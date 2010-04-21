@@ -45,4 +45,4 @@ Fixes in v0.2
 * The, An, and A should be listed after the title. e.g. "The Trigger" becomes
 "Trigger, The"
 * Books lists should sort by Series, Series #, then Author (or Title)
-* Aut
+

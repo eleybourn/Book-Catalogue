@@ -18,7 +18,7 @@
         </activity>
 
     <activity android:name=".BookEdit" android:label="@string/edit_title"></activity>
-<activity android:name=".BookCatalogueTitle" android:label="@string/sort_title"></activity>
+
 <activity android:name=".BookISBNSearch" android:label="@string/title_isbn_search"></activity>
 <activity android:name=".Bookshelf" android:label="@string/title_manage_bs"></activity>
 <activity android:name=".BookshelfEdit" android:label="@string/title_edit_bs"></activity>

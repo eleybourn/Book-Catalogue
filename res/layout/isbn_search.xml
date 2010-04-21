@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content">
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:orientation="vertical" 
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent">
+	
+		<EditText android:id="@+id/isbn" 
+		    android:layout_width="fill_parent"
+			android:layout_height="wrap_content" 
+			android:layout_weight="1"
+			android:hint="@string/isbn"
+			android:inputType="number"
+			android:digits="0123456789Xx"
+			/>
+	
+		<Button android:id="@+id/search" 
+			android:text="@string/search"
+			android:layout_width="fill_parent"
+		  	android:width="150sp"
+			android:layout_height="wrap_content" />
+	
+	</LinearLayout>
+</ScrollView>

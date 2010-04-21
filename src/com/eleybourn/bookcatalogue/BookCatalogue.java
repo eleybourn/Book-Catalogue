@@ -91,7 +91,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			//fillData();
 			registerForContextMenu(getExpandableListView());
     	} catch (Exception e) {
-    		Log.e("Book Catalogue", "Unknown Exception - BC onCreate - " + e.getMessage() );
+    		//Log.e("Book Catalogue", "Unknown Exception - BC onCreate - " + e.getMessage() );
     	}
     }
 

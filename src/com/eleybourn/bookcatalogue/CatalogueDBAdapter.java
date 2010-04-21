@@ -118,8 +118,7 @@ public class CatalogueDBAdapter {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
-                    + newVersion + ", existing data will be saved");
+            //Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion + ", existing data will be saved");
             int curVersion = oldVersion;
             if (curVersion < 11) {
             	onCreate(db);

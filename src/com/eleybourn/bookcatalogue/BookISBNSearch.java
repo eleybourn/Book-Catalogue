@@ -148,13 +148,13 @@ public class BookISBNSearch extends Activity {
 			}
 			return book;
 		} catch (MalformedURLException e) {
-			Log.e("Book Catalogue", "Malformed URL " + e.getMessage());
+			//Log.e("Book Catalogue", "Malformed URL " + e.getMessage());
 		} catch (ParserConfigurationException e) {
-			Log.e("Book Catalogue", "SAX Parsing Error " + e.getMessage());
+			//Log.e("Book Catalogue", "SAX Parsing Error " + e.getMessage());
 		} catch (SAXException e) {
-			Log.e("Book Catalogue", "SAX Exception " + e.getMessage());
+			//Log.e("Book Catalogue", "SAX Exception " + e.getMessage());
 		} catch (IOException e) {
-			Log.e("Book Catalogue", "SAX IO Exception " + e.getMessage());
+			//Log.e("Book Catalogue", "SAX IO Exception " + e.getMessage());
 		}
 		return null;
     }
@@ -524,7 +524,7 @@ public class BookISBNSearch extends Activity {
 					try {
 						u = new URL(thumbnail);
 					} catch (MalformedURLException e) {
-						Log.e("Book Catalogue", "Malformed URL");
+						//Log.e("Book Catalogue", "Malformed URL");
 						return;
 					}
             	    HttpURLConnection c;
@@ -536,7 +536,7 @@ public class BookISBNSearch extends Activity {
 	            	    c.connect();
 	            	    in = c.getInputStream();
 					} catch (IOException e) {
-						Log.e("Book Catalogue", "Thumbnail cannot be read");
+						//Log.e("Book Catalogue", "Thumbnail cannot be read");
 						return;
 					}
 					
@@ -544,7 +544,7 @@ public class BookISBNSearch extends Activity {
 					try {
 						f = new FileOutputStream(Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/tmp.jpg");
 					} catch (FileNotFoundException e) {
-						Log.e("Book Catalogue", "Thumbnail cannot be written");
+						//Log.e("Book Catalogue", "Thumbnail cannot be written");
 						return;
 					}
 
@@ -556,7 +556,7 @@ public class BookISBNSearch extends Activity {
 						}
 	            	    f.close();
 					} catch (IOException e) {
-						Log.e("Book Catalogue", "Error writing thumbnail");
+						//Log.e("Book Catalogue", "Error writing thumbnail");
 						return;
 					}
             	}

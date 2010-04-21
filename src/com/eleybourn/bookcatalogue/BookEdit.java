@@ -85,7 +85,6 @@ public class BookEdit extends Activity {
     	startManagingCursor(series_cur);
     	while (series_cur.moveToNext()) {
     		String series = series_cur.getString(series_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES));
-    		Log.e("BC", series + "...");
     		series_list.add(series);
     	}
     	return series_list;
@@ -172,7 +171,7 @@ public class BookEdit extends Activity {
 	        });
 	        
     	} catch (Exception e) {
-    		Log.e("Book Catalogue", "Unknown error " + e.toString());
+    		//Log.e("Book Catalogue", "Unknown error " + e.toString());
     	}
     }
     

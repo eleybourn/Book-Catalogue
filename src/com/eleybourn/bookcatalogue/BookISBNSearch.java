@@ -402,7 +402,7 @@ public class BookISBNSearch extends Activity {
     		}
 
 			/* Do not convert 1st char to uppercase in the following situations */
-    		if (wordnum > 1 && word.matches("a|to|at|the|in|and|is|von")) {
+    		if (wordnum > 1 && word.matches("a|to|at|the|in|and|is|von|de|le")) {
     			ff.append(word);
     			continue;
     		} 

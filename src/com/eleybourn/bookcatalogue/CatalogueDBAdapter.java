@@ -28,7 +28,6 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
-import android.util.Log;
 
 /**
  * Book Catalogue database access helper class. Defines the basic CRUD operations
@@ -37,6 +36,7 @@ import android.util.Log;
  */
 public class CatalogueDBAdapter {
 
+	/* This is the list of all column names as static variables for reference */
     public static final String KEY_AUTHOR = "author";
     public static final String KEY_TITLE = "title";
     public static final String KEY_ISBN = "isbn";
@@ -53,10 +53,10 @@ public class CatalogueDBAdapter {
     public static final String LOCATION = "bookCatalogue";
     public static final String KEY_SERIES_NUM = "series_num";
 
-    private static final String TAG = "CatalogueDBAdapter";
     private DatabaseHelper mDbHelper;
     private SQLiteDatabase mDb;
 
+    /* private database variables as static reference */
     private static final String DATABASE_NAME = "book_catalogue";
     private static final String DATABASE_TABLE_BOOKS = "books";
     private static final String DATABASE_TABLE_AUTHORS = "authors";
@@ -72,7 +72,7 @@ public class CatalogueDBAdapter {
             	KEY_FAMILY_NAME + " text not null, " +
             	KEY_GIVEN_NAMES + " text not null" +
                 ")";
-    
+
     private static final String DATABASE_CREATE_BOOKSHELF =
         "create table " + DATABASE_TABLE_BOOKSHELF + 
         	" (_id integer primary key autoincrement, " +
@@ -183,8 +183,17 @@ public class CatalogueDBAdapter {
     		given = name.substring(commaIndex+1);
     	} else {
     		names = name.split(" ");
-    		family = names[names.length-1];
-    		for (int i=0; i<names.length-1; i++) {
+    		int flen = 1;
+    		if (names.length > 2) {
+    			String sname = names[names.length-2];
+    			/* e.g. Ursula Le Guin or Marianne De Pierres */
+    			if (sname.matches("[LlDd]e")) {
+    				family = names[names.length-2] + " ";
+    				flen = 2;
+    			}
+    		}
+    		family += names[names.length-1];
+    		for (int i=0; i<names.length-flen; i++) {
     			given += names[i] + " ";
     		}
     	}
@@ -380,7 +389,7 @@ public class CatalogueDBAdapter {
     		", b." + KEY_READ + ", b." + KEY_SERIES + ", b." + KEY_PAGES + ", b." + KEY_SERIES_NUM + 
     		" FROM " + DATABASE_TABLE_BOOKS + " b, " + DATABASE_TABLE_BOOKSHELF + " bs, " + DATABASE_TABLE_AUTHORS + " a" + 
     		" WHERE bs._id=b." + KEY_BOOKSHELF + " AND a._id=b." + KEY_AUTHOR + " AND a._id=" + author + where + 
-    		" ORDER BY b." + KEY_SERIES + ", substr('0000000000' || b." + KEY_SERIES_NUM + ", -10, 10), b." + KEY_TITLE + " ASC";
+    		" ORDER BY b." + KEY_SERIES + ", substr('0000000000' || b." + KEY_SERIES_NUM + ", -10, 10), lower(b." + KEY_TITLE + ") ASC";
     	return mDb.rawQuery(sql, new String[]{});
     }
     
@@ -391,7 +400,7 @@ public class CatalogueDBAdapter {
 		", b." + KEY_READ + ", b." + KEY_SERIES + ", b." + KEY_PAGES + ", b." + KEY_SERIES_NUM + 
 		" FROM " + DATABASE_TABLE_BOOKS + " b, " + DATABASE_TABLE_BOOKSHELF + " bs, " + DATABASE_TABLE_AUTHORS + " a" + 
 		" WHERE bs._id=b." + KEY_BOOKSHELF + " AND a._id=b." + KEY_AUTHOR + " AND b." + KEY_ISBN + "=" + isbn + 
-		" ORDER BY b." + KEY_TITLE + "";
+		" ORDER BY lower(b." + KEY_TITLE + ")";
     	return mDb.rawQuery(sql, new String[]{});
     }
     
@@ -412,7 +421,7 @@ public class CatalogueDBAdapter {
     	}
     	String sql = "SELECT a._id, a." + KEY_FAMILY_NAME + ", a." + KEY_GIVEN_NAMES + 
     		" FROM " + DATABASE_TABLE_AUTHORS + " a" + where + 
-    		" ORDER BY " + KEY_FAMILY_NAME + ", " + KEY_GIVEN_NAMES + "";
+    		" ORDER BY lower(" + KEY_FAMILY_NAME + "), lower(" + KEY_GIVEN_NAMES + ")";
     	return mDb.rawQuery(sql, new String[]{});
     }
 

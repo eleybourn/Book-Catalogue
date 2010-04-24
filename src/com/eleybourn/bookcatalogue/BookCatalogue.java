@@ -21,6 +21,9 @@
 package com.eleybourn.bookcatalogue;
 
 //import android.R;
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import android.app.ExpandableListActivity;
 import android.app.SearchManager;
 import android.content.Context;
@@ -29,7 +32,6 @@ import android.database.Cursor;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,6 +48,7 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
 import android.widget.ExpandableListView.OnGroupClickListener;
+import android.widget.ExpandableListView.OnGroupCollapseListener;
 
 /*
  * A book catalogue application that integrates with Google Books.
@@ -76,6 +79,7 @@ public class BookCatalogue extends ExpandableListActivity {
     
     public int sort = 0;
     public int numAuthors = 0;
+    private ArrayList<Integer> currentGroup = new ArrayList<Integer>();
 
     /** Called when the activity is first created. */
     @Override
@@ -134,6 +138,7 @@ public class BookCatalogue extends ExpandableListActivity {
     	} else {
     		fillDataAuthor();
     	}
+    	gotoCurrentGroup();
     }
     
     private void fillDataAuthor() {
@@ -168,7 +173,15 @@ public class BookCatalogue extends ExpandableListActivity {
 		ExpandableListView expandableList = getExpandableListView();
 		expandableList.setOnGroupClickListener(new OnGroupClickListener() {
 			public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+				addToCurrentGroup(groupPosition);
 				return false;
+			}
+		});
+		expandableList.setOnGroupCollapseListener(new OnGroupCollapseListener() {
+			@Override
+			public void onGroupCollapse(int groupPosition) {
+				addToCurrentGroup(groupPosition);
+				
 			}
 		});
 
@@ -188,7 +201,6 @@ public class BookCatalogue extends ExpandableListActivity {
     	// Get all of the rows from the database and create the item list
         Cursor BooksCursor = null;
        	String order = CatalogueDBAdapter.KEY_TITLE + ", " + CatalogueDBAdapter.KEY_FAMILY_NAME;
-       	//TODO: Title Search
 		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 			String query = intent.getStringExtra(SearchManager.QUERY);
 			BooksCursor = mDbHelper.searchBooks(query, order, bookshelf);
@@ -215,10 +227,18 @@ public class BookCatalogue extends ExpandableListActivity {
 		final BookCatalogue pthis = this;
 		expandableList.setOnGroupClickListener(new OnGroupClickListener() {
 			public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+				addToCurrentGroup(groupPosition);
 		        Intent i = new Intent(pthis, BookEdit.class);
 		        i.putExtra(CatalogueDBAdapter.KEY_ROWID, id);
 		        startActivityForResult(i, ACTIVITY_EDIT);
 				return true;
+			}
+		});
+		expandableList.setOnGroupCollapseListener(new OnGroupCollapseListener() {
+			@Override
+			public void onGroupCollapse(int groupPosition) {
+				addToCurrentGroup(groupPosition);
+				
 			}
 		});
 
@@ -378,16 +398,61 @@ public class BookCatalogue extends ExpandableListActivity {
     }
     
     /*
+     * Expand and scroll to the current group
+     */
+    public void gotoCurrentGroup() {
+		ExpandableListView view = this.getExpandableListView();
+    	Iterator<Integer> arrayIterator = currentGroup.iterator();
+		while(arrayIterator.hasNext()) {
+			view.expandGroup(arrayIterator.next());
+		}
+
+    	try {
+    		view.setSelectedGroup(currentGroup.get(currentGroup.size()-1));
+    	} catch (Exception e) {
+    		//do nothing
+    	}
+    	
+    	return;
+    }
+    
+    /*
+     * add / remove items from the current group arraylist
+     */
+    public void addToCurrentGroup(int pos) {
+    	addToCurrentGroup(pos, false);
+    }
+    
+    /*
+     * add / remove items from the current group arraylist
+     */
+    public void addToCurrentGroup(int pos, boolean force) {
+    	int index = currentGroup.indexOf(pos);
+    	if (index == -1) {
+    		//it does not exist (so is not open), so add to the list
+    		currentGroup.add(pos);
+    	} else {
+    		//it does exist (so is open), so remove from the list
+    		currentGroup.remove(index);
+    		if (force == true) {
+    			currentGroup.add(pos);
+    		}
+    	}
+    }
+
+    /*
      * Expand all Author Groups
      */
     public void expandAll() {
+		ExpandableListView view = this.getExpandableListView();
+    	currentGroup = new ArrayList<Integer>();
 		int i = 0;
 		while (i < numAuthors) {
-			ExpandableListView view = this.getExpandableListView();
-			boolean expand = view.expandGroup(i);
-			if (!expand) {
-				break;
-			}
+	    	addToCurrentGroup(i);
+			view.expandGroup(i);
+			//if (!expand) {
+			//	break;
+			//}
 			i++;
 		}
     }
@@ -396,15 +461,17 @@ public class BookCatalogue extends ExpandableListActivity {
      * Collapse all Author Groups
      */
     public void collapseAll() {
+    	// there is no current group anymore
+		ExpandableListView view = this.getExpandableListView();
 		int i = 0;
 		while (i < numAuthors) {
-			ExpandableListView view = this.getExpandableListView();
-			boolean expand = view.collapseGroup(i);
-			if (!expand) {
-				break;
-			}
+			view.collapseGroup(i);
+			//if (!expand) {
+			//	break;
+			//}
 			i++;
 		}
+    	currentGroup = new ArrayList<Integer>();
     }
 	
     @Override
@@ -504,6 +571,7 @@ public class BookCatalogue extends ExpandableListActivity {
     @Override
     public boolean onChildClick(ExpandableListView l, View v, int position, int childPosition, long id) {
 		boolean result = super.onChildClick(l, v, position, childPosition, id);
+		addToCurrentGroup(position, true);
     	if (sort == 0) {
 	        Intent i = new Intent(this, BookEdit.class);
 	        i.putExtra(CatalogueDBAdapter.KEY_ROWID, id);

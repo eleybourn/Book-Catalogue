@@ -42,8 +42,16 @@
 <string name="title_edit_bs">Book Catalogue (Edit Bookshelf)</string>
 <string name="book_exists">The book you are trying to add already exists. Skipping.</string>
 <string name="search_label">Search for Books</string>
-<string name="search_hint">Start typing in the author or title</string>
+<string name="search_hint">Search Author or Title</string>
 <string name="book_not_found">The scanned book was not found. Please enter the details manually.</string>
 <string name="series_num">#</string>
 <string name="unable_to_connect">Unable to Connect to Google Books</string>
+<string name="export_data">Export Books</string>
+<string name="export_complete">Export (to SDCard) of data complete. </string>
+<string name="import_data">Import Books</string>
+<string name="import_alert">Warning. Importing data may update existing book records with new information if the id in the import file is the same as an existing id. This is usually fine if you changed a field in an exported file. If you created a new book record, ensure the id field is blank.</string>
+<string name="export_failed">ERROR: Export (to SDCard) of data failed. </string>
+<string name="import_failed">ERROR: Import of data (from SDCard) failed. Is the file in the correct place?</string>
+<string name="search_title">Book Catalogue: Search Results</string>
+<string name="results_found">Results Found</string>
 </resources>

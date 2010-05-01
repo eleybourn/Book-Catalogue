@@ -67,11 +67,11 @@ public class CatalogueDBAdapter {
      * Database creation sql statement
      */
     private static final String DATABASE_CREATE_AUTHORS =
-            "create table " + DATABASE_TABLE_AUTHORS + 
-            	" (_id integer primary key autoincrement, " +
-            	KEY_FAMILY_NAME + " text not null, " +
-            	KEY_GIVEN_NAMES + " text not null" +
-                ")";
+        "create table " + DATABASE_TABLE_AUTHORS + 
+        	" (_id integer primary key autoincrement, " +
+        	KEY_FAMILY_NAME + " text not null, " +
+        	KEY_GIVEN_NAMES + " text not null" +
+            ")";
 
     private static final String DATABASE_CREATE_BOOKSHELF =
         "create table " + DATABASE_TABLE_BOOKSHELF + 
@@ -95,8 +95,8 @@ public class CatalogueDBAdapter {
         	KEY_BOOKSHELF + " integer REFERENCES " + DATABASE_TABLE_BOOKSHELF + " ON DELETE SET NULL ON UPDATE SET NULL, " + 
         	KEY_READ + " boolean not null default 'f', " +
         	KEY_SERIES + " text, " +
-        	KEY_PAGES + " int" +
-        	KEY_SERIES_NUM + " text, " +
+        	KEY_PAGES + " int, " +
+        	KEY_SERIES_NUM + " text " +
             ")";
 
     private final Context mCtx;
@@ -157,6 +157,9 @@ public class CatalogueDBAdapter {
      * @throws SQLException if the database could be neither opened or created
      */
     public CatalogueDBAdapter open() throws SQLException {
+    	/* Create the bookCatalogue directory if it does not exist */
+        new File(Environment.getExternalStorageDirectory() + "/" + LOCATION + "/").mkdirs();
+        
         mDbHelper = new DatabaseHelper(mCtx);
         mDb = mDbHelper.getWritableDatabase();
         return this;
@@ -363,10 +366,36 @@ public class CatalogueDBAdapter {
     	}
     	String sql = "SELECT b." + KEY_ROWID + ", a." + KEY_FAMILY_NAME + " || ', ' || a." + KEY_GIVEN_NAMES + " as " + KEY_AUTHOR + ", b." + KEY_TITLE + 
     		", b." + KEY_ISBN + ", b." + KEY_PUBLISHER + ", b." + KEY_DATE_PUBLISHED + ", b." + KEY_RATING + ", bs." + KEY_BOOKSHELF + 
-    		", b." + KEY_READ + ", b." + KEY_SERIES + ", b." + KEY_PAGES + ", b." + KEY_SERIES_NUM + 
+    		", b." + KEY_READ + ", b." + KEY_SERIES + ", b." + KEY_PAGES + ", b." + KEY_SERIES_NUM + ", b." + KEY_BOOKSHELF + " as bookshelf_id" + 
     		" FROM " + DATABASE_TABLE_BOOKS + " b, " + DATABASE_TABLE_BOOKSHELF + " bs, " + DATABASE_TABLE_AUTHORS + " a" + 
     		" WHERE bs._id=b." + KEY_BOOKSHELF + " AND a._id=b." + KEY_AUTHOR + where + 
     		" ORDER BY " + order + "";
+    	return mDb.rawQuery(sql, new String[]{});
+        //return mDb.query(DATABASE_TABLE_BOOKS, new String[] {KEY_ROWID, KEY_AUTHOR, KEY_TITLE, KEY_ISBN, KEY_PUBLISHER, 
+        //		KEY_DATE_PUBLISHED, KEY_RATING, KEY_BOOKSHELF, KEY_READ, KEY_SERIES, KEY_PAGES}, null, null, null, null, null);
+    }
+
+    /**
+     * Return a Cursor over the list of all books in the database
+     * 
+     * @return Cursor over all notes
+     */
+    public Cursor fetchAllBooks(String order) {
+    	return fetchAllBooks(order, "All Books"); 
+    }
+
+    /**
+     * Return a Cursor over the list of all books in the database
+     * 
+     * @return Cursor over all notes
+     */
+    public Cursor exportBooks() {
+    	String sql = "SELECT b." + KEY_ROWID + ", b." + KEY_AUTHOR + ", a." + KEY_FAMILY_NAME + ", a." + KEY_GIVEN_NAMES + ", b." + KEY_TITLE + 
+    		", b." + KEY_ISBN + ", b." + KEY_PUBLISHER + ", b." + KEY_DATE_PUBLISHED + ", b." + KEY_RATING + 
+    		", b." + KEY_BOOKSHELF + " as bookshelf_id" + ", bs." + KEY_BOOKSHELF + ", b." + KEY_READ + ", b." + KEY_SERIES + 
+    		", b." + KEY_PAGES + ", b." + KEY_SERIES_NUM + 
+    		" FROM " + DATABASE_TABLE_BOOKS + " b, " + DATABASE_TABLE_BOOKSHELF + " bs, " + DATABASE_TABLE_AUTHORS + " a" + 
+    		" WHERE bs._id=b." + KEY_BOOKSHELF + " AND a._id=b." + KEY_AUTHOR;
     	return mDb.rawQuery(sql, new String[]{});
         //return mDb.query(DATABASE_TABLE_BOOKS, new String[] {KEY_ROWID, KEY_AUTHOR, KEY_TITLE, KEY_ISBN, KEY_PUBLISHER, 
         //		KEY_DATE_PUBLISHED, KEY_RATING, KEY_BOOKSHELF, KEY_READ, KEY_SERIES, KEY_PAGES}, null, null, null, null, null);

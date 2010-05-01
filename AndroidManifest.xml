@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.eleybourn.bookcatalogue"
-      android:versionName="1.03" android:versionCode="3">
+      android:versionName="1.04" android:versionCode="4">
     <application android:label="@string/app_name" android:icon="@drawable/logo_bc">
         <activity android:name=".BookCatalogue"
                   android:label="@string/app_name">

@@ -79,7 +79,13 @@ public final class R {
         public static final int date_published=0x7f050008;
         public static final int delete_1st_bs=0x7f050021;
         public static final int edit_title=0x7f050015;
+        public static final int export_complete=0x7f05002f;
+        public static final int export_data=0x7f05002e;
+        public static final int export_failed=0x7f050032;
         public static final int hello=0x7f050000;
+        public static final int import_alert=0x7f050031;
+        public static final int import_data=0x7f050030;
+        public static final int import_failed=0x7f050033;
         public static final int isbn=0x7f050006;
         public static final int isbn_found=0x7f050024;
         public static final int menu_bookshelf=0x7f05001e;
@@ -99,9 +105,11 @@ public final class R {
         public static final int publisher=0x7f050007;
         public static final int rating=0x7f050009;
         public static final int read=0x7f05000b;
+        public static final int results_found=0x7f050035;
         public static final int search=0x7f050018;
         public static final int search_hint=0x7f05002a;
         public static final int search_label=0x7f050029;
+        public static final int search_title=0x7f050034;
         public static final int series=0x7f05000c;
         public static final int series_num=0x7f05002c;
         public static final int sort_title=0x7f050014;

@@ -21,17 +21,28 @@
 package com.eleybourn.bookcatalogue;
 
 //import android.R;
+import java.io.BufferedInputStream;
+import java.io.BufferedWriter;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import android.app.AlertDialog;
 import android.app.ExpandableListActivity;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -72,6 +83,8 @@ public class BookCatalogue extends ExpandableListActivity {
     private static final int DELETE_ID = Menu.FIRST + 7;
     private static final int BOOKSHELVES = Menu.FIRST + 8;
     private static final int SORT_BY_AUTHOR = Menu.FIRST + 9;
+    private static final int EXPORT = Menu.FIRST + 10;
+    private static final int IMPORT = Menu.FIRST + 11;
 
     public String bookshelf = "";
     private ArrayAdapter<String> spinnerAdapter;
@@ -80,6 +93,8 @@ public class BookCatalogue extends ExpandableListActivity {
     public int sort = 0;
     public int numAuthors = 0;
     private ArrayList<Integer> currentGroup = new ArrayList<Integer>();
+    private int importUpdated = 0;
+    private int importCreated = 0;
 
     /** Called when the activity is first created. */
     @Override
@@ -152,10 +167,14 @@ public class BookCatalogue extends ExpandableListActivity {
 		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 			String query = intent.getStringExtra(SearchManager.QUERY);
 			BooksCursor = mDbHelper.searchAuthors(query, bookshelf);
+	    	numAuthors = BooksCursor.getCount();
+	    	Toast.makeText(this, numAuthors + " " + this.getResources().getString(R.string.results_found), Toast.LENGTH_LONG).show();
+			this.setTitle(R.string.search_title);
 		} else {
 			BooksCursor = mDbHelper.fetchAllAuthors(bookshelf);
+	    	numAuthors = BooksCursor.getCount();
+			this.setTitle(R.string.app_name);
 		}
-    	numAuthors = BooksCursor.getCount();
     	mGroupIdColumnIndex = BooksCursor.getColumnIndexOrThrow("_id");
         startManagingCursor(BooksCursor);
      
@@ -204,10 +223,14 @@ public class BookCatalogue extends ExpandableListActivity {
 		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 			String query = intent.getStringExtra(SearchManager.QUERY);
 			BooksCursor = mDbHelper.searchBooks(query, order, bookshelf);
+	    	numAuthors = BooksCursor.getCount();
+	    	Toast.makeText(this, numAuthors + " " + this.getResources().getString(R.string.results_found), Toast.LENGTH_LONG).show();
+			this.setTitle(R.string.search_title);
 		} else {
 			BooksCursor = mDbHelper.fetchAllBooks(order, bookshelf);
+	    	numAuthors = BooksCursor.getCount();
+			this.setTitle(R.string.app_name);
 		}
-    	numAuthors = BooksCursor.getCount();
     	mGroupIdColumnIndex = BooksCursor.getColumnIndexOrThrow("_id");
         startManagingCursor(BooksCursor);
      
@@ -360,6 +383,12 @@ public class BookCatalogue extends ExpandableListActivity {
         MenuItem bookshelf = menu.add(2, BOOKSHELVES, 4, R.string.menu_bookshelf);
         bookshelf.setIcon(R.drawable.ic_menu_bookshelves);
         
+        MenuItem export = menu.add(2, EXPORT, 4, R.string.export_data);
+        export.setIcon(android.R.drawable.ic_menu_save);
+        
+        MenuItem importM = menu.add(2, IMPORT, 4, R.string.import_data);
+        importM.setIcon(android.R.drawable.ic_menu_upload);
+        
         return true;
     }
 
@@ -391,6 +420,32 @@ public class BookCatalogue extends ExpandableListActivity {
             return true;
         case BOOKSHELVES:
             manageBookselves();
+            return true;
+        case EXPORT:
+            exportData();
+            return true;
+        case IMPORT:
+        	// Verify - this can be a dangerous operation
+        	AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(R.string.import_alert).create();
+            alertDialog.setTitle(R.string.import_data);
+            alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
+            /* Hack to pass this into the class */
+            final BookCatalogue pthis = this;
+            alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+            	public void onClick(DialogInterface dialog, int which) {
+            		importData();
+            		fillData();
+					Toast.makeText(pthis, importUpdated + " Updated, " + importCreated + " Created", Toast.LENGTH_LONG).show();
+            		return;
+            	}
+            }); 
+            alertDialog.setButton2("Cancel", new DialogInterface.OnClickListener() {
+            	public void onClick(DialogInterface dialog, int which) {
+            		//do nothing
+            		return;
+            	}
+            }); 
+            alertDialog.show();
             return true;
         }
 
@@ -567,7 +622,183 @@ public class BookCatalogue extends ExpandableListActivity {
         Intent i = new Intent(this, Bookshelf.class);
         startActivityForResult(i, ACTIVITY_BOOKSHELF);
     }
-    
+	
+    /*
+     * Export all data to a CSV file
+     * 
+     * return void
+     */
+    private void exportData() {
+    	Cursor books = mDbHelper.exportBooks();
+    	String export = 
+    		CatalogueDBAdapter.KEY_ROWID + "\t" + 
+    		CatalogueDBAdapter.KEY_FAMILY_NAME + "\t" + 
+    		CatalogueDBAdapter.KEY_GIVEN_NAMES + "\t" + 
+    		CatalogueDBAdapter.KEY_AUTHOR + "\t" + 
+    		CatalogueDBAdapter.KEY_TITLE + "\t" + 
+    		CatalogueDBAdapter.KEY_ISBN + "\t" + 
+    		CatalogueDBAdapter.KEY_PUBLISHER + "\t" + 
+    		CatalogueDBAdapter.KEY_DATE_PUBLISHED + "\t" + 
+    		CatalogueDBAdapter.KEY_RATING + "\t" + 
+    		"bookshelf_id\t" + 
+    		CatalogueDBAdapter.KEY_BOOKSHELF + "\t" +
+    		CatalogueDBAdapter.KEY_READ + "\t" +
+    		CatalogueDBAdapter.KEY_SERIES + "\t" + 
+    		CatalogueDBAdapter.KEY_SERIES_NUM + "\t" +
+    		CatalogueDBAdapter.KEY_PAGES + "\t" + 
+    		"\n";
+        if (books.moveToFirst()) {
+            do { 
+            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROWID)) + "\t";
+            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_FAMILY_NAME)) + "\t";
+            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_GIVEN_NAMES)) + "\t";
+            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR)) + "\t";
+            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE)) + "\t";
+            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ISBN)) + "\t";
+            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PUBLISHER)) + "\t";
+            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DATE_PUBLISHED)) + "\t";
+            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_RATING)) + "\t";
+            	export += books.getString(books.getColumnIndexOrThrow("bookshelf_id")) + "\t";
+            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_BOOKSHELF)) + "\t";
+            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ)) + "\t";
+            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES)) + "\t";
+            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES_NUM)) + "\t";
+            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PAGES)) + "\t";
+            	export += "\n";
+            } 
+            while (books.moveToNext()); 
+        } 
+        
+        /* write to the SDCard */
+		try {
+			BufferedWriter out = new BufferedWriter(new FileWriter(Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/export.tab"));
+			out.write(export);
+			out.close();
+        	Toast.makeText(this, R.string.export_complete, Toast.LENGTH_LONG).show();
+		} catch (IOException e) {
+			//Log.e("Book Catalogue", "Could not write to the SDCard");		
+        	Toast.makeText(this, R.string.export_failed, Toast.LENGTH_LONG).show();
+		}
+
+   }
+	
+	/**
+	 * This program reads a text file line by line and print to the console. It uses
+	 * FileOutputStream to read the file.
+	 * 
+	 */
+	public ArrayList<String> readFile(String filename) {
+
+		ArrayList<String> importedString = new ArrayList<String>();
+		File file = new File(filename);
+		FileInputStream fis = null;
+		BufferedInputStream bis = null;
+		DataInputStream dis = null;
+
+		try {
+			fis = new FileInputStream(file);
+			// Here BufferedInputStream is added for fast reading.
+			bis = new BufferedInputStream(fis);
+			dis = new DataInputStream(bis);
+
+			// dis.available() returns 0 if the file does not have more lines.
+			while (dis.available() != 0) {
+				// this statement reads the line from the file and print it to the console.
+				importedString.add(dis.readLine());
+			}
+			// dispose all the resources after using them.
+			fis.close();
+			bis.close();
+			dis.close();
+		} catch (FileNotFoundException e) {
+			Toast.makeText(this, R.string.import_failed, Toast.LENGTH_LONG).show();
+		} catch (IOException e) {
+			Toast.makeText(this, R.string.import_failed, Toast.LENGTH_LONG).show();
+		}
+		return importedString;
+	}
+
+    /*
+     * Export all data to a CSV file
+     * 
+     * return void
+     */
+    private void importData() {
+    	importUpdated = 0;
+    	importCreated = 0;
+    	ArrayList<String> export = readFile(Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/export.tab");
+    	int row = 1;
+
+    	/* Iterate through each imported row */
+    	while (row < export.size()) {
+    		String[] imported = export.get(row).split("\t");
+    		row++;
+    		/* Setup aliases for each cell*/
+    		Long id = null;
+    		try {
+    			id = Long.parseLong(imported[0]);
+    		} catch(Exception e) {
+    			id = Long.parseLong("0");
+    		}
+    		String family = imported[1]; 
+    		String given = imported[2]; 
+    		//String author_id = imported[3]; 
+    		String title = imported[4]; 
+			String isbn = imported[5];
+    		String publisher = imported[6]; 
+    		String date_published = imported[7];
+    		float rating = 0;
+    		try {
+        		rating = Float.valueOf(imported[8]); 
+    		} catch (Exception e) {
+    			rating = 0;
+    		}
+    		//String bookshelf_id = imported[9]; 
+    		String bookshelf = imported[10];
+    		Boolean read;
+    		if (imported[11].equals("0")) {
+        		read = false;
+    		} else {
+        		read = true;
+    		}
+    		String series = imported[12]; 
+    		String series_num = imported[13];
+    		int pages = 0;
+    		try {
+        		pages = Integer.parseInt(imported[14]); 
+    		} catch (Exception e) {
+    			pages = 0;
+    		}
+
+    		String author = family + ", " + given;
+    		
+    		if (id == 0) {
+    			// Book is new. It does not exist in the current database
+            	if (!isbn.equals("")) {
+            		Cursor book = mDbHelper.fetchBookByISBN(isbn);
+            		int rows = book.getCount();
+            		if (rows != 0) {
+                		// Its a new entry, but the ISBN exists
+            			book.moveToFirst();
+            			mDbHelper.updateBook(book.getLong(0), author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num);
+            			importUpdated++;
+            			continue;
+            		}
+            	} 
+                mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num);
+                importCreated++;
+    			continue;
+    			
+    		} else {
+    			// Book exists and should be updated if it has changed
+    			mDbHelper.updateBook(id, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num);
+    			importUpdated++;
+    			continue;
+    		}
+    	}
+
+   }
+   
     @Override
     public boolean onChildClick(ExpandableListView l, View v, int position, int childPosition, long id) {
 		boolean result = super.onChildClick(l, v, position, childPosition, id);

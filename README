@@ -41,7 +41,12 @@ Features include;
   case. e.g. "The murder on the links" becomes "The Murder on the Links"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
-New in v0.4
+New in v1.06
+* Import / Export and Manage Bookshelves have been moved to an admin page.
+* Bug fixes in the Sort by Title view
+* The options menu has been enhanced
+
+New in v1.04
 * There is now an option in the main menu to export all data to the SDCard. 
   This will be saved as a tab separated file in the bookCatalogue directory.
 * There is now an option in the main menu to import data from the SDCard. 
@@ -50,13 +55,13 @@ New in v0.4
 * Improvements have been made to the search results screen to make it more 
   obvious
 
-New in v0.3
+New in v1.03
 * Authors like "Marianne De Pierres" and "Ursula Le Guin" are now listed 
   correctly. They will list as;
 	De Pierres, Marianne
 	Le Guin, Ursula
 
-New in v0.2
+New in v1.02
 * The, An, and A should be listed after the title. e.g. "The Trigger" becomes
   "Trigger, The"
 * Books lists should sort by Series, Series #, then Author (or Title)

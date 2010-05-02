@@ -17,9 +17,9 @@
 <string name="confirm_add">Add Book</string>
 <string name="nobooks">There are no books in this Bookshelf. Please add some using the menu at the bottom of this screen.</string>
 <string name="menu_sort_by_author">Sort by Author</string>
-<string name="menu_sort_by_author_expanded">Expand</string>
+<string name="menu_sort_by_author_expanded">Expand All</string>
 <string name="menu_sort_by_title">Sort By Title</string>
-<string name="menu_sort_by_author_collapsed">Collapse</string>
+<string name="menu_sort_by_author_collapsed">Collapse All</string>
 <string name="sort_title">Book Catalogue (by Title)</string>
 <string name="edit_title">Book Catalogue (Edit Book)</string>
 <string name="menu_insert_isbn">Add by ISBN</string>
@@ -54,4 +54,6 @@
 <string name="import_failed">ERROR: Import of data (from SDCard) failed. Is the file in the correct place?</string>
 <string name="search_title">Book Catalogue: Search Results</string>
 <string name="results_found">Results Found</string>
+<string name="administration_label">Administration</string>
+<string name="menu_administration">Administration</string>
 </resources>

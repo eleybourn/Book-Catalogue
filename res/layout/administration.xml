@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:orientation="vertical"
+	android:layout_width="fill_parent" 
+	android:layout_height="fill_parent"
+   	android:paddingLeft="5sp"
+	android:background="#2d2d2d">
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	    android:orientation="horizontal"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+	   	android:paddingLeft="5sp"
+		android:background="#2d2d2d">
+	  	<ImageView android:id="@+id/bookshelf_img" 
+	  		android:layout_width="wrap_content" 
+	  		android:layout_height="wrap_content" 
+	  		android:src="@+drawable/ic_menu_bookshelves"
+	   		/>
+	  	<TextView android:id="@+id/bookshelf_label" 
+	  		android:layout_width="wrap_content" 
+	  		android:layout_height="wrap_content" 
+	  		android:text="@+string/menu_bookshelf"
+		    android:textAppearance="?android:attr/textAppearanceLarge"
+	   		/>
+   	</LinearLayout>
+
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	    android:orientation="horizontal"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+	   	android:paddingLeft="5sp"
+		android:background="#2d2d2d">
+	  	<ImageView android:id="@+id/export_img" 
+	  		android:layout_width="wrap_content" 
+	  		android:layout_height="wrap_content" 
+	  		android:src="@+android:drawable/ic_menu_save"
+	   		/>
+	 	<TextView android:id="@+id/export_label" 
+	 		android:layout_width="fill_parent" 
+	 		android:layout_height="wrap_content" 
+	 		android:text="@+string/export_data"
+	  	    android:textAppearance="?android:attr/textAppearanceLarge"
+	  		/>
+   	</LinearLayout>
+
+
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	    android:orientation="horizontal"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+	   	android:paddingLeft="5sp"
+		android:background="#2d2d2d">
+	  	<ImageView android:id="@+id/import_img" 
+	  		android:layout_width="wrap_content" 
+	  		android:layout_height="wrap_content" 
+	  		android:src="@+android:drawable/ic_menu_upload"
+	   		/>
+	  	<TextView android:id="@+id/import_label" 
+	  		android:layout_width="fill_parent" 
+	  		android:layout_height="wrap_content" 
+	  		android:text="@+string/import_data"
+	   	    android:textAppearance="?android:attr/textAppearanceLarge"
+	   		/>
+   	</LinearLayout>
+
+</LinearLayout>

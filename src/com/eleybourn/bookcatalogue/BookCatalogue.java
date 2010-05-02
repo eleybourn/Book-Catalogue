@@ -21,28 +21,17 @@
 package com.eleybourn.bookcatalogue;
 
 //import android.R;
-import java.io.BufferedInputStream;
-import java.io.BufferedWriter;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import android.app.AlertDialog;
 import android.app.ExpandableListActivity;
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -70,7 +59,7 @@ public class BookCatalogue extends ExpandableListActivity {
     private static final int ACTIVITY_SORT=2;
     private static final int ACTIVITY_ISBN=3;
     private static final int ACTIVITY_SCAN=4;
-    private static final int ACTIVITY_BOOKSHELF=5;
+    private static final int ACTIVITY_ADMIN=5;
 
     private CatalogueDBAdapter mDbHelper;
     private int mGroupIdColumnIndex; 
@@ -81,20 +70,16 @@ public class BookCatalogue extends ExpandableListActivity {
     private static final int INSERT_ISBN_ID = Menu.FIRST + 5;
     private static final int INSERT_BARCODE_ID = Menu.FIRST + 6;
     private static final int DELETE_ID = Menu.FIRST + 7;
-    private static final int BOOKSHELVES = Menu.FIRST + 8;
-    private static final int SORT_BY_AUTHOR = Menu.FIRST + 9;
-    private static final int EXPORT = Menu.FIRST + 10;
-    private static final int IMPORT = Menu.FIRST + 11;
+    private static final int SORT_BY_AUTHOR = Menu.FIRST + 8;
+    private static final int ADMIN = Menu.FIRST + 9;
 
     public String bookshelf = "";
     private ArrayAdapter<String> spinnerAdapter;
-    private Menu optionsMenu;
     
     public int sort = 0;
     public int numAuthors = 0;
     private ArrayList<Integer> currentGroup = new ArrayList<Integer>();
-    private int importUpdated = 0;
-    private int importCreated = 0;
+    private boolean expanded = false;
 
     /** Called when the activity is first created. */
     @Override
@@ -328,7 +313,7 @@ public class BookCatalogue extends ExpandableListActivity {
         			series = false;
         		} else {
         			series = true;
-        			text = "(" + text;
+        			text = "" + text;
         		}
         	} else if (v.getId() == R.id.row_series_num) {
         		if (series == false) {
@@ -337,7 +322,7 @@ public class BookCatalogue extends ExpandableListActivity {
             		if (text.equals("")) {
             			text = ")";
             		} else {
-            			text = " #" + text + ")";
+            			text = " #" + text + "";
             		}
         		}
         	}
@@ -352,44 +337,39 @@ public class BookCatalogue extends ExpandableListActivity {
     }
    
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        optionsMenu = menu;
-        if (sort == 0) {
-	        MenuItem collapse = menu.add(0, SORT_BY_AUTHOR_EXPANDED, 0, R.string.menu_sort_by_author_collapsed);
-	        collapse.setIcon(R.drawable.ic_menu_collapse);
-	
-	        MenuItem expand = menu.add(0, SORT_BY_AUTHOR_COLLAPSED, 1, R.string.menu_sort_by_author_expanded);
-	        expand.setIcon(R.drawable.ic_menu_expand);
-        }
-
-        MenuItem insert = menu.add(1, INSERT_ID, 2, R.string.menu_insert);
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.clear();
+        MenuItem insert = menu.add(0, INSERT_ID, 0, R.string.menu_insert);
         insert.setIcon(android.R.drawable.ic_menu_add);
 
-        MenuItem insertBC = menu.add(1, INSERT_BARCODE_ID, 3, R.string.menu_insert_barcode);
+        MenuItem insertBC = menu.add(0, INSERT_BARCODE_ID, 1, R.string.menu_insert_barcode);
         insertBC.setIcon(R.drawable.ic_menu_insert_barcode);
 
-        MenuItem insertISBN = menu.add(1, INSERT_ISBN_ID, 4, R.string.menu_insert_isbn);
+        MenuItem insertISBN = menu.add(0, INSERT_ISBN_ID, 2, R.string.menu_insert_isbn);
         insertISBN.setIcon(android.R.drawable.ic_menu_zoom);
 
         if (sort == 0) {
-        	MenuItem title = menu.add(2, SORT_BY_TITLE, 4, R.string.menu_sort_by_title);
-        	title.setIcon(android.R.drawable.ic_menu_sort_alphabetically);
-        } else {
-        	MenuItem title = menu.add(2, SORT_BY_AUTHOR, 4, R.string.menu_sort_by_author);
-        	title.setIcon(android.R.drawable.ic_menu_sort_alphabetically);
+        	if (expanded == true) {
+        		MenuItem collapse = menu.add(0, SORT_BY_AUTHOR_EXPANDED, 3, R.string.menu_sort_by_author_collapsed);
+        		collapse.setIcon(R.drawable.ic_menu_collapse);
+        	} else {
+        		MenuItem expand = menu.add(0, SORT_BY_AUTHOR_COLLAPSED, 3, R.string.menu_sort_by_author_expanded);
+        		expand.setIcon(R.drawable.ic_menu_expand);
+        	}
         }
 
-        MenuItem bookshelf = menu.add(2, BOOKSHELVES, 4, R.string.menu_bookshelf);
-        bookshelf.setIcon(R.drawable.ic_menu_bookshelves);
+        if (sort == 0) {
+        	MenuItem title = menu.add(0, SORT_BY_TITLE, 4, R.string.menu_sort_by_title);
+        	title.setIcon(android.R.drawable.ic_menu_sort_alphabetically);
+        } else {
+        	MenuItem title = menu.add(0, SORT_BY_AUTHOR, 4, R.string.menu_sort_by_author);
+        	title.setIcon(android.R.drawable.ic_menu_sort_alphabetically);
+        }
         
-        MenuItem export = menu.add(2, EXPORT, 4, R.string.export_data);
-        export.setIcon(android.R.drawable.ic_menu_save);
+        MenuItem admin = menu.add(0, ADMIN, 5, R.string.menu_administration);
+        admin.setIcon(android.R.drawable.ic_menu_manage);
         
-        MenuItem importM = menu.add(2, IMPORT, 4, R.string.import_data);
-        importM.setIcon(android.R.drawable.ic_menu_upload);
-        
-        return true;
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -418,34 +398,8 @@ public class BookCatalogue extends ExpandableListActivity {
         case INSERT_BARCODE_ID:
         	createBookScan();
             return true;
-        case BOOKSHELVES:
-            manageBookselves();
-            return true;
-        case EXPORT:
-            exportData();
-            return true;
-        case IMPORT:
-        	// Verify - this can be a dangerous operation
-        	AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(R.string.import_alert).create();
-            alertDialog.setTitle(R.string.import_data);
-            alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-            /* Hack to pass this into the class */
-            final BookCatalogue pthis = this;
-            alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-            	public void onClick(DialogInterface dialog, int which) {
-            		importData();
-            		fillData();
-					Toast.makeText(pthis, importUpdated + " Updated, " + importCreated + " Created", Toast.LENGTH_LONG).show();
-            		return;
-            	}
-            }); 
-            alertDialog.setButton2("Cancel", new DialogInterface.OnClickListener() {
-            	public void onClick(DialogInterface dialog, int which) {
-            		//do nothing
-            		return;
-            	}
-            }); 
-            alertDialog.show();
+        case ADMIN:
+            adminPage();
             return true;
         }
 
@@ -510,6 +464,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			//}
 			i++;
 		}
+		expanded = true;
     }
     
     /*
@@ -527,6 +482,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			i++;
 		}
     	currentGroup = new ArrayList<Integer>();
+		expanded = false;
     }
 	
     @Override
@@ -565,8 +521,6 @@ public class BookCatalogue extends ExpandableListActivity {
         //Intent i = new Intent(this, BookCatalogueTitle.class);
         //startActivityForResult(i, ACTIVITY_SORT);
     	sort = 1;
-    	optionsMenu.clear();
-    	onCreateOptionsMenu(optionsMenu);
     	fillData();
     }
 	
@@ -577,9 +531,17 @@ public class BookCatalogue extends ExpandableListActivity {
      */
     private void sortByAuthor() {
     	sort = 0;
-    	optionsMenu.clear();
-    	onCreateOptionsMenu(optionsMenu);
     	fillData();
+    }
+	
+    /*
+     * Load the BookEdit Activity
+     * 
+     * return void
+     */
+    private void adminPage() {
+        Intent i = new Intent(this, Administration.class);
+        startActivityForResult(i, ACTIVITY_ADMIN);
     }
 	
     /*
@@ -612,192 +574,6 @@ public class BookCatalogue extends ExpandableListActivity {
         //intent.putExtra("SCAN_MODE", "EAN_13");
         startActivityForResult(intent, ACTIVITY_SCAN);
     }
-	
-    /*
-     * Load the BookEdit Activity
-     * 
-     * return void
-     */
-    private void manageBookselves() {
-        Intent i = new Intent(this, Bookshelf.class);
-        startActivityForResult(i, ACTIVITY_BOOKSHELF);
-    }
-	
-    /*
-     * Export all data to a CSV file
-     * 
-     * return void
-     */
-    private void exportData() {
-    	Cursor books = mDbHelper.exportBooks();
-    	String export = 
-    		CatalogueDBAdapter.KEY_ROWID + "\t" + 
-    		CatalogueDBAdapter.KEY_FAMILY_NAME + "\t" + 
-    		CatalogueDBAdapter.KEY_GIVEN_NAMES + "\t" + 
-    		CatalogueDBAdapter.KEY_AUTHOR + "\t" + 
-    		CatalogueDBAdapter.KEY_TITLE + "\t" + 
-    		CatalogueDBAdapter.KEY_ISBN + "\t" + 
-    		CatalogueDBAdapter.KEY_PUBLISHER + "\t" + 
-    		CatalogueDBAdapter.KEY_DATE_PUBLISHED + "\t" + 
-    		CatalogueDBAdapter.KEY_RATING + "\t" + 
-    		"bookshelf_id\t" + 
-    		CatalogueDBAdapter.KEY_BOOKSHELF + "\t" +
-    		CatalogueDBAdapter.KEY_READ + "\t" +
-    		CatalogueDBAdapter.KEY_SERIES + "\t" + 
-    		CatalogueDBAdapter.KEY_SERIES_NUM + "\t" +
-    		CatalogueDBAdapter.KEY_PAGES + "\t" + 
-    		"\n";
-        if (books.moveToFirst()) {
-            do { 
-            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROWID)) + "\t";
-            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_FAMILY_NAME)) + "\t";
-            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_GIVEN_NAMES)) + "\t";
-            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR)) + "\t";
-            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE)) + "\t";
-            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ISBN)) + "\t";
-            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PUBLISHER)) + "\t";
-            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DATE_PUBLISHED)) + "\t";
-            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_RATING)) + "\t";
-            	export += books.getString(books.getColumnIndexOrThrow("bookshelf_id")) + "\t";
-            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_BOOKSHELF)) + "\t";
-            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ)) + "\t";
-            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES)) + "\t";
-            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES_NUM)) + "\t";
-            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PAGES)) + "\t";
-            	export += "\n";
-            } 
-            while (books.moveToNext()); 
-        } 
-        
-        /* write to the SDCard */
-		try {
-			BufferedWriter out = new BufferedWriter(new FileWriter(Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/export.tab"));
-			out.write(export);
-			out.close();
-        	Toast.makeText(this, R.string.export_complete, Toast.LENGTH_LONG).show();
-		} catch (IOException e) {
-			//Log.e("Book Catalogue", "Could not write to the SDCard");		
-        	Toast.makeText(this, R.string.export_failed, Toast.LENGTH_LONG).show();
-		}
-
-   }
-	
-	/**
-	 * This program reads a text file line by line and print to the console. It uses
-	 * FileOutputStream to read the file.
-	 * 
-	 */
-	public ArrayList<String> readFile(String filename) {
-
-		ArrayList<String> importedString = new ArrayList<String>();
-		File file = new File(filename);
-		FileInputStream fis = null;
-		BufferedInputStream bis = null;
-		DataInputStream dis = null;
-
-		try {
-			fis = new FileInputStream(file);
-			// Here BufferedInputStream is added for fast reading.
-			bis = new BufferedInputStream(fis);
-			dis = new DataInputStream(bis);
-
-			// dis.available() returns 0 if the file does not have more lines.
-			while (dis.available() != 0) {
-				// this statement reads the line from the file and print it to the console.
-				importedString.add(dis.readLine());
-			}
-			// dispose all the resources after using them.
-			fis.close();
-			bis.close();
-			dis.close();
-		} catch (FileNotFoundException e) {
-			Toast.makeText(this, R.string.import_failed, Toast.LENGTH_LONG).show();
-		} catch (IOException e) {
-			Toast.makeText(this, R.string.import_failed, Toast.LENGTH_LONG).show();
-		}
-		return importedString;
-	}
-
-    /*
-     * Export all data to a CSV file
-     * 
-     * return void
-     */
-    private void importData() {
-    	importUpdated = 0;
-    	importCreated = 0;
-    	ArrayList<String> export = readFile(Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/export.tab");
-    	int row = 1;
-
-    	/* Iterate through each imported row */
-    	while (row < export.size()) {
-    		String[] imported = export.get(row).split("\t");
-    		row++;
-    		/* Setup aliases for each cell*/
-    		Long id = null;
-    		try {
-    			id = Long.parseLong(imported[0]);
-    		} catch(Exception e) {
-    			id = Long.parseLong("0");
-    		}
-    		String family = imported[1]; 
-    		String given = imported[2]; 
-    		//String author_id = imported[3]; 
-    		String title = imported[4]; 
-			String isbn = imported[5];
-    		String publisher = imported[6]; 
-    		String date_published = imported[7];
-    		float rating = 0;
-    		try {
-        		rating = Float.valueOf(imported[8]); 
-    		} catch (Exception e) {
-    			rating = 0;
-    		}
-    		//String bookshelf_id = imported[9]; 
-    		String bookshelf = imported[10];
-    		Boolean read;
-    		if (imported[11].equals("0")) {
-        		read = false;
-    		} else {
-        		read = true;
-    		}
-    		String series = imported[12]; 
-    		String series_num = imported[13];
-    		int pages = 0;
-    		try {
-        		pages = Integer.parseInt(imported[14]); 
-    		} catch (Exception e) {
-    			pages = 0;
-    		}
-
-    		String author = family + ", " + given;
-    		
-    		if (id == 0) {
-    			// Book is new. It does not exist in the current database
-            	if (!isbn.equals("")) {
-            		Cursor book = mDbHelper.fetchBookByISBN(isbn);
-            		int rows = book.getCount();
-            		if (rows != 0) {
-                		// Its a new entry, but the ISBN exists
-            			book.moveToFirst();
-            			mDbHelper.updateBook(book.getLong(0), author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num);
-            			importUpdated++;
-            			continue;
-            		}
-            	} 
-                mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num);
-                importCreated++;
-    			continue;
-    			
-    		} else {
-    			// Book exists and should be updated if it has changed
-    			mDbHelper.updateBook(id, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num);
-    			importUpdated++;
-    			continue;
-    		}
-    	}
-
-   }
    
     @Override
     public boolean onChildClick(ExpandableListView l, View v, int position, int childPosition, long id) {
@@ -831,8 +607,8 @@ public class BookCatalogue extends ExpandableListActivity {
         case ACTIVITY_EDIT:
         case ACTIVITY_SORT:
         case ACTIVITY_ISBN:
-        case ACTIVITY_BOOKSHELF:
-        	fillData();
+        case ACTIVITY_ADMIN:
+        	 fillData();
         	break;
         }
    }

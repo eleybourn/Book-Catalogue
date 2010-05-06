@@ -22,37 +22,40 @@ public final class R {
         public static final int logo_bc=0x7f020008;
     }
     public static final class id {
-        public static final int author=0x7f060007;
-        public static final int bookshelf=0x7f06000e;
-        public static final int bookshelf_img=0x7f060000;
-        public static final int bookshelf_label=0x7f060001;
-        public static final int bookshelf_name=0x7f060015;
-        public static final int cancel=0x7f060013;
-        public static final int confirm=0x7f060012;
-        public static final int date_published=0x7f06000d;
-        public static final int export_img=0x7f060002;
-        public static final int export_label=0x7f060003;
-        public static final int import_img=0x7f060004;
-        public static final int import_label=0x7f060005;
-        public static final int isbn=0x7f060009;
-        public static final int pages=0x7f06000f;
-        public static final int publisher=0x7f06000c;
-        public static final int rating=0x7f060011;
-        public static final int read=0x7f060010;
-        public static final int row_author=0x7f06001b;
-        public static final int row_bookshelf=0x7f06001d;
-        public static final int row_family=0x7f060016;
-        public static final int row_given=0x7f060017;
-        public static final int row_img=0x7f060006;
-        public static final int row_publisher=0x7f06001c;
-        public static final int row_series=0x7f060019;
-        public static final int row_series_num=0x7f06001a;
-        public static final int row_title=0x7f060018;
-        public static final int search=0x7f060014;
-        public static final int series=0x7f06000a;
-        public static final int series_num=0x7f06000b;
-        public static final int spinnerTarget=0x7f06001e;
-        public static final int title=0x7f060008;
+        public static final int app_name=0x7f060000;
+        public static final int author=0x7f06000a;
+        public static final int bookshelf=0x7f060011;
+        public static final int bookshelf_img=0x7f060003;
+        public static final int bookshelf_label=0x7f060004;
+        public static final int bookshelf_name=0x7f060018;
+        public static final int cancel=0x7f060016;
+        public static final int confirm=0x7f060015;
+        public static final int date_published=0x7f060010;
+        public static final int export_img=0x7f060005;
+        public static final int export_label=0x7f060006;
+        public static final int import_img=0x7f060007;
+        public static final int import_label=0x7f060008;
+        public static final int isbn=0x7f06000c;
+        public static final int pages=0x7f060012;
+        public static final int publisher=0x7f06000f;
+        public static final int rating=0x7f060014;
+        public static final int read=0x7f060013;
+        public static final int row_author=0x7f06001e;
+        public static final int row_bookshelf=0x7f060020;
+        public static final int row_family=0x7f060019;
+        public static final int row_given=0x7f06001a;
+        public static final int row_img=0x7f060009;
+        public static final int row_publisher=0x7f06001f;
+        public static final int row_series=0x7f06001c;
+        public static final int row_series_num=0x7f06001d;
+        public static final int row_title=0x7f06001b;
+        public static final int search=0x7f060017;
+        public static final int series=0x7f06000d;
+        public static final int series_num=0x7f06000e;
+        public static final int spinnerTarget=0x7f060021;
+        public static final int title=0x7f06000b;
+        public static final int version=0x7f060002;
+        public static final int version_label=0x7f060001;
     }
     public static final class layout {
         public static final int administration=0x7f030000;
@@ -93,6 +96,8 @@ public final class R {
         public static final int import_alert=0x7f050031;
         public static final int import_data=0x7f050030;
         public static final int import_failed=0x7f050033;
+        public static final int install_scan=0x7f050038;
+        public static final int install_scan_title=0x7f050039;
         public static final int isbn=0x7f050006;
         public static final int isbn_found=0x7f050024;
         public static final int menu_administration=0x7f050037;
@@ -126,6 +131,7 @@ public final class R {
         public static final int title_isbn_search=0x7f050025;
         public static final int title_manage_bs=0x7f050026;
         public static final int unable_to_connect=0x7f05002d;
+        public static final int version_number=0x7f05003a;
     }
     public static final class xml {
         public static final int searchable=0x7f040000;

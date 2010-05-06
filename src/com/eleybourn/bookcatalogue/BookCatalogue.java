@@ -24,13 +24,17 @@ package com.eleybourn.bookcatalogue;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import android.app.AlertDialog;
 import android.app.ExpandableListActivity;
 import android.app.SearchManager;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -572,7 +576,30 @@ public class BookCatalogue extends ExpandableListActivity {
     private void createBookScan() {
         Intent intent = new Intent("com.google.zxing.client.android.SCAN");
         //intent.putExtra("SCAN_MODE", "EAN_13");
-        startActivityForResult(intent, ACTIVITY_SCAN);
+        try {
+            startActivityForResult(intent, ACTIVITY_SCAN);
+        } catch (ActivityNotFoundException e) {
+        	// Verify - this can be a dangerous operation
+        	BookCatalogue pthis = this;
+        	AlertDialog alertDialog = new AlertDialog.Builder(pthis).setMessage(R.string.install_scan).create();
+            alertDialog.setTitle(R.string.install_scan_title);
+            alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
+            alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+            	public void onClick(DialogInterface dialog, int which) {
+                    Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=\"com.google.zxing.client.android\"")); 
+                	startActivity(marketIntent);
+            		return;
+            	}
+            }); 
+            alertDialog.setButton2("Cancel", new DialogInterface.OnClickListener() {
+            	public void onClick(DialogInterface dialog, int which) {
+            		//do nothing
+            		return;
+            	}
+            }); 
+            alertDialog.show();
+            return;
+        }
     }
    
     @Override

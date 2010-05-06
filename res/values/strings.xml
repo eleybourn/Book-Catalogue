@@ -56,4 +56,7 @@
 <string name="results_found">Results Found</string>
 <string name="administration_label">Administration</string>
 <string name="menu_administration">Administration</string>
+<string name="install_scan">To scan your books via the ISBN barcode, you must install the zxing barcode scanner application. Press OK to install, or Cancel to skip.</string>
+<string name="install_scan_title">Install Barcode Scanner</string>
+<string name="version_number">Version Number</string>
 </resources>

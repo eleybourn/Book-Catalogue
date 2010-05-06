@@ -35,6 +35,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Environment;
@@ -118,6 +121,19 @@ public class Administration extends Activity {
 			}
     	});
 
+    	/* Version Number */
+    	TextView release = (TextView) findViewById(R.id.version);
+    	PackageManager manager = this.getPackageManager();
+        PackageInfo info;
+		try {
+			info = manager.getPackageInfo(this.getPackageName(), 0);
+	        //String packageName = info.packageName;
+	        //int versionCode = info.versionCode;
+	        String versionName = info.versionName;
+	    	release.setText(versionName);
+		} catch (NameNotFoundException e) {
+			//do nothing
+		}
     
     }
     

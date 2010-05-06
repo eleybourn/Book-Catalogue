@@ -39,10 +39,12 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -134,6 +136,30 @@ public class Administration extends Activity {
 		} catch (NameNotFoundException e) {
 			//do nothing
 		}
+		
+		/*
+		WebView webview = (WebView) findViewById(R.id.donate_web);
+		String summary = "<form stye=\"background:#2d2d2d;\" action=\"https://www.paypal.com/cgi-bin/webscr\" method=\"post\">" + 
+						"<input type=\"hidden\" name=\"cmd\" value=\"_s-xclick\">" + 
+						"<input type=\"hidden\" name=\"encrypted\" value=\"-----BEGIN PKCS7-----MIIHTwYJKoZIhvcNAQcEoIIHQDCCBzwCAQExggEwMIIBLAIBADCBlDCBjjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MRQwEgYDVQQKEwtQYXlQYWwgSW5jLjETMBEGA1UECxQKbGl2ZV9jZXJ0czERMA8GA1UEAxQIbGl2ZV9hcGkxHDAaBgkqhkiG9w0BCQEWDXJlQHBheXBhbC5jb20CAQAwDQYJKoZIhvcNAQEBBQAEgYBRCn/5ZAEzqh/msA1wb7zgtgi+JatOTrndcSmHMPCZ/Cm0CqEUigZeWbRLFDC4u8uOc2ATxJ38JwY7za2QfuJujEPCxOqcV0bJ9Tal9uNke2SZNuSODLVqb+H+jIH24BlgNTMPW/MWmx7TuN5ZZ5a8nskVFX9eOEBFAQqG459MvTELMAkGBSsOAwIaBQAwgcwGCSqGSIb3DQEHATAUBggqhkiG9w0DBwQIhbqIUw7fgkmAgai3PMAVSQBaK+Zctu8vsmGEQ/i9yCT73ZtmH4IwwFEuePS75NraMirXoEBLWkNTZ3aV02k+SoG8Uqt3mLIBZReotr1Wh6hmfcmD87ADVtJEZj56cIht/BD6TniLlWYfIwbe9NaYHAdhTfjI+08xdLENTeI6ui9ET2imwe/60KAYdfMKSp7GgTh45DwouqyDwZmAxqeg/3XR/qv/8sWrCWYDMYGOHVGiuSigggOHMIIDgzCCAuygAwIBAgIBADANBgkqhkiG9w0BAQUFADCBjjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MRQwEgYDVQQKEwtQYXlQYWwgSW5jLjETMBEGA1UECxQKbGl2ZV9jZXJ0czERMA8GA1UEAxQIbGl2ZV9hcGkxHDAaBgkqhkiG9w0BCQEWDXJlQHBheXBhbC5jb20wHhcNMDQwMjEzMTAxMzE1WhcNMzUwMjEzMTAxMzE1WjCBjjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MRQwEgYDVQQKEwtQYXlQYWwgSW5jLjETMBEGA1UECxQKbGl2ZV9jZXJ0czERMA8GA1UEAxQIbGl2ZV9hcGkxHDAaBgkqhkiG9w0BCQEWDXJlQHBheXBhbC5jb20wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAMFHTt38RMxLXJyO2SmS+Ndl72T7oKJ4u4uw+6awntALWh03PewmIJuzbALScsTS4sZoS1fKciBGoh11gIfHzylvkdNe/hJl66/RGqrj5rFb08sAABNTzDTiqqNpJeBsYs/c2aiGozptX2RlnBktH+SUNpAajW724Nv2Wvhif6sFAgMBAAGjge4wgeswHQYDVR0OBBYEFJaffLvGbxe9WT9S1wob7BDWZJRrMIG7BgNVHSMEgbMwgbCAFJaffLvGbxe9WT9S1wob7BDWZJRroYGUpIGRMIGOMQswCQYDVQQGEwJVUzELMAkGA1UECBMCQ0ExFjAUBgNVBAcTDU1vdW50YWluIFZpZXcxFDASBgNVBAoTC1BheVBhbCBJbmMuMRMwEQYDVQQLFApsaXZlX2NlcnRzMREwDwYDVQQDFAhsaXZlX2FwaTEcMBoGCSqGSIb3DQEJARYNcmVAcGF5cGFsLmNvbYIBADAMBgNVHRMEBTADAQH/MA0GCSqGSIb3DQEBBQUAA4GBAIFfOlaagFrl71+jq6OKidbWFSE+Q4FqROvdgIONth+8kSK//Y/4ihuE4Ymvzn5ceE3S/iBSQQMjyvb+s2TWbQYDwcp129OPIbD9epdr4tJOUNiSojw7BHwYRiPh58S1xGlFgHFXwrEBb3dgNbMUa+u4qectsMAXpVHnD9wIyfmHMYIBmjCCAZYCAQEwgZQwgY4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJDQTEWMBQGA1UEBxMNTW91bnRhaW4gVmlldzEUMBIGA1UEChMLUGF5UGFsIEluYy4xEzARBgNVBAsUCmxpdmVfY2VydHMxETAPBgNVBAMUCGxpdmVfYXBpMRwwGgYJKoZIhvcNAQkBFg1yZUBwYXlwYWwuY29tAgEAMAkGBSsOAwIaBQCgXTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0xMDA1MDIyMDM4NDVaMCMGCSqGSIb3DQEJBDEWBBQDjc1XISsdx1+lAnzSCpmG6FLfyTANBgkqhkiG9w0BAQEFAASBgAR/GE9Segw478W+Zsdv2lL0p6BN4KaSRzKRFPqBU/WoDUfd7W33VkV5j2B26jF85YL715jv0qsqldQ8QNMjAij2eme4amwYS+c5ln6bQH2kKC21mBLjrFAuzsvx6IsY0+LkHzcn7Qlh+hEpJxy5+vXKktpNtDQX1A4uAuGemnp6-----END PKCS7-----\"" +
+						"\"> " +
+						"<input type=\"image\" src=\"https://www.paypal.com/en_AU/i/btn/btn_donateCC_LG.gif\" border=\"0\" name=\"submit\" alt=\"PayPal - The safer, easier way to pay online.\">" +
+						"<img alt=\"\" border=\"0\" src=\"https://www.paypal.com/en_AU/i/scr/pixel.gif\" width=\"1\" height=\"1\">" + 
+						"</form>" +
+						"";
+		webview.loadData(summary, "text/html", "utf-8");
+		*/
+		
+		ImageView donate = (ImageView) findViewById(R.id.donate_url);
+		donate.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent loadweb = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=94US4N9MQGDMY&lc=AU&currency_code=AUD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted"));
+				startActivity(loadweb); 
+				return;
+			}
+    	});
+    	
     
     }
     

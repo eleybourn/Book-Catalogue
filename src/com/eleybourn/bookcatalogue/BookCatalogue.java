@@ -143,6 +143,10 @@ public class BookCatalogue extends ExpandableListActivity {
     		fillDataAuthor();
     	}
     	gotoCurrentGroup();
+    	/* Add number to bookshelf */
+    	TextView mBookshelfNumView = (TextView) findViewById(R.id.bookshelf_num);
+    	int numBooks = mDbHelper.getBooksCount(bookshelf);
+    	mBookshelfNumView.setText("(" + numBooks + ")");
     }
     
     private void fillDataAuthor() {
@@ -586,7 +590,7 @@ public class BookCatalogue extends ExpandableListActivity {
             alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
             alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
             	public void onClick(DialogInterface dialog, int which) {
-                    Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=\"com.google.zxing.client.android\"")); 
+                    Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.google.zxing.client.android")); 
                 	startActivity(marketIntent);
             		return;
             	}

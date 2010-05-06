@@ -59,4 +59,5 @@
 <string name="install_scan">To scan your books via the ISBN barcode, you must install the zxing barcode scanner application. Press OK to install, or Cancel to skip.</string>
 <string name="install_scan_title">Install Barcode Scanner</string>
 <string name="version_number">Version Number</string>
+<string name="donate">If you would like to support the development of this application, please donate using the above paypal button. Being in Australia means I cannot publish a "paid" version. :-) </string>
 </resources>

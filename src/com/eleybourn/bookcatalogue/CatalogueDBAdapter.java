@@ -380,6 +380,26 @@ public class CatalogueDBAdapter {
      * 
      * @return Cursor over all notes
      */
+    public int getBooksCount(String bookshelf) {
+    	String where = "";
+    	if (bookshelf.equals("All Books")) {
+    		// do nothing 
+    	} else {
+    		where += " AND bs." + KEY_BOOKSHELF + "='" + bookshelf + "'";
+    	}
+    	String sql = "SELECT count(*) as count " + 
+    		" FROM " + DATABASE_TABLE_BOOKS + " b, " + DATABASE_TABLE_BOOKSHELF + " bs" + 
+    		" WHERE bs._id=b." + KEY_BOOKSHELF + where;
+    	Cursor count = mDb.rawQuery(sql, new String[]{});
+    	count.moveToNext();
+    	return count.getInt(0);
+    }
+
+    /**
+     * Return a Cursor over the list of all books in the database
+     * 
+     * @return Cursor over all notes
+     */
     public Cursor fetchAllBooks(String order) {
     	return fetchAllBooks(order, "All Books"); 
     }

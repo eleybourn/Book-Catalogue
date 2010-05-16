@@ -141,84 +141,84 @@ public class SearchGoogleBooksEntryHandler extends DefaultHandler {
 		return book;
 	}
 	
-    @Override
-    public void characters(char[] ch, int start, int length) throws SAXException {
-        super.characters(ch, start, length);
-        builder.append(ch, start, length);
-    }
+	@Override
+	public void characters(char[] ch, int start, int length) throws SAXException {
+		super.characters(ch, start, length);
+		builder.append(ch, start, length);
+	}
 
-    @Override
-    public void endElement(String uri, String localName, String name) throws SAXException {
-        super.endElement(uri, localName, name);
-        if (localName.equalsIgnoreCase(TITLE)){
-        	if (title == "") {
-        		title = builder.toString();
-        	}
-        } else if (localName.equalsIgnoreCase(ISBN)){
-        	String tmp = builder.toString(); 
-        	if (tmp.indexOf("ISBN:") == 0) {
-        		tmp = tmp.substring(5); 
-        		if (isbn == "" || tmp.length() > isbn.length()) {
-        			isbn = tmp;
-        		}
-        	}
-        } else if (localName.equalsIgnoreCase(AUTHOR)){
-        	if (author == "") {
-        		author = builder.toString();
-        	}
-        } else if (localName.equalsIgnoreCase(PUBLISHER)){
-        	if (publisher == "") {
-        		publisher = builder.toString();
-        	}
-        } else if (localName.equalsIgnoreCase(DATE_PUBLISHED)){
-        	if (date_published == "") {
-        		date_published = builder.toString();
-        	}
-        } else if (localName.equalsIgnoreCase(PAGES)){
-        	String tmp = builder.toString();
-        	int index = tmp.indexOf(" pages");
-        	if (index > -1) {
-        		tmp = tmp.substring(0, index).trim(); 
-       			pages = tmp;
-        	}
-        }
-        builder.setLength(0);
-    }
+	@Override
+	public void endElement(String uri, String localName, String name) throws SAXException {
+		super.endElement(uri, localName, name);
+		if (localName.equalsIgnoreCase(TITLE)){
+			if (title == "") {
+				title = builder.toString();
+			}
+		} else if (localName.equalsIgnoreCase(ISBN)){
+			String tmp = builder.toString(); 
+			if (tmp.indexOf("ISBN:") == 0) {
+				tmp = tmp.substring(5); 
+				if (isbn == "" || tmp.length() > isbn.length()) {
+					isbn = tmp;
+				}
+			}
+		} else if (localName.equalsIgnoreCase(AUTHOR)){
+			if (author == "") {
+				author = builder.toString();
+			}
+		} else if (localName.equalsIgnoreCase(PUBLISHER)){
+			if (publisher == "") {
+				publisher = builder.toString();
+			}
+		} else if (localName.equalsIgnoreCase(DATE_PUBLISHED)){
+			if (date_published == "") {
+				date_published = builder.toString();
+			}
+		} else if (localName.equalsIgnoreCase(PAGES)){
+			String tmp = builder.toString();
+			int index = tmp.indexOf(" pages");
+			if (index > -1) {
+				tmp = tmp.substring(0, index).trim(); 
+				pages = tmp;
+			}
+		}
+		builder.setLength(0);
+	}
 
-    @Override
-    public void startDocument() throws SAXException {
-        super.startDocument();
-        builder = new StringBuilder();
-    }
+	@Override
+	public void startDocument() throws SAXException {
+		super.startDocument();
+		builder = new StringBuilder();
+	}
 
-    @Override
-    public void startElement(String uri, String localName, String name, Attributes attributes) throws SAXException {
-        super.startElement(uri, localName, name, attributes);
-        if (localName.equalsIgnoreCase(THUMBNAIL)){
-        	if (attributes.getValue("", "rel").equals("http://schemas.google.com/books/2008/thumbnail")) {
-        		thumbnail = attributes.getValue("", "href");
+	@Override
+	public void startElement(String uri, String localName, String name, Attributes attributes) throws SAXException {
+		super.startElement(uri, localName, name, attributes);
+		if (localName.equalsIgnoreCase(THUMBNAIL)){
+			if (attributes.getValue("", "rel").equals("http://schemas.google.com/books/2008/thumbnail")) {
+				thumbnail = attributes.getValue("", "href");
 
-        	    URL u;
+				URL u;
 				try {
 					u = new URL(thumbnail);
 				} catch (MalformedURLException e) {
 					//Log.e("Book Catalogue", "Malformed URL");
 					return;
 				}
-        	    HttpURLConnection c;
-        	    InputStream in = null;
+				HttpURLConnection c;
+				InputStream in = null;
 				try {
 					c = (HttpURLConnection) u.openConnection();
-            	    c.setRequestMethod("GET");
-            	    c.setDoOutput(true);
-            	    c.connect();
-            	    in = c.getInputStream();
+					c.setRequestMethod("GET");
+					c.setDoOutput(true);
+					c.connect();
+					in = c.getInputStream();
 				} catch (IOException e) {
 					//Log.e("Book Catalogue", "Thumbnail cannot be read");
 					return;
 				}
-				
-        	    FileOutputStream f = null;
+
+				FileOutputStream f = null;
 				try {
 					f = new FileOutputStream(Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/tmp.jpg");
 				} catch (FileNotFoundException e) {
@@ -226,18 +226,18 @@ public class SearchGoogleBooksEntryHandler extends DefaultHandler {
 					return;
 				}
 
-        	    try {
-            	    byte[] buffer = new byte[1024];
-            	    int len1 = 0;
+				try {
+					byte[] buffer = new byte[1024];
+					int len1 = 0;
 					while ( (len1 = in.read(buffer)) > 0 ) {
 					     f.write(buffer,0, len1);
 					}
-            	    f.close();
+					f.close();
 				} catch (IOException e) {
 					//Log.e("Book Catalogue", "Error writing thumbnail");
 					return;
 				}
-        	}
-        }
-    }
+			}
+		}
+	}
 }

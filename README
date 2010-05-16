@@ -41,6 +41,11 @@ Features include;
   case. e.g. "The murder on the links" becomes "The Murder on the Links"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+New in v1.08
+* Add by ISBN will now search Amazon as well as Google Books (thanks Sue)
+* The series field will attempt to guess the value based on Amazon data 
+* Fixed an issue for books where the date of publication is just a year
+
 New in v1.07
 * Fixes a crash if zxing (barcode scanner) if not installed (as found by Jesse)
 * Adds a book count number to the main page (as requested by Keridel)

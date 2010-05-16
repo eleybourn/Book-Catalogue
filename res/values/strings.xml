@@ -45,7 +45,7 @@
 <string name="search_hint">Search Author or Title</string>
 <string name="book_not_found">The scanned book was not found. Please enter the details manually.</string>
 <string name="series_num">#</string>
-<string name="unable_to_connect">Unable to Connect to Google Books</string>
+<string name="unable_to_connect_google">Unable to Connect to Google Books</string>
 <string name="export_data">Export Books</string>
 <string name="export_complete">Export (to SDCard) of data complete. </string>
 <string name="import_data">Import Books</string>
@@ -60,4 +60,5 @@
 <string name="install_scan_title">Install Barcode Scanner</string>
 <string name="version_number">Version Number</string>
 <string name="donate">If you would like to support the development of this application, please donate using the above paypal button. Being in Australia means I cannot publish a "paid" version. :-) </string>
+<string name="unable_to_connect_amazon">Unable to Connect to Amazon</string>
 </resources>

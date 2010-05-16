@@ -7,7 +7,7 @@
 		android:orientation="vertical" 
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent">
-	
+
 		<EditText android:id="@+id/isbn" 
 		    android:layout_width="fill_parent"
 			android:layout_height="wrap_content" 
@@ -16,12 +16,12 @@
 			android:inputType="number"
 			android:digits="0123456789Xx"
 			/>
-	
+
 		<Button android:id="@+id/search" 
 			android:text="@string/search"
 			android:layout_width="fill_parent"
 		  	android:width="150sp"
 			android:layout_height="wrap_content" />
-	
+
 	</LinearLayout>
 </ScrollView>

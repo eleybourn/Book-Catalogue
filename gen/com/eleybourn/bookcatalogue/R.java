@@ -135,7 +135,8 @@ public final class R {
         public static final int title_edit_bs=0x7f050027;
         public static final int title_isbn_search=0x7f050025;
         public static final int title_manage_bs=0x7f050026;
-        public static final int unable_to_connect=0x7f05002d;
+        public static final int unable_to_connect_amazon=0x7f05003c;
+        public static final int unable_to_connect_google=0x7f05002d;
         public static final int version_number=0x7f05003a;
     }
     public static final class xml {

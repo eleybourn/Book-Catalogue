@@ -219,7 +219,7 @@ public class BookEdit extends Activity {
             try {
 	            String[] date = book[4].split("-");
 	            int yyyy = Integer.parseInt(date[0]);
-	            int mm = Integer.parseInt(date[1]);
+	            int mm = Integer.parseInt(date[1])-1;
 	            int dd = Integer.parseInt(date[2]);
 	            mDate_publishedText.updateDate(yyyy, mm, dd);
             } catch (ArrayIndexOutOfBoundsException e) {

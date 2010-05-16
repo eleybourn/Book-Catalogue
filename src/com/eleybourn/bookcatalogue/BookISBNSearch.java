@@ -94,19 +94,19 @@ public class BookISBNSearch extends Activity {
 		}
 		/* Get the book */
 		String[] book;
-		String[] bookAmazon;
+		//TODO: RE-IMPLEMENT String[] bookAmazon;
 		book = searchGoogle(isbn);
-		bookAmazon = searchAmazon(isbn);
+		//TODO: RE-IMPLEMENT bookAmazon = searchAmazon(isbn);
 		//Look for series in Title. e.g. Red Phoenix (Dark Heavens Trilogy)
 		book[8] = findSeries(book[1]);
-		bookAmazon[8] = findSeries(bookAmazon[1]);
+		//TODO: RE-IMPLEMENT bookAmazon[8] = findSeries(bookAmazon[1]);
 		
 		/* Fill blank fields as required */
-		for (int i = 0; i<book.length; i++) {
-			if (book[i] == "" || book[i] == "0") {
-				book[i] = bookAmazon[i];
-			}
-		}
+		//TODO: RE-IMPLEMENT for (int i = 0; i<book.length; i++) {
+		//TODO: RE-IMPLEMENT 	if (book[i] == "" || book[i] == "0") {
+		//TODO: RE-IMPLEMENT 		book[i] = bookAmazon[i];
+		//TODO: RE-IMPLEMENT 	}
+		//TODO: RE-IMPLEMENT }
 		
 		/* Format the output 
 		 * String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num};
@@ -201,7 +201,8 @@ public class BookISBNSearch extends Activity {
 		String[] key_params = {"Keywords", "Operation", "ResponseGroup", "SearchIndex", "Service", "SubscriptionId", "Timestamp"};
 		
 		String amazon_url = "http://" + host + path + "?";
-		String sk = "L5IZjd9oIf++JkjwH4/GScWsM3dJ74zOSjF+3IgP";
+		//TODO - INSERT SECRET KEY HERE
+		String sk = "<INSERT SECRET KEY>";
 		String url_params = "";
 		String enc_params = "";
 		for (int i = 0; i<params.length; i++) {

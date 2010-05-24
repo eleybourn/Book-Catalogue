@@ -41,10 +41,12 @@ Features include;
   case. e.g. "The murder on the links" becomes "The Murder on the Links"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+New in v1.10
+* Fixed a crash on the phone (SQL Exception) 
+
 New in v1.09
 * Amazon unfortunately doesn’t allow using their web services (search) on any 
   mobile devices, so this has been disabled until I can come up with a work-around.
-
 
 New in v1.08
 * Add by ISBN will now search Amazon as well as Google Books (thanks Sue)

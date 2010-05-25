@@ -37,105 +37,122 @@ import android.os.Environment;
 public class CatalogueDBAdapter {
 
 	/* This is the list of all column names as static variables for reference */
-    public static final String KEY_AUTHOR = "author";
-    public static final String KEY_TITLE = "title";
-    public static final String KEY_ISBN = "isbn";
-    public static final String KEY_PUBLISHER = "publisher";
-    public static final String KEY_DATE_PUBLISHED = "date_published";
-    public static final String KEY_RATING = "rating";
-    public static final String KEY_BOOKSHELF = "bookshelf";
-    public static final String KEY_READ = "read";
-    public static final String KEY_SERIES = "series";
-    public static final String KEY_PAGES = "pages";
-    public static final String KEY_ROWID = "_id";
-    public static final String KEY_FAMILY_NAME = "family_name";
-    public static final String KEY_GIVEN_NAMES = "given_names";
-    public static final String LOCATION = "bookCatalogue";
-    public static final String KEY_SERIES_NUM = "series_num";
+	public static final String KEY_AUTHOR = "author";
+	public static final String KEY_TITLE = "title";
+	public static final String KEY_ISBN = "isbn";
+	public static final String KEY_PUBLISHER = "publisher";
+	public static final String KEY_DATE_PUBLISHED = "date_published";
+	public static final String KEY_RATING = "rating";
+	public static final String KEY_BOOKSHELF = "bookshelf";
+	public static final String KEY_READ = "read";
+	public static final String KEY_SERIES = "series";
+	public static final String KEY_PAGES = "pages";
+	public static final String KEY_ROWID = "_id";
+	public static final String KEY_FAMILY_NAME = "family_name";
+	public static final String KEY_GIVEN_NAMES = "given_names";
+	public static final String LOCATION = "bookCatalogue";
+	public static final String KEY_SERIES_NUM = "series_num";
 
-    private DatabaseHelper mDbHelper;
-    private SQLiteDatabase mDb;
+	private DatabaseHelper mDbHelper;
+	private SQLiteDatabase mDb;
 
-    /* private database variables as static reference */
-    private static final String DATABASE_NAME = "book_catalogue";
-    private static final String DATABASE_TABLE_BOOKS = "books";
-    private static final String DATABASE_TABLE_AUTHORS = "authors";
-    private static final String DATABASE_TABLE_BOOKSHELF = "bookshelf";
-    private static final int DATABASE_VERSION = 13;
+	/* private database variables as static reference */
+	private static final String DATABASE_NAME = "book_catalogue";
+	private static final String DATABASE_TABLE_BOOKS = "books";
+	private static final String DATABASE_TABLE_AUTHORS = "authors";
+	private static final String DATABASE_TABLE_BOOKSHELF = "bookshelf";
+	private static final int DATABASE_VERSION = 17;
+	public static String message = "";
+
+	/**
+	 * Database creation sql statement
+	 */
+	private static final String DATABASE_CREATE_AUTHORS =
+		"create table " + DATABASE_TABLE_AUTHORS + 
+		" (_id integer primary key autoincrement, " +
+		KEY_FAMILY_NAME + " text not null, " +
+		KEY_GIVEN_NAMES + " text not null" +
+		")";
+
+	private static final String DATABASE_CREATE_BOOKSHELF =
+		"create table " + DATABASE_TABLE_BOOKSHELF + 
+		" (_id integer primary key autoincrement, " +
+		KEY_BOOKSHELF + " text not null " +
+		")";
+
+	private static final String DATABASE_CREATE_BOOKSHELF_DATA =
+		"INSERT INTO " + DATABASE_TABLE_BOOKSHELF + 
+		" (" + KEY_BOOKSHELF + ") VALUES ('Default')";
+
+	private static final String DATABASE_CREATE_BOOKS =
+		"create table " + DATABASE_TABLE_BOOKS + 
+		" (_id integer primary key autoincrement, " +
+		KEY_AUTHOR + " integer not null REFERENCES " + DATABASE_TABLE_AUTHORS + ", " + 
+		KEY_TITLE + " text not null, " +
+		KEY_ISBN + " text, " +
+		KEY_PUBLISHER + " text, " +
+		KEY_DATE_PUBLISHED + " date, " +
+		KEY_RATING + " float not null default 0, " +
+		KEY_BOOKSHELF + " integer REFERENCES " + DATABASE_TABLE_BOOKSHELF + " ON DELETE SET NULL ON UPDATE SET NULL, " + 
+		KEY_READ + " boolean not null default 'f', " +
+		KEY_SERIES + " text, " +
+		KEY_PAGES + " int, " +
+		KEY_SERIES_NUM + " text " +
+		")";
+
+	private final Context mCtx;
+
+	private static class DatabaseHelper extends SQLiteOpenHelper {
+		DatabaseHelper(Context context) {
+			super(context, DATABASE_NAME, null, DATABASE_VERSION);
+		}
+
+		@Override
+		public void onCreate(SQLiteDatabase db) {
+			db.execSQL(DATABASE_CREATE_AUTHORS);
+			db.execSQL(DATABASE_CREATE_BOOKSHELF);
+			db.execSQL(DATABASE_CREATE_BOOKS);
+			db.execSQL(DATABASE_CREATE_BOOKSHELF_DATA);
+			new File(Environment.getExternalStorageDirectory() + "/" + LOCATION + "/").mkdirs();
+		}
+
+		@Override
+		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+			//Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion + ", existing data will be saved");
+			int curVersion = oldVersion;
+			if (curVersion < 11) {
+				onCreate(db);
+			}
+			if (curVersion == 11) {
+				db.execSQL("ALTER TABLE " + DATABASE_TABLE_BOOKS + " ADD " + KEY_SERIES_NUM + " text");
+				db.execSQL("UPDATE " + DATABASE_TABLE_BOOKS + " SET " + KEY_SERIES_NUM + " = ''");
+				curVersion++;
+			}
+			if (curVersion == 12) {
+				//do nothing except increment
+				curVersion++;
+			}
+			if (curVersion == 13) {
+				//do nothing except increment
+				curVersion++;
+			}
+			if (curVersion == 14) {
+				//do nothing except increment
+				curVersion++;
+			}
+			if (curVersion == 15) {
+				//do nothing except increment
+				curVersion++;
+			}
+			if (curVersion == 16) {
+				//do nothing except increment
+				curVersion++;
+				message += "* This message will now appear whenever you upgrade\n";
+				message += "* Various SQL bugs have been resolved\n";
+			}
+		}
+	}
     
-    /**
-     * Database creation sql statement
-     */
-    private static final String DATABASE_CREATE_AUTHORS =
-        "create table " + DATABASE_TABLE_AUTHORS + 
-        	" (_id integer primary key autoincrement, " +
-        	KEY_FAMILY_NAME + " text not null, " +
-        	KEY_GIVEN_NAMES + " text not null" +
-            ")";
-
-    private static final String DATABASE_CREATE_BOOKSHELF =
-        "create table " + DATABASE_TABLE_BOOKSHELF + 
-        	" (_id integer primary key autoincrement, " +
-        	KEY_BOOKSHELF + " text not null " +
-            ")";
-    
-    private static final String DATABASE_CREATE_BOOKSHELF_DATA =
-        "INSERT INTO " + DATABASE_TABLE_BOOKSHELF + 
-        	" (" + KEY_BOOKSHELF + ") VALUES ('Default')";
-
-    private static final String DATABASE_CREATE_BOOKS =
-        "create table " + DATABASE_TABLE_BOOKS + 
-        	" (_id integer primary key autoincrement, " +
-        	KEY_AUTHOR + " integer not null REFERENCES " + DATABASE_TABLE_AUTHORS + ", " + 
-        	KEY_TITLE + " text not null, " +
-        	KEY_ISBN + " text, " +
-        	KEY_PUBLISHER + " text, " +
-        	KEY_DATE_PUBLISHED + " date, " +
-        	KEY_RATING + " float not null default 0, " +
-        	KEY_BOOKSHELF + " integer REFERENCES " + DATABASE_TABLE_BOOKSHELF + " ON DELETE SET NULL ON UPDATE SET NULL, " + 
-        	KEY_READ + " boolean not null default 'f', " +
-        	KEY_SERIES + " text, " +
-        	KEY_PAGES + " int, " +
-        	KEY_SERIES_NUM + " text " +
-            ")";
-
-    private final Context mCtx;
-
-    private static class DatabaseHelper extends SQLiteOpenHelper {
-
-        DatabaseHelper(Context context) {
-            super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        }
-
-        @Override
-        public void onCreate(SQLiteDatabase db) {
-            db.execSQL(DATABASE_CREATE_AUTHORS);
-            db.execSQL(DATABASE_CREATE_BOOKSHELF);
-            db.execSQL(DATABASE_CREATE_BOOKS);
-            db.execSQL(DATABASE_CREATE_BOOKSHELF_DATA);
-            new File(Environment.getExternalStorageDirectory() + "/" + LOCATION + "/").mkdirs();
-        }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            //Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion + ", existing data will be saved");
-            int curVersion = oldVersion;
-            if (curVersion < 11) {
-            	onCreate(db);
-            }
-            if (curVersion == 11) {
-            	db.execSQL("ALTER TABLE " + DATABASE_TABLE_BOOKS + " ADD " + KEY_SERIES_NUM + " text");
-            	db.execSQL("UPDATE " + DATABASE_TABLE_BOOKS + " SET " + KEY_SERIES_NUM + " = ''");
-            	curVersion++;
-            }
-            if (curVersion == 12) {
-            	//do nothing except increment
-            	curVersion++;
-            }
-        }
-    }
-    
-
     /**
      * Constructor - takes the context to allow the database to be
      * opened/created

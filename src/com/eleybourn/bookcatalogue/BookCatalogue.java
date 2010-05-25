@@ -58,52 +58,67 @@ import android.widget.ExpandableListView.OnGroupCollapseListener;
  * A book catalogue application that integrates with Google Books.
  */
 public class BookCatalogue extends ExpandableListActivity {
-    private static final int ACTIVITY_CREATE=0;
-    private static final int ACTIVITY_EDIT=1;
-    private static final int ACTIVITY_SORT=2;
-    private static final int ACTIVITY_ISBN=3;
-    private static final int ACTIVITY_SCAN=4;
-    private static final int ACTIVITY_ADMIN=5;
+	private static final int ACTIVITY_CREATE=0;
+	private static final int ACTIVITY_EDIT=1;
+	private static final int ACTIVITY_SORT=2;
+	private static final int ACTIVITY_ISBN=3;
+	private static final int ACTIVITY_SCAN=4;
+	private static final int ACTIVITY_ADMIN=5;
 
-    private CatalogueDBAdapter mDbHelper;
-    private int mGroupIdColumnIndex; 
-    private static final int SORT_BY_AUTHOR_EXPANDED = Menu.FIRST + 1; 
-    private static final int SORT_BY_AUTHOR_COLLAPSED = Menu.FIRST + 2;
-    private static final int SORT_BY_TITLE = Menu.FIRST + 3; 
-    private static final int INSERT_ID = Menu.FIRST + 4;
-    private static final int INSERT_ISBN_ID = Menu.FIRST + 5;
-    private static final int INSERT_BARCODE_ID = Menu.FIRST + 6;
-    private static final int DELETE_ID = Menu.FIRST + 7;
-    private static final int SORT_BY_AUTHOR = Menu.FIRST + 8;
-    private static final int ADMIN = Menu.FIRST + 9;
+	private CatalogueDBAdapter mDbHelper;
+	private int mGroupIdColumnIndex; 
+	private static final int SORT_BY_AUTHOR_EXPANDED = Menu.FIRST + 1; 
+	private static final int SORT_BY_AUTHOR_COLLAPSED = Menu.FIRST + 2;
+	private static final int SORT_BY_TITLE = Menu.FIRST + 3; 
+	private static final int INSERT_ID = Menu.FIRST + 4;
+	private static final int INSERT_ISBN_ID = Menu.FIRST + 5;
+	private static final int INSERT_BARCODE_ID = Menu.FIRST + 6;
+	private static final int DELETE_ID = Menu.FIRST + 7;
+	private static final int SORT_BY_AUTHOR = Menu.FIRST + 8;
+	private static final int ADMIN = Menu.FIRST + 9;
 
-    public String bookshelf = "";
-    private ArrayAdapter<String> spinnerAdapter;
-    
-    public int sort = 0;
-    public int numAuthors = 0;
-    private ArrayList<Integer> currentGroup = new ArrayList<Integer>();
-    private boolean expanded = false;
+	public String bookshelf = "";
+	private ArrayAdapter<String> spinnerAdapter;
 
-    /** Called when the activity is first created. */
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-    	try {
+	public int sort = 0;
+	public int numAuthors = 0;
+	private ArrayList<Integer> currentGroup = new ArrayList<Integer>();
+	private boolean expanded = false;
+
+	/** Called when the activity is first created. */
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		try {
 			super.onCreate(savedInstanceState);
 			setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
 			setContentView(R.layout.list_authors);
 			mDbHelper = new CatalogueDBAdapter(this);
 			mDbHelper.open();
-            bookshelf = getString(R.string.all_books);
+			bookshelf = getString(R.string.all_books);
 			bookshelf();
 			//fillData();
+			if (!CatalogueDBAdapter.message.equals("")) {
+				upgradePopup(CatalogueDBAdapter.message);
+			}
 			registerForContextMenu(getExpandableListView());
-    	} catch (Exception e) {
-    		//Log.e("Book Catalogue", "Unknown Exception - BC onCreate - " + e.getMessage() );
-    	}
-    }
+		} catch (Exception e) {
+			//Log.e("Book Catalogue", "Unknown Exception - BC onCreate - " + e.getMessage() );
+		}
+	}
 
-    
+	public void upgradePopup(String message) {
+		AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(message).create();
+		alertDialog.setTitle(R.string.upgrade_title);
+		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
+		alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				return;
+			}
+		}); 
+		alertDialog.show();
+		return;
+	}
+
     private void bookshelf() {
         // Setup the Bookshelf Spinner 
     	Spinner mBookshelfText = (Spinner) findViewById(R.id.bookshelf_name);

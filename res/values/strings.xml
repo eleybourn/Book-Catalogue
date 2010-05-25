@@ -61,4 +61,5 @@
 <string name="version_number">Version Number</string>
 <string name="donate">If you would like to support the development of this application, please donate using the above paypal button. Being in Australia means I cannot publish a "paid" version. :-) </string>
 <string name="unable_to_connect_amazon">Unable to Connect to Amazon</string>
+<string name="upgrade_title">Since your last upgrade</string>
 </resources>

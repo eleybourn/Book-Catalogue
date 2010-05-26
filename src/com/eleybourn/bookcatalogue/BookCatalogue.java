@@ -84,6 +84,8 @@ public class BookCatalogue extends ExpandableListActivity {
 	public int numAuthors = 0;
 	private ArrayList<Integer> currentGroup = new ArrayList<Integer>();
 	private boolean expanded = false;
+	
+	private static boolean shown = false;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -107,6 +109,9 @@ public class BookCatalogue extends ExpandableListActivity {
 	}
 
 	public void upgradePopup(String message) {
+		if (shown) {
+			return;
+		}
 		AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(message).create();
 		alertDialog.setTitle(R.string.upgrade_title);
 		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
@@ -116,6 +121,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			}
 		}); 
 		alertDialog.show();
+		shown = true;
 		return;
 	}
 

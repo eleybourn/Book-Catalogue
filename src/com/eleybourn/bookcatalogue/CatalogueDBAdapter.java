@@ -61,7 +61,6 @@ public class CatalogueDBAdapter {
 	private static final String DATABASE_TABLE_BOOKS = "books";
 	private static final String DATABASE_TABLE_AUTHORS = "authors";
 	private static final String DATABASE_TABLE_BOOKSHELF = "bookshelf";
-	private static final int DATABASE_VERSION = 17;
 	public static String message = "";
 
 	/**
@@ -101,6 +100,7 @@ public class CatalogueDBAdapter {
 		")";
 
 	private final Context mCtx;
+	private static final int DATABASE_VERSION = 19;
 
 	private static class DatabaseHelper extends SQLiteOpenHelper {
 		DatabaseHelper(Context context) {
@@ -149,6 +149,14 @@ public class CatalogueDBAdapter {
 				curVersion++;
 				message += "* This message will now appear whenever you upgrade\n";
 				message += "* Various SQL bugs have been resolved\n";
+			}
+			if (curVersion == 17) {
+				//do nothing except increment
+				curVersion++;
+			}
+			if (curVersion == 18) {
+				//do nothing except increment
+				curVersion++;
 			}
 		}
 	}

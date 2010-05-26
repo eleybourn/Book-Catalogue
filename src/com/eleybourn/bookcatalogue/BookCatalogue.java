@@ -634,6 +634,7 @@ public class BookCatalogue extends ExpandableListActivity {
     	if (sort == 0) {
 	        Intent i = new Intent(this, BookEdit.class);
 	        i.putExtra(CatalogueDBAdapter.KEY_ROWID, id);
+			i.putExtra(BookEdit.TAB, BookEdit.TAB_EDIT);
 	        startActivityForResult(i, ACTIVITY_EDIT);
     	}
         return result;

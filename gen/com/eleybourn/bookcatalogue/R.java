@@ -19,8 +19,11 @@ public final class R {
         public static final int ic_menu_expand=0x7f020005;
         public static final int ic_menu_insert_barcode=0x7f020006;
         public static final int ic_paypal=0x7f020007;
-        public static final int icon=0x7f020008;
-        public static final int logo_bc=0x7f020009;
+        public static final int ic_tab_bookedit=0x7f020008;
+        public static final int ic_tab_bookedit_grey=0x7f020009;
+        public static final int ic_tab_bookedit_white=0x7f02000a;
+        public static final int icon=0x7f02000b;
+        public static final int logo_bc=0x7f02000c;
     }
     public static final class id {
         public static final int app_name=0x7f060000;
@@ -75,6 +78,7 @@ public final class R {
         public static final int row_books=0x7f03000a;
         public static final int row_bookshelf=0x7f03000b;
         public static final int spinner_frontpage=0x7f03000c;
+        public static final int tabhost=0x7f03000d;
     }
     public static final class string {
         public static final int administration_label=0x7f050036;

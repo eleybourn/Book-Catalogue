@@ -33,7 +33,10 @@ import android.widget.TabHost;
 public class BookEdit extends TabActivity {
 	public static final String TAB = "tab";
 	public static final int TAB_EDIT = 0;
+	public static final int TAB_EDIT_NOTES = 1;
+	public static final int TAB_EDIT_FRIENDS = 2;
 	public int currentTab = 0;
+	private Long mRowId;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -47,24 +50,44 @@ public class BookEdit extends TabActivity {
 		//get the passed parameters
 		Bundle extras = getIntent().getExtras();
 		currentTab = extras != null ? extras.getInt(BookEdit.TAB) : 0;
+		mRowId = savedInstanceState != null ? savedInstanceState.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
+		if (mRowId == null) {
+			mRowId = extras != null ? extras.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
+		}
 		
 		// Create an Intent to launch an Activity for the tab (to be reused)
 		intent = new Intent().setClass(this, BookEditFields.class);
-		intent.putExtras(extras);
+		if (extras != null) {
+			intent.putExtras(extras);
+		}
+		//Change the name depending on whether it is a new or existing book
+		String name = "";
+		if (mRowId == null || mRowId == 0) {
+			name = this.getResources().getString(R.string.menu_insert);
+		} else {
+			name = this.getResources().getString(R.string.edit_book);
+		}
 		// Initialise a TabSpec for each tab and add it to the TabHost
-		spec = tabHost.newTabSpec("artists").setIndicator("Edit Book", res.getDrawable(R.drawable.ic_tab_bookedit)).setContent(intent);
+		spec = tabHost.newTabSpec("edit_book").setIndicator(name, res.getDrawable(R.drawable.ic_tab_edit)).setContent(intent);
 		tabHost.addTab(spec);
 
-		// Do the same for the other tabs
-		intent = new Intent().setClass(this, BookEditNotes.class);
-		intent.putExtras(extras);
-		spec = tabHost.newTabSpec("albums").setIndicator("Albums", res.getDrawable(R.drawable.ic_tab_bookedit)).setContent(intent);
-		tabHost.addTab(spec);
-
-		intent = new Intent().setClass(this, BookEditLoaned.class);
-		intent.putExtras(extras);
-		spec = tabHost.newTabSpec("songs").setIndicator("Songs", res.getDrawable(R.drawable.ic_tab_bookedit)).setContent(intent);
-		tabHost.addTab(spec);
+		// Only show the other tabs if it is an edited book, otherwise only show the first tab
+		if (mRowId != null && mRowId > 0) {
+			// Do the same for the other tabs
+			intent = new Intent().setClass(this, BookEditNotes.class);
+			if (extras != null) {
+				intent.putExtras(extras);
+			}
+			spec = tabHost.newTabSpec("edit_book_notes").setIndicator(this.getResources().getString(R.string.edit_book_notes), res.getDrawable(R.drawable.ic_tab_notes)).setContent(intent);
+			tabHost.addTab(spec);
+	
+			intent = new Intent().setClass(this, BookEditLoaned.class);
+			if (extras != null) {
+				intent.putExtras(extras);
+			}
+			spec = tabHost.newTabSpec("edit_book_friends").setIndicator(this.getResources().getString(R.string.edit_book_friends), res.getDrawable(R.drawable.ic_tab_friends)).setContent(intent);
+			tabHost.addTab(spec);
+		}
 
 		tabHost.setCurrentTab(currentTab);
 	}

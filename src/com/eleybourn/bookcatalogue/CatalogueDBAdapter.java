@@ -52,6 +52,7 @@ public class CatalogueDBAdapter {
 	public static final String KEY_GIVEN_NAMES = "given_names";
 	public static final String LOCATION = "bookCatalogue";
 	public static final String KEY_SERIES_NUM = "series_num";
+	public static final String KEY_NOTES = "notes";
 
 	private DatabaseHelper mDbHelper;
 	private SQLiteDatabase mDb;
@@ -96,11 +97,12 @@ public class CatalogueDBAdapter {
 		KEY_READ + " boolean not null default 'f', " +
 		KEY_SERIES + " text, " +
 		KEY_PAGES + " int, " +
-		KEY_SERIES_NUM + " text " +
+		KEY_SERIES_NUM + " text, " +
+		KEY_NOTES + " text " +
 		")";
 
 	private final Context mCtx;
-	private static final int DATABASE_VERSION = 19;
+	private static final int DATABASE_VERSION = 20;
 
 	private static class DatabaseHelper extends SQLiteOpenHelper {
 		DatabaseHelper(Context context) {
@@ -156,6 +158,15 @@ public class CatalogueDBAdapter {
 			}
 			if (curVersion == 18) {
 				//do nothing except increment
+				curVersion++;
+			}
+			if (curVersion == 19) {
+				//do nothing except increment
+				curVersion++;
+				message += "* There is a new tabbed 'edit' interface which allows you to 1) edit, 2) make notes and 3) loan a book\n";
+				message += "* The comments tab also has a notes field where you can add any information you want  (Requested by Luke).\n";
+				db.execSQL("ALTER TABLE " + DATABASE_TABLE_BOOKS + " ADD " + KEY_NOTES + " text");
+				db.execSQL("UPDATE " + DATABASE_TABLE_BOOKS + " SET " + KEY_NOTES + " = ''");
 				curVersion++;
 			}
 		}
@@ -285,57 +296,57 @@ public class CatalogueDBAdapter {
     }
     
 
-    /**
-     * Create a new note using the title and body provided. If the note is
-     * successfully created return the new rowId for that note, otherwise return
-     * a -1 to indicate failure.
-     * 
-     * @param title the title of the note
-     * @param body the body of the note
-     * @return rowId or -1 if failed
-     */
-    public long createBook(String author, String title, String isbn, String publisher, String date_published, float rating, String bookshelf, Boolean read, String series, int pages, String series_num) {
-        ContentValues initialValues = new ContentValues();
-        String[] names = processAuthorName(author);
-        Cursor authorId = getAuthorByName(names);
-        int aRows = authorId.getCount();
-        if (aRows == 0) {
-        	createAuthor(names[0], names[1]);
-        	authorId.close();
-        	authorId = getAuthorByName(names);
-        }
-        authorId.moveToFirst();
-        
-    	int bookshelf_id=1;
-        if (bookshelf != "") {
-	        Cursor bookshelfId = getBookshelfByName(bookshelf);
-	        int bRows = bookshelfId.getCount();
-	        if (bRows == 0) {
-	        	createBookshelf(bookshelf);
-	        	bookshelfId.close();
-	        	bookshelfId = getBookshelfByName(bookshelf);
-	        }    
-	        bookshelfId.moveToFirst();
-	        bookshelf_id = bookshelfId.getInt(0);
-	    	bookshelfId.close();
-        }
-        
-        initialValues.put(KEY_AUTHOR, authorId.getInt(0));
-        initialValues.put(KEY_TITLE, title);
-        initialValues.put(KEY_ISBN, isbn);
-        initialValues.put(KEY_PUBLISHER, publisher);
-        initialValues.put(KEY_DATE_PUBLISHED, date_published);
-        initialValues.put(KEY_RATING, rating);
-        initialValues.put(KEY_BOOKSHELF, bookshelf_id);
-        initialValues.put(KEY_READ, read);
-        initialValues.put(KEY_SERIES, series);
-        initialValues.put(KEY_PAGES, pages);
-        initialValues.put(KEY_SERIES_NUM, series_num);
-    	authorId.close();
+	/**
+	 * Create a new note using the title and body provided. If the note is
+	 * successfully created return the new rowId for that note, otherwise return
+	 * a -1 to indicate failure.
+	 * 
+	 * @param title the title of the note
+	 * @param body the body of the note
+	 * @return rowId or -1 if failed
+	 */
+	public long createBook(String author, String title, String isbn, String publisher, String date_published, float rating, String bookshelf, Boolean read, String series, int pages, String series_num, String notes) {
+		ContentValues initialValues = new ContentValues();
+		String[] names = processAuthorName(author);
+		Cursor authorId = getAuthorByName(names);
+		int aRows = authorId.getCount();
+		if (aRows == 0) {
+			createAuthor(names[0], names[1]);
+			authorId.close();
+			authorId = getAuthorByName(names);
+		}
+		authorId.moveToFirst();
+		
+		int bookshelf_id=1;
+		if (bookshelf != "") {
+			Cursor bookshelfId = getBookshelfByName(bookshelf);
+			int bRows = bookshelfId.getCount();
+			if (bRows == 0) {
+				createBookshelf(bookshelf);
+				bookshelfId.close();
+				bookshelfId = getBookshelfByName(bookshelf);
+			}
+			bookshelfId.moveToFirst();
+			bookshelf_id = bookshelfId.getInt(0);
+			bookshelfId.close();
+		}
 
-        return mDb.insert(DATABASE_TABLE_BOOKS, null, initialValues);
-    }
-    
+		initialValues.put(KEY_AUTHOR, authorId.getInt(0));
+		initialValues.put(KEY_TITLE, title);
+		initialValues.put(KEY_ISBN, isbn);
+		initialValues.put(KEY_PUBLISHER, publisher);
+		initialValues.put(KEY_DATE_PUBLISHED, date_published);
+		initialValues.put(KEY_RATING, rating);
+		initialValues.put(KEY_BOOKSHELF, bookshelf_id);
+		initialValues.put(KEY_READ, read);
+		initialValues.put(KEY_SERIES, series);
+		initialValues.put(KEY_PAGES, pages);
+		initialValues.put(KEY_SERIES_NUM, series_num);
+		initialValues.put(KEY_NOTES, notes);
+		authorId.close();
+
+		return mDb.insert(DATABASE_TABLE_BOOKS, null, initialValues);
+	}
 
     /** 
      * Delete the book with the given rowId
@@ -377,28 +388,29 @@ public class CatalogueDBAdapter {
     }
     
 
-    /**
-     * Return a Cursor over the list of all books in the database
-     * 
-     * @return Cursor over all notes
-     */
-    public Cursor fetchAllBooks(String order, String bookshelf) {
-    	String where = "";
-    	if (bookshelf.equals("All Books")) {
-    		// do nothing 
-    	} else {
-    		where += " AND bs." + KEY_BOOKSHELF + "='" + encodeString(bookshelf) + "'";
-    	}
-    	String sql = "SELECT b." + KEY_ROWID + ", a." + KEY_FAMILY_NAME + " || ', ' || a." + KEY_GIVEN_NAMES + " as " + KEY_AUTHOR + ", b." + KEY_TITLE + 
-    		", b." + KEY_ISBN + ", b." + KEY_PUBLISHER + ", b." + KEY_DATE_PUBLISHED + ", b." + KEY_RATING + ", bs." + KEY_BOOKSHELF + 
-    		", b." + KEY_READ + ", b." + KEY_SERIES + ", b." + KEY_PAGES + ", b." + KEY_SERIES_NUM + ", b." + KEY_BOOKSHELF + " as bookshelf_id" + 
-    		" FROM " + DATABASE_TABLE_BOOKS + " b, " + DATABASE_TABLE_BOOKSHELF + " bs, " + DATABASE_TABLE_AUTHORS + " a" + 
-    		" WHERE bs._id=b." + KEY_BOOKSHELF + " AND a._id=b." + KEY_AUTHOR + where + 
-    		" ORDER BY " + order + "";
-    	return mDb.rawQuery(sql, new String[]{});
-        //return mDb.query(DATABASE_TABLE_BOOKS, new String[] {KEY_ROWID, KEY_AUTHOR, KEY_TITLE, KEY_ISBN, KEY_PUBLISHER, 
-        //		KEY_DATE_PUBLISHED, KEY_RATING, KEY_BOOKSHELF, KEY_READ, KEY_SERIES, KEY_PAGES}, null, null, null, null, null);
-    }
+	/**
+	 * Return a Cursor over the list of all books in the database
+	 * 
+	 * @return Cursor over all notes
+	 */
+	public Cursor fetchAllBooks(String order, String bookshelf) {
+		String where = "";
+		if (bookshelf.equals("All Books")) {
+			// do nothing 
+		} else {
+			where += " AND bs." + KEY_BOOKSHELF + "='" + encodeString(bookshelf) + "'";
+		}
+		String sql = "SELECT b." + KEY_ROWID + ", a." + KEY_FAMILY_NAME + " || ', ' || a." + KEY_GIVEN_NAMES + " as " + KEY_AUTHOR + ", b." + KEY_TITLE + 
+		", b." + KEY_ISBN + ", b." + KEY_PUBLISHER + ", b." + KEY_DATE_PUBLISHED + ", b." + KEY_RATING + ", bs." + KEY_BOOKSHELF + 
+		", b." + KEY_READ + ", b." + KEY_SERIES + ", b." + KEY_PAGES + ", b." + KEY_SERIES_NUM + ", b." + KEY_BOOKSHELF + " as bookshelf_id" +
+		", b." + KEY_NOTES + 
+		" FROM " + DATABASE_TABLE_BOOKS + " b, " + DATABASE_TABLE_BOOKSHELF + " bs, " + DATABASE_TABLE_AUTHORS + " a" + 
+		" WHERE bs._id=b." + KEY_BOOKSHELF + " AND a._id=b." + KEY_AUTHOR + where + 
+		" ORDER BY " + order + "";
+		return mDb.rawQuery(sql, new String[]{});
+		//return mDb.query(DATABASE_TABLE_BOOKS, new String[] {KEY_ROWID, KEY_AUTHOR, KEY_TITLE, KEY_ISBN, KEY_PUBLISHER, 
+		//KEY_DATE_PUBLISHED, KEY_RATING, KEY_BOOKSHELF, KEY_READ, KEY_SERIES, KEY_PAGES}, null, null, null, null, null);
+	}
 
     /**
      * Return a Cursor over the list of all books in the database
@@ -429,55 +441,51 @@ public class CatalogueDBAdapter {
     	return fetchAllBooks(order, "All Books"); 
     }
 
-    /**
-     * Return a Cursor over the list of all books in the database
-     * 
-     * @return Cursor over all notes
-     */
-    public Cursor exportBooks() {
-    	String sql = "SELECT b." + KEY_ROWID + ", b." + KEY_AUTHOR + ", a." + KEY_FAMILY_NAME + ", a." + KEY_GIVEN_NAMES + ", b." + KEY_TITLE + 
-    		", b." + KEY_ISBN + ", b." + KEY_PUBLISHER + ", b." + KEY_DATE_PUBLISHED + ", b." + KEY_RATING + 
-    		", b." + KEY_BOOKSHELF + " as bookshelf_id" + ", bs." + KEY_BOOKSHELF + ", b." + KEY_READ + ", b." + KEY_SERIES + 
-    		", b." + KEY_PAGES + ", b." + KEY_SERIES_NUM + 
-    		" FROM " + DATABASE_TABLE_BOOKS + " b, " + DATABASE_TABLE_BOOKSHELF + " bs, " + DATABASE_TABLE_AUTHORS + " a" + 
-    		" WHERE bs._id=b." + KEY_BOOKSHELF + " AND a._id=b." + KEY_AUTHOR;
-    	return mDb.rawQuery(sql, new String[]{});
-        //return mDb.query(DATABASE_TABLE_BOOKS, new String[] {KEY_ROWID, KEY_AUTHOR, KEY_TITLE, KEY_ISBN, KEY_PUBLISHER, 
-        //		KEY_DATE_PUBLISHED, KEY_RATING, KEY_BOOKSHELF, KEY_READ, KEY_SERIES, KEY_PAGES}, null, null, null, null, null);
-    }
+	/**
+	 * Return a Cursor over the list of all books in the database
+	 * 
+	 * @return Cursor over all notes
+	 */
+	public Cursor exportBooks() {
+		String sql = "SELECT b." + KEY_ROWID + ", b." + KEY_AUTHOR + ", a." + KEY_FAMILY_NAME + ", a." + KEY_GIVEN_NAMES + ", b." + KEY_TITLE + 
+		", b." + KEY_ISBN + ", b." + KEY_PUBLISHER + ", b." + KEY_DATE_PUBLISHED + ", b." + KEY_RATING + 
+		", b." + KEY_BOOKSHELF + " as bookshelf_id" + ", bs." + KEY_BOOKSHELF + ", b." + KEY_READ + ", b." + KEY_SERIES + 
+		", b." + KEY_PAGES + ", b." + KEY_SERIES_NUM + ", b." + KEY_NOTES + 
+		" FROM " + DATABASE_TABLE_BOOKS + " b, " + DATABASE_TABLE_BOOKSHELF + " bs, " + DATABASE_TABLE_AUTHORS + " a" + 
+		" WHERE bs._id=b." + KEY_BOOKSHELF + " AND a._id=b." + KEY_AUTHOR;
+		return mDb.rawQuery(sql, new String[]{});
+	}
 
-    /**
-     * Return a Cursor over the list of all books in the database by author
-     * 
-     * @return Cursor over all notes
-     */
-    public Cursor fetchAllBooksByAuthor(int author, String bookshelf) {
-    	String where = "";
-    	if (bookshelf.equals("All Books")) {
-    		// do nothing 
-    	} else {
-    		where += " AND bs." + KEY_BOOKSHELF + "='" + encodeString(bookshelf) + "'";
-    	}
-    	String sql = "SELECT b." + KEY_ROWID + ", a." + KEY_FAMILY_NAME + " || ', ' || a." + KEY_GIVEN_NAMES + " as " + KEY_AUTHOR + ", b." + KEY_TITLE + 
-    		", b." + KEY_ISBN + ", b." + KEY_PUBLISHER + ", b." + KEY_DATE_PUBLISHED + ", b." + KEY_RATING + ", bs." + KEY_BOOKSHELF + 
-    		", b." + KEY_READ + ", b." + KEY_SERIES + ", b." + KEY_PAGES + ", b." + KEY_SERIES_NUM + 
-    		" FROM " + DATABASE_TABLE_BOOKS + " b, " + DATABASE_TABLE_BOOKSHELF + " bs, " + DATABASE_TABLE_AUTHORS + " a" + 
-    		" WHERE bs._id=b." + KEY_BOOKSHELF + " AND a._id=b." + KEY_AUTHOR + " AND a._id=" + author + where + 
-    		" ORDER BY b." + KEY_SERIES + ", substr('0000000000' || b." + KEY_SERIES_NUM + ", -10, 10), lower(b." + KEY_TITLE + ") ASC";
-    	return mDb.rawQuery(sql, new String[]{});
-    }
-    
-    
-    public Cursor fetchBookByISBN(String isbn) {
-    	String sql = "SELECT b." + KEY_ROWID + ", a." + KEY_FAMILY_NAME + " || ', ' || a." + KEY_GIVEN_NAMES + " as " + KEY_AUTHOR + ", b." + KEY_TITLE + 
+	/**
+	 * Return a Cursor over the list of all books in the database by author
+	 * 
+	 * @return Cursor over all notes
+	 */
+	public Cursor fetchAllBooksByAuthor(int author, String bookshelf) {
+		String where = "";
+		if (bookshelf.equals("All Books")) {
+			// do nothing 
+		} else 	{
+			where += " AND bs." + KEY_BOOKSHELF + "='" + encodeString(bookshelf) + "'";
+		}
+		String sql = "SELECT b." + KEY_ROWID + ", a." + KEY_FAMILY_NAME + " || ', ' || a." + KEY_GIVEN_NAMES + " as " + KEY_AUTHOR + ", b." + KEY_TITLE + 
 		", b." + KEY_ISBN + ", b." + KEY_PUBLISHER + ", b." + KEY_DATE_PUBLISHED + ", b." + KEY_RATING + ", bs." + KEY_BOOKSHELF + 
-		", b." + KEY_READ + ", b." + KEY_SERIES + ", b." + KEY_PAGES + ", b." + KEY_SERIES_NUM + 
+		", b." + KEY_READ + ", b." + KEY_SERIES + ", b." + KEY_PAGES + ", b." + KEY_SERIES_NUM + ", b." + KEY_NOTES + 
+		" FROM " + DATABASE_TABLE_BOOKS + " b, " + DATABASE_TABLE_BOOKSHELF + " bs, " + DATABASE_TABLE_AUTHORS + " a" + 
+		" WHERE bs._id=b." + KEY_BOOKSHELF + " AND a._id=b." + KEY_AUTHOR + " AND a._id=" + author + where + 
+		" ORDER BY b." + KEY_SERIES + ", substr('0000000000' || b." + KEY_SERIES_NUM + ", -10, 10), lower(b." + KEY_TITLE + ") ASC";
+		return mDb.rawQuery(sql, new String[]{});
+	}
+
+	public Cursor fetchBookByISBN(String isbn) {
+		String sql = "SELECT b." + KEY_ROWID + ", a." + KEY_FAMILY_NAME + " || ', ' || a." + KEY_GIVEN_NAMES + " as " + KEY_AUTHOR + ", b." + KEY_TITLE + 
+		", b." + KEY_ISBN + ", b." + KEY_PUBLISHER + ", b." + KEY_DATE_PUBLISHED + ", b." + KEY_RATING + ", bs." + KEY_BOOKSHELF + 
+		", b." + KEY_READ + ", b." + KEY_SERIES + ", b." + KEY_PAGES + ", b." + KEY_SERIES_NUM + ", b." + KEY_NOTES + 
 		" FROM " + DATABASE_TABLE_BOOKS + " b, " + DATABASE_TABLE_BOOKSHELF + " bs, " + DATABASE_TABLE_AUTHORS + " a" + 
 		" WHERE bs._id=b." + KEY_BOOKSHELF + " AND a._id=b." + KEY_AUTHOR + " AND b." + KEY_ISBN + "='" + encodeString(isbn) + "'" +
 		" ORDER BY lower(b." + KEY_TITLE + ")";
-    	return mDb.rawQuery(sql, new String[]{});
-    }
-    
+		return mDb.rawQuery(sql, new String[]{});
+	}
 
     /**
      * Return a Cursor over the list of all books in the database
@@ -549,31 +557,30 @@ public class CatalogueDBAdapter {
     }
     
 
-    /**
-     * Return a Cursor over the list of all books in the database
-     * 
-     * @return Cursor over all notes
-     */
-    public Cursor searchBooks(String query, String order, String bookshelf) {
-    	String where = "";
-    	query = encodeString(query);
-    	if (bookshelf.equals("All Books")) {
-    		// do nothing 
-    	} else {
-    		where += " AND bs." + KEY_BOOKSHELF + "='" + encodeString(bookshelf) + "'";
-    	}
-    	String sql = "SELECT b." + KEY_ROWID + ", a." + KEY_FAMILY_NAME + " || ', ' || a." + KEY_GIVEN_NAMES + " as " + KEY_AUTHOR + ", b." + KEY_TITLE + 
-    		", b." + KEY_ISBN + ", b." + KEY_PUBLISHER + ", b." + KEY_DATE_PUBLISHED + ", b." + KEY_RATING + ", bs." + KEY_BOOKSHELF + 
-    		", b." + KEY_READ + ", b." + KEY_SERIES + ", b." + KEY_PAGES + ", b." + KEY_SERIES_NUM + 
-    		" FROM " + DATABASE_TABLE_BOOKS + " b, " + DATABASE_TABLE_BOOKSHELF + " bs, " + DATABASE_TABLE_AUTHORS + " a" + 
-    		" WHERE bs._id=b." + KEY_BOOKSHELF + " AND a._id=b." + KEY_AUTHOR + 
-    		" AND (a." + KEY_FAMILY_NAME + " LIKE '%" + query + "%' OR a." + KEY_GIVEN_NAMES + " LIKE '%" + query + "%' OR " +
-			" b." + KEY_TITLE + " LIKE '%" + query + "%')" + 
-    		where + 
-    		" ORDER BY " + order + "";
-    	return mDb.rawQuery(sql, new String[]{});
-    }
-    
+	/**
+	 * Return a Cursor over the list of all books in the database
+	 * 
+	 * @return Cursor over all notes
+	 */
+	public Cursor searchBooks(String query, String order, String bookshelf) {
+		String where = "";
+		query = encodeString(query);
+		if (bookshelf.equals("All Books")) {
+			// do nothing 
+		} else {
+			where += " AND bs." + KEY_BOOKSHELF + "='" + encodeString(bookshelf) + "'";
+		}
+		String sql = "SELECT b." + KEY_ROWID + ", a." + KEY_FAMILY_NAME + " || ', ' || a." + KEY_GIVEN_NAMES + " as " + KEY_AUTHOR + ", b." + KEY_TITLE + 
+		", b." + KEY_ISBN + ", b." + KEY_PUBLISHER + ", b." + KEY_DATE_PUBLISHED + ", b." + KEY_RATING + ", bs." + KEY_BOOKSHELF + 
+		", b." + KEY_READ + ", b." + KEY_SERIES + ", b." + KEY_PAGES + ", b." + KEY_SERIES_NUM + ", b." + KEY_NOTES + 
+		" FROM " + DATABASE_TABLE_BOOKS + " b, " + DATABASE_TABLE_BOOKSHELF + " bs, " + DATABASE_TABLE_AUTHORS + " a" + 
+		" WHERE bs._id=b." + KEY_BOOKSHELF + " AND a._id=b." + KEY_AUTHOR + 
+		" AND (a." + KEY_FAMILY_NAME + " LIKE '%" + query + "%' OR a." + KEY_GIVEN_NAMES + " LIKE '%" + query + "%' OR " +
+		" b." + KEY_TITLE + " LIKE '%" + query + "%')" + 
+		where + 
+		" ORDER BY " + order + "";
+		return mDb.rawQuery(sql, new String[]{});
+	}
 
     /**
      * Return a Cursor over the list of all books in the database
@@ -587,31 +594,30 @@ public class CatalogueDBAdapter {
     	return mDb.rawQuery(sql, new String[]{});
     }
 
-    /**
-     * Return a Cursor positioned at the books that matches the given rowId
-     * 
-     * @param rowId id of note to retrieve
-     * @return Cursor positioned to matching note, if found
-     * @throws SQLException if note could not be found/retrieved
-     */
-    public Cursor fetchBook(long rowId) throws SQLException {
-    	String sql = "SELECT b." + KEY_ROWID + ", a." + KEY_FAMILY_NAME + " || ', ' || a." + KEY_GIVEN_NAMES + " as " + KEY_AUTHOR + 
-    	", b." + KEY_TITLE + ", b." + KEY_ISBN + ", b." + KEY_PUBLISHER + ", b." + KEY_DATE_PUBLISHED + ", b." + KEY_RATING + 
-    	", bs." + KEY_BOOKSHELF + 
-		", b." + KEY_READ + ", b." + KEY_SERIES + ", b." + KEY_PAGES + ", b." + KEY_SERIES_NUM + 
+	/**
+	 * Return a Cursor positioned at the books that matches the given rowId
+	 * 
+	 * @param rowId id of note to retrieve
+	 * @return Cursor positioned to matching note, if found
+	 * @throws SQLException if note could not be found/retrieved
+	 */
+	public Cursor fetchBook(long rowId) throws SQLException {
+		String sql = "SELECT b." + KEY_ROWID + ", a." + KEY_FAMILY_NAME + " || ', ' || a." + KEY_GIVEN_NAMES + " as " + KEY_AUTHOR + 
+		", b." + KEY_TITLE + ", b." + KEY_ISBN + ", b." + KEY_PUBLISHER + ", b." + KEY_DATE_PUBLISHED + ", b." + KEY_RATING + 
+		", bs." + KEY_BOOKSHELF + 
+		", b." + KEY_READ + ", b." + KEY_SERIES + ", b." + KEY_PAGES + ", b." + KEY_SERIES_NUM + ", b." + KEY_NOTES + 
 		" FROM " + DATABASE_TABLE_BOOKS + " b, " + DATABASE_TABLE_BOOKSHELF + " bs, " + DATABASE_TABLE_AUTHORS + " a" + 
 		" WHERE bs._id=b." + KEY_BOOKSHELF + " AND a._id=b." + KEY_AUTHOR + " AND b." + KEY_ROWID + "=" + rowId + "";
 
-    	Cursor mCursor = mDb.rawQuery(sql, new String[]{});
-        //Cursor mCursor = mDb.query(true, DATABASE_TABLE_BOOKS, new String[] {KEY_ROWID, KEY_AUTHOR, KEY_TITLE, KEY_ISBN, KEY_PUBLISHER, 
-        //		KEY_DATE_PUBLISHED, KEY_RATING, KEY_BOOKSHELF, KEY_READ, KEY_SERIES, KEY_PAGES}, KEY_ROWID + "=" + rowId, 
-        //		null, null, null, null, null);
-        if (mCursor != null) {
-            mCursor.moveToFirst();
-        }
-        return mCursor;
-
-    }
+		Cursor mCursor = mDb.rawQuery(sql, new String[]{});
+		//Cursor mCursor = mDb.query(true, DATABASE_TABLE_BOOKS, new String[] {KEY_ROWID, KEY_AUTHOR, KEY_TITLE, KEY_ISBN, KEY_PUBLISHER, 
+		//		KEY_DATE_PUBLISHED, KEY_RATING, KEY_BOOKSHELF, KEY_READ, KEY_SERIES, KEY_PAGES}, KEY_ROWID + "=" + rowId, 
+		//		null, null, null, null, null);
+		if (mCursor != null) {
+			mCursor.moveToFirst();
+		}
+		return mCursor;
+	}
 
     /**
      * Return a Cursor positioned at the books that matches the given rowId
@@ -653,60 +659,60 @@ public class CatalogueDBAdapter {
 
     }
 
-    /**
-     * Update the note using the details provided. The note to be updated is
-     * specified using the rowId, and it is altered to use the title and body
-     * values passed in
-     * 
-     * @param rowId id of note to update
-     * @param title value to set note title to
-     * @param body value to set note body to
-     * @return true if the note was successfully updated, false otherwise
-     */
-    public boolean updateBook(long rowId, String author, String title, String isbn, String publisher, String date_published, float rating, String bookshelf, Boolean read, String series, int pages, String series_num) {
-    	boolean success;
-        ContentValues args = new ContentValues();
-        String[] names = processAuthorName(author);
-        Cursor authorId = getAuthorByName(names);
-        int aRows = authorId.getCount();
-        if (aRows == 0) {
-        	createAuthor(names[0], names[1]);
-        	authorId.close();
-        	authorId = getAuthorByName(names);
-        }
+	/**
+	 * Update the note using the details provided. The note to be updated is
+	 * specified using the rowId, and it is altered to use the title and body
+	 * values passed in
+	 * 
+	 * @param rowId id of note to update
+	 * @param title value to set note title to
+	 * @param body value to set note body to
+	 * @return true if the note was successfully updated, false otherwise
+	 */
+	public boolean updateBook(long rowId, String author, String title, String isbn, String publisher, String date_published, float rating, String bookshelf, Boolean read, String series, int pages, String series_num, String notes) {
+		boolean success;
+		ContentValues args = new ContentValues();
+		String[] names = processAuthorName(author);
+		Cursor authorId = getAuthorByName(names);
+		int aRows = authorId.getCount();
+		if (aRows == 0) {
+			createAuthor(names[0], names[1]);
+			authorId.close();
+			authorId = getAuthorByName(names);
+		}
 
-    	int bookshelf_id=1;
-        if (bookshelf != "") {
-	        Cursor bookshelfId = getBookshelfByName(bookshelf);
-	        int bRows = bookshelfId.getCount();
-	        if (bRows == 0) {
-	        	createBookshelf(bookshelf);
-	        	bookshelfId.close();
-	        	bookshelfId = getBookshelfByName(bookshelf);
-	        }    
-	        bookshelfId.moveToFirst();
-	        bookshelf_id = bookshelfId.getInt(0);
-	    	bookshelfId.close();
-        }
-        authorId.moveToFirst();
-        
-        args.put(KEY_AUTHOR, authorId.getInt(0));
-        args.put(KEY_TITLE, title);
-        args.put(KEY_ISBN, isbn);
-        args.put(KEY_PUBLISHER, publisher);
-        args.put(KEY_DATE_PUBLISHED, date_published);
-        args.put(KEY_RATING, rating);
-        args.put(KEY_BOOKSHELF, bookshelf_id);
-        args.put(KEY_READ, read);
-        args.put(KEY_SERIES, series);
-        args.put(KEY_PAGES, pages);
-        args.put(KEY_SERIES_NUM, series_num);
-    	authorId.close();
+		int bookshelf_id=1;
+		if (bookshelf != "") {
+			Cursor bookshelfId = getBookshelfByName(bookshelf);
+			int bRows = bookshelfId.getCount();
+			if (bRows == 0) {
+				createBookshelf(bookshelf);
+				bookshelfId.close();
+				bookshelfId = getBookshelfByName(bookshelf);
+			}
+			bookshelfId.moveToFirst();
+			bookshelf_id = bookshelfId.getInt(0);
+			bookshelfId.close();
+		}
+		authorId.moveToFirst();
+		args.put(KEY_AUTHOR, authorId.getInt(0));
+		args.put(KEY_TITLE, title);
+		args.put(KEY_ISBN, isbn);
+		args.put(KEY_PUBLISHER, publisher);
+		args.put(KEY_DATE_PUBLISHED, date_published);
+		args.put(KEY_RATING, rating);
+		args.put(KEY_BOOKSHELF, bookshelf_id);
+		args.put(KEY_READ, read);
+		args.put(KEY_SERIES, series);
+		args.put(KEY_PAGES, pages);
+		args.put(KEY_SERIES_NUM, series_num);
+		args.put(KEY_NOTES, notes);
+		authorId.close();
 
-        success = mDb.update(DATABASE_TABLE_BOOKS, args, KEY_ROWID + "=" + rowId, null) > 0;
-        deleteAuthors();
-        return success;
-    }
+		success = mDb.update(DATABASE_TABLE_BOOKS, args, KEY_ROWID + "=" + rowId, null) > 0;
+		deleteAuthors();
+		return success;
+	}
 
     /**
      * Update the note using the details provided. The note to be updated is

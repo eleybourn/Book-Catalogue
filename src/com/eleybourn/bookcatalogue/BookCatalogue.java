@@ -76,6 +76,9 @@ public class BookCatalogue extends ExpandableListActivity {
 	private static final int DELETE_ID = Menu.FIRST + 7;
 	private static final int SORT_BY_AUTHOR = Menu.FIRST + 8;
 	private static final int ADMIN = Menu.FIRST + 9;
+	private static final int EDIT_BOOK = Menu.FIRST + 10;
+	private static final int EDIT_BOOK_NOTES = Menu.FIRST + 11;
+	private static final int EDIT_BOOK_FRIENDS = Menu.FIRST + 12;
 
 	public String bookshelf = "";
 	private ArrayAdapter<String> spinnerAdapter;
@@ -125,25 +128,25 @@ public class BookCatalogue extends ExpandableListActivity {
 		return;
 	}
 
-    private void bookshelf() {
-        // Setup the Bookshelf Spinner 
-    	Spinner mBookshelfText = (Spinner) findViewById(R.id.bookshelf_name);
-    	spinnerAdapter = new ArrayAdapter<String>(this, R.layout.spinner_frontpage);
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mBookshelfText.setAdapter(spinnerAdapter);
+	private void bookshelf() {
+		// Setup the Bookshelf Spinner 
+		Spinner mBookshelfText = (Spinner) findViewById(R.id.bookshelf_name);
+		spinnerAdapter = new ArrayAdapter<String>(this, R.layout.spinner_frontpage);
+		spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		mBookshelfText.setAdapter(spinnerAdapter);
 
-        /* Add the default All Books bookshelf */
-        spinnerAdapter.add(getString(R.string.all_books)); 
-        
-        Cursor bookshelves = mDbHelper.fetchAllBookshelves();
-        if (bookshelves.moveToFirst()) { 
-            do { 
-            	spinnerAdapter.add(bookshelves.getString(1)); 
-            } 
-            while (bookshelves.moveToNext()); 
-        } 
-    	
-        mBookshelfText.setOnItemSelectedListener(new OnItemSelectedListener() {
+		/* Add the default All Books bookshelf */
+		spinnerAdapter.add(getString(R.string.all_books)); 
+
+		Cursor bookshelves = mDbHelper.fetchAllBookshelves();
+		if (bookshelves.moveToFirst()) { 
+			do { 
+				spinnerAdapter.add(bookshelves.getString(1)); 
+			} 
+			while (bookshelves.moveToNext()); 
+		} 
+
+		mBookshelfText.setOnItemSelectedListener(new OnItemSelectedListener() {
 			public void onItemSelected(AdapterView<?> parentView, View view, int position, long id) {
 				bookshelf = spinnerAdapter.getItem(position);
 				fillData();
@@ -153,23 +156,22 @@ public class BookCatalogue extends ExpandableListActivity {
 				// Do Nothing
 				
 			}
-        });
+		});
+	}
 
-    }
-    
-    private void fillData() {
-    	if (sort == 1) {
-    		fillDataTitle();
-    	} else {
-    		fillDataAuthor();
-    	}
-    	gotoCurrentGroup();
-    	/* Add number to bookshelf */
-    	TextView mBookshelfNumView = (TextView) findViewById(R.id.bookshelf_num);
-    	int numBooks = mDbHelper.getBooksCount(bookshelf);
-    	mBookshelfNumView.setText("(" + numBooks + ")");
-    }
-    
+	private void fillData() {
+		if (sort == 1) {
+			fillDataTitle();
+		} else {
+			fillDataAuthor();
+		}
+		gotoCurrentGroup();
+		/* Add number to bookshelf */
+		TextView mBookshelfNumView = (TextView) findViewById(R.id.bookshelf_num);
+		int numBooks = mDbHelper.getBooksCount(bookshelf);
+		mBookshelfNumView.setText("(" + numBooks + ")");
+	}
+
     private void fillDataAuthor() {
     	Intent intent = getIntent();
     	// base the layout and the query on the sort order
@@ -514,7 +516,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		expanded = false;
     }
 	
-    @Override
+	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		ExpandableListView.ExpandableListContextMenuInfo info = (ExpandableListView.ExpandableListContextMenuInfo) menuInfo;
@@ -523,20 +525,35 @@ public class BookCatalogue extends ExpandableListActivity {
 			if (ExpandableListView.getPackedPositionType(info.packedPosition) == 1) {
 				MenuItem delete = menu.add(0, DELETE_ID, 0, R.string.menu_delete);
 				delete.setIcon(android.R.drawable.ic_menu_delete);
+				MenuItem edit_book = menu.add(0, EDIT_BOOK, 0, R.string.edit_book);
+				edit_book.setIcon(android.R.drawable.ic_menu_edit);
+				MenuItem edit_book_notes = menu.add(0, EDIT_BOOK_NOTES, 0, R.string.edit_book_notes);
+				edit_book_notes.setIcon(R.drawable.ic_menu_compose);
+				MenuItem edit_book_friends = menu.add(0, EDIT_BOOK_FRIENDS, 0, R.string.edit_book_friends);
+				edit_book_friends.setIcon(R.drawable.ic_menu_cc);
 			}
 		} catch (NullPointerException e) {
 			// do nothing
 		}
 	}
 
-    @Override
+	@Override
 	public boolean onContextItemSelected(MenuItem item) {
+		ExpandableListContextMenuInfo info = (ExpandableListContextMenuInfo) item.getMenuInfo();
 		switch(item.getItemId()) {
-    	case DELETE_ID:
-    		ExpandableListContextMenuInfo info = (ExpandableListContextMenuInfo) item.getMenuInfo();
-	        mDbHelper.deleteBook(info.id);
-	        fillData();
-	        return true;
+		case DELETE_ID:
+			mDbHelper.deleteBook(info.id);
+			fillData();
+			return true;
+		case EDIT_BOOK:
+			editBook(info.id, BookEdit.TAB_EDIT);
+			return true;
+		case EDIT_BOOK_NOTES:
+			editBook(info.id, BookEdit.TAB_EDIT_NOTES);
+			return true;
+		case EDIT_BOOK_FRIENDS:
+			editBook(info.id, BookEdit.TAB_EDIT_FRIENDS);
+			return true;
 		}
 		return super.onContextItemSelected(item);
 	}
@@ -592,6 +609,19 @@ public class BookCatalogue extends ExpandableListActivity {
         Intent i = new Intent(this, BookISBNSearch.class);
         startActivityForResult(i, ACTIVITY_ISBN);
     }
+
+	/*
+	 * Load the bookedit activity based on the provided id. Also open to the provided tab
+	 * 
+	 * return void
+	 */
+	private void editBook(long id, int tab) {
+		Intent i = new Intent(this, BookEdit.class);
+		i.putExtra(CatalogueDBAdapter.KEY_ROWID, id);
+		i.putExtra(BookEdit.TAB, tab);
+		startActivityForResult(i, ACTIVITY_EDIT);
+		return;
+	}
 	
     /*
      * Load the BookEdit Activity
@@ -626,19 +656,16 @@ public class BookCatalogue extends ExpandableListActivity {
             return;
         }
     }
-   
-    @Override
-    public boolean onChildClick(ExpandableListView l, View v, int position, int childPosition, long id) {
+	
+	@Override
+	public boolean onChildClick(ExpandableListView l, View v, int position, int childPosition, long id) {
 		boolean result = super.onChildClick(l, v, position, childPosition, id);
 		addToCurrentGroup(position, true);
-    	if (sort == 0) {
-	        Intent i = new Intent(this, BookEdit.class);
-	        i.putExtra(CatalogueDBAdapter.KEY_ROWID, id);
-			i.putExtra(BookEdit.TAB, BookEdit.TAB_EDIT);
-	        startActivityForResult(i, ACTIVITY_EDIT);
-    	}
-        return result;
-    }
+		if (sort == 0) {
+			editBook(id, BookEdit.TAB_EDIT);
+		}
+		return result;
+	}
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {

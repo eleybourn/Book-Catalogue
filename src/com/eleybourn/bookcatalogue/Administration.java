@@ -173,65 +173,66 @@ public class Administration extends Activity {
         startActivityForResult(i, ACTIVITY_BOOKSHELF);
     }
 	
-    /*
-     * Export all data to a CSV file
-     * 
-     * return void
-     */
-    private void exportData() {
-    	Cursor books = mDbHelper.exportBooks();
-    	String export = 
-    		CatalogueDBAdapter.KEY_ROWID + "\t" + 
-    		CatalogueDBAdapter.KEY_FAMILY_NAME + "\t" + 
-    		CatalogueDBAdapter.KEY_GIVEN_NAMES + "\t" + 
-    		CatalogueDBAdapter.KEY_AUTHOR + "\t" + 
-    		CatalogueDBAdapter.KEY_TITLE + "\t" + 
-    		CatalogueDBAdapter.KEY_ISBN + "\t" + 
-    		CatalogueDBAdapter.KEY_PUBLISHER + "\t" + 
-    		CatalogueDBAdapter.KEY_DATE_PUBLISHED + "\t" + 
-    		CatalogueDBAdapter.KEY_RATING + "\t" + 
-    		"bookshelf_id\t" + 
-    		CatalogueDBAdapter.KEY_BOOKSHELF + "\t" +
-    		CatalogueDBAdapter.KEY_READ + "\t" +
-    		CatalogueDBAdapter.KEY_SERIES + "\t" + 
-    		CatalogueDBAdapter.KEY_SERIES_NUM + "\t" +
-    		CatalogueDBAdapter.KEY_PAGES + "\t" + 
-    		"\n";
-        if (books.moveToFirst()) {
-            do { 
-            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROWID)) + "\t";
-            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_FAMILY_NAME)) + "\t";
-            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_GIVEN_NAMES)) + "\t";
-            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR)) + "\t";
-            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE)) + "\t";
-            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ISBN)) + "\t";
-            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PUBLISHER)) + "\t";
-            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DATE_PUBLISHED)) + "\t";
-            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_RATING)) + "\t";
-            	export += books.getString(books.getColumnIndexOrThrow("bookshelf_id")) + "\t";
-            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_BOOKSHELF)) + "\t";
-            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ)) + "\t";
-            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES)) + "\t";
-            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES_NUM)) + "\t";
-            	export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PAGES)) + "\t";
-            	export += "\n";
-            } 
-            while (books.moveToNext()); 
-        } 
-        
-        /* write to the SDCard */
+	/*
+	 * Export all data to a CSV file
+	 * 
+	 * return void
+	 */
+	private void exportData() {
+		Cursor books = mDbHelper.exportBooks();
+		String export = 
+			CatalogueDBAdapter.KEY_ROWID + "\t" + 
+			CatalogueDBAdapter.KEY_FAMILY_NAME + "\t" + 
+			CatalogueDBAdapter.KEY_GIVEN_NAMES + "\t" + 
+			CatalogueDBAdapter.KEY_AUTHOR + "\t" + 
+			CatalogueDBAdapter.KEY_TITLE + "\t" + 
+			CatalogueDBAdapter.KEY_ISBN + "\t" + 
+			CatalogueDBAdapter.KEY_PUBLISHER + "\t" + 
+			CatalogueDBAdapter.KEY_DATE_PUBLISHED + "\t" + 
+			CatalogueDBAdapter.KEY_RATING + "\t" + 
+			"bookshelf_id\t" + 
+			CatalogueDBAdapter.KEY_BOOKSHELF + "\t" +
+			CatalogueDBAdapter.KEY_READ + "\t" +
+			CatalogueDBAdapter.KEY_SERIES + "\t" + 
+			CatalogueDBAdapter.KEY_SERIES_NUM + "\t" +
+			CatalogueDBAdapter.KEY_PAGES + "\t" + 
+			CatalogueDBAdapter.KEY_NOTES + "\t" + 
+			"\n";
+		if (books.moveToFirst()) {
+			do { 
+				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROWID)) + "\t";
+				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_FAMILY_NAME)) + "\t";
+				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_GIVEN_NAMES)) + "\t";
+				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR)) + "\t";
+				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE)) + "\t";
+				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ISBN)) + "\t";
+				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PUBLISHER)) + "\t";
+				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DATE_PUBLISHED)) + "\t";
+				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_RATING)) + "\t";
+				export += books.getString(books.getColumnIndexOrThrow("bookshelf_id")) + "\t";
+				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_BOOKSHELF)) + "\t";
+				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ)) + "\t";
+				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES)) + "\t";
+				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES_NUM)) + "\t";
+				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PAGES)) + "\t";
+				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_NOTES)) + "\t";
+				export += "\n";
+			} 
+			while (books.moveToNext()); 
+		} 
+
+		/* write to the SDCard */
 		try {
 			BufferedWriter out = new BufferedWriter(new FileWriter(Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/export.tab"));
 			out.write(export);
 			out.close();
-        	Toast.makeText(this, R.string.export_complete, Toast.LENGTH_LONG).show();
+			Toast.makeText(this, R.string.export_complete, Toast.LENGTH_LONG).show();
 		} catch (IOException e) {
 			//Log.e("Book Catalogue", "Could not write to the SDCard");		
-        	Toast.makeText(this, R.string.export_failed, Toast.LENGTH_LONG).show();
+			Toast.makeText(this, R.string.export_failed, Toast.LENGTH_LONG).show();
 		}
+	}
 
-   }
-	
 	/**
 	 * This program reads a text file line by line and print to the console. It uses
 	 * FileOutputStream to read the file.
@@ -268,87 +269,86 @@ public class Administration extends Activity {
 		return importedString;
 	}
 
-    /*
-     * Export all data to a CSV file
-     * 
-     * return void
-     */
-    private void importData() {
-    	importUpdated = 0;
-    	importCreated = 0;
-    	ArrayList<String> export = readFile(Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/export.tab");
-    	int row = 1;
+	/*
+	 * Export all data to a CSV file
+	 * 
+	 * return void
+	 */
+	private void importData() {
+		importUpdated = 0;
+		importCreated = 0;
+		ArrayList<String> export = readFile(Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/export.tab");
+		int row = 1;
 
-    	/* Iterate through each imported row */
-    	while (row < export.size()) {
-    		String[] imported = export.get(row).split("\t");
-    		row++;
-    		/* Setup aliases for each cell*/
-    		Long id = null;
-    		try {
-    			id = Long.parseLong(imported[0]);
-    		} catch(Exception e) {
-    			id = Long.parseLong("0");
-    		}
-    		String family = imported[1]; 
-    		String given = imported[2]; 
-    		//String author_id = imported[3]; 
-    		String title = imported[4]; 
+		/* Iterate through each imported row */
+		while (row < export.size()) {
+			String[] imported = export.get(row).split("\t");
+			row++;
+			/* Setup aliases for each cell*/
+			Long id = null;
+			try {
+				id = Long.parseLong(imported[0]);
+			} catch(Exception e) {
+				id = Long.parseLong("0");
+			}
+			String family = imported[1]; 
+			String given = imported[2]; 
+			//String author_id = imported[3]; 
+			String title = imported[4]; 
 			String isbn = imported[5];
-    		String publisher = imported[6]; 
-    		String date_published = imported[7];
-    		float rating = 0;
-    		try {
-        		rating = Float.valueOf(imported[8]); 
-    		} catch (Exception e) {
-    			rating = 0;
-    		}
-    		//String bookshelf_id = imported[9]; 
-    		String bookshelf = imported[10];
-    		Boolean read;
-    		if (imported[11].equals("0")) {
-        		read = false;
-    		} else {
-        		read = true;
-    		}
-    		String series = imported[12]; 
-    		String series_num = imported[13];
-    		int pages = 0;
-    		try {
-        		pages = Integer.parseInt(imported[14]); 
-    		} catch (Exception e) {
-    			pages = 0;
-    		}
+			String publisher = imported[6]; 
+			String date_published = imported[7];
+			float rating = 0;
+			try {
+				rating = Float.valueOf(imported[8]); 
+			} catch (Exception e) {
+				rating = 0;
+			}
+			//String bookshelf_id = imported[9]; 
+			String bookshelf = imported[10];
+			Boolean read;
+			if (imported[11].equals("0")) {
+				read = false;
+			} else {
+				read = true;
+			}
+			String series = imported[12]; 
+			String series_num = imported[13];
+			int pages = 0;
+			try {
+				pages = Integer.parseInt(imported[14]); 
+			} catch (Exception e) {
+				pages = 0;
+			}
+			String notes = imported[15];
 
-    		String author = family + ", " + given;
-    		
-    		if (id == 0) {
-    			// Book is new. It does not exist in the current database
-            	if (!isbn.equals("")) {
-            		Cursor book = mDbHelper.fetchBookByISBN(isbn);
-            		int rows = book.getCount();
-            		if (rows != 0) {
-                		// Its a new entry, but the ISBN exists
-            			book.moveToFirst();
-            			mDbHelper.updateBook(book.getLong(0), author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num);
-            			importUpdated++;
-            			continue;
-            		}
-            	} 
-                mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num);
-                importCreated++;
-    			continue;
-    			
-    		} else {
-    			// Book exists and should be updated if it has changed
-    			mDbHelper.updateBook(id, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num);
-    			importUpdated++;
-    			continue;
-    		}
-    	}
+			String author = family + ", " + given;
+			if (id == 0) {
+				// Book is new. It does not exist in the current database
+				if (!isbn.equals("")) {
+					Cursor book = mDbHelper.fetchBookByISBN(isbn);
+					int rows = book.getCount();
+					if (rows != 0) {
+						// Its a new entry, but the ISBN exists
+						book.moveToFirst();
+						mDbHelper.updateBook(book.getLong(0), author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes);
+						importUpdated++;
+						continue;
+					}
+				} 
+				mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes);
+				importCreated++;
+				continue;
 
-   }
- 
+			} else {
+				// Book exists and should be updated if it has changed
+				mDbHelper.updateBook(id, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes);
+				importUpdated++;
+				continue;
+			}
+		}
+	}
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);

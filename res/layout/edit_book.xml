@@ -4,19 +4,19 @@
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content">
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:layout_width="fill_parent"
-	    android:layout_height="fill_parent"
-	    android:orientation="vertical"
-	    android:padding="10sp">
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:orientation="vertical"
+		android:padding="10sp">
 		
 			<ImageView android:id="@+id/row_img" 
-			    android:layout_width="fill_parent"
-			    android:layout_height="wrap_content"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
 				android:layout_weight="1"
 			/>
 
 			<AutoCompleteTextView android:id="@+id/author" 
-			  	android:layout_width="fill_parent"
+				android:layout_width="fill_parent"
 				android:layout_height="wrap_content" 
 				android:layout_weight="1"
 				android:hint="@string/author"
@@ -40,11 +40,11 @@
 				/>
 
 			<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-			    android:layout_width="fill_parent"
-			    android:layout_height="wrap_content"
-			    android:orientation="horizontal"
-			    >
-	
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				>
+
 				<AutoCompleteTextView android:id="@+id/series" 
 					android:layout_width="wrap_content"
 					android:layout_height="fill_parent" 
@@ -97,38 +97,20 @@
 				android:numeric="decimal"
 				/>
 
-			<CheckBox android:id="@+id/read" 
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content" 
-				android:layout_weight="1"
-				android:hint="@string/read"
-				/>
-
-			<TextView android:layout_width="fill_parent"
-				android:layout_height="wrap_content" 
-				android:text="@string/rating" 
-				android:textSize="16sp" />
-			<RatingBar android:id="@+id/rating" 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content" 
-				android:layout_weight="1"
-				android:numStars="5"
-				/>
-
 			<LinearLayout	
 				android:orientation="horizontal"
 				android:layout_width="fill_parent"
 				android:layout_height="fill_parent"
 				android:layout_weight="1">
 				<Button android:id="@+id/confirm" 
-				  	android:text="@string/confirm_add"
-				  	android:width="150sp"
+					android:text="@string/confirm_add"
+					android:width="150sp"
 					android:layout_width="wrap_content"
 					android:layout_height="fill_parent" />
 				
 				<Button android:id="@+id/cancel" 
-				  	android:text="@string/cancel"
-				  	android:width="150sp"
+					android:text="@string/cancel"
+					android:width="150sp"
 					android:layout_width="wrap_content"
 					android:layout_height="fill_parent" />
 			</LinearLayout>

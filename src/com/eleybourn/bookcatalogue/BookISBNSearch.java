@@ -50,6 +50,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+/**
+ * This class is called by the BookCatalogue activity and will search the interwebs for 
+ * book details based on either a typed in or scanned ISBN.
+ * 
+ * It currently only searches Google Books, but Amazon will be coming soon.  
+ */
 public class BookISBNSearch extends Activity {
 	private static final int CREATE_BOOK = 0;
 	
@@ -59,21 +65,26 @@ public class BookISBNSearch extends Activity {
 	public String author;
 	public String title;
 	public String isbn;
-
+	
+	/**
+	 * Called when the activity is first created. This function will search the interwebs for 
+	 * book details based on either a typed in or scanned ISBN.
+	 * 
+	 * @param savedInstanceState The saved bundle (from pausing). Can be null.
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Bundle extras = getIntent().getExtras();
+		mDbHelper = new CatalogueDBAdapter(this);
+		mDbHelper.open();
+		
 		if (extras != null) {
 			//ISBN has been passed by another component
 			isbn = extras.getString("isbn");
 			go(isbn);
 		} else {
-			mDbHelper = new CatalogueDBAdapter(this);
-			mDbHelper.open();
-			
 			setContentView(R.layout.isbn_search);
-			
 			mIsbnText = (EditText) findViewById(R.id.isbn);
 			Button confirmButton = (Button) findViewById(R.id.search);
 			confirmButton.setOnClickListener(new View.OnClickListener() {
@@ -94,14 +105,18 @@ public class BookISBNSearch extends Activity {
 	 */
 	protected void go(String isbn) {
 		// If the book already exists, do not continue
-		if (!isbn.equals("")) {
-			Cursor book = mDbHelper.fetchBookByISBN(isbn);
-			int rows = book.getCount();
-			if (rows != 0) {
-				Toast.makeText(this, R.string.book_exists, Toast.LENGTH_LONG).show();
-				finish();
-				return;
+		try {
+			if (!isbn.equals("")) {
+				Cursor book = mDbHelper.fetchBookByISBN(isbn);
+				int rows = book.getCount();
+				if (rows != 0) {
+					Toast.makeText(this, R.string.book_exists, Toast.LENGTH_LONG).show();
+					finish();
+					return;
+				}
 			}
+		} catch (Exception e) {
+			//TODO: FIX THIS
 		}
 		
 		/* Delete any hanging around thumbs */

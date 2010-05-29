@@ -95,10 +95,14 @@ public class BookEditLoaned extends Activity {
 			return;
 		}
 		
-		Cursor book = mDbHelper.fetchBook(mRowId);
-		startManagingCursor(book);
-		String title = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE)); 
-		getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + title);
+		try {
+			Cursor book = mDbHelper.fetchBook(mRowId);
+			startManagingCursor(book);
+			String title = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE)); 
+			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + title);
+		} catch (Exception e) {
+			// do nothing - default title
+		}
 		
 		String user = mDbHelper.fetchLoanByBook(mRowId);
 		if (user == null) {

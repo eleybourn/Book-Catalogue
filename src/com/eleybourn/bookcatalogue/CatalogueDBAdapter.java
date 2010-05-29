@@ -125,7 +125,7 @@ public class CatalogueDBAdapter {
 		;
 
 	private final Context mCtx;
-	private static final int DATABASE_VERSION = 23;
+	private static final int DATABASE_VERSION = 25;
 
 	/**
 	 * This is a specific version of the SQLiteOpenHelper class. It handles onCreate and onUpgrade events
@@ -208,7 +208,6 @@ public class CatalogueDBAdapter {
 				curVersion++;
 				db.execSQL("ALTER TABLE " + DATABASE_TABLE_BOOKS + " ADD " + KEY_NOTES + " text");
 				db.execSQL("UPDATE " + DATABASE_TABLE_BOOKS + " SET " + KEY_NOTES + " = ''");
-				curVersion++;
 			}
 			if (curVersion == 20) {
 				curVersion++;
@@ -227,6 +226,33 @@ public class CatalogueDBAdapter {
 				message += "* Scanned books that already exist in the database (based on ISBN) will no longer be added (Identified by Colin)\n\n";
 				message += "* After adding a book, the main view will now scroll to a appropriate location. \n\n";
 				message += "* Searching has been made significantly faster.\n\n";
+			}
+			if (curVersion == 23) {
+				//do nothing
+				curVersion++;
+			}
+			if (curVersion == 24) {
+				curVersion++;
+				try {
+					db.execSQL("ALTER TABLE " + DATABASE_TABLE_BOOKS + " ADD " + KEY_NOTES + " text");
+				} catch (Exception e) {
+					//do nothing
+				}
+				try {
+					db.execSQL("UPDATE " + DATABASE_TABLE_BOOKS + " SET " + KEY_NOTES + " = ''");
+				} catch (Exception e) {
+					//do nothing
+				}
+				try {
+					db.execSQL(DATABASE_CREATE_LOAN);
+				} catch (Exception e) {
+					//do nothing
+				}
+				try {
+					db.execSQL(DATABASE_CREATE_INDICES);
+				} catch (Exception e) {
+					//do nothing
+				}
 			}
 		}
 	}

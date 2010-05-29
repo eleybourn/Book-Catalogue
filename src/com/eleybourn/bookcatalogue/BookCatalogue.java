@@ -628,39 +628,38 @@ public class BookCatalogue extends ExpandableListActivity {
 		return;
 	}
 	
-    /*
-     * Load the BookEdit Activity
-     * 
-     * return void
-     */
-    private void createBookScan() {
-        Intent intent = new Intent("com.google.zxing.client.android.SCAN");
-        //intent.putExtra("SCAN_MODE", "EAN_13");
-        try {
-            startActivityForResult(intent, ACTIVITY_SCAN);
-        } catch (ActivityNotFoundException e) {
-        	// Verify - this can be a dangerous operation
-        	BookCatalogue pthis = this;
-        	AlertDialog alertDialog = new AlertDialog.Builder(pthis).setMessage(R.string.install_scan).create();
-            alertDialog.setTitle(R.string.install_scan_title);
-            alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-            alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-            	public void onClick(DialogInterface dialog, int which) {
-                    Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.google.zxing.client.android")); 
-                	startActivity(marketIntent);
-            		return;
-            	}
-            }); 
-            alertDialog.setButton2("Cancel", new DialogInterface.OnClickListener() {
-            	public void onClick(DialogInterface dialog, int which) {
-            		//do nothing
-            		return;
-            	}
-            }); 
-            alertDialog.show();
-            return;
-        }
-    }
+	/**
+	 * Use the zxing barcode scanner to search for a isbn
+	 * Prompt users to install the application if they do not have it installed.
+	 */
+	private void createBookScan() {
+		Intent intent = new Intent("com.google.zxing.client.android.SCAN");
+		//intent.putExtra("SCAN_MODE", "EAN_13");
+		try {
+			startActivityForResult(intent, ACTIVITY_SCAN);
+		} catch (ActivityNotFoundException e) {
+			// Verify - this can be a dangerous operation
+			BookCatalogue pthis = this;
+			AlertDialog alertDialog = new AlertDialog.Builder(pthis).setMessage(R.string.install_scan).create();
+			alertDialog.setTitle(R.string.install_scan_title);
+			alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
+			alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.google.zxing.client.android")); 
+					startActivity(marketIntent);
+					return;
+				}
+			}); 
+			alertDialog.setButton2("Cancel", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					//do nothing
+					return;
+				}
+			}); 
+			alertDialog.show();
+			return;
+		}
+	}
 	
 	@Override
 	public boolean onChildClick(ExpandableListView l, View v, int position, int childPosition, long id) {

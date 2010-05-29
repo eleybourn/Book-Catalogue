@@ -109,7 +109,7 @@ public class BookEditNotes extends Activity {
 			// From the database (edit)
 			Cursor book = mDbHelper.fetchBook(mRowId);
 			startManagingCursor(book);
-			String title = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE)); 
+			title = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE)); 
 			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + title);
 
 			mRatingText.setRating(book.getFloat(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_RATING)));
@@ -118,7 +118,6 @@ public class BookEditNotes extends Activity {
 			mConfirmButton.setText(R.string.confirm_save);
 
 			author = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR));
-			title = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE));
 			isbn = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ISBN));
 			publisher = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PUBLISHER));
 			date_published = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DATE_PUBLISHED));

@@ -109,6 +109,8 @@ public class BookEditNotes extends Activity {
 			// From the database (edit)
 			Cursor book = mDbHelper.fetchBook(mRowId);
 			startManagingCursor(book);
+			String title = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE)); 
+			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + title);
 
 			mRatingText.setRating(book.getFloat(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_RATING)));
 			mReadText.setChecked((book.getInt(book.getColumnIndex(CatalogueDBAdapter.KEY_READ))==0? false:true) );

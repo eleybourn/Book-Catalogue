@@ -24,6 +24,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -58,6 +59,11 @@ public class BookEditFields extends Activity {
 	private Float rating = Float.parseFloat("0");
 	private boolean read = false;
 	private String notes = "";
+	
+	private String added_title = "";
+	private String added_author = "";
+	public static String ADDED_TITLE = "ADDED_TITLE";
+	public static String ADDED_AUTHOR = "ADDED_AUTHOR";
 
 	protected void getRowId() {
 		/* Get any information from the extras bundle */
@@ -150,8 +156,15 @@ public class BookEditFields extends Activity {
 			mConfirmButton.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
 					saveState();
-					setResult(RESULT_OK);
-					finish();
+					Intent i = new Intent();
+					i.putExtra(ADDED_TITLE, added_title);
+					i.putExtra(ADDED_AUTHOR, added_author);
+					if (getParent() == null) {
+						setResult(RESULT_OK, i);
+					} else {
+						getParent().setResult(RESULT_OK, i);
+					}
+					getParent().finish();
 				}
 			});
 
@@ -176,9 +189,11 @@ public class BookEditFields extends Activity {
 			// From the database (edit)
 			Cursor book = mDbHelper.fetchBook(mRowId);
 			startManagingCursor(book);
+			String title = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE)); 
+			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + title);
 
 			mAuthorText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR)));
-			mTitleText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE)));
+			mTitleText.setText(title);
 			mIsbnText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ISBN)));
 			mPublisherText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PUBLISHER)));
 			String[] date = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DATE_PUBLISHED)).split("-");
@@ -198,6 +213,7 @@ public class BookEditFields extends Activity {
 			read = (book.getInt(book.getColumnIndex(CatalogueDBAdapter.KEY_READ))==0 ? false:true);
 			notes = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_NOTES));
 		} else if (extras != null) {
+			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + this.getResources().getString(R.string.menu_insert));
 			// From the ISBN Search (add)
 			String[] book = extras.getStringArray("book");
 			mAuthorText.setText(book[0]);
@@ -225,6 +241,7 @@ public class BookEditFields extends Activity {
 			mImageView.setImageBitmap(BitmapFactory.decodeFile(tmpThumbFilename));
 		} else {
 			// Manual Add
+			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + this.getResources().getString(R.string.menu_insert));
 			mConfirmButton.setText(R.string.confirm_add);
 		}
 	}
@@ -249,10 +266,19 @@ public class BookEditFields extends Activity {
         super.onResume();
         populateFields();
     }
-    
+	
+	/**
+	 * This will save a book into the database, by either updating or created a book.
+	 * Minor modifications will be made to the strings:
+	 * 	Titles will be rewords so a, the, an will be moved to the end of the string
+	 * 	Date published will be converted from a date to a string
+	 * 
+	 * It will also ensure the book doesn't already exist (isbn search) if you are creating a book.
+	 * Thumbnails will also be saved to the correct location 
+	 */
 	private void saveState() {
 		String author = mAuthorText.getText().toString();
-
+		
 		/* Move "The, A, An" to the end of the string */
 		String title = mTitleText.getText().toString();
 		String[] title_words = title.split(" ");
@@ -270,7 +296,7 @@ public class BookEditFields extends Activity {
 		} catch (Exception e) {
 			//do nothing. Title stays the same
 		}
-
+		
 		String isbn = mIsbnText.getText().toString();
 		String publisher = mPublisherText.getText().toString();
 		int yyyy =  mDate_publishedText.getYear();
@@ -286,7 +312,7 @@ public class BookEditFields extends Activity {
 		} catch (NumberFormatException e) {
 			pages = 0;
 		}
-
+		
 		if (mRowId == null || mRowId == 0) {
 			/* Check if the book currently exists */
 			if (!isbn.equals("")) {
@@ -297,7 +323,7 @@ public class BookEditFields extends Activity {
 					return;
 				}
 			}
-
+			
 			long id = mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes);
 			if (id > 0) {
 				mRowId = id;
@@ -310,6 +336,9 @@ public class BookEditFields extends Activity {
 		} else {
 			mDbHelper.updateBook(mRowId, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes);
 		}
+		/* These are global variables that will be sent via intent back to the list view */
+		added_author = author;
+		added_title = title;
 		return;
 	}
 

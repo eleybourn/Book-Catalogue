@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content">
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:orientation="vertical"
+		android:padding="10sp">
+
+		<TextView android:id="@+id/loaned_to" 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" 
+			android:layout_weight="1"
+			android:text="@string/loaned_to"
+			/>
+
+		<TextView android:id="@+id/who" 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" 
+			android:layout_weight="1"
+			android:text="@string/nobody"
+			android:paddingBottom = "5sp"
+			/>
+
+		<TextView android:id="@+id/line" 
+			android:layout_width="fill_parent"
+			android:layout_height="2sp" 
+			android:layout_weight="1"
+			android:background = "#CCCCCC"
+			/>
+
+		<Button android:id="@+id/confirm" 
+			android:paddingTop = "5sp"
+			android:text="@string/returned"
+			android:width="150sp"
+			android:layout_width="wrap_content"
+			android:layout_height="fill_parent" />
+
+
+
+	</LinearLayout>
+</ScrollView>

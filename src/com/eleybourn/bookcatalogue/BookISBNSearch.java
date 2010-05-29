@@ -42,6 +42,7 @@ import org.xml.sax.SAXException;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
@@ -50,7 +51,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class BookISBNSearch extends Activity {
-
+	private static final int CREATE_BOOK = 0;
+	
 	private EditText mIsbnText;
 	private CatalogueDBAdapter mDbHelper;
 
@@ -83,7 +85,25 @@ public class BookISBNSearch extends Activity {
 		}
 	}
 	
+	/**
+	 * This function takes the isbn and search google books (and soon amazon)
+	 * to extract the details of the book. The details will then get sent to the
+	 * BookEdit activity
+	 * 
+	 * @param isbn The ISBN to search
+	 */
 	protected void go(String isbn) {
+		// If the book already exists, do not continue
+		if (!isbn.equals("")) {
+			Cursor book = mDbHelper.fetchBookByISBN(isbn);
+			int rows = book.getCount();
+			if (rows != 0) {
+				Toast.makeText(this, R.string.book_exists, Toast.LENGTH_LONG).show();
+				finish();
+				return;
+			}
+		}
+		
 		/* Delete any hanging around thumbs */
 		try {
 			String tmpThumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/tmp.jpg";
@@ -121,8 +141,6 @@ public class BookISBNSearch extends Activity {
 			book[8] = properCase(book[8]); // series
 		}
 		createBook(book);
-		setResult(RESULT_OK);
-		finish();
 	}
 	
 	@Override
@@ -382,7 +400,16 @@ public class BookISBNSearch extends Activity {
 	private void createBook(String[] book) {
 		Intent i = new Intent(this, BookEdit.class);
 		i.putExtra("book", book);
-		startActivity(i);
+		startActivityForResult(i, CREATE_BOOK);
 	}
-
+	
+	/**
+	 * This is a straight passthrough
+	 */
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+		super.onActivityResult(requestCode, resultCode, intent);
+		setResult(resultCode, intent);
+		finish();
+	}
 }

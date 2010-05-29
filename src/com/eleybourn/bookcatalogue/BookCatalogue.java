@@ -89,6 +89,7 @@ public class BookCatalogue extends ExpandableListActivity {
 	private boolean expanded = false;
 	
 	private static boolean shown = false;
+	private String justAdded = ""; 
 
 	/** Called when the activity is first created. */
 	@Override
@@ -172,29 +173,29 @@ public class BookCatalogue extends ExpandableListActivity {
 		mBookshelfNumView.setText("(" + numBooks + ")");
 	}
 
-    private void fillDataAuthor() {
-    	Intent intent = getIntent();
-    	// base the layout and the query on the sort order
-        int layout = R.layout.row_authors;
-        int layout_child = R.layout.row_authors_books;
-    	
-    	// Get all of the rows from the database and create the item list
-        Cursor BooksCursor = null;
+	private void fillDataAuthor() {
+		Intent intent = getIntent();
+		// base the layout and the query on the sort order
+		int layout = R.layout.row_authors;
+		int layout_child = R.layout.row_authors_books;
+		
+		// Get all of the rows from the database and create the item list
+		Cursor BooksCursor = null;
 		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 			String query = intent.getStringExtra(SearchManager.QUERY);
 			BooksCursor = mDbHelper.searchAuthors(query, bookshelf);
-	    	numAuthors = BooksCursor.getCount();
-	    	Toast.makeText(this, numAuthors + " " + this.getResources().getString(R.string.results_found), Toast.LENGTH_LONG).show();
+			numAuthors = BooksCursor.getCount();
+			Toast.makeText(this, numAuthors + " " + this.getResources().getString(R.string.results_found), Toast.LENGTH_LONG).show();
 			this.setTitle(R.string.search_title);
 		} else {
 			BooksCursor = mDbHelper.fetchAllAuthors(bookshelf);
-	    	numAuthors = BooksCursor.getCount();
+			numAuthors = BooksCursor.getCount();
 			this.setTitle(R.string.app_name);
 		}
-    	mGroupIdColumnIndex = BooksCursor.getColumnIndexOrThrow("_id");
-        startManagingCursor(BooksCursor);
-     
-        // Create an array to specify the fields we want to display in the list
+		mGroupIdColumnIndex = BooksCursor.getColumnIndexOrThrow("_id");
+		startManagingCursor(BooksCursor);
+		
+		// Create an array to specify the fields we want to display in the list
         String[] from = new String[]{CatalogueDBAdapter.KEY_FAMILY_NAME, CatalogueDBAdapter.KEY_GIVEN_NAMES};
         String[] exp_from = new String[]{CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_SERIES, CatalogueDBAdapter.KEY_SERIES_NUM};
         
@@ -457,29 +458,33 @@ public class BookCatalogue extends ExpandableListActivity {
     }
     
     /*
-     * add / remove items from the current group arraylist
+     * add / remove items from the current group arrayList
      */
     public void addToCurrentGroup(int pos) {
     	addToCurrentGroup(pos, false);
     }
     
-    /*
-     * add / remove items from the current group arraylist
-     */
-    public void addToCurrentGroup(int pos, boolean force) {
-    	int index = currentGroup.indexOf(pos);
-    	if (index == -1) {
-    		//it does not exist (so is not open), so add to the list
-    		currentGroup.add(pos);
-    	} else {
-    		//it does exist (so is open), so remove from the list
-    		currentGroup.remove(index);
-    		if (force == true) {
-    			currentGroup.add(pos);
-    		}
-    	}
-    }
 
+	/**
+	 * add / remove items from the current group arrayList
+	 * 
+	 * @param pos The position to add or remove
+	 * @param force If force is true, then it will be always be added, even if it already exists - but moved to the end
+	 */
+	public void addToCurrentGroup(int pos, boolean force) {
+		int index = currentGroup.indexOf(pos);
+		if (index == -1) {
+			//it does not exist (so is not open), so add to the list
+			currentGroup.add(pos);
+		} else {
+			//it does exist (so is open), so remove from the list
+			currentGroup.remove(index);
+			if (force == true) {
+				currentGroup.add(pos);
+			}
+		}
+	}
+	
     /*
      * Expand all Author Groups
      */
@@ -522,7 +527,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		ExpandableListView.ExpandableListContextMenuInfo info = (ExpandableListView.ExpandableListContextMenuInfo) menuInfo;
 		try {
 			// Only delete titles, not authors
-			if (ExpandableListView.getPackedPositionType(info.packedPosition) == 1) {
+			if (ExpandableListView.getPackedPositionType(info.packedPosition) == 1 || sort == 1) {
 				MenuItem delete = menu.add(0, DELETE_ID, 0, R.string.menu_delete);
 				delete.setIcon(android.R.drawable.ic_menu_delete);
 				MenuItem edit_book = menu.add(0, EDIT_BOOK, 0, R.string.edit_book);
@@ -666,32 +671,49 @@ public class BookCatalogue extends ExpandableListActivity {
 		}
 		return result;
 	}
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-        switch(requestCode) {
-        case ACTIVITY_SCAN:
-        	try {
-	        	String contents = intent.getStringExtra("SCAN_RESULT");
-	        	Toast.makeText(this, R.string.isbn_found, Toast.LENGTH_LONG).show();
-	            Intent i = new Intent(this, BookISBNSearch.class);
-	            i.putExtra("isbn", contents);
-	            startActivityForResult(i, ACTIVITY_ISBN);
-	        } catch (NullPointerException e) {
-	        	// This is not a scan result, but a normal return
-	            fillData();
-	        }
-	        break;
-        case ACTIVITY_CREATE:
-        case ACTIVITY_EDIT:
-        case ACTIVITY_SORT:
-        case ACTIVITY_ISBN:
-        case ACTIVITY_ADMIN:
-        	 fillData();
-        	break;
-        }
-   }
-
-
+	
+	/**
+	 * Called when an activity launched exits, giving you the requestCode you started it with, 
+	 * the resultCode it returned, and any additional data from it. 
+	 */
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+		super.onActivityResult(requestCode, resultCode, intent);
+		switch(requestCode) {
+		case ACTIVITY_SCAN:
+			try {
+				String contents = intent.getStringExtra("SCAN_RESULT");
+				Toast.makeText(this, R.string.isbn_found, Toast.LENGTH_LONG).show();
+				Intent i = new Intent(this, BookISBNSearch.class);
+				i.putExtra("isbn", contents);
+				startActivityForResult(i, ACTIVITY_ISBN);
+			} catch (NullPointerException e) {
+				// This is not a scan result, but a normal return
+				fillData();
+			}
+			break;
+		case ACTIVITY_CREATE:
+		case ACTIVITY_EDIT:
+		case ACTIVITY_SORT:
+		case ACTIVITY_ISBN:
+		case ACTIVITY_ADMIN:
+			try {
+				if (sort == 1) {
+					justAdded = intent.getStringExtra(BookEditFields.ADDED_TITLE);
+					int position = mDbHelper.fetchBookPositionByTitle(justAdded, bookshelf);
+					addToCurrentGroup(position, true);
+				} else {
+					justAdded = intent.getStringExtra(BookEditFields.ADDED_AUTHOR);
+					int position = mDbHelper.fetchAuthorPositionByName(justAdded, bookshelf);
+					addToCurrentGroup(position, true);
+				}
+				
+			} catch (Exception e) {
+				//do nothing
+			}
+			fillData();
+			break;
+		}
+	}
+	
 }

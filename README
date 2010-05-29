@@ -41,11 +41,16 @@ Features include;
   case. e.g. "The murder on the links" becomes "The Murder on the Links"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
-New in v1.11
-* There is a new tabbed "edit" interface which allows you to 1) edit, 
-  2) make notes and 3) loan a book
-* The comments tab also has a notes field where you can add any information you 
-  want (Requested by Luke).
+New in v2.0
+* There is a new tabbed "edit" interface to simplify editing books. 
+* The new comments tab also includes a notes field where you can add personal 
+  notes for any book (Requested by Luke).
+* The new loaned books tab allows you to record books loaned to friends. This 
+  will lookup your phone contacts to pre-populate the list (Requested by Luke)
+* Scanned books that already exist in the database (based on ISBN) will no 
+  longer be added (Identified by Colin)
+* After adding a book, the main view will now scroll to a appropriate location. 
+* Searching has been made significantly faster.
 
 New in v1.10
 * Fixed a crash on the phone (SQL Exception) 

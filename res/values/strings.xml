@@ -20,8 +20,8 @@
 <string name="menu_sort_by_author_expanded">Expand All</string>
 <string name="menu_sort_by_title">Sort By Title</string>
 <string name="menu_sort_by_author_collapsed">Collapse All</string>
-<string name="sort_title">Book Catalogue (by Title)</string>
-<string name="edit_title">Book Catalogue (Edit Book)</string>
+<string name="sort_title">Book Catalogue: by Title</string>
+<string name="edit_title">Book Catalogue: Edit Book</string>
 <string name="menu_insert_isbn">Add by ISBN</string>
 <string name="menu_insert_barcode">Add by Barcode</string>
 <string name="search">Search</string>
@@ -37,9 +37,9 @@
 <string name="bookshelf_label">Bookshelf: </string>
 <string name="all_books">All Books</string>
 <string name="isbn_found">ISBN Scanned. Searching Internet.</string>
-<string name="title_isbn_search">Book Catalogue (ISBN Search)</string>
-<string name="title_manage_bs">Book Catalogue (Manage Bookshelves)</string>
-<string name="title_edit_bs">Book Catalogue (Edit Bookshelf)</string>
+<string name="title_isbn_search">Book Catalogue: ISBN Search</string>
+<string name="title_manage_bs">Book Catalogue: Manage Bookshelves</string>
+<string name="title_edit_bs">Book Catalogue: Edit Bookshelf</string>
 <string name="book_exists">The book you are trying to add already exists. Skipping.</string>
 <string name="search_label">Search for Books</string>
 <string name="search_hint">Search Author or Title</string>
@@ -67,4 +67,9 @@
 <string name="edit_book_friends">Loan Book</string>
 <string name="unknown_error">An unknown error occured</string>
 <string name="notes">Notes</string>
+<string name="loaned_to">This book has been loaned to:</string>
+<string name="nobody">Nobody</string>
+<string name="loan_to">Loan book to:</string>
+<string name="returned">Returned</string>
+<string name="name">Name</string>
 </resources>

@@ -91,4 +91,14 @@ public class BookEdit extends TabActivity {
 
 		tabHost.setCurrentTab(currentTab);
 	}
+	
+	/**
+	 * This is a straight passthrough
+	 */
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+		super.onActivityResult(requestCode, resultCode, intent);
+		setResult(resultCode, intent);
+		finish();
+	}
 }

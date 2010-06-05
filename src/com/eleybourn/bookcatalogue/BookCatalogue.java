@@ -31,6 +31,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -64,7 +65,7 @@ public class BookCatalogue extends ExpandableListActivity {
 	private static final int ACTIVITY_ISBN=3;
 	private static final int ACTIVITY_SCAN=4;
 	private static final int ACTIVITY_ADMIN=5;
-
+	
 	private CatalogueDBAdapter mDbHelper;
 	private int mGroupIdColumnIndex; 
 	private static final int SORT_BY_AUTHOR_EXPANDED = Menu.FIRST + 1; 
@@ -79,10 +80,11 @@ public class BookCatalogue extends ExpandableListActivity {
 	private static final int EDIT_BOOK = Menu.FIRST + 10;
 	private static final int EDIT_BOOK_NOTES = Menu.FIRST + 11;
 	private static final int EDIT_BOOK_FRIENDS = Menu.FIRST + 12;
-
+	
 	public String bookshelf = "";
 	private ArrayAdapter<String> spinnerAdapter;
-
+	
+	private SharedPreferences mPrefs;
 	public int sort = 0;
 	public int numAuthors = 0;
 	private ArrayList<Integer> currentGroup = new ArrayList<Integer>();
@@ -90,12 +92,23 @@ public class BookCatalogue extends ExpandableListActivity {
 	
 	private static boolean shown = false;
 	private String justAdded = ""; 
-
-	/** Called when the activity is first created. */
+	
+	/** 
+	 * Called when the activity is first created. 
+	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		try {
 			super.onCreate(savedInstanceState);
+			// Extract the sort type from the bundle. getInt will return 0 if there is no attribute 
+			// sort (which is exactly what we want)
+			try {
+				mPrefs = getSharedPreferences("bookCatalogue", MODE_PRIVATE);
+				sort = mPrefs.getInt("sort", sort);
+			} catch (Exception e) {
+				//do nothing
+			}
+			// This sets the search capability to local (application) search
 			setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
 			setContentView(R.layout.list_authors);
 			mDbHelper = new CatalogueDBAdapter(this);
@@ -715,4 +728,24 @@ public class BookCatalogue extends ExpandableListActivity {
 		}
 	}
 	
+	/**
+	 * Restore UI state when loaded.
+	 */
+	@Override
+	public void onResume() {
+		mPrefs = getSharedPreferences("bookCatalogue", MODE_PRIVATE);
+		sort = mPrefs.getInt("sort", sort);
+		super.onResume();
+	}
+	
+	/**
+	 * Save UI state changes.
+	 */
+	@Override
+	public void onPause() {
+		SharedPreferences.Editor ed = mPrefs.edit();
+		ed.putInt("sort", sort);
+		ed.commit();
+		super.onPause();
+	}
 }

@@ -30,7 +30,7 @@
 <string name="nobookshelves">You have not created any bookshelves yet. Please add some using the menu at the bottom of this screen.</string>
 <string name="menu_insert_bs">Create Bookshelf</string>
 <string name="confirm_add_bs">Add Bookshelf</string>
-<string name="menu_bookshelf">Bookshelves</string>
+<string name="menu_bookshelf">Manage Bookshelves</string>
 <string name="confirm_save_bs">Save Bookshelf</string>
 <string name="menu_delete_bs">Delete Bookshelf</string>
 <string name="delete_1st_bs">Cannot Delete the 1st Bookshelf</string>
@@ -55,11 +55,12 @@
 <string name="search_title">Book Catalogue: Search Results</string>
 <string name="results_found">Results Found</string>
 <string name="administration_label">Administration</string>
+<string name="administration_title">Book Catalogue: Administration</string>
 <string name="menu_administration">Administration</string>
 <string name="install_scan">To scan your books via the ISBN barcode, you must install the zxing barcode scanner application. Press OK to install, or Cancel to skip.</string>
 <string name="install_scan_title">Install Barcode Scanner</string>
 <string name="version_number">Version Number</string>
-<string name="donate">If you would like to support the development of this application, please donate using the above paypal button. Being in Australia means I cannot publish a "paid" version. :-) </string>
+<string name="donate">If you would like to support the development of this application, please donate using the paypal button. Being in Australia means I cannot publish a &quot;paid&quot; version. :-) </string>
 <string name="unable_to_connect_amazon">Unable to Connect to Amazon</string>
 <string name="upgrade_title">Since your last upgrade</string>
 <string name="edit_book">Edit Book</string>
@@ -72,4 +73,13 @@
 <string name="loan_to">Loan book to:</string>
 <string name="returned">Returned</string>
 <string name="name">Name</string>
+<string name="webpage_label">Webpage</string>
+<string name="sourcecode_label">Source Code</string>
+<string name="contact_label">Contact</string>
+<string name="webpage">http://wiki.github.com/eleybourn/Book-Catalogue/</string>
+<string name="sourcecode">http://github.com/eleybourn/Book-Catalogue</string>
+<string name="contact">eleybourn@gmail.com</string>
+<string name="donate_label">Donate</string>
+<string name="about_label">About this App</string>
+<string name="administration_functions_label">Functions</string>
 </resources>

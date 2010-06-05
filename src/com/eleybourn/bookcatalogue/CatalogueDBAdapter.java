@@ -125,7 +125,7 @@ public class CatalogueDBAdapter {
 		;
 
 	private final Context mCtx;
-	private static final int DATABASE_VERSION = 25;
+	private static final int DATABASE_VERSION = 26;
 
 	/**
 	 * This is a specific version of the SQLiteOpenHelper class. It handles onCreate and onUpgrade events
@@ -253,6 +253,12 @@ public class CatalogueDBAdapter {
 				} catch (Exception e) {
 					//do nothing
 				}
+			}
+			if (curVersion == 25) {
+				//do nothing
+				curVersion++;
+				message += "* Your sort order will be automatically saved when to close the application (Requested by Martin)\n\n";
+				message += "* There is a new 'about this app' view available from the administration tabs (Also from Martin)\n\n"; 
 			}
 		}
 	}

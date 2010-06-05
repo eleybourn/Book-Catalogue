@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:orientation="vertical"
+	android:layout_width="fill_parent" 
+	android:layout_height="fill_parent"
+	android:paddingLeft="5sp">
+
+	<TextView android:id="@+id/app_name" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" 
+		android:textAppearance="?android:attr/textAppearanceLarge"
+		android:text="@+string/app_name"
+		/>
+	
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+		android:orientation="horizontal"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:paddingLeft="5sp">
+		<TextView android:id="@+id/version_label" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:text="@+string/version_number"
+			/>
+		<TextView android:id="@+id/version_label" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:text=": "
+			/>
+		<TextView android:id="@+id/version" 
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:color="#cccccc"
+			android:paddingLeft="5sp"
+			android:paddingBottom="5sp"
+			/>
+	</LinearLayout>
+	
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+		android:orientation="horizontal"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:paddingLeft="5sp">
+		<TextView android:id="@+id/webpage_label" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:text="@+string/webpage_label"
+			/>
+		<TextView android:id="@+id/webpage_colon" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:text=": "
+			/>
+	</LinearLayout>
+	<TextView android:id="@+id/webpage" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" 
+		android:color="#cccccc"
+		android:paddingLeft="15sp"
+		android:paddingBottom="5sp"
+		android:text="@+string/webpage"
+		/>
+	
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+		android:orientation="horizontal"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:paddingLeft="5sp">
+		<TextView android:id="@+id/sourcecode_label" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:text="@+string/sourcecode_label"
+			/>
+		<TextView android:id="@+id/sourcecode_colon" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:text=": "
+			/>
+	</LinearLayout>
+	<TextView android:id="@+id/sourcecode" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" 
+		android:color="#cccccc"
+		android:paddingLeft="15sp"
+		android:paddingBottom="5sp"
+		android:text="@+string/sourcecode"
+		/>
+	
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+		android:orientation="horizontal"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:paddingLeft="5sp">
+		<TextView android:id="@+id/contact_label" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:text="@+string/contact_label"
+			/>
+		<TextView android:id="@+id/contact_colon" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:text=": "
+			/>
+	</LinearLayout>
+	<TextView android:id="@+id/contact" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" 
+		android:color="#cccccc"
+		android:paddingLeft="15sp"
+		android:paddingBottom="5sp"
+		android:text="@+string/contact"
+		/>
+
+</LinearLayout>

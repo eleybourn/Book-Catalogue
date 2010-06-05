@@ -27,8 +27,13 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.widget.TabHost;
 
-/*
- * A book catalogue application that integrates with Google Books.
+/**
+ * A tab host activity which holds the three edit book tabs
+ * 1. Edit Details
+ * 2. Edit Comments
+ * 3. Loan Book
+ * 
+ * @author Evan Leybourn
  */
 public class BookEdit extends TabActivity {
 	public static final String TAB = "tab";
@@ -63,9 +68,9 @@ public class BookEdit extends TabActivity {
 		//Change the name depending on whether it is a new or existing book
 		String name = "";
 		if (mRowId == null || mRowId == 0) {
-			name = this.getResources().getString(R.string.menu_insert);
+			name = res.getString(R.string.menu_insert);
 		} else {
-			name = this.getResources().getString(R.string.edit_book);
+			name = res.getString(R.string.edit_book);
 		}
 		// Initialise a TabSpec for each tab and add it to the TabHost
 		spec = tabHost.newTabSpec("edit_book").setIndicator(name, res.getDrawable(R.drawable.ic_tab_edit)).setContent(intent);
@@ -78,14 +83,14 @@ public class BookEdit extends TabActivity {
 			if (extras != null) {
 				intent.putExtras(extras);
 			}
-			spec = tabHost.newTabSpec("edit_book_notes").setIndicator(this.getResources().getString(R.string.edit_book_notes), res.getDrawable(R.drawable.ic_tab_notes)).setContent(intent);
+			spec = tabHost.newTabSpec("edit_book_notes").setIndicator(res.getString(R.string.edit_book_notes), res.getDrawable(R.drawable.ic_tab_notes)).setContent(intent);
 			tabHost.addTab(spec);
 	
 			intent = new Intent().setClass(this, BookEditLoaned.class);
 			if (extras != null) {
 				intent.putExtras(extras);
 			}
-			spec = tabHost.newTabSpec("edit_book_friends").setIndicator(this.getResources().getString(R.string.edit_book_friends), res.getDrawable(R.drawable.ic_tab_friends)).setContent(intent);
+			spec = tabHost.newTabSpec("edit_book_friends").setIndicator(res.getString(R.string.edit_book_friends), res.getDrawable(R.drawable.ic_tab_friends)).setContent(intent);
 			tabHost.addTab(spec);
 		}
 

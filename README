@@ -41,6 +41,12 @@ Features include;
   case. e.g. "The murder on the links" becomes "The Murder on the Links"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+New in v2.1
+* Your sort order will be automatically saved when to close the 
+  application (Requested by Martin)
+* There is a new "about this app" view available from the administration 
+  tabs (Also from Martin)
+
 New in v2.0
 * There is a new tabbed "edit" interface to simplify editing books. 
 * The new comments tab also includes a notes field where you can add personal 

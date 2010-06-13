@@ -41,6 +41,11 @@ Features include;
   case. e.g. "The murder on the links" becomes "The Murder on the Links"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+New in v2.2.
+* There are two additional sort functions, by series and by loaned (Request from N4ppy)
+* Your bookshelf and current location will be saved when you exit (Feedback from Martin)
+* Minor interface improvements when sorting by title 
+
 New in v2.1
 * Your sort order will be automatically saved when to close the 
   application (Requested by Martin)

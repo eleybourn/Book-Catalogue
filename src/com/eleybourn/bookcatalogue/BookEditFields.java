@@ -60,8 +60,10 @@ public class BookEditFields extends Activity {
 	private boolean read = false;
 	private String notes = "";
 	
+	private String added_series = "";
 	private String added_title = "";
 	private String added_author = "";
+	public static String ADDED_SERIES = "ADDED_SERIES";
 	public static String ADDED_TITLE = "ADDED_TITLE";
 	public static String ADDED_AUTHOR = "ADDED_AUTHOR";
 
@@ -104,22 +106,25 @@ public class BookEditFields extends Activity {
 		}
 		return publisher_list;
 	}
-
+	
+	/**
+	 * Display the edit fields page
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		try {
 			super.onCreate(savedInstanceState);
 			mDbHelper = new CatalogueDBAdapter(this);
 			mDbHelper.open();
-
+			
 			setContentView(R.layout.edit_book);
-
+			
 			ArrayAdapter<String> author_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getAuthors());
 			mAuthorText = (AutoCompleteTextView) findViewById(R.id.author);
 			mAuthorText.setAdapter(author_adapter);
 			mTitleText = (EditText) findViewById(R.id.title);
 			mIsbnText = (EditText) findViewById(R.id.isbn);
-
+			
 			ArrayAdapter<String> publisher_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getPublishers());
 			mPublisherText = (AutoCompleteTextView) findViewById(R.id.publisher);
 			mPublisherText.setAdapter(publisher_adapter);
@@ -127,13 +132,13 @@ public class BookEditFields extends Activity {
 			ArrayAdapter<String> series_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getSeries());
 			mSeriesText = (AutoCompleteTextView) findViewById(R.id.series);
 			mSeriesText.setAdapter(series_adapter);
-
+			
 			mSeriesNumText = (EditText) findViewById(R.id.series_num);
 			mPagesText = (EditText) findViewById(R.id.pages);
 			mConfirmButton = (Button) findViewById(R.id.confirm);
 			mCancelButton = (Button) findViewById(R.id.cancel);
 			mImageView = (ImageView) findViewById(R.id.row_img);
-
+			
 			/* Setup the Bookshelf Spinner */
 			mBookshelfText = (Spinner) findViewById(R.id.bookshelf);
 			spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
@@ -146,17 +151,18 @@ public class BookEditFields extends Activity {
 				} 
 				while (bookshelves.moveToNext()); 
 			} 
-
+			
 			mRowId = savedInstanceState != null ? savedInstanceState.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
 			if (mRowId == null) {
 				getRowId();
 			}
 			populateFields();
-
+			
 			mConfirmButton.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
 					saveState();
 					Intent i = new Intent();
+					i.putExtra(ADDED_SERIES, added_series);
 					i.putExtra(ADDED_TITLE, added_title);
 					i.putExtra(ADDED_AUTHOR, added_author);
 					if (getParent() == null) {
@@ -167,7 +173,7 @@ public class BookEditFields extends Activity {
 					getParent().finish();
 				}
 			});
-
+			
 			mCancelButton.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
 					setResult(RESULT_OK);
@@ -178,7 +184,7 @@ public class BookEditFields extends Activity {
 			//Log.e("Book Catalogue", "Unknown error " + e.toString());
 		}
 	}
-
+	
 	private void populateFields() {
 		Bundle extras = getIntent().getExtras();
 		if (mRowId == null) {
@@ -339,6 +345,7 @@ public class BookEditFields extends Activity {
 		/* These are global variables that will be sent via intent back to the list view */
 		added_author = author;
 		added_title = title;
+		added_series = series;
 		return;
 	}
 

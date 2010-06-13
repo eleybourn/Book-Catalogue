@@ -99,8 +99,8 @@ public class AdministrationAbout extends Activity {
 		contact.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent loadweb = new Intent(Intent.ACTION_SENDTO);
-				loadweb.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{res.getString(R.string.sourcecode)});
+				Intent loadweb = new Intent(Intent.ACTION_SEND);
+				loadweb.putExtra(Intent.EXTRA_EMAIL, new String[]{res.getString(R.string.sourcecode)});
 				startActivity(loadweb); 
 				return;
 			}

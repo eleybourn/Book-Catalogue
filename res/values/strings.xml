@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Book Catalogue!</string>
-    <string name="app_name">Book Catalogue</string>
+<string name="hello">Book Catalogue!</string>
+<string name="app_name">Book Catalogue</string>
 <string name="menu_insert">Add Book</string>
 <string name="menu_delete">Delete Book</string>
 <string name="author">Author</string>
@@ -16,9 +16,8 @@
 <string name="pages">Pages</string>
 <string name="confirm_add">Add Book</string>
 <string name="nobooks">There are no books in this Bookshelf. Please add some using the menu at the bottom of this screen.</string>
-<string name="menu_sort_by_author">Sort by Author</string>
 <string name="menu_sort_by_author_expanded">Expand All</string>
-<string name="menu_sort_by_title">Sort By Title</string>
+<string name="menu_sort_by">Sort By</string>
 <string name="menu_sort_by_author_collapsed">Collapse All</string>
 <string name="sort_title">Book Catalogue: by Title</string>
 <string name="edit_title">Book Catalogue: Edit Book</string>
@@ -82,4 +81,9 @@
 <string name="donate_label">Donate</string>
 <string name="about_label">About this App</string>
 <string name="administration_functions_label">Functions</string>
+<string name="sortby_popup_title">Sort By</string>
+<string name="sortby_author">Sort by Author</string>
+<string name="sortby_title">Sort by Title</string>
+<string name="sortby_series">Sort by Series</string>
+<string name="sortby_loan">Sort by Loaned</string>
 </resources>

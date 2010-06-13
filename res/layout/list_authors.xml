@@ -1,46 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-    android:orientation="vertical"
+	android:orientation="vertical"
 	android:layout_width="fill_parent" 
 	android:layout_height="fill_parent"
-   	android:paddingLeft="5sp"
+	android:paddingLeft="5sp"
 	android:background="#2d2d2d">
-  	<TextView android:id="@+id/bookshelf_label" 
-  		android:layout_width="wrap_content" 
-  		android:layout_height="32sp" 
-  		android:text="@+string/bookshelf_label"
-	    android:textAppearance="?android:attr/textAppearanceLarge"
-   		android:background="#2d2d2d"
-   		android:paddingRight="5sp"
-   		/>
-  	<Spinner android:id="@+id/bookshelf_name" 
-  		android:layout_width="wrap_content" 
-  		android:layout_height="32sp" 
-  		android:layout_toRightOf="@id/bookshelf_label"
-   		android:paddingBottom="2sp"
+	<TextView android:id="@+id/bookshelf_label" 
+		android:layout_width="wrap_content" 
+		android:layout_height="32sp" 
+		android:text="@+string/bookshelf_label"
+		android:textAppearance="?android:attr/textAppearanceLarge"
 		android:background="#2d2d2d"
-	    />
-  	<TextView android:id="@+id/bookshelf_num" 
-  		android:layout_width="wrap_content" 
-  		android:layout_height="32sp" 
-  		android:layout_toRightOf="@+id/bookshelf_name"
-  		android:text="@+string/bookshelf_label"
-	    android:textAppearance="?android:attr/textAppearanceLarge"
-   		android:background="#2d2d2d"
-   		android:paddingLeft="5sp"
-   		/>
+		android:paddingRight="5sp"
+		/>
+	<Spinner android:id="@+id/bookshelf_name" 
+		android:layout_width="wrap_content" 
+		android:layout_height="32sp" 
+		android:layout_toRightOf="@id/bookshelf_label"
+		android:paddingBottom="2sp"
+		android:background="#2d2d2d"
+		/>
+	<TextView android:id="@+id/bookshelf_num" 
+		android:layout_width="wrap_content" 
+		android:layout_height="32sp" 
+		android:layout_toRightOf="@+id/bookshelf_name"
+		android:text="@+string/bookshelf_label"
+		android:textAppearance="?android:attr/textAppearanceLarge"
+		android:background="#2d2d2d"
+		android:paddingLeft="5sp"
+		/>
 	<LinearLayout 
 		android:layout_width="fill_parent" 
 		android:layout_height="fill_parent"
 		android:layout_below="@id/bookshelf_label">
-	    <ExpandableListView android:id="@+id/android:list" 
-	    	android:layout_width="fill_parent" 
-	    	android:layout_height="wrap_content"
-	    	android:textSize="16sp" />
-	  	<TextView android:id="@+id/android:empty" 
-	  		android:layout_width="fill_parent" 
-	  		android:layout_height="wrap_content" 
-	  		android:text="@+string/nobooks"
-	  		android:textSize="16sp" />
+		<ExpandableListView android:id="@+id/android:list" 
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content"
+			android:textSize="16sp" />
+		<TextView android:id="@+id/android:empty" 
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:text="@+string/nobooks"
+			android:textSize="16sp" />
 	</LinearLayout>
 </RelativeLayout>

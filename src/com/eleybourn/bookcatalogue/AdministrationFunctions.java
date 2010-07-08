@@ -168,6 +168,19 @@ public class AdministrationFunctions extends Activity {
 			"\n";
 		if (books.moveToFirst()) {
 			do { 
+				String dateString = "";
+				try {
+					String[] date = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DATE_PUBLISHED)).split("-");
+					int yyyy = Integer.parseInt(date[0]);
+					int mm = Integer.parseInt(date[1])+1;
+					int dd = Integer.parseInt(date[2]);
+					//String mmString = (mm < 10) ? "0"+mm : "" + mm;
+					//String ddString = (dd < 10) ? "0"+dd : "" + dd;
+					dateString = yyyy + "-" + mm + "-" + dd;
+				} catch (Exception e) {
+					//do nothing
+				}
+				
 				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROWID)) + "\t";
 				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_FAMILY_NAME)) + "\t";
 				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_GIVEN_NAMES)) + "\t";
@@ -175,7 +188,7 @@ public class AdministrationFunctions extends Activity {
 				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE)) + "\t";
 				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ISBN)) + "\t";
 				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PUBLISHER)) + "\t";
-				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DATE_PUBLISHED)) + "\t";
+				export += dateString + "\t";
 				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_RATING)) + "\t";
 				export += books.getString(books.getColumnIndexOrThrow("bookshelf_id")) + "\t";
 				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_BOOKSHELF)) + "\t";
@@ -185,10 +198,10 @@ public class AdministrationFunctions extends Activity {
 				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PAGES)) + "\t";
 				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_NOTES)) + "\t";
 				export += "\n";
-			} 
+			}
 			while (books.moveToNext()); 
 		} 
-
+		
 		/* write to the SDCard */
 		try {
 			BufferedWriter out = new BufferedWriter(new FileWriter(Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/export.tab"));
@@ -266,6 +279,16 @@ public class AdministrationFunctions extends Activity {
 			String isbn = imported[5];
 			String publisher = imported[6]; 
 			String date_published = imported[7];
+			try {
+				String[] date = date_published.split("-");
+				int yyyy = Integer.parseInt(date[0]);
+				int mm = Integer.parseInt(date[1])-1;
+				int dd = Integer.parseInt(date[2]);
+				date_published = yyyy + "-" + mm + "-" + dd;
+			} catch (Exception e) {
+				//do nothing
+			}
+			
 			float rating = 0;
 			try {
 				rating = Float.valueOf(imported[8]); 

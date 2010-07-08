@@ -99,9 +99,12 @@ public class AdministrationAbout extends Activity {
 		contact.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent loadweb = new Intent(Intent.ACTION_SEND);
-				loadweb.putExtra(Intent.EXTRA_EMAIL, new String[]{res.getString(R.string.sourcecode)});
-				startActivity(loadweb); 
+				Intent msg = new Intent(Intent.ACTION_SEND);
+				msg.setType("text/plain");
+				msg.putExtra(Intent.EXTRA_EMAIL, new String[]{res.getString(R.string.sourcecode)});
+				msg.putExtra(Intent.EXTRA_SUBJECT, "[Book Catalogue] ");
+				AdministrationAbout.this.startActivity(Intent.createChooser(msg, "Send email..."));
+				//startActivity(msg); 
 				return;
 			}
 		});

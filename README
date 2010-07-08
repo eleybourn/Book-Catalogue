@@ -20,7 +20,7 @@
 # along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-This is an open source android application. Please feel free to fork, bug fix 
+This is an open source Android application. Please feel free to fork, bug fix 
 and commit back. 
 
 This is a simple book catalogue application, to store a list of your books. 
@@ -32,14 +32,18 @@ Features include;
 * Books can be automatically added by typing in the ISBN or scanning the 
   barcode. It will search Google Books for details (and download a thumbnail). 
   It will search more sites as I add them. 
-* Multiple Books lists (or bookshelfs). For example I like to keep my Doctor Who
-  books seperate from my normal fiction books. 
+* Multiple Books lists (or bookshelves). For example I like to keep my Doctor Who
+  books separate from my normal fiction books. 
 * You can search for a book by title, author or series.
 * When adding or editing books author, series and publisher should display a 
   suggestion list
 * When downloading book information, authors and titles are converted to proper
   case. e.g. "The murder on the links" becomes "The Murder on the Links"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
+
+New in v2.3
+* The book thumbnail now appears in the list view
+
 
 New in v2.2.
 * There are two additional sort functions, by series and by loaned (Request from N4ppy)

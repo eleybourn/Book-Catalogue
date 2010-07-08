@@ -33,20 +33,26 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SimpleCursorTreeAdapter;
@@ -270,11 +276,11 @@ public class BookCatalogue extends ExpandableListActivity {
 		
 		// Create an array to specify the fields we want to display in the list
 		String[] from = new String[]{CatalogueDBAdapter.KEY_FAMILY_NAME, CatalogueDBAdapter.KEY_GIVEN_NAMES};
-		String[] exp_from = new String[]{CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_SERIES, CatalogueDBAdapter.KEY_SERIES_NUM};
+		String[] exp_from = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_SERIES, CatalogueDBAdapter.KEY_SERIES_NUM};
 		
 		// and an array of the fields we want to bind those fields to (in this case just text1)
 		int[] to = new int[]{R.id.row_family, R.id.row_given};
-		int[] exp_to = new int[]{R.id.row_title, R.id.row_series, R.id.row_series_num};
+		int[] exp_to = new int[]{R.id.row_img, R.id.row_title, R.id.row_series, R.id.row_series_num};
 		
 		// Instantiate the List Adapter
 		ExpandableListAdapter books = new AuthorBookListAdapter(BooksCursor, this, layout, layout_child, from, to, exp_from, exp_to);
@@ -362,9 +368,19 @@ public class BookCatalogue extends ExpandableListActivity {
 						text = " #" + text + ")";
 					}
 				}
-				
 			} else if (v.getId() == R.id.row_family) {
 				text = text + ", ";
+			} else if (v.getId() == R.id.row_img) {
+				String thumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/" + text + ".jpg";
+				Bitmap thumbnail = BitmapFactory.decodeFile(thumbFilename);
+				ImageView newv = (ImageView) ((ViewGroup) v.getParent()).findViewById(R.id.row_image_view);
+				if (thumbnail != null) {
+					newv.setImageBitmap(thumbnail);
+				} else {
+					newv.setImageResource(android.R.drawable.ic_menu_help);
+				}
+				text = "";
+				return;
 			}
 			v.setText(text);
 		}

@@ -20,11 +20,8 @@
 
 package com.eleybourn.bookcatalogue;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.DataInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -223,7 +220,7 @@ public class AdministrationFunctions extends Activity {
 	 * FileOutputStream to read the file.
 	 * 
 	 */
-	public ArrayList<String> readFile(String filename) {
+	public ArrayList<String> readFile() {
 		ArrayList<String> importedString = new ArrayList<String>();
 		
 		try {
@@ -249,7 +246,7 @@ public class AdministrationFunctions extends Activity {
 	private void importData() {
 		importUpdated = 0;
 		importCreated = 0;
-		ArrayList<String> export = readFile(Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/export.tab");
+		ArrayList<String> export = readFile();
 		int row = 1;
 		
 		/* Iterate through each imported row */

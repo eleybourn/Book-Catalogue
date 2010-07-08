@@ -21,13 +21,16 @@
 package com.eleybourn.bookcatalogue;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -55,7 +58,10 @@ public class AdministrationFunctions extends Activity {
 	private CatalogueDBAdapter mDbHelper;
 	private int importUpdated = 0;
 	private int importCreated = 0;
-
+	private String filePath = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/export.csv";
+	private String UTF8 = "utf8";
+	private int BUFFER_SIZE = 8192;
+	
 	/**
 	 * Called when the activity is first created. 
 	 */
@@ -174,8 +180,6 @@ public class AdministrationFunctions extends Activity {
 					int yyyy = Integer.parseInt(date[0]);
 					int mm = Integer.parseInt(date[1])+1;
 					int dd = Integer.parseInt(date[2]);
-					//String mmString = (mm < 10) ? "0"+mm : "" + mm;
-					//String ddString = (dd < 10) ? "0"+dd : "" + dd;
 					dateString = yyyy + "-" + mm + "-" + dd;
 				} catch (Exception e) {
 					//do nothing
@@ -204,7 +208,7 @@ public class AdministrationFunctions extends Activity {
 		
 		/* write to the SDCard */
 		try {
-			BufferedWriter out = new BufferedWriter(new FileWriter(Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/export.tab"));
+			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath), UTF8), BUFFER_SIZE);
 			out.write(export);
 			out.close();
 			Toast.makeText(this, R.string.export_complete, Toast.LENGTH_LONG).show();
@@ -220,28 +224,15 @@ public class AdministrationFunctions extends Activity {
 	 * 
 	 */
 	public ArrayList<String> readFile(String filename) {
-
 		ArrayList<String> importedString = new ArrayList<String>();
-		File file = new File(filename);
-		FileInputStream fis = null;
-		BufferedInputStream bis = null;
-		DataInputStream dis = null;
-
+		
 		try {
-			fis = new FileInputStream(file);
-			// Here BufferedInputStream is added for fast reading.
-			bis = new BufferedInputStream(fis);
-			dis = new DataInputStream(bis);
-
-			// dis.available() returns 0 if the file does not have more lines.
-			while (dis.available() != 0) {
-				// this statement reads the line from the file and print it to the console.
-				importedString.add(dis.readLine());
+			BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), UTF8),BUFFER_SIZE);
+			String line = "";
+			while ((line = in.readLine()) != null) {
+				importedString.add(line);
 			}
-			// dispose all the resources after using them.
-			fis.close();
-			bis.close();
-			dis.close();
+			in.close();
 		} catch (FileNotFoundException e) {
 			Toast.makeText(this, R.string.import_failed, Toast.LENGTH_LONG).show();
 		} catch (IOException e) {
@@ -249,7 +240,7 @@ public class AdministrationFunctions extends Activity {
 		}
 		return importedString;
 	}
-
+	
 	/*
 	 * Export all data to a CSV file
 	 * 
@@ -260,7 +251,7 @@ public class AdministrationFunctions extends Activity {
 		importCreated = 0;
 		ArrayList<String> export = readFile(Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/export.tab");
 		int row = 1;
-
+		
 		/* Iterate through each imported row */
 		while (row < export.size()) {
 			String[] imported = export.get(row).split("\t");
@@ -311,8 +302,14 @@ public class AdministrationFunctions extends Activity {
 			} catch (Exception e) {
 				pages = 0;
 			}
-			String notes = imported[15];
-
+			//occasionally the notes will not import correctly (as it is the last field)
+			String notes = "";
+			try {
+				notes = imported[15];
+			} catch (ArrayIndexOutOfBoundsException e) {
+				// do nothing
+			}
+			
 			String author = family + ", " + given;
 			if (id == 0) {
 				// Book is new. It does not exist in the current database
@@ -330,7 +327,7 @@ public class AdministrationFunctions extends Activity {
 				mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes);
 				importCreated++;
 				continue;
-
+				
 			} else {
 				// Book exists and should be updated if it has changed
 				mDbHelper.updateBook(id, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes);

@@ -45,7 +45,8 @@ New in v2.3
 * The book thumbnail now appears in the list view
 * Emailing the developer now works from the admin page
 * The Change Bookshelf option is now more obvious (Thanks Mike)
-
+* The exports have been renamed to csv, use the correct published date and are 
+  now unicode safe (Thanks Mike)
 
 New in v2.2.
 * There are two additional sort functions, by series and by loaned (Request from N4ppy)

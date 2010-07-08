@@ -124,7 +124,7 @@ public class CatalogueDBAdapter {
 		;
 
 	private final Context mCtx;
-	private static final int DATABASE_VERSION = 27;
+	private static final int DATABASE_VERSION = 28;
 
 	/**
 	 * This is a specific version of the SQLiteOpenHelper class. It handles onCreate and onUpgrade events
@@ -265,6 +265,14 @@ public class CatalogueDBAdapter {
 				message += "* There are two additional sort functions, by series and by loaned (Request from N4ppy)\n\n";
 				message += "* Your bookshelf and current location will be saved when you exit (Feedback from Martin)\n\n"; 
 				message += "* Minor interface improvements when sorting by title \n\n"; 
+			}
+			if (curVersion == 27) {
+				//do nothing
+				curVersion++;
+				message += "* The book thumbnail now appears in the list view\n\n";
+				message += "* Emailing the developer now works from the admin page\n\n";
+				message += "* The Change Bookshelf option is now more obvious (Thanks Mike)\n\n";
+				message += "* The exports have been renamed to csv, use the correct published date and are now unicode safe (Thanks Mike)\n\n";
 			}
 		}
 	}

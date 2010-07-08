@@ -91,6 +91,7 @@ public class BookCatalogue extends ExpandableListActivity {
 	
 	private String bookshelf = "";
 	private ArrayAdapter<String> spinnerAdapter;
+	private Spinner mBookshelfText;
 	
 	private SharedPreferences mPrefs;
 	public int sort = 0;
@@ -176,7 +177,7 @@ public class BookCatalogue extends ExpandableListActivity {
 	 */
 	private void bookshelf() {
 		// Setup the Bookshelf Spinner 
-		Spinner mBookshelfText = (Spinner) findViewById(R.id.bookshelf_name);
+		mBookshelfText = (Spinner) findViewById(R.id.bookshelf_name);
 		spinnerAdapter = new ArrayAdapter<String>(this, R.layout.spinner_frontpage);
 		spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		mBookshelfText.setAdapter(spinnerAdapter);
@@ -221,6 +222,25 @@ public class BookCatalogue extends ExpandableListActivity {
 				
 			}
 		});
+		
+		ImageView mBookshelfDown = (ImageView) findViewById(R.id.bookshelf_down);
+		mBookshelfDown.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mBookshelfText.performClick();
+				return;
+			}
+		});
+
+		TextView mBookshelfNum = (TextView) findViewById(R.id.bookshelf_num);
+		mBookshelfNum.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mBookshelfText.performClick();
+				return;
+			}
+		});
+
 	}
 	
 	/**

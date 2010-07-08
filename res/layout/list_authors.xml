@@ -15,7 +15,7 @@
 		/>
 	<Spinner android:id="@+id/bookshelf_name" 
 		android:layout_width="wrap_content" 
-		android:layout_height="32sp" 
+		android:layout_height="wrap_content" 
 		android:layout_toRightOf="@id/bookshelf_label"
 		android:paddingBottom="2sp"
 		android:background="#2d2d2d"
@@ -27,6 +27,13 @@
 		android:text="@+string/bookshelf_label"
 		android:textAppearance="?android:attr/textAppearanceLarge"
 		android:background="#2d2d2d"
+		android:paddingLeft="5sp"
+		/>
+	<ImageView android:id="@+id/bookshelf_down" 
+		android:layout_width="wrap_content" 
+		android:layout_height="32sp" 
+		android:layout_toRightOf="@+id/bookshelf_num"
+		android:src="@+drawable/ic_dialog_menu_generic"
 		android:paddingLeft="5sp"
 		/>
 	<LinearLayout 

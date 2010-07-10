@@ -86,4 +86,5 @@
 <string name="sortby_title">Sort by Title</string>
 <string name="sortby_series">Sort by Series</string>
 <string name="sortby_loan">Sort by Loaned</string>
+<string name="list_price">List Price</string>
 </resources>

@@ -168,6 +168,7 @@ public class AdministrationFunctions extends Activity {
 			CatalogueDBAdapter.KEY_SERIES_NUM + "\t" +
 			CatalogueDBAdapter.KEY_PAGES + "\t" + 
 			CatalogueDBAdapter.KEY_NOTES + "\t" + 
+			CatalogueDBAdapter.KEY_LIST_PRICE + "\t" + 
 			"\n";
 		if (books.moveToFirst()) {
 			do { 
@@ -198,6 +199,7 @@ public class AdministrationFunctions extends Activity {
 				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES_NUM)) + "\t";
 				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PAGES)) + "\t";
 				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_NOTES)) + "\t";
+				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LIST_PRICE)) + "\t";
 				export += "\n";
 			}
 			while (books.moveToNext()); 
@@ -299,10 +301,17 @@ public class AdministrationFunctions extends Activity {
 			} catch (Exception e) {
 				pages = 0;
 			}
-			//occasionally the notes will not import correctly (as it is the last field)
+			//occasionally the notes will not import correctly (as it used to be the last field)
 			String notes = "";
 			try {
 				notes = imported[15];
+			} catch (ArrayIndexOutOfBoundsException e) {
+				// do nothing
+			}
+			//occasionally the list_price will not import correctly (as it is the last field)
+			String list_price = "";
+			try {
+				list_price = imported[16];
 			} catch (ArrayIndexOutOfBoundsException e) {
 				// do nothing
 			}
@@ -316,18 +325,18 @@ public class AdministrationFunctions extends Activity {
 					if (rows != 0) {
 						// Its a new entry, but the ISBN exists
 						book.moveToFirst();
-						mDbHelper.updateBook(book.getLong(0), author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes);
+						mDbHelper.updateBook(book.getLong(0), author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price);
 						importUpdated++;
 						continue;
 					}
 				} 
-				mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes);
+				mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price);
 				importCreated++;
 				continue;
 				
 			} else {
 				// Book exists and should be updated if it has changed
-				mDbHelper.updateBook(id, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes);
+				mDbHelper.updateBook(id, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price);
 				importUpdated++;
 				continue;
 			}

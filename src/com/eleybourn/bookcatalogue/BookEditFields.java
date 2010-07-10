@@ -50,6 +50,7 @@ public class BookEditFields extends Activity {
 	private ArrayAdapter<String> spinnerAdapter;
 	private AutoCompleteTextView mSeriesText;
 	private EditText mSeriesNumText;
+	private EditText mListPriceText;
 	private EditText mPagesText;
 	private Button mConfirmButton;
 	private Button mCancelButton;
@@ -134,6 +135,7 @@ public class BookEditFields extends Activity {
 			mSeriesText.setAdapter(series_adapter);
 			
 			mSeriesNumText = (EditText) findViewById(R.id.series_num);
+			mListPriceText = (EditText) findViewById(R.id.list_price);
 			mPagesText = (EditText) findViewById(R.id.pages);
 			mConfirmButton = (Button) findViewById(R.id.confirm);
 			mCancelButton = (Button) findViewById(R.id.cancel);
@@ -190,14 +192,14 @@ public class BookEditFields extends Activity {
 		if (mRowId == null) {
 			getRowId();
 		}
-
+		
 		if (mRowId != null && mRowId > 0) {
 			// From the database (edit)
 			Cursor book = mDbHelper.fetchBook(mRowId);
 			startManagingCursor(book);
 			String title = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE)); 
 			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + title);
-
+			
 			mAuthorText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR)));
 			mTitleText.setText(title);
 			mIsbnText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ISBN)));
@@ -211,6 +213,7 @@ public class BookEditFields extends Activity {
 			mBookshelfText.setSelection(spinnerAdapter.getPosition(bs));
 			mSeriesText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES)));
 			mSeriesNumText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES_NUM)));
+			mListPriceText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LIST_PRICE)));
 			mPagesText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PAGES)));
 			mConfirmButton.setText(R.string.confirm_save);
 			String thumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/" + mRowId + ".jpg";
@@ -237,10 +240,11 @@ public class BookEditFields extends Activity {
 			} catch (NumberFormatException e) {
 				//do nothing
 			}
-
+			
 			mBookshelfText.setSelection(spinnerAdapter.getPosition(book[6]));
 			mSeriesText.setText(book[8]);
 			mSeriesNumText.setText(book[10]);
+			mListPriceText.setText(book[11]);
 			mPagesText.setText(book[9]);
 			mConfirmButton.setText(R.string.confirm_add);
 			String tmpThumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/tmp.jpg";
@@ -312,6 +316,7 @@ public class BookEditFields extends Activity {
 		String bookshelf = mBookshelfText.getAdapter().getItem(mBookshelfText.getSelectedItemPosition()).toString(); 
 		String series = mSeriesText.getText().toString();
 		String series_num = mSeriesNumText.getText().toString();
+		String list_price = mListPriceText.getText().toString();
 		int pages = 0;
 		try {
 			pages = Integer.parseInt(mPagesText.getText().toString());
@@ -330,7 +335,7 @@ public class BookEditFields extends Activity {
 				}
 			}
 			
-			long id = mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes);
+			long id = mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price);
 			if (id > 0) {
 				mRowId = id;
 				String tmpThumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/tmp.jpg";
@@ -340,7 +345,7 @@ public class BookEditFields extends Activity {
 				thumb.renameTo(real);
 			}
 		} else {
-			mDbHelper.updateBook(mRowId, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes);
+			mDbHelper.updateBook(mRowId, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price);
 		}
 		/* These are global variables that will be sent via intent back to the list view */
 		added_author = author;

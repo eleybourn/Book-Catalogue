@@ -106,6 +106,14 @@
 			android:inputType="number"
 			/>
 		
+		<EditText android:id="@+id/list_price" 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" 
+			android:layout_weight="1"
+			android:hint="@string/list_price"
+			android:inputType="number"
+			/>
+		
 		<LinearLayout	
 			android:orientation="horizontal"
 			android:layout_width="fill_parent"

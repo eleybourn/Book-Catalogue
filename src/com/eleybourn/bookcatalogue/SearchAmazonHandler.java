@@ -34,7 +34,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import android.os.Environment;
 
-/* 
+/** 
  * An XML handler for the Amazon return 
  * 
  * An example response looks like;
@@ -166,6 +166,9 @@ import android.os.Environment;
  * 			</Item>
  * 		</Items>
  * </ItemSearchResponse>
+ * 
+ * @author evan
+ * 
  */
 public class SearchAmazonHandler extends DefaultHandler {
 	private StringBuilder builder;
@@ -182,13 +185,14 @@ public class SearchAmazonHandler extends DefaultHandler {
 	public String pages = "0";
 	public String thumbnail = "";
 	public String series_num = "";
-
+	public String list_price = "";
+	
 	/* How many results found */
 	public int count = 0;
 	/* A flag to identify if we are in the correct node */
 	private boolean entry = false;
 	private boolean image = false;
-
+	
 	/* The XML element names */
 	public static String ID = "id";
 	public static String TOTALRESULTS = "TotalResults";
@@ -207,7 +211,7 @@ public class SearchAmazonHandler extends DefaultHandler {
 	 * A public function the return a book structure
 	 */
 	public String[] getBook(){
-		String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num};
+		String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num, list_price};
 		//Log.e("bc", author + " :: " + title + " :: " + isbn  + " :: " + publisher + " :: " + date_published + " :: " + rating +  " :: " + bookshelf + " :: " + read + " :: " + series + " :: " + pages + " :: " + series_num);
 		return book;
 	}

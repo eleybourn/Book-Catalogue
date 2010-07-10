@@ -23,17 +23,9 @@ package com.eleybourn.bookcatalogue;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -116,7 +108,7 @@ public class BookISBNSearch extends Activity {
 				}
 			}
 		} catch (Exception e) {
-			//TODO: FIX THIS
+			//do nothing
 		}
 		
 		/* Delete any hanging around thumbs */
@@ -129,22 +121,22 @@ public class BookISBNSearch extends Activity {
 		}
 		/* Get the book */
 		String[] book;
-		//TODO: RE-IMPLEMENT String[] bookAmazon;
+		String[] bookAmazon;
 		book = searchGoogle(isbn);
-		//TODO: RE-IMPLEMENT bookAmazon = searchAmazon(isbn);
+		bookAmazon = searchAmazon(isbn);
 		//Look for series in Title. e.g. Red Phoenix (Dark Heavens Trilogy)
 		book[8] = findSeries(book[1]);
-		//TODO: RE-IMPLEMENT bookAmazon[8] = findSeries(bookAmazon[1]);
+		bookAmazon[8] = findSeries(bookAmazon[1]);
 		
 		/* Fill blank fields as required */
-		//TODO: RE-IMPLEMENT for (int i = 0; i<book.length; i++) {
-		//TODO: RE-IMPLEMENT 	if (book[i] == "" || book[i] == "0") {
-		//TODO: RE-IMPLEMENT 		book[i] = bookAmazon[i];
-		//TODO: RE-IMPLEMENT 	}
-		//TODO: RE-IMPLEMENT }
+		for (int i = 0; i<book.length; i++) {
+			if (book[i] == "" || book[i] == "0") {
+				book[i] = bookAmazon[i];
+			}
+		}
 		
 		/* Format the output 
-		 * String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num};
+		 * String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num, list_price};
 		 */
 		if (book[0] == "" && book[1] == "") {
 			Toast.makeText(this, R.string.book_not_found, Toast.LENGTH_LONG).show();
@@ -218,65 +210,24 @@ public class BookISBNSearch extends Activity {
 		return null;
 	}
 	
+	/**
+	 * 
+	 * This searches the amazon REST site based on a specific isbn. It proxies through lgsolutions.com.au
+	 * due to amazon not support mobile devices
+	 * 
+	 * @param mIsbn The ISBN to search for
+	 * @return The book array
+	 */
 	private String[] searchAmazon(String mIsbn) {
 		//String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num};
 		String[] book = {"", "", mIsbn, "", "", "0",  "", "", "", "", ""};
-
-		// Format the timestamp
-		Date now = new Date();
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.'000Z'");
-
-		// Create the URL
-		String host = "webservices.amazon.com";
-		String path = "/onca/xml";
-		
-		String[] params = {mIsbn, "ItemSearch", "Medium,Images", "Books", "AWSECommerceService", "AKIAIHF2BM6OTOA23JEQ", format.format(now)};
-		String[] key_params = {"Keywords", "Operation", "ResponseGroup", "SearchIndex", "Service", "SubscriptionId", "Timestamp"};
-		
-		String amazon_url = "http://" + host + path + "?";
-		//TODO - INSERT SECRET KEY HERE
-		String sk = "<INSERT SECRET KEY>";
-		String url_params = "";
-		String enc_params = "";
-		for (int i = 0; i<params.length; i++) {
-			if (i != 0) {
-				url_params += "&";
-				enc_params += "&";
-			}
-			String param = params[i];
-			url_params += key_params[i]+"="+param;
-			param = param.replace(",","%2C");
-			param = param.replace(":","%3A");
-			enc_params += key_params[i]+"="+param;
-		}
-		
-		String signstr = "GET\n" + host + "\n" + path + "\n" + enc_params;
-		try {
-			byte[] secretyKeyBytes = sk.getBytes("UTF-8");
-			SecretKeySpec signingKey = new SecretKeySpec(secretyKeyBytes, "HmacSHA256");
-			Mac hmac = Mac.getInstance("HmacSHA256");
-			hmac.init(signingKey);
-			byte[] rawHmac = hmac.doFinal(signstr.getBytes("UTF-8"));
-			signstr = Base64.encodeBytes(rawHmac);
-			signstr = URLEncoder.encode(signstr, "UTF-8").replace("+", "%20").replace("*", "%2A").replace("%7E", "~");
-		} catch (NoSuchAlgorithmException e) {
-			//Log.e("Book Catalogue", "Invalid Algorithm");
-			return book;
-		} catch (InvalidKeyException e) {
-			//Log.e("Book Catalogue", "Invalid Key");
-			return book;
-		} catch (UnsupportedEncodingException e) {
-			//do nothing
-		}
-
-		String signedurl = amazon_url + url_params + "&Signature=" + signstr;
-
+		String signedurl = "http://demo.lgsolutions.com.au/getRest.php?isbn="+mIsbn;
 		URL url;
 		
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		SAXParser parser;
 		SearchAmazonHandler handler = new SearchAmazonHandler();
-
+		
 		try {
 			url = new URL(signedurl);
 			parser = factory.newSAXParser();
@@ -298,7 +249,7 @@ public class BookISBNSearch extends Activity {
 		}
 		return null;
 	}
-
+	
 	protected InputStream getInputStream(URL url) {
 		try {
 			return url.openConnection().getInputStream();

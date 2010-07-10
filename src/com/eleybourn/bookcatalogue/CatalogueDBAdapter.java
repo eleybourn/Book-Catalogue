@@ -585,11 +585,12 @@ public class CatalogueDBAdapter {
 				" AND bs." + KEY_BOOKSHELF + "='" + encodeString(bookshelf) + "') ";
 		}
 		String sql = "SELECT count(*) as count FROM " + DATABASE_TABLE_AUTHORS + " a " +
-			"WHERE a." + KEY_FAMILY_NAME + "<'" + encodeString(names[0]) + "' " +
-			"OR (a." + KEY_FAMILY_NAME + "='" + encodeString(names[0]) + "' AND a." + KEY_GIVEN_NAMES + "<'" + encodeString(names[1]) + "')" + 
-			where;
+			"WHERE (a." + KEY_FAMILY_NAME + "<'" + encodeString(names[0]) + "' " +
+			"OR (a." + KEY_FAMILY_NAME + "='" + encodeString(names[0]) + "' AND a." + KEY_GIVEN_NAMES + "<'" + encodeString(names[1]) + "'))" + 
+			where + 
+			" ORDER BY a." + KEY_FAMILY_NAME + ", a." + KEY_GIVEN_NAMES;
 		Cursor results = mDb.rawQuery(sql, null);
-		int pos = getIntValue(results, 0);
+		int pos = getIntValue(results, 0)+1;
 		return pos;
 	}
 	

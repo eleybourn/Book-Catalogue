@@ -230,7 +230,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				return;
 			}
 		});
-
+		
 		TextView mBookshelfNum = (TextView) findViewById(R.id.bookshelf_num);
 		mBookshelfNum.setOnClickListener(new OnClickListener() {
 			@Override
@@ -239,7 +239,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				return;
 			}
 		});
-
+		
 	}
 	
 	/**
@@ -321,7 +321,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				
 			}
 		});
-
+		
 		/* Hide the default expandable icon, and use a different icon (actually the same icon)
 		 * The override is for when changing back from the title view and it has hidden the icon. */
 		Drawable indicator = this.getResources().getDrawable(R.drawable.expander_group); 
@@ -460,7 +460,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				
 			}
 		});
-
+		
 		/* Hide the default expandable icon, and use a different icon (actually the same icon)
 		 * The override is for when changing back from the title view and it has hidden the icon. */
 		Drawable indicator = this.getResources().getDrawable(R.drawable.expander_group); 
@@ -635,7 +635,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			}
 			v.setText(text);
 		}
-
+		
 		@Override
 		protected Cursor getChildrenCursor(Cursor groupCursor) {
 			return null;
@@ -901,7 +901,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		return super.onMenuItemSelected(featureId, item);
 	}
 	
-	/*
+	/**
 	 * Expand and scroll to the current group
 	 */
 	public void gotoCurrentGroup() {
@@ -919,14 +919,16 @@ public class BookCatalogue extends ExpandableListActivity {
 		return;
 	}
 	
-    /*
-     * add / remove items from the current group arrayList
-     */
-    public void addToCurrentGroup(int pos) {
-    	addToCurrentGroup(pos, false);
-    }
-    
-
+	/**
+	 * add / remove items from the current group arrayList. This will pass directly to
+	 * addToCurrentGroup(int pos, boolean force) with force set to false 
+	 * 
+	 * @param pos The position to add or remove
+	 */
+	public void addToCurrentGroup(int pos) {
+		addToCurrentGroup(pos, false);
+	}
+	
 	/**
 	 * add / remove items from the current group arrayList
 	 * 
@@ -1071,40 +1073,35 @@ public class BookCatalogue extends ExpandableListActivity {
 		fillData();
 	}
 	
-    /*
-     * Load the BookEdit Activity
-     * 
-     * return void
-     */
-    private void adminPage() {
-        Intent i = new Intent(this, Administration.class);
-        startActivityForResult(i, ACTIVITY_ADMIN);
-    }
+	/**
+	 * Load the Administration Activity
+	 */
+	private void adminPage() {
+		Intent i = new Intent(this, Administration.class);
+		startActivityForResult(i, ACTIVITY_ADMIN);
+	}
 	
-    /*
-     * Load the BookEdit Activity
-     * 
-     * return void
-     */
-    private void createBook() {
-        Intent i = new Intent(this, BookEdit.class);
-        startActivityForResult(i, ACTIVITY_CREATE);
-    }
+	/**
+	 * Load the BookEdit Activity
+	 */
+	private void createBook() {
+		Intent i = new Intent(this, BookEdit.class);
+		startActivityForResult(i, ACTIVITY_CREATE);
+	}
 	
-    /*
-     * Load the BookEdit Activity
-     * 
-     * return void
-     */
-    private void createBookISBN() {
-        Intent i = new Intent(this, BookISBNSearch.class);
-        startActivityForResult(i, ACTIVITY_ISBN);
-    }
-
-	/*
-	 * Load the bookedit activity based on the provided id. Also open to the provided tab
+	/**
+	 * Load the Search by ISBN Activity
+	 */
+	private void createBookISBN() {
+		Intent i = new Intent(this, BookISBNSearch.class);
+		startActivityForResult(i, ACTIVITY_ISBN);
+	}
+	
+	/**
+	 * Load the EditBook activity based on the provided id. Also open to the provided tab
 	 * 
-	 * return void
+	 * @param id The id of the book to edit
+	 * @param tab Which tab to open first
 	 */
 	private void editBook(long id, int tab) {
 		Intent i = new Intent(this, BookEdit.class);

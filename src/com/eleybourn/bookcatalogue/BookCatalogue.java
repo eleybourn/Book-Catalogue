@@ -40,7 +40,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -903,24 +902,23 @@ public class BookCatalogue extends ExpandableListActivity {
 	}
 	
 	/*
-     * Expand and scroll to the current group
-     */
-    public void gotoCurrentGroup() {
-		ExpandableListView view = this.getExpandableListView();
-    	Iterator<Integer> arrayIterator = currentGroup.iterator();
-		while(arrayIterator.hasNext()) {
-			view.expandGroup(arrayIterator.next());
+	 * Expand and scroll to the current group
+	 */
+	public void gotoCurrentGroup() {
+		try {
+			ExpandableListView view = this.getExpandableListView();
+			Iterator<Integer> arrayIterator = currentGroup.iterator();
+			while(arrayIterator.hasNext()) {
+				view.expandGroup(arrayIterator.next());
+			}
+			
+			view.setSelectedGroup(currentGroup.get(currentGroup.size()-1));
+		} catch (Exception e) {
+			//do nothing
 		}
-
-    	try {
-    		view.setSelectedGroup(currentGroup.get(currentGroup.size()-1));
-    	} catch (Exception e) {
-    		//do nothing
-    	}
-    	
-    	return;
-    }
-    
+		return;
+	}
+	
     /*
      * add / remove items from the current group arrayList
      */

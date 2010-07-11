@@ -87,4 +87,12 @@
 <string name="sortby_series">Sort by Series</string>
 <string name="sortby_loan">Sort by Loaned</string>
 <string name="list_price">List Price</string>
+<string name="date_started_reading">Date Started Reading</string>
+<string name="date_finished_reading">Date Finished Reading</string>
+<string name="update_thumbnails">Update Thumbnails</string>
+<string name="overwrite_thumbnail">Do you want to overwrite all existing thumbnails. Warning, this may take a long time. </string>
+<string name="yes">Yes</string>
+<string name="no">No</string>
+<string name="ok">OK</string>
+<string name="download_thumbs">Thumbnails are being downloaded in the background</string>
 </resources>

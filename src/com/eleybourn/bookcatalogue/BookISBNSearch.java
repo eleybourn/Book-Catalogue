@@ -165,7 +165,7 @@ public class BookISBNSearch extends Activity {
 		super.onResume();
 	}
 	
-	private String[] searchGoogle(String mIsbn) {
+	public String[] searchGoogle(String mIsbn) {
 		String path = "http://books.google.com/books/feeds/volumes?q=ISBN";
 		URL url;
 		//String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num};
@@ -218,7 +218,7 @@ public class BookISBNSearch extends Activity {
 	 * @param mIsbn The ISBN to search for
 	 * @return The book array
 	 */
-	private String[] searchAmazon(String mIsbn) {
+	public String[] searchAmazon(String mIsbn) {
 		//String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num};
 		String[] book = {"", "", mIsbn, "", "", "0",  "", "", "", "", ""};
 		String signedurl = "http://demo.lgsolutions.com.au/getRest.php?isbn="+mIsbn;

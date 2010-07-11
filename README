@@ -44,6 +44,8 @@ Features include;
 New in v2.4
 * Adding books will now (finally) search Amazon
 * A field for list price has been included (Requested by Brenda)
+* You can bulk update the thumbnails for all books with ISBN's from the Admin 
+  page
 
 New in v2.3
 * The book thumbnail now appears in the list view

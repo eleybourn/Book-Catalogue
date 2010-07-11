@@ -22,6 +22,7 @@ package com.eleybourn.bookcatalogue;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -32,11 +33,15 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
@@ -58,6 +63,8 @@ public class AdministrationFunctions extends Activity {
 	private String filePath = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/export.csv";
 	private String UTF8 = "utf8";
 	private int BUFFER_SIZE = 8192;
+	private ProgressDialog pd = null;
+	private int num = 0;
 	
 	/**
 	 * Called when the activity is first created. 
@@ -115,16 +122,48 @@ public class AdministrationFunctions extends Activity {
 				AlertDialog alertDialog = new AlertDialog.Builder(pthis).setMessage(R.string.import_alert).create();
 				alertDialog.setTitle(R.string.import_data);
 				alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-				alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+				alertDialog.setButton(pthis.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						importData();
 						Toast.makeText(pthis, importUpdated + " Updated, " + importCreated + " Created", Toast.LENGTH_LONG).show();
 						return;
 					}
 				}); 
-				alertDialog.setButton2("Cancel", new DialogInterface.OnClickListener() {
+				alertDialog.setButton2(pthis.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						//do nothing
+						return;
+					}
+				}); 
+				alertDialog.show();
+				return;
+			}
+		});
+		
+		/* Export Link */
+		TextView thumb = (TextView) findViewById(R.id.thumb_label);
+		thumb.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// Verify - this can be a dangerous operation
+				AlertDialog alertDialog = new AlertDialog.Builder(pthis).setMessage(R.string.overwrite_thumbnail).create();
+				alertDialog.setTitle(R.string.update_thumbnails);
+				alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
+				alertDialog.setButton(pthis.getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						updateThumbnails(true);
+						return;
+					}
+				}); 
+				alertDialog.setButton2(pthis.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						//do nothing
+						return;
+					}
+				}); 
+				alertDialog.setButton3(pthis.getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						updateThumbnails(false);
 						return;
 					}
 				}); 
@@ -135,14 +174,131 @@ public class AdministrationFunctions extends Activity {
 	}
 	
 	/**
-	 * Load the BookEdit Activity
-	 * 
-	 * return void
+	 * Load the Bookshelf Activity
 	 */
 	private void manageBookselves() {
 		Intent i = new Intent(this, Bookshelf.class);
 		startActivityForResult(i, ACTIVITY_BOOKSHELF);
 	}
+	
+	private class UpdateThumbnailsThread extends Thread {
+		public boolean overwrite = false;
+		public Cursor books = null;
+		private Handler mHandler;
+		
+		/**
+		 * @param handler
+		 */
+		public UpdateThumbnailsThread(Handler handler) {
+			mHandler = handler;
+		}
+		
+		private void sendMessage(int num, String title) {
+			/* Send message to the handler */
+			Message msg = mHandler.obtainMessage();
+			Bundle b = new Bundle();
+			b.putInt("total", num);
+			b.putString("title", title);
+			msg.setData(b);
+			mHandler.sendMessage(msg);
+			return;
+		}
+
+		@Override
+		public void run() {
+			Looper.prepare();
+			String tmpThumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/tmp.jpg";
+			String realThumbFilename = "";
+			startManagingCursor(books);
+			int num = 0;
+			while (books.moveToNext()) {
+				int id = books.getInt(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROWID));
+				String isbn = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ISBN));
+				String title = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE));
+				
+				num++;
+				// delete any tmp thumbnails //
+				try {
+					File delthumb = new File(tmpThumbFilename);
+					delthumb.delete();
+				} catch (Exception e) {
+					// do nothing - this is the expected behaviour 
+				}
+				
+				realThumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/" + id + ".jpg";
+				File thumb = new File(realThumbFilename);
+				if ((overwrite == true || !thumb.exists()) && !isbn.equals("")) {
+					sendMessage(num, title);
+					BookISBNSearch bis = new BookISBNSearch();
+					bis.searchAmazon(isbn);
+					File tmpthumb = new File(tmpThumbFilename);
+					/* If amazon fails, try google books */
+					if (!tmpthumb.exists()) {
+						bis.searchGoogle(isbn);
+						tmpthumb = new File(tmpThumbFilename);
+					}
+					
+					/* Copy tmpthumb over realthumb */
+					try {
+						tmpthumb.renameTo(thumb);
+					} catch (Exception e) {
+						//do nothing
+					}
+					
+				} else {
+					sendMessage(num, "Skip - " + title);
+				}
+			}
+			sendMessage(0, "Complete");
+		}
+		
+	}	
+	
+	/**
+	 * Update all (non-existent) thumbnails
+	 * 
+	 * There is a current limitation that restricts the search to only books with an ISBN
+	 */
+	private void updateThumbnails(boolean overwrite) {
+		Cursor books = mDbHelper.fetchAllBooks("b." + CatalogueDBAdapter.KEY_ROWID, "All Books");
+		
+		pd = new ProgressDialog(AdministrationFunctions.this);
+		pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+		pd.setMessage("Updating...");
+		pd.setCancelable(false);
+		pd.setMax(books.getCount());
+		pd.show();
+		
+		//pd = ProgressDialog.show(this, getResources().getString(R.string.update_thumbnails), "Updating ...", false);
+		//pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+		//pd.setMax(100);
+		
+		UpdateThumbnailsThread thread = new UpdateThumbnailsThread(handler);
+		thread.overwrite = overwrite;
+		thread.books = books;
+		thread.start();
+		//Toast.makeText(AdministrationFunctions.this, R.string.download_thumbs, Toast.LENGTH_LONG).show();
+	}
+	
+	final Handler handler = new Handler() {
+		public void handleMessage(Message msg) {
+			int total = msg.getData().getInt("total");
+			String title = msg.getData().getString("title");
+			if (total == 0) {
+				//Toast.makeText(AdministrationFunctions.this, num + " Thumbnail Updated", Toast.LENGTH_LONG).show();
+				pd.dismiss();
+				//progressThread.setState(UpdateThumbnailsThread.STATE_DONE);
+			} else {
+				num += 1;
+				pd.incrementProgressBy(1);
+				if (title.length() > 21) {
+					title = title.substring(0, 20) + "...";
+				}
+				pd.setMessage(title);
+			}
+		}
+	};
+
 	
 	/*
 	 * Export all data to a CSV file

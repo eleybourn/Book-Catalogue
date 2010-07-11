@@ -126,7 +126,7 @@ public class CatalogueDBAdapter {
 		;
 	
 	private final Context mCtx;
-	private static final int DATABASE_VERSION = 29;
+	private static final int DATABASE_VERSION = 30;
 	
 	/**
 	 * This is a specific version of the SQLiteOpenHelper class. It handles onCreate and onUpgrade events
@@ -283,6 +283,13 @@ public class CatalogueDBAdapter {
 				} catch (Exception e) {
 					//do nothing
 				}
+			}
+			if (curVersion == 29) {
+				//do nothing
+				curVersion++;
+				message += "* Adding books will now (finally) search Amazon\n\n";
+				message += "* A field for list price has been included (Requested by Brenda)\n\n";
+				message += "* You can bulk update the thumbnails for all books with ISBN's from the Admin page\n\n";
 			}
 		}
 	}

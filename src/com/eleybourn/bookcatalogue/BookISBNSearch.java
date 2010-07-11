@@ -120,34 +120,40 @@ public class BookISBNSearch extends Activity {
 			// do nothing - this is the expected behaviour 
 		}
 		/* Get the book */
-		String[] book;
-		String[] bookAmazon;
-		book = searchGoogle(isbn);
-		bookAmazon = searchAmazon(isbn);
-		//Look for series in Title. e.g. Red Phoenix (Dark Heavens Trilogy)
-		book[8] = findSeries(book[1]);
-		bookAmazon[8] = findSeries(bookAmazon[1]);
-		
-		/* Fill blank fields as required */
-		for (int i = 0; i<book.length; i++) {
-			if (book[i] == "" || book[i] == "0") {
-				book[i] = bookAmazon[i];
+		try {
+			String[] book;
+			String[] bookAmazon;
+			book = searchGoogle(isbn);
+			bookAmazon = searchAmazon(isbn);
+			//Look for series in Title. e.g. Red Phoenix (Dark Heavens Trilogy)
+			book[8] = findSeries(book[1]);
+			bookAmazon[8] = findSeries(bookAmazon[1]);
+			
+			/* Fill blank fields as required */
+			for (int i = 0; i<book.length; i++) {
+				if (book[i] == "" || book[i] == "0") {
+					book[i] = bookAmazon[i];
+				}
 			}
+			
+			/* Format the output 
+			 * String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num, list_price};
+			 */
+			if (book[0] == "" && book[1] == "") {
+				Toast.makeText(this, R.string.book_not_found, Toast.LENGTH_LONG).show();
+			} else {
+				book[0] = properCase(book[0]); // author
+				book[1] = properCase(book[1]); // title
+				book[3] = properCase(book[3]); // publisher
+				book[4] = convertDate(book[4]); // date_published
+				book[8] = properCase(book[8]); // series
+			}
+			createBook(book);
+		} catch (Exception e) {
+			Toast.makeText(this, R.string.search_fail, Toast.LENGTH_LONG).show();
+			finish();
+			return;
 		}
-		
-		/* Format the output 
-		 * String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num, list_price};
-		 */
-		if (book[0] == "" && book[1] == "") {
-			Toast.makeText(this, R.string.book_not_found, Toast.LENGTH_LONG).show();
-		} else {
-			book[0] = properCase(book[0]); // author
-			book[1] = properCase(book[1]); // title
-			book[3] = properCase(book[3]); // publisher
-			book[4] = convertDate(book[4]); // date_published
-			book[8] = properCase(book[8]); // series
-		}
-		createBook(book);
 	}
 	
 	@Override

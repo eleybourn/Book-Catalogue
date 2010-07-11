@@ -95,4 +95,5 @@
 <string name="no">No</string>
 <string name="ok">OK</string>
 <string name="download_thumbs">Thumbnails are being downloaded in the background</string>
+<string name="search_fail">Searching for the book failed. Please check your network settings.</string>
 </resources>

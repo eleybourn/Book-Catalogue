@@ -244,7 +244,12 @@ public class BookEditFields extends Activity {
 			mBookshelfText.setSelection(spinnerAdapter.getPosition(book[6]));
 			mSeriesText.setText(book[8]);
 			mSeriesNumText.setText(book[10]);
-			mListPriceText.setText(book[11]);
+			try {
+				//just in case - there was an exception earlier, but it should be fixed
+				mListPriceText.setText(book[11]);
+			} catch (Exception e) {
+				//do nothing
+			}
 			mPagesText.setText(book[9]);
 			mConfirmButton.setText(R.string.confirm_add);
 			String tmpThumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/tmp.jpg";

@@ -175,7 +175,7 @@ public class BookISBNSearch extends Activity {
 		String path = "http://books.google.com/books/feeds/volumes?q=ISBN";
 		URL url;
 		//String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num};
-		String[] book = {"", "", mIsbn, "", "", "0",  "", "", "", "", ""};
+		String[] book = {"", "", mIsbn, "", "", "0",  "", "", "", "", "", ""};
 		
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		SAXParser parser;
@@ -226,7 +226,7 @@ public class BookISBNSearch extends Activity {
 	 */
 	public String[] searchAmazon(String mIsbn) {
 		//String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num};
-		String[] book = {"", "", mIsbn, "", "", "0",  "", "", "", "", ""};
+		String[] book = {"", "", mIsbn, "", "", "0",  "", "", "", "", "", ""};
 		String signedurl = "http://demo.lgsolutions.com.au/getRest.php?isbn="+mIsbn;
 		URL url;
 		

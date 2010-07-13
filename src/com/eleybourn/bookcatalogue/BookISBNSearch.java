@@ -21,7 +21,6 @@
 package com.eleybourn.bookcatalogue;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -210,7 +209,7 @@ public class BookISBNSearch extends Activity {
 			//Log.e("Book Catalogue", "SAX Parsing Error " + e.getMessage());
 		} catch (SAXException e) {
 			//Log.e("Book Catalogue", "SAX Exception " + e.getMessage());
-		} catch (IOException e) {
+		} catch (Exception e) {
 			//Log.e("Book Catalogue", "SAX IO Exception " + e.getMessage());
 		}
 		return null;
@@ -250,7 +249,7 @@ public class BookISBNSearch extends Activity {
 			//Log.e("Book Catalogue", "SAX Parsing Error " + e.getMessage());
 		} catch (SAXException e) {
 			//Log.e("Book Catalogue", "SAX Exception " + e.getMessage());
-		} catch (IOException e) {
+		} catch (Exception e) {
 			//Log.e("Book Catalogue", "SAX IO Exception " + e.getMessage());
 		}
 		return null;

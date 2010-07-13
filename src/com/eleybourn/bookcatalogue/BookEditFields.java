@@ -29,7 +29,10 @@ import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -67,6 +70,8 @@ public class BookEditFields extends Activity {
 	public static String ADDED_SERIES = "ADDED_SERIES";
 	public static String ADDED_TITLE = "ADDED_TITLE";
 	public static String ADDED_AUTHOR = "ADDED_AUTHOR";
+	
+	private static final int DELETE_ID = 1;
 
 	protected void getRowId() {
 		/* Get any information from the extras bundle */
@@ -160,6 +165,14 @@ public class BookEditFields extends Activity {
 			}
 			populateFields();
 			
+			mImageView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+				@Override
+				public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+					MenuItem delete = menu.add(0, DELETE_ID, 0, R.string.menu_delete_thumb);
+					delete.setIcon(android.R.drawable.ic_menu_delete);
+				}
+			});
+			
 			mConfirmButton.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
 					saveState();
@@ -187,6 +200,42 @@ public class BookEditFields extends Activity {
 		}
 	}
 	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		switch(item.getItemId()) {
+		case DELETE_ID:
+			deleteThumbnail(mRowId);
+			populateFields();
+			return true;
+		}
+		return super.onContextItemSelected(item);
+	}
+	
+	/**
+	 * Delete the provided thumbnail from the sdcard
+	 * 
+	 * @param id The id of the book (and thumbnail) to delete
+	 */
+	private void deleteThumbnail(long id) {
+		try {
+			String tmpThumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/" + id + ".jpg";
+			File thumb = new File(tmpThumbFilename);
+			thumb.delete();
+			
+			tmpThumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/tmp.jpg";
+			thumb = new File(tmpThumbFilename);
+			thumb.delete();
+		} catch (Exception e) {
+			// something has gone wrong. 
+		}
+	}
+	
+	/**
+	 * This function will populate the forms elements in three different ways
+	 * 1. If a valid rowId exists it will populate the fields from the database
+	 * 2. If fields have been passed from another activity (e.g. ISBNSearch) it will populate the fields from the bundle
+	 * 3. It will leave the fields blank for new books.
+	 */
 	private void populateFields() {
 		Bundle extras = getIntent().getExtras();
 		if (mRowId == null) {
@@ -217,7 +266,12 @@ public class BookEditFields extends Activity {
 			mPagesText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PAGES)));
 			mConfirmButton.setText(R.string.confirm_save);
 			String thumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/" + mRowId + ".jpg";
-			mImageView.setImageBitmap(BitmapFactory.decodeFile(thumbFilename));
+			File thumb = new File(thumbFilename);
+			if (thumb.exists()) {
+				mImageView.setImageBitmap(BitmapFactory.decodeFile(thumbFilename));
+			} else {
+				mImageView.setImageResource(android.R.drawable.ic_menu_help);
+			}
 			rating = book.getFloat(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_RATING));
 			read = (book.getInt(book.getColumnIndex(CatalogueDBAdapter.KEY_READ))==0 ? false:true);
 			notes = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_NOTES));
@@ -252,8 +306,13 @@ public class BookEditFields extends Activity {
 			}
 			mPagesText.setText(book[9]);
 			mConfirmButton.setText(R.string.confirm_add);
-			String tmpThumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/tmp.jpg";
-			mImageView.setImageBitmap(BitmapFactory.decodeFile(tmpThumbFilename));
+			String thumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/tmp.jpg";
+			File thumb = new File(thumbFilename);
+			if (thumb.exists()) {
+				mImageView.setImageBitmap(BitmapFactory.decodeFile(thumbFilename));
+			} else {
+				mImageView.setImageResource(android.R.drawable.ic_menu_help);
+			}
 		} else {
 			// Manual Add
 			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + this.getResources().getString(R.string.menu_insert));
@@ -271,16 +330,16 @@ public class BookEditFields extends Activity {
 		}
 	}
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-    
-    @Override
-    protected void onResume() {
-        super.onResume();
-        populateFields();
-    }
+	@Override
+	protected void onPause() {
+		super.onPause();
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		populateFields();
+	}
 	
 	/**
 	 * This will save a book into the database, by either updating or created a book.

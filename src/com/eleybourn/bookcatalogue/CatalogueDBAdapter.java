@@ -126,7 +126,7 @@ public class CatalogueDBAdapter {
 		;
 	
 	private final Context mCtx;
-	private static final int DATABASE_VERSION = 30;
+	private static final int DATABASE_VERSION = 31;
 	
 	/**
 	 * This is a specific version of the SQLiteOpenHelper class. It handles onCreate and onUpgrade events
@@ -290,6 +290,11 @@ public class CatalogueDBAdapter {
 				message += "* Adding books will now (finally) search Amazon\n\n";
 				message += "* A field for list price has been included (Requested by Brenda)\n\n";
 				message += "* You can bulk update the thumbnails for all books with ISBN's from the Admin page\n\n";
+			}
+			if (curVersion == 30) {
+				//do nothing
+				curVersion++;
+				message += "* You can now delete individual thumbnails by holding on the image and selecting delete.\n\n";
 			}
 		}
 	}
@@ -597,7 +602,7 @@ public class CatalogueDBAdapter {
 			where + 
 			" ORDER BY a." + KEY_FAMILY_NAME + ", a." + KEY_GIVEN_NAMES;
 		Cursor results = mDb.rawQuery(sql, null);
-		int pos = getIntValue(results, 0)+1;
+		int pos = getIntValue(results, 0);
 		return pos;
 	}
 	

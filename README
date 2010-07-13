@@ -41,6 +41,10 @@ Features include;
   case. e.g. "The murder on the links" becomes "The Murder on the Links"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+New in v2.4.2
+* You can now delete individual thumbnails by holding on the image and 
+  selecting delete.
+
 New in v2.4
 * Adding books will now (finally) search Amazon
 * A field for list price has been included (Requested by Brenda)

@@ -55,7 +55,7 @@
 <string name="results_found">Results Found</string>
 <string name="administration_label">Administration</string>
 <string name="administration_title">Book Catalogue: Administration</string>
-<string name="menu_administration">Administration</string>
+<string name="menu_administration">Admin</string>
 <string name="install_scan">To scan your books via the ISBN barcode, you must install the zxing barcode scanner application. Press OK to install, or Cancel to skip.</string>
 <string name="install_scan_title">Install Barcode Scanner</string>
 <string name="version_number">Version Number</string>
@@ -97,4 +97,8 @@
 <string name="download_thumbs">Thumbnails are being downloaded in the background</string>
 <string name="search_fail">Searching for the book failed. Please check your network settings.</string>
 <string name="menu_delete_thumb">Delete Thumbnail</string>
+<string name="help">Help</string>
+<string name="filler_help_text">Full online application help will come soon. </string>
+<string name="menu_manage_fields">Manage Field Visibility</string>
+<string name="manage_fields_help">Selected fields are visible in the add/edit book screens. Unselected fields are hidden.</string>
 </resources>

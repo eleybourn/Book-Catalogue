@@ -22,6 +22,7 @@ package com.eleybourn.bookcatalogue;
 
 //import android.R;
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
@@ -29,6 +30,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RatingBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /*
@@ -54,7 +56,9 @@ public class BookEditNotes extends Activity {
 	private String series_num;
 	private String list_price;
 	private int pages;
-
+	
+	private static final int GONE = 8;
+	
 	protected void getRowId() {
 		/* Get any information from the extras bundle */
 		Bundle extras = getIntent().getExtras();
@@ -63,25 +67,45 @@ public class BookEditNotes extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		SharedPreferences mPrefs = getSharedPreferences("bookCatalogue", MODE_PRIVATE);
+		String visibility_prefix = FieldVisibility.prefix;
+		boolean field_visibility = true;
 		try {
 			super.onCreate(savedInstanceState);
 			mDbHelper = new CatalogueDBAdapter(this);
 			mDbHelper.open();
-
+			
 			setContentView(R.layout.edit_book_notes);
-
+			
 			mRatingText = (RatingBar) findViewById(R.id.rating);
+			field_visibility = mPrefs.getBoolean(visibility_prefix + "rating", true);
+			if (field_visibility == false) {
+				TextView mRatingLabel = (TextView) findViewById(R.id.rating_label);
+				mRatingLabel.setVisibility(GONE);
+				mRatingText.setVisibility(GONE);
+			}
+			
 			mReadText = (CheckBox) findViewById(R.id.read);
+			field_visibility = mPrefs.getBoolean(visibility_prefix + "read", true);
+			if (field_visibility == false) {
+				mReadText.setVisibility(GONE);
+			}
+			
 			mNotesText = (EditText) findViewById(R.id.notes);
+			field_visibility = mPrefs.getBoolean(visibility_prefix + "notes", true);
+			if (field_visibility == false) {
+				mNotesText.setVisibility(GONE);
+			}
+			
 			mConfirmButton = (Button) findViewById(R.id.confirm);
 			mCancelButton = (Button) findViewById(R.id.cancel);
-
+			
 			mRowId = savedInstanceState != null ? savedInstanceState.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
 			if (mRowId == null) {
 				getRowId();
 			}
 			populateFields();
-
+			
 			mConfirmButton.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
 					saveState();
@@ -89,7 +113,7 @@ public class BookEditNotes extends Activity {
 					finish();
 				}
 			});
-
+			
 			mCancelButton.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
 					setResult(RESULT_OK);

@@ -28,6 +28,8 @@
 <activity android:name=".AdministrationAbout"></activity>
 <activity android:name=".AdministrationDonate"></activity>
 <activity android:name=".AdministrationFunctions"></activity>
+<activity android:name=".Help"></activity>
+<activity android:name=".FieldVisibility"></activity>
 </application>
     <uses-sdk android:minSdkVersion="7" />
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>

@@ -28,7 +28,7 @@ import android.widget.TabHost;
 
 /**
  * 
- * This is the Administration tab host. It contains three tabls 
+ * This is the Administration tab host. It contains three tabs 
  * 1. About this app - links to my website and email
  * 2. Functions to export and import books and functions to manage bookshelves.
  * 3. Donate tab
@@ -55,6 +55,15 @@ public class Administration extends TabActivity {
 		Bundle extras = getIntent().getExtras();
 		
 		// Create an Intent to launch an Activity for the tab (to be reused)
+		intent = new Intent().setClass(this, Help.class);
+		if (extras != null) {
+			intent.putExtras(extras);
+		}
+		// Initialise a TabSpec for each tab and add it to the TabHost
+		spec = tabHost.newTabSpec("help").setIndicator(res.getString(R.string.help)).setContent(intent);
+		tabHost.addTab(spec);
+		
+		// Do the same for the other tabs
 		intent = new Intent().setClass(this, AdministrationFunctions.class);
 		if (extras != null) {
 			intent.putExtras(extras);
@@ -63,7 +72,6 @@ public class Administration extends TabActivity {
 		spec = tabHost.newTabSpec("admin_functions").setIndicator(res.getString(R.string.administration_label)).setContent(intent);
 		tabHost.addTab(spec);
 
-		// Do the same for the other tabs
 		intent = new Intent().setClass(this, AdministrationDonate.class);
 		if (extras != null) {
 			intent.putExtras(extras);

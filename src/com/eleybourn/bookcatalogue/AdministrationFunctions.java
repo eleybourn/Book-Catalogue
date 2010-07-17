@@ -57,6 +57,7 @@ import android.widget.Toast;
  */
 public class AdministrationFunctions extends Activity {
 	private static final int ACTIVITY_BOOKSHELF=1;
+	private static final int ACTIVITY_FIELD_VISIBILITY=2;
 	private CatalogueDBAdapter mDbHelper;
 	private int importUpdated = 0;
 	private int importCreated = 0;
@@ -83,7 +84,7 @@ public class AdministrationFunctions extends Activity {
 	}
 	
 	/**
-	 * This function builds the Admin page in 4 sections. 
+	 * This function builds the Administration page in 4 sections. 
 	 * 1. The button to goto the manage bookshelves activity
 	 * 2. The button to export the database
 	 * 3. The button to import the exported file into the database
@@ -97,6 +98,16 @@ public class AdministrationFunctions extends Activity {
 			@Override
 			public void onClick(View v) {
 				manageBookselves();
+				return;
+			}
+		});
+		
+		/* Manage Fields Link */
+		TextView fields = (TextView) findViewById(R.id.fields_label);
+		fields.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				manageFields();
 				return;
 			}
 		});
@@ -179,6 +190,14 @@ public class AdministrationFunctions extends Activity {
 	private void manageBookselves() {
 		Intent i = new Intent(this, Bookshelf.class);
 		startActivityForResult(i, ACTIVITY_BOOKSHELF);
+	}
+	
+	/**
+	 * Load the Manage Field Visibility Activity
+	 */
+	private void manageFields() {
+		Intent i = new Intent(this, FieldVisibility.class);
+		startActivityForResult(i, ACTIVITY_FIELD_VISIBILITY);
 	}
 	
 	private class UpdateThumbnailsThread extends Thread {
@@ -504,6 +523,7 @@ public class AdministrationFunctions extends Activity {
 		super.onActivityResult(requestCode, resultCode, intent);
 		switch(requestCode) {
 		case ACTIVITY_BOOKSHELF:
+		case ACTIVITY_FIELD_VISIBILITY:
 			//do nothing (yet)
 			break;
 		}

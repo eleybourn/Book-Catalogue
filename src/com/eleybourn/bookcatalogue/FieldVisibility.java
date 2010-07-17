@@ -1,0 +1,121 @@
+/*
+ * @copyright 2010 Evan Leybourn
+ * @license GNU General Public License
+ * 
+ * This file is part of Book Catalogue.
+ *
+ * Book Catalogue is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Book Catalogue is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package com.eleybourn.bookcatalogue;
+
+import android.app.Activity;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+/**
+ * 
+ * This is the Field Visibility page. It contains a list of all fields and a 
+ * checkbox to enable or disable the field on the main edit book screen.
+ * 
+ * @author Evan Leybourn
+ */
+public class FieldVisibility extends Activity {
+	public final static String prefix = "field_visibility_";
+	
+	/**
+	 * Called when the activity is first created. 
+	 */
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		try {
+			super.onCreate(savedInstanceState);
+			setContentView(R.layout.field_visibility);
+			setupFields();
+		} catch (Exception e) {
+			//Log.e("Book Catalogue", "Unknown Exception - BC onCreate - " + e.getMessage() );
+		}
+	}
+	
+	/**
+	 * This function builds the manage field visibility by adding onClick events
+	 * to each field checkbox
+	 */
+	public void setupFields() {
+		// The fields to show/hide
+		String[] fields = {"author", "title", "isbn", "series", "series_num", "publisher", "date_published", 
+				"bookshelf", "pages", "list_price", "read", "rating", "notes"};
+		int[] fieldRs = {R.string.author, R.string.title, R.string.isbn, R.string.series, R.string.series_num, 
+				R.string.publisher, R.string.date_published, R.string.bookshelf, R.string.pages, R.string.list_price,
+				R.string.read, R.string.rating, R.string.notes};
+		boolean[] compulsary = {true, true, false, false, false, false, false, 
+				true, false, false, false, false, false};
+		
+		SharedPreferences mPrefs = getSharedPreferences("bookCatalogue", MODE_PRIVATE);
+		//SharedPreferences.Editor ed = mPrefs.edit();
+		//ed.putString(STATE_BOOKSHELF, bookshelf);
+		//ed.commit();
+		
+		// Display the list of fields
+		LinearLayout parent = (LinearLayout) findViewById(R.id.manage_fields_scrollview);
+		for (int i = 0; i<fields.length; i++) {
+			final String prefs_name = prefix + fields[i];
+			//Create the LinearLayout to hold each row
+			LinearLayout ll = new LinearLayout(this);
+			ll.setPadding(5, 0, 0, 0);
+			
+			//Create the checkbox
+			boolean field_visibility = mPrefs.getBoolean(prefs_name, true);
+			CheckBox cb = new CheckBox(this);
+			cb.setChecked(field_visibility);
+			if (compulsary[i] == true) {
+				cb.setEnabled(false);
+			} else {
+				cb.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						SharedPreferences mPrefs = getSharedPreferences("bookCatalogue", MODE_PRIVATE);
+						SharedPreferences.Editor ed = mPrefs.edit();
+						boolean field_visibility = mPrefs.getBoolean(prefs_name, true);
+						ed.putBoolean(prefs_name, !field_visibility);
+						ed.commit();
+						return;
+					}
+				});
+			}
+			ll.addView(cb);
+			
+			//Create the checkBox label (or textView)
+			TextView tv = new TextView(this);
+			tv.setTextAppearance(this, android.R.attr.textAppearanceLarge);
+			tv.setText(fieldRs[i]);
+			tv.setPadding(0, 5, 0, 0);
+			if (compulsary[i] == true) {
+				tv.setTextColor(Color.GRAY);
+			} 
+			ll.addView(tv);
+			
+			//Add the LinearLayout to the parent
+			parent.addView(ll);
+			
+		}
+	}
+
+}

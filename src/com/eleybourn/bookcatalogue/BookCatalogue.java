@@ -88,7 +88,7 @@ public class BookCatalogue extends ExpandableListActivity {
 	private static final int EDIT_BOOK_NOTES = Menu.FIRST + 11;
 	private static final int EDIT_BOOK_FRIENDS = Menu.FIRST + 12;
 	
-	private String bookshelf = "";
+	public static String bookshelf = "All Books";
 	private ArrayAdapter<String> spinnerAdapter;
 	private Spinner mBookshelfText;
 	
@@ -182,9 +182,10 @@ public class BookCatalogue extends ExpandableListActivity {
 		mBookshelfText.setAdapter(spinnerAdapter);
 		
 		// Add the default All Books bookshelf
-		spinnerAdapter.add(getString(R.string.all_books)); 
-		int pos = 1;
+		int pos = 0;
 		int bspos = pos;
+		spinnerAdapter.add(getString(R.string.all_books)); 
+		pos++;
 		
 		Cursor bookshelves = mDbHelper.fetchAllBookshelves();
 		if (bookshelves.moveToFirst()) { 
@@ -213,6 +214,10 @@ public class BookCatalogue extends ExpandableListActivity {
 					currentGroup = new ArrayList<Integer>();
 				}
 				bookshelf = new_bookshelf;
+				// save the current bookshelf into the preferences
+				SharedPreferences.Editor ed = mPrefs.edit();
+				ed.putString(STATE_BOOKSHELF, bookshelf);
+				ed.commit();
 				fillData();
 			}
 			
@@ -862,7 +867,8 @@ public class BookCatalogue extends ExpandableListActivity {
 		MenuItem sortby = menu.add(0, SORT_BY, 4, R.string.menu_sort_by);
 		sortby.setIcon(android.R.drawable.ic_menu_sort_alphabetically);
 		
-		MenuItem admin = menu.add(0, ADMIN, 5, R.string.menu_administration);
+		String adminTitle = getResources().getString(R.string.help) + " & " + getResources().getString(R.string.menu_administration);
+		MenuItem admin = menu.add(0, ADMIN, 5, adminTitle);
 		admin.setIcon(android.R.drawable.ic_menu_manage);
 		
 		return super.onPrepareOptionsMenu(menu);
@@ -940,11 +946,19 @@ public class BookCatalogue extends ExpandableListActivity {
 		if (index == -1) {
 			//it does not exist (so is not open), so add to the list
 			currentGroup.add(pos);
+			/* Add the latest position to the preferences */
+			SharedPreferences.Editor ed = mPrefs.edit();
+			ed.putInt(STATE_LASTBOOK, pos);
+			ed.commit();
 		} else {
 			//it does exist (so is open), so remove from the list
 			currentGroup.remove(index);
 			if (force == true) {
 				currentGroup.add(pos);
+				/* Add the latest position to the preferences */
+				SharedPreferences.Editor ed = mPrefs.edit();
+				ed.putInt(STATE_LASTBOOK, pos);
+				ed.commit();
 			}
 		}
 	}
@@ -1044,6 +1058,10 @@ public class BookCatalogue extends ExpandableListActivity {
 		sort = SORT_TITLE;
 		currentGroup = new ArrayList<Integer>();
 		fillData();
+		/* Save the current sort settings */
+		SharedPreferences.Editor ed = mPrefs.edit();
+		ed.putInt(STATE_SORT, sort);
+		ed.commit();
 	}
 	
 	/**
@@ -1053,6 +1071,10 @@ public class BookCatalogue extends ExpandableListActivity {
 		sort = SORT_AUTHOR;
 		currentGroup = new ArrayList<Integer>();
 		fillData();
+		/* Save the current sort settings */
+		SharedPreferences.Editor ed = mPrefs.edit();
+		ed.putInt(STATE_SORT, sort);
+		ed.commit();
 	}
 	
 	/**
@@ -1062,6 +1084,10 @@ public class BookCatalogue extends ExpandableListActivity {
 		sort = SORT_SERIES;
 		currentGroup = new ArrayList<Integer>();
 		fillData();
+		/* Save the current sort settings */
+		SharedPreferences.Editor ed = mPrefs.edit();
+		ed.putInt(STATE_SORT, sort);
+		ed.commit();
 	}
 	
 	/**
@@ -1071,6 +1097,10 @@ public class BookCatalogue extends ExpandableListActivity {
 		sort = SORT_LOAN;
 		currentGroup = new ArrayList<Integer>();
 		fillData();
+		/* Save the current sort settings */
+		SharedPreferences.Editor ed = mPrefs.edit();
+		ed.putInt(STATE_SORT, sort);
+		ed.commit();
 	}
 	
 	/**
@@ -1236,4 +1266,5 @@ public class BookCatalogue extends ExpandableListActivity {
 		ed.commit();
 		super.onPause();
 	}
+	
 }

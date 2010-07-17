@@ -79,7 +79,8 @@
 			android:nextFocusDown="@+id/date_published"
 			/>
 
-		<TextView android:layout_width="fill_parent"
+		<TextView android:id="@+id/date_published_label" 
+			android:layout_width="fill_parent"
 			android:layout_height="wrap_content" 
 			android:text="@string/date_published" 
 			android:textSize="16sp" />

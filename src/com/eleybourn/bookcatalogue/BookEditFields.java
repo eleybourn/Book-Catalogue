@@ -25,10 +25,12 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,6 +42,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class BookEditFields extends Activity {
@@ -72,13 +75,14 @@ public class BookEditFields extends Activity {
 	public static String ADDED_AUTHOR = "ADDED_AUTHOR";
 	
 	private static final int DELETE_ID = 1;
-
+	private static final int GONE = 8;
+	
 	protected void getRowId() {
 		/* Get any information from the extras bundle */
 		Bundle extras = getIntent().getExtras();
 		mRowId = extras != null ? extras.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
 	}
-
+	
 	protected ArrayList<String> getAuthors() {
 		ArrayList<String> author_list = new ArrayList<String>();
 		Cursor author_cur = mDbHelper.fetchAllAuthors("All Books");
@@ -118,7 +122,12 @@ public class BookEditFields extends Activity {
 	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		SharedPreferences mPrefs = getSharedPreferences("bookCatalogue", MODE_PRIVATE);
+		String visibility_prefix = FieldVisibility.prefix;
+		boolean field_visibility = true;
 		try {
+			//TODO: Compulsory fields
+			//TODO: How did list become "null"
 			super.onCreate(savedInstanceState);
 			mDbHelper = new CatalogueDBAdapter(this);
 			mDbHelper.open();
@@ -128,20 +137,66 @@ public class BookEditFields extends Activity {
 			ArrayAdapter<String> author_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getAuthors());
 			mAuthorText = (AutoCompleteTextView) findViewById(R.id.author);
 			mAuthorText.setAdapter(author_adapter);
+			field_visibility = mPrefs.getBoolean(visibility_prefix + "author", true);
+			if (field_visibility == false) {
+				mAuthorText.setVisibility(GONE);
+			}
+			
 			mTitleText = (EditText) findViewById(R.id.title);
+			field_visibility = mPrefs.getBoolean(visibility_prefix + "title", true);
+			if (field_visibility == false) {
+				mTitleText.setVisibility(GONE);
+			}
+			
 			mIsbnText = (EditText) findViewById(R.id.isbn);
+			field_visibility = mPrefs.getBoolean(visibility_prefix + "isbn", true);
+			if (field_visibility == false) {
+				mIsbnText.setVisibility(GONE);
+			}
 			
 			ArrayAdapter<String> publisher_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getPublishers());
 			mPublisherText = (AutoCompleteTextView) findViewById(R.id.publisher);
 			mPublisherText.setAdapter(publisher_adapter);
+			field_visibility = mPrefs.getBoolean(visibility_prefix + "publisher", true);
+			if (field_visibility == false) {
+				mPublisherText.setVisibility(GONE);
+				Log.e("BC", "Gone");
+			}
+			
 			mDate_publishedText = (DatePicker) findViewById(R.id.date_published);
+			field_visibility = mPrefs.getBoolean(visibility_prefix + "date_published", true);
+			if (field_visibility == false) {
+				TextView mDate_publishedLabel = (TextView) findViewById(R.id.date_published_label);
+				mDate_publishedLabel.setVisibility(GONE);
+				mDate_publishedText.setVisibility(GONE);
+			}
+			
 			ArrayAdapter<String> series_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getSeries());
 			mSeriesText = (AutoCompleteTextView) findViewById(R.id.series);
 			mSeriesText.setAdapter(series_adapter);
+			field_visibility = mPrefs.getBoolean(visibility_prefix + "series", true);
+			if (field_visibility == false) {
+				mSeriesText.setVisibility(GONE);
+			}
 			
 			mSeriesNumText = (EditText) findViewById(R.id.series_num);
+			field_visibility = mPrefs.getBoolean(visibility_prefix + "series_num", true);
+			if (field_visibility == false) {
+				mSeriesNumText.setVisibility(GONE);
+			}
+			
 			mListPriceText = (EditText) findViewById(R.id.list_price);
+			field_visibility = mPrefs.getBoolean(visibility_prefix + "list_price", true);
+			if (field_visibility == false) {
+				mListPriceText.setVisibility(GONE);
+			}
+			
 			mPagesText = (EditText) findViewById(R.id.pages);
+			field_visibility = mPrefs.getBoolean(visibility_prefix + "pages", true);
+			if (field_visibility == false) {
+				mPagesText.setVisibility(GONE);
+			}
+			
 			mConfirmButton = (Button) findViewById(R.id.confirm);
 			mCancelButton = (Button) findViewById(R.id.cancel);
 			mImageView = (ImageView) findViewById(R.id.row_img);
@@ -158,6 +213,10 @@ public class BookEditFields extends Activity {
 				} 
 				while (bookshelves.moveToNext()); 
 			} 
+			field_visibility = mPrefs.getBoolean(visibility_prefix + "bookshelf", true);
+			if (field_visibility == false) {
+				mBookshelfText.setVisibility(GONE);
+			}
 			
 			mRowId = savedInstanceState != null ? savedInstanceState.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
 			if (mRowId == null) {
@@ -316,6 +375,11 @@ public class BookEditFields extends Activity {
 		} else {
 			// Manual Add
 			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + this.getResources().getString(R.string.menu_insert));
+			try {
+				mBookshelfText.setSelection(spinnerAdapter.getPosition(BookCatalogue.bookshelf));
+			} catch (Exception e) {
+				//do nothing. The default will not be set
+			}
 			mConfirmButton.setText(R.string.confirm_add);
 		}
 	}

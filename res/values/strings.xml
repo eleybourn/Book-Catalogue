@@ -59,7 +59,7 @@
 <string name="install_scan">To scan your books via the ISBN barcode, you must install the zxing barcode scanner application. Press OK to install, or Cancel to skip.</string>
 <string name="install_scan_title">Install Barcode Scanner</string>
 <string name="version_number">Version Number</string>
-<string name="donate">If you would like to support the development of this application, please donate using the paypal button. Being in Australia means I cannot publish a &quot;paid&quot; version. :-) </string>
+<string name="donate">If you would like to support the development of this application, please donate using a my Amazon Wishlist or the paypal button below. Being in Australia means I cannot publish a &quot;paid&quot; version. :-) </string>
 <string name="unable_to_connect_amazon">Unable to Connect to Amazon</string>
 <string name="upgrade_title">Since your last upgrade</string>
 <string name="edit_book">Edit Book</string>
@@ -101,4 +101,9 @@
 <string name="filler_help_text">Full online application help will come soon. </string>
 <string name="menu_manage_fields">Manage Field Visibility</string>
 <string name="manage_fields_help">Selected fields are visible in the add/edit book screens. Unselected fields are hidden.</string>
+<string name="edit_book_anthology">Anthology</string>
+<string name="amazon_wishlist">Amazon Wishlist</string>
+<string name="same_author">All stories in this anthology are written by the same author</string>
+<string name="menu_delete_anthology">Delete Title from Anthology</string>
+<string name="is_anthology">Is this book an Anthology</string>
 </resources>

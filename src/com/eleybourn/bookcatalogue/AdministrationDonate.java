@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 /**
  * 
@@ -67,6 +68,17 @@ public class AdministrationDonate extends Activity {
 			@Override
 			public void onClick(View v) {
 				Intent loadweb = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=94US4N9MQGDMY&lc=AU&currency_code=AUD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted"));
+				startActivity(loadweb); 
+				return;
+			}
+		});
+		
+		/* Donation Link */
+		TextView amazon = (TextView) findViewById(R.id.amazon_url);
+		amazon.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent loadweb = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.amazon.com/registry/wishlist/27ISBYRXBGXO3/"));
 				startActivity(loadweb); 
 				return;
 			}

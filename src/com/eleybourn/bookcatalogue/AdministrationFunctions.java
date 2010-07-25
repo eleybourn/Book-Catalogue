@@ -344,6 +344,7 @@ public class AdministrationFunctions extends Activity {
 			CatalogueDBAdapter.KEY_PAGES + "\t" + 
 			CatalogueDBAdapter.KEY_NOTES + "\t" + 
 			CatalogueDBAdapter.KEY_LIST_PRICE + "\t" + 
+			CatalogueDBAdapter.KEY_ANTHOLOGY+ "\t" + 
 			"\n";
 		if (books.moveToFirst()) {
 			do { 
@@ -375,6 +376,7 @@ public class AdministrationFunctions extends Activity {
 				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PAGES)) + "\t";
 				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_NOTES)) + "\t";
 				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LIST_PRICE)) + "\t";
+				export += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY)) + "\t";
 				export += "\n";
 			}
 			while (books.moveToNext()); 
@@ -491,6 +493,13 @@ public class AdministrationFunctions extends Activity {
 				// do nothing
 			}
 			
+			int anthology = CatalogueDBAdapter.ANTHOLOGY_NO;
+			try {
+				anthology = Integer.parseInt(imported[17]); 
+			} catch (Exception e) {
+				anthology = 0;
+			}
+			
 			String author = family + ", " + given;
 			if (id == 0) {
 				// Book is new. It does not exist in the current database
@@ -500,18 +509,18 @@ public class AdministrationFunctions extends Activity {
 					if (rows != 0) {
 						// Its a new entry, but the ISBN exists
 						book.moveToFirst();
-						mDbHelper.updateBook(book.getLong(0), author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price);
+						mDbHelper.updateBook(book.getLong(0), author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology);
 						importUpdated++;
 						continue;
 					}
 				} 
-				mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price);
+				mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology);
 				importCreated++;
 				continue;
 				
 			} else {
 				// Book exists and should be updated if it has changed
-				mDbHelper.updateBook(id, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price);
+				mDbHelper.updateBook(id, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology);
 				importUpdated++;
 				continue;
 			}

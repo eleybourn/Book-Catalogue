@@ -125,6 +125,7 @@ public class SearchGoogleBooksEntryHandler extends DefaultHandler {
 	public String thumbnail = "";
 	public String series_num = "";
 	public String list_price = "";
+	public String anthology = "0";
 	
 	public static String ID = "id";
 	public static String TOTALRESULTS = "totalResults";
@@ -138,7 +139,7 @@ public class SearchGoogleBooksEntryHandler extends DefaultHandler {
 	public static String THUMBNAIL = "link";
 	
 	public String[] getBook(){
-		String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num, list_price};
+		String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num, list_price, anthology};
 		return book;
 	}
 	

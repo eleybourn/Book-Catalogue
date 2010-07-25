@@ -38,6 +38,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -58,6 +59,7 @@ public class BookEditFields extends Activity {
 	private EditText mSeriesNumText;
 	private EditText mListPriceText;
 	private EditText mPagesText;
+	private CheckBox mAnthologyCheckBox;
 	private Button mConfirmButton;
 	private Button mCancelButton;
 	private Long mRowId;
@@ -65,6 +67,7 @@ public class BookEditFields extends Activity {
 	private ImageView mImageView;
 	private Float rating = Float.parseFloat("0");
 	private boolean read = false;
+	private int anthology_num = CatalogueDBAdapter.ANTHOLOGY_NO;
 	private String notes = "";
 	
 	private String added_series = "";
@@ -197,6 +200,14 @@ public class BookEditFields extends Activity {
 				mPagesText.setVisibility(GONE);
 			}
 			
+			mAnthologyCheckBox = (CheckBox) findViewById(R.id.anthology);
+			field_visibility = mPrefs.getBoolean(visibility_prefix + "anthology", true);
+			if (field_visibility == false) {
+				TextView mAnthologyLabel = (TextView) findViewById(R.id.anthology_label);
+				mAnthologyLabel.setVisibility(GONE);
+				mAnthologyCheckBox.setVisibility(GONE);
+			}
+			
 			mConfirmButton = (Button) findViewById(R.id.confirm);
 			mCancelButton = (Button) findViewById(R.id.cancel);
 			mImageView = (ImageView) findViewById(R.id.row_img);
@@ -323,6 +334,12 @@ public class BookEditFields extends Activity {
 			mSeriesNumText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES_NUM)));
 			mListPriceText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LIST_PRICE)));
 			mPagesText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PAGES)));
+			anthology_num = book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
+			if (anthology_num == 0) {
+				mAnthologyCheckBox.setChecked(false);
+			} else {
+				mAnthologyCheckBox.setChecked(true);
+			}
 			mConfirmButton.setText(R.string.confirm_save);
 			String thumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/" + mRowId + ".jpg";
 			File thumb = new File(thumbFilename);
@@ -364,6 +381,13 @@ public class BookEditFields extends Activity {
 				//do nothing
 			}
 			mPagesText.setText(book[9]);
+			
+			String anthology = book[12];
+			if (anthology == "0") {
+				mAnthologyCheckBox.setChecked(false);
+			} else {
+				mAnthologyCheckBox.setChecked(true);
+			}
 			mConfirmButton.setText(R.string.confirm_add);
 			String thumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/tmp.jpg";
 			File thumb = new File(thumbFilename);
@@ -445,6 +469,11 @@ public class BookEditFields extends Activity {
 		String series = mSeriesText.getText().toString();
 		String series_num = mSeriesNumText.getText().toString();
 		String list_price = mListPriceText.getText().toString();
+		boolean anthology_checked = mAnthologyCheckBox.isChecked();
+		int anthology = anthology_num; // Defaults to ANTHOLOGY_NO or what is in the database
+		if (anthology_checked == true && anthology_num == CatalogueDBAdapter.ANTHOLOGY_NO) {
+			anthology = CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS;
+		}
 		int pages = 0;
 		try {
 			pages = Integer.parseInt(mPagesText.getText().toString());
@@ -463,7 +492,7 @@ public class BookEditFields extends Activity {
 				}
 			}
 			
-			long id = mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price);
+			long id = mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology);
 			if (id > 0) {
 				mRowId = id;
 				String tmpThumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/tmp.jpg";
@@ -473,7 +502,7 @@ public class BookEditFields extends Activity {
 				thumb.renameTo(real);
 			}
 		} else {
-			mDbHelper.updateBook(mRowId, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price);
+			mDbHelper.updateBook(mRowId, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology);
 		}
 		/* These are global variables that will be sent via intent back to the list view */
 		added_author = author;

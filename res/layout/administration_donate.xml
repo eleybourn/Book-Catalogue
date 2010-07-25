@@ -11,6 +11,13 @@
 		android:text="@+string/donate"
 		android:paddingBottom="20sp"
 		/>
+	<TextView android:id="@+id/amazon_url" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" 
+		android:text="@+string/amazon_wishlist"
+		android:paddingBottom="10sp"
+		android:gravity="center"
+		/>
 	<ImageView android:id="@+id/donate_url" 
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content" 

@@ -25,6 +25,7 @@ import android.app.TabActivity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TabHost;
 
 /**
@@ -51,6 +52,8 @@ public class BookEdit extends TabActivity {
 		TabHost tabHost = getTabHost();  // The activity TabHost
 		TabHost.TabSpec spec;  // Resusable TabSpec for each tab
 		Intent intent;  // Reusable Intent for each tab
+		CatalogueDBAdapter mDbHelper = new CatalogueDBAdapter(this);
+		mDbHelper.open();
 		
 		//get the passed parameters
 		Bundle extras = getIntent().getExtras();
@@ -59,6 +62,8 @@ public class BookEdit extends TabActivity {
 		if (mRowId == null) {
 			mRowId = extras != null ? extras.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
 		}
+		int anthology_num = mDbHelper.fetchAnthologyPositionByBook(mRowId);
+		Log.e("BC", mRowId + " " + anthology_num);
 		
 		// Create an Intent to launch an Activity for the tab (to be reused)
 		intent = new Intent().setClass(this, BookEditFields.class);
@@ -75,7 +80,7 @@ public class BookEdit extends TabActivity {
 		// Initialise a TabSpec for each tab and add it to the TabHost
 		spec = tabHost.newTabSpec("edit_book").setIndicator(name, res.getDrawable(R.drawable.ic_tab_edit)).setContent(intent);
 		tabHost.addTab(spec);
-
+		
 		// Only show the other tabs if it is an edited book, otherwise only show the first tab
 		if (mRowId != null && mRowId > 0) {
 			// Do the same for the other tabs
@@ -85,7 +90,17 @@ public class BookEdit extends TabActivity {
 			}
 			spec = tabHost.newTabSpec("edit_book_notes").setIndicator(res.getString(R.string.edit_book_notes), res.getDrawable(R.drawable.ic_tab_notes)).setContent(intent);
 			tabHost.addTab(spec);
-	
+			
+			// Only show the anthology tab if the book is marked as an anthology
+			if (anthology_num != 0) {
+				intent = new Intent().setClass(this, BookEditAnthology.class);
+				if (extras != null) {
+					intent.putExtras(extras);
+				}
+				spec = tabHost.newTabSpec("edit_book_anthology").setIndicator(res.getString(R.string.edit_book_anthology), res.getDrawable(R.drawable.ic_tab_anthology)).setContent(intent);
+				tabHost.addTab(spec);
+			}
+			
 			intent = new Intent().setClass(this, BookEditLoaned.class);
 			if (extras != null) {
 				intent.putExtras(extras);
@@ -93,7 +108,7 @@ public class BookEdit extends TabActivity {
 			spec = tabHost.newTabSpec("edit_book_friends").setIndicator(res.getString(R.string.edit_book_friends), res.getDrawable(R.drawable.ic_tab_friends)).setContent(intent);
 			tabHost.addTab(spec);
 		}
-
+		
 		tabHost.setCurrentTab(currentTab);
 	}
 	

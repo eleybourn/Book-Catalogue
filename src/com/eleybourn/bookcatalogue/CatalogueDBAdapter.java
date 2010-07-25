@@ -29,6 +29,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
+import android.util.Log;
 
 /**
  * Book Catalogue database access helper class. Defines the basic CRUD operations
@@ -57,6 +58,8 @@ public class CatalogueDBAdapter {
 	public static final String KEY_BOOK = "book";
 	public static final String KEY_LOANED_TO = "loaned_to";
 	public static final String KEY_LIST_PRICE = "list_price";
+	public static final String KEY_POSITION = "position";
+	public static final String KEY_ANTHOLOGY = "anthology";
 	
 	private DatabaseHelper mDbHelper;
 	private SQLiteDatabase mDb;
@@ -67,7 +70,12 @@ public class CatalogueDBAdapter {
 	private static final String DATABASE_TABLE_AUTHORS = "authors";
 	private static final String DATABASE_TABLE_BOOKSHELF = "bookshelf";
 	private static final String DATABASE_TABLE_LOAN = "loan";
+	private static final String DATABASE_TABLE_ANTHOLOGY = "anthology";
 	public static String message = "";
+	
+	public static final int ANTHOLOGY_NO = 0;
+	public static final int ANTHOLOGY_SAME_AUTHOR = 1;
+	public static final int ANTHOLOGY_MULTIPLE_AUTHORS = 2;
 	
 	/* Database creation sql statement */
 	private static final String DATABASE_CREATE_AUTHORS =
@@ -102,7 +110,8 @@ public class CatalogueDBAdapter {
 		KEY_PAGES + " int, " +
 		KEY_SERIES_NUM + " text, " +
 		KEY_NOTES + " text, " +
-		KEY_LIST_PRICE + " text " +
+		KEY_LIST_PRICE + " text, " +
+		KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO + "" + 
 		")";
 	
 	private static final String DATABASE_CREATE_LOAN =
@@ -110,6 +119,15 @@ public class CatalogueDBAdapter {
 		" (_id integer primary key autoincrement, " +
 		KEY_BOOK + " integer REFERENCES " + DATABASE_TABLE_BOOKS + " ON DELETE SET NULL ON UPDATE SET NULL, " +
 		KEY_LOANED_TO + " text " +
+		")";
+	
+	private static final String DATABASE_CREATE_ANTHOLOGY =
+		"create table " + DATABASE_TABLE_ANTHOLOGY + 
+		" (_id integer primary key autoincrement, " +
+		KEY_BOOK + " integer REFERENCES " + DATABASE_TABLE_BOOKS + " ON DELETE SET NULL ON UPDATE SET NULL, " +
+		KEY_AUTHOR + " integer not null REFERENCES " + DATABASE_TABLE_AUTHORS + ", " + 
+		KEY_TITLE + " text not null, " +
+		KEY_POSITION + " int" +
 		")";
 	
 	private static final String DATABASE_CREATE_INDICES = 
@@ -122,11 +140,14 @@ public class CatalogueDBAdapter {
 		"CREATE INDEX IF NOT EXISTS books_bookshelf ON "+DATABASE_TABLE_BOOKS+" ("+KEY_BOOKSHELF+");" + 
 		"CREATE INDEX IF NOT EXISTS books_series ON "+DATABASE_TABLE_BOOKS+" ("+KEY_SERIES+");" + 
 		"CREATE INDEX IF NOT EXISTS books_publisher ON "+DATABASE_TABLE_BOOKS+" ("+KEY_PUBLISHER+");" + 
+		"CREATE INDEX IF NOT EXISTS anthology_book ON "+DATABASE_TABLE_ANTHOLOGY+" ("+KEY_BOOK+");" + 
+		"CREATE INDEX IF NOT EXISTS anthology_author ON "+DATABASE_TABLE_ANTHOLOGY+" ("+KEY_AUTHOR+");" + 
+		"CREATE INDEX IF NOT EXISTS anthology_title ON "+DATABASE_TABLE_ANTHOLOGY+" ("+KEY_TITLE+");" + 
 		"CREATE UNIQUE INDEX IF NOT EXISTS loan_book_loaned_to ON "+DATABASE_TABLE_LOAN+" ("+KEY_BOOK+");" 
 		;
 	
 	private final Context mCtx;
-	private static final int DATABASE_VERSION = 31;
+	private static final int DATABASE_VERSION = 33;
 	
 	/**
 	 * This is a specific version of the SQLiteOpenHelper class. It handles onCreate and onUpgrade events
@@ -150,6 +171,7 @@ public class CatalogueDBAdapter {
 			db.execSQL(DATABASE_CREATE_BOOKS);
 			db.execSQL(DATABASE_CREATE_BOOKSHELF_DATA);
 			db.execSQL(DATABASE_CREATE_LOAN);
+			db.execSQL(DATABASE_CREATE_ANTHOLOGY);
 			db.execSQL(DATABASE_CREATE_INDICES);
 			new File(Environment.getExternalStorageDirectory() + "/" + LOCATION + "/").mkdirs();
 		}
@@ -296,6 +318,33 @@ public class CatalogueDBAdapter {
 				curVersion++;
 				message += "* You can now delete individual thumbnails by holding on the image and selecting delete.\n\n";
 			}
+			if (curVersion == 31) {
+				//do nothing
+				curVersion++;
+				message += "* There is a new Admin option (Field Visibility) to hide unused fields\n\n";
+				message += "* 'All Books' should now be saved as a bookshelf preference correctly\n\n";
+				message += "* When adding books the bookshelf will default to your currently selected bookshelf (Thanks Martin)\n\n";
+			}
+			if (curVersion == 32) {
+				//do nothing
+				curVersion++;
+				try {
+					db.execSQL(DATABASE_CREATE_ANTHOLOGY);
+				} catch (Exception e) {
+					//do nothing
+				}
+				try {
+					db.execSQL(DATABASE_CREATE_INDICES);
+				} catch (Exception e) {
+					//do nothing
+				}
+				try {
+					db.execSQL("ALTER TABLE " + DATABASE_TABLE_BOOKS + " ADD " + KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO);
+				} catch (Exception e) {
+					//do nothing
+				}
+				message += "* There is now support to record anthology titles. \n\n";
+			}
 		}
 	}
 	
@@ -422,7 +471,7 @@ public class CatalogueDBAdapter {
 		String sql = "SELECT b." + KEY_ROWID + ", b." + KEY_AUTHOR + ", a." + KEY_FAMILY_NAME + ", a." + KEY_GIVEN_NAMES + ", b." + KEY_TITLE + 
 		", b." + KEY_ISBN + ", b." + KEY_PUBLISHER + ", b." + KEY_DATE_PUBLISHED + ", b." + KEY_RATING + 
 		", b." + KEY_BOOKSHELF + " as bookshelf_id" + ", bs." + KEY_BOOKSHELF + ", b." + KEY_READ + ", b." + KEY_SERIES + 
-		", b." + KEY_PAGES + ", b." + KEY_SERIES_NUM + ", b." + KEY_NOTES + ", b." + KEY_LIST_PRICE +
+		", b." + KEY_PAGES + ", b." + KEY_SERIES_NUM + ", b." + KEY_NOTES + ", b." + KEY_LIST_PRICE + ", b." + KEY_ANTHOLOGY +
 		" FROM " + DATABASE_TABLE_BOOKS + " b, " + DATABASE_TABLE_BOOKSHELF + " bs, " + DATABASE_TABLE_AUTHORS + " a" + 
 		" WHERE bs._id=b." + KEY_BOOKSHELF + " AND a._id=b." + KEY_AUTHOR;
 		return mDb.rawQuery(sql, new String[]{});
@@ -449,7 +498,7 @@ public class CatalogueDBAdapter {
 		String sql = "SELECT b." + KEY_ROWID + ", a." + KEY_FAMILY_NAME + " || ', ' || a." + KEY_GIVEN_NAMES + " as " + KEY_AUTHOR + ", b." + KEY_TITLE + 
 		", b." + KEY_ISBN + ", b." + KEY_PUBLISHER + ", b." + KEY_DATE_PUBLISHED + ", b." + KEY_RATING + ", bs." + KEY_BOOKSHELF + 
 		", b." + KEY_READ + ", b." + KEY_SERIES + ", b." + KEY_PAGES + ", b." + KEY_SERIES_NUM + ", b." + KEY_BOOKSHELF + " as bookshelf_id" +
-		", b." + KEY_NOTES + ", b." + KEY_LIST_PRICE +
+		", b." + KEY_NOTES + ", b." + KEY_LIST_PRICE + ", b." + KEY_ANTHOLOGY +
 		" FROM " + DATABASE_TABLE_BOOKS + " b, " + DATABASE_TABLE_BOOKSHELF + " bs, " + DATABASE_TABLE_AUTHORS + " a" + 
 		" WHERE bs._id=b." + KEY_BOOKSHELF + " AND a._id=b." + KEY_AUTHOR + where + 
 		" ORDER BY " + order + "";
@@ -474,7 +523,8 @@ public class CatalogueDBAdapter {
 		}
 		String sql = "SELECT b." + KEY_ROWID + ", a." + KEY_FAMILY_NAME + " || ', ' || a." + KEY_GIVEN_NAMES + " as " + KEY_AUTHOR + ", b." + KEY_TITLE + 
 		", b." + KEY_ISBN + ", b." + KEY_PUBLISHER + ", b." + KEY_DATE_PUBLISHED + ", b." + KEY_RATING + ", bs." + KEY_BOOKSHELF + 
-		", b." + KEY_READ + ", b." + KEY_SERIES + ", b." + KEY_PAGES + ", b." + KEY_SERIES_NUM + ", b." + KEY_NOTES + ", b." + KEY_LIST_PRICE +
+		", b." + KEY_READ + ", b." + KEY_SERIES + ", b." + KEY_PAGES + ", b." + KEY_SERIES_NUM + ", b." + KEY_NOTES + 
+		", b." + KEY_LIST_PRICE + ", b." + KEY_ANTHOLOGY +
 		" FROM " + DATABASE_TABLE_BOOKS + " b, " + DATABASE_TABLE_BOOKSHELF + " bs, " + DATABASE_TABLE_AUTHORS + " a" + 
 		" WHERE bs._id=b." + KEY_BOOKSHELF + " AND a._id=b." + KEY_AUTHOR + " AND a._id=" + author + where + 
 		" ORDER BY b." + KEY_SERIES + ", substr('0000000000' || b." + KEY_SERIES_NUM + ", -10, 10), lower(b." + KEY_TITLE + ") ASC";
@@ -491,7 +541,7 @@ public class CatalogueDBAdapter {
 		String sql = "SELECT b." + KEY_ROWID + ", a." + KEY_FAMILY_NAME + " || ', ' || a." + KEY_GIVEN_NAMES + " as " + KEY_AUTHOR + 
 		", b." + KEY_TITLE + " as " + KEY_TITLE + ", b." + KEY_ISBN + ", b." + KEY_PUBLISHER + ", b." + KEY_DATE_PUBLISHED + 
 		", b." + KEY_RATING + ", bs." + KEY_BOOKSHELF + ", b." + KEY_READ + ", b." + KEY_SERIES + " as " + KEY_SERIES + ", b." + KEY_PAGES + 
-		", b." + KEY_SERIES_NUM + ", b." + KEY_NOTES + ", b." + KEY_LIST_PRICE +
+		", b." + KEY_SERIES_NUM + ", b." + KEY_NOTES + ", b." + KEY_LIST_PRICE + ", b." + KEY_ANTHOLOGY +
 		" FROM " + DATABASE_TABLE_LOAN + " l, " + DATABASE_TABLE_BOOKS + " b, " + DATABASE_TABLE_BOOKSHELF + " bs, " + DATABASE_TABLE_AUTHORS + " a" + 
 		" WHERE l." + KEY_BOOK + "=b._id AND bs._id=b." + KEY_BOOKSHELF + " AND a._id=b." + KEY_AUTHOR + " " +
 		" AND l." + KEY_LOANED_TO + "='" + encodeString(loaned_to) + "'" + 
@@ -516,7 +566,7 @@ public class CatalogueDBAdapter {
 		String sql = "SELECT b." + KEY_ROWID + ", a." + KEY_FAMILY_NAME + " || ', ' || a." + KEY_GIVEN_NAMES + " as " + KEY_AUTHOR + 
 		", b." + KEY_TITLE + " as " + KEY_TITLE + ", b." + KEY_ISBN + ", b." + KEY_PUBLISHER + ", b." + KEY_DATE_PUBLISHED + 
 		", b." + KEY_RATING + ", bs." + KEY_BOOKSHELF + ", b." + KEY_READ + ", b." + KEY_SERIES + " as " + KEY_SERIES + ", b." + KEY_PAGES + 
-		", b." + KEY_SERIES_NUM + ", b." + KEY_NOTES + ", b." + KEY_LIST_PRICE +
+		", b." + KEY_SERIES_NUM + ", b." + KEY_NOTES + ", b." + KEY_LIST_PRICE + ", b." + KEY_ANTHOLOGY +
 		" FROM " + DATABASE_TABLE_BOOKS + " b, " + DATABASE_TABLE_BOOKSHELF + " bs, " + DATABASE_TABLE_AUTHORS + " a" + 
 		" WHERE bs._id=b." + KEY_BOOKSHELF + " AND a._id=b." + KEY_AUTHOR + " AND b." + KEY_SERIES + "='" + encodeString(series) + "'" + where + 
 		" ORDER BY substr('0000000000' || b." + KEY_SERIES_NUM + ", -10, 10), lower(b." + KEY_TITLE + ") ASC";
@@ -579,6 +629,36 @@ public class CatalogueDBAdapter {
 		" ORDER BY b." + KEY_SERIES + "";
 		return mDb.rawQuery(sql, new String[]{});
 	}
+	
+	/**
+	 * Return all the anthology titles and authors recorded for book
+	 * 
+	 * @param rowId id of book to retrieve
+	 * @return Cursor containing all records, if found
+	 */
+	public Cursor fetchAnthologyByBook(long rowId) {
+		String sql = "SELECT an." + KEY_ROWID + ", an." + KEY_TITLE + ", an." + KEY_POSITION + ", au." + KEY_FAMILY_NAME + " || ', ' || au." + KEY_GIVEN_NAMES + " as " + KEY_AUTHOR +  
+			" FROM " + DATABASE_TABLE_ANTHOLOGY + " an, " + DATABASE_TABLE_AUTHORS + " au " +
+			" WHERE an." + KEY_AUTHOR + "=au." + KEY_ROWID + " AND an." + KEY_BOOK + "='" + rowId + "'" +
+			" ORDER BY an." + KEY_POSITION + "";
+		Cursor mCursor = mDb.rawQuery(sql, new String[]{});
+		return mCursor;
+	}
+	
+	/**
+	 * Return the largest anthology position (usually used for adding new titles)
+	 * 
+	 * @param rowId id of book to retrieve
+	 * @return An integer of the highest position. 0 if it is not an anthology
+	 */
+	public int fetchAnthologyPositionByBook(long rowId) {
+		String sql = "SELECT max(" + KEY_POSITION + ") FROM " + DATABASE_TABLE_ANTHOLOGY + 
+			" WHERE " + KEY_ROWID + "='" + rowId + "'";
+		Cursor mCursor = mDb.rawQuery(sql, new String[]{});
+		int position = getIntValue(mCursor, 0);
+		return position;
+	}
+	
 	/**
 	 * Return the position of an author in a list of all authors (within a bookshelf)
 	 *  
@@ -610,14 +690,14 @@ public class CatalogueDBAdapter {
 	 * Return a book (Cursor) that matches the given rowId
 	 * 
 	 * @param rowId id of book to retrieve
-	 * @return Cursor positioned to matching note, if found
+	 * @return Cursor positioned to matching book, if found
 	 * @throws SQLException if note could not be found/retrieved
 	 */
 	public Cursor fetchBook(long rowId) throws SQLException {
 		String sql = "SELECT b." + KEY_ROWID + ", a." + KEY_FAMILY_NAME + " || ', ' || a." + KEY_GIVEN_NAMES + " as " + KEY_AUTHOR + 
 		", b." + KEY_TITLE + ", b." + KEY_ISBN + ", b." + KEY_PUBLISHER + ", b." + KEY_DATE_PUBLISHED + ", b." + KEY_RATING + 
-		", bs." + KEY_BOOKSHELF + 
-		", b." + KEY_READ + ", b." + KEY_SERIES + ", b." + KEY_PAGES + ", b." + KEY_SERIES_NUM + ", b." + KEY_NOTES + ", b." + KEY_LIST_PRICE +
+		", bs." + KEY_BOOKSHELF + ", b." + KEY_READ + ", b." + KEY_SERIES + ", b." + KEY_PAGES + 
+		", b." + KEY_SERIES_NUM + ", b." + KEY_NOTES + ", b." + KEY_LIST_PRICE + ", b." + KEY_ANTHOLOGY + 
 		" FROM " + DATABASE_TABLE_BOOKS + " b, " + DATABASE_TABLE_BOOKSHELF + " bs, " + DATABASE_TABLE_AUTHORS + " a" + 
 		" WHERE bs._id=b." + KEY_BOOKSHELF + " AND a._id=b." + KEY_AUTHOR + " AND b." + KEY_ROWID + "=" + rowId + "";
 
@@ -639,7 +719,8 @@ public class CatalogueDBAdapter {
 	public Cursor fetchBookByISBN(String isbn) {
 		String sql = "SELECT b." + KEY_ROWID + ", a." + KEY_FAMILY_NAME + " || ', ' || a." + KEY_GIVEN_NAMES + " as " + KEY_AUTHOR + ", b." + KEY_TITLE + 
 		", b." + KEY_ISBN + ", b." + KEY_PUBLISHER + ", b." + KEY_DATE_PUBLISHED + ", b." + KEY_RATING + ", bs." + KEY_BOOKSHELF + 
-		", b." + KEY_READ + ", b." + KEY_SERIES + ", b." + KEY_PAGES + ", b." + KEY_SERIES_NUM + ", b." + KEY_NOTES + ", b." + KEY_LIST_PRICE +
+		", b." + KEY_READ + ", b." + KEY_SERIES + ", b." + KEY_PAGES + ", b." + KEY_SERIES_NUM + 
+		", b." + KEY_NOTES + ", b." + KEY_LIST_PRICE + ", b." + KEY_ANTHOLOGY +
 		" FROM " + DATABASE_TABLE_BOOKS + " b, " + DATABASE_TABLE_BOOKSHELF + " bs, " + DATABASE_TABLE_AUTHORS + " a" + 
 		" WHERE bs._id=b." + KEY_BOOKSHELF + " AND a._id=b." + KEY_AUTHOR + " AND b." + KEY_ISBN + "='" + encodeString(isbn) + "'" +
 		" ORDER BY lower(b." + KEY_TITLE + ")";
@@ -734,7 +815,8 @@ public class CatalogueDBAdapter {
 		}
 		String sql = "SELECT b." + KEY_ROWID + ", a." + KEY_FAMILY_NAME + " || ', ' || a." + KEY_GIVEN_NAMES + " as " + KEY_AUTHOR + ", b." + KEY_TITLE + 
 		", b." + KEY_ISBN + ", b." + KEY_PUBLISHER + ", b." + KEY_DATE_PUBLISHED + ", b." + KEY_RATING + ", bs." + KEY_BOOKSHELF + 
-		", b." + KEY_READ + ", b." + KEY_SERIES + ", b." + KEY_PAGES + ", b." + KEY_SERIES_NUM + ", b." + KEY_NOTES + ", b." + KEY_LIST_PRICE+
+		", b." + KEY_READ + ", b." + KEY_SERIES + ", b." + KEY_PAGES + ", b." + KEY_SERIES_NUM + 
+		", b." + KEY_NOTES + ", b." + KEY_LIST_PRICE+ ", b." + KEY_ANTHOLOGY +
 		" FROM " + DATABASE_TABLE_BOOKS + " b, " + DATABASE_TABLE_BOOKSHELF + " bs, " + DATABASE_TABLE_AUTHORS + " a" + 
 		" WHERE bs._id=b." + KEY_BOOKSHELF + " AND a._id=b." + KEY_AUTHOR + 
 		" AND (a." + KEY_FAMILY_NAME + " LIKE '%" + query + "%' OR a." + KEY_GIVEN_NAMES + " LIKE '%" + query + "%' OR " +
@@ -747,7 +829,27 @@ public class CatalogueDBAdapter {
 	
 	
 	
-	
+	public long createAnthologyTitle(long mRowId, String author, String title) {
+		ContentValues initialValues = new ContentValues();
+		String[] names = processAuthorName(author);
+		Cursor authorId = getAuthorByName(names);
+		int aRows = authorId.getCount();
+		if (aRows == 0) {
+			createAuthor(names[0], names[1]);
+			authorId.close();
+			authorId = getAuthorByName(names);
+		}
+		authorId.moveToFirst();
+		
+		int position = fetchAnthologyPositionByBook(mRowId) + 1;
+		
+		initialValues.put(KEY_BOOK, mRowId);
+		initialValues.put(KEY_AUTHOR, authorId.getInt(0));
+		initialValues.put(KEY_TITLE, title);
+		initialValues.put(KEY_POSITION, position);
+		Log.e("BC", mRowId + " " + author + " " + authorId.getInt(0) + " " + title + " " + position );
+		return mDb.insert(DATABASE_TABLE_ANTHOLOGY, null, initialValues);
+	}
 	
 	/**
 	 * This function will create a new author in the database
@@ -783,7 +885,7 @@ public class CatalogueDBAdapter {
 	 * @param list_price The list price of the book
 	 * @return rowId or -1 if failed
 	 */
-	public long createBook(String author, String title, String isbn, String publisher, String date_published, float rating, String bookshelf, Boolean read, String series, int pages, String series_num, String notes, String list_price) {
+	public long createBook(String author, String title, String isbn, String publisher, String date_published, float rating, String bookshelf, Boolean read, String series, int pages, String series_num, String notes, String list_price, int anthology) {
 		ContentValues initialValues = new ContentValues();
 		String[] names = processAuthorName(author);
 		Cursor authorId = getAuthorByName(names);
@@ -822,6 +924,7 @@ public class CatalogueDBAdapter {
 		initialValues.put(KEY_SERIES_NUM, series_num);
 		initialValues.put(KEY_NOTES, notes);
 		initialValues.put(KEY_LIST_PRICE, list_price);
+		initialValues.put(KEY_ANTHOLOGY, anthology);
 		authorId.close();
 		
 		return mDb.insert(DATABASE_TABLE_BOOKS, null, initialValues);
@@ -863,7 +966,7 @@ public class CatalogueDBAdapter {
 	 * @param list_price The list price of the book
 	 * @return true if the note was successfully updated, false otherwise
 	 */
-	public boolean updateBook(long rowId, String author, String title, String isbn, String publisher, String date_published, float rating, String bookshelf, Boolean read, String series, int pages, String series_num, String notes, String list_price) {
+	public boolean updateBook(long rowId, String author, String title, String isbn, String publisher, String date_published, float rating, String bookshelf, Boolean read, String series, int pages, String series_num, String notes, String list_price, int anthology) {
 		boolean success;
 		ContentValues args = new ContentValues();
 		String[] names = processAuthorName(author);
@@ -902,6 +1005,7 @@ public class CatalogueDBAdapter {
 		args.put(KEY_SERIES_NUM, series_num);
 		args.put(KEY_NOTES, notes);
 		args.put(KEY_LIST_PRICE, list_price);
+		args.put(KEY_ANTHOLOGY, anthology);
 		authorId.close();
 		
 		success = mDb.update(DATABASE_TABLE_BOOKS, args, KEY_ROWID + "=" + rowId, null) > 0;
@@ -914,7 +1018,18 @@ public class CatalogueDBAdapter {
 	
 	
 	
-	
+	/**
+	 * Delete the anthology record with the given rowId (not to be confused with the book rowId
+	 * 
+	 * @param rowId id of the anthology to delete
+	 * @return true if deleted, false otherwise
+	 */
+	public boolean deleteAnthologyTitle(long rowId) {
+		boolean success;
+		success = mDb.delete(DATABASE_TABLE_ANTHOLOGY, KEY_ROWID + "=" + rowId, null) > 0;
+		deleteAuthors();
+		return success;
+	}
 	
 	/** 
 	 * Delete the book with the given rowId

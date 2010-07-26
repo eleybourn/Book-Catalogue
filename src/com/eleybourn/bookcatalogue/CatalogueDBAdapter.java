@@ -636,11 +636,26 @@ public class CatalogueDBAdapter {
 	 * @param rowId id of book to retrieve
 	 * @return Cursor containing all records, if found
 	 */
-	public Cursor fetchAnthologyByBook(long rowId) {
-		String sql = "SELECT an." + KEY_ROWID + ", an." + KEY_TITLE + ", an." + KEY_POSITION + ", au." + KEY_FAMILY_NAME + " || ', ' || au." + KEY_GIVEN_NAMES + " as " + KEY_AUTHOR +  
+	public Cursor fetchAnthologyTitlesByBook(long rowId) {
+		String sql = "SELECT an." + KEY_ROWID + " as " + KEY_ROWID + ", an." + KEY_TITLE + " as " + KEY_TITLE + ", an." + KEY_POSITION + " as " + KEY_POSITION + ", au." + KEY_FAMILY_NAME + " || ', ' || au." + KEY_GIVEN_NAMES + " as " + KEY_AUTHOR + ", an." + KEY_BOOK + " as " + KEY_BOOK +  
 			" FROM " + DATABASE_TABLE_ANTHOLOGY + " an, " + DATABASE_TABLE_AUTHORS + " au " +
 			" WHERE an." + KEY_AUTHOR + "=au." + KEY_ROWID + " AND an." + KEY_BOOK + "='" + rowId + "'" +
 			" ORDER BY an." + KEY_POSITION + "";
+		Cursor mCursor = mDb.rawQuery(sql, new String[]{});
+		return mCursor;
+	}
+	
+	/**
+	 * Return all the anthology titles and authors recorded for book
+	 * 
+	 * @param rowId id of book to retrieve
+	 * @return Cursor containing all records, if found
+	 */
+	public Cursor fetchAnthologyTitleById(long rowId) {
+		String sql = "SELECT an." + KEY_ROWID + " as " + KEY_ROWID + ", an." + KEY_TITLE + " as " + KEY_TITLE + ", an." + KEY_POSITION + " as " + KEY_POSITION + 
+			", au." + KEY_FAMILY_NAME + " || ', ' || au." + KEY_GIVEN_NAMES + " as " + KEY_AUTHOR + ", an." + KEY_BOOK + " as " + KEY_BOOK +
+			" FROM " + DATABASE_TABLE_ANTHOLOGY + " an, " + DATABASE_TABLE_AUTHORS + " au " +
+			" WHERE an." + KEY_AUTHOR + "=au." + KEY_ROWID + " AND an." + KEY_ROWID + "='" + rowId + "'";
 		Cursor mCursor = mDb.rawQuery(sql, new String[]{});
 		return mCursor;
 	}
@@ -653,9 +668,10 @@ public class CatalogueDBAdapter {
 	 */
 	public int fetchAnthologyPositionByBook(long rowId) {
 		String sql = "SELECT max(" + KEY_POSITION + ") FROM " + DATABASE_TABLE_ANTHOLOGY + 
-			" WHERE " + KEY_ROWID + "='" + rowId + "'";
+			" WHERE " + KEY_BOOK + "='" + rowId + "'";
 		Cursor mCursor = mDb.rawQuery(sql, new String[]{});
 		int position = getIntValue(mCursor, 0);
+		Log.e("BC", position + " " + sql);
 		return position;
 	}
 	
@@ -842,6 +858,7 @@ public class CatalogueDBAdapter {
 		authorId.moveToFirst();
 		
 		int position = fetchAnthologyPositionByBook(mRowId) + 1;
+		Log.e("BC", position + " ");
 		
 		initialValues.put(KEY_BOOK, mRowId);
 		initialValues.put(KEY_AUTHOR, authorId.getInt(0));
@@ -1025,12 +1042,24 @@ public class CatalogueDBAdapter {
 	 * @return true if deleted, false otherwise
 	 */
 	public boolean deleteAnthologyTitle(long rowId) {
+		// Find the soon to be deleted title position#
+		Cursor anthology = fetchAnthologyTitleById(rowId);
+		anthology.moveToFirst();
+		int position = anthology.getInt(anthology.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_POSITION));
+		int book = anthology.getInt(anthology.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_BOOK));
 		boolean success;
+		// Delete the title
 		success = mDb.delete(DATABASE_TABLE_ANTHOLOGY, KEY_ROWID + "=" + rowId, null) > 0;
 		deleteAuthors();
+		// Move all titles past the deleted book up one position
+		String sql = "UPDATE " + DATABASE_TABLE_ANTHOLOGY + 
+			" SET " + KEY_POSITION + "=" + KEY_POSITION + "-1" +
+			" WHERE " + KEY_POSITION + ">" + position + " AND " + KEY_BOOK + "=" + book + "";
+		mDb.execSQL(sql);
+		Log.e("BC", sql);
 		return success;
 	}
-	
+
 	/** 
 	 * Delete the book with the given rowId
 	 * 
@@ -1105,7 +1134,7 @@ public class CatalogueDBAdapter {
      * @return true if deleted, false otherwise
      */
     public boolean deleteAuthors() {
-        return mDb.delete(DATABASE_TABLE_AUTHORS, "_id NOT IN (SELECT DISTINCT " + KEY_AUTHOR + " FROM " + DATABASE_TABLE_BOOKS + ")", null) > 0;
+        return mDb.delete(DATABASE_TABLE_AUTHORS, "_id NOT IN (SELECT DISTINCT " + KEY_AUTHOR + " FROM " + DATABASE_TABLE_BOOKS + ") AND _id NOT IN (SELECT DISTINCT " + KEY_AUTHOR + " FROM " + DATABASE_TABLE_ANTHOLOGY + ")", null) > 0;
     }
     
 

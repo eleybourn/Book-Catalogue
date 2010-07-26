@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
 	android:id="@+id/anthology_wrapper"
 	android:orientation="vertical"
 	android:layout_width="fill_parent" 
@@ -10,28 +10,33 @@
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content"
 		android:text="@+string/edit_book_anthology" 
-		android:textAppearance="?android:attr/textAppearanceLarge" />
+		android:textAppearance="?android:attr/textAppearanceLarge" 
+		android:layout_alignParentTop="true"
+		/>
 	<LinearLayout android:id="@+id/anthology_form" 
 		android:orientation="horizontal"
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content"
-		android:layout_below="@+id/anthology_title" >
+		android:paddingBottom="10sp"
+		android:layout_below="@id/anthology_title" 
+		>
 		<CheckBox android:id="@+id/same_author" 
 			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content" 
-			android:textSize="16sp" />
+			android:layout_height="fill_parent"
+			android:paddingTop="10sp" />
 		<TextView android:layout_width="fill_parent" 
-			android:layout_height="wrap_content"
+			android:layout_height="fill_parent"
 			android:text="@+string/same_author" 
-			android:textSize="16sp" 
-			android:paddingBottom="10sp"/>
+			android:textSize="16sp"
+			android:paddingTop="10sp" />
 	</LinearLayout>
 	<LinearLayout android:id="@+id/anthology_add" 
 		android:orientation="horizontal"
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content"
 		android:layout_alignParentBottom="true"
-		android:layout_below="@+id/anthology_list">
+		android:layout_weight="2" 
+		> 
 		<LinearLayout 
 			android:orientation="vertical"
 			android:layout_width="wrap_content" 
@@ -58,11 +63,13 @@
 	</LinearLayout>
 	<LinearLayout android:id="@+id/anthology_list" 
 		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content"
-		android:layout_above="@id/anthology_add">
+		android:layout_height="fill_parent"
+		android:layout_below="@id/anthology_form" 
+		android:layout_above="@id/anthology_add"
+		>
 		<ListView android:id="@+id/android:list" 
 			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content"
+			android:layout_height="fill_parent"
 			android:textSize="16sp" />
 		<TextView android:id="@+id/android:empty" 
 			android:layout_width="fill_parent" 

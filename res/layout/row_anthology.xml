@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-	android:orientation="vertical"
+	android:orientation="horizontal"
 	android:layout_width="fill_parent" 
 	android:layout_height="wrap_content" 
 	android:padding="10dp" >
-	<TextView android:id="@+id/row_author" 
-		android:layout_width="fill_parent"
+	<TextView android:id="@+id/row_position" 
+		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:paddingRight="5sp"
 		/>
 	<TextView android:id="@+id/row_title" 
-		android:layout_width="fill_parent"
+		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:paddingRight="5sp"
+		/>
+	<TextView android:id="@+id/row_author" 
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:paddingRight="5sp"
 		/>
 </LinearLayout>

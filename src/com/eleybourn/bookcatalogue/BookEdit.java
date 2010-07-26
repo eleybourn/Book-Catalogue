@@ -24,8 +24,9 @@ package com.eleybourn.bookcatalogue;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TabHost;
 
 /**
@@ -62,8 +63,15 @@ public class BookEdit extends TabActivity {
 		if (mRowId == null) {
 			mRowId = extras != null ? extras.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
 		}
-		int anthology_num = mDbHelper.fetchAnthologyPositionByBook(mRowId);
-		Log.e("BC", mRowId + " " + anthology_num);
+		int anthology_num = 0;
+		try {
+			Cursor book = mDbHelper.fetchBook(mRowId);
+			anthology_num = book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
+		} catch (CursorIndexOutOfBoundsException e) {
+			//do nothing
+		} catch (NullPointerException e) {
+			//do nothing
+		}
 		
 		// Create an Intent to launch an Activity for the tab (to be reused)
 		intent = new Intent().setClass(this, BookEditFields.class);

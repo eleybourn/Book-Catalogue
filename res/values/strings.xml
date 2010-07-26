@@ -101,9 +101,11 @@
 <string name="filler_help_text">Full online application help will come soon. </string>
 <string name="menu_manage_fields">Manage Field Visibility</string>
 <string name="manage_fields_help">Selected fields are visible in the add/edit book screens. Unselected fields are hidden.</string>
-<string name="edit_book_anthology">Anthology</string>
+<string name="edit_book_anthology">Anthology Titles</string>
 <string name="amazon_wishlist">Amazon Wishlist</string>
 <string name="same_author">All stories in this anthology are written by the same author</string>
 <string name="menu_delete_anthology">Delete Title from Anthology</string>
 <string name="is_anthology">Is this book an Anthology</string>
+<string name="populate_anthology_titles">Automatically Populate Titles (EXPERIMENTAL)</string>
+<string name="automatic_population_failed">Automatic Population of Titles Failed</string>
 </resources>

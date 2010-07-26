@@ -383,7 +383,7 @@ public class BookEditFields extends Activity {
 			mPagesText.setText(book[9]);
 			
 			String anthology = book[12];
-			if (anthology == "0") {
+			if (anthology.equals("0")) {
 				mAnthologyCheckBox.setChecked(false);
 			} else {
 				mAnthologyCheckBox.setChecked(true);
@@ -473,6 +473,8 @@ public class BookEditFields extends Activity {
 		int anthology = anthology_num; // Defaults to ANTHOLOGY_NO or what is in the database
 		if (anthology_checked == true && anthology_num == CatalogueDBAdapter.ANTHOLOGY_NO) {
 			anthology = CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS;
+		} else if (anthology_checked == false) {
+			anthology = CatalogueDBAdapter.ANTHOLOGY_NO;
 		}
 		int pages = 0;
 		try {

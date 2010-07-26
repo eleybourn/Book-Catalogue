@@ -29,62 +29,57 @@ import org.xml.sax.helpers.DefaultHandler;
  * 
  */
 public class SearchWikipediaHandler extends DefaultHandler {
-    //private StringBuilder builder;
-    public String id = "";
-    public int count = 0;
-    public String[] link = {"", ""};
-    private boolean entry = false;
-
-    public static String UL = "ul";
-    public static String LINK = "A";
-    
-    public String[] getLinks(){
-        return link;
-    }
-    
-    public int getCount(){
-        return count;
-    }
-   
-    /*@Override
-    public void characters(char[] ch, int start, int length) throws SAXException {
-        super.characters(ch, start, length);
-        builder.append(ch, start, length);
-    }
-
-    @Override
-    public void endElement(String uri, String localName, String name) throws SAXException {
-        super.endElement(uri, localName, name);
-        builder.setLength(0);
-    }
-
-    @Override
-    public void startDocument() throws SAXException {
-        super.startDocument();
-        builder = new StringBuilder();
-    }*/
-
-    @Override
-    public void startElement(String uri, String localName, String name, Attributes attributes) throws SAXException {
-        super.startElement(uri, localName, name, attributes);
-        if (localName.equalsIgnoreCase(UL)){
-        	String className = attributes.getValue("class");
-        	if (className != null && className.equals("mw-search-results")) {
-        		entry = true;
-        	}
-        }
-        if (entry == true) {
-            if (localName.equalsIgnoreCase(LINK)){
-            	String href = attributes.getValue("href");
-            	// we only want the first 2 links
-            	if (count < 2) {
-            		link[count] = href;
-                	count++;
-            	} else {
-            		entry = false;
-            	}
-            }
-        }
-    }
+	//private StringBuilder builder;
+	public String id = "";
+	public int count = 0;
+	public String[] link = {"", ""};
+	private boolean entry = false;
+	
+	public static String UL = "ul";
+	public static String LINK = "A";
+	
+	public String[] getLinks(){
+		return link;
+	}
+	
+	public int getCount(){
+		return count;
+	}
+	
+	@Override
+	public void endElement(String uri, String localName, String name) throws SAXException {
+		super.endElement(uri, localName, name);
+		// don't do anything if we are in the table of contents
+		if (localName.equalsIgnoreCase(UL) && entry == true){
+			entry = false;
+		}
+	}
+	
+	@Override
+	public void startElement(String uri, String localName, String name, Attributes attributes) throws SAXException {
+		super.startElement(uri, localName, name, attributes);
+		if (localName.equalsIgnoreCase(UL)){
+			String className = attributes.getValue("class");
+			if (className != null && className.equals("mw-search-results")) {
+				entry = true;
+			}
+		}
+		if (entry == true) {
+			if (localName.equalsIgnoreCase(LINK)){
+				String href = attributes.getValue("href");
+				if (href.contains("/wiki") == false) {
+					//only use /wiki/... urls
+					return;
+				}
+				// we only want the first 2 links
+				if (count < 2) {
+					link[count] = href;
+					count++;
+				} else {
+					entry = false;
+				}
+			}
+		}
+	}
 }
  

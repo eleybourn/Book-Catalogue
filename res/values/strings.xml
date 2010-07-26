@@ -108,4 +108,6 @@
 <string name="is_anthology">Is this book an Anthology</string>
 <string name="populate_anthology_titles">Automatically Populate Titles (EXPERIMENTAL)</string>
 <string name="automatic_population_failed">Automatic Population of Titles Failed</string>
+<string name="anthology">Anthology</string>
+<string name="anthology_confirm">Please confirm that these anthology titles are (mostly) correct</string>
 </resources>

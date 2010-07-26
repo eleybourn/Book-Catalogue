@@ -8,15 +8,43 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:paddingRight="5sp"
+		android:layout_alignParentLeft="true"
 		/>
 	<TextView android:id="@+id/row_title" 
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:paddingRight="5sp"
+		android:layout_toLeftOf="@id/row_position"
 		/>
 	<TextView android:id="@+id/row_author" 
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:paddingRight="5sp"
+		android:layout_toLeftOf="@id/row_title"
+		/>
+	<TextView android:id="@+id/row_row_id" 
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_toLeftOf="@id/row_author"
+		/>
+	<Button android:id="@+id/row_down" 
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:paddingRight="5sp"
+		android:text="D"
+		android:layout_alignParentRight="true"
+		android:focusable="false"
+		android:focusableInTouchMode="false"
+		android:layout_gravity="left"
+		/>
+	<Button android:id="@+id/row_up" 
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:paddingRight="5sp"
+		android:text="U"
+		android:layout_toRightOf="@id/row_down"
+		android:focusable="false"
+		android:focusableInTouchMode="false"
+		android:layout_gravity="left"
 		/>
 </LinearLayout>

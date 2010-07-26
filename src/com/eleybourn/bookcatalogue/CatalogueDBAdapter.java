@@ -845,7 +845,7 @@ public class CatalogueDBAdapter {
 	
 	
 	
-	public long createAnthologyTitle(long mRowId, String author, String title) {
+	public long createAnthologyTitle(long book, String author, String title) {
 		ContentValues initialValues = new ContentValues();
 		String[] names = processAuthorName(author);
 		Cursor authorId = getAuthorByName(names);
@@ -857,14 +857,14 @@ public class CatalogueDBAdapter {
 		}
 		authorId.moveToFirst();
 		
-		int position = fetchAnthologyPositionByBook(mRowId) + 1;
+		int position = fetchAnthologyPositionByBook(book) + 1;
 		Log.e("BC", position + " ");
 		
-		initialValues.put(KEY_BOOK, mRowId);
+		initialValues.put(KEY_BOOK, book);
 		initialValues.put(KEY_AUTHOR, authorId.getInt(0));
 		initialValues.put(KEY_TITLE, title);
 		initialValues.put(KEY_POSITION, position);
-		Log.e("BC", mRowId + " " + author + " " + authorId.getInt(0) + " " + title + " " + position );
+		Log.e("BC", book + " " + author + " " + authorId.getInt(0) + " " + title + " " + position );
 		return mDb.insert(DATABASE_TABLE_ANTHOLOGY, null, initialValues);
 	}
 	
@@ -962,6 +962,74 @@ public class CatalogueDBAdapter {
 	}
 	
 	
+	
+	/**
+	 * Update the anthology title in the database
+	 * 
+	 * @param rowId The rowId of the anthology title 
+	 * @param book The id of the book 
+	 * @param author The author name
+	 * @param title The title of the anthology story
+	 * @return true/false on success
+	 */
+	public boolean updateAnthologyTitle(long rowId, long book, String author, String title) {
+		ContentValues args = new ContentValues();
+		String[] names = processAuthorName(author);
+		Cursor authorId = getAuthorByName(names);
+		int aRows = authorId.getCount();
+		if (aRows == 0) {
+			createAuthor(names[0], names[1]);
+			authorId.close();
+			authorId = getAuthorByName(names);
+		}
+		authorId.moveToFirst();
+		
+		args.put(KEY_BOOK, book);
+		args.put(KEY_AUTHOR, authorId.getInt(0));
+		args.put(KEY_TITLE, title);
+		Log.e("BC", book + " " + author + " " + authorId.getInt(0) + " " + title );
+		boolean success = mDb.update(DATABASE_TABLE_ANTHOLOGY, args, KEY_ROWID + "=" + rowId, null) > 0;
+		deleteAuthors();
+		return success;
+	}
+	
+	/**
+	 * Move the given title up/down one position
+	 * 
+	 * @param rowId The rowId of the title 
+	 * @param up true if going up, false if going down
+	 * @return true/false on success
+	 */
+	public boolean updateAnthologyTitlePosition(long rowId, boolean up) {
+		Cursor title = fetchAnthologyTitleById(rowId);
+		title.moveToFirst();
+		int book = title.getInt(title.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_BOOK)); 
+		int position = title.getInt(title.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_POSITION)); 
+		int max_position = fetchAnthologyPositionByBook(rowId);
+		if (position == 1 && up == true) {
+			return false;
+		}
+		if (position == max_position && up == false) {
+			return false;
+		}
+		String sql = "";
+		String dir = "";
+		String opp_dir = "";
+		if (up == true) {
+			dir = "-1";
+			opp_dir = "+1";
+		} else {
+			dir = "+1";
+			opp_dir = "-1";
+		}
+		sql = "UPDATE " + DATABASE_TABLE_ANTHOLOGY + " SET " + KEY_POSITION + "=" + KEY_POSITION + opp_dir + " " +
+			" WHERE " + KEY_BOOK + "='" + book + "' AND " + KEY_POSITION + "=" + position + dir + " ";
+		mDb.execSQL(sql);
+		sql = "UPDATE " + DATABASE_TABLE_ANTHOLOGY + " SET " + KEY_POSITION + "=" + KEY_POSITION + dir + " " +
+		" WHERE " + KEY_BOOK + "='" + book + "' AND " + KEY_ROWID + "=" + rowId+ " ";
+		mDb.execSQL(sql);
+		return true;
+	}
 	
 	/**
 	 * Update the book using the details provided. The book to be updated is

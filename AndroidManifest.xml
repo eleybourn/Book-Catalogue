@@ -1,42 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="com.eleybourn.bookcatalogue"
-      android:versionName="2.5" android:versionCode="28">
-    <application android:label="@string/app_name" android:icon="@drawable/logo_bc">
-        <activity android:name=".BookCatalogue"
-                  android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+	package="com.eleybourn.bookcatalogue"
+	android:versionName="2.5" android:versionCode="28">
+	<application android:label="@string/app_name" android:icon="@drawable/logo_bc">
+		<activity android:name=".BookCatalogue"
+			android:label="@string/app_name">
 			<intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-            <meta-data android:name="android.app.searchable" android:resource="@xml/searchable" />
-        </activity>
-
-    <activity android:name=".BookEdit"></activity>
-
-<activity android:name=".BookISBNSearch" android:label="@string/title_isbn_search"></activity>
-<activity android:name=".Bookshelf" android:label="@string/title_manage_bs"></activity>
-<activity android:name=".BookshelfEdit" android:label="@string/title_edit_bs"></activity>
-<activity android:name=".Administration" android:label="@string/administration_title"></activity>
-<activity android:name=".BookEditFields"></activity>
-<activity android:name=".BookEditLoaned"></activity>
-<activity android:name=".BookEditNotes"></activity>
-<activity android:name=".AdministrationAbout"></activity>
-<activity android:name=".AdministrationDonate"></activity>
-<activity android:name=".AdministrationFunctions"></activity>
-<activity android:name=".Help"></activity>
-<activity android:name=".FieldVisibility"></activity>
-<activity android:name=".BookEditAnthology"></activity>
-</application>
-    <uses-sdk android:minSdkVersion="4" />
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
-
-
-
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
-<uses-permission android:name="android.permission.READ_CONTACTS"></uses-permission>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.SEARCH" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+			<meta-data android:name="android.app.searchable" android:resource="@xml/searchable" />
+		</activity>
+		<activity android:name=".BookEdit"></activity>
+		<activity android:name=".BookISBNSearch" android:label="@string/title_isbn_search"></activity>
+		<activity android:name=".Bookshelf" android:label="@string/title_manage_bs"></activity>
+		<activity android:name=".BookshelfEdit" android:label="@string/title_edit_bs"></activity>
+		<activity android:name=".Administration" android:label="@string/administration_title"></activity>
+		<activity android:name=".BookEditFields"></activity>
+		<activity android:name=".BookEditLoaned"></activity>
+		<activity android:name=".BookEditNotes"></activity>
+		<activity android:name=".AdministrationAbout"></activity>
+		<activity android:name=".AdministrationDonate"></activity>
+		<activity android:name=".AdministrationFunctions"></activity>
+		<activity android:name=".Help"></activity>
+		<activity android:name=".FieldVisibility"></activity>
+		<activity android:name=".BookEditAnthology"></activity>
+	</application>
+	<uses-sdk android:minSdkVersion="4" />
+	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+	<uses-permission android:name="android.permission.READ_CONTACTS"></uses-permission>
 </manifest> 

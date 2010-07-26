@@ -31,24 +31,33 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.view.ViewGroup;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 
 public class BookEditAnthology extends ListActivity {
 	
@@ -187,9 +196,9 @@ public class BookEditAnthology extends ListActivity {
 		String[] from = null;
 		int[] to = null;
 		// Create an array to specify the fields we want to display in the list
-		from = new String[]{CatalogueDBAdapter.KEY_POSITION, CatalogueDBAdapter.KEY_AUTHOR, CatalogueDBAdapter.KEY_TITLE};
+		from = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_POSITION, CatalogueDBAdapter.KEY_AUTHOR, CatalogueDBAdapter.KEY_TITLE};
 		// and an array of the fields we want to bind those fields to (in this case just text1)
-		to = new int[]{R.id.row_position, R.id.row_author, R.id.row_title};
+		to = new int[]{R.id.row_row_id, R.id.row_position, R.id.row_author, R.id.row_title};
 		// Now create a simple cursor adapter and set it to display
 		SimpleCursorAdapter books = new AnthologyTitleListAdapter(this, layout, BooksCursor, from, to);
 		setListAdapter(books);
@@ -233,9 +242,27 @@ public class BookEditAnthology extends ListActivity {
 				}
 			} else if (v.getId() == R.id.row_position) {
 				text = text + ". ";
+			} else if (v.getId() == R.id.row_row_id) {
+				final long this_text = Long.parseLong(text); 
+				Button up = (Button) ((ViewGroup) v.getParent()).findViewById(R.id.row_up);
+				up.setOnClickListener(new View.OnClickListener() {
+					public void onClick(View view) {
+						mDbHelper.updateAnthologyTitlePosition(this_text, true);
+						fillAnthology();
+					}
+				});
+				Button down = (Button) ((ViewGroup) v.getParent()).findViewById(R.id.row_down);
+				down.setOnClickListener(new View.OnClickListener() {
+					public void onClick(View view) {
+						mDbHelper.updateAnthologyTitlePosition(this_text, false);
+						fillAnthology();
+					}
+				});
+				text = "";
 			}
 			v.setText(text);
 		}
+		
 	}
 	
 	public void searchWikipedia() {
@@ -254,7 +281,7 @@ public class BookEditAnthology extends ListActivity {
 
 		try {
 			url = new URL(path);
-			//Log.e("BC", path);
+			Log.e("BC", path);
 			parser = factory.newSAXParser();
 			try {
 				parser.parse(getInputStream(url), handler);
@@ -269,27 +296,19 @@ public class BookEditAnthology extends ListActivity {
 					break;
 				}
 				url = new URL(basepath + links[i]);
-				//Log.e("BC", basepath + links[i]);
+				Log.e("BC", basepath + links[i]);
 				parser = factory.newSAXParser();
 				try {
 					parser.parse(getInputStream(url), entryHandler);
 					ArrayList<String> titles = entryHandler.getList();
-					for (int j=0; j < titles.size(); j++) {
-						String anthology_title = titles.get(j);
-						//Log.e("BC", anthology_title);
-						String anthology_author = bookAuthor;
-						// Does the string look like "Hindsight by Jack Williamson"
-						int pos = anthology_title.indexOf(" by ");
-						if (pos > 0) {
-							anthology_author = anthology_title.substring(pos+4);
-							anthology_title = anthology_title.substring(0, pos);
-						}
-						mDbHelper.createAnthologyTitle(mRowId, anthology_author, anthology_title);
-						//Log.e("BC", anthology_author + " " + anthology_title);
+					/* Display the confirm dialog */
+					if (titles.size() > 0) {
 						success = true;
+						showAnthologyConfirm(titles);
 					}
 				} catch (RuntimeException e) {
 					//Log.e("Book Catalogue", "SAX Runtime Exception " + e);
+					Toast.makeText(this, R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
 				}
 			}
 			if (success == false) {
@@ -297,7 +316,6 @@ public class BookEditAnthology extends ListActivity {
 				Toast.makeText(this, R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
 				return;
 			}
-			//return book;
 		} catch (MalformedURLException e) {
 			//Log.e("Book Catalogue", "Malformed URL " + e.getMessage());
 		} catch (ParserConfigurationException e) {
@@ -309,6 +327,44 @@ public class BookEditAnthology extends ListActivity {
 		}
 		fillAnthology();
 		return;
+	}
+	
+	private void showAnthologyConfirm(final ArrayList<String> titles) {
+		String anthology_title = "";
+		for (int j=0; j < titles.size(); j++) {
+			anthology_title += "* " + titles.get(j) + "\n";
+		}
+		
+		AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(anthology_title).create();
+		alertDialog.setTitle(R.string.anthology_confirm);
+		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
+		alertDialog.setButton(this.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				for (int j=0; j < titles.size(); j++) {
+					String anthology_title = titles.get(j);
+					//Log.e("BC", anthology_title);
+					String anthology_author = bookAuthor;
+					// Does the string look like "Hindsight by Jack Williamson"
+					int pos = anthology_title.indexOf(" by ");
+					if (pos > 0) {
+						anthology_author = anthology_title.substring(pos+4);
+						anthology_title = anthology_title.substring(0, pos);
+					}
+					mDbHelper.createAnthologyTitle(mRowId, anthology_author, anthology_title);
+					//Log.e("BC", anthology_author + " " + anthology_title);
+				}
+				fillAnthology();
+				return;
+			}
+		}); 
+		alertDialog.setButton2(this.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				//do nothing
+				return;
+			}
+		}); 
+		alertDialog.show();
+
 	}
 	
 	protected InputStream getInputStream(URL url) {

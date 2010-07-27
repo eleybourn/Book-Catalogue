@@ -44,6 +44,7 @@ Features include;
 New in v2.6
 * There is now support to record books as anthologies and it's titles.
 * There is experimental support to automatically populate the anthology titles
+* You can now take photos for the book cover (long click on the thumbnail in edit)
 
 New in v2.5
 * There is a new Admin option (Field Visibility) to hide unused fields

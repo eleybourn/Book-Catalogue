@@ -23,24 +23,21 @@ package com.eleybourn.bookcatalogue;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.net.URI;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -286,11 +283,7 @@ public class BookEditFields extends Activity {
 			return true;
 		case ADD_PHOTO:
 			Intent intent = null;
-			//try {
-			//	intent = new Intent("com.android.camera.action.CROP");
-			//} catch (ActivityNotFoundException e) {
-				intent = new Intent("android.media.action.IMAGE_CAPTURE");
-			//}
+			intent = new Intent("android.media.action.IMAGE_CAPTURE");
 			startActivityForResult(intent, ADD_PHOTO);
 			return true;
 		}
@@ -543,8 +536,7 @@ public class BookEditFields extends Activity {
 		case ADD_PHOTO:
 			if (resultCode == Activity.RESULT_OK){
 				
-				//String realThumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/" + mRowId + ".jpg";
-				String realThumbFilename = Environment.getExternalStorageDirectory() + "/Download/" + mRowId + ".jpg";
+				String realThumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/" + mRowId + ".jpg";
 				Bitmap x = (Bitmap) intent.getExtras().get("data");
 				
 				/* Create a file to copy the thumbnail into */
@@ -556,24 +548,7 @@ public class BookEditFields extends Activity {
 					return;
 				}
 				
-				x.compress(Bitmap.CompressFormat.JPEG, 75, f);
-				
-				File realThumbFile = new File(realThumbFilename);
-				Uri fileUri = Uri.fromFile(realThumbFile);
-				
-			       Intent i2 = new Intent("com.android.camera.action.CROP");
-			       i2.setClassName("com.android.camera", "com.android.camera.CropImage");
-
-			       i2.setData(fileUri);
-			       i2.putExtra("outputX", 96);
-			       i2.putExtra("outputY", 96);
-			       i2.putExtra("aspectX", 1);
-			       i2.putExtra("aspectY", 1);
-			       i2.putExtra("scale", true);
-			       i2.putExtra("return-data", true);            
-			        startActivityForResult(i2, 5);
-
-
+				x.compress(Bitmap.CompressFormat.JPEG, 50, f);
 			}
 		}
 	}

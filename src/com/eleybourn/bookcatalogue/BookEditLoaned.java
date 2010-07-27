@@ -118,9 +118,13 @@ public class BookEditLoaned extends Activity {
 	 */
 	private void loanTo() {
 		setContentView(R.layout.edit_book_loan);
-		ArrayAdapter<String> series_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getFriends());
 		AutoCompleteTextView mUserText = (AutoCompleteTextView) findViewById(R.id.loan_to_who);
-		mUserText.setAdapter(series_adapter);
+		try {
+			ArrayAdapter<String> series_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getFriends());
+			mUserText.setAdapter(series_adapter);
+		} catch (Exception e) {
+			// do nothing
+		}
 		Button mConfirmButton = (Button) findViewById(R.id.confirm);
 		mConfirmButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {

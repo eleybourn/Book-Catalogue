@@ -343,7 +343,9 @@ public class CatalogueDBAdapter {
 				} catch (Exception e) {
 					//do nothing
 				}
-				message += "* There is now support to record anthology titles. \n\n";
+				message += "* There is now support to record books as anthologies and it's titles. \n\n";
+				message += "* There is experimental support to automatically populate the anthology titles \n\n";
+				message += "* You can now take photos for the book cover (long click on the thumbnail in edit) \n\n";
 			}
 		}
 	}

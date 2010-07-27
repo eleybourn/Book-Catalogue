@@ -482,6 +482,27 @@ public class CatalogueDBAdapter {
 	
 	
 	/**
+	 * Return a Cursor over the list of all books in the database
+	 * 
+	 * @param bookshelf Which bookshelf is it in. Can be "All Books"
+	 * @return Cursor over all notes
+	 */
+	public Cursor fetchAllAuthors(String bookshelf) {
+		String where = "";
+		if (bookshelf.equals("All Books")) {
+			// do nothing
+		} else {
+			where += " AND bs." + KEY_BOOKSHELF + "='" + encodeString(bookshelf) + "' ";
+		}
+		String sql = "SELECT DISTINCT a._id as " + KEY_ROWID + ", a." + KEY_FAMILY_NAME + " as " + KEY_FAMILY_NAME + ", a." + KEY_GIVEN_NAMES + " as " + KEY_GIVEN_NAMES +
+			" FROM " + DATABASE_TABLE_AUTHORS + " a, " + DATABASE_TABLE_BOOKS + " b, " + DATABASE_TABLE_BOOKSHELF + " bs" +
+			" WHERE a." + KEY_ROWID + "=b." + KEY_AUTHOR + " AND bs." + KEY_ROWID + "=b." + KEY_BOOKSHELF + 
+			where + 
+			" ORDER BY lower(" + KEY_FAMILY_NAME + "), lower(" + KEY_GIVEN_NAMES + ")";
+		return mDb.rawQuery(sql, new String[]{});
+	}
+	
+	/**
 	 * Return a list of all books in the database
 	 * 
 	 * @param order What order to return the books
@@ -1000,17 +1021,17 @@ public class CatalogueDBAdapter {
 	 * @param up true if going up, false if going down
 	 * @return true/false on success
 	 */
-	public boolean updateAnthologyTitlePosition(long rowId, boolean up) {
+	public int updateAnthologyTitlePosition(long rowId, boolean up) {
 		Cursor title = fetchAnthologyTitleById(rowId);
 		title.moveToFirst();
 		int book = title.getInt(title.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_BOOK)); 
 		int position = title.getInt(title.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_POSITION)); 
 		int max_position = fetchAnthologyPositionByBook(rowId);
 		if (position == 1 && up == true) {
-			return false;
+			return 0;
 		}
 		if (position == max_position && up == false) {
-			return false;
+			return 0;
 		}
 		String sql = "";
 		String dir = "";
@@ -1028,7 +1049,7 @@ public class CatalogueDBAdapter {
 		sql = "UPDATE " + DATABASE_TABLE_ANTHOLOGY + " SET " + KEY_POSITION + "=" + KEY_POSITION + dir + " " +
 		" WHERE " + KEY_BOOK + "='" + book + "' AND " + KEY_ROWID + "=" + rowId+ " ";
 		mDb.execSQL(sql);
-		return true;
+		return position;
 	}
 	
 	/**
@@ -1248,26 +1269,6 @@ public class CatalogueDBAdapter {
      */
     public Cursor fetchAllBooks(String order) {
     	return fetchAllBooks(order, "All Books"); 
-    }
-
-    /**
-     * Return a Cursor over the list of all books in the database
-     * 
-     * @return Cursor over all notes
-     */
-    public Cursor fetchAllAuthors(String bookshelf) {
-    	String where = "";
-    	if (bookshelf.equals("All Books")) {
-    		// do nothing
-    	} else {
-    		where += " WHERE a." + KEY_ROWID + " IN (SELECT " + KEY_AUTHOR + " FROM " + 
-    			DATABASE_TABLE_BOOKS + " b, " + DATABASE_TABLE_BOOKSHELF + " bs WHERE bs." + KEY_ROWID + "=b." + KEY_BOOKSHELF +
-    			" AND bs." + KEY_BOOKSHELF + "='" + encodeString(bookshelf) + "') ";
-    	}
-    	String sql = "SELECT a._id, a." + KEY_FAMILY_NAME + ", a." + KEY_GIVEN_NAMES + 
-    		" FROM " + DATABASE_TABLE_AUTHORS + " a" + where + 
-    		" ORDER BY lower(" + KEY_FAMILY_NAME + "), lower(" + KEY_GIVEN_NAMES + ")";
-    	return mDb.rawQuery(sql, new String[]{});
     }
 
     /**

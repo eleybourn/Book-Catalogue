@@ -17,6 +17,7 @@
 		android:text="@+string/amazon_wishlist"
 		android:paddingBottom="10sp"
 		android:gravity="center"
+		android:textColor="#006699"
 		/>
 	<ImageView android:id="@+id/donate_url" 
 		android:layout_width="fill_parent" 

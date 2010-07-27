@@ -36,28 +36,25 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 
 public class BookEditAnthology extends ListActivity {
 	
@@ -67,31 +64,12 @@ public class BookEditAnthology extends ListActivity {
 	private String bookTitle;
 	private Button mAdd;
 	private CheckBox mSame;
-	//private DatePicker mDate_publishedText;
-	//private Spinner mBookshelfText;
-	//private ArrayAdapter<String> spinnerAdapter;
-	//private AutoCompleteTextView mSeriesText;
-	//private EditText mSeriesNumText;
-	//private EditText mListPriceText;
-	//private EditText mPagesText;
-	//private Button mConfirmButton;
-	//private Button mCancelButton;
 	private Long mRowId;
+	private Long mEditId = null;
 	private CatalogueDBAdapter mDbHelper;
 	private Cursor book;
 	int anthology_num = CatalogueDBAdapter.ANTHOLOGY_NO;
-	//private ImageView mImageView;
-	//private Float rating = Float.parseFloat("0");
-	//private boolean read = false;
-	//private String notes = "";
-	//private String added_series = "";
-	//private String added_title = "";
-	//private String added_author = "";
-	//public static String ADDED_SERIES = "ADDED_SERIES";
-	//public static String ADDED_TITLE = "ADDED_TITLE";
-	//public static String ADDED_AUTHOR = "ADDED_AUTHOR";
 	
-	//private static final int DELETE_ID = 1;
 	private static final int GONE = 8;
 	private static final int DELETE_ID = Menu.FIRST;
 	private static final int POPULATE = Menu.FIRST + 1;
@@ -170,18 +148,31 @@ public class BookEditAnthology extends ListActivity {
 		mAdd = (Button) findViewById(R.id.row_add);
 		mAdd.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
-				String author = bookAuthor; 
-				if (!mSame.isChecked()) {
-					author = mAuthorText.getText().toString(); 
-				}
 				String title = mTitleText.getText().toString();
-				mDbHelper.createAnthologyTitle(mRowId, author, title);
+				String author = mAuthorText.getText().toString(); 
+				if (mEditId == null) {
+					if (mSame.isChecked()) {
+						author = bookAuthor; 
+					}
+					mDbHelper.createAnthologyTitle(mRowId, author, title);
+				} else {
+					mDbHelper.updateAnthologyTitle(mEditId, mRowId, author, title);
+					mEditId = null;
+					mAdd.setText(R.string.anthology_add);
+				}
+				mTitleText.setText("");
+				mAuthorText.setText("");
 				fillAnthology();
 			}
 		});
 		
 		fillAnthology();
 		
+	}
+	
+	public void fillAnthology(int scroll_to_id) {
+		fillAnthology();
+		gotoTitle(scroll_to_id);
 	}
 	
 	/**
@@ -244,18 +235,18 @@ public class BookEditAnthology extends ListActivity {
 				text = text + ". ";
 			} else if (v.getId() == R.id.row_row_id) {
 				final long this_text = Long.parseLong(text); 
-				Button up = (Button) ((ViewGroup) v.getParent()).findViewById(R.id.row_up);
+				ImageView up = (ImageView) ((ViewGroup) v.getParent()).findViewById(R.id.row_up);
 				up.setOnClickListener(new View.OnClickListener() {
 					public void onClick(View view) {
-						mDbHelper.updateAnthologyTitlePosition(this_text, true);
-						fillAnthology();
+						int position = mDbHelper.updateAnthologyTitlePosition(this_text, true);
+						fillAnthology(position-2);
 					}
 				});
-				Button down = (Button) ((ViewGroup) v.getParent()).findViewById(R.id.row_down);
+				ImageView down = (ImageView) ((ViewGroup) v.getParent()).findViewById(R.id.row_down);
 				down.setOnClickListener(new View.OnClickListener() {
 					public void onClick(View view) {
-						mDbHelper.updateAnthologyTitlePosition(this_text, false);
-						fillAnthology();
+						int position = mDbHelper.updateAnthologyTitlePosition(this_text, false);
+						fillAnthology(position);
 					}
 				});
 				text = "";
@@ -265,11 +256,30 @@ public class BookEditAnthology extends ListActivity {
 		
 	}
 	
+	/**
+	 * Scroll to the current group
+	 */
+	public void gotoTitle(int id) {
+		try {
+			ListView view = this.getListView();
+			view.setSelection(id);
+		} catch (Exception e) {
+			//do nothing
+		}
+		return;
+	}
+	
 	public void searchWikipedia() {
 		String basepath = "http://en.wikipedia.org";
 		String pathAuthor = bookAuthor.replace(" ", "+");
 		pathAuthor = pathAuthor.replace(",", "");
-		String pathTitle = bookTitle.replace(" ", "+");
+		// Strip everything past the , from the title
+		String pathTitle = bookTitle;
+		int comma = bookTitle.indexOf(",");
+		if (comma > 0) {
+			pathTitle = pathTitle.substring(0, comma);
+		}
+		pathTitle = pathTitle.replace(" ", "+");
 		String path = basepath + "/w/index.php?title=Special:Search&search=%22" + pathTitle + "%22+" + pathAuthor + "";
 		boolean success = false;
 		URL url;
@@ -374,7 +384,21 @@ public class BookEditAnthology extends ListActivity {
 			throw new RuntimeException(e);
 		}
 	}
-
+	
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		super.onListItemClick(l, v, position, id);
+		Cursor anthology = mDbHelper.fetchAnthologyTitleById(id);
+		anthology.moveToFirst();
+		String title = anthology.getString(anthology.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE)); 
+		String author = anthology.getString(anthology.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR));
+		
+		mEditId = id;
+		mTitleText.setText(title);
+		mAuthorText.setText(author);
+		mAdd.setText(R.string.anthology_save);
+	}
+	
 	/**
 	 * Run each time the menu button is pressed. This will setup the options menu
 	 */

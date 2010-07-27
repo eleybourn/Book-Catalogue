@@ -286,7 +286,7 @@ public class SearchAmazonHandler extends DefaultHandler {
 					//Log.e("Book Catalogue", "Thumbnail cannot be read");
 					return;
 				}
-
+				
 				/* Create a file to copy the thumbnail into */
 				FileOutputStream f = null;
 				try {
@@ -295,13 +295,13 @@ public class SearchAmazonHandler extends DefaultHandler {
 					//Log.e("Book Catalogue", "Thumbnail cannot be written");
 					return;
 				}
-
+				
 				/* Copy the inputstream into an outpustream on the sdcard */
 				try {
 					byte[] buffer = new byte[1024];
 					int len1 = 0;
 					while ( (len1 = in.read(buffer)) > 0 ) {
-					     f.write(buffer,0, len1);
+						f.write(buffer,0, len1);
 					}
 					f.close();
 				} catch (IOException e) {

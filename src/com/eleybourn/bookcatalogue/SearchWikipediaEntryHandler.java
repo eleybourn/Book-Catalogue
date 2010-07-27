@@ -119,8 +119,18 @@ public class SearchWikipediaEntryHandler extends DefaultHandler {
 	@Override
 	public void startDocument() throws SAXException {
 		super.startDocument();
+		// Clear all variables (in case they were set in a previous instantiation)
 		builder = new StringBuilder();
 		titles = new ArrayList<String>();
+		entry1 = false;
+		entry2 = false;
+		entry3 = false;
+		intoc = false;
+		in_parent_ul = false;
+		ready_to_close_parent_ul = false;
+		div = 0;
+		entrydiv = 0;
+		this_title = "";
 	}
 	
 	@Override
@@ -144,13 +154,13 @@ public class SearchWikipediaEntryHandler extends DefaultHandler {
 		}
 		if (intoc == false) {
 			// This is a parent ul. Not the list ul
-			if (entry1 == true && entry2 == true && localName.equalsIgnoreCase(LIST1) || localName.equalsIgnoreCase(LIST2)) {
+			if (entry1 == true && entry2 == true && (localName.equalsIgnoreCase(LIST1) || localName.equalsIgnoreCase(LIST2))) {
 				// inner ul (if exists)
 				Log.e("BC", "inlist x2 true");
 				in_parent_ul = true;
 				this_title = "";
 				ready_to_close_parent_ul = false;
-			} else if (entry1 == true && localName.equalsIgnoreCase(LIST1) || localName.equalsIgnoreCase(LIST2)) {
+			} else if (entry1 == true && (localName.equalsIgnoreCase(LIST1) || localName.equalsIgnoreCase(LIST2))) {
 				Log.e("BC", "inlist true");
 				entry2 = true;
 				ready_to_close_parent_ul = true;

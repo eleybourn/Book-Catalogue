@@ -30,42 +30,40 @@
 			android:textSize="16sp"
 			android:paddingTop="10sp" />
 	</LinearLayout>
-	<LinearLayout android:id="@+id/anthology_add" 
-		android:orientation="horizontal"
-		android:layout_width="fill_parent" 
+	<Button android:id="@+id/row_add" 
+		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:text="@+string/anthology_add"
+		android:layout_weight="2"
+		android:gravity="right"
+		
 		android:layout_alignParentBottom="true"
-		android:layout_weight="2" 
-		> 
-		<LinearLayout 
-			android:orientation="vertical"
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content"
-			android:layout_weight="2">
-			<AutoCompleteTextView android:id="@+id/add_author" 
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content"
-				android:paddingLeft="10dp"
-				android:hint="@+string/author"
-				/>
-			<EditText android:id="@+id/add_title" 
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content"
-				android:hint="@+string/title"
-				/>
-		</LinearLayout>
-		<Button android:id="@+id/row_add" 
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="+"
-			android:layout_weight="1"
-			/>
-	</LinearLayout>
+		android:layout_alignParentRight="true"
+		/>
+	<EditText android:id="@+id/add_title" 
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:hint="@+string/title"
+		
+		android:layout_alignParentBottom="true"
+		android:layout_alignParentLeft="true"
+		android:layout_toLeftOf="@id/row_add"
+		/>
+	<AutoCompleteTextView android:id="@+id/add_author" 
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:paddingLeft="10dp"
+		android:hint="@+string/author"
+		
+		android:layout_alignParentLeft="true"
+		android:layout_above="@id/add_title"
+		/>
+	
 	<LinearLayout android:id="@+id/anthology_list" 
 		android:layout_width="fill_parent" 
 		android:layout_height="fill_parent"
 		android:layout_below="@id/anthology_form" 
-		android:layout_above="@id/anthology_add"
+		android:layout_above="@id/add_author"
 		>
 		<ListView android:id="@+id/android:list" 
 			android:layout_width="fill_parent" 

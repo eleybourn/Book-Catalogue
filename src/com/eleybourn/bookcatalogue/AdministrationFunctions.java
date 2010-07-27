@@ -431,6 +431,10 @@ public class AdministrationFunctions extends Activity {
 		/* Iterate through each imported row */
 		while (row < export.size()) {
 			String[] imported = export.get(row).split("\t");
+			// This import line is too short
+			if (imported.length <= 14) {
+				continue;
+			}
 			row++;
 			/* Setup aliases for each cell*/
 			Long id = null;

@@ -21,20 +21,26 @@
 package com.eleybourn.bookcatalogue;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.net.URI;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -78,6 +84,7 @@ public class BookEditFields extends Activity {
 	public static String ADDED_AUTHOR = "ADDED_AUTHOR";
 	
 	private static final int DELETE_ID = 1;
+	private static final int ADD_PHOTO = 2;
 	private static final int GONE = 8;
 	
 	protected void getRowId() {
@@ -129,8 +136,6 @@ public class BookEditFields extends Activity {
 		String visibility_prefix = FieldVisibility.prefix;
 		boolean field_visibility = true;
 		try {
-			//TODO: Compulsory fields
-			//TODO: How did list become "null"
 			super.onCreate(savedInstanceState);
 			mDbHelper = new CatalogueDBAdapter(this);
 			mDbHelper.open();
@@ -240,6 +245,8 @@ public class BookEditFields extends Activity {
 				public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 					MenuItem delete = menu.add(0, DELETE_ID, 0, R.string.menu_delete_thumb);
 					delete.setIcon(android.R.drawable.ic_menu_delete);
+					MenuItem add_photo = menu.add(0, ADD_PHOTO, 0, R.string.menu_add_thumb_photo);
+					add_photo.setIcon(android.R.drawable.ic_menu_camera);
 				}
 			});
 			
@@ -276,6 +283,15 @@ public class BookEditFields extends Activity {
 		case DELETE_ID:
 			deleteThumbnail(mRowId);
 			populateFields();
+			return true;
+		case ADD_PHOTO:
+			Intent intent = null;
+			//try {
+			//	intent = new Intent("com.android.camera.action.CROP");
+			//} catch (ActivityNotFoundException e) {
+				intent = new Intent("android.media.action.IMAGE_CAPTURE");
+			//}
+			startActivityForResult(intent, ADD_PHOTO);
 			return true;
 		}
 		return super.onContextItemSelected(item);
@@ -371,7 +387,14 @@ public class BookEditFields extends Activity {
 				//do nothing
 			}
 			
-			mBookshelfText.setSelection(spinnerAdapter.getPosition(book[6]));
+			// Bookshelves can't be set from the search results (very user specific)
+			// so use the currently selected bookshelf
+			try {
+				mBookshelfText.setSelection(spinnerAdapter.getPosition(BookCatalogue.bookshelf));
+			} catch (Exception e) {
+				//do nothing. The default will not be set
+				mBookshelfText.setSelection(spinnerAdapter.getPosition(book[6]));
+			}
 			mSeriesText.setText(book[8]);
 			mSeriesNumText.setText(book[10]);
 			try {
@@ -513,4 +536,45 @@ public class BookEditFields extends Activity {
 		return;
 	}
 
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+		super.onActivityResult(requestCode, resultCode, intent);
+		switch(requestCode) {
+		case ADD_PHOTO:
+			if (resultCode == Activity.RESULT_OK){
+				
+				//String realThumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/" + mRowId + ".jpg";
+				String realThumbFilename = Environment.getExternalStorageDirectory() + "/Download/" + mRowId + ".jpg";
+				Bitmap x = (Bitmap) intent.getExtras().get("data");
+				
+				/* Create a file to copy the thumbnail into */
+				FileOutputStream f = null;
+				try {
+					f = new FileOutputStream(realThumbFilename);
+				} catch (FileNotFoundException e) {
+					//Log.e("Book Catalogue", "Thumbnail cannot be written");
+					return;
+				}
+				
+				x.compress(Bitmap.CompressFormat.JPEG, 75, f);
+				
+				File realThumbFile = new File(realThumbFilename);
+				Uri fileUri = Uri.fromFile(realThumbFile);
+				
+			       Intent i2 = new Intent("com.android.camera.action.CROP");
+			       i2.setClassName("com.android.camera", "com.android.camera.CropImage");
+
+			       i2.setData(fileUri);
+			       i2.putExtra("outputX", 96);
+			       i2.putExtra("outputY", 96);
+			       i2.putExtra("aspectX", 1);
+			       i2.putExtra("aspectY", 1);
+			       i2.putExtra("scale", true);
+			       i2.putExtra("return-data", true);            
+			        startActivityForResult(i2, 5);
+
+
+			}
+		}
+	}
 }

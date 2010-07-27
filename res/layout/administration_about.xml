@@ -59,6 +59,7 @@
 		android:paddingLeft="15sp"
 		android:paddingBottom="5sp"
 		android:text="@+string/webpage"
+		android:textColor="#006699"
 		/>
 	
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
@@ -84,6 +85,7 @@
 		android:paddingLeft="15sp"
 		android:paddingBottom="5sp"
 		android:text="@+string/sourcecode"
+		android:textColor="#006699"
 		/>
 	
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
@@ -109,6 +111,7 @@
 		android:paddingLeft="15sp"
 		android:paddingBottom="5sp"
 		android:text="@+string/contact"
+		android:textColor="#006699"
 		/>
 
 </LinearLayout>

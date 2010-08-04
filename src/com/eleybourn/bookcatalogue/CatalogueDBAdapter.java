@@ -111,7 +111,10 @@ public class CatalogueDBAdapter {
 		KEY_SERIES_NUM + " text, " +
 		KEY_NOTES + " text, " +
 		KEY_LIST_PRICE + " text, " +
-		KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO + "" + 
+		KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO + ", " + 
+		KEY_DATE_READ_START+ " date, " +
+		KEY_DATE_READ_START + " date, " +
+		KEY_DATE_PUBLISHED + " date, " +
 		")";
 	
 	private static final String DATABASE_CREATE_LOAN =

@@ -44,6 +44,7 @@
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:hint="@+string/title"
+		android:inputType="textCapWords"
 		
 		android:layout_alignParentBottom="true"
 		android:layout_alignParentLeft="true"
@@ -54,6 +55,7 @@
 		android:layout_height="wrap_content"
 		android:paddingLeft="10dp"
 		android:hint="@+string/author"
+		android:inputType="textCapWords"
 		
 		android:layout_alignParentLeft="true"
 		android:layout_above="@id/add_title"

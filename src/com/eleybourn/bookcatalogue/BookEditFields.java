@@ -26,11 +26,14 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.TabActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -46,6 +49,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -209,6 +213,26 @@ public class BookEditFields extends Activity {
 				mAnthologyLabel.setVisibility(GONE);
 				mAnthologyCheckBox.setVisibility(GONE);
 			}
+			mAnthologyCheckBox.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View view) {
+					saveState();
+					try {
+						TabHost tabHost = ((TabActivity) getParent()).getTabHost();  // The activity TabHost
+						if (mAnthologyCheckBox.isChecked()) {
+							Resources res = getResources();
+							TabHost.TabSpec spec;  // Resusable TabSpec for each tab
+							Intent intent = new Intent().setClass(BookEditFields.this, BookEditAnthology.class);
+							spec = tabHost.newTabSpec("edit_book_anthology").setIndicator(res.getString(R.string.edit_book_anthology), res.getDrawable(R.drawable.ic_tab_anthology)).setContent(intent);
+							tabHost.addTab(spec);
+						} else {
+							// remove tab
+							tabHost.getTabWidget().removeViewAt(3);
+						}
+					} catch (Exception e) {
+						// if this doesn't work don't add the tab. The user will have to save and reenter
+					}
+				}
+			});
 			
 			mConfirmButton = (Button) findViewById(R.id.confirm);
 			mCancelButton = (Button) findViewById(R.id.cancel);
@@ -538,7 +562,9 @@ public class BookEditFields extends Activity {
 				
 				String realThumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/" + mRowId + ".jpg";
 				Bitmap x = (Bitmap) intent.getExtras().get("data");
-				
+				Matrix m = new Matrix();
+				m.postRotate(90);
+				x = Bitmap.createBitmap(x, 0, 0, x.getWidth(), x.getHeight(), m, true);
 				/* Create a file to copy the thumbnail into */
 				FileOutputStream f = null;
 				try {

@@ -99,6 +99,13 @@ public class BookEdit extends TabActivity {
 			spec = tabHost.newTabSpec("edit_book_notes").setIndicator(res.getString(R.string.edit_book_notes), res.getDrawable(R.drawable.ic_tab_notes)).setContent(intent);
 			tabHost.addTab(spec);
 			
+			intent = new Intent().setClass(this, BookEditLoaned.class);
+			if (extras != null) {
+				intent.putExtras(extras);
+			}
+			spec = tabHost.newTabSpec("edit_book_friends").setIndicator(res.getString(R.string.edit_book_friends), res.getDrawable(R.drawable.ic_tab_friends)).setContent(intent);
+			tabHost.addTab(spec);
+			
 			// Only show the anthology tab if the book is marked as an anthology
 			if (anthology_num != 0) {
 				intent = new Intent().setClass(this, BookEditAnthology.class);
@@ -108,13 +115,6 @@ public class BookEdit extends TabActivity {
 				spec = tabHost.newTabSpec("edit_book_anthology").setIndicator(res.getString(R.string.edit_book_anthology), res.getDrawable(R.drawable.ic_tab_anthology)).setContent(intent);
 				tabHost.addTab(spec);
 			}
-			
-			intent = new Intent().setClass(this, BookEditLoaned.class);
-			if (extras != null) {
-				intent.putExtras(extras);
-			}
-			spec = tabHost.newTabSpec("edit_book_friends").setIndicator(res.getString(R.string.edit_book_friends), res.getDrawable(R.drawable.ic_tab_friends)).setContent(intent);
-			tabHost.addTab(spec);
 		}
 		
 		tabHost.setCurrentTab(currentTab);

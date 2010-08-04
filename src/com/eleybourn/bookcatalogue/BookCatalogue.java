@@ -109,7 +109,7 @@ public class BookCatalogue extends ExpandableListActivity {
 	private static final String STATE_BOOKSHELF = "state_bookshelf"; 
 	private static final String STATE_LASTBOOK = "state_lastbook"; 
 	
-	
+	private static final int GONE = 8;
 	/** 
 	 * Called when the activity is first created. 
 	 */
@@ -395,13 +395,18 @@ public class BookCatalogue extends ExpandableListActivity {
 			} else if (v.getId() == R.id.row_family) {
 				text = text + ", ";
 			} else if (v.getId() == R.id.row_img) {
-				String thumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/" + text + ".jpg";
-				Bitmap thumbnail = BitmapFactory.decodeFile(thumbFilename);
+				boolean field_visibility = mPrefs.getBoolean(FieldVisibility.prefix + "thumbnail", true);
 				ImageView newv = (ImageView) ((ViewGroup) v.getParent()).findViewById(R.id.row_image_view);
-				if (thumbnail != null) {
-					newv.setImageBitmap(thumbnail);
+				if (field_visibility == false) {
+					newv.setVisibility(GONE);
 				} else {
-					newv.setImageResource(android.R.drawable.ic_menu_help);
+					String thumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/" + text + ".jpg";
+					Bitmap thumbnail = BitmapFactory.decodeFile(thumbFilename);
+					if (thumbnail != null) {
+						newv.setImageBitmap(thumbnail);
+					} else {
+						newv.setImageResource(android.R.drawable.ic_menu_help);
+					}
 				}
 				text = "";
 				return;
@@ -439,11 +444,11 @@ public class BookCatalogue extends ExpandableListActivity {
 		
 		// Create an array to specify the fields we want to display in the list
 		String[] from = new String[]{CatalogueDBAdapter.KEY_ROWID};
-		String[] exp_from = new String[]{CatalogueDBAdapter.KEY_SERIES_NUM, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_AUTHOR};
+		String[] exp_from = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_SERIES_NUM, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_AUTHOR};
 		
 		// and an array of the fields we want to bind those fields to (in this case just text1)
 		int[] to = new int[]{R.id.row_family};
-		int[] exp_to = new int[]{R.id.row_series_num, R.id.row_title, R.id.row_author};
+		int[] exp_to = new int[]{R.id.row_img, R.id.row_series_num, R.id.row_title, R.id.row_author};
 		
 		// Instantiate the List Adapter
 		ExpandableListAdapter books = new SeriesBookListAdapter(BooksCursor, this, layout, layout_child, from, to, exp_from, exp_to);
@@ -519,6 +524,22 @@ public class BookCatalogue extends ExpandableListActivity {
 				} else {
 					text = "(" + text + ")";
 				}
+			} else if (v.getId() == R.id.row_img) {
+				boolean field_visibility = mPrefs.getBoolean(FieldVisibility.prefix + "thumbnail", true);
+				ImageView newv = (ImageView) ((ViewGroup) v.getParent()).findViewById(R.id.row_image_view);
+				if (field_visibility == false) {
+					newv.setVisibility(GONE);
+				} else {
+					String thumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/" + text + ".jpg";
+					Bitmap thumbnail = BitmapFactory.decodeFile(thumbFilename);
+					if (thumbnail != null) {
+						newv.setImageBitmap(thumbnail);
+					} else {
+						newv.setImageResource(android.R.drawable.ic_menu_help);
+					}
+				}
+				text = "";
+				return;
 			}
 			v.setText(text);
 		}
@@ -554,11 +575,11 @@ public class BookCatalogue extends ExpandableListActivity {
 		startManagingCursor(BooksCursor);
 		
 		// Create an array to specify the fields we want to display in the list
-		String[] from = new String[]{CatalogueDBAdapter.KEY_AUTHOR, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_PUBLISHER, CatalogueDBAdapter.KEY_SERIES, CatalogueDBAdapter.KEY_SERIES_NUM};
+		String[] from = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_AUTHOR, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_PUBLISHER, CatalogueDBAdapter.KEY_SERIES, CatalogueDBAdapter.KEY_SERIES_NUM};
 		String[] exp_from = new String[]{};
 		
 		// and an array of the fields we want to bind those fields to (in this case just text1)
-		int[] to = new int[]{R.id.row_author, R.id.row_title, R.id.row_publisher, R.id.row_series, R.id.row_series_num};
+		int[] to = new int[]{R.id.row_img, R.id.row_author, R.id.row_title, R.id.row_publisher, R.id.row_series, R.id.row_series_num};
 		int[] exp_to = new int[]{};
 		
 		ExpandableListAdapter books = new BooksBookListAdapter(BooksCursor, this, layout, layout_child, from, to, exp_from, exp_to);
@@ -623,20 +644,42 @@ public class BookCatalogue extends ExpandableListActivity {
 			if (v.getId() == R.id.row_series) {
 				if (text.equals("")) {
 					series = false;
-					// 8 = GONE
-					v.setVisibility(8);
+					v.setVisibility(GONE);
 				} else {
 					series = true;
 					text = "" + text;
 				}
 			} else if (v.getId() == R.id.row_series_num) {
-				if (series == false) {
-					// 8 = GONE
-					v.setVisibility(8);
+				if (series == false || text.equals("")) {
+					v.setVisibility(GONE);
 					text = "";
-				} else if (series == true) {
+				} else {
 					text = " #" + text + "";
 				}
+			} else if (v.getId() == R.id.row_author) {
+				if (text.equals("")) {
+					v.setVisibility(GONE);
+				}
+			} else if (v.getId() == R.id.row_publisher) {
+				if (text.equals("")) {
+					v.setVisibility(GONE);
+				}
+			} else if (v.getId() == R.id.row_img) {
+				boolean field_visibility = mPrefs.getBoolean(FieldVisibility.prefix + "thumbnail", true);
+				ImageView newv = (ImageView) ((ViewGroup) v.getParent()).findViewById(R.id.row_image_view);
+				if (field_visibility == false) {
+					newv.setVisibility(GONE);
+				} else {
+					String thumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/" + text + ".jpg";
+					Bitmap thumbnail = BitmapFactory.decodeFile(thumbFilename);
+					if (thumbnail != null) {
+						newv.setImageBitmap(thumbnail);
+					} else {
+						newv.setImageResource(android.R.drawable.ic_menu_help);
+					}
+				}
+				text = "";
+				return;
 			}
 			v.setText(text);
 		}
@@ -668,11 +711,11 @@ public class BookCatalogue extends ExpandableListActivity {
 		
 		// Create an array to specify the fields we want to display in the list
 		String[] from = new String[]{CatalogueDBAdapter.KEY_ROWID};
-		String[] exp_from = new String[]{CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_AUTHOR};
+		String[] exp_from = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_AUTHOR};
 		
 		// and an array of the fields we want to bind those fields to (in this case just text1)
 		int[] to = new int[]{R.id.row_family};
-		int[] exp_to = new int[]{R.id.row_title, R.id.row_author};
+		int[] exp_to = new int[]{R.id.row_img, R.id.row_title, R.id.row_author};
 		
 		// Instantiate the List Adapter
 		ExpandableListAdapter books = new LoanBookListAdapter(BooksCursor, this, layout, layout_child, from, to, exp_from, exp_to);
@@ -748,6 +791,22 @@ public class BookCatalogue extends ExpandableListActivity {
 				} else {
 					text = "(" + text + ")";
 				}
+			} else if (v.getId() == R.id.row_img) {
+				boolean field_visibility = mPrefs.getBoolean(FieldVisibility.prefix + "thumbnail", true);
+				ImageView newv = (ImageView) ((ViewGroup) v.getParent()).findViewById(R.id.row_image_view);
+				if (field_visibility == false) {
+					newv.setVisibility(GONE);
+				} else {
+					String thumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/" + text + ".jpg";
+					Bitmap thumbnail = BitmapFactory.decodeFile(thumbFilename);
+					if (thumbnail != null) {
+						newv.setImageBitmap(thumbnail);
+					} else {
+						newv.setImageResource(android.R.drawable.ic_menu_help);
+					}
+				}
+				text = "";
+				return;
 			}
 			v.setText(text);
 		}

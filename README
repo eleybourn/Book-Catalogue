@@ -41,6 +41,10 @@ Features include;
   case. e.g. "The murder on the links" becomes "The Murder on the Links"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+**********
+* Thumbnails can now be hidden just like any other field (Thanks Martin)
+**********
+
 New in v2.6
 * There is now support to record books as anthologies and it's titles.
 * There is experimental support to automatically populate the anthology titles

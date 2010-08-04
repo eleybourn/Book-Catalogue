@@ -36,11 +36,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -169,7 +168,6 @@ public class BookEditFields extends Activity {
 			field_visibility = mPrefs.getBoolean(visibility_prefix + "publisher", true);
 			if (field_visibility == false) {
 				mPublisherText.setVisibility(GONE);
-				Log.e("BC", "Gone");
 			}
 			
 			mDate_publishedText = (DatePicker) findViewById(R.id.date_published);
@@ -236,7 +234,12 @@ public class BookEditFields extends Activity {
 			
 			mConfirmButton = (Button) findViewById(R.id.confirm);
 			mCancelButton = (Button) findViewById(R.id.cancel);
+			
 			mImageView = (ImageView) findViewById(R.id.row_img);
+			field_visibility = mPrefs.getBoolean(visibility_prefix + "thumbnail", true);
+			if (field_visibility == false) {
+				mImageView.setVisibility(GONE);
+			}
 			
 			/* Setup the Bookshelf Spinner */
 			mBookshelfText = (Spinner) findViewById(R.id.bookshelf);

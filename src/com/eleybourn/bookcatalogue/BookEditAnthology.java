@@ -37,7 +37,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -66,6 +65,8 @@ public class BookEditAnthology extends ListActivity {
 	private CheckBox mSame;
 	private Long mRowId;
 	private Long mEditId = null;
+	private int currentPosition = 0;
+	private int maxPosition = 0;
 	private CatalogueDBAdapter mDbHelper;
 	private Cursor book;
 	int anthology_num = CatalogueDBAdapter.ANTHOLOGY_NO;
@@ -162,7 +163,8 @@ public class BookEditAnthology extends ListActivity {
 				}
 				mTitleText.setText("");
 				mAuthorText.setText("");
-				fillAnthology();
+				fillAnthology(currentPosition);
+				currentPosition = maxPosition;
 			}
 		});
 		
@@ -183,6 +185,8 @@ public class BookEditAnthology extends ListActivity {
 		
 		// Get all of the rows from the database and create the item list
 		Cursor BooksCursor = mDbHelper.fetchAnthologyTitlesByBook(mRowId);
+		maxPosition = BooksCursor.getCount();
+		currentPosition = maxPosition;
 		startManagingCursor(BooksCursor);
 		String[] from = null;
 		int[] to = null;
@@ -291,7 +295,6 @@ public class BookEditAnthology extends ListActivity {
 
 		try {
 			url = new URL(path);
-			Log.e("BC", path);
 			parser = factory.newSAXParser();
 			try {
 				parser.parse(getInputStream(url), handler);
@@ -306,7 +309,6 @@ public class BookEditAnthology extends ListActivity {
 					break;
 				}
 				url = new URL(basepath + links[i]);
-				Log.e("BC", basepath + links[i]);
 				parser = factory.newSAXParser();
 				try {
 					parser.parse(getInputStream(url), entryHandler);
@@ -352,6 +354,7 @@ public class BookEditAnthology extends ListActivity {
 			public void onClick(DialogInterface dialog, int which) {
 				for (int j=0; j < titles.size(); j++) {
 					String anthology_title = titles.get(j);
+					anthology_title = anthology_title + ", ";
 					//Log.e("BC", anthology_title);
 					String anthology_author = bookAuthor;
 					// Does the string look like "Hindsight by Jack Williamson"
@@ -360,6 +363,9 @@ public class BookEditAnthology extends ListActivity {
 						anthology_author = anthology_title.substring(pos+4);
 						anthology_title = anthology_title.substring(0, pos);
 					}
+					// Trim extraneous punctionaction and whitespace from the titles and authors
+					anthology_author = anthology_author.trim().replace("\n", " ").replaceAll("[\\,\\.\\'\\:\\;\\`\\~\\@\\#\\$\\%\\^\\&\\*\\(\\)\\-\\=\\_\\+]*$", "").trim();
+					anthology_title = anthology_title.trim().replace("\n", " ").replaceAll("[\\,\\.\\'\\:\\;\\`\\~\\@\\#\\$\\%\\^\\&\\*\\(\\)\\-\\=\\_\\+]*$", "").trim();
 					mDbHelper.createAnthologyTitle(mRowId, anthology_author, anthology_title);
 					//Log.e("BC", anthology_author + " " + anthology_title);
 				}
@@ -393,6 +399,7 @@ public class BookEditAnthology extends ListActivity {
 		String title = anthology.getString(anthology.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE)); 
 		String author = anthology.getString(anthology.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR));
 		
+		currentPosition = position;
 		mEditId = id;
 		mTitleText.setText(title);
 		mAuthorText.setText(author);

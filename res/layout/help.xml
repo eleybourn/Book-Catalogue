@@ -1,89 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
 	android:orientation="vertical"
 	android:layout_width="fill_parent" 
 	android:layout_height="fill_parent"
 	android:paddingLeft="5sp">
-	
-	<TextView android:layout_width="fill_parent" 
-		android:layout_height="wrap_content" 
-		android:textAppearance="?android:attr/textAppearanceLarge"
-		android:text="@+string/help_title_nutshell"
-		/>
-	<TextView android:layout_width="fill_parent" 
-		android:layout_height="wrap_content" 
-		android:text="@+string/help_text_nutshell"
-		/>
-	<TextView android:id="@+id/nutshell_link"
+	<LinearLayout android:orientation="vertical"
 		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content" 
-		android:text="@+string/help_text_nutshell2"
-		android:textColor="#006699"
-		/>
-	<TextView android:layout_width="fill_parent"
-		android:layout_height="2dip"
-		android:paddingTop="5dip"
-		android:background="#CCCCCC" />
-	
-	
-	
-	
-	<TextView android:layout_width="fill_parent" 
-		android:layout_height="wrap_content" 
-		android:textAppearance="?android:attr/textAppearanceLarge"
-		android:text="@+string/help_title_home"
-		android:paddingTop="5dip"
-		/>
-	<TextView android:layout_width="fill_parent" 
-		android:layout_height="wrap_content" 
-		android:text="@+string/help_text_home1"
-		/>
-	<ImageView android:layout_width="fill_parent" 
-		android:layout_height="wrap_content" 
-		android:src="@+drawable/help_dropdown"
-		/>
-	<TextView android:layout_width="fill_parent" 
-		android:layout_height="wrap_content" 
-		android:text="@+string/help_text_home2"
-		/>
-	<ImageView android:layout_width="fill_parent" 
-		android:layout_height="wrap_content" 
-		android:src="@+drawable/help_menu_sortby"
-		/>
-	<TextView android:layout_width="fill_parent" 
-		android:layout_height="wrap_content" 
-		android:text="@+string/help_text_home3"
-		/>
-	<ImageView android:layout_width="fill_parent" 
-		android:layout_height="wrap_content" 
-		android:src="@+drawable/help_screen_sortby"
-		/>
+		android:layout_height="fill_parent">
 		
-	<TextView android:layout_width="fill_parent" 
-		android:layout_height="wrap_content" 
-		android:text="@+string/help_text_home4"
-		android:paddingTop="5dip"
-		/>
+		<TextView android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:text="@+string/help_title_nutshell"
+			/>
+		<TextView android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:text="@+string/help_text_nutshell"
+			/>
+		<TextView android:id="@+id/nutshell_link"
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:text="@+string/help_text_nutshell2"
+			android:textColor="#006699"
+			/>
+		<TextView android:layout_width="fill_parent"
+			android:layout_height="2dip"
+			android:paddingTop="15sp"
+			android:background="#CCCCCC" />
 		
-	<TextView android:layout_width="fill_parent" 
-		android:layout_height="wrap_content" 
-		android:text="@+string/help_text_home5"
-		android:paddingTop="5dip"
-		/>
-	<ImageView android:layout_width="fill_parent" 
-		android:layout_height="wrap_content" 
-		android:src="@+drawable/help_screen_sortby"
-		/>
-	<TextView android:layout_width="fill_parent" 
-		android:layout_height="wrap_content" 
-		android:text="@+string/help_text_home6"
-		android:paddingTop="5dip"
-		/>
 		
-	<TextView android:layout_width="fill_parent" 
-		android:layout_height="wrap_content" 
-		android:text="@+string/help_text_home7"
-		android:paddingTop="5dip"
-		/>
 		
-</LinearLayout>
+		
+		<TextView android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:text="@+string/help_title_home"
+			android:paddingTop="15sp"
+			/>
+		<TextView android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:text="@+string/help_text_home1"
+			/>
+		<ImageView android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:src="@+drawable/help_dropdown"
+			/>
+		<TextView android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:text="@+string/help_text_home2"
+			/>
+		<ImageView android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:src="@+drawable/help_menu_sortby"
+			/>
+		<TextView android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:text="@+string/help_text_home3"
+			/>
+		<ImageView android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:src="@+drawable/help_screen_sortby"
+			/>
+			
+		<TextView android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:text="@+string/help_text_home4"
+			android:paddingTop="15sp"
+			/>
+			
+		<TextView android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:text="@+string/help_text_home5"
+			android:paddingTop="15sp"
+			/>
+		<ImageView android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:src="@+drawable/help_screen_sortby"
+			/>
+		<TextView android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:text="@+string/help_text_home6"
+			android:paddingTop="5dip"
+			/>
+			
+		<TextView android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:text="@+string/help_text_home7"
+			android:paddingTop="15sp"
+			/>
+	</LinearLayout>
+		
+</ScrollView>

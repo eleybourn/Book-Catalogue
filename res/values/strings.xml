@@ -126,4 +126,8 @@
 <string name="help_text_home5">Other display options under menu include</string>
 <string name="help_text_home6">which will expand all authors (or series / loans depending on your sort setting). This option is not available when sorting by title.</string>
 <string name="help_text_home7">If you long click on a book title (not author title) it will bring up a context menu which will allow you to delete a book or open/edit a book at a specific tab.</string>
+<string name="help_title_bookshelves">Bookshelves</string>
+<string name="help_text_bookshelves1">At the top of the main screen is the bookshelf selector.</string>
+<string name="help_text_bookshelves2">This will tell you which bookshelf you are currently viewing and, if you click on it, allow you to change the current bookshelf.</string>
+<string name="help_text_bookshelves3">There is a special bookshelf called “All Books” which allows you to display all books in the database regardless of the bookshelf they are in.</string>
 </resources>

@@ -2,11 +2,12 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
 	android:orientation="vertical"
 	android:layout_width="fill_parent" 
-	android:layout_height="fill_parent"
-	android:paddingLeft="5sp">
+	android:layout_height="fill_parent">
 	<LinearLayout android:orientation="vertical"
 		android:layout_width="fill_parent" 
-		android:layout_height="fill_parent">
+		android:layout_height="fill_parent"
+		android:paddingLeft="5sp"
+		android:paddingRight="5sp">
 		
 		<TextView android:layout_width="fill_parent" 
 			android:layout_height="wrap_content" 
@@ -22,10 +23,10 @@
 			android:layout_height="wrap_content" 
 			android:text="@+string/help_text_nutshell2"
 			android:textColor="#006699"
+			android:paddingBottom="15sp"
 			/>
 		<TextView android:layout_width="fill_parent"
-			android:layout_height="2dip"
-			android:paddingTop="15sp"
+			android:layout_height="2sp"
 			android:background="#CCCCCC" />
 		
 		
@@ -87,7 +88,55 @@
 			android:layout_height="wrap_content" 
 			android:text="@+string/help_text_home7"
 			android:paddingTop="15sp"
+			android:paddingBottom="15sp"
 			/>
+		<TextView android:layout_width="fill_parent"
+			android:layout_height="2sp"
+			android:background="#CCCCCC" />
+		
+		
+		
+		
+		
+		<TextView android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:text="@+string/help_title_bookshelves"
+			android:paddingTop="15sp"
+			/>
+		<TextView android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:text="@+string/help_text_bookshelves1"
+			/>
+		<ImageView android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:src="@+drawable/help_widget_bookshelf"
+			/>
+		<TextView android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:text="@+string/help_text_bookshelves2"
+			/>
+		<ImageView android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:src="@+drawable/help_screen_bookshelf"
+			android:paddingTop="15sp"
+			/>
+			
+		<TextView android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:text="@+string/help_text_bookshelves3"
+			android:paddingTop="15sp"
+			android:paddingBottom="15sp"
+			/>
+		<TextView android:layout_width="fill_parent"
+			android:layout_height="2sp"
+			android:background="#CCCCCC" />
+		
+		
+		
+		
+		
+		
 	</LinearLayout>
 		
 </ScrollView>

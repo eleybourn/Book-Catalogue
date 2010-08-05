@@ -115,4 +115,15 @@
 <string name="menu_add_thumb_photo">Add Thumbnail from Camera</string>
 <string name="thumbnail">Cover Thumbnail</string>
 <string name="menu_rotate_thumbnail">Rotate Thumbnail</string>
+<string name="help_title_nutshell">In a Nutshell</string>
+<string name="help_text_nutshell">Book Catalogue is exactly what it sounds like; a simple application that allows you to create a list of all your books. Books can be added either manually, by ISBN, or by barcode. This is an open source android application - for more information please visit </string>
+<string name="help_text_nutshell2">http://wiki.github.com/eleybourn/Book-Catalogue/</string>
+<string name="help_title_home">Home Screen</string>
+<string name="help_text_home1">The bulk of this screen lists your entire book collection. By default your books will be sorted by Author. If you click on the</string>
+<string name="help_text_home2">icon it will expand to display all books for that author. You can change the sort order by selecting </string>
+<string name="help_text_home3">from the menu, which will provide 4 options; sort by author, title, series and loaned. </string>
+<string name="help_text_home4">When you quit, Book Catalogue will remember all your current settings, including how it is sorted, current bookshelf, and which book you are focused on.</string>
+<string name="help_text_home5">Other display options under menu include</string>
+<string name="help_text_home6">which will expand all authors (or series / loans depending on your sort setting). This option is not available when sorting by title.</string>
+<string name="help_text_home7">If you long click on a book title (not author title) it will bring up a context menu which will allow you to delete a book or open/edit a book at a specific tab.</string>
 </resources>

@@ -32,8 +32,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import android.os.Environment;
-
 /* 
  * An XML handler for the Google Books entry return 
  * 
@@ -199,7 +197,7 @@ public class SearchGoogleBooksEntryHandler extends DefaultHandler {
 		if (localName.equalsIgnoreCase(THUMBNAIL)){
 			if (attributes.getValue("", "rel").equals("http://schemas.google.com/books/2008/thumbnail")) {
 				thumbnail = attributes.getValue("", "href");
-
+				
 				URL u;
 				try {
 					u = new URL(thumbnail);
@@ -219,20 +217,21 @@ public class SearchGoogleBooksEntryHandler extends DefaultHandler {
 					//Log.e("Book Catalogue", "Thumbnail cannot be read");
 					return;
 				}
-
+				
 				FileOutputStream f = null;
 				try {
-					f = new FileOutputStream(Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/tmp.jpg");
+					String filename = CatalogueDBAdapter.fetchThumbnailFilename(0, true);
+					f = new FileOutputStream(filename);
 				} catch (FileNotFoundException e) {
 					//Log.e("Book Catalogue", "Thumbnail cannot be written");
 					return;
 				}
-
+				
 				try {
 					byte[] buffer = new byte[1024];
 					int len1 = 0;
 					while ( (len1 = in.read(buffer)) > 0 ) {
-					     f.write(buffer,0, len1);
+						f.write(buffer,0, len1);
 					}
 					f.close();
 				} catch (IOException e) {

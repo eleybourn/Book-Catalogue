@@ -21,6 +21,7 @@
 package com.eleybourn.bookcatalogue;
 
 //import android.R;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -400,7 +401,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				if (field_visibility == false) {
 					newv.setVisibility(GONE);
 				} else {
-					String thumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/" + text + ".jpg";
+					String thumbFilename = CatalogueDBAdapter.fetchThumbnailFilename(Long.parseLong(text), false);
 					Bitmap thumbnail = BitmapFactory.decodeFile(thumbFilename);
 					if (thumbnail != null) {
 						newv.setImageBitmap(thumbnail);
@@ -530,7 +531,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				if (field_visibility == false) {
 					newv.setVisibility(GONE);
 				} else {
-					String thumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/" + text + ".jpg";
+					String thumbFilename = CatalogueDBAdapter.fetchThumbnailFilename(Long.parseLong(text), false);
 					Bitmap thumbnail = BitmapFactory.decodeFile(thumbFilename);
 					if (thumbnail != null) {
 						newv.setImageBitmap(thumbnail);
@@ -670,7 +671,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				if (field_visibility == false) {
 					newv.setVisibility(GONE);
 				} else {
-					String thumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/" + text + ".jpg";
+					String thumbFilename = CatalogueDBAdapter.fetchThumbnailFilename(Long.parseLong(text), false);
 					Bitmap thumbnail = BitmapFactory.decodeFile(thumbFilename);
 					if (thumbnail != null) {
 						newv.setImageBitmap(thumbnail);
@@ -797,7 +798,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				if (field_visibility == false) {
 					newv.setVisibility(GONE);
 				} else {
-					String thumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/" + text + ".jpg";
+					String thumbFilename = CatalogueDBAdapter.fetchThumbnailFilename(Long.parseLong(text), false);
 					Bitmap thumbnail = BitmapFactory.decodeFile(thumbFilename);
 					if (thumbnail != null) {
 						newv.setImageBitmap(thumbnail);

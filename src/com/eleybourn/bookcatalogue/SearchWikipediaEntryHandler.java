@@ -26,8 +26,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import android.util.Log;
-
 /** 
  * An XML handler for the Wikipedia entry return 
  */
@@ -70,10 +68,8 @@ public class SearchWikipediaEntryHandler extends DefaultHandler {
 		if (intoc == false) {
 			if (localName.equalsIgnoreCase(ENTRY)){
 				if (entry1 == true && entry2 == true) {
-					Log.e("BC", "inentry false");
 					String title = this_title + builder.toString();
 					title = title.replace("\"", "").trim();
-					Log.e("BC", title);
 					if (title != null && title != "") {
 						titles.add(title);
 					}
@@ -90,7 +86,6 @@ public class SearchWikipediaEntryHandler extends DefaultHandler {
 					in_parent_ul = false;
 					entry3 = false;
 				} else if (entry1 == true && entry2 == true) {
-					Log.e("BC", "inlist false");
 					entry1 = false;
 					entry2 = false;
 					entry3 = false;
@@ -100,7 +95,6 @@ public class SearchWikipediaEntryHandler extends DefaultHandler {
 		}
 		if (localName.equalsIgnoreCase(DIV)){
 			if (entry1 == true && div==entrydiv) {
-				Log.e("BC", "indiv false");
 				entry1 = false;
 				entry2 = false;
 				entry3 = false;
@@ -109,7 +103,6 @@ public class SearchWikipediaEntryHandler extends DefaultHandler {
 		}
 		if (localName.equalsIgnoreCase(TOC_TABLE)){
 			if (intoc == true) {
-				Log.e("BC", "intoc false");
 				intoc = false;
 			}
 		}
@@ -140,7 +133,6 @@ public class SearchWikipediaEntryHandler extends DefaultHandler {
 			div++;
 			String idName = attributes.getValue("id");
 			if (idName != null && idName.equals("bodyContent")) {
-				Log.e("BC", "indiv true");
 				entrydiv = div;
 				entry1 = true;
 			}
@@ -148,7 +140,6 @@ public class SearchWikipediaEntryHandler extends DefaultHandler {
 		if (entry1 == true && localName.equalsIgnoreCase(TOC_TABLE)) {
 			String idName = attributes.getValue("id");
 			if (idName != null && idName.equals("toc")) {
-				Log.e("BC", "intoc true");
 				intoc = true;
 			}
 		}
@@ -156,17 +147,14 @@ public class SearchWikipediaEntryHandler extends DefaultHandler {
 			// This is a parent ul. Not the list ul
 			if (entry1 == true && entry2 == true && (localName.equalsIgnoreCase(LIST1) || localName.equalsIgnoreCase(LIST2))) {
 				// inner ul (if exists)
-				Log.e("BC", "inlist x2 true");
 				in_parent_ul = true;
 				this_title = "";
 				ready_to_close_parent_ul = false;
 			} else if (entry1 == true && (localName.equalsIgnoreCase(LIST1) || localName.equalsIgnoreCase(LIST2))) {
-				Log.e("BC", "inlist true");
 				entry2 = true;
 				ready_to_close_parent_ul = true;
 			}
 			if (entry1 == true && entry2 == true && localName.equalsIgnoreCase(ENTRY)) {
-				Log.e("BC", "inentry true");
 				entry3 = true;
 			}
 		}

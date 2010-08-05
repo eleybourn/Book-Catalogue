@@ -498,5 +498,11 @@ public class BookEditAnthology extends ListActivity {
 		}
 		return;
 	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		mDbHelper.close();
+	}
 
 }

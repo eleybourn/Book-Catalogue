@@ -44,6 +44,7 @@ public class BookEdit extends TabActivity {
 	public static final int TAB_EDIT_FRIENDS = 2;
 	public int currentTab = 0;
 	private Long mRowId;
+	private CatalogueDBAdapter mDbHelper = new CatalogueDBAdapter(this);
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -53,7 +54,6 @@ public class BookEdit extends TabActivity {
 		TabHost tabHost = getTabHost();  // The activity TabHost
 		TabHost.TabSpec spec;  // Resusable TabSpec for each tab
 		Intent intent;  // Reusable Intent for each tab
-		CatalogueDBAdapter mDbHelper = new CatalogueDBAdapter(this);
 		mDbHelper.open();
 		
 		//get the passed parameters
@@ -128,5 +128,11 @@ public class BookEdit extends TabActivity {
 		super.onActivityResult(requestCode, resultCode, intent);
 		setResult(resultCode, intent);
 		finish();
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		mDbHelper.close();
 	}
 }

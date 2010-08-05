@@ -29,7 +29,6 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
-import android.util.Log;
 
 /**
  * Book Catalogue database access helper class. Defines the basic CRUD operations
@@ -111,10 +110,7 @@ public class CatalogueDBAdapter {
 		KEY_SERIES_NUM + " text, " +
 		KEY_NOTES + " text, " +
 		KEY_LIST_PRICE + " text, " +
-		KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO + ", " + 
-		KEY_DATE_READ_START+ " date, " +
-		KEY_DATE_READ_START + " date, " +
-		KEY_DATE_PUBLISHED + " date, " +
+		KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO + " " + 
 		")";
 	
 	private static final String DATABASE_CREATE_LOAN =
@@ -384,6 +380,45 @@ public class CatalogueDBAdapter {
 	 */
 	public void close() {
 		mDbHelper.close();
+	}
+	
+	/**
+	 * return the thumbnail (as a File object) for the given id
+	 * 
+	 * @param id The id of the book
+	 * @return The File object
+	 */
+	public static File fetchThumbnail(long id) {
+		String filename = "";
+		File file = null;
+		if (id == 0) {
+			filename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/tmp.png";
+			file = new File(filename);
+		} else {
+			filename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/" + id + ".jpg";
+			file = new File(filename);
+			if (!file.exists()) {
+				filename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/" + id + ".png";
+				file = new File(filename);
+			}
+		}
+		return file;
+	}
+	
+	/**
+	 * Return the filename for the thumbnail. Usually used to loadup bitmaps into imageviews
+	 * 
+	 * @param id The id of the book
+	 * @param force Normally this function will return "" if the file does not exist. If forces it will return the filename regardless of whether the file exists
+	 * @return The filename string
+	 */
+	public static String fetchThumbnailFilename(long id, boolean force) {
+		File file = fetchThumbnail(id);
+		String filename = null;
+		if (force == true || file.exists()) {
+			filename = file.getPath(); 
+		}
+		return filename;
 	}
 	
 	/**
@@ -697,7 +732,6 @@ public class CatalogueDBAdapter {
 			" WHERE " + KEY_BOOK + "='" + rowId + "'";
 		Cursor mCursor = mDb.rawQuery(sql, new String[]{});
 		int position = getIntValue(mCursor, 0);
-		Log.e("BC", position + " " + sql);
 		return position;
 	}
 	
@@ -884,13 +918,11 @@ public class CatalogueDBAdapter {
 		authorId.moveToFirst();
 		
 		int position = fetchAnthologyPositionByBook(book) + 1;
-		Log.e("BC", position + " ");
 		
 		initialValues.put(KEY_BOOK, book);
 		initialValues.put(KEY_AUTHOR, authorId.getInt(0));
 		initialValues.put(KEY_TITLE, title);
 		initialValues.put(KEY_POSITION, position);
-		Log.e("BC", book + " " + author + " " + authorId.getInt(0) + " " + title + " " + position );
 		return mDb.insert(DATABASE_TABLE_ANTHOLOGY, null, initialValues);
 	}
 	
@@ -1013,7 +1045,6 @@ public class CatalogueDBAdapter {
 		args.put(KEY_BOOK, book);
 		args.put(KEY_AUTHOR, authorId.getInt(0));
 		args.put(KEY_TITLE, title);
-		Log.e("BC", book + " " + author + " " + authorId.getInt(0) + " " + title );
 		boolean success = mDb.update(DATABASE_TABLE_ANTHOLOGY, args, KEY_ROWID + "=" + rowId, null) > 0;
 		deleteAuthors();
 		return success;
@@ -1150,7 +1181,6 @@ public class CatalogueDBAdapter {
 			" SET " + KEY_POSITION + "=" + KEY_POSITION + "-1" +
 			" WHERE " + KEY_POSITION + ">" + position + " AND " + KEY_BOOK + "=" + book + "";
 		mDb.execSQL(sql);
-		Log.e("BC", sql);
 		return success;
 	}
 

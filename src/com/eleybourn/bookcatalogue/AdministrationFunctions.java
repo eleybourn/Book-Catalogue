@@ -226,8 +226,6 @@ public class AdministrationFunctions extends Activity {
 		@Override
 		public void run() {
 			Looper.prepare();
-			String tmpThumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/tmp.jpg";
-			String realThumbFilename = "";
 			startManagingCursor(books);
 			int num = 0;
 			while (books.moveToNext()) {
@@ -238,23 +236,22 @@ public class AdministrationFunctions extends Activity {
 				num++;
 				// delete any tmp thumbnails //
 				try {
-					File delthumb = new File(tmpThumbFilename);
+					File delthumb = CatalogueDBAdapter.fetchThumbnail(0);
 					delthumb.delete();
 				} catch (Exception e) {
 					// do nothing - this is the expected behaviour 
 				}
 				
-				realThumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/" + id + ".jpg";
-				File thumb = new File(realThumbFilename);
+				File thumb = CatalogueDBAdapter.fetchThumbnail(id);
 				if ((overwrite == true || !thumb.exists()) && !isbn.equals("")) {
 					sendMessage(num, title);
 					BookISBNSearch bis = new BookISBNSearch();
 					bis.searchAmazon(isbn);
-					File tmpthumb = new File(tmpThumbFilename);
+					File tmpthumb = CatalogueDBAdapter.fetchThumbnail(0);
 					/* If amazon fails, try google books */
 					if (!tmpthumb.exists()) {
 						bis.searchGoogle(isbn);
-						tmpthumb = new File(tmpThumbFilename);
+						tmpthumb = CatalogueDBAdapter.fetchThumbnail(0);
 					}
 					
 					/* Copy tmpthumb over realthumb */

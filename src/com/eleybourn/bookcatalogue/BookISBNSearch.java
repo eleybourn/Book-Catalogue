@@ -35,7 +35,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -112,8 +111,7 @@ public class BookISBNSearch extends Activity {
 		
 		/* Delete any hanging around thumbs */
 		try {
-			String tmpThumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/tmp.jpg";
-			File thumb = new File(tmpThumbFilename);
+			File thumb = CatalogueDBAdapter.fetchThumbnail(0);
 			thumb.delete();
 		} catch (Exception e) {
 			// do nothing - this is the expected behaviour 
@@ -168,6 +166,12 @@ public class BookISBNSearch extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		mDbHelper.close();
 	}
 	
 	public String[] searchGoogle(String mIsbn) {
@@ -241,6 +245,7 @@ public class BookISBNSearch extends Activity {
 				book = handler.getBook();
 			} catch (RuntimeException e) {
 				Toast.makeText(this, R.string.unable_to_connect_amazon, Toast.LENGTH_LONG).show();
+				//Log.e("Book Catalogue", "Handler Exception " + e);
 			}
 			return book;
 		} catch (MalformedURLException e) {

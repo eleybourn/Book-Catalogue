@@ -173,5 +173,11 @@ public class BookEditLoaned extends Activity {
 		mDbHelper.deleteLoan(mRowId);
 		return;
 	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		mDbHelper.close();
+	}
 
 }

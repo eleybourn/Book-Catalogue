@@ -35,7 +35,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuItem;
@@ -85,6 +84,7 @@ public class BookEditFields extends Activity {
 	
 	private static final int DELETE_ID = 1;
 	private static final int ADD_PHOTO = 2;
+	private static final int ROTATE_THUMBNAIL = 3;
 	private static final int GONE = 8;
 	
 	protected void getRowId() {
@@ -211,26 +211,6 @@ public class BookEditFields extends Activity {
 				mAnthologyLabel.setVisibility(GONE);
 				mAnthologyCheckBox.setVisibility(GONE);
 			}
-			mAnthologyCheckBox.setOnClickListener(new View.OnClickListener() {
-				public void onClick(View view) {
-					saveState();
-					try {
-						TabHost tabHost = ((TabActivity) getParent()).getTabHost();  // The activity TabHost
-						if (mAnthologyCheckBox.isChecked()) {
-							Resources res = getResources();
-							TabHost.TabSpec spec;  // Resusable TabSpec for each tab
-							Intent intent = new Intent().setClass(BookEditFields.this, BookEditAnthology.class);
-							spec = tabHost.newTabSpec("edit_book_anthology").setIndicator(res.getString(R.string.edit_book_anthology), res.getDrawable(R.drawable.ic_tab_anthology)).setContent(intent);
-							tabHost.addTab(spec);
-						} else {
-							// remove tab
-							tabHost.getTabWidget().removeViewAt(3);
-						}
-					} catch (Exception e) {
-						// if this doesn't work don't add the tab. The user will have to save and reenter
-					}
-				}
-			});
 			
 			mConfirmButton = (Button) findViewById(R.id.confirm);
 			mCancelButton = (Button) findViewById(R.id.cancel);
@@ -271,25 +251,12 @@ public class BookEditFields extends Activity {
 					delete.setIcon(android.R.drawable.ic_menu_delete);
 					MenuItem add_photo = menu.add(0, ADD_PHOTO, 0, R.string.menu_add_thumb_photo);
 					add_photo.setIcon(android.R.drawable.ic_menu_camera);
+					MenuItem rotate_photo = menu.add(0, ROTATE_THUMBNAIL, 0, R.string.menu_rotate_thumbnail);
+					rotate_photo.setIcon(android.R.drawable.ic_menu_rotate);
 				}
 			});
 			
-			mConfirmButton.setOnClickListener(new View.OnClickListener() {
-				public void onClick(View view) {
-					saveState();
-					Intent i = new Intent();
-					i.putExtra(ADDED_SERIES, added_series);
-					i.putExtra(ADDED_TITLE, added_title);
-					i.putExtra(ADDED_AUTHOR, added_author);
-					if (getParent() == null) {
-						setResult(RESULT_OK, i);
-					} else {
-						getParent().setResult(RESULT_OK, i);
-					}
-					getParent().finish();
-				}
-			});
-			
+			// mConfirmButton.setOnClickListener - This is set in populate fields. The behaviour changes depending on if it is adding or saving
 			mCancelButton.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
 					setResult(RESULT_OK);
@@ -308,6 +275,10 @@ public class BookEditFields extends Activity {
 			deleteThumbnail(mRowId);
 			populateFields();
 			return true;
+		case ROTATE_THUMBNAIL:
+			rotateThumbnail(mRowId);
+			populateFields();
+			return true;
 		case ADD_PHOTO:
 			Intent intent = null;
 			intent = new Intent("android.media.action.IMAGE_CAPTURE");
@@ -324,15 +295,37 @@ public class BookEditFields extends Activity {
 	 */
 	private void deleteThumbnail(long id) {
 		try {
-			String tmpThumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/" + id + ".jpg";
-			File thumb = new File(tmpThumbFilename);
+			File thumb = CatalogueDBAdapter.fetchThumbnail(id);
 			thumb.delete();
 			
-			tmpThumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/tmp.jpg";
-			thumb = new File(tmpThumbFilename);
+			thumb = CatalogueDBAdapter.fetchThumbnail(id);
 			thumb.delete();
 		} catch (Exception e) {
 			// something has gone wrong. 
+		}
+	}
+	
+	/**
+	 * Rotate the thumbnail 90 degrees clockwise
+	 * 
+	 * @param id
+	 */
+	private void rotateThumbnail(long id) {
+		String filename = CatalogueDBAdapter.fetchThumbnailFilename(mRowId, false);
+		if (filename != null) {
+			Bitmap x = BitmapFactory.decodeFile(filename);
+			Matrix m = new Matrix();
+			m.postRotate(90);
+			x = Bitmap.createBitmap(x, 0, 0, x.getWidth(), x.getHeight(), m, true);
+			/* Create a file to copy the thumbnail into */
+			FileOutputStream f = null;
+			try {
+				f = new FileOutputStream(filename);
+			} catch (FileNotFoundException e) {
+				//Log.e("Book Catalogue", "Thumbnail cannot be written");
+				return;
+			}
+			x.compress(Bitmap.CompressFormat.PNG, 100, f);
 		}
 	}
 	
@@ -376,13 +369,51 @@ public class BookEditFields extends Activity {
 			} else {
 				mAnthologyCheckBox.setChecked(true);
 			}
+			mAnthologyCheckBox.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View view) {
+					saveState();
+					try {
+						TabHost tabHost = ((TabActivity) getParent()).getTabHost();  // The activity TabHost
+						if (mAnthologyCheckBox.isChecked()) {
+							Resources res = getResources();
+							TabHost.TabSpec spec;  // Resusable TabSpec for each tab
+							Intent intent = new Intent().setClass(BookEditFields.this, BookEditAnthology.class);
+							intent.putExtra(CatalogueDBAdapter.KEY_ROWID, mRowId);
+							spec = tabHost.newTabSpec("edit_book_anthology").setIndicator(res.getString(R.string.edit_book_anthology), res.getDrawable(R.drawable.ic_tab_anthology)).setContent(intent);
+							tabHost.addTab(spec);
+						} else {
+							// remove tab
+							tabHost.getTabWidget().removeViewAt(3);
+						}
+					} catch (Exception e) {
+						// if this doesn't work don't add the tab. The user will have to save and reenter
+					}
+				}
+			});
+			
+			// On save it should close this view
 			mConfirmButton.setText(R.string.confirm_save);
-			String thumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/" + mRowId + ".jpg";
-			File thumb = new File(thumbFilename);
-			if (thumb.exists()) {
-				mImageView.setImageBitmap(BitmapFactory.decodeFile(thumbFilename));
-			} else {
+			mConfirmButton.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View view) {
+					saveState();
+					Intent i = new Intent();
+					i.putExtra(ADDED_SERIES, added_series);
+					i.putExtra(ADDED_TITLE, added_title);
+					i.putExtra(ADDED_AUTHOR, added_author);
+					if (getParent() == null) {
+						setResult(RESULT_OK, i);
+					} else {
+						getParent().setResult(RESULT_OK, i);
+					}
+					getParent().finish();
+				}
+			});
+			
+			String filename = CatalogueDBAdapter.fetchThumbnailFilename(mRowId, false);
+			if (filename == null) {
 				mImageView.setImageResource(android.R.drawable.ic_menu_help);
+			} else {
+				mImageView.setImageBitmap(BitmapFactory.decodeFile(filename));
 			}
 			rating = book.getFloat(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_RATING));
 			read = (book.getInt(book.getColumnIndex(CatalogueDBAdapter.KEY_READ))==0 ? false:true);
@@ -431,13 +462,34 @@ public class BookEditFields extends Activity {
 			} else {
 				mAnthologyCheckBox.setChecked(true);
 			}
+			// On add it should reload this view
 			mConfirmButton.setText(R.string.confirm_add);
-			String thumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/tmp.jpg";
-			File thumb = new File(thumbFilename);
-			if (thumb.exists()) {
-				mImageView.setImageBitmap(BitmapFactory.decodeFile(thumbFilename));
-			} else {
+			mConfirmButton.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View view) {
+					saveState();
+					Intent edit = new Intent(BookEditFields.this, BookEdit.class);
+					edit.putExtra(CatalogueDBAdapter.KEY_ROWID, mRowId);
+					edit.putExtra(BookEdit.TAB, BookEdit.TAB_EDIT_NOTES);
+					startActivity(edit);
+					
+					Intent i = new Intent();
+					i.putExtra(ADDED_SERIES, added_series);
+					i.putExtra(ADDED_TITLE, added_title);
+					i.putExtra(ADDED_AUTHOR, added_author);
+					if (getParent() == null) {
+						setResult(RESULT_OK, i);
+					} else {
+						getParent().setResult(RESULT_OK, i);
+					}
+					getParent().finish();
+				}
+			});
+			
+			String filename = CatalogueDBAdapter.fetchThumbnailFilename(0, false);
+			if (filename == null) {
 				mImageView.setImageResource(android.R.drawable.ic_menu_help);
+			} else {
+				mImageView.setImageBitmap(BitmapFactory.decodeFile(filename));
 			}
 		} else {
 			// Manual Add
@@ -448,6 +500,26 @@ public class BookEditFields extends Activity {
 				//do nothing. The default will not be set
 			}
 			mConfirmButton.setText(R.string.confirm_add);
+			mConfirmButton.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View view) {
+					saveState();
+					Intent edit = new Intent(BookEditFields.this, BookEdit.class);
+					edit.putExtra(CatalogueDBAdapter.KEY_ROWID, mRowId);
+					edit.putExtra(BookEdit.TAB, BookEdit.TAB_EDIT_NOTES);
+					startActivity(edit);
+					
+					Intent i = new Intent();
+					i.putExtra(ADDED_SERIES, added_series);
+					i.putExtra(ADDED_TITLE, added_title);
+					i.putExtra(ADDED_AUTHOR, added_author);
+					if (getParent() == null) {
+						setResult(RESULT_OK, i);
+					} else {
+						getParent().setResult(RESULT_OK, i);
+					}
+					getParent().finish();
+				}
+			});
 		}
 	}
 
@@ -540,10 +612,8 @@ public class BookEditFields extends Activity {
 			long id = mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology);
 			if (id > 0) {
 				mRowId = id;
-				String tmpThumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/tmp.jpg";
-				String realThumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/" + id + ".jpg";
-				File thumb = new File(tmpThumbFilename);
-				File real = new File(realThumbFilename);
+				File thumb = CatalogueDBAdapter.fetchThumbnail(0);
+				File real = CatalogueDBAdapter.fetchThumbnail(id);
 				thumb.renameTo(real);
 			}
 		} else {
@@ -555,15 +625,14 @@ public class BookEditFields extends Activity {
 		added_series = series;
 		return;
 	}
-
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
 		switch(requestCode) {
 		case ADD_PHOTO:
 			if (resultCode == Activity.RESULT_OK){
-				
-				String realThumbFilename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/" + mRowId + ".jpg";
+				String filename = CatalogueDBAdapter.fetchThumbnailFilename(mRowId, true);
 				Bitmap x = (Bitmap) intent.getExtras().get("data");
 				Matrix m = new Matrix();
 				m.postRotate(90);
@@ -571,14 +640,20 @@ public class BookEditFields extends Activity {
 				/* Create a file to copy the thumbnail into */
 				FileOutputStream f = null;
 				try {
-					f = new FileOutputStream(realThumbFilename);
+					f = new FileOutputStream(filename);
 				} catch (FileNotFoundException e) {
 					//Log.e("Book Catalogue", "Thumbnail cannot be written");
 					return;
 				}
 				
-				x.compress(Bitmap.CompressFormat.JPEG, 50, f);
+				x.compress(Bitmap.CompressFormat.PNG, 100, f);
 			}
 		}
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		mDbHelper.close();
 	}
 }

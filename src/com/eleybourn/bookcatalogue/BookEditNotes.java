@@ -193,5 +193,11 @@ public class BookEditNotes extends Activity {
 		}
 		return;
 	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		mDbHelper.close();
+	}
 
 }

@@ -114,4 +114,5 @@
 <string name="anthology_add">Add</string>
 <string name="menu_add_thumb_photo">Add Thumbnail from Camera</string>
 <string name="thumbnail">Cover Thumbnail</string>
+<string name="menu_rotate_thumbnail">Rotate Thumbnail</string>
 </resources>

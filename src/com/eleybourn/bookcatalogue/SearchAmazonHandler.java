@@ -32,8 +32,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import android.os.Environment;
-
 /** 
  * An XML handler for the Amazon return 
  * 
@@ -290,7 +288,8 @@ public class SearchAmazonHandler extends DefaultHandler {
 				/* Create a file to copy the thumbnail into */
 				FileOutputStream f = null;
 				try {
-					f = new FileOutputStream(Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/tmp.jpg");
+					String filename = CatalogueDBAdapter.fetchThumbnailFilename(0, true);
+					f = new FileOutputStream(filename);
 				} catch (FileNotFoundException e) {
 					//Log.e("Book Catalogue", "Thumbnail cannot be written");
 					return;

@@ -101,7 +101,7 @@ public class AdministrationAbout extends Activity {
 			public void onClick(View v) {
 				Intent msg = new Intent(Intent.ACTION_SEND);
 				msg.setType("text/plain");
-				msg.putExtra(Intent.EXTRA_EMAIL, new String[]{res.getString(R.string.sourcecode)});
+				msg.putExtra(Intent.EXTRA_EMAIL, new String[]{res.getString(R.string.contact)});
 				msg.putExtra(Intent.EXTRA_SUBJECT, "[Book Catalogue] ");
 				AdministrationAbout.this.startActivity(Intent.createChooser(msg, "Send email..."));
 				//startActivity(msg); 

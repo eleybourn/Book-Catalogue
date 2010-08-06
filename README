@@ -41,11 +41,11 @@ Features include;
   case. e.g. "The murder on the links" becomes "The Murder on the Links"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
-New in v2.6.5
+New in v2.7
 * Minor enhancements
+* Online help has been written
 * Thumbnails can now be hidden just like any other field (Thanks Martin)
 * You can also rotate thumbnails; useful for thumbnails taken with the camera
-* Online help has been written
 
 New in v2.6
 * There is now support to record books as anthologies and it's titles.

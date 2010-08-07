@@ -46,6 +46,7 @@ New in v2.7
 * Online help has been written
 * Thumbnails can now be hidden just like any other field (Thanks Martin)
 * You can also rotate thumbnails; useful for thumbnails taken with the camera
+* Bookshelves will appear in the menu immediately (Thanks Martin/Julia)
 
 New in v2.6
 * There is now support to record books as anthologies and it's titles.

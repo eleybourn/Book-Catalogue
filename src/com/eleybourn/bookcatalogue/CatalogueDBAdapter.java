@@ -59,6 +59,11 @@ public class CatalogueDBAdapter {
 	public static final String KEY_LIST_PRICE = "list_price";
 	public static final String KEY_POSITION = "position";
 	public static final String KEY_ANTHOLOGY = "anthology";
+	//public static final String KEY_LOCATION = "location";
+	//public static final String KEY_READ_START = "read_start";
+	//public static final String KEY_READ_END = " read_end";
+	//public static final String KEY_AUDIOBOOK = "audiobook";
+	//public static final String KEY_SIGNED = "signed";
 	
 	private DatabaseHelper mDbHelper;
 	private SQLiteDatabase mDb;
@@ -111,6 +116,12 @@ public class CatalogueDBAdapter {
 		KEY_NOTES + " text, " +
 		KEY_LIST_PRICE + " text, " +
 		KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO + " " + 
+		//KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO + ", " + 
+		//KEY_LOCATION + " text, " +
+		//KEY_READ_START + " date, " +
+		//KEY_READ_END + " date, " +
+		//KEY_AUDIOBOOK + " boolean not null default 'f', " +
+		//KEY_SIGNED + " boolean not null default 'f' " +
 		")";
 	
 	private static final String DATABASE_CREATE_LOAN =
@@ -146,7 +157,7 @@ public class CatalogueDBAdapter {
 		;
 	
 	private final Context mCtx;
-	private static final int DATABASE_VERSION = 33;
+	private static final int DATABASE_VERSION = 34;
 	
 	/**
 	 * This is a specific version of the SQLiteOpenHelper class. It handles onCreate and onUpgrade events
@@ -345,6 +356,15 @@ public class CatalogueDBAdapter {
 				message += "* There is now support to record books as anthologies and it's titles. \n\n";
 				message += "* There is experimental support to automatically populate the anthology titles \n\n";
 				message += "* You can now take photos for the book cover (long click on the thumbnail in edit) \n\n";
+			}
+			if (curVersion == 33) {
+				//do nothing
+				curVersion++;
+				message += "* Minor enhancements\n\n";
+				message += "* Online help has been written\n\n";
+				message += "* Thumbnails can now be hidden just like any other field (Thanks Martin)\n\n";
+				message += "* You can also rotate thumbnails; useful for thumbnails taken with the camera\n\n";
+				message += "* Bookshelves will appear in the menu immediately (Thanks Martin/Julia)\n\n";
 			}
 		}
 	}

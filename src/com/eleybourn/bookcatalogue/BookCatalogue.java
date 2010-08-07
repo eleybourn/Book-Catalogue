@@ -1285,7 +1285,8 @@ public class BookCatalogue extends ExpandableListActivity {
 			} catch (Exception e) {
 				//do nothing
 			}
-			fillData();
+			// We call bookshelf not fillData in case the bookshelves have been updated.
+			bookshelf();
 			break;
 		}
 	}

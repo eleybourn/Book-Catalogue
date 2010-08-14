@@ -64,7 +64,7 @@
 				android:layout_height="fill_parent" 
 				android:layout_weight="1"
 				android:hint="@string/series_num"
-				android:inputType="number"
+				android:inputType="numberDecimal"
 				android:nextFocusDown="@+id/publisher"
 				/>
 		</LinearLayout>
@@ -78,7 +78,7 @@
 			android:completionThreshold="2"
 			android:nextFocusDown="@+id/date_published"
 			/>
-
+		
 		<TextView android:id="@+id/date_published_label" 
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content" 
@@ -112,26 +112,22 @@
 			android:layout_height="wrap_content" 
 			android:layout_weight="1"
 			android:hint="@string/list_price"
-			android:inputType="number"
+			android:inputType="numberDecimal"
 			/>
 		
-		<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		<CheckBox android:id="@+id/anthology" 
+			android:layout_width="wrap_content"
+			android:layout_height="fill_parent" 
+			android:layout_weight="1"
+			android:hint="@string/is_anthology"
+			/>
+		
+		<CheckBox android:id="@+id/audiobook" 
 			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:orientation="horizontal"
-			>
-			<CheckBox android:id="@+id/anthology" 
-				android:layout_width="wrap_content"
-				android:layout_height="fill_parent" 
-				android:layout_weight="1"
-				/>
-			<TextView android:id="@+id/anthology_label" 
-				android:layout_width="wrap_content"
-				android:layout_height="fill_parent" 
-				android:layout_weight="2"
-				android:text="@string/is_anthology"
-				/>
-		</LinearLayout>
+			android:layout_height="wrap_content" 
+			android:layout_weight="1"
+			android:hint="@string/audiobook"
+			/>
 		
 		<LinearLayout	
 			android:orientation="horizontal"

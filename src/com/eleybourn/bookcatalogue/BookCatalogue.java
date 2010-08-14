@@ -40,20 +40,16 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
-import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
-import android.widget.ExpandableListView.OnGroupClickListener;
-import android.widget.ExpandableListView.OnGroupCollapseListener;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -61,6 +57,10 @@ import android.widget.SimpleCursorTreeAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
+import android.widget.ExpandableListView.OnGroupClickListener;
+import android.widget.ExpandableListView.OnGroupCollapseListener;
 
 /*
  * A book catalogue application that integrates with Google Books.
@@ -109,6 +109,7 @@ public class BookCatalogue extends ExpandableListActivity {
 	private static final String STATE_LASTBOOK = "state_lastbook"; 
 	
 	private static final int GONE = 8;
+	private static final int VISIBLE = 0;
 	/** 
 	 * Called when the activity is first created. 
 	 */
@@ -298,12 +299,12 @@ public class BookCatalogue extends ExpandableListActivity {
 		startManagingCursor(BooksCursor);
 		
 		// Create an array to specify the fields we want to display in the list
-		String[] from = new String[]{CatalogueDBAdapter.KEY_FAMILY_NAME, CatalogueDBAdapter.KEY_GIVEN_NAMES};
-		String[] exp_from = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_SERIES, CatalogueDBAdapter.KEY_SERIES_NUM};
+		String[] from = new String[]{CatalogueDBAdapter.KEY_AUTHOR_FORMATTED};
+		String[] exp_from = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_SERIES_FORMATTED};
 		
 		// and an array of the fields we want to bind those fields to (in this case just text1)
-		int[] to = new int[]{R.id.row_family, R.id.row_given};
-		int[] exp_to = new int[]{R.id.row_img, R.id.row_title, R.id.row_series, R.id.row_series_num};
+		int[] to = new int[]{R.id.row_family};
+		int[] exp_to = new int[]{R.id.row_img, R.id.row_title, R.id.row_series};
 		
 		// Instantiate the List Adapter
 		ExpandableListAdapter books = new AuthorBookListAdapter(BooksCursor, this, layout, layout_child, from, to, exp_from, exp_to);
@@ -372,28 +373,9 @@ public class BookCatalogue extends ExpandableListActivity {
 		 * Override the setTextView function. This helps us set the appropriate opening and
 		 * closing brackets for series numbers
 		 */
-		@Override
+		//TODO: @Override
 		public void setViewText(TextView v, String text) {
-			if (v.getId() == R.id.row_series) {
-				if (text.equals("")) {
-					series = false;
-				} else {
-					series = true;
-					text = "(" + text;
-				}
-			} else if (v.getId() == R.id.row_series_num) {
-				if (series == false) {
-					text = "";
-				} else if (series == true) {
-					if (text.equals("")) {
-						text = ")";
-					} else {
-						text = " #" + text + ")";
-					}
-				}
-			} else if (v.getId() == R.id.row_family) {
-				text = text + ", ";
-			} else if (v.getId() == R.id.row_img) {
+			if (v.getId() == R.id.row_img) {
 				boolean field_visibility = mPrefs.getBoolean(FieldVisibility.prefix + "thumbnail", true);
 				ImageView newv = (ImageView) ((ViewGroup) v.getParent()).findViewById(R.id.row_image_view);
 				if (field_visibility == false) {
@@ -406,6 +388,7 @@ public class BookCatalogue extends ExpandableListActivity {
 					} else {
 						newv.setImageResource(android.R.drawable.ic_menu_help);
 					}
+					newv.setVisibility(VISIBLE);
 				}
 				text = "";
 				return;
@@ -443,7 +426,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		
 		// Create an array to specify the fields we want to display in the list
 		String[] from = new String[]{CatalogueDBAdapter.KEY_ROWID};
-		String[] exp_from = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_SERIES_NUM, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_AUTHOR};
+		String[] exp_from = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_SERIES_NUM_FORMATTED, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_AUTHOR};
 		
 		// and an array of the fields we want to bind those fields to (in this case just text1)
 		int[] to = new int[]{R.id.row_family};
@@ -516,14 +499,9 @@ public class BookCatalogue extends ExpandableListActivity {
 		 * Override the setTextView function. This helps us set the appropriate opening and
 		 * closing brackets for series numbers
 		 */
-		@Override
+		//TODO: @Override
 		public void setViewText(TextView v, String text) {
-			if (v.getId() == R.id.row_author) {
-				if (text.equals("")) {
-				} else {
-					text = "(" + text + ")";
-				}
-			} else if (v.getId() == R.id.row_img) {
+			if (v.getId() == R.id.row_img) {
 				boolean field_visibility = mPrefs.getBoolean(FieldVisibility.prefix + "thumbnail", true);
 				ImageView newv = (ImageView) ((ViewGroup) v.getParent()).findViewById(R.id.row_image_view);
 				if (field_visibility == false) {
@@ -536,6 +514,7 @@ public class BookCatalogue extends ExpandableListActivity {
 					} else {
 						newv.setImageResource(android.R.drawable.ic_menu_help);
 					}
+					newv.setVisibility(VISIBLE);
 				}
 				text = "";
 				return;
@@ -574,11 +553,11 @@ public class BookCatalogue extends ExpandableListActivity {
 		startManagingCursor(BooksCursor);
 		
 		// Create an array to specify the fields we want to display in the list
-		String[] from = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_AUTHOR, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_PUBLISHER, CatalogueDBAdapter.KEY_SERIES, CatalogueDBAdapter.KEY_SERIES_NUM};
+		String[] from = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_AUTHOR, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_PUBLISHER, CatalogueDBAdapter.KEY_SERIES_FORMATTED};
 		String[] exp_from = new String[]{};
 		
 		// and an array of the fields we want to bind those fields to (in this case just text1)
-		int[] to = new int[]{R.id.row_img, R.id.row_author, R.id.row_title, R.id.row_publisher, R.id.row_series, R.id.row_series_num};
+		int[] to = new int[]{R.id.row_img, R.id.row_author, R.id.row_title, R.id.row_publisher, R.id.row_series};
 		int[] exp_to = new int[]{};
 		
 		ExpandableListAdapter books = new BooksBookListAdapter(BooksCursor, this, layout, layout_child, from, to, exp_from, exp_to);
@@ -638,30 +617,33 @@ public class BookCatalogue extends ExpandableListActivity {
 		 * Override the setTextView function. This helps us set the appropriate opening and
 		 * closing brackets for series numbers
 		 */
-		@Override
+		//TODO: @Override
 		public void setViewText(TextView v, String text) {
 			if (v.getId() == R.id.row_series) {
-				if (text.equals("")) {
+				if (text.trim().equals("")) {
 					series = false;
 					v.setVisibility(GONE);
 				} else {
 					series = true;
-					text = "" + text;
+					v.setVisibility(VISIBLE);
 				}
 			} else if (v.getId() == R.id.row_series_num) {
-				if (series == false || text.equals("")) {
+				if (series == false || text.trim().equals("")) {
 					v.setVisibility(GONE);
-					text = "";
 				} else {
-					text = " #" + text + "";
+					v.setVisibility(VISIBLE);
 				}
 			} else if (v.getId() == R.id.row_author) {
-				if (text.equals("")) {
+				if (text.trim().equals("")) {
 					v.setVisibility(GONE);
+				} else {
+					v.setVisibility(VISIBLE);
 				}
 			} else if (v.getId() == R.id.row_publisher) {
-				if (text.equals("")) {
+				if (text.trim().equals("")) {
 					v.setVisibility(GONE);
+				} else {
+					v.setVisibility(VISIBLE);
 				}
 			} else if (v.getId() == R.id.row_img) {
 				boolean field_visibility = mPrefs.getBoolean(FieldVisibility.prefix + "thumbnail", true);
@@ -676,6 +658,7 @@ public class BookCatalogue extends ExpandableListActivity {
 					} else {
 						newv.setImageResource(android.R.drawable.ic_menu_help);
 					}
+					newv.setVisibility(VISIBLE);
 				}
 				text = "";
 				return;
@@ -710,7 +693,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		
 		// Create an array to specify the fields we want to display in the list
 		String[] from = new String[]{CatalogueDBAdapter.KEY_ROWID};
-		String[] exp_from = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_AUTHOR};
+		String[] exp_from = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_AUTHOR_FORMATTED};
 		
 		// and an array of the fields we want to bind those fields to (in this case just text1)
 		int[] to = new int[]{R.id.row_family};
@@ -783,14 +766,9 @@ public class BookCatalogue extends ExpandableListActivity {
 		 * Override the setTextView function. This helps us set the appropriate opening and
 		 * closing brackets for series numbers
 		 */
-		@Override
+		//TODO: @Override
 		public void setViewText(TextView v, String text) {
-			if (v.getId() == R.id.row_author) {
-				if (text.equals("")) {
-				} else {
-					text = "(" + text + ")";
-				}
-			} else if (v.getId() == R.id.row_img) {
+			if (v.getId() == R.id.row_img) {
 				boolean field_visibility = mPrefs.getBoolean(FieldVisibility.prefix + "thumbnail", true);
 				ImageView newv = (ImageView) ((ViewGroup) v.getParent()).findViewById(R.id.row_image_view);
 				if (field_visibility == false) {
@@ -803,6 +781,7 @@ public class BookCatalogue extends ExpandableListActivity {
 					} else {
 						newv.setImageResource(android.R.drawable.ic_menu_help);
 					}
+					v.setVisibility(VISIBLE);
 				}
 				text = "";
 				return;
@@ -1325,5 +1304,11 @@ public class BookCatalogue extends ExpandableListActivity {
 		ed.commit();
 		super.onPause();
 	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		mDbHelper.close();
+	} 
 	
 }

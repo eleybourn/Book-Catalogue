@@ -21,13 +21,18 @@
 package com.eleybourn.bookcatalogue;
 
 //import android.R;
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -41,6 +46,10 @@ public class BookEditNotes extends Activity {
 	private RatingBar mRatingText;
 	private CheckBox mReadText;
 	private EditText mNotesText;
+	private AutoCompleteTextView mLocationView;
+	private DatePicker mReadStartView;
+	private DatePicker mReadEndView;
+	private CheckBox mSignedView;
 	private Button mConfirmButton;
 	private Button mCancelButton;
 	private Long mRowId;
@@ -57,6 +66,7 @@ public class BookEditNotes extends Activity {
 	private String list_price;
 	private int anthology;
 	private int pages;
+	private boolean audiobook;
 	
 	private static final int GONE = 8;
 	
@@ -64,6 +74,22 @@ public class BookEditNotes extends Activity {
 		/* Get any information from the extras bundle */
 		Bundle extras = getIntent().getExtras();
 		mRowId = extras != null ? extras.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
+	}
+	
+	/**
+	 * Returns a unique list of all locations in the database
+	 *  
+	 * @return The list
+	 */
+	protected ArrayList<String> getLocations() {
+		ArrayList<String> location_list = new ArrayList<String>();
+		Cursor location_cur = mDbHelper.fetchAllLocations();
+		startManagingCursor(location_cur);
+		while (location_cur.moveToNext()) {
+			String publisher = location_cur.getString(location_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOCATION));
+			location_list.add(publisher);
+		}
+		return location_list;
 	}
 
 	@Override
@@ -96,6 +122,32 @@ public class BookEditNotes extends Activity {
 			field_visibility = mPrefs.getBoolean(visibility_prefix + "notes", true);
 			if (field_visibility == false) {
 				mNotesText.setVisibility(GONE);
+			}
+			
+			ArrayAdapter<String> location_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getLocations());
+			mLocationView = (AutoCompleteTextView) findViewById(R.id.location);
+			mLocationView.setAdapter(location_adapter);
+			field_visibility = mPrefs.getBoolean(visibility_prefix + "location", true);
+			if (field_visibility == false) {
+				mLocationView.setVisibility(GONE);
+			}
+			
+			mReadStartView = (DatePicker) findViewById(R.id.read_start);
+			field_visibility = mPrefs.getBoolean(visibility_prefix + "read_start", true);
+			if (field_visibility == false) {
+				mReadStartView.setVisibility(GONE);
+			}
+			
+			mReadEndView = (DatePicker) findViewById(R.id.read_end);
+			field_visibility = mPrefs.getBoolean(visibility_prefix + "read_end", true);
+			if (field_visibility == false) {
+				mReadEndView.setVisibility(GONE);
+			}
+			
+			mSignedView = (CheckBox) findViewById(R.id.signed);
+			field_visibility = mPrefs.getBoolean(visibility_prefix + "signed", true);
+			if (field_visibility == false) {
+				mSignedView.setVisibility(GONE);
 			}
 			
 			mConfirmButton = (Button) findViewById(R.id.confirm);
@@ -141,6 +193,26 @@ public class BookEditNotes extends Activity {
 			mRatingText.setRating(book.getFloat(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_RATING)));
 			mReadText.setChecked((book.getInt(book.getColumnIndex(CatalogueDBAdapter.KEY_READ))==0? false:true) );
 			mNotesText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_NOTES)));
+			mLocationView.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOCATION)));
+			try {
+				String[] s_date = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_START)).split("-");
+				int s_yyyy = Integer.parseInt(s_date[0]);
+				int s_mm = Integer.parseInt(s_date[1]);
+				int s_dd = Integer.parseInt(s_date[2]);
+				mReadStartView.updateDate(s_yyyy, s_mm, s_dd);
+			} catch (Exception e) {
+				//Keep the default date - which is now()
+			}
+			try {
+				String[] e_date = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_END)).split("-");
+				int e_yyyy = Integer.parseInt(e_date[0]);
+				int e_mm = Integer.parseInt(e_date[1]);
+				int e_dd = Integer.parseInt(e_date[2]);
+				mReadEndView.updateDate(e_yyyy, e_mm, e_dd);
+			} catch (Exception e) {
+				// Keep the default date - which is now()
+			}
+			mSignedView.setChecked((book.getInt(book.getColumnIndex(CatalogueDBAdapter.KEY_SIGNED))==0? false:true) );
 			mConfirmButton.setText(R.string.confirm_save);
 			
 			author = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR));
@@ -153,6 +225,7 @@ public class BookEditNotes extends Activity {
 			list_price = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LIST_PRICE));
 			anthology = book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
 			pages = book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PAGES));
+			audiobook = (book.getInt(book.getColumnIndex(CatalogueDBAdapter.KEY_AUDIOBOOK))==0? false:true);
 		} else {
 			// Manual Add
 			//This should never happen
@@ -180,16 +253,26 @@ public class BookEditNotes extends Activity {
 
 	private void saveState() {
 		float rating = mRatingText.getRating();
-		Boolean read = mReadText.isChecked();
+		boolean read = mReadText.isChecked();
 		String notes = mNotesText.getText().toString();
-
+		String location = mLocationView.getText().toString();
+		int s_yyyy =  mReadStartView.getYear();
+		int s_mm =  mReadStartView.getMonth();
+		int s_dd =  mReadStartView.getDayOfMonth();
+		String read_start = s_yyyy + "-" + s_mm + "-" + s_dd;
+		int e_yyyy =  mReadEndView.getYear();
+		int e_mm =  mReadEndView.getMonth();
+		int e_dd =  mReadEndView.getDayOfMonth();
+		String read_end = e_yyyy + "-" + e_mm + "-" + e_dd;
+		boolean signed = mSignedView.isChecked();
+		
 		if (mRowId == null || mRowId == 0) {
 			//This should never happen
 			//long id = mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num);
 			Toast.makeText(this, R.string.unknown_error, Toast.LENGTH_LONG).show();
 			finish();
 		} else {
-			mDbHelper.updateBook(mRowId, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology);
+			mDbHelper.updateBook(mRowId, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, audiobook, signed);
 		}
 		return;
 	}

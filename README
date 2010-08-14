@@ -41,6 +41,19 @@ Features include;
   case. e.g. "The murder on the links" becomes "The Murder on the Links"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+New in v2.8
+Don't forget you can hide any of the new fields that you do not want to see. 
+* Fixed several crashing defects when adding books
+* Added Autocompleting Location Field (For Cam)
+* Added Read Start & Read End Fields (For Robert)
+* Added an Audiobook Checkbox Field (For Ted)
+* Added a Book Signed Checkbox Field (For me)
+* Series Number now support decimal figures (Requested by Beth)
+* List price now support decimal figures (Requested by eleavings)
+* Fixed Import Crashes (Thanks Roydalg) 
+* Fixed several defects for Android 1.6 users - I do not have a 1.6 device to 
+  test on so please let me know if you discover any errors
+
 New in v2.7
 * Minor enhancements
 * Online help has been written

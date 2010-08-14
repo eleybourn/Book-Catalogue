@@ -60,7 +60,7 @@ public class Administration extends TabActivity {
 			intent.putExtras(extras);
 		}
 		// Initialise a TabSpec for each tab and add it to the TabHost
-		spec = tabHost.newTabSpec("help").setIndicator(res.getString(R.string.help)).setContent(intent);
+		spec = tabHost.newTabSpec("help").setIndicator(res.getString(R.string.help), res.getDrawable(R.drawable.ic_tab_help)).setContent(intent);
 		tabHost.addTab(spec);
 		
 		// Do the same for the other tabs
@@ -69,21 +69,21 @@ public class Administration extends TabActivity {
 			intent.putExtras(extras);
 		}
 		// Initialise a TabSpec for each tab and add it to the TabHost
-		spec = tabHost.newTabSpec("admin_functions").setIndicator(res.getString(R.string.administration_label)).setContent(intent);
+		spec = tabHost.newTabSpec("admin_functions").setIndicator(res.getString(R.string.administration_label), res.getDrawable(R.drawable.ic_tab_admin)).setContent(intent);
 		tabHost.addTab(spec);
 
 		intent = new Intent().setClass(this, AdministrationDonate.class);
 		if (extras != null) {
 			intent.putExtras(extras);
 		}
-		spec = tabHost.newTabSpec("admin_donate").setIndicator(res.getString(R.string.donate_label)).setContent(intent);
+		spec = tabHost.newTabSpec("admin_donate").setIndicator(res.getString(R.string.donate_label), res.getDrawable(R.drawable.ic_tab_donate)).setContent(intent);
 		tabHost.addTab(spec);
 
 		intent = new Intent().setClass(this, AdministrationAbout.class);
 		if (extras != null) {
 			intent.putExtras(extras);
 		}
-		spec = tabHost.newTabSpec("admin_about").setIndicator(res.getString(R.string.about_label)).setContent(intent);
+		spec = tabHost.newTabSpec("admin_about").setIndicator(res.getString(R.string.about_label), res.getDrawable(R.drawable.ic_tab_about)).setContent(intent);
 		tabHost.addTab(spec);
 
 		tabHost.setCurrentTab(currentTab);

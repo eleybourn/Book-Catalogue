@@ -24,8 +24,8 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -67,9 +67,24 @@ public class BookEditLoaned extends Activity {
 	 */
 	protected ArrayList<String> getFriends() {
 		ArrayList<String> friend_list = new ArrayList<String>();
-		Cursor contactsCursor = getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+		Uri baseUri = null;
+		String display_name = null;
+		try {
+			Class<?> c = Class.forName("android.provider.ContactsContract$Contacts");
+			baseUri = (Uri) c.getField("CONTENT_URI").get(baseUri);
+			display_name = (String) c.getField("DISPLAY_NAME").get(display_name);
+		} catch (Exception e) {
+			try {
+				Class<?> c = Class.forName("android.provider.Contacts$People");
+				baseUri = (Uri) c.getField("CONTENT_URI").get(baseUri);
+				display_name = (String) c.getField("DISPLAY_NAME").get(display_name);
+			} catch (Exception e2) {
+				// do nothing
+			}
+		}
+		Cursor contactsCursor = getContentResolver().query(baseUri, null, null, null, null);
 		while (contactsCursor.moveToNext()) {
-			String name = contactsCursor.getString(contactsCursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+			String name = contactsCursor.getString(contactsCursor.getColumnIndex(display_name));
 			friend_list.add(name);
 		}
 		return friend_list;

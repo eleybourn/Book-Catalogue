@@ -86,9 +86,8 @@ public class BookEditAnthology extends ListActivity {
 		Cursor author_cur = mDbHelper.fetchAllAuthors("All Books");
 		startManagingCursor(author_cur);
 		while (author_cur.moveToNext()) {
-			String family = author_cur.getString(author_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_FAMILY_NAME));
-			String given = author_cur.getString(author_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_GIVEN_NAMES));
-			author_list.add(family + ", " + given);
+			String name = author_cur.getString(author_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED));
+			author_list.add(name);
 		}
 		return author_list;
 	}
@@ -486,6 +485,11 @@ public class BookEditAnthology extends ListActivity {
 		String series = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES));
 		String series_num = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES_NUM));
 		String list_price = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LIST_PRICE));
+		String location = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOCATION));
+		String read_start = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_START));
+		String read_end = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_END));
+		boolean audiobook = (book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUDIOBOOK))==0? false:true);
+		boolean signed = (book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SIGNED))==0? false:true);
 		int pages = book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PAGES));
 
 		if (mRowId == null || mRowId == 0) {
@@ -494,7 +498,7 @@ public class BookEditAnthology extends ListActivity {
 			Toast.makeText(this, R.string.unknown_error, Toast.LENGTH_LONG).show();
 			finish();
 		} else {
-			mDbHelper.updateBook(mRowId, bookAuthor, bookTitle, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology);
+			mDbHelper.updateBook(mRowId, bookAuthor, bookTitle, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, audiobook, signed);
 		}
 		return;
 	}

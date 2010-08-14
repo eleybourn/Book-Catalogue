@@ -36,6 +36,45 @@
 			android:lines="5"
 			/>
 		
+		<CheckBox android:id="@+id/signed" 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" 
+			android:layout_weight="1"
+			android:hint="@string/signed"
+			/>
+		
+		<TextView android:id="@+id/read_start_label" 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" 
+			android:text="@string/read_start" 
+			android:textSize="16sp" />
+		<DatePicker android:id="@+id/read_start" 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" 
+			android:layout_weight="1"
+			/>
+		
+		<TextView android:id="@+id/read_end_label" 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" 
+			android:text="@string/read_end" 
+			android:textSize="16sp" />
+		<DatePicker android:id="@+id/read_end" 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" 
+			android:layout_weight="1"
+			android:nextFocusDown="@+id/bookshelf"
+			/>
+			
+		<AutoCompleteTextView android:id="@+id/location" 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" 
+			android:layout_weight="1"
+			android:hint="@string/location"
+			android:inputType="textCapWords"
+			android:completionThreshold="2"
+			/>
+		
 		<LinearLayout	
 			android:orientation="horizontal"
 			android:layout_width="fill_parent"

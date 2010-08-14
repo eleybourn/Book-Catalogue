@@ -105,7 +105,7 @@
 <string name="amazon_wishlist">Amazon Wishlist</string>
 <string name="same_author">All stories in this anthology are written by the same author</string>
 <string name="menu_delete_anthology">Delete Title from Anthology</string>
-<string name="is_anthology">Is this book an Anthology</string>
+<string name="is_anthology">Is this book an Anthology?</string>
 <string name="populate_anthology_titles">Automatically Populate Titles (EXPERIMENTAL)</string>
 <string name="automatic_population_failed">Automatic Population of Titles Failed</string>
 <string name="anthology">Anthology</string>
@@ -191,4 +191,9 @@
 <string name="help_text_admindonate2">Being in Australia means I cannot publish a paid version.</string>
 <string name="help_title_adminabout">About this App</string>
 <string name="help_text_adminabout1">This screen will show you the current version of the Book Catalogue you are running as well as links to the app homepage, source code and my email address.</string>
+<string name="signed">has this book been signed</string>
+<string name="audiobook">This book is an Audiobook</string>
+<string name="read_start">Date started reading</string>
+<string name="read_end">Date finished reading</string>
+<string name="location">Location of the book</string>
 </resources>

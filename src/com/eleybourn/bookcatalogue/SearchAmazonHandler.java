@@ -185,6 +185,11 @@ public class SearchAmazonHandler extends DefaultHandler {
 	public String series_num = "";
 	public String list_price = "";
 	public String anthology = "0";
+	public String location = "";
+	public String read_start = "";
+	public String read_end = "";
+	public String audiobook = "0";
+	public String signed = "0";
 	
 	/* How many results found */
 	public int count = 0;
@@ -210,7 +215,7 @@ public class SearchAmazonHandler extends DefaultHandler {
 	 * A public function the return a book structure
 	 */
 	public String[] getBook(){
-		String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num, list_price, anthology};
+		String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num, list_price, anthology, location, read_start, read_end, audiobook, signed};
 		//Log.e("bc", author + " :: " + title + " :: " + isbn  + " :: " + publisher + " :: " + date_published + " :: " + rating +  " :: " + bookshelf + " :: " + read + " :: " + series + " :: " + pages + " :: " + series_num);
 		return book;
 	}

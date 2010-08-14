@@ -134,5 +134,12 @@ public class BookEdit extends TabActivity {
 	protected void onDestroy() {
 		super.onDestroy();
 		mDbHelper.close();
-	}
+	} 
+	
+	@Override 
+	protected void onSaveInstanceState(Bundle outState) { 
+		super.onSaveInstanceState(outState);
+		outState.putLong(CatalogueDBAdapter.KEY_ROWID, mRowId);
+	} 
+
 }

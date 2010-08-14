@@ -61,12 +61,14 @@ public class FieldVisibility extends Activity {
 	public void setupFields() {
 		// The fields to show/hide
 		String[] fields = {"author", "title", "thumbnail", "isbn", "series", "series_num", "publisher", "date_published", 
-				"bookshelf", "pages", "list_price", "read", "rating", "notes", "anthology"};
+				"bookshelf", "pages", "list_price", "read", "rating", "notes", "anthology", "location", "read_start", 
+				"read_end", "audiobook", "signed"};
 		int[] fieldRs = {R.string.author, R.string.title, R.string.thumbnail, R.string.isbn, R.string.series, R.string.series_num, 
 				R.string.publisher, R.string.date_published, R.string.bookshelf, R.string.pages, R.string.list_price,
-				R.string.read, R.string.rating, R.string.notes, R.string.anthology};
+				R.string.read, R.string.rating, R.string.notes, R.string.anthology, R.string.location, 
+				R.string.read_start, R.string.read_end, R.string.audiobook, R.string.signed};
 		boolean[] compulsary = {true, true, false, false, false, false, false, false, 
-				true, false, false, false, false, false, false};
+				true, false, false, false, false, false, false, false, false, false, false, false};
 		
 		SharedPreferences mPrefs = getSharedPreferences("bookCatalogue", MODE_PRIVATE);
 		//SharedPreferences.Editor ed = mPrefs.edit();

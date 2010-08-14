@@ -36,9 +36,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -65,6 +65,7 @@ public class BookEditFields extends Activity {
 	private EditText mListPriceText;
 	private EditText mPagesText;
 	private CheckBox mAnthologyCheckBox;
+	private CheckBox mAudiobookCheckBox;
 	private Button mConfirmButton;
 	private Button mCancelButton;
 	private Long mRowId;
@@ -74,6 +75,10 @@ public class BookEditFields extends Activity {
 	private boolean read = false;
 	private int anthology_num = CatalogueDBAdapter.ANTHOLOGY_NO;
 	private String notes = "";
+	private String location = "";
+	private String read_start = "";
+	private String read_end = "";
+	private boolean signed = false;
 	
 	private String added_series = "";
 	private String added_title = "";
@@ -98,9 +103,8 @@ public class BookEditFields extends Activity {
 		Cursor author_cur = mDbHelper.fetchAllAuthors("All Books");
 		startManagingCursor(author_cur);
 		while (author_cur.moveToNext()) {
-			String family = author_cur.getString(author_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_FAMILY_NAME));
-			String given = author_cur.getString(author_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_GIVEN_NAMES));
-			author_list.add(family + ", " + given);
+			String name = author_cur.getString(author_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED));
+			author_list.add(name);
 		}
 		return author_list;
 	}
@@ -207,9 +211,13 @@ public class BookEditFields extends Activity {
 			mAnthologyCheckBox = (CheckBox) findViewById(R.id.anthology);
 			field_visibility = mPrefs.getBoolean(visibility_prefix + "anthology", true);
 			if (field_visibility == false) {
-				TextView mAnthologyLabel = (TextView) findViewById(R.id.anthology_label);
-				mAnthologyLabel.setVisibility(GONE);
 				mAnthologyCheckBox.setVisibility(GONE);
+			}
+			
+			mAudiobookCheckBox = (CheckBox) findViewById(R.id.audiobook);
+			field_visibility = mPrefs.getBoolean(visibility_prefix + "audiobook", true);
+			if (field_visibility == false) {
+				mAudiobookCheckBox.setVisibility(GONE);
 			}
 			
 			mConfirmButton = (Button) findViewById(R.id.confirm);
@@ -352,17 +360,22 @@ public class BookEditFields extends Activity {
 			mTitleText.setText(title);
 			mIsbnText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ISBN)));
 			mPublisherText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PUBLISHER)));
-			String[] date = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DATE_PUBLISHED)).split("-");
-			int yyyy = Integer.parseInt(date[0]);
-			int mm = Integer.parseInt(date[1]);
-			int dd = Integer.parseInt(date[2]);
-			mDate_publishedText.updateDate(yyyy, mm, dd);
+			try {
+				String[] date = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DATE_PUBLISHED)).split("-");
+				int yyyy = Integer.parseInt(date[0]);
+				int mm = Integer.parseInt(date[1]);
+				int dd = Integer.parseInt(date[2]);
+				mDate_publishedText.updateDate(yyyy, mm, dd);
+			} catch (Exception e) {
+				// use the default date
+			}
 			String bs = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_BOOKSHELF));
 			mBookshelfText.setSelection(spinnerAdapter.getPosition(bs));
 			mSeriesText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES)));
 			mSeriesNumText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES_NUM)));
 			mListPriceText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LIST_PRICE)));
 			mPagesText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PAGES)));
+			mAudiobookCheckBox.setChecked((book.getInt(book.getColumnIndex(CatalogueDBAdapter.KEY_AUDIOBOOK))==0? false:true) );
 			anthology_num = book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
 			if (anthology_num == 0) {
 				mAnthologyCheckBox.setChecked(false);
@@ -418,50 +431,65 @@ public class BookEditFields extends Activity {
 			rating = book.getFloat(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_RATING));
 			read = (book.getInt(book.getColumnIndex(CatalogueDBAdapter.KEY_READ))==0 ? false:true);
 			notes = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_NOTES));
+			location = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOCATION));
+			read_start = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_START));
+			read_end = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_END));
+			signed = (book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SIGNED))==0 ? false:true);
 		} else if (extras != null) {
 			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + this.getResources().getString(R.string.menu_insert));
 			// From the ISBN Search (add)
-			String[] book = extras.getStringArray("book");
-			mAuthorText.setText(book[0]);
-			mTitleText.setText(book[1]);
-			mIsbnText.setText(book[2]);
-			mPublisherText.setText(book[3]);
 			try {
-				String[] date = book[4].split("-");
-				int yyyy = Integer.parseInt(date[0]);
-				int mm = Integer.parseInt(date[1])-1;
-				int dd = Integer.parseInt(date[2]);
-				mDate_publishedText.updateDate(yyyy, mm, dd);
-			} catch (ArrayIndexOutOfBoundsException e) {
-				//do nothing
-			} catch (NumberFormatException e) {
-				//do nothing
+				String[] book = extras.getStringArray("book");
+				mAuthorText.setText(book[0]);
+				mTitleText.setText(book[1]);
+				mIsbnText.setText(book[2]);
+				mPublisherText.setText(book[3]);
+				try {
+					String[] date = book[4].split("-");
+					int yyyy = Integer.parseInt(date[0]);
+					int mm = Integer.parseInt(date[1])-1;
+					int dd = Integer.parseInt(date[2]);
+					mDate_publishedText.updateDate(yyyy, mm, dd);
+				} catch (ArrayIndexOutOfBoundsException e) {
+					//do nothing
+				} catch (NumberFormatException e) {
+					//do nothing
+				}
+				
+				// Bookshelves can't be set from the search results (very user specific)
+				// so use the currently selected bookshelf
+				try {
+					mBookshelfText.setSelection(spinnerAdapter.getPosition(BookCatalogue.bookshelf));
+				} catch (Exception e) {
+					//do nothing. The default will not be set
+					mBookshelfText.setSelection(spinnerAdapter.getPosition(book[6]));
+				}
+				mSeriesText.setText(book[8]);
+				mSeriesNumText.setText(book[10]);
+				try {
+					//just in case - there was an exception earlier, but it should be fixed
+					mListPriceText.setText(book[11]);
+				} catch (Exception e) {
+					//do nothing
+				}
+				mPagesText.setText(book[9]);
+				
+				String anthology = book[12];
+				if (anthology.equals("0")) {
+					mAnthologyCheckBox.setChecked(false);
+				} else {
+					mAnthologyCheckBox.setChecked(true);
+				}
+				String audiobookValue = book[13];
+				if (audiobookValue.equals("t")) {
+					mAudiobookCheckBox.setChecked(true);
+				} else {
+					mAudiobookCheckBox.setChecked(false);
+				}
+			} catch (NullPointerException e) {
+				// do nothing
 			}
-			
-			// Bookshelves can't be set from the search results (very user specific)
-			// so use the currently selected bookshelf
-			try {
-				mBookshelfText.setSelection(spinnerAdapter.getPosition(BookCatalogue.bookshelf));
-			} catch (Exception e) {
-				//do nothing. The default will not be set
-				mBookshelfText.setSelection(spinnerAdapter.getPosition(book[6]));
-			}
-			mSeriesText.setText(book[8]);
-			mSeriesNumText.setText(book[10]);
-			try {
-				//just in case - there was an exception earlier, but it should be fixed
-				mListPriceText.setText(book[11]);
-			} catch (Exception e) {
-				//do nothing
-			}
-			mPagesText.setText(book[9]);
-			
-			String anthology = book[12];
-			if (anthology.equals("0")) {
-				mAnthologyCheckBox.setChecked(false);
-			} else {
-				mAnthologyCheckBox.setChecked(true);
-			}
+				
 			// On add it should reload this view
 			mConfirmButton.setText(R.string.confirm_add);
 			mConfirmButton.setOnClickListener(new View.OnClickListener() {
@@ -532,7 +560,7 @@ public class BookEditFields extends Activity {
 			//there is nothing todo
 		}
 	}
-
+	
 	@Override
 	protected void onPause() {
 		super.onPause();
@@ -597,6 +625,7 @@ public class BookEditFields extends Activity {
 		} catch (NumberFormatException e) {
 			pages = 0;
 		}
+		boolean audiobook = mAudiobookCheckBox.isChecked();
 		
 		if (mRowId == null || mRowId == 0) {
 			/* Check if the book currently exists */
@@ -609,7 +638,7 @@ public class BookEditFields extends Activity {
 				}
 			}
 			
-			long id = mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology);
+			long id = mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, audiobook, signed);
 			if (id > 0) {
 				mRowId = id;
 				File thumb = CatalogueDBAdapter.fetchThumbnail(0);
@@ -617,7 +646,7 @@ public class BookEditFields extends Activity {
 				thumb.renameTo(real);
 			}
 		} else {
-			mDbHelper.updateBook(mRowId, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology);
+			mDbHelper.updateBook(mRowId, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, audiobook, signed);
 		}
 		/* These are global variables that will be sent via intent back to the list view */
 		added_author = author;

@@ -42,7 +42,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
@@ -137,7 +136,7 @@ public class AdministrationFunctions extends Activity {
 				alertDialog.setButton(pthis.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						importData();
-						Toast.makeText(pthis, importUpdated + " Existing, " + importCreated + " Created", Toast.LENGTH_LONG).show();
+						//Toast.makeText(pthis, importUpdated + " Existing, " + importCreated + " Created", Toast.LENGTH_LONG).show();
 						return;
 					}
 				}); 
@@ -286,10 +285,6 @@ public class AdministrationFunctions extends Activity {
 		pd.setMax(books.getCount());
 		pd.show();
 		
-		//pd = ProgressDialog.show(this, getResources().getString(R.string.update_thumbnails), "Updating ...", false);
-		//pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-		//pd.setMax(100);
-		
 		UpdateThumbnailsThread thread = new UpdateThumbnailsThread(handler);
 		thread.overwrite = overwrite;
 		thread.books = books;
@@ -315,93 +310,175 @@ public class AdministrationFunctions extends Activity {
 			}
 		}
 	};
-
 	
-	/*
+	
+	private class ExportThread extends Thread {
+		public Cursor books = null;
+		private Handler mHandler;
+		
+		/**
+		 * @param handler
+		 */
+		public ExportThread(Handler handler) {
+			mHandler = handler;
+		}
+		
+		private void sendMessage(int num, String title) {
+			/* Send message to the handler */
+			Message msg = mHandler.obtainMessage();
+			Bundle b = new Bundle();
+			b.putInt("total", num);
+			b.putString("title", title);
+			msg.setData(b);
+			mHandler.sendMessage(msg);
+			return;
+		}
+
+		@Override
+		public void run() {
+			Looper.prepare();
+			int num = 0;
+			
+			String export = 
+				CatalogueDBAdapter.KEY_ROWID + "\t" + 			//0
+				CatalogueDBAdapter.KEY_FAMILY_NAME + "\t" + 	//1
+				CatalogueDBAdapter.KEY_GIVEN_NAMES + "\t" + 	//2
+				CatalogueDBAdapter.KEY_AUTHOR + "\t" + 			//3
+				CatalogueDBAdapter.KEY_TITLE + "\t" + 			//4
+				CatalogueDBAdapter.KEY_ISBN + "\t" + 			//5
+				CatalogueDBAdapter.KEY_PUBLISHER + "\t" + 		//6
+				CatalogueDBAdapter.KEY_DATE_PUBLISHED + "\t" + 	//7
+				CatalogueDBAdapter.KEY_RATING + "\t" + 			//8
+				"bookshelf_id\t" + 								//9
+				CatalogueDBAdapter.KEY_BOOKSHELF + "\t" +		//10
+				CatalogueDBAdapter.KEY_READ + "\t" +			//11
+				CatalogueDBAdapter.KEY_SERIES + "\t" + 			//12
+				CatalogueDBAdapter.KEY_SERIES_NUM + "\t" +		//13
+				CatalogueDBAdapter.KEY_PAGES + "\t" + 			//14
+				CatalogueDBAdapter.KEY_NOTES + "\t" + 			//15
+				CatalogueDBAdapter.KEY_LIST_PRICE + "\t" + 		//16
+				CatalogueDBAdapter.KEY_ANTHOLOGY+ "\t" + 		//17
+				CatalogueDBAdapter.KEY_LOCATION+ "\t" + 		//18
+				CatalogueDBAdapter.KEY_READ_START+ "\t" + 		//19
+				CatalogueDBAdapter.KEY_READ_END+ "\t" + 		//20
+				CatalogueDBAdapter.KEY_AUDIOBOOK+ "\t" + 		//21
+				CatalogueDBAdapter.KEY_SIGNED+ "\t" + 			//22
+				CatalogueDBAdapter.KEY_LOANED_TO+ "\t" +		//23 
+				"anthology_titles\t" +							//24 
+				"\n";
+			if (books.moveToFirst()) {
+				do { 
+					num++;
+					long id = books.getLong(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROWID));
+					String dateString = "";
+					try {
+						String[] date = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DATE_PUBLISHED)).split("-");
+						int yyyy = Integer.parseInt(date[0]);
+						int mm = Integer.parseInt(date[1])+1;
+						int dd = Integer.parseInt(date[2]);
+						dateString = yyyy + "-" + mm + "-" + dd;
+					} catch (Exception e) {
+						//do nothing
+					}
+					String dateReadStartString = "";
+					try {
+						String[] date = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_START)).split("-");
+						int yyyy = Integer.parseInt(date[0]);
+						int mm = Integer.parseInt(date[1])+1;
+						int dd = Integer.parseInt(date[2]);
+						dateReadStartString = yyyy + "-" + mm + "-" + dd;
+					} catch (Exception e) {
+						//do nothing
+					}
+					String dateReadEndString = "";
+					try {
+						String[] date = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_END)).split("-");
+						int yyyy = Integer.parseInt(date[0]);
+						int mm = Integer.parseInt(date[1])+1;
+						int dd = Integer.parseInt(date[2]);
+						dateReadEndString = yyyy + "-" + mm + "-" + dd;
+					} catch (Exception e) {
+						//do nothing
+					}
+					String anthology = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
+					String anthology_titles = "";
+					if (anthology.equals(CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS + "") || anthology.equals(CatalogueDBAdapter.ANTHOLOGY_SAME_AUTHOR + "")) {
+						Cursor titles = mDbHelper.fetchAnthologyTitlesByBook(id);
+						if (titles.moveToFirst()) {
+							do { 
+								String anth_title = titles.getString(titles.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE));
+								String anth_author = titles.getString(titles.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR));
+								anthology_titles += anth_title + " * " + anth_author + "|";
+							} while (titles.moveToNext()); 
+						}
+					}
+					String title = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE));
+					
+					String row = "";
+					row += id + "\t";
+					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_FAMILY_NAME)) + "\t";
+					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_GIVEN_NAMES)) + "\t";
+					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR)) + "\t";
+					row += title + "\t";
+					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ISBN)) + "\t";
+					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PUBLISHER)) + "\t";
+					row += dateString + "\t";
+					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_RATING)) + "\t";
+					row += books.getString(books.getColumnIndexOrThrow("bookshelf_id")) + "\t";
+					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_BOOKSHELF)) + "\t";
+					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ)) + "\t";
+					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES)) + "\t";
+					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES_NUM)) + "\t";
+					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PAGES)) + "\t";
+					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_NOTES)) + "\t";
+					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LIST_PRICE)) + "\t";
+					row += anthology + "\t";
+					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOCATION)) + "\t";
+					row += dateReadStartString + "\t";
+					row += dateReadEndString + "\t";
+					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUDIOBOOK)) + "\t";
+					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SIGNED)) + "\t";
+					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOANED_TO)) + "\t";
+					row += anthology_titles + "\t";
+					row += "\n";
+					export += row;
+					sendMessage(num, title);
+				}
+				while (books.moveToNext()); 
+			} 
+			
+			/* write to the SDCard */
+			try {
+				BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath), UTF8), BUFFER_SIZE);
+				out.write(export);
+				out.close();
+				//Toast.makeText(this, R.string.export_complete, Toast.LENGTH_LONG).show();
+			} catch (IOException e) {
+				//Log.e("Book Catalogue", "Could not write to the SDCard");		
+				//Toast.makeText(this, R.string.export_failed, Toast.LENGTH_LONG).show();
+			}
+			sendMessage(0, "Complete");
+		}
+	}	
+
+	/**
 	 * Export all data to a CSV file
 	 * 
 	 * return void
 	 */
 	private void exportData() {
 		Cursor books = mDbHelper.exportBooks();
-		String export = 
-			CatalogueDBAdapter.KEY_ROWID + "\t" + 
-			CatalogueDBAdapter.KEY_FAMILY_NAME + "\t" + 
-			CatalogueDBAdapter.KEY_GIVEN_NAMES + "\t" + 
-			CatalogueDBAdapter.KEY_AUTHOR + "\t" + 
-			CatalogueDBAdapter.KEY_TITLE + "\t" + 
-			CatalogueDBAdapter.KEY_ISBN + "\t" + 
-			CatalogueDBAdapter.KEY_PUBLISHER + "\t" + 
-			CatalogueDBAdapter.KEY_DATE_PUBLISHED + "\t" + 
-			CatalogueDBAdapter.KEY_RATING + "\t" + 
-			"bookshelf_id\t" + 
-			CatalogueDBAdapter.KEY_BOOKSHELF + "\t" +
-			CatalogueDBAdapter.KEY_READ + "\t" +
-			CatalogueDBAdapter.KEY_SERIES + "\t" + 
-			CatalogueDBAdapter.KEY_SERIES_NUM + "\t" +
-			CatalogueDBAdapter.KEY_PAGES + "\t" + 
-			CatalogueDBAdapter.KEY_NOTES + "\t" + 
-			CatalogueDBAdapter.KEY_LIST_PRICE + "\t" + 
-			CatalogueDBAdapter.KEY_ANTHOLOGY+ "\t" + 
-			CatalogueDBAdapter.KEY_LOCATION+ "\t" + 
-			CatalogueDBAdapter.KEY_READ_START+ "\t" + 
-			CatalogueDBAdapter.KEY_READ_END+ "\t" + 
-			CatalogueDBAdapter.KEY_AUDIOBOOK+ "\t" + 
-			CatalogueDBAdapter.KEY_SIGNED+ "\t" + 
-			"\n";
-		if (books.moveToFirst()) {
-			do { 
-				String dateString = "";
-				try {
-					String[] date = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DATE_PUBLISHED)).split("-");
-					int yyyy = Integer.parseInt(date[0]);
-					int mm = Integer.parseInt(date[1])+1;
-					int dd = Integer.parseInt(date[2]);
-					dateString = yyyy + "-" + mm + "-" + dd;
-				} catch (Exception e) {
-					//do nothing
-				}
-				String row = "";
-				row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROWID)) + "\t";
-				row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_FAMILY_NAME)) + "\t";
-				row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_GIVEN_NAMES)) + "\t";
-				row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR)) + "\t";
-				row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE)) + "\t";
-				row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ISBN)) + "\t";
-				row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PUBLISHER)) + "\t";
-				row += dateString + "\t";
-				row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_RATING)) + "\t";
-				row += books.getString(books.getColumnIndexOrThrow("bookshelf_id")) + "\t";
-				row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_BOOKSHELF)) + "\t";
-				row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ)) + "\t";
-				row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES)) + "\t";
-				row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES_NUM)) + "\t";
-				row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PAGES)) + "\t";
-				row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_NOTES)) + "\t";
-				row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LIST_PRICE)) + "\t";
-				row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY)) + "\t";
-				row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOCATION)) + "\t";
-				row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_START)) + "\t";
-				row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_END)) + "\t";
-				row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUDIOBOOK)) + "\t";
-				row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SIGNED)) + "\t";
-				row += "\n";
-				Log.e("BC", row);
-				export += row;
-			}
-			while (books.moveToNext()); 
-		} 
 		
-		/* write to the SDCard */
-		try {
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath), UTF8), BUFFER_SIZE);
-			out.write(export);
-			out.close();
-			Toast.makeText(this, R.string.export_complete, Toast.LENGTH_LONG).show();
-		} catch (IOException e) {
-			//Log.e("Book Catalogue", "Could not write to the SDCard");		
-			Toast.makeText(this, R.string.export_failed, Toast.LENGTH_LONG).show();
-		}
+		pd = new ProgressDialog(AdministrationFunctions.this);
+		pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+		pd.setMessage("Exporting...");
+		pd.setCancelable(false);
+		pd.setMax(books.getCount());
+		pd.show();
+		
+		ExportThread thread = new ExportThread(handler);
+		thread.books = books;
+		thread.start();
 	}
 
 	/**
@@ -427,8 +504,283 @@ public class AdministrationFunctions extends Activity {
 		return importedString;
 	}
 	
-	/*
-	 * Export all data to a CSV file
+	private class ImportThread extends Thread {
+		public ArrayList<String> export = null;
+		private Handler mHandler;
+		
+		/**
+		 * @param handler
+		 */
+		public ImportThread(Handler handler) {
+			mHandler = handler;
+		}
+		
+		private void sendMessage(int num, String title) {
+			/* Send message to the handler */
+			Message msg = mHandler.obtainMessage();
+			Bundle b = new Bundle();
+			b.putInt("total", num);
+			b.putString("title", title);
+			msg.setData(b);
+			mHandler.sendMessage(msg);
+			return;
+		}
+
+		@Override
+		public void run() {
+			Looper.prepare();
+			
+			int row = 1;
+			int num = 0;
+			/* Iterate through each imported row */
+			while (row < export.size()) {
+				num++;
+				String[] imported = export.get(row).split("\t");
+				for (int i=0; i<imported.length; i++) {
+					imported[i] = imported[i].trim();
+					if (imported[i].indexOf("\"") == 0) {
+						imported[i] = imported[i].substring(1);
+					}
+					int length = imported[i].length()-1;
+					if (length > -1 && imported[i].lastIndexOf("\"") == length) {
+						imported[i] = imported[i].substring(0, length);
+					}
+					imported[i] = imported[i].trim();
+				}
+				// This import line is too short
+				row++;
+				
+				/* Setup aliases for each cell*/
+				Long id = null;
+				try {
+					id = Long.parseLong(imported[0]);
+				} catch(Exception e) {
+					id = Long.parseLong("0");
+				}
+				
+				String family = "";
+				try {
+					family = imported[1]; 
+				} catch (Exception e) {
+					// family is a compulsory field
+					continue;
+				}
+				String given = "";
+				try {
+					given = imported[2]; 
+				} catch (Exception e) {
+					given = "";
+				}
+				//String author_id = imported[3];
+				
+				String title = "";
+				try {
+					title = imported[4]; 
+				} catch (Exception e) {
+					//title is a compulsory field
+					continue;
+				}
+				
+				String isbn = "";
+				try {
+					isbn = imported[5];
+				} catch (Exception e) {
+					isbn = "";
+				}
+				
+				String publisher = "";
+				try {
+					publisher = imported[6]; 
+				} catch (Exception e) {
+					publisher = "";
+				}
+				
+				String date_published = "";
+				try {
+					date_published = imported[7];
+					String[] date = date_published.split("-");
+					int yyyy = Integer.parseInt(date[0]);
+					int mm = Integer.parseInt(date[1])-1;
+					int dd = Integer.parseInt(date[2]);
+					date_published = yyyy + "-" + mm + "-" + dd;
+				} catch (Exception e) {
+					date_published = "";
+				}
+				
+				float rating = 0;
+				try {
+					rating = Float.valueOf(imported[8]); 
+				} catch (Exception e) {
+					rating = 0;
+				}
+				
+				//String bookshelf_id = imported[9]; 
+				
+				String bookshelf = "";
+				try {
+					bookshelf = imported[10];
+				} catch (Exception e) {
+					bookshelf = "";
+				}
+				
+				boolean read = false;
+				try {
+					read = (imported[11].equals("0")? false:true); 
+				} catch (Exception e) {
+					read = false;
+				}
+				
+				String series = "";
+				try {
+					series = imported[12]; 
+				} catch (Exception e) {
+					series = "";
+				}
+				
+				String series_num = "";
+				try {
+					series_num = imported[13];
+				} catch (Exception e) {
+					series_num = "";
+				}
+				
+				int pages = 0;
+				try {
+					pages = Integer.parseInt(imported[14]); 
+				} catch (Exception e) {
+					pages = 0;
+				}
+				
+				String notes = "";
+				try {
+					notes = imported[15];
+				} catch (Exception e) {
+					notes = "";
+				}
+				
+				String list_price = "";
+				try {
+					list_price = imported[16];
+				} catch (ArrayIndexOutOfBoundsException e) {
+					list_price = "";
+				}
+				
+				int anthology = CatalogueDBAdapter.ANTHOLOGY_NO;
+				try {
+					anthology = Integer.parseInt(imported[17]); 
+				} catch (Exception e) {
+					anthology = 0;
+				}
+				
+				String location = "";
+				try {
+					location = imported[18]; 
+				} catch (Exception e) {
+					location = "";
+				}
+				
+				String read_start = "";
+				try {
+					read_start = imported[19];
+					String[] date = date_published.split("-");
+					int yyyy = Integer.parseInt(date[0]);
+					int mm = Integer.parseInt(date[1])-1;
+					int dd = Integer.parseInt(date[2]);
+					read_start = yyyy + "-" + mm + "-" + dd;
+				} catch (Exception e) {
+					read_start = "";
+				}
+				
+				String read_end = "";
+				try {
+					read_end = imported[20];
+					String[] date = date_published.split("-");
+					int yyyy = Integer.parseInt(date[0]);
+					int mm = Integer.parseInt(date[1])-1;
+					int dd = Integer.parseInt(date[2]);
+					read_end = yyyy + "-" + mm + "-" + dd;
+				} catch (Exception e) {
+					read_end = "";
+				}
+				
+				boolean audiobook = false;
+				try {
+					audiobook = (imported[21].equals("0")? false:true); 
+				} catch (Exception e) {
+					audiobook = false;
+				}
+				
+				boolean signed = false;
+				try {
+					signed = (imported[22].equals("0")? false:true); 
+				} catch (Exception e) {
+					signed = false;
+				}
+				
+				String loan = "";
+				try {
+					loan = imported[23]; 
+				} catch (Exception e) {
+					loan = ""; 
+				}
+				
+				String anthology_titles = "";
+				try {
+					anthology_titles = imported[24]; 
+				} catch (Exception e) {
+					anthology_titles = ""; 
+				}
+				
+				String author = family + ", " + given;
+				if (id == 0) {
+					// Book is new. It does not exist in the current database
+					Cursor book = mDbHelper.fetchBookByISBNOrCombo(isbn, family, given, title);
+					int rows = book.getCount();
+					if (rows != 0) {
+						// Its a new entry, but the ISBN exists
+						id = book.getLong(0);
+						book.moveToFirst();
+						mDbHelper.updateBook(id, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, audiobook, signed);
+						importUpdated++;
+					} else {
+						id = mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, audiobook, signed);
+						importCreated++;
+					}
+				} else {
+					Cursor book = mDbHelper.fetchBook(id);
+					int rows = book.getCount();
+					if (rows == 0) {
+						mDbHelper.createBook(id, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, audiobook, signed);
+						importCreated++;
+					} else {
+						// Book exists and should be updated if it has changed
+						mDbHelper.updateBook(id, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, audiobook, signed);
+						importUpdated++;
+					}
+				}
+				
+				if (!loan.equals("")) {
+					mDbHelper.createLoan(id, loan);
+				}
+				
+				if (anthology == CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS || anthology == CatalogueDBAdapter.ANTHOLOGY_SAME_AUTHOR) {
+					String[] extracted_titles = anthology_titles.split("|");
+					for (int j=0; j<extracted_titles.length; j++) {
+						String[] author_title = extracted_titles[j].split(" * ");
+						if (author_title.length > 2) {
+							mDbHelper.createAnthologyTitle(id, author_title[1], author_title[0]);
+						}
+					}
+				}
+				sendMessage(num, title);
+			}
+			sendMessage(0, "Complete");
+		}
+	}	
+
+	
+	/**
+	 * Import all data from the CSV file
 	 * 
 	 * return void
 	 */
@@ -436,218 +788,17 @@ public class AdministrationFunctions extends Activity {
 		importUpdated = 0;
 		importCreated = 0;
 		ArrayList<String> export = readFile();
-		int row = 1;
 		
-		/* Iterate through each imported row */
-		while (row < export.size()) {
-			Log.e("BC", export.get(row));
-			String[] imported = export.get(row).split("\t");
-			for (int i=0; i<imported.length; i++) {
-				imported[i] = imported[i].trim();
-				if (imported[i].indexOf("\"") == 0) {
-					imported[i] = imported[i].substring(1);
-				}
-				int length = imported[i].length()-1;
-				if (length > -1 && imported[i].lastIndexOf("\"") == length) {
-					imported[i] = imported[i].substring(0, length);
-				}
-				imported[i] = imported[i].trim();
-			}
-			// This import line is too short
-			row++;
-			
-			/* Setup aliases for each cell*/
-			Long id = null;
-			try {
-				id = Long.parseLong(imported[0]);
-			} catch(Exception e) {
-				id = Long.parseLong("0");
-			}
-			
-			String family = "";
-			try {
-				family = imported[1]; 
-			} catch (Exception e) {
-				// family is a compulsary field
-				continue;
-			}
-			String given = "";
-			try {
-				given = imported[2]; 
-			} catch (Exception e) {
-				given = "";
-			}
-			//String author_id = imported[3];
-			
-			String title = "";
-			try {
-				title = imported[4]; 
-			} catch (Exception e) {
-				//title is a compulsary field
-				continue;
-			}
-			
-			String isbn = "";
-			try {
-				isbn = imported[5];
-			} catch (Exception e) {
-				isbn = "";
-			}
-			
-			String publisher = "";
-			try {
-				publisher = imported[6]; 
-			} catch (Exception e) {
-				publisher = "";
-			}
-			
-			String date_published = "";
-			try {
-				date_published = imported[7];
-				String[] date = date_published.split("-");
-				int yyyy = Integer.parseInt(date[0]);
-				int mm = Integer.parseInt(date[1])-1;
-				int dd = Integer.parseInt(date[2]);
-				date_published = yyyy + "-" + mm + "-" + dd;
-			} catch (Exception e) {
-				date_published = "";
-			}
-			
-			float rating = 0;
-			try {
-				rating = Float.valueOf(imported[8]); 
-			} catch (Exception e) {
-				rating = 0;
-			}
-			
-			//String bookshelf_id = imported[9]; 
-			
-			String bookshelf = "";
-			try {
-				bookshelf = imported[10];
-			} catch (Exception e) {
-				bookshelf = "";
-			}
-			
-			boolean read = false;
-			try {
-				read = (imported[11].equals("0")? false:true); 
-			} catch (Exception e) {
-				read = false;
-			}
-			
-			String series = "";
-			try {
-				series = imported[12]; 
-			} catch (Exception e) {
-				series = "";
-			}
-			
-			String series_num = "";
-			try {
-				series_num = imported[13];
-			} catch (Exception e) {
-				series_num = "";
-			}
-			
-			int pages = 0;
-			try {
-				pages = Integer.parseInt(imported[14]); 
-			} catch (Exception e) {
-				pages = 0;
-			}
-			
-			String notes = "";
-			try {
-				notes = imported[15];
-			} catch (Exception e) {
-				notes = "";
-			}
-			
-			String list_price = "";
-			try {
-				list_price = imported[16];
-			} catch (ArrayIndexOutOfBoundsException e) {
-				list_price = "";
-			}
-			
-			int anthology = CatalogueDBAdapter.ANTHOLOGY_NO;
-			try {
-				anthology = Integer.parseInt(imported[17]); 
-			} catch (Exception e) {
-				anthology = 0;
-			}
-			
-			String location = "";
-			try {
-				location = imported[18]; 
-			} catch (Exception e) {
-				location = "";
-			}
-			
-			String read_start = "";
-			try {
-				read_start = imported[19];
-				String[] date = date_published.split("-");
-				int yyyy = Integer.parseInt(date[0]);
-				int mm = Integer.parseInt(date[1])-1;
-				int dd = Integer.parseInt(date[2]);
-				read_start = yyyy + "-" + mm + "-" + dd;
-			} catch (Exception e) {
-				read_start = "";
-			}
-			
-			String read_end = "";
-			try {
-				read_end = imported[20];
-				String[] date = date_published.split("-");
-				int yyyy = Integer.parseInt(date[0]);
-				int mm = Integer.parseInt(date[1])-1;
-				int dd = Integer.parseInt(date[2]);
-				read_end = yyyy + "-" + mm + "-" + dd;
-			} catch (Exception e) {
-				read_end = "";
-			}
-			
-			boolean audiobook = false;
-			try {
-				audiobook = (imported[21].equals("0")? false:true); 
-			} catch (Exception e) {
-				audiobook = false;
-			}
-			
-			boolean signed = false;
-			try {
-				signed = (imported[22].equals("0")? false:true); 
-			} catch (Exception e) {
-				signed = false;
-			}
-			
-			String author = family + ", " + given;
-			if (id == 0) {
-				// Book is new. It does not exist in the current database
-				if (!isbn.equals("")) {
-					Cursor book = mDbHelper.fetchBookByISBNOrCombo(isbn, family, given, title);
-					int rows = book.getCount();
-					if (rows != 0) {
-						// Its a new entry, but the ISBN exists
-						book.moveToFirst();
-						mDbHelper.updateBook(book.getLong(0), author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, audiobook, signed);
-						importUpdated++;
-						continue;
-					}
-				} 
-				mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, audiobook, signed);
-				importCreated++;
-				continue;
-				
-			} else {
-				// Book exists and should be updated if it has changed
-				mDbHelper.updateBook(id, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, audiobook, signed);
-				importUpdated++;
-				continue;
-			}
-		}
+		pd = new ProgressDialog(AdministrationFunctions.this);
+		pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+		pd.setMessage("Importing...");
+		pd.setCancelable(false);
+		pd.setMax(export.size());
+		pd.show();
+		
+		ImportThread thread = new ImportThread(handler);
+		thread.export = export;
+		thread.start();
 	}
 	
 	@Override

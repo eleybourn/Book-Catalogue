@@ -570,13 +570,19 @@ public class CatalogueDBAdapter {
 	 * @return Cursor over all books, authors, etc
 	 */
 	public Cursor exportBooks() {
-		String sql = "SELECT b." + KEY_ROWID + ", b." + KEY_AUTHOR + ", a." + KEY_FAMILY_NAME + ", a." + KEY_GIVEN_NAMES + ", b." + KEY_TITLE + 
-		", b." + KEY_ISBN + ", b." + KEY_PUBLISHER + ", b." + KEY_DATE_PUBLISHED + ", b." + KEY_RATING + 
-		", b." + KEY_BOOKSHELF + " as bookshelf_id" + ", bs." + KEY_BOOKSHELF + ", b." + KEY_READ + ", b." + KEY_SERIES + 
-		", b." + KEY_PAGES + ", b." + KEY_SERIES_NUM + ", b." + KEY_NOTES + ", b." + KEY_LIST_PRICE + 
-		", b." + KEY_ANTHOLOGY + ", b." + KEY_LOCATION + ", b." + KEY_READ_START + ", b." + KEY_READ_END +
-		", b." + KEY_AUDIOBOOK + ", b." + KEY_SIGNED +
-		" FROM " + DATABASE_TABLE_BOOKS + " b, " + DATABASE_TABLE_BOOKSHELF + " bs, " + DATABASE_TABLE_AUTHORS + " a" + 
+		String sql = "SELECT DISTINCT b." + KEY_ROWID + " as " + KEY_ROWID + ", b." + KEY_AUTHOR + " as " + KEY_AUTHOR + 
+		", a." + KEY_FAMILY_NAME + " as " + KEY_FAMILY_NAME + ", a." + KEY_GIVEN_NAMES + " as " + KEY_GIVEN_NAMES + 
+		", b." + KEY_TITLE + " as " + KEY_TITLE + ", b." + KEY_ISBN + " as " + KEY_ISBN + ", b." + KEY_PUBLISHER + " as " + KEY_PUBLISHER + 
+		", b." + KEY_DATE_PUBLISHED + " as " + KEY_DATE_PUBLISHED + ", b." + KEY_RATING + " as " + KEY_RATING + 
+		", b." + KEY_BOOKSHELF + " as bookshelf_id" + ", bs." + KEY_BOOKSHELF + " as " + KEY_BOOKSHELF + 
+		", b." + KEY_READ + " as " + KEY_READ + ", b." + KEY_SERIES + " as " + KEY_SERIES + ", b." + KEY_PAGES + " as " + KEY_PAGES + 
+		", b." + KEY_SERIES_NUM + " as " + KEY_SERIES_NUM + ", b." + KEY_NOTES + " as " + KEY_NOTES + 
+		", b." + KEY_LIST_PRICE + " as " + KEY_LIST_PRICE + ", b." + KEY_ANTHOLOGY + " as " + KEY_ANTHOLOGY + 
+		", b." + KEY_LOCATION + " as " + KEY_LOCATION + ", b." + KEY_READ_START + " as " + KEY_READ_START + 
+		", b." + KEY_READ_END + " as " + KEY_READ_END + ", b." + KEY_AUDIOBOOK + " as " + KEY_AUDIOBOOK + 
+		", b." + KEY_SIGNED + " as " + KEY_SIGNED + ", l." + KEY_LOANED_TO + " as " + KEY_LOANED_TO + " " +  
+		" FROM " + DATABASE_TABLE_BOOKS + " b, " + DATABASE_TABLE_BOOKSHELF + " bs, " + DATABASE_TABLE_AUTHORS + " a" +
+			" LEFT OUTER JOIN " + DATABASE_TABLE_LOAN +" l ON (l." + KEY_BOOK + "=b." + KEY_ROWID + ") " +
 		" WHERE bs._id=b." + KEY_BOOKSHELF + " AND a._id=b." + KEY_AUTHOR;
 		return mDb.rawQuery(sql, new String[]{});
 	}
@@ -916,7 +922,7 @@ public class CatalogueDBAdapter {
 		", b." + KEY_READ_START + ", b." + KEY_READ_END + ", b." + KEY_AUDIOBOOK + ", b." + KEY_SIGNED +
 		" FROM " + DATABASE_TABLE_BOOKS + " b, " + DATABASE_TABLE_BOOKSHELF + " bs, " + DATABASE_TABLE_AUTHORS + " a" + 
 		" WHERE bs._id=b." + KEY_BOOKSHELF + " AND a._id=b." + KEY_AUTHOR + " AND " +
-			"(b." + KEY_ISBN + "='" + encodeString(isbn) + "' OR (b." + KEY_TITLE + "=" + encodeString(title) + " AND a." + KEY_FAMILY_NAME + "=" + encodeString(family) + " AND a." + KEY_GIVEN_NAMES + "=" + encodeString(given) + "))" +
+			"((b." + KEY_ISBN + "='" + encodeString(isbn) + "' AND b." + KEY_ISBN + "!='') OR (b." + KEY_TITLE + "='" + encodeString(title) + "' AND a." + KEY_FAMILY_NAME + "='" + encodeString(family) + "' AND a." + KEY_GIVEN_NAMES + "='" + encodeString(given) + "'))" +
 		" ORDER BY lower(b." + KEY_TITLE + ")";
 		return mDb.rawQuery(sql, new String[]{});
 	}
@@ -1113,6 +1119,37 @@ public class CatalogueDBAdapter {
 	 * @return rowId or -1 if failed
 	 */
 	public long createBook(String author, String title, String isbn, String publisher, String date_published, float rating, String bookshelf, Boolean read, String series, int pages, String series_num, String notes, String list_price, int anthology, String location, String read_start, String read_end, boolean audiobook, boolean signed) {
+		return createBook(0, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, audiobook, signed);
+	}
+	
+	/**
+	 * Create a new book using the details provided. If the book is
+	 * successfully created return the new rowId for that book, otherwise return
+	 * a -1 to indicate failure.
+	 * 
+	 * @param id The ID of the book to insert (this will overwrite the normal autoIncrement)
+	 * @param author The author name
+	 * @param title The title of the book
+	 * @param isbn The isbn of the book
+	 * @param publisher The book publisher
+	 * @param date_published The date the book was published
+	 * @param rating The user rating of the book
+	 * @param bookshelf The virtual bookshelf the book sits on
+	 * @param read Has the user read the book
+	 * @param series What series does the book belong to
+	 * @param pages How many pages in the book
+	 * @param series_num What number in the series is the book
+	 * @param notes Any user written notes
+	 * @param list_price The list price of the book
+	 * @param anthology Is the book an anthology
+	 * @param location A location field for the book
+	 * @param read_start When was the book started to be read
+	 * @param read_end When was the book finished being read
+	 * @param audiobook Is it an audiobook 
+	 * @param signed Is this copy signed
+	 * @return rowId or -1 if failed
+	 */
+	public long createBook(long id, String author, String title, String isbn, String publisher, String date_published, float rating, String bookshelf, Boolean read, String series, int pages, String series_num, String notes, String list_price, int anthology, String location, String read_start, String read_end, boolean audiobook, boolean signed) {
 		ContentValues initialValues = new ContentValues();
 		String[] names = processAuthorName(author);
 		Cursor authorId = getAuthorByName(names);
@@ -1138,6 +1175,9 @@ public class CatalogueDBAdapter {
 			bookshelfId.close();
 		}
 		
+		if (id > 0) {
+			initialValues.put(KEY_ROWID, id);
+		}
 		initialValues.put(KEY_AUTHOR, authorId.getInt(0));
 		initialValues.put(KEY_TITLE, title);
 		initialValues.put(KEY_ISBN, isbn);

@@ -41,6 +41,14 @@ Features include;
   case. e.g. "The murder on the links" becomes "The Murder on the Links"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+New in v2.9
+Tip: If you long click on a book title on the main list you can delete it
+Tip: If you want to see all books, change the bookshelf to "All Books"
+Tip: You can find the correct barcode for many modern paperbacks on the inside cover
+* There is now a "Sort by Unread" option, as well as a "read" icon on the main list (requested by Angel)
+* If you long click on the (?) thumbnail you can now select a new thumbnail from the gallery (requested by Giovanni)
+* Bookshelves, loaned books and anthology titles will now import correctly
+
 New in v2.8
 Don't forget you can hide any of the new fields that you do not want to see. 
 * Fixed several crashing defects when adding books

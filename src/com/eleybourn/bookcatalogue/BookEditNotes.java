@@ -136,12 +136,16 @@ public class BookEditNotes extends Activity {
 			field_visibility = mPrefs.getBoolean(visibility_prefix + "read_start", true);
 			if (field_visibility == false) {
 				mReadStartView.setVisibility(GONE);
+				TextView mReadStartLabelView = (TextView) findViewById(R.id.read_start_label);
+				mReadStartLabelView.setVisibility(GONE);
 			}
 			
 			mReadEndView = (DatePicker) findViewById(R.id.read_end);
 			field_visibility = mPrefs.getBoolean(visibility_prefix + "read_end", true);
 			if (field_visibility == false) {
 				mReadEndView.setVisibility(GONE);
+				TextView mReadEndLabelView = (TextView) findViewById(R.id.read_end_label);
+				mReadEndLabelView.setVisibility(GONE);
 			}
 			
 			mSignedView = (CheckBox) findViewById(R.id.signed);

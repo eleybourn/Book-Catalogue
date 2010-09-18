@@ -21,8 +21,11 @@
 package com.eleybourn.bookcatalogue;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -34,7 +37,9 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
@@ -90,6 +95,7 @@ public class BookEditFields extends Activity {
 	private static final int DELETE_ID = 1;
 	private static final int ADD_PHOTO = 2;
 	private static final int ROTATE_THUMBNAIL = 3;
+	private static final int ADD_GALLERY = 4;
 	private static final int GONE = 8;
 	
 	protected void getRowId() {
@@ -259,6 +265,8 @@ public class BookEditFields extends Activity {
 					delete.setIcon(android.R.drawable.ic_menu_delete);
 					MenuItem add_photo = menu.add(0, ADD_PHOTO, 0, R.string.menu_add_thumb_photo);
 					add_photo.setIcon(android.R.drawable.ic_menu_camera);
+					MenuItem add_gallery = menu.add(0, ADD_GALLERY, 0, R.string.menu_add_thumb_gallery);
+					add_gallery.setIcon(android.R.drawable.ic_menu_gallery);
 					MenuItem rotate_photo = menu.add(0, ROTATE_THUMBNAIL, 0, R.string.menu_rotate_thumbnail);
 					rotate_photo.setIcon(android.R.drawable.ic_menu_rotate);
 				}
@@ -288,9 +296,15 @@ public class BookEditFields extends Activity {
 			populateFields();
 			return true;
 		case ADD_PHOTO:
-			Intent intent = null;
-			intent = new Intent("android.media.action.IMAGE_CAPTURE");
-			startActivityForResult(intent, ADD_PHOTO);
+			Intent pintent = null;
+			pintent = new Intent("android.media.action.IMAGE_CAPTURE");
+			startActivityForResult(pintent, ADD_PHOTO);
+			return true;
+		case ADD_GALLERY:
+			Intent gintent = new Intent();
+			gintent.setType("image/*");
+			gintent.setAction(Intent.ACTION_GET_CONTENT);
+			startActivityForResult(Intent.createChooser(gintent, "Select Picture"), ADD_GALLERY);
 			return true;
 		}
 		return super.onContextItemSelected(item);
@@ -677,6 +691,39 @@ public class BookEditFields extends Activity {
 				
 				x.compress(Bitmap.CompressFormat.PNG, 100, f);
 			}
+			return;
+		case ADD_GALLERY:
+			if (resultCode == Activity.RESULT_OK){
+				Uri selectedImageUri = intent.getData();
+				
+				String[] projection = { MediaStore.Images.Media.DATA };
+				Cursor cursor = managedQuery(selectedImageUri, projection, null, null, null);
+				int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+				cursor.moveToFirst();
+				String selectedImagePath = cursor.getString(column_index);
+				
+				File thumb = new File(selectedImagePath);
+				File real = CatalogueDBAdapter.fetchThumbnail(mRowId);
+				try {
+					copyFile(thumb, real);
+				} catch (IOException e) {
+					//do nothing - error to be handled later
+				}
+			}
+			return;
+		}
+	}
+	
+	private void copyFile(File src, File dst) throws IOException {
+		FileChannel inChannel = new FileInputStream(src).getChannel();
+		FileChannel outChannel = new FileOutputStream(dst).getChannel();
+		try {
+			inChannel.transferTo(0, inChannel.size(), outChannel);
+		} finally {
+			if (inChannel != null)
+				inChannel.close();
+			if (outChannel != null)
+				outChannel.close();
 		}
 	}
 	

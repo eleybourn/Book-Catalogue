@@ -86,35 +86,38 @@ public class BookshelfEdit extends Activity {
             mConfirmButton.setText(R.string.confirm_add_bs);
         }
     }
-    
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putLong(CatalogueDBAdapter.KEY_ROWID, mRowId);
-    }
-    
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-    
-    @Override
-    protected void onResume() {
-        super.onResume();
-        populateFields();
-    }
-    
-    private void saveState() {
-        String bookshelf = mBookshelfText.getText().toString();
-
-        if (mRowId == null || mRowId == 0) {
-            long id = mDbHelper.createBookshelf(bookshelf);
-            if (id > 0) {
-                mRowId = id;
-            }
-        } else {
-            mDbHelper.updateBookshelf(mRowId, bookshelf);
-        }
-    }
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		try {
+			outState.putLong(CatalogueDBAdapter.KEY_ROWID, mRowId);
+		} catch (Exception e) {
+			//do nothing
+		}
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		populateFields();
+	}
+	
+	private void saveState() {
+		String bookshelf = mBookshelfText.getText().toString();
+		if (mRowId == null || mRowId == 0) {
+			long id = mDbHelper.createBookshelf(bookshelf);
+			if (id > 0) {
+				mRowId = id;
+			}
+		} else {
+			mDbHelper.updateBookshelf(mRowId, bookshelf);
+		}
+	}
 
 }

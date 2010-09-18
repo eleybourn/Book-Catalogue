@@ -86,6 +86,7 @@
 <string name="sortby_title">Sort by Title</string>
 <string name="sortby_series">Sort by Series</string>
 <string name="sortby_loan">Sort by Loaned</string>
+<string name="sortby_unread">Sort by Unread</string>
 <string name="list_price">List Price</string>
 <string name="date_started_reading">Date Started Reading</string>
 <string name="date_finished_reading">Date Finished Reading</string>
@@ -120,8 +121,8 @@
 <string name="help_text_nutshell2">http://wiki.github.com/eleybourn/Book-Catalogue/</string>
 <string name="help_title_home">Home Screen</string>
 <string name="help_text_home1">The bulk of this screen lists your entire book collection. By default your books will be sorted by Author. If you click on the</string>
-<string name="help_text_home2">icon it will expand to display all books for that author. You can change the sort order by selecting </string>
-<string name="help_text_home3">from the menu, which will provide 4 options; sort by author, title, series and loaned. </string>
+<string name="help_text_home2">icon it will expand to display all books for that author and a small tick to show if you have read the book or not. You can change the sort order by selecting </string>
+<string name="help_text_home3">from the menu, which will provide 5 options; sort by author, title, series, loaned and read/unread. </string>
 <string name="help_text_home4">When you quit, Book Catalogue will remember all your current settings, including how it is sorted, current bookshelf, and which book you are focused on.</string>
 <string name="help_text_home5">Other display options under menu include</string>
 <string name="help_text_home6">which will expand all authors (or series / loans depending on your sort setting). This option is not available when sorting by title.</string>
@@ -152,10 +153,11 @@
 <string name="help_title_editbooks">Editing Books</string>
 <string name="help_text_editbooks1">There are up to 4 tabs available when editing a book. Book Details, Your Comments, Loan Book and Anthology Titles.</string>
 <string name="help_title_editbooksedit">Editing Books – Edit Book</string>
-<string name="help_text_editbooksedit1">This is the same screen as “add book”. The only difference is the “Anthology” checkbox; which will activate/deactivate the anthology tab. You also have more options to modify the book thumbnail. If you long hold on the thumbnail you will get a menu with three options.</string>
+<string name="help_text_editbooksedit1">This is the same screen as “add book”. The only difference is the “Anthology” checkbox; which will activate/deactivate the anthology tab. You also have more options to modify the book thumbnail. If you long hold on the thumbnail you will get a menu with four options.</string>
 <string name="help_text_editbooksedit2">1. “Delete Thumbnail” will remove the saved thumbnail from the database. This is useful if the wrong thumbnail was automatically downloaded.</string>
-<string name="help_text_editbooksedit3">2. “Add Thumbnail from Camera” allows you to take a photo of the book cover to use as a thumbnail. It assumes the book is in portrait orientation. Which brings us to…</string>
-<string name="help_text_editbooksedit4">3. “Rotate Thumbnail” if the book cover is in the wrong orientation this will rotate the cover 90 degrees clockwise. You may need to do this several times to get it to the correct orientation.</string>
+<string name="help_text_editbooksedit3">2. “Add Thumbnail from Gallery” allows you to use a photo from your gallery as a thumbnail. </string>
+<string name="help_text_editbooksedit4">3. “Add Thumbnail from Camera” allows you to take a photo of the book cover to use as a thumbnail. It assumes the book is in portrait orientation. Which brings us to...</string>
+<string name="help_text_editbooksedit5">4. “Rotate Thumbnail” if the book cover is in the wrong orientation this will rotate the cover 90 degrees clockwise. You may need to do this several times to get it to the correct orientation.</string>
 <string name="help_title_editbookscomments">Editing Books – Your Comments</string>
 <string name="help_text_editbookscomments1a">This tab is to enter any personal information regarding this book; these are fields such as have you read the book, your rating, any notes, is your copy signed, etc. Press</string>
 <string name="help_text_editbookscomments1b">to save your changes</string>
@@ -181,7 +183,7 @@
 <string name="help_text_adminadmin6">Export Books</string>
 <string name="help_text_adminadmin7">You can export your complete collection to a csv file on the sdcard. This will create a file called bookCatalogue/export.tab which can be loaded and manipulated in excel. The thumbnails are stored in the same location.</string>
 <string name="help_text_adminadmin8">Import Books</string>
-<string name="help_text_adminadmin9">If you have modified the bookCatalogue/export.tab file, you can load it back into the database.</string>
+<string name="help_text_adminadmin9">If you have modified the bookCatalogue/export.tab file, you can load it back into the database (including all bookshelves, loans and anthology titles).</string>
 <string name="help_text_adminadmin10">Be warned: If the id in the import file is the same as an existing id, importing data will update existing book records with new information. This is usually fine if you changed a field in an exported file. If you created a new book record, ensure the id field is blank.</string>
 <string name="help_text_adminadmin11">Update Thumbnails</string>
 <string name="help_text_adminadmin12">This will search the internet for thumbnails of any of your books with an ISBN. You can search for thumbnails for all books, or only books without a current thumbnail. Be warned: this function can take a long time.</string>
@@ -191,9 +193,12 @@
 <string name="help_text_admindonate2">Being in Australia means I cannot publish a paid version.</string>
 <string name="help_title_adminabout">About this App</string>
 <string name="help_text_adminabout1">This screen will show you the current version of the Book Catalogue you are running as well as links to the app homepage, source code and my email address.</string>
-<string name="signed">has this book been signed</string>
+<string name="signed">Has this book been signed</string>
 <string name="audiobook">This book is an Audiobook</string>
 <string name="read_start">Date started reading</string>
 <string name="read_end">Date finished reading</string>
 <string name="location">Location of the book</string>
+<string name="duplicate_title">Duplicate Book</string>
+<string name="duplicate_alert">The book you are trying to add already exists in the database, are you sure you want to add another copy</string>
+<string name="menu_add_thumb_gallery">Add Thumbnail from Gallery</string>
 </resources>

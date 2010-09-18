@@ -86,6 +86,43 @@ public class BookISBNSearch extends Activity {
 		}
 	}
 	
+	/* - MAJOR DATABASE ISSUES FOR THIS TO WORK!!!
+	protected void checkISBN(final String isbn) {
+		// If the book already exists, ask if the user wants to continue
+		try {
+			if (!isbn.equals("")) {
+				Cursor book = mDbHelper.fetchBookByISBN(isbn);
+				int rows = book.getCount();
+				if (rows != 0) {
+					
+					AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(R.string.duplicate_alert).create();
+					alertDialog.setTitle(R.string.duplicate_title);
+					alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
+					alertDialog.setButton(this.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							go(isbn);
+							return;
+						}
+					}); 
+					alertDialog.setButton2(this.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							finish();
+							return;
+						}
+					}); 
+					alertDialog.show();
+				} else {
+					go(isbn);
+				}
+			} else {
+				go(isbn);
+			}
+		} catch (Exception e) {
+			//do nothing
+		}
+	}
+	*/
+	
 	/**
 	 * This function takes the isbn and search google books (and soon amazon)
 	 * to extract the details of the book. The details will then get sent to the

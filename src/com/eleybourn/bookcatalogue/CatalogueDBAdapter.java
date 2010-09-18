@@ -29,6 +29,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
+import android.util.Log;
 
 /**
  * Book Catalogue database access helper class. Defines the basic CRUD operations
@@ -160,7 +161,7 @@ public class CatalogueDBAdapter {
 		;
 	
 	private final Context mCtx;
-	private static final int DATABASE_VERSION = 37;
+	private static final int DATABASE_VERSION = 38;
 	
 	/**
 	 * This is a specific version of the SQLiteOpenHelper class. It handles onCreate and onUpgrade events
@@ -407,6 +408,17 @@ public class CatalogueDBAdapter {
 				message += "* Fixed Import Crashes (Thanks Roydalg) \n\n";
 				message += "* Fixed several defects for Android 1.6 users - I do not have a 1.6 device to test on so please let me know if you discover any errors\n\n";
 			}
+			if (curVersion == 37) {
+				//do nothing
+				curVersion++;
+				db.execSQL("UPDATE " + DATABASE_TABLE_LOAN + " SET " + KEY_LOANED_TO + "='' WHERE " + KEY_LOANED_TO + "='null'");
+				message += "Tip: If you long click on a book title on the main list you can delete it\n\n";
+				message += "Tip: If you want to see all books, change the bookshelf to 'All Books'\n\n";
+				message += "Tip: You can find the correct barcode for many modern paperbacks on the inside cover\n\n";
+				message += "* There is now a 'Sort by Unread' option, as well as a 'read' icon on the main list (requested by Angel)\n\n";
+				message += "* If you long click on the (?) thumbnail you can now select a new thumbnail from the gallery (requested by Giovanni)\n\n";
+				message += "* Bookshelves, loaned books and anthology titles will now import correctly\n\n";
+			}
 
 		}
 	}
@@ -441,7 +453,11 @@ public class CatalogueDBAdapter {
 	 * Generic function to close the database
 	 */
 	public void close() {
-		mDbHelper.close();
+		try {
+			mDbHelper.close();
+		} catch (Exception e) {
+			//do nothing - already closed
+		}
 	}
 	
 	/**
@@ -675,15 +691,77 @@ public class CatalogueDBAdapter {
 	 * @return Cursor over all books
 	 */
 	public Cursor fetchAllBooksByLoan(String loaned_to) {
-		String sql = "SELECT b." + KEY_ROWID + ", '(' || a." + KEY_FAMILY_NAME + " || ', ' || a." + KEY_GIVEN_NAMES + " || ')'as " + KEY_AUTHOR_FORMATTED + 
+		String sql = "SELECT DISTINCT b." + KEY_ROWID + " as " + KEY_ROWID + ", '(' || a." + KEY_FAMILY_NAME + " || ', ' || a." + KEY_GIVEN_NAMES + " || ')'as " + KEY_AUTHOR_FORMATTED + 
 		", b." + KEY_TITLE + " as " + KEY_TITLE + ", b." + KEY_ISBN + ", b." + KEY_PUBLISHER + ", b." + KEY_DATE_PUBLISHED + 
 		", b." + KEY_RATING + ", bs." + KEY_BOOKSHELF + ", b." + KEY_READ + ", b." + KEY_SERIES + " as " + KEY_SERIES + ", b." + KEY_PAGES + 
 		", b." + KEY_SERIES_NUM + ", b." + KEY_NOTES + ", b." + KEY_LIST_PRICE + ", b." + KEY_ANTHOLOGY + 
 		", b." + KEY_LOCATION + ", b." + KEY_READ_START + ", b." + KEY_READ_END + ", b." + KEY_AUDIOBOOK + 
 		", b." + KEY_SIGNED +
 		" FROM " + DATABASE_TABLE_LOAN + " l, " + DATABASE_TABLE_BOOKS + " b, " + DATABASE_TABLE_BOOKSHELF + " bs, " + DATABASE_TABLE_AUTHORS + " a" + 
-		" WHERE l." + KEY_BOOK + "=b._id AND bs._id=b." + KEY_BOOKSHELF + " AND a._id=b." + KEY_AUTHOR + " " +
+		" WHERE l." + KEY_BOOK + "=b." + KEY_ROWID + " AND bs." + KEY_ROWID + "=b." + KEY_BOOKSHELF + " AND a." + KEY_ROWID + "=b." + KEY_AUTHOR + " " +
 		" AND l." + KEY_LOANED_TO + "='" + encodeString(loaned_to) + "'" + 
+		" ORDER BY lower(b." + KEY_TITLE + ") ASC";
+		Log.e("BC", sql);
+		/*
+		 * 09-18 07:21:14.211: ERROR/BC(1974): 
+		 * 
+		 * SELECT DISTINCT b._id, '(' || a.family_name || ', ' || a.given_names || ')'as author_formatted, 
+		 * 	b.title as title, b.isbn, b.publisher, b.date_published, b.rating, bs.bookshelf, b.read, 
+		 * 	b.series as series, b.pages, b.series_num, b.notes, b.list_price, b.anthology, b.location, 
+		 * 	b.read_start, b.read_end, b.audiobook, b.signed 
+		 * 
+		 * FROM loan l, books b, bookshelf bs, authors a 
+		 * 
+		 * WHERE l.book=b._id AND bs._id=b.bookshelf AND a._id=b.author  AND l.loaned_to='AndyX White' 
+		 * 
+		 * ORDER BY lower(b.title) ASC
+		 */
+		
+		return mDb.rawQuery(sql, new String[]{});
+	}
+	
+	/**
+	 * This will return a list of all books either read or unread
+	 * 
+	 * @param read "Read" or "Unread"
+	 * @return Cursor over all books
+	 */
+	public Cursor fetchAllBooksByRead(String read, String bookshelf) {
+		String where = "";
+		if (bookshelf.equals("All Books")) {
+			// do nothing 
+		} else 	{
+			where += " AND bs." + KEY_BOOKSHELF + "='" + encodeString(bookshelf) + "'";
+		}
+		if (read.equals("Read")) {
+			where += " AND b." + KEY_READ + "=1";
+		} else {
+			where += " AND b." + KEY_READ + "!=1";
+		}
+		/*
+		 * SELECT b._id, '(' || a.family_name || ', ' || a.given_names || ')'as author_formatted, b.title as title, 
+		 * 	b.isbn, b.publisher, b.date_published, b.rating, bs.bookshelf, b.read, b.series as series, b.pages, 
+		 * 	b.series_num, b.notes, b.list_price, b.anthology, b.location, b.read_start, b.read_end, b.audiobook, 
+		 * 	b.signed 
+		 * 
+		 * FROM books b, bookshelf bs, authors a 
+		 * 
+		 * WHERE bs._id=b.bookshelf AND a._id=b.author  AND b.read='t' ORDER BY lower(b.title) ASC
+		 * 
+		 * 	09-18 05:01:19.080: ERROR/BC(429): SELECT b._id, '(' || a.family_name || ', ' || a.given_names || ')'as author_formatted, b.title as title, b.isbn, b.publisher, b.date_published, b.rating, bs.bookshelf, b.read, b.series as series, b.pages, b.series_num, b.notes, b.list_price, b.anthology, b.location, b.read_start, b.read_end, b.audiobook, b.signed FROM books b, bookshelf bs, authors a WHERE bs._id=b.bookshelf AND a._id=b.author  AND b.read='read=''t''' ORDER BY lower(b.title) ASC
+			09-18 05:01:20.552: ERROR/BC(429): SELECT b._id, '(' || a.family_name || ', ' || a.given_names || ')'as author_formatted, b.title as title, b.isbn, b.publisher, b.date_published, b.rating, bs.bookshelf, b.read, b.series as series, b.pages, b.series_num, b.notes, b.list_price, b.anthology, b.location, b.read_start, b.read_end, b.audiobook, b.signed FROM books b, bookshelf bs, authors a WHERE bs._id=b.bookshelf AND a._id=b.author  AND b.read='read!=''t''' ORDER BY lower(b.title) ASC
+
+		 */
+
+		String sql = "SELECT b." + KEY_ROWID + ", '(' || a." + KEY_FAMILY_NAME + " || ', ' || a." + KEY_GIVEN_NAMES + " || ')'as " + KEY_AUTHOR_FORMATTED + 
+		", b." + KEY_TITLE + " as " + KEY_TITLE + ", b." + KEY_ISBN + ", b." + KEY_PUBLISHER + ", b." + KEY_DATE_PUBLISHED + 
+		", b." + KEY_RATING + ", bs." + KEY_BOOKSHELF + ", b." + KEY_READ + ", b." + KEY_SERIES + " as " + KEY_SERIES + ", b." + KEY_PAGES + 
+		", b." + KEY_SERIES_NUM + ", b." + KEY_NOTES + ", b." + KEY_LIST_PRICE + ", b." + KEY_ANTHOLOGY + 
+		", b." + KEY_LOCATION + ", b." + KEY_READ_START + ", b." + KEY_READ_END + ", b." + KEY_AUDIOBOOK + 
+		", b." + KEY_SIGNED +
+		" FROM " + DATABASE_TABLE_BOOKS + " b, " + DATABASE_TABLE_BOOKSHELF + " bs, " + DATABASE_TABLE_AUTHORS + " a" + 
+		" WHERE bs._id=b." + KEY_BOOKSHELF + " AND a._id=b." + KEY_AUTHOR + " " +
+		where + "" + 
 		" ORDER BY lower(b." + KEY_TITLE + ") ASC";
 		return mDb.rawQuery(sql, new String[]{});
 	}
@@ -720,6 +798,12 @@ public class CatalogueDBAdapter {
 	 * @return Cursor over all series
 	 */
 	public Cursor fetchAllLoans() {
+		//cleanup SQL
+		//String cleanup = "DELETE FROM " + DATABASE_TABLE_LOAN + " " +
+		//		" WHERE " + KEY_BOOK + " NOT IN (SELECT " + KEY_ROWID + " FROM " + DATABASE_TABLE_BOOKS + ") ";
+		//mDb.rawQuery(cleanup, new String[]{});
+		
+		//fetch books
 		String sql = "SELECT DISTINCT l." + KEY_LOANED_TO + " as " + KEY_ROWID + 
 		" FROM " + DATABASE_TABLE_LOAN + " l " + 
 		" ORDER BY l." + KEY_LOANED_TO + "";
@@ -793,6 +877,17 @@ public class CatalogueDBAdapter {
 		" AND (a." + KEY_FAMILY_NAME + " LIKE '%" + query + "%' OR a." + KEY_GIVEN_NAMES + " LIKE '%" + query + "%' OR " +
 		" b." + KEY_TITLE + " LIKE '%" + query + "%' OR b." + KEY_SERIES + " LIKE '%" + query + "%')" + 
 		" ORDER BY b." + KEY_SERIES + "";
+		return mDb.rawQuery(sql, new String[]{});
+	}
+	
+	/**
+	 * This will return a list consisting of "Read" and "Unread"
+	 * 
+	 * @return Cursor over all the psuedo list
+	 */
+	public Cursor fetchAllUnreadPsuedo() {
+		String sql = "SELECT 'Unread' as " + KEY_ROWID + "" +
+				" UNION SELECT 'Read' as " + KEY_ROWID + "";
 		return mDb.rawQuery(sql, new String[]{});
 	}
 	

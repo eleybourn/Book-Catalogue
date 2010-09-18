@@ -139,7 +139,11 @@ public class BookEdit extends TabActivity {
 	@Override 
 	protected void onSaveInstanceState(Bundle outState) { 
 		super.onSaveInstanceState(outState);
-		outState.putLong(CatalogueDBAdapter.KEY_ROWID, mRowId);
+		try {
+			outState.putLong(CatalogueDBAdapter.KEY_ROWID, mRowId);
+		} catch (Exception e) {
+			//do nothing
+		}
 	} 
 
 }

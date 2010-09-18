@@ -228,42 +228,46 @@ public class AdministrationFunctions extends Activity {
 			Looper.prepare();
 			startManagingCursor(books);
 			int num = 0;
-			while (books.moveToNext()) {
-				int id = books.getInt(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROWID));
-				String isbn = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ISBN));
-				String title = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE));
-				
-				num++;
-				// delete any tmp thumbnails //
-				try {
-					File delthumb = CatalogueDBAdapter.fetchThumbnail(0);
-					delthumb.delete();
-				} catch (Exception e) {
-					// do nothing - this is the expected behaviour 
-				}
-				
-				File thumb = CatalogueDBAdapter.fetchThumbnail(id);
-				if ((overwrite == true || !thumb.exists()) && !isbn.equals("")) {
-					sendMessage(num, title);
-					BookISBNSearch bis = new BookISBNSearch();
-					bis.searchAmazon(isbn);
-					File tmpthumb = CatalogueDBAdapter.fetchThumbnail(0);
-					/* If amazon fails, try google books */
-					if (!tmpthumb.exists()) {
-						bis.searchGoogle(isbn);
-						tmpthumb = CatalogueDBAdapter.fetchThumbnail(0);
-					}
+			try {
+				while (books.moveToNext()) {
+					int id = books.getInt(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROWID));
+					String isbn = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ISBN));
+					String title = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE));
 					
-					/* Copy tmpthumb over realthumb */
+					num++;
+					// delete any tmp thumbnails //
 					try {
-						tmpthumb.renameTo(thumb);
+						File delthumb = CatalogueDBAdapter.fetchThumbnail(0);
+						delthumb.delete();
 					} catch (Exception e) {
-						//do nothing
+						// do nothing - this is the expected behaviour 
 					}
 					
-				} else {
-					sendMessage(num, "Skip - " + title);
+					File thumb = CatalogueDBAdapter.fetchThumbnail(id);
+					if ((overwrite == true || !thumb.exists()) && !isbn.equals("")) {
+						sendMessage(num, title);
+						BookISBNSearch bis = new BookISBNSearch();
+						bis.searchAmazon(isbn);
+						File tmpthumb = CatalogueDBAdapter.fetchThumbnail(0);
+						/* If amazon fails, try google books */
+						if (!tmpthumb.exists()) {
+							bis.searchGoogle(isbn);
+							tmpthumb = CatalogueDBAdapter.fetchThumbnail(0);
+						}
+						
+						/* Copy tmpthumb over realthumb */
+						try {
+							tmpthumb.renameTo(thumb);
+						} catch (Exception e) {
+							//do nothing
+						}
+						
+					} else {
+						sendMessage(num, "Skip - " + title);
+					}
 				}
+			} catch (Exception e) {
+				// do nothing
 			}
 			sendMessage(0, "Complete");
 		}
@@ -732,31 +736,35 @@ public class AdministrationFunctions extends Activity {
 				}
 				
 				String author = family + ", " + given;
-				if (id == 0) {
-					// Book is new. It does not exist in the current database
-					Cursor book = mDbHelper.fetchBookByISBNOrCombo(isbn, family, given, title);
-					int rows = book.getCount();
-					if (rows != 0) {
-						// Its a new entry, but the ISBN exists
-						id = book.getLong(0);
-						book.moveToFirst();
-						mDbHelper.updateBook(id, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, audiobook, signed);
-						importUpdated++;
+				try {
+					if (id == 0) {
+						// Book is new. It does not exist in the current database
+						Cursor book = mDbHelper.fetchBookByISBNOrCombo(isbn, family, given, title);
+						int rows = book.getCount();
+						if (rows != 0) {
+							// Its a new entry, but the ISBN exists
+							id = book.getLong(0);
+							book.moveToFirst();
+							mDbHelper.updateBook(id, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, audiobook, signed);
+							importUpdated++;
+						} else {
+							id = mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, audiobook, signed);
+							importCreated++;
+						}
 					} else {
-						id = mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, audiobook, signed);
-						importCreated++;
+						Cursor book = mDbHelper.fetchBook(id);
+						int rows = book.getCount();
+						if (rows == 0) {
+							mDbHelper.createBook(id, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, audiobook, signed);
+							importCreated++;
+						} else {
+							// Book exists and should be updated if it has changed
+							mDbHelper.updateBook(id, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, audiobook, signed);
+							importUpdated++;
+						}
 					}
-				} else {
-					Cursor book = mDbHelper.fetchBook(id);
-					int rows = book.getCount();
-					if (rows == 0) {
-						mDbHelper.createBook(id, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, audiobook, signed);
-						importCreated++;
-					} else {
-						// Book exists and should be updated if it has changed
-						mDbHelper.updateBook(id, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, audiobook, signed);
-						importUpdated++;
-					}
+				} catch (Exception e) {
+					// do nothing
 				}
 				
 				if (!loan.equals("")) {

@@ -97,6 +97,7 @@ public class BookCatalogue extends ExpandableListActivity {
 	private static final int SORT_TITLE = 1; 
 	private static final int SORT_SERIES = 2; 
 	private static final int SORT_LOAN = 3; 
+	private static final int SORT_UNREAD = 4;
 	public int numAuthors = 0;
 	private ArrayList<Integer> currentGroup = new ArrayList<Integer>();
 	private boolean expanded = false;
@@ -259,6 +260,8 @@ public class BookCatalogue extends ExpandableListActivity {
 			fillDataSeries();
 		} else if (sort == SORT_LOAN) {
 			fillDataLoan();
+		} else if (sort == SORT_UNREAD) {
+			fillDataUnread();
 		}
 		gotoCurrentGroup();
 		//undo any expansion that has occurred for non expandable lists
@@ -300,11 +303,11 @@ public class BookCatalogue extends ExpandableListActivity {
 		
 		// Create an array to specify the fields we want to display in the list
 		String[] from = new String[]{CatalogueDBAdapter.KEY_AUTHOR_FORMATTED};
-		String[] exp_from = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_SERIES_FORMATTED};
+		String[] exp_from = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_SERIES_FORMATTED, CatalogueDBAdapter.KEY_READ};
 		
 		// and an array of the fields we want to bind those fields to (in this case just text1)
 		int[] to = new int[]{R.id.row_family};
-		int[] exp_to = new int[]{R.id.row_img, R.id.row_title, R.id.row_series};
+		int[] exp_to = new int[]{R.id.row_img, R.id.row_title, R.id.row_series, R.id.row_read};
 		
 		// Instantiate the List Adapter
 		ExpandableListAdapter books = new AuthorBookListAdapter(BooksCursor, this, layout, layout_child, from, to, exp_from, exp_to);
@@ -387,6 +390,21 @@ public class BookCatalogue extends ExpandableListActivity {
 						newv.setImageBitmap(thumbnail);
 					} else {
 						newv.setImageResource(android.R.drawable.ic_menu_help);
+					}
+					newv.setVisibility(VISIBLE);
+				}
+				text = "";
+				return;
+			} else if (v.getId() == R.id.row_read) {
+				boolean field_visibility = mPrefs.getBoolean(FieldVisibility.prefix + "read", true);
+				ImageView newv = (ImageView) ((ViewGroup) v.getParent()).findViewById(R.id.row_read_image_view);
+				if (field_visibility == false) {
+					newv.setVisibility(GONE);
+				} else {
+					if (text.equals("1")) {
+						newv.setImageResource(R.drawable.btn_check_buttonless_on);
+					} else {
+						newv.setImageResource(R.drawable.btn_check_buttonless_off);
 					}
 					newv.setVisibility(VISIBLE);
 				}
@@ -791,6 +809,123 @@ public class BookCatalogue extends ExpandableListActivity {
 	}
 	
 	/**
+	 * Display the author view. This is a true expandableList. 
+	 */
+	private void fillDataUnread() {
+		// base the layout and the query on the sort order
+		int layout = R.layout.row_authors;
+		int layout_child = R.layout.row_series_books;
+		
+		// Get all of the rows from the database and create the item list
+		Cursor BooksCursor = null;
+		// Return all books for the given bookshelf
+		BooksCursor = mDbHelper.fetchAllUnreadPsuedo();
+		numAuthors = BooksCursor.getCount();
+		this.setTitle(R.string.app_name);
+		
+		mGroupIdColumnIndex = BooksCursor.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROWID);
+		startManagingCursor(BooksCursor);
+		
+		// Create an array to specify the fields we want to display in the list
+		String[] from = new String[]{CatalogueDBAdapter.KEY_ROWID};
+		String[] exp_from = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_AUTHOR_FORMATTED};
+		
+		// and an array of the fields we want to bind those fields to (in this case just text1)
+		int[] to = new int[]{R.id.row_family};
+		int[] exp_to = new int[]{R.id.row_img, R.id.row_title, R.id.row_author};
+		
+		// Instantiate the List Adapter
+		ExpandableListAdapter books = new UnreadBookListAdapter(BooksCursor, this, layout, layout_child, from, to, exp_from, exp_to);
+		
+		// Handle the click event. Do not open, but goto the book edit page
+		ExpandableListView expandableList = getExpandableListView();
+		// Extend the onGroupClick (Open) - Every click should add to the currentGroup array
+		expandableList.setOnGroupClickListener(new OnGroupClickListener() {
+			public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+				addToCurrentGroup(groupPosition);
+				return false;
+			}
+		});
+		// Extend the onGroupClick (Close) - Every click should remove from the currentGroup array
+		expandableList.setOnGroupCollapseListener(new OnGroupCollapseListener() {
+			@Override
+			public void onGroupCollapse(int groupPosition) {
+				addToCurrentGroup(groupPosition);
+				
+			}
+		});
+
+		/* Hide the default expandable icon, and use a different icon (actually the same icon)
+		 * The override is for when changing back from the title view and it has hidden the icon. */
+		Drawable indicator = this.getResources().getDrawable(R.drawable.expander_group); 
+		expandableList.setGroupIndicator(indicator);
+		
+		setListAdapter(books);
+	}
+	
+	/**
+	 * The adapter for the Authors Expandable List
+	 * 
+	 * @author evan
+	 *
+	 */
+	public class UnreadBookListAdapter extends SimpleCursorTreeAdapter {
+		boolean series = false;
+		
+		/**
+		 * 
+		 * Pass the parameters directly to the overridden function
+		 * 
+		 * @param cursor
+		 * @param context
+		 * @param groupLayout
+		 * @param childLayout
+		 * @param groupFrom
+		 * @param groupTo
+		 * @param childrenFrom
+		 * @param childrenTo
+		 */
+		public UnreadBookListAdapter(Cursor cursor, Context context, int groupLayout, int childLayout, String[] groupFrom, int[] groupTo, String[] childrenFrom, int[] childrenTo) {
+			super(context, cursor, groupLayout, groupFrom, groupTo, childLayout, childrenFrom, childrenTo);
+		}
+		
+		/**
+		 * Override the getChildrenCursor. This runs the SQL to extract the titles per author
+		 */
+		@Override
+		protected Cursor getChildrenCursor(Cursor groupCursor) {
+			return mDbHelper.fetchAllBooksByRead(groupCursor.getString(mGroupIdColumnIndex), bookshelf);
+		}
+		
+		/**
+		 * Override the setTextView function. This helps us set the appropriate opening and
+		 * closing brackets for series numbers
+		 */
+		//TODO: @Override
+		public void setViewText(TextView v, String text) {
+			if (v.getId() == R.id.row_img) {
+				boolean field_visibility = mPrefs.getBoolean(FieldVisibility.prefix + "thumbnail", true);
+				ImageView newv = (ImageView) ((ViewGroup) v.getParent()).findViewById(R.id.row_image_view);
+				if (field_visibility == false) {
+					newv.setVisibility(GONE);
+				} else {
+					String thumbFilename = CatalogueDBAdapter.fetchThumbnailFilename(Long.parseLong(text), false);
+					Bitmap thumbnail = BitmapFactory.decodeFile(thumbFilename);
+					if (thumbnail != null) {
+						newv.setImageBitmap(thumbnail);
+					} else {
+						newv.setImageResource(android.R.drawable.ic_menu_help);
+					}
+					v.setVisibility(VISIBLE);
+				}
+				text = "";
+				return;
+			}
+			v.setText(text);
+		}
+	}
+	
+	/**
 	 * Setup the sort options. This function will also call fillData when 
 	 * complete having loaded the appropriate view. 
 	 */
@@ -833,6 +968,15 @@ public class BookCatalogue extends ExpandableListActivity {
 			radio_loan.setChecked(false);
 		}
 		
+		RadioButton radio_unread = new RadioButton(this);
+		radio_unread.setText(R.string.sortby_unread);
+		group.addView(radio_unread);
+		if (sort == SORT_UNREAD) {
+			radio_unread.setChecked(true);
+		} else {
+			radio_unread.setChecked(false);
+		}
+		
 		final AlertDialog sortDialog = new AlertDialog.Builder(this).setView(group).create();
 		sortDialog.setTitle(R.string.menu_sort_by);
 		sortDialog.setIcon(android.R.drawable.ic_menu_info_details);
@@ -873,6 +1017,15 @@ public class BookCatalogue extends ExpandableListActivity {
 				return;
 			}
 		});
+		
+		radio_unread.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				sortByUnread();
+				sortDialog.hide();
+				return;
+			}
+		});
 	}
 	
 	/**
@@ -891,7 +1044,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		MenuItem insertISBN = menu.add(0, INSERT_ISBN_ID, 2, R.string.menu_insert_isbn);
 		insertISBN.setIcon(android.R.drawable.ic_menu_zoom);
 		
-		if (sort == SORT_AUTHOR || sort == SORT_SERIES || sort == SORT_LOAN) {
+		if (sort == SORT_AUTHOR || sort == SORT_SERIES || sort == SORT_LOAN || sort == SORT_UNREAD) {
 			if (expanded == true) {
 				MenuItem collapse = menu.add(0, SORT_BY_AUTHOR_EXPANDED, 3, R.string.menu_sort_by_author_collapsed);
 				collapse.setIcon(R.drawable.ic_menu_collapse);
@@ -1141,6 +1294,19 @@ public class BookCatalogue extends ExpandableListActivity {
 	}
 	
 	/**
+	 * Change the sort order of the view and refresh the page
+	 */
+	private void sortByUnread() {
+		sort = SORT_UNREAD;
+		currentGroup = new ArrayList<Integer>();
+		fillData();
+		/* Save the current sort settings */
+		SharedPreferences.Editor ed = mPrefs.edit();
+		ed.putInt(STATE_SORT, sort);
+		ed.commit();
+	}
+	
+	/**
 	 * Load the Administration Activity
 	 */
 	private void adminPage() {
@@ -1215,7 +1381,7 @@ public class BookCatalogue extends ExpandableListActivity {
 	public boolean onChildClick(ExpandableListView l, View v, int position, int childPosition, long id) {
 		boolean result = super.onChildClick(l, v, position, childPosition, id);
 		addToCurrentGroup(position, true);
-		if (sort == SORT_AUTHOR || sort == SORT_SERIES || sort == SORT_LOAN) {
+		if (sort == SORT_AUTHOR || sort == SORT_SERIES || sort == SORT_LOAN || sort == SORT_UNREAD) {
 			editBook(id, BookEdit.TAB_EDIT);
 		}
 		return result;

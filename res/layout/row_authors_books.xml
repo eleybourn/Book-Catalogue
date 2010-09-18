@@ -2,36 +2,70 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
 	android:orientation="horizontal"
 	android:layout_width="fill_parent" 
-	android:layout_height="40dp">
-	<ImageView android:id="@+id/row_image_view" 
-		android:layout_width="50dp"
-		android:layout_height="wrap_content"
-		android:paddingLeft="10dp"
-		android:visibility="gone"
-		/>
-	 <TextView android:id="@+id/row_img" 
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:visibility="gone"
-		/>
-	<TextView android:id="@+id/row_title" 
+	android:layout_height="40dp"
+	android:scaleType="fitStart"
+	>
+	<LinearLayout
+		android:orientation="horizontal"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:paddingLeft="10dp"
-		android:paddingTop="10dp" 
-		android:paddingBottom="10dp" 
-		/>
-	<TextView android:id="@+id/row_series" 
+		android:gravity="left" 
+		android:layout_weight="0"
+		>
+		<ImageView android:id="@+id/row_image_view" 
+			android:layout_width="50dp"
+			android:layout_height="wrap_content"
+			android:visibility="gone"
+			/>
+		 <TextView android:id="@+id/row_img" 
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:visibility="gone"
+			/>
+	</LinearLayout>
+	<LinearLayout
+		android:orientation="horizontal"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:paddingLeft="10dp"
+		android:gravity="left" 
 		android:paddingTop="10dp" 
-		android:paddingBottom="10dp" 
-		/>
-	<TextView android:id="@+id/row_series_num" 
+		android:paddingBottom="10dp"
+		android:layout_weight="1"
+		>
+		<TextView android:id="@+id/row_title" 
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:lines="1" 
+			/>
+		<TextView android:id="@+id/row_series" 
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:paddingLeft="10dp"
+			android:lines="1" 
+			/>
+	</LinearLayout>
+	<LinearLayout
+		android:orientation="horizontal"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:paddingTop="10dp" 
-		android:paddingBottom="10dp" 
-		/>
+		android:paddingLeft="10dp"
+		android:paddingRight="10dp"
+		android:gravity="right" 
+		android:layout_weight="0"
+		>
+		<ImageView android:id="@+id/row_read_image_view" 
+			android:layout_width="30dp"
+			android:layout_height="wrap_content"
+			android:src="@drawable/btn_check_buttonless_off"
+			android:visibility="gone"
+			/>
+		 <TextView android:id="@+id/row_read" 
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:visibility="gone"
+			/>
+	</LinearLayout>
+
 </LinearLayout>

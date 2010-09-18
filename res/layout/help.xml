@@ -340,6 +340,11 @@
 			android:layout_height="wrap_content" 
 			android:text="@+string/help_text_editbooksedit4"
 			android:paddingTop="15sp"
+			/>
+		<TextView android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:text="@+string/help_text_editbooksedit5"
+			android:paddingTop="15sp"
 			android:paddingBottom="15sp"
 			/>
 		<TextView android:layout_width="fill_parent"

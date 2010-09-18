@@ -161,7 +161,7 @@ public class CatalogueDBAdapter {
 		;
 	
 	private final Context mCtx;
-	private static final int DATABASE_VERSION = 38;
+	private static final int DATABASE_VERSION = 39;
 	
 	/**
 	 * This is a specific version of the SQLiteOpenHelper class. It handles onCreate and onUpgrade events
@@ -411,13 +411,17 @@ public class CatalogueDBAdapter {
 			if (curVersion == 37) {
 				//do nothing
 				curVersion++;
-				db.execSQL("UPDATE " + DATABASE_TABLE_LOAN + " SET " + KEY_LOANED_TO + "='' WHERE " + KEY_LOANED_TO + "='null'");
 				message += "Tip: If you long click on a book title on the main list you can delete it\n\n";
 				message += "Tip: If you want to see all books, change the bookshelf to 'All Books'\n\n";
 				message += "Tip: You can find the correct barcode for many modern paperbacks on the inside cover\n\n";
 				message += "* There is now a 'Sort by Unread' option, as well as a 'read' icon on the main list (requested by Angel)\n\n";
 				message += "* If you long click on the (?) thumbnail you can now select a new thumbnail from the gallery (requested by Giovanni)\n\n";
 				message += "* Bookshelves, loaned books and anthology titles will now import correctly\n\n";
+			}
+			if (curVersion == 38) {
+				//do nothing
+				curVersion++;
+				db.execSQL("DELETE FROM " + DATABASE_TABLE_LOAN + " WHERE (" + KEY_LOANED_TO + "='' OR " + KEY_LOANED_TO + "='null')");
 			}
 
 		}

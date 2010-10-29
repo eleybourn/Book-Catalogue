@@ -1515,6 +1515,9 @@ public class CatalogueDBAdapter {
 		for (int i = 0; i<bookshelves.length; i++) {
 			int bookshelf_id=1;
 			String name = bookshelves[i].trim();
+			if (name.equals("")) {
+				continue;
+			}
 			ContentValues initialValues = new ContentValues();
 			Cursor bookshelfId = fetchBookshelfByName(name);
 			int bRows = bookshelfId.getCount();

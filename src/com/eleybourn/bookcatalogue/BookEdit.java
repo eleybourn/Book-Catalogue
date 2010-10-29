@@ -65,10 +65,12 @@ public class BookEdit extends TabActivity {
 		}
 		int anthology_num = 0;
 		try {
-			Cursor book = mDbHelper.fetchBook(mRowId);
+			Cursor book = mDbHelper.fetchBookById(mRowId);
+			book.moveToFirst();
 			anthology_num = book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
+			book.close(); // close the cursor
 		} catch (CursorIndexOutOfBoundsException e) {
-			//do nothing
+			//do nothing - new book
 		} catch (NullPointerException e) {
 			//do nothing
 		}

@@ -189,7 +189,10 @@ public class BookEditNotes extends Activity {
 		
 		if (mRowId != null && mRowId > 0) {
 			// From the database (edit)
-			Cursor book = mDbHelper.fetchBook(mRowId);
+			Cursor book = mDbHelper.fetchBookById(mRowId);
+			if (book != null) {
+				book.moveToFirst();
+			}
 			startManagingCursor(book);
 			title = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE)); 
 			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + title);
@@ -219,11 +222,11 @@ public class BookEditNotes extends Activity {
 			mSignedView.setChecked((book.getInt(book.getColumnIndex(CatalogueDBAdapter.KEY_SIGNED))==0? false:true) );
 			mConfirmButton.setText(R.string.confirm_save);
 			
-			author = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR));
+			author = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED));
 			isbn = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ISBN));
 			publisher = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PUBLISHER));
 			date_published = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DATE_PUBLISHED));
-			bookshelf = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_BOOKSHELF));
+			bookshelf = null;
 			series = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES));
 			series_num = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES_NUM));
 			list_price = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LIST_PRICE));

@@ -53,6 +53,13 @@ public class Administration extends TabActivity {
 		
 		//get the passed parameters
 		Bundle extras = getIntent().getExtras();
+		try {
+			if (extras.getString(AdministrationFunctions.DOAUTO) != null) {
+				currentTab = 1;
+			}
+		} catch (NullPointerException e) {
+			// do nothing. This is the normal behaviour
+		}
 		
 		// Create an Intent to launch an Activity for the tab (to be reused)
 		intent = new Intent().setClass(this, Help.class);
@@ -78,14 +85,14 @@ public class Administration extends TabActivity {
 		}
 		spec = tabHost.newTabSpec("admin_donate").setIndicator(res.getString(R.string.donate_label), res.getDrawable(R.drawable.ic_tab_donate)).setContent(intent);
 		tabHost.addTab(spec);
-
+		
 		intent = new Intent().setClass(this, AdministrationAbout.class);
 		if (extras != null) {
 			intent.putExtras(extras);
 		}
 		spec = tabHost.newTabSpec("admin_about").setIndicator(res.getString(R.string.about_label), res.getDrawable(R.drawable.ic_tab_about)).setContent(intent);
 		tabHost.addTab(spec);
-
+		
 		tabHost.setCurrentTab(currentTab);
 	}
 	

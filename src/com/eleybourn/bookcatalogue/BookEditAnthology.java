@@ -37,13 +37,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -54,6 +54,7 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 
 public class BookEditAnthology extends ListActivity {
 	
@@ -83,7 +84,7 @@ public class BookEditAnthology extends ListActivity {
 	
 	protected ArrayList<String> getAuthors() {
 		ArrayList<String> author_list = new ArrayList<String>();
-		Cursor author_cur = mDbHelper.fetchAllAuthors("All Books");
+		Cursor author_cur = mDbHelper.fetchAllAuthorsIgnoreBooks();
 		startManagingCursor(author_cur);
 		while (author_cur.moveToNext()) {
 			String name = author_cur.getString(author_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED));
@@ -117,8 +118,12 @@ public class BookEditAnthology extends ListActivity {
 	public void loadPage() {
 		setContentView(R.layout.list_anthology);
 		
-		book = mDbHelper.fetchBook(mRowId);
-		bookAuthor = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR));
+		book = mDbHelper.fetchBookById(mRowId);
+		if (book != null) {
+			book.moveToFirst();
+		}
+		
+		bookAuthor = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED));
 		bookTitle = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE));
 		
 		// Setup the same author field
@@ -284,6 +289,7 @@ public class BookEditAnthology extends ListActivity {
 		}
 		pathTitle = pathTitle.replace(" ", "+");
 		String path = basepath + "/w/index.php?title=Special:Search&search=%22" + pathTitle + "%22+" + pathAuthor + "";
+		Log.e("BC", path);
 		boolean success = false;
 		URL url;
 		
@@ -328,13 +334,17 @@ public class BookEditAnthology extends ListActivity {
 				return;
 			}
 		} catch (MalformedURLException e) {
-			//Log.e("Book Catalogue", "Malformed URL " + e.getMessage());
+			Toast.makeText(this, R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
+			Log.e("Book Catalogue", "Malformed URL " + e.getMessage());
 		} catch (ParserConfigurationException e) {
-			//Log.e("Book Catalogue", "SAX Parsing Error " + e.getMessage());
+			Toast.makeText(this, R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
+			Log.e("Book Catalogue", "SAX Parsing Error " + e.getMessage());
 		} catch (SAXException e) {
-			//Log.e("Book Catalogue", "SAX Exception " + e.getMessage());
+			Toast.makeText(this, R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
+			Log.e("Book Catalogue", "SAX Exception " + e.getMessage());
 		} catch (Exception e) {
-			//Log.e("Book Catalogue", "SAX IO Exception " + e.getMessage());
+			Toast.makeText(this, R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
+			Log.e("Book Catalogue", "SAX IO Exception " + e.getMessage());
 		}
 		fillAnthology();
 		return;
@@ -481,7 +491,7 @@ public class BookEditAnthology extends ListActivity {
 		String isbn = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ISBN));
 		String publisher = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PUBLISHER));
 		String date_published = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DATE_PUBLISHED));
-		String bookshelf = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_BOOKSHELF));
+		String bookshelf = null;
 		String series = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES));
 		String series_num = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES_NUM));
 		String list_price = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LIST_PRICE));

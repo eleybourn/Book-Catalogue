@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -42,6 +44,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
@@ -61,11 +64,36 @@ public class AdministrationFunctions extends Activity {
 	private CatalogueDBAdapter mDbHelper;
 	private int importUpdated = 0;
 	private int importCreated = 0;
-	private String filePath = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/export.csv";
-	private String UTF8 = "utf8";
-	private int BUFFER_SIZE = 8192;
+	public static String filePath = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/export.csv";
+	public static String UTF8 = "utf8";
+	public static int BUFFER_SIZE = 8192;
 	private ProgressDialog pd = null;
 	private int num = 0;
+	private boolean finish_after = false;
+	
+	public static final String DOAUTO = "do_auto";
+	
+	final Handler handler = new Handler() {
+		public void handleMessage(Message msg) {
+			int total = msg.getData().getInt("total");
+			String title = msg.getData().getString("title");
+			if (total == 0) {
+				//Toast.makeText(AdministrationFunctions.this, num + " Thumbnail Updated", Toast.LENGTH_LONG).show();
+				pd.dismiss();
+				if (finish_after == true) {
+					finish();
+				}
+				//progressThread.setState(UpdateThumbnailsThread.STATE_DONE);
+			} else {
+				num += 1;
+				pd.incrementProgressBy(1);
+				if (title.length() > 21) {
+					title = title.substring(0, 20) + "...";
+				}
+				pd.setMessage(title);
+			}
+		}
+	};
 	
 	/**
 	 * Called when the activity is first created. 
@@ -77,6 +105,20 @@ public class AdministrationFunctions extends Activity {
 			mDbHelper = new CatalogueDBAdapter(this);
 			mDbHelper.open();
 			setContentView(R.layout.administration_functions);
+			Bundle extras = getIntent().getExtras();
+			Log.e("BC", "Admin");
+			try {
+				if (extras.getString(DOAUTO).equals("export")) {
+					finish_after = true;
+					exportData();
+				//} else if (extras.getString(DOAUTO).equals("import")) {
+				//	finish_after = true;
+				//	importData();
+				}
+			} catch (NullPointerException e) {
+				//do nothing
+			}
+			Log.e("BC", "Setup");
 			setupAdmin();
 		} catch (Exception e) {
 			//Log.e("Book Catalogue", "Unknown Exception - BC onCreate - " + e.getMessage() );
@@ -93,10 +135,13 @@ public class AdministrationFunctions extends Activity {
 	 */
 	public void setupAdmin() {
 		/* Bookshelf Link */
+		Log.e("BC", "Setup");
 		TextView bookshelf = (TextView) findViewById(R.id.bookshelf_label);
+		Log.e("BC", bookshelf.toString());
 		bookshelf.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				Log.e("BC", "Click");
 				manageBookselves();
 				return;
 			}
@@ -296,26 +341,6 @@ public class AdministrationFunctions extends Activity {
 		//Toast.makeText(AdministrationFunctions.this, R.string.download_thumbs, Toast.LENGTH_LONG).show();
 	}
 	
-	final Handler handler = new Handler() {
-		public void handleMessage(Message msg) {
-			int total = msg.getData().getInt("total");
-			String title = msg.getData().getString("title");
-			if (total == 0) {
-				//Toast.makeText(AdministrationFunctions.this, num + " Thumbnail Updated", Toast.LENGTH_LONG).show();
-				pd.dismiss();
-				//progressThread.setState(UpdateThumbnailsThread.STATE_DONE);
-			} else {
-				num += 1;
-				pd.incrementProgressBy(1);
-				if (title.length() > 21) {
-					title = title.substring(0, 20) + "...";
-				}
-				pd.setMessage(title);
-			}
-		}
-	};
-	
-	
 	private class ExportThread extends Thread {
 		public Cursor books = null;
 		private Handler mHandler;
@@ -344,31 +369,31 @@ public class AdministrationFunctions extends Activity {
 			int num = 0;
 			
 			String export = 
-				CatalogueDBAdapter.KEY_ROWID + "\t" + 			//0
-				CatalogueDBAdapter.KEY_FAMILY_NAME + "\t" + 	//1
-				CatalogueDBAdapter.KEY_GIVEN_NAMES + "\t" + 	//2
-				CatalogueDBAdapter.KEY_AUTHOR + "\t" + 			//3
-				CatalogueDBAdapter.KEY_TITLE + "\t" + 			//4
-				CatalogueDBAdapter.KEY_ISBN + "\t" + 			//5
-				CatalogueDBAdapter.KEY_PUBLISHER + "\t" + 		//6
-				CatalogueDBAdapter.KEY_DATE_PUBLISHED + "\t" + 	//7
-				CatalogueDBAdapter.KEY_RATING + "\t" + 			//8
-				"bookshelf_id\t" + 								//9
-				CatalogueDBAdapter.KEY_BOOKSHELF + "\t" +		//10
-				CatalogueDBAdapter.KEY_READ + "\t" +			//11
-				CatalogueDBAdapter.KEY_SERIES + "\t" + 			//12
-				CatalogueDBAdapter.KEY_SERIES_NUM + "\t" +		//13
-				CatalogueDBAdapter.KEY_PAGES + "\t" + 			//14
-				CatalogueDBAdapter.KEY_NOTES + "\t" + 			//15
-				CatalogueDBAdapter.KEY_LIST_PRICE + "\t" + 		//16
-				CatalogueDBAdapter.KEY_ANTHOLOGY+ "\t" + 		//17
-				CatalogueDBAdapter.KEY_LOCATION+ "\t" + 		//18
-				CatalogueDBAdapter.KEY_READ_START+ "\t" + 		//19
-				CatalogueDBAdapter.KEY_READ_END+ "\t" + 		//20
-				CatalogueDBAdapter.KEY_AUDIOBOOK+ "\t" + 		//21
-				CatalogueDBAdapter.KEY_SIGNED+ "\t" + 			//22
-				CatalogueDBAdapter.KEY_LOANED_TO+ "\t" +		//23 
-				"anthology_titles\t" +							//24 
+				'"' + CatalogueDBAdapter.KEY_ROWID + "\"," + 			//0
+				'"' + CatalogueDBAdapter.KEY_FAMILY_NAME + "\"," + 		//1
+				'"' + CatalogueDBAdapter.KEY_GIVEN_NAMES + "\"," + 		//2
+				'"' + CatalogueDBAdapter.KEY_AUTHOR + "\"," + 			//3
+				'"' + CatalogueDBAdapter.KEY_TITLE + "\"," + 			//4
+				'"' + CatalogueDBAdapter.KEY_ISBN + "\"," + 			//5
+				'"' + CatalogueDBAdapter.KEY_PUBLISHER + "\"," + 		//6
+				'"' + CatalogueDBAdapter.KEY_DATE_PUBLISHED + "\"," + 	//7
+				'"' + CatalogueDBAdapter.KEY_RATING + "\"," + 			//8
+				'"' + "bookshelf_id,\"" + 								//9
+				'"' + CatalogueDBAdapter.KEY_BOOKSHELF + "\"," +		//10
+				'"' + CatalogueDBAdapter.KEY_READ + "\"," +				//11
+				'"' + CatalogueDBAdapter.KEY_SERIES + "\"," + 			//12
+				'"' + CatalogueDBAdapter.KEY_SERIES_NUM + "\"," +		//13
+				'"' + CatalogueDBAdapter.KEY_PAGES + "\"," + 			//14
+				'"' + CatalogueDBAdapter.KEY_NOTES + "\"," + 			//15
+				'"' + CatalogueDBAdapter.KEY_LIST_PRICE + "\"," + 		//16
+				'"' + CatalogueDBAdapter.KEY_ANTHOLOGY+ "\"," + 		//17
+				'"' + CatalogueDBAdapter.KEY_LOCATION+ "\"," + 			//18
+				'"' + CatalogueDBAdapter.KEY_READ_START+ "\"," + 		//19
+				'"' + CatalogueDBAdapter.KEY_READ_END+ "\"," + 			//20
+				'"' + CatalogueDBAdapter.KEY_AUDIOBOOK+ "\"," + 		//21
+				'"' + CatalogueDBAdapter.KEY_SIGNED+ "\"," + 			//22
+				'"' + CatalogueDBAdapter.KEY_LOANED_TO+ "\"," +			//23 
+				'"' + "anthology_titles," + "\"" +						//24 
 				"\n";
 			if (books.moveToFirst()) {
 				do { 
@@ -417,33 +442,42 @@ public class AdministrationFunctions extends Activity {
 						}
 					}
 					String title = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE));
+					//Display the selected bookshelves
+					Cursor bookshelves = mDbHelper.fetchAllBookshelvesByBook(id);
+					String bookshelves_id_text = "";
+					String bookshelves_name_text = "";
+					while (bookshelves.moveToNext()) {
+						bookshelves_id_text += bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_ROWID)) + BookEditFields.BOOKSHELF_SEPERATOR;
+						bookshelves_name_text += bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)) + BookEditFields.BOOKSHELF_SEPERATOR;
+					}
+					bookshelves.close();
 					
 					String row = "";
-					row += id + "\t";
-					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_FAMILY_NAME)) + "\t";
-					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_GIVEN_NAMES)) + "\t";
-					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR)) + "\t";
-					row += title + "\t";
-					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ISBN)) + "\t";
-					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PUBLISHER)) + "\t";
-					row += dateString + "\t";
-					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_RATING)) + "\t";
-					row += books.getString(books.getColumnIndexOrThrow("bookshelf_id")) + "\t";
-					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_BOOKSHELF)) + "\t";
-					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ)) + "\t";
-					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES)) + "\t";
-					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES_NUM)) + "\t";
-					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PAGES)) + "\t";
-					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_NOTES)) + "\t";
-					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LIST_PRICE)) + "\t";
-					row += anthology + "\t";
-					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOCATION)) + "\t";
-					row += dateReadStartString + "\t";
-					row += dateReadEndString + "\t";
-					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUDIOBOOK)) + "\t";
-					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SIGNED)) + "\t";
-					row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOANED_TO)) + "\t";
-					row += anthology_titles + "\t";
+					row += "\"" + id + "\",";
+					row += "\"" + (books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_FAMILY_NAME))+"").replace("\"", "\"\"") + "\",";
+					row += "\"" + (books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_GIVEN_NAMES))+"").replace("\"", "\"\"") + "\",";
+					row += "\"" + (books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR))+"").replace("\"", "\"\"") + "\",";
+					row += "\"" + (title+"").replace("\"", "\"\"") + "\",";
+					row += "\"" + (books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ISBN))+"").replace("\"", "\"\"") + "\",";
+					row += "\"" + (books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PUBLISHER))+"").replace("\"", "\"\"") + "\",";
+					row += "\"" + dateString + "\",";
+					row += "\"" + (books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_RATING))+"").replace("\"", "\"\"") + "\",";
+					row += "\"" + bookshelves_id_text.replace("\"", "\"\"") + "\",";
+					row += "\"" + bookshelves_name_text.replace("\"", "\"\"") + "\",";
+					row += "\"" + (books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ))+"").replace("\"", "\"\"") + "\",";
+					row += "\"" + (books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES))+"").replace("\"", "\"\"") + "\",";
+					row += "\"" + (books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES_NUM))+"").replace("\"", "\"\"") + "\",";
+					row += "\"" + (books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PAGES))+"").replace("\"", "\"\"") + "\",";
+					row += "\"" + (books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_NOTES))+"").replace("\"", "\"\"") + "\",";
+					row += "\"" + (books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LIST_PRICE))+"").replace("\"", "\"\"") + "\",";
+					row += "\"" + (anthology+"").replace("\"", "\"\"") + "\",";
+					row += "\"" + (books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOCATION))+"").replace("\"", "\"\"") + "\",";
+					row += "\"" + dateReadStartString + "\",";
+					row += "\"" + dateReadEndString + "\",";
+					row += "\"" + (books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUDIOBOOK))+"").replace("\"", "\"\"") + "\",";
+					row += "\"" + (books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SIGNED))+"").replace("\"", "\"\"") + "\",";
+					row += "\"" + (books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOANED_TO))+"").replace("\"", "\"\"") + "\",";
+					row += "\"" + (anthology_titles+"").replace("\"", "\"\"") + "\"";
 					row += "\n";
 					export += row;
 					sendMessage(num, title);
@@ -470,9 +504,8 @@ public class AdministrationFunctions extends Activity {
 	 * 
 	 * return void
 	 */
-	private void exportData() {
+	public void exportData() {
 		Cursor books = mDbHelper.exportBooks();
-		
 		pd = new ProgressDialog(AdministrationFunctions.this);
 		pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 		pd.setMessage("Exporting...");
@@ -529,6 +562,43 @@ public class AdministrationFunctions extends Activity {
 			mHandler.sendMessage(msg);
 			return;
 		}
+		
+		private String[] returnRow(String row) {
+			//String[] imported = row.split(",");
+			Pattern pat = Pattern.compile(",(\".*?\")");
+			Matcher matcher = pat.matcher(row);
+			StringBuffer sb = new StringBuffer();
+			while (matcher.find()){
+				matcher.appendReplacement(sb,","+matcher.group(1).replaceAll(",","&comm"));
+			}
+			matcher.appendTail(sb);
+			String[] imported = sb.toString().split(",");
+			for (int i=0;i<imported.length;i++){
+				imported[i] = imported[i]!=null ? imported[i].replaceAll("&comm",",") : "";
+				imported[i] = imported[i].trim();
+				if (imported[i].indexOf("\"") == 0) {
+					imported[i] = imported[i].substring(1);
+				}
+				int length = imported[i].length()-1;
+				if (length > -1 && imported[i].lastIndexOf("\"") == length) {
+					imported[i] = imported[i].substring(0, length);
+				}
+				imported[i] = imported[i].trim();
+			}
+/*			for (int i=0; i<imported.length; i++) {
+				Log.e("BC", i + " " + imported[i]);
+				imported[i] = imported[i].trim();
+				if (imported[i].indexOf("\"") == 0) {
+					imported[i] = imported[i].substring(1);
+				}
+				int length = imported[i].length()-1;
+				if (length > -1 && imported[i].lastIndexOf("\"") == length) {
+					imported[i] = imported[i].substring(0, length);
+				}
+				imported[i] = imported[i].trim();
+			}*/
+			return imported;
+		}
 
 		@Override
 		public void run() {
@@ -538,21 +608,11 @@ public class AdministrationFunctions extends Activity {
 			int num = 0;
 			/* Iterate through each imported row */
 			while (row < export.size()) {
+				Log.e("BC", "Row: " + row);
 				num++;
-				String[] imported = export.get(row).split("\t");
-				for (int i=0; i<imported.length; i++) {
-					imported[i] = imported[i].trim();
-					if (imported[i].indexOf("\"") == 0) {
-						imported[i] = imported[i].substring(1);
-					}
-					int length = imported[i].length()-1;
-					if (length > -1 && imported[i].lastIndexOf("\"") == length) {
-						imported[i] = imported[i].substring(0, length);
-					}
-					imported[i] = imported[i].trim();
-				}
-				// This import line is too short
+				String[] imported = returnRow(export.get(row));
 				row++;
+				Log.e("BC", "A: " + row);
 				
 				/* Setup aliases for each cell*/
 				Long id = null;
@@ -561,6 +621,7 @@ public class AdministrationFunctions extends Activity {
 				} catch(Exception e) {
 					id = Long.parseLong("0");
 				}
+				Log.e("BC", "1: " + row);
 				
 				String family = "";
 				try {
@@ -569,6 +630,7 @@ public class AdministrationFunctions extends Activity {
 					// family is a compulsory field
 					continue;
 				}
+				Log.e("BC", "2: " + row);
 				String given = "";
 				try {
 					given = imported[2]; 
@@ -577,13 +639,16 @@ public class AdministrationFunctions extends Activity {
 				}
 				//String author_id = imported[3];
 				
+				Log.e("BC", "3: " + row);
 				String title = "";
+				title = imported[4]; 
 				try {
 					title = imported[4]; 
 				} catch (Exception e) {
 					//title is a compulsory field
 					continue;
 				}
+				Log.e("BC", "4: " + row);
 				
 				String isbn = "";
 				try {
@@ -591,6 +656,7 @@ public class AdministrationFunctions extends Activity {
 				} catch (Exception e) {
 					isbn = "";
 				}
+				Log.e("BC", "5: " + row);
 				
 				String publisher = "";
 				try {
@@ -598,6 +664,7 @@ public class AdministrationFunctions extends Activity {
 				} catch (Exception e) {
 					publisher = "";
 				}
+				Log.e("BC", "B: " + row);
 				
 				String date_published = "";
 				try {
@@ -682,6 +749,7 @@ public class AdministrationFunctions extends Activity {
 				} catch (Exception e) {
 					location = "";
 				}
+				Log.e("BC", "C: " + row);
 				
 				String read_start = "";
 				try {
@@ -735,6 +803,7 @@ public class AdministrationFunctions extends Activity {
 					anthology_titles = ""; 
 				}
 				
+				Log.e("BC", "D: " + row);
 				String author = family + ", " + given;
 				try {
 					if (id == 0) {
@@ -742,6 +811,7 @@ public class AdministrationFunctions extends Activity {
 						Cursor book = mDbHelper.fetchBookByISBNOrCombo(isbn, family, given, title);
 						int rows = book.getCount();
 						if (rows != 0) {
+							book.moveToFirst();
 							// Its a new entry, but the ISBN exists
 							id = book.getLong(0);
 							book.moveToFirst();
@@ -752,7 +822,7 @@ public class AdministrationFunctions extends Activity {
 							importCreated++;
 						}
 					} else {
-						Cursor book = mDbHelper.fetchBook(id);
+						Cursor book = mDbHelper.fetchBookById(id);
 						int rows = book.getCount();
 						if (rows == 0) {
 							mDbHelper.createBook(id, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, audiobook, signed);
@@ -764,6 +834,7 @@ public class AdministrationFunctions extends Activity {
 						}
 					}
 				} catch (Exception e) {
+					Log.e("BC", "Import Book (Single) Error");
 					// do nothing
 				}
 				
@@ -780,6 +851,7 @@ public class AdministrationFunctions extends Activity {
 						}
 					}
 				}
+				Log.e("BC", num + " " + title);
 				sendMessage(num, title);
 			}
 			sendMessage(0, "Complete");
@@ -801,7 +873,7 @@ public class AdministrationFunctions extends Activity {
 		pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 		pd.setMessage("Importing...");
 		pd.setCancelable(false);
-		pd.setMax(export.size());
+		pd.setMax(export.size() - 1);
 		pd.show();
 		
 		ImportThread thread = new ImportThread(handler);

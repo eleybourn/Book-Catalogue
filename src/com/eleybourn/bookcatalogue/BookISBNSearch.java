@@ -37,7 +37,8 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -49,7 +50,9 @@ import android.widget.Toast;
 public class BookISBNSearch extends Activity {
 	private static final int CREATE_BOOK = 0;
 	
-	private EditText mIsbnText;
+	private TextView mIsbnText;
+	private TextView mIsbnStatus;
+	private Button mConfirmButton;
 	private CatalogueDBAdapter mDbHelper;
 
 	public String author;
@@ -69,15 +72,53 @@ public class BookISBNSearch extends Activity {
 		mDbHelper = new CatalogueDBAdapter(this);
 		mDbHelper.open();
 		
+		setContentView(R.layout.isbn_search);
+		mIsbnText = (TextView) findViewById(R.id.isbn);
+		mIsbnStatus = (TextView) findViewById(R.id.isbn_search_status);
+		mConfirmButton = (Button) findViewById(R.id.search);
+		
 		if (extras != null) {
 			//ISBN has been passed by another component
 			isbn = extras.getString("isbn");
+			mIsbnText.setText(isbn);
 			go(isbn);
 		} else {
-			setContentView(R.layout.isbn_search);
-			mIsbnText = (EditText) findViewById(R.id.isbn);
-			Button confirmButton = (Button) findViewById(R.id.search);
-			confirmButton.setOnClickListener(new View.OnClickListener() {
+			
+			// Set the number buttons
+			Button button1 = (Button) findViewById(R.id.isbn_1);
+			button1.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { mIsbnText.append("1"); } });
+			Button button2 = (Button) findViewById(R.id.isbn_2);
+			button2.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { mIsbnText.append("2"); } });
+			Button button3 = (Button) findViewById(R.id.isbn_3);
+			button3.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { mIsbnText.append("3"); } });
+			Button button4 = (Button) findViewById(R.id.isbn_4);
+			button4.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { mIsbnText.append("4"); } });
+			Button button5 = (Button) findViewById(R.id.isbn_5);
+			button5.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { mIsbnText.append("5"); } });
+			Button button6 = (Button) findViewById(R.id.isbn_6);
+			button6.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { mIsbnText.append("6"); } });
+			Button button7 = (Button) findViewById(R.id.isbn_7);
+			button7.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { mIsbnText.append("7"); } });
+			Button button8 = (Button) findViewById(R.id.isbn_8);
+			button8.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { mIsbnText.append("8"); } });
+			Button button9 = (Button) findViewById(R.id.isbn_9);
+			button9.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { mIsbnText.append("9"); } });
+			Button buttonX = (Button) findViewById(R.id.isbn_X);
+			buttonX.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { mIsbnText.append("X"); } });
+			Button button0 = (Button) findViewById(R.id.isbn_0);
+			button0.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { mIsbnText.append("0"); } });
+			ImageButton buttonDel = (ImageButton) findViewById(R.id.isbn_del);
+			buttonDel.setOnClickListener(new View.OnClickListener() { 
+				public void onClick(View view) { 
+					try {
+						mIsbnText.setText(mIsbnText.getText().toString().substring(0, (mIsbnText.getText().toString().length()-1))); 
+					} catch (StringIndexOutOfBoundsException e) {
+						//do nothing - empty string
+					}
+				} 
+			});
+			
+			mConfirmButton.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
 					String mIsbn = mIsbnText.getText().toString();
 					go(mIsbn);
@@ -132,6 +173,7 @@ public class BookISBNSearch extends Activity {
 	 */
 	protected void go(String isbn) {
 		// If the book already exists, do not continue
+		mConfirmButton.setEnabled(false);
 		try {
 			if (!isbn.equals("")) {
 				Cursor book = mDbHelper.fetchBookByISBN(isbn);
@@ -141,6 +183,7 @@ public class BookISBNSearch extends Activity {
 					finish();
 					return;
 				}
+				book.close(); //close the cursor
 			}
 		} catch (Exception e) {
 			//do nothing
@@ -157,7 +200,10 @@ public class BookISBNSearch extends Activity {
 		try {
 			String[] book;
 			String[] bookAmazon;
+			
+			mIsbnStatus.append(this.getResources().getString(R.string.searching_google_books) + "\n");
 			book = searchGoogle(isbn);
+			mIsbnStatus.append(this.getResources().getString(R.string.searching_amazon_books) + "\n");
 			bookAmazon = searchAmazon(isbn);
 			//Look for series in Title. e.g. Red Phoenix (Dark Heavens Trilogy)
 			book[8] = findSeries(book[1]);

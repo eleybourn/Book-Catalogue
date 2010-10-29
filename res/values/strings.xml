@@ -42,7 +42,7 @@
 <string name="book_exists">The book you are trying to add already exists. Skipping.</string>
 <string name="search_label">Search for Books</string>
 <string name="search_hint">Search Author or Title</string>
-<string name="book_not_found">The scanned book was not found. Please enter the details manually.</string>
+<string name="book_not_found">The scanned book was not found. You can sometimes find the correct barcode on the inside front cover. Otherwise please enter the details manually.</string>
 <string name="series_num">#</string>
 <string name="unable_to_connect_google">Unable to Connect to Google Books</string>
 <string name="export_data">Export Books</string>
@@ -201,4 +201,10 @@
 <string name="duplicate_title">Duplicate Book</string>
 <string name="duplicate_alert">The book you are trying to add already exists in the database, are you sure you want to add another copy</string>
 <string name="menu_add_thumb_gallery">Add Thumbnail from Gallery</string>
+<string name="backup_request">Would you like to backup your database to your sdcard</string>
+<string name="backup_title">Backup?</string>
+<string name="searching_google_books">Searching Google Books</string>
+<string name="searching_amazon_books">Searching Amazon</string>
+<string name="bookshelf_title">Select bookshelves for this book</string>
+<string name="bookshelves">Select Bookshelves</string>
 </resources>

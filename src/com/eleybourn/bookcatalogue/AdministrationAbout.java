@@ -21,6 +21,7 @@
 package com.eleybourn.bookcatalogue;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -99,12 +100,16 @@ public class AdministrationAbout extends Activity {
 		contact.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent msg = new Intent(Intent.ACTION_SEND);
-				msg.setType("text/plain");
-				msg.putExtra(Intent.EXTRA_EMAIL, new String[]{res.getString(R.string.contact)});
-				msg.putExtra(Intent.EXTRA_SUBJECT, "[Book Catalogue] ");
-				AdministrationAbout.this.startActivity(Intent.createChooser(msg, "Send email..."));
-				//startActivity(msg); 
+				try {
+					Intent msg = new Intent(Intent.ACTION_SEND);
+					msg.setType("text/plain");
+					msg.putExtra(Intent.EXTRA_EMAIL, new String[]{res.getString(R.string.contact)});
+					msg.putExtra(Intent.EXTRA_SUBJECT, "[Book Catalogue] ");
+					AdministrationAbout.this.startActivity(Intent.createChooser(msg, "Send email..."));
+					//startActivity(msg);
+				} catch (ActivityNotFoundException e) {
+					// link doesn't work. Don't worry about it
+				}
 				return;
 			}
 		});

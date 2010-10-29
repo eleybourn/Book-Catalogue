@@ -39,7 +39,9 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -72,6 +74,7 @@ public class BookCatalogue extends ExpandableListActivity {
 	private static final int ACTIVITY_ISBN=3;
 	private static final int ACTIVITY_SCAN=4;
 	private static final int ACTIVITY_ADMIN=5;
+	private static final int ACTIVITY_ADMIN_FINISH=6;
 	
 	private CatalogueDBAdapter mDbHelper;
 	private int mGroupIdColumnIndex; 
@@ -108,15 +111,20 @@ public class BookCatalogue extends ExpandableListActivity {
 	private static final String STATE_SORT = "state_sort"; 
 	private static final String STATE_BOOKSHELF = "state_bookshelf"; 
 	private static final String STATE_LASTBOOK = "state_lastbook"; 
+	private static final String STATE_OPENED = "state_opened";
 	
 	private static final int GONE = 8;
 	private static final int VISIBLE = 0;
+	
+	//TODO: Change this to 10
+	private static final int BACKUP_PROMPT_WAIT = 5;
 	/** 
 	 * Called when the activity is first created. 
 	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		bookshelf = getString(R.string.all_books);
+		Log.e("BC", "VERSION " + CatalogueDBAdapter.DATABASE_VERSION + " ");
 		try {
 			super.onCreate(savedInstanceState);
 			// Extract the sort type from the bundle. getInt will return 0 if there is no attribute 
@@ -130,7 +138,7 @@ public class BookCatalogue extends ExpandableListActivity {
 					addToCurrentGroup(pos, true);
 				}
 			} catch (Exception e) {
-				//do nothing
+				Log.e("Book Catalogue", "Unknown Exception - BC Prefs - " + e.getMessage() );
 			}
 			// This sets the search capability to local (application) search
 			setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
@@ -144,10 +152,10 @@ public class BookCatalogue extends ExpandableListActivity {
 			}
 			registerForContextMenu(getExpandableListView());
 		} catch (Exception e) {
-			//Log.e("Book Catalogue", "Unknown Exception - BC onCreate - " + e.getMessage() );
+			Log.e("Book Catalogue", "Unknown Exception - BC onCreate - " + e.getMessage() );
 		}
 	}
-
+	
 	/**
 	 * This will display a popup with a provided message to the user. This will be
 	 * mostly used for upgrade notifications
@@ -200,6 +208,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			} 
 			while (bookshelves.moveToNext()); 
 		} 
+		bookshelves.close(); // close the cursor
 		// Set the current bookshelf. We use this to force the correct bookshelf after
 		// the state has been restored. 
 		mBookshelfText.setSelection(bspos);
@@ -270,7 +279,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		}
 		/* Add number to bookshelf */
 		TextView mBookshelfNumView = (TextView) findViewById(R.id.bookshelf_num);
-		int numBooks = mDbHelper.getBooksCount(bookshelf);
+		int numBooks = mDbHelper.countBooks(bookshelf);
 		mBookshelfNumView.setText("(" + numBooks + ")");
 	}
 	
@@ -429,7 +438,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 			// Return the search results instead of all books (for the bookshelf)
 			String query = intent.getStringExtra(SearchManager.QUERY);
-			BooksCursor = mDbHelper.fetchAllSeriesBySearch(query, bookshelf);
+			BooksCursor = mDbHelper.searchSeries(query, bookshelf);
 			numAuthors = BooksCursor.getCount();
 			Toast.makeText(this, numAuthors + " " + this.getResources().getString(R.string.results_found), Toast.LENGTH_LONG).show();
 			this.setTitle(R.string.search_title);
@@ -444,7 +453,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		
 		// Create an array to specify the fields we want to display in the list
 		String[] from = new String[]{CatalogueDBAdapter.KEY_ROWID};
-		String[] exp_from = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_SERIES_NUM_FORMATTED, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_AUTHOR};
+		String[] exp_from = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_SERIES_NUM, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_AUTHOR_FORMATTED};
 		
 		// and an array of the fields we want to bind those fields to (in this case just text1)
 		int[] to = new int[]{R.id.row_family};
@@ -571,7 +580,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		startManagingCursor(BooksCursor);
 		
 		// Create an array to specify the fields we want to display in the list
-		String[] from = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_AUTHOR, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_PUBLISHER, CatalogueDBAdapter.KEY_SERIES_FORMATTED};
+		String[] from = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_PUBLISHER, CatalogueDBAdapter.KEY_SERIES_FORMATTED};
 		String[] exp_from = new String[]{};
 		
 		// and an array of the fields we want to bind those fields to (in this case just text1)
@@ -1110,7 +1119,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			
 			view.setSelectedGroup(currentGroup.get(currentGroup.size()-1));
 		} catch (Exception e) {
-			//do nothing
+			Log.e("Book Catalogue", "Unknown Exception - BC gotoCurrentGroup - " + e.getMessage() );
 		}
 		return;
 	}
@@ -1310,8 +1319,18 @@ public class BookCatalogue extends ExpandableListActivity {
 	 * Load the Administration Activity
 	 */
 	private void adminPage() {
+		adminPage("", ACTIVITY_ADMIN);
+	}
+	
+	/**
+	 * Load the Administration Activity
+	 */
+	private void adminPage(String auto, int activityAdmin) {
 		Intent i = new Intent(this, Administration.class);
-		startActivityForResult(i, ACTIVITY_ADMIN);
+		if (!auto.equals("")) {
+			i.putExtra(AdministrationFunctions.DOAUTO, auto);
+		}
+		startActivityForResult(i, activityAdmin);
 	}
 	
 	/**
@@ -1433,6 +1452,9 @@ public class BookCatalogue extends ExpandableListActivity {
 			// We call bookshelf not fillData in case the bookshelves have been updated.
 			bookshelf();
 			break;
+		case ACTIVITY_ADMIN_FINISH:
+			finish();
+			break;
 		}
 	}
 	
@@ -1473,8 +1495,53 @@ public class BookCatalogue extends ExpandableListActivity {
 	
 	@Override
 	protected void onDestroy() {
+		try {
+			mDbHelper.close();
+		} catch (RuntimeException e) {
+			// could not be closed (app crash maybe). Don't worry about it
+		}
 		super.onDestroy();
-		mDbHelper.close();
 	} 
 	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			int opened = mPrefs.getInt(STATE_OPENED, BACKUP_PROMPT_WAIT);
+			SharedPreferences.Editor ed = mPrefs.edit();
+			if (opened == 0){
+				ed.putInt(STATE_OPENED, BACKUP_PROMPT_WAIT);
+				ed.commit();
+				backupPopup();
+				return true;
+			} else {
+				ed.putInt(STATE_OPENED, opened - 1);
+				ed.commit();
+			}
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+	
+	
+	/**
+	 * This will display a popup asking if the user would like to backup.
+	 */
+	public void backupPopup() {
+		AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(R.string.backup_request).create();
+		alertDialog.setTitle(R.string.backup_title);
+		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
+		alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				adminPage("export", ACTIVITY_ADMIN_FINISH);
+				return;
+			}
+		}); 
+		alertDialog.setButton2("Cancel", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				finish();
+				return;
+			}
+		}); 
+		alertDialog.show();
+		return;
+	}
 }

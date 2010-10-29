@@ -29,21 +29,26 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -51,7 +56,7 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
+import android.widget.LinearLayout;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,8 +68,8 @@ public class BookEditFields extends Activity {
 	private EditText mIsbnText;
 	private AutoCompleteTextView mPublisherText;
 	private DatePicker mDate_publishedText;
-	private Spinner mBookshelfText;
-	private ArrayAdapter<String> spinnerAdapter;
+	private Button mBookshelfButton;
+	private TextView mBookshelfText;
 	private AutoCompleteTextView mSeriesText;
 	private EditText mSeriesNumText;
 	private EditText mListPriceText;
@@ -98,6 +103,8 @@ public class BookEditFields extends Activity {
 	private static final int ADD_GALLERY = 4;
 	private static final int GONE = 8;
 	
+	public static final String BOOKSHELF_SEPERATOR = ", ";
+	
 	protected void getRowId() {
 		/* Get any information from the extras bundle */
 		Bundle extras = getIntent().getExtras();
@@ -106,12 +113,13 @@ public class BookEditFields extends Activity {
 	
 	protected ArrayList<String> getAuthors() {
 		ArrayList<String> author_list = new ArrayList<String>();
-		Cursor author_cur = mDbHelper.fetchAllAuthors("All Books");
+		Cursor author_cur = mDbHelper.fetchAllAuthorsIgnoreBooks();
 		startManagingCursor(author_cur);
 		while (author_cur.moveToNext()) {
 			String name = author_cur.getString(author_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED));
 			author_list.add(name);
 		}
+		author_cur.close();
 		return author_list;
 	}
 
@@ -123,6 +131,7 @@ public class BookEditFields extends Activity {
 			String series = series_cur.getString(series_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES));
 			series_list.add(series);
 		}
+		series_cur.close();
 		return series_list;
 	}
 
@@ -134,6 +143,7 @@ public class BookEditFields extends Activity {
 			String publisher = publisher_cur.getString(publisher_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PUBLISHER));
 			publisher_list.add(publisher);
 		}
+		publisher_cur.close();
 		return publisher_list;
 	}
 	
@@ -146,6 +156,11 @@ public class BookEditFields extends Activity {
 		String visibility_prefix = FieldVisibility.prefix;
 		boolean field_visibility = true;
 		try {
+			mRowId = savedInstanceState != null ? savedInstanceState.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
+			if (mRowId == null) {
+				getRowId();
+			}
+			
 			super.onCreate(savedInstanceState);
 			mDbHelper = new CatalogueDBAdapter(this);
 			mDbHelper.open();
@@ -235,27 +250,124 @@ public class BookEditFields extends Activity {
 				mImageView.setVisibility(GONE);
 			}
 			
-			/* Setup the Bookshelf Spinner */
-			mBookshelfText = (Spinner) findViewById(R.id.bookshelf);
-			spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
-			spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-			mBookshelfText.setAdapter(spinnerAdapter);
-			Cursor bookshelves = mDbHelper.fetchAllBookshelves();
-			if (bookshelves.moveToFirst()) { 
-				do { 
-					spinnerAdapter.add(bookshelves.getString(1)); 
-				} 
-				while (bookshelves.moveToNext()); 
-			} 
+			/* Setup the Bookshelf Multiselect*/
+			mBookshelfButton = (Button) findViewById(R.id.bookshelf);
+			mBookshelfText = (TextView) findViewById(R.id.bookshelf_text);
+			
+			Log.e("BC", "FOO");
+			mBookshelfButton.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View v) {
+					Cursor bookshelves_for_book = null;
+					if (mRowId == null) {
+						bookshelves_for_book = mDbHelper.fetchAllBookshelves();
+					} else {
+						bookshelves_for_book = mDbHelper.fetchAllBookshelves(mRowId);
+					}
+					final Dialog dialog = new Dialog(BookEditFields.this);
+					dialog.setContentView(R.layout.bookshelf_dialog);
+					dialog.setTitle(R.string.bookshelf_title);
+					Button button = (Button) dialog.findViewById(R.id.bookshelf_dialog_button);
+					button.setOnClickListener(new View.OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							dialog.dismiss();
+						}
+					});
+					
+					LinearLayout root = (LinearLayout) dialog.findViewById(R.id.bookshelf_dialog_root);
+					
+					if (bookshelves_for_book.moveToFirst()) { 
+						do { 
+							final CheckBox cb = new CheckBox(BookEditFields.this);
+							boolean checked = false;
+							int db_book = bookshelves_for_book.getInt(bookshelves_for_book.getColumnIndex(CatalogueDBAdapter.KEY_BOOK));
+							String db_bookshelf = bookshelves_for_book.getString(bookshelves_for_book.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF));
+							Log.e("BC", "Bookshelf " + db_bookshelf + " " + db_book);
+							if (db_book == 1 || mBookshelfText.getText().toString().indexOf(db_bookshelf + BOOKSHELF_SEPERATOR) > -1) {
+								checked = true;
+							}
+							cb.setChecked(checked);
+							cb.setHintTextColor(Color.WHITE);
+							cb.setHint(db_bookshelf);
+							cb.setOnClickListener(new OnClickListener() {
+								@Override
+								public void onClick(View v) {
+									String name = cb.getHint() + BOOKSHELF_SEPERATOR;
+									if (cb.isChecked()) {
+										mBookshelfText.setText(mBookshelfText.getText().toString() + name);
+									} else {
+										String text = mBookshelfText.getText().toString();
+										int index = text.indexOf(name);
+										if (index > -1) {
+											text = text.substring(0, index) + text.substring(index + name.length());
+											if (text == null) {
+												text = "";
+											}
+										}
+										mBookshelfText.setText(text);
+									}
+									return;
+								}
+							});
+							root.addView(cb, root.getChildCount()-1);
+						} 
+						while (bookshelves_for_book.moveToNext()); 
+					} 
+					bookshelves_for_book.close();
+					
+					dialog.show();
+					
+					//while (bookshelves_for_book2.moveToNext()) {
+						//new ArrayAdapter(this, android.R.layout.simple_list_item_1, new String[] { "Apple", "Peach","Banane" });
+
+						//root.addView(child);
+					//}
+					
+					/*
+					AlertDialog.Builder builder = new AlertDialog.Builder(BookEditFields.this);
+					builder.setTitle(R.string.bookshelf_label);
+					builder.setMultiChoiceItems(bookshelves_for_book2, CatalogueDBAdapter.KEY_BOOK, CatalogueDBAdapter.KEY_BOOKSHELF, new OnMultiChoiceClickListener() {
+						public void onClick(DialogInterface dialog, int item, boolean isChecked) {
+							((AlertDialog) dialog).getListView().setItemChecked(item, isChecked);
+							Log.e("BC", "xxx" + isChecked + " " + item);
+							bookshelves_for_book2.moveToPosition(item);
+							String bookshelf = bookshelves_for_book2.getString(bookshelves_for_book2.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF));
+							//String bookshelf = "foo";
+							Toast.makeText(BookEditFields.this, item + " " + bookshelf, Toast.LENGTH_SHORT).show();
+							mBookshelfText.setText(mBookshelfText.getText().toString() + bookshelf + "\n");
+						}
+					});
+					AlertDialog alertDialog = builder.create();
+					alertDialog.setButton(BookEditFields.this.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							return;
+						}
+					}); 
+					alertDialog.show();
+					Log.e("BC", "bar");
+					*/
+				}
+			});
+			
+			
+			
+			
+			//spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
+			//spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			//mBookshelfText.setAdapter(spinnerAdapter);
+			
+			//if (bookshelves.moveToFirst()) { 
+			//	do { 
+			//		spinnerAdapter.add(bookshelves.getString(1)); 
+			//	} 
+			//	while (bookshelves.moveToNext()); 
+			//} 
+			//bookshelves.close(); // close the cursor
 			field_visibility = mPrefs.getBoolean(visibility_prefix + "bookshelf", true);
 			if (field_visibility == false) {
 				mBookshelfText.setVisibility(GONE);
 			}
 			
-			mRowId = savedInstanceState != null ? savedInstanceState.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
-			if (mRowId == null) {
-				getRowId();
-			}
 			populateFields();
 			
 			mImageView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
@@ -279,8 +391,8 @@ public class BookEditFields extends Activity {
 					finish();
 				}
 			});
-		} catch (Exception e) {
-			//Log.e("Book Catalogue", "Unknown error " + e.toString());
+		} catch (SQLException e) {
+			Log.e("Book Catalogue", "Unknown error " + e.toString());
 		}
 	}
 	
@@ -344,7 +456,7 @@ public class BookEditFields extends Activity {
 			try {
 				f = new FileOutputStream(filename);
 			} catch (FileNotFoundException e) {
-				//Log.e("Book Catalogue", "Thumbnail cannot be written");
+				Log.e("Book Catalogue", "Thumbnail cannot be written");
 				return;
 			}
 			x.compress(Bitmap.CompressFormat.PNG, 100, f);
@@ -365,12 +477,15 @@ public class BookEditFields extends Activity {
 		
 		if (mRowId != null && mRowId > 0) {
 			// From the database (edit)
-			Cursor book = mDbHelper.fetchBook(mRowId);
+			Cursor book = mDbHelper.fetchBookById(mRowId);
 			startManagingCursor(book);
+			if (book != null) {
+				book.moveToFirst();
+			}
 			String title = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE)); 
 			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + title);
 			
-			mAuthorText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR)));
+			mAuthorText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED)));
 			mTitleText.setText(title);
 			mIsbnText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ISBN)));
 			mPublisherText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PUBLISHER)));
@@ -383,8 +498,16 @@ public class BookEditFields extends Activity {
 			} catch (Exception e) {
 				// use the default date
 			}
-			String bs = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_BOOKSHELF));
-			mBookshelfText.setSelection(spinnerAdapter.getPosition(bs));
+			
+			//Display the selected bookshelves
+			Cursor bookshelves = mDbHelper.fetchAllBookshelvesByBook(mRowId);
+			String bookshelves_text = "";
+			while (bookshelves.moveToNext()) {
+				bookshelves_text += bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)) + BOOKSHELF_SEPERATOR;
+			}
+			mBookshelfText.setText(bookshelves_text);
+			bookshelves.close();
+			
 			mSeriesText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES)));
 			mSeriesNumText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES_NUM)));
 			mListPriceText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LIST_PRICE)));
@@ -449,6 +572,7 @@ public class BookEditFields extends Activity {
 			read_start = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_START));
 			read_end = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_END));
 			signed = (book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SIGNED))==0 ? false:true);
+			book.close();
 		} else if (extras != null) {
 			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + this.getResources().getString(R.string.menu_insert));
 			// From the ISBN Search (add)
@@ -470,13 +594,13 @@ public class BookEditFields extends Activity {
 					//do nothing
 				}
 				
-				// Bookshelves can't be set from the search results (very user specific)
-				// so use the currently selected bookshelf
-				try {
-					mBookshelfText.setSelection(spinnerAdapter.getPosition(BookCatalogue.bookshelf));
-				} catch (Exception e) {
-					//do nothing. The default will not be set
-					mBookshelfText.setSelection(spinnerAdapter.getPosition(book[6]));
+				//Display the selected bookshelves
+				if (BookCatalogue.bookshelf.equals("All Books")) {
+					Cursor bookshelves = mDbHelper.fetchAllBookshelves();
+					bookshelves.moveToFirst();
+					mBookshelfText.setText(bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)) + BOOKSHELF_SEPERATOR);
+				} else {
+					mBookshelfText.setText(BookCatalogue.bookshelf + BOOKSHELF_SEPERATOR);
 				}
 				mSeriesText.setText(book[8]);
 				mSeriesNumText.setText(book[10]);
@@ -536,11 +660,12 @@ public class BookEditFields extends Activity {
 		} else {
 			// Manual Add
 			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + this.getResources().getString(R.string.menu_insert));
-			try {
-				mBookshelfText.setSelection(spinnerAdapter.getPosition(BookCatalogue.bookshelf));
-			} catch (Exception e) {
-				//do nothing. The default will not be set
-			}
+			
+			Cursor bookshelves = mDbHelper.fetchAllBookshelves();
+			bookshelves.moveToFirst();
+			mBookshelfText.setText(bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)) + BOOKSHELF_SEPERATOR);
+			bookshelves.close();
+			
 			mConfirmButton.setText(R.string.confirm_add);
 			mConfirmButton.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
@@ -622,7 +747,7 @@ public class BookEditFields extends Activity {
 		int mm =  mDate_publishedText.getMonth();
 		int dd =  mDate_publishedText.getDayOfMonth();
 		String date_published = yyyy + "-" + mm + "-" + dd;
-		String bookshelf = mBookshelfText.getAdapter().getItem(mBookshelfText.getSelectedItemPosition()).toString(); 
+		String bookshelf = mBookshelfText.getText().toString(); 
 		String series = mSeriesText.getText().toString();
 		String series_num = mSeriesNumText.getText().toString();
 		String list_price = mListPriceText.getText().toString();
@@ -650,6 +775,7 @@ public class BookEditFields extends Activity {
 					Toast.makeText(this, R.string.book_exists, Toast.LENGTH_LONG).show();
 					return;
 				}
+				book.close(); // close the cursor
 			}
 			
 			long id = mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, audiobook, signed);
@@ -685,7 +811,7 @@ public class BookEditFields extends Activity {
 				try {
 					f = new FileOutputStream(filename);
 				} catch (FileNotFoundException e) {
-					//Log.e("Book Catalogue", "Thumbnail cannot be written");
+					Log.e("Book Catalogue", "Thumbnail cannot be written");
 					return;
 				}
 				

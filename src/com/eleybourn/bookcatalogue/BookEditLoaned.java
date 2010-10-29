@@ -111,7 +111,10 @@ public class BookEditLoaned extends Activity {
 		}
 		
 		try {
-			Cursor book = mDbHelper.fetchBook(mRowId);
+			Cursor book = mDbHelper.fetchBookById(mRowId);
+			if (book != null) {
+				book.moveToFirst();
+			}
 			startManagingCursor(book);
 			String title = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE)); 
 			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + title);

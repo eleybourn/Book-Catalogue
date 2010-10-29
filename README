@@ -41,6 +41,14 @@ Features include;
   case. e.g. "The murder on the links" becomes "The Murder on the Links"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+New in v3.0
+* Added app2sd support (2.2 users only)
+* You can now assign books to multiple bookshelves (requested by many people)
+* A .nomedia file will be automatically created which will stop the thumbnails showing up in the gallery (thanks Brandon)
+* The "Add Book by ISBN" page has been redesigned to be simpler and more stable (thanks Vinikia)
+* The export file is now formatted correctly (.csv) (thanks glohr)
+* You will be prompted to backup your books on a regular basis 
+
 New in v2.9
 Tip: If you long click on a book title on the main list you can delete it
 Tip: If you want to see all books, change the bookshelf to "All Books"

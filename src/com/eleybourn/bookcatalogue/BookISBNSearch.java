@@ -37,6 +37,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,7 +51,7 @@ import android.widget.Toast;
 public class BookISBNSearch extends Activity {
 	private static final int CREATE_BOOK = 0;
 	
-	private TextView mIsbnText;
+	private EditText mIsbnText;
 	private TextView mIsbnStatus;
 	private Button mConfirmButton;
 	private CatalogueDBAdapter mDbHelper;
@@ -73,7 +74,7 @@ public class BookISBNSearch extends Activity {
 		mDbHelper.open();
 		
 		setContentView(R.layout.isbn_search);
-		mIsbnText = (TextView) findViewById(R.id.isbn);
+		mIsbnText = (EditText) findViewById(R.id.isbn);
 		mIsbnStatus = (TextView) findViewById(R.id.isbn_search_status);
 		mConfirmButton = (Button) findViewById(R.id.search);
 		

@@ -39,7 +39,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -124,7 +123,6 @@ public class BookCatalogue extends ExpandableListActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		bookshelf = getString(R.string.all_books);
-		Log.e("BC", "VERSION " + CatalogueDBAdapter.DATABASE_VERSION + " ");
 		try {
 			super.onCreate(savedInstanceState);
 			// Extract the sort type from the bundle. getInt will return 0 if there is no attribute 
@@ -138,7 +136,7 @@ public class BookCatalogue extends ExpandableListActivity {
 					addToCurrentGroup(pos, true);
 				}
 			} catch (Exception e) {
-				Log.e("Book Catalogue", "Unknown Exception - BC Prefs - " + e.getMessage() );
+				//Log.e("Book Catalogue", "Unknown Exception - BC Prefs - " + e.getMessage() );
 			}
 			// This sets the search capability to local (application) search
 			setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
@@ -152,7 +150,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			}
 			registerForContextMenu(getExpandableListView());
 		} catch (Exception e) {
-			Log.e("Book Catalogue", "Unknown Exception - BC onCreate - " + e.getMessage() );
+			//Log.e("Book Catalogue", "Unknown Exception - BC onCreate - " + e.getMessage() );
 		}
 	}
 	
@@ -444,7 +442,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			this.setTitle(R.string.search_title);
 		} else {
 			// Return all books for the given bookshelf
-			BooksCursor = mDbHelper.fetchAllSeries(bookshelf);
+			BooksCursor = mDbHelper.fetchAllSeries(bookshelf, true);
 			numAuthors = BooksCursor.getCount();
 			this.setTitle(R.string.app_name);
 		}
@@ -453,11 +451,11 @@ public class BookCatalogue extends ExpandableListActivity {
 		
 		// Create an array to specify the fields we want to display in the list
 		String[] from = new String[]{CatalogueDBAdapter.KEY_ROWID};
-		String[] exp_from = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_SERIES_NUM, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_AUTHOR_FORMATTED};
+		String[] exp_from = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_SERIES_NUM, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, CatalogueDBAdapter.KEY_READ};
 		
 		// and an array of the fields we want to bind those fields to (in this case just text1)
 		int[] to = new int[]{R.id.row_family};
-		int[] exp_to = new int[]{R.id.row_img, R.id.row_series_num, R.id.row_title, R.id.row_author};
+		int[] exp_to = new int[]{R.id.row_img, R.id.row_series_num, R.id.row_title, R.id.row_author, R.id.row_read};
 		
 		// Instantiate the List Adapter
 		ExpandableListAdapter books = new SeriesBookListAdapter(BooksCursor, this, layout, layout_child, from, to, exp_from, exp_to);
@@ -540,6 +538,21 @@ public class BookCatalogue extends ExpandableListActivity {
 						newv.setImageBitmap(thumbnail);
 					} else {
 						newv.setImageResource(android.R.drawable.ic_menu_help);
+					}
+					newv.setVisibility(VISIBLE);
+				}
+				text = "";
+				return;
+			} else if (v.getId() == R.id.row_read) {
+				boolean field_visibility = mPrefs.getBoolean(FieldVisibility.prefix + "read", true);
+				ImageView newv = (ImageView) ((ViewGroup) v.getParent()).findViewById(R.id.row_read_image_view);
+				if (field_visibility == false) {
+					newv.setVisibility(GONE);
+				} else {
+					if (text.equals("1")) {
+						newv.setImageResource(R.drawable.btn_check_buttonless_on);
+					} else {
+						newv.setImageResource(R.drawable.btn_check_buttonless_off);
 					}
 					newv.setVisibility(VISIBLE);
 				}
@@ -1119,7 +1132,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			
 			view.setSelectedGroup(currentGroup.get(currentGroup.size()-1));
 		} catch (Exception e) {
-			Log.e("Book Catalogue", "Unknown Exception - BC gotoCurrentGroup - " + e.getMessage() );
+			//Log.e("Book Catalogue", "Unknown Exception - BC gotoCurrentGroup - " + e.getMessage() );
 		}
 		return;
 	}

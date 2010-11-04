@@ -41,6 +41,13 @@ Features include;
   case. e.g. "The murder on the links" becomes "The Murder on the Links"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+New in v3.0.1
+* Export bug fixed
+* Further enhancements to the new ISBN screen
+* Filtering by bookshelf on title view is now fixed
+* There is now an <Empty Series> when sorting by Series (thanks Vinikia)
+* App will now search all fields (Thanks Michael)
+
 New in v3.0
 * Added app2sd support (2.2 users only)
 * You can now assign books to multiple bookshelves (requested by many people)

@@ -43,11 +43,10 @@ import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -254,7 +253,6 @@ public class BookEditFields extends Activity {
 			mBookshelfButton = (Button) findViewById(R.id.bookshelf);
 			mBookshelfText = (TextView) findViewById(R.id.bookshelf_text);
 			
-			Log.e("BC", "FOO");
 			mBookshelfButton.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v) {
 					Cursor bookshelves_for_book = null;
@@ -282,7 +280,6 @@ public class BookEditFields extends Activity {
 							boolean checked = false;
 							int db_book = bookshelves_for_book.getInt(bookshelves_for_book.getColumnIndex(CatalogueDBAdapter.KEY_BOOK));
 							String db_bookshelf = bookshelves_for_book.getString(bookshelves_for_book.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF));
-							Log.e("BC", "Bookshelf " + db_bookshelf + " " + db_book);
 							if (db_book == 1 || mBookshelfText.getText().toString().indexOf(db_bookshelf + BOOKSHELF_SEPERATOR) > -1) {
 								checked = true;
 							}
@@ -392,7 +389,7 @@ public class BookEditFields extends Activity {
 				}
 			});
 		} catch (SQLException e) {
-			Log.e("Book Catalogue", "Unknown error " + e.toString());
+			//Log.e("Book Catalogue", "Unknown error " + e.toString());
 		}
 	}
 	
@@ -456,7 +453,7 @@ public class BookEditFields extends Activity {
 			try {
 				f = new FileOutputStream(filename);
 			} catch (FileNotFoundException e) {
-				Log.e("Book Catalogue", "Thumbnail cannot be written");
+				//Log.e("Book Catalogue", "Thumbnail cannot be written");
 				return;
 			}
 			x.compress(Bitmap.CompressFormat.PNG, 100, f);
@@ -811,7 +808,7 @@ public class BookEditFields extends Activity {
 				try {
 					f = new FileOutputStream(filename);
 				} catch (FileNotFoundException e) {
-					Log.e("Book Catalogue", "Thumbnail cannot be written");
+					//Log.e("Book Catalogue", "Thumbnail cannot be written");
 					return;
 				}
 				

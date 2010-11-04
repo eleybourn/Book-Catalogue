@@ -31,9 +31,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
-import android.app.backup.BackupAgent;
-import android.app.backup.BackupDataInput;
-import android.app.backup.BackupDataOutput;
 import android.database.Cursor;
 import android.os.ParcelFileDescriptor;
 
@@ -41,21 +38,22 @@ import android.os.ParcelFileDescriptor;
  * A book catalogue application that integrates with Google Books.
  */
 /* THIS DOES NOT WORK YET */
-public class BookBackupAgent extends BackupAgent {
+public class BookBackupAgent { //TODO extends BackupAgent 
 	static final int AGENT_VERSION = 1;
 	static final String APP_DATA_KEY = "alldata";
 	public int mCount = 0;
 	public CatalogueDBAdapter mDbHelper;
 	
 	/** For convenience, we set up the File object for the app's data on creation */
-	@Override
+	//TODO @Override
 	public void onCreate() {
-		mDbHelper = new CatalogueDBAdapter(this);
+		mDbHelper = null; //TODO new CatalogueDBAdapter(this);
 	}
 	
 	/* (non-Javadoc)
 	 * @see android.app.backup.BackupAgent#onBackup(android.os.ParcelFileDescriptor, android.app.backup.BackupDataOutput, android.os.ParcelFileDescriptor)
 	 */
+	/*
 	@Override
 	public void onBackup(ParcelFileDescriptor oldState, BackupDataOutput data, ParcelFileDescriptor newState) throws IOException {
 		try {
@@ -191,7 +189,7 @@ public class BookBackupAgent extends BackupAgent {
 				while (books.moveToNext()); 
 			} 
 			
-			/* write to the SDCard */
+			// write to the SDCard 
 			try {
 				BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(AdministrationFunctions.filePath), AdministrationFunctions.UTF8), AdministrationFunctions.BUFFER_SIZE);
 				out.write(export);
@@ -220,11 +218,13 @@ public class BookBackupAgent extends BackupAgent {
 			//I can't test this, so I don't know if it will work
 		}
 	}
+	*/
 	
 	/* (non-Javadoc)
 	 * @see android.app.backup.BackupAgent#onRestore(android.app.backup.BackupDataInput, int, android.os.ParcelFileDescriptor)
 	 */
-	@Override
+	//TODO @Override
+	/* TODO
 	public void onRestore(BackupDataInput data, int appVersionCode, ParcelFileDescriptor newState) throws IOException {
 		try {
 			data.readNextHeader();
@@ -248,7 +248,7 @@ public class BookBackupAgent extends BackupAgent {
 			}
 			
 			//TODO: As before
-			/* Iterate through each imported row */
+			// Iterate through each imported row 
 			int row = 1;
 			while (row < export.size()) {
 				String[] imported = export.get(row).split("\t");
@@ -266,7 +266,7 @@ public class BookBackupAgent extends BackupAgent {
 				// This import line is too short
 				row++;
 				
-				/* Setup aliases for each cell*/
+				// Setup aliases for each cell
 				Long id = null;
 				try {
 					id = Long.parseLong(imported[0]);
@@ -499,5 +499,6 @@ public class BookBackupAgent extends BackupAgent {
 			// I can't test this so I don't know if it will work
 		}
 	}
+	*/
 	
 }

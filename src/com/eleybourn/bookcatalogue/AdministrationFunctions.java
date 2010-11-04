@@ -44,7 +44,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
@@ -106,7 +105,6 @@ public class AdministrationFunctions extends Activity {
 			mDbHelper.open();
 			setContentView(R.layout.administration_functions);
 			Bundle extras = getIntent().getExtras();
-			Log.e("BC", "Admin");
 			try {
 				if (extras.getString(DOAUTO).equals("export")) {
 					finish_after = true;
@@ -118,7 +116,6 @@ public class AdministrationFunctions extends Activity {
 			} catch (NullPointerException e) {
 				//do nothing
 			}
-			Log.e("BC", "Setup");
 			setupAdmin();
 		} catch (Exception e) {
 			//Log.e("Book Catalogue", "Unknown Exception - BC onCreate - " + e.getMessage() );
@@ -135,13 +132,10 @@ public class AdministrationFunctions extends Activity {
 	 */
 	public void setupAdmin() {
 		/* Bookshelf Link */
-		Log.e("BC", "Setup");
 		TextView bookshelf = (TextView) findViewById(R.id.bookshelf_label);
-		Log.e("BC", bookshelf.toString());
 		bookshelf.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.e("BC", "Click");
 				manageBookselves();
 				return;
 			}
@@ -378,7 +372,7 @@ public class AdministrationFunctions extends Activity {
 				'"' + CatalogueDBAdapter.KEY_PUBLISHER + "\"," + 		//6
 				'"' + CatalogueDBAdapter.KEY_DATE_PUBLISHED + "\"," + 	//7
 				'"' + CatalogueDBAdapter.KEY_RATING + "\"," + 			//8
-				'"' + "bookshelf_id,\"" + 								//9
+				'"' + "bookshelf_id\"," + 								//9
 				'"' + CatalogueDBAdapter.KEY_BOOKSHELF + "\"," +		//10
 				'"' + CatalogueDBAdapter.KEY_READ + "\"," +				//11
 				'"' + CatalogueDBAdapter.KEY_SERIES + "\"," + 			//12
@@ -608,11 +602,9 @@ public class AdministrationFunctions extends Activity {
 			int num = 0;
 			/* Iterate through each imported row */
 			while (row < export.size()) {
-				Log.e("BC", "Row: " + row);
 				num++;
 				String[] imported = returnRow(export.get(row));
 				row++;
-				Log.e("BC", "A: " + row);
 				
 				/* Setup aliases for each cell*/
 				Long id = null;
@@ -621,7 +613,6 @@ public class AdministrationFunctions extends Activity {
 				} catch(Exception e) {
 					id = Long.parseLong("0");
 				}
-				Log.e("BC", "1: " + row);
 				
 				String family = "";
 				try {
@@ -630,7 +621,6 @@ public class AdministrationFunctions extends Activity {
 					// family is a compulsory field
 					continue;
 				}
-				Log.e("BC", "2: " + row);
 				String given = "";
 				try {
 					given = imported[2]; 
@@ -639,7 +629,6 @@ public class AdministrationFunctions extends Activity {
 				}
 				//String author_id = imported[3];
 				
-				Log.e("BC", "3: " + row);
 				String title = "";
 				title = imported[4]; 
 				try {
@@ -648,7 +637,6 @@ public class AdministrationFunctions extends Activity {
 					//title is a compulsory field
 					continue;
 				}
-				Log.e("BC", "4: " + row);
 				
 				String isbn = "";
 				try {
@@ -656,7 +644,6 @@ public class AdministrationFunctions extends Activity {
 				} catch (Exception e) {
 					isbn = "";
 				}
-				Log.e("BC", "5: " + row);
 				
 				String publisher = "";
 				try {
@@ -664,7 +651,6 @@ public class AdministrationFunctions extends Activity {
 				} catch (Exception e) {
 					publisher = "";
 				}
-				Log.e("BC", "B: " + row);
 				
 				String date_published = "";
 				try {
@@ -749,7 +735,6 @@ public class AdministrationFunctions extends Activity {
 				} catch (Exception e) {
 					location = "";
 				}
-				Log.e("BC", "C: " + row);
 				
 				String read_start = "";
 				try {
@@ -803,7 +788,6 @@ public class AdministrationFunctions extends Activity {
 					anthology_titles = ""; 
 				}
 				
-				Log.e("BC", "D: " + row);
 				String author = family + ", " + given;
 				try {
 					if (id == 0) {
@@ -834,7 +818,7 @@ public class AdministrationFunctions extends Activity {
 						}
 					}
 				} catch (Exception e) {
-					Log.e("BC", "Import Book (Single) Error");
+					//Log.e("BC", "Import Book (Single) Error");
 					// do nothing
 				}
 				
@@ -851,7 +835,6 @@ public class AdministrationFunctions extends Activity {
 						}
 					}
 				}
-				Log.e("BC", num + " " + title);
 				sendMessage(num, title);
 			}
 			sendMessage(0, "Complete");

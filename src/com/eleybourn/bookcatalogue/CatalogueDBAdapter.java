@@ -88,6 +88,8 @@ public class CatalogueDBAdapter {
 	public static final int ANTHOLOGY_SAME_AUTHOR = 1;
 	public static final int ANTHOLOGY_MULTIPLE_AUTHORS = 2;
 	
+	public static final String META_EMPTY_SERIES = "<Empty Series>";
+	
 	/* Database creation sql statement */
 	private static final String DATABASE_CREATE_AUTHORS =
 		"create table " + DB_TB_AUTHORS + 
@@ -193,7 +195,7 @@ public class CatalogueDBAdapter {
 	
 	
 	private final Context mCtx;
-	public static final int DATABASE_VERSION = 42;
+	public static final int DATABASE_VERSION = 43;
 	
 	/**
 	 * This is a specific version of the SQLiteOpenHelper class. It handles onCreate and onUpgrade events
@@ -513,6 +515,15 @@ public class CatalogueDBAdapter {
 					//do nothing
 				}
 			}
+			if (curVersion == 42) {
+				//do nothing
+				curVersion++;
+				message += "* Export bug fixed\n\n";
+				message += "* Further enhancements to the new ISBN screen\n\n";
+				message += "* Filtering by bookshelf on title view is now fixed\n\n";
+				message += "* There is now an <Empty Series> when sorting by Series (thanks Vinikia)\n\n";
+				message += "* App will now search all fields (Thanks Michael)\n\n";
+			}
 		}
 	}
 	
@@ -830,7 +841,7 @@ public class CatalogueDBAdapter {
 	 * @return Cursor over all books
 	 */
 	public Cursor fetchAllBooks(String order, String bookshelf) {
-		return fetchAllBooks(order, "All Books", ""); 
+		return fetchAllBooks(order, bookshelf, ""); 
 	}
 	
 	/**
@@ -921,7 +932,13 @@ public class CatalogueDBAdapter {
 	 * @return Cursor over all books
 	 */
 	public Cursor fetchAllBooksBySeries(String series, String bookshelf) {
-		String where = " AND b." + KEY_SERIES + "='" + encodeString(series) + "'";
+		String where = " AND ";
+		if (series.equals(META_EMPTY_SERIES)) {
+			where += "(b." + KEY_SERIES + "='' OR b." + KEY_SERIES + " IS NULL)";
+		} else {
+			series = encodeString(series);
+			where += "b." + KEY_SERIES + "='" + series + "'";
+		}
 		String order = "substr('0000000000' || b." + KEY_SERIES_NUM + ", -10, 10), lower(b." + KEY_TITLE + ") ASC";
 		return fetchAllBooks(order, bookshelf, where);
 	}
@@ -967,7 +984,7 @@ public class CatalogueDBAdapter {
 	 * @return Cursor over all bookshelves
 	 */
 	public Cursor fetchAllBookshelvesByBook(long rowId) {
-		String sql = "SELECT DISTINCT bs." + KEY_ROWID + ", bs." + KEY_BOOKSHELF + " as " + KEY_BOOKSHELF + 
+		String sql = "SELECT DISTINCT bs." + KEY_ROWID + " as " + KEY_ROWID + ", bs." + KEY_BOOKSHELF + " as " + KEY_BOOKSHELF + 
 			" FROM " + DB_TB_BOOKSHELF + " bs, " + DB_TB_BOOK_BOOKSHELF_WEAK + " w " +
 			" WHERE w." + KEY_BOOKSHELF + "=bs." + KEY_ROWID + " AND w." + KEY_BOOK + "=" + rowId + " " + 
 			" ORDER BY bs." + KEY_BOOKSHELF + "";
@@ -1024,6 +1041,16 @@ public class CatalogueDBAdapter {
 	 * @return Cursor over all series
 	 */
 	public Cursor fetchAllSeries(String bookshelf) {
+		return fetchAllSeries(bookshelf, false);
+	}
+	
+	/**
+	 * This will return a list of all series within the given bookshelf
+	 * 
+	 * @param bookshelf The bookshelf to search within. Can be the string "All Books"
+	 * @return Cursor over all series
+	 */
+	public Cursor fetchAllSeries(String bookshelf, boolean include_blank) {
 		String where = "";
 		if (bookshelf.equals("All Books")) {
 			// do nothing 
@@ -1033,6 +1060,7 @@ public class CatalogueDBAdapter {
 		String sql = "SELECT DISTINCT b." + KEY_SERIES + " as " + KEY_ROWID + 
 		" FROM " + BOOKSHELF_TABLES + 
 		" WHERE " + BOOKSHELF_JOIN + " AND b." + KEY_SERIES + "!= '' " + where + 
+		" UNION SELECT \"" + META_EMPTY_SERIES + "\" as " + KEY_ROWID +
 		" ORDER BY b." + KEY_SERIES + "";
 		return mDb.rawQuery(sql, new String[]{});
 	}
@@ -1272,7 +1300,13 @@ public class CatalogueDBAdapter {
 			" FROM " + DB_TB_AUTHORS + " a" + " " +
 			"WHERE (a." + KEY_FAMILY_NAME + " LIKE '%" + query + "%' OR " +
 				"a." + KEY_GIVEN_NAMES + " LIKE '%" + query + "%' OR " +
-				"a." + KEY_ROWID + " IN (SELECT " + KEY_AUTHOR + " FROM " + DB_TB_BOOKS + " b WHERE (b." + KEY_TITLE + " LIKE '%" + query + "%' OR b." + KEY_SERIES + " LIKE '%" + query + "%')) )" + 
+				"a." + KEY_ROWID + " IN (SELECT " + KEY_AUTHOR + " FROM " + DB_TB_BOOKS + " b " +
+					"WHERE (b." + KEY_TITLE + " LIKE '%" + query + "%' OR " +
+					" b." + KEY_ISBN + " LIKE '%" + query + "%' OR " +
+					" b." + KEY_PUBLISHER + " LIKE '%" + query + "%' OR " +
+					" b." + KEY_SERIES + " LIKE '%" + query + "%' OR " +
+					" b." + KEY_NOTES + " LIKE '%" + query + "%' OR " +
+					" b." + KEY_LOCATION + " LIKE '%" + query + "%')) )" + 
 				where + 
 			"ORDER BY " + KEY_FAMILY_NAME + ", " + KEY_GIVEN_NAMES + "";
 		return mDb.rawQuery(sql, new String[]{});
@@ -1295,7 +1329,7 @@ public class CatalogueDBAdapter {
 		} else {
 			where += " AND bs." + KEY_BOOKSHELF + "='" + encodeString(bookshelf) + "'";
 		}
-		String sql = "SELECT DISTINCT b." + KEY_ROWID + ", " +
+		String sql = "SELECT DISTINCT b." + KEY_ROWID + " AS " + KEY_ROWID + ", " +
 				AUTHOR_FIELDS + ", " + 
 				BOOK_FIELDS + 
 			" FROM " + BOOKSHELF_TABLES + ", " + DB_TB_AUTHORS + " a" + 
@@ -1304,7 +1338,11 @@ public class CatalogueDBAdapter {
 				"(a." + KEY_FAMILY_NAME + " LIKE '%" + query + "%' OR " +
 				" a." + KEY_GIVEN_NAMES + " LIKE '%" + query + "%' OR " +
 				" b." + KEY_TITLE + " LIKE '%" + query + "%' OR " +
-				"b." + KEY_SERIES + " LIKE '%" + query + "%')" + 
+				" b." + KEY_ISBN + " LIKE '%" + query + "%' OR " +
+				" b." + KEY_PUBLISHER + " LIKE '%" + query + "%' OR " +
+				" b." + KEY_SERIES + " LIKE '%" + query + "%' OR " +
+				" b." + KEY_NOTES + " LIKE '%" + query + "%' OR " +
+				" b." + KEY_LOCATION + " LIKE '%" + query + "%')" + 
 				where + 
 			" ORDER BY " + order + "";
 		return mDb.rawQuery(sql, new String[]{});
@@ -1333,7 +1371,11 @@ public class CatalogueDBAdapter {
 					" (a." + KEY_FAMILY_NAME + " LIKE '%" + query + "%' OR " +
 					" a." + KEY_GIVEN_NAMES + " LIKE '%" + query + "%' OR " +
 					" b." + KEY_TITLE + " LIKE '%" + query + "%' OR " +
-					"b." + KEY_SERIES + " LIKE '%" + query + "%')" + 
+					" b." + KEY_ISBN + " LIKE '%" + query + "%' OR " +
+					" b." + KEY_PUBLISHER + " LIKE '%" + query + "%' OR " +
+					" b." + KEY_SERIES + " LIKE '%" + query + "%' OR " +
+					" b." + KEY_NOTES + " LIKE '%" + query + "%' OR " +
+					" b." + KEY_LOCATION + " LIKE '%" + query + "%')" + 
 				" ORDER BY b." + KEY_SERIES + "";
 		return mDb.rawQuery(sql, new String[]{});
 	}

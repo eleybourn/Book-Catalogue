@@ -278,9 +278,12 @@ public class BookEditFields extends Activity {
 						do { 
 							final CheckBox cb = new CheckBox(BookEditFields.this);
 							boolean checked = false;
-							int db_book = bookshelves_for_book.getInt(bookshelves_for_book.getColumnIndex(CatalogueDBAdapter.KEY_BOOK));
+							//TODO This is no longer required
+							//int db_book = bookshelves_for_book.getInt(bookshelves_for_book.getColumnIndex(CatalogueDBAdapter.KEY_BOOK));
 							String db_bookshelf = bookshelves_for_book.getString(bookshelves_for_book.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF));
-							if (db_book == 1 || mBookshelfText.getText().toString().indexOf(db_bookshelf + BOOKSHELF_SEPERATOR) > -1) {
+							//TODO This is no longer required
+							//if (db_book == 1 || mBookshelfText.getText().toString().indexOf(db_bookshelf + BOOKSHELF_SEPERATOR) > -1) {
+							if (mBookshelfText.getText().toString().indexOf(db_bookshelf + BOOKSHELF_SEPERATOR) > -1) {
 								checked = true;
 							}
 							cb.setChecked(checked);
@@ -297,9 +300,10 @@ public class BookEditFields extends Activity {
 										int index = text.indexOf(name);
 										if (index > -1) {
 											text = text.substring(0, index) + text.substring(index + name.length());
-											if (text == null) {
-												text = "";
-											}
+											//TODO Remove this code
+											//if (text == null) {
+											//	text = "";
+											//}
 										}
 										mBookshelfText.setText(text);
 									}
@@ -326,7 +330,6 @@ public class BookEditFields extends Activity {
 					builder.setMultiChoiceItems(bookshelves_for_book2, CatalogueDBAdapter.KEY_BOOK, CatalogueDBAdapter.KEY_BOOKSHELF, new OnMultiChoiceClickListener() {
 						public void onClick(DialogInterface dialog, int item, boolean isChecked) {
 							((AlertDialog) dialog).getListView().setItemChecked(item, isChecked);
-							Log.e("BC", "xxx" + isChecked + " " + item);
 							bookshelves_for_book2.moveToPosition(item);
 							String bookshelf = bookshelves_for_book2.getString(bookshelves_for_book2.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF));
 							//String bookshelf = "foo";
@@ -341,7 +344,6 @@ public class BookEditFields extends Activity {
 						}
 					}); 
 					alertDialog.show();
-					Log.e("BC", "bar");
 					*/
 				}
 			});

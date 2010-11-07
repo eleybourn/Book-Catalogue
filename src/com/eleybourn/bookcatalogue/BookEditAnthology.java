@@ -37,7 +37,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -289,7 +288,6 @@ public class BookEditAnthology extends ListActivity {
 		}
 		pathTitle = pathTitle.replace(" ", "+");
 		String path = basepath + "/w/index.php?title=Special:Search&search=%22" + pathTitle + "%22+" + pathAuthor + "";
-		Log.e("BC", path);
 		boolean success = false;
 		URL url;
 		
@@ -335,16 +333,16 @@ public class BookEditAnthology extends ListActivity {
 			}
 		} catch (MalformedURLException e) {
 			Toast.makeText(this, R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
-			Log.e("Book Catalogue", "Malformed URL " + e.getMessage());
+			//Log.e("Book Catalogue", "Malformed URL " + e.getMessage());
 		} catch (ParserConfigurationException e) {
 			Toast.makeText(this, R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
-			Log.e("Book Catalogue", "SAX Parsing Error " + e.getMessage());
+			//Log.e("Book Catalogue", "SAX Parsing Error " + e.getMessage());
 		} catch (SAXException e) {
 			Toast.makeText(this, R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
-			Log.e("Book Catalogue", "SAX Exception " + e.getMessage());
+			//Log.e("Book Catalogue", "SAX Exception " + e.getMessage());
 		} catch (Exception e) {
 			Toast.makeText(this, R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
-			Log.e("Book Catalogue", "SAX IO Exception " + e.getMessage());
+			//Log.e("Book Catalogue", "SAX IO Exception " + e.getMessage());
 		}
 		fillAnthology();
 		return;

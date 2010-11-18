@@ -72,7 +72,7 @@ public class BookBackup extends Activity {
 			CatalogueDBAdapter.KEY_LOCATION+ "\t" + 		//18
 			CatalogueDBAdapter.KEY_READ_START+ "\t" + 		//19
 			CatalogueDBAdapter.KEY_READ_END+ "\t" + 		//20
-			CatalogueDBAdapter.KEY_AUDIOBOOK+ "\t" + 		//21
+			CatalogueDBAdapter.KEY_FORMAT+ "\t" +	 		//21
 			CatalogueDBAdapter.KEY_SIGNED+ "\t" + 			//22
 			CatalogueDBAdapter.KEY_LOANED_TO+ "\t" +		//23 
 			"anthology_titles\t" +							//24 
@@ -146,7 +146,7 @@ public class BookBackup extends Activity {
 				row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOCATION)) + "\t";
 				row += dateReadStartString + "\t";
 				row += dateReadEndString + "\t";
-				row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUDIOBOOK)) + "\t";
+				row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_FORMAT)) + "\t";
 				row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SIGNED)) + "\t";
 				row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOANED_TO)) + "\t";
 				row += anthology_titles + "\t";

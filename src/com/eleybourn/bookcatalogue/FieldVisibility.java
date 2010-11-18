@@ -60,13 +60,17 @@ public class FieldVisibility extends Activity {
 	 */
 	public void setupFields() {
 		// The fields to show/hide
-		String[] fields = {"author", "title", "thumbnail", "isbn", "series", "series_num", "publisher", "date_published", 
-				"bookshelf", "pages", "list_price", "read", "rating", "notes", "anthology", "location", "read_start", 
-				"read_end", "audiobook", "signed"};
+		String[] fields = {CatalogueDBAdapter.KEY_AUTHOR, CatalogueDBAdapter.KEY_TITLE, "thumbnail", 
+				CatalogueDBAdapter.KEY_ISBN, CatalogueDBAdapter.KEY_SERIES, CatalogueDBAdapter.KEY_SERIES_NUM, 
+				CatalogueDBAdapter.KEY_PUBLISHER, CatalogueDBAdapter.KEY_DATE_PUBLISHED, CatalogueDBAdapter.KEY_BOOKSHELF, 
+				CatalogueDBAdapter.KEY_PAGES, CatalogueDBAdapter.KEY_LIST_PRICE, CatalogueDBAdapter.KEY_READ, 
+				CatalogueDBAdapter.KEY_RATING, CatalogueDBAdapter.KEY_NOTES, CatalogueDBAdapter.KEY_ANTHOLOGY, 
+				CatalogueDBAdapter.KEY_LOCATION, CatalogueDBAdapter.KEY_READ_START, CatalogueDBAdapter.KEY_READ_END, 
+				CatalogueDBAdapter.KEY_FORMAT, CatalogueDBAdapter.KEY_SIGNED};
 		int[] fieldRs = {R.string.author, R.string.title, R.string.thumbnail, R.string.isbn, R.string.series, R.string.series_num, 
 				R.string.publisher, R.string.date_published, R.string.bookshelf, R.string.pages, R.string.list_price,
 				R.string.read, R.string.rating, R.string.notes, R.string.anthology, R.string.location, 
-				R.string.read_start, R.string.read_end, R.string.audiobook, R.string.signed};
+				R.string.read_start, R.string.read_end, R.string.format, R.string.signed};
 		boolean[] compulsary = {true, true, false, false, false, false, false, false, 
 				true, false, false, false, false, false, false, false, false, false, false, false};
 		

@@ -125,18 +125,17 @@
 			android:inputType="numberDecimal"
 			/>
 		
+		<Spinner android:id="@+id/format" 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" 
+			android:layout_weight="1"
+			/>
+		
 		<CheckBox android:id="@+id/anthology" 
 			android:layout_width="wrap_content"
 			android:layout_height="fill_parent" 
 			android:layout_weight="1"
 			android:hint="@string/is_anthology"
-			/>
-		
-		<CheckBox android:id="@+id/audiobook" 
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content" 
-			android:layout_weight="1"
-			android:hint="@string/audiobook"
 			/>
 		
 		<LinearLayout	

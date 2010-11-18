@@ -56,6 +56,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -74,7 +75,10 @@ public class BookEditFields extends Activity {
 	private EditText mListPriceText;
 	private EditText mPagesText;
 	private CheckBox mAnthologyCheckBox;
-	private CheckBox mAudiobookCheckBox;
+	private Spinner mFormatText;
+	private ArrayList<String> formats = new ArrayList<String>();
+
+	private ArrayAdapter<String> spinnerAdapter;
 	private Button mConfirmButton;
 	private Button mCancelButton;
 	private Long mRowId;
@@ -169,19 +173,19 @@ public class BookEditFields extends Activity {
 			ArrayAdapter<String> author_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getAuthors());
 			mAuthorText = (AutoCompleteTextView) findViewById(R.id.author);
 			mAuthorText.setAdapter(author_adapter);
-			field_visibility = mPrefs.getBoolean(visibility_prefix + "author", true);
+			field_visibility = mPrefs.getBoolean(visibility_prefix + CatalogueDBAdapter.KEY_AUTHOR, true);
 			if (field_visibility == false) {
 				mAuthorText.setVisibility(GONE);
 			}
 			
 			mTitleText = (EditText) findViewById(R.id.title);
-			field_visibility = mPrefs.getBoolean(visibility_prefix + "title", true);
+			field_visibility = mPrefs.getBoolean(visibility_prefix + CatalogueDBAdapter.KEY_TITLE, true);
 			if (field_visibility == false) {
 				mTitleText.setVisibility(GONE);
 			}
 			
 			mIsbnText = (EditText) findViewById(R.id.isbn);
-			field_visibility = mPrefs.getBoolean(visibility_prefix + "isbn", true);
+			field_visibility = mPrefs.getBoolean(visibility_prefix + CatalogueDBAdapter.KEY_ISBN, true);
 			if (field_visibility == false) {
 				mIsbnText.setVisibility(GONE);
 			}
@@ -189,7 +193,7 @@ public class BookEditFields extends Activity {
 			ArrayAdapter<String> publisher_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getPublishers());
 			mPublisherText = (AutoCompleteTextView) findViewById(R.id.publisher);
 			mPublisherText.setAdapter(publisher_adapter);
-			field_visibility = mPrefs.getBoolean(visibility_prefix + "publisher", true);
+			field_visibility = mPrefs.getBoolean(visibility_prefix + CatalogueDBAdapter.KEY_PUBLISHER, true);
 			if (field_visibility == false) {
 				mPublisherText.setVisibility(GONE);
 			}
@@ -234,10 +238,21 @@ public class BookEditFields extends Activity {
 				mAnthologyCheckBox.setVisibility(GONE);
 			}
 			
-			mAudiobookCheckBox = (CheckBox) findViewById(R.id.audiobook);
-			field_visibility = mPrefs.getBoolean(visibility_prefix + "audiobook", true);
+			mFormatText = (Spinner) findViewById(R.id.format);
+			spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
+			spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			mFormatText.setAdapter(spinnerAdapter);
+			formats.add(getString(R.string.paperback));
+			formats.add(getString(R.string.hardcover)); 
+			formats.add(getString(R.string.ebook));
+			formats.add(getString(R.string.audiobook));
+			formats.add(getString(R.string.guide));
+			for (int i=0; i<formats.size(); i++) {
+				spinnerAdapter.add(formats.get(i)); 
+			}
+			field_visibility = mPrefs.getBoolean(visibility_prefix + "format", true);
 			if (field_visibility == false) {
-				mAudiobookCheckBox.setVisibility(GONE);
+				mFormatText.setVisibility(GONE);
 			}
 			
 			mConfirmButton = (Button) findViewById(R.id.confirm);
@@ -511,7 +526,13 @@ public class BookEditFields extends Activity {
 			mSeriesNumText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES_NUM)));
 			mListPriceText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LIST_PRICE)));
 			mPagesText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PAGES)));
-			mAudiobookCheckBox.setChecked((book.getInt(book.getColumnIndex(CatalogueDBAdapter.KEY_AUDIOBOOK))==0? false:true) );
+			String format = book.getString(book.getColumnIndex(CatalogueDBAdapter.KEY_FORMAT));
+			for (int i=0; i<formats.size(); i++) {
+				if (formats.get(i).equals(format)) {
+					mFormatText.setSelection(i);
+				}
+			}
+			
 			anthology_num = book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
 			if (anthology_num == 0) {
 				mAnthologyCheckBox.setChecked(false);
@@ -617,11 +638,11 @@ public class BookEditFields extends Activity {
 				} else {
 					mAnthologyCheckBox.setChecked(true);
 				}
-				String audiobookValue = book[13];
-				if (audiobookValue.equals("t")) {
-					mAudiobookCheckBox.setChecked(true);
-				} else {
-					mAudiobookCheckBox.setChecked(false);
+				String formatValue = book[13];
+				for (int i=0; i<formats.size(); i++) {
+					if (formats.get(i) == formatValue) {
+						mFormatText.setSelection(i);
+					}
 				}
 			} catch (NullPointerException e) {
 				// do nothing
@@ -763,7 +784,7 @@ public class BookEditFields extends Activity {
 		} catch (NumberFormatException e) {
 			pages = 0;
 		}
-		boolean audiobook = mAudiobookCheckBox.isChecked();
+		String format = spinnerAdapter.getItem(mFormatText.getSelectedItemPosition());
 		
 		if (mRowId == null || mRowId == 0) {
 			/* Check if the book currently exists */
@@ -777,7 +798,7 @@ public class BookEditFields extends Activity {
 				book.close(); // close the cursor
 			}
 			
-			long id = mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, audiobook, signed);
+			long id = mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, format, signed);
 			if (id > 0) {
 				mRowId = id;
 				File thumb = CatalogueDBAdapter.fetchThumbnail(0);
@@ -785,7 +806,7 @@ public class BookEditFields extends Activity {
 				thumb.renameTo(real);
 			}
 		} else {
-			mDbHelper.updateBook(mRowId, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, audiobook, signed);
+			mDbHelper.updateBook(mRowId, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, format, signed);
 		}
 		/* These are global variables that will be sent via intent back to the list view */
 		added_author = author;

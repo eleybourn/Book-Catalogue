@@ -63,7 +63,8 @@ public class CatalogueDBAdapter {
 	public static final String KEY_LOCATION = "location";
 	public static final String KEY_READ_START = "read_start";
 	public static final String KEY_READ_END = "read_end";
-	public static final String KEY_AUDIOBOOK = "audiobook";
+	public static final String KEY_FORMAT = "format";
+	public static final String OLD_KEY_AUDIOBOOK = "audiobook";
 	public static final String KEY_SIGNED = "signed";
 	
 	public static final String KEY_AUTHOR_FORMATTED = "author_formatted";
@@ -126,7 +127,7 @@ public class CatalogueDBAdapter {
 		KEY_LOCATION + " text, " +
 		KEY_READ_START + " date, " +
 		KEY_READ_END + " date, " +
-		KEY_AUDIOBOOK + " boolean not null default 'f', " +
+		KEY_FORMAT + " text, " +
 		KEY_SIGNED + " boolean not null default 'f' " +
 		")";
 	
@@ -187,14 +188,14 @@ public class CatalogueDBAdapter {
 		"b." + KEY_LOCATION + " as " + KEY_LOCATION + ", " +
 		"b." + KEY_READ_START + " as " + KEY_READ_START + ", " +
 		"b." + KEY_READ_END + " as " + KEY_READ_END + ", " +
-		"b." + KEY_AUDIOBOOK + " as " + KEY_AUDIOBOOK + ", " +
+		"b." + KEY_FORMAT + " as " + KEY_FORMAT + ", " +
 		"b." + KEY_SIGNED + " as " + KEY_SIGNED + ", " + 
 		"CASE WHEN " + KEY_SERIES + "='' THEN '' ELSE b." + KEY_SERIES + " || CASE WHEN " + KEY_SERIES_NUM + "='' THEN '' ELSE ' #' || b." + KEY_SERIES_NUM + " END END AS " + KEY_SERIES_FORMATTED;
 	private static String BOOKSHELF_TABLES = DB_TB_BOOKS + " b LEFT OUTER JOIN " + DB_TB_BOOK_BOOKSHELF_WEAK + " w ON (b." + KEY_ROWID + "=w." + KEY_BOOK + ") LEFT OUTER JOIN " + DB_TB_BOOKSHELF + " bs ON (bs." + KEY_ROWID + "=w." + KEY_BOOKSHELF + ") ";
 	
 	
 	private final Context mCtx;
-	public static final int DATABASE_VERSION = 44;
+	public static final int DATABASE_VERSION = 46;
 	
 	/**
 	 * This is a specific version of the SQLiteOpenHelper class. It handles onCreate and onUpgrade events
@@ -415,7 +416,7 @@ public class CatalogueDBAdapter {
 					db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " ADD " + KEY_LOCATION + " text");
 					db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " ADD " + KEY_READ_START + " date");
 					db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " ADD " + KEY_READ_END + " date");
-					db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " ADD " + KEY_AUDIOBOOK + " boolean not null default 'f'");
+					db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " ADD " + OLD_KEY_AUDIOBOOK + " boolean not null default 'f'");
 					db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " ADD " + KEY_SIGNED + " boolean not null default 'f'");
 				} catch (Exception e) {
 					//do nothing
@@ -427,7 +428,7 @@ public class CatalogueDBAdapter {
 					db.execSQL("UPDATE " + DB_TB_BOOKS + " SET " + KEY_LOCATION + "=''");
 					db.execSQL("UPDATE " + DB_TB_BOOKS + " SET " + KEY_READ_START + "=''");
 					db.execSQL("UPDATE " + DB_TB_BOOKS + " SET " + KEY_READ_END + "=''");
-					db.execSQL("UPDATE " + DB_TB_BOOKS + " SET " + KEY_AUDIOBOOK + "='f'");
+					db.execSQL("UPDATE " + DB_TB_BOOKS + " SET " + OLD_KEY_AUDIOBOOK + "='f'");
 					db.execSQL("UPDATE " + DB_TB_BOOKS + " SET " + KEY_SIGNED + "='f'");
 				} catch (Exception e) {
 					//do nothing
@@ -490,7 +491,7 @@ public class CatalogueDBAdapter {
 					db.execSQL("INSERT INTO " + DB_TB_BOOK_BOOKSHELF_WEAK + " (" + KEY_BOOK + ", " + KEY_BOOKSHELF + ") SELECT " + KEY_ROWID + ", " + KEY_BOOKSHELF + " FROM " + DB_TB_BOOKS + "");
 					db.execSQL("CREATE TABLE tmp1 AS SELECT _id, " + KEY_AUTHOR + ", " + KEY_TITLE + ", " + KEY_ISBN + ", " + KEY_PUBLISHER + ", " + 
 						KEY_DATE_PUBLISHED + ", " + KEY_RATING + ", " + KEY_READ + ", " + KEY_SERIES + ", " + KEY_PAGES + ", " + KEY_SERIES_NUM + ", " + KEY_NOTES + ", " + 
-						KEY_LIST_PRICE + ", " + KEY_ANTHOLOGY + ", " + KEY_LOCATION + ", " + KEY_READ_START + ", " + KEY_READ_END + ", " + KEY_AUDIOBOOK + ", " + 
+						KEY_LIST_PRICE + ", " + KEY_ANTHOLOGY + ", " + KEY_LOCATION + ", " + KEY_READ_START + ", " + KEY_READ_END + ", " + OLD_KEY_AUDIOBOOK + ", " + 
 						KEY_SIGNED + " FROM " + DB_TB_BOOKS);
 					db.execSQL("CREATE TABLE tmp2 AS SELECT _id, " + KEY_BOOK + ", " + KEY_LOANED_TO + " FROM " + DB_TB_LOAN );
 					db.execSQL("CREATE TABLE tmp3 AS SELECT _id, " + KEY_BOOK + ", " + KEY_AUTHOR + ", " + KEY_TITLE + ", " + KEY_POSITION + " FROM " + DB_TB_ANTHOLOGY);
@@ -531,6 +532,45 @@ public class CatalogueDBAdapter {
 						" AND a." + KEY_TITLE + "=b." + KEY_TITLE + " AND a." + KEY_ROWID + " > b." + KEY_ROWID + "" +
 						")");
 				db.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS anthology_pk_idx ON " + DB_TB_ANTHOLOGY + " (" + KEY_BOOK + ", " + KEY_AUTHOR + ", " + KEY_TITLE + ")");
+			}
+			if (curVersion == 44) {
+				//do nothing
+				curVersion++;
+				db.execSQL("CREATE TABLE tmp1 AS SELECT _id, " + KEY_AUTHOR + ", " + KEY_TITLE + ", " + KEY_ISBN + ", " + KEY_PUBLISHER + ", " + 
+					KEY_DATE_PUBLISHED + ", " + KEY_RATING + ", " + KEY_READ + ", " + KEY_SERIES + ", " + KEY_PAGES + ", " + KEY_SERIES_NUM + ", " + KEY_NOTES + ", " + 
+					KEY_LIST_PRICE + ", " + KEY_ANTHOLOGY + ", " + KEY_LOCATION + ", " + KEY_READ_START + ", " + KEY_READ_END + ", " +
+					"CASE WHEN " + OLD_KEY_AUDIOBOOK + "='t' THEN 'Audiobook' ELSE 'Paperback' END AS " + OLD_KEY_AUDIOBOOK + ", " + 
+					KEY_SIGNED + " FROM " + DB_TB_BOOKS);
+				db.execSQL("CREATE TABLE tmp2 AS SELECT _id, " + KEY_BOOK + ", " + KEY_LOANED_TO + " FROM " + DB_TB_LOAN );
+				db.execSQL("CREATE TABLE tmp3 AS SELECT _id, " + KEY_BOOK + ", " + KEY_AUTHOR + ", " + KEY_TITLE + ", " + KEY_POSITION + " FROM " + DB_TB_ANTHOLOGY);
+				db.execSQL("CREATE TABLE tmp4 AS SELECT " + KEY_BOOK + ", " + KEY_BOOKSHELF+ " FROM " + DB_TB_BOOK_BOOKSHELF_WEAK);
+				
+				db.execSQL("DROP TABLE " + DB_TB_ANTHOLOGY);
+				db.execSQL("DROP TABLE " + DB_TB_LOAN);
+				db.execSQL("DROP TABLE " + DB_TB_BOOKS);
+				db.execSQL("DROP TABLE " + DB_TB_BOOK_BOOKSHELF_WEAK);
+				
+				db.execSQL(DATABASE_CREATE_BOOKS);
+				db.execSQL(DATABASE_CREATE_LOAN);
+				db.execSQL(DATABASE_CREATE_ANTHOLOGY);
+				db.execSQL(DATABASE_CREATE_BOOK_BOOKSHELF_WEAK);
+				
+				db.execSQL("INSERT INTO " + DB_TB_BOOKS + " SELECT * FROM tmp1");
+				db.execSQL("INSERT INTO " + DB_TB_LOAN + " SELECT * FROM tmp2");
+				db.execSQL("INSERT INTO " + DB_TB_ANTHOLOGY + " SELECT * FROM tmp3");
+				db.execSQL("INSERT INTO " + DB_TB_BOOK_BOOKSHELF_WEAK + " SELECT * FROM tmp4");
+				
+				db.execSQL("DROP TABLE tmp1");
+				db.execSQL("DROP TABLE tmp2");
+				db.execSQL("DROP TABLE tmp3");
+				db.execSQL("DROP TABLE tmp4");
+				
+				db.execSQL(DATABASE_CREATE_INDICES);
+			}
+			if (curVersion == 45) {
+				//do nothing
+				curVersion++;
+				db.execSQL("DELETE FROM " + DB_TB_LOAN + " WHERE " + KEY_LOANED_TO + "='null'" );
 			}
 		}
 	}
@@ -1441,8 +1481,8 @@ public class CatalogueDBAdapter {
 	 * @param signed Is this copy signed
 	 * @return rowId or -1 if failed
 	 */
-	public long createBook(String author, String title, String isbn, String publisher, String date_published, float rating, String bookshelf, Boolean read, String series, int pages, String series_num, String notes, String list_price, int anthology, String location, String read_start, String read_end, boolean audiobook, boolean signed) {
-		return createBook(0, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, audiobook, signed);
+	public long createBook(String author, String title, String isbn, String publisher, String date_published, float rating, String bookshelf, Boolean read, String series, int pages, String series_num, String notes, String list_price, int anthology, String location, String read_start, String read_end, String format, boolean signed) {
+		return createBook(0, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, format, signed);
 	}
 	
 	/**
@@ -1472,7 +1512,7 @@ public class CatalogueDBAdapter {
 	 * @param signed Is this copy signed
 	 * @return rowId or -1 if failed
 	 */
-	public long createBook(long id, String author, String title, String isbn, String publisher, String date_published, float rating, String bookshelf, Boolean read, String series, int pages, String series_num, String notes, String list_price, int anthology, String location, String read_start, String read_end, boolean audiobook, boolean signed) {
+	public long createBook(long id, String author, String title, String isbn, String publisher, String date_published, float rating, String bookshelf, Boolean read, String series, int pages, String series_num, String notes, String list_price, int anthology, String location, String read_start, String read_end, String format, boolean signed) {
 		ContentValues initialValues = new ContentValues();
 		String[] names = processAuthorName(author);
 		Cursor authorId = getAuthorByName(names);
@@ -1504,7 +1544,7 @@ public class CatalogueDBAdapter {
 		initialValues.put(KEY_LOCATION, location);
 		initialValues.put(KEY_READ_START, read_start);
 		initialValues.put(KEY_READ_END, read_end);
-		initialValues.put(KEY_AUDIOBOOK, audiobook);
+		initialValues.put(KEY_FORMAT, format);
 		initialValues.put(KEY_SIGNED, signed);
 		authorId.close();
 		
@@ -1679,7 +1719,7 @@ public class CatalogueDBAdapter {
 	 * @param signed Is this copy signed
 	 * @return true if the note was successfully updated, false otherwise
 	 */
-	public boolean updateBook(long rowId, String author, String title, String isbn, String publisher, String date_published, float rating, String bookshelf, boolean read, String series, int pages, String series_num, String notes, String list_price, int anthology, String location, String read_start, String read_end, boolean audiobook, boolean signed) {
+	public boolean updateBook(long rowId, String author, String title, String isbn, String publisher, String date_published, float rating, String bookshelf, boolean read, String series, int pages, String series_num, String notes, String list_price, int anthology, String location, String read_start, String read_end, String format, boolean signed) {
 		boolean success;
 		ContentValues args = new ContentValues();
 		String[] names = processAuthorName(author);
@@ -1708,7 +1748,7 @@ public class CatalogueDBAdapter {
 		args.put(KEY_LOCATION, location);
 		args.put(KEY_READ_START, read_start);
 		args.put(KEY_READ_END, read_end);
-		args.put(KEY_AUDIOBOOK, audiobook);
+		args.put(KEY_FORMAT, format);
 		args.put(KEY_SIGNED, signed);
 		authorId.close();
 		

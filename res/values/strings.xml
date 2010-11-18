@@ -194,7 +194,7 @@
 <string name="help_title_adminabout">About this App</string>
 <string name="help_text_adminabout1">This screen will show you the current version of the Book Catalogue you are running as well as links to the app homepage, source code and my email address.</string>
 <string name="signed">Has this book been signed</string>
-<string name="audiobook">This book is an Audiobook</string>
+<string name="audiobook">Audiobook</string>
 <string name="read_start">Date started reading</string>
 <string name="read_end">Date finished reading</string>
 <string name="location">Location of the book</string>
@@ -207,4 +207,9 @@
 <string name="searching_amazon_books">Searching Amazon</string>
 <string name="bookshelf_title">Select bookshelves for this book</string>
 <string name="bookshelves">Select Bookshelves</string>
+<string name="format">Format</string>
+<string name="paperback">Paperback</string>
+<string name="hardcover">Hard Cover</string>
+<string name="ebook">eBook</string>
+<string name="guide">Guide / Companion</string>
 </resources>

@@ -42,7 +42,7 @@ Features include;
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
 New in v3.1
-
+* The audiobook checkbox has been replaced with a format selector (inc. paperback, hardcover, companion etc)
 
 New in v3.0.1
 * Export bug fixed

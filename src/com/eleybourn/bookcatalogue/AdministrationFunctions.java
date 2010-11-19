@@ -504,6 +504,7 @@ public class AdministrationFunctions extends Activity {
 			
 			/* write to the SDCard */
 			try {
+				backupExport();
 				BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName), UTF8), BUFFER_SIZE);
 				out.write(export);
 				out.close();
@@ -514,6 +515,12 @@ public class AdministrationFunctions extends Activity {
 				//Toast.makeText(AdministrationFunctions.this, R.string.export_failed, Toast.LENGTH_LONG).show();
 				sendMessage(0, "Export Failed - Could not write to SDCard");
 			}
+		}
+		
+		private void backupExport() {
+			File export = new File(fileName);
+			File backup = new File(fileName + ".bak");
+			export.renameTo(backup);
 		}
 		
 		/**

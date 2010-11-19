@@ -43,6 +43,7 @@ import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuItem;
@@ -293,11 +294,7 @@ public class BookEditFields extends Activity {
 						do { 
 							final CheckBox cb = new CheckBox(BookEditFields.this);
 							boolean checked = false;
-							//TODO This is no longer required
-							//int db_book = bookshelves_for_book.getInt(bookshelves_for_book.getColumnIndex(CatalogueDBAdapter.KEY_BOOK));
 							String db_bookshelf = bookshelves_for_book.getString(bookshelves_for_book.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF));
-							//TODO This is no longer required
-							//if (db_book == 1 || mBookshelfText.getText().toString().indexOf(db_bookshelf + BOOKSHELF_SEPERATOR) > -1) {
 							if (mBookshelfText.getText().toString().indexOf(db_bookshelf + BOOKSHELF_SEPERATOR) > -1) {
 								checked = true;
 							}
@@ -615,10 +612,12 @@ public class BookEditFields extends Activity {
 				}
 				
 				//Display the selected bookshelves
+				Log.e("BC", BookCatalogue.bookshelf);
 				if (BookCatalogue.bookshelf.equals("All Books")) {
-					Cursor bookshelves = mDbHelper.fetchAllBookshelves();
+					Cursor bookshelves = mDbHelper.fetchBookshelf(1);
 					bookshelves.moveToFirst();
 					mBookshelfText.setText(bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)) + BOOKSHELF_SEPERATOR);
+					bookshelves.close();
 				} else {
 					mBookshelfText.setText(BookCatalogue.bookshelf + BOOKSHELF_SEPERATOR);
 				}
@@ -681,10 +680,16 @@ public class BookEditFields extends Activity {
 			// Manual Add
 			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + this.getResources().getString(R.string.menu_insert));
 			
-			Cursor bookshelves = mDbHelper.fetchAllBookshelves();
-			bookshelves.moveToFirst();
-			mBookshelfText.setText(bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)) + BOOKSHELF_SEPERATOR);
-			bookshelves.close();
+			//Display the selected bookshelves
+			Log.e("BC", BookCatalogue.bookshelf);
+			if (BookCatalogue.bookshelf.equals("All Books")) {
+				Cursor bookshelves = mDbHelper.fetchBookshelf(1);
+				bookshelves.moveToFirst();
+				mBookshelfText.setText(bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)) + BOOKSHELF_SEPERATOR);
+				bookshelves.close();
+			} else {
+				mBookshelfText.setText(BookCatalogue.bookshelf + BOOKSHELF_SEPERATOR);
+			}
 			
 			mConfirmButton.setText(R.string.confirm_add);
 			mConfirmButton.setOnClickListener(new View.OnClickListener() {

@@ -499,6 +499,8 @@ public class BookEditAnthology extends ListActivity {
 		String format = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_FORMAT));
 		boolean signed = (book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SIGNED))==0? false:true);
 		int pages = book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PAGES));
+		String description = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DESCRIPTION));
+		String genre = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_GENRE));
 
 		if (mRowId == null || mRowId == 0) {
 			//This should never happen
@@ -506,7 +508,7 @@ public class BookEditAnthology extends ListActivity {
 			Toast.makeText(this, R.string.unknown_error, Toast.LENGTH_LONG).show();
 			finish();
 		} else {
-			mDbHelper.updateBook(mRowId, bookAuthor, bookTitle, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, format, signed);
+			mDbHelper.updateBook(mRowId, bookAuthor, bookTitle, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, format, signed, description, genre);
 		}
 		return;
 	}

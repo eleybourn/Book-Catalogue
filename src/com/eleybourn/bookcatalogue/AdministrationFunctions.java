@@ -411,6 +411,8 @@ public class AdministrationFunctions extends Activity {
 				'"' + CatalogueDBAdapter.KEY_SIGNED+ "\"," + 			//22
 				'"' + CatalogueDBAdapter.KEY_LOANED_TO+ "\"," +			//23 
 				'"' + "anthology_titles," + "\"" +						//24 
+				'"' + CatalogueDBAdapter.KEY_DESCRIPTION+ "\"," + 		//25
+				'"' + CatalogueDBAdapter.KEY_GENRE+ "\"," + 			//26
 				"\n";
 			if (books.moveToFirst()) {
 				do { 
@@ -495,6 +497,8 @@ public class AdministrationFunctions extends Activity {
 					row += "\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SIGNED))) + "\",";
 					row += "\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOANED_TO))+"") + "\",";
 					row += "\"" + formatCell(anthology_titles) + "\"";
+					row += "\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DESCRIPTION))) + "\",";
+					row += "\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_GENRE))) + "\",";
 					row += "\n";
 					export += row;
 					sendMessage(num, title);
@@ -838,6 +842,20 @@ public class AdministrationFunctions extends Activity {
 					anthology_titles = ""; 
 				}
 				
+				String description = "";
+				try {
+					description = imported[25]; 
+				} catch (Exception e) {
+					description = ""; 
+				}
+				
+				String genre = "";
+				try {
+					genre = imported[26]; 
+				} catch (Exception e) {
+					genre = ""; 
+				}
+				
 				String author = family + ", " + given;
 				try {
 					if (id == 0) {
@@ -849,21 +867,21 @@ public class AdministrationFunctions extends Activity {
 							// Its a new entry, but the ISBN exists
 							id = book.getLong(0);
 							book.moveToFirst();
-							mDbHelper.updateBook(id, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, format, signed);
+							mDbHelper.updateBook(id, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, format, signed, description, genre);
 							importUpdated++;
 						} else {
-							id = mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, format, signed);
+							id = mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, format, signed, description, genre);
 							importCreated++;
 						}
 					} else {
 						Cursor book = mDbHelper.fetchBookById(id);
 						int rows = book.getCount();
 						if (rows == 0) {
-							mDbHelper.createBook(id, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, format, signed);
+							mDbHelper.createBook(id, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, format, signed, description, genre);
 							importCreated++;
 						} else {
 							// Book exists and should be updated if it has changed
-							mDbHelper.updateBook(id, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, format, signed);
+							mDbHelper.updateBook(id, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, format, signed, description, genre);
 							importUpdated++;
 						}
 					}

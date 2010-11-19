@@ -1,160 +1,182 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
-	android:layout_height="wrap_content">
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_height="fill_parent"
+	android:orientation="vertical"
+	android:padding="10sp">
+	<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
 		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
-		android:orientation="vertical"
-		android:padding="10sp">
-	
-		<ImageView android:id="@+id/row_img" 
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:layout_weight="1"
-		/>
-		
-		<AutoCompleteTextView android:id="@+id/author" 
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content" 
-			android:layout_weight="1"
-			android:hint="@string/author"
-			android:inputType="textCapWords"
-			android:completionThreshold="2"
-			android:nextFocusDown="@+id/title"
-			/>
-	
-		<EditText android:id="@+id/title" 
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content" 
-			android:layout_weight="1"
-			android:hint="@string/title"
-			android:inputType="textCapWords"
-			android:nextFocusDown="@+id/isbn"
-			/>
-
-		<EditText android:id="@+id/isbn" 
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content" 
-			android:layout_weight="1"
-			android:hint="@string/isbn"
-			android:inputType="text"
-			android:nextFocusDown="@+id/series"
-			/>
-		
+		android:layout_height="wrap_content"
+		android:layout_marginBottom="50dip">
 		<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:orientation="horizontal"
-			>
-			
-			<AutoCompleteTextView android:id="@+id/series" 
-				android:layout_width="wrap_content"
-				android:layout_height="fill_parent" 
-				android:layout_weight="2"
-				android:hint="@string/series"
-				android:inputType="textCapWords"
-				android:completionThreshold="2"
-				android:nextFocusDown="@+id/series_num"
-				/>
-			
-			<EditText android:id="@+id/series_num" 
-				android:layout_width="100sp"
-				android:layout_height="fill_parent" 
-				android:layout_weight="1"
-				android:hint="@string/series_num"
-				android:inputType="numberDecimal"
-				android:nextFocusDown="@+id/publisher"
-				/>
-		</LinearLayout>
-
-		<AutoCompleteTextView android:id="@+id/publisher" 
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content" 
-			android:layout_weight="1"
-			android:hint="@string/publisher"
-			android:inputType="textCapWords"
-			android:completionThreshold="2"
-			android:nextFocusDown="@+id/date_published"
-			/>
-		
-		<TextView android:id="@+id/date_published_label" 
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content" 
-			android:text="@string/date_published" 
-			android:textSize="16sp" />
-		<DatePicker android:id="@+id/date_published" 
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content" 
-			android:layout_weight="1"
-			android:nextFocusDown="@+id/bookshelf"
-			/>
-		
-		<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:orientation="horizontal"
-			>
-			<Button android:id="@+id/bookshelf" 
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content" 
-				android:text="@string/bookshelves"
-				android:nextFocusDown="@+id/pages"
-				/>
-			
-			<TextView android:id="@+id/bookshelf_text" 
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content" 
-				/>
-		</LinearLayout>
-		
-		<EditText android:id="@+id/pages" 
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content" 
-			android:layout_weight="1"
-			android:hint="@string/pages"
-			android:inputType="number"
-			/>
-		
-		<EditText android:id="@+id/list_price" 
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content" 
-			android:layout_weight="1"
-			android:hint="@string/list_price"
-			android:inputType="numberDecimal"
-			/>
-		
-		<Spinner android:id="@+id/format" 
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content" 
-			android:layout_weight="1"
-			/>
-		
-		<CheckBox android:id="@+id/anthology" 
-			android:layout_width="wrap_content"
-			android:layout_height="fill_parent" 
-			android:layout_weight="1"
-			android:hint="@string/is_anthology"
-			/>
-		
-		<LinearLayout	
-			android:orientation="horizontal"
 			android:layout_width="fill_parent"
 			android:layout_height="fill_parent"
-			android:layout_weight="1">
-			<Button android:id="@+id/confirm" 
-				android:text="@string/confirm_add"
-				android:width="150sp"
-				android:layout_width="wrap_content"
-				android:layout_height="fill_parent" />
+			android:orientation="vertical"
+			android:padding="10sp">
+		
+			<ImageView android:id="@+id/row_img" 
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+			/>
 			
-			<Button android:id="@+id/cancel" 
-				android:text="@string/cancel"
-				android:width="150sp"
-				android:layout_width="wrap_content"
-				android:layout_height="fill_parent" />
-		</LinearLayout>
+			<AutoCompleteTextView android:id="@+id/author" 
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content" 
+				android:layout_weight="1"
+				android:hint="@string/author"
+				android:inputType="textCapWords"
+				android:completionThreshold="2"
+				android:nextFocusDown="@+id/title"
+				/>
+		
+			<EditText android:id="@+id/title" 
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content" 
+				android:layout_weight="1"
+				android:hint="@string/title"
+				android:inputType="textCapWords"
+				android:nextFocusDown="@+id/isbn"
+				/>
 	
+			<EditText android:id="@+id/isbn" 
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content" 
+				android:layout_weight="1"
+				android:hint="@string/isbn"
+				android:inputType="text"
+				android:nextFocusDown="@+id/series"
+				/>
+			
+			<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				>
+				
+				<AutoCompleteTextView android:id="@+id/series" 
+					android:layout_width="wrap_content"
+					android:layout_height="fill_parent" 
+					android:layout_weight="2"
+					android:hint="@string/series"
+					android:inputType="textCapWords"
+					android:completionThreshold="2"
+					android:nextFocusDown="@+id/series_num"
+					/>
+				
+				<EditText android:id="@+id/series_num" 
+					android:layout_width="100sp"
+					android:layout_height="fill_parent" 
+					android:layout_weight="1"
+					android:hint="@string/series_num"
+					android:inputType="numberDecimal"
+					android:nextFocusDown="@+id/publisher"
+					/>
+			</LinearLayout>
+	
+			<AutoCompleteTextView android:id="@+id/publisher" 
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content" 
+				android:layout_weight="1"
+				android:hint="@string/publisher"
+				android:inputType="textCapWords"
+				android:completionThreshold="2"
+				android:nextFocusDown="@+id/date_published"
+				/>
+			
+			<TextView android:id="@+id/date_published_label" 
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content" 
+				android:text="@string/date_published" 
+				android:textSize="16sp" />
+			<DatePicker android:id="@+id/date_published" 
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content" 
+				android:layout_weight="1"
+				android:nextFocusDown="@+id/bookshelf"
+				/>
+			
+			<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				>
+				<Button android:id="@+id/bookshelf" 
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content" 
+					android:text="@string/bookshelves"
+					android:nextFocusDown="@+id/pages"
+					/>
+				
+				<TextView android:id="@+id/bookshelf_text" 
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content" 
+					/>
+			</LinearLayout>
+			
+			<EditText android:id="@+id/pages" 
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content" 
+				android:layout_weight="1"
+				android:hint="@string/pages"
+				android:inputType="number"
+				/>
+			
+			<EditText android:id="@+id/list_price" 
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content" 
+				android:layout_weight="1"
+				android:hint="@string/list_price"
+				android:inputType="numberDecimal"
+				/>
+			
+			<Spinner android:id="@+id/format" 
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content" 
+				android:layout_weight="1"
+				/>
+			
+			<EditText android:id="@+id/genre" 
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content" 
+				android:layout_weight="1"
+				android:hint="@string/genre"
+				/>
+			
+			<EditText android:id="@+id/description" 
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content" 
+				android:layout_weight="1"
+				android:hint="@string/description"
+				android:lines="5"
+				/>
+				
+			<CheckBox android:id="@+id/anthology" 
+				android:layout_width="wrap_content"
+				android:layout_height="fill_parent" 
+				android:layout_weight="1"
+				android:hint="@string/is_anthology"
+				/>
+		
+		</LinearLayout>
+	</ScrollView>
+	<LinearLayout	
+		android:layout_marginTop="-50dip" 
+		android:gravity="bottom" 
+		android:orientation="horizontal"
+		android:layout_height="wrap_content" 
+		android:layout_width="fill_parent">
+		<Button android:id="@+id/confirm" 
+			android:text="@string/confirm_add"
+			android:width="150sp"
+			android:layout_width="wrap_content"
+			android:layout_height="fill_parent" />
+		
+		<Button android:id="@+id/cancel" 
+			android:text="@string/cancel"
+			android:width="150sp"
+			android:layout_width="wrap_content"
+			android:layout_height="fill_parent" />
 	</LinearLayout>
-</ScrollView>
+</LinearLayout>

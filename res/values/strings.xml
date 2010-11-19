@@ -212,4 +212,6 @@
 <string name="hardcover">Hard Cover</string>
 <string name="ebook">eBook</string>
 <string name="guide">Guide / Companion</string>
+<string name="description">Description</string>
+<string name="genre">Genre</string>
 </resources>

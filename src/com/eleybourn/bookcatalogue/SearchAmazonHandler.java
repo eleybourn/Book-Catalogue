@@ -188,8 +188,10 @@ public class SearchAmazonHandler extends DefaultHandler {
 	public String location = "";
 	public String read_start = "";
 	public String read_end = "";
-	public String audiobook = "0";
+	public String audiobook = "";
 	public String signed = "0";
+	public String description = "";
+	public String genre = "";
 	
 	/* How many results found */
 	public int count = 0;
@@ -210,12 +212,13 @@ public class SearchAmazonHandler extends DefaultHandler {
 	public static String PAGES = "NumberOfPages";
 	public static String THUMBNAIL = "URL";
 	public static String MEDIUMIMAGE = "MediumImage";
+	public static String DESCRIPTION = "Content";
 
 	/*
 	 * A public function the return a book structure
 	 */
 	public String[] getBook(){
-		String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num, list_price, anthology, location, read_start, read_end, audiobook, signed};
+		String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num, list_price, anthology, location, read_start, read_end, audiobook, signed, description, genre};
 		//Log.e("bc", author + " :: " + title + " :: " + isbn  + " :: " + publisher + " :: " + date_published + " :: " + rating +  " :: " + bookshelf + " :: " + read + " :: " + series + " :: " + pages + " :: " + series_num);
 		return book;
 	}
@@ -313,6 +316,10 @@ public class SearchAmazonHandler extends DefaultHandler {
 					return;
 				}
 				image = false;
+			}
+		} else if (localName.equalsIgnoreCase(DESCRIPTION)){
+			if (entry == true && description == "") {
+				description = builder.toString();
 			}
 		}
 		builder.setLength(0);

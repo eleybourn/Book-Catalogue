@@ -77,6 +77,8 @@ public class BookEditFields extends Activity {
 	private EditText mPagesText;
 	private CheckBox mAnthologyCheckBox;
 	private Spinner mFormatText;
+	private EditText mDescriptionText;
+	private EditText mGenreText;
 	private ArrayList<String> formats = new ArrayList<String>();
 
 	private ArrayAdapter<String> spinnerAdapter;
@@ -237,6 +239,18 @@ public class BookEditFields extends Activity {
 			field_visibility = mPrefs.getBoolean(visibility_prefix + "anthology", true);
 			if (field_visibility == false) {
 				mAnthologyCheckBox.setVisibility(GONE);
+			}
+			
+			mDescriptionText = (EditText) findViewById(R.id.description);
+			field_visibility = mPrefs.getBoolean(visibility_prefix + CatalogueDBAdapter.KEY_DESCRIPTION, true);
+			if (field_visibility == false) {
+				mDescriptionText.setVisibility(GONE);
+			}
+			
+			mGenreText = (EditText) findViewById(R.id.genre);
+			field_visibility = mPrefs.getBoolean(visibility_prefix + CatalogueDBAdapter.KEY_GENRE, true);
+			if (field_visibility == false) {
+				mGenreText.setVisibility(GONE);
 			}
 			
 			mFormatText = (Spinner) findViewById(R.id.format);
@@ -529,6 +543,8 @@ public class BookEditFields extends Activity {
 					mFormatText.setSelection(i);
 				}
 			}
+			mDescriptionText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DESCRIPTION)));
+			mGenreText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_GENRE)));
 			
 			anthology_num = book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
 			if (anthology_num == 0) {
@@ -594,6 +610,9 @@ public class BookEditFields extends Activity {
 			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + this.getResources().getString(R.string.menu_insert));
 			// From the ISBN Search (add)
 			try {
+				//String[] book = {0=author, 1=title, 2=isbn, 3=publisher, 4=date_published, 5=rating,  6=bookshelf, 
+				//	7=read, 8=series, 9=pages, 10=series_num, 11=list_price, 12=anthology, 13=location, 14=read_start, 
+				//	15=read_end, 16=audiobook, 17=signed, 18=description, 19=genre};
 				String[] book = extras.getStringArray("book");
 				mAuthorText.setText(book[0]);
 				mTitleText.setText(book[1]);
@@ -637,12 +656,14 @@ public class BookEditFields extends Activity {
 				} else {
 					mAnthologyCheckBox.setChecked(true);
 				}
-				String formatValue = book[13];
+				String formatValue = book[16];
 				for (int i=0; i<formats.size(); i++) {
 					if (formats.get(i) == formatValue) {
 						mFormatText.setSelection(i);
 					}
 				}
+				mDescriptionText.setText(book[18]);
+				mGenreText.setText(book[19]);
 			} catch (NullPointerException e) {
 				// do nothing
 			}
@@ -790,6 +811,8 @@ public class BookEditFields extends Activity {
 			pages = 0;
 		}
 		String format = spinnerAdapter.getItem(mFormatText.getSelectedItemPosition());
+		String description = mDescriptionText.getText().toString();
+		String genre = mGenreText.getText().toString();
 		
 		if (mRowId == null || mRowId == 0) {
 			/* Check if the book currently exists */
@@ -802,8 +825,8 @@ public class BookEditFields extends Activity {
 				}
 				book.close(); // close the cursor
 			}
-			
-			long id = mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, format, signed);
+
+			long id = mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, format, signed, description, genre);
 			if (id > 0) {
 				mRowId = id;
 				File thumb = CatalogueDBAdapter.fetchThumbnail(0);
@@ -811,7 +834,7 @@ public class BookEditFields extends Activity {
 				thumb.renameTo(real);
 			}
 		} else {
-			mDbHelper.updateBook(mRowId, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, format, signed);
+			mDbHelper.updateBook(mRowId, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, format, signed, description, genre);
 		}
 		/* These are global variables that will be sent via intent back to the list view */
 		added_author = author;

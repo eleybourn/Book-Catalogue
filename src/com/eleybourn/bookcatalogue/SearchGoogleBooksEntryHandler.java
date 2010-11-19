@@ -127,8 +127,10 @@ public class SearchGoogleBooksEntryHandler extends DefaultHandler {
 	public String location = "";
 	public String read_start = "";
 	public String read_end = "";
-	public String audiobook = "0";
+	public String audiobook = "";
 	public String signed = "0";
+	public String description = "";
+	public String genre = "";
 	
 	public static String ID = "id";
 	public static String TOTALRESULTS = "totalResults";
@@ -140,9 +142,11 @@ public class SearchGoogleBooksEntryHandler extends DefaultHandler {
 	public static String PUBLISHER = "publisher";
 	public static String PAGES = "format";
 	public static String THUMBNAIL = "link";
+	public static String GENRE = "subject";
+	public static String DESCRIPTION = "description";
 	
 	public String[] getBook(){
-		String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num, list_price, anthology, location, read_start, read_end, audiobook, signed};
+		String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num, list_price, anthology, location, read_start, read_end, audiobook, signed, description, genre};
 		return book;
 	}
 	
@@ -185,6 +189,12 @@ public class SearchGoogleBooksEntryHandler extends DefaultHandler {
 			if (index > -1) {
 				tmp = tmp.substring(0, index).trim(); 
 				pages = tmp;
+			}
+		} else if (localName.equalsIgnoreCase(GENRE)){
+			genre = builder.toString();
+		} else if (localName.equalsIgnoreCase(DESCRIPTION)){
+			if (description == "") {
+				description = builder.toString();
 			}
 		}
 		builder.setLength(0);

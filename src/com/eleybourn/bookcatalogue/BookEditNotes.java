@@ -67,6 +67,8 @@ public class BookEditNotes extends Activity {
 	private int anthology;
 	private int pages;
 	private String format;
+	private String description;
+	private String genre;
 	
 	private static final int GONE = 8;
 	
@@ -233,6 +235,8 @@ public class BookEditNotes extends Activity {
 			anthology = book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
 			pages = book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PAGES));
 			format = book.getString(book.getColumnIndex(CatalogueDBAdapter.KEY_FORMAT));
+			description = book.getString(book.getColumnIndex(CatalogueDBAdapter.KEY_DESCRIPTION));
+			genre = book.getString(book.getColumnIndex(CatalogueDBAdapter.KEY_GENRE));
 		} else {
 			// Manual Add
 			//This should never happen
@@ -279,7 +283,7 @@ public class BookEditNotes extends Activity {
 			Toast.makeText(this, R.string.unknown_error, Toast.LENGTH_LONG).show();
 			finish();
 		} else {
-			mDbHelper.updateBook(mRowId, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, format, signed);
+			mDbHelper.updateBook(mRowId, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, format, signed, description, genre);
 		}
 		return;
 	}

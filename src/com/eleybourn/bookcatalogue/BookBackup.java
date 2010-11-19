@@ -76,6 +76,8 @@ public class BookBackup extends Activity {
 			CatalogueDBAdapter.KEY_SIGNED+ "\t" + 			//22
 			CatalogueDBAdapter.KEY_LOANED_TO+ "\t" +		//23 
 			"anthology_titles\t" +							//24 
+			CatalogueDBAdapter.KEY_DESCRIPTION+ "\t" + 		//25
+			CatalogueDBAdapter.KEY_GENRE+ "\t" + 			//26
 			"\n";
 		if (books.moveToFirst()) {
 			do { 
@@ -150,6 +152,8 @@ public class BookBackup extends Activity {
 				row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SIGNED)) + "\t";
 				row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOANED_TO)) + "\t";
 				row += anthology_titles + "\t";
+				row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DESCRIPTION)) + "\t";
+				row += books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_GENRE)) + "\t";
 				row += "\n";
 				export += row;
 			}

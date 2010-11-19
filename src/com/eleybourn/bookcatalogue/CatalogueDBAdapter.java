@@ -66,6 +66,8 @@ public class CatalogueDBAdapter {
 	public static final String KEY_FORMAT = "format";
 	public static final String OLD_KEY_AUDIOBOOK = "audiobook";
 	public static final String KEY_SIGNED = "signed";
+	public static final String KEY_DESCRIPTION = "description";
+	public static final String KEY_GENRE = "genre";
 	
 	public static final String KEY_AUTHOR_FORMATTED = "author_formatted";
 	public static final String KEY_SERIES_FORMATTED = "series_formatted";
@@ -128,7 +130,9 @@ public class CatalogueDBAdapter {
 		KEY_READ_START + " date, " +
 		KEY_READ_END + " date, " +
 		KEY_FORMAT + " text, " +
-		KEY_SIGNED + " boolean not null default 'f' " +
+		KEY_SIGNED + " boolean not null default 'f', " +
+		KEY_DESCRIPTION + " text, " +
+		KEY_GENRE + " text " +
 		")";
 	
 	private static final String DATABASE_CREATE_LOAN =
@@ -190,12 +194,14 @@ public class CatalogueDBAdapter {
 		"b." + KEY_READ_END + " as " + KEY_READ_END + ", " +
 		"b." + KEY_FORMAT + " as " + KEY_FORMAT + ", " +
 		"b." + KEY_SIGNED + " as " + KEY_SIGNED + ", " + 
+		"b." + KEY_DESCRIPTION + " as " + KEY_DESCRIPTION + ", " + 
+		"b." + KEY_GENRE  + " as " + KEY_GENRE + ", " + 
 		"CASE WHEN " + KEY_SERIES + "='' THEN '' ELSE b." + KEY_SERIES + " || CASE WHEN " + KEY_SERIES_NUM + "='' THEN '' ELSE ' #' || b." + KEY_SERIES_NUM + " END END AS " + KEY_SERIES_FORMATTED;
 	private static String BOOKSHELF_TABLES = DB_TB_BOOKS + " b LEFT OUTER JOIN " + DB_TB_BOOK_BOOKSHELF_WEAK + " w ON (b." + KEY_ROWID + "=w." + KEY_BOOK + ") LEFT OUTER JOIN " + DB_TB_BOOKSHELF + " bs ON (bs." + KEY_ROWID + "=w." + KEY_BOOKSHELF + ") ";
 	
 	
 	private final Context mCtx;
-	public static final int DATABASE_VERSION = 46;
+	public static final int DATABASE_VERSION = 47;
 	
 	/**
 	 * This is a specific version of the SQLiteOpenHelper class. It handles onCreate and onUpgrade events
@@ -571,6 +577,11 @@ public class CatalogueDBAdapter {
 				//do nothing
 				curVersion++;
 				db.execSQL("DELETE FROM " + DB_TB_LOAN + " WHERE " + KEY_LOANED_TO + "='null'" );
+			}
+			if (curVersion == 46) {
+				curVersion++;
+				db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " ADD " + KEY_DESCRIPTION + " text");
+				db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " ADD " + KEY_GENRE + " text");
 			}
 		}
 	}
@@ -1481,8 +1492,8 @@ public class CatalogueDBAdapter {
 	 * @param signed Is this copy signed
 	 * @return rowId or -1 if failed
 	 */
-	public long createBook(String author, String title, String isbn, String publisher, String date_published, float rating, String bookshelf, Boolean read, String series, int pages, String series_num, String notes, String list_price, int anthology, String location, String read_start, String read_end, String format, boolean signed) {
-		return createBook(0, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, format, signed);
+	public long createBook(String author, String title, String isbn, String publisher, String date_published, float rating, String bookshelf, Boolean read, String series, int pages, String series_num, String notes, String list_price, int anthology, String location, String read_start, String read_end, String format, boolean signed, String description, String genre) {
+		return createBook(0, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, format, signed, description, genre);
 	}
 	
 	/**
@@ -1512,7 +1523,7 @@ public class CatalogueDBAdapter {
 	 * @param signed Is this copy signed
 	 * @return rowId or -1 if failed
 	 */
-	public long createBook(long id, String author, String title, String isbn, String publisher, String date_published, float rating, String bookshelf, Boolean read, String series, int pages, String series_num, String notes, String list_price, int anthology, String location, String read_start, String read_end, String format, boolean signed) {
+	public long createBook(long id, String author, String title, String isbn, String publisher, String date_published, float rating, String bookshelf, Boolean read, String series, int pages, String series_num, String notes, String list_price, int anthology, String location, String read_start, String read_end, String format, boolean signed, String description, String genre) {
 		ContentValues initialValues = new ContentValues();
 		String[] names = processAuthorName(author);
 		Cursor authorId = getAuthorByName(names);
@@ -1546,6 +1557,8 @@ public class CatalogueDBAdapter {
 		initialValues.put(KEY_READ_END, read_end);
 		initialValues.put(KEY_FORMAT, format);
 		initialValues.put(KEY_SIGNED, signed);
+		initialValues.put(KEY_DESCRIPTION, description);
+		initialValues.put(KEY_GENRE, genre);
 		authorId.close();
 		
 		long result = mDb.insert(DB_TB_BOOKS, null, initialValues);
@@ -1719,7 +1732,7 @@ public class CatalogueDBAdapter {
 	 * @param signed Is this copy signed
 	 * @return true if the note was successfully updated, false otherwise
 	 */
-	public boolean updateBook(long rowId, String author, String title, String isbn, String publisher, String date_published, float rating, String bookshelf, boolean read, String series, int pages, String series_num, String notes, String list_price, int anthology, String location, String read_start, String read_end, String format, boolean signed) {
+	public boolean updateBook(long rowId, String author, String title, String isbn, String publisher, String date_published, float rating, String bookshelf, boolean read, String series, int pages, String series_num, String notes, String list_price, int anthology, String location, String read_start, String read_end, String format, boolean signed, String description, String genre) {
 		boolean success;
 		ContentValues args = new ContentValues();
 		String[] names = processAuthorName(author);
@@ -1750,6 +1763,8 @@ public class CatalogueDBAdapter {
 		args.put(KEY_READ_END, read_end);
 		args.put(KEY_FORMAT, format);
 		args.put(KEY_SIGNED, signed);
+		args.put(KEY_DESCRIPTION, description);
+		args.put(KEY_GENRE, genre);
 		authorId.close();
 		
 		success = mDb.update(DB_TB_BOOKS, args, KEY_ROWID + "=" + rowId, null) > 0;

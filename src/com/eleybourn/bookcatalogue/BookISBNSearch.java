@@ -261,8 +261,8 @@ public class BookISBNSearch extends Activity {
 	public String[] searchGoogle(String mIsbn) {
 		String path = "http://books.google.com/books/feeds/volumes?q=ISBN";
 		URL url;
-		//String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num, list_price, anthology, location, read_start, read_end, audiobook, signed};
-		String[] book = {"", "", mIsbn, "", "", "0",  "", "", "", "", "", "", "0", "", "", "", "0", "0"};
+		//String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num, list_price, anthology, location, read_start, read_end, audiobook, signed, description, genre};
+		String[] book = {"", "", mIsbn, "", "", "0",  "", "", "", "", "", "", "0", "", "", "", "", "0", "", ""};
 		
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		SAXParser parser;
@@ -312,8 +312,8 @@ public class BookISBNSearch extends Activity {
 	 * @return The book array
 	 */
 	public String[] searchAmazon(String mIsbn) {
-		//String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num, list_price, anthology, location, read_start, read_end, audiobook, signed};
-		String[] book = {"", "", mIsbn, "", "", "0",  "", "", "", "", "", "", "0", "", "", "", "0", ""};
+		//String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num, list_price, anthology, location, read_start, read_end, audiobook, signed, description, genre};
+		String[] book = {"", "", mIsbn, "", "", "0",  "", "", "", "", "", "", "0", "", "", "", "", "0", "", ""};
 		String signedurl = "http://alphacomplex.org/getRest.php?isbn="+mIsbn;
 		URL url;
 		

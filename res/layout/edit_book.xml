@@ -85,17 +85,23 @@
 				android:nextFocusDown="@+id/date_published"
 				/>
 			
-			<TextView android:id="@+id/date_published_label" 
+			<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 				android:layout_width="fill_parent"
-				android:layout_height="wrap_content" 
-				android:text="@string/date_published" 
-				android:textSize="16sp" />
-			<DatePicker android:id="@+id/date_published" 
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content" 
-				android:layout_weight="1"
-				android:nextFocusDown="@+id/bookshelf"
-				/>
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				>
+				<Button android:id="@+id/date_published_button" 
+					android:layout_width="120dip"
+					android:layout_height="wrap_content" 
+					android:text="@string/date_published"
+					/>
+				<TextView android:id="@+id/date_published" 
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content" 
+					android:text="@string/notset" 
+					android:textAppearance="?android:attr/textAppearanceMedium"
+					/>
+			</LinearLayout>
 			
 			<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 				android:layout_width="fill_parent"
@@ -103,15 +109,15 @@
 				android:orientation="horizontal"
 				>
 				<Button android:id="@+id/bookshelf" 
-					android:layout_width="wrap_content"
+					android:layout_width="120dip"
 					android:layout_height="wrap_content" 
 					android:text="@string/bookshelves"
 					android:nextFocusDown="@+id/pages"
 					/>
-				
 				<TextView android:id="@+id/bookshelf_text" 
 					android:layout_width="fill_parent"
 					android:layout_height="wrap_content" 
+					android:textAppearance="?android:attr/textAppearanceMedium"
 					/>
 			</LinearLayout>
 			

@@ -106,16 +106,14 @@ public class BookCatalogue extends ExpandableListActivity {
 	
 	private static boolean shown = false;
 	private String justAdded = ""; 
+	public String search_query = "";
 	// These are the states that get saved onPause
 	private static final String STATE_SORT = "state_sort"; 
 	private static final String STATE_BOOKSHELF = "state_bookshelf"; 
 	private static final String STATE_LASTBOOK = "state_lastbook"; 
 	private static final String STATE_OPENED = "state_opened";
-	
 	private static final int GONE = 8;
 	private static final int VISIBLE = 0;
-	
-	//TODO: Change this to 10
 	private static final int BACKUP_PROMPT_WAIT = 5;
 	/** 
 	 * Called when the activity is first created. 
@@ -143,6 +141,14 @@ public class BookCatalogue extends ExpandableListActivity {
 			setContentView(R.layout.list_authors);
 			mDbHelper = new CatalogueDBAdapter(this);
 			mDbHelper.open();
+			
+			// Did the user search
+			Intent intent = getIntent();
+			if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+				// Return the search results instead of all books (for the bookshelf)
+				search_query = intent.getStringExtra(SearchManager.QUERY).trim();
+			}
+			
 			bookshelf();
 			//fillData();
 			if (!CatalogueDBAdapter.message.equals("")) {
@@ -304,25 +310,23 @@ public class BookCatalogue extends ExpandableListActivity {
 	 * Display the author view. This is a true expandableList. 
 	 */
 	private void fillDataAuthor() {
-		Intent intent = getIntent();
 		// base the layout and the query on the sort order
 		int layout = R.layout.row_authors;
 		int layout_child = R.layout.row_authors_books;
 		
 		// Get all of the rows from the database and create the item list
 		Cursor BooksCursor = null;
-		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-			// Return the search results instead of all books (for the bookshelf)
-			String query = intent.getStringExtra(SearchManager.QUERY);
-			BooksCursor = mDbHelper.searchAuthors(query, bookshelf);
-			numAuthors = BooksCursor.getCount();
-			Toast.makeText(this, numAuthors + " " + this.getResources().getString(R.string.results_found), Toast.LENGTH_LONG).show();
-			this.setTitle(R.string.search_title);
-		} else {
+		if (search_query.equals("")) {
 			// Return all books for the given bookshelf
 			BooksCursor = mDbHelper.fetchAllAuthors(bookshelf);
 			numAuthors = BooksCursor.getCount();
 			this.setTitle(R.string.app_name);
+		} else {
+			// Return the search results instead of all books (for the bookshelf)
+			BooksCursor = mDbHelper.searchAuthors(search_query, bookshelf);
+			numAuthors = BooksCursor.getCount();
+			Toast.makeText(this, numAuthors + " " + this.getResources().getString(R.string.results_found), Toast.LENGTH_LONG).show();
+			this.setTitle(R.string.search_title);
 		}
 		mGroupIdColumnIndex = BooksCursor.getColumnIndexOrThrow("_id");
 		startManagingCursor(BooksCursor);
@@ -445,25 +449,23 @@ public class BookCatalogue extends ExpandableListActivity {
 	 * Display the series view. This is a true expandableList. 
 	 */
 	private void fillDataSeries() {
-		Intent intent = getIntent();
 		// base the layout and the query on the sort order
 		int layout = R.layout.row_authors;
 		int layout_child = R.layout.row_series_books;
 		
 		// Get all of the rows from the database and create the item list
 		Cursor BooksCursor = null;
-		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-			// Return the search results instead of all books (for the bookshelf)
-			String query = intent.getStringExtra(SearchManager.QUERY);
-			BooksCursor = mDbHelper.searchSeries(query, bookshelf);
-			numAuthors = BooksCursor.getCount();
-			Toast.makeText(this, numAuthors + " " + this.getResources().getString(R.string.results_found), Toast.LENGTH_LONG).show();
-			this.setTitle(R.string.search_title);
-		} else {
+		if (search_query.equals("")) {
 			// Return all books for the given bookshelf
 			BooksCursor = mDbHelper.fetchAllSeries(bookshelf, true);
 			numAuthors = BooksCursor.getCount();
 			this.setTitle(R.string.app_name);
+		} else {
+			// Return the search results instead of all books (for the bookshelf)
+			BooksCursor = mDbHelper.searchSeries(search_query, bookshelf);
+			numAuthors = BooksCursor.getCount();
+			Toast.makeText(this, numAuthors + " " + this.getResources().getString(R.string.results_found), Toast.LENGTH_LONG).show();
+			this.setTitle(R.string.search_title);
 		}
 		mGroupIdColumnIndex = BooksCursor.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROWID);
 		startManagingCursor(BooksCursor);
@@ -587,7 +589,6 @@ public class BookCatalogue extends ExpandableListActivity {
 	 * to replicate a normal list (as we can't drill into a title).
 	 */
 	private void fillDataTitle() {
-		Intent intent = getIntent();
 		// base the layout and the query on the sort order
 		int layout = R.layout.row_books;
 		int layout_child = R.layout.row_books;
@@ -595,18 +596,17 @@ public class BookCatalogue extends ExpandableListActivity {
 		// Get all of the rows from the database and create the item list
 		Cursor BooksCursor = null;
 		String order = CatalogueDBAdapter.KEY_TITLE + ", " + CatalogueDBAdapter.KEY_FAMILY_NAME;
-		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-			// Return the search results instead of all books (for the bookshelf)
-			String query = intent.getStringExtra(SearchManager.QUERY);
-			BooksCursor = mDbHelper.searchBooks(query, order, bookshelf);
-			numAuthors = BooksCursor.getCount();
-			Toast.makeText(this, numAuthors + " " + this.getResources().getString(R.string.results_found), Toast.LENGTH_LONG).show();
-			this.setTitle(R.string.search_title);
-		} else {
+		if (search_query.equals("")) {
 			// Return all books (for the bookshelf)
 			BooksCursor = mDbHelper.fetchAllBooks(order, bookshelf);
 			numAuthors = BooksCursor.getCount();
 			this.setTitle(R.string.app_name);
+		} else {
+			// Return the search results instead of all books (for the bookshelf)
+			BooksCursor = mDbHelper.searchBooks(search_query, order, bookshelf);
+			numAuthors = BooksCursor.getCount();
+			Toast.makeText(this, numAuthors + " " + this.getResources().getString(R.string.results_found), Toast.LENGTH_LONG).show();
+			this.setTitle(R.string.search_title);
 		}
 		mGroupIdColumnIndex = BooksCursor.getColumnIndexOrThrow("_id");
 		startManagingCursor(BooksCursor);

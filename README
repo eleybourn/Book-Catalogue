@@ -46,6 +46,8 @@ New in v3.1
 * When adding books the current bookshelf will be selected as the default bookshelf
 * Genre/Subject and Description fields have been added (Requested by Tosh) and will automatically populate based on Google Books and Amazon information
 * The save button will always be visible on the edit book screen
+* Searching for a single space will clear the search results page
+* The Date Picker will now appear in a popup in order to save space on the screen
 
 New in v3.0.1
 * Export bug fixed

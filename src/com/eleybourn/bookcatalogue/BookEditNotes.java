@@ -22,8 +22,11 @@ package com.eleybourn.bookcatalogue;
 
 //import android.R;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -47,8 +50,8 @@ public class BookEditNotes extends Activity {
 	private CheckBox mReadText;
 	private EditText mNotesText;
 	private AutoCompleteTextView mLocationView;
-	private DatePicker mReadStartView;
-	private DatePicker mReadEndView;
+	private TextView mReadStartView;
+	private TextView mReadEndView;
 	private CheckBox mSignedView;
 	private Button mConfirmButton;
 	private Button mCancelButton;
@@ -71,7 +74,8 @@ public class BookEditNotes extends Activity {
 	private String genre;
 	
 	private static final int GONE = 8;
-	
+	private static final int READ_START_DIALOG_ID = 1;
+	private static final int READ_END_DIALOG_ID = 2;
 	protected void getRowId() {
 		/* Get any information from the extras bundle */
 		Bundle extras = getIntent().getExtras();
@@ -134,20 +138,30 @@ public class BookEditNotes extends Activity {
 				mLocationView.setVisibility(GONE);
 			}
 			
-			mReadStartView = (DatePicker) findViewById(R.id.read_start);
+			Button mReadStartButton = (Button) findViewById(R.id.read_start_button);
+			mReadStartButton.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View view) {
+					showDialog(READ_START_DIALOG_ID);
+				}
+			});
+			mReadStartView = (TextView) findViewById(R.id.read_start);
 			field_visibility = mPrefs.getBoolean(visibility_prefix + "read_start", true);
 			if (field_visibility == false) {
 				mReadStartView.setVisibility(GONE);
-				TextView mReadStartLabelView = (TextView) findViewById(R.id.read_start_label);
-				mReadStartLabelView.setVisibility(GONE);
+				mReadStartButton.setVisibility(GONE);
 			}
 			
-			mReadEndView = (DatePicker) findViewById(R.id.read_end);
+			Button mReadEndButton = (Button) findViewById(R.id.read_end_button);
+			mReadEndButton.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View view) {
+					showDialog(READ_END_DIALOG_ID);
+				}
+			});
+			mReadEndView = (TextView) findViewById(R.id.read_end);
 			field_visibility = mPrefs.getBoolean(visibility_prefix + "read_end", true);
 			if (field_visibility == false) {
 				mReadEndView.setVisibility(GONE);
-				TextView mReadEndLabelView = (TextView) findViewById(R.id.read_end_label);
-				mReadEndLabelView.setVisibility(GONE);
+				mReadEndButton.setVisibility(GONE);
 			}
 			
 			mSignedView = (CheckBox) findViewById(R.id.signed);
@@ -184,6 +198,85 @@ public class BookEditNotes extends Activity {
 		}
 	}
 	
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		switch (id) {
+		case READ_START_DIALOG_ID:
+			try {
+				String dateString = (String) mReadStartView.getText();
+				// get the current date
+				final Calendar c = Calendar.getInstance();
+				int yyyy = c.get(Calendar.YEAR);
+				int mm = c.get(Calendar.MONTH);
+				int dd = c.get(Calendar.DAY_OF_MONTH);
+				try {
+					String[] date = dateString.split("-");
+					yyyy = Integer.parseInt(date[0]);
+					mm = Integer.parseInt(date[1])-1;
+					dd = Integer.parseInt(date[2]);
+				} catch (Exception e) {
+					//do nothing
+				}
+				return new DatePickerDialog(this, mReadStartSetListener, yyyy, mm, dd);
+			} catch (Exception e) {
+				// use the default date
+			}
+			break;
+		case READ_END_DIALOG_ID:
+			try {
+				String dateString = (String) mReadEndView.getText();
+				// get the current date
+				final Calendar c = Calendar.getInstance();
+				int yyyy = c.get(Calendar.YEAR);
+				int mm = c.get(Calendar.MONTH);
+				int dd = c.get(Calendar.DAY_OF_MONTH);
+				try {
+					String[] date = dateString.split("-");
+					yyyy = Integer.parseInt(date[0]);
+					mm = Integer.parseInt(date[1])-1;
+					dd = Integer.parseInt(date[2]);
+				} catch (Exception e) {
+					//do nothing
+				}
+				return new DatePickerDialog(this, mReadEndSetListener, yyyy, mm, dd);
+			} catch (Exception e) {
+				// use the default date
+			}
+			break;
+		}
+		return null;
+	}	
+	// the callback received when the user "sets" the date in the dialog
+	private DatePickerDialog.OnDateSetListener mReadStartSetListener = new DatePickerDialog.OnDateSetListener() {
+		public void onDateSet(DatePicker view, int year, int month, int day) {
+			month = month + 1;
+			String mm = month + "";
+			if (mm.length() == 1) {
+				mm = "0" + mm;
+			}
+			String dd = day + "";
+			if (dd.length() == 1) {
+				dd = "0" + dd;
+			}
+			mReadStartView.setText(year + "-" + mm + "-" + dd);
+		}
+	};
+	// the callback received when the user "sets" the date in the dialog
+	private DatePickerDialog.OnDateSetListener mReadEndSetListener = new DatePickerDialog.OnDateSetListener() {
+		public void onDateSet(DatePicker view, int year, int month, int day) {
+			month = month + 1;
+			String mm = month + "";
+			if (mm.length() == 1) {
+				mm = "0" + mm;
+			}
+			String dd = day + "";
+			if (dd.length() == 1) {
+				dd = "0" + dd;
+			}
+			mReadEndView.setText(year + "-" + mm + "-" + dd);
+		}
+	};
+	
 	private void populateFields() {
 		if (mRowId == null) {
 			getRowId();
@@ -203,23 +296,39 @@ public class BookEditNotes extends Activity {
 			mReadText.setChecked((book.getInt(book.getColumnIndex(CatalogueDBAdapter.KEY_READ))==0? false:true) );
 			mNotesText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_NOTES)));
 			mLocationView.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOCATION)));
+			String[] start_date = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_START)).split("-");
 			try {
-				String[] s_date = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_START)).split("-");
-				int s_yyyy = Integer.parseInt(s_date[0]);
-				int s_mm = Integer.parseInt(s_date[1]);
-				int s_dd = Integer.parseInt(s_date[2]);
-				mReadStartView.updateDate(s_yyyy, s_mm, s_dd);
+				String yyyy = start_date[0];
+				int month = Integer.parseInt(start_date[1]);
+				month = month + 1;
+				String mm = month + "";
+				if (mm.length() == 1) {
+					mm = "0" + mm;
+				}
+				String dd = start_date[2];
+				if (dd.length() == 1) {
+					dd = "0" + dd;
+				}
+				mReadStartView.setText(yyyy + "-" + mm + "-" + dd);
 			} catch (Exception e) {
-				//Keep the default date - which is now()
+				
 			}
+			String[] end_date = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_END)).split("-");
 			try {
-				String[] e_date = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_END)).split("-");
-				int e_yyyy = Integer.parseInt(e_date[0]);
-				int e_mm = Integer.parseInt(e_date[1]);
-				int e_dd = Integer.parseInt(e_date[2]);
-				mReadEndView.updateDate(e_yyyy, e_mm, e_dd);
+				String yyyy = end_date[0];
+				int month = Integer.parseInt(end_date[1]);
+				month = month + 1;
+				String mm = month + "";
+				if (mm.length() == 1) {
+					mm = "0" + mm;
+				}
+				String dd = end_date[2];
+				if (dd.length() == 1) {
+					dd = "0" + dd;
+				}
+				mReadEndView.setText(yyyy + "-" + mm + "-" + dd);
 			} catch (Exception e) {
-				// Keep the default date - which is now()
+				
 			}
 			mSignedView.setChecked((book.getInt(book.getColumnIndex(CatalogueDBAdapter.KEY_SIGNED))==0? false:true) );
 			mConfirmButton.setText(R.string.confirm_save);
@@ -267,14 +376,28 @@ public class BookEditNotes extends Activity {
 		boolean read = mReadText.isChecked();
 		String notes = mNotesText.getText().toString();
 		String location = mLocationView.getText().toString();
-		int s_yyyy =  mReadStartView.getYear();
-		int s_mm =  mReadStartView.getMonth();
-		int s_dd =  mReadStartView.getDayOfMonth();
-		String read_start = s_yyyy + "-" + s_mm + "-" + s_dd;
-		int e_yyyy =  mReadEndView.getYear();
-		int e_mm =  mReadEndView.getMonth();
-		int e_dd =  mReadEndView.getDayOfMonth();
-		String read_end = e_yyyy + "-" + e_mm + "-" + e_dd;
+		String read_start = "";
+		try {
+			read_start = (String) mReadStartView.getText();
+			String[] date = read_start.split("-");
+			int yyyy = Integer.parseInt(date[0]);
+			int mm = Integer.parseInt(date[1])-1;
+			int dd = Integer.parseInt(date[2]);
+			read_start = yyyy + "-" + mm + "-" + dd;
+		} catch (Exception e) {
+			//do nothing
+		}
+		String read_end = "";
+		try {
+			read_end = (String) mReadEndView.getText();
+			String[] date = read_end.split("-");
+			int yyyy = Integer.parseInt(date[0]);
+			int mm = Integer.parseInt(date[1])-1;
+			int dd = Integer.parseInt(date[2]);
+			read_end = yyyy + "-" + mm + "-" + dd;
+		} catch (Exception e) {
+			//do nothing
+		}
 		boolean signed = mSignedView.isChecked();
 		
 		if (mRowId == null || mRowId == 0) {

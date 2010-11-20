@@ -49,28 +49,41 @@
 				android:hint="@string/signed"
 				/>
 			
-			<TextView android:id="@+id/read_start_label" 
+			<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 				android:layout_width="fill_parent"
-				android:layout_height="wrap_content" 
-				android:text="@string/read_start" 
-				android:textSize="16sp" />
-			<DatePicker android:id="@+id/read_start" 
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content" 
-				android:layout_weight="1"
-				/>
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				>
+				<Button android:id="@+id/read_start_button" 
+					android:layout_width="120dip"
+					android:layout_height="wrap_content" 
+					android:text="@string/read_start"
+					/>
+				<TextView android:id="@+id/read_start" 
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content" 
+					android:text="@string/notset" 
+					android:textAppearance="?android:attr/textAppearanceMedium"
+					/>
+			</LinearLayout>
 			
-			<TextView android:id="@+id/read_end_label" 
+			<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 				android:layout_width="fill_parent"
-				android:layout_height="wrap_content" 
-				android:text="@string/read_end" 
-				android:textSize="16sp" />
-			<DatePicker android:id="@+id/read_end" 
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content" 
-				android:layout_weight="1"
-				android:nextFocusDown="@+id/bookshelf"
-				/>
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				>
+				<Button android:id="@+id/read_end_button" 
+					android:layout_width="120dip"
+					android:layout_height="wrap_content" 
+					android:text="@string/read_end"
+					/>
+				<TextView android:id="@+id/read_end" 
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content" 
+					android:text="@string/notset" 
+					android:textAppearance="?android:attr/textAppearanceMedium"
+					/>
+			</LinearLayout>
 				
 			<AutoCompleteTextView android:id="@+id/location" 
 				android:layout_width="fill_parent"

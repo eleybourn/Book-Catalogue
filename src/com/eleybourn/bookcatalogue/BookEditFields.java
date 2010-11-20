@@ -27,8 +27,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TabActivity;
 import android.content.Intent;
@@ -68,7 +70,7 @@ public class BookEditFields extends Activity {
 	private EditText mTitleText;
 	private EditText mIsbnText;
 	private AutoCompleteTextView mPublisherText;
-	private DatePicker mDate_publishedText;
+	private TextView mDate_publishedText;
 	private Button mBookshelfButton;
 	private TextView mBookshelfText;
 	private AutoCompleteTextView mSeriesText;
@@ -108,6 +110,7 @@ public class BookEditFields extends Activity {
 	private static final int ROTATE_THUMBNAIL = 3;
 	private static final int ADD_GALLERY = 4;
 	private static final int GONE = 8;
+	private static final int DATE_DIALOG_ID = 1;
 	
 	public static final String BOOKSHELF_SEPERATOR = ", ";
 	
@@ -201,11 +204,16 @@ public class BookEditFields extends Activity {
 				mPublisherText.setVisibility(GONE);
 			}
 			
-			mDate_publishedText = (DatePicker) findViewById(R.id.date_published);
+			Button mDate_publishedButton = (Button) findViewById(R.id.date_published_button);
+			mDate_publishedButton.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View view) {
+					showDialog(DATE_DIALOG_ID);
+				}
+			});
+			mDate_publishedText = (TextView) findViewById(R.id.date_published);
 			field_visibility = mPrefs.getBoolean(visibility_prefix + "date_published", true);
 			if (field_visibility == false) {
-				TextView mDate_publishedLabel = (TextView) findViewById(R.id.date_published_label);
-				mDate_publishedLabel.setVisibility(GONE);
+				mDate_publishedButton.setVisibility(GONE);
 				mDate_publishedText.setVisibility(GONE);
 			}
 			
@@ -326,10 +334,6 @@ public class BookEditFields extends Activity {
 										int index = text.indexOf(name);
 										if (index > -1) {
 											text = text.substring(0, index) + text.substring(index + name.length());
-											//TODO Remove this code
-											//if (text == null) {
-											//	text = "";
-											//}
 										}
 										mBookshelfText.setText(text);
 									}
@@ -420,6 +424,48 @@ public class BookEditFields extends Activity {
 			//Log.e("Book Catalogue", "Unknown error " + e.toString());
 		}
 	}
+	
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		switch (id) {
+		case DATE_DIALOG_ID:
+			try {
+				String dateString = (String) mDate_publishedText.getText();
+				// get the current date
+				final Calendar c = Calendar.getInstance();
+				int yyyy = c.get(Calendar.YEAR);
+				int mm = c.get(Calendar.MONTH);
+				int dd = c.get(Calendar.DAY_OF_MONTH);
+				try {
+					String[] date = dateString.split("-");
+					yyyy = Integer.parseInt(date[0]);
+					mm = Integer.parseInt(date[1])-1;
+					dd = Integer.parseInt(date[2]);
+				} catch (Exception e) {
+					//do nothing
+				}
+				return new DatePickerDialog(this, mDateSetListener, yyyy, mm, dd);
+			} catch (Exception e) {
+				// use the default date
+			}
+		}
+		return null;
+	}	
+	// the callback received when the user "sets" the date in the dialog
+	private DatePickerDialog.OnDateSetListener mDateSetListener = new DatePickerDialog.OnDateSetListener() {
+		public void onDateSet(DatePicker view, int year, int month, int day) {
+			month = month + 1;
+			String mm = month + "";
+			if (mm.length() == 1) {
+				mm = "0" + mm;
+			}
+			String dd = day + "";
+			if (dd.length() == 1) {
+				dd = "0" + dd;
+			}
+			mDate_publishedText.setText(year + "-" + mm + "-" + dd);
+		}
+	};
 	
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
@@ -514,14 +560,22 @@ public class BookEditFields extends Activity {
 			mTitleText.setText(title);
 			mIsbnText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ISBN)));
 			mPublisherText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PUBLISHER)));
+			String[] date = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DATE_PUBLISHED)).split("-");
 			try {
-				String[] date = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DATE_PUBLISHED)).split("-");
-				int yyyy = Integer.parseInt(date[0]);
-				int mm = Integer.parseInt(date[1]);
-				int dd = Integer.parseInt(date[2]);
-				mDate_publishedText.updateDate(yyyy, mm, dd);
+				String yyyy = date[0];
+				int month = Integer.parseInt(date[1]);
+				month = month + 1;
+				String mm = month + "";
+				if (mm.length() == 1) {
+					mm = "0" + mm;
+				}
+				String dd = date[2];
+				if (dd.length() == 1) {
+					dd = "0" + dd;
+				}
+				mDate_publishedText.setText(yyyy + "-" + mm + "-" + dd);
 			} catch (Exception e) {
-				// use the default date
+				
 			}
 			
 			//Display the selected bookshelves
@@ -619,11 +673,7 @@ public class BookEditFields extends Activity {
 				mIsbnText.setText(book[2]);
 				mPublisherText.setText(book[3]);
 				try {
-					String[] date = book[4].split("-");
-					int yyyy = Integer.parseInt(date[0]);
-					int mm = Integer.parseInt(date[1])-1;
-					int dd = Integer.parseInt(date[2]);
-					mDate_publishedText.updateDate(yyyy, mm, dd);
+					mDate_publishedText.setText(book[4]);
 				} catch (ArrayIndexOutOfBoundsException e) {
 					//do nothing
 				} catch (NumberFormatException e) {
@@ -789,10 +839,17 @@ public class BookEditFields extends Activity {
 		
 		String isbn = mIsbnText.getText().toString();
 		String publisher = mPublisherText.getText().toString();
-		int yyyy =  mDate_publishedText.getYear();
-		int mm =  mDate_publishedText.getMonth();
-		int dd =  mDate_publishedText.getDayOfMonth();
-		String date_published = yyyy + "-" + mm + "-" + dd;
+		String date_published = "";
+		try {
+			date_published = (String) mDate_publishedText.getText();
+			String[] date = date_published.split("-");
+			int yyyy = Integer.parseInt(date[0]);
+			int mm = Integer.parseInt(date[1])-1;
+			int dd = Integer.parseInt(date[2]);
+			date_published = yyyy + "-" + mm + "-" + dd;
+		} catch (Exception e) {
+			//do nothing
+		}
 		String bookshelf = mBookshelfText.getText().toString(); 
 		String series = mSeriesText.getText().toString();
 		String series_num = mSeriesNumText.getText().toString();

@@ -867,7 +867,12 @@ public class BookEditFields extends Activity {
 		} catch (NumberFormatException e) {
 			pages = 0;
 		}
-		String format = spinnerAdapter.getItem(mFormatText.getSelectedItemPosition());
+		String format = "";
+		try {
+			format = spinnerAdapter.getItem(mFormatText.getSelectedItemPosition());
+		} catch (IndexOutOfBoundsException e) {
+			//do nothing - format is hidden
+		}
 		String description = mDescriptionText.getText().toString();
 		String genre = mGenreText.getText().toString();
 		

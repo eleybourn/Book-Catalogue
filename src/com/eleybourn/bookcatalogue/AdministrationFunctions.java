@@ -110,9 +110,9 @@ public class AdministrationFunctions extends Activity {
 				if (extras.getString(DOAUTO).equals("export")) {
 					finish_after = true;
 					exportData();
-				//} else if (extras.getString(DOAUTO).equals("import")) {
-				//	finish_after = true;
-				//	importData();
+				} else if (extras.getString(DOAUTO).equals("update_fields")) {
+					finish_after = true;
+					updateThumbnails(false);
 				}
 			} catch (NullPointerException e) {
 				//do nothing
@@ -262,7 +262,7 @@ public class AdministrationFunctions extends Activity {
 			mHandler.sendMessage(msg);
 			return;
 		}
-
+		
 		@Override
 		public void run() {
 			Looper.prepare();
@@ -281,9 +281,35 @@ public class AdministrationFunctions extends Activity {
 			int num = 0;
 			try {
 				while (books.moveToNext()) {
-					int id = books.getInt(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROWID));
+					long id = books.getLong(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROWID));
 					String isbn = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ISBN));
 					String title = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE));
+					String genre = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_GENRE));
+					String description = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DESCRIPTION));
+					
+					String author = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED));
+					String publisher = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PUBLISHER));
+					String date_published = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DATE_PUBLISHED));
+					String series = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES));
+					String series_num = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES_NUM));
+					String list_price = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LIST_PRICE));
+					int pages = books.getInt(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PAGES));
+					String format = books.getString(books.getColumnIndex(CatalogueDBAdapter.KEY_FORMAT));
+					int anthology = books.getInt(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
+					float rating = books.getFloat(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_RATING));
+					
+					//Display the selected bookshelves
+					Cursor bookshelves = mDbHelper.fetchAllBookshelvesByBook(id);
+					String bookshelf = "";
+					while (bookshelves.moveToNext()) {
+						bookshelf += bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)) + BookEditFields.BOOKSHELF_SEPERATOR;
+					}
+					boolean read = (books.getInt(books.getColumnIndex(CatalogueDBAdapter.KEY_READ))==0 ? false:true);
+					String notes = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_NOTES));
+					String location = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOCATION));
+					String read_start = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_START));
+					String read_end = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_END));
+					boolean signed = (books.getInt(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SIGNED))==0 ? false:true);
 					
 					num++;
 					// delete any tmp thumbnails //
@@ -294,24 +320,41 @@ public class AdministrationFunctions extends Activity {
 						// do nothing - this is the expected behaviour 
 					}
 					
+					String[] book = null;
 					File thumb = CatalogueDBAdapter.fetchThumbnail(id);
-					if ((overwrite == true || !thumb.exists()) && !isbn.equals("")) {
+					if (isbn.equals("")) {
+						// Must have an ISBN to be able to search
+						sendMessage(num, "Skip - " + title);
+					} else if (overwrite == true || !thumb.exists() || genre.equals("") || description.equals("")) {
 						sendMessage(num, title);
 						BookISBNSearch bis = new BookISBNSearch();
-						bis.searchAmazon(isbn);
+						//String[] book = {0=author, 1=title, 2=isbn, 3=publisher, 4=date_published, 5=rating,  6=bookshelf, 
+						//	7=read, 8=series, 9=pages, 10=series_num, 11=list_price, 12=anthology, 13=location, 14=read_start, 
+						//	15=read_end, 16=audiobook, 17=signed, 18=description, 19=genre};
+						book = bis.searchAmazon(isbn);
 						File tmpthumb = CatalogueDBAdapter.fetchThumbnail(0);
 						/* If amazon fails, try google books */
 						if (!tmpthumb.exists()) {
-							bis.searchGoogle(isbn);
+							book = bis.searchGoogle(isbn);
 							tmpthumb = CatalogueDBAdapter.fetchThumbnail(0);
 						}
 						
 						/* Copy tmpthumb over realthumb */
-						try {
-							tmpthumb.renameTo(thumb);
-						} catch (Exception e) {
-							//do nothing
+						if (overwrite == true || !thumb.exists()) {
+							try {
+								tmpthumb.renameTo(thumb);
+							} catch (Exception e) {
+								//do nothing
+							}
 						}
+						
+						if (description.equals("")) {
+							description = book[18];
+						}
+						if (genre.equals("")) {
+							genre = book[19];
+						}
+						mDbHelper.updateBook(id, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, format, signed, description, genre);
 						
 					} else {
 						sendMessage(num, "Skip - " + title);

@@ -218,7 +218,7 @@ public class BookISBNSearch extends Activity {
 			}
 			
 			/* Format the output 
-			 * String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num, list_price, anthology, location, read_start, read_end, audiobook, signed};
+			 * String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num, list_price, anthology, location, read_start, read_end, audiobook, signed, description, genre};
 			 */
 			if (book[0] == "" && book[1] == "") {
 				Toast.makeText(this, R.string.book_not_found, Toast.LENGTH_LONG).show();

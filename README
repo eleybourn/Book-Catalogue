@@ -44,7 +44,8 @@ Features include;
 New in v3.1
 * The audiobook checkbox has been replaced with a format selector (inc. paperback, hardcover, companion etc)
 * When adding books the current bookshelf will be selected as the default bookshelf
-* Genre/Subject and Description fields have been added (Requested by Tosh)
+* Genre/Subject and Description fields have been added (Requested by Tosh) and will automatically populate based on Google Books and Amazon information
+* The save button will always be visible on the edit book screen
 
 New in v3.0.1
 * Export bug fixed

@@ -85,6 +85,8 @@ public class CatalogueDBAdapter {
 	private static final String DB_TB_ANTHOLOGY = "anthology";
 	private static final String DB_TB_BOOK_BOOKSHELF_WEAK = "book_bookshelf_weak";
 	public static String message = "";
+	public static String do_action = "";
+	public static String DO_UPDATE_FIELDS = "do_update_fields";
 	
 	public static final int ANTHOLOGY_NO = 0;
 	public static final int ANTHOLOGY_SAME_AUTHOR = 1;
@@ -201,7 +203,7 @@ public class CatalogueDBAdapter {
 	
 	
 	private final Context mCtx;
-	public static final int DATABASE_VERSION = 47;
+	public static final int DATABASE_VERSION = 48;
 	
 	/**
 	 * This is a specific version of the SQLiteOpenHelper class. It handles onCreate and onUpgrade events
@@ -582,6 +584,15 @@ public class CatalogueDBAdapter {
 				curVersion++;
 				db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " ADD " + KEY_DESCRIPTION + " text");
 				db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " ADD " + KEY_GENRE + " text");
+			}
+			if (curVersion == 47) {
+				curVersion++;
+				do_action = DO_UPDATE_FIELDS;
+				message += "New in v3.1\n\n";
+				message += "* The audiobook checkbox has been replaced with a format selector (inc. paperback, hardcover, companion etc)\n\n";
+				message += "* When adding books the current bookshelf will be selected as the default bookshelf\n\n";
+				message += "* Genre/Subject and Description fields have been added (Requested by Tosh) and will automatically populate based on Google Books and Amazon information\n\n";
+				message += "* The save button will always be visible on the edit book screen\n\n";
 			}
 		}
 	}

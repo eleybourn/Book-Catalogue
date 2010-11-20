@@ -90,8 +90,8 @@
 <string name="list_price">List Price</string>
 <string name="date_started_reading">Date Started Reading</string>
 <string name="date_finished_reading">Date Finished Reading</string>
-<string name="update_thumbnails">Update Thumbnails</string>
-<string name="overwrite_thumbnail">Do you want to overwrite all existing thumbnails. Warning, this may take a long time. </string>
+<string name="update_thumbnails">Automatically Update Fields and Thumbnails</string>
+<string name="overwrite_thumbnail">This will update the following fields (only if blank) \n* Genre \n* Description \n* Thumbnails\n\nThumbnails Only: Do you want to overwrite all existing. Warning, this may take a long time. </string>
 <string name="yes">Yes</string>
 <string name="no">No</string>
 <string name="ok">OK</string>
@@ -214,4 +214,5 @@
 <string name="guide">Guide / Companion</string>
 <string name="description">Description</string>
 <string name="genre">Genre</string>
+<string name="auto_update">Would you like to automatically update the following fields now \n* Genre \n* Description \n* Thumbnails\n\n If you select Cancel you can always run this again from the Administration page</string>
 </resources>

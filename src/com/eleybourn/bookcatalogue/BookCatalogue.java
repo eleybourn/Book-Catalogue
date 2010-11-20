@@ -148,6 +148,25 @@ public class BookCatalogue extends ExpandableListActivity {
 			if (!CatalogueDBAdapter.message.equals("")) {
 				upgradePopup(CatalogueDBAdapter.message);
 			}
+			if (CatalogueDBAdapter.do_action.equals(CatalogueDBAdapter.DO_UPDATE_FIELDS)) {
+				AlertDialog alertDialog = new AlertDialog.Builder(BookCatalogue.this).setMessage(R.string.auto_update).create();
+				alertDialog.setTitle(R.string.import_data);
+				alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
+				alertDialog.setButton(BookCatalogue.this.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						adminPage("update_fields", ACTIVITY_ADMIN);
+						return;
+					}
+				}); 
+				alertDialog.setButton2(BookCatalogue.this.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						//do nothing
+						return;
+					}
+				}); 
+				alertDialog.show();
+				return;
+			}
 			registerForContextMenu(getExpandableListView());
 		} catch (Exception e) {
 			//Log.e("Book Catalogue", "Unknown Exception - BC onCreate - " + e.getMessage() );

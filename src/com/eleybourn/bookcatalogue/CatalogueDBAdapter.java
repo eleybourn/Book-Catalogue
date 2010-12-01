@@ -547,10 +547,10 @@ public class CatalogueDBAdapter {
 				//do nothing
 				curVersion++;
 				db.execSQL("CREATE TABLE tmp1 AS SELECT _id, " + KEY_AUTHOR + ", " + KEY_TITLE + ", " + KEY_ISBN + ", " + KEY_PUBLISHER + ", " + 
-					KEY_DATE_PUBLISHED + ", " + KEY_RATING + ", " + KEY_READ + ", " + KEY_SERIES + ", " + KEY_PAGES + ", " + KEY_SERIES_NUM + ", " + KEY_NOTES + ", " + 
-					KEY_LIST_PRICE + ", " + KEY_ANTHOLOGY + ", " + KEY_LOCATION + ", " + KEY_READ_START + ", " + KEY_READ_END + ", " +
-					"CASE WHEN " + OLD_KEY_AUDIOBOOK + "='t' THEN 'Audiobook' ELSE 'Paperback' END AS " + OLD_KEY_AUDIOBOOK + ", " + 
-					KEY_SIGNED + " FROM " + DB_TB_BOOKS);
+						KEY_DATE_PUBLISHED + ", " + KEY_RATING + ", " + KEY_READ + ", " + KEY_SERIES + ", " + KEY_PAGES + ", " + KEY_SERIES_NUM + ", " + KEY_NOTES + ", " + 
+						KEY_LIST_PRICE + ", " + KEY_ANTHOLOGY + ", " + KEY_LOCATION + ", " + KEY_READ_START + ", " + KEY_READ_END + ", " +
+						"CASE WHEN " + OLD_KEY_AUDIOBOOK + "='t' THEN 'Audiobook' ELSE 'Paperback' END AS " + OLD_KEY_AUDIOBOOK + ", " + 
+						KEY_SIGNED + ", null, null FROM " + DB_TB_BOOKS);
 				db.execSQL("CREATE TABLE tmp2 AS SELECT _id, " + KEY_BOOK + ", " + KEY_LOANED_TO + " FROM " + DB_TB_LOAN );
 				db.execSQL("CREATE TABLE tmp3 AS SELECT _id, " + KEY_BOOK + ", " + KEY_AUTHOR + ", " + KEY_TITLE + ", " + KEY_POSITION + " FROM " + DB_TB_ANTHOLOGY);
 				db.execSQL("CREATE TABLE tmp4 AS SELECT " + KEY_BOOK + ", " + KEY_BOOKSHELF+ " FROM " + DB_TB_BOOK_BOOKSHELF_WEAK);
@@ -560,7 +560,31 @@ public class CatalogueDBAdapter {
 				db.execSQL("DROP TABLE " + DB_TB_BOOKS);
 				db.execSQL("DROP TABLE " + DB_TB_BOOK_BOOKSHELF_WEAK);
 				
-				db.execSQL(DATABASE_CREATE_BOOKS);
+				String TMP_DATABASE_CREATE_BOOKS =
+					"create table " + DB_TB_BOOKS + 
+					" (_id integer primary key autoincrement, " +
+					KEY_AUTHOR + " integer not null REFERENCES " + DB_TB_AUTHORS + ", " + 
+					KEY_TITLE + " text not null, " +
+					KEY_ISBN + " text, " +
+					KEY_PUBLISHER + " text, " +
+					KEY_DATE_PUBLISHED + " date, " +
+					KEY_RATING + " float not null default 0, " +
+					KEY_READ + " boolean not null default 'f', " +
+					KEY_SERIES + " text, " +
+					KEY_PAGES + " int, " +
+					KEY_SERIES_NUM + " text, " +
+					KEY_NOTES + " text, " +
+					KEY_LIST_PRICE + " text, " +
+					KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO + ", " + 
+					KEY_LOCATION + " text, " +
+					KEY_READ_START + " date, " +
+					KEY_READ_END + " date, " +
+					KEY_FORMAT + " text, " +
+					KEY_SIGNED + " boolean not null default 'f' " +
+					")";
+
+				
+				db.execSQL(TMP_DATABASE_CREATE_BOOKS);
 				db.execSQL(DATABASE_CREATE_LOAN);
 				db.execSQL(DATABASE_CREATE_ANTHOLOGY);
 				db.execSQL(DATABASE_CREATE_BOOK_BOOKSHELF_WEAK);

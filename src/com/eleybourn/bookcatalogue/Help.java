@@ -53,12 +53,14 @@ public class Help extends Activity {
 			setContentView(R.layout.help);
 			res = getResources();
 			
+			/*
 			ScrollView container = (ScrollView) findViewById(R.id.help_container);
 			int Rid = 0;
 			if (Rid > 0) {
 				LinearLayout ll = (LinearLayout) findViewById(Rid);
 				container.requestChildFocus(ll, ll);
 			}
+			*/
 			
 			TextView nutshell = (TextView) findViewById(R.id.nutshell_link);
 			nutshell.setOnClickListener(new OnClickListener() {

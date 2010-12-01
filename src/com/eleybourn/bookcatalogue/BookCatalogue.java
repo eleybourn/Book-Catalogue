@@ -1526,16 +1526,18 @@ public class BookCatalogue extends ExpandableListActivity {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			int opened = mPrefs.getInt(STATE_OPENED, BACKUP_PROMPT_WAIT);
-			SharedPreferences.Editor ed = mPrefs.edit();
-			if (opened == 0){
-				ed.putInt(STATE_OPENED, BACKUP_PROMPT_WAIT);
-				ed.commit();
-				backupPopup();
-				return true;
-			} else {
-				ed.putInt(STATE_OPENED, opened - 1);
-				ed.commit();
+			if (search_query.equals("")) {
+				int opened = mPrefs.getInt(STATE_OPENED, BACKUP_PROMPT_WAIT);
+				SharedPreferences.Editor ed = mPrefs.edit();
+				if (opened == 0){
+					ed.putInt(STATE_OPENED, BACKUP_PROMPT_WAIT);
+					ed.commit();
+					backupPopup();
+					return true;
+				} else {
+					ed.putInt(STATE_OPENED, opened - 1);
+					ed.commit();
+				}
 			}
 		}
 		return super.onKeyDown(keyCode, event);

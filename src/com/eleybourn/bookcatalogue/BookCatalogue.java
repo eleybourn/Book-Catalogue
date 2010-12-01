@@ -22,6 +22,7 @@ package com.eleybourn.bookcatalogue;
 
 //import android.R;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 
 import android.app.AlertDialog;
@@ -35,22 +36,26 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
+import android.widget.ExpandableListView.OnGroupClickListener;
+import android.widget.ExpandableListView.OnGroupCollapseListener;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -58,10 +63,6 @@ import android.widget.SimpleCursorTreeAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
-import android.widget.ExpandableListView.OnGroupClickListener;
-import android.widget.ExpandableListView.OnGroupCollapseListener;
 
 /*
  * A book catalogue application that integrates with Google Books.
@@ -100,7 +101,6 @@ public class BookCatalogue extends ExpandableListActivity {
 	private static final int SORT_SERIES = 2; 
 	private static final int SORT_LOAN = 3; 
 	private static final int SORT_UNREAD = 4;
-	public int numAuthors = 0;
 	private ArrayList<Integer> currentGroup = new ArrayList<Integer>();
 	private boolean expanded = false;
 	
@@ -147,6 +147,9 @@ public class BookCatalogue extends ExpandableListActivity {
 			if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 				// Return the search results instead of all books (for the bookshelf)
 				search_query = intent.getStringExtra(SearchManager.QUERY).trim();
+				if (search_query.equals(".")) {
+					search_query = "";
+				}
 			}
 			
 			bookshelf();
@@ -284,6 +287,7 @@ public class BookCatalogue extends ExpandableListActivity {
 	 * Select between the different fillData function based on the sort parameter
 	 */
 	private void fillData() {
+		Log.e("BC", "FILLDATA");
 		if (sort == SORT_TITLE) {
 			fillDataTitle();
 		} else if (sort == SORT_AUTHOR) {
@@ -296,10 +300,6 @@ public class BookCatalogue extends ExpandableListActivity {
 			fillDataUnread();
 		}
 		gotoCurrentGroup();
-		//undo any expansion that has occurred for non expandable lists
-		if (sort == SORT_TITLE) {
-			collapseAll(false);
-		}
 		/* Add number to bookshelf */
 		TextView mBookshelfNumView = (TextView) findViewById(R.id.bookshelf_num);
 		int numBooks = mDbHelper.countBooks(bookshelf);
@@ -319,12 +319,11 @@ public class BookCatalogue extends ExpandableListActivity {
 		if (search_query.equals("")) {
 			// Return all books for the given bookshelf
 			BooksCursor = mDbHelper.fetchAllAuthors(bookshelf);
-			numAuthors = BooksCursor.getCount();
 			this.setTitle(R.string.app_name);
 		} else {
 			// Return the search results instead of all books (for the bookshelf)
 			BooksCursor = mDbHelper.searchAuthors(search_query, bookshelf);
-			numAuthors = BooksCursor.getCount();
+			int numAuthors = BooksCursor.getCount();
 			Toast.makeText(this, numAuthors + " " + this.getResources().getString(R.string.results_found), Toast.LENGTH_LONG).show();
 			this.setTitle(R.string.search_title);
 		}
@@ -458,12 +457,11 @@ public class BookCatalogue extends ExpandableListActivity {
 		if (search_query.equals("")) {
 			// Return all books for the given bookshelf
 			BooksCursor = mDbHelper.fetchAllSeries(bookshelf, true);
-			numAuthors = BooksCursor.getCount();
 			this.setTitle(R.string.app_name);
 		} else {
 			// Return the search results instead of all books (for the bookshelf)
 			BooksCursor = mDbHelper.searchSeries(search_query, bookshelf);
-			numAuthors = BooksCursor.getCount();
+			int numAuthors = BooksCursor.getCount();
 			Toast.makeText(this, numAuthors + " " + this.getResources().getString(R.string.results_found), Toast.LENGTH_LONG).show();
 			this.setTitle(R.string.search_title);
 		}
@@ -590,61 +588,69 @@ public class BookCatalogue extends ExpandableListActivity {
 	 */
 	private void fillDataTitle() {
 		// base the layout and the query on the sort order
-		int layout = R.layout.row_books;
+		int layout = R.layout.row_authors;
 		int layout_child = R.layout.row_books;
 		
 		// Get all of the rows from the database and create the item list
 		Cursor BooksCursor = null;
 		String order = CatalogueDBAdapter.KEY_TITLE + ", " + CatalogueDBAdapter.KEY_FAMILY_NAME;
+		Log.e("BC", "S2:               " + Calendar.getInstance().getTimeInMillis() + "\t");
 		if (search_query.equals("")) {
 			// Return all books (for the bookshelf)
-			BooksCursor = mDbHelper.fetchAllBooks(order, bookshelf);
-			numAuthors = BooksCursor.getCount();
+			Log.e("BC", "S3:               " + Calendar.getInstance().getTimeInMillis() + "\t");
+			BooksCursor = mDbHelper.fetchAllBookChars(order, bookshelf);
+			Log.e("BC", "S4:               " + Calendar.getInstance().getTimeInMillis() + "\t");
 			this.setTitle(R.string.app_name);
 		} else {
 			// Return the search results instead of all books (for the bookshelf)
-			BooksCursor = mDbHelper.searchBooks(search_query, order, bookshelf);
-			numAuthors = BooksCursor.getCount();
+			BooksCursor = mDbHelper.searchBooksChars(search_query, order, bookshelf);
+			int numAuthors = BooksCursor.getCount();
 			Toast.makeText(this, numAuthors + " " + this.getResources().getString(R.string.results_found), Toast.LENGTH_LONG).show();
 			this.setTitle(R.string.search_title);
 		}
+		Log.e("BC", "S6:               " + Calendar.getInstance().getTimeInMillis() + "\t");
 		mGroupIdColumnIndex = BooksCursor.getColumnIndexOrThrow("_id");
 		startManagingCursor(BooksCursor);
+		Log.e("BC", "Database Done:    " + Calendar.getInstance().getTimeInMillis() + "\t");
 		
 		// Create an array to specify the fields we want to display in the list
-		String[] from = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_PUBLISHER, CatalogueDBAdapter.KEY_SERIES_FORMATTED};
-		String[] exp_from = new String[]{};
+		String[] from = new String[]{CatalogueDBAdapter.KEY_ROWID};
+		String[] exp_from = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_PUBLISHER, CatalogueDBAdapter.KEY_SERIES_FORMATTED};
 		
 		// and an array of the fields we want to bind those fields to (in this case just text1)
-		int[] to = new int[]{R.id.row_img, R.id.row_author, R.id.row_title, R.id.row_publisher, R.id.row_series};
-		int[] exp_to = new int[]{};
+		int[] to = new int[]{R.id.row_family};
+		int[] exp_to = new int[]{R.id.row_img, R.id.row_author, R.id.row_title, R.id.row_publisher, R.id.row_series};
 		
+		Log.e("BC", "Set Vars:         " + Calendar.getInstance().getTimeInMillis() + "\t");
 		ExpandableListAdapter books = new BooksBookListAdapter(BooksCursor, this, layout, layout_child, from, to, exp_from, exp_to);
+		Log.e("BC", "Set Adapter:      " + Calendar.getInstance().getTimeInMillis() + "\t");
 		
-		/* Handle the click event. Do not open, but goto the book edit page */
+		// Handle the click event. Do not open, but goto the book edit page
 		ExpandableListView expandableList = getExpandableListView();
-		
-		/* Hack. So we can pass the current context into the onGroupClick event */ 
-		final BookCatalogue pthis = this;
-		/* Override the onGroupClick to ignore the expansion event, instead treat it the same
-		 * as a click on a child element 
-		 */
+		// Extend the onGroupClick (Open) - Every click should add to the currentGroup array
 		expandableList.setOnGroupClickListener(new OnGroupClickListener() {
 			public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-				addToCurrentGroup(groupPosition, true);
-				Intent i = new Intent(pthis, BookEdit.class);
-				i.putExtra(CatalogueDBAdapter.KEY_ROWID, id);
-				startActivityForResult(i, ACTIVITY_EDIT);
-				return true;
+				addToCurrentGroup(groupPosition);
+				return false;
 			}
 		});
+		// Extend the onGroupClick (Close) - Every click should remove from the currentGroup array
+		expandableList.setOnGroupCollapseListener(new OnGroupCollapseListener() {
+			@Override
+			public void onGroupCollapse(int groupPosition) {
+				addToCurrentGroup(groupPosition);
+				
+			}
+		});
+		Log.e("BC", "Override:         " + Calendar.getInstance().getTimeInMillis() + "\t");
 		
-		/* Hide the default expandable icon */
-		Drawable indicator = new BitmapDrawable();
-		indicator.setVisible(false, true);
+		/* Hide the default expandable icon, and use a different icon (actually the same icon)
+		 * The override is for when changing back from the title view and it has hidden the icon. */
+		Drawable indicator = this.getResources().getDrawable(R.drawable.expander_group); 
 		expandableList.setGroupIndicator(indicator);
 		
 		setListAdapter(books);
+		Log.e("BC", "Done:             " + Calendar.getInstance().getTimeInMillis() + "\t");
 	}
 	
 	/**
@@ -670,6 +676,20 @@ public class BookCatalogue extends ExpandableListActivity {
 		 */
 		public BooksBookListAdapter(Cursor cursor, Context context, int groupLayout, int childLayout, String[] groupFrom, int[] groupTo, String[] childrenFrom, int[] childrenTo) {
 			super(context, cursor, groupLayout, groupFrom, groupTo, childLayout, childrenFrom, childrenTo);
+			Log.e("BC", "List Adapter Override:     " + Calendar.getInstance().getTimeInMillis() + "\t");
+		}
+		
+		@Override
+		protected Cursor getChildrenCursor(Cursor groupCursor) {
+			Log.e("BC", "Children Cursor:  " + Calendar.getInstance().getTimeInMillis() + "\t");
+			Cursor books = null;
+			if (search_query.equals("")) {
+				books = mDbHelper.fetchAllBooksByChar(groupCursor.getString(mGroupIdColumnIndex), bookshelf);
+			} else {
+				books = mDbHelper.searchBooksByChar(search_query, groupCursor.getString(mGroupIdColumnIndex), bookshelf);
+			}
+			Log.e("BC", "Children Cursor:  " + Calendar.getInstance().getTimeInMillis() + "\t");
+			return books;
 		}
 		
 		/**
@@ -678,33 +698,9 @@ public class BookCatalogue extends ExpandableListActivity {
 		 */
 		//TODO: @Override
 		public void setViewText(TextView v, String text) {
-			if (v.getId() == R.id.row_series) {
-				if (text.trim().equals("")) {
-					series = false;
-					v.setVisibility(GONE);
-				} else {
-					series = true;
-					v.setVisibility(VISIBLE);
-				}
-			} else if (v.getId() == R.id.row_series_num) {
-				if (series == false || text.trim().equals("")) {
-					v.setVisibility(GONE);
-				} else {
-					v.setVisibility(VISIBLE);
-				}
-			} else if (v.getId() == R.id.row_author) {
-				if (text.trim().equals("")) {
-					v.setVisibility(GONE);
-				} else {
-					v.setVisibility(VISIBLE);
-				}
-			} else if (v.getId() == R.id.row_publisher) {
-				if (text.trim().equals("")) {
-					v.setVisibility(GONE);
-				} else {
-					v.setVisibility(VISIBLE);
-				}
-			} else if (v.getId() == R.id.row_img) {
+			//Log.e("BC", "TV Start:     " + Calendar.getInstance().getTimeInMillis() + "\t" + text);
+			if (v.getId() == R.id.row_img) {
+				Log.e("BC", "Img Start:        " + Calendar.getInstance().getTimeInMillis() + "\t" + text);
 				boolean field_visibility = mPrefs.getBoolean(FieldVisibility.prefix + "thumbnail", true);
 				ImageView newv = (ImageView) ((ViewGroup) v.getParent()).findViewById(R.id.row_image_view);
 				if (field_visibility == false) {
@@ -720,14 +716,10 @@ public class BookCatalogue extends ExpandableListActivity {
 					newv.setVisibility(VISIBLE);
 				}
 				text = "";
+				//Log.e("BC", "Img End:      " + Calendar.getInstance().getTimeInMillis() + "\t" + text);
 				return;
 			}
 			v.setText(text);
-		}
-		
-		@Override
-		protected Cursor getChildrenCursor(Cursor groupCursor) {
-			return null;
 		}
 		
 	}
@@ -744,7 +736,6 @@ public class BookCatalogue extends ExpandableListActivity {
 		Cursor BooksCursor = null;
 		// Return all books for the given bookshelf
 		BooksCursor = mDbHelper.fetchAllLoans();
-		numAuthors = BooksCursor.getCount();
 		this.setTitle(R.string.app_name);
 		
 		mGroupIdColumnIndex = BooksCursor.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROWID);
@@ -861,7 +852,6 @@ public class BookCatalogue extends ExpandableListActivity {
 		Cursor BooksCursor = null;
 		// Return all books for the given bookshelf
 		BooksCursor = mDbHelper.fetchAllUnreadPsuedo();
-		numAuthors = BooksCursor.getCount();
 		this.setTitle(R.string.app_name);
 		
 		mGroupIdColumnIndex = BooksCursor.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROWID);
@@ -1085,14 +1075,12 @@ public class BookCatalogue extends ExpandableListActivity {
 		MenuItem insertISBN = menu.add(0, INSERT_ISBN_ID, 2, R.string.menu_insert_isbn);
 		insertISBN.setIcon(android.R.drawable.ic_menu_zoom);
 		
-		if (sort == SORT_AUTHOR || sort == SORT_SERIES || sort == SORT_LOAN || sort == SORT_UNREAD) {
-			if (expanded == true) {
-				MenuItem collapse = menu.add(0, SORT_BY_AUTHOR_EXPANDED, 3, R.string.menu_sort_by_author_collapsed);
-				collapse.setIcon(R.drawable.ic_menu_collapse);
-			} else {
-				MenuItem expand = menu.add(0, SORT_BY_AUTHOR_COLLAPSED, 3, R.string.menu_sort_by_author_expanded);
-				expand.setIcon(R.drawable.ic_menu_expand);
-			}
+		if (expanded == true) {
+			MenuItem collapse = menu.add(0, SORT_BY_AUTHOR_EXPANDED, 3, R.string.menu_sort_by_author_collapsed);
+			collapse.setIcon(R.drawable.ic_menu_collapse);
+		} else {
+			MenuItem expand = menu.add(0, SORT_BY_AUTHOR_COLLAPSED, 3, R.string.menu_sort_by_author_expanded);
+			expand.setIcon(R.drawable.ic_menu_expand);
 		}
 		
 		MenuItem sortby = menu.add(0, SORT_BY, 4, R.string.menu_sort_by);
@@ -1199,6 +1187,7 @@ public class BookCatalogue extends ExpandableListActivity {
 	 */
 	public void expandAll() {
 		ExpandableListView view = this.getExpandableListView();
+		int numAuthors = view.getChildCount();
 		currentGroup = new ArrayList<Integer>();
 		int i = 0;
 		while (i < numAuthors) {
@@ -1226,6 +1215,7 @@ public class BookCatalogue extends ExpandableListActivity {
 	public void collapseAll(boolean clearCurrent) {
 		// there is no current group anymore
 		ExpandableListView view = this.getExpandableListView();
+		int numAuthors = view.getChildCount();
 		int i = 0;
 		while (i < numAuthors) {
 			view.collapseGroup(i);
@@ -1246,7 +1236,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		ExpandableListView.ExpandableListContextMenuInfo info = (ExpandableListView.ExpandableListContextMenuInfo) menuInfo;
 		try {
 			// Only delete titles, not authors
-			if (ExpandableListView.getPackedPositionType(info.packedPosition) == 1 || sort == SORT_TITLE) {
+			if (ExpandableListView.getPackedPositionType(info.packedPosition) == 1) {
 				MenuItem delete = menu.add(0, DELETE_ID, 0, R.string.menu_delete);
 				delete.setIcon(android.R.drawable.ic_menu_delete);
 				MenuItem edit_book = menu.add(0, EDIT_BOOK, 0, R.string.edit_book);
@@ -1432,9 +1422,7 @@ public class BookCatalogue extends ExpandableListActivity {
 	public boolean onChildClick(ExpandableListView l, View v, int position, int childPosition, long id) {
 		boolean result = super.onChildClick(l, v, position, childPosition, id);
 		addToCurrentGroup(position, true);
-		if (sort == SORT_AUTHOR || sort == SORT_SERIES || sort == SORT_LOAN || sort == SORT_UNREAD) {
-			editBook(id, BookEdit.TAB_EDIT);
-		}
+		editBook(id, BookEdit.TAB_EDIT);
 		return result;
 	}
 	

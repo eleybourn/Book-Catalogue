@@ -21,6 +21,7 @@ package com.eleybourn.bookcatalogue;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Calendar;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -30,6 +31,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
+import android.util.Log;
 
 /**
  * Book Catalogue database access helper class. Defines the basic CRUD operations
@@ -203,7 +205,7 @@ public class CatalogueDBAdapter {
 	
 	
 	private final Context mCtx;
-	public static final int DATABASE_VERSION = 48;
+	public static final int DATABASE_VERSION = 49;
 	
 	/**
 	 * This is a specific version of the SQLiteOpenHelper class. It handles onCreate and onUpgrade events
@@ -594,6 +596,13 @@ public class CatalogueDBAdapter {
 				message += "* Genre/Subject and Description fields have been added (Requested by Tosh) and will automatically populate based on Google Books and Amazon information\n\n";
 				message += "* The save button will always be visible on the edit book screen\n\n";
 			}
+			if (curVersion == 48) {
+				curVersion++;
+				db.execSQL("delete from loan where loaned_to='null';");
+				db.execSQL("delete from loan where _id!=(select max(l2._id) from loan l2 where l2.book=loan.book);");
+				db.execSQL("delete from anthology where _id!=(select max(a2._id) from anthology a2 where a2.book=anthology.book AND a2.author=anthology.author AND a2.title=anthology.title);");
+				db.execSQL(DATABASE_CREATE_INDICES);
+			}
 		}
 	}
 	
@@ -856,7 +865,7 @@ public class CatalogueDBAdapter {
 			return fetchAllAuthors();
 		}
 		String sql = "SELECT DISTINCT a._id as " + KEY_ROWID + ", " + AUTHOR_FIELDS +
-			" FROM " + DB_TB_AUTHORS + " a, " + BOOKSHELF_TABLES +
+			" FROM " + BOOKSHELF_TABLES + ", " + DB_TB_AUTHORS + " a " + 
 			" WHERE a." + KEY_ROWID + "=b." + KEY_AUTHOR + " AND " +
 				"bs." + KEY_BOOKSHELF + "='" + encodeString(bookshelf) + "' " + 
 			" ORDER BY lower(" + KEY_FAMILY_NAME + "), lower(" + KEY_GIVEN_NAMES + ")";
@@ -887,6 +896,36 @@ public class CatalogueDBAdapter {
 			open();
 			returnable = mDb.rawQuery(sql, new String[]{});
 		}
+		return returnable;
+	}
+	
+	/**
+	 * Return a list of all the first characters for book titles in the database
+	 * 
+	 * @param order What order to return the books
+	 * @param bookshelf Which bookshelf is it in. Can be "All Books"
+	 * @return Cursor over all Books
+	 */
+	public Cursor fetchAllBookChars(String order, String bookshelf) {
+		String where = "";
+		if (bookshelf.equals("All Books")) {
+			// do nothing 
+		} else {
+			where += " AND bs." + KEY_BOOKSHELF + "='" + encodeString(bookshelf) + "'";
+		}
+		String sql = "SELECT DISTINCT substr(b." + KEY_TITLE + ", 0, 1) as " + KEY_ROWID + " " +
+			" FROM " + BOOKSHELF_TABLES + 
+			" WHERE 1=1 " + where + 
+			" ORDER BY " + KEY_ROWID + "";
+		Cursor returnable = null;
+		Log.e("BC", "DB Start:         " + Calendar.getInstance().getTimeInMillis() + "\t");
+		try {
+			returnable = mDb.rawQuery(sql, new String[]{});
+		} catch (IllegalStateException e) {
+			open();
+			returnable = mDb.rawQuery(sql, new String[]{});
+		}
+		Log.e("BC", "DB End:           " + Calendar.getInstance().getTimeInMillis() + "\t");
 		return returnable;
 	}
 	
@@ -924,16 +963,18 @@ public class CatalogueDBAdapter {
 		String sql = "SELECT DISTINCT b." + KEY_ROWID + " as " + KEY_ROWID + ", " +
 				AUTHOR_FIELDS + ", " + 
 				BOOK_FIELDS + 
-			" FROM " + DB_TB_AUTHORS + " a, " + BOOKSHELF_TABLES + 
+			" FROM " + BOOKSHELF_TABLES + ", " + DB_TB_AUTHORS + " a " + 
 			" WHERE a." + KEY_ROWID + "=b." + KEY_AUTHOR + where + 
 			" ORDER BY " + order + "";
 		Cursor returnable = null;
+		Log.e("BC", "DB Start:         " + Calendar.getInstance().getTimeInMillis() + "\t");
 		try {
 			returnable = mDb.rawQuery(sql, new String[]{});
 		} catch (IllegalStateException e) {
 			open();
 			returnable = mDb.rawQuery(sql, new String[]{});
 		}
+		Log.e("BC", "DB End:           " + Calendar.getInstance().getTimeInMillis() + "\t");
 		return returnable;
 	}
 	
@@ -951,6 +992,18 @@ public class CatalogueDBAdapter {
 	}
 	
 	/**
+	 * This will return a list of all books by a given first title character
+	 * 
+	 * @param char The first title character
+	 * @return Cursor over all books
+	 */
+	public Cursor fetchAllBooksByChar(String first_char, String bookshelf) {
+		String where = " AND substr(b." + KEY_TITLE + ", 0, 1)='"+first_char+"'";
+		String order = "lower(b." + KEY_TITLE + ") ASC";
+		return fetchAllBooks(order, bookshelf, where);
+	}
+	
+	/**
 	 * This will return a list of all books loaned to a given person
 	 * 
 	 * @param loaned_to The person who had books loaned to
@@ -960,7 +1013,7 @@ public class CatalogueDBAdapter {
 		String sql = "SELECT DISTINCT b." + KEY_ROWID + " as " + KEY_ROWID + ", " +
 				AUTHOR_FIELDS + ", " + 
 				BOOK_FIELDS + 
-			" FROM " + DB_TB_LOAN + " l, " + DB_TB_AUTHORS + " a, " + BOOKSHELF_TABLES +  
+			" FROM " + BOOKSHELF_TABLES + ", " + DB_TB_LOAN + " l, " + DB_TB_AUTHORS + " a " + 
 			" WHERE l." + KEY_BOOK + "=b." + KEY_ROWID + " AND " + 
 				"a." + KEY_ROWID + "=b." + KEY_AUTHOR + " AND " +
 				"l." + KEY_LOANED_TO + "='" + encodeString(loaned_to) + "'" + 
@@ -1371,6 +1424,13 @@ public class CatalogueDBAdapter {
 	}
 	
 	/**
+	 * @see searchBooks
+	 */
+	public Cursor searchBooks(String query, String order, String bookshelf) {
+		return searchBooks(query, order, bookshelf, "");
+	}
+	
+	/**
 	 * Returns a list of books, similar to fetchAllBooks but restricted by a search string. The
 	 * query will be applied to author, title, and series
 	 * 
@@ -1379,8 +1439,7 @@ public class CatalogueDBAdapter {
 	 * @param bookshelf The bookshelf to search within. Can be the string "All Books"
 	 * @return A Cursor of book meeting the search criteria
 	 */
-	public Cursor searchBooks(String query, String order, String bookshelf) {
-		String where = "";
+	public Cursor searchBooks(String query, String order, String bookshelf, String where) {
 		query = encodeString(query);
 		if (bookshelf.equals("All Books")) {
 			// do nothing 
@@ -1390,6 +1449,45 @@ public class CatalogueDBAdapter {
 		String sql = "SELECT DISTINCT b." + KEY_ROWID + " AS " + KEY_ROWID + ", " +
 				AUTHOR_FIELDS + ", " + 
 				BOOK_FIELDS + 
+			" FROM " + BOOKSHELF_TABLES + ", " + DB_TB_AUTHORS + " a" + 
+			" WHERE a._id=b." + KEY_AUTHOR + " AND " +
+				"(a." + KEY_FAMILY_NAME + " LIKE '%" + query + "%' OR " +
+				" a." + KEY_GIVEN_NAMES + " LIKE '%" + query + "%' OR " +
+				" b." + KEY_TITLE + " LIKE '%" + query + "%' OR " +
+				" b." + KEY_ISBN + " LIKE '%" + query + "%' OR " +
+				" b." + KEY_PUBLISHER + " LIKE '%" + query + "%' OR " +
+				" b." + KEY_SERIES + " LIKE '%" + query + "%' OR " +
+				" b." + KEY_NOTES + " LIKE '%" + query + "%' OR " +
+				" b." + KEY_LOCATION + " LIKE '%" + query + "%')" + 
+				where + 
+			" ORDER BY " + order + "";
+		Log.e("BC", sql);
+		return mDb.rawQuery(sql, new String[]{});
+	}
+
+	public Cursor searchBooksByChar(String query, String first_char, String bookshelf) {
+		String order = CatalogueDBAdapter.KEY_TITLE + ", " + CatalogueDBAdapter.KEY_FAMILY_NAME;
+		return searchBooks(query, order, bookshelf, " AND substr(b." + KEY_TITLE + ", 0, 1)='" + first_char + "'");
+	}
+	
+	/**
+	 * Returns a list of books title characters, similar to fetchAllBookChars but restricted by a search string. The
+	 * query will be applied to author, title, and series
+	 * 
+	 * @param query The search string to restrict the output by
+	 * @param order What order to return in 
+	 * @param bookshelf The bookshelf to search within. Can be the string "All Books"
+	 * @return A Cursor of book meeting the search criteria
+	 */
+	public Cursor searchBooksChars(String query, String order, String bookshelf) {
+		String where = "";
+		query = encodeString(query);
+		if (bookshelf.equals("All Books")) {
+			// do nothing 
+		} else {
+			where += " AND bs." + KEY_BOOKSHELF + "='" + encodeString(bookshelf) + "'";
+		}
+		String sql = "SELECT DISTINCT substr(b." + KEY_TITLE + ", 0, 1) AS " + KEY_ROWID + " " +
 			" FROM " + BOOKSHELF_TABLES + ", " + DB_TB_AUTHORS + " a" + 
 			" WHERE a._id=b." + KEY_AUTHOR + " AND " +
 				"(a." + KEY_FAMILY_NAME + " LIKE '%" + query + "%' OR " +

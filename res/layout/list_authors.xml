@@ -24,7 +24,6 @@
 		android:layout_width="wrap_content" 
 		android:layout_height="32sp" 
 		android:layout_toRightOf="@+id/bookshelf_name"
-		android:text="@+string/bookshelf_label"
 		android:textAppearance="?android:attr/textAppearanceLarge"
 		android:background="#2d2d2d"
 		android:paddingLeft="5sp"

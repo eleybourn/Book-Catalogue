@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:id="@+id/help_container"
 	android:orientation="vertical"
 	android:layout_width="fill_parent" 
 	android:layout_height="fill_parent">
@@ -98,41 +99,48 @@
 		
 		
 		
-		
-		<TextView android:layout_width="fill_parent" 
+		<LinearLayout
+			android:id="@+id/help_title_bookshelves"
+			android:layout_width="fill_parent" 
 			android:layout_height="wrap_content" 
-			android:textAppearance="?android:attr/textAppearanceLarge"
-			android:text="@+string/help_title_bookshelves"
-			android:paddingTop="15sp"
-			/>
-		<TextView android:layout_width="fill_parent" 
-			android:layout_height="wrap_content" 
-			android:text="@+string/help_text_bookshelves1"
-			/>
-		<ImageView android:layout_width="fill_parent" 
-			android:layout_height="wrap_content" 
-			android:src="@+drawable/help_widget_bookshelf"
-			/>
-		<TextView android:layout_width="fill_parent" 
-			android:layout_height="wrap_content" 
-			android:text="@+string/help_text_bookshelves2"
-			android:paddingTop="15sp"
-			/>
-		<ImageView android:layout_width="fill_parent" 
-			android:layout_height="wrap_content" 
-			android:src="@+drawable/help_screen_bookshelf"
-			android:paddingTop="15sp"
-			/>
-			
-		<TextView android:layout_width="fill_parent" 
-			android:layout_height="wrap_content" 
-			android:text="@+string/help_text_bookshelves3"
-			android:paddingTop="15sp"
-			android:paddingBottom="15sp"
-			/>
-		<TextView android:layout_width="fill_parent"
-			android:layout_height="2sp"
-			android:background="#CCCCCC" />
+			android:orientation="vertical"
+			>
+			<TextView 
+				android:layout_width="fill_parent" 
+				android:layout_height="wrap_content" 
+				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:text="@+string/help_title_bookshelves"
+				android:paddingTop="15sp"
+				/>
+			<TextView android:layout_width="fill_parent" 
+				android:layout_height="wrap_content" 
+				android:text="@+string/help_text_bookshelves1"
+				/>
+			<ImageView android:layout_width="fill_parent" 
+				android:layout_height="wrap_content" 
+				android:src="@+drawable/help_widget_bookshelf"
+				/>
+			<TextView android:layout_width="fill_parent" 
+				android:layout_height="wrap_content" 
+				android:text="@+string/help_text_bookshelves2"
+				android:paddingTop="15sp"
+				/>
+			<ImageView android:layout_width="fill_parent" 
+				android:layout_height="wrap_content" 
+				android:src="@+drawable/help_screen_bookshelf"
+				android:paddingTop="15sp"
+				/>
+				
+			<TextView android:layout_width="fill_parent" 
+				android:layout_height="wrap_content" 
+				android:text="@+string/help_text_bookshelves3"
+				android:paddingTop="15sp"
+				android:paddingBottom="15sp"
+				/>
+			<TextView android:layout_width="fill_parent"
+				android:layout_height="2sp"
+				android:background="#CCCCCC" />
+		</LinearLayout>
 		
 		
 		

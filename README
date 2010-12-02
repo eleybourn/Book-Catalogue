@@ -49,10 +49,6 @@ New in v3.1
 * Searching for a single space will clear the search results page
 * The Date Picker will now appear in a popup in order to save space on the screen (Requested by several people)
 * To improve speed when sorting by title, the titles will be broken up by the first character. Remember prefixes such as "the" and "a" are listed after the title, e.g. "The Trigger" becomes "Trigger, The"
-* TODO: Add Date Loaned, Date Bought, Language (+ update)
-* TODO: Help on every page
-* TODO: Add by Author+Title
-* TODO: Search/Update by Author+Title
 
 New in v3.0.1
 * Export bug fixed

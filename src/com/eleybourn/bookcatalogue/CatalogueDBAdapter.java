@@ -619,6 +619,9 @@ public class CatalogueDBAdapter {
 				message += "* When adding books the current bookshelf will be selected as the default bookshelf\n\n";
 				message += "* Genre/Subject and Description fields have been added (Requested by Tosh) and will automatically populate based on Google Books and Amazon information\n\n";
 				message += "* The save button will always be visible on the edit book screen\n\n";
+				message += "* Searching for a single space will clear the search results page\n\n";
+				message += "* The Date Picker will now appear in a popup in order to save space on the screen (Requested by several people)\n\n";
+				message += "* To improve speed when sorting by title, the titles will be broken up by the first character. Remember prefixes such as 'the' and 'a' are listed after the title, e.g. 'The Trigger' becomes 'Trigger, The'\n\n";
 			}
 			if (curVersion == 48) {
 				curVersion++;

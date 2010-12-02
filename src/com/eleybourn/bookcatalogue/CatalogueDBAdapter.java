@@ -996,6 +996,7 @@ public class CatalogueDBAdapter {
 			" WHERE a." + KEY_ROWID + "=b." + KEY_AUTHOR + where + 
 			" ORDER BY " + order + "";
 		Cursor returnable = null;
+		Log.e("BC", sql);
 		try {
 			returnable = mDb.rawQuery(sql, new String[]{});
 		} catch (IllegalStateException e) {

@@ -45,7 +45,6 @@ import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuItem;
@@ -681,7 +680,6 @@ public class BookEditFields extends Activity {
 				}
 				
 				//Display the selected bookshelves
-				Log.e("BC", BookCatalogue.bookshelf);
 				if (BookCatalogue.bookshelf.equals("All Books")) {
 					Cursor bookshelves = mDbHelper.fetchBookshelf(1);
 					bookshelves.moveToFirst();
@@ -752,7 +750,6 @@ public class BookEditFields extends Activity {
 			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + this.getResources().getString(R.string.menu_insert));
 			
 			//Display the selected bookshelves
-			Log.e("BC", BookCatalogue.bookshelf);
 			if (BookCatalogue.bookshelf.equals("All Books")) {
 				Cursor bookshelves = mDbHelper.fetchBookshelf(1);
 				bookshelves.moveToFirst();

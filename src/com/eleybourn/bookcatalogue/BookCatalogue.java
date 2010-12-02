@@ -22,7 +22,6 @@ package com.eleybourn.bookcatalogue;
 
 //import android.R;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Iterator;
 
 import android.app.AlertDialog;
@@ -39,23 +38,18 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
-import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
-import android.widget.ExpandableListView.OnGroupClickListener;
-import android.widget.ExpandableListView.OnGroupCollapseListener;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -63,6 +57,10 @@ import android.widget.SimpleCursorTreeAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
+import android.widget.ExpandableListView.OnGroupClickListener;
+import android.widget.ExpandableListView.OnGroupCollapseListener;
 
 /*
  * A book catalogue application that integrates with Google Books.
@@ -287,7 +285,6 @@ public class BookCatalogue extends ExpandableListActivity {
 	 * Select between the different fillData function based on the sort parameter
 	 */
 	private void fillData() {
-		Log.e("BC", "FILLDATA");
 		if (sort == SORT_TITLE) {
 			fillDataTitle();
 		} else if (sort == SORT_AUTHOR) {
@@ -594,12 +591,9 @@ public class BookCatalogue extends ExpandableListActivity {
 		// Get all of the rows from the database and create the item list
 		Cursor BooksCursor = null;
 		String order = CatalogueDBAdapter.KEY_TITLE + ", " + CatalogueDBAdapter.KEY_FAMILY_NAME;
-		Log.e("BC", "S2:               " + Calendar.getInstance().getTimeInMillis() + "\t");
 		if (search_query.equals("")) {
 			// Return all books (for the bookshelf)
-			Log.e("BC", "S3:               " + Calendar.getInstance().getTimeInMillis() + "\t");
 			BooksCursor = mDbHelper.fetchAllBookChars(order, bookshelf);
-			Log.e("BC", "S4:               " + Calendar.getInstance().getTimeInMillis() + "\t");
 			this.setTitle(R.string.app_name);
 		} else {
 			// Return the search results instead of all books (for the bookshelf)
@@ -608,10 +602,8 @@ public class BookCatalogue extends ExpandableListActivity {
 			Toast.makeText(this, numAuthors + " " + this.getResources().getString(R.string.results_found), Toast.LENGTH_LONG).show();
 			this.setTitle(R.string.search_title);
 		}
-		Log.e("BC", "S6:               " + Calendar.getInstance().getTimeInMillis() + "\t");
 		mGroupIdColumnIndex = BooksCursor.getColumnIndexOrThrow("_id");
 		startManagingCursor(BooksCursor);
-		Log.e("BC", "Database Done:    " + Calendar.getInstance().getTimeInMillis() + "\t");
 		
 		// Create an array to specify the fields we want to display in the list
 		String[] from = new String[]{CatalogueDBAdapter.KEY_ROWID};
@@ -621,9 +613,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		int[] to = new int[]{R.id.row_family};
 		int[] exp_to = new int[]{R.id.row_img, R.id.row_author, R.id.row_title, R.id.row_publisher, R.id.row_series};
 		
-		Log.e("BC", "Set Vars:         " + Calendar.getInstance().getTimeInMillis() + "\t");
 		ExpandableListAdapter books = new BooksBookListAdapter(BooksCursor, this, layout, layout_child, from, to, exp_from, exp_to);
-		Log.e("BC", "Set Adapter:      " + Calendar.getInstance().getTimeInMillis() + "\t");
 		
 		// Handle the click event. Do not open, but goto the book edit page
 		ExpandableListView expandableList = getExpandableListView();
@@ -642,7 +632,6 @@ public class BookCatalogue extends ExpandableListActivity {
 				
 			}
 		});
-		Log.e("BC", "Override:         " + Calendar.getInstance().getTimeInMillis() + "\t");
 		
 		/* Hide the default expandable icon, and use a different icon (actually the same icon)
 		 * The override is for when changing back from the title view and it has hidden the icon. */
@@ -650,7 +639,6 @@ public class BookCatalogue extends ExpandableListActivity {
 		expandableList.setGroupIndicator(indicator);
 		
 		setListAdapter(books);
-		Log.e("BC", "Done:             " + Calendar.getInstance().getTimeInMillis() + "\t");
 	}
 	
 	/**
@@ -676,19 +664,16 @@ public class BookCatalogue extends ExpandableListActivity {
 		 */
 		public BooksBookListAdapter(Cursor cursor, Context context, int groupLayout, int childLayout, String[] groupFrom, int[] groupTo, String[] childrenFrom, int[] childrenTo) {
 			super(context, cursor, groupLayout, groupFrom, groupTo, childLayout, childrenFrom, childrenTo);
-			Log.e("BC", "List Adapter Override:     " + Calendar.getInstance().getTimeInMillis() + "\t");
 		}
 		
 		@Override
 		protected Cursor getChildrenCursor(Cursor groupCursor) {
-			Log.e("BC", "Children Cursor:  " + Calendar.getInstance().getTimeInMillis() + "\t");
 			Cursor books = null;
 			if (search_query.equals("")) {
 				books = mDbHelper.fetchAllBooksByChar(groupCursor.getString(mGroupIdColumnIndex), bookshelf);
 			} else {
 				books = mDbHelper.searchBooksByChar(search_query, groupCursor.getString(mGroupIdColumnIndex), bookshelf);
 			}
-			Log.e("BC", "Children Cursor:  " + Calendar.getInstance().getTimeInMillis() + "\t");
 			return books;
 		}
 		
@@ -698,9 +683,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		 */
 		//TODO: @Override
 		public void setViewText(TextView v, String text) {
-			//Log.e("BC", "TV Start:     " + Calendar.getInstance().getTimeInMillis() + "\t" + text);
 			if (v.getId() == R.id.row_img) {
-				Log.e("BC", "Img Start:        " + Calendar.getInstance().getTimeInMillis() + "\t" + text);
 				boolean field_visibility = mPrefs.getBoolean(FieldVisibility.prefix + "thumbnail", true);
 				ImageView newv = (ImageView) ((ViewGroup) v.getParent()).findViewById(R.id.row_image_view);
 				if (field_visibility == false) {
@@ -716,7 +699,6 @@ public class BookCatalogue extends ExpandableListActivity {
 					newv.setVisibility(VISIBLE);
 				}
 				text = "";
-				//Log.e("BC", "Img End:      " + Calendar.getInstance().getTimeInMillis() + "\t" + text);
 				return;
 			}
 			v.setText(text);

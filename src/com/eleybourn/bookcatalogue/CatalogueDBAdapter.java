@@ -21,7 +21,6 @@ package com.eleybourn.bookcatalogue;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Calendar;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -940,19 +939,22 @@ public class CatalogueDBAdapter {
 		} else {
 			where += " AND bs." + KEY_BOOKSHELF + "='" + encodeString(bookshelf) + "'";
 		}
-		String sql = "SELECT DISTINCT substr(b." + KEY_TITLE + ", 0, 1) as " + KEY_ROWID + " " +
+		String sql = "SELECT DISTINCT substr(b." + KEY_TITLE + ", 1, 1) as " + KEY_ROWID + " " +
 			" FROM " + BOOKSHELF_TABLES + 
 			" WHERE 1=1 " + where + 
 			" ORDER BY " + KEY_ROWID + "";
 		Cursor returnable = null;
-		Log.e("BC", "DB Start:         " + Calendar.getInstance().getTimeInMillis() + "\t");
 		try {
 			returnable = mDb.rawQuery(sql, new String[]{});
 		} catch (IllegalStateException e) {
 			open();
 			returnable = mDb.rawQuery(sql, new String[]{});
 		}
-		Log.e("BC", "DB End:           " + Calendar.getInstance().getTimeInMillis() + "\t");
+		returnable.moveToFirst();
+		Log.e("BC", returnable.getColumnIndexOrThrow(KEY_ROWID) + " xxx");
+		Log.e("BC", returnable.getString(returnable.getColumnIndexOrThrow(KEY_ROWID)) + " yyy");
+		Log.e("BC", returnable.getCount() + " zzz");
+		Log.e("BC", sql);
 		return returnable;
 	}
 	
@@ -994,14 +996,12 @@ public class CatalogueDBAdapter {
 			" WHERE a." + KEY_ROWID + "=b." + KEY_AUTHOR + where + 
 			" ORDER BY " + order + "";
 		Cursor returnable = null;
-		Log.e("BC", "DB Start:         " + Calendar.getInstance().getTimeInMillis() + "\t");
 		try {
 			returnable = mDb.rawQuery(sql, new String[]{});
 		} catch (IllegalStateException e) {
 			open();
 			returnable = mDb.rawQuery(sql, new String[]{});
 		}
-		Log.e("BC", "DB End:           " + Calendar.getInstance().getTimeInMillis() + "\t");
 		return returnable;
 	}
 	
@@ -1025,7 +1025,7 @@ public class CatalogueDBAdapter {
 	 * @return Cursor over all books
 	 */
 	public Cursor fetchAllBooksByChar(String first_char, String bookshelf) {
-		String where = " AND substr(b." + KEY_TITLE + ", 0, 1)='"+first_char+"'";
+		String where = " AND substr(b." + KEY_TITLE + ", 1, 1)='"+first_char+"'";
 		String order = "lower(b." + KEY_TITLE + ") ASC";
 		return fetchAllBooks(order, bookshelf, where);
 	}
@@ -1488,13 +1488,12 @@ public class CatalogueDBAdapter {
 				" b." + KEY_LOCATION + " LIKE '%" + query + "%')" + 
 				where + 
 			" ORDER BY " + order + "";
-		Log.e("BC", sql);
 		return mDb.rawQuery(sql, new String[]{});
 	}
 
 	public Cursor searchBooksByChar(String query, String first_char, String bookshelf) {
 		String order = CatalogueDBAdapter.KEY_TITLE + ", " + CatalogueDBAdapter.KEY_FAMILY_NAME;
-		return searchBooks(query, order, bookshelf, " AND substr(b." + KEY_TITLE + ", 0, 1)='" + first_char + "'");
+		return searchBooks(query, order, bookshelf, " AND substr(b." + KEY_TITLE + ", 1, 1)='" + first_char + "'");
 	}
 	
 	/**
@@ -1514,7 +1513,7 @@ public class CatalogueDBAdapter {
 		} else {
 			where += " AND bs." + KEY_BOOKSHELF + "='" + encodeString(bookshelf) + "'";
 		}
-		String sql = "SELECT DISTINCT substr(b." + KEY_TITLE + ", 0, 1) AS " + KEY_ROWID + " " +
+		String sql = "SELECT DISTINCT substr(b." + KEY_TITLE + ", 1, 1) AS " + KEY_ROWID + " " +
 			" FROM " + BOOKSHELF_TABLES + ", " + DB_TB_AUTHORS + " a" + 
 			" WHERE a._id=b." + KEY_AUTHOR + " AND " +
 				"(a." + KEY_FAMILY_NAME + " LIKE '%" + query + "%' OR " +

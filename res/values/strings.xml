@@ -216,4 +216,6 @@
 <string name="genre">Genre</string>
 <string name="auto_update">Would you like to automatically update the following fields now \n* Genre \n* Description \n* Thumbnails\n\n If you select Cancel you can always run this again from the Administration page</string>
 <string name="notset">Not Set</string>
+<string name="menu_search">Search Books</string>
+<string name="menu_insert_name">Add by Author/Title</string>
 </resources>

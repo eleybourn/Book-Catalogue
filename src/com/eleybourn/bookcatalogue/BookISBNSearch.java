@@ -50,8 +50,11 @@ import android.widget.Toast;
  */
 public class BookISBNSearch extends Activity {
 	private static final int CREATE_BOOK = 0;
+	public static final String BY = "by";
 	
 	private EditText mIsbnText;
+	private EditText mTitleText;
+	private EditText mAuthorText;
 	private TextView mIsbnStatus;
 	private Button mConfirmButton;
 	private CatalogueDBAdapter mDbHelper;
@@ -73,17 +76,18 @@ public class BookISBNSearch extends Activity {
 		mDbHelper = new CatalogueDBAdapter(this);
 		mDbHelper.open();
 		
-		setContentView(R.layout.isbn_search);
-		mIsbnText = (EditText) findViewById(R.id.isbn);
-		mIsbnStatus = (TextView) findViewById(R.id.isbn_search_status);
-		mConfirmButton = (Button) findViewById(R.id.search);
+		isbn = extras.getString("isbn");
+		String by = extras.getString(BY);
 		
-		if (extras != null) {
+		if (isbn != null) {
 			//ISBN has been passed by another component
-			isbn = extras.getString("isbn");
 			mIsbnText.setText(isbn);
-			go(isbn);
-		} else {
+			go(isbn, "", "");
+		} else if (by.equals("isbn")) {
+			setContentView(R.layout.isbn_search);
+			mIsbnText = (EditText) findViewById(R.id.isbn);
+			mIsbnStatus = (TextView) findViewById(R.id.isbn_search_status);
+			mConfirmButton = (Button) findViewById(R.id.search);
 			
 			// Set the number buttons
 			Button button1 = (Button) findViewById(R.id.isbn_1);
@@ -122,7 +126,21 @@ public class BookISBNSearch extends Activity {
 			mConfirmButton.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
 					String mIsbn = mIsbnText.getText().toString();
-					go(mIsbn);
+					go(mIsbn, "", "");
+				}
+			});
+		} else if (by.equals("name")) {
+			setContentView(R.layout.name_search);
+			mAuthorText = (EditText) findViewById(R.id.author);
+			mTitleText = (EditText) findViewById(R.id.title);
+			mIsbnStatus = (TextView) findViewById(R.id.isbn_search_status);
+			mConfirmButton = (Button) findViewById(R.id.search);
+			
+			mConfirmButton.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View view) {
+					String mAuthor = mAuthorText.getText().toString();
+					String mTitle = mTitleText.getText().toString();
+					go("", mAuthor, mTitle);
 				}
 			});
 		}
@@ -172,7 +190,7 @@ public class BookISBNSearch extends Activity {
 	 * 
 	 * @param isbn The ISBN to search
 	 */
-	protected void go(String isbn) {
+	protected void go(String isbn, String author, String title) {
 		// If the book already exists, do not continue
 		mConfirmButton.setEnabled(false);
 		try {

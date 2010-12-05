@@ -87,6 +87,8 @@ public class BookCatalogue extends ExpandableListActivity {
 	private static final int EDIT_BOOK = Menu.FIRST + 10;
 	private static final int EDIT_BOOK_NOTES = Menu.FIRST + 11;
 	private static final int EDIT_BOOK_FRIENDS = Menu.FIRST + 12;
+	private static final int SEARCH = Menu.FIRST + 13;
+	private static final int INSERT_NAME_ID = Menu.FIRST + 14;
 	
 	public static String bookshelf = "All Books";
 	private ArrayAdapter<String> spinnerAdapter;
@@ -1072,6 +1074,9 @@ public class BookCatalogue extends ExpandableListActivity {
 		MenuItem insertISBN = menu.add(0, INSERT_ISBN_ID, 2, R.string.menu_insert_isbn);
 		insertISBN.setIcon(android.R.drawable.ic_menu_zoom);
 		
+		MenuItem insertName = menu.add(0, INSERT_NAME_ID, 2, R.string.menu_insert_name);
+		insertName.setIcon(android.R.drawable.ic_menu_zoom);
+		
 		if (expanded == true) {
 			MenuItem collapse = menu.add(0, SORT_BY_AUTHOR_EXPANDED, 3, R.string.menu_sort_by_author_collapsed);
 			collapse.setIcon(R.drawable.ic_menu_collapse);
@@ -1086,6 +1091,9 @@ public class BookCatalogue extends ExpandableListActivity {
 		String adminTitle = getResources().getString(R.string.help) + " & " + getResources().getString(R.string.menu_administration);
 		MenuItem admin = menu.add(0, ADMIN, 5, adminTitle);
 		admin.setIcon(android.R.drawable.ic_menu_manage);
+		
+		MenuItem search = menu.add(0, SEARCH, 4, R.string.menu_search);
+		search.setIcon(android.R.drawable.ic_menu_search);
 		
 		return super.onPrepareOptionsMenu(menu);
 	}
@@ -1110,13 +1118,19 @@ public class BookCatalogue extends ExpandableListActivity {
 			createBook();
 			return true;
 		case INSERT_ISBN_ID:
-			createBookISBN();
+			createBookISBN("isbn");
 			return true;
 		case INSERT_BARCODE_ID:
 			createBookScan();
 			return true;
 		case ADMIN:
 			adminPage();
+			return true;
+		case SEARCH:
+			onSearchRequested();
+			return true;
+		case INSERT_NAME_ID:
+			createBookISBN("name");
 			return true;
 		}
 		
@@ -1363,8 +1377,9 @@ public class BookCatalogue extends ExpandableListActivity {
 	/**
 	 * Load the Search by ISBN Activity
 	 */
-	private void createBookISBN() {
+	private void createBookISBN(String by) {
 		Intent i = new Intent(this, BookISBNSearch.class);
+		i.putExtra(BookISBNSearch.BY, by);
 		startActivityForResult(i, ACTIVITY_ISBN);
 	}
 	

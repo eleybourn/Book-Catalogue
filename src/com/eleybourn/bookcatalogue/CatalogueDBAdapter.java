@@ -30,7 +30,6 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
-import android.util.Log;
 
 /**
  * Book Catalogue database access helper class. Defines the basic CRUD operations
@@ -951,10 +950,6 @@ public class CatalogueDBAdapter {
 			returnable = mDb.rawQuery(sql, new String[]{});
 		}
 		returnable.moveToFirst();
-		Log.e("BC", returnable.getColumnIndexOrThrow(KEY_ROWID) + " xxx");
-		Log.e("BC", returnable.getString(returnable.getColumnIndexOrThrow(KEY_ROWID)) + " yyy");
-		Log.e("BC", returnable.getCount() + " zzz");
-		Log.e("BC", sql);
 		return returnable;
 	}
 	
@@ -996,7 +991,6 @@ public class CatalogueDBAdapter {
 			" WHERE a." + KEY_ROWID + "=b." + KEY_AUTHOR + where + 
 			" ORDER BY " + order + "";
 		Cursor returnable = null;
-		Log.e("BC", sql);
 		try {
 			returnable = mDb.rawQuery(sql, new String[]{});
 		} catch (IllegalStateException e) {

@@ -44,6 +44,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
@@ -259,6 +260,7 @@ public class AdministrationFunctions extends Activity {
 			b.putInt("total", num);
 			b.putString("title", title);
 			msg.setData(b);
+			Log.e("BC", num + " " + title);
 			mHandler.sendMessage(msg);
 			return;
 		}
@@ -279,13 +281,23 @@ public class AdministrationFunctions extends Activity {
 			
 			startManagingCursor(books);
 			int num = 0;
-			try {
+			//try {
 				while (books.moveToNext()) {
 					long id = books.getLong(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROWID));
 					String isbn = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ISBN));
 					String title = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE));
 					String genre = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_GENRE));
 					String description = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DESCRIPTION));
+					try {
+						genre.equals("");
+					} catch (NullPointerException e) {
+						genre = "";
+					}
+					try {
+						description.equals("");
+					} catch (NullPointerException e) {
+						description = "";
+					}
 					
 					String author = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED));
 					String publisher = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PUBLISHER));
@@ -331,12 +343,17 @@ public class AdministrationFunctions extends Activity {
 						//String[] book = {0=author, 1=title, 2=isbn, 3=publisher, 4=date_published, 5=rating,  6=bookshelf, 
 						//	7=read, 8=series, 9=pages, 10=series_num, 11=list_price, 12=anthology, 13=location, 14=read_start, 
 						//	15=read_end, 16=audiobook, 17=signed, 18=description, 19=genre};
-						book = bis.searchAmazon(isbn);
+						
+						book = bis.searchGoogle(isbn);
 						File tmpthumb = CatalogueDBAdapter.fetchThumbnail(0);
-						/* If amazon fails, try google books */
-						if (!tmpthumb.exists()) {
-							book = bis.searchGoogle(isbn);
-							tmpthumb = CatalogueDBAdapter.fetchThumbnail(0);
+						
+						String[] bookAmazon = bis.searchAmazon(isbn);
+						tmpthumb = CatalogueDBAdapter.fetchThumbnail(0);
+						/* Fill blank fields as required */
+						for (int i = 0; i<book.length; i++) {
+							if (book[i] == "" || book[i] == "0") {
+								book[i] = bookAmazon[i];
+							}
 						}
 						
 						/* Copy tmpthumb over realthumb */
@@ -360,9 +377,9 @@ public class AdministrationFunctions extends Activity {
 						sendMessage(num, "Skip - " + title);
 					}
 				}
-			} catch (Exception e) {
+			//} catch (Exception e) {
 				// do nothing
-			}
+			//}
 			sendMessage(0, num + " Books Searched");
 		}
 		
@@ -539,7 +556,7 @@ public class AdministrationFunctions extends Activity {
 					row += "\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_FORMAT))) + "\",";
 					row += "\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SIGNED))) + "\",";
 					row += "\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOANED_TO))+"") + "\",";
-					row += "\"" + formatCell(anthology_titles) + "\"";
+					row += "\"" + formatCell(anthology_titles) + "\",";
 					row += "\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DESCRIPTION))) + "\",";
 					row += "\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_GENRE))) + "\",";
 					row += "\n";
@@ -577,7 +594,14 @@ public class AdministrationFunctions extends Activity {
 		 * @return The formatted cell
 		 */
 		private String formatCell(String cell) {
-			return cell.replaceAll("\"", "\"\"").replaceAll("\n", "").replaceAll("\r", "");
+			try {
+				if (cell.equals("null")) {
+					return "";
+				}
+				return cell.replaceAll("\"", "\"\"").replaceAll("\n", "").replaceAll("\r", "");
+			} catch (NullPointerException e) {
+				return "";
+			}
 		}
 		
 		/**

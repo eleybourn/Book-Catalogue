@@ -300,7 +300,7 @@ public class BookISBNSearch extends Activity {
 		} catch (Exception e) {
 			//Log.e("Book Catalogue", "SAX IO Exception " + e.getMessage());
 		}
-		return null;
+		return book;
 	}
 	
 	/**
@@ -341,7 +341,7 @@ public class BookISBNSearch extends Activity {
 		} catch (Exception e) {
 			//Log.e("Book Catalogue", "SAX IO Exception " + e.getMessage());
 		}
-		return null;
+		return book;
 	}
 	
 	protected InputStream getInputStream(URL url) {

@@ -337,6 +337,7 @@ public class AdministrationFunctions extends Activity {
 					if (isbn.equals("")) {
 						// Must have an ISBN to be able to search
 						sendMessage(num, "Skip - " + title);
+						//TODO: searchGoogle(AUTHOR)
 					} else if (overwrite == true || !thumb.exists() || genre.equals("") || description.equals("")) {
 						sendMessage(num, title);
 						BookISBNSearch bis = new BookISBNSearch();
@@ -344,10 +345,10 @@ public class AdministrationFunctions extends Activity {
 						//	7=read, 8=series, 9=pages, 10=series_num, 11=list_price, 12=anthology, 13=location, 14=read_start, 
 						//	15=read_end, 16=audiobook, 17=signed, 18=description, 19=genre};
 						
-						book = bis.searchGoogle(isbn);
+						book = bis.searchGoogle(isbn, "", "");
 						File tmpthumb = CatalogueDBAdapter.fetchThumbnail(0);
 						
-						String[] bookAmazon = bis.searchAmazon(isbn);
+						String[] bookAmazon = bis.searchAmazon(isbn, "", "");
 						tmpthumb = CatalogueDBAdapter.fetchThumbnail(0);
 						/* Fill blank fields as required */
 						for (int i = 0; i<book.length; i++) {

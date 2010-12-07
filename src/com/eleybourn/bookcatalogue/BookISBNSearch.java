@@ -221,9 +221,9 @@ public class BookISBNSearch extends Activity {
 			String[] bookAmazon;
 			
 			mIsbnStatus.append(this.getResources().getString(R.string.searching_google_books) + "\n");
-			book = searchGoogle(isbn);
+			book = searchGoogle(isbn, author, title);
 			mIsbnStatus.append(this.getResources().getString(R.string.searching_amazon_books) + "\n");
-			bookAmazon = searchAmazon(isbn);
+			bookAmazon = searchAmazon(isbn, author, title);
 			//Look for series in Title. e.g. Red Phoenix (Dark Heavens Trilogy)
 			book[8] = findSeries(book[1]);
 			bookAmazon[8] = findSeries(bookAmazon[1]);
@@ -276,8 +276,16 @@ public class BookISBNSearch extends Activity {
 		mDbHelper.close();
 	}
 	
-	public String[] searchGoogle(String mIsbn) {
-		String path = "http://books.google.com/books/feeds/volumes?q=ISBN";
+	public String[] searchGoogle(String mIsbn, String mAuthor, String mTitle) {
+		String path = "http://books.google.com/books/feeds/volumes";
+		String search_string = "";
+		if (mIsbn.equals("")) {
+			path += "?q=";
+			search_string = "intitle:\""+mTitle+"\"+inauthor:\""+mAuthor+"\"";
+		} else {
+			path += "?q=ISBN";
+			search_string = mIsbn;
+		}
 		URL url;
 		//String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num, list_price, anthology, location, read_start, read_end, audiobook, signed, description, genre};
 		String[] book = {"", "", mIsbn, "", "", "0",  "", "", "", "", "", "", "0", "", "", "", "", "0", "", ""};
@@ -288,7 +296,7 @@ public class BookISBNSearch extends Activity {
 		SearchGoogleBooksEntryHandler entryHandler = new SearchGoogleBooksEntryHandler();
 
 		try {
-			url = new URL(path+mIsbn);
+			url = new URL(path+search_string);
 			parser = factory.newSAXParser();
 			int count = 0;
 			try {
@@ -329,7 +337,8 @@ public class BookISBNSearch extends Activity {
 	 * @param mIsbn The ISBN to search for
 	 * @return The book array
 	 */
-	public String[] searchAmazon(String mIsbn) {
+	public String[] searchAmazon(String mIsbn, String mAuthor, String mTitle) {
+		//TODO: mAuthor
 		//String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num, list_price, anthology, location, read_start, read_end, audiobook, signed, description, genre};
 		String[] book = {"", "", mIsbn, "", "", "0",  "", "", "", "", "", "", "0", "", "", "", "", "0", "", ""};
 		String signedurl = "http://alphacomplex.org/getRest.php?isbn="+mIsbn;

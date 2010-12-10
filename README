@@ -41,6 +41,12 @@ Features include;
   case. e.g. "The murder on the links" becomes "The Murder on the Links"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+New in v3.2
+* Books can now be automatically added by searching for the author name and book title
+* Updating thumbnails, genre and description fields will also searh by author name and title is the isbn does not exist
+* Expand/Collapse all bug fixed
+* The search query will be shown at the top of all search screens
+
 New in v3.1
 * The audiobook checkbox has been replaced with a format selector (inc. paperback, hardcover, companion etc)
 * When adding books the current bookshelf will be selected as the default bookshelf

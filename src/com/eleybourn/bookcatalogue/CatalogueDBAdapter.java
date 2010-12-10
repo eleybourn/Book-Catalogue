@@ -93,6 +93,7 @@ public class CatalogueDBAdapter {
 	public static final int ANTHOLOGY_MULTIPLE_AUTHORS = 2;
 	
 	public static final String META_EMPTY_SERIES = "<Empty Series>";
+	public static final String META_EMPTY_GENRE = "<Empty Genre>";
 	
 	/* Database creation sql statement */
 	private static final String DATABASE_CREATE_AUTHORS =
@@ -1026,6 +1027,25 @@ public class CatalogueDBAdapter {
 	}
 	
 	/**
+	 * Return a Cursor over the list of all books in the database by genre
+	 * 
+	 * @param author The genre name to search by
+	 * @param bookshelf The bookshelf to search within. Can be the string "All Books"
+	 * @return Cursor over all books
+	 */
+	public Cursor fetchAllBooksByGenre(String genre, String bookshelf) {
+		String where = " AND ";
+		if (genre.equals(META_EMPTY_GENRE)) {
+			where += "(b." + KEY_GENRE + "='' OR b." + KEY_GENRE + " IS NULL)";
+		} else {
+			genre = encodeString(genre);
+			where += "b." + KEY_GENRE + "='" + genre + "'";
+		}
+		String order = CatalogueDBAdapter.KEY_TITLE + ", " + CatalogueDBAdapter.KEY_FAMILY_NAME;
+		return fetchAllBooks(order, bookshelf, where);
+	}
+	
+	/**
 	 * This will return a list of all books loaned to a given person
 	 * 
 	 * @param loaned_to The person who had books loaned to
@@ -1124,6 +1144,27 @@ public class CatalogueDBAdapter {
 			" FROM " + DB_TB_BOOKSHELF + " bs, " + DB_TB_BOOK_BOOKSHELF_WEAK + " w " +
 			" WHERE w." + KEY_BOOKSHELF + "=bs." + KEY_ROWID + " AND w." + KEY_BOOK + "=" + rowId + " " + 
 			" ORDER BY bs." + KEY_BOOKSHELF + "";
+		return mDb.rawQuery(sql, new String[]{});
+	}
+	
+	/**
+	 * This will return a list of all genres within the given bookshelf
+	 * 
+	 * @param bookshelf The bookshelf to search within. Can be the string "All Books"
+	 * @return Cursor over all series
+	 */
+	public Cursor fetchAllGenres(String bookshelf) {
+		String where = "";
+		if (bookshelf.equals("All Books")) {
+			// do nothing 
+		} else {
+			where += " AND bs." + KEY_BOOKSHELF + "='" + encodeString(bookshelf) + "'";
+		}
+		String sql = "SELECT DISTINCT b." + KEY_GENRE + " as " + KEY_ROWID + 
+		" FROM " + BOOKSHELF_TABLES + 
+		" WHERE b." + KEY_GENRE + "!= '' " + where + 
+		" UNION SELECT \"" + META_EMPTY_GENRE + "\" as " + KEY_ROWID +
+		" ORDER BY b." + KEY_GENRE + "";
 		return mDb.rawQuery(sql, new String[]{});
 	}
 	
@@ -1392,6 +1433,28 @@ public class CatalogueDBAdapter {
 	/**
 	 * Return the position of a book in a list of all books (within a bookshelf)
 	 *  
+	 * @param genre The book genre to search for
+	 * @param bookshelf The bookshelf to search within. Can be the string "All Books"
+	 * @return The position of the book
+	 */
+	public int fetchGenrePositionByGenre(String genre, String bookshelf) {
+		String where = "";
+		if (bookshelf.equals("All Books")) {
+			// do nothing 
+		} else {
+			where += " AND bs." + KEY_BOOKSHELF + "='" + encodeString(bookshelf) + "'";
+		}
+		String sql = "SELECT count(DISTINCT b." + KEY_GENRE + ") as count " +
+			"FROM " + BOOKSHELF_TABLES +
+			"WHERE b." + KEY_GENRE + " < '" + encodeString(genre) + "'" + where;
+		Cursor results = mDb.rawQuery(sql, null);
+		int pos = (getIntValue(results, 0))-1;
+		return pos;
+	}
+	
+	/**
+	 * Return the position of a book in a list of all books (within a bookshelf)
+	 *  
 	 * @param title The book title to search for
 	 * @param bookshelf The bookshelf to search within. Can be the string "All Books"
 	 * @return The position of the book
@@ -1490,6 +1553,11 @@ public class CatalogueDBAdapter {
 		String order = CatalogueDBAdapter.KEY_TITLE + ", " + CatalogueDBAdapter.KEY_FAMILY_NAME;
 		return searchBooks(query, order, bookshelf, " AND substr(b." + KEY_TITLE + ", 1, 1)='" + first_char + "'");
 	}
+
+	public Cursor searchBooksByGenre(String query, String genre, String bookshelf) {
+		String order = CatalogueDBAdapter.KEY_TITLE + ", " + CatalogueDBAdapter.KEY_FAMILY_NAME;
+		return searchBooks(query, order, bookshelf, " AND " + KEY_GENRE + "='" + genre + "'");
+	}
 	
 	/**
 	 * Returns a list of books title characters, similar to fetchAllBookChars but restricted by a search string. The
@@ -1521,6 +1589,37 @@ public class CatalogueDBAdapter {
 				" b." + KEY_LOCATION + " LIKE '%" + query + "%')" + 
 				where + 
 			" ORDER BY " + order + "";
+		return mDb.rawQuery(sql, new String[]{});
+	}
+	
+	/**
+	 * This will return a list of all genres within the given bookshelf where the
+	 * series, title or author meet the search string
+	 * 
+	 * @param query The query string to search for 
+	 * @param bookshelf The bookshelf to search within. Can be the string "All Books"
+	 * @return Cursor over all notes
+	 */
+	public Cursor searchGenres(String query, String bookshelf) {
+		String where = "";
+		query = encodeString(query);
+		if (bookshelf.equals("All Books")) {
+			// do nothing 
+		} else {
+			where += " AND bs." + KEY_BOOKSHELF + "='" + encodeString(bookshelf) + "'";
+		}
+		String sql = "SELECT DISTINCT b." + KEY_GENRE + " as " + KEY_ROWID + 
+				" FROM " + BOOKSHELF_TABLES + ", " + DB_TB_AUTHORS + " a" + 
+				" WHERE a._id=b." + KEY_AUTHOR + where + " AND " + 
+					" (a." + KEY_FAMILY_NAME + " LIKE '%" + query + "%' OR " +
+					" a." + KEY_GIVEN_NAMES + " LIKE '%" + query + "%' OR " +
+					" b." + KEY_TITLE + " LIKE '%" + query + "%' OR " +
+					" b." + KEY_ISBN + " LIKE '%" + query + "%' OR " +
+					" b." + KEY_PUBLISHER + " LIKE '%" + query + "%' OR " +
+					" b." + KEY_SERIES + " LIKE '%" + query + "%' OR " +
+					" b." + KEY_NOTES + " LIKE '%" + query + "%' OR " +
+					" b." + KEY_LOCATION + " LIKE '%" + query + "%')" + 
+				" ORDER BY b." + KEY_GENRE + "";
 		return mDb.rawQuery(sql, new String[]{});
 	}
 	

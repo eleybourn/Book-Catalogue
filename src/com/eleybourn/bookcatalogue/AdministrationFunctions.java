@@ -44,7 +44,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
@@ -260,7 +259,6 @@ public class AdministrationFunctions extends Activity {
 			b.putInt("total", num);
 			b.putString("title", title);
 			msg.setData(b);
-			Log.e("BC", num + " " + title);
 			mHandler.sendMessage(msg);
 			return;
 		}
@@ -334,7 +332,7 @@ public class AdministrationFunctions extends Activity {
 					
 					String[] book = null;
 					File thumb = CatalogueDBAdapter.fetchThumbnail(id);
-					if (isbn.equals("")) {
+					if (isbn.equals("") && author.equals("") && title.equals("")) {
 						// Must have an ISBN to be able to search
 						sendMessage(num, "Skip - " + title);
 						//TODO: searchGoogle(AUTHOR)
@@ -345,10 +343,10 @@ public class AdministrationFunctions extends Activity {
 						//	7=read, 8=series, 9=pages, 10=series_num, 11=list_price, 12=anthology, 13=location, 14=read_start, 
 						//	15=read_end, 16=audiobook, 17=signed, 18=description, 19=genre};
 						
-						book = bis.searchGoogle(isbn, "", "");
+						book = bis.searchGoogle(isbn, author, title);
 						File tmpthumb = CatalogueDBAdapter.fetchThumbnail(0);
 						
-						String[] bookAmazon = bis.searchAmazon(isbn, "", "");
+						String[] bookAmazon = bis.searchAmazon(isbn, author, title);
 						tmpthumb = CatalogueDBAdapter.fetchThumbnail(0);
 						/* Fill blank fields as required */
 						for (int i = 0; i<book.length; i++) {

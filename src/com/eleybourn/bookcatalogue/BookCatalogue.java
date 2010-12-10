@@ -39,17 +39,21 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
+import android.widget.ExpandableListView.OnGroupClickListener;
+import android.widget.ExpandableListView.OnGroupCollapseListener;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -57,10 +61,6 @@ import android.widget.SimpleCursorTreeAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
-import android.widget.ExpandableListView.OnGroupClickListener;
-import android.widget.ExpandableListView.OnGroupCollapseListener;
 
 /*
  * A book catalogue application that integrates with Google Books.
@@ -101,8 +101,9 @@ public class BookCatalogue extends ExpandableListActivity {
 	private static final int SORT_SERIES = 2; 
 	private static final int SORT_LOAN = 3; 
 	private static final int SORT_UNREAD = 4;
+	private static final int SORT_GENRE = 5;
 	private ArrayList<Integer> currentGroup = new ArrayList<Integer>();
-	private boolean expanded = false;
+	private boolean collapsed = false;
 	
 	private static boolean shown = false;
 	private String justAdded = ""; 
@@ -297,6 +298,8 @@ public class BookCatalogue extends ExpandableListActivity {
 			fillDataLoan();
 		} else if (sort == SORT_UNREAD) {
 			fillDataUnread();
+		} else if (sort == SORT_GENRE) {
+			fillDataGenre();
 		}
 		gotoCurrentGroup();
 		/* Add number to bookshelf */
@@ -324,7 +327,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			BooksCursor = mDbHelper.searchAuthors(search_query, bookshelf);
 			int numAuthors = BooksCursor.getCount();
 			Toast.makeText(this, numAuthors + " " + this.getResources().getString(R.string.results_found), Toast.LENGTH_LONG).show();
-			this.setTitle(R.string.search_title);
+			this.setTitle(getResources().getString(R.string.search_title) + " - " + search_query);
 		}
 		mGroupIdColumnIndex = BooksCursor.getColumnIndexOrThrow("_id");
 		startManagingCursor(BooksCursor);
@@ -462,7 +465,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			BooksCursor = mDbHelper.searchSeries(search_query, bookshelf);
 			int numAuthors = BooksCursor.getCount();
 			Toast.makeText(this, numAuthors + " " + this.getResources().getString(R.string.results_found), Toast.LENGTH_LONG).show();
-			this.setTitle(R.string.search_title);
+			this.setTitle(getResources().getString(R.string.search_title) + " - " + search_query);
 		}
 		mGroupIdColumnIndex = BooksCursor.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROWID);
 		startManagingCursor(BooksCursor);
@@ -602,7 +605,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			BooksCursor = mDbHelper.searchBooksChars(search_query, order, bookshelf);
 			int numAuthors = BooksCursor.getCount();
 			Toast.makeText(this, numAuthors + " " + this.getResources().getString(R.string.results_found), Toast.LENGTH_LONG).show();
-			this.setTitle(R.string.search_title);
+			this.setTitle(getResources().getString(R.string.search_title) + " - " + search_query);
 		}
 		mGroupIdColumnIndex = BooksCursor.getColumnIndexOrThrow("_id");
 		startManagingCursor(BooksCursor);
@@ -956,6 +959,146 @@ public class BookCatalogue extends ExpandableListActivity {
 	}
 	
 	/**
+	 * Display the list of genres.
+	 */
+	private void fillDataGenre() {
+		// base the layout and the query on the sort order
+		int layout = R.layout.row_authors;
+		int layout_child = R.layout.row_books;
+		
+		// Get all of the rows from the database and create the item list
+		Cursor BooksCursor = null;
+		if (search_query.equals("")) {
+			// Return all books (for the bookshelf)
+			BooksCursor = mDbHelper.fetchAllGenres(bookshelf);
+			this.setTitle(R.string.app_name);
+		} else {
+			// Return the search results instead of all books (for the bookshelf)
+			BooksCursor = mDbHelper.searchGenres(search_query, bookshelf);
+			int numAuthors = BooksCursor.getCount();
+			Toast.makeText(this, numAuthors + " " + this.getResources().getString(R.string.results_found), Toast.LENGTH_LONG).show();
+			this.setTitle(getResources().getString(R.string.search_title) + " - " + search_query);
+		}
+		mGroupIdColumnIndex = BooksCursor.getColumnIndexOrThrow("_id");
+		startManagingCursor(BooksCursor);
+		
+		// Create an array to specify the fields we want to display in the list
+		String[] from = new String[]{CatalogueDBAdapter.KEY_ROWID};
+		String[] exp_from = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_PUBLISHER, CatalogueDBAdapter.KEY_SERIES_FORMATTED, CatalogueDBAdapter.KEY_READ};
+		
+		// and an array of the fields we want to bind those fields to (in this case just text1)
+		int[] to = new int[]{R.id.row_family};
+		int[] exp_to = new int[]{R.id.row_img, R.id.row_author, R.id.row_title, R.id.row_publisher, R.id.row_series, R.id.row_read};
+		
+		ExpandableListAdapter books = new GenreBookListAdapter(BooksCursor, this, layout, layout_child, from, to, exp_from, exp_to);
+		
+		// Handle the click event. Do not open, but goto the book edit page
+		ExpandableListView expandableList = getExpandableListView();
+		// Extend the onGroupClick (Open) - Every click should add to the currentGroup array
+		expandableList.setOnGroupClickListener(new OnGroupClickListener() {
+			public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+				addToCurrentGroup(groupPosition);
+				return false;
+			}
+		});
+		// Extend the onGroupClick (Close) - Every click should remove from the currentGroup array
+		expandableList.setOnGroupCollapseListener(new OnGroupCollapseListener() {
+			@Override
+			public void onGroupCollapse(int groupPosition) {
+				addToCurrentGroup(groupPosition);
+				
+			}
+		});
+		
+		/* Hide the default expandable icon, and use a different icon (actually the same icon)
+		 * The override is for when changing back from the title view and it has hidden the icon. */
+		Drawable indicator = this.getResources().getDrawable(R.drawable.expander_group); 
+		expandableList.setGroupIndicator(indicator);
+		
+		setListAdapter(books);
+	}
+	
+	/**
+	 * The adapter for the Titles List
+	 * 
+	 * @author evan
+	 *
+	 */
+	public class GenreBookListAdapter extends SimpleCursorTreeAdapter {
+		boolean series = false;
+		
+		/**
+		 * Pass the parameters directly to the overridden function
+		 * 
+		 * @param cursor
+		 * @param context
+		 * @param groupLayout
+		 * @param childLayout
+		 * @param groupFrom
+		 * @param groupTo
+		 * @param childrenFrom
+		 * @param childrenTo
+		 */
+		public GenreBookListAdapter(Cursor cursor, Context context, int groupLayout, int childLayout, String[] groupFrom, int[] groupTo, String[] childrenFrom, int[] childrenTo) {
+			super(context, cursor, groupLayout, groupFrom, groupTo, childLayout, childrenFrom, childrenTo);
+		}
+		
+		@Override
+		protected Cursor getChildrenCursor(Cursor groupCursor) {
+			Cursor books = null;
+			if (search_query.equals("")) {
+				books = mDbHelper.fetchAllBooksByGenre(groupCursor.getString(mGroupIdColumnIndex), bookshelf);
+			} else {
+				books = mDbHelper.searchBooksByGenre(search_query, groupCursor.getString(mGroupIdColumnIndex), bookshelf);
+			}
+			return books;
+		}
+		
+		/**
+		 * Override the setTextView function. This helps us set the appropriate opening and
+		 * closing brackets for series numbers
+		 */
+		//TODO: @Override
+		public void setViewText(TextView v, String text) {
+			if (v.getId() == R.id.row_img) {
+				boolean field_visibility = mPrefs.getBoolean(FieldVisibility.prefix + "thumbnail", true);
+				ImageView newv = (ImageView) ((ViewGroup) v.getParent()).findViewById(R.id.row_image_view);
+				if (field_visibility == false) {
+					newv.setVisibility(GONE);
+				} else {
+					String thumbFilename = CatalogueDBAdapter.fetchThumbnailFilename(Long.parseLong(text), false);
+					Bitmap thumbnail = BitmapFactory.decodeFile(thumbFilename);
+					if (thumbnail != null) {
+						newv.setImageBitmap(thumbnail);
+					} else {
+						newv.setImageResource(android.R.drawable.ic_menu_help);
+					}
+					newv.setVisibility(VISIBLE);
+				}
+				text = "";
+				return;
+			} else if (v.getId() == R.id.row_read) {
+				boolean field_visibility = mPrefs.getBoolean(FieldVisibility.prefix + "read", true);
+				ImageView newv = (ImageView) ((ViewGroup) v.getParent()).findViewById(R.id.row_read_image_view);
+				if (field_visibility == false) {
+					newv.setVisibility(GONE);
+				} else {
+					if (text.equals("1")) {
+						newv.setImageResource(R.drawable.btn_check_buttonless_on);
+					} else {
+						newv.setImageResource(R.drawable.btn_check_buttonless_off);
+					}
+					newv.setVisibility(VISIBLE);
+				}
+				text = "";
+				return;
+			}
+			v.setText(text);
+		}
+		
+	}
+	
+	/**
 	 * Setup the sort options. This function will also call fillData when 
 	 * complete having loaded the appropriate view. 
 	 */
@@ -987,6 +1130,15 @@ public class BookCatalogue extends ExpandableListActivity {
 			radio_series.setChecked(true);
 		} else {
 			radio_series.setChecked(false);
+		}
+		
+		RadioButton radio_genre = new RadioButton(this);
+		radio_genre.setText(R.string.sortby_genre);
+		group.addView(radio_genre);
+		if (sort == SORT_GENRE) {
+			radio_genre.setChecked(true);
+		} else {
+			radio_genre.setChecked(false);
 		}
 		
 		RadioButton radio_loan = new RadioButton(this);
@@ -1039,6 +1191,15 @@ public class BookCatalogue extends ExpandableListActivity {
 			}
 		});
 		
+		radio_genre.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				sortByGenre();
+				sortDialog.hide();
+				return;
+			}
+		});
+		
 		radio_loan.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -1077,12 +1238,12 @@ public class BookCatalogue extends ExpandableListActivity {
 		MenuItem insertName = menu.add(0, INSERT_NAME_ID, 2, R.string.menu_insert_name);
 		insertName.setIcon(android.R.drawable.ic_menu_zoom);
 		
-		if (expanded == true) {
-			MenuItem collapse = menu.add(0, SORT_BY_AUTHOR_EXPANDED, 3, R.string.menu_sort_by_author_collapsed);
-			collapse.setIcon(R.drawable.ic_menu_collapse);
-		} else {
+		if (collapsed == true) {
 			MenuItem expand = menu.add(0, SORT_BY_AUTHOR_COLLAPSED, 3, R.string.menu_sort_by_author_expanded);
 			expand.setIcon(R.drawable.ic_menu_expand);
+		} else {
+			MenuItem collapse = menu.add(0, SORT_BY_AUTHOR_EXPANDED, 3, R.string.menu_sort_by_author_collapsed);
+			collapse.setIcon(R.drawable.ic_menu_collapse);
 		}
 		
 		MenuItem sortby = menu.add(0, SORT_BY, 4, R.string.menu_sort_by);
@@ -1198,7 +1359,8 @@ public class BookCatalogue extends ExpandableListActivity {
 	 */
 	public void expandAll() {
 		ExpandableListView view = this.getExpandableListView();
-		int numAuthors = view.getChildCount();
+		ExpandableListAdapter ad = view.getExpandableListAdapter();
+		int numAuthors = ad.getGroupCount();
 		currentGroup = new ArrayList<Integer>();
 		int i = 0;
 		while (i < numAuthors) {
@@ -1206,7 +1368,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			view.expandGroup(i);
 			i++;
 		}
-		expanded = true;
+		collapsed = false;
 	}
 	
 	/**
@@ -1226,7 +1388,8 @@ public class BookCatalogue extends ExpandableListActivity {
 	public void collapseAll(boolean clearCurrent) {
 		// there is no current group anymore
 		ExpandableListView view = this.getExpandableListView();
-		int numAuthors = view.getChildCount();
+		ExpandableListAdapter ad = view.getExpandableListAdapter();
+		int numAuthors = ad.getGroupCount();
 		int i = 0;
 		while (i < numAuthors) {
 			view.collapseGroup(i);
@@ -1238,7 +1401,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		if (clearCurrent) {
 			currentGroup = new ArrayList<Integer>();
 		}
-		expanded = false;
+		collapsed = true;
 	}
 	
 	@Override
@@ -1314,6 +1477,19 @@ public class BookCatalogue extends ExpandableListActivity {
 	 */
 	private void sortBySeries() {
 		sort = SORT_SERIES;
+		currentGroup = new ArrayList<Integer>();
+		fillData();
+		/* Save the current sort settings */
+		SharedPreferences.Editor ed = mPrefs.edit();
+		ed.putInt(STATE_SORT, sort);
+		ed.commit();
+	}
+	
+	/**
+	 * Change the sort order of the view and refresh the page
+	 */
+	private void sortByGenre() {
+		sort = SORT_GENRE;
 		currentGroup = new ArrayList<Integer>();
 		fillData();
 		/* Save the current sort settings */
@@ -1475,6 +1651,10 @@ public class BookCatalogue extends ExpandableListActivity {
 				} else if (sort == SORT_SERIES) {
 					justAdded = intent.getStringExtra(BookEditFields.ADDED_SERIES);
 					int position = mDbHelper.fetchSeriesPositionBySeries(justAdded, bookshelf);
+					addToCurrentGroup(position, true);
+				} else if (sort == SORT_GENRE) {
+					justAdded = intent.getStringExtra(BookEditFields.ADDED_GENRE);
+					int position = mDbHelper.fetchGenrePositionByGenre(justAdded, bookshelf);
 					addToCurrentGroup(position, true);
 				}
 				

@@ -97,9 +97,11 @@ public class BookEditFields extends Activity {
 	private String read_end = "";
 	private boolean signed = false;
 	
+	private String added_genre = "";
 	private String added_series = "";
 	private String added_title = "";
 	private String added_author = "";
+	public static String ADDED_GENRE = "ADDED_GENRE";
 	public static String ADDED_SERIES = "ADDED_SERIES";
 	public static String ADDED_TITLE = "ADDED_TITLE";
 	public static String ADDED_AUTHOR = "ADDED_AUTHOR";
@@ -633,6 +635,7 @@ public class BookEditFields extends Activity {
 				public void onClick(View view) {
 					saveState();
 					Intent i = new Intent();
+					i.putExtra(ADDED_GENRE, added_genre);
 					i.putExtra(ADDED_SERIES, added_series);
 					i.putExtra(ADDED_TITLE, added_title);
 					i.putExtra(ADDED_AUTHOR, added_author);
@@ -727,6 +730,7 @@ public class BookEditFields extends Activity {
 					startActivity(edit);
 					
 					Intent i = new Intent();
+					i.putExtra(ADDED_GENRE, added_genre);
 					i.putExtra(ADDED_SERIES, added_series);
 					i.putExtra(ADDED_TITLE, added_title);
 					i.putExtra(ADDED_AUTHOR, added_author);
@@ -769,6 +773,7 @@ public class BookEditFields extends Activity {
 					startActivity(edit);
 					
 					Intent i = new Intent();
+					i.putExtra(ADDED_GENRE, added_genre);
 					i.putExtra(ADDED_SERIES, added_series);
 					i.putExtra(ADDED_TITLE, added_title);
 					i.putExtra(ADDED_AUTHOR, added_author);
@@ -899,6 +904,7 @@ public class BookEditFields extends Activity {
 		added_author = author;
 		added_title = title;
 		added_series = series;
+		added_genre = genre;
 		return;
 	}
 	

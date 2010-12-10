@@ -87,6 +87,7 @@
 <string name="sortby_series">Sort by Series</string>
 <string name="sortby_loan">Sort by Loaned</string>
 <string name="sortby_unread">Sort by Unread</string>
+<string name="sortby_genre">Sort by Genre</string>
 <string name="list_price">List Price</string>
 <string name="date_started_reading">Date Started Reading</string>
 <string name="date_finished_reading">Date Finished Reading</string>
@@ -217,5 +218,6 @@
 <string name="auto_update">Would you like to automatically update the following fields now \n* Genre \n* Description \n* Thumbnails\n\n If you select Cancel you can always run this again from the Administration page</string>
 <string name="notset">Not Set</string>
 <string name="menu_search">Search Books</string>
-<string name="menu_insert_name">Add by Author/Title</string>
+<string name="menu_insert_name">Add by Name</string>
+<string name="isbn_name_search_help">Adding books by ISBN is much more accurate than adding by author and title and is generally preferred. Please remember you can sometimes find the correct barcode on the inside front cover. \n\n</string>
 </resources>

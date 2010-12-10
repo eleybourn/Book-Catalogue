@@ -198,6 +198,7 @@ public class SearchAmazonHandler extends DefaultHandler {
 	/* A flag to identify if we are in the correct node */
 	private boolean entry = false;
 	private boolean image = false;
+	private boolean done = false;
 	
 	/* The XML element names */
 	public static String ID = "id";
@@ -321,6 +322,9 @@ public class SearchAmazonHandler extends DefaultHandler {
 			if (entry == true && description == "") {
 				description = builder.toString();
 			}
+		} else if (localName.equalsIgnoreCase(ENTRY)){
+				done = true;
+				entry = false;
 		}
 		builder.setLength(0);
 	}
@@ -346,7 +350,7 @@ public class SearchAmazonHandler extends DefaultHandler {
 	@Override
 	public void startElement(String uri, String localName, String name, Attributes attributes) throws SAXException {
 		super.startElement(uri, localName, name, attributes);
-		if (localName.equalsIgnoreCase(ENTRY)){
+		if (done == false && localName.equalsIgnoreCase(ENTRY)){
 			entry = true;
 		} else if (localName.equalsIgnoreCase(MEDIUMIMAGE)){
 			image = true;

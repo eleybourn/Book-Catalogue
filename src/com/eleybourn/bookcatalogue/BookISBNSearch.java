@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -36,6 +37,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -54,7 +57,7 @@ public class BookISBNSearch extends Activity {
 	
 	private EditText mIsbnText;
 	private EditText mTitleText;
-	private EditText mAuthorText;
+	private AutoCompleteTextView mAuthorText;
 	private TextView mIsbnStatus;
 	private Button mConfirmButton;
 	private CatalogueDBAdapter mDbHelper;
@@ -131,7 +134,10 @@ public class BookISBNSearch extends Activity {
 			});
 		} else if (by.equals("name")) {
 			setContentView(R.layout.name_search);
-			mAuthorText = (EditText) findViewById(R.id.author);
+			ArrayAdapter<String> author_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getAuthors());
+			mAuthorText = (AutoCompleteTextView) findViewById(R.id.author);
+			mAuthorText.setAdapter(author_adapter);
+			
 			mTitleText = (EditText) findViewById(R.id.title);
 			mIsbnStatus = (TextView) findViewById(R.id.isbn_search_status);
 			mConfirmButton = (Button) findViewById(R.id.search);
@@ -183,6 +189,18 @@ public class BookISBNSearch extends Activity {
 	}
 	*/
 	
+	protected ArrayList<String> getAuthors() {
+		ArrayList<String> author_list = new ArrayList<String>();
+		Cursor author_cur = mDbHelper.fetchAllAuthorsIgnoreBooks();
+		startManagingCursor(author_cur);
+		while (author_cur.moveToNext()) {
+			String name = author_cur.getString(author_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED));
+			author_list.add(name);
+		}
+		author_cur.close();
+		return author_list;
+	}
+	
 	/**
 	 * This function takes the isbn and search google books (and soon amazon)
 	 * to extract the details of the book. The details will then get sent to the
@@ -217,8 +235,9 @@ public class BookISBNSearch extends Activity {
 		}
 		/* Get the book */
 		try {
-			String[] book;
-			String[] bookAmazon;
+			//String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num, list_price, anthology, location, read_start, read_end, audiobook, signed, description, genre};
+			String[] book = {author, title, isbn, "", "", "0",  "", "", "", "", "", "", "0", "", "", "", "", "0", "", ""};
+			String[] bookAmazon = {author, title, isbn, "", "", "0",  "", "", "", "", "", "", "0", "", "", "", "", "0", "", ""};
 			
 			mIsbnStatus.append(this.getResources().getString(R.string.searching_google_books) + "\n");
 			book = searchGoogle(isbn, author, title);
@@ -277,26 +296,27 @@ public class BookISBNSearch extends Activity {
 	}
 	
 	public String[] searchGoogle(String mIsbn, String mAuthor, String mTitle) {
+		//replace spaces with %20
+		mAuthor = mAuthor.replace(" ", "%20");
+		mTitle = mTitle.replace(" ", "%20");
+		
 		String path = "http://books.google.com/books/feeds/volumes";
-		String search_string = "";
 		if (mIsbn.equals("")) {
-			path += "?q=";
-			search_string = "intitle:\""+mTitle+"\"+inauthor:\""+mAuthor+"\"";
+			path += "?q=" + "intitle:"+mTitle+"+inauthor:"+mAuthor+"";
 		} else {
-			path += "?q=ISBN";
-			search_string = mIsbn;
+			path += "?q=ISBN" + mIsbn;
 		}
 		URL url;
 		//String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num, list_price, anthology, location, read_start, read_end, audiobook, signed, description, genre};
-		String[] book = {"", "", mIsbn, "", "", "0",  "", "", "", "", "", "", "0", "", "", "", "", "0", "", ""};
+		String[] book = {mAuthor, mTitle, mIsbn, "", "", "0",  "", "", "", "", "", "", "0", "", "", "", "", "0", "", ""};
 		
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		SAXParser parser;
 		SearchGoogleBooksHandler handler = new SearchGoogleBooksHandler();
 		SearchGoogleBooksEntryHandler entryHandler = new SearchGoogleBooksEntryHandler();
-
+		
 		try {
-			url = new URL(path+search_string);
+			url = new URL(path);
 			parser = factory.newSAXParser();
 			int count = 0;
 			try {
@@ -304,6 +324,7 @@ public class BookISBNSearch extends Activity {
 				count = handler.getCount();
 			} catch (RuntimeException e) {
 				Toast.makeText(this, R.string.unable_to_connect_google, Toast.LENGTH_LONG).show();
+				//Log.e("BC", e.getMessage());
 			}
 			if (count > 0) {
 				String id = handler.getId();
@@ -314,6 +335,7 @@ public class BookISBNSearch extends Activity {
 					book = entryHandler.getBook();
 				} catch (RuntimeException e) {
 					Toast.makeText(this, R.string.unable_to_connect_google, Toast.LENGTH_LONG).show();
+					//Log.e("BC", e.getMessage());
 				}
 			}
 			return book;
@@ -338,10 +360,19 @@ public class BookISBNSearch extends Activity {
 	 * @return The book array
 	 */
 	public String[] searchAmazon(String mIsbn, String mAuthor, String mTitle) {
-		//TODO: mAuthor
+		//replace spaces with %20
+		mAuthor = mAuthor.replace(" ", "%20");
+		mTitle = mTitle.replace(" ", "%20");
+		
 		//String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num, list_price, anthology, location, read_start, read_end, audiobook, signed, description, genre};
-		String[] book = {"", "", mIsbn, "", "", "0",  "", "", "", "", "", "", "0", "", "", "", "", "0", "", ""};
-		String signedurl = "http://alphacomplex.org/getRest.php?isbn="+mIsbn;
+		String[] book = {mAuthor, mTitle, mIsbn, "", "", "0",  "", "", "", "", "", "", "0", "", "", "", "", "0", "", ""};
+		
+		String path = "http://alphacomplex.org/getRest_v2.php";
+		if (mIsbn.equals("")) {
+			path += "?author=" + mAuthor + "&title=" + mTitle;
+		} else {
+			path += "?isbn=" + mIsbn;
+		}
 		URL url;
 		
 		SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -349,7 +380,7 @@ public class BookISBNSearch extends Activity {
 		SearchAmazonHandler handler = new SearchAmazonHandler();
 		
 		try {
-			url = new URL(signedurl);
+			url = new URL(path);
 			parser = factory.newSAXParser();
 			try {
 				parser.parse(getInputStream(url), handler);

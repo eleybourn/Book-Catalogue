@@ -204,7 +204,7 @@ public class CatalogueDBAdapter {
 	
 	
 	private final Context mCtx;
-	public static final int DATABASE_VERSION = 49;
+	public static final int DATABASE_VERSION = 50;
 	
 	/**
 	 * This is a specific version of the SQLiteOpenHelper class. It handles onCreate and onUpgrade events
@@ -493,7 +493,15 @@ public class CatalogueDBAdapter {
 				message += "* The 'Add Book by ISBN' page has been redesigned to be simpler and more stable (thanks Vinikia)\n\n";
 				message += "* The export file is now formatted correctly (.csv) (thanks glohr)\n\n";
 				message += "* You will be prompted to backup your books on a regular basis \n\n";
-
+				
+				try {
+					db.execSQL("DROP TABLE tmp1");
+					db.execSQL("DROP TABLE tmp2");
+					db.execSQL("DROP TABLE tmp3");
+				} catch (Exception e) {
+					//do nothing
+				}
+				
 				try {
 					db.execSQL(DATABASE_CREATE_BOOK_BOOKSHELF_WEAK);
 					db.execSQL(DATABASE_CREATE_INDICES);
@@ -545,6 +553,15 @@ public class CatalogueDBAdapter {
 			if (curVersion == 44) {
 				//do nothing
 				curVersion++;
+				
+				try {
+					db.execSQL("DROP TABLE tmp1");
+					db.execSQL("DROP TABLE tmp2");
+					db.execSQL("DROP TABLE tmp3");
+				} catch (Exception e) {
+					//do nothing
+				}
+				
 				db.execSQL("CREATE TABLE tmp1 AS SELECT _id, " + KEY_AUTHOR + ", " + KEY_TITLE + ", " + KEY_ISBN + ", " + KEY_PUBLISHER + ", " + 
 						KEY_DATE_PUBLISHED + ", " + KEY_RATING + ", " + KEY_READ + ", " + KEY_SERIES + ", " + KEY_PAGES + ", " + KEY_SERIES_NUM + ", " + KEY_NOTES + ", " + 
 						KEY_LIST_PRICE + ", " + KEY_ANTHOLOGY + ", " + KEY_LOCATION + ", " + KEY_READ_START + ", " + KEY_READ_END + ", " +
@@ -628,6 +645,14 @@ public class CatalogueDBAdapter {
 				db.execSQL("delete from loan where _id!=(select max(l2._id) from loan l2 where l2.book=loan.book);");
 				db.execSQL("delete from anthology where _id!=(select max(a2._id) from anthology a2 where a2.book=anthology.book AND a2.author=anthology.author AND a2.title=anthology.title);");
 				db.execSQL(DATABASE_CREATE_INDICES);
+			}
+			if (curVersion == 49) {
+				curVersion++;
+				message += "New in v3.2\n\n";
+				message += "* Books can now be automatically added by searching for the author name and book title\n\n";
+				message += "* Updating thumbnails, genre and description fields will also search by author name and title is the isbn does not exist\n\n";
+				message += "* Expand/Collapse all bug fixed\n\n";
+				message += "* The search query will be shown at the top of all search screens\n\n";
 			}
 		}
 	}

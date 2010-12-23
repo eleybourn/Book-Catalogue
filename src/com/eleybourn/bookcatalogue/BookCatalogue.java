@@ -38,6 +38,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
@@ -66,6 +67,8 @@ import android.widget.Toast;
  * A book catalogue application that integrates with Google Books.
  */
 public class BookCatalogue extends ExpandableListActivity {
+	public static final String APP_NAME = "Book Catalogue";
+	
 	private static final int ACTIVITY_CREATE=0;
 	private static final int ACTIVITY_EDIT=1;
 	private static final int ACTIVITY_SORT=2;
@@ -121,6 +124,13 @@ public class BookCatalogue extends ExpandableListActivity {
 	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		//check which strings.xml file is currently active
+		if (!getString(R.string.app_name).equals(APP_NAME)) {
+			Log.e("BC", getString(R.string.app_name));
+			Log.e("BC", APP_NAME);
+			throw new NullPointerException();
+		}
+		
 		bookshelf = getString(R.string.all_books);
 		try {
 			super.onCreate(savedInstanceState);
@@ -1238,7 +1248,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		MenuItem insertName = menu.add(0, INSERT_NAME_ID, 2, R.string.menu_insert_name);
 		insertName.setIcon(android.R.drawable.ic_menu_zoom);
 		
-		if (collapsed == true) {
+		if (collapsed == true || currentGroup.size() == 0) {
 			MenuItem expand = menu.add(0, SORT_BY_AUTHOR_COLLAPSED, 3, R.string.menu_sort_by_author_expanded);
 			expand.setIcon(R.drawable.ic_menu_expand);
 		} else {

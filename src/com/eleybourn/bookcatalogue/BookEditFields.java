@@ -108,8 +108,9 @@ public class BookEditFields extends Activity {
 	
 	private static final int DELETE_ID = 1;
 	private static final int ADD_PHOTO = 2;
-	private static final int ROTATE_THUMBNAIL = 3;
-	private static final int ADD_GALLERY = 4;
+	private static final int ROTATE_THUMB_CW = 3;
+	private static final int ROTATE_THUMB_CCW = 4;
+	private static final int ADD_GALLERY = 5;
 	private static final int GONE = 8;
 	private static final int DATE_DIALOG_ID = 1;
 	
@@ -409,8 +410,10 @@ public class BookEditFields extends Activity {
 					add_photo.setIcon(android.R.drawable.ic_menu_camera);
 					MenuItem add_gallery = menu.add(0, ADD_GALLERY, 0, R.string.menu_add_thumb_gallery);
 					add_gallery.setIcon(android.R.drawable.ic_menu_gallery);
-					MenuItem rotate_photo = menu.add(0, ROTATE_THUMBNAIL, 0, R.string.menu_rotate_thumbnail);
-					rotate_photo.setIcon(android.R.drawable.ic_menu_rotate);
+					MenuItem rotate_photo_cw = menu.add(0, ROTATE_THUMB_CW, 0, R.string.menu_rotate_thumb_cw);
+					rotate_photo_cw.setIcon(android.R.drawable.ic_menu_rotate);
+					MenuItem rotate_photo_ccw = menu.add(0, ROTATE_THUMB_CCW, 0, R.string.menu_rotate_thumb_ccw);
+					rotate_photo_ccw.setIcon(android.R.drawable.ic_menu_rotate);
 				}
 			});
 			
@@ -475,8 +478,12 @@ public class BookEditFields extends Activity {
 			deleteThumbnail(mRowId);
 			populateFields();
 			return true;
-		case ROTATE_THUMBNAIL:
-			rotateThumbnail(mRowId);
+		case ROTATE_THUMB_CW:
+			rotateThumbnail(mRowId, 90);
+			populateFields();
+			return true;
+		case ROTATE_THUMB_CCW:
+			rotateThumbnail(mRowId, -90);
 			populateFields();
 			return true;
 		case ADD_PHOTO:
@@ -516,12 +523,12 @@ public class BookEditFields extends Activity {
 	 * 
 	 * @param id
 	 */
-	private void rotateThumbnail(long id) {
+	private void rotateThumbnail(long id, long angle) {
 		String filename = CatalogueDBAdapter.fetchThumbnailFilename(mRowId, false);
 		if (filename != null) {
 			Bitmap x = BitmapFactory.decodeFile(filename);
 			Matrix m = new Matrix();
-			m.postRotate(90);
+			m.postRotate(angle);
 			x = Bitmap.createBitmap(x, 0, 0, x.getWidth(), x.getHeight(), m, true);
 			/* Create a file to copy the thumbnail into */
 			FileOutputStream f = null;

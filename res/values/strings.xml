@@ -116,7 +116,7 @@
 <string name="anthology_add">Add</string>
 <string name="menu_add_thumb_photo">Add Thumbnail from Camera</string>
 <string name="thumbnail">Cover Thumbnail</string>
-<string name="menu_rotate_thumbnail">Rotate Thumbnail</string>
+<string name="menu_rotate_thumb_cw">Rotate Clockwise</string><string name="menu_rotate_thumb_ccw">Rotate Anti-Clockwise</string>
 <string name="help_title_nutshell">In a Nutshell</string>
 <string name="signed">Has this book been signed</string>
 <string name="audiobook">Audiobook</string>
@@ -144,4 +144,5 @@
 <string name="menu_search">Search Books</string>
 <string name="menu_insert_name">Add by Name</string>
 <string name="isbn_name_search_help">Adding books by ISBN is much more accurate than adding by author and title and is generally preferred. Please remember you can sometimes find the correct barcode on the inside front cover. \n\n</string>
+
 </resources>

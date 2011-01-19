@@ -684,40 +684,81 @@ public class AdministrationFunctions extends Activity {
 			mHandler.sendMessage(msg);
 			return;
 		}
-		
+
+		//
+		// This CSV parser is not a complete parser, but it will parse files exported by older 
+		// versions. At some stage in the future it would be good to allow full CSV export 
+		// and import to allow for escape('\') chars so that cr/lf can be preserved.
+		// 
 		private String[] returnRow(String row) {
-			//String[] imported = row.split(",");
-			Pattern pat = Pattern.compile(",(\".*?\")");
-			Matcher matcher = pat.matcher(row);
-			StringBuffer sb = new StringBuffer();
-			while (matcher.find()){
-				matcher.appendReplacement(sb,","+matcher.group(1).replaceAll(",","&comm"));
-			}
-			matcher.appendTail(sb);
-			String[] imported = sb.toString().split(",");
-			for (int i=0;i<imported.length;i++){
-				imported[i] = imported[i]!=null ? imported[i].replaceAll("&comm",",") : "";
-				imported[i] = imported[i].trim();
-				if (imported[i].indexOf("\"") == 0) {
-					imported[i] = imported[i].substring(1);
+			// Need to handle double quotes etc
+			char sep = ',';				// CSV seperator
+			char quoteChar = '"';		// CSV quote char
+			int pos = 0;				// Current position
+			boolean inQuote = false;	// In a quoted string
+			char c;						// 'Current' char
+			char next					// 'Next' char 
+					= (row.length() > 0) ? row.charAt(0) : '\0';
+			int endPos					// Last position in row 
+					= row.length() - 1;
+			ArrayList<String> fields	// Array of fields found in row
+					= new ArrayList<String>();
+
+			StringBuilder bld			// Temp. storage for current field
+					= new StringBuilder();
+
+			while (next != '\0')
+			{
+				// Get current and next char
+				c = next;
+				next = (pos < endPos) ? row.charAt(pos+1) : '\0';
+
+				if (inQuote)
+				{
+					if (c == quoteChar) {
+						if (next == quoteChar)
+						{
+							// Double-quote: Advance one more and append a single quote
+							pos++;
+							next = (pos < endPos) ? row.charAt(pos+1) : '\0';
+							bld.append(c);
+						} else {
+							// Leave the quote
+							inQuote = false;
+						}
+					} else {
+						// Append anything else that appears in quotes
+						bld.append(c);
+					}
+				} else {
+					if (bld.length() == 0 && (c == ' ' || c == '\t') ) {
+						// Skip leading white space
+					} else if (c == quoteChar) {
+						if (bld.length() > 0) {
+							// Fields with quotes MUST be quoted...
+							throw new IllegalArgumentException();
+						} else {
+							inQuote = true;
+						}
+					} else if (c == sep) {
+						// Add this field and reset it.
+						fields.add(bld.toString());
+						bld = new StringBuilder();
+					} else {
+						// Just append the char
+						bld.append(c);
+					}
 				}
-				int length = imported[i].length()-1;
-				if (length > -1 && imported[i].lastIndexOf("\"") == length) {
-					imported[i] = imported[i].substring(0, length);
-				}
-				imported[i] = imported[i].trim();
-			}
-/*			for (int i=0; i<imported.length; i++) {
-				imported[i] = imported[i].trim();
-				if (imported[i].indexOf("\"") == 0) {
-					imported[i] = imported[i].substring(1);
-				}
-				int length = imported[i].length()-1;
-				if (length > -1 && imported[i].lastIndexOf("\"") == length) {
-					imported[i] = imported[i].substring(0, length);
-				}
-				imported[i] = imported[i].trim();
-			}*/
+				pos++;
+			};
+
+			// Add the remaining chunk
+			fields.add(bld.toString());
+
+			// Return the result as a String[].
+			String[] imported = new String[fields.size()];
+			fields.toArray(imported);
+
 			return imported;
 		}
 

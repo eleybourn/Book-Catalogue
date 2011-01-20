@@ -425,13 +425,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				if (field_visibility == false) {
 					newv.setVisibility(GONE);
 				} else {
-					String thumbFilename = CatalogueDBAdapter.fetchThumbnailFilename(Long.parseLong(text), false);
-					Bitmap thumbnail = BitmapFactory.decodeFile(thumbFilename);
-					if (thumbnail != null) {
-						newv.setImageBitmap(thumbnail);
-					} else {
-						newv.setImageResource(android.R.drawable.ic_menu_help);
-					}
+					CatalogueDBAdapter.fetchThumbnailIntoImageView(Long.parseLong(text),newv, 100,100);
 					newv.setVisibility(VISIBLE);
 				}
 				text = "";
@@ -563,13 +557,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				if (field_visibility == false) {
 					newv.setVisibility(GONE);
 				} else {
-					String thumbFilename = CatalogueDBAdapter.fetchThumbnailFilename(Long.parseLong(text), false);
-					Bitmap thumbnail = BitmapFactory.decodeFile(thumbFilename);
-					if (thumbnail != null) {
-						newv.setImageBitmap(thumbnail);
-					} else {
-						newv.setImageResource(android.R.drawable.ic_menu_help);
-					}
+					CatalogueDBAdapter.fetchThumbnailIntoImageView(Long.parseLong(text), newv, 100, 100);
 					newv.setVisibility(VISIBLE);
 				}
 				text = "";
@@ -704,13 +692,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				if (field_visibility == false) {
 					newv.setVisibility(GONE);
 				} else {
-					String thumbFilename = CatalogueDBAdapter.fetchThumbnailFilename(Long.parseLong(text), false);
-					Bitmap thumbnail = BitmapFactory.decodeFile(thumbFilename);
-					if (thumbnail != null) {
-						newv.setImageBitmap(thumbnail);
-					} else {
-						newv.setImageResource(android.R.drawable.ic_menu_help);
-					}
+					CatalogueDBAdapter.fetchThumbnailIntoImageView(Long.parseLong(text), newv, 100, 100);
 					newv.setVisibility(VISIBLE);
 				}
 				text = "";
@@ -836,13 +818,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				if (field_visibility == false) {
 					newv.setVisibility(GONE);
 				} else {
-					String thumbFilename = CatalogueDBAdapter.fetchThumbnailFilename(Long.parseLong(text), false);
-					Bitmap thumbnail = BitmapFactory.decodeFile(thumbFilename);
-					if (thumbnail != null) {
-						newv.setImageBitmap(thumbnail);
-					} else {
-						newv.setImageResource(android.R.drawable.ic_menu_help);
-					}
+					CatalogueDBAdapter.fetchThumbnailIntoImageView(Long.parseLong(text), newv, 100, 100);
 					v.setVisibility(VISIBLE);
 				}
 				text = "";
@@ -952,13 +928,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				if (field_visibility == false) {
 					newv.setVisibility(GONE);
 				} else {
-					String thumbFilename = CatalogueDBAdapter.fetchThumbnailFilename(Long.parseLong(text), false);
-					Bitmap thumbnail = BitmapFactory.decodeFile(thumbFilename);
-					if (thumbnail != null) {
-						newv.setImageBitmap(thumbnail);
-					} else {
-						newv.setImageResource(android.R.drawable.ic_menu_help);
-					}
+					CatalogueDBAdapter.fetchThumbnailIntoImageView(Long.parseLong(text), newv, 100, 100);
 					v.setVisibility(VISIBLE);
 				}
 				text = "";
@@ -1076,13 +1046,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				if (field_visibility == false) {
 					newv.setVisibility(GONE);
 				} else {
-					String thumbFilename = CatalogueDBAdapter.fetchThumbnailFilename(Long.parseLong(text), false);
-					Bitmap thumbnail = BitmapFactory.decodeFile(thumbFilename);
-					if (thumbnail != null) {
-						newv.setImageBitmap(thumbnail);
-					} else {
-						newv.setImageResource(android.R.drawable.ic_menu_help);
-					}
+					CatalogueDBAdapter.fetchThumbnailIntoImageView(Long.parseLong(text), newv, 100, 100);
 					newv.setVisibility(VISIBLE);
 				}
 				text = "";

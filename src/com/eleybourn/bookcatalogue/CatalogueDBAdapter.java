@@ -29,7 +29,10 @@ import android.database.CursorIndexOutOfBoundsException;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.widget.ImageView;
 
 /**
  * Book Catalogue database access helper class. Defines the basic CRUD operations
@@ -732,7 +735,101 @@ public class CatalogueDBAdapter {
 		}
 		return filename;
 	}
-	
+
+//	/**
+//	 * This function will load the thumbnail bitmap with a guaranteed maximum size; it
+//	 * prevents OutOfMemory exceptions on large files and reduces memory usage in lists.
+//	 * 
+//	 * @param id The id of the book
+//	 * @param maxWidth Maximum desired width of the image
+//	 * @param maxHeight Maximum desired height of the image
+//	 * @return The filename string
+//	 */
+//	public static Bitmap fetchThumbnailBitmap(long id, int maxWidth, int maxHeight) {
+//		// Get the file, if it exists. Otherwise set icon.
+//		File file = fetchThumbnail(id);
+//		if (!file.exists()) {
+//			return null;
+//		}
+//		String filename = file.getPath();
+//
+//		// Read the file to get file size
+//		BitmapFactory.Options opt = new BitmapFactory.Options();
+//		opt.inJustDecodeBounds = true;
+//	    BitmapFactory.decodeFile( filename, opt );
+//
+//	    // If no size info, assume file bad and return appropriate icon
+//	    if ( opt.outHeight <= 0 || opt.outWidth <= 0 ) {
+//	    	return null;
+//	    }
+//
+//	    // Now load the file
+//	    float widthRatio = (float)maxWidth / opt.outWidth; 
+//	    float heightRatio = (float)maxHeight / opt.outHeight;
+//
+//	    opt.inJustDecodeBounds = false;
+//	    if (widthRatio < 1.0 || heightRatio < 1.0) {
+//		    float ratio = widthRatio < heightRatio ? widthRatio : heightRatio;
+//		    opt.inSampleSize = (int)Math.ceil(1/ratio);
+//		    //Matrix matrix = new Matrix();
+//		    //matrix.postScale(ratio, ratio);
+//		    //bm = Bitmap.createBitmap(bitmapOrg, 0, 0,width, height, matrix, true); 
+//	    }
+//	    return BitmapFactory.decodeFile( filename, opt );
+//	}
+
+	/**
+	 * This function will load the thumbnail bitmap with a guaranteed maximum size; it
+	 * prevents OutOfMemory exceptions on large files and reduces memory usage in lists.
+	 * 
+	 * @param id The id of the book
+	 * @param destView The ImageView to load with the bitmap or an appropriate icon
+	 * @param maxWidth Maximum desired width of the image
+	 * @param maxHeight Maximum desired height of the image
+	 * @return The filename string
+	 */
+	public static Bitmap fetchThumbnailIntoImageView(long id, ImageView destView, int maxWidth, int maxHeight) {
+		// Get the file, if it exists. Otherwise set icon.
+		File file = fetchThumbnail(id);
+		if (!file.exists()) {
+	    	if (destView != null)
+				destView.setImageResource(android.R.drawable.ic_menu_help);
+			return null;
+		}
+		String filename = file.getPath();
+
+		// Read the file to get file size
+		Bitmap bm = null;
+		BitmapFactory.Options opt = new BitmapFactory.Options();
+		opt.inJustDecodeBounds = true;
+	    BitmapFactory.decodeFile( filename, opt );
+
+	    // If no size info, assume file bad and return appropriate icon
+	    if ( opt.outHeight <= 0 || opt.outWidth <= 0 ) {
+	    	if (destView != null)
+	    		destView.setImageResource(android.R.drawable.ic_dialog_alert);
+	    	return null;
+	    }
+
+	    // Now load the file
+	    float widthRatio = (float)maxWidth / opt.outWidth; 
+	    float heightRatio = (float)maxHeight / opt.outHeight;
+
+	    opt.inJustDecodeBounds = false;
+	    if (widthRatio < 1.0 || heightRatio < 1.0) {
+		    float ratio = widthRatio < heightRatio ? widthRatio : heightRatio;
+		    opt.inSampleSize = (int)Math.ceil(1/ratio);
+		    //Matrix matrix = new Matrix();
+		    //matrix.postScale(ratio, ratio);
+		    //bm = Bitmap.createBitmap(bitmapOrg, 0, 0,width, height, matrix, true); 
+	    }
+	    bm = BitmapFactory.decodeFile( filename, opt );
+    	if (destView != null)
+		    destView.setImageBitmap(bm);
+	 
+	    return bm;
+	}
+
 	/**
 	 * This will return the parsed author name based on a String. 
 	 * The name can be in either "family, given" or "given family" format.

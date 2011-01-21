@@ -88,6 +88,8 @@ public class BookEditFields extends Activity {
 	private Button mCancelButton;
 	private Long mRowId;
 	private CatalogueDBAdapter mDbHelper;
+	private Integer mThumbEditSize;
+	private Integer mThumbZoomSize;
 	private ImageView mImageView;
 	private Float rating = Float.parseFloat("0");
 	private boolean read = false;
@@ -108,8 +110,8 @@ public class BookEditFields extends Activity {
 	public static String ADDED_AUTHOR = "ADDED_AUTHOR";
 	
 	// Target size of a thumbnail in edit dialog and zoom dialog (bbox dim)
-	private static final int EDIT_THUMBNAIL_SIZE=200;
-	private static final int ZOOM_THUMBNAIL_SIZE=800;
+	private static final int MAX_EDIT_THUMBNAIL_SIZE=256;
+	private static final int MAX_ZOOM_THUMBNAIL_SIZE=1024;
 
 	private static final int DELETE_ID = 1;
 	private static final int ADD_PHOTO = 2;
@@ -184,7 +186,15 @@ public class BookEditFields extends Activity {
 			super.onCreate(savedInstanceState);
 			mDbHelper = new CatalogueDBAdapter(this);
 			mDbHelper.open();
-			
+
+			// See how big the display is and use that to set bitmap sizes
+			android.util.DisplayMetrics metrics = new android.util.DisplayMetrics();
+			getWindowManager().getDefaultDisplay().getMetrics(metrics);
+			// Minimum of MAX_EDIT_THUMBNAIL_SIZE and 1/3rd of largest screen dimension 
+			mThumbEditSize = Math.min(MAX_EDIT_THUMBNAIL_SIZE, Math.max(metrics.widthPixels, metrics.heightPixels)/3);
+			// Zoom size is minimum of MAX_ZOOM_THUMBNAIL_SIZE and largest screen dimension.
+			mThumbZoomSize = Math.min(MAX_ZOOM_THUMBNAIL_SIZE, Math.max(metrics.widthPixels, metrics.heightPixels));
+
 			setContentView(R.layout.edit_book);
 			
 			ArrayAdapter<String> author_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getAuthors());
@@ -496,7 +506,7 @@ public class BookEditFields extends Activity {
 				} else {
 					dialog.setTitle("Cover Detail");
 					ImageView cover = new ImageView(this);
-					CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, cover, ZOOM_THUMBNAIL_SIZE, ZOOM_THUMBNAIL_SIZE, true);
+					CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, cover, mThumbZoomSize, mThumbZoomSize, true);
 					cover.setAdjustViewBounds(true);
 				    LayoutParams lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
 				    dialog.addContentView(cover, lp);
@@ -508,6 +518,7 @@ public class BookEditFields extends Activity {
 		}
 		return dialog;
 	}
+
 	// the callback received when the user "sets" the date in the dialog
 	private DatePickerDialog.OnDateSetListener mDateSetListener = new DatePickerDialog.OnDateSetListener() {
 		public void onDateSet(DatePicker view, int year, int month, int day) {
@@ -588,7 +599,7 @@ public class BookEditFields extends Activity {
 	 */
 	private void rotateThumbnail(long id, long angle) {
 
-		Bitmap bm = CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, null, ZOOM_THUMBNAIL_SIZE*2, ZOOM_THUMBNAIL_SIZE*2, true);
+		Bitmap bm = CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, null, mThumbZoomSize*2, mThumbZoomSize*2, true);
 		if (bm == null)
 			return;
 
@@ -720,7 +731,7 @@ public class BookEditFields extends Activity {
 				}
 			});
 
-			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, mImageView, EDIT_THUMBNAIL_SIZE, EDIT_THUMBNAIL_SIZE, true);
+			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, mImageView, mThumbEditSize, mThumbEditSize, true);
 			rating = book.getFloat(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_RATING));
 			read = (book.getInt(book.getColumnIndex(CatalogueDBAdapter.KEY_READ))==0 ? false:true);
 			notes = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_NOTES));
@@ -810,7 +821,7 @@ public class BookEditFields extends Activity {
 				}
 			});
 			
-			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, mImageView, EDIT_THUMBNAIL_SIZE, EDIT_THUMBNAIL_SIZE, true);
+			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, mImageView, mThumbEditSize, mThumbEditSize, true);
 
 		} else {
 			// Manual Add

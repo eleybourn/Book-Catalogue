@@ -50,6 +50,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -106,13 +107,21 @@ public class BookEditFields extends Activity {
 	public static String ADDED_TITLE = "ADDED_TITLE";
 	public static String ADDED_AUTHOR = "ADDED_AUTHOR";
 	
+	// Target size of a thumbnail in edit dialog and zoom dialog (bbox dim)
+	private static final int EDIT_THUMBNAIL_SIZE=200;
+	private static final int ZOOM_THUMBNAIL_SIZE=800;
+
 	private static final int DELETE_ID = 1;
 	private static final int ADD_PHOTO = 2;
-	private static final int ROTATE_THUMB_CW = 3;
-	private static final int ROTATE_THUMB_CCW = 4;
-	private static final int ADD_GALLERY = 5;
+	private static final int ROTATE_THUMB_SUBMENU = 3;
+	private static final int ROTATE_THUMB_CW = 31;
+	private static final int ROTATE_THUMB_CCW = 32;
+	private static final int ROTATE_THUMB_180 = 33;
+	private static final int ADD_GALLERY = 4;
+	private static final int ZOOM_THUMB = 5;
 	private static final int GONE = 8;
 	private static final int DATE_DIALOG_ID = 1;
+	private static final int ZOOM_THUMB_DIALOG_ID = 2;
 	
 	public static final String BOOKSHELF_SEPERATOR = ", ";
 	
@@ -406,14 +415,24 @@ public class BookEditFields extends Activity {
 				public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 					MenuItem delete = menu.add(0, DELETE_ID, 0, R.string.menu_delete_thumb);
 					delete.setIcon(android.R.drawable.ic_menu_delete);
-					MenuItem add_photo = menu.add(0, ADD_PHOTO, 0, R.string.menu_add_thumb_photo);
+					MenuItem add_photo = menu.add(0, ADD_PHOTO, 1, R.string.menu_add_thumb_photo);
 					add_photo.setIcon(android.R.drawable.ic_menu_camera);
-					MenuItem add_gallery = menu.add(0, ADD_GALLERY, 0, R.string.menu_add_thumb_gallery);
+					MenuItem add_gallery = menu.add(0, ADD_GALLERY, 2, R.string.menu_add_thumb_gallery);
 					add_gallery.setIcon(android.R.drawable.ic_menu_gallery);
-					MenuItem rotate_photo_cw = menu.add(0, ROTATE_THUMB_CW, 0, R.string.menu_rotate_thumb_cw);
+
+					// Submenu for rotate
+					android.view.SubMenu submenu = menu.addSubMenu(0, ROTATE_THUMB_SUBMENU, 3, R.string.menu_rotate_thumb);
+					add_gallery.setIcon(android.R.drawable.ic_menu_rotate);
+
+					MenuItem rotate_photo_cw = submenu.add(0, ROTATE_THUMB_CW, 1, R.string.menu_rotate_thumb_cw);
 					rotate_photo_cw.setIcon(android.R.drawable.ic_menu_rotate);
-					MenuItem rotate_photo_ccw = menu.add(0, ROTATE_THUMB_CCW, 0, R.string.menu_rotate_thumb_ccw);
+					MenuItem rotate_photo_ccw = submenu.add(0, ROTATE_THUMB_CCW, 2, R.string.menu_rotate_thumb_ccw);
 					rotate_photo_ccw.setIcon(android.R.drawable.ic_menu_rotate);
+					MenuItem rotate_photo_180 = submenu.add(0, ROTATE_THUMB_180, 3, R.string.menu_rotate_thumb_180);
+					rotate_photo_180.setIcon(android.R.drawable.ic_menu_rotate);
+
+					MenuItem zoom_thumb = menu.add(0, ZOOM_THUMB, 4, R.string.menu_zoom_thumb);
+					zoom_thumb.setIcon(android.R.drawable.ic_menu_zoom);
 				}
 			});
 			
@@ -431,6 +450,8 @@ public class BookEditFields extends Activity {
 	
 	@Override
 	protected Dialog onCreateDialog(int id) {
+		Dialog dialog;
+
 		switch (id) {
 		case DATE_DIALOG_ID:
 			try {
@@ -448,13 +469,45 @@ public class BookEditFields extends Activity {
 				} catch (Exception e) {
 					//do nothing
 				}
-				return new DatePickerDialog(this, mDateSetListener, yyyy, mm, dd);
+				dialog = new DatePickerDialog(this, mDateSetListener, yyyy, mm, dd);
 			} catch (Exception e) {
 				// use the default date
+				dialog = null;
 			}
+			break;
+		case ZOOM_THUMB_DIALOG_ID:
+			// Create dialog and set layout
+			dialog = new Dialog(BookEditFields.this);
+			dialog.setContentView(R.layout.zoom_thumb_dialog);
+
+			// Check if we have a file and/or it is valid
+			String filename = CatalogueDBAdapter.fetchThumbnailFilename(mRowId, false);
+
+			if (filename == null) {
+				dialog.setTitle("Cover is not set");
+			} else {
+				BitmapFactory.Options opt = new BitmapFactory.Options();
+				opt.inJustDecodeBounds = true;
+			    BitmapFactory.decodeFile( filename, opt );
+
+			    // If no size info, assume file bad and return appropriate icon
+			    if ( opt.outHeight <= 0 || opt.outWidth <= 0 ) {
+			    	dialog.setTitle("Cover corrupt");
+				} else {
+					dialog.setTitle("Cover Detail");
+					ImageView cover = new ImageView(this);
+					CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, cover, ZOOM_THUMBNAIL_SIZE, ZOOM_THUMBNAIL_SIZE, true);
+					cover.setAdjustViewBounds(true);
+				    LayoutParams lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+				    dialog.addContentView(cover, lp);
+				}
+			}
+			break;
+		default:
+			dialog = null;
 		}
-		return null;
-	}	
+		return dialog;
+	}
 	// the callback received when the user "sets" the date in the dialog
 	private DatePickerDialog.OnDateSetListener mDateSetListener = new DatePickerDialog.OnDateSetListener() {
 		public void onDateSet(DatePicker view, int year, int month, int day) {
@@ -478,12 +531,19 @@ public class BookEditFields extends Activity {
 			deleteThumbnail(mRowId);
 			populateFields();
 			return true;
+		case ROTATE_THUMB_SUBMENU:
+			// Just a submenu; skip
+			return true;
 		case ROTATE_THUMB_CW:
 			rotateThumbnail(mRowId, 90);
 			populateFields();
 			return true;
 		case ROTATE_THUMB_CCW:
 			rotateThumbnail(mRowId, -90);
+			populateFields();
+			return true;
+		case ROTATE_THUMB_180:
+			rotateThumbnail(mRowId, 180);
 			populateFields();
 			return true;
 		case ADD_PHOTO:
@@ -496,6 +556,9 @@ public class BookEditFields extends Activity {
 			gintent.setType("image/*");
 			gintent.setAction(Intent.ACTION_GET_CONTENT);
 			startActivityForResult(Intent.createChooser(gintent, "Select Picture"), ADD_GALLERY);
+			return true;
+		case ZOOM_THUMB:
+			showDialog(ZOOM_THUMB_DIALOG_ID);
 			return true;
 		}
 		return super.onContextItemSelected(item);
@@ -519,29 +582,31 @@ public class BookEditFields extends Activity {
 	}
 	
 	/**
-	 * Rotate the thumbnail 90 degrees clockwise
+	 * Rotate the thumbnail a specified amount
 	 * 
 	 * @param id
 	 */
 	private void rotateThumbnail(long id, long angle) {
-		String filename = CatalogueDBAdapter.fetchThumbnailFilename(mRowId, false);
-		if (filename != null) {
-			Bitmap x = BitmapFactory.decodeFile(filename);
-			Matrix m = new Matrix();
-			m.postRotate(angle);
-			x = Bitmap.createBitmap(x, 0, 0, x.getWidth(), x.getHeight(), m, true);
-			/* Create a file to copy the thumbnail into */
-			FileOutputStream f = null;
-			try {
-				f = new FileOutputStream(filename);
-			} catch (FileNotFoundException e) {
-				//Log.e("Book Catalogue", "Thumbnail cannot be written");
-				return;
-			}
-			x.compress(Bitmap.CompressFormat.PNG, 100, f);
+
+		Bitmap bm = CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, null, ZOOM_THUMBNAIL_SIZE*2, ZOOM_THUMBNAIL_SIZE*2, true);
+		if (bm == null)
+			return;
+
+		Matrix m = new Matrix();
+		m.postRotate(angle);
+		bm = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), m, true);
+		/* Create a file to copy the thumbnail into */
+		FileOutputStream f = null;
+		try {
+			String filename = CatalogueDBAdapter.fetchThumbnailFilename(mRowId, false);
+			f = new FileOutputStream(filename);
+		} catch (FileNotFoundException e) {
+			//Log.e("Book Catalogue", "Thumbnail cannot be written");
+			return;
 		}
+		bm.compress(Bitmap.CompressFormat.PNG, 100, f);				
 	}
-	
+
 	/**
 	 * This function will populate the forms elements in three different ways
 	 * 1. If a valid rowId exists it will populate the fields from the database
@@ -654,13 +719,8 @@ public class BookEditFields extends Activity {
 					getParent().finish();
 				}
 			});
-			
-			String filename = CatalogueDBAdapter.fetchThumbnailFilename(mRowId, false);
-			if (filename == null) {
-				mImageView.setImageResource(android.R.drawable.ic_menu_help);
-			} else {
-				mImageView.setImageBitmap(BitmapFactory.decodeFile(filename));
-			}
+
+			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, mImageView, EDIT_THUMBNAIL_SIZE, EDIT_THUMBNAIL_SIZE, true);
 			rating = book.getFloat(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_RATING));
 			read = (book.getInt(book.getColumnIndex(CatalogueDBAdapter.KEY_READ))==0 ? false:true);
 			notes = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_NOTES));
@@ -750,12 +810,8 @@ public class BookEditFields extends Activity {
 				}
 			});
 			
-			String filename = CatalogueDBAdapter.fetchThumbnailFilename(0, false);
-			if (filename == null) {
-				mImageView.setImageResource(android.R.drawable.ic_menu_help);
-			} else {
-				mImageView.setImageBitmap(BitmapFactory.decodeFile(filename));
-			}
+			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, mImageView, EDIT_THUMBNAIL_SIZE, EDIT_THUMBNAIL_SIZE, true);
+
 		} else {
 			// Manual Add
 			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + this.getResources().getString(R.string.menu_insert));

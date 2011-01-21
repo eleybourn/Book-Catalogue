@@ -69,6 +69,9 @@ import android.widget.Toast;
 public class BookCatalogue extends ExpandableListActivity {
 	public static final String APP_NAME = "Book Catalogue";
 	
+	// Target size of a thumbnail in a list (bbox dim)
+	private static final int LIST_THUMBNAIL_SIZE=60;
+
 	private static final int ACTIVITY_CREATE=0;
 	private static final int ACTIVITY_EDIT=1;
 	private static final int ACTIVITY_SORT=2;
@@ -425,13 +428,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				if (field_visibility == false) {
 					newv.setVisibility(GONE);
 				} else {
-					String thumbFilename = CatalogueDBAdapter.fetchThumbnailFilename(Long.parseLong(text), false);
-					Bitmap thumbnail = BitmapFactory.decodeFile(thumbFilename);
-					if (thumbnail != null) {
-						newv.setImageBitmap(thumbnail);
-					} else {
-						newv.setImageResource(android.R.drawable.ic_menu_help);
-					}
+					CatalogueDBAdapter.fetchThumbnailIntoImageView(Long.parseLong(text),newv, LIST_THUMBNAIL_SIZE,LIST_THUMBNAIL_SIZE, true);
 					newv.setVisibility(VISIBLE);
 				}
 				text = "";
@@ -563,13 +560,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				if (field_visibility == false) {
 					newv.setVisibility(GONE);
 				} else {
-					String thumbFilename = CatalogueDBAdapter.fetchThumbnailFilename(Long.parseLong(text), false);
-					Bitmap thumbnail = BitmapFactory.decodeFile(thumbFilename);
-					if (thumbnail != null) {
-						newv.setImageBitmap(thumbnail);
-					} else {
-						newv.setImageResource(android.R.drawable.ic_menu_help);
-					}
+					CatalogueDBAdapter.fetchThumbnailIntoImageView(Long.parseLong(text), newv, LIST_THUMBNAIL_SIZE, LIST_THUMBNAIL_SIZE, true);
 					newv.setVisibility(VISIBLE);
 				}
 				text = "";
@@ -704,13 +695,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				if (field_visibility == false) {
 					newv.setVisibility(GONE);
 				} else {
-					String thumbFilename = CatalogueDBAdapter.fetchThumbnailFilename(Long.parseLong(text), false);
-					Bitmap thumbnail = BitmapFactory.decodeFile(thumbFilename);
-					if (thumbnail != null) {
-						newv.setImageBitmap(thumbnail);
-					} else {
-						newv.setImageResource(android.R.drawable.ic_menu_help);
-					}
+					CatalogueDBAdapter.fetchThumbnailIntoImageView(Long.parseLong(text), newv, LIST_THUMBNAIL_SIZE, LIST_THUMBNAIL_SIZE, true);
 					newv.setVisibility(VISIBLE);
 				}
 				text = "";
@@ -836,13 +821,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				if (field_visibility == false) {
 					newv.setVisibility(GONE);
 				} else {
-					String thumbFilename = CatalogueDBAdapter.fetchThumbnailFilename(Long.parseLong(text), false);
-					Bitmap thumbnail = BitmapFactory.decodeFile(thumbFilename);
-					if (thumbnail != null) {
-						newv.setImageBitmap(thumbnail);
-					} else {
-						newv.setImageResource(android.R.drawable.ic_menu_help);
-					}
+					CatalogueDBAdapter.fetchThumbnailIntoImageView(Long.parseLong(text), newv, LIST_THUMBNAIL_SIZE, LIST_THUMBNAIL_SIZE, true);
 					v.setVisibility(VISIBLE);
 				}
 				text = "";
@@ -952,13 +931,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				if (field_visibility == false) {
 					newv.setVisibility(GONE);
 				} else {
-					String thumbFilename = CatalogueDBAdapter.fetchThumbnailFilename(Long.parseLong(text), false);
-					Bitmap thumbnail = BitmapFactory.decodeFile(thumbFilename);
-					if (thumbnail != null) {
-						newv.setImageBitmap(thumbnail);
-					} else {
-						newv.setImageResource(android.R.drawable.ic_menu_help);
-					}
+					CatalogueDBAdapter.fetchThumbnailIntoImageView(Long.parseLong(text), newv, LIST_THUMBNAIL_SIZE, LIST_THUMBNAIL_SIZE, true);
 					v.setVisibility(VISIBLE);
 				}
 				text = "";
@@ -1076,13 +1049,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				if (field_visibility == false) {
 					newv.setVisibility(GONE);
 				} else {
-					String thumbFilename = CatalogueDBAdapter.fetchThumbnailFilename(Long.parseLong(text), false);
-					Bitmap thumbnail = BitmapFactory.decodeFile(thumbFilename);
-					if (thumbnail != null) {
-						newv.setImageBitmap(thumbnail);
-					} else {
-						newv.setImageResource(android.R.drawable.ic_menu_help);
-					}
+					CatalogueDBAdapter.fetchThumbnailIntoImageView(Long.parseLong(text), newv, LIST_THUMBNAIL_SIZE, LIST_THUMBNAIL_SIZE, true);
 					newv.setVisibility(VISIBLE);
 				}
 				text = "";

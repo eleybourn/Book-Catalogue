@@ -116,10 +116,13 @@
 <string name="anthology_add">Add</string>
 <string name="menu_add_thumb_photo">Add Thumbnail from Camera</string>
 <string name="thumbnail">Cover Thumbnail</string>
-<string name="menu_rotate_thumb">Rotate Thumbnail...</string><string name="menu_rotate_thumb_cw">Rotate Clockwise</string><string name="menu_rotate_thumb_ccw">Rotate Anti-Clockwise</string><string name="menu_rotate_thumb_180">Rotate 180 deg</string><string name="menu_zoom_thumb">Zoom Thumbnail</string>
+<string name="menu_rotate_thumb">Rotate Thumbnail...</string>
+<string name="menu_rotate_thumb_cw">Rotate Clockwise</string>
+<string name="menu_rotate_thumb_ccw">Rotate Anti-Clockwise</string>
+<string name="menu_rotate_thumb_180">Rotate 180 deg</string>
+<string name="menu_zoom_thumb">Zoom Thumbnail</string>
 <string name="help_title_nutshell">In a Nutshell</string>
 <string name="signed">Has this book been signed</string>
-<string name="audiobook">Audiobook</string>
 <string name="read_start">Date started reading</string>
 <string name="read_end">Date finished reading</string>
 <string name="location">Location of the book</string>
@@ -133,10 +136,11 @@
 <string name="bookshelf_title">Select bookshelves for this book</string>
 <string name="bookshelves">Select Bookshelves</string>
 <string name="format">Format</string>
-<string name="paperback">Paperback</string>
-<string name="hardcover">Hard Cover</string>
-<string name="ebook">eBook</string>
-<string name="guide">Guide / Companion</string>
+<string name="format1">Paperback</string>
+<string name="format2">Hard Cover</string>
+<string name="format3">eBook</string>
+<string name="format4">Audiobook</string>
+<string name="format5">Guide / Companion</string>
 <string name="description">Description</string>
 <string name="genre">Genre</string>
 <string name="auto_update">Would you like to automatically update the following fields now \n* Genre \n* Description \n* Thumbnails\n\n If you select Cancel you can always run this again from the Administration page</string>
@@ -144,8 +148,4 @@
 <string name="menu_search">Search Books</string>
 <string name="menu_insert_name">Add by Name</string>
 <string name="isbn_name_search_help">Adding books by ISBN is much more accurate than adding by author and title and is generally preferred. Please remember you can sometimes find the correct barcode on the inside front cover. \n\n</string>
-
-
-
-
 </resources>

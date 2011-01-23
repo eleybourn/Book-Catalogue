@@ -41,6 +41,12 @@ Features include;
   case. e.g. "The murder on the links" becomes "The Murder on the Links"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+New in v3.3
+* The thumbnail can be rotated in both directions now
+* You can zoom in the thumbnail to see full detail
+* The help page will redirect to the, more frequently updated, online wiki
+* Dollar signs in the text fields will no longer FC on import/export  
+
 New in v3.2
 * Books can now be automatically added by searching for the author name and book title
 * Updating thumbnails, genre and description fields will also search by author name and title is the isbn does not exist

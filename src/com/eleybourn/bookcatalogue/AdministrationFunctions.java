@@ -62,7 +62,7 @@ public class AdministrationFunctions extends Activity {
 	private CatalogueDBAdapter mDbHelper;
 	private int importUpdated = 0;
 	private int importCreated = 0;
-	public static String filePath = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION;
+	public static String filePath = Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION;
 	public static String fileName = filePath + "/export.csv";
 	public static String UTF8 = "utf8";
 	public static int BUFFER_SIZE = 8192;

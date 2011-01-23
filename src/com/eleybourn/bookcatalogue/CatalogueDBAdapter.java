@@ -40,8 +40,7 @@ import android.widget.ImageView;
  * ability to list all books as well as retrieve or modify a specific book.
  */
 public class CatalogueDBAdapter {
-
-	public static final String LOCATION = "bookCatalogue";
+	
 	/* This is the list of all column names as static variables for reference */
 	public static final String KEY_AUTHOR = "author";
 	public static final String KEY_TITLE = "title";
@@ -80,7 +79,6 @@ public class CatalogueDBAdapter {
 	private SQLiteDatabase mDb;
 	
 	/* private database variables as static reference */
-	private static final String DATABASE_NAME = "book_catalogue";
 	private static final String DB_TB_BOOKS = "books";
 	private static final String DB_TB_AUTHORS = "authors";
 	private static final String DB_TB_BOOKSHELF = "bookshelf";
@@ -216,7 +214,7 @@ public class CatalogueDBAdapter {
 	 */
 	private static class DatabaseHelper extends SQLiteOpenHelper {
 		DatabaseHelper(Context context) {
-			super(context, DATABASE_NAME, null, DATABASE_VERSION);
+			super(context, BookCatalogue.DATABASE_NAME, null, DATABASE_VERSION);
 		}
 		
 		/**
@@ -234,9 +232,9 @@ public class CatalogueDBAdapter {
 			db.execSQL(DATABASE_CREATE_ANTHOLOGY);
 			db.execSQL(DATABASE_CREATE_BOOK_BOOKSHELF_WEAK);
 			db.execSQL(DATABASE_CREATE_INDICES);
-			new File(Environment.getExternalStorageDirectory() + "/" + LOCATION + "/").mkdirs();
+			new File(Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION + "/").mkdirs();
 			try {
-				new File(Environment.getExternalStorageDirectory() + "/" + LOCATION + "/.nomedia").createNewFile();
+				new File(Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION + "/.nomedia").createNewFile();
 			} catch (IOException e) {
 				//error
 			}
@@ -478,7 +476,7 @@ public class CatalogueDBAdapter {
 			if (curVersion == 39) {
 				curVersion++;
 				try {
-					new File(Environment.getExternalStorageDirectory() + "/" + LOCATION + "/.nomedia").createNewFile();
+					new File(Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION + "/.nomedia").createNewFile();
 				} catch (Exception e) {
 					//error
 				}
@@ -680,7 +678,7 @@ public class CatalogueDBAdapter {
 	 */
 	public CatalogueDBAdapter open() throws SQLException {
 		/* Create the bookCatalogue directory if it does not exist */
-		new File(Environment.getExternalStorageDirectory() + "/" + LOCATION + "/").mkdirs();
+		new File(Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION + "/").mkdirs();
 		mDbHelper = new DatabaseHelper(mCtx);
 		mDb = mDbHelper.getWritableDatabase();
 		return this;
@@ -707,13 +705,13 @@ public class CatalogueDBAdapter {
 		String filename = "";
 		File file = null;
 		if (id == 0) {
-			filename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/tmp.png";
+			filename = Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION + "/tmp.png";
 			file = new File(filename);
 		} else {
-			filename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/" + id + ".jpg";
+			filename = Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION + "/" + id + ".jpg";
 			file = new File(filename);
 			if (!file.exists()) {
-				filename = Environment.getExternalStorageDirectory() + "/" + CatalogueDBAdapter.LOCATION + "/" + id + ".png";
+				filename = Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION + "/" + id + ".png";
 				file = new File(filename);
 			}
 		}

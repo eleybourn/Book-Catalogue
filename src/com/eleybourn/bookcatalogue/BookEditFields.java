@@ -286,11 +286,11 @@ public class BookEditFields extends Activity {
 			spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
 			spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			mFormatText.setAdapter(spinnerAdapter);
-			formats.add(getString(R.string.paperback));
-			formats.add(getString(R.string.hardcover)); 
-			formats.add(getString(R.string.ebook));
-			formats.add(getString(R.string.audiobook));
-			formats.add(getString(R.string.guide));
+			formats.add(getString(R.string.format1));
+			formats.add(getString(R.string.format2)); 
+			formats.add(getString(R.string.format3));
+			formats.add(getString(R.string.format4));
+			formats.add(getString(R.string.format5));
 			for (int i=0; i<formats.size(); i++) {
 				spinnerAdapter.add(formats.get(i)); 
 			}

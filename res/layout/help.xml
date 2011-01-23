@@ -1,6 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<WebView xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/help_webview"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:orientation="vertical"
 	android:layout_width="fill_parent" 
 	android:layout_height="fill_parent"
-	/>
+	android:paddingLeft="5sp">
+
+	<TextView android:id="@+id/helpinstructions" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" 
+		android:textAppearance="?android:attr/textAppearanceLarge"
+		android:text="@+string/help"
+		/>
+	<TextView android:id="@+id/click_here" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content" 
+		android:text="@+string/help_click_here"
+		/>
+	<TextView android:id="@+id/helppage" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" 
+		android:color="#cccccc"
+		android:paddingLeft="15sp"
+		android:paddingBottom="5sp"
+		android:text="@+string/helppage"
+		android:textColor="#006699"
+		/>
+</LinearLayout>

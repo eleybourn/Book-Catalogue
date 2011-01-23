@@ -75,8 +75,9 @@
 <string name="webpage_label">Webpage</string>
 <string name="sourcecode_label">Source Code</string>
 <string name="contact_label">Contact</string>
-<string name="webpage">http://wiki.github.com/eleybourn/Book-Catalogue/</string>
-<string name="sourcecode">http://github.com/eleybourn/Book-Catalogue</string>
+<string name="webpage">https://wiki.github.com/eleybourn/Book-Catalogue/</string>
+<string name="sourcecode">https://github.com/eleybourn/Book-Catalogue</string>
+<string name="helppage">https://github.com/eleybourn/Book-Catalogue/wiki/Help</string>
 <string name="contact">eleybourn@gmail.com</string>
 <string name="donate_label">Donate</string>
 <string name="about_label">About this App</string>
@@ -148,4 +149,5 @@
 <string name="menu_search">Search Books</string>
 <string name="menu_insert_name">Add by Name</string>
 <string name="isbn_name_search_help">Adding books by ISBN is much more accurate than adding by author and title and is generally preferred. Please remember you can sometimes find the correct barcode on the inside front cover. \n\n</string>
+<string name="help_click_here">Please click here to access the online help pages</string>
 </resources>

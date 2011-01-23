@@ -21,12 +21,14 @@
 package com.eleybourn.bookcatalogue;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.webkit.SslErrorHandler;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.TextView;
 
 /**
  * 
@@ -49,28 +51,29 @@ public class Help extends Activity {
 			setContentView(R.layout.help);
 			res = getResources();
 			
-			WebView wv = (WebView) findViewById(R.id.help_webview);
-			wv.getSettings().setJavaScriptEnabled(true);
-			wv.setWebViewClient(new HelpClient());
-			wv.loadUrl("https://github.com/eleybourn/Book-Catalogue/wiki/Help");
-			//wv.loadUrl("https://www.google.com");
+			TextView webinstructions = (TextView) findViewById(R.id.helpinstructions);
+			webinstructions.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Intent loadweb = new Intent(Intent.ACTION_VIEW, Uri.parse(res.getString(R.string.helppage)));
+					startActivity(loadweb); 
+					return;
+				}
+			});
+			
+			TextView webpage = (TextView) findViewById(R.id.helppage);
+			webpage.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Intent loadweb = new Intent(Intent.ACTION_VIEW, Uri.parse(res.getString(R.string.helppage)));
+					startActivity(loadweb); 
+					return;
+				}
+			});
+			
 		} catch (Exception e) {
 			Log.e("Book Catalogue", "Unknown Exception - Help onCreate - " + e.getMessage() );
 		}
-	}
-	
-	private class HelpClient extends WebViewClient {
-		@Override
-		public boolean shouldOverrideUrlLoading(WebView view, String url) {
-			view.loadUrl(url);
-			return true;
-		}
-		
-		//@Override
-		//public void onRecievedSslError(WebView view, SslErrorHandler handler, SslError error) {
-		//	Log.e("BC", "SSL ERROR " + error);
-		//	handler.proceed();
-		//}
 	}
 
 }

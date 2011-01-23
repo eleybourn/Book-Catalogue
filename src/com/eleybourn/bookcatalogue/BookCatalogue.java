@@ -38,7 +38,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
@@ -67,7 +66,18 @@ import android.widget.Toast;
  * A book catalogue application that integrates with Google Books.
  */
 public class BookCatalogue extends ExpandableListActivity {
+	/*
+	public static final String APP_NAME = "DVD Catalogue";
+	public static final String LOCATION = "dvdCatalogue";
+	public static final String DATABASE_NAME = "dvd_catalogue";
+	public static final String APP_NAME = "CD Catalogue";
+	public static final String LOCATION = "cdCatalogue";
+	public static final String DATABASE_NAME = "cd_catalogue";
+	*/
 	public static final String APP_NAME = "Book Catalogue";
+	public static final String LOCATION = "bookCatalogue";
+	public static final String DATABASE_NAME = "book_catalogue";
+		
 	
 	// Target size of a thumbnail in a list (bbox dim)
 	private static final int LIST_THUMBNAIL_SIZE=60;
@@ -129,8 +139,6 @@ public class BookCatalogue extends ExpandableListActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		//check which strings.xml file is currently active
 		if (!getString(R.string.app_name).equals(APP_NAME)) {
-			Log.e("BC", getString(R.string.app_name));
-			Log.e("BC", APP_NAME);
 			throw new NullPointerException();
 		}
 		

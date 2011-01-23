@@ -84,6 +84,10 @@ public class BookISBNSearch extends Activity {
 		
 		if (isbn != null) {
 			//ISBN has been passed by another component
+			setContentView(R.layout.isbn_search);
+			mIsbnText = (EditText) findViewById(R.id.isbn);
+			mIsbnStatus = (TextView) findViewById(R.id.isbn_search_status);
+			mConfirmButton = (Button) findViewById(R.id.search);
 			mIsbnText.setText(isbn);
 			go(isbn, "", "");
 		} else if (by.equals("isbn")) {

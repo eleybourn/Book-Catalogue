@@ -189,7 +189,18 @@ public class AdministrationFunctions extends Activity {
 				return;
 			}
 		});
-		
+
+//		// Debug ONLY!
+//		/* Backup Link */
+//		TextView backup = (TextView) findViewById(R.id.backup_label);
+//		backup.setOnClickListener(new OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+//				mDbHelper.backupDbFile();
+//				return;
+//			}
+//		});
+
 		/* Export Link */
 		TextView thumb = (TextView) findViewById(R.id.thumb_label);
 		thumb.setOnClickListener(new OnClickListener() {
@@ -974,9 +985,17 @@ public class AdministrationFunctions extends Activity {
 				String author = family + ", " + given;
 				try {
 					if (id == 0) {
-						// Book is new. It does not exist in the current database
-						Cursor book = mDbHelper.fetchBookByISBNOrCombo(isbn, family, given, title);
-						int rows = book.getCount();
+						// ID is unknown, may be new. Check if it exists in the current database.
+						Cursor book = null;
+						int rows = 0;
+						if (isbn != "") {
+							book = mDbHelper.fetchBookByISBN(isbn);
+							rows = book.getCount();
+						}
+						if (rows == 0) {
+							book = mDbHelper.fetchByAuthorAndTitle(family, given, title);
+							rows = book.getCount();
+						}
 						if (rows != 0) {
 							book.moveToFirst();
 							// Its a new entry, but the ISBN exists

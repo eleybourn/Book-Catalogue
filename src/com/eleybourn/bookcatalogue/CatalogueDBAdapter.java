@@ -231,7 +231,8 @@ public class CatalogueDBAdapter {
 			db.execSQL(DATABASE_CREATE_LOAN);
 			db.execSQL(DATABASE_CREATE_ANTHOLOGY);
 			db.execSQL(DATABASE_CREATE_BOOK_BOOKSHELF_WEAK);
-			db.execSQL(DATABASE_CREATE_INDICES);
+			createIndices(db);
+
 			new File(Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION + "/").mkdirs();
 			try {
 				new File(Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION + "/.nomedia").createNewFile();
@@ -239,7 +240,14 @@ public class CatalogueDBAdapter {
 				//error
 			}
 		}
-		
+
+		private void createIndices(SQLiteDatabase db) {
+			String[] indices = DATABASE_CREATE_INDICES.split(";");
+			for (int i = 0; i < indices.length; i++) {
+				db.execSQL(indices[i]);
+			}			
+		}
+
 		/**
 		 * This function is called each time the database is upgraded. The function will run all 
 		 * upgrade scripts between the oldVersion and the newVersion. 
@@ -299,7 +307,7 @@ public class CatalogueDBAdapter {
 			if (curVersion == 20) {
 				curVersion++;
 				db.execSQL(DATABASE_CREATE_LOAN);
-				db.execSQL(DATABASE_CREATE_INDICES);
+				createIndices(db);
 			}
 			if (curVersion == 21) {
 				//do nothing
@@ -336,7 +344,7 @@ public class CatalogueDBAdapter {
 					//do nothing
 				}
 				try {
-					db.execSQL(DATABASE_CREATE_INDICES);
+					createIndices(db);
 				} catch (Exception e) {
 					//do nothing
 				}
@@ -398,7 +406,7 @@ public class CatalogueDBAdapter {
 					//do nothing
 				}
 				try {
-					db.execSQL(DATABASE_CREATE_INDICES);
+					createIndices(db);
 				} catch (Exception e) {
 					//do nothing
 				}
@@ -505,7 +513,7 @@ public class CatalogueDBAdapter {
 				
 				try {
 					db.execSQL(DATABASE_CREATE_BOOK_BOOKSHELF_WEAK);
-					db.execSQL(DATABASE_CREATE_INDICES);
+					createIndices(db);
 					db.execSQL("INSERT INTO " + DB_TB_BOOK_BOOKSHELF_WEAK + " (" + KEY_BOOK + ", " + KEY_BOOKSHELF + ") SELECT " + KEY_ROWID + ", " + KEY_BOOKSHELF + " FROM " + DB_TB_BOOKS + "");
 					db.execSQL("CREATE TABLE tmp1 AS SELECT _id, " + KEY_AUTHOR + ", " + KEY_TITLE + ", " + KEY_ISBN + ", " + KEY_PUBLISHER + ", " + 
 						KEY_DATE_PUBLISHED + ", " + KEY_RATING + ", " + KEY_READ + ", " + KEY_SERIES + ", " + KEY_PAGES + ", " + KEY_SERIES_NUM + ", " + KEY_NOTES + ", " + 
@@ -616,7 +624,7 @@ public class CatalogueDBAdapter {
 				db.execSQL("DROP TABLE tmp3");
 				db.execSQL("DROP TABLE tmp4");
 				
-				db.execSQL(DATABASE_CREATE_INDICES);
+				createIndices(db);
 			}
 			if (curVersion == 45) {
 				//do nothing
@@ -645,7 +653,7 @@ public class CatalogueDBAdapter {
 				db.execSQL("delete from loan where loaned_to='null';");
 				db.execSQL("delete from loan where _id!=(select max(l2._id) from loan l2 where l2.book=loan.book);");
 				db.execSQL("delete from anthology where _id!=(select max(a2._id) from anthology a2 where a2.book=anthology.book AND a2.author=anthology.author AND a2.title=anthology.title);");
-				db.execSQL(DATABASE_CREATE_INDICES);
+				createIndices(db);
 			}
 			if (curVersion == 49) {
 				curVersion++;
@@ -695,6 +703,34 @@ public class CatalogueDBAdapter {
 		}
 	}
 	
+	// DEBUG ONLY!
+	/**
+	 * Backup database file
+	 * @throws Exception 
+	 */
+	public void backupDbFile() {
+		try {
+			java.io.InputStream dbOrig = new java.io.FileInputStream(mDb.getPath());
+			File dir = new File(Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION);
+			dir.mkdir();
+		    // Path to the external backup
+			java.io.OutputStream dbCopy = new java.io.FileOutputStream(dir.getPath() + "/dbExport.db");
+
+		    byte[] buffer = new byte[1024];
+		    int length;
+		    while ((length = dbOrig.read(buffer))>0) {
+		        dbCopy.write(buffer, 0, length);
+		    }
+
+		    dbCopy.flush();
+		    dbCopy.close();
+		    dbOrig.close();
+
+		} catch (Exception e) {
+			//do nothing
+		}
+	}
+
 	/**
 	 * return the thumbnail (as a File object) for the given id
 	 * 
@@ -1457,17 +1493,19 @@ public class CatalogueDBAdapter {
 	}
 	
 	/**
-	 * 
-	 * @param isbn The isbn to search by
+	 *
+	 * @param family Family name of author
+	 * @param given Given name of author
+	 * @param title Title of book
 	 * @return Cursor of the book
 	 */
-	public Cursor fetchBookByISBNOrCombo(String isbn, String family, String given, String title) {
-		String where = " AND ((b." + KEY_ISBN + "='" + encodeString(isbn) + "' AND b." + KEY_ISBN + "!='') OR " +
-				"(b." + KEY_TITLE + "='" + encodeString(title) + "' AND a." + KEY_FAMILY_NAME + "='" + encodeString(family) + "' AND a." + KEY_GIVEN_NAMES + "='" + encodeString(given) + "'))";
+	public Cursor fetchByAuthorAndTitle(String family, String given, String title) {
+		String where = " AND b." + KEY_TITLE + "='" + encodeString(title) + "' AND a." + KEY_FAMILY_NAME + "='" + encodeString(family) 
+						+ "' AND a." + KEY_GIVEN_NAMES + "='" + encodeString(given) + "'";
 		String order = "lower(b." + KEY_TITLE + ")";
 		return fetchAllBooks(order, "All Books", where);
 	}
-	
+
 	/**
 	 * Return the position of a book in a list of all books (within a bookshelf)
 	 *  

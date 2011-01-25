@@ -150,4 +150,5 @@
 <string name="menu_insert_name">Add by Name</string>
 <string name="isbn_name_search_help">Adding books by ISBN is much more accurate than adding by author and title and is generally preferred. Please remember you can sometimes find the correct barcode on the inside front cover. \n\n</string>
 <string name="help_click_here">Please click here to access the online help pages</string>
+<string name="backup_database">Backup Database</string>
 </resources>

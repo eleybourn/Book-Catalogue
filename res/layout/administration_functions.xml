@@ -81,6 +81,27 @@
 			/>
 	</LinearLayout>
 	
+	<!-- DEBUG ONLY!
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+		android:orientation="horizontal"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:paddingLeft="5sp">
+		<ImageView android:id="@+id/backup_img" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:src="@+android:drawable/ic_menu_gallery"
+			/>
+		<TextView android:id="@+id/backup_label" 
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:text="@+string/backup_database"
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:paddingTop="5sp"
+			/>
+	</LinearLayout>
+	-->
+
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
 		android:orientation="horizontal"
 		android:layout_width="fill_parent" 

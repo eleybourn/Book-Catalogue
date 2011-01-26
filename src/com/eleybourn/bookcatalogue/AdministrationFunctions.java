@@ -468,7 +468,7 @@ public class AdministrationFunctions extends Activity {
 				'"' + CatalogueDBAdapter.KEY_FORMAT+ "\"," + 			//21
 				'"' + CatalogueDBAdapter.KEY_SIGNED+ "\"," + 			//22
 				'"' + CatalogueDBAdapter.KEY_LOANED_TO+ "\"," +			//23 
-				'"' + "anthology_titles," + "\"" +						//24 
+				'"' + "anthology_titles" + "\"," +						//24 
 				'"' + CatalogueDBAdapter.KEY_DESCRIPTION+ "\"," + 		//25
 				'"' + CatalogueDBAdapter.KEY_GENRE+ "\"," + 			//26
 				"\n";

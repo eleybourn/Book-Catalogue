@@ -205,7 +205,7 @@ public class CatalogueDBAdapter {
 	
 	
 	private final Context mCtx;
-	public static final int DATABASE_VERSION = 50;
+	public static final int DATABASE_VERSION = 51;
 	
 	/**
 	 * This is a specific version of the SQLiteOpenHelper class. It handles onCreate and onUpgrade events
@@ -662,6 +662,10 @@ public class CatalogueDBAdapter {
 				message += "* Updating thumbnails, genre and description fields will also search by author name and title is the isbn does not exist\n\n";
 				message += "* Expand/Collapse all bug fixed\n\n";
 				message += "* The search query will be shown at the top of all search screens\n\n";
+			}
+			if (curVersion == 50) {
+				curVersion++;
+				createIndices(db);
 			}
 		}
 	}

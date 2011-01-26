@@ -41,7 +41,8 @@ Features include;
   case. e.g. "The murder on the links" becomes "The Murder on the Links"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
-New in v3.3
+New in v3.3 - Updates courtesy of Grunthos
+* The application should be significantly faster now - Fixed a bug with database index creation
 * The thumbnail can be rotated in both directions now
 * You can zoom in the thumbnail to see full detail
 * The help page will redirect to the, more frequently updated, online wiki

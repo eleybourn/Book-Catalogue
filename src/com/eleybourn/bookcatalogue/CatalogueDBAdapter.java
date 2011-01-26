@@ -1,5 +1,5 @@
 /*
- * @copyright 2010 Evan Leybourn
+* @copyright 2010 Evan Leybourn
  * @license GNU General Public License
  * 
  * This file is part of Book Catalogue.
@@ -205,7 +205,7 @@ public class CatalogueDBAdapter {
 	
 	
 	private final Context mCtx;
-	public static final int DATABASE_VERSION = 51;
+	public static final int DATABASE_VERSION = 52;
 	
 	/**
 	 * This is a specific version of the SQLiteOpenHelper class. It handles onCreate and onUpgrade events
@@ -659,13 +659,21 @@ public class CatalogueDBAdapter {
 				curVersion++;
 				message += "New in v3.2\n\n";
 				message += "* Books can now be automatically added by searching for the author name and book title\n\n";
-				message += "* Updating thumbnails, genre and description fields will also search by author name and title is the isbn does not exist\n\n";
-				message += "* Expand/Collapse all bug fixed\n\n";
+				message += "* Updating thumbnails, genre and description fields will also search by author name and title is the isbn does not exist\n\n";				message += "* Expand/Collapse all bug fixed\n\n";
 				message += "* The search query will be shown at the top of all search screens\n\n";
 			}
 			if (curVersion == 50) {
 				curVersion++;
 				createIndices(db);
+			}
+			if (curVersion == 51) {
+				curVersion++;
+				message += "New in v3.3 - Updates courtesy of Grunthos\n\n";
+				message += "* The application should be significantly faster now - Fixed a bug with database index creation\n\n";
+				message += "* The thumbnail can be rotated in both directions now\n\n";
+				message += "* You can zoom in the thumbnail to see full detail\n\n";
+				message += "* The help page will redirect to the, more frequently updated, online wiki\n\n";
+				message += "* Dollar signs in the text fields will no longer FC on import/export\n\n";
 			}
 		}
 	}
@@ -1166,7 +1174,7 @@ public class CatalogueDBAdapter {
 	 * @return Cursor over all books
 	 */
 	public Cursor fetchAllBooksByChar(String first_char, String bookshelf) {
-		String where = " AND substr(b." + KEY_TITLE + ", 1, 1)='"+first_char+"'";
+		String where = " AND substr(b." + KEY_TITLE + ", 1, 1)='"+encodeString(first_char)+"'";
 		String order = "lower(b." + KEY_TITLE + ") ASC";
 		return fetchAllBooks(order, bookshelf, where);
 	}

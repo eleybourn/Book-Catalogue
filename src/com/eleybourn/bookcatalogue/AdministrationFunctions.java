@@ -988,13 +988,15 @@ public class AdministrationFunctions extends Activity {
 						// ID is unknown, may be new. Check if it exists in the current database.
 						Cursor book = null;
 						int rows = 0;
+						// If the ISBN is specified, use it as a definitive lookup.
 						if (isbn != "") {
 							book = mDbHelper.fetchBookByISBN(isbn);
 							rows = book.getCount();
-						}
-						if (rows == 0) {
-							book = mDbHelper.fetchByAuthorAndTitle(family, given, title);
-							rows = book.getCount();
+						} else {
+							if (rows == 0) {
+								book = mDbHelper.fetchByAuthorAndTitle(family, given, title);
+								rows = book.getCount();
+							}
 						}
 						if (rows != 0) {
 							book.moveToFirst();

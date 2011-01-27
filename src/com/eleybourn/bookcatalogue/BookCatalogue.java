@@ -58,6 +58,7 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
 import android.widget.ExpandableListView.OnGroupClickListener;
+import android.widget.ExpandableListView.OnGroupExpandListener;
 import android.widget.ExpandableListView.OnGroupCollapseListener;
 
 /*
@@ -151,7 +152,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				bookshelf = mPrefs.getString(STATE_BOOKSHELF, bookshelf);
 				int pos = mPrefs.getInt(STATE_LASTBOOK, 0);
 				if (pos != 0) {
-					addToCurrentGroup(pos, true);
+					adjustCurrentGroup(pos, 1, true);
 				}
 			} catch (Exception e) {
 				//Log.e("Book Catalogue", "Unknown Exception - BC Prefs - " + e.getMessage() );
@@ -365,18 +366,17 @@ public class BookCatalogue extends ExpandableListActivity {
 		// Handle the click event. Do not open, but goto the book edit page
 		ExpandableListView expandableList = getExpandableListView();
 		// Extend the onGroupClick (Open) - Every click should add to the currentGroup array
-		expandableList.setOnGroupClickListener(new OnGroupClickListener() {
-			public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-				addToCurrentGroup(groupPosition);
-				return false;
+		expandableList.setOnGroupExpandListener(new OnGroupExpandListener() {
+			@Override
+			public void onGroupExpand(int groupPosition) {
+				adjustCurrentGroup(groupPosition, 1, false);
 			}
 		});
 		// Extend the onGroupClick (Close) - Every click should remove from the currentGroup array
 		expandableList.setOnGroupCollapseListener(new OnGroupCollapseListener() {
 			@Override
 			public void onGroupCollapse(int groupPosition) {
-				addToCurrentGroup(groupPosition);
-				
+				adjustCurrentGroup(groupPosition, -1, false);				
 			}
 		});
 		
@@ -497,18 +497,16 @@ public class BookCatalogue extends ExpandableListActivity {
 		// Handle the click event. Do not open, but goto the book edit page
 		ExpandableListView expandableList = getExpandableListView();
 		// Extend the onGroupClick (Open) - Every click should add to the currentGroup array
-		expandableList.setOnGroupClickListener(new OnGroupClickListener() {
-			public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-				addToCurrentGroup(groupPosition);
-				return false;
+		expandableList.setOnGroupExpandListener(new OnGroupExpandListener() {
+			public void onGroupExpand(int groupPosition) {
+				adjustCurrentGroup(groupPosition, 1, false);
 			}
 		});
 		// Extend the onGroupClick (Close) - Every click should remove from the currentGroup array
 		expandableList.setOnGroupCollapseListener(new OnGroupCollapseListener() {
 			@Override
 			public void onGroupCollapse(int groupPosition) {
-				addToCurrentGroup(groupPosition);
-				
+				adjustCurrentGroup(groupPosition, -1, false);
 			}
 		});
 		
@@ -630,17 +628,16 @@ public class BookCatalogue extends ExpandableListActivity {
 		// Handle the click event. Do not open, but goto the book edit page
 		ExpandableListView expandableList = getExpandableListView();
 		// Extend the onGroupClick (Open) - Every click should add to the currentGroup array
-		expandableList.setOnGroupClickListener(new OnGroupClickListener() {
-			public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-				addToCurrentGroup(groupPosition);
-				return false;
+		expandableList.setOnGroupExpandListener(new OnGroupExpandListener() {
+			public void onGroupExpand(int groupPosition) {
+				adjustCurrentGroup(groupPosition, 1, false);
 			}
 		});
 		// Extend the onGroupClick (Close) - Every click should remove from the currentGroup array
 		expandableList.setOnGroupCollapseListener(new OnGroupCollapseListener() {
 			@Override
 			public void onGroupCollapse(int groupPosition) {
-				addToCurrentGroup(groupPosition);
+				adjustCurrentGroup(groupPosition, -1, false);
 				
 			}
 		});
@@ -758,18 +755,16 @@ public class BookCatalogue extends ExpandableListActivity {
 		// Handle the click event. Do not open, but goto the book edit page
 		ExpandableListView expandableList = getExpandableListView();
 		// Extend the onGroupClick (Open) - Every click should add to the currentGroup array
-		expandableList.setOnGroupClickListener(new OnGroupClickListener() {
-			public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-				addToCurrentGroup(groupPosition);
-				return false;
+		expandableList.setOnGroupExpandListener(new OnGroupExpandListener() {
+			public void onGroupExpand(int groupPosition) {
+				adjustCurrentGroup(groupPosition, 1, false);
 			}
 		});
 		// Extend the onGroupClick (Close) - Every click should remove from the currentGroup array
 		expandableList.setOnGroupCollapseListener(new OnGroupCollapseListener() {
 			@Override
 			public void onGroupCollapse(int groupPosition) {
-				addToCurrentGroup(groupPosition);
-				
+				adjustCurrentGroup(groupPosition, -1, false);				
 			}
 		});
 
@@ -868,17 +863,16 @@ public class BookCatalogue extends ExpandableListActivity {
 		// Handle the click event. Do not open, but goto the book edit page
 		ExpandableListView expandableList = getExpandableListView();
 		// Extend the onGroupClick (Open) - Every click should add to the currentGroup array
-		expandableList.setOnGroupClickListener(new OnGroupClickListener() {
-			public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-				addToCurrentGroup(groupPosition);
-				return false;
+		expandableList.setOnGroupExpandListener(new OnGroupExpandListener() {
+			public void onGroupExpand(int groupPosition) {
+				adjustCurrentGroup(groupPosition, 1, false);
 			}
 		});
 		// Extend the onGroupClick (Close) - Every click should remove from the currentGroup array
 		expandableList.setOnGroupCollapseListener(new OnGroupCollapseListener() {
 			@Override
 			public void onGroupCollapse(int groupPosition) {
-				addToCurrentGroup(groupPosition);
+				adjustCurrentGroup(groupPosition, -1, false);
 				
 			}
 		});
@@ -984,18 +978,16 @@ public class BookCatalogue extends ExpandableListActivity {
 		// Handle the click event. Do not open, but goto the book edit page
 		ExpandableListView expandableList = getExpandableListView();
 		// Extend the onGroupClick (Open) - Every click should add to the currentGroup array
-		expandableList.setOnGroupClickListener(new OnGroupClickListener() {
-			public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-				addToCurrentGroup(groupPosition);
-				return false;
+		expandableList.setOnGroupExpandListener(new OnGroupExpandListener() {
+			public void onGroupExpand(int groupPosition) {
+				adjustCurrentGroup(groupPosition, 1, false);
 			}
 		});
 		// Extend the onGroupClick (Close) - Every click should remove from the currentGroup array
 		expandableList.setOnGroupCollapseListener(new OnGroupCollapseListener() {
 			@Override
 			public void onGroupCollapse(int groupPosition) {
-				addToCurrentGroup(groupPosition);
-				
+				adjustCurrentGroup(groupPosition, -1, false);	
 			}
 		});
 		
@@ -1298,41 +1290,38 @@ public class BookCatalogue extends ExpandableListActivity {
 		}
 		return;
 	}
-	
-	/**
-	 * add / remove items from the current group arrayList. This will pass directly to
-	 * addToCurrentGroup(int pos, boolean force) with force set to false 
-	 * 
-	 * @param pos The position to add or remove
-	 */
-	public void addToCurrentGroup(int pos) {
-		addToCurrentGroup(pos, false);
-	}
-	
+		
 	/**
 	 * add / remove items from the current group arrayList
 	 * 
-	 * @param pos The position to add or remove
-	 * @param force If force is true, then it will be always be added, even if it already exists - but moved to the end
+	 * @param pos	The position to add or remove
+	 * @param adj	Adjustment to make (+1/-1 = open/close)
+	 * @param force	If force is true, then it will be always be added (if adj=1), even if it already exists - but moved to the end
 	 */
-	public void addToCurrentGroup(int pos, boolean force) {
+	public void adjustCurrentGroup(int pos, int adj, boolean force) {
 		int index = currentGroup.indexOf(pos);
 		if (index == -1) {
-			//it does not exist (so is not open), so add to the list
-			currentGroup.add(pos);
-			/* Add the latest position to the preferences */
-			SharedPreferences.Editor ed = mPrefs.edit();
-			ed.putInt(STATE_LASTBOOK, pos);
-			ed.commit();
-		} else {
-			//it does exist (so is open), so remove from the list
-			currentGroup.remove(index);
-			if (force == true) {
+			//it does not exist (so is not open), so if adj=1, add to the list
+			if (adj > 0) {
 				currentGroup.add(pos);
 				/* Add the latest position to the preferences */
 				SharedPreferences.Editor ed = mPrefs.edit();
 				ed.putInt(STATE_LASTBOOK, pos);
-				ed.commit();
+				ed.commit();				
+			}
+		} else {
+			//it does exist (so is open), so remove from the list if adj=-1
+			if (adj < 0) {
+				currentGroup.remove(index);	
+			} else {
+				if (force == true) {
+					currentGroup.remove(index);	
+					currentGroup.add(pos);
+					/* Add the latest position to the preferences */
+					SharedPreferences.Editor ed = mPrefs.edit();
+					ed.putInt(STATE_LASTBOOK, pos);
+					ed.commit();
+				}				
 			}
 		}
 	}
@@ -1347,7 +1336,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		currentGroup = new ArrayList<Integer>();
 		int i = 0;
 		while (i < numAuthors) {
-			addToCurrentGroup(i);
+			adjustCurrentGroup(i, 1, false);
 			view.expandGroup(i);
 			i++;
 		}
@@ -1555,44 +1544,20 @@ public class BookCatalogue extends ExpandableListActivity {
 		startActivityForResult(i, ACTIVITY_EDIT);
 		return;
 	}
-	
+
 	/**
-	 * Use the zxing barcode scanner to search for a isbn
-	 * Prompt users to install the application if they do not have it installed.
+	 * Load the Search by ISBN Activity to begin scanning.
 	 */
 	private void createBookScan() {
-		Intent intent = new Intent("com.google.zxing.client.android.SCAN");
-		//intent.putExtra("SCAN_MODE", "EAN_13");
-		try {
-			startActivityForResult(intent, ACTIVITY_SCAN);
-		} catch (ActivityNotFoundException e) {
-			// Verify - this can be a dangerous operation
-			BookCatalogue pthis = this;
-			AlertDialog alertDialog = new AlertDialog.Builder(pthis).setMessage(R.string.install_scan).create();
-			alertDialog.setTitle(R.string.install_scan_title);
-			alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-			alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.google.zxing.client.android")); 
-					startActivity(marketIntent);
-					return;
-				}
-			}); 
-			alertDialog.setButton2("Cancel", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					//do nothing
-					return;
-				}
-			}); 
-			alertDialog.show();
-			return;
-		}
+		Intent i = new Intent(this, BookISBNSearch.class);
+		i.putExtra(BookISBNSearch.BY, "scan");
+		startActivityForResult(i, ACTIVITY_ISBN);
 	}
-	
+
 	@Override
 	public boolean onChildClick(ExpandableListView l, View v, int position, int childPosition, long id) {
 		boolean result = super.onChildClick(l, v, position, childPosition, id);
-		addToCurrentGroup(position, true);
+		adjustCurrentGroup(position, 1, true);
 		editBook(id, BookEdit.TAB_EDIT);
 		return result;
 	}
@@ -1626,19 +1591,19 @@ public class BookCatalogue extends ExpandableListActivity {
 				if (sort == SORT_TITLE) {
 					justAdded = intent.getStringExtra(BookEditFields.ADDED_TITLE);
 					int position = mDbHelper.fetchBookPositionByTitle(justAdded, bookshelf);
-					addToCurrentGroup(position, true);
+					adjustCurrentGroup(position, 1, true);
 				} else if (sort == SORT_AUTHOR) {
 					justAdded = intent.getStringExtra(BookEditFields.ADDED_AUTHOR);
 					int position = mDbHelper.fetchAuthorPositionByName(justAdded, bookshelf);
-					addToCurrentGroup(position, true);
+					adjustCurrentGroup(position, 1, true);
 				} else if (sort == SORT_SERIES) {
 					justAdded = intent.getStringExtra(BookEditFields.ADDED_SERIES);
 					int position = mDbHelper.fetchSeriesPositionBySeries(justAdded, bookshelf);
-					addToCurrentGroup(position, true);
+					adjustCurrentGroup(position, 1, true);
 				} else if (sort == SORT_GENRE) {
 					justAdded = intent.getStringExtra(BookEditFields.ADDED_GENRE);
 					int position = mDbHelper.fetchGenrePositionByGenre(justAdded, bookshelf);
-					addToCurrentGroup(position, true);
+					adjustCurrentGroup(position, 1, true);
 				}
 				
 			} catch (Exception e) {
@@ -1664,7 +1629,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			bookshelf = mPrefs.getString(STATE_BOOKSHELF, bookshelf);
 			int pos = mPrefs.getInt(STATE_LASTBOOK, 0);
 			if (pos != 0) {
-				addToCurrentGroup(pos, true);
+				adjustCurrentGroup(pos, 1, true);
 			}
 		} catch (Exception e) {
 			//do nothing

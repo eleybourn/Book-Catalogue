@@ -209,7 +209,8 @@ public class BookISBNSearch extends Activity {
 
 				Toast.makeText(mParent.get(), R.string.book_not_found, Toast.LENGTH_LONG).show();
 				// Leave the ISBN text unchanged in case they need to edit it.
-				startScannerActivity();
+				if (mMode == MODE_SCAN)
+					startScannerActivity();
 			} else {
 				if (mParent != null && mParent.get() != null && mParent.get().getProgress() != null) 
 					mParent.get().getProgress().setMessage("Adding book...");
@@ -781,10 +782,16 @@ public class BookISBNSearch extends Activity {
 			}
 			break;
 		case CREATE_BOOK:
+			if (intent != null)
+				mLastBookIntent = intent;
+
 			// Created a book; save the intent and restart scanner if necessary.
 			if (mMode == MODE_SCAN)
 				startScannerActivity();
-			mLastBookIntent = intent;
+			else
+				// If the 'Back' button is pressed on a normal activity, set the default result to cancelled by setting it here.
+				this.setResult(RESULT_CANCELED, mLastBookIntent);
+
 			break;
 		}
 	}

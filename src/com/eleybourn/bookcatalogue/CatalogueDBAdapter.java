@@ -163,14 +163,14 @@ public class CatalogueDBAdapter {
 	
 	private static final String DATABASE_CREATE_INDICES = 
 		"CREATE INDEX IF NOT EXISTS authors_given_names ON "+DB_TB_AUTHORS+" ("+KEY_GIVEN_NAMES+");" + 
-		"CREATE INDEX IF NOT EXISTS authors_given_names_ci ON "+DB_TB_AUTHORS+" ("+KEY_GIVEN_NAMES+" collate nocase);" + 
+		"CREATE INDEX IF NOT EXISTS authors_given_names_ci ON "+DB_TB_AUTHORS+" ("+KEY_GIVEN_NAMES+" collate unicode);" + 
 		"CREATE INDEX IF NOT EXISTS authors_family_name ON "+DB_TB_AUTHORS+" ("+KEY_FAMILY_NAME+");" + 
-		"CREATE INDEX IF NOT EXISTS authors_family_name_ci ON "+DB_TB_AUTHORS+" ("+KEY_FAMILY_NAME+" collate nocase);" + 
+		"CREATE INDEX IF NOT EXISTS authors_family_name_ci ON "+DB_TB_AUTHORS+" ("+KEY_FAMILY_NAME+" collate unicode);" + 
 		"CREATE INDEX IF NOT EXISTS bookshelf_bookshelf ON "+DB_TB_BOOKSHELF+" ("+KEY_BOOKSHELF+");" + 
 		"CREATE INDEX IF NOT EXISTS books_author ON "+DB_TB_BOOKS+" ("+KEY_AUTHOR+");" + 
-		"CREATE INDEX IF NOT EXISTS books_author_ci ON "+DB_TB_BOOKS+" ("+KEY_AUTHOR+" collate nocase);" + 
+		"CREATE INDEX IF NOT EXISTS books_author_ci ON "+DB_TB_BOOKS+" ("+KEY_AUTHOR+" collate unicode);" + 
 		"CREATE INDEX IF NOT EXISTS books_title ON "+DB_TB_BOOKS+" ("+KEY_TITLE+");" + 
-		"CREATE INDEX IF NOT EXISTS books_title_ci ON "+DB_TB_BOOKS+" ("+KEY_TITLE+" collate nocase);" + 
+		"CREATE INDEX IF NOT EXISTS books_title_ci ON "+DB_TB_BOOKS+" ("+KEY_TITLE+" collate unicode);" + 
 		"CREATE INDEX IF NOT EXISTS books_isbn ON "+DB_TB_BOOKS+" ("+KEY_ISBN+");" + 
 		"CREATE INDEX IF NOT EXISTS books_series ON "+DB_TB_BOOKS+" ("+KEY_SERIES+");" + 
 		"CREATE INDEX IF NOT EXISTS books_publisher ON "+DB_TB_BOOKS+" ("+KEY_PUBLISHER+");" + 
@@ -1474,8 +1474,8 @@ public class CatalogueDBAdapter {
 				" WHERE bs." + KEY_BOOKSHELF + "='" + encodeString(bookshelf) + "') ";
 		}
 		String sql = "SELECT count(*) as count FROM " + DB_TB_AUTHORS + " a " +
-			"WHERE (a." + KEY_FAMILY_NAME + "<'" + encodeString(names[0]) + "' collate nocase " +
-			"OR (a." + KEY_FAMILY_NAME + "='" + encodeString(names[0]) + "' collate nocase AND a." + KEY_GIVEN_NAMES + "<'" + encodeString(names[1]) + "' collate nocase))" + 
+			"WHERE (a." + KEY_FAMILY_NAME + "<'" + encodeString(names[0]) + "' collate unicode " +
+			"OR (a." + KEY_FAMILY_NAME + "='" + encodeString(names[0]) + "' collate unicode AND a." + KEY_GIVEN_NAMES + "<'" + encodeString(names[1]) + "' collate unicode))" + 
 			where + 
 			" ORDER BY a." + KEY_FAMILY_NAME + ", a." + KEY_GIVEN_NAMES;
 		Cursor results = mDb.rawQuery(sql, null);

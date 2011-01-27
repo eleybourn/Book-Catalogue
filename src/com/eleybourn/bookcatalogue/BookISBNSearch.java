@@ -33,8 +33,12 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.SAXException;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -44,6 +48,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.lang.ref.WeakReference;
 
 /**
  * This class is called by the BookCatalogue activity and will search the interwebs for 
@@ -58,14 +63,175 @@ public class BookISBNSearch extends Activity {
 	private EditText mIsbnText;
 	private EditText mTitleText;
 	private AutoCompleteTextView mAuthorText;
-	private TextView mIsbnStatus;
 	private Button mConfirmButton;
 	private CatalogueDBAdapter mDbHelper;
+	private android.app.ProgressDialog mProgress = null;
+	private SearchForBookTask mSearchTask = null;
 
 	public String author;
 	public String title;
 	public String isbn;
+
+	private static final int ACTIVITY_SCAN=4;
+
+	/*
+	 *  Mode this activity is in; MANUAL = data entry, SCAN = data from scanner.
+	 *  For SCAN, it loops repeatedly starting the scanner.
+	 */
+	private static final int MODE_MANUAL = 1;
+	private static final int MODE_SCAN = 2;
+	private int mMode;
 	
+	// Flag to indicate the Activity should not 'finish()' because 
+	// an alert is being displayed. The Alter will call finish().
+	private boolean mDisplayingAlert = false;
+
+	// The intent used to start the scanner.
+	private Intent mScannerIntent = null;
+	// The last Intent returned as a result of creating a book.
+	private Intent mLastBookIntent = null;
+
+	// Used by AsyncTask to get the ProgressDialog
+	public android.app.ProgressDialog getProgress() {
+		return mProgress;
+	}
+
+	// Dismiss the ProgressDialog and clear pointer.
+	public void dismissProgress() {
+		if (mProgress != null && mProgress.isShowing()) {
+			mProgress.dismiss();
+			mProgress = null;
+		}
+	}
+
+	/*
+	 * AsyncTask to lookup and process an ISBN. Doe in background so that 
+	 * progress can be reported and to prevent locking up the android.
+	 */
+	public class SearchForBookTask extends android.os.AsyncTask<WeakReference<BookISBNSearch>, String,String[]> {
+
+		/* 
+		 * Keep a WEAK reference to the parent activity. Keeping a strong
+		 * one could cause the GC problems since the parent keeps a pointer
+		 * to this task.
+		 */
+		protected WeakReference<BookISBNSearch> mParent = null;
+
+		public void setParent(WeakReference<BookISBNSearch> parent) {
+			mParent = parent;
+		}
+
+		protected String[] doInBackground(WeakReference<BookISBNSearch>... activity) {
+			mParent = activity[0];
+
+			/* Format the output 
+			 * String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, 
+			 * series, pages, series_num, list_price, anthology, location, read_start, read_end, audiobook, 
+			 * signed, description, genre};
+			 */
+			
+			// List which fields are not sourced externally (ie. are local-only). In the case of
+			// 'series' we try to derive it from the title.
+			boolean[]  localOnly = { false /* author */, false /* title */, false /* isbn */, 
+									false /* publisher */, false /* date_published */, true /* rating */,
+									true /* bookshelf */, true /* read */, true /* series */, false /* pages */,
+									true /* series_num */, false /* list_price */, false /* anthology */,
+									true /* location */, true /* read_start */, true /* read_end */,
+									false /* audiobook */, true /* signed */, false /* description */,
+									false /* genre */ };
+
+			String[] book = {mParent.get().author, mParent.get().title, mParent.get().isbn, "", "", "0",  "", "", "", "", "", "", "0", "", "", "", "", "0", "", ""};
+			String[] bookAmazon = {mParent.get().author, mParent.get().title, mParent.get().isbn, "", "", "0",  "", "", "", "", "", "", "0", "", "", "", "", "0", "", ""};
+			try {
+				if (mParent != null)
+					publishProgress(mParent.get().getResources().getString(R.string.searching_google_books));
+				book = searchGoogle(isbn, author, title);
+				if (mParent != null)
+					publishProgress(mParent.get().getResources().getString(R.string.searching_amazon_books));
+
+				/* Since Amazon only fills in blanks...check for externally sourced blanks so that 
+				 * this goes faster.
+				 * 
+				 * Note 1: This may not be an optimization worth the effort since it seems that some
+				 * fields are frequently blank (eg. list price at google).
+				 * Note 2: This probably is a good optimization to use when more sources are added.
+				 */
+				boolean hasBlank = false;
+
+				/* Fill blank fields as required */
+				for (int i = 0; i<book.length; i++) {
+					if (!localOnly[i] && (book[i] == "" || book[i] == "0") ) {
+						hasBlank = true;
+						break;
+					}
+				}
+
+				if (hasBlank) {
+					bookAmazon = searchAmazon(isbn, author, title);
+					//Look for series in Title. e.g. Red Phoenix (Dark Heavens Trilogy)
+					book[8] = findSeries(book[1]);
+					bookAmazon[8] = findSeries(bookAmazon[1]);
+
+					/* 
+					 * Fill blank fields as required.
+					 * 
+					 * Note: We should probably verify that we found the same book. At least compare
+					 * the ISBNs (if both non-blank) or something. Not sure.
+					 */
+					for (int i = 0; i<book.length; i++) {
+						if (book[i] == "" || book[i] == "0") {
+							book[i] = bookAmazon[i];
+						}
+					}
+				}
+
+				return book;
+
+			} catch (Exception e) {
+				Toast.makeText(mParent.get(), R.string.search_fail, Toast.LENGTH_LONG).show();
+				return book;
+			}
+		}
+
+		// Called in UI thread; update the ProgressDialog
+		protected void onProgressUpdate(String... progress) {
+			if (mParent != null && mParent.get() != null && mParent.get().getProgress() != null)
+				mParent.get().getProgress().setMessage(progress[0]);
+		}
+
+		// Called in UI thread; perform appriate next step
+	    protected void onPostExecute(String[] result) {
+
+	    	// If book is not found, just return to dialog.
+			if (result[0] == "" && result[1] == "") {
+				if (mParent != null && mParent.get() != null)
+			    	mParent.get().dismissProgress();
+
+				Toast.makeText(mParent.get(), R.string.book_not_found, Toast.LENGTH_LONG).show();
+				// Leave the ISBN text unchanged in case they need to edit it.
+				startScannerActivity();
+			} else {
+				if (mParent != null && mParent.get() != null && mParent.get().getProgress() != null) 
+					mParent.get().getProgress().setMessage("Adding book...");
+				result[0] = properCase(result[0]); // author
+				result[1] = properCase(result[1]); // title
+				result[3] = properCase(result[3]); // publisher
+				result[4] = convertDate(result[4]); // date_published
+				result[8] = properCase(result[8]); // series
+				createBook(result);
+				// Clear the data entry fields ready for the next one
+				clearFields();
+			}
+			// Clear ref to parent
+			if (mParent != null) {
+				mParent.clear();
+				mParent = null;
+			}
+			// Clear reference to this task.
+			mSearchTask = null;
+	    }
+	 }
+
 	/**
 	 * Called when the activity is first created. This function will search the interwebs for 
 	 * book details based on either a typed in or scanned ISBN.
@@ -78,24 +244,24 @@ public class BookISBNSearch extends Activity {
 		Bundle extras = getIntent().getExtras();
 		mDbHelper = new CatalogueDBAdapter(this);
 		mDbHelper.open();
-		
+
 		isbn = extras.getString("isbn");
 		String by = extras.getString(BY);
-		
+
+		// Default to MANUAL
+		mMode = MODE_MANUAL;
+
 		if (isbn != null) {
 			//ISBN has been passed by another component
 			setContentView(R.layout.isbn_search);
 			mIsbnText = (EditText) findViewById(R.id.isbn);
-			mIsbnStatus = (TextView) findViewById(R.id.isbn_search_status);
-			mConfirmButton = (Button) findViewById(R.id.search);
 			mIsbnText.setText(isbn);
 			go(isbn, "", "");
 		} else if (by.equals("isbn")) {
 			setContentView(R.layout.isbn_search);
 			mIsbnText = (EditText) findViewById(R.id.isbn);
-			mIsbnStatus = (TextView) findViewById(R.id.isbn_search_status);
 			mConfirmButton = (Button) findViewById(R.id.search);
-			
+
 			// Set the number buttons
 			Button button1 = (Button) findViewById(R.id.isbn_1);
 			button1.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { mIsbnText.append("1"); } });
@@ -143,9 +309,8 @@ public class BookISBNSearch extends Activity {
 			mAuthorText.setAdapter(author_adapter);
 			
 			mTitleText = (EditText) findViewById(R.id.title);
-			mIsbnStatus = (TextView) findViewById(R.id.isbn_search_status);
 			mConfirmButton = (Button) findViewById(R.id.search);
-			
+
 			mConfirmButton.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
 					String mAuthor = mAuthorText.getText().toString();
@@ -153,6 +318,44 @@ public class BookISBNSearch extends Activity {
 					go("", mAuthor, mTitle);
 				}
 			});
+		} else if (by.equals("scan")) {
+			// Use the scanner to get ISBNs
+			mMode = MODE_SCAN;
+			setContentView(R.layout.isbn_scan);
+			mIsbnText = (EditText) findViewById(R.id.isbn);
+
+			/**
+			 * Use the zxing barcode scanner to search for a isbn
+			 * Prompt users to install the application if they do not have it installed.
+			 */
+			try {
+				// Start the scanner IF this is a real 'first time' call.
+				if (savedInstanceState == null)
+					startScannerActivity();
+			} catch (ActivityNotFoundException e) {
+				// Verify - this can be a dangerous operation
+				BookISBNSearch pthis = this;
+				AlertDialog alertDialog = new AlertDialog.Builder(pthis).setMessage(R.string.install_scan).create();
+				alertDialog.setTitle(R.string.install_scan_title);
+				alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
+				alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.google.zxing.client.android")); 
+						startActivity(marketIntent);
+						finish();
+					}
+				}); 
+				alertDialog.setButton2("Cancel", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						//do nothing
+						finish();
+					}
+				}); 
+				// Prevent the activity result from closing this activity.
+				mDisplayingAlert = true;
+				alertDialog.show();
+				return;
+			}
 		}
 	}
 	
@@ -204,7 +407,20 @@ public class BookISBNSearch extends Activity {
 		author_cur.close();
 		return author_list;
 	}
-	
+
+	/*
+	 * Clear any data-entry fields that have been set.
+	 * Used when a book has been successfully added as we want to get ready for another.
+	 */
+	private void clearFields() {
+		if (mIsbnText != null)
+			mIsbnText.setText("");
+		if (mAuthorText != null)
+			mAuthorText.setText("");
+		if (mTitleText != null)
+			mTitleText.setText("");
+	}
+
 	/**
 	 * This function takes the isbn and search google books (and soon amazon)
 	 * to extract the details of the book. The details will then get sent to the
@@ -214,22 +430,24 @@ public class BookISBNSearch extends Activity {
 	 */
 	protected void go(String isbn, String author, String title) {
 		// If the book already exists, do not continue
-		mConfirmButton.setEnabled(false);
 		try {
 			if (!isbn.equals("")) {
 				Cursor book = mDbHelper.fetchBookByISBN(isbn);
 				int rows = book.getCount();
+				book.close(); //close the cursor
+
 				if (rows != 0) {
 					Toast.makeText(this, R.string.book_exists, Toast.LENGTH_LONG).show();
-					finish();
+					// If the scanner was the input, start it again.
+					if (mMode == MODE_SCAN)
+						startScannerActivity();
 					return;
 				}
-				book.close(); //close the cursor
 			}
 		} catch (Exception e) {
 			//do nothing
 		}
-		
+
 		/* Delete any hanging around thumbs */
 		try {
 			File thumb = CatalogueDBAdapter.fetchThumbnail(0);
@@ -239,38 +457,20 @@ public class BookISBNSearch extends Activity {
 		}
 		/* Get the book */
 		try {
-			//String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num, list_price, anthology, location, read_start, read_end, audiobook, signed, description, genre};
-			String[] book = {author, title, isbn, "", "", "0",  "", "", "", "", "", "", "0", "", "", "", "", "0", "", ""};
-			String[] bookAmazon = {author, title, isbn, "", "", "0",  "", "", "", "", "", "", "0", "", "", "", "", "0", "", ""};
-			
-			mIsbnStatus.append(this.getResources().getString(R.string.searching_google_books) + "\n");
-			book = searchGoogle(isbn, author, title);
-			mIsbnStatus.append(this.getResources().getString(R.string.searching_amazon_books) + "\n");
-			bookAmazon = searchAmazon(isbn, author, title);
-			//Look for series in Title. e.g. Red Phoenix (Dark Heavens Trilogy)
-			book[8] = findSeries(book[1]);
-			bookAmazon[8] = findSeries(bookAmazon[1]);
-			
-			/* Fill blank fields as required */
-			for (int i = 0; i<book.length; i++) {
-				if (book[i] == "" || book[i] == "0") {
-					book[i] = bookAmazon[i];
-				}
-			}
-			
-			/* Format the output 
-			 * String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num, list_price, anthology, location, read_start, read_end, audiobook, signed, description, genre};
-			 */
-			if (book[0] == "" && book[1] == "") {
-				Toast.makeText(this, R.string.book_not_found, Toast.LENGTH_LONG).show();
-			} else {
-				book[0] = properCase(book[0]); // author
-				book[1] = properCase(book[1]); // title
-				book[3] = properCase(book[3]); // publisher
-				book[4] = convertDate(book[4]); // date_published
-				book[8] = properCase(book[8]); // series
-			}
-			createBook(book);
+			// Save the details
+			this.isbn = isbn;
+			this.author = author;
+			this.title = title;
+
+			// Show a ProgressDialog
+			mProgress = android.app.ProgressDialog.show(this, "Searching...", "Searching internet for book...",true);
+			mProgress.setCancelable(false);
+
+			// Start the lookup task
+			mSearchTask = new SearchForBookTask();
+			WeakReference<BookISBNSearch> ref = new WeakReference<BookISBNSearch>(this);
+			mSearchTask.execute(ref,null,null);
+
 		} catch (Exception e) {
 			Toast.makeText(this, R.string.search_fail, Toast.LENGTH_LONG).show();
 			finish();
@@ -281,6 +481,32 @@ public class BookISBNSearch extends Activity {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
+		// Leaving the PD ref around causes some issues. Just clear it.
+		// We will recreate later.
+		dismissProgress();
+	}
+	
+	@Override
+	protected void onRestoreInstanceState(Bundle inState) {
+		// Get the AsyncTask
+		mSearchTask = (SearchForBookTask) getLastNonConfigurationInstance();
+		if (mSearchTask != null) {
+			// If we had a task, create the progross dialog and reset the pointers.
+			mProgress = android.app.ProgressDialog.show(this, "Searching...", "Searching internet for book...",true);
+			mSearchTask.setParent(new WeakReference<BookISBNSearch>(this));
+		}
+		super.onRestoreInstanceState(inState);
+	}
+
+	@Override
+	public Object onRetainNonConfigurationInstance() {
+		// Save the AsyncTask and remove the local refs.
+		SearchForBookTask t = mSearchTask;
+		if (mSearchTask != null) {
+			mSearchTask.setParent(null);
+			mSearchTask = null;
+		}
+		return t;
 	}
 	
 	@Override
@@ -513,7 +739,7 @@ public class BookISBNSearch extends Activity {
 		}
 		return outputString;
 	}
-	
+
 	/*
 	 * Load the BookEdit Activity
 	 * 
@@ -523,15 +749,53 @@ public class BookISBNSearch extends Activity {
 		Intent i = new Intent(this, BookEdit.class);
 		i.putExtra("book", book);
 		startActivityForResult(i, CREATE_BOOK);
+		dismissProgress();
 	}
-	
+
 	/**
 	 * This is a straight passthrough
 	 */
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
-		setResult(resultCode, intent);
-		finish();
+		switch(requestCode) {
+		case ACTIVITY_SCAN:
+			try {
+				if (resultCode == RESULT_OK) {
+					// Scanner returned an ISBN...process it.
+					String contents = intent.getStringExtra("SCAN_RESULT");
+					Toast.makeText(this, R.string.isbn_found, Toast.LENGTH_LONG).show();
+					mIsbnText.setText(contents);
+					go(contents, "", "");
+				} else {
+					// Scanner Cancelled/failed. Exit if no dialog present.
+					if (mLastBookIntent != null)
+						this.setResult(RESULT_OK, mLastBookIntent);
+					else
+						this.setResult(RESULT_CANCELED, mLastBookIntent);
+					if (!mDisplayingAlert)
+						finish();
+				}
+			} catch (NullPointerException e) {
+				finish();
+			}
+			break;
+		case CREATE_BOOK:
+			// Created a book; save the intent and restart scanner if necessary.
+			if (mMode == MODE_SCAN)
+				startScannerActivity();
+			mLastBookIntent = intent;
+			break;
+		}
+	}
+	
+	/*
+	 * Start scanner activity.
+	 */
+	private void startScannerActivity() {
+		if (mScannerIntent == null)
+			mScannerIntent = new Intent("com.google.zxing.client.android.SCAN");
+		//intent.putExtra("SCAN_MODE", "EAN_13");
+		startActivityForResult(mScannerIntent, ACTIVITY_SCAN);		
 	}
 }

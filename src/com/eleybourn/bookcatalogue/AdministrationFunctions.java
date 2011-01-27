@@ -190,16 +190,16 @@ public class AdministrationFunctions extends Activity {
 			}
 		});
 
-//		// Debug ONLY!
-//		/* Backup Link */
-//		TextView backup = (TextView) findViewById(R.id.backup_label);
-//		backup.setOnClickListener(new OnClickListener() {
-//			@Override
-//			public void onClick(View v) {
-//				mDbHelper.backupDbFile();
-//				return;
-//			}
-//		});
+		// Debug ONLY!
+		/* Backup Link */
+		TextView backup = (TextView) findViewById(R.id.backup_label);
+		backup.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mDbHelper.backupDbFile();
+				return;
+			}
+		});
 
 		/* Export Link */
 		TextView thumb = (TextView) findViewById(R.id.thumb_label);

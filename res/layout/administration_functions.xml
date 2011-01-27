@@ -81,7 +81,7 @@
 			/>
 	</LinearLayout>
 	
-	<!-- DEBUG ONLY!
+	<!-- DEBUG ONLY! -->
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
 		android:orientation="horizontal"
 		android:layout_width="fill_parent" 
@@ -100,7 +100,7 @@
 			android:paddingTop="5sp"
 			/>
 	</LinearLayout>
-	-->
+	<!-- -->
 
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
 		android:orientation="horizontal"

@@ -807,7 +807,6 @@ public class AdministrationFunctions extends Activity {
 				//String author_id = imported[3];
 				
 				String title = "";
-				title = imported[4]; 
 				try {
 					title = imported[4]; 
 				} catch (Exception e) {

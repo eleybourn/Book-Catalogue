@@ -1313,7 +1313,10 @@ public class BookCatalogue extends ExpandableListActivity {
 					adjustCurrentGroup(pos, 1, false);
 				i++;
 			}
-			
+
+			if (count == 0)
+				collapsed = true;
+
 		} catch (Exception e) {
 			//Log.e("Book Catalogue", "Unknown Exception - BC gotoCurrentGroup - " + e.getMessage() );
 		}
@@ -1367,6 +1370,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				}				
 			}
 		}
+		collapsed = (currentGroup.size() == 0);
 	}
 	
 	/**

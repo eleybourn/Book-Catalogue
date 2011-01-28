@@ -172,7 +172,7 @@ public class BookCatalogue extends ExpandableListActivity {
 					search_query = "";
 				}
 			}
-			
+
 			bookshelf();
 			//fillData();
 			if (!CatalogueDBAdapter.message.equals("")) {
@@ -419,7 +419,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		 */
 		@Override
 		protected Cursor getChildrenCursor(Cursor groupCursor) {
-			return mDbHelper.fetchAllBooksByAuthor(groupCursor.getInt(mGroupIdColumnIndex), bookshelf);
+			return mDbHelper.fetchAllBooksByAuthor(groupCursor.getInt(mGroupIdColumnIndex), bookshelf, search_query);
 		}
 		
 		/**
@@ -548,7 +548,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		 */
 		@Override
 		protected Cursor getChildrenCursor(Cursor groupCursor) {
-			Cursor books = mDbHelper.fetchAllBooksBySeries(groupCursor.getString(mGroupIdColumnIndex), bookshelf);
+			Cursor books = mDbHelper.fetchAllBooksBySeries(groupCursor.getString(mGroupIdColumnIndex), bookshelf, search_query);
 			return books;
 		}
 		
@@ -679,7 +679,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		protected Cursor getChildrenCursor(Cursor groupCursor) {
 			Cursor books = null;
 			if (search_query.equals("")) {
-				books = mDbHelper.fetchAllBooksByChar(groupCursor.getString(mGroupIdColumnIndex), bookshelf);
+				books = mDbHelper.fetchAllBooksByChar(groupCursor.getString(mGroupIdColumnIndex), bookshelf, "");
 			} else {
 				books = mDbHelper.searchBooksByChar(search_query, groupCursor.getString(mGroupIdColumnIndex), bookshelf);
 			}
@@ -807,7 +807,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		 */
 		@Override
 		protected Cursor getChildrenCursor(Cursor groupCursor) {
-			return mDbHelper.fetchAllBooksByLoan(groupCursor.getString(mGroupIdColumnIndex));
+			return mDbHelper.fetchAllBooksByLoan(groupCursor.getString(mGroupIdColumnIndex), search_query);
 		}
 		
 		/**
@@ -916,7 +916,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		 */
 		@Override
 		protected Cursor getChildrenCursor(Cursor groupCursor) {
-			return mDbHelper.fetchAllBooksByRead(groupCursor.getString(mGroupIdColumnIndex), bookshelf);
+			return mDbHelper.fetchAllBooksByRead(groupCursor.getString(mGroupIdColumnIndex), bookshelf, search_query);
 		}
 		
 		/**
@@ -1028,7 +1028,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		protected Cursor getChildrenCursor(Cursor groupCursor) {
 			Cursor books = null;
 			if (search_query.equals("")) {
-				books = mDbHelper.fetchAllBooksByGenre(groupCursor.getString(mGroupIdColumnIndex), bookshelf);
+				books = mDbHelper.fetchAllBooksByGenre(groupCursor.getString(mGroupIdColumnIndex), bookshelf, "");
 			} else {
 				books = mDbHelper.searchBooksByGenre(search_query, groupCursor.getString(mGroupIdColumnIndex), bookshelf);
 			}

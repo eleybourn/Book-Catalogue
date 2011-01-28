@@ -400,8 +400,8 @@ public class AdministrationFunctions extends Activity {
 	 * There is a current limitation that restricts the search to only books with an ISBN
 	 */
 	private void updateThumbnails(boolean overwrite) {
-		
-		Cursor books = mDbHelper.fetchAllBooks("b." + CatalogueDBAdapter.KEY_ROWID, "All Books");
+
+		Cursor books = mDbHelper.fetchAllBooks("b." + CatalogueDBAdapter.KEY_ROWID, "All Books", "", "");
 		
 		pd = new ProgressDialog(AdministrationFunctions.this);
 		pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);

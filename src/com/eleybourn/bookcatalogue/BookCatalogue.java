@@ -126,7 +126,8 @@ public class BookCatalogue extends ExpandableListActivity {
 	// These are the states that get saved onPause
 	private static final String STATE_SORT = "state_sort"; 
 	private static final String STATE_BOOKSHELF = "state_bookshelf"; 
-	private static final String STATE_LASTBOOK = "state_lastbook"; 
+	private static final String STATE_CURRENT_GROUP_COUNT = "state_current_group_count"; 
+	private static final String STATE_CURRENT_GROUP = "state_current_group"; 
 	private static final String STATE_OPENED = "state_opened";
 	private static final int GONE = 8;
 	private static final int VISIBLE = 0;
@@ -150,10 +151,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				mPrefs = getSharedPreferences("bookCatalogue", MODE_PRIVATE);
 				sort = mPrefs.getInt(STATE_SORT, sort);
 				bookshelf = mPrefs.getString(STATE_BOOKSHELF, bookshelf);
-				int pos = mPrefs.getInt(STATE_LASTBOOK, 0);
-				if (pos != 0) {
-					adjustCurrentGroup(pos, 1, true);
-				}
+				loadCurrentGroup();
 			} catch (Exception e) {
 				//Log.e("Book Catalogue", "Unknown Exception - BC Prefs - " + e.getMessage() );
 			}
@@ -1272,7 +1270,56 @@ public class BookCatalogue extends ExpandableListActivity {
 		
 		return super.onMenuItemSelected(featureId, item);
 	}
-	
+
+	/*
+	 * Save Current group to preferences
+	 */
+	public void saveCurrentGroup() {
+		try {
+			SharedPreferences.Editor ed = mPrefs.edit();
+			ed.putInt(STATE_CURRENT_GROUP_COUNT, currentGroup.size());
+
+			int i = 0;
+			Iterator<Integer> arrayIterator = currentGroup.iterator();
+			while(arrayIterator.hasNext()) {
+				ed.putInt(STATE_CURRENT_GROUP + " " + i, arrayIterator.next());
+				i++;
+			}
+			
+			ed.commit();
+
+		} catch (Exception e) {
+			//Log.e("Book Catalogue", "Unknown Exception - BC gotoCurrentGroup - " + e.getMessage() );
+		}
+		return;
+	}
+
+	/*
+	 * Load Current group from preferences
+	 */
+	public void loadCurrentGroup() {
+		try {
+			if (currentGroup != null)
+				currentGroup.clear();
+			else
+				currentGroup = new ArrayList<Integer>();
+
+			int count = mPrefs.getInt(STATE_CURRENT_GROUP_COUNT, -1);
+
+			int i = 0;
+			while(i < count) {
+				int pos = mPrefs.getInt(STATE_CURRENT_GROUP + " " + i, -1);
+				if (pos >= 0)
+					adjustCurrentGroup(pos, 1, false);
+				i++;
+			}
+			
+		} catch (Exception e) {
+			//Log.e("Book Catalogue", "Unknown Exception - BC gotoCurrentGroup - " + e.getMessage() );
+		}
+		return;
+	}
+
 	/**
 	 * Expand and scroll to the current group
 	 */
@@ -1305,9 +1352,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			if (adj > 0) {
 				currentGroup.add(pos);
 				/* Add the latest position to the preferences */
-				SharedPreferences.Editor ed = mPrefs.edit();
-				ed.putInt(STATE_LASTBOOK, pos);
-				ed.commit();				
+				saveCurrentGroup();
 			}
 		} else {
 			//it does exist (so is open), so remove from the list if adj=-1
@@ -1318,9 +1363,7 @@ public class BookCatalogue extends ExpandableListActivity {
 					currentGroup.remove(index);	
 					currentGroup.add(pos);
 					/* Add the latest position to the preferences */
-					SharedPreferences.Editor ed = mPrefs.edit();
-					ed.putInt(STATE_LASTBOOK, pos);
-					ed.commit();
+					saveCurrentGroup();
 				}				
 			}
 		}
@@ -1627,10 +1670,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			mPrefs = getSharedPreferences("bookCatalogue", MODE_PRIVATE);
 			sort = mPrefs.getInt(STATE_SORT, sort);
 			bookshelf = mPrefs.getString(STATE_BOOKSHELF, bookshelf);
-			int pos = mPrefs.getInt(STATE_LASTBOOK, 0);
-			if (pos != 0) {
-				adjustCurrentGroup(pos, 1, true);
-			}
+			loadCurrentGroup();
 		} catch (Exception e) {
 			//do nothing
 		}
@@ -1645,11 +1685,8 @@ public class BookCatalogue extends ExpandableListActivity {
 		SharedPreferences.Editor ed = mPrefs.edit();
 		ed.putInt(STATE_SORT, sort);
 		ed.putString(STATE_BOOKSHELF, bookshelf);
-		//only save if the currentGroup is > 0
-		if (currentGroup.size() > 0) {
-			ed.putInt(STATE_LASTBOOK, currentGroup.get(currentGroup.size()-1));
-		}
 		ed.commit();
+		saveCurrentGroup();
 		super.onPause();
 	}
 	

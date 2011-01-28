@@ -375,16 +375,35 @@ public class BookCatalogue extends ExpandableListActivity {
 				return;
 			} else if (v.getId() == R.id.row_series) {
 				// Hide series if necessary.
-				boolean field_visibility = mPrefs.getBoolean(FieldVisibility.prefix + CatalogueDBAdapter.KEY_SERIES, true);
-				if (field_visibility == false) {
-					v.setVisibility(GONE);
-				} else {
-					v.setVisibility(VISIBLE);
+				if (setFieldVisiblity(v,CatalogueDBAdapter.KEY_SERIES))
 					v.setText(text);
-				}
+				return;
+			} else if (v.getId() == R.id.row_publisher) {
+				if (setFieldVisiblity(v,CatalogueDBAdapter.KEY_PUBLISHER))
+					v.setText(text);
 				return;
 			}
 			v.setText(text);
+		}
+
+		/*
+		 * Set layout field visibility and return flag indicating is visible.
+		 * 
+		 * @param v View to set
+		 * @param key The data key to use
+		 * 
+		 * @returns flag indicating of visible
+		 */
+		private boolean setFieldVisiblity(View v, String key) {
+			// Hide field if necessary.
+			boolean field_visibility = mPrefs.getBoolean(FieldVisibility.prefix + key, true);
+			if (field_visibility == false) {
+				v.setVisibility(GONE);
+				return false;
+			} else {
+				v.setVisibility(VISIBLE);
+				return true;
+			}
 		}
 	}
 

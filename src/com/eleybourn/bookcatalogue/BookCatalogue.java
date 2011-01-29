@@ -375,8 +375,13 @@ public class BookCatalogue extends ExpandableListActivity {
 				return;
 			} else if (v.getId() == R.id.row_series) {
 				// Hide series if necessary.
-				if (setFieldVisiblity(v,CatalogueDBAdapter.KEY_SERIES))
-					v.setText(text);
+				if (setFieldVisiblity(v,CatalogueDBAdapter.KEY_SERIES)) {
+					if (sort == SORT_SERIES || text.length() == 0) {
+						v.setText(text);						
+					} else {
+						v.setText("[" + text + "]");
+					}
+				}
 				return;
 			} else if (v.getId() == R.id.row_publisher) {
 				if (setFieldVisiblity(v,CatalogueDBAdapter.KEY_PUBLISHER))

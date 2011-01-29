@@ -110,6 +110,13 @@ public class BookISBNSearch extends Activity {
 	 */
 	public class SearchForBookTask extends android.os.AsyncTask<WeakReference<BookISBNSearch>, String,String[]> {
 
+		/*
+		 * Support for checking if task has finished in case the process finished while a screen rotation was happening.
+		 * We don't want the Activity to rebuild the ProgressDialog if this task has done it's main work.
+		 */
+		private boolean mFinishedFlg = false;
+		public boolean isFinished() { return mFinishedFlg; };
+
 		/* 
 		 * Keep a WEAK reference to the parent activity. Keeping a strong
 		 * one could cause the GC problems since the parent keeps a pointer
@@ -201,6 +208,8 @@ public class BookISBNSearch extends Activity {
 
 		// Called in UI thread; perform appriate next step
 	    protected void onPostExecute(String[] result) {
+	    	// Record that we have finished in case screen rotates.
+	    	mFinishedFlg = true;
 
 	    	// If book is not found, just return to dialog.
 			if (result[0] == "" && result[1] == "") {
@@ -491,7 +500,7 @@ public class BookISBNSearch extends Activity {
 	protected void onRestoreInstanceState(Bundle inState) {
 		// Get the AsyncTask
 		mSearchTask = (SearchForBookTask) getLastNonConfigurationInstance();
-		if (mSearchTask != null) {
+		if (mSearchTask != null && !mSearchTask.isFinished()) {
 			// If we had a task, create the progross dialog and reset the pointers.
 			mProgress = android.app.ProgressDialog.show(this, "Searching...", "Searching internet for book...",true);
 			mSearchTask.setParent(new WeakReference<BookISBNSearch>(this));

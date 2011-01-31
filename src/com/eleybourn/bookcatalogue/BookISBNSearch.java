@@ -114,8 +114,7 @@ public class BookISBNSearch extends Activity {
 		 * Support for checking if task has finished in case the process finished while a screen rotation was happening.
 		 * We don't want the Activity to rebuild the ProgressDialog if this task has done it's main work.
 		 */
-		private boolean mFinishedFlg = false;
-		public boolean isFinished() { return mFinishedFlg; };
+		public boolean isFinished() { return (this.getStatus() == Status.FINISHED); };
 
 		/* 
 		 * Keep a WEAK reference to the parent activity. Keeping a strong
@@ -208,9 +207,6 @@ public class BookISBNSearch extends Activity {
 
 		// Called in UI thread; perform appriate next step
 	    protected void onPostExecute(String[] result) {
-	    	// Record that we have finished in case screen rotates.
-	    	mFinishedFlg = true;
-
 	    	// If book is not found, just return to dialog.
 			if (result[0] == "" && result[1] == "") {
 				if (mParent != null && mParent.get() != null)

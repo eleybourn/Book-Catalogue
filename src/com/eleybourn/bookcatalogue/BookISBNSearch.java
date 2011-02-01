@@ -114,8 +114,7 @@ public class BookISBNSearch extends Activity {
 		 * Support for checking if task has finished in case the process finished while a screen rotation was happening.
 		 * We don't want the Activity to rebuild the ProgressDialog if this task has done it's main work.
 		 */
-		private boolean mFinishedFlg = false;
-		public boolean isFinished() { return mFinishedFlg; };
+		public boolean isFinished() { return (this.getStatus() == Status.FINISHED); };
 
 		/* 
 		 * Keep a WEAK reference to the parent activity. Keeping a strong
@@ -208,9 +207,6 @@ public class BookISBNSearch extends Activity {
 
 		// Called in UI thread; perform appriate next step
 	    protected void onPostExecute(String[] result) {
-	    	// Record that we have finished in case screen rotates.
-	    	mFinishedFlg = true;
-
 	    	// If book is not found, just return to dialog.
 			if (result[0] == "" && result[1] == "") {
 				if (mParent != null && mParent.get() != null)
@@ -272,34 +268,55 @@ public class BookISBNSearch extends Activity {
 			mIsbnText = (EditText) findViewById(R.id.isbn);
 			mConfirmButton = (Button) findViewById(R.id.search);
 
+			// Not sure this is a great idea; we CAN diable keypad for this item completely.
+			//android.view.inputmethod.InputMethodManager imm 
+			//	= (android.view.inputmethod.InputMethodManager)
+			//	getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
+			//imm.hideSoftInputFromWindow(mIsbnText.getWindowToken(), 0);
+
+			// For now, just make sure it's hidden on entry
+			getWindow().setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
 			// Set the number buttons
 			Button button1 = (Button) findViewById(R.id.isbn_1);
-			button1.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { mIsbnText.append("1"); } });
+			button1.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("1"); } });
 			Button button2 = (Button) findViewById(R.id.isbn_2);
-			button2.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { mIsbnText.append("2"); } });
+			button2.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("2"); } });
 			Button button3 = (Button) findViewById(R.id.isbn_3);
-			button3.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { mIsbnText.append("3"); } });
+			button3.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("3"); } });
 			Button button4 = (Button) findViewById(R.id.isbn_4);
-			button4.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { mIsbnText.append("4"); } });
+			button4.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("4"); } });
 			Button button5 = (Button) findViewById(R.id.isbn_5);
-			button5.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { mIsbnText.append("5"); } });
+			button5.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("5"); } });
 			Button button6 = (Button) findViewById(R.id.isbn_6);
-			button6.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { mIsbnText.append("6"); } });
+			button6.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("6"); } });
 			Button button7 = (Button) findViewById(R.id.isbn_7);
-			button7.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { mIsbnText.append("7"); } });
+			button7.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("7"); } });
 			Button button8 = (Button) findViewById(R.id.isbn_8);
-			button8.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { mIsbnText.append("8"); } });
+			button8.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("8"); } });
 			Button button9 = (Button) findViewById(R.id.isbn_9);
-			button9.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { mIsbnText.append("9"); } });
+			button9.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("9"); } });
 			Button buttonX = (Button) findViewById(R.id.isbn_X);
-			buttonX.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { mIsbnText.append("X"); } });
+			buttonX.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("X"); } });
 			Button button0 = (Button) findViewById(R.id.isbn_0);
-			button0.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { mIsbnText.append("0"); } });
+			button0.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("0"); } });
 			ImageButton buttonDel = (ImageButton) findViewById(R.id.isbn_del);
 			buttonDel.setOnClickListener(new View.OnClickListener() { 
 				public void onClick(View view) { 
 					try {
-						mIsbnText.setText(mIsbnText.getText().toString().substring(0, (mIsbnText.getText().toString().length()-1))); 
+						int start = mIsbnText.getSelectionStart();
+						int end = mIsbnText.getSelectionEnd();
+						if (start < end) {
+							// We have a selection. Delete it.
+							mIsbnText.getText().replace(start, end, "");
+							mIsbnText.setSelection(start, start);
+						} else {
+							// Delete char before cursor
+							if (start > 0) {
+								mIsbnText.getText().replace(start-1, start, "");
+								mIsbnText.setSelection(start-1, start-1);
+							}
+						}
 					} catch (StringIndexOutOfBoundsException e) {
 						//do nothing - empty string
 					}
@@ -368,7 +385,17 @@ public class BookISBNSearch extends Activity {
 			}
 		}
 	}
-	
+
+	/*
+	 * Handle character inserion at cursor position in EditText
+	 */
+	private void handleIsbnKey(String key) {
+		int start = mIsbnText.getSelectionStart();
+		int end = mIsbnText.getSelectionEnd();
+		mIsbnText.getText().replace(start, end, key);
+		mIsbnText.setSelection(start+1, start+1);
+	}
+
 	/* - MAJOR DATABASE ISSUES FOR THIS TO WORK!!!
 	protected void checkISBN(final String isbn) {
 		// If the book already exists, ask if the user wants to continue

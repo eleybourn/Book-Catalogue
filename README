@@ -49,8 +49,8 @@ New in v...
 * Ensure that search results can now be sorted correctly. Expanding, eg, an author 
   name in search results will just show matching books.
 * Preserves *all* open groups when closing application.
-* Displays square brackets around series name when displaying a list of books.
-* Changed the ISBN data entry screen when device is in landscape mode.
+* Displays square brackets around the series name when displaying a list of books.
+* Changed the ISBN data entry screen when the device is in landscape mode.
 * Bug fixes for the 'collapse/expand' button, series selection/de-selection
 * Bug fixes for sorting of book titles, series and authors.
 

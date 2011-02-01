@@ -177,8 +177,9 @@ public class BookEditNotes extends Activity {
 			if (mRowId == null) {
 				getRowId();
 			}
-			populateFields();
-			
+			if (savedInstanceState == null)
+				populateFields();
+
 			mConfirmButton.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
 					saveState();
@@ -346,6 +347,9 @@ public class BookEditNotes extends Activity {
 			format = book.getString(book.getColumnIndex(CatalogueDBAdapter.KEY_FORMAT));
 			description = book.getString(book.getColumnIndex(CatalogueDBAdapter.KEY_DESCRIPTION));
 			genre = book.getString(book.getColumnIndex(CatalogueDBAdapter.KEY_GENRE));
+
+			// Tidy up
+			book.close();
 		} else {
 			// Manual Add
 			//This should never happen
@@ -368,7 +372,6 @@ public class BookEditNotes extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		populateFields();
 	}
 
 	private void saveState() {

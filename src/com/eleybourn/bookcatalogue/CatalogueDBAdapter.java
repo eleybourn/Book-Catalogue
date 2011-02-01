@@ -1395,11 +1395,15 @@ public class CatalogueDBAdapter {
 		} else {
 			where += " AND bs." + KEY_BOOKSHELF + "='" + encodeString(bookshelf) + "'";
 		}
-		String sql = "SELECT DISTINCT b." + KEY_SERIES + " as " + KEY_ROWID + 
-		" FROM " + BOOKSHELF_TABLES + 
-		" WHERE b." + KEY_SERIES + "!= '' " + where + 
-		" UNION SELECT \"" + META_EMPTY_SERIES + "\" as " + KEY_ROWID +
-		" ORDER BY b." + KEY_SERIES + "";
+		// Display blank series as '<Empty Series>' BUT sort as ''. Using a UNION
+		// seems to make ordering fail.
+		String sql = "SELECT DISTINCT Case When b." + KEY_SERIES + " = '' " + 
+						" Then '" + META_EMPTY_SERIES + "'" +
+						" Else b." + KEY_SERIES +
+						" End as " + KEY_ROWID + 
+						" FROM " + BOOKSHELF_TABLES + 
+						" WHERE 1=1 " + where +
+						" ORDER BY b." + KEY_SERIES + " Collate UNICODE";
 		return mDb.rawQuery(sql, new String[]{});
 	}
 	
@@ -1612,6 +1616,7 @@ public class CatalogueDBAdapter {
 			"WHERE b." + KEY_GENRE + " < '" + encodeString(genre) + "'" + where;
 		Cursor results = mDb.rawQuery(sql, null);
 		int pos = (getIntValue(results, 0))-1;
+		results.close();
 		return pos;
 	}
 	
@@ -1631,9 +1636,11 @@ public class CatalogueDBAdapter {
 		}
 		String sql = "SELECT count(DISTINCT b." + KEY_SERIES + ") as count " +
 			"FROM " + BOOKSHELF_TABLES +
-			"WHERE b." + KEY_SERIES + " < '" + encodeString(series) + "'" + where;
+			"WHERE b." + KEY_SERIES + " < '" + encodeString(series) + "' Collate UNICODE" + 
+			where;
 		Cursor results = mDb.rawQuery(sql, null);
-		int pos = (getIntValue(results, 0))-1;
+		int pos = (getIntValue(results, 0));
+		results.close();
 		return pos;
 	}
 	

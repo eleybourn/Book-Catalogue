@@ -786,32 +786,32 @@ public class BookEditFields extends Activity {
 	private void setupUi() {
 
 		if (mRowId != null && mRowId > 0) {
-			mConfirmButton.setText(R.string.confirm_save);			
+			mConfirmButton.setText(R.string.confirm_save);
+
+			mAnthologyCheckBox.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View view) {
+					saveState();
+					try {
+						TabHost tabHost = ((TabActivity) getParent()).getTabHost();  // The activity TabHost
+						if (mAnthologyCheckBox.isChecked()) {
+							Resources res = getResources();
+							TabHost.TabSpec spec;  // Resusable TabSpec for each tab
+							Intent intent = new Intent().setClass(BookEditFields.this, BookEditAnthology.class);
+							intent.putExtra(CatalogueDBAdapter.KEY_ROWID, mRowId);
+							spec = tabHost.newTabSpec("edit_book_anthology").setIndicator(res.getString(R.string.edit_book_anthology), res.getDrawable(R.drawable.ic_tab_anthology)).setContent(intent);
+							tabHost.addTab(spec);
+						} else {
+							// remove tab
+							tabHost.getTabWidget().removeViewAt(3);
+						}
+					} catch (Exception e) {
+						// if this doesn't work don't add the tab. The user will have to save and reenter
+					}
+				}
+			});
 		} else {
 			mConfirmButton.setText(R.string.confirm_add);
 		}
-
-		mAnthologyCheckBox.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View view) {
-				saveState();
-				try {
-					TabHost tabHost = ((TabActivity) getParent()).getTabHost();  // The activity TabHost
-					if (mAnthologyCheckBox.isChecked()) {
-						Resources res = getResources();
-						TabHost.TabSpec spec;  // Resusable TabSpec for each tab
-						Intent intent = new Intent().setClass(BookEditFields.this, BookEditAnthology.class);
-						intent.putExtra(CatalogueDBAdapter.KEY_ROWID, mRowId);
-						spec = tabHost.newTabSpec("edit_book_anthology").setIndicator(res.getString(R.string.edit_book_anthology), res.getDrawable(R.drawable.ic_tab_anthology)).setContent(intent);
-						tabHost.addTab(spec);
-					} else {
-						// remove tab
-						tabHost.getTabWidget().removeViewAt(3);
-					}
-				} catch (Exception e) {
-					// if this doesn't work don't add the tab. The user will have to save and reenter
-				}
-			}
-		});
 		
 		mConfirmButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {

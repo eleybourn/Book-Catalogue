@@ -816,7 +816,7 @@ public class BookEditFields extends Activity {
 		mConfirmButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
 				saveState();
-				if (mRowId != null && mRowId > 0) {
+				if (mRowId == null || mRowId == 0) {
 					Intent edit = new Intent(BookEditFields.this, BookEdit.class);
 					edit.putExtra(CatalogueDBAdapter.KEY_ROWID, mRowId);
 					edit.putExtra(BookEdit.TAB, BookEdit.TAB_EDIT_NOTES);

@@ -417,9 +417,17 @@ public class BookEditFields extends Activity {
 			if (field_visibility == false) {
 				mBookshelfText.setVisibility(GONE);
 			}
-			
-			populateFields();
-			
+
+			// Don't populate the fields if we are just restoring from a save
+			if (savedInstanceState == null) {
+				populateFields();
+			} else {
+				// The thumbnail image is not automatically preserved, so reload it.
+				CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, mImageView, mThumbEditSize, mThumbEditSize, true);				
+			}
+			// Setup the Save/Add/Anthology UI elements
+			setupUi();
+
 			mImageView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
 				@Override
 				public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
@@ -540,22 +548,22 @@ public class BookEditFields extends Activity {
 		switch(item.getItemId()) {
 		case DELETE_ID:
 			deleteThumbnail(mRowId);
-			populateFields();
+			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, mImageView, mThumbEditSize, mThumbEditSize, true);
 			return true;
 		case ROTATE_THUMB_SUBMENU:
 			// Just a submenu; skip
 			return true;
 		case ROTATE_THUMB_CW:
 			rotateThumbnail(mRowId, 90);
-			populateFields();
+			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, mImageView, mThumbEditSize, mThumbEditSize, true);
 			return true;
 		case ROTATE_THUMB_CCW:
 			rotateThumbnail(mRowId, -90);
-			populateFields();
+			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, mImageView, mThumbEditSize, mThumbEditSize, true);
 			return true;
 		case ROTATE_THUMB_180:
 			rotateThumbnail(mRowId, 180);
-			populateFields();
+			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, mImageView, mThumbEditSize, mThumbEditSize, true);
 			return true;
 		case ADD_PHOTO:
 			Intent pintent = null;
@@ -629,7 +637,7 @@ public class BookEditFields extends Activity {
 		if (mRowId == null) {
 			getRowId();
 		}
-		
+
 		if (mRowId != null && mRowId > 0) {
 			// From the database (edit)
 			Cursor book = mDbHelper.fetchBookById(mRowId);
@@ -690,46 +698,6 @@ public class BookEditFields extends Activity {
 			} else {
 				mAnthologyCheckBox.setChecked(true);
 			}
-			mAnthologyCheckBox.setOnClickListener(new View.OnClickListener() {
-				public void onClick(View view) {
-					saveState();
-					try {
-						TabHost tabHost = ((TabActivity) getParent()).getTabHost();  // The activity TabHost
-						if (mAnthologyCheckBox.isChecked()) {
-							Resources res = getResources();
-							TabHost.TabSpec spec;  // Resusable TabSpec for each tab
-							Intent intent = new Intent().setClass(BookEditFields.this, BookEditAnthology.class);
-							intent.putExtra(CatalogueDBAdapter.KEY_ROWID, mRowId);
-							spec = tabHost.newTabSpec("edit_book_anthology").setIndicator(res.getString(R.string.edit_book_anthology), res.getDrawable(R.drawable.ic_tab_anthology)).setContent(intent);
-							tabHost.addTab(spec);
-						} else {
-							// remove tab
-							tabHost.getTabWidget().removeViewAt(3);
-						}
-					} catch (Exception e) {
-						// if this doesn't work don't add the tab. The user will have to save and reenter
-					}
-				}
-			});
-			
-			// On save it should close this view
-			mConfirmButton.setText(R.string.confirm_save);
-			mConfirmButton.setOnClickListener(new View.OnClickListener() {
-				public void onClick(View view) {
-					saveState();
-					Intent i = new Intent();
-					i.putExtra(ADDED_GENRE, added_genre);
-					i.putExtra(ADDED_SERIES, added_series);
-					i.putExtra(ADDED_TITLE, added_title);
-					i.putExtra(ADDED_AUTHOR, added_author);
-					if (getParent() == null) {
-						setResult(RESULT_OK, i);
-					} else {
-						getParent().setResult(RESULT_OK, i);
-					}
-					getParent().finish();
-				}
-			});
 
 			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, mImageView, mThumbEditSize, mThumbEditSize, true);
 			rating = book.getFloat(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_RATING));
@@ -796,31 +764,7 @@ public class BookEditFields extends Activity {
 			} catch (NullPointerException e) {
 				// do nothing
 			}
-				
-			// On add it should reload this view
-			mConfirmButton.setText(R.string.confirm_add);
-			mConfirmButton.setOnClickListener(new View.OnClickListener() {
-				public void onClick(View view) {
-					saveState();
-					Intent edit = new Intent(BookEditFields.this, BookEdit.class);
-					edit.putExtra(CatalogueDBAdapter.KEY_ROWID, mRowId);
-					edit.putExtra(BookEdit.TAB, BookEdit.TAB_EDIT_NOTES);
-					startActivity(edit);
-					
-					Intent i = new Intent();
-					i.putExtra(ADDED_GENRE, added_genre);
-					i.putExtra(ADDED_SERIES, added_series);
-					i.putExtra(ADDED_TITLE, added_title);
-					i.putExtra(ADDED_AUTHOR, added_author);
-					if (getParent() == null) {
-						setResult(RESULT_OK, i);
-					} else {
-						getParent().setResult(RESULT_OK, i);
-					}
-					getParent().finish();
-				}
-			});
-			
+
 			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, mImageView, mThumbEditSize, mThumbEditSize, true);
 
 		} else {
@@ -835,31 +779,62 @@ public class BookEditFields extends Activity {
 				bookshelves.close();
 			} else {
 				mBookshelfText.setText(BookCatalogue.bookshelf + BOOKSHELF_SEPERATOR);
-			}
-			
-			mConfirmButton.setText(R.string.confirm_add);
-			mConfirmButton.setOnClickListener(new View.OnClickListener() {
+			}			
+		}
+	}
+
+	private void setupUi() {
+
+		if (mRowId != null && mRowId > 0) {
+			mConfirmButton.setText(R.string.confirm_save);
+
+			mAnthologyCheckBox.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
 					saveState();
+					try {
+						TabHost tabHost = ((TabActivity) getParent()).getTabHost();  // The activity TabHost
+						if (mAnthologyCheckBox.isChecked()) {
+							Resources res = getResources();
+							TabHost.TabSpec spec;  // Resusable TabSpec for each tab
+							Intent intent = new Intent().setClass(BookEditFields.this, BookEditAnthology.class);
+							intent.putExtra(CatalogueDBAdapter.KEY_ROWID, mRowId);
+							spec = tabHost.newTabSpec("edit_book_anthology").setIndicator(res.getString(R.string.edit_book_anthology), res.getDrawable(R.drawable.ic_tab_anthology)).setContent(intent);
+							tabHost.addTab(spec);
+						} else {
+							// remove tab
+							tabHost.getTabWidget().removeViewAt(3);
+						}
+					} catch (Exception e) {
+						// if this doesn't work don't add the tab. The user will have to save and reenter
+					}
+				}
+			});
+		} else {
+			mConfirmButton.setText(R.string.confirm_add);
+		}
+		
+		mConfirmButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View view) {
+				saveState();
+				if (mRowId == null || mRowId == 0) {
 					Intent edit = new Intent(BookEditFields.this, BookEdit.class);
 					edit.putExtra(CatalogueDBAdapter.KEY_ROWID, mRowId);
 					edit.putExtra(BookEdit.TAB, BookEdit.TAB_EDIT_NOTES);
 					startActivity(edit);
-					
-					Intent i = new Intent();
-					i.putExtra(ADDED_GENRE, added_genre);
-					i.putExtra(ADDED_SERIES, added_series);
-					i.putExtra(ADDED_TITLE, added_title);
-					i.putExtra(ADDED_AUTHOR, added_author);
-					if (getParent() == null) {
-						setResult(RESULT_OK, i);
-					} else {
-						getParent().setResult(RESULT_OK, i);
-					}
-					getParent().finish();
 				}
-			});
-		}
+				Intent i = new Intent();
+				i.putExtra(ADDED_GENRE, added_genre);
+				i.putExtra(ADDED_SERIES, added_series);
+				i.putExtra(ADDED_TITLE, added_title);
+				i.putExtra(ADDED_AUTHOR, added_author);
+				if (getParent() == null) {
+					setResult(RESULT_OK, i);
+				} else {
+					getParent().setResult(RESULT_OK, i);
+				}
+				getParent().finish();
+			}
+		});
 	}
 
 	@Override
@@ -880,7 +855,6 @@ public class BookEditFields extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		populateFields();
 	}
 	
 	/**
@@ -1003,6 +977,9 @@ public class BookEditFields extends Activity {
 				}
 				
 				x.compress(Bitmap.CompressFormat.PNG, 100, f);
+
+				// Update the ImageView with the new image
+				CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, mImageView, mThumbEditSize, mThumbEditSize, true);				
 			}
 			return;
 		case ADD_GALLERY:
@@ -1022,6 +999,8 @@ public class BookEditFields extends Activity {
 				} catch (IOException e) {
 					//do nothing - error to be handled later
 				}
+				// Update the ImageView with the new image
+				CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, mImageView, mThumbEditSize, mThumbEditSize, true);				
 			}
 			return;
 		}

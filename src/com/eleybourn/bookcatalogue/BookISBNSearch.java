@@ -206,11 +206,11 @@ public class BookISBNSearch extends Activity {
 		}
 
 		// Called in UI thread; perform appriate next step
-	    protected void onPostExecute(String[] result) {
-	    	// If book is not found, just return to dialog.
+		protected void onPostExecute(String[] result) {
+			// If book is not found, just return to dialog.
 			if (result[0] == "" && result[1] == "") {
 				if (mParent != null && mParent.get() != null)
-			    	mParent.get().dismissProgress();
+					mParent.get().dismissProgress();
 
 				Toast.makeText(mParent.get(), R.string.book_not_found, Toast.LENGTH_LONG).show();
 				// Leave the ISBN text unchanged in case they need to edit it.

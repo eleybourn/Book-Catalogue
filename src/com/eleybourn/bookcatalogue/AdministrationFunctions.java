@@ -42,7 +42,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
@@ -499,28 +498,22 @@ public class AdministrationFunctions extends Activity {
 					}
 					String dateReadStartString = "";
 					try {
-						Log.e("BC", "S" + books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_START)));
 						String[] date = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_START)).split("-");
 						int yyyy = Integer.parseInt(date[0]);
 						int mm = Integer.parseInt(date[1])+1;
 						int dd = Integer.parseInt(date[2]);
 						dateReadStartString = yyyy + "-" + mm + "-" + dd;
-						Log.e("BC", dateReadStartString);
 					} catch (Exception e) {
-						Log.e("BC", "EXPORT ERROR");
 						//do nothing
 					}
 					String dateReadEndString = "";
 					try {
-						Log.e("BC", "S" + books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_END)));
 						String[] date = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_END)).split("-");
 						int yyyy = Integer.parseInt(date[0]);
 						int mm = Integer.parseInt(date[1])+1;
 						int dd = Integer.parseInt(date[2]);
 						dateReadEndString = yyyy + "-" + mm + "-" + dd;
-						Log.e("BC", dateReadEndString);
 					} catch (Exception e) {
-						Log.e("BC", "EXPORT ERROR2");
 						//do nothing
 					}
 					String anthology = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
@@ -927,16 +920,13 @@ public class AdministrationFunctions extends Activity {
 				String read_end = "";
 				try {
 					read_end = imported[20];
-					Log.e("BC", "R" + read_end);
 					String[] date = read_end.split("-");
 					int yyyy = Integer.parseInt(date[0]);
 					int mm = Integer.parseInt(date[1])-1;
 					int dd = Integer.parseInt(date[2]);
 					read_end = yyyy + "-" + mm + "-" + dd;
-					Log.e("BC", "C" + read_end);
 				} catch (Exception e) {
 					read_end = "";
-					Log.e("BC", "ERROR");
 				}
 				
 				String format = "";

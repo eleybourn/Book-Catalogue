@@ -20,6 +20,9 @@
 
 package com.eleybourn.bookcatalogue;
 
+import android.content.ContentValues;
+import android.util.Log;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -169,29 +172,30 @@ import org.xml.sax.helpers.DefaultHandler;
  * 
  */
 public class SearchAmazonHandler extends DefaultHandler {
+	private ContentValues mBookData;
 	private StringBuilder builder;
 	/* public variables to hold the found values */
-	public String title = "";
-	public String author = "";
-	public String isbn = "";
-	public String publisher = "";
-	public String date_published = "";
-	public String rating = "0";
-	public String bookshelf = "";
-	public String read = "false";
-	public String series = "";
-	public String pages = "0";
-	public String thumbnail = "";
-	public String series_num = "";
-	public String list_price = "";
-	public String anthology = "0";
-	public String location = "";
-	public String read_start = "";
-	public String read_end = "";
-	public String audiobook = "";
-	public String signed = "0";
-	public String description = "";
-	public String genre = "";
+//	public String title = "";
+//	public String author = "";
+//	public String isbn = "";
+//	public String publisher = "";
+//	public String date_published = "";
+//	public String rating = "0";
+//	public String bookshelf = "";
+//	public String read = "false";
+//	public String series = "";
+//	public String pages = "0";
+//	public String thumbnail = "";
+//	public String series_num = "";
+//	public String list_price = "";
+//	public String anthology = "0";
+//	public String location = "";
+//	public String read_start = "";
+//	public String read_end = "";
+//	public String audiobook = "";
+//	public String signed = "0";
+//	public String description = "";
+//	public String genre = "";
 	
 	/* How many results found */
 	public int count = 0;
@@ -215,19 +219,33 @@ public class SearchAmazonHandler extends DefaultHandler {
 	public static String MEDIUMIMAGE = "MediumImage";
 	public static String DESCRIPTION = "Content";
 
-	/*
-	 * A public function the return a book structure
-	 */
-	public String[] getBook(){
-		String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num, list_price, anthology, location, read_start, read_end, audiobook, signed, description, genre};
-		//Log.e("bc", author + " :: " + title + " :: " + isbn  + " :: " + publisher + " :: " + date_published + " :: " + rating +  " :: " + bookshelf + " :: " + read + " :: " + series + " :: " + pages + " :: " + series_num);
-		return book;
+	SearchAmazonHandler(ContentValues bookData) {
+		mBookData = bookData;
 	}
+//	/*
+//	 * A public function the return a book structure
+//	 */
+//	public String[] getBook(){
+//		String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num, list_price, anthology, location, read_start, read_end, audiobook, signed, description, genre};
+//		//Log.e("bc", author + " :: " + title + " :: " + isbn  + " :: " + publisher + " :: " + date_published + " :: " + rating +  " :: " + bookshelf + " :: " + read + " :: " + series + " :: " + pages + " :: " + series_num);
+//		return book;
+//	}
 
 	@Override
 	public void characters(char[] ch, int start, int length) throws SAXException {
 		super.characters(ch, start, length);
 		builder.append(ch, start, length);
+	}
+
+	private void addIfNotPresent(String key) {
+		if (!mBookData.containsKey(key) || mBookData.getAsString(key).length() == 0) {
+			mBookData.put(key, builder.toString());
+		}		
+	}
+	private void addIfNotPresentOrEqual(String key, String value) {
+		if (!mBookData.containsKey(key) || mBookData.getAsString(key).length() == 0 || mBookData.getAsString(key).equals(value)) {
+			mBookData.put(key, builder.toString());
+		}		
 	}
 
 	/*
@@ -240,93 +258,91 @@ public class SearchAmazonHandler extends DefaultHandler {
 	@Override
 	public void endElement(String uri, String localName, String name) throws SAXException {
 		super.endElement(uri, localName, name);
-		if (localName.equalsIgnoreCase(TOTALRESULTS)){
-			count = Integer.parseInt(builder.toString());
-		} else if (localName.equalsIgnoreCase(AUTHOR)){
-			if (entry == true && author == "") {
-				author = builder.toString();
-			}
-		} else if (localName.equalsIgnoreCase(TITLE)){
-				if (entry == true && title == "") {
-					title = builder.toString();
-				}
-		} else if (localName.equalsIgnoreCase(ISBN)){
-			if (entry == true && isbn.length() < 11) {
-				isbn = builder.toString();
-			}
-		} else if (localName.equalsIgnoreCase(ISBNOLD)){
-			if (entry == true && isbn == "") {
-				isbn = builder.toString();
-			}
-		} else if (localName.equalsIgnoreCase(PUBLISHER)){
-			if (entry == true && publisher == "") {
-				publisher = builder.toString();
-			}
-		} else if (localName.equalsIgnoreCase(DATE_PUBLISHED)){
-			if (entry == true && date_published == "") {
-				date_published = builder.toString();
-			}
-		} else if (localName.equalsIgnoreCase(PAGES)){
-			if (entry == true && pages == "0") {
-				pages = builder.toString();
-			}
-		} else if (localName.equalsIgnoreCase(THUMBNAIL)){
-			if (image == true) {
-				URL u;
-				/* Convert the URL string into a URL object */
-				try {
-					u = new URL(builder.toString());
-				} catch (MalformedURLException e) {
-					//Log.e("Book Catalogue", "Malformed URL");
-					return;
-				}
-				HttpURLConnection c;
-				InputStream in = null;
-				/* Connect to the server to get the thumbnail and download the thumbnail as an InputStream */
-				try {
-					c = (HttpURLConnection) u.openConnection();
-					c.setRequestMethod("GET");
-					c.setDoOutput(true);
-					c.connect();
-					in = c.getInputStream();
-				} catch (IOException e) {
-					//Log.e("Book Catalogue", "Thumbnail cannot be read");
-					return;
-				}
-				
-				/* Create a file to copy the thumbnail into */
-				FileOutputStream f = null;
-				try {
-					String filename = CatalogueDBAdapter.fetchThumbnailFilename(0, true);
-					f = new FileOutputStream(filename);
-				} catch (FileNotFoundException e) {
-					//Log.e("Book Catalogue", "Thumbnail cannot be written");
-					return;
-				}
-				
-				/* Copy the inputstream into an outpustream on the sdcard */
-				try {
-					byte[] buffer = new byte[1024];
-					int len1 = 0;
-					while ( (len1 = in.read(buffer)) > 0 ) {
-						f.write(buffer,0, len1);
+		try {
+			if (localName.equalsIgnoreCase(TOTALRESULTS)){
+				count = Integer.parseInt(builder.toString());
+			} else if (localName.equalsIgnoreCase(THUMBNAIL)){
+				if (image == true) {
+					URL u;
+					/* Convert the URL string into a URL object */
+					try {
+						u = new URL(builder.toString());
+					} catch (MalformedURLException e) {
+						//Log.e("Book Catalogue", "Malformed URL");
+						return;
 					}
-					f.close();
-				} catch (IOException e) {
-					//Log.e("Book Catalogue", "Error writing thumbnail");
-					return;
+					HttpURLConnection c;
+					InputStream in = null;
+					/* Connect to the server to get the thumbnail and download the thumbnail as an InputStream */
+					try {
+						c = (HttpURLConnection) u.openConnection();
+						c.setRequestMethod("GET");
+						c.setDoOutput(true);
+						c.connect();
+						in = c.getInputStream();
+					} catch (IOException e) {
+						//Log.e("Book Catalogue", "Thumbnail cannot be read");
+						return;
+					}
+					
+					/* Create a file to copy the thumbnail into */
+					FileOutputStream f = null;
+					try {
+						String filename = CatalogueDBAdapter.fetchThumbnailFilename(0, true);
+						f = new FileOutputStream(filename);
+					} catch (FileNotFoundException e) {
+						//Log.e("Book Catalogue", "Thumbnail cannot be written");
+						return;
+					}
+					
+					/* Copy the inputstream into an outpustream on the sdcard */
+					try {
+						byte[] buffer = new byte[1024];
+						int len1 = 0;
+						while ( (len1 = in.read(buffer)) > 0 ) {
+							f.write(buffer,0, len1);
+						}
+						f.close();
+					} catch (IOException e) {
+						//Log.e("Book Catalogue", "Error writing thumbnail");
+						return;
+					}
+					image = false;
 				}
-				image = false;
-			}
-		} else if (localName.equalsIgnoreCase(DESCRIPTION)){
-			if (entry == true && description == "") {
-				description = builder.toString();
-			}
-		} else if (localName.equalsIgnoreCase(ENTRY)){
+			} else if (localName.equalsIgnoreCase(ENTRY)){
 				done = true;
 				entry = false;
+			} else if (entry == true) {
+				if (localName.equalsIgnoreCase(AUTHOR)){
+					addIfNotPresent(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);
+				} else if (localName.equalsIgnoreCase(TITLE)){
+					addIfNotPresent(CatalogueDBAdapter.KEY_TITLE);
+				} else if (localName.equalsIgnoreCase(ISBN)){
+					String tmp = builder.toString();
+					if (!mBookData.containsKey(CatalogueDBAdapter.KEY_ISBN) 
+							|| mBookData.getAsString(CatalogueDBAdapter.KEY_ISBN).length() < tmp.length()) {
+						mBookData.put(CatalogueDBAdapter.KEY_ISBN, tmp);
+					}					
+				} else if (localName.equalsIgnoreCase(ISBNOLD)){
+					String tmp = builder.toString();
+					if (!mBookData.containsKey(CatalogueDBAdapter.KEY_ISBN) 
+							|| mBookData.getAsString(CatalogueDBAdapter.KEY_ISBN).length() < tmp.length()) {
+						mBookData.put(CatalogueDBAdapter.KEY_ISBN, tmp);
+					}					
+				} else if (localName.equalsIgnoreCase(PUBLISHER)){
+					addIfNotPresent(CatalogueDBAdapter.KEY_PUBLISHER);
+				} else if (localName.equalsIgnoreCase(DATE_PUBLISHED)){
+					addIfNotPresent(CatalogueDBAdapter.KEY_DATE_PUBLISHED);
+				} else if (localName.equalsIgnoreCase(PAGES)){
+					addIfNotPresentOrEqual(CatalogueDBAdapter.KEY_PUBLISHER, "0");
+				} else if (localName.equalsIgnoreCase(DESCRIPTION)){
+					addIfNotPresent(CatalogueDBAdapter.KEY_DESCRIPTION);
+				}
+			}
+			builder.setLength(0);			
+		} catch (Exception e) {
+			Log.e("Amazon", e.getMessage());
 		}
-		builder.setLength(0);
 	}
 
 	/*

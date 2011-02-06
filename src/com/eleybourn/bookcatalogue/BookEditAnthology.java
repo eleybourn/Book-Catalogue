@@ -33,6 +33,7 @@ import org.xml.sax.SAXException;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
@@ -121,12 +122,13 @@ public class BookEditAnthology extends ListActivity {
 		if (book != null) {
 			book.moveToFirst();
 		}
-		
+
 		bookAuthor = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED));
 		bookTitle = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE));
-		
 		// Setup the same author field
 		anthology_num = book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
+		book.close();
+
 		mSame = (CheckBox) findViewById(R.id.same_author);
 		if (anthology_num == CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS) {
 			mSame.setChecked(false);
@@ -479,28 +481,13 @@ public class BookEditAnthology extends ListActivity {
 	*/
 
 	private void saveState() {
-		int anthology = CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS;
+		Integer anthology = CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS;
 		if (mSame.isChecked()) {
 			anthology = CatalogueDBAdapter.ANTHOLOGY_SAME_AUTHOR;
 		}
-		float rating = book.getFloat(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_RATING));
-		boolean read = book.getInt(book.getColumnIndex(CatalogueDBAdapter.KEY_READ))==0? false:true;
-		String notes = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_NOTES));
-		String isbn = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ISBN));
-		String publisher = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PUBLISHER));
-		String date_published = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DATE_PUBLISHED));
-		String bookshelf = null;
-		String series = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES));
-		String series_num = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES_NUM));
-		String list_price = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LIST_PRICE));
-		String location = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOCATION));
-		String read_start = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_START));
-		String read_end = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_END));
-		String format = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_FORMAT));
-		boolean signed = (book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SIGNED))==0? false:true);
-		int pages = book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PAGES));
-		String description = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DESCRIPTION));
-		String genre = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_GENRE));
+		ContentValues values = new ContentValues();
+		values.put(CatalogueDBAdapter.KEY_ROWID, mRowId);
+		values.put(CatalogueDBAdapter.KEY_ANTHOLOGY, anthology);
 
 		if (mRowId == null || mRowId == 0) {
 			//This should never happen
@@ -508,7 +495,7 @@ public class BookEditAnthology extends ListActivity {
 			Toast.makeText(this, R.string.unknown_error, Toast.LENGTH_LONG).show();
 			finish();
 		} else {
-			mDbHelper.updateBook(mRowId, bookAuthor, bookTitle, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, format, signed, description, genre);
+			mDbHelper.updateBook(mRowId, values);
 		}
 		return;
 	}

@@ -27,53 +27,31 @@ import java.util.Calendar;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.SharedPreferences;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.RatingBar;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import com.eleybourn.bookcatalogue.Fields.Field;
+import com.eleybourn.bookcatalogue.Fields.FieldFormatter;
+import com.eleybourn.bookcatalogue.Fields.FieldValidator;
 
 /*
  * A book catalogue application that integrates with Google Books.
  */
 public class BookEditNotes extends Activity {
 
-	private RatingBar mRatingText;
-	private CheckBox mReadText;
-	private EditText mNotesText;
-	private AutoCompleteTextView mLocationView;
-	private TextView mReadStartView;
-	private TextView mReadEndView;
-	private CheckBox mSignedView;
+	private Fields mFields;
 	private Button mConfirmButton;
 	private Button mCancelButton;
 	private Long mRowId;
 	private CatalogueDBAdapter mDbHelper;
-	
-	private String author;
-	private String title;
-	private String isbn;
-	private String publisher;
-	private String date_published;
-	private String bookshelf;
-	private String series;
-	private String series_num;
-	private String list_price;
-	private int anthology;
-	private int pages;
-	private String format;
-	private String description;
-	private String genre;
-	
-	private static final int GONE = 8;
+
 	private static final int READ_START_DIALOG_ID = 1;
 	private static final int READ_END_DIALOG_ID = 2;
 	protected void getRowId() {
@@ -82,6 +60,21 @@ public class BookEditNotes extends Activity {
 		mRowId = extras != null ? extras.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
 	}
 	
+	/**
+	 * Validate the current data in all fields that have validators. Display any errors.
+	 * 
+	 * @param values The values to use
+	 * 
+	 * @return Boolean success or failure.
+	 */
+	private boolean validate(ContentValues values) {
+		if (!mFields.validate(values)) {
+			Toast.makeText(getParent(), mFields.getValidationExceptionMessage(getResources()), Toast.LENGTH_LONG).show();
+			return false;
+		}
+		return true;
+	}
+
 	/**
 	 * Returns a unique list of all locations in the database
 	 *  
@@ -100,76 +93,61 @@ public class BookEditNotes extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		SharedPreferences mPrefs = getSharedPreferences("bookCatalogue", MODE_PRIVATE);
-		String visibility_prefix = FieldVisibility.prefix;
-		boolean field_visibility = true;
 		try {
 			super.onCreate(savedInstanceState);
 			mDbHelper = new CatalogueDBAdapter(this);
 			mDbHelper.open();
 			
 			setContentView(R.layout.edit_book_notes);
-			
-			mRatingText = (RatingBar) findViewById(R.id.rating);
-			field_visibility = mPrefs.getBoolean(visibility_prefix + "rating", true);
-			if (field_visibility == false) {
-				TextView mRatingLabel = (TextView) findViewById(R.id.rating_label);
-				mRatingLabel.setVisibility(GONE);
-				mRatingText.setVisibility(GONE);
-			}
-			
-			mReadText = (CheckBox) findViewById(R.id.read);
-			field_visibility = mPrefs.getBoolean(visibility_prefix + "read", true);
-			if (field_visibility == false) {
-				mReadText.setVisibility(GONE);
-			}
-			
-			mNotesText = (EditText) findViewById(R.id.notes);
-			field_visibility = mPrefs.getBoolean(visibility_prefix + "notes", true);
-			if (field_visibility == false) {
-				mNotesText.setVisibility(GONE);
-			}
-			
+
+			mFields = new Fields(this);
+			Field f;
+
+			// Generic validators; if field-specific defaults are needed, create a new one.
+			FieldValidator booleanValidator = new Fields.BooleanValidator();
+			FieldValidator blankOrDateValidator = new Fields.OrValidator(new Fields.BlankValidator(), new Fields.DateValidator());
+			FieldFormatter dateFormatter = new Fields.DateFieldFormatter();
+
+			mFields.add(R.id.rating, CatalogueDBAdapter.KEY_RATING, new Fields.FloatValidator());
+			mFields.add(R.id.rating_label, "",  CatalogueDBAdapter.KEY_RATING, null);
+			mFields.add(R.id.read, CatalogueDBAdapter.KEY_READ, booleanValidator);
+			mFields.add(R.id.notes, CatalogueDBAdapter.KEY_NOTES, null);
+
 			ArrayAdapter<String> location_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getLocations());
-			mLocationView = (AutoCompleteTextView) findViewById(R.id.location);
-			mLocationView.setAdapter(location_adapter);
-			field_visibility = mPrefs.getBoolean(visibility_prefix + "location", true);
-			if (field_visibility == false) {
-				mLocationView.setVisibility(GONE);
-			}
-			
-			Button mReadStartButton = (Button) findViewById(R.id.read_start_button);
-			mReadStartButton.setOnClickListener(new View.OnClickListener() {
+			f = mFields.add(R.id.location, CatalogueDBAdapter.KEY_LOCATION, null);
+			((AutoCompleteTextView)f.view).setAdapter(location_adapter);
+
+			f = mFields.add(R.id.read_start_button, "",  CatalogueDBAdapter.KEY_READ_START, null);
+			f.view.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
 					showDialog(READ_START_DIALOG_ID);
 				}
 			});
-			mReadStartView = (TextView) findViewById(R.id.read_start);
-			field_visibility = mPrefs.getBoolean(visibility_prefix + "read_start", true);
-			if (field_visibility == false) {
-				mReadStartView.setVisibility(GONE);
-				mReadStartButton.setVisibility(GONE);
-			}
-			
-			Button mReadEndButton = (Button) findViewById(R.id.read_end_button);
-			mReadEndButton.setOnClickListener(new View.OnClickListener() {
+			mFields.add(R.id.read_start, CatalogueDBAdapter.KEY_READ_START, blankOrDateValidator, dateFormatter);
+
+			f = mFields.add(R.id.read_end_button, "",  CatalogueDBAdapter.KEY_READ_END, null);
+			f.view.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
 					showDialog(READ_END_DIALOG_ID);
 				}
 			});
-			mReadEndView = (TextView) findViewById(R.id.read_end);
-			field_visibility = mPrefs.getBoolean(visibility_prefix + "read_end", true);
-			if (field_visibility == false) {
-				mReadEndView.setVisibility(GONE);
-				mReadEndButton.setVisibility(GONE);
-			}
-			
-			mSignedView = (CheckBox) findViewById(R.id.signed);
-			field_visibility = mPrefs.getBoolean(visibility_prefix + "signed", true);
-			if (field_visibility == false) {
-				mSignedView.setVisibility(GONE);
-			}
-			
+			f = mFields.add(R.id.read_end, CatalogueDBAdapter.KEY_READ_END, blankOrDateValidator, dateFormatter);
+
+			mFields.add(R.id.signed, CatalogueDBAdapter.KEY_SIGNED,  booleanValidator);
+
+			mFields.addCrossValidator(new Fields.FieldCrossValidator() {
+				public void validate(Fields fields, android.content.ContentValues values) {
+					String start = values.getAsString(CatalogueDBAdapter.KEY_READ_START);
+					if (start.equals(""))
+						return;
+					String end = values.getAsString(CatalogueDBAdapter.KEY_READ_END);
+					if (end.equals(""))
+						return;
+					if (start.compareToIgnoreCase(end) > 0)
+						throw new Fields.ValidatorException(R.string.vldt_read_start_after_end,new Object[]{});							
+				}
+			});
+
 			mConfirmButton = (Button) findViewById(R.id.confirm);
 			mCancelButton = (Button) findViewById(R.id.cancel);
 			
@@ -177,12 +155,17 @@ public class BookEditNotes extends Activity {
 			if (mRowId == null) {
 				getRowId();
 			}
+
 			if (savedInstanceState == null)
 				populateFields();
 
 			mConfirmButton.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
-					saveState();
+					ContentValues values = new ContentValues();
+					if (!validate(values))
+						return;
+
+					saveState(values);
 					setResult(RESULT_OK);
 					finish();
 				}
@@ -195,7 +178,7 @@ public class BookEditNotes extends Activity {
 				}
 			});
 		} catch (Exception e) {
-			//Log.e("Book Catalogue", "Unknown error " + e.toString());
+			android.util.Log.e("Book Catalogue", "Unknown error " + e.toString());
 		}
 	}
 	
@@ -204,7 +187,7 @@ public class BookEditNotes extends Activity {
 		switch (id) {
 		case READ_START_DIALOG_ID:
 			try {
-				String dateString = (String) mReadStartView.getText();
+				String dateString = mFields.get(R.id.read_start).getValue().toString();
 				// get the current date
 				final Calendar c = Calendar.getInstance();
 				int yyyy = c.get(Calendar.YEAR);
@@ -225,7 +208,7 @@ public class BookEditNotes extends Activity {
 			break;
 		case READ_END_DIALOG_ID:
 			try {
-				String dateString = (String) mReadEndView.getText();
+				String dateString = mFields.get(R.id.read_end).getValue().toString();
 				// get the current date
 				final Calendar c = Calendar.getInstance();
 				int yyyy = c.get(Calendar.YEAR);
@@ -247,6 +230,7 @@ public class BookEditNotes extends Activity {
 		}
 		return null;
 	}	
+
 	// the callback received when the user "sets" the date in the dialog
 	private DatePickerDialog.OnDateSetListener mReadStartSetListener = new DatePickerDialog.OnDateSetListener() {
 		public void onDateSet(DatePicker view, int year, int month, int day) {
@@ -259,7 +243,7 @@ public class BookEditNotes extends Activity {
 			if (dd.length() == 1) {
 				dd = "0" + dd;
 			}
-			mReadStartView.setText(year + "-" + mm + "-" + dd);
+			mFields.get(R.id.read_start).setValue(year + "-" + mm + "-" + dd);
 		}
 	};
 	// the callback received when the user "sets" the date in the dialog
@@ -274,7 +258,7 @@ public class BookEditNotes extends Activity {
 			if (dd.length() == 1) {
 				dd = "0" + dd;
 			}
-			mReadEndView.setText(year + "-" + mm + "-" + dd);
+			mFields.get(R.id.read_end).setValue(year + "-" + mm + "-" + dd);
 		}
 	};
 	
@@ -290,63 +274,13 @@ public class BookEditNotes extends Activity {
 				book.moveToFirst();
 			}
 			startManagingCursor(book);
-			title = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE)); 
-			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + title);
-			
-			mRatingText.setRating(book.getFloat(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_RATING)));
-			mReadText.setChecked((book.getInt(book.getColumnIndex(CatalogueDBAdapter.KEY_READ))==0? false:true) );
-			mNotesText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_NOTES)));
-			mLocationView.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOCATION)));
-			String[] start_date = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_START)).split("-");
-			try {
-				String yyyy = start_date[0];
-				int month = Integer.parseInt(start_date[1]);
-				month = month + 1;
-				String mm = month + "";
-				if (mm.length() == 1) {
-					mm = "0" + mm;
-				}
-				String dd = start_date[2];
-				if (dd.length() == 1) {
-					dd = "0" + dd;
-				}
-				mReadStartView.setText(yyyy + "-" + mm + "-" + dd);
-			} catch (Exception e) {
-				
-			}
-			String[] end_date = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_END)).split("-");
-			try {
-				String yyyy = end_date[0];
-				int month = Integer.parseInt(end_date[1]);
-				month = month + 1;
-				String mm = month + "";
-				if (mm.length() == 1) {
-					mm = "0" + mm;
-				}
-				String dd = end_date[2];
-				if (dd.length() == 1) {
-					dd = "0" + dd;
-				}
-				mReadEndView.setText(yyyy + "-" + mm + "-" + dd);
-			} catch (Exception e) {
-				
-			}
-			mSignedView.setChecked((book.getInt(book.getColumnIndex(CatalogueDBAdapter.KEY_SIGNED))==0? false:true) );
+
+			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + 
+						book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE)));
+
+			mFields.setFromCursor(book);
+
 			mConfirmButton.setText(R.string.confirm_save);
-			
-			author = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED));
-			isbn = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ISBN));
-			publisher = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PUBLISHER));
-			date_published = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DATE_PUBLISHED));
-			bookshelf = null;
-			series = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES));
-			series_num = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES_NUM));
-			list_price = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LIST_PRICE));
-			anthology = book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
-			pages = book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PAGES));
-			format = book.getString(book.getColumnIndex(CatalogueDBAdapter.KEY_FORMAT));
-			description = book.getString(book.getColumnIndex(CatalogueDBAdapter.KEY_DESCRIPTION));
-			genre = book.getString(book.getColumnIndex(CatalogueDBAdapter.KEY_GENRE));
 
 			// Tidy up
 			book.close();
@@ -374,42 +308,15 @@ public class BookEditNotes extends Activity {
 		super.onResume();
 	}
 
-	private void saveState() {
-		float rating = mRatingText.getRating();
-		boolean read = mReadText.isChecked();
-		String notes = mNotesText.getText().toString();
-		String location = mLocationView.getText().toString();
-		String read_start = "";
-		try {
-			read_start = (String) mReadStartView.getText();
-			String[] date = read_start.split("-");
-			int yyyy = Integer.parseInt(date[0]);
-			int mm = Integer.parseInt(date[1])-1;
-			int dd = Integer.parseInt(date[2]);
-			read_start = yyyy + "-" + mm + "-" + dd;
-		} catch (Exception e) {
-			//do nothing
-		}
-		String read_end = "";
-		try {
-			read_end = (String) mReadEndView.getText();
-			String[] date = read_end.split("-");
-			int yyyy = Integer.parseInt(date[0]);
-			int mm = Integer.parseInt(date[1])-1;
-			int dd = Integer.parseInt(date[2]);
-			read_end = yyyy + "-" + mm + "-" + dd;
-		} catch (Exception e) {
-			//do nothing
-		}
-		boolean signed = mSignedView.isChecked();
-		
+	private void saveState(ContentValues values) {
+
 		if (mRowId == null || mRowId == 0) {
 			//This should never happen
 			//long id = mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num);
 			Toast.makeText(this, R.string.unknown_error, Toast.LENGTH_LONG).show();
 			finish();
 		} else {
-			mDbHelper.updateBook(mRowId, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, format, signed, description, genre);
+			mDbHelper.updateBook(mRowId, values);
 		}
 		return;
 	}

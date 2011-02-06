@@ -20,6 +20,8 @@
 
 package com.eleybourn.bookcatalogue;
 
+import android.content.ContentValues;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -110,27 +112,29 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class SearchGoogleBooksEntryHandler extends DefaultHandler {
 	private StringBuilder builder;
-	public String title = "";
-	public String author = "";
-	public String isbn = "";
-	public String publisher = "";
-	public String date_published = "";
-	public String rating = "0";
-	public String bookshelf = "";
-	public String read = "false";
-	public String series = "";
-	public String pages = "0";
-	public String thumbnail = "";
-	public String series_num = "";
-	public String list_price = "";
-	public String anthology = "0";
-	public String location = "";
-	public String read_start = "";
-	public String read_end = "";
-	public String audiobook = "";
-	public String signed = "0";
-	public String description = "";
-	public String genre = "";
+	
+	private ContentValues mValues;
+//	public String title = "";
+//	public String author = "";
+//	public String isbn = "";
+//	public String publisher = "";
+//	public String date_published = "";
+//	public String rating = "0";
+//	public String bookshelf = "";
+//	public String read = "false";
+//	public String series = "";
+//	public String pages = "0";
+//	public String thumbnail = "";
+//	public String series_num = "";
+//	public String list_price = "";
+//	public String anthology = "0";
+//	public String location = "";
+//	public String read_start = "";
+//	public String read_end = "";
+//	public String audiobook = "";
+//	public String signed = "0";
+//	public String description = "";
+//	public String genre = "";
 	
 	public static String ID = "id";
 	public static String TOTALRESULTS = "totalResults";
@@ -144,58 +148,53 @@ public class SearchGoogleBooksEntryHandler extends DefaultHandler {
 	public static String THUMBNAIL = "link";
 	public static String GENRE = "subject";
 	public static String DESCRIPTION = "description";
-	
-	public String[] getBook(){
-		String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num, list_price, anthology, location, read_start, read_end, audiobook, signed, description, genre};
-		return book;
+
+	SearchGoogleBooksEntryHandler(ContentValues values) {
+		mValues = values;
 	}
-	
+
 	@Override
 	public void characters(char[] ch, int start, int length) throws SAXException {
 		super.characters(ch, start, length);
 		builder.append(ch, start, length);
 	}
 
+	private void addIfNotPresent(String key) {
+		if (!mValues.containsKey(key) || mValues.getAsString(key).length() == 0) {
+			mValues.put(key, builder.toString());
+		}		
+	}
+
 	@Override
 	public void endElement(String uri, String localName, String name) throws SAXException {
 		super.endElement(uri, localName, name);
 		if (localName.equalsIgnoreCase(TITLE)){
-			if (title == "") {
-				title = builder.toString();
-			}
+			addIfNotPresent(CatalogueDBAdapter.KEY_TITLE);
 		} else if (localName.equalsIgnoreCase(ISBN)){
 			String tmp = builder.toString(); 
 			if (tmp.indexOf("ISBN:") == 0) {
 				tmp = tmp.substring(5); 
-				if (isbn == "" || tmp.length() > isbn.length()) {
-					isbn = tmp;
+				if (!mValues.containsKey(CatalogueDBAdapter.KEY_ISBN) || tmp.length() > mValues.getAsString(CatalogueDBAdapter.KEY_ISBN).length()) {
+					mValues.put(CatalogueDBAdapter.KEY_ISBN, tmp);
 				}
 			}
 		} else if (localName.equalsIgnoreCase(AUTHOR)){
-			if (author == "") {
-				author = builder.toString();
-			}
+			addIfNotPresent(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);
 		} else if (localName.equalsIgnoreCase(PUBLISHER)){
-			if (publisher == "") {
-				publisher = builder.toString();
-			}
+			addIfNotPresent(CatalogueDBAdapter.KEY_PUBLISHER);
 		} else if (localName.equalsIgnoreCase(DATE_PUBLISHED)){
-			if (date_published == "") {
-				date_published = builder.toString();
-			}
+			addIfNotPresent(CatalogueDBAdapter.KEY_DATE_PUBLISHED);
 		} else if (localName.equalsIgnoreCase(PAGES)){
 			String tmp = builder.toString();
 			int index = tmp.indexOf(" pages");
 			if (index > -1) {
 				tmp = tmp.substring(0, index).trim(); 
-				pages = tmp;
+				mValues.put(CatalogueDBAdapter.KEY_PAGES, tmp);
 			}
 		} else if (localName.equalsIgnoreCase(GENRE)){
-			genre = builder.toString();
+			mValues.put(CatalogueDBAdapter.KEY_GENRE, builder.toString());
 		} else if (localName.equalsIgnoreCase(DESCRIPTION)){
-			if (description == "") {
-				description = builder.toString();
-			}
+			addIfNotPresent(CatalogueDBAdapter.KEY_DESCRIPTION);
 		}
 		builder.setLength(0);
 	}
@@ -211,8 +210,8 @@ public class SearchGoogleBooksEntryHandler extends DefaultHandler {
 		super.startElement(uri, localName, name, attributes);
 		if (localName.equalsIgnoreCase(THUMBNAIL)){
 			if (attributes.getValue("", "rel").equals("http://schemas.google.com/books/2008/thumbnail")) {
-				thumbnail = attributes.getValue("", "href");
-				
+				String thumbnail = attributes.getValue("", "href");
+
 				URL u;
 				try {
 					u = new URL(thumbnail);

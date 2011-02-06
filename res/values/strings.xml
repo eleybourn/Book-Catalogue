@@ -151,4 +151,14 @@
 <string name="isbn_name_search_help">Adding books by ISBN is much more accurate than adding by author and title and is generally preferred. Please remember you can sometimes find the correct barcode on the inside front cover. \n\n</string>
 <string name="help_click_here">Please click here to access the online help pages</string>
 <string name="backup_database">Backup Database</string>
+<string name="vldt_unable_to_get_value">Unable to get value for \'%s\'</string>
+<string name="vldt_integer_expected">Expected an integer value for \'%s\'</string>
+<string name="vldt_real_expected">Expected a real number for \'%s\'</string>
+<string name="vldt_date_expected">Expected a date for \'%s\'</string>
+<string name="vldt_boolean_expected">Expected a boolean value (0,1,t,f,true,false) for \'%s\'</string>
+<string name="vldt_nonblank_required">Non-empty value required for \'%s\'</string>
+<string name="vldt_blank_required">Empty value required for \'%s\'</string>
+<string name="vldt_failed">Validation failed for \'%s\'</string>
+<string name="vldt_series_num_must_be_blank">Series number must be blank (found %1$s) or series name must be specified</string>
+<string name="vldt_read_start_after_end">The date reading started is after the end date</string>
 </resources>

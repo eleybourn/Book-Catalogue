@@ -36,6 +36,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Environment;
@@ -290,45 +291,12 @@ public class AdministrationFunctions extends Activity {
 			int num = 0;
 			//try {
 				while (books.moveToNext()) {
-					long id = books.getLong(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROWID));
-					String isbn = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ISBN));
-					String title = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE));
-					String genre = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_GENRE));
-					String description = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DESCRIPTION));
-					try {
-						genre.equals("");
-					} catch (NullPointerException e) {
-						genre = "";
+
+					// Copy the fields from the cursor
+					ContentValues values = new ContentValues();
+					for(int i = 0; i < books.getColumnCount(); i++) {
+						values.put(books.getColumnName(i), books.getString(i));
 					}
-					try {
-						description.equals("");
-					} catch (NullPointerException e) {
-						description = "";
-					}
-					
-					String author = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED));
-					String publisher = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PUBLISHER));
-					String date_published = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DATE_PUBLISHED));
-					String series = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES));
-					String series_num = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES_NUM));
-					String list_price = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LIST_PRICE));
-					int pages = books.getInt(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PAGES));
-					String format = books.getString(books.getColumnIndex(CatalogueDBAdapter.KEY_FORMAT));
-					int anthology = books.getInt(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
-					float rating = books.getFloat(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_RATING));
-					
-					//Display the selected bookshelves
-					Cursor bookshelves = mDbHelper.fetchAllBookshelvesByBook(id);
-					String bookshelf = "";
-					while (bookshelves.moveToNext()) {
-						bookshelf += bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)) + BookEditFields.BOOKSHELF_SEPERATOR;
-					}
-					boolean read = (books.getInt(books.getColumnIndex(CatalogueDBAdapter.KEY_READ))==0 ? false:true);
-					String notes = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_NOTES));
-					String location = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOCATION));
-					String read_start = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_START));
-					String read_end = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_END));
-					boolean signed = (books.getInt(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SIGNED))==0 ? false:true);
 					
 					num++;
 					// delete any tmp thumbnails //
@@ -338,8 +306,16 @@ public class AdministrationFunctions extends Activity {
 					} catch (Exception e) {
 						// do nothing - this is the expected behaviour 
 					}
-					
-					String[] book = null;
+
+					Long id = values.getAsLong(CatalogueDBAdapter.KEY_ROWID);
+					String isbn = values.getAsString(CatalogueDBAdapter.KEY_ISBN);
+					String author = values.getAsString(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);
+					String title = values.getAsString(CatalogueDBAdapter.KEY_TITLE);
+					String genre = values.getAsString(CatalogueDBAdapter.KEY_GENRE);
+					String description = values.getAsString(CatalogueDBAdapter.KEY_DESCRIPTION);
+
+					ContentValues bookData = new ContentValues();
+
 					File thumb = CatalogueDBAdapter.fetchThumbnail(id);
 					if (isbn.equals("") && author.equals("") && title.equals("")) {
 						// Must have an ISBN to be able to search
@@ -351,19 +327,13 @@ public class AdministrationFunctions extends Activity {
 						//String[] book = {0=author, 1=title, 2=isbn, 3=publisher, 4=date_published, 5=rating,  6=bookshelf, 
 						//	7=read, 8=series, 9=pages, 10=series_num, 11=list_price, 12=anthology, 13=location, 14=read_start, 
 						//	15=read_end, 16=audiobook, 17=signed, 18=description, 19=genre};
-						
-						book = bis.searchGoogle(isbn, author, title);
+
+						bis.searchGoogle(isbn, author, title, bookData);
 						File tmpthumb = CatalogueDBAdapter.fetchThumbnail(0);
-						
-						String[] bookAmazon = bis.searchAmazon(isbn, author, title);
+
+						bis.searchAmazon(isbn, author, title, bookData);
 						tmpthumb = CatalogueDBAdapter.fetchThumbnail(0);
-						/* Fill blank fields as required */
-						for (int i = 0; i<book.length; i++) {
-							if (book[i] == "" || book[i] == "0") {
-								book[i] = bookAmazon[i];
-							}
-						}
-						
+
 						/* Copy tmpthumb over realthumb */
 						if (overwrite == true || !thumb.exists()) {
 							try {
@@ -372,14 +342,14 @@ public class AdministrationFunctions extends Activity {
 								//do nothing
 							}
 						}
-						
+
 						if (description.equals("")) {
-							description = book[18];
+							values.put(CatalogueDBAdapter.KEY_DESCRIPTION, bookData.getAsString(CatalogueDBAdapter.KEY_DESCRIPTION));
 						}
 						if (genre.equals("")) {
-							genre = book[19];
+							values.put(CatalogueDBAdapter.KEY_GENRE, bookData.getAsString(CatalogueDBAdapter.KEY_GENRE));
 						}
-						mDbHelper.updateBook(id, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, format, signed, description, genre);
+						mDbHelper.updateBook(id, values);
 						
 					} else {
 						sendMessage(num, "Skip - " + title);
@@ -764,220 +734,83 @@ public class AdministrationFunctions extends Activity {
 			return imported;
 		}
 
+
+		// Require a column
+		private void requireColumn(ContentValues values, String name) {
+			if (!values.containsKey(name))
+				throw new RuntimeException("File must contain column named " + name);
+		}
+
+		private void requireNonblank(ContentValues values, String name, int row) {
+			if (values.getAsString(name).length() == 0)
+				throw new RuntimeException("Column " + name + " is blank at line " + row);
+		}
+
 		@Override
 		public void run() {
 			Looper.prepare();
-			
+
+			// Container for values.
+			ContentValues values = new ContentValues();
+
+			String[] names = returnRow(export.get(0));
+			for(int i = 0; i < names.length; i++) {
+				names[i] = names[i].toLowerCase();
+				values.put(names[i], "");
+			}
+
+			// Make sure required fields are present.
+			requireColumn(values, CatalogueDBAdapter.KEY_ROWID);
+			requireColumn(values, CatalogueDBAdapter.KEY_FAMILY_NAME);
+
+			if (!values.containsKey(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED)) {
+				values.put(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, "");
+			}
+
 			int row = 1;
 			int num = 0;
+
 			/* Iterate through each imported row */
 			while (row < export.size()) {
 				num++;
 				String[] imported = returnRow(export.get(row));
 				row++;
-				
-				/* Setup aliases for each cell*/
-				Long id = null;
-				try {
-					id = Long.parseLong(imported[0]);
-				} catch(Exception e) {
-					id = Long.parseLong("0");
+
+				for(int i = 0; i < names.length; i++) {
+					values.put(names[i], imported[i]);
 				}
-				
-				String family = "";
-				try {
-					family = imported[1]; 
-				} catch (Exception e) {
-					// family is a compulsory field
-					continue;
+
+				// Validate ID
+				String idVal = values.getAsString(CatalogueDBAdapter.KEY_ROWID.toLowerCase());
+				if (idVal == "") {
+					idVal = "0";
+					values.put(CatalogueDBAdapter.KEY_ROWID, idVal);
 				}
+
+				requireNonblank(values, CatalogueDBAdapter.KEY_FAMILY_NAME, row);
+				requireNonblank(values, CatalogueDBAdapter.KEY_TITLE, row);
+
+				String family = values.getAsString(CatalogueDBAdapter.KEY_FAMILY_NAME);
 				String given = "";
-				try {
-					given = imported[2]; 
-				} catch (Exception e) {
-					given = "";
+
+				if (values.containsKey(CatalogueDBAdapter.KEY_GIVEN_NAMES))
+					given = values.getAsString(CatalogueDBAdapter.KEY_GIVEN_NAMES);
+				String title = values.getAsString(CatalogueDBAdapter.KEY_TITLE);
+
+				values.put(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, family + ", " + given);
+
+				// Make sure we have bookself_text if we imported bookshelf
+				if (values.containsKey(CatalogueDBAdapter.KEY_BOOKSHELF) && !values.containsKey("bookshelf_text")) {
+					values.put("bookshelf_text", values.getAsString(CatalogueDBAdapter.KEY_BOOKSHELF));
 				}
-				//String author_id = imported[3];
-				
-				String title = "";
+
 				try {
-					title = imported[4]; 
-				} catch (Exception e) {
-					//title is a compulsory field
-					continue;
-				}
-				
-				String isbn = "";
-				try {
-					isbn = imported[5];
-				} catch (Exception e) {
-					isbn = "";
-				}
-				
-				String publisher = "";
-				try {
-					publisher = imported[6]; 
-				} catch (Exception e) {
-					publisher = "";
-				}
-				
-				String date_published = "";
-				try {
-					date_published = imported[7];
-					String[] date = date_published.split("-");
-					int yyyy = Integer.parseInt(date[0]);
-					int mm = Integer.parseInt(date[1])-1;
-					int dd = Integer.parseInt(date[2]);
-					date_published = yyyy + "-" + mm + "-" + dd;
-				} catch (Exception e) {
-					date_published = "";
-				}
-				
-				float rating = 0;
-				try {
-					rating = Float.valueOf(imported[8]); 
-				} catch (Exception e) {
-					rating = 0;
-				}
-				
-				//String bookshelf_id = imported[9]; 
-				
-				String bookshelf = "";
-				try {
-					bookshelf = imported[10];
-				} catch (Exception e) {
-					bookshelf = "";
-				}
-				
-				boolean read = false;
-				try {
-					read = (imported[11].equals("0")? false:true); 
-				} catch (Exception e) {
-					read = false;
-				}
-				
-				String series = "";
-				try {
-					series = imported[12]; 
-				} catch (Exception e) {
-					series = "";
-				}
-				
-				String series_num = "";
-				try {
-					series_num = imported[13];
-				} catch (Exception e) {
-					series_num = "";
-				}
-				
-				int pages = 0;
-				try {
-					pages = Integer.parseInt(imported[14]); 
-				} catch (Exception e) {
-					pages = 0;
-				}
-				
-				String notes = "";
-				try {
-					notes = imported[15];
-				} catch (Exception e) {
-					notes = "";
-				}
-				
-				String list_price = "";
-				try {
-					list_price = imported[16];
-				} catch (ArrayIndexOutOfBoundsException e) {
-					list_price = "";
-				}
-				
-				int anthology = CatalogueDBAdapter.ANTHOLOGY_NO;
-				try {
-					anthology = Integer.parseInt(imported[17]); 
-				} catch (Exception e) {
-					anthology = 0;
-				}
-				
-				String location = "";
-				try {
-					location = imported[18]; 
-				} catch (Exception e) {
-					location = "";
-				}
-				
-				String read_start = "";
-				try {
-					read_start = imported[19];
-					String[] date = read_start.split("-");
-					int yyyy = Integer.parseInt(date[0]);
-					int mm = Integer.parseInt(date[1])-1;
-					int dd = Integer.parseInt(date[2]);
-					read_start = yyyy + "-" + mm + "-" + dd;
-				} catch (Exception e) {
-					read_start = "";
-				}
-				
-				String read_end = "";
-				try {
-					read_end = imported[20];
-					String[] date = read_end.split("-");
-					int yyyy = Integer.parseInt(date[0]);
-					int mm = Integer.parseInt(date[1])-1;
-					int dd = Integer.parseInt(date[2]);
-					read_end = yyyy + "-" + mm + "-" + dd;
-				} catch (Exception e) {
-					read_end = "";
-				}
-				
-				String format = "";
-				try {
-					format = imported[21]; 
-				} catch (Exception e) {
-					format = "";
-				}
-				
-				boolean signed = false;
-				try {
-					signed = (imported[22].equals("0")? false:true); 
-				} catch (Exception e) {
-					signed = false;
-				}
-				
-				String loan = "";
-				try {
-					loan = imported[23]; 
-				} catch (Exception e) {
-					loan = ""; 
-				}
-				
-				String anthology_titles = "";
-				try {
-					anthology_titles = imported[24]; 
-				} catch (Exception e) {
-					anthology_titles = ""; 
-				}
-				
-				String description = "";
-				try {
-					description = imported[25]; 
-				} catch (Exception e) {
-					description = ""; 
-				}
-				
-				String genre = "";
-				try {
-					genre = imported[26]; 
-				} catch (Exception e) {
-					genre = ""; 
-				}
-				
-				String author = family + ", " + given;
-				try {
-					if (id == 0) {
+					if (idVal.equals("0")) {
 						// ID is unknown, may be new. Check if it exists in the current database.
 						Cursor book = null;
 						int rows = 0;
 						// If the ISBN is specified, use it as a definitive lookup.
+						String isbn = values.getAsString(CatalogueDBAdapter.KEY_ISBN);
 						if (isbn != "") {
 							book = mDbHelper.fetchBookByISBN(isbn);
 							rows = book.getCount();
@@ -990,23 +823,28 @@ public class AdministrationFunctions extends Activity {
 						if (rows != 0) {
 							book.moveToFirst();
 							// Its a new entry, but the ISBN exists
-							id = book.getLong(0);
-							book.moveToFirst();
-							mDbHelper.updateBook(id, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, format, signed, description, genre);
+							Integer id = book.getInt(0);
+							values.put(CatalogueDBAdapter.KEY_ROWID, book.getString(0));
+							mDbHelper.updateBook(id,values);
 							importUpdated++;
 						} else {
-							id = mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, format, signed, description, genre);
+							Long id = mDbHelper.createBook(values);
+							idVal = id.toString();
+							values.put(CatalogueDBAdapter.KEY_ROWID, idVal);
 							importCreated++;
 						}
 					} else {
+						Long id = Long.parseLong(idVal);
 						Cursor book = mDbHelper.fetchBookById(id);
 						int rows = book.getCount();
 						if (rows == 0) {
-							mDbHelper.createBook(id, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, format, signed, description, genre);
+							id = mDbHelper.createBook(values);
 							importCreated++;
+							idVal = id.toString();
+							values.put(CatalogueDBAdapter.KEY_ROWID, idVal);
 						} else {
 							// Book exists and should be updated if it has changed
-							mDbHelper.updateBook(id, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, format, signed, description, genre);
+							mDbHelper.updateBook(id, values);
 							importUpdated++;
 						}
 					}
@@ -1014,27 +852,33 @@ public class AdministrationFunctions extends Activity {
 					//Log.e("BC", "Import Book (Single) Error");
 					// do nothing
 				}
-				
-				if (!loan.equals("")) {
-					mDbHelper.createLoan(id, loan);
+
+				if (!values.get(CatalogueDBAdapter.KEY_LOANED_TO).equals("")) {
+					mDbHelper.createLoan(values);
 				}
-				
-				if (anthology == CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS || anthology == CatalogueDBAdapter.ANTHOLOGY_SAME_AUTHOR) {
-					int oldi = 0;
-					int i = anthology_titles.indexOf("|", oldi);
-					while (i > -1) {
-						String extracted_title = anthology_titles.substring(oldi, i).trim();
-						
-						int j = extracted_title.indexOf("*");
-						if (j > -1) {
-							String anth_title = extracted_title.substring(0, j).trim();
-							String anth_author = extracted_title.substring((j+1)).trim();
-							mDbHelper.createAnthologyTitle(id, anth_author, anth_title);
+
+				if (values.containsKey(CatalogueDBAdapter.KEY_ANTHOLOGY)) {
+					int anthology = Integer.parseInt(values.getAsString(CatalogueDBAdapter.KEY_ANTHOLOGY));
+					int id = Integer.parseInt(values.getAsString(CatalogueDBAdapter.KEY_ROWID));
+					if (anthology == CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS || anthology == CatalogueDBAdapter.ANTHOLOGY_SAME_AUTHOR) {
+						int oldi = 0;
+						String anthology_titles = values.getAsString("anthology_titles");
+						int i = anthology_titles.indexOf("|", oldi);
+						while (i > -1) {
+							String extracted_title = anthology_titles.substring(oldi, i).trim();
+							
+							int j = extracted_title.indexOf("*");
+							if (j > -1) {
+								String anth_title = extracted_title.substring(0, j).trim();
+								String anth_author = extracted_title.substring((j+1)).trim();
+								mDbHelper.createAnthologyTitle(id, anth_author, anth_title);
+							}
+							oldi = i + 1;
+							i = anthology_titles.indexOf("|", oldi);
 						}
-						oldi = i + 1;
-						i = anthology_titles.indexOf("|", oldi);
 					}
 				}
+
 				sendMessage(num, title);
 			}
 			sendMessage(0, "Import Complete");

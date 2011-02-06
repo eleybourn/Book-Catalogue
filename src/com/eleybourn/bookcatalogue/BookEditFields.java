@@ -28,13 +28,14 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TabActivity;
+import android.content.ContentValues;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -46,59 +47,34 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TabHost;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import com.eleybourn.bookcatalogue.Fields.Field;
+import com.eleybourn.bookcatalogue.Fields.FieldValidator;
 
 public class BookEditFields extends Activity {
 
-	private AutoCompleteTextView mAuthorText;
-	private EditText mTitleText;
-	private EditText mIsbnText;
-	private AutoCompleteTextView mPublisherText;
-	private TextView mDate_publishedText;
-	private Button mBookshelfButton;
-	private TextView mBookshelfText;
-	private AutoCompleteTextView mSeriesText;
-	private EditText mSeriesNumText;
-	private EditText mListPriceText;
-	private EditText mPagesText;
-	private CheckBox mAnthologyCheckBox;
-	private Spinner mFormatText;
-	private EditText mDescriptionText;
-	private EditText mGenreText;
-	private ArrayList<String> formats = new ArrayList<String>();
+	private Fields mFields = null;
 
-	private ArrayAdapter<String> spinnerAdapter;
 	private Button mConfirmButton;
 	private Button mCancelButton;
 	private Long mRowId;
 	private CatalogueDBAdapter mDbHelper;
 	private Integer mThumbEditSize;
 	private Integer mThumbZoomSize;
-	private ImageView mImageView;
-	private Float rating = Float.parseFloat("0");
-	private boolean read = false;
-	private int anthology_num = CatalogueDBAdapter.ANTHOLOGY_NO;
-	private String notes = "";
-	private String location = "";
-	private String read_start = "";
-	private String read_end = "";
-	private boolean signed = false;
 	
 	private String added_genre = "";
 	private String added_series = "";
@@ -121,7 +97,6 @@ public class BookEditFields extends Activity {
 	private static final int ROTATE_THUMB_180 = 33;
 	private static final int ADD_GALLERY = 4;
 	private static final int ZOOM_THUMB = 5;
-	private static final int GONE = 8;
 	private static final int DATE_DIALOG_ID = 1;
 	private static final int ZOOM_THUMB_DIALOG_ID = 2;
 	
@@ -168,15 +143,12 @@ public class BookEditFields extends Activity {
 		publisher_cur.close();
 		return publisher_list;
 	}
-	
+
 	/**
 	 * Display the edit fields page
 	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		SharedPreferences mPrefs = getSharedPreferences("bookCatalogue", MODE_PRIVATE);
-		String visibility_prefix = FieldVisibility.prefix;
-		boolean field_visibility = true;
 		try {
 			mRowId = savedInstanceState != null ? savedInstanceState.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
 			if (mRowId == null) {
@@ -196,123 +168,122 @@ public class BookEditFields extends Activity {
 			mThumbZoomSize = Math.min(MAX_ZOOM_THUMBNAIL_SIZE, Math.max(metrics.widthPixels, metrics.heightPixels));
 
 			setContentView(R.layout.edit_book);
+
+			// Generic validators; if field-specific defaults are needed, create a new one.
+			FieldValidator booleanValidator = new Fields.BooleanValidator("0");
+			FieldValidator integerValidator = new Fields.IntegerValidator("0");
+			FieldValidator nonBlankValidator = new Fields.NonBlankValidator();
+			FieldValidator blankOrIntegerValidator = new Fields.OrValidator(new Fields.BlankValidator(), new Fields.IntegerValidator("0"));
+			FieldValidator blankOrFloatValidator = new Fields.OrValidator(new Fields.BlankValidator(), new Fields.FloatValidator("0.0"));
+			FieldValidator blankOrDateValidator = new Fields.OrValidator(new Fields.BlankValidator(), new Fields.DateValidator());
+
+			mFields = new Fields(this);
+
+			mFields.add(R.id.author, CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, nonBlankValidator);
+
+			// Title has some post-processing on the text, to move leading 'A', 'The' etc to the end.
+			// While we could do it in a formatter, it it not really a display-oriented function and
+			// is handled in preprocessing in the database layer since it also needs to be applied
+			// to imported record etc.
+			mFields.add(R.id.title, CatalogueDBAdapter.KEY_TITLE, nonBlankValidator);
+
+			mFields.add(R.id.isbn, CatalogueDBAdapter.KEY_ISBN, null);
+			mFields.add(R.id.publisher, CatalogueDBAdapter.KEY_PUBLISHER, null);
+			mFields.add(R.id.date_published_button, "", CatalogueDBAdapter.KEY_DATE_PUBLISHED, null);
+			mFields.add(R.id.date_published, CatalogueDBAdapter.KEY_DATE_PUBLISHED, CatalogueDBAdapter.KEY_DATE_PUBLISHED, 
+							blankOrDateValidator, new Fields.DateFieldFormatter());
+
+			mFields.add(R.id.series, CatalogueDBAdapter.KEY_SERIES, CatalogueDBAdapter.KEY_SERIES, null);
+			mFields.add(R.id.series_num, "series_num", CatalogueDBAdapter.KEY_SERIES, blankOrIntegerValidator);
+
+			// Ensure that series number is blank if series is blank 
+			mFields.addCrossValidator(new Fields.FieldCrossValidator() {
+				public void validate(Fields fields, android.content.ContentValues values) {
+					if (!values.getAsString(CatalogueDBAdapter.KEY_SERIES).equals(""))
+						return;
+					// For blank series, series-number must also be blank
+					String num = values.getAsString(CatalogueDBAdapter.KEY_SERIES_NUM);
+					if (!num.equals("")) {
+						throw new Fields.ValidatorException(R.string.vldt_series_num_must_be_blank,new Object[]{num});							
+					}
+				}
+			});
+
+			mFields.add(R.id.list_price, "list_price", blankOrFloatValidator);
+			mFields.add(R.id.pages, "pages", blankOrIntegerValidator);
 			
+			// Anthology needs special handling, and we use a formatter to do this. If the original value was 0 or 1, then 
+			// setting/clearing it here should just set the new value to 0 or 1.
+			// However...if if the original value was 2, then we want setting/clearing to alternate between 2 and 0, not 1
+			// and 0.
+			//
+			// So, despite if being a checkbox, we use an integerValidator and use a special formatter.
+			// We also store it in the tag field so that it is automatically serialized with the activity.
+			mFields.add(R.id.anthology, CatalogueDBAdapter.KEY_ANTHOLOGY, integerValidator, new Fields.FieldFormatter() {
+					private static final int TAG_ORIG_VAL = 1;
+					public String format(Field f, String s) {
+						// Save the original value, if its an integer
+						try {
+							Integer i = Integer.parseInt(s);
+							f.view.setTag(TAG_ORIG_VAL,i);
+						} catch (Exception e) {
+							f.view.setTag(TAG_ORIG_VAL,0);
+						}
+						// Just pass the string onwards to the accessor.
+						return s;
+					}
+					public String extract(Field f, String s) {
+						// Parse the string the CheckBox returns us (0 or 1)
+						Integer i = Integer.parseInt(s);
+						Integer orig = (Integer) f.view.getTag(TAG_ORIG_VAL);
+						if (i != 0 && orig > 0) {
+							// If non-zero, and original was non-zero, re-use original
+							return orig.toString();
+						} else {
+							// Just return what we got.
+							return s;
+						}
+					}
+			});
+
+			mFields.add(R.id.description, CatalogueDBAdapter.KEY_DESCRIPTION, null);
+
+			mFields.add(R.id.genre, CatalogueDBAdapter.KEY_GENRE, null);
+			mFields.add(R.id.row_img, "", "thumbnail", null);
+			Field formatField = mFields.add(R.id.format, CatalogueDBAdapter.KEY_FORMAT, null);
+
+			mFields.add(R.id.bookshelf_text, "bookshelf_text", null).doNoFetch = true; // Output-only field
+			Field bookshelfButtonFe = mFields.add(R.id.bookshelf, "", null);
+
 			ArrayAdapter<String> author_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getAuthors());
-			mAuthorText = (AutoCompleteTextView) findViewById(R.id.author);
-			mAuthorText.setAdapter(author_adapter);
-			field_visibility = mPrefs.getBoolean(visibility_prefix + CatalogueDBAdapter.KEY_AUTHOR, true);
-			if (field_visibility == false) {
-				mAuthorText.setVisibility(GONE);
-			}
-			
-			mTitleText = (EditText) findViewById(R.id.title);
-			field_visibility = mPrefs.getBoolean(visibility_prefix + CatalogueDBAdapter.KEY_TITLE, true);
-			if (field_visibility == false) {
-				mTitleText.setVisibility(GONE);
-			}
-			
-			mIsbnText = (EditText) findViewById(R.id.isbn);
-			field_visibility = mPrefs.getBoolean(visibility_prefix + CatalogueDBAdapter.KEY_ISBN, true);
-			if (field_visibility == false) {
-				mIsbnText.setVisibility(GONE);
-			}
-			
+			mFields.setAdapter(R.id.author, author_adapter);
+
 			ArrayAdapter<String> publisher_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getPublishers());
-			mPublisherText = (AutoCompleteTextView) findViewById(R.id.publisher);
-			mPublisherText.setAdapter(publisher_adapter);
-			field_visibility = mPrefs.getBoolean(visibility_prefix + CatalogueDBAdapter.KEY_PUBLISHER, true);
-			if (field_visibility == false) {
-				mPublisherText.setVisibility(GONE);
-			}
-			
-			Button mDate_publishedButton = (Button) findViewById(R.id.date_published_button);
-			mDate_publishedButton.setOnClickListener(new View.OnClickListener() {
+			mFields.setAdapter(R.id.publisher, publisher_adapter);
+
+			mFields.setListener(R.id.date_published_button, new View.OnClickListener() {
 				public void onClick(View view) {
 					showDialog(DATE_DIALOG_ID);
 				}
 			});
-			mDate_publishedText = (TextView) findViewById(R.id.date_published);
-			field_visibility = mPrefs.getBoolean(visibility_prefix + "date_published", true);
-			if (field_visibility == false) {
-				mDate_publishedButton.setVisibility(GONE);
-				mDate_publishedText.setVisibility(GONE);
-			}
-			
+
 			ArrayAdapter<String> series_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getSeries());
-			mSeriesText = (AutoCompleteTextView) findViewById(R.id.series);
-			mSeriesText.setAdapter(series_adapter);
-			field_visibility = mPrefs.getBoolean(visibility_prefix + "series", true);
-			if (field_visibility == false) {
-				mSeriesText.setVisibility(GONE);
-			}
-			
-			mSeriesNumText = (EditText) findViewById(R.id.series_num);
-			field_visibility = mPrefs.getBoolean(visibility_prefix + "series_num", true);
-			if (field_visibility == false) {
-				mSeriesNumText.setVisibility(GONE);
-			}
-			
-			mListPriceText = (EditText) findViewById(R.id.list_price);
-			field_visibility = mPrefs.getBoolean(visibility_prefix + "list_price", true);
-			if (field_visibility == false) {
-				mListPriceText.setVisibility(GONE);
-			}
-			
-			mPagesText = (EditText) findViewById(R.id.pages);
-			field_visibility = mPrefs.getBoolean(visibility_prefix + "pages", true);
-			if (field_visibility == false) {
-				mPagesText.setVisibility(GONE);
-			}
-			
-			mAnthologyCheckBox = (CheckBox) findViewById(R.id.anthology);
-			field_visibility = mPrefs.getBoolean(visibility_prefix + "anthology", true);
-			if (field_visibility == false) {
-				mAnthologyCheckBox.setVisibility(GONE);
-			}
-			
-			mDescriptionText = (EditText) findViewById(R.id.description);
-			field_visibility = mPrefs.getBoolean(visibility_prefix + CatalogueDBAdapter.KEY_DESCRIPTION, true);
-			if (field_visibility == false) {
-				mDescriptionText.setVisibility(GONE);
-			}
-			
-			mGenreText = (EditText) findViewById(R.id.genre);
-			field_visibility = mPrefs.getBoolean(visibility_prefix + CatalogueDBAdapter.KEY_GENRE, true);
-			if (field_visibility == false) {
-				mGenreText.setVisibility(GONE);
-			}
-			
-			mFormatText = (Spinner) findViewById(R.id.format);
-			spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
-			spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-			mFormatText.setAdapter(spinnerAdapter);
-			formats.add(getString(R.string.format1));
-			formats.add(getString(R.string.format2)); 
-			formats.add(getString(R.string.format3));
-			formats.add(getString(R.string.format4));
-			formats.add(getString(R.string.format5));
-			for (int i=0; i<formats.size(); i++) {
-				spinnerAdapter.add(formats.get(i)); 
-			}
-			field_visibility = mPrefs.getBoolean(visibility_prefix + "format", true);
-			if (field_visibility == false) {
-				mFormatText.setVisibility(GONE);
-			}
-			
+			mFields.setAdapter(R.id.series, series_adapter);
+
+			Spinner formatSpinner = (Spinner) formatField.view;
+			ArrayAdapter<String> formatArr = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
+			formatArr.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			formatSpinner.setAdapter(formatArr);
+			formatArr.add(getString(R.string.format1));
+			formatArr.add(getString(R.string.format2));
+			formatArr.add(getString(R.string.format3));
+			formatArr.add(getString(R.string.format4));
+			formatArr.add(getString(R.string.format5));
+
 			mConfirmButton = (Button) findViewById(R.id.confirm);
 			mCancelButton = (Button) findViewById(R.id.cancel);
-			
-			mImageView = (ImageView) findViewById(R.id.row_img);
-			field_visibility = mPrefs.getBoolean(visibility_prefix + "thumbnail", true);
-			if (field_visibility == false) {
-				mImageView.setVisibility(GONE);
-			}
-			
-			/* Setup the Bookshelf Multiselect*/
-			mBookshelfButton = (Button) findViewById(R.id.bookshelf);
-			mBookshelfText = (TextView) findViewById(R.id.bookshelf_text);
-			
-			mBookshelfButton.setOnClickListener(new View.OnClickListener() {
+
+			bookshelfButtonFe.view.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v) {
 					Cursor bookshelves_for_book = null;
 					if (mRowId == null) {
@@ -330,7 +301,7 @@ public class BookEditFields extends Activity {
 							dialog.dismiss();
 						}
 					});
-					
+
 					LinearLayout root = (LinearLayout) dialog.findViewById(R.id.bookshelf_dialog_root);
 					
 					if (bookshelves_for_book.moveToFirst()) { 
@@ -338,7 +309,9 @@ public class BookEditFields extends Activity {
 							final CheckBox cb = new CheckBox(BookEditFields.this);
 							boolean checked = false;
 							String db_bookshelf = bookshelves_for_book.getString(bookshelves_for_book.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF));
-							if (mBookshelfText.getText().toString().indexOf(db_bookshelf + BOOKSHELF_SEPERATOR) > -1) {
+
+							Field fe = mFields.get(R.id.bookshelf_text);
+							if (fe.getValue().toString().indexOf(db_bookshelf + BOOKSHELF_SEPERATOR) > -1) {
 								checked = true;
 							}
 							cb.setChecked(checked);
@@ -348,15 +321,16 @@ public class BookEditFields extends Activity {
 								@Override
 								public void onClick(View v) {
 									String name = cb.getHint() + BOOKSHELF_SEPERATOR;
+									Field fe = mFields.get(R.id.bookshelf_text);
 									if (cb.isChecked()) {
-										mBookshelfText.setText(mBookshelfText.getText().toString() + name);
+										fe.setValue(fe.getValue().toString()+name);
 									} else {
-										String text = mBookshelfText.getText().toString();
+										String text = fe.getValue().toString();
 										int index = text.indexOf(name);
 										if (index > -1) {
 											text = text.substring(0, index) + text.substring(index + name.length());
 										}
-										mBookshelfText.setText(text);
+										fe.setValue(text);
 									}
 									return;
 								}
@@ -413,22 +387,21 @@ public class BookEditFields extends Activity {
 			//	while (bookshelves.moveToNext()); 
 			//} 
 			//bookshelves.close(); // close the cursor
-			field_visibility = mPrefs.getBoolean(visibility_prefix + "bookshelf", true);
-			if (field_visibility == false) {
-				mBookshelfText.setVisibility(GONE);
-			}
 
 			// Don't populate the fields if we are just restoring from a save
 			if (savedInstanceState == null) {
 				populateFields();
 			} else {
 				// The thumbnail image is not automatically preserved, so reload it.
-				CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, mImageView, mThumbEditSize, mThumbEditSize, true);				
+				ImageView iv = (ImageView) mFields.get(R.id.row_img).view;
+				CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);				
 			}
+
 			// Setup the Save/Add/Anthology UI elements
 			setupUi();
 
-			mImageView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+			// Set up the thumbnail context menu.
+			mFields.get(R.id.row_img).view.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
 				@Override
 				public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 					MenuItem delete = menu.add(0, DELETE_ID, 0, R.string.menu_delete_thumb);
@@ -473,7 +446,7 @@ public class BookEditFields extends Activity {
 		switch (id) {
 		case DATE_DIALOG_ID:
 			try {
-				String dateString = (String) mDate_publishedText.getText();
+				String dateString = (String) mFields.get(R.id.date_published).getValue().toString();
 				// get the current date
 				final Calendar c = Calendar.getInstance();
 				int yyyy = c.get(Calendar.YEAR);
@@ -539,31 +512,32 @@ public class BookEditFields extends Activity {
 			if (dd.length() == 1) {
 				dd = "0" + dd;
 			}
-			mDate_publishedText.setText(year + "-" + mm + "-" + dd);
+			mFields.get(R.id.date_published).setValue(year + "-" + mm + "-" + dd);
 		}
 	};
 	
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
+		ImageView iv = (ImageView)mFields.get(R.id.row_img).view;
 		switch(item.getItemId()) {
 		case DELETE_ID:
 			deleteThumbnail(mRowId);
-			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, mImageView, mThumbEditSize, mThumbEditSize, true);
+			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);
 			return true;
 		case ROTATE_THUMB_SUBMENU:
 			// Just a submenu; skip
 			return true;
 		case ROTATE_THUMB_CW:
 			rotateThumbnail(mRowId, 90);
-			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, mImageView, mThumbEditSize, mThumbEditSize, true);
+			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);
 			return true;
 		case ROTATE_THUMB_CCW:
 			rotateThumbnail(mRowId, -90);
-			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, mImageView, mThumbEditSize, mThumbEditSize, true);
+			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);
 			return true;
 		case ROTATE_THUMB_180:
 			rotateThumbnail(mRowId, 180);
-			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, mImageView, mThumbEditSize, mThumbEditSize, true);
+			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);
 			return true;
 		case ADD_PHOTO:
 			Intent pintent = null;
@@ -645,68 +619,28 @@ public class BookEditFields extends Activity {
 			if (book != null) {
 				book.moveToFirst();
 			}
-			String title = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE)); 
-			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + title);
-			
-			mAuthorText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED)));
-			mTitleText.setText(title);
-			mIsbnText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ISBN)));
-			mPublisherText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PUBLISHER)));
-			String[] date = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DATE_PUBLISHED)).split("-");
-			try {
-				String yyyy = date[0];
-				int month = Integer.parseInt(date[1]);
-				month = month + 1;
-				String mm = month + "";
-				if (mm.length() == 1) {
-					mm = "0" + mm;
-				}
-				String dd = date[2];
-				if (dd.length() == 1) {
-					dd = "0" + dd;
-				}
-				mDate_publishedText.setText(yyyy + "-" + mm + "-" + dd);
-			} catch (Exception e) {
-				
-			}
-			
+
+			// Set any field that has a 'column' non blank.
+			mFields.setFromCursor(book);
+
+			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + mFields.get(R.id.title).getValue().toString());
+
 			//Display the selected bookshelves
+			Field bookshelfTextFe = mFields.get(R.id.bookshelf_text);
 			Cursor bookshelves = mDbHelper.fetchAllBookshelvesByBook(mRowId);
 			String bookshelves_text = "";
 			while (bookshelves.moveToNext()) {
 				bookshelves_text += bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)) + BOOKSHELF_SEPERATOR;
 			}
-			mBookshelfText.setText(bookshelves_text);
 			bookshelves.close();
-			
-			mSeriesText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES)));
-			mSeriesNumText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES_NUM)));
-			mListPriceText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LIST_PRICE)));
-			mPagesText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PAGES)));
-			String format = book.getString(book.getColumnIndex(CatalogueDBAdapter.KEY_FORMAT));
-			for (int i=0; i<formats.size(); i++) {
-				if (formats.get(i).equals(format)) {
-					mFormatText.setSelection(i);
-				}
-			}
-			mDescriptionText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DESCRIPTION)));
-			mGenreText.setText(book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_GENRE)));
-			
-			anthology_num = book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
-			if (anthology_num == 0) {
-				mAnthologyCheckBox.setChecked(false);
-			} else {
-				mAnthologyCheckBox.setChecked(true);
-			}
+			bookshelfTextFe.setValue(bookshelves_text);
 
-			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, mImageView, mThumbEditSize, mThumbEditSize, true);
-			rating = book.getFloat(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_RATING));
-			read = (book.getInt(book.getColumnIndex(CatalogueDBAdapter.KEY_READ))==0 ? false:true);
-			notes = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_NOTES));
-			location = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOCATION));
-			read_start = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_START));
-			read_end = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_END));
-			signed = (book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SIGNED))==0 ? false:true);
+			Integer anthNo = book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
+			mFields.get(R.id.anthology).setValue(anthNo.toString());
+
+			ImageView iv = (ImageView) mFields.get(R.id.row_img).view;
+			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);
+
 			book.close();
 		} else if (extras != null) {
 			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + this.getResources().getString(R.string.menu_insert));
@@ -715,72 +649,104 @@ public class BookEditFields extends Activity {
 				//String[] book = {0=author, 1=title, 2=isbn, 3=publisher, 4=date_published, 5=rating,  6=bookshelf, 
 				//	7=read, 8=series, 9=pages, 10=series_num, 11=list_price, 12=anthology, 13=location, 14=read_start, 
 				//	15=read_end, 16=audiobook, 17=signed, 18=description, 19=genre};
-				String[] book = extras.getStringArray("book");
-				mAuthorText.setText(book[0]);
-				mTitleText.setText(book[1]);
-				mIsbnText.setText(book[2]);
-				mPublisherText.setText(book[3]);
-				try {
-					mDate_publishedText.setText(book[4]);
-				} catch (ArrayIndexOutOfBoundsException e) {
-					//do nothing
-				} catch (NumberFormatException e) {
-					//do nothing
-				}
-				
-				//Display the selected bookshelves
-				if (BookCatalogue.bookshelf.equals("All Books")) {
-					Cursor bookshelves = mDbHelper.fetchBookshelf(1);
-					bookshelves.moveToFirst();
-					mBookshelfText.setText(bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)) + BOOKSHELF_SEPERATOR);
-					bookshelves.close();
+				if (extras.containsKey("book")) {
+					String[] book = extras.getStringArray("book");
+					mFields.get(R.id.author).setValue(book[0]);
+					mFields.get(R.id.title).setValue(book[1]);
+					mFields.get(R.id.isbn).setValue(book[2]);
+					mFields.get(R.id.publisher).setValue(book[3]);
+					try {
+						mFields.get(R.id.date_published).setValue(book[4]);
+					} catch (ArrayIndexOutOfBoundsException e) {
+						//do nothing
+					} catch (NumberFormatException e) {
+						//do nothing
+					}
+
+					//Display the selected bookshelves
+					if (BookCatalogue.bookshelf.equals("All Books")) {
+						Cursor bookshelves = mDbHelper.fetchBookshelf(1);
+						bookshelves.moveToFirst();
+						mFields.get(R.id.bookshelf_text).setValue(bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)) + BOOKSHELF_SEPERATOR);
+						bookshelves.close();
+					} else {
+						mFields.get(R.id.bookshelf_text).setValue(BookCatalogue.bookshelf + BOOKSHELF_SEPERATOR);
+					}
+					mFields.get(R.id.series).setValue(book[8]);
+					mFields.get(R.id.series_num).setValue(book[10]);
+					try {
+						//just in case - there was an exception earlier, but it should be fixed
+						mFields.get(R.id.list_price).setValue(book[11]);
+					} catch (Exception e) {
+						//do nothing
+					}
+					mFields.get(R.id.pages).setValue(book[9]);
+
+					mFields.get(R.id.anthology).setValue(book[12]);
+					mFields.get(R.id.format).setValue(book[16]);
+					mFields.get(R.id.description).setValue(book[18]);
+					mFields.get(R.id.genre).setValue(book[19]);
 				} else {
-					mBookshelfText.setText(BookCatalogue.bookshelf + BOOKSHELF_SEPERATOR);
-				}
-				mSeriesText.setText(book[8]);
-				mSeriesNumText.setText(book[10]);
-				try {
-					//just in case - there was an exception earlier, but it should be fixed
-					mListPriceText.setText(book[11]);
-				} catch (Exception e) {
-					//do nothing
-				}
-				mPagesText.setText(book[9]);
-				
-				String anthology = book[12];
-				if (anthology.equals("0")) {
-					mAnthologyCheckBox.setChecked(false);
-				} else {
-					mAnthologyCheckBox.setChecked(true);
-				}
-				String formatValue = book[16];
-				for (int i=0; i<formats.size(); i++) {
-					if (formats.get(i) == formatValue) {
-						mFormatText.setSelection(i);
+					ContentValues values = (ContentValues)extras.getParcelable("bookData");
+					Iterator<Fields.Field> i = mFields.iterator();
+					while(i.hasNext()) {
+						Fields.Field f = i.next();
+						if (!f.column.equals("") && values.containsKey(f.column)) {
+							try {
+								f.setValue(values.getAsString(f.column));								
+							} catch (Exception e) {
+								android.util.Log.e("BookEditFields","Populate field " + f.column + " failed: " + e.getMessage());
+							}
+						}
+					}
+					//Display the selected bookshelves
+					if (BookCatalogue.bookshelf.equals("All Books")) {
+						Cursor bookshelves = mDbHelper.fetchBookshelf(1);
+						bookshelves.moveToFirst();
+						mFields.get(R.id.bookshelf_text).setValue(bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)) + BOOKSHELF_SEPERATOR);
+						bookshelves.close();
+					} else {
+						mFields.get(R.id.bookshelf_text).setValue(BookCatalogue.bookshelf + BOOKSHELF_SEPERATOR);
 					}
 				}
-				mDescriptionText.setText(book[18]);
-				mGenreText.setText(book[19]);
+				
+
 			} catch (NullPointerException e) {
 				// do nothing
 			}
 
-			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, mImageView, mThumbEditSize, mThumbEditSize, true);
+			ImageView iv = (ImageView) mFields.get(R.id.row_img).view;
+			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);
 
 		} else {
 			// Manual Add
 			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + this.getResources().getString(R.string.menu_insert));
-			
+
 			//Display the selected bookshelves
 			if (BookCatalogue.bookshelf.equals("All Books")) {
 				Cursor bookshelves = mDbHelper.fetchBookshelf(1);
 				bookshelves.moveToFirst();
-				mBookshelfText.setText(bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)) + BOOKSHELF_SEPERATOR);
+				mFields.get(R.id.bookshelf_text).setValue(bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)) + BOOKSHELF_SEPERATOR);
 				bookshelves.close();
 			} else {
-				mBookshelfText.setText(BookCatalogue.bookshelf + BOOKSHELF_SEPERATOR);
+				mFields.get(R.id.bookshelf_text).setValue(BookCatalogue.bookshelf + BOOKSHELF_SEPERATOR);
 			}			
 		}
+	}
+
+	/**
+	 * Validate the current data in all fields that have validators. Display any errors.
+	 * 
+	 * @param values The values to use
+	 * 
+	 * @return Boolean success or failure.
+	 */
+	private boolean validate(ContentValues values) {
+		if (!mFields.validate(values)) {
+			Toast.makeText(getParent(), mFields.getValidationExceptionMessage(getResources()), Toast.LENGTH_LONG).show();
+			return false;
+		}
+		return true;
 	}
 
 	private void setupUi() {
@@ -788,14 +754,21 @@ public class BookEditFields extends Activity {
 		if (mRowId != null && mRowId > 0) {
 			mConfirmButton.setText(R.string.confirm_save);
 
-			mAnthologyCheckBox.setOnClickListener(new View.OnClickListener() {
+			CheckBox cb = (CheckBox)mFields.get(R.id.anthology).view;
+
+			cb.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
-					saveState();
+					ContentValues values = new ContentValues();
+					if (!validate(values))
+						return;
+					saveState(values);
+
+					CheckBox cb = (CheckBox) view;
 					try {
 						TabHost tabHost = ((TabActivity) getParent()).getTabHost();  // The activity TabHost
-						if (mAnthologyCheckBox.isChecked()) {
+						if (cb.isChecked()) {
 							Resources res = getResources();
-							TabHost.TabSpec spec;  // Resusable TabSpec for each tab
+							TabHost.TabSpec spec;  // Reusable TabSpec for each tab
 							Intent intent = new Intent().setClass(BookEditFields.this, BookEditAnthology.class);
 							intent.putExtra(CatalogueDBAdapter.KEY_ROWID, mRowId);
 							spec = tabHost.newTabSpec("edit_book_anthology").setIndicator(res.getString(R.string.edit_book_anthology), res.getDrawable(R.drawable.ic_tab_anthology)).setContent(intent);
@@ -812,11 +785,16 @@ public class BookEditFields extends Activity {
 		} else {
 			mConfirmButton.setText(R.string.confirm_add);
 		}
-		
+
 		mConfirmButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
-				saveState();
-				if (mRowId == null || mRowId == 0) {
+				ContentValues values = new ContentValues();
+				if (!validate(values))
+					return;
+				boolean wasNew = (mRowId == null || mRowId == 0);
+
+				saveState(values);
+				if (wasNew) {
 					Intent edit = new Intent(BookEditFields.this, BookEdit.class);
 					edit.putExtra(CatalogueDBAdapter.KEY_ROWID, mRowId);
 					edit.putExtra(BookEdit.TAB, BookEdit.TAB_EDIT_NOTES);
@@ -866,67 +844,11 @@ public class BookEditFields extends Activity {
 	 * It will also ensure the book doesn't already exist (isbn search) if you are creating a book.
 	 * Thumbnails will also be saved to the correct location 
 	 */
-	private void saveState() {
-		String author = mAuthorText.getText().toString();
-		
-		/* Move "The, A, An" to the end of the string */
-		String title = mTitleText.getText().toString();
-		String[] title_words = title.split(" ");
-		try {
-			if (title_words[0].matches("a|A|an|An|the|The")) {
-				title = "";
-				for (int i = 1; i < title_words.length; i++) {
-					if (i != 1) {
-						title += " ";
-					}
-					title += title_words[i];
-				}
-				title += ", " + title_words[0];
-			}
-		} catch (Exception e) {
-			//do nothing. Title stays the same
-		}
-		
-		String isbn = mIsbnText.getText().toString();
-		String publisher = mPublisherText.getText().toString();
-		String date_published = "";
-		try {
-			date_published = (String) mDate_publishedText.getText();
-			String[] date = date_published.split("-");
-			int yyyy = Integer.parseInt(date[0]);
-			int mm = Integer.parseInt(date[1])-1;
-			int dd = Integer.parseInt(date[2]);
-			date_published = yyyy + "-" + mm + "-" + dd;
-		} catch (Exception e) {
-			//do nothing
-		}
-		String bookshelf = mBookshelfText.getText().toString(); 
-		String series = mSeriesText.getText().toString();
-		String series_num = mSeriesNumText.getText().toString();
-		String list_price = mListPriceText.getText().toString();
-		boolean anthology_checked = mAnthologyCheckBox.isChecked();
-		int anthology = anthology_num; // Defaults to ANTHOLOGY_NO or what is in the database
-		if (anthology_checked == true && anthology_num == CatalogueDBAdapter.ANTHOLOGY_NO) {
-			anthology = CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS;
-		} else if (anthology_checked == false) {
-			anthology = CatalogueDBAdapter.ANTHOLOGY_NO;
-		}
-		int pages = 0;
-		try {
-			pages = Integer.parseInt(mPagesText.getText().toString());
-		} catch (NumberFormatException e) {
-			pages = 0;
-		}
-		String format = "";
-		try {
-			format = spinnerAdapter.getItem(mFormatText.getSelectedItemPosition());
-		} catch (IndexOutOfBoundsException e) {
-			//do nothing - format is hidden
-		}
-		String description = mDescriptionText.getText().toString();
-		String genre = mGenreText.getText().toString();
+	private void saveState(android.content.ContentValues values) {
+
 		
 		if (mRowId == null || mRowId == 0) {
+			String isbn = values.getAsString(CatalogueDBAdapter.KEY_ISBN);
 			/* Check if the book currently exists */
 			if (!isbn.equals("")) {
 				Cursor book = mDbHelper.fetchBookByISBN(isbn);
@@ -938,7 +860,8 @@ public class BookEditFields extends Activity {
 				book.close(); // close the cursor
 			}
 
-			long id = mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, format, signed, description, genre);
+			long id = mDbHelper.createBook(values);
+
 			if (id > 0) {
 				mRowId = id;
 				File thumb = CatalogueDBAdapter.fetchThumbnail(0);
@@ -946,13 +869,13 @@ public class BookEditFields extends Activity {
 				thumb.renameTo(real);
 			}
 		} else {
-			mDbHelper.updateBook(mRowId, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, format, signed, description, genre);
+			mDbHelper.updateBook(mRowId, values);
 		}
 		/* These are global variables that will be sent via intent back to the list view */
-		added_author = author;
-		added_title = title;
-		added_series = series;
-		added_genre = genre;
+		added_author = values.getAsString(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);
+		added_title = values.getAsString(CatalogueDBAdapter.KEY_TITLE);
+		added_series = values.getAsString(CatalogueDBAdapter.KEY_SERIES);
+		added_genre = values.getAsString(CatalogueDBAdapter.KEY_GENRE);
 		return;
 	}
 	
@@ -979,7 +902,8 @@ public class BookEditFields extends Activity {
 				x.compress(Bitmap.CompressFormat.PNG, 100, f);
 
 				// Update the ImageView with the new image
-				CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, mImageView, mThumbEditSize, mThumbEditSize, true);				
+				ImageView iv = (ImageView)mFields.get(R.id.row_img).view;
+				CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);				
 			}
 			return;
 		case ADD_GALLERY:
@@ -1000,7 +924,8 @@ public class BookEditFields extends Activity {
 					//do nothing - error to be handled later
 				}
 				// Update the ImageView with the new image
-				CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, mImageView, mThumbEditSize, mThumbEditSize, true);				
+				ImageView iv = (ImageView)mFields.get(R.id.row_img).view;
+				CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);				
 			}
 			return;
 		}

@@ -41,14 +41,7 @@ Features include;
   case. e.g. "The murder on the links" becomes "The Murder on the Links"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
-TODO:
-
-- Check what else uses Book[] and fix.
-- Check Amazon and Google processing; see if it can be improved
-- Use LibraryThing as a source of series.
-
-
-New in v...
+New in v3.4
 * The scanner and book search screens remain active after a book has been added or a
   search fails. It was viewed that this more closely represents the work-flow of people
   adding or scanning books.
@@ -58,8 +51,10 @@ New in v...
 * Preserves *all* open groups when closing application.
 * Displays square brackets around the series name when displaying a list of books.
 * Changed the ISBN data entry screen when the device is in landscape mode.
+* Unsaved edits are retained when rotating the screen.
 * Bug fixes for the 'collapse/expand' button, series selection/de-selection
 * Bug fixes for sorting of book titles, series and authors.
+* Suggestions available when searching
 
 New in v3.3 - Updates courtesy of Grunthos
 * The application should be significantly faster now - Fixed a bug with database index creation

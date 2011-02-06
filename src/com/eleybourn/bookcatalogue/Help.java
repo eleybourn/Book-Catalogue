@@ -25,7 +25,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
@@ -72,7 +71,7 @@ public class Help extends Activity {
 			});
 			
 		} catch (Exception e) {
-			Log.e("Book Catalogue", "Unknown Exception - Help onCreate - " + e.getMessage() );
+			//Log.e("Book Catalogue", "Unknown Exception - Help onCreate - " + e.getMessage() );
 		}
 	}
 

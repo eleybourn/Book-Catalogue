@@ -27,14 +27,12 @@ import java.util.Iterator;
 import android.app.AlertDialog;
 import android.app.ExpandableListActivity;
 import android.app.SearchManager;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -58,9 +56,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
-import android.widget.ExpandableListView.OnGroupClickListener;
-import android.widget.ExpandableListView.OnGroupExpandListener;
 import android.widget.ExpandableListView.OnGroupCollapseListener;
+import android.widget.ExpandableListView.OnGroupExpandListener;
 
 /*
  * A book catalogue application that integrates with Google Books.
@@ -168,11 +165,14 @@ public class BookCatalogue extends ExpandableListActivity {
 			if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 				// Return the search results instead of all books (for the bookshelf)
 				search_query = intent.getStringExtra(SearchManager.QUERY).trim();
-				if (search_query.equals(".")) {
-					search_query = "";
-				}
+			} else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+				// Handle a suggestions click (because the suggestions all use ACTION_VIEW)
+				search_query = intent.getDataString();
 			}
-
+			if (search_query.equals(".")) {
+				search_query = "";
+			}
+			
 			bookshelf();
 			//fillData();
 			if (!CatalogueDBAdapter.message.equals("")) {

@@ -1060,7 +1060,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	 * 
 	 * @return Associated Field.
 	 */
-	public Field get(int id) {
+	public Field getField(int id) {
 		Iterator<Field> iter = this.iterator();
 		while (iter.hasNext()) {
 			Field f = iter.next();
@@ -1077,7 +1077,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	 * @param adapter	Adapter to use
 	 */
 	public void setAdapter(int fieldId, ArrayAdapter<String> adapter) {
-		Field f = get(fieldId);
+		Field f = getField(fieldId);
 		((AutoCompleteTextView)f.view).setAdapter(adapter);
 	}
 
@@ -1088,7 +1088,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	 * @param listener	onClick() listener.
 	 */
 	void setListener(int id, View.OnClickListener listener) {
-		Field f = get(id);
+		Field f = getField(id);
 		f.view.setOnClickListener(listener);
 	}
 

@@ -189,7 +189,7 @@ public class BookEditNotes extends Activity {
 		switch (id) {
 		case READ_START_DIALOG_ID:
 			try {
-				String dateString = mFields.get(R.id.read_start).getValue().toString();
+				String dateString = mFields.getField(R.id.read_start).getValue().toString();
 				// get the current date
 				final Calendar c = Calendar.getInstance();
 				int yyyy = c.get(Calendar.YEAR);
@@ -210,7 +210,7 @@ public class BookEditNotes extends Activity {
 			break;
 		case READ_END_DIALOG_ID:
 			try {
-				String dateString = mFields.get(R.id.read_end).getValue().toString();
+				String dateString = mFields.getField(R.id.read_end).getValue().toString();
 				// get the current date
 				final Calendar c = Calendar.getInstance();
 				int yyyy = c.get(Calendar.YEAR);
@@ -245,7 +245,7 @@ public class BookEditNotes extends Activity {
 			if (dd.length() == 1) {
 				dd = "0" + dd;
 			}
-			mFields.get(R.id.read_start).setValue(year + "-" + mm + "-" + dd);
+			mFields.getField(R.id.read_start).setValue(year + "-" + mm + "-" + dd);
 		}
 	};
 	// the callback received when the user "sets" the date in the dialog
@@ -260,7 +260,7 @@ public class BookEditNotes extends Activity {
 			if (dd.length() == 1) {
 				dd = "0" + dd;
 			}
-			mFields.get(R.id.read_end).setValue(year + "-" + mm + "-" + dd);
+			mFields.getField(R.id.read_end).setValue(year + "-" + mm + "-" + dd);
 		}
 	};
 	

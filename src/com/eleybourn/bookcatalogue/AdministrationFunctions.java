@@ -43,7 +43,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
@@ -469,28 +468,22 @@ public class AdministrationFunctions extends Activity {
 					}
 					String dateReadStartString = "";
 					try {
-						Log.e("BC", "S" + books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_START)));
 						String[] date = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_START)).split("-");
 						int yyyy = Integer.parseInt(date[0]);
 						int mm = Integer.parseInt(date[1])+1;
 						int dd = Integer.parseInt(date[2]);
 						dateReadStartString = yyyy + "-" + mm + "-" + dd;
-						Log.e("BC", dateReadStartString);
 					} catch (Exception e) {
-						Log.e("BC", "EXPORT ERROR");
 						//do nothing
 					}
 					String dateReadEndString = "";
 					try {
-						Log.e("BC", "S" + books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_END)));
 						String[] date = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_END)).split("-");
 						int yyyy = Integer.parseInt(date[0]);
 						int mm = Integer.parseInt(date[1])+1;
 						int dd = Integer.parseInt(date[2]);
 						dateReadEndString = yyyy + "-" + mm + "-" + dd;
-						Log.e("BC", dateReadEndString);
 					} catch (Exception e) {
-						Log.e("BC", "EXPORT ERROR2");
 						//do nothing
 					}
 					String anthology = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
@@ -799,6 +792,7 @@ public class AdministrationFunctions extends Activity {
 
 				String family = values.getAsString(CatalogueDBAdapter.KEY_FAMILY_NAME);
 				String given = "";
+
 				if (values.containsKey(CatalogueDBAdapter.KEY_GIVEN_NAMES))
 					given = values.getAsString(CatalogueDBAdapter.KEY_GIVEN_NAMES);
 				String title = values.getAsString(CatalogueDBAdapter.KEY_TITLE);

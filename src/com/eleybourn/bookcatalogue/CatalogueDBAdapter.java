@@ -37,6 +37,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.widget.ImageView;
+import android.provider.BaseColumns;
+import android.app.SearchManager;
 
 /**
  * Book Catalogue database access helper class. Defines the basic CRUD operations
@@ -1630,6 +1632,33 @@ public class CatalogueDBAdapter {
 		int pos = (getIntValue(results, 0))-1;
 		results.close();
 		return pos;
+	}
+	
+	/**
+	 * 
+	 * @param query The query string
+	 * @return Cursor of search suggestions
+	 */
+	public Cursor fetchSearchSuggestions(String query) {
+		String sql = "SELECT \"BK\" || b." + KEY_ROWID + " as " + BaseColumns._ID + ", b." + KEY_TITLE + " as " + SearchManager.SUGGEST_COLUMN_TEXT_1 + ", b." + KEY_TITLE + " as " + SearchManager.SUGGEST_COLUMN_INTENT_DATA +
+			" FROM " + DB_TB_BOOKS + " b" + 
+			" WHERE b." + KEY_TITLE + " LIKE '"+query+"%'" +
+			" UNION " + 
+			" SELECT \"AF\" || a." + KEY_ROWID + " as " + BaseColumns._ID + ", a." + KEY_FAMILY_NAME + " as " + SearchManager.SUGGEST_COLUMN_TEXT_1 + ", a." + KEY_FAMILY_NAME + " as " + SearchManager.SUGGEST_COLUMN_INTENT_DATA +
+			" FROM " + DB_TB_AUTHORS + " a" + 
+			" WHERE a." + KEY_FAMILY_NAME + " LIKE '"+query+"%'" +
+			" UNION " + 
+			" SELECT \"AG\" || a." + KEY_ROWID + " as " + BaseColumns._ID + ", a." + KEY_GIVEN_NAMES + " as " + SearchManager.SUGGEST_COLUMN_TEXT_1 + ", a." + KEY_GIVEN_NAMES + " as " + SearchManager.SUGGEST_COLUMN_INTENT_DATA +
+			" FROM " + DB_TB_AUTHORS + " a" + 
+			" WHERE a." + KEY_GIVEN_NAMES + " LIKE '"+query+"%'" +
+			" UNION " + 
+			" SELECT \"BK\" || b." + KEY_ROWID + " as " + BaseColumns._ID + ", b." + KEY_ISBN + " as " + SearchManager.SUGGEST_COLUMN_TEXT_1 + ", b." + KEY_ISBN + " as " + SearchManager.SUGGEST_COLUMN_INTENT_DATA +
+			" FROM " + DB_TB_BOOKS + " b" + 
+			" WHERE b." + KEY_ISBN + " LIKE '"+query+"%'" +
+			" ORDER BY b." + KEY_TITLE;
+			;
+		Cursor results = mDb.rawQuery(sql, null);
+		return results;
 	}
 	
 	/**

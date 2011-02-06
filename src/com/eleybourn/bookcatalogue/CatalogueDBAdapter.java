@@ -21,6 +21,10 @@ package com.eleybourn.bookcatalogue;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -41,7 +45,11 @@ import android.widget.ImageView;
  */
 public class CatalogueDBAdapter {
 	
-	/* This is the list of all column names as static variables for reference */
+	/* This is the list of all column names as static variables for reference
+	 * 
+	 * NOTE!!! Because Java String comparisons are not case-insensitive, it is 
+	 * important that ALL these fields be listed in LOWER CASE.
+	 */
 	public static final String KEY_AUTHOR = "author";
 	public static final String KEY_TITLE = "title";
 	public static final String KEY_ISBN = "isbn";
@@ -210,7 +218,9 @@ public class CatalogueDBAdapter {
 	
 	private final Context mCtx;
 	public static final int DATABASE_VERSION = 52;
-	
+
+	private TableInfo mBooksInfo = null;
+
 	/**
 	 * This is a specific version of the SQLiteOpenHelper class. It handles onCreate and onUpgrade events
 	 * 
@@ -1549,6 +1559,7 @@ public class CatalogueDBAdapter {
 			"WHERE b.title < '" + encodeString(title) + "'" + where;
 		Cursor results = mDb.rawQuery(sql, null);
 		int pos = getIntValue(results, 0);
+		results.close();
 		return pos;
 	}
 
@@ -1594,6 +1605,7 @@ public class CatalogueDBAdapter {
 		sql = KEY_BOOK + "=" + mRowId + "";
 		Cursor results = mDb.query(DB_TB_LOAN, new String[] {KEY_BOOK, KEY_LOANED_TO}, sql, null, null, null, null);
 		String user = getStringValue(results, 1);
+		results.close();
 		return user;
 	}
 	
@@ -1851,29 +1863,13 @@ public class CatalogueDBAdapter {
 	 * successfully created return the new rowId for that book, otherwise return
 	 * a -1 to indicate failure.
 	 * 
-	 * @param author The author name
-	 * @param title The title of the book
-	 * @param isbn The isbn of the book
-	 * @param publisher The book publisher
-	 * @param date_published The date the book was published
-	 * @param rating The user rating of the book
-	 * @param bookshelf The virtual bookshelf the book sits on
-	 * @param read Has the user read the book
-	 * @param series What series does the book belong to
-	 * @param pages How many pages in the book
-	 * @param series_num What number in the series is the book
-	 * @param notes Any user written notes
-	 * @param list_price The list price of the book
-	 * @param anthology Is the book an anthology
-	 * @param location A location field for the book
-	 * @param read_start When was the book started to be read
-	 * @param read_end When was the book finished being read
-	 * @param audiobook Is it an audiobook 
-	 * @param signed Is this copy signed
+	 * @param id The ID of the book to insert (this will overwrite the normal autoIncrement)
+	 * @param values A ContentValues collection with the columns to be updated. May contain extrat data.
+	 *
 	 * @return rowId or -1 if failed
 	 */
-	public long createBook(String author, String title, String isbn, String publisher, String date_published, float rating, String bookshelf, Boolean read, String series, int pages, String series_num, String notes, String list_price, int anthology, String location, String read_start, String read_end, String format, boolean signed, String description, String genre) {
-		return createBook(0, author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num, notes, list_price, anthology, location, read_start, read_end, format, signed, description, genre);
+	public long createBook(ContentValues values) {
+		return createBook(0, values);
 	}
 	
 	/**
@@ -1882,70 +1878,39 @@ public class CatalogueDBAdapter {
 	 * a -1 to indicate failure.
 	 * 
 	 * @param id The ID of the book to insert (this will overwrite the normal autoIncrement)
-	 * @param author The author name
-	 * @param title The title of the book
-	 * @param isbn The isbn of the book
-	 * @param publisher The book publisher
-	 * @param date_published The date the book was published
-	 * @param rating The user rating of the book
-	 * @param bookshelf The virtual bookshelf the book sits on
-	 * @param read Has the user read the book
-	 * @param series What series does the book belong to
-	 * @param pages How many pages in the book
-	 * @param series_num What number in the series is the book
-	 * @param notes Any user written notes
-	 * @param list_price The list price of the book
-	 * @param anthology Is the book an anthology
-	 * @param location A location field for the book
-	 * @param read_start When was the book started to be read
-	 * @param read_end When was the book finished being read
-	 * @param audiobook Is it an audiobook 
-	 * @param signed Is this copy signed
+	 * @param values A ContentValues collection with the columns to be updated. May contain extrat data.
+	 *
 	 * @return rowId or -1 if failed
 	 */
-	public long createBook(long id, String author, String title, String isbn, String publisher, String date_published, float rating, String bookshelf, Boolean read, String series, int pages, String series_num, String notes, String list_price, int anthology, String location, String read_start, String read_end, String format, boolean signed, String description, String genre) {
-		ContentValues initialValues = new ContentValues();
-		String[] names = processAuthorName(author);
-		Cursor authorId = getAuthorByName(names);
-		int aRows = authorId.getCount();
-		if (aRows == 0) {
-			createAuthor(names[0], names[1]);
-			authorId.close();
-			authorId = getAuthorByName(names);
-		}
-		authorId.moveToFirst();
-		
+	//public long createBook(long id, String author, String title, String isbn, String publisher, String date_published, float rating, String bookshelf, Boolean read, String series, int pages, String series_num, String notes, String list_price, int anthology, String location, String read_start, String read_end, String format, boolean signed, String description, String genre) {
+	public long createBook(long id, ContentValues values) {
+
+		// Make sure we have the target table details
+		if (mBooksInfo == null)
+			mBooksInfo = new TableInfo(DB_TB_BOOKS);
+
+		preprocessOutput(id, values);
+
+		/* We may want to provide default values for these fields:
+		 * KEY_RATING, KEY_READ, KEY_NOTES, KEY_LOCATION, KEY_READ_START, KEY_READ_END, KEY_SIGNED
+		 */
+
+		// Make sure we have an author ID
+		if (!values.containsKey(KEY_AUTHOR))
+			throw new IllegalArgumentException();
+
+		ContentValues initialValues = filterValues(values, mBooksInfo);
+
 		if (id > 0) {
 			initialValues.put(KEY_ROWID, id);
 		}
-		initialValues.put(KEY_AUTHOR, authorId.getInt(0));
-		initialValues.put(KEY_TITLE, title);
-		initialValues.put(KEY_ISBN, isbn);
-		initialValues.put(KEY_PUBLISHER, publisher);
-		initialValues.put(KEY_DATE_PUBLISHED, date_published);
-		initialValues.put(KEY_RATING, rating);
-		//initialValues.put(KEY_BOOKSHELF, bookshelf_id);
-		initialValues.put(KEY_READ, read);
-		initialValues.put(KEY_SERIES, series);
-		initialValues.put(KEY_PAGES, pages);
-		initialValues.put(KEY_SERIES_NUM, series_num);
-		initialValues.put(KEY_NOTES, notes);
-		initialValues.put(KEY_LIST_PRICE, list_price);
-		initialValues.put(KEY_ANTHOLOGY, anthology);
-		initialValues.put(KEY_LOCATION, location);
-		initialValues.put(KEY_READ_START, read_start);
-		initialValues.put(KEY_READ_END, read_end);
-		initialValues.put(KEY_FORMAT, format);
-		initialValues.put(KEY_SIGNED, signed);
-		initialValues.put(KEY_DESCRIPTION, description);
-		initialValues.put(KEY_GENRE, genre);
-		authorId.close();
-		
+
 		long result = mDb.insert(DB_TB_BOOKS, null, initialValues);
+
+		String bookshelf = values.getAsString("bookshelf_text");
 		if (bookshelf != null) {
 			createBookshelfBooks(result, bookshelf);
 		}
-		authorId.close();
 		return result;
 	}
 	
@@ -2008,10 +1973,10 @@ public class CatalogueDBAdapter {
 	 * @param friend A string containing the friend you are loaning to
 	 * @return the ID of the loan
 	 */
-	public long createLoan(long book, String friend) {
+	public long createLoan(ContentValues values) {
 		ContentValues initialValues = new ContentValues();
-		initialValues.put(KEY_BOOK, book);
-		initialValues.put(KEY_LOANED_TO, friend);
+		initialValues.put(KEY_BOOK, values.getAsLong(KEY_ROWID));
+		initialValues.put(KEY_LOANED_TO, values.getAsString(KEY_LOANED_TO));
 		long result = mDb.insert(DB_TB_LOAN, null, initialValues);
 		return result;
 	}
@@ -2060,7 +2025,10 @@ public class CatalogueDBAdapter {
 		title.moveToFirst();
 		int book = title.getInt(title.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_BOOK)); 
 		int position = title.getInt(title.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_POSITION)); 
+		title.close();
+
 		int max_position = fetchAnthologyPositionByBook(rowId);
+
 		if (position == 1 && up == true) {
 			return 0;
 		}
@@ -2085,37 +2053,13 @@ public class CatalogueDBAdapter {
 		mDb.execSQL(sql);
 		return position;
 	}
-	
-	/**
-	 * Update the book using the details provided. The book to be updated is
-	 * specified using the rowId, and it is altered to use values passed in
-	 * 
-	 * @param rowId The id of the book in the database
-	 * @param author The author name
-	 * @param title The title of the book
-	 * @param isbn The isbn of the book
-	 * @param publisher The book publisher
-	 * @param date_published The date the book was published
-	 * @param rating The user rating of the book
-	 * @param bookshelf The virtual bookshelf the book sits on
-	 * @param read Has the user read the book
-	 * @param series What series does the book belong to
-	 * @param pages How many pages in the book
-	 * @param series_num What number in the series is the book
-	 * @param notes Any user written notes
-	 * @param list_price The list price of the book
-	 * @param anthology Is the book an anthology
-	 * @param location A location field for the book
-	 * @param read_start When was the book started to be read
-	 * @param read_end When was the book finished being read
-	 * @param audiobook Is it an audiobook 
-	 * @param signed Is this copy signed
-	 * @return true if the note was successfully updated, false otherwise
-	 */
-	public boolean updateBook(long rowId, String author, String title, String isbn, String publisher, String date_published, float rating, String bookshelf, boolean read, String series, int pages, String series_num, String notes, String list_price, int anthology, String location, String read_start, String read_end, String format, boolean signed, String description, String genre) {
-		boolean success;
-		ContentValues args = new ContentValues();
-		String[] names = processAuthorName(author);
+
+	private String getAuthorId(String name) {
+		String[] names = processAuthorName(name);
+		return getAuthorId(names);
+	}
+
+	private String getAuthorId(String[] names) {
 		Cursor authorId = getAuthorByName(names);
 		int aRows = authorId.getCount();
 		if (aRows == 0) {
@@ -2123,36 +2067,157 @@ public class CatalogueDBAdapter {
 			authorId.close();
 			authorId = getAuthorByName(names);
 		}
-		
 		authorId.moveToFirst();
-		args.put(KEY_AUTHOR, authorId.getInt(0));
-		args.put(KEY_TITLE, title);
-		args.put(KEY_ISBN, isbn);
-		args.put(KEY_PUBLISHER, publisher);
-		args.put(KEY_DATE_PUBLISHED, date_published);
-		args.put(KEY_RATING, rating);
-		args.put(KEY_READ, read);
-		args.put(KEY_SERIES, series);
-		args.put(KEY_PAGES, pages);
-		args.put(KEY_SERIES_NUM, series_num);
-		args.put(KEY_NOTES, notes);
-		args.put(KEY_LIST_PRICE, list_price);
-		args.put(KEY_ANTHOLOGY, anthology);
-		args.put(KEY_LOCATION, location);
-		args.put(KEY_READ_START, read_start);
-		args.put(KEY_READ_END, read_end);
-		args.put(KEY_FORMAT, format);
-		args.put(KEY_SIGNED, signed);
-		args.put(KEY_DESCRIPTION, description);
-		args.put(KEY_GENRE, genre);
+		String s = authorId.getString(0);
 		authorId.close();
-		
-		success = mDb.update(DB_TB_BOOKS, args, KEY_ROWID + "=" + rowId, null) > 0;
-		if (bookshelf != null) {
-			createBookshelfBooks(rowId, bookshelf);
+
+		return s;
+	}
+
+	/**
+	 * Return a ContentValues collection containing only those values from 'source' that match columns in 'dest'.
+	 * - Exclude the primary key from the list of columns.
+	 * - data will be transformed based on the intended type of the underlying column based on column definition.
+	 *  
+	 * @param source	Source column data
+	 * @param dest		Destination table definition
+	 * 
+	 * @return New, filtered, collection
+	 */
+	ContentValues filterValues(ContentValues source, TableInfo dest) {
+		ContentValues args = new ContentValues();
+
+		Set<Entry<String, Object>> s = source.valueSet();
+		// Create the arguments
+		for (Entry<String, Object> e : s) {
+			// Get column info for this column.
+			ColumnInfo c = mBooksInfo.getColumn(e.getKey());
+			// Check if we actually have a matching column.
+			if (c != null) {
+				// Never update PK.
+				if (!c.isPrimaryKey) {
+
+					Object v = e.getValue();
+
+					switch(c.typeClass) {
+
+					case TableInfo.CLASS_REAL:
+						if (v instanceof Float)
+							args.put(c.name, (Float)v);
+						else
+							args.put(c.name, Float.parseFloat(v.toString()));
+						break;
+
+					case TableInfo.CLASS_INTEGER:
+						if (v instanceof Boolean) {
+							if ((Boolean)v) {
+								args.put(c.name, 1);
+							} else {
+								args.put(c.name, 0);
+							}
+						} else if (v instanceof Integer) {
+							args.put(c.name, (Integer)v);
+						} else {
+							args.put(c.name, Integer.parseInt(v.toString()));
+						}
+						break;
+
+					case TableInfo.CLASS_TEXT:
+						if (v instanceof String)
+							args.put(c.name, (String) v);
+						else							
+							args.put(c.name, v.toString());
+						break;
+					}
+				}
+			}
 		}
+		return args;
+	}
+
+	/**
+	 * Examine the values and make any changes necessary before writing the data.
+	 * 
+	 * @param values	Collection of field values.
+	 */
+	private void preprocessOutput(long rowId, ContentValues values) {
+		String authorId;
+
+		// Handle AUTHOR
+		// If present, get the author ID from the author name (it may have changed with a name change)
+		if (values.containsKey(KEY_AUTHOR_FORMATTED)) {
+			authorId = getAuthorId(values.getAsString(KEY_AUTHOR_FORMATTED));
+			values.put(KEY_AUTHOR, authorId);
+		} else {
+			if (values.containsKey(KEY_FAMILY_NAME)) {
+				String family = values.getAsString(KEY_FAMILY_NAME);
+				String given;
+				if (values.containsKey(KEY_GIVEN_NAMES)) {
+					given = values.getAsString(KEY_GIVEN_NAMES);
+				} else {
+					given = "";
+				}
+				authorId = getAuthorId(new String[] {family, given});
+				values.put(KEY_AUTHOR, authorId);
+			}
+		}
+		
+		// Handle TITLE
+		if (values.containsKey(KEY_TITLE)) {
+			/* Move "The, A, An" to the end of the string */
+			String title = values.getAsString(KEY_TITLE);
+			String newTitle = "";
+			String[] title_words = title.split(" ");
+			try {
+				if (title_words[0].matches("a|A|an|An|the|The")) {
+					for (int i = 1; i < title_words.length; i++) {
+						if (i != 1) {
+							newTitle += " ";
+						}
+						newTitle += title_words[i];
+					}
+					newTitle += ", " + title_words[0];
+					values.put(KEY_TITLE, newTitle);
+				}
+			} catch (Exception e) {
+				//do nothing. Title stays the same
+			}
+		}
+
+	}
+
+	/**
+	 * Update the book using the details provided. The book to be updated is
+	 * specified using the rowId, and it is altered to use values passed in
+	 * 
+	 * @param rowId The id of the book in the database
+	 * @param values A ContentValues collection with the columns to be updated. May contain extrat data.
+	 * 
+	 * @return true if the note was successfully updated, false otherwise
+	 */
+	public boolean updateBook(long rowId, ContentValues values) {
+		boolean success;
+
+		// Make sure we have the target table details
+		if (mBooksInfo == null)
+			mBooksInfo = new TableInfo(DB_TB_BOOKS);
+
+		preprocessOutput(rowId, values);
+
+		ContentValues args = filterValues(values, mBooksInfo);
+
+		success = mDb.update(DB_TB_BOOKS, args, KEY_ROWID + "=" + rowId, null) > 0;
+
+		if (values.containsKey("bookshelf_text")) {
+			String bookshelf = values.getAsString("bookshelf_text");
+			if (bookshelf != null) {
+				createBookshelfBooks(rowId, bookshelf);
+			}			
+		}
+
+		// Delete any unused authors
 		deleteAuthors();
-		authorId.close();
+
 		return success;
 	}
 
@@ -2189,6 +2254,8 @@ public class CatalogueDBAdapter {
 		anthology.moveToFirst();
 		int position = anthology.getInt(anthology.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_POSITION));
 		int book = anthology.getInt(anthology.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_BOOK));
+		anthology.close();
+
 		boolean success;
 		// Delete the title
 		success = mDb.delete(DB_TB_ANTHOLOGY, KEY_ROWID + "=" + rowId, null) > 0;
@@ -2324,5 +2391,97 @@ public class CatalogueDBAdapter {
     public String encodeString(String value) {
     	return value.replace("'", "''");
     }
-    
+
+    /**
+     * Column info support. This is useful for auto-building queries from maps that have
+     * more columns than are in the table.
+     * 
+     * @author Grunthos
+     */
+    private class ColumnInfo {
+    	public int position;
+    	public String name;
+    	public String typeName;
+    	public boolean allowNull;
+    	public boolean isPrimaryKey;
+    	public String defaultValue;
+    	public int typeClass;
+    }
+
+    /**
+     * Details of a database table.
+     * 
+     * @author Grunthos
+     */
+    private class TableInfo {
+    	private Map<String,ColumnInfo> mColumns;
+    	private String mName;
+
+    	public static final int CLASS_INTEGER = 1;
+    	public static final int CLASS_TEXT = 2;
+    	public static final int CLASS_REAL = 3;
+    	
+    	TableInfo(String tableName) {
+    		mName = tableName;
+    		mColumns = describeTable(mName);
+    	}
+
+    	public ColumnInfo getColumn(String name) {
+    		String lcName = name.toLowerCase();
+    		if (!mColumns.containsKey(lcName))
+    			return null;
+    		return mColumns.get(lcName);
+    	}
+
+    	/**
+         * Get the column details for the given table.
+    	 * 
+    	 * @param tableName	Name of the database table to lookup
+    	 * 
+    	 * @return	A collection of ColumnInfo objects.
+    	 */
+        Map<String,ColumnInfo> describeTable(String tableName) {
+        	String sql = "PRAGMA table_info(" + tableName + ")";
+        	
+        	Cursor colCsr = mDb.rawQuery(sql, new String[]{});
+            if (colCsr == null)
+            	throw new IllegalArgumentException();
+
+            if (!colCsr.moveToFirst())
+            	throw new RuntimeException("Unable to get column details");
+
+            Map<String,ColumnInfo> cols = new Hashtable<String,ColumnInfo>();
+
+            while (true) {
+            	ColumnInfo col = new ColumnInfo();
+            	col.position = colCsr.getInt(0);
+            	col.name = colCsr.getString(1);
+            	col.typeName = colCsr.getString(2);
+            	col.allowNull = colCsr.getInt(3) == 0;
+            	col.defaultValue = colCsr.getString(4);
+            	col.isPrimaryKey = colCsr.getInt(5) == 1;
+            	String tName = col.typeName.toLowerCase();
+            	if (tName.equals("int") || tName.equals("integer")) {
+            		col.typeClass = CLASS_INTEGER;
+            	} else if (tName.equals("text")) {
+            		col.typeClass = CLASS_TEXT;            		
+            	} else if (tName.equals("float") || tName.equals("real") || tName.equals("double")) {
+            		col.typeClass = CLASS_REAL;
+            	} else if (tName.equals("date")) {
+            		col.typeClass = CLASS_TEXT;
+            	} else if (tName.equals("boolean")) {
+            		col.typeClass = CLASS_INTEGER;
+            	} else {
+            		throw new RuntimeException("Unknown data type '" + tName + "'");
+            	}
+            	
+            	cols.put(col.name.toLowerCase(),col);
+            	if (colCsr.isLast())
+            		break;
+            	colCsr.moveToNext();
+            }
+            colCsr.close();
+            return cols;
+        }
+    }
 }

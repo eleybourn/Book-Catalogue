@@ -35,6 +35,7 @@ import org.xml.sax.SAXException;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -108,7 +109,7 @@ public class BookISBNSearch extends Activity {
 	 * AsyncTask to lookup and process an ISBN. Doe in background so that 
 	 * progress can be reported and to prevent locking up the android.
 	 */
-	public class SearchForBookTask extends android.os.AsyncTask<WeakReference<BookISBNSearch>, String,String[]> {
+	public class SearchForBookTask extends android.os.AsyncTask<WeakReference<BookISBNSearch>, String, ContentValues> {
 
 		/*
 		 * Support for checking if task has finished in case the process finished while a screen rotation was happening.
@@ -127,7 +128,7 @@ public class BookISBNSearch extends Activity {
 			mParent = parent;
 		}
 
-		protected String[] doInBackground(WeakReference<BookISBNSearch>... activity) {
+		protected ContentValues doInBackground(WeakReference<BookISBNSearch>... activity) {
 			mParent = activity[0];
 
 			/* Format the output 
@@ -146,12 +147,17 @@ public class BookISBNSearch extends Activity {
 									false /* audiobook */, true /* signed */, false /* description */,
 									false /* genre */ };
 
-			String[] book = {mParent.get().author, mParent.get().title, mParent.get().isbn, "", "", "0",  "", "", "", "", "", "", "0", "", "", "", "", "0", "", ""};
-			String[] bookAmazon = {mParent.get().author, mParent.get().title, mParent.get().isbn, "", "", "0",  "", "", "", "", "", "", "0", "", "", "", "", "0", "", ""};
+			//String[] book = {mParent.get().author, mParent.get().title, mParent.get().isbn, "", "", "0",  "", "", "", "", "", "", "0", "", "", "", "", "0", "", ""};
+			//String[] bookAmazon = {mParent.get().author, mParent.get().title, mParent.get().isbn, "", "", "0",  "", "", "", "", "", "", "0", "", "", "", "", "0", "", ""};
+			ContentValues bookData = new ContentValues();
+			bookData.put(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, mParent.get().author);
+			bookData.put(CatalogueDBAdapter.KEY_TITLE, mParent.get().title);
+			bookData.put(CatalogueDBAdapter.KEY_ISBN, mParent.get().isbn);
 			try {
 				if (mParent != null)
 					publishProgress(mParent.get().getResources().getString(R.string.searching_google_books));
-				book = searchGoogle(isbn, author, title);
+				
+				searchGoogle(isbn, author, title, bookData);
 				if (mParent != null)
 					publishProgress(mParent.get().getResources().getString(R.string.searching_amazon_books));
 
@@ -162,40 +168,39 @@ public class BookISBNSearch extends Activity {
 				 * fields are frequently blank (eg. list price at google).
 				 * Note 2: This probably is a good optimization to use when more sources are added.
 				 */
-				boolean hasBlank = false;
+				boolean hasBlank = true;
 
-				/* Fill blank fields as required */
-				for (int i = 0; i<book.length; i++) {
-					if (!localOnly[i] && (book[i] == "" || book[i] == "0") ) {
-						hasBlank = true;
-						break;
-					}
-				}
+//				/* Check for blank fields */
+//				for (int i = 0; i<book.length; i++) {
+//					if (!localOnly[i] && (book[i] == "" || book[i] == "0") ) {
+//						hasBlank = true;
+//						break;
+//					}
+//				}
 
 				if (hasBlank) {
-					bookAmazon = searchAmazon(isbn, author, title);
+					// Copy the series for later
+					if (bookData.containsKey(CatalogueDBAdapter.KEY_TITLE)) {
+						bookData.put(CatalogueDBAdapter.KEY_SERIES, findSeries(bookData.getAsString(CatalogueDBAdapter.KEY_TITLE)));
+					}
+					searchAmazon(isbn, author, title, bookData);
 					//Look for series in Title. e.g. Red Phoenix (Dark Heavens Trilogy)
-					book[8] = findSeries(book[1]);
-					bookAmazon[8] = findSeries(bookAmazon[1]);
+					String tmpSeries = findSeries(bookData.getAsString(CatalogueDBAdapter.KEY_TITLE));
 
-					/* 
-					 * Fill blank fields as required.
-					 * 
-					 * Note: We should probably verify that we found the same book. At least compare
-					 * the ISBNs (if both non-blank) or something. Not sure.
-					 */
-					for (int i = 0; i<book.length; i++) {
-						if (book[i] == "" || book[i] == "0") {
-							book[i] = bookAmazon[i];
+					if (tmpSeries != null && tmpSeries.length() > 0) {
+						if (!bookData.containsKey(CatalogueDBAdapter.KEY_SERIES) 
+								|| bookData.getAsString(CatalogueDBAdapter.KEY_SERIES).length() < tmpSeries.length() ) {
+							bookData.put(CatalogueDBAdapter.KEY_SERIES, tmpSeries);
 						}
 					}
+					
 				}
 
-				return book;
+				return bookData;
 
 			} catch (Exception e) {
 				Toast.makeText(mParent.get(), R.string.search_fail, Toast.LENGTH_LONG).show();
-				return book;
+				return bookData;
 			}
 		}
 
@@ -205,10 +210,24 @@ public class BookISBNSearch extends Activity {
 				mParent.get().getProgress().setMessage(progress[0]);
 		}
 
+		private void doProperCase(ContentValues values, String key) {
+			if (!values.containsKey(key))
+				return;
+			values.put(key, properCase(values.getAsString(key)));
+		}
+
 		// Called in UI thread; perform appriate next step
-	    protected void onPostExecute(String[] result) {
+	    protected void onPostExecute(ContentValues result) {
 	    	// If book is not found, just return to dialog.
-			if (result[0] == "" && result[1] == "") {
+	    	String author = "";
+	    	String title = "";
+	    	try {
+	    		author = result.getAsString(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);
+	    	} catch (Exception e) {}
+	    	try {
+	    		title = result.getAsString(CatalogueDBAdapter.KEY_TITLE);
+	    	} catch (Exception e) {}
+			if (author.length() == 0 && title.length() == 0) {
 				if (mParent != null && mParent.get() != null)
 			    	mParent.get().dismissProgress();
 
@@ -219,11 +238,11 @@ public class BookISBNSearch extends Activity {
 			} else {
 				if (mParent != null && mParent.get() != null && mParent.get().getProgress() != null) 
 					mParent.get().getProgress().setMessage("Adding book...");
-				result[0] = properCase(result[0]); // author
-				result[1] = properCase(result[1]); // title
-				result[3] = properCase(result[3]); // publisher
-				result[4] = convertDate(result[4]); // date_published
-				result[8] = properCase(result[8]); // series
+				doProperCase(result, CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);
+				doProperCase(result, CatalogueDBAdapter.KEY_TITLE);
+				doProperCase(result, CatalogueDBAdapter.KEY_PUBLISHER);
+				doProperCase(result, CatalogueDBAdapter.KEY_DATE_PUBLISHED);
+				doProperCase(result, CatalogueDBAdapter.KEY_SERIES);
 				createBook(result);
 				// Clear the data entry fields ready for the next one
 				clearFields();
@@ -562,11 +581,11 @@ public class BookISBNSearch extends Activity {
 		mDbHelper.close();
 	}
 	
-	public String[] searchGoogle(String mIsbn, String mAuthor, String mTitle) {
+	public ContentValues searchGoogle(String mIsbn, String mAuthor, String mTitle, ContentValues bookData) {
 		//replace spaces with %20
 		mAuthor = mAuthor.replace(" ", "%20");
 		mTitle = mTitle.replace(" ", "%20");
-		
+
 		String path = "http://books.google.com/books/feeds/volumes";
 		if (mIsbn.equals("")) {
 			path += "?q=" + "intitle:"+mTitle+"+inauthor:"+mAuthor+"";
@@ -575,13 +594,16 @@ public class BookISBNSearch extends Activity {
 		}
 		URL url;
 		//String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num, list_price, anthology, location, read_start, read_end, audiobook, signed, description, genre};
-		String[] book = {mAuthor, mTitle, mIsbn, "", "", "0",  "", "", "", "", "", "", "0", "", "", "", "", "0", "", ""};
+		//String[] book = {mAuthor, mTitle, mIsbn, "", "", "0",  "", "", "", "", "", "", "0", "", "", "", "", "0", "", ""};
+//		bookData.put(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, mAuthor);
+//		bookData.put(CatalogueDBAdapter.KEY_TITLE, mTitle);
+//		bookData.put(CatalogueDBAdapter.KEY_ISBN, mIsbn);
 		
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		SAXParser parser;
 		SearchGoogleBooksHandler handler = new SearchGoogleBooksHandler();
-		SearchGoogleBooksEntryHandler entryHandler = new SearchGoogleBooksEntryHandler();
-		
+		SearchGoogleBooksEntryHandler entryHandler = new SearchGoogleBooksEntryHandler(bookData);
+	
 		try {
 			url = new URL(path);
 			parser = factory.newSAXParser();
@@ -599,13 +621,12 @@ public class BookISBNSearch extends Activity {
 				parser = factory.newSAXParser();
 				try {
 					parser.parse(getInputStream(url), entryHandler);
-					book = entryHandler.getBook();
 				} catch (RuntimeException e) {
 					Toast.makeText(this, R.string.unable_to_connect_google, Toast.LENGTH_LONG).show();
 					//Log.e("BC", e.getMessage());
 				}
 			}
-			return book;
+			return bookData;
 		} catch (MalformedURLException e) {
 			//Log.e("Book Catalogue", "Malformed URL " + e.getMessage());
 		} catch (ParserConfigurationException e) {
@@ -615,7 +636,7 @@ public class BookISBNSearch extends Activity {
 		} catch (Exception e) {
 			//Log.e("Book Catalogue", "SAX IO Exception " + e.getMessage());
 		}
-		return book;
+		return bookData;
 	}
 	
 	/**
@@ -626,14 +647,17 @@ public class BookISBNSearch extends Activity {
 	 * @param mIsbn The ISBN to search for
 	 * @return The book array
 	 */
-	public String[] searchAmazon(String mIsbn, String mAuthor, String mTitle) {
+	public void searchAmazon(String mIsbn, String mAuthor, String mTitle, ContentValues bookData) {
 		//replace spaces with %20
 		mAuthor = mAuthor.replace(" ", "%20");
 		mTitle = mTitle.replace(" ", "%20");
 		
 		//String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num, list_price, anthology, location, read_start, read_end, audiobook, signed, description, genre};
-		String[] book = {mAuthor, mTitle, mIsbn, "", "", "0",  "", "", "", "", "", "", "0", "", "", "", "", "0", "", ""};
-		
+		//String[] book = {mAuthor, mTitle, mIsbn, "", "", "0",  "", "", "", "", "", "", "0", "", "", "", "", "0", "", ""};
+//		bookData.put(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, mAuthor);
+//		bookData.put(CatalogueDBAdapter.KEY_TITLE, mTitle);
+//		bookData.put(CatalogueDBAdapter.KEY_ISBN, mIsbn);
+
 		String path = "http://alphacomplex.org/getRest_v2.php";
 		if (mIsbn.equals("")) {
 			path += "?author=" + mAuthor + "&title=" + mTitle;
@@ -644,19 +668,18 @@ public class BookISBNSearch extends Activity {
 		
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		SAXParser parser;
-		SearchAmazonHandler handler = new SearchAmazonHandler();
-		
+		SearchAmazonHandler handler = new SearchAmazonHandler(bookData);
+
 		try {
 			url = new URL(path);
 			parser = factory.newSAXParser();
 			try {
 				parser.parse(getInputStream(url), handler);
-				book = handler.getBook();
 			} catch (RuntimeException e) {
 				Toast.makeText(this, R.string.unable_to_connect_amazon, Toast.LENGTH_LONG).show();
 				//Log.e("Book Catalogue", "Handler Exception " + e);
 			}
-			return book;
+			return;
 		} catch (MalformedURLException e) {
 			//Log.e("Book Catalogue", "Malformed URL " + e.getMessage());
 		} catch (ParserConfigurationException e) {
@@ -666,7 +689,7 @@ public class BookISBNSearch extends Activity {
 		} catch (Exception e) {
 			//Log.e("Book Catalogue", "SAX IO Exception " + e.getMessage());
 		}
-		return book;
+		return;
 	}
 	
 	protected InputStream getInputStream(URL url) {
@@ -782,9 +805,9 @@ public class BookISBNSearch extends Activity {
 	 * 
 	 * return void
 	 */
-	private void createBook(String[] book) {
+	private void createBook(ContentValues book) {
 		Intent i = new Intent(this, BookEdit.class);
-		i.putExtra("book", book);
+		i.putExtra("bookData", book);
 		startActivityForResult(i, CREATE_BOOK);
 		dismissProgress();
 	}

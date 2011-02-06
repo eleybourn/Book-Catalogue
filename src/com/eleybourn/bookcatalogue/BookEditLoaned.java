@@ -21,7 +21,6 @@
 package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
-
 import android.app.Activity;
 import android.database.Cursor;
 import android.net.Uri;
@@ -180,7 +179,10 @@ public class BookEditLoaned extends Activity {
 	private String saveLoan() {
 		AutoCompleteTextView mUserText = (AutoCompleteTextView) findViewById(R.id.loan_to_who);
 		String friend = mUserText.getText().toString();
-		mDbHelper.createLoan(mRowId, friend);
+		android.content.ContentValues values = new android.content.ContentValues();
+		values.put(CatalogueDBAdapter.KEY_ROWID, mRowId.toString());
+		values.put(CatalogueDBAdapter.KEY_LOANED_TO, friend);
+		mDbHelper.createLoan(values);
 		return friend;
 	}
 	

@@ -41,6 +41,13 @@ Features include;
   case. e.g. "The murder on the links" becomes "The Murder on the Links"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+TODO:
+
+- Check what else uses Book[] and fix.
+- Check Amazon and Google processing; see if it can be improved
+- Use LibraryThing as a source of series.
+
+
 New in v...
 * The scanner and book search screens remain active after a book has been added or a
   search fails. It was viewed that this more closely represents the work-flow of people

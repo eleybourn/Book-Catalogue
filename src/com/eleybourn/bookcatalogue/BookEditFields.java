@@ -310,7 +310,7 @@ public class BookEditFields extends Activity {
 							boolean checked = false;
 							String db_bookshelf = bookshelves_for_book.getString(bookshelves_for_book.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF));
 
-							Field fe = mFields.get(R.id.bookshelf_text);
+							Field fe = mFields.getField(R.id.bookshelf_text);
 							if (fe.getValue().toString().indexOf(db_bookshelf + BOOKSHELF_SEPERATOR) > -1) {
 								checked = true;
 							}
@@ -321,7 +321,7 @@ public class BookEditFields extends Activity {
 								@Override
 								public void onClick(View v) {
 									String name = cb.getHint() + BOOKSHELF_SEPERATOR;
-									Field fe = mFields.get(R.id.bookshelf_text);
+									Field fe = mFields.getField(R.id.bookshelf_text);
 									if (cb.isChecked()) {
 										fe.setValue(fe.getValue().toString()+name);
 									} else {
@@ -393,7 +393,7 @@ public class BookEditFields extends Activity {
 				populateFields();
 			} else {
 				// The thumbnail image is not automatically preserved, so reload it.
-				ImageView iv = (ImageView) mFields.get(R.id.row_img).view;
+				ImageView iv = (ImageView) mFields.getField(R.id.row_img).view;
 				CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);				
 			}
 
@@ -401,7 +401,7 @@ public class BookEditFields extends Activity {
 			setupUi();
 
 			// Set up the thumbnail context menu.
-			mFields.get(R.id.row_img).view.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+			mFields.getField(R.id.row_img).view.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
 				@Override
 				public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 					MenuItem delete = menu.add(0, DELETE_ID, 0, R.string.menu_delete_thumb);
@@ -446,7 +446,7 @@ public class BookEditFields extends Activity {
 		switch (id) {
 		case DATE_DIALOG_ID:
 			try {
-				String dateString = (String) mFields.get(R.id.date_published).getValue().toString();
+				String dateString = (String) mFields.getField(R.id.date_published).getValue().toString();
 				// get the current date
 				final Calendar c = Calendar.getInstance();
 				int yyyy = c.get(Calendar.YEAR);
@@ -512,13 +512,13 @@ public class BookEditFields extends Activity {
 			if (dd.length() == 1) {
 				dd = "0" + dd;
 			}
-			mFields.get(R.id.date_published).setValue(year + "-" + mm + "-" + dd);
+			mFields.getField(R.id.date_published).setValue(year + "-" + mm + "-" + dd);
 		}
 	};
 	
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		ImageView iv = (ImageView)mFields.get(R.id.row_img).view;
+		ImageView iv = (ImageView)mFields.getField(R.id.row_img).view;
 		switch(item.getItemId()) {
 		case DELETE_ID:
 			deleteThumbnail(mRowId);
@@ -623,10 +623,10 @@ public class BookEditFields extends Activity {
 			// Set any field that has a 'column' non blank.
 			mFields.setFromCursor(book);
 
-			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + mFields.get(R.id.title).getValue().toString());
+			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + mFields.getField(R.id.title).getValue().toString());
 
 			//Display the selected bookshelves
-			Field bookshelfTextFe = mFields.get(R.id.bookshelf_text);
+			Field bookshelfTextFe = mFields.getField(R.id.bookshelf_text);
 			Cursor bookshelves = mDbHelper.fetchAllBookshelvesByBook(mRowId);
 			String bookshelves_text = "";
 			while (bookshelves.moveToNext()) {
@@ -636,9 +636,9 @@ public class BookEditFields extends Activity {
 			bookshelfTextFe.setValue(bookshelves_text);
 
 			Integer anthNo = book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
-			mFields.get(R.id.anthology).setValue(anthNo.toString());
+			mFields.getField(R.id.anthology).setValue(anthNo.toString());
 
-			ImageView iv = (ImageView) mFields.get(R.id.row_img).view;
+			ImageView iv = (ImageView) mFields.getField(R.id.row_img).view;
 			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);
 
 			book.close();
@@ -651,12 +651,12 @@ public class BookEditFields extends Activity {
 				//	15=read_end, 16=audiobook, 17=signed, 18=description, 19=genre};
 				if (extras.containsKey("book")) {
 					String[] book = extras.getStringArray("book");
-					mFields.get(R.id.author).setValue(book[0]);
-					mFields.get(R.id.title).setValue(book[1]);
-					mFields.get(R.id.isbn).setValue(book[2]);
-					mFields.get(R.id.publisher).setValue(book[3]);
+					mFields.getField(R.id.author).setValue(book[0]);
+					mFields.getField(R.id.title).setValue(book[1]);
+					mFields.getField(R.id.isbn).setValue(book[2]);
+					mFields.getField(R.id.publisher).setValue(book[3]);
 					try {
-						mFields.get(R.id.date_published).setValue(book[4]);
+						mFields.getField(R.id.date_published).setValue(book[4]);
 					} catch (ArrayIndexOutOfBoundsException e) {
 						//do nothing
 					} catch (NumberFormatException e) {
@@ -667,25 +667,25 @@ public class BookEditFields extends Activity {
 					if (BookCatalogue.bookshelf.equals("All Books")) {
 						Cursor bookshelves = mDbHelper.fetchBookshelf(1);
 						bookshelves.moveToFirst();
-						mFields.get(R.id.bookshelf_text).setValue(bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)) + BOOKSHELF_SEPERATOR);
+						mFields.getField(R.id.bookshelf_text).setValue(bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)) + BOOKSHELF_SEPERATOR);
 						bookshelves.close();
 					} else {
-						mFields.get(R.id.bookshelf_text).setValue(BookCatalogue.bookshelf + BOOKSHELF_SEPERATOR);
+						mFields.getField(R.id.bookshelf_text).setValue(BookCatalogue.bookshelf + BOOKSHELF_SEPERATOR);
 					}
-					mFields.get(R.id.series).setValue(book[8]);
-					mFields.get(R.id.series_num).setValue(book[10]);
+					mFields.getField(R.id.series).setValue(book[8]);
+					mFields.getField(R.id.series_num).setValue(book[10]);
 					try {
 						//just in case - there was an exception earlier, but it should be fixed
-						mFields.get(R.id.list_price).setValue(book[11]);
+						mFields.getField(R.id.list_price).setValue(book[11]);
 					} catch (Exception e) {
 						//do nothing
 					}
-					mFields.get(R.id.pages).setValue(book[9]);
+					mFields.getField(R.id.pages).setValue(book[9]);
 
-					mFields.get(R.id.anthology).setValue(book[12]);
-					mFields.get(R.id.format).setValue(book[16]);
-					mFields.get(R.id.description).setValue(book[18]);
-					mFields.get(R.id.genre).setValue(book[19]);
+					mFields.getField(R.id.anthology).setValue(book[12]);
+					mFields.getField(R.id.format).setValue(book[16]);
+					mFields.getField(R.id.description).setValue(book[18]);
+					mFields.getField(R.id.genre).setValue(book[19]);
 				} else {
 					ContentValues values = (ContentValues)extras.getParcelable("bookData");
 					Iterator<Fields.Field> i = mFields.iterator();
@@ -703,10 +703,10 @@ public class BookEditFields extends Activity {
 					if (BookCatalogue.bookshelf.equals("All Books")) {
 						Cursor bookshelves = mDbHelper.fetchBookshelf(1);
 						bookshelves.moveToFirst();
-						mFields.get(R.id.bookshelf_text).setValue(bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)) + BOOKSHELF_SEPERATOR);
+						mFields.getField(R.id.bookshelf_text).setValue(bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)) + BOOKSHELF_SEPERATOR);
 						bookshelves.close();
 					} else {
-						mFields.get(R.id.bookshelf_text).setValue(BookCatalogue.bookshelf + BOOKSHELF_SEPERATOR);
+						mFields.getField(R.id.bookshelf_text).setValue(BookCatalogue.bookshelf + BOOKSHELF_SEPERATOR);
 					}
 				}
 				
@@ -715,7 +715,7 @@ public class BookEditFields extends Activity {
 				// do nothing
 			}
 
-			ImageView iv = (ImageView) mFields.get(R.id.row_img).view;
+			ImageView iv = (ImageView) mFields.getField(R.id.row_img).view;
 			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);
 
 		} else {
@@ -726,10 +726,10 @@ public class BookEditFields extends Activity {
 			if (BookCatalogue.bookshelf.equals("All Books")) {
 				Cursor bookshelves = mDbHelper.fetchBookshelf(1);
 				bookshelves.moveToFirst();
-				mFields.get(R.id.bookshelf_text).setValue(bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)) + BOOKSHELF_SEPERATOR);
+				mFields.getField(R.id.bookshelf_text).setValue(bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)) + BOOKSHELF_SEPERATOR);
 				bookshelves.close();
 			} else {
-				mFields.get(R.id.bookshelf_text).setValue(BookCatalogue.bookshelf + BOOKSHELF_SEPERATOR);
+				mFields.getField(R.id.bookshelf_text).setValue(BookCatalogue.bookshelf + BOOKSHELF_SEPERATOR);
 			}			
 		}
 	}
@@ -754,7 +754,7 @@ public class BookEditFields extends Activity {
 		if (mRowId != null && mRowId > 0) {
 			mConfirmButton.setText(R.string.confirm_save);
 
-			CheckBox cb = (CheckBox)mFields.get(R.id.anthology).view;
+			CheckBox cb = (CheckBox)mFields.getField(R.id.anthology).view;
 
 			cb.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
@@ -902,7 +902,7 @@ public class BookEditFields extends Activity {
 				x.compress(Bitmap.CompressFormat.PNG, 100, f);
 
 				// Update the ImageView with the new image
-				ImageView iv = (ImageView)mFields.get(R.id.row_img).view;
+				ImageView iv = (ImageView)mFields.getField(R.id.row_img).view;
 				CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);				
 			}
 			return;
@@ -924,7 +924,7 @@ public class BookEditFields extends Activity {
 					//do nothing - error to be handled later
 				}
 				// Update the ImageView with the new image
-				ImageView iv = (ImageView)mFields.get(R.id.row_img).view;
+				ImageView iv = (ImageView)mFields.getField(R.id.row_img).view;
 				CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);				
 			}
 			return;

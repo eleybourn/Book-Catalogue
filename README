@@ -46,6 +46,7 @@ New in v3.4
   search fails. It was viewed that this more closely represents the work-flow of people
   adding or scanning books.
 * Displays a progress dialog while searching for a book on the internet.
+* Adding by Amazon's ASIN is supported on the "Add by ISBN" page
 * Ensure that search results can now be sorted correctly. Expanding, eg, an author 
   name in search results will just show matching books.
 * Preserves *all* open groups when closing application.

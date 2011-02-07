@@ -229,7 +229,7 @@ public class BookISBNSearch extends Activity {
 	    	} catch (Exception e) {}
 			if (author.length() == 0 && title.length() == 0) {
 				if (mParent != null && mParent.get() != null)
-			    	mParent.get().dismissProgress();
+					mParent.get().dismissProgress();
 
 				Toast.makeText(mParent.get(), R.string.book_not_found, Toast.LENGTH_LONG).show();
 				// Leave the ISBN text unchanged in case they need to edit it.

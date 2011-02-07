@@ -115,7 +115,13 @@ public class Fields extends ArrayList<Fields.Field> {
 			// Parse as SQL/ANSI date
 			d = mDateSqlSdf.parse(s);
 		} catch (Exception e) {
-			d = mDateDispSdf.parse(s);
+			try {
+				d = mDateDispSdf.parse(s);				
+			} catch (Exception e1) {
+				java.text.DateFormat df = java.text.DateFormat.getDateInstance(java.text.DateFormat.SHORT);
+				d = df.parse(s);
+			}
+
 		}
 		return d;
 	}

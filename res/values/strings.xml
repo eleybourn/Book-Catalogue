@@ -161,4 +161,6 @@
 <string name="vldt_failed">Validation failed for \'%s\'</string>
 <string name="vldt_series_num_must_be_blank">Series number must be blank (found %1$s) or series name must be specified</string>
 <string name="vldt_read_start_after_end">The date reading started is after the end date</string>
+<string name="backup_success">Backup Success</string>
+<string name="backup_failed">Backup Failed</string>
 </resources>

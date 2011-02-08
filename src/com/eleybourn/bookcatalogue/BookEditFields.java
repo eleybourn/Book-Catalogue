@@ -646,46 +646,8 @@ public class BookEditFields extends Activity {
 			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + this.getResources().getString(R.string.menu_insert));
 			// From the ISBN Search (add)
 			try {
-				//String[] book = {0=author, 1=title, 2=isbn, 3=publisher, 4=date_published, 5=rating,  6=bookshelf, 
-				//	7=read, 8=series, 9=pages, 10=series_num, 11=list_price, 12=anthology, 13=location, 14=read_start, 
-				//	15=read_end, 16=audiobook, 17=signed, 18=description, 19=genre};
 				if (extras.containsKey("book")) {
-					String[] book = extras.getStringArray("book");
-					mFields.getField(R.id.author).setValue(book[0]);
-					mFields.getField(R.id.title).setValue(book[1]);
-					mFields.getField(R.id.isbn).setValue(book[2]);
-					mFields.getField(R.id.publisher).setValue(book[3]);
-					try {
-						mFields.getField(R.id.date_published).setValue(book[4]);
-					} catch (ArrayIndexOutOfBoundsException e) {
-						//do nothing
-					} catch (NumberFormatException e) {
-						//do nothing
-					}
-
-					//Display the selected bookshelves
-					if (BookCatalogue.bookshelf.equals("All Books")) {
-						Cursor bookshelves = mDbHelper.fetchBookshelf(1);
-						bookshelves.moveToFirst();
-						mFields.getField(R.id.bookshelf_text).setValue(bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)) + BOOKSHELF_SEPERATOR);
-						bookshelves.close();
-					} else {
-						mFields.getField(R.id.bookshelf_text).setValue(BookCatalogue.bookshelf + BOOKSHELF_SEPERATOR);
-					}
-					mFields.getField(R.id.series).setValue(book[8]);
-					mFields.getField(R.id.series_num).setValue(book[10]);
-					try {
-						//just in case - there was an exception earlier, but it should be fixed
-						mFields.getField(R.id.list_price).setValue(book[11]);
-					} catch (Exception e) {
-						//do nothing
-					}
-					mFields.getField(R.id.pages).setValue(book[9]);
-
-					mFields.getField(R.id.anthology).setValue(book[12]);
-					mFields.getField(R.id.format).setValue(book[16]);
-					mFields.getField(R.id.description).setValue(book[18]);
-					mFields.getField(R.id.genre).setValue(book[19]);
+					throw new RuntimeException("[book] array passed in Intent");
 				} else {
 					ContentValues values = (ContentValues)extras.getParcelable("bookData");
 					Iterator<Fields.Field> i = mFields.iterator();

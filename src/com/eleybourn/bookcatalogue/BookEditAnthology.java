@@ -302,7 +302,7 @@ public class BookEditAnthology extends ListActivity {
 			url = new URL(path);
 			parser = factory.newSAXParser();
 			try {
-				parser.parse(getInputStream(url), handler);
+				parser.parse(Utils.getInputStream(url), handler);
 			} catch (RuntimeException e) {
 				Toast.makeText(this, R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
 				//Log.e("Book Catalogue", "SAX Runtime Exception " + e);
@@ -316,7 +316,7 @@ public class BookEditAnthology extends ListActivity {
 				url = new URL(basepath + links[i]);
 				parser = factory.newSAXParser();
 				try {
-					parser.parse(getInputStream(url), entryHandler);
+					parser.parse(Utils.getInputStream(url), entryHandler);
 					ArrayList<String> titles = entryHandler.getList();
 					/* Display the confirm dialog */
 					if (titles.size() > 0) {
@@ -390,14 +390,6 @@ public class BookEditAnthology extends ListActivity {
 		}); 
 		alertDialog.show();
 
-	}
-	
-	protected InputStream getInputStream(URL url) {
-		try {
-			return url.openConnection().getInputStream();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
 	}
 	
 	@Override

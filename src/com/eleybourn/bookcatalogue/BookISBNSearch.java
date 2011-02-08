@@ -40,8 +40,11 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -104,11 +107,29 @@ public class BookISBNSearch extends Activity {
 		}
 	}
 
+	/**
+	 * Simple data class containing information to me displayed in UI thread.
+	 */
+	private class ProgressInfo {
+		int			id = 0;
+		boolean 	toastIt = false;
+		int			extra;
+		Exception 	e = null;
+		
+		ProgressInfo(int messageId) { id = messageId; }
+		ProgressInfo(int messageId, boolean toast, int extraText, Exception e) {
+			id = messageId;
+			toastIt = toast;
+			extra = extraText;
+			this.e = e;
+		}
+	}
+
 	/*
 	 * AsyncTask to lookup and process an ISBN. Doe in background so that 
 	 * progress can be reported and to prevent locking up the android.
 	 */
-	public class SearchForBookTask extends android.os.AsyncTask<WeakReference<BookISBNSearch>, String, ContentValues> {
+	public class SearchForBookTask extends android.os.AsyncTask<WeakReference<BookISBNSearch>, ProgressInfo, ContentValues> {
 
 		/*
 		 * Support for checking if task has finished in case the process finished while a screen rotation was happening.
@@ -153,60 +174,92 @@ public class BookISBNSearch extends Activity {
 			bookData.put(CatalogueDBAdapter.KEY_TITLE, mParent.get().title);
 			bookData.put(CatalogueDBAdapter.KEY_ISBN, mParent.get().isbn);
 			try {
+				//
+				//	Google
+				//
 				if (mParent != null)
-					publishProgress(mParent.get().getResources().getString(R.string.searching_google_books));
-				
-				searchGoogle(isbn, author, title, bookData);
-				if (mParent != null)
-					publishProgress(mParent.get().getResources().getString(R.string.searching_amazon_books));
+					publishProgress(new ProgressInfo(R.string.searching_google_books));
 
-				/* Since Amazon only fills in blanks...check for externally sourced blanks so that 
-				 * this goes faster.
-				 * 
-				 * Note 1: This may not be an optimization worth the effort since it seems that some
-				 * fields are frequently blank (eg. list price at google).
-				 * Note 2: This probably is a good optimization to use when more sources are added.
-				 */
-				boolean hasBlank = true;
-
-//				/* Check for blank fields */
-//				for (int i = 0; i<book.length; i++) {
-//					if (!localOnly[i] && (book[i] == "" || book[i] == "0") ) {
-//						hasBlank = true;
-//						break;
-//					}
-//				}
-
-				if (hasBlank) {
-					// Copy the series for later
-					if (bookData.containsKey(CatalogueDBAdapter.KEY_TITLE)) {
-						bookData.put(CatalogueDBAdapter.KEY_SERIES, findSeries(bookData.getAsString(CatalogueDBAdapter.KEY_TITLE)));
-					}
-					searchAmazon(isbn, author, title, bookData);
-					//Look for series in Title. e.g. Red Phoenix (Dark Heavens Trilogy)
-					String tmpSeries = findSeries(bookData.getAsString(CatalogueDBAdapter.KEY_TITLE));
-
-					if (tmpSeries != null && tmpSeries.length() > 0) {
-						if (!bookData.containsKey(CatalogueDBAdapter.KEY_SERIES) 
-								|| bookData.getAsString(CatalogueDBAdapter.KEY_SERIES).length() < tmpSeries.length() ) {
-							bookData.put(CatalogueDBAdapter.KEY_SERIES, tmpSeries);
-						}
-					}
-					
+				try {
+					searchGoogle(isbn, author, title, bookData);					
+				} catch (Exception e) {
+					publishProgress(new ProgressInfo(R.string.search_exception, true, R.string.searching_google_books, e));
 				}
 
+				// Copy the series for later
+				if (bookData.containsKey(CatalogueDBAdapter.KEY_TITLE)) {
+					bookData.put(CatalogueDBAdapter.KEY_SERIES, findSeries(bookData.getAsString(CatalogueDBAdapter.KEY_TITLE)));
+				}
+
+				//
+				//	Amazon
+				//
+				if (mParent != null)
+					publishProgress(new ProgressInfo(R.string.searching_amazon_books));
+
+				try {
+					searchAmazon(isbn, author, title, bookData);
+				} catch (Exception e) {
+					publishProgress(new ProgressInfo(R.string.search_exception, true, R.string.searching_amazon_books, e));
+				}
+
+				//Look for series in Title. e.g. Red Phoenix (Dark Heavens Trilogy)
+				String tmpSeries = findSeries(bookData.getAsString(CatalogueDBAdapter.KEY_TITLE));
+
+				if (tmpSeries != null && tmpSeries.length() > 0) {
+					if (!bookData.containsKey(CatalogueDBAdapter.KEY_SERIES) 
+							|| bookData.getAsString(CatalogueDBAdapter.KEY_SERIES).length() < tmpSeries.length() ) {
+						bookData.put(CatalogueDBAdapter.KEY_SERIES, tmpSeries);
+					}
+				}
+
+				//
+				//	LibraryThing
+				//
+				//	We always contact LibraryThing because it is a good source of Series data and thumbnails. But it 
+				//	does require an ISBN AND a developer key.
+				//
+				if (bookData.containsKey(CatalogueDBAdapter.KEY_ISBN)) {
+					String isbn = bookData.getAsString(CatalogueDBAdapter.KEY_ISBN);
+					if (isbn.length() > 0) {
+						if (mParent != null)
+							publishProgress(new ProgressInfo(R.string.searching_library_thing));
+						LibraryThingManager ltm = new LibraryThingManager(bookData);
+						try {
+							ltm.searchByIsbn(isbn);											
+						} catch (Exception e) {
+							publishProgress(new ProgressInfo(R.string.search_exception, true, R.string.searching_library_thing, e));
+						}
+					}
+				}
 				return bookData;
 
 			} catch (Exception e) {
-				Toast.makeText(mParent.get(), R.string.search_fail, Toast.LENGTH_LONG).show();
+				publishProgress(new ProgressInfo(R.string.search_exception, true, R.string.search_fail, e));
 				return bookData;
 			}
 		}
 
 		// Called in UI thread; update the ProgressDialog
-		protected void onProgressUpdate(String... progress) {
-			if (mParent != null && mParent.get() != null && mParent.get().getProgress() != null)
-				mParent.get().getProgress().setMessage(progress[0]);
+		protected void onProgressUpdate(ProgressInfo... progress) {
+			try {
+				ProgressInfo pi = progress[0];
+				if (mParent != null && mParent.get() != null && mParent.get().getProgress() != null) {
+					android.content.res.Resources res = getResources();
+					if (pi.toastIt) {
+						// Use args...
+						String s;
+						try {s = pi.e.getMessage(); } catch (Exception e2) {s = "Unknown Exception";};
+						String msg = String.format(res.getString(pi.id), res.getString(pi.extra), s);
+						Toast.makeText(mParent.get(), msg, Toast.LENGTH_LONG).show();
+					} else {
+						// Not toasted, this it's just a text message
+						getProgress().setMessage(res.getString(pi.id));
+					}
+				}				
+			} catch (Exception e) {
+				Log.e("BC", "Failed to log progess");
+			}
 		}
 
 		private void doProperCase(ContentValues values, String key) {
@@ -215,8 +268,66 @@ public class BookISBNSearch extends Activity {
 			values.put(key, properCase(values.getAsString(key)));
 		}
 
-		// Called in UI thread; perform appriate next step
+		/**
+		 * If there is a '__thumbnails' key, pick the largest image, rename it
+		 * and delete the others. Finally, remove the key.
+		 * 
+		 * @param result	Book data
+		 */
+		private void cleanupThumbnails(ContentValues result) {
+	    	if (result.containsKey("__thumbnail")) {
+	    		long best = -1;
+	    		int bestFile = -1;
+
+	    		// Parse the list
+	    		ArrayList<String> files = Utils.decodeList(result.getAsString("__thumbnail"));
+
+	    		// Just read the image files to get file size
+	    		BitmapFactory.Options opt = new BitmapFactory.Options();
+	    		opt.inJustDecodeBounds = true;
+
+	    		// Scan, finding biggest
+	    		for(int i = 0; i < files.size(); i++) {
+	    			String filespec = files.get(i);
+		    		File file = new File(filespec);
+		    		if (file.exists()) {
+			    	    BitmapFactory.decodeFile( filespec, opt );
+			    	    // If no size info, assume file bad and skip
+			    	    if ( opt.outHeight > 0 && opt.outWidth > 0 ) {
+			    	    	long size = opt.outHeight * opt.outWidth;
+			    	    	if (size > best) {
+			    	    		best = size;
+			    	    		bestFile = i;
+			    	    	}
+			    	    }	    		
+		    		}
+	    		}
+
+	    		// Delete all but the best one. Note there *may* be no best one,
+	    		// so all would be deleted. We do this first in case the list 
+	    		// contains a file with the same name as the target of our
+	    		// rename.
+	    		for(int i = 0; i < files.size(); i++) {
+	    			if (i != bestFile) {
+			    		File file = new File(files.get(i));
+			    		file.delete();
+	    			}
+	    		}
+	    		// Get the best file (if present) and rename it.
+    			if (bestFile >= 0) {
+		    		File file = new File(files.get(bestFile));
+		    		file.renameTo(CatalogueDBAdapter.fetchThumbnail(0));
+    			}
+	    		// Finally, cleanup the data
+	    		result.remove("__thumbnail");
+	    	}			
+		}
+
+		// Called in UI thread; perform appropriate next step
 	    protected void onPostExecute(ContentValues result) {
+	    	// If there are thumbnails present, pick the biggest, delete others and rename.
+	    	cleanupThumbnails(result);
+
 	    	// If book is not found, just return to dialog.
 	    	String author = "";
 	    	String title = "";
@@ -607,23 +718,15 @@ public class BookISBNSearch extends Activity {
 			url = new URL(path);
 			parser = factory.newSAXParser();
 			int count = 0;
-			try {
-				parser.parse(getInputStream(url), handler);
-				count = handler.getCount();
-			} catch (RuntimeException e) {
-				Toast.makeText(this, R.string.unable_to_connect_google, Toast.LENGTH_LONG).show();
-				//Log.e("BC", e.getMessage());
-			}
+			// We can't Toast anything from here; it no longer runs in UI thread. So let the caller deal 
+			// with any exceptions.
+			parser.parse(Utils.getInputStream(url), handler);
+			count = handler.getCount();
 			if (count > 0) {
 				String id = handler.getId();
 				url = new URL(id);
 				parser = factory.newSAXParser();
-				try {
-					parser.parse(getInputStream(url), entryHandler);
-				} catch (RuntimeException e) {
-					Toast.makeText(this, R.string.unable_to_connect_google, Toast.LENGTH_LONG).show();
-					//Log.e("BC", e.getMessage());
-				}
+				parser.parse(Utils.getInputStream(url), entryHandler);
 			}
 			return bookData;
 		} catch (MalformedURLException e) {
@@ -672,13 +775,8 @@ public class BookISBNSearch extends Activity {
 		try {
 			url = new URL(path);
 			parser = factory.newSAXParser();
-			try {
-				parser.parse(getInputStream(url), handler);
-			} catch (RuntimeException e) {
-				Toast.makeText(this, R.string.unable_to_connect_amazon, Toast.LENGTH_LONG).show();
-				//Log.e("Book Catalogue", "Handler Exception " + e);
-			}
-			return;
+			// We can't Toast anything here, so let exceptions fall through.
+			parser.parse(Utils.getInputStream(url), handler);
 		} catch (MalformedURLException e) {
 			//Log.e("Book Catalogue", "Malformed URL " + e.getMessage());
 		} catch (ParserConfigurationException e) {
@@ -691,14 +789,6 @@ public class BookISBNSearch extends Activity {
 		return;
 	}
 	
-	protected InputStream getInputStream(URL url) {
-		try {
-			return url.openConnection().getInputStream();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
 	public String findSeries(String title) {
 		String series = "";
 		int last = title.lastIndexOf("(");
@@ -708,7 +798,7 @@ public class BookISBNSearch extends Activity {
 		}
 		return series;
 	}
-	
+
 	public String convertDate(String date) {
 		if (date.length() == 2) {
 			//assume yy

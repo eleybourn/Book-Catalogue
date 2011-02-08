@@ -173,7 +173,9 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class SearchAmazonHandler extends DefaultHandler {
 	private ContentValues mBookData;
-	private StringBuilder builder;
+	private StringBuilder mBuilder;
+	private String mThumbnailUrl = "";
+	private int mThumbnailSize = -1;
 	/* public variables to hold the found values */
 //	public String title = "";
 //	public String author = "";
@@ -216,7 +218,9 @@ public class SearchAmazonHandler extends DefaultHandler {
 	public static String PUBLISHER = "Publisher";
 	public static String PAGES = "NumberOfPages";
 	public static String THUMBNAIL = "URL";
+	public static String SMALLIMAGE = "SmallImage";
 	public static String MEDIUMIMAGE = "MediumImage";
+	public static String LARGEIMAGE = "LargeImage";
 	public static String DESCRIPTION = "Content";
 
 	SearchAmazonHandler(ContentValues bookData) {
@@ -234,17 +238,41 @@ public class SearchAmazonHandler extends DefaultHandler {
 	@Override
 	public void characters(char[] ch, int start, int length) throws SAXException {
 		super.characters(ch, start, length);
-		builder.append(ch, start, length);
+		mBuilder.append(ch, start, length);
 	}
 
+	/**
+	 * Add the current characters to the book collection if not already present.
+	 * 
+	 * @param key	Key for data to add
+	 */
 	private void addIfNotPresent(String key) {
 		if (!mBookData.containsKey(key) || mBookData.getAsString(key).length() == 0) {
-			mBookData.put(key, builder.toString());
+			mBookData.put(key, mBuilder.toString());
 		}		
 	}
+
+	/**
+	 * Add the current characters to the book collection if not already present.
+	 * 
+	 * @param key	Key for data to add
+	 * @param value	Value to compare to; if present but equal to this, it will be overwritten
+	 */
 	private void addIfNotPresentOrEqual(String key, String value) {
 		if (!mBookData.containsKey(key) || mBookData.getAsString(key).length() == 0 || mBookData.getAsString(key).equals(value)) {
-			mBookData.put(key, builder.toString());
+			mBookData.put(key, mBuilder.toString());
+		}		
+	}
+
+	/**
+	 * 	Overridden method to get the best thumbnail, if present.
+	 */
+	@Override
+	public void endDocument() {
+		if (mThumbnailUrl.length() > 0) {
+			String filename = Utils.saveThumbnailFromUrl(mThumbnailUrl, "_AM");
+			if (filename.length() > 0)
+				Utils.appendOrAdd(mBookData, "__thumbnail", filename);			
 		}		
 	}
 
@@ -260,53 +288,10 @@ public class SearchAmazonHandler extends DefaultHandler {
 		super.endElement(uri, localName, name);
 		try {
 			if (localName.equalsIgnoreCase(TOTALRESULTS)){
-				count = Integer.parseInt(builder.toString());
+				count = Integer.parseInt(mBuilder.toString());
 			} else if (localName.equalsIgnoreCase(THUMBNAIL)){
 				if (image == true) {
-					URL u;
-					/* Convert the URL string into a URL object */
-					try {
-						u = new URL(builder.toString());
-					} catch (MalformedURLException e) {
-						//Log.e("Book Catalogue", "Malformed URL");
-						return;
-					}
-					HttpURLConnection c;
-					InputStream in = null;
-					/* Connect to the server to get the thumbnail and download the thumbnail as an InputStream */
-					try {
-						c = (HttpURLConnection) u.openConnection();
-						c.setRequestMethod("GET");
-						c.setDoOutput(true);
-						c.connect();
-						in = c.getInputStream();
-					} catch (IOException e) {
-						//Log.e("Book Catalogue", "Thumbnail cannot be read");
-						return;
-					}
-					
-					/* Create a file to copy the thumbnail into */
-					FileOutputStream f = null;
-					try {
-						String filename = CatalogueDBAdapter.fetchThumbnailFilename(0, true);
-						f = new FileOutputStream(filename);
-					} catch (FileNotFoundException e) {
-						//Log.e("Book Catalogue", "Thumbnail cannot be written");
-						return;
-					}
-					
-					/* Copy the inputstream into an outpustream on the sdcard */
-					try {
-						byte[] buffer = new byte[1024];
-						int len1 = 0;
-						while ( (len1 = in.read(buffer)) > 0 ) {
-							f.write(buffer,0, len1);
-						}
-						f.close();
-					} catch (IOException e) {
-						//Log.e("Book Catalogue", "Error writing thumbnail");
-						return;
-					}
+					mThumbnailUrl = mBuilder.toString();
 					image = false;
 				}
 			} else if (localName.equalsIgnoreCase(ENTRY)){
@@ -318,13 +303,13 @@ public class SearchAmazonHandler extends DefaultHandler {
 				} else if (localName.equalsIgnoreCase(TITLE)){
 					addIfNotPresent(CatalogueDBAdapter.KEY_TITLE);
 				} else if (localName.equalsIgnoreCase(ISBN)){
-					String tmp = builder.toString();
+					String tmp = mBuilder.toString();
 					if (!mBookData.containsKey(CatalogueDBAdapter.KEY_ISBN) 
 							|| mBookData.getAsString(CatalogueDBAdapter.KEY_ISBN).length() < tmp.length()) {
 						mBookData.put(CatalogueDBAdapter.KEY_ISBN, tmp);
 					}					
 				} else if (localName.equalsIgnoreCase(ISBNOLD)){
-					String tmp = builder.toString();
+					String tmp = mBuilder.toString();
 					if (!mBookData.containsKey(CatalogueDBAdapter.KEY_ISBN) 
 							|| mBookData.getAsString(CatalogueDBAdapter.KEY_ISBN).length() < tmp.length()) {
 						mBookData.put(CatalogueDBAdapter.KEY_ISBN, tmp);
@@ -339,7 +324,7 @@ public class SearchAmazonHandler extends DefaultHandler {
 					addIfNotPresent(CatalogueDBAdapter.KEY_DESCRIPTION);
 				}
 			}
-			builder.setLength(0);			
+			mBuilder.setLength(0);			
 		} catch (Exception e) {
 			Log.e("Amazon", e.getMessage());
 		}
@@ -354,7 +339,7 @@ public class SearchAmazonHandler extends DefaultHandler {
 	@Override
 	public void startDocument() throws SAXException {
 		super.startDocument();
-		builder = new StringBuilder();
+		mBuilder = new StringBuilder();
 	}
 
 	/*
@@ -368,8 +353,21 @@ public class SearchAmazonHandler extends DefaultHandler {
 		super.startElement(uri, localName, name, attributes);
 		if (done == false && localName.equalsIgnoreCase(ENTRY)){
 			entry = true;
-		} else if (localName.equalsIgnoreCase(MEDIUMIMAGE)){
-			image = true;
+		} else if (localName.equalsIgnoreCase(SMALLIMAGE)) {
+			if (mThumbnailSize < 1) {
+				image = true;
+				mThumbnailSize = 1;
+			}
+		} else if (localName.equalsIgnoreCase(MEDIUMIMAGE)) {
+			if (mThumbnailSize < 2) {
+				image = true;
+				mThumbnailSize = 2;
+			}
+		} else if (localName.equalsIgnoreCase(LARGEIMAGE)){
+			if (mThumbnailSize < 3) {
+				image = true;
+				mThumbnailSize = 3;
+			}
 		}
 	}
 }

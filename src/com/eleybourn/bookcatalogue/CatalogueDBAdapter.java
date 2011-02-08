@@ -766,16 +766,27 @@ public class CatalogueDBAdapter {
 	 * @return The File object
 	 */
 	public static File fetchThumbnail(long id) {
+		return fetchThumbnail(id, "");
+	}
+
+	/**
+	 * return the thumbnail (as a File object) for the given id. Optionally use a suffix
+	 * on the file name.
+	 * 
+	 * @param id The id of the book
+	 * @return The File object
+	 */
+	public static File fetchThumbnail(long id, String suffix) {
 		String filename = "";
 		File file = null;
 		if (id == 0) {
-			filename = Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION + "/tmp.png";
+			filename = Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION + "/tmp" + suffix + ".png";
 			file = new File(filename);
 		} else {
-			filename = Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION + "/" + id + ".jpg";
+			filename = Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION + "/" + id + suffix + ".jpg";
 			file = new File(filename);
 			if (!file.exists()) {
-				filename = Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION + "/" + id + ".png";
+				filename = Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION + "/" + id + suffix + ".png";
 				file = new File(filename);
 			}
 		}
@@ -790,7 +801,11 @@ public class CatalogueDBAdapter {
 	 * @return The filename string
 	 */
 	public static String fetchThumbnailFilename(long id, boolean force) {
-		File file = fetchThumbnail(id);
+		return fetchThumbnailFilename(id, force, "");
+	}
+
+	public static String fetchThumbnailFilename(long id, boolean force, String suffix) {
+		File file = fetchThumbnail(id, suffix);
 		String filename = null;
 		if (force == true || file.exists()) {
 			filename = file.getPath(); 

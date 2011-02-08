@@ -211,47 +211,9 @@ public class SearchGoogleBooksEntryHandler extends DefaultHandler {
 		if (localName.equalsIgnoreCase(THUMBNAIL)){
 			if (attributes.getValue("", "rel").equals("http://schemas.google.com/books/2008/thumbnail")) {
 				String thumbnail = attributes.getValue("", "href");
-
-				URL u;
-				try {
-					u = new URL(thumbnail);
-				} catch (MalformedURLException e) {
-					//Log.e("Book Catalogue", "Malformed URL");
-					return;
-				}
-				HttpURLConnection c;
-				InputStream in = null;
-				try {
-					c = (HttpURLConnection) u.openConnection();
-					c.setRequestMethod("GET");
-					c.setDoOutput(true);
-					c.connect();
-					in = c.getInputStream();
-				} catch (IOException e) {
-					//Log.e("Book Catalogue", "Thumbnail cannot be read");
-					return;
-				}
-				
-				FileOutputStream f = null;
-				try {
-					String filename = CatalogueDBAdapter.fetchThumbnailFilename(0, true);
-					f = new FileOutputStream(filename);
-				} catch (FileNotFoundException e) {
-					//Log.e("Book Catalogue", "Thumbnail cannot be written");
-					return;
-				}
-				
-				try {
-					byte[] buffer = new byte[1024];
-					int len1 = 0;
-					while ( (len1 = in.read(buffer)) > 0 ) {
-						f.write(buffer,0, len1);
-					}
-					f.close();
-				} catch (IOException e) {
-					//Log.e("Book Catalogue", "Error writing thumbnail");
-					return;
-				}
+				String filename = Utils.saveThumbnailFromUrl(thumbnail, "_GB");
+				if (filename.length() > 0)
+					Utils.appendOrAdd(mValues, "__thumbnail", filename);
 			}
 		}
 	}

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<string name="hello">Book Catalogue!</string>
 <string name="app_name">Book Catalogue</string>
 <string name="menu_insert">Add Book</string>
 <string name="menu_delete">Delete Book</string>
@@ -99,6 +98,7 @@
 <string name="ok">OK</string>
 <string name="download_thumbs">Thumbnails are being downloaded in the background</string>
 <string name="search_fail">Searching for the book failed. Please check your network settings.</string>
+<string name="search_exception">Search failed while %1$s: %2$s</string><string name="hello">Book Catalogue!</string>
 <string name="menu_delete_thumb">Delete Thumbnail</string>
 <string name="help">Help</string>
 <string name="filler_help_text">Full online application help will come soon. </string>
@@ -132,9 +132,9 @@
 <string name="menu_add_thumb_gallery">Add Thumbnail from Gallery</string>
 <string name="backup_request">Would you like to backup your database to your sdcard</string>
 <string name="backup_title">Backup?</string>
-<string name="searching_google_books">Searching Google Books</string>
-<string name="searching_amazon_books">Searching Amazon</string>
-<string name="bookshelf_title">Select bookshelves for this book</string>
+<string name="searching_amazon_books">Searching Amazon</string><string name="searching_google_books">Searching Google Books</string>
+
+<string name="searching_library_thing">Searching LibraryThing</string><string name="bookshelf_title">Select bookshelves for this book</string>
 <string name="bookshelves">Select Bookshelves</string>
 <string name="format">Format</string>
 <string name="format1">Paperback</string>
@@ -161,4 +161,6 @@
 <string name="vldt_failed">Validation failed for \'%s\'</string>
 <string name="vldt_series_num_must_be_blank">Series number must be blank (found %1$s) or series name must be specified</string>
 <string name="vldt_read_start_after_end">The date reading started is after the end date</string>
+
+
 </resources>

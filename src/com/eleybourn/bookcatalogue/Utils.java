@@ -29,11 +29,13 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 
 import java.util.ArrayList;
 
 import android.content.ContentValues;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 public class Utils {
 
@@ -196,14 +198,28 @@ public class Utils {
 	 * 
 	 * @param url		URL to retrieve
 	 * @return
+	 * @throws UnknownHostException 
 	 */
-	static public InputStream getInputStream(URL url) {
-		try {
-			java.net.URLConnection conn = url.openConnection();
-			conn.setConnectTimeout(30000);
-			return conn.getInputStream();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+	static public InputStream getInputStream(URL url) throws UnknownHostException {
+		int retries = 3;
+		while (true) {
+			try {
+				java.net.URLConnection conn = url.openConnection();
+				conn.setConnectTimeout(30000);
+				return conn.getInputStream();
+			} catch (java.net.UnknownHostException e) {
+				Log.e("BookCatalogue.Utils", "Unknown Host in getInpuStream", e);
+				retries--;
+				if (retries-- == 0)
+					throw e;
+				try { Thread.sleep(500); } catch(Exception junk) {};
+			} catch (Exception e) {
+				/**
+				 * TODO Handle some transient errors....like UnknownHostException...
+				 */
+				Log.e("BookCatalogue.Utils", "Exception in getInpuStream", e);
+				throw new RuntimeException(e);
+			}			
 		}
 	}
 

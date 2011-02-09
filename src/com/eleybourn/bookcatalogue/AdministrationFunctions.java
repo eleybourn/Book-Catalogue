@@ -329,17 +329,29 @@ public class AdministrationFunctions extends Activity {
 						//	7=read, 8=series, 9=pages, 10=series_num, 11=list_price, 12=anthology, 13=location, 14=read_start, 
 						//	15=read_end, 16=audiobook, 17=signed, 18=description, 19=genre};
 
-						bis.searchGoogle(isbn, author, title, bookData);
+						try {
+							bis.searchGoogle(isbn, author, title, bookData);							
+						} catch (Exception e) {
+							
+						}
 
-						bis.searchAmazon(isbn, author, title, bookData);
+						try {
+							bis.searchAmazon(isbn, author, title, bookData);
+						} catch (Exception e) {
+							
+						}
 
 						// LibraryThing
-						if (bookData.containsKey(CatalogueDBAdapter.KEY_ISBN)) {
-							String bdIsbn = bookData.getAsString(CatalogueDBAdapter.KEY_ISBN);
-							if (bdIsbn.length() > 0) {
-								LibraryThingManager ltm = new LibraryThingManager(bookData);
-								ltm.searchByIsbn(bdIsbn);
+						try {
+							if (bookData.containsKey(CatalogueDBAdapter.KEY_ISBN)) {
+								String bdIsbn = bookData.getAsString(CatalogueDBAdapter.KEY_ISBN);
+								if (bdIsbn.length() > 0) {
+									LibraryThingManager ltm = new LibraryThingManager(bookData);
+									ltm.searchByIsbn(bdIsbn);
+								}
 							}
+						} catch (Exception e) {
+							
 						}
 						Utils.cleanupThumbnails(bookData);
 

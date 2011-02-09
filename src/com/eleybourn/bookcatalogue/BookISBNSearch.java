@@ -268,65 +268,10 @@ public class BookISBNSearch extends Activity {
 			values.put(key, properCase(values.getAsString(key)));
 		}
 
-		/**
-		 * If there is a '__thumbnails' key, pick the largest image, rename it
-		 * and delete the others. Finally, remove the key.
-		 * 
-		 * @param result	Book data
-		 */
-		private void cleanupThumbnails(ContentValues result) {
-	    	if (result.containsKey("__thumbnail")) {
-	    		long best = -1;
-	    		int bestFile = -1;
-
-	    		// Parse the list
-	    		ArrayList<String> files = Utils.decodeList(result.getAsString("__thumbnail"));
-
-	    		// Just read the image files to get file size
-	    		BitmapFactory.Options opt = new BitmapFactory.Options();
-	    		opt.inJustDecodeBounds = true;
-
-	    		// Scan, finding biggest
-	    		for(int i = 0; i < files.size(); i++) {
-	    			String filespec = files.get(i);
-		    		File file = new File(filespec);
-		    		if (file.exists()) {
-			    	    BitmapFactory.decodeFile( filespec, opt );
-			    	    // If no size info, assume file bad and skip
-			    	    if ( opt.outHeight > 0 && opt.outWidth > 0 ) {
-			    	    	long size = opt.outHeight * opt.outWidth;
-			    	    	if (size > best) {
-			    	    		best = size;
-			    	    		bestFile = i;
-			    	    	}
-			    	    }	    		
-		    		}
-	    		}
-
-	    		// Delete all but the best one. Note there *may* be no best one,
-	    		// so all would be deleted. We do this first in case the list 
-	    		// contains a file with the same name as the target of our
-	    		// rename.
-	    		for(int i = 0; i < files.size(); i++) {
-	    			if (i != bestFile) {
-			    		File file = new File(files.get(i));
-			    		file.delete();
-	    			}
-	    		}
-	    		// Get the best file (if present) and rename it.
-    			if (bestFile >= 0) {
-		    		File file = new File(files.get(bestFile));
-		    		file.renameTo(CatalogueDBAdapter.fetchThumbnail(0));
-    			}
-	    		// Finally, cleanup the data
-	    		result.remove("__thumbnail");
-	    	}			
-		}
-
 		// Called in UI thread; perform appropriate next step
 	    protected void onPostExecute(ContentValues result) {
 	    	// If there are thumbnails present, pick the biggest, delete others and rename.
-	    	cleanupThumbnails(result);
+	    	Utils.cleanupThumbnails(result);
 
 	    	// If book is not found, just return to dialog.
 	    	String author = "";

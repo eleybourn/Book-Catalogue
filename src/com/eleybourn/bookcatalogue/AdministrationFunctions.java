@@ -317,6 +317,7 @@ public class AdministrationFunctions extends Activity {
 					ContentValues bookData = new ContentValues();
 
 					File thumb = CatalogueDBAdapter.fetchThumbnail(id);
+
 					if (isbn.equals("") && author.equals("") && title.equals("")) {
 						// Must have an ISBN to be able to search
 						sendMessage(num, "Skip - " + title);
@@ -329,11 +330,20 @@ public class AdministrationFunctions extends Activity {
 						//	15=read_end, 16=audiobook, 17=signed, 18=description, 19=genre};
 
 						bis.searchGoogle(isbn, author, title, bookData);
-						File tmpthumb = CatalogueDBAdapter.fetchThumbnail(0);
 
 						bis.searchAmazon(isbn, author, title, bookData);
-						tmpthumb = CatalogueDBAdapter.fetchThumbnail(0);
 
+						// LibraryThing
+						if (bookData.containsKey(CatalogueDBAdapter.KEY_ISBN)) {
+							String bdIsbn = bookData.getAsString(CatalogueDBAdapter.KEY_ISBN);
+							if (bdIsbn.length() > 0) {
+								LibraryThingManager ltm = new LibraryThingManager(bookData);
+								ltm.searchByIsbn(bdIsbn);
+							}
+						}
+						Utils.cleanupThumbnails(bookData);
+
+						File tmpthumb = CatalogueDBAdapter.fetchThumbnail(0);
 						/* Copy tmpthumb over realthumb */
 						if (overwrite == true || !thumb.exists()) {
 							try {
@@ -343,10 +353,10 @@ public class AdministrationFunctions extends Activity {
 							}
 						}
 
-						if (description.equals("")) {
+						if (description.equals("") && bookData.containsKey(CatalogueDBAdapter.KEY_DESCRIPTION)) {
 							values.put(CatalogueDBAdapter.KEY_DESCRIPTION, bookData.getAsString(CatalogueDBAdapter.KEY_DESCRIPTION));
 						}
-						if (genre.equals("")) {
+						if (genre.equals("") && bookData.containsKey(CatalogueDBAdapter.KEY_GENRE)) {
 							values.put(CatalogueDBAdapter.KEY_GENRE, bookData.getAsString(CatalogueDBAdapter.KEY_GENRE));
 						}
 						mDbHelper.updateBook(id, values);

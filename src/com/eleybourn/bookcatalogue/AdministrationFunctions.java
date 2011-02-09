@@ -197,6 +197,7 @@ public class AdministrationFunctions extends Activity {
 			@Override
 			public void onClick(View v) {
 				mDbHelper.backupDbFile();
+				Toast.makeText(AdministrationFunctions.this, R.string.backup_success, Toast.LENGTH_LONG).show();
 				return;
 			}
 		});

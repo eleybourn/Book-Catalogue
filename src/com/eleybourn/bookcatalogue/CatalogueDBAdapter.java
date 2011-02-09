@@ -23,9 +23,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Map.Entry;
 
+import android.app.SearchManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -36,9 +37,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
-import android.widget.ImageView;
 import android.provider.BaseColumns;
-import android.app.SearchManager;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 /**
  * Book Catalogue database access helper class. Defines the basic CRUD operations
@@ -753,8 +754,9 @@ public class CatalogueDBAdapter {
 		    dbCopy.flush();
 		    dbCopy.close();
 		    dbOrig.close();
-
+			
 		} catch (Exception e) {
+			//Toast.makeText(BookCatalogue.this, R.string.backup_failed, Toast.LENGTH_LONG).show();
 			//do nothing
 		}
 	}

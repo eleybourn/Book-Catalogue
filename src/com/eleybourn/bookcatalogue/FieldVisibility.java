@@ -60,8 +60,8 @@ public class FieldVisibility extends Activity {
 	 */
 	public void setupFields() {
 		// The fields to show/hide
-		String[] fields = {CatalogueDBAdapter.KEY_AUTHOR, CatalogueDBAdapter.KEY_TITLE, "thumbnail", 
-				CatalogueDBAdapter.KEY_ISBN, CatalogueDBAdapter.KEY_SERIES, CatalogueDBAdapter.KEY_SERIES_NUM, 
+		String[] fields = {CatalogueDBAdapter.KEY_AUTHOR_ID, CatalogueDBAdapter.KEY_TITLE, "thumbnail", 
+				CatalogueDBAdapter.KEY_ISBN, CatalogueDBAdapter.KEY_SERIES_NAME, CatalogueDBAdapter.KEY_SERIES_NUM, 
 				CatalogueDBAdapter.KEY_PUBLISHER, CatalogueDBAdapter.KEY_DATE_PUBLISHED, CatalogueDBAdapter.KEY_BOOKSHELF, 
 				CatalogueDBAdapter.KEY_PAGES, CatalogueDBAdapter.KEY_LIST_PRICE, CatalogueDBAdapter.KEY_READ, 
 				CatalogueDBAdapter.KEY_RATING, CatalogueDBAdapter.KEY_NOTES, CatalogueDBAdapter.KEY_ANTHOLOGY, 

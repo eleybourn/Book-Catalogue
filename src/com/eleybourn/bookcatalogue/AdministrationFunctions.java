@@ -393,7 +393,7 @@ public class AdministrationFunctions extends Activity {
 	 */
 	private void updateThumbnails(boolean overwrite) {
 
-		Cursor books = mDbHelper.fetchAllBooks("b." + CatalogueDBAdapter.KEY_ROWID, "All Books", "", "");
+		Cursor books = mDbHelper.fetchAllBooks("b." + CatalogueDBAdapter.KEY_ROWID, "All Books", "", "", "", "", "");
 		
 		pd = new ProgressDialog(AdministrationFunctions.this);
 		pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -450,7 +450,7 @@ public class AdministrationFunctions extends Activity {
 				'"' + CatalogueDBAdapter.KEY_ROWID + "\"," + 			//0
 				'"' + CatalogueDBAdapter.KEY_FAMILY_NAME + "\"," + 		//1
 				'"' + CatalogueDBAdapter.KEY_GIVEN_NAMES + "\"," + 		//2
-				'"' + CatalogueDBAdapter.KEY_AUTHOR + "\"," + 			//3
+				'"' + CatalogueDBAdapter.KEY_AUTHOR_ID + "\"," + 		//3
 				'"' + CatalogueDBAdapter.KEY_TITLE + "\"," + 			//4
 				'"' + CatalogueDBAdapter.KEY_ISBN + "\"," + 			//5
 				'"' + CatalogueDBAdapter.KEY_PUBLISHER + "\"," + 		//6
@@ -459,7 +459,7 @@ public class AdministrationFunctions extends Activity {
 				'"' + "bookshelf_id\"," + 								//9
 				'"' + CatalogueDBAdapter.KEY_BOOKSHELF + "\"," +		//10
 				'"' + CatalogueDBAdapter.KEY_READ + "\"," +				//11
-				'"' + CatalogueDBAdapter.KEY_SERIES + "\"," + 			//12
+				'"' + CatalogueDBAdapter.KEY_SERIES_NAME + "\"," +		//12
 				'"' + CatalogueDBAdapter.KEY_SERIES_NUM + "\"," +		//13
 				'"' + CatalogueDBAdapter.KEY_PAGES + "\"," + 			//14
 				'"' + CatalogueDBAdapter.KEY_NOTES + "\"," + 			//15
@@ -516,7 +516,7 @@ public class AdministrationFunctions extends Activity {
 						if (titles.moveToFirst()) {
 							do { 
 								String anth_title = titles.getString(titles.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE));
-								String anth_author = titles.getString(titles.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR));
+								String anth_author = titles.getString(titles.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR_ID));
 								anthology_titles += anth_title + " * " + anth_author + "|";
 							} while (titles.moveToNext()); 
 						}
@@ -536,7 +536,7 @@ public class AdministrationFunctions extends Activity {
 					row += "\"" + formatCell(id) + "\",";
 					row += "\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_FAMILY_NAME))) + "\",";
 					row += "\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_GIVEN_NAMES))) + "\",";
-					row += "\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR))) + "\",";
+					row += "\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR_ID))) + "\",";
 					row += "\"" + formatCell(title) + "\",";
 					row += "\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ISBN))) + "\",";
 					row += "\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PUBLISHER))) + "\",";
@@ -545,7 +545,7 @@ public class AdministrationFunctions extends Activity {
 					row += "\"" + formatCell(bookshelves_id_text) + "\",";
 					row += "\"" + formatCell(bookshelves_name_text) + "\",";
 					row += "\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ))) + "\",";
-					row += "\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES))) + "\",";
+					row += "\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES_NAME))) + "\",";
 					row += "\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES_NUM))) + "\",";
 					row += "\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PAGES))) + "\",";
 					row += "\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_NOTES))) + "\",";

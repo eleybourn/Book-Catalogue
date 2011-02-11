@@ -188,7 +188,7 @@ public class BookISBNSearch extends Activity {
 
 				// Copy the series for later
 				if (bookData.containsKey(CatalogueDBAdapter.KEY_TITLE)) {
-					bookData.put(CatalogueDBAdapter.KEY_SERIES, findSeries(bookData.getAsString(CatalogueDBAdapter.KEY_TITLE)));
+					bookData.put(CatalogueDBAdapter.KEY_SERIES_NAME, findSeries(bookData.getAsString(CatalogueDBAdapter.KEY_TITLE)));
 				}
 
 				//
@@ -207,9 +207,9 @@ public class BookISBNSearch extends Activity {
 				String tmpSeries = findSeries(bookData.getAsString(CatalogueDBAdapter.KEY_TITLE));
 
 				if (tmpSeries != null && tmpSeries.length() > 0) {
-					if (!bookData.containsKey(CatalogueDBAdapter.KEY_SERIES) 
-							|| bookData.getAsString(CatalogueDBAdapter.KEY_SERIES).length() < tmpSeries.length() ) {
-						bookData.put(CatalogueDBAdapter.KEY_SERIES, tmpSeries);
+					if (!bookData.containsKey(CatalogueDBAdapter.KEY_SERIES_NAME) 
+							|| bookData.getAsString(CatalogueDBAdapter.KEY_SERIES_NAME).length() < tmpSeries.length() ) {
+						bookData.put(CatalogueDBAdapter.KEY_SERIES_NAME, tmpSeries);
 					}
 				}
 
@@ -297,7 +297,7 @@ public class BookISBNSearch extends Activity {
 				doProperCase(result, CatalogueDBAdapter.KEY_TITLE);
 				doProperCase(result, CatalogueDBAdapter.KEY_PUBLISHER);
 				doProperCase(result, CatalogueDBAdapter.KEY_DATE_PUBLISHED);
-				doProperCase(result, CatalogueDBAdapter.KEY_SERIES);
+				doProperCase(result, CatalogueDBAdapter.KEY_SERIES_NAME);
 				createBook(result);
 				// Clear the data entry fields ready for the next one
 				clearFields();

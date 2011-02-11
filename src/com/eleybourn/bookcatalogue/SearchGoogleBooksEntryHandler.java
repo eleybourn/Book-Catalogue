@@ -179,6 +179,9 @@ public class SearchGoogleBooksEntryHandler extends DefaultHandler {
 				}
 			}
 		} else if (localName.equalsIgnoreCase(AUTHOR)){
+			/**
+			 * TODO Handle multiple AUTHOR entries (use appendOrAdd(mValues, KEY_AUTHOR_FORMATTED, builder.toString())
+			 */
 			addIfNotPresent(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);
 		} else if (localName.equalsIgnoreCase(PUBLISHER)){
 			addIfNotPresent(CatalogueDBAdapter.KEY_PUBLISHER);

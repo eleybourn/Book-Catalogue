@@ -375,7 +375,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				return;
 			} else if (v.getId() == R.id.row_series) {
 				// Hide series if necessary.
-				if (setFieldVisiblity(v,CatalogueDBAdapter.KEY_SERIES)) {
+				if (setFieldVisiblity(v,CatalogueDBAdapter.KEY_SERIES_NAME)) {
 					if (sort == SORT_SERIES || text.length() == 0) {
 						v.setText(text);						
 					} else {
@@ -445,13 +445,12 @@ public class BookCatalogue extends ExpandableListActivity {
 			mLayout = R.layout.row_authors;
 			mChildLayout = R.layout.row_books; 
 
-			String order = CatalogueDBAdapter.KEY_TITLE + ", " + CatalogueDBAdapter.KEY_FAMILY_NAME;
 			if (search_query.equals("")) {
 				// Return all books (for the bookshelf)
-				mCursor = mDbHelper.fetchAllBookChars(order, bookshelf);
+				mCursor = mDbHelper.fetchAllBookChars("", bookshelf);
 			} else {
 				// Return the search results instead of all books (for the bookshelf)
-				mCursor = mDbHelper.searchBooksChars(search_query, order, bookshelf);
+				mCursor = mDbHelper.searchBooksChars(search_query, bookshelf);
 			}
 			mFrom = new String[]{CatalogueDBAdapter.KEY_ROWID};
 			mTo = new int[]{R.id.row_family};			

@@ -125,7 +125,7 @@ public class BookEditFields extends Activity {
 		Cursor series_cur = mDbHelper.fetchAllSeries();
 		startManagingCursor(series_cur);
 		while (series_cur.moveToNext()) {
-			String series = series_cur.getString(series_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES));
+			String series = series_cur.getString(series_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES_NAME));
 			series_list.add(series);
 		}
 		series_cur.close();
@@ -193,13 +193,13 @@ public class BookEditFields extends Activity {
 			mFields.add(R.id.date_published, CatalogueDBAdapter.KEY_DATE_PUBLISHED, CatalogueDBAdapter.KEY_DATE_PUBLISHED, 
 							blankOrDateValidator, new Fields.DateFieldFormatter());
 
-			mFields.add(R.id.series, CatalogueDBAdapter.KEY_SERIES, CatalogueDBAdapter.KEY_SERIES, null);
-			mFields.add(R.id.series_num, "series_num", CatalogueDBAdapter.KEY_SERIES, blankOrIntegerValidator);
+			mFields.add(R.id.series, CatalogueDBAdapter.KEY_SERIES_NAME, CatalogueDBAdapter.KEY_SERIES_NAME, null);
+			mFields.add(R.id.series_num, CatalogueDBAdapter.KEY_SERIES_NUM, CatalogueDBAdapter.KEY_SERIES_NAME, blankOrIntegerValidator);
 
 			// Ensure that series number is blank if series is blank 
 			mFields.addCrossValidator(new Fields.FieldCrossValidator() {
 				public void validate(Fields fields, android.content.ContentValues values) {
-					if (!values.getAsString(CatalogueDBAdapter.KEY_SERIES).equals(""))
+					if (!values.getAsString(CatalogueDBAdapter.KEY_SERIES_NAME).equals(""))
 						return;
 					// For blank series, series-number must also be blank
 					String num = values.getAsString(CatalogueDBAdapter.KEY_SERIES_NUM);
@@ -836,7 +836,7 @@ public class BookEditFields extends Activity {
 		/* These are global variables that will be sent via intent back to the list view */
 		added_author = values.getAsString(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);
 		added_title = values.getAsString(CatalogueDBAdapter.KEY_TITLE);
-		added_series = values.getAsString(CatalogueDBAdapter.KEY_SERIES);
+		added_series = values.getAsString(CatalogueDBAdapter.KEY_SERIES_NAME);
 		added_genre = values.getAsString(CatalogueDBAdapter.KEY_GENRE);
 		return;
 	}

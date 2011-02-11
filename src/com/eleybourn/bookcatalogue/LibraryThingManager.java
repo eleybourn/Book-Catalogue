@@ -515,7 +515,7 @@ public class LibraryThingManager {
 					break;
 
 				case SERIES:
-					appendOrAdd(CatalogueDBAdapter.KEY_SERIES);
+					appendOrAdd(CatalogueDBAdapter.KEY_SERIES_NAME);
 					break;
 
 				case PLACES:

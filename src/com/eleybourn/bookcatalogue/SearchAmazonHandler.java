@@ -300,7 +300,7 @@ public class SearchAmazonHandler extends DefaultHandler {
 			} else if (entry == true) {
 				if (localName.equalsIgnoreCase(AUTHOR)){
 					/**
-					 * TODO: handle mutiple authors and this being called more than once, possibly adding duplicates
+					 * TODO: handle multiple authors and this being called more than once, possibly adding duplicates
 					 * because of pre-existing data. Rely on the update process weeking them out.
 					 */
 					addIfNotPresent(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);

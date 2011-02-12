@@ -30,6 +30,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+
+import com.eleybourn.bookcatalogue.UpdateThumbnailsThread.BookInfo;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -43,6 +47,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
@@ -69,10 +74,30 @@ public class AdministrationFunctions extends Activity {
 	private ProgressDialog pd = null;
 	private int num = 0;
 	private boolean finish_after = false;
-	
+	UpdateThumbnailsThread mUpdateThumbnailsThread = null;
+
 	public static final String DOAUTO = "do_auto";
 	
-	final Handler handler = new Handler() {
+	final UpdateThumbnailsThread.LookupHandler mLookupHandler = new UpdateThumbnailsThread.LookupHandler() {
+		@Override
+		public void onFinish(LinkedList<BookInfo> queue) {
+			if (finish_after == true) {
+				finish();
+			}
+		}
+
+		@Override
+		public void onFound(LinkedList<BookInfo> queue) {
+			Iterator<BookInfo> i = queue.iterator();
+			while (i.hasNext()) {
+				BookInfo bi = i.next();
+				Log.i("BookCatalogue", "Updating book " + bi.id);
+				mDbHelper.updateBook(bi.id, bi.bookData);
+			}
+		}
+	};
+
+	final Handler mProgressHandler = new Handler() {
 		public void handleMessage(Message msg) {
 			int total = msg.getData().getInt("total");
 			String title = msg.getData().getString("title");
@@ -93,7 +118,7 @@ public class AdministrationFunctions extends Activity {
 			}
 		}
 	};
-	
+
 	/**
 	 * Called when the activity is first created. 
 	 */
@@ -251,141 +276,141 @@ public class AdministrationFunctions extends Activity {
 		startActivityForResult(i, ACTIVITY_FIELD_VISIBILITY);
 	}
 	
-	private class UpdateThumbnailsThread extends Thread {
-		public boolean overwrite = false;
-		public Cursor books = null;
-		private Handler mHandler;
-		
-		/**
-		 * @param handler
-		 */
-		public UpdateThumbnailsThread(Handler handler) {
-			mHandler = handler;
-		}
-		
-		private void sendMessage(int num, String title) {
-			/* Send message to the handler */
-			Message msg = mHandler.obtainMessage();
-			Bundle b = new Bundle();
-			b.putInt("total", num);
-			b.putString("title", title);
-			msg.setData(b);
-			mHandler.sendMessage(msg);
-			return;
-		}
-		
-		@Override
-		public void run() {
-			Looper.prepare();
-			
-			/* Test write to the SDCard */
-			try {
-				BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath + "/.nomedia"), UTF8), BUFFER_SIZE);
-				out.write("");
-				out.close();
-			} catch (IOException e) {
-				sendMessage(0, "Thumbnail Download Failed - Could not write to SDCard");
-				return;
-			}
-			
-			startManagingCursor(books);
-			int num = 0;
-			//try {
-				while (books.moveToNext()) {
-
-					// Copy the fields from the cursor
-					ContentValues values = new ContentValues();
-					for(int i = 0; i < books.getColumnCount(); i++) {
-						values.put(books.getColumnName(i), books.getString(i));
-					}
-					
-					num++;
-					// delete any tmp thumbnails //
-					try {
-						File delthumb = CatalogueDBAdapter.fetchThumbnail(0);
-						delthumb.delete();
-					} catch (Exception e) {
-						// do nothing - this is the expected behaviour 
-					}
-
-					Long id = values.getAsLong(CatalogueDBAdapter.KEY_ROWID);
-					String isbn = values.getAsString(CatalogueDBAdapter.KEY_ISBN);
-					String author = values.getAsString(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);
-					String title = values.getAsString(CatalogueDBAdapter.KEY_TITLE);
-					String genre = values.getAsString(CatalogueDBAdapter.KEY_GENRE);
-					String description = values.getAsString(CatalogueDBAdapter.KEY_DESCRIPTION);
-
-					ContentValues bookData = new ContentValues();
-
-					File thumb = CatalogueDBAdapter.fetchThumbnail(id);
-
-					if (isbn.equals("") && author.equals("") && title.equals("")) {
-						// Must have an ISBN to be able to search
-						sendMessage(num, "Skip - " + title);
-						//TODO: searchGoogle(AUTHOR)
-					} else if (overwrite == true || !thumb.exists() || genre.equals("") || description.equals("")) {
-						sendMessage(num, title);
-						BookISBNSearch bis = new BookISBNSearch();
-						//String[] book = {0=author, 1=title, 2=isbn, 3=publisher, 4=date_published, 5=rating,  6=bookshelf, 
-						//	7=read, 8=series, 9=pages, 10=series_num, 11=list_price, 12=anthology, 13=location, 14=read_start, 
-						//	15=read_end, 16=audiobook, 17=signed, 18=description, 19=genre};
-
-						try {
-							bis.searchGoogle(isbn, author, title, bookData);							
-						} catch (Exception e) {
-							
-						}
-
-						try {
-							bis.searchAmazon(isbn, author, title, bookData);
-						} catch (Exception e) {
-							
-						}
-
-						// LibraryThing
-						try {
-							if (bookData.containsKey(CatalogueDBAdapter.KEY_ISBN)) {
-								String bdIsbn = bookData.getAsString(CatalogueDBAdapter.KEY_ISBN);
-								if (bdIsbn.length() > 0) {
-									LibraryThingManager ltm = new LibraryThingManager(bookData);
-									ltm.searchByIsbn(bdIsbn);
-								}
-							}
-						} catch (Exception e) {
-							
-						}
-						Utils.cleanupThumbnails(bookData);
-
-						File tmpthumb = CatalogueDBAdapter.fetchThumbnail(0);
-						/* Copy tmpthumb over realthumb */
-						if (overwrite == true || !thumb.exists()) {
-							try {
-								tmpthumb.renameTo(thumb);
-							} catch (Exception e) {
-								//do nothing
-							}
-						}
-
-						if (description.equals("") && bookData.containsKey(CatalogueDBAdapter.KEY_DESCRIPTION)) {
-							values.put(CatalogueDBAdapter.KEY_DESCRIPTION, bookData.getAsString(CatalogueDBAdapter.KEY_DESCRIPTION));
-						}
-						if (genre.equals("") && bookData.containsKey(CatalogueDBAdapter.KEY_GENRE)) {
-							values.put(CatalogueDBAdapter.KEY_GENRE, bookData.getAsString(CatalogueDBAdapter.KEY_GENRE));
-						}
-						mDbHelper.updateBook(id, values);
-						
-					} else {
-						sendMessage(num, "Skip - " + title);
-					}
-				}
-			//} catch (Exception e) {
-				// do nothing
-			//}
-			sendMessage(0, num + " Books Searched");
-		}
-		
-	}	
-	
+//	private class UpdateThumbnailsThread extends Thread {
+//		public boolean overwrite = false;
+//		public Cursor books = null;
+//		private Handler mHandler;
+//		
+//		/**
+//		 * @param handler
+//		 */
+//		public UpdateThumbnailsThread(Handler handler) {
+//			mHandler = handler;
+//		}
+//		
+//		private void sendMessage(int num, String title) {
+//			/* Send message to the handler */
+//			Message msg = mHandler.obtainMessage();
+//			Bundle b = new Bundle();
+//			b.putInt("total", num);
+//			b.putString("title", title);
+//			msg.setData(b);
+//			mHandler.sendMessage(msg);
+//			return;
+//		}
+//		
+//		@Override
+//		public void run() {
+//			Looper.prepare();
+//			
+//			/* Test write to the SDCard */
+//			try {
+//				BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath + "/.nomedia"), UTF8), BUFFER_SIZE);
+//				out.write("");
+//				out.close();
+//			} catch (IOException e) {
+//				sendMessage(0, "Thumbnail Download Failed - Could not write to SDCard");
+//				return;
+//			}
+//			
+//			startManagingCursor(books);
+//			int num = 0;
+//			//try {
+//				while (books.moveToNext()) {
+//
+//					// Copy the fields from the cursor
+//					ContentValues values = new ContentValues();
+//					for(int i = 0; i < books.getColumnCount(); i++) {
+//						values.put(books.getColumnName(i), books.getString(i));
+//					}
+//					
+//					num++;
+//					// delete any tmp thumbnails //
+//					try {
+//						File delthumb = CatalogueDBAdapter.fetchThumbnail(0);
+//						delthumb.delete();
+//					} catch (Exception e) {
+//						// do nothing - this is the expected behaviour 
+//					}
+//
+//					Long id = values.getAsLong(CatalogueDBAdapter.KEY_ROWID);
+//					String isbn = values.getAsString(CatalogueDBAdapter.KEY_ISBN);
+//					String author = values.getAsString(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);
+//					String title = values.getAsString(CatalogueDBAdapter.KEY_TITLE);
+//					String genre = values.getAsString(CatalogueDBAdapter.KEY_GENRE);
+//					String description = values.getAsString(CatalogueDBAdapter.KEY_DESCRIPTION);
+//
+//					ContentValues bookData = new ContentValues();
+//
+//					File thumb = CatalogueDBAdapter.fetchThumbnail(id);
+//
+//					if (isbn.equals("") && author.equals("") && title.equals("")) {
+//						// Must have an ISBN to be able to search
+//						sendMessage(num, "Skip - " + title);
+//						//TODO: searchGoogle(AUTHOR)
+//					} else if (overwrite == true || !thumb.exists() || genre.equals("") || description.equals("")) {
+//						sendMessage(num, title);
+//						BookISBNSearch bis = new BookISBNSearch();
+//						//String[] book = {0=author, 1=title, 2=isbn, 3=publisher, 4=date_published, 5=rating,  6=bookshelf, 
+//						//	7=read, 8=series, 9=pages, 10=series_num, 11=list_price, 12=anthology, 13=location, 14=read_start, 
+//						//	15=read_end, 16=audiobook, 17=signed, 18=description, 19=genre};
+//
+//						try {
+//							bis.searchGoogle(isbn, author, title, bookData);							
+//						} catch (Exception e) {
+//							
+//						}
+//
+//						try {
+//							bis.searchAmazon(isbn, author, title, bookData);
+//						} catch (Exception e) {
+//							
+//						}
+//
+//						// LibraryThing
+//						try {
+//							if (bookData.containsKey(CatalogueDBAdapter.KEY_ISBN)) {
+//								String bdIsbn = bookData.getAsString(CatalogueDBAdapter.KEY_ISBN);
+//								if (bdIsbn.length() > 0) {
+//									LibraryThingManager ltm = new LibraryThingManager(bookData);
+//									ltm.searchByIsbn(bdIsbn);
+//								}
+//							}
+//						} catch (Exception e) {
+//							
+//						}
+//						Utils.cleanupThumbnails(bookData);
+//
+//						File tmpthumb = CatalogueDBAdapter.fetchThumbnail(0);
+//						/* Copy tmpthumb over realthumb */
+//						if (overwrite == true || !thumb.exists()) {
+//							try {
+//								tmpthumb.renameTo(thumb);
+//							} catch (Exception e) {
+//								//do nothing
+//							}
+//						}
+//
+//						if (description.equals("") && bookData.containsKey(CatalogueDBAdapter.KEY_DESCRIPTION)) {
+//							values.put(CatalogueDBAdapter.KEY_DESCRIPTION, bookData.getAsString(CatalogueDBAdapter.KEY_DESCRIPTION));
+//						}
+//						if (genre.equals("") && bookData.containsKey(CatalogueDBAdapter.KEY_GENRE)) {
+//							values.put(CatalogueDBAdapter.KEY_GENRE, bookData.getAsString(CatalogueDBAdapter.KEY_GENRE));
+//						}
+//						mDbHelper.updateBook(id, values);
+//						
+//					} else {
+//						sendMessage(num, "Skip - " + title);
+//					}
+//				}
+//			//} catch (Exception e) {
+//				// do nothing
+//			//}
+//			sendMessage(0, num + " Books Searched");
+//		}
+//		
+//	}	
+//	
 	/**
 	 * Update all (non-existent) thumbnails
 	 * 
@@ -394,18 +419,8 @@ public class AdministrationFunctions extends Activity {
 	private void updateThumbnails(boolean overwrite) {
 
 		Cursor books = mDbHelper.fetchAllBooks("b." + CatalogueDBAdapter.KEY_ROWID, "All Books", "", "", "", "", "");
-		
-		pd = new ProgressDialog(AdministrationFunctions.this);
-		pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-		pd.setMessage("Updating...");
-		pd.setCancelable(false);
-		pd.setMax(books.getCount());
-		pd.show();
-		
-		UpdateThumbnailsThread thread = new UpdateThumbnailsThread(handler);
-		thread.overwrite = overwrite;
-		thread.books = books;
-		thread.start();
+		mUpdateThumbnailsThread = new UpdateThumbnailsThread(this, overwrite, books, mLookupHandler);
+		mUpdateThumbnailsThread.start();
 		//Toast.makeText(AdministrationFunctions.this, R.string.download_thumbs, Toast.LENGTH_LONG).show();
 	}
 	
@@ -630,7 +645,7 @@ public class AdministrationFunctions extends Activity {
 		pd.setMax(books.getCount());
 		pd.show();
 		
-		ExportThread thread = new ExportThread(handler);
+		ExportThread thread = new ExportThread(mProgressHandler);
 		thread.books = books;
 		thread.start();
 	}
@@ -925,8 +940,8 @@ public class AdministrationFunctions extends Activity {
 		pd.setCancelable(false);
 		pd.setMax(export.size() - 1);
 		pd.show();
-		
-		ImportThread thread = new ImportThread(handler);
+
+		ImportThread thread = new ImportThread(mProgressHandler);
 		thread.export = export;
 		thread.start();
 	}
@@ -947,5 +962,34 @@ public class AdministrationFunctions extends Activity {
 		super.onDestroy();
 		mDbHelper.close();
 	} 
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+	} 
+	@Override
+	protected void onResume() {
+		super.onResume();
+	} 
+	protected void onRestoreInstanceState(Bundle inState) {
+		// Get the AsyncTask
+		mUpdateThumbnailsThread = (UpdateThumbnailsThread) getLastNonConfigurationInstance();
+
+		if (mUpdateThumbnailsThread != null && !mUpdateThumbnailsThread.isFinished()) {
+			// If we had a task, create the progross dialog and reset the pointers.
+			mUpdateThumbnailsThread.reconnect(this, mLookupHandler);
+		}
+		super.onRestoreInstanceState(inState);
+	}
+
+	@Override
+	public Object onRetainNonConfigurationInstance() {
+		// Save the AsyncTask and remove the local refs.
+		UpdateThumbnailsThread t = mUpdateThumbnailsThread;
+		if (mUpdateThumbnailsThread != null) {
+			mUpdateThumbnailsThread.disconnect();
+		}
+		return t;
+	}
 
 }

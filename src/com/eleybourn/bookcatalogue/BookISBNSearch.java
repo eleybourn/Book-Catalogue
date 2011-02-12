@@ -181,7 +181,7 @@ public class BookISBNSearch extends Activity {
 					publishProgress(new ProgressInfo(R.string.searching_google_books));
 
 				try {
-					searchGoogle(isbn, author, title, bookData);					
+					GoogleBooksManager.searchGoogle(isbn, author, title, bookData);					
 				} catch (Exception e) {
 					publishProgress(new ProgressInfo(R.string.search_exception, true, R.string.searching_google_books, e));
 				}
@@ -198,7 +198,7 @@ public class BookISBNSearch extends Activity {
 					publishProgress(new ProgressInfo(R.string.searching_amazon_books));
 
 				try {
-					searchAmazon(isbn, author, title, bookData);
+					AmazonManager.searchAmazon(isbn, author, title, bookData);
 				} catch (Exception e) {
 					publishProgress(new ProgressInfo(R.string.search_exception, true, R.string.searching_amazon_books, e));
 				}
@@ -634,104 +634,6 @@ public class BookISBNSearch extends Activity {
 	protected void onDestroy() {
 		super.onDestroy();
 		mDbHelper.close();
-	}
-	
-	public ContentValues searchGoogle(String mIsbn, String mAuthor, String mTitle, ContentValues bookData) {
-		//replace spaces with %20
-		mAuthor = mAuthor.replace(" ", "%20");
-		mTitle = mTitle.replace(" ", "%20");
-
-		String path = "http://books.google.com/books/feeds/volumes";
-		if (mIsbn.equals("")) {
-			path += "?q=" + "intitle:"+mTitle+"+inauthor:"+mAuthor+"";
-		} else {
-			path += "?q=ISBN" + mIsbn;
-		}
-		URL url;
-		//String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num, list_price, anthology, location, read_start, read_end, audiobook, signed, description, genre};
-		//String[] book = {mAuthor, mTitle, mIsbn, "", "", "0",  "", "", "", "", "", "", "0", "", "", "", "", "0", "", ""};
-//		bookData.put(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, mAuthor);
-//		bookData.put(CatalogueDBAdapter.KEY_TITLE, mTitle);
-//		bookData.put(CatalogueDBAdapter.KEY_ISBN, mIsbn);
-		
-		SAXParserFactory factory = SAXParserFactory.newInstance();
-		SAXParser parser;
-		SearchGoogleBooksHandler handler = new SearchGoogleBooksHandler();
-		SearchGoogleBooksEntryHandler entryHandler = new SearchGoogleBooksEntryHandler(bookData);
-	
-		try {
-			url = new URL(path);
-			parser = factory.newSAXParser();
-			int count = 0;
-			// We can't Toast anything from here; it no longer runs in UI thread. So let the caller deal 
-			// with any exceptions.
-			parser.parse(Utils.getInputStream(url), handler);
-			count = handler.getCount();
-			if (count > 0) {
-				String id = handler.getId();
-				url = new URL(id);
-				parser = factory.newSAXParser();
-				parser.parse(Utils.getInputStream(url), entryHandler);
-			}
-			return bookData;
-		} catch (MalformedURLException e) {
-			//Log.e("Book Catalogue", "Malformed URL " + e.getMessage());
-		} catch (ParserConfigurationException e) {
-			//Log.e("Book Catalogue", "SAX Parsing Error " + e.getMessage());
-		} catch (SAXException e) {
-			//Log.e("Book Catalogue", "SAX Exception " + e.getMessage());
-		} catch (Exception e) {
-			//Log.e("Book Catalogue", "SAX IO Exception " + e.getMessage());
-		}
-		return bookData;
-	}
-	
-	/**
-	 * 
-	 * This searches the amazon REST site based on a specific isbn. It proxies through lgsolutions.com.au
-	 * due to amazon not support mobile devices
-	 * 
-	 * @param mIsbn The ISBN to search for
-	 * @return The book array
-	 */
-	public void searchAmazon(String mIsbn, String mAuthor, String mTitle, ContentValues bookData) {
-		//replace spaces with %20
-		mAuthor = mAuthor.replace(" ", "%20");
-		mTitle = mTitle.replace(" ", "%20");
-		
-		//String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num, list_price, anthology, location, read_start, read_end, audiobook, signed, description, genre};
-		//String[] book = {mAuthor, mTitle, mIsbn, "", "", "0",  "", "", "", "", "", "", "0", "", "", "", "", "0", "", ""};
-//		bookData.put(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, mAuthor);
-//		bookData.put(CatalogueDBAdapter.KEY_TITLE, mTitle);
-//		bookData.put(CatalogueDBAdapter.KEY_ISBN, mIsbn);
-
-		String path = "http://alphacomplex.org/getRest_v2.php";
-		if (mIsbn.equals("")) {
-			path += "?author=" + mAuthor + "&title=" + mTitle;
-		} else {
-			path += "?isbn=" + mIsbn;
-		}
-		URL url;
-		
-		SAXParserFactory factory = SAXParserFactory.newInstance();
-		SAXParser parser;
-		SearchAmazonHandler handler = new SearchAmazonHandler(bookData);
-
-		try {
-			url = new URL(path);
-			parser = factory.newSAXParser();
-			// We can't Toast anything here, so let exceptions fall through.
-			parser.parse(Utils.getInputStream(url), handler);
-		} catch (MalformedURLException e) {
-			//Log.e("Book Catalogue", "Malformed URL " + e.getMessage());
-		} catch (ParserConfigurationException e) {
-			//Log.e("Book Catalogue", "SAX Parsing Error " + e.getMessage());
-		} catch (SAXException e) {
-			//Log.e("Book Catalogue", "SAX Exception " + e.getMessage());
-		} catch (Exception e) {
-			//Log.e("Book Catalogue", "SAX IO Exception " + e.getMessage());
-		}
-		return;
 	}
 	
 	public String findSeries(String title) {

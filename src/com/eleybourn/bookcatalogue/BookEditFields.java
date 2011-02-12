@@ -33,6 +33,7 @@ import java.util.Iterator;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.app.TabActivity;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -45,6 +46,8 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.view.ContextMenu;
 import android.view.MenuItem;
@@ -75,7 +78,6 @@ public class BookEditFields extends Activity {
 	private CatalogueDBAdapter mDbHelper;
 	private Integer mThumbEditSize;
 	private Integer mThumbZoomSize;
-	
 	private String added_genre = "";
 	private String added_series = "";
 	private String added_title = "";

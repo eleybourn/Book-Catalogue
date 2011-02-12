@@ -274,17 +274,17 @@ public class CatalogueDBAdapter {
 			}
 			return sql + alias + "." + KEY_TITLE + " as " + KEY_TITLE + ", " +
 
-			// Find fir FIRST series ID. If we ever introduce a series ordering, we could use that
+			// Find FIRST series ID. If we ever introduce a series ordering, we could use that
 			"(Select " + KEY_SERIES_ID + " From " + DB_TB_BOOK_SERIES + " bs " +
-			" where bs." + KEY_BOOK + " = b." + KEY_ROWID + " Order by " + KEY_SERIES_ID + " asc) as " + KEY_SERIES_ID + ", " +
+			" where bs." + KEY_BOOK + " = " + alias + "." + KEY_ROWID + " Order by " + KEY_SERIES_ID + " asc) as " + KEY_SERIES_ID + ", " +
 			// Get the total series count
-			"(Select Count(*) from " + DB_TB_BOOK_SERIES + " bs Where bs." + KEY_BOOK + " = b." + KEY_ROWID + ") as _num_series," + 
+			"(Select Count(*) from " + DB_TB_BOOK_SERIES + " bs Where bs." + KEY_BOOK + " = " + alias + "." + KEY_ROWID + ") as _num_series," + 
 			// Find the first AUTHOR ID
 			"(Select " + KEY_AUTHOR_ID + " From " + DB_TB_BOOK_AUTHOR + " ba " + 
-			"   where ba." + KEY_BOOK + " = b." + KEY_ROWID + 
+			"   where ba." + KEY_BOOK + " = " + alias + "." + KEY_ROWID + 
 			"   order by " + KEY_AUTHOR_POSITION + ", ba." + KEY_AUTHOR_ID + " Limit 1) as " + KEY_AUTHOR_ID + ", " +
 			// Get the total author count
-			"(Select Count(*) from " + DB_TB_BOOK_AUTHOR + " ba Where ba." + KEY_BOOK + " = b." + KEY_ROWID + ") as _num_authors," + 
+			"(Select Count(*) from " + DB_TB_BOOK_AUTHOR + " ba Where ba." + KEY_BOOK + " = " + alias + "." + KEY_ROWID + ") as _num_authors," + 
 
 			alias + "." + KEY_ISBN + " as " + KEY_ISBN + ", " +
 			alias + "." + KEY_PUBLISHER + " as " + KEY_PUBLISHER + ", " +
@@ -302,7 +302,6 @@ public class CatalogueDBAdapter {
 			alias + "." + KEY_SIGNED + " as " + KEY_SIGNED + ", " + 
 			alias + "." + KEY_DESCRIPTION + " as " + KEY_DESCRIPTION + ", " + 
 			alias + "." + KEY_GENRE  + " as " + KEY_GENRE;
-
 		}
 
 //	private static String SERIES_FIELDS = "s." + KEY_ROWID + " as " + KEY_SERIES_ID
@@ -1255,7 +1254,7 @@ public class CatalogueDBAdapter {
 		String sql = "SELECT " + getAuthorFields("a", KEY_ROWID)
 		+ " FROM " + DB_TB_AUTHORS + " a "
 		+ " WHERE " + authorOnBookshelfSql(bookshelf, "a." + KEY_ROWID)
-		+ " ORDER BY " + KEY_FAMILY_NAME + ", " + KEY_GIVEN_NAMES + " COLLATE UNICODE)";
+		+ " ORDER BY " + KEY_FAMILY_NAME + ", " + KEY_GIVEN_NAMES + " COLLATE UNICODE";
 
 		Cursor returnable = null;
 		try {

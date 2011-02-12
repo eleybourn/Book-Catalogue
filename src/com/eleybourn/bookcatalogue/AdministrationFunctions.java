@@ -87,7 +87,7 @@ public class AdministrationFunctions extends Activity {
 		}
 
 		@Override
-		public void onFound(LinkedList<BookInfo> queue) {
+		public void onProgress(LinkedList<BookInfo> queue) {
 			Iterator<BookInfo> i = queue.iterator();
 			while (i.hasNext()) {
 				BookInfo bi = i.next();

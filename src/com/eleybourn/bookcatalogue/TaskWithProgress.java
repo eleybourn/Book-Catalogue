@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -15,14 +16,14 @@ abstract public class TaskWithProgress<T> extends Thread {
 	private boolean mFinished = false;
 	private boolean mCancelFlg = false;
 
-	private TaskHandler<T> mLookupHandler;
+	private TaskHandler<T> mTaskHandler;
 
 	protected int mProgressCount = 0;
 	protected int mProgressMax = 1;
 	private String mLastProgressMessage = "Updating...";
 
 	abstract protected void onFinish();
-	abstract protected void onFound();
+	abstract protected void onRun();
 	abstract protected void onMessage(Message msg);
 
 	/**
@@ -45,18 +46,27 @@ abstract public class TaskWithProgress<T> extends Thread {
 	}
 
 	/**
+	 * Accessor for the task handler.
+	 * 
+	 * @return
+	 */
+	TaskHandler<T> getTaskHandler() {
+		return mTaskHandler;
+	}
+
+	/**
 	 * Constructor.
 	 * 
-	 * @param ctx				Context to use for constructingprogressdialog
+	 * @param ctx				Context to use for constructing progressdialog
 	 * @param overwrite			Whether to overwrite details
 	 * @param books				Cursor to scan
 	 * @param lookupHandler		Interface object to handle events in this thread.
 	 * 
 	 */
-	public TaskWithProgress(Context ctx, TaskHandler<T> lookupHandler) {
+	public TaskWithProgress(Context ctx, TaskHandler<T> taskHandler) {
 		mContext = ctx;
 		mHandler = new ImportHandler();
-		mLookupHandler = lookupHandler;
+		mTaskHandler = taskHandler;
 		if (mProgress == null) {
 			if (ctx != null) {
 				initProgress();
@@ -64,21 +74,96 @@ abstract public class TaskWithProgress<T> extends Thread {
 		}
 	}
 
-	public void updateProgress(String message, int count) {
+	@Override
+	public void run() {
+
+		onRun();
+
+		mHandler.post(new Runnable() {
+			public void run() { doFinish(); };
+		});
+	}
+
+	private void doFinish() {
+		onFinish();
 		synchronized(this) {
-			if (mProgress != null && mContext != null) {
-				mProgress.setMessage(message);
-				mProgress.setProgress(count);
-			}			
+			if (mProgress != null) {
+				try { mProgress.dismiss(); } catch (Exception e) {};
+			}
+			mProgress = null;
+			mContext = null;
+			mFinished = true;			
 		}
 	}
 
+	/**
+	 * Send a message to the handler object (defined below)
+	 * 
+	 * @param num
+	 * @param title
+	 */
+	public void doProgress(String message, int count) {
+		/* Send message to the handler */
+		Message msg = obtainMessage();
+		Bundle b = new Bundle();
+		b.putBoolean("__internal", true);
+		b.putInt("count", count);
+		b.putString("message", message);
+		msg.setData(b);
+		sendMessage(msg);
+		return;
+	}
+
+	/**
+	 * Update the current ProgressDialog.
+	 * 
+	 * NOTE: This is (or should be) ONLY called from the UI thread.
+	 * 
+	 * @param message	Message text
+	 * @param count		Counter for progress
+	 */
+	public void updateProgress(String message, int count) {
+		synchronized(this) {
+			Context ctx = getContext();
+			if (mProgress == null) {
+				if (ctx != null) {
+					initProgress();
+				}
+			}
+			if (mProgress != null && mContext != null) {
+				mProgress.setMessage(message);
+				mProgress.setProgress(count);
+			}	
+			mProgressCount = count;
+			mLastProgressMessage = message;
+		}
+	}
+
+	public void makeToast(String message) {
+		synchronized(this) {
+			Context ctx = getContext();
+			if (ctx != null)
+				android.widget.Toast.makeText(ctx, mProgressCount + " Books Searched", android.widget.Toast.LENGTH_LONG).show();			
+		}
+	}
 	/**
 	 * Accessor to check if task finished.
 	 * @return true/false depending on state
 	 */
 	public boolean isFinished() {
 		return mFinished;
+	}
+
+	/**
+	 * Accessor to check if task cancelled.
+	 * @return true/false depending on state
+	 */
+	public boolean isCancelled() {
+		return mCancelFlg;
+	}
+
+	Message obtainMessage() {
+		return mHandler.obtainMessage();
 	}
 
 	void sendMessage(Message msg) {
@@ -116,11 +201,11 @@ abstract public class TaskWithProgress<T> extends Thread {
 		}		
 	}
 
-	public void reconnect(Context ctx, TaskHandler<T> lookupHandler) {
+	public void reconnect(Context ctx, TaskHandler<T> taskHandler) {
 		synchronized(this) {
 			if (!mFinished) {
 				mContext = ctx;
-				mLookupHandler = lookupHandler;
+				mTaskHandler = taskHandler;
 				initProgress();
 			} else {
 				onFinish();
@@ -146,7 +231,14 @@ abstract public class TaskWithProgress<T> extends Thread {
 
 	private class ImportHandler extends Handler {
 		public void handleMessage(Message msg) {
-			onMessage(msg);
+			Bundle b = msg.getData();
+			if (b.containsKey("__internal")) {
+				int count = b.getInt("count");
+				String message = b.getString("message");
+				updateProgress(message, count);
+			} else {
+				onMessage(msg);
+			}
 		}		
 	}
 }

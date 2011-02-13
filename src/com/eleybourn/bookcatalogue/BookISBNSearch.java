@@ -33,6 +33,8 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
 
+import com.eleybourn.bookcatalogue.SearchForBookThread.SearchHandler;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -68,8 +70,9 @@ public class BookISBNSearch extends Activity {
 	private AutoCompleteTextView mAuthorText;
 	private Button mConfirmButton;
 	private CatalogueDBAdapter mDbHelper;
-	private android.app.ProgressDialog mProgress = null;
-	private SearchForBookTask mSearchTask = null;
+	//private android.app.ProgressDialog mProgress = null;
+	//private SearchForBookTask mSearchTask = null;
+	private SearchForBookThread mSearchThread = null;
 
 	public String author;
 	public String title;
@@ -93,224 +96,6 @@ public class BookISBNSearch extends Activity {
 	private Intent mScannerIntent = null;
 	// The last Intent returned as a result of creating a book.
 	private Intent mLastBookIntent = null;
-
-	// Used by AsyncTask to get the ProgressDialog
-	public android.app.ProgressDialog getProgress() {
-		return mProgress;
-	}
-
-	// Dismiss the ProgressDialog and clear pointer.
-	public void dismissProgress() {
-		if (mProgress != null && mProgress.isShowing()) {
-			mProgress.dismiss();
-			mProgress = null;
-		}
-	}
-
-	/**
-	 * Simple data class containing information to me displayed in UI thread.
-	 */
-	private class ProgressInfo {
-		int			id = 0;
-		boolean 	toastIt = false;
-		int			extra;
-		Exception 	e = null;
-		
-		ProgressInfo(int messageId) { id = messageId; }
-		ProgressInfo(int messageId, boolean toast, int extraText, Exception e) {
-			id = messageId;
-			toastIt = toast;
-			extra = extraText;
-			this.e = e;
-		}
-	}
-
-	/*
-	 * AsyncTask to lookup and process an ISBN. Doe in background so that 
-	 * progress can be reported and to prevent locking up the android.
-	 */
-	public class SearchForBookTask extends android.os.AsyncTask<WeakReference<BookISBNSearch>, ProgressInfo, ContentValues> {
-
-		/*
-		 * Support for checking if task has finished in case the process finished while a screen rotation was happening.
-		 * We don't want the Activity to rebuild the ProgressDialog if this task has done it's main work.
-		 */
-		public boolean isFinished() { return (this.getStatus() == Status.FINISHED); };
-
-		/* 
-		 * Keep a WEAK reference to the parent activity. Keeping a strong
-		 * one could cause the GC problems since the parent keeps a pointer
-		 * to this task.
-		 */
-		protected WeakReference<BookISBNSearch> mParent = null;
-
-		public void setParent(WeakReference<BookISBNSearch> parent) {
-			mParent = parent;
-		}
-
-		protected ContentValues doInBackground(WeakReference<BookISBNSearch>... activity) {
-			mParent = activity[0];
-
-			/* Format the output 
-			 * String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, 
-			 * series, pages, series_num, list_price, anthology, location, read_start, read_end, audiobook, 
-			 * signed, description, genre};
-			 */
-			
-			// List which fields are not sourced externally (ie. are local-only). In the case of
-			// 'series' we try to derive it from the title.
-			boolean[]  localOnly = { false /* author */, false /* title */, false /* isbn */, 
-									false /* publisher */, false /* date_published */, true /* rating */,
-									true /* bookshelf */, true /* read */, true /* series */, false /* pages */,
-									true /* series_num */, false /* list_price */, false /* anthology */,
-									true /* location */, true /* read_start */, true /* read_end */,
-									false /* audiobook */, true /* signed */, false /* description */,
-									false /* genre */ };
-
-			//String[] book = {mParent.get().author, mParent.get().title, mParent.get().isbn, "", "", "0",  "", "", "", "", "", "", "0", "", "", "", "", "0", "", ""};
-			//String[] bookAmazon = {mParent.get().author, mParent.get().title, mParent.get().isbn, "", "", "0",  "", "", "", "", "", "", "0", "", "", "", "", "0", "", ""};
-			ContentValues bookData = new ContentValues();
-			bookData.put(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, mParent.get().author);
-			bookData.put(CatalogueDBAdapter.KEY_TITLE, mParent.get().title);
-			bookData.put(CatalogueDBAdapter.KEY_ISBN, mParent.get().isbn);
-			try {
-				//
-				//	Google
-				//
-				if (mParent != null)
-					publishProgress(new ProgressInfo(R.string.searching_google_books));
-
-				try {
-					GoogleBooksManager.searchGoogle(isbn, author, title, bookData);					
-				} catch (Exception e) {
-					publishProgress(new ProgressInfo(R.string.search_exception, true, R.string.searching_google_books, e));
-				}
-
-				// Copy the series for later
-				if (bookData.containsKey(CatalogueDBAdapter.KEY_TITLE)) {
-					bookData.put(CatalogueDBAdapter.KEY_SERIES_NAME, findSeries(bookData.getAsString(CatalogueDBAdapter.KEY_TITLE)));
-				}
-
-				//
-				//	Amazon
-				//
-				if (mParent != null)
-					publishProgress(new ProgressInfo(R.string.searching_amazon_books));
-
-				try {
-					AmazonManager.searchAmazon(isbn, author, title, bookData);
-				} catch (Exception e) {
-					publishProgress(new ProgressInfo(R.string.search_exception, true, R.string.searching_amazon_books, e));
-				}
-
-				//Look for series in Title. e.g. Red Phoenix (Dark Heavens Trilogy)
-				String tmpSeries = findSeries(bookData.getAsString(CatalogueDBAdapter.KEY_TITLE));
-
-				if (tmpSeries != null && tmpSeries.length() > 0) {
-					if (!bookData.containsKey(CatalogueDBAdapter.KEY_SERIES_NAME) 
-							|| bookData.getAsString(CatalogueDBAdapter.KEY_SERIES_NAME).length() < tmpSeries.length() ) {
-						bookData.put(CatalogueDBAdapter.KEY_SERIES_NAME, tmpSeries);
-					}
-				}
-
-				//
-				//	LibraryThing
-				//
-				//	We always contact LibraryThing because it is a good source of Series data and thumbnails. But it 
-				//	does require an ISBN AND a developer key.
-				//
-				if (bookData.containsKey(CatalogueDBAdapter.KEY_ISBN)) {
-					String isbn = bookData.getAsString(CatalogueDBAdapter.KEY_ISBN);
-					if (isbn.length() > 0) {
-						if (mParent != null)
-							publishProgress(new ProgressInfo(R.string.searching_library_thing));
-						LibraryThingManager ltm = new LibraryThingManager(bookData);
-						try {
-							ltm.searchByIsbn(isbn);											
-						} catch (Exception e) {
-							publishProgress(new ProgressInfo(R.string.search_exception, true, R.string.searching_library_thing, e));
-						}
-					}
-				}
-				return bookData;
-
-			} catch (Exception e) {
-				publishProgress(new ProgressInfo(R.string.search_exception, true, R.string.search_fail, e));
-				return bookData;
-			}
-		}
-
-		// Called in UI thread; update the ProgressDialog
-		protected void onProgressUpdate(ProgressInfo... progress) {
-			try {
-				ProgressInfo pi = progress[0];
-				if (mParent != null && mParent.get() != null && mParent.get().getProgress() != null) {
-					android.content.res.Resources res = getResources();
-					if (pi.toastIt) {
-						// Use args...
-						String s;
-						try {s = pi.e.getMessage(); } catch (Exception e2) {s = "Unknown Exception";};
-						String msg = String.format(res.getString(pi.id), res.getString(pi.extra), s);
-						Toast.makeText(mParent.get(), msg, Toast.LENGTH_LONG).show();
-					} else {
-						// Not toasted, this it's just a text message
-						getProgress().setMessage(res.getString(pi.id));
-					}
-				}				
-			} catch (Exception e) {
-				Log.e("BC", "Failed to log progess");
-			}
-		}
-
-		private void doProperCase(ContentValues values, String key) {
-			if (!values.containsKey(key))
-				return;
-			values.put(key, properCase(values.getAsString(key)));
-		}
-
-		// Called in UI thread; perform appropriate next step
-	    protected void onPostExecute(ContentValues result) {
-	    	// If there are thumbnails present, pick the biggest, delete others and rename.
-	    	Utils.cleanupThumbnails(result);
-
-	    	// If book is not found, just return to dialog.
-	    	String author = "";
-	    	String title = "";
-	    	try {
-	    		author = result.getAsString(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);
-	    	} catch (Exception e) {}
-	    	try {
-	    		title = result.getAsString(CatalogueDBAdapter.KEY_TITLE);
-	    	} catch (Exception e) {}
-			if (author.length() == 0 && title.length() == 0) {
-				if (mParent != null && mParent.get() != null)
-					mParent.get().dismissProgress();
-
-				Toast.makeText(mParent.get(), R.string.book_not_found, Toast.LENGTH_LONG).show();
-				// Leave the ISBN text unchanged in case they need to edit it.
-				if (mMode == MODE_SCAN)
-					startScannerActivity();
-			} else {
-				if (mParent != null && mParent.get() != null && mParent.get().getProgress() != null) 
-					mParent.get().getProgress().setMessage("Adding book...");
-				doProperCase(result, CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);
-				doProperCase(result, CatalogueDBAdapter.KEY_TITLE);
-				doProperCase(result, CatalogueDBAdapter.KEY_PUBLISHER);
-				doProperCase(result, CatalogueDBAdapter.KEY_DATE_PUBLISHED);
-				doProperCase(result, CatalogueDBAdapter.KEY_SERIES_NAME);
-				createBook(result);
-				// Clear the data entry fields ready for the next one
-				clearFields();
-			}
-			// Clear ref to parent
-			if (mParent != null) {
-				mParent.clear();
-				mParent = null;
-			}
-			// Clear reference to this task.
-			mSearchTask = null;
-	    }
-	 }
 
 	/**
 	 * Called when the activity is first created. This function will search the interwebs for 
@@ -573,14 +358,17 @@ public class BookISBNSearch extends Activity {
 			this.author = author;
 			this.title = title;
 
-			// Show a ProgressDialog
-			mProgress = android.app.ProgressDialog.show(this, "Searching...", "Searching internet for book...",true);
-			mProgress.setCancelable(false);
+//			// Show a ProgressDialog
+//			mProgress = android.app.ProgressDialog.show(this, "Searching...", "Searching internet for book...",true);
+//			mProgress.setCancelable(false);
+//
+//			// Start the lookup task
+//			mSearchTask = new SearchForBookTask();
+//			WeakReference<BookISBNSearch> ref = new WeakReference<BookISBNSearch>(this);
+//			mSearchTask.execute(ref,null,null);
 
-			// Start the lookup task
-			mSearchTask = new SearchForBookTask();
-			WeakReference<BookISBNSearch> ref = new WeakReference<BookISBNSearch>(this);
-			mSearchTask.execute(ref,null,null);
+			mSearchThread = new SearchForBookThread(this, mTaskHandler, author, title, isbn);
+			mSearchThread.start();
 
 		} catch (Exception e) {
 			Toast.makeText(this, R.string.search_fail, Toast.LENGTH_LONG).show();
@@ -589,35 +377,69 @@ public class BookISBNSearch extends Activity {
 		}
 	}
 	
+	private SearchHandler mTaskHandler = new SearchHandler() {
+
+		public void onFinish(ContentValues arg) {
+			if (arg == null) {
+				if (mMode == MODE_SCAN)
+					startScannerActivity();
+			} else {
+				if (mSearchThread != null)
+					mSearchThread.doProgress("Adding Book...",0);
+				createBook(arg);
+				// Clear the data entry fields ready for the next one
+				clearFields();
+			}
+			mSearchThread = null;
+		}
+
+		@Override
+		public String getString(int id) {
+			return getResources().getString(id);
+		}
+		
+	};
+
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		// Leaving the PD ref around causes some issues. Just clear it.
 		// We will recreate later.
-		dismissProgress();
+//		dismissProgress();
 	}
 	
 	@Override
 	protected void onRestoreInstanceState(Bundle inState) {
-		// Get the AsyncTask
-		mSearchTask = (SearchForBookTask) getLastNonConfigurationInstance();
-		if (mSearchTask != null && !mSearchTask.isFinished()) {
-			// If we had a task, create the progross dialog and reset the pointers.
-			mProgress = android.app.ProgressDialog.show(this, "Searching...", "Searching internet for book...",true);
-			mSearchTask.setParent(new WeakReference<BookISBNSearch>(this));
-		}
+		mSearchThread = (SearchForBookThread) getLastNonConfigurationInstance();
+		if (mSearchThread != null)
+			mSearchThread.reconnect(this, mTaskHandler);
+		
+//		// Get the AsyncTask
+//		mSearchTask = (SearchForBookTask) getLastNonConfigurationInstance();
+//		if (mSearchTask != null && !mSearchTask.isFinished()) {
+//			// If we had a task, create the progross dialog and reset the pointers.
+//			mProgress = android.app.ProgressDialog.show(this, "Searching...", "Searching internet for book...",true);
+//			mSearchTask.setParent(new WeakReference<BookISBNSearch>(this));
+//		}
 		super.onRestoreInstanceState(inState);
 	}
 
 	@Override
 	public Object onRetainNonConfigurationInstance() {
-		// Save the AsyncTask and remove the local refs.
-		SearchForBookTask t = mSearchTask;
-		if (mSearchTask != null) {
-			mSearchTask.setParent(null);
-			mSearchTask = null;
+		SearchForBookThread t = mSearchThread;
+		if (mSearchThread != null) {
+			mSearchThread.disconnect();
+			mSearchThread = null;
 		}
 		return t;
+		
+//		// Save the AsyncTask and remove the local refs.
+//		SearchForBookTask t = mSearchTask;
+//		if (mSearchTask != null) {
+//			mSearchTask.setParent(null);
+//			mSearchTask = null;
+//		}
+//		return t;
 	}
 	
 	@Override
@@ -636,15 +458,15 @@ public class BookISBNSearch extends Activity {
 		mDbHelper.close();
 	}
 	
-	public String findSeries(String title) {
-		String series = "";
-		int last = title.lastIndexOf("(");
-		int close = title.lastIndexOf(")");
-		if (last > -1 && close > -1 && last < close) {
-			series = title.substring((last+1), close);
-		}
-		return series;
-	}
+//	public String findSeries(String title) {
+//		String series = "";
+//		int last = title.lastIndexOf("(");
+//		int close = title.lastIndexOf(")");
+//		if (last > -1 && close > -1 && last < close) {
+//			series = title.substring((last+1), close);
+//		}
+//		return series;
+//	}
 
 	public String convertDate(String date) {
 		if (date.length() == 2) {
@@ -671,71 +493,6 @@ public class BookISBNSearch extends Activity {
 		return date;
 	}
 	
-	public String properCase(String inputString) {
-		StringBuilder ff = new StringBuilder(); 
-		String outputString;
-		int wordnum = 0;
-
-		try {
-			for(String f: inputString.split(" ")) {
-				if(ff.length() > 0) { 
-					ff.append(" "); 
-				} 
-				wordnum++;
-				String word = f.toLowerCase();
-	
-				if (word.substring(0,1).matches("[\"\\(\\./\\\\,]")) {
-					wordnum = 1;
-					ff.append(word.substring(0,1));
-					word = word.substring(1,word.length());
-				}
-	
-				/* Do not convert 1st char to uppercase in the following situations */
-				if (wordnum > 1 && word.matches("a|to|at|the|in|and|is|von|de|le")) {
-					ff.append(word);
-					continue;
-				} 
-				try {
-					if (word.substring(0,2).equals("mc")) {
-						ff.append(word.substring(0,1).toUpperCase());
-						ff.append(word.substring(1,2));
-						ff.append(word.substring(2,3).toUpperCase());
-						ff.append(word.substring(3,word.length()));
-						continue;
-					}
-				} catch (StringIndexOutOfBoundsException e) {
-					// do nothing and continue;
-				}
-	
-				try {
-					if (word.substring(0,3).equals("mac")) {
-						ff.append(word.substring(0,1).toUpperCase());
-						ff.append(word.substring(1,3));
-						ff.append(word.substring(3,4).toUpperCase());
-						ff.append(word.substring(4,word.length()));
-						continue;
-					}
-				} catch (StringIndexOutOfBoundsException e) {
-					// do nothing and continue;
-				}
-	
-				try {
-					ff.append(word.substring(0,1).toUpperCase());
-					ff.append(word.substring(1,word.length()));
-				} catch (StringIndexOutOfBoundsException e) {
-					ff.append(word);
-				}
-			}
-	
-			/* output */ 
-			outputString = ff.toString();
-		} catch (StringIndexOutOfBoundsException e) {
-			//empty string - do nothing
-			outputString = inputString;
-		}
-		return outputString;
-	}
-
 	/*
 	 * Load the BookEdit Activity
 	 * 
@@ -745,7 +502,7 @@ public class BookISBNSearch extends Activity {
 		Intent i = new Intent(this, BookEdit.class);
 		i.putExtra("bookData", book);
 		startActivityForResult(i, CREATE_BOOK);
-		dismissProgress();
+		//dismissProgress();
 	}
 
 	/**

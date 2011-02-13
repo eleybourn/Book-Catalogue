@@ -69,8 +69,10 @@ public class CatalogueDBAdapter {
 	public static final String KEY_SERIES_OLD = "series";
 	public static final String KEY_PAGES = "pages";
 	public static final String KEY_ROWID = "_id";
+	public static final String KEY_AUTHOR_DETAILS = "author_deatils";
 	public static final String KEY_FAMILY_NAME = "family_name";
 	public static final String KEY_GIVEN_NAMES = "given_names";
+	public static final String KEY_SERIES_DETAILS = "series_details";
 	public static final String KEY_SERIES_NUM = "series_num";
 	public static final String KEY_NOTES = "notes";
 	public static final String KEY_BOOK = "book";
@@ -1179,7 +1181,6 @@ public class CatalogueDBAdapter {
 				"l." + KEY_LOANED_TO + " as " + KEY_LOANED_TO + " " +  
 			" FROM " + DB_TB_BOOKS + " b" +
 				" LEFT OUTER JOIN " + DB_TB_LOAN +" l ON (l." + KEY_BOOK + "=b." + KEY_ROWID + ") " +
-			" WHERE a._id=b." + KEY_AUTHOR_ID + 
 			" ORDER BY b._id";
 		return mDb.rawQuery(sql, new String[]{});
 	}
@@ -2362,6 +2363,72 @@ public class CatalogueDBAdapter {
 		return s;
 	}
 
+	/**
+	 * Return a Cursor over the list of all authors  in the database for the given book
+	 * 
+	 * @param long rowId the rowId of the book
+	 * @return Cursor over all authors
+	 */
+	public Cursor fetchAllAuthorsByBook(long rowId) {
+		String sql = "SELECT DISTINCT a." + KEY_ROWID + " as " + KEY_ROWID 
+			+ ", a." + KEY_FAMILY_NAME + " as " + KEY_FAMILY_NAME
+			+ ", a." + KEY_GIVEN_NAMES + " as " + KEY_GIVEN_NAMES
+			+ ", Case When a." + KEY_GIVEN_NAMES + " = '' Then " + KEY_FAMILY_NAME
+			+ "  Else " + KEY_FAMILY_NAME + "||', '||" + KEY_GIVEN_NAMES 
+			+ " End as " + KEY_AUTHOR_FORMATTED
+			+ ", ba." + KEY_AUTHOR_POSITION
+			+ " FROM " + DB_TB_BOOK_AUTHOR + " ba Join " + DB_TB_AUTHORS + " a "
+			+ "       On a." + KEY_ROWID + " = ba." + KEY_AUTHOR_ID
+			+ " WHERE ba." + KEY_BOOK + "=" + rowId + " "
+			+ " ORDER BY ba." + KEY_AUTHOR_POSITION + " Asc, " + KEY_AUTHOR_FORMATTED + " Collate UNICODE ASC";
+		return mDb.rawQuery(sql, new String[]{});
+	}
+
+	String getBookAuthorsDetails(long id) {
+		String authorDetails = "";
+		Cursor authors = fetchAllAuthorsByBook(id);
+		int authorCol = authors.getColumnIndex(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);
+		while (authors.moveToNext()) {
+			if (authorDetails.length() > 0)
+				authorDetails += "|";
+			authorDetails += Utils.encodeListItem(authors.getString(authorCol));
+		}
+		authors.close();
+		return authorDetails;
+	}
+
+	/**
+	 * Return a Cursor over the list of all authors  in the database for the given book
+	 * 
+	 * @param long rowId the rowId of the book
+	 * @return Cursor over all authors
+	 */
+	public Cursor fetchAllSeriesByBook(long rowId) {
+		String sql = "SELECT DISTINCT s." + KEY_ROWID + " as " + KEY_ROWID 
+			+ ", s." + KEY_SERIES_NAME + " as " + KEY_SERIES_NAME
+			+ ", bs." + KEY_SERIES_NUM + " as " + KEY_SERIES_NUM
+			+ ", " + KEY_SERIES_NAME + "||' ('||" + KEY_SERIES_NUM + "||')' as " + KEY_SERIES_FORMATTED 
+			+ " FROM " + DB_TB_BOOK_SERIES + " bs Join " + DB_TB_SERIES + " s "
+			+ "       On s." + KEY_ROWID + " = bs." + KEY_SERIES_ID
+			+ " WHERE bs." + KEY_BOOK + "=" + rowId + " "
+			+ " ORDER BY s." + KEY_SERIES_NAME + " Collate UNICODE ASC";
+		return mDb.rawQuery(sql, new String[]{});
+	}
+
+	String getBookSeriesDetails(long id) {
+		String seriesDetails = "";
+		Cursor series = fetchAllSeriesByBook(id);
+		int seriesNameCol = series.getColumnIndex(CatalogueDBAdapter.KEY_SERIES_NAME);
+		int seriesNumCol = series.getColumnIndex(CatalogueDBAdapter.KEY_SERIES_NUM);
+		while (series.moveToNext()) {
+			if (seriesDetails.length() > 0)
+				seriesDetails += "|";
+			seriesDetails += Utils.encodeListItem(series.getString(seriesNameCol) + "(" + series.getString(seriesNumCol) + ")");
+		}
+		series.close();
+		return seriesDetails;
+	}
+	
 	/**
 	 * Return a ContentValues collection containing only those values from 'source' that match columns in 'dest'.
 	 * - Exclude the primary key from the list of columns.

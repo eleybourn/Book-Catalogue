@@ -20,11 +20,13 @@
 
 package com.eleybourn.bookcatalogue;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -35,9 +37,25 @@ import java.util.ArrayList;
 
 import android.content.ContentValues;
 import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.util.Log;
 
 public class Utils {
+	private static String filePath = Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION;
+	private static String UTF8 = "utf8";
+	private static int BUFFER_SIZE = 8192;
+
+	static public boolean sdCardWritable() {
+		/* Test write to the SDCard */
+		try {
+			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath + "/.nomedia"), UTF8), BUFFER_SIZE);
+			out.write("");
+			out.close();
+			return true;
+		} catch (IOException e) {
+			return false;
+		}		
+	}
 
 	/**
 	 * Encode a string by 'escaping' all instances of: '|', '\', \r, \n. The
@@ -277,4 +295,70 @@ public class Utils {
     		result.remove("__thumbnail");
     	}			
 	}
+
+	public static String properCase(String inputString) {
+		StringBuilder ff = new StringBuilder(); 
+		String outputString;
+		int wordnum = 0;
+
+		try {
+			for(String f: inputString.split(" ")) {
+				if(ff.length() > 0) { 
+					ff.append(" "); 
+				} 
+				wordnum++;
+				String word = f.toLowerCase();
+	
+				if (word.substring(0,1).matches("[\"\\(\\./\\\\,]")) {
+					wordnum = 1;
+					ff.append(word.substring(0,1));
+					word = word.substring(1,word.length());
+				}
+	
+				/* Do not convert 1st char to uppercase in the following situations */
+				if (wordnum > 1 && word.matches("a|to|at|the|in|and|is|von|de|le")) {
+					ff.append(word);
+					continue;
+				} 
+				try {
+					if (word.substring(0,2).equals("mc")) {
+						ff.append(word.substring(0,1).toUpperCase());
+						ff.append(word.substring(1,2));
+						ff.append(word.substring(2,3).toUpperCase());
+						ff.append(word.substring(3,word.length()));
+						continue;
+					}
+				} catch (StringIndexOutOfBoundsException e) {
+					// do nothing and continue;
+				}
+	
+				try {
+					if (word.substring(0,3).equals("mac")) {
+						ff.append(word.substring(0,1).toUpperCase());
+						ff.append(word.substring(1,3));
+						ff.append(word.substring(3,4).toUpperCase());
+						ff.append(word.substring(4,word.length()));
+						continue;
+					}
+				} catch (StringIndexOutOfBoundsException e) {
+					// do nothing and continue;
+				}
+	
+				try {
+					ff.append(word.substring(0,1).toUpperCase());
+					ff.append(word.substring(1,word.length()));
+				} catch (StringIndexOutOfBoundsException e) {
+					ff.append(word);
+				}
+			}
+	
+			/* output */ 
+			outputString = ff.toString();
+		} catch (StringIndexOutOfBoundsException e) {
+			//empty string - do nothing
+			outputString = inputString;
+		}
+		return outputString;
+	}
+
 }

@@ -163,4 +163,8 @@
 <string name="vldt_read_start_after_end">The date reading started is after the end date</string>
 <string name="backup_success">Backup Success</string>
 <string name="backup_failed">Backup Failed</string>
+<string name="file_must_contain_column">File must contain column named %s</string>
+<string name="file_must_contain_any_column">File must contain a column with one of the following names: %s</string>
+<string name="column_is_blank">Column %1$s is blank at row %2$s</string>
+<string name="columns_are_blank">Columns %1$s are all blank at row %2$d</string>
 </resources>

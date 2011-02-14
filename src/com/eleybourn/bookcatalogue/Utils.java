@@ -361,4 +361,31 @@ public class Utils {
 		return outputString;
 	}
 
+	/**
+	 * Join the passed array of strings, with 'delim' between them.
+	 * 
+	 * @param sa		Array of strings to join
+	 * @param delim		Delimiter to place between entries
+	 * 
+	 * @return			The joined strings
+	 */
+	static String join(String[] sa, String delim) {
+		// Simple case, return empty string
+		if (sa.length <= 0)
+			return "";
+
+		// Initialize with first
+		StringBuilder buf = new StringBuilder(sa[0]);
+
+		if (sa.length > 1) {
+			// If more than one, loop appending delim then string.
+			for(int i = 1; i < sa.length; i++) {
+				buf.append(delim);
+				buf.append(sa[i]);
+			}
+		}
+		// Return result
+		return buf.toString();
+	}
+	
 }

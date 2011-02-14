@@ -992,7 +992,11 @@ public class Fields extends ArrayList<Fields.Field> {
 		 */
 		public void setFromCursor(Cursor c) {
 			if (column.length() > 0 && !doNoFetch) {
-				mAccessor.set(this, c);
+				try {
+					mAccessor.set(this, c);					
+				} catch (android.database.CursorIndexOutOfBoundsException e) {
+					throw new RuntimeException("Column '" + this.column + "' not found in cursor",e);
+				}
 			}
 		}
 	}

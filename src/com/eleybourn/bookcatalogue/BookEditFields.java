@@ -172,7 +172,6 @@ public class BookEditFields extends Activity {
 			setContentView(R.layout.edit_book);
 
 			// Generic validators; if field-specific defaults are needed, create a new one.
-			FieldValidator booleanValidator = new Fields.BooleanValidator("0");
 			FieldValidator integerValidator = new Fields.IntegerValidator("0");
 			FieldValidator nonBlankValidator = new Fields.NonBlankValidator();
 			FieldValidator blankOrIntegerValidator = new Fields.OrValidator(new Fields.BlankValidator(), new Fields.IntegerValidator("0"));

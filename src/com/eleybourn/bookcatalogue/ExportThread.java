@@ -37,7 +37,9 @@ public class ExportThread extends TaskWithProgress {
 
 	@Override
 	protected void onFinish() {
-		// Nothing to do
+		ExportHandler h = (ExportHandler)getTaskHandler();
+		if (h != null)
+			h.onFinish();
 	}
 
 	@Override

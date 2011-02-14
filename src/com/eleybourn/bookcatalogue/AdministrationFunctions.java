@@ -115,6 +115,18 @@ public class AdministrationFunctions extends Activity {
 		}
 	};
 
+	final ImportThread.ImportHandler mImportHandler = new ImportThread.ImportHandler() {
+		@Override
+		public String getString(int id) {
+			return getResources().getString(id);
+		}
+
+		@Override
+		public void onFinish() {
+			mActiveTask = null;
+		}
+	};
+
 	final Handler mProgressHandler = new Handler() {
 		public void handleMessage(Message msg) {
 			int total = msg.getData().getInt("total");
@@ -477,255 +489,255 @@ public class AdministrationFunctions extends Activity {
 		return importedString;
 	}
 	
-	private class ImportThread extends Thread {
-		public ArrayList<String> export = null;
-		private Handler mHandler;
-		
-		/**
-		 * @param handler
-		 */
-		public ImportThread(Handler handler) {
-			mHandler = handler;
-		}
-		
-		private void sendMessage(int num, String title) {
-			/* Send message to the handler */
-			Message msg = mHandler.obtainMessage();
-			Bundle b = new Bundle();
-			b.putInt("total", num);
-			b.putString("title", title);
-			msg.setData(b);
-			mHandler.sendMessage(msg);
-			return;
-		}
-
-		//
-		// This CSV parser is not a complete parser, but it will parse files exported by older 
-		// versions. At some stage in the future it would be good to allow full CSV export 
-		// and import to allow for escape('\') chars so that cr/lf can be preserved.
-		// 
-		private String[] returnRow(String row) {
-			// Need to handle double quotes etc
-			char sep = ',';				// CSV seperator
-			char quoteChar = '"';		// CSV quote char
-			int pos = 0;				// Current position
-			boolean inQuote = false;	// In a quoted string
-			char c;						// 'Current' char
-			char next					// 'Next' char 
-					= (row.length() > 0) ? row.charAt(0) : '\0';
-			int endPos					// Last position in row 
-					= row.length() - 1;
-			ArrayList<String> fields	// Array of fields found in row
-					= new ArrayList<String>();
-
-			StringBuilder bld			// Temp. storage for current field
-					= new StringBuilder();
-
-			while (next != '\0')
-			{
-				// Get current and next char
-				c = next;
-				next = (pos < endPos) ? row.charAt(pos+1) : '\0';
-
-				if (inQuote)
-				{
-					if (c == quoteChar) {
-						if (next == quoteChar)
-						{
-							// Double-quote: Advance one more and append a single quote
-							pos++;
-							next = (pos < endPos) ? row.charAt(pos+1) : '\0';
-							bld.append(c);
-						} else {
-							// Leave the quote
-							inQuote = false;
-						}
-					} else {
-						// Append anything else that appears in quotes
-						bld.append(c);
-					}
-				} else {
-					if (bld.length() == 0 && (c == ' ' || c == '\t') ) {
-						// Skip leading white space
-					} else if (c == quoteChar) {
-						if (bld.length() > 0) {
-							// Fields with quotes MUST be quoted...
-							throw new IllegalArgumentException();
-						} else {
-							inQuote = true;
-						}
-					} else if (c == sep) {
-						// Add this field and reset it.
-						fields.add(bld.toString());
-						bld = new StringBuilder();
-					} else {
-						// Just append the char
-						bld.append(c);
-					}
-				}
-				pos++;
-			};
-
-			// Add the remaining chunk
-			fields.add(bld.toString());
-
-			// Return the result as a String[].
-			String[] imported = new String[fields.size()];
-			fields.toArray(imported);
-
-			return imported;
-		}
-
-
-		// Require a column
-		private void requireColumn(ContentValues values, String name) {
-			if (!values.containsKey(name))
-				throw new RuntimeException("File must contain column named " + name);
-		}
-
-		private void requireNonblank(ContentValues values, String name, int row) {
-			if (values.getAsString(name).length() == 0)
-				throw new RuntimeException("Column " + name + " is blank at line " + row);
-		}
-
-		@Override
-		public void run() {
-			Looper.prepare();
-
-			// Container for values.
-			ContentValues values = new ContentValues();
-
-			String[] names = returnRow(export.get(0));
-			for(int i = 0; i < names.length; i++) {
-				names[i] = names[i].toLowerCase();
-				values.put(names[i], "");
-			}
-
-			// Make sure required fields are present.
-			requireColumn(values, CatalogueDBAdapter.KEY_ROWID);
-			requireColumn(values, CatalogueDBAdapter.KEY_FAMILY_NAME);
-
-			if (!values.containsKey(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED)) {
-				values.put(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, "");
-			}
-
-			int row = 1;
-			int num = 0;
-
-			/* Iterate through each imported row */
-			while (row < export.size()) {
-				num++;
-				String[] imported = returnRow(export.get(row));
-				row++;
-
-				for(int i = 0; i < names.length; i++) {
-					values.put(names[i], imported[i]);
-				}
-
-				// Validate ID
-				String idVal = values.getAsString(CatalogueDBAdapter.KEY_ROWID.toLowerCase());
-				if (idVal == "") {
-					idVal = "0";
-					values.put(CatalogueDBAdapter.KEY_ROWID, idVal);
-				}
-
-				requireNonblank(values, CatalogueDBAdapter.KEY_FAMILY_NAME, row);
-				requireNonblank(values, CatalogueDBAdapter.KEY_TITLE, row);
-
-				String family = values.getAsString(CatalogueDBAdapter.KEY_FAMILY_NAME);
-				String given = "";
-
-				if (values.containsKey(CatalogueDBAdapter.KEY_GIVEN_NAMES))
-					given = values.getAsString(CatalogueDBAdapter.KEY_GIVEN_NAMES);
-				String title = values.getAsString(CatalogueDBAdapter.KEY_TITLE);
-
-				values.put(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, family + ", " + given);
-
-				// Make sure we have bookself_text if we imported bookshelf
-				if (values.containsKey(CatalogueDBAdapter.KEY_BOOKSHELF) && !values.containsKey("bookshelf_text")) {
-					values.put("bookshelf_text", values.getAsString(CatalogueDBAdapter.KEY_BOOKSHELF));
-				}
-
-				try {
-					if (idVal.equals("0")) {
-						// ID is unknown, may be new. Check if it exists in the current database.
-						Cursor book = null;
-						int rows = 0;
-						// If the ISBN is specified, use it as a definitive lookup.
-						String isbn = values.getAsString(CatalogueDBAdapter.KEY_ISBN);
-						if (isbn != "") {
-							book = mDbHelper.fetchBookByISBN(isbn);
-							rows = book.getCount();
-						} else {
-							if (rows == 0) {
-								book = mDbHelper.fetchByAuthorAndTitle(family, given, title);
-								rows = book.getCount();
-							}
-						}
-						if (rows != 0) {
-							book.moveToFirst();
-							// Its a new entry, but the ISBN exists
-							Integer id = book.getInt(0);
-							values.put(CatalogueDBAdapter.KEY_ROWID, book.getString(0));
-							mDbHelper.updateBook(id,values);
-							importUpdated++;
-						} else {
-							Long id = mDbHelper.createBook(values);
-							idVal = id.toString();
-							values.put(CatalogueDBAdapter.KEY_ROWID, idVal);
-							importCreated++;
-						}
-					} else {
-						Long id = Long.parseLong(idVal);
-						Cursor book = mDbHelper.fetchBookById(id);
-						int rows = book.getCount();
-						if (rows == 0) {
-							id = mDbHelper.createBook(values);
-							importCreated++;
-							idVal = id.toString();
-							values.put(CatalogueDBAdapter.KEY_ROWID, idVal);
-						} else {
-							// Book exists and should be updated if it has changed
-							mDbHelper.updateBook(id, values);
-							importUpdated++;
-						}
-					}
-				} catch (Exception e) {
-					//Log.e("BC", "Import Book (Single) Error");
-					// do nothing
-				}
-
-				if (!values.get(CatalogueDBAdapter.KEY_LOANED_TO).equals("")) {
-					mDbHelper.createLoan(values);
-				}
-
-				if (values.containsKey(CatalogueDBAdapter.KEY_ANTHOLOGY)) {
-					int anthology = Integer.parseInt(values.getAsString(CatalogueDBAdapter.KEY_ANTHOLOGY));
-					int id = Integer.parseInt(values.getAsString(CatalogueDBAdapter.KEY_ROWID));
-					if (anthology == CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS || anthology == CatalogueDBAdapter.ANTHOLOGY_SAME_AUTHOR) {
-						int oldi = 0;
-						String anthology_titles = values.getAsString("anthology_titles");
-						int i = anthology_titles.indexOf("|", oldi);
-						while (i > -1) {
-							String extracted_title = anthology_titles.substring(oldi, i).trim();
-							
-							int j = extracted_title.indexOf("*");
-							if (j > -1) {
-								String anth_title = extracted_title.substring(0, j).trim();
-								String anth_author = extracted_title.substring((j+1)).trim();
-								mDbHelper.createAnthologyTitle(id, anth_author, anth_title);
-							}
-							oldi = i + 1;
-							i = anthology_titles.indexOf("|", oldi);
-						}
-					}
-				}
-
-				sendMessage(num, title);
-			}
-			sendMessage(0, "Import Complete");
-		}
-	}	
+//	private class ImportThread extends Thread {
+//		//public ArrayList<String> export = null;
+//		private Handler mHandler;
+//		
+//		/**
+//		 * @param handler
+//		 */
+//		public ImportThread(Handler handler) {
+//			mHandler = handler;
+//		}
+//		
+//		private void sendMessage(int num, String title) {
+//			/* Send message to the handler */
+//			Message msg = mHandler.obtainMessage();
+//			Bundle b = new Bundle();
+//			b.putInt("total", num);
+//			b.putString("title", title);
+//			msg.setData(b);
+//			mHandler.sendMessage(msg);
+//			return;
+//		}
+//
+//		//
+//		// This CSV parser is not a complete parser, but it will parse files exported by older 
+//		// versions. At some stage in the future it would be good to allow full CSV export 
+//		// and import to allow for escape('\') chars so that cr/lf can be preserved.
+//		// 
+//		private String[] returnRow(String row) {
+//			// Need to handle double quotes etc
+//			char sep = ',';				// CSV seperator
+//			char quoteChar = '"';		// CSV quote char
+//			int pos = 0;				// Current position
+//			boolean inQuote = false;	// In a quoted string
+//			char c;						// 'Current' char
+//			char next					// 'Next' char 
+//					= (row.length() > 0) ? row.charAt(0) : '\0';
+//			int endPos					// Last position in row 
+//					= row.length() - 1;
+//			ArrayList<String> fields	// Array of fields found in row
+//					= new ArrayList<String>();
+//
+//			StringBuilder bld			// Temp. storage for current field
+//					= new StringBuilder();
+//
+//			while (next != '\0')
+//			{
+//				// Get current and next char
+//				c = next;
+//				next = (pos < endPos) ? row.charAt(pos+1) : '\0';
+//
+//				if (inQuote)
+//				{
+//					if (c == quoteChar) {
+//						if (next == quoteChar)
+//						{
+//							// Double-quote: Advance one more and append a single quote
+//							pos++;
+//							next = (pos < endPos) ? row.charAt(pos+1) : '\0';
+//							bld.append(c);
+//						} else {
+//							// Leave the quote
+//							inQuote = false;
+//						}
+//					} else {
+//						// Append anything else that appears in quotes
+//						bld.append(c);
+//					}
+//				} else {
+//					if (bld.length() == 0 && (c == ' ' || c == '\t') ) {
+//						// Skip leading white space
+//					} else if (c == quoteChar) {
+//						if (bld.length() > 0) {
+//							// Fields with quotes MUST be quoted...
+//							throw new IllegalArgumentException();
+//						} else {
+//							inQuote = true;
+//						}
+//					} else if (c == sep) {
+//						// Add this field and reset it.
+//						fields.add(bld.toString());
+//						bld = new StringBuilder();
+//					} else {
+//						// Just append the char
+//						bld.append(c);
+//					}
+//				}
+//				pos++;
+//			};
+//
+//			// Add the remaining chunk
+//			fields.add(bld.toString());
+//
+//			// Return the result as a String[].
+//			String[] imported = new String[fields.size()];
+//			fields.toArray(imported);
+//
+//			return imported;
+//		}
+//
+//
+//		// Require a column
+//		private void requireColumn(ContentValues values, String name) {
+//			if (!values.containsKey(name))
+//				throw new RuntimeException("File must contain column named " + name);
+//		}
+//
+//		private void requireNonblank(ContentValues values, String name, int row) {
+//			if (values.getAsString(name).length() == 0)
+//				throw new RuntimeException("Column " + name + " is blank at line " + row);
+//		}
+//
+//		@Override
+//		public void run() {
+//			Looper.prepare();
+//
+//			// Container for values.
+//			ContentValues values = new ContentValues();
+//
+//			String[] names = returnRow(export.get(0));
+//			for(int i = 0; i < names.length; i++) {
+//				names[i] = names[i].toLowerCase();
+//				values.put(names[i], "");
+//			}
+//
+//			// Make sure required fields are present.
+//			requireColumn(values, CatalogueDBAdapter.KEY_ROWID);
+//			requireColumn(values, CatalogueDBAdapter.KEY_FAMILY_NAME);
+//
+//			if (!values.containsKey(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED)) {
+//				values.put(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, "");
+//			}
+//
+//			int row = 1;
+//			int num = 0;
+//
+//			/* Iterate through each imported row */
+//			while (row < export.size()) {
+//				num++;
+//				String[] imported = returnRow(export.get(row));
+//				row++;
+//
+//				for(int i = 0; i < names.length; i++) {
+//					values.put(names[i], imported[i]);
+//				}
+//
+//				// Validate ID
+//				String idVal = values.getAsString(CatalogueDBAdapter.KEY_ROWID.toLowerCase());
+//				if (idVal == "") {
+//					idVal = "0";
+//					values.put(CatalogueDBAdapter.KEY_ROWID, idVal);
+//				}
+//
+//				requireNonblank(values, CatalogueDBAdapter.KEY_FAMILY_NAME, row);
+//				requireNonblank(values, CatalogueDBAdapter.KEY_TITLE, row);
+//
+//				String family = values.getAsString(CatalogueDBAdapter.KEY_FAMILY_NAME);
+//				String given = "";
+//
+//				if (values.containsKey(CatalogueDBAdapter.KEY_GIVEN_NAMES))
+//					given = values.getAsString(CatalogueDBAdapter.KEY_GIVEN_NAMES);
+//				String title = values.getAsString(CatalogueDBAdapter.KEY_TITLE);
+//
+//				values.put(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, family + ", " + given);
+//
+//				// Make sure we have bookself_text if we imported bookshelf
+//				if (values.containsKey(CatalogueDBAdapter.KEY_BOOKSHELF) && !values.containsKey("bookshelf_text")) {
+//					values.put("bookshelf_text", values.getAsString(CatalogueDBAdapter.KEY_BOOKSHELF));
+//				}
+//
+//				try {
+//					if (idVal.equals("0")) {
+//						// ID is unknown, may be new. Check if it exists in the current database.
+//						Cursor book = null;
+//						int rows = 0;
+//						// If the ISBN is specified, use it as a definitive lookup.
+//						String isbn = values.getAsString(CatalogueDBAdapter.KEY_ISBN);
+//						if (isbn != "") {
+//							book = mDbHelper.fetchBookByISBN(isbn);
+//							rows = book.getCount();
+//						} else {
+//							if (rows == 0) {
+//								book = mDbHelper.fetchByAuthorAndTitle(family, given, title);
+//								rows = book.getCount();
+//							}
+//						}
+//						if (rows != 0) {
+//							book.moveToFirst();
+//							// Its a new entry, but the ISBN exists
+//							Integer id = book.getInt(0);
+//							values.put(CatalogueDBAdapter.KEY_ROWID, book.getString(0));
+//							mDbHelper.updateBook(id,values);
+//							importUpdated++;
+//						} else {
+//							Long id = mDbHelper.createBook(values);
+//							idVal = id.toString();
+//							values.put(CatalogueDBAdapter.KEY_ROWID, idVal);
+//							importCreated++;
+//						}
+//					} else {
+//						Long id = Long.parseLong(idVal);
+//						Cursor book = mDbHelper.fetchBookById(id);
+//						int rows = book.getCount();
+//						if (rows == 0) {
+//							id = mDbHelper.createBook(values);
+//							importCreated++;
+//							idVal = id.toString();
+//							values.put(CatalogueDBAdapter.KEY_ROWID, idVal);
+//						} else {
+//							// Book exists and should be updated if it has changed
+//							mDbHelper.updateBook(id, values);
+//							importUpdated++;
+//						}
+//					}
+//				} catch (Exception e) {
+//					//Log.e("BC", "Import Book (Single) Error");
+//					// do nothing
+//				}
+//
+//				if (!values.get(CatalogueDBAdapter.KEY_LOANED_TO).equals("")) {
+//					mDbHelper.createLoan(values);
+//				}
+//
+//				if (values.containsKey(CatalogueDBAdapter.KEY_ANTHOLOGY)) {
+//					int anthology = Integer.parseInt(values.getAsString(CatalogueDBAdapter.KEY_ANTHOLOGY));
+//					int id = Integer.parseInt(values.getAsString(CatalogueDBAdapter.KEY_ROWID));
+//					if (anthology == CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS || anthology == CatalogueDBAdapter.ANTHOLOGY_SAME_AUTHOR) {
+//						int oldi = 0;
+//						String anthology_titles = values.getAsString("anthology_titles");
+//						int i = anthology_titles.indexOf("|", oldi);
+//						while (i > -1) {
+//							String extracted_title = anthology_titles.substring(oldi, i).trim();
+//							
+//							int j = extracted_title.indexOf("*");
+//							if (j > -1) {
+//								String anth_title = extracted_title.substring(0, j).trim();
+//								String anth_author = extracted_title.substring((j+1)).trim();
+//								mDbHelper.createAnthologyTitle(id, anth_author, anth_title);
+//							}
+//							oldi = i + 1;
+//							i = anthology_titles.indexOf("|", oldi);
+//						}
+//					}
+//				}
+//
+//				sendMessage(num, title);
+//			}
+//			sendMessage(0, "Import Complete");
+//		}
+//	}	
 
 	
 	/**
@@ -734,20 +746,24 @@ public class AdministrationFunctions extends Activity {
 	 * return void
 	 */
 	private void importData() {
-		importUpdated = 0;
-		importCreated = 0;
 		ArrayList<String> export = readFile();
-		
-		pd = new ProgressDialog(AdministrationFunctions.this);
-		pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-		pd.setMessage("Importing...");
-		pd.setCancelable(false);
-		pd.setMax(export.size() - 1);
-		pd.show();
-
-		ImportThread thread = new ImportThread(mProgressHandler);
-		thread.export = export;
-		thread.start();
+		ImportThread thread = new ImportThread(this, mImportHandler, export);
+		thread.start();		
+		mActiveTask = thread;
+//		importUpdated = 0;
+//		importCreated = 0;
+//		ArrayList<String> export = readFile();
+//		
+//		pd = new ProgressDialog(AdministrationFunctions.this);
+//		pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+//		pd.setMessage("Importing...");
+//		pd.setCancelable(false);
+//		pd.setMax(export.size() - 1);
+//		pd.show();
+//
+//		ImportThread thread = new ImportThread(mProgressHandler);
+//		thread.export = export;
+//		thread.start();
 	}
 	
 	@Override
@@ -786,6 +802,8 @@ public class AdministrationFunctions extends Activity {
 				mActiveTask.reconnect(this, mThumbnailsHandler);
 			} else if (mActiveTask instanceof ExportThread) {
 				mActiveTask.reconnect(this, mExportHandler);
+			} else if (mActiveTask instanceof ImportThread) {
+				mActiveTask.reconnect(this, mImportHandler);
 			} else {
 				Log.e("BookCatalogue", "Unknown task type");
 			}

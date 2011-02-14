@@ -22,6 +22,7 @@ package com.eleybourn.bookcatalogue;
 import java.io.File;
 import java.io.IOException;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
@@ -199,7 +200,8 @@ public class CatalogueDBAdapter {
 		"create table " + DB_TB_BOOK_AUTHOR + "(" + 
 		KEY_BOOK + " integer REFERENCES " + DB_TB_BOOKS + " ON DELETE CASCADE ON UPDATE CASCADE, " +
 		KEY_AUTHOR_ID + " integer REFERENCES " + DB_TB_SERIES + " ON DELETE SET NULL ON UPDATE CASCADE, " +
-		KEY_AUTHOR_POSITION + " integer NOT NULL" + 
+		KEY_AUTHOR_POSITION + " integer NOT NULL, " + 
+		"PRIMARY KEY(" + KEY_BOOK + ", "  + KEY_AUTHOR_POSITION + ")" +
 		")";
 	
 	private static final String DATABASE_CREATE_INDICES = 
@@ -2148,6 +2150,19 @@ public class CatalogueDBAdapter {
 	}
 	
 	/**
+	 * This function will create a new series in the database
+	 * 
+	 * @param seriesName 	A string containing the series name
+	 * @return the ID of the new series
+	 */
+	public long createSeries(String seriesName) {
+		ContentValues initialValues = new ContentValues();
+		initialValues.put(KEY_SERIES_NAME, seriesName);
+		long result = mDb.insert(DB_TB_SERIES, null, initialValues);
+		return result;
+	}
+	
+	/**
 	 * Create a new book using the details provided. If the book is
 	 * successfully created return the new rowId for that book, otherwise return
 	 * a -1 to indicate failure.
@@ -2200,6 +2215,10 @@ public class CatalogueDBAdapter {
 		if (bookshelf != null) {
 			createBookshelfBooks(result, bookshelf);
 		}
+
+		createBookAuthors(result, values);
+		createBookSeries(result, values);
+
 		return result;
 	}
 	
@@ -2346,6 +2365,22 @@ public class CatalogueDBAdapter {
 	private String getAuthorId(String name) {
 		String[] names = processAuthorName(name);
 		return getAuthorId(names);
+	}
+
+	private String getSeriesId(String name) {
+		Cursor seriesCsr = getSeriesByName(name);
+		int aRows = seriesCsr.getCount();
+		long id;
+		if (aRows == 0) {
+			id = createSeries(name);
+		} else {
+			seriesCsr.moveToFirst();
+			id = seriesCsr.getLong(0);			
+		}
+
+		seriesCsr.close();
+
+		return Long.toString(id);
 	}
 
 	private String getAuthorId(String[] names) {
@@ -2570,10 +2605,91 @@ public class CatalogueDBAdapter {
 			}			
 		}
 
+		createBookAuthors(rowId, values);
+		createBookSeries(rowId, values);
+
 		// Delete any unused authors
 		deleteAuthors();
 
 		return success;
+	}
+
+	/**
+	 * If the passed ContentValues contains KEY_AUTHOR_DETAILS, parse them
+	 * and add the authors.
+	 * 
+	 * @param bookId		ID of book
+	 * @param bookData		Book fields
+	 */
+	private void createBookAuthors(long bookId, ContentValues bookData) {
+		// If we have AUTHOR_DETAILS, same them.
+		String authorDetails = bookData.getAsString(CatalogueDBAdapter.KEY_AUTHOR_DETAILS);
+		if (authorDetails != null && authorDetails.length() > 0) {
+			// Collection for insert/update statements
+			ContentValues bookAuthor = new ContentValues();
+			bookAuthor.put(KEY_BOOK, bookId);
+			// Get the authors and turn into a list of names
+			java.util.ArrayList<String> authors = Utils.decodeList(authorDetails);
+			Iterator<String> i = authors.iterator();
+			int pos = 0;
+			while (i.hasNext()) {
+				pos++;
+				// Get the name and find/add the author
+				String fullName = i.next().trim();
+				String authorId = getAuthorId(fullName);
+				bookAuthor.put(KEY_AUTHOR_ID, authorId);
+				bookAuthor.put(KEY_AUTHOR_POSITION, pos);
+				// Update or Insert.
+				int rows = mDb.update(DB_TB_BOOK_AUTHOR, bookAuthor, KEY_AUTHOR_POSITION + " = " + pos + " and " + KEY_BOOK + " = " + bookId, null);
+				if (rows == 0) {
+					mDb.insert(DB_TB_BOOK_AUTHOR, null, bookAuthor);					
+				}
+			}
+			// Delete any subsequent authors.
+			mDb.delete(DB_TB_BOOK_AUTHOR, KEY_AUTHOR_POSITION + " > " + pos + " and " + KEY_BOOK + " = " + bookId, null);
+		}		
+	}
+
+	/**
+	 * If the passed ContentValues contains KEY_SERIES_DETAILS, parse them
+	 * and add the series.
+	 * 
+	 * @param bookId		ID of book
+	 * @param bookData		Book fields
+	 */
+	private void createBookSeries(long bookId, ContentValues bookData) {
+		// If we have SERIES_DETAILS, same them.
+		String seriesDetails = bookData.getAsString(CatalogueDBAdapter.KEY_SERIES_DETAILS);
+		if (seriesDetails != null && seriesDetails.length() > 0) {
+			// Delete the current series
+			mDb.delete(DB_TB_BOOK_SERIES, KEY_BOOK + "=" + bookId + "", null);
+
+			// Collection for insert/update statements
+			ContentValues bookSeries = new ContentValues();
+			bookSeries.put(KEY_BOOK, bookId);
+			// Get the authors and turn into a list of names
+			java.util.ArrayList<String> series = Utils.decodeList(seriesDetails);
+			Iterator<String> i = series.iterator();
+			int pos = 0;
+			java.util.regex.Pattern p = java.util.regex.Pattern.compile("^(.*)\\s*\\((.*)\\)$");
+			while (i.hasNext()) {
+				pos++;
+				// Get the name and find/add the author
+				String seriesSpec = i.next().trim();
+				String seriesName;
+				java.util.regex.Matcher m = p.matcher(seriesSpec);
+				if (m.find()) {
+					seriesName = m.group(1);
+					bookSeries.put(KEY_SERIES_NUM, m.group(2));
+				} else {
+					seriesName = seriesSpec;
+				}
+
+				String seriesId = getSeriesId(seriesName);
+				bookSeries.put(KEY_SERIES_ID, seriesId);
+				mDb.insert(DB_TB_BOOK_SERIES, null, bookSeries);
+			}
+		}		
 	}
 
 	/**
@@ -2706,9 +2822,16 @@ public class CatalogueDBAdapter {
         return mDb.query(DB_TB_AUTHORS, new String[] {"_id", KEY_FAMILY_NAME, KEY_GIVEN_NAMES}, sql, null, null, null, null);
     }
     
-    
-    
-
+    /*
+     * This will return the author id based on the name. 
+     * The name can be in either "family, given" or "given family" format.
+     */
+    public Cursor getSeriesByName(String name) {
+    	String sql = "";
+    	sql = KEY_SERIES_NAME + "='" + encodeString(name) + "'";
+        return mDb.query(DB_TB_SERIES, new String[] {"_id", KEY_SERIES_NAME}, sql, null, null, null, null);
+    }
+ 
     /**
      * Return a Cursor over the list of all series in the database
      * 

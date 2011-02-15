@@ -299,11 +299,7 @@ public class SearchAmazonHandler extends DefaultHandler {
 				entry = false;
 			} else if (entry == true) {
 				if (localName.equalsIgnoreCase(AUTHOR)){
-					/**
-					 * TODO: handle multiple authors and this being called more than once, possibly adding duplicates
-					 * because of pre-existing data. Rely on the update process weeking them out.
-					 */
-					addIfNotPresent(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);
+					Utils.appendOrAdd(mBookData, CatalogueDBAdapter.KEY_AUTHOR_DETAILS, mBuilder.toString());
 				} else if (localName.equalsIgnoreCase(TITLE)){
 					addIfNotPresent(CatalogueDBAdapter.KEY_TITLE);
 				} else if (localName.equalsIgnoreCase(ISBN)){

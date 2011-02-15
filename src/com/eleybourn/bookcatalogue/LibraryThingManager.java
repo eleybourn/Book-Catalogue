@@ -503,7 +503,7 @@ public class LibraryThingManager {
 
 			} else if (localName.equalsIgnoreCase(AUTHOR)) {
 				// Add the author
-				addIfNotPresent(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);
+				Utils.appendOrAdd(mBookData, CatalogueDBAdapter.KEY_AUTHOR_DETAILS, mBuilder.toString());
 
 			} else if (localName.equalsIgnoreCase(FACT)) {
 				// Process the FACT according to the active FIELD type.

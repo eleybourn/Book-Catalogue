@@ -123,7 +123,7 @@ public class SearchForBookThread extends TaskWithProgress {
 	    	String author = "";
 	    	String title = "";
 	    	try {
-	    		author = mBookData.getAsString(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);
+	    		author = mBookData.getAsString(CatalogueDBAdapter.KEY_AUTHOR_DETAILS);
 	    	} catch (Exception e) {}
 	    	try {
 	    		title = mBookData.getAsString(CatalogueDBAdapter.KEY_TITLE);

@@ -104,6 +104,9 @@ public class BookEditFields extends Activity {
 	
 	public static final String BOOKSHELF_SEPERATOR = ", ";
 	
+	private String mAuthorDetails = "";
+	private String mSeriesDetails = "";
+
 	protected void getRowId() {
 		/* Get any information from the extras bundle */
 		Bundle extras = getIntent().getExtras();
@@ -643,6 +646,10 @@ public class BookEditFields extends Activity {
 			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);
 
 			book.close();
+			
+			mAuthorDetails = mDbHelper.getBookAuthorsDetails(mRowId);
+			mSeriesDetails = mDbHelper.getBookSeriesDetails(mRowId);
+
 		} else if (extras != null) {
 			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + this.getResources().getString(R.string.menu_insert));
 			// From the ISBN Search (add)
@@ -671,9 +678,12 @@ public class BookEditFields extends Activity {
 					} else {
 						mFields.getField(R.id.bookshelf_text).setValue(BookCatalogue.bookshelf + BOOKSHELF_SEPERATOR);
 					}
+
+					mAuthorDetails = values.getAsString(CatalogueDBAdapter.KEY_AUTHOR_DETAILS);
+					mSeriesDetails = values.getAsString(CatalogueDBAdapter.KEY_SERIES_DETAILS);
+
 				}
 				
-
 			} catch (NullPointerException e) {
 				// do nothing
 			}
@@ -695,6 +705,16 @@ public class BookEditFields extends Activity {
 				mFields.getField(R.id.bookshelf_text).setValue(BookCatalogue.bookshelf + BOOKSHELF_SEPERATOR);
 			}			
 		}
+		/**
+		 * TODO: Fill in AUTHOR_FORMATTED and SERIES_FORMATTED from mAuthorDetails and mSeriesDetails
+		 * TODO: Turn series and author into button fields that look like spinners (maybe)
+		 * TODO: Add an EditBookAuthors activity: author AND move up/down
+		 * TODO: Add an EditBookSeries activity: series (MAYBE up/down)
+		 * TODO: Add EditSeries to change series name (and maybe series_sort)
+		 * TODO: Add EditAuthor to edit author_name_disp and author_name_sort
+		 * 
+		 * TODO: Remove family/given; add author_name_sort and author_name_disp.
+		 */
 	}
 
 	/**
@@ -809,7 +829,9 @@ public class BookEditFields extends Activity {
 	 */
 	private void saveState(android.content.ContentValues values) {
 
-		
+		values.put(CatalogueDBAdapter.KEY_AUTHOR_DETAILS, mAuthorDetails);
+		values.put(CatalogueDBAdapter.KEY_SERIES_DETAILS, mSeriesDetails);
+
 		if (mRowId == null || mRowId == 0) {
 			String isbn = values.getAsString(CatalogueDBAdapter.KEY_ISBN);
 			/* Check if the book currently exists */

@@ -2631,21 +2631,27 @@ public class CatalogueDBAdapter {
 			// Get the authors and turn into a list of names
 			java.util.ArrayList<String> authors = Utils.decodeList(authorDetails);
 			Iterator<String> i = authors.iterator();
+			// The list MAY contain duplicates (eg. from Internet lookups of multiple
+			// sources), so we track them in a hash table
+			Hashtable<String, Boolean> idHash = new Hashtable<String, Boolean>();
 			int pos = 0;
 			while (i.hasNext()) {
-				pos++;
 				// Get the name and find/add the author
 				String fullName = i.next().trim();
 				String authorId = getAuthorId(fullName);
-				bookAuthor.put(KEY_AUTHOR_ID, authorId);
-				bookAuthor.put(KEY_AUTHOR_POSITION, pos);
-				// Update or Insert.
-				int rows = mDb.update(DB_TB_BOOK_AUTHOR, bookAuthor, KEY_AUTHOR_POSITION + " = " + pos + " and " + KEY_BOOK + " = " + bookId, null);
-				if (rows == 0) {
-					mDb.insert(DB_TB_BOOK_AUTHOR, null, bookAuthor);					
+				if (!idHash.containsKey(authorId)) {
+					idHash.put(authorId, true);
+					pos++;
+					bookAuthor.put(KEY_AUTHOR_ID, authorId);
+					bookAuthor.put(KEY_AUTHOR_POSITION, pos);
+					// Update or Insert.
+					int rows = mDb.update(DB_TB_BOOK_AUTHOR, bookAuthor, KEY_AUTHOR_POSITION + " = " + pos + " and " + KEY_BOOK + " = " + bookId, null);
+					if (rows == 0) {
+						mDb.insert(DB_TB_BOOK_AUTHOR, null, bookAuthor);					
+					}
 				}
 			}
-			// Delete any subsequent authors.
+			// Delete any remaining authors.
 			mDb.delete(DB_TB_BOOK_AUTHOR, KEY_AUTHOR_POSITION + " > " + pos + " and " + KEY_BOOK + " = " + bookId, null);
 		}		
 	}
@@ -2670,10 +2676,12 @@ public class CatalogueDBAdapter {
 			// Get the authors and turn into a list of names
 			java.util.ArrayList<String> series = Utils.decodeList(seriesDetails);
 			Iterator<String> i = series.iterator();
+			// The list MAY contain duplicates (eg. from Internet lookups of multiple
+			// sources), so we track them in a hash table
+			Hashtable<String, Boolean> idHash = new Hashtable<String, Boolean>();
 			int pos = 0;
 			java.util.regex.Pattern p = java.util.regex.Pattern.compile("^(.*)\\s*\\((.*)\\)$");
 			while (i.hasNext()) {
-				pos++;
 				// Get the name and find/add the author
 				String seriesSpec = i.next().trim();
 				String seriesName;
@@ -2686,8 +2694,12 @@ public class CatalogueDBAdapter {
 				}
 
 				String seriesId = getSeriesId(seriesName);
-				bookSeries.put(KEY_SERIES_ID, seriesId);
-				mDb.insert(DB_TB_BOOK_SERIES, null, bookSeries);
+				if (!idHash.containsKey(seriesId)) {
+					idHash.put(seriesId, true);
+					pos++;
+					bookSeries.put(KEY_SERIES_ID, seriesId);
+					mDb.insert(DB_TB_BOOK_SERIES, null, bookSeries);					
+				}
 			}
 		}		
 	}

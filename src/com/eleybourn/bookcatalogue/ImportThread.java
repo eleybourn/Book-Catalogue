@@ -16,20 +16,6 @@ public class ImportThread extends TaskWithProgress {
 	public ArrayList<String> mExport = null;
 	private CatalogueDBAdapter mDbHelper;
 	
-	// Create an ArrayUtils for Author objects...
-	ArrayUtils<Author> mAuthorUtils = new ArrayUtils<Author>(new Utils.Factory(){
-		@Override
-		public Object get(String source) {
-			return new Author(source);
-		}});
-
-	// Create an ArrayUtils for Series objects...
-	ArrayUtils<Author> mSeriesUtils = new ArrayUtils<Author>(new Utils.Factory(){
-		@Override
-		public Object get(String source) {
-			return new Author(source);
-		}});
-
 	public class ImportException extends RuntimeException {
 		ImportException(String s) {
 			super(s);
@@ -109,36 +95,64 @@ public class ImportThread extends TaskWithProgress {
 			requireNonblank(values, row, CatalogueDBAdapter.KEY_TITLE);
 			String title = values.getString(CatalogueDBAdapter.KEY_TITLE);
 
-			// Get the list of authors from whatever source is available.
-			String authorDetails;
-			authorDetails = values.getString(CatalogueDBAdapter.KEY_AUTHOR_DETAILS);
-			if (authorDetails == null || authorDetails.length() == 0) {
-				// Need to build it from other fields.
-				if (values.containsKey(CatalogueDBAdapter.KEY_FAMILY_NAME)) {
-					// Build from family/given
-					authorDetails = values.getString(CatalogueDBAdapter.KEY_FAMILY_NAME);
-					String given = "";
-					if (values.containsKey(CatalogueDBAdapter.KEY_GIVEN_NAMES))
-						given = values.getString(CatalogueDBAdapter.KEY_GIVEN_NAMES);
-					if (given != null && given.length() > 0)
-						authorDetails += ", " + given;
-				} else if (values.containsKey(CatalogueDBAdapter.KEY_AUTHOR_NAME)) {
-					authorDetails = values.getString(CatalogueDBAdapter.KEY_AUTHOR_NAME);
-				} else if (values.containsKey(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED)) {
-					authorDetails = values.getString(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);					
+			// Keep author handling stuff local
+			{
+				// Get the list of authors from whatever source is available.
+				String authorDetails;
+				authorDetails = values.getString(CatalogueDBAdapter.KEY_AUTHOR_DETAILS);
+				if (authorDetails == null || authorDetails.length() == 0) {
+					// Need to build it from other fields.
+					if (values.containsKey(CatalogueDBAdapter.KEY_FAMILY_NAME)) {
+						// Build from family/given
+						authorDetails = values.getString(CatalogueDBAdapter.KEY_FAMILY_NAME);
+						String given = "";
+						if (values.containsKey(CatalogueDBAdapter.KEY_GIVEN_NAMES))
+							given = values.getString(CatalogueDBAdapter.KEY_GIVEN_NAMES);
+						if (given != null && given.length() > 0)
+							authorDetails += ", " + given;
+					} else if (values.containsKey(CatalogueDBAdapter.KEY_AUTHOR_NAME)) {
+						authorDetails = values.getString(CatalogueDBAdapter.KEY_AUTHOR_NAME);
+					} else if (values.containsKey(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED)) {
+						authorDetails = values.getString(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);					
+					}
 				}
+
+				if (authorDetails == null || authorDetails.length() == 0) {
+					String s = getTaskHandler().getString(R.string.column_is_blank);
+					throw new ImportException(String.format(s, CatalogueDBAdapter.KEY_AUTHOR_DETAILS, row));
+				}
+
+				// Now build the array for authors
+				ArrayList<Author> aa = Utils.getAuthorUtils().decodeList(authorDetails, '|');
+				Utils.pruneAuthors(mDbHelper, aa);
+				values.putParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, aa);
 			}
 
-			if (authorDetails == null || authorDetails.length() == 0) {
-				String s = getTaskHandler().getString(R.string.column_is_blank);
-				throw new ImportException(String.format(s, CatalogueDBAdapter.KEY_AUTHOR_DETAILS, row));
+			// Keep series handling local
+			{
+				String seriesDetails;
+				seriesDetails = values.getString(CatalogueDBAdapter.KEY_SERIES_DETAILS);
+				if (seriesDetails == null || seriesDetails.length() == 0) {
+					// Try to build from SERIES_NAME and SERIES_NUM. It may all be blank
+					if (values.containsKey(CatalogueDBAdapter.KEY_SERIES_NAME)) {
+						seriesDetails = values.getString(CatalogueDBAdapter.KEY_SERIES_NAME);
+						if (seriesDetails != null && seriesDetails.length() != 0) {
+							String seriesNum = values.getString(CatalogueDBAdapter.KEY_SERIES_NUM);
+							if (seriesNum == null)
+								seriesNum = "";
+							seriesDetails += "(" + seriesNum + ")";
+						} else {
+							seriesDetails = null;
+						}
+					}
+				}
+				// Handle the series
+				ArrayList<Series> sa = Utils.getSeriesUtils().decodeList(seriesDetails, '|');
+				Utils.pruneSeries(mDbHelper, sa);
+				values.putParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY, sa);				
 			}
-
-			// Now build the array for authors
-			ArrayList<Author> aa = mAuthorUtils.decodeList(authorDetails, '|');
-			Utils.pruneAuthors(mDbHelper, aa);
-			values.putParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, aa);
-
+			
+			
 			// Make sure we have bookself_text if we imported bookshelf
 			if (values.containsKey(CatalogueDBAdapter.KEY_BOOKSHELF) && !values.containsKey("bookshelf_text")) {
 				values.putString("bookshelf_text", values.getString(CatalogueDBAdapter.KEY_BOOKSHELF));

@@ -204,6 +204,9 @@ public class Utils {
 		ArrayList<T> decodeList(String s, char delim) {
 			StringBuilder ns = new StringBuilder();
 			ArrayList<T> list = new ArrayList<T>();
+			if (s == null)
+				return list;
+
 			boolean inEsc = false;
 			for (int i = 0; i < s.length(); i++){
 			    char c = s.charAt(i);
@@ -594,6 +597,22 @@ public class Utils {
 				names.put(name, true);
 				if (a.id == 0)
 					a.id = db.lookupAuthorId(a);
+			}
+		}
+	}
+
+	public static void pruneSeries(CatalogueDBAdapter db, ArrayList<Series> series) {
+		Hashtable<String,Boolean> names = new Hashtable<String,Boolean>();
+
+		for(int i = series.size() - 1; i >=0; i--) {
+			Series s = series.get(i);
+			String name = s.getSortName();
+			if (names.containsKey(name)) {
+				series.remove(i);
+			} else {
+				names.put(name, true);
+				if (s.id == 0)
+					s.id = db.lookupSeriesId(s);
 			}
 		}
 	}

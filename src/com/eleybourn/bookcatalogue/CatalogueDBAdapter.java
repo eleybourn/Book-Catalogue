@@ -77,6 +77,7 @@ public class CatalogueDBAdapter {
 	public static final String KEY_FAMILY_NAME = "family_name";
 	public static final String KEY_GIVEN_NAMES = "given_names";
 	public static final String KEY_SERIES_DETAILS = "series_details";
+	public static final String KEY_SERIES_ARRAY = "series_array";
 	public static final String KEY_SERIES_NUM = "series_num";
 	public static final String KEY_NOTES = "notes";
 	public static final String KEY_BOOK = "book";
@@ -2414,6 +2415,20 @@ public class CatalogueDBAdapter {
 		return id;
 	}
 
+	public long lookupSeriesId(Series s) {
+		Cursor seriesCsr = getSeriesByName(s.name);
+		int aRows = seriesCsr.getCount();
+		long id;
+		if (aRows == 0)
+			return 0;
+
+		seriesCsr.moveToFirst();
+		id = seriesCsr.getLong(0);			
+		seriesCsr.close();
+
+		return id;
+	}
+
 	/**
 	 * Return a Cursor over the list of all authors  in the database for the given book
 	 * 
@@ -2445,17 +2460,42 @@ public class CatalogueDBAdapter {
 			if (count == 0)
 				return authorList;
 
+			int idCol = authors.getColumnIndex(CatalogueDBAdapter.KEY_ROWID);
 			int familyCol = authors.getColumnIndex(CatalogueDBAdapter.KEY_FAMILY_NAME);
 			int givenCol = authors.getColumnIndex(CatalogueDBAdapter.KEY_GIVEN_NAMES);
 
 			while (authors.moveToNext()) {
-				authorList.add(new Author(authors.getString(familyCol), authors.getString(givenCol)));
+				authorList.add(new Author(authors.getLong(idCol), authors.getString(familyCol), authors.getString(givenCol)));
 			}			
 		} finally {
 			if (authors != null)
 				authors.close();
 		}
 		return authorList;
+	}
+
+	ArrayList<Series> getBookSeriesList(long id) {
+		ArrayList<Series> seriesList = new ArrayList<Series>();
+		Cursor series = null;
+		try {
+			series = fetchAllSeriesByBook(id);
+			int count = series.getCount();
+
+			if (count == 0)
+				return seriesList;
+
+			int idCol = series.getColumnIndex(CatalogueDBAdapter.KEY_ROWID);
+			int nameCol = series.getColumnIndex(CatalogueDBAdapter.KEY_SERIES_NAME);
+			int numCol = series.getColumnIndex(CatalogueDBAdapter.KEY_SERIES_NUM);
+
+			while (series.moveToNext()) {
+				seriesList.add(new Series(series.getLong(idCol), series.getString(nameCol), series.getString(numCol)));
+			}			
+		} finally {
+			if (series != null)
+				series.close();
+		}
+		return seriesList;
 	}
 
 	/**
@@ -2691,8 +2731,7 @@ public class CatalogueDBAdapter {
 	 */
 	private void createBookSeries(long bookId, Bundle bookData) {
 		// If we have SERIES_DETAILS, same them.
-		String seriesDetails = bookData.getString(CatalogueDBAdapter.KEY_SERIES_DETAILS);
-		if (seriesDetails != null && seriesDetails.length() > 0) {
+		if (bookData.containsKey(CatalogueDBAdapter.KEY_SERIES_ARRAY)) {
 			// Delete the current series
 			mDb.delete(DB_TB_BOOK_SERIES, KEY_BOOK + "=" + bookId + "", null);
 
@@ -2700,30 +2739,22 @@ public class CatalogueDBAdapter {
 			ContentValues bookSeries = new ContentValues();
 			bookSeries.put(KEY_BOOK, bookId);
 			// Get the authors and turn into a list of names
-			java.util.ArrayList<String> series = Utils.decodeList(seriesDetails,'|');
-			Iterator<String> i = series.iterator();
+			ArrayList<Series> series = bookData.getParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY);
+			Iterator<Series> i = series.iterator();
 			// The list MAY contain duplicates (eg. from Internet lookups of multiple
 			// sources), so we track them in a hash table
 			Hashtable<String, Boolean> idHash = new Hashtable<String, Boolean>();
 			int pos = 0;
-			java.util.regex.Pattern p = java.util.regex.Pattern.compile("^(.*)\\s*\\((.*)\\)$");
 			while (i.hasNext()) {
 				// Get the name and find/add the author
-				String seriesSpec = i.next().trim();
-				String seriesName;
-				java.util.regex.Matcher m = p.matcher(seriesSpec);
-				if (m.find()) {
-					seriesName = m.group(1);
-					bookSeries.put(KEY_SERIES_NUM, m.group(2));
-				} else {
-					seriesName = seriesSpec;
-				}
-
+				Series s = i.next();
+				String seriesName = s.name;
 				String seriesId = getSeriesId(seriesName);
 				if (!idHash.containsKey(seriesId)) {
 					idHash.put(seriesId, true);
 					pos++;
 					bookSeries.put(KEY_SERIES_ID, seriesId);
+					bookSeries.put(KEY_SERIES_NUM, s.num);
 					mDb.insert(DB_TB_BOOK_SERIES, null, bookSeries);					
 				}
 			}

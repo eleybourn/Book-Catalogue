@@ -90,6 +90,7 @@ public class BookEditFields extends Activity {
 	public static String ADDED_AUTHOR = "ADDED_AUTHOR";
 
 	public static final int ACTIVITY_EDIT_AUTHORS = 1000;
+	public static final int ACTIVITY_EDIT_SERIES = 1001;
 	
 	// Target size of a thumbnail in edit dialog and zoom dialog (bbox dim)
 	private static final int MAX_EDIT_THUMBNAIL_SIZE=256;
@@ -109,7 +110,7 @@ public class BookEditFields extends Activity {
 	public static final String BOOKSHELF_SEPERATOR = ", ";
 	
 	private ArrayList<Author> mAuthorList = null;
-	private String mSeriesDetails = "";
+	private ArrayList<Series> mSeriesList = null;
 
 	protected void getRowId() {
 		/* Get any information from the extras bundle */
@@ -117,29 +118,6 @@ public class BookEditFields extends Activity {
 		mRowId = extras != null ? extras.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
 	}
 	
-//	protected ArrayList<String> getAuthors() {
-//		ArrayList<String> author_list = new ArrayList<String>();
-//		Cursor author_cur = mDbHelper.fetchAllAuthorsIgnoreBooks();
-//		startManagingCursor(author_cur);
-//		while (author_cur.moveToNext()) {
-//			String name = author_cur.getString(author_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED));
-//			author_list.add(name);
-//		}
-//		author_cur.close();
-//		return author_list;
-//	}
-
-	protected ArrayList<String> getSeries() {
-		ArrayList<String> series_list = new ArrayList<String>();
-		Cursor series_cur = mDbHelper.fetchAllSeries();
-		startManagingCursor(series_cur);
-		while (series_cur.moveToNext()) {
-			String series = series_cur.getString(series_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES_NAME));
-			series_list.add(series);
-		}
-		series_cur.close();
-		return series_list;
-	}
 
 	protected ArrayList<String> getPublishers() {
 		ArrayList<String> publisher_list = new ArrayList<String>();
@@ -214,7 +192,19 @@ public class BookEditFields extends Activity {
 							blankOrDateValidator, new Fields.DateFieldFormatter());
 
 			mFields.add(R.id.series, CatalogueDBAdapter.KEY_SERIES_NAME, CatalogueDBAdapter.KEY_SERIES_NAME, null);
-			mFields.add(R.id.series_num, CatalogueDBAdapter.KEY_SERIES_NUM, CatalogueDBAdapter.KEY_SERIES_NAME, blankOrIntegerValidator);
+			{
+				View v = mFields.getField(R.id.series).view;
+				v.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						Intent i = new Intent(BookEditFields.this, EditSeriesList.class);
+						i.putExtra(CatalogueDBAdapter.KEY_SERIES_ARRAY, mSeriesList);
+						i.putExtra("title_label", CatalogueDBAdapter.KEY_TITLE);
+						i.putExtra("title", mFields.getField(R.id.title).getValue().toString());
+						startActivityForResult(i, ACTIVITY_EDIT_SERIES);						
+					}
+				});
+			}
 
 			// Ensure that series number is blank if series is blank 
 			mFields.addCrossValidator(new Fields.FieldCrossValidator() {
@@ -286,9 +276,6 @@ public class BookEditFields extends Activity {
 					showDialog(DATE_DIALOG_ID);
 				}
 			});
-
-			ArrayAdapter<String> series_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getSeries());
-			mFields.setAdapter(R.id.series, series_adapter);
 
 			Spinner formatSpinner = (Spinner) formatField.view;
 			ArrayAdapter<String> formatArr = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
@@ -664,7 +651,7 @@ public class BookEditFields extends Activity {
 			book.close();
 			
 			mAuthorList = mDbHelper.getBookAuthorList(mRowId);
-			mSeriesDetails = mDbHelper.getBookSeriesDetails(mRowId);
+			mSeriesList = mDbHelper.getBookSeriesList(mRowId);
 
 		} else if (extras != null) {
 			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + this.getResources().getString(R.string.menu_insert));
@@ -696,7 +683,7 @@ public class BookEditFields extends Activity {
 					}
 
 					mAuthorList = values.getParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
-					mSeriesDetails = values.getString(CatalogueDBAdapter.KEY_SERIES_DETAILS);
+					mSeriesList = values.getParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY);
 
 				}
 				
@@ -721,7 +708,7 @@ public class BookEditFields extends Activity {
 				mFields.getField(R.id.bookshelf_text).setValue(BookCatalogue.bookshelf + BOOKSHELF_SEPERATOR);
 			}			
 			mAuthorList = new ArrayList<Author>();
-			mSeriesDetails = "";
+			mSeriesList = new ArrayList<Series>();
 		}
 		/**
 		 * TODO: Fill in AUTHOR_FORMATTED and SERIES_FORMATTED from mAuthorDetails and mSeriesDetails
@@ -735,6 +722,7 @@ public class BookEditFields extends Activity {
 		 */
 
 		fixupAuthorList();
+		fixupSeriesList();
 		
 	}
 
@@ -852,7 +840,7 @@ public class BookEditFields extends Activity {
 	private void saveState(Bundle values) {
 
 		values.putParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mAuthorList);
-		values.putString(CatalogueDBAdapter.KEY_SERIES_DETAILS, mSeriesDetails);
+		values.putParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY, mSeriesList);
 
 		if (mRowId == null || mRowId == 0) {
 			String isbn = values.getString(CatalogueDBAdapter.KEY_ISBN);
@@ -940,6 +928,11 @@ public class BookEditFields extends Activity {
 				mAuthorList = Utils.getAuthorsFromIntent(intent);
 				fixupAuthorList();
 			}
+		case ACTIVITY_EDIT_SERIES:
+			if (resultCode == Activity.RESULT_OK && intent.hasExtra(CatalogueDBAdapter.KEY_SERIES_ARRAY)){
+				mSeriesList = intent.getParcelableArrayListExtra(CatalogueDBAdapter.KEY_SERIES_ARRAY);
+				fixupSeriesList();
+			}
 		}
 	}
 	
@@ -955,6 +948,20 @@ public class BookEditFields extends Activity {
 				newText += " et. al.";
 		}
 		mFields.getField(R.id.author).setValue(newText);		
+	}
+
+	private void fixupSeriesList() {
+
+		String newText;
+		if (mSeriesList.size() == 0)
+			newText = "Set Series...";
+		else {
+			Utils.pruneSeries(mDbHelper, mSeriesList);
+			newText = mSeriesList.get(0).getDisplayName();
+			if (mSeriesList.size() > 1)
+				newText += " et. al.";
+		}
+		mFields.getField(R.id.series).setValue(newText);		
 	}
 
 	private void copyFile(File src, File dst) throws IOException {

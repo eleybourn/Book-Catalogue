@@ -21,6 +21,7 @@ package com.eleybourn.bookcatalogue;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
@@ -37,6 +38,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.BaseColumns;
 import android.widget.ImageView;
@@ -70,7 +72,8 @@ public class CatalogueDBAdapter {
 	public static final String KEY_SERIES_OLD = "series";
 	public static final String KEY_PAGES = "pages";
 	public static final String KEY_ROWID = "_id";
-	public static final String KEY_AUTHOR_DETAILS = "author_deatils";
+	public static final String KEY_AUTHOR_DETAILS = "author_details";
+	public static final String KEY_AUTHOR_ARRAY = "author_array";
 	public static final String KEY_FAMILY_NAME = "family_name";
 	public static final String KEY_GIVEN_NAMES = "given_names";
 	public static final String KEY_SERIES_DETAILS = "series_details";
@@ -1045,7 +1048,7 @@ public class CatalogueDBAdapter {
 	 * @param name a String containing the name e.g. "Isaac Asimov" or "Asimov, Isaac"
 	 * @return a String array containing the family and given names. e.g. ['Asimov', 'Isaac']
 	 */
-	public String[] processAuthorName(String name) {
+	static public String[] processAuthorName(String name) {
 		String[] author = {"", ""};
 		String family = "";
 		String given = "";
@@ -2172,7 +2175,7 @@ public class CatalogueDBAdapter {
 	 *
 	 * @return rowId or -1 if failed
 	 */
-	public long createBook(ContentValues values) {
+	public long createBook(Bundle values) {
 		return createBook(0, values);
 	}
 	
@@ -2187,7 +2190,7 @@ public class CatalogueDBAdapter {
 	 * @return rowId or -1 if failed
 	 */
 	//public long createBook(long id, String author, String title, String isbn, String publisher, String date_published, float rating, String bookshelf, Boolean read, String series, int pages, String series_num, String notes, String list_price, int anthology, String location, String read_start, String read_end, String format, boolean signed, String description, String genre) {
-	public long createBook(long id, ContentValues values) {
+	public long createBook(long id, Bundle values) {
 
 		// Make sure we have the target table details
 		if (mBooksInfo == null)
@@ -2211,7 +2214,7 @@ public class CatalogueDBAdapter {
 
 		long result = mDb.insert(DB_TB_BOOKS, null, initialValues);
 
-		String bookshelf = values.getAsString("bookshelf_text");
+		String bookshelf = values.getString("bookshelf_text");
 		if (bookshelf != null) {
 			createBookshelfBooks(result, bookshelf);
 		}
@@ -2281,10 +2284,10 @@ public class CatalogueDBAdapter {
 	 * @param friend A string containing the friend you are loaning to
 	 * @return the ID of the loan
 	 */
-	public long createLoan(ContentValues values) {
+	public long createLoan(Bundle values) {
 		ContentValues initialValues = new ContentValues();
-		initialValues.put(KEY_BOOK, values.getAsLong(KEY_ROWID));
-		initialValues.put(KEY_LOANED_TO, values.getAsString(KEY_LOANED_TO));
+		initialValues.put(KEY_BOOK, Utils.getAsLong(values,KEY_ROWID));
+		initialValues.put(KEY_LOANED_TO, values.getString(KEY_LOANED_TO));
 		long result = mDb.insert(DB_TB_LOAN, null, initialValues);
 		return result;
 	}
@@ -2398,6 +2401,19 @@ public class CatalogueDBAdapter {
 		return s;
 	}
 
+	public long lookupAuthorId(Author a) {
+		Cursor authorId = getAuthorByName(new String[] {a.familyName, a.givenNames});
+		int aRows = authorId.getCount();
+		if (aRows == 0) {
+			return 0;
+		}
+		authorId.moveToFirst();
+		long id = authorId.getLong(0);
+		authorId.close();
+
+		return id;
+	}
+
 	/**
 	 * Return a Cursor over the list of all authors  in the database for the given book
 	 * 
@@ -2419,17 +2435,27 @@ public class CatalogueDBAdapter {
 		return mDb.rawQuery(sql, new String[]{});
 	}
 
-	String getBookAuthorsDetails(long id) {
-		String authorDetails = "";
-		Cursor authors = fetchAllAuthorsByBook(id);
-		int authorCol = authors.getColumnIndex(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);
-		while (authors.moveToNext()) {
-			if (authorDetails.length() > 0)
-				authorDetails += "|";
-			authorDetails += Utils.encodeListItem(authors.getString(authorCol));
+	ArrayList<Author> getBookAuthorList(long id) {
+		ArrayList<Author> authorList = new ArrayList<Author>();
+		Cursor authors = null;
+		try {
+			authors = fetchAllAuthorsByBook(id);
+			int count = authors.getCount();
+
+			if (count == 0)
+				return authorList;
+
+			int familyCol = authors.getColumnIndex(CatalogueDBAdapter.KEY_FAMILY_NAME);
+			int givenCol = authors.getColumnIndex(CatalogueDBAdapter.KEY_GIVEN_NAMES);
+
+			while (authors.moveToNext()) {
+				authorList.add(new Author(authors.getString(familyCol), authors.getString(givenCol)));
+			}			
+		} finally {
+			if (authors != null)
+				authors.close();
 		}
-		authors.close();
-		return authorDetails;
+		return authorList;
 	}
 
 	/**
@@ -2458,7 +2484,7 @@ public class CatalogueDBAdapter {
 		while (series.moveToNext()) {
 			if (seriesDetails.length() > 0)
 				seriesDetails += "|";
-			seriesDetails += Utils.encodeListItem(series.getString(seriesNameCol) + "(" + series.getString(seriesNumCol) + ")");
+			seriesDetails += series.getString(seriesNameCol) + "(" + series.getString(seriesNumCol) + ")";
 		}
 		series.close();
 		return seriesDetails;
@@ -2474,20 +2500,20 @@ public class CatalogueDBAdapter {
 	 * 
 	 * @return New, filtered, collection
 	 */
-	ContentValues filterValues(ContentValues source, TableInfo dest) {
+	ContentValues filterValues(Bundle source, TableInfo dest) {
 		ContentValues args = new ContentValues();
 
-		Set<Entry<String, Object>> s = source.valueSet();
+		Set<String> keys = source.keySet();
 		// Create the arguments
-		for (Entry<String, Object> e : s) {
+		for (String key : keys) {
 			// Get column info for this column.
-			ColumnInfo c = mBooksInfo.getColumn(e.getKey());
+			ColumnInfo c = mBooksInfo.getColumn(key);
 			// Check if we actually have a matching column.
 			if (c != null) {
 				// Never update PK.
 				if (!c.isPrimaryKey) {
 
-					Object v = e.getValue();
+					Object v = source.get(key);
 
 					switch(c.typeClass) {
 
@@ -2530,32 +2556,32 @@ public class CatalogueDBAdapter {
 	 * 
 	 * @param values	Collection of field values.
 	 */
-	private void preprocessOutput(long rowId, ContentValues values) {
+	private void preprocessOutput(long rowId, Bundle values) {
 		String authorId;
 
 		// Handle AUTHOR
 		// If present, get the author ID from the author name (it may have changed with a name change)
 		if (values.containsKey(KEY_AUTHOR_FORMATTED)) {
-			authorId = getAuthorId(values.getAsString(KEY_AUTHOR_FORMATTED));
-			values.put(KEY_AUTHOR_ID, authorId);
+			authorId = getAuthorId(values.getString(KEY_AUTHOR_FORMATTED));
+			values.putString(KEY_AUTHOR_ID, authorId);
 		} else {
 			if (values.containsKey(KEY_FAMILY_NAME)) {
-				String family = values.getAsString(KEY_FAMILY_NAME);
+				String family = values.getString(KEY_FAMILY_NAME);
 				String given;
 				if (values.containsKey(KEY_GIVEN_NAMES)) {
-					given = values.getAsString(KEY_GIVEN_NAMES);
+					given = values.getString(KEY_GIVEN_NAMES);
 				} else {
 					given = "";
 				}
 				authorId = getAuthorId(new String[] {family, given});
-				values.put(KEY_AUTHOR_ID, authorId);
+				values.putString(KEY_AUTHOR_ID, authorId);
 			}
 		}
 		
 		// Handle TITLE
 		if (values.containsKey(KEY_TITLE)) {
 			/* Move "The, A, An" to the end of the string */
-			String title = values.getAsString(KEY_TITLE);
+			String title = values.getString(KEY_TITLE);
 			String newTitle = "";
 			String[] title_words = title.split(" ");
 			try {
@@ -2567,7 +2593,7 @@ public class CatalogueDBAdapter {
 						newTitle += title_words[i];
 					}
 					newTitle += ", " + title_words[0];
-					values.put(KEY_TITLE, newTitle);
+					values.putString(KEY_TITLE, newTitle);
 				}
 			} catch (Exception e) {
 				//do nothing. Title stays the same
@@ -2585,7 +2611,7 @@ public class CatalogueDBAdapter {
 	 * 
 	 * @return true if the note was successfully updated, false otherwise
 	 */
-	public boolean updateBook(long rowId, ContentValues values) {
+	public boolean updateBook(long rowId, Bundle values) {
 		boolean success;
 
 		// Make sure we have the target table details
@@ -2599,7 +2625,7 @@ public class CatalogueDBAdapter {
 		success = mDb.update(DB_TB_BOOKS, args, KEY_ROWID + "=" + rowId, null) > 0;
 
 		if (values.containsKey("bookshelf_text")) {
-			String bookshelf = values.getAsString("bookshelf_text");
+			String bookshelf = values.getString("bookshelf_text");
 			if (bookshelf != null) {
 				createBookshelfBooks(rowId, bookshelf);
 			}			
@@ -2615,44 +2641,44 @@ public class CatalogueDBAdapter {
 	}
 
 	/**
-	 * If the passed ContentValues contains KEY_AUTHOR_DETAILS, parse them
+	 * If the passed ContentValues contains KEY_AUTHOR_LIST, parse them
 	 * and add the authors.
 	 * 
 	 * @param bookId		ID of book
 	 * @param bookData		Book fields
 	 */
-	private void createBookAuthors(long bookId, ContentValues bookData) {
+	private void createBookAuthors(long bookId, Bundle bookData) {
 		// If we have AUTHOR_DETAILS, same them.
-		String authorDetails = bookData.getAsString(CatalogueDBAdapter.KEY_AUTHOR_DETAILS);
-		if (authorDetails != null && authorDetails.length() > 0) {
+		ArrayList<Author> foo = bookData.getParcelableArrayList("asdasd");
+
+		if (bookData.containsKey(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)) {
+			// Need to delete the current records because they may have been reordered and a simple set of updates
+			// could result in unique key or index violations.
+			mDb.delete(DB_TB_BOOK_AUTHOR, KEY_BOOK + " = " + bookId, null);
+
 			// Collection for insert/update statements
 			ContentValues bookAuthor = new ContentValues();
 			bookAuthor.put(KEY_BOOK, bookId);
 			// Get the authors and turn into a list of names
-			java.util.ArrayList<String> authors = Utils.decodeList(authorDetails);
-			Iterator<String> i = authors.iterator();
+			ArrayList<Author> authors = bookData.getParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
+			Iterator<Author> i = authors.iterator();
 			// The list MAY contain duplicates (eg. from Internet lookups of multiple
 			// sources), so we track them in a hash table
 			Hashtable<String, Boolean> idHash = new Hashtable<String, Boolean>();
 			int pos = 0;
 			while (i.hasNext()) {
 				// Get the name and find/add the author
-				String fullName = i.next().trim();
-				String authorId = getAuthorId(fullName);
+				Author a = i.next();
+				String authorId = getAuthorId(new String[] {a.familyName,a.givenNames});
 				if (!idHash.containsKey(authorId)) {
 					idHash.put(authorId, true);
 					pos++;
 					bookAuthor.put(KEY_AUTHOR_ID, authorId);
 					bookAuthor.put(KEY_AUTHOR_POSITION, pos);
 					// Update or Insert.
-					int rows = mDb.update(DB_TB_BOOK_AUTHOR, bookAuthor, KEY_AUTHOR_POSITION + " = " + pos + " and " + KEY_BOOK + " = " + bookId, null);
-					if (rows == 0) {
-						mDb.insert(DB_TB_BOOK_AUTHOR, null, bookAuthor);					
-					}
+					mDb.insert(DB_TB_BOOK_AUTHOR, null, bookAuthor);					
 				}
 			}
-			// Delete any remaining authors.
-			mDb.delete(DB_TB_BOOK_AUTHOR, KEY_AUTHOR_POSITION + " > " + pos + " and " + KEY_BOOK + " = " + bookId, null);
 		}		
 	}
 
@@ -2663,9 +2689,9 @@ public class CatalogueDBAdapter {
 	 * @param bookId		ID of book
 	 * @param bookData		Book fields
 	 */
-	private void createBookSeries(long bookId, ContentValues bookData) {
+	private void createBookSeries(long bookId, Bundle bookData) {
 		// If we have SERIES_DETAILS, same them.
-		String seriesDetails = bookData.getAsString(CatalogueDBAdapter.KEY_SERIES_DETAILS);
+		String seriesDetails = bookData.getString(CatalogueDBAdapter.KEY_SERIES_DETAILS);
 		if (seriesDetails != null && seriesDetails.length() > 0) {
 			// Delete the current series
 			mDb.delete(DB_TB_BOOK_SERIES, KEY_BOOK + "=" + bookId + "", null);
@@ -2674,7 +2700,7 @@ public class CatalogueDBAdapter {
 			ContentValues bookSeries = new ContentValues();
 			bookSeries.put(KEY_BOOK, bookId);
 			// Get the authors and turn into a list of names
-			java.util.ArrayList<String> series = Utils.decodeList(seriesDetails);
+			java.util.ArrayList<String> series = Utils.decodeList(seriesDetails,'|');
 			Iterator<String> i = series.iterator();
 			// The list MAY contain duplicates (eg. from Internet lookups of multiple
 			// sources), so we track them in a hash table

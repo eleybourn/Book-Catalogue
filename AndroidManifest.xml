@@ -30,7 +30,8 @@
 		<activity android:name=".Help"></activity>
 		<activity android:name=".FieldVisibility"></activity>
 		<activity android:name=".BookEditAnthology"></activity>
-	</application>
+	<activity android:name=".EditAuthorList"></activity>
+</application>
 	<uses-sdk android:minSdkVersion="4" />
 	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>

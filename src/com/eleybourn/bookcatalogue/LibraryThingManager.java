@@ -40,6 +40,7 @@ import android.util.Log;
 import android.widget.Toast;
 import android.content.Context;
 import android.content.ContentValues;
+import android.os.Bundle;
 import android.os.Handler;
 
 /**
@@ -56,7 +57,7 @@ import android.os.Handler;
 public class LibraryThingManager {
 
 	// 
-	ContentValues mBookData = null;
+	Bundle mBookData = null;
 	
 	// Words in XML
 	public static String ID = "id";
@@ -76,7 +77,7 @@ public class LibraryThingManager {
 	// Field types we are interested in.
 	private enum FieldTypes{ NONE, AUTHOR, TITLE, SERIES, PLACES, CHARACTERS, OTHER };
 
-	LibraryThingManager(ContentValues bookData) {
+	LibraryThingManager(Bundle bookData) {
 		mBookData = bookData;
 	}
 
@@ -421,13 +422,13 @@ public class LibraryThingManager {
 	 * @author Grunthos
 	 */
 	private class SearchLibraryThingEntryHandler extends DefaultHandler  {
-		private ContentValues mBookData = null;
+		private Bundle mBookData = null;
 		private StringBuilder mBuilder = new StringBuilder();
 
 		private FieldTypes mFieldType = FieldTypes.OTHER;
 		private String mWorkId;
 
-		SearchLibraryThingEntryHandler(ContentValues bookData) {
+		SearchLibraryThingEntryHandler(Bundle bookData) {
 			mBookData = bookData;
 		}
 
@@ -443,8 +444,8 @@ public class LibraryThingManager {
 		 * @param key	Key for data to add
 		 */
 		private void addIfNotPresent(String key) {
-			if (!mBookData.containsKey(key) || mBookData.getAsString(key).length() == 0) {
-				mBookData.put(key, mBuilder.toString());
+			if (!mBookData.containsKey(key) || mBookData.getString(key).length() == 0) {
+				mBookData.putString(key, mBuilder.toString());
 			}		
 		}
 

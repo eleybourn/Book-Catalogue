@@ -25,9 +25,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 
-import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -217,7 +217,7 @@ public class Fields extends ArrayList<Fields.Field> {
 		 * @param field		Field associated with the View object
 		 * @param values	Collection to save value.
 		 */
-		void get(Field field, ContentValues values);
+		void get(Field field, Bundle values);
 
 		/**
 		 * Get the the value from the view associated with Field and return it as am Object.
@@ -243,8 +243,8 @@ public class Fields extends ArrayList<Fields.Field> {
 		public void set(Field field, String s) {
 			mLocalValue = field.format(s);
 		}
-		public void get(Field field, ContentValues values) {
-			values.put(field.column, field.extract(mLocalValue));
+		public void get(Field field, Bundle values) {
+			values.putString(field.column, field.extract(mLocalValue));
 		}
 		public Object get(Field field) {
 			return field.extract(mLocalValue);
@@ -266,9 +266,9 @@ public class Fields extends ArrayList<Fields.Field> {
 			TextView v = (TextView) field.view;
 			v.setText(field.format(s));
 		}
-		public void get(Field field, ContentValues values) {
+		public void get(Field field, Bundle values) {
 			TextView v = (TextView) field.view;
-			values.put(field.column, field.extract(v.getText().toString()));
+			values.putString(field.column, field.extract(v.getText().toString()));
 		}
 		public Object get(Field field) {
 			return field.extract(((TextView) field.view).getText().toString());
@@ -296,12 +296,12 @@ public class Fields extends ArrayList<Fields.Field> {
 				v.setChecked(s.equals("t") || s.equals("true"));
 			}
 		}
-		public void get(Field field, ContentValues values) {
+		public void get(Field field, Bundle values) {
 			CheckBox v = (CheckBox) field.view;
 			if (field.formatter != null)
-				values.put(field.column, field.extract(v.isChecked() ? "1" : "0"));
+				values.putString(field.column, field.extract(v.isChecked() ? "1" : "0"));
 			else
-				values.put(field.column, v.isChecked());
+				values.putBoolean(field.column, v.isChecked());
 		}
 		public Object get(Field field) {
 			if (field.formatter != null)
@@ -335,12 +335,12 @@ public class Fields extends ArrayList<Fields.Field> {
 			}
 			v.setRating(f);
 		}
-		public void get(Field field, ContentValues values) {
+		public void get(Field field, Bundle values) {
 			RatingBar v = (RatingBar) field.view;
-			if (field.formatter == null)
-				values.put(field.column, field.extract("" + v.getRating()));
+			if (field.formatter != null)
+				values.putString(field.column, field.extract("" + v.getRating()));
 			else
-				values.put(field.column, v.getRating());
+				values.putFloat(field.column, v.getRating());
 		}
 		public Object get(Field field) {
 			RatingBar v = (RatingBar) field.view;
@@ -369,9 +369,9 @@ public class Fields extends ArrayList<Fields.Field> {
 				}
 			}
 		}
-		public void get(Field field, ContentValues values) {
+		public void get(Field field, Bundle values) {
 			Spinner v = (Spinner) field.view;
-			values.put(field.column, field.extract(v.getSelectedItem().toString()));
+			values.putString(field.column, field.extract(v.getSelectedItem().toString()));
 		}
 		public Object get(Field field) {
 			Spinner v = (Spinner) field.view;
@@ -400,7 +400,7 @@ public class Fields extends ArrayList<Fields.Field> {
 		 * 
 		 * @throws ValidatorException	For any validation failure.
 		 */
-		void validate(Fields fields, Field field, ContentValues values, boolean crossValidating);
+		void validate(Fields fields, Field field, Bundle values, boolean crossValidating);
 	}
 	
 	/**
@@ -414,9 +414,9 @@ public class Fields extends ArrayList<Fields.Field> {
 		/**
 		 * 
 		 * @param fields			The Fields object containing the Field being validated
-		 * @param values			A ContentValues collection with all validated field values.
+		 * @param values			A Bundle collection with all validated field values.
 		 */
-		void validate(Fields fields, ContentValues values);
+		void validate(Fields fields, Bundle values);
 	}
 	
 	/**
@@ -466,7 +466,7 @@ public class Fields extends ArrayList<Fields.Field> {
 			mDefault = defaultValue;
 		}
 
-		public void validate(Fields fields, Field field, ContentValues values, boolean crossValidating) {
+		public void validate(Fields fields, Field field, Bundle values, boolean crossValidating) {
 			if (crossValidating)
 				return;
 
@@ -497,7 +497,7 @@ public class Fields extends ArrayList<Fields.Field> {
 		IntegerValidator(String defaultValue) {
 			super(defaultValue);
 		}
-		public void validate(Fields fields, Field field, ContentValues values, boolean crossValidating) {
+		public void validate(Fields fields, Field field, Bundle values, boolean crossValidating) {
 			if (crossValidating)
 				return;
 
@@ -514,7 +514,7 @@ public class Fields extends ArrayList<Fields.Field> {
 				}
 
 				if (values != null && !field.column.equals("")) {
-					values.put(field.column, v);
+					values.putInt(field.column, v);
 				}
 				return;
 			} catch (Exception e) {
@@ -536,7 +536,7 @@ public class Fields extends ArrayList<Fields.Field> {
 		FloatValidator(String defaultValue) {
 			super(defaultValue);
 		}
-		public void validate(Fields fields, Field field, ContentValues values, boolean crossValidating) {
+		public void validate(Fields fields, Field field, Bundle values, boolean crossValidating) {
 			if (crossValidating)
 				return;
 			// Will throw on failure...
@@ -554,7 +554,7 @@ public class Fields extends ArrayList<Fields.Field> {
 					v = Float.parseFloat(o.toString());					
 				}
 				if (values != null && !field.column.equals("")) {
-					values.put(field.column, v);
+					values.putFloat(field.column, v);
 				}
 				return;
 			} catch (Exception e) {
@@ -577,7 +577,7 @@ public class Fields extends ArrayList<Fields.Field> {
 		DateValidator(String defaultValue) {
 			super(defaultValue);
 		}
-		public void validate(Fields fields, Field field, ContentValues values, boolean crossValidating) {
+		public void validate(Fields fields, Field field, Bundle values, boolean crossValidating) {
 			if (crossValidating)
 				return;
 			try {
@@ -585,7 +585,7 @@ public class Fields extends ArrayList<Fields.Field> {
 				if (values != null && !field.column.equals("")) {
 					// Save it in SQL/ANSI format
 					String v = mDateSqlSdf.format(d);
-					values .put(field.column, v);
+					values.putString(field.column, v);
 				}
 			} catch (Exception e) {
 				throw new ValidatorException(R.string.vldt_date_expected, new Object[]{field.column});					
@@ -607,7 +607,7 @@ public class Fields extends ArrayList<Fields.Field> {
 		BooleanValidator(String defaultValue) {
 			super(defaultValue);
 		}
-		public void validate(Fields fields, Field field, ContentValues values, boolean crossValidating) {
+		public void validate(Fields fields, Field field, Bundle values, boolean crossValidating) {
 			if (crossValidating)
 				return;
 
@@ -625,7 +625,7 @@ public class Fields extends ArrayList<Fields.Field> {
 					v = stringToBoolean(s);
 				}
 				if (values != null && !field.column.equals("")) {
-					values.put(field.column, v);
+					values.putBoolean(field.column, v);
 				}
 				return;
 			} catch (Exception e) {
@@ -642,14 +642,14 @@ public class Fields extends ArrayList<Fields.Field> {
 	 */
 	static public class NonBlankValidator implements FieldValidator {
 
-		public void validate(Fields fields, Field field, ContentValues values, boolean crossValidating) {
+		public void validate(Fields fields, Field field, Bundle values, boolean crossValidating) {
 			if (crossValidating)
 				return;
 			try {
 				String v = field.getValue().toString().trim();
 				if (v.length() > 0) {
 					if (values != null && !field.column.equals("")) {
-						values.put(field.column, v);
+						values.putString(field.column, v);
 					}
 					return;
 				} else {
@@ -668,7 +668,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	 *
 	 */
 	static public class BlankValidator implements FieldValidator {
-		public void validate(Fields fields, Field field, ContentValues values, boolean crossValidating) {
+		public void validate(Fields fields, Field field, Bundle values, boolean crossValidating) {
 			if (crossValidating)
 				return;
 			try {
@@ -681,7 +681,7 @@ public class Fields extends ArrayList<Fields.Field> {
 					field.setValue(s);
 				}
 				if (values != null && !field.column.equals("")) {
-					values.put(field.column, s);
+					values.putString(field.column, s);
 				}
 				return;
 			} catch (Exception e) {
@@ -749,7 +749,7 @@ public class Fields extends ArrayList<Fields.Field> {
 		OrValidator(FieldValidator v1, FieldValidator v2) { super(v1, v2); }
 		OrValidator(FieldValidator v1, FieldValidator v2, FieldValidator v3) { super(v1, v2, v3); }
 
-		public void validate(Fields fields, Field field, ContentValues values, boolean crossValidating) {
+		public void validate(Fields fields, Field field, Bundle values, boolean crossValidating) {
 			Iterator<FieldValidator> i = this.iterator();
 			ValidatorException lastException = null;
 			while (i.hasNext()) {
@@ -786,12 +786,12 @@ public class Fields extends ArrayList<Fields.Field> {
 		AndValidator(FieldValidator v1, FieldValidator v2) { super(v1, v2); }
 		AndValidator(FieldValidator v1, FieldValidator v2, FieldValidator v3) { super(v1, v2, v3); }
 
-		public void validate(Fields fields, Field field, ContentValues values, boolean crossValidating) {
+		public void validate(Fields fields, Field field, Bundle values, boolean crossValidating) {
 			Iterator<FieldValidator> i = this.iterator();
-			ContentValues cv = null;
+			Bundle cv = null;
 			while (i.hasNext()) {
 				FieldValidator v = i.next();
-				// Only set the ContentValues for the last in the list
+				// Only set the Bundle for the last in the list
 				if (!i.hasNext()) {
 					cv = values;
 				}
@@ -944,10 +944,10 @@ public class Fields extends ArrayList<Fields.Field> {
 		}
 
 		/**
-		 * Get the current value of this field and put into the ContentValues collection.
+		 * Get the current value of this field and put into the Bundle collection.
 		 * @return	Current value in native form.
 		 */
-		public void getValue(ContentValues values) {
+		public void getValue(Bundle values) {
 			mAccessor.get(this, values);
 		}
 
@@ -1137,10 +1137,10 @@ public class Fields extends ArrayList<Fields.Field> {
 	/**
 	 * Internal utility routine to perform one loop validating all fields.
 	 * 
-	 * @param values 			The ContentValues to fill in/use.
+	 * @param values 			The Bundle to fill in/use.
 	 * @param crossValidating 	Flag indicating if this is a cross validation pass.
 	 */
-	private boolean doValidate(ContentValues values, boolean crossValidating) {
+	private boolean doValidate(Bundle values, boolean crossValidating) {
 		Iterator<Field> fi = this.iterator();
 		while(fi.hasNext()) {
 			Field fe = fi.next();
@@ -1160,15 +1160,15 @@ public class Fields extends ArrayList<Fields.Field> {
 	}
 
 	/**
-	 * Loop through and apply validators, generating a ContentValues collection as a by-product.
-	 * The ContentValues collection is then used in cross-validation as a seond pass, and finally
+	 * Loop through and apply validators, generating a Bundle collection as a by-product.
+	 * The Bundle collection is then used in cross-validation as a seond pass, and finally
 	 * passed to each defined cross-validator.
 	 * 
-	 * @param values The ContentValues collection to fill
+	 * @param values The Bundle collection to fill
 	 * 
 	 * @return boolean True if all validation passed.
 	 */
-	public boolean validate(ContentValues values) {
+	public boolean validate(Bundle values) {
 		if (values == null)
 			throw new NullPointerException();
 

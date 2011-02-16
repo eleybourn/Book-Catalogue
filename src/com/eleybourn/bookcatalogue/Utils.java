@@ -21,12 +21,18 @@
 package com.eleybourn.bookcatalogue;
 
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Serializable;
+import java.io.StreamCorruptedException;
 
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -34,9 +40,13 @@ import java.net.URL;
 import java.net.UnknownHostException;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 
@@ -45,6 +55,36 @@ public class Utils {
 	private static String UTF8 = "utf8";
 	private static int BUFFER_SIZE = 8192;
 
+	private static ArrayUtils<Author> mAuthorUtils = null;
+	private static ArrayUtils<Series> mSeriesUtils = null;
+
+	static public ArrayUtils<Author> getAuthorUtils() {
+		if (mAuthorUtils == null) {
+			mAuthorUtils = new ArrayUtils<Author>(new Utils.Factory(){
+				@Override
+				public Object get(String source) {
+					return new Author(source);
+				}});			
+		}
+		return mAuthorUtils;
+	}
+
+	static public ArrayUtils<Series> getSeriesUtils() {
+		if (mSeriesUtils == null) {
+			mSeriesUtils = new ArrayUtils<Series>(new Utils.Factory(){
+				@Override
+				public Object get(String source) {
+					return new Series(source);
+				}});
+		}
+		return mSeriesUtils;
+	}
+
+	/**
+	 * Check if the sdcard is writable
+	 * 
+	 * @return	success or failure
+	 */
 	static public boolean sdCardWritable() {
 		/* Test write to the SDCard */
 		try {
@@ -61,19 +101,18 @@ public class Utils {
 	 * Encode a string by 'escaping' all instances of: '|', '\', \r, \n. The
 	 * escape char is '\'.
 	 * 
-	 * This is used to build text lists separated by '|'.
+	 * This is used to build text lists separated by the passed delimiter.
 	 * 
-	 * @param s		String to convert
+	 * @param s			String to convert
+	 * @param delim		The list delimiter to encode (if found).
+	 * 
 	 * @return		Converted string
 	 */
-	static String encodeListItem(String s) {
+	static String encodeListItem(String s, char delim) {
 		StringBuilder ns = new StringBuilder();
 		for (int i = 0; i < s.length(); i++){
 		    char c = s.charAt(i);        
 		    switch (c) {
-		    case '|':
-		    	ns.append("\\|");
-		    	break;
 		    case '\\':
 		    	ns.append("\\\\");
 		    	break;
@@ -84,6 +123,8 @@ public class Utils {
 		    	ns.append("\\n");
 		    	break;
 		    default:
+		    	if (c == delim)
+		    		ns.append("\\");
 		    	ns.append(c);
 		    }
 		}
@@ -91,12 +132,129 @@ public class Utils {
 	}
 
 	/**
+	 * Encode a list of strings by 'escaping' all instances of: delim, '\', \r, \n. The
+	 * escape char is '\'.
+	 * 
+	 * This is used to build text lists separated by 'delim'.
+	 * 
+	 * @param s		String to convert
+	 * @return		Converted string
+	 */
+	static String encodeList(ArrayList<String> sa, char delim) {
+		StringBuilder ns = new StringBuilder();
+		Iterator<String> si = sa.iterator();
+		if (si.hasNext()) {
+			ns.append(encodeListItem(si.next(), delim));
+			while (si.hasNext()) {
+				ns.append(delim);
+				ns.append(encodeListItem(si.next(), delim));
+			}
+		}
+		return ns.toString();
+	}
+
+	public interface Factory {
+		Object get(String source);
+	}
+
+	static public class ArrayUtils<T> {
+
+		Factory mFactory;
+
+		ArrayUtils(Factory factory) {
+			mFactory = factory;
+		}
+
+		@SuppressWarnings("unchecked")
+		private T get(String source) {
+			return (T) mFactory.get(source);
+		}
+		/**
+		 * Encode a list of strings by 'escaping' all instances of: delim, '\', \r, \n. The
+		 * escape char is '\'.
+		 * 
+		 * This is used to build text lists separated by 'delim'.
+		 * 
+		 * @param s		String to convert
+		 * @return		Converted string
+		 */
+		String encodeList(ArrayList<T> sa, char delim) {
+			Iterator<T> si = sa.iterator();
+			return encodeList(si, delim);
+		}
+
+		private String encodeList(Iterator<T> si, char delim) {
+			StringBuilder ns = new StringBuilder();
+			if (si.hasNext()) {
+				ns.append(encodeListItem(si.next().toString(), delim));
+				while (si.hasNext()) {
+					ns.append(delim);
+					ns.append(encodeListItem(si.next().toString(), delim));
+				}
+			}
+			return ns.toString();
+		}
+		
+		/**
+		 * Decode a text list separated by '|' and encoded by encodeListItem.
+		 * 
+		 * @param s		String representing the list
+		 * @return		Array of strings resulting from list
+		 */
+		ArrayList<T> decodeList(String s, char delim) {
+			StringBuilder ns = new StringBuilder();
+			ArrayList<T> list = new ArrayList<T>();
+			boolean inEsc = false;
+			for (int i = 0; i < s.length(); i++){
+			    char c = s.charAt(i);
+			    if (inEsc) {
+			    	switch(c) {
+				    case '\\':
+			    		ns.append(c);
+				    	break;		    	
+				    case 'r':
+			    		ns.append('\r');
+				    	break;		    	
+				    case 't':
+			    		ns.append('\t');
+				    	break;		    	
+				    case 'n':
+			    		ns.append('\n');
+				    	break;		    	
+				    default:
+				    	ns.append(c);
+				    	break;
+			    	}
+		    		inEsc = false;
+			    } else {
+				    switch (c) {
+				    case '\\':
+			    		inEsc = true;
+				    	break;
+				    default:
+				    	if (c == delim) {
+					    	list.add(get(ns.toString()));
+					    	ns.setLength(0);
+					    	break;
+				    	} else {
+					    	ns.append(c);
+					    	break;
+				    	}
+				    }
+			    }
+			}
+			// It's important to send back even an empty item.
+	    	list.add(get(ns.toString()));
+			return list;
+		}
+	}
+	/**
 	 * Decode a text list separated by '|' and encoded by encodeListItem.
 	 * 
 	 * @param s		String representing the list
 	 * @return		Array of strings resulting from list
 	 */
-	static ArrayList<String> decodeList(String s) {
+	static ArrayList<String> decodeList(String s, char delim) {
 		StringBuilder ns = new StringBuilder();
 		ArrayList<String> list = new java.util.ArrayList<String>();
 		boolean inEsc = false;
@@ -126,16 +284,19 @@ public class Utils {
 			    case '\\':
 		    		inEsc = true;
 			    	break;
-			    case '|':
-			    	list.add(ns.toString());
-			    	ns.setLength(0);
-			    	break;
 			    default:
-			    	ns.append(c);
-			    	break;
+			    	if (c == delim) {
+				    	list.add(ns.toString());
+				    	ns.setLength(0);
+				    	break;
+			    	} else {
+				    	ns.append(c);
+				    	break;
+			    	}
 			    }
 		    }
 		}
+		// It's important to send back even an empty item.
     	list.add(ns.toString());
 		return list;
 	}
@@ -146,13 +307,13 @@ public class Utils {
 	 * 
 	 * @param key	Key for data to add
 	 */
-	static public void appendOrAdd(android.content.ContentValues values, String key, String value) {
-		String s = Utils.encodeListItem(value);
-		if (!values.containsKey(key) || values.getAsString(key).length() == 0) {
-			values.put(key, s);
+	static public void appendOrAdd(Bundle values, String key, String value) {
+		String s = Utils.encodeListItem(value, '|');
+		if (!values.containsKey(key) || values.getString(key).length() == 0) {
+			values.putString(key, s);
 		} else {
-			String curr = values.getAsString(key);
-			values.put(key, curr + "|" + s);
+			String curr = values.getString(key);
+			values.putString(key, curr + "|" + s);
 		}
 	}
 
@@ -247,13 +408,13 @@ public class Utils {
 	 * 
 	 * @param result	Book data
 	 */
-	static public void cleanupThumbnails(ContentValues result) {
+	static public void cleanupThumbnails(Bundle result) {
     	if (result.containsKey("__thumbnail")) {
     		long best = -1;
     		int bestFile = -1;
 
     		// Parse the list
-    		ArrayList<String> files = Utils.decodeList(result.getAsString("__thumbnail"));
+    		ArrayList<String> files = Utils.decodeList(result.getString("__thumbnail"), '|');
 
     		// Just read the image files to get file size
     		BitmapFactory.Options opt = new BitmapFactory.Options();
@@ -387,5 +548,54 @@ public class Utils {
 		// Return result
 		return buf.toString();
 	}
-	
+
+	/**
+	 * Method added mainly to avoid @SuppressWarnings on larger methods.
+	 */
+	public static ArrayList<Author> getAuthorsFromIntent(Intent i) {
+		return i.getParcelableArrayListExtra(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
+	}
+
+	/**
+	 * Method added mainly to avoid @SuppressWarnings on larger methods.
+	 */
+	public static ArrayList<Author> getAuthorsFromBundle(Bundle b) {
+		return b.getParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
+	}
+
+	public static long getAsLong(Bundle b, String key) {
+		Object o = b.get(key);
+		if (o instanceof Long) {
+			return (Long) o;
+		} else if (o instanceof String) {
+			return Long.parseLong((String)o);
+		} else if (o instanceof Integer) {
+			return ((Integer)o).longValue();
+		} else {
+			throw new RuntimeException("Not a long value");
+		}
+	}
+
+	public static String getAsString(Bundle b, String key) {
+		Object o = b.get(key);
+		return o.toString();
+	}
+
+	// TODO Add author_aliases table to allow further pruning (eg. Joe Haldeman == Jow W Haldeman).
+	public static void pruneAuthors(CatalogueDBAdapter db, ArrayList<Author> authors) {
+		Hashtable<String,Boolean> names = new Hashtable<String,Boolean>();
+
+		for(int i = authors.size() - 1; i >=0; i--) {
+			Author a = authors.get(i);
+			String name = a.getSortName();
+			if (names.containsKey(name)) {
+				authors.remove(i);
+			} else {
+				names.put(name, true);
+				if (a.id == 0)
+					a.id = db.lookupAuthorId(a);
+			}
+		}
+	}
 }
+

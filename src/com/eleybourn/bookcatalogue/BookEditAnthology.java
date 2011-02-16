@@ -477,9 +477,9 @@ public class BookEditAnthology extends ListActivity {
 		if (mSame.isChecked()) {
 			anthology = CatalogueDBAdapter.ANTHOLOGY_SAME_AUTHOR;
 		}
-		ContentValues values = new ContentValues();
-		values.put(CatalogueDBAdapter.KEY_ROWID, mRowId);
-		values.put(CatalogueDBAdapter.KEY_ANTHOLOGY, anthology);
+		Bundle values = new Bundle();
+		values.putLong(CatalogueDBAdapter.KEY_ROWID, mRowId);
+		values.putInt(CatalogueDBAdapter.KEY_ANTHOLOGY, anthology);
 
 		if (mRowId == null || mRowId == 0) {
 			//This should never happen

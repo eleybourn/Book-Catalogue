@@ -21,6 +21,7 @@
 package com.eleybourn.bookcatalogue;
 
 import android.content.ContentValues;
+import android.os.Bundle;
 import android.util.Log;
 
 import java.io.FileNotFoundException;
@@ -172,32 +173,10 @@ import org.xml.sax.helpers.DefaultHandler;
  * 
  */
 public class SearchAmazonHandler extends DefaultHandler {
-	private ContentValues mBookData;
+	private Bundle mBookData;
 	private StringBuilder mBuilder;
 	private String mThumbnailUrl = "";
 	private int mThumbnailSize = -1;
-	/* public variables to hold the found values */
-//	public String title = "";
-//	public String author = "";
-//	public String isbn = "";
-//	public String publisher = "";
-//	public String date_published = "";
-//	public String rating = "0";
-//	public String bookshelf = "";
-//	public String read = "false";
-//	public String series = "";
-//	public String pages = "0";
-//	public String thumbnail = "";
-//	public String series_num = "";
-//	public String list_price = "";
-//	public String anthology = "0";
-//	public String location = "";
-//	public String read_start = "";
-//	public String read_end = "";
-//	public String audiobook = "";
-//	public String signed = "0";
-//	public String description = "";
-//	public String genre = "";
 	
 	/* How many results found */
 	public int count = 0;
@@ -223,7 +202,7 @@ public class SearchAmazonHandler extends DefaultHandler {
 	public static String LARGEIMAGE = "LargeImage";
 	public static String DESCRIPTION = "Content";
 
-	SearchAmazonHandler(ContentValues bookData) {
+	SearchAmazonHandler(Bundle bookData) {
 		mBookData = bookData;
 	}
 //	/*
@@ -247,8 +226,8 @@ public class SearchAmazonHandler extends DefaultHandler {
 	 * @param key	Key for data to add
 	 */
 	private void addIfNotPresent(String key) {
-		if (!mBookData.containsKey(key) || mBookData.getAsString(key).length() == 0) {
-			mBookData.put(key, mBuilder.toString());
+		if (!mBookData.containsKey(key) || mBookData.getString(key).length() == 0) {
+			mBookData.putString(key, mBuilder.toString());
 		}		
 	}
 
@@ -259,8 +238,8 @@ public class SearchAmazonHandler extends DefaultHandler {
 	 * @param value	Value to compare to; if present but equal to this, it will be overwritten
 	 */
 	private void addIfNotPresentOrEqual(String key, String value) {
-		if (!mBookData.containsKey(key) || mBookData.getAsString(key).length() == 0 || mBookData.getAsString(key).equals(value)) {
-			mBookData.put(key, mBuilder.toString());
+		if (!mBookData.containsKey(key) || mBookData.getString(key).length() == 0 || mBookData.getString(key).equals(value)) {
+			mBookData.putString(key, mBuilder.toString());
 		}		
 	}
 
@@ -305,14 +284,14 @@ public class SearchAmazonHandler extends DefaultHandler {
 				} else if (localName.equalsIgnoreCase(ISBN)){
 					String tmp = mBuilder.toString();
 					if (!mBookData.containsKey(CatalogueDBAdapter.KEY_ISBN) 
-							|| mBookData.getAsString(CatalogueDBAdapter.KEY_ISBN).length() < tmp.length()) {
-						mBookData.put(CatalogueDBAdapter.KEY_ISBN, tmp);
+							|| mBookData.getString(CatalogueDBAdapter.KEY_ISBN).length() < tmp.length()) {
+						mBookData.putString(CatalogueDBAdapter.KEY_ISBN, tmp);
 					}					
 				} else if (localName.equalsIgnoreCase(ISBNOLD)){
 					String tmp = mBuilder.toString();
 					if (!mBookData.containsKey(CatalogueDBAdapter.KEY_ISBN) 
-							|| mBookData.getAsString(CatalogueDBAdapter.KEY_ISBN).length() < tmp.length()) {
-						mBookData.put(CatalogueDBAdapter.KEY_ISBN, tmp);
+							|| mBookData.getString(CatalogueDBAdapter.KEY_ISBN).length() < tmp.length()) {
+						mBookData.putString(CatalogueDBAdapter.KEY_ISBN, tmp);
 					}					
 				} else if (localName.equalsIgnoreCase(PUBLISHER)){
 					addIfNotPresent(CatalogueDBAdapter.KEY_PUBLISHER);

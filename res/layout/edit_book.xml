@@ -19,17 +19,17 @@
 				android:layout_height="wrap_content"
 				android:layout_weight="1"
 			/>
-			
-			<AutoCompleteTextView android:id="@+id/author" 
+
+			<Button android:id="@+id/author" 
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content" 
 				android:layout_weight="1"
-				android:hint="@string/author"
 				android:inputType="textCapWords"
-				android:completionThreshold="2"
+				android:hint="@string/author"
 				android:nextFocusDown="@+id/title"
+				android:gravity="left|center_vertical"
 				/>
-		
+
 			<EditText android:id="@+id/title" 
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content" 

@@ -179,9 +179,9 @@ public class BookEditLoaned extends Activity {
 	private String saveLoan() {
 		AutoCompleteTextView mUserText = (AutoCompleteTextView) findViewById(R.id.loan_to_who);
 		String friend = mUserText.getText().toString();
-		android.content.ContentValues values = new android.content.ContentValues();
-		values.put(CatalogueDBAdapter.KEY_ROWID, mRowId.toString());
-		values.put(CatalogueDBAdapter.KEY_LOANED_TO, friend);
+		Bundle values = new Bundle();
+		values.putString(CatalogueDBAdapter.KEY_ROWID, mRowId.toString());
+		values.putString(CatalogueDBAdapter.KEY_LOANED_TO, friend);
 		mDbHelper.createLoan(values);
 		return friend;
 	}

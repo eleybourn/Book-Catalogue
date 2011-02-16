@@ -33,8 +33,8 @@ public class UpdateThumbnailsThread extends TaskWithProgress {
 
 	public class BookInfo {
 		long			id;
-		ContentValues	bookData = null;
-		BookInfo(long id, ContentValues values) {
+		Bundle			bookData = null;
+		BookInfo(long id, Bundle values) {
 			this.id = id;
 			bookData = values;
 		}
@@ -90,9 +90,9 @@ public class UpdateThumbnailsThread extends TaskWithProgress {
 			while (mBooks.moveToNext() && !isCancelled()) {
 
 				// Copy the fields from the cursor
-				ContentValues origData = new ContentValues();
+				Bundle origData = new Bundle();
 				for(int i = 0; i < mBooks.getColumnCount(); i++) {
-					origData.put(mBooks.getColumnName(i), mBooks.getString(i));
+					origData.putString(mBooks.getColumnName(i), mBooks.getString(i));
 				}
 
 				mProgressCount++;
@@ -104,14 +104,14 @@ public class UpdateThumbnailsThread extends TaskWithProgress {
 					// do nothing - this is the expected behaviour 
 				}
 
-				Long id = origData.getAsLong(CatalogueDBAdapter.KEY_ROWID);
-				String isbn = origData.getAsString(CatalogueDBAdapter.KEY_ISBN);
-				String author = origData.getAsString(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);
-				String title = origData.getAsString(CatalogueDBAdapter.KEY_TITLE);
-				String genre = origData.getAsString(CatalogueDBAdapter.KEY_GENRE);
-				String description = origData.getAsString(CatalogueDBAdapter.KEY_DESCRIPTION);
+				Long id = Utils.getAsLong(origData, CatalogueDBAdapter.KEY_ROWID);
+				String isbn = origData.getString(CatalogueDBAdapter.KEY_ISBN);
+				String author = origData.getString(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);
+				String title = origData.getString(CatalogueDBAdapter.KEY_TITLE);
+				String genre = origData.getString(CatalogueDBAdapter.KEY_GENRE);
+				String description = origData.getString(CatalogueDBAdapter.KEY_DESCRIPTION);
 
-				ContentValues newData = new ContentValues();
+				Bundle newData = new Bundle();
 
 				File thumb = CatalogueDBAdapter.fetchThumbnail(id);
 
@@ -145,7 +145,7 @@ public class UpdateThumbnailsThread extends TaskWithProgress {
 						// LibraryThing
 						try {
 							if (newData.containsKey(CatalogueDBAdapter.KEY_ISBN)) {
-								String bdIsbn = newData.getAsString(CatalogueDBAdapter.KEY_ISBN);
+								String bdIsbn = newData.getString(CatalogueDBAdapter.KEY_ISBN);
 								if (bdIsbn.length() > 0) {
 									LibraryThingManager ltm = new LibraryThingManager(newData);
 									ltm.searchByIsbn(bdIsbn);
@@ -169,10 +169,10 @@ public class UpdateThumbnailsThread extends TaskWithProgress {
 						}
 
 						if (description.equals("") && newData.containsKey(CatalogueDBAdapter.KEY_DESCRIPTION)) {
-							origData.put(CatalogueDBAdapter.KEY_DESCRIPTION, newData.getAsString(CatalogueDBAdapter.KEY_DESCRIPTION));
+							origData.putString(CatalogueDBAdapter.KEY_DESCRIPTION, newData.getString(CatalogueDBAdapter.KEY_DESCRIPTION));
 						}
 						if (genre.equals("") && newData.containsKey(CatalogueDBAdapter.KEY_GENRE)) {
-							origData.put(CatalogueDBAdapter.KEY_GENRE, newData.getAsString(CatalogueDBAdapter.KEY_GENRE));
+							origData.putString(CatalogueDBAdapter.KEY_GENRE, newData.getString(CatalogueDBAdapter.KEY_GENRE));
 						}
 
 						// Queue the book we found

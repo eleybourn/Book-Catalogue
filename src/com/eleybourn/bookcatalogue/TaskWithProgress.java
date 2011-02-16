@@ -22,6 +22,8 @@ abstract public class TaskWithProgress extends Thread {
 
 	protected int mProgressCount = 0;
 	protected int mProgressMax = 0;
+	//protected CatalogueDBAdapter mDbHelper;
+
 	private String mLastProgressMessage = "Updating...";
 
 	abstract protected void onFinish();
@@ -82,6 +84,7 @@ abstract public class TaskWithProgress extends Thread {
 		mContext = ctx;
 		mHandler = new ImportHandler();
 		mTaskHandler = taskHandler;
+		//mDbHelper = new CatalogueDBAdapter(mContext);
 	}
 
 	@Override

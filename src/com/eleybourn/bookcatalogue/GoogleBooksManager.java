@@ -10,10 +10,11 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.SAXException;
 
 import android.content.ContentValues;
+import android.os.Bundle;
 
 public class GoogleBooksManager {
 
-	static public ContentValues searchGoogle(String mIsbn, String author, String title, ContentValues bookData) {
+	static public void searchGoogle(String mIsbn, String author, String title, Bundle bookData) {
 		//replace spaces with %20
 		author = author.replace(" ", "%20");
 		title = title.replace(" ", "%20");
@@ -45,7 +46,7 @@ public class GoogleBooksManager {
 				parser = factory.newSAXParser();
 				parser.parse(Utils.getInputStream(url), entryHandler);
 			}
-			return bookData;
+			return;
 		} catch (MalformedURLException e) {
 			//Log.e("Book Catalogue", "Malformed URL " + e.getMessage());
 		} catch (ParserConfigurationException e) {
@@ -55,7 +56,7 @@ public class GoogleBooksManager {
 		} catch (Exception e) {
 			//Log.e("Book Catalogue", "SAX IO Exception " + e.getMessage());
 		}
-		return bookData;
+		return;
 	}
 	
 }

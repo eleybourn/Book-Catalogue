@@ -67,7 +67,7 @@ public class BookEditNotes extends Activity {
 	 * 
 	 * @return Boolean success or failure.
 	 */
-	private boolean validate(ContentValues values) {
+	private boolean validate(Bundle values) {
 		if (!mFields.validate(values)) {
 			Toast.makeText(getParent(), mFields.getValidationExceptionMessage(getResources()), Toast.LENGTH_LONG).show();
 			return false;
@@ -136,11 +136,11 @@ public class BookEditNotes extends Activity {
 			mFields.add(R.id.signed, CatalogueDBAdapter.KEY_SIGNED,  booleanValidator);
 
 			mFields.addCrossValidator(new Fields.FieldCrossValidator() {
-				public void validate(Fields fields, android.content.ContentValues values) {
-					String start = values.getAsString(CatalogueDBAdapter.KEY_READ_START);
+				public void validate(Fields fields, Bundle values) {
+					String start = values.getString(CatalogueDBAdapter.KEY_READ_START);
 					if (start.equals(""))
 						return;
-					String end = values.getAsString(CatalogueDBAdapter.KEY_READ_END);
+					String end = values.getString(CatalogueDBAdapter.KEY_READ_END);
 					if (end.equals(""))
 						return;
 					if (start.compareToIgnoreCase(end) > 0)
@@ -161,7 +161,7 @@ public class BookEditNotes extends Activity {
 
 			mConfirmButton.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
-					ContentValues values = new ContentValues();
+					Bundle values = new Bundle();
 					if (!validate(values))
 						return;
 
@@ -308,7 +308,7 @@ public class BookEditNotes extends Activity {
 		super.onResume();
 	}
 
-	private void saveState(ContentValues values) {
+	private void saveState(Bundle values) {
 
 		if (mRowId == null || mRowId == 0) {
 			//This should never happen

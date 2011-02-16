@@ -5,6 +5,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+
+import com.eleybourn.bookcatalogue.Utils.ArrayUtils;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -58,7 +61,7 @@ public class ExportThread extends TaskWithProgress {
 		
 		String export = 
 			'"' + CatalogueDBAdapter.KEY_ROWID + "\"," + 			//0
-			'"' + CatalogueDBAdapter.KEY_AUTHOR_DETAILS + "\"," + 		//2
+			'"' + CatalogueDBAdapter.KEY_AUTHOR_DETAILS + "\"," + 	//2
 			'"' + CatalogueDBAdapter.KEY_TITLE + "\"," + 			//4
 			'"' + CatalogueDBAdapter.KEY_ISBN + "\"," + 			//5
 			'"' + CatalogueDBAdapter.KEY_PUBLISHER + "\"," + 		//6
@@ -140,8 +143,13 @@ public class ExportThread extends TaskWithProgress {
 				}
 				bookshelves.close();
 
-				String authorDetails = mDbHelper.getBookAuthorsDetails(id);
+				ArrayUtils<Author> ut = new ArrayUtils<Author>(new Utils.Factory(){
+					@Override
+					public Object get(String source) {
+						return new Author(source);
+					}});
 
+				String authorDetails = ut.encodeList( mDbHelper.getBookAuthorList(id), '|' );
 				String seriesDetails = mDbHelper.getBookSeriesDetails(id);
 
 				String row = "";

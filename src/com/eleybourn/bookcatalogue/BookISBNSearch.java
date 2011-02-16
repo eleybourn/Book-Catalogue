@@ -379,7 +379,7 @@ public class BookISBNSearch extends Activity {
 	
 	private SearchHandler mTaskHandler = new SearchHandler() {
 
-		public void onFinish(ContentValues arg) {
+		public void onFinish(Bundle arg) {
 			if (arg == null) {
 				if (mMode == MODE_SCAN)
 					startScannerActivity();
@@ -498,7 +498,7 @@ public class BookISBNSearch extends Activity {
 	 * 
 	 * return void
 	 */
-	private void createBook(ContentValues book) {
+	private void createBook(Bundle book) {
 		Intent i = new Intent(this, BookEdit.class);
 		i.putExtra("bookData", book);
 		startActivityForResult(i, CREATE_BOOK);

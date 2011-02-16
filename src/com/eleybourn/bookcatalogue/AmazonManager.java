@@ -10,6 +10,7 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.SAXException;
 
 import android.content.ContentValues;
+import android.os.Bundle;
 
 public class AmazonManager {
 	/**
@@ -20,7 +21,7 @@ public class AmazonManager {
 	 * @param mIsbn The ISBN to search for
 	 * @return The book array
 	 */
-	static public void searchAmazon(String mIsbn, String mAuthor, String mTitle, ContentValues bookData) {
+	static public void searchAmazon(String mIsbn, String mAuthor, String mTitle, Bundle bookData) {
 		//replace spaces with %20
 		mAuthor = mAuthor.replace(" ", "%20");
 		mTitle = mTitle.replace(" ", "%20");

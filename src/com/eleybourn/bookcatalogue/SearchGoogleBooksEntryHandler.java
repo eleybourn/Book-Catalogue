@@ -21,6 +21,7 @@
 package com.eleybourn.bookcatalogue;
 
 import android.content.ContentValues;
+import android.os.Bundle;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -113,28 +114,7 @@ import org.xml.sax.helpers.DefaultHandler;
 public class SearchGoogleBooksEntryHandler extends DefaultHandler {
 	private StringBuilder builder;
 	
-	private ContentValues mValues;
-//	public String title = "";
-//	public String author = "";
-//	public String isbn = "";
-//	public String publisher = "";
-//	public String date_published = "";
-//	public String rating = "0";
-//	public String bookshelf = "";
-//	public String read = "false";
-//	public String series = "";
-//	public String pages = "0";
-//	public String thumbnail = "";
-//	public String series_num = "";
-//	public String list_price = "";
-//	public String anthology = "0";
-//	public String location = "";
-//	public String read_start = "";
-//	public String read_end = "";
-//	public String audiobook = "";
-//	public String signed = "0";
-//	public String description = "";
-//	public String genre = "";
+	private Bundle mValues;
 	
 	public static String ID = "id";
 	public static String TOTALRESULTS = "totalResults";
@@ -149,7 +129,7 @@ public class SearchGoogleBooksEntryHandler extends DefaultHandler {
 	public static String GENRE = "subject";
 	public static String DESCRIPTION = "description";
 
-	SearchGoogleBooksEntryHandler(ContentValues values) {
+	SearchGoogleBooksEntryHandler(Bundle values) {
 		mValues = values;
 	}
 
@@ -160,8 +140,8 @@ public class SearchGoogleBooksEntryHandler extends DefaultHandler {
 	}
 
 	private void addIfNotPresent(String key) {
-		if (!mValues.containsKey(key) || mValues.getAsString(key).length() == 0) {
-			mValues.put(key, builder.toString());
+		if (!mValues.containsKey(key) || mValues.getString(key).length() == 0) {
+			mValues.putString(key, builder.toString());
 		}		
 	}
 
@@ -174,8 +154,8 @@ public class SearchGoogleBooksEntryHandler extends DefaultHandler {
 			String tmp = builder.toString(); 
 			if (tmp.indexOf("ISBN:") == 0) {
 				tmp = tmp.substring(5); 
-				if (!mValues.containsKey(CatalogueDBAdapter.KEY_ISBN) || tmp.length() > mValues.getAsString(CatalogueDBAdapter.KEY_ISBN).length()) {
-					mValues.put(CatalogueDBAdapter.KEY_ISBN, tmp);
+				if (!mValues.containsKey(CatalogueDBAdapter.KEY_ISBN) || tmp.length() > mValues.getString(CatalogueDBAdapter.KEY_ISBN).length()) {
+					mValues.putString(CatalogueDBAdapter.KEY_ISBN, tmp);
 				}
 			}
 		} else if (localName.equalsIgnoreCase(AUTHOR)){
@@ -189,10 +169,10 @@ public class SearchGoogleBooksEntryHandler extends DefaultHandler {
 			int index = tmp.indexOf(" pages");
 			if (index > -1) {
 				tmp = tmp.substring(0, index).trim(); 
-				mValues.put(CatalogueDBAdapter.KEY_PAGES, tmp);
+				mValues.putString(CatalogueDBAdapter.KEY_PAGES, tmp);
 			}
 		} else if (localName.equalsIgnoreCase(GENRE)){
-			mValues.put(CatalogueDBAdapter.KEY_GENRE, builder.toString());
+			mValues.putString(CatalogueDBAdapter.KEY_GENRE, builder.toString());
 		} else if (localName.equalsIgnoreCase(DESCRIPTION)){
 			addIfNotPresent(CatalogueDBAdapter.KEY_DESCRIPTION);
 		}

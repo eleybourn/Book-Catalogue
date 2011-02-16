@@ -1,12 +1,15 @@
 package com.eleybourn.bookcatalogue;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import com.eleybourn.bookcatalogue.TaskWithProgress.TaskHandler;
 import com.eleybourn.bookcatalogue.UpdateThumbnailsThread.BookInfo;
+import com.eleybourn.bookcatalogue.Utils.ArrayUtils;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.os.Bundle;
 import android.os.Message;
 
 public class SearchForBookThread extends TaskWithProgress {
@@ -14,10 +17,24 @@ public class SearchForBookThread extends TaskWithProgress {
 	private String mTitle;
 	private String mIsbn;
 
-	private ContentValues mBookData = new ContentValues();
+	private Bundle mBookData = new Bundle();
+
+	// Create an ArrayUtils for Author objects...
+	ArrayUtils<Author> mAuthorUtils = new ArrayUtils<Author>(new Utils.Factory(){
+		@Override
+		public Object get(String source) {
+			return new Author(source);
+		}});
+
+	// Create an ArrayUtils for Series objects...
+	ArrayUtils<Author> mSeriesUtils = new ArrayUtils<Author>(new Utils.Factory(){
+		@Override
+		public Object get(String source) {
+			return new Author(source);
+		}});
 
 	public interface SearchHandler extends TaskWithProgress.TaskHandler {
-		void onFinish(ContentValues bookData);
+		void onFinish(Bundle bookData);
 	}
 
 	SearchForBookThread(Context ctx, SearchHandler taskHandler, String author, String title, String isbn) {
@@ -50,9 +67,9 @@ public class SearchForBookThread extends TaskWithProgress {
 
 	@Override
 	protected void onRun() {
-		mBookData.put(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, mAuthor);
-		mBookData.put(CatalogueDBAdapter.KEY_TITLE, mTitle);
-		mBookData.put(CatalogueDBAdapter.KEY_ISBN, mIsbn);
+		mBookData.putString(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, mAuthor);
+		mBookData.putString(CatalogueDBAdapter.KEY_TITLE, mTitle);
+		mBookData.putString(CatalogueDBAdapter.KEY_ISBN, mIsbn);
 		try {
 
 			//
@@ -68,7 +85,7 @@ public class SearchForBookThread extends TaskWithProgress {
 
 			// Copy the series for later
 			if (mBookData.containsKey(CatalogueDBAdapter.KEY_TITLE)) {
-				mBookData.put(CatalogueDBAdapter.KEY_SERIES_NAME, findSeries(mBookData.getAsString(CatalogueDBAdapter.KEY_TITLE)));
+				mBookData.putString(CatalogueDBAdapter.KEY_SERIES_NAME, findSeries(mBookData.getString(CatalogueDBAdapter.KEY_TITLE)));
 			}
 
 			//
@@ -83,12 +100,12 @@ public class SearchForBookThread extends TaskWithProgress {
 			}
 
 			//Look for series in Title. e.g. Red Phoenix (Dark Heavens Trilogy)
-			String tmpSeries = findSeries(mBookData.getAsString(CatalogueDBAdapter.KEY_TITLE));
+			String tmpSeries = findSeries(mBookData.getString(CatalogueDBAdapter.KEY_TITLE));
 
 			if (tmpSeries != null && tmpSeries.length() > 0) {
 				if (!mBookData.containsKey(CatalogueDBAdapter.KEY_SERIES_NAME) 
-						|| mBookData.getAsString(CatalogueDBAdapter.KEY_SERIES_NAME).length() < tmpSeries.length() ) {
-					mBookData.put(CatalogueDBAdapter.KEY_SERIES_NAME, tmpSeries);
+						|| mBookData.getString(CatalogueDBAdapter.KEY_SERIES_NAME).length() < tmpSeries.length() ) {
+					mBookData.putString(CatalogueDBAdapter.KEY_SERIES_NAME, tmpSeries);
 				}
 			}
 
@@ -99,7 +116,7 @@ public class SearchForBookThread extends TaskWithProgress {
 			//	does require an ISBN AND a developer key.
 			//
 			if (mBookData.containsKey(CatalogueDBAdapter.KEY_ISBN)) {
-				String isbn = mBookData.getAsString(CatalogueDBAdapter.KEY_ISBN);
+				String isbn = mBookData.getString(CatalogueDBAdapter.KEY_ISBN);
 				if (isbn.length() > 0) {
 					this.doProgress(getString(R.string.searching_library_thing), 0);
 					LibraryThingManager ltm = new LibraryThingManager(mBookData);
@@ -120,34 +137,35 @@ public class SearchForBookThread extends TaskWithProgress {
 	    	Utils.cleanupThumbnails(mBookData);
 
 	    	// If book is not found, just return to dialog.
-	    	String author = "";
-	    	String title = "";
+	    	String authors = null;
+	    	String title = null;
 	    	try {
-	    		author = mBookData.getAsString(CatalogueDBAdapter.KEY_AUTHOR_DETAILS);
+	    		authors = mBookData.getString(CatalogueDBAdapter.KEY_AUTHOR_DETAILS);
 	    	} catch (Exception e) {}
 	    	try {
-	    		title = mBookData.getAsString(CatalogueDBAdapter.KEY_TITLE);
+	    		title = mBookData.getString(CatalogueDBAdapter.KEY_TITLE);
 	    	} catch (Exception e) {}
-			if (author.length() == 0 || title.length() == 0) {
+			if (authors == null || authors.length() == 0 || title == null || title.length() == 0) {
 
 				doToast(getString(R.string.book_not_found));
 				mBookData = null;
 
 			} else {
-				doProperCase(mBookData, CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);
 				doProperCase(mBookData, CatalogueDBAdapter.KEY_TITLE);
 				doProperCase(mBookData, CatalogueDBAdapter.KEY_PUBLISHER);
 				doProperCase(mBookData, CatalogueDBAdapter.KEY_DATE_PUBLISHED);
 				doProperCase(mBookData, CatalogueDBAdapter.KEY_SERIES_NAME);
+				ArrayList<Author> aa = mAuthorUtils.decodeList(authors, '|');
+				mBookData.putSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, aa);
 			}
 		}
 
 	}
 
-	private void doProperCase(ContentValues values, String key) {
+	private void doProperCase(Bundle values, String key) {
 		if (!values.containsKey(key))
 			return;
-		values.put(key, Utils.properCase(values.getAsString(key)));
+		values.putString(key, Utils.properCase(values.getString(key)));
 	}
 
 	private void showException(int id, Exception e) {

@@ -83,6 +83,7 @@ public class Author implements Parcelable {
     private Author(Parcel in) {
     	familyName = in.readString();
     	givenNames = in.readString();
+    	id = in.readLong();
     }
 
     @Override
@@ -94,5 +95,6 @@ public class Author implements Parcelable {
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeString(familyName);
 		dest.writeString(givenNames);
+		dest.writeLong(id);
 	}
 }

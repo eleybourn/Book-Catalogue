@@ -70,7 +70,7 @@ public class ExportThread extends TaskWithProgress {
 			'"' + "bookshelf_id\"," + 								//9
 			'"' + CatalogueDBAdapter.KEY_BOOKSHELF + "\"," +		//10
 			'"' + CatalogueDBAdapter.KEY_READ + "\"," +				//11
-			'"' + CatalogueDBAdapter.KEY_SERIES_DETAILS + "\"," +		//12
+			'"' + CatalogueDBAdapter.KEY_SERIES_DETAILS + "\"," +	//12
 			'"' + CatalogueDBAdapter.KEY_PAGES + "\"," + 			//14
 			'"' + CatalogueDBAdapter.KEY_NOTES + "\"," + 			//15
 			'"' + CatalogueDBAdapter.KEY_LIST_PRICE + "\"," + 		//16
@@ -143,14 +143,8 @@ public class ExportThread extends TaskWithProgress {
 				}
 				bookshelves.close();
 
-				ArrayUtils<Author> ut = new ArrayUtils<Author>(new Utils.Factory(){
-					@Override
-					public Object get(String source) {
-						return new Author(source);
-					}});
-
-				String authorDetails = ut.encodeList( mDbHelper.getBookAuthorList(id), '|' );
-				String seriesDetails = mDbHelper.getBookSeriesDetails(id);
+				String authorDetails = Utils.getAuthorUtils().encodeList( mDbHelper.getBookAuthorList(id), '|' );
+				String seriesDetails = Utils.getSeriesUtils().encodeList( mDbHelper.getBookSeriesList(id), '|' );
 
 				String row = "";
 				row += "\"" + formatCell(id) + "\",";

@@ -96,10 +96,28 @@ public class EditAuthorList extends EditObjectList<Author> {
 			AutoCompleteTextView t = ((AutoCompleteTextView)EditAuthorList.this.findViewById(R.id.author));
 			String s = t.getText().toString().trim();
 			if (s.length() > 0) {
-				mList.add(new Author(t.getText().toString()));
+				Author a = new Author(t.getText().toString());
+				a.id = mDbHelper.lookupAuthorId(a);
+
+				boolean foundMatch = false;
+				for(int i = 0; i < mList.size() && !foundMatch; i++) {
+					if (a.id != 0L) {
+						if (mList.get(i).id == a.id)
+							foundMatch = true;
+					} else {
+						if (a.getDisplayName().equals(mList.get(i).getDisplayName()))
+							foundMatch = true;
+					}
+				}
+				if (foundMatch) {
+					Toast.makeText(EditAuthorList.this, "Author matches exiting author", Toast.LENGTH_LONG).show();						
+					return;							
+				}
+				
+				mList.add(a);
 	            mAdapter.notifyDataSetChanged();
 			} else {
-				Toast.makeText(EditAuthorList.this, "Author is empty", Toast.LENGTH_LONG);
+				Toast.makeText(EditAuthorList.this, "Author is empty", Toast.LENGTH_LONG).show();
 			}
 		}
 	};

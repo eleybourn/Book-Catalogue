@@ -11,6 +11,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Message;
+import android.util.Log;
 
 public class SearchForBookThread extends TaskWithProgress {
 	private String mAuthor;
@@ -18,20 +19,6 @@ public class SearchForBookThread extends TaskWithProgress {
 	private String mIsbn;
 
 	private Bundle mBookData = new Bundle();
-
-	// Create an ArrayUtils for Author objects...
-	ArrayUtils<Author> mAuthorUtils = new ArrayUtils<Author>(new Utils.Factory(){
-		@Override
-		public Object get(String source) {
-			return new Author(source);
-		}});
-
-	// Create an ArrayUtils for Series objects...
-	ArrayUtils<Author> mSeriesUtils = new ArrayUtils<Author>(new Utils.Factory(){
-		@Override
-		public Object get(String source) {
-			return new Author(source);
-		}});
 
 	public interface SearchHandler extends TaskWithProgress.TaskHandler {
 		void onFinish(Bundle bookData);
@@ -83,9 +70,11 @@ public class SearchForBookThread extends TaskWithProgress {
 				showException(R.string.searching_google_books, e);
 			}
 
-			// Copy the series for later
+			// Save the series from title, if found
 			if (mBookData.containsKey(CatalogueDBAdapter.KEY_TITLE)) {
-				mBookData.putString(CatalogueDBAdapter.KEY_SERIES_NAME, findSeries(mBookData.getString(CatalogueDBAdapter.KEY_TITLE)));
+				String tmpSeries = findSeries(mBookData.getString(CatalogueDBAdapter.KEY_TITLE));
+				if (tmpSeries != null && tmpSeries.length() > 0)
+					Utils.appendOrAdd(mBookData, CatalogueDBAdapter.KEY_SERIES_DETAILS, tmpSeries);
 			}
 
 			//
@@ -101,13 +90,8 @@ public class SearchForBookThread extends TaskWithProgress {
 
 			//Look for series in Title. e.g. Red Phoenix (Dark Heavens Trilogy)
 			String tmpSeries = findSeries(mBookData.getString(CatalogueDBAdapter.KEY_TITLE));
-
-			if (tmpSeries != null && tmpSeries.length() > 0) {
-				if (!mBookData.containsKey(CatalogueDBAdapter.KEY_SERIES_NAME) 
-						|| mBookData.getString(CatalogueDBAdapter.KEY_SERIES_NAME).length() < tmpSeries.length() ) {
-					mBookData.putString(CatalogueDBAdapter.KEY_SERIES_NAME, tmpSeries);
-				}
-			}
+			if (tmpSeries != null && tmpSeries.length() > 0)
+				Utils.appendOrAdd(mBookData, CatalogueDBAdapter.KEY_SERIES_DETAILS, tmpSeries);
 
 			//
 			//	LibraryThing
@@ -155,8 +139,15 @@ public class SearchForBookThread extends TaskWithProgress {
 				doProperCase(mBookData, CatalogueDBAdapter.KEY_PUBLISHER);
 				doProperCase(mBookData, CatalogueDBAdapter.KEY_DATE_PUBLISHED);
 				doProperCase(mBookData, CatalogueDBAdapter.KEY_SERIES_NAME);
-				ArrayList<Author> aa = mAuthorUtils.decodeList(authors, '|');
+				ArrayList<Author> aa = Utils.getAuthorUtils().decodeList(authors, '|');
 				mBookData.putSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, aa);
+				try {
+		    		String series = mBookData.getString(CatalogueDBAdapter.KEY_SERIES_DETAILS);
+					ArrayList<Series> sa = Utils.getSeriesUtils().decodeList(series, '|');
+					mBookData.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, sa);
+		    	} catch (Exception e) {
+		    		Log.e("BC","Failed to add series", e);
+		    	}
 			}
 		}
 

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:orientation="horizontal"
+	android:layout_width="fill_parent" 
+	android:layout_height="wrap_content" 
+	android:padding="10dp" >
+	<ImageView android:id="@+id/row_delete" 
+		android:layout_width="25sp"
+		android:layout_height="25sp"
+		android:paddingRight="5sp"
+		android:focusable="false"
+		android:focusableInTouchMode="false"
+		android:gravity="left"
+		
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentTop="true"
+		android:layout_alignParentBottom="true"
+		android:layout_weight="1"
+		/>
+
+	<ImageView android:id="@+id/row_down" 
+		android:layout_width="25sp"
+		android:layout_height="25sp"
+		android:paddingRight="5sp"
+		android:src="@+drawable/down"
+		android:focusable="false"
+		android:focusableInTouchMode="false"
+		android:gravity="right"
+		
+		android:layout_alignParentRight="true"
+		android:layout_alignParentTop="true"
+		android:layout_alignParentBottom="true"
+		android:layout_weight="1"
+		/>
+	<ImageView android:id="@+id/row_up" 
+		android:layout_width="25sp"
+		android:layout_height="25sp"
+		android:paddingRight="5sp"
+		android:src="@+drawable/up"
+		android:focusable="false"
+		android:focusableInTouchMode="false"
+		android:gravity="right"
+		
+		android:layout_toLeftOf="@id/row_down"
+		android:layout_alignParentTop="true"
+		android:layout_alignParentBottom="true"
+		android:layout_weight="1"
+		/>
+	<TextView android:id="@+id/row_position" 
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:paddingRight="5sp"
+		android:gravity="left"
+		
+		android:layout_toRightOf="@id/row_delete"
+		android:layout_alignParentTop="true"
+		android:layout_alignParentBottom="true"
+		android:layout_weight="1"
+		android:visibility="gone"
+		/>
+	<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android" 
+			android:orientation="vertical"
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:padding="2dp"
+
+			android:layout_alignParentBottom="true"
+			android:layout_alignParentTop="true" 
+			android:layout_toRightOf="@id/row_position"
+			android:layout_toLeftOf="@+id/row_up"
+			android:layout_weight="0"
+		>
+		<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android" 
+				android:id="@+id/grp_series" 
+				android:orientation="horizontal"
+				android:layout_width="fill_parent" 
+				android:layout_height="wrap_content" 
+				android:padding="2dp"
+	
+				android:layout_alignParentTop="true" 
+				android:layout_weight="0"
+			>
+			<TextView android:id="@+id/row_series" 
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:paddingRight="5sp"
+				android:singleLine="true"
+				android:ellipsize="marquee"
+				android:gravity="left"
+				
+				android:layout_toLeftOf="@+id/row_series_num"
+				android:layout_alignParentLeft="true" 
+				android:layout_alignParentTop="true" 
+				android:layout_weight="2"
+				android:textSize="16sp"			
+				/>
+			<EditText android:id="@+id/row_series_num" 
+				android:layout_width="100sp"
+				android:layout_height="wrap_content"
+				android:paddingRight="5sp"
+				android:singleLine="true"
+				android:gravity="left"
+				android:hint="@string/series_num"
+				android:inputType="numberDecimal"
+				
+				android:layout_alignParentTop="true" 
+				android:layout_alignParentRight="true" 
+				android:layout_weight="1"
+				android:textSize="16sp"			
+				android:visibility="gone"
+				/>
+		</RelativeLayout>
+		<TextView android:id="@+id/row_series_sort" 
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:paddingRight="5sp"
+			android:singleLine="true"
+			android:ellipsize="marquee"
+			android:gravity="left"
+
+			android:layout_below="@+id/grp_series"
+			android:layout_alignParentBottom="true" 
+			android:layout_weight="0"
+			android:textSize="12sp"			
+			/>
+	</RelativeLayout>
+</RelativeLayout>

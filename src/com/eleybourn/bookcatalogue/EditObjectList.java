@@ -16,7 +16,27 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 /**
- * Base class for editing a list of objects.
+ * Base class for editing a list of objects. The inheritor must specify a view id
+ * and a row view id to the constructor of this class. Each view can have the
+ * following sub-view IDs present which will be automatically handled. Optional
+ * IDs are noted:
+ * 
+ * Main View:
+ * 	- cancel
+ *  - confirm
+ *  - add (OPTIONAL)
+ *  
+ * Row View (must have layout ID set to android:id="@+id/row"):
+ *  - position (OPTIONAL)
+ *  - up (OPTIONAL)
+ *  - down (OPTIONAL)
+ *  - delete (OPTIONAL)
+ * 
+ * The row view is tagged using TAG_POSITION, defined in strings.xml, to save the rows position for
+ * use when moving the row up/down or deleting it.
+ *
+ * Abstract methods are defined for specific tasks (Add, Save, Load etc). While would 
+ * be tempting to add local implementations the java generic model seems to prevent this.
  * 
  * @author Grunthos
  *
@@ -38,25 +58,45 @@ abstract public class EditObjectList<T> extends ListActivity {
 	private int mRowViewId;
 
 	/**
-	 * Called from onCreate to initialize the list.
+	 * Called when user clicks the 'Add' button (if present).
+	 * 
+	 * @param v		The view that was clicked ('add' button).
+	 * 
+	 * @return		True if activity should exit, false to abort exit.
+	 */
+	abstract protected void onAdd(View v);
+
+	/**
+	 * Called to retrieve the list from a Bundle (typically in onCreate).
 	 * 
 	 * @param savedInstanceState	As passed to onCreate
 	 */
-	abstract protected void onInitList(Bundle savedInstanceState);
+	abstract protected ArrayList<T> onGetList(Bundle b);
+
 	/**
-	 * Called when user clicks the 'Save' button (if present).
+	 * Called from onSaveInstanceState to save the list.
+	 * 
+	 * @param savedInstanceState	As passed to onCreate
+	 */
+	abstract protected void onSaveList(Bundle outState);
+
+	/**
+	 * Called when user clicks the 'Save' button (if present). Primary task is
+	 * to store the list in the passed intent.
 	 * 
 	 * @param i		A newly created Intent to store output if necessary.
 	 * 
 	 * @return		True if activity should exit, false to abort exit.
 	 */
 	abstract protected boolean onSave(Intent i);
+
 	/**
 	 * Called when user presses 'Cancel' button if present.
 	 * 
 	 * @return		True if activity should exit, false to abort exit.
 	 */
 	abstract protected boolean onCancel();
+
 	/**
 	 * Call to set up the row view.
 	 * 
@@ -64,7 +104,7 @@ abstract public class EditObjectList<T> extends ListActivity {
 	 * @param object	The object (or type T) from which to draw values.
 	 */
 	abstract protected void onSetupView(View target, T object);
-
+	
 	/**
 	 * Constructor
 	 * 
@@ -87,12 +127,27 @@ abstract public class EditObjectList<T> extends ListActivity {
 			// Set the view
 			setContentView(mBaseViewId);
 
-			// Add handlers for 'Save' and 'Cancel'
-			this.findViewById(R.id.confirm).setOnClickListener(mSaveListener);
-			this.findViewById(R.id.cancel).setOnClickListener(mCancelListener);
+			// Add handlers for 'Save', 'Cancel' and 'Add'
+			setupListener(R.id.confirm, mSaveListener);
+			setupListener(R.id.cancel, mCancelListener);
+			setupListener(R.id.add, mAddListener);
 
-			// Ask the subclass to setup the list
-			onInitList(savedInstanceState);
+			// Ask the subclass to setup the list; we need this before 
+			// building the adapter.
+			if (savedInstanceState != null) {
+				mList = onGetList(savedInstanceState);
+			}
+
+			if (mList == null) {
+				/* Get any information from the extras bundle */
+				Bundle extras = getIntent().getExtras();
+				if (extras != null) {
+					mList = onGetList(extras);
+				}
+				if (mList == null) {
+					mList = onGetList(null);		
+				}
+			}		
 
 			// Set up list handling
 	        this.mAdapter = new ListAdapter(this, mRowViewId, mList);
@@ -113,6 +168,22 @@ abstract public class EditObjectList<T> extends ListActivity {
 	}
 
 	/**
+	 * Utility routine to setup a listener for the specified view id
+	 * 
+	 * @param id	Resource ID
+	 * @param l		Listener
+	 * 
+	 * @return		true if resource present, false if not
+	 */
+	private boolean setupListener(int id, OnClickListener l) {
+		View v = this.findViewById(id);
+		if (v == null)
+			return false;
+		v.setOnClickListener(l);
+		return true;
+	}
+
+	/**
 	 * Utility routine to set a TextView to a string, or hide it on failure.
 	 * 
 	 * @param id	View ID
@@ -128,6 +199,7 @@ abstract public class EditObjectList<T> extends ListActivity {
 			}
 		} catch (Exception e) {
 		};		
+		// If we get here, something went wrong.
 		if (v != null)
 			v.setVisibility(View.GONE);		
 	}
@@ -158,6 +230,25 @@ abstract public class EditObjectList<T> extends ListActivity {
 	};
 
 	/**
+	 * Handle 'Add'
+	 */
+	private OnClickListener mAddListener = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			onAdd(v);
+		}		
+	};
+
+	private Integer getViewRow(View v) {
+		View pv = v;
+		while(pv.getId() != R.id.row)
+			pv = (View) pv.getParent();
+		return (Integer) pv.getTag(R.id.TAG_POSITION);
+//		View pv = (View) v.getParent();
+//        TextView pt = (TextView) pv.findViewById(R.id.row_position);
+//        int pos = Integer.parseInt(pt.getText().toString()) - 1;
+	}
+	/**
 	 * Handle deletion of a row
 	 */
 	private OnClickListener mRowDeleteListener = new OnClickListener() {
@@ -165,9 +256,7 @@ abstract public class EditObjectList<T> extends ListActivity {
 		@Override
 		public void onClick(View v) {
 			Log.i("BC","Delete");
-			View pv = (View) v.getParent();
-            TextView pt = (TextView) pv.findViewById(R.id.row_position);
-            int pos = Integer.parseInt(pt.getText().toString()) - 1;
+			int pos = getViewRow(v);
             mList.remove(pos);
             mAdapter.notifyDataSetChanged();
 		}
@@ -181,9 +270,7 @@ abstract public class EditObjectList<T> extends ListActivity {
 		@Override
 		public void onClick(View v) {
 			Log.i("BC","Move UP");
-			View pv = (View) v.getParent();
-            TextView pt = (TextView) pv.findViewById(R.id.row_position);
-            int pos = Integer.parseInt(pt.getText().toString()) - 1;
+			int pos = getViewRow(v);
             if (pos == 0)
             	return;
             T old = mList.get(pos-1);
@@ -202,9 +289,7 @@ abstract public class EditObjectList<T> extends ListActivity {
 		@Override
 		public void onClick(View v) {
 			Log.i("BC","Move DOWN");
-			View pv = (View) v.getParent();
-            TextView pt = (TextView) pv.findViewById(R.id.row_position);
-            int pos = Integer.parseInt(pt.getText().toString()) - 1;
+			int pos = getViewRow(v);
             if (pos == (mList.size()-1) )
             	return;
             T old = mList.get(pos);
@@ -242,6 +327,10 @@ abstract public class EditObjectList<T> extends ListActivity {
                 LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 v = vi.inflate(mRowViewId, null);
             }
+            
+            // Save this views position
+            v.setTag(R.id.TAG_POSITION, new Integer(position));
+
             // Get the object, if not null, do some processing
             T o = mList.get(position);
             if (o != null) {
@@ -293,4 +382,15 @@ abstract public class EditObjectList<T> extends ListActivity {
             }
             return v;
         }
-}}
+	}
+
+	/**
+	 * Ensure that the list os saved.
+	 */
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {    	
+    	super.onSaveInstanceState(outState);
+    	// save list
+    	onSaveList(outState);
+    }
+}

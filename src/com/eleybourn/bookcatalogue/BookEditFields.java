@@ -165,7 +165,7 @@ public class BookEditFields extends Activity {
 
 			mFields = new Fields(this);
 
-			mFields.add(R.id.author, CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, nonBlankValidator);
+			mFields.add(R.id.author, "", CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, nonBlankValidator);
 			{
 				View v = mFields.getField(R.id.author).view;
 				v.setOnClickListener(new OnClickListener() {
@@ -179,6 +179,7 @@ public class BookEditFields extends Activity {
 					}
 				});
 			}
+
 			// Title has some post-processing on the text, to move leading 'A', 'The' etc to the end.
 			// While we could do it in a formatter, it it not really a display-oriented function and
 			// is handled in preprocessing in the database layer since it also needs to be applied
@@ -205,19 +206,6 @@ public class BookEditFields extends Activity {
 					}
 				});
 			}
-
-			// Ensure that series number is blank if series is blank 
-			mFields.addCrossValidator(new Fields.FieldCrossValidator() {
-				public void validate(Fields fields, Bundle values) {
-					if (!values.getString(CatalogueDBAdapter.KEY_SERIES_NAME).equals(""))
-						return;
-					// For blank series, series-number must also be blank
-					String num = Utils.getAsString(values, CatalogueDBAdapter.KEY_SERIES_NUM);
-					if (!num.equals("")) {
-						throw new Fields.ValidatorException(R.string.vldt_series_num_must_be_blank,new Object[]{num});							
-					}
-				}
-			});
 
 			mFields.add(R.id.list_price, "list_price", blankOrFloatValidator);
 			mFields.add(R.id.pages, "pages", blankOrIntegerValidator);
@@ -402,6 +390,13 @@ public class BookEditFields extends Activity {
 				// The thumbnail image is not automatically preserved, so reload it.
 				ImageView iv = (ImageView) mFields.getField(R.id.row_img).view;
 				CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);				
+				// Author and series lists
+				mAuthorList = savedInstanceState.getParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
+				fixupAuthorList();	// Will update related display fields/button
+				mSeriesList = savedInstanceState.getParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY);
+				fixupSeriesList();	// Will update related display fields/button
+				mFields.getField(R.id.date_published).setValue(savedInstanceState.getString(CatalogueDBAdapter.KEY_DATE_PUBLISHED));
+				mFields.getField(R.id.bookshelf_text).setValue(savedInstanceState.getString("bookshelf_text"));
 			}
 
 			// Setup the Save/Add/Anthology UI elements
@@ -433,7 +428,7 @@ public class BookEditFields extends Activity {
 					zoom_thumb.setIcon(android.R.drawable.ic_menu_zoom);
 				}
 			});
-			
+
 			// mConfirmButton.setOnClickListener - This is set in populate fields. The behaviour changes depending on if it is adding or saving
 			mCancelButton.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
@@ -711,14 +706,10 @@ public class BookEditFields extends Activity {
 			mSeriesList = new ArrayList<Series>();
 		}
 		/**
-		 * TODO: Fill in AUTHOR_FORMATTED and SERIES_FORMATTED from mAuthorDetails and mSeriesDetails
-		 * TODO: Turn series and author into button fields that look like spinners (maybe)
-		 * TODO: Add an EditBookAuthors activity: author AND move up/down
-		 * TODO: Add an EditBookSeries activity: series (MAYBE up/down)
-		 * TODO: Add EditSeries to change series name (and maybe series_sort)
-		 * TODO: Add EditAuthor to edit author_name_disp and author_name_sort
+		 * TODO: Add EditAuthor to edit family and given names
+		 * TODO: Add EditBookSeries to change series and series num
+		 * TODO: Add EditSeries to change series name
 		 * 
-		 * TODO: Remove family/given; add author_name_sort and author_name_disp.
 		 */
 
 		fixupAuthorList();
@@ -815,6 +806,13 @@ public class BookEditFields extends Activity {
 		} else {
 			//there is nothing todo
 		}
+		// DONT FORGET TO UPDATE onCreate to read these values back.
+		// Need to save local data that is not stored in editable views
+		outState.putParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mAuthorList);
+		outState.putParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY, mSeriesList);
+		// ...including special text stored in TextViews and the like
+		outState.putString(CatalogueDBAdapter.KEY_DATE_PUBLISHED, mFields.getField(R.id.date_published).getValue().toString());
+		outState.putString("bookshelf_text", mFields.getField(R.id.bookshelf_text).getValue().toString());
 	}
 	
 	@Override
@@ -849,6 +847,7 @@ public class BookEditFields extends Activity {
 				Cursor book = mDbHelper.fetchBookByISBN(isbn);
 				int rows = book.getCount();
 				if (rows != 0) {
+					// TODO : Allow duplicates in Save...
 					Toast.makeText(this, R.string.book_exists, Toast.LENGTH_LONG).show();
 					return;
 				}
@@ -866,14 +865,22 @@ public class BookEditFields extends Activity {
 		} else {
 			mDbHelper.updateBook(mRowId, values);
 		}
+
 		/* These are global variables that will be sent via intent back to the list view */
-		added_author = values.getString(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);
+		try {
+			ArrayList<Author> authors = values.getParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
+			added_author = authors.get(0).getSortName();
+		} catch (Exception e) {};
+		try {
+			ArrayList<Author> series = values.getParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY);
+			added_series = series.get(0).getSortName();
+		} catch (Exception e) {};
+
 		added_title = values.getString(CatalogueDBAdapter.KEY_TITLE);
-		added_series = values.getString(CatalogueDBAdapter.KEY_SERIES_NAME);
 		added_genre = values.getString(CatalogueDBAdapter.KEY_GENRE);
 		return;
 	}
-	
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
@@ -925,7 +932,7 @@ public class BookEditFields extends Activity {
 			return;
 		case ACTIVITY_EDIT_AUTHORS:
 			if (resultCode == Activity.RESULT_OK && intent.hasExtra(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)){
-				mAuthorList = Utils.getAuthorsFromIntent(intent);
+				mAuthorList = intent.getParcelableArrayListExtra(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
 				fixupAuthorList();
 			}
 		case ACTIVITY_EDIT_SERIES:
@@ -942,7 +949,7 @@ public class BookEditFields extends Activity {
 		if (mAuthorList.size() == 0)
 			newText = "Set Authors...";
 		else {
-			Utils.pruneAuthors(mDbHelper, mAuthorList);
+			Utils.pruneList(mDbHelper, mAuthorList);
 			newText = mAuthorList.get(0).getDisplayName();
 			if (mAuthorList.size() > 1)
 				newText += " et. al.";
@@ -956,7 +963,7 @@ public class BookEditFields extends Activity {
 		if (mSeriesList.size() == 0)
 			newText = "Set Series...";
 		else {
-			Utils.pruneSeries(mDbHelper, mSeriesList);
+			Utils.pruneList(mDbHelper, mSeriesList);
 			newText = mSeriesList.get(0).getDisplayName();
 			if (mSeriesList.size() > 1)
 				newText += " et. al.";

@@ -11,6 +11,16 @@ import android.util.Log;
 
 import java.lang.ref.WeakReference;
 
+/**
+ * Base class for handling tasks in background while displating a ProgressDialog.
+ * Copes with deconstruction of the underlying activity BUT that activity MUST:
+ * 
+ *  - call reconnect(...) in onRestoreInstanceState.
+ *  - save the task in onRetainNonConfigurationInstance
+ *  - call disconnect() in onRetainNonConfigurationInstance, possibly even in onPause()
+ * 
+ * @author Grunthos
+ */
 abstract public class TaskWithProgress extends Thread {
 	private Context mContext;
 	private Handler mHandler;

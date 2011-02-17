@@ -2,21 +2,24 @@ package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
 
-import com.eleybourn.bookcatalogue.ExportThread.ExportHandler;
-import com.eleybourn.bookcatalogue.Utils.ArrayUtils;
-
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
 
+/**
+ * Class to handle import in a separate thread.
+ *
+ * @author Grunthos
+ */
 public class ImportThread extends TaskWithProgress {
 	public ArrayList<String> mExport = null;
 	private CatalogueDBAdapter mDbHelper;
 	
 	public class ImportException extends RuntimeException {
+		private static final long serialVersionUID = 1660687786319003483L;
+
 		ImportException(String s) {
 			super(s);
 		}
@@ -71,14 +74,11 @@ public class ImportThread extends TaskWithProgress {
 								CatalogueDBAdapter.KEY_AUTHOR_NAME,
 								CatalogueDBAdapter.KEY_AUTHOR_DETAILS);
 
-		int row = 1;
-		int num = 0;
+		int row = 1; // Start after headings.
 
 		/* Iterate through each imported row */
 		while (row < mExport.size() && !isCancelled()) {
-			// Increment row count and get a row
-			num++;
-			row++;
+			// Get row
 			String[] imported = returnRow(mExport.get(row));
 
 			for(int i = 0; i < names.length; i++) {
@@ -123,8 +123,8 @@ public class ImportThread extends TaskWithProgress {
 				}
 
 				// Now build the array for authors
-				ArrayList<Author> aa = Utils.getAuthorUtils().decodeList(authorDetails, '|');
-				Utils.pruneAuthors(mDbHelper, aa);
+				ArrayList<Author> aa = Utils.getAuthorUtils().decodeList(authorDetails, '|', false);
+				Utils.pruneList(mDbHelper, aa);
 				values.putParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, aa);
 			}
 
@@ -147,8 +147,8 @@ public class ImportThread extends TaskWithProgress {
 					}
 				}
 				// Handle the series
-				ArrayList<Series> sa = Utils.getSeriesUtils().decodeList(seriesDetails, '|');
-				Utils.pruneSeries(mDbHelper, sa);
+				ArrayList<Series> sa = Utils.getSeriesUtils().decodeList(seriesDetails, '|', false);
+				Utils.pruneList(mDbHelper, sa);
 				values.putParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY, sa);				
 			}
 			
@@ -212,7 +212,10 @@ public class ImportThread extends TaskWithProgress {
 				}
 			}
 
-			doProgress(title, num);
+			doProgress(title, row);
+
+			// Increment row count
+			row++;
 		}
 		doToast("Import Complete");
 	}

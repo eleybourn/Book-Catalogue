@@ -20,6 +20,11 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
+/**
+ * Class to update all thumbnails (and some other data) in a background thread.
+ *
+ * @author Grunthos
+ */
 public class UpdateThumbnailsThread extends TaskWithProgress {
 	private boolean mOverwrite = false;
 	private Cursor mBooks = null;

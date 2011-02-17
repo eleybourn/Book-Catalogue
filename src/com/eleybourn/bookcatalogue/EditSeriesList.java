@@ -1,20 +1,14 @@
 package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
-import android.app.ListActivity;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,23 +51,6 @@ public class EditSeriesList extends EditObjectList<Series> {
         }
 	}
 
-	@Override
-	protected void onInitList(Bundle savedInstanceState) {
-		if (savedInstanceState != null && savedInstanceState.containsKey(CatalogueDBAdapter.KEY_SERIES_ARRAY)) {
-			mList = savedInstanceState.getParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY);
-		}
-
-		if (mList == null) {
-			/* Get any information from the extras bundle */
-			Bundle extras = getIntent().getExtras();
-			if (extras != null && extras.containsKey(CatalogueDBAdapter.KEY_SERIES_ARRAY)) {
-				mList = extras.getParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY);
-			} else {
-				mList = new ArrayList<Series>();				
-			}
-		}		
-	}
-
 	protected ArrayList<String> getSeriesFromDb() {
 		ArrayList<String> series_list = new ArrayList<String>();
 		Cursor series_cur = mDbHelper.fetchAllSeries();
@@ -92,46 +69,55 @@ public class EditSeriesList extends EditObjectList<Series> {
 
 			ArrayAdapter<String> series_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getSeriesFromDb());
 			((AutoCompleteTextView)this.findViewById(R.id.series)).setAdapter(series_adapter);
-			this.findViewById(R.id.add).setOnClickListener(mAddSeriesListener);
-
+	
 		} catch (Exception e) {
 			Log.e("BookCatalogue.EditSeriesList.onCreate","Failed to initialize", e);
 		}
 	}
 
-	private OnClickListener mAddSeriesListener = new OnClickListener() {
-
-		@Override
-		public void onClick(View v) {
-			Log.i("BC","Add");
-			AutoCompleteTextView t = ((AutoCompleteTextView)EditSeriesList.this.findViewById(R.id.series));
-			String s = t.getText().toString().trim();
-			if (s.length() > 0) {
-				EditText et = ((EditText)EditSeriesList.this.findViewById(R.id.series_num));
-				String n = et.getText().toString();
-				if (n == null)
-					n = "";
-				Series series = new Series(t.getText().toString(), n);
-				series.id = mDbHelper.lookupSeriesId(series);
-				boolean foundMatch = false;
-				for(int i = 0; i < mList.size() && !foundMatch; i++) {
-					if (series.id != 0L) {
-						if (mList.get(i).id == series.id)
-							foundMatch = true;
-					} else {
-						if (series.name.equals(mList.get(i).name))
-							foundMatch = true;
-					}
+	@Override
+	protected void onAdd(View v) {
+		Log.i("BC","Add");
+		AutoCompleteTextView t = ((AutoCompleteTextView)EditSeriesList.this.findViewById(R.id.series));
+		String s = t.getText().toString().trim();
+		if (s.length() > 0) {
+			EditText et = ((EditText)EditSeriesList.this.findViewById(R.id.series_num));
+			String n = et.getText().toString();
+			if (n == null)
+				n = "";
+			Series series = new Series(t.getText().toString(), n);
+			series.id = mDbHelper.lookupSeriesId(series);
+			boolean foundMatch = false;
+			for(int i = 0; i < mList.size() && !foundMatch; i++) {
+				if (series.id != 0L) {
+					if (mList.get(i).id == series.id)
+						foundMatch = true;
+				} else {
+					if (series.name.equals(mList.get(i).name))
+						foundMatch = true;
 				}
-				if (foundMatch) {
-					Toast.makeText(EditSeriesList.this, "Series matches exiting series", Toast.LENGTH_LONG).show();						
-					return;							
-				}
-				mList.add(series);
-	            mAdapter.notifyDataSetChanged();
-			} else {
-				Toast.makeText(EditSeriesList.this, "Series is empty", Toast.LENGTH_LONG).show();
 			}
+			if (foundMatch) {
+				Toast.makeText(EditSeriesList.this, "Series matches exiting series", Toast.LENGTH_LONG).show();						
+				return;							
+			}
+			mList.add(series);
+            mAdapter.notifyDataSetChanged();
+		} else {
+			Toast.makeText(EditSeriesList.this, "Series is empty", Toast.LENGTH_LONG).show();
 		}
-	};
+	}
+
+	@Override
+	protected ArrayList<Series> onGetList(Bundle b) {
+		if (b == null)
+			return new ArrayList<Series>();				
+
+		return b.getParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY);
+	}
+
+	@Override
+	protected void onSaveList(Bundle outState) {
+		outState.putParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY, mList);
+	}
 }

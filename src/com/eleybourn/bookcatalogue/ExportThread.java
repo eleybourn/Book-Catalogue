@@ -5,16 +5,17 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
 
-import com.eleybourn.bookcatalogue.Utils.ArrayUtils;
-
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Environment;
 import android.os.Message;
 
+/**
+ * Class to handle export in a separate thread.
+ * 
+ * @author Grunthos
+ */
 public class ExportThread extends TaskWithProgress {
 	private static String mFilePath = Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION;
 	private static String mFileName = mFilePath + "/export.csv";
@@ -193,6 +194,9 @@ public class ExportThread extends TaskWithProgress {
 		}
 	}
 	
+	/**
+	 * Backup the current file
+	 */
 	private void backupExport() {
 		File export = new File(mFileName);
 		File backup = new File(mFileName + ".bak");

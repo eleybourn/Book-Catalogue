@@ -153,21 +153,20 @@ public class Utils {
 		return ns.toString();
 	}
 
-	public interface Factory {
-		Object get(String source);
+	public interface Factory<T> {
+		T get(String source);
 	}
 
 	static public class ArrayUtils<T> {
 
-		Factory mFactory;
+		Factory<T> mFactory;
 
-		ArrayUtils(Factory factory) {
+		ArrayUtils(Factory<T> factory) {
 			mFactory = factory;
 		}
 
-		@SuppressWarnings("unchecked")
 		private T get(String source) {
-			return (T) mFactory.get(source);
+			return mFactory.get(source);
 		}
 		/**
 		 * Encode a list of strings by 'escaping' all instances of: delim, '\', \r, \n. The
@@ -201,7 +200,7 @@ public class Utils {
 		 * @param s		String representing the list
 		 * @return		Array of strings resulting from list
 		 */
-		ArrayList<T> decodeList(String s, char delim) {
+		ArrayList<T> decodeList(String s, char delim, boolean allowBlank) {
 			StringBuilder ns = new StringBuilder();
 			ArrayList<T> list = new ArrayList<T>();
 			if (s == null)
@@ -236,7 +235,9 @@ public class Utils {
 				    	break;
 				    default:
 				    	if (c == delim) {
-					    	list.add(get(ns.toString()));
+				    		String source = ns.toString();
+				    		if (allowBlank || source.length() > 0)
+						    	list.add(get(source));
 					    	ns.setLength(0);
 					    	break;
 				    	} else {
@@ -247,10 +248,13 @@ public class Utils {
 			    }
 			}
 			// It's important to send back even an empty item.
-	    	list.add(get(ns.toString()));
+    		String source = ns.toString();
+    		if (allowBlank || source.length() > 0)
+		    	list.add(get(source));
 			return list;
 		}
 	}
+
 	/**
 	 * Decode a text list separated by '|' and encoded by encodeListItem.
 	 * 
@@ -553,19 +557,13 @@ public class Utils {
 	}
 
 	/**
-	 * Method added mainly to avoid @SuppressWarnings on larger methods.
+	 * Get a value from a bundle and convert to a long.
+	 * 
+	 * @param b		Bundle
+	 * @param key	Key in bundle
+	 * 
+	 * @return		Result
 	 */
-	public static ArrayList<Author> getAuthorsFromIntent(Intent i) {
-		return i.getParcelableArrayListExtra(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
-	}
-
-	/**
-	 * Method added mainly to avoid @SuppressWarnings on larger methods.
-	 */
-	public static ArrayList<Author> getAuthorsFromBundle(Bundle b) {
-		return b.getParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
-	}
-
 	public static long getAsLong(Bundle b, String key) {
 		Object o = b.get(key);
 		if (o instanceof Long) {
@@ -579,42 +577,52 @@ public class Utils {
 		}
 	}
 
+	/**
+	 * Get a value from a bundle and convert to a long.
+	 * 
+	 * @param b		Bundle
+	 * @param key	Key in bundle
+	 * 
+	 * @return		Result
+	 */
 	public static String getAsString(Bundle b, String key) {
 		Object o = b.get(key);
 		return o.toString();
 	}
 
-	// TODO Add author_aliases table to allow further pruning (eg. Joe Haldeman == Jow W Haldeman).
-	public static void pruneAuthors(CatalogueDBAdapter db, ArrayList<Author> authors) {
-		Hashtable<String,Boolean> names = new Hashtable<String,Boolean>();
-
-		for(int i = authors.size() - 1; i >=0; i--) {
-			Author a = authors.get(i);
-			String name = a.getSortName();
-			if (names.containsKey(name)) {
-				authors.remove(i);
-			} else {
-				names.put(name, true);
-				if (a.id == 0)
-					a.id = db.lookupAuthorId(a);
-			}
-		}
+	public interface ItemWithIdFixup {
+		long fixupId(CatalogueDBAdapter db);
 	}
 
-	public static void pruneSeries(CatalogueDBAdapter db, ArrayList<Series> series) {
+	/**
+	 * Passed a list of Objects, remove duplicates based on the toString result.
+	 * 
+	 * TODO Add author_aliases table to allow further pruning (eg. Joe Haldeman == Jow W Haldeman).
+	 * TODO Add series_aliases table to allow further pruning (eg. 'Amber Series' <==> 'Amber').
+	 * 
+	 * @param db		Database connection to lookup IDs
+	 * @param list		List to clean up
+	 */
+	public static <T extends ItemWithIdFixup> void pruneList(CatalogueDBAdapter db, ArrayList<T> list) {
 		Hashtable<String,Boolean> names = new Hashtable<String,Boolean>();
+		
+		// We have to go forwards through the list because 'first item' is important,
+		// but we also can't delete things as we traverse if we are going forward. So
+		// we build a list of items to delete.
+		ArrayList<Integer> toDelete = new ArrayList<Integer>();
 
-		for(int i = series.size() - 1; i >=0; i--) {
-			Series s = series.get(i);
-			String name = s.getSortName();
+		for(int i = 0; i < list.size(); i++) {
+			T item = list.get(i);
+			String name = item.toString();
 			if (names.containsKey(name)) {
-				series.remove(i);
+				toDelete.add(i);
 			} else {
 				names.put(name, true);
-				if (s.id == 0)
-					s.id = db.lookupSeriesId(s);
+				item.fixupId(db);
 			}
 		}
+		for(int i = toDelete.size() - 1; i >= 0; i--)
+			list.remove(toDelete.get(i));
 	}
 }
 

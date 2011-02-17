@@ -13,17 +13,43 @@ import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
 
+/**
+ * Class to handle all book searches in a separate thread.
+ * TODO: Consider putting each search in its own thread to improve speed.
+ *
+ * @author Grunthos
+ *
+ */
 public class SearchForBookThread extends TaskWithProgress {
 	private String mAuthor;
 	private String mTitle;
 	private String mIsbn;
 
+	private String mSavedTitle = null;
+
+	// Accumulated book info.
 	private Bundle mBookData = new Bundle();
 
+	/**
+	 * Task handler for thread management; caller MUST implement this to get
+	 * search results.
+	 * 
+	 * @author Grunthos
+	 */
 	public interface SearchHandler extends TaskWithProgress.TaskHandler {
 		void onFinish(Bundle bookData);
 	}
 
+	/**
+	 * Constructor. Will search according to passed parameters. If an ISBN
+	 * is provided that will be used to the exclusion of all others.
+	 * 
+	 * @param ctx			Context
+	 * @param taskHandler	TaskHandler implementation
+	 * @param author		Author to search for
+	 * @param title			Title to search for
+	 * @param isbn			ISBN to search for.
+	 */
 	SearchForBookThread(Context ctx, SearchHandler taskHandler, String author, String title, String isbn) {
 		super(ctx, taskHandler);
 		mAuthor = author;
@@ -42,6 +68,13 @@ public class SearchForBookThread extends TaskWithProgress {
 	protected void onMessage(Message msg) {
 	}
 
+	/**
+	 * Try to extract a series from a book title.
+	 * TODO: Consider removing findSeries if LibraryThing proves reliable.
+	 * 
+	 * @param 	title	Book title to parse
+	 * @return
+	 */
 	public String findSeries(String title) {
 		String series = "";
 		int last = title.lastIndexOf("(");
@@ -70,12 +103,8 @@ public class SearchForBookThread extends TaskWithProgress {
 				showException(R.string.searching_google_books, e);
 			}
 
-			// Save the series from title, if found
-			if (mBookData.containsKey(CatalogueDBAdapter.KEY_TITLE)) {
-				String tmpSeries = findSeries(mBookData.getString(CatalogueDBAdapter.KEY_TITLE));
-				if (tmpSeries != null && tmpSeries.length() > 0)
-					Utils.appendOrAdd(mBookData, CatalogueDBAdapter.KEY_SERIES_DETAILS, tmpSeries);
-			}
+			// Look for series name and clear KEY_TITLE
+			checkForSeriesName();
 
 			//
 			//	Amazon
@@ -88,10 +117,8 @@ public class SearchForBookThread extends TaskWithProgress {
 				showException(R.string.searching_amazon_books, e);
 			}
 
-			//Look for series in Title. e.g. Red Phoenix (Dark Heavens Trilogy)
-			String tmpSeries = findSeries(mBookData.getString(CatalogueDBAdapter.KEY_TITLE));
-			if (tmpSeries != null && tmpSeries.length() > 0)
-				Utils.appendOrAdd(mBookData, CatalogueDBAdapter.KEY_SERIES_DETAILS, tmpSeries);
+			// Look for series name and clear KEY_TITLE
+			checkForSeriesName();
 
 			//
 			//	LibraryThing
@@ -105,12 +132,18 @@ public class SearchForBookThread extends TaskWithProgress {
 					this.doProgress(getString(R.string.searching_library_thing), 0);
 					LibraryThingManager ltm = new LibraryThingManager(mBookData);
 					try {
-						ltm.searchByIsbn(isbn);											
+						ltm.searchByIsbn(isbn);
+						// Look for series name and clear KEY_TITLE
+						checkForSeriesName();
 					} catch (Exception e) {
 						showException(R.string.searching_library_thing, e);
 					}
 				}
 			}
+			
+			if (mSavedTitle != null)
+				mBookData.putString(CatalogueDBAdapter.KEY_TITLE, mSavedTitle);
+
 			return;
 
 		} catch (Exception e) {
@@ -139,12 +172,16 @@ public class SearchForBookThread extends TaskWithProgress {
 				doProperCase(mBookData, CatalogueDBAdapter.KEY_PUBLISHER);
 				doProperCase(mBookData, CatalogueDBAdapter.KEY_DATE_PUBLISHED);
 				doProperCase(mBookData, CatalogueDBAdapter.KEY_SERIES_NAME);
-				ArrayList<Author> aa = Utils.getAuthorUtils().decodeList(authors, '|');
-				mBookData.putSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, aa);
+				
+				// Decode the collected author names and convert to an ArrayList
+				ArrayList<Author> aa = Utils.getAuthorUtils().decodeList(authors, '|', false);
+				mBookData.putParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, aa);
+
+				// Decode the collected series names and convert to an ArrayList
 				try {
 		    		String series = mBookData.getString(CatalogueDBAdapter.KEY_SERIES_DETAILS);
-					ArrayList<Series> sa = Utils.getSeriesUtils().decodeList(series, '|');
-					mBookData.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, sa);
+					ArrayList<Series> sa = Utils.getSeriesUtils().decodeList(series, '|', false);
+					mBookData.putParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY, sa);
 		    	} catch (Exception e) {
 		    		Log.e("BC","Failed to add series", e);
 		    	}
@@ -153,6 +190,32 @@ public class SearchForBookThread extends TaskWithProgress {
 
 	}
 
+	/**
+	 * Look in the data for a title, if present try to get a series name from it.
+	 * In any case, clear the title (and save if none saved already) so that the 
+	 * next lookup will overwrite with a possibly new title.
+	 */
+	private void checkForSeriesName() {
+		try {
+			if (mBookData.containsKey(CatalogueDBAdapter.KEY_TITLE)) {
+				String thisTitle = mBookData.getString(CatalogueDBAdapter.KEY_TITLE);
+				if (mSavedTitle == null)
+					mSavedTitle = thisTitle;
+				String tmpSeries = findSeries(thisTitle);
+				if (tmpSeries != null && tmpSeries.length() > 0)
+					Utils.appendOrAdd(mBookData, CatalogueDBAdapter.KEY_SERIES_DETAILS, tmpSeries);				
+				// Delete the title so that Amazon will get it too
+				mBookData.remove(CatalogueDBAdapter.KEY_TITLE);
+			}							
+		} catch (Exception e) {};		
+	}
+	
+	/**
+	 * Convert text at specified key to proper case.
+	 * 
+	 * @param values
+	 * @param key
+	 */
 	private void doProperCase(Bundle values, String key) {
 		if (!values.containsKey(key))
 			return;

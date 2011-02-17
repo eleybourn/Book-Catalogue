@@ -6,27 +6,55 @@ import android.os.Parcelable;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Author implements Parcelable {
+/**
+ * Class to hold author data. Used in lists and import/export.
+ * 
+ * @author Grunthos
+ */
+public class Author implements Parcelable, Utils.ItemWithIdFixup {
 
 	public String 	familyName;
 	public String 	givenNames;
 	public long		id;
 
+	/**
+	 * Constructor that will attempt to parse a single string into an author name.
+	 * 
+	 * @param name
+	 */
 	Author(String name) {
 		id = 0;
 		fromString(name);
 	}
 
+	/**
+	 * Constructor without ID.
+	 * 
+	 * @param family	Family name
+	 * @param given		Given names
+	 */
+	Author(String family, String given) {
+		this(0L, family, given);
+	}
+
+	/**
+	 * Constructor
+	 *
+	 * @param id		ID of author in DB (0 if not in DB)
+	 * @param family	Family name
+	 * @param given		Given names
+	 */
 	Author(long id, String family, String given) {
 		this.id = id;
 		familyName = family.trim();
 		givenNames = given.trim();
 	}
 
-	Author(String family, String given) {
-		this(0L, family, given);
-	}
-
+	/**
+	 * Return the 'human readable' version of the name (eg. 'Iassc Asimov').
+	 * 
+	 * @return	formatted name
+	 */
 	public String getDisplayName() {
 		if (givenNames != null && givenNames.length() > 0)
 			return givenNames + " " + familyName;
@@ -34,6 +62,11 @@ public class Author implements Parcelable {
 			return familyName;
 	}
 
+	/**
+	 * Return the name in a sortable form (eg. 'Asimov, Iassc')
+	 * 
+	 * @return	formatted name
+	 */
 	public String getSortName() {
 		if (givenNames != null && givenNames.length() > 0)
 			return familyName + ", " + givenNames;
@@ -62,12 +95,12 @@ public class Author implements Parcelable {
 				familyName = sa.get(0).trim();
 				givenNames = sa.get(1).trim();			
 			}
-			
 		}
 	}
 
 	/**
-	 * Support for creation via Parcelable
+	 * Support for creation via Parcelable. This is primarily useful for passing
+	 * ArrayList<Author> in Bundles to activities.
 	 */
     public static final Parcelable.Creator<Author> CREATOR
             = new Parcelable.Creator<Author>() {
@@ -79,7 +112,12 @@ public class Author implements Parcelable {
             return new Author[size];
         }
     };
-    
+
+    /**
+     * Constructor using a Parcel.
+     * 
+     * @param in
+     */
     private Author(Parcel in) {
     	familyName = in.readString();
     	givenNames = in.readString();
@@ -96,5 +134,11 @@ public class Author implements Parcelable {
 		dest.writeString(familyName);
 		dest.writeString(givenNames);
 		dest.writeLong(id);
+	}
+
+	@Override
+	public long fixupId(CatalogueDBAdapter db) {
+		this.id = db.lookupAuthorId(this);
+		return this.id;
 	}
 }

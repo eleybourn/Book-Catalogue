@@ -6,22 +6,28 @@ import android.os.Parcelable;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Series implements Parcelable {
+/**
+ * Class to hold book-related series data. Used in lists and import/export.
+ * 
+ * @author Grunthos
+ */
+public class Series implements Parcelable, Utils.ItemWithIdFixup {
 	public long		id;
 	public String 	name;
 	public String	num;
 
-	Series(String name) {
-		//java.util.regex.Pattern p = java.util.regex.Pattern.compile("^(.*)\\s*\\((.*)\\)$");
-//		java.util.regex.Matcher m = p.matcher(seriesSpec);
-//		if (m.find()) {
-//			seriesName = m.group(1);
-//			bookSeries.put(KEY_SERIES_NUM, m.group(2));
-//		} else {
-//			seriesName = seriesSpec;
-//		}
+	private java.util.regex.Pattern mPattern = java.util.regex.Pattern.compile("^(.*)\\s*\\((.*)\\)$");
 
-		this(0L, name, "");
+	Series(String name) {
+		java.util.regex.Matcher m = mPattern.matcher(name);
+		if (m.find()) {
+			this.name = m.group(1).trim();
+			this.num = m.group(2).trim();
+		} else {
+			this.name = name.trim();
+			this.num = "";
+		}
+		this.id = 0L;
 	}
 
 	Series(long id, String name) {
@@ -34,8 +40,8 @@ public class Series implements Parcelable {
 
 	Series(long id, String name, String num) {
 		this.id = id;
-		this.name = name;
-		this.num = num;
+		this.name = name.trim();
+		this.num = num.trim();
 	}
 
 	public String getDisplayName() {
@@ -83,5 +89,11 @@ public class Series implements Parcelable {
 		dest.writeString(name);
 		dest.writeString(num);
 		dest.writeLong(id);
+	}
+
+	@Override
+	public long fixupId(CatalogueDBAdapter db) {
+		this.id = db.lookupSeriesId(this);
+		return this.id;
 	}
 }

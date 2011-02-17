@@ -70,8 +70,6 @@ public class BookISBNSearch extends Activity {
 	private AutoCompleteTextView mAuthorText;
 	private Button mConfirmButton;
 	private CatalogueDBAdapter mDbHelper;
-	//private android.app.ProgressDialog mProgress = null;
-	//private SearchForBookTask mSearchTask = null;
 	private SearchForBookThread mSearchThread = null;
 
 	public String author;
@@ -333,6 +331,7 @@ public class BookISBNSearch extends Activity {
 				book.close(); //close the cursor
 
 				if (rows != 0) {
+					// TODO : Allow duplicates after search
 					Toast.makeText(this, R.string.book_exists, Toast.LENGTH_LONG).show();
 					// If the scanner was the input, start it again.
 					if (mMode == MODE_SCAN)
@@ -358,15 +357,7 @@ public class BookISBNSearch extends Activity {
 			this.author = author;
 			this.title = title;
 
-//			// Show a ProgressDialog
-//			mProgress = android.app.ProgressDialog.show(this, "Searching...", "Searching internet for book...",true);
-//			mProgress.setCancelable(false);
-//
-//			// Start the lookup task
-//			mSearchTask = new SearchForBookTask();
-//			WeakReference<BookISBNSearch> ref = new WeakReference<BookISBNSearch>(this);
-//			mSearchTask.execute(ref,null,null);
-
+			// Start the lookup in background.
 			mSearchThread = new SearchForBookThread(this, mTaskHandler, author, title, isbn);
 			mSearchThread.start();
 
@@ -414,13 +405,6 @@ public class BookISBNSearch extends Activity {
 		if (mSearchThread != null)
 			mSearchThread.reconnect(this, mTaskHandler);
 		
-//		// Get the AsyncTask
-//		mSearchTask = (SearchForBookTask) getLastNonConfigurationInstance();
-//		if (mSearchTask != null && !mSearchTask.isFinished()) {
-//			// If we had a task, create the progross dialog and reset the pointers.
-//			mProgress = android.app.ProgressDialog.show(this, "Searching...", "Searching internet for book...",true);
-//			mSearchTask.setParent(new WeakReference<BookISBNSearch>(this));
-//		}
 		super.onRestoreInstanceState(inState);
 	}
 
@@ -432,14 +416,6 @@ public class BookISBNSearch extends Activity {
 			mSearchThread = null;
 		}
 		return t;
-		
-//		// Save the AsyncTask and remove the local refs.
-//		SearchForBookTask t = mSearchTask;
-//		if (mSearchTask != null) {
-//			mSearchTask.setParent(null);
-//			mSearchTask = null;
-//		}
-//		return t;
 	}
 	
 	@Override
@@ -458,16 +434,6 @@ public class BookISBNSearch extends Activity {
 		mDbHelper.close();
 	}
 	
-//	public String findSeries(String title) {
-//		String series = "";
-//		int last = title.lastIndexOf("(");
-//		int close = title.lastIndexOf(")");
-//		if (last > -1 && close > -1 && last < close) {
-//			series = title.substring((last+1), close);
-//		}
-//		return series;
-//	}
-
 	public String convertDate(String date) {
 		if (date.length() == 2) {
 			//assume yy

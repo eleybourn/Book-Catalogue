@@ -23,18 +23,7 @@ public class EditAuthorList extends EditObjectList<Author> {
 	 * Constructor; pass the superclass the main and row based layouts to use.
 	 */
 	public EditAuthorList() {
-		super(R.layout.edit_author_list, R.layout.row_edit_author_list);
-	}
-
-	@Override
-	protected boolean onSave(Intent i) {
-		i.putExtra(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mList);
-		return true;
-	}
-
-	@Override
-	protected boolean onCancel() {
-		return true;
+		super(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, R.layout.edit_author_list, R.layout.row_edit_author_list);
 	}
 
 	@Override
@@ -48,20 +37,6 @@ public class EditAuthorList extends EditObjectList<Author> {
 	              at.setText(object.getSortName());                            }
         }
 	};
-
-	@Override
-	protected ArrayList<Author> onGetList(Bundle b) {
-		// If null, return an empty list. Used for creating new instances.
-		if (b == null)
-			return new ArrayList<Author>();
-		// Return the entry from the bundle
-		return b.getParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
-	}
-
-	@Override
-	protected void onSaveList(Bundle b) {
-		b.putParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mList);
-	}
 
 	/**
 	 * Return a complete list of author names from the database; used for AutoComplete.

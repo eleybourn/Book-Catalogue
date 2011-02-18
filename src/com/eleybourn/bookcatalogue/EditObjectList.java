@@ -5,11 +5,13 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -42,7 +44,7 @@ import android.widget.Toast;
  *
  * @param <T>
  */
-abstract public class EditObjectList<T> extends ListActivity {
+abstract public class EditObjectList<T extends Parcelable> extends ListActivity {
 
 	// List
 	protected ArrayList<T> mList = null;
@@ -52,6 +54,8 @@ abstract public class EditObjectList<T> extends ListActivity {
 	// DB connection
 	protected CatalogueDBAdapter mDbHelper;
 
+	// The key to use in the Bundle to get the array
+	private String mKey;
 	// The resource ID for the base view
 	private int mBaseViewId;
 	// The resource ID for the row view
@@ -67,37 +71,6 @@ abstract public class EditObjectList<T> extends ListActivity {
 	abstract protected void onAdd(View v);
 
 	/**
-	 * Called to retrieve the list from a Bundle (typically in onCreate).
-	 * 
-	 * @param savedInstanceState	As passed to onCreate
-	 */
-	abstract protected ArrayList<T> onGetList(Bundle b);
-
-	/**
-	 * Called from onSaveInstanceState to save the list.
-	 * 
-	 * @param savedInstanceState	As passed to onCreate
-	 */
-	abstract protected void onSaveList(Bundle outState);
-
-	/**
-	 * Called when user clicks the 'Save' button (if present). Primary task is
-	 * to store the list in the passed intent.
-	 * 
-	 * @param i		A newly created Intent to store output if necessary.
-	 * 
-	 * @return		True if activity should exit, false to abort exit.
-	 */
-	abstract protected boolean onSave(Intent i);
-
-	/**
-	 * Called when user presses 'Cancel' button if present.
-	 * 
-	 * @return		True if activity should exit, false to abort exit.
-	 */
-	abstract protected boolean onCancel();
-
-	/**
 	 * Call to set up the row view.
 	 * 
 	 * @param target	The target row view object
@@ -106,12 +79,35 @@ abstract public class EditObjectList<T> extends ListActivity {
 	abstract protected void onSetupView(View target, T object);
 	
 	/**
+	 * Called when user clicks the 'Save' button (if present). Primary task is
+	 * to return a boolean indicating it is OK to continue.
+	 * 
+	 * Can be overridden to perform other checks.
+	 * 
+	 * @param i		A newly created Intent to store output if necessary.
+	 * 
+	 * @return		True if activity should exit, false to abort exit.
+	 */
+	protected boolean onSave(Intent i) { return true; };
+ 
+	/**
+	 * Called when user presses 'Cancel' button if present. Primary task is
+	 * return a boolean indicating it is OK to continue.
+	 * 
+	 * Can be overridden to perform other checks.
+	 * 
+	 * @return		True if activity should exit, false to abort exit.
+	 */
+	protected boolean onCancel() { return true;};
+
+	/**
 	 * Constructor
 	 * 
 	 * @param baseViewId	Resource id of base view
 	 * @param rowViewId		Resource id of row view
 	 */
-	EditObjectList(int baseViewId, int rowViewId) {
+	EditObjectList(String key, int baseViewId, int rowViewId) {
+		mKey = key;
 		mBaseViewId = baseViewId;
 		mRowViewId = rowViewId;
 	}
@@ -134,18 +130,18 @@ abstract public class EditObjectList<T> extends ListActivity {
 
 			// Ask the subclass to setup the list; we need this before 
 			// building the adapter.
-			if (savedInstanceState != null) {
-				mList = onGetList(savedInstanceState);
+			if (savedInstanceState != null && savedInstanceState.containsKey(mKey)) {
+				mList = savedInstanceState.getParcelableArrayList("asdasds");
 			}
 
 			if (mList == null) {
 				/* Get any information from the extras bundle */
 				Bundle extras = getIntent().getExtras();
 				if (extras != null) {
-					mList = onGetList(extras);
+					mList = extras.getParcelableArrayList(mKey);
 				}
 				if (mList == null) {
-					mList = onGetList(null);		
+					throw new RuntimeException("Unable to find list in passed data");		
 				}
 			}		
 
@@ -211,6 +207,7 @@ abstract public class EditObjectList<T> extends ListActivity {
 		@Override
 		public void onClick(View v) {
 			Intent i = new Intent();
+			i.putParcelableArrayListExtra(mKey, mList);
 			if (onSave(i)) {
 				setResult(RESULT_OK, i);
 				finish();
@@ -239,15 +236,26 @@ abstract public class EditObjectList<T> extends ListActivity {
 		}		
 	};
 
+	/**
+	 * Find the first ancestor that has the ID R.id.row. This 
+	 * will be the complete row View. Use the TAG on that to get
+	 * the physical row number.
+	 * 
+	 * @param v		View to search from
+	 * 
+	 * @return		The row view.
+	 */
 	private Integer getViewRow(View v) {
 		View pv = v;
-		while(pv.getId() != R.id.row)
-			pv = (View) pv.getParent();
+		while(pv.getId() != R.id.row) {
+			ViewParent p = pv.getParent();
+			if (!(p instanceof View))
+				throw new RuntimeException("Could not find row view in view ancestors");
+			pv = (View) p;
+		}
 		return (Integer) pv.getTag(R.id.TAG_POSITION);
-//		View pv = (View) v.getParent();
-//        TextView pt = (TextView) pv.findViewById(R.id.row_position);
-//        int pos = Integer.parseInt(pt.getText().toString()) - 1;
 	}
+
 	/**
 	 * Handle deletion of a row
 	 */
@@ -255,7 +263,6 @@ abstract public class EditObjectList<T> extends ListActivity {
 
 		@Override
 		public void onClick(View v) {
-			Log.i("BC","Delete");
 			int pos = getViewRow(v);
             mList.remove(pos);
             mAdapter.notifyDataSetChanged();
@@ -269,7 +276,6 @@ abstract public class EditObjectList<T> extends ListActivity {
 
 		@Override
 		public void onClick(View v) {
-			Log.i("BC","Move UP");
 			int pos = getViewRow(v);
             if (pos == 0)
             	return;
@@ -288,7 +294,6 @@ abstract public class EditObjectList<T> extends ListActivity {
 
 		@Override
 		public void onClick(View v) {
-			Log.i("BC","Move DOWN");
 			int pos = getViewRow(v);
             if (pos == (mList.size()-1) )
             	return;
@@ -385,12 +390,12 @@ abstract public class EditObjectList<T> extends ListActivity {
 	}
 
 	/**
-	 * Ensure that the list os saved.
+	 * Ensure that the list is saved.
 	 */
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {    	
     	super.onSaveInstanceState(outState);
     	// save list
-    	onSaveList(outState);
+    	outState.putParcelableArrayList(mKey, mList);
     }
 }

@@ -1,6 +1,28 @@
+/*
+ * @copyright 2011 Philip Warner
+ * @license GNU General Public License
+ * 
+ * This file is part of Book Catalogue.
+ *
+ * Book Catalogue is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Book Catalogue is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
+
+import android.app.Dialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -8,6 +30,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -102,4 +126,54 @@ public class EditAuthorList extends EditObjectList<Author> {
 			Toast.makeText(EditAuthorList.this, getResources().getString(R.string.author_is_blank), Toast.LENGTH_LONG).show();
 		}		
 	}
+
+	@Override
+	protected void onRowClick(View target, final Author object) {
+		final Dialog dialog = new Dialog(this);
+		dialog.setContentView(R.layout.edit_author);
+		dialog.setTitle(R.string.edit_author_details);
+		EditText familyView = (EditText) dialog.findViewById(R.id.family_name);
+		EditText givenView = (EditText) dialog.findViewById(R.id.given_names);
+		familyView.setText(object.familyName);
+		givenView.setText(object.givenNames);
+
+		Button saveButton = (Button) dialog.findViewById(R.id.confirm);
+		saveButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				EditText familyView = (EditText) dialog.findViewById(R.id.family_name);
+				EditText givenView = (EditText) dialog.findViewById(R.id.given_names);
+				String newFamily = familyView.getText().toString().trim();
+				if (newFamily == null || newFamily.length() == 0) {
+					Toast.makeText(EditAuthorList.this, R.string.author_is_blank, Toast.LENGTH_LONG).show();
+					return;
+				}
+				object.familyName = newFamily;
+				object.givenNames = givenView.getText().toString();
+				mDbHelper.syncAuthor(object);
+					
+				dialog.dismiss();
+				mAdapter.notifyDataSetChanged();
+			}
+		});
+		Button cancelButton = (Button) dialog.findViewById(R.id.cancel);
+		cancelButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				dialog.dismiss();
+			}
+		});
+		
+		dialog.show();
+	}
+
+//	@Override
+//	protected boolean onSave(Intent i) {
+//		for(Author a : mList) {
+//			if (a.requiresUpdate)
+//				mDbHelper.updateAuthor(a);
+//		}
+//
+//		return true;
+//	};
 }

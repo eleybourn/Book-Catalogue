@@ -190,4 +190,9 @@
 <string name="skip_title">Skip - %s</string>
 <string name="num_books_searched">%s Books Searched</string>
 <string name="cancelled_info">Cancelled - %s</string>
+<string name="edit_book_series">Edit Book Series</string>
+<string name="family_name">Family Name</string>
+<string name="given_names">Given Names</string>
+<string name="edit_author_details">Edit Author Details</string>
+<string name="immediate_global_changes">NOTE: All saved changes apply instantly and globally</string>
 </resources>

@@ -1,18 +1,49 @@
+/*
+ * @copyright 2011 Philip Warner
+ * @license GNU General Public License
+ * 
+ * This file is part of Book Catalogue.
+ *
+ * Book Catalogue is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Book Catalogue is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
+
+import com.eleybourn.bookcatalogue.Fields.Field;
+
+import android.app.Dialog;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class EditSeriesList extends EditObjectList<Series> {
+
+	private ArrayAdapter<String> mSeriesAdapter;
 
 	public EditSeriesList() {
 		super(CatalogueDBAdapter.KEY_SERIES_ARRAY, R.layout.edit_series_list, R.layout.row_edit_series_list);
@@ -56,8 +87,8 @@ public class EditSeriesList extends EditObjectList<Series> {
 		super.onCreate(savedInstanceState);
 		try {
 
-			ArrayAdapter<String> series_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getSeriesFromDb());
-			((AutoCompleteTextView)this.findViewById(R.id.series)).setAdapter(series_adapter);
+			mSeriesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getSeriesFromDb());
+			((AutoCompleteTextView)this.findViewById(R.id.series)).setAdapter(mSeriesAdapter);
 	
 		} catch (Exception e) {
 			Log.e("BookCatalogue.EditSeriesList.onCreate","Failed to initialize", e);
@@ -94,5 +125,49 @@ public class EditSeriesList extends EditObjectList<Series> {
 		} else {
 			Toast.makeText(EditSeriesList.this, getResources().getString(R.string.series_is_blank), Toast.LENGTH_LONG).show();
 		}
+	}
+
+	@Override
+	protected void onRowClick(View target, final Series object) {
+		final Dialog dialog = new Dialog(this);
+		dialog.setContentView(R.layout.edit_book_series);
+		dialog.setTitle(R.string.edit_book_series);
+
+		AutoCompleteTextView seriesView = (AutoCompleteTextView) dialog.findViewById(R.id.series);
+		seriesView.setText(object.name);
+		seriesView.setAdapter(mSeriesAdapter);
+
+		EditText numView = (EditText) dialog.findViewById(R.id.series_num);
+		numView.setText(object.num);
+
+		setTextOrHideView(dialog.findViewById(R.id.title_label), mBookTitleLabel);
+		setTextOrHideView(dialog.findViewById(R.id.title), mBookTitle);
+
+		Button saveButton = (Button) dialog.findViewById(R.id.confirm);
+		saveButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				AutoCompleteTextView seriesView = (AutoCompleteTextView) dialog.findViewById(R.id.series);
+				EditText numView = (EditText) dialog.findViewById(R.id.series_num);
+				String newName = seriesView.getText().toString().trim();
+				if (newName == null || newName.length() == 0) {
+					Toast.makeText(EditSeriesList.this, R.string.series_is_blank, Toast.LENGTH_LONG).show();
+					return;
+				}
+				object.name = newName;
+				object.num = numView.getText().toString();
+				dialog.dismiss();
+				mAdapter.notifyDataSetChanged();
+			}
+		});
+		Button cancelButton = (Button) dialog.findViewById(R.id.cancel);
+		cancelButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				dialog.dismiss();
+			}
+		});
+		
+		dialog.show();
 	}
 }

@@ -717,7 +717,6 @@ public class BookEditFields extends Activity {
 		 * TODO: Add EditAuthor to edit family and given names
 		 * TODO: Add EditBookSeries to change series and series num
 		 * TODO: Add EditSeries to change series name
-		 * 
 		 */
 
 		fixupAuthorList();
@@ -1016,8 +1015,13 @@ public class BookEditFields extends Activity {
 		case ACTIVITY_EDIT_AUTHORS:
 			if (resultCode == Activity.RESULT_OK && intent.hasExtra(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)){
 				mAuthorList = intent.getParcelableArrayListExtra(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
-				fixupAuthorList();
+			} else {
+				// Even though the dialog was terminated, some authors MAY have been updated/added.
+				for(Author a : mAuthorList) {
+					mDbHelper.refreshAuthor(a);
+				}
 			}
+			fixupAuthorList();
 		case ACTIVITY_EDIT_SERIES:
 			if (resultCode == Activity.RESULT_OK && intent.hasExtra(CatalogueDBAdapter.KEY_SERIES_ARRAY)){
 				mSeriesList = intent.getParcelableArrayListExtra(CatalogueDBAdapter.KEY_SERIES_ARRAY);

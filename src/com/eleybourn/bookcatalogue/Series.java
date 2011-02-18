@@ -96,4 +96,9 @@ public class Series implements Parcelable, Utils.ItemWithIdFixup {
 		this.id = db.lookupSeriesId(this);
 		return this.id;
 	}
+
+	@Override
+	public long getId() {
+		return id;
+	}
 }

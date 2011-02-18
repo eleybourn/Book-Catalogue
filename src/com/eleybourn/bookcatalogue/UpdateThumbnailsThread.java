@@ -212,7 +212,6 @@ public class UpdateThumbnailsThread extends TaskWithProgress {
 
 	@Override
 	protected void onMessage(Message msg) {
-		// TODO Auto-generated method stub
 		if (msg.getData().containsKey("sendBook")) {
 			if (getTaskHandler() != null && mBookQueue.size() > 0) {
 				LinkedList<BookInfo> queue;

@@ -323,6 +323,11 @@ public class BookISBNSearch extends Activity {
 	 * @param isbn The ISBN to search
 	 */
 	protected void go(String isbn, String author, String title) {
+		// Save the details
+		this.isbn = isbn;
+		this.author = author;
+		this.title = title;
+
 		// If the book already exists, do not continue
 		try {
 			if (!isbn.equals("")) {
@@ -331,11 +336,25 @@ public class BookISBNSearch extends Activity {
 				book.close(); //close the cursor
 
 				if (rows != 0) {
-					// TODO : Allow duplicates after search
-					Toast.makeText(this, R.string.book_exists, Toast.LENGTH_LONG).show();
-					// If the scanner was the input, start it again.
-					if (mMode == MODE_SCAN)
-						startScannerActivity();
+					// Verify - this can be a dangerous operation
+					AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(R.string.duplicate_book_message).create();
+					alertDialog.setTitle(R.string.duplicate_book_title);
+					alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
+					alertDialog.setButton(this.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							doSearchBook();
+							return;
+						}
+					}); 
+					alertDialog.setButton2(this.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							//do nothing
+							if (mMode == MODE_SCAN)
+								startScannerActivity();
+							return;
+						}
+					}); 
+					alertDialog.show();
 					return;
 				}
 			}
@@ -343,6 +362,11 @@ public class BookISBNSearch extends Activity {
 			//do nothing
 		}
 
+		doSearchBook();
+
+	}
+
+	private void doSearchBook() {
 		/* Delete any hanging around thumbs */
 		try {
 			File thumb = CatalogueDBAdapter.fetchThumbnail(0);
@@ -352,11 +376,6 @@ public class BookISBNSearch extends Activity {
 		}
 		/* Get the book */
 		try {
-			// Save the details
-			this.isbn = isbn;
-			this.author = author;
-			this.title = title;
-
 			// Start the lookup in background.
 			mSearchThread = new SearchForBookThread(this, mTaskHandler, author, title, isbn);
 			mSearchThread.start();
@@ -365,9 +384,9 @@ public class BookISBNSearch extends Activity {
 			Toast.makeText(this, R.string.search_fail, Toast.LENGTH_LONG).show();
 			finish();
 			return;
-		}
+		}		
 	}
-	
+
 	private SearchHandler mTaskHandler = new SearchHandler() {
 
 		public void onFinish(Bundle arg) {

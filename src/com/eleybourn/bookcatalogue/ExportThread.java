@@ -185,12 +185,12 @@ public class ExportThread extends TaskWithProgress {
 			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(mFileName), UTF8), BUFFER_SIZE);
 			out.write(export);
 			out.close();
-			doToast("Export Complete");
+			doToast( getString(R.string.export_complete) );
 			//Toast.makeText(AdministrationFunctions.this, R.string.export_complete, Toast.LENGTH_LONG).show();
 		} catch (IOException e) {
 			//Log.e("Book Catalogue", "Could not write to the SDCard");		
 			//Toast.makeText(AdministrationFunctions.this, R.string.export_failed, Toast.LENGTH_LONG).show();
-			doToast("Export Failed - Could not write to SDCard");
+			doToast(getString(R.string.export_failed_sdcard));
 		}
 	}
 	

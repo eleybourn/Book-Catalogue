@@ -66,7 +66,6 @@ public class EditSeriesList extends EditObjectList<Series> {
 
 	@Override
 	protected void onAdd(View v) {
-		Log.i("BC","Add");
 		AutoCompleteTextView t = ((AutoCompleteTextView)EditSeriesList.this.findViewById(R.id.series));
 		String s = t.getText().toString().trim();
 		if (s.length() > 0) {
@@ -87,13 +86,13 @@ public class EditSeriesList extends EditObjectList<Series> {
 				}
 			}
 			if (foundMatch) {
-				Toast.makeText(EditSeriesList.this, "Series matches exiting series", Toast.LENGTH_LONG).show();						
+				Toast.makeText(EditSeriesList.this, getResources().getString(R.string.series_already_in_list), Toast.LENGTH_LONG).show();						
 				return;							
 			}
 			mList.add(series);
             mAdapter.notifyDataSetChanged();
 		} else {
-			Toast.makeText(EditSeriesList.this, "Series is empty", Toast.LENGTH_LONG).show();
+			Toast.makeText(EditSeriesList.this, getResources().getString(R.string.series_is_blank), Toast.LENGTH_LONG).show();
 		}
 	}
 }

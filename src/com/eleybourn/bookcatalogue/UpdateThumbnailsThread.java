@@ -87,7 +87,7 @@ public class UpdateThumbnailsThread extends TaskWithProgress {
 			out.write("");
 			out.close();
 		} catch (IOException e) {
-			mFinalMessage = "Thumbnail Download Failed - Could not write to SDCard";
+			mFinalMessage = getString(R.string.thumbnail_failed_sdcard);
 			return;
 		}
 		
@@ -122,7 +122,7 @@ public class UpdateThumbnailsThread extends TaskWithProgress {
 
 				if (isbn.equals("") && author.equals("") && title.equals("")) {
 					// Must have an ISBN to be able to search
-					doProgress("Skip - " + title, mProgressCount);
+					doProgress(String.format(getString(R.string.skip_title), title), mProgressCount);
 					//TODO: searchGoogle(AUTHOR)
 				} else if (mOverwrite == true || !thumb.exists() || genre.equals("") || description.equals("")) {
 
@@ -198,9 +198,9 @@ public class UpdateThumbnailsThread extends TaskWithProgress {
 			if (mBooks != null && !mBooks.isClosed())
 				mBooks.close();
 		}
-		mFinalMessage = mProgressCount + " Books Searched";
+		mFinalMessage = String.format(getString(R.string.num_books_searched), "" + mProgressCount);
 		if (isCancelled()) 
-			mFinalMessage = "Cancelled - " + mFinalMessage;
+			mFinalMessage = String.format(getString(R.string.cancelled_info), mFinalMessage);
 	}
 
 	@Override

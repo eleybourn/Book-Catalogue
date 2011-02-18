@@ -72,7 +72,6 @@ public class EditAuthorList extends EditObjectList<Author> {
 	 * @param v
 	 */
 	protected void onAdd(View v) {
-		Log.i("BC","Add");
 		// Get the text
 		AutoCompleteTextView t = ((AutoCompleteTextView)EditAuthorList.this.findViewById(R.id.author));
 		String s = t.getText().toString().trim();
@@ -93,14 +92,14 @@ public class EditAuthorList extends EditObjectList<Author> {
 				}
 			}
 			if (foundMatch) {
-				Toast.makeText(EditAuthorList.this, "Author matches exiting author", Toast.LENGTH_LONG).show();						
+				Toast.makeText(EditAuthorList.this, getResources().getString(R.string.author_already_in_list), Toast.LENGTH_LONG).show();						
 				return;							
 			}
 
 			mList.add(a);
             mAdapter.notifyDataSetChanged();
 		} else {
-			Toast.makeText(EditAuthorList.this, "Author is empty", Toast.LENGTH_LONG).show();
+			Toast.makeText(EditAuthorList.this, getResources().getString(R.string.author_is_blank), Toast.LENGTH_LONG).show();
 		}		
 	}
 }

@@ -38,7 +38,7 @@
 <string name="title_isbn_search">Book Catalogue: ISBN Search</string>
 <string name="title_manage_bs">Book Catalogue: Manage Bookshelves</string>
 <string name="title_edit_bs">Book Catalogue: Edit Bookshelf</string>
-<string name="book_exists">The book you are trying to add already exists. Skipping.</string>
+<string name="book_exists">The book you are trying to add already exists. .</string>
 <string name="search_label">Search for Books</string>
 <string name="search_hint">Search Author or Title</string>
 <string name="book_not_found">The scanned book was not found. You can sometimes find the correct barcode on the inside front cover. Otherwise please enter the details manually.</string>
@@ -128,7 +128,8 @@
 <string name="read_end">Date finished reading</string>
 <string name="location">Location of the book</string>
 <string name="duplicate_title">Duplicate Book</string>
-<string name="duplicate_alert">The book you are trying to add already exists in the database, are you sure you want to add another copy</string>
+<string name="duplicate_book_title">Duplicate Book</string>
+<string name="duplicate_book_message">The book you are trying to add already exists in the database, are you sure you want to add another copy?</string>
 <string name="menu_add_thumb_gallery">Add Thumbnail from Gallery</string>
 <string name="backup_request">Would you like to backup your database to your sdcard</string>
 <string name="backup_title">Backup?</string>
@@ -173,4 +174,20 @@
 <string name="noseries">There are no series for this Book. You can add some using the text area and button at the top of this screen.</string>
 <item name="TAG_POSITION" type="id"></item>
 <item type="id" name="TAG_ORIGINAL_VALUE"></item>
+<string name="cover_not_set">Cover is not set</string>
+<string name="cover_corrupt">Cover is corrupt</string>
+<string name="cover_detail">Cover Detail</string>
+<string name="select_picture">Select Picture</string>
+<string name="set_authors">Set Authors...</string>
+<string name="and_others">et. al.</string>
+<string name="set_series">Set Series...</string>
+<string name="author_already_in_list">Author is already in the list</string>
+<string name="author_is_blank">Author field is blank</string>
+<string name="series_already_in_list">Series is already in the list</string>
+<string name="series_is_blank">Series field is blank</string>
+<string name="export_failed_sdcard">Export failed - could not write to SD card</string>
+<string name="thumbnail_failed_sdcard">Thumbnail Download Failed - Could not write to SDCard</string>
+<string name="skip_title">Skip - %s</string>
+<string name="num_books_searched">%s Books Searched</string>
+<string name="cancelled_info">Cancelled - %s</string>
 </resources>

@@ -131,7 +131,7 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
 			// Ask the subclass to setup the list; we need this before 
 			// building the adapter.
 			if (savedInstanceState != null && savedInstanceState.containsKey(mKey)) {
-				mList = savedInstanceState.getParcelableArrayList("asdasds");
+				mList = savedInstanceState.getParcelableArrayList(mKey);
 			}
 
 			if (mList == null) {
@@ -141,7 +141,7 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
 					mList = extras.getParcelableArrayList(mKey);
 				}
 				if (mList == null) {
-					throw new RuntimeException("Unable to find list in passed data");		
+					throw new RuntimeException("Unable to find list key '" + mKey + "' in passed data");		
 				}
 			}		
 

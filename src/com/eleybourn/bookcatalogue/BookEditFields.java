@@ -32,11 +32,14 @@ import java.util.Calendar;
 import java.util.Iterator;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TabActivity;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -111,6 +114,11 @@ public class BookEditFields extends Activity {
 	
 	private ArrayList<Author> mAuthorList = null;
 	private ArrayList<Series> mSeriesList = null;
+
+	// Global value for values from UI. Recreated periodically; at least 
+	// in saveState(). Needs to be global so an Alert can be displayed 
+	// during a save.
+	private Bundle mStateValues = null;
 
 	protected void getRowId() {
 		/* Get any information from the extras bundle */
@@ -476,7 +484,7 @@ public class BookEditFields extends Activity {
 			String filename = CatalogueDBAdapter.fetchThumbnailFilename(mRowId, false);
 
 			if (filename == null) {
-				dialog.setTitle("Cover is not set");
+				dialog.setTitle(getResources().getString(R.string.cover_not_set));
 			} else {
 				BitmapFactory.Options opt = new BitmapFactory.Options();
 				opt.inJustDecodeBounds = true;
@@ -484,9 +492,9 @@ public class BookEditFields extends Activity {
 
 			    // If no size info, assume file bad and return appropriate icon
 			    if ( opt.outHeight <= 0 || opt.outWidth <= 0 ) {
-			    	dialog.setTitle("Cover corrupt");
+			    	dialog.setTitle(getResources().getString(R.string.cover_corrupt));
 				} else {
-					dialog.setTitle("Cover Detail");
+					dialog.setTitle(getResources().getString(R.string.cover_detail));
 					ImageView cover = new ImageView(this);
 					CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, cover, mThumbZoomSize, mThumbZoomSize, true);
 					cover.setAdjustViewBounds(true);
@@ -549,7 +557,7 @@ public class BookEditFields extends Activity {
 			Intent gintent = new Intent();
 			gintent.setType("image/*");
 			gintent.setAction(Intent.ACTION_GET_CONTENT);
-			startActivityForResult(Intent.createChooser(gintent, "Select Picture"), ADD_GALLERY);
+			startActivityForResult(Intent.createChooser(gintent, getResources().getString(R.string.select_picture)), ADD_GALLERY);
 			return true;
 		case ZOOM_THUMB:
 			showDialog(ZOOM_THUMB_DIALOG_ID);
@@ -682,6 +690,7 @@ public class BookEditFields extends Activity {
 				}
 				
 			} catch (NullPointerException e) {
+				Log.e("BC","Failed to load data", e);
 				// do nothing
 			}
 
@@ -713,7 +722,7 @@ public class BookEditFields extends Activity {
 
 		fixupAuthorList();
 		fixupSeriesList();
-		
+
 	}
 
 	/**
@@ -731,6 +740,71 @@ public class BookEditFields extends Activity {
 		return true;
 	}
 
+	private void showAnthologyTab() {
+		CheckBox cb = (CheckBox)mFields.getField(R.id.anthology).view;
+		try {
+			TabHost tabHost = ((TabActivity) getParent()).getTabHost();  // The activity TabHost
+			if (cb.isChecked()) {
+				Resources res = getResources();
+				TabHost.TabSpec spec;  // Reusable TabSpec for each tab
+				Intent intent = new Intent().setClass(BookEditFields.this, BookEditAnthology.class);
+				intent.putExtra(CatalogueDBAdapter.KEY_ROWID, mRowId);
+				spec = tabHost.newTabSpec("edit_book_anthology").setIndicator(res.getString(R.string.edit_book_anthology), res.getDrawable(R.drawable.ic_tab_anthology)).setContent(intent);
+				tabHost.addTab(spec);
+			} else {
+				// remove tab
+				tabHost.getTabWidget().removeViewAt(3);
+			}
+		} catch (Exception e) {
+			// if this doesn't work don't add the tab. The user will have to save and reenter
+		}
+	}
+
+	private interface PostSaveAction {
+		public void success();
+		public void failure();
+	}
+
+	private class DoAnthologyAction implements PostSaveAction {
+		public void success() {
+			showAnthologyTab();
+		}
+		public void failure() {
+			// Do nothing
+		}
+	}
+
+	private class DoConfirmAction implements PostSaveAction {
+		boolean wasNew;
+
+		DoConfirmAction(boolean wasNew) {
+			this.wasNew = wasNew;
+		}
+
+		public void success() {
+			if (wasNew) {
+				Intent edit = new Intent(BookEditFields.this, BookEdit.class);
+				edit.putExtra(CatalogueDBAdapter.KEY_ROWID, mRowId);
+				edit.putExtra(BookEdit.TAB, BookEdit.TAB_EDIT_NOTES);
+				startActivity(edit);
+			}
+			Intent i = new Intent();
+			i.putExtra(ADDED_GENRE, added_genre);
+			i.putExtra(ADDED_SERIES, added_series);
+			i.putExtra(ADDED_TITLE, added_title);
+			i.putExtra(ADDED_AUTHOR, added_author);
+			if (getParent() == null) {
+				setResult(RESULT_OK, i);
+			} else {
+				getParent().setResult(RESULT_OK, i);
+			}
+			getParent().finish();
+		}
+		public void failure() {
+			// Do nothing
+		}
+	}
+
 	private void setupUi() {
 
 		if (mRowId != null && mRowId > 0) {
@@ -740,28 +814,7 @@ public class BookEditFields extends Activity {
 
 			cb.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
-					Bundle values = new Bundle();
-					if (!validate(values))
-						return;
-					saveState(values);
-
-					CheckBox cb = (CheckBox) view;
-					try {
-						TabHost tabHost = ((TabActivity) getParent()).getTabHost();  // The activity TabHost
-						if (cb.isChecked()) {
-							Resources res = getResources();
-							TabHost.TabSpec spec;  // Reusable TabSpec for each tab
-							Intent intent = new Intent().setClass(BookEditFields.this, BookEditAnthology.class);
-							intent.putExtra(CatalogueDBAdapter.KEY_ROWID, mRowId);
-							spec = tabHost.newTabSpec("edit_book_anthology").setIndicator(res.getString(R.string.edit_book_anthology), res.getDrawable(R.drawable.ic_tab_anthology)).setContent(intent);
-							tabHost.addTab(spec);
-						} else {
-							// remove tab
-							tabHost.getTabWidget().removeViewAt(3);
-						}
-					} catch (Exception e) {
-						// if this doesn't work don't add the tab. The user will have to save and reenter
-					}
+					saveState(new DoAnthologyAction());
 				}
 			});
 		} else {
@@ -770,29 +823,8 @@ public class BookEditFields extends Activity {
 
 		mConfirmButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
-				Bundle values = new Bundle();
-				if (!validate(values))
-					return;
 				boolean wasNew = (mRowId == null || mRowId == 0);
-
-				saveState(values);
-				if (wasNew) {
-					Intent edit = new Intent(BookEditFields.this, BookEdit.class);
-					edit.putExtra(CatalogueDBAdapter.KEY_ROWID, mRowId);
-					edit.putExtra(BookEdit.TAB, BookEdit.TAB_EDIT_NOTES);
-					startActivity(edit);
-				}
-				Intent i = new Intent();
-				i.putExtra(ADDED_GENRE, added_genre);
-				i.putExtra(ADDED_SERIES, added_series);
-				i.putExtra(ADDED_TITLE, added_title);
-				i.putExtra(ADDED_AUTHOR, added_author);
-				if (getParent() == null) {
-					setResult(RESULT_OK, i);
-				} else {
-					getParent().setResult(RESULT_OK, i);
-				}
-				getParent().finish();
+				saveState(new DoConfirmAction(wasNew));
 			}
 		});
 	}
@@ -824,36 +856,89 @@ public class BookEditFields extends Activity {
 		super.onResume();
 	}
 	
+	private class SaveAlert extends AlertDialog {
+
+		protected SaveAlert() {
+			super(BookEditFields.this);
+		}
+	}
+
 	/**
 	 * This will save a book into the database, by either updating or created a book.
 	 * Minor modifications will be made to the strings:
-	 * 	Titles will be rewords so a, the, an will be moved to the end of the string
-	 * 	Date published will be converted from a date to a string
+	 * 	- Titles will be rewords so 'a', 'the', 'an' will be moved to the end of the 
+	 *    string (this is only done for NEW books)
+	 *  
+	 * 	- Date published will be converted from a date to a string
 	 * 
-	 * It will also ensure the book doesn't already exist (isbn search) if you are creating a book.
 	 * Thumbnails will also be saved to the correct location 
+	 * 
+	 * It will check if the book already exists (isbn search) if you are creating a book;
+	 * if so the user will be prompted to confirm.
+	 * 
+	 * In all cases, once the book is added/created, or not, the appropriate method
+	 * of the passed nextStep parameter will be executed. Passing nextStep is necessary
+	 * because this method may return after displaying a dialogue.
+	 * 
+	 * @param nextStep		The next step to be executed on success/failure.
+	 * 
 	 * @throws IOException 
 	 */
-	private void saveState(Bundle values) {
+	private void saveState(final PostSaveAction nextStep) {
 
-		values.putParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mAuthorList);
-		values.putParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY, mSeriesList);
+		mStateValues = new Bundle();
+		if (!validate(mStateValues)) {
+			nextStep.failure();
+			return;
+		}
+
+		mStateValues.putParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mAuthorList);
+		mStateValues.putParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY, mSeriesList);
 
 		if (mRowId == null || mRowId == 0) {
-			String isbn = values.getString(CatalogueDBAdapter.KEY_ISBN);
+			String isbn = mStateValues.getString(CatalogueDBAdapter.KEY_ISBN);
 			/* Check if the book currently exists */
 			if (!isbn.equals("")) {
 				Cursor book = mDbHelper.fetchBookByISBN(isbn);
 				int rows = book.getCount();
+				book.close(); // close the cursor
 				if (rows != 0) {
-					// TODO : Allow duplicates in Save...
-					Toast.makeText(this, R.string.book_exists, Toast.LENGTH_LONG).show();
+					/*
+					 * If is exists, show a dialog and use it to perform the next action, according to the
+					 * users choice.
+					 */
+					SaveAlert alert = new SaveAlert();
+					alert.setMessage(getResources().getString(R.string.duplicate_book_message));
+					alert.setTitle(R.string.duplicate_book_title);
+					alert.setIcon(android.R.drawable.ic_menu_info_details);
+					alert.setButton(this.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							updateOrCreate();
+							nextStep.success();
+							return;
+						}
+					}); 
+					alert.setButton2(this.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							nextStep.failure();
+							return;
+						}
+					}); 
+					alert.show();
 					return;
 				}
-				book.close(); // close the cursor
 			}
+		}
 
-			long id = mDbHelper.createBook(values);
+		// No special actions required...just do it.
+		updateOrCreate();
+		nextStep.success();
+		return;
+	}
+
+	private void updateOrCreate() {
+		if (mRowId == null || mRowId == 0) {
+			long id = mDbHelper.createBook(mStateValues);
 
 			if (id > 0) {
 				mRowId = id;
@@ -862,22 +947,21 @@ public class BookEditFields extends Activity {
 				thumb.renameTo(real);
 			}
 		} else {
-			mDbHelper.updateBook(mRowId, values);
+			mDbHelper.updateBook(mRowId, mStateValues);
 		}
 
-		/* These are global variables that will be sent via intent back to the list view */
+		/* These are global variables that will be sent via intent back to the list view, if added/created */
 		try {
-			ArrayList<Author> authors = values.getParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
+			ArrayList<Author> authors = mStateValues.getParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
 			added_author = authors.get(0).getSortName();
 		} catch (Exception e) {};
 		try {
-			ArrayList<Author> series = values.getParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY);
+			ArrayList<Author> series = mStateValues.getParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY);
 			added_series = series.get(0).getSortName();
 		} catch (Exception e) {};
 
-		added_title = values.getString(CatalogueDBAdapter.KEY_TITLE);
-		added_genre = values.getString(CatalogueDBAdapter.KEY_GENRE);
-		return;
+		added_title = mStateValues.getString(CatalogueDBAdapter.KEY_TITLE);
+		added_genre = mStateValues.getString(CatalogueDBAdapter.KEY_GENRE);
 	}
 
 	@Override
@@ -946,12 +1030,12 @@ public class BookEditFields extends Activity {
 
 		String newText;
 		if (mAuthorList.size() == 0)
-			newText = "Set Authors...";
+			newText = getResources().getString(R.string.set_authors);
 		else {
 			Utils.pruneList(mDbHelper, mAuthorList);
 			newText = mAuthorList.get(0).getDisplayName();
 			if (mAuthorList.size() > 1)
-				newText += " et. al.";
+				newText += " " + getResources().getString(R.string.and_others);
 		}
 		mFields.getField(R.id.author).setValue(newText);		
 	}
@@ -960,12 +1044,12 @@ public class BookEditFields extends Activity {
 
 		String newText;
 		if (mSeriesList.size() == 0)
-			newText = "Set Series...";
+			newText = getResources().getString(R.string.set_series);
 		else {
 			Utils.pruneList(mDbHelper, mSeriesList);
 			newText = mSeriesList.get(0).getDisplayName();
 			if (mSeriesList.size() > 1)
-				newText += " et. al.";
+				newText += " " + getResources().getString(R.string.and_others);
 		}
 		mFields.getField(R.id.series).setValue(newText);		
 	}

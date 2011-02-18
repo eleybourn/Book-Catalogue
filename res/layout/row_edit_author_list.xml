@@ -4,6 +4,7 @@
 	android:layout_width="fill_parent" 
 	android:layout_height="wrap_content" 
 	android:padding="10dp"
+	android:clickable="true"
 	android:id="@+id/row" >
 	<ImageView android:id="@+id/row_delete" 
 		android:layout_width="25sp"

@@ -1,3 +1,23 @@
+/*
+ * @copyright 2011 Philip Warner
+ * @license GNU General Public License
+ * 
+ * This file is part of Book Catalogue.
+ *
+ * Book Catalogue is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Book Catalogue is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
@@ -54,6 +74,9 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
 	// DB connection
 	protected CatalogueDBAdapter mDbHelper;
 
+	protected String mBookTitle;
+	protected String mBookTitleLabel;
+
 	// The key to use in the Bundle to get the array
 	private String mKey;
 	// The resource ID for the base view
@@ -77,6 +100,14 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
 	 * @param object	The object (or type T) from which to draw values.
 	 */
 	abstract protected void onSetupView(View target, T object);
+
+	/**
+	 * Called when an otherwise inactive part of the row is clicked.
+	 * 
+	 * @param target	The view clicked
+	 * @param object	The object associated with this row
+	 */
+	abstract protected void onRowClick(View target, T object);
 	
 	/**
 	 * Called when user clicks the 'Save' button (if present). Primary task is
@@ -152,10 +183,10 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
 	        // Look for title and title_label
 			Bundle extras = getIntent().getExtras();
 			if (extras != null) {
-				String s = extras.getString("title_label");
-				setTextOrHideView(R.id.title_label, s);
-				s = extras.getString("title");
-				setTextOrHideView(R.id.title, s);
+				mBookTitleLabel = extras.getString("title_label");
+				mBookTitle = extras.getString("title");
+				setTextOrHideView(R.id.title_label, mBookTitleLabel);
+				setTextOrHideView(R.id.title, mBookTitle);
 			}
 
 		} catch (Exception e) {
@@ -185,10 +216,14 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
 	 * @param id	View ID
 	 * @param s		String to set
 	 */
-	private void setTextOrHideView(int id, String s) {
-		View v = null;
+	protected void setTextOrHideView(View v, int id, String s) {
+		if (v != null && v.getId() != id)
+			v = v.findViewById(id);
+		setTextOrHideView(v,s);
+	}
+	
+	protected void setTextOrHideView(View v, String s) {
 		try {
-			v = this.findViewById(id);
 			if (s != null && s.length() > 0) {
 				((TextView)v).setText(s);
 				return;			
@@ -198,6 +233,10 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
 		// If we get here, something went wrong.
 		if (v != null)
 			v.setVisibility(View.GONE);		
+	}
+	
+	protected void setTextOrHideView(int id, String s) {
+		setTextOrHideView(this.findViewById(id), id, s);
 	}
 	
 	/**
@@ -306,6 +345,19 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
 	};
 
 	/**
+	 * Handle moving a row DOWN
+	 */
+	private OnClickListener mRowClickListener = new OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			int pos = getViewRow(v);
+			onRowClick(v, mList.get(pos));
+		}
+		
+	};
+
+	/**
 	 * Adapter to manage the rows.
 	 * 
 	 * @author Grunthos
@@ -331,6 +383,7 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
             if (v == null) {
                 LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 v = vi.inflate(mRowViewId, null);
+                v.setOnClickListener(mRowClickListener);
             }
             
             // Save this views position

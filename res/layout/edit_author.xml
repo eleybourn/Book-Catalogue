@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:id="@+id/edit_series_list_wrapper"
+	android:orientation="vertical"
+	android:layout_width="fill_parent" 
+	android:layout_height="wrap_content"
+	android:paddingLeft="5sp"
+	android:background="#2d2d2d">
+
+	<LinearLayout	 android:id="@+id/top_buttons" 
+		android:layout_alignParentTop="true"
+		android:gravity="top" 
+		android:orientation="vertical"
+		android:layout_width="fill_parent" 
+		android:layout_below="@+id/title_label"
+		android:layout_height="wrap_content" 
+		android:paddingTop="5sp"
+		>
+	  	<TextView 
+	  		android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:text="@string/family_name"
+			android:layout_weight="2"
+			android:layout_alignParentTop="true"
+	  		android:textSize="12sp" />
+		<EditText android:id="@+id/family_name" 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" 
+			android:layout_weight="2"
+			android:hint="@string/family_name"
+			android:inputType="textCapWords"
+			android:completionThreshold="2"
+			/>
+	  	<TextView 
+	  		android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:text="@string/given_names"
+			android:layout_weight="2"
+	  		android:textSize="12sp" />
+		<EditText android:id="@+id/given_names" 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:singleLine="true"
+			android:hint="@string/given_names"
+			android:inputType="textCapWords"
+			android:layout_weight="1"
+			/>
+		
+	</LinearLayout>
+
+  	<TextView android:id="@+id/title" 
+  		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" 
+		android:layout_weight="2"
+		android:layout_below="@+id/top_buttons"
+		android:hint="@string/title"
+  		android:textSize="16sp"
+  		android:text="@string/immediate_global_changes"
+		android:paddingTop="5sp"
+		android:paddingBottom="5sp"
+  		/>
+
+	<LinearLayout	 android:id="@+id/bottom_buttons" 
+		android:orientation="horizontal"
+		android:layout_height="60sp" 
+		android:layout_width="fill_parent" 
+		android:layout_below="@+id/title"
+		>
+		<Button android:id="@+id/confirm" 
+			android:text="@string/save"
+			android:width="150sp"
+			android:layout_width="wrap_content"
+			android:layout_height="fill_parent" />
+		
+		<Button android:id="@+id/cancel" 
+			android:text="@string/cancel"
+			android:width="150sp"
+			android:layout_width="wrap_content"
+			android:layout_height="fill_parent" />
+	</LinearLayout>
+</RelativeLayout>

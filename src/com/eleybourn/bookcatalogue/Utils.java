@@ -400,9 +400,6 @@ public class Utils {
 					throw e;
 				try { Thread.sleep(500); } catch(Exception junk) {};
 			} catch (Exception e) {
-				/**
-				 * TODO Handle some transient errors....like UnknownHostException...
-				 */
 				Log.e("BookCatalogue.Utils", "Exception in getInpuStream", e);
 				throw new RuntimeException(e);
 			}			
@@ -592,6 +589,7 @@ public class Utils {
 
 	public interface ItemWithIdFixup {
 		long fixupId(CatalogueDBAdapter db);
+		long getId();
 	}
 
 	/**

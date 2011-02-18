@@ -2797,11 +2797,58 @@ public class CatalogueDBAdapter {
 		deleteAuthors();
 		return success;
 	}
-	
-	
-	
-	
-	
+
+	/**
+	 * Update the author names or create a new one or update the passed object ID
+	 * 
+	 * @param a		Author in question
+
+	 */
+	public void syncAuthor(Author a) {
+		long id = lookupAuthorId(a);
+		// If we have a match, just update the object
+		if (id != 0) {
+			a.id = id;
+			return;
+		}
+
+		if (a.id != 0) {
+			ContentValues v = new ContentValues();
+			v.put(KEY_FAMILY_NAME, a.familyName);
+			v.put(KEY_GIVEN_NAMES, a.givenNames);
+			mDb.update(DB_TB_AUTHORS, v, KEY_ROWID + " = " + a.id, null);
+		} else {
+			a.id = createAuthor(a.familyName, a.givenNames);
+		}
+		return;
+	}
+
+	/**
+	 * Refresh the passed author from the database, if present. Used to ensure that
+	 * the current record matches the current DB if some other task may have 
+	 * changed the author.
+	 * 
+	 * @param a		Author in question
+	 */
+	public void refreshAuthor(Author a) {
+		if (a.id == 0) {
+			// It wasn't a known author; see if it is now. If so, update ID.
+			long id = lookupAuthorId(a);
+			// If we have a match, just update the object
+			if (id != 0)
+				a.id = id;
+			return;
+		} else {
+			// It was a known author, see if it still is and update fields.
+			Author newA = this.getAuthorById(a.id);
+			if (newA != null) {
+				a.familyName = newA.familyName;
+				a.givenNames = newA.givenNames;
+			} else {
+				a.id = 0;
+			}
+		}
+	}	
 	
 	/**
 	 * Delete the anthology record with the given rowId (not to be confused with the book rowId
@@ -2911,6 +2958,23 @@ public class CatalogueDBAdapter {
         return mDb.query(DB_TB_AUTHORS, new String[] {"_id", KEY_FAMILY_NAME, KEY_GIVEN_NAMES}, sql, null, null, null, null);
     }
     
+    /*
+     * This will return the author based on the ID.
+     */
+    public Author getAuthorById(long id) {
+    	Cursor c = null;
+    	try {
+        	String sql = "Select " + KEY_FAMILY_NAME + ", " + KEY_GIVEN_NAMES + " From " + DB_TB_AUTHORS 
+        				+ " Where " + KEY_ROWID + " = " + id;
+            c = mDb.rawQuery(sql, null);
+            if (!c.moveToFirst())
+            	return null;
+            return new Author(id, c.getString(0), c.getString(1)); 
+    	} finally {
+    		if (c != null)
+	            c.close();    		
+	    	}
+    }
    
     /*
      * This will return the author id based on the name. 

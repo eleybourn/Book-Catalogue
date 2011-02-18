@@ -16,6 +16,7 @@ public class Author implements Parcelable, Utils.ItemWithIdFixup {
 	public String 	familyName;
 	public String 	givenNames;
 	public long		id;
+	public boolean	requiresUpdate = false;
 
 	/**
 	 * Constructor that will attempt to parse a single string into an author name.
@@ -140,5 +141,10 @@ public class Author implements Parcelable, Utils.ItemWithIdFixup {
 	public long fixupId(CatalogueDBAdapter db) {
 		this.id = db.lookupAuthorId(this);
 		return this.id;
+	}
+	
+	@Override
+	public long getId() {
+		return id;
 	}
 }

@@ -1757,13 +1757,13 @@ public class CatalogueDBAdapter {
 	public Cursor fetchAnthologyTitlesByBook(long rowId) {
 		String sql = "SELECT an." + KEY_ROWID + " as " + KEY_ROWID 
 				+ ", an." + KEY_TITLE + " as " + KEY_TITLE 
-				+ ", an." + KEY_POSITION 
-				+ " as " + KEY_POSITION 
+				+ ", an." + KEY_POSITION + " as " + KEY_POSITION 
 				+ ", au." + KEY_FAMILY_NAME + " || ', ' || au." + KEY_GIVEN_NAMES + " as " + KEY_AUTHOR_NAME 
-				+ ", an." + KEY_BOOK + " as " + KEY_BOOK +  
-			" FROM " + DB_TB_ANTHOLOGY + " an, " + DB_TB_AUTHORS + " au " +
-			" WHERE an." + KEY_AUTHOR_ID + "=au." + KEY_ROWID + " AND an." + KEY_BOOK + "='" + rowId + "'" +
-			" ORDER BY an." + KEY_POSITION + "";
+				+ ", an." + KEY_BOOK + " as " + KEY_BOOK
+				+ ", an." + KEY_AUTHOR_ID + " as " + KEY_AUTHOR_ID
+			+ " FROM " + DB_TB_ANTHOLOGY + " an, " + DB_TB_AUTHORS + " au "
+			+ " WHERE an." + KEY_AUTHOR_ID + "=au." + KEY_ROWID + " AND an." + KEY_BOOK + "='" + rowId + "'"
+			+ " ORDER BY an." + KEY_POSITION + "";
 		Cursor mCursor = mDb.rawQuery(sql, new String[]{});
 		return mCursor;
 	}
@@ -1775,10 +1775,14 @@ public class CatalogueDBAdapter {
 	 * @return Cursor containing all records, if found
 	 */
 	public Cursor fetchAnthologyTitleById(long rowId) {
-		String sql = "SELECT an." + KEY_ROWID + " as " + KEY_ROWID + ", an." + KEY_TITLE + " as " + KEY_TITLE + ", an." + KEY_POSITION + " as " + KEY_POSITION + 
-			", au." + KEY_FAMILY_NAME + " || ', ' || au." + KEY_GIVEN_NAMES + " as " + KEY_AUTHOR_NAME + ", an." + KEY_BOOK + " as " + KEY_BOOK +
-			" FROM " + DB_TB_ANTHOLOGY + " an, " + DB_TB_AUTHORS + " au " +
-			" WHERE an." + KEY_AUTHOR_ID + "=au." + KEY_ROWID + " AND an." + KEY_ROWID + "='" + rowId + "'";
+		String sql = "SELECT an." + KEY_ROWID + " as " + KEY_ROWID 
+			+ ", an." + KEY_TITLE + " as " + KEY_TITLE 
+			+ ", an." + KEY_POSITION + " as " + KEY_POSITION + 
+			", au." + KEY_FAMILY_NAME + " || ', ' || au." + KEY_GIVEN_NAMES + " as " + KEY_AUTHOR_NAME 
+			+ ", an." + KEY_BOOK + " as " + KEY_BOOK
+			+ ", an." + KEY_AUTHOR_ID + " as " + KEY_AUTHOR_ID
+			+ " FROM " + DB_TB_ANTHOLOGY + " an, " + DB_TB_AUTHORS + " au "
+			+ " WHERE an." + KEY_AUTHOR_ID + "=au." + KEY_ROWID + " AND an." + KEY_ROWID + "='" + rowId + "'";
 		Cursor mCursor = mDb.rawQuery(sql, new String[]{});
 		return mCursor;
 	}

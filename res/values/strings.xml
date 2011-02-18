@@ -172,4 +172,5 @@
 <string name="noauthors">There are no authors for this Book. Please add some using the text area and button at the top of this screen.</string>
 <string name="noseries">There are no series for this Book. You can add some using the text area and button at the top of this screen.</string>
 <item name="TAG_POSITION" type="id"></item>
+<item type="id" name="TAG_ORIGINAL_VALUE"></item>
 </resources>

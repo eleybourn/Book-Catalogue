@@ -622,7 +622,7 @@ public class Utils {
 			}
 		}
 		for(int i = toDelete.size() - 1; i >= 0; i--)
-			list.remove(toDelete.get(i));
+			list.remove(toDelete.get(i).intValue());
 	}
 }
 

@@ -218,14 +218,13 @@ public class BookEditFields extends Activity {
 			// So, despite if being a checkbox, we use an integerValidator and use a special formatter.
 			// We also store it in the tag field so that it is automatically serialized with the activity.
 			mFields.add(R.id.anthology, CatalogueDBAdapter.KEY_ANTHOLOGY, integerValidator, new Fields.FieldFormatter() {
-					private static final int TAG_ORIG_VAL = 1;
 					public String format(Field f, String s) {
 						// Save the original value, if its an integer
 						try {
 							Integer i = Integer.parseInt(s);
-							f.view.setTag(TAG_ORIG_VAL,i);
+							f.view.setTag(R.id.TAG_ORIGINAL_VALUE,i);
 						} catch (Exception e) {
-							f.view.setTag(TAG_ORIG_VAL,0);
+							f.view.setTag(R.id.TAG_ORIGINAL_VALUE,0);
 						}
 						// Just pass the string onwards to the accessor.
 						return s;
@@ -233,7 +232,7 @@ public class BookEditFields extends Activity {
 					public String extract(Field f, String s) {
 						// Parse the string the CheckBox returns us (0 or 1)
 						Integer i = Integer.parseInt(s);
-						Integer orig = (Integer) f.view.getTag(TAG_ORIG_VAL);
+						Integer orig = (Integer) f.view.getTag(R.id.TAG_ORIGINAL_VALUE);
 						if (i != 0 && orig > 0) {
 							// If non-zero, and original was non-zero, re-use original
 							return orig.toString();

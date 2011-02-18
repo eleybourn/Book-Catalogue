@@ -15,18 +15,7 @@ import android.widget.Toast;
 public class EditSeriesList extends EditObjectList<Series> {
 
 	public EditSeriesList() {
-		super(R.layout.edit_series_list, R.layout.row_edit_series_list);
-	}
-
-	@Override
-	protected boolean onSave(Intent i) {
-		i.putExtra(CatalogueDBAdapter.KEY_SERIES_ARRAY, mList);
-		return true;
-	}
-
-	@Override
-	protected boolean onCancel() {
-		return true;
+		super(CatalogueDBAdapter.KEY_SERIES_ARRAY, R.layout.edit_series_list, R.layout.row_edit_series_list);
 	}
 
 	@Override
@@ -106,18 +95,5 @@ public class EditSeriesList extends EditObjectList<Series> {
 		} else {
 			Toast.makeText(EditSeriesList.this, "Series is empty", Toast.LENGTH_LONG).show();
 		}
-	}
-
-	@Override
-	protected ArrayList<Series> onGetList(Bundle b) {
-		if (b == null)
-			return new ArrayList<Series>();				
-
-		return b.getParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY);
-	}
-
-	@Override
-	protected void onSaveList(Bundle outState) {
-		outState.putParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY, mList);
 	}
 }

@@ -252,8 +252,8 @@ public class CatalogueDBAdapter {
 			sql += alias + "." + KEY_FAMILY_NAME + " as " + KEY_FAMILY_NAME 
 				+ ", " + alias + "." + KEY_GIVEN_NAMES + " as " + KEY_GIVEN_NAMES 
 				+ ",  Case When " + alias + "." + KEY_GIVEN_NAMES + " = '' Then " + KEY_FAMILY_NAME 
-				+ "        Else " + alias + "." + KEY_GIVEN_NAMES + " || ' ' || " 
-									+ alias + "." + KEY_FAMILY_NAME + " End as " + KEY_AUTHOR_FORMATTED + " ";
+				+ "        Else " + alias + "." + KEY_FAMILY_NAME + " || ', ' || " 
+									+ alias + "." + KEY_GIVEN_NAMES + " End as " + KEY_AUTHOR_FORMATTED + " ";
 			return sql;
 		}
 
@@ -891,8 +891,8 @@ public class CatalogueDBAdapter {
 		else if (alias.length() > 0)
 			alias += ".";
 
-		//return alias + KEY_FAMILY_NAME + "||', '||" + KEY_GIVEN_NAMES;
-		return alias + KEY_GIVEN_NAMES + "||' '||" + KEY_FAMILY_NAME;
+		return alias + KEY_FAMILY_NAME + "||', '||" + KEY_GIVEN_NAMES;
+		//return alias + KEY_GIVEN_NAMES + "||' '||" + KEY_FAMILY_NAME;
 	}
 	
 	// DEBUG ONLY!
@@ -2027,7 +2027,7 @@ public class CatalogueDBAdapter {
 			"WHERE (" + authorSearchPredicate(searchText) +  " OR " +
 				"a." + KEY_ROWID + " IN (SELECT ba." + KEY_AUTHOR_ID + 
 				" FROM " + DB_TB_BOOKS + " b Join " + DB_TB_BOOK_AUTHOR + " ba " + 
-						" On ba." + KEY_BOOK + " = b." + KEY_ROWID + ")" + 
+				 		" On ba." + KEY_BOOK + " = b." + KEY_ROWID + " " + 
 					"WHERE (" + bookSearchPredicate(searchText)  + ") ) )" + 
 				where + 
 			"ORDER BY " + KEY_FAMILY_NAME + ", " + KEY_GIVEN_NAMES + "";
@@ -2073,11 +2073,11 @@ public class CatalogueDBAdapter {
 	}
 
 	public Cursor searchBooksByChar(String searchText, String first_char, String bookshelf) {
-		return searchBooks(searchText, "", bookshelf, "", " AND substr(b." + KEY_TITLE + ", 1, 1)='" + first_char + "'");
+		return searchBooks(searchText, "", bookshelf, "", " substr(b." + KEY_TITLE + ", 1, 1)='" + first_char + "'");
 	}
 
 	public Cursor searchBooksByGenre(String searchText, String genre, String bookshelf) {
-		return searchBooks(searchText, "", bookshelf, "", " AND " + KEY_GENRE + "='" + genre + "'");
+		return searchBooks(searchText, "", bookshelf, "", " " + KEY_GENRE + "='" + genre + "'");
 	}
 	
 	/**
@@ -2105,7 +2105,7 @@ public class CatalogueDBAdapter {
 	 */
 	public Cursor searchGenres(String searchText, String bookshelf) {
 		String baseSql = this.fetchAllBooksSql("1", bookshelf, "", "", searchText, "", "");
-		String sql = "SELECT DISTINCT substr(b." + KEY_GENRE + ", 1, 1) AS " + KEY_ROWID + " " + baseSql;
+		String sql = "SELECT DISTINCT " + KEY_GENRE + " AS " + KEY_ROWID + " " + baseSql;
 		return mDb.rawQuery(sql, new String[]{});
 	}
 	

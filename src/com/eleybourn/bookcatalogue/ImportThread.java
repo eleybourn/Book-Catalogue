@@ -82,6 +82,7 @@ public class ImportThread extends TaskWithProgress {
 			// Get row
 			String[] imported = returnRow(mExport.get(row));
 
+			values.clear();
 			for(int i = 0; i < names.length; i++) {
 				values.putString(names[i], imported[i]);
 			}

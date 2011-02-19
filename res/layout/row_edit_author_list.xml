@@ -4,8 +4,8 @@
 	android:layout_width="fill_parent" 
 	android:layout_height="wrap_content" 
 	android:padding="10dp"
-	android:clickable="true"
 	android:id="@+id/row" >
+
 	<ImageView android:id="@+id/row_delete" 
 		android:layout_width="25sp"
 		android:layout_height="25sp"
@@ -18,36 +18,18 @@
 		android:layout_alignParentTop="true"
 		android:layout_alignParentBottom="true"
 		android:layout_weight="1"
+		android:clickable="true"
 		/>
 
-	<ImageView android:id="@+id/row_down" 
-		android:layout_width="25sp"
-		android:layout_height="25sp"
-		android:paddingRight="5sp"
-		android:src="@+drawable/down"
-		android:focusable="false"
-		android:focusableInTouchMode="false"
-		android:gravity="right"
-		
-		android:layout_alignParentRight="true"
-		android:layout_alignParentTop="true"
-		android:layout_alignParentBottom="true"
-		android:layout_weight="1"
+    <ImageView android:id="@+id/grabber"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+		android:src="@drawable/grabber"
 		/>
-	<ImageView android:id="@+id/row_up" 
-		android:layout_width="25sp"
-		android:layout_height="25sp"
-		android:paddingRight="5sp"
-		android:src="@+drawable/up"
-		android:focusable="false"
-		android:focusableInTouchMode="false"
-		android:gravity="right"
-		
-		android:layout_toLeftOf="@id/row_down"
-		android:layout_alignParentTop="true"
-		android:layout_alignParentBottom="true"
-		android:layout_weight="1"
-		/>
+<!-- 
 	<TextView android:id="@+id/row_position" 
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
@@ -60,7 +42,9 @@
 		android:layout_weight="1"
 		android:visibility="gone"
 		/>
-	<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android" 
+ -->
+ 	<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android" 
+			android:id="@+id/row_details" 
 			android:orientation="vertical"
 			android:layout_width="fill_parent" 
 			android:layout_height="wrap_content" 
@@ -68,8 +52,8 @@
 
 			android:layout_alignParentBottom="true"
 			android:layout_alignParentTop="true" 
-			android:layout_toRightOf="@id/row_position"
-			android:layout_toLeftOf="@+id/row_up"
+			android:layout_toRightOf="@id/row_delete"
+			android:layout_toLeftOf="@+id/grabber"
 			android:layout_weight="0"
 		>
 		<TextView android:id="@+id/row_author" 

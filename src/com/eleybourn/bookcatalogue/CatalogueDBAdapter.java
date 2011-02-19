@@ -2438,16 +2438,20 @@ public class CatalogueDBAdapter {
 
 	public long lookupSeriesId(Series s) {
 		Cursor seriesCsr = getSeriesByName(s.name);
-		int aRows = seriesCsr.getCount();
-		long id;
-		if (aRows == 0)
-			return 0;
+		try {
+			int aRows = seriesCsr.getCount();
+			long id;
+			if (aRows == 0)
+				return 0;
 
-		seriesCsr.moveToFirst();
-		id = seriesCsr.getLong(0);			
-		seriesCsr.close();
+			seriesCsr.moveToFirst();
+			id = seriesCsr.getLong(0);			
 
-		return id;
+			return id;			
+		} finally {
+			if (seriesCsr != null)
+				seriesCsr.close();
+		}
 	}
 
 	/**

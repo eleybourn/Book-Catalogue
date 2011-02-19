@@ -2022,6 +2022,9 @@ public class CatalogueDBAdapter {
 		} else {
 			where += this.authorOnBookshelfSql(bookshelf, "a." + KEY_ROWID);
 		}
+		if (where != null && where.trim().length() > 0)
+			where = " and " + where;
+
 		String sql = "SELECT " + getAuthorFields("a", KEY_ROWID) +
 			" FROM " + DB_TB_AUTHORS + " a" + " " +
 			"WHERE (" + authorSearchPredicate(searchText) +  " OR " +

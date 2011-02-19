@@ -189,10 +189,25 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
 				setTextOrHideView(R.id.title, mBookTitle);
 			}
 
+			
+			TouchListView tlv=(TouchListView)getListView();
+			tlv.setDropListener(mDropListener);
+			//tlv.setRemoveListener(onRemove);
+
 		} catch (Exception e) {
 			Log.e("BookCatalogue.EditObjectList.onCreate","Failed to initialize", e);
 		}
 	}
+
+	private TouchListView.DropListener mDropListener=new TouchListView.DropListener() {
+		@Override
+		public void drop(int from, int to) {
+				Log.i("BC", "Drop " + from + "->"+to);
+				T item=mAdapter.getItem(from);				
+				mAdapter.remove(item);
+				mAdapter.insert(item, to);
+		}
+	};
 
 	/**
 	 * Utility routine to setup a listener for the specified view id
@@ -383,11 +398,18 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
             if (v == null) {
                 LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 v = vi.inflate(mRowViewId, null);
-                v.setOnClickListener(mRowClickListener);
             }
             
             // Save this views position
             v.setTag(R.id.TAG_POSITION, new Integer(position));
+
+            {
+            	// Giving the whole row ad onClickListener seems to interfere
+            	// with drag/drop.
+            	View details = v.findViewById(R.id.row_details);
+            	if (details != null)
+                    details.setOnClickListener(mRowClickListener);
+            }
 
             // Get the object, if not null, do some processing
             T o = mList.get(position);

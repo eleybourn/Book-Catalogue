@@ -60,9 +60,9 @@ public class Utils {
 
 	static public ArrayUtils<Author> getAuthorUtils() {
 		if (mAuthorUtils == null) {
-			mAuthorUtils = new ArrayUtils<Author>(new Utils.Factory(){
+			mAuthorUtils = new ArrayUtils<Author>(new Utils.Factory<Author>(){
 				@Override
-				public Object get(String source) {
+				public Author get(String source) {
 					return new Author(source);
 				}});			
 		}
@@ -71,9 +71,9 @@ public class Utils {
 
 	static public ArrayUtils<Series> getSeriesUtils() {
 		if (mSeriesUtils == null) {
-			mSeriesUtils = new ArrayUtils<Series>(new Utils.Factory(){
+			mSeriesUtils = new ArrayUtils<Series>(new Utils.Factory<Series>(){
 				@Override
-				public Object get(String source) {
+				public Series get(String source) {
 					return new Series(source);
 				}});
 		}
@@ -621,6 +621,24 @@ public class Utils {
 		}
 		for(int i = toDelete.size() - 1; i >= 0; i--)
 			list.remove(toDelete.get(i).intValue());
+	}
+
+	/**
+	 * Convert a array of objects to a string.
+	 * 
+	 * @param <T>
+	 * @param a		Array
+	 * @return		Resulting string
+	 */
+	public static <T> String ArrayToString(ArrayList<T> a) {
+		String details = "";
+
+		for (T i : a) {
+			if (details.length() > 0)
+				details += "|";
+			details += Utils.encodeListItem(i.toString(), '|');			
+		}
+		return details;
 	}
 }
 

@@ -60,6 +60,22 @@ import android.widget.Toast;
  * Abstract methods are defined for specific tasks (Add, Save, Load etc). While would 
  * be tempting to add local implementations the java generic model seems to prevent this.
  * 
+ * This Activity uses TouchListView from CommonsWare which is in turn based on Android code
+ * for TouchIntercptor which was (reputedly) removed in Android 2.2. 
+ * 
+ * For this code to work, the  main view must contain:
+ * - a TouchListView with id = @+id/android:list
+ * - the TouchListView must have the following attributes:
+ * 		tlv:grabber="@+id/<SOME ID FOR AN IMAGE>" (eg. "@+id/grabber")
+ *		tlv:remove_mode="none"
+ *		tlv:normal_height="64dip" ---- or some simlar value
+ * 
+ * Each row view must have:
+ * - an ID of @+id/row
+ * - an ImageView with an ID of "@+id/<SOME ID FOR AN IMAGE>" (eg. "@+id/grabber")
+ * - (OPTIONAL) a subview with an ID of "@+id/row_details"; when clicked, this will result 
+ *   in the onRowClick event.
+ * 
  * @author Grunthos
  *
  * @param <T>

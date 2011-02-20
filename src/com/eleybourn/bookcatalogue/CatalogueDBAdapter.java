@@ -804,7 +804,7 @@ public class CatalogueDBAdapter {
 				try {
 					db.execSQL(DATABASE_CREATE_SERIES);
 					db.execSQL("INSERT INTO " + DB_TB_SERIES + " (" + KEY_SERIES_NAME + ") "
-								+ "SELECT DISTINCT " + KEY_SERIES_OLD + " FROM " + DB_TB_BOOKS
+								+ "SELECT DISTINCT " + KEY_SERIES_OLD + " Collate UNICODE FROM " + DB_TB_BOOKS
 								+ " WHERE Coalesce(" + KEY_SERIES_OLD + ",'') <> ''");
 
 					db.execSQL(DATABASE_CREATE_BOOK_SERIES);
@@ -1307,7 +1307,7 @@ public class CatalogueDBAdapter {
 	 * @param bookshelf Which bookshelf is it in. Can be "All Books"
 	 * @return Cursor over all Books
 	 */
-	public Cursor fetchAllBookChars(String order, String bookshelf) {
+	public Cursor fetchAllBookChars(String bookshelf) {
 		String baseSql = this.fetchAllBooksSql("1", bookshelf, "", "", "", "", "");
 		String sql = "SELECT DISTINCT substr(b." + KEY_TITLE + ", 1, 1) AS " + KEY_ROWID + " " + baseSql;
 
@@ -1838,8 +1838,7 @@ public class CatalogueDBAdapter {
 	 */
 	public Cursor fetchBookById(long rowId) throws SQLException {
 		String where = "b." + KEY_ROWID + "=" + rowId;
-		String order = "b." + KEY_ROWID;
-		return fetchAllBooks(order, "All Books", "", where, "", "", "");
+		return fetchAllBooks("", "All Books", "", where, "", "", "");
 	}
 	
 	/**
@@ -1861,7 +1860,7 @@ public class CatalogueDBAdapter {
 	 */
 	public Cursor fetchByAuthorAndTitle(String family, String given, String title) {
 		String authorWhere = "a." + KEY_FAMILY_NAME + "='" + encodeString(family) 
-							+ "' AND a." + KEY_GIVEN_NAMES + "='" + encodeString(given) + "'  Collate UNICODE";
+							+ "' Collate UNICODE AND a." + KEY_GIVEN_NAMES + "='" + encodeString(given) + "'  Collate UNICODE";
 		String bookWhere = "b." + KEY_TITLE + "='" + encodeString(title) + "' Collate UNICODE";
 		return fetchAllBooks("", "All Books", authorWhere, bookWhere, "", "", "" );
 	}
@@ -1874,7 +1873,7 @@ public class CatalogueDBAdapter {
 	 * @return The position of the book
 	 */
 	public int fetchBookPositionByTitle(String title, String bookshelf) {
-		String baseSql = this.fetchAllBooksSql("1", bookshelf, "", "b." + KEY_TITLE + "<'" + encodeString(title) + "'", "", "", "");
+		String baseSql = this.fetchAllBooksSql("1", bookshelf, "", "b." + KEY_TITLE + "<'" + encodeString(title) + "' Collate UNICODE ", "", "", "");
 		String sql = "SELECT Count(*) as count " + baseSql;
 
 		Cursor results = mDb.rawQuery(sql, null);
@@ -1940,7 +1939,7 @@ public class CatalogueDBAdapter {
 		if (genre.equals(META_EMPTY_GENRE))
 			return 0;
 
-		String where = "b." + KEY_GENRE + " < '" + encodeString(genre) + "'";
+		String where = "b." + KEY_GENRE + " < '" + encodeString(genre) + "' Collate UNICODE";
 		String baseSql = fetchAllBooksSql("", bookshelf, "", where, "", "", "");
 
 		String sql = "SELECT Count(DISTINCT *)" + baseSql;
@@ -2056,13 +2055,6 @@ public class CatalogueDBAdapter {
 	}
 
 	/**
-	 * @see searchBooks
-	 */
-	public Cursor searchBooks(String query, String order, String bookshelf) {
-		return searchBooks(query, order, bookshelf, "", "");
-	}
-	
-	/**
 	 * Returns a list of books, similar to fetchAllBooks but restricted by a search string. The
 	 * query will be applied to author, title, and series
 	 * 
@@ -2071,16 +2063,12 @@ public class CatalogueDBAdapter {
 	 * @param bookshelf The bookshelf to search within. Can be the string "All Books"
 	 * @return A Cursor of book meeting the search criteria
 	 */
-	public Cursor searchBooks(String searchText, String order, String bookshelf, String authorWhere, String bookWhere) {
-		return this.fetchAllBooks(order, bookshelf, authorWhere, bookWhere, searchText, "", "");
-	}
-
 	public Cursor searchBooksByChar(String searchText, String first_char, String bookshelf) {
-		return searchBooks(searchText, "", bookshelf, "", " substr(b." + KEY_TITLE + ", 1, 1)='" + first_char + "'");
+		return fetchAllBooks("", bookshelf, "", " substr(b." + KEY_TITLE + ", 1, 1)='" + first_char + "' Collate UNICODE", searchText, "", "");
 	}
 
 	public Cursor searchBooksByGenre(String searchText, String genre, String bookshelf) {
-		return searchBooks(searchText, "", bookshelf, "", " " + KEY_GENRE + "='" + genre + "'");
+		return fetchAllBooks("", bookshelf, "", " " + KEY_GENRE + "='" + genre + "' Collate UNICODE ", searchText, "", "");
 	}
 	
 	/**
@@ -2094,7 +2082,7 @@ public class CatalogueDBAdapter {
 	 */
 	public Cursor searchBooksChars(String searchText, String bookshelf) {
 		String baseSql = this.fetchAllBooksSql("1", bookshelf, "", "", searchText, "", "");
-		String sql = "SELECT DISTINCT substr(b." + KEY_TITLE + ", 1, 1) AS " + KEY_ROWID + " " + baseSql;
+		String sql = "SELECT DISTINCT substr(b." + KEY_TITLE + ", 1, 1) Collate UNICODE AS " + KEY_ROWID + " " + baseSql;
 		return mDb.rawQuery(sql, new String[]{});
 	}
 	
@@ -2108,7 +2096,7 @@ public class CatalogueDBAdapter {
 	 */
 	public Cursor searchGenres(String searchText, String bookshelf) {
 		String baseSql = this.fetchAllBooksSql("1", bookshelf, "", "", searchText, "", "");
-		String sql = "SELECT DISTINCT " + KEY_GENRE + " AS " + KEY_ROWID + " " + baseSql;
+		String sql = "SELECT DISTINCT " + KEY_GENRE + " AS " + KEY_ROWID + " Collate UNICODE " + baseSql;
 		return mDb.rawQuery(sql, new String[]{});
 	}
 	
@@ -2427,16 +2415,19 @@ public class CatalogueDBAdapter {
 	}
 
 	public long lookupAuthorId(Author a) {
-		Cursor authorId = getAuthorByName(new String[] {a.familyName, a.givenNames});
-		int aRows = authorId.getCount();
-		if (aRows == 0) {
-			return 0;
+		Cursor authorId = null;
+		try {
+			authorId = getAuthorByName(new String[] {a.familyName, a.givenNames});
+			int aRows = authorId.getCount();
+			if (aRows == 0) {
+				return 0;
+			}
+			authorId.moveToFirst();
+			return authorId.getLong(0);			
+		} finally {
+			if (authorId != null)
+				authorId.close();			
 		}
-		authorId.moveToFirst();
-		long id = authorId.getLong(0);
-		authorId.close();
-
-		return id;
 	}
 
 	public long lookupSeriesId(Series s) {
@@ -2543,20 +2534,6 @@ public class CatalogueDBAdapter {
 			+ " WHERE bs." + KEY_BOOK + "=" + rowId + " "
 			+ " ORDER BY bs." + KEY_SERIES_POSITION + ", s." + KEY_SERIES_NAME + " Collate UNICODE ASC";
 		return mDb.rawQuery(sql, new String[]{});
-	}
-
-	String getBookSeriesDetails(long id) {
-		String seriesDetails = "";
-		Cursor series = fetchAllSeriesByBook(id);
-		int seriesNameCol = series.getColumnIndex(CatalogueDBAdapter.KEY_SERIES_NAME);
-		int seriesNumCol = series.getColumnIndex(CatalogueDBAdapter.KEY_SERIES_NUM);
-		while (series.moveToNext()) {
-			if (seriesDetails.length() > 0)
-				seriesDetails += "|";
-			seriesDetails += series.getString(seriesNameCol) + "(" + series.getString(seriesNumCol) + ")";
-		}
-		series.close();
-		return seriesDetails;
 	}
 	
 	/**
@@ -2959,10 +2936,16 @@ public class CatalogueDBAdapter {
      */
     public Cursor getAuthorByName(String name) {
     	String[] names = processAuthorName(name);
-    	String sql = "";
-    	
-    	sql = KEY_FAMILY_NAME + "='" + encodeString(names[0]) + "' AND " + KEY_GIVEN_NAMES + "='" + encodeString(names[1]) + "'";
-        return mDb.query(DB_TB_AUTHORS, new String[] {"_id", KEY_FAMILY_NAME, KEY_GIVEN_NAMES}, sql, null, null, null, null);
+    	return getAuthorByName(names);
+    }
+    
+    /*
+     * This will return the author id based on the name. 
+     * The name can be in either "family, given" or "given family" format.
+     */
+    public Cursor getAuthorByName(String[] names) {
+    	String sql = KEY_FAMILY_NAME + "=? COLLATE UNICODE AND " + KEY_GIVEN_NAMES + "=? COLLATE UNICODE";
+        return mDb.query(DB_TB_AUTHORS, new String[] {"_id", KEY_FAMILY_NAME, KEY_GIVEN_NAMES}, sql, names, null, null, null);
     }
     
     /*
@@ -2987,19 +2970,9 @@ public class CatalogueDBAdapter {
      * This will return the author id based on the name. 
      * The name can be in either "family, given" or "given family" format.
      */
-    public Cursor getAuthorByName(String[] names) {
-    	String sql = "";
-    	sql = KEY_FAMILY_NAME + "='" + encodeString(names[0]) + "' AND " + KEY_GIVEN_NAMES + "='" + encodeString(names[1]) + "'";
-        return mDb.query(DB_TB_AUTHORS, new String[] {"_id", KEY_FAMILY_NAME, KEY_GIVEN_NAMES}, sql, null, null, null, null);
-    }
-    
-    /*
-     * This will return the author id based on the name. 
-     * The name can be in either "family, given" or "given family" format.
-     */
     public Cursor getSeriesByName(String name) {
     	String sql = "";
-    	sql = KEY_SERIES_NAME + "='" + encodeString(name) + "'";
+    	sql = KEY_SERIES_NAME + "='" + encodeString(name) + "' Collate UNICODE";
         return mDb.query(DB_TB_SERIES, new String[] {"_id", KEY_SERIES_NAME}, sql, null, null, null, null);
     }
  

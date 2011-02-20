@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -64,6 +65,7 @@ public class LibraryThingManager {
 	public static String AUTHOR = "author";
 	public static String RESPONSE = "response";
 	public static String FIELD = "field";
+	public static String ISBN = "isbn";
 	public static String ITEM = "item";
 	public static String FACT = "fact";
 	public static String CANONICAL_TITLE = "canonicaltitle";
@@ -71,11 +73,17 @@ public class LibraryThingManager {
 	public static String PLACES = "placesmentioned";
 	public static String CHARACTERS = "characternames";
 
-	public static String COVER_URL = "http://covers.librarything.com/devkey/%1$s/large/isbn/%2$s";
+	public static String COVER_URL_LARGE = "http://covers.librarything.com/devkey/%1$s/large/isbn/%2$s";
+	public static String COVER_URL_MEDIUM = "http://covers.librarything.com/devkey/%1$s/medium/isbn/%2$s";
+	public static String COVER_URL_SMALL = "http://covers.librarything.com/devkey/%1$s/small/isbn/%2$s";
 	public static String DETAIL_URL = "http://www.librarything.com/services/rest/1.1/?method=librarything.ck.getwork&apikey=%1$s&isbn=%2$s";
+	public static String EDITIONS_URL = "http://www.librarything.com/api/thingISBN/%s";
 
 	// Field types we are interested in.
 	private enum FieldTypes{ NONE, AUTHOR, TITLE, SERIES, PLACES, CHARACTERS, OTHER };
+
+	// Sizes of thumbnails
+	public enum ImageSizes { SMALL, MEDIUM, LARGE };
 
 	LibraryThingManager(Bundle bookData) {
 		mBookData = bookData;
@@ -411,7 +419,7 @@ public class LibraryThingManager {
 			Log.e("Book Catalogue", "IO Exception " + s);
 		}
 
-		getCoverImage(isbn);
+		getCoverImage(isbn, mBookData, ImageSizes.LARGE);
 
 		return;
 	}
@@ -540,16 +548,111 @@ public class LibraryThingManager {
 
 	/**
 	 * Get the cover image using the ISBN
-	 *
+	 * 
 	 * @param isbn
 	 */
-	private void getCoverImage(String isbn) {
+	public static String getCoverImageUrl(String isbn, ImageSizes size) {
+		String path = COVER_URL_SMALL;
+
+		switch(size) {
+		case SMALL:
+			path = COVER_URL_SMALL;
+			break;
+		case MEDIUM:
+			path = COVER_URL_MEDIUM;
+			break;
+		case LARGE:
+			path = COVER_URL_LARGE;
+			break;
+		}
 		// Get the 'large' version
-		String thumbnail = String.format(COVER_URL, LibraryThingApiKey.get(), isbn);
+		String url = String.format(path, LibraryThingApiKey.get(), isbn);
+		return url;
+	}
+	/**
+	 * Get the cover image using the ISBN
+	 * 
+	 * @param isbn
+	 */
+	public static String getCoverImage(String isbn, Bundle bookData, ImageSizes size) {
+		String url = getCoverImageUrl(isbn, size);
 		// Save it with an _LT suffix
-		String filename = Utils.saveThumbnailFromUrl(thumbnail, "_LT");
-		if (filename.length() > 0)
-			Utils.appendOrAdd(mBookData, "__thumbnail", filename);
+		String filename = Utils.saveThumbnailFromUrl(url, "_LT_" + size + "_" + isbn);
+		if (filename.length() > 0 && bookData != null)
+			Utils.appendOrAdd(bookData, "__thumbnail", filename);
+		return filename;
+	}
+
+	/**
+	 * Search for edition data.
+	 *
+	 * @param bookData
+	 * 
+	 */
+	public static ArrayList<String> searchEditions(String isbn) {
+		// Base path for an ISBN search
+		String path = String.format(EDITIONS_URL, isbn);
+		if (isbn.equals(""))
+			throw new IllegalArgumentException();
+
+		ArrayList<String> editions = new ArrayList<String>();
+
+		// Setup the parser
+		SAXParserFactory factory = SAXParserFactory.newInstance();
+		SearchLibraryThingEditionHandler entryHandler = new LibraryThingManager.SearchLibraryThingEditionHandler(editions);
+
+		Utils.parseUrlOutput(path, factory, entryHandler);
+
+		return editions;
+	}
+
+	/**
+	 * Parser Handler to collect the edition data.
+	 * 
+	 * Typical request output:
+	 * 
+	 * <?xml version="1.0" encoding="utf-8"?>
+	 * <idlist>
+	 *  <isbn>0380014300</isbn>
+	 *  <isbn>0839824270</isbn>
+	 *  <isbn>0722194390</isbn>
+	 *  <isbn>0783884257</isbn>
+	 *  ...etc...
+	 *  <isbn>2207301907</isbn>
+	 * </idlist>
+	 * @author Grunthos
+	 */
+	static private class SearchLibraryThingEditionHandler extends DefaultHandler  {
+		private StringBuilder mBuilder = new StringBuilder();
+		private ArrayList<String> mEditions = new ArrayList<String>();
+
+		SearchLibraryThingEditionHandler(ArrayList<String> editions) {
+			mEditions = editions;
+		}
+
+		@Override
+		public void characters(char[] ch, int start, int length) throws SAXException {
+			super.characters(ch, start, length);
+			mBuilder.append(ch, start, length);
+		}
+
+		@Override
+		public void endElement(String uri, String localName, String name) throws SAXException {
+			super.endElement(uri, localName, name);
+			
+			if (localName.equalsIgnoreCase(ISBN)){
+				// Add the isbn
+				String isbn = mBuilder.toString();
+				mEditions.add(isbn);
+			}
+			// Note:
+			// Always reset the length. This is not entirely the right thing to do, but works
+			// because we always want strings from the lowest level (leaf) XML elements.
+			// To be completely correct, we should maintain a stack of builders that are pushed and
+			// popped as each startElement/endElement is called. But lets not be pedantic for now.
+			mBuilder.setLength(0);
+		}
+
 	}
 
 }

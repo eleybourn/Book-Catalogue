@@ -182,7 +182,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	}
 
 	// The last validator exception caught by this object
-	private ValidatorException mValidationException = null;
+	private ArrayList<ValidatorException> mValidationExceptions = new ArrayList<ValidatorException>();
 	// A list of cross-validators to apply if all fields pass simple validation.
 	private ArrayList<FieldCrossValidator> mCrossValidators = new ArrayList<FieldCrossValidator>();
 
@@ -504,8 +504,9 @@ public class Fields extends ArrayList<Fields.Field> {
 			// Will throw on failure...
 			super.validate(fields, field, null, crossValidating);
 
+			Object o = null;
 			try {
-				Object o = field.getValue();
+				o = field.getValue();
 				Integer v;
 				if (o instanceof Integer) {
 					v = (Integer)o;
@@ -1142,21 +1143,28 @@ public class Fields extends ArrayList<Fields.Field> {
 	 */
 	private boolean doValidate(Bundle values, boolean crossValidating) {
 		Iterator<Field> fi = this.iterator();
+		boolean isOk = true;
+
 		while(fi.hasNext()) {
 			Field fe = fi.next();
 			if (fe.validator != null) {
 				try {
 					fe.validator.validate(this,fe, values, crossValidating);
 				} catch(ValidatorException e) {
-					mValidationException = e;
-					return false;						
+					mValidationExceptions.add(e);
+					isOk = false;
+					// Always save the value...even if invalid. Or at least try to.
+					if (!crossValidating)
+						try {
+							values.putString(fe.column, fe.getValue().toString());							
+						} catch (Exception e2) {};
 				}
 			} else {
 				if (!fe.column.equals("") && values != null)
 					fe.getValue(values);						
 			}
 		}
-		return true;
+		return isOk;
 	}
 
 	/**
@@ -1172,13 +1180,16 @@ public class Fields extends ArrayList<Fields.Field> {
 		if (values == null)
 			throw new NullPointerException();
 
+		boolean isOk = true;
+		mValidationExceptions.clear();
+
 		// First, just validate individual fields with the cross-val flag set false
 		if (!doValidate(values, false))
-			return false;
+			isOk = false;
 		
 		// Now re-run with cross-val set to true.
 		if (!doValidate(values, true))
-			return false;
+			isOk = false;
 
 		// Finally run the local cross-validation
 		Iterator<FieldCrossValidator> i = mCrossValidators.iterator();
@@ -1187,11 +1198,11 @@ public class Fields extends ArrayList<Fields.Field> {
 			try {
 				v.validate(this,values);
 			} catch(ValidatorException e) {
-				mValidationException = e;
-				return false;
+				mValidationExceptions.add(e);
+				isOk = false;
 			}
 		}
-		return true;
+		return isOk;
 	}
 
 	/**
@@ -1200,10 +1211,18 @@ public class Fields extends ArrayList<Fields.Field> {
 	 * @return res The resource manager to use when looking up strings.
 	 */
 	public String getValidationExceptionMessage(android.content.res.Resources res) {
-		if (mValidationException == null)
-			return "Unknown error";
-		else
-			return mValidationException.getFormattedMessage(res);
+		if (mValidationExceptions.size() == 0)
+			return "No error";
+		else {
+			String message = "";
+			Iterator<ValidatorException> i = mValidationExceptions.iterator();
+			if (i.hasNext())
+				message = i.next().getFormattedMessage(res);
+			while (i.hasNext()) {
+				message += i.next().getFormattedMessage(res) + "\r\n";
+			}
+			return message;
+		}
 	}
 
 	/**

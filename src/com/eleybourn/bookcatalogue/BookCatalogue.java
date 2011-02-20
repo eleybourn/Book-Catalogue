@@ -447,7 +447,7 @@ public class BookCatalogue extends ExpandableListActivity {
 
 			if (search_query.equals("")) {
 				// Return all books (for the bookshelf)
-				mCursor = mDbHelper.fetchAllBookChars("", bookshelf);
+				mCursor = mDbHelper.fetchAllBookChars(bookshelf);
 			} else {
 				// Return the search results instead of all books (for the bookshelf)
 				mCursor = mDbHelper.searchBooksChars(search_query, bookshelf);

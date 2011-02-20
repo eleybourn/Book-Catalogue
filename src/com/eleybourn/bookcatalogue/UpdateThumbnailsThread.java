@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import android.app.ProgressDialog;
@@ -35,6 +36,9 @@ public class UpdateThumbnailsThread extends TaskWithProgress {
 	public static String UTF8 = "utf8";
 	public static int BUFFER_SIZE = 8192;
 	private String mFinalMessage;
+
+	// DB connection
+	protected CatalogueDBAdapter mDbHelper;
 
 	public class BookInfo {
 		long			id;
@@ -81,6 +85,9 @@ public class UpdateThumbnailsThread extends TaskWithProgress {
 		// We need this because we use bookISBNSearch which seems to want to create handlers...
 		//Looper.prepare();
 
+		mDbHelper = new CatalogueDBAdapter(getContext());
+		mDbHelper.open();
+
 		/* Test write to the SDCard */
 		try {
 			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath + "/.nomedia"), UTF8), BUFFER_SIZE);
@@ -124,7 +131,7 @@ public class UpdateThumbnailsThread extends TaskWithProgress {
 					// Must have an ISBN to be able to search
 					doProgress(String.format(getString(R.string.skip_title), title), mProgressCount);
 					//TODO: searchGoogle(AUTHOR)
-				} else if (mOverwrite == true || !thumb.exists() || genre.equals("") || description.equals("")) {
+				} else if (true) { // if (mOverwrite == true || !thumb.exists() || genre.equals("") || description.equals("")) {
 
 					doProgress(title, mProgressCount);
 					
@@ -180,6 +187,19 @@ public class UpdateThumbnailsThread extends TaskWithProgress {
 							origData.putString(CatalogueDBAdapter.KEY_GENRE, newData.getString(CatalogueDBAdapter.KEY_GENRE));
 						}
 
+						if (newData.containsKey(CatalogueDBAdapter.KEY_AUTHOR_DETAILS)) {
+							ArrayList<Author> authors = mDbHelper.getBookAuthorList(id);
+							ArrayList<Author> newAuthors = Utils.getAuthorUtils().decodeList(newData.getString(CatalogueDBAdapter.KEY_AUTHOR_DETAILS), '|', false);
+							authors.addAll(newAuthors);
+							origData.putParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, authors);
+						}
+						if (newData.containsKey(CatalogueDBAdapter.KEY_SERIES_DETAILS)) {
+							ArrayList<Series> series = mDbHelper.getBookSeriesList(id);
+							ArrayList<Series> newSeries = Utils.getSeriesUtils().decodeList(newData.getString(CatalogueDBAdapter.KEY_SERIES_DETAILS), '|', false);
+							series.addAll(newSeries);
+							origData.putParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY, series);
+						}
+						
 						// Queue the book we found
 						synchronized(mBookQueue) {
 							mBookQueue.add(new BookInfo(id, origData));
@@ -188,8 +208,8 @@ public class UpdateThumbnailsThread extends TaskWithProgress {
 
 					sendBook();
 
-				} else {
-					doProgress("Skip - " + title, mProgressCount);
+//				} else {
+//					doProgress("Skip - " + title, mProgressCount);
 				}
 			}
 		} catch (Exception e) {

@@ -43,12 +43,22 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.xml.sax.HandlerBase;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
 import android.content.ContentValues;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.ImageView;
 
 public class Utils {
 	private static String filePath = Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION;
@@ -640,5 +650,101 @@ public class Utils {
 		}
 		return details;
 	}
+	
+	static public void parseUrlOutput(String path, SAXParserFactory factory, DefaultHandler handler) {
+		SAXParser parser;
+		URL url;
+
+		try {
+			url = new URL(path);
+			parser = factory.newSAXParser();
+			parser.parse(Utils.getInputStream(url), handler);
+			// Dont bother catching general exceptions, they will be caught by the caller.
+		} catch (MalformedURLException e) {
+			String s = "unknown";
+			try { s = e.getMessage(); } catch (Exception e2) {};
+			Log.e("Book Catalogue", "Malformed URL " + s);
+		} catch (ParserConfigurationException e) {
+			String s = "unknown";
+			try { s = e.getMessage(); } catch (Exception e2) {};
+			Log.e("Book Catalogue", "SAX Parsing Error " + s);
+		} catch (SAXException e) {
+			String s = e.getMessage(); // "unknown";
+			try { s = e.getMessage(); } catch (Exception e2) {};
+			Log.e("Book Catalogue", "SAX Exception " + s);
+		} catch (java.io.IOException e) {
+			String s = "unknown";
+			try { s = e.getMessage(); } catch (Exception e2) {};
+			Log.e("Book Catalogue", "IO Exception " + s);
+		}
+
+
+	}
+
+	public static Bitmap fetchFileIntoImageView(File file, ImageView destView, int maxWidth, int maxHeight, boolean exact) {
+		// Get the file, if it exists. Otherwise set 'help' icon and exit.
+		if (!file.exists()) {
+	    	if (destView != null)
+				destView.setImageResource(android.R.drawable.ic_menu_help);
+			return null;
+		}
+
+		Bitmap bm = null;					// resultant Bitmap (which we will return) 
+		String filename = file.getPath();	// Full file spec
+
+		// Read the file to get file size
+		BitmapFactory.Options opt = new BitmapFactory.Options();
+		opt.inJustDecodeBounds = true;
+	    BitmapFactory.decodeFile( filename, opt );
+
+	    // If no size info, assume file bad and set the 'alert' icon
+	    if ( opt.outHeight <= 0 || opt.outWidth <= 0 ) {
+	    	if (destView != null)
+	    		destView.setImageResource(android.R.drawable.ic_dialog_alert);
+	    	return null;
+	    }
+
+	    // Next time we don't just want the bounds, we want the file
+	    opt.inJustDecodeBounds = false;
+
+	    // Work out how to scale the file to fit in required bbox
+	    float widthRatio = (float)maxWidth / opt.outWidth; 
+	    float heightRatio = (float)maxHeight / opt.outHeight;
+
+	    // Work out scale so that it fit exactly
+	    float ratio = widthRatio < heightRatio ? widthRatio : heightRatio;
+
+	    // Note that inSampleSize seems to ALWAYS be forced to a power of 2, no matter what we
+		// specify, so we just work with powers of 2.
+	    int idealSampleSize = (int)Math.ceil(1/ratio); // This is the sample size we want to use
+	    // Get the nearest *bigger* power of 2.
+	    int samplePow2 = (int)Math.ceil(Math.log(idealSampleSize)/Math.log(2));
+
+    	if (exact) {
+    		// Create one bigger than needed and scale it; this is an attempt to improve quality.
+		    opt.inSampleSize = samplePow2 / 2;
+		    if (opt.inSampleSize < 1)
+		    	opt.inSampleSize = 1;
+
+		    bm = BitmapFactory.decodeFile( filename, opt );
+		    android.graphics.Matrix matrix = new android.graphics.Matrix();
+		    // Fixup ratio based on new sample size and scale it.
+		    ratio = ratio / (1.0f / opt.inSampleSize);
+		    matrix.postScale(ratio, ratio);
+		    bm = Bitmap.createBitmap(bm, 0, 0, opt.outWidth, opt.outHeight, matrix, true); 
+    	} else {
+    		// Use a scale that will make image *no larger than* the desired size
+    		if (ratio < 1.0f)
+			    opt.inSampleSize = samplePow2;
+		    bm = BitmapFactory.decodeFile( filename, opt );
+    	}
+
+    	// Set ImageView and return bitmap
+    	if (destView != null)
+		    destView.setImageBitmap(bm);
+	 
+	    return bm;
+	}
+	
 }
 

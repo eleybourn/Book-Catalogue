@@ -994,67 +994,7 @@ public class CatalogueDBAdapter {
 	public static Bitmap fetchThumbnailIntoImageView(long id, ImageView destView, int maxWidth, int maxHeight, boolean exact) {
 		// Get the file, if it exists. Otherwise set 'help' icon and exit.
 		File file = fetchThumbnail(id);
-		if (!file.exists()) {
-	    	if (destView != null)
-				destView.setImageResource(android.R.drawable.ic_menu_help);
-			return null;
-		}
-
-		Bitmap bm = null;					// resultant Bitmap (which we will return) 
-		String filename = file.getPath();	// Full file spec
-
-		// Read the file to get file size
-		BitmapFactory.Options opt = new BitmapFactory.Options();
-		opt.inJustDecodeBounds = true;
-	    BitmapFactory.decodeFile( filename, opt );
-
-	    // If no size info, assume file bad and set the 'alert' icon
-	    if ( opt.outHeight <= 0 || opt.outWidth <= 0 ) {
-	    	if (destView != null)
-	    		destView.setImageResource(android.R.drawable.ic_dialog_alert);
-	    	return null;
-	    }
-
-	    // Next time we don't just want the bounds, we want the file
-	    opt.inJustDecodeBounds = false;
-
-	    // Work out how to scale the file to fit in required bbox
-	    float widthRatio = (float)maxWidth / opt.outWidth; 
-	    float heightRatio = (float)maxHeight / opt.outHeight;
-
-	    // Work out scale so that it fit exactly
-	    float ratio = widthRatio < heightRatio ? widthRatio : heightRatio;
-
-	    // Note that inSampleSize seems to ALWAYS be forced to a power of 2, no matter what we
-		// specify, so we just work with powers of 2.
-	    int idealSampleSize = (int)Math.ceil(1/ratio); // This is the sample size we want to use
-	    // Get the nearest *bigger* power of 2.
-	    int samplePow2 = (int)Math.ceil(Math.log(idealSampleSize)/Math.log(2));
-
-    	if (exact) {
-    		// Create one bigger than needed and scale it; this is an attempt to improve quality.
-		    opt.inSampleSize = samplePow2 / 2;
-		    if (opt.inSampleSize < 1)
-		    	opt.inSampleSize = 1;
-
-		    bm = BitmapFactory.decodeFile( filename, opt );
-		    android.graphics.Matrix matrix = new android.graphics.Matrix();
-		    // Fixup ratio based on new sample size and scale it.
-		    ratio = ratio / (1.0f / opt.inSampleSize);
-		    matrix.postScale(ratio, ratio);
-		    bm = Bitmap.createBitmap(bm, 0, 0, opt.outWidth, opt.outHeight, matrix, true); 
-    	} else {
-    		// Use a scale that will make image *no larger than* the desired size
-    		if (ratio < 1.0f)
-			    opt.inSampleSize = samplePow2;
-		    bm = BitmapFactory.decodeFile( filename, opt );
-    	}
-
-    	// Set ImageView and return bitmap
-    	if (destView != null)
-		    destView.setImageBitmap(bm);
-	 
-	    return bm;
+		return Utils.fetchFileIntoImageView(file, destView, maxWidth, maxHeight, exact );
 	}
 
 	/**

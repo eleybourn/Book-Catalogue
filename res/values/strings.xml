@@ -115,7 +115,7 @@
 <string name="anthology_confirm">Please confirm that these anthology titles are (mostly) correct</string>
 <string name="anthology_save">Save</string>
 <string name="anthology_add">Add</string>
-<string name="menu_add_thumb_photo">Add Thumbnail from Camera</string>
+<string name="menu_add_thumb_photo">From Camera...</string>
 <string name="thumbnail">Cover Thumbnail</string>
 <string name="menu_rotate_thumb">Rotate Thumbnail...</string>
 <string name="menu_rotate_thumb_cw">Rotate Clockwise</string>
@@ -130,7 +130,7 @@
 <string name="duplicate_title">Duplicate Book</string>
 <string name="duplicate_book_title">Duplicate Book</string>
 <string name="duplicate_book_message">The book you are trying to add already exists in the database, are you sure you want to add another copy?</string>
-<string name="menu_add_thumb_gallery">Add Thumbnail from Gallery</string>
+<string name="menu_add_thumb_gallery">From Gallery...</string>
 <string name="backup_request">Would you like to backup your database to your sdcard</string>
 <string name="backup_title">Backup?</string>
 <string name="searching_amazon_books">Searching Amazon</string><string name="searching_google_books">Searching Google Books</string>
@@ -195,4 +195,6 @@
 <string name="given_names">Given Names</string>
 <string name="edit_author_details">Edit Author Details</string>
 <string name="immediate_global_changes">NOTE: All saved changes apply instantly and globally</string>
+<string name="menu_replace_thumb">Replace Thumbnail...</string>
+<string name="menu_thumb_alt_editions">From other editions...</string>
 </resources>

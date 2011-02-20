@@ -26,6 +26,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StreamCorruptedException;
+import java.net.URI;
+import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -40,14 +42,18 @@ import android.app.TabActivity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -59,19 +65,28 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.Gallery;
+import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.Toast;
+import android.widget.ViewSwitcher.ViewFactory;
 
 import com.eleybourn.bookcatalogue.Fields.Field;
 import com.eleybourn.bookcatalogue.Fields.FieldValidator;
+import com.eleybourn.bookcatalogue.LibraryThingManager.ImageSizes;
 
 public class BookEditFields extends Activity {
 
@@ -100,12 +115,14 @@ public class BookEditFields extends Activity {
 	private static final int MAX_ZOOM_THUMBNAIL_SIZE=1024;
 
 	private static final int DELETE_ID = 1;
-	private static final int ADD_PHOTO = 2;
+	private static final int REPLACE_THUMB_SUBMENU = 2;
+	private static final int ADD_PHOTO = 21;
+	private static final int ADD_GALLERY = 22;
+	private static final int SHOW_ALT_COVERS = 23;
 	private static final int ROTATE_THUMB_SUBMENU = 3;
 	private static final int ROTATE_THUMB_CW = 31;
 	private static final int ROTATE_THUMB_CCW = 32;
 	private static final int ROTATE_THUMB_180 = 33;
-	private static final int ADD_GALLERY = 4;
 	private static final int ZOOM_THUMB = 5;
 	private static final int DATE_DIALOG_ID = 1;
 	private static final int ZOOM_THUMB_DIALOG_ID = 2;
@@ -114,6 +131,8 @@ public class BookEditFields extends Activity {
 	
 	private ArrayList<Author> mAuthorList = null;
 	private ArrayList<Series> mSeriesList = null;
+
+	private android.util.DisplayMetrics mMetrics;
 
 	// Global value for values from UI. Recreated periodically; at least 
 	// in saveState(). Needs to be global so an Alert can be displayed 
@@ -155,12 +174,12 @@ public class BookEditFields extends Activity {
 			mDbHelper.open();
 
 			// See how big the display is and use that to set bitmap sizes
-			android.util.DisplayMetrics metrics = new android.util.DisplayMetrics();
-			getWindowManager().getDefaultDisplay().getMetrics(metrics);
+			mMetrics = new android.util.DisplayMetrics();
+			getWindowManager().getDefaultDisplay().getMetrics(mMetrics);
 			// Minimum of MAX_EDIT_THUMBNAIL_SIZE and 1/3rd of largest screen dimension 
-			mThumbEditSize = Math.min(MAX_EDIT_THUMBNAIL_SIZE, Math.max(metrics.widthPixels, metrics.heightPixels)/3);
+			mThumbEditSize = Math.min(MAX_EDIT_THUMBNAIL_SIZE, Math.max(mMetrics.widthPixels, mMetrics.heightPixels)/3);
 			// Zoom size is minimum of MAX_ZOOM_THUMBNAIL_SIZE and largest screen dimension.
-			mThumbZoomSize = Math.min(MAX_ZOOM_THUMBNAIL_SIZE, Math.max(metrics.widthPixels, metrics.heightPixels));
+			mThumbZoomSize = Math.min(MAX_ZOOM_THUMBNAIL_SIZE, Math.max(mMetrics.widthPixels, mMetrics.heightPixels));
 
 			setContentView(R.layout.edit_book);
 
@@ -415,10 +434,18 @@ public class BookEditFields extends Activity {
 				public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 					MenuItem delete = menu.add(0, DELETE_ID, 0, R.string.menu_delete_thumb);
 					delete.setIcon(android.R.drawable.ic_menu_delete);
-					MenuItem add_photo = menu.add(0, ADD_PHOTO, 1, R.string.menu_add_thumb_photo);
+
+					// Submenu for rotate
+					android.view.SubMenu replaceSubmenu = menu.addSubMenu(0, REPLACE_THUMB_SUBMENU, 2, R.string.menu_replace_thumb);
+					replaceSubmenu.setIcon(android.R.drawable.ic_menu_gallery);
+
+
+					MenuItem add_photo = replaceSubmenu.add(0, ADD_PHOTO, 1, R.string.menu_add_thumb_photo);
 					add_photo.setIcon(android.R.drawable.ic_menu_camera);
-					MenuItem add_gallery = menu.add(0, ADD_GALLERY, 2, R.string.menu_add_thumb_gallery);
+					MenuItem add_gallery = replaceSubmenu.add(0, ADD_GALLERY, 2, R.string.menu_add_thumb_gallery);
 					add_gallery.setIcon(android.R.drawable.ic_menu_gallery);
+					MenuItem alt_covers = replaceSubmenu.add(0, SHOW_ALT_COVERS, 3, R.string.menu_thumb_alt_editions);
+					alt_covers.setIcon(android.R.drawable.ic_menu_zoom);
 
 					// Submenu for rotate
 					android.view.SubMenu submenu = menu.addSubMenu(0, ROTATE_THUMB_SUBMENU, 3, R.string.menu_rotate_thumb);
@@ -433,6 +460,7 @@ public class BookEditFields extends Activity {
 
 					MenuItem zoom_thumb = menu.add(0, ZOOM_THUMB, 4, R.string.menu_zoom_thumb);
 					zoom_thumb.setIcon(android.R.drawable.ic_menu_zoom);
+
 				}
 			});
 
@@ -561,6 +589,9 @@ public class BookEditFields extends Activity {
 			return true;
 		case ZOOM_THUMB:
 			showDialog(ZOOM_THUMB_DIALOG_ID);
+			return true;
+		case SHOW_ALT_COVERS:
+			showEditionCovers();
 			return true;
 		}
 		return super.onContextItemSelected(item);
@@ -694,8 +725,7 @@ public class BookEditFields extends Activity {
 				// do nothing
 			}
 
-			ImageView iv = (ImageView) mFields.getField(R.id.row_img).view;
-			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);
+			setCoverImage();
 
 		} else {
 			// Manual Add
@@ -722,6 +752,11 @@ public class BookEditFields extends Activity {
 		fixupAuthorList();
 		fixupSeriesList();
 
+	}
+
+	private void setCoverImage() {
+		ImageView iv = (ImageView) mFields.getField(R.id.row_img).view;
+		CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);		
 	}
 
 	/**
@@ -886,9 +921,11 @@ public class BookEditFields extends Activity {
 	private void saveState(final PostSaveAction nextStep) {
 
 		mStateValues = new Bundle();
+
+		// Ignore validation failures; we still validate to get the current values.
 		if (!validate(mStateValues)) {
-			nextStep.failure();
-			return;
+			//nextStep.failure();
+			//return;
 		}
 
 		mStateValues.putParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mAuthorList);
@@ -986,8 +1023,7 @@ public class BookEditFields extends Activity {
 				x.compress(Bitmap.CompressFormat.PNG, 100, f);
 
 				// Update the ImageView with the new image
-				ImageView iv = (ImageView)mFields.getField(R.id.row_img).view;
-				CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);				
+				setCoverImage();
 			}
 			return;
 		case ADD_GALLERY:
@@ -1008,8 +1044,7 @@ public class BookEditFields extends Activity {
 					//do nothing - error to be handled later
 				}
 				// Update the ImageView with the new image
-				ImageView iv = (ImageView)mFields.getField(R.id.row_img).view;
-				CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);				
+				setCoverImage();
 			}
 			return;
 		case ACTIVITY_EDIT_AUTHORS:
@@ -1076,4 +1111,149 @@ public class BookEditFields extends Activity {
 		super.onDestroy();
 		mDbHelper.close();
 	}
+
+	private void showEditionCovers() {
+		final Dialog dialog = new Dialog(this);
+		dialog.setContentView(R.layout.select_edition_cover);
+		dialog.setTitle("Select cover");
+		final FileManager fileManager = new FileManager();
+
+		final ImageSwitcher switcher = (ImageSwitcher) dialog.findViewById(R.id.switcher);
+
+		final ArrayList<String> editions = LibraryThingManager.searchEditions(mFields.getField(R.id.isbn).getValue().toString());
+		final int previewSize = Math.min(MAX_ZOOM_THUMBNAIL_SIZE, Math.max(mMetrics.widthPixels, mMetrics.heightPixels)/5);
+
+		Gallery gallery = (Gallery) dialog.findViewById(R.id.gallery);
+		ImageAdapter adapter = new ImageAdapter(this, editions, fileManager, previewSize);
+		gallery.setAdapter(adapter);
+		//gallery.setOnItemSelectedListener(this);
+		gallery.setHorizontalScrollBarEnabled(true);
+		gallery.setMinimumWidth(1000);
+		gallery.setSpacing(previewSize/10);
+
+		gallery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+	        public void onItemClick(AdapterView parent, View v, int position, long id) {
+	            Toast.makeText(BookEditFields.this, "" + position, Toast.LENGTH_SHORT).show();
+	            File file = fileManager.get(editions.get(position), ImageSizes.LARGE);
+	            Drawable d = new BitmapDrawable(Utils.fetchFileIntoImageView(file, null, previewSize*4, previewSize*4, false));
+	            switcher.setImageDrawable(d);
+	            switcher.setTag(file.getAbsolutePath());
+	        }
+	    });
+
+		switcher.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				File bookFile = CatalogueDBAdapter.fetchThumbnail(mRowId);
+				Object newSpec = switcher.getTag();
+				if (newSpec != null) {
+					File newFile = new File((String)newSpec);					
+					newFile.renameTo(bookFile);
+					setCoverImage();
+				}
+				dialog.dismiss();
+			}});
+		
+		
+		dialog.setOnDismissListener(new OnDismissListener() {
+			@Override
+			public void onDismiss(DialogInterface dialog) {
+				fileManager.purge();
+			}});
+
+		switcher.setFactory(new ViewFactory() {
+			@Override
+			public View makeView() {
+		        ImageView i = new ImageView(BookEditFields.this);
+		        i.setBackgroundColor(0xFF000000);
+		        i.setScaleType(ImageView.ScaleType.FIT_CENTER);
+		        i.setLayoutParams(new ImageSwitcher.LayoutParams(ImageSwitcher.LayoutParams.WRAP_CONTENT,
+		        		ImageSwitcher.LayoutParams.WRAP_CONTENT));
+		        return i;
+			}});
+
+		dialog.show();
+
+	}
+
+	private class FileManager {
+		private Bundle mFiles = new Bundle();
+		public File get(String isbn, ImageSizes size) {
+		    String filespec;
+		    String key = isbn + "_" + size;
+		    if (!mFiles.containsKey(key)) {
+		    	filespec = LibraryThingManager.getCoverImage(isbn, null, size);
+			    mFiles.putString(key, filespec);
+		    } else {
+		    	filespec = mFiles.getString(key);
+		    }
+		    File file = new File(filespec);
+			return file;
+		}
+
+		public void purge() {
+			try {
+				for(String k : mFiles.keySet()) {
+					String filespec = mFiles.getString(k);
+					File file = new File(filespec);
+					if (file.exists())
+						file.delete();
+				}				
+				mFiles.clear();
+			} catch (Exception e) {
+				Log.e("BC", " Error purging files", e);
+			}
+		}
+	}
+
+	public class ImageAdapter extends BaseAdapter {
+	    int mGalleryItemBackground;
+	    ArrayList<String> mEditions;
+	    Bundle mFiles;
+	    private int mPreviewSize;
+	    private FileManager mFileManager = new FileManager();
+	    
+	    public ImageAdapter(Context c, ArrayList<String> editions, FileManager fileManager, int previewSize) {
+	        mContext = c;
+	        mEditions = editions;
+	        mFileManager = fileManager;
+	        mPreviewSize = previewSize;
+	        // See res/values/attrs.xml for the <declare-styleable> that defines
+	        // Gallery1.
+	        //TypedArray a = obtainStyledAttributes(R.styleable.Gallery1);
+	        //mGalleryItemBackground = a.getResourceId(
+	        //				R.styleable.Gallery1_android_galleryItemBackground, 0);
+	        //a.recycle();
+	    }
+	
+		public int getCount() {
+		    return mEditions.size();
+		}
+		
+		public Object getItem(int position) {
+		    return position;
+		}
+		
+		public long getItemId(int position) {
+		    return position;
+		}
+		
+		public View getView(int position, View convertView, ViewGroup parent) {
+		    String isbn = mEditions.get(position);
+		    ImageView i = new ImageView(mContext);
+
+		    //URL url = new URL(LibraryThingManager.getCoverImageUrl(isbn, ImageSizes.SMALL));
+		    //i.setImageURI(url.toURI());
+
+		    File file = mFileManager.get(isbn, ImageSizes.SMALL);
+		    file.deleteOnExit();
+		    Utils.fetchFileIntoImageView(file, i, mPreviewSize, mPreviewSize, false);
+		    i.setScaleType(ImageView.ScaleType.FIT_XY);
+		    return i;
+		}
+		
+	    private Context mContext;
+
+	}
+	
 }

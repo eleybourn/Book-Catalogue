@@ -13,7 +13,7 @@ import android.util.Log;
  *
  * @author Grunthos
  */
-public class ImportThread extends TaskWithProgress {
+public class ImportThread extends ManagedTask {
 	public ArrayList<String> mExport = null;
 	private CatalogueDBAdapter mDbHelper;
 	
@@ -28,7 +28,7 @@ public class ImportThread extends TaskWithProgress {
 	private int mImportUpdated;
 	private int mImportCreated;
 	
-	public interface ImportHandler extends TaskWithProgress.TaskHandler {
+	public interface ImportHandler extends ManagedTask.TaskHandler {
 		void onFinish();
 	}
 

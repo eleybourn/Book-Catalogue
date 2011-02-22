@@ -34,7 +34,7 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.SAXException;
 
 import com.eleybourn.bookcatalogue.SearchForBookThread.SearchHandler;
-import com.eleybourn.bookcatalogue.TaskWithProgress.TaskHandler;
+import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -535,7 +535,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 	}
 
 	@Override
-	TaskHandler getTaskHandler(TaskWithProgress t) {
+	TaskHandler getTaskHandler(ManagedTask t) {
 		return mTaskHandler;
 	}
 }

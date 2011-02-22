@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import com.eleybourn.bookcatalogue.TaskWithProgress.TaskHandler;
+import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -35,5 +35,5 @@ abstract public class ActivityWithTasks extends Activity {
 		return t;
 	}
 
-	abstract TaskHandler getTaskHandler(TaskWithProgress t);
+	abstract TaskHandler getTaskHandler(ManagedTask t);
 }

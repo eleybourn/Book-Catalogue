@@ -64,7 +64,7 @@ public class ExportThread extends ManagedTask {
 			return;			
 		}
 		
-		String export = 
+		StringBuilder export = new StringBuilder(
 			'"' + CatalogueDBAdapter.KEY_ROWID + "\"," + 			//0
 			'"' + CatalogueDBAdapter.KEY_AUTHOR_DETAILS + "\"," + 	//2
 			'"' + CatalogueDBAdapter.KEY_TITLE + "\"," + 			//4
@@ -89,7 +89,11 @@ public class ExportThread extends ManagedTask {
 			'"' + "anthology_titles" + "\"," +						//24 
 			'"' + CatalogueDBAdapter.KEY_DESCRIPTION+ "\"," + 		//25
 			'"' + CatalogueDBAdapter.KEY_GENRE+ "\"," + 			//26
-			"\n";
+			"\n");
+
+		long lastUpdate = 0;
+
+		StringBuilder row = new StringBuilder();
 
 		if (mBooks.moveToFirst()) {
 			do { 
@@ -151,34 +155,39 @@ public class ExportThread extends ManagedTask {
 				String authorDetails = Utils.getAuthorUtils().encodeList( mDbHelper.getBookAuthorList(id), '|' );
 				String seriesDetails = Utils.getSeriesUtils().encodeList( mDbHelper.getBookSeriesList(id), '|' );
 
-				String row = "";
-				row += "\"" + formatCell(id) + "\",";
-				row += "\"" + formatCell(authorDetails) + "\",";
-				row += "\"" + formatCell(title) + "\",";
-				row += "\"" + formatCell(mBooks.getString(mBooks.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ISBN))) + "\",";
-				row += "\"" + formatCell(mBooks.getString(mBooks.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PUBLISHER))) + "\",";
-				row += "\"" + formatCell(dateString) + "\",";
-				row += "\"" + formatCell(mBooks.getString(mBooks.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_RATING))) + "\",";
-				row += "\"" + formatCell(bookshelves_id_text) + "\",";
-				row += "\"" + formatCell(bookshelves_name_text) + "\",";
-				row += "\"" + formatCell(mBooks.getString(mBooks.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ))) + "\",";
-				row += "\"" + formatCell(seriesDetails) + "\",";
-				row += "\"" + formatCell(mBooks.getString(mBooks.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PAGES))) + "\",";
-				row += "\"" + formatCell(mBooks.getString(mBooks.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_NOTES))) + "\",";
-				row += "\"" + formatCell(mBooks.getString(mBooks.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LIST_PRICE))) + "\",";
-				row += "\"" + formatCell(anthology) + "\",";
-				row += "\"" + formatCell(mBooks.getString(mBooks.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOCATION))) + "\",";
-				row += "\"" + formatCell(dateReadStartString) + "\",";
-				row += "\"" + formatCell(dateReadEndString) + "\",";
-				row += "\"" + formatCell(mBooks.getString(mBooks.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_FORMAT))) + "\",";
-				row += "\"" + formatCell(mBooks.getString(mBooks.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SIGNED))) + "\",";
-				row += "\"" + formatCell(mBooks.getString(mBooks.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOANED_TO))+"") + "\",";
-				row += "\"" + formatCell(anthology_titles) + "\",";
-				row += "\"" + formatCell(mBooks.getString(mBooks.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DESCRIPTION))) + "\",";
-				row += "\"" + formatCell(mBooks.getString(mBooks.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_GENRE))) + "\",";
-				row += "\n";
-				export += row;
-				doProgress(title, num);
+				row.setLength(0);
+				row.append("\"" + formatCell(id) + "\",");
+				row.append("\"" + formatCell(authorDetails) + "\",");
+				row.append( "\"" + formatCell(title) + "\"," );
+				row.append("\"" + formatCell(mBooks.getString(mBooks.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ISBN))) + "\",");
+				row.append("\"" + formatCell(mBooks.getString(mBooks.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PUBLISHER))) + "\",");
+				row.append("\"" + formatCell(dateString) + "\",");
+				row.append("\"" + formatCell(mBooks.getString(mBooks.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_RATING))) + "\",");
+				row.append("\"" + formatCell(bookshelves_id_text) + "\",");
+				row.append("\"" + formatCell(bookshelves_name_text) + "\",");
+				row.append("\"" + formatCell(mBooks.getString(mBooks.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ))) + "\",");
+				row.append("\"" + formatCell(seriesDetails) + "\",");
+				row.append("\"" + formatCell(mBooks.getString(mBooks.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PAGES))) + "\",");
+				row.append("\"" + formatCell(mBooks.getString(mBooks.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_NOTES))) + "\",");
+				row.append("\"" + formatCell(mBooks.getString(mBooks.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LIST_PRICE))) + "\",");
+				row.append("\"" + formatCell(anthology) + "\",");
+				row.append("\"" + formatCell(mBooks.getString(mBooks.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOCATION))) + "\",");
+				row.append("\"" + formatCell(dateReadStartString) + "\",");
+				row.append("\"" + formatCell(dateReadEndString) + "\",");
+				row.append("\"" + formatCell(mBooks.getString(mBooks.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_FORMAT))) + "\",");
+				row.append("\"" + formatCell(mBooks.getString(mBooks.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SIGNED))) + "\",");
+				row.append("\"" + formatCell(mBooks.getString(mBooks.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOANED_TO))+"") + "\",");
+				row.append("\"" + formatCell(anthology_titles) + "\",");
+				row.append("\"" + formatCell(mBooks.getString(mBooks.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DESCRIPTION))) + "\",");
+				row.append("\"" + formatCell(mBooks.getString(mBooks.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_GENRE))) + "\",");
+				row.append("\n");
+				export.append(row);
+
+				long now = System.currentTimeMillis();
+				if ( (now - lastUpdate) > 200) {
+					doProgress(title, num);
+					lastUpdate = now;
+				}
 			}
 			while (mBooks.moveToNext() && !isCancelled()); 
 		} 
@@ -187,7 +196,7 @@ public class ExportThread extends ManagedTask {
 		try {
 			backupExport();
 			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(mFileName), UTF8), BUFFER_SIZE);
-			out.write(export);
+			out.write(export.toString());
 			out.close();
 			mManager.doToast( getString(R.string.export_complete) );
 			//Toast.makeText(AdministrationFunctions.this, R.string.export_complete, Toast.LENGTH_LONG).show();

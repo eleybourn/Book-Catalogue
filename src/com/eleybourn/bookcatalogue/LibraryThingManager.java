@@ -593,7 +593,8 @@ public class LibraryThingManager {
 		// Base path for an ISBN search
 		String path = String.format(EDITIONS_URL, isbn);
 		if (isbn.equals(""))
-			throw new IllegalArgumentException();
+			// TODO Stringify
+			throw new RuntimeException("Can not get editions without an ISBN");
 
 		ArrayList<String> editions = new ArrayList<String>();
 

@@ -471,6 +471,18 @@ public class Utils {
     	}			
 	}
 
+	/**
+	 * Convert text at specified key to proper case.
+	 * 
+	 * @param values
+	 * @param key
+	 */
+	public static void doProperCase(Bundle values, String key) {
+		if (!values.containsKey(key))
+			return;
+		values.putString(key, properCase(values.getString(key)));
+	}
+
 	public static String properCase(String inputString) {
 		StringBuilder ff = new StringBuilder(); 
 		String outputString;

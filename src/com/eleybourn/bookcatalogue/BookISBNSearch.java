@@ -34,6 +34,7 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.SAXException;
 
 import com.eleybourn.bookcatalogue.SearchForBookThread.SearchHandler;
+import com.eleybourn.bookcatalogue.TaskWithProgress.TaskHandler;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -61,7 +62,7 @@ import android.widget.Toast;
  * 
  * It currently only searches Google Books, but Amazon will be coming soon.  
  */
-public class BookISBNSearch extends Activity {
+public class BookISBNSearch extends ActivityWithTasks {
 	private static final int CREATE_BOOK = 0;
 	public static final String BY = "by";
 	
@@ -70,7 +71,6 @@ public class BookISBNSearch extends Activity {
 	private AutoCompleteTextView mAuthorText;
 	private Button mConfirmButton;
 	private CatalogueDBAdapter mDbHelper;
-	private SearchForBookThread mSearchThread = null;
 
 	public String author;
 	public String title;
@@ -377,8 +377,10 @@ public class BookISBNSearch extends Activity {
 		/* Get the book */
 		try {
 			// Start the lookup in background.
-			mSearchThread = new SearchForBookThread(this, mTaskHandler, author, title, isbn);
-			mSearchThread.start();
+			SearchManager m = new SearchManager(mTaskManager, mSearchHandler);
+			m.search(author, title, isbn);
+			//Thread t = new SearchForBookThread(mTaskManager, mTaskHandler, author, title, isbn);
+			//t.start();
 
 		} catch (Exception e) {
 			Toast.makeText(this, R.string.search_fail, Toast.LENGTH_LONG).show();
@@ -387,56 +389,45 @@ public class BookISBNSearch extends Activity {
 		}		
 	}
 
+	private SearchThread.SearchHandler mSearchHandler = new SearchThread.SearchHandler() {
+
+		@Override
+		public void onFinish(SearchThread nonePresent, Bundle bookData) {
+			if (bookData == null) {
+				if (mMode == MODE_SCAN)
+					startScannerActivity();
+			} else {
+				// TODO Allow TaskManager to display non-thread-based messages
+				mTaskManager.doToast("Adding Book");
+				createBook(bookData);
+				// Clear the data entry fields ready for the next one
+				clearFields();
+			}
+		}
+	};
 	private SearchHandler mTaskHandler = new SearchHandler() {
 
-		public void onFinish(Bundle arg) {
+		public void onFinish(SearchForBookThread t, Bundle arg) {
 			if (arg == null) {
 				if (mMode == MODE_SCAN)
 					startScannerActivity();
 			} else {
-				if (mSearchThread != null)
-					mSearchThread.doProgress("Adding Book...",0);
+				// TODO Allow TaskHanlder to display non-thread-based messages
+				t.doProgress("Adding Book...", 0);
 				createBook(arg);
 				// Clear the data entry fields ready for the next one
 				clearFields();
 			}
-			mSearchThread = null;
+			t.removeFromManager();
 		}
-
-		@Override
-		public String getString(int id) {
-			return getResources().getString(id);
-		}
+		
+//		@Override
+//		public String getString(int id) {
+//			return getResources().getString(id);
+//		}
 		
 	};
 
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		// Leaving the PD ref around causes some issues. Just clear it.
-		// We will recreate later.
-//		dismissProgress();
-	}
-	
-	@Override
-	protected void onRestoreInstanceState(Bundle inState) {
-		mSearchThread = (SearchForBookThread) getLastNonConfigurationInstance();
-		if (mSearchThread != null)
-			mSearchThread.reconnect(this, mTaskHandler);
-		
-		super.onRestoreInstanceState(inState);
-	}
-
-	@Override
-	public Object onRetainNonConfigurationInstance() {
-		SearchForBookThread t = mSearchThread;
-		if (mSearchThread != null) {
-			mSearchThread.disconnect();
-			mSearchThread = null;
-		}
-		return t;
-	}
-	
 	@Override
 	protected void onPause() {
 		super.onPause();
@@ -541,5 +532,10 @@ public class BookISBNSearch extends Activity {
 			mScannerIntent = new Intent("com.google.zxing.client.android.SCAN");
 		//intent.putExtra("SCAN_MODE", "EAN_13");
 		startActivityForResult(mScannerIntent, ACTIVITY_SCAN);		
+	}
+
+	@Override
+	TaskHandler getTaskHandler(TaskWithProgress t) {
+		return mTaskHandler;
 	}
 }

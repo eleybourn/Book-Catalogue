@@ -26,7 +26,7 @@ import android.widget.Toast;
  *
  * @author Grunthos
  */
-public class UpdateThumbnailsThread extends TaskWithProgress {
+public class UpdateThumbnailsThread extends ManagedTask {
 	private boolean mOverwrite = false;
 	private Cursor mBooks = null;
 	private LinkedList<BookInfo> mBookQueue = new LinkedList<BookInfo>();
@@ -49,7 +49,7 @@ public class UpdateThumbnailsThread extends TaskWithProgress {
 		}
 	}
 
-	public interface LookupHandler extends TaskWithProgress.TaskHandler {
+	public interface LookupHandler extends ManagedTask.TaskHandler {
 		void onFinish(LinkedList<BookInfo> queue);
 		void onProgress(LinkedList<BookInfo> queue);
 	}

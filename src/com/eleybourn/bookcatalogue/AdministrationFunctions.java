@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import com.eleybourn.bookcatalogue.TaskWithProgress.TaskHandler;
+import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
 import com.eleybourn.bookcatalogue.UpdateThumbnailsThread.BookInfo;
 
 import android.app.Activity;
@@ -652,7 +652,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	} 
 
 	@Override
-	TaskHandler getTaskHandler(TaskWithProgress t) {
+	TaskHandler getTaskHandler(ManagedTask t) {
 		Log.i("BookCatalogue", "Reconnecting task");
 		// If we had a task, create the progress dialog and reset the pointers.
 		if (t instanceof UpdateThumbnailsThread) {

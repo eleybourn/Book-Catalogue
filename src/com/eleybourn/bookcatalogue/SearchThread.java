@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
 
-abstract public class SearchThread extends TaskWithProgress {
+abstract public class SearchThread extends ManagedTask {
 	protected String mAuthor;
 	protected String mTitle;
 	protected String mIsbn;
@@ -41,7 +41,7 @@ abstract public class SearchThread extends TaskWithProgress {
 	 * 
 	 * @author Grunthos
 	 */
-	public interface SearchHandler extends TaskWithProgress.TaskHandler {
+	public interface SearchHandler extends ManagedTask.TaskHandler {
 		void onFinish(SearchThread t, Bundle bookData);
 	}
 

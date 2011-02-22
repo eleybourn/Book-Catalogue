@@ -4,7 +4,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import com.eleybourn.bookcatalogue.TaskWithProgress.TaskHandler;
+import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
 import com.eleybourn.bookcatalogue.UpdateThumbnailsThread.BookInfo;
 
 import android.app.ProgressDialog;
@@ -37,14 +37,14 @@ public class TaskManager {
 	ArrayList<TaskInfo> mTasks = new ArrayList<TaskInfo> ();
 
 	private class TaskInfo {
-		TaskWithProgress 	task;
+		ManagedTask 	task;
 		String				progressMessage;
 		int					progressMax;
 		int					progressCurrent;
-		TaskInfo(TaskWithProgress t) {
+		TaskInfo(ManagedTask t) {
 			this(t, 0, 0, "Starting");
 		}
-		TaskInfo(TaskWithProgress t, int max, int curr, String message) {
+		TaskInfo(ManagedTask t, int max, int curr, String message) {
 			task = t;
 			progressMax = max;
 			progressCurrent = curr;
@@ -53,7 +53,7 @@ public class TaskManager {
 	}
 
 	public interface OnTaskEndedListener {
-		void taskEnded(TaskManager manager, TaskWithProgress task);
+		void taskEnded(TaskManager manager, ManagedTask task);
 	}
 
 	public void addOnTaskEndedListener(OnTaskEndedListener listener) {
@@ -72,14 +72,14 @@ public class TaskManager {
 		mMessageHandler = new MessageHandler();
 	}
 
-	void addTask(TaskWithProgress t) {
+	void addTask(ManagedTask t) {
 		synchronized(this) {
 			if (getTaskInfo(t) == null)
 					mTasks.add(new TaskInfo(t));
 		}
 	}
 
-	void removeTask(TaskWithProgress task) {
+	void removeTask(ManagedTask task) {
 		synchronized(this) {
 			for(TaskInfo i : mTasks) {
 				if (i.task == task) {
@@ -93,7 +93,7 @@ public class TaskManager {
 		}
 	}
 
-	public void taskEnded(TaskWithProgress task) {
+	public void taskEnded(ManagedTask task) {
 		for(OnTaskEndedListener l : mOnTaskEndedListeners)
 			try {
 				l.taskEnded(this, task);
@@ -106,7 +106,7 @@ public class TaskManager {
 		return mTasks.size();
 	}
 
-	void taskStarting(TaskWithProgress t) {
+	void taskStarting(ManagedTask t) {
 		initProgress();
 	}
 
@@ -192,7 +192,7 @@ public class TaskManager {
 	 * @param message	Message text
 	 * @param count		Counter for progress
 	 */
-	public void doProgress(TaskWithProgress task, String message, int count) {
+	public void doProgress(ManagedTask task, String message, int count) {
 		setProgress(task, message, count);
 	}
 
@@ -293,7 +293,7 @@ public class TaskManager {
 		}
 	}
 
-	private TaskInfo getTaskInfo(TaskWithProgress task) {
+	private TaskInfo getTaskInfo(ManagedTask task) {
 		for(TaskInfo t : mTasks) {
 			if (t.task == task) {
 				return t;
@@ -302,7 +302,7 @@ public class TaskManager {
 		return null;
 	}
 
-	public void setMax(TaskWithProgress task, int max) {
+	public void setMax(ManagedTask task, int max) {
 		TaskInfo t = getTaskInfo(task);
 		if (t != null) {
 			t.progressMax = max;
@@ -311,7 +311,7 @@ public class TaskManager {
 		}
 	}
 
-	public void setProgress(TaskWithProgress task, String message, int count) {
+	public void setProgress(ManagedTask task, String message, int count) {
 		TaskInfo t = getTaskInfo(task);
 		if (t != null) {
 			t.progressMessage = message;

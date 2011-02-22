@@ -16,14 +16,14 @@ import android.os.Message;
  * 
  * @author Grunthos
  */
-public class ExportThread extends TaskWithProgress {
+public class ExportThread extends ManagedTask {
 	private static String mFilePath = Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION;
 	private static String mFileName = mFilePath + "/export.csv";
 	private static String UTF8 = "utf8";
 	private static int BUFFER_SIZE = 8192;
 	private CatalogueDBAdapter mDbHelper;
 
-	public interface ExportHandler extends TaskWithProgress.TaskHandler {
+	public interface ExportHandler extends ManagedTask.TaskHandler {
 		void onFinish();
 	}
 

@@ -19,7 +19,7 @@ public class SearchManager implements OnTaskEndedListener {
 
 	private SearchHandler mSearchHandler = null;
 
-	private ArrayList<TaskWithProgress> mTasks = new ArrayList<TaskWithProgress>();
+	private ArrayList<ManagedTask> mTasks = new ArrayList<ManagedTask>();
 
 	SearchManager(TaskManager taskManager, SearchHandler taskHandler) {
 		mTaskManager = taskManager;
@@ -28,7 +28,7 @@ public class SearchManager implements OnTaskEndedListener {
 	}
 
 	@Override
-	public void taskEnded(TaskManager manager, TaskWithProgress task) {
+	public void taskEnded(TaskManager manager, ManagedTask task) {
 		mTasks.remove(task);
 		if (mTasks.size() == 0) {
 			finish();

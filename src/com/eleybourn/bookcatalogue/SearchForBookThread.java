@@ -3,7 +3,7 @@ package com.eleybourn.bookcatalogue;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import com.eleybourn.bookcatalogue.TaskWithProgress.TaskHandler;
+import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
 import com.eleybourn.bookcatalogue.UpdateThumbnailsThread.BookInfo;
 import com.eleybourn.bookcatalogue.Utils.ArrayUtils;
 
@@ -20,7 +20,7 @@ import android.util.Log;
  * @author Grunthos
  *
  */
-public class SearchForBookThread extends TaskWithProgress {
+public class SearchForBookThread extends ManagedTask {
 	private String mAuthor;
 	private String mTitle;
 	private String mIsbn;
@@ -36,7 +36,7 @@ public class SearchForBookThread extends TaskWithProgress {
 	 * 
 	 * @author Grunthos
 	 */
-	public interface SearchHandler extends TaskWithProgress.TaskHandler {
+	public interface SearchHandler extends ManagedTask.TaskHandler {
 		void onFinish(SearchForBookThread t, Bundle bookData);
 	}
 

@@ -32,7 +32,7 @@ import android.util.Log;
 import java.lang.ref.WeakReference;
 
 /**
- * Base class for handling tasks in background while displating a ProgressDialog.
+ * Base class for handling tasks in background while displaying a ProgressDialog.
  * Copes with deconstruction of the underlying activity BUT that activity MUST:
  * 
  *  - call reconnect(...) in onRestoreInstanceState.
@@ -41,7 +41,7 @@ import java.lang.ref.WeakReference;
  * 
  * @author Grunthos
  */
-abstract public class TaskWithProgress extends Thread {
+abstract public class ManagedTask extends Thread {
 	protected TaskManager mManager;
 	private boolean mFinished = false;
 	private boolean mCancelFlg = false;
@@ -88,7 +88,7 @@ abstract public class TaskWithProgress extends Thread {
 	 * @param lookupHandler		Interface object to handle events in this thread.
 	 * 
 	 */
-	public TaskWithProgress(TaskManager manager, TaskHandler taskHandler) {
+	public ManagedTask(TaskManager manager, TaskHandler taskHandler) {
 		if (manager == null)
 			throw new IllegalArgumentException();
 

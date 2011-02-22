@@ -37,7 +37,7 @@ public class SearchForBookThread extends TaskWithProgress {
 	 * @author Grunthos
 	 */
 	public interface SearchHandler extends TaskWithProgress.TaskHandler {
-		void onFinish(Bundle bookData);
+		void onFinish(SearchForBookThread t, Bundle bookData);
 	}
 
 	/**
@@ -50,17 +50,20 @@ public class SearchForBookThread extends TaskWithProgress {
 	 * @param title			Title to search for
 	 * @param isbn			ISBN to search for.
 	 */
-	SearchForBookThread(Context ctx, SearchHandler taskHandler, String author, String title, String isbn) {
-		super(ctx, taskHandler);
+	SearchForBookThread(TaskManager manager, SearchHandler taskHandler, String author, String title, String isbn) {
+		super(manager, taskHandler);
 		mAuthor = author;
 		mTitle = title;
 		mIsbn = isbn;
 	}
 
 	@Override
-	protected void onFinish() {
+	protected boolean onFinish() {
 		if (getTaskHandler() != null) {
-			((SearchHandler)getTaskHandler()).onFinish(mBookData);
+			((SearchHandler)getTaskHandler()).onFinish(this, mBookData);
+			return true;
+		} else {
+			return false;
 		}
 	}
 
@@ -95,7 +98,7 @@ public class SearchForBookThread extends TaskWithProgress {
 			//
 			//	Google
 			//
-			this.doProgress(getString(R.string.searching_google_books), 0);
+			doProgress(getString(R.string.searching_google_books), 0);
 
 			try {
 				GoogleBooksManager.searchGoogle(mIsbn, mAuthor, mTitle, mBookData);					

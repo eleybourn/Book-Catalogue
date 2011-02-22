@@ -32,20 +32,24 @@ public class ImportThread extends TaskWithProgress {
 		void onFinish();
 	}
 
-	public ImportThread(Context ctx, TaskHandler taskHandler, ArrayList<String> export) {
-		super(ctx, taskHandler);
+	public ImportThread(TaskManager manager, TaskHandler taskHandler, ArrayList<String> export) {
+		super(manager, taskHandler);
 		mExport = export;
-		mDbHelper = new CatalogueDBAdapter(getContext());
+		mDbHelper = new CatalogueDBAdapter(manager.getContext());
 		mDbHelper.open();
 		
-		setMax(mExport.size());
+		manager.setMax(this, mExport.size());
 	}
 
 	@Override
-	protected void onFinish() {
+	protected boolean onFinish() {
 		ImportHandler h = (ImportHandler)getTaskHandler();
-		if (h != null)
+		if (h != null) {
 			h.onFinish();
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
@@ -120,7 +124,7 @@ public class ImportThread extends TaskWithProgress {
 				}
 
 				if (authorDetails == null || authorDetails.length() == 0) {
-					String s = getTaskHandler().getString(R.string.column_is_blank);
+					String s = mManager.getString(R.string.column_is_blank);
 					throw new ImportException(String.format(s, CatalogueDBAdapter.KEY_AUTHOR_DETAILS, row));
 				}
 
@@ -304,7 +308,7 @@ public class ImportThread extends TaskWithProgress {
 		if (values.containsKey(name))
 			return;
 
-		String s = getTaskHandler().getString(R.string.file_must_contain_column);
+		String s = mManager.getString(R.string.file_must_contain_column);
 		throw new ImportException(String.format(s,name));
 	}
 
@@ -314,14 +318,14 @@ public class ImportThread extends TaskWithProgress {
 			if (values.containsKey(names[i]))
 				return;
 		
-		String s = getTaskHandler().getString(R.string.file_must_contain_any_column);
+		String s = mManager.getString(R.string.file_must_contain_any_column);
 		throw new ImportException(String.format(s, Utils.join(names, ",")));
 	}
 
 	private void requireNonblank(Bundle values, int row, String name) {
 		if (values.getString(name).length() != 0)
 			return;
-		String s = getTaskHandler().getString(R.string.column_is_blank);
+		String s = mManager.getString(R.string.column_is_blank);
 		throw new ImportException(String.format(s, name, row));
 	}
 
@@ -330,7 +334,7 @@ public class ImportThread extends TaskWithProgress {
 			if (values.containsKey(names[i]) && values.getString(names[i]).length() != 0)
 				return;
 
-		String s = getTaskHandler().getString(R.string.columns_are_blank);
+		String s = mManager.getString(R.string.columns_are_blank);
 		throw new ImportException(String.format(s, Utils.join( names, ","), row));
 	}
 	

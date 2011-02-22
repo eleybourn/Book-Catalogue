@@ -1120,7 +1120,14 @@ public class BookEditFields extends Activity {
 
 		final ImageSwitcher switcher = (ImageSwitcher) dialog.findViewById(R.id.switcher);
 
-		final ArrayList<String> editions = LibraryThingManager.searchEditions(mFields.getField(R.id.isbn).getValue().toString());
+		final ArrayList<String> editions;
+		try {
+			editions = LibraryThingManager.searchEditions(mFields.getField(R.id.isbn).getValue().toString());			
+		} catch (Exception e) {
+			// TODO Stringify
+			Toast.makeText(this, "Can not get editions for a book with no ISBN", Toast.LENGTH_LONG).show();
+			return;
+		}
 		final int previewSize = Math.min(MAX_ZOOM_THUMBNAIL_SIZE, Math.max(mMetrics.widthPixels, mMetrics.heightPixels)/5);
 
 		Gallery gallery = (Gallery) dialog.findViewById(R.id.gallery);

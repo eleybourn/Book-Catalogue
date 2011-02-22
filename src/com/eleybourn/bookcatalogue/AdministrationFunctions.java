@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import com.eleybourn.bookcatalogue.TaskWithProgress.TaskHandler;
 import com.eleybourn.bookcatalogue.UpdateThumbnailsThread.BookInfo;
 
 import android.app.Activity;
@@ -61,7 +62,7 @@ import android.widget.Toast;
  * 
  * @author Evan Leybourn
  */
-public class AdministrationFunctions extends Activity {
+public class AdministrationFunctions extends ActivityWithTasks {
 	private static final int ACTIVITY_BOOKSHELF=1;
 	private static final int ACTIVITY_FIELD_VISIBILITY=2;
 	private CatalogueDBAdapter mDbHelper;
@@ -74,7 +75,6 @@ public class AdministrationFunctions extends Activity {
 	private ProgressDialog pd = null;
 	private int num = 0;
 	private boolean finish_after = false;
-	TaskWithProgress	mActiveTask = null;
 
 	public static final String DOAUTO = "do_auto";
 
@@ -84,7 +84,6 @@ public class AdministrationFunctions extends Activity {
 			if (finish_after == true) {
 				finish();
 			}
-			mActiveTask = null;
 		}
 
 		@Override
@@ -97,33 +96,31 @@ public class AdministrationFunctions extends Activity {
 			}
 		}
 
-		@Override
-		public String getString(int id) {
-			return getResources().getString(id);
-		}
+//		@Override
+//		public String getString(int id) {
+//			return getResources().getString(id);
+//		}
 	};
 
 	final ExportThread.ExportHandler mExportHandler = new ExportThread.ExportHandler() {
-		@Override
-		public String getString(int id) {
-			return getResources().getString(id);
-		}
+//		@Override
+//		public String getString(int id) {
+//			return getResources().getString(id);
+//		}
 
 		@Override
 		public void onFinish() {
-			mActiveTask = null;
 		}
 	};
 
 	final ImportThread.ImportHandler mImportHandler = new ImportThread.ImportHandler() {
-		@Override
-		public String getString(int id) {
-			return getResources().getString(id);
-		}
+//		@Override
+//		public String getString(int id) {
+//			return getResources().getString(id);
+//		}
 
 		@Override
 		public void onFinish() {
-			mActiveTask = null;
 		}
 	};
 
@@ -314,9 +311,8 @@ public class AdministrationFunctions extends Activity {
 	private void updateThumbnails(boolean overwrite) {
 
 		Cursor books = mDbHelper.fetchAllBooks("b." + CatalogueDBAdapter.KEY_ROWID, "All Books", "", "", "", "", "");
-		UpdateThumbnailsThread thread = new UpdateThumbnailsThread(this, overwrite, books, mThumbnailsHandler);
+		UpdateThumbnailsThread thread = new UpdateThumbnailsThread(mTaskManager, overwrite, books, mThumbnailsHandler);
 		thread.start();
-		mActiveTask = thread;
 	}
 
 
@@ -326,9 +322,8 @@ public class AdministrationFunctions extends Activity {
 	 * return void
 	 */
 	public void exportData() {
-		ExportThread thread = new ExportThread(this, mExportHandler);
+		ExportThread thread = new ExportThread(mTaskManager, mExportHandler);
 		thread.start();		
-		mActiveTask = thread;
 	}
 
 	/**
@@ -612,9 +607,8 @@ public class AdministrationFunctions extends Activity {
 	 */
 	private void importData() {
 		ArrayList<String> export = readFile();
-		ImportThread thread = new ImportThread(this, mImportHandler, export);
+		ImportThread thread = new ImportThread(mTaskManager, mImportHandler, export);
 		thread.start();		
-		mActiveTask = thread;
 //		importUpdated = 0;
 //		importCreated = 0;
 //		ArrayList<String> export = readFile();
@@ -657,33 +651,20 @@ public class AdministrationFunctions extends Activity {
 		super.onResume();
 	} 
 
-	protected void onRestoreInstanceState(Bundle inState) {
-		// Get the AsyncTask
-		mActiveTask = (TaskWithProgress) getLastNonConfigurationInstance();
-		if (mActiveTask != null && !mActiveTask.isFinished()) {
-			Log.i("BookCatalogue", "Reconnecting task");
-			// If we had a task, create the progress dialog and reset the pointers.
-			if (mActiveTask instanceof UpdateThumbnailsThread) {
-				mActiveTask.reconnect(this, mThumbnailsHandler);
-			} else if (mActiveTask instanceof ExportThread) {
-				mActiveTask.reconnect(this, mExportHandler);
-			} else if (mActiveTask instanceof ImportThread) {
-				mActiveTask.reconnect(this, mImportHandler);
-			} else {
-				Log.e("BookCatalogue", "Unknown task type");
-			}
-		}
-		super.onRestoreInstanceState(inState);
-	}
-
 	@Override
-	public Object onRetainNonConfigurationInstance() {
-		// Save the AsyncTask and remove the local refs.
-		if (mActiveTask != null) {
-			Log.i("BookCatalogue", "Disconnecting task");
-			mActiveTask.disconnect();
+	TaskHandler getTaskHandler(TaskWithProgress t) {
+		Log.i("BookCatalogue", "Reconnecting task");
+		// If we had a task, create the progress dialog and reset the pointers.
+		if (t instanceof UpdateThumbnailsThread) {
+			return mThumbnailsHandler;
+		} else if (t instanceof ExportThread) {
+			return mExportHandler;
+		} else if (t instanceof ImportThread) {
+			return mImportHandler;
+		} else {
+			Log.e("BookCatalogue", "Unknown task type");
+			return null;
 		}
-		return mActiveTask;
 	}
 
 }

@@ -42,21 +42,14 @@ import java.lang.ref.WeakReference;
  * @author Grunthos
  */
 abstract public class TaskWithProgress extends Thread {
-	private Context mContext;
-	private Handler mHandler;
-	private ProgressDialog mProgress = null;
+	protected TaskManager mManager;
 	private boolean mFinished = false;
 	private boolean mCancelFlg = false;
-	private WeakReference<Thread> mUiThread;
 	private TaskHandler mTaskHandler;
+	// Handler for UI thread messages
+	private Handler mMessageHandler;
 
-	protected int mProgressCount = 0;
-	protected int mProgressMax = 0;
-	//protected CatalogueDBAdapter mDbHelper;
-
-	private String mLastProgressMessage = "Updating...";
-
-	abstract protected void onFinish();
+	abstract protected boolean onFinish();
 	abstract protected void onRun();
 	abstract protected void onMessage(Message msg);
 
@@ -66,16 +59,10 @@ abstract public class TaskWithProgress extends Thread {
 	 * @author Grunthos
 	 */
 	public interface TaskHandler {
-		/**
-		 * Lookup a resource string
-		 * @param id
-		 * @return
-		 */
-		String getString(int id);
 	}
 
 	String getString(int id) {
-		return mTaskHandler.getString(id);
+		return mManager.getString(id);
 	}
 
 	/**
@@ -89,11 +76,6 @@ abstract public class TaskWithProgress extends Thread {
 
 	@Override
 	public void start() {
-		if (mProgress == null) {
-			if (getContext() != null) {
-				initProgress();
-			}
-		}
 		super.start();
 	}
 
@@ -106,15 +88,23 @@ abstract public class TaskWithProgress extends Thread {
 	 * @param lookupHandler		Interface object to handle events in this thread.
 	 * 
 	 */
-	public TaskWithProgress(Context ctx, TaskHandler taskHandler) {
-		if (ctx == null)
+	public TaskWithProgress(TaskManager manager, TaskHandler taskHandler) {
+		if (manager == null)
 			throw new IllegalArgumentException();
 
-		mUiThread = new WeakReference<Thread>(Thread.currentThread());
-		mContext = ctx;
-		mHandler = new ImportHandler();
+		mManager = manager;
 		mTaskHandler = taskHandler;
+		mMessageHandler = new TaskMessageHandler();
+		mManager.addTask(this);
 		//mDbHelper = new CatalogueDBAdapter(mContext);
+	}
+
+	public void doProgress(String message, int count) {
+		mManager.doProgress(this, message, count);
+	}
+
+	public void doToast(String message) {
+		mManager.doToast(message);
 	}
 
 	@Override
@@ -122,82 +112,27 @@ abstract public class TaskWithProgress extends Thread {
 
 		onRun();
 
-		mHandler.post(new Runnable() {
+		mMessageHandler.post(new Runnable() {
 			public void run() { doFinish(); };
 		});
 	}
 
+	public void removeFromManager() {
+		mManager.removeTask(this);
+	}
+
 	private void doFinish() {
-		if (mContext == null) {
-			// We are disconnected...wait for a reconnect.
-			mFinished = true;	
-			return;			
-		}
-
-		onFinish();
-		synchronized(this) {
-			if (mProgress != null) {
-				try { mProgress.dismiss(); } catch (Exception e) {};
+		mFinished = true;	
+		if (mManager.getContext() != null) {
+			if (onFinish()) {
+				this.removeFromManager();
+				mManager.taskEnded(this);
 			}
-			mProgress = null;
-			mContext = null;
-			mFinished = true;	
 		}
 	}
 
-	/**
-	 * Update the current ProgressDialog.
-	 * 
-	 * NOTE: This is (or should be) ONLY called from the UI thread.
-	 * 
-	 * @param message	Message text
-	 * @param count		Counter for progress
-	 */
-	public void doProgress(String message, int count) {
-		if (Thread.currentThread() == mUiThread.get()) {
-			synchronized(this) {
-				Context ctx = getContext();
-				if (mProgress == null) {
-					if (ctx != null) {
-						initProgress();
-					}
-				}
-				if (mProgress != null && mContext != null) {
-					mProgress.setMessage(message);
-					if (mProgressMax > 0)
-						mProgress.setProgress(count);
-				}	
-				mProgressCount = count;
-				mLastProgressMessage = message;
-			}
-		} else {
-			/* Send message to the handler */
-			Message msg = obtainMessage();
-			Bundle b = new Bundle();
-			b.putString("__internal", "progress");
-			b.putInt("count", count);
-			b.putString("message", message);
-			msg.setData(b);
-			sendMessage(msg);
-		}
-	}
-
-	public void doToast(String message) {
-		if (Thread.currentThread() == mUiThread.get()) {
-			synchronized(this) {
-				Context ctx = getContext();
-				if (ctx != null)
-					android.widget.Toast.makeText(ctx, message, android.widget.Toast.LENGTH_LONG).show();			
-			}
-		} else {
-			/* Send message to the handler */
-			Message msg = obtainMessage();
-			Bundle b = new Bundle();
-			b.putString("__internal", "toast");
-			b.putString("message", message);
-			msg.setData(b);
-			sendMessage(msg);			
-		}
+	public void cancelTask() {
+		mCancelFlg = true;
 	}
 
 	/**
@@ -216,93 +151,28 @@ abstract public class TaskWithProgress extends Thread {
 		return mCancelFlg;
 	}
 
-	Message obtainMessage() {
-		return mHandler.obtainMessage();
+	public Message obtainMessage() {
+		return mMessageHandler.obtainMessage();
 	}
 
 	void sendMessage(Message msg) {
-		mHandler.sendMessage(msg);
+		mMessageHandler.sendMessage(msg);
 	}
 
-	private OnCancelListener mCancelHandler = new OnCancelListener() {
-		public void onCancel(DialogInterface i) {
-			mCancelFlg = true;
-			Log.i("BookCatalogue", "Cancelling TaskWithProgress...");
-		}
-	};
-
-	public void setMax(int max) {
-		mProgressMax = max;		
-		if (mProgress != null) {
-			mProgress.setMax(mProgressMax);
-		}
-	}
-	private void initProgress() {
-
+	public void reconnect(ActivityWithTasks ctx, TaskHandler taskHandler) {
 		synchronized(this) {
-			Context ctx = getContext();
-			if (ctx != null) {
-				mProgress = new ProgressDialog(ctx);
-				if (mProgressMax > 0) {
-					mProgress.setIndeterminate(false);
-					mProgress.setMax(mProgressMax);
-					mProgress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-				} else {
-					mProgress.setIndeterminate(true);					
-					mProgress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-				}
-				mProgress.setMessage(mLastProgressMessage);
-				mProgress.setCancelable(true);
-				mProgress.setOnCancelListener(mCancelHandler);
-				mProgress.show();
-				mProgress.setProgress(mProgressCount);
-			}
-		}		
-	}
-
-	public void reconnect(Context ctx, TaskHandler taskHandler) {
-		synchronized(this) {
-			mContext = ctx;
-			mTaskHandler = taskHandler;
-			initProgress();
 			if (mFinished) {
 				doFinish();
 			}
 		}
 	}
 
-	public Context getContext() {
-		synchronized(this) {
-			return mContext;
-		}
-	}
-
 	public void disconnect() {
-		synchronized(this) {
-			mContext = null;
-			if (mProgress != null) {
-				mProgress.dismiss();
-				mProgress = null;
-			}			
-		}
 	}
 
-	private class ImportHandler extends Handler {
+	private class TaskMessageHandler extends Handler {
 		public void handleMessage(Message msg) {
-			Bundle b = msg.getData();
-			if (b.containsKey("__internal")) {
-				String kind = b.getString("__internal");
-				if (kind.equals("toast")) {
-					doToast(b.getString("message"));
-				} else {
-					int count = b.getInt("count");
-					String message = b.getString("message");
-					doProgress(message, count);
-				}
-			} else {
-				onMessage(msg);
-			}
+			onMessage(msg);
 		}		
 	}
-
 }

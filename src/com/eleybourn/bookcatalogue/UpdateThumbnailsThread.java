@@ -63,11 +63,11 @@ public class UpdateThumbnailsThread extends TaskWithProgress {
 	 * @param lookupHandler		Interface object to handle events in this thread.
 	 * 
 	 */
-	public UpdateThumbnailsThread(Context ctx, boolean overwrite, Cursor books, LookupHandler lookupHandler) {
-		super(ctx, lookupHandler);
+	public UpdateThumbnailsThread(TaskManager manager, boolean overwrite, Cursor books, LookupHandler lookupHandler) {
+		super(manager, lookupHandler);
 		mOverwrite = overwrite;
 		mBooks = books;
-		this.setMax(books.getCount());
+		manager.setMax(this, books.getCount());
 	}
 
 	private void sendBook() {
@@ -85,8 +85,9 @@ public class UpdateThumbnailsThread extends TaskWithProgress {
 		// We need this because we use bookISBNSearch which seems to want to create handlers...
 		//Looper.prepare();
 
-		mDbHelper = new CatalogueDBAdapter(getContext());
+		mDbHelper = new CatalogueDBAdapter(mManager.getContext());
 		mDbHelper.open();
+		int counter = 0;
 
 		/* Test write to the SDCard */
 		try {
@@ -107,7 +108,7 @@ public class UpdateThumbnailsThread extends TaskWithProgress {
 					origData.putString(mBooks.getColumnName(i), mBooks.getString(i));
 				}
 
-				mProgressCount++;
+				counter++;
 				// delete any tmp thumbnails //
 				try {
 					File delthumb = CatalogueDBAdapter.fetchThumbnail(0);
@@ -129,12 +130,12 @@ public class UpdateThumbnailsThread extends TaskWithProgress {
 
 				if (isbn.equals("") && author.equals("") && title.equals("")) {
 					// Must have an ISBN to be able to search
-					doProgress(String.format(getString(R.string.skip_title), title), mProgressCount);
+					mManager.doProgress(this, String.format(getString(R.string.skip_title), title), counter);
 					//TODO: searchGoogle(AUTHOR)
 				} else if (true) { // if (mOverwrite == true || !thumb.exists() || genre.equals("") || description.equals("")) {
 
-					doProgress(title, mProgressCount);
-					
+					mManager.doProgress(this, title, counter);
+
 					//String[] book = {0=author, 1=title, 2=isbn, 3=publisher, 4=date_published, 5=rating,  6=bookshelf, 
 					//	7=read, 8=series, 9=pages, 10=series_num, 11=list_price, 12=anthology, 13=location, 14=read_start, 
 					//	15=read_end, 16=audiobook, 17=signed, 18=description, 19=genre};
@@ -218,16 +219,20 @@ public class UpdateThumbnailsThread extends TaskWithProgress {
 			if (mBooks != null && !mBooks.isClosed())
 				mBooks.close();
 		}
-		mFinalMessage = String.format(getString(R.string.num_books_searched), "" + mProgressCount);
+		mFinalMessage = String.format(getString(R.string.num_books_searched), "" + counter);
 		if (isCancelled()) 
 			mFinalMessage = String.format(getString(R.string.cancelled_info), mFinalMessage);
 	}
 
 	@Override
-	protected void onFinish() {
-		doToast(mFinalMessage);
-		if (getTaskHandler() != null) 
+	protected boolean onFinish() {
+		mManager.doToast(mFinalMessage);
+		if (getTaskHandler() != null) {
 			((LookupHandler)getTaskHandler()).onFinish(mBookQueue);	
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override

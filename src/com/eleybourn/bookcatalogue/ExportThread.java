@@ -27,23 +27,27 @@ public class ExportThread extends TaskWithProgress {
 		void onFinish();
 	}
 
-	public ExportThread(Context ctx, ExportHandler taskHandler) {
+	public ExportThread(TaskManager ctx, ExportHandler taskHandler) {
 		super(ctx, taskHandler);
 
-		mDbHelper = new CatalogueDBAdapter(getContext());
+		mDbHelper = new CatalogueDBAdapter(ctx.getContext());
 		mDbHelper.open();
 		mBooks = mDbHelper.exportBooks();
 
-		setMax(mBooks.getCount());
+		ctx.setMax(this, mBooks.getCount());
 	}
 
 	public Cursor mBooks = null;
 
 	@Override
-	protected void onFinish() {
+	protected boolean onFinish() {
 		ExportHandler h = (ExportHandler)getTaskHandler();
-		if (h != null)
+		if (h != null) {
 			h.onFinish();
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
@@ -56,7 +60,7 @@ public class ExportThread extends TaskWithProgress {
 		int num = 0;
 
 		if (!Utils.sdCardWritable()) {
-			doToast("Export Failed - Could not write to SDCard");
+			mManager.doToast("Export Failed - Could not write to SDCard");
 			return;			
 		}
 		
@@ -185,12 +189,12 @@ public class ExportThread extends TaskWithProgress {
 			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(mFileName), UTF8), BUFFER_SIZE);
 			out.write(export);
 			out.close();
-			doToast( getString(R.string.export_complete) );
+			mManager.doToast( getString(R.string.export_complete) );
 			//Toast.makeText(AdministrationFunctions.this, R.string.export_complete, Toast.LENGTH_LONG).show();
 		} catch (IOException e) {
 			//Log.e("Book Catalogue", "Could not write to the SDCard");		
 			//Toast.makeText(AdministrationFunctions.this, R.string.export_failed, Toast.LENGTH_LONG).show();
-			doToast(getString(R.string.export_failed_sdcard));
+			mManager.doToast(getString(R.string.export_failed_sdcard));
 		}
 	}
 	

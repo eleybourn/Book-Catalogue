@@ -298,7 +298,7 @@ public class SearchAmazonHandler extends DefaultHandler {
 				} else if (localName.equalsIgnoreCase(DATE_PUBLISHED)){
 					addIfNotPresent(CatalogueDBAdapter.KEY_DATE_PUBLISHED);
 				} else if (localName.equalsIgnoreCase(PAGES)){
-					addIfNotPresentOrEqual(CatalogueDBAdapter.KEY_PUBLISHER, "0");
+					addIfNotPresentOrEqual(CatalogueDBAdapter.KEY_PAGES, "0");
 				} else if (localName.equalsIgnoreCase(DESCRIPTION)){
 					addIfNotPresent(CatalogueDBAdapter.KEY_DESCRIPTION);
 				}

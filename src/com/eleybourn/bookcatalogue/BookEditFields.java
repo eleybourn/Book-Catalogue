@@ -928,6 +928,16 @@ public class BookEditFields extends Activity {
 			//return;
 		}
 
+		// However, there is some data that we really do require...
+		if (mAuthorList.size() == 0) {
+			Toast.makeText(this, getResources().getText(R.string.author_required), Toast.LENGTH_LONG).show();
+			return;
+		}
+		if (!mStateValues.containsKey(CatalogueDBAdapter.KEY_TITLE) || mStateValues.getString(CatalogueDBAdapter.KEY_TITLE).trim().length() == 0) {
+			Toast.makeText(this, getResources().getText(R.string.title_required), Toast.LENGTH_LONG).show();
+			return;			
+		}
+
 		mStateValues.putParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mAuthorList);
 		mStateValues.putParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY, mSeriesList);
 

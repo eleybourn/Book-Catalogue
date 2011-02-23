@@ -1216,10 +1216,12 @@ public class Fields extends ArrayList<Fields.Field> {
 		else {
 			String message = "";
 			Iterator<ValidatorException> i = mValidationExceptions.iterator();
+			int cnt = 1;
 			if (i.hasNext())
-				message = i.next().getFormattedMessage(res);
+				message = "(" + cnt + ") " + i.next().getFormattedMessage(res);
 			while (i.hasNext()) {
-				message += i.next().getFormattedMessage(res) + "\r\n";
+				cnt ++;
+				message += " (" + cnt + ") " + i.next().getFormattedMessage(res) + "\r\n";
 			}
 			return message;
 		}

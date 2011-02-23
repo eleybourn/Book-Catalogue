@@ -39,7 +39,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
 
@@ -57,6 +59,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
+import java.text.DateFormat;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -64,6 +67,49 @@ public class Utils {
 	private static String filePath = Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION;
 	private static String UTF8 = "utf8";
 	private static int BUFFER_SIZE = 8192;
+
+	// Used for date parsing
+	static SimpleDateFormat mDateSqlSdf = new SimpleDateFormat("yyyy-MM-dd");
+	static SimpleDateFormat mDate1Sdf = new SimpleDateFormat("dd-MMM-yyyy");
+	static SimpleDateFormat mDate2Sdf = new SimpleDateFormat("dd-MMM-yy");
+	static SimpleDateFormat mDateUSSdf = new SimpleDateFormat("MM-dd-yyyy");
+	static SimpleDateFormat mDateEngSdf = new SimpleDateFormat("dd-MM-yyyy");
+	static DateFormat mDateDispSdf = DateFormat.getDateInstance(java.text.DateFormat.MEDIUM);
+
+	public static String toSqlDate(Date d) {
+		return mDateSqlSdf.format(d);
+	}
+	public static String toPrettyDate(Date d) {
+		return mDateDispSdf.format(d);		
+	}
+
+	public static Date parseDate(String s) {
+		SimpleDateFormat[] formats = new SimpleDateFormat[] {
+				mDateSqlSdf,
+				mDate1Sdf,
+				mDate2Sdf,
+				mDateUSSdf,
+				mDateEngSdf};
+		Date d;
+		for ( SimpleDateFormat sdf : formats ) {
+			try {
+				// Parse as SQL/ANSI date
+				d = sdf.parse(s);
+				return d;
+			} catch (Exception e) {
+				// Ignore 
+			}			
+		}
+		// All SDFs failed, try one more...
+		try {
+			java.text.DateFormat df = java.text.DateFormat.getDateInstance(java.text.DateFormat.SHORT);
+			d = df.parse(s);
+			return d;
+		} catch (Exception e) {
+			// Ignore 
+		}			
+		return null;
+	}
 
 	private static ArrayUtils<Author> mAuthorUtils = null;
 	private static ArrayUtils<Series> mSeriesUtils = null;
@@ -548,6 +594,25 @@ public class Utils {
 		return outputString;
 	}
 
+	/**
+	 * Check if passed bundle contains a non-blank string at key k.
+	 * 
+	 * @param b			Bundle to check
+	 * @param key		Key to check for
+	 * @return			Present/absent
+	 */
+	public static boolean isNonBlankString(Bundle b, String key) {
+		try {
+			if (b.containsKey(key)) {
+				String s = b.getString(key);
+				return (s != null && s.length() > 0);
+			} else {
+				return false;
+			}
+		} catch (Exception e) {
+			return false;
+		}
+	}
 	/**
 	 * Join the passed array of strings, with 'delim' between them.
 	 * 

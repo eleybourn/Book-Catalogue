@@ -1,6 +1,27 @@
-package com.eleybourn.bookcatalogue;
+/*
+ * @copyright 2011 Philip Warner
+ * @license GNU General Public License
+ * 
+ * This file is part of Book Catalogue.
+ *
+ * Book Catalogue is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Book Catalogue is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+ package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import com.eleybourn.bookcatalogue.SearchThread.SearchHandler;
 import com.eleybourn.bookcatalogue.TaskManager.OnTaskEndedListener;
@@ -11,11 +32,15 @@ import android.util.Log;
 public class SearchManager implements OnTaskEndedListener {
 	TaskManager mTaskManager;
 	private Bundle mBookData = new Bundle();
-	private boolean mLtWaitingForIsbn = false;
+	private boolean mWaitingForIsbn = false;
 
 	private String mAuthor;
 	private String mTitle;
 	private String mIsbn;
+
+	private Bundle mGoogleData;
+	private Bundle mAmazonData;
+	private Bundle mLibraryThingData;
 
 	private SearchHandler mSearchHandler = null;
 
@@ -36,28 +61,38 @@ public class SearchManager implements OnTaskEndedListener {
 		}
 	}
 
+	private void startOne(SearchThread thread) {
+		mTasks.add(thread);
+		thread.start();
+	}
+
+	private void startAmazon() {
+		startOne( new SearchAmazonThread(mTaskManager, mAmazonHandler, mAuthor, mTitle, mIsbn) );		
+	}
+	private void startGoogle() {
+		startOne( new SearchGoogleThread(mTaskManager, mGoogleHandler, mAuthor, mTitle, mIsbn) );		
+	}
+	private void startLibraryThing(){
+		if (mIsbn != null && mIsbn.trim().length() > 0)
+			startOne( new SearchLibraryThingThread(mTaskManager, mLibraryThingHandler, mAuthor, mTitle, mIsbn));		
+	}
+
 	public void search(String author, String title, String isbn) {
 		mAuthor = author;
 		mTitle = title;
 		mIsbn = isbn;
 
-		if (isbn != null && isbn.length() > 0)
-		{
-			SearchLibraryThingThread lt = new SearchLibraryThingThread(mTaskManager, mLibraryThingHandler, author, title, isbn);
-			mTasks.add(lt);
-			lt.start();			
+		// We really want to ensure we get the same book from each, so if isbn is not present, do
+		// these in series.
+		if (isbn != null && isbn.length() > 0) {
+			mWaitingForIsbn = false;
+			startLibraryThing();
+			startGoogle();
+			startAmazon();
 		} else {
-			mLtWaitingForIsbn = true;
-		}
-		{
-			SearchGoogleThread gt = new SearchGoogleThread(mTaskManager, mGoogleHandler, author, title, isbn);
-			mTasks.add(gt);
-			gt.start();			
-		}
-		{
-			SearchAmazonThread at = new SearchAmazonThread(mTaskManager, mAmazonHandler, author, title, isbn);
-			mTasks.add(at);
-			at.start();
+			// Run one at a time, startNext() defined the order.
+			mWaitingForIsbn = true;
+			startNext();
 		}
 	}
 
@@ -68,6 +103,8 @@ public class SearchManager implements OnTaskEndedListener {
 
 	private void accumulateData(Bundle bookData) {
 		Log.i("BC", "Appending data");
+		if (bookData == null)
+			return;
 		for (String k : bookData.keySet()) {
 			if (!mBookData.containsKey(k) || mBookData.getString(k) == null || mBookData.getString(k).trim().length() == 0) 
 				mBookData.putString(k, bookData.getString(k));
@@ -76,6 +113,15 @@ public class SearchManager implements OnTaskEndedListener {
 					appendData(k, bookData, mBookData);
 				} else if (k.equals(CatalogueDBAdapter.KEY_SERIES_DETAILS)) {
 					appendData(k, bookData, mBookData);					
+				} else if (k.equals(CatalogueDBAdapter.KEY_DATE_PUBLISHED)) {
+					// Grab a different date if we can parse it.
+					Date newDate = Utils.parseDate(bookData.getString(k));
+					if (newDate != null) {
+						String curr = mBookData.getString(k);
+						if (Utils.parseDate(curr) == null) {
+							mBookData.putString(k, Utils.toSqlDate(newDate));
+						}
+					}
 				} else if (k.equals("__thumbnail")) {
 					appendData(k, bookData, mBookData);					
 				}
@@ -84,6 +130,11 @@ public class SearchManager implements OnTaskEndedListener {
 	}
 
 	private void finish() {
+		// Merge the data we have. We do this in a fixed order rather than as the threads finish.
+		accumulateData(mGoogleData);
+		accumulateData(mAmazonData);
+		accumulateData(mLibraryThingData);
+		
     	// If there are thumbnails present, pick the biggest, delete others and rename.
     	Utils.cleanupThumbnails(mBookData);
 
@@ -123,34 +174,70 @@ public class SearchManager implements OnTaskEndedListener {
 		}
 	}
 
-	private void doLibraryThingIfNecessary(Bundle bookData) {
-		if (mLtWaitingForIsbn && bookData.containsKey(CatalogueDBAdapter.KEY_ISBN) && bookData.getString(CatalogueDBAdapter.KEY_ISBN).length() > 0) {
-			String isbn = bookData.getString(CatalogueDBAdapter.KEY_ISBN);
-			SearchLibraryThingThread lt = new SearchLibraryThingThread(mTaskManager, mLibraryThingHandler, mAuthor, mTitle, isbn);
-			mTasks.add(lt);
-			lt.start();	
-			mLtWaitingForIsbn = false;
-		}		
+	private void startNext() {
+		// Google is reputedly most likely to succeed. Amazon is fastest, and LT REQUIRES and ISBN.
+		if (mGoogleData == null) {
+			startGoogle();
+		} else if (mAmazonData == null) {
+			startAmazon();
+		} else if (mLibraryThingData == null) {
+			startLibraryThing();
+		}
 	}
 
 	private SearchHandler mGoogleHandler = new SearchHandler() {
 		@Override
 		public void onFinish(SearchThread t, Bundle bookData) {
-			doLibraryThingIfNecessary(bookData);
-			accumulateData(bookData);
+			mGoogleData = bookData;
+			if (mWaitingForIsbn) {
+				if (Utils.isNonBlankString(bookData, CatalogueDBAdapter.KEY_ISBN)) {
+					mWaitingForIsbn = false;
+					// Start the other two...even if they have run before
+					mIsbn = bookData.getString(CatalogueDBAdapter.KEY_ISBN);
+					startAmazon();
+					startLibraryThing();
+				} else {
+					// Start next one that has not run. 
+					startNext();
+				}
+			}
 		}
 	};
+
 	private SearchHandler mAmazonHandler = new SearchHandler() {
 		@Override
 		public void onFinish(SearchThread t, Bundle bookData) {
-			doLibraryThingIfNecessary(bookData);
-			accumulateData(bookData);
+			mAmazonData = bookData;
+			if (mWaitingForIsbn) {
+				if (Utils.isNonBlankString(bookData, CatalogueDBAdapter.KEY_ISBN)) {
+					mWaitingForIsbn = false;
+					// Start the other two...even if they have run before
+					mIsbn = bookData.getString(CatalogueDBAdapter.KEY_ISBN);
+					startGoogle();
+					startLibraryThing();
+				} else {
+					// Start next one that has not run. 
+					startNext();
+				}
+			}
 		}
 	};
 	private SearchHandler mLibraryThingHandler = new SearchHandler() {
 		@Override
 		public void onFinish(SearchThread t, Bundle bookData) {
-			accumulateData(bookData);
+			mLibraryThingData = bookData;
+			if (mWaitingForIsbn) {
+				if (Utils.isNonBlankString(bookData, CatalogueDBAdapter.KEY_ISBN)) {
+					mWaitingForIsbn = false;
+					// Start the other two...even if they have run before
+					mIsbn = bookData.getString(CatalogueDBAdapter.KEY_ISBN);
+					startGoogle();
+					startAmazon();
+				} else {
+					// Start next one that has not run. 
+					startNext();
+				}
+			}
 		}
 	};
 

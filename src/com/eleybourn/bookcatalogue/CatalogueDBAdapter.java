@@ -1391,7 +1391,7 @@ public class CatalogueDBAdapter {
 			+ KEY_AUTHOR_ID + ", " 
 			+ KEY_FAMILY_NAME + ", " 
 			+ KEY_GIVEN_NAMES + ", " 
-			+ "ba." + KEY_BOOK + ", "
+			+ "ba." + KEY_BOOK + " as " + KEY_BOOK + ", "
 			+ " Case When " + KEY_GIVEN_NAMES + " = '' Then " + KEY_FAMILY_NAME
 			+ " Else " + authorFormattedSource("") + " End as " + KEY_AUTHOR_FORMATTED
 			+ " From " + DB_TB_BOOK_AUTHOR + " ba Join " + DB_TB_AUTHORS + " a"
@@ -1404,7 +1404,7 @@ public class CatalogueDBAdapter {
 				+ KEY_SERIES_ID + ", " 
 				+ KEY_SERIES_NAME + ", " 
 				+ KEY_SERIES_NUM  + ", "
-				+ "bs." + KEY_BOOK + ", "
+				+ "bs." + KEY_BOOK + " as " + KEY_BOOK + ", "
 				+ " Case When " + KEY_SERIES_NUM + " = '' Then " + KEY_SERIES_NAME 
 				+ " Else " + KEY_SERIES_NAME + "||' #'||" + KEY_SERIES_NUM + " End as " + KEY_SERIES_FORMATTED
 				+ " From " + DB_TB_BOOK_SERIES + " bs Join " + DB_TB_SERIES + " s"
@@ -1416,7 +1416,7 @@ public class CatalogueDBAdapter {
 				+ KEY_SERIES_ID + ", " 
 				+ KEY_SERIES_NAME + ", " 
 				+ KEY_SERIES_NUM  + ", "
-				+ "bs." + KEY_BOOK + ", "
+				+ "bs." + KEY_BOOK + " as " + KEY_BOOK + ", "
 				+ " Case When " + KEY_SERIES_NUM + " = '' Then " + KEY_SERIES_NAME 
 				+ " Else " + KEY_SERIES_NAME + "||' #'||" + KEY_SERIES_NUM + " End as " + KEY_SERIES_FORMATTED
 				+ " From " + DB_TB_BOOK_SERIES + " bs Join " + DB_TB_SERIES + " s"

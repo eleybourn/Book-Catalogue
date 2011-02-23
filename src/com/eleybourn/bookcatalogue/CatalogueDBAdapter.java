@@ -2501,35 +2501,42 @@ public class CatalogueDBAdapter {
 
 					Object v = source.get(key);
 
-					switch(c.typeClass) {
+					// Try to set the appropriate value, but if that fails, just use TEXT...
+					try {
 
-					case TableInfo.CLASS_REAL:
-						if (v instanceof Float)
-							args.put(c.name, (Float)v);
-						else
-							args.put(c.name, Float.parseFloat(v.toString()));
-						break;
+						switch(c.typeClass) {
 
-					case TableInfo.CLASS_INTEGER:
-						if (v instanceof Boolean) {
-							if ((Boolean)v) {
-								args.put(c.name, 1);
+						case TableInfo.CLASS_REAL:
+							if (v instanceof Float)
+								args.put(c.name, (Float)v);
+							else
+								args.put(c.name, Float.parseFloat(v.toString()));
+							break;
+
+						case TableInfo.CLASS_INTEGER:
+							if (v instanceof Boolean) {
+								if ((Boolean)v) {
+									args.put(c.name, 1);
+								} else {
+									args.put(c.name, 0);
+								}
+							} else if (v instanceof Integer) {
+								args.put(c.name, (Integer)v);
 							} else {
-								args.put(c.name, 0);
+								args.put(c.name, Integer.parseInt(v.toString()));
 							}
-						} else if (v instanceof Integer) {
-							args.put(c.name, (Integer)v);
-						} else {
-							args.put(c.name, Integer.parseInt(v.toString()));
-						}
-						break;
+							break;
 
-					case TableInfo.CLASS_TEXT:
-						if (v instanceof String)
-							args.put(c.name, (String) v);
-						else							
-							args.put(c.name, v.toString());
-						break;
+						case TableInfo.CLASS_TEXT:
+							if (v instanceof String)
+								args.put(c.name, (String) v);
+							else							
+								args.put(c.name, v.toString());
+							break;
+						}
+
+					} catch (Exception e) {
+						args.put(c.name, v.toString());						
 					}
 				}
 			}

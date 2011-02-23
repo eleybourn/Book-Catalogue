@@ -197,4 +197,6 @@
 <string name="immediate_global_changes">NOTE: All saved changes apply instantly and globally</string>
 <string name="menu_replace_thumb">Replace Thumbnail...</string>
 <string name="menu_thumb_alt_editions">From other editions...</string>
+<string name="author_required">At least one author must be specified</string>
+<string name="title_required">A non-blank title must be specified</string>
 </resources>

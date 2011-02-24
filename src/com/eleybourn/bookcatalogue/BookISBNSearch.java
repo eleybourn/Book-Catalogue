@@ -377,6 +377,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 		/* Get the book */
 		try {
 			// Start the lookup in background.
+			//mTaskManager.doProgress("Searching");
 			SearchManager m = new SearchManager(mTaskManager, mSearchHandler);
 			m.search(author, title, isbn);
 			//Thread t = new SearchForBookThread(mTaskManager, mTaskHandler, author, title, isbn);
@@ -397,35 +398,14 @@ public class BookISBNSearch extends ActivityWithTasks {
 				if (mMode == MODE_SCAN)
 					startScannerActivity();
 			} else {
-				// TODO Allow TaskManager to display non-thread-based messages
-				mTaskManager.doToast("Adding Book");
+				mTaskManager.doProgress("Adding Book...");
 				createBook(bookData);
 				// Clear the data entry fields ready for the next one
 				clearFields();
+				// Make sure the message will be empty.
+				mTaskManager.doProgress(null);
 			}
 		}
-	};
-	private SearchHandler mTaskHandler = new SearchHandler() {
-
-		public void onFinish(SearchForBookThread t, Bundle arg) {
-			if (arg == null) {
-				if (mMode == MODE_SCAN)
-					startScannerActivity();
-			} else {
-				// TODO Allow TaskHanlder to display non-thread-based messages
-				t.doProgress("Adding Book...", 0);
-				createBook(arg);
-				// Clear the data entry fields ready for the next one
-				clearFields();
-			}
-			t.removeFromManager();
-		}
-		
-//		@Override
-//		public String getString(int id) {
-//			return getResources().getString(id);
-//		}
-		
 	};
 
 	@Override
@@ -536,6 +516,6 @@ public class BookISBNSearch extends ActivityWithTasks {
 
 	@Override
 	TaskHandler getTaskHandler(ManagedTask t) {
-		return mTaskHandler;
+		return mSearchHandler;
 	}
 }

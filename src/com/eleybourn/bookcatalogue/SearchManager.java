@@ -29,32 +29,64 @@ import com.eleybourn.bookcatalogue.TaskManager.OnTaskEndedListener;
 import android.os.Bundle;
 import android.util.Log;
 
+/**
+ * Class to co-ordinate multiple SearchThread objects using an existing TaskManager.
+ * 
+ * It uses the task manager it is passed and listens to OnTaskEndedListener messages;
+ * it maintain its own internal list of tasks and as ones it knows about end, it
+ * processes the data. Once all tasks are complete, it sends a message to its
+ * creator via its SearchHandler.
+ * 
+ * @author Grunthos
+ */
 public class SearchManager implements OnTaskEndedListener {
+	// TaskManager for threads; may have other threads tham the ones this object creates.
 	TaskManager mTaskManager;
+	// Accumulated book data
 	private Bundle mBookData = new Bundle();
+	// Flag indicating searches will be non-concurrent until an ISBN is found
 	private boolean mWaitingForIsbn = false;
-
+	// Flag indicating a task was cancelled.
 	private boolean mCancelledFlg = false;
+	// Original author for search
 	private String mAuthor;
+	// Original title for search
 	private String mTitle;
+	// Original ISBN for search
 	private String mIsbn;
 
+	// Output from google search
 	private Bundle mGoogleData;
+	// Output from Amazon search
 	private Bundle mAmazonData;
+	// Output from LibraryThing search
 	private Bundle mLibraryThingData;
 
+	// Handler for search results
 	private SearchHandler mSearchHandler = null;
 
+	// List of threads created by *this* object.
 	private ArrayList<ManagedTask> mTasks = new ArrayList<ManagedTask>();
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param taskManager	TaskManager to use
+	 * @param taskHandler	SearchHandler to send results
+	 */
 	SearchManager(TaskManager taskManager, SearchHandler taskHandler) {
 		mTaskManager = taskManager;
 		mSearchHandler = taskHandler;
+		// List for task ends
 		mTaskManager.addOnTaskEndedListener(this);
 	}
 
+	/**
+	 * When a task has ended, see if we are finished (no more tasks running).
+	 * If so, finish.
+	 */
 	@Override
-	public void taskEnded(TaskManager manager, ManagedTask task) {
+	public void onTaskEnded(TaskManager manager, ManagedTask task) {
 		mTasks.remove(task);
 		if (mTasks.size() == 0) {
 			finish();
@@ -62,26 +94,48 @@ public class SearchManager implements OnTaskEndedListener {
 		}
 	}
 
+	/**
+	 * Utility routine to start a task
+	 * 
+	 * @param thread	Task to start
+	 */
 	private void startOne(SearchThread thread) {
 		mTasks.add(thread);
 		thread.start();
 	}
 
+	/**
+	 * Start an Amazon search
+	 */
 	private void startAmazon() {
 		if (!mCancelledFlg)
 			startOne( new SearchAmazonThread(mTaskManager, mAmazonHandler, mAuthor, mTitle, mIsbn) );		
 	}
+	/**
+	 * Start a Google search
+	 */
 	private void startGoogle() {
 		if (!mCancelledFlg)
 			startOne( new SearchGoogleThread(mTaskManager, mGoogleHandler, mAuthor, mTitle, mIsbn) );		
 	}
+	/**
+	 * Start an Amazon search
+	 */
 	private void startLibraryThing(){
 		if (!mCancelledFlg)
 			if (mIsbn != null && mIsbn.trim().length() > 0)
 				startOne( new SearchLibraryThingThread(mTaskManager, mLibraryThingHandler, mAuthor, mTitle, mIsbn));		
 	}
 
+	/**
+	 * Start a search
+	 * 
+	 * @param author	Author to search for
+	 * @param title		Title to search for
+	 * @param isbn		ISBN to search for
+	 */
 	public void search(String author, String title, String isbn) {
+		// Save the input and initialize
 		mAuthor = author;
 		mTitle = title;
 		mIsbn = isbn;
@@ -101,19 +155,34 @@ public class SearchManager implements OnTaskEndedListener {
 		}
 	}
 
+	/**
+	 * Utility routine to append text data from one Bundle to another
+	 * 
+	 * @param key		Key of data
+	 * @param source	Source Bundle
+	 * @param dest		Destination Bundle
+	 */
 	private void appendData(String key, Bundle source, Bundle dest) {
 		String res = dest.getString(key) + "|" + source.getString(key);
 		dest.putString(key, res);
 	}
 
+	/**
+	 * Copy data from passed Bundle to current accumulated data. Does some careful
+	 * processing of the data.
+	 * 
+	 * @param bookData	Source
+	 */
 	private void accumulateData(Bundle bookData) {
 		Log.i("BC", "Appending data");
 		if (bookData == null)
 			return;
 		for (String k : bookData.keySet()) {
+			// If its not there, copy it.
 			if (!mBookData.containsKey(k) || mBookData.getString(k) == null || mBookData.getString(k).trim().length() == 0) 
 				mBookData.putString(k, bookData.getString(k));
 			else {
+				// Copy, append or update data as appropriate.
 				if (k.equals(CatalogueDBAdapter.KEY_AUTHOR_DETAILS)) {
 					appendData(k, bookData, mBookData);
 				} else if (k.equals(CatalogueDBAdapter.KEY_SERIES_DETAILS)) {
@@ -134,6 +203,9 @@ public class SearchManager implements OnTaskEndedListener {
 		}
 	}
 
+	/**
+	 * Combine all the data and create a book or display an error.
+	 */
 	private void finish() {
 		// Merge the data we have. We do this in a fixed order rather than as the threads finish.
 		accumulateData(mGoogleData);
@@ -179,8 +251,11 @@ public class SearchManager implements OnTaskEndedListener {
 		}
 	}
 
+	/**
+	 * When running in single-stream mode, start the next thread that has no data.
+	 * Google is reputedly most likely to succeed. Amazon is fastest, and LT REQUIRES and ISBN.
+	 */
 	private void startNext() {
-		// Google is reputedly most likely to succeed. Amazon is fastest, and LT REQUIRES and ISBN.
 		if (mGoogleData == null) {
 			startGoogle();
 		} else if (mAmazonData == null) {
@@ -190,6 +265,9 @@ public class SearchManager implements OnTaskEndedListener {
 		}
 	}
 
+	/**
+	 * Handle google completion
+	 */
 	private SearchHandler mGoogleHandler = new SearchHandler() {
 		@Override
 		public void onFinish(SearchThread t, Bundle bookData, boolean cancelled) {
@@ -214,6 +292,9 @@ public class SearchManager implements OnTaskEndedListener {
 		}
 	};
 
+	/**
+	 * Handle Amazon completion
+	 */
 	private SearchHandler mAmazonHandler = new SearchHandler() {
 		@Override
 		public void onFinish(SearchThread t, Bundle bookData, boolean cancelled) {
@@ -238,6 +319,9 @@ public class SearchManager implements OnTaskEndedListener {
 		}
 	};
 
+	/**
+	 * Handle LibraryThing completion
+	 */
 	private SearchHandler mLibraryThingHandler = new SearchHandler() {
 		@Override
 		public void onFinish(SearchThread t, Bundle bookData, boolean cancelled) {

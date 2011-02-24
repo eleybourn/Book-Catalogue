@@ -36,6 +36,7 @@ import android.database.CursorIndexOutOfBoundsException;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -99,6 +100,10 @@ public class CatalogueDBAdapter {
 	public static final String KEY_SERIES_FORMATTED = "series_formatted";
 	public static final String KEY_SERIES_NUM_FORMATTED = "series_num_formatted";
 	
+	// We tried 'Collate UNICODE' but it seemed to be case sensitive. We ended
+	// up with 'Ursula Le Guin' and 'Ursula le Guin'.
+	public static final String COLLATION = "Collate NOCASE";
+
 	private DatabaseHelper mDbHelper;
 	private SQLiteDatabase mDb;
 	
@@ -213,14 +218,14 @@ public class CatalogueDBAdapter {
 	
 	private static final String DATABASE_CREATE_INDICES = 
 		"CREATE INDEX IF NOT EXISTS authors_given_names ON "+DB_TB_AUTHORS+" ("+KEY_GIVEN_NAMES+");" + 
-		"CREATE INDEX IF NOT EXISTS authors_given_names_ci ON "+DB_TB_AUTHORS+" ("+KEY_GIVEN_NAMES+" collate unicode);" + 
+		"CREATE INDEX IF NOT EXISTS authors_given_names_ci ON "+DB_TB_AUTHORS+" ("+KEY_GIVEN_NAMES+" " + COLLATION + ");" + 
 		"CREATE INDEX IF NOT EXISTS authors_family_name ON "+DB_TB_AUTHORS+" ("+KEY_FAMILY_NAME+");" + 
-		"CREATE INDEX IF NOT EXISTS authors_family_name_ci ON "+DB_TB_AUTHORS+" ("+KEY_FAMILY_NAME+" collate unicode);" + 
+		"CREATE INDEX IF NOT EXISTS authors_family_name_ci ON "+DB_TB_AUTHORS+" ("+KEY_FAMILY_NAME+" " + COLLATION + ");" + 
 		"CREATE INDEX IF NOT EXISTS bookshelf_bookshelf ON "+DB_TB_BOOKSHELF+" ("+KEY_BOOKSHELF+");" + 
 		/* "CREATE INDEX IF NOT EXISTS books_author ON "+DB_TB_BOOKS+" ("+KEY_AUTHOR+");" + */
-		/*"CREATE INDEX IF NOT EXISTS books_author_ci ON "+DB_TB_BOOKS+" ("+KEY_AUTHOR+" collate unicode);" + */
+		/*"CREATE INDEX IF NOT EXISTS books_author_ci ON "+DB_TB_BOOKS+" ("+KEY_AUTHOR+" " + COLLATION + ");" + */
 		"CREATE INDEX IF NOT EXISTS books_title ON "+DB_TB_BOOKS+" ("+KEY_TITLE+");" + 
-		"CREATE INDEX IF NOT EXISTS books_title_ci ON "+DB_TB_BOOKS+" ("+KEY_TITLE+" collate unicode);" + 
+		"CREATE INDEX IF NOT EXISTS books_title_ci ON "+DB_TB_BOOKS+" ("+KEY_TITLE+" " + COLLATION + ");" + 
 		"CREATE INDEX IF NOT EXISTS books_isbn ON "+DB_TB_BOOKS+" ("+KEY_ISBN+");" + 
 		/* "CREATE INDEX IF NOT EXISTS books_series ON "+DB_TB_BOOKS+" ("+KEY_SERIES+");" + */
 		"CREATE INDEX IF NOT EXISTS books_publisher ON "+DB_TB_BOOKS+" ("+KEY_PUBLISHER+");" + 
@@ -804,7 +809,7 @@ public class CatalogueDBAdapter {
 				try {
 					db.execSQL(DATABASE_CREATE_SERIES);
 					db.execSQL("INSERT INTO " + DB_TB_SERIES + " (" + KEY_SERIES_NAME + ") "
-								+ "SELECT DISTINCT " + KEY_SERIES_OLD + " Collate UNICODE FROM " + DB_TB_BOOKS
+								+ "SELECT DISTINCT " + KEY_SERIES_OLD + " " + COLLATION + " FROM " + DB_TB_BOOKS
 								+ " WHERE Coalesce(" + KEY_SERIES_OLD + ",'') <> ''");
 
 					db.execSQL(DATABASE_CREATE_BOOK_SERIES);
@@ -816,7 +821,7 @@ public class CatalogueDBAdapter {
 							+ "SELECT DISTINCT b." + KEY_ROWID + ", s." + KEY_ROWID + ", b." + KEY_SERIES_NUM + ", 1"
 							+ " FROM " + DB_TB_BOOKS + " b "
 							+ " Join " + DB_TB_SERIES + " s On s." + KEY_SERIES_NAME + " = b." + KEY_SERIES_OLD 
-							+ " COLLATE UNICODE"
+							+ " " + COLLATION
 							+ " Where b." + KEY_SERIES_OLD + " <> '' or b." + KEY_SERIES_NUM + " <> ''");
 
 					db.execSQL("INSERT INTO " + DB_TB_BOOK_AUTHOR + " (" + KEY_BOOK + ", " + KEY_AUTHOR_ID + ", " + KEY_AUTHOR_POSITION + ") "
@@ -1169,7 +1174,7 @@ public class CatalogueDBAdapter {
 	public Cursor fetchAllAuthors() {
 		String sql = "SELECT " + getAuthorFields("a", KEY_ROWID) + 
 			" FROM " + DB_TB_AUTHORS + " a " +
-			" ORDER BY " + KEY_FAMILY_NAME + " COLLATE UNICODE" + ", " + KEY_GIVEN_NAMES + " COLLATE UNICODE";
+			" ORDER BY " + KEY_FAMILY_NAME + " " + COLLATION + ", " + KEY_GIVEN_NAMES + " " + COLLATION;
 		Cursor returnable = null;
 		try {
 			returnable = mDb.rawQuery(sql, new String[]{});
@@ -1216,7 +1221,7 @@ public class CatalogueDBAdapter {
 		String sql = "SELECT " + getAuthorFields("a", KEY_ROWID)
 		+ " FROM " + DB_TB_AUTHORS + " a "
 		+ " WHERE " + authorOnBookshelfSql(bookshelf, "a." + KEY_ROWID)
-		+ " ORDER BY " + KEY_FAMILY_NAME + " COLLATE UNICODE" + ", " + KEY_GIVEN_NAMES + " COLLATE UNICODE";
+		+ " ORDER BY " + KEY_FAMILY_NAME + " " + COLLATION + ", " + KEY_GIVEN_NAMES + " " + COLLATION;
 
 		Cursor returnable = null;
 		try {
@@ -1344,7 +1349,7 @@ public class CatalogueDBAdapter {
 		if (seriesName.length() > 0 && !seriesName.equals(META_EMPTY_SERIES))
 			sql += " Join " + DB_TB_BOOK_SERIES + " bs On (bs." + KEY_BOOK + " = b." + KEY_ROWID + ")"
 					+ " Join " + DB_TB_SERIES + " s On (s." + KEY_ROWID + " = bs." + KEY_SERIES_ID 
-					+ " and s." + KEY_SERIES_NAME + " = '" + encodeString(seriesName) + "' Collate UNICODE)";
+					+ " and s." + KEY_SERIES_NAME + " = '" + encodeString(seriesName) + "' " + COLLATION + ")";
 
 
 		if (where.length() > 0)
@@ -1355,7 +1360,7 @@ public class CatalogueDBAdapter {
 			if (order.length() > 0)
 				sql += " ORDER BY " + order + "";
 			else
-				sql += " ORDER BY b." + KEY_TITLE + " Collate UNICODE ASC";
+				sql += " ORDER BY b." + KEY_TITLE + " " + COLLATION + " ASC";
 		}
 
 		return sql;
@@ -1513,7 +1518,7 @@ public class CatalogueDBAdapter {
 		if (series.length() == 0 || series.equals(META_EMPTY_SERIES)) {
 			return fetchAllBooks("", bookshelf, "", "", search_term, "", META_EMPTY_SERIES);
 		} else {
-			String order = "substr('0000000000' || bs." + KEY_SERIES_NUM + ", -10, 10), b." + KEY_TITLE + " Collate UNICODE ASC";
+			String order = "substr('0000000000' || bs." + KEY_SERIES_NUM + ", -10, 10), b." + KEY_TITLE + " " + COLLATION + " ASC";
 			return fetchAllBooks(order, bookshelf, "", "", search_term, "", series);
 		}
 	}
@@ -1672,7 +1677,7 @@ public class CatalogueDBAdapter {
 					+ " From ( " + series 
 					+ "       UNION Select '' as " +  KEY_SERIES_NAME
 					+ "       )"
-					+ " Order by " + KEY_SERIES_NAME + " Collate UNICODE asc ";
+					+ " Order by " + KEY_SERIES_NAME + " " + COLLATION + " asc ";
 
 		return mDb.rawQuery(sql, new String[]{});
 	}
@@ -1759,8 +1764,8 @@ public class CatalogueDBAdapter {
 			where += authorOnBookshelfSql(bookshelf, "a." + KEY_ROWID);
 		}
 		String sql = "SELECT count(*) as count FROM " + DB_TB_AUTHORS + " a " +
-			"WHERE (a." + KEY_FAMILY_NAME + "<'" + encodeString(names[0]) + "' collate unicode " +
-			"OR (a." + KEY_FAMILY_NAME + "='" + encodeString(names[0]) + "' collate unicode AND a." + KEY_GIVEN_NAMES + "<'" + encodeString(names[1]) + "' collate unicode))" + 
+			"WHERE (a." + KEY_FAMILY_NAME + "<'" + encodeString(names[0]) + "' " + COLLATION + " " +
+			"OR (a." + KEY_FAMILY_NAME + "='" + encodeString(names[0]) + "' " + COLLATION + " AND a." + KEY_GIVEN_NAMES + "<'" + encodeString(names[1]) + "' " + COLLATION + "))" + 
 			where + 
 			" ORDER BY a." + KEY_FAMILY_NAME + ", a." + KEY_GIVEN_NAMES;
 		Cursor results = mDb.rawQuery(sql, null);
@@ -1800,8 +1805,8 @@ public class CatalogueDBAdapter {
 	 */
 	public Cursor fetchByAuthorAndTitle(String family, String given, String title) {
 		String authorWhere = "a." + KEY_FAMILY_NAME + "='" + encodeString(family) 
-							+ "' Collate UNICODE AND a." + KEY_GIVEN_NAMES + "='" + encodeString(given) + "'  Collate UNICODE";
-		String bookWhere = "b." + KEY_TITLE + "='" + encodeString(title) + "' Collate UNICODE";
+							+ "' " + COLLATION + " AND a." + KEY_GIVEN_NAMES + "='" + encodeString(given) + "'  " + COLLATION + "";
+		String bookWhere = "b." + KEY_TITLE + "='" + encodeString(title) + "' " + COLLATION + "";
 		return fetchAllBooks("", "All Books", authorWhere, bookWhere, "", "", "" );
 	}
 
@@ -1813,7 +1818,7 @@ public class CatalogueDBAdapter {
 	 * @return The position of the book
 	 */
 	public int fetchBookPositionByTitle(String title, String bookshelf) {
-		String baseSql = this.fetchAllBooksSql("1", bookshelf, "", "b." + KEY_TITLE + "<'" + encodeString(title) + "' Collate UNICODE ", "", "", "");
+		String baseSql = this.fetchAllBooksSql("1", bookshelf, "", "b." + KEY_TITLE + "<'" + encodeString(title) + "' " + COLLATION + " ", "", "", "");
 		String sql = "SELECT Count(*) as count " + baseSql;
 
 		Cursor results = mDb.rawQuery(sql, null);
@@ -1879,7 +1884,7 @@ public class CatalogueDBAdapter {
 		if (genre.equals(META_EMPTY_GENRE))
 			return 0;
 
-		String where = "b." + KEY_GENRE + " < '" + encodeString(genre) + "' Collate UNICODE";
+		String where = "b." + KEY_GENRE + " < '" + encodeString(genre) + "' " + COLLATION + "";
 		String baseSql = fetchAllBooksSql("", bookshelf, "", where, "", "", "");
 
 		String sql = "SELECT Count(DISTINCT *)" + baseSql;
@@ -1938,7 +1943,7 @@ public class CatalogueDBAdapter {
 					+ "       UNION Select '" + META_EMPTY_SERIES + "' as " +  KEY_SERIES_NAME
 					+ "       )"
 					+ " WHERE " + KEY_SERIES_NAME + " < '" + encodeString(seriesName)
-					+ " Order by 1 Collate UNICODE asc ";
+					+ " Order by 1 " + COLLATION + " asc ";
 
 		Cursor results = mDb.rawQuery(sql, null);
 		int pos = (getIntValue(results, 0));
@@ -2004,11 +2009,11 @@ public class CatalogueDBAdapter {
 	 * @return A Cursor of book meeting the search criteria
 	 */
 	public Cursor searchBooksByChar(String searchText, String first_char, String bookshelf) {
-		return fetchAllBooks("", bookshelf, "", " substr(b." + KEY_TITLE + ", 1, 1)='" + first_char + "' Collate UNICODE", searchText, "", "");
+		return fetchAllBooks("", bookshelf, "", " substr(b." + KEY_TITLE + ", 1, 1)='" + first_char + "' " + COLLATION + "", searchText, "", "");
 	}
 
 	public Cursor searchBooksByGenre(String searchText, String genre, String bookshelf) {
-		return fetchAllBooks("", bookshelf, "", " " + KEY_GENRE + "='" + genre + "' Collate UNICODE ", searchText, "", "");
+		return fetchAllBooks("", bookshelf, "", " " + KEY_GENRE + "='" + genre + "' " + COLLATION + " ", searchText, "", "");
 	}
 	
 	/**
@@ -2022,7 +2027,7 @@ public class CatalogueDBAdapter {
 	 */
 	public Cursor searchBooksChars(String searchText, String bookshelf) {
 		String baseSql = this.fetchAllBooksSql("1", bookshelf, "", "", searchText, "", "");
-		String sql = "SELECT DISTINCT substr(b." + KEY_TITLE + ", 1, 1) Collate UNICODE AS " + KEY_ROWID + " " + baseSql;
+		String sql = "SELECT DISTINCT substr(b." + KEY_TITLE + ", 1, 1) " + COLLATION + " AS " + KEY_ROWID + " " + baseSql;
 		return mDb.rawQuery(sql, new String[]{});
 	}
 	
@@ -2036,7 +2041,7 @@ public class CatalogueDBAdapter {
 	 */
 	public Cursor searchGenres(String searchText, String bookshelf) {
 		String baseSql = this.fetchAllBooksSql("1", bookshelf, "", "", searchText, "", "");
-		String sql = "SELECT DISTINCT " + KEY_GENRE + " AS " + KEY_ROWID + " Collate UNICODE " + baseSql;
+		String sql = "SELECT DISTINCT " + KEY_GENRE + " AS " + KEY_ROWID + " " + COLLATION + " " + baseSql;
 		return mDb.rawQuery(sql, new String[]{});
 	}
 	
@@ -2060,7 +2065,7 @@ public class CatalogueDBAdapter {
 			+ "     On bs." + KEY_BOOK + " = MatchingBooks." + KEY_ROWID
 			+ " Left Outer Join " + DB_TB_SERIES + " s "
 			+ "     On s." + KEY_ROWID + " = bs." + KEY_SERIES_ID
-			+ " Order by s." + KEY_SERIES_NAME + " Collate UNICODE ASC ";
+			+ " Order by s." + KEY_SERIES_NAME + " " + COLLATION + " ASC ";
 
 		return mDb.rawQuery(sql, new String[]{});
 	}
@@ -2405,7 +2410,7 @@ public class CatalogueDBAdapter {
 			+ " FROM " + DB_TB_BOOK_AUTHOR + " ba Join " + DB_TB_AUTHORS + " a "
 			+ "       On a." + KEY_ROWID + " = ba." + KEY_AUTHOR_ID
 			+ " WHERE ba." + KEY_BOOK + "=" + rowId + " "
-			+ " ORDER BY ba." + KEY_AUTHOR_POSITION + " Asc, " + KEY_FAMILY_NAME + " Collate UNICODE ASC, " + KEY_GIVEN_NAMES + " Collate UNICODE ASC";
+			+ " ORDER BY ba." + KEY_AUTHOR_POSITION + " Asc, " + KEY_FAMILY_NAME + " " + COLLATION + " ASC, " + KEY_GIVEN_NAMES + " " + COLLATION + " ASC";
 		return mDb.rawQuery(sql, new String[]{});
 	}
 
@@ -2472,7 +2477,7 @@ public class CatalogueDBAdapter {
 			+ " FROM " + DB_TB_BOOK_SERIES + " bs Join " + DB_TB_SERIES + " s "
 			+ "       On s." + KEY_ROWID + " = bs." + KEY_SERIES_ID
 			+ " WHERE bs." + KEY_BOOK + "=" + rowId + " "
-			+ " ORDER BY bs." + KEY_SERIES_POSITION + ", s." + KEY_SERIES_NAME + " Collate UNICODE ASC";
+			+ " ORDER BY bs." + KEY_SERIES_POSITION + ", s." + KEY_SERIES_NAME + " " + COLLATION + " ASC";
 		return mDb.rawQuery(sql, new String[]{});
 	}
 	
@@ -2631,6 +2636,8 @@ public class CatalogueDBAdapter {
 
 		// Delete any unused authors
 		deleteAuthors();
+		// Delete any unused series
+		deleteSeries();
 
 		return success;
 	}
@@ -2755,6 +2762,28 @@ public class CatalogueDBAdapter {
 	}
 
 	/**
+	 * Update or create the passed author.
+	 * 
+	 * @param a		Author in question
+
+	 */
+	public void sendAuthor(Author a) {
+		if (a.id == 0) {
+			a.id = lookupAuthorId(a);
+		}
+
+		if (a.id != 0) {
+			ContentValues v = new ContentValues();
+			v.put(KEY_FAMILY_NAME, a.familyName);
+			v.put(KEY_GIVEN_NAMES, a.givenNames);
+			mDb.update(DB_TB_AUTHORS, v, KEY_ROWID + " = " + a.id, null);
+		} else {
+			a.id = createAuthor(a.familyName, a.givenNames);
+		}
+		return;
+	}
+
+	/**
 	 * Refresh the passed author from the database, if present. Used to ensure that
 	 * the current record matches the current DB if some other task may have 
 	 * changed the author.
@@ -2780,7 +2809,52 @@ public class CatalogueDBAdapter {
 			}
 		}
 	}	
-	
+
+	/**
+	 * Update the series name or create a new one or update the passed object ID
+	 * 
+	 * @param a		Series in question
+
+	 */
+	public void syncSeries(Series s) {
+		long id = lookupSeriesId(s);
+		// If we have a match, just update the object
+		if (id != 0) {
+			s.id = id;
+			return;
+		}
+
+		if (s.id != 0) {
+			ContentValues v = new ContentValues();
+			v.put(KEY_SERIES_NAME, s.name);
+			mDb.update(DB_TB_SERIES, v, KEY_ROWID + " = " + s.id, null);
+		} else {
+			s.id = createSeries(s.name);
+		}
+		return;
+	}
+
+	/**
+	 * Update or create the passed series.
+	 * 
+	 * @param a		Author in question
+
+	 */
+	public void sendSeries(Series s) {
+		if (s.id == 0) {
+			s.id = lookupSeriesId(s);
+		}
+
+		if (s.id != 0) {
+			ContentValues v = new ContentValues();
+			v.put(KEY_SERIES_NAME, s.name);
+			mDb.update(DB_TB_SERIES, v, KEY_ROWID + " = " + s.id, null);
+		} else {
+			s.id = createSeries(s.name);
+		}
+		return;
+	}
+
 	/**
 	 * Delete the anthology record with the given rowId (not to be confused with the book rowId
 	 * 
@@ -2822,7 +2896,27 @@ public class CatalogueDBAdapter {
 		// Delete author entries with no Book_Author or anthology records
 		boolean success2 = mDb.delete(DB_TB_AUTHORS, "_id NOT IN "
 		+ "(SELECT DISTINCT " + KEY_AUTHOR_ID + " FROM " + DB_TB_BOOK_AUTHOR + ") "
-		+ "AND _id NOT IN (SELECT DISTINCT " + KEY_AUTHOR_ID + " FROM " + DB_TB_ANTHOLOGY + ")", 
+		+ "AND " + KEY_ROWID + " NOT IN (SELECT DISTINCT " + KEY_AUTHOR_ID + " FROM " + DB_TB_ANTHOLOGY + ")", 
+		null) > 0;
+
+		return success1 || success2;
+	}
+
+	/** 
+	 * Delete the author with the given rowId
+	 * 
+	 * @param rowId id of note to delete
+	 * @return true if deleted, false otherwise
+	 */
+	public boolean deleteSeries() {
+		// Delete DB_TB_BOOK_SERIES with no books
+		boolean success1 = mDb.delete(DB_TB_BOOK_SERIES, KEY_BOOK + " NOT IN "
+				+ "(SELECT DISTINCT " + KEY_ROWID + " FROM " + DB_TB_BOOKS + ") ",
+				null) > 0;
+
+		// Delete series entries with no Book_Series
+		boolean success2 = mDb.delete(DB_TB_SERIES, KEY_ROWID + " NOT IN "
+		+ "(SELECT DISTINCT " + KEY_SERIES_ID + " FROM " + DB_TB_BOOK_SERIES + ") ",
 		null) > 0;
 
 		return success1 || success2;
@@ -2891,7 +2985,7 @@ public class CatalogueDBAdapter {
      * The name can be in either "family, given" or "given family" format.
      */
     public Cursor getAuthorByName(String[] names) {
-    	String sql = KEY_FAMILY_NAME + "=? COLLATE UNICODE AND " + KEY_GIVEN_NAMES + "=? COLLATE UNICODE";
+    	String sql = KEY_FAMILY_NAME + "=? " + COLLATION + " AND " + KEY_GIVEN_NAMES + "=? " + COLLATION;
         return mDb.query(DB_TB_AUTHORS, new String[] {"_id", KEY_FAMILY_NAME, KEY_GIVEN_NAMES}, sql, names, null, null, null);
     }
     
@@ -2912,14 +3006,172 @@ public class CatalogueDBAdapter {
 	            c.close();    		
 	    	}
     }
-   
+ 
+    private SQLiteStatement mGetAuthorBookCountQuery = null;
+    /*
+     * This will return the author id based on the name. 
+     * The name can be in either "family, given" or "given family" format.
+     */
+    public long getAuthorBookCount(Author a) {
+    	if (a.id == 0)
+    		a.id = lookupAuthorId(a);
+    	if (a.id == 0)
+    		return 0;
+ 
+    	if (mGetAuthorBookCountQuery == null) {
+        	String sql = "Select Count(" + KEY_BOOK + ") From " + DB_TB_BOOK_AUTHOR + " Where " + KEY_AUTHOR_ID + "=?";
+        	mGetAuthorBookCountQuery = mDb.compileStatement(sql);
+    	}
+    	// Be cautious
+    	synchronized(mGetAuthorBookCountQuery) {
+        	mGetAuthorBookCountQuery.bindLong(1, a.id);
+        	return mGetAuthorBookCountQuery.simpleQueryForLong();
+    	}
+
+    }
+    
+    private SQLiteStatement mGetAuthorAnthologyCountQuery = null;
+    /*
+     * This will return the author id based on the name. 
+     * The name can be in either "family, given" or "given family" format.
+     */
+    public long getAuthorAnthologyCount(Author a) {
+    	if (a.id == 0)
+    		a.id = lookupAuthorId(a);
+    	if (a.id == 0)
+    		return 0;
+ 
+    	if (mGetAuthorAnthologyCountQuery == null) {
+        	String sql = "Select Count(" + KEY_ROWID + ") From " + DB_TB_ANTHOLOGY + " Where " + KEY_AUTHOR_ID + "=?";
+        	mGetAuthorAnthologyCountQuery = mDb.compileStatement(sql);
+    	}
+    	// Be cautious
+    	synchronized(mGetAuthorAnthologyCountQuery) {
+    		mGetAuthorAnthologyCountQuery.bindLong(1, a.id);
+        	return mGetAuthorAnthologyCountQuery.simpleQueryForLong();
+    	}
+
+    }
+
+    private SQLiteStatement mGetSeriesBookCountQuery = null;
+    /*
+     * This will return the author id based on the name. 
+     * The name can be in either "family, given" or "given family" format.
+     */
+    public long getSeriesBookCount(Series s) {
+    	if (s.id == 0)
+    		s.id = lookupSeriesId(s);
+    	if (s.id == 0)
+    		return 0;
+ 
+    	if (mGetSeriesBookCountQuery == null) {
+        	String sql = "Select Count(" + KEY_BOOK + ") From " + DB_TB_BOOK_SERIES + " Where " + KEY_SERIES_ID + "=?";
+        	mGetSeriesBookCountQuery = mDb.compileStatement(sql);
+    	}
+    	// Be cautious
+    	synchronized(mGetSeriesBookCountQuery) {
+    		mGetSeriesBookCountQuery.bindLong(1, s.id);
+        	return mGetSeriesBookCountQuery.simpleQueryForLong();
+    	}
+
+    }
+    
+    public void globalReplaceAuthor(Author oldAuthor, Author newAuthor) {
+		// Create or update the new author
+		if (newAuthor.id == 0)
+			syncAuthor(newAuthor);
+		else
+			sendAuthor(newAuthor);
+
+		// Do some basic sanity checks
+		if (oldAuthor.id == 0)
+			oldAuthor.id = lookupAuthorId(oldAuthor);
+		if (oldAuthor.id == 0)
+			throw new RuntimeException("Old Author is not defined");
+
+		if (oldAuthor.id == newAuthor.id)
+			return;
+
+		try {
+			mDb.beginTransaction();
+			// First handle anthologies; they have a single author and are easy
+			String sql = "Update " + DB_TB_ANTHOLOGY + " set " + KEY_AUTHOR_ID + " = " + newAuthor.id
+						+ " Where " + KEY_AUTHOR_ID + " = " + oldAuthor.id;
+			mDb.execSQL(sql);
+
+			// Next, update books but prevent duplicate index errors
+			sql = "Update " + DB_TB_BOOK_AUTHOR + " Set " + KEY_AUTHOR_ID + " = " + newAuthor.id 
+					+ " Where " + KEY_AUTHOR_ID + " = " + oldAuthor.id
+					+ " and Not Exists(Select NULL From " + DB_TB_BOOK_AUTHOR + " ba Where "
+					+ "                 ba." + KEY_BOOK + " = " + DB_TB_BOOK_AUTHOR + "." + KEY_BOOK
+					+ "                 and ba." + KEY_AUTHOR_ID + " = " + newAuthor.id + ")";
+			mDb.execSQL(sql);	
+			
+			// Finally, delete the rows that would have caused duplicates. Be cautious by using the 
+			// EXISTS statement again; it's not necessary, but we do it to reduce the risk of data
+			// loss if one of the prior statements failed silently.
+			sql = "Delete from " + DB_TB_BOOK_AUTHOR + " Where " + KEY_AUTHOR_ID + " = " + oldAuthor.id 
+			+ " And Exists(Select NULL From " + DB_TB_BOOK_AUTHOR + " ba Where "
+			+ "                 ba." + KEY_BOOK + " = " + DB_TB_BOOK_AUTHOR + "." + KEY_BOOK
+			+ "                 and ba." + KEY_AUTHOR_ID + " = " + newAuthor.id + ")";
+			mDb.execSQL(sql);
+
+			mDb.setTransactionSuccessful();
+		} finally {
+			mDb.endTransaction();
+		}
+	}
+
+    public void globalReplaceSeries(Series oldSeries, Series newSeries) {
+		// Create or update the new author
+		if (newSeries.id == 0)
+			syncSeries(newSeries);
+		else
+			sendSeries(newSeries);
+
+		// Do some basic sanity checks
+		if (oldSeries.id == 0)
+			oldSeries.id = lookupSeriesId(oldSeries);
+		if (oldSeries.id == 0)
+			throw new RuntimeException("Old Series is not defined");
+
+		if (oldSeries.id == newSeries.id)
+			return;
+
+		try {
+			mDb.beginTransaction();
+			String sql;
+
+			// Update books but prevent duplicate index errors
+			sql = "Update " + DB_TB_BOOK_SERIES + " Set " + KEY_SERIES_ID + " = " + newSeries.id 
+					+ " Where " + KEY_SERIES_ID + " = " + oldSeries.id
+					+ " and Not Exists(Select NULL From " + DB_TB_BOOK_SERIES + " bs Where "
+					+ "                 bs." + KEY_BOOK + " = " + DB_TB_BOOK_SERIES + "." + KEY_BOOK
+					+ "                 and bs." + KEY_SERIES_ID + " = " + newSeries.id + ")";
+			mDb.execSQL(sql);	
+			
+			// Finally, delete the rows that would have caused duplicates. Be cautious by using the 
+			// EXISTS statement again; it's not necessary, but we do it to reduce the risk of data
+			// loss if one of the prior statements failed silently.
+			sql = "Delete from " + DB_TB_BOOK_SERIES + " Where " + KEY_SERIES_ID + " = " + oldSeries.id 
+			+ " and Exists(Select NULL From " + DB_TB_BOOK_SERIES + " bs Where "
+			+ "                 bs." + KEY_BOOK + " = " + DB_TB_BOOK_SERIES + "." + KEY_BOOK
+			+ "                 and bs." + KEY_SERIES_ID + " = " + newSeries.id + ")";
+			mDb.execSQL(sql);
+
+			mDb.setTransactionSuccessful();
+		} finally {
+			mDb.endTransaction();
+		}
+	}
+
     /*
      * This will return the author id based on the name. 
      * The name can be in either "family, given" or "given family" format.
      */
     public Cursor getSeriesByName(String name) {
     	String sql = "";
-    	sql = KEY_SERIES_NAME + "='" + encodeString(name) + "' Collate UNICODE";
+    	sql = KEY_SERIES_NAME + "='" + encodeString(name) + "' " + COLLATION + "";
         return mDb.query(DB_TB_SERIES, new String[] {"_id", KEY_SERIES_NAME}, sql, null, null, null, null);
     }
  

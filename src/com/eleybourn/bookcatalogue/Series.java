@@ -79,7 +79,18 @@ public class Series implements Parcelable, Utils.ItemWithIdFixup {
 		return getDisplayName();
 	}
 
-	/**
+    /**
+     * Replace local details from another series
+     * 
+     * @param source	Author to copy
+     */
+    void copyFrom(Series source) {
+		name = source.name;
+		num = source.num;
+		id = source.id;    	
+    }
+
+    /**
 	 * Support for creation via Parcelable
 	 */
     public static final Parcelable.Creator<Series> CREATOR

@@ -100,6 +100,9 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
 	// The resource ID for the row view
 	private int mRowViewId;
 
+	// Row ID... mainly used (if list is from a book) to know if book is new.
+	protected Long mRowId = null;
+
 	/**
 	 * Called when user clicks the 'Add' button (if present).
 	 * 
@@ -199,6 +202,7 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
 	        // Look for title and title_label
 			Bundle extras = getIntent().getExtras();
 			if (extras != null) {
+				mRowId = extras.getLong(CatalogueDBAdapter.KEY_ROWID);
 				mBookTitleLabel = extras.getString("title_label");
 				mBookTitle = extras.getString("title");
 				setTextOrHideView(R.id.title_label, mBookTitleLabel);

@@ -22,9 +22,12 @@ package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -129,13 +132,17 @@ public class EditAuthorList extends EditObjectList<Author> {
 
 	@Override
 	protected void onRowClick(View target, final Author object) {
+		editAuthor(object);
+	}
+
+	private void editAuthor(final Author author) {
 		final Dialog dialog = new Dialog(this);
 		dialog.setContentView(R.layout.edit_author);
 		dialog.setTitle(R.string.edit_author_details);
 		EditText familyView = (EditText) dialog.findViewById(R.id.family_name);
 		EditText givenView = (EditText) dialog.findViewById(R.id.given_names);
-		familyView.setText(object.familyName);
-		givenView.setText(object.givenNames);
+		familyView.setText(author.familyName);
+		givenView.setText(author.givenNames);
 
 		Button saveButton = (Button) dialog.findViewById(R.id.confirm);
 		saveButton.setOnClickListener(new View.OnClickListener() {
@@ -148,12 +155,10 @@ public class EditAuthorList extends EditObjectList<Author> {
 					Toast.makeText(EditAuthorList.this, R.string.author_is_blank, Toast.LENGTH_LONG).show();
 					return;
 				}
-				object.familyName = newFamily;
-				object.givenNames = givenView.getText().toString();
-				mDbHelper.syncAuthor(object);
-					
+				String newGiven = givenView.getText().toString();
+				Author newAuthor = new Author(newFamily, newGiven);
 				dialog.dismiss();
-				mAdapter.notifyDataSetChanged();
+				confirmEditAuthor(author, newAuthor);
 			}
 		});
 		Button cancelButton = (Button) dialog.findViewById(R.id.cancel);
@@ -166,7 +171,65 @@ public class EditAuthorList extends EditObjectList<Author> {
 		
 		dialog.show();
 	}
+	
+	private void confirmEditAuthor(final Author oldAuthor, final Author newAuthor) {
+		// First, deal with a some special cases...
+		
+		// Case: Unchanged.
+		if (newAuthor.familyName.compareTo(oldAuthor.familyName) == 0 
+				&& newAuthor.givenNames.compareTo(oldAuthor.givenNames) == 0) {
+			// No change; nothing to do
+			return;
+		}
 
+		// Get the new author ID
+		oldAuthor.id = mDbHelper.lookupAuthorId(oldAuthor);
+		newAuthor.id = mDbHelper.lookupAuthorId(newAuthor);
+
+		// See if the old author is used in any other books.
+		long nRefs = mDbHelper.getAuthorBookCount(oldAuthor) + mDbHelper.getAuthorAnthologyCount(oldAuthor);
+		boolean oldHasOthers = nRefs > (mRowId == 0 ? 0 : 1);
+
+		// Case: author is the same, or is only used in this book
+		if (newAuthor.id == oldAuthor.id || !oldHasOthers) {
+			// Just update with the most recent spelling and format
+			oldAuthor.copyFrom(newAuthor);
+			Utils.pruneList(mDbHelper, mList);
+			mDbHelper.sendAuthor(oldAuthor);
+			mAdapter.notifyDataSetChanged();
+			return;
+		}
+
+		// TODO Stringify this procedure!
+		// When we get here, we know the names are genuinely different and the old author is used in more than one place.
+		final AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage("You have changed the author from:\n  '" 
+										+ oldAuthor.getSortName() + "' to \n  '" + newAuthor.getSortName() 
+										+ "'\nHow do you wish to apply this change? "
+										+ "\nNote: The choice 'All Books' will be applied instantly.").create();
+
+		alertDialog.setTitle("Scope of Change");
+		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
+		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "This Book", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				oldAuthor.copyFrom(newAuthor);
+				Utils.pruneList(mDbHelper, mList);
+				mAdapter.notifyDataSetChanged();
+				alertDialog.dismiss();
+			}
+		}); 
+
+		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "All Books", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				mDbHelper.globalReplaceAuthor(oldAuthor, newAuthor);
+				oldAuthor.copyFrom(newAuthor);
+				Utils.pruneList(mDbHelper, mList);
+				mAdapter.notifyDataSetChanged();
+				alertDialog.dismiss();
+			}
+		}); 
+
+		alertDialog.show();
+	}
 //	@Override
 //	protected boolean onSave(Intent i) {
 //		for(Author a : mList) {

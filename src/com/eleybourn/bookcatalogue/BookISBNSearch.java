@@ -392,8 +392,8 @@ public class BookISBNSearch extends ActivityWithTasks {
 	private SearchThread.SearchHandler mSearchHandler = new SearchThread.SearchHandler() {
 
 		@Override
-		public void onFinish(SearchThread nonePresent, Bundle bookData) {
-			if (bookData == null) {
+		public void onFinish(SearchThread nonePresent, Bundle bookData, boolean cancelled) {
+			if (cancelled || bookData == null) {
 				if (mMode == MODE_SCAN)
 					startScannerActivity();
 			} else {

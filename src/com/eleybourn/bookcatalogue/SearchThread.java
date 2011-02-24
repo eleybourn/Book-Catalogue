@@ -62,14 +62,14 @@ abstract public class SearchThread extends ManagedTask {
 	 * @author Grunthos
 	 */
 	public interface SearchHandler extends ManagedTask.TaskHandler {
-		void onFinish(SearchThread t, Bundle bookData);
+		void onFinish(SearchThread t, Bundle bookData, boolean cancelled);
 	}
 
 	@Override
 	protected boolean onFinish() {
 		doProgress("Done",0);
 		if (getTaskHandler() != null) {
-			((SearchHandler)getTaskHandler()).onFinish(this, mBookData);
+			((SearchHandler)getTaskHandler()).onFinish(this, mBookData, isCancelled());				
 			return true;
 		} else {
 			return false;

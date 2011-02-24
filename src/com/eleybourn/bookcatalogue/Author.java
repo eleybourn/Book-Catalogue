@@ -36,7 +36,6 @@ public class Author implements Parcelable, Utils.ItemWithIdFixup {
 	public String 	familyName;
 	public String 	givenNames;
 	public long		id;
-	public boolean	requiresUpdate = false;
 
 	/**
 	 * Constructor that will attempt to parse a single string into an author name.
@@ -133,6 +132,17 @@ public class Author implements Parcelable, Utils.ItemWithIdFixup {
             return new Author[size];
         }
     };
+
+    /**
+     * Replace local details from another author
+     * 
+     * @param source	Author to copy
+     */
+    void copyFrom(Author source) {
+		familyName = source.familyName;
+		givenNames = source.givenNames;
+		id = source.id;    	
+    }
 
     /**
      * Constructor using a Parcel.

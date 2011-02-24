@@ -200,6 +200,7 @@ public class BookEditFields extends Activity {
 					public void onClick(View v) {
 						Intent i = new Intent(BookEditFields.this, EditAuthorList.class);
 						i.putExtra(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mAuthorList);
+						i.putExtra(CatalogueDBAdapter.KEY_ROWID, mRowId);
 						i.putExtra("title_label", CatalogueDBAdapter.KEY_TITLE);
 						i.putExtra("title", mFields.getField(R.id.title).getValue().toString());
 						startActivityForResult(i, ACTIVITY_EDIT_AUTHORS);						
@@ -227,6 +228,7 @@ public class BookEditFields extends Activity {
 					public void onClick(View v) {
 						Intent i = new Intent(BookEditFields.this, EditSeriesList.class);
 						i.putExtra(CatalogueDBAdapter.KEY_SERIES_ARRAY, mSeriesList);
+						i.putExtra(CatalogueDBAdapter.KEY_ROWID, mRowId);
 						i.putExtra("title_label", CatalogueDBAdapter.KEY_TITLE);
 						i.putExtra("title", mFields.getField(R.id.title).getValue().toString());
 						startActivityForResult(i, ACTIVITY_EDIT_SERIES);						
@@ -467,6 +469,10 @@ public class BookEditFields extends Activity {
 			// mConfirmButton.setOnClickListener - This is set in populate fields. The behaviour changes depending on if it is adding or saving
 			mCancelButton.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
+					// Cleanup because we may have made global changes
+					mDbHelper.deleteAuthors();
+					mDbHelper.deleteSeries();
+					// We're done.
 					setResult(RESULT_OK);
 					finish();
 				}

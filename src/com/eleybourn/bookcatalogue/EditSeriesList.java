@@ -24,7 +24,9 @@ import java.util.ArrayList;
 
 import com.eleybourn.bookcatalogue.Fields.Field;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -129,16 +131,20 @@ public class EditSeriesList extends EditObjectList<Series> {
 
 	@Override
 	protected void onRowClick(View target, final Series object) {
+		editSeries(object);
+	}
+	
+	private void editSeries(final Series series) {
 		final Dialog dialog = new Dialog(this);
 		dialog.setContentView(R.layout.edit_book_series);
 		dialog.setTitle(R.string.edit_book_series);
 
 		AutoCompleteTextView seriesView = (AutoCompleteTextView) dialog.findViewById(R.id.series);
-		seriesView.setText(object.name);
+		seriesView.setText(series.name);
 		seriesView.setAdapter(mSeriesAdapter);
 
 		EditText numView = (EditText) dialog.findViewById(R.id.series_num);
-		numView.setText(object.num);
+		numView.setText(series.num);
 
 		setTextOrHideView(dialog.findViewById(R.id.title_label), mBookTitleLabel);
 		setTextOrHideView(dialog.findViewById(R.id.title), mBookTitle);
@@ -154,10 +160,9 @@ public class EditSeriesList extends EditObjectList<Series> {
 					Toast.makeText(EditSeriesList.this, R.string.series_is_blank, Toast.LENGTH_LONG).show();
 					return;
 				}
-				object.name = newName;
-				object.num = numView.getText().toString();
+				Series newSeries = new Series(newName, numView.getText().toString());
+				confirmEditSeries(series, newSeries);
 				dialog.dismiss();
-				mAdapter.notifyDataSetChanged();
 			}
 		});
 		Button cancelButton = (Button) dialog.findViewById(R.id.cancel);
@@ -168,6 +173,72 @@ public class EditSeriesList extends EditObjectList<Series> {
 			}
 		});
 		
-		dialog.show();
+		dialog.show();		
+	}
+
+	private void confirmEditSeries(final Series oldSeries, final Series newSeries) {
+		// First, deal with a some special cases...
+		
+		boolean nameIsSame = (newSeries.name.compareTo(oldSeries.name) == 0);
+		// Case: Unchanged.
+		if (nameIsSame && newSeries.num.compareTo(oldSeries.num) == 0) {
+			// No change to anything; nothing to do
+			return;
+		}
+		if (nameIsSame) {
+			// Same name, different number... just update
+			oldSeries.copyFrom(newSeries);
+			Utils.pruneList(mDbHelper, mList);
+			mAdapter.notifyDataSetChanged();
+			return;
+		}
+
+		// Get the new IDs
+		oldSeries.id = mDbHelper.lookupSeriesId(oldSeries);
+		newSeries.id = mDbHelper.lookupSeriesId(newSeries);
+
+		// See if the old series is used in any other books.
+		long nRefs = mDbHelper.getSeriesBookCount(oldSeries);
+		boolean oldHasOthers = nRefs > (mRowId == 0 ? 0 : 1);
+
+		// Case: series is the same (but different case), or is only used in this book
+		if (newSeries.id == oldSeries.id || !oldHasOthers) {
+			// Just update with the most recent spelling and format
+			oldSeries.copyFrom(newSeries);
+			Utils.pruneList(mDbHelper, mList);
+			mDbHelper.sendSeries(oldSeries);
+			mAdapter.notifyDataSetChanged();
+			return;
+		}
+
+		// TODO Stringify this procedure!
+		// When we get here, we know the names are genuinely different and the old series is used in more than one place.
+		final AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage("You have changed the series from:\n  '" 
+										+ oldSeries.name + "' to \n  '" + newSeries.name 
+										+ "'\nHow do you wish to apply this change? "
+										+ "\nNote: The choice 'All Books' will be applied instantly.").create();
+
+		alertDialog.setTitle("Scope of Change");
+		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
+		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "This Book", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				oldSeries.copyFrom(newSeries);
+				Utils.pruneList(mDbHelper, mList);
+				mAdapter.notifyDataSetChanged();
+				alertDialog.dismiss();
+			}
+		});
+
+		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "All Books", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				mDbHelper.globalReplaceSeries(oldSeries, newSeries);
+				oldSeries.copyFrom(newSeries);
+				Utils.pruneList(mDbHelper, mList);
+				mAdapter.notifyDataSetChanged();
+				alertDialog.dismiss();
+			}
+		}); 
+
+		alertDialog.show();
 	}
 }

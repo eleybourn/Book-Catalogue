@@ -34,6 +34,7 @@ public class SearchManager implements OnTaskEndedListener {
 	private Bundle mBookData = new Bundle();
 	private boolean mWaitingForIsbn = false;
 
+	private boolean mCancelledFlg = false;
 	private String mAuthor;
 	private String mTitle;
 	private String mIsbn;
@@ -67,20 +68,24 @@ public class SearchManager implements OnTaskEndedListener {
 	}
 
 	private void startAmazon() {
-		startOne( new SearchAmazonThread(mTaskManager, mAmazonHandler, mAuthor, mTitle, mIsbn) );		
+		if (!mCancelledFlg)
+			startOne( new SearchAmazonThread(mTaskManager, mAmazonHandler, mAuthor, mTitle, mIsbn) );		
 	}
 	private void startGoogle() {
-		startOne( new SearchGoogleThread(mTaskManager, mGoogleHandler, mAuthor, mTitle, mIsbn) );		
+		if (!mCancelledFlg)
+			startOne( new SearchGoogleThread(mTaskManager, mGoogleHandler, mAuthor, mTitle, mIsbn) );		
 	}
 	private void startLibraryThing(){
-		if (mIsbn != null && mIsbn.trim().length() > 0)
-			startOne( new SearchLibraryThingThread(mTaskManager, mLibraryThingHandler, mAuthor, mTitle, mIsbn));		
+		if (!mCancelledFlg)
+			if (mIsbn != null && mIsbn.trim().length() > 0)
+				startOne( new SearchLibraryThingThread(mTaskManager, mLibraryThingHandler, mAuthor, mTitle, mIsbn));		
 	}
 
 	public void search(String author, String title, String isbn) {
 		mAuthor = author;
 		mTitle = title;
 		mIsbn = isbn;
+		mCancelledFlg = false;
 
 		// We really want to ensure we get the same book from each, so if isbn is not present, do
 		// these in series.
@@ -150,7 +155,7 @@ public class SearchManager implements OnTaskEndedListener {
 		if (authors == null || authors.length() == 0 || title == null || title.length() == 0) {
 
 			mTaskManager.doToast(mTaskManager.getString(R.string.book_not_found));
-			mSearchHandler.onFinish(null, null);
+			mSearchHandler.onFinish(null, null, mCancelledFlg);
 
 		} else {
 			Utils.doProperCase(mBookData, CatalogueDBAdapter.KEY_TITLE);
@@ -170,7 +175,7 @@ public class SearchManager implements OnTaskEndedListener {
 	    	} catch (Exception e) {
 	    		Log.e("BC","Failed to add series", e);
 	    	}
-			mSearchHandler.onFinish(null, mBookData);
+			mSearchHandler.onFinish(null, mBookData, mCancelledFlg);
 		}
 	}
 
@@ -187,56 +192,72 @@ public class SearchManager implements OnTaskEndedListener {
 
 	private SearchHandler mGoogleHandler = new SearchHandler() {
 		@Override
-		public void onFinish(SearchThread t, Bundle bookData) {
+		public void onFinish(SearchThread t, Bundle bookData, boolean cancelled) {
+			mCancelledFlg = cancelled;
 			mGoogleData = bookData;
-			if (mWaitingForIsbn) {
-				if (Utils.isNonBlankString(bookData, CatalogueDBAdapter.KEY_ISBN)) {
-					mWaitingForIsbn = false;
-					// Start the other two...even if they have run before
-					mIsbn = bookData.getString(CatalogueDBAdapter.KEY_ISBN);
-					startAmazon();
-					startLibraryThing();
-				} else {
-					// Start next one that has not run. 
-					startNext();
-				}
+			if (cancelled) {
+				mWaitingForIsbn = false;
+			} else {
+				if (mWaitingForIsbn) {
+					if (Utils.isNonBlankString(bookData, CatalogueDBAdapter.KEY_ISBN)) {
+						mWaitingForIsbn = false;
+						// Start the other two...even if they have run before
+						mIsbn = bookData.getString(CatalogueDBAdapter.KEY_ISBN);
+						startAmazon();
+						startLibraryThing();
+					} else {
+						// Start next one that has not run. 
+						startNext();
+					}
+				}				
 			}
 		}
 	};
 
 	private SearchHandler mAmazonHandler = new SearchHandler() {
 		@Override
-		public void onFinish(SearchThread t, Bundle bookData) {
+		public void onFinish(SearchThread t, Bundle bookData, boolean cancelled) {
+			mCancelledFlg = cancelled;
 			mAmazonData = bookData;
-			if (mWaitingForIsbn) {
-				if (Utils.isNonBlankString(bookData, CatalogueDBAdapter.KEY_ISBN)) {
-					mWaitingForIsbn = false;
-					// Start the other two...even if they have run before
-					mIsbn = bookData.getString(CatalogueDBAdapter.KEY_ISBN);
-					startGoogle();
-					startLibraryThing();
-				} else {
-					// Start next one that has not run. 
-					startNext();
-				}
+			if (cancelled) {
+				mWaitingForIsbn = false;
+			} else {
+				if (mWaitingForIsbn) {
+					if (Utils.isNonBlankString(bookData, CatalogueDBAdapter.KEY_ISBN)) {
+						mWaitingForIsbn = false;
+						// Start the other two...even if they have run before
+						mIsbn = bookData.getString(CatalogueDBAdapter.KEY_ISBN);
+						startGoogle();
+						startLibraryThing();
+					} else {
+						// Start next one that has not run. 
+						startNext();
+					}
+				}				
 			}
 		}
 	};
+
 	private SearchHandler mLibraryThingHandler = new SearchHandler() {
 		@Override
-		public void onFinish(SearchThread t, Bundle bookData) {
+		public void onFinish(SearchThread t, Bundle bookData, boolean cancelled) {
+			mCancelledFlg = cancelled;
 			mLibraryThingData = bookData;
-			if (mWaitingForIsbn) {
-				if (Utils.isNonBlankString(bookData, CatalogueDBAdapter.KEY_ISBN)) {
-					mWaitingForIsbn = false;
-					// Start the other two...even if they have run before
-					mIsbn = bookData.getString(CatalogueDBAdapter.KEY_ISBN);
-					startGoogle();
-					startAmazon();
-				} else {
-					// Start next one that has not run. 
-					startNext();
-				}
+			if (cancelled) {
+				mWaitingForIsbn = false;
+			} else {
+				if (mWaitingForIsbn) {
+					if (Utils.isNonBlankString(bookData, CatalogueDBAdapter.KEY_ISBN)) {
+						mWaitingForIsbn = false;
+						// Start the other two...even if they have run before
+						mIsbn = bookData.getString(CatalogueDBAdapter.KEY_ISBN);
+						startGoogle();
+						startAmazon();
+					} else {
+						// Start next one that has not run. 
+						startNext();
+					}
+				}				
 			}
 		}
 	};

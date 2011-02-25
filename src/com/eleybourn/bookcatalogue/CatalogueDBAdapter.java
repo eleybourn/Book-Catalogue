@@ -1642,7 +1642,7 @@ public class CatalogueDBAdapter {
 	}
 
 	private String sqlAllSeriesOnBookshelf(String bookshelf) {
-		return "select distinct s." + KEY_SERIES_NAME //+ ", s." + KEY_SERIES_NAME + " as series_sort "
+		return "select distinct s." + KEY_ROWID + ", s." + KEY_SERIES_NAME //+ ", s." + KEY_SERIES_NAME + " as series_sort "
 				 + " From " + DB_TB_SERIES + " s "
 				 + " join " + DB_TB_BOOK_SERIES + " bsw "
 				 + "    on bsw." + KEY_SERIES_ID + " = s." + KEY_ROWID 
@@ -1655,7 +1655,7 @@ public class CatalogueDBAdapter {
 				 + " where bs." + KEY_BOOKSHELF + " = '" + bookshelf + "'";
 	}
 	private String sqlAllSeries() {
-		return "select distinct s." + KEY_SERIES_NAME //+ ", s." + KEY_SERIES_NAME + " as series_sort "
+		return "select distinct s." + KEY_ROWID + ", s."+ KEY_SERIES_NAME //+ ", s." + KEY_SERIES_NAME + " as series_sort "
 				 + " From " + DB_TB_SERIES + " s ";
 	}
 	/**
@@ -1673,11 +1673,11 @@ public class CatalogueDBAdapter {
 		}
 		// Display blank series as '<Empty Series>' BUT sort as ''. Using a UNION
 		// seems to make ordering fail.
-		String sql = "Select Case When " + KEY_SERIES_NAME + " = '' Then '" + META_EMPTY_SERIES + "' Else " + KEY_SERIES_NAME + " End  as " + KEY_ROWID
+		String sql = "Select " + KEY_ROWID + ", Case When " + KEY_SERIES_NAME + " = '' Then '" + META_EMPTY_SERIES + "' Else " + KEY_SERIES_NAME + " End  as " + KEY_SERIES_NAME
 					+ " From ( " + series 
-					+ "       UNION Select '' as " +  KEY_SERIES_NAME
-					+ "       )"
-					+ " Order by " + KEY_SERIES_NAME + " " + COLLATION + " asc ";
+					+ "       UNION Select -1 as " + KEY_ROWID + ", '' as " + KEY_SERIES_NAME
+					+ "       ) s"
+					+ " Order by s." + KEY_SERIES_NAME + " " + COLLATION + " asc ";
 
 		return mDb.rawQuery(sql, new String[]{});
 	}
@@ -2058,7 +2058,8 @@ public class CatalogueDBAdapter {
 		String sql;
 		String baseSql = this.fetchAllBooksSql("1", bookshelf, "", "", searchText, "", "");
 
-		sql = "Select DISTINCT Case When s." + KEY_SERIES_NAME + " is NULL Then '" + META_EMPTY_SERIES + "'"
+		sql = "Select DISTINCT Case When s." + KEY_ROWID + " is NULL Then -1 Else s." + KEY_ROWID + " as " + KEY_ROWID + ","
+			+ " Case When s." + KEY_SERIES_NAME + " is NULL Then '" + META_EMPTY_SERIES + "'"
 			+ "               Else " + KEY_SERIES_NAME + " End AS " + KEY_ROWID
 			+ " From (Select b." + KEY_ROWID + " " + baseSql + " ) MatchingBooks"
 			+ " Left Outer Join " + DB_TB_BOOK_SERIES + " bs "
@@ -2903,9 +2904,8 @@ public class CatalogueDBAdapter {
 	}
 
 	/** 
-	 * Delete the author with the given rowId
+	 * Delete the series with no related books
 	 * 
-	 * @param rowId id of note to delete
 	 * @return true if deleted, false otherwise
 	 */
 	public boolean deleteSeries() {
@@ -2918,6 +2918,29 @@ public class CatalogueDBAdapter {
 		boolean success2 = mDb.delete(DB_TB_SERIES, KEY_ROWID + " NOT IN "
 		+ "(SELECT DISTINCT " + KEY_SERIES_ID + " FROM " + DB_TB_BOOK_SERIES + ") ",
 		null) > 0;
+
+		return success1 || success2;
+	}
+
+	/** 
+	 * Delete the passed series
+	 * 
+	 * @param series 	series to delete
+	 * @return true if deleted, false otherwise
+	 */
+	public boolean deleteSeries(Series series) {
+		if (series.id == 0)
+			series.id = lookupSeriesId(series);
+		if (series.id == 0)
+			return false;
+
+		// Delete DB_TB_BOOK_SERIES for this series
+		boolean success1 = mDb.delete(DB_TB_BOOK_SERIES, KEY_SERIES_ID + " = " + series.id, null) > 0;
+
+		boolean success2 = false;
+		if (success1)
+			// Cleanup all series
+			success2 = deleteSeries();
 
 		return success1 || success2;
 	}
@@ -3001,6 +3024,24 @@ public class CatalogueDBAdapter {
             if (!c.moveToFirst())
             	return null;
             return new Author(id, c.getString(0), c.getString(1)); 
+    	} finally {
+    		if (c != null)
+	            c.close();    		
+	    	}
+    }
+ 
+    /*
+     * This will return the series based on the ID.
+     */
+    public Series getSeriesById(long id) {
+    	Cursor c = null;
+    	try {
+        	String sql = "Select " + KEY_SERIES_NAME + " From " + DB_TB_SERIES 
+        				+ " Where " + KEY_ROWID + " = " + id;
+            c = mDb.rawQuery(sql, null);
+            if (!c.moveToFirst())
+            	return null;
+            return new Series(id, c.getString(0), ""); 
     	} finally {
     		if (c != null)
 	            c.close();    		
@@ -3174,20 +3215,57 @@ public class CatalogueDBAdapter {
     	sql = KEY_SERIES_NAME + "='" + encodeString(name) + "' " + COLLATION + "";
         return mDb.query(DB_TB_SERIES, new String[] {"_id", KEY_SERIES_NAME}, sql, null, null, null, null);
     }
- 
+
     /**
-     * Return a Cursor over the list of all series in the database
+     * Utility routine to fill an array with the specified column from the passed SQL.
      * 
-     * @return Cursor over all notes
+     * @param sql			SQL to execute
+     * @param columnName	Column to fetch
+     * 
+     * @return				List of values
      */
-    public Cursor fetchAllSeries() {
-    	String sql = "SELECT DISTINCT " + KEY_SERIES_NAME +  
-    		" FROM " + DB_TB_SERIES + "" +  
-    		" ORDER BY " + KEY_SERIES_NAME + "";
-    	return mDb.rawQuery(sql, new String[]{});
+    private ArrayList<String> fetchArray(String sql, String columnName) {
+		ArrayList<String> list = new ArrayList<String>();
+
+		Cursor cursor = mDb.rawQuery(sql, new String[]{});
+		try {
+			int column = cursor.getColumnIndexOrThrow(columnName);
+			while (cursor.moveToNext()) {
+				String name = cursor.getString(column);
+				list.add(name);
+			}
+			return list;			
+		} finally {
+			cursor.close();			
+		}    	
     }
-    
-    
+
+    /**
+     * Utility routine to build an arrayList of all series names.
+     * 
+     * @return
+     */
+	public ArrayList<String> fetchAllSeriesArray() {
+    	String sql = "SELECT DISTINCT " + KEY_SERIES_NAME +  
+					" FROM " + DB_TB_SERIES + "" +  
+					" ORDER BY " + KEY_SERIES_NAME + "";
+    	return fetchArray(sql, KEY_SERIES_NAME);
+	}
+
+    /**
+     * Utility routine to build an arrayList of all author names.
+     * 
+     * @return
+     */
+	public ArrayList<String> fetchAllAuthorsArray() {
+
+    	String sql = "SELECT DISTINCT Case When " + KEY_GIVEN_NAMES + " = '' Then " + KEY_FAMILY_NAME +  
+    				" Else " + KEY_FAMILY_NAME + "||', '||" + KEY_GIVEN_NAMES +
+    				" End as " + KEY_AUTHOR_FORMATTED + 
+					" FROM " + DB_TB_AUTHORS + "" +  
+					" ORDER BY 1";
+    	return fetchArray(sql, KEY_AUTHOR_FORMATTED);
+	}
 
     /**
      * Return a Cursor positioned at the books that matches the given rowId

@@ -100,11 +100,16 @@ public class BookCatalogue extends ExpandableListActivity {
 	private static final int EDIT_BOOK_FRIENDS = Menu.FIRST + 12;
 	private static final int SEARCH = Menu.FIRST + 13;
 	private static final int INSERT_NAME_ID = Menu.FIRST + 14;
-	
+
+	private static final int DELETE_SERIES_ID = Menu.FIRST + 15;
+	private static final int EDIT_AUTHOR_ID = Menu.FIRST + 16;
+	private static final int EDIT_SERIES_ID = Menu.FIRST + 17;
+
 	public static String bookshelf = "All Books";
 	private ArrayAdapter<String> spinnerAdapter;
 	private Spinner mBookshelfText;
-	
+	BasicBookListAdapter mBooksAdapter = null;
+
 	private SharedPreferences mPrefs;
 	public int sort = 0;
 	private static final int SORT_AUTHOR = 0; 
@@ -338,8 +343,18 @@ public class BookCatalogue extends ExpandableListActivity {
 		 */
 		@Override
 		protected Cursor getChildrenCursor(Cursor groupCursor) {
-			return mViewManager.getChildrenCursor(groupCursor);
+			Cursor children = mViewManager.getChildrenCursor(groupCursor);
+			BookCatalogue.this.startManagingCursor(children);
+			return children;
 		}
+
+		/**
+		 * Make datasetchanged available
+		 */
+//		@Override
+//		public void notifyDataSetChanged() {
+//			super.notifyDataSetChanged();
+//		}
 
 		/**
 		 * Override the setTextView function. This helps us set the appropriate opening and
@@ -428,11 +443,19 @@ public class BookCatalogue extends ExpandableListActivity {
 		// Methods to 'get' list/view related items
 		public int getLayout() { return mLayout; };
 		public int getLayoutChild() { return mChildLayout; };
-		public Cursor getCursor() { return mCursor; };
+		public Cursor getCursor() {
+			if (mCursor == null) {
+				newCursor();
+				BookCatalogue.this.startManagingCursor(mCursor);
+			}
+			return mCursor;
+		};
+		abstract public Cursor newCursor();
 		public String[] getFrom() { return mFrom; };
 		public int[] getTo() { return mTo; };
 		public String[] getChildFrom() { return mChildFrom; };
 		public int[] getChildTo() { return mChildTo; };
+
 		// Get a cursor to retrieve list of children.
 		public abstract Cursor getChildrenCursor(Cursor groupCursor);
 	}
@@ -444,14 +467,6 @@ public class BookCatalogue extends ExpandableListActivity {
 		TitleViewManager() {
 			mLayout = R.layout.row_authors;
 			mChildLayout = R.layout.row_books; 
-
-			if (search_query.equals("")) {
-				// Return all books (for the bookshelf)
-				mCursor = mDbHelper.fetchAllBookChars(bookshelf);
-			} else {
-				// Return the search results instead of all books (for the bookshelf)
-				mCursor = mDbHelper.searchBooksChars(search_query, bookshelf);
-			}
 			mFrom = new String[]{CatalogueDBAdapter.KEY_ROWID};
 			mTo = new int[]{R.id.row_family};			
 			mChildFrom = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_PUBLISHER, CatalogueDBAdapter.KEY_SERIES_FORMATTED, CatalogueDBAdapter.KEY_READ};
@@ -464,6 +479,17 @@ public class BookCatalogue extends ExpandableListActivity {
 				return mDbHelper.searchBooksByChar(search_query, groupCursor.getString(mGroupIdColumnIndex), bookshelf);
 			}
 		}
+		@Override
+		public Cursor newCursor() {
+			if (search_query.equals("")) {
+				// Return all books (for the bookshelf)
+				mCursor = mDbHelper.fetchAllBookChars(bookshelf);
+			} else {
+				// Return the search results instead of all books (for the bookshelf)
+				mCursor = mDbHelper.searchBooksChars(search_query, bookshelf);
+			}
+			return mCursor;
+		}
 	}
 
 	/*
@@ -473,13 +499,6 @@ public class BookCatalogue extends ExpandableListActivity {
 		AuthorViewManager() {
 			mLayout = R.layout.row_authors;
 			mChildLayout = R.layout.row_authors_books;
-			if (search_query.equals("")) {
-				// Return all books for the given bookshelf
-				mCursor = mDbHelper.fetchAllAuthors(bookshelf);
-			} else {
-				// Return the search results instead of all books (for the bookshelf)
-				mCursor = mDbHelper.searchAuthors(search_query, bookshelf);
-			}
 			mFrom = new String[]{CatalogueDBAdapter.KEY_AUTHOR_FORMATTED};
 			mTo = new int[]{R.id.row_family};	
 			mChildFrom = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_SERIES_FORMATTED, CatalogueDBAdapter.KEY_READ};
@@ -487,6 +506,17 @@ public class BookCatalogue extends ExpandableListActivity {
 		}
 		public Cursor getChildrenCursor(Cursor groupCursor) {
 			return mDbHelper.fetchAllBooksByAuthor(groupCursor.getInt(mGroupIdColumnIndex), bookshelf, search_query);
+		}
+		@Override
+		public Cursor newCursor() {
+			if (search_query.equals("")) {
+				// Return all books for the given bookshelf
+				mCursor = mDbHelper.fetchAllAuthors(bookshelf);
+			} else {
+				// Return the search results instead of all books (for the bookshelf)
+				mCursor = mDbHelper.searchAuthors(search_query, bookshelf);
+			}
+			return mCursor;
 		}
 	}
 
@@ -497,18 +527,23 @@ public class BookCatalogue extends ExpandableListActivity {
 		SeriesViewManager() {
 			mLayout = R.layout.row_authors;
 			mChildLayout = R.layout.row_series_books;
-			if (search_query.equals("")) {
-				mCursor = mDbHelper.fetchAllSeries(bookshelf, true);
-			} else {
-				mCursor = mDbHelper.searchSeries(search_query, bookshelf);
-			}
-			mFrom = new String[]{CatalogueDBAdapter.KEY_ROWID};
+			mFrom = new String[]{CatalogueDBAdapter.KEY_SERIES_NAME};
 			mTo = new int[]{R.id.row_family};	
 			mChildFrom = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_SERIES_NUM, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, CatalogueDBAdapter.KEY_READ};		
 			mChildTo = new int[]{R.id.row_img, R.id.row_series_num, R.id.row_title, R.id.row_author, R.id.row_read};
 		}
 		public Cursor getChildrenCursor(Cursor groupCursor) {
-			return mDbHelper.fetchAllBooksBySeries(groupCursor.getString(mGroupIdColumnIndex), bookshelf, search_query);
+			return mDbHelper.fetchAllBooksBySeries(groupCursor.getString(groupCursor.getColumnIndex(CatalogueDBAdapter.KEY_SERIES_NAME)), bookshelf, search_query);
+		}
+		@Override
+		public Cursor newCursor() {
+			if (search_query.equals("")) {
+				mCursor = mDbHelper.fetchAllSeries(bookshelf, true);
+			} else {
+				mCursor = mDbHelper.searchSeries(search_query, bookshelf);
+			}
+			BookCatalogue.this.startManagingCursor(mCursor);
+			return mCursor;
 		}
 	}
 
@@ -519,7 +554,6 @@ public class BookCatalogue extends ExpandableListActivity {
 		LoanViewManager() {
 			mLayout = R.layout.row_authors; 
 			mChildLayout = R.layout.row_series_books;
-			mCursor = mDbHelper.fetchAllLoans();
 			mFrom = new String[]{CatalogueDBAdapter.KEY_ROWID};
 			mTo = new int[]{R.id.row_family};	
 			mChildFrom = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_AUTHOR_FORMATTED};
@@ -527,6 +561,11 @@ public class BookCatalogue extends ExpandableListActivity {
 		}
 		public Cursor getChildrenCursor(Cursor groupCursor) {
 			return mDbHelper.fetchAllBooksByLoan(groupCursor.getString(mGroupIdColumnIndex), search_query);
+		}
+		@Override
+		public Cursor newCursor() {
+			mCursor = mDbHelper.fetchAllLoans();
+			return mCursor;
 		}
 	}
 
@@ -537,7 +576,6 @@ public class BookCatalogue extends ExpandableListActivity {
 		UnreadViewManager() {
 			mLayout = R.layout.row_authors; 
 			mChildLayout = R.layout.row_series_books;
-			mCursor = mDbHelper.fetchAllUnreadPsuedo();
 			mFrom = new String[]{CatalogueDBAdapter.KEY_ROWID};
 			mTo = new int[]{R.id.row_family};	
 			mChildFrom = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_AUTHOR_FORMATTED};
@@ -545,6 +583,11 @@ public class BookCatalogue extends ExpandableListActivity {
 		}
 		public Cursor getChildrenCursor(Cursor groupCursor) {
 			return mDbHelper.fetchAllBooksByRead(groupCursor.getString(mGroupIdColumnIndex), bookshelf, search_query);
+		}
+		@Override
+		public Cursor newCursor() {
+			mCursor = mDbHelper.fetchAllUnreadPsuedo();
+			return mCursor;
 		}
 	}
 	
@@ -555,13 +598,6 @@ public class BookCatalogue extends ExpandableListActivity {
 		GenreViewManager() {
 			mLayout = R.layout.row_authors;
 			mChildLayout = R.layout.row_books;
-			if (search_query.equals("")) {
-				// Return all books (for the bookshelf)
-				mCursor = mDbHelper.fetchAllGenres(bookshelf);
-			} else {
-				// Return the search results instead of all books (for the bookshelf)
-				mCursor = mDbHelper.searchGenres(search_query, bookshelf);
-			}
 			mFrom = new String[]{CatalogueDBAdapter.KEY_ROWID};
 			mTo = new int[]{R.id.row_family};	
 			mChildFrom = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_PUBLISHER, CatalogueDBAdapter.KEY_SERIES_FORMATTED, CatalogueDBAdapter.KEY_READ};
@@ -573,6 +609,17 @@ public class BookCatalogue extends ExpandableListActivity {
 			} else {
 				return mDbHelper.searchBooksByGenre(search_query, groupCursor.getString(mGroupIdColumnIndex), bookshelf);
 			}
+		}
+		@Override
+		public Cursor newCursor() {
+			if (search_query.equals("")) {
+				// Return all books (for the bookshelf)
+				mCursor = mDbHelper.fetchAllGenres(bookshelf);
+			} else {
+				// Return the search results instead of all books (for the bookshelf)
+				mCursor = mDbHelper.searchGenres(search_query, bookshelf);
+			}
+			return mCursor;
 		}
 	}
 	
@@ -623,7 +670,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		}
 		
 		// Instantiate the List Adapter
-		ExpandableListAdapter books = new BasicBookListAdapter( this );
+		mBooksAdapter = new BasicBookListAdapter( this );
 
 		// Handle the click event. Do not open, but goto the book edit page
 		ExpandableListView expandableList = getExpandableListView();
@@ -647,7 +694,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		Drawable indicator = this.getResources().getDrawable(R.drawable.expander_group); 
 		expandableList.setGroupIndicator(indicator);
 		
-		setListAdapter(books);		
+		setListAdapter(mBooksAdapter);		
 		
 		gotoCurrentGroup();
 		/* Add number to bookshelf */
@@ -1014,7 +1061,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		ExpandableListView.ExpandableListContextMenuInfo info = (ExpandableListView.ExpandableListContextMenuInfo) menuInfo;
 		try {
 			// Only delete titles, not authors
-			if (ExpandableListView.getPackedPositionType(info.packedPosition) == 1) {
+			if (ExpandableListView.getPackedPositionType(info.packedPosition) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
 				MenuItem delete = menu.add(0, DELETE_ID, 0, R.string.menu_delete);
 				delete.setIcon(android.R.drawable.ic_menu_delete);
 				MenuItem edit_book = menu.add(0, EDIT_BOOK, 0, R.string.edit_book);
@@ -1023,6 +1070,23 @@ public class BookCatalogue extends ExpandableListActivity {
 				edit_book_notes.setIcon(R.drawable.ic_menu_compose);
 				MenuItem edit_book_friends = menu.add(0, EDIT_BOOK_FRIENDS, 0, R.string.edit_book_friends);
 				edit_book_friends.setIcon(R.drawable.ic_menu_cc);
+			} else if (ExpandableListView.getPackedPositionType(info.packedPosition) == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
+				switch(sort) {
+				case SORT_AUTHOR:
+					{
+						MenuItem edit_book = menu.add(0, EDIT_AUTHOR_ID, 0, R.string.menu_edit_author);
+						edit_book.setIcon(android.R.drawable.ic_menu_edit);
+						break;
+					}
+				case SORT_SERIES:
+					{
+						MenuItem delete = menu.add(0, DELETE_SERIES_ID, 0, R.string.menu_delete_series);
+						delete.setIcon(android.R.drawable.ic_menu_delete);
+						MenuItem edit_book = menu.add(0, EDIT_SERIES_ID, 0, R.string.menu_edit_series);
+						edit_book.setIcon(android.R.drawable.ic_menu_edit);
+						break;
+					}
+				}
 			}
 		} catch (NullPointerException e) {
 			// do nothing
@@ -1033,23 +1097,68 @@ public class BookCatalogue extends ExpandableListActivity {
 	public boolean onContextItemSelected(MenuItem item) {
 		ExpandableListContextMenuInfo info = (ExpandableListContextMenuInfo) item.getMenuInfo();
 		switch(item.getItemId()) {
+
 		case DELETE_ID:
 			mDbHelper.deleteBook(info.id);
 			fillData();
 			return true;
+
 		case EDIT_BOOK:
 			editBook(info.id, BookEdit.TAB_EDIT);
 			return true;
+
 		case EDIT_BOOK_NOTES:
 			editBook(info.id, BookEdit.TAB_EDIT_NOTES);
 			return true;
+
 		case EDIT_BOOK_FRIENDS:
 			editBook(info.id, BookEdit.TAB_EDIT_FRIENDS);
 			return true;
+
+		case EDIT_SERIES_ID:
+			{
+				Series s = mDbHelper.getSeriesById(info.id);
+				EditSeriesDialog d = new EditSeriesDialog(this, mDbHelper, new Runnable() {
+					@Override
+					public void run() {
+						mDbHelper.deleteSeries();
+						regenGroups();
+					}});
+				d.editSeries(s);
+				break;
+			}
+		case DELETE_SERIES_ID:
+			{
+				StandardDialogs.deleteSeriesAlert(this, mDbHelper, mDbHelper.getSeriesById(info.id), new Runnable() {
+					@Override
+					public void run() {
+						regenGroups();
+					}});
+				break;			
+			}
+		case EDIT_AUTHOR_ID:
+			{
+				EditAuthorDialog d = new EditAuthorDialog(this, mDbHelper, new Runnable() {
+					@Override
+					public void run() {
+						mDbHelper.deleteAuthors();
+						regenGroups();
+					}});
+				d.editAuthor(mDbHelper.getAuthorById(info.id));
+				break;
+			}
 		}
 		return super.onContextItemSelected(item);
 	}
-	
+
+	/**
+	 * Utility routine to regenerate the groups cursor.
+	 */
+	private void regenGroups() {
+		mBooksAdapter.setGroupCursor(mViewManager.newCursor());
+		mBooksAdapter.notifyDataSetChanged();		
+	}
+
 	/**
 	 * Change the sort order of the view and refresh the page
 	 */

@@ -73,23 +73,11 @@ public class EditSeriesList extends EditObjectList<Series> {
         }
 	}
 
-	protected ArrayList<String> getSeriesFromDb() {
-		ArrayList<String> series_list = new ArrayList<String>();
-		Cursor series_cur = mDbHelper.fetchAllSeries();
-		startManagingCursor(series_cur);
-		while (series_cur.moveToNext()) {
-			String series = series_cur.getString(series_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SERIES_NAME));
-			series_list.add(series);
-		}
-		series_cur.close();
-		return series_list;
-	}
-
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		try {
 
-			mSeriesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getSeriesFromDb());
+			mSeriesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, mDbHelper.fetchAllSeriesArray());
 			((AutoCompleteTextView)this.findViewById(R.id.series)).setAdapter(mSeriesAdapter);
 	
 		} catch (Exception e) {

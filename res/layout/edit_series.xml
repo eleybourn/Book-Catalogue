@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:id="@+id/edit_series_list_wrapper"
+	android:orientation="vertical"
+	android:layout_width="fill_parent" 
+	android:layout_height="wrap_content"
+	android:paddingLeft="5sp"
+	android:background="#2d2d2d">
+
+	<LinearLayout	 android:id="@+id/top_buttons" 
+		android:gravity="top" 
+		android:orientation="horizontal"
+		android:layout_width="fill_parent" 
+		android:layout_below="@+id/title"
+		android:layout_height="wrap_content" 
+		>
+		<AutoCompleteTextView android:id="@+id/series" 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" 
+			android:layout_weight="2"
+			android:hint="@string/series"
+			android:inputType="textCapWords"
+			android:completionThreshold="2"
+			android:paddingLeft="5sp"
+			/>
+	</LinearLayout>
+
+	<LinearLayout	 android:id="@+id/bottom_buttons" 
+		android:orientation="horizontal"
+		android:layout_height="60sp" 
+		android:layout_width="fill_parent" 
+		android:layout_below="@+id/top_buttons"
+		>
+		<Button android:id="@+id/confirm" 
+			android:text="@string/save"
+			android:width="150sp"
+			android:layout_width="wrap_content"
+			android:layout_height="fill_parent" />
+		
+		<Button android:id="@+id/cancel" 
+			android:text="@string/cancel"
+			android:width="150sp"
+			android:layout_width="wrap_content"
+			android:layout_height="fill_parent" />
+	</LinearLayout>
+</RelativeLayout>

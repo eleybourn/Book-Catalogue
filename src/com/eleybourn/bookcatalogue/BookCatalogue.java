@@ -34,6 +34,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -1348,7 +1349,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				}
 				
 			} catch (Exception e) {
-				//do nothing
+				Log.e("BC", "Error getting position", e);
 			}
 			// We call bookshelf not fillData in case the bookshelves have been updated.
 			bookshelf();

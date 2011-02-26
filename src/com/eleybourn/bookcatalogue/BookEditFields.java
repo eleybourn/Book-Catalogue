@@ -1005,12 +1005,22 @@ public class BookEditFields extends Activity {
 		/* These are global variables that will be sent via intent back to the list view, if added/created */
 		try {
 			ArrayList<Author> authors = mStateValues.getParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
-			added_author = authors.get(0).getSortName();
-		} catch (Exception e) {};
+			if (authors.size() > 1)
+				added_author = authors.get(0).getSortName();
+			else 
+				added_author = "";
+		} catch (Exception e) {
+			Log.e("BC", "Error getting author", e);			
+		};
 		try {
-			ArrayList<Author> series = mStateValues.getParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY);
-			added_series = series.get(0).getSortName();
-		} catch (Exception e) {};
+			ArrayList<Series> series = mStateValues.getParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY);
+			if (series.size() > 1)
+				added_series = series.get(0).name;
+			else 
+				added_series = "";
+		} catch (Exception e) {
+			Log.e("BC", "Error getting series", e);
+		};
 
 		added_title = mStateValues.getString(CatalogueDBAdapter.KEY_TITLE);
 		added_genre = mStateValues.getString(CatalogueDBAdapter.KEY_GENRE);

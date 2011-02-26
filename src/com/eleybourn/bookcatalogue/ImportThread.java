@@ -80,148 +80,166 @@ public class ImportThread extends ManagedTask {
 								CatalogueDBAdapter.KEY_AUTHOR_DETAILS);
 
 		int row = 1; // Start after headings.
+		boolean inTx = false;
+		int txRowCount = 0;
 
 		/* Iterate through each imported row */
-		while (row < mExport.size() && !isCancelled()) {
-			// Get row
-			String[] imported = returnRow(mExport.get(row));
+		try {
+			while (row < mExport.size() && !isCancelled()) {
+				if (inTx && txRowCount > 10) {
+					mDbHelper.setTransactionSuccessful();
+					mDbHelper.endTransaction();
+				}
+				if (!inTx) {
+					mDbHelper.startTransaction();
+					inTx = true;
+					txRowCount = 0;
+				}
+				// Get row
+				String[] imported = returnRow(mExport.get(row));
 
-			values.clear();
-			for(int i = 0; i < names.length; i++) {
-				values.putString(names[i], imported[i]);
-			}
-
-			// Validate ID
-			String idVal = values.getString(CatalogueDBAdapter.KEY_ROWID.toLowerCase());
-			if (idVal == "") {
-				idVal = "0";
-				values.putString(CatalogueDBAdapter.KEY_ROWID, idVal);
-			}
-
-			requireNonblank(values, row, CatalogueDBAdapter.KEY_TITLE);
-			String title = values.getString(CatalogueDBAdapter.KEY_TITLE);
-
-			// Keep author handling stuff local
-			{
-				// Get the list of authors from whatever source is available.
-				String authorDetails;
-				authorDetails = values.getString(CatalogueDBAdapter.KEY_AUTHOR_DETAILS);
-				if (authorDetails == null || authorDetails.length() == 0) {
-					// Need to build it from other fields.
-					if (values.containsKey(CatalogueDBAdapter.KEY_FAMILY_NAME)) {
-						// Build from family/given
-						authorDetails = values.getString(CatalogueDBAdapter.KEY_FAMILY_NAME);
-						String given = "";
-						if (values.containsKey(CatalogueDBAdapter.KEY_GIVEN_NAMES))
-							given = values.getString(CatalogueDBAdapter.KEY_GIVEN_NAMES);
-						if (given != null && given.length() > 0)
-							authorDetails += ", " + given;
-					} else if (values.containsKey(CatalogueDBAdapter.KEY_AUTHOR_NAME)) {
-						authorDetails = values.getString(CatalogueDBAdapter.KEY_AUTHOR_NAME);
-					} else if (values.containsKey(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED)) {
-						authorDetails = values.getString(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);					
-					}
+				values.clear();
+				for(int i = 0; i < names.length; i++) {
+					values.putString(names[i], imported[i]);
 				}
 
-				if (authorDetails == null || authorDetails.length() == 0) {
-					String s = mManager.getString(R.string.column_is_blank);
-					throw new ImportException(String.format(s, CatalogueDBAdapter.KEY_AUTHOR_DETAILS, row));
+				// Validate ID
+				String idVal = values.getString(CatalogueDBAdapter.KEY_ROWID.toLowerCase());
+				if (idVal == "") {
+					idVal = "0";
+					values.putString(CatalogueDBAdapter.KEY_ROWID, idVal);
 				}
 
-				// Now build the array for authors
-				ArrayList<Author> aa = Utils.getAuthorUtils().decodeList(authorDetails, '|', false);
-				Utils.pruneList(mDbHelper, aa);
-				values.putParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, aa);
-			}
+				requireNonblank(values, row, CatalogueDBAdapter.KEY_TITLE);
+				String title = values.getString(CatalogueDBAdapter.KEY_TITLE);
 
-			// Keep series handling local
-			{
-				String seriesDetails;
-				seriesDetails = values.getString(CatalogueDBAdapter.KEY_SERIES_DETAILS);
-				if (seriesDetails == null || seriesDetails.length() == 0) {
-					// Try to build from SERIES_NAME and SERIES_NUM. It may all be blank
-					if (values.containsKey(CatalogueDBAdapter.KEY_SERIES_NAME)) {
-						seriesDetails = values.getString(CatalogueDBAdapter.KEY_SERIES_NAME);
-						if (seriesDetails != null && seriesDetails.length() != 0) {
-							String seriesNum = values.getString(CatalogueDBAdapter.KEY_SERIES_NUM);
-							if (seriesNum == null)
-								seriesNum = "";
-							seriesDetails += "(" + seriesNum + ")";
-						} else {
-							seriesDetails = null;
+				// Keep author handling stuff local
+				{
+					// Get the list of authors from whatever source is available.
+					String authorDetails;
+					authorDetails = values.getString(CatalogueDBAdapter.KEY_AUTHOR_DETAILS);
+					if (authorDetails == null || authorDetails.length() == 0) {
+						// Need to build it from other fields.
+						if (values.containsKey(CatalogueDBAdapter.KEY_FAMILY_NAME)) {
+							// Build from family/given
+							authorDetails = values.getString(CatalogueDBAdapter.KEY_FAMILY_NAME);
+							String given = "";
+							if (values.containsKey(CatalogueDBAdapter.KEY_GIVEN_NAMES))
+								given = values.getString(CatalogueDBAdapter.KEY_GIVEN_NAMES);
+							if (given != null && given.length() > 0)
+								authorDetails += ", " + given;
+						} else if (values.containsKey(CatalogueDBAdapter.KEY_AUTHOR_NAME)) {
+							authorDetails = values.getString(CatalogueDBAdapter.KEY_AUTHOR_NAME);
+						} else if (values.containsKey(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED)) {
+							authorDetails = values.getString(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);					
 						}
 					}
-				}
-				// Handle the series
-				ArrayList<Series> sa = Utils.getSeriesUtils().decodeList(seriesDetails, '|', false);
-				Utils.pruneList(mDbHelper, sa);
-				values.putParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY, sa);				
-			}
-			
-			
-			// Make sure we have bookself_text if we imported bookshelf
-			if (values.containsKey(CatalogueDBAdapter.KEY_BOOKSHELF) && !values.containsKey("bookshelf_text")) {
-				values.putString("bookshelf_text", values.getString(CatalogueDBAdapter.KEY_BOOKSHELF));
-			}
 
-			try {
-				if (idVal.equals("0")) {
-					// Always import empty IDs...even if the are duplicates.
-					Long id = mDbHelper.createBook(values);
-					idVal = id.toString();
-					values.putString(CatalogueDBAdapter.KEY_ROWID, idVal);
-					mImportCreated++;
-				} else {
-					Long id = Long.parseLong(idVal);
-					Cursor book = mDbHelper.fetchBookById(id);
-					int rows = book.getCount();
-					book.close();
-					if (rows == 0) {
-						id = mDbHelper.createBook(values);
-						mImportCreated++;
+					if (authorDetails == null || authorDetails.length() == 0) {
+						String s = mManager.getString(R.string.column_is_blank);
+						throw new ImportException(String.format(s, CatalogueDBAdapter.KEY_AUTHOR_DETAILS, row));
+					}
+
+					// Now build the array for authors
+					ArrayList<Author> aa = Utils.getAuthorUtils().decodeList(authorDetails, '|', false);
+					Utils.pruneList(mDbHelper, aa);
+					values.putParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, aa);
+				}
+
+				// Keep series handling local
+				{
+					String seriesDetails;
+					seriesDetails = values.getString(CatalogueDBAdapter.KEY_SERIES_DETAILS);
+					if (seriesDetails == null || seriesDetails.length() == 0) {
+						// Try to build from SERIES_NAME and SERIES_NUM. It may all be blank
+						if (values.containsKey(CatalogueDBAdapter.KEY_SERIES_NAME)) {
+							seriesDetails = values.getString(CatalogueDBAdapter.KEY_SERIES_NAME);
+							if (seriesDetails != null && seriesDetails.length() != 0) {
+								String seriesNum = values.getString(CatalogueDBAdapter.KEY_SERIES_NUM);
+								if (seriesNum == null)
+									seriesNum = "";
+								seriesDetails += "(" + seriesNum + ")";
+							} else {
+								seriesDetails = null;
+							}
+						}
+					}
+					// Handle the series
+					ArrayList<Series> sa = Utils.getSeriesUtils().decodeList(seriesDetails, '|', false);
+					Utils.pruneList(mDbHelper, sa);
+					values.putParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY, sa);				
+				}
+				
+				
+				// Make sure we have bookself_text if we imported bookshelf
+				if (values.containsKey(CatalogueDBAdapter.KEY_BOOKSHELF) && !values.containsKey("bookshelf_text")) {
+					values.putString("bookshelf_text", values.getString(CatalogueDBAdapter.KEY_BOOKSHELF));
+				}
+
+				try {
+					if (idVal.equals("0")) {
+						// Always import empty IDs...even if the are duplicates.
+						Long id = mDbHelper.createBook(values);
 						idVal = id.toString();
 						values.putString(CatalogueDBAdapter.KEY_ROWID, idVal);
+						mImportCreated++;
 					} else {
-						// Book exists and should be updated if it has changed
-						mDbHelper.updateBook(id, values);
-						mImportUpdated++;
-					}
-				}
-			} catch (Exception e) {
-				Log.e("BC", "Import Book (Single) Error", e);
-				// do nothing
-			}
-
-			if (!values.get(CatalogueDBAdapter.KEY_LOANED_TO).equals("")) {
-				mDbHelper.createLoan(values);
-			}
-
-			if (values.containsKey(CatalogueDBAdapter.KEY_ANTHOLOGY)) {
-				int anthology = Integer.parseInt(values.getString(CatalogueDBAdapter.KEY_ANTHOLOGY));
-				int id = Integer.parseInt(Utils.getAsString(values, CatalogueDBAdapter.KEY_ROWID));
-				if (anthology == CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS || anthology == CatalogueDBAdapter.ANTHOLOGY_SAME_AUTHOR) {
-					int oldi = 0;
-					String anthology_titles = values.getString("anthology_titles");
-					int i = anthology_titles.indexOf("|", oldi);
-					while (i > -1) {
-						String extracted_title = anthology_titles.substring(oldi, i).trim();
-						
-						int j = extracted_title.indexOf("*");
-						if (j > -1) {
-							String anth_title = extracted_title.substring(0, j).trim();
-							String anth_author = extracted_title.substring((j+1)).trim();
-							mDbHelper.createAnthologyTitle(id, anth_author, anth_title);
+						Long id = Long.parseLong(idVal);
+						Cursor book = mDbHelper.fetchBookById(id);
+						int rows = book.getCount();
+						book.close();
+						if (rows == 0) {
+							id = mDbHelper.createBook(values);
+							mImportCreated++;
+							idVal = id.toString();
+							values.putString(CatalogueDBAdapter.KEY_ROWID, idVal);
+						} else {
+							// Book exists and should be updated if it has changed
+							mDbHelper.updateBook(id, values);
+							mImportUpdated++;
 						}
-						oldi = i + 1;
-						i = anthology_titles.indexOf("|", oldi);
+					}
+				} catch (Exception e) {
+					Log.e("BC", "Import Book (Single) Error", e);
+					// do nothing
+				}
+
+				if (!values.get(CatalogueDBAdapter.KEY_LOANED_TO).equals("")) {
+					mDbHelper.createLoan(values);
+				}
+
+				if (values.containsKey(CatalogueDBAdapter.KEY_ANTHOLOGY)) {
+					int anthology = Integer.parseInt(values.getString(CatalogueDBAdapter.KEY_ANTHOLOGY));
+					int id = Integer.parseInt(Utils.getAsString(values, CatalogueDBAdapter.KEY_ROWID));
+					if (anthology == CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS || anthology == CatalogueDBAdapter.ANTHOLOGY_SAME_AUTHOR) {
+						int oldi = 0;
+						String anthology_titles = values.getString("anthology_titles");
+						int i = anthology_titles.indexOf("|", oldi);
+						while (i > -1) {
+							String extracted_title = anthology_titles.substring(oldi, i).trim();
+							
+							int j = extracted_title.indexOf("*");
+							if (j > -1) {
+								String anth_title = extracted_title.substring(0, j).trim();
+								String anth_author = extracted_title.substring((j+1)).trim();
+								mDbHelper.createAnthologyTitle(id, anth_author, anth_title);
+							}
+							oldi = i + 1;
+							i = anthology_titles.indexOf("|", oldi);
+						}
 					}
 				}
+
+				doProgress(title, row);
+
+				// Increment row count
+				row++;
+			}			
+		} finally {
+			if (inTx) {
+				mDbHelper.setTransactionSuccessful();
+				mDbHelper.endTransaction();
 			}
-
-			doProgress(title, row);
-
-			// Increment row count
-			row++;
 		}
 		doToast("Import Complete");
 	}

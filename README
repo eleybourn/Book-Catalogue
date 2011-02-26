@@ -56,6 +56,13 @@ New in v3.4
 * Bug fixes for the 'collapse/expand' button, series selection/de-selection
 * Bug fixes for sorting of book titles, series and authors.
 * Suggestions available when searching
+* Multiple Authors per book
+* Multiple Series per book
+* Fetches series (and other stuff) from LibraryThing
+* Does concurrent ISBN searches at Amazon, Google and LibraryThing (it's faster)
+* Import & Export improvements
+* Duplicate books allowed
+* Can now make global changes to Author and Series
 
 New in v3.3 - Updates courtesy of Grunthos
 * The application should be significantly faster now - Fixed a bug with database index creation

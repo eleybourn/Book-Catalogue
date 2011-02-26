@@ -808,10 +808,31 @@ public class CatalogueDBAdapter {
 			}
 			if (curVersion == 52) {
 				try {
+					message += "New in v3.4 - Updates courtesy of (mainly) Grunthos (blame him, politely, if it toasts your data)\n\n";
+					message += "* Multiple Authors per book\n\n";
+					message += "* Multiple Series per book\n\n";
+					message += "* ASIN support\n\n";
+					message += "* Progress Dialong during book search\n\n";
+					message += "* Fetches series (and other stuff) from LibraryThing\n\n";
+					message += "* Does concurrent ISBN searches at Amazon, Google and LibraryThing (it's faster)\n\n";
+					message += "* Import & Export improvements\n\n";
+					message += "* Work-flow enhancements when adding books\n\n";
+					message += "* Duplicate books allowed\n\n";
+					message += "* Can now make global changes to Author and Series\n\n";
+					message += "See the web site for more details";
+
 					db.execSQL(DATABASE_CREATE_SERIES);
+					// We need to create a series table with series that are unique wrt case and unicode. The old
+					// system allowed for series with slightly different case. So we capture these by using
+					// max() to pick and arbitrary matching name to use as our canonical version.
 					db.execSQL("INSERT INTO " + DB_TB_SERIES + " (" + KEY_SERIES_NAME + ") "
-								+ "SELECT DISTINCT " + KEY_SERIES_OLD + " " + COLLATION + " FROM " + DB_TB_BOOKS
-								+ " WHERE Coalesce(" + KEY_SERIES_OLD + ",'') <> ''");
+								+ "SELECT name from ("
+								+ "    SELECT Upper(" + KEY_SERIES_OLD + ") " + COLLATION + " as ucName, "
+								+ "    max(" + KEY_SERIES_OLD + ")" + COLLATION + " as name FROM " + DB_TB_BOOKS
+								+ "    WHERE Coalesce(" + KEY_SERIES_OLD + ",'') <> ''"
+								+ "    Group By Upper(" + KEY_SERIES_OLD + ")"
+								+ " )"
+								);
 
 					db.execSQL(DATABASE_CREATE_BOOK_SERIES);
 					db.execSQL(DATABASE_CREATE_BOOK_AUTHOR);
@@ -821,9 +842,8 @@ public class CatalogueDBAdapter {
 					db.execSQL("INSERT INTO " + DB_TB_BOOK_SERIES + " (" + KEY_BOOK + ", " + KEY_SERIES_ID + ", " + KEY_SERIES_NUM + ", " + KEY_SERIES_POSITION + ") "
 							+ "SELECT DISTINCT b." + KEY_ROWID + ", s." + KEY_ROWID + ", b." + KEY_SERIES_NUM + ", 1"
 							+ " FROM " + DB_TB_BOOKS + " b "
-							+ " Join " + DB_TB_SERIES + " s On s." + KEY_SERIES_NAME + " = b." + KEY_SERIES_OLD 
-							+ " " + COLLATION
-							+ " Where b." + KEY_SERIES_OLD + " <> '' or b." + KEY_SERIES_NUM + " <> ''");
+							+ " Join " + DB_TB_SERIES + " s On Upper(s." + KEY_SERIES_NAME + ") = Upper(b." + KEY_SERIES_OLD + ")" + COLLATION
+							+ " Where Coalesce(b." + KEY_SERIES_OLD + ", '') <> ''");
 
 					db.execSQL("INSERT INTO " + DB_TB_BOOK_AUTHOR + " (" + KEY_BOOK + ", " + KEY_AUTHOR_ID + ", " + KEY_AUTHOR_POSITION + ") "
 							+ "SELECT b." + KEY_ROWID + ", b." + KEY_AUTHOR_OLD + ", 1 FROM " + DB_TB_BOOKS + " b ");
@@ -834,15 +854,15 @@ public class CatalogueDBAdapter {
 					+ ", " + KEY_LIST_PRICE + ", " + KEY_ANTHOLOGY + ", " + KEY_LOCATION + ", " + KEY_READ_START 
 					+ ", " + KEY_READ_END + ", " + KEY_FORMAT + ", " + KEY_SIGNED + ", " + KEY_DESCRIPTION
 					+ ", " + KEY_GENRE;
-					db.execSQL("CREATE TABLE tmp1 AS SELECT " + tmpFields + " FROM " + DB_TB_BOOKS);
+					db.execSQL("CREATE TABLE tmpBooks AS SELECT " + tmpFields + " FROM " + DB_TB_BOOKS);
 
 					db.execSQL("DROP TABLE " + DB_TB_BOOKS);
 
 					db.execSQL(DATABASE_CREATE_BOOKS);
 
-					db.execSQL("INSERT INTO " + DB_TB_BOOKS + "( " + tmpFields + ")  SELECT * FROM tmp1");
+					db.execSQL("INSERT INTO " + DB_TB_BOOKS + "( " + tmpFields + ")  SELECT * FROM tmpBooks");
 
-					db.execSQL("DROP TABLE tmp1");
+					db.execSQL("DROP TABLE tmpBooks");
 				} catch (Exception e) {
 					android.util.Log.e("BookCatalogue","Exception during upgrade!",e);
 					//do nothing

@@ -102,11 +102,12 @@ public class CatalogueDBAdapter {
 	
 	// We tried 'Collate UNICODE' but it seemed to be case sensitive. We ended
 	// up with 'Ursula Le Guin' and 'Ursula le Guin'.
-	public static final String COLLATION = "Collate NOCASE";
+	//public static final String COLLATION = "Collate NOCASE";
+	public static final String COLLATION = "Collate UNICODE ";
 
 	private DatabaseHelper mDbHelper;
 	private SQLiteDatabase mDb;
-	
+
 	/* private database variables as static reference */
 	private static final String DB_TB_BOOKS = "books";
 	private static final String DB_TB_BOOK_AUTHOR = "book_author";
@@ -3383,4 +3384,15 @@ public class CatalogueDBAdapter {
             return cols;
         }
     }
+
+    void startTransaction() {
+    	mDb.beginTransaction();
+    }
+    void endTransaction() {
+    	mDb.endTransaction();
+    }
+    void setTransactionSuccessful() {
+    	mDb.setTransactionSuccessful();
+    }
+    
 }

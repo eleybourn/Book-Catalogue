@@ -103,7 +103,7 @@ public class CatalogueDBAdapter {
 	// We tried 'Collate UNICODE' but it seemed to be case sensitive. We ended
 	// up with 'Ursula Le Guin' and 'Ursula le Guin'.
 	//public static final String COLLATION = "Collate NOCASE";
-	public static final String COLLATION = "Collate UNICODE ";
+	public static final String COLLATION = " Collate UNICODE ";
 
 	private DatabaseHelper mDbHelper;
 	private SQLiteDatabase mDb;
@@ -1129,7 +1129,7 @@ public class CatalogueDBAdapter {
 			"     On bbs." + KEY_BOOKSHELF + " = bs." + KEY_ROWID +
 			" Join " + DB_TB_BOOKS + " b " +
 			"     On bbs." + KEY_BOOK + " = b." + KEY_ROWID + 
-			" WHERE bs." + KEY_BOOKSHELF + "='" + encodeString(bookshelf) + "'";
+			" WHERE " + makeTextTerm("bs." + KEY_BOOKSHELF, "=", bookshelf);
 		Cursor count = mDb.rawQuery(sql, new String[]{});
 		count.moveToNext();
 		int result = count.getInt(0);
@@ -1175,7 +1175,7 @@ public class CatalogueDBAdapter {
 	public Cursor fetchAllAuthors() {
 		String sql = "SELECT " + getAuthorFields("a", KEY_ROWID) + 
 			" FROM " + DB_TB_AUTHORS + " a " +
-			" ORDER BY " + KEY_FAMILY_NAME + " " + COLLATION + ", " + KEY_GIVEN_NAMES + " " + COLLATION;
+			" ORDER BY Upper(" + KEY_FAMILY_NAME + ") " + COLLATION + ", Upper(" + KEY_GIVEN_NAMES + ") " + COLLATION;
 		Cursor returnable = null;
 		try {
 			returnable = mDb.rawQuery(sql, new String[]{});
@@ -1193,7 +1193,7 @@ public class CatalogueDBAdapter {
 		+ "               Join " + DB_TB_BOOKSHELF + " bs"
 		+ "                  On bs." + KEY_ROWID + " = bbs." + KEY_BOOKSHELF
 		+ "               Where ba." + KEY_AUTHOR_ID + " = " + authorIdSpec
-		+ "               	And bs." + KEY_BOOKSHELF + " = '" + encodeString(bookshelf) + "'"
+		+ "               	And " + makeTextTerm("bs." + KEY_BOOKSHELF, "=", bookshelf)
 		+ "              )";
 		
 	}
@@ -1203,7 +1203,7 @@ public class CatalogueDBAdapter {
 		+ "               Join " + DB_TB_BOOKSHELF + " bs"
 		+ "                  On bs." + KEY_ROWID + " = bbs." + KEY_BOOKSHELF
 		+ "               Where bbs." + KEY_BOOK + " = " + bookIdSpec
-		+ "               	And bs." + KEY_BOOKSHELF + " = '" + encodeString(bookshelf) + "'"
+		+ "               	And " + makeTextTerm("bs." + KEY_BOOKSHELF, "=", bookshelf)
 		+ "              )";
 	}
 
@@ -1222,7 +1222,7 @@ public class CatalogueDBAdapter {
 		String sql = "SELECT " + getAuthorFields("a", KEY_ROWID)
 		+ " FROM " + DB_TB_AUTHORS + " a "
 		+ " WHERE " + authorOnBookshelfSql(bookshelf, "a." + KEY_ROWID)
-		+ " ORDER BY " + KEY_FAMILY_NAME + " " + COLLATION + ", " + KEY_GIVEN_NAMES + " " + COLLATION;
+		+ " ORDER BY Upper(" + KEY_FAMILY_NAME + ") " + COLLATION + ", Upper(" + KEY_GIVEN_NAMES + ") " + COLLATION;
 
 		Cursor returnable = null;
 		try {
@@ -1328,7 +1328,7 @@ public class CatalogueDBAdapter {
 				where += " and";
 			where += " Exists(Select NULL From " + DB_TB_LOAN + " l Where "
 					+ " l." + KEY_BOOK + "=b." + KEY_ROWID
-					+ " And l." + KEY_LOANED_TO + "='" + encodeString(loaned_to) + "')";
+					+ " And " + makeTextTerm("l." + KEY_LOANED_TO, "=", loaned_to) + ")";
 		}
 
 		if (seriesName.length() > 0 && seriesName.equals(META_EMPTY_SERIES)) {
@@ -1344,13 +1344,13 @@ public class CatalogueDBAdapter {
 			// Join with specific bookshelf
 			sql += " Join " + DB_TB_BOOK_BOOKSHELF_WEAK + " bbsx On bbsx." + KEY_BOOK + " = b." + KEY_ROWID;
 			sql += " Join " + DB_TB_BOOKSHELF + " bsx On bsx." + KEY_ROWID + " = bbsx." + KEY_BOOKSHELF
-					+ " and bsx." + KEY_BOOKSHELF + " = '" + encodeString(bookshelf) + "'";
+					+ " and " + makeTextTerm("bsx." + KEY_BOOKSHELF, "=", bookshelf);
 		}
 
 		if (seriesName.length() > 0 && !seriesName.equals(META_EMPTY_SERIES))
 			sql += " Join " + DB_TB_BOOK_SERIES + " bs On (bs." + KEY_BOOK + " = b." + KEY_ROWID + ")"
 					+ " Join " + DB_TB_SERIES + " s On (s." + KEY_ROWID + " = bs." + KEY_SERIES_ID 
-					+ " and s." + KEY_SERIES_NAME + " = '" + encodeString(seriesName) + "' " + COLLATION + ")";
+					+ " and " + makeTextTerm("s." + KEY_SERIES_NAME, "=", seriesName) + ")";
 
 
 		if (where.length() > 0)
@@ -1359,9 +1359,10 @@ public class CatalogueDBAdapter {
 		// NULL order suppresses order-by
 		if (order != null) {
 			if (order.length() > 0)
+				// TODO Assess if ORDER is used and how
 				sql += " ORDER BY " + order + "";
 			else
-				sql += " ORDER BY b." + KEY_TITLE + " " + COLLATION + " ASC";
+				sql += " ORDER BY Upper(b." + KEY_TITLE + ") " + COLLATION + " ASC";
 		}
 
 		return sql;
@@ -1415,7 +1416,7 @@ public class CatalogueDBAdapter {
 				+ " Else " + KEY_SERIES_NAME + "||' #'||" + KEY_SERIES_NUM + " End as " + KEY_SERIES_FORMATTED
 				+ " From " + DB_TB_BOOK_SERIES + " bs Join " + DB_TB_SERIES + " s"
 				+ "    On bs." + KEY_SERIES_ID + " = s." + KEY_ROWID + ") s "
-				+ " On s." + KEY_BOOK + " = b." + KEY_ROWID + " and s." + KEY_SERIES_NAME + " = '" + encodeString(seriesName) + "'";
+				+ " On s." + KEY_BOOK + " = b." + KEY_ROWID + " and " + makeTextTerm("s." + KEY_SERIES_NAME, "=", seriesName);
 		} else {
 			// Get the 'default' series...defined in getBookFields()
 			fullSql += " Left Outer Join (Select " 
@@ -1460,7 +1461,7 @@ public class CatalogueDBAdapter {
 	 * @return Cursor over all books
 	 */
 	public Cursor fetchAllBooksByChar(String first_char, String bookshelf, String search_term) {
-		String where = " substr(b." + KEY_TITLE + ", 1, 1)='"+encodeString(first_char)+"'";
+		String where = " " + makeTextTerm("substr(b." + KEY_TITLE + ", 1, 1)", "=", first_char);
 		return fetchAllBooks("", bookshelf, "", where, search_term, "", "");
 	}
 	
@@ -1476,8 +1477,7 @@ public class CatalogueDBAdapter {
 		if (genre.equals(META_EMPTY_GENRE)) {
 			where = "(b." + KEY_GENRE + "='' OR b." + KEY_GENRE + " IS NULL)";
 		} else {
-			genre = encodeString(genre);
-			where = "b." + KEY_GENRE + "='" + encodeString(genre) + "'";
+			where = makeTextTerm("b." + KEY_GENRE, "=", genre);
 		}
 		return fetchAllBooks("", bookshelf, "", where, search_term, "", "");
 	}
@@ -1534,7 +1534,7 @@ public class CatalogueDBAdapter {
 				"bs." + KEY_BOOKSHELF + " as " + KEY_BOOKSHELF + ", " +
 				"0 as " + KEY_BOOK + 
 			" FROM " + DB_TB_BOOKSHELF + " bs" + 
-			" ORDER BY bs." + KEY_BOOKSHELF + "";
+			" ORDER BY Upper(bs." + KEY_BOOKSHELF + ") " + COLLATION ;
 		return mDb.rawQuery(sql, new String[]{});
 	}
 	
@@ -1549,7 +1549,7 @@ public class CatalogueDBAdapter {
 				"bs." + KEY_BOOKSHELF + " as " + KEY_BOOKSHELF + ", " +
 				"CASE WHEN w." + KEY_BOOK + " IS NULL THEN 0 ELSE 1 END as " + KEY_BOOK + 
 			" FROM " + DB_TB_BOOKSHELF + " bs LEFT OUTER JOIN " + DB_TB_BOOK_BOOKSHELF_WEAK + " w ON (w." + KEY_BOOKSHELF + "=bs." + KEY_ROWID + " AND w." + KEY_BOOK + "=" + rowId + ") " + 
-			" ORDER BY bs." + KEY_BOOKSHELF + "";
+			" ORDER BY Upper(bs." + KEY_BOOKSHELF + ") " + COLLATION;
 		try {
 			return mDb.rawQuery(sql, new String[]{});
 		} catch (NullPointerException e) {
@@ -1568,7 +1568,7 @@ public class CatalogueDBAdapter {
 		String sql = "SELECT DISTINCT bs." + KEY_ROWID + " as " + KEY_ROWID + ", bs." + KEY_BOOKSHELF + " as " + KEY_BOOKSHELF + 
 			" FROM " + DB_TB_BOOKSHELF + " bs, " + DB_TB_BOOK_BOOKSHELF_WEAK + " w " +
 			" WHERE w." + KEY_BOOKSHELF + "=bs." + KEY_ROWID + " AND w." + KEY_BOOK + "=" + rowId + " " + 
-			" ORDER BY bs." + KEY_BOOKSHELF + "";
+			" ORDER BY Upper(bs." + KEY_BOOKSHELF + ") " + COLLATION;
 		return mDb.rawQuery(sql, new String[]{});
 	}
 	
@@ -1585,7 +1585,7 @@ public class CatalogueDBAdapter {
 		String sql = "SELECT DISTINCT "
 				+ " Case When (b." + KEY_GENRE + " = '' or b." + KEY_GENRE + " is NULL) Then '" + META_EMPTY_GENRE + "'"
 				+ " Else b." + KEY_GENRE + " End as " + KEY_ROWID + baseSql +
-		" ORDER BY b." + KEY_GENRE;
+		" ORDER BY Upper(b." + KEY_GENRE + ") " + COLLATION;
 		return mDb.rawQuery(sql, new String[]{});
 	}
 	
@@ -1603,7 +1603,7 @@ public class CatalogueDBAdapter {
 		//fetch books
 		String sql = "SELECT DISTINCT l." + KEY_LOANED_TO + " as " + KEY_ROWID + 
 		" FROM " + DB_TB_LOAN + " l " + 
-		" ORDER BY l." + KEY_LOANED_TO + "";
+		" ORDER BY Upper(l." + KEY_LOANED_TO + ") " + COLLATION;
 		return mDb.rawQuery(sql, new String[]{});
 	}
 	
@@ -1615,7 +1615,7 @@ public class CatalogueDBAdapter {
 	public Cursor fetchAllLocations() {
 		String sql = "SELECT DISTINCT " + KEY_LOCATION +  
 			" FROM " + DB_TB_BOOKS + "" +  
-			" ORDER BY " + KEY_LOCATION + "";
+			" ORDER BY Upper(" + KEY_LOCATION + ") " + COLLATION;
 		return mDb.rawQuery(sql, new String[]{});
 	}
 	
@@ -1627,7 +1627,7 @@ public class CatalogueDBAdapter {
 	public Cursor fetchAllPublishers() {
 		String sql = "SELECT DISTINCT " + KEY_PUBLISHER +  
 			" FROM " + DB_TB_BOOKS + "" +  
-			" ORDER BY " + KEY_PUBLISHER + "";
+			" ORDER BY Upper(" + KEY_PUBLISHER + ") " + COLLATION;
 		return mDb.rawQuery(sql, new String[]{});
 	}
 	
@@ -1678,7 +1678,7 @@ public class CatalogueDBAdapter {
 					+ " From ( " + series 
 					+ "       UNION Select -1 as " + KEY_ROWID + ", '' as " + KEY_SERIES_NAME
 					+ "       ) s"
-					+ " Order by s." + KEY_SERIES_NAME + " " + COLLATION + " asc ";
+					+ " Order by Upper(s." + KEY_SERIES_NAME + ") " + COLLATION + " asc ";
 
 		return mDb.rawQuery(sql, new String[]{});
 	}
@@ -1765,10 +1765,11 @@ public class CatalogueDBAdapter {
 			where += authorOnBookshelfSql(bookshelf, "a." + KEY_ROWID);
 		}
 		String sql = "SELECT count(*) as count FROM " + DB_TB_AUTHORS + " a " +
-			"WHERE (a." + KEY_FAMILY_NAME + "<'" + encodeString(names[0]) + "' " + COLLATION + " " +
-			"OR (a." + KEY_FAMILY_NAME + "='" + encodeString(names[0]) + "' " + COLLATION + " AND a." + KEY_GIVEN_NAMES + "<'" + encodeString(names[1]) + "' " + COLLATION + "))" + 
+			"WHERE ( " + makeTextTerm("a." + KEY_FAMILY_NAME, "<", names[0]) +
+			"OR ( " + makeTextTerm("a." + KEY_FAMILY_NAME, "=", names[0]) + 
+			"     AND " + makeTextTerm("a." + KEY_GIVEN_NAMES, "<", names[1]) + ")) " + 
 			where + 
-			" ORDER BY a." + KEY_FAMILY_NAME + ", a." + KEY_GIVEN_NAMES;
+			" ORDER BY Upper(a." + KEY_FAMILY_NAME + ") " + COLLATION + ", Upper(a." + KEY_GIVEN_NAMES + ") " + COLLATION;
 		Cursor results = mDb.rawQuery(sql, null);
 		int pos = getIntValue(results, 0);
 		results.close();
@@ -1793,7 +1794,7 @@ public class CatalogueDBAdapter {
 	 * @return Cursor of the book
 	 */
 	public Cursor fetchBookByISBN(String isbn) {
-		String where = "b." + KEY_ISBN + "='" + encodeString(isbn) + "'";
+		String where = "b." + KEY_ISBN + "=Upper('" + encodeString(isbn) + "')";
 		return fetchAllBooks("", "All Books", "", where, "", "", "");
 	}
 	
@@ -1805,9 +1806,9 @@ public class CatalogueDBAdapter {
 	 * @return Cursor of the book
 	 */
 	public Cursor fetchByAuthorAndTitle(String family, String given, String title) {
-		String authorWhere = "a." + KEY_FAMILY_NAME + "='" + encodeString(family) 
-							+ "' " + COLLATION + " AND a." + KEY_GIVEN_NAMES + "='" + encodeString(given) + "'  " + COLLATION + "";
-		String bookWhere = "b." + KEY_TITLE + "='" + encodeString(title) + "' " + COLLATION + "";
+		String authorWhere = makeTextTerm("a." + KEY_FAMILY_NAME, "=", family) 
+							+ " AND " + makeTextTerm("a." + KEY_GIVEN_NAMES, "=", given);
+		String bookWhere = makeTextTerm("b." + KEY_TITLE, "=", title);
 		return fetchAllBooks("", "All Books", authorWhere, bookWhere, "", "", "" );
 	}
 
@@ -1819,7 +1820,7 @@ public class CatalogueDBAdapter {
 	 * @return The position of the book
 	 */
 	public int fetchBookPositionByTitle(String title, String bookshelf) {
-		String baseSql = this.fetchAllBooksSql("1", bookshelf, "", "b." + KEY_TITLE + "<'" + encodeString(title) + "' " + COLLATION + " ", "", "", "");
+		String baseSql = this.fetchAllBooksSql("1", bookshelf, "", makeTextTerm("b." + KEY_TITLE, "<", title), "", "", "");
 		String sql = "SELECT Count(*) as count " + baseSql;
 
 		Cursor results = mDb.rawQuery(sql, null);
@@ -1855,7 +1856,7 @@ public class CatalogueDBAdapter {
 	 */
 	public Cursor fetchBookshelfByName(String name) {
 		String sql = "";
-		sql = KEY_BOOKSHELF + "='" + encodeString(name) + "'";
+		sql = makeTextTerm(KEY_BOOKSHELF, "=", name);
 		return mDb.query(DB_TB_BOOKSHELF, new String[] {"_id", KEY_BOOKSHELF}, sql, null, null, null, null);
 	}
 	
@@ -1885,12 +1886,12 @@ public class CatalogueDBAdapter {
 		if (genre.equals(META_EMPTY_GENRE))
 			return 0;
 
-		String where = "b." + KEY_GENRE + " < '" + encodeString(genre) + "' " + COLLATION + "";
+		String where = makeTextTerm("b." + KEY_GENRE, "<", genre);
 		String baseSql = fetchAllBooksSql("", bookshelf, "", where, "", "", "");
 
-		String sql = "SELECT Count(DISTINCT *)" + baseSql;
+		String sql = "SELECT Count(DISTINCT Upper(" + KEY_GENRE + "))" + baseSql;
 		Cursor results = mDb.rawQuery(sql, null);
-		int pos = (getIntValue(results, 0))-1;
+		int pos = (getIntValue(results, 0));
 		results.close();
 		return pos;
 	}
@@ -1916,7 +1917,7 @@ public class CatalogueDBAdapter {
 			" SELECT \"BK\" || b." + KEY_ROWID + " as " + BaseColumns._ID + ", b." + KEY_ISBN + " as " + SearchManager.SUGGEST_COLUMN_TEXT_1 + ", b." + KEY_ISBN + " as " + SearchManager.SUGGEST_COLUMN_INTENT_DATA +
 			" FROM " + DB_TB_BOOKS + " b" + 
 			" WHERE b." + KEY_ISBN + " LIKE '"+query+"%'" +
-			" ORDER BY b." + KEY_TITLE;
+			" ORDER BY Upper(b." + KEY_TITLE + ") " + COLLATION;
 			;
 		Cursor results = mDb.rawQuery(sql, null);
 		return results;
@@ -1937,14 +1938,17 @@ public class CatalogueDBAdapter {
 		} else {
 			seriesSql = sqlAllSeriesOnBookshelf(bookshelf);
 		}
+		if (seriesName.equals(META_EMPTY_SERIES))
+			seriesName = "";
+
 		// Display blank series as '<Empty Series>' BUT sort as ''. Using a UNION
 		// seems to make ordering fail.
-		String sql = "Select Count(Distinct" + KEY_SERIES_NAME + ") as count"
+		String sql = "Select Count(Distinct " + KEY_SERIES_NAME + ") as count"
 					+ " From ( " + seriesSql 
-					+ "       UNION Select '" + META_EMPTY_SERIES + "' as " +  KEY_SERIES_NAME
-					+ "       )"
-					+ " WHERE " + KEY_SERIES_NAME + " < '" + encodeString(seriesName)
-					+ " Order by 1 " + COLLATION + " asc ";
+					+ "       UNION Select -1 as " + KEY_ROWID + ", '' as " +  KEY_SERIES_NAME
+					+ "       ) s "
+					+ " WHERE " + makeTextTerm("s." + KEY_SERIES_NAME, "<", seriesName)
+					+ " Order by s." + KEY_SERIES_NAME + COLLATION + " asc ";
 
 		Cursor results = mDb.rawQuery(sql, null);
 		int pos = (getIntValue(results, 0));
@@ -1978,26 +1982,45 @@ public class CatalogueDBAdapter {
 				 		" On ba." + KEY_BOOK + " = b." + KEY_ROWID + " " + 
 					"WHERE (" + bookSearchPredicate(searchText)  + ") ) )" + 
 				where + 
-			"ORDER BY " + KEY_FAMILY_NAME + ", " + KEY_GIVEN_NAMES + "";
+			"ORDER BY Upper(" + KEY_FAMILY_NAME + ") " + COLLATION + ", Upper(" + KEY_GIVEN_NAMES + ") " + COLLATION;
 		return mDb.rawQuery(sql, new String[]{});
 	}
 
+	private String makeSearchTerm(String key, String text) {
+		return "Upper(" + key + ") LIKE Upper('%" + text + "%') " + COLLATION;
+	}
+
+	private String makeEqualFieldsTerm(String v1, String v2) {
+		return "Upper(" + v1 + ") = Upper(" + v2 + ") " + COLLATION;
+	}
+
+	private String makeTextTerm(String field, String op, String text) {
+		return "Upper(" + field + ") " + op + " Upper('" + encodeString(text) + "') " + COLLATION;
+	}
+
 	private String authorSearchPredicate(String search_term) {
-		return "(a." + KEY_FAMILY_NAME + " LIKE '%" + search_term + "%' OR " +
-				"a." + KEY_GIVEN_NAMES + " LIKE '%" + search_term + "%')";
+		return "(" + makeSearchTerm(KEY_FAMILY_NAME, search_term) + " OR " +
+				makeSearchTerm(KEY_GIVEN_NAMES, search_term) + ")";
 	}
 
 	private String bookSearchPredicate(String search_term) {
-		return "(b." + KEY_TITLE + " LIKE '%" + search_term + "%' OR " +
-					" b." + KEY_ISBN + " LIKE '%" + search_term + "%' OR " +
-					" b." + KEY_PUBLISHER + " LIKE '%" + search_term + "%' OR " +
-					" Exists(Select NULL From " + DB_TB_BOOK_SERIES + " bsw "
-					+ 		" Join " + DB_TB_SERIES + " s "
-					+ 		"     On s." + KEY_ROWID + " = bsw." + KEY_SERIES_ID 
-					+ 		"         And s." + KEY_SERIES_NAME + " LIKE '%" + search_term + "%'"
-					+ 	 	" Where bsw." + KEY_BOOK + " = b." + KEY_ROWID + ") OR " +
-					" b." + KEY_NOTES + " LIKE '%" + search_term + "%' OR " +
-					" b." + KEY_LOCATION + " LIKE '%" + search_term + "%')";
+		StringBuilder result = new StringBuilder("(");
+
+		// Just do a simple search of a bunch of fields.
+		String[] keys = new String[] {KEY_TITLE, KEY_ISBN, KEY_PUBLISHER, KEY_NOTES, KEY_LOCATION};
+		for(String k : keys)
+			result.append(makeSearchTerm(k, search_term) + " OR ");
+
+		// And check the series too.
+		result.append(" Exists(Select NULL From " + DB_TB_BOOK_SERIES + " bsw "
+						+ " Join " + DB_TB_SERIES + " s "
+						+ "     On s." + KEY_ROWID + " = bsw." + KEY_SERIES_ID 
+						+ "         And " + makeSearchTerm("s." + KEY_SERIES_NAME, search_term)
+						+ " Where bsw." + KEY_BOOK + " = b." + KEY_ROWID + ") ");		
+
+		result.append( ")") ;
+
+		return result.toString();
 	}
 
 	/**
@@ -2067,7 +2090,7 @@ public class CatalogueDBAdapter {
 			+ "     On bs." + KEY_BOOK + " = MatchingBooks." + KEY_ROWID
 			+ " Left Outer Join " + DB_TB_SERIES + " s "
 			+ "     On s." + KEY_ROWID + " = bs." + KEY_SERIES_ID
-			+ " Order by s." + KEY_SERIES_NAME + " " + COLLATION + " ASC ";
+			+ " Order by Upper(s." + KEY_SERIES_NAME + ") " + COLLATION + " ASC ";
 
 		return mDb.rawQuery(sql, new String[]{});
 	}
@@ -2412,7 +2435,8 @@ public class CatalogueDBAdapter {
 			+ " FROM " + DB_TB_BOOK_AUTHOR + " ba Join " + DB_TB_AUTHORS + " a "
 			+ "       On a." + KEY_ROWID + " = ba." + KEY_AUTHOR_ID
 			+ " WHERE ba." + KEY_BOOK + "=" + rowId + " "
-			+ " ORDER BY ba." + KEY_AUTHOR_POSITION + " Asc, " + KEY_FAMILY_NAME + " " + COLLATION + " ASC, " + KEY_GIVEN_NAMES + " " + COLLATION + " ASC";
+			+ " ORDER BY ba." + KEY_AUTHOR_POSITION + " Asc, Upper(" + KEY_FAMILY_NAME + ") " + COLLATION + " ASC,"
+			+ " Upper(" + KEY_GIVEN_NAMES + ") " + COLLATION + " ASC";
 		return mDb.rawQuery(sql, new String[]{});
 	}
 
@@ -2479,7 +2503,7 @@ public class CatalogueDBAdapter {
 			+ " FROM " + DB_TB_BOOK_SERIES + " bs Join " + DB_TB_SERIES + " s "
 			+ "       On s." + KEY_ROWID + " = bs." + KEY_SERIES_ID
 			+ " WHERE bs." + KEY_BOOK + "=" + rowId + " "
-			+ " ORDER BY bs." + KEY_SERIES_POSITION + ", s." + KEY_SERIES_NAME + " " + COLLATION + " ASC";
+			+ " ORDER BY bs." + KEY_SERIES_POSITION + ", Upper(s." + KEY_SERIES_NAME + ") " + COLLATION + " ASC";
 		return mDb.rawQuery(sql, new String[]{});
 	}
 	
@@ -3213,7 +3237,7 @@ public class CatalogueDBAdapter {
      */
     public Cursor getSeriesByName(String name) {
     	String sql = "";
-    	sql = KEY_SERIES_NAME + "='" + encodeString(name) + "' " + COLLATION + "";
+    	sql = makeTextTerm(KEY_SERIES_NAME, "=", name);
         return mDb.query(DB_TB_SERIES, new String[] {"_id", KEY_SERIES_NAME}, sql, null, null, null, null);
     }
 
@@ -3249,7 +3273,7 @@ public class CatalogueDBAdapter {
 	public ArrayList<String> fetchAllSeriesArray() {
     	String sql = "SELECT DISTINCT " + KEY_SERIES_NAME +  
 					" FROM " + DB_TB_SERIES + "" +  
-					" ORDER BY " + KEY_SERIES_NAME + "";
+					" ORDER BY Upper(" + KEY_SERIES_NAME + ") " + COLLATION;
     	return fetchArray(sql, KEY_SERIES_NAME);
 	}
 
@@ -3264,7 +3288,7 @@ public class CatalogueDBAdapter {
     				" Else " + KEY_FAMILY_NAME + "||', '||" + KEY_GIVEN_NAMES +
     				" End as " + KEY_AUTHOR_FORMATTED + 
 					" FROM " + DB_TB_AUTHORS + "" +  
-					" ORDER BY 1";
+					" ORDER BY Upper(" + KEY_AUTHOR_FORMATTED + ") " + COLLATION;
     	return fetchArray(sql, KEY_AUTHOR_FORMATTED);
 	}
 

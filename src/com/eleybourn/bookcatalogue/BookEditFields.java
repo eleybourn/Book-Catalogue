@@ -884,6 +884,11 @@ public class BookEditFields extends Activity {
 	@Override
 	protected void onPause() {
 		super.onPause();
+		// Close down the cover browser.
+		if (mCoverBrowser != null) {
+			mCoverBrowser.dismiss();
+			mCoverBrowser = null;
+		}
 	}
 	
 	@Override
@@ -1133,15 +1138,24 @@ public class BookEditFields extends Activity {
 		mDbHelper.close();
 	}
 
+	/**
+	 * Handler to process a cover selected from the CoverBrowser.
+	 */
 	private OnImageSelectedListener mOnImageSelectedListener = new OnImageSelectedListener() {
 		@Override
 		public void onImageSelected(String fileSpec) {
-			File bookFile = CatalogueDBAdapter.fetchThumbnail(mRowId);
-			if (fileSpec != null) {
+			if (mCoverBrowser != null && fileSpec != null) {
+				// Get the current file
+				File bookFile = CatalogueDBAdapter.fetchThumbnail(mRowId);
+				// Get the new file
 				File newFile = new File(fileSpec);					
+				// Overwrite with new file
 				newFile.renameTo(bookFile);
+				// update current activity
 				setCoverImage();
 			}
+			if (mCoverBrowser != null)
+				mCoverBrowser.dismiss();
 			mCoverBrowser = null;
 		}};
 }

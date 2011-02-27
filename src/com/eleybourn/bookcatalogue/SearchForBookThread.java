@@ -1,17 +1,9 @@
 package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
-import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
-import com.eleybourn.bookcatalogue.UpdateThumbnailsThread.BookInfo;
-import com.eleybourn.bookcatalogue.Utils.ArrayUtils;
-
-import android.content.ContentValues;
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Message;
-import android.util.Log;
 
 /**
  * Class to handle all book searches in a separate thread.
@@ -103,6 +95,7 @@ public class SearchForBookThread extends ManagedTask {
 			try {
 				GoogleBooksManager.searchGoogle(mIsbn, mAuthor, mTitle, mBookData);					
 			} catch (Exception e) {
+				BookCatalogue.logError(e);
 				showException(R.string.searching_google_books, e);
 			}
 
@@ -117,6 +110,7 @@ public class SearchForBookThread extends ManagedTask {
 			try {
 				AmazonManager.searchAmazon(mIsbn, mAuthor, mTitle, mBookData);
 			} catch (Exception e) {
+				BookCatalogue.logError(e);
 				showException(R.string.searching_amazon_books, e);
 			}
 
@@ -139,6 +133,7 @@ public class SearchForBookThread extends ManagedTask {
 						// Look for series name and clear KEY_TITLE
 						checkForSeriesName();
 					} catch (Exception e) {
+						BookCatalogue.logError(e);
 						showException(R.string.searching_library_thing, e);
 					}
 				}
@@ -150,6 +145,7 @@ public class SearchForBookThread extends ManagedTask {
 			return;
 
 		} catch (Exception e) {
+			BookCatalogue.logError(e);
 			showException(R.string.search_fail, e);
 			return;
 		} finally {
@@ -179,15 +175,15 @@ public class SearchForBookThread extends ManagedTask {
 				// Decode the collected author names and convert to an ArrayList
 				ArrayList<Author> aa = Utils.getAuthorUtils().decodeList(authors, '|', false);
 				mBookData.putParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, aa);
-
+				
 				// Decode the collected series names and convert to an ArrayList
 				try {
-		    		String series = mBookData.getString(CatalogueDBAdapter.KEY_SERIES_DETAILS);
+					String series = mBookData.getString(CatalogueDBAdapter.KEY_SERIES_DETAILS);
 					ArrayList<Series> sa = Utils.getSeriesUtils().decodeList(series, '|', false);
 					mBookData.putParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY, sa);
-		    	} catch (Exception e) {
-		    		Log.e("BC","Failed to add series", e);
-		    	}
+				} catch (Exception e) {
+					BookCatalogue.logError(e);
+				}
 			}
 		}
 

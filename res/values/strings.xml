@@ -206,4 +206,6 @@
 <string name="really_delete_series">Really delete series \'%s\'?\n\nThe books themselves will not be deleted.\n\nConsider editing the series and changing the series name to that of another series to preserve this data</string>
 <string name="edit_series">Edit Series Details</string>
 <string name="edit_author">Edit Author Details</string>
+<string name="unsaved_edits">You have unsaved changes. Are you sure you want to continue?</string>
+<string name="unsaved_edits_title">Unsaved Changes</string>
 </resources>

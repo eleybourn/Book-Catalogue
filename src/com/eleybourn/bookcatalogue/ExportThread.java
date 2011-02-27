@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.os.Environment;
 import android.os.Message;
@@ -201,8 +200,7 @@ public class ExportThread extends ManagedTask {
 			mManager.doToast( getString(R.string.export_complete) );
 			//Toast.makeText(AdministrationFunctions.this, R.string.export_complete, Toast.LENGTH_LONG).show();
 		} catch (IOException e) {
-			//Log.e("Book Catalogue", "Could not write to the SDCard");		
-			//Toast.makeText(AdministrationFunctions.this, R.string.export_failed, Toast.LENGTH_LONG).show();
+			BookCatalogue.logError(e);
 			mManager.doToast(getString(R.string.export_failed_sdcard));
 		}
 	}

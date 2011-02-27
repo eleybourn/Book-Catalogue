@@ -28,6 +28,7 @@ import java.util.Iterator;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -467,6 +468,10 @@ public class Fields extends ArrayList<Fields.Field> {
 		}
 
 		public void validate(Fields fields, Field field, Bundle values, boolean crossValidating) {
+			if (field.visible == false) {
+				// No validation required for invisible fields
+				return;
+			}
 			if (crossValidating)
 				return;
 
@@ -498,6 +503,10 @@ public class Fields extends ArrayList<Fields.Field> {
 			super(defaultValue);
 		}
 		public void validate(Fields fields, Field field, Bundle values, boolean crossValidating) {
+			if (field.visible == false) {
+				// No validation required for invisible fields
+				return;
+			}
 			if (crossValidating)
 				return;
 
@@ -538,6 +547,10 @@ public class Fields extends ArrayList<Fields.Field> {
 			super(defaultValue);
 		}
 		public void validate(Fields fields, Field field, Bundle values, boolean crossValidating) {
+			if (field.visible == false) {
+				// No validation required for invisible fields
+				return;
+			}
 			if (crossValidating)
 				return;
 			// Will throw on failure...
@@ -579,6 +592,10 @@ public class Fields extends ArrayList<Fields.Field> {
 			super(defaultValue);
 		}
 		public void validate(Fields fields, Field field, Bundle values, boolean crossValidating) {
+			if (field.visible == false) {
+				// No validation required for invisible fields
+				return;
+			}
 			if (crossValidating)
 				return;
 			try {
@@ -609,6 +626,10 @@ public class Fields extends ArrayList<Fields.Field> {
 			super(defaultValue);
 		}
 		public void validate(Fields fields, Field field, Bundle values, boolean crossValidating) {
+			if (field.visible == false) {
+				// No validation required for invisible fields
+				return;
+			}
 			if (crossValidating)
 				return;
 
@@ -644,6 +665,10 @@ public class Fields extends ArrayList<Fields.Field> {
 	static public class NonBlankValidator implements FieldValidator {
 
 		public void validate(Fields fields, Field field, Bundle values, boolean crossValidating) {
+			if (field.visible == false) {
+				// No validation required for invisible fields
+				return;
+			}
 			if (crossValidating)
 				return;
 			try {
@@ -670,6 +695,10 @@ public class Fields extends ArrayList<Fields.Field> {
 	 */
 	static public class BlankValidator implements FieldValidator {
 		public void validate(Fields fields, Field field, Bundle values, boolean crossValidating) {
+			if (field.visible == false) {
+				// No validation required for invisible fields
+				return;
+			}
 			if (crossValidating)
 				return;
 			try {
@@ -878,6 +907,8 @@ public class Fields extends ArrayList<Fields.Field> {
 		public FieldFormatter formatter = null;
 		/** Validator to use (can be null) */
 		public FieldValidator validator;
+		/** Has the field been set to invisible **/
+		public boolean visible;
 		/** Flag indicating that even though field has a column name, it should NOT be fetched from a 
 		 * Cursor. This is usually done for synthetic fields needed when saving the data */
 		public boolean doNoFetch = false;
@@ -929,8 +960,8 @@ public class Fields extends ArrayList<Fields.Field> {
 				} else {
 					throw new IllegalArgumentException();
 				}
-				boolean colVis = fields.getPreferences().getBoolean(FieldVisibility.prefix + group, true);
-				if (!colVis) {
+				visible = fields.getPreferences().getBoolean(FieldVisibility.prefix + group, true);
+				if (!visible) {
 					view.setVisibility(View.GONE);
 				}				
 			}

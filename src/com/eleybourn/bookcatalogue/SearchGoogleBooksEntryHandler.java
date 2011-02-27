@@ -20,20 +20,11 @@
 
 package com.eleybourn.bookcatalogue;
 
-import android.content.ContentValues;
-import android.os.Bundle;
-
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import android.os.Bundle;
 
 /* 
  * An XML handler for the Google Books entry return 

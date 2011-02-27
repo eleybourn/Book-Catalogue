@@ -23,7 +23,6 @@ import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -90,7 +89,6 @@ public class TouchListView extends ListView {
     
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
-		Log.i("TLV", "onInterceptTouchEvent");
 			if (mRemoveListener != null && mGestureDetector == null) {
 					if (mRemoveMode == FLING) {
 							mGestureDetector = new GestureDetector(getContext(), new SimpleOnGestureListener() {

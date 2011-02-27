@@ -49,7 +49,7 @@ public class AdministrationDonate extends Activity {
 			setContentView(R.layout.administration_donate);
 			setupAdmin();
 		} catch (Exception e) {
-			//Log.e("Book Catalogue", "Unknown Exception - BC onCreate - " + e.getMessage() );
+			BookCatalogue.logError(e);
 		}
 	}
 	

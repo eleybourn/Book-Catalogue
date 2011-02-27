@@ -84,6 +84,7 @@ import android.widget.TabHost;
 import android.widget.Toast;
 import android.widget.ViewSwitcher.ViewFactory;
 
+import com.eleybourn.bookcatalogue.CoverBrowser.OnImageSelectedListener;
 import com.eleybourn.bookcatalogue.Fields.Field;
 import com.eleybourn.bookcatalogue.Fields.FieldValidator;
 import com.eleybourn.bookcatalogue.LibraryThingManager.ImageSizes;
@@ -131,6 +132,7 @@ public class BookEditFields extends Activity {
 	
 	private ArrayList<Author> mAuthorList = null;
 	private ArrayList<Series> mSeriesList = null;
+	CoverBrowser mCoverBrowser = null;
 
 	private android.util.DisplayMetrics mMetrics;
 
@@ -597,7 +599,9 @@ public class BookEditFields extends Activity {
 			showDialog(ZOOM_THUMB_DIALOG_ID);
 			return true;
 		case SHOW_ALT_COVERS:
-			showEditionCovers();
+			String isbn = mFields.getField(R.id.isbn).getValue().toString();
+			mCoverBrowser = new CoverBrowser(this, mMetrics, isbn, mOnImageSelectedListener);
+			mCoverBrowser.showEditionCovers();
 			return true;
 		}
 		return super.onContextItemSelected(item);
@@ -1138,155 +1142,15 @@ public class BookEditFields extends Activity {
 		mDbHelper.close();
 	}
 
-	private void showEditionCovers() {
-		final Dialog dialog = new Dialog(this);
-		dialog.setContentView(R.layout.select_edition_cover);
-		dialog.setTitle("Select cover");
-		final FileManager fileManager = new FileManager();
-
-		final ImageSwitcher switcher = (ImageSwitcher) dialog.findViewById(R.id.switcher);
-
-		final ArrayList<String> editions;
-		try {
-			editions = LibraryThingManager.searchEditions(mFields.getField(R.id.isbn).getValue().toString());			
-		} catch (Exception e) {
-			// TODO Stringify
-			Toast.makeText(this, "Can not get editions for a book with no ISBN", Toast.LENGTH_LONG).show();
-			return;
-		}
-		final int previewSize = Math.min(MAX_ZOOM_THUMBNAIL_SIZE, Math.max(mMetrics.widthPixels, mMetrics.heightPixels)/5);
-
-		Gallery gallery = (Gallery) dialog.findViewById(R.id.gallery);
-		ImageAdapter adapter = new ImageAdapter(this, editions, fileManager, previewSize);
-		gallery.setAdapter(adapter);
-		//gallery.setOnItemSelectedListener(this);
-		gallery.setHorizontalScrollBarEnabled(true);
-		gallery.setMinimumWidth(1000);
-		gallery.setSpacing(previewSize/10);
-
-		gallery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-	        public void onItemClick(AdapterView parent, View v, int position, long id) {
-	            Toast.makeText(BookEditFields.this, "" + position, Toast.LENGTH_SHORT).show();
-	            File file = fileManager.get(editions.get(position), ImageSizes.LARGE);
-	            Drawable d = new BitmapDrawable(Utils.fetchFileIntoImageView(file, null, previewSize*4, previewSize*4, false));
-	            switcher.setImageDrawable(d);
-	            switcher.setTag(file.getAbsolutePath());
-	        }
-	    });
-
-		switcher.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				File bookFile = CatalogueDBAdapter.fetchThumbnail(mRowId);
-				Object newSpec = switcher.getTag();
-				if (newSpec != null) {
-					File newFile = new File((String)newSpec);					
-					newFile.renameTo(bookFile);
-					setCoverImage();
-				}
-				dialog.dismiss();
-			}});
-		
-		
-		dialog.setOnDismissListener(new OnDismissListener() {
-			@Override
-			public void onDismiss(DialogInterface dialog) {
-				fileManager.purge();
-			}});
-
-		switcher.setFactory(new ViewFactory() {
-			@Override
-			public View makeView() {
-		        ImageView i = new ImageView(BookEditFields.this);
-		        i.setBackgroundColor(0xFF000000);
-		        i.setScaleType(ImageView.ScaleType.FIT_CENTER);
-		        i.setLayoutParams(new ImageSwitcher.LayoutParams(ImageSwitcher.LayoutParams.WRAP_CONTENT,
-		        		ImageSwitcher.LayoutParams.WRAP_CONTENT));
-		        return i;
-			}});
-
-		dialog.show();
-
-	}
-
-	private class FileManager {
-		private Bundle mFiles = new Bundle();
-		public File get(String isbn, ImageSizes size) {
-		    String filespec;
-		    String key = isbn + "_" + size;
-		    if (!mFiles.containsKey(key)) {
-		    	filespec = LibraryThingManager.getCoverImage(isbn, null, size);
-			    mFiles.putString(key, filespec);
-		    } else {
-		    	filespec = mFiles.getString(key);
-		    }
-		    File file = new File(filespec);
-			return file;
-		}
-
-		public void purge() {
-			try {
-				for(String k : mFiles.keySet()) {
-					String filespec = mFiles.getString(k);
-					File file = new File(filespec);
-					if (file.exists())
-						file.delete();
-				}				
-				mFiles.clear();
-			} catch (Exception e) {
-				Log.e("BC", " Error purging files", e);
+	private OnImageSelectedListener mOnImageSelectedListener = new OnImageSelectedListener() {
+		@Override
+		public void onImageSelected(String fileSpec) {
+			File bookFile = CatalogueDBAdapter.fetchThumbnail(mRowId);
+			if (fileSpec != null) {
+				File newFile = new File(fileSpec);					
+				newFile.renameTo(bookFile);
+				setCoverImage();
 			}
-		}
-	}
-
-	public class ImageAdapter extends BaseAdapter {
-	    int mGalleryItemBackground;
-	    ArrayList<String> mEditions;
-	    Bundle mFiles;
-	    private int mPreviewSize;
-	    private FileManager mFileManager = new FileManager();
-	    
-	    public ImageAdapter(Context c, ArrayList<String> editions, FileManager fileManager, int previewSize) {
-	        mContext = c;
-	        mEditions = editions;
-	        mFileManager = fileManager;
-	        mPreviewSize = previewSize;
-	        // See res/values/attrs.xml for the <declare-styleable> that defines
-	        // Gallery1.
-	        //TypedArray a = obtainStyledAttributes(R.styleable.Gallery1);
-	        //mGalleryItemBackground = a.getResourceId(
-	        //				R.styleable.Gallery1_android_galleryItemBackground, 0);
-	        //a.recycle();
-	    }
-	
-		public int getCount() {
-		    return mEditions.size();
-		}
-		
-		public Object getItem(int position) {
-		    return position;
-		}
-		
-		public long getItemId(int position) {
-		    return position;
-		}
-		
-		public View getView(int position, View convertView, ViewGroup parent) {
-		    String isbn = mEditions.get(position);
-		    ImageView i = new ImageView(mContext);
-
-		    //URL url = new URL(LibraryThingManager.getCoverImageUrl(isbn, ImageSizes.SMALL));
-		    //i.setImageURI(url.toURI());
-
-		    File file = mFileManager.get(isbn, ImageSizes.SMALL);
-		    file.deleteOnExit();
-		    Utils.fetchFileIntoImageView(file, i, mPreviewSize, mPreviewSize, false);
-		    i.setScaleType(ImageView.ScaleType.FIT_XY);
-		    return i;
-		}
-		
-	    private Context mContext;
-
-	}
-	
+			mCoverBrowser = null;
+		}};
 }

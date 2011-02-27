@@ -334,13 +334,13 @@ public class TaskManager {
 			// Append each task message
 			if (mTasks.size() > 0) {
 				if (mProgressMessage.length() > 0)
-					mProgressMessage += "\r\n";
+					mProgressMessage += "\n";
 				if (mTasks.size() == 1) {
 					mProgressMessage += mTasks.get(0).progressMessage;						
 				} else {
 					mProgressMessage += "1: " + mTasks.get(0).progressMessage;
 					for(int i = 1; i < mTasks.size(); i++) {
-						mProgressMessage += "\r\n" + (i+1) + ": " + mTasks.get(i).progressMessage;
+						mProgressMessage += "\n" + (i+1) + ": " + mTasks.get(i).progressMessage;
 					}
 				}
 			}

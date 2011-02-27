@@ -774,8 +774,8 @@ public class Utils {
 		opt.inJustDecodeBounds = true;
 	    BitmapFactory.decodeFile( filename, opt );
 
-	    // If no size info, assume file bad and set the 'alert' icon
-	    if ( opt.outHeight <= 0 || opt.outWidth <= 0 ) {
+	    // If no size info, or a single pixel, assume file bad and set the 'alert' icon
+	    if ( opt.outHeight <= 0 || opt.outWidth <= 0 || (opt.outHeight== 1 && opt.outWidth == 1) ) {
 	    	if (destView != null)
 	    		destView.setImageResource(android.R.drawable.ic_dialog_alert);
 	    	return null;

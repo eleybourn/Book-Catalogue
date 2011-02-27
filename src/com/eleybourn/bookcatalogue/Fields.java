@@ -1221,7 +1221,7 @@ public class Fields extends ArrayList<Fields.Field> {
 				message = "(" + cnt + ") " + i.next().getFormattedMessage(res);
 			while (i.hasNext()) {
 				cnt ++;
-				message += " (" + cnt + ") " + i.next().getFormattedMessage(res) + "\r\n";
+				message += " (" + cnt + ") " + i.next().getFormattedMessage(res) + "\n";
 			}
 			return message;
 		}

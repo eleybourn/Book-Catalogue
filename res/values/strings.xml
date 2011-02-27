@@ -196,7 +196,7 @@
 <string name="edit_author_details">Edit Author Details</string>
 <string name="immediate_global_changes">NOTE: All saved changes apply instantly and globally</string>
 <string name="menu_replace_thumb">Replace Thumbnail...</string>
-<string name="menu_thumb_alt_editions">From other editions...</string>
+<string name="menu_thumb_alt_editions">From Other Editions...</string>
 <string name="author_required">At least one author must be specified</string>
 <string name="title_required">A non-blank title must be specified</string>
 <string name="menu_delete_series">Delete Series...</string>
@@ -206,4 +206,6 @@
 <string name="really_delete_series">Really delete series \'%s\'?\n\nThe books themselves will not be deleted.\n\nConsider editing the series and changing the series name to that of another series to preserve this data</string>
 <string name="edit_series">Edit Series Details</string>
 <string name="edit_author">Edit Author Details</string>
+<string name="select_cover">Select Cover</string>
+<string name="no_isbn_no_editions">Can not get editions for a book with no ISBN</string>
 </resources>

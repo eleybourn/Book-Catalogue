@@ -3,21 +3,18 @@ package com.eleybourn.bookcatalogue;
 import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 public class EditAuthorDialog {
 	private final Context mContext;
-	private final ArrayAdapter<String> mAuthorAdapter;
 	private final CatalogueDBAdapter mDbHelper;
 	private final Runnable mOnChanged;
 
 	EditAuthorDialog(Context context, CatalogueDBAdapter dbHelper, final Runnable onChanged) {
 		mDbHelper = dbHelper;
 		mContext = context;
-		mAuthorAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_dropdown_item_1line, mDbHelper.fetchAllAuthorsArray());
 		mOnChanged = onChanged;
 	}
 

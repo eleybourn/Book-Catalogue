@@ -22,10 +22,6 @@ package com.eleybourn.bookcatalogue;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.LinkedList;
-
-import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
-import com.eleybourn.bookcatalogue.UpdateThumbnailsThread.BookInfo;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -34,7 +30,8 @@ import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
+
+import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
 
 /**
  * Class used to manager a collection of backgroud threads for an AcitivityWithTasks subclass.
@@ -167,7 +164,7 @@ public class TaskManager {
 			try {
 				l.onTaskEnded(this, task);
 			} catch (Exception e) {
-				Log.e("BC","OnTaskEndedListener failed", e);
+				BookCatalogue.logError(e);
 			}
 
 		// Update the progress dialog
@@ -190,11 +187,10 @@ public class TaskManager {
 	private void destroyProgress() {
 		synchronized(this) {
 			if (mProgress != null) {
-				Log.i("BC", "Deleting progress");
 				try { 
 					mProgress.dismiss(); 
 				} catch (Exception e) {
-					Log.e("BC", "Failed to delete progress", e);
+					BookCatalogue.logError(e);
 				};
 				mProgress = null;
 			}
@@ -284,7 +280,6 @@ public class TaskManager {
 	 */
 	private OnCancelListener mCancelHandler = new OnCancelListener() {
 		public void onCancel(DialogInterface i) {
-			Log.i("BookCatalogue", "Cancelling Tasks...");
 			for(TaskInfo t : mTasks) {
 				t.task.cancelTask();
 			}
@@ -419,7 +414,6 @@ public class TaskManager {
 				// Get the context; if null or we already have a PD, just skip
 				Context ctx = getContext();
 				if (ctx != null && mProgress == null) {
-					Log.i("BC", "Creating progress");
 					mProgress = new ProgressDialog(ctx);
 					if (mProgressMax > 0) {
 						mProgress.setIndeterminate(false);

@@ -1,6 +1,5 @@
 package com.eleybourn.bookcatalogue;
 
-import android.util.Log;
 
 public class SearchLibraryThingThread extends SearchThread {
 
@@ -27,11 +26,11 @@ public class SearchLibraryThingThread extends SearchThread {
 					// Look for series name and clear KEY_TITLE
 					checkForSeriesName();
 				} catch (Exception e) {
+					BookCatalogue.logError(e);
 					showException(R.string.searching_library_thing, e);
 				}
 			}
 		}
-		Log.i("BC", "LT done");
 	}
 
 }

@@ -1,19 +1,9 @@
 package com.eleybourn.bookcatalogue;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
+import android.app.Activity;
+import android.os.Bundle;
 
 import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
-
-import android.app.Activity;
-import android.app.ProgressDialog;
-import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
-import android.widget.Toast;
 
 /**
  * Class to used as a bace class for any Activity that wants to run one or more threads that

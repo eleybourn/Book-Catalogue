@@ -20,7 +20,6 @@
 
 package com.eleybourn.bookcatalogue;
 
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -33,7 +32,6 @@ import org.xml.sax.SAXException;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
@@ -273,7 +271,7 @@ public class BookEditAnthology extends ListActivity {
 			ListView view = this.getListView();
 			view.setSelection(id);
 		} catch (Exception e) {
-			//do nothing
+			BookCatalogue.logError(e);
 		}
 		return;
 	}
@@ -305,7 +303,7 @@ public class BookEditAnthology extends ListActivity {
 				parser.parse(Utils.getInputStream(url), handler);
 			} catch (RuntimeException e) {
 				Toast.makeText(this, R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
-				//Log.e("Book Catalogue", "SAX Runtime Exception " + e);
+				BookCatalogue.logError(e);
 				return;
 			}
 			String[] links = handler.getLinks();
@@ -324,27 +322,26 @@ public class BookEditAnthology extends ListActivity {
 						showAnthologyConfirm(titles);
 					}
 				} catch (RuntimeException e) {
-					//Log.e("Book Catalogue", "SAX Runtime Exception " + e);
+					BookCatalogue.logError(e);
 					Toast.makeText(this, R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
 				}
 			}
 			if (success == false) {
-				//Log.e("BC", "Fail 3");
 				Toast.makeText(this, R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
 				return;
 			}
 		} catch (MalformedURLException e) {
 			Toast.makeText(this, R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
-			//Log.e("Book Catalogue", "Malformed URL " + e.getMessage());
+			BookCatalogue.logError(e);
 		} catch (ParserConfigurationException e) {
 			Toast.makeText(this, R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
-			//Log.e("Book Catalogue", "SAX Parsing Error " + e.getMessage());
+			BookCatalogue.logError(e);
 		} catch (SAXException e) {
 			Toast.makeText(this, R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
-			//Log.e("Book Catalogue", "SAX Exception " + e.getMessage());
+			BookCatalogue.logError(e);
 		} catch (Exception e) {
 			Toast.makeText(this, R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
-			//Log.e("Book Catalogue", "SAX IO Exception " + e.getMessage());
+			BookCatalogue.logError(e);
 		}
 		fillAnthology();
 		return;
@@ -364,7 +361,6 @@ public class BookEditAnthology extends ListActivity {
 				for (int j=0; j < titles.size(); j++) {
 					String anthology_title = titles.get(j);
 					anthology_title = anthology_title + ", ";
-					//Log.e("BC", anthology_title);
 					String anthology_author = bookAuthor;
 					// Does the string look like "Hindsight by Jack Williamson"
 					int pos = anthology_title.indexOf(" by ");
@@ -376,7 +372,6 @@ public class BookEditAnthology extends ListActivity {
 					anthology_author = anthology_author.trim().replace("\n", " ").replaceAll("[\\,\\.\\'\\:\\;\\`\\~\\@\\#\\$\\%\\^\\&\\*\\(\\)\\-\\=\\_\\+]*$", "").trim();
 					anthology_title = anthology_title.trim().replace("\n", " ").replaceAll("[\\,\\.\\'\\:\\;\\`\\~\\@\\#\\$\\%\\^\\&\\*\\(\\)\\-\\=\\_\\+]*$", "").trim();
 					mDbHelper.createAnthologyTitle(mRowId, anthology_author, anthology_title);
-					//Log.e("BC", anthology_author + " " + anthology_title);
 				}
 				fillAnthology();
 				return;

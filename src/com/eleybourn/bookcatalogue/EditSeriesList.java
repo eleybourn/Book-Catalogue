@@ -20,26 +20,16 @@
 
 package com.eleybourn.bookcatalogue;
 
-import java.util.ArrayList;
-
-import com.eleybourn.bookcatalogue.Fields.Field;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Color;
+import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.AutoCompleteTextView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -81,7 +71,7 @@ public class EditSeriesList extends EditObjectList<Series> {
 			((AutoCompleteTextView)this.findViewById(R.id.series)).setAdapter(mSeriesAdapter);
 	
 		} catch (Exception e) {
-			Log.e("BookCatalogue.EditSeriesList.onCreate","Failed to initialize", e);
+			BookCatalogue.logError(e);
 		}
 	}
 
@@ -98,12 +88,8 @@ public class EditSeriesList extends EditObjectList<Series> {
 			series.id = mDbHelper.lookupSeriesId(series);
 			boolean foundMatch = false;
 			for(int i = 0; i < mList.size() && !foundMatch; i++) {
-				if (series.id != 0L) {
-					if (mList.get(i).id == series.id)
-						foundMatch = true;
-				} else {
-					if (series.name.equals(mList.get(i).name))
-						foundMatch = true;
+				if (series.name.equals(mList.get(i).name) && series.num.equals(mList.get(i).num)) {
+					foundMatch = true;
 				}
 			}
 			if (foundMatch) {
@@ -111,7 +97,9 @@ public class EditSeriesList extends EditObjectList<Series> {
 				return;							
 			}
 			mList.add(series);
-            mAdapter.notifyDataSetChanged();
+			mAdapter.notifyDataSetChanged();
+			t.setText("");
+			et.setText("");
 		} else {
 			Toast.makeText(EditSeriesList.this, getResources().getString(R.string.series_is_blank), Toast.LENGTH_LONG).show();
 		}
@@ -229,4 +217,34 @@ public class EditSeriesList extends EditObjectList<Series> {
 
 		alertDialog.show();
 	}
+	
+	@Override
+	protected boolean onSave() {
+		final AutoCompleteTextView t = ((AutoCompleteTextView)EditSeriesList.this.findViewById(R.id.series));
+		Resources res = this.getResources();
+		String s = t.getText().toString().trim();
+		if (s.length() > 0) {
+			final AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(res.getText(R.string.unsaved_edits)).create();
+			
+			alertDialog.setTitle(res.getText(R.string.unsaved_edits_title));
+			alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
+			alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, res.getText(R.string.yes), new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					t.setText("");
+					findViewById(R.id.confirm).performClick();
+				}
+			}); 
+			
+			alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, res.getText(R.string.no), new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					//do nothing
+				}
+			}); 
+			
+			alertDialog.show();
+			return false;
+		} else {
+			return true;
+		}
+	};
 }

@@ -20,16 +20,8 @@
 
 package com.eleybourn.bookcatalogue;
 
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
-
-import java.lang.ref.WeakReference;
 
 /**
  * Base class for handling tasks in background while displaying a ProgressDialog.

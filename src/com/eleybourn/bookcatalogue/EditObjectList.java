@@ -21,21 +21,20 @@
 package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
+
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * Base class for editing a list of objects. The inheritor must specify a view id
@@ -138,7 +137,7 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
 	 * 
 	 * @return		True if activity should exit, false to abort exit.
 	 */
-	protected boolean onSave(Intent i) { return true; };
+	protected boolean onSave() { return true; };
  
 	/**
 	 * Called when user presses 'Cancel' button if present. Primary task is
@@ -215,14 +214,13 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
 			//tlv.setRemoveListener(onRemove);
 
 		} catch (Exception e) {
-			Log.e("BookCatalogue.EditObjectList.onCreate","Failed to initialize", e);
+			BookCatalogue.logError(e);
 		}
 	}
 
 	private TouchListView.DropListener mDropListener=new TouchListView.DropListener() {
 		@Override
 		public void drop(int from, int to) {
-				Log.i("BC", "Drop " + from + "->"+to);
 				T item=mAdapter.getItem(from);				
 				mAdapter.remove(item);
 				mAdapter.insert(item, to);
@@ -264,6 +262,7 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
 				return;			
 			}
 		} catch (Exception e) {
+			BookCatalogue.logError(e);
 		};		
 		// If we get here, something went wrong.
 		if (v != null)
@@ -282,7 +281,7 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
 		public void onClick(View v) {
 			Intent i = new Intent();
 			i.putParcelableArrayListExtra(mKey, mList);
-			if (onSave(i)) {
+			if (onSave()) {
 				setResult(RESULT_OK, i);
 				finish();
 			}
@@ -475,7 +474,7 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
             	try {
                     onSetupView(v, o);            		
             	} catch (Exception e) {
-            		Log.e("BookCatalogue.EditObjectList", "onSetupView failed", e);
+            		BookCatalogue.logError(e);
             	}
 
                 mCheckedFields = true;

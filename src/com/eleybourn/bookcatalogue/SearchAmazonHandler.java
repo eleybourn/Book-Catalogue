@@ -20,21 +20,11 @@
 
 package com.eleybourn.bookcatalogue;
 
-import android.content.ContentValues;
-import android.os.Bundle;
-import android.util.Log;
-
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import android.os.Bundle;
 
 /** 
  * An XML handler for the Amazon return 
@@ -210,7 +200,6 @@ public class SearchAmazonHandler extends DefaultHandler {
 //	 */
 //	public String[] getBook(){
 //		String[] book = {author, title, isbn, publisher, date_published, rating,  bookshelf, read, series, pages, series_num, list_price, anthology, location, read_start, read_end, audiobook, signed, description, genre};
-//		//Log.e("bc", author + " :: " + title + " :: " + isbn  + " :: " + publisher + " :: " + date_published + " :: " + rating +  " :: " + bookshelf + " :: " + read + " :: " + series + " :: " + pages + " :: " + series_num);
 //		return book;
 //	}
 
@@ -305,7 +294,7 @@ public class SearchAmazonHandler extends DefaultHandler {
 			}
 			mBuilder.setLength(0);			
 		} catch (Exception e) {
-			Log.e("Amazon", e.getMessage());
+			BookCatalogue.logError(e);
 		}
 	}
 

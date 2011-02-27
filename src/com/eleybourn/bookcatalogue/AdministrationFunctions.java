@@ -21,38 +21,30 @@
 package com.eleybourn.bookcatalogue;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
-import com.eleybourn.bookcatalogue.UpdateThumbnailsThread.BookInfo;
-
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
+import com.eleybourn.bookcatalogue.UpdateThumbnailsThread.BookInfo;
 
 /**
  * 
@@ -66,8 +58,8 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	private static final int ACTIVITY_BOOKSHELF=1;
 	private static final int ACTIVITY_FIELD_VISIBILITY=2;
 	private CatalogueDBAdapter mDbHelper;
-	private int importUpdated = 0;
-	private int importCreated = 0;
+	//private int importUpdated = 0;
+	//private int importCreated = 0;
 	public static String filePath = Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION;
 	public static String fileName = filePath + "/export.csv";
 	public static String UTF8 = "utf8";
@@ -91,7 +83,6 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			Iterator<BookInfo> i = queue.iterator();
 			while (i.hasNext()) {
 				BookInfo bi = i.next();
-				Log.i("BookCatalogue", "Updating book " + bi.id);
 				mDbHelper.updateBook(bi.id, bi.bookData);
 			}
 		}
@@ -166,11 +157,11 @@ public class AdministrationFunctions extends ActivityWithTasks {
 					updateThumbnails(false);
 				}
 			} catch (NullPointerException e) {
-				//do nothing
+				BookCatalogue.logError(e);
 			}
 			setupAdmin();
 		} catch (Exception e) {
-			//Log.e("Book Catalogue", "Unknown Exception - BC onCreate - " + e.getMessage() );
+			BookCatalogue.logError(e);
 		}
 	}
 	
@@ -343,8 +334,10 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			in.close();
 		} catch (FileNotFoundException e) {
 			Toast.makeText(this, R.string.import_failed, Toast.LENGTH_LONG).show();
+			BookCatalogue.logError(e);
 		} catch (IOException e) {
 			Toast.makeText(this, R.string.import_failed, Toast.LENGTH_LONG).show();
+			BookCatalogue.logError(e);
 		}
 		return importedString;
 	}
@@ -563,8 +556,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 //						}
 //					}
 //				} catch (Exception e) {
-//					//Log.e("BC", "Import Book (Single) Error");
-//					// do nothing
+//					BookCatalogue.logError(e);
 //				}
 //
 //				if (!values.get(CatalogueDBAdapter.KEY_LOANED_TO).equals("")) {
@@ -653,7 +645,6 @@ public class AdministrationFunctions extends ActivityWithTasks {
 
 	@Override
 	TaskHandler getTaskHandler(ManagedTask t) {
-		Log.i("BookCatalogue", "Reconnecting task");
 		// If we had a task, create the progress dialog and reset the pointers.
 		if (t instanceof UpdateThumbnailsThread) {
 			return mThumbnailsHandler;
@@ -662,7 +653,6 @@ public class AdministrationFunctions extends ActivityWithTasks {
 		} else if (t instanceof ImportThread) {
 			return mImportHandler;
 		} else {
-			Log.e("BookCatalogue", "Unknown task type");
 			return null;
 		}
 	}

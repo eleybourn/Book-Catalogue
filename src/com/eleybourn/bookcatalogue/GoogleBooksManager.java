@@ -9,7 +9,6 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
 
-import android.content.ContentValues;
 import android.os.Bundle;
 
 public class GoogleBooksManager {
@@ -48,13 +47,13 @@ public class GoogleBooksManager {
 			}
 			return;
 		} catch (MalformedURLException e) {
-			//Log.e("Book Catalogue", "Malformed URL " + e.getMessage());
+			BookCatalogue.logError(e);
 		} catch (ParserConfigurationException e) {
-			//Log.e("Book Catalogue", "SAX Parsing Error " + e.getMessage());
+			BookCatalogue.logError(e);
 		} catch (SAXException e) {
-			//Log.e("Book Catalogue", "SAX Exception " + e.getMessage());
+			BookCatalogue.logError(e);
 		} catch (Exception e) {
-			//Log.e("Book Catalogue", "SAX IO Exception " + e.getMessage());
+			BookCatalogue.logError(e);
 		}
 		return;
 	}

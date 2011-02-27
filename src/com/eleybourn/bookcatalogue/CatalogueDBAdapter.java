@@ -26,7 +26,6 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import android.app.SearchManager;
 import android.content.ContentValues;
@@ -38,12 +37,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.BaseColumns;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 /**
  * Book Catalogue database access helper class. Defines the basic CRUD operations
@@ -368,7 +365,7 @@ public class CatalogueDBAdapter {
 			try {
 				new File(Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION + "/.nomedia").createNewFile();
 			} catch (IOException e) {
-				//error
+				BookCatalogue.logError(e);
 			}
 		}
 
@@ -390,7 +387,6 @@ public class CatalogueDBAdapter {
 		 */
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-			//Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion + ", existing data will be saved");
 			int curVersion = oldVersion;
 			if (curVersion < 11) {
 				onCreate(db);
@@ -462,22 +458,22 @@ public class CatalogueDBAdapter {
 				try {
 					db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " ADD " + KEY_NOTES + " text");
 				} catch (Exception e) {
-					//do nothing
+					BookCatalogue.logError(e);
 				}
 				try {
 					db.execSQL("UPDATE " + DB_TB_BOOKS + " SET " + KEY_NOTES + " = ''");
 				} catch (Exception e) {
-					//do nothing
+					BookCatalogue.logError(e);
 				}
 				try {
 					db.execSQL(DATABASE_CREATE_LOAN);
 				} catch (Exception e) {
-					//do nothing
+					BookCatalogue.logError(e);
 				}
 				try {
 					createIndices(db);
 				} catch (Exception e) {
-					//do nothing
+					BookCatalogue.logError(e);
 				}
 			}
 			if (curVersion == 25) {
@@ -506,7 +502,7 @@ public class CatalogueDBAdapter {
 				try {
 					db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " ADD " + KEY_LIST_PRICE + " text");
 				} catch (Exception e) {
-					//do nothing
+					BookCatalogue.logError(e);
 				}
 			}
 			if (curVersion == 29) {
@@ -534,17 +530,17 @@ public class CatalogueDBAdapter {
 				try {
 					db.execSQL(DATABASE_CREATE_ANTHOLOGY);
 				} catch (Exception e) {
-					//do nothing
+					BookCatalogue.logError(e);
 				}
 				try {
 					createIndices(db);
 				} catch (Exception e) {
-					//do nothing
+					BookCatalogue.logError(e);
 				}
 				try {
 					db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " ADD " + KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO);
 				} catch (Exception e) {
-					//do nothing
+					BookCatalogue.logError(e);
 				}
 				message += "* There is now support to record books as anthologies and it's titles. \n\n";
 				message += "* There is experimental support to automatically populate the anthology titles \n\n";
@@ -568,7 +564,7 @@ public class CatalogueDBAdapter {
 					db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " ADD " + OLD_KEY_AUDIOBOOK + " boolean not null default 'f'");
 					db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " ADD " + KEY_SIGNED + " boolean not null default 'f'");
 				} catch (Exception e) {
-					//do nothing
+					BookCatalogue.logError(e);
 				}
 			}
 			if (curVersion == 35) {
@@ -580,7 +576,7 @@ public class CatalogueDBAdapter {
 					db.execSQL("UPDATE " + DB_TB_BOOKS + " SET " + OLD_KEY_AUDIOBOOK + "='f'");
 					db.execSQL("UPDATE " + DB_TB_BOOKS + " SET " + KEY_SIGNED + "='f'");
 				} catch (Exception e) {
-					//do nothing
+					BookCatalogue.logError(e);
 				}
 			}
 			if (curVersion == 36) {
@@ -617,7 +613,7 @@ public class CatalogueDBAdapter {
 				try {
 					new File(Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION + "/.nomedia").createNewFile();
 				} catch (Exception e) {
-					//error
+					BookCatalogue.logError(e);
 				}
 			}
 			if (curVersion == 40) {
@@ -639,7 +635,7 @@ public class CatalogueDBAdapter {
 					db.execSQL("DROP TABLE tmp2");
 					db.execSQL("DROP TABLE tmp3");
 				} catch (Exception e) {
-					//do nothing
+					BookCatalogue.logError(e);
 				}
 				
 				try {
@@ -669,7 +665,7 @@ public class CatalogueDBAdapter {
 					db.execSQL("DROP TABLE tmp2");
 					db.execSQL("DROP TABLE tmp3");
 				} catch (Exception e) {
-					//do nothing
+					BookCatalogue.logError(e);
 				}
 			}
 			if (curVersion == 42) {
@@ -699,7 +695,7 @@ public class CatalogueDBAdapter {
 					db.execSQL("DROP TABLE tmp2");
 					db.execSQL("DROP TABLE tmp3");
 				} catch (Exception e) {
-					//do nothing
+					BookCatalogue.logError(e);
 				}
 				
 				db.execSQL("CREATE TABLE tmp1 AS SELECT _id, " + KEY_AUTHOR_OLD + ", " + KEY_TITLE + ", " + KEY_ISBN + ", " + KEY_PUBLISHER + ", " + 
@@ -864,8 +860,7 @@ public class CatalogueDBAdapter {
 
 					db.execSQL("DROP TABLE tmpBooks");
 				} catch (Exception e) {
-					android.util.Log.e("BookCatalogue","Exception during upgrade!",e);
-					//do nothing
+					BookCatalogue.logError(e);
 				}
 				
 			}
@@ -945,8 +940,7 @@ public class CatalogueDBAdapter {
 		    dbOrig.close();
 			
 		} catch (Exception e) {
-			//Toast.makeText(BookCatalogue.this, R.string.backup_failed, Toast.LENGTH_LONG).show();
-			//do nothing
+			BookCatalogue.logError(e);
 		}
 	}
 
@@ -1202,6 +1196,7 @@ public class CatalogueDBAdapter {
 		} catch (IllegalStateException e) {
 			open();
 			returnable = mDb.rawQuery(sql, new String[]{});
+			BookCatalogue.logError(e);
 		}
 		return returnable;
 	}
@@ -1250,6 +1245,7 @@ public class CatalogueDBAdapter {
 		} catch (IllegalStateException e) {
 			open();
 			returnable = mDb.rawQuery(sql, new String[]{});
+			BookCatalogue.logError(e);
 		}
 		return returnable;
 	}
@@ -1283,6 +1279,7 @@ public class CatalogueDBAdapter {
 		} catch (IllegalStateException e) {
 			open();
 			returnable = mDb.rawQuery(sql, new String[]{});
+			BookCatalogue.logError(e);
 		}
 		returnable.moveToFirst();
 		return returnable;
@@ -1457,6 +1454,7 @@ public class CatalogueDBAdapter {
 		} catch (IllegalStateException e) {
 			open();
 			returnable = mDb.rawQuery(fullSql, new String[]{});
+			BookCatalogue.logError(e);
 		}
 		return returnable;
 	}
@@ -1951,7 +1949,6 @@ public class CatalogueDBAdapter {
 	 * @return The position of the book
 	 */
 	public int fetchSeriesPositionBySeries(String seriesName, String bookshelf) {
-		String where = "";
 		String seriesSql;
 		if (bookshelf.equals("All Books")) {
 			seriesSql = sqlAllSeries();

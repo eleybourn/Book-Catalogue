@@ -2,11 +2,9 @@ package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Message;
-import android.util.Log;
 
 /**
  * Class to handle import in a separate thread.
@@ -200,8 +198,7 @@ public class ImportThread extends ManagedTask {
 						}
 					}
 				} catch (Exception e) {
-					Log.e("BC", "Import Book (Single) Error", e);
-					// do nothing
+					BookCatalogue.logError(e);
 				}
 
 				if (!values.get(CatalogueDBAdapter.KEY_LOANED_TO).equals("")) {

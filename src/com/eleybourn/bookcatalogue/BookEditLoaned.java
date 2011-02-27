@@ -78,7 +78,7 @@ public class BookEditLoaned extends Activity {
 				baseUri = (Uri) c.getField("CONTENT_URI").get(baseUri);
 				display_name = (String) c.getField("DISPLAY_NAME").get(display_name);
 			} catch (Exception e2) {
-				// do nothing
+				BookCatalogue.logError(e);
 			}
 		}
 		Cursor contactsCursor = getContentResolver().query(baseUri, null, null, null, null);
@@ -140,7 +140,7 @@ public class BookEditLoaned extends Activity {
 			ArrayAdapter<String> series_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getFriends());
 			mUserText.setAdapter(series_adapter);
 		} catch (Exception e) {
-			// do nothing
+			BookCatalogue.logError(e);
 		}
 		Button mConfirmButton = (Button) findViewById(R.id.confirm);
 		mConfirmButton.setOnClickListener(new View.OnClickListener() {

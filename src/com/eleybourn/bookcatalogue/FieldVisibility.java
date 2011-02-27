@@ -50,7 +50,7 @@ public class FieldVisibility extends Activity {
 			setContentView(R.layout.field_visibility);
 			setupFields();
 		} catch (Exception e) {
-			//Log.e("Book Catalogue", "Unknown Exception - BC onCreate - " + e.getMessage() );
+			BookCatalogue.logError(e);
 		}
 	}
 	

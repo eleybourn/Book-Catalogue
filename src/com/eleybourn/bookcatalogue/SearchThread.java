@@ -20,11 +20,8 @@
 
 package com.eleybourn.bookcatalogue;
 
-import java.util.ArrayList;
-
 import android.os.Bundle;
 import android.os.Message;
-import android.util.Log;
 
 abstract public class SearchThread extends ManagedTask {
 	protected String mAuthor;
@@ -110,7 +107,9 @@ abstract public class SearchThread extends ManagedTask {
 				if (tmpSeries != null && tmpSeries.length() > 0)
 					Utils.appendOrAdd(mBookData, CatalogueDBAdapter.KEY_SERIES_DETAILS, tmpSeries);				
 			}							
-		} catch (Exception e) {};		
+		} catch (Exception e) {
+			BookCatalogue.logError(e);
+		};		
 	}
 	
 	protected void showException(int id, Exception e) {

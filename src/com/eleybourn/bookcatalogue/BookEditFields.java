@@ -25,9 +25,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.StreamCorruptedException;
-import java.net.URI;
-import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -37,15 +34,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.app.TabActivity;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.graphics.Bitmap;
@@ -56,25 +50,20 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.Gallery;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
@@ -477,8 +466,10 @@ public class BookEditFields extends Activity {
 					finish();
 				}
 			});
+		} catch (IndexOutOfBoundsException e) {
+			BookCatalogue.logError(e);
 		} catch (SQLException e) {
-			//Log.e("Book Catalogue", "Unknown error " + e.toString());
+			BookCatalogue.logError(e);
 		}
 	}
 	
@@ -616,7 +607,7 @@ public class BookEditFields extends Activity {
 			thumb = CatalogueDBAdapter.fetchThumbnail(id);
 			thumb.delete();
 		} catch (Exception e) {
-			// something has gone wrong. 
+			BookCatalogue.logError(e);
 		}
 	}
 	
@@ -640,7 +631,7 @@ public class BookEditFields extends Activity {
 			String filename = CatalogueDBAdapter.fetchThumbnailFilename(mRowId, false);
 			f = new FileOutputStream(filename);
 		} catch (FileNotFoundException e) {
-			//Log.e("Book Catalogue", "Thumbnail cannot be written");
+			BookCatalogue.logError(e);
 			return;
 		}
 		bm.compress(Bitmap.CompressFormat.PNG, 100, f);				
@@ -707,7 +698,8 @@ public class BookEditFields extends Activity {
 							try {
 								f.setValue(values.getString(f.column));								
 							} catch (Exception e) {
-								android.util.Log.e("BookEditFields","Populate field " + f.column + " failed: " + e.getMessage());
+								String msg = "Populate field " + f.column + " failed: " + e.getMessage();
+								BookCatalogue.logError(e, msg);
 							}
 						}
 					}
@@ -727,8 +719,7 @@ public class BookEditFields extends Activity {
 				}
 				
 			} catch (NullPointerException e) {
-				Log.e("BC","Failed to load data", e);
-				// do nothing
+				BookCatalogue.logError(e);
 			}
 
 			setCoverImage();
@@ -1010,7 +1001,7 @@ public class BookEditFields extends Activity {
 			else 
 				added_author = "";
 		} catch (Exception e) {
-			Log.e("BC", "Error getting author", e);			
+			BookCatalogue.logError(e);
 		};
 		try {
 			ArrayList<Series> series = mStateValues.getParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY);
@@ -1019,7 +1010,7 @@ public class BookEditFields extends Activity {
 			else 
 				added_series = "";
 		} catch (Exception e) {
-			Log.e("BC", "Error getting series", e);
+			BookCatalogue.logError(e);
 		};
 
 		added_title = mStateValues.getString(CatalogueDBAdapter.KEY_TITLE);
@@ -1042,7 +1033,7 @@ public class BookEditFields extends Activity {
 				try {
 					f = new FileOutputStream(filename);
 				} catch (FileNotFoundException e) {
-					//Log.e("Book Catalogue", "Thumbnail cannot be written");
+					BookCatalogue.logError(e);
 					return;
 				}
 				
@@ -1067,7 +1058,7 @@ public class BookEditFields extends Activity {
 				try {
 					copyFile(thumb, real);
 				} catch (IOException e) {
-					//do nothing - error to be handled later
+					BookCatalogue.logError(e);
 				}
 				// Update the ImageView with the new image
 				setCoverImage();
@@ -1163,16 +1154,16 @@ public class BookEditFields extends Activity {
 		gallery.setHorizontalScrollBarEnabled(true);
 		gallery.setMinimumWidth(1000);
 		gallery.setSpacing(previewSize/10);
-
+		
 		gallery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-	        public void onItemClick(AdapterView parent, View v, int position, long id) {
-	            Toast.makeText(BookEditFields.this, "" + position, Toast.LENGTH_SHORT).show();
-	            File file = fileManager.get(editions.get(position), ImageSizes.LARGE);
-	            Drawable d = new BitmapDrawable(Utils.fetchFileIntoImageView(file, null, previewSize*4, previewSize*4, false));
-	            switcher.setImageDrawable(d);
-	            switcher.setTag(file.getAbsolutePath());
-	        }
-	    });
+			public void onItemClick(AdapterView parent, View v, int position, long id) {
+				Toast.makeText(BookEditFields.this, "" + position, Toast.LENGTH_SHORT).show();
+				File file = fileManager.get(editions.get(position), ImageSizes.LARGE);
+				Drawable d = new BitmapDrawable(Utils.fetchFileIntoImageView(file, null, previewSize*4, previewSize*4, false));
+				switcher.setImageDrawable(d);
+				switcher.setTag(file.getAbsolutePath());
+			}
+		});
 
 		switcher.setOnClickListener(new OnClickListener() {
 			@Override
@@ -1197,33 +1188,32 @@ public class BookEditFields extends Activity {
 		switcher.setFactory(new ViewFactory() {
 			@Override
 			public View makeView() {
-		        ImageView i = new ImageView(BookEditFields.this);
-		        i.setBackgroundColor(0xFF000000);
-		        i.setScaleType(ImageView.ScaleType.FIT_CENTER);
-		        i.setLayoutParams(new ImageSwitcher.LayoutParams(ImageSwitcher.LayoutParams.WRAP_CONTENT,
-		        		ImageSwitcher.LayoutParams.WRAP_CONTENT));
-		        return i;
+				ImageView i = new ImageView(BookEditFields.this);
+				i.setBackgroundColor(0xFF000000);
+				i.setScaleType(ImageView.ScaleType.FIT_CENTER);
+				i.setLayoutParams(new ImageSwitcher.LayoutParams(ImageSwitcher.LayoutParams.WRAP_CONTENT,
+						ImageSwitcher.LayoutParams.WRAP_CONTENT));
+				return i;
 			}});
-
+		
 		dialog.show();
-
 	}
-
+	
 	private class FileManager {
 		private Bundle mFiles = new Bundle();
 		public File get(String isbn, ImageSizes size) {
-		    String filespec;
-		    String key = isbn + "_" + size;
-		    if (!mFiles.containsKey(key)) {
-		    	filespec = LibraryThingManager.getCoverImage(isbn, null, size);
-			    mFiles.putString(key, filespec);
-		    } else {
-		    	filespec = mFiles.getString(key);
-		    }
-		    File file = new File(filespec);
+			String filespec;
+			String key = isbn + "_" + size;
+			if (!mFiles.containsKey(key)) {
+				filespec = LibraryThingManager.getCoverImage(isbn, null, size);
+				mFiles.putString(key, filespec);
+			} else {
+				filespec = mFiles.getString(key);
+			}
+			File file = new File(filespec);
 			return file;
 		}
-
+		
 		public void purge() {
 			try {
 				for(String k : mFiles.keySet()) {
@@ -1234,7 +1224,7 @@ public class BookEditFields extends Activity {
 				}				
 				mFiles.clear();
 			} catch (Exception e) {
-				Log.e("BC", " Error purging files", e);
+				BookCatalogue.logError(e);
 			}
 		}
 	}

@@ -21,33 +21,15 @@
 package com.eleybourn.bookcatalogue;
 
 import java.io.File;
-import java.io.InputStream;
-import java.lang.ref.WeakReference;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
-import org.xml.sax.SAXException;
-
-import com.eleybourn.bookcatalogue.SearchForBookThread.SearchHandler;
-import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
-
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -55,6 +37,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
+import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
 
 /**
  * This class is called by the BookCatalogue activity and will search the interwebs for 
@@ -285,7 +269,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 				go(isbn);
 			}
 		} catch (Exception e) {
-			//do nothing
+			BookCatalogue.logError(e);
 		}
 	}
 	*/
@@ -359,7 +343,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 				}
 			}
 		} catch (Exception e) {
-			//do nothing
+			BookCatalogue.logError(e);
 		}
 
 		doSearchBook();
@@ -384,6 +368,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 			//t.start();
 
 		} catch (Exception e) {
+			BookCatalogue.logError(e);
 			Toast.makeText(this, R.string.search_fail, Toast.LENGTH_LONG).show();
 			finish();
 			return;
@@ -486,6 +471,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 						finish();
 				}
 			} catch (NullPointerException e) {
+				BookCatalogue.logError(e);
 				finish();
 			}
 			break;

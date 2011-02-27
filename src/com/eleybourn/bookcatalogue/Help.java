@@ -71,7 +71,7 @@ public class Help extends Activity {
 			});
 			
 		} catch (Exception e) {
-			//Log.e("Book Catalogue", "Unknown Exception - Help onCreate - " + e.getMessage() );
+			BookCatalogue.logError(e);
 		}
 	}
 

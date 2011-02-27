@@ -27,7 +27,6 @@ import java.util.Calendar;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
@@ -178,7 +177,7 @@ public class BookEditNotes extends Activity {
 				}
 			});
 		} catch (Exception e) {
-			android.util.Log.e("Book Catalogue", "Unknown error " + e.toString());
+			BookCatalogue.logError(e);
 		}
 	}
 	

@@ -72,7 +72,7 @@ public class BookEdit extends TabActivity {
 		} catch (CursorIndexOutOfBoundsException e) {
 			//do nothing - new book
 		} catch (NullPointerException e) {
-			//do nothing
+			BookCatalogue.logError(e);
 		}
 		
 		// Create an Intent to launch an Activity for the tab (to be reused)

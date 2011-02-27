@@ -20,11 +20,10 @@
 
 package com.eleybourn.bookcatalogue;
 
+import java.util.ArrayList;
+
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import java.io.Serializable;
-import java.util.ArrayList;
 
 /**
  * Class to hold author data. Used in lists and import/export.

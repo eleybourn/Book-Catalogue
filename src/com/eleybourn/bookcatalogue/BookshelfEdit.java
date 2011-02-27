@@ -71,7 +71,7 @@ public class BookshelfEdit extends Activity {
 	        });
 	        
     	} catch (Exception e) {
-    		//do nothing
+    		BookCatalogue.logError(e);
     	}
     }
     

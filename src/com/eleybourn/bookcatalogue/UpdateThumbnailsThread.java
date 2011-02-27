@@ -8,18 +8,10 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import android.app.ProgressDialog;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
-import android.widget.Toast;
 
 /**
  * Class to update all thumbnails (and some other data) in a background thread.
@@ -95,6 +87,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
 			out.write("");
 			out.close();
 		} catch (IOException e) {
+			BookCatalogue.logError(e);
 			mFinalMessage = getString(R.string.thumbnail_failed_sdcard);
 			return;
 		}
@@ -143,15 +136,17 @@ public class UpdateThumbnailsThread extends ManagedTask {
 					if (!isCancelled()) {
 						try {
 							GoogleBooksManager.searchGoogle(isbn, author, title, newData);							
-						} catch (Exception e) {						
-						}						
+						} catch (Exception e) {
+							BookCatalogue.logError(e);
+						}
 					}
 
 					if (!isCancelled()) {
 						try {
 							AmazonManager.searchAmazon(isbn, author, title, newData);
-						} catch (Exception e) {	
-						}						
+						} catch (Exception e) {
+							BookCatalogue.logError(e);
+						}
 					}
 
 					if (!isCancelled()) {
@@ -164,8 +159,9 @@ public class UpdateThumbnailsThread extends ManagedTask {
 									ltm.searchByIsbn(bdIsbn);
 								}
 							}
-						} catch (Exception e) {						
-						}						
+						} catch (Exception e) {
+							BookCatalogue.logError(e);
+						}
 					}
 					
 					Utils.cleanupThumbnails(newData);
@@ -214,7 +210,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
 				}
 			}
 		} catch (Exception e) {
-			Log.e("BookCatalogue","Exception in thread", e);
+			BookCatalogue.logError(e);
 		} finally {
 			if (mBooks != null && !mBooks.isClosed())
 				mBooks.close();

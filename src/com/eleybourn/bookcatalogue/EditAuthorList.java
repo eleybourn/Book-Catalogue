@@ -25,14 +25,12 @@ import java.util.ArrayList;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -55,16 +53,18 @@ public class EditAuthorList extends EditObjectList<Author> {
 
 	@Override
 	protected void onSetupView(View target, Author object) {
-        if (object != null) {
-	        TextView at = (TextView) target.findViewById(R.id.row_author);
-	        if (at != null) {
-	              at.setText(object.getDisplayName());                            }
-	        at = (TextView) target.findViewById(R.id.row_author_sort);
-	        if (at != null) {
-	              at.setText(object.getSortName());                            }
-        }
+		if (object != null) {
+			TextView at = (TextView) target.findViewById(R.id.row_author);
+			if (at != null) {
+				at.setText(object.getDisplayName());
+			}
+			at = (TextView) target.findViewById(R.id.row_author_sort);
+			if (at != null) {
+				at.setText(object.getSortName());
+			}
+		}
 	};
-
+	
 	/**
 	 * Return a complete list of author names from the database; used for AutoComplete.
 	 *  
@@ -89,7 +89,7 @@ public class EditAuthorList extends EditObjectList<Author> {
 			ArrayAdapter<String> author_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getAuthorsFromDb());
 			((AutoCompleteTextView)this.findViewById(R.id.author)).setAdapter(author_adapter);
 		} catch (Exception e) {
-			Log.e("BookCatalogue.EditAuthorList.onCreate","Failed to initialize", e);
+			BookCatalogue.logError(e);
 		}
 	}
 
@@ -124,7 +124,8 @@ public class EditAuthorList extends EditObjectList<Author> {
 			}
 
 			mList.add(a);
-            mAdapter.notifyDataSetChanged();
+			mAdapter.notifyDataSetChanged();
+			t.setText("");
 		} else {
 			Toast.makeText(EditAuthorList.this, getResources().getString(R.string.author_is_blank), Toast.LENGTH_LONG).show();
 		}		
@@ -230,13 +231,34 @@ public class EditAuthorList extends EditObjectList<Author> {
 
 		alertDialog.show();
 	}
-//	@Override
-//	protected boolean onSave(Intent i) {
-//		for(Author a : mList) {
-//			if (a.requiresUpdate)
-//				mDbHelper.updateAuthor(a);
-//		}
-//
-//		return true;
-//	};
+	
+	@Override
+	protected boolean onSave() {
+		final AutoCompleteTextView t = ((AutoCompleteTextView)EditAuthorList.this.findViewById(R.id.author));
+		Resources res = this.getResources();
+		String s = t.getText().toString().trim();
+		if (s.length() > 0) {
+			final AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(res.getText(R.string.unsaved_edits)).create();
+			
+			alertDialog.setTitle(res.getText(R.string.unsaved_edits_title));
+			alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
+			alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, res.getText(R.string.yes), new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					t.setText("");
+					findViewById(R.id.confirm).performClick();
+				}
+			}); 
+			
+			alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, res.getText(R.string.no), new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					//do nothing
+				}
+			}); 
+			
+			alertDialog.show();
+			return false;
+		} else {
+			return true;
+		}
+	};
 }

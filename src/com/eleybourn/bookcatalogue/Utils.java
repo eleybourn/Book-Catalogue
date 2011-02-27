@@ -21,24 +21,17 @@
 package com.eleybourn.bookcatalogue;
 
 import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
-import java.io.Serializable;
-import java.io.StreamCorruptedException;
-
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
-
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,18 +42,13 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.xml.sax.HandlerBase;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import android.content.ContentValues;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
-import java.text.DateFormat;
-import android.util.Log;
 import android.widget.ImageView;
 
 public class Utils {
@@ -393,7 +381,7 @@ public class Utils {
 		try {
 			u = new URL(urlText);
 		} catch (MalformedURLException e) {
-			//Log.e("Book Catalogue", "Malformed URL");
+			BookCatalogue.logError(e);
 			return "";
 		}
 		HttpURLConnection c;
@@ -406,7 +394,7 @@ public class Utils {
 			c.connect();
 			in = c.getInputStream();
 		} catch (IOException e) {
-			//Log.e("Book Catalogue", "Thumbnail cannot be read");
+			BookCatalogue.logError(e);
 			return "";
 		}
 
@@ -416,7 +404,7 @@ public class Utils {
 			filename = CatalogueDBAdapter.fetchThumbnailFilename(0, true, filenameSuffix);
 			f = new FileOutputStream(filename);
 		} catch (FileNotFoundException e) {
-			//Log.e("Book Catalogue", "Thumbnail cannot be written");
+			BookCatalogue.logError(e);
 			return "";
 		}
 		
@@ -428,7 +416,7 @@ public class Utils {
 			}
 			f.close();
 		} catch (IOException e) {
-			//Log.e("Book Catalogue", "Error writing thumbnail");
+			BookCatalogue.logError(e);
 			return "";
 		}
 		return filename;
@@ -450,13 +438,13 @@ public class Utils {
 				conn.setConnectTimeout(30000);
 				return conn.getInputStream();
 			} catch (java.net.UnknownHostException e) {
-				Log.e("BookCatalogue.Utils", "Unknown Host in getInpuStream", e);
+				BookCatalogue.logError(e);
 				retries--;
 				if (retries-- == 0)
 					throw e;
 				try { Thread.sleep(500); } catch(Exception junk) {};
 			} catch (Exception e) {
-				Log.e("BookCatalogue.Utils", "Exception in getInpuStream", e);
+				BookCatalogue.logError(e);
 				throw new RuntimeException(e);
 			}			
 		}
@@ -740,19 +728,19 @@ public class Utils {
 		} catch (MalformedURLException e) {
 			String s = "unknown";
 			try { s = e.getMessage(); } catch (Exception e2) {};
-			Log.e("Book Catalogue", "Malformed URL " + s);
+			BookCatalogue.logError(e, s);
 		} catch (ParserConfigurationException e) {
 			String s = "unknown";
 			try { s = e.getMessage(); } catch (Exception e2) {};
-			Log.e("Book Catalogue", "SAX Parsing Error " + s);
+			BookCatalogue.logError(e, s);
 		} catch (SAXException e) {
 			String s = e.getMessage(); // "unknown";
 			try { s = e.getMessage(); } catch (Exception e2) {};
-			Log.e("Book Catalogue", "SAX Exception " + s);
+			BookCatalogue.logError(e, s);
 		} catch (java.io.IOException e) {
 			String s = "unknown";
 			try { s = e.getMessage(); } catch (Exception e2) {};
-			Log.e("Book Catalogue", "IO Exception " + s);
+			BookCatalogue.logError(e, s);
 		}
 
 

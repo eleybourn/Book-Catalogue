@@ -27,7 +27,6 @@ import com.eleybourn.bookcatalogue.SearchThread.SearchHandler;
 import com.eleybourn.bookcatalogue.TaskManager.OnTaskEndedListener;
 
 import android.os.Bundle;
-import android.util.Log;
 
 /**
  * Class to co-ordinate multiple SearchThread objects using an existing TaskManager.
@@ -174,7 +173,6 @@ public class SearchManager implements OnTaskEndedListener {
 	 * @param bookData	Source
 	 */
 	private void accumulateData(Bundle bookData) {
-		Log.i("BC", "Appending data");
 		if (bookData == null)
 			return;
 		for (String k : bookData.keySet()) {
@@ -238,15 +236,15 @@ public class SearchManager implements OnTaskEndedListener {
 			// Decode the collected author names and convert to an ArrayList
 			ArrayList<Author> aa = Utils.getAuthorUtils().decodeList(authors, '|', false);
 			mBookData.putParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, aa);
-
+			
 			// Decode the collected series names and convert to an ArrayList
 			try {
-	    		String series = mBookData.getString(CatalogueDBAdapter.KEY_SERIES_DETAILS);
+				String series = mBookData.getString(CatalogueDBAdapter.KEY_SERIES_DETAILS);
 				ArrayList<Series> sa = Utils.getSeriesUtils().decodeList(series, '|', false);
 				mBookData.putParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY, sa);
-	    	} catch (Exception e) {
-	    		Log.e("BC","Failed to add series", e);
-	    	}
+			} catch (Exception e) {
+				BookCatalogue.logError(e);
+			}
 			mSearchHandler.onFinish(null, mBookData, mCancelledFlg);
 		}
 	}

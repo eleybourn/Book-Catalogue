@@ -1,7 +1,5 @@
 package com.eleybourn.bookcatalogue;
 
-import android.util.Log;
-
 public class SearchAmazonThread extends SearchThread {
 
 	public SearchAmazonThread(TaskManager manager, TaskHandler taskHandler,
@@ -21,10 +19,9 @@ public class SearchAmazonThread extends SearchThread {
 			// Look for series name and clear KEY_TITLE
 			checkForSeriesName();
 		} catch (Exception e) {
+			BookCatalogue.logError(e);
 			showException(R.string.searching_amazon_books, e);
 		}
-
-		Log.i("BC", "Amazon done");
 	}
 
 }

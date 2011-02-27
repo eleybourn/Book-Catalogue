@@ -20,11 +20,6 @@
 
 package com.eleybourn.bookcatalogue;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -37,12 +32,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import android.util.Log;
-import android.widget.Toast;
-import android.content.Context;
-import android.content.ContentValues;
 import android.os.Bundle;
-import android.os.Handler;
 
 /**
  * Handle all aspects of searching (and ultimately synchronizing with) LibraryThing.
@@ -118,7 +108,7 @@ public class LibraryThingManager {
 	 *                   <fact>1001 Books You Must Read Before You Die (2006/2008/2010 Edition)</fact>
 	 *                   <fact>Astounding/Analog Science Fiction and Fact All-Time Poll (placed 23, 1952)</fact>
 	 *                   <fact>Astounding/Analog Science Fiction and Fact All-Time Poll (placed 21, 1956)</fact>
-	 *                   <fact>Harenberg Buch der 1000 Bücher (1. Ausgabe)</fact>
+	 *                   <fact>Harenberg Buch der 1000 Bï¿½cher (1. Ausgabe)</fact>
 	 *                   <fact>501 Must-Read Books (Science Fiction)</fact>
 	 *                 </factList>
 	 *               </version>
@@ -255,10 +245,10 @@ public class LibraryThingManager {
 	 *                 <factList>
 	 *                   <fact>&lt;![CDATA[ Robbie:&lt;br&gt;"Well," said Mrs. Weston, at last, "I guess he can stay with us until he rusts." ]]&gt;</fact>
 	 *                   <fact>&lt;![CDATA[ Runaround:&lt;br&gt;"Space Station," said Donovan, "here I come." ]]&gt;</fact>
-	 *                   <fact>&lt;![CDATA[ Reason"&lt;br&gt;He grinned — and went into the ship.  Muller would be here for several weeks — ]]&gt;</fact>
+	 *                   <fact>&lt;![CDATA[ Reason"&lt;br&gt;He grinned ï¿½ and went into the ship.  Muller would be here for several weeks ï¿½ ]]&gt;</fact>
 	 *                   <fact>&lt;![CDATA[ Catch That Rabbit:&lt;br&gt;****&lt;br&gt;**** too spoilerish! ]]&gt;</fact>
 	 *                   <fact>&lt;![CDATA[ Liar:&lt;br&gt;"Liar!" ]]&gt;</fact>
-	 *                   <fact>&lt;![CDATA[ Little Lost Robot:&lt;br&gt;"… His very superiority caught him.  Good-by General" ]]&gt;</fact>
+	 *                   <fact>&lt;![CDATA[ Little Lost Robot:&lt;br&gt;"ï¿½ His very superiority caught him.  Good-by General" ]]&gt;</fact>
 	 *                   <fact>&lt;![CDATA[ Escape:&lt;br&gt;To which Bogert added absently, "Strictly according to the contract, too." ]]&gt;</fact>
 	 *                   <fact>&lt;![CDATA[ Evidence:&lt;br&gt;Stephen Byerley chuckled.  "I must reply that that is a somewhat farfetched idea."&lt;br&gt;The door closed behind her. ]]&gt;</fact>
 	 *                   <fact>&lt;![CDATA[ The Evitable Conflict:&lt;br&gt;And the fire behind the quartz went out and only a curl of smoke was left to indicate its place. ]]&gt;</fact>
@@ -276,7 +266,7 @@ public class LibraryThingManager {
 	 *                   <url>http://www.librarything.com/profile/lorax</url>
 	 *                 </person>
 	 *                 <factList>
-	 *                   <fact>&lt;![CDATA[ Robbie:&lt;br&gt;"Ninety-eight — ninety-nine — &lt;i&gt;one hundred&lt;/i&gt;." ]]&gt;</fact>
+	 *                   <fact>&lt;![CDATA[ Robbie:&lt;br&gt;"Ninety-eight ï¿½ ninety-nine ï¿½ &lt;i&gt;one hundred&lt;/i&gt;." ]]&gt;</fact>
 	 *                   <fact>&lt;![CDATA[ Runaround:&lt;br&gt;It was one of Gregory Powell's favorite platitudes that nothing was to 
 	 *                         be gained from excitement, so when Mike Donovan came leaping down the stairs toward him, red hair matted 
 	 *                         with perspiration, Powell frowned. ]]&gt;
@@ -329,7 +319,7 @@ public class LibraryThingManager {
 	 *                 <fact>QT1 (Cutie)</fact>
 	 *                 <fact>The Master</fact>
 	 *                 <fact>Prophet of the Master</fact>
-	 *                 <fact>René Descartes</fact>
+	 *                 <fact>Renï¿½ Descartes</fact>
 	 *                 <fact>DV-5 (Dave)</fact><fact>Dave (DV-5)</fact>
 	 *                 <fact>HRB-34 (Herbie)</fact>
 	 *                 <fact>Herbie (HRB-34)</fact>
@@ -408,19 +398,19 @@ public class LibraryThingManager {
 		} catch (MalformedURLException e) {
 			String s = "unknown";
 			try { s = e.getMessage(); } catch (Exception e2) {};
-			Log.e("Book Catalogue", "Malformed URL " + s);
+			BookCatalogue.logError(e, s);
 		} catch (ParserConfigurationException e) {
 			String s = "unknown";
 			try { s = e.getMessage(); } catch (Exception e2) {};
-			Log.e("Book Catalogue", "SAX Parsing Error " + s);
+			BookCatalogue.logError(e, s);
 		} catch (SAXException e) {
 			String s = e.getMessage(); // "unknown";
 			try { s = e.getMessage(); } catch (Exception e2) {};
-			Log.e("Book Catalogue", "SAX Exception " + s);
+			BookCatalogue.logError(e, s);
 		} catch (java.io.IOException e) {
 			String s = "unknown";
 			try { s = e.getMessage(); } catch (Exception e2) {};
-			Log.e("Book Catalogue", "IO Exception " + s);
+			BookCatalogue.logError(e, s);
 		}
 
 		getCoverImage(isbn, mBookData, ImageSizes.LARGE);

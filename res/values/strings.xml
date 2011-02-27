@@ -208,4 +208,6 @@
 <string name="edit_author">Edit Author Details</string>
 <string name="select_cover">Select Cover</string>
 <string name="no_isbn_no_editions">Can not get editions for a book with no ISBN</string>
+<string name="unsaved_edits">You have unsaved changes. Are you sure you want to continue?</string>
+<string name="unsaved_edits_title">Unsaved Changes</string>
 </resources>

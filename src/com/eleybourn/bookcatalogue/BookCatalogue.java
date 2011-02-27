@@ -21,7 +21,15 @@
 package com.eleybourn.bookcatalogue;
 
 //import android.R;
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 
 import android.app.AlertDialog;
@@ -33,7 +41,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
@@ -136,6 +146,56 @@ public class BookCatalogue extends ExpandableListActivity {
 	private static final int GONE = 8;
 	private static final int VISIBLE = 0;
 	private static final int BACKUP_PROMPT_WAIT = 5;
+	
+	public static String filePath = Environment.getExternalStorageDirectory() + "/" + LOCATION; 	//TODO: This should be moved to the util class
+	public static String fileName = filePath + "/error.log"; 	//TODO: This should be moved to the util class
+	//TODO: This should be moved to the util class
+	
+	public static void logError(Exception e) {
+		logError(e, "");
+	}
+	/**
+	 * Write the exception stacktrace to the error log file 
+	 * @param e The exception to log
+	 */
+	public static void logError(Exception e, String msg) {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date date = new Date();
+		String now = dateFormat.format(date);
+		
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		e.printStackTrace(pw);
+		
+		String error = "An Exception Occured @ " + now + "\n" + 
+			"In Phone " + Build.MODEL + " (" + Build.VERSION.SDK_INT + ") \n" + 
+			msg + "\n" + 
+			sw.toString();
+		Log.e("BookCatalogue", error);
+		
+		try {
+			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName), "utf8"), 8192);
+			out.write(error);
+			out.close();
+		} catch (Exception e1) {
+			// do nothing - we can't log an error in the error logger. (and we don't want to FC the app)
+		}
+	}
+	
+	//TODO: This should be moved to the util class
+	/**
+	 * Clear the error log each time the app is started
+	 */
+	public void clearLog() {
+		try {
+			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName), "utf8"), 8192);
+			out.write("");
+			out.close();
+		} catch (Exception e1) {
+			// do nothing - we can't log an error in the error logger. (and we don't want to FC the app)
+		}
+	}
+	
 	/** 
 	 * Called when the activity is first created. 
 	 */
@@ -157,7 +217,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				bookshelf = mPrefs.getString(STATE_BOOKSHELF, bookshelf);
 				loadCurrentGroup();
 			} catch (Exception e) {
-				//Log.e("Book Catalogue", "Unknown Exception - BC Prefs - " + e.getMessage() );
+				logError(e);
 			}
 			// This sets the search capability to local (application) search
 			setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
@@ -204,7 +264,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			}
 			registerForContextMenu(getExpandableListView());
 		} catch (Exception e) {
-			//Log.e("Book Catalogue", "Unknown Exception - BC onCreate - " + e.getMessage() );
+			logError(e);
 		}
 	}
 	
@@ -922,7 +982,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			ed.commit();
 
 		} catch (Exception e) {
-			//Log.e("Book Catalogue", "Unknown Exception - BC gotoCurrentGroup - " + e.getMessage() );
+			logError(e);
 		}
 		return;
 	}
@@ -951,7 +1011,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				collapsed = true;
 
 		} catch (Exception e) {
-			//Log.e("Book Catalogue", "Unknown Exception - BC gotoCurrentGroup - " + e.getMessage() );
+			logError(e);
 		}
 		return;
 	}
@@ -969,7 +1029,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			
 			view.setSelectedGroup(currentGroup.get(currentGroup.size()-1));
 		} catch (Exception e) {
-			//Log.e("Book Catalogue", "Unknown Exception - BC gotoCurrentGroup - " + e.getMessage() );
+			logError(e);
 		}
 		return;
 	}
@@ -1090,7 +1150,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				}
 			}
 		} catch (NullPointerException e) {
-			// do nothing
+			logError(e);
 		}
 	}
 	
@@ -1349,7 +1409,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				}
 				
 			} catch (Exception e) {
-				Log.e("BC", "Error getting position", e);
+				logError(e);
 			}
 			// We call bookshelf not fillData in case the bookshelves have been updated.
 			bookshelf();
@@ -1371,7 +1431,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			bookshelf = mPrefs.getString(STATE_BOOKSHELF, bookshelf);
 			loadCurrentGroup();
 		} catch (Exception e) {
-			//do nothing
+			logError(e);
 		}
 		super.onResume();
 	}

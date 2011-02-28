@@ -80,6 +80,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 	// The last Intent returned as a result of creating a book.
 	private Intent mLastBookIntent = null;
 
+	// Object managing current search.
 	SearchManager mSearchManager = null;
 
 	/**
@@ -391,6 +392,8 @@ public class BookISBNSearch extends ActivityWithTasks {
 				// Make sure the message will be empty.
 				mTaskManager.doProgress(null);
 			}
+			// Clean up
+			mSearchManager = null;
 		}
 	};
 
@@ -518,8 +521,8 @@ public class BookISBNSearch extends ActivityWithTasks {
 	 */
 	@Override
 	public void onRetainNonConfigurationInstance(Hashtable<String,Object> store) {
-		store.put("SearchManager", mSearchManager);
 		if (mSearchManager != null) {
+			store.put("SearchManager", mSearchManager);
 			mSearchManager.disconnect();
 			mSearchManager = null;
 		}

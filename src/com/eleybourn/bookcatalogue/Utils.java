@@ -678,7 +678,8 @@ public class Utils {
 	 */
 	public static <T extends ItemWithIdFixup> void pruneList(CatalogueDBAdapter db, ArrayList<T> list) {
 		Hashtable<String,Boolean> names = new Hashtable<String,Boolean>();
-		
+		Hashtable<Long,Boolean> ids = new Hashtable<Long,Boolean>();
+
 		// We have to go forwards through the list because 'first item' is important,
 		// but we also can't delete things as we traverse if we are going forward. So
 		// we build a list of items to delete.
@@ -686,12 +687,13 @@ public class Utils {
 
 		for(int i = 0; i < list.size(); i++) {
 			T item = list.get(i);
-			String name = item.toString();
-			if (names.containsKey(name)) {
+			Long id = item.fixupId(db);
+			String name = item.toString().trim().toUpperCase();
+			if (names.containsKey(name) || (id != 0 && ids.containsKey(id))) {
 				toDelete.add(i);
 			} else {
+				ids.put(id, true);
 				names.put(name, true);
-				item.fixupId(db);
 			}
 		}
 		for(int i = toDelete.size() - 1; i >= 0; i--)

@@ -39,7 +39,7 @@ import android.util.Log;
  * 
  * The results queue is executed in FIFO order.
  * 
- * In the future, both queues could be done independantly and this object bould be broken into
+ * In the future, both queues could be done independently and this object could be broken into
  * 3 classes: SimpleTaskQueueBase, SimpleTaskQueueFIFO and SimpleTaskQueueLIFO. For now, this is
  * not needed.
  * 

@@ -164,7 +164,7 @@ public class TaskManager {
 			try {
 				l.onTaskEnded(this, task);
 			} catch (Exception e) {
-				BookCatalogue.logError(e);
+				Logger.logError(e);
 			}
 
 		// Update the progress dialog
@@ -190,7 +190,7 @@ public class TaskManager {
 				try { 
 					mProgress.dismiss(); 
 				} catch (Exception e) {
-					BookCatalogue.logError(e);
+					Logger.logError(e);
 				};
 				mProgress = null;
 			}

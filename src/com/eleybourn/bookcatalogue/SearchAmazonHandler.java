@@ -294,7 +294,7 @@ public class SearchAmazonHandler extends DefaultHandler {
 			}
 			mBuilder.setLength(0);			
 		} catch (Exception e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		}
 	}
 

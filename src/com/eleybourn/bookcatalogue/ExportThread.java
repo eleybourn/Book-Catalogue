@@ -16,7 +16,7 @@ import android.os.Message;
  * @author Grunthos
  */
 public class ExportThread extends ManagedTask {
-	private static String mFilePath = Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION;
+	private static String mFilePath = Utils.EXTERNAL_FILE_PATH;
 	private static String mFileName = mFilePath + "/export.csv";
 	private static String UTF8 = "utf8";
 	private static int BUFFER_SIZE = 8192;
@@ -200,7 +200,7 @@ public class ExportThread extends ManagedTask {
 			mManager.doToast( getString(R.string.export_complete) );
 			//Toast.makeText(AdministrationFunctions.this, R.string.export_complete, Toast.LENGTH_LONG).show();
 		} catch (IOException e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 			mManager.doToast(getString(R.string.export_failed_sdcard));
 		}
 	}

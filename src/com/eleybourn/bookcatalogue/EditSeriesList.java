@@ -71,7 +71,7 @@ public class EditSeriesList extends EditObjectList<Series> {
 			((AutoCompleteTextView)this.findViewById(R.id.series)).setAdapter(mSeriesAdapter);
 	
 		} catch (Exception e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		}
 	}
 

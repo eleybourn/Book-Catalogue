@@ -94,7 +94,7 @@ public class SearchForBookThread extends ManagedTask {
 			try {
 				GoogleBooksManager.searchGoogle(mIsbn, mAuthor, mTitle, mBookData);					
 			} catch (Exception e) {
-				BookCatalogue.logError(e);
+				Logger.logError(e);
 				showException(R.string.searching_google_books, e);
 			}
 
@@ -109,7 +109,7 @@ public class SearchForBookThread extends ManagedTask {
 			try {
 				AmazonManager.searchAmazon(mIsbn, mAuthor, mTitle, mBookData);
 			} catch (Exception e) {
-				BookCatalogue.logError(e);
+				Logger.logError(e);
 				showException(R.string.searching_amazon_books, e);
 			}
 
@@ -132,7 +132,7 @@ public class SearchForBookThread extends ManagedTask {
 						// Look for series name and clear KEY_TITLE
 						checkForSeriesName();
 					} catch (Exception e) {
-						BookCatalogue.logError(e);
+						Logger.logError(e);
 						showException(R.string.searching_library_thing, e);
 					}
 				}
@@ -144,7 +144,7 @@ public class SearchForBookThread extends ManagedTask {
 			return;
 
 		} catch (Exception e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 			showException(R.string.search_fail, e);
 			return;
 		} finally {
@@ -181,7 +181,7 @@ public class SearchForBookThread extends ManagedTask {
 					ArrayList<Series> sa = Utils.getSeriesUtils().decodeList(series, '|', false);
 					mBookData.putParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY, sa);
 				} catch (Exception e) {
-					BookCatalogue.logError(e);
+					Logger.logError(e);
 				}
 			}
 		}

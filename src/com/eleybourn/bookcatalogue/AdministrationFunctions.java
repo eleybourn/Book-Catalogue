@@ -61,8 +61,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	private CatalogueDBAdapter mDbHelper;
 	//private int importUpdated = 0;
 	//private int importCreated = 0;
-	public static String filePath = Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION;
-	public static String fileName = filePath + "/export.csv";
+	public static String fileName = Utils.EXTERNAL_FILE_PATH + "/export.csv";
 	public static String UTF8 = "utf8";
 	public static int BUFFER_SIZE = 8192;
 	private ProgressDialog pd = null;
@@ -158,11 +157,11 @@ public class AdministrationFunctions extends ActivityWithTasks {
 					updateThumbnails(false);
 				}
 			} catch (NullPointerException e) {
-				BookCatalogue.logError(e);
+				Logger.logError(e);
 			}
 			setupAdmin();
 		} catch (Exception e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		}
 	}
 	
@@ -335,10 +334,10 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			in.close();
 		} catch (FileNotFoundException e) {
 			Toast.makeText(this, R.string.import_failed, Toast.LENGTH_LONG).show();
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		} catch (IOException e) {
 			Toast.makeText(this, R.string.import_failed, Toast.LENGTH_LONG).show();
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		}
 		return importedString;
 	}
@@ -557,7 +556,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 //						}
 //					}
 //				} catch (Exception e) {
-//					BookCatalogue.logError(e);
+//					Logger.logError(e);
 //				}
 //
 //				if (!values.get(CatalogueDBAdapter.KEY_LOANED_TO).equals("")) {

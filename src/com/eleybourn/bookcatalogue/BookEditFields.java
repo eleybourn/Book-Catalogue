@@ -470,9 +470,9 @@ public class BookEditFields extends Activity {
 				}
 			});
 		} catch (IndexOutOfBoundsException e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		} catch (SQLException e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		}
 	}
 	
@@ -612,7 +612,7 @@ public class BookEditFields extends Activity {
 			thumb = CatalogueDBAdapter.fetchThumbnail(id);
 			thumb.delete();
 		} catch (Exception e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		}
 	}
 	
@@ -636,7 +636,7 @@ public class BookEditFields extends Activity {
 			String filename = CatalogueDBAdapter.fetchThumbnailFilename(mRowId, false);
 			f = new FileOutputStream(filename);
 		} catch (FileNotFoundException e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 			return;
 		}
 		bm.compress(Bitmap.CompressFormat.PNG, 100, f);				
@@ -704,7 +704,7 @@ public class BookEditFields extends Activity {
 								f.setValue(values.getString(f.column));								
 							} catch (Exception e) {
 								String msg = "Populate field " + f.column + " failed: " + e.getMessage();
-								BookCatalogue.logError(e, msg);
+								Logger.logError(e, msg);
 							}
 						}
 					}
@@ -724,7 +724,7 @@ public class BookEditFields extends Activity {
 				}
 				
 			} catch (NullPointerException e) {
-				BookCatalogue.logError(e);
+				Logger.logError(e);
 			}
 
 			setCoverImage();
@@ -1007,7 +1007,7 @@ public class BookEditFields extends Activity {
 			else 
 				added_author = "";
 		} catch (Exception e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		};
 		try {
 			ArrayList<Series> series = mStateValues.getParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY);
@@ -1016,7 +1016,7 @@ public class BookEditFields extends Activity {
 			else 
 				added_series = "";
 		} catch (Exception e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		};
 
 		added_title = mStateValues.getString(CatalogueDBAdapter.KEY_TITLE);
@@ -1039,7 +1039,7 @@ public class BookEditFields extends Activity {
 				try {
 					f = new FileOutputStream(filename);
 				} catch (FileNotFoundException e) {
-					BookCatalogue.logError(e);
+					Logger.logError(e);
 					return;
 				}
 				
@@ -1064,7 +1064,7 @@ public class BookEditFields extends Activity {
 				try {
 					copyFile(thumb, real);
 				} catch (IOException e) {
-					BookCatalogue.logError(e);
+					Logger.logError(e);
 				}
 				// Update the ImageView with the new image
 				setCoverImage();

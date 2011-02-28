@@ -19,7 +19,7 @@ public class SearchAmazonThread extends SearchThread {
 			// Look for series name and clear KEY_TITLE
 			checkForSeriesName();
 		} catch (Exception e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 			showException(R.string.searching_amazon_books, e);
 		}
 	}

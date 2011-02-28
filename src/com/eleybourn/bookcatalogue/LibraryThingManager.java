@@ -398,19 +398,19 @@ public class LibraryThingManager {
 		} catch (MalformedURLException e) {
 			String s = "unknown";
 			try { s = e.getMessage(); } catch (Exception e2) {};
-			BookCatalogue.logError(e, s);
+			Logger.logError(e, s);
 		} catch (ParserConfigurationException e) {
 			String s = "unknown";
 			try { s = e.getMessage(); } catch (Exception e2) {};
-			BookCatalogue.logError(e, s);
+			Logger.logError(e, s);
 		} catch (SAXException e) {
 			String s = e.getMessage(); // "unknown";
 			try { s = e.getMessage(); } catch (Exception e2) {};
-			BookCatalogue.logError(e, s);
+			Logger.logError(e, s);
 		} catch (java.io.IOException e) {
 			String s = "unknown";
 			try { s = e.getMessage(); } catch (Exception e2) {};
-			BookCatalogue.logError(e, s);
+			Logger.logError(e, s);
 		}
 
 		getCoverImage(isbn, mBookData, ImageSizes.LARGE);

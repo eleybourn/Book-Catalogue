@@ -49,7 +49,7 @@ public class AdministrationDonate extends Activity {
 			setContentView(R.layout.administration_donate);
 			setupAdmin();
 		} catch (Exception e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		}
 	}
 	

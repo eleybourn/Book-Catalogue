@@ -53,7 +53,7 @@ public class AdministrationAbout extends Activity {
 			setContentView(R.layout.administration_about);
 			setupAdmin();
 		} catch (Exception e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		}
 	}
 	
@@ -75,7 +75,7 @@ public class AdministrationAbout extends Activity {
 			String versionName = info.versionName;
 			release.setText(versionName);
 		} catch (NameNotFoundException e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		}
 		final Resources res = this.getResources();
 		TextView webpage = (TextView) findViewById(R.id.webpage);
@@ -108,7 +108,7 @@ public class AdministrationAbout extends Activity {
 					AdministrationAbout.this.startActivity(Intent.createChooser(msg, "Send email..."));
 					//startActivity(msg);
 				} catch (ActivityNotFoundException e) {
-					BookCatalogue.logError(e);
+					Logger.logError(e);
 				}
 				return;
 			}

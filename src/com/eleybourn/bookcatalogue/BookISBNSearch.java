@@ -273,7 +273,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 				go(isbn);
 			}
 		} catch (Exception e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		}
 	}
 	*/
@@ -347,7 +347,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 				}
 			}
 		} catch (Exception e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		}
 
 		doSearchBook();
@@ -370,7 +370,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 			mSearchManager.search(author, title, isbn);
 
 		} catch (Exception e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 			Toast.makeText(this, R.string.search_fail, Toast.LENGTH_LONG).show();
 			finish();
 			return;
@@ -475,7 +475,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 						finish();
 				}
 			} catch (NullPointerException e) {
-				BookCatalogue.logError(e);
+				Logger.logError(e);
 				finish();
 			}
 			break;

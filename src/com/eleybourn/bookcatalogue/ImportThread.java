@@ -71,7 +71,7 @@ public class ImportThread extends ManagedTask {
 		// Make sure required fields are present.
 		// TODO: Rationalize import to allow updates using 1 or 2 columns. For now we require complete data.
 		// TODO: Do a search if mandatory columns missing (eg. allow 'import' of a list of ISBNs).
-		// TODO: Only make some columns mandator if the ID is not in import or not in DB 
+		// TODO: Only make some columns mandatory if the ID is not in import, or not in DB (ie. if not an update)
 		requireColumn(values, CatalogueDBAdapter.KEY_ROWID);
 		requireColumnOr(values, CatalogueDBAdapter.KEY_FAMILY_NAME,
 								CatalogueDBAdapter.KEY_AUTHOR_FORMATTED,
@@ -199,7 +199,7 @@ public class ImportThread extends ManagedTask {
 						}
 					}
 				} catch (Exception e) {
-					BookCatalogue.logError(e);
+					Logger.logError(e);
 				}
 
 				if (!values.get(CatalogueDBAdapter.KEY_LOANED_TO).equals("")) {

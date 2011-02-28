@@ -214,7 +214,7 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
 			//tlv.setRemoveListener(onRemove);
 
 		} catch (Exception e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		}
 	}
 
@@ -262,7 +262,7 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
 				return;			
 			}
 		} catch (Exception e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		};		
 		// If we get here, something went wrong.
 		if (v != null)
@@ -474,7 +474,7 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
             	try {
                     onSetupView(v, o);            		
             	} catch (Exception e) {
-            		BookCatalogue.logError(e);
+            		Logger.logError(e);
             	}
 
                 mCheckedFields = true;

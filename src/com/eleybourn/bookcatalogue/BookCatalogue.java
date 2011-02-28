@@ -81,9 +81,6 @@ public class BookCatalogue extends ExpandableListActivity {
 	public static final String LOCATION = "cdCatalogue";
 	public static final String DATABASE_NAME = "cd_catalogue";
 	*/
-	public static final String APP_NAME = "Book Catalogue";
-	public static final String LOCATION = "bookCatalogue";
-	public static final String DATABASE_NAME = "book_catalogue";
 
 	// Target size of a thumbnail in a list (bbox dim)
 	private static final int LIST_THUMBNAIL_SIZE=60;
@@ -146,63 +143,17 @@ public class BookCatalogue extends ExpandableListActivity {
 	private static final int GONE = 8;
 	private static final int VISIBLE = 0;
 	private static final int BACKUP_PROMPT_WAIT = 5;
-	
-	public static String filePath = Environment.getExternalStorageDirectory() + "/" + LOCATION; 	//TODO: This should be moved to the util class
-	public static String fileName = filePath + "/error.log"; 	//TODO: This should be moved to the util class
-	//TODO: This should be moved to the util class
-	
-	public static void logError(Exception e) {
-		logError(e, "");
-	}
-	/**
-	 * Write the exception stacktrace to the error log file 
-	 * @param e The exception to log
-	 */
-	public static void logError(Exception e, String msg) {
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Date date = new Date();
-		String now = dateFormat.format(date);
-		
-		StringWriter sw = new StringWriter();
-		PrintWriter pw = new PrintWriter(sw);
-		e.printStackTrace(pw);
-		
-		String error = "An Exception Occured @ " + now + "\n" + 
-			"In Phone " + Build.MODEL + " (" + Build.VERSION.SDK_INT + ") \n" + 
-			msg + "\n" + 
-			sw.toString();
-		Log.e("BookCatalogue", error);
-		
-		try {
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName), "utf8"), 8192);
-			out.write(error);
-			out.close();
-		} catch (Exception e1) {
-			// do nothing - we can't log an error in the error logger. (and we don't want to FC the app)
-		}
-	}
-	
-	//TODO: This should be moved to the util class
-	/**
-	 * Clear the error log each time the app is started
-	 */
-	public void clearLog() {
-		try {
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName), "utf8"), 8192);
-			out.write("");
-			out.close();
-		} catch (Exception e1) {
-			// do nothing - we can't log an error in the error logger. (and we don't want to FC the app)
-		}
-	}
-	
+
 	/** 
 	 * Called when the activity is first created. 
 	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		// Reset the error log.
+		Logger.clearLog();
+
 		//check which strings.xml file is currently active
-		if (!getString(R.string.app_name).equals(APP_NAME)) {
+		if (!getString(R.string.app_name).equals(Utils.APP_NAME)) {
 			throw new NullPointerException();
 		}
 
@@ -217,7 +168,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				bookshelf = mPrefs.getString(STATE_BOOKSHELF, bookshelf);
 				loadCurrentGroup();
 			} catch (Exception e) {
-				logError(e);
+				Logger.logError(e);
 			}
 			// This sets the search capability to local (application) search
 			setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
@@ -264,7 +215,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			}
 			registerForContextMenu(getExpandableListView());
 		} catch (Exception e) {
-			logError(e);
+			Logger.logError(e);
 		}
 	}
 	
@@ -982,7 +933,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			ed.commit();
 
 		} catch (Exception e) {
-			logError(e);
+			Logger.logError(e);
 		}
 		return;
 	}
@@ -1011,7 +962,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				collapsed = true;
 
 		} catch (Exception e) {
-			logError(e);
+			Logger.logError(e);
 		}
 		return;
 	}
@@ -1029,7 +980,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			
 			view.setSelectedGroup(currentGroup.get(currentGroup.size()-1));
 		} catch (Exception e) {
-			logError(e);
+			Logger.logError(e);
 		}
 		return;
 	}
@@ -1150,7 +1101,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				}
 			}
 		} catch (NullPointerException e) {
-			logError(e);
+			Logger.logError(e);
 		}
 	}
 	
@@ -1416,7 +1367,7 @@ public class BookCatalogue extends ExpandableListActivity {
 					}					
 				}
 			} catch (Exception e) {
-				logError(e);
+				Logger.logError(e);
 			}
 			// We call bookshelf not fillData in case the bookshelves have been updated.
 			bookshelf();
@@ -1438,7 +1389,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			bookshelf = mPrefs.getString(STATE_BOOKSHELF, bookshelf);
 			loadCurrentGroup();
 		} catch (Exception e) {
-			logError(e);
+			Logger.logError(e);
 		}
 		super.onResume();
 	}

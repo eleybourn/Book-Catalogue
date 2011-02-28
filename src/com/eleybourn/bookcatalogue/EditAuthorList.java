@@ -89,7 +89,7 @@ public class EditAuthorList extends EditObjectList<Author> {
 			ArrayAdapter<String> author_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getAuthorsFromDb());
 			((AutoCompleteTextView)this.findViewById(R.id.author)).setAdapter(author_adapter);
 		} catch (Exception e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		}
 	}
 

@@ -18,7 +18,7 @@ public class SearchGoogleThread extends SearchThread {
 			try {
 				GoogleBooksManager.searchGoogle(mIsbn, mAuthor, mTitle, mBookData);					
 			} catch (Exception e) {
-				BookCatalogue.logError(e);
+				Logger.logError(e);
 				showException(R.string.searching_google_books, e);
 			}
 
@@ -26,7 +26,7 @@ public class SearchGoogleThread extends SearchThread {
 			checkForSeriesName();
 
 		} catch (Exception e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 			showException(R.string.search_fail, e);
 		}
 	}

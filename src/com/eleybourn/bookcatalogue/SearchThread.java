@@ -108,7 +108,7 @@ abstract public class SearchThread extends ManagedTask {
 					Utils.appendOrAdd(mBookData, CatalogueDBAdapter.KEY_SERIES_DETAILS, tmpSeries);				
 			}							
 		} catch (Exception e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		};		
 	}
 	

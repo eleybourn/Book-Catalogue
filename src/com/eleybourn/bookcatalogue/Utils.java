@@ -52,7 +52,6 @@ import android.os.Environment;
 import android.widget.ImageView;
 
 public class Utils {
-	private static String filePath = Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION;
 	private static String UTF8 = "utf8";
 	private static int BUFFER_SIZE = 8192;
 
@@ -63,6 +62,12 @@ public class Utils {
 	static SimpleDateFormat mDateUSSdf = new SimpleDateFormat("MM-dd-yyyy");
 	static SimpleDateFormat mDateEngSdf = new SimpleDateFormat("dd-MM-yyyy");
 	static DateFormat mDateDispSdf = DateFormat.getDateInstance(java.text.DateFormat.MEDIUM);
+
+	public static final String APP_NAME = "Book Catalogue";
+	public static final String LOCATION = "bookCatalogue";
+
+	public static final String EXTERNAL_FILE_PATH = Environment.getExternalStorageDirectory() + "/" + LOCATION;
+	public static final String ERRORLOG_FILE = EXTERNAL_FILE_PATH + "/error.log";
 
 	public static String toSqlDate(Date d) {
 		return mDateSqlSdf.format(d);
@@ -132,7 +137,7 @@ public class Utils {
 	static public boolean sdCardWritable() {
 		/* Test write to the SDCard */
 		try {
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath + "/.nomedia"), UTF8), BUFFER_SIZE);
+			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(EXTERNAL_FILE_PATH + "/.nomedia"), UTF8), BUFFER_SIZE);
 			out.write("");
 			out.close();
 			return true;
@@ -381,7 +386,7 @@ public class Utils {
 		try {
 			u = new URL(urlText);
 		} catch (MalformedURLException e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 			return "";
 		}
 		HttpURLConnection c;
@@ -394,7 +399,7 @@ public class Utils {
 			c.connect();
 			in = c.getInputStream();
 		} catch (IOException e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 			return "";
 		}
 
@@ -404,7 +409,7 @@ public class Utils {
 			filename = CatalogueDBAdapter.fetchThumbnailFilename(0, true, filenameSuffix);
 			f = new FileOutputStream(filename);
 		} catch (FileNotFoundException e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 			return "";
 		}
 		
@@ -416,7 +421,7 @@ public class Utils {
 			}
 			f.close();
 		} catch (IOException e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 			return "";
 		}
 		return filename;
@@ -438,13 +443,13 @@ public class Utils {
 				conn.setConnectTimeout(30000);
 				return conn.getInputStream();
 			} catch (java.net.UnknownHostException e) {
-				BookCatalogue.logError(e);
+				Logger.logError(e);
 				retries--;
 				if (retries-- == 0)
 					throw e;
 				try { Thread.sleep(500); } catch(Exception junk) {};
 			} catch (Exception e) {
-				BookCatalogue.logError(e);
+				Logger.logError(e);
 				throw new RuntimeException(e);
 			}			
 		}
@@ -730,19 +735,19 @@ public class Utils {
 		} catch (MalformedURLException e) {
 			String s = "unknown";
 			try { s = e.getMessage(); } catch (Exception e2) {};
-			BookCatalogue.logError(e, s);
+			Logger.logError(e, s);
 		} catch (ParserConfigurationException e) {
 			String s = "unknown";
 			try { s = e.getMessage(); } catch (Exception e2) {};
-			BookCatalogue.logError(e, s);
+			Logger.logError(e, s);
 		} catch (SAXException e) {
 			String s = e.getMessage(); // "unknown";
 			try { s = e.getMessage(); } catch (Exception e2) {};
-			BookCatalogue.logError(e, s);
+			Logger.logError(e, s);
 		} catch (java.io.IOException e) {
 			String s = "unknown";
 			try { s = e.getMessage(); } catch (Exception e2) {};
-			BookCatalogue.logError(e, s);
+			Logger.logError(e, s);
 		}
 
 

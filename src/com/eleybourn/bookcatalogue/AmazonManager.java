@@ -43,13 +43,13 @@ public class AmazonManager {
 			// We can't Toast anything here, so let exceptions fall through.
 			parser.parse(Utils.getInputStream(url), handler);
 		} catch (MalformedURLException e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		} catch (ParserConfigurationException e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		} catch (SAXException e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		} catch (Exception e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		}
 		return;
 	}

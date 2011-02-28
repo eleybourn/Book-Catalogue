@@ -49,6 +49,8 @@ import android.widget.ImageView;
  */
 public class CatalogueDBAdapter {
 	
+	public static final String DATABASE_NAME = "book_catalogue";
+
 	/* This is the list of all column names as static variables for reference
 	 * 
 	 * NOTE!!! Because Java String comparisons are not case-insensitive, it is 
@@ -339,7 +341,7 @@ public class CatalogueDBAdapter {
 	 */
 	private static class DatabaseHelper extends SQLiteOpenHelper {
 		DatabaseHelper(Context context) {
-			super(context, BookCatalogue.DATABASE_NAME, null, DATABASE_VERSION);
+			super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		}
 		
 		/**
@@ -361,11 +363,11 @@ public class CatalogueDBAdapter {
 			db.execSQL(DATABASE_CREATE_BOOK_SERIES);
 			createIndices(db);
 
-			new File(Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION + "/").mkdirs();
+			new File(Utils.EXTERNAL_FILE_PATH + "/").mkdirs();
 			try {
-				new File(Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION + "/.nomedia").createNewFile();
+				new File(Utils.EXTERNAL_FILE_PATH + "/.nomedia").createNewFile();
 			} catch (IOException e) {
-				BookCatalogue.logError(e);
+				Logger.logError(e);
 			}
 		}
 
@@ -458,22 +460,22 @@ public class CatalogueDBAdapter {
 				try {
 					db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " ADD " + KEY_NOTES + " text");
 				} catch (Exception e) {
-					BookCatalogue.logError(e);
+					Logger.logError(e);
 				}
 				try {
 					db.execSQL("UPDATE " + DB_TB_BOOKS + " SET " + KEY_NOTES + " = ''");
 				} catch (Exception e) {
-					BookCatalogue.logError(e);
+					Logger.logError(e);
 				}
 				try {
 					db.execSQL(DATABASE_CREATE_LOAN);
 				} catch (Exception e) {
-					BookCatalogue.logError(e);
+					Logger.logError(e);
 				}
 				try {
 					createIndices(db);
 				} catch (Exception e) {
-					BookCatalogue.logError(e);
+					Logger.logError(e);
 				}
 			}
 			if (curVersion == 25) {
@@ -502,7 +504,7 @@ public class CatalogueDBAdapter {
 				try {
 					db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " ADD " + KEY_LIST_PRICE + " text");
 				} catch (Exception e) {
-					BookCatalogue.logError(e);
+					Logger.logError(e);
 				}
 			}
 			if (curVersion == 29) {
@@ -530,17 +532,17 @@ public class CatalogueDBAdapter {
 				try {
 					db.execSQL(DATABASE_CREATE_ANTHOLOGY);
 				} catch (Exception e) {
-					BookCatalogue.logError(e);
+					Logger.logError(e);
 				}
 				try {
 					createIndices(db);
 				} catch (Exception e) {
-					BookCatalogue.logError(e);
+					Logger.logError(e);
 				}
 				try {
 					db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " ADD " + KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO);
 				} catch (Exception e) {
-					BookCatalogue.logError(e);
+					Logger.logError(e);
 				}
 				message += "* There is now support to record books as anthologies and it's titles. \n\n";
 				message += "* There is experimental support to automatically populate the anthology titles \n\n";
@@ -564,7 +566,7 @@ public class CatalogueDBAdapter {
 					db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " ADD " + OLD_KEY_AUDIOBOOK + " boolean not null default 'f'");
 					db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " ADD " + KEY_SIGNED + " boolean not null default 'f'");
 				} catch (Exception e) {
-					BookCatalogue.logError(e);
+					Logger.logError(e);
 				}
 			}
 			if (curVersion == 35) {
@@ -576,7 +578,7 @@ public class CatalogueDBAdapter {
 					db.execSQL("UPDATE " + DB_TB_BOOKS + " SET " + OLD_KEY_AUDIOBOOK + "='f'");
 					db.execSQL("UPDATE " + DB_TB_BOOKS + " SET " + KEY_SIGNED + "='f'");
 				} catch (Exception e) {
-					BookCatalogue.logError(e);
+					Logger.logError(e);
 				}
 			}
 			if (curVersion == 36) {
@@ -611,9 +613,9 @@ public class CatalogueDBAdapter {
 			if (curVersion == 39) {
 				curVersion++;
 				try {
-					new File(Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION + "/.nomedia").createNewFile();
+					new File(Utils.EXTERNAL_FILE_PATH + "/.nomedia").createNewFile();
 				} catch (Exception e) {
-					BookCatalogue.logError(e);
+					Logger.logError(e);
 				}
 			}
 			if (curVersion == 40) {
@@ -635,7 +637,7 @@ public class CatalogueDBAdapter {
 					db.execSQL("DROP TABLE tmp2");
 					db.execSQL("DROP TABLE tmp3");
 				} catch (Exception e) {
-					BookCatalogue.logError(e);
+					Logger.logError(e);
 				}
 				
 				try {
@@ -665,7 +667,7 @@ public class CatalogueDBAdapter {
 					db.execSQL("DROP TABLE tmp2");
 					db.execSQL("DROP TABLE tmp3");
 				} catch (Exception e) {
-					BookCatalogue.logError(e);
+					Logger.logError(e);
 				}
 			}
 			if (curVersion == 42) {
@@ -695,7 +697,7 @@ public class CatalogueDBAdapter {
 					db.execSQL("DROP TABLE tmp2");
 					db.execSQL("DROP TABLE tmp3");
 				} catch (Exception e) {
-					BookCatalogue.logError(e);
+					Logger.logError(e);
 				}
 				
 				db.execSQL("CREATE TABLE tmp1 AS SELECT _id, " + KEY_AUTHOR_OLD + ", " + KEY_TITLE + ", " + KEY_ISBN + ", " + KEY_PUBLISHER + ", " + 
@@ -860,7 +862,7 @@ public class CatalogueDBAdapter {
 
 					db.execSQL("DROP TABLE tmpBooks");
 				} catch (Exception e) {
-					BookCatalogue.logError(e);
+					Logger.logError(e);
 				}
 				
 			}
@@ -887,7 +889,7 @@ public class CatalogueDBAdapter {
 	 */
 	public CatalogueDBAdapter open() throws SQLException {
 		/* Create the bookCatalogue directory if it does not exist */
-		new File(Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION + "/").mkdirs();
+		new File(Utils.EXTERNAL_FILE_PATH + "/").mkdirs();
 		mDbHelper = new DatabaseHelper(mCtx);
 		mDb = mDbHelper.getWritableDatabase();
 		// Turn on foreign key support so that CASCADE works.
@@ -924,7 +926,7 @@ public class CatalogueDBAdapter {
 	public void backupDbFile() {
 		try {
 			java.io.InputStream dbOrig = new java.io.FileInputStream(mDb.getPath());
-			File dir = new File(Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION);
+			File dir = new File(Utils.EXTERNAL_FILE_PATH);
 			dir.mkdir();
 		    // Path to the external backup
 			java.io.OutputStream dbCopy = new java.io.FileOutputStream(dir.getPath() + "/dbExport.db");
@@ -940,7 +942,7 @@ public class CatalogueDBAdapter {
 		    dbOrig.close();
 			
 		} catch (Exception e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		}
 	}
 
@@ -965,13 +967,13 @@ public class CatalogueDBAdapter {
 		String filename = "";
 		File file = null;
 		if (id == 0) {
-			filename = Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION + "/tmp" + suffix + ".png";
+			filename = Utils.EXTERNAL_FILE_PATH + "/tmp" + suffix + ".png";
 			file = new File(filename);
 		} else {
-			filename = Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION + "/" + id + suffix + ".jpg";
+			filename = Utils.EXTERNAL_FILE_PATH + "/" + id + suffix + ".jpg";
 			file = new File(filename);
 			if (!file.exists()) {
-				filename = Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION + "/" + id + suffix + ".png";
+				filename = Utils.EXTERNAL_FILE_PATH + "/" + id + suffix + ".png";
 				file = new File(filename);
 			}
 		}
@@ -1196,7 +1198,7 @@ public class CatalogueDBAdapter {
 		} catch (IllegalStateException e) {
 			open();
 			returnable = mDb.rawQuery(sql, new String[]{});
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		}
 		return returnable;
 	}
@@ -1245,7 +1247,7 @@ public class CatalogueDBAdapter {
 		} catch (IllegalStateException e) {
 			open();
 			returnable = mDb.rawQuery(sql, new String[]{});
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		}
 		return returnable;
 	}
@@ -1279,7 +1281,7 @@ public class CatalogueDBAdapter {
 		} catch (IllegalStateException e) {
 			open();
 			returnable = mDb.rawQuery(sql, new String[]{});
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		}
 		returnable.moveToFirst();
 		return returnable;
@@ -1462,7 +1464,7 @@ public class CatalogueDBAdapter {
 		} catch (IllegalStateException e) {
 			open();
 			returnable = mDb.rawQuery(fullSql, new String[]{});
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		}
 		return returnable;
 	}

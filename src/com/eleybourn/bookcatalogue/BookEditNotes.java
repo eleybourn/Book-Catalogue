@@ -177,7 +177,7 @@ public class BookEditNotes extends Activity {
 				}
 			});
 		} catch (Exception e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		}
 	}
 	

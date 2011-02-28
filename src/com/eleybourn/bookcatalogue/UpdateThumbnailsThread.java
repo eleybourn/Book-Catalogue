@@ -23,7 +23,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
 	private Cursor mBooks = null;
 	private LinkedList<BookInfo> mBookQueue = new LinkedList<BookInfo>();
 
-	public static String filePath = Environment.getExternalStorageDirectory() + "/" + BookCatalogue.LOCATION;
+	public static String filePath = Utils.EXTERNAL_FILE_PATH;
 	public static String fileName = filePath + "/export.csv";
 	public static String UTF8 = "utf8";
 	public static int BUFFER_SIZE = 8192;
@@ -87,7 +87,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
 			out.write("");
 			out.close();
 		} catch (IOException e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 			mFinalMessage = getString(R.string.thumbnail_failed_sdcard);
 			return;
 		}
@@ -137,7 +137,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
 						try {
 							GoogleBooksManager.searchGoogle(isbn, author, title, newData);							
 						} catch (Exception e) {
-							BookCatalogue.logError(e);
+							Logger.logError(e);
 						}
 					}
 
@@ -145,7 +145,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
 						try {
 							AmazonManager.searchAmazon(isbn, author, title, newData);
 						} catch (Exception e) {
-							BookCatalogue.logError(e);
+							Logger.logError(e);
 						}
 					}
 
@@ -160,7 +160,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
 								}
 							}
 						} catch (Exception e) {
-							BookCatalogue.logError(e);
+							Logger.logError(e);
 						}
 					}
 					
@@ -210,7 +210,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
 				}
 			}
 		} catch (Exception e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		} finally {
 			if (mBooks != null && !mBooks.isClosed())
 				mBooks.close();

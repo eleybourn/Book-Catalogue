@@ -277,7 +277,7 @@ public class SearchManager implements OnTaskEndedListener {
 				ArrayList<Series> sa = Utils.getSeriesUtils().decodeList(series, '|', false);
 				mBookData.putParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY, sa);
 			} catch (Exception e) {
-				BookCatalogue.logError(e);
+				Logger.logError(e);
 			}
 			if (mSearchHandler != null)
 				mSearchHandler.onFinish(null, mBookData, mCancelledFlg);

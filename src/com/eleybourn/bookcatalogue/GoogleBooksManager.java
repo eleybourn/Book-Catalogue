@@ -47,13 +47,13 @@ public class GoogleBooksManager {
 			}
 			return;
 		} catch (MalformedURLException e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		} catch (ParserConfigurationException e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		} catch (SAXException e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		} catch (Exception e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		}
 		return;
 	}

@@ -71,7 +71,7 @@ public class Help extends Activity {
 			});
 			
 		} catch (Exception e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		}
 	}
 

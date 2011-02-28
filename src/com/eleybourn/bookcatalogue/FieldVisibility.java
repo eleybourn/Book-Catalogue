@@ -50,7 +50,7 @@ public class FieldVisibility extends Activity {
 			setContentView(R.layout.field_visibility);
 			setupFields();
 		} catch (Exception e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		}
 	}
 	

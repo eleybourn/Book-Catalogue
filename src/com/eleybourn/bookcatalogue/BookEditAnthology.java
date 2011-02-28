@@ -271,7 +271,7 @@ public class BookEditAnthology extends ListActivity {
 			ListView view = this.getListView();
 			view.setSelection(id);
 		} catch (Exception e) {
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		}
 		return;
 	}
@@ -303,7 +303,7 @@ public class BookEditAnthology extends ListActivity {
 				parser.parse(Utils.getInputStream(url), handler);
 			} catch (RuntimeException e) {
 				Toast.makeText(this, R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
-				BookCatalogue.logError(e);
+				Logger.logError(e);
 				return;
 			}
 			String[] links = handler.getLinks();
@@ -322,7 +322,7 @@ public class BookEditAnthology extends ListActivity {
 						showAnthologyConfirm(titles);
 					}
 				} catch (RuntimeException e) {
-					BookCatalogue.logError(e);
+					Logger.logError(e);
 					Toast.makeText(this, R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
 				}
 			}
@@ -332,16 +332,16 @@ public class BookEditAnthology extends ListActivity {
 			}
 		} catch (MalformedURLException e) {
 			Toast.makeText(this, R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		} catch (ParserConfigurationException e) {
 			Toast.makeText(this, R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		} catch (SAXException e) {
 			Toast.makeText(this, R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		} catch (Exception e) {
 			Toast.makeText(this, R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
-			BookCatalogue.logError(e);
+			Logger.logError(e);
 		}
 		fillAnthology();
 		return;

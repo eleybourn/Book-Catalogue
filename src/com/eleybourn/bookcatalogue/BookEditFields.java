@@ -92,6 +92,7 @@ public class BookEditFields extends Activity {
 	private String added_series = "";
 	private String added_title = "";
 	private String added_author = "";
+	public static String ADDED_HAS_INFO = "ADDED_HAS_INFO";
 	public static String ADDED_GENRE = "ADDED_GENRE";
 	public static String ADDED_SERIES = "ADDED_SERIES";
 	public static String ADDED_TITLE = "ADDED_TITLE";
@@ -819,6 +820,7 @@ public class BookEditFields extends Activity {
 				startActivity(edit);
 			}
 			Intent i = new Intent();
+			i.putExtra(ADDED_HAS_INFO, true);
 			i.putExtra(ADDED_GENRE, added_genre);
 			i.putExtra(ADDED_SERIES, added_series);
 			i.putExtra(ADDED_TITLE, added_title);

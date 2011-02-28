@@ -1390,24 +1390,26 @@ public class BookCatalogue extends ExpandableListActivity {
 		case ACTIVITY_ISBN:
 		case ACTIVITY_ADMIN:
 			try {
-				if (sort == SORT_TITLE) {
-					justAdded = intent.getStringExtra(BookEditFields.ADDED_TITLE);
-					int position = mDbHelper.fetchBookPositionByTitle(justAdded, bookshelf);
-					adjustCurrentGroup(position, 1, true);
-				} else if (sort == SORT_AUTHOR) {
-					justAdded = intent.getStringExtra(BookEditFields.ADDED_AUTHOR);
-					int position = mDbHelper.fetchAuthorPositionByName(justAdded, bookshelf);
-					adjustCurrentGroup(position, 1, true);
-				} else if (sort == SORT_SERIES) {
-					justAdded = intent.getStringExtra(BookEditFields.ADDED_SERIES);
-					int position = mDbHelper.fetchSeriesPositionBySeries(justAdded, bookshelf);
-					adjustCurrentGroup(position, 1, true);
-				} else if (sort == SORT_GENRE) {
-					justAdded = intent.getStringExtra(BookEditFields.ADDED_GENRE);
-					int position = mDbHelper.fetchGenrePositionByGenre(justAdded, bookshelf);
-					adjustCurrentGroup(position, 1, true);
+				// Use the ADDED_* fields if present.
+				if (intent.hasExtra(BookEditFields.ADDED_HAS_INFO)) {
+					if (sort == SORT_TITLE) {
+						justAdded = intent.getStringExtra(BookEditFields.ADDED_TITLE);
+						int position = mDbHelper.fetchBookPositionByTitle(justAdded, bookshelf);
+						adjustCurrentGroup(position, 1, true);
+					} else if (sort == SORT_AUTHOR) {
+						justAdded = intent.getStringExtra(BookEditFields.ADDED_AUTHOR);
+						int position = mDbHelper.fetchAuthorPositionByName(justAdded, bookshelf);
+						adjustCurrentGroup(position, 1, true);
+					} else if (sort == SORT_SERIES) {
+						justAdded = intent.getStringExtra(BookEditFields.ADDED_SERIES);
+						int position = mDbHelper.fetchSeriesPositionBySeries(justAdded, bookshelf);
+						adjustCurrentGroup(position, 1, true);
+					} else if (sort == SORT_GENRE) {
+						justAdded = intent.getStringExtra(BookEditFields.ADDED_GENRE);
+						int position = mDbHelper.fetchGenrePositionByGenre(justAdded, bookshelf);
+						adjustCurrentGroup(position, 1, true);
+					}					
 				}
-				
 			} catch (Exception e) {
 				logError(e);
 			}

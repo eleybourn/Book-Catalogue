@@ -1160,8 +1160,13 @@ public class BookCatalogue extends ExpandableListActivity {
 		switch(item.getItemId()) {
 
 		case DELETE_ID:
-			mDbHelper.deleteBook(info.id);
-			fillData();
+			int res = StandardDialogs.deleteBookAlert(this, mDbHelper, info.id, new Runnable() {
+				@Override
+				public void run() {
+					fillData();
+				}});
+			if (res != 0) 
+				Toast.makeText(this, res, Toast.LENGTH_LONG).show();
 			return true;
 
 		case EDIT_BOOK:

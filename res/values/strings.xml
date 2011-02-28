@@ -214,4 +214,7 @@
 <string name="this_book">This Book</string>
 <string name="scope_of_change">Scope of Change</string>
 <string name="changed_series_how_apply">You have changed the series from:\n  \'%1$s\' to \n  \'%2$s\'\nHow do you wish to apply this change?\nNote: The choice \'All Books\' will be applied instantly.</string>
+<string name="unable_to_find_book">Unable to find the specified book</string>
+<string name="list_and">and</string>
+<string name="really_delete_book">This will completely delete the book entitled \'%1$s\' by %2$s. Are you sure you wish to proceed?</string>
 </resources>

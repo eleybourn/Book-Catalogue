@@ -22,6 +22,7 @@ package com.eleybourn.bookcatalogue;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -78,6 +79,8 @@ public class BookISBNSearch extends ActivityWithTasks {
 	private Intent mScannerIntent = null;
 	// The last Intent returned as a result of creating a book.
 	private Intent mLastBookIntent = null;
+
+	SearchManager mSearchManager = null;
 
 	/**
 	 * Called when the activity is first created. This function will search the interwebs for 
@@ -362,8 +365,8 @@ public class BookISBNSearch extends ActivityWithTasks {
 		try {
 			// Start the lookup in background.
 			//mTaskManager.doProgress("Searching");
-			SearchManager m = new SearchManager(mTaskManager, mSearchHandler);
-			m.search(author, title, isbn);
+			mSearchManager = new SearchManager(mTaskManager, mSearchHandler);
+			mSearchManager.search(author, title, isbn);
 
 		} catch (Exception e) {
 			BookCatalogue.logError(e);
@@ -498,8 +501,39 @@ public class BookISBNSearch extends ActivityWithTasks {
 		startActivityForResult(mScannerIntent, ACTIVITY_SCAN);		
 	}
 
+	/**
+	 * Ensure the TaskManager is restored.
+	 */
+	@Override
+	protected void onRestoreInstanceState(Bundle inState) {
+		mSearchManager = (SearchManager) getLastNonConfigurationInstance("SearchManager");
+		if (mSearchManager != null)
+			mSearchManager.reconnect( mSearchHandler );
+		// Call the super method only after we have the searchManager set up
+		super.onRestoreInstanceState(inState);
+	}
+
+	/**
+	 * Ensure the TaskManager is saved.
+	 */
+	@Override
+	public void onRetainNonConfigurationInstance(Hashtable<String,Object> store) {
+		store.put("SearchManager", mSearchManager);
+		if (mSearchManager != null) {
+			mSearchManager.disconnect();
+			mSearchManager = null;
+		}
+			
+	}
+
 	@Override
 	TaskHandler getTaskHandler(ManagedTask t) {
-		return mSearchHandler;
+		if (mSearchManager == null)
+			throw new RuntimeException("Tasks running, but no SearchManager");
+		TaskHandler h = mSearchManager.getTaskHandler( t );
+		if (h == null)
+			throw new RuntimeException("Unable to find handler for task " + t.toString());
+
+		return h;
 	}
 }

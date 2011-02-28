@@ -187,16 +187,17 @@ public class EditSeriesList extends EditObjectList<Series> {
 			return;
 		}
 
-		// TODO Stringify this procedure!
 		// When we get here, we know the names are genuinely different and the old series is used in more than one place.
-		final AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage("You have changed the series from:\n  '" 
-										+ oldSeries.name + "' to \n  '" + newSeries.name 
-										+ "'\nHow do you wish to apply this change? "
-										+ "\nNote: The choice 'All Books' will be applied instantly.").create();
+		String format = getResources().getString(R.string.changed_series_how_apply);
+		String allBooks = getResources().getString(R.string.all_books);
+		String thisBook = getResources().getString(R.string.this_book);
+		String message = String.format(format, oldSeries.name, newSeries.name, allBooks);
 
-		alertDialog.setTitle("Scope of Change");
+		final AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(message).create();
+
+		alertDialog.setTitle(getResources().getString(R.string.scope_of_change));
 		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "This Book", new DialogInterface.OnClickListener() {
+		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, thisBook, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				oldSeries.copyFrom(newSeries);
 				Utils.pruneList(mDbHelper, mList);
@@ -205,7 +206,7 @@ public class EditSeriesList extends EditObjectList<Series> {
 			}
 		});
 
-		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "All Books", new DialogInterface.OnClickListener() {
+		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, allBooks, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				mDbHelper.globalReplaceSeries(oldSeries, newSeries);
 				oldSeries.copyFrom(newSeries);

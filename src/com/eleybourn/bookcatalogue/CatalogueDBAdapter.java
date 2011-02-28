@@ -1303,7 +1303,15 @@ public class CatalogueDBAdapter {
 	 * 
 	 * @param order What order to return the books
 	 * @param bookshelf Which bookshelf is it in. Can be "All Books"
-	 * @return Cursor over all Books
+	 * @param authorWhere 	Extra SQL pertaining to author predicate to be applied
+	 * @param bookWhere 	Extra SQL pertaining to book predicate to be applied
+	 * @param searchText	Raw text string to search for
+	 * @param loaned_to		Name of person to whom book was loaned 
+	 * @param seriesName	Name of series to match
+	 * 
+	 * @return SQL text for basic lookup
+	 * 
+	 * TODO: Replace exact-match String parameters with long parameters containing the ID.
 	 */
 	public String fetchAllBooksSql(String order, String bookshelf, String authorWhere, String bookWhere, String searchText, String loaned_to, String seriesName) {
 		String where = "";
@@ -1838,8 +1846,8 @@ public class CatalogueDBAdapter {
 	 * @return The position of the book
 	 */
 	public int fetchBookPositionByTitle(String title, String bookshelf) {
-		String baseSql = this.fetchAllBooksSql("1", bookshelf, "", makeTextTerm("b." + KEY_TITLE, "<", title), "", "", "");
-		String sql = "SELECT Count(*) as count " + baseSql;
+		String baseSql = this.fetchAllBooksSql("1", bookshelf, "", makeTextTerm("Substr(b." + KEY_TITLE + ",1,1)", "<", title.substring(0,1)), "", "", "");
+		String sql = "SELECT Count(Distinct Upper(Substr(" + KEY_TITLE + ",1,1))" + COLLATION + ") as count " + baseSql;
 
 		Cursor results = mDb.rawQuery(sql, null);
 		int pos = getIntValue(results, 0);
@@ -2082,7 +2090,7 @@ public class CatalogueDBAdapter {
 	 */
 	public Cursor searchGenres(String searchText, String bookshelf) {
 		String baseSql = this.fetchAllBooksSql("1", bookshelf, "", "", searchText, "", "");
-		String sql = "SELECT DISTINCT " + KEY_GENRE + " AS " + KEY_ROWID + " " + COLLATION + " " + baseSql;
+		String sql = "SELECT DISTINCT Case When " + KEY_GENRE + " = '' Then '" + META_EMPTY_GENRE + "' else " + KEY_GENRE + " End " + COLLATION + " AS " + KEY_ROWID + " " + baseSql;
 		return mDb.rawQuery(sql, new String[]{});
 	}
 	
@@ -2099,9 +2107,9 @@ public class CatalogueDBAdapter {
 		String sql;
 		String baseSql = this.fetchAllBooksSql("1", bookshelf, "", "", searchText, "", "");
 
-		sql = "Select DISTINCT Case When s." + KEY_ROWID + " is NULL Then -1 Else s." + KEY_ROWID + " as " + KEY_ROWID + ","
+		sql = "Select DISTINCT Case When s." + KEY_ROWID + " is NULL Then -1 Else s." + KEY_ROWID + " End as " + KEY_ROWID + ","
 			+ " Case When s." + KEY_SERIES_NAME + " is NULL Then '" + META_EMPTY_SERIES + "'"
-			+ "               Else " + KEY_SERIES_NAME + " End AS " + KEY_ROWID
+			+ "               Else " + KEY_SERIES_NAME + " End AS " + KEY_SERIES_NAME
 			+ " From (Select b." + KEY_ROWID + " " + baseSql + " ) MatchingBooks"
 			+ " Left Outer Join " + DB_TB_BOOK_SERIES + " bs "
 			+ "     On bs." + KEY_BOOK + " = MatchingBooks." + KEY_ROWID

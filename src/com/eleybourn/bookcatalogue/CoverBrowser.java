@@ -104,7 +104,8 @@ public class CoverBrowser {
 
 		// Get some editions
 		// TODO: the list of editions should be expanded to somehow include Amazon and Google. As well
-		// as the alternate user-contributed images from LibraryThing. The latter are often the best source.
+		// as the alternate user-contributed images from LibraryThing. The latter are often the best 
+		// source but at present could only be obtained by HTML scraping.
 		try {
 			mEditions = LibraryThingManager.searchEditions(mIsbn);			
 		} catch (Exception e) {

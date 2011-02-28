@@ -210,4 +210,8 @@
 <string name="no_isbn_no_editions">Can not get editions for a book with no ISBN</string>
 <string name="unsaved_edits">You have unsaved changes. Are you sure you want to continue?</string>
 <string name="unsaved_edits_title">Unsaved Changes</string>
+<string name="changed_author_how_apply">You have changed the author from:\n  \'%1$s\' to \n  \'%2$s\'\nHow do you wish to apply this change?\nNote: The choice \'%3$s\' will be applied instantly.</string>
+<string name="this_book">This Book</string>
+<string name="scope_of_change">Scope of Change</string>
+<string name="changed_series_how_apply">You have changed the series from:\n  \'%1$s\' to \n  \'%2$s\'\nHow do you wish to apply this change?\nNote: The choice \'All Books\' will be applied instantly.</string>
 </resources>

@@ -42,7 +42,7 @@ import android.os.Bundle;
  * Details via ISBN: http://www.librarything.com/services/rest/1.1/?method=librarything.ck.getwork&apikey=<DEVKEY>&isbn=<ISBN>
  * Covers via ISBN: http://covers.librarything.com/devkey/<DEVKEY>/large/isbn/<ISBN>
  *
- * TODO: extend use of LibraryThing:
+ * TODO: extend the use of LibraryThing:
  * - Lookup title using keywords: http://www.librarything.com/api/thingTitle/hand oberon
  * - consider scraping html for covers: http://www.librarything.com/work/18998/covers
  * 
@@ -587,7 +587,6 @@ public class LibraryThingManager {
 		// Base path for an ISBN search
 		String path = String.format(EDITIONS_URL, isbn);
 		if (isbn.equals(""))
-			// TODO Stringify
 			throw new RuntimeException("Can not get editions without an ISBN");
 
 		ArrayList<String> editions = new ArrayList<String>();

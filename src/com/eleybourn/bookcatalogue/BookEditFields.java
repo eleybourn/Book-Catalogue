@@ -744,11 +744,6 @@ public class BookEditFields extends Activity {
 			mAuthorList = new ArrayList<Author>();
 			mSeriesList = new ArrayList<Series>();
 		}
-		/**
-		 * TODO: Add EditAuthor to edit family and given names
-		 * TODO: Add EditBookSeries to change series and series num
-		 * TODO: Add EditSeries to change series name
-		 */
 
 		fixupAuthorList();
 		fixupSeriesList();
@@ -1005,7 +1000,7 @@ public class BookEditFields extends Activity {
 		/* These are global variables that will be sent via intent back to the list view, if added/created */
 		try {
 			ArrayList<Author> authors = mStateValues.getParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
-			if (authors.size() > 1)
+			if (authors.size() > 0)
 				added_author = authors.get(0).getSortName();
 			else 
 				added_author = "";
@@ -1014,7 +1009,7 @@ public class BookEditFields extends Activity {
 		};
 		try {
 			ArrayList<Series> series = mStateValues.getParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY);
-			if (series.size() > 1)
+			if (series.size() > 0)
 				added_series = series.get(0).name;
 			else 
 				added_series = "";

@@ -364,8 +364,6 @@ public class BookISBNSearch extends ActivityWithTasks {
 			//mTaskManager.doProgress("Searching");
 			SearchManager m = new SearchManager(mTaskManager, mSearchHandler);
 			m.search(author, title, isbn);
-			//Thread t = new SearchForBookThread(mTaskManager, mTaskHandler, author, title, isbn);
-			//t.start();
 
 		} catch (Exception e) {
 			BookCatalogue.logError(e);

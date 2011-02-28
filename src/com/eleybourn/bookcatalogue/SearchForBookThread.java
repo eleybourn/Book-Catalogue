@@ -7,7 +7,6 @@ import android.os.Message;
 
 /**
  * Class to handle all book searches in a separate thread.
- * TODO: Consider putting each search in its own thread to improve speed.
  *
  * @author Grunthos
  *

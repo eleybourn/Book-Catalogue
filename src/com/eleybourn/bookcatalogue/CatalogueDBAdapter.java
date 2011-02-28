@@ -1790,6 +1790,9 @@ public class CatalogueDBAdapter {
 		} else {
 			where += authorOnBookshelfSql(bookshelf, "a." + KEY_ROWID);
 		}
+		if (where != null && where.length() > 0)
+			where = " and " + where;
+
 		String sql = "SELECT count(*) as count FROM " + DB_TB_AUTHORS + " a " +
 			"WHERE ( " + makeTextTerm("a." + KEY_FAMILY_NAME, "<", names[0]) +
 			"OR ( " + makeTextTerm("a." + KEY_FAMILY_NAME, "=", names[0]) + 

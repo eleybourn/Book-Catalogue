@@ -23,6 +23,7 @@
 import java.util.ArrayList;
 import java.util.Date;
 
+import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
 import com.eleybourn.bookcatalogue.SearchThread.SearchHandler;
 import com.eleybourn.bookcatalogue.TaskManager.OnTaskEndedListener;
 
@@ -47,6 +48,8 @@ public class SearchManager implements OnTaskEndedListener {
 	private boolean mWaitingForIsbn = false;
 	// Flag indicating a task was cancelled.
 	private boolean mCancelledFlg = false;
+	// Flag to indicate search finished
+	private boolean mFinished = false;
 	// Original author for search
 	private String mAuthor;
 	// Original title for search
@@ -78,6 +81,35 @@ public class SearchManager implements OnTaskEndedListener {
 		mSearchHandler = taskHandler;
 		// List for task ends
 		mTaskManager.addOnTaskEndedListener(this);
+	}
+
+	/**
+	 * Disconnect from handler so that underlying activity can rebuild.
+	 */
+	public void disconnect() {
+		mSearchHandler = null;
+	}
+
+	/**
+	 * Reconnect and (possibly)send the completion message.
+	 * @param handler
+	 */
+	public void reconnect(SearchHandler handler) {
+		mSearchHandler = handler;
+		if (mFinished)
+			mSearchHandler.onFinish(null, mBookData, mCancelledFlg);
+	}
+	
+	public TaskHandler getTaskHandler(ManagedTask t) {
+		if (t instanceof SearchAmazonThread) {
+			return mAmazonHandler;
+		} else if (t instanceof SearchGoogleThread) {
+			return mGoogleHandler;
+		} else if (t instanceof SearchLibraryThingThread){
+			return mLibraryThingHandler;
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -225,7 +257,9 @@ public class SearchManager implements OnTaskEndedListener {
 		if (authors == null || authors.length() == 0 || title == null || title.length() == 0) {
 
 			mTaskManager.doToast(mTaskManager.getString(R.string.book_not_found));
-			mSearchHandler.onFinish(null, null, mCancelledFlg);
+			mBookData = null;
+			if (mSearchHandler != null)
+				mSearchHandler.onFinish(null, mBookData, mCancelledFlg);
 
 		} else {
 			Utils.doProperCase(mBookData, CatalogueDBAdapter.KEY_TITLE);
@@ -245,8 +279,10 @@ public class SearchManager implements OnTaskEndedListener {
 			} catch (Exception e) {
 				BookCatalogue.logError(e);
 			}
-			mSearchHandler.onFinish(null, mBookData, mCancelledFlg);
+			if (mSearchHandler != null)
+				mSearchHandler.onFinish(null, mBookData, mCancelledFlg);
 		}
+		mFinished = true;
 	}
 
 	/**

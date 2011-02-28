@@ -1391,7 +1391,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		case ACTIVITY_ADMIN:
 			try {
 				// Use the ADDED_* fields if present.
-				if (intent.hasExtra(BookEditFields.ADDED_HAS_INFO)) {
+				if (intent != null && intent.hasExtra(BookEditFields.ADDED_HAS_INFO)) {
 					if (sort == SORT_TITLE) {
 						justAdded = intent.getStringExtra(BookEditFields.ADDED_TITLE);
 						int position = mDbHelper.fetchBookPositionByTitle(justAdded, bookshelf);

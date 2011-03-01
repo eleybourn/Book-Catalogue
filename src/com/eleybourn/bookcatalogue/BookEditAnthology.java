@@ -80,17 +80,6 @@ public class BookEditAnthology extends ListActivity {
 		mRowId = extras != null ? extras.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
 	}
 	
-	protected ArrayList<String> getAuthors() {
-		ArrayList<String> author_list = new ArrayList<String>();
-		Cursor author_cur = mDbHelper.fetchAllAuthorsIgnoreBooks();
-		startManagingCursor(author_cur);
-		while (author_cur.moveToNext()) {
-			String name = author_cur.getString(author_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED));
-			author_list.add(name);
-		}
-		return author_list;
-	}
-	
 	/**
 	 * Display the edit fields page
 	 */
@@ -117,15 +106,20 @@ public class BookEditAnthology extends ListActivity {
 		setContentView(R.layout.list_anthology);
 		
 		book = mDbHelper.fetchBookById(mRowId);
-		if (book != null) {
-			book.moveToFirst();
-		}
+		try {
+			if (book != null) {
+				book.moveToFirst();
+			}
 
-		bookAuthor = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED));
-		bookTitle = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE));
-		// Setup the same author field
-		anthology_num = book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
-		book.close();
+			bookAuthor = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED));
+			bookTitle = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE));
+			// Setup the same author field
+			anthology_num = book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
+			
+		} finally {
+			if (book != null)
+				book.close();			
+		}
 
 		mSame = (CheckBox) findViewById(R.id.same_author);
 		if (anthology_num == CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS) {
@@ -141,7 +135,7 @@ public class BookEditAnthology extends ListActivity {
 			}
 		});
 		
-		ArrayAdapter<String> author_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getAuthors());
+		ArrayAdapter<String> author_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, mDbHelper.getAllAuthors());
 		mAuthorText = (AutoCompleteTextView) findViewById(R.id.add_author);
 		mAuthorText.setAdapter(author_adapter);
 		if (mSame.isChecked()) {

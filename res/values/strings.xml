@@ -217,4 +217,5 @@
 <string name="unable_to_find_book">Unable to find the specified book</string>
 <string name="list_and">and</string>
 <string name="really_delete_book">This will completely delete the book entitled \'%1$s\' by %2$s. Are you sure you wish to proceed?</string>
+<string name="editions_require_isbn">Retrieving other editions requires an ISBN</string>
 </resources>

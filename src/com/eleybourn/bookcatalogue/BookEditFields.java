@@ -592,8 +592,12 @@ public class BookEditFields extends Activity {
 			return true;
 		case SHOW_ALT_COVERS:
 			String isbn = mFields.getField(R.id.isbn).getValue().toString();
-			mCoverBrowser = new CoverBrowser(this, mMetrics, isbn, mOnImageSelectedListener);
-			mCoverBrowser.showEditionCovers();
+			if (isbn == null || isbn.trim().length() == 0) {
+				Toast.makeText(this, getResources().getString(R.string.editions_require_isbn), Toast.LENGTH_LONG).show();
+			} else {
+				mCoverBrowser = new CoverBrowser(this, mMetrics, isbn, mOnImageSelectedListener);
+				mCoverBrowser.showEditionCovers();				
+			}
 			return true;
 		}
 		return super.onContextItemSelected(item);
@@ -657,33 +661,37 @@ public class BookEditFields extends Activity {
 		if (mRowId != null && mRowId > 0) {
 			// From the database (edit)
 			Cursor book = mDbHelper.fetchBookById(mRowId);
-			startManagingCursor(book);
-			if (book != null) {
-				book.moveToFirst();
+			Cursor bookshelves = null;
+			try {
+				if (book != null) {
+					book.moveToFirst();
+				}
+
+				// Set any field that has a 'column' non blank.
+				mFields.setFromCursor(book);
+
+				getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + mFields.getField(R.id.title).getValue().toString());
+
+				//Display the selected bookshelves
+				Field bookshelfTextFe = mFields.getField(R.id.bookshelf_text);
+				bookshelves = mDbHelper.fetchAllBookshelvesByBook(mRowId);
+				String bookshelves_text = "";
+				while (bookshelves.moveToNext()) {
+					bookshelves_text += bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)) + BOOKSHELF_SEPERATOR;
+				}
+				bookshelfTextFe.setValue(bookshelves_text);
+
+				Integer anthNo = book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
+				mFields.getField(R.id.anthology).setValue(anthNo.toString());
+
+				ImageView iv = (ImageView) mFields.getField(R.id.row_img).view;
+				CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);				
+			} finally {	
+				if (book != null)
+					book.close();
+				if (bookshelves != null)
+					bookshelves.close();
 			}
-
-			// Set any field that has a 'column' non blank.
-			mFields.setFromCursor(book);
-
-			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + mFields.getField(R.id.title).getValue().toString());
-
-			//Display the selected bookshelves
-			Field bookshelfTextFe = mFields.getField(R.id.bookshelf_text);
-			Cursor bookshelves = mDbHelper.fetchAllBookshelvesByBook(mRowId);
-			String bookshelves_text = "";
-			while (bookshelves.moveToNext()) {
-				bookshelves_text += bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)) + BOOKSHELF_SEPERATOR;
-			}
-			bookshelves.close();
-			bookshelfTextFe.setValue(bookshelves_text);
-
-			Integer anthNo = book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
-			mFields.getField(R.id.anthology).setValue(anthNo.toString());
-
-			ImageView iv = (ImageView) mFields.getField(R.id.row_img).view;
-			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);
-
-			book.close();
 			
 			mAuthorList = mDbHelper.getBookAuthorList(mRowId);
 			mSeriesList = mDbHelper.getBookSeriesList(mRowId);
@@ -710,10 +718,7 @@ public class BookEditFields extends Activity {
 					}
 					//Display the selected bookshelves
 					if (BookCatalogue.bookshelf.equals("All Books")) {
-						Cursor bookshelves = mDbHelper.fetchBookshelf(1);
-						bookshelves.moveToFirst();
-						mFields.getField(R.id.bookshelf_text).setValue(bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)) + BOOKSHELF_SEPERATOR);
-						bookshelves.close();
+						mFields.getField(R.id.bookshelf_text).setValue(mDbHelper.getBookshelfName(1) + BOOKSHELF_SEPERATOR);
 					} else {
 						mFields.getField(R.id.bookshelf_text).setValue(BookCatalogue.bookshelf + BOOKSHELF_SEPERATOR);
 					}
@@ -735,10 +740,7 @@ public class BookEditFields extends Activity {
 
 			//Display the selected bookshelves
 			if (BookCatalogue.bookshelf.equals("All Books")) {
-				Cursor bookshelves = mDbHelper.fetchBookshelf(1);
-				bookshelves.moveToFirst();
-				mFields.getField(R.id.bookshelf_text).setValue(bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)) + BOOKSHELF_SEPERATOR);
-				bookshelves.close();
+				mFields.getField(R.id.bookshelf_text).setValue(mDbHelper.getBookshelfName(1) + BOOKSHELF_SEPERATOR);
 			} else {
 				mFields.getField(R.id.bookshelf_text).setValue(BookCatalogue.bookshelf + BOOKSHELF_SEPERATOR);
 			}			
@@ -948,12 +950,9 @@ public class BookEditFields extends Activity {
 			String isbn = mStateValues.getString(CatalogueDBAdapter.KEY_ISBN);
 			/* Check if the book currently exists */
 			if (!isbn.equals("")) {
-				Cursor book = mDbHelper.fetchBookByISBN(isbn);
-				int rows = book.getCount();
-				book.close(); // close the cursor
-				if (rows != 0) {
+				if (mDbHelper.checkIsbnExists(isbn)) {
 					/*
-					 * If is exists, show a dialog and use it to perform the next action, according to the
+					 * If it exists, show a dialog and use it to perform the next action, according to the
 					 * users choice.
 					 */
 					SaveAlert alert = new SaveAlert();

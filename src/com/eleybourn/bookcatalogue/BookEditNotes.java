@@ -271,20 +271,22 @@ public class BookEditNotes extends Activity {
 		if (mRowId != null && mRowId > 0) {
 			// From the database (edit)
 			Cursor book = mDbHelper.fetchBookById(mRowId);
-			if (book != null) {
-				book.moveToFirst();
+			try {
+				if (book != null) {
+					book.moveToFirst();
+				}
+				getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + 
+							book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE)));
+
+				mFields.setFromCursor(book);
+
+				mConfirmButton.setText(R.string.confirm_save);
+				
+			} finally {
+				// Tidy up
+				if (book != null)
+					book.close();				
 			}
-			startManagingCursor(book);
-
-			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + 
-						book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE)));
-
-			mFields.setFromCursor(book);
-
-			mConfirmButton.setText(R.string.confirm_save);
-
-			// Tidy up
-			book.close();
 		} else {
 			// Manual Add
 			//This should never happen

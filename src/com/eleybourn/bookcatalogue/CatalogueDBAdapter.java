@@ -1170,20 +1170,6 @@ public class CatalogueDBAdapter {
 	}
 	
 	/**
-	 * A complete export of all tables (flattened) in the database 
-	 * 
-	 * @return Cursor over all books, authors, etc
-	 */
-	public Cursor bookAuthors(int book) {
-		String sql = "SELECT " + getAuthorFields("a", KEY_AUTHOR_ID)  
-			+ " FROM " + DB_TB_BOOK_AUTHOR + " ba"
-			+ " JOIN " + DB_TB_AUTHORS + " a ON (a." + KEY_ROWID + "=ba." + KEY_AUTHOR_ID + ") "
-			+ " WHERE ba." + KEY_BOOK + " = " + book 
-			+ " ORDER BY a." + KEY_AUTHOR_POSITION;
-		return mDb.rawQuery(sql, new String[]{});
-	}
-
-	/**
 	 * Return a Cursor over the list of all books in the database
 	 * 
 	 * @param bookshelf Which bookshelf is it in. Can be "All Books"
@@ -1202,6 +1188,25 @@ public class CatalogueDBAdapter {
 			Logger.logError(e);
 		}
 		return returnable;
+	}
+
+	/**
+	 * Return a complete list of author names from the database; used for AutoComplete.
+	 *  
+	 * @return
+	 */
+	protected ArrayList<String> getAllAuthors() {
+		ArrayList<String> author_list = new ArrayList<String>();
+		Cursor author_cur = fetchAllAuthorsIgnoreBooks();
+		try {
+			while (author_cur.moveToNext()) {
+				String name = author_cur.getString(author_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED));
+				author_list.add(name);
+			}
+			return author_list;			
+		} finally {
+			author_cur.close();			
+		}
 	}
 
 	private String authorOnBookshelfSql(String bookshelf, String authorIdSpec) {
@@ -1261,7 +1266,7 @@ public class CatalogueDBAdapter {
 	 * @param bookshelf Which bookshelf is it in. Can be "All Books"
 	 * @return Cursor over all notes
 	 */
-	public Cursor fetchAllAuthorsIgnoreBooks() {
+	private Cursor fetchAllAuthorsIgnoreBooks() {
 		return fetchAllAuthors();
 	}
 	
@@ -1287,15 +1292,6 @@ public class CatalogueDBAdapter {
 		returnable.moveToFirst();
 		return returnable;
 	}
-	
-	/**
-	 * Return a Cursor over the list of all books in the database
-	 * 
-	 * @return Cursor over all books
-	 */
-//	public Cursor fetchAllBooks(String order) {
-//		return fetchAllBooks(order, "All Books", ""); 
-//	}
 	
 	/**
 	 * Return the SQL for a list of all books in the database matching the passed criteria. The SQL
@@ -1841,14 +1837,18 @@ public class CatalogueDBAdapter {
 		}
 	}
 	
+	private SQLiteStatement mCheckIsbnExistsStmt = null;
 	/**
 	 * 
 	 * @param isbn The isbn to search by
-	 * @return Cursor of the book
+	 * @return boolean indicating ISBN already in DB
 	 */
-	public Cursor fetchBookByISBN(String isbn) {
-		String where = "b." + KEY_ISBN + "=Upper('" + encodeString(isbn) + "')";
-		return fetchAllBooks("", "All Books", "", where, "", "", "");
+	public boolean checkIsbnExists(String isbn) {
+		if (mCheckIsbnExistsStmt == null) {
+			mCheckIsbnExistsStmt = mDb.compileStatement("Select Count(*) From " + DB_TB_BOOKS + " Where Upper(" + KEY_ISBN + ") = Upper(?)");
+		}
+		mCheckIsbnExistsStmt.bindString(1, isbn);
+		return mCheckIsbnExistsStmt.simpleQueryForLong() > 0;
 	}
 	
 	/**
@@ -1882,35 +1882,50 @@ public class CatalogueDBAdapter {
 		return pos;
 	}
 
+	private SQLiteStatement mGetBookshelfNameStmt = null;
 	/**
 	 * Return a Cursor positioned at the bookshelf that matches the given rowId
 	 * 
 	 * @param rowId id of bookshelf to retrieve
-	 * @return Cursor positioned to matching note, if found
-	 * @throws SQLException if note could not be found/retrieved
+	 * @return Name of bookshelf, if found, or throws SQLiteDoneException
 	 */
-	public Cursor fetchBookshelf(long rowId) throws SQLException {
-		String sql = "SELECT bs." + KEY_ROWID + ", bs." + KEY_BOOKSHELF + 
-		" FROM " + DB_TB_BOOKSHELF + " bs " +  
-		" WHERE bs." + KEY_ROWID + "=" + rowId + "";
-		Cursor mCursor = mDb.rawQuery(sql, new String[]{});
-		if (mCursor != null) {
-			mCursor.moveToFirst();
+	public String getBookshelfName(long rowId) throws SQLiteDoneException {
+		if (mGetBookshelfNameStmt == null) {
+			mGetBookshelfNameStmt = mDb.compileStatement("Select " + KEY_BOOKSHELF + " From " + DB_TB_BOOKSHELF + " Where " + KEY_ROWID + " = ?");
 		}
-		return mCursor;
+		mGetBookshelfNameStmt.bindLong(1, rowId);
+		return mGetBookshelfNameStmt.simpleQueryForString();
 	}
 	
-	/**
-	 * This will return the bookshelf id based on the name. 
-	 * 
-	 * @param name The bookshelf name to search for
-	 * @return A cursor containing all bookshelves with the given name
-	 */
-	public Cursor fetchBookshelfByName(String name) {
-		String sql = "";
-		sql = makeTextTerm(KEY_BOOKSHELF, "=", name);
-		return mDb.query(DB_TB_BOOKSHELF, new String[] {"_id", KEY_BOOKSHELF}, sql, null, null, null, null);
-	}
+//	/**
+//	 * Return a Cursor positioned at the bookshelf that matches the given rowId
+//	 * 
+//	 * @param rowId id of bookshelf to retrieve
+//	 * @return Cursor positioned to matching note, if found
+//	 * @throws SQLException if note could not be found/retrieved
+//	 */
+//	public Cursor fetchBookshelf(long rowId) throws SQLException {
+//		String sql = "SELECT bs." + KEY_ROWID + ", bs." + KEY_BOOKSHELF + 
+//		" FROM " + DB_TB_BOOKSHELF + " bs " +  
+//		" WHERE bs." + KEY_ROWID + "=" + rowId + "";
+//		Cursor mCursor = mDb.rawQuery(sql, new String[]{});
+//		if (mCursor != null) {
+//			mCursor.moveToFirst();
+//		}
+//		return mCursor;
+//	}
+//	
+//	/**
+//	 * This will return the bookshelf id based on the name. 
+//	 * 
+//	 * @param name The bookshelf name to search for
+//	 * @return A cursor containing all bookshelves with the given name
+//	 */
+//	public Cursor fetchBookshelfByName(String name) {
+//		String sql = "";
+//		sql = makeTextTerm(KEY_BOOKSHELF, "=", name);
+//		return mDb.query(DB_TB_BOOKSHELF, new String[] {"_id", KEY_BOOKSHELF}, sql, null, null, null, null);
+//	}
 	
 	/**
 	 * This will return JUST the bookshelf id based on the name. 
@@ -2171,22 +2186,28 @@ public class CatalogueDBAdapter {
 		ContentValues initialValues = new ContentValues();
 		String[] names = processAuthorName(author);
 		Cursor authorId = getAuthorByName(names);
-		int aRows = authorId.getCount();
-		if (aRows == 0) {
-			createAuthor(names[0], names[1]);
-			authorId.close();
-			authorId = getAuthorByName(names);
+		long result;
+		try {
+			int aRows = authorId.getCount();
+			if (aRows == 0) {
+				createAuthor(names[0], names[1]);
+				authorId.close();
+				authorId = getAuthorByName(names);
+			}
+			authorId.moveToFirst();
+			
+			int position = fetchAnthologyPositionByBook(book) + 1;
+			
+			initialValues.put(KEY_BOOK, book);
+			initialValues.put(KEY_AUTHOR_ID, authorId.getInt(0));
+			initialValues.put(KEY_TITLE, title);
+			initialValues.put(KEY_POSITION, position);
+			result = mDb.insert(DB_TB_ANTHOLOGY, null, initialValues);
+			
+		} finally {
+			if (authorId != null)
+				authorId.close();			
 		}
-		authorId.moveToFirst();
-		
-		int position = fetchAnthologyPositionByBook(book) + 1;
-		
-		initialValues.put(KEY_BOOK, book);
-		initialValues.put(KEY_AUTHOR_ID, authorId.getInt(0));
-		initialValues.put(KEY_TITLE, title);
-		initialValues.put(KEY_POSITION, position);
-		long result = mDb.insert(DB_TB_ANTHOLOGY, null, initialValues);
-		authorId.close();
 		return result;
 	}
 	
@@ -2431,7 +2452,7 @@ public class CatalogueDBAdapter {
 
 	private SQLiteStatement mGetSeriesIdStmt = null;
 
-	private String getSeriesId(String name) {
+	private long getSeriesId(String name) {
 		if (mGetSeriesIdStmt == null) {
 			mGetSeriesIdStmt = mDb.compileStatement("Select " + KEY_ROWID + " From " + DB_TB_SERIES 
 								+ " Where Upper(" + KEY_SERIES_NAME + ") = Upper(?)" + COLLATION);
@@ -2443,6 +2464,11 @@ public class CatalogueDBAdapter {
 		} catch (SQLiteDoneException e) {
 			id = 0;
 		}
+		return id;
+	}
+
+	private String getSeriesIdOrCreate(String name) {
+		long id = getSeriesId(name);
 		if (id == 0)
 			id = createSeries(name);
 
@@ -2481,21 +2507,7 @@ public class CatalogueDBAdapter {
 	}
 
 	public long lookupSeriesId(Series s) {
-		Cursor seriesCsr = getSeriesByName(s.name);
-		try {
-			int aRows = seriesCsr.getCount();
-			long id;
-			if (aRows == 0)
-				return 0;
-
-			seriesCsr.moveToFirst();
-			id = seriesCsr.getLong(0);			
-
-			return id;			
-		} finally {
-			if (seriesCsr != null)
-				seriesCsr.close();
-		}
+		return getSeriesId(s.name);
 	}
 
 	/**
@@ -2844,7 +2856,7 @@ public class CatalogueDBAdapter {
 				// Get the name and find/add the author
 				Series s = i.next();
 				String seriesName = s.name;
-				String seriesIdStr = getSeriesId(seriesName);
+				String seriesIdStr = getSeriesIdOrCreate(seriesName);
 				long seriesId = Long.parseLong(seriesIdStr);
 				if (!idHash.containsKey(seriesIdStr)) {
 					idHash.put(seriesIdStr, true);
@@ -3172,20 +3184,20 @@ public class CatalogueDBAdapter {
 	
 	
 	
-    /*
-     * This will return the author id based on the name. 
-     * The name can be in either "family, given" or "given family" format.
-     */
-    public Cursor getAuthorByName(String name) {
-    	String[] names = processAuthorName(name);
-    	return getAuthorByName(names);
-    }
+//    /*
+//     * This will return the author id based on the name. 
+//     * The name can be in either "family, given" or "given family" format.
+//     */
+//    public Cursor getAuthorByName(String name) {
+//    	String[] names = processAuthorName(name);
+//    	return getAuthorByName(names);
+//    }
     
     /*
      * This will return the author id based on the name. 
      * The name can be in either "family, given" or "given family" format.
      */
-    public Cursor getAuthorByName(String[] names) {
+    private Cursor getAuthorByName(String[] names) {
     	String sql = KEY_FAMILY_NAME + "=? " + COLLATION + " AND " + KEY_GIVEN_NAMES + "=? " + COLLATION;
         return mDb.query(DB_TB_AUTHORS, new String[] {"_id", KEY_FAMILY_NAME, KEY_GIVEN_NAMES}, sql, names, null, null, null);
     }
@@ -3384,15 +3396,15 @@ public class CatalogueDBAdapter {
 		}
 	}
 
-    /*
-     * This will return the author id based on the name. 
-     * The name can be in either "family, given" or "given family" format.
-     */
-    public Cursor getSeriesByName(String name) {
-    	String sql = "";
-    	sql = makeTextTerm(KEY_SERIES_NAME, "=", name);
-        return mDb.query(DB_TB_SERIES, new String[] {"_id", KEY_SERIES_NAME}, sql, null, null, null, null);
-    }
+//    /*
+//     * This will return the author id based on the name. 
+//     * The name can be in either "family, given" or "given family" format.
+//     */
+//    public Cursor getSeriesByName(String name) {
+//    	String sql = "";
+//    	sql = makeTextTerm(KEY_SERIES_NAME, "=", name);
+//        return mDb.query(DB_TB_SERIES, new String[] {"_id", KEY_SERIES_NAME}, sql, null, null, null, null);
+//    }
 
     /**
      * Utility routine to fill an array with the specified column from the passed SQL.
@@ -3445,25 +3457,25 @@ public class CatalogueDBAdapter {
     	return fetchArray(sql, KEY_AUTHOR_FORMATTED);
 	}
 
-    /**
-     * Return a Cursor positioned at the books that matches the given rowId
-     * 
-     * @param rowId id of note to retrieve
-     * @return Cursor positioned to matching note, if found
-     * @throws SQLException if note could not be found/retrieved
-     */
-    public Cursor fetchAuthor(long rowId) throws SQLException {
-    	String sql = "SELECT a." + KEY_ROWID + ", a." + KEY_FAMILY_NAME + ", a." + KEY_GIVEN_NAMES + 
-		" FROM " + DB_TB_AUTHORS + " a " +  
-		" WHERE a." + KEY_ROWID + "=" + rowId + "";
-
-    	Cursor mCursor = mDb.rawQuery(sql, new String[]{});
-        if (mCursor != null) {
-            mCursor.moveToFirst();
-        }
-        return mCursor;
-
-    }
+//    /**
+//     * Return a Cursor positioned at the books that matches the given rowId
+//     * 
+//     * @param rowId id of note to retrieve
+//     * @return Cursor positioned to matching note, if found
+//     * @throws SQLException if note could not be found/retrieved
+//     */
+//    public Cursor fetchAuthor(long rowId) throws SQLException {
+//    	String sql = "SELECT a." + KEY_ROWID + ", a." + KEY_FAMILY_NAME + ", a." + KEY_GIVEN_NAMES + 
+//		" FROM " + DB_TB_AUTHORS + " a " +  
+//		" WHERE a." + KEY_ROWID + "=" + rowId + "";
+//
+//    	Cursor mCursor = mDb.rawQuery(sql, new String[]{});
+//        if (mCursor != null) {
+//            mCursor.moveToFirst();
+//        }
+//        return mCursor;
+//
+//    }
 
     public String encodeString(String value) {
     	return value.replace("'", "''");

@@ -176,7 +176,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 			});
 		} else if (by.equals("name")) {
 			setContentView(R.layout.name_search);
-			ArrayAdapter<String> author_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getAuthors());
+			ArrayAdapter<String> author_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, mDbHelper.getAllAuthors());
 			mAuthorText = (AutoCompleteTextView) findViewById(R.id.author);
 			mAuthorText.setAdapter(author_adapter);
 			
@@ -278,18 +278,6 @@ public class BookISBNSearch extends ActivityWithTasks {
 	}
 	*/
 	
-	protected ArrayList<String> getAuthors() {
-		ArrayList<String> author_list = new ArrayList<String>();
-		Cursor author_cur = mDbHelper.fetchAllAuthorsIgnoreBooks();
-		startManagingCursor(author_cur);
-		while (author_cur.moveToNext()) {
-			String name = author_cur.getString(author_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED));
-			author_list.add(name);
-		}
-		author_cur.close();
-		return author_list;
-	}
-
 	/*
 	 * Clear any data-entry fields that have been set.
 	 * Used when a book has been successfully added as we want to get ready for another.
@@ -319,11 +307,8 @@ public class BookISBNSearch extends ActivityWithTasks {
 		// If the book already exists, do not continue
 		try {
 			if (!isbn.equals("")) {
-				Cursor book = mDbHelper.fetchBookByISBN(isbn);
-				int rows = book.getCount();
-				book.close(); //close the cursor
 
-				if (rows != 0) {
+				if (mDbHelper.checkIsbnExists(isbn)) {
 					// Verify - this can be a dangerous operation
 					AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(R.string.duplicate_book_message).create();
 					alertDialog.setTitle(R.string.duplicate_book_title);

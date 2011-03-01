@@ -77,10 +77,7 @@ public class BookshelfEdit extends Activity {
     
     private void populateFields() {
         if (mRowId != null && mRowId > 0) {
-            Cursor bookshelf = mDbHelper.fetchBookshelf(mRowId);
-            startManagingCursor(bookshelf);
-            
-            mBookshelfText.setText(bookshelf.getString(bookshelf.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_BOOKSHELF)));
+            mBookshelfText.setText(mDbHelper.getBookshelfName(mRowId));
             mConfirmButton.setText(R.string.confirm_save_bs);
         } else {
             mConfirmButton.setText(R.string.confirm_add_bs);

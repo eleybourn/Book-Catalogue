@@ -37,10 +37,21 @@ public class StandardDialogs {
 	public static int deleteBookAlert(Context context, final CatalogueDBAdapter dbHelper, final long id, final Runnable onDeleted) {
 
 		ArrayList<Author> authorList = dbHelper.getBookAuthorList(id);
-		Cursor cur = dbHelper.fetchBookById(id);
 
-		if (cur == null || !cur.moveToFirst())
-			return R.string.unable_to_find_book;
+		String title;
+		Cursor cur = dbHelper.fetchBookById(id);
+		try {
+			if (cur == null || !cur.moveToFirst())
+				return R.string.unable_to_find_book;
+
+			title = cur.getString(cur.getColumnIndex(CatalogueDBAdapter.KEY_TITLE));
+			if (title == null || title.length() == 0)
+				title = "<Unknown>";
+			
+		} finally {
+			if (cur != null)
+				cur.close();
+		}
 
 		// Format the list of authors nicely
 		String authors;
@@ -54,11 +65,7 @@ public class StandardDialogs {
 				authors += " " + context.getResources().getString(R.string.list_and) + " " + authorList.get(authorList.size()).getDisplayName();
 		}
 
-		// Get the title
-		String title = cur.getString(cur.getColumnIndex(CatalogueDBAdapter.KEY_TITLE));
-		if (title == null || title.length() == 0)
-			title = "<Unknown>";
-		
+		// Get the title		
 		String format = context.getResources().getString(R.string.really_delete_book);
 		
 		String message = String.format(format, title, authors);

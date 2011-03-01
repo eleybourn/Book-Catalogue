@@ -161,8 +161,10 @@ public class BookEditNotes extends Activity {
 			mConfirmButton.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
 					Bundle values = new Bundle();
-					if (!validate(values))
-						return;
+					if (!validate(values)) {
+						//return;
+						// Ignore...nothing here is that important...but warn the users.
+					}
 
 					saveState(values);
 					setResult(RESULT_OK);
@@ -315,7 +317,7 @@ public class BookEditNotes extends Activity {
 			Toast.makeText(this, R.string.unknown_error, Toast.LENGTH_LONG).show();
 			finish();
 		} else {
-			mDbHelper.updateBook(mRowId, values);
+			mDbHelper.updateBook(mRowId, values, true);
 		}
 		return;
 	}

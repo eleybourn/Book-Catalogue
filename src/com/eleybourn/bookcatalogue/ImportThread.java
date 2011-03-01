@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Message;
 
 /**
@@ -37,10 +38,12 @@ public class ImportThread extends ManagedTask {
 		mDbHelper.open();
 		
 		manager.setMax(this, mExport.size());
+		//Debug.startMethodTracing();
 	}
 
 	@Override
 	protected boolean onFinish() {
+		//Debug.stopMethodTracing();
 		ImportHandler h = (ImportHandler)getTaskHandler();
 		if (h != null) {
 			h.onFinish();
@@ -82,18 +85,22 @@ public class ImportThread extends ManagedTask {
 		boolean inTx = false;
 		int txRowCount = 0;
 
+		long lastUpdate = 0;
 		/* Iterate through each imported row */
 		try {
 			while (row < mExport.size() && !isCancelled()) {
 				if (inTx && txRowCount > 10) {
 					mDbHelper.setTransactionSuccessful();
 					mDbHelper.endTransaction();
+					inTx = false;
 				}
 				if (!inTx) {
 					mDbHelper.startTransaction();
 					inTx = true;
 					txRowCount = 0;
 				}
+				txRowCount++;
+
 				// Get row
 				String[] imported = returnRow(mExport.get(row));
 
@@ -183,18 +190,20 @@ public class ImportThread extends ManagedTask {
 						values.putString(CatalogueDBAdapter.KEY_ROWID, idVal);
 						mImportCreated++;
 					} else {
-						Long id = Long.parseLong(idVal);
-						Cursor book = mDbHelper.fetchBookById(id);
-						int rows = book.getCount();
-						book.close();
-						if (rows == 0) {
-							id = mDbHelper.createBook(values);
+						Long id;
+						try {
+							id = Long.parseLong(idVal);
+						} catch (Exception e) {
+							id = 0L;
+						}
+						if (id == 0 || !mDbHelper.checkBookExists(id)) {
+							id = mDbHelper.createBook(id, values);
 							mImportCreated++;
 							idVal = id.toString();
 							values.putString(CatalogueDBAdapter.KEY_ROWID, idVal);
 						} else {
 							// Book exists and should be updated if it has changed
-							mDbHelper.updateBook(id, values);
+							mDbHelper.updateBook(id, values, false);
 							mImportUpdated++;
 						}
 					}
@@ -207,7 +216,12 @@ public class ImportThread extends ManagedTask {
 				}
 
 				if (values.containsKey(CatalogueDBAdapter.KEY_ANTHOLOGY)) {
-					int anthology = Integer.parseInt(values.getString(CatalogueDBAdapter.KEY_ANTHOLOGY));
+					int anthology;
+					try {
+						anthology = Integer.parseInt(values.getString(CatalogueDBAdapter.KEY_ANTHOLOGY));
+					} catch (Exception e) {
+						anthology = 0;
+					}
 					int id = Integer.parseInt(Utils.getAsString(values, CatalogueDBAdapter.KEY_ROWID));
 					if (anthology == CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS || anthology == CatalogueDBAdapter.ANTHOLOGY_SAME_AUTHOR) {
 						int oldi = 0;
@@ -228,7 +242,11 @@ public class ImportThread extends ManagedTask {
 					}
 				}
 
-				doProgress(title, row);
+				long now = System.currentTimeMillis();
+				if ( (now - lastUpdate) > 200) {
+					doProgress(title, row);
+					lastUpdate = now;
+				}
 
 				// Increment row count
 				row++;
@@ -238,6 +256,8 @@ public class ImportThread extends ManagedTask {
 				mDbHelper.setTransactionSuccessful();
 				mDbHelper.endTransaction();
 			}
+			mDbHelper.purgeAuthors();
+			mDbHelper.purgeSeries();
 		}
 		doToast("Import Complete");
 	}

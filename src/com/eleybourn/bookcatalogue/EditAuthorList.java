@@ -65,28 +65,11 @@ public class EditAuthorList extends EditObjectList<Author> {
 		}
 	};
 	
-	/**
-	 * Return a complete list of author names from the database; used for AutoComplete.
-	 *  
-	 * @return
-	 */
-	protected ArrayList<String> getAuthorsFromDb() {
-		ArrayList<String> author_list = new ArrayList<String>();
-		Cursor author_cur = mDbHelper.fetchAllAuthorsIgnoreBooks();
-		startManagingCursor(author_cur);
-		while (author_cur.moveToNext()) {
-			String name = author_cur.getString(author_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED));
-			author_list.add(name);
-		}
-		author_cur.close();
-		return author_list;
-	}
-
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		try {
 			// Setup autocomplete for author name
-			ArrayAdapter<String> author_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getAuthorsFromDb());
+			ArrayAdapter<String> author_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, mDbHelper.getAllAuthors());
 			((AutoCompleteTextView)this.findViewById(R.id.author)).setAdapter(author_adapter);
 		} catch (Exception e) {
 			Logger.logError(e);

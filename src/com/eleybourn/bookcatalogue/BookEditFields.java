@@ -462,8 +462,8 @@ public class BookEditFields extends Activity {
 			mCancelButton.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
 					// Cleanup because we may have made global changes
-					mDbHelper.deleteAuthors();
-					mDbHelper.deleteSeries();
+					mDbHelper.purgeAuthors();
+					mDbHelper.purgeSeries();
 					// We're done.
 					setResult(RESULT_OK);
 					finish();
@@ -996,7 +996,7 @@ public class BookEditFields extends Activity {
 				thumb.renameTo(real);
 			}
 		} else {
-			mDbHelper.updateBook(mRowId, mStateValues);
+			mDbHelper.updateBook(mRowId, mStateValues, true);
 		}
 
 		/* These are global variables that will be sent via intent back to the list view, if added/created */

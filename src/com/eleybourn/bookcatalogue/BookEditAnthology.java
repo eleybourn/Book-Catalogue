@@ -482,7 +482,7 @@ public class BookEditAnthology extends ListActivity {
 			Toast.makeText(this, R.string.unknown_error, Toast.LENGTH_LONG).show();
 			finish();
 		} else {
-			mDbHelper.updateBook(mRowId, values);
+			mDbHelper.updateBook(mRowId, values, true);
 		}
 		return;
 	}

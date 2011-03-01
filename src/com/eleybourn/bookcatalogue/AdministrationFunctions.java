@@ -83,7 +83,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			Iterator<BookInfo> i = queue.iterator();
 			while (i.hasNext()) {
 				BookInfo bi = i.next();
-				mDbHelper.updateBook(bi.id, bi.bookData);
+				mDbHelper.updateBook(bi.id, bi.bookData, true);
 			}
 		}
 
@@ -148,16 +148,18 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			mDbHelper.open();
 			setContentView(R.layout.administration_functions);
 			Bundle extras = getIntent().getExtras();
-			try {
-				if (extras.getString(DOAUTO).equals("export")) {
-					finish_after = true;
-					exportData();
-				} else if (extras.getString(DOAUTO).equals("update_fields")) {
-					finish_after = true;
-					updateThumbnails(false);
-				}
-			} catch (NullPointerException e) {
-				Logger.logError(e);
+			if (extras != null && extras.containsKey("DOAUTO")) {
+				try {
+					if (extras.getString(DOAUTO).equals("export")) {
+						finish_after = true;
+						exportData();
+					} else if (extras.getString(DOAUTO).equals("update_fields")) {
+						finish_after = true;
+						updateThumbnails(false);
+					}
+				} catch (NullPointerException e) {
+					Logger.logError(e);
+				}				
 			}
 			setupAdmin();
 		} catch (Exception e) {

@@ -149,8 +149,10 @@ public class BookCatalogue extends ExpandableListActivity {
 	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		// Reset the error log.
-		Logger.clearLog();
+		// Reset the error log if new instance
+		if (savedInstanceState == null) {
+			Logger.clearLog();
+		}
 
 		//check which strings.xml file is currently active
 		if (!getString(R.string.app_name).equals(Utils.APP_NAME)) {
@@ -175,6 +177,10 @@ public class BookCatalogue extends ExpandableListActivity {
 			setContentView(R.layout.list_authors);
 			mDbHelper = new CatalogueDBAdapter(this);
 			mDbHelper.open();
+			if (savedInstanceState == null) {
+				// Analyze DB  if new instance
+				mDbHelper.analyzeDb();
+			}
 			
 			// Did the user search
 			Intent intent = getIntent();
@@ -978,7 +984,9 @@ public class BookCatalogue extends ExpandableListActivity {
 				view.expandGroup(arrayIterator.next());
 			}
 			
-			view.setSelectedGroup(currentGroup.get(currentGroup.size()-1));
+			int pos = currentGroup.size()-1;
+			if (pos >= 0)
+				view.setSelectedGroup(currentGroup.get(pos));
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
@@ -1138,7 +1146,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				EditSeriesDialog d = new EditSeriesDialog(this, mDbHelper, new Runnable() {
 					@Override
 					public void run() {
-						mDbHelper.deleteSeries();
+						mDbHelper.purgeSeries();
 						regenGroups();
 					}});
 				d.editSeries(s);
@@ -1158,7 +1166,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				EditAuthorDialog d = new EditAuthorDialog(this, mDbHelper, new Runnable() {
 					@Override
 					public void run() {
-						mDbHelper.deleteAuthors();
+						mDbHelper.purgeAuthors();
 						regenGroups();
 					}});
 				d.editAuthor(mDbHelper.getAuthorById(info.id));

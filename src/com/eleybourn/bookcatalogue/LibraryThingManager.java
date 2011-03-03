@@ -33,6 +33,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import android.os.Bundle;
+import android.util.Log;
 
 /**
  * Handle all aspects of searching (and ultimately synchronizing with) LibraryThing.
@@ -51,6 +52,7 @@ import android.os.Bundle;
  */
 public class LibraryThingManager {
 
+	private static Long mLastRequestTime = 0L;
 	// 
 	Bundle mBookData = null;
 	
@@ -81,6 +83,41 @@ public class LibraryThingManager {
 
 	LibraryThingManager(Bundle bookData) {
 		mBookData = bookData;
+	}
+
+	/**
+	 * Use mLastRequestTime to determine how long until the next request is allowed; and
+	 * update mLastRequestTime this needs to be synchroized across threads.
+	 *
+ 	 * Note that as a result of this approach mLastRequestTime may in fact be
+	 * in the future; callers to this routine effectively allocate time slots.
+	 * 
+	 * This method will sleep() until it can make a request; if ten threads call this 
+	 * simultaneously, one will return immediately, one will return 1 second later, another
+	 * two seconds etc.
+	 * 
+	 */
+	private static void waitUntilRequestAllowed() {
+		long now = System.currentTimeMillis();
+		long wait;
+		synchronized(mLastRequestTime) {
+			wait = 1000 - (now - mLastRequestTime);
+			//
+			// mLastRequestTime must be updated while synchronized. As soon as this
+			// block is left, another block may perform another update.
+			//
+			if (wait < 0)
+				wait = 0;
+			mLastRequestTime = now + wait;
+		}
+		if (wait > 0) {
+			Log.i("BC", "Waiting for LT");
+			try {
+			Thread.sleep(wait);
+			} catch (InterruptedException e) {
+			}
+			Log.i("BC", "Waited for LT");
+		}
 	}
 
 	/**
@@ -393,6 +430,8 @@ public class LibraryThingManager {
 		try {
 			url = new URL(path);
 			parser = factory.newSAXParser();
+			// Make sure we follow LibraryThing ToS (no more than 1 request/second).
+			waitUntilRequestAllowed();
 			parser.parse(Utils.getInputStream(url), entryHandler);
 			// Dont bother catching general exceptions, they will be caught by the caller.
 		} catch (MalformedURLException e) {
@@ -570,6 +609,10 @@ public class LibraryThingManager {
 	 */
 	public static String getCoverImage(String isbn, Bundle bookData, ImageSizes size) {
 		String url = getCoverImageUrl(isbn, size);
+
+		// Make sure we follow LibraryThing ToS (no more than 1 request/second).
+		waitUntilRequestAllowed();
+
 		// Save it with an _LT suffix
 		String filename = Utils.saveThumbnailFromUrl(url, "_LT_" + size + "_" + isbn);
 		if (filename.length() > 0 && bookData != null)
@@ -595,6 +638,10 @@ public class LibraryThingManager {
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		SearchLibraryThingEditionHandler entryHandler = new LibraryThingManager.SearchLibraryThingEditionHandler(editions);
 
+		// Make sure we follow LibraryThing ToS (no more than 1 request/second).
+		waitUntilRequestAllowed();
+
+		// Get it
 		Utils.parseUrlOutput(path, factory, entryHandler);
 
 		return editions;

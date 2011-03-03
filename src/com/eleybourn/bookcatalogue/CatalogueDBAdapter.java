@@ -51,7 +51,8 @@ import android.widget.ImageView;
 public class CatalogueDBAdapter {
 	
 	public static final String DATABASE_NAME = "book_catalogue";
-
+	private ArrayList<SQLiteStatement> mStatements = new ArrayList<SQLiteStatement>();
+	
 	/* This is the list of all column names as static variables for reference
 	 * 
 	 * NOTE!!! Because Java String comparisons are not case-insensitive, it is 
@@ -903,6 +904,12 @@ public class CatalogueDBAdapter {
 	 */
 	public void close() {
 		try {
+			for(SQLiteStatement s : mStatements)
+				try {
+					s.close();
+				} catch (Exception e)
+				{};
+
 			mDbHelper.close();
 		} catch (Exception e) {
 			//do nothing - already closed
@@ -1826,7 +1833,7 @@ public class CatalogueDBAdapter {
 	private SQLiteStatement mCheckBookExistsStmt = null;
 	public boolean checkBookExists(long rowId) {
 		if (mCheckBookExistsStmt == null) {
-			mCheckBookExistsStmt = mDb.compileStatement("Select " + KEY_ROWID + " From " + DB_TB_BOOKS + " Where " + KEY_ROWID + " = ?");
+			mCheckBookExistsStmt = compileStatement("Select " + KEY_ROWID + " From " + DB_TB_BOOKS + " Where " + KEY_ROWID + " = ?");
 		}
 		mCheckBookExistsStmt.bindLong(1, rowId);
 		try {
@@ -1845,7 +1852,7 @@ public class CatalogueDBAdapter {
 	 */
 	public boolean checkIsbnExists(String isbn) {
 		if (mCheckIsbnExistsStmt == null) {
-			mCheckIsbnExistsStmt = mDb.compileStatement("Select Count(*) From " + DB_TB_BOOKS + " Where Upper(" + KEY_ISBN + ") = Upper(?)");
+			mCheckIsbnExistsStmt = compileStatement("Select Count(*) From " + DB_TB_BOOKS + " Where Upper(" + KEY_ISBN + ") = Upper(?)");
 		}
 		mCheckIsbnExistsStmt.bindString(1, isbn);
 		return mCheckIsbnExistsStmt.simpleQueryForLong() > 0;
@@ -1891,7 +1898,7 @@ public class CatalogueDBAdapter {
 	 */
 	public String getBookshelfName(long rowId) throws SQLiteDoneException {
 		if (mGetBookshelfNameStmt == null) {
-			mGetBookshelfNameStmt = mDb.compileStatement("Select " + KEY_BOOKSHELF + " From " + DB_TB_BOOKSHELF + " Where " + KEY_ROWID + " = ?");
+			mGetBookshelfNameStmt = compileStatement("Select " + KEY_BOOKSHELF + " From " + DB_TB_BOOKSHELF + " Where " + KEY_ROWID + " = ?");
 		}
 		mGetBookshelfNameStmt.bindLong(1, rowId);
 		return mGetBookshelfNameStmt.simpleQueryForString();
@@ -1937,15 +1944,17 @@ public class CatalogueDBAdapter {
 	private SQLiteStatement mFetchBookshelfIdByNameStmt = null;
 	public long fetchBookshelfIdByName(String name) {
 		if (mFetchBookshelfIdByNameStmt == null) {
-			mFetchBookshelfIdByNameStmt = mDb.compileStatement("Select " + KEY_ROWID + " From " + KEY_BOOKSHELF 
+			mFetchBookshelfIdByNameStmt = compileStatement("Select " + KEY_ROWID + " From " + KEY_BOOKSHELF 
 											+ " Where Upper(" + KEY_BOOKSHELF + ") = Upper(?)" + COLLATION);
 		}
 		mFetchBookshelfIdByNameStmt.bindString(1, name);
+		long id;
 		try {
-			return mFetchBookshelfIdByNameStmt.simpleQueryForLong();
+			id = mFetchBookshelfIdByNameStmt.simpleQueryForLong();
 		} catch (SQLiteDoneException e) {
-			return 0L;
+			id = 0L;
 		}
+		return id;
 	}
 	
 	/**
@@ -2315,8 +2324,8 @@ public class CatalogueDBAdapter {
 	}
 
 	// Statements used by createBookshelfBooks
-	private static SQLiteStatement mDeleteBookshelfBooksStmt = null;
-	private static SQLiteStatement mInsertBookshelfBooksStmt = null;
+	private SQLiteStatement mDeleteBookshelfBooksStmt = null;
+	private SQLiteStatement mInsertBookshelfBooksStmt = null;
 
 	/**
 	 * Create each book/bookshelf combo in the weak entity
@@ -2326,13 +2335,13 @@ public class CatalogueDBAdapter {
 	 */
 	public void createBookshelfBooks(long mRowId, String bookshelf) {
 		if (mDeleteBookshelfBooksStmt == null) {
-			mDeleteBookshelfBooksStmt = mDb.compileStatement("Delete from " + DB_TB_BOOK_BOOKSHELF_WEAK + " Where " + KEY_BOOK + " = ?");
+			mDeleteBookshelfBooksStmt = compileStatement("Delete from " + DB_TB_BOOK_BOOKSHELF_WEAK + " Where " + KEY_BOOK + " = ?");
 		}
 		mDeleteBookshelfBooksStmt.bindLong(1, mRowId);
 		mDeleteBookshelfBooksStmt.execute();
 
 		if (mInsertBookshelfBooksStmt == null) {
-			mInsertBookshelfBooksStmt = mDb.compileStatement("Insert Into " 
+			mInsertBookshelfBooksStmt = compileStatement("Insert Into " 
 								+ DB_TB_BOOK_BOOKSHELF_WEAK + "(" + KEY_BOOK + ", " + KEY_BOOKSHELF + ")"
 								+ " Values (?,?)");
 		}
@@ -2344,6 +2353,7 @@ public class CatalogueDBAdapter {
 			if (name.equals("")) {
 				continue;
 			}
+			
 			//ContentValues initialValues = new ContentValues();
 			long bookshelfId = fetchBookshelfIdByName(name);
 			if (bookshelfId == 0) {
@@ -2351,6 +2361,7 @@ public class CatalogueDBAdapter {
 			}
 			if (bookshelfId == 0)
 				bookshelfId = 1;
+
 			mInsertBookshelfBooksStmt.bindLong(1, mRowId);
 			mInsertBookshelfBooksStmt.bindLong(2, bookshelfId);
 			mInsertBookshelfBooksStmt.execute();
@@ -2454,7 +2465,7 @@ public class CatalogueDBAdapter {
 
 	private long getSeriesId(String name) {
 		if (mGetSeriesIdStmt == null) {
-			mGetSeriesIdStmt = mDb.compileStatement("Select " + KEY_ROWID + " From " + DB_TB_SERIES 
+			mGetSeriesIdStmt = compileStatement("Select " + KEY_ROWID + " From " + DB_TB_SERIES 
 								+ " Where Upper(" + KEY_SERIES_NAME + ") = Upper(?)" + COLLATION);
 		}
 		long id;
@@ -2479,7 +2490,7 @@ public class CatalogueDBAdapter {
 	private SQLiteStatement mGetAuthorIdStmt = null;
 	private long getAuthorId(String[] names) {
 		if (mGetAuthorIdStmt == null) {
-			mGetAuthorIdStmt = mDb.compileStatement("Select " + KEY_ROWID + " From " + DB_TB_AUTHORS 
+			mGetAuthorIdStmt = compileStatement("Select " + KEY_ROWID + " From " + DB_TB_AUTHORS 
 								+ " Where Upper(" + KEY_FAMILY_NAME + ") = Upper(?) " + COLLATION
 								+ " And Upper(" + KEY_GIVEN_NAMES + ") = Upper(?)" + COLLATION);
 		}
@@ -2729,7 +2740,7 @@ public class CatalogueDBAdapter {
 	 * @return true if the note was successfully updated, false otherwise
 	 */
 	public boolean updateBook(long rowId, Bundle values, boolean doPurge) {
-		boolean success;
+		boolean success = true;
 
 		// Make sure we have the target table details
 		if (mBooksInfo == null)
@@ -2748,10 +2759,14 @@ public class CatalogueDBAdapter {
 			}			
 		}
 
-		ArrayList<Author> authors = values.getParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
-		createBookAuthors(rowId, authors);
-		ArrayList<Series> series = values.getParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY);
-		createBookSeries(rowId, series);
+		if (values.containsKey(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)) {
+			ArrayList<Author> authors = values.getParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
+			createBookAuthors(rowId, authors);			
+		}
+		if (values.containsKey(CatalogueDBAdapter.KEY_SERIES_ARRAY)) {
+			ArrayList<Series> series = values.getParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY);
+			createBookSeries(rowId, series);			
+		}
 
 		// Only really skip the purge if a batch update of multiple books is being done.
 		if (doPurge) {
@@ -2779,10 +2794,10 @@ public class CatalogueDBAdapter {
 		// If we have AUTHOR_DETAILS, same them.
 		if (authors != null) {
 			if (mDeleteBookAuthorsStmt == null) {
-				mDeleteBookAuthorsStmt = mDb.compileStatement("Delete from " + DB_TB_BOOK_AUTHOR + " Where " + KEY_BOOK + " = ?");
+				mDeleteBookAuthorsStmt = compileStatement("Delete from " + DB_TB_BOOK_AUTHOR + " Where " + KEY_BOOK + " = ?");
 			}
 			if (mAddBookAuthorsStmt == null) {
-				mAddBookAuthorsStmt = mDb.compileStatement("Insert Into " + DB_TB_BOOK_AUTHOR 
+				mAddBookAuthorsStmt = compileStatement("Insert Into " + DB_TB_BOOK_AUTHOR 
 															+ "(" + KEY_BOOK + "," + KEY_AUTHOR_ID + "," + KEY_AUTHOR_POSITION + ")"
 															+ "Values(?,?,?)");
 
@@ -2810,7 +2825,7 @@ public class CatalogueDBAdapter {
 					pos++;
 					mAddBookAuthorsStmt.bindLong(2, authorId);
 					mAddBookAuthorsStmt.bindLong(3, pos);
-					mAddBookAuthorsStmt.execute();
+					mAddBookAuthorsStmt.executeInsert();
 				}
 			}
 		}
@@ -2830,10 +2845,10 @@ public class CatalogueDBAdapter {
 		// If we have SERIES_DETAILS, same them.
 		if (series != null) {
 			if (mDeleteBookSeriesStmt == null) {
-				mDeleteBookSeriesStmt = mDb.compileStatement("Delete from " + DB_TB_BOOK_SERIES + " Where " + KEY_BOOK + " = ?");
+				mDeleteBookSeriesStmt = compileStatement("Delete from " + DB_TB_BOOK_SERIES + " Where " + KEY_BOOK + " = ?");
 			}
 			if (mAddBookSeriesStmt == null) {
-				mAddBookSeriesStmt = mDb.compileStatement("Insert Into " + DB_TB_BOOK_SERIES 
+				mAddBookSeriesStmt = compileStatement("Insert Into " + DB_TB_BOOK_SERIES 
 															+ "(" + KEY_BOOK + "," + KEY_SERIES_ID + "," + KEY_SERIES_NUM + "," + KEY_SERIES_POSITION + ")"
 															+ " Values(?,?,?,?)");
 
@@ -3043,7 +3058,7 @@ public class CatalogueDBAdapter {
 	public boolean purgeAuthors() {
 		// Delete DB_TB_BOOK_AUTHOR with no books
 		if (mPurgeBookAuthorsStmt == null) {
-			mPurgeBookAuthorsStmt = mDb.compileStatement("Delete from " + DB_TB_BOOK_AUTHOR + " Where " + KEY_BOOK 
+			mPurgeBookAuthorsStmt = compileStatement("Delete from " + DB_TB_BOOK_AUTHOR + " Where " + KEY_BOOK 
 									+ " Not In (SELECT DISTINCT " + KEY_ROWID + " FROM " + DB_TB_BOOKS + ") ");
 		}
 
@@ -3057,7 +3072,7 @@ public class CatalogueDBAdapter {
 		}
 
 		if (mPurgeAuthorsStmt == null) {
-			mPurgeAuthorsStmt = mDb.compileStatement("Delete from " + DB_TB_AUTHORS + " Where "
+			mPurgeAuthorsStmt = compileStatement("Delete from " + DB_TB_AUTHORS + " Where "
 					 			+ KEY_ROWID + " Not In (SELECT DISTINCT " + KEY_AUTHOR_ID + " FROM " + DB_TB_BOOK_AUTHOR + ")"
 								+ " And " + KEY_ROWID + " Not In (SELECT DISTINCT " + KEY_AUTHOR_ID + " FROM " + DB_TB_ANTHOLOGY + ")");
 		}
@@ -3084,7 +3099,7 @@ public class CatalogueDBAdapter {
 	 */
 	public boolean purgeSeries() {
 		if (mPurgeBookSeriesStmt == null) {
-			mPurgeBookSeriesStmt = mDb.compileStatement("Delete From "+ DB_TB_BOOK_SERIES + " Where " 
+			mPurgeBookSeriesStmt = compileStatement("Delete From "+ DB_TB_BOOK_SERIES + " Where " 
 									+ KEY_BOOK + " NOT IN (SELECT DISTINCT " + KEY_ROWID + " FROM " + DB_TB_BOOKS + ")");
 		}
 		boolean success;
@@ -3098,7 +3113,7 @@ public class CatalogueDBAdapter {
 		}
 
 		if (mPurgeSeriesStmt == null) {
-			mPurgeSeriesStmt = mDb.compileStatement("Delete from " + DB_TB_SERIES + " Where "
+			mPurgeSeriesStmt = compileStatement("Delete from " + DB_TB_SERIES + " Where "
 					+ KEY_ROWID + " NOT IN (SELECT DISTINCT " + KEY_SERIES_ID + " FROM " + DB_TB_BOOK_SERIES + ") ");
 		}
 		// Delete series entries with no Book_Series
@@ -3251,7 +3266,7 @@ public class CatalogueDBAdapter {
  
     	if (mGetAuthorBookCountQuery == null) {
         	String sql = "Select Count(" + KEY_BOOK + ") From " + DB_TB_BOOK_AUTHOR + " Where " + KEY_AUTHOR_ID + "=?";
-        	mGetAuthorBookCountQuery = mDb.compileStatement(sql);
+        	mGetAuthorBookCountQuery = compileStatement(sql);
     	}
     	// Be cautious
     	synchronized(mGetAuthorBookCountQuery) {
@@ -3274,7 +3289,7 @@ public class CatalogueDBAdapter {
  
     	if (mGetAuthorAnthologyCountQuery == null) {
         	String sql = "Select Count(" + KEY_ROWID + ") From " + DB_TB_ANTHOLOGY + " Where " + KEY_AUTHOR_ID + "=?";
-        	mGetAuthorAnthologyCountQuery = mDb.compileStatement(sql);
+        	mGetAuthorAnthologyCountQuery = compileStatement(sql);
     	}
     	// Be cautious
     	synchronized(mGetAuthorAnthologyCountQuery) {
@@ -3297,7 +3312,7 @@ public class CatalogueDBAdapter {
  
     	if (mGetSeriesBookCountQuery == null) {
         	String sql = "Select Count(" + KEY_BOOK + ") From " + DB_TB_BOOK_SERIES + " Where " + KEY_SERIES_ID + "=?";
-        	mGetSeriesBookCountQuery = mDb.compileStatement(sql);
+        	mGetSeriesBookCountQuery = compileStatement(sql);
     	}
     	// Be cautious
     	synchronized(mGetSeriesBookCountQuery) {
@@ -3532,44 +3547,49 @@ public class CatalogueDBAdapter {
         Map<String,ColumnInfo> describeTable(String tableName) {
         	String sql = "PRAGMA table_info(" + tableName + ")";
         	
-        	Cursor colCsr = mDb.rawQuery(sql, new String[]{});
-            if (colCsr == null)
-            	throw new IllegalArgumentException();
-
-            if (!colCsr.moveToFirst())
-            	throw new RuntimeException("Unable to get column details");
-
             Map<String,ColumnInfo> cols = new Hashtable<String,ColumnInfo>();
 
-            while (true) {
-            	ColumnInfo col = new ColumnInfo();
-            	col.position = colCsr.getInt(0);
-            	col.name = colCsr.getString(1);
-            	col.typeName = colCsr.getString(2);
-            	col.allowNull = colCsr.getInt(3) == 0;
-            	col.defaultValue = colCsr.getString(4);
-            	col.isPrimaryKey = colCsr.getInt(5) == 1;
-            	String tName = col.typeName.toLowerCase();
-            	if (tName.equals("int") || tName.equals("integer")) {
-            		col.typeClass = CLASS_INTEGER;
-            	} else if (tName.equals("text")) {
-            		col.typeClass = CLASS_TEXT;            		
-            	} else if (tName.equals("float") || tName.equals("real") || tName.equals("double")) {
-            		col.typeClass = CLASS_REAL;
-            	} else if (tName.equals("date")) {
-            		col.typeClass = CLASS_TEXT;
-            	} else if (tName.equals("boolean")) {
-            		col.typeClass = CLASS_INTEGER;
-            	} else {
-            		throw new RuntimeException("Unknown data type '" + tName + "'");
-            	}
-            	
-            	cols.put(col.name.toLowerCase(),col);
-            	if (colCsr.isLast())
-            		break;
-            	colCsr.moveToNext();
-            }
-            colCsr.close();
+            Cursor colCsr = mDb.rawQuery(sql, new String[]{});
+        	try {
+                if (colCsr == null)
+                	throw new IllegalArgumentException();
+
+                if (!colCsr.moveToFirst())
+                	throw new RuntimeException("Unable to get column details");
+
+
+                while (true) {
+                	ColumnInfo col = new ColumnInfo();
+                	col.position = colCsr.getInt(0);
+                	col.name = colCsr.getString(1);
+                	col.typeName = colCsr.getString(2);
+                	col.allowNull = colCsr.getInt(3) == 0;
+                	col.defaultValue = colCsr.getString(4);
+                	col.isPrimaryKey = colCsr.getInt(5) == 1;
+                	String tName = col.typeName.toLowerCase();
+                	if (tName.equals("int") || tName.equals("integer")) {
+                		col.typeClass = CLASS_INTEGER;
+                	} else if (tName.equals("text")) {
+                		col.typeClass = CLASS_TEXT;            		
+                	} else if (tName.equals("float") || tName.equals("real") || tName.equals("double")) {
+                		col.typeClass = CLASS_REAL;
+                	} else if (tName.equals("date")) {
+                		col.typeClass = CLASS_TEXT;
+                	} else if (tName.equals("boolean")) {
+                		col.typeClass = CLASS_INTEGER;
+                	} else {
+                		throw new RuntimeException("Unknown data type '" + tName + "'");
+                	}
+                	
+                	cols.put(col.name.toLowerCase(),col);
+                	if (colCsr.isLast())
+                		break;
+                	colCsr.moveToNext();
+                }        		
+        	} finally {
+        		if (colCsr != null)
+	                colCsr.close();        		
+        	}
             return cols;
         }
     }
@@ -3592,4 +3612,9 @@ public class CatalogueDBAdapter {
     	}
     }
 
+    private SQLiteStatement compileStatement(String sql) {
+    	SQLiteStatement s = mDb.compileStatement(sql);
+    	mStatements.add(s);
+    	return s;
+    }
 }

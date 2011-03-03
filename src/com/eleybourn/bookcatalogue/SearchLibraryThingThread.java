@@ -16,8 +16,8 @@ public class SearchLibraryThingThread extends SearchThread {
 		//	We always contact LibraryThing because it is a good source of Series data and thumbnails. But it 
 		//	does require an ISBN AND a developer key.
 		//
-		if (mBookData.containsKey(CatalogueDBAdapter.KEY_ISBN)) {
-			String isbn = mBookData.getString(CatalogueDBAdapter.KEY_ISBN);
+		if (mIsbn != null && mIsbn.trim().length() > 0) {
+			String isbn = mIsbn;
 			if (isbn.length() > 0) {
 				this.doProgress(getString(R.string.searching_library_thing), 0);
 				LibraryThingManager ltm = new LibraryThingManager(mBookData);

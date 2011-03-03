@@ -115,7 +115,7 @@
 		<TextView android:id="@+id/thumb_label" 
 			android:layout_width="fill_parent" 
 			android:layout_height="wrap_content" 
-			android:text="@+string/update_thumbnails"
+			android:text="@+string/update_fields"
 			android:textAppearance="?android:attr/textAppearanceLarge"
 			android:paddingTop="5sp"
 			/>

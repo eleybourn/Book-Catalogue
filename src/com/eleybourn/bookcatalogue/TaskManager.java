@@ -104,6 +104,19 @@ public class TaskManager {
 	}
 
 	/**
+	 * Check if running in UI thread.
+	 * 
+	 * @return	true if in UI thread
+	 */
+	public boolean runningInUiThread() {
+		return (Thread.currentThread() == mUiThread.get());
+	}
+
+	public void postToUiThread(Runnable r) {
+		mMessageHandler.post(r);
+	}
+
+	/**
 	 * Allows other objects to know when a task completed. See SearchManager for an example.
 	 * 
 	 * @author Grunthos
@@ -136,7 +149,7 @@ public class TaskManager {
 	 * @param t		Task to add
 	 */
 	void addTask(ManagedTask t) {
-		synchronized(this) {
+		synchronized(mTasks) {
 			if (getTaskInfo(t) == null)
 					mTasks.add(new TaskInfo(t));
 		}
@@ -150,7 +163,7 @@ public class TaskManager {
 	public void taskEnded(ManagedTask task) {
 		// Remove from the list of tasks. From now on, it should
 		// not send any progress requests.
-		synchronized(this) {
+		synchronized(mTasks) {
 			for(TaskInfo i : mTasks) {
 				if (i.task == task) {
 					mTasks.remove(i);
@@ -234,10 +247,12 @@ public class TaskManager {
 		mContext = context;
 		if (mTasks.size() > 0) {
 			initProgress();
-			for(TaskInfo t : mTasks) {
-				TaskHandler h = context.getTaskHandler(t.task);
-				t.task.reconnect(h);
-			}			
+			synchronized(mTasks) {
+				for(TaskInfo t : mTasks) {
+					TaskHandler h = context.getTaskHandler(t.task);
+					t.task.reconnect(h);
+				}
+			}
 		}
 	}
 
@@ -247,8 +262,10 @@ public class TaskManager {
 	public void disconnect() {
 		mContext = null;
 		destroyProgress();
-		for(TaskInfo t : mTasks) {
-			t.task.disconnect();
+		synchronized(mTasks) {
+			for(TaskInfo t : mTasks) {
+				t.task.disconnect();
+			}
 		}
 	}
 
@@ -280,14 +297,16 @@ public class TaskManager {
 	 */
 	private OnCancelListener mCancelHandler = new OnCancelListener() {
 		public void onCancel(DialogInterface i) {
-			for(TaskInfo t : mTasks) {
-				t.task.cancelTask();
+			synchronized(mTasks) {
+				for(TaskInfo t : mTasks) {
+					t.task.cancelTask();
+				}
 			}
 		}
 	};
 
 	/**
-	 * Update the base progress message. Used (gereally) by the ActivityWuthTasks to 
+	 * Update the base progress message. Used (generally) by the ActivityWuthTasks to 
 	 * display some text above the task info. Set to blank to ensure ProgressDialog will
 	 * be removed.
 	 * 
@@ -319,62 +338,85 @@ public class TaskManager {
 	 * If in the UI thread, update the progress dialog, otherwise resubmit to UI thread.
 	 */
 	private void updateProgressDialog() {
-		if (Thread.currentThread() == mUiThread.get()) {
-			// Start with the base message if present
-			if (mBaseMessage != null && mBaseMessage.length() > 0)
-				mProgressMessage = mBaseMessage;
-			else
-				mProgressMessage = "";
+		try {
+			if (Thread.currentThread() == mUiThread.get()) {
+				// Start with the base message if present
+				if (mBaseMessage != null && mBaseMessage.length() > 0)
+					mProgressMessage = mBaseMessage;
+				else
+					mProgressMessage = "";
 
-			// Append each task message
-			if (mTasks.size() > 0) {
-				if (mProgressMessage.length() > 0)
-					mProgressMessage += "\n";
-				if (mTasks.size() == 1) {
-					mProgressMessage += mTasks.get(0).progressMessage;						
-				} else {
-					mProgressMessage += "1: " + mTasks.get(0).progressMessage;
-					for(int i = 1; i < mTasks.size(); i++) {
-						mProgressMessage += "\n" + (i+1) + ": " + mTasks.get(i).progressMessage;
+				synchronized(mTasks) {
+					// Append each task message
+					if (mTasks.size() > 0) {
+						if (mProgressMessage.length() > 0)
+							mProgressMessage += "\n";
+						if (mTasks.size() == 1) {
+							String oneMsg = mTasks.get(0).progressMessage;
+							if (oneMsg != null && oneMsg.trim().length() > 0)
+								mProgressMessage += oneMsg;						
+						} else {
+							String taskMsgs = "";
+							boolean got = false;
+							// Don't append blank messages; allows tasks to hide.
+							for(int i = 0; i < mTasks.size(); i++) {
+								String oneMsg = mTasks.get(i).progressMessage;
+								if (oneMsg != null && oneMsg.trim().length() > 0) {
+									if (got)
+										taskMsgs += "\n";
+									else
+										got = true;
+									taskMsgs += " - " + oneMsg;									
+								}
+							}
+							if (taskMsgs.length() > 0)
+								mProgressMessage += taskMsgs;
+						}
+					}				
+				}
+
+				// Sum the current & max values for each active task. This will be our new values.
+				mProgressMax = 0;
+				mProgressCount = 0;
+				synchronized(mTasks) {
+					for (TaskInfo t : mTasks) {
+						mProgressMax += t.progressMax;
+						mProgressCount += t.progressCurrent;
+					}				
+				}
+
+				// Now, display it if we have a context; if it is empty and complete, delete the progress.
+				synchronized(this) {
+					if (mProgressMessage.trim().length() == 0 && mProgressMax == mProgressCount) {
+						destroyProgress();
+					} else {
+						Context ctx = getContext();
+						if (mProgress == null) {
+							if (ctx != null) {
+								initProgress();
+							}
+						}
+						if (mProgress != null && ctx != null) {
+							mProgress.setMessage(mProgressMessage);
+							if (mProgressMax > 0) {
+								mProgress.setMax(mProgressMax);
+								mProgress.setProgress(mProgressCount);						
+							}
+							if (!mProgress.isShowing())
+								mProgress.show();
+						}	
 					}
 				}
-			}
-
-			// Sum the current & max values for each active task. This will be our new values.
-			mProgressMax = 0;
-			mProgressCount = 0;
-			for (TaskInfo t : mTasks) {
-				mProgressMax += t.progressMax;
-				mProgressCount += t.progressCurrent;
-			}
-
-			// Now, display it if we have a context; if it is empty and complete, delete the progress.
-			synchronized(this) {
-				if (mProgressMessage.trim().length() == 0 && mProgressMax == mProgressCount) {
-					destroyProgress();
-				} else {
-					Context ctx = getContext();
-					if (mProgress == null) {
-						if (ctx != null) {
-							initProgress();
-						}
-					}
-					if (mProgress != null && ctx != null) {
-						mProgress.setMessage(mProgressMessage);
-						if (mProgressMax > 0) {
-							mProgress.setMax(mProgressMax);
-							mProgress.setProgress(mProgressCount);						
-						}
-					}	
-				}
-			}
-		} else {
-			/* Send message to the handler */
-			Message msg = mMessageHandler.obtainMessage();
-			Bundle b = new Bundle();
-			b.putString("__internal", "progress");
-			msg.setData(b);
-			mMessageHandler.sendMessage(msg);
+			} else {
+				/* Send message to the handler */
+				Message msg = mMessageHandler.obtainMessage();
+				Bundle b = new Bundle();
+				b.putString("__internal", "progress");
+				msg.setData(b);
+				mMessageHandler.sendMessage(msg);
+			}			
+		} catch (Exception e) {
+			Logger.logError(e, "Error updating progress");
 		}
 	}
 
@@ -448,11 +490,13 @@ public class TaskManager {
 	 * @return			TaskInfo associated with task.
 	 */
 	private TaskInfo getTaskInfo(ManagedTask task) {
-		for(TaskInfo t : mTasks) {
-			if (t.task == task) {
-				return t;
-			}
-		}		
+		synchronized(mTasks) {
+			for(TaskInfo t : mTasks) {
+				if (t.task == task) {
+					return t;
+				}
+			}			
+		}
 		return null;
 	}
 
@@ -466,6 +510,21 @@ public class TaskManager {
 		TaskInfo t = getTaskInfo(task);
 		if (t != null) {
 			t.progressMax = max;
+			updateProgressDialog();
+			return;
+		}
+	}
+
+	/**
+	 * Set the count value for progress for the passed task.
+	 * 
+	 * @param task
+	 * @param max
+	 */
+	public void setCount(ManagedTask task, int count) {
+		TaskInfo t = getTaskInfo(task);
+		if (t != null) {
+			t.progressCurrent = count;
 			updateProgressDialog();
 			return;
 		}

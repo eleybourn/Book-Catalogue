@@ -47,9 +47,9 @@ abstract public class SearchThread extends ManagedTask {
 		mTitle = title;
 		mIsbn = isbn;
 
-		mBookData.putString(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, mAuthor);
-		mBookData.putString(CatalogueDBAdapter.KEY_TITLE, mTitle);
-		mBookData.putString(CatalogueDBAdapter.KEY_ISBN, mIsbn);
+		//mBookData.putString(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, mAuthor);
+		//mBookData.putString(CatalogueDBAdapter.KEY_TITLE, mTitle);
+		//mBookData.putString(CatalogueDBAdapter.KEY_ISBN, mIsbn);
 	}
 
 	/**
@@ -58,7 +58,7 @@ abstract public class SearchThread extends ManagedTask {
 	 * 
 	 * @author Grunthos
 	 */
-	public interface SearchHandler extends ManagedTask.TaskHandler {
+	public interface SearchTaskHandler extends ManagedTask.TaskHandler {
 		void onFinish(SearchThread t, Bundle bookData, boolean cancelled);
 	}
 
@@ -66,7 +66,7 @@ abstract public class SearchThread extends ManagedTask {
 	protected boolean onFinish() {
 		doProgress("Done",0);
 		if (getTaskHandler() != null) {
-			((SearchHandler)getTaskHandler()).onFinish(this, mBookData, isCancelled());				
+			((SearchTaskHandler)getTaskHandler()).onFinish(this, mBookData, isCancelled());				
 			return true;
 		} else {
 			return false;

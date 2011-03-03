@@ -32,6 +32,7 @@
 		<activity android:name=".BookEditAnthology"></activity>
 	<activity android:name=".EditAuthorList"></activity>
 <activity android:name=".EditSeriesList"></activity>
+<activity android:name=".UpdateFromInternet"></activity>
 </application>
 	<uses-sdk android:minSdkVersion="4" />
 	<uses-permission android:name="android.permission.INTERNET"></uses-permission>

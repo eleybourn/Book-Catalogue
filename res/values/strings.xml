@@ -14,6 +14,7 @@
 <string name="series">Series</string>
 <string name="pages">Pages</string>
 <string name="confirm_add">Add Book</string>
+<string name="confirm_update">Update</string>
 <string name="nobooks">There are no books in this Bookshelf. Please add some using the menu at the bottom of this screen.</string>
 <string name="menu_sort_by_author_expanded">Expand All</string>
 <string name="menu_sort_by">Sort By</string>
@@ -91,7 +92,9 @@
 <string name="list_price">List Price</string>
 <string name="date_started_reading">Date Started Reading</string>
 <string name="date_finished_reading">Date Finished Reading</string>
-<string name="update_thumbnails">Automatically Update Fields and Thumbnails</string>
+<string name="update_fields">Automatically Update Fields</string>
+<string name="select_fields_to_update">Select Fields to Update</string>
+<string name="select_fields_to_update_help">Selected fields will be updated from the internet. Unselected fields will remain unchanged.</string>
 <string name="overwrite_thumbnail">This will update the following fields (only if blank) \n* Genre \n* Description \n* Thumbnails\n\nThumbnails Only: Do you want to overwrite all existing. Warning, this may take a long time. </string>
 <string name="yes">Yes</string>
 <string name="no">No</string>
@@ -223,4 +226,6 @@
 <string name="click_on_thumb">Click on a tumbnail to display a larger image</string>
 <string name="loading">Loading...</string>
 <string name="image_not_found">Image Not Found</string>
+<item name="fieldCheckbox" type="id"></item>
+<string name="select_min_1_field">Select at least one field to update</string>
 </resources>

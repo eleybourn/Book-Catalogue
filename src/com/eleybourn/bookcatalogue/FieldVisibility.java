@@ -73,7 +73,7 @@ public class FieldVisibility extends Activity {
 				R.string.read, R.string.rating, R.string.notes, R.string.anthology, R.string.location, 
 				R.string.read_start, R.string.read_end, R.string.format, R.string.signed, R.string.description, 
 				R.string.genre};
-		boolean[] compulsary = {true, true, false, false, false, false, false, false, 
+		boolean[] compulsory = {true, true, false, false, false, false, false, false, 
 				true, false, false, false, false, false, false, false, false, false, false, false, false, false};
 		
 		SharedPreferences mPrefs = getSharedPreferences("bookCatalogue", MODE_PRIVATE);
@@ -93,7 +93,7 @@ public class FieldVisibility extends Activity {
 			boolean field_visibility = mPrefs.getBoolean(prefs_name, true);
 			CheckBox cb = new CheckBox(this);
 			cb.setChecked(field_visibility);
-			if (compulsary[i] == true) {
+			if (compulsory[i] == true) {
 				cb.setEnabled(false);
 			} else {
 				cb.setOnClickListener(new OnClickListener() {
@@ -115,7 +115,7 @@ public class FieldVisibility extends Activity {
 			tv.setTextAppearance(this, android.R.attr.textAppearanceLarge);
 			tv.setText(fieldRs[i]);
 			tv.setPadding(0, 5, 0, 0);
-			if (compulsary[i] == true) {
+			if (compulsory[i] == true) {
 				tv.setTextColor(Color.GRAY);
 			} 
 			ll.addView(tv);

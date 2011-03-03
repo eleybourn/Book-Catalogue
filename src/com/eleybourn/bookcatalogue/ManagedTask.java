@@ -45,7 +45,7 @@ abstract public class ManagedTask extends Thread {
 	// Each task has a handler object that can be used to communicate with the main thread.
 	private TaskHandler mTaskHandler;
 	// Handler for UI thread messages. Used to manage thread-based comms.
-	private Handler mMessageHandler;
+	protected Handler mMessageHandler;
 
 	//
 	// Called when the task has finished, but *only* if the TaskManager has a context (ie. is

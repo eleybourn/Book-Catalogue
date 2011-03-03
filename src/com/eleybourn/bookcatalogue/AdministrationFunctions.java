@@ -26,17 +26,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
@@ -45,7 +40,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
-import com.eleybourn.bookcatalogue.UpdateThumbnailsThread.BookInfo;
 
 /**
  * 
@@ -58,6 +52,7 @@ import com.eleybourn.bookcatalogue.UpdateThumbnailsThread.BookInfo;
 public class AdministrationFunctions extends ActivityWithTasks {
 	private static final int ACTIVITY_BOOKSHELF=1;
 	private static final int ACTIVITY_FIELD_VISIBILITY=2;
+	private static final int ACTIVITY_UPDATE_FROM_INTERNET=3;
 	private CatalogueDBAdapter mDbHelper;
 	//private int importUpdated = 0;
 	//private int importCreated = 0;
@@ -69,25 +64,6 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	private boolean finish_after = false;
 
 	public static final String DOAUTO = "do_auto";
-
-	final UpdateThumbnailsThread.LookupHandler mThumbnailsHandler = new UpdateThumbnailsThread.LookupHandler() {
-		@Override
-		public void onFinish(LinkedList<BookInfo> queue) {
-			if (finish_after == true) {
-				finish();
-			}
-		}
-
-		@Override
-		public void onProgress(LinkedList<BookInfo> queue) {
-			Iterator<BookInfo> i = queue.iterator();
-			while (i.hasNext()) {
-				BookInfo bi = i.next();
-				mDbHelper.updateBook(bi.id, bi.bookData, true);
-			}
-		}
-
-	};
 
 	final ExportThread.ExportHandler mExportHandler = new ExportThread.ExportHandler() {
 		@Override
@@ -139,9 +115,8 @@ public class AdministrationFunctions extends ActivityWithTasks {
 					if (extras.getString(DOAUTO).equals("export")) {
 						finish_after = true;
 						exportData();
-					} else if (extras.getString(DOAUTO).equals("update_fields")) {
-						finish_after = true;
-						updateThumbnails(false);
+					} else {
+						throw new RuntimeException("Unsupported DOAUTO option");
 					}
 				} catch (NullPointerException e) {
 					Logger.logError(e);
@@ -238,29 +213,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 		thumb.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// Verify - this can be a dangerous operation
-				AlertDialog alertDialog = new AlertDialog.Builder(pthis).setMessage(R.string.overwrite_thumbnail).create();
-				alertDialog.setTitle(R.string.update_thumbnails);
-				alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-				alertDialog.setButton(pthis.getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						updateThumbnails(true);
-						return;
-					}
-				}); 
-				alertDialog.setButton2(pthis.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						//do nothing
-						return;
-					}
-				}); 
-				alertDialog.setButton3(pthis.getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						updateThumbnails(false);
-						return;
-					}
-				}); 
-				alertDialog.show();
+				updateThumbnails();
 				return;
 			}
 		});
@@ -287,11 +240,9 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	 * 
 	 * There is a current limitation that restricts the search to only books with an ISBN
 	 */
-	private void updateThumbnails(boolean overwrite) {
-
-		Cursor books = mDbHelper.fetchAllBooks("b." + CatalogueDBAdapter.KEY_ROWID, "All Books", "", "", "", "", "");
-		UpdateThumbnailsThread thread = new UpdateThumbnailsThread(mTaskManager, overwrite, books, mThumbnailsHandler);
-		thread.start();
+	private void updateThumbnails() {
+		Intent i = new Intent(this, UpdateFromInternet.class);
+		startActivityForResult(i, ACTIVITY_UPDATE_FROM_INTERNET);
 	}
 
 
@@ -348,6 +299,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 		switch(requestCode) {
 		case ACTIVITY_BOOKSHELF:
 		case ACTIVITY_FIELD_VISIBILITY:
+		case ACTIVITY_UPDATE_FROM_INTERNET:
 			//do nothing (yet)
 			break;
 		}
@@ -371,9 +323,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	@Override
 	TaskHandler getTaskHandler(ManagedTask t) {
 		// If we had a task, create the progress dialog and reset the pointers.
-		if (t instanceof UpdateThumbnailsThread) {
-			return mThumbnailsHandler;
-		} else if (t instanceof ExportThread) {
+		if (t instanceof ExportThread) {
 			return mExportHandler;
 		} else if (t instanceof ImportThread) {
 			return mImportHandler;

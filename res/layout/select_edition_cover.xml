@@ -10,6 +10,8 @@
       android:layout_width="fill_parent"
       android:layout_height="wrap_content">
       android:padding="2sp"
+      android:visibility="gone"
+      android:layout_weight="1"
   </Gallery>
   <LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
       android:id="@+id/main"
@@ -18,13 +20,22 @@
 	  android:orientation="vertical"
       android:gravity="center"
       android:padding="3sp"
+      android:layout_weight="4"
   >
   	<ImageSwitcher
       android:id="@+id/switcher"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"  
       android:gravity="center"
+      android:visibility="gone"
   	/>
+    <TextView
+      android:id="@+id/switcherStatus"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content">
+      android:padding="2sp"
+      android:visibility="gone"
+    </TextView>
   </LinearLayout>
   
 

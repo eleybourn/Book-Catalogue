@@ -43,6 +43,7 @@ import android.widget.BaseAdapter;
 import android.widget.Gallery;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher.ViewFactory;
 
@@ -102,16 +103,6 @@ public class CoverBrowser {
 		// Create an object to manage the downloaded files
 		mFileManager = new FileManager();
 
-		// Get some editions
-		// TODO: the list of editions should be expanded to somehow include Amazon and Google. As well
-		// as the alternate user-contributed images from LibraryThing. The latter are often the best 
-		// source but at present could only be obtained by HTML scraping.
-		try {
-			mEditions = LibraryThingManager.searchEditions(mIsbn);			
-		} catch (Exception e) {
-			mEditions = null;
-			Toast.makeText(mContext, R.string.no_isbn_no_editions, Toast.LENGTH_LONG).show();
-		}
 	}
 
 	/**
@@ -139,6 +130,47 @@ public class CoverBrowser {
 			mFileManager = null;
 		}
 	}
+	/**
+	 * SimpleTask to fetch a thumbnail image and apply it to an ImageView
+	 * 
+	 * @author Grunthos
+	 */
+	private class GetEditionsTask implements SimpleTask {
+		String isbn;
+
+		/**
+		 * Constructor
+		 * 
+		 * @param position	Position on requested cover.
+		 * @param v			View to update
+		 */
+		GetEditionsTask(String isbn){
+			this.isbn = isbn;
+		}
+
+		@Override
+		public void run() {
+			// Get some editions
+			// TODO: the list of editions should be expanded to somehow include Amazon and Google. As well
+			// as the alternate user-contributed images from LibraryThing. The latter are often the best 
+			// source but at present could only be obtained by HTML scraping.
+			try {
+				mEditions = LibraryThingManager.searchEditions(isbn);			
+			} catch (Exception e) {
+				mEditions = null;
+			}
+		}
+		@Override
+		public void finished() {
+			if (mEditions.size() == 0) {
+				Toast.makeText(mContext, R.string.no_editions, Toast.LENGTH_LONG).show();
+				shutdown();
+				return;
+			}
+			showDialogDetails();
+		}
+	}
+
 	/**
 	 * SimpleTask to fetch a thumbnail image and apply it to an ImageView
 	 * 
@@ -197,7 +229,7 @@ public class CoverBrowser {
 		private String fileSpec;
 
 		/**
-		 * Constrcutor
+		 * Constructor
 		 * 
 		 * @param position		Position f ISBN
 		 * @param switcher		ImageSwicther to update
@@ -219,10 +251,19 @@ public class CoverBrowser {
 			// Update the ImageSwitcher
 			//Log.i("BC", "LARGE: Found " + isbn + " and position " + position + "->" + fileSpec);
 			File file = new File(fileSpec);
-            Drawable d = new BitmapDrawable(Utils.fetchFileIntoImageView(file, null, mPreviewSize*4, mPreviewSize*4, true));
-            switcher.setImageDrawable(d);
-            switcher.setTag(file.getAbsolutePath());
 			//Log.i("BC", "LARGE: Set " + isbn + " and position " + position + "->" + fileSpec);
+    		TextView msgVw = (TextView)mDialog.findViewById(R.id.switcherStatus);
+    		if (file.exists() && file.length() > 0) {
+                Drawable d = new BitmapDrawable(Utils.fetchFileIntoImageView(file, null, mPreviewSize*4, mPreviewSize*4, true));
+                switcher.setImageDrawable(d);
+                switcher.setTag(file.getAbsolutePath());    			
+        		msgVw.setVisibility(View.GONE);
+        		switcher.setVisibility(View.VISIBLE);
+    		} else {
+        		msgVw.setVisibility(View.VISIBLE);
+        		switcher.setVisibility(View.GONE);
+        		msgVw.setText(R.string.image_not_found);
+    		}
 		}
 	}
 
@@ -231,23 +272,46 @@ public class CoverBrowser {
 	 */
 	public void showEditionCovers() {
 
-		if (mEditions == null) 
-			throw new RuntimeException("No editions available");
+		if (mIsbn == null || mIsbn.trim().length() == 0) {
+			Toast.makeText(mContext, R.string.no_isbn_no_editions, Toast.LENGTH_LONG).show();
+			shutdown();
+			return;
+		}
 
 		// Setup the background fetcher
 		if (mImageFetcher == null)
 			mImageFetcher = new SimpleTaskQueue();
 
+		SimpleTask edTask = new GetEditionsTask(mIsbn);
+		mImageFetcher.request(edTask);
+
 		// Setup the basic dialog
 		mDialog = new Dialog(mContext);
 		mDialog.setContentView(R.layout.select_edition_cover);
+		mDialog.setTitle(R.string.finding_editions);
+
+		//TextView msgVw = (TextView)mDialog.findViewById(R.id.status);
+		//msgVw.setText(R.string.finding_editions);
+
+		mDialog.show();
+
+	}
+
+	private void showDialogDetails() {
 		mDialog.setTitle(R.string.select_cover);
-		
+
 		// The switcher will be used to display larger versions; needed for onItemClick().
 		final ImageSwitcher switcher = (ImageSwitcher) mDialog.findViewById(R.id.switcher);
 
 		// Setup the Gallery.
 		final Gallery gallery = (Gallery) mDialog.findViewById(R.id.gallery);
+		gallery.setVisibility(View.VISIBLE);
+
+		// Show help message
+		TextView msgVw = (TextView)mDialog.findViewById(R.id.switcherStatus);
+		msgVw.setText(R.string.click_on_thumb);
+		msgVw.setVisibility(View.VISIBLE);
+
 		//gallery.setHorizontalScrollBarEnabled(true);
 		gallery.setMinimumWidth(mMetrics.widthPixels);
 		gallery.setMinimumHeight(mPreviewSize);
@@ -261,7 +325,13 @@ public class CoverBrowser {
 		// When the gallery is clicked, load the switcher
 		gallery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 	        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-	        	GetFullImageTask task = new GetFullImageTask(position, switcher);
+	    		// Show status message
+	    		TextView msgVw = (TextView)mDialog.findViewById(R.id.switcherStatus);
+        		switcher.setVisibility(View.GONE);
+	    		msgVw.setText(R.string.loading);
+        		msgVw.setVisibility(View.VISIBLE);
+
+	    		GetFullImageTask task = new GetFullImageTask(position, switcher);
 	        	mImageFetcher.request(task);
 	        }
 	    });
@@ -300,8 +370,6 @@ public class CoverBrowser {
 		        return i;
 			}});
 
-		mDialog.show();
-
 	}
 
 	/**
@@ -326,7 +394,26 @@ public class CoverBrowser {
 		    synchronized(mFiles) {
 		    	isPresent = mFiles.containsKey(key);
 		    }
-		    
+
+		    // Do some checks on the actual file to see if a re-download may help
+		    if (isPresent) {
+			    synchronized(mFiles) {
+		    		filespec = mFiles.getString(key);			    	
+			    }
+		    	File f = new File(filespec);
+		    	boolean isBad = false;
+		    	if (!f.exists()) {
+		    		isBad = true;
+		    	} else if (f.length() == 0) {
+		    		f.delete();
+		    		isBad = true;
+		    	}
+		    	if (isBad) {
+		    		mFiles.remove(key);
+		    		isPresent = false;		    		
+		    	}
+		    }
+
 		    if (!isPresent) {
 		    	Log.i("BC"," Downloading " + isbn + "(" + size + ")");
 		    	filespec = LibraryThingManager.getCoverImage(isbn, null, size);
@@ -350,7 +437,7 @@ public class CoverBrowser {
 		    synchronized(mFiles) {
 		    	isPresent = mFiles.containsKey(key);
 		    }
-		    
+
 		    if (!isPresent)
 		    	return null;
 	    	synchronized(mFiles) {

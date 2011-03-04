@@ -95,7 +95,7 @@
 <string name="update_fields">Automatically Update Fields</string>
 <string name="select_fields_to_update">Select Fields to Update</string>
 <string name="select_fields_to_update_help">Selected fields will be updated from the internet. Unselected fields will remain unchanged.</string>
-<string name="overwrite_thumbnail">This will update the following fields (only if blank) \n* Genre \n* Description \n* Thumbnails\n\nThumbnails Only: Do you want to overwrite all existing. Warning, this may take a long time. </string>
+<string name="overwrite_thumbnail">This will update the selected fields as shown, but Thumbnails can optionally be downloaded for ALL books.\n\nDo you want to overwrite all existing thumbnails? Warning, this may take a long time. </string>
 <string name="yes">Yes</string>
 <string name="no">No</string>
 <string name="ok">OK</string>
@@ -223,9 +223,14 @@
 <string name="editions_require_isbn">Retrieving other editions requires an ISBN</string>
 <string name="no_editions">No editions available</string>
 <string name="finding_editions">Finding Editions...</string>
-<string name="click_on_thumb">Click on a tumbnail to display a larger image</string>
+<string name="click_on_thumb">Click on a thumbnail to display a larger image</string>
 <string name="loading">Loading...</string>
 <string name="image_not_found">Image Not Found</string>
 <item name="fieldCheckbox" type="id"></item>
 <string name="select_min_1_field">Select at least one field to update</string>
+<string name="usage_copy_if_blank">Copy if blank</string>
+<string name="usage_add_extra">Appends extra data</string>
+<string name="usage_overwrite">Overwrites existing data</string>
+<string name="cancelling">Cancelling</string>
+<string name="starting_search">Starting Search</string>
 </resources>

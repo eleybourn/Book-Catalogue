@@ -106,7 +106,8 @@ public class SearchGoogleBooksEntryHandler extends DefaultHandler {
 	private StringBuilder builder;
 	
 	private Bundle mValues;
-	
+	private static boolean mFetchThumbnail;
+
 	public static String ID = "id";
 	public static String TOTALRESULTS = "totalResults";
 	public static String ENTRY = "entry";
@@ -120,8 +121,9 @@ public class SearchGoogleBooksEntryHandler extends DefaultHandler {
 	public static String GENRE = "subject";
 	public static String DESCRIPTION = "description";
 
-	SearchGoogleBooksEntryHandler(Bundle values) {
+	SearchGoogleBooksEntryHandler(Bundle values, boolean fetchThumbnail) {
 		mValues = values;
+		mFetchThumbnail = fetchThumbnail;
 	}
 
 	@Override
@@ -179,7 +181,7 @@ public class SearchGoogleBooksEntryHandler extends DefaultHandler {
 	@Override
 	public void startElement(String uri, String localName, String name, Attributes attributes) throws SAXException {
 		super.startElement(uri, localName, name, attributes);
-		if (localName.equalsIgnoreCase(THUMBNAIL)){
+		if (mFetchThumbnail && localName.equalsIgnoreCase(THUMBNAIL)){
 			if (attributes.getValue("", "rel").equals("http://schemas.google.com/books/2008/thumbnail")) {
 				String thumbnail = attributes.getValue("", "href");
 				String filename = Utils.saveThumbnailFromUrl(thumbnail, "_GB");

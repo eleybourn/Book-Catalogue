@@ -507,7 +507,8 @@ public class Utils {
 			}
     		// Finally, cleanup the data
     		result.remove("__thumbnail");
-    	}			
+    		result.putBoolean(CatalogueDBAdapter.KEY_THUMBNAIL, true);
+    	}
 	}
 
 	/**
@@ -723,6 +724,7 @@ public class Utils {
 		return details;
 	}
 	
+	// TODO: Make sure all URL getters use this if possible.
 	static public void parseUrlOutput(String path, SAXParserFactory factory, DefaultHandler handler) {
 		SAXParser parser;
 		URL url;
@@ -749,8 +751,6 @@ public class Utils {
 			try { s = e.getMessage(); } catch (Exception e2) {};
 			Logger.logError(e, s);
 		}
-
-
 	}
 
 	public static Bitmap fetchFileIntoImageView(File file, ImageView destView, int maxWidth, int maxHeight, boolean exact) {

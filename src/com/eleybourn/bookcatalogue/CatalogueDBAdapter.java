@@ -63,6 +63,7 @@ public class CatalogueDBAdapter {
 	public static final String KEY_AUTHOR_NAME = "author_name";
 	public static final String KEY_AUTHOR_POSITION = "author_position";
 	public static final String KEY_TITLE = "title";
+	public static final String KEY_THUMBNAIL = "thumbnail";
 	public static final String KEY_ISBN = "isbn";
 	public static final String KEY_PUBLISHER = "publisher";
 	public static final String KEY_DATE_PUBLISHED = "date_published";
@@ -2750,7 +2751,11 @@ public class CatalogueDBAdapter {
 
 		ContentValues args = filterValues(values, mBooksInfo);
 
-		success = mDb.update(DB_TB_BOOKS, args, KEY_ROWID + "=" + rowId, null) > 0;
+		// Allow for the possibillity we are just updating series, or author lists.
+		if (args.size() > 0)
+			success = mDb.update(DB_TB_BOOKS, args, KEY_ROWID + "=" + rowId, null) > 0;
+		else
+			success = true;
 
 		if (values.containsKey("bookshelf_text")) {
 			String bookshelf = values.getString("bookshelf_text");

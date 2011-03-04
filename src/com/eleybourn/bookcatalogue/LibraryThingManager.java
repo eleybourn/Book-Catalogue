@@ -55,7 +55,7 @@ public class LibraryThingManager {
 	private static Long mLastRequestTime = 0L;
 	// 
 	Bundle mBookData = null;
-	
+
 	// Words in XML
 	public static String ID = "id";
 	public static String AUTHOR = "author";
@@ -413,7 +413,7 @@ public class LibraryThingManager {
 	 * but in both cases, in both cases it should be noted that the covers are still available.
 	 *
 	 */
-	public void searchByIsbn(String isbn) {
+	public void searchByIsbn(String isbn, boolean fetchThumbnail) {
 		// Base path for an ISBN search
 		String path = String.format(DETAIL_URL, LibraryThingApiKey.get(), isbn);
 
@@ -452,7 +452,8 @@ public class LibraryThingManager {
 			Logger.logError(e, s);
 		}
 
-		getCoverImage(isbn, mBookData, ImageSizes.LARGE);
+		if (fetchThumbnail)
+			getCoverImage(isbn, mBookData, ImageSizes.LARGE);
 
 		return;
 	}

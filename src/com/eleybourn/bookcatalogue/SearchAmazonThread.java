@@ -3,8 +3,8 @@ package com.eleybourn.bookcatalogue;
 public class SearchAmazonThread extends SearchThread {
 
 	public SearchAmazonThread(TaskManager manager, TaskHandler taskHandler,
-			String author, String title, String isbn) {
-		super(manager, taskHandler, author, title, isbn);
+			String author, String title, String isbn, boolean fetchThumbnail) {
+		super(manager, taskHandler, author, title, isbn, fetchThumbnail);
 	}
 
 	@Override
@@ -15,7 +15,7 @@ public class SearchAmazonThread extends SearchThread {
 		this.doProgress(getString(R.string.searching_amazon_books), 0);
 
 		try {
-			AmazonManager.searchAmazon(mIsbn, mAuthor, mTitle, mBookData);
+			AmazonManager.searchAmazon(mIsbn, mAuthor, mTitle, mBookData, mFetchThumbnail);
 			// Look for series name and clear KEY_TITLE
 			checkForSeriesName();
 		} catch (Exception e) {

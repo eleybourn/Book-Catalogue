@@ -20,7 +20,7 @@ public class AmazonManager {
 	 * @param mIsbn The ISBN to search for
 	 * @return The book array
 	 */
-	static public void searchAmazon(String mIsbn, String mAuthor, String mTitle, Bundle bookData) {
+	static public void searchAmazon(String mIsbn, String mAuthor, String mTitle, Bundle bookData, boolean fetchThumbnail) {
 		//replace spaces with %20
 		mAuthor = mAuthor.replace(" ", "%20");
 		mTitle = mTitle.replace(" ", "%20");
@@ -35,7 +35,7 @@ public class AmazonManager {
 		
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		SAXParser parser;
-		SearchAmazonHandler handler = new SearchAmazonHandler(bookData);
+		SearchAmazonHandler handler = new SearchAmazonHandler(bookData, fetchThumbnail);
 
 		try {
 			url = new URL(path);

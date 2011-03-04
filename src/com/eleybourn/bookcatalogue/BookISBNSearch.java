@@ -352,7 +352,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 			// Start the lookup in background.
 			//mTaskManager.doProgress("Searching");
 			mSearchManager = new SearchManager(mTaskManager, mSearchHandler);
-			mSearchManager.search(author, title, isbn);
+			mSearchManager.search(author, title, isbn, true);
 
 		} catch (Exception e) {
 			Logger.logError(e);
@@ -365,7 +365,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 	private SearchManager.SearchResultHandler mSearchHandler = new SearchManager.SearchResultHandler() {
 
 		@Override
-		public void onFinish(Bundle bookData, boolean cancelled) {
+		public void onSearchFinished(Bundle bookData, boolean cancelled) {
 			if (cancelled || bookData == null) {
 				if (mMode == MODE_SCAN)
 					startScannerActivity();

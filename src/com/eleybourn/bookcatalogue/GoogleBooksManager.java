@@ -13,7 +13,7 @@ import android.os.Bundle;
 
 public class GoogleBooksManager {
 
-	static public void searchGoogle(String mIsbn, String author, String title, Bundle bookData) {
+	static public void searchGoogle(String mIsbn, String author, String title, Bundle bookData, boolean fetchThumbnail) {
 		//replace spaces with %20
 		author = author.replace(" ", "%20");
 		title = title.replace(" ", "%20");
@@ -29,7 +29,7 @@ public class GoogleBooksManager {
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		SAXParser parser;
 		SearchGoogleBooksHandler handler = new SearchGoogleBooksHandler();
-		SearchGoogleBooksEntryHandler entryHandler = new SearchGoogleBooksEntryHandler(bookData);
+		SearchGoogleBooksEntryHandler entryHandler = new SearchGoogleBooksEntryHandler(bookData, fetchThumbnail);
 	
 		try {
 			url = new URL(path);

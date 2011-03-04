@@ -27,9 +27,12 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.DialogInterface.OnKeyListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
+import android.view.KeyEvent;
 
 import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
 
@@ -297,13 +300,20 @@ public class TaskManager {
 	 */
 	private OnCancelListener mCancelHandler = new OnCancelListener() {
 		public void onCancel(DialogInterface i) {
-			synchronized(mTasks) {
-				for(TaskInfo t : mTasks) {
-					t.task.cancelTask();
-				}
-			}
+			cancelAllTasks();
 		}
 	};
+
+	/** 
+	 * Utility routine to cancel all tasks.
+	 */
+	private void cancelAllTasks() {
+		synchronized(mTasks) {
+			for(TaskInfo t : mTasks) {
+				t.task.cancelTask();
+			}
+		}		
+	}
 
 	/**
 	 * Update the base progress message. Used (generally) by the ActivityWuthTasks to 
@@ -467,6 +477,7 @@ public class TaskManager {
 					}
 					mProgress.setMessage(mProgressMessage);
 					mProgress.setCancelable(true);
+					mProgress.setOnKeyListener(mDialogKeyListener);
 					mProgress.setOnCancelListener(mCancelHandler);
 					mProgress.show();
 					mProgress.setProgress(mProgressCount);
@@ -482,6 +493,23 @@ public class TaskManager {
 		}
 	}
 
+	/**
+	 * Wait for the 'Back' key and cancel all tasks on keyUp.
+	 */
+	private OnKeyListener mDialogKeyListener = new OnKeyListener() {
+		@Override
+		public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+			if (event.getAction() == KeyEvent.ACTION_UP) {
+				if (keyCode == KeyEvent.KEYCODE_BACK) {
+					Log.i("BC", "Back pressed - cancelling");
+					doToast(getString(R.string.cancelling));
+					cancelAllTasks();
+					return true;
+				}				
+			}
+			return false;
+		}};
+	
 	/**
 	 * Lookup the TaskInfo for the passed task.
 	 * 

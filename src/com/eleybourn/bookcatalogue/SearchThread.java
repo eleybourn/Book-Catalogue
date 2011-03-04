@@ -27,6 +27,7 @@ abstract public class SearchThread extends ManagedTask {
 	protected String mAuthor;
 	protected String mTitle;
 	protected String mIsbn;
+	protected static boolean mFetchThumbnail;
 
 	// Accumulated book info.
 	protected Bundle mBookData = new Bundle();
@@ -41,11 +42,12 @@ abstract public class SearchThread extends ManagedTask {
 	 * @param title			Title to search for
 	 * @param isbn			ISBN to search for.
 	 */
-	public SearchThread(TaskManager manager, TaskHandler taskHandler, String author, String title, String isbn) {
+	public SearchThread(TaskManager manager, TaskHandler taskHandler, String author, String title, String isbn, boolean fetchThumbnail) {
 		super(manager, taskHandler);
 		mAuthor = author;
 		mTitle = title;
 		mIsbn = isbn;
+		mFetchThumbnail = fetchThumbnail;
 
 		//mBookData.putString(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, mAuthor);
 		//mBookData.putString(CatalogueDBAdapter.KEY_TITLE, mTitle);
@@ -59,14 +61,14 @@ abstract public class SearchThread extends ManagedTask {
 	 * @author Grunthos
 	 */
 	public interface SearchTaskHandler extends ManagedTask.TaskHandler {
-		void onFinish(SearchThread t, Bundle bookData, boolean cancelled);
+		void onSearchThreadFinish(SearchThread t, Bundle bookData, boolean cancelled);
 	}
 
 	@Override
 	protected boolean onFinish() {
 		doProgress("Done",0);
 		if (getTaskHandler() != null) {
-			((SearchTaskHandler)getTaskHandler()).onFinish(this, mBookData, isCancelled());				
+			((SearchTaskHandler)getTaskHandler()).onSearchThreadFinish(this, mBookData, isCancelled());				
 			return true;
 		} else {
 			return false;

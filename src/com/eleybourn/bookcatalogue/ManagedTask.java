@@ -20,6 +20,8 @@
 
 package com.eleybourn.bookcatalogue;
 
+import java.nio.channels.ClosedByInterruptException;
+
 import android.os.Handler;
 import android.os.Message;
 
@@ -59,7 +61,7 @@ abstract public class ManagedTask extends Thread {
 	//
 	abstract protected boolean onFinish();
 	// Called to do the main thread work. Can use doProgress() and doToast() to display messages.
-	abstract protected void onRun();
+	abstract protected void onRun() throws InterruptedException, ClosedByInterruptException;
 	// Called to handle any messages posted via the sendMessage() method. Messages can be constructed
 	// by calling obtainMessage().
 	abstract protected void onMessage(Message msg);
@@ -141,8 +143,15 @@ abstract public class ManagedTask extends Thread {
 	@Override
 	public void run() {
 
-		onRun();
-
+		try {
+			onRun();			
+		} catch (InterruptedException e) {
+			mCancelFlg = true;
+		} catch (ClosedByInterruptException e) {
+			mCancelFlg = true;
+		} catch (Exception e) {
+			Logger.logError(e);
+		}
 		mMessageHandler.post(new Runnable() {
 			public void run() { doFinish(); };
 		});
@@ -166,6 +175,7 @@ abstract public class ManagedTask extends Thread {
 	 */
 	public void cancelTask() {
 		mCancelFlg = true;
+		this.interrupt();
 	}
 
 	/**

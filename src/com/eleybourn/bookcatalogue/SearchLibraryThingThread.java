@@ -4,8 +4,8 @@ package com.eleybourn.bookcatalogue;
 public class SearchLibraryThingThread extends SearchThread {
 
 	public SearchLibraryThingThread(TaskManager manager,
-			TaskHandler taskHandler, String author, String title, String isbn) {
-		super(manager, taskHandler, author, title, isbn);
+			TaskHandler taskHandler, String author, String title, String isbn, boolean fetchThumbnail) {
+		super(manager, taskHandler, author, title, isbn, fetchThumbnail);
 	}
 
 	@Override
@@ -22,7 +22,7 @@ public class SearchLibraryThingThread extends SearchThread {
 				this.doProgress(getString(R.string.searching_library_thing), 0);
 				LibraryThingManager ltm = new LibraryThingManager(mBookData);
 				try {
-					ltm.searchByIsbn(isbn);
+					ltm.searchByIsbn(isbn, mFetchThumbnail);
 					// Look for series name and clear KEY_TITLE
 					checkForSeriesName();
 				} catch (Exception e) {

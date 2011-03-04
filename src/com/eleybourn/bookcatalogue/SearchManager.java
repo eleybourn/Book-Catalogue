@@ -56,6 +56,8 @@ public class SearchManager implements OnTaskEndedListener {
 	private String mTitle;
 	// Original ISBN for search
 	private String mIsbn;
+	// Whether of not to fetch thumbnails
+	private boolean mFetchThumbnail;
 
 	// Output from google search
 	private Bundle mGoogleData;
@@ -77,7 +79,7 @@ public class SearchManager implements OnTaskEndedListener {
 	 * @author Grunthos
 	 */
 	public interface SearchResultHandler extends ManagedTask.TaskHandler {
-		void onFinish(Bundle bookData, boolean cancelled);
+		void onSearchFinished(Bundle bookData, boolean cancelled);
 	}
 	
 	/**
@@ -105,7 +107,7 @@ public class SearchManager implements OnTaskEndedListener {
 	public void reconnect(SearchResultHandler handler) {
 		mSearchHandler = handler;
 		if (mFinished)
-			mSearchHandler.onFinish(mBookData, mCancelledFlg);
+			mSearchHandler.onSearchFinished(mBookData, mCancelledFlg);
 	}
 	
 	public TaskHandler getTaskHandler(ManagedTask t) {
@@ -148,14 +150,14 @@ public class SearchManager implements OnTaskEndedListener {
 	 */
 	private void startAmazon() {
 		if (!mCancelledFlg)
-			startOne( new SearchAmazonThread(mTaskManager, mAmazonHandler, mAuthor, mTitle, mIsbn) );		
+			startOne( new SearchAmazonThread(mTaskManager, mAmazonHandler, mAuthor, mTitle, mIsbn, mFetchThumbnail) );		
 	}
 	/**
 	 * Start a Google search
 	 */
 	private void startGoogle() {
 		if (!mCancelledFlg)
-			startOne( new SearchGoogleThread(mTaskManager, mGoogleHandler, mAuthor, mTitle, mIsbn) );		
+			startOne( new SearchGoogleThread(mTaskManager, mGoogleHandler, mAuthor, mTitle, mIsbn, mFetchThumbnail) );		
 	}
 	/**
 	 * Start an Amazon search
@@ -163,7 +165,7 @@ public class SearchManager implements OnTaskEndedListener {
 	private void startLibraryThing(){
 		if (!mCancelledFlg)
 			if (mIsbn != null && mIsbn.trim().length() > 0)
-				startOne( new SearchLibraryThingThread(mTaskManager, mLibraryThingHandler, mAuthor, mTitle, mIsbn));		
+				startOne( new SearchLibraryThingThread(mTaskManager, mLibraryThingHandler, mAuthor, mTitle, mIsbn, mFetchThumbnail));		
 	}
 
 	/**
@@ -173,7 +175,7 @@ public class SearchManager implements OnTaskEndedListener {
 	 * @param title		Title to search for
 	 * @param isbn		ISBN to search for
 	 */
-	public void search(String author, String title, String isbn) {
+	public void search(String author, String title, String isbn, boolean fetchThumbnail) {
 		// Save the input and initialize
 		mBookData = new Bundle();
 		mGoogleData = null;
@@ -186,6 +188,7 @@ public class SearchManager implements OnTaskEndedListener {
 		mAuthor = author;
 		mTitle = title;
 		mIsbn = isbn;
+		mFetchThumbnail = fetchThumbnail;
 
 		if (mTaskManager.runningInUiThread()) {
 			doSearch();
@@ -288,7 +291,7 @@ public class SearchManager implements OnTaskEndedListener {
 			mTaskManager.doToast(mTaskManager.getString(R.string.book_not_found));
 			mBookData = null;
 			if (mSearchHandler != null)
-				mSearchHandler.onFinish(mBookData, mCancelledFlg);
+				mSearchHandler.onSearchFinished(mBookData, mCancelledFlg);
 
 		} else {
 			Utils.doProperCase(mBookData, CatalogueDBAdapter.KEY_TITLE);
@@ -309,7 +312,7 @@ public class SearchManager implements OnTaskEndedListener {
 				Logger.logError(e);
 			}
 			if (mSearchHandler != null)
-				mSearchHandler.onFinish(mBookData, mCancelledFlg);
+				mSearchHandler.onSearchFinished(mBookData, mCancelledFlg);
 		}
 		mFinished = true;
 	}
@@ -333,7 +336,7 @@ public class SearchManager implements OnTaskEndedListener {
 	 */
 	private SearchTaskHandler mGoogleHandler = new SearchTaskHandler() {
 		@Override
-		public void onFinish(SearchThread t, Bundle bookData, boolean cancelled) {
+		public void onSearchThreadFinish(SearchThread t, Bundle bookData, boolean cancelled) {
 			mCancelledFlg = cancelled;
 			mGoogleData = bookData;
 			if (cancelled) {
@@ -360,7 +363,7 @@ public class SearchManager implements OnTaskEndedListener {
 	 */
 	private SearchTaskHandler mAmazonHandler = new SearchTaskHandler() {
 		@Override
-		public void onFinish(SearchThread t, Bundle bookData, boolean cancelled) {
+		public void onSearchThreadFinish(SearchThread t, Bundle bookData, boolean cancelled) {
 			mCancelledFlg = cancelled;
 			mAmazonData = bookData;
 			if (cancelled) {
@@ -387,7 +390,7 @@ public class SearchManager implements OnTaskEndedListener {
 	 */
 	private SearchTaskHandler mLibraryThingHandler = new SearchTaskHandler() {
 		@Override
-		public void onFinish(SearchThread t, Bundle bookData, boolean cancelled) {
+		public void onSearchThreadFinish(SearchThread t, Bundle bookData, boolean cancelled) {
 			mCancelledFlg = cancelled;
 			mLibraryThingData = bookData;
 			if (cancelled) {

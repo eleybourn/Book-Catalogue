@@ -92,7 +92,7 @@ public class SearchForBookThread extends ManagedTask {
 			doProgress(getString(R.string.searching_google_books), 0);
 
 			try {
-				GoogleBooksManager.searchGoogle(mIsbn, mAuthor, mTitle, mBookData);					
+				GoogleBooksManager.searchGoogle(mIsbn, mAuthor, mTitle, mBookData, true);					
 			} catch (Exception e) {
 				Logger.logError(e);
 				showException(R.string.searching_google_books, e);
@@ -107,7 +107,7 @@ public class SearchForBookThread extends ManagedTask {
 			this.doProgress(getString(R.string.searching_amazon_books), 0);
 
 			try {
-				AmazonManager.searchAmazon(mIsbn, mAuthor, mTitle, mBookData);
+				AmazonManager.searchAmazon(mIsbn, mAuthor, mTitle, mBookData, true);
 			} catch (Exception e) {
 				Logger.logError(e);
 				showException(R.string.searching_amazon_books, e);
@@ -128,7 +128,7 @@ public class SearchForBookThread extends ManagedTask {
 					this.doProgress(getString(R.string.searching_library_thing), 0);
 					LibraryThingManager ltm = new LibraryThingManager(mBookData);
 					try {
-						ltm.searchByIsbn(isbn);
+						ltm.searchByIsbn(isbn, true);
 						// Look for series name and clear KEY_TITLE
 						checkForSeriesName();
 					} catch (Exception e) {

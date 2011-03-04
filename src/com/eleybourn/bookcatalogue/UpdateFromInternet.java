@@ -1,7 +1,29 @@
+/*
+ * @copyright 2011 Philip Warner
+ * @license GNU General Public License
+ * 
+ * This file is part of Book Catalogue.
+ *
+ * Book Catalogue is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Book Catalogue is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.eleybourn.bookcatalogue;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
 import android.app.AlertDialog;
@@ -17,10 +39,28 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
+import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsages.Usages;
 
 public class UpdateFromInternet extends ActivityWithTasks {
 	
-	private String[] mFields;
+	private UpdateThumbnailsThread mUpdateThread;
+
+	/**
+	 * Class to manage a collection of fields and the rules for importing them.
+	 * Inherits from LinkedHashMap to guarantee iteration order.
+	 * 
+	 * @author Grunthos
+	 */
+	static public class FieldUsages extends LinkedHashMap<String,FieldUsage>  {
+		static public enum Usages { COPY_IF_BLANK, ADD_EXTRA, OVERWRITE };
+
+		public FieldUsage put(FieldUsage usage) {
+			this.put(usage.fieldName, usage);
+			return usage;
+		}
+
+	}
+	private FieldUsages mFieldUsages = new FieldUsages();
 
 	/**
 	 * Called when the activity is first created. 
@@ -36,55 +76,70 @@ public class UpdateFromInternet extends ActivityWithTasks {
 		}
 	}
 	
+	public class FieldUsage {
+		String fieldName;
+		int stringId;
+		Usages usage;
+		boolean selected;
+		FieldUsage(String name, int id, Usages usage) {
+			this.fieldName = name;
+			this.stringId = id;
+			this.usage = usage;
+			this.selected = true;
+		}
+	}
+	
 	/**
 	 * This function builds the manage field visibility by adding onClick events
 	 * to each field checkbox
 	 */
 	public void setupFields() {
-		// The fields to show/hide
-		mFields = new String[] {
-				CatalogueDBAdapter.KEY_AUTHOR_ARRAY, 
-				CatalogueDBAdapter.KEY_TITLE, 
-				"thumbnail", 
-				CatalogueDBAdapter.KEY_SERIES_ARRAY, 
-				CatalogueDBAdapter.KEY_PUBLISHER, 
-				CatalogueDBAdapter.KEY_DATE_PUBLISHED,  
-				CatalogueDBAdapter.KEY_PAGES, 
-				CatalogueDBAdapter.KEY_LIST_PRICE, 
-				CatalogueDBAdapter.KEY_FORMAT, 
-				CatalogueDBAdapter.KEY_DESCRIPTION, 
-				CatalogueDBAdapter.KEY_GENRE};
-		int[] fieldRs = {
-				R.string.author, 
-				R.string.title, 
-				R.string.thumbnail, 
-				R.string.series,
-				R.string.publisher, 
-				R.string.date_published, 
-				R.string.pages, 
-				R.string.list_price,
-				R.string.format, 
-				R.string.description, 
-				R.string.genre};
+		mFieldUsages.put(new FieldUsage(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, R.string.author, Usages.ADD_EXTRA));
+		mFieldUsages.put(new FieldUsage(CatalogueDBAdapter.KEY_TITLE, R.string.title, Usages.COPY_IF_BLANK));
+		mFieldUsages.put(new FieldUsage(CatalogueDBAdapter.KEY_THUMBNAIL, R.string.thumbnail, Usages.COPY_IF_BLANK));
+		mFieldUsages.put(new FieldUsage(CatalogueDBAdapter.KEY_SERIES_ARRAY, R.string.series, Usages.ADD_EXTRA));
+		mFieldUsages.put(new FieldUsage(CatalogueDBAdapter.KEY_PUBLISHER, R.string.publisher, Usages.COPY_IF_BLANK));
+		mFieldUsages.put(new FieldUsage(CatalogueDBAdapter.KEY_DATE_PUBLISHED, R.string.date_published, Usages.COPY_IF_BLANK));
+		mFieldUsages.put(new FieldUsage(CatalogueDBAdapter.KEY_PAGES, R.string.pages, Usages.COPY_IF_BLANK));
+		mFieldUsages.put(new FieldUsage(CatalogueDBAdapter.KEY_LIST_PRICE, R.string.list_price, Usages.COPY_IF_BLANK));
+		mFieldUsages.put(new FieldUsage(CatalogueDBAdapter.KEY_FORMAT, R.string.format, Usages.COPY_IF_BLANK));
+		mFieldUsages.put(new FieldUsage(CatalogueDBAdapter.KEY_DESCRIPTION, R.string.description, Usages.COPY_IF_BLANK));
+		mFieldUsages.put(new FieldUsage(CatalogueDBAdapter.KEY_GENRE, R.string.genre, Usages.COPY_IF_BLANK));
 		
 		// Display the list of fields
 		LinearLayout parent = (LinearLayout) findViewById(R.id.manage_fields_scrollview);
-		for (int i = 0; i < mFields.length; i++) {
+		int i = 0;
+		for(FieldUsage usage : mFieldUsages.values()) {
 			//Create the LinearLayout to hold each row
 			LinearLayout ll = new LinearLayout(this);
 			ll.setPadding(5, 0, 0, 0);
 			
 			//Create the checkbox
 			CheckBox cb = new CheckBox(this);
-			cb.setChecked(true);
-			cb.setTag((Integer)i);
+			cb.setChecked(usage.selected);
+			cb.setTag(usage);
 			cb.setId(R.id.fieldCheckbox);
 			ll.addView(cb);
 
 			//Create the checkBox label (or textView)
 			TextView tv = new TextView(this);
 			tv.setTextAppearance(this, android.R.attr.textAppearanceLarge);
-			tv.setText(fieldRs[i]);
+			String text = getResources().getString(usage.stringId);
+			String extra;
+			switch(usage.usage) {
+			case ADD_EXTRA:
+				extra = getResources().getString(R.string.usage_add_extra);
+				break;
+			case COPY_IF_BLANK:
+				extra = getResources().getString(R.string.usage_copy_if_blank);
+				break;
+			case OVERWRITE:
+				extra = getResources().getString(R.string.usage_overwrite);
+				break;
+			default:
+				throw new RuntimeException("Unknown Usage");
+			}
+			tv.setText(text + " (" + extra + ")");
 			tv.setPadding(0, 5, 0, 0);
 			ll.addView(tv);
 			
@@ -96,29 +151,42 @@ public class UpdateFromInternet extends ActivityWithTasks {
 		confirmBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// Verify - this can be a dangerous operation
-				AlertDialog alertDialog = new AlertDialog.Builder(UpdateFromInternet.this).setMessage(R.string.overwrite_thumbnail).create();
-				alertDialog.setTitle(R.string.update_fields);
-				alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-				alertDialog.setButton(UpdateFromInternet.this.getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						startUpdate(true);
-						return;
-					}
-				}); 
-				alertDialog.setButton2(UpdateFromInternet.this.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						//do nothing
-						return;
-					}
-				});
-				alertDialog.setButton3(UpdateFromInternet.this.getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						startUpdate(false);
-						return;
-					}
-				}); 
-				alertDialog.show();
+				// Get the selections the user made
+				if (readUserSelections() == 0) {
+					Toast.makeText(UpdateFromInternet.this, R.string.select_min_1_field, Toast.LENGTH_LONG).show();
+					return;
+				}
+
+				// If they have selected thumbnails, check if they want to download ALL.
+				if (mFieldUsages.get(CatalogueDBAdapter.KEY_THUMBNAIL).selected) {
+					// Verify - this can be a dangerous operation
+					AlertDialog alertDialog = new AlertDialog.Builder(UpdateFromInternet.this).setMessage(R.string.overwrite_thumbnail).create();
+					alertDialog.setTitle(R.string.update_fields);
+					alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
+					alertDialog.setButton(UpdateFromInternet.this.getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							mFieldUsages.get(CatalogueDBAdapter.KEY_THUMBNAIL).usage = Usages.OVERWRITE;
+							startUpdate();
+							return;
+						}
+					}); 
+					alertDialog.setButton2(UpdateFromInternet.this.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							//do nothing
+							return;
+						}
+					});
+					alertDialog.setButton3(UpdateFromInternet.this.getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							mFieldUsages.get(CatalogueDBAdapter.KEY_THUMBNAIL).usage = Usages.COPY_IF_BLANK;
+							startUpdate();
+							return;
+						}
+					}); 
+					alertDialog.show();					
+				} else {
+					startUpdate();					
+				}
 				return;
 			}
 		});
@@ -132,39 +200,64 @@ public class UpdateFromInternet extends ActivityWithTasks {
 		});
 	}
 
-	private void startUpdate(boolean overwrite) {
+	private int readUserSelections() {
 		LinearLayout parent = (LinearLayout) findViewById(R.id.manage_fields_scrollview);
 		int nChildren = parent.getChildCount();
-		Hashtable<String,Boolean> fieldHash = new Hashtable<String,Boolean>();
+		int nSelected = 0;
 		for (int i = 0; i<nChildren; i++) {
 			View v = parent.getChildAt(i);
 			CheckBox cb = (CheckBox) v.findViewById(R.id.fieldCheckbox);
 			if (cb != null) {
-				int offset = (Integer) cb.getTag();
-				if (cb.isChecked()) {
-					fieldHash.put(mFields[offset], true);
-				}				
+				FieldUsage usage = (FieldUsage) cb.getTag();
+				usage.selected = cb.isChecked();
+				if (usage.selected)
+					nSelected++;
 			}
-		}
+		}	
+		return nSelected;
+	}
 
-		if (fieldHash.keySet().size() == 0) {
-			Toast.makeText(this, R.string.select_min_1_field, Toast.LENGTH_LONG).show();
-			return;
-		}
-
-		UpdateThumbnailsThread thread = new UpdateThumbnailsThread(mTaskManager, fieldHash, overwrite, mThumbnailsHandler);
-		thread.start();	
+	private void startUpdate() {
+		mUpdateThread = new UpdateThumbnailsThread(mTaskManager, mFieldUsages, mThumbnailsHandler);
+		mUpdateThread.start();	
 	}
 
 	final UpdateThumbnailsThread.LookupHandler mThumbnailsHandler = new UpdateThumbnailsThread.LookupHandler() {
 		@Override
 		public void onFinish() {
+			mUpdateThread = null;
 		}
 	};
 
 	@Override
 	TaskHandler getTaskHandler(ManagedTask t) {
-		return mThumbnailsHandler;
+		if (t instanceof UpdateThumbnailsThread)
+			return mThumbnailsHandler;
+		else
+			if (mUpdateThread != null)
+				return mUpdateThread.getTaskHandler(t);
+			else
+				return null;
 	}
 
+	/**
+	 * Ensure the mUpdateThread is restored.
+	 */
+	@Override
+	protected void onRestoreInstanceState(Bundle inState) {
+		mUpdateThread = (UpdateThumbnailsThread) getLastNonConfigurationInstance("UpdateThread");
+		// Call the super method only after we have the searchManager set up
+		super.onRestoreInstanceState(inState);
+	}
+
+	/**
+	 * Ensure the TaskManager is saved.
+	 */
+	@Override
+	public void onRetainNonConfigurationInstance(Hashtable<String,Object> store) {
+		if (mUpdateThread != null) {
+			store.put("UpdateThread", mUpdateThread);
+			mUpdateThread = null;
+		}
+	}
 }

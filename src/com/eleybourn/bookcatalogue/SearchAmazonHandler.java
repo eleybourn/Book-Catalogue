@@ -167,6 +167,7 @@ public class SearchAmazonHandler extends DefaultHandler {
 	private StringBuilder mBuilder;
 	private String mThumbnailUrl = "";
 	private int mThumbnailSize = -1;
+	private static boolean mFetchThumbnail;
 	
 	/* How many results found */
 	public int count = 0;
@@ -192,8 +193,9 @@ public class SearchAmazonHandler extends DefaultHandler {
 	public static String LARGEIMAGE = "LargeImage";
 	public static String DESCRIPTION = "Content";
 
-	SearchAmazonHandler(Bundle bookData) {
+	SearchAmazonHandler(Bundle bookData, boolean fetchThumbnail) {
 		mBookData = bookData;
+		mFetchThumbnail = fetchThumbnail;
 	}
 //	/*
 //	 * A public function the return a book structure
@@ -237,7 +239,7 @@ public class SearchAmazonHandler extends DefaultHandler {
 	 */
 	@Override
 	public void endDocument() {
-		if (mThumbnailUrl.length() > 0) {
+		if (mFetchThumbnail && mThumbnailUrl.length() > 0) {
 			String filename = Utils.saveThumbnailFromUrl(mThumbnailUrl, "_AM");
 			if (filename.length() > 0)
 				Utils.appendOrAdd(mBookData, "__thumbnail", filename);			

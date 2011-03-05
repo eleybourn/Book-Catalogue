@@ -96,6 +96,7 @@ public class UpdateFromInternet extends ActivityWithTasks {
 	public void setupFields() {
 		mFieldUsages.put(new FieldUsage(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, R.string.author, Usages.ADD_EXTRA));
 		mFieldUsages.put(new FieldUsage(CatalogueDBAdapter.KEY_TITLE, R.string.title, Usages.COPY_IF_BLANK));
+		mFieldUsages.put(new FieldUsage(CatalogueDBAdapter.KEY_ISBN, R.string.isbn, Usages.COPY_IF_BLANK));
 		mFieldUsages.put(new FieldUsage(CatalogueDBAdapter.KEY_THUMBNAIL, R.string.thumbnail, Usages.COPY_IF_BLANK));
 		mFieldUsages.put(new FieldUsage(CatalogueDBAdapter.KEY_SERIES_ARRAY, R.string.series, Usages.ADD_EXTRA));
 		mFieldUsages.put(new FieldUsage(CatalogueDBAdapter.KEY_PUBLISHER, R.string.publisher, Usages.COPY_IF_BLANK));

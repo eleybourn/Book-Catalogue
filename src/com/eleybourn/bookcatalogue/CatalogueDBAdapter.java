@@ -1372,7 +1372,7 @@ public class CatalogueDBAdapter {
 
 		String sql = " FROM " + DB_TB_BOOKS + " b";
 
-		if (!bookshelf.equals("All Books")) {
+		if (!bookshelf.equals("All Books") && bookshelf.trim().length() > 0) {
 			// Join with specific bookshelf
 			sql += " Join " + DB_TB_BOOK_BOOKSHELF_WEAK + " bbsx On bbsx." + KEY_BOOK + " = b." + KEY_ROWID;
 			sql += " Join " + DB_TB_BOOKSHELF + " bsx On bsx." + KEY_ROWID + " = bbsx." + KEY_BOOKSHELF
@@ -1676,7 +1676,7 @@ public class CatalogueDBAdapter {
 	}
 
 	private String sqlAllSeriesOnBookshelf(String bookshelf) {
-		return "select distinct s." + KEY_ROWID + ", s." + KEY_SERIES_NAME //+ ", s." + KEY_SERIES_NAME + " as series_sort "
+		return "select distinct s." + KEY_ROWID + " as " + KEY_ROWID + ", s." + KEY_SERIES_NAME + " as " + KEY_SERIES_NAME//+ ", s." + KEY_SERIES_NAME + " as series_sort "
 				 + " From " + DB_TB_SERIES + " s "
 				 + " join " + DB_TB_BOOK_SERIES + " bsw "
 				 + "    on bsw." + KEY_SERIES_ID + " = s." + KEY_ROWID 
@@ -1689,7 +1689,7 @@ public class CatalogueDBAdapter {
 				 + " where bs." + KEY_BOOKSHELF + " = '" + bookshelf + "'";
 	}
 	private String sqlAllSeries() {
-		return "select distinct s." + KEY_ROWID + ", s."+ KEY_SERIES_NAME //+ ", s." + KEY_SERIES_NAME + " as series_sort "
+		return "select distinct s." + KEY_ROWID + " as " + KEY_ROWID + ", s."+ KEY_SERIES_NAME + " as " + KEY_SERIES_NAME //+ ", s." + KEY_SERIES_NAME + " as series_sort "
 				 + " From " + DB_TB_SERIES + " s ";
 	}
 	/**
@@ -2182,7 +2182,7 @@ public class CatalogueDBAdapter {
 		sql = "Select DISTINCT Case When s." + KEY_ROWID + " is NULL Then -1 Else s." + KEY_ROWID + " End as " + KEY_ROWID + ","
 			+ " Case When s." + KEY_SERIES_NAME + " is NULL Then '" + META_EMPTY_SERIES + "'"
 			+ "               Else " + KEY_SERIES_NAME + " End AS " + KEY_SERIES_NAME
-			+ " From (Select b." + KEY_ROWID + " " + baseSql + " ) MatchingBooks"
+			+ " From (Select b." + KEY_ROWID + " as " + KEY_ROWID + " " + baseSql + " ) MatchingBooks"
 			+ " Left Outer Join " + DB_TB_BOOK_SERIES + " bs "
 			+ "     On bs." + KEY_BOOK + " = MatchingBooks." + KEY_ROWID
 			+ " Left Outer Join " + DB_TB_SERIES + " s "
@@ -2195,29 +2195,16 @@ public class CatalogueDBAdapter {
 	public long createAnthologyTitle(long book, String author, String title) {
 		ContentValues initialValues = new ContentValues();
 		String[] names = processAuthorName(author);
-		Cursor authorId = getAuthorByName(names);
+		String authorId = getAuthorIdOrCreate(names);
 		long result;
-		try {
-			int aRows = authorId.getCount();
-			if (aRows == 0) {
-				createAuthor(names[0], names[1]);
-				authorId.close();
-				authorId = getAuthorByName(names);
-			}
-			authorId.moveToFirst();
+		int position = fetchAnthologyPositionByBook(book) + 1;
+		
+		initialValues.put(KEY_BOOK, book);
+		initialValues.put(KEY_AUTHOR_ID, authorId);
+		initialValues.put(KEY_TITLE, title);
+		initialValues.put(KEY_POSITION, position);
+		result = mDb.insert(DB_TB_ANTHOLOGY, null, initialValues);
 			
-			int position = fetchAnthologyPositionByBook(book) + 1;
-			
-			initialValues.put(KEY_BOOK, book);
-			initialValues.put(KEY_AUTHOR_ID, authorId.getInt(0));
-			initialValues.put(KEY_TITLE, title);
-			initialValues.put(KEY_POSITION, position);
-			result = mDb.insert(DB_TB_ANTHOLOGY, null, initialValues);
-			
-		} finally {
-			if (authorId != null)
-				authorId.close();			
-		}
 		return result;
 	}
 	
@@ -2398,21 +2385,13 @@ public class CatalogueDBAdapter {
 	public boolean updateAnthologyTitle(long rowId, long book, String author, String title) {
 		ContentValues args = new ContentValues();
 		String[] names = processAuthorName(author);
-		Cursor authorId = getAuthorByName(names);
-		int aRows = authorId.getCount();
-		if (aRows == 0) {
-			createAuthor(names[0], names[1]);
-			authorId.close();
-			authorId = getAuthorByName(names);
-		}
-		authorId.moveToFirst();
+		long authorId = Long.parseLong(getAuthorIdOrCreate(names));
 		
 		args.put(KEY_BOOK, book);
-		args.put(KEY_AUTHOR_ID, authorId.getInt(0));
+		args.put(KEY_AUTHOR_ID, authorId);
 		args.put(KEY_TITLE, title);
 		boolean success = mDb.update(DB_TB_ANTHOLOGY, args, KEY_ROWID + "=" + rowId, null) > 0;
 		purgeAuthors();
-		authorId.close();
 		return success;
 	}
 	

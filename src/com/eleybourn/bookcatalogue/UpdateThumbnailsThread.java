@@ -170,7 +170,7 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 								}
 							} else {
 								// If the original was blank, add to list
-								if (!mOrigData.containsKey(usage.fieldName) || mOrigData.getString(usage.fieldName) == null && mOrigData.getString(usage.fieldName).length() == 0 )
+								if (!mOrigData.containsKey(usage.fieldName) || mOrigData.getString(usage.fieldName) == null || mOrigData.getString(usage.fieldName).length() == 0 )
 									mCurrFieldUsages.put(usage);
 							}
 							break;

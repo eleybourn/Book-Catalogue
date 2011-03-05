@@ -80,7 +80,7 @@ public class TaskManager {
 		int					progressMax;
 		int					progressCurrent;
 		TaskInfo(ManagedTask t) {
-			this(t, 0, 0, "Starting");
+			this(t, 0, 0, "");
 		}
 		TaskInfo(ManagedTask t, int max, int curr, String message) {
 			task = t;
@@ -409,6 +409,12 @@ public class TaskManager {
 						if (mProgress != null && ctx != null) {
 							mProgress.setMessage(mProgressMessage);
 							if (mProgressMax > 0) {
+								if (mProgress.isIndeterminate()) {
+									ProgressDialog oldDialog = mProgress;
+									mProgress = null;
+									initProgress();
+									oldDialog.dismiss();
+								}
 								mProgress.setMax(mProgressMax);
 								mProgress.setProgress(mProgressCount);						
 							}
@@ -502,10 +508,12 @@ public class TaskManager {
 			if (event.getAction() == KeyEvent.ACTION_UP) {
 				if (keyCode == KeyEvent.KEYCODE_BACK) {
 					Log.i("BC", "Back pressed - cancelling");
-					doToast(getString(R.string.cancelling));
+					// Toasting a message here makes the app look less responsive, because
+					// the final 'Cancelled...' message is delayed too much.
+					//doToast(getString(R.string.cancelling));
 					cancelAllTasks();
 					return true;
-				}				
+				}
 			}
 			return false;
 		}};

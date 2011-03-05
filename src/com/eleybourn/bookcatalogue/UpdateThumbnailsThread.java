@@ -51,26 +51,23 @@ import android.util.Log;
  * @author Grunthos
  */
 public class UpdateThumbnailsThread extends ManagedTask implements SearchManager.SearchResultHandler {
-	private FieldUsages mFieldUsages;
+	// The fields that the user requested to update
+	private FieldUsages mRequestedFields;
 
 	// Lock help by pop and by push when an item was added to an empty stack.
 	private final ReentrantLock mSearchLock = new ReentrantLock();
 	// Signal for available items
 	private final Condition mSearchDone = mSearchLock.newCondition();
 
-	public static String filePath = Utils.EXTERNAL_FILE_PATH;
-	public static String fileName = filePath + "/export.csv";
-	public static String UTF8 = "utf8";
-	public static int BUFFER_SIZE = 8192;
 	private String mFinalMessage;
-	// Shortcut value derived from mFieldUsages
-	private boolean mFetchingThumbnails;
 
 	// Data related to current row being processed
 	// - Original row data
 	private Bundle mOrigData = null;
 	// - current book ID
 	private long mCurrId = 0;
+	// - The (subset) of fields relevant to the current book
+	private FieldUsages mCurrFieldUsages;
 
 	// Active search manager
 	private SearchManager mSearchManager = null;
@@ -78,6 +75,7 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 	// DB connection
 	protected CatalogueDBAdapter mDbHelper;
 
+	// Handler in caller to be notified when this task completes.
 	public interface LookupHandler extends ManagedTask.TaskHandler {
 		void onFinish();
 	}
@@ -92,40 +90,36 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 	 * @param lookupHandler		Interface object to handle events in this thread.
 	 * 
 	 */
-	public UpdateThumbnailsThread(TaskManager manager, FieldUsages fieldUsages, LookupHandler lookupHandler) {
+	public UpdateThumbnailsThread(TaskManager manager, FieldUsages requestedFields, LookupHandler lookupHandler) {
 		super(manager, lookupHandler);
 		mDbHelper = new CatalogueDBAdapter(manager.getContext());
 		mDbHelper.open();
 
-		mFieldUsages = fieldUsages;
+		mRequestedFields = requestedFields;
 		mSearchManager = new SearchManager(mManager, this);
-		mFetchingThumbnails = (mFieldUsages.containsKey(CatalogueDBAdapter.KEY_THUMBNAIL) && mFieldUsages.get("thumbnail").selected);
+		mManager.doProgress(mManager.getString(R.string.starting_search));
 	}
 
 	@Override
 	public void onRun() throws InterruptedException {
 		int counter = 0;
 
-		mManager.setMax(this, 1);
-		mManager.doProgress(this, mManager.getString(R.string.starting_search), 0);
-
-		/* Test write to the SDCard */
-		try {
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath + "/.nomedia"), UTF8), BUFFER_SIZE);
-			out.write("");
-			out.close();
-		} catch (IOException e) {
-			Logger.logError(e);
+		/* Test write to the SDCard; abort if not writable */
+		if (!Utils.sdCardWritable()) {
 			mFinalMessage = getString(R.string.thumbnail_failed_sdcard);
 			return;
 		}
-		
+
+		// TODO: Allow caller to pass cursor (again) so that specific books can be updated (eg. just one book)
 		Cursor books = mDbHelper.fetchAllBooks("b." + CatalogueDBAdapter.KEY_ROWID, "All Books", "", "", "", "", "");
 		mManager.setMax(this, books.getCount());
 		try {
 			while (books.moveToNext() && !isCancelled()) {
+				// Increment the progress counter 
+				counter++;
 
-				// Copy the fields from the cursor
+				// Copy the fields from the cursor and build a complete set of data for this book.
+				// This only needs to include data that we can fetch (so, for example, bookshelves are ignored).
 				mOrigData = new Bundle();
 				for(int i = 0; i < books.getColumnCount(); i++) {
 					mOrigData.putString(books.getColumnName(i), books.getString(i));
@@ -136,9 +130,59 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 				mOrigData.putParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mDbHelper.getBookAuthorList(mCurrId));
 				mOrigData.putParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY, mDbHelper.getBookSeriesList(mCurrId));
 
-				counter++;
-				if (mFetchingThumbnails) {
-					// delete any tmp thumbnails //
+				// Grab the searchable fields. Ideally we will have an ISBN but we may not.
+				String isbn = mOrigData.getString(CatalogueDBAdapter.KEY_ISBN);
+				String author = mOrigData.getString(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);
+				String title = mOrigData.getString(CatalogueDBAdapter.KEY_TITLE);
+
+				// Reset the fields we want for THIS book
+				mCurrFieldUsages = new FieldUsages();
+
+				// See if there is a reason to fetch ANY data by checking which fields this book needs. 
+				for(FieldUsage usage : mRequestedFields.values()) {
+					// Not selected, we dont want it
+					if (usage.selected) {
+						switch(usage.usage) {
+						case ADD_EXTRA:
+						case OVERWRITE:
+							// Add and Overwrite mean we always get the data
+							mCurrFieldUsages.put(usage);
+							break;
+						case COPY_IF_BLANK:
+							// Handle special cases
+							// - If it's a thumbnail, then see if it's missing or empty. 
+							if (usage.fieldName.equals(CatalogueDBAdapter.KEY_THUMBNAIL)) {
+								File file = CatalogueDBAdapter.fetchThumbnail(mCurrId);
+								if (!file.exists() || file.length() == 0)
+									mCurrFieldUsages.put(usage);
+							} else if (usage.fieldName.equals(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)) {
+								// We should never have a book with no authors, but lets be paranoid
+								if (mOrigData.containsKey(usage.fieldName)) {
+									ArrayList<Author> origAuthors = mOrigData.getParcelableArrayList(usage.fieldName);
+									if (origAuthors == null || origAuthors.size() == 0)
+										mCurrFieldUsages.put(usage);
+								}
+							} else if (usage.fieldName.equals(CatalogueDBAdapter.KEY_SERIES_ARRAY)) {
+								if (mOrigData.containsKey(usage.fieldName)) {
+									ArrayList<Series> origSeries = mOrigData.getParcelableArrayList(usage.fieldName);
+									if (origSeries == null || origSeries.size() == 0)
+										mCurrFieldUsages.put(usage);
+								}
+							} else {
+								// If the original was blank, add to list
+								if (!mOrigData.containsKey(usage.fieldName) || mOrigData.getString(usage.fieldName) == null && mOrigData.getString(usage.fieldName).length() == 0 )
+									mCurrFieldUsages.put(usage);
+							}
+							break;
+						}
+					}
+				}
+
+				// Cache the value to indicate we need thumbnails (or not).
+				boolean tmpThumbWanted = mCurrFieldUsages.containsKey(CatalogueDBAdapter.KEY_THUMBNAIL);
+
+				if (tmpThumbWanted) {
+					// delete any temporary thumbnails //
 					try {
 						File delthumb = CatalogueDBAdapter.fetchThumbnail(0);
 						delthumb.delete();
@@ -147,20 +191,13 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 					}					
 				}
 
-				String isbn = mOrigData.getString(CatalogueDBAdapter.KEY_ISBN);
-				String author = mOrigData.getString(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);
-				String title = mOrigData.getString(CatalogueDBAdapter.KEY_TITLE);
-				boolean tmpWantThumb = mFetchingThumbnails;
-				
-				if (tmpWantThumb && mFieldUsages.get(CatalogueDBAdapter.KEY_THUMBNAIL).usage == Usages.COPY_IF_BLANK) {
-					File file = CatalogueDBAdapter.fetchThumbnail(mCurrId);
-					tmpWantThumb = (!file.exists() || file.length() == 0);
-				}
-
-				if (isbn.equals("") && (author.equals("") || title.equals(""))) {
-					mManager.doProgress(this, String.format(getString(R.string.skip_title), title), counter);
+				// Use this to flag if we actually need a search.
+				boolean wantSearch = false;
+				// Update the progress appropriately
+				if (mCurrFieldUsages.size() == 0 || isbn.equals("") && (author.equals("") || title.equals(""))) {
+					mManager.doProgress(String.format(getString(R.string.skip_title), title));
 				} else {
-					mSearchManager.search(author, title, isbn, tmpWantThumb);
+					wantSearch = true;
 					if (title.length() > 0)
 						mManager.doProgress(title);
 					else
@@ -168,24 +205,31 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 				}
 				mManager.doProgress(this, null, counter);
 
-				// Wait for the search to complete; when the search has completed it uses class-level state
-				// data when processing the results. It will signal this lock when it no longer needs any class
-				// level state data (eg. mOrigData).
-				Log.i("BC", "Waiting search done " + mCurrId);
-				mSearchLock.lock();
-				try {
-					mSearchDone.await();
-				} finally {
-					mSearchLock.unlock();					
+				// Start searching if we need it, then wait...
+				if (wantSearch) {
+					mSearchManager.search(author, title, isbn, tmpThumbWanted);
+					// Wait for the search to complete; when the search has completed it uses class-level state
+					// data when processing the results. It will signal this lock when it no longer needs any class
+					// level state data (eg. mOrigData).
+					//Log.i("BC", "Waiting until search done " + mCurrId);
+					mSearchLock.lock();
+					try {
+						mSearchDone.await();
+					} finally {
+						mSearchLock.unlock();					
+					}
+					//Log.i("BC", "Got search done " + mCurrId + " in " + Thread.currentThread().toString());					
 				}
-				Log.i("BC", "Got search done " + mCurrId + " in " + Thread.currentThread().toString());
 
 			}
 		} finally {
+			// Clean up the cursor
 			if (books != null && !books.isClosed())
 				books.close();
+			// Empty the progress.
 			mManager.doProgress(null);
 
+			// Make the final message
 			mFinalMessage = String.format(getString(R.string.num_books_searched), "" + counter);
 			if (isCancelled()) 
 				mFinalMessage = String.format(getString(R.string.cancelled_info), mFinalMessage);
@@ -225,6 +269,7 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 		// Save the local data from the context so we can start a new search
 		long rowId = mCurrId;
 		Bundle origData = mOrigData;
+		FieldUsages requestedFields = mCurrFieldUsages;
 
 		// Dispatch to UI thread so we can fire the lock...can't do from same thread.
 		mMessageHandler.post(new Runnable() {
@@ -234,7 +279,7 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 			}});
 
 		if (!isCancelled() && bookData != null)
-			processSearchResults(rowId, bookData, origData);
+			processSearchResults(rowId, requestedFields, bookData, origData);
 	}
 
 	/**
@@ -244,11 +289,11 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 	 * @param newData	Data gathered from internet
 	 * @param origData	Original data
 	 */
-	private void processSearchResults(long rowId, Bundle newData, Bundle origData) {
+	private void processSearchResults(long rowId, FieldUsages requestedFields, Bundle newData, Bundle origData) {
 		// First, filter the data to remove keys we don't care about
 		ArrayList<String> toRemove = new ArrayList<String>();
 		for(String key : newData.keySet()) {
-			if (!mFieldUsages.containsKey(key) || !mFieldUsages.get(key).selected)
+			if (!requestedFields.containsKey(key) || !requestedFields.get(key).selected)
 				toRemove.add(key);
 		}
 		for(String key : toRemove) {
@@ -256,7 +301,7 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 		}
 
 		// For each field, process it according the the usage. 
-		for(FieldUsage usage : mFieldUsages.values()) {
+		for(FieldUsage usage : requestedFields.values()) {
 			if (newData.containsKey(usage.fieldName)) {
 				// Handle thumbnail specially
 				if (usage.fieldName.equals(CatalogueDBAdapter.KEY_THUMBNAIL)) {
@@ -344,11 +389,16 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 		// Save combined version to the new data
 		newData.putParcelableArrayList(key, origList);
 	}
+	
+	/**
+	 * Called to signal that the search is complete AND the class-level data has 
+	 * been cached by the processing thread, so that a new search can begin.
+	 */
 	private void doSearchDone() {
 		// Let another search begin
 		mSearchLock.lock();
 		try {
-			Log.i("BC", "Signalling search done " + mCurrId + " in " + Thread.currentThread().toString());
+			//Log.i("BC", "Signalling search done " + mCurrId + " in " + Thread.currentThread().toString());
 			mSearchDone.signal();
 		} finally {
 			mSearchLock.unlock();			
@@ -359,7 +409,14 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 	protected void finalize() {
 		mDbHelper.close();
 	}
-	
+
+	/**
+	 * Since this thread is the only one created directly by the calling activity, we need to 
+	 * provide a way to get the handlers for each task. We just defer to the SearchManager.
+	 * 
+	 * @param t
+	 * @return
+	 */
 	public TaskHandler getTaskHandler(ManagedTask t) {
 		return mSearchManager.getTaskHandler(t);
 	}

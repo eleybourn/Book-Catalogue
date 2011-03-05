@@ -67,7 +67,6 @@ public class BookEditAnthology extends ListActivity {
 	private int currentPosition = 0;
 	private int maxPosition = 0;
 	private CatalogueDBAdapter mDbHelper;
-	private Cursor book;
 	int anthology_num = CatalogueDBAdapter.ANTHOLOGY_NO;
 	
 	private static final int GONE = 8;
@@ -105,7 +104,7 @@ public class BookEditAnthology extends ListActivity {
 	public void loadPage() {
 		setContentView(R.layout.list_anthology);
 		
-		book = mDbHelper.fetchBookById(mRowId);
+		Cursor book = mDbHelper.fetchBookById(mRowId);
 		try {
 			if (book != null) {
 				book.moveToFirst();
@@ -188,7 +187,7 @@ public class BookEditAnthology extends ListActivity {
 		String[] from = null;
 		int[] to = null;
 		// Create an array to specify the fields we want to display in the list
-		from = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_POSITION, CatalogueDBAdapter.KEY_AUTHOR_ID, CatalogueDBAdapter.KEY_TITLE};
+		from = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_POSITION, CatalogueDBAdapter.KEY_AUTHOR_NAME, CatalogueDBAdapter.KEY_TITLE};
 		// and an array of the fields we want to bind those fields to (in this case just text1)
 		to = new int[]{R.id.row_row_id, R.id.row_position, R.id.row_author, R.id.row_title};
 		// Now create a simple cursor adapter and set it to display
@@ -384,11 +383,20 @@ public class BookEditAnthology extends ListActivity {
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
+
 		Cursor anthology = mDbHelper.fetchAnthologyTitleById(id);
-		anthology.moveToFirst();
-		String title = anthology.getString(anthology.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE)); 
-		String author = anthology.getString(anthology.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR_ID));
-		
+		String title;
+		String author;
+		try {
+			anthology.moveToFirst();
+			title = anthology.getString(anthology.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE)); 
+			author = anthology.getString(anthology.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR_NAME));
+			anthology.close();			
+		} finally {
+			if (anthology != null)
+				anthology.close();
+		}
+
 		currentPosition = position;
 		mEditId = id;
 		mTitleText.setText(title);

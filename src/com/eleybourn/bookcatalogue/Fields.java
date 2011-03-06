@@ -372,11 +372,23 @@ public class Fields extends ArrayList<Fields.Field> {
 		}
 		public void get(Field field, Bundle values) {
 			Spinner v = (Spinner) field.view;
-			values.putString(field.column, field.extract(v.getSelectedItem().toString()));
+			Object selItem = v.getSelectedItem();
+			String value;
+			if (selItem != null)
+				value = selItem.toString();
+			else
+				value = "";			
+			values.putString(field.column, value);
 		}
 		public Object get(Field field) {
 			Spinner v = (Spinner) field.view;
-			return field.extract(v.getSelectedItem().toString());
+			Object selItem = v.getSelectedItem();
+			String value;
+			if (selItem != null)
+				value = selItem.toString();
+			else
+				value = "";			
+			return field.extract(value);
 		}
 	}
 

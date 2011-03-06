@@ -137,10 +137,10 @@ public class BookEditNotes extends Activity {
 			mFields.addCrossValidator(new Fields.FieldCrossValidator() {
 				public void validate(Fields fields, Bundle values) {
 					String start = values.getString(CatalogueDBAdapter.KEY_READ_START);
-					if (start.equals(""))
+					if (start == null || start.equals(""))
 						return;
 					String end = values.getString(CatalogueDBAdapter.KEY_READ_END);
-					if (end.equals(""))
+					if (end == null || end.equals(""))
 						return;
 					if (start.compareToIgnoreCase(end) > 0)
 						throw new Fields.ValidatorException(R.string.vldt_read_start_after_end,new Object[]{});							

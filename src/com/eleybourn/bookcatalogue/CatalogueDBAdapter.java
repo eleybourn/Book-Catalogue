@@ -238,8 +238,8 @@ public class CatalogueDBAdapter {
 		"CREATE UNIQUE INDEX IF NOT EXISTS loan_book_loaned_to ON "+DB_TB_LOAN+" ("+KEY_BOOK+");" + 
 		"CREATE INDEX IF NOT EXISTS book_bookshelf_weak_book ON "+DB_TB_BOOK_BOOKSHELF_WEAK+" ("+KEY_BOOK+");" + 
 		"CREATE INDEX IF NOT EXISTS book_bookshelf_weak_bookshelf ON "+DB_TB_BOOK_BOOKSHELF_WEAK+" ("+KEY_BOOKSHELF+");" + 
-		"CREATE UNIQUE INDEX IF NOT EXISTS book_series_series ON "+DB_TB_BOOK_SERIES+" ("+KEY_SERIES_ID+", " + KEY_BOOK + ");" + 
-		"CREATE UNIQUE INDEX IF NOT EXISTS book_series_book ON "+DB_TB_BOOK_SERIES+" ("+KEY_BOOK+", " + KEY_SERIES_ID + ");" + 
+		"CREATE UNIQUE INDEX IF NOT EXISTS book_series_series ON "+DB_TB_BOOK_SERIES+" ("+KEY_SERIES_ID+", " + KEY_BOOK + ", " + KEY_SERIES_NUM + ");" + 
+		"CREATE UNIQUE INDEX IF NOT EXISTS book_series_book ON "+DB_TB_BOOK_SERIES+" ("+KEY_BOOK+", " + KEY_SERIES_ID + ", " + KEY_SERIES_NUM + ");" + 
 		"CREATE UNIQUE INDEX IF NOT EXISTS book_author_author ON "+DB_TB_BOOK_AUTHOR+" ("+KEY_AUTHOR_ID+", " + KEY_BOOK + ");" + 
 		"CREATE UNIQUE INDEX IF NOT EXISTS book_author_book ON "+DB_TB_BOOK_AUTHOR+" ("+KEY_BOOK+", " + KEY_AUTHOR_ID + ");" + 
 		"CREATE UNIQUE INDEX IF NOT EXISTS anthology_pk_idx ON " + DB_TB_ANTHOLOGY + " (" + KEY_BOOK + ", " + KEY_AUTHOR_ID + ", " + KEY_TITLE + ")";
@@ -2870,10 +2870,11 @@ public class CatalogueDBAdapter {
 				// Get the name and find/add the author
 				Series s = i.next();
 				String seriesName = s.name;
-				String seriesIdStr = getSeriesIdOrCreate(seriesName);
-				long seriesId = Long.parseLong(seriesIdStr);
-				if (!idHash.containsKey(seriesIdStr)) {
-					idHash.put(seriesIdStr, true);
+				String seriesIdTxt = getSeriesIdOrCreate(seriesName);
+				long seriesId = Long.parseLong(seriesIdTxt);
+				String uniqueId = seriesIdTxt + "(" + s.num.trim().toUpperCase() + ")";
+				if (!idHash.containsKey(uniqueId)) {
+					idHash.put(uniqueId, true);
 					pos++;
 					mAddBookSeriesStmt.bindLong(2, seriesId);
 					mAddBookSeriesStmt.bindString(3, s.num);

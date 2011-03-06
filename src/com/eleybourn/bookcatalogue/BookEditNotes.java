@@ -114,10 +114,10 @@ public class BookEditNotes extends Activity {
 
 			ArrayAdapter<String> location_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getLocations());
 			f = mFields.add(R.id.location, CatalogueDBAdapter.KEY_LOCATION, null);
-			((AutoCompleteTextView)f.view).setAdapter(location_adapter);
+			((AutoCompleteTextView)f.getView()).setAdapter(location_adapter);
 
 			f = mFields.add(R.id.read_start_button, "",  CatalogueDBAdapter.KEY_READ_START, null);
-			f.view.setOnClickListener(new View.OnClickListener() {
+			f.getView().setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
 					showDialog(READ_START_DIALOG_ID);
 				}
@@ -125,7 +125,7 @@ public class BookEditNotes extends Activity {
 			mFields.add(R.id.read_start, CatalogueDBAdapter.KEY_READ_START, blankOrDateValidator, dateFormatter);
 
 			f = mFields.add(R.id.read_end_button, "",  CatalogueDBAdapter.KEY_READ_END, null);
-			f.view.setOnClickListener(new View.OnClickListener() {
+			f.getView().setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
 					showDialog(READ_END_DIALOG_ID);
 				}

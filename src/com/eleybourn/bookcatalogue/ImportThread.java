@@ -34,7 +34,7 @@ public class ImportThread extends ManagedTask {
 	public ImportThread(TaskManager manager, TaskHandler taskHandler, ArrayList<String> export) {
 		super(manager, taskHandler);
 		mExport = export;
-		mDbHelper = new CatalogueDBAdapter(manager.getContext());
+		mDbHelper = new CatalogueDBAdapter(manager.getAppContext());
 		mDbHelper.open();
 		
 		manager.setMax(this, mExport.size());

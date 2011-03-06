@@ -20,11 +20,13 @@
 
 package com.eleybourn.bookcatalogue;
 
+import java.lang.ref.WeakReference;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -106,7 +108,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	public static final long serialVersionUID = 1L;
 
 	// The activity and preferences related to this object.
-	private android.app.Activity mActivity = null;
+	private WeakReference<Activity> mActivity = null;
 	SharedPreferences mPrefs = null;
 
 	/**
@@ -117,7 +119,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	 */
 	Fields(android.app.Activity a) {
 		super();
-		mActivity = a;
+		mActivity = new WeakReference<Activity>(a);
 		mPrefs = a.getSharedPreferences("bookCatalogue", android.content.Context.MODE_PRIVATE);
 	}
 
@@ -264,15 +266,15 @@ public class Fields extends ArrayList<Fields.Field> {
 			set(field, c.getString(c.getColumnIndex(field.column)));
 		}
 		public void set(Field field, String s) {
-			TextView v = (TextView) field.view;
+			TextView v = (TextView) field.getView();
 			v.setText(field.format(s));
 		}
 		public void get(Field field, Bundle values) {
-			TextView v = (TextView) field.view;
+			TextView v = (TextView) field.getView();
 			values.putString(field.column, field.extract(v.getText().toString()));
 		}
 		public Object get(Field field) {
-			return field.extract(((TextView) field.view).getText().toString());
+			return field.extract(((TextView) field.getView()).getText().toString());
 		}
 	}
 
@@ -287,7 +289,7 @@ public class Fields extends ArrayList<Fields.Field> {
 			set(field, c.getString(c.getColumnIndex(field.column)));
 		}
 		public void set(Field field, String s) {
-			CheckBox v = (CheckBox) field.view;
+			CheckBox v = (CheckBox) field.getView();
 			try {
 				s = field.format(s);
 				Integer i = Integer.parseInt(s);
@@ -298,7 +300,7 @@ public class Fields extends ArrayList<Fields.Field> {
 			}
 		}
 		public void get(Field field, Bundle values) {
-			CheckBox v = (CheckBox) field.view;
+			CheckBox v = (CheckBox) field.getView();
 			if (field.formatter != null)
 				values.putString(field.column, field.extract(v.isChecked() ? "1" : "0"));
 			else
@@ -306,9 +308,9 @@ public class Fields extends ArrayList<Fields.Field> {
 		}
 		public Object get(Field field) {
 			if (field.formatter != null)
-				return field.formatter.extract(field, (((CheckBox)field.view).isChecked() ? "1" : "0"));
+				return field.formatter.extract(field, (((CheckBox)field.getView()).isChecked() ? "1" : "0"));
 			else				
-				return (Integer)(((CheckBox)field.view).isChecked() ? 1 : 0);
+				return (Integer)(((CheckBox)field.getView()).isChecked() ? 1 : 0);
 		}
 	}
 
@@ -320,14 +322,14 @@ public class Fields extends ArrayList<Fields.Field> {
 	 */
 	static public class RatingBarAccessor implements FieldDataAccessor {
 		public void set(Field field, Cursor c) {
-			RatingBar v = (RatingBar) field.view;
+			RatingBar v = (RatingBar) field.getView();
 			if (field.formatter != null)
 				v.setRating(Float.parseFloat(field.formatter.format(field, c.getString(c.getColumnIndex(field.column)))));
 			else
 				v.setRating(c.getFloat(c.getColumnIndex(field.column)));
 		}
 		public void set(Field field, String s) {
-			RatingBar v = (RatingBar) field.view;
+			RatingBar v = (RatingBar) field.getView();
 			Float f = 0.0f;
 			try {
 				s = field.format(s);
@@ -337,14 +339,14 @@ public class Fields extends ArrayList<Fields.Field> {
 			v.setRating(f);
 		}
 		public void get(Field field, Bundle values) {
-			RatingBar v = (RatingBar) field.view;
+			RatingBar v = (RatingBar) field.getView();
 			if (field.formatter != null)
 				values.putString(field.column, field.extract("" + v.getRating()));
 			else
 				values.putFloat(field.column, v.getRating());
 		}
 		public Object get(Field field) {
-			RatingBar v = (RatingBar) field.view;
+			RatingBar v = (RatingBar) field.getView();
 			return v.getRating();
 		}
 	}
@@ -362,7 +364,9 @@ public class Fields extends ArrayList<Fields.Field> {
 		}
 		public void set(Field field, String s) {
 			s = field.format(s);
-			Spinner v = (Spinner) field.view;
+			Spinner v = (Spinner) field.getView();
+			if (v == null)
+				return;
 			for(int i=0; i < v.getCount(); i++) {
 				if (v.getItemAtPosition(i).equals(s)) {
 					v.setSelection(i);
@@ -371,23 +375,31 @@ public class Fields extends ArrayList<Fields.Field> {
 			}
 		}
 		public void get(Field field, Bundle values) {
-			Spinner v = (Spinner) field.view;
-			Object selItem = v.getSelectedItem();
 			String value;
-			if (selItem != null)
-				value = selItem.toString();
-			else
-				value = "";			
+			Spinner v = (Spinner) field.getView();
+			if (v == null)
+				value = "";
+			else {
+				Object selItem = v.getSelectedItem();
+				if (selItem != null)
+					value = selItem.toString();
+				else
+					value = "";							
+			}
 			values.putString(field.column, value);
 		}
 		public Object get(Field field) {
-			Spinner v = (Spinner) field.view;
-			Object selItem = v.getSelectedItem();
 			String value;
-			if (selItem != null)
-				value = selItem.toString();
-			else
-				value = "";			
+			Spinner v = (Spinner) field.getView();
+			if (v == null)
+				value = "";
+			else {
+				Object selItem = v.getSelectedItem();
+				if (selItem != null)
+					value = selItem.toString();
+				else
+					value = "";							
+			}
 			return field.extract(value);
 		}
 	}
@@ -907,14 +919,15 @@ public class Fields extends ArrayList<Fields.Field> {
 	 *
 	 */
 	public class Field {
+		/** Owning collction */
+		WeakReference<Fields> mFields;
+
 		/** Layout ID  */
 		public int id;
 		/** database column name (can be blank) */
 		public String column;
 		/** Visibility group name. Used in conjunction with preferences to show/hide Views  */
 		public String group;
-		/** View associated with layout id */
-		public View view = null;
 		/** FieldFormatter to use (can be null) */
 		public FieldFormatter formatter = null;
 		/** Validator to use (can be null) */
@@ -939,6 +952,7 @@ public class Fields extends ArrayList<Fields.Field> {
 		 * @param fieldFormatter		Formatter. Can be null.
 		 */
 		Field(Fields fields, int fieldId, String sourceColumn, String visibilityGroupName, FieldValidator fieldValidator, FieldFormatter fieldFormatter) {
+			mFields = new WeakReference<Fields>(fields);
 			id = fieldId;
 			column = sourceColumn;
 			group = visibilityGroupName;
@@ -953,7 +967,7 @@ public class Fields extends ArrayList<Fields.Field> {
 				return;
 
 			// Lookup the view
-			view = a.findViewById(id);
+			View view = a.findViewById(id);
 
 			// Set the appropriate accessor
 			if (view == null) {
@@ -977,6 +991,21 @@ public class Fields extends ArrayList<Fields.Field> {
 					view.setVisibility(View.GONE);
 				}				
 			}
+		}
+
+		/**
+		 * Get the view associated with this Field, if available.
+		 * @param id	View ID.
+		 * @return		Resulting View, or null.
+		 */
+		View getView() {
+			Fields fs = mFields.get();
+			if (fs == null)
+				return null;
+			Activity a = fs.getActivity();
+			if (a == null)
+				return null;
+			return a.findViewById(this.id);
 		}
 
 		/**
@@ -1051,7 +1080,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	 * @return Activity for this collection.
 	 */
 	public android.app.Activity getActivity() {
-		return mActivity;
+		return mActivity.get();
 	}
 
 	/**
@@ -1151,7 +1180,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	 */
 	public void setAdapter(int fieldId, ArrayAdapter<String> adapter) {
 		Field f = getField(fieldId);
-		((AutoCompleteTextView)f.view).setAdapter(adapter);
+		((AutoCompleteTextView)f.getView()).setAdapter(adapter);
 	}
 
 	/**
@@ -1162,7 +1191,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	 */
 	void setListener(int id, View.OnClickListener listener) {
 		Field f = getField(id);
-		f.view.setOnClickListener(listener);
+		f.getView().setOnClickListener(listener);
 	}
 
 	/**

@@ -46,7 +46,13 @@ import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
  * @author Grunthos
  */
 abstract public class ActivityWithTasks extends Activity {
-	protected TaskManager mTaskManager = new TaskManager(this);
+	protected TaskManager mTaskManager = null;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		mTaskManager = new TaskManager(this);
+	}
 
 	private class NonConfigInstance {
 		TaskManager taskManager = mTaskManager;

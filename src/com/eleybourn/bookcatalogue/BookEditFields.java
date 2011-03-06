@@ -175,7 +175,7 @@ public class BookEditFields extends Activity {
 
 			mFields.add(R.id.author, "", CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, nonBlankValidator);
 			{
-				View v = mFields.getField(R.id.author).view;
+				View v = findViewById(R.id.author);
 				v.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
@@ -203,7 +203,7 @@ public class BookEditFields extends Activity {
 
 			mFields.add(R.id.series, CatalogueDBAdapter.KEY_SERIES_NAME, CatalogueDBAdapter.KEY_SERIES_NAME, null);
 			{
-				View v = mFields.getField(R.id.series).view;
+				View v = findViewById(R.id.series);
 				v.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
@@ -232,9 +232,9 @@ public class BookEditFields extends Activity {
 						// Save the original value, if its an integer
 						try {
 							Integer i = Integer.parseInt(s);
-							f.view.setTag(R.id.TAG_ORIGINAL_VALUE,i);
+							f.getView().setTag(R.id.TAG_ORIGINAL_VALUE,i);
 						} catch (Exception e) {
-							f.view.setTag(R.id.TAG_ORIGINAL_VALUE,0);
+							f.getView().setTag(R.id.TAG_ORIGINAL_VALUE,0);
 						}
 						// Just pass the string onwards to the accessor.
 						return s;
@@ -242,7 +242,7 @@ public class BookEditFields extends Activity {
 					public String extract(Field f, String s) {
 						// Parse the string the CheckBox returns us (0 or 1)
 						Integer i = Integer.parseInt(s);
-						Integer orig = (Integer) f.view.getTag(R.id.TAG_ORIGINAL_VALUE);
+						Integer orig = (Integer) f.getView().getTag(R.id.TAG_ORIGINAL_VALUE);
 						if (i != 0 && orig > 0) {
 							// If non-zero, and original was non-zero, re-use original
 							return orig.toString();
@@ -274,7 +274,7 @@ public class BookEditFields extends Activity {
 				}
 			});
 
-			Spinner formatSpinner = (Spinner) formatField.view;
+			Spinner formatSpinner = (Spinner) formatField.getView();
 			ArrayAdapter<String> formatArr = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
 			formatArr.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			formatSpinner.setAdapter(formatArr);
@@ -287,7 +287,7 @@ public class BookEditFields extends Activity {
 			mConfirmButton = (Button) findViewById(R.id.confirm);
 			mCancelButton = (Button) findViewById(R.id.cancel);
 
-			bookshelfButtonFe.view.setOnClickListener(new View.OnClickListener() {
+			bookshelfButtonFe.getView().setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v) {
 					Cursor bookshelves_for_book = null;
 					if (mRowId == null) {
@@ -397,7 +397,7 @@ public class BookEditFields extends Activity {
 				populateFields();
 			} else {
 				// The thumbnail image is not automatically preserved, so reload it.
-				ImageView iv = (ImageView) mFields.getField(R.id.row_img).view;
+				ImageView iv = (ImageView) findViewById(R.id.row_img);
 				CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);				
 				// Author and series lists
 				mAuthorList = savedInstanceState.getParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
@@ -412,7 +412,7 @@ public class BookEditFields extends Activity {
 			setupUi();
 
 			// Set up the thumbnail context menu.
-			mFields.getField(R.id.row_img).view.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+			mFields.getField(R.id.row_img).getView().setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
 				@Override
 				public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 					MenuItem delete = menu.add(0, DELETE_ID, 0, R.string.menu_delete_thumb);
@@ -544,7 +544,7 @@ public class BookEditFields extends Activity {
 	
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		ImageView iv = (ImageView)mFields.getField(R.id.row_img).view;
+		ImageView iv = (ImageView)findViewById(R.id.row_img);
 		switch(item.getItemId()) {
 		case DELETE_ID:
 			deleteThumbnail(mRowId);
@@ -673,7 +673,7 @@ public class BookEditFields extends Activity {
 				Integer anthNo = book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
 				mFields.getField(R.id.anthology).setValue(anthNo.toString());
 
-				ImageView iv = (ImageView) mFields.getField(R.id.row_img).view;
+				ImageView iv = (ImageView) findViewById(R.id.row_img);
 				CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);				
 			} finally {	
 				if (book != null)
@@ -743,7 +743,7 @@ public class BookEditFields extends Activity {
 	}
 
 	private void setCoverImage() {
-		ImageView iv = (ImageView) mFields.getField(R.id.row_img).view;
+		ImageView iv = (ImageView) findViewById(R.id.row_img);
 		CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);		
 	}
 
@@ -763,7 +763,7 @@ public class BookEditFields extends Activity {
 	}
 
 	private void showAnthologyTab() {
-		CheckBox cb = (CheckBox)mFields.getField(R.id.anthology).view;
+		CheckBox cb = (CheckBox)findViewById(R.id.anthology);
 		try {
 			TabHost tabHost = ((TabActivity) getParent()).getTabHost();  // The activity TabHost
 			if (cb.isChecked()) {
@@ -833,7 +833,7 @@ public class BookEditFields extends Activity {
 		if (mRowId != null && mRowId > 0) {
 			mConfirmButton.setText(R.string.confirm_save);
 
-			CheckBox cb = (CheckBox)mFields.getField(R.id.anthology).view;
+			CheckBox cb = (CheckBox)findViewById(R.id.anthology);
 
 			cb.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {

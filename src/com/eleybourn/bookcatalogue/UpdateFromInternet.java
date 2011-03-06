@@ -28,6 +28,7 @@ import java.util.LinkedList;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
@@ -44,6 +45,7 @@ import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsages.Usages;
 public class UpdateFromInternet extends ActivityWithTasks {
 	
 	private UpdateThumbnailsThread mUpdateThread;
+	private SharedPreferences mPrefs = null;
 
 	/**
 	 * Class to manage a collection of fields and the rules for importing them.
@@ -70,6 +72,7 @@ public class UpdateFromInternet extends ActivityWithTasks {
 		try {
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.update_from_internet);
+			mPrefs = getSharedPreferences("bookCatalogue", android.content.Context.MODE_PRIVATE);
 			setupFields();
 		} catch (Exception e) {
 			Logger.logError(e);
@@ -88,25 +91,39 @@ public class UpdateFromInternet extends ActivityWithTasks {
 			this.selected = true;
 		}
 	}
-	
+
+	/**
+	 * Add a FieldUsage if the specified field has not been hidden by the user.
+	 * 
+	 * @param field		Field name to use in FieldUsages
+	 * @param visField	Field name to check for visibility. If null, use field.
+	 * @param stringId	ID of field label string
+	 * @param usage		Usage to apply.
+	 */
+	private void addIfVisible(String field, String visField, int stringId, Usages usage) {
+		if (visField == null || visField.trim().length() == 0)
+			visField = field;
+		if (mPrefs.getBoolean(FieldVisibility.prefix + visField, true))
+			mFieldUsages.put(new FieldUsage(field, stringId, usage));		
+	}
 	/**
 	 * This function builds the manage field visibility by adding onClick events
 	 * to each field checkbox
 	 */
 	public void setupFields() {
-		mFieldUsages.put(new FieldUsage(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, R.string.author, Usages.ADD_EXTRA));
-		mFieldUsages.put(new FieldUsage(CatalogueDBAdapter.KEY_TITLE, R.string.title, Usages.COPY_IF_BLANK));
-		mFieldUsages.put(new FieldUsage(CatalogueDBAdapter.KEY_ISBN, R.string.isbn, Usages.COPY_IF_BLANK));
-		mFieldUsages.put(new FieldUsage(CatalogueDBAdapter.KEY_THUMBNAIL, R.string.thumbnail, Usages.COPY_IF_BLANK));
-		mFieldUsages.put(new FieldUsage(CatalogueDBAdapter.KEY_SERIES_ARRAY, R.string.series, Usages.ADD_EXTRA));
-		mFieldUsages.put(new FieldUsage(CatalogueDBAdapter.KEY_PUBLISHER, R.string.publisher, Usages.COPY_IF_BLANK));
-		mFieldUsages.put(new FieldUsage(CatalogueDBAdapter.KEY_DATE_PUBLISHED, R.string.date_published, Usages.COPY_IF_BLANK));
-		mFieldUsages.put(new FieldUsage(CatalogueDBAdapter.KEY_PAGES, R.string.pages, Usages.COPY_IF_BLANK));
-		mFieldUsages.put(new FieldUsage(CatalogueDBAdapter.KEY_LIST_PRICE, R.string.list_price, Usages.COPY_IF_BLANK));
-		mFieldUsages.put(new FieldUsage(CatalogueDBAdapter.KEY_FORMAT, R.string.format, Usages.COPY_IF_BLANK));
-		mFieldUsages.put(new FieldUsage(CatalogueDBAdapter.KEY_DESCRIPTION, R.string.description, Usages.COPY_IF_BLANK));
-		mFieldUsages.put(new FieldUsage(CatalogueDBAdapter.KEY_GENRE, R.string.genre, Usages.COPY_IF_BLANK));
-		
+		addIfVisible(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, CatalogueDBAdapter.KEY_AUTHOR_ID, R.string.author, Usages.ADD_EXTRA);
+		addIfVisible(CatalogueDBAdapter.KEY_TITLE, null, R.string.title, Usages.COPY_IF_BLANK);
+		addIfVisible(CatalogueDBAdapter.KEY_ISBN, null, R.string.isbn, Usages.COPY_IF_BLANK);
+		addIfVisible(CatalogueDBAdapter.KEY_THUMBNAIL, null, R.string.thumbnail, Usages.COPY_IF_BLANK);
+		addIfVisible(CatalogueDBAdapter.KEY_SERIES_ARRAY, CatalogueDBAdapter.KEY_SERIES_NAME, R.string.series, Usages.ADD_EXTRA);
+		addIfVisible(CatalogueDBAdapter.KEY_PUBLISHER, null, R.string.publisher, Usages.COPY_IF_BLANK);
+		addIfVisible(CatalogueDBAdapter.KEY_DATE_PUBLISHED, null, R.string.date_published, Usages.COPY_IF_BLANK);
+		addIfVisible(CatalogueDBAdapter.KEY_PAGES, null, R.string.pages, Usages.COPY_IF_BLANK);
+		addIfVisible(CatalogueDBAdapter.KEY_LIST_PRICE, null, R.string.list_price, Usages.COPY_IF_BLANK);
+		addIfVisible(CatalogueDBAdapter.KEY_FORMAT, null, R.string.format, Usages.COPY_IF_BLANK);
+		addIfVisible(CatalogueDBAdapter.KEY_DESCRIPTION, null, R.string.description, Usages.COPY_IF_BLANK);
+		addIfVisible(CatalogueDBAdapter.KEY_GENRE, null, R.string.genre, Usages.COPY_IF_BLANK);
+
 		// Display the list of fields
 		LinearLayout parent = (LinearLayout) findViewById(R.id.manage_fields_scrollview);
 		int i = 0;

@@ -176,4 +176,12 @@ public class Author implements Parcelable, Utils.ItemWithIdFixup {
 	public long getId() {
 		return id;
 	}
+
+	/**
+	 * Each author is defined exactly by a unique ID.
+	 */
+	@Override
+	public boolean isUniqueById() {
+		return true;
+	}
 }

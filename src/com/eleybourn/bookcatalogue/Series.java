@@ -129,4 +129,13 @@ public class Series implements Parcelable, Utils.ItemWithIdFixup {
 	public long getId() {
 		return id;
 	}
+
+	/**
+	 * Each position in a series ('Elric(1)', 'Elric(2)' etc) will have the same
+	 * ID, so they are not unique by ID.
+	 */
+	@Override
+	public boolean isUniqueById() {
+		return false;
+	}
 }

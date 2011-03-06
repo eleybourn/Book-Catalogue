@@ -695,7 +695,17 @@ public class Utils {
 			T item = list.get(i);
 			Long id = item.fixupId(db);
 			String name = item.toString().trim().toUpperCase();
-			if (names.containsKey(name) || (id != 0 && ids.containsKey(id))) {
+			
+			boolean is_series = false;
+			if (name.lastIndexOf(")")+1==name.length()) {
+				is_series = true;
+			}
+			
+			// Series special case - same name different series number
+			if (ids.containsKey(id) && names.containsKey(name) == false && is_series == true) {
+				ids.put(id, true);
+				names.put(name, true);
+			} else if (names.containsKey(name) || (id != 0 && ids.containsKey(id))) {
 				toDelete.add(i);
 			} else {
 				ids.put(id, true);

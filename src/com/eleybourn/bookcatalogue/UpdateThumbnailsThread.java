@@ -81,7 +81,7 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 	 */
 	public UpdateThumbnailsThread(TaskManager manager, FieldUsages requestedFields, LookupHandler lookupHandler) {
 		super(manager, lookupHandler);
-		mDbHelper = new CatalogueDBAdapter(manager.getContext());
+		mDbHelper = new CatalogueDBAdapter(manager.getAppContext());
 		mDbHelper.open();
 
 		mRequestedFields = requestedFields;

@@ -48,8 +48,10 @@ import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
  * @author Grunthos
  */
 public class TaskManager {
+	// Application context (for getting resources)
+	private Context mAppContext = null;
 	// Calling activity
-	private ActivityWithTasks mContext = null;
+	private ActivityWithTasks mActivity = null;
 	// ProgressDialog
 	private ProgressDialog mProgress = null;
 	// Ref to UI thread; assumed to be thread that created this object
@@ -98,7 +100,8 @@ public class TaskManager {
 		// Must not be null
 		if (activity == null)
 			throw new IllegalArgumentException();
-		mContext = activity;	
+		mAppContext = activity.getApplicationContext();
+		mActivity = activity;	
 		// Assumes the current thread is the UI thread.
 		mUiThread = new WeakReference<Thread>(Thread.currentThread());
 		// New handler to send messages to the UI thread.
@@ -220,23 +223,27 @@ public class TaskManager {
 	 * @return			The associated string
 	 */
 	public String getString(int id) {
-		if (mContext != null) {
-			return mContext.getResources().getString(id);
-		} else {
-			return "No Context";
-		}
+		return mAppContext.getResources().getString(id);
+	}
+
+	public boolean isConnected() {
+		return (mActivity != null);
 	}
 
 	/**
-	 * Return the associated context object.
+	 * Return the associated activity object.
 	 * 
 	 * @return	The context
 	 */
-	public Context getContext() {
-		synchronized(this) {
-			return mContext;
-		}
-	}
+//	private Context getContext() {
+//	synchronized(this) {
+//		return mContext;
+//	}
+//}
+
+	public Context getAppContext() {
+		return mAppContext;
+}
 
 	/**
 	 * Called by ActivityWithTasks to reconnect to this TaskManager (eg. this
@@ -246,7 +253,7 @@ public class TaskManager {
 	 * @param context	ActivityWithTasks to connect
 	 */
 	public void reconnect(ActivityWithTasks context) {
-		mContext = context;
+		mActivity = context;
 		if (mTasks.size() > 0) {
 			initProgress();
 			synchronized(mTasks) {
@@ -262,7 +269,7 @@ public class TaskManager {
 	 * Disconnect from the associated ActivityWithTasks. Let each task know.
 	 */
 	public void disconnect() {
-		mContext = null;
+		mActivity = null;
 		destroyProgress();
 		synchronized(mTasks) {
 			for(TaskInfo t : mTasks) {
@@ -399,13 +406,12 @@ public class TaskManager {
 					if (mProgressMessage.trim().length() == 0 && mProgressMax == mProgressCount) {
 						destroyProgress();
 					} else {
-						Context ctx = getContext();
 						if (mProgress == null) {
-							if (ctx != null) {
+							if (isConnected()) {
 								initProgress();
 							}
 						}
-						if (mProgress != null && ctx != null) {
+						if (mProgress != null && isConnected()) {
 							mProgress.setMessage(mProgressMessage);
 							if (mProgressMax > 0) {
 								if (mProgress.isIndeterminate()) {
@@ -443,9 +449,7 @@ public class TaskManager {
 	public void doToast(String message) {
 		if (Thread.currentThread() == mUiThread.get()) {
 			synchronized(this) {
-				Context ctx = getContext();
-				if (ctx != null)
-					android.widget.Toast.makeText(ctx, message, android.widget.Toast.LENGTH_LONG).show();			
+				android.widget.Toast.makeText(mAppContext, message, android.widget.Toast.LENGTH_LONG).show();			
 			}
 		} else {
 			/* Send message to the handler */
@@ -469,7 +473,7 @@ public class TaskManager {
 		if (Thread.currentThread() == mUiThread.get()) {
 			synchronized(this) {
 				// Get the context; if null or we already have a PD, just skip
-				Context ctx = getContext();
+				Context ctx = mActivity;
 				if (ctx != null && mProgress == null) {
 					mProgress = new ProgressDialog(ctx);
 					if (mProgressMax > 0) {

@@ -163,7 +163,7 @@ abstract public class ManagedTask extends Thread {
 	 */
 	private void doFinish() {
 		mFinished = true;	
-		if (mManager.getContext() != null) {
+		if (mManager.isConnected()) {
 			if (onFinish()) {
 				mManager.taskEnded(this);
 			}

@@ -30,7 +30,7 @@ public class ExportThread extends ManagedTask {
 	public ExportThread(TaskManager ctx, ExportHandler taskHandler) {
 		super(ctx, taskHandler);
 
-		mDbHelper = new CatalogueDBAdapter(ctx.getContext());
+		mDbHelper = new CatalogueDBAdapter(ctx.getAppContext());
 		mDbHelper.open();
 
 	}

@@ -33,7 +33,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import android.os.Bundle;
-import android.util.Log;
 
 /**
  * Handle all aspects of searching (and ultimately synchronizing with) LibraryThing.
@@ -111,12 +110,10 @@ public class LibraryThingManager {
 			mLastRequestTime = now + wait;
 		}
 		if (wait > 0) {
-			Log.i("BC", "Waiting for LT");
 			try {
 			Thread.sleep(wait);
 			} catch (InterruptedException e) {
 			}
-			Log.i("BC", "Waited for LT");
 		}
 	}
 

@@ -31,7 +31,6 @@ import android.content.DialogInterface.OnKeyListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.KeyEvent;
 
 import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
@@ -507,7 +506,6 @@ public class TaskManager {
 		public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
 			if (event.getAction() == KeyEvent.ACTION_UP) {
 				if (keyCode == KeyEvent.KEYCODE_BACK) {
-					Log.i("BC", "Back pressed - cancelling");
 					// Toasting a message here makes the app look less responsive, because
 					// the final 'Cancelled...' message is delayed too much.
 					//doToast(getString(R.string.cancelling));

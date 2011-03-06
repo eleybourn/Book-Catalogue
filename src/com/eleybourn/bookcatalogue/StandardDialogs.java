@@ -79,10 +79,11 @@ public class StandardDialogs {
 			authors = "<Unknown>";
 		else {
 			authors = authorList.get(0).getDisplayName();
-			for (int i = 1; i < authorList.size() - 1; i++)
+			for (int i = 1; i < authorList.size() - 1; i++) {
 				authors += ", " + authorList.get(i).getDisplayName();
-			if (authorList.size() > 2)
-				authors += " " + context.getResources().getString(R.string.list_and) + " " + authorList.get(authorList.size()).getDisplayName();
+			}
+			if (authorList.size() > 1)
+				authors += " " + context.getResources().getString(R.string.list_and) + " " + authorList.get(authorList.size() -1).getDisplayName();
 		}
 
 		// Get the title		

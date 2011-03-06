@@ -20,12 +20,9 @@
 
 package com.eleybourn.bookcatalogue;
 
-import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
+
 import android.os.Handler;
-import android.os.Message;
-import android.os.Parcelable;
-import android.util.Log;
 
 /**
  * Class to perform time consuming but light-weight tasks in a worker thread. Users of this
@@ -93,33 +90,26 @@ public class SimpleTaskQueue extends Thread {
 	 * @param task		Task to run.
 	 */
 	public void request(SimpleTask task) {
-		//Log.i("BC","Queueing request");
 		try {
 			mQueue.push(task);				
 		} catch (InterruptedException e) {
 			// Ignore. This happens if the object is being terminated.
-			//Log.e("BC", "Thread interrupted while queueing request", e);
 		}
-		//Log.i("BC","Queued request");
 	}
 
 	/**
 	 * Main worker thread logic
 	 */
 	public void run() {
-		//Log.i("BC","Thread running");
 		try {
 			while (!mTerminate) {
-				//Log.i("BC","Thread waiting for request");
 				SimpleTask req = mQueue.pop();
-				//Log.i("BC","Thread handling request");
 				handleRequest(req);
-				//Log.i("BC","Thread handled request");
 			}
 		} catch (InterruptedException e) {
 			// Ignore; these will happen when object is destroyed
 		} catch (Exception e) {
-			Log.e("BC", "Exception in thread", e);
+			Logger.logError(e);
 		}
 	}
 
@@ -142,13 +132,11 @@ public class SimpleTaskQueue extends Thread {
 		try {
 			task.run();
 		} catch (Exception e) {
-			Log.e("BC", "Error running task", e);
+			Logger.logError(e, "Error running task");
 		}
-		Log.i("BC","Thread queueing result");
 		try {
 			mResultQueue.put(task);	
 		} catch (InterruptedException e) {
-			//Log.e("BC", "Thread interrupted while queueing request", e);
 		}
 		// Wake up the UI thread.
 		mHandler.post(mDoProcessResults);
@@ -168,11 +156,11 @@ public class SimpleTaskQueue extends Thread {
 				try {
 					req.finished();
 				} catch (Exception e) {
-					Log.e("BC", "Error processing request result", e);
+					Logger.logError(e, "Error processing request result");
 				}
 			}
 		} catch (Exception e) {
-			Log.e("BC", "Exception in processResults in UI thread", e);
+			Logger.logError(e, "Exception in processResults in UI thread");
 		}
 	}
 }

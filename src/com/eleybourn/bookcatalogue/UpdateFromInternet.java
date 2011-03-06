@@ -20,16 +20,12 @@
 
 package com.eleybourn.bookcatalogue;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -244,6 +240,7 @@ public class UpdateFromInternet extends ActivityWithTasks {
 		@Override
 		public void onFinish() {
 			mUpdateThread = null;
+			finish();
 		}
 	};
 

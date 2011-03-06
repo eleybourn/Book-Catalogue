@@ -39,7 +39,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.BaseColumns;
 import android.widget.ImageView;
 
@@ -333,7 +332,7 @@ public class CatalogueDBAdapter {
 //						+ " LEFT OUTER JOIN " + DB_TB_SERIES + " s ON (s." + KEY_ROWID + "=w." + KEY_SERIES_ID + ") ";
 		
 	private final Context mCtx;
-	public static final int DATABASE_VERSION = 53;
+	public static final int DATABASE_VERSION = 54;
 
 	private TableInfo mBooksInfo = null;
 
@@ -808,66 +807,82 @@ public class CatalogueDBAdapter {
 				message += "* Dollar signs in the text fields will no longer FC on import/export\n\n";
 			}
 			if (curVersion == 52) {
-				try {
-					message += "New in v3.4 - Updates courtesy of (mainly) Grunthos (blame him, politely, if it toasts your data)\n\n";
-					message += "* Multiple Authors per book\n\n";
-					message += "* Multiple Series per book\n\n";
-					message += "* ASIN support\n\n";
-					message += "* Progress Dialong during book search\n\n";
-					message += "* Fetches series (and other stuff) from LibraryThing\n\n";
-					message += "* Does concurrent ISBN searches at Amazon, Google and LibraryThing (it's faster)\n\n";
-					message += "* Import & Export improvements\n\n";
-					message += "* Work-flow enhancements when adding books\n\n";
-					message += "* Duplicate books allowed\n\n";
-					message += "* Can now make global changes to Author and Series\n\n";
-					message += "See the web site for more details";
-
-					db.execSQL(DATABASE_CREATE_SERIES);
-					// We need to create a series table with series that are unique wrt case and unicode. The old
-					// system allowed for series with slightly different case. So we capture these by using
-					// max() to pick and arbitrary matching name to use as our canonical version.
-					db.execSQL("INSERT INTO " + DB_TB_SERIES + " (" + KEY_SERIES_NAME + ") "
-								+ "SELECT name from ("
-								+ "    SELECT Upper(" + KEY_SERIES_OLD + ") " + COLLATION + " as ucName, "
-								+ "    max(" + KEY_SERIES_OLD + ")" + COLLATION + " as name FROM " + DB_TB_BOOKS
-								+ "    WHERE Coalesce(" + KEY_SERIES_OLD + ",'') <> ''"
-								+ "    Group By Upper(" + KEY_SERIES_OLD + ")"
-								+ " )"
-								);
-
-					db.execSQL(DATABASE_CREATE_BOOK_SERIES);
-					db.execSQL(DATABASE_CREATE_BOOK_AUTHOR);
-
-					createIndices(db);
-
-					db.execSQL("INSERT INTO " + DB_TB_BOOK_SERIES + " (" + KEY_BOOK + ", " + KEY_SERIES_ID + ", " + KEY_SERIES_NUM + ", " + KEY_SERIES_POSITION + ") "
-							+ "SELECT DISTINCT b." + KEY_ROWID + ", s." + KEY_ROWID + ", b." + KEY_SERIES_NUM + ", 1"
-							+ " FROM " + DB_TB_BOOKS + " b "
-							+ " Join " + DB_TB_SERIES + " s On Upper(s." + KEY_SERIES_NAME + ") = Upper(b." + KEY_SERIES_OLD + ")" + COLLATION
-							+ " Where Coalesce(b." + KEY_SERIES_OLD + ", '') <> ''");
-
-					db.execSQL("INSERT INTO " + DB_TB_BOOK_AUTHOR + " (" + KEY_BOOK + ", " + KEY_AUTHOR_ID + ", " + KEY_AUTHOR_POSITION + ") "
-							+ "SELECT b." + KEY_ROWID + ", b." + KEY_AUTHOR_OLD + ", 1 FROM " + DB_TB_BOOKS + " b ");
-
-					String tmpFields = KEY_ROWID + ", " /* + KEY_AUTHOR + ", " */ + KEY_TITLE + ", " + KEY_ISBN 
-					+ ", " + KEY_PUBLISHER + ", " + KEY_DATE_PUBLISHED + ", " + KEY_RATING + ", " + KEY_READ 
-					+ /* ", " + KEY_SERIES + */ ", " + KEY_PAGES /* + ", " + KEY_SERIES_NUM */ + ", " + KEY_NOTES 
-					+ ", " + KEY_LIST_PRICE + ", " + KEY_ANTHOLOGY + ", " + KEY_LOCATION + ", " + KEY_READ_START 
-					+ ", " + KEY_READ_END + ", " + KEY_FORMAT + ", " + KEY_SIGNED + ", " + KEY_DESCRIPTION
-					+ ", " + KEY_GENRE;
-					db.execSQL("CREATE TABLE tmpBooks AS SELECT " + tmpFields + " FROM " + DB_TB_BOOKS);
-
-					db.execSQL("DROP TABLE " + DB_TB_BOOKS);
-
-					db.execSQL(DATABASE_CREATE_BOOKS);
-
-					db.execSQL("INSERT INTO " + DB_TB_BOOKS + "( " + tmpFields + ")  SELECT * FROM tmpBooks");
-
-					db.execSQL("DROP TABLE tmpBooks");
-				} catch (Exception e) {
-					Logger.logError(e);
+				curVersion++;
+				message += "New in v3.3.1\n\n";
+				message += "* Minor bug fixes and error logging. Please email me if you have any further issues.\n\n";
+			}
+			if (curVersion == 53) {
+				//There is a conflict between eleybourn released branch (3.3.1) and grunthos HEAD (3.4). 
+				// This is to check and skip as required
+				boolean skip = false;
+				String checkSQL = "SELECT * FROM " + DB_TB_BOOKS;
+				Cursor results = db.rawQuery(checkSQL, new String[]{});
+				if (results.getCount() > 0) {
+					if (results.getColumnIndex(KEY_AUTHOR_OLD) > -1) {
+						skip = true;
+					}
 				}
-				
+				if (skip == true) {
+					try {
+						message += "New in v3.4 - Updates courtesy of (mainly) Grunthos (blame him, politely, if it toasts your data)\n\n";
+						message += "* Multiple Authors per book\n\n";
+						message += "* Multiple Series per book\n\n";
+						message += "* ASIN support\n\n";
+						message += "* Progress Dialong during book search\n\n";
+						message += "* Fetches series (and other stuff) from LibraryThing\n\n";
+						message += "* Does concurrent ISBN searches at Amazon, Google and LibraryThing (it's faster)\n\n";
+						message += "* Import & Export improvements\n\n";
+						message += "* Work-flow enhancements when adding books\n\n";
+						message += "* Duplicate books allowed\n\n";
+						message += "* Can now make global changes to Author and Series\n\n";
+						message += "See the web site for more details";
+						
+						db.execSQL(DATABASE_CREATE_SERIES);
+						// We need to create a series table with series that are unique wrt case and unicode. The old
+						// system allowed for series with slightly different case. So we capture these by using
+						// max() to pick and arbitrary matching name to use as our canonical version.
+						db.execSQL("INSERT INTO " + DB_TB_SERIES + " (" + KEY_SERIES_NAME + ") "
+									+ "SELECT name from ("
+									+ "    SELECT Upper(" + KEY_SERIES_OLD + ") " + COLLATION + " as ucName, "
+									+ "    max(" + KEY_SERIES_OLD + ")" + COLLATION + " as name FROM " + DB_TB_BOOKS
+									+ "    WHERE Coalesce(" + KEY_SERIES_OLD + ",'') <> ''"
+									+ "    Group By Upper(" + KEY_SERIES_OLD + ")"
+									+ " )"
+									);
+	
+						db.execSQL(DATABASE_CREATE_BOOK_SERIES);
+						db.execSQL(DATABASE_CREATE_BOOK_AUTHOR);
+	
+						createIndices(db);
+	
+						db.execSQL("INSERT INTO " + DB_TB_BOOK_SERIES + " (" + KEY_BOOK + ", " + KEY_SERIES_ID + ", " + KEY_SERIES_NUM + ", " + KEY_SERIES_POSITION + ") "
+								+ "SELECT DISTINCT b." + KEY_ROWID + ", s." + KEY_ROWID + ", b." + KEY_SERIES_NUM + ", 1"
+								+ " FROM " + DB_TB_BOOKS + " b "
+								+ " Join " + DB_TB_SERIES + " s On Upper(s." + KEY_SERIES_NAME + ") = Upper(b." + KEY_SERIES_OLD + ")" + COLLATION
+								+ " Where Coalesce(b." + KEY_SERIES_OLD + ", '') <> ''");
+	
+						db.execSQL("INSERT INTO " + DB_TB_BOOK_AUTHOR + " (" + KEY_BOOK + ", " + KEY_AUTHOR_ID + ", " + KEY_AUTHOR_POSITION + ") "
+								+ "SELECT b." + KEY_ROWID + ", b." + KEY_AUTHOR_OLD + ", 1 FROM " + DB_TB_BOOKS + " b ");
+	
+						String tmpFields = KEY_ROWID + ", " /* + KEY_AUTHOR + ", " */ + KEY_TITLE + ", " + KEY_ISBN 
+						+ ", " + KEY_PUBLISHER + ", " + KEY_DATE_PUBLISHED + ", " + KEY_RATING + ", " + KEY_READ 
+						+ /* ", " + KEY_SERIES + */ ", " + KEY_PAGES /* + ", " + KEY_SERIES_NUM */ + ", " + KEY_NOTES 
+						+ ", " + KEY_LIST_PRICE + ", " + KEY_ANTHOLOGY + ", " + KEY_LOCATION + ", " + KEY_READ_START 
+						+ ", " + KEY_READ_END + ", " + KEY_FORMAT + ", " + KEY_SIGNED + ", " + KEY_DESCRIPTION
+						+ ", " + KEY_GENRE;
+						db.execSQL("CREATE TABLE tmpBooks AS SELECT " + tmpFields + " FROM " + DB_TB_BOOKS);
+	
+						db.execSQL("DROP TABLE " + DB_TB_BOOKS);
+	
+						db.execSQL(DATABASE_CREATE_BOOKS);
+	
+						db.execSQL("INSERT INTO " + DB_TB_BOOKS + "( " + tmpFields + ")  SELECT * FROM tmpBooks");
+	
+						db.execSQL("DROP TABLE tmpBooks");
+					} catch (Exception e) {
+						Logger.logError(e);
+					}
+				} 
 			}
 		}
 	}

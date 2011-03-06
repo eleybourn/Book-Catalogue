@@ -63,6 +63,7 @@ New in v3.4
 * Bug fixes for sorting of book titles, series and authors.
 * Suggestions available when searching
 * Does concurrent ISBN searches at Amazon, Google and LibraryThing (it's faster)
+* Removed the need for contacts permission. Though it does mean you will need to manually enter everyone you want to loan to.
 * Import & Export improvements
 
 New in v3.3 - Updates courtesy of Grunthos

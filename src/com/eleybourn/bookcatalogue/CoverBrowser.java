@@ -34,7 +34,6 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -197,19 +196,16 @@ public class CoverBrowser {
 		@Override
 		public void run() {
 			// Start the download
-			//Log.i("BC", "SMALL: requesting " + isbn + " at position " + position);
 			fileSpec = mFileManager.download(isbn, ImageSizes.SMALL);
 		}
 		@Override
 		public void finished() {
 			// Load the file and apply to view
-			//Log.i("BC", "SMALL: Found " + isbn + " and position " + position + "->" + fileSpec);
 			File file = new File(fileSpec);
-		    file.deleteOnExit();
-		    //CoverImageAdapter cia = (CoverImageAdapter) gallery.getAdapter();
-		    //cia.notifyDataSetChanged();
-		    Utils.fetchFileIntoImageView(file, v, mPreviewSize, mPreviewSize, true);
-			Log.i("BC", "SMALL: Set " + isbn + " and position " + position + "->" + fileSpec);
+			file.deleteOnExit();
+			//CoverImageAdapter cia = (CoverImageAdapter) gallery.getAdapter();
+			//cia.notifyDataSetChanged();
+			Utils.fetchFileIntoImageView(file, v, mPreviewSize, mPreviewSize, true);
 		}
 	}
 
@@ -243,27 +239,24 @@ public class CoverBrowser {
 		@Override
 		public void run() {
 			// Download the file
-			//Log.i("BC", "LARGE: requesting " + isbn + " at position " + position);
 			fileSpec = mFileManager.download(isbn, ImageSizes.LARGE);
 		}
 		@Override
 		public void finished() {
 			// Update the ImageSwitcher
-			//Log.i("BC", "LARGE: Found " + isbn + " and position " + position + "->" + fileSpec);
 			File file = new File(fileSpec);
-			//Log.i("BC", "LARGE: Set " + isbn + " and position " + position + "->" + fileSpec);
-    		TextView msgVw = (TextView)mDialog.findViewById(R.id.switcherStatus);
-    		if (file.exists() && file.length() > 0) {
-                Drawable d = new BitmapDrawable(Utils.fetchFileIntoImageView(file, null, mPreviewSize*4, mPreviewSize*4, true));
-                switcher.setImageDrawable(d);
-                switcher.setTag(file.getAbsolutePath());    			
-        		msgVw.setVisibility(View.GONE);
-        		switcher.setVisibility(View.VISIBLE);
-    		} else {
-        		msgVw.setVisibility(View.VISIBLE);
-        		switcher.setVisibility(View.GONE);
-        		msgVw.setText(R.string.image_not_found);
-    		}
+			TextView msgVw = (TextView)mDialog.findViewById(R.id.switcherStatus);
+			if (file.exists() && file.length() > 0) {
+				Drawable d = new BitmapDrawable(Utils.fetchFileIntoImageView(file, null, mPreviewSize*4, mPreviewSize*4, true));
+				switcher.setImageDrawable(d);
+				switcher.setTag(file.getAbsolutePath());    			
+				msgVw.setVisibility(View.GONE);
+				switcher.setVisibility(View.VISIBLE);
+			} else {
+				msgVw.setVisibility(View.VISIBLE);
+				switcher.setVisibility(View.GONE);
+				msgVw.setText(R.string.image_not_found);
+			}
 		}
 	}
 
@@ -415,9 +408,7 @@ public class CoverBrowser {
 		    }
 
 		    if (!isPresent) {
-		    	Log.i("BC"," Downloading " + isbn + "(" + size + ")");
 		    	filespec = LibraryThingManager.getCoverImage(isbn, null, size);
-		    	Log.i("BC"," Downloaded " + isbn + "(" + size + ")->" + filespec);
 		    	synchronized(mFiles) {
 				    mFiles.putString(key, filespec);		    		
 		    	}
@@ -459,7 +450,7 @@ public class CoverBrowser {
 				}				
 				mFiles.clear();
 			} catch (Exception e) {
-				Log.e("BC", " Error purging files", e);
+				Logger.logError(e);
 			}
 		}
 	}

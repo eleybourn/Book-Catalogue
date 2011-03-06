@@ -7,18 +7,10 @@
 	android:paddingLeft="5sp"
 	android:background="#2d2d2d">
 
-  	<TextView android:id="@+id/title_label" 
-  		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content" 
-		android:hint="Label"
-		android:layout_weight="2"
-		android:layout_alignParentTop="true"
-  		android:textSize="12sp" />
   	<TextView android:id="@+id/title" 
   		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content" 
 		android:layout_weight="2"
-		android:layout_below="@+id/title_label"
 		android:hint="@string/title"
   		android:textSize="16sp" />
 

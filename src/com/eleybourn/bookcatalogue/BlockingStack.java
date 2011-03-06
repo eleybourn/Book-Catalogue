@@ -20,15 +20,9 @@
 
 package com.eleybourn.bookcatalogue;
 
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Stack;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-
-import android.util.Log;
 
 /**
  * Based loosely on LinkedBlockingQueue. Ideally we would use BlockingDeque but that is only
@@ -70,7 +64,6 @@ public class BlockingStack<T> {
 
 		// Make sure we are the only 'pusher' here.
 		pushLock.lockInterruptibly();
-		//Log.i("BC",mName + " push - Lock");
 		try {
 			// Add the object and get the size of the current stack
 			// we 'synchronize' because it is not at all clear that 
@@ -80,10 +73,8 @@ public class BlockingStack<T> {
 				origSize = mStack.size();
 				mStack.push(object);
 			}
-			//Log.i("BC",mName + " push - pushed - orig size = " + origSize);
 		} finally {
 			pushLock.unlock();
-			//Log.i("BC",mName + " push - Unlock");
 		}
 		if (origSize == 0) {
 			// It was an empty stack; signal that it has some objects now.
@@ -93,7 +84,6 @@ public class BlockingStack<T> {
 			popLock.lock();
 			try {
 				mNotEmpty.signal();
-				//Log.i("BC",mName + " push - signalled not empty");
 			} finally {
 				popLock.unlock();
 			}			
@@ -113,7 +103,6 @@ public class BlockingStack<T> {
 		T o = null;
 		// Make sure we are the only popper.
 		popLock.lockInterruptibly();
-		//Log.i("BC",mName + " pop - Lock");
 		try {
 			// Get the size
 			synchronized(mStack) {
@@ -122,24 +111,19 @@ public class BlockingStack<T> {
 			// If none left, wait for another thread to signal.
 			while (count ==0) {
 				// Wait for the notEmpty condition and get the current size
-				//Log.i("BC",mName + " pop - Waiting, count = " + count);
 				mNotEmpty.await();
-				//Log.i("BC",mName + " pop - Waited");
 				synchronized(mStack) {
 					count = mStack.size();
 				}
-				//Log.i("BC",mName + " pop - Waited, count = " + count);					
 			};
 			// Pop an item
 			synchronized(mStack) {
 				o = mStack.pop();
 			}
-			//Log.i("BC",mName + " pop - popped");				
 			// If, after popping, there would be more left, resignal for any other threads.
 			// Note that the regignal DOES NOT apply to this thread.
 			if (count > 1) {
 				mNotEmpty.signal();
-				//Log.i("BC",mName + " pop - resignalled");				
 			}
 		} finally {
 			popLock.unlock();
@@ -160,24 +144,20 @@ public class BlockingStack<T> {
 		T o = null;
 		// Make sure we are the only popper.
 		popLock.lockInterruptibly();
-		//Log.i("BC",mName + " poll - Lock");
 		try {
 			int count;
 			// Get the current size
 			synchronized(mStack) {
 				count = mStack.size();
 			}
-			//Log.i("BC",mName + " poll - count = " + count);
 			// If any present, we know no-one will delete (we are the popper) so get it.
 			if (count > 0) {
 				// Pop an item
 				synchronized(mStack) {
 					o = mStack.pop();
 				}
-				//Log.i("BC",mName + " poll - popped");
 				// If, after popping, there would be more left, resignal.
 				if (count > 1) {
-					//Log.i("BC",mName + " poll - signal");
 					mNotEmpty.signal();					
 				}
 			}

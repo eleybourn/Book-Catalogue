@@ -20,30 +20,19 @@
 
 package com.eleybourn.bookcatalogue;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.LinkedList;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
+import android.database.Cursor;
+import android.os.Bundle;
+import android.os.Message;
+import android.os.Parcelable;
+
 import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsage;
 import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsages;
 import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsages.Usages;
-import com.eleybourn.bookcatalogue.Utils.ItemWithIdFixup;
-
-import android.database.Cursor;
-import android.os.Bundle;
-import android.os.Environment;
-import android.os.Looper;
-import android.os.Message;
-import android.os.Parcelable;
-import android.util.Log;
 
 /**
  * Class to update all thumbnails (and some other data) in a background thread.
@@ -211,14 +200,12 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 					// Wait for the search to complete; when the search has completed it uses class-level state
 					// data when processing the results. It will signal this lock when it no longer needs any class
 					// level state data (eg. mOrigData).
-					//Log.i("BC", "Waiting until search done " + mCurrId);
 					mSearchLock.lock();
 					try {
 						mSearchDone.await();
 					} finally {
 						mSearchLock.unlock();					
 					}
-					//Log.i("BC", "Got search done " + mCurrId + " in " + Thread.currentThread().toString());					
 				}
 
 			}
@@ -398,7 +385,6 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 		// Let another search begin
 		mSearchLock.lock();
 		try {
-			//Log.i("BC", "Signalling search done " + mCurrId + " in " + Thread.currentThread().toString());
 			mSearchDone.signal();
 		} finally {
 			mSearchLock.unlock();			

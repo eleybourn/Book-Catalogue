@@ -45,6 +45,7 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -826,5 +827,10 @@ public class Utils {
 	    return bm;
 	}
 	
+	public static void showLtAlertIfNecessary(Context context, boolean always, String suffix) {
+		LibraryThingManager ltm = new LibraryThingManager(context);
+		if (!ltm.isAvailable())
+			StandardDialogs.needLibraryThingAlert(context, always, suffix);		
+	}
 }
 

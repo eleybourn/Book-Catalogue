@@ -233,4 +233,15 @@
 <string name="usage_overwrite">Overwrites existing data</string>
 <string name="cancelling">Cancelling</string>
 <string name="starting_search">Starting Search</string>
+<string name="lt_info">This application is enhanced by using LibraryThing as a source of information about book series, as well as a source of alternate covers. To use these features you need to register with LibraryThing (free) and request a LibraryThing developer key (also free).</string>
+<string name="lt_register_text">Register with LibaryThing</string>
+<string name="lt_devkey_text">Request LibaryThing developer key</string>
+<string name="lt_label">LibraryThing</string>
+<string name="lt_gotkey">Once you have the developer key (or if you already have one), just enter it below and it will be used to get extra data.</string>
+<string name="developer_key">Developer Key</string>
+<string name="require_library_thing_info">This feature requires a LibraryThing Developer Key. Do you want to see more information about LibraryThing?</string>
+<string name="uses_library_thing_info">This feature benefits from having a LibraryThing Developer Key. Do you want to see more information about LibraryThing, or disable this message?\n\nLibraryThing information can be found in the LibraryThing tab of the Administration pages.</string>
+<string name="reg_library_thing_title">LibraryThing Registration</string>
+<string name="more_info">More Info.</string>
+<string name="disable_dialogue">Disable Message</string>
 </resources>

@@ -32,6 +32,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 /**
@@ -50,10 +52,15 @@ import android.os.Bundle;
  *
  */
 public class LibraryThingManager {
+	/** App context (for prefs) */
+	Context mAppContext;
+
+	/** Name of preference that contains the dev key for the user */
+	public static final String LT_DEVKEY_PREF_NAME = "lt_devkey";
+	/** Name of preference that controls display of alert about LT */
+	public static final String LT_HIDE_ALERT_PREF_NAME = "lt_hide_alert";
 
 	private static Long mLastRequestTime = 0L;
-	// 
-	Bundle mBookData = null;
 
 	// Words in XML
 	public static String ID = "id";
@@ -80,8 +87,8 @@ public class LibraryThingManager {
 	// Sizes of thumbnails
 	public enum ImageSizes { SMALL, MEDIUM, LARGE };
 
-	LibraryThingManager(Bundle bookData) {
-		mBookData = bookData;
+	LibraryThingManager(Context context) {
+		mAppContext = context.getApplicationContext();
 	}
 
 	/**
@@ -410,9 +417,13 @@ public class LibraryThingManager {
 	 * but in both cases, in both cases it should be noted that the covers are still available.
 	 *
 	 */
-	public void searchByIsbn(String isbn, boolean fetchThumbnail) {
+	public void searchByIsbn(String isbn, boolean fetchThumbnail, Bundle bookData) {
+		String devKey = getDevKey();
+		if (devKey.equals(""))
+			throw new RuntimeException("Developer Key not available");
+
 		// Base path for an ISBN search
-		String path = String.format(DETAIL_URL, LibraryThingApiKey.get(), isbn);
+		String path = String.format(DETAIL_URL, devKey, isbn);
 
 		if (isbn.equals(""))
 			throw new IllegalArgumentException();
@@ -422,7 +433,7 @@ public class LibraryThingManager {
 		// Setup the parser
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		SAXParser parser;
-		SearchLibraryThingEntryHandler entryHandler = new LibraryThingManager.SearchLibraryThingEntryHandler(mBookData);
+		SearchLibraryThingEntryHandler entryHandler = new LibraryThingManager.SearchLibraryThingEntryHandler(bookData);
 
 		try {
 			url = new URL(path);
@@ -450,7 +461,7 @@ public class LibraryThingManager {
 		}
 
 		if (fetchThumbnail)
-			getCoverImage(isbn, mBookData, ImageSizes.LARGE);
+			getCoverImage(isbn, bookData, ImageSizes.LARGE);
 
 		return;
 	}
@@ -582,7 +593,11 @@ public class LibraryThingManager {
 	 * 
 	 * @param isbn
 	 */
-	public static String getCoverImageUrl(String isbn, ImageSizes size) {
+	public String getCoverImageUrl(String isbn, ImageSizes size) {
+		String devKey = getDevKey();
+		if (devKey.equals(""))
+			throw new RuntimeException("Developer Key not available");
+
 		String path = COVER_URL_SMALL;
 
 		switch(size) {
@@ -597,7 +612,7 @@ public class LibraryThingManager {
 			break;
 		}
 		// Get the 'large' version
-		String url = String.format(path, LibraryThingApiKey.get(), isbn);
+		String url = String.format(path, devKey, isbn);
 		return url;
 	}
 	/**
@@ -605,7 +620,7 @@ public class LibraryThingManager {
 	 * 
 	 * @param isbn
 	 */
-	public static String getCoverImage(String isbn, Bundle bookData, ImageSizes size) {
+	public String getCoverImage(String isbn, Bundle bookData, ImageSizes size) {
 		String url = getCoverImageUrl(isbn, size);
 
 		// Make sure we follow LibraryThing ToS (no more than 1 request/second).
@@ -694,4 +709,12 @@ public class LibraryThingManager {
 
 	}
 
+	public boolean isAvailable() {
+		return getDevKey().length() > 0;
+	}
+
+	private String getDevKey() {
+		SharedPreferences prefs = mAppContext.getSharedPreferences("bookCatalogue", android.content.Context.MODE_PRIVATE);
+		return prefs.getString(LT_DEVKEY_PREF_NAME, "");
+	}
 }

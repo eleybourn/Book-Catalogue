@@ -15,7 +15,8 @@ public class SearchForBookThread extends ManagedTask {
 	private String mAuthor;
 	private String mTitle;
 	private String mIsbn;
-
+	private LibraryThingManager mLibraryThing;
+	
 	private String mSavedTitle = null;
 
 	// Accumulated book info.
@@ -46,6 +47,7 @@ public class SearchForBookThread extends ManagedTask {
 		mAuthor = author;
 		mTitle = title;
 		mIsbn = isbn;
+		mLibraryThing = new LibraryThingManager(manager.getAppContext());
 	}
 
 	@Override
@@ -122,22 +124,23 @@ public class SearchForBookThread extends ManagedTask {
 			//	We always contact LibraryThing because it is a good source of Series data and thumbnails. But it 
 			//	does require an ISBN AND a developer key.
 			//
-			if (mBookData.containsKey(CatalogueDBAdapter.KEY_ISBN)) {
-				String isbn = mBookData.getString(CatalogueDBAdapter.KEY_ISBN);
-				if (isbn.length() > 0) {
-					this.doProgress(getString(R.string.searching_library_thing), 0);
-					LibraryThingManager ltm = new LibraryThingManager(mBookData);
-					try {
-						ltm.searchByIsbn(isbn, true);
-						// Look for series name and clear KEY_TITLE
-						checkForSeriesName();
-					} catch (Exception e) {
-						Logger.logError(e);
-						showException(R.string.searching_library_thing, e);
+			if (mLibraryThing.isAvailable()) {
+				if (mBookData.containsKey(CatalogueDBAdapter.KEY_ISBN)) {
+					String isbn = mBookData.getString(CatalogueDBAdapter.KEY_ISBN);
+					if (isbn.length() > 0) {
+						this.doProgress(getString(R.string.searching_library_thing), 0);
+						try {
+							mLibraryThing.searchByIsbn(isbn, true, mBookData);
+							// Look for series name and clear KEY_TITLE
+							checkForSeriesName();
+						} catch (Exception e) {
+							Logger.logError(e);
+							showException(R.string.searching_library_thing, e);
+						}
 					}
-				}
+				}				
 			}
-			
+
 			if (mSavedTitle != null)
 				mBookData.putString(CatalogueDBAdapter.KEY_TITLE, mSavedTitle);
 

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:orientation="vertical"
+	android:layout_width="fill_parent" 
+	android:layout_height="fill_parent"
+	android:paddingLeft="5sp">
+
+	<TextView android:id="@+id/info1" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" 
+		android:text="@+string/lt_info"
+		android:paddingBottom="20sp"
+		/>
+	<TextView android:id="@+id/register_url" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" 
+		android:text="@+string/lt_register_text"
+		android:paddingBottom="10sp"
+		android:gravity="center"
+		android:textColor="#006699"
+		/>
+	<TextView android:id="@+id/devkey_url" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" 
+		android:text="@+string/lt_devkey_text"
+		android:paddingBottom="10sp"
+		android:gravity="center"
+		android:textColor="#006699"
+		/>
+	<TextView android:id="@+id/info2" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" 
+		android:text="@+string/lt_gotkey"
+		android:paddingTop="20sp"
+		android:paddingBottom="20sp"
+		/>
+	<EditText android:id="@+id/devkey" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" 
+		android:hint="@string/developer_key"
+		/>
+	<Button android:id="@+id/confirm" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" 
+		android:hint="@+string/save"
+		/>
+
+</LinearLayout>

@@ -67,6 +67,8 @@ public class UpdateFromInternet extends ActivityWithTasks {
 	public void onCreate(Bundle savedInstanceState) {
 		try {
 			super.onCreate(savedInstanceState);
+			Utils.showLtAlertIfNecessary(this, false, "update_from_internet");
+
 			setContentView(R.layout.update_from_internet);
 			mPrefs = getSharedPreferences("bookCatalogue", android.content.Context.MODE_PRIVATE);
 			setupFields();

@@ -62,6 +62,8 @@ public class CoverBrowser {
 	private String mIsbn;
 	// Calling context
 	private Context mContext;
+	// Libary Thing
+	private LibraryThingManager mLibraryThing;
 	// Calculated size for preview images
 	private final int mPreviewSize;
 	// List of all editions for the given ISBN
@@ -265,6 +267,12 @@ public class CoverBrowser {
 	 */
 	public void showEditionCovers() {
 
+		mLibraryThing = new LibraryThingManager(mContext);
+		if (!mLibraryThing.isAvailable()) {
+			StandardDialogs.needLibraryThingAlert(mContext, true, "cover_browser");
+			return;
+		}
+
 		if (mIsbn == null || mIsbn.trim().length() == 0) {
 			Toast.makeText(mContext, R.string.no_isbn_no_editions, Toast.LENGTH_LONG).show();
 			shutdown();
@@ -372,6 +380,7 @@ public class CoverBrowser {
 	 */
 	private class FileManager {
 		private Bundle mFiles = new Bundle();
+    	LibraryThingManager mLibraryThing = new LibraryThingManager(mContext);
 
 		/**
 		 * Download a file if not present and keep a record of it.
@@ -408,7 +417,7 @@ public class CoverBrowser {
 		    }
 
 		    if (!isPresent) {
-		    	filespec = LibraryThingManager.getCoverImage(isbn, null, size);
+		    	filespec = mLibraryThing.getCoverImage(isbn, null, size);
 		    	synchronized(mFiles) {
 				    mFiles.putString(key, filespec);		    		
 		    	}

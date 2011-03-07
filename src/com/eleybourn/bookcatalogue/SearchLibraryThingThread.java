@@ -20,14 +20,16 @@ public class SearchLibraryThingThread extends SearchThread {
 			String isbn = mIsbn;
 			if (isbn.length() > 0) {
 				this.doProgress(getString(R.string.searching_library_thing), 0);
-				LibraryThingManager ltm = new LibraryThingManager(mBookData);
-				try {
-					ltm.searchByIsbn(isbn, mFetchThumbnail);
-					// Look for series name and clear KEY_TITLE
-					checkForSeriesName();
-				} catch (Exception e) {
-					Logger.logError(e);
-					showException(R.string.searching_library_thing, e);
+				LibraryThingManager ltm = new LibraryThingManager(mManager.getAppContext());
+				if (ltm.isAvailable()) {
+					try {
+						ltm.searchByIsbn(isbn, mFetchThumbnail, mBookData);
+						// Look for series name and clear KEY_TITLE
+						checkForSeriesName();
+					} catch (Exception e) {
+						Logger.logError(e);
+						showException(R.string.searching_library_thing, e);
+					}
 				}
 			}
 		}

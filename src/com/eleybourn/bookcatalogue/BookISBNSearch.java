@@ -92,6 +92,9 @@ public class BookISBNSearch extends ActivityWithTasks {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		Utils.showLtAlertIfNecessary(this, false, "search");
+
 		Bundle extras = getIntent().getExtras();
 		mDbHelper = new CatalogueDBAdapter(this);
 		mDbHelper.open();

@@ -62,7 +62,7 @@ public class AdministrationLibraryThing extends Activity {
 		SharedPreferences prefs = getSharedPreferences("bookCatalogue", android.content.Context.MODE_PRIVATE);
 		devkeyView.setText(prefs.getString(LibraryThingManager.LT_DEVKEY_PREF_NAME, ""));
 		
-		/* Button */
+		/* Save Button */
 		Button btn = (Button) findViewById(R.id.confirm);
 		btn.setOnClickListener(new OnClickListener() {
 			@Override
@@ -72,6 +72,24 @@ public class AdministrationLibraryThing extends Activity {
 				SharedPreferences prefs = getSharedPreferences("bookCatalogue", android.content.Context.MODE_PRIVATE);
 				SharedPreferences.Editor ed = prefs.edit();
 				ed.putString(LibraryThingManager.LT_DEVKEY_PREF_NAME, devkey);
+				ed.commit();
+				return;
+			}
+		});
+
+		/* Reset Button */
+		Button resetBtn = (Button) findViewById(R.id.reset_messages);
+		resetBtn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				EditText devkeyView = (EditText) findViewById(R.id.devkey);
+				String devkey = devkeyView.getText().toString();
+				SharedPreferences prefs = getSharedPreferences("bookCatalogue", android.content.Context.MODE_PRIVATE);
+				SharedPreferences.Editor ed = prefs.edit();
+				for( String key : prefs.getAll().keySet()) {
+					if (key.toLowerCase().startsWith(LibraryThingManager.LT_HIDE_ALERT_PREF_NAME.toLowerCase())) 
+						ed.remove(key);
+				}
 				ed.commit();
 				return;
 			}

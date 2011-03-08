@@ -492,4 +492,12 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
     	// save list
     	outState.putParcelableArrayList(mKey, mList);
     }
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		if (mDbHelper != null)
+			mDbHelper.close();
+	}
+
 }

@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+  <ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content">
+
+  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
 	android:orientation="vertical"
 	android:layout_width="fill_parent" 
 	android:layout_height="fill_parent"
@@ -40,9 +44,21 @@
 		android:hint="@string/developer_key"
 		/>
 	<Button android:id="@+id/confirm" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content" 
+		android:hint="@+string/save" android:gravity="center|center_horizontal"/>
+	<TextView android:id="@+id/info3" 
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content" 
-		android:hint="@+string/save"
+		android:text="@+string/lt_reset_messages_info"
+		android:paddingTop="20sp"
+		android:paddingBottom="20sp"
 		/>
+	<Button android:id="@+id/reset_messages" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content" 
+		android:hint="@+string/reset" android:gravity="center|center_horizontal"/>
 
-</LinearLayout>
+  </LinearLayout>
+ </ScrollView>
+  

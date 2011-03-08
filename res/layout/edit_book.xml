@@ -134,7 +134,6 @@
 				android:layout_height="wrap_content" 
 				android:layout_weight="1"
 				android:hint="@string/description"
-				android:lines="5"
 				/>
 				
 			<CheckBox android:id="@+id/anthology" 

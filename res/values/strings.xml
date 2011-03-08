@@ -244,4 +244,7 @@
 <string name="reg_library_thing_title">LibraryThing Registration</string>
 <string name="more_info">More Info.</string>
 <string name="disable_dialogue">Disable Message</string>
+<string name="lt_reset_messages_info">From time to time this application can display optional messages regarding LibraryThing. Press the button below to reset any of these messages that have been disabled.</string>
+<string name="reset">Reset</string>
+
 </resources>

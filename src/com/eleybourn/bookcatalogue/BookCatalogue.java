@@ -83,7 +83,6 @@ public class BookCatalogue extends ExpandableListActivity {
 	private static final int ACTIVITY_ADMIN_FINISH=6;
 	
 	private CatalogueDBAdapter mDbHelper;
-	private int mGroupIdColumnIndex; 
 	private static final int SORT_BY_AUTHOR_EXPANDED = Menu.FIRST + 1; 
 	private static final int SORT_BY_AUTHOR_COLLAPSED = Menu.FIRST + 2;
 	private static final int SORT_BY = Menu.FIRST + 3; 
@@ -105,7 +104,6 @@ public class BookCatalogue extends ExpandableListActivity {
 	public static String bookshelf = "All Books";
 	private ArrayAdapter<String> spinnerAdapter;
 	private Spinner mBookshelfText;
-	BasicBookListAdapter mBooksAdapter = null;
 
 	private SharedPreferences mPrefs;
 	public int sort = 0;
@@ -117,8 +115,6 @@ public class BookCatalogue extends ExpandableListActivity {
 	private static final int SORT_GENRE = 5;
 	private ArrayList<Integer> currentGroup = new ArrayList<Integer>();
 	private boolean collapsed = false;
-
-	private ViewManager mViewManager = null;
 
 	private static boolean shown = false;
 	private String justAdded = ""; 
@@ -315,131 +311,13 @@ public class BookCatalogue extends ExpandableListActivity {
 		
 	}
 	
-	/**
-	 * Adapter for the the expandable list of books. Uses ViewManager to manage
-	 * cursor.
-	 * 
-	 * Note: Could expand ViewManager to hlpwith setViewText, but at the moment
-	 * it seems OK to make it completely generic.
-	 * 
-	 * @author pjw
-	 *
-	 */
-	public class BasicBookListAdapter extends SimpleCursorTreeAdapter {
-		/**
-		 * 
-		 * Pass the parameters directly to the overridden function
-		 * 
-		 * Note: It would be great to pass a ViewManager to the constructor
-		 * as an instance variable, but the 'super' initializer calls 
-		 * getChildrenCursor which needs the ViewManager...whih can not be set
-		 * before the call to 'super'...so we use an instance variable in the
-		 * containing class.
-		 * 
-		 * @param context
-		 */
-		public BasicBookListAdapter(Context context) {
-			super(context, mViewManager.getCursor(), mViewManager.getLayout(), 
-					mViewManager.getFrom(), mViewManager.getTo(), 
-					mViewManager.getLayoutChild(), mViewManager.getChildFrom(), 
-					mViewManager.getChildTo());
-		}
-
-		/**
-		 * Override the getChildrenCursor. This runs the SQL to extract the titles per author
-		 */
-		@Override
-		protected Cursor getChildrenCursor(Cursor groupCursor) {
-			Cursor children = mViewManager.getChildrenCursor(groupCursor);
-			BookCatalogue.this.startManagingCursor(children);
-			return children;
-		}
-
-		/**
-		 * Make datasetchanged available
-		 */
-//		@Override
-//		public void notifyDataSetChanged() {
-//			super.notifyDataSetChanged();
-//		}
-
-		/**
-		 * Override the setTextView function. This helps us set the appropriate opening and
-		 * closing brackets for series numbers and standardize the view.
-		 */
-		//TODO: @Override
-		public void setViewText(TextView v, String text) {
-			if (v.getId() == R.id.row_img) {
-				boolean field_visibility = mPrefs.getBoolean(FieldVisibility.prefix + "thumbnail", true);
-				ImageView newv = (ImageView) ((ViewGroup) v.getParent()).findViewById(R.id.row_image_view);
-				if (field_visibility == false) {
-					newv.setVisibility(GONE);
-				} else {
-					CatalogueDBAdapter.fetchThumbnailIntoImageView(Long.parseLong(text),newv, LIST_THUMBNAIL_SIZE,LIST_THUMBNAIL_SIZE, true);
-					newv.setVisibility(VISIBLE);
-				}
-				text = "";
-				return;
-			} else if (v.getId() == R.id.row_read) {
-				boolean field_visibility = mPrefs.getBoolean(FieldVisibility.prefix + "read", true);
-				ImageView newv = (ImageView) ((ViewGroup) v.getParent()).findViewById(R.id.row_read_image_view);
-				if (field_visibility == false) {
-					newv.setVisibility(GONE);
-				} else {
-					if (text.equals("1")) {
-						newv.setImageResource(R.drawable.btn_check_buttonless_on);
-					} else {
-						newv.setImageResource(R.drawable.btn_check_buttonless_off);
-					}
-					newv.setVisibility(VISIBLE);
-				}
-				text = "";
-				return;
-			} else if (v.getId() == R.id.row_series) {
-				// Hide series if necessary.
-				if (setFieldVisiblity(v,CatalogueDBAdapter.KEY_SERIES_NAME)) {
-					if (sort == SORT_SERIES || text.length() == 0) {
-						v.setText(text);						
-					} else {
-						v.setText("[" + text + "]");
-					}
-				}
-				return;
-			} else if (v.getId() == R.id.row_publisher) {
-				if (setFieldVisiblity(v,CatalogueDBAdapter.KEY_PUBLISHER))
-					v.setText(text);
-				return;
-			}
-			v.setText(text);
-		}
-
-		/*
-		 * Set layout field visibility and return flag indicating is visible.
-		 * 
-		 * @param v View to set
-		 * @param key The data key to use
-		 * 
-		 * @returns flag indicating of visible
-		 */
-		private boolean setFieldVisiblity(View v, String key) {
-			// Hide field if necessary.
-			boolean field_visibility = mPrefs.getBoolean(FieldVisibility.prefix + key, true);
-			if (field_visibility == false) {
-				v.setVisibility(GONE);
-				return false;
-			} else {
-				v.setVisibility(VISIBLE);
-				return true;
-			}
-		}
-	}
-
 	/*
 	 * Class that handles list/view specific initializations etc.
 	 * The member variable mViewManager is set early in object
 	 * initialization of the containing class.
 	 */
 	private abstract class ViewManager {
+		protected int mGroupIdColumnIndex;
 		protected int mLayout = -1;			// Top level resource I
 		protected int mChildLayout = -1;	// Child resource ID
 		protected Cursor mCursor = null;	// Top level cursor
@@ -465,6 +343,138 @@ public class BookCatalogue extends ExpandableListActivity {
 
 		// Get a cursor to retrieve list of children.
 		public abstract Cursor getChildrenCursor(Cursor groupCursor);
+
+		public BasicBookListAdapter newAdapter(Context context) {
+			return new BasicBookListAdapter(context);
+		}
+
+		/**
+		 * Adapter for the the expandable list of books. Uses ViewManager to manage
+		 * cursor.
+		 * 
+		 * Note: Could expand ViewManager to hlpwith setViewText, but at the moment
+		 * it seems OK to make it completely generic.
+		 * 
+		 * @author pjw
+		 *
+		 */
+		public class BasicBookListAdapter extends SimpleCursorTreeAdapter {
+			/**
+			 * 
+			 * Pass the parameters directly to the overridden function
+			 * 
+			 * Note: It would be great to pass a ViewManager to the constructor
+			 * as an instance variable, but the 'super' initializer calls 
+			 * getChildrenCursor which needs the ViewManager...whih can not be set
+			 * before the call to 'super'...so we use an instance variable in the
+			 * containing class.
+			 * 
+			 * @param context
+			 */
+			public BasicBookListAdapter(Context context) {
+				super(context, ViewManager.this.getCursor(), ViewManager.this.getLayout(), 
+						ViewManager.this.getFrom(), ViewManager.this.getTo(), 
+						ViewManager.this.getLayoutChild(), ViewManager.this.getChildFrom(), 
+						ViewManager.this.getChildTo());
+			}
+
+			/**
+			 * Override the getChildrenCursor. This runs the SQL to extract the titles per author
+			 */
+			@Override
+			protected Cursor getChildrenCursor(Cursor groupCursor) {
+				Cursor children = ViewManager.this.getChildrenCursor(groupCursor);
+				BookCatalogue.this.startManagingCursor(children);
+				return children;
+			}
+
+			/**
+			 * Make datasetchanged available
+			 */
+//			@Override
+//			public void notifyDataSetChanged() {
+//				super.notifyDataSetChanged();
+//			}
+
+			/**
+			 * Override the setTextView function. This helps us set the appropriate opening and
+			 * closing brackets for series numbers and standardize the view.
+			 */
+			//TODO: @Override
+			public void setViewText(TextView v, String text) {
+				if (v.getId() == R.id.row_img) {
+					boolean field_visibility = mPrefs.getBoolean(FieldVisibility.prefix + "thumbnail", true);
+					ImageView newv = (ImageView) ((ViewGroup) v.getParent()).findViewById(R.id.row_image_view);
+					if (field_visibility == false) {
+						newv.setVisibility(GONE);
+					} else {
+						CatalogueDBAdapter.fetchThumbnailIntoImageView(Long.parseLong(text),newv, LIST_THUMBNAIL_SIZE,LIST_THUMBNAIL_SIZE, true);
+						newv.setVisibility(VISIBLE);
+					}
+					text = "";
+					return;
+				} else if (v.getId() == R.id.row_read) {
+					boolean field_visibility = mPrefs.getBoolean(FieldVisibility.prefix + "read", true);
+					ImageView newv = (ImageView) ((ViewGroup) v.getParent()).findViewById(R.id.row_read_image_view);
+					if (field_visibility == false) {
+						newv.setVisibility(GONE);
+					} else {
+						if (text.equals("1")) {
+							newv.setImageResource(R.drawable.btn_check_buttonless_on);
+						} else {
+							newv.setImageResource(R.drawable.btn_check_buttonless_off);
+						}
+						newv.setVisibility(VISIBLE);
+					}
+					text = "";
+					return;
+				} else if (v.getId() == R.id.row_series) {
+					// Hide series if necessary.
+					if (setFieldVisiblity(v,CatalogueDBAdapter.KEY_SERIES_NAME)) {
+						if (sort == SORT_SERIES || text.length() == 0) {
+							v.setText(text);						
+						} else {
+							v.setText("[" + text + "]");
+						}
+					}
+					return;
+				} else if (v.getId() == R.id.row_publisher) {
+					if (setFieldVisiblity(v,CatalogueDBAdapter.KEY_PUBLISHER))
+						v.setText(text);
+					return;
+				}
+				v.setText(text);
+			}
+
+			/*
+			 * Set layout field visibility and return flag indicating is visible.
+			 * 
+			 * @param v View to set
+			 * @param key The data key to use
+			 * 
+			 * @returns flag indicating of visible
+			 */
+			private boolean setFieldVisiblity(View v, String key) {
+				// Hide field if necessary.
+				boolean field_visibility = mPrefs.getBoolean(FieldVisibility.prefix + key, true);
+				if (field_visibility == false) {
+					v.setVisibility(GONE);
+					return false;
+				} else {
+					v.setVisibility(VISIBLE);
+					return true;
+				}
+			}
+
+			/**
+			 * Utility routine to regenerate the groups cursor using the enclosing ViewManager.
+			 */
+			private void regenGroups() {
+				setGroupCursor(newCursor());
+				notifyDataSetChanged();		
+			}
+
+		}
 	}
 
 	/*
@@ -495,6 +505,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				// Return the search results instead of all books (for the bookshelf)
 				mCursor = mDbHelper.searchBooksChars(search_query, bookshelf);
 			}
+			mGroupIdColumnIndex = mCursor.getColumnIndex(CatalogueDBAdapter.KEY_ROWID);
 			return mCursor;
 		}
 	}
@@ -523,6 +534,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				// Return the search results instead of all books (for the bookshelf)
 				mCursor = mDbHelper.searchAuthors(search_query, bookshelf);
 			}
+			mGroupIdColumnIndex = mCursor.getColumnIndex(CatalogueDBAdapter.KEY_ROWID);
 			return mCursor;
 		}
 	}
@@ -550,6 +562,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				mCursor = mDbHelper.searchSeries(search_query, bookshelf);
 			}
 			BookCatalogue.this.startManagingCursor(mCursor);
+			mGroupIdColumnIndex = mCursor.getColumnIndex(CatalogueDBAdapter.KEY_ROWID);
 			return mCursor;
 		}
 	}
@@ -572,6 +585,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		@Override
 		public Cursor newCursor() {
 			mCursor = mDbHelper.fetchAllLoans();
+			mGroupIdColumnIndex = mCursor.getColumnIndex(CatalogueDBAdapter.KEY_ROWID);
 			return mCursor;
 		}
 	}
@@ -594,6 +608,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		@Override
 		public Cursor newCursor() {
 			mCursor = mDbHelper.fetchAllUnreadPsuedo();
+			mGroupIdColumnIndex = mCursor.getColumnIndex(CatalogueDBAdapter.KEY_ROWID);
 			return mCursor;
 		}
 	}
@@ -626,6 +641,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				// Return the search results instead of all books (for the bookshelf)
 				mCursor = mDbHelper.searchGenres(search_query, bookshelf);
 			}
+			mGroupIdColumnIndex = mCursor.getColumnIndex(CatalogueDBAdapter.KEY_ROWID);
 			return mCursor;
 		}
 	}
@@ -634,50 +650,48 @@ public class BookCatalogue extends ExpandableListActivity {
 	 * Build the tree view
 	 */
 	private void fillData() {
-		
+		ViewManager vm;
+
 		/**
 		 * Select between the different ViewManager objects based on the sort parameter
 		 */
 		switch(sort) {
 		case SORT_TITLE:
-			mViewManager  = new TitleViewManager();
+			vm  = new TitleViewManager();
 			break;
 		case SORT_AUTHOR:
-			mViewManager = new AuthorViewManager();
+			vm = new AuthorViewManager();
 			break;
 		case SORT_SERIES:
-			mViewManager = new SeriesViewManager();
+			vm = new SeriesViewManager();
 			break;
 		case SORT_LOAN:
-			mViewManager = new LoanViewManager();
+			vm = new LoanViewManager();
 			break;
 		case SORT_UNREAD:
-			mViewManager = new UnreadViewManager();
+			vm = new UnreadViewManager();
 			break;
 		case SORT_GENRE:
-			mViewManager = new GenreViewManager();
+			vm = new GenreViewManager();
 			break;
 		default:
 			throw new IllegalArgumentException();
 		}
 
-		// Row ID is always the key...
-		mGroupIdColumnIndex = mViewManager.getCursor().getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROWID);
-
 		// Manage it
-		startManagingCursor(mViewManager.getCursor());
+		startManagingCursor(vm.getCursor());
 
 		// Set view title
 		if (search_query.equals("")) {
 			this.setTitle(R.string.app_name);
 		} else {
-			int numResults = mViewManager.getCursor().getCount();
+			int numResults = vm.getCursor().getCount();
 			Toast.makeText(this, numResults + " " + this.getResources().getString(R.string.results_found), Toast.LENGTH_LONG).show();
 			this.setTitle(getResources().getString(R.string.search_title) + " - " + search_query);
 		}
 		
 		// Instantiate the List Adapter
-		mBooksAdapter = new BasicBookListAdapter( this );
+		ViewManager.BasicBookListAdapter adapter = vm.newAdapter(this); 
 
 		// Handle the click event. Do not open, but goto the book edit page
 		ExpandableListView expandableList = getExpandableListView();
@@ -700,9 +714,9 @@ public class BookCatalogue extends ExpandableListActivity {
 		 * The override is for when changing back from the title view and it has hidden the icon. */
 		Drawable indicator = this.getResources().getDrawable(R.drawable.expander_group); 
 		expandableList.setGroupIndicator(indicator);
-		
-		setListAdapter(mBooksAdapter);		
-		
+
+		setListAdapter(adapter);		
+	
 		gotoCurrentGroup();
 		/* Add number to bookshelf */
 		TextView mBookshelfNumView = (TextView) findViewById(R.id.bookshelf_num);
@@ -1111,6 +1125,8 @@ public class BookCatalogue extends ExpandableListActivity {
 			int res = StandardDialogs.deleteBookAlert(this, mDbHelper, info.id, new Runnable() {
 				@Override
 				public void run() {
+					mDbHelper.purgeAuthors();
+					mDbHelper.purgeSeries();
 					fillData();
 				}});
 			if (res != 0) 
@@ -1169,8 +1185,8 @@ public class BookCatalogue extends ExpandableListActivity {
 	 * Utility routine to regenerate the groups cursor.
 	 */
 	private void regenGroups() {
-		mBooksAdapter.setGroupCursor(mViewManager.newCursor());
-		mBooksAdapter.notifyDataSetChanged();		
+		ViewManager.BasicBookListAdapter adapter = (ViewManager.BasicBookListAdapter) getExpandableListAdapter();
+		adapter.regenGroups();
 	}
 
 	/**

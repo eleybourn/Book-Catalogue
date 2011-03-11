@@ -138,7 +138,8 @@
 <string name="backup_title">Backup?</string>
 <string name="searching_amazon_books">Searching Amazon</string><string name="searching_google_books">Searching Google Books</string>
 
-<string name="searching_library_thing">Searching LibraryThing</string><string name="bookshelf_title">Select bookshelves for this book</string>
+<string name="searching_library_thing">Searching LibraryThing</string>
+<string name="bookshelf_title">Select bookshelves for this book</string>
 <string name="bookshelves">Select Bookshelves</string>
 <string name="format">Format</string>
 <string name="format1">Paperback</string>

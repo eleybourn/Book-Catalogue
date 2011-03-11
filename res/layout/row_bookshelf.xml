@@ -3,7 +3,8 @@
     android:orientation="vertical"
 	android:layout_width="fill_parent" 
 	android:layout_height="wrap_content" 
-	android:padding="10dp" >
+	android:padding="10dp"
+	android:id="@+id/row" >
 	<TextView android:id="@+id/row_bookshelf" 
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"

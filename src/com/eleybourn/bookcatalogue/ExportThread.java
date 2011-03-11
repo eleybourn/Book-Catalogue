@@ -231,10 +231,38 @@ public class ExportThread extends ManagedTask {
 	 */
 	private String formatCell(String cell) {
 		try {
-			if (cell.equals("null")) {
+			if (cell.equals("null") || cell.trim().length() == 0) {
 				return "";
 			}
-			return cell.replaceAll("\"", "\"\"").replaceAll("\n", "").replaceAll("\r", "");
+			StringBuilder bld = new StringBuilder();
+			int endPos = cell.length() - 1;
+			int pos = 0;
+			char next = cell.charAt(0);
+			while (pos <= endPos) {
+				char c = cell.charAt(pos);
+				switch(c) {
+				case '\r':
+					bld.append("\\r");
+					break;
+				case '\n':
+					bld.append("\\n");
+					break;
+				case '\t':
+					bld.append("\\t");
+					break;
+				case '"':
+					bld.append("\"\"");
+					break;
+				case '\\':
+					bld.append("\\\\");
+					break;
+				default:
+					bld.append(c);
+				}
+				pos++;
+
+			}
+			return bld.toString();
 		} catch (NullPointerException e) {
 			return "";
 		}

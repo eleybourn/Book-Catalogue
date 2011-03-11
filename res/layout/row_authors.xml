@@ -5,6 +5,7 @@
 	android:layout_height="?android:attr/listPreferredItemHeight"
     android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
     android:gravity="center_vertical"
+	android:id="@+id/row"
     >
 	<TextView android:id="@+id/row_family" 
 	    android:layout_width="wrap_content"

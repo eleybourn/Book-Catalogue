@@ -63,12 +63,24 @@ public class ImportThread extends ManagedTask {
 		// Container for values.
 		Bundle values = new Bundle();
 
-		String[] names = returnRow(mExport.get(0));
+		String[] names = returnRow(mExport.get(0), true);
 
 		// Store the names so we can check what is present
 		for(int i = 0; i < names.length; i++) {
 			names[i] = names[i].toLowerCase();
 			values.putString(names[i], "");
+		}
+
+		// See if we can deduce the kind of escaping to use based on column names.
+		// Version 1->3.3 export with family_name and author_id. Version 3.4+ do not; latest versions
+		// make an attempt at escaping characters etc to preserve formatting.
+		boolean fullEscaping;
+		if (values.containsKey(CatalogueDBAdapter.KEY_AUTHOR_ID) && values.containsKey(CatalogueDBAdapter.KEY_FAMILY_NAME)) {
+			// Old export, or one using old formats
+			fullEscaping = false;
+		} else {
+			// More recent data format
+			fullEscaping = true;
 		}
 
 		// Make sure required fields are present.
@@ -102,7 +114,7 @@ public class ImportThread extends ManagedTask {
 				txRowCount++;
 
 				// Get row
-				String[] imported = returnRow(mExport.get(row));
+				String[] imported = returnRow(mExport.get(row), fullEscaping);
 
 				values.clear();
 				for(int i = 0; i < names.length; i++) {
@@ -262,17 +274,33 @@ public class ImportThread extends ManagedTask {
 		doToast("Import Complete");
 	}
 
+	private final static char QUOTE_CHAR = '"';
+	private final static char ESCAPE_CHAR = '\\';
+	private final static char SEPARATOR = ',';
+	private char unescape(char c) {
+		switch(c) {
+		case 'r':
+			return '\r';
+		case 't':
+			return '\t';
+		case 'n':
+			return '\n';
+		default:
+			// Handle simple escapes. We could go further and allow arbitrary numeric wchars by
+			// testing for numeric sequences here but that is beyond the scope of this app. 
+			return c;
+		}
+	}
 	//
 	// This CSV parser is not a complete parser, but it will parse files exported by older 
 	// versions. At some stage in the future it would be good to allow full CSV export 
 	// and import to allow for escape('\') chars so that cr/lf can be preserved.
 	// 
-	private String[] returnRow(String row) {
+	private String[] returnRow(String row, boolean fullEscaping) {
 		// Need to handle double quotes etc
-		char sep = ',';				// CSV seperator
-		char quoteChar = '"';		// CSV quote char
 		int pos = 0;				// Current position
 		boolean inQuote = false;	// In a quoted string
+		boolean inEsc = false;		// Found an escape char
 		char c;						// 'Current' char
 		char next					// 'Next' char 
 				= (row.length() > 0) ? row.charAt(0) : '\0';
@@ -290,40 +318,67 @@ public class ImportThread extends ManagedTask {
 			c = next;
 			next = (pos < endPos) ? row.charAt(pos+1) : '\0';
 
-			if (inQuote)
+			// If we are 'escaped', just append the char, handling special cases
+			if (inEsc) {
+				bld.append(unescape(c));
+				inEsc = false;
+			}
+			else if (inQuote)
 			{
-				if (c == quoteChar) {
-					if (next == quoteChar)
-					{
-						// Double-quote: Advance one more and append a single quote
-						pos++;
-						next = (pos < endPos) ? row.charAt(pos+1) : '\0';
-						bld.append(c);
-					} else {
-						// Leave the quote
-						inQuote = false;
-					}
-				} else {
-					// Append anything else that appears in quotes
-					bld.append(c);
+				switch(c) {
+					case QUOTE_CHAR:
+						if (next == QUOTE_CHAR)
+						{
+							// Double-quote: Advance one more and append a single quote
+							pos++;
+							next = (pos < endPos) ? row.charAt(pos+1) : '\0';
+							bld.append(c);
+						} else {
+							// Leave the quote
+							inQuote = false;
+						}
+						break;
+					case ESCAPE_CHAR:
+						if (fullEscaping)
+							inEsc = true;
+						else
+							bld.append(c);						
+						break;
+					default:
+						bld.append(c);						
+						break;
 				}
 			} else {
-				if (bld.length() == 0 && (c == ' ' || c == '\t') ) {
+				// This is just a raw string; no escape or quote active.
+				// Ignore leading space.
+				if ((c == ' ' || c == '\t') && bld.length() == 0 ) {
 					// Skip leading white space
-				} else if (c == quoteChar) {
-					if (bld.length() > 0) {
-						// Fields with quotes MUST be quoted...
-						throw new IllegalArgumentException();
-					} else {
-						inQuote = true;
-					}
-				} else if (c == sep) {
-					// Add this field and reset it.
-					fields.add(bld.toString());
-					bld = new StringBuilder();
 				} else {
-					// Just append the char
-					bld.append(c);
+					switch(c){
+						case QUOTE_CHAR:
+							if (bld.length() > 0) {
+								// Fields with quotes MUST be quoted...
+								throw new IllegalArgumentException();
+							} else {
+								inQuote = true;
+							}
+							break;
+						case ESCAPE_CHAR:
+							if (fullEscaping)
+								inEsc = true;
+							else
+								bld.append(c);						
+							break;
+						case SEPARATOR:
+							// Add this field and reset it.
+							fields.add(bld.toString());
+							bld = new StringBuilder();
+							break;
+						default:
+							// Just append the char
+							bld.append(c);
+							break;
+					}
 				}
 			}
 			pos++;

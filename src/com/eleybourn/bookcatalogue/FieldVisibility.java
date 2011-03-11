@@ -88,7 +88,18 @@ public class FieldVisibility extends Activity {
 			//Create the LinearLayout to hold each row
 			LinearLayout ll = new LinearLayout(this);
 			ll.setPadding(5, 0, 0, 0);
-			
+
+			OnClickListener listener = new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					SharedPreferences mPrefs = getSharedPreferences("bookCatalogue", MODE_PRIVATE);
+					SharedPreferences.Editor ed = mPrefs.edit();
+					boolean field_visibility = mPrefs.getBoolean(prefs_name, true);
+					ed.putBoolean(prefs_name, !field_visibility);
+					ed.commit();
+					return;
+				}};
+
 			//Create the checkbox
 			boolean field_visibility = mPrefs.getBoolean(prefs_name, true);
 			CheckBox cb = new CheckBox(this);
@@ -96,17 +107,7 @@ public class FieldVisibility extends Activity {
 			if (compulsory[i] == true) {
 				cb.setEnabled(false);
 			} else {
-				cb.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						SharedPreferences mPrefs = getSharedPreferences("bookCatalogue", MODE_PRIVATE);
-						SharedPreferences.Editor ed = mPrefs.edit();
-						boolean field_visibility = mPrefs.getBoolean(prefs_name, true);
-						ed.putBoolean(prefs_name, !field_visibility);
-						ed.commit();
-						return;
-					}
-				});
+				cb.setOnClickListener(listener);
 			}
 			ll.addView(cb);
 			
@@ -117,7 +118,9 @@ public class FieldVisibility extends Activity {
 			tv.setPadding(0, 5, 0, 0);
 			if (compulsory[i] == true) {
 				tv.setTextColor(Color.GRAY);
-			} 
+			} else {
+				tv.setOnClickListener(listener);
+			}
 			ll.addView(tv);
 			
 			//Add the LinearLayout to the parent

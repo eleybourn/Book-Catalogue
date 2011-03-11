@@ -3,6 +3,7 @@
 	android:orientation="horizontal"
 	android:layout_width="fill_parent" 
 	android:layout_height="40dp"
+	android:id="@+id/row"
 	>
 	<LinearLayout
 		android:orientation="horizontal"

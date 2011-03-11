@@ -929,6 +929,8 @@ public class CatalogueDBAdapter {
 			mDbHelper.close();
 		} catch (Exception e) {
 			//do nothing - already closed
+		} finally {
+			mStatements.clear();
 		}
 	}
 	

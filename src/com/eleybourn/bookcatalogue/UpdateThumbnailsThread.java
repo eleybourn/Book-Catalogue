@@ -225,12 +225,19 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 
 	@Override
 	protected boolean onFinish() {
-		mManager.doToast(mFinalMessage);
-		if (getTaskHandler() != null) {
-			((LookupHandler)getTaskHandler()).onFinish();
-			return true;
-		} else {
-			return false;
+		try {
+			mManager.doToast(mFinalMessage);
+			if (getTaskHandler() != null) {
+				((LookupHandler)getTaskHandler()).onFinish();
+				return true;
+			} else {
+				return false;
+			}
+		} finally {
+			if (mDbHelper != null) {
+				mDbHelper.close();
+				mDbHelper = null;
+			}
 		}
 	}
 
@@ -392,8 +399,12 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 	}
 	
 	@Override
-	protected void finalize() {
-		mDbHelper.close();
+	protected void finalize() throws Throwable {
+		super.finalize();
+		if (mDbHelper != null) {
+			mDbHelper.close();
+			mDbHelper = null;
+		}
 	}
 
 	/**

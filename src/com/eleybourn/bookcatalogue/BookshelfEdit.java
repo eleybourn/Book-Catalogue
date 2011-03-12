@@ -116,5 +116,13 @@ public class BookshelfEdit extends Activity {
 			mDbHelper.updateBookshelf(mRowId, bookshelf);
 		}
 	}
-
+	
+	@Override
+	protected void onDestroy(){
+		if (mDbHelper != null) {
+	        mDbHelper.close();
+	        mDbHelper = null;
+		}
+		super.onDestroy();
+	}
 }

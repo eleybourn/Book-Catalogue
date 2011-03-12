@@ -118,7 +118,7 @@ public class BookCatalogue extends ExpandableListActivity {
 
 	private static boolean shown = false;
 	private String justAdded = ""; 
-	public String search_query = "";
+	private String search_query = "";
 	// These are the states that get saved onPause
 	private static final String STATE_SORT = "state_sort"; 
 	private static final String STATE_BOOKSHELF = "state_bookshelf"; 
@@ -383,6 +383,9 @@ public class BookCatalogue extends ExpandableListActivity {
 			 */
 			@Override
 			protected Cursor getChildrenCursor(Cursor groupCursor) {
+				if (mDbHelper == null) // We are terminating
+					return null;
+
 				Cursor children = ViewManager.this.getChildrenCursor(groupCursor);
 				BookCatalogue.this.startManagingCursor(children);
 				return children;
@@ -794,7 +797,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			@Override
 			public void onClick(View v) {
 				sortByAuthor();
-				sortDialog.hide();
+				sortDialog.dismiss();
 				return;
 			}
 		});
@@ -803,7 +806,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			@Override
 			public void onClick(View v) {
 				sortByTitle();
-				sortDialog.hide();
+				sortDialog.dismiss();
 				return;
 			}
 		});
@@ -812,7 +815,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			@Override
 			public void onClick(View v) {
 				sortBySeries();
-				sortDialog.hide();
+				sortDialog.dismiss();
 				return;
 			}
 		});
@@ -821,7 +824,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			@Override
 			public void onClick(View v) {
 				sortByGenre();
-				sortDialog.hide();
+				sortDialog.dismiss();
 				return;
 			}
 		});
@@ -830,7 +833,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			@Override
 			public void onClick(View v) {
 				sortByLoan();
-				sortDialog.hide();
+				sortDialog.dismiss();
 				return;
 			}
 		});
@@ -839,7 +842,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			@Override
 			public void onClick(View v) {
 				sortByUnread();
-				sortDialog.hide();
+				sortDialog.dismiss();
 				return;
 			}
 		});
@@ -1423,7 +1426,10 @@ public class BookCatalogue extends ExpandableListActivity {
 	@Override
 	protected void onDestroy() {
 		try {
-			mDbHelper.close();
+			if (mDbHelper != null) {
+				mDbHelper.close();
+				mDbHelper = null;
+			}
 		} catch (RuntimeException e) {
 			// could not be closed (app crash maybe). Don't worry about it
 		}
@@ -1472,5 +1478,15 @@ public class BookCatalogue extends ExpandableListActivity {
 		}); 
 		alertDialog.show();
 		return;
+	}
+	
+	/**
+	 * Accessor used by Robotium test harness.
+	 * 
+	 * @param s		New search string.
+	 */
+	public void setSearchQuery(String s) {
+		search_query = s;
+		regenGroups();
 	}
 }

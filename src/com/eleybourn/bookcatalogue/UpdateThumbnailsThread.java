@@ -234,10 +234,7 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 				return false;
 			}
 		} finally {
-			if (mDbHelper != null) {
-				mDbHelper.close();
-				mDbHelper = null;
-			}
+			cleanup();
 		}
 	}
 
@@ -398,13 +395,20 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 		}
 	}
 	
-	@Override
-	protected void finalize() throws Throwable {
-		super.finalize();
+	/**
+	 * Cleanup any DB connection etc after main task has run.
+	 */
+	private void cleanup() {
 		if (mDbHelper != null) {
 			mDbHelper.close();
 			mDbHelper = null;
-		}
+		}		
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		cleanup();
+		super.finalize();
 	}
 
 	/**

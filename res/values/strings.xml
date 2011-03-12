@@ -235,8 +235,8 @@
 <string name="cancelling">Cancelling</string>
 <string name="starting_search">Starting Search</string>
 <string name="lt_info">This application is enhanced by using LibraryThing as a source of information about book series, as well as a source of alternate covers. To use these features you need to register with LibraryThing (free) and request a LibraryThing developer key (also free).</string>
-<string name="lt_register_text">Register with LibaryThing</string>
-<string name="lt_devkey_text">Request LibaryThing developer key</string>
+<string name="lt_register_text">Register with LibraryThing</string>
+<string name="lt_devkey_text">Request LibraryThing developer key</string>
 <string name="lt_label">LibraryThing</string>
 <string name="lt_gotkey">Once you have the developer key (or if you already have one), just enter it below and it will be used to get extra data.</string>
 <string name="developer_key">Developer Key</string>

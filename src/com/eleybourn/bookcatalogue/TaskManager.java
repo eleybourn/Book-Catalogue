@@ -568,4 +568,13 @@ public class TaskManager {
 		}
 	}
 
+	@Override
+	protected void finalize() throws Throwable {
+		destroyProgress();
+		mAppContext = null;
+		mActivity = null;	
+		mUiThread = null;
+		mMessageHandler = null;
+		super.finalize();
+	}
 }

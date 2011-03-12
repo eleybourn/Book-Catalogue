@@ -43,13 +43,17 @@ public class ImportThread extends ManagedTask {
 
 	@Override
 	protected boolean onFinish() {
-		//Debug.stopMethodTracing();
-		ImportHandler h = (ImportHandler)getTaskHandler();
-		if (h != null) {
-			h.onFinish();
-			return true;
-		} else {
-			return false;
+		try {
+			//Debug.stopMethodTracing();
+			ImportHandler h = (ImportHandler)getTaskHandler();
+			if (h != null) {
+				h.onFinish();
+				return true;
+			} else {
+				return false;
+			}			
+		} finally {
+			cleanup();
 		}
 	}
 
@@ -428,5 +432,20 @@ public class ImportThread extends ManagedTask {
 		String s = mManager.getString(R.string.columns_are_blank);
 		throw new ImportException(String.format(s, Utils.join( names, ","), row));
 	}
-	
+
+	/**
+	 * Cleanup any DB connection etc after main task has run.
+	 */
+	private void cleanup() {
+		if (mDbHelper != null) {
+			mDbHelper.close();
+			mDbHelper = null;
+		}		
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		cleanup();
+		super.finalize();
+	}
 }

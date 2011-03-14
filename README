@@ -41,30 +41,28 @@ Features include;
   case. e.g. "The murder on the links" becomes "The Murder on the Links"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
-New in v3.4
-* The scanner and book search screens remain active after a book has been added or a
-  search fails. It was viewed that this more closely represents the work-flow of people
-  adding or scanning books.
-* Adding by Amazon's ASIN is supported on the "Add by ISBN" page
-* Multiple Authors per book
-* Multiple Series per book
+New in v3.4 - Most updates courtesy of Grunthos
+* Multiple Authors per book (Editing a book now displays an author button which takes the user to a new activity for managing the authors of this book.)
+* Multiple Series per book (Editing a book now displays an series button which takes the user to a new activity for managing the series of this book.)
 * Fetches series (and other stuff) from LibraryThing
-* Duplicate books allowed
-* Can now make global changes to Author and Series
-* Can replace a cover thumbnail from a different edition via LibraryThing.
-* Displays square brackets around the series name when displaying a list of books.
+* Can now make global changes to Author and Series (Access this feature via the catalogue screen; long-click on an author or series name Editing can also be accessed while editing series or authors in an individual books.)
+* Can replace a cover thumbnail from a different edition via LibraryThing. (Access this via long-clicking the cover while editing the book. It will display a gallery of thumbnails; clicking on the small thumbnail will display a larger version. Clicking on the larger version will select it.)
+* Does concurrent ISBN searches at Amazon, Google and LibraryThing (it's faster)
 * Displays a progress dialog while searching for a book on the internet.
-* Ensure that search results can now be sorted correctly. Expanding, eg, an author 
-  name in search results will just show matching books.
-* Preserves *all* open groups when closing application.
-* Changed the ISBN data entry screen when the device is in landscape mode.
+* Adding by Amazon's ASIN is supported on the "Add by ISBN" page
+* Duplicate books allowed, with a warning message
+* User-selectable fields when reloading data from internet (eg. just update authors).
 * Unsaved edits are retained when rotating the screen.
+* Changed the ISBN data entry screen when the device is in landscape mode.
+* Displays square brackets around the series name when displaying a list of books.
+* Suggestions available when searching
+* Removed the need for contacts permission. Though it does mean you will need to manually enter everyone you want to loan to.
+* Preserves *all* open groups when closing application.
+* The scanner and book search screens remain active after a book has been added or a search fails. It was viewed that this more closely represents the work-flow of people adding or scanning books.
+* Import & Export improvements
 * Bug fixes for the 'collapse/expand' button, series selection/de-selection
 * Bug fixes for sorting of book titles, series and authors.
-* Suggestions available when searching
-* Does concurrent ISBN searches at Amazon, Google and LibraryThing (it's faster)
-* Removed the need for contacts permission. Though it does mean you will need to manually enter everyone you want to loan to.
-* Import & Export improvements
+* Ensure that search results can now be sorted correctly. Expanding, eg, an author name in search results will just show matching books.
 
 New in v3.3 - Updates courtesy of Grunthos
 * The application should be significantly faster now - Fixed a bug with database index creation

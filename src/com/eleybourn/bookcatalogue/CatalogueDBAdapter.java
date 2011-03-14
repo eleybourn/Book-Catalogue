@@ -1479,7 +1479,6 @@ public class CatalogueDBAdapter {
 				+ "    On bs." + KEY_SERIES_ID + " = s." + KEY_ROWID + ") s "
 				+ " On s." + KEY_BOOK + " = b." + KEY_ROWID + " and s." + KEY_SERIES_ID + " = b." + KEY_SERIES_ID;
 		}
-			
 		Cursor returnable = null;
 		try {
 			returnable = mDb.rawQuery(fullSql, new String[]{});
@@ -1511,7 +1510,7 @@ public class CatalogueDBAdapter {
 	 * @return Cursor over all books
 	 */
 	public Cursor fetchAllBooksByChar(String first_char, String bookshelf, String search_term) {
-		String where = " " + makeTextTerm("substr(b." + KEY_TITLE + ", 1, 1)", "=", first_char);
+		String where = " " + makeTextTerm("substr(b." + KEY_TITLE + ",1,1)", "=", first_char);
 		return fetchAllBooks("", bookshelf, "", where, search_term, "", "");
 	}
 	
@@ -2156,7 +2155,8 @@ public class CatalogueDBAdapter {
 	 * @return A Cursor of book meeting the search criteria
 	 */
 	public Cursor searchBooksByChar(String searchText, String first_char, String bookshelf) {
-		return fetchAllBooks("", bookshelf, "", " substr(b." + KEY_TITLE + ", 1, 1)='" + first_char + "' " + COLLATION + "", searchText, "", "");
+		String where = " " + makeTextTerm("substr(b." + KEY_TITLE + ",1,1)", "=", first_char);
+		return fetchAllBooks("", bookshelf, "", where, searchText, "", "");
 	}
 
 	public Cursor searchBooksByGenre(String searchText, String genre, String bookshelf) {

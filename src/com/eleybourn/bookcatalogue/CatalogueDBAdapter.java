@@ -814,28 +814,36 @@ public class CatalogueDBAdapter {
 			if (curVersion == 53) {
 				//There is a conflict between eleybourn released branch (3.3.1) and grunthos HEAD (3.4). 
 				// This is to check and skip as required
-				boolean skip = false;
+				boolean go = false;
 				String checkSQL = "SELECT * FROM " + DB_TB_BOOKS;
 				Cursor results = db.rawQuery(checkSQL, new String[]{});
 				if (results.getCount() > 0) {
 					if (results.getColumnIndex(KEY_AUTHOR_OLD) > -1) {
-						skip = true;
+						go = true;
 					}
 				}
-				if (skip == true) {
+				if (go == true) {
 					try {
+						backupDbFile(db);
 						message += "New in v3.4 - Updates courtesy of (mainly) Grunthos (blame him, politely, if it toasts your data)\n\n";
 						message += "* Multiple Authors per book\n\n";
 						message += "* Multiple Series per book\n\n";
-						message += "* ASIN support\n\n";
-						message += "* Progress Dialong during book search\n\n";
 						message += "* Fetches series (and other stuff) from LibraryThing\n\n";
+						message += "* Can now make global changes to Author and Series (Access this feature via long-click on the catalogue screen)\n\n";
+						message += "* Can replace a cover thumbnail from a different edition via LibraryThing.\n\n";
 						message += "* Does concurrent ISBN searches at Amazon, Google and LibraryThing (it's faster)\n\n";
-						message += "* Import & Export improvements\n\n";
-						message += "* Work-flow enhancements when adding books\n\n";
-						message += "* Duplicate books allowed\n\n";
-						message += "* Can now make global changes to Author and Series\n\n";
-						message += "See the web site for more details";
+						message += "* Displays a progress dialog while searching for a book on the internet.\n\n";
+						message += "* Adding by Amazon's ASIN is supported on the 'Add by ISBN' page\n\n";
+						message += "* Duplicate books allowed, with a warning message\n\n";
+						message += "* User-selectable fields when reloading data from internet (eg. just update authors).\n\n";
+						message += "* Unsaved edits are retained when rotating the screen.\n\n";
+						message += "* Changed the ISBN data entry screen when the device is in landscape mode.\n\n";
+						message += "* Displays square brackets around the series name when displaying a list of books.\n\n";
+						message += "* Suggestions available when searching\n\n";
+						message += "* Removed the need for contacts permission. Though it does mean you will need to manually enter everyone you want to loan to.\n\n";
+						message += "* Preserves *all* open groups when closing application.\n\n";
+						message += "* The scanner and book search screens remain active after a book has been added or a search fails. It was viewed that this more closely represents the work-flow of people adding or scanning books.\n\n";
+						message += "See the web site (from the Admin menu) for more details\n\n";
 						
 						db.execSQL(DATABASE_CREATE_SERIES);
 						// We need to create a series table with series that are unique wrt case and unicode. The old
@@ -849,21 +857,21 @@ public class CatalogueDBAdapter {
 									+ "    Group By Upper(" + KEY_SERIES_OLD + ")"
 									+ " )"
 									);
-	
+						
 						db.execSQL(DATABASE_CREATE_BOOK_SERIES);
 						db.execSQL(DATABASE_CREATE_BOOK_AUTHOR);
-	
+						
 						createIndices(db);
-	
+						
 						db.execSQL("INSERT INTO " + DB_TB_BOOK_SERIES + " (" + KEY_BOOK + ", " + KEY_SERIES_ID + ", " + KEY_SERIES_NUM + ", " + KEY_SERIES_POSITION + ") "
 								+ "SELECT DISTINCT b." + KEY_ROWID + ", s." + KEY_ROWID + ", b." + KEY_SERIES_NUM + ", 1"
 								+ " FROM " + DB_TB_BOOKS + " b "
 								+ " Join " + DB_TB_SERIES + " s On Upper(s." + KEY_SERIES_NAME + ") = Upper(b." + KEY_SERIES_OLD + ")" + COLLATION
 								+ " Where Coalesce(b." + KEY_SERIES_OLD + ", '') <> ''");
-	
+						
 						db.execSQL("INSERT INTO " + DB_TB_BOOK_AUTHOR + " (" + KEY_BOOK + ", " + KEY_AUTHOR_ID + ", " + KEY_AUTHOR_POSITION + ") "
 								+ "SELECT b." + KEY_ROWID + ", b." + KEY_AUTHOR_OLD + ", 1 FROM " + DB_TB_BOOKS + " b ");
-	
+						
 						String tmpFields = KEY_ROWID + ", " /* + KEY_AUTHOR + ", " */ + KEY_TITLE + ", " + KEY_ISBN 
 						+ ", " + KEY_PUBLISHER + ", " + KEY_DATE_PUBLISHED + ", " + KEY_RATING + ", " + KEY_READ 
 						+ /* ", " + KEY_SERIES + */ ", " + KEY_PAGES /* + ", " + KEY_SERIES_NUM */ + ", " + KEY_NOTES 
@@ -871,13 +879,13 @@ public class CatalogueDBAdapter {
 						+ ", " + KEY_READ_END + ", " + KEY_FORMAT + ", " + KEY_SIGNED + ", " + KEY_DESCRIPTION
 						+ ", " + KEY_GENRE;
 						db.execSQL("CREATE TABLE tmpBooks AS SELECT " + tmpFields + " FROM " + DB_TB_BOOKS);
-	
+						
 						db.execSQL("DROP TABLE " + DB_TB_BOOKS);
-	
+						
 						db.execSQL(DATABASE_CREATE_BOOKS);
-	
+						
 						db.execSQL("INSERT INTO " + DB_TB_BOOKS + "( " + tmpFields + ")  SELECT * FROM tmpBooks");
-	
+						
 						db.execSQL("DROP TABLE tmpBooks");
 					} catch (Exception e) {
 						Logger.logError(e);
@@ -951,21 +959,34 @@ public class CatalogueDBAdapter {
 	 */
 	public void backupDbFile() {
 		try {
-			java.io.InputStream dbOrig = new java.io.FileInputStream(mDb.getPath());
+			backupDbFile(mDb);
+		} catch (Exception e) {
+			Logger.logError(e);
+		}
+	}
+	
+	// DEBUG ONLY!
+	/**
+	 * Backup database file
+	 * @throws Exception 
+	 */
+	public static void backupDbFile(SQLiteDatabase db) {
+		try {
+			java.io.InputStream dbOrig = new java.io.FileInputStream(db.getPath());
 			File dir = new File(Utils.EXTERNAL_FILE_PATH);
 			dir.mkdir();
-		    // Path to the external backup
+			// Path to the external backup
 			java.io.OutputStream dbCopy = new java.io.FileOutputStream(dir.getPath() + "/dbExport.db");
-
-		    byte[] buffer = new byte[1024];
-		    int length;
-		    while ((length = dbOrig.read(buffer))>0) {
-		        dbCopy.write(buffer, 0, length);
-		    }
-
-		    dbCopy.flush();
-		    dbCopy.close();
-		    dbOrig.close();
+			
+			byte[] buffer = new byte[1024];
+			int length;
+			while ((length = dbOrig.read(buffer))>0) {
+				dbCopy.write(buffer, 0, length);
+			}
+			
+			dbCopy.flush();
+			dbCopy.close();
+			dbOrig.close();
 			
 		} catch (Exception e) {
 			Logger.logError(e);

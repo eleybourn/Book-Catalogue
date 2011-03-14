@@ -1062,8 +1062,14 @@ public class CatalogueDBAdapter {
 	 */
 	public static Bitmap fetchThumbnailIntoImageView(long id, ImageView destView, int maxWidth, int maxHeight, boolean exact) {
 		// Get the file, if it exists. Otherwise set 'help' icon and exit.
-		File file = fetchThumbnail(id);
-		return Utils.fetchFileIntoImageView(file, destView, maxWidth, maxHeight, exact );
+		Bitmap image = null;
+		try {
+			File file = fetchThumbnail(id);
+			image = Utils.fetchFileIntoImageView(file, destView, maxWidth, maxHeight, exact );
+		} catch (IllegalArgumentException e) {
+			Logger.logError(e);
+		}
+		return image;
 	}
 
 	/**
@@ -1232,6 +1238,8 @@ public class CatalogueDBAdapter {
 			open();
 			returnable = mDb.rawQuery(sql, new String[]{});
 			Logger.logError(e);
+		} catch (Exception e) {
+			Logger.logError(e, "fetchAllAuthors catchall");
 		}
 		return returnable;
 	}

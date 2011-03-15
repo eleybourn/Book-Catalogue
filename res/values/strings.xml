@@ -247,5 +247,13 @@
 <string name="disable_dialogue">Disable Message</string>
 <string name="lt_reset_messages_info">From time to time this application can display optional messages regarding LibraryThing. Press the button below to reset any of these messages that have been disabled.</string>
 <string name="reset">Reset</string>
-
+<string name="send_info_text">Click on the button below to gather information about any recent crashes or other errors and send it to one of our developers. This will create a backup copy of your entire database as well as any log files. If you do not wish to send any of these files, delete it from the mail attachments before sending.</string>
+<string name="send_info">Send Information</string>
+<string name="cleanup_files_text">Purgeable files currently use %s on the SD card. Log files and other data are saved on the SD card at each upgrade, when you backup the database, or when the application crashes. Click the button below to purge these files from your SD card. If you have been experiencing crashing or other errors, please consider using the \'Send Information\' button first.</string>
+<string name="cleanup_files">Cleanup Files</string>
+<string name="no_debug_info">No debug information available</string>
+<string name="megabytes">%.2fMB</string>
+<string name="kilobytes">%.2fkB</string>
+<string name="bytes">%.0f bytes</string>
+<string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
 </resources>

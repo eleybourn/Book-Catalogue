@@ -27,6 +27,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.TextView;
 
 /**
@@ -39,6 +40,7 @@ import android.widget.TextView;
  */
 public class Help extends Activity {
 	public Resources res;
+	private CatalogueDBAdapter mDbHelper;
 
 	/**
 	 * Called when the activity is first created. 
@@ -46,10 +48,14 @@ public class Help extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		try {
+			// Needed for sending debug info...
+			mDbHelper = new CatalogueDBAdapter(this);
+			mDbHelper.open();
+
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.help);
 			res = getResources();
-			
+
 			TextView webinstructions = (TextView) findViewById(R.id.helpinstructions);
 			webinstructions.setOnClickListener(new OnClickListener() {
 				@Override
@@ -59,7 +65,7 @@ public class Help extends Activity {
 					return;
 				}
 			});
-			
+
 			TextView webpage = (TextView) findViewById(R.id.helppage);
 			webpage.setOnClickListener(new OnClickListener() {
 				@Override
@@ -69,10 +75,68 @@ public class Help extends Activity {
 					return;
 				}
 			});
-			
+
+			Button sendInfo = (Button) findViewById(R.id.send_info);
+			sendInfo.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Utils.sendDebugInfo(Help.this, mDbHelper);
+				}
+			});
+
+			setupCleanupButton();
+
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
+	}
+
+	private void setupCleanupButton() {
+		try {
+			Button cleanupBtn = (Button) findViewById(R.id.cleanup_button);
+			TextView cleanupTxt = (TextView) findViewById(R.id.cleanup_text);
+
+			cleanupBtn.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Utils.cleanupFiles();
+					setupCleanupButton();
+				}
+			});
+
+
+			float space = Utils.cleanupFilesTotalSize();
+			if (space == 0) {
+				cleanupBtn.setVisibility(View.GONE);
+				cleanupTxt.setVisibility(View.GONE);
+			} else {
+				cleanupBtn.setVisibility(View.VISIBLE);
+				cleanupTxt.setVisibility(View.VISIBLE);
+				String fmt = getString(R.string.cleanup_files_text);
+				String sizeFmt;
+				String msg;
+				if (space < 3072) { // Show 'bytes' if < 3k
+					sizeFmt = getString(R.string.bytes);
+				} else if (space < 250 * 1024) { // Show Kb if less than 250kB
+					sizeFmt = getString(R.string.kilobytes);
+					space = space / 1024;
+				} else { // Show MB otherwise...
+					sizeFmt = getString(R.string.megabytes);
+					space = space / (1024 * 1024);
+				}
+				msg = String.format(fmt, String.format(sizeFmt,space));
+				cleanupTxt.setText(msg);
+
+			}			
+		} catch (Exception e) {
+			Logger.logError(e);
+		}
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		setupCleanupButton();		
 	}
 
 }

@@ -392,6 +392,10 @@ public class CatalogueDBAdapter {
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 			int curVersion = oldVersion;
+
+			if (oldVersion < newVersion)
+				backupDbFile(db, "dbUpgrade-" + oldVersion);
+
 			if (curVersion < 11) {
 				onCreate(db);
 			}
@@ -824,7 +828,6 @@ public class CatalogueDBAdapter {
 				}
 				if (go == true) {
 					try {
-						backupDbFile(db);
 						message += "New in v3.4 - Updates courtesy of (mainly) Grunthos (blame him, politely, if it toasts your data)\n\n";
 						message += "* Multiple Authors per book\n\n";
 						message += "* Multiple Series per book\n\n";
@@ -952,31 +955,38 @@ public class CatalogueDBAdapter {
 		//return alias + KEY_GIVEN_NAMES + "||' '||" + KEY_FAMILY_NAME;
 	}
 	
-	// DEBUG ONLY!
 	/**
-	 * Backup database file
+	 * Backup database file using default file name
 	 * @throws Exception 
 	 */
 	public void backupDbFile() {
+		backupDbFile("dbExport.db");
+	}
+	
+	/**
+	 * Backup database file to the specified filename
+	 *
+	 * @throws Exception 
+	 */
+	public void backupDbFile(String filename) {
 		try {
-			backupDbFile(mDb);
+			backupDbFile(mDb, filename);
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
 	}
 	
-	// DEBUG ONLY!
 	/**
 	 * Backup database file
 	 * @throws Exception 
 	 */
-	public static void backupDbFile(SQLiteDatabase db) {
+	private static void backupDbFile(SQLiteDatabase db, String filename) {
 		try {
 			java.io.InputStream dbOrig = new java.io.FileInputStream(db.getPath());
 			File dir = new File(Utils.EXTERNAL_FILE_PATH);
 			dir.mkdir();
 			// Path to the external backup
-			java.io.OutputStream dbCopy = new java.io.FileOutputStream(dir.getPath() + "/dbExport.db");
+			java.io.OutputStream dbCopy = new java.io.FileOutputStream(dir.getPath() + "/" + filename);
 			
 			byte[] buffer = new byte[1024];
 			int length;

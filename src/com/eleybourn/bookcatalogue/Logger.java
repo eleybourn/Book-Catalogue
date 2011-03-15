@@ -66,14 +66,14 @@ public class Logger {
 	}
 
 	/**
-	 * Clear the error log each time the app is started
+	 * Clear the error log each time the app is started; preserve previous if non-empty
 	 */
 	public static void clearLog() {
 		try {
 			try { 
 				File orig = new File(Utils.ERRORLOG_FILE);
 				File backup = new File(Utils.ERRORLOG_FILE + ".bak");
-				if (orig.exists())
+				if (orig.exists() && orig.length() > 0)
 					orig.renameTo(backup);
 			} catch (Exception e) {
 				// Ignore backup failure...

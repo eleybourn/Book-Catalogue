@@ -46,11 +46,14 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 public class Utils {
 	private static String UTF8 = "utf8";
@@ -831,6 +834,116 @@ public class Utils {
 		LibraryThingManager ltm = new LibraryThingManager(context);
 		if (!ltm.isAvailable())
 			StandardDialogs.needLibraryThingAlert(context, always, suffix);		
+	}
+
+	private static String[] mPurgeableFilePrefixes = new String[]{"dbUpgrade", "dbExport", "error.log", "tmp"};
+	private static String[] mDebugFilePrefixes = new String[]{"dbUpgrade", "dbExport", "error.log"};
+
+	/**
+	 * Collect and send debug info to a support email address. 
+	 * 
+	 * THIS SHOULD NOT BE A PUBLICALLY AVAILABLE MAINING LIST OR FORUM!
+	 * 
+	 * @param context
+	 * @param dbHelper
+	 */
+	public static void sendDebugInfo(Context context, CatalogueDBAdapter dbHelper) {
+		// Create a temp DB copy.
+		String tmpName = "dbExport-tmp.db";
+		dbHelper.backupDbFile(tmpName);
+		File dbFile = new File(Utils.EXTERNAL_FILE_PATH + "/" + tmpName);
+		dbFile.deleteOnExit();
+		// setup the mail message
+		final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND_MULTIPLE);
+		emailIntent.setType("plain/text");
+        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, context.getString(R.string.debug_email).split(";"));
+        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Gathered debugging information" );
+        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "See attached files for details." );
+        //has to be an ArrayList
+        ArrayList<Uri> uris = new ArrayList<Uri>();
+        //convert from paths to Android friendly Parcelable Uri's
+        ArrayList<String> files = new ArrayList<String>();
+
+        // Find all files of interest to send
+        File dir = new File(Utils.EXTERNAL_FILE_PATH);
+        for (String name : dir.list()) {
+        	boolean send = false;
+        	for(String prefix : mDebugFilePrefixes)
+        		if (name.startsWith(prefix)) {
+        			send = true;
+        			break;
+        		}
+        	if (send)
+        		files.add(name);
+        }
+
+        // Build the attachment list
+        for (String file : files)
+        {
+            File fileIn = new File(Utils.EXTERNAL_FILE_PATH + "/" + file);
+            if (fileIn.exists() && fileIn.length() > 0) {
+                Uri u = Uri.fromFile(fileIn);
+                uris.add(u);            	
+            }
+        }
+        // Send it, if there are any files to send.
+        if (uris.size() == 0) {
+        	Toast.makeText(context, R.string.no_debug_info, Toast.LENGTH_LONG).show();
+        } else {
+            emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+            context.startActivity(Intent.createChooser(emailIntent, "Send mail..."));        	
+        }
+	}
+
+	/**
+	 * Cleanup any purgeable files.
+	 */
+	public static void cleanupFiles() {
+		if (Utils.sdCardWritable()) {
+	        File dir = new File(Utils.EXTERNAL_FILE_PATH);
+	        for (String name : dir.list()) {
+	        	boolean purge = false;
+	        	for(String prefix : mPurgeableFilePrefixes)
+	        		if (name.startsWith(prefix)) {
+	        			purge = true;
+	        			break;
+	        		}
+	        	if (purge)
+		        	try {
+		        		File file = new File(Utils.EXTERNAL_FILE_PATH + "/" + name);
+			        	file.delete();
+		        	} catch (Exception e) {        		
+		        	}
+	        }
+		}
+	}
+
+	/**
+	 * Get the total size of purgeable files.
+	 * @return	size, in bytes
+	 */
+	public static long cleanupFilesTotalSize() {
+		if (!Utils.sdCardWritable())
+			return 0;
+
+		long totalSize = 0;
+
+		File dir = new File(Utils.EXTERNAL_FILE_PATH);
+        for (String name : dir.list()) {
+        	boolean purge = false;
+        	for(String prefix : mPurgeableFilePrefixes)
+        		if (name.startsWith(prefix)) {
+        			purge = true;
+        			break;
+        		}
+        	if (purge)
+	        	try {
+	        		File file = new File(Utils.EXTERNAL_FILE_PATH + "/" + name);
+	        		totalSize += file.length();
+	        	} catch (Exception e) {        		
+	        	}
+        }
+        return totalSize;
 	}
 }
 

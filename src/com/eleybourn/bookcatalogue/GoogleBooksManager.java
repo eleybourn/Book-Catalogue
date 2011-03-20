@@ -11,6 +11,8 @@ import org.xml.sax.SAXException;
 
 import android.os.Bundle;
 
+// TODO: Get editions via: http://books.google.com/books/feeds/volumes?q=editions:ISBN0380014300
+
 public class GoogleBooksManager {
 
 	static public void searchGoogle(String mIsbn, String author, String title, Bundle bookData, boolean fetchThumbnail) {

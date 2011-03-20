@@ -172,7 +172,31 @@ public class CatalogueDBAdapter {
 		KEY_DESCRIPTION + " text, " +
 		KEY_GENRE + " text " +
 		")";
-	
+
+	private static final String KEY_AUDIOBOOK_V41 = "audiobook";
+	private static final String DATABASE_CREATE_BOOKS_V41 =
+		"create table " + DB_TB_BOOKS + 
+		" (_id integer primary key autoincrement, " +
+		KEY_AUTHOR_ID + " integer not null REFERENCES " + DB_TB_AUTHORS + ", " + 
+		KEY_TITLE + " text not null, " +
+		KEY_ISBN + " text, " +
+		KEY_PUBLISHER + " text, " +
+		KEY_DATE_PUBLISHED + " date, " +
+		KEY_RATING + " float not null default 0, " +
+		KEY_READ + " boolean not null default 'f', " +
+		KEY_SERIES_OLD + " text, " +
+		KEY_PAGES + " int, " +
+		KEY_SERIES_NUM + " text, " +
+		KEY_NOTES + " text, " +
+		KEY_LIST_PRICE + " text, " +
+		KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO + ", " + 
+		KEY_LOCATION + " text, " +
+		KEY_READ_START + " date, " +
+		KEY_READ_END + " date, " +
+		KEY_AUDIOBOOK_V41 + " boolean not null default 'f', " +
+		KEY_SIGNED + " boolean not null default 'f' " +
+		")";
+
 	private static final String DATABASE_CREATE_LOAN =
 		"create table " + DB_TB_LOAN + 
 		" (_id integer primary key autoincrement, " +
@@ -376,7 +400,19 @@ public class CatalogueDBAdapter {
 		private void createIndices(SQLiteDatabase db) {
 			String[] indices = DATABASE_CREATE_INDICES.split(";");
 			for (int i = 0; i < indices.length; i++) {
-				db.execSQL(indices[i]);
+				// Avoid index creation killing an upgrade because this 
+				// method may be called by any upgrade script and some tables
+				// may not yet exist. We probably still want indexes.
+				// 
+				// Ideally, whenever an upgrade script is written, the 'createIndices()' call
+				// from prior upgrades should be removed saved and used and a new version of this
+				// script written for the new DB.
+				try {
+					db.execSQL(indices[i]);					
+				} catch (Exception e) {
+					// Expected on multi-version upgrades.
+					Logger.logError(e, "Index creation failed (probably not a problem), definition was: " + indices[i]);
+				}
 			}			
 		}
 
@@ -393,8 +429,8 @@ public class CatalogueDBAdapter {
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 			int curVersion = oldVersion;
 
-			if (oldVersion < newVersion)
-				backupDbFile(db, "dbUpgrade-" + oldVersion);
+			if (oldVersion != newVersion)
+				backupDbFile(db, "dbUpgrade-" + oldVersion + "-" + newVersion);
 
 			if (curVersion < 11) {
 				onCreate(db);
@@ -661,7 +697,7 @@ public class CatalogueDBAdapter {
 					db.execSQL("DROP TABLE " + DB_TB_LOAN);
 					db.execSQL("DROP TABLE " + DB_TB_BOOKS);
 					
-					db.execSQL(DATABASE_CREATE_BOOKS);
+					db.execSQL(DATABASE_CREATE_BOOKS_V41);
 					db.execSQL(DATABASE_CREATE_LOAN);
 					db.execSQL(DATABASE_CREATE_ANTHOLOGY);
 					

@@ -837,7 +837,7 @@ public class Utils {
 	}
 
 	private static String[] mPurgeableFilePrefixes = new String[]{"dbUpgrade", "dbExport", "error.log", "tmp"};
-	private static String[] mDebugFilePrefixes = new String[]{"dbUpgrade", "dbExport", "error.log"};
+	private static String[] mDebugFilePrefixes = new String[]{"dbUpgrade", "dbExport", "error.log", "export.csv"};
 
 	/**
 	 * Collect and send debug info to a support email address. 

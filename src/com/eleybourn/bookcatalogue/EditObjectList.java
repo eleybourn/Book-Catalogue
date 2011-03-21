@@ -256,6 +256,9 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
 	}
 	
 	protected void setTextOrHideView(View v, String s) {
+		// If view is not present, just exit
+		if (v == null)
+			return;
 		try {
 			if (s != null && s.length() > 0) {
 				((TextView)v).setText(s);

@@ -316,9 +316,12 @@ public class CatalogueDBAdapter {
 			}
 			return sql + alias + "." + KEY_TITLE + " as " + KEY_TITLE + ", " +
 
-			// Find FIRST series ID. If we ever introduce a series ordering, we could use that
+			// Find FIRST series ID. 
 			"(Select " + KEY_SERIES_ID + " From " + DB_TB_BOOK_SERIES + " bs " +
 			" where bs." + KEY_BOOK + " = " + alias + "." + KEY_ROWID + " Order by " + KEY_SERIES_POSITION + " asc  Limit 1) as " + KEY_SERIES_ID + ", " +
+			// Find FIRST series NUM. 
+			"(Select " + KEY_SERIES_NUM + " From " + DB_TB_BOOK_SERIES + " bs " +
+			" where bs." + KEY_BOOK + " = " + alias + "." + KEY_ROWID + " Order by " + KEY_SERIES_POSITION + " asc  Limit 1) as " + KEY_SERIES_NUM + ", " +
 			// Get the total series count
 			"(Select Count(*) from " + DB_TB_BOOK_SERIES + " bs Where bs." + KEY_BOOK + " = " + alias + "." + KEY_ROWID + ") as _num_series," + 
 			// Find the first AUTHOR ID
@@ -503,21 +506,25 @@ public class CatalogueDBAdapter {
 					db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " ADD " + KEY_NOTES + " text");
 				} catch (Exception e) {
 					Logger.logError(e);
+					throw new RuntimeException("Failed to upgrade database", e);
 				}
 				try {
 					db.execSQL("UPDATE " + DB_TB_BOOKS + " SET " + KEY_NOTES + " = ''");
 				} catch (Exception e) {
 					Logger.logError(e);
+					throw new RuntimeException("Failed to upgrade database", e);
 				}
 				try {
 					db.execSQL(DATABASE_CREATE_LOAN);
 				} catch (Exception e) {
 					Logger.logError(e);
+					throw new RuntimeException("Failed to upgrade database", e);
 				}
 				try {
 					createIndices(db);
 				} catch (Exception e) {
 					Logger.logError(e);
+					throw new RuntimeException("Failed to upgrade database", e);
 				}
 			}
 			if (curVersion == 25) {
@@ -547,6 +554,7 @@ public class CatalogueDBAdapter {
 					db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " ADD " + KEY_LIST_PRICE + " text");
 				} catch (Exception e) {
 					Logger.logError(e);
+					throw new RuntimeException("Failed to upgrade database", e);
 				}
 			}
 			if (curVersion == 29) {
@@ -575,16 +583,19 @@ public class CatalogueDBAdapter {
 					db.execSQL(DATABASE_CREATE_ANTHOLOGY);
 				} catch (Exception e) {
 					Logger.logError(e);
+					throw new RuntimeException("Failed to upgrade database", e);
 				}
 				try {
 					createIndices(db);
 				} catch (Exception e) {
 					Logger.logError(e);
+					throw new RuntimeException("Failed to upgrade database", e);
 				}
 				try {
 					db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " ADD " + KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO);
 				} catch (Exception e) {
 					Logger.logError(e);
+					throw new RuntimeException("Failed to upgrade database", e);
 				}
 				message += "* There is now support to record books as anthologies and it's titles. \n\n";
 				message += "* There is experimental support to automatically populate the anthology titles \n\n";
@@ -609,6 +620,7 @@ public class CatalogueDBAdapter {
 					db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " ADD " + KEY_SIGNED + " boolean not null default 'f'");
 				} catch (Exception e) {
 					Logger.logError(e);
+					throw new RuntimeException("Failed to upgrade database", e);
 				}
 			}
 			if (curVersion == 35) {
@@ -621,6 +633,7 @@ public class CatalogueDBAdapter {
 					db.execSQL("UPDATE " + DB_TB_BOOKS + " SET " + KEY_SIGNED + "='f'");
 				} catch (Exception e) {
 					Logger.logError(e);
+					throw new RuntimeException("Failed to upgrade database", e);
 				}
 			}
 			if (curVersion == 36) {
@@ -657,6 +670,7 @@ public class CatalogueDBAdapter {
 				try {
 					new File(Utils.EXTERNAL_FILE_PATH + "/.nomedia").createNewFile();
 				} catch (Exception e) {
+					// Don't care about this exception
 					Logger.logError(e);
 				}
 			}
@@ -676,10 +690,18 @@ public class CatalogueDBAdapter {
 				
 				try {
 					db.execSQL("DROP TABLE tmp1");
+				} catch (Exception e) {
+					// Don't really care about this
+				}				
+				try {
 					db.execSQL("DROP TABLE tmp2");
+				} catch (Exception e) {
+					// Don't really care about this
+				}
+				try {
 					db.execSQL("DROP TABLE tmp3");
 				} catch (Exception e) {
-					Logger.logError(e);
+					// Don't really care about this
 				}
 				
 				try {
@@ -710,6 +732,7 @@ public class CatalogueDBAdapter {
 					db.execSQL("DROP TABLE tmp3");
 				} catch (Exception e) {
 					Logger.logError(e);
+					throw new RuntimeException("Failed to upgrade database", e);
 				}
 			}
 			if (curVersion == 42) {
@@ -736,10 +759,18 @@ public class CatalogueDBAdapter {
 				
 				try {
 					db.execSQL("DROP TABLE tmp1");
+				} catch (Exception e) {
+					// Don't care
+				}
+				try {
 					db.execSQL("DROP TABLE tmp2");
+				} catch (Exception e) {
+					// Don't care
+				}
+				try {
 					db.execSQL("DROP TABLE tmp3");
 				} catch (Exception e) {
-					Logger.logError(e);
+					// Don't care
 				}
 				
 				db.execSQL("CREATE TABLE tmp1 AS SELECT _id, " + KEY_AUTHOR_OLD + ", " + KEY_TITLE + ", " + KEY_ISBN + ", " + KEY_PUBLISHER + ", " + 
@@ -928,6 +959,7 @@ public class CatalogueDBAdapter {
 						db.execSQL("DROP TABLE tmpBooks");
 					} catch (Exception e) {
 						Logger.logError(e);
+						throw new RuntimeException("Failed to upgrade database", e);
 					}
 				} 
 			}
@@ -1540,7 +1572,9 @@ public class CatalogueDBAdapter {
 				+ " Else " + KEY_SERIES_NAME + "||' #'||" + KEY_SERIES_NUM + " End as " + KEY_SERIES_FORMATTED
 				+ " From " + DB_TB_BOOK_SERIES + " bs Join " + DB_TB_SERIES + " s"
 				+ "    On bs." + KEY_SERIES_ID + " = s." + KEY_ROWID + ") s "
-				+ " On s." + KEY_BOOK + " = b." + KEY_ROWID + " and " + makeTextTerm("s." + KEY_SERIES_NAME, "=", seriesName);
+				+ " On s." + KEY_BOOK + " = b." + KEY_ROWID 
+				+ " and " + makeTextTerm("s." + KEY_SERIES_NAME, "=", seriesName) 
+				+ " and " + this.makeEqualFieldsTerm("s." + KEY_SERIES_NUM, "b." + KEY_SERIES_NUM);
 		} else {
 			// Get the 'default' series...defined in getBookFields()
 			fullSql += " Left Outer Join (Select " 
@@ -1552,7 +1586,9 @@ public class CatalogueDBAdapter {
 				+ " Else " + KEY_SERIES_NAME + "||' #'||" + KEY_SERIES_NUM + " End as " + KEY_SERIES_FORMATTED
 				+ " From " + DB_TB_BOOK_SERIES + " bs Join " + DB_TB_SERIES + " s"
 				+ "    On bs." + KEY_SERIES_ID + " = s." + KEY_ROWID + ") s "
-				+ " On s." + KEY_BOOK + " = b." + KEY_ROWID + " and s." + KEY_SERIES_ID + " = b." + KEY_SERIES_ID;
+				+ " On s." + KEY_BOOK + " = b." + KEY_ROWID 
+				+ " and s." + KEY_SERIES_ID + " = b." + KEY_SERIES_ID
+				+ " and " + this.makeEqualFieldsTerm("s." + KEY_SERIES_NUM, "b." + KEY_SERIES_NUM);
 		}
 		Cursor returnable = null;
 		try {

@@ -858,7 +858,7 @@ public class Utils {
 		emailIntent.setType("plain/text");
         emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, context.getString(R.string.debug_email).split(";"));
         emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Gathered debugging information" );
-        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "See attached files for details." );
+        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Please take the time to briefly describe the problem you are experiencing." );
         //has to be an ArrayList
         ArrayList<Uri> uris = new ArrayList<Uri>();
         //convert from paths to Android friendly Parcelable Uri's

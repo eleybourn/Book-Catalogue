@@ -176,7 +176,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				// Handle a suggestions click (because the suggestions all use ACTION_VIEW)
 				search_query = intent.getDataString();
 			}
-			if (search_query.equals(".")) {
+			if (search_query == null || search_query.equals(".")) {
 				search_query = "";
 			}
 			

@@ -47,7 +47,11 @@ public class EditSeriesDialog {
 		dialog.setTitle(R.string.edit_series);
 
 		AutoCompleteTextView seriesView = (AutoCompleteTextView) dialog.findViewById(R.id.series);
-		seriesView.setText(series.name);
+		try {
+			seriesView.setText(series.name);
+		} catch (NullPointerException e) {
+			Logger.logError(e);
+		}
 		seriesView.setAdapter(mSeriesAdapter);
 
 		Button saveButton = (Button) dialog.findViewById(R.id.confirm);

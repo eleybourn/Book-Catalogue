@@ -510,7 +510,12 @@ public class CoverBrowser {
 	        i.setBackgroundResource(mGalleryItemBackground);
 
 	        // See if file is present
-		    File f = mFileManager.getFile(mEditions.get(position), ImageSizes.SMALL);
+	        File f = null;
+		    try {
+		    	f = mFileManager.getFile(mEditions.get(position), ImageSizes.SMALL);
+		    } catch (NullPointerException e) {
+		    	//file did not exist. Dealt with later.
+		    }
 		    if (f == null) {
 		    	// Not present; request it and use a placeholder.
 		    	GetThumbnailTask task = new GetThumbnailTask(position, i);

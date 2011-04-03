@@ -2,9 +2,7 @@ package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
 
-import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Debug;
 import android.os.Message;
 
 /**
@@ -36,7 +34,6 @@ public class ImportThread extends ManagedTask {
 		mExport = export;
 		mDbHelper = new CatalogueDBAdapter(manager.getAppContext());
 		mDbHelper.open();
-		
 		manager.setMax(this, mExport.size());
 		//Debug.startMethodTracing();
 	}

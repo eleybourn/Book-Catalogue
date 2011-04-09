@@ -116,6 +116,46 @@ public class BookCatalogue extends ExpandableListActivity {
 	private ArrayList<Integer> currentGroup = new ArrayList<Integer>();
 	private boolean collapsed = false;
 
+	/* Side-step a bug in HONEYCOMB. It seems that startManagingCursor() in honeycomb causes
+	 * child-list cursors for ExpanadableList objects to be closed prematurely. So we seem to have
+	 * to roll our own...see http://osdir.com/ml/Android-Developers/2011-03/msg02605.html.
+	 */
+	private ArrayList<Cursor> mManagedCursors = new ArrayList<Cursor>();
+	@Override    
+	public void startManagingCursor(Cursor c)
+	{     
+		synchronized(mManagedCursors) {
+			if (!mManagedCursors.contains(c))
+				mManagedCursors.add(c);     
+		}    
+	}
+
+	@Override    
+	public void stopManagingCursor(Cursor c)
+	{
+		synchronized(mManagedCursors) {
+			try {
+				mManagedCursors.remove(c);				
+			} catch (Exception e) {
+				// Don;t really care if it's called more than once.
+			}
+		}
+	}
+
+	private void destroyManagedCursors() 
+	{
+		synchronized(mManagedCursors) {
+			for (Cursor c : mManagedCursors) {
+				try {
+					c.close();
+				} catch (Exception e) {
+					// Don;t really care if it's called more than once or fails.
+				}
+			}     
+			mManagedCursors.clear();
+		}
+	}
+    
 	private static boolean shown = false;
 	private String justAdded = ""; 
 	private String search_query = "";
@@ -387,6 +427,9 @@ public class BookCatalogue extends ExpandableListActivity {
 					return null;
 
 				Cursor children = ViewManager.this.getChildrenCursor(groupCursor);
+				// TODO THIS CAUSES CRASH IN HONEYCOMB when viewing book details then clicking 'back', so we have 
+				// overridden startManagingCursor to only close cursors in onDestroy().
+				// FIND A BETTER SOLUTION!
 				BookCatalogue.this.startManagingCursor(children);
 				return children;
 			}
@@ -1426,6 +1469,7 @@ public class BookCatalogue extends ExpandableListActivity {
 	@Override
 	protected void onDestroy() {
 		try {
+			destroyManagedCursors();
 			if (mDbHelper != null) {
 				mDbHelper.close();
 				mDbHelper = null;

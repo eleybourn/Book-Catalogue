@@ -1548,7 +1548,7 @@ public class CatalogueDBAdapter {
 	 * @return Cursor over all Books
 	 */
 	public Cursor fetchAllBooks(String order, String bookshelf, String authorWhere, String bookWhere, String searchText, String loaned_to, String seriesName) {
-		String baseSql = this.fetchAllBooksSql(order, bookshelf, authorWhere, bookWhere, searchText, loaned_to, seriesName);
+		String baseSql = this.fetchAllBooksSql("", bookshelf, authorWhere, bookWhere, searchText, loaned_to, seriesName);
 
 		// Get the basic query; we will use it as a sub-query
 		String sql = "SELECT " + getBookFields("b", KEY_ROWID) + baseSql;
@@ -1606,6 +1606,9 @@ public class CatalogueDBAdapter {
 				+ " and s." + KEY_SERIES_ID + " = b." + KEY_SERIES_ID
 				+ " and " + this.makeEqualFieldsTerm("s." + KEY_SERIES_NUM, "b." + KEY_SERIES_NUM);
 		}
+		if (!order.equals("")) {
+			fullSql += " ORDER BY " + order;
+		}
 		Cursor returnable = null;
 		try {
 			returnable = mDb.rawQuery(fullSql, new String[]{});
@@ -1626,8 +1629,8 @@ public class CatalogueDBAdapter {
 	 */
 	public Cursor fetchAllBooksByAuthor(int author, String bookshelf, String search_term) {
 		String where = " a._id=" + author;
-		// XXXX String order = "b." + KEY_SERIES + ", substr('0000000000' || b." + KEY_SERIES_NUM + ", -10, 10), lower(b." + KEY_TITLE + ") ASC";
-		return fetchAllBooks("", bookshelf, where, "", search_term, "", "");
+		String order = "s." + KEY_SERIES_NAME + ", substr('0000000000' || s." + KEY_SERIES_NUM + ", -10, 10), lower(b." + KEY_TITLE + ") ASC";
+		return fetchAllBooks(order, bookshelf, where, "", search_term, "", "");
 	}
 	
 	/**
@@ -1695,7 +1698,7 @@ public class CatalogueDBAdapter {
 		if (series.length() == 0 || series.equals(META_EMPTY_SERIES)) {
 			return fetchAllBooks("", bookshelf, "", "", search_term, "", META_EMPTY_SERIES);
 		} else {
-			String order = "substr('0000000000' || bs." + KEY_SERIES_NUM + ", -10, 10), b." + KEY_TITLE + " " + COLLATION + " ASC";
+			String order = "substr('0000000000' || s." + KEY_SERIES_NUM + ", -10, 10), b." + KEY_TITLE + " " + COLLATION + " ASC";
 			return fetchAllBooks(order, bookshelf, "", "", search_term, "", series);
 		}
 	}

@@ -113,6 +113,7 @@ public class BookCatalogue extends ExpandableListActivity {
 	private static final int SORT_LOAN = 3; 
 	private static final int SORT_UNREAD = 4;
 	private static final int SORT_GENRE = 5;
+	private static final int SORT_AUTHOR_GIVEN = 6;
 	private ArrayList<Integer> currentGroup = new ArrayList<Integer>();
 	private boolean collapsed = false;
 
@@ -555,7 +556,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			return mCursor;
 		}
 	}
-
+	
 	/*
 	 * ViewManager for sorting by Author
 	 */
@@ -579,6 +580,64 @@ public class BookCatalogue extends ExpandableListActivity {
 			} else {
 				// Return the search results instead of all books (for the bookshelf)
 				mCursor = mDbHelper.searchAuthors(search_query, bookshelf);
+			}
+			mGroupIdColumnIndex = mCursor.getColumnIndex(CatalogueDBAdapter.KEY_ROWID);
+			return mCursor;
+		}
+	}
+	
+	/*
+	 * ViewManager for sorting by Author
+	 */
+	private class AuthorSeriesViewManager extends ViewManager {
+		AuthorSeriesViewManager() {
+			mLayout = R.layout.row_authors;
+			mChildLayout = R.layout.row_authors_books;
+			mFrom = new String[]{CatalogueDBAdapter.KEY_AUTHOR_FORMATTED};
+			mTo = new int[]{R.id.row_family};	
+			mChildFrom = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_SERIES_FORMATTED, CatalogueDBAdapter.KEY_READ};
+			mChildTo = new int[]{R.id.row_img, R.id.row_title, R.id.row_series, R.id.row_read};
+		}
+		public Cursor getChildrenCursor(Cursor groupCursor) {
+			return mDbHelper.fetchAllBooksByAuthor(groupCursor.getInt(mGroupIdColumnIndex), bookshelf, search_query);
+		}
+		@Override
+		public Cursor newCursor() {
+			if (search_query.equals("")) {
+				// Return all books for the given bookshelf
+				mCursor = mDbHelper.fetchAllAuthors(bookshelf);
+			} else {
+				// Return the search results instead of all books (for the bookshelf)
+				mCursor = mDbHelper.searchAuthors(search_query, bookshelf);
+			}
+			mGroupIdColumnIndex = mCursor.getColumnIndex(CatalogueDBAdapter.KEY_ROWID);
+			return mCursor;
+		}
+	}
+	
+	/*
+	 * ViewManager for sorting by Author
+	 */
+	private class AuthorFirstViewManager extends ViewManager {
+		AuthorFirstViewManager() {
+			mLayout = R.layout.row_authors;
+			mChildLayout = R.layout.row_authors_books;
+			mFrom = new String[]{CatalogueDBAdapter.KEY_AUTHOR_FORMATTED_GIVEN_FIRST};
+			mTo = new int[]{R.id.row_family};	
+			mChildFrom = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_SERIES_FORMATTED, CatalogueDBAdapter.KEY_READ};
+			mChildTo = new int[]{R.id.row_img, R.id.row_title, R.id.row_series, R.id.row_read};
+		}
+		public Cursor getChildrenCursor(Cursor groupCursor) {
+			return mDbHelper.fetchAllBooksByAuthor(groupCursor.getInt(mGroupIdColumnIndex), bookshelf, search_query);
+		}
+		@Override
+		public Cursor newCursor() {
+			if (search_query.equals("")) {
+				// Return all books for the given bookshelf
+				mCursor = mDbHelper.fetchAllAuthors(bookshelf, false);
+			} else {
+				// Return the search results instead of all books (for the bookshelf)
+				mCursor = mDbHelper.searchAuthors(search_query, bookshelf, false);
 			}
 			mGroupIdColumnIndex = mCursor.getColumnIndex(CatalogueDBAdapter.KEY_ROWID);
 			return mCursor;
@@ -708,6 +767,9 @@ public class BookCatalogue extends ExpandableListActivity {
 		case SORT_AUTHOR:
 			vm = new AuthorViewManager();
 			break;
+		case SORT_AUTHOR_GIVEN:
+			vm = new AuthorFirstViewManager();
+			break;
 		case SORT_SERIES:
 			vm = new SeriesViewManager();
 			break;
@@ -786,6 +848,15 @@ public class BookCatalogue extends ExpandableListActivity {
 			radio_author.setChecked(false);
 		}
 		
+		RadioButton radio_author_given = new RadioButton(this);
+		radio_author_given.setText(R.string.sortby_author_given);
+		group.addView(radio_author_given);
+		if (sort == SORT_AUTHOR_GIVEN) {
+			radio_author_given.setChecked(true);
+		} else {
+			radio_author_given.setChecked(false);
+		}
+		
 		RadioButton radio_title = new RadioButton(this);
 		radio_title.setText(R.string.sortby_title);
 		group.addView(radio_title);
@@ -840,6 +911,15 @@ public class BookCatalogue extends ExpandableListActivity {
 			@Override
 			public void onClick(View v) {
 				sortByAuthor();
+				sortDialog.dismiss();
+				return;
+			}
+		});
+		
+		radio_author_given.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				sortByAuthorGiven();
 				sortDialog.dismiss();
 				return;
 			}
@@ -1142,6 +1222,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			} else if (ExpandableListView.getPackedPositionType(info.packedPosition) == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
 				switch(sort) {
 				case SORT_AUTHOR:
+				case SORT_AUTHOR_GIVEN:
 					{
 						MenuItem edit_book = menu.add(0, EDIT_AUTHOR_ID, 0, R.string.menu_edit_author);
 						edit_book.setIcon(android.R.drawable.ic_menu_edit);
@@ -1253,6 +1334,19 @@ public class BookCatalogue extends ExpandableListActivity {
 	 */
 	private void sortByAuthor() {
 		sort = SORT_AUTHOR;
+		currentGroup = new ArrayList<Integer>();
+		fillData();
+		/* Save the current sort settings */
+		SharedPreferences.Editor ed = mPrefs.edit();
+		ed.putInt(STATE_SORT, sort);
+		ed.commit();
+	}
+	
+	/**
+	 * Change the sort order of the view and refresh the page
+	 */
+	private void sortByAuthorGiven() {
+		sort = SORT_AUTHOR_GIVEN;
 		currentGroup = new ArrayList<Integer>();
 		fillData();
 		/* Save the current sort settings */
@@ -1414,6 +1508,10 @@ public class BookCatalogue extends ExpandableListActivity {
 					} else if (sort == SORT_AUTHOR) {
 						justAdded = intent.getStringExtra(BookEditFields.ADDED_AUTHOR);
 						int position = mDbHelper.fetchAuthorPositionByName(justAdded, bookshelf);
+						adjustCurrentGroup(position, 1, true);
+					} else if (sort == SORT_AUTHOR_GIVEN) {
+						justAdded = intent.getStringExtra(BookEditFields.ADDED_AUTHOR);
+						int position = mDbHelper.fetchAuthorPositionByGivenName(justAdded, bookshelf);
 						adjustCurrentGroup(position, 1, true);
 					} else if (sort == SORT_SERIES) {
 						justAdded = intent.getStringExtra(BookEditFields.ADDED_SERIES);

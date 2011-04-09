@@ -256,4 +256,5 @@
 <string name="kilobytes">%.2fkB</string>
 <string name="bytes">%.0f bytes</string>
 <string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
+<string name="sortby_author_given">Sort by Author (Given Name)</string>
 </resources>

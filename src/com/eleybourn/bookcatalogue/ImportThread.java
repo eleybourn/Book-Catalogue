@@ -239,18 +239,22 @@ public class ImportThread extends ManagedTask {
 					if (anthology == CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS || anthology == CatalogueDBAdapter.ANTHOLOGY_SAME_AUTHOR) {
 						int oldi = 0;
 						String anthology_titles = values.getString("anthology_titles");
-						int i = anthology_titles.indexOf("|", oldi);
-						while (i > -1) {
-							String extracted_title = anthology_titles.substring(oldi, i).trim();
-							
-							int j = extracted_title.indexOf("*");
-							if (j > -1) {
-								String anth_title = extracted_title.substring(0, j).trim();
-								String anth_author = extracted_title.substring((j+1)).trim();
-								mDbHelper.createAnthologyTitle(id, anth_author, anth_title);
+						try {
+							int i = anthology_titles.indexOf("|", oldi);
+							while (i > -1) {
+								String extracted_title = anthology_titles.substring(oldi, i).trim();
+								
+								int j = extracted_title.indexOf("*");
+								if (j > -1) {
+									String anth_title = extracted_title.substring(0, j).trim();
+									String anth_author = extracted_title.substring((j+1)).trim();
+									mDbHelper.createAnthologyTitle(id, anth_author, anth_title);
+								}
+								oldi = i + 1;
+								i = anthology_titles.indexOf("|", oldi);
 							}
-							oldi = i + 1;
-							i = anthology_titles.indexOf("|", oldi);
+						} catch (NullPointerException e) {
+							//do nothing. There are no anthology titles
 						}
 					}
 				}

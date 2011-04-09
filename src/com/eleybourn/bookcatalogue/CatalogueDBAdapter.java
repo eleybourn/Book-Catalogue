@@ -1427,7 +1427,7 @@ public class CatalogueDBAdapter {
 	 */
 	public Cursor fetchAllBookChars(String bookshelf) {
 		String baseSql = this.fetchAllBooksSql("1", bookshelf, "", "", "", "", "");
-		String sql = "SELECT DISTINCT substr(b." + KEY_TITLE + ", 1, 1) AS " + KEY_ROWID + " " + baseSql;
+		String sql = "SELECT DISTINCT upper(substr(b." + KEY_TITLE + ", 1, 1)) AS " + KEY_ROWID + " " + baseSql;
 
 		Cursor returnable = null;
 		try {
@@ -1829,7 +1829,7 @@ public class CatalogueDBAdapter {
 				 + "    on bbw." + KEY_BOOK + " = b." + KEY_ROWID 
 				 + " join " + DB_TB_BOOKSHELF + " bs "
 				 + "    on bs." + KEY_ROWID + " = bbw." + KEY_BOOKSHELF
-				 + " where bs." + KEY_BOOKSHELF + " = '" + bookshelf + "'";
+				 + " where " + makeTextTerm("bs." + KEY_BOOKSHELF, "=", bookshelf);
 	}
 	private String sqlAllSeries() {
 		return "select distinct s." + KEY_ROWID + " as " + KEY_ROWID + ", s."+ KEY_SERIES_NAME + " as " + KEY_SERIES_NAME //+ ", s." + KEY_SERIES_NAME + " as series_sort "
@@ -2301,7 +2301,7 @@ public class CatalogueDBAdapter {
 	 */
 	public Cursor searchBooksChars(String searchText, String bookshelf) {
 		String baseSql = this.fetchAllBooksSql("1", bookshelf, "", "", searchText, "", "");
-		String sql = "SELECT DISTINCT substr(b." + KEY_TITLE + ", 1, 1) " + COLLATION + " AS " + KEY_ROWID + " " + baseSql;
+		String sql = "SELECT DISTINCT upper(substr(b." + KEY_TITLE + ", 1, 1)) " + COLLATION + " AS " + KEY_ROWID + " " + baseSql;
 		return mDb.rawQuery(sql, new String[]{});
 	}
 	

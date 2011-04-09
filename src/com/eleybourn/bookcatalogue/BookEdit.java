@@ -27,7 +27,10 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TabHost;
+import android.widget.Toast;
 
 /**
  * A tab host activity which holds the three edit book tabs
@@ -42,6 +45,7 @@ public class BookEdit extends TabActivity {
 	public static final int TAB_EDIT = 0;
 	public static final int TAB_EDIT_NOTES = 1;
 	public static final int TAB_EDIT_FRIENDS = 2;
+	public static final int DELETE_ID = 1;
 	public int currentTab = 0;
 	private Long mRowId;
 	private CatalogueDBAdapter mDbHelper = new CatalogueDBAdapter(this);
@@ -147,5 +151,39 @@ public class BookEdit extends TabActivity {
 			//do nothing
 		}
 	} 
-
+	
+	/**
+	 * Run each time the menu button is pressed. This will setup the options menu
+	 */
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.clear();
+		MenuItem delete = menu.add(0, DELETE_ID, 0, R.string.menu_delete);
+		delete.setIcon(android.R.drawable.ic_menu_delete);
+		
+		return super.onPrepareOptionsMenu(menu);
+	}
+	
+	/**
+	 * This will be called when a menu item is selected. A large switch statement to
+	 * call the appropriate functions (or other activities) 
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch(item.getItemId()) {
+		case DELETE_ID:
+			int res = StandardDialogs.deleteBookAlert(this, mDbHelper, mRowId, new Runnable() {
+				@Override
+				public void run() {
+					mDbHelper.purgeAuthors();
+					mDbHelper.purgeSeries();
+					finish();
+				}});
+			if (res != 0) {
+				Toast.makeText(this, res, Toast.LENGTH_LONG).show();
+				finish();
+			}
+		}
+		return true;
+	}
 }

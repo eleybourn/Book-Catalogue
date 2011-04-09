@@ -98,6 +98,7 @@ public class CatalogueDBAdapter {
 	public static final String KEY_GENRE = "genre";
 	
 	public static final String KEY_AUTHOR_FORMATTED = "author_formatted";
+	public static final String KEY_AUTHOR_FORMATTED_GIVEN_FIRST = "author_formatted_given_first";
 	public static final String KEY_SERIES_FORMATTED = "series_formatted";
 	public static final String KEY_SERIES_NUM_FORMATTED = "series_num_formatted";
 	
@@ -284,7 +285,10 @@ public class CatalogueDBAdapter {
 				+ ", " + alias + "." + KEY_GIVEN_NAMES + " as " + KEY_GIVEN_NAMES 
 				+ ",  Case When " + alias + "." + KEY_GIVEN_NAMES + " = '' Then " + KEY_FAMILY_NAME 
 				+ "        Else " + alias + "." + KEY_FAMILY_NAME + " || ', ' || " 
-									+ alias + "." + KEY_GIVEN_NAMES + " End as " + KEY_AUTHOR_FORMATTED + " ";
+						+ alias + "." + KEY_GIVEN_NAMES + " End as " + KEY_AUTHOR_FORMATTED 
+				+ ",  Case When " + alias + "." + KEY_GIVEN_NAMES + " = '' Then " + KEY_FAMILY_NAME 
+				+ "        Else " + alias + "." + KEY_GIVEN_NAMES + " || ' ' || " 
+						+ alias + "." + KEY_FAMILY_NAME + " End as " + KEY_AUTHOR_FORMATTED_GIVEN_FIRST + " ";
 			return sql;
 		}
 
@@ -1322,9 +1326,26 @@ public class CatalogueDBAdapter {
 	 * @return Cursor over all notes
 	 */
 	public Cursor fetchAllAuthors() {
+		return fetchAllAuthors(true);
+	}
+	
+	/**
+	 * Return a Cursor over the list of all books in the database
+	 * 
+	 * @param bookshelf Which bookshelf is it in. Can be "All Books"
+	 * @return Cursor over all notes
+	 */
+	public Cursor fetchAllAuthors(boolean sortByFamily) {
+		String order = "";
+		if (sortByFamily == true) {
+			order = " ORDER BY Upper(" + KEY_FAMILY_NAME + ") " + COLLATION + ", Upper(" + KEY_GIVEN_NAMES + ") " + COLLATION;
+		} else {
+			order = " ORDER BY Upper(" + KEY_GIVEN_NAMES + ") " + COLLATION + ", Upper(" + KEY_FAMILY_NAME + ") " + COLLATION;
+		}
+		
 		String sql = "SELECT " + getAuthorFields("a", KEY_ROWID) + 
 			" FROM " + DB_TB_AUTHORS + " a " +
-			" ORDER BY Upper(" + KEY_FAMILY_NAME + ") " + COLLATION + ", Upper(" + KEY_GIVEN_NAMES + ") " + COLLATION;
+			order;
 		Cursor returnable = null;
 		try {
 			returnable = mDb.rawQuery(sql, new String[]{});
@@ -1386,14 +1407,31 @@ public class CatalogueDBAdapter {
 	 * @return Cursor over all notes
 	 */
 	public Cursor fetchAllAuthors(String bookshelf) {
+		return fetchAllAuthors(bookshelf, true);
+	}
+
+	/**
+	 * Return a Cursor over the list of all authors in the database
+	 * 
+	 * @param bookshelf Which bookshelf is it in. Can be "All Books"
+	 * 
+	 * @return Cursor over all notes
+	 */
+	public Cursor fetchAllAuthors(String bookshelf, boolean sortByFamily) {
 		if (bookshelf.equals("All Books")) {
-			return fetchAllAuthors();
+			return fetchAllAuthors(sortByFamily);
+		}
+		String order = "";
+		if (sortByFamily == true) {
+			order = " ORDER BY Upper(" + KEY_FAMILY_NAME + ") " + COLLATION + ", Upper(" + KEY_GIVEN_NAMES + ") " + COLLATION;
+		} else {
+			order = " ORDER BY Upper(" + KEY_GIVEN_NAMES + ") " + COLLATION + ", Upper(" + KEY_FAMILY_NAME + ") " + COLLATION;
 		}
 
 		String sql = "SELECT " + getAuthorFields("a", KEY_ROWID)
 		+ " FROM " + DB_TB_AUTHORS + " a "
 		+ " WHERE " + authorOnBookshelfSql(bookshelf, "a." + KEY_ROWID)
-		+ " ORDER BY Upper(" + KEY_FAMILY_NAME + ") " + COLLATION + ", Upper(" + KEY_GIVEN_NAMES + ") " + COLLATION;
+		+ order;
 
 		Cursor returnable = null;
 		try {
@@ -1934,6 +1972,37 @@ public class CatalogueDBAdapter {
 	 * @param bookshelf The bookshelf to search within. Can be the string "All Books"
 	 * @return The position of the author
 	 */
+	public int fetchAuthorPositionByGivenName(String name, String bookshelf) {
+
+		String where = "";
+		String[] names = processAuthorName(name);
+		if (bookshelf.equals("All Books")) {
+			// do nothing
+		} else {
+			where += authorOnBookshelfSql(bookshelf, "a." + KEY_ROWID);
+		}
+		if (where != null && where.length() > 0)
+			where = " and " + where;
+
+		String sql = "SELECT count(*) as count FROM " + DB_TB_AUTHORS + " a " +
+			"WHERE ( " + makeTextTerm("a." + KEY_GIVEN_NAMES, "<", names[0]) +
+			"OR ( " + makeTextTerm("a." + KEY_GIVEN_NAMES, "=", names[0]) + 
+			"     AND " + makeTextTerm("a." + KEY_FAMILY_NAME, "<", names[1]) + ")) " + 
+			where + 
+			" ORDER BY Upper(a." + KEY_GIVEN_NAMES + ") " + COLLATION + ", Upper(a." + KEY_FAMILY_NAME + ") " + COLLATION;
+		Cursor results = mDb.rawQuery(sql, null);
+		int pos = getIntValue(results, 0);
+		results.close();
+		return pos;
+	}
+	
+	/**
+	 * Return the position of an author in a list of all authors (within a bookshelf)
+	 *  
+	 * @param author The author to search for
+	 * @param bookshelf The bookshelf to search within. Can be the string "All Books"
+	 * @return The position of the author
+	 */
 	public int fetchAuthorPositionByName(String name, String bookshelf) {
 
 		String where = "";
@@ -2216,6 +2285,17 @@ public class CatalogueDBAdapter {
 	 * @return Cursor over all authors
 	 */
 	public Cursor searchAuthors(String searchText, String bookshelf) {
+		return searchAuthors(searchText, bookshelf, true);
+	}
+	
+	/**
+	 * Return a Cursor over the author in the database which meet the provided search criteria
+	 * 
+	 * @param query The search query
+	 * @param bookshelf The bookshelf to search within
+	 * @return Cursor over all authors
+	 */
+	public Cursor searchAuthors(String searchText, String bookshelf, boolean sortByFamily) {
 		String where = "";
 		searchText = encodeString(searchText);
 		if (bookshelf.equals("All Books")) {
@@ -2225,7 +2305,14 @@ public class CatalogueDBAdapter {
 		}
 		if (where != null && where.trim().length() > 0)
 			where = " and " + where;
-
+		
+		String order = "";
+		if (sortByFamily == true) {
+			order = " ORDER BY Upper(" + KEY_FAMILY_NAME + ") " + COLLATION + ", Upper(" + KEY_GIVEN_NAMES + ") " + COLLATION;
+		} else {
+			order = " ORDER BY Upper(" + KEY_GIVEN_NAMES + ") " + COLLATION + ", Upper(" + KEY_FAMILY_NAME + ") " + COLLATION;
+		}
+		
 		String sql = "SELECT " + getAuthorFields("a", KEY_ROWID) +
 			" FROM " + DB_TB_AUTHORS + " a" + " " +
 			"WHERE (" + authorSearchPredicate(searchText) +  " OR " +
@@ -2233,8 +2320,7 @@ public class CatalogueDBAdapter {
 				" FROM " + DB_TB_BOOKS + " b Join " + DB_TB_BOOK_AUTHOR + " ba " + 
 				 		" On ba." + KEY_BOOK + " = b." + KEY_ROWID + " " + 
 					"WHERE (" + bookSearchPredicate(searchText)  + ") ) )" + 
-				where + 
-			"ORDER BY Upper(" + KEY_FAMILY_NAME + ") " + COLLATION + ", Upper(" + KEY_GIVEN_NAMES + ") " + COLLATION;
+				where + order;
 		return mDb.rawQuery(sql, new String[]{});
 	}
 

@@ -1344,7 +1344,8 @@ public class CatalogueDBAdapter {
 		}
 		
 		String sql = "SELECT " + getAuthorFields("a", KEY_ROWID) + 
-			" FROM " + DB_TB_AUTHORS + " a " +
+			" FROM " + DB_TB_AUTHORS + " a, " + DB_TB_BOOK_AUTHOR + " ab " + 
+			" WHERE a." + KEY_ROWID + "=ab." + KEY_AUTHOR_ID + " " + 
 			order;
 		Cursor returnable = null;
 		try {
@@ -1427,12 +1428,12 @@ public class CatalogueDBAdapter {
 		} else {
 			order = " ORDER BY Upper(" + KEY_GIVEN_NAMES + ") " + COLLATION + ", Upper(" + KEY_FAMILY_NAME + ") " + COLLATION;
 		}
-
+		
 		String sql = "SELECT " + getAuthorFields("a", KEY_ROWID)
 		+ " FROM " + DB_TB_AUTHORS + " a "
 		+ " WHERE " + authorOnBookshelfSql(bookshelf, "a." + KEY_ROWID)
 		+ order;
-
+		
 		Cursor returnable = null;
 		try {
 			returnable = mDb.rawQuery(sql, new String[]{});

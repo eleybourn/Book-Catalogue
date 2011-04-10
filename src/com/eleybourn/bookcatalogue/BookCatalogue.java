@@ -589,35 +589,6 @@ public class BookCatalogue extends ExpandableListActivity {
 	/*
 	 * ViewManager for sorting by Author
 	 */
-	private class AuthorSeriesViewManager extends ViewManager {
-		AuthorSeriesViewManager() {
-			mLayout = R.layout.row_authors;
-			mChildLayout = R.layout.row_authors_books;
-			mFrom = new String[]{CatalogueDBAdapter.KEY_AUTHOR_FORMATTED};
-			mTo = new int[]{R.id.row_family};	
-			mChildFrom = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_SERIES_FORMATTED, CatalogueDBAdapter.KEY_READ};
-			mChildTo = new int[]{R.id.row_img, R.id.row_title, R.id.row_series, R.id.row_read};
-		}
-		public Cursor getChildrenCursor(Cursor groupCursor) {
-			return mDbHelper.fetchAllBooksByAuthor(groupCursor.getInt(mGroupIdColumnIndex), bookshelf, search_query);
-		}
-		@Override
-		public Cursor newCursor() {
-			if (search_query.equals("")) {
-				// Return all books for the given bookshelf
-				mCursor = mDbHelper.fetchAllAuthors(bookshelf);
-			} else {
-				// Return the search results instead of all books (for the bookshelf)
-				mCursor = mDbHelper.searchAuthors(search_query, bookshelf);
-			}
-			mGroupIdColumnIndex = mCursor.getColumnIndex(CatalogueDBAdapter.KEY_ROWID);
-			return mCursor;
-		}
-	}
-	
-	/*
-	 * ViewManager for sorting by Author
-	 */
 	private class AuthorFirstViewManager extends ViewManager {
 		AuthorFirstViewManager() {
 			mLayout = R.layout.row_authors;

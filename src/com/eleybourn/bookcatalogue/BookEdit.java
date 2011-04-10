@@ -68,15 +68,19 @@ public class BookEdit extends TabActivity {
 			mRowId = extras != null ? extras.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
 		}
 		int anthology_num = 0;
-		try {
-			Cursor book = mDbHelper.fetchBookById(mRowId);
-			book.moveToFirst();
-			anthology_num = book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
-			book.close(); // close the cursor
-		} catch (CursorIndexOutOfBoundsException e) {
-			//do nothing - new book
-		} catch (NullPointerException e) {
-			Logger.logError(e);
+
+		// Avoid unnecessary exception logging; check the rowId
+		if (mRowId != null && mRowId > 0) {
+			try {
+				Cursor book = mDbHelper.fetchBookById(mRowId);
+				book.moveToFirst();
+				anthology_num = book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
+				book.close(); // close the cursor
+			} catch (CursorIndexOutOfBoundsException e) {
+				//do nothing - new book
+			} catch (NullPointerException e) {
+				Logger.logError(e);
+			}
 		}
 		
 		// Create an Intent to launch an Activity for the tab (to be reused)

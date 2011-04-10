@@ -1343,7 +1343,7 @@ public class CatalogueDBAdapter {
 			order = " ORDER BY Upper(" + KEY_GIVEN_NAMES + ") " + COLLATION + ", Upper(" + KEY_FAMILY_NAME + ") " + COLLATION;
 		}
 		
-		String sql = "SELECT " + getAuthorFields("a", KEY_ROWID) + 
+		String sql = "SELECT DISTINCT " + getAuthorFields("a", KEY_ROWID) + 
 			" FROM " + DB_TB_AUTHORS + " a, " + DB_TB_BOOK_AUTHOR + " ab " + 
 			" WHERE a." + KEY_ROWID + "=ab." + KEY_AUTHOR_ID + " " + 
 			order;

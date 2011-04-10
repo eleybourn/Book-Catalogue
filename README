@@ -45,6 +45,7 @@ New in v3.5
 * Sorting by Author has been fixed (it will correctly sort series)
 * A new sort option "Sort by Author Given Name" has been added
 * You can delete books directly from the edit book screen.
+* Minor fixes to the import process
 
 New in v3.4 - Most updates courtesy of Grunthos
 * Multiple Authors per book (Editing a book now displays an author button which takes the user to a new activity for managing the authors of this book.)

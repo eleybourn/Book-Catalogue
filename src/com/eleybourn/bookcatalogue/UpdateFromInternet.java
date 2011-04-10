@@ -174,7 +174,13 @@ public class UpdateFromInternet extends ActivityWithTasks {
 				}
 
 				// If they have selected thumbnails, check if they want to download ALL.
-				if (mFieldUsages.get(CatalogueDBAdapter.KEY_THUMBNAIL).selected) {
+				boolean thumbnail_check = false;
+				try {
+					thumbnail_check = mFieldUsages.get(CatalogueDBAdapter.KEY_THUMBNAIL).selected;
+				} catch (NullPointerException e) {
+					Logger.logError(e);
+				}
+				if (thumbnail_check) {
 					// Verify - this can be a dangerous operation
 					AlertDialog alertDialog = new AlertDialog.Builder(UpdateFromInternet.this).setMessage(R.string.overwrite_thumbnail).create();
 					alertDialog.setTitle(R.string.update_fields);

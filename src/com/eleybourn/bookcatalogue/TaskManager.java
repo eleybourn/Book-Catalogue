@@ -136,7 +136,10 @@ public class TaskManager {
 	 * @param listener	Object to add
 	 */
 	public void addOnTaskEndedListener(OnTaskEndedListener listener) {
-		mOnTaskEndedListeners.add(listener);
+		// Sync. because it *may* get modified in another thread.
+		synchronized (mOnTaskEndedListeners) {
+			mOnTaskEndedListeners.add(listener);
+		}
 	}
 
 	/**
@@ -145,7 +148,10 @@ public class TaskManager {
 	 * @param listener	object to remove
 	 */
 	public void removeOnTaskEndedListener(OnTaskEndedListener listener) {
-		mOnTaskEndedListeners.remove(listener);
+		// Sync. because it *may* get modified in another thread.
+		synchronized (mOnTaskEndedListeners) {
+			mOnTaskEndedListeners.remove(listener);			
+		}
 	}
 
 	/**
@@ -178,7 +184,13 @@ public class TaskManager {
 		}
 
 		// Tell all listeners that it has ended.
-		for(OnTaskEndedListener l : mOnTaskEndedListeners)
+		// Make a copy of the list in case it gets modified by a listener or in another thread.
+		ArrayList<OnTaskEndedListener> tmpList ;
+		synchronized(mOnTaskEndedListeners) {
+			tmpList = new ArrayList<OnTaskEndedListener>(mOnTaskEndedListeners);
+		}
+
+		for(OnTaskEndedListener l : tmpList)
 			try {
 				l.onTaskEnded(this, task);
 			} catch (Exception e) {

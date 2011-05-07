@@ -130,13 +130,15 @@ public class BookEditFields extends Activity {
 	protected ArrayList<String> getPublishers() {
 		ArrayList<String> publisher_list = new ArrayList<String>();
 		Cursor publisher_cur = mDbHelper.fetchAllPublishers();
-		startManagingCursor(publisher_cur);
-		while (publisher_cur.moveToNext()) {
-			String publisher = publisher_cur.getString(publisher_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PUBLISHER));
-			publisher_list.add(publisher);
+		try {
+			while (publisher_cur.moveToNext()) {
+				String publisher = publisher_cur.getString(publisher_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PUBLISHER));
+				publisher_list.add(publisher);
+			}
+			return publisher_list;
+		} finally {
+			publisher_cur.close();			
 		}
-		publisher_cur.close();
-		return publisher_list;
 	}
 
 	/**

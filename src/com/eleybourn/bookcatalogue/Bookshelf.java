@@ -20,6 +20,8 @@
 
 package com.eleybourn.bookcatalogue;
 
+import java.util.ArrayList;
+
 import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -43,7 +45,47 @@ public class Bookshelf extends ListActivity {
 	private CatalogueDBAdapter mDbHelper;
 	private static final int INSERT_ID = Menu.FIRST + 0;
 	private static final int DELETE_ID = Menu.FIRST + 1;
-	
+
+	/* Side-step a bug in HONEYCOMB. It seems that startManagingCursor() in honeycomb causes
+	 * child-list cursors for ExpanadableList objects to be closed prematurely. So we seem to have
+	 * to roll our own...see http://osdir.com/ml/Android-Developers/2011-03/msg02605.html.
+	 */
+	private ArrayList<Cursor> mManagedCursors = new ArrayList<Cursor>();
+	@Override    
+	public void startManagingCursor(Cursor c)
+	{     
+		synchronized(mManagedCursors) {
+			if (!mManagedCursors.contains(c))
+				mManagedCursors.add(c);     
+		}    
+	}
+
+	@Override    
+	public void stopManagingCursor(Cursor c)
+	{
+		synchronized(mManagedCursors) {
+			try {
+				mManagedCursors.remove(c);				
+			} catch (Exception e) {
+				// Don;t really care if it's called more than once.
+			}
+		}
+	}
+
+	private void destroyManagedCursors() 
+	{
+		synchronized(mManagedCursors) {
+			for (Cursor c : mManagedCursors) {
+				try {
+					c.close();
+				} catch (Exception e) {
+					// Don;t really care if it's called more than once or fails.
+				}
+			}     
+			mManagedCursors.clear();
+		}
+	}
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -134,6 +176,7 @@ public class Bookshelf extends ListActivity {
 	
 	@Override
 	protected void onDestroy() {
+		destroyManagedCursors();
 		super.onDestroy();
 		mDbHelper.close();
 	}

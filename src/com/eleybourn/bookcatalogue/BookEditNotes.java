@@ -82,10 +82,13 @@ public class BookEditNotes extends Activity {
 	protected ArrayList<String> getLocations() {
 		ArrayList<String> location_list = new ArrayList<String>();
 		Cursor location_cur = mDbHelper.fetchAllLocations();
-		startManagingCursor(location_cur);
-		while (location_cur.moveToNext()) {
-			String publisher = location_cur.getString(location_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOCATION));
-			location_list.add(publisher);
+		try {
+			while (location_cur.moveToNext()) {
+				String publisher = location_cur.getString(location_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOCATION));
+				location_list.add(publisher);
+			}			
+		} finally {
+			location_cur.close();
 		}
 		return location_list;
 	}

@@ -73,6 +73,46 @@ public class BookEditAnthology extends ListActivity {
 	private static final int DELETE_ID = Menu.FIRST;
 	private static final int POPULATE = Menu.FIRST + 1;
 	
+	/* Side-step a bug in HONEYCOMB. It seems that startManagingCursor() in honeycomb causes
+	 * child-list cursors for ExpanadableList objects to be closed prematurely. So we seem to have
+	 * to roll our own...see http://osdir.com/ml/Android-Developers/2011-03/msg02605.html.
+	 */
+	private ArrayList<Cursor> mManagedCursors = new ArrayList<Cursor>();
+	@Override    
+	public void startManagingCursor(Cursor c)
+	{     
+		synchronized(mManagedCursors) {
+			if (!mManagedCursors.contains(c))
+				mManagedCursors.add(c);     
+		}    
+	}
+
+	@Override    
+	public void stopManagingCursor(Cursor c)
+	{
+		synchronized(mManagedCursors) {
+			try {
+				mManagedCursors.remove(c);				
+			} catch (Exception e) {
+				// Don;t really care if it's called more than once.
+			}
+		}
+	}
+
+	private void destroyManagedCursors() 
+	{
+		synchronized(mManagedCursors) {
+			for (Cursor c : mManagedCursors) {
+				try {
+					c.close();
+				} catch (Exception e) {
+					// Don;t really care if it's called more than once or fails.
+				}
+			}     
+			mManagedCursors.clear();
+		}
+	}
+
 	protected void getRowId() {
 		/* Get any information from the extras bundle */
 		Bundle extras = getIntent().getExtras();
@@ -491,6 +531,7 @@ public class BookEditAnthology extends ListActivity {
 	
 	@Override
 	protected void onDestroy() {
+		destroyManagedCursors();
 		super.onDestroy();
 		mDbHelper.close();
 	}

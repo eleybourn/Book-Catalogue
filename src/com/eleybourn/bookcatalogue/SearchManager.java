@@ -208,7 +208,9 @@ public class SearchManager implements OnTaskEndedListener {
 		// these in series.
 		if (mIsbn != null && mIsbn.length() > 0) {
 			mWaitingForIsbn = false;
-			startLibraryThing();
+			if (Utils.USE_LT) {
+				startLibraryThing();
+			}
 			startGoogle();
 			startAmazon();
 		} else {

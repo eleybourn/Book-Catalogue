@@ -133,7 +133,7 @@
 <string name="location">Location of the CD</string>
 <string name="duplicate_title">Duplicate CD</string>
 <string name="duplicate_book_title">Duplicate CD</string>
-<string name="duplicate_alert">The CD you are trying to add already exists in the database, are you sure you want to add another copy</string>
+<string name="duplicate_book_message">The CD you are trying to add already exists in the database, are you sure you want to add another copy</string>
 <string name="menu_add_thumb_gallery">Add Thumbnail from Gallery</string>
 <string name="backup_request">Would you like to backup your database to your sdcard</string>
 <string name="backup_title">Backup?</string>
@@ -258,4 +258,6 @@
 <string name="bytes">%.0f bytes</string>
 <string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
 <string name="sortby_author_given">Sort by Artist (Given Name)</string>
+<string name="debug_subject">Gathered debugging information</string>
+<string name="debug_body">Please take the time to briefly describe the problem you are experiencing.</string>
 </resources>

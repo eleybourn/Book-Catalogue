@@ -133,7 +133,7 @@
 <string name="location">Location of the DVD</string>
 <string name="duplicate_title">Duplicate DVD</string>
 <string name="duplicate_book_title">Duplicate DVD</string>
-<string name="duplicate_alert">The DVD you are trying to add already exists in the database, are you sure you want to add another copy</string>
+<string name="duplicate_book_message">The DVD you are trying to add already exists in the database, are you sure you want to add another copy</string>
 <string name="menu_add_thumb_gallery">Add Thumbnail from Gallery</string>
 <string name="backup_request">Would you like to backup your database to your sdcard</string>
 <string name="backup_title">Backup?</string>
@@ -234,6 +234,7 @@
 <string name="usage_add_extra">Appends extra data</string>
 <string name="usage_overwrite">Overwrites existing data</string>
 <string name="cancelling">Cancelling</string>
+
 <string name="starting_search">Starting Search</string>
 <string name="lt_info">This application is enhanced by using LibraryThing as a source of information about book series, as well as a source of alternate covers. To use these features you need to register with LibraryThing (free) and request a LibraryThing developer key (also free).</string>
 <string name="lt_register_text">Register with LibraryThing</string>
@@ -258,4 +259,6 @@
 <string name="bytes">%.0f bytes</string>
 <string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
 <string name="sortby_author_given">Sort by Director (Given Name)</string>
+<string name="debug_subject">Gathered debugging information</string>
+<string name="debug_body">Please take the time to briefly describe the problem you are experiencing.</string>
 </resources>

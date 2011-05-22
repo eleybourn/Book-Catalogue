@@ -104,7 +104,8 @@ public class AdministrationAbout extends Activity {
 					Intent msg = new Intent(Intent.ACTION_SEND);
 					msg.setType("text/plain");
 					msg.putExtra(Intent.EXTRA_EMAIL, new String[]{res.getString(R.string.contact)});
-					msg.putExtra(Intent.EXTRA_SUBJECT, "[Book Catalogue] ");
+					String subject = "[" + res.getString(R.string.app_name) + "] ";
+					msg.putExtra(Intent.EXTRA_SUBJECT, subject);
 					AdministrationAbout.this.startActivity(Intent.createChooser(msg, "Send email..."));
 					//startActivity(msg);
 				} catch (ActivityNotFoundException e) {

@@ -49,7 +49,6 @@ import android.widget.ImageView;
  */
 public class CatalogueDBAdapter {
 	
-	public static final String DATABASE_NAME = "book_catalogue";
 	private ArrayList<SQLiteStatement> mStatements = new ArrayList<SQLiteStatement>();
 	
 	/* This is the list of all column names as static variables for reference
@@ -374,7 +373,7 @@ public class CatalogueDBAdapter {
 	 */
 	private static class DatabaseHelper extends SQLiteOpenHelper {
 		DatabaseHelper(Context context) {
-			super(context, DATABASE_NAME, null, DATABASE_VERSION);
+			super(context, Utils.DATABASE_NAME, null, DATABASE_VERSION);
 		}
 		
 		/**

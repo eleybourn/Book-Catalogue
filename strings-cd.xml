@@ -92,7 +92,7 @@
 <string name="list_price">List Price</string>
 <string name="date_started_reading">Date Started Listening</string>
 <string name="date_finished_reading">Date Finished Listening</string>
-<string name="update_thumbnails">Automatically Update Fields</string>
+<string name="update_fields">Automatically Update Fields</string>
 <string name="select_fields_to_update">Select Fields to Update</string>
 <string name="select_fields_to_update_help">Selected fields will be updated from the internet. Unselected fields will remain unchanged.</string>
 <string name="overwrite_thumbnail">This will update the selected fields as shown, but Thumbnails can optionally be downloaded for ALL CDs.\n\nDo you want to overwrite all existing thumbnails? Warning, this may take a long time. </string>

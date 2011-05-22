@@ -156,7 +156,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			mManagedCursors.clear();
 		}
 	}
-    
+	
 	private static boolean shown = false;
 	private String justAdded = ""; 
 	private String search_query = "";

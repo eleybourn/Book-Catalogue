@@ -21,14 +21,12 @@
 package com.eleybourn.bookcatalogue;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Hashtable;
 
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -306,11 +304,11 @@ public class BookISBNSearch extends ActivityWithTasks {
 		this.isbn = isbn;
 		this.author = author;
 		this.title = title;
-
+		
 		// If the book already exists, do not continue
 		try {
 			if (!isbn.equals("")) {
-
+				
 				if (mDbHelper.checkIsbnExists(isbn)) {
 					// Verify - this can be a dangerous operation
 					AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(R.string.duplicate_book_message).create();
@@ -337,11 +335,11 @@ public class BookISBNSearch extends ActivityWithTasks {
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
-
+		
 		doSearchBook();
-
+		
 	}
-
+	
 	private void doSearchBook() {
 		/* Delete any hanging around thumbs */
 		try {

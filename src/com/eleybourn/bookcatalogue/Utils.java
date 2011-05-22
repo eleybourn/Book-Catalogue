@@ -69,6 +69,16 @@ public class Utils {
 
 	public static final String APP_NAME = "Book Catalogue";
 	public static final String LOCATION = "bookCatalogue";
+	public static final String DATABASE_NAME = "book_catalogue";
+	public static final boolean USE_LT = true;
+	//public static final String APP_NAME = "DVD Catalogue";
+	//public static final String LOCATION = "dvdCatalogue";
+	//public static final String DATABASE_NAME = "dvd_catalogue";
+	//public static final boolean USE_LT = false;
+	//public static final String APP_NAME = "CD Catalogue";
+	//public static final String LOCATION = "cdCatalogue";
+	//public static final String DATABASE_NAME = "cd_catalogue";
+	//public static final boolean USE_LT = true;
 
 	public static final String EXTERNAL_FILE_PATH = Environment.getExternalStorageDirectory() + "/" + LOCATION;
 	public static final String ERRORLOG_FILE = EXTERNAL_FILE_PATH + "/error.log";
@@ -831,9 +841,11 @@ public class Utils {
 	}
 	
 	public static void showLtAlertIfNecessary(Context context, boolean always, String suffix) {
-		LibraryThingManager ltm = new LibraryThingManager(context);
-		if (!ltm.isAvailable())
-			StandardDialogs.needLibraryThingAlert(context, always, suffix);		
+		if (USE_LT) {
+			LibraryThingManager ltm = new LibraryThingManager(context);
+			if (!ltm.isAvailable())
+				StandardDialogs.needLibraryThingAlert(context, always, suffix);		
+		}
 	}
 
 	private static String[] mPurgeableFilePrefixes = new String[]{"dbUpgrade", "dbExport", "error.log", "tmp"};
@@ -856,43 +868,44 @@ public class Utils {
 		// setup the mail message
 		final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND_MULTIPLE);
 		emailIntent.setType("plain/text");
-        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, context.getString(R.string.debug_email).split(";"));
-        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Gathered debugging information" );
-        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Please take the time to briefly describe the problem you are experiencing." );
-        //has to be an ArrayList
-        ArrayList<Uri> uris = new ArrayList<Uri>();
-        //convert from paths to Android friendly Parcelable Uri's
-        ArrayList<String> files = new ArrayList<String>();
-
-        // Find all files of interest to send
-        File dir = new File(Utils.EXTERNAL_FILE_PATH);
-        for (String name : dir.list()) {
-        	boolean send = false;
-        	for(String prefix : mDebugFilePrefixes)
-        		if (name.startsWith(prefix)) {
-        			send = true;
-        			break;
-        		}
-        	if (send)
-        		files.add(name);
-        }
-
-        // Build the attachment list
-        for (String file : files)
-        {
-            File fileIn = new File(Utils.EXTERNAL_FILE_PATH + "/" + file);
-            if (fileIn.exists() && fileIn.length() > 0) {
-                Uri u = Uri.fromFile(fileIn);
-                uris.add(u);            	
-            }
-        }
-        // Send it, if there are any files to send.
-        if (uris.size() == 0) {
-        	Toast.makeText(context, R.string.no_debug_info, Toast.LENGTH_LONG).show();
-        } else {
-            emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-            context.startActivity(Intent.createChooser(emailIntent, "Send mail..."));        	
-        }
+		emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, context.getString(R.string.debug_email).split(";"));
+		String subject = "[" + context.getString(R.string.app_name) + "] " + context.getString(R.string.debug_subject);
+		emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
+		emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, context.getString(R.string.debug_body));
+		//has to be an ArrayList
+		ArrayList<Uri> uris = new ArrayList<Uri>();
+		//convert from paths to Android friendly Parcelable Uri's
+		ArrayList<String> files = new ArrayList<String>();
+		
+		// Find all files of interest to send
+		File dir = new File(Utils.EXTERNAL_FILE_PATH);
+		for (String name : dir.list()) {
+			boolean send = false;
+			for(String prefix : mDebugFilePrefixes)
+				if (name.startsWith(prefix)) {
+					send = true;
+					break;
+				}
+			if (send)
+				files.add(name);
+		}
+		
+		// Build the attachment list
+		for (String file : files)
+		{
+			File fileIn = new File(Utils.EXTERNAL_FILE_PATH + "/" + file);
+			if (fileIn.exists() && fileIn.length() > 0) {
+				Uri u = Uri.fromFile(fileIn);
+				uris.add(u);
+			}
+		}
+		// Send it, if there are any files to send.
+		if (uris.size() == 0) {
+			Toast.makeText(context, R.string.no_debug_info, Toast.LENGTH_LONG).show();
+		} else {
+			emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+			context.startActivity(Intent.createChooser(emailIntent, "Send mail..."));        	
+		}
 	}
 
 	/**

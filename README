@@ -41,7 +41,7 @@ Features include;
   case. e.g. "The murder on the links" becomes "The Murder on the Links"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
-New in v3.5.2
+New in v3.5.3
 * Fixes for honeycomb tablets
 * Fixes several reported crashes
 

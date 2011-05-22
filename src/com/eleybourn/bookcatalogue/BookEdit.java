@@ -174,19 +174,23 @@ public class BookEdit extends TabActivity {
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch(item.getItemId()) {
-		case DELETE_ID:
-			int res = StandardDialogs.deleteBookAlert(this, mDbHelper, mRowId, new Runnable() {
-				@Override
-				public void run() {
-					mDbHelper.purgeAuthors();
-					mDbHelper.purgeSeries();
+		try {
+			switch(item.getItemId()) {
+			case DELETE_ID:
+				int res = StandardDialogs.deleteBookAlert(this, mDbHelper, mRowId, new Runnable() {
+					@Override
+					public void run() {
+						mDbHelper.purgeAuthors();
+						mDbHelper.purgeSeries();
+						finish();
+					}});
+				if (res != 0) {
+					Toast.makeText(this, res, Toast.LENGTH_LONG).show();
 					finish();
-				}});
-			if (res != 0) {
-				Toast.makeText(this, res, Toast.LENGTH_LONG).show();
-				finish();
+				}
 			}
+		} catch (NullPointerException e) {
+			Logger.logError(e);
 		}
 		return true;
 	}

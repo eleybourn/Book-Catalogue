@@ -1738,7 +1738,7 @@ public class CatalogueDBAdapter {
 	/**
 	 * Return a Cursor over the list of all books in the database by series
 	 * 
-	 * @param author The series name to search by
+	 * @param series The series name to search by
 	 * @param bookshelf The bookshelf to search within. Can be the string "All Books"
 	 * @return Cursor over all books
 	 */

@@ -84,9 +84,13 @@ public class EditSeriesDialog {
 		// First, deal with a some special cases...
 
 		// Case: Unchanged.
-		if (newSeries.name.compareTo(oldSeries.name) == 0) {
-			// No change to anything; nothing to do
-			return;
+		try {
+			if (newSeries.name.compareTo(oldSeries.name) == 0) {
+				// No change to anything; nothing to do
+				return;
+			}
+		} catch (NullPointerException e) {
+			Logger.logError(e);
 		}
 
 		// Get the new IDs

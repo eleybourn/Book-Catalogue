@@ -1271,11 +1271,16 @@ public class CatalogueDBAdapter {
 	 * @return int The number of books
 	 */
 	public int countBooks() {
-		String sql = "SELECT count(*) as count FROM " + DB_TB_BOOKS + " b ";
-		Cursor count = mDb.rawQuery(sql, new String[]{});
-		count.moveToNext();
-		int result = count.getInt(0);
-		count.close();
+		int result = 0;
+		try {
+			String sql = "SELECT count(*) as count FROM " + DB_TB_BOOKS + " b ";
+			Cursor count = mDb.rawQuery(sql, new String[]{});
+			count.moveToNext();
+			result = count.getInt(0);
+			count.close();
+		} catch (IllegalStateException e) {
+			Logger.logError(e);
+		}
 		return result;
 	}
 	
@@ -1286,20 +1291,25 @@ public class CatalogueDBAdapter {
 	 * @return int The number of books
 	 */
 	public int countBooks(String bookshelf) {
-		if (bookshelf.equals("All Books")) {
-			return countBooks();
+		int result = 0;
+		try {
+			if (bookshelf.equals("All Books")) {
+				return countBooks();
+			}
+			String sql = "SELECT count(DISTINCT b._id) as count " + 
+				" FROM " + DB_TB_BOOKSHELF + " bs " +
+				" Join " + DB_TB_BOOK_BOOKSHELF_WEAK + " bbs " +
+				"     On bbs." + KEY_BOOKSHELF + " = bs." + KEY_ROWID +
+				" Join " + DB_TB_BOOKS + " b " +
+				"     On bbs." + KEY_BOOK + " = b." + KEY_ROWID + 
+				" WHERE " + makeTextTerm("bs." + KEY_BOOKSHELF, "=", bookshelf);
+			Cursor count = mDb.rawQuery(sql, new String[]{});
+			count.moveToNext();
+			result = count.getInt(0);
+			count.close();
+		} catch (IllegalStateException e) {
+			Logger.logError(e);
 		}
-		String sql = "SELECT count(DISTINCT b._id) as count " + 
-			" FROM " + DB_TB_BOOKSHELF + " bs " +
-			" Join " + DB_TB_BOOK_BOOKSHELF_WEAK + " bbs " +
-			"     On bbs." + KEY_BOOKSHELF + " = bs." + KEY_ROWID +
-			" Join " + DB_TB_BOOKS + " b " +
-			"     On bbs." + KEY_BOOK + " = b." + KEY_ROWID + 
-			" WHERE " + makeTextTerm("bs." + KEY_BOOKSHELF, "=", bookshelf);
-		Cursor count = mDb.rawQuery(sql, new String[]{});
-		count.moveToNext();
-		int result = count.getInt(0);
-		count.close();
 		return result;
 	}
 	

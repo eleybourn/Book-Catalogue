@@ -71,14 +71,17 @@ public class Utils {
 	public static final String LOCATION = "bookCatalogue";
 	public static final String DATABASE_NAME = "book_catalogue";
 	public static final boolean USE_LT = true;
+	public static final boolean USE_BARCODE = true;
 	//public static final String APP_NAME = "DVD Catalogue";
 	//public static final String LOCATION = "dvdCatalogue";
 	//public static final String DATABASE_NAME = "dvd_catalogue";
 	//public static final boolean USE_LT = false;
+	//public static final boolean USE_BARCODE = false;
 	//public static final String APP_NAME = "CD Catalogue";
 	//public static final String LOCATION = "cdCatalogue";
 	//public static final String DATABASE_NAME = "cd_catalogue";
 	//public static final boolean USE_LT = true;
+	//public static final boolean USE_BARCODE = false;
 
 	public static final String EXTERNAL_FILE_PATH = Environment.getExternalStorageDirectory() + "/" + LOCATION;
 	public static final String ERRORLOG_FILE = EXTERNAL_FILE_PATH + "/error.log";

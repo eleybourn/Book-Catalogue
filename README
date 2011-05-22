@@ -41,6 +41,10 @@ Features include;
   case. e.g. "The murder on the links" becomes "The Murder on the Links"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+New in v3.5.2
+* Fixes for honeycomb tablets
+* Fixes several reported crashes
+
 New in v3.5
 * Sorting by Author has been fixed (it will correctly sort series)
 * A new sort option "Sort by Author Given Name" has been added

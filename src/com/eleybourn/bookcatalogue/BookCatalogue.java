@@ -952,14 +952,16 @@ public class BookCatalogue extends ExpandableListActivity {
 		MenuItem insert = menu.add(0, INSERT_ID, 0, R.string.menu_insert);
 		insert.setIcon(android.R.drawable.ic_menu_add);
 		
-		MenuItem insertBC = menu.add(0, INSERT_BARCODE_ID, 1, R.string.menu_insert_barcode);
-		insertBC.setIcon(R.drawable.ic_menu_insert_barcode);
-		
-		MenuItem insertISBN = menu.add(0, INSERT_ISBN_ID, 2, R.string.menu_insert_isbn);
-		insertISBN.setIcon(android.R.drawable.ic_menu_zoom);
-		
-		MenuItem insertName = menu.add(0, INSERT_NAME_ID, 2, R.string.menu_insert_name);
-		insertName.setIcon(android.R.drawable.ic_menu_zoom);
+		if (Utils.USE_BARCODE) {
+			MenuItem insertBC = menu.add(0, INSERT_BARCODE_ID, 1, R.string.menu_insert_barcode);
+			insertBC.setIcon(R.drawable.ic_menu_insert_barcode);
+			
+			MenuItem insertISBN = menu.add(0, INSERT_ISBN_ID, 2, R.string.menu_insert_isbn);
+			insertISBN.setIcon(android.R.drawable.ic_menu_zoom);
+			
+			MenuItem insertName = menu.add(0, INSERT_NAME_ID, 2, R.string.menu_insert_name);
+			insertName.setIcon(android.R.drawable.ic_menu_zoom);
+		}
 		
 		if (collapsed == true || currentGroup.size() == 0) {
 			MenuItem expand = menu.add(0, SORT_BY_AUTHOR_COLLAPSED, 3, R.string.menu_sort_by_author_expanded);

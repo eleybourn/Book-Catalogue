@@ -30,7 +30,6 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -546,7 +545,7 @@ public class Fields extends ArrayList<Fields.Field> {
 				} else {
 					v = Integer.parseInt(o.toString());
 				}
-
+				
 				if (values != null && !field.column.equals("")) {
 					values.putInt(field.column, v);
 				}

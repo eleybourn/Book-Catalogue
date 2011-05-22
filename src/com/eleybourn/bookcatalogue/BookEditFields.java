@@ -245,11 +245,15 @@ public class BookEditFields extends Activity {
 						// Parse the string the CheckBox returns us (0 or 1)
 						Integer i = Integer.parseInt(s);
 						Integer orig = (Integer) f.getView().getTag(R.id.TAG_ORIGINAL_VALUE);
-						if (i != 0 && orig > 0) {
-							// If non-zero, and original was non-zero, re-use original
-							return orig.toString();
-						} else {
-							// Just return what we got.
+						try {
+							if (i != 0 && orig > 0) {
+								// If non-zero, and original was non-zero, re-use original
+								return orig.toString();
+							} else {
+								// Just return what we got.
+								return s;
+							}
+						} catch (NullPointerException e) {
 							return s;
 						}
 					}

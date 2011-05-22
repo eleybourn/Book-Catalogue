@@ -62,18 +62,10 @@ import android.widget.ExpandableListView.OnGroupExpandListener;
  * A book catalogue application that integrates with Google Books.
  */
 public class BookCatalogue extends ExpandableListActivity {
-	/*
-	public static final String APP_NAME = "DVD Catalogue";
-	public static final String LOCATION = "dvdCatalogue";
-	public static final String DATABASE_NAME = "dvd_catalogue";
-	public static final String APP_NAME = "CD Catalogue";
-	public static final String LOCATION = "cdCatalogue";
-	public static final String DATABASE_NAME = "cd_catalogue";
-	*/
-
+	
 	// Target size of a thumbnail in a list (bbox dim)
 	private static final int LIST_THUMBNAIL_SIZE=60;
-
+	
 	private static final int ACTIVITY_CREATE=0;
 	private static final int ACTIVITY_EDIT=1;
 	private static final int ACTIVITY_SORT=2;

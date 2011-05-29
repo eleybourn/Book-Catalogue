@@ -318,8 +318,8 @@ public class BookEditFields extends Activity {
 						do { 
 							final CheckBox cb = new CheckBox(BookEditFields.this);
 							boolean checked = false;
-							String db_bookshelf = bookshelves_for_book.getString(bookshelves_for_book.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF));
-
+							String db_bookshelf = bookshelves_for_book.getString(bookshelves_for_book.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)).trim();
+							
 							Field fe = mFields.getField(R.id.bookshelf_text);
 							if (fe.getValue().toString().indexOf(db_bookshelf + BOOKSHELF_SEPERATOR) > -1) {
 								checked = true;
@@ -330,7 +330,8 @@ public class BookEditFields extends Activity {
 							cb.setOnClickListener(new OnClickListener() {
 								@Override
 								public void onClick(View v) {
-									String name = cb.getHint() + BOOKSHELF_SEPERATOR;
+									String hint = cb.getHint() + "";
+									String name = hint.trim() + BOOKSHELF_SEPERATOR;
 									Field fe = mFields.getField(R.id.bookshelf_text);
 									if (cb.isChecked()) {
 										fe.setValue(fe.getValue().toString()+name);

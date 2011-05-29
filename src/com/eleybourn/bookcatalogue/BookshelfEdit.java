@@ -31,57 +31,57 @@ public class BookshelfEdit extends Activity {
 	private EditText mBookshelfText;
 	private Button mConfirmButton;
 	private Button mCancelButton;
-    private Long mRowId;
-    private CatalogueDBAdapter mDbHelper;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-    	try {
-	        super.onCreate(savedInstanceState);
-	        mDbHelper = new CatalogueDBAdapter(this);
-	        mDbHelper.open();
-	        
-	        setContentView(R.layout.edit_bookshelf);
-	       
-	        mBookshelfText = (EditText) findViewById(R.id.bookshelf);
-            mConfirmButton = (Button) findViewById(R.id.confirm);
-	        mCancelButton = (Button) findViewById(R.id.cancel);
-	       
-	        mRowId = savedInstanceState != null ? savedInstanceState.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
-	        if (mRowId == null) {
-	        	Bundle extras = getIntent().getExtras();
-	        	mRowId = extras != null ? extras.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
-	        }
-	        populateFields();
-	        
-	        mConfirmButton.setOnClickListener(new View.OnClickListener() {
-	            public void onClick(View view) {
-	                saveState();
-	                setResult(RESULT_OK);
-	                finish();
-	            }
-	        });
-	        
-	        mCancelButton.setOnClickListener(new View.OnClickListener() {
-	            public void onClick(View view) {
-	                setResult(RESULT_OK);
-	                finish();
-	            }
-	        });
-	        
-    	} catch (Exception e) {
-    		Logger.logError(e);
-    	}
-    }
-    
-    private void populateFields() {
-        if (mRowId != null && mRowId > 0) {
-            mBookshelfText.setText(mDbHelper.getBookshelfName(mRowId));
-            mConfirmButton.setText(R.string.confirm_save_bs);
-        } else {
-            mConfirmButton.setText(R.string.confirm_add_bs);
-        }
-    }
+	private Long mRowId;
+	private CatalogueDBAdapter mDbHelper;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		try {
+			super.onCreate(savedInstanceState);
+			mDbHelper = new CatalogueDBAdapter(this);
+			mDbHelper.open();
+			
+			setContentView(R.layout.edit_bookshelf);
+			
+			mBookshelfText = (EditText) findViewById(R.id.bookshelf);
+			mConfirmButton = (Button) findViewById(R.id.confirm);
+			mCancelButton = (Button) findViewById(R.id.cancel);
+			
+			mRowId = savedInstanceState != null ? savedInstanceState.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
+			if (mRowId == null) {
+				Bundle extras = getIntent().getExtras();
+				mRowId = extras != null ? extras.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
+			}
+			populateFields();
+			
+			mConfirmButton.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View view) {
+					saveState();
+					setResult(RESULT_OK);
+					finish();
+				}
+			});
+			
+			mCancelButton.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View view) {
+					setResult(RESULT_OK);
+					finish();
+				}
+			});
+			
+		} catch (Exception e) {
+			Logger.logError(e);
+		}
+	}
+	
+	private void populateFields() {
+		if (mRowId != null && mRowId > 0) {
+			mBookshelfText.setText(mDbHelper.getBookshelfName(mRowId));
+			mConfirmButton.setText(R.string.confirm_save_bs);
+		} else {
+			mConfirmButton.setText(R.string.confirm_add_bs);
+		}
+	}
 	
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
@@ -105,7 +105,7 @@ public class BookshelfEdit extends Activity {
 	}
 	
 	private void saveState() {
-		String bookshelf = mBookshelfText.getText().toString();
+		String bookshelf = mBookshelfText.getText().toString().trim();
 		if (mRowId == null || mRowId == 0) {
 			long id = mDbHelper.createBookshelf(bookshelf);
 			if (id > 0) {
@@ -119,8 +119,8 @@ public class BookshelfEdit extends Activity {
 	@Override
 	protected void onDestroy(){
 		if (mDbHelper != null) {
-	        mDbHelper.close();
-	        mDbHelper = null;
+			mDbHelper.close();
+			mDbHelper = null;
 		}
 		super.onDestroy();
 	}

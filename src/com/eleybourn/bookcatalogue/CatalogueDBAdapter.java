@@ -362,7 +362,8 @@ public class CatalogueDBAdapter {
 //						+ " LEFT OUTER JOIN " + DB_TB_SERIES + " s ON (s." + KEY_ROWID + "=w." + KEY_SERIES_ID + ") ";
 		
 	private final Context mCtx;
-	public static final int DATABASE_VERSION = 55;
+	//TODO: Update database version
+	public static final int DATABASE_VERSION = 57;
 
 	private TableInfo mBooksInfo = null;
 
@@ -407,14 +408,18 @@ public class CatalogueDBAdapter {
 			//delete all indices first
 			String sql = "select name from sqlite_master where type = 'index' and sql is not null;";
 			Cursor current = db.rawQuery(sql, new String[]{});
-			try {
-				while (current.moveToNext()) {
-					String index_name = current.getString(0);
-					String delete_sql = "DROP INDEX " + index_name;
+			while (current.moveToNext()) {
+				String index_name = current.getString(0);
+				String delete_sql = "DROP INDEX " + index_name;
+				//db.beginTransaction();
+				try {
 					db.execSQL(delete_sql);
+					//db.setTransactionSuccessful();
+				} catch (Exception e) {
+					Logger.logError(e, "Index deletion failed (probably not a problem)");
+				} finally {
+					//db.endTransaction();
 				}
-			} catch (Exception e) {
-				Logger.logError(e, "Index deletion failed (probably not a problem)");
 			}
 			
 			String[] indices = DATABASE_CREATE_INDICES;
@@ -426,15 +431,19 @@ public class CatalogueDBAdapter {
 				// Ideally, whenever an upgrade script is written, the 'createIndices()' call
 				// from prior upgrades should be removed saved and used and a new version of this
 				// script written for the new DB.
+				//db.beginTransaction();
 				try {
-					db.execSQL(indices[i]);					
+					db.execSQL(indices[i]);	
+					//db.setTransactionSuccessful();
 				} catch (Exception e) {
 					// Expected on multi-version upgrades.
 					Logger.logError(e, "Index creation failed (probably not a problem), definition was: " + indices[i]);
+				} finally {
+					//db.endTransaction();
 				}
 			}			
 		}
-
+		
 		/**
 		 * This function is called each time the database is upgraded. The function will run all 
 		 * upgrade scripts between the oldVersion and the newVersion. 
@@ -447,10 +456,10 @@ public class CatalogueDBAdapter {
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 			int curVersion = oldVersion;
-
+			
 			if (oldVersion != newVersion)
 				backupDbFile(db, "dbUpgrade-" + oldVersion + "-" + newVersion);
-
+			
 			if (curVersion < 11) {
 				onCreate(db);
 			}
@@ -497,7 +506,7 @@ public class CatalogueDBAdapter {
 			if (curVersion == 20) {
 				curVersion++;
 				db.execSQL(DATABASE_CREATE_LOAN);
-				createIndices(db);
+				//createIndices(db); // All createIndices prior to the latest have been removed
 			}
 			if (curVersion == 21) {
 				//do nothing
@@ -537,7 +546,7 @@ public class CatalogueDBAdapter {
 					throw new RuntimeException("Failed to upgrade database", e);
 				}
 				try {
-					createIndices(db);
+					//createIndices(db); // All createIndices prior to the latest have been removed
 				} catch (Exception e) {
 					Logger.logError(e);
 					throw new RuntimeException("Failed to upgrade database", e);
@@ -602,7 +611,7 @@ public class CatalogueDBAdapter {
 					throw new RuntimeException("Failed to upgrade database", e);
 				}
 				try {
-					createIndices(db);
+					//createIndices(db); // All createIndices prior to the latest have been removed
 				} catch (Exception e) {
 					Logger.logError(e);
 					throw new RuntimeException("Failed to upgrade database", e);
@@ -722,7 +731,7 @@ public class CatalogueDBAdapter {
 				
 				try {
 					db.execSQL(DATABASE_CREATE_BOOK_BOOKSHELF_WEAK);
-					createIndices(db);
+					//createIndices(db); // All createIndices prior to the latest have been removed
 					db.execSQL("INSERT INTO " + DB_TB_BOOK_BOOKSHELF_WEAK + " (" + KEY_BOOK + ", " + KEY_BOOKSHELF + ") SELECT " + KEY_ROWID + ", " + KEY_BOOKSHELF + " FROM " + DB_TB_BOOKS + "");
 					db.execSQL("CREATE TABLE tmp1 AS SELECT _id, " + KEY_AUTHOR_OLD + ", " + KEY_TITLE + ", " + KEY_ISBN + ", " + KEY_PUBLISHER + ", " + 
 						KEY_DATE_PUBLISHED + ", " + KEY_RATING + ", " + KEY_READ + ", " + KEY_SERIES_OLD + ", " + KEY_PAGES + ", " + KEY_SERIES_NUM + ", " + KEY_NOTES + ", " + 
@@ -842,7 +851,7 @@ public class CatalogueDBAdapter {
 				db.execSQL("DROP TABLE tmp3");
 				db.execSQL("DROP TABLE tmp4");
 				
-				createIndices(db);
+				//createIndices(db); // All createIndices prior to the latest have been removed
 			}
 			if (curVersion == 45) {
 				//do nothing
@@ -871,7 +880,7 @@ public class CatalogueDBAdapter {
 				db.execSQL("delete from loan where loaned_to='null';");
 				db.execSQL("delete from loan where _id!=(select max(l2._id) from loan l2 where l2.book=loan.book);");
 				db.execSQL("delete from anthology where _id!=(select max(a2._id) from anthology a2 where a2.book=anthology.book AND a2.author=anthology.author AND a2.title=anthology.title);");
-				createIndices(db);
+				//createIndices(db); // All createIndices prior to the latest have been removed
 			}
 			if (curVersion == 49) {
 				curVersion++;
@@ -882,7 +891,7 @@ public class CatalogueDBAdapter {
 			}
 			if (curVersion == 50) {
 				curVersion++;
-				createIndices(db);
+				//createIndices(db); // All createIndices prior to the latest have been removed
 			}
 			if (curVersion == 51) {
 				curVersion++;
@@ -899,6 +908,7 @@ public class CatalogueDBAdapter {
 				message += "* Minor bug fixes and error logging. Please email me if you have any further issues.\n\n";
 			}
 			if (curVersion == 53) {
+				curVersion++;
 				//There is a conflict between eleybourn released branch (3.3.1) and grunthos HEAD (3.4). 
 				// This is to check and skip as required
 				boolean go = false;
@@ -911,26 +921,6 @@ public class CatalogueDBAdapter {
 				}
 				if (go == true) {
 					try {
-						message += "New in v3.4 - Updates courtesy of (mainly) Grunthos (blame him, politely, if it toasts your data)\n\n";
-						message += "* Multiple Authors per book\n\n";
-						message += "* Multiple Series per book\n\n";
-						message += "* Fetches series (and other stuff) from LibraryThing\n\n";
-						message += "* Can now make global changes to Author and Series (Access this feature via long-click on the catalogue screen)\n\n";
-						message += "* Can replace a cover thumbnail from a different edition via LibraryThing.\n\n";
-						message += "* Does concurrent ISBN searches at Amazon, Google and LibraryThing (it's faster)\n\n";
-						message += "* Displays a progress dialog while searching for a book on the internet.\n\n";
-						message += "* Adding by Amazon's ASIN is supported on the 'Add by ISBN' page\n\n";
-						message += "* Duplicate books allowed, with a warning message\n\n";
-						message += "* User-selectable fields when reloading data from internet (eg. just update authors).\n\n";
-						message += "* Unsaved edits are retained when rotating the screen.\n\n";
-						message += "* Changed the ISBN data entry screen when the device is in landscape mode.\n\n";
-						message += "* Displays square brackets around the series name when displaying a list of books.\n\n";
-						message += "* Suggestions available when searching\n\n";
-						message += "* Removed the need for contacts permission. Though it does mean you will need to manually enter everyone you want to loan to.\n\n";
-						message += "* Preserves *all* open groups when closing application.\n\n";
-						message += "* The scanner and book search screens remain active after a book has been added or a search fails. It was viewed that this more closely represents the work-flow of people adding or scanning books.\n\n";
-						message += "See the web site (from the Admin menu) for more details\n\n";
-						
 						db.execSQL(DATABASE_CREATE_SERIES);
 						// We need to create a series table with series that are unique wrt case and unicode. The old
 						// system allowed for series with slightly different case. So we capture these by using
@@ -947,7 +937,7 @@ public class CatalogueDBAdapter {
 						db.execSQL(DATABASE_CREATE_BOOK_SERIES);
 						db.execSQL(DATABASE_CREATE_BOOK_AUTHOR);
 						
-						createIndices(db);
+						//createIndices(db); // All createIndices prior to the latest have been removed
 						
 						db.execSQL("INSERT INTO " + DB_TB_BOOK_SERIES + " (" + KEY_BOOK + ", " + KEY_SERIES_ID + ", " + KEY_SERIES_NUM + ", " + KEY_SERIES_POSITION + ") "
 								+ "SELECT DISTINCT b." + KEY_ROWID + ", s." + KEY_ROWID + ", b." + KEY_SERIES_NUM + ", 1"
@@ -979,9 +969,79 @@ public class CatalogueDBAdapter {
 					}
 				} 
 				if (curVersion == 54) {
+					//createIndices(db); // All createIndices prior to the latest have been removed
+					curVersion++;
+				}
+				if (curVersion == 55) {
+					//There is a conflict between eleybourn released branch (3.3.1) and grunthos HEAD (3.4). 
+					// This is to check and skip as required
+					boolean go2 = false;
+					String checkSQL2 = "SELECT * FROM " + DB_TB_BOOKS;
+					Cursor results2 = db.rawQuery(checkSQL2, new String[]{});
+					if (results2.getCount() > 0) {
+						if (results2.getColumnIndex(KEY_AUTHOR_OLD) > -1) {
+							go2 = true;
+						}
+					} else {
+						go2 = true;
+					}
+					if (go2 == true) {
+						try {
+							db.execSQL(DATABASE_CREATE_SERIES);
+							// We need to create a series table with series that are unique wrt case and unicode. The old
+							// system allowed for series with slightly different case. So we capture these by using
+							// max() to pick and arbitrary matching name to use as our canonical version.
+							db.execSQL("INSERT INTO " + DB_TB_SERIES + " (" + KEY_SERIES_NAME + ") "
+										+ "SELECT name from ("
+										+ "    SELECT Upper(" + KEY_SERIES_OLD + ") " + COLLATION + " as ucName, "
+										+ "    max(" + KEY_SERIES_OLD + ")" + COLLATION + " as name FROM " + DB_TB_BOOKS
+										+ "    WHERE Coalesce(" + KEY_SERIES_OLD + ",'') <> ''"
+										+ "    Group By Upper(" + KEY_SERIES_OLD + ")"
+										+ " )"
+										);
+							
+							db.execSQL(DATABASE_CREATE_BOOK_SERIES);
+							db.execSQL(DATABASE_CREATE_BOOK_AUTHOR);
+							
+							db.execSQL("INSERT INTO " + DB_TB_BOOK_SERIES + " (" + KEY_BOOK + ", " + KEY_SERIES_ID + ", " + KEY_SERIES_NUM + ", " + KEY_SERIES_POSITION + ") "
+									+ "SELECT DISTINCT b." + KEY_ROWID + ", s." + KEY_ROWID + ", b." + KEY_SERIES_NUM + ", 1"
+									+ " FROM " + DB_TB_BOOKS + " b "
+									+ " Join " + DB_TB_SERIES + " s On Upper(s." + KEY_SERIES_NAME + ") = Upper(b." + KEY_SERIES_OLD + ")" + COLLATION
+									+ " Where Coalesce(b." + KEY_SERIES_OLD + ", '') <> ''");
+							
+							db.execSQL("INSERT INTO " + DB_TB_BOOK_AUTHOR + " (" + KEY_BOOK + ", " + KEY_AUTHOR_ID + ", " + KEY_AUTHOR_POSITION + ") "
+									+ "SELECT b." + KEY_ROWID + ", b." + KEY_AUTHOR_OLD + ", 1 FROM " + DB_TB_BOOKS + " b ");
+							
+							String tmpFields = KEY_ROWID + ", " /* + KEY_AUTHOR + ", " */ + KEY_TITLE + ", " + KEY_ISBN 
+							+ ", " + KEY_PUBLISHER + ", " + KEY_DATE_PUBLISHED + ", " + KEY_RATING + ", " + KEY_READ 
+							+ /* ", " + KEY_SERIES + */ ", " + KEY_PAGES /* + ", " + KEY_SERIES_NUM */ + ", " + KEY_NOTES 
+							+ ", " + KEY_LIST_PRICE + ", " + KEY_ANTHOLOGY + ", " + KEY_LOCATION + ", " + KEY_READ_START 
+							+ ", " + KEY_READ_END + ", " + KEY_FORMAT + ", " + KEY_SIGNED + ", " + KEY_DESCRIPTION
+							+ ", " + KEY_GENRE;
+							db.execSQL("CREATE TABLE tmpBooks AS SELECT " + tmpFields + " FROM " + DB_TB_BOOKS);
+							
+							db.execSQL("DROP TABLE " + DB_TB_BOOKS);
+							
+							db.execSQL(DATABASE_CREATE_BOOKS);
+							
+							db.execSQL("INSERT INTO " + DB_TB_BOOKS + "( " + tmpFields + ")  SELECT * FROM tmpBooks");
+							
+							db.execSQL("DROP TABLE tmpBooks");
+						} catch (Exception e) {
+							Logger.logError(e);
+							throw new RuntimeException("Failed to upgrade database", e);
+						} finally {
+						}
+					} 
+					//createIndices(db); // All createIndices prior to the latest have been removed
+					curVersion++;
+				}
+				if (curVersion == 56) {
 					createIndices(db);
+					curVersion++;
 				}
 			}
+			//TODO: NOTE: END OF UPDATE
 		}
 	}
 	
@@ -1398,15 +1458,6 @@ public class CatalogueDBAdapter {
 		+ "               	And " + makeTextTerm("bs." + KEY_BOOKSHELF, "=", bookshelf)
 		+ "              )";
 		
-	}
-
-	private String bookOnBookshelfSql(String bookshelf, String bookIdSpec) {
-		return " Exists(Select NULL From " + DB_TB_BOOK_BOOKSHELF_WEAK + " bbs"
-		+ "               Join " + DB_TB_BOOKSHELF + " bs"
-		+ "                  On bs." + KEY_ROWID + " = bbs." + KEY_BOOKSHELF
-		+ "               Where bbs." + KEY_BOOK + " = " + bookIdSpec
-		+ "               	And " + makeTextTerm("bs." + KEY_BOOKSHELF, "=", bookshelf)
-		+ "              )";
 	}
 
 	/**
@@ -2063,7 +2114,7 @@ public class CatalogueDBAdapter {
 		}
 		mCheckBookExistsStmt.bindLong(1, rowId);
 		try {
-			long id = mCheckBookExistsStmt.simpleQueryForLong();
+			mCheckBookExistsStmt.simpleQueryForLong();
 			return true;
 		} catch (SQLiteDoneException e) {
 			return false;
@@ -3440,24 +3491,6 @@ public class CatalogueDBAdapter {
 	
 	
 	
-//    /*
-//     * This will return the author id based on the name. 
-//     * The name can be in either "family, given" or "given family" format.
-//     */
-//    public Cursor getAuthorByName(String name) {
-//    	String[] names = processAuthorName(name);
-//    	return getAuthorByName(names);
-//    }
-    
-    /*
-     * This will return the author id based on the name. 
-     * The name can be in either "family, given" or "given family" format.
-     */
-    private Cursor getAuthorByName(String[] names) {
-    	String sql = KEY_FAMILY_NAME + "=? " + COLLATION + " AND " + KEY_GIVEN_NAMES + "=? " + COLLATION;
-        return mDb.query(DB_TB_AUTHORS, new String[] {"_id", KEY_FAMILY_NAME, KEY_GIVEN_NAMES}, sql, names, null, null, null);
-    }
-    
     /*
      * This will return the author based on the ID.
      */
@@ -3652,16 +3685,6 @@ public class CatalogueDBAdapter {
 		}
 	}
 
-//    /*
-//     * This will return the author id based on the name. 
-//     * The name can be in either "family, given" or "given family" format.
-//     */
-//    public Cursor getSeriesByName(String name) {
-//    	String sql = "";
-//    	sql = makeTextTerm(KEY_SERIES_NAME, "=", name);
-//        return mDb.query(DB_TB_SERIES, new String[] {"_id", KEY_SERIES_NAME}, sql, null, null, null, null);
-//    }
-
     /**
      * Utility routine to fill an array with the specified column from the passed SQL.
      * 
@@ -3713,149 +3736,130 @@ public class CatalogueDBAdapter {
     	return fetchArray(sql, KEY_AUTHOR_FORMATTED);
 	}
 
-//    /**
-//     * Return a Cursor positioned at the books that matches the given rowId
-//     * 
-//     * @param rowId id of note to retrieve
-//     * @return Cursor positioned to matching note, if found
-//     * @throws SQLException if note could not be found/retrieved
-//     */
-//    public Cursor fetchAuthor(long rowId) throws SQLException {
-//    	String sql = "SELECT a." + KEY_ROWID + ", a." + KEY_FAMILY_NAME + ", a." + KEY_GIVEN_NAMES + 
-//		" FROM " + DB_TB_AUTHORS + " a " +  
-//		" WHERE a." + KEY_ROWID + "=" + rowId + "";
-//
-//    	Cursor mCursor = mDb.rawQuery(sql, new String[]{});
-//        if (mCursor != null) {
-//            mCursor.moveToFirst();
-//        }
-//        return mCursor;
-//
-//    }
-
     public String encodeString(String value) {
     	return value.replace("'", "''");
     }
+	
+	/**
+	 * Column info support. This is useful for auto-building queries from maps that have
+	 * more columns than are in the table.
+	 * 
+	 * @author Grunthos
+	 */
+	@SuppressWarnings("unused")
+	private class ColumnInfo {
+		public int position;
+		public String name;
+		public String typeName;
+		public boolean allowNull;
+		public boolean isPrimaryKey;
+		public String defaultValue;
+		public int typeClass;
+	}
 
-    /**
-     * Column info support. This is useful for auto-building queries from maps that have
-     * more columns than are in the table.
-     * 
-     * @author Grunthos
-     */
-    private class ColumnInfo {
-    	public int position;
-    	public String name;
-    	public String typeName;
-    	public boolean allowNull;
-    	public boolean isPrimaryKey;
-    	public String defaultValue;
-    	public int typeClass;
-    }
-
-    /**
-     * Details of a database table.
-     * 
-     * @author Grunthos
-     */
-    private class TableInfo {
-    	private Map<String,ColumnInfo> mColumns;
-    	private String mName;
-
-    	public static final int CLASS_INTEGER = 1;
-    	public static final int CLASS_TEXT = 2;
-    	public static final int CLASS_REAL = 3;
-    	
-    	TableInfo(String tableName) {
-    		mName = tableName;
-    		mColumns = describeTable(mName);
-    	}
-
-    	public ColumnInfo getColumn(String name) {
-    		String lcName = name.toLowerCase();
-    		if (!mColumns.containsKey(lcName))
-    			return null;
-    		return mColumns.get(lcName);
-    	}
-
-    	/**
-         * Get the column details for the given table.
-    	 * 
-    	 * @param tableName	Name of the database table to lookup
-    	 * 
-    	 * @return	A collection of ColumnInfo objects.
-    	 */
-        Map<String,ColumnInfo> describeTable(String tableName) {
-        	String sql = "PRAGMA table_info(" + tableName + ")";
-        	
-            Map<String,ColumnInfo> cols = new Hashtable<String,ColumnInfo>();
-
-            Cursor colCsr = mDb.rawQuery(sql, new String[]{});
-        	try {
-                if (colCsr == null)
-                	throw new IllegalArgumentException();
-
-                if (!colCsr.moveToFirst())
-                	throw new RuntimeException("Unable to get column details");
-
-
-                while (true) {
-                	ColumnInfo col = new ColumnInfo();
-                	col.position = colCsr.getInt(0);
-                	col.name = colCsr.getString(1);
-                	col.typeName = colCsr.getString(2);
-                	col.allowNull = colCsr.getInt(3) == 0;
-                	col.defaultValue = colCsr.getString(4);
-                	col.isPrimaryKey = colCsr.getInt(5) == 1;
-                	String tName = col.typeName.toLowerCase();
-                	if (tName.equals("int") || tName.equals("integer")) {
-                		col.typeClass = CLASS_INTEGER;
-                	} else if (tName.equals("text")) {
-                		col.typeClass = CLASS_TEXT;            		
-                	} else if (tName.equals("float") || tName.equals("real") || tName.equals("double")) {
-                		col.typeClass = CLASS_REAL;
-                	} else if (tName.equals("date")) {
-                		col.typeClass = CLASS_TEXT;
-                	} else if (tName.equals("boolean")) {
-                		col.typeClass = CLASS_INTEGER;
-                	} else {
-                		throw new RuntimeException("Unknown data type '" + tName + "'");
-                	}
-                	
-                	cols.put(col.name.toLowerCase(),col);
-                	if (colCsr.isLast())
-                		break;
-                	colCsr.moveToNext();
-                }        		
-        	} finally {
-        		if (colCsr != null)
-	                colCsr.close();        		
-        	}
-            return cols;
-        }
-    }
-
-    void startTransaction() {
-    	mDb.beginTransaction();
-    }
-    void endTransaction() {
-    	mDb.endTransaction();
-    }
-    void setTransactionSuccessful() {
-    	mDb.setTransactionSuccessful();
-    }
-    
-    public void analyzeDb() {
-    	try {
-        	mDb.execSQL("analyze");    		
-    	} catch (Exception e) {
-    		Logger.logError(e, "Analyze failed");
-    	}
-    }
-
-    private SQLiteStatement compileStatement(String sql) {
-    	SQLiteStatement s = mDb.compileStatement(sql);
-    	mStatements.add(s);
-    	return s;
-    }
+	/**
+	 * Details of a database table.
+	 * 
+	 * @author Grunthos
+	 */
+	private class TableInfo {
+		private Map<String,ColumnInfo> mColumns;
+		private String mName;
+		
+		public static final int CLASS_INTEGER = 1;
+		public static final int CLASS_TEXT = 2;
+		public static final int CLASS_REAL = 3;
+		
+		TableInfo(String tableName) {
+			mName = tableName;
+			mColumns = describeTable(mName);
+		}
+		
+		public ColumnInfo getColumn(String name) {
+			String lcName = name.toLowerCase();
+			if (!mColumns.containsKey(lcName))
+				return null;
+			return mColumns.get(lcName);
+		}
+		
+		/**
+		 * Get the column details for the given table.
+		 * 
+		 * @param tableName	Name of the database table to lookup
+		 * 
+		 * @return	A collection of ColumnInfo objects.
+		 */
+		Map<String,ColumnInfo> describeTable(String tableName) {
+			String sql = "PRAGMA table_info(" + tableName + ")";
+			
+			Map<String,ColumnInfo> cols = new Hashtable<String,ColumnInfo>();
+			
+			Cursor colCsr = mDb.rawQuery(sql, new String[]{});
+			try {
+				if (colCsr == null)
+					throw new IllegalArgumentException();
+				
+				if (!colCsr.moveToFirst())
+					throw new RuntimeException("Unable to get column details");
+				
+				
+				while (true) {
+					ColumnInfo col = new ColumnInfo();
+					col.position = colCsr.getInt(0);
+					col.name = colCsr.getString(1);
+					col.typeName = colCsr.getString(2);
+					col.allowNull = colCsr.getInt(3) == 0;
+					col.defaultValue = colCsr.getString(4);
+					col.isPrimaryKey = colCsr.getInt(5) == 1;
+					String tName = col.typeName.toLowerCase();
+					if (tName.equals("int") || tName.equals("integer")) {
+						col.typeClass = CLASS_INTEGER;
+					} else if (tName.equals("text")) {
+						col.typeClass = CLASS_TEXT;            		
+					} else if (tName.equals("float") || tName.equals("real") || tName.equals("double")) {
+						col.typeClass = CLASS_REAL;
+					} else if (tName.equals("date")) {
+						col.typeClass = CLASS_TEXT;
+					} else if (tName.equals("boolean")) {
+						col.typeClass = CLASS_INTEGER;
+					} else {
+						throw new RuntimeException("Unknown data type '" + tName + "'");
+					}
+					
+					cols.put(col.name.toLowerCase(),col);
+					if (colCsr.isLast())
+						break;
+					colCsr.moveToNext();
+				}
+			} finally {
+				if (colCsr != null)
+					colCsr.close();
+			}
+			return cols;
+		}
+	}
+	
+	void startTransaction() {
+		mDb.beginTransaction();
+	}
+	void endTransaction() {
+		mDb.endTransaction();
+	}
+	void setTransactionSuccessful() {
+		mDb.setTransactionSuccessful();
+	}
+	
+	public void analyzeDb() {
+		try {
+			mDb.execSQL("analyze");    		
+		} catch (Exception e) {
+			Logger.logError(e, "Analyze failed");
+		}
+	}
+	
+	private SQLiteStatement compileStatement(String sql) {
+		SQLiteStatement s = mDb.compileStatement(sql);
+		mStatements.add(s);
+		return s;
+	}
 }

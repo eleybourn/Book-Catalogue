@@ -440,6 +440,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			 * closing brackets for series numbers and standardize the view.
 			 */
 			//TODO: @Override
+			@SuppressWarnings("unused") // This is used by 2.1+
 			public void setViewText(TextView v, String text) {
 				if (v.getId() == R.id.row_img) {
 					boolean field_visibility = mPrefs.getBoolean(FieldVisibility.prefix + "thumbnail", true);

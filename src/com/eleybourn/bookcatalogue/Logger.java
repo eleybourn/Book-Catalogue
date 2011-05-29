@@ -55,7 +55,7 @@ public class Logger {
 			"In Phone " + Build.MODEL + " (" + Build.VERSION.SDK_INT + ") \n" + 
 			msg + "\n" + 
 			sw.toString();
-		//Log.e("BookCatalogue", error);
+		Log.e("BookCatalogue", error);
 		
 		try {
 			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Utils.ERRORLOG_FILE), "utf8"), 8192);

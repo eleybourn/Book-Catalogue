@@ -177,6 +177,7 @@ public class CoverBrowser {
 	 * 
 	 * @author Grunthos
 	 */
+	@SuppressWarnings("unused")
 	private class GetThumbnailTask implements SimpleTask {
 		ImageView 	v;
 		int position;
@@ -216,6 +217,7 @@ public class CoverBrowser {
 	 * 
 	 * @author Grunthos
 	 */
+	@SuppressWarnings("unused")
 	private class GetFullImageTask implements SimpleTask {
 		// Switcher to use
 		private ImageSwitcher 	switcher;

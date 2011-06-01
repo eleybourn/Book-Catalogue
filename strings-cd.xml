@@ -260,4 +260,5 @@
 <string name="sortby_author_given">Sort by Artist (Given Name)</string>
 <string name="debug_subject">Gathered debugging information</string>
 <string name="debug_body">Please take the time to briefly describe the problem you are experiencing.</string>
+<string name="menu_duplicate">Duplicate CD</string>
 </resources>

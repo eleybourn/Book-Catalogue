@@ -42,6 +42,7 @@ Features include;
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
 New in v3.5.4
+* There is an option to create a duplicate book (requested by Vinika)
 * Fixed errors caused by failed upgrades
 * Fixed errors caused by trailing spaces in bookshelf names
 

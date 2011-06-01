@@ -653,7 +653,7 @@ public class BookEditFields extends Activity {
 		if (mRowId == null) {
 			getRowId();
 		}
-
+		
 		if (mRowId != null && mRowId > 0) {
 			// From the database (edit)
 			Cursor book = mDbHelper.fetchBookById(mRowId);
@@ -662,12 +662,12 @@ public class BookEditFields extends Activity {
 				if (book != null) {
 					book.moveToFirst();
 				}
-
+				
 				// Set any field that has a 'column' non blank.
 				mFields.setFromCursor(book);
-
+				
 				getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + mFields.getField(R.id.title).getValue().toString());
-
+				
 				//Display the selected bookshelves
 				Field bookshelfTextFe = mFields.getField(R.id.bookshelf_text);
 				bookshelves = mDbHelper.fetchAllBookshelvesByBook(mRowId);
@@ -676,10 +676,10 @@ public class BookEditFields extends Activity {
 					bookshelves_text += bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)) + BOOKSHELF_SEPERATOR;
 				}
 				bookshelfTextFe.setValue(bookshelves_text);
-
+				
 				Integer anthNo = book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
 				mFields.getField(R.id.anthology).setValue(anthNo.toString());
-
+				
 				ImageView iv = (ImageView) findViewById(R.id.row_img);
 				CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);				
 			} finally {	
@@ -691,7 +691,7 @@ public class BookEditFields extends Activity {
 			
 			mAuthorList = mDbHelper.getBookAuthorList(mRowId);
 			mSeriesList = mDbHelper.getBookSeriesList(mRowId);
-
+			
 		} else if (extras != null) {
 			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + this.getResources().getString(R.string.menu_insert));
 			// From the ISBN Search (add)
@@ -718,22 +718,18 @@ public class BookEditFields extends Activity {
 					} else {
 						mFields.getField(R.id.bookshelf_text).setValue(BookCatalogue.bookshelf + BOOKSHELF_SEPERATOR);
 					}
-
 					mAuthorList = values.getParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
 					mSeriesList = values.getParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY);
-
 				}
 				
 			} catch (NullPointerException e) {
 				Logger.logError(e);
 			}
-
 			setCoverImage();
-
 		} else {
 			// Manual Add
 			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + this.getResources().getString(R.string.menu_insert));
-
+			
 			//Display the selected bookshelves
 			if (BookCatalogue.bookshelf.equals("All Books")) {
 				mFields.getField(R.id.bookshelf_text).setValue(mDbHelper.getBookshelfName(1) + BOOKSHELF_SEPERATOR);
@@ -743,17 +739,17 @@ public class BookEditFields extends Activity {
 			mAuthorList = new ArrayList<Author>();
 			mSeriesList = new ArrayList<Series>();
 		}
-
+		
 		fixupAuthorList();
 		fixupSeriesList();
-
+		
 	}
-
+	
 	private void setCoverImage() {
 		ImageView iv = (ImageView) findViewById(R.id.row_img);
 		CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);		
 	}
-
+	
 	/**
 	 * Validate the current data in all fields that have validators. Display any errors.
 	 * 

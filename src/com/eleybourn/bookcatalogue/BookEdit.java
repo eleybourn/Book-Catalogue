@@ -46,7 +46,7 @@ public class BookEdit extends TabActivity {
 	public static final int TAB_EDIT_NOTES = 1;
 	public static final int TAB_EDIT_FRIENDS = 2;
 	public static final int DELETE_ID = 1;
-	public static final int DUPLICATE_ID = 2;
+	public static final int DUPLICATE_ID = 3; //2 is taken by populate in anthology
 	public int currentTab = 0;
 	private Long mRowId;
 	private CatalogueDBAdapter mDbHelper = new CatalogueDBAdapter(this);

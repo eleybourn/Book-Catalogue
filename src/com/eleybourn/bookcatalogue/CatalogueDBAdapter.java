@@ -921,6 +921,26 @@ public class CatalogueDBAdapter {
 				}
 				if (go == true) {
 					try {
+						message += "New in v3.4 - Updates courtesy of (mainly) Grunthos (blame him, politely, if it toasts your data)\n\n";
+						message += "* Multiple Authors per book\n\n";
+						message += "* Multiple Series per book\n\n";
+						message += "* Fetches series (and other stuff) from LibraryThing\n\n";
+						message += "* Can now make global changes to Author and Series (Access this feature via long-click on the catalogue screen)\n\n";
+						message += "* Can replace a cover thumbnail from a different edition via LibraryThing.\n\n";
+						message += "* Does concurrent ISBN searches at Amazon, Google and LibraryThing (it's faster)\n\n";
+						message += "* Displays a progress dialog while searching for a book on the internet.\n\n";
+						message += "* Adding by Amazon's ASIN is supported on the 'Add by ISBN' page\n\n";
+						message += "* Duplicate books allowed, with a warning message\n\n";
+						message += "* User-selectable fields when reloading data from internet (eg. just update authors).\n\n";
+						message += "* Unsaved edits are retained when rotating the screen.\n\n";
+						message += "* Changed the ISBN data entry screen when the device is in landscape mode.\n\n";
+						message += "* Displays square brackets around the series name when displaying a list of books.\n\n";
+						message += "* Suggestions available when searching\n\n";
+						message += "* Removed the need for contacts permission. Though it does mean you will need to manually enter everyone you want to loan to.\n\n";
+						message += "* Preserves *all* open groups when closing application.\n\n";
+						message += "* The scanner and book search screens remain active after a book has been added or a search fails. It was viewed that this more closely represents the work-flow of people adding or scanning books.\n\n";
+						message += "See the web site (from the Admin menu) for more details\n\n";
+						
 						db.execSQL(DATABASE_CREATE_SERIES);
 						// We need to create a series table with series that are unique wrt case and unicode. The old
 						// system allowed for series with slightly different case. So we capture these by using
@@ -1039,6 +1059,11 @@ public class CatalogueDBAdapter {
 				if (curVersion == 56) {
 					createIndices(db);
 					curVersion++;
+					message += "New in v3.5.4\n\n";
+					message += "* French translation available\n\n";
+					message += "* There is an option to create a duplicate book (requested by Vinika)\n\n";
+					message += "* Fixed errors caused by failed upgrades\n\n";
+					message += "* Fixed errors caused by trailing spaces in bookshelf names\n\n";
 				}
 			}
 			//TODO: NOTE: END OF UPDATE
@@ -3426,22 +3451,27 @@ public class CatalogueDBAdapter {
 	 * @return true if deleted, false otherwise
 	 */
 	public boolean deleteSeries(Series series) {
-		if (series.id == 0)
-			series.id = lookupSeriesId(series);
-		if (series.id == 0)
+		try {
+			if (series.id == 0)
+				series.id = lookupSeriesId(series);
+			if (series.id == 0)
+				return false;
+		} catch (NullPointerException e) {
+			Logger.logError(e);
 			return false;
-
+		}
+		
 		// Delete DB_TB_BOOK_SERIES for this series
 		boolean success1 = mDb.delete(DB_TB_BOOK_SERIES, KEY_SERIES_ID + " = " + series.id, null) > 0;
-
+		
 		boolean success2 = false;
 		if (success1)
 			// Cleanup all series
 			success2 = purgeSeries();
-
+		
 		return success1 || success2;
 	}
-
+	
 	/** 
 	 * Delete the book with the given rowId
 	 * 

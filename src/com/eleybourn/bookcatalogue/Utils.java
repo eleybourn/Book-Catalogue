@@ -882,32 +882,37 @@ public class Utils {
 		
 		// Find all files of interest to send
 		File dir = new File(Utils.EXTERNAL_FILE_PATH);
-		for (String name : dir.list()) {
-			boolean send = false;
-			for(String prefix : mDebugFilePrefixes)
-				if (name.startsWith(prefix)) {
-					send = true;
-					break;
-				}
-			if (send)
-				files.add(name);
-		}
-		
-		// Build the attachment list
-		for (String file : files)
-		{
-			File fileIn = new File(Utils.EXTERNAL_FILE_PATH + "/" + file);
-			if (fileIn.exists() && fileIn.length() > 0) {
-				Uri u = Uri.fromFile(fileIn);
-				uris.add(u);
+		try {
+			for (String name : dir.list()) {
+				boolean send = false;
+				for(String prefix : mDebugFilePrefixes)
+					if (name.startsWith(prefix)) {
+						send = true;
+						break;
+					}
+				if (send)
+					files.add(name);
 			}
-		}
-		// Send it, if there are any files to send.
-		if (uris.size() == 0) {
-			Toast.makeText(context, R.string.no_debug_info, Toast.LENGTH_LONG).show();
-		} else {
-			emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-			context.startActivity(Intent.createChooser(emailIntent, "Send mail..."));        	
+			
+			// Build the attachment list
+			for (String file : files)
+			{
+				File fileIn = new File(Utils.EXTERNAL_FILE_PATH + "/" + file);
+				if (fileIn.exists() && fileIn.length() > 0) {
+					Uri u = Uri.fromFile(fileIn);
+					uris.add(u);
+				}
+			}
+			// Send it, if there are any files to send.
+			if (uris.size() == 0) {
+				Toast.makeText(context, R.string.no_debug_info, Toast.LENGTH_LONG).show();
+			} else {
+				emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+				context.startActivity(Intent.createChooser(emailIntent, "Send mail..."));        	
+			}
+		} catch (NullPointerException e) {
+			Logger.logError(e);
+			Toast.makeText(context, R.string.export_failed_sdcard, Toast.LENGTH_LONG).show();
 		}
 	}
 

@@ -38,10 +38,11 @@ Features include;
 * When adding or editing books author, series and publisher should display a 
   suggestion list
 * When downloading book information, authors and titles are converted to proper
-  case. e.g. "The murder on the links" becomes "The Murder on the Links"
+  case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
 New in v3.5.4
+* French translation available
 * There is an option to create a duplicate book (requested by Vinika)
 * Fixed errors caused by failed upgrades
 * Fixed errors caused by trailing spaces in bookshelf names

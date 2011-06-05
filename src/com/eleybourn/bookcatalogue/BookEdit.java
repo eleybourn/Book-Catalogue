@@ -195,6 +195,7 @@ public class BookEdit extends TabActivity {
 					Toast.makeText(this, res, Toast.LENGTH_LONG).show();
 					finish();
 				}
+				return true;
 			case DUPLICATE_ID:
 				Intent i = new Intent(this, BookEdit.class);
 				Bundle book = new Bundle();
@@ -223,6 +224,7 @@ public class BookEdit extends TabActivity {
 				
 				i.putExtra("bookData", book);
 				startActivityForResult(i, DUPLICATE_ID);
+				return true;
 			}
 		} catch (NullPointerException e) {
 			Logger.logError(e);

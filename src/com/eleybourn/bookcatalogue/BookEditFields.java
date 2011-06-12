@@ -713,7 +713,7 @@ public class BookEditFields extends Activity {
 						}
 					}
 					//Display the selected bookshelves
-					if (BookCatalogue.bookshelf.equals("All Books")) {
+					if (BookCatalogue.bookshelf.equals("")) {
 						mFields.getField(R.id.bookshelf_text).setValue(mDbHelper.getBookshelfName(1) + BOOKSHELF_SEPERATOR);
 					} else {
 						mFields.getField(R.id.bookshelf_text).setValue(BookCatalogue.bookshelf + BOOKSHELF_SEPERATOR);
@@ -731,7 +731,7 @@ public class BookEditFields extends Activity {
 			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + this.getResources().getString(R.string.menu_insert));
 			
 			//Display the selected bookshelves
-			if (BookCatalogue.bookshelf.equals("All Books")) {
+			if (BookCatalogue.bookshelf.equals("")) {
 				mFields.getField(R.id.bookshelf_text).setValue(mDbHelper.getBookshelfName(1) + BOOKSHELF_SEPERATOR);
 			} else {
 				mFields.getField(R.id.bookshelf_text).setValue(BookCatalogue.bookshelf + BOOKSHELF_SEPERATOR);

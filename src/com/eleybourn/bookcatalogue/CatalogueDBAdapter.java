@@ -1378,7 +1378,7 @@ public class CatalogueDBAdapter {
 	public int countBooks(String bookshelf) {
 		int result = 0;
 		try {
-			if (bookshelf.equals("All Books")) {
+			if (bookshelf.equals("")) {
 				return countBooks();
 			}
 			String sql = "SELECT count(DISTINCT b._id) as count " + 
@@ -1504,7 +1504,7 @@ public class CatalogueDBAdapter {
 	 * @return Cursor over all notes
 	 */
 	public Cursor fetchAllAuthors(String bookshelf, boolean sortByFamily) {
-		if (bookshelf.equals("All Books")) {
+		if (bookshelf.equals("")) {
 			return fetchAllAuthors(sortByFamily);
 		}
 		String order = "";
@@ -1636,7 +1636,7 @@ public class CatalogueDBAdapter {
 
 		String sql = " FROM " + DB_TB_BOOKS + " b";
 
-		if (!bookshelf.equals("All Books") && bookshelf.trim().length() > 0) {
+		if (!bookshelf.equals("") && bookshelf.trim().length() > 0) {
 			// Join with specific bookshelf
 			sql += " Join " + DB_TB_BOOK_BOOKSHELF_WEAK + " bbsx On bbsx." + KEY_BOOK + " = b." + KEY_ROWID;
 			sql += " Join " + DB_TB_BOOKSHELF + " bsx On bsx." + KEY_ROWID + " = bbsx." + KEY_BOOKSHELF
@@ -1970,7 +1970,7 @@ public class CatalogueDBAdapter {
 	 */
 	public Cursor fetchAllSeries(String bookshelf, boolean include_blank) {
 		String series;
-		if (bookshelf.equals("All Books")) {
+		if (bookshelf.equals("")) {
 			series = sqlAllSeries();
 		} else {
 			series = sqlAllSeriesOnBookshelf(bookshelf);
@@ -2062,7 +2062,7 @@ public class CatalogueDBAdapter {
 
 		String where = "";
 		String[] names = processAuthorName(name);
-		if (bookshelf.equals("All Books")) {
+		if (bookshelf.equals("")) {
 			// do nothing
 		} else {
 			where += authorOnBookshelfSql(bookshelf, "a." + KEY_ROWID);
@@ -2093,7 +2093,7 @@ public class CatalogueDBAdapter {
 
 		String where = "";
 		String[] names = processAuthorName(name);
-		if (bookshelf.equals("All Books")) {
+		if (bookshelf.equals("")) {
 			// do nothing
 		} else {
 			where += authorOnBookshelfSql(bookshelf, "a." + KEY_ROWID);
@@ -2122,7 +2122,7 @@ public class CatalogueDBAdapter {
 	 */
 	public Cursor fetchBookById(long rowId) throws SQLException {
 		String where = "b." + KEY_ROWID + "=" + rowId;
-		return fetchAllBooks("", "All Books", "", where, "", "", "");
+		return fetchAllBooks("", "", "", where, "", "", "");
 	}
 	
 	/**
@@ -2171,7 +2171,7 @@ public class CatalogueDBAdapter {
 		String authorWhere = makeTextTerm("a." + KEY_FAMILY_NAME, "=", family) 
 							+ " AND " + makeTextTerm("a." + KEY_GIVEN_NAMES, "=", given);
 		String bookWhere = makeTextTerm("b." + KEY_TITLE, "=", title);
-		return fetchAllBooks("", "All Books", authorWhere, bookWhere, "", "", "" );
+		return fetchAllBooks("", "", authorWhere, bookWhere, "", "", "" );
 	}
 
 	/**
@@ -2340,7 +2340,7 @@ public class CatalogueDBAdapter {
 	 */
 	public int fetchSeriesPositionBySeries(String seriesName, String bookshelf) {
 		String seriesSql;
-		if (bookshelf.equals("All Books")) {
+		if (bookshelf.equals("")) {
 			seriesSql = sqlAllSeries();
 		} else {
 			seriesSql = sqlAllSeriesOnBookshelf(bookshelf);
@@ -2384,7 +2384,7 @@ public class CatalogueDBAdapter {
 	public Cursor searchAuthors(String searchText, String bookshelf, boolean sortByFamily) {
 		String where = "";
 		searchText = encodeString(searchText);
-		if (bookshelf.equals("All Books")) {
+		if (bookshelf.equals("")) {
 			// do nothing
 		} else {
 			where += this.authorOnBookshelfSql(bookshelf, "a." + KEY_ROWID);

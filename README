@@ -43,6 +43,7 @@ Features include;
 
 New in v3.5.6
 * Fixed bug in moving to SDcard (2.2 and above only)
+* Fixed defect in the "All Books" bookshelf (French version only)
 
 New in v3.5.5
 * Add by ISBN also works to Amazon ASIN (use the android keyboard not the onscreen buttons) 

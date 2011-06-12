@@ -158,7 +158,6 @@ public class BookCatalogue extends ExpandableListActivity {
 	private static final String STATE_CURRENT_GROUP_COUNT = "state_current_group_count"; 
 	private static final String STATE_CURRENT_GROUP = "state_current_group"; 
 	private static final String STATE_OPENED = "state_opened";
-	private static final int GONE = 8;
 	private static final int VISIBLE = 0;
 	private static final int BACKUP_PROMPT_WAIT = 5;
 
@@ -449,7 +448,7 @@ public class BookCatalogue extends ExpandableListActivity {
 					boolean field_visibility = mPrefs.getBoolean(FieldVisibility.prefix + "thumbnail", true);
 					ImageView newv = (ImageView) ((ViewGroup) v.getParent()).findViewById(R.id.row_image_view);
 					if (field_visibility == false) {
-						newv.setVisibility(GONE);
+						newv.setVisibility(View.GONE);
 					} else {
 						CatalogueDBAdapter.fetchThumbnailIntoImageView(Long.parseLong(text),newv, LIST_THUMBNAIL_SIZE,LIST_THUMBNAIL_SIZE, true);
 						newv.setVisibility(VISIBLE);
@@ -460,7 +459,7 @@ public class BookCatalogue extends ExpandableListActivity {
 					boolean field_visibility = mPrefs.getBoolean(FieldVisibility.prefix + "read", true);
 					ImageView newv = (ImageView) ((ViewGroup) v.getParent()).findViewById(R.id.row_read_image_view);
 					if (field_visibility == false) {
-						newv.setVisibility(GONE);
+						newv.setVisibility(View.GONE);
 					} else {
 						if (text.equals("1")) {
 							newv.setImageResource(R.drawable.btn_check_buttonless_on);
@@ -501,7 +500,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				// Hide field if necessary.
 				boolean field_visibility = mPrefs.getBoolean(FieldVisibility.prefix + key, true);
 				if (field_visibility == false) {
-					v.setVisibility(GONE);
+					v.setVisibility(View.GONE);
 					return false;
 				} else {
 					v.setVisibility(VISIBLE);

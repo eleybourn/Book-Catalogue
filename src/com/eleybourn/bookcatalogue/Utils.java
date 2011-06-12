@@ -781,7 +781,7 @@ public class Utils {
 	public static Bitmap fetchFileIntoImageView(File file, ImageView destView, int maxWidth, int maxHeight, boolean exact) {
 		// Get the file, if it exists. Otherwise set 'help' icon and exit.
 		if (!file.exists()) {
-	    	if (destView != null)
+			if (destView != null)
 				destView.setImageResource(android.R.drawable.ic_menu_help);
 			return null;
 		}

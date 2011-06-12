@@ -93,7 +93,7 @@ public class BookCatalogue extends ExpandableListActivity {
 	private static final int EDIT_AUTHOR_ID = Menu.FIRST + 16;
 	private static final int EDIT_SERIES_ID = Menu.FIRST + 17;
 
-	public static String bookshelf = "All Books";
+	public static String bookshelf = "";
 	private ArrayAdapter<String> spinnerAdapter;
 	private Spinner mBookshelfText;
 
@@ -310,7 +310,11 @@ public class BookCatalogue extends ExpandableListActivity {
 				if (!new_bookshelf.equals(bookshelf)) {
 					currentGroup = new ArrayList<Integer>();
 				}
-				bookshelf = new_bookshelf;
+				if (position == 0) {
+					bookshelf = "";
+				} else {
+					bookshelf = new_bookshelf;
+				}
 				// save the current bookshelf into the preferences
 				SharedPreferences.Editor ed = mPrefs.edit();
 				ed.putString(STATE_BOOKSHELF, bookshelf);
@@ -437,10 +441,9 @@ public class BookCatalogue extends ExpandableListActivity {
 
 			/**
 			 * Override the setTextView function. This helps us set the appropriate opening and
-			 * closing brackets for series numbers and standardize the view.
+			 * closing brackets for series numbers and standardise the view.
 			 */
 			//TODO: @Override
-			@SuppressWarnings("unused") // This is used by 2.1+
 			public void setViewText(TextView v, String text) {
 				if (v.getId() == R.id.row_img) {
 					boolean field_visibility = mPrefs.getBoolean(FieldVisibility.prefix + "thumbnail", true);

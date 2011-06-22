@@ -92,7 +92,6 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 	@Override
 	public void onRun() throws InterruptedException {
 		int counter = 0;
-
 		/* Test write to the SDCard; abort if not writable */
 		if (!Utils.sdCardWritable()) {
 			mFinalMessage = getString(R.string.thumbnail_failed_sdcard);
@@ -100,7 +99,7 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 		}
 
 		// TODO: Allow caller to pass cursor (again) so that specific books can be updated (eg. just one book)
-		Cursor books = mDbHelper.fetchAllBooks("b." + CatalogueDBAdapter.KEY_ROWID, "All Books", "", "", "", "", "");
+		Cursor books = mDbHelper.fetchAllBooks("b." + CatalogueDBAdapter.KEY_ROWID, "", "", "", "", "", "");
 		mManager.setMax(this, books.getCount());
 		try {
 			while (books.moveToNext() && !isCancelled()) {

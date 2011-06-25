@@ -126,7 +126,6 @@ public class BookEditFields extends Activity {
 		mRowId = extras != null ? extras.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
 	}
 	
-
 	protected ArrayList<String> getPublishers() {
 		ArrayList<String> publisher_list = new ArrayList<String>();
 		Cursor publisher_cur = mDbHelper.fetchAllPublishers();
@@ -138,6 +137,20 @@ public class BookEditFields extends Activity {
 			return publisher_list;
 		} finally {
 			publisher_cur.close();			
+		}
+	}
+	
+	protected ArrayList<String> getGenres() {
+		ArrayList<String> genre_list = new ArrayList<String>();
+		Cursor genre_cur = mDbHelper.fetchAllGenres("");
+		try {
+			while (genre_cur.moveToNext()) {
+				String genre = genre_cur.getString(genre_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROWID));
+				genre_list.add(genre);
+			}
+			return genre_list;
+		} finally {
+			genre_cur.close();			
 		}
 	}
 
@@ -258,22 +271,20 @@ public class BookEditFields extends Activity {
 						}
 					}
 			});
-
+			
 			mFields.add(R.id.description, CatalogueDBAdapter.KEY_DESCRIPTION, null);
-
+			
 			mFields.add(R.id.genre, CatalogueDBAdapter.KEY_GENRE, null);
 			mFields.add(R.id.row_img, "", "thumbnail", null);
 			Field formatField = mFields.add(R.id.format, CatalogueDBAdapter.KEY_FORMAT, null);
-
+			
 			mFields.add(R.id.bookshelf_text, "bookshelf_text", null).doNoFetch = true; // Output-only field
 			Field bookshelfButtonFe = mFields.add(R.id.bookshelf, "", null);
-
-			//ArrayAdapter<String> author_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getAuthors());
-			//mFields.setAdapter(R.id.author, author_adapter);
-
 			ArrayAdapter<String> publisher_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getPublishers());
 			mFields.setAdapter(R.id.publisher, publisher_adapter);
-
+			ArrayAdapter<String> genre_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getGenres());
+			mFields.setAdapter(R.id.genre, genre_adapter);
+			
 			mFields.setListener(R.id.date_published_button, new View.OnClickListener() {
 				public void onClick(View view) {
 					showDialog(DATE_DIALOG_ID);

@@ -363,7 +363,7 @@ public class CatalogueDBAdapter {
 		
 	private final Context mCtx;
 	//TODO: Update database version
-	public static final int DATABASE_VERSION = 57;
+	public static final int DATABASE_VERSION = 58;
 
 	private TableInfo mBooksInfo = null;
 
@@ -1064,6 +1064,92 @@ public class CatalogueDBAdapter {
 					message += "* There is an option to create a duplicate book (requested by Vinika)\n\n";
 					message += "* Fixed errors caused by failed upgrades\n\n";
 					message += "* Fixed errors caused by trailing spaces in bookshelf names\n\n";
+				}
+				if (curVersion == 57) {
+					curVersion++;
+					Cursor results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_AUTHORS + "'", new String[]{});
+					if (results57.getCount() == 0) {
+						//table does not exist
+						db.execSQL(DATABASE_CREATE_AUTHORS);
+					}
+					results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_BOOKSHELF + "'", new String[]{});
+					if (results57.getCount() == 0) {
+						//table does not exist
+						db.execSQL(DATABASE_CREATE_BOOKSHELF);
+						db.execSQL(DATABASE_CREATE_BOOKSHELF_DATA);
+					}
+					results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_SERIES + "'", new String[]{});
+					if (results57.getCount() == 0) {
+						//table does not exist
+						db.execSQL(DATABASE_CREATE_SERIES);
+						Cursor results57_2 = db.rawQuery("SELECT * FROM " + DB_TB_BOOKS, new String[]{});
+						if (results57_2.getCount() > 0) {
+							if (results57_2.getColumnIndex(KEY_SERIES_OLD) > -1) {
+								db.execSQL("INSERT INTO " + DB_TB_SERIES + " (" + KEY_SERIES_NAME + ") "
+										+ "SELECT name from ("
+										+ "    SELECT Upper(" + KEY_SERIES_OLD + ") " + COLLATION + " as ucName, "
+										+ "    max(" + KEY_SERIES_OLD + ")" + COLLATION + " as name FROM " + DB_TB_BOOKS
+										+ "    WHERE Coalesce(" + KEY_SERIES_OLD + ",'') <> ''"
+										+ "    Group By Upper(" + KEY_SERIES_OLD + ")"
+										+ " )"
+										);
+							}
+						}
+					}
+					results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_BOOKS + "'", new String[]{});
+					if (results57.getCount() == 0) {
+						//table does not exist
+						db.execSQL(DATABASE_CREATE_BOOKS);
+					}
+					results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_LOAN + "'", new String[]{});
+					if (results57.getCount() == 0) {
+						//table does not exist
+						db.execSQL(DATABASE_CREATE_LOAN);
+					}
+					results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_ANTHOLOGY + "'", new String[]{});
+					if (results57.getCount() == 0) {
+						//table does not exist
+						db.execSQL(DATABASE_CREATE_ANTHOLOGY);
+					}
+					results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_BOOK_BOOKSHELF_WEAK + "'", new String[]{});
+					if (results57.getCount() == 0) {
+						//table does not exist
+						db.execSQL(DATABASE_CREATE_BOOK_BOOKSHELF_WEAK);
+					}
+					results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_BOOK_SERIES + "'", new String[]{});
+					if (results57.getCount() == 0) {
+						//table does not exist
+						db.execSQL(DATABASE_CREATE_BOOK_SERIES);
+						db.execSQL("INSERT INTO " + DB_TB_BOOK_SERIES + " (" + KEY_BOOK + ", " + KEY_SERIES_ID + ", " + KEY_SERIES_NUM + ", " + KEY_SERIES_POSITION + ") "
+								+ "SELECT DISTINCT b." + KEY_ROWID + ", s." + KEY_ROWID + ", b." + KEY_SERIES_NUM + ", 1"
+								+ " FROM " + DB_TB_BOOKS + " b "
+								+ " Join " + DB_TB_SERIES + " s On Upper(s." + KEY_SERIES_NAME + ") = Upper(b." + KEY_SERIES_OLD + ")" + COLLATION
+								+ " Where Coalesce(b." + KEY_SERIES_OLD + ", '') <> ''");
+					}
+					results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_BOOK_AUTHOR + "'", new String[]{});
+					if (results57.getCount() == 0) {
+						//table does not exist
+						db.execSQL(DATABASE_CREATE_BOOK_AUTHOR);
+						db.execSQL("INSERT INTO " + DB_TB_BOOK_AUTHOR + " (" + KEY_BOOK + ", " + KEY_AUTHOR_ID + ", " + KEY_AUTHOR_POSITION + ") "
+								+ "SELECT b." + KEY_ROWID + ", b." + KEY_AUTHOR_OLD + ", 1 FROM " + DB_TB_BOOKS + " b ");
+					}
+					Cursor results57_3 = db.rawQuery("SELECT * FROM " + DB_TB_BOOKS, new String[]{});
+					if (results57_3.getCount() > 0) {
+						if (results57_3.getColumnIndex(KEY_SERIES_OLD) > -1) {
+							String tmpFields = KEY_ROWID + ", " /* + KEY_AUTHOR + ", " */ + KEY_TITLE + ", " + KEY_ISBN 
+							+ ", " + KEY_PUBLISHER + ", " + KEY_DATE_PUBLISHED + ", " + KEY_RATING + ", " + KEY_READ 
+							+ /* ", " + KEY_SERIES + */ ", " + KEY_PAGES /* + ", " + KEY_SERIES_NUM */ + ", " + KEY_NOTES 
+							+ ", " + KEY_LIST_PRICE + ", " + KEY_ANTHOLOGY + ", " + KEY_LOCATION + ", " + KEY_READ_START 
+							+ ", " + KEY_READ_END + ", " + KEY_FORMAT + ", " + KEY_SIGNED + ", " + KEY_DESCRIPTION
+							+ ", " + KEY_GENRE;
+							db.execSQL("CREATE TABLE tmpBooks AS SELECT " + tmpFields + " FROM " + DB_TB_BOOKS);
+							db.execSQL("DROP TABLE " + DB_TB_BOOKS);
+							db.execSQL(DATABASE_CREATE_BOOKS);
+							db.execSQL("INSERT INTO " + DB_TB_BOOKS + "( " + tmpFields + ")  SELECT * FROM tmpBooks");
+							db.execSQL("DROP TABLE tmpBooks");
+						}
+					}
+					createIndices(db);
 				}
 			}
 			//TODO: NOTE: END OF UPDATE

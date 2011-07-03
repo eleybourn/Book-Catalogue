@@ -1107,7 +1107,13 @@ public class BookEditFields extends Activity {
 	private void fixupSeriesList() {
 
 		String newText;
-		if (mSeriesList.size() == 0)
+		int size = 0;
+		try {
+			size = mSeriesList.size();
+		} catch (NullPointerException e) {
+			size = 0;
+		}
+		if (size == 0)
 			newText = getResources().getString(R.string.set_series);
 		else {
 			Utils.pruneList(mDbHelper, mSeriesList);

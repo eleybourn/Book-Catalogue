@@ -17,6 +17,8 @@
 			android:hint="@string/isbn"
 			android:padding="10sp"
 			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:inputType="number"
+			android:digits="1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"
 			/>
 		<LinearLayout
 			android:orientation="horizontal" 

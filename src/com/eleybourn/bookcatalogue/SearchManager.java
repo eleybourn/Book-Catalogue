@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
 import com.eleybourn.bookcatalogue.SearchThread.SearchTaskHandler;

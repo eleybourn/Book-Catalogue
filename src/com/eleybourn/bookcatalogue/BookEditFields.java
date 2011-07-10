@@ -183,7 +183,7 @@ public class BookEditFields extends Activity {
 			FieldValidator integerValidator = new Fields.IntegerValidator("0");
 			FieldValidator nonBlankValidator = new Fields.NonBlankValidator();
 			FieldValidator blankOrIntegerValidator = new Fields.OrValidator(new Fields.BlankValidator(), new Fields.IntegerValidator("0"));
-			FieldValidator blankOrFloatValidator = new Fields.OrValidator(new Fields.BlankValidator(), new Fields.FloatValidator("0.0"));
+			FieldValidator blankOrFloatValidator = new Fields.OrValidator(new Fields.BlankValidator(), new Fields.FloatValidator("0.00"));
 			FieldValidator blankOrDateValidator = new Fields.OrValidator(new Fields.BlankValidator(), new Fields.DateValidator());
 
 			mFields = new Fields(this);

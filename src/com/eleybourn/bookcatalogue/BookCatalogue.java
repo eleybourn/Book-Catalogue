@@ -1084,6 +1084,8 @@ public class BookCatalogue extends ExpandableListActivity {
 			int pos = currentGroup.size()-1;
 			if (pos >= 0)
 				view.setSelectedGroup(currentGroup.get(pos));
+		} catch (NoSuchFieldError e) {
+			//do nothing
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
@@ -1242,14 +1244,18 @@ public class BookCatalogue extends ExpandableListActivity {
 
 		case EDIT_SERIES_ID:
 			{
-				Series s = mDbHelper.getSeriesById(info.id);
-				EditSeriesDialog d = new EditSeriesDialog(this, mDbHelper, new Runnable() {
-					@Override
-					public void run() {
-						mDbHelper.purgeSeries();
-						regenGroups();
-					}});
-				d.editSeries(s);
+				if (info.id==-1) {
+					Toast.makeText(this, R.string.cannot_edit_system, Toast.LENGTH_LONG).show();
+				} else {
+					Series s = mDbHelper.getSeriesById(info.id);
+					EditSeriesDialog d = new EditSeriesDialog(this, mDbHelper, new Runnable() {
+						@Override
+						public void run() {
+							mDbHelper.purgeSeries();
+							regenGroups();
+						}});
+					d.editSeries(s);
+				} 
 				break;
 			}
 		case DELETE_SERIES_ID:

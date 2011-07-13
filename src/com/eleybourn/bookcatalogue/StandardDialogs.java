@@ -84,7 +84,12 @@ public class StandardDialogs {
 	public static void deleteSeriesAlert(Context context, final CatalogueDBAdapter dbHelper, final Series series, final Runnable onDeleted) {
 
 		// When we get here, we know the names are genuinely different and the old series is used in more than one place.
-		String message = String.format(context.getResources().getString(R.string.really_delete_series), series.name);
+		String message = "Delete series";
+		try {
+			message = String.format(context.getResources().getString(R.string.really_delete_series), series.name);
+		} catch (NullPointerException e) {
+			Logger.logError(e);
+		}
 		final AlertDialog alertDialog = new AlertDialog.Builder(context).setMessage(message).create();
 
 		alertDialog.setTitle(R.string.delete_series);

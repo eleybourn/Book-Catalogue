@@ -69,7 +69,6 @@ public class BookEditAnthology extends ListActivity {
 	private CatalogueDBAdapter mDbHelper;
 	int anthology_num = CatalogueDBAdapter.ANTHOLOGY_NO;
 	
-	private static final int GONE = 8;
 	private static final int DELETE_ID = Menu.FIRST;
 	private static final int POPULATE = Menu.FIRST + 1;
 	
@@ -178,7 +177,7 @@ public class BookEditAnthology extends ListActivity {
 		mAuthorText = (AutoCompleteTextView) findViewById(R.id.add_author);
 		mAuthorText.setAdapter(author_adapter);
 		if (mSame.isChecked()) {
-			mAuthorText.setVisibility(GONE);
+			mAuthorText.setVisibility(View.GONE);
 		}
 		mTitleText = (EditText) findViewById(R.id.add_title);
 		
@@ -267,7 +266,7 @@ public class BookEditAnthology extends ListActivity {
 		public void setViewText(TextView v, String text) {
 			if (v.getId() == R.id.row_author) {
 				if (mSame.isChecked()) {
-					v.setVisibility(GONE);
+					v.setVisibility(View.GONE);
 				} else {
 					text = " (" + text + ")";
 				}

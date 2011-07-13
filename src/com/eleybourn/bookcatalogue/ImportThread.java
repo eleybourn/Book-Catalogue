@@ -221,7 +221,7 @@ public class ImportThread extends ManagedTask {
 						}
 					}
 				} catch (Exception e) {
-					Logger.logError(e);
+					Logger.logError(e, "Import at row " + row);
 				}
 
 				if (!values.get(CatalogueDBAdapter.KEY_LOANED_TO).equals("")) {

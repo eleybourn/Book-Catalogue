@@ -31,6 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import android.os.Build;
+import android.util.Log;
 
 public class Logger {
 	

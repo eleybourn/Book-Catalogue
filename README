@@ -38,8 +38,25 @@ Features include;
 * When adding or editing books author, series and publisher should display a 
   suggestion list
 * When downloading book information, authors and titles are converted to proper
-  case. e.g. "The murder on the links" becomes "The Murder on the Links"
+  case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
+
+New in v3.5.6
+* Fixed bug in moving to SDcard (2.2 and above only)
+* Fixed defect in the "All Books" bookshelf (French version only)
+
+New in v3.5.5
+* Add by ISBN also works to Amazon ASIN (use the android keyboard not the onscreen buttons) 
+
+New in v3.5.4
+* French translation available
+* There is an option to create a duplicate book (requested by Vinika)
+* Fixed errors caused by failed upgrades
+* Fixed errors caused by trailing spaces in bookshelf names
+
+New in v3.5.3
+* Fixes for honeycomb tablets
+* Fixes several reported crashes
 
 New in v3.5
 * Sorting by Author has been fixed (it will correctly sort series)

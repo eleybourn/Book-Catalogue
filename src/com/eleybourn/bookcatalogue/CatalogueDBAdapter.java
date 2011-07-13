@@ -49,7 +49,6 @@ import android.widget.ImageView;
  */
 public class CatalogueDBAdapter {
 	
-	public static final String DATABASE_NAME = "book_catalogue";
 	private ArrayList<SQLiteStatement> mStatements = new ArrayList<SQLiteStatement>();
 	
 	/* This is the list of all column names as static variables for reference
@@ -363,7 +362,8 @@ public class CatalogueDBAdapter {
 //						+ " LEFT OUTER JOIN " + DB_TB_SERIES + " s ON (s." + KEY_ROWID + "=w." + KEY_SERIES_ID + ") ";
 		
 	private final Context mCtx;
-	public static final int DATABASE_VERSION = 55;
+	//TODO: Update database version
+	public static final int DATABASE_VERSION = 58;
 
 	private TableInfo mBooksInfo = null;
 
@@ -374,7 +374,7 @@ public class CatalogueDBAdapter {
 	 */
 	private static class DatabaseHelper extends SQLiteOpenHelper {
 		DatabaseHelper(Context context) {
-			super(context, DATABASE_NAME, null, DATABASE_VERSION);
+			super(context, Utils.DATABASE_NAME, null, DATABASE_VERSION);
 		}
 		
 		/**
@@ -408,14 +408,18 @@ public class CatalogueDBAdapter {
 			//delete all indices first
 			String sql = "select name from sqlite_master where type = 'index' and sql is not null;";
 			Cursor current = db.rawQuery(sql, new String[]{});
-			try {
-				while (current.moveToNext()) {
-					String index_name = current.getString(0);
-					String delete_sql = "DROP INDEX " + index_name;
+			while (current.moveToNext()) {
+				String index_name = current.getString(0);
+				String delete_sql = "DROP INDEX " + index_name;
+				//db.beginTransaction();
+				try {
 					db.execSQL(delete_sql);
+					//db.setTransactionSuccessful();
+				} catch (Exception e) {
+					Logger.logError(e, "Index deletion failed (probably not a problem)");
+				} finally {
+					//db.endTransaction();
 				}
-			} catch (Exception e) {
-				Logger.logError(e, "Index deletion failed (probably not a problem)");
 			}
 			
 			String[] indices = DATABASE_CREATE_INDICES;
@@ -427,15 +431,19 @@ public class CatalogueDBAdapter {
 				// Ideally, whenever an upgrade script is written, the 'createIndices()' call
 				// from prior upgrades should be removed saved and used and a new version of this
 				// script written for the new DB.
+				//db.beginTransaction();
 				try {
-					db.execSQL(indices[i]);					
+					db.execSQL(indices[i]);	
+					//db.setTransactionSuccessful();
 				} catch (Exception e) {
 					// Expected on multi-version upgrades.
 					Logger.logError(e, "Index creation failed (probably not a problem), definition was: " + indices[i]);
+				} finally {
+					//db.endTransaction();
 				}
 			}			
 		}
-
+		
 		/**
 		 * This function is called each time the database is upgraded. The function will run all 
 		 * upgrade scripts between the oldVersion and the newVersion. 
@@ -448,10 +456,10 @@ public class CatalogueDBAdapter {
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 			int curVersion = oldVersion;
-
+			
 			if (oldVersion != newVersion)
 				backupDbFile(db, "dbUpgrade-" + oldVersion + "-" + newVersion);
-
+			
 			if (curVersion < 11) {
 				onCreate(db);
 			}
@@ -498,7 +506,7 @@ public class CatalogueDBAdapter {
 			if (curVersion == 20) {
 				curVersion++;
 				db.execSQL(DATABASE_CREATE_LOAN);
-				createIndices(db);
+				//createIndices(db); // All createIndices prior to the latest have been removed
 			}
 			if (curVersion == 21) {
 				//do nothing
@@ -538,7 +546,7 @@ public class CatalogueDBAdapter {
 					throw new RuntimeException("Failed to upgrade database", e);
 				}
 				try {
-					createIndices(db);
+					//createIndices(db); // All createIndices prior to the latest have been removed
 				} catch (Exception e) {
 					Logger.logError(e);
 					throw new RuntimeException("Failed to upgrade database", e);
@@ -603,7 +611,7 @@ public class CatalogueDBAdapter {
 					throw new RuntimeException("Failed to upgrade database", e);
 				}
 				try {
-					createIndices(db);
+					//createIndices(db); // All createIndices prior to the latest have been removed
 				} catch (Exception e) {
 					Logger.logError(e);
 					throw new RuntimeException("Failed to upgrade database", e);
@@ -723,7 +731,7 @@ public class CatalogueDBAdapter {
 				
 				try {
 					db.execSQL(DATABASE_CREATE_BOOK_BOOKSHELF_WEAK);
-					createIndices(db);
+					//createIndices(db); // All createIndices prior to the latest have been removed
 					db.execSQL("INSERT INTO " + DB_TB_BOOK_BOOKSHELF_WEAK + " (" + KEY_BOOK + ", " + KEY_BOOKSHELF + ") SELECT " + KEY_ROWID + ", " + KEY_BOOKSHELF + " FROM " + DB_TB_BOOKS + "");
 					db.execSQL("CREATE TABLE tmp1 AS SELECT _id, " + KEY_AUTHOR_OLD + ", " + KEY_TITLE + ", " + KEY_ISBN + ", " + KEY_PUBLISHER + ", " + 
 						KEY_DATE_PUBLISHED + ", " + KEY_RATING + ", " + KEY_READ + ", " + KEY_SERIES_OLD + ", " + KEY_PAGES + ", " + KEY_SERIES_NUM + ", " + KEY_NOTES + ", " + 
@@ -843,7 +851,7 @@ public class CatalogueDBAdapter {
 				db.execSQL("DROP TABLE tmp3");
 				db.execSQL("DROP TABLE tmp4");
 				
-				createIndices(db);
+				//createIndices(db); // All createIndices prior to the latest have been removed
 			}
 			if (curVersion == 45) {
 				//do nothing
@@ -872,7 +880,7 @@ public class CatalogueDBAdapter {
 				db.execSQL("delete from loan where loaned_to='null';");
 				db.execSQL("delete from loan where _id!=(select max(l2._id) from loan l2 where l2.book=loan.book);");
 				db.execSQL("delete from anthology where _id!=(select max(a2._id) from anthology a2 where a2.book=anthology.book AND a2.author=anthology.author AND a2.title=anthology.title);");
-				createIndices(db);
+				//createIndices(db); // All createIndices prior to the latest have been removed
 			}
 			if (curVersion == 49) {
 				curVersion++;
@@ -883,7 +891,7 @@ public class CatalogueDBAdapter {
 			}
 			if (curVersion == 50) {
 				curVersion++;
-				createIndices(db);
+				//createIndices(db); // All createIndices prior to the latest have been removed
 			}
 			if (curVersion == 51) {
 				curVersion++;
@@ -900,6 +908,7 @@ public class CatalogueDBAdapter {
 				message += "* Minor bug fixes and error logging. Please email me if you have any further issues.\n\n";
 			}
 			if (curVersion == 53) {
+				curVersion++;
 				//There is a conflict between eleybourn released branch (3.3.1) and grunthos HEAD (3.4). 
 				// This is to check and skip as required
 				boolean go = false;
@@ -948,7 +957,7 @@ public class CatalogueDBAdapter {
 						db.execSQL(DATABASE_CREATE_BOOK_SERIES);
 						db.execSQL(DATABASE_CREATE_BOOK_AUTHOR);
 						
-						createIndices(db);
+						//createIndices(db); // All createIndices prior to the latest have been removed
 						
 						db.execSQL("INSERT INTO " + DB_TB_BOOK_SERIES + " (" + KEY_BOOK + ", " + KEY_SERIES_ID + ", " + KEY_SERIES_NUM + ", " + KEY_SERIES_POSITION + ") "
 								+ "SELECT DISTINCT b." + KEY_ROWID + ", s." + KEY_ROWID + ", b." + KEY_SERIES_NUM + ", 1"
@@ -980,9 +989,170 @@ public class CatalogueDBAdapter {
 					}
 				} 
 				if (curVersion == 54) {
+					//createIndices(db); // All createIndices prior to the latest have been removed
+					curVersion++;
+				}
+				if (curVersion == 55) {
+					//There is a conflict between eleybourn released branch (3.3.1) and grunthos HEAD (3.4). 
+					// This is to check and skip as required
+					boolean go2 = false;
+					String checkSQL2 = "SELECT * FROM " + DB_TB_BOOKS;
+					Cursor results2 = db.rawQuery(checkSQL2, new String[]{});
+					if (results2.getCount() > 0) {
+						if (results2.getColumnIndex(KEY_AUTHOR_OLD) > -1) {
+							go2 = true;
+						}
+					} else {
+						go2 = true;
+					}
+					if (go2 == true) {
+						try {
+							db.execSQL(DATABASE_CREATE_SERIES);
+							// We need to create a series table with series that are unique wrt case and unicode. The old
+							// system allowed for series with slightly different case. So we capture these by using
+							// max() to pick and arbitrary matching name to use as our canonical version.
+							db.execSQL("INSERT INTO " + DB_TB_SERIES + " (" + KEY_SERIES_NAME + ") "
+										+ "SELECT name from ("
+										+ "    SELECT Upper(" + KEY_SERIES_OLD + ") " + COLLATION + " as ucName, "
+										+ "    max(" + KEY_SERIES_OLD + ")" + COLLATION + " as name FROM " + DB_TB_BOOKS
+										+ "    WHERE Coalesce(" + KEY_SERIES_OLD + ",'') <> ''"
+										+ "    Group By Upper(" + KEY_SERIES_OLD + ")"
+										+ " )"
+										);
+							
+							db.execSQL(DATABASE_CREATE_BOOK_SERIES);
+							db.execSQL(DATABASE_CREATE_BOOK_AUTHOR);
+							
+							db.execSQL("INSERT INTO " + DB_TB_BOOK_SERIES + " (" + KEY_BOOK + ", " + KEY_SERIES_ID + ", " + KEY_SERIES_NUM + ", " + KEY_SERIES_POSITION + ") "
+									+ "SELECT DISTINCT b." + KEY_ROWID + ", s." + KEY_ROWID + ", b." + KEY_SERIES_NUM + ", 1"
+									+ " FROM " + DB_TB_BOOKS + " b "
+									+ " Join " + DB_TB_SERIES + " s On Upper(s." + KEY_SERIES_NAME + ") = Upper(b." + KEY_SERIES_OLD + ")" + COLLATION
+									+ " Where Coalesce(b." + KEY_SERIES_OLD + ", '') <> ''");
+							
+							db.execSQL("INSERT INTO " + DB_TB_BOOK_AUTHOR + " (" + KEY_BOOK + ", " + KEY_AUTHOR_ID + ", " + KEY_AUTHOR_POSITION + ") "
+									+ "SELECT b." + KEY_ROWID + ", b." + KEY_AUTHOR_OLD + ", 1 FROM " + DB_TB_BOOKS + " b ");
+							
+							String tmpFields = KEY_ROWID + ", " /* + KEY_AUTHOR + ", " */ + KEY_TITLE + ", " + KEY_ISBN 
+							+ ", " + KEY_PUBLISHER + ", " + KEY_DATE_PUBLISHED + ", " + KEY_RATING + ", " + KEY_READ 
+							+ /* ", " + KEY_SERIES + */ ", " + KEY_PAGES /* + ", " + KEY_SERIES_NUM */ + ", " + KEY_NOTES 
+							+ ", " + KEY_LIST_PRICE + ", " + KEY_ANTHOLOGY + ", " + KEY_LOCATION + ", " + KEY_READ_START 
+							+ ", " + KEY_READ_END + ", " + KEY_FORMAT + ", " + KEY_SIGNED + ", " + KEY_DESCRIPTION
+							+ ", " + KEY_GENRE;
+							db.execSQL("CREATE TABLE tmpBooks AS SELECT " + tmpFields + " FROM " + DB_TB_BOOKS);
+							
+							db.execSQL("DROP TABLE " + DB_TB_BOOKS);
+							
+							db.execSQL(DATABASE_CREATE_BOOKS);
+							
+							db.execSQL("INSERT INTO " + DB_TB_BOOKS + "( " + tmpFields + ")  SELECT * FROM tmpBooks");
+							
+							db.execSQL("DROP TABLE tmpBooks");
+						} catch (Exception e) {
+							Logger.logError(e);
+							throw new RuntimeException("Failed to upgrade database", e);
+						} finally {
+						}
+					} 
+					//createIndices(db); // All createIndices prior to the latest have been removed
+					curVersion++;
+				}
+				if (curVersion == 56) {
+					createIndices(db);
+					curVersion++;
+					message += "New in v3.5.4\n\n";
+					message += "* French translation available\n\n";
+					message += "* There is an option to create a duplicate book (requested by Vinika)\n\n";
+					message += "* Fixed errors caused by failed upgrades\n\n";
+					message += "* Fixed errors caused by trailing spaces in bookshelf names\n\n";
+				}
+				if (curVersion == 57) {
+					curVersion++;
+					Cursor results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_AUTHORS + "'", new String[]{});
+					if (results57.getCount() == 0) {
+						//table does not exist
+						db.execSQL(DATABASE_CREATE_AUTHORS);
+					}
+					results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_BOOKSHELF + "'", new String[]{});
+					if (results57.getCount() == 0) {
+						//table does not exist
+						db.execSQL(DATABASE_CREATE_BOOKSHELF);
+						db.execSQL(DATABASE_CREATE_BOOKSHELF_DATA);
+					}
+					results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_SERIES + "'", new String[]{});
+					if (results57.getCount() == 0) {
+						//table does not exist
+						db.execSQL(DATABASE_CREATE_SERIES);
+						Cursor results57_2 = db.rawQuery("SELECT * FROM " + DB_TB_BOOKS, new String[]{});
+						if (results57_2.getCount() > 0) {
+							if (results57_2.getColumnIndex(KEY_SERIES_OLD) > -1) {
+								db.execSQL("INSERT INTO " + DB_TB_SERIES + " (" + KEY_SERIES_NAME + ") "
+										+ "SELECT name from ("
+										+ "    SELECT Upper(" + KEY_SERIES_OLD + ") " + COLLATION + " as ucName, "
+										+ "    max(" + KEY_SERIES_OLD + ")" + COLLATION + " as name FROM " + DB_TB_BOOKS
+										+ "    WHERE Coalesce(" + KEY_SERIES_OLD + ",'') <> ''"
+										+ "    Group By Upper(" + KEY_SERIES_OLD + ")"
+										+ " )"
+										);
+							}
+						}
+					}
+					results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_BOOKS + "'", new String[]{});
+					if (results57.getCount() == 0) {
+						//table does not exist
+						db.execSQL(DATABASE_CREATE_BOOKS);
+					}
+					results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_LOAN + "'", new String[]{});
+					if (results57.getCount() == 0) {
+						//table does not exist
+						db.execSQL(DATABASE_CREATE_LOAN);
+					}
+					results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_ANTHOLOGY + "'", new String[]{});
+					if (results57.getCount() == 0) {
+						//table does not exist
+						db.execSQL(DATABASE_CREATE_ANTHOLOGY);
+					}
+					results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_BOOK_BOOKSHELF_WEAK + "'", new String[]{});
+					if (results57.getCount() == 0) {
+						//table does not exist
+						db.execSQL(DATABASE_CREATE_BOOK_BOOKSHELF_WEAK);
+					}
+					results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_BOOK_SERIES + "'", new String[]{});
+					if (results57.getCount() == 0) {
+						//table does not exist
+						db.execSQL(DATABASE_CREATE_BOOK_SERIES);
+						db.execSQL("INSERT INTO " + DB_TB_BOOK_SERIES + " (" + KEY_BOOK + ", " + KEY_SERIES_ID + ", " + KEY_SERIES_NUM + ", " + KEY_SERIES_POSITION + ") "
+								+ "SELECT DISTINCT b." + KEY_ROWID + ", s." + KEY_ROWID + ", b." + KEY_SERIES_NUM + ", 1"
+								+ " FROM " + DB_TB_BOOKS + " b "
+								+ " Join " + DB_TB_SERIES + " s On Upper(s." + KEY_SERIES_NAME + ") = Upper(b." + KEY_SERIES_OLD + ")" + COLLATION
+								+ " Where Coalesce(b." + KEY_SERIES_OLD + ", '') <> ''");
+					}
+					results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_BOOK_AUTHOR + "'", new String[]{});
+					if (results57.getCount() == 0) {
+						//table does not exist
+						db.execSQL(DATABASE_CREATE_BOOK_AUTHOR);
+						db.execSQL("INSERT INTO " + DB_TB_BOOK_AUTHOR + " (" + KEY_BOOK + ", " + KEY_AUTHOR_ID + ", " + KEY_AUTHOR_POSITION + ") "
+								+ "SELECT b." + KEY_ROWID + ", b." + KEY_AUTHOR_OLD + ", 1 FROM " + DB_TB_BOOKS + " b ");
+					}
+					Cursor results57_3 = db.rawQuery("SELECT * FROM " + DB_TB_BOOKS, new String[]{});
+					if (results57_3.getCount() > 0) {
+						if (results57_3.getColumnIndex(KEY_SERIES_OLD) > -1) {
+							String tmpFields = KEY_ROWID + ", " /* + KEY_AUTHOR + ", " */ + KEY_TITLE + ", " + KEY_ISBN 
+							+ ", " + KEY_PUBLISHER + ", " + KEY_DATE_PUBLISHED + ", " + KEY_RATING + ", " + KEY_READ 
+							+ /* ", " + KEY_SERIES + */ ", " + KEY_PAGES /* + ", " + KEY_SERIES_NUM */ + ", " + KEY_NOTES 
+							+ ", " + KEY_LIST_PRICE + ", " + KEY_ANTHOLOGY + ", " + KEY_LOCATION + ", " + KEY_READ_START 
+							+ ", " + KEY_READ_END + ", " + KEY_FORMAT + ", " + KEY_SIGNED + ", " + KEY_DESCRIPTION
+							+ ", " + KEY_GENRE;
+							db.execSQL("CREATE TABLE tmpBooks AS SELECT " + tmpFields + " FROM " + DB_TB_BOOKS);
+							db.execSQL("DROP TABLE " + DB_TB_BOOKS);
+							db.execSQL(DATABASE_CREATE_BOOKS);
+							db.execSQL("INSERT INTO " + DB_TB_BOOKS + "( " + tmpFields + ")  SELECT * FROM tmpBooks");
+							db.execSQL("DROP TABLE tmpBooks");
+						}
+					}
 					createIndices(db);
 				}
 			}
+			//TODO: NOTE: END OF UPDATE
 		}
 	}
 	
@@ -1272,11 +1442,16 @@ public class CatalogueDBAdapter {
 	 * @return int The number of books
 	 */
 	public int countBooks() {
-		String sql = "SELECT count(*) as count FROM " + DB_TB_BOOKS + " b ";
-		Cursor count = mDb.rawQuery(sql, new String[]{});
-		count.moveToNext();
-		int result = count.getInt(0);
-		count.close();
+		int result = 0;
+		try {
+			String sql = "SELECT count(*) as count FROM " + DB_TB_BOOKS + " b ";
+			Cursor count = mDb.rawQuery(sql, new String[]{});
+			count.moveToNext();
+			result = count.getInt(0);
+			count.close();
+		} catch (IllegalStateException e) {
+			Logger.logError(e);
+		}
 		return result;
 	}
 	
@@ -1287,20 +1462,25 @@ public class CatalogueDBAdapter {
 	 * @return int The number of books
 	 */
 	public int countBooks(String bookshelf) {
-		if (bookshelf.equals("All Books")) {
-			return countBooks();
+		int result = 0;
+		try {
+			if (bookshelf.equals("")) {
+				return countBooks();
+			}
+			String sql = "SELECT count(DISTINCT b._id) as count " + 
+				" FROM " + DB_TB_BOOKSHELF + " bs " +
+				" Join " + DB_TB_BOOK_BOOKSHELF_WEAK + " bbs " +
+				"     On bbs." + KEY_BOOKSHELF + " = bs." + KEY_ROWID +
+				" Join " + DB_TB_BOOKS + " b " +
+				"     On bbs." + KEY_BOOK + " = b." + KEY_ROWID + 
+				" WHERE " + makeTextTerm("bs." + KEY_BOOKSHELF, "=", bookshelf);
+			Cursor count = mDb.rawQuery(sql, new String[]{});
+			count.moveToNext();
+			result = count.getInt(0);
+			count.close();
+		} catch (IllegalStateException e) {
+			Logger.logError(e);
 		}
-		String sql = "SELECT count(DISTINCT b._id) as count " + 
-			" FROM " + DB_TB_BOOKSHELF + " bs " +
-			" Join " + DB_TB_BOOK_BOOKSHELF_WEAK + " bbs " +
-			"     On bbs." + KEY_BOOKSHELF + " = bs." + KEY_ROWID +
-			" Join " + DB_TB_BOOKS + " b " +
-			"     On bbs." + KEY_BOOK + " = b." + KEY_ROWID + 
-			" WHERE " + makeTextTerm("bs." + KEY_BOOKSHELF, "=", bookshelf);
-		Cursor count = mDb.rawQuery(sql, new String[]{});
-		count.moveToNext();
-		int result = count.getInt(0);
-		count.close();
 		return result;
 	}
 	
@@ -1391,15 +1571,6 @@ public class CatalogueDBAdapter {
 		
 	}
 
-	private String bookOnBookshelfSql(String bookshelf, String bookIdSpec) {
-		return " Exists(Select NULL From " + DB_TB_BOOK_BOOKSHELF_WEAK + " bbs"
-		+ "               Join " + DB_TB_BOOKSHELF + " bs"
-		+ "                  On bs." + KEY_ROWID + " = bbs." + KEY_BOOKSHELF
-		+ "               Where bbs." + KEY_BOOK + " = " + bookIdSpec
-		+ "               	And " + makeTextTerm("bs." + KEY_BOOKSHELF, "=", bookshelf)
-		+ "              )";
-	}
-
 	/**
 	 * Return a Cursor over the list of all authors in the database
 	 * 
@@ -1419,7 +1590,7 @@ public class CatalogueDBAdapter {
 	 * @return Cursor over all notes
 	 */
 	public Cursor fetchAllAuthors(String bookshelf, boolean sortByFamily) {
-		if (bookshelf.equals("All Books")) {
+		if (bookshelf.equals("")) {
 			return fetchAllAuthors(sortByFamily);
 		}
 		String order = "";
@@ -1551,7 +1722,7 @@ public class CatalogueDBAdapter {
 
 		String sql = " FROM " + DB_TB_BOOKS + " b";
 
-		if (!bookshelf.equals("All Books") && bookshelf.trim().length() > 0) {
+		if (!bookshelf.equals("") && bookshelf.trim().length() > 0) {
 			// Join with specific bookshelf
 			sql += " Join " + DB_TB_BOOK_BOOKSHELF_WEAK + " bbsx On bbsx." + KEY_BOOK + " = b." + KEY_ROWID;
 			sql += " Join " + DB_TB_BOOKSHELF + " bsx On bsx." + KEY_ROWID + " = bbsx." + KEY_BOOKSHELF
@@ -1729,7 +1900,7 @@ public class CatalogueDBAdapter {
 	/**
 	 * Return a Cursor over the list of all books in the database by series
 	 * 
-	 * @param author The series name to search by
+	 * @param series The series name to search by
 	 * @param bookshelf The bookshelf to search within. Can be the string "All Books"
 	 * @return Cursor over all books
 	 */
@@ -1885,7 +2056,7 @@ public class CatalogueDBAdapter {
 	 */
 	public Cursor fetchAllSeries(String bookshelf, boolean include_blank) {
 		String series;
-		if (bookshelf.equals("All Books")) {
+		if (bookshelf.equals("")) {
 			series = sqlAllSeries();
 		} else {
 			series = sqlAllSeriesOnBookshelf(bookshelf);
@@ -1977,7 +2148,7 @@ public class CatalogueDBAdapter {
 
 		String where = "";
 		String[] names = processAuthorName(name);
-		if (bookshelf.equals("All Books")) {
+		if (bookshelf.equals("")) {
 			// do nothing
 		} else {
 			where += authorOnBookshelfSql(bookshelf, "a." + KEY_ROWID);
@@ -2008,7 +2179,7 @@ public class CatalogueDBAdapter {
 
 		String where = "";
 		String[] names = processAuthorName(name);
-		if (bookshelf.equals("All Books")) {
+		if (bookshelf.equals("")) {
 			// do nothing
 		} else {
 			where += authorOnBookshelfSql(bookshelf, "a." + KEY_ROWID);
@@ -2037,7 +2208,7 @@ public class CatalogueDBAdapter {
 	 */
 	public Cursor fetchBookById(long rowId) throws SQLException {
 		String where = "b." + KEY_ROWID + "=" + rowId;
-		return fetchAllBooks("", "All Books", "", where, "", "", "");
+		return fetchAllBooks("", "", "", where, "", "", "");
 	}
 	
 	/**
@@ -2054,7 +2225,7 @@ public class CatalogueDBAdapter {
 		}
 		mCheckBookExistsStmt.bindLong(1, rowId);
 		try {
-			long id = mCheckBookExistsStmt.simpleQueryForLong();
+			mCheckBookExistsStmt.simpleQueryForLong();
 			return true;
 		} catch (SQLiteDoneException e) {
 			return false;
@@ -2086,7 +2257,7 @@ public class CatalogueDBAdapter {
 		String authorWhere = makeTextTerm("a." + KEY_FAMILY_NAME, "=", family) 
 							+ " AND " + makeTextTerm("a." + KEY_GIVEN_NAMES, "=", given);
 		String bookWhere = makeTextTerm("b." + KEY_TITLE, "=", title);
-		return fetchAllBooks("", "All Books", authorWhere, bookWhere, "", "", "" );
+		return fetchAllBooks("", "", authorWhere, bookWhere, "", "", "" );
 	}
 
 	/**
@@ -2255,7 +2426,7 @@ public class CatalogueDBAdapter {
 	 */
 	public int fetchSeriesPositionBySeries(String seriesName, String bookshelf) {
 		String seriesSql;
-		if (bookshelf.equals("All Books")) {
+		if (bookshelf.equals("")) {
 			seriesSql = sqlAllSeries();
 		} else {
 			seriesSql = sqlAllSeriesOnBookshelf(bookshelf);
@@ -2299,7 +2470,7 @@ public class CatalogueDBAdapter {
 	public Cursor searchAuthors(String searchText, String bookshelf, boolean sortByFamily) {
 		String where = "";
 		searchText = encodeString(searchText);
-		if (bookshelf.equals("All Books")) {
+		if (bookshelf.equals("")) {
 			// do nothing
 		} else {
 			where += this.authorOnBookshelfSql(bookshelf, "a." + KEY_ROWID);
@@ -3366,22 +3537,27 @@ public class CatalogueDBAdapter {
 	 * @return true if deleted, false otherwise
 	 */
 	public boolean deleteSeries(Series series) {
-		if (series.id == 0)
-			series.id = lookupSeriesId(series);
-		if (series.id == 0)
+		try {
+			if (series.id == 0)
+				series.id = lookupSeriesId(series);
+			if (series.id == 0)
+				return false;
+		} catch (NullPointerException e) {
+			Logger.logError(e);
 			return false;
-
+		}
+		
 		// Delete DB_TB_BOOK_SERIES for this series
 		boolean success1 = mDb.delete(DB_TB_BOOK_SERIES, KEY_SERIES_ID + " = " + series.id, null) > 0;
-
+		
 		boolean success2 = false;
 		if (success1)
 			// Cleanup all series
 			success2 = purgeSeries();
-
+		
 		return success1 || success2;
 	}
-
+	
 	/** 
 	 * Delete the book with the given rowId
 	 * 
@@ -3431,24 +3607,6 @@ public class CatalogueDBAdapter {
 	
 	
 	
-//    /*
-//     * This will return the author id based on the name. 
-//     * The name can be in either "family, given" or "given family" format.
-//     */
-//    public Cursor getAuthorByName(String name) {
-//    	String[] names = processAuthorName(name);
-//    	return getAuthorByName(names);
-//    }
-    
-    /*
-     * This will return the author id based on the name. 
-     * The name can be in either "family, given" or "given family" format.
-     */
-    private Cursor getAuthorByName(String[] names) {
-    	String sql = KEY_FAMILY_NAME + "=? " + COLLATION + " AND " + KEY_GIVEN_NAMES + "=? " + COLLATION;
-        return mDb.query(DB_TB_AUTHORS, new String[] {"_id", KEY_FAMILY_NAME, KEY_GIVEN_NAMES}, sql, names, null, null, null);
-    }
-    
     /*
      * This will return the author based on the ID.
      */
@@ -3643,16 +3801,6 @@ public class CatalogueDBAdapter {
 		}
 	}
 
-//    /*
-//     * This will return the author id based on the name. 
-//     * The name can be in either "family, given" or "given family" format.
-//     */
-//    public Cursor getSeriesByName(String name) {
-//    	String sql = "";
-//    	sql = makeTextTerm(KEY_SERIES_NAME, "=", name);
-//        return mDb.query(DB_TB_SERIES, new String[] {"_id", KEY_SERIES_NAME}, sql, null, null, null, null);
-//    }
-
     /**
      * Utility routine to fill an array with the specified column from the passed SQL.
      * 
@@ -3704,149 +3852,130 @@ public class CatalogueDBAdapter {
     	return fetchArray(sql, KEY_AUTHOR_FORMATTED);
 	}
 
-//    /**
-//     * Return a Cursor positioned at the books that matches the given rowId
-//     * 
-//     * @param rowId id of note to retrieve
-//     * @return Cursor positioned to matching note, if found
-//     * @throws SQLException if note could not be found/retrieved
-//     */
-//    public Cursor fetchAuthor(long rowId) throws SQLException {
-//    	String sql = "SELECT a." + KEY_ROWID + ", a." + KEY_FAMILY_NAME + ", a." + KEY_GIVEN_NAMES + 
-//		" FROM " + DB_TB_AUTHORS + " a " +  
-//		" WHERE a." + KEY_ROWID + "=" + rowId + "";
-//
-//    	Cursor mCursor = mDb.rawQuery(sql, new String[]{});
-//        if (mCursor != null) {
-//            mCursor.moveToFirst();
-//        }
-//        return mCursor;
-//
-//    }
-
     public String encodeString(String value) {
     	return value.replace("'", "''");
     }
+	
+	/**
+	 * Column info support. This is useful for auto-building queries from maps that have
+	 * more columns than are in the table.
+	 * 
+	 * @author Grunthos
+	 */
+	@SuppressWarnings("unused")
+	private class ColumnInfo {
+		public int position;
+		public String name;
+		public String typeName;
+		public boolean allowNull;
+		public boolean isPrimaryKey;
+		public String defaultValue;
+		public int typeClass;
+	}
 
-    /**
-     * Column info support. This is useful for auto-building queries from maps that have
-     * more columns than are in the table.
-     * 
-     * @author Grunthos
-     */
-    private class ColumnInfo {
-    	public int position;
-    	public String name;
-    	public String typeName;
-    	public boolean allowNull;
-    	public boolean isPrimaryKey;
-    	public String defaultValue;
-    	public int typeClass;
-    }
-
-    /**
-     * Details of a database table.
-     * 
-     * @author Grunthos
-     */
-    private class TableInfo {
-    	private Map<String,ColumnInfo> mColumns;
-    	private String mName;
-
-    	public static final int CLASS_INTEGER = 1;
-    	public static final int CLASS_TEXT = 2;
-    	public static final int CLASS_REAL = 3;
-    	
-    	TableInfo(String tableName) {
-    		mName = tableName;
-    		mColumns = describeTable(mName);
-    	}
-
-    	public ColumnInfo getColumn(String name) {
-    		String lcName = name.toLowerCase();
-    		if (!mColumns.containsKey(lcName))
-    			return null;
-    		return mColumns.get(lcName);
-    	}
-
-    	/**
-         * Get the column details for the given table.
-    	 * 
-    	 * @param tableName	Name of the database table to lookup
-    	 * 
-    	 * @return	A collection of ColumnInfo objects.
-    	 */
-        Map<String,ColumnInfo> describeTable(String tableName) {
-        	String sql = "PRAGMA table_info(" + tableName + ")";
-        	
-            Map<String,ColumnInfo> cols = new Hashtable<String,ColumnInfo>();
-
-            Cursor colCsr = mDb.rawQuery(sql, new String[]{});
-        	try {
-                if (colCsr == null)
-                	throw new IllegalArgumentException();
-
-                if (!colCsr.moveToFirst())
-                	throw new RuntimeException("Unable to get column details");
-
-
-                while (true) {
-                	ColumnInfo col = new ColumnInfo();
-                	col.position = colCsr.getInt(0);
-                	col.name = colCsr.getString(1);
-                	col.typeName = colCsr.getString(2);
-                	col.allowNull = colCsr.getInt(3) == 0;
-                	col.defaultValue = colCsr.getString(4);
-                	col.isPrimaryKey = colCsr.getInt(5) == 1;
-                	String tName = col.typeName.toLowerCase();
-                	if (tName.equals("int") || tName.equals("integer")) {
-                		col.typeClass = CLASS_INTEGER;
-                	} else if (tName.equals("text")) {
-                		col.typeClass = CLASS_TEXT;            		
-                	} else if (tName.equals("float") || tName.equals("real") || tName.equals("double")) {
-                		col.typeClass = CLASS_REAL;
-                	} else if (tName.equals("date")) {
-                		col.typeClass = CLASS_TEXT;
-                	} else if (tName.equals("boolean")) {
-                		col.typeClass = CLASS_INTEGER;
-                	} else {
-                		throw new RuntimeException("Unknown data type '" + tName + "'");
-                	}
-                	
-                	cols.put(col.name.toLowerCase(),col);
-                	if (colCsr.isLast())
-                		break;
-                	colCsr.moveToNext();
-                }        		
-        	} finally {
-        		if (colCsr != null)
-	                colCsr.close();        		
-        	}
-            return cols;
-        }
-    }
-
-    void startTransaction() {
-    	mDb.beginTransaction();
-    }
-    void endTransaction() {
-    	mDb.endTransaction();
-    }
-    void setTransactionSuccessful() {
-    	mDb.setTransactionSuccessful();
-    }
-    
-    public void analyzeDb() {
-    	try {
-        	mDb.execSQL("analyze");    		
-    	} catch (Exception e) {
-    		Logger.logError(e, "Analyze failed");
-    	}
-    }
-
-    private SQLiteStatement compileStatement(String sql) {
-    	SQLiteStatement s = mDb.compileStatement(sql);
-    	mStatements.add(s);
-    	return s;
-    }
+	/**
+	 * Details of a database table.
+	 * 
+	 * @author Grunthos
+	 */
+	private class TableInfo {
+		private Map<String,ColumnInfo> mColumns;
+		private String mName;
+		
+		public static final int CLASS_INTEGER = 1;
+		public static final int CLASS_TEXT = 2;
+		public static final int CLASS_REAL = 3;
+		
+		TableInfo(String tableName) {
+			mName = tableName;
+			mColumns = describeTable(mName);
+		}
+		
+		public ColumnInfo getColumn(String name) {
+			String lcName = name.toLowerCase();
+			if (!mColumns.containsKey(lcName))
+				return null;
+			return mColumns.get(lcName);
+		}
+		
+		/**
+		 * Get the column details for the given table.
+		 * 
+		 * @param tableName	Name of the database table to lookup
+		 * 
+		 * @return	A collection of ColumnInfo objects.
+		 */
+		Map<String,ColumnInfo> describeTable(String tableName) {
+			String sql = "PRAGMA table_info(" + tableName + ")";
+			
+			Map<String,ColumnInfo> cols = new Hashtable<String,ColumnInfo>();
+			
+			Cursor colCsr = mDb.rawQuery(sql, new String[]{});
+			try {
+				if (colCsr == null)
+					throw new IllegalArgumentException();
+				
+				if (!colCsr.moveToFirst())
+					throw new RuntimeException("Unable to get column details");
+				
+				
+				while (true) {
+					ColumnInfo col = new ColumnInfo();
+					col.position = colCsr.getInt(0);
+					col.name = colCsr.getString(1);
+					col.typeName = colCsr.getString(2);
+					col.allowNull = colCsr.getInt(3) == 0;
+					col.defaultValue = colCsr.getString(4);
+					col.isPrimaryKey = colCsr.getInt(5) == 1;
+					String tName = col.typeName.toLowerCase();
+					if (tName.equals("int") || tName.equals("integer")) {
+						col.typeClass = CLASS_INTEGER;
+					} else if (tName.equals("text")) {
+						col.typeClass = CLASS_TEXT;            		
+					} else if (tName.equals("float") || tName.equals("real") || tName.equals("double")) {
+						col.typeClass = CLASS_REAL;
+					} else if (tName.equals("date")) {
+						col.typeClass = CLASS_TEXT;
+					} else if (tName.equals("boolean")) {
+						col.typeClass = CLASS_INTEGER;
+					} else {
+						throw new RuntimeException("Unknown data type '" + tName + "'");
+					}
+					
+					cols.put(col.name.toLowerCase(),col);
+					if (colCsr.isLast())
+						break;
+					colCsr.moveToNext();
+				}
+			} finally {
+				if (colCsr != null)
+					colCsr.close();
+			}
+			return cols;
+		}
+	}
+	
+	void startTransaction() {
+		mDb.beginTransaction();
+	}
+	void endTransaction() {
+		mDb.endTransaction();
+	}
+	void setTransactionSuccessful() {
+		mDb.setTransactionSuccessful();
+	}
+	
+	public void analyzeDb() {
+		try {
+			mDb.execSQL("analyze");    		
+		} catch (Exception e) {
+			Logger.logError(e, "Analyze failed");
+		}
+	}
+	
+	private SQLiteStatement compileStatement(String sql) {
+		SQLiteStatement s = mDb.compileStatement(sql);
+		mStatements.add(s);
+		return s;
+	}
 }

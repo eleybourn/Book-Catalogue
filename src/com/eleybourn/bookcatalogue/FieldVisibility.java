@@ -112,16 +112,16 @@ public class FieldVisibility extends Activity {
 			ll.addView(cb);
 			
 			//Create the checkBox label (or textView)
-			TextView tv = new TextView(this);
-			tv.setTextAppearance(this, android.R.attr.textAppearanceLarge);
-			tv.setText(fieldRs[i]);
-			tv.setPadding(0, 5, 0, 0);
+			//TextView tv = new TextView(this);
+			cb.setTextAppearance(this, android.R.attr.textAppearanceLarge);
+			cb.setText(fieldRs[i]);
+			//cb.setPadding(0, 5, 0, 0);
 			if (compulsory[i] == true) {
-				tv.setTextColor(Color.GRAY);
-			} else {
-				tv.setOnClickListener(listener);
+				cb.setTextColor(Color.GRAY);
+			//} else {
+				//cb.setOnClickListener(listener);
 			}
-			ll.addView(tv);
+			//ll.addView(tv);
 			
 			//Add the LinearLayout to the parent
 			parent.addView(ll);

@@ -126,7 +126,6 @@ public class BookEditFields extends Activity {
 		mRowId = extras != null ? extras.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
 	}
 	
-
 	protected ArrayList<String> getPublishers() {
 		ArrayList<String> publisher_list = new ArrayList<String>();
 		Cursor publisher_cur = mDbHelper.fetchAllPublishers();
@@ -138,6 +137,20 @@ public class BookEditFields extends Activity {
 			return publisher_list;
 		} finally {
 			publisher_cur.close();			
+		}
+	}
+	
+	protected ArrayList<String> getGenres() {
+		ArrayList<String> genre_list = new ArrayList<String>();
+		Cursor genre_cur = mDbHelper.fetchAllGenres("");
+		try {
+			while (genre_cur.moveToNext()) {
+				String genre = genre_cur.getString(genre_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROWID));
+				genre_list.add(genre);
+			}
+			return genre_list;
+		} finally {
+			genre_cur.close();			
 		}
 	}
 
@@ -170,7 +183,7 @@ public class BookEditFields extends Activity {
 			FieldValidator integerValidator = new Fields.IntegerValidator("0");
 			FieldValidator nonBlankValidator = new Fields.NonBlankValidator();
 			FieldValidator blankOrIntegerValidator = new Fields.OrValidator(new Fields.BlankValidator(), new Fields.IntegerValidator("0"));
-			FieldValidator blankOrFloatValidator = new Fields.OrValidator(new Fields.BlankValidator(), new Fields.FloatValidator("0.0"));
+			FieldValidator blankOrFloatValidator = new Fields.OrValidator(new Fields.BlankValidator(), new Fields.FloatValidator("0.00"));
 			FieldValidator blankOrDateValidator = new Fields.OrValidator(new Fields.BlankValidator(), new Fields.DateValidator());
 
 			mFields = new Fields(this);
@@ -245,31 +258,33 @@ public class BookEditFields extends Activity {
 						// Parse the string the CheckBox returns us (0 or 1)
 						Integer i = Integer.parseInt(s);
 						Integer orig = (Integer) f.getView().getTag(R.id.TAG_ORIGINAL_VALUE);
-						if (i != 0 && orig > 0) {
-							// If non-zero, and original was non-zero, re-use original
-							return orig.toString();
-						} else {
-							// Just return what we got.
+						try {
+							if (i != 0 && orig > 0) {
+								// If non-zero, and original was non-zero, re-use original
+								return orig.toString();
+							} else {
+								// Just return what we got.
+								return s;
+							}
+						} catch (NullPointerException e) {
 							return s;
 						}
 					}
 			});
-
+			
 			mFields.add(R.id.description, CatalogueDBAdapter.KEY_DESCRIPTION, null);
-
+			
 			mFields.add(R.id.genre, CatalogueDBAdapter.KEY_GENRE, null);
 			mFields.add(R.id.row_img, "", "thumbnail", null);
 			Field formatField = mFields.add(R.id.format, CatalogueDBAdapter.KEY_FORMAT, null);
-
+			
 			mFields.add(R.id.bookshelf_text, "bookshelf_text", null).doNoFetch = true; // Output-only field
 			Field bookshelfButtonFe = mFields.add(R.id.bookshelf, "", null);
-
-			//ArrayAdapter<String> author_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getAuthors());
-			//mFields.setAdapter(R.id.author, author_adapter);
-
 			ArrayAdapter<String> publisher_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getPublishers());
 			mFields.setAdapter(R.id.publisher, publisher_adapter);
-
+			ArrayAdapter<String> genre_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getGenres());
+			mFields.setAdapter(R.id.genre, genre_adapter);
+			
 			mFields.setListener(R.id.date_published_button, new View.OnClickListener() {
 				public void onClick(View view) {
 					showDialog(DATE_DIALOG_ID);
@@ -314,8 +329,8 @@ public class BookEditFields extends Activity {
 						do { 
 							final CheckBox cb = new CheckBox(BookEditFields.this);
 							boolean checked = false;
-							String db_bookshelf = bookshelves_for_book.getString(bookshelves_for_book.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF));
-
+							String db_bookshelf = bookshelves_for_book.getString(bookshelves_for_book.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)).trim();
+							
 							Field fe = mFields.getField(R.id.bookshelf_text);
 							if (fe.getValue().toString().indexOf(db_bookshelf + BOOKSHELF_SEPERATOR) > -1) {
 								checked = true;
@@ -326,7 +341,8 @@ public class BookEditFields extends Activity {
 							cb.setOnClickListener(new OnClickListener() {
 								@Override
 								public void onClick(View v) {
-									String name = cb.getHint() + BOOKSHELF_SEPERATOR;
+									String hint = cb.getHint() + "";
+									String name = hint.trim() + BOOKSHELF_SEPERATOR;
 									Field fe = mFields.getField(R.id.bookshelf_text);
 									if (cb.isChecked()) {
 										fe.setValue(fe.getValue().toString()+name);
@@ -648,7 +664,7 @@ public class BookEditFields extends Activity {
 		if (mRowId == null) {
 			getRowId();
 		}
-
+		
 		if (mRowId != null && mRowId > 0) {
 			// From the database (edit)
 			Cursor book = mDbHelper.fetchBookById(mRowId);
@@ -657,12 +673,12 @@ public class BookEditFields extends Activity {
 				if (book != null) {
 					book.moveToFirst();
 				}
-
+				
 				// Set any field that has a 'column' non blank.
 				mFields.setFromCursor(book);
-
+				
 				getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + mFields.getField(R.id.title).getValue().toString());
-
+				
 				//Display the selected bookshelves
 				Field bookshelfTextFe = mFields.getField(R.id.bookshelf_text);
 				bookshelves = mDbHelper.fetchAllBookshelvesByBook(mRowId);
@@ -671,10 +687,10 @@ public class BookEditFields extends Activity {
 					bookshelves_text += bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)) + BOOKSHELF_SEPERATOR;
 				}
 				bookshelfTextFe.setValue(bookshelves_text);
-
+				
 				Integer anthNo = book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
 				mFields.getField(R.id.anthology).setValue(anthNo.toString());
-
+				
 				ImageView iv = (ImageView) findViewById(R.id.row_img);
 				CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);				
 			} finally {	
@@ -686,7 +702,7 @@ public class BookEditFields extends Activity {
 			
 			mAuthorList = mDbHelper.getBookAuthorList(mRowId);
 			mSeriesList = mDbHelper.getBookSeriesList(mRowId);
-
+			
 		} else if (extras != null) {
 			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + this.getResources().getString(R.string.menu_insert));
 			// From the ISBN Search (add)
@@ -708,29 +724,25 @@ public class BookEditFields extends Activity {
 						}
 					}
 					//Display the selected bookshelves
-					if (BookCatalogue.bookshelf.equals("All Books")) {
+					if (BookCatalogue.bookshelf.equals("")) {
 						mFields.getField(R.id.bookshelf_text).setValue(mDbHelper.getBookshelfName(1) + BOOKSHELF_SEPERATOR);
 					} else {
 						mFields.getField(R.id.bookshelf_text).setValue(BookCatalogue.bookshelf + BOOKSHELF_SEPERATOR);
 					}
-
 					mAuthorList = values.getParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
 					mSeriesList = values.getParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY);
-
 				}
 				
 			} catch (NullPointerException e) {
 				Logger.logError(e);
 			}
-
 			setCoverImage();
-
 		} else {
 			// Manual Add
 			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + this.getResources().getString(R.string.menu_insert));
-
+			
 			//Display the selected bookshelves
-			if (BookCatalogue.bookshelf.equals("All Books")) {
+			if (BookCatalogue.bookshelf.equals("")) {
 				mFields.getField(R.id.bookshelf_text).setValue(mDbHelper.getBookshelfName(1) + BOOKSHELF_SEPERATOR);
 			} else {
 				mFields.getField(R.id.bookshelf_text).setValue(BookCatalogue.bookshelf + BOOKSHELF_SEPERATOR);
@@ -738,17 +750,17 @@ public class BookEditFields extends Activity {
 			mAuthorList = new ArrayList<Author>();
 			mSeriesList = new ArrayList<Series>();
 		}
-
+		
 		fixupAuthorList();
 		fixupSeriesList();
-
+		
 	}
-
+	
 	private void setCoverImage() {
 		ImageView iv = (ImageView) findViewById(R.id.row_img);
 		CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);		
 	}
-
+	
 	/**
 	 * Validate the current data in all fields that have validators. Display any errors.
 	 * 
@@ -1095,7 +1107,13 @@ public class BookEditFields extends Activity {
 	private void fixupSeriesList() {
 
 		String newText;
-		if (mSeriesList.size() == 0)
+		int size = 0;
+		try {
+			size = mSeriesList.size();
+		} catch (NullPointerException e) {
+			size = 0;
+		}
+		if (size == 0)
 			newText = getResources().getString(R.string.set_series);
 		else {
 			Utils.pruneList(mDbHelper, mSeriesList);

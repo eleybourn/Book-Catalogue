@@ -53,7 +53,7 @@
 <string name="import_failed">ERROR: Import of data (from SDCard) failed. Is the file in the correct place?</string>
 <string name="search_title">Book Catalogue: Search Results</string>
 <string name="results_found">Results Found</string>
-<string name="administration_label">Administration</string>
+<string name="administration_label">Administration Functions</string>
 <string name="administration_title">Book Catalogue: Administration</string>
 <string name="menu_administration">Admin</string>
 <string name="install_scan">To scan your books via the ISBN barcode, you must install the zxing barcode scanner application. Press OK to install, or Cancel to skip.</string>
@@ -258,4 +258,7 @@
 <string name="bytes">%.0f bytes</string>
 <string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
 <string name="sortby_author_given">Sort by Author (Given Name)</string>
+<string name="debug_subject">Gathered debugging information</string>
+<string name="debug_body">Please take the time to briefly describe the problem you are experiencing.</string>
+<string name="menu_duplicate">Duplicate Book</string>
 </resources>

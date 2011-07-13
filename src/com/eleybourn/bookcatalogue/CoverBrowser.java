@@ -23,9 +23,6 @@
 import java.io.File;
 import java.util.ArrayList;
 
-import com.eleybourn.bookcatalogue.LibraryThingManager.ImageSizes;
-import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTask;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -35,8 +32,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Gallery;
@@ -45,6 +42,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher.ViewFactory;
+
+import com.eleybourn.bookcatalogue.LibraryThingManager.ImageSizes;
+import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTask;
 
 /**
  * Class to display and manage a cover image browser in a dialog.
@@ -177,6 +177,7 @@ public class CoverBrowser {
 	 * 
 	 * @author Grunthos
 	 */
+	@SuppressWarnings("unused")
 	private class GetThumbnailTask implements SimpleTask {
 		ImageView 	v;
 		int position;
@@ -216,6 +217,7 @@ public class CoverBrowser {
 	 * 
 	 * @author Grunthos
 	 */
+	@SuppressWarnings("unused")
 	private class GetFullImageTask implements SimpleTask {
 		// Switcher to use
 		private ImageSwitcher 	switcher;
@@ -470,65 +472,65 @@ public class CoverBrowser {
 	 * @author Grunthos
 	 */
 	public class CoverImageAdapter extends BaseAdapter {
-	    private int mGalleryItemBackground;
-
-	    /**
-	     * Constructor
-	     */
-	    public CoverImageAdapter() {
-	    	// Setup the background
-	        TypedArray a = mContext.obtainStyledAttributes(R.styleable.CoverGallery);
-	        mGalleryItemBackground = a.getResourceId(
-	                R.styleable.CoverGallery_android_galleryItemBackground, 0);
-	        a.recycle();
-	    }
+		private int mGalleryItemBackground;
 		
-	    @Override
+		/**
+		 * Constructor
+		 */
+		public CoverImageAdapter() {
+			// Setup the background
+			TypedArray a = mContext.obtainStyledAttributes(R.styleable.CoverGallery);
+			mGalleryItemBackground = a.getResourceId(
+					R.styleable.CoverGallery_android_galleryItemBackground, 0);
+			a.recycle();
+		}
+		
+		@Override
 		public Object getItem(int position) {
-		    return position;
+			return position;
 		}
 		
-	    @Override
+		@Override
 		public long getItemId(int position) {
-		    return position;
+			return position;
 		}
 		
-	    @Override
+		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-	    	// Create or reuse view
-		    ImageView i;
-		    if (convertView == null)
-			    i = new ImageView(mContext);
-		    else 
-		    	i = (ImageView)convertView;
-
-		    // Initialize the view
-		    i.setScaleType(ImageView.ScaleType.FIT_XY);
-		    //i.setAdjustViewBounds(true);
-		    i.setMaxHeight(mPreviewSize);
-		    i.setMaxWidth(mPreviewSize);
-	        i.setBackgroundResource(mGalleryItemBackground);
-
-	        // See if file is present
-	        File f = null;
-		    try {
-		    	f = mFileManager.getFile(mEditions.get(position), ImageSizes.SMALL);
-		    } catch (NullPointerException e) {
-		    	//file did not exist. Dealt with later.
-		    }
-		    if (f == null) {
-		    	// Not present; request it and use a placeholder.
-		    	GetThumbnailTask task = new GetThumbnailTask(position, i);
-			    mImageFetcher.request(task);
-			    i.setImageResource(android.R.drawable.ic_menu_help);
-		    } else {
-		    	// Present, so use it.
-			    Utils.fetchFileIntoImageView(f, i, mPreviewSize, mPreviewSize, true);
-		    }
-
-		    return i;
+			// Create or reuse view
+			ImageView i;
+			if (convertView == null)
+				i = new ImageView(mContext);
+			else 
+				i = (ImageView)convertView;
+			
+			// Initialize the view
+			i.setScaleType(ImageView.ScaleType.FIT_XY);
+			//i.setAdjustViewBounds(true);
+			i.setMaxHeight(mPreviewSize);
+			i.setMaxWidth(mPreviewSize);
+			i.setBackgroundResource(mGalleryItemBackground);
+			
+			// See if file is present
+			File f = null;
+			try {
+				f = mFileManager.getFile(mEditions.get(position), ImageSizes.SMALL);
+			} catch (NullPointerException e) {
+				//file did not exist. Dealt with later.
+			}
+			if (f == null) {
+				// Not present; request it and use a placeholder.
+				GetThumbnailTask task = new GetThumbnailTask(position, i);
+				mImageFetcher.request(task);
+				i.setImageResource(android.R.drawable.ic_menu_help);
+			} else {
+				// Present, so use it.
+				Utils.fetchFileIntoImageView(f, i, mPreviewSize, mPreviewSize, true);
+			}
+			
+			return i;
 		}
-
+		
 		@Override
 		public int getCount() {
 			return mEditions.size();

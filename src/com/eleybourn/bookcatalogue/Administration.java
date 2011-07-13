@@ -93,12 +93,14 @@ public class Administration extends TabActivity {
 		spec = tabHost.newTabSpec("admin_about").setIndicator(res.getString(R.string.about_label), res.getDrawable(R.drawable.ic_tab_about)).setContent(intent);
 		tabHost.addTab(spec);
 		
-		intent = new Intent().setClass(this, AdministrationLibraryThing.class);
-		if (extras != null) {
-			intent.putExtras(extras);
+		if (Utils.USE_LT) {
+			intent = new Intent().setClass(this, AdministrationLibraryThing.class);
+			if (extras != null) {
+				intent.putExtras(extras);
+			}
+			spec = tabHost.newTabSpec("admin_librarything").setIndicator(res.getString(R.string.lt_label), res.getDrawable(R.drawable.ic_tab_admin)).setContent(intent);
+			tabHost.addTab(spec);
 		}
-		spec = tabHost.newTabSpec("admin_librarything").setIndicator(res.getString(R.string.lt_label), res.getDrawable(R.drawable.ic_tab_admin)).setContent(intent);
-		tabHost.addTab(spec);
 		
 		tabHost.setCurrentTab(currentTab);
 	}

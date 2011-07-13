@@ -46,6 +46,7 @@ public class BookEdit extends TabActivity {
 	public static final int TAB_EDIT_NOTES = 1;
 	public static final int TAB_EDIT_FRIENDS = 2;
 	public static final int DELETE_ID = 1;
+	public static final int DUPLICATE_ID = 3; //2 is taken by populate in anthology
 	public int currentTab = 0;
 	private Long mRowId;
 	private CatalogueDBAdapter mDbHelper = new CatalogueDBAdapter(this);
@@ -137,6 +138,10 @@ public class BookEdit extends TabActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
 		setResult(resultCode, intent);
+		switch(requestCode) {
+		case DUPLICATE_ID:
+			finish();
+		}
 		finish();
 	}
 	
@@ -164,6 +169,8 @@ public class BookEdit extends TabActivity {
 		menu.clear();
 		MenuItem delete = menu.add(0, DELETE_ID, 0, R.string.menu_delete);
 		delete.setIcon(android.R.drawable.ic_menu_delete);
+		MenuItem duplicate = menu.add(0, DUPLICATE_ID, 0, R.string.menu_duplicate);
+		duplicate.setIcon(android.R.drawable.ic_menu_add);
 		
 		return super.onPrepareOptionsMenu(menu);
 	}
@@ -174,19 +181,58 @@ public class BookEdit extends TabActivity {
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch(item.getItemId()) {
-		case DELETE_ID:
-			int res = StandardDialogs.deleteBookAlert(this, mDbHelper, mRowId, new Runnable() {
-				@Override
-				public void run() {
-					mDbHelper.purgeAuthors();
-					mDbHelper.purgeSeries();
+		try {
+			switch(item.getItemId()) {
+			case DELETE_ID:
+				int res = StandardDialogs.deleteBookAlert(this, mDbHelper, mRowId, new Runnable() {
+					@Override
+					public void run() {
+						mDbHelper.purgeAuthors();
+						mDbHelper.purgeSeries();
+						finish();
+					}});
+				if (res != 0) {
+					Toast.makeText(this, res, Toast.LENGTH_LONG).show();
 					finish();
-				}});
-			if (res != 0) {
-				Toast.makeText(this, res, Toast.LENGTH_LONG).show();
-				finish();
+				}
+				return true;
+			case DUPLICATE_ID:
+				Intent i = new Intent(this, BookEdit.class);
+				Bundle book = new Bundle();
+				Cursor thisBook = mDbHelper.fetchBookById(mRowId);
+				try {
+					thisBook.moveToFirst();
+					book.putString(CatalogueDBAdapter.KEY_TITLE, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_TITLE)));
+					book.putString(CatalogueDBAdapter.KEY_ISBN, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_ISBN)));
+					book.putString(CatalogueDBAdapter.KEY_PUBLISHER, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_PUBLISHER)));
+					book.putString(CatalogueDBAdapter.KEY_DATE_PUBLISHED, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_DATE_PUBLISHED)));
+					book.putString(CatalogueDBAdapter.KEY_RATING, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_RATING)));
+					book.putString(CatalogueDBAdapter.KEY_READ, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_READ)));
+					book.putString(CatalogueDBAdapter.KEY_PAGES, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_PAGES)));
+					book.putString(CatalogueDBAdapter.KEY_NOTES, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_NOTES)));
+					book.putString(CatalogueDBAdapter.KEY_LIST_PRICE, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_LIST_PRICE)));
+					book.putString(CatalogueDBAdapter.KEY_ANTHOLOGY, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_ANTHOLOGY)));
+					book.putString(CatalogueDBAdapter.KEY_LOCATION, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_LOCATION)));
+					book.putString(CatalogueDBAdapter.KEY_READ_START, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_READ_START)));
+					book.putString(CatalogueDBAdapter.KEY_READ_END, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_READ_END)));
+					book.putString(CatalogueDBAdapter.KEY_FORMAT, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_FORMAT)));
+					book.putString(CatalogueDBAdapter.KEY_SIGNED, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_SIGNED)));
+					book.putString(CatalogueDBAdapter.KEY_DESCRIPTION, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_DESCRIPTION)));
+					book.putString(CatalogueDBAdapter.KEY_GENRE, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_GENRE)));
+					
+					book.putParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mDbHelper.getBookAuthorList(mRowId));
+					book.putParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY, mDbHelper.getBookSeriesList(mRowId));
+					
+					i.putExtra("bookData", book);
+					startActivityForResult(i, DUPLICATE_ID);
+				} catch (CursorIndexOutOfBoundsException e) {
+					Toast.makeText(this, R.string.unknown_error, Toast.LENGTH_LONG).show();
+					Logger.logError(e);
+				}
+				return true;
 			}
+		} catch (NullPointerException e) {
+			Logger.logError(e);
 		}
 		return true;
 	}

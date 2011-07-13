@@ -23,11 +23,11 @@
 import java.util.ArrayList;
 import java.util.Date;
 
+import android.os.Bundle;
+
 import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
 import com.eleybourn.bookcatalogue.SearchThread.SearchTaskHandler;
 import com.eleybourn.bookcatalogue.TaskManager.OnTaskEndedListener;
-
-import android.os.Bundle;
 
 /**
  * Class to co-ordinate multiple SearchThread objects using an existing TaskManager.
@@ -208,7 +208,9 @@ public class SearchManager implements OnTaskEndedListener {
 		// these in series.
 		if (mIsbn != null && mIsbn.length() > 0) {
 			mWaitingForIsbn = false;
-			startLibraryThing();
+			if (Utils.USE_LT) {
+				startLibraryThing();
+			}
 			startGoogle();
 			startAmazon();
 		} else {
@@ -289,9 +291,13 @@ public class SearchManager implements OnTaskEndedListener {
 		if (authors == null || authors.length() == 0 || title == null || title.length() == 0) {
 
 			mTaskManager.doToast(mTaskManager.getString(R.string.book_not_found));
-			mBookData = null;
-			if (mSearchHandler != null)
+			mBookData.putString(CatalogueDBAdapter.KEY_ISBN, mIsbn);
+			mBookData.putString(CatalogueDBAdapter.KEY_TITLE, mTitle);
+			ArrayList<Author> aa = Utils.getAuthorUtils().decodeList(mAuthor, '|', false);
+			mBookData.putParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, aa);
+			if (mSearchHandler != null) {
 				mSearchHandler.onSearchFinished(mBookData, mCancelledFlg);
+			}
 
 		} else {
 			Utils.doProperCase(mBookData, CatalogueDBAdapter.KEY_TITLE);

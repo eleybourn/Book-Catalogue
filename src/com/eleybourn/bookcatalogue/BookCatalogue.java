@@ -62,18 +62,10 @@ import android.widget.ExpandableListView.OnGroupExpandListener;
  * A book catalogue application that integrates with Google Books.
  */
 public class BookCatalogue extends ExpandableListActivity {
-	/*
-	public static final String APP_NAME = "DVD Catalogue";
-	public static final String LOCATION = "dvdCatalogue";
-	public static final String DATABASE_NAME = "dvd_catalogue";
-	public static final String APP_NAME = "CD Catalogue";
-	public static final String LOCATION = "cdCatalogue";
-	public static final String DATABASE_NAME = "cd_catalogue";
-	*/
-
+	
 	// Target size of a thumbnail in a list (bbox dim)
 	private static final int LIST_THUMBNAIL_SIZE=60;
-
+	
 	private static final int ACTIVITY_CREATE=0;
 	private static final int ACTIVITY_EDIT=1;
 	private static final int ACTIVITY_SORT=2;
@@ -101,7 +93,7 @@ public class BookCatalogue extends ExpandableListActivity {
 	private static final int EDIT_AUTHOR_ID = Menu.FIRST + 16;
 	private static final int EDIT_SERIES_ID = Menu.FIRST + 17;
 
-	public static String bookshelf = "All Books";
+	public static String bookshelf = "";
 	private ArrayAdapter<String> spinnerAdapter;
 	private Spinner mBookshelfText;
 
@@ -156,7 +148,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			mManagedCursors.clear();
 		}
 	}
-    
+	
 	private static boolean shown = false;
 	private String justAdded = ""; 
 	private String search_query = "";
@@ -166,7 +158,6 @@ public class BookCatalogue extends ExpandableListActivity {
 	private static final String STATE_CURRENT_GROUP_COUNT = "state_current_group_count"; 
 	private static final String STATE_CURRENT_GROUP = "state_current_group"; 
 	private static final String STATE_OPENED = "state_opened";
-	private static final int GONE = 8;
 	private static final int VISIBLE = 0;
 	private static final int BACKUP_PROMPT_WAIT = 5;
 
@@ -318,7 +309,11 @@ public class BookCatalogue extends ExpandableListActivity {
 				if (!new_bookshelf.equals(bookshelf)) {
 					currentGroup = new ArrayList<Integer>();
 				}
-				bookshelf = new_bookshelf;
+				if (position == 0) {
+					bookshelf = "";
+				} else {
+					bookshelf = new_bookshelf;
+				}
 				// save the current bookshelf into the preferences
 				SharedPreferences.Editor ed = mPrefs.edit();
 				ed.putString(STATE_BOOKSHELF, bookshelf);
@@ -445,7 +440,7 @@ public class BookCatalogue extends ExpandableListActivity {
 
 			/**
 			 * Override the setTextView function. This helps us set the appropriate opening and
-			 * closing brackets for series numbers and standardize the view.
+			 * closing brackets for series numbers and standardise the view.
 			 */
 			//TODO: @Override
 			public void setViewText(TextView v, String text) {
@@ -453,7 +448,7 @@ public class BookCatalogue extends ExpandableListActivity {
 					boolean field_visibility = mPrefs.getBoolean(FieldVisibility.prefix + "thumbnail", true);
 					ImageView newv = (ImageView) ((ViewGroup) v.getParent()).findViewById(R.id.row_image_view);
 					if (field_visibility == false) {
-						newv.setVisibility(GONE);
+						newv.setVisibility(View.GONE);
 					} else {
 						CatalogueDBAdapter.fetchThumbnailIntoImageView(Long.parseLong(text),newv, LIST_THUMBNAIL_SIZE,LIST_THUMBNAIL_SIZE, true);
 						newv.setVisibility(VISIBLE);
@@ -464,7 +459,7 @@ public class BookCatalogue extends ExpandableListActivity {
 					boolean field_visibility = mPrefs.getBoolean(FieldVisibility.prefix + "read", true);
 					ImageView newv = (ImageView) ((ViewGroup) v.getParent()).findViewById(R.id.row_read_image_view);
 					if (field_visibility == false) {
-						newv.setVisibility(GONE);
+						newv.setVisibility(View.GONE);
 					} else {
 						if (text.equals("1")) {
 							newv.setImageResource(R.drawable.btn_check_buttonless_on);
@@ -505,7 +500,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				// Hide field if necessary.
 				boolean field_visibility = mPrefs.getBoolean(FieldVisibility.prefix + key, true);
 				if (field_visibility == false) {
-					v.setVisibility(GONE);
+					v.setVisibility(View.GONE);
 					return false;
 				} else {
 					v.setVisibility(VISIBLE);
@@ -952,14 +947,16 @@ public class BookCatalogue extends ExpandableListActivity {
 		MenuItem insert = menu.add(0, INSERT_ID, 0, R.string.menu_insert);
 		insert.setIcon(android.R.drawable.ic_menu_add);
 		
-		MenuItem insertBC = menu.add(0, INSERT_BARCODE_ID, 1, R.string.menu_insert_barcode);
-		insertBC.setIcon(R.drawable.ic_menu_insert_barcode);
-		
-		MenuItem insertISBN = menu.add(0, INSERT_ISBN_ID, 2, R.string.menu_insert_isbn);
-		insertISBN.setIcon(android.R.drawable.ic_menu_zoom);
-		
-		MenuItem insertName = menu.add(0, INSERT_NAME_ID, 2, R.string.menu_insert_name);
-		insertName.setIcon(android.R.drawable.ic_menu_zoom);
+		if (Utils.USE_BARCODE) {
+			MenuItem insertBC = menu.add(0, INSERT_BARCODE_ID, 1, R.string.menu_insert_barcode);
+			insertBC.setIcon(R.drawable.ic_menu_insert_barcode);
+			
+			MenuItem insertISBN = menu.add(0, INSERT_ISBN_ID, 2, R.string.menu_insert_isbn);
+			insertISBN.setIcon(android.R.drawable.ic_menu_zoom);
+			
+			MenuItem insertName = menu.add(0, INSERT_NAME_ID, 2, R.string.menu_insert_name);
+			insertName.setIcon(android.R.drawable.ic_menu_zoom);
+		}
 		
 		if (collapsed == true || currentGroup.size() == 0) {
 			MenuItem expand = menu.add(0, SORT_BY_AUTHOR_COLLAPSED, 3, R.string.menu_sort_by_author_expanded);
@@ -1087,6 +1084,8 @@ public class BookCatalogue extends ExpandableListActivity {
 			int pos = currentGroup.size()-1;
 			if (pos >= 0)
 				view.setSelectedGroup(currentGroup.get(pos));
+		} catch (NoSuchFieldError e) {
+			//do nothing
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
@@ -1245,14 +1244,18 @@ public class BookCatalogue extends ExpandableListActivity {
 
 		case EDIT_SERIES_ID:
 			{
-				Series s = mDbHelper.getSeriesById(info.id);
-				EditSeriesDialog d = new EditSeriesDialog(this, mDbHelper, new Runnable() {
-					@Override
-					public void run() {
-						mDbHelper.purgeSeries();
-						regenGroups();
-					}});
-				d.editSeries(s);
+				if (info.id==-1) {
+					Toast.makeText(this, R.string.cannot_edit_system, Toast.LENGTH_LONG).show();
+				} else {
+					Series s = mDbHelper.getSeriesById(info.id);
+					EditSeriesDialog d = new EditSeriesDialog(this, mDbHelper, new Runnable() {
+						@Override
+						public void run() {
+							mDbHelper.purgeSeries();
+							regenGroups();
+						}});
+					d.editSeries(s);
+				} 
 				break;
 			}
 		case DELETE_SERIES_ID:

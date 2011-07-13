@@ -69,6 +69,19 @@ public class Utils {
 
 	public static final String APP_NAME = "Book Catalogue";
 	public static final String LOCATION = "bookCatalogue";
+	public static final String DATABASE_NAME = "book_catalogue";
+	public static final boolean USE_LT = true;
+	public static final boolean USE_BARCODE = true;
+	//public static final String APP_NAME = "DVD Catalogue";
+	//public static final String LOCATION = "dvdCatalogue";
+	//public static final String DATABASE_NAME = "dvd_catalogue";
+	//public static final boolean USE_LT = false;
+	//public static final boolean USE_BARCODE = false;
+	//public static final String APP_NAME = "CD Catalogue";
+	//public static final String LOCATION = "cdCatalogue";
+	//public static final String DATABASE_NAME = "cd_catalogue";
+	//public static final boolean USE_LT = true;
+	//public static final boolean USE_BARCODE = false;
 
 	public static final String EXTERNAL_FILE_PATH = Environment.getExternalStorageDirectory() + "/" + LOCATION;
 	public static final String ERRORLOG_FILE = EXTERNAL_FILE_PATH + "/error.log";
@@ -764,76 +777,81 @@ public class Utils {
 			Logger.logError(e, s);
 		}
 	}
-
+	
 	public static Bitmap fetchFileIntoImageView(File file, ImageView destView, int maxWidth, int maxHeight, boolean exact) {
 		// Get the file, if it exists. Otherwise set 'help' icon and exit.
 		if (!file.exists()) {
-	    	if (destView != null)
+			if (destView != null)
 				destView.setImageResource(android.R.drawable.ic_menu_help);
 			return null;
 		}
-
+		
 		Bitmap bm = null;					// resultant Bitmap (which we will return) 
 		String filename = file.getPath();	// Full file spec
-
+		
 		// Read the file to get file size
 		BitmapFactory.Options opt = new BitmapFactory.Options();
 		opt.inJustDecodeBounds = true;
-	    BitmapFactory.decodeFile( filename, opt );
-
-	    // If no size info, or a single pixel, assume file bad and set the 'alert' icon
-	    if ( opt.outHeight <= 0 || opt.outWidth <= 0 || (opt.outHeight== 1 && opt.outWidth == 1) ) {
-	    	if (destView != null)
-	    		destView.setImageResource(android.R.drawable.ic_dialog_alert);
-	    	return null;
-	    }
-
-	    // Next time we don't just want the bounds, we want the file
-	    opt.inJustDecodeBounds = false;
-
-	    // Work out how to scale the file to fit in required bbox
-	    float widthRatio = (float)maxWidth / opt.outWidth; 
-	    float heightRatio = (float)maxHeight / opt.outHeight;
-
-	    // Work out scale so that it fit exactly
-	    float ratio = widthRatio < heightRatio ? widthRatio : heightRatio;
-
-	    // Note that inSampleSize seems to ALWAYS be forced to a power of 2, no matter what we
+		BitmapFactory.decodeFile( filename, opt );
+		
+		// If no size info, or a single pixel, assume file bad and set the 'alert' icon
+		if ( opt.outHeight <= 0 || opt.outWidth <= 0 || (opt.outHeight== 1 && opt.outWidth == 1) ) {
+			if (destView != null)
+				destView.setImageResource(android.R.drawable.ic_dialog_alert);
+			return null;
+		}
+		
+		// Next time we don't just want the bounds, we want the file
+		opt.inJustDecodeBounds = false;
+		
+		// Work out how to scale the file to fit in required bbox
+		float widthRatio = (float)maxWidth / opt.outWidth; 
+		float heightRatio = (float)maxHeight / opt.outHeight;
+		
+		// Work out scale so that it fit exactly
+		float ratio = widthRatio < heightRatio ? widthRatio : heightRatio;
+		
+		// Note that inSampleSize seems to ALWAYS be forced to a power of 2, no matter what we
 		// specify, so we just work with powers of 2.
-	    int idealSampleSize = (int)Math.ceil(1/ratio); // This is the sample size we want to use
-	    // Get the nearest *bigger* power of 2.
-	    int samplePow2 = (int)Math.ceil(Math.log(idealSampleSize)/Math.log(2));
-
-    	if (exact) {
-    		// Create one bigger than needed and scale it; this is an attempt to improve quality.
-		    opt.inSampleSize = samplePow2 / 2;
-		    if (opt.inSampleSize < 1)
-		    	opt.inSampleSize = 1;
-
-		    bm = BitmapFactory.decodeFile( filename, opt );
-		    android.graphics.Matrix matrix = new android.graphics.Matrix();
-		    // Fixup ratio based on new sample size and scale it.
-		    ratio = ratio / (1.0f / opt.inSampleSize);
-		    matrix.postScale(ratio, ratio);
-		    bm = Bitmap.createBitmap(bm, 0, 0, opt.outWidth, opt.outHeight, matrix, true); 
-    	} else {
-    		// Use a scale that will make image *no larger than* the desired size
-    		if (ratio < 1.0f)
-			    opt.inSampleSize = samplePow2;
-		    bm = BitmapFactory.decodeFile( filename, opt );
-    	}
-
-    	// Set ImageView and return bitmap
-    	if (destView != null)
-		    destView.setImageBitmap(bm);
-	 
-	    return bm;
+		int idealSampleSize = (int)Math.ceil(1/ratio); // This is the sample size we want to use
+		// Get the nearest *bigger* power of 2.
+		int samplePow2 = (int)Math.ceil(Math.log(idealSampleSize)/Math.log(2));
+		
+		try {
+			if (exact) {
+				// Create one bigger than needed and scale it; this is an attempt to improve quality.
+				opt.inSampleSize = samplePow2 / 2;
+				if (opt.inSampleSize < 1)
+					opt.inSampleSize = 1;
+				
+				bm = BitmapFactory.decodeFile( filename, opt );
+				android.graphics.Matrix matrix = new android.graphics.Matrix();
+				// Fixup ratio based on new sample size and scale it.
+				ratio = ratio / (1.0f / opt.inSampleSize);
+				matrix.postScale(ratio, ratio);
+				bm = Bitmap.createBitmap(bm, 0, 0, opt.outWidth, opt.outHeight, matrix, true); 
+			} else {
+				// Use a scale that will make image *no larger than* the desired size
+				if (ratio < 1.0f)
+					opt.inSampleSize = samplePow2;
+				bm = BitmapFactory.decodeFile( filename, opt );
+			}
+		} catch (OutOfMemoryError e) {
+			return null;
+		}
+		
+		// Set ImageView and return bitmap
+		if (destView != null)
+			destView.setImageBitmap(bm);
+		return bm;
 	}
 	
 	public static void showLtAlertIfNecessary(Context context, boolean always, String suffix) {
-		LibraryThingManager ltm = new LibraryThingManager(context);
-		if (!ltm.isAvailable())
-			StandardDialogs.needLibraryThingAlert(context, always, suffix);		
+		if (USE_LT) {
+			LibraryThingManager ltm = new LibraryThingManager(context);
+			if (!ltm.isAvailable())
+				StandardDialogs.needLibraryThingAlert(context, always, suffix);		
+		}
 	}
 
 	private static String[] mPurgeableFilePrefixes = new String[]{"dbUpgrade", "dbExport", "error.log", "tmp"};
@@ -856,43 +874,49 @@ public class Utils {
 		// setup the mail message
 		final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND_MULTIPLE);
 		emailIntent.setType("plain/text");
-        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, context.getString(R.string.debug_email).split(";"));
-        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Gathered debugging information" );
-        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Please take the time to briefly describe the problem you are experiencing." );
-        //has to be an ArrayList
-        ArrayList<Uri> uris = new ArrayList<Uri>();
-        //convert from paths to Android friendly Parcelable Uri's
-        ArrayList<String> files = new ArrayList<String>();
-
-        // Find all files of interest to send
-        File dir = new File(Utils.EXTERNAL_FILE_PATH);
-        for (String name : dir.list()) {
-        	boolean send = false;
-        	for(String prefix : mDebugFilePrefixes)
-        		if (name.startsWith(prefix)) {
-        			send = true;
-        			break;
-        		}
-        	if (send)
-        		files.add(name);
-        }
-
-        // Build the attachment list
-        for (String file : files)
-        {
-            File fileIn = new File(Utils.EXTERNAL_FILE_PATH + "/" + file);
-            if (fileIn.exists() && fileIn.length() > 0) {
-                Uri u = Uri.fromFile(fileIn);
-                uris.add(u);            	
-            }
-        }
-        // Send it, if there are any files to send.
-        if (uris.size() == 0) {
-        	Toast.makeText(context, R.string.no_debug_info, Toast.LENGTH_LONG).show();
-        } else {
-            emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-            context.startActivity(Intent.createChooser(emailIntent, "Send mail..."));        	
-        }
+		emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, context.getString(R.string.debug_email).split(";"));
+		String subject = "[" + context.getString(R.string.app_name) + "] " + context.getString(R.string.debug_subject);
+		emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
+		emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, context.getString(R.string.debug_body));
+		//has to be an ArrayList
+		ArrayList<Uri> uris = new ArrayList<Uri>();
+		//convert from paths to Android friendly Parcelable Uri's
+		ArrayList<String> files = new ArrayList<String>();
+		
+		// Find all files of interest to send
+		File dir = new File(Utils.EXTERNAL_FILE_PATH);
+		try {
+			for (String name : dir.list()) {
+				boolean send = false;
+				for(String prefix : mDebugFilePrefixes)
+					if (name.startsWith(prefix)) {
+						send = true;
+						break;
+					}
+				if (send)
+					files.add(name);
+			}
+			
+			// Build the attachment list
+			for (String file : files)
+			{
+				File fileIn = new File(Utils.EXTERNAL_FILE_PATH + "/" + file);
+				if (fileIn.exists() && fileIn.length() > 0) {
+					Uri u = Uri.fromFile(fileIn);
+					uris.add(u);
+				}
+			}
+			// Send it, if there are any files to send.
+			if (uris.size() == 0) {
+				Toast.makeText(context, R.string.no_debug_info, Toast.LENGTH_LONG).show();
+			} else {
+				emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+				context.startActivity(Intent.createChooser(emailIntent, "Send mail..."));        	
+			}
+		} catch (NullPointerException e) {
+			Logger.logError(e);
+			Toast.makeText(context, R.string.export_failed_sdcard, Toast.LENGTH_LONG).show();
+		}
 	}
 
 	/**

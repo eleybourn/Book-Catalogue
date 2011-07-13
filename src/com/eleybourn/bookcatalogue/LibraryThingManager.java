@@ -474,20 +474,20 @@ public class LibraryThingManager {
 	private class SearchLibraryThingEntryHandler extends DefaultHandler  {
 		private Bundle mBookData = null;
 		private StringBuilder mBuilder = new StringBuilder();
-
+		
 		private FieldTypes mFieldType = FieldTypes.OTHER;
 		private String mWorkId;
-
+		
 		SearchLibraryThingEntryHandler(Bundle bookData) {
 			mBookData = bookData;
 		}
-
+		
 		@Override
 		public void characters(char[] ch, int start, int length) throws SAXException {
 			super.characters(ch, start, length);
 			mBuilder.append(ch, start, length);
 		}
-
+		
 		/**
 		 * Add the current characters to the book collection if not already present.
 		 * 
@@ -498,7 +498,7 @@ public class LibraryThingManager {
 				mBookData.putString(key, mBuilder.toString());
 			}		
 		}
-
+		
 		/**
 		 * Add the current text data to the book collection if not present, otherwise 
 		 * append the data as a list.
@@ -622,17 +622,17 @@ public class LibraryThingManager {
 	 */
 	public String getCoverImage(String isbn, Bundle bookData, ImageSizes size) {
 		String url = getCoverImageUrl(isbn, size);
-
+		
 		// Make sure we follow LibraryThing ToS (no more than 1 request/second).
 		waitUntilRequestAllowed();
-
+		
 		// Save it with an _LT suffix
 		String filename = Utils.saveThumbnailFromUrl(url, "_LT_" + size + "_" + isbn);
 		if (filename.length() > 0 && bookData != null)
 			Utils.appendOrAdd(bookData, "__thumbnail", filename);
 		return filename;
 	}
-
+	
 	/**
 	 * Search for edition data.
 	 *

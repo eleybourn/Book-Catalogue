@@ -47,15 +47,15 @@ public class Help extends Activity {
 	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		try {
 			// Needed for sending debug info...
 			mDbHelper = new CatalogueDBAdapter(this);
 			mDbHelper.open();
-
-			super.onCreate(savedInstanceState);
+			
 			setContentView(R.layout.help);
 			res = getResources();
-
+			
 			TextView webinstructions = (TextView) findViewById(R.id.helpinstructions);
 			webinstructions.setOnClickListener(new OnClickListener() {
 				@Override
@@ -65,7 +65,7 @@ public class Help extends Activity {
 					return;
 				}
 			});
-
+			
 			TextView webpage = (TextView) findViewById(R.id.helppage);
 			webpage.setOnClickListener(new OnClickListener() {
 				@Override
@@ -75,7 +75,7 @@ public class Help extends Activity {
 					return;
 				}
 			});
-
+			
 			Button sendInfo = (Button) findViewById(R.id.send_info);
 			sendInfo.setOnClickListener(new OnClickListener() {
 				@Override
@@ -83,9 +83,9 @@ public class Help extends Activity {
 					Utils.sendDebugInfo(Help.this, mDbHelper);
 				}
 			});
-
+			
 			setupCleanupButton();
-
+			
 		} catch (Exception e) {
 			Logger.logError(e);
 		}

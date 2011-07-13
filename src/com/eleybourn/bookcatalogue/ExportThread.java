@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 
 import android.database.Cursor;
-import android.os.Debug;
-import android.os.Environment;
 import android.os.Message;
 
 /**
@@ -241,7 +239,6 @@ public class ExportThread extends ManagedTask {
 			StringBuilder bld = new StringBuilder();
 			int endPos = cell.length() - 1;
 			int pos = 0;
-			char next = cell.charAt(0);
 			while (pos <= endPos) {
 				char c = cell.charAt(pos);
 				switch(c) {

@@ -2517,7 +2517,7 @@ public class CatalogueDBAdapter {
 		StringBuilder result = new StringBuilder("(");
 
 		// Just do a simple search of a bunch of fields.
-		String[] keys = new String[] {KEY_TITLE, KEY_ISBN, KEY_PUBLISHER, KEY_NOTES, KEY_LOCATION};
+		String[] keys = new String[] {KEY_TITLE, KEY_ISBN, KEY_PUBLISHER, KEY_NOTES, KEY_LOCATION, KEY_DESCRIPTION};
 		for(String k : keys)
 			result.append(makeSearchTerm(k, search_term) + " OR ");
 
@@ -2527,6 +2527,13 @@ public class CatalogueDBAdapter {
 						+ "     On s." + KEY_ROWID + " = bsw." + KEY_SERIES_ID 
 						+ "         And " + makeSearchTerm("s." + KEY_SERIES_NAME, search_term)
 						+ " Where bsw." + KEY_BOOK + " = b." + KEY_ROWID + ") ");		
+		
+		//and check the anthologies too.
+		result.append(" OR Exists (SELECT NULL FROM  " + DB_TB_ANTHOLOGY + " bsan, " + DB_TB_AUTHORS + " bsau "
+				+ " WHERE bsan." + KEY_AUTHOR_ID + "= bsau." + KEY_ROWID + " AND bsan." + KEY_BOOK + " = b." + KEY_ROWID + " AND "
+				+ "(" + makeSearchTerm("bsan." + KEY_TITLE, search_term) + " OR " 
+				+ makeSearchTerm("bsau." + KEY_FAMILY_NAME, search_term) + " OR "
+				+ makeSearchTerm("bsau." + KEY_GIVEN_NAMES, search_term) + ")) ");
 
 		result.append( ")") ;
 

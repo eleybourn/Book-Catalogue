@@ -144,7 +144,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				} catch (Exception e) {
 					// Don;t really care if it's called more than once or fails.
 				}
-			}     
+			}
 			mManagedCursors.clear();
 		}
 	}
@@ -172,7 +172,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		}
 
 		//check which strings.xml file is currently active
-		if (!getString(R.string.app_name).equals(Utils.APP_NAME)) {
+		if (!getString(R.string.system_app_name).equals(Utils.APP_NAME)) {
 			throw new NullPointerException();
 		}
 

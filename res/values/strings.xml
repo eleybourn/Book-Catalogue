@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <string name="app_name">Book Catalogue</string>
+<string name="system_app_name">Book Catalogue</string>
 <string name="menu_insert">Add Book</string>
 <string name="menu_delete">Delete Book</string>
 <string name="author">Author</string>

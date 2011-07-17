@@ -1761,7 +1761,7 @@ public class CatalogueDBAdapter {
 		String baseSql = this.fetchAllBooksSql("", bookshelf, authorWhere, bookWhere, searchText, loaned_to, seriesName);
 
 		// Get the basic query; we will use it as a sub-query
-		String sql = "SELECT " + getBookFields("b", KEY_ROWID) + baseSql;
+		String sql = "SELECT DISTINCT " + getBookFields("b", KEY_ROWID) + baseSql;
 		String fullSql = "Select b.*, " + 
 		"a." + KEY_AUTHOR_ID + ", " +
 		"a." + KEY_FAMILY_NAME + ", " +
@@ -1799,8 +1799,8 @@ public class CatalogueDBAdapter {
 				+ " From " + DB_TB_BOOK_SERIES + " bs Join " + DB_TB_SERIES + " s"
 				+ "    On bs." + KEY_SERIES_ID + " = s." + KEY_ROWID + ") s "
 				+ " On s." + KEY_BOOK + " = b." + KEY_ROWID 
-				+ " and " + makeTextTerm("s." + KEY_SERIES_NAME, "=", seriesName) 
-				+ " and " + this.makeEqualFieldsTerm("s." + KEY_SERIES_NUM, "b." + KEY_SERIES_NUM);
+				+ " and " + makeTextTerm("s." + KEY_SERIES_NAME, "=", seriesName); 
+				//+ " and " + this.makeEqualFieldsTerm("s." + KEY_SERIES_NUM, "b." + KEY_SERIES_NUM);
 		} else {
 			// Get the 'default' series...defined in getBookFields()
 			fullSql += " Left Outer Join (Select " 

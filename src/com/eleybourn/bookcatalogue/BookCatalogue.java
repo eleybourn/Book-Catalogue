@@ -306,14 +306,13 @@ public class BookCatalogue extends ExpandableListActivity {
 		mBookshelfText.setOnItemSelectedListener(new OnItemSelectedListener() {
 			public void onItemSelected(AdapterView<?> parentView, View view, int position, long id) {
 				String new_bookshelf = spinnerAdapter.getItem(position);
+				if (position == 0) {
+					new_bookshelf = "";
+				}
 				if (!new_bookshelf.equals(bookshelf)) {
 					currentGroup = new ArrayList<Integer>();
 				}
-				if (position == 0) {
-					bookshelf = "";
-				} else {
-					bookshelf = new_bookshelf;
-				}
+				bookshelf = new_bookshelf;
 				// save the current bookshelf into the preferences
 				SharedPreferences.Editor ed = mPrefs.edit();
 				ed.putString(STATE_BOOKSHELF, bookshelf);
@@ -722,7 +721,6 @@ public class BookCatalogue extends ExpandableListActivity {
 	 */
 	private void fillData() {
 		ViewManager vm;
-
 		/**
 		 * Select between the different ViewManager objects based on the sort parameter
 		 */
@@ -751,10 +749,10 @@ public class BookCatalogue extends ExpandableListActivity {
 		default:
 			throw new IllegalArgumentException();
 		}
-
+		
 		// Manage it
 		startManagingCursor(vm.getCursor());
-
+		
 		// Set view title
 		if (search_query.equals("")) {
 			this.setTitle(R.string.app_name);
@@ -766,7 +764,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		
 		// Instantiate the List Adapter
 		ViewManager.BasicBookListAdapter adapter = vm.newAdapter(this); 
-
+		
 		// Handle the click event. Do not open, but goto the book edit page
 		ExpandableListView expandableList = getExpandableListView();
 		// Extend the onGroupClick (Open) - Every click should add to the currentGroup array
@@ -780,7 +778,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		expandableList.setOnGroupCollapseListener(new OnGroupCollapseListener() {
 			@Override
 			public void onGroupCollapse(int groupPosition) {
-				adjustCurrentGroup(groupPosition, -1, false);				
+				adjustCurrentGroup(groupPosition, -1, false);
 			}
 		});
 		
@@ -788,9 +786,9 @@ public class BookCatalogue extends ExpandableListActivity {
 		 * The override is for when changing back from the title view and it has hidden the icon. */
 		Drawable indicator = this.getResources().getDrawable(R.drawable.expander_group); 
 		expandableList.setGroupIndicator(indicator);
-
+		
 		setListAdapter(adapter);		
-	
+		
 		gotoCurrentGroup();
 		/* Add number to bookshelf */
 		TextView mBookshelfNumView = (TextView) findViewById(R.id.bookshelf_num);
@@ -1025,22 +1023,23 @@ public class BookCatalogue extends ExpandableListActivity {
 		try {
 			SharedPreferences.Editor ed = mPrefs.edit();
 			ed.putInt(STATE_CURRENT_GROUP_COUNT, currentGroup.size());
-
+			
 			int i = 0;
 			Iterator<Integer> arrayIterator = currentGroup.iterator();
 			while(arrayIterator.hasNext()) {
-				ed.putInt(STATE_CURRENT_GROUP + " " + i, arrayIterator.next());
+				int currentValue = arrayIterator.next();
+				ed.putInt(STATE_CURRENT_GROUP + " " + i, currentValue);
 				i++;
 			}
 			
 			ed.commit();
-
+			
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
 		return;
 	}
-
+	
 	/*
 	 * Load Current group from preferences
 	 */
@@ -1056,8 +1055,9 @@ public class BookCatalogue extends ExpandableListActivity {
 			int i = 0;
 			while(i < count) {
 				int pos = mPrefs.getInt(STATE_CURRENT_GROUP + " " + i, -1);
-				if (pos >= 0)
-					adjustCurrentGroup(pos, 1, false);
+				if (pos >= 0) {
+					adjustCurrentGroup(pos, 1, true);
+				}
 				i++;
 			}
 
@@ -1076,14 +1076,16 @@ public class BookCatalogue extends ExpandableListActivity {
 	public void gotoCurrentGroup() {
 		try {
 			ExpandableListView view = this.getExpandableListView();
-			Iterator<Integer> arrayIterator = currentGroup.iterator();
+			ArrayList<Integer> localCurrentGroup = currentGroup;
+			Iterator<Integer> arrayIterator = localCurrentGroup.iterator();
 			while(arrayIterator.hasNext()) {
 				view.expandGroup(arrayIterator.next());
 			}
 			
-			int pos = currentGroup.size()-1;
-			if (pos >= 0)
-				view.setSelectedGroup(currentGroup.get(pos));
+			int pos = localCurrentGroup.size()-1;
+			if (pos >= 0) {
+				view.setSelectedGroup(localCurrentGroup.get(pos));
+			}
 		} catch (NoSuchFieldError e) {
 			//do nothing
 		} catch (Exception e) {
@@ -1106,7 +1108,6 @@ public class BookCatalogue extends ExpandableListActivity {
 			if (adj > 0) {
 				currentGroup.add(pos);
 				/* Add the latest position to the preferences */
-				saveCurrentGroup();
 			}
 		} else {
 			//it does exist (so is open), so remove from the list if adj=-1
@@ -1117,10 +1118,10 @@ public class BookCatalogue extends ExpandableListActivity {
 					currentGroup.remove(index);	
 					currentGroup.add(pos);
 					/* Add the latest position to the preferences */
-					saveCurrentGroup();
 				}				
 			}
 		}
+		saveCurrentGroup();
 		collapsed = (currentGroup.size() == 0);
 	}
 	

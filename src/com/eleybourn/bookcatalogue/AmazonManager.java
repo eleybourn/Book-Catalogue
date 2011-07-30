@@ -25,7 +25,7 @@ public class AmazonManager {
 		mAuthor = mAuthor.replace(" ", "%20");
 		mTitle = mTitle.replace(" ", "%20");
 		
-		String path = "http://alphacomplex.org/getRest_v2.php";
+		String path = "http://theagiledirector.com/getRest_v3.php";
 		if (mIsbn.equals("")) {
 			path += "?author=" + mAuthor + "&title=" + mTitle;
 		} else {

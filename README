@@ -47,6 +47,7 @@ New in v3.6
 * When automatically updating fields click on each checkbox twice will give you the option to override existing fields (rather than populate only blank fields)
 * Fixed a crash when exporting over 2000 books
 * Orphan loan records will now be correctly managed 
+* The Amazon search will now look for English, French, German, Italian and Japanese versions
 
 New in v3.5.6
 * Fixed bug in moving to SDcard (2.2 and above only)

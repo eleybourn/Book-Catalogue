@@ -83,7 +83,7 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 		super(manager, lookupHandler);
 		mDbHelper = new CatalogueDBAdapter(manager.getAppContext());
 		mDbHelper.open();
-
+		
 		mRequestedFields = requestedFields;
 		mSearchManager = new SearchManager(mManager, this);
 		mManager.doProgress(mManager.getString(R.string.starting_search));

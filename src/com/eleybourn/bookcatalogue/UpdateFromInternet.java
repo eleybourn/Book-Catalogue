@@ -27,12 +27,12 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
@@ -135,11 +135,35 @@ public class UpdateFromInternet extends ActivityWithTasks {
 			cb.setChecked(usage.selected);
 			cb.setTag(usage);
 			cb.setId(R.id.fieldCheckbox);
-			ll.addView(cb);
+			//add override capability
+			cb.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					CheckBox thiscb = (CheckBox) v;
+					Log.e("BC", " " + thiscb.isChecked());
+					if (thiscb.isChecked() == false && thiscb.getText().toString().contains(getResources().getString(R.string.usage_copy_if_blank))) {
+						FieldUsage usage = (FieldUsage) thiscb.getTag();
+						String extra = getResources().getString(R.string.usage_overwrite);
+						String text = getResources().getString(usage.stringId);
+						thiscb.setText(text + " (" + extra + ")");
+						thiscb.setChecked(true); //reset to checked
+						usage.usage = FieldUsages.Usages.OVERWRITE;
+						thiscb.setTag(usage);
+					} else if (thiscb.getText().toString().contains(getResources().getString(R.string.usage_overwrite))) {
+						FieldUsage usage = (FieldUsage) thiscb.getTag();
+						String extra = getResources().getString(R.string.usage_copy_if_blank);
+						String text = getResources().getString(usage.stringId);
+						thiscb.setText(text + " (" + extra + ")");
+						usage.usage = FieldUsages.Usages.COPY_IF_BLANK;
+						thiscb.setTag(usage);
+					}
+				}
+			});
+			//ll.addView(cb);
 
 			//Create the checkBox label (or textView)
-			TextView tv = new TextView(this);
-			tv.setTextAppearance(this, android.R.attr.textAppearanceLarge);
+			//TextView tv = new TextView(this);
+			cb.setTextAppearance(this, android.R.attr.textAppearanceLarge);
 			String text = getResources().getString(usage.stringId);
 			String extra;
 			switch(usage.usage) {
@@ -155,9 +179,9 @@ public class UpdateFromInternet extends ActivityWithTasks {
 			default:
 				throw new RuntimeException("Unknown Usage");
 			}
-			tv.setText(text + " (" + extra + ")");
-			tv.setPadding(0, 5, 0, 0);
-			ll.addView(tv);
+			cb.setText(text + " (" + extra + ")");
+			//tv.setPadding(0, 5, 0, 0);
+			ll.addView(cb);
 			
 			//Add the LinearLayout to the parent
 			parent.addView(ll);			
@@ -172,7 +196,7 @@ public class UpdateFromInternet extends ActivityWithTasks {
 					Toast.makeText(UpdateFromInternet.this, R.string.select_min_1_field, Toast.LENGTH_LONG).show();
 					return;
 				}
-
+				
 				// If they have selected thumbnails, check if they want to download ALL.
 				boolean thumbnail_check = false;
 				try {

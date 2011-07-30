@@ -738,6 +738,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			vm = new SeriesViewManager();
 			break;
 		case SORT_LOAN:
+			//Special cleanup step - Delete all loans without books
 			vm = new LoanViewManager();
 			break;
 		case SORT_UNREAD:

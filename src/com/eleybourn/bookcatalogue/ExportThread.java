@@ -47,12 +47,12 @@ public class ExportThread extends ManagedTask {
 			cleanup();
 		}
 	}
-
+	
 	@Override
 	protected void onMessage(Message msg) {
 		// Nothing to do. we don't sent any
 	}
-
+	
 	@Override
 	protected void onRun() {
 		int num = 0;
@@ -87,15 +87,19 @@ public class ExportThread extends ManagedTask {
 			'"' + CatalogueDBAdapter.KEY_DESCRIPTION+ "\"," + 		//25
 			'"' + CatalogueDBAdapter.KEY_GENRE+ "\"," + 			//26
 			"\n");
-
+		
 		long lastUpdate = 0;
-
+		
 		StringBuilder row = new StringBuilder();
-
+		
 		Cursor books = mDbHelper.exportBooks();
 		mManager.setMax(this, books.getCount());
-
+		
 		try {
+			/* write to the SDCard */
+			backupExport();
+			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(mFileName), UTF8), BUFFER_SIZE);
+			out.write(export.toString());
 			if (books.moveToFirst()) {
 				do { 
 					num++;
@@ -157,10 +161,10 @@ public class ExportThread extends ManagedTask {
 						bookshelves_name_text += bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)) + BookEditFields.BOOKSHELF_SEPERATOR;
 					}
 					bookshelves.close();
-
+					
 					String authorDetails = Utils.getAuthorUtils().encodeList( mDbHelper.getBookAuthorList(id), '|' );
 					String seriesDetails = Utils.getSeriesUtils().encodeList( mDbHelper.getBookSeriesList(id), '|' );
-
+					
 					row.setLength(0);
 					row.append("\"" + formatCell(id) + "\",");
 					row.append("\"" + formatCell(authorDetails) + "\",");
@@ -187,8 +191,9 @@ public class ExportThread extends ManagedTask {
 					row.append("\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DESCRIPTION))) + "\",");
 					row.append("\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_GENRE))) + "\",");
 					row.append("\n");
-					export.append(row);
-
+					out.write(row.toString());
+					//export.append(row);
+					
 					long now = System.currentTimeMillis();
 					if ( (now - lastUpdate) > 200) {
 						doProgress(title, num);
@@ -198,19 +203,13 @@ public class ExportThread extends ManagedTask {
 				while (books.moveToNext() && !isCancelled()); 
 			} 
 			
-			/* write to the SDCard */
-			try {
-				backupExport();
-				BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(mFileName), UTF8), BUFFER_SIZE);
-				out.write(export.toString());
-				out.close();
-				mManager.doToast( getString(R.string.export_complete) );
-				//Toast.makeText(AdministrationFunctions.this, R.string.export_complete, Toast.LENGTH_LONG).show();
-			} catch (IOException e) {
-				Logger.logError(e);
-				mManager.doToast(getString(R.string.export_failed_sdcard));
-			}
+			out.close();
+			//Toast.makeText(AdministrationFunctions.this, R.string.export_complete, Toast.LENGTH_LONG).show();
+		} catch (IOException e) {
+			Logger.logError(e);
+			mManager.doToast(getString(R.string.export_failed_sdcard));
 		} finally {
+			mManager.doToast( getString(R.string.export_complete) );
 			if (books != null)
 				books.close();
 		}

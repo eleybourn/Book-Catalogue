@@ -25,10 +25,12 @@ import java.util.Hashtable;
 
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -240,8 +242,12 @@ public class BookISBNSearch extends ActivityWithTasks {
 		int end = mIsbnText.getSelectionEnd();
 		mIsbnText.getText().replace(start, end, key);
 		mIsbnText.setSelection(start+1, start+1);
+		// Get instance of Vibrator from current Context
+		Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+		// Vibrate for 300 milliseconds
+		v.vibrate(300);
 	}
-
+	
 	/* - MAJOR DATABASE ISSUES FOR THIS TO WORK!!!
 	protected void checkISBN(final String isbn) {
 		// If the book already exists, ask if the user wants to continue

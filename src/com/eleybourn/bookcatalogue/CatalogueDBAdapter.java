@@ -3605,6 +3605,17 @@ public class CatalogueDBAdapter {
 		return success;
 	}
 	
+	/** 
+	 * Delete all loan without a book or loanee
+	 * 
+	 * @return true if deleted, false otherwise
+	 */
+	public boolean deleteLoanInvalids() {
+		boolean success;
+		success = mDb.delete(DB_TB_LOAN, "("+KEY_BOOK+ "='' OR " + KEY_BOOK+ "=null OR " + KEY_LOANED_TO + "='' OR " + KEY_LOANED_TO + "=null) ", null) > 0;
+		return success;
+	}
+	
 	
 	
 	

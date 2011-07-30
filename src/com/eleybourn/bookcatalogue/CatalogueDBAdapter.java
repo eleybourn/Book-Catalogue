@@ -1160,6 +1160,7 @@ public class CatalogueDBAdapter {
 					message += "* When automatically updating fields click on each checkbox twice will give you the option to override existing fields (rather than populate only blank fields)\n\n";
 					message += "* Fixed a crash when exporting over 2000 books\n\n";
 					message += "* Orphan loan records will now be correctly managed\n\n";
+					message += "* The Amazon search will now look for English, French, German, Italian and Japanese versions\n\n";
 				}
 			}
 			//TODO: NOTE: END OF UPDATE

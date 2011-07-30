@@ -124,7 +124,6 @@ public class UpdateFromInternet extends ActivityWithTasks {
 
 		// Display the list of fields
 		LinearLayout parent = (LinearLayout) findViewById(R.id.manage_fields_scrollview);
-		int i = 0;
 		for(FieldUsage usage : mFieldUsages.values()) {
 			//Create the LinearLayout to hold each row
 			LinearLayout ll = new LinearLayout(this);

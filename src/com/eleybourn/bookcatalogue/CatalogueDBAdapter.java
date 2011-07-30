@@ -363,7 +363,7 @@ public class CatalogueDBAdapter {
 		
 	private final Context mCtx;
 	//TODO: Update database version
-	public static final int DATABASE_VERSION = 58;
+	public static final int DATABASE_VERSION = 59;
 
 	private TableInfo mBooksInfo = null;
 
@@ -1150,6 +1150,16 @@ public class CatalogueDBAdapter {
 						}
 					}
 					createIndices(db);
+				}
+				if (curVersion == 58) {
+					curVersion++;
+					db.delete(DB_TB_LOAN, "("+KEY_BOOK+ "='' OR " + KEY_BOOK+ "=null OR " + KEY_LOANED_TO + "='' OR " + KEY_LOANED_TO + "=null) ", null);
+					message += "New in v3.6\n\n";
+					message += "* The LibraryThing Key will be verified when added\n\n";
+					message += "* When entering ISBN's manually, each button with vibrate the phone slightly\n\n";
+					message += "* When automatically updating fields click on each checkbox twice will give you the option to override existing fields (rather than populate only blank fields)\n\n";
+					message += "* Fixed a crash when exporting over 2000 books\n\n";
+					message += "* Orphan loan records will now be correctly managed\n\n";
 				}
 			}
 			//TODO: NOTE: END OF UPDATE
@@ -2793,6 +2803,8 @@ public class CatalogueDBAdapter {
 		initialValues.put(KEY_BOOK, Utils.getAsLong(values,KEY_ROWID));
 		initialValues.put(KEY_LOANED_TO, values.getString(KEY_LOANED_TO));
 		long result = mDb.insert(DB_TB_LOAN, null, initialValues);
+		//Special cleanup step - Delete all loans without books
+		this.deleteLoanInvalids();
 		return result;
 	}
 	
@@ -3602,6 +3614,8 @@ public class CatalogueDBAdapter {
 	public boolean deleteLoan(long rowId) {
 		boolean success;
 		success = mDb.delete(DB_TB_LOAN, KEY_BOOK+ "=" + rowId, null) > 0;
+		//Special cleanup step - Delete all loans without books
+		this.deleteLoanInvalids();
 		return success;
 	}
 	

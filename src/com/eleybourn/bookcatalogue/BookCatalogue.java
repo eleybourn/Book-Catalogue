@@ -720,6 +720,14 @@ public class BookCatalogue extends ExpandableListActivity {
 	 * Build the tree view
 	 */
 	private void fillData() {
+		//check and reset mDbHelper
+		try {
+			mDbHelper.fetchAllAuthors(bookshelf);
+		} catch (NullPointerException e) {
+			//reset
+			mDbHelper = new CatalogueDBAdapter(this);
+			mDbHelper.open();
+		}
 		ViewManager vm;
 		/**
 		 * Select between the different ViewManager objects based on the sort parameter

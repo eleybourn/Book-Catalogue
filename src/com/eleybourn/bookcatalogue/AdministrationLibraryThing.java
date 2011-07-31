@@ -77,18 +77,20 @@ public class AdministrationLibraryThing extends Activity {
 				ed.putString(LibraryThingManager.LT_DEVKEY_PREF_NAME, devkey);
 				ed.commit();
 				
-				//TEST Library Thing
-				Bundle tmp = new Bundle(); 
-				LibraryThingManager ltm = new LibraryThingManager(AdministrationLibraryThing.this);
-				String filename = ltm.getCoverImage("0451451783", tmp, LibraryThingManager.ImageSizes.SMALL);
-				File filetmp = new File(filename);
-				long length = filetmp.length();
-				if (length < 100) {
-					Toast.makeText(AdministrationLibraryThing.this, R.string.incorrect_key, Toast.LENGTH_LONG).show();
-				} else {
-					Toast.makeText(AdministrationLibraryThing.this, R.string.correct_key, Toast.LENGTH_LONG).show();
+				if (devkey.length() > 0) {
+					//TEST Library Thing
+					Bundle tmp = new Bundle(); 
+					LibraryThingManager ltm = new LibraryThingManager(AdministrationLibraryThing.this);
+					String filename = ltm.getCoverImage("0451451783", tmp, LibraryThingManager.ImageSizes.SMALL);
+					File filetmp = new File(filename);
+					long length = filetmp.length();
+					if (length < 100) {
+						Toast.makeText(AdministrationLibraryThing.this, R.string.incorrect_key, Toast.LENGTH_LONG).show();
+					} else {
+						Toast.makeText(AdministrationLibraryThing.this, R.string.correct_key, Toast.LENGTH_LONG).show();
+					}
+					filetmp.delete();
 				}
-				filetmp.delete();
 				return;
 			}
 		});

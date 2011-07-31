@@ -2625,19 +2625,23 @@ public class CatalogueDBAdapter {
 	}
 	
 	public long createAnthologyTitle(long book, String author, String title) {
-		ContentValues initialValues = new ContentValues();
-		String[] names = processAuthorName(author);
-		String authorId = getAuthorIdOrCreate(names);
-		long result;
-		int position = fetchAnthologyPositionByBook(book) + 1;
-		
-		initialValues.put(KEY_BOOK, book);
-		initialValues.put(KEY_AUTHOR_ID, authorId);
-		initialValues.put(KEY_TITLE, title);
-		initialValues.put(KEY_POSITION, position);
-		result = mDb.insert(DB_TB_ANTHOLOGY, null, initialValues);
+		if (title.length() > 0) {
+			ContentValues initialValues = new ContentValues();
+			String[] names = processAuthorName(author);
+			String authorId = getAuthorIdOrCreate(names);
+			long result;
+			int position = fetchAnthologyPositionByBook(book) + 1;
 			
-		return result;
+			initialValues.put(KEY_BOOK, book);
+			initialValues.put(KEY_AUTHOR_ID, authorId);
+			initialValues.put(KEY_TITLE, title);
+			initialValues.put(KEY_POSITION, position);
+			result = mDb.insert(DB_TB_ANTHOLOGY, null, initialValues);
+				
+			return result;
+		} else {
+			return -1;
+		}
 	}
 	
 	/**

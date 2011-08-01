@@ -41,7 +41,7 @@ Features include;
   case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
-New in v3.6
+New in v3.6 / v3.6.1
 * The LibraryThing Key will be verified when added
 * When entering ISBN's manually, each button with vibrate the phone slightly
 * When automatically updating fields click on each checkbox twice will give you the option to override existing fields (rather than populate only blank fields)

@@ -106,6 +106,7 @@ public class BookCatalogue extends ExpandableListActivity {
 	private static final int SORT_UNREAD = 4;
 	private static final int SORT_GENRE = 5;
 	private static final int SORT_AUTHOR_GIVEN = 6;
+	private static final int SORT_AUTHOR_ONE = 7; 
 	private ArrayList<Integer> currentGroup = new ArrayList<Integer>();
 	private boolean collapsed = false;
 
@@ -564,7 +565,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			mChildTo = new int[]{R.id.row_img, R.id.row_title, R.id.row_series, R.id.row_read};
 		}
 		public Cursor getChildrenCursor(Cursor groupCursor) {
-			return mDbHelper.fetchAllBooksByAuthor(groupCursor.getInt(mGroupIdColumnIndex), bookshelf, search_query);
+			return mDbHelper.fetchAllBooksByAuthor(groupCursor.getInt(mGroupIdColumnIndex), bookshelf, search_query, false);
 		}
 		@Override
 		public Cursor newCursor() {
@@ -593,16 +594,45 @@ public class BookCatalogue extends ExpandableListActivity {
 			mChildTo = new int[]{R.id.row_img, R.id.row_title, R.id.row_series, R.id.row_read};
 		}
 		public Cursor getChildrenCursor(Cursor groupCursor) {
-			return mDbHelper.fetchAllBooksByAuthor(groupCursor.getInt(mGroupIdColumnIndex), bookshelf, search_query);
+			return mDbHelper.fetchAllBooksByAuthor(groupCursor.getInt(mGroupIdColumnIndex), bookshelf, search_query, false);
 		}
 		@Override
 		public Cursor newCursor() {
 			if (search_query.equals("")) {
 				// Return all books for the given bookshelf
-				mCursor = mDbHelper.fetchAllAuthors(bookshelf, false);
+				mCursor = mDbHelper.fetchAllAuthors(bookshelf, false, false);
 			} else {
 				// Return the search results instead of all books (for the bookshelf)
-				mCursor = mDbHelper.searchAuthors(search_query, bookshelf, false);
+				mCursor = mDbHelper.searchAuthors(search_query, bookshelf, false, false);
+			}
+			mGroupIdColumnIndex = mCursor.getColumnIndex(CatalogueDBAdapter.KEY_ROWID);
+			return mCursor;
+		}
+	}
+	
+	/*
+	 * ViewManager for sorting by Author
+	 */
+	private class AuthorOneViewManager extends ViewManager {
+		AuthorOneViewManager() {
+			mLayout = R.layout.row_authors;
+			mChildLayout = R.layout.row_authors_books;
+			mFrom = new String[]{CatalogueDBAdapter.KEY_AUTHOR_FORMATTED};
+			mTo = new int[]{R.id.row_family};	
+			mChildFrom = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_SERIES_FORMATTED, CatalogueDBAdapter.KEY_READ};
+			mChildTo = new int[]{R.id.row_img, R.id.row_title, R.id.row_series, R.id.row_read};
+		}
+		public Cursor getChildrenCursor(Cursor groupCursor) {
+			return mDbHelper.fetchAllBooksByAuthor(groupCursor.getInt(mGroupIdColumnIndex), bookshelf, search_query, true);
+		}
+		@Override
+		public Cursor newCursor() {
+			if (search_query.equals("")) {
+				// Return all books for the given bookshelf
+				mCursor = mDbHelper.fetchAllAuthors(bookshelf, true, true);
+			} else {
+				// Return the search results instead of all books (for the bookshelf)
+				mCursor = mDbHelper.searchAuthors(search_query, bookshelf, true, true); 
 			}
 			mGroupIdColumnIndex = mCursor.getColumnIndex(CatalogueDBAdapter.KEY_ROWID);
 			return mCursor;
@@ -742,6 +772,9 @@ public class BookCatalogue extends ExpandableListActivity {
 		case SORT_AUTHOR_GIVEN:
 			vm = new AuthorFirstViewManager();
 			break;
+		case SORT_AUTHOR_ONE:
+			vm = new AuthorOneViewManager();
+			break;
 		case SORT_SERIES:
 			vm = new SeriesViewManager();
 			break;
@@ -820,6 +853,15 @@ public class BookCatalogue extends ExpandableListActivity {
 			radio_author.setChecked(false);
 		}
 		
+		RadioButton radio_author_one = new RadioButton(this);
+		radio_author_one.setText(R.string.sortby_author_one);
+		group.addView(radio_author_one);
+		if (sort == SORT_AUTHOR_ONE) {
+			radio_author_one.setChecked(true);
+		} else {
+			radio_author_one.setChecked(false);
+		}
+		
 		RadioButton radio_author_given = new RadioButton(this);
 		radio_author_given.setText(R.string.sortby_author_given);
 		group.addView(radio_author_given);
@@ -892,6 +934,15 @@ public class BookCatalogue extends ExpandableListActivity {
 			@Override
 			public void onClick(View v) {
 				sortByAuthorGiven();
+				sortDialog.dismiss();
+				return;
+			}
+		});
+		
+		radio_author_one.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				sortByAuthorOne();
 				sortDialog.dismiss();
 				return;
 			}
@@ -1330,6 +1381,19 @@ public class BookCatalogue extends ExpandableListActivity {
 	 */
 	private void sortByAuthorGiven() {
 		sort = SORT_AUTHOR_GIVEN;
+		currentGroup = new ArrayList<Integer>();
+		fillData();
+		/* Save the current sort settings */
+		SharedPreferences.Editor ed = mPrefs.edit();
+		ed.putInt(STATE_SORT, sort);
+		ed.commit();
+	}
+	
+	/**
+	 * Change the sort order of the view and refresh the page
+	 */
+	private void sortByAuthorOne() {
+		sort = SORT_AUTHOR_ONE;
 		currentGroup = new ArrayList<Integer>();
 		fillData();
 		/* Save the current sort settings */

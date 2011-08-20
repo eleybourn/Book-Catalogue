@@ -363,7 +363,7 @@ public class CatalogueDBAdapter {
 		
 	private final Context mCtx;
 	//TODO: Update database version
-	public static final int DATABASE_VERSION = 59;
+	public static final int DATABASE_VERSION = 60;
 
 	private TableInfo mBooksInfo = null;
 
@@ -1162,6 +1162,12 @@ public class CatalogueDBAdapter {
 					message += "* Orphan loan records will now be correctly managed\n\n";
 					message += "* The Amazon search will now look for English, French, German, Italian and Japanese versions\n\n";
 				}
+				if (curVersion == 59) {
+					curVersion++;
+					message += "New in v3.6.2\n\n";
+					message += "* Optionally restrict 'Sort By Author' to only the first Author (where there are multiple listed)\n\n";
+					message += "* Minor bug fixes\n\n";
+				}
 			}
 			//TODO: NOTE: END OF UPDATE
 		}
@@ -1517,7 +1523,7 @@ public class CatalogueDBAdapter {
 	 * @return Cursor over all notes
 	 */
 	public Cursor fetchAllAuthors() {
-		return fetchAllAuthors(true);
+		return fetchAllAuthors(true, false);
 	}
 	
 	/**
@@ -1526,7 +1532,7 @@ public class CatalogueDBAdapter {
 	 * @param bookshelf Which bookshelf is it in. Can be "All Books"
 	 * @return Cursor over all notes
 	 */
-	public Cursor fetchAllAuthors(boolean sortByFamily) {
+	public Cursor fetchAllAuthors(boolean sortByFamily, boolean firstOnly) {
 		String order = "";
 		if (sortByFamily == true) {
 			order = " ORDER BY Upper(" + KEY_FAMILY_NAME + ") " + COLLATION + ", Upper(" + KEY_GIVEN_NAMES + ") " + COLLATION;
@@ -1536,8 +1542,11 @@ public class CatalogueDBAdapter {
 		
 		String sql = "SELECT DISTINCT " + getAuthorFields("a", KEY_ROWID) + 
 			" FROM " + DB_TB_AUTHORS + " a, " + DB_TB_BOOK_AUTHOR + " ab " + 
-			" WHERE a." + KEY_ROWID + "=ab." + KEY_AUTHOR_ID + " " + 
-			order;
+			" WHERE a." + KEY_ROWID + "=ab." + KEY_AUTHOR_ID + " ";
+		if (firstOnly == true) {
+			sql += " AND ab." + KEY_AUTHOR_POSITION + "=1 ";
+		}
+		sql += order;
 		Cursor returnable = null;
 		try {
 			returnable = mDb.rawQuery(sql, new String[]{});
@@ -1570,15 +1579,19 @@ public class CatalogueDBAdapter {
 		}
 	}
 
-	private String authorOnBookshelfSql(String bookshelf, String authorIdSpec) {
-		return " Exists(Select NULL From " + DB_TB_BOOK_AUTHOR + " ba"
+	private String authorOnBookshelfSql(String bookshelf, String authorIdSpec, boolean first) {
+		String sql = " Exists(Select NULL From " + DB_TB_BOOK_AUTHOR + " ba"
 		+ "               JOIN " + DB_TB_BOOK_BOOKSHELF_WEAK + " bbs"
-		+ "                  On bbs." + KEY_BOOK + " = ba." + KEY_BOOK
-		+ "               Join " + DB_TB_BOOKSHELF + " bs"
-		+ "                  On bs." + KEY_ROWID + " = bbs." + KEY_BOOKSHELF
-		+ "               Where ba." + KEY_AUTHOR_ID + " = " + authorIdSpec
-		+ "               	And " + makeTextTerm("bs." + KEY_BOOKSHELF, "=", bookshelf)
-		+ "              )";
+		+ "                  ON bbs." + KEY_BOOK + " = ba." + KEY_BOOK
+		+ "               JOIN " + DB_TB_BOOKSHELF + " bs"
+		+ "                  ON bs." + KEY_ROWID + " = bbs." + KEY_BOOKSHELF
+		+ "               WHERE ba." + KEY_AUTHOR_ID + " = " + authorIdSpec
+		+ "               	AND " + makeTextTerm("bs." + KEY_BOOKSHELF, "=", bookshelf);
+		if (first == true) {
+			sql += "AND ba." + KEY_AUTHOR_POSITION + "=1";
+		}
+		sql += "              )";
+		return sql;
 		
 	}
 
@@ -1590,7 +1603,7 @@ public class CatalogueDBAdapter {
 	 * @return Cursor over all notes
 	 */
 	public Cursor fetchAllAuthors(String bookshelf) {
-		return fetchAllAuthors(bookshelf, true);
+		return fetchAllAuthors(bookshelf, true, false);
 	}
 
 	/**
@@ -1600,9 +1613,9 @@ public class CatalogueDBAdapter {
 	 * 
 	 * @return Cursor over all notes
 	 */
-	public Cursor fetchAllAuthors(String bookshelf, boolean sortByFamily) {
+	public Cursor fetchAllAuthors(String bookshelf, boolean sortByFamily, boolean firstOnly) {
 		if (bookshelf.equals("")) {
-			return fetchAllAuthors(sortByFamily);
+			return fetchAllAuthors(sortByFamily, firstOnly);
 		}
 		String order = "";
 		if (sortByFamily == true) {
@@ -1613,7 +1626,7 @@ public class CatalogueDBAdapter {
 		
 		String sql = "SELECT " + getAuthorFields("a", KEY_ROWID)
 		+ " FROM " + DB_TB_AUTHORS + " a "
-		+ " WHERE " + authorOnBookshelfSql(bookshelf, "a." + KEY_ROWID)
+		+ " WHERE " + authorOnBookshelfSql(bookshelf, "a." + KEY_ROWID, firstOnly)
 		+ order;
 		
 		Cursor returnable = null;
@@ -1848,8 +1861,11 @@ public class CatalogueDBAdapter {
 	 * @param bookshelf Which bookshelf is it in. Can be "All Books"
 	 * @return Cursor over all Books
 	 */
-	public Cursor fetchAllBooksByAuthor(int author, String bookshelf, String search_term) {
+	public Cursor fetchAllBooksByAuthor(int author, String bookshelf, String search_term, boolean firstOnly) {
 		String where = " a._id=" + author;
+		if (firstOnly == true) {
+			where += " AND ba." + KEY_AUTHOR_POSITION + "=1 ";
+		}
 		String order = "s." + KEY_SERIES_NAME + ", substr('0000000000' || s." + KEY_SERIES_NUM + ", -10, 10), lower(b." + KEY_TITLE + ") ASC";
 		return fetchAllBooks(order, bookshelf, where, "", search_term, "", "");
 	}
@@ -2162,7 +2178,7 @@ public class CatalogueDBAdapter {
 		if (bookshelf.equals("")) {
 			// do nothing
 		} else {
-			where += authorOnBookshelfSql(bookshelf, "a." + KEY_ROWID);
+			where += authorOnBookshelfSql(bookshelf, "a." + KEY_ROWID, false);
 		}
 		if (where != null && where.length() > 0)
 			where = " and " + where;
@@ -2193,7 +2209,7 @@ public class CatalogueDBAdapter {
 		if (bookshelf.equals("")) {
 			// do nothing
 		} else {
-			where += authorOnBookshelfSql(bookshelf, "a." + KEY_ROWID);
+			where += authorOnBookshelfSql(bookshelf, "a." + KEY_ROWID, false);
 		}
 		if (where != null && where.length() > 0)
 			where = " and " + where;
@@ -2468,7 +2484,7 @@ public class CatalogueDBAdapter {
 	 * @return Cursor over all authors
 	 */
 	public Cursor searchAuthors(String searchText, String bookshelf) {
-		return searchAuthors(searchText, bookshelf, true);
+		return searchAuthors(searchText, bookshelf, true, false);
 	}
 	
 	/**
@@ -2478,16 +2494,19 @@ public class CatalogueDBAdapter {
 	 * @param bookshelf The bookshelf to search within
 	 * @return Cursor over all authors
 	 */
-	public Cursor searchAuthors(String searchText, String bookshelf, boolean sortByFamily) {
+	public Cursor searchAuthors(String searchText, String bookshelf, boolean sortByFamily, boolean firstOnly) {
 		String where = "";
 		searchText = encodeString(searchText);
 		if (bookshelf.equals("")) {
 			// do nothing
 		} else {
-			where += this.authorOnBookshelfSql(bookshelf, "a." + KEY_ROWID);
+			where += " AND " + this.authorOnBookshelfSql(bookshelf, "a." + KEY_ROWID, false);
 		}
-		if (where != null && where.trim().length() > 0)
-			where = " and " + where;
+		if (firstOnly == true) {
+			where += " AND ba." + KEY_AUTHOR_POSITION + "=1 ";
+		}
+		//if (where != null && where.trim().length() > 0)
+		//	where = " and " + where;
 		
 		String order = "";
 		if (sortByFamily == true) {

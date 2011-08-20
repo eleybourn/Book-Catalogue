@@ -265,4 +265,5 @@
 <string name="cannot_edit_system">You cannot edit the system values</string>
 <string name="incorrect_key">Your LibraryThing Developer Key was incorrect, or we could not connect to the network to verify.</string>
 <string name="correct_key">Your LibraryThing Developer Key is valid.</string>
+<string name="sortby_author_one">Sort by Author (First author only)</string>
 </resources>

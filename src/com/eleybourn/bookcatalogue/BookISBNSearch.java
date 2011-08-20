@@ -244,8 +244,8 @@ public class BookISBNSearch extends ActivityWithTasks {
 		mIsbnText.setSelection(start+1, start+1);
 		// Get instance of Vibrator from current Context
 		Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-		// Vibrate for 300 milliseconds
-		v.vibrate(300);
+		// Vibrate for 10 milliseconds
+		v.vibrate(10);
 	}
 	
 	/* - MAJOR DATABASE ISSUES FOR THIS TO WORK!!!

@@ -14,7 +14,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.eleybourn.bookcatalogue.BookCatalogue;
 import com.eleybourn.bookcatalogue.Utils;
 import com.jayway.android.robotium.solo.Solo;
 

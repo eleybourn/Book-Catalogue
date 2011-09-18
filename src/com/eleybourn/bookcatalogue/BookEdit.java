@@ -26,7 +26,9 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TabHost;
@@ -47,6 +49,7 @@ public class BookEdit extends TabActivity {
 	public static final int TAB_EDIT_FRIENDS = 2;
 	public static final int DELETE_ID = 1;
 	public static final int DUPLICATE_ID = 3; //2 is taken by populate in anthology
+	public static final int TWEET_ID = 4; //2 is taken by populate in anthology
 	public int currentTab = 0;
 	private Long mRowId;
 	private CatalogueDBAdapter mDbHelper = new CatalogueDBAdapter(this);
@@ -171,6 +174,8 @@ public class BookEdit extends TabActivity {
 		delete.setIcon(android.R.drawable.ic_menu_delete);
 		MenuItem duplicate = menu.add(0, DUPLICATE_ID, 0, R.string.menu_duplicate);
 		duplicate.setIcon(android.R.drawable.ic_menu_add);
+		MenuItem tweet = menu.add(0, TWEET_ID, 0, R.string.menu_share_this);
+		tweet.setIcon(R.drawable.ic_menu_twitter);
 		
 		return super.onPrepareOptionsMenu(menu);
 	}
@@ -181,8 +186,37 @@ public class BookEdit extends TabActivity {
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		Cursor thisBook = null;
 		try {
 			switch(item.getItemId()) {
+			case TWEET_ID:
+				thisBook = mDbHelper.fetchBookById(mRowId);
+				thisBook.moveToFirst();
+				String title = thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_TITLE));
+				double rating = thisBook.getDouble(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_RATING));
+				Log.e("BC", rating  + " ");
+				String ratingString = "";
+				String author = thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED_GIVEN_FIRST));
+				String series = thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_SERIES_FORMATTED));
+				if (series.length() > 0) {
+					series = " (" + series.replace("#", "%23") + ")";
+				}
+				//remove trailing 0's
+				if (rating > 0) {
+					int ratingTmp = (int)rating;
+					double decimal = rating - ratingTmp;
+					Log.e("BC", rating + " " + ratingTmp + " " + decimal);
+					if (decimal > 0) {
+						ratingString = rating + "/5";
+					} else {
+						ratingString = ratingTmp + "/5";
+					}
+				}
+				
+				String url = "https://twitter.com/intent/tweet?related=eleybourn&text=%23reading " + title + " by " + author + series + " " + ratingString;
+				Intent loadweb = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+				startActivity(loadweb); 
+				return true;
 			case DELETE_ID:
 				int res = StandardDialogs.deleteBookAlert(this, mDbHelper, mRowId, new Runnable() {
 					@Override
@@ -199,7 +233,7 @@ public class BookEdit extends TabActivity {
 			case DUPLICATE_ID:
 				Intent i = new Intent(this, BookEdit.class);
 				Bundle book = new Bundle();
-				Cursor thisBook = mDbHelper.fetchBookById(mRowId);
+				thisBook = mDbHelper.fetchBookById(mRowId);
 				try {
 					thisBook.moveToFirst();
 					book.putString(CatalogueDBAdapter.KEY_TITLE, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_TITLE)));

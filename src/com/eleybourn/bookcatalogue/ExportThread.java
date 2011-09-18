@@ -108,7 +108,7 @@ public class ExportThread extends ManagedTask {
 					try {
 						String[] date = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DATE_PUBLISHED)).split("-");
 						int yyyy = Integer.parseInt(date[0]);
-						int mm = Integer.parseInt(date[1])+1;
+						int mm = Integer.parseInt(date[1]);
 						int dd = Integer.parseInt(date[2]);
 						dateString = yyyy + "-" + mm + "-" + dd;
 					} catch (Exception e) {
@@ -118,7 +118,7 @@ public class ExportThread extends ManagedTask {
 					try {
 						String[] date = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_START)).split("-");
 						int yyyy = Integer.parseInt(date[0]);
-						int mm = Integer.parseInt(date[1])+1;
+						int mm = Integer.parseInt(date[1]);
 						int dd = Integer.parseInt(date[2]);
 						dateReadStartString = yyyy + "-" + mm + "-" + dd;
 					} catch (Exception e) {
@@ -128,7 +128,7 @@ public class ExportThread extends ManagedTask {
 					try {
 						String[] date = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_END)).split("-");
 						int yyyy = Integer.parseInt(date[0]);
-						int mm = Integer.parseInt(date[1])+1;
+						int mm = Integer.parseInt(date[1]);
 						int dd = Integer.parseInt(date[2]);
 						dateReadEndString = yyyy + "-" + mm + "-" + dd;
 					} catch (Exception e) {

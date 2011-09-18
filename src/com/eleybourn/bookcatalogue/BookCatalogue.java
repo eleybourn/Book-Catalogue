@@ -49,6 +49,7 @@ import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.SimpleCursorTreeAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -106,7 +107,8 @@ public class BookCatalogue extends ExpandableListActivity {
 	private static final int SORT_UNREAD = 4;
 	private static final int SORT_GENRE = 5;
 	private static final int SORT_AUTHOR_GIVEN = 6;
-	private static final int SORT_AUTHOR_ONE = 7; 
+	private static final int SORT_AUTHOR_ONE = 7;
+	private static final int SORT_PUBLISHED = 8;
 	private ArrayList<Integer> currentGroup = new ArrayList<Integer>();
 	private boolean collapsed = false;
 
@@ -746,6 +748,39 @@ public class BookCatalogue extends ExpandableListActivity {
 		}
 	}
 	
+	/*
+	 * ViewManager for sorting by Genre
+	 */
+	private class PublishedViewManager extends ViewManager {
+		PublishedViewManager() {
+			mLayout = R.layout.row_authors;
+			mChildLayout = R.layout.row_books;
+			mFrom = new String[]{CatalogueDBAdapter.KEY_ROWID};
+			mTo = new int[]{R.id.row_family};	
+			mChildFrom = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, CatalogueDBAdapter.KEY_TITLE, CatalogueDBAdapter.KEY_PUBLISHER, CatalogueDBAdapter.KEY_SERIES_FORMATTED, CatalogueDBAdapter.KEY_READ};
+			mChildTo = new int[]{R.id.row_img, R.id.row_author, R.id.row_title, R.id.row_publisher, R.id.row_series, R.id.row_read};
+		}
+		public Cursor getChildrenCursor(Cursor groupCursor) {
+			if (search_query.equals("")) {
+				return mDbHelper.fetchAllBooksByDatePublished(groupCursor.getString(mGroupIdColumnIndex), bookshelf, "");
+			} else {
+				return mDbHelper.searchBooksByDatePublished(search_query, groupCursor.getString(mGroupIdColumnIndex), bookshelf);
+			}
+		}
+		@Override
+		public Cursor newCursor() {
+			if (search_query.equals("")) {
+				// Return all books (for the bookshelf)
+				mCursor = mDbHelper.fetchAllDatePublished(bookshelf);
+			} else {
+				// Return the search results instead of all books (for the bookshelf)
+				mCursor = mDbHelper.searchDatePublished(search_query, bookshelf);
+			}
+			mGroupIdColumnIndex = mCursor.getColumnIndex(CatalogueDBAdapter.KEY_ROWID);
+			return mCursor;
+		}
+	}
+	
 	/**
 	 * Build the tree view
 	 */
@@ -786,6 +821,9 @@ public class BookCatalogue extends ExpandableListActivity {
 			break;
 		case SORT_GENRE:
 			vm = new GenreViewManager();
+			break;
+		case SORT_PUBLISHED:
+			vm = new PublishedViewManager();
 			break;
 		default:
 			throw new IllegalArgumentException();
@@ -833,8 +871,12 @@ public class BookCatalogue extends ExpandableListActivity {
 		gotoCurrentGroup();
 		/* Add number to bookshelf */
 		TextView mBookshelfNumView = (TextView) findViewById(R.id.bookshelf_num);
-		int numBooks = mDbHelper.countBooks(bookshelf);
-		mBookshelfNumView.setText("(" + numBooks + ")");
+		try {
+			int numBooks = mDbHelper.countBooks(bookshelf);
+			mBookshelfNumView.setText("(" + numBooks + ")");
+		} catch (IllegalStateException e) {
+			Logger.logError(e);
+		}
 	}
 
 	/**
@@ -842,7 +884,13 @@ public class BookCatalogue extends ExpandableListActivity {
 	 * complete having loaded the appropriate view. 
 	 */
 	private void sortOptions() {
+		ScrollView sv = new ScrollView(this);
 		RadioGroup group = new RadioGroup(this);
+		sv.addView(group);
+		final AlertDialog sortDialog = new AlertDialog.Builder(this).setView(sv).create();
+		sortDialog.setTitle(R.string.menu_sort_by);
+		sortDialog.setIcon(android.R.drawable.ic_menu_info_details);
+		sortDialog.show();
 		
 		RadioButton radio_author = new RadioButton(this);
 		radio_author.setText(R.string.sortby_author);
@@ -852,6 +900,14 @@ public class BookCatalogue extends ExpandableListActivity {
 		} else {
 			radio_author.setChecked(false);
 		}
+		radio_author.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				saveSortBy(SORT_AUTHOR);
+				sortDialog.dismiss();
+				return;
+			}
+		});
 		
 		RadioButton radio_author_one = new RadioButton(this);
 		radio_author_one.setText(R.string.sortby_author_one);
@@ -861,6 +917,14 @@ public class BookCatalogue extends ExpandableListActivity {
 		} else {
 			radio_author_one.setChecked(false);
 		}
+		radio_author_one.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				saveSortBy(SORT_AUTHOR_ONE);
+				sortDialog.dismiss();
+				return;
+			}
+		});
 		
 		RadioButton radio_author_given = new RadioButton(this);
 		radio_author_given.setText(R.string.sortby_author_given);
@@ -870,6 +934,14 @@ public class BookCatalogue extends ExpandableListActivity {
 		} else {
 			radio_author_given.setChecked(false);
 		}
+		radio_author_given.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				saveSortBy(SORT_AUTHOR_GIVEN);
+				sortDialog.dismiss();
+				return;
+			}
+		});
 		
 		RadioButton radio_title = new RadioButton(this);
 		radio_title.setText(R.string.sortby_title);
@@ -879,6 +951,14 @@ public class BookCatalogue extends ExpandableListActivity {
 		} else {
 			radio_title.setChecked(false);
 		}
+		radio_title.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				saveSortBy(SORT_TITLE);
+				sortDialog.dismiss();
+				return;
+			}
+		});
 		
 		RadioButton radio_series = new RadioButton(this);
 		radio_series.setText(R.string.sortby_series);
@@ -888,6 +968,14 @@ public class BookCatalogue extends ExpandableListActivity {
 		} else {
 			radio_series.setChecked(false);
 		}
+		radio_series.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				saveSortBy(SORT_SERIES);
+				sortDialog.dismiss();
+				return;
+			}
+		});
 		
 		RadioButton radio_genre = new RadioButton(this);
 		radio_genre.setText(R.string.sortby_genre);
@@ -897,6 +985,15 @@ public class BookCatalogue extends ExpandableListActivity {
 		} else {
 			radio_genre.setChecked(false);
 		}
+		radio_genre.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				saveSortBy(SORT_GENRE);
+				sortDialog.dismiss();
+				return;
+			}
+		});
+
 		
 		RadioButton radio_loan = new RadioButton(this);
 		radio_loan.setText(R.string.sortby_loan);
@@ -906,6 +1003,14 @@ public class BookCatalogue extends ExpandableListActivity {
 		} else {
 			radio_loan.setChecked(false);
 		}
+		radio_loan.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				saveSortBy(SORT_LOAN);
+				sortDialog.dismiss();
+				return;
+			}
+		});
 		
 		RadioButton radio_unread = new RadioButton(this);
 		radio_unread.setText(R.string.sortby_unread);
@@ -915,79 +1020,27 @@ public class BookCatalogue extends ExpandableListActivity {
 		} else {
 			radio_unread.setChecked(false);
 		}
-		
-		final AlertDialog sortDialog = new AlertDialog.Builder(this).setView(group).create();
-		sortDialog.setTitle(R.string.menu_sort_by);
-		sortDialog.setIcon(android.R.drawable.ic_menu_info_details);
-		sortDialog.show();
-		
-		radio_author.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				sortByAuthor();
-				sortDialog.dismiss();
-				return;
-			}
-		});
-		
-		radio_author_given.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				sortByAuthorGiven();
-				sortDialog.dismiss();
-				return;
-			}
-		});
-		
-		radio_author_one.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				sortByAuthorOne();
-				sortDialog.dismiss();
-				return;
-			}
-		});
-		
-		radio_title.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				sortByTitle();
-				sortDialog.dismiss();
-				return;
-			}
-		});
-		
-		radio_series.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				sortBySeries();
-				sortDialog.dismiss();
-				return;
-			}
-		});
-		
-		radio_genre.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				sortByGenre();
-				sortDialog.dismiss();
-				return;
-			}
-		});
-		
-		radio_loan.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				sortByLoan();
-				sortDialog.dismiss();
-				return;
-			}
-		});
-		
 		radio_unread.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				sortByUnread();
+				saveSortBy(SORT_UNREAD);
+				sortDialog.dismiss();
+				return;
+			}
+		});
+		
+		RadioButton radio_published = new RadioButton(this);
+		radio_published.setText(R.string.sortby_published);
+		group.addView(radio_published);
+		if (sort == SORT_PUBLISHED) {
+			radio_published.setChecked(true);
+		} else {
+			radio_published.setChecked(false);
+		}
+		radio_published.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				saveSortBy(SORT_PUBLISHED);
 				sortDialog.dismiss();
 				return;
 			}
@@ -1353,105 +1406,15 @@ public class BookCatalogue extends ExpandableListActivity {
 	/**
 	 * Change the sort order of the view and refresh the page
 	 */
-	private void sortByTitle() {
-		sort = SORT_TITLE;
+	private void saveSortBy(int sortType) {
+		sort = sortType;
 		currentGroup = new ArrayList<Integer>();
 		fillData();
 		/* Save the current sort settings */
 		SharedPreferences.Editor ed = mPrefs.edit();
-		ed.putInt(STATE_SORT, sort);
+		ed.putInt(STATE_SORT, sortType);
 		ed.commit();
-	}
-	
-	/**
-	 * Change the sort order of the view and refresh the page
-	 */
-	private void sortByAuthor() {
-		sort = SORT_AUTHOR;
-		currentGroup = new ArrayList<Integer>();
-		fillData();
-		/* Save the current sort settings */
-		SharedPreferences.Editor ed = mPrefs.edit();
-		ed.putInt(STATE_SORT, sort);
-		ed.commit();
-	}
-	
-	/**
-	 * Change the sort order of the view and refresh the page
-	 */
-	private void sortByAuthorGiven() {
-		sort = SORT_AUTHOR_GIVEN;
-		currentGroup = new ArrayList<Integer>();
-		fillData();
-		/* Save the current sort settings */
-		SharedPreferences.Editor ed = mPrefs.edit();
-		ed.putInt(STATE_SORT, sort);
-		ed.commit();
-	}
-	
-	/**
-	 * Change the sort order of the view and refresh the page
-	 */
-	private void sortByAuthorOne() {
-		sort = SORT_AUTHOR_ONE;
-		currentGroup = new ArrayList<Integer>();
-		fillData();
-		/* Save the current sort settings */
-		SharedPreferences.Editor ed = mPrefs.edit();
-		ed.putInt(STATE_SORT, sort);
-		ed.commit();
-	}
-	
-	/**
-	 * Change the sort order of the view and refresh the page
-	 */
-	private void sortBySeries() {
-		sort = SORT_SERIES;
-		currentGroup = new ArrayList<Integer>();
-		fillData();
-		/* Save the current sort settings */
-		SharedPreferences.Editor ed = mPrefs.edit();
-		ed.putInt(STATE_SORT, sort);
-		ed.commit();
-	}
-	
-	/**
-	 * Change the sort order of the view and refresh the page
-	 */
-	private void sortByGenre() {
-		sort = SORT_GENRE;
-		currentGroup = new ArrayList<Integer>();
-		fillData();
-		/* Save the current sort settings */
-		SharedPreferences.Editor ed = mPrefs.edit();
-		ed.putInt(STATE_SORT, sort);
-		ed.commit();
-	}
-	
-	/**
-	 * Change the sort order of the view and refresh the page
-	 */
-	private void sortByLoan() {
-		sort = SORT_LOAN;
-		currentGroup = new ArrayList<Integer>();
-		fillData();
-		/* Save the current sort settings */
-		SharedPreferences.Editor ed = mPrefs.edit();
-		ed.putInt(STATE_SORT, sort);
-		ed.commit();
-	}
-	
-	/**
-	 * Change the sort order of the view and refresh the page
-	 */
-	private void sortByUnread() {
-		sort = SORT_UNREAD;
-		currentGroup = new ArrayList<Integer>();
-		fillData();
-		/* Save the current sort settings */
-		SharedPreferences.Editor ed = mPrefs.edit();
-		ed.putInt(STATE_SORT, sort);
-		ed.commit();
+		
 	}
 	
 	/**

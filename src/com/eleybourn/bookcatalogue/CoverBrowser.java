@@ -250,7 +250,7 @@ public class CoverBrowser {
 			// Update the ImageSwitcher
 			File file = new File(fileSpec);
 			TextView msgVw = (TextView)mDialog.findViewById(R.id.switcherStatus);
-			if (file.exists() && file.length() > 0) {
+			if (file.exists() && file.length() > 100) {
 				Drawable d = new BitmapDrawable(Utils.fetchFileIntoImageView(file, null, mPreviewSize*4, mPreviewSize*4, true));
 				switcher.setImageDrawable(d);
 				switcher.setTag(file.getAbsolutePath());    			

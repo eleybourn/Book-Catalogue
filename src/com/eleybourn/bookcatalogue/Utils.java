@@ -49,6 +49,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -453,23 +455,45 @@ public class Utils {
 	 * @throws UnknownHostException 
 	 */
 	static public InputStream getInputStream(URL url) throws UnknownHostException {
-		int retries = 3;
-		while (true) {
-			try {
-				java.net.URLConnection conn = url.openConnection();
-				conn.setConnectTimeout(30000);
-				return conn.getInputStream();
-			} catch (java.net.UnknownHostException e) {
-				Logger.logError(e);
-				retries--;
-				if (retries-- == 0)
-					throw e;
-				try { Thread.sleep(500); } catch(Exception junk) {};
-			} catch (Exception e) {
-				Logger.logError(e);
-				throw new RuntimeException(e);
-			}			
+		
+		synchronized (url) {
+			
+			int retries = 3;
+			while (true) {
+				try {
+					java.net.URLConnection conn = url.openConnection();
+					conn.setConnectTimeout(30000);
+					return conn.getInputStream();
+				} catch (java.net.UnknownHostException e) {
+					Logger.logError(e);
+					retries--;
+					if (retries-- == 0)
+						throw e;
+					try { Thread.sleep(500); } catch(Exception junk) {};
+				} catch (Exception e) {
+					Logger.logError(e);
+					throw new RuntimeException(e);
+				}			
+			}
 		}
+	}
+	
+	/*
+	 *@return boolean return true if the application can access the internet
+	 */
+	public static boolean isNetworkAvailable(Context context) {
+		ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		if (connectivity != null) {
+			NetworkInfo[] info = connectivity.getAllNetworkInfo();
+			if (info != null) {
+				for (int i = 0; i < info.length; i++) {
+					if (info[i].getState() == NetworkInfo.State.CONNECTED) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	/**

@@ -622,6 +622,7 @@ public class LibraryThingManager {
 	 */
 	public String getCoverImage(String isbn, Bundle bookData, ImageSizes size) {
 		String url = getCoverImageUrl(isbn, size);
+		//Log.e("BC", url + " " + isbn + " " + size.toString());
 		
 		// Make sure we follow LibraryThing ToS (no more than 1 request/second).
 		waitUntilRequestAllowed();

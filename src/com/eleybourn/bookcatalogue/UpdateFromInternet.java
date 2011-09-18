@@ -27,7 +27,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -50,6 +49,8 @@ public class UpdateFromInternet extends ActivityWithTasks {
 	 * @author Grunthos
 	 */
 	static public class FieldUsages extends LinkedHashMap<String,FieldUsage>  {
+		private static final long serialVersionUID = 1L;
+
 		static public enum Usages { COPY_IF_BLANK, ADD_EXTRA, OVERWRITE };
 
 		public FieldUsage put(FieldUsage usage) {
@@ -139,7 +140,6 @@ public class UpdateFromInternet extends ActivityWithTasks {
 				@Override
 				public void onClick(View v) {
 					CheckBox thiscb = (CheckBox) v;
-					Log.e("BC", " " + thiscb.isChecked());
 					if (thiscb.isChecked() == false && thiscb.getText().toString().contains(getResources().getString(R.string.usage_copy_if_blank))) {
 						FieldUsage usage = (FieldUsage) thiscb.getTag();
 						String extra = getResources().getString(R.string.usage_overwrite);

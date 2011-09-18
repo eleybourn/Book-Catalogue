@@ -92,6 +92,13 @@ public class BookISBNSearch extends ActivityWithTasks {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		//do we have a network connection?
+		boolean network_available = Utils.isNetworkAvailable(this);
+		if (network_available == false) {
+			Toast.makeText(this, R.string.no_connection, Toast.LENGTH_LONG).show();
+			finish();
+		}
+
 
 		Utils.showLtAlertIfNecessary(this, false, "search");
 
@@ -213,7 +220,15 @@ public class BookISBNSearch extends ActivityWithTasks {
 				AlertDialog alertDialog = new AlertDialog.Builder(pthis).setMessage(R.string.install_scan).create();
 				alertDialog.setTitle(R.string.install_scan_title);
 				alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-				alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+				alertDialog.setButton("Google Goggles", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						//TODO
+						Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.google.android.apps.unveil")); 
+						startActivity(marketIntent);
+						finish();
+					}
+				}); 
+				alertDialog.setButton3("ZXing", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.google.zxing.client.android")); 
 						startActivity(marketIntent);
@@ -244,8 +259,8 @@ public class BookISBNSearch extends ActivityWithTasks {
 		mIsbnText.setSelection(start+1, start+1);
 		// Get instance of Vibrator from current Context
 		Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-		// Vibrate for 10 milliseconds
-		v.vibrate(10);
+		// Vibrate for 50 milliseconds
+		v.vibrate(50);
 	}
 	
 	/* - MAJOR DATABASE ISSUES FOR THIS TO WORK!!!
@@ -354,6 +369,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 		} catch (Exception e) {
 			// do nothing - this is the expected behaviour 
 		}
+		
 		/* Get the book */
 		try {
 			// Start the lookup in background.

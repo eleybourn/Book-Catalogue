@@ -41,6 +41,13 @@ Features include;
   case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+New in v3.7
+Hint: The export function will create an export.csv file on the sdcard
+* You can tweet about a book directly from the book edit screen.
+* Sort by Date Published added
+* Will check for network connection prior to searching for details (new permission required)
+* Fixed crash when opening search results
+
 New in v3.6.2
 * Optionally restrict "Sort By Author" to only the first Author (where there are multiple listed)
 * Minor bug fixes

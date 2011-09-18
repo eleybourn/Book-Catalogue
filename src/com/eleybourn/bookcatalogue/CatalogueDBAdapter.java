@@ -40,6 +40,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.BaseColumns;
+import android.util.Log;
 import android.widget.ImageView;
 
 /**
@@ -129,6 +130,7 @@ public class CatalogueDBAdapter {
 	
 	public static final String META_EMPTY_SERIES = "<Empty Series>";
 	public static final String META_EMPTY_GENRE = "<Empty Genre>";
+	public static final String META_EMPTY_DATE_PUBLISHED = "<No Valid Published Date>";
 	
 	/* Database creation sql statement */
 	private static final String DATABASE_CREATE_AUTHORS =
@@ -1786,12 +1788,8 @@ public class CatalogueDBAdapter {
 
 		// Get the basic query; we will use it as a sub-query
 		String sql = "SELECT DISTINCT " + getBookFields("b", KEY_ROWID) + baseSql;
-		String fullSql = "Select b.*, " + 
+		String fullSql = "Select b.*, " + getAuthorFields("a", "") + ", " +  
 		"a." + KEY_AUTHOR_ID + ", " +
-		"a." + KEY_FAMILY_NAME + ", " +
-		"a." + KEY_GIVEN_NAMES + ", " +
-		" Case When _num_authors < 2 Then a." + KEY_AUTHOR_FORMATTED + 
-		" Else " + KEY_AUTHOR_FORMATTED + "|| ' et. al.' End as " + KEY_AUTHOR_FORMATTED + ", " +
 		"Coalesce(s." + KEY_SERIES_ID + ", 0) as " + KEY_SERIES_ID + ", " +
 		"Coalesce(s." + KEY_SERIES_NAME + ", '') as " + KEY_SERIES_NAME + ", " +
 		"Coalesce(s." + KEY_SERIES_NUM + ", '') as " + KEY_SERIES_NUM + ", " +
@@ -1878,6 +1876,27 @@ public class CatalogueDBAdapter {
 	 */
 	public Cursor fetchAllBooksByChar(String first_char, String bookshelf, String search_term) {
 		String where = " " + makeTextTerm("substr(b." + KEY_TITLE + ",1,1)", "=", first_char);
+		return fetchAllBooks("", bookshelf, "", where, search_term, "", "");
+	}
+	
+	/**
+	 * Return a Cursor over the list of all books in the database by genre
+	 * 
+	 * @param author The genre name to search by
+	 * @param bookshelf The bookshelf to search within. Can be the string "All Books"
+	 * @return Cursor over all books
+	 */
+	public Cursor fetchAllBooksByDatePublished(String date, String bookshelf, String search_term) {
+		String where = "";
+		if (date == null) {
+			date = META_EMPTY_DATE_PUBLISHED;
+		}
+		Log.e("BC", "Date: " + date);
+		if (date.equals(META_EMPTY_DATE_PUBLISHED)) {
+			where = "(b." + KEY_DATE_PUBLISHED + "='' OR b." + KEY_DATE_PUBLISHED + " IS NULL or cast(strftime('%Y', b." + KEY_DATE_PUBLISHED + ") as int)<0 or cast(strftime('%Y', b." + KEY_DATE_PUBLISHED + ") as int) is null)";
+		} else {
+			where = makeTextTerm("strftime('%Y', b." + KEY_DATE_PUBLISHED + ")", "=", date);
+		}
 		return fetchAllBooks("", bookshelf, "", where, search_term, "", "");
 	}
 	
@@ -1985,6 +2004,24 @@ public class CatalogueDBAdapter {
 			" FROM " + DB_TB_BOOKSHELF + " bs, " + DB_TB_BOOK_BOOKSHELF_WEAK + " w " +
 			" WHERE w." + KEY_BOOKSHELF + "=bs." + KEY_ROWID + " AND w." + KEY_BOOK + "=" + rowId + " " + 
 			" ORDER BY Upper(bs." + KEY_BOOKSHELF + ") " + COLLATION;
+		return mDb.rawQuery(sql, new String[]{});
+	}
+	
+	/**
+	 * This will return a list of all date published years within the given bookshelf
+	 * 
+	 * @param bookshelf The bookshelf to search within. Can be the string "All Books"
+	 * @return Cursor over all series
+	 */
+	public Cursor fetchAllDatePublished(String bookshelf) {
+		// Null 'order' to suppress ordering
+		String baseSql = fetchAllBooksSql(null, bookshelf, "", "", "", "", "");
+
+		String sql = "SELECT DISTINCT "
+				+ " Case When (b." + KEY_DATE_PUBLISHED + " = '' or b." + KEY_DATE_PUBLISHED + " is NULL or cast(strftime('%Y', b." + KEY_DATE_PUBLISHED + ") as int)<0 or cast(strftime('%Y', b." + KEY_DATE_PUBLISHED + ") as int) is null) Then '" + META_EMPTY_DATE_PUBLISHED + "'"
+				+ " Else strftime('%Y', b." + KEY_DATE_PUBLISHED + ") End as " + KEY_ROWID + baseSql +
+		" ORDER BY strftime('%Y', b." + KEY_DATE_PUBLISHED + ") " + COLLATION;
+		Log.e("BC", sql);
 		return mDb.rawQuery(sql, new String[]{});
 	}
 	
@@ -2583,7 +2620,11 @@ public class CatalogueDBAdapter {
 		String where = " " + makeTextTerm("substr(b." + KEY_TITLE + ",1,1)", "=", first_char);
 		return fetchAllBooks("", bookshelf, "", where, searchText, "", "");
 	}
-
+	
+	public Cursor searchBooksByDatePublished(String searchText, String date, String bookshelf) {
+		return fetchAllBooks("", bookshelf, "", " strftime('%Y', b." + KEY_DATE_PUBLISHED + ")='" + date + "' " + COLLATION + " ", searchText, "", "");
+	}
+	
 	public Cursor searchBooksByGenre(String searchText, String genre, String bookshelf) {
 		return fetchAllBooks("", bookshelf, "", " " + KEY_GENRE + "='" + genre + "' " + COLLATION + " ", searchText, "", "");
 	}
@@ -2600,6 +2641,20 @@ public class CatalogueDBAdapter {
 	public Cursor searchBooksChars(String searchText, String bookshelf) {
 		String baseSql = this.fetchAllBooksSql("1", bookshelf, "", "", searchText, "", "");
 		String sql = "SELECT DISTINCT upper(substr(b." + KEY_TITLE + ", 1, 1)) " + COLLATION + " AS " + KEY_ROWID + " " + baseSql;
+		return mDb.rawQuery(sql, new String[]{});
+	}
+	
+	/**
+	 * This will return a list of all date published years within the given bookshelf where the
+	 * series, title or author meet the search string
+	 * 
+	 * @param query The query string to search for 
+	 * @param bookshelf The bookshelf to search within. Can be the string "All Books"
+	 * @return Cursor over all notes
+	 */
+	public Cursor searchDatePublished(String searchText, String bookshelf) {
+		String baseSql = this.fetchAllBooksSql("1", bookshelf, "", "", searchText, "", "");
+		String sql = "SELECT DISTINCT Case When " + KEY_DATE_PUBLISHED + " = '' Then '" + META_EMPTY_DATE_PUBLISHED + "' else strftime('%Y', b." + KEY_DATE_PUBLISHED + ") End " + COLLATION + " AS " + KEY_ROWID + " " + baseSql;
 		return mDb.rawQuery(sql, new String[]{});
 	}
 	

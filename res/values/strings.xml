@@ -57,7 +57,7 @@
 <string name="administration_label">Administration Functions</string>
 <string name="administration_title">Book Catalogue: Administration</string>
 <string name="menu_administration">Admin</string>
-<string name="install_scan">To scan your books via the ISBN barcode, you must install the zxing barcode scanner application. Press OK to install, or Cancel to skip.</string>
+<string name="install_scan">To scan your books via the ISBN barcode, you must install Google Googles or zxing barcode scanner application.</string>
 <string name="install_scan_title">Install Barcode Scanner</string>
 <string name="version_number">Version Number</string>
 <string name="donate">If you would like to support the development of this application, please donate using a my Amazon Wishlist or the paypal button below. Being in Australia means I cannot publish a &quot;paid&quot; version. :-) </string>
@@ -266,4 +266,7 @@
 <string name="incorrect_key">Your LibraryThing Developer Key was incorrect, or we could not connect to the network to verify.</string>
 <string name="correct_key">Your LibraryThing Developer Key is valid.</string>
 <string name="sortby_author_one">Sort by Author (First author only)</string>
+<string name="no_connection">No Internet connection is available.</string>
+<string name="sortby_published">Sort by Date Published</string>
+<string name="menu_share_this">Share</string>
 </resources>

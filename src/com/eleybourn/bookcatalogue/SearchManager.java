@@ -203,7 +203,7 @@ public class SearchManager implements OnTaskEndedListener {
 	private void doSearch() {
 		// List for task ends
 		mTaskManager.addOnTaskEndedListener(this);
-
+		
 		// We really want to ensure we get the same book from each, so if isbn is not present, do
 		// these in series.
 		if (mIsbn != null && mIsbn.length() > 0) {

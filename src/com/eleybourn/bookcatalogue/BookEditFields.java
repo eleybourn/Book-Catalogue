@@ -25,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -35,6 +36,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TabActivity;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -46,6 +48,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.ContextMenu;
 import android.view.MenuItem;
@@ -106,6 +109,7 @@ public class BookEditFields extends Activity {
 	private static final int ZOOM_THUMB = 5;
 	private static final int DATE_DIALOG_ID = 1;
 	private static final int ZOOM_THUMB_DIALOG_ID = 2;
+	private static final int CAMERA_RESULT = 41;
 	
 	public static final String BOOKSHELF_SEPERATOR = ", ";
 	
@@ -1046,11 +1050,20 @@ public class BookEditFields extends Activity {
 				}
 				
 				x.compress(Bitmap.CompressFormat.PNG, 100, f);
-
+				
+				Intent crop_intent = new Intent(this, CropCropImage.class);
+				// here you have to pass absolute path to your file
+				crop_intent.putExtra("image-path", filename);
+				crop_intent.putExtra("scale", true);
+				startActivityForResult(crop_intent, CAMERA_RESULT);
+				
+			}
+			return;
+		case CAMERA_RESULT:
+			if (resultCode == Activity.RESULT_OK){
 				// Update the ImageView with the new image
 				setCoverImage();
 			}
-			return;
 		case ADD_GALLERY:
 			if (resultCode == Activity.RESULT_OK){
 				Uri selectedImageUri = intent.getData();

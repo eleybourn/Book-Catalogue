@@ -18,7 +18,6 @@ package com.eleybourn.bookcatalogue;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
-import android.util.Log;
 
 public class CropRotateBitmap {
     public static final String TAG = "RotateBitmap";

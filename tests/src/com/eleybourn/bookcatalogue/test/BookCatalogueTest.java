@@ -781,6 +781,41 @@ public class BookCatalogueTest extends ActivityInstrumentationTestCase2 {
 		t.goBack();
 		assertTrue("Expected populated author", t.searchText("Barclay, James"));
 	}
+	
+	public void test209AdminLinks() {
+		t.clickOnMenuItem("Help & Admin", true);
+		t.assertCurrentActivity("Expected Administration activity", "Administration");
+		t.clickOnText("Donate");
+		t.assertCurrentActivity("Expected AdministrationDonate activity", "AdministrationDonate");
+		
+		assertTrue("Expected wishlist link", t.searchText("Amazon Wishlist", 2));
+		
+		//t.clickOnImage(0); //donate
+		//t.sleep(3000);
+		//t.goBack(); //expected to have gone somewhere. I don't know the WEB Activity name, so not checking
+		//t.assertCurrentActivity("Expected AdministrationDonate activity", "AdministrationDonate"); // This will fail if we don't return from the webpage
+		
+		t.clickOnText("About this App");
+		t.assertCurrentActivity("Expected AdministrationAbout activity", "AdministrationAbout");
+		
+		assertTrue("Expected wiki link", t.searchText("https://wiki.github.com/eleybourn/Book-Catalogue"));
+		//t.clickOnText("https://wiki.github.com/eleybourn/Book-Catalogue");
+		//t.sleep(3000);
+		//t.goBack(); //expected to have gone somewhere. I don't know the WEB Activity name, so not checking
+		//t.assertCurrentActivity("Expected AdministrationAbout activity", "AdministrationAbout"); // This will fail if we don't return from the webpage
+		
+		assertTrue("Expected source link", t.searchText("https://github.com/eleybourn/Book-Catalogue"));
+		//t.clickOnText("https://github.com/eleybourn/Book-Catalogue");
+		//t.sleep(3000);
+		//t.goBack(); //expected to have gone somewhere. I don't know the WEB Activity name, so not checking
+		//t.assertCurrentActivity("Expected AdministrationAbout activity", "AdministrationAbout"); // This will fail if we don't return from the webpage
+		
+		assertTrue("Expected email link", t.searchText("eleybourn@gmail.com"));
+		//t.clickOnText("eleybourn@gmail.com");
+		//t.sleep(3000);
+		//t.goBack(); //expected to have gone somewhere. I don't know the EMAIL Activity name, so not checking
+		//t.assertCurrentActivity("Expected AdministrationAbout activity", "AdministrationAbout"); // This will fail if we don't return from the webpage
+	}
 
 	
 	@Override	

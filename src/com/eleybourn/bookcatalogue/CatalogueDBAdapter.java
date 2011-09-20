@@ -40,7 +40,6 @@ import android.database.sqlite.SQLiteStatement;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.BaseColumns;
-import android.util.Log;
 import android.widget.ImageView;
 
 /**
@@ -1901,7 +1900,6 @@ public class CatalogueDBAdapter {
 		if (date == null) {
 			date = META_EMPTY_DATE_PUBLISHED;
 		}
-		Log.e("BC", "Date: " + date);
 		if (date.equals(META_EMPTY_DATE_PUBLISHED)) {
 			where = "(b." + KEY_DATE_PUBLISHED + "='' OR b." + KEY_DATE_PUBLISHED + " IS NULL or cast(strftime('%Y', b." + KEY_DATE_PUBLISHED + ") as int)<0 or cast(strftime('%Y', b." + KEY_DATE_PUBLISHED + ") as int) is null)";
 		} else {
@@ -2031,7 +2029,6 @@ public class CatalogueDBAdapter {
 				+ " Case When (b." + KEY_DATE_PUBLISHED + " = '' or b." + KEY_DATE_PUBLISHED + " is NULL or cast(strftime('%Y', b." + KEY_DATE_PUBLISHED + ") as int)<0 or cast(strftime('%Y', b." + KEY_DATE_PUBLISHED + ") as int) is null) Then '" + META_EMPTY_DATE_PUBLISHED + "'"
 				+ " Else strftime('%Y', b." + KEY_DATE_PUBLISHED + ") End as " + KEY_ROWID + baseSql +
 		" ORDER BY strftime('%Y', b." + KEY_DATE_PUBLISHED + ") " + COLLATION;
-		Log.e("BC", sql);
 		return mDb.rawQuery(sql, new String[]{});
 	}
 	

@@ -43,7 +43,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.StatFs;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -125,7 +124,6 @@ public class CropCropImage extends CropMonitoredActivity {
 
 
 	if (mBitmap == null) {
-	    Log.d(TAG, "finish!!!");
 	    finish();
 	    return;
 	}
@@ -161,7 +159,6 @@ public class CropCropImage extends CropMonitoredActivity {
 	    in = mContentResolver.openInputStream(uri);
 	    return BitmapFactory.decodeStream(in);
 	} catch (FileNotFoundException e) {
-	    Log.e(TAG, "file " + path + " not found");
 	}
 	return null;
     }
@@ -325,7 +322,6 @@ public class CropCropImage extends CropMonitoredActivity {
 		}
 	    } catch (IOException ex) {
 		// TODO: report error to caller
-		Log.e(TAG, "Cannot open file: " + mSaveUri, ex);
 	    } finally {
 		CropUtil.closeSilently(outputStream);
 	    }
@@ -333,7 +329,6 @@ public class CropCropImage extends CropMonitoredActivity {
 	    setResult(RESULT_OK, new Intent(mSaveUri.toString())
 	    .putExtras(extras));
 	} else {
-	    Log.e(TAG, "neni definovana adresa pro ulozeni");
 	    /*Bundle extras = new Bundle();
 	    extras.putString("rect", mCrop.getCropRect().toString());
 

@@ -18,7 +18,6 @@ package com.eleybourn.bookcatalogue;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 
 import java.io.FileDescriptor;
 import java.util.Iterator;
@@ -170,9 +169,6 @@ public class CropBitmapManager {
 
         while (i.hasNext()) {
             Map.Entry<Thread, ThreadStatus> entry = i.next();
-            Log.v(TAG, "[Dump] Thread " + entry.getKey() + " ("
-                    + entry.getKey().getId()
-                    + ")'s status is " + entry.getValue());
         }
     }
 
@@ -194,7 +190,6 @@ public class CropBitmapManager {
 
         Thread thread = Thread.currentThread();
         if (!canThreadDecoding(thread)) {
-            Log.d(TAG, "Thread " + thread + " is not allowed to decode.");
             return null;
         }
 

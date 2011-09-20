@@ -18,9 +18,11 @@ package com.eleybourn.bookcatalogue;
 
 
 
+import java.io.Closeable;
+import java.io.IOException;
+
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -29,14 +31,8 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.ParcelFileDescriptor;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-
-import java.io.ByteArrayOutputStream;
-import java.io.Closeable;
-import java.io.FileDescriptor;
-import java.io.IOException;
 
 /**
  * Collection of utility functions used in this package.
@@ -279,7 +275,6 @@ public class CropUtil {
     }
 
     public static void debugWhere(String tag, String msg) {
-        Log.d(tag, msg + " --- stack trace begins: ");
         StackTraceElement elements[] = Thread.currentThread().getStackTrace();
         // skip first 3 element, they are not related to the caller
         for (int i = 3, n = elements.length; i < n; ++i) {
@@ -287,9 +282,7 @@ public class CropUtil {
             String message = String.format("    at %s.%s(%s:%s)",
                     st.getClassName(), st.getMethodName(), st.getFileName(),
                     st.getLineNumber());
-            Log.d(tag, message);
         }
-        Log.d(tag, msg + " --- stack trace ends.");
     }
 
     public static synchronized OnClickListener getNullOnClickListener() {

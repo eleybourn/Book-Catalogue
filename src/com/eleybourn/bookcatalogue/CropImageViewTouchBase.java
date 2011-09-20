@@ -23,7 +23,6 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.ImageView;
 

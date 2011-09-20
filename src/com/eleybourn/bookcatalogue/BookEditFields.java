@@ -25,7 +25,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URI;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -36,7 +35,6 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TabActivity;
-import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -48,7 +46,6 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.ContextMenu;
 import android.view.MenuItem;
@@ -107,6 +104,7 @@ public class BookEditFields extends Activity {
 	private static final int ROTATE_THUMB_CCW = 32;
 	private static final int ROTATE_THUMB_180 = 33;
 	private static final int ZOOM_THUMB = 5;
+	private static final int CROP_THUMB = 6;
 	private static final int DATE_DIALOG_ID = 1;
 	private static final int ZOOM_THUMB_DIALOG_ID = 2;
 	private static final int CAMERA_RESULT = 41;
@@ -466,6 +464,9 @@ public class BookEditFields extends Activity {
 					MenuItem zoom_thumb = menu.add(0, ZOOM_THUMB, 4, R.string.menu_zoom_thumb);
 					zoom_thumb.setIcon(android.R.drawable.ic_menu_zoom);
 
+					MenuItem crop_thumb = menu.add(0, CROP_THUMB, 4, R.string.menu_crop_thumb);
+					crop_thumb.setIcon(android.R.drawable.ic_menu_crop);
+
 				}
 			});
 
@@ -600,6 +601,14 @@ public class BookEditFields extends Activity {
 			return true;
 		case ZOOM_THUMB:
 			showDialog(ZOOM_THUMB_DIALOG_ID);
+			return true;
+		case CROP_THUMB:
+			Intent crop_intent = new Intent(this, CropCropImage.class);
+			String filename = CatalogueDBAdapter.fetchThumbnailFilename(mRowId, false);
+			// here you have to pass absolute path to your file
+			crop_intent.putExtra("image-path", filename);
+			crop_intent.putExtra("scale", true);
+			startActivityForResult(crop_intent, CAMERA_RESULT);
 			return true;
 		case SHOW_ALT_COVERS:
 			String isbn = mFields.getField(R.id.isbn).getValue().toString();
@@ -1064,6 +1073,7 @@ public class BookEditFields extends Activity {
 				// Update the ImageView with the new image
 				setCoverImage();
 			}
+			return;
 		case ADD_GALLERY:
 			if (resultCode == Activity.RESULT_OK){
 				Uri selectedImageUri = intent.getData();

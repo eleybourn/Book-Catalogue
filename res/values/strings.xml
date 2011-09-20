@@ -270,4 +270,5 @@
 <string name="sortby_published">Sort by Date Published</string>
 <string name="menu_share_this">Share</string>
 <string name="email_export">Would you like to send this export as an email somewhere?</string>
+<string name="menu_crop_thumb">Crop Thumbnail</string>
 </resources>

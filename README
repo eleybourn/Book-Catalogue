@@ -43,6 +43,7 @@ Features include;
 
 New in v3.7
 Hint: The export function will create an export.csv file on the sdcard
+* You can crop cover thumbnails (both from the menu and after taking a camera image)
 * You can tweet about a book directly from the book edit screen.
 * Sort by Date Published added
 * Will check for network connection prior to searching for details (new permission required)

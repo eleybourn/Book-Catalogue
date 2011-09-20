@@ -365,7 +365,7 @@ public class CatalogueDBAdapter {
 		
 	private final Context mCtx;
 	//TODO: Update database version
-	public static final int DATABASE_VERSION = 60;
+	public static final int DATABASE_VERSION = 61;
 
 	private TableInfo mBooksInfo = null;
 
@@ -1169,6 +1169,16 @@ public class CatalogueDBAdapter {
 					message += "New in v3.6.2\n\n";
 					message += "* Optionally restrict 'Sort By Author' to only the first Author (where there are multiple listed)\n\n";
 					message += "* Minor bug fixes\n\n";
+				}
+				if (curVersion == 60) {
+					curVersion++;
+					message += "New in v3.7\n\n";
+					message += "Hint: The export function will create an export.csv file on the sdcard\n\n";
+					message += "* You can crop cover thumbnails (both from the menu and after taking a camera image)\n\n";
+					message += "* You can tweet about a book directly from the book edit screen.\n\n";
+					message += "* Sort by Date Published added\n\n";
+					message += "* Will check for network connection prior to searching for details (new permission required)\n\n";
+					message += "* Fixed crash when opening search results\n\n";
 				}
 			}
 			//TODO: NOTE: END OF UPDATE

@@ -41,6 +41,9 @@ Features include;
   case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+New in v3.7.1
+* The database backup has been renamed for clarity
+
 New in v3.7
 Hint: The export function will create an export.csv file on the sdcard
 * You can crop cover thumbnails (both from the menu and after taking a camera image)

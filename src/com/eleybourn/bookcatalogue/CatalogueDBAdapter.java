@@ -459,7 +459,7 @@ public class CatalogueDBAdapter {
 			int curVersion = oldVersion;
 			
 			if (oldVersion != newVersion)
-				backupDbFile(db, "dbUpgrade-" + oldVersion + "-" + newVersion);
+				backupDbFile(db, Utils.LOCATION + "DbUpgrade-" + oldVersion + "-" + newVersion);
 			
 			if (curVersion < 11) {
 				onCreate(db);
@@ -1246,7 +1246,7 @@ public class CatalogueDBAdapter {
 	 * @throws Exception 
 	 */
 	public void backupDbFile() {
-		backupDbFile("dbExport.db");
+		backupDbFile(Utils.LOCATION + "DbExport.db");
 	}
 	
 	/**
@@ -1272,7 +1272,15 @@ public class CatalogueDBAdapter {
 			File dir = new File(Utils.EXTERNAL_FILE_PATH);
 			dir.mkdir();
 			// Path to the external backup
-			java.io.OutputStream dbCopy = new java.io.FileOutputStream(dir.getPath() + "/" + filename);
+			String fullFilename = dir.getPath() + "/" + filename;
+			//check if it exists
+			File existing = new File(fullFilename);
+			if (existing.exists()) {
+				String backupFilename = dir.getPath() + "/" + filename + ".bak";
+				File backup = new File(backupFilename);
+				existing.renameTo(backup);
+			}
+			java.io.OutputStream dbCopy = new java.io.FileOutputStream(fullFilename);
 			
 			byte[] buffer = new byte[1024];
 			int length;

@@ -878,8 +878,8 @@ public class Utils {
 		}
 	}
 
-	private static String[] mPurgeableFilePrefixes = new String[]{"dbUpgrade", "dbExport", "error.log", "tmp"};
-	private static String[] mDebugFilePrefixes = new String[]{"dbUpgrade", "dbExport", "error.log", "export.csv"};
+	private static String[] mPurgeableFilePrefixes = new String[]{Utils.LOCATION + "DbUpgrade", Utils.LOCATION + "DbExport", "error.log", "tmp"};
+	private static String[] mDebugFilePrefixes = new String[]{Utils.LOCATION + "DbUpgrade", Utils.LOCATION + "DbExport", "error.log", "export.csv"};
 
 	/**
 	 * Collect and send debug info to a support email address. 
@@ -891,7 +891,7 @@ public class Utils {
 	 */
 	public static void sendDebugInfo(Context context, CatalogueDBAdapter dbHelper) {
 		// Create a temp DB copy.
-		String tmpName = "dbExport-tmp.db";
+		String tmpName = Utils.LOCATION + "DbExport-tmp.db";
 		dbHelper.backupDbFile(tmpName);
 		File dbFile = new File(Utils.EXTERNAL_FILE_PATH + "/" + tmpName);
 		dbFile.deleteOnExit();

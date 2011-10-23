@@ -1055,7 +1055,7 @@ public class BookCatalogue extends ExpandableListActivity {
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		menu.clear();
 		
-		SubMenu insert = menu.addSubMenu(0, INSERT_PARENT_ID, 0, this.getResources().getString(R.string.menu_insert) + " ...");
+		SubMenu insert = menu.addSubMenu(0, INSERT_PARENT_ID, 0, this.getResources().getString(R.string.menu_insert) + "...");
 		insert.setIcon(android.R.drawable.ic_menu_add);
 		
 		/* Moved to submenu */

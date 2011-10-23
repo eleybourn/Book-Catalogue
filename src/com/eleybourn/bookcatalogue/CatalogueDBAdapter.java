@@ -364,7 +364,7 @@ public class CatalogueDBAdapter {
 		
 	private final Context mCtx;
 	//TODO: Update database version
-	public static final int DATABASE_VERSION = 61;
+	public static final int DATABASE_VERSION = 62;
 
 	private TableInfo mBooksInfo = null;
 
@@ -1178,6 +1178,14 @@ public class CatalogueDBAdapter {
 					message += "* Sort by Date Published added\n\n";
 					message += "* Will check for network connection prior to searching for details (new permission required)\n\n";
 					message += "* Fixed crash when opening search results\n\n";
+				}
+				if (curVersion == 61) {
+					curVersion++;
+					message += "New in v3.8\n\n";
+					message += "* Fixed several defects (including multiple author's and author prefix/suffix's)\n\n";
+					message += "* Fixed issue with thumbnail resolutions from LibraryThing\n\n";
+					message += "* Changed the 'Add Book' menu options to be submenu\n\n";
+					message += "* The database backup has been renamed for clarity\n\n";
 				}
 			}
 			//TODO: NOTE: END OF UPDATE

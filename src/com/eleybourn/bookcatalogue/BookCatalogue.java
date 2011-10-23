@@ -38,6 +38,7 @@ import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -89,10 +90,10 @@ public class BookCatalogue extends ExpandableListActivity {
 	private static final int EDIT_BOOK_FRIENDS = Menu.FIRST + 12;
 	private static final int SEARCH = Menu.FIRST + 13;
 	private static final int INSERT_NAME_ID = Menu.FIRST + 14;
-
 	private static final int DELETE_SERIES_ID = Menu.FIRST + 15;
 	private static final int EDIT_AUTHOR_ID = Menu.FIRST + 16;
 	private static final int EDIT_SERIES_ID = Menu.FIRST + 17;
+	private static final int INSERT_PARENT_ID = Menu.FIRST + 18;
 
 	public static String bookshelf = "";
 	private ArrayAdapter<String> spinnerAdapter;
@@ -1054,19 +1055,24 @@ public class BookCatalogue extends ExpandableListActivity {
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		menu.clear();
 		
-		MenuItem insert = menu.add(0, INSERT_ID, 0, R.string.menu_insert);
+		SubMenu insert = menu.addSubMenu(0, INSERT_PARENT_ID, 0, this.getResources().getString(R.string.menu_insert) + " ...");
 		insert.setIcon(android.R.drawable.ic_menu_add);
 		
+		/* Moved to submenu */
+		MenuItem insertBook = insert.add(0, INSERT_ID, 0, R.string.menu_insert);
+		insertBook.setIcon(android.R.drawable.ic_menu_add);
+		
 		if (Utils.USE_BARCODE) {
-			MenuItem insertBC = menu.add(0, INSERT_BARCODE_ID, 1, R.string.menu_insert_barcode);
+			MenuItem insertBC = insert.add(0, INSERT_BARCODE_ID, 1, R.string.menu_insert_barcode);
 			insertBC.setIcon(R.drawable.ic_menu_insert_barcode);
 			
-			MenuItem insertISBN = menu.add(0, INSERT_ISBN_ID, 2, R.string.menu_insert_isbn);
+			MenuItem insertISBN = insert.add(0, INSERT_ISBN_ID, 2, R.string.menu_insert_isbn);
 			insertISBN.setIcon(android.R.drawable.ic_menu_zoom);
 			
-			MenuItem insertName = menu.add(0, INSERT_NAME_ID, 2, R.string.menu_insert_name);
+			MenuItem insertName = insert.add(0, INSERT_NAME_ID, 2, R.string.menu_insert_name);
 			insertName.setIcon(android.R.drawable.ic_menu_zoom);
 		}
+		
 		
 		if (collapsed == true || currentGroup.size() == 0) {
 			MenuItem expand = menu.add(0, SORT_BY_AUTHOR_COLLAPSED, 3, R.string.menu_sort_by_author_expanded);

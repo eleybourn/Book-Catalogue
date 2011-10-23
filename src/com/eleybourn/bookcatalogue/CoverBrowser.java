@@ -200,6 +200,10 @@ public class CoverBrowser {
 		public void run() {
 			// Start the download
 			fileSpec = mFileManager.download(isbn, ImageSizes.SMALL);
+			File file = new File(fileSpec);
+			if (file.length() < 50) {
+				fileSpec = mFileManager.download(isbn, ImageSizes.LARGE);
+			}
 		}
 		@Override
 		public void finished() {
@@ -244,6 +248,10 @@ public class CoverBrowser {
 		public void run() {
 			// Download the file
 			fileSpec = mFileManager.download(isbn, ImageSizes.LARGE);
+			File file = new File(fileSpec);
+			if (file.length() < 50) {
+				fileSpec = mFileManager.download(isbn, ImageSizes.SMALL);
+			}
 		}
 		@Override
 		public void finished() {

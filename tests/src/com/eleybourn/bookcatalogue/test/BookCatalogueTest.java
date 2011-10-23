@@ -48,9 +48,17 @@ public class BookCatalogueTest extends ActivityInstrumentationTestCase2 {
 		t =  new Solo(getInstrumentation(), getActivity());
 	}
 	
+	public void test000Reset() {
+		File sp = new File("/data/data/com.eleybourn.bookcatalogue/shared_prefs/bookCatalogue.xml");
+		sp.delete();
+		File db = new File("/data/data/com.eleybourn.bookcatalogue/databases/book_catalogue");
+		db.delete();
+	}
+	
 	public void test001LibraryThing() {
+		
 		//reset message for LT
-		t.clickOnMenuItem("Help & Admin", true);
+		t.clickOnMenuItem("Help & Admin");
 		t.assertCurrentActivity("Expected Administration activity", "Administration");
 		t.clickOnText("LibraryThing");
 		t.clickOnEditText(0); //Dev Key
@@ -61,19 +69,21 @@ public class BookCatalogueTest extends ActivityInstrumentationTestCase2 {
 		t.goBack();
 		
 		//Disable the message
-		t.clickOnMenuItem("Add by ISBN");
+		t.clickOnMenuItem("Add Book...");
+		t.clickOnText("Add by ISBN");
 		t.assertCurrentActivity("Expected BookISBNSearch activity", "BookISBNSearch");
 		t.clickOnText("Disable Message"); // This will fail if it does not exist
 		t.goBack();
 		
 		//Check it has been disabled
-		t.clickOnMenuItem("Add by ISBN");
+		t.clickOnMenuItem("Add Book...");
+		t.clickOnText("Add by ISBN");
 		t.assertCurrentActivity("Expected BookISBNSearch activity", "BookISBNSearch");
 		assertFalse("Did not expect cancel button", t.searchButton("Cancel"));
 		t.goBack();
 		
 		//reset again
-		t.clickOnMenuItem("Help & Admin", true);
+		t.clickOnMenuItem("Help & Admin");
 		t.assertCurrentActivity("Expected Administration activity", "Administration");
 		t.clickOnText("LibraryThing");
 		t.clickOnEditText(0); //Dev Key
@@ -84,13 +94,15 @@ public class BookCatalogueTest extends ActivityInstrumentationTestCase2 {
 		t.goBack();
 		
 		//Test Cancel Button
-		t.clickOnMenuItem("Add by ISBN");
+		t.clickOnMenuItem("Add Book...");
+		t.clickOnText("Add by ISBN");
 		t.assertCurrentActivity("Expected BookISBNSearch activity", "BookISBNSearch");
 		t.clickOnText("Cancel"); // This will fail if it does not exist
 		t.goBack();
 		
 		//Test Adding Dev Key
-		t.clickOnMenuItem("Add by ISBN");
+		t.clickOnMenuItem("Add Book...");
+		t.clickOnText("Add by ISBN");
 		t.assertCurrentActivity("Expected BookISBNSearch activity", "BookISBNSearch");
 		t.clickOnText("More Info"); // This will fail if it does not exist
 		t.assertCurrentActivity("Expected AdministrationLibraryThing activity", "AdministrationLibraryThing");
@@ -104,14 +116,16 @@ public class BookCatalogueTest extends ActivityInstrumentationTestCase2 {
 		t.goBack();
 		
 		//Check it has been disabled (the key has been added)
-		t.clickOnMenuItem("Add by ISBN");
+		t.clickOnMenuItem("Add Book...");
+		t.clickOnText("Add by ISBN");
 		t.assertCurrentActivity("Expected BookISBNSearch activity", "BookISBNSearch");
 		assertFalse("Did not expect cancel button", t.searchButton("Cancel"));
 		t.goBack();
 	}
 	
 	public void test101AddByISBNNumbers() {
-		t.clickOnMenuItem("Add by ISBN");
+		t.clickOnMenuItem("Add Book...");
+		t.clickOnText("Add by ISBN");
 		t.assertCurrentActivity("Expected BookISBNSearch activity", "BookISBNSearch");
 		
 		//setup fields
@@ -136,7 +150,8 @@ public class BookCatalogueTest extends ActivityInstrumentationTestCase2 {
 	}
 	
 	public void test102AddByISBN(){
-		t.clickOnMenuItem("Add by ISBN");
+		t.clickOnMenuItem("Add Book...");
+		t.clickOnText("Add by ISBN");
 		t.assertCurrentActivity("Expected BookISBNSearch activity", "BookISBNSearch");
 		
 		//setup fields
@@ -166,7 +181,8 @@ public class BookCatalogueTest extends ActivityInstrumentationTestCase2 {
 	}
 	
 	public void test103AddByISBNLandscape() {
-		t.clickOnMenuItem("Add by ISBN");
+		t.clickOnMenuItem("Add Book...");
+		t.clickOnText("Add by ISBN");
 		t.assertCurrentActivity("Expected BookISBNSearch activity", "BookISBNSearch");
 		t.setActivityOrientation(Solo.LANDSCAPE); // Change orientation of activity
 		
@@ -329,7 +345,8 @@ public class BookCatalogueTest extends ActivityInstrumentationTestCase2 {
 	}
 	
 	public void test105AddByName(){
-		t.clickOnMenuItem("Add by Name");
+		t.clickOnMenuItem("Add Book...");
+		t.clickOnText("Add by Name");
 		t.assertCurrentActivity("Expected BookISBNSearch activity", "BookISBNSearch");
 		
 		//setup fields
@@ -361,7 +378,8 @@ public class BookCatalogueTest extends ActivityInstrumentationTestCase2 {
 	}
 	
 	public void test106AddBook(){
-		t.clickOnMenuItem("Add Book");
+		t.clickOnMenuItem("Add Book...");
+		t.clickOnText("Add Book", 2);
 		t.assertCurrentActivity("Expected BookEdit activity", "BookEdit");
 		
 		//add author
@@ -429,7 +447,7 @@ public class BookCatalogueTest extends ActivityInstrumentationTestCase2 {
 		//save book
 		t.clickOnText("Have you read this book?");
 		
-		t.enterText(7, "My Notes");
+		t.enterText(0, "My Notes");
 		assertTrue("Notes were not entered", t.searchText("My Notes", true));
 		
 		//check that persistance works
@@ -456,13 +474,13 @@ public class BookCatalogueTest extends ActivityInstrumentationTestCase2 {
 	
 	
 	public void test201AdminHelp() {
-		t.clickOnMenuItem("Help & Admin", true);
+		t.clickOnMenuItem("Help & Admin");
 		t.assertCurrentActivity("Expected Administration activity", "Administration");
 		assertTrue("Expected help link", t.searchText("https://github.com/eleybourn/Book-Catalogue/wiki/Help"));
 	}
 	
 	public void test202AdminBookshelves() {
-		t.clickOnMenuItem("Help & Admin", true);
+		t.clickOnMenuItem("Help & Admin");
 		t.assertCurrentActivity("Expected Administration activity", "Administration");
 		t.clickOnText("Administration Functions");
 		t.assertCurrentActivity("Expected AdministrationFunctions activity", "AdministrationFunctions");
@@ -470,7 +488,7 @@ public class BookCatalogueTest extends ActivityInstrumentationTestCase2 {
 		t.assertCurrentActivity("Expected Bookshelf activity", "Bookshelf");
 		
 		//add 3x bookshelves
-		t.clickOnMenuItem("Create Bookshelf", true);
+		t.clickOnMenuItem("Create Bookshelf");
 		t.assertCurrentActivity("Expected BookshelfEdit activity", "BookshelfEdit");
 		EditText bookshelf = (EditText) t.getCurrentActivity().findViewById(com.eleybourn.bookcatalogue.R.id.bookshelf);
 		t.clearEditText(bookshelf);
@@ -478,13 +496,13 @@ public class BookCatalogueTest extends ActivityInstrumentationTestCase2 {
 		t.clickOnButton("Add Bookshelf");
 		t.assertCurrentActivity("Expected Bookshelf activity", "Bookshelf");
 		
-		t.clickOnMenuItem("Create Bookshelf", true);
+		t.clickOnMenuItem("Create Bookshelf");
 		bookshelf = (EditText) t.getCurrentActivity().findViewById(com.eleybourn.bookcatalogue.R.id.bookshelf);
 		t.clearEditText(bookshelf);
 		t.enterText(bookshelf, "A2");
 		t.clickOnButton("Add Bookshelf");
 		
-		t.clickOnMenuItem("Create Bookshelf", true);
+		t.clickOnMenuItem("Create Bookshelf");
 		bookshelf = (EditText) t.getCurrentActivity().findViewById(com.eleybourn.bookcatalogue.R.id.bookshelf);
 		t.clearEditText(bookshelf);
 		t.enterText(bookshelf, "A3");
@@ -508,20 +526,20 @@ public class BookCatalogueTest extends ActivityInstrumentationTestCase2 {
 	
 	public void test203AdminBackupDatabase() {
 		//weak test
-		t.clickOnMenuItem("Help & Admin", true);
+		t.clickOnMenuItem("Help & Admin");
 		t.assertCurrentActivity("Expected Administration activity", "Administration");
 		t.clickOnText("Administration Functions");
 		t.assertCurrentActivity("Expected AdministrationFunctions activity", "AdministrationFunctions");
 		t.clickOnText("Backup Database");
 		t.sleep(1000);
-		String filename = com.eleybourn.bookcatalogue.Utils.EXTERNAL_FILE_PATH + "/dbExport.db";
+		String filename = com.eleybourn.bookcatalogue.Utils.EXTERNAL_FILE_PATH + "/bookCatalogueDbExport.db";
 		Log.e("BC", filename);
 		File file = new File(filename);
 		assertTrue("Backup file does not exist", file.exists());
 	}
 	
 	public void test204AdminFieldInvisibility() {
-		t.clickOnMenuItem("Help & Admin", true);
+		t.clickOnMenuItem("Help & Admin");
 		t.assertCurrentActivity("Expected Administration activity", "Administration");
 		t.clickOnText("Administration Functions");
 		t.assertCurrentActivity("Expected AdministrationFunctions activity", "AdministrationFunctions");
@@ -607,7 +625,7 @@ public class BookCatalogueTest extends ActivityInstrumentationTestCase2 {
 	}
 	
 	public void test205AdminFieldVisibility() {
-		t.clickOnMenuItem("Help & Admin", true);
+		t.clickOnMenuItem("Help & Admin");
 		t.assertCurrentActivity("Expected Administration activity", "Administration");
 		t.clickOnText("Administration Functions");
 		t.assertCurrentActivity("Expected AdministrationFunctions activity", "AdministrationFunctions");
@@ -710,7 +728,7 @@ public class BookCatalogueTest extends ActivityInstrumentationTestCase2 {
 		assertFalse("File was not deleted", export.exists());
 		
 		//export
-		t.clickOnMenuItem("Help & Admin", true);
+		t.clickOnMenuItem("Help & Admin");
 		t.assertCurrentActivity("Expected Administration activity", "Administration");
 		t.clickOnText("Administration Functions");
 		t.assertCurrentActivity("Expected AdministrationFunctions activity", "AdministrationFunctions");
@@ -736,7 +754,7 @@ public class BookCatalogueTest extends ActivityInstrumentationTestCase2 {
 		assertTrue("Book was not renamed", t.searchText("Foobar", true));
 		
 		//import
-		t.clickOnMenuItem("Help & Admin", true);
+		t.clickOnMenuItem("Help & Admin");
 		t.assertCurrentActivity("Expected Administration activity", "Administration");
 		t.clickOnText("Administration Functions");
 		t.assertCurrentActivity("Expected AdministrationFunctions activity", "AdministrationFunctions");
@@ -750,7 +768,8 @@ public class BookCatalogueTest extends ActivityInstrumentationTestCase2 {
 	}
 	
 	public void test208AdminAutoUpdate(){
-		t.clickOnMenuItem("Add Book");
+		t.clickOnMenuItem("Add Book...");
+		t.clickOnText("Add Book");
 		t.assertCurrentActivity("Expected BookEdit activity", "BookEdit");
 		
 		//add author
@@ -770,7 +789,7 @@ public class BookCatalogueTest extends ActivityInstrumentationTestCase2 {
 		assertTrue("Expected populated author", t.searchText("Bloggs, Fred"));
 		
 		//automatically update
-		t.clickOnMenuItem("Help & Admin", true);
+		t.clickOnMenuItem("Help & Admin");
 		t.assertCurrentActivity("Expected Administration activity", "Administration");
 		t.clickOnText("Administration Functions");
 		t.assertCurrentActivity("Expected AdministrationFunctions activity", "AdministrationFunctions");
@@ -783,7 +802,7 @@ public class BookCatalogueTest extends ActivityInstrumentationTestCase2 {
 	}
 	
 	public void test209AdminLinks() {
-		t.clickOnMenuItem("Help & Admin", true);
+		t.clickOnMenuItem("Help & Admin");
 		t.assertCurrentActivity("Expected Administration activity", "Administration");
 		t.clickOnText("Donate");
 		t.assertCurrentActivity("Expected AdministrationDonate activity", "AdministrationDonate");

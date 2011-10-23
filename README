@@ -41,7 +41,10 @@ Features include;
   case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
-New in v3.7.1
+New in v3.8
+* Fixed several defects (including multiple author's and author prefix/suffix's)
+* Fixed issue with thumbnail resolutions from LibraryThing
+* Changed the "Add Book" menu options to be submenu
 * The database backup has been renamed for clarity
 
 New in v3.7

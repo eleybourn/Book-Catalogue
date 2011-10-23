@@ -1402,6 +1402,12 @@ public class CatalogueDBAdapter {
 					family = names[names.length-2] + " ";
 					flen = 2;
 				}
+				sname = names[names.length-1];
+				/* e.g. Foo Bar Jr*/
+				if (sname.matches("[Jj]r|[Jj]unior|[Ss]r|[Ss]enior")) {
+					family = names[names.length-2] + " ";
+					flen = 2;
+				}
 			}
 			family += names[names.length-1];
 			for (int i=0; i<names.length-flen; i++) {

@@ -1017,10 +1017,11 @@ public class BookEditFields extends Activity {
 		/* These are global variables that will be sent via intent back to the list view, if added/created */
 		try {
 			ArrayList<Author> authors = mStateValues.getParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
-			if (authors.size() > 0)
+			if (authors.size() > 0) {
 				added_author = authors.get(0).getSortName();
-			else 
+			} else { 
 				added_author = "";
+			}
 		} catch (Exception e) {
 			Logger.logError(e);
 		};

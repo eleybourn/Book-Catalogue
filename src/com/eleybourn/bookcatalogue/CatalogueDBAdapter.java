@@ -2802,7 +2802,6 @@ public class CatalogueDBAdapter {
 		ArrayList<Author> authors = values.getParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
 		if (authors == null || authors.size() == 0)
 			throw new IllegalArgumentException();
-
 		ContentValues initialValues = filterValues(values, mBooksInfo);
 
 		if (id > 0) {
@@ -3322,8 +3321,6 @@ public class CatalogueDBAdapter {
 			mDeleteBookAuthorsStmt.bindLong(1, bookId);
 			mDeleteBookAuthorsStmt.execute();
 
-			mAddBookAuthorsStmt.bindLong(1, bookId);
-
 			// Get the authors and turn into a list of names
 			Iterator<Author> i = authors.iterator();
 			// The list MAY contain duplicates (eg. from Internet lookups of multiple
@@ -3338,9 +3335,11 @@ public class CatalogueDBAdapter {
 				if (!idHash.containsKey(authorIdStr)) {
 					idHash.put(authorIdStr, true);
 					pos++;
+					mAddBookAuthorsStmt.bindLong(1, bookId);
 					mAddBookAuthorsStmt.bindLong(2, authorId);
 					mAddBookAuthorsStmt.bindLong(3, pos);
 					mAddBookAuthorsStmt.executeInsert();
+					mAddBookAuthorsStmt.clearBindings();
 				}
 			}
 		}

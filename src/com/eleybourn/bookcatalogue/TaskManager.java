@@ -524,7 +524,7 @@ public class TaskManager {
 				if (keyCode == KeyEvent.KEYCODE_BACK) {
 					// Toasting a message here makes the app look less responsive, because
 					// the final 'Cancelled...' message is delayed too much.
-					//doToast(getString(R.string.cancelling));
+					doToast(getString(R.string.cancelling));
 					cancelAllTasks();
 					return true;
 				}

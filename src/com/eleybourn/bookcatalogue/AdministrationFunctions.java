@@ -252,7 +252,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	 * return void
 	 */
 	public void exportData() {
-		ExportThread thread = new ExportThread(mTaskManager, mExportHandler);
+		ExportThread thread = new ExportThread(mTaskManager, mExportHandler, this);
 		thread.start();		
 	}
 

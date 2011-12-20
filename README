@@ -41,6 +41,48 @@ Features include;
   case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+new in v3.8.1
+* Italian translation added
+* TODO: Catch XML error in search org.apache.harmony.xml.ExpatParser$ParseException: At line 2, column 0: junk after document element
+	at org.apache.harmony.xml.ExpatParser.parseFragment(ExpatParser.java:519)
+	at org.apache.harmony.xml.ExpatParser.parseDocument(ExpatParser.java:478)
+	at org.apache.harmony.xml.ExpatReader.parse(ExpatReader.java:317)
+	at org.apache.harmony.xml.ExpatReader.parse(ExpatReader.java:275)
+	at javax.xml.parsers.SAXParser.parse(SAXParser.java:390)
+	at javax.xml.parsers.SAXParser.parse(SAXParser.java:187)
+	at com.eleybourn.bookcatalogue.AmazonManager.searchAmazon(AmazonManager.java:44)
+	at com.eleybourn.bookcatalogue.SearchAmazonThread.onRun(SearchAmazonThread.java:18)
+	at com.eleybourn.bookcatalogue.ManagedTask.run(ManagedTask.java:147)
+
+
+New in v3.8
+* Fixed several defects (including multiple author's and author prefix/suffix's)
+* Fixed issue with thumbnail resolutions from LibraryThing
+* Changed the "Add Book" menu options to be submenu
+* The database backup has been renamed for clarity
+
+New in v3.7
+Hint: The export function will create an export.csv file on the sdcard
+* You can crop cover thumbnails (both from the menu and after taking a camera image)
+* You can tweet about a book directly from the book edit screen.
+* Sort by Date Published added
+* Will check for network connection prior to searching for details (new permission required)
+* Fixed crash when opening search results
+
+New in v3.6.2
+* Optionally restrict "Sort By Author" to only the first Author (where there are multiple listed)
+* Minor bug fixes
+
+New in v3.6 / v3.6.1
+* The LibraryThing Key will be verified when added
+* When entering ISBN's manually, each button with vibrate the phone slightly
+* When automatically updating fields click on each checkbox twice will give you the option to override existing fields (rather than populate only blank fields)
+* Fixed a crash when exporting over 2000 books
+* Orphan loan records will now be correctly managed 
+* The Amazon search will now look for English, French, German, Italian and Japanese versions
+* Fixed several reports defects
+* Fixed bug in moving to SD Card
+
 New in v3.5.6
 * Fixed bug in moving to SDcard (2.2 and above only)
 * Fixed defect in the "All Books" bookshelf (French version only)

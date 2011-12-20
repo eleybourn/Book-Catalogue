@@ -1,5 +1,7 @@
 package com.eleybourn.bookcatalogue;
 
+import java.io.File;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,6 +12,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * 
@@ -73,6 +76,21 @@ public class AdministrationLibraryThing extends Activity {
 				SharedPreferences.Editor ed = prefs.edit();
 				ed.putString(LibraryThingManager.LT_DEVKEY_PREF_NAME, devkey);
 				ed.commit();
+				
+				if (devkey.length() > 0) {
+					//TEST Library Thing
+					Bundle tmp = new Bundle(); 
+					LibraryThingManager ltm = new LibraryThingManager(AdministrationLibraryThing.this);
+					String filename = ltm.getCoverImage("0451451783", tmp, LibraryThingManager.ImageSizes.SMALL);
+					File filetmp = new File(filename);
+					long length = filetmp.length();
+					if (length < 100) {
+						Toast.makeText(AdministrationLibraryThing.this, R.string.incorrect_key, Toast.LENGTH_LONG).show();
+					} else {
+						Toast.makeText(AdministrationLibraryThing.this, R.string.correct_key, Toast.LENGTH_LONG).show();
+					}
+					filetmp.delete();
+				}
 				return;
 			}
 		});
@@ -82,8 +100,6 @@ public class AdministrationLibraryThing extends Activity {
 		resetBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				EditText devkeyView = (EditText) findViewById(R.id.devkey);
-				String devkey = devkeyView.getText().toString();
 				SharedPreferences prefs = getSharedPreferences("bookCatalogue", android.content.Context.MODE_PRIVATE);
 				SharedPreferences.Editor ed = prefs.edit();
 				for( String key : prefs.getAll().keySet()) {

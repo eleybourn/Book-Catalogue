@@ -5,9 +5,16 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Message;
+import android.widget.Toast;
 
 /**
  * Class to handle export in a separate thread.
@@ -20,14 +27,15 @@ public class ExportThread extends ManagedTask {
 	private static String UTF8 = "utf8";
 	private static int BUFFER_SIZE = 8192;
 	private CatalogueDBAdapter mDbHelper;
+	private Context context;
 
 	public interface ExportHandler extends ManagedTask.TaskHandler {
 		void onFinish();
 	}
 
-	public ExportThread(TaskManager ctx, ExportHandler taskHandler) {
+	public ExportThread(TaskManager ctx, ExportHandler taskHandler, AdministrationFunctions thisContext) {
 		super(ctx, taskHandler);
-
+		context = thisContext;
 		mDbHelper = new CatalogueDBAdapter(ctx.getAppContext());
 		mDbHelper.open();
 
@@ -35,6 +43,45 @@ public class ExportThread extends ManagedTask {
 
 	@Override
 	protected boolean onFinish() {
+		AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+		alertDialog.setTitle(R.string.email_export);
+		alertDialog.setIcon(android.R.drawable.ic_menu_send);
+		alertDialog.setButton(context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				// setup the mail message
+				final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND_MULTIPLE);
+				emailIntent.setType("plain/text");
+				//emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, context.getString(R.string.debug_email).split(";"));
+				String subject = "[" + context.getString(R.string.app_name) + "] " + context.getString(R.string.export_data);
+				emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
+				//emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, context.getString(R.string.debug_body));
+				//has to be an ArrayList
+				ArrayList<Uri> uris = new ArrayList<Uri>();
+				// Find all files of interest to send
+				try {
+					File fileIn = new File(Utils.EXTERNAL_FILE_PATH + "/" + "export.csv");
+					Uri u = Uri.fromFile(fileIn);
+					uris.add(u);
+					// Send it, if there are any files to send.
+					emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+					context.startActivity(Intent.createChooser(emailIntent, "Send mail..."));        	
+				} catch (NullPointerException e) {
+					Logger.logError(e);
+					Toast.makeText(context, R.string.export_failed_sdcard, Toast.LENGTH_LONG).show();
+				}
+
+				return;
+			}
+		}); 
+		alertDialog.setButton2(context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				//do nothing
+				return;
+			}
+		}); 
+		alertDialog.show();
+
+		
 		try {
 			ExportHandler h = (ExportHandler)getTaskHandler();
 			if (h != null) {
@@ -47,12 +94,12 @@ public class ExportThread extends ManagedTask {
 			cleanup();
 		}
 	}
-
+	
 	@Override
 	protected void onMessage(Message msg) {
 		// Nothing to do. we don't sent any
 	}
-
+	
 	@Override
 	protected void onRun() {
 		int num = 0;
@@ -87,15 +134,19 @@ public class ExportThread extends ManagedTask {
 			'"' + CatalogueDBAdapter.KEY_DESCRIPTION+ "\"," + 		//25
 			'"' + CatalogueDBAdapter.KEY_GENRE+ "\"," + 			//26
 			"\n");
-
+		
 		long lastUpdate = 0;
-
+		
 		StringBuilder row = new StringBuilder();
-
+		
 		Cursor books = mDbHelper.exportBooks();
 		mManager.setMax(this, books.getCount());
-
+		
 		try {
+			/* write to the SDCard */
+			backupExport();
+			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(mFileName), UTF8), BUFFER_SIZE);
+			out.write(export.toString());
 			if (books.moveToFirst()) {
 				do { 
 					num++;
@@ -104,7 +155,7 @@ public class ExportThread extends ManagedTask {
 					try {
 						String[] date = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DATE_PUBLISHED)).split("-");
 						int yyyy = Integer.parseInt(date[0]);
-						int mm = Integer.parseInt(date[1])+1;
+						int mm = Integer.parseInt(date[1]);
 						int dd = Integer.parseInt(date[2]);
 						dateString = yyyy + "-" + mm + "-" + dd;
 					} catch (Exception e) {
@@ -114,7 +165,7 @@ public class ExportThread extends ManagedTask {
 					try {
 						String[] date = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_START)).split("-");
 						int yyyy = Integer.parseInt(date[0]);
-						int mm = Integer.parseInt(date[1])+1;
+						int mm = Integer.parseInt(date[1]);
 						int dd = Integer.parseInt(date[2]);
 						dateReadStartString = yyyy + "-" + mm + "-" + dd;
 					} catch (Exception e) {
@@ -124,7 +175,7 @@ public class ExportThread extends ManagedTask {
 					try {
 						String[] date = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_END)).split("-");
 						int yyyy = Integer.parseInt(date[0]);
-						int mm = Integer.parseInt(date[1])+1;
+						int mm = Integer.parseInt(date[1]);
 						int dd = Integer.parseInt(date[2]);
 						dateReadEndString = yyyy + "-" + mm + "-" + dd;
 					} catch (Exception e) {
@@ -157,10 +208,10 @@ public class ExportThread extends ManagedTask {
 						bookshelves_name_text += bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)) + BookEditFields.BOOKSHELF_SEPERATOR;
 					}
 					bookshelves.close();
-
+					
 					String authorDetails = Utils.getAuthorUtils().encodeList( mDbHelper.getBookAuthorList(id), '|' );
 					String seriesDetails = Utils.getSeriesUtils().encodeList( mDbHelper.getBookSeriesList(id), '|' );
-
+					
 					row.setLength(0);
 					row.append("\"" + formatCell(id) + "\",");
 					row.append("\"" + formatCell(authorDetails) + "\",");
@@ -187,8 +238,9 @@ public class ExportThread extends ManagedTask {
 					row.append("\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DESCRIPTION))) + "\",");
 					row.append("\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_GENRE))) + "\",");
 					row.append("\n");
-					export.append(row);
-
+					out.write(row.toString());
+					//export.append(row);
+					
 					long now = System.currentTimeMillis();
 					if ( (now - lastUpdate) > 200) {
 						doProgress(title, num);
@@ -198,19 +250,13 @@ public class ExportThread extends ManagedTask {
 				while (books.moveToNext() && !isCancelled()); 
 			} 
 			
-			/* write to the SDCard */
-			try {
-				backupExport();
-				BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(mFileName), UTF8), BUFFER_SIZE);
-				out.write(export.toString());
-				out.close();
-				mManager.doToast( getString(R.string.export_complete) );
-				//Toast.makeText(AdministrationFunctions.this, R.string.export_complete, Toast.LENGTH_LONG).show();
-			} catch (IOException e) {
-				Logger.logError(e);
-				mManager.doToast(getString(R.string.export_failed_sdcard));
-			}
+			out.close();
+			//Toast.makeText(AdministrationFunctions.this, R.string.export_complete, Toast.LENGTH_LONG).show();
+		} catch (IOException e) {
+			Logger.logError(e);
+			mManager.doToast(getString(R.string.export_failed_sdcard));
 		} finally {
+			mManager.doToast( getString(R.string.export_complete) );
 			if (books != null)
 				books.close();
 		}

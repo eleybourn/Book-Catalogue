@@ -203,7 +203,7 @@ public class SearchManager implements OnTaskEndedListener {
 	private void doSearch() {
 		// List for task ends
 		mTaskManager.addOnTaskEndedListener(this);
-
+		
 		// We really want to ensure we get the same book from each, so if isbn is not present, do
 		// these in series.
 		if (mIsbn != null && mIsbn.length() > 0) {
@@ -276,25 +276,28 @@ public class SearchManager implements OnTaskEndedListener {
 		accumulateData(mAmazonData);
 		accumulateData(mLibraryThingData);
 		
-    	// If there are thumbnails present, pick the biggest, delete others and rename.
-    	Utils.cleanupThumbnails(mBookData);
-
-    	// If book is not found, just return to dialog.
-    	String authors = null;
-    	String title = null;
-    	try {
-    		authors = mBookData.getString(CatalogueDBAdapter.KEY_AUTHOR_DETAILS);
-    	} catch (Exception e) {}
-    	try {
-    		title = mBookData.getString(CatalogueDBAdapter.KEY_TITLE);
-    	} catch (Exception e) {}
+		// If there are thumbnails present, pick the biggest, delete others and rename.
+		Utils.cleanupThumbnails(mBookData);
+		
+		// If book is not found, just return to dialog.
+		String authors = null;
+		String title = null;
+		try {
+			authors = mBookData.getString(CatalogueDBAdapter.KEY_AUTHOR_DETAILS);
+		} catch (Exception e) {}
+		try {
+			title = mBookData.getString(CatalogueDBAdapter.KEY_TITLE);
+		} catch (Exception e) {}
 		if (authors == null || authors.length() == 0 || title == null || title.length() == 0) {
-
+			
 			mTaskManager.doToast(mTaskManager.getString(R.string.book_not_found));
 			mBookData.putString(CatalogueDBAdapter.KEY_ISBN, mIsbn);
 			mBookData.putString(CatalogueDBAdapter.KEY_TITLE, mTitle);
 			ArrayList<Author> aa = Utils.getAuthorUtils().decodeList(mAuthor, '|', false);
 			mBookData.putParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, aa);
+			//add series to stop crashing
+			ArrayList<Series> sa = Utils.getSeriesUtils().decodeList("", '|', false);
+			mBookData.putParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY, sa);
 			if (mSearchHandler != null) {
 				mSearchHandler.onSearchFinished(mBookData, mCancelledFlg);
 			}

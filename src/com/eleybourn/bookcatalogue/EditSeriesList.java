@@ -34,47 +34,47 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class EditSeriesList extends EditObjectList<Series> {
-
+	
 	private ArrayAdapter<String> mSeriesAdapter;
-
+	
 	public EditSeriesList() {
 		super(CatalogueDBAdapter.KEY_SERIES_ARRAY, R.layout.edit_series_list, R.layout.row_edit_series_list);
 	}
-
+	
 	@Override
 	protected void onSetupView(View target, Series object) {
-        if (object != null) {
-	        TextView dt = (TextView) target.findViewById(R.id.row_series);
-	        if (dt != null)
-	              dt.setText(object.getDisplayName());
-
-	        TextView st = (TextView) target.findViewById(R.id.row_series_sort);
-	        if (st != null) {
-		        if (object.getDisplayName().equals(object.getSortName())) {
-		        	st.setVisibility(View.GONE);
-		        } else {
-		        	st.setVisibility(View.VISIBLE);
+		if (object != null) {
+			TextView dt = (TextView) target.findViewById(R.id.row_series);
+			if (dt != null)
+				dt.setText(object.getDisplayName());
+			
+			TextView st = (TextView) target.findViewById(R.id.row_series_sort);
+			if (st != null) {
+				if (object.getDisplayName().equals(object.getSortName())) {
+					st.setVisibility(View.GONE);
+				} else {
+					st.setVisibility(View.VISIBLE);
 					st.setText(object.getSortName());
-	        	}
-        	}
+				}
+			}
 			EditText et = (EditText) target.findViewById(R.id.row_series_num);
 			if (et != null)
 				et.setText(object.num);
-        }
+		}
 	}
-
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		try {
-
+			
 			mSeriesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, mDbHelper.fetchAllSeriesArray());
 			((AutoCompleteTextView)this.findViewById(R.id.series)).setAdapter(mSeriesAdapter);
-	
+			
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
 	}
-
+	
 	@Override
 	protected void onAdd(View v) {
 		AutoCompleteTextView t = ((AutoCompleteTextView)EditSeriesList.this.findViewById(R.id.series));
@@ -87,10 +87,14 @@ public class EditSeriesList extends EditObjectList<Series> {
 			Series series = new Series(t.getText().toString(), n);
 			series.id = mDbHelper.lookupSeriesId(series);
 			boolean foundMatch = false;
-			for(int i = 0; i < mList.size() && !foundMatch; i++) {
-				if (series.name.equals(mList.get(i).name) && series.num.equals(mList.get(i).num)) {
-					foundMatch = true;
+			try {
+				for(int i = 0; i < mList.size() && !foundMatch; i++) {
+					if (series.name.equals(mList.get(i).name) && series.num.equals(mList.get(i).num)) {
+						foundMatch = true;
+					}
 				}
+			} catch (NullPointerException e) {
+				Logger.logError(e, "while adding series");
 			}
 			if (foundMatch) {
 				Toast.makeText(EditSeriesList.this, getResources().getString(R.string.series_already_in_list), Toast.LENGTH_LONG).show();						

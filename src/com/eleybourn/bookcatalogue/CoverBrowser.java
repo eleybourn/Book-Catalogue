@@ -200,6 +200,10 @@ public class CoverBrowser {
 		public void run() {
 			// Start the download
 			fileSpec = mFileManager.download(isbn, ImageSizes.SMALL);
+			File file = new File(fileSpec);
+			if (file.length() < 50) {
+				fileSpec = mFileManager.download(isbn, ImageSizes.LARGE);
+			}
 		}
 		@Override
 		public void finished() {
@@ -244,13 +248,17 @@ public class CoverBrowser {
 		public void run() {
 			// Download the file
 			fileSpec = mFileManager.download(isbn, ImageSizes.LARGE);
+			File file = new File(fileSpec);
+			if (file.length() < 50) {
+				fileSpec = mFileManager.download(isbn, ImageSizes.SMALL);
+			}
 		}
 		@Override
 		public void finished() {
 			// Update the ImageSwitcher
 			File file = new File(fileSpec);
 			TextView msgVw = (TextView)mDialog.findViewById(R.id.switcherStatus);
-			if (file.exists() && file.length() > 0) {
+			if (file.exists() && file.length() > 100) {
 				Drawable d = new BitmapDrawable(Utils.fetchFileIntoImageView(file, null, mPreviewSize*4, mPreviewSize*4, true));
 				switcher.setImageDrawable(d);
 				switcher.setTag(file.getAbsolutePath());    			

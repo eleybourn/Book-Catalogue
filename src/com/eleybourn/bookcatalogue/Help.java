@@ -139,4 +139,17 @@ public class Help extends Activity {
 		setupCleanupButton();		
 	}
 
+	/**
+	 * Called when activity destroyed
+	 */
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		try {
+			mDbHelper.close();
+		} catch (Exception e) {
+			Logger.logError(e);
+		}
+	}
+
 }

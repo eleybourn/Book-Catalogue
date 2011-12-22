@@ -422,6 +422,7 @@ public class CatalogueDBAdapter {
 					//db.endTransaction();
 				}
 			}
+			current.close();
 			
 			String[] indices = DATABASE_CREATE_INDICES;
 			for (int i = 0; i < indices.length; i++) {

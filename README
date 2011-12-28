@@ -43,17 +43,8 @@ Features include;
 
 new in v3.8.1
 * Italian translation added
-* TODO: Catch XML error in search org.apache.harmony.xml.ExpatParser$ParseException: At line 2, column 0: junk after document element
-	at org.apache.harmony.xml.ExpatParser.parseFragment(ExpatParser.java:519)
-	at org.apache.harmony.xml.ExpatParser.parseDocument(ExpatParser.java:478)
-	at org.apache.harmony.xml.ExpatReader.parse(ExpatReader.java:317)
-	at org.apache.harmony.xml.ExpatReader.parse(ExpatReader.java:275)
-	at javax.xml.parsers.SAXParser.parse(SAXParser.java:390)
-	at javax.xml.parsers.SAXParser.parse(SAXParser.java:187)
-	at com.eleybourn.bookcatalogue.AmazonManager.searchAmazon(AmazonManager.java:44)
-	at com.eleybourn.bookcatalogue.SearchAmazonThread.onRun(SearchAmazonThread.java:18)
-	at com.eleybourn.bookcatalogue.ManagedTask.run(ManagedTask.java:147)
-
+* Crash during searching fixed
+* Crash when entering locations fixed
 
 New in v3.8
 * Fixed several defects (including multiple author's and author prefix/suffix's)

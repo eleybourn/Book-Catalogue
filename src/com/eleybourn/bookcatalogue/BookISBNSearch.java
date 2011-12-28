@@ -54,13 +54,13 @@ public class BookISBNSearch extends ActivityWithTasks {
 	private AutoCompleteTextView mAuthorText;
 	private Button mConfirmButton;
 	private CatalogueDBAdapter mDbHelper;
-
+	
 	public String author;
 	public String title;
 	public String isbn;
-
+	
 	private static final int ACTIVITY_SCAN=4;
-
+	
 	/*
 	 *  Mode this activity is in; MANUAL = data entry, SCAN = data from scanner.
 	 *  For SCAN, it loops repeatedly starting the scanner.

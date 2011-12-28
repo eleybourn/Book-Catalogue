@@ -2563,6 +2563,7 @@ public class CatalogueDBAdapter {
 	 */
 	public Cursor searchAuthors(String searchText, String bookshelf, boolean sortByFamily, boolean firstOnly) {
 		String where = "";
+		String baWhere = "";
 		searchText = encodeString(searchText);
 		if (bookshelf.equals("")) {
 			// do nothing
@@ -2570,7 +2571,7 @@ public class CatalogueDBAdapter {
 			where += " AND " + this.authorOnBookshelfSql(bookshelf, "a." + KEY_ROWID, false);
 		}
 		if (firstOnly == true) {
-			where += " AND ba." + KEY_AUTHOR_POSITION + "=1 ";
+			baWhere += " AND ba." + KEY_AUTHOR_POSITION + "=1 ";
 		}
 		//if (where != null && where.trim().length() > 0)
 		//	where = " and " + where;
@@ -2587,7 +2588,7 @@ public class CatalogueDBAdapter {
 			"WHERE (" + authorSearchPredicate(searchText) +  " OR " +
 				"a." + KEY_ROWID + " IN (SELECT ba." + KEY_AUTHOR_ID + 
 				" FROM " + DB_TB_BOOKS + " b Join " + DB_TB_BOOK_AUTHOR + " ba " + 
-				 		" On ba." + KEY_BOOK + " = b." + KEY_ROWID + " " + 
+				 		" On ba." + KEY_BOOK + " = b." + KEY_ROWID + " " + baWhere + 
 					"WHERE (" + bookSearchPredicate(searchText)  + ") ) )" + 
 				where + order;
 		return mDb.rawQuery(sql, new String[]{});

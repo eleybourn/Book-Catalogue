@@ -9,6 +9,7 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
 
+import android.net.ParseException;
 import android.os.Bundle;
 
 public class AmazonManager {
@@ -47,6 +48,8 @@ public class AmazonManager {
 		} catch (ParserConfigurationException e) {
 			Logger.logError(e);
 		} catch (SAXException e) {
+			Logger.logError(e);
+		} catch (ParseException e) {
 			Logger.logError(e);
 		} catch (Exception e) {
 			Logger.logError(e);

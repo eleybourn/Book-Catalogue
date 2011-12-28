@@ -31,7 +31,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.Toast;
@@ -84,15 +83,21 @@ public class BookEditNotes extends Activity {
 		Cursor location_cur = mDbHelper.fetchAllLocations();
 		try {
 			while (location_cur.moveToNext()) {
-				String publisher = location_cur.getString(location_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOCATION));
-				location_list.add(publisher);
+				String location = location_cur.getString(location_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOCATION));
+				try {
+					if (location.length() > 2) {
+						location_list.add(location);
+					}
+				} catch (NullPointerException e) {
+					// do nothing
+				}
 			}			
 		} finally {
 			location_cur.close();
 		}
 		return location_list;
 	}
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		try {
@@ -101,24 +106,24 @@ public class BookEditNotes extends Activity {
 			mDbHelper.open();
 			
 			setContentView(R.layout.edit_book_notes);
-
+			
 			mFields = new Fields(this);
 			Field f;
-
+			
 			// Generic validators; if field-specific defaults are needed, create a new one.
 			FieldValidator booleanValidator = new Fields.BooleanValidator();
 			FieldValidator blankOrDateValidator = new Fields.OrValidator(new Fields.BlankValidator(), new Fields.DateValidator());
 			FieldFormatter dateFormatter = new Fields.DateFieldFormatter();
-
+			
 			mFields.add(R.id.rating, CatalogueDBAdapter.KEY_RATING, new Fields.FloatValidator());
 			mFields.add(R.id.rating_label, "",  CatalogueDBAdapter.KEY_RATING, null);
 			mFields.add(R.id.read, CatalogueDBAdapter.KEY_READ, booleanValidator);
 			mFields.add(R.id.notes, CatalogueDBAdapter.KEY_NOTES, null);
-
+			
 			ArrayAdapter<String> location_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getLocations());
-			f = mFields.add(R.id.location, CatalogueDBAdapter.KEY_LOCATION, null);
-			((AutoCompleteTextView)f.getView()).setAdapter(location_adapter);
-
+			mFields.add(R.id.location, CatalogueDBAdapter.KEY_LOCATION, null);
+			mFields.setAdapter(R.id.location, location_adapter);
+			
 			f = mFields.add(R.id.read_start_button, "",  CatalogueDBAdapter.KEY_READ_START, null);
 			f.getView().setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
@@ -126,7 +131,7 @@ public class BookEditNotes extends Activity {
 				}
 			});
 			mFields.add(R.id.read_start, CatalogueDBAdapter.KEY_READ_START, blankOrDateValidator, dateFormatter);
-
+			
 			f = mFields.add(R.id.read_end_button, "",  CatalogueDBAdapter.KEY_READ_END, null);
 			f.getView().setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
@@ -134,9 +139,9 @@ public class BookEditNotes extends Activity {
 				}
 			});
 			f = mFields.add(R.id.read_end, CatalogueDBAdapter.KEY_READ_END, blankOrDateValidator, dateFormatter);
-
+			
 			mFields.add(R.id.signed, CatalogueDBAdapter.KEY_SIGNED,  booleanValidator);
-
+			
 			mFields.addCrossValidator(new Fields.FieldCrossValidator() {
 				public void validate(Fields fields, Bundle values) {
 					String start = values.getString(CatalogueDBAdapter.KEY_READ_START);
@@ -149,7 +154,7 @@ public class BookEditNotes extends Activity {
 						throw new Fields.ValidatorException(R.string.vldt_read_start_after_end,new Object[]{});							
 				}
 			});
-
+			
 			mConfirmButton = (Button) findViewById(R.id.confirm);
 			mCancelButton = (Button) findViewById(R.id.cancel);
 			
@@ -157,10 +162,10 @@ public class BookEditNotes extends Activity {
 			if (mRowId == null) {
 				getRowId();
 			}
-
+			
 			if (savedInstanceState == null)
 				populateFields();
-
+			
 			mConfirmButton.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
 					Bundle values = new Bundle();
@@ -168,7 +173,7 @@ public class BookEditNotes extends Activity {
 						//return;
 						// Ignore...nothing here is that important...but warn the users.
 					}
-
+					
 					saveState(values);
 					setResult(RESULT_OK);
 					finish();

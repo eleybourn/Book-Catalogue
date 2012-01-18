@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import net.philipwarner.taskqueue.QueueManager;
+
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -36,10 +38,14 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsExportFailuresActivity;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsRegister;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.*;
+import com.eleybourn.bookcatalogue.goodreads.SendAllBooksTask;
 
 /**
  * 
@@ -138,7 +144,9 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	 */
 	public void setupAdmin() {
 		/* Bookshelf Link */
-		TextView bookshelf = (TextView) findViewById(R.id.bookshelf_label);
+		View bookshelf = findViewById(R.id.bookshelf_label);
+		// Make line flash when clicked.
+		bookshelf.setBackgroundResource(android.R.drawable.list_selector_background);
 		bookshelf.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -148,7 +156,9 @@ public class AdministrationFunctions extends ActivityWithTasks {
 		});
 		
 		/* Manage Fields Link */
-		TextView fields = (TextView) findViewById(R.id.fields_label);
+		View fields = findViewById(R.id.fields_label);
+		// Make line flash when clicked.
+		fields.setBackgroundResource(android.R.drawable.list_selector_background);
 		fields.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -158,7 +168,9 @@ public class AdministrationFunctions extends ActivityWithTasks {
 		});
 		
 		/* Export Link */
-		TextView export = (TextView) findViewById(R.id.export_label);
+		View export = findViewById(R.id.export_label);
+		// Make line flash when clicked.
+		export.setBackgroundResource(android.R.drawable.list_selector_background);
 		export.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -168,24 +180,24 @@ public class AdministrationFunctions extends ActivityWithTasks {
 		});
 		
 		/* Import Link */
-		TextView imports = (TextView) findViewById(R.id.import_label);
-		/* Hack to pass this into the class */
-		final AdministrationFunctions pthis = this;
+		View imports = findViewById(R.id.import_label);
+		// Make line flash when clicked.
+		imports.setBackgroundResource(android.R.drawable.list_selector_background);
 		imports.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				// Verify - this can be a dangerous operation
-				AlertDialog alertDialog = new AlertDialog.Builder(pthis).setMessage(R.string.import_alert).create();
+				AlertDialog alertDialog = new AlertDialog.Builder(AdministrationFunctions.this).setMessage(R.string.import_alert).create();
 				alertDialog.setTitle(R.string.import_data);
 				alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-				alertDialog.setButton(pthis.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+				alertDialog.setButton(AdministrationFunctions.this.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						importData();
 						//Toast.makeText(pthis, importUpdated + " Existing, " + importCreated + " Created", Toast.LENGTH_LONG).show();
 						return;
 					}
 				}); 
-				alertDialog.setButton2(pthis.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+				alertDialog.setButton2(AdministrationFunctions.this.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						//do nothing
 						return;
@@ -198,7 +210,9 @@ public class AdministrationFunctions extends ActivityWithTasks {
 
 		// Debug ONLY!
 		/* Backup Link */
-		TextView backup = (TextView) findViewById(R.id.backup_label);
+		View backup = findViewById(R.id.backup_label);
+		// Make line flash when clicked.
+		backup.setBackgroundResource(android.R.drawable.list_selector_background);
 		backup.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -209,7 +223,9 @@ public class AdministrationFunctions extends ActivityWithTasks {
 		});
 
 		/* Export Link */
-		TextView thumb = (TextView) findViewById(R.id.thumb_label);
+		View thumb = findViewById(R.id.thumb_label);
+		// Make line flash when clicked.
+		thumb.setBackgroundResource(android.R.drawable.list_selector_background);
 		thumb.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -217,6 +233,122 @@ public class AdministrationFunctions extends ActivityWithTasks {
 				return;
 			}
 		});
+
+		/* Goodreads export Link */
+		{
+			View v = findViewById(R.id.send_all_to_goodreads_label);
+			// Make line flash when clicked.
+			v.setBackgroundResource(android.R.drawable.list_selector_background);
+			v.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					sendAllToGoodreads();
+					return;
+				}
+			});
+		}
+
+		{
+			/* Tasks setup Link */
+			View v = findViewById(R.id.background_tasks_label);
+			// Make line flash when clicked.
+			v.setBackgroundResource(android.R.drawable.list_selector_background);
+			v.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					showBackgroundTasks();
+					return;
+				}
+			});
+		}
+
+		/* Task errors setup Link */
+		View errTest = findViewById(R.id.task_errors_label);
+		// Make line flash when clicked.
+		errTest.setBackgroundResource(android.R.drawable.list_selector_background);
+		errTest.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				showEvents();
+				return;
+			}
+		});
+
+		/* LibraryThing auth Link */
+		View ltAuth = findViewById(R.id.librarything_auth);
+		// Make line flash when clicked.
+		ltAuth.setBackgroundResource(android.R.drawable.list_selector_background);
+		ltAuth.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(AdministrationFunctions.this, AdministrationLibraryThing.class);
+				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(i);
+				return;
+			}
+		});
+
+		/* Goodreads auth Link */
+		View grAuth = findViewById(R.id.goodreads_auth);
+		// Make line flash when clicked.
+		grAuth.setBackgroundResource(android.R.drawable.list_selector_background);
+		grAuth.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(AdministrationFunctions.this, GoodreadsRegister.class);
+				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(i);
+				return;
+			}
+		});
+
+		/* Other Prefs Link */
+		View otherPrefs = findViewById(R.id.other_prefs_label);
+		// Make line flash when clicked.
+		otherPrefs.setBackgroundResource(android.R.drawable.list_selector_background);
+		otherPrefs.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(AdministrationFunctions.this, OtherPreferences.class);
+				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(i);
+				return;
+			}
+		});
+	}
+
+	/**
+	 * Start the activity that shows the basic details of background tasks.
+	 */
+	private void showBackgroundTasks() {
+		Intent i = new Intent(this, TaskListActivity.class);
+		i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		startActivity(i);
+	}
+	/**
+	 * Show the activity that displays all Event objects created by the QueueManager.
+	 */
+	private void showEvents() {
+		Intent i = new Intent(this, GoodreadsExportFailuresActivity.class);
+		i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		startActivity(i);
+	}
+
+	/**
+	 * Start a background task that exports all books to goodreads.
+	 */
+	private void sendAllToGoodreads() {
+		GoodreadsManager grMgr = new GoodreadsManager();
+		if (!grMgr.hasValidCredentials()) {
+			try {
+				grMgr.requestAuthorization(this);
+			} catch (NetworkException e) {
+				Logger.logError(e, "Network error while requesting OAuth Authorization");
+			}
+			return;
+		}
+
+		QueueManager.getQueueManager().enqueueTask(new SendAllBooksTask(), "main");
 	}
 	
 	/**

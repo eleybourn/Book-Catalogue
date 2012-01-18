@@ -1,0 +1,154 @@
+package com.eleybourn.bookcatalogue.goodreads;
+
+import com.eleybourn.bookcatalogue.BooksCursor;
+import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
+import com.eleybourn.bookcatalogue.R;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.TextView;
+import android.widget.Toast;
+
+/**
+ * Activity to handle searching goodreads for books that did not automatically convert. These
+ * are typically books with no ISBN.
+ * 
+ * The search criteria is setup to contain the book author, title and ISBN. The user can edit
+ * these and search goodreads, then review the results.
+ * 
+ * @author Grunthos
+ */
+public class GoodreadsSearchCriteria extends Activity {
+	public static final String EXTRA_BOOK_ID = "bookId";
+
+	private CatalogueDBAdapter mDbHelper;
+	private long mBookId = 0;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		// Setup DB and layout.
+		mDbHelper = new CatalogueDBAdapter(this);
+		mDbHelper.open();
+		setContentView(R.layout.goodreads_search_criteria);
+
+		// Initial value; try to build from passed book, if available.
+		String criteria = "";
+
+		Bundle extras = this.getIntent().getExtras();
+
+		// Look for a book ID
+		if (extras != null && extras.containsKey(EXTRA_BOOK_ID)) {
+			mBookId = extras.getLong(EXTRA_BOOK_ID);
+		}
+
+		// If we have a book, fill in criteria AND try a search
+		if (mBookId != 0) {
+			setViewVisibility(R.id.original_details, true);
+			BooksCursor c = mDbHelper.fetchBookById(mBookId);
+			try 
+			{
+				if (!c.moveToFirst()) {
+					Toast.makeText(this, getString(R.string.book_no_longer_exists), Toast.LENGTH_LONG).show();
+					finish();
+					return;					
+				}
+				{
+					String s = c.getPrimaryAuthorName();
+					setViewText(R.id.author, s);
+					criteria += s + " ";
+				}
+				{
+					String s = c.getTitle();
+					setViewText(R.id.title, s);
+					criteria += s + " ";
+				}
+				{
+					String s = c.getIsbn();
+					setViewText(R.id.isbn, s);
+					criteria += s + " ";
+				}
+			} finally {
+				c.close();
+			}
+			criteria = criteria.trim();
+
+			setViewText(R.id.search_text, criteria.trim());
+			doSearch();
+		} else {
+			setViewVisibility(R.id.original_details, false);			
+		}
+
+		setClickListener(R.id.search, new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				doSearch();
+			}});
+		
+	}
+
+	/**
+	 * Set the visibility of the passed view.
+	 */
+	private void setViewVisibility(int id, boolean visible) {
+		int flag;
+		if (visible) {
+			flag = View.VISIBLE;
+		} else {
+			flag = View.GONE;
+		}
+		this.findViewById(id).setVisibility(flag);
+	}
+
+	/**
+	 * Set the text of the passed view
+	 */
+	private void setViewText(int id, String s) {
+		((TextView)this.findViewById(id)).setText(s);
+	}
+	
+	/**
+	 * Get the text of the passed view
+	 */
+	private String getViewText(int id) {
+		return ((TextView)this.findViewById(id)).getText().toString();
+	}
+
+	/**
+	 * Set the OnClickListener for the passed view
+	 */
+	private void setClickListener(int id, OnClickListener listener) {
+		((View)this.findViewById(id)).setOnClickListener(listener);
+	}
+
+
+	/**
+	 * Start the search results activity.
+	 */
+	private void doSearch() {
+		String criteria = getViewText(R.id.search_text).trim();
+
+		if (criteria.equals("")) {
+			Toast.makeText(this, getString(R.string.please_enter_search_criteria), Toast.LENGTH_LONG).show();
+			return;
+		}
+
+		Intent i = new Intent(this, GoodreadsSearchResults.class);
+		i.putExtra(GoodreadsSearchResults.SEARCH_CRITERIA, criteria);
+		this.startActivity(i);
+	}
+
+	/**
+	 * Cleanup
+	 */
+	@Override 
+	public void onDestroy() {
+		super.onDestroy();
+		if (mDbHelper != null)
+			mDbHelper.close();
+	}
+}

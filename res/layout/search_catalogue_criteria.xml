@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_root" 
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+	android:gravity="top" 
+	android:background="@drawable/bc_background_gradient"
+    android:orientation="vertical" >
+
+    <LinearLayout android:id="@+id/header" 
+        android:background="#00000000"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+		android:layout_alignParentTop="true"
+		android:paddingLeft="5dp"
+		android:paddingRight="5dp"
+	    android:orientation="vertical" >
+
+	 	<LinearLayout android:id="@+id/original_details"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+			android:background="#00000000"
+		    android:orientation="vertical" >
+
+	        <LinearLayout
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+				android:background="#00000000"
+			    android:orientation="vertical" >
+		
+		 		<TextView 
+			        android:background="#00000000"
+			  		android:layout_width="wrap_content" 
+					android:layout_height="wrap_content" 
+				    android:textAppearance="?android:attr/textAppearanceSmall"
+				    android:text="@string/search_criteria"
+			  		/>
+				<EditText android:id="@+id/criteria" 
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content" 
+					android:layout_weight="1"
+					android:inputType="textMultiLine"
+					android:singleLine="false"
+				    android:textAppearance="?android:attr/textAppearanceMedium"
+					/>	 				 	    
+		 	</LinearLayout>
+	        <LinearLayout
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+				android:background="#00000000"
+			    android:orientation="vertical" >
+		
+		 		<TextView 
+			        android:background="#00000000"
+			  		android:layout_width="wrap_content" 
+					android:layout_height="wrap_content" 
+				    android:textAppearance="?android:attr/textAppearanceSmall"
+				    android:text="@string/author"
+			  		/>
+				<EditText android:id="@+id/author" 
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content" 
+					android:layout_weight="1"
+					android:inputType="textMultiLine"
+					android:singleLine="false"
+				    android:textAppearance="?android:attr/textAppearanceMedium"
+					/>	 				 	    
+		 	</LinearLayout>
+	        <LinearLayout
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+				android:background="#00000000"
+			    android:orientation="vertical" >
+		
+		 		<TextView 
+			        android:background="#00000000"
+			  		android:layout_width="wrap_content" 
+					android:layout_height="wrap_content" 
+				    android:textAppearance="?android:attr/textAppearanceSmall"
+				    android:text="@string/title"
+			  		/>
+				<EditText android:id="@+id/title" 
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content" 
+					android:layout_weight="1"
+					android:inputType="textMultiLine"
+					android:singleLine="false"
+				    android:textAppearance="?android:attr/textAppearanceMedium"
+					/>	 				 	    
+		 	</LinearLayout>
+		 	
+		 	<View 
+			    android:background="@drawable/main_menu_header_divider"
+			    android:layout_width="fill_parent"
+			    android:layout_height="2dp"
+				android:paddingBottom="2dp"
+			    />
+
+		 </LinearLayout>
+
+	 	<LinearLayout
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+			android:background="#00000000"
+			android:paddingTop="5dp"
+		    android:orientation="vertical" >
+		
+	 	    <TextView android:id="@+id/books_found" 
+		        android:background="#00000000"
+		  		android:layout_width="fill_parent" 
+				android:layout_height="wrap_content" 
+			    android:textAppearance="?android:attr/textAppearanceMedium"
+		  		/>
+	 	</LinearLayout>
+	 	<View 
+		    android:background="@drawable/main_menu_header_divider"
+		    android:layout_width="fill_parent"
+		    android:layout_height="2dp"
+			android:paddingBottom="2dp"
+		    />
+ 	</LinearLayout>
+ 
+ 	<LinearLayout android:id="@+id/footer"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+		android:background="#00000000"
+		android:layout_alignParentBottom="true"
+		android:paddingLeft="5dp"
+		android:paddingRight="5dp"
+	    android:orientation="vertical" >
+
+	 	<View 
+		    android:background="@drawable/main_menu_header_divider"
+		    android:layout_width="fill_parent"
+		    android:layout_height="2dp"
+			android:paddingBottom="2dp"
+		    />
+ 	    <Button android:id="@+id/search"
+			android:focusable="false"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:text="@+string/show_results"
+			android:layout_gravity="center"
+		    />
+ 	    <Button android:id="@+id/rebuild"
+			android:focusable="false"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:text="@+string/rebuild_fts"
+			android:layout_gravity="center"
+		    />
+   	</LinearLayout>
+</RelativeLayout>

@@ -271,4 +271,69 @@
 <string name="menu_share_this">Share</string>
 <string name="email_export">Would you like to send this export as an email somewhere?</string>
 <string name="menu_crop_thumb">Crop Thumbnail</string>
+<string name="test_goodreads">Test Goodreads</string>
+<string name="task_errors">Task Errors</string>
+<string name="retry">Retry</string>
+<string name="optionsElipsis">Options&#8230;</string>
+<string name="edit_book">Edit Book&#8230;</string>
+<string name="retry_task">Retry</string>
+<string name="visit_goodreads">Visit GoodReads&#8230;</string>
+<string name="delete_entry">Delete</string>
+<item name="TAG_EVENT" type="id"></item>
+<item name="TAG_HOLDER" type="id"></item>
+<item name="TAG_TASK" type="id"></item>
+<item name="TAG_TASK_ID" type="id"></item>
+<item name="TAG_BOOK_EVENT_HOLDER" type="id"></item>
+<item name="TAG_TASK_HOLDER" type="id"></item>
+<string name="my_books">My Books</string>
+<string name="loan_return_book">Loan, Return or Edit Book</string>
+<string name="admin_and_prefs">Administration and Preferences</string>
+<string name="edit_book_send_to_gr">Send to GoodReads</string>
+<string name="goodreads_label">GoodReads</string>
+<string name="goodreads_auth_blurb_part1">goodreads is a web site whose stated mission is "to help people find and share books they love". They have an extensive database of books and reviews, and if you are a registered goodreads user, BookCatalogue can export your books, shelves and reviews to goodreads and import your books, shelves and reviews from goodreads. BookCatalogue is a stand-alone application and does not require goodreads, but if you are interested you can register at:</string>
+<string name="goodreads_auth_blurb_part2">Once you are registered, or if you are already a goodreads user, you can authorize BookCatalogue to access your goodreads data by pressing the button below. It will take you to a web page where you will need to login to goodreads and authorize this application. We will never see your password, and you can disable access via the goodreads website. Due to the vagueries of the web, you may end up on a blank web page. Just click the back button to return here!</string>
+<string name="goodreads_auth_blurb_part3">But remember...there is no need to do any of this: BookCatalogue works just fine without it!</string>
+<string name="goodreads_url">http://www.goodreads.com</string>
+<string name="authorize_access">Authorize Access</string>
+<string name="authorize_access_already_auth">It looks like you have already authorized this application. All goodreads functions should be available already</string>
+<string name="goodreads_access_error">There was a problem accessing goodreads. If the problem persists please contact support</string>
+<string name="other_preferences">Other Preferences</string>
+<string name="user_interface">User Interface</string>
+<string name="start_in_my_books">Start in &quot;My Books&quot;</string>
+<string name="background_tasks">Background Tasks</string>
+<string name="cleanup_old_tasks">Cleanup Old Tasks</string>
+<string name="cleanup_old_events">Cleanup Old Events</string>
+<string name="show_more">Show More</string>
+<string name="text_and_or_isbn">Text and/or ISBN</string>
+<string name="search_criteria">Search Criteria</string>
+<string name="add_manually">Add Manually</string>
+<string name="scan_barcode">Scan Barcode</string>
+<string name="enter_barcode">Enter Barcode</string>
+<string name="search_internet">Search Internet</string>
+<string name="show_results">Show Results</string>
+<string name="rebuild_fts">Rebuild FTS (alpha only!)</string>
+<string name="search_in">Search In</string>
+<string name="send_all_to_goodreads">Send all to goodreads</string>
+<string name="legacy_task">Legacy Task</string>
+<string name="occurred_at">occurred at %1$s</string>
+<string name="unknown_uc">UNKNOWN</string>
+<string name="this_book_deleted_uc">THIS BOOK HAS BEEN DELETED</string>
+<string name="by">by %1$s</string>
+<string name="no_matching_book_found">No matching book found</string>
+<string name="no_isbn_stored_for_book">No ISBN stored for book</string>
+<string name="select_an_action">Select an action</string>
+<string name="get_image_from">Get an image from %1$s</string>
+<string name="goodreads_auth_check">Goodreads authorization check</string>
+<string name="goodreads_auth_failed">Goodreads authorization failed</string>
+<string name="goodreads_auth_successful">Goodreads authorization successful</string>
+<string name="authorized">Authorized</string>
+<string name="not_authorized">Not Authorized</string>
+<string name="goodreads_auth_error">Goodreads authorization resulted in an error.</string>
+<string name="if_the_problem_persists">If the problem persists, contact support via Help on the main menu.</string>
+<string name="book_no_longer_exists">The specified book no longer exists</string>
+<string name="please_enter_search_criteria">Please enter search criteria</string>
+<string name="error_while_searching">Error while searching.</string>
+<string name="send_all_to_goodreads_result">%1$s books processed: %2$s sent successfully, %3$s with no ISBN and %4$s with ISBN but not found in goodreads</string>
+<string name="x_of_y">%1$s of %2$s</string>
+<string name="send_book_to_goodreads">Send book %1$s to goodreads</string>
 </resources>

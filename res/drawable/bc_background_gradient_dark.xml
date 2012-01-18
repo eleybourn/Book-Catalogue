@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item>
+		<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
+		    android:src="@drawable/books_bg" 
+		    android:tileMode="repeat">
+		</bitmap>
+    </item>
+    <item>
+		<shape xmlns:android="http://schemas.android.com/apk/res/android" >
+		   <gradient 
+		       android:startColor="#FF000000"
+		       android:centerColor="#E0000000"
+		       android:endColor="#D0000000"
+		       android:angle="0"
+		       android:dither="true"
+		    />
+		</shape>
+<!--         <gradient  xmlns:android="http://schemas.android.com/apk/res/android" android:src="@drawable/bc_gradient" />
+ -->
+     </item>
+</layer-list>
+

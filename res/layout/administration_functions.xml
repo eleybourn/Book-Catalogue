@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
 		android:layout_width="fill_parent"
-		android:layout_height="wrap_content">
+		android:layout_height="wrap_content"
+		android:background="@drawable/bc_background_gradient"
+		>
 
+  <!--  MANAGEMENT HEader -->
   <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
 	android:orientation="vertical"
 	android:layout_width="fill_parent" 
@@ -14,12 +17,29 @@
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content"
 		android:paddingLeft="5sp">
+		<TextView 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:text="management"
+			android:textAppearance="?android:attr/textAppearanceSmall"
+			android:paddingTop="5sp"
+			/>
+	</LinearLayout>
+
+  	<!--  BOOKSHELVES -->
+	<LinearLayout android:id="@+id/bookshelf_label" 
+		android:orientation="horizontal"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:clickable="true"
+		android:paddingLeft="15sp">
 		<ImageView android:id="@+id/bookshelf_img" 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
+			android:paddingLeft="10sp"
 			android:src="@+drawable/ic_menu_bookshelves"
 			/>
-		<TextView android:id="@+id/bookshelf_label" 
+		<TextView 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
 			android:text="@+string/menu_bookshelf"
@@ -27,18 +47,21 @@
 			android:paddingTop="5sp"
 			/>
 	</LinearLayout>
-	
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+
+	<!--  FIELDS -->
+	<LinearLayout android:id="@+id/fields_label" 
 		android:orientation="horizontal"
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content"
-		android:paddingLeft="5sp">
+		android:clickable="true"
+		android:paddingLeft="15sp">
 		<ImageView android:id="@+id/fields_img" 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
+			android:paddingLeft="10sp"
 			android:src="@+android:drawable/ic_menu_agenda"
 			/>
-		<TextView android:id="@+id/fields_label" 
+		<TextView 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
 			android:text="@+string/menu_manage_fields"
@@ -46,18 +69,164 @@
 			android:paddingTop="5sp"
 			/>
 	</LinearLayout>
+
+	<!--  OTHER PREFS -->
+	<LinearLayout android:id="@+id/other_prefs_label" 
+		android:orientation="horizontal"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:clickable="true"
+		android:paddingLeft="15sp">
+		<ImageView
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:paddingLeft="10sp"
+			android:src="@+android:drawable/ic_menu_manage"
+			/>
+		<TextView 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:text="@+string/other_preferences"
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:paddingTop="5sp"
+			/>
+	</LinearLayout>
 	
+	<!--  TASKs -->
+	<LinearLayout android:id="@+id/background_tasks_label" 
+		android:orientation="horizontal"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:clickable="true"
+		android:paddingLeft="15sp">
+		<ImageView 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:paddingLeft="10sp"
+			android:src="@+android:drawable/ic_menu_gallery"
+			/>
+		<TextView 
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:text="@+string/background_tasks"
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:paddingTop="5sp"
+			/>
+	</LinearLayout>
+
+	<!--  TASK ERRORS -->
+	<LinearLayout android:id="@+id/task_errors_label" 
+		android:orientation="horizontal"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:clickable="true"
+		android:paddingLeft="15sp">
+		<ImageView 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:paddingLeft="10sp"
+			android:src="@+android:drawable/ic_menu_gallery"
+			/>
+		<TextView 
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:text="@+string/task_errors"
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:paddingTop="5sp"
+			/>
+	</LinearLayout>
+		
+	<!--  CREDENTIALS HEADING -->
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
 		android:orientation="horizontal"
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content"
 		android:paddingLeft="5sp">
-		<ImageView android:id="@+id/export_img" 
+		<TextView android:id="@+id/bookshelf_label" 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
+			android:text="credentials"
+			android:textAppearance="?android:attr/textAppearanceSmall"
+			android:paddingTop="5sp"
+			/>
+	</LinearLayout>
+
+	<!--  GOODREADS CREDENTIALS -->
+	<LinearLayout android:id="@+id/goodreads_auth"
+		android:orientation="horizontal"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:clickable="true"
+		android:paddingLeft="0sp">
+		<ImageView 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:paddingLeft="10sp"
+			android:src="@drawable/ic_menu_gr_logo"
+			android:layout_gravity="center_vertical|left"
+			/>
+		<TextView  
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:text="goodreads"
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:paddingTop="5sp"
+			android:gravity="left|center_vertical"
+			android:layout_gravity="center_vertical"
+			/>
+	</LinearLayout>
+	
+	<LinearLayout android:id="@+id/librarything_auth" 
+		android:orientation="horizontal"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:clickable="true"
+		android:paddingLeft="0sp">
+		<ImageView 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:paddingLeft="10sp"
+			android:layout_gravity="center_vertical|left"
+			android:src="@+android:drawable/ic_menu_gallery"
+			/>
+		<TextView 
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:text="LibraryThing"
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:paddingTop="5sp"
+			android:gravity="left|center_vertical"
+			android:layout_gravity="center_vertical"
+			/>
+	</LinearLayout>
+	
+	<LinearLayout 
+		android:orientation="horizontal"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:paddingLeft="5sp">
+		<TextView 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:text="data import/export"
+			android:textAppearance="?android:attr/textAppearanceSmall"
+			android:paddingTop="5sp"
+			/>
+	</LinearLayout>
+
+	<LinearLayout android:id="@+id/export_label" 
+		android:orientation="horizontal"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:clickable="true"
+		android:paddingLeft="100sp">
+		<ImageView 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:paddingLeft="10sp"
 			android:src="@+android:drawable/ic_menu_save"
 			/>
-		<TextView android:id="@+id/export_label" 
+		<TextView 
 			android:layout_width="fill_parent" 
 			android:layout_height="wrap_content" 
 			android:text="@+string/export_data"
@@ -66,17 +235,19 @@
 			/>
 	</LinearLayout>
 	
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	<LinearLayout android:id="@+id/import_label" 
 		android:orientation="horizontal"
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content"
-		android:paddingLeft="5sp">
-		<ImageView android:id="@+id/import_img" 
+		android:clickable="true"
+		android:paddingLeft="30dp">
+		<ImageView 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
+			android:paddingLeft="10sp"
 			android:src="@+android:drawable/ic_menu_upload"
 			/>
-		<TextView android:id="@+id/import_label" 
+		<TextView 
 			android:layout_width="fill_parent" 
 			android:layout_height="wrap_content" 
 			android:text="@+string/import_data"
@@ -86,17 +257,19 @@
 	</LinearLayout>
 	
 	<!-- DEBUG ONLY! -->
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	<LinearLayout android:id="@+id/backup_label" 
 		android:orientation="horizontal"
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content"
-		android:paddingLeft="5sp">
-		<ImageView android:id="@+id/backup_img" 
+		android:clickable="true"
+		android:paddingLeft="15sp">
+		<ImageView 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
+			android:paddingLeft="10sp"
 			android:src="@+android:drawable/ic_menu_gallery"
 			/>
-		<TextView android:id="@+id/backup_label" 
+		<TextView 
 			android:layout_width="fill_parent" 
 			android:layout_height="wrap_content" 
 			android:text="@+string/backup_database"
@@ -106,17 +279,19 @@
 	</LinearLayout>
 	<!-- -->
 
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	<LinearLayout android:id="@+id/thumb_label" 
 		android:orientation="horizontal"
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content"
-		android:paddingLeft="5sp">
-		<ImageView android:id="@+id/thumb_img" 
+		android:clickable="true"
+		android:paddingLeft="15sp">
+		<ImageView 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
+			android:paddingLeft="10sp"
 			android:src="@+android:drawable/ic_menu_gallery"
 			/>
-		<TextView android:id="@+id/thumb_label" 
+		<TextView 
 			android:layout_width="fill_parent" 
 			android:layout_height="wrap_content" 
 			android:text="@+string/update_fields"
@@ -125,6 +300,28 @@
 			/>
 	</LinearLayout>
 
-  </LinearLayout>
+	<LinearLayout android:id="@+id/send_all_to_goodreads_label"  
+		android:orientation="horizontal"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:clickable="true"
+		android:paddingLeft="15sp">
+		<ImageView
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:paddingLeft="10sp"
+			android:src="@+android:drawable/ic_menu_gallery"
+			/>
+		<TextView 
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:text="@+string/send_all_to_goodreads"
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:paddingTop="5sp"
+			/>
+	</LinearLayout>
+
+
+	</LinearLayout>
 </ScrollView>
   

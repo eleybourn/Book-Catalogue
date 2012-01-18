@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:orientation="vertical"
+	android:layout_width="fill_parent" 
+	android:layout_height="fill_parent"
+	android:background="@drawable/bc_background_gradient"
+	android:paddingLeft="5sp">
+
+    <TextView 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content" 
+		android:text="@+string/other_preferences"
+		android:textAppearance="?android:attr/textAppearanceSmall"
+		android:paddingTop="5dp"
+		android:paddingBottom="2dp"
+		/>
+ 	<View 
+	    android:background="@drawable/main_menu_header_divider"
+	    android:layout_width="fill_parent"
+	    android:layout_height="1dp"
+		android:paddingBottom="5dp"
+	    />
+
+	<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			>
+	
+	  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+		android:orientation="vertical"
+		android:layout_width="fill_parent" 
+		android:layout_height="fill_parent"
+		android:paddingLeft="5sp">
+		
+	  	<!--  UI Header -->
+	  	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+			android:orientation="horizontal"
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content"
+			android:paddingLeft="5sp">
+			<TextView 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:text="@+string/user_interface"
+				android:textAppearance="?android:attr/textAppearanceSmall"
+				android:paddingTop="5sp"
+				/>
+		</LinearLayout>
+	
+	  	<!--  Startup Screen -->
+		<LinearLayout android:id="@+id/startup_in_my_books_label" 
+			android:orientation="horizontal"
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content"
+			android:paddingLeft="15sp">
+			<CheckBox android:id="@+id/startup_my_books_checkbox" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:paddingLeft="10sp"
+				android:focusable="false"
+				android:src="@+drawable/ic_menu_bookshelves"
+				/>
+			<TextView 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:text="@+string/start_in_my_books"
+				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:paddingTop="5sp"
+				/>
+		</LinearLayout>
+	
+	</LinearLayout>
+  </ScrollView>
+
+</LinearLayout>
+	

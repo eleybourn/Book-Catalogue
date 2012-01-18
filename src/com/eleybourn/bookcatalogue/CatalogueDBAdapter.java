@@ -33,10 +33,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.database.SQLException;
+import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDoneException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteQuery;
 import android.database.sqlite.SQLiteStatement;
+import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.BaseColumns;
@@ -51,6 +54,9 @@ public class CatalogueDBAdapter {
 	
 	private ArrayList<SQLiteStatement> mStatements = new ArrayList<SQLiteStatement>();
 	
+	/** Convenience to avoid writing "String[] {}" in many DB routines */
+	public static final String[] EMPTY_STRING_ARRAY = new String[]{};
+
 	/* This is the list of all column names as static variables for reference
 	 * 
 	 * NOTE!!! Because Java String comparisons are not case-insensitive, it is 
@@ -106,11 +112,15 @@ public class CatalogueDBAdapter {
 	//public static final String COLLATION = "Collate NOCASE";
 	public static final String COLLATION = " Collate UNICODE ";
 
+	public static final String[] EMPTY_STRNG_ARRAY = new String[] {};
+
 	private DatabaseHelper mDbHelper;
 	private SQLiteDatabase mDb;
 
 	/* private database variables as static reference */
 	private static final String DB_TB_BOOKS = "books";
+	private static final String DB_TB_BOOKS_FTS = "books_fts";
+	private static final String DB_TB_BOOKS_FTS_TEMP = "books_fts_temp";
 	private static final String DB_TB_BOOK_AUTHOR = "book_author";
 	private static final String DB_TB_BOOK_BOOKSHELF_WEAK = "book_bookshelf_weak";
 	private static final String DB_TB_BOOK_SERIES = "book_series";
@@ -364,7 +374,7 @@ public class CatalogueDBAdapter {
 		
 	private final Context mCtx;
 	//TODO: Update database version
-	public static final int DATABASE_VERSION = 62;
+	public static final int DATABASE_VERSION = 63;
 
 	private TableInfo mBooksInfo = null;
 
@@ -1188,6 +1198,13 @@ public class CatalogueDBAdapter {
 					message += "* Changed the 'Add Book' menu options to be submenu\n\n";
 					message += "* The database backup has been renamed for clarity\n\n";
 				}
+				if (curVersion == 62) {
+					// A bit of presumption here...
+					curVersion++;
+					message += "New in v4.0\n\n";
+					message += "* New look, new startup page, new search\n\n";
+					message += "* Synchronization with GoodReads\n\n";
+				}
 			}
 			//TODO: NOTE: END OF UPDATE
 		}
@@ -1815,7 +1832,7 @@ public class CatalogueDBAdapter {
 	 * @param bookshelf Which bookshelf is it in. Can be "All Books"
 	 * @return Cursor over all Books
 	 */
-	public Cursor fetchAllBooks(String order, String bookshelf, String authorWhere, String bookWhere, String searchText, String loaned_to, String seriesName) {
+	public BooksCursor fetchAllBooks(String order, String bookshelf, String authorWhere, String bookWhere, String searchText, String loaned_to, String seriesName) {
 		String baseSql = this.fetchAllBooksSql("", bookshelf, authorWhere, bookWhere, searchText, loaned_to, seriesName);
 
 		// Get the basic query; we will use it as a sub-query
@@ -1873,12 +1890,12 @@ public class CatalogueDBAdapter {
 		if (!order.equals("")) {
 			fullSql += " ORDER BY " + order;
 		}
-		Cursor returnable = null;
+		BooksCursor returnable = null;
 		try {
-			returnable = mDb.rawQuery(fullSql, new String[]{});
+			returnable = fetchBooks(fullSql, EMPTY_STRING_ARRAY);
 		} catch (IllegalStateException e) {
 			open();
-			returnable = mDb.rawQuery(fullSql, new String[]{});
+			returnable = fetchBooks(fullSql, EMPTY_STRING_ARRAY);
 			Logger.logError(e);
 		}
 		return returnable;
@@ -1891,7 +1908,7 @@ public class CatalogueDBAdapter {
 	 * @param bookshelf Which bookshelf is it in. Can be "All Books"
 	 * @return Cursor over all Books
 	 */
-	public Cursor fetchAllBooksByAuthor(int author, String bookshelf, String search_term, boolean firstOnly) {
+	public BooksCursor fetchAllBooksByAuthor(int author, String bookshelf, String search_term, boolean firstOnly) {
 		String where = " a._id=" + author;
 		if (firstOnly == true) {
 			where += " AND ba." + KEY_AUTHOR_POSITION + "=1 ";
@@ -1906,7 +1923,7 @@ public class CatalogueDBAdapter {
 	 * @param char The first title character
 	 * @return Cursor over all books
 	 */
-	public Cursor fetchAllBooksByChar(String first_char, String bookshelf, String search_term) {
+	public BooksCursor fetchAllBooksByChar(String first_char, String bookshelf, String search_term) {
 		String where = " " + makeTextTerm("substr(b." + KEY_TITLE + ",1,1)", "=", first_char);
 		return fetchAllBooks("", bookshelf, "", where, search_term, "", "");
 	}
@@ -1918,7 +1935,7 @@ public class CatalogueDBAdapter {
 	 * @param bookshelf The bookshelf to search within. Can be the string "All Books"
 	 * @return Cursor over all books
 	 */
-	public Cursor fetchAllBooksByDatePublished(String date, String bookshelf, String search_term) {
+	public BooksCursor fetchAllBooksByDatePublished(String date, String bookshelf, String search_term) {
 		String where = "";
 		if (date == null) {
 			date = META_EMPTY_DATE_PUBLISHED;
@@ -1938,7 +1955,7 @@ public class CatalogueDBAdapter {
 	 * @param bookshelf The bookshelf to search within. Can be the string "All Books"
 	 * @return Cursor over all books
 	 */
-	public Cursor fetchAllBooksByGenre(String genre, String bookshelf, String search_term) {
+	public BooksCursor fetchAllBooksByGenre(String genre, String bookshelf, String search_term) {
 		String where = "";
 		if (genre.equals(META_EMPTY_GENRE)) {
 			where = "(b." + KEY_GENRE + "='' OR b." + KEY_GENRE + " IS NULL)";
@@ -1954,7 +1971,7 @@ public class CatalogueDBAdapter {
 	 * @param loaned_to The person who had books loaned to
 	 * @return Cursor over all books
 	 */
-	public Cursor fetchAllBooksByLoan(String loaned_to, String search_term) {
+	public BooksCursor fetchAllBooksByLoan(String loaned_to, String search_term) {
 		return fetchAllBooks("", "", "", "", search_term, loaned_to, "");
 	}
 	
@@ -1964,7 +1981,7 @@ public class CatalogueDBAdapter {
 	 * @param read "Read" or "Unread"
 	 * @return Cursor over all books
 	 */
-	public Cursor fetchAllBooksByRead(String read, String bookshelf, String search_term) {
+	public BooksCursor fetchAllBooksByRead(String read, String bookshelf, String search_term) {
 		String where = "";
 		if (read.equals("Read")) {
 			where += " b." + KEY_READ + "=1";
@@ -1981,7 +1998,7 @@ public class CatalogueDBAdapter {
 	 * @param bookshelf The bookshelf to search within. Can be the string "All Books"
 	 * @return Cursor over all books
 	 */
-	public Cursor fetchAllBooksBySeries(String series, String bookshelf, String search_term) {
+	public BooksCursor fetchAllBooksBySeries(String series, String bookshelf, String search_term) {
 		if (series.length() == 0 || series.equals(META_EMPTY_SERIES)) {
 			return fetchAllBooks("", bookshelf, "", "", search_term, "", META_EMPTY_SERIES);
 		} else {
@@ -2300,7 +2317,7 @@ public class CatalogueDBAdapter {
 	 * @return Cursor positioned to matching book, if found
 	 * @throws SQLException if note could not be found/retrieved
 	 */
-	public Cursor fetchBookById(long rowId) throws SQLException {
+	public BooksCursor fetchBookById(long rowId) throws SQLException {
 		String where = "b." + KEY_ROWID + "=" + rowId;
 		return fetchAllBooks("", "", "", where, "", "", "");
 	}
@@ -2347,7 +2364,7 @@ public class CatalogueDBAdapter {
 	 * @param title Title of book
 	 * @return Cursor of the book
 	 */
-	public Cursor fetchByAuthorAndTitle(String family, String given, String title) {
+	public BooksCursor fetchByAuthorAndTitle(String family, String given, String title) {
 		String authorWhere = makeTextTerm("a." + KEY_FAMILY_NAME, "=", family) 
 							+ " AND " + makeTextTerm("a." + KEY_GIVEN_NAMES, "=", given);
 		String bookWhere = makeTextTerm("b." + KEY_TITLE, "=", title);
@@ -2647,16 +2664,16 @@ public class CatalogueDBAdapter {
 	 * @param bookshelf The bookshelf to search within. Can be the string "All Books"
 	 * @return A Cursor of book meeting the search criteria
 	 */
-	public Cursor searchBooksByChar(String searchText, String first_char, String bookshelf) {
+	public BooksCursor searchBooksByChar(String searchText, String first_char, String bookshelf) {
 		String where = " " + makeTextTerm("substr(b." + KEY_TITLE + ",1,1)", "=", first_char);
 		return fetchAllBooks("", bookshelf, "", where, searchText, "", "");
 	}
 	
-	public Cursor searchBooksByDatePublished(String searchText, String date, String bookshelf) {
+	public BooksCursor searchBooksByDatePublished(String searchText, String date, String bookshelf) {
 		return fetchAllBooks("", bookshelf, "", " strftime('%Y', b." + KEY_DATE_PUBLISHED + ")='" + date + "' " + COLLATION + " ", searchText, "", "");
 	}
 	
-	public Cursor searchBooksByGenre(String searchText, String genre, String bookshelf) {
+	public BooksCursor searchBooksByGenre(String searchText, String genre, String bookshelf) {
 		return fetchAllBooks("", bookshelf, "", " " + KEY_GENRE + "='" + genre + "' " + COLLATION + " ", searchText, "", "");
 	}
 	
@@ -3069,7 +3086,7 @@ public class CatalogueDBAdapter {
 		return mDb.rawQuery(sql, new String[]{});
 	}
 
-	ArrayList<Author> getBookAuthorList(long id) {
+	public ArrayList<Author> getBookAuthorList(long id) {
 		ArrayList<Author> authorList = new ArrayList<Author>();
 		Cursor authors = null;
 		try {
@@ -3739,8 +3756,68 @@ public class CatalogueDBAdapter {
 		return success;
 	}
 	
-	
-	
+/***************************************************************************************
+ * GoodReads support
+ **************************************************************************************/
+	/** Static Factory object to create the custom cursor */
+	private static final CursorFactory m_booksFactory = new CursorFactory() {
+			@Override
+			public Cursor newCursor(
+					SQLiteDatabase db,
+					SQLiteCursorDriver masterQuery, 
+					String editTable,
+					SQLiteQuery query) 
+			{
+				return new BooksCursor(db, masterQuery, editTable, query);
+			}
+	};
+
+	/**
+	 * Static method to get a BooksCursor Cursor. The passed sql should at least return 
+	 * some of the fields from the books table! If a method call is made to retrieve 
+	 * a column that does not exists, an exceptio will be thrown.
+	 * 
+	 * @param db		Database
+	 * @param taskId	ID of the task whose exceptions we want
+	 * 
+	 * @return			A new TaskExceptionsCursor
+	 */
+	public BooksCursor fetchBooks(String sql, String[] selectionArgs) {
+		return (BooksCursor) mDb.rawQueryWithFactory(m_booksFactory, sql, selectionArgs, "");
+	}
+
+
+	/**
+	 * Query to get all book IDs and ISBN for sending to goodreads.
+	 */
+	public BooksCursor getAllBooksForGoodreadsCursor(long startId) {
+		//if (m_allBooksForGoodreadsStmt == null) {
+		//	m_allBooksForGoodreadsStmt = compileStatement("Select isbn, " + KEY_BOOK + " from " + DB_TB_BOOKS + " Order by " + KEY_BOOK);
+		//}
+		String sql = "Select isbn, " + KEY_ROWID + " from " + DB_TB_BOOKS + " Where " + KEY_ROWID + " > " + startId + " Order by " + KEY_ROWID;
+		BooksCursor cursor = fetchBooks(sql, EMPTY_STRNG_ARRAY);
+		return cursor;
+	}
+
+	/**
+	 * Query to get a specific book ISBN from the ID for sending to goodreads.
+	 */
+	public BooksCursor getBookForGoodreadsCursor(long bookId) {
+		String sql = "Select " + KEY_ROWID + ", " + KEY_ISBN + " from " + DB_TB_BOOKS + " Where " + KEY_ROWID + " = " + bookId + " Order by " + KEY_ROWID;
+		BooksCursor cursor = fetchBooks(sql, EMPTY_STRNG_ARRAY);
+		return cursor;
+	}
+
+	/**
+	 * Query to get a all bookshelves for a book, for sending to goodreads.
+	 */
+	public Cursor getAllBookBookshelvesForGoodreadsCursor(long book) {
+		String sql = "Select s." + KEY_BOOKSHELF + " from " + DB_TB_BOOKSHELF + " s"
+				 + " Join " + DB_TB_BOOK_BOOKSHELF_WEAK + " bbs On bbs." + KEY_BOOKSHELF + " = s." + KEY_ROWID
+				 + " and bbs." + KEY_BOOK + " = " + book + " Order by s." + KEY_BOOKSHELF;
+		Cursor cursor = mDb.rawQuery(sql, new String[]{});
+		return cursor;
+	}
 	
 /**************************************************************************************/
 	
@@ -3942,6 +4019,23 @@ public class CatalogueDBAdapter {
 		}
 	}
 
+    private SQLiteStatement mGetBookTitleQuery = null;
+    /**
+     * Utility routine to return the book title based on the id. 
+     */
+    public String getBookTitle(long id) {
+    	if (mGetBookTitleQuery == null) {
+        	String sql = "Select " + KEY_TITLE + " From " + DB_TB_BOOKS + " Where " + KEY_ROWID + "=?";
+        	mGetBookTitleQuery = compileStatement(sql);
+    	}
+    	// Be cautious
+    	synchronized(mGetBookTitleQuery) {
+    		mGetBookTitleQuery.bindLong(1, id);
+        	return mGetBookTitleQuery.simpleQueryForString();
+    	}
+
+    }
+    
     /**
      * Utility routine to fill an array with the specified column from the passed SQL.
      * 
@@ -4118,5 +4212,106 @@ public class CatalogueDBAdapter {
 		SQLiteStatement s = mDb.compileStatement(sql);
 		mStatements.add(s);
 		return s;
+	}
+
+	/****************************************************************************************************
+	 * FTS Support - ALPHA!!
+	 */
+	
+	/**
+	 * Rebuild the entire FTS database. This can take a while. Minutes.
+	 * 
+	 * TODO: Finish stringification
+	 */
+	public void rebuildFts() {
+		// Delete old temp version, if it exists
+		try {
+			mDb.execSQL("Drop Table " + DB_TB_BOOKS_FTS_TEMP);
+		} catch (Exception e) {
+			// Nothing to do?
+		}
+		// Create a new temp version
+		mDb.execSQL("Create Virtual Table " + DB_TB_BOOKS_FTS_TEMP + " using fts3(author text, title text, description text, notes text, isbn text)");
+		// Compile an INSERT statement
+		SQLiteStatement insert = mDb.compileStatement("insert into " + DB_TB_BOOKS_FTS_TEMP + "(docid, author, title, description, notes, isbn) values (?,?,?,?,?,?)");
+
+		// Get all books in the DB and loop over them
+		BooksCursor c = this.fetchAllBooks("", "", "", "", "", "", "");
+		while (c.moveToNext()) {
+			// Turn a list of authors into a single string
+			ArrayList<Author> authors = this.getBookAuthorList(c.getId());
+			String authorText = "";
+			for(Author a : authors) {
+				authorText += a.getDisplayName() + ";";
+			}
+			// Set the parameters and call
+			insert.bindLong(1, c.getId());
+			insert.bindString(2, authorText);
+			insert.bindString(3, c.getTitle());
+			insert.bindString(4, c.getDescription());
+			insert.bindString(5, c.getNotes());
+			insert.bindString(6, c.getIsbn());
+			insert.execute();
+		}
+		// We're done with the cursor and statment
+		c.close();
+		insert.close();
+		// Delete old table and rename the new table
+		try {
+			mDb.execSQL("Drop Table " + DB_TB_BOOKS_FTS);
+		} catch (Exception e) {
+			// Nothing to do?
+		}
+		mDb.execSQL("Alter Table " + DB_TB_BOOKS_FTS_TEMP + " rename to " + DB_TB_BOOKS_FTS);
+		
+	}
+
+	/**
+	 * Cleanup a search string to remove all quotes etc.
+	 * 
+	 * TODO: Consider adding a '*' to the end of all words. Or make it an option.
+	 * 
+	 * @param s		Search criteria to clean
+	 * @return		Clean string
+	 */
+	private String cleanupFtsCriterion(String s) {
+		return s.replace("'", " ").replace("\"", " ").trim();
+	}
+
+	/**
+	 * Search the FTS table and return a cursor.
+	 * 
+	 * TODO: Finish stringification
+	 * TODO: Add another method that returns a books cursor...or modify the queries used in 
+	 * the BookCatalogue activity.
+	 * 
+	 * @param author		Author-related keyworks to find
+	 * @param title			Title-related keyworks to find
+	 * @param anywhere		Keyworks to find anywhere in book
+	 * @return
+	 */
+	public Cursor searchFts(String author, String title, String anywhere) {
+		author = cleanupFtsCriterion(author);
+		title = cleanupFtsCriterion(title);
+		anywhere = cleanupFtsCriterion(anywhere);
+
+		if ( (author.length() + title.length() + anywhere.length()) == 0)
+			return null;
+
+		String[] authorWords = author.split(" ");
+		String[] titleWords = title.split(" ");
+
+		String sql = "select docid from " + DB_TB_BOOKS_FTS + " where " + DB_TB_BOOKS_FTS + " match '" + anywhere;
+		for(String w : authorWords) {
+			if (!w.equals(""))
+				sql += " author:" + w;
+		}
+		for(String w : titleWords) {
+			if (!w.equals(""))
+				sql += " title:" + w;
+		}
+		sql += "'";
+
+		return mDb.rawQuery(sql, EMPTY_STRING_ARRAY);
 	}
 }

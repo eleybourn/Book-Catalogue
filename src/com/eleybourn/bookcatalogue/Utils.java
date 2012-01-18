@@ -21,6 +21,7 @@
 package com.eleybourn.bookcatalogue;
 
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -28,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -444,6 +446,83 @@ public class Utils {
 			return "";
 		}
 		return filename;
+	}
+
+	/**
+	 * Given a URL, get an image and return as a bitmap.
+	 * 
+	 * @param urlText			Image file URL
+	 *
+	 * @return	Downloaded bitmap
+	 */
+	static public Bitmap getBitmapFromUrl(String urlText) {
+		return getBitmapFromBytes( getBytesFromUrl(urlText) );
+	}
+
+	/**
+	 * Given byte array that represents an image (jpg, png etc), return as a bitmap.
+	 * 
+	 * @param bytes			Raw byte data
+	 *
+	 * @return	bitmap
+	 */
+	static public Bitmap getBitmapFromBytes(byte[] bytes) {
+		if (bytes == null || bytes.length == 0)
+			return null;
+
+		BitmapFactory.Options options = new BitmapFactory.Options();
+        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length,options);
+        String s = "Array " + bytes.length + " bytes, bitmap " + bitmap.getHeight() + "x" + bitmap.getWidth();
+        System.out.println(s);
+        return bitmap;
+	}
+
+	/**
+	 * Given a URL, get an image and return as a byte array.
+	 * 
+	 * @param urlText			Image file URL
+	 *
+	 * @return	Downloaded byte[]
+	 */
+	static public byte[] getBytesFromUrl(String urlText) {
+		// Get the URL
+		URL u;
+		try {
+			u = new URL(urlText);
+		} catch (MalformedURLException e) {
+			Logger.logError(e);
+			return null;
+		}
+		// Request it from the network
+		HttpURLConnection c;
+		InputStream in = null;
+		try {
+			c = (HttpURLConnection) u.openConnection();
+			c.setConnectTimeout(30000);
+			c.setRequestMethod("GET");
+			c.setDoOutput(true);
+			c.connect();
+			in = c.getInputStream();
+		} catch (IOException e) {
+			Logger.logError(e);
+			return null;
+		}
+
+		// Save the output to a byte output stream
+		ByteArrayOutputStream f = new ByteArrayOutputStream();
+		try {
+			byte[] buffer = new byte[1024];
+			int len1 = 0;
+			while ( (len1 = in.read(buffer)) > 0 ) {
+				f.write(buffer,0, len1);
+			}
+			f.close();
+		} catch (IOException e) {
+			Logger.logError(e);
+			return null;
+		}
+		// Return it as a byte[]
+		return f.toByteArray();
 	}
 
 	/**
@@ -992,6 +1071,74 @@ public class Utils {
 	        	}
         }
         return totalSize;
+	}
+	
+	/**
+	 * Check if phone has a network connection
+	 * 
+	 * @return
+	 */
+	/*
+	public static boolean isOnline(Context ctx) {
+	    ConnectivityManager cm = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
+	    NetworkInfo netInfo = cm.getActiveNetworkInfo();
+	    if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+	        return true;
+	    }
+	    return false;
+	}
+	*/
+
+	/**
+	 * Check if phone can connect to a specific host.
+	 * Does not work....
+	 * 
+	 * TODO: Find a way to make network  host checks possible
+	 * 
+	 * @return
+	 */
+	/*
+	public static boolean hostIsAvailable(Context ctx, String host) {
+		if (!isOnline(ctx))
+			return false;
+		int addr;
+		try {
+			addr = lookupHost(host);			
+		} catch (Exception e) {
+			return false;
+		}
+	    ConnectivityManager cm = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
+	    try {
+		    return cm.requestRouteToHost(ConnectivityManager., addr);	    	
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	*/
+
+	public static int lookupHost(String hostname) {
+	    InetAddress inetAddress;
+	    try {
+	        inetAddress = InetAddress.getByName(hostname);
+	    } catch (UnknownHostException e) {
+	        return -1;
+	    }
+	    byte[] addrBytes;
+	    int addr;
+	    addrBytes = inetAddress.getAddress();
+	    addr = ((addrBytes[3] & 0xff) << 24)
+	            | ((addrBytes[2] & 0xff) << 16)
+	            | ((addrBytes[1] & 0xff) << 8)
+	            |  (addrBytes[0] & 0xff);
+	    return addr;
+	}
+	
+	/**
+	 * Format the given string using the passed paraeters.
+	 */
+	public static String format(Context c, int id, Object...objects) {
+		String f = c.getString(id);
+		return String.format(f, objects);
 	}
 }
 

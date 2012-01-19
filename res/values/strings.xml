@@ -275,7 +275,7 @@
 <string name="task_errors">Task Errors</string>
 <string name="retry">Retry</string>
 <string name="optionsElipsis">Options&#8230;</string>
-<string name="edit_book">Edit Book&#8230;</string>
+<string name="edit_bookElipsis">Edit Book&#8230;</string>
 <string name="retry_task">Retry</string>
 <string name="visit_goodreads">Visit GoodReads&#8230;</string>
 <string name="delete_entry">Delete</string>

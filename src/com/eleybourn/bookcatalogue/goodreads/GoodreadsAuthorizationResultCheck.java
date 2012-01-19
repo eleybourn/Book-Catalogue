@@ -34,14 +34,21 @@ public class GoodreadsAuthorizationResultCheck extends GenericTask {
 	    try {
 		    grMgr.handleAuthentication();		    	
 		    if (grMgr.hasValidCredentials())
-				manager.showNotification(c.getString(R.string.authorized), c.getString(R.string.goodreads_auth_successful), i);
+				manager.showNotification(R.id.NOTIFICATION, 
+										c.getString(R.string.authorized), 
+										c.getString(R.string.goodreads_auth_successful), i);
 			else
-				manager.showNotification(c.getString(R.string.not_authorized), c.getString(R.string.goodreads_auth_failed), i);
+				manager.showNotification(R.id.NOTIFICATION, 
+										c.getString(R.string.not_authorized), 
+										c.getString(R.string.goodreads_auth_failed), i);
 	    } catch (NotAuthorizedException e) {
-			QueueManager.getQueueManager().showNotification(c.getString(R.string.not_authorized), c.getString(R.string.goodreads_auth_failed), i);
+			QueueManager.getQueueManager().showNotification(R.id.NOTIFICATION, 
+										c.getString(R.string.not_authorized), 
+										c.getString(R.string.goodreads_auth_failed), i);
 	    } catch (Exception e) {
-			QueueManager.getQueueManager().showNotification(c.getString(R.string.not_authorized), 
-											c.getString(R.string.goodreads_auth_error) + " " + c.getString(R.string.if_the_problem_persists), i);		    	
+			QueueManager.getQueueManager().showNotification(R.id.NOTIFICATION, 
+										c.getString(R.string.not_authorized), 
+										c.getString(R.string.goodreads_auth_error) + " " + c.getString(R.string.if_the_problem_persists), i);		    	
 	    }
 
 		return true;

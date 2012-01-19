@@ -336,4 +336,5 @@
 <string name="send_all_to_goodreads_result">%1$s books processed: %2$s sent successfully, %3$s with no ISBN and %4$s with ISBN but not found in goodreads</string>
 <string name="x_of_y">%1$s of %2$s</string>
 <string name="send_book_to_goodreads">Send book %1$s to goodreads</string>
+<item name="NOTIFICATION" type="id"></item>
 </resources>

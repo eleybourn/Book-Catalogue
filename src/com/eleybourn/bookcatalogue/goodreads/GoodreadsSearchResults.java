@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.Logger;
 import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.SimpleTaskQueue;
 import com.eleybourn.bookcatalogue.goodreads.api.SearchBooksApiHandler;
 
 import android.app.ListActivity;
@@ -34,6 +35,7 @@ public class GoodreadsSearchResults extends ListActivity {
 	private ArrayList<GoodreadsWork> mList = new ArrayList<GoodreadsWork>();
 	private ArrayAdapter<GoodreadsWork> mAdapter = null;
 	private String mCriteria;
+	private SimpleTaskQueue mTaskQueue = new SimpleTaskQueue("gr-covers");
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -168,14 +170,18 @@ public class GoodreadsSearchResults extends ListActivity {
 	        	holder = (ListHolder)convertView.getTag();
 	        }
 
-			// Save the work details
-			holder.work = mList.get(position);
-			// get the cover (or put it in background task)
-			holder.work.fillImageView(holder.cover);
+			synchronized(convertView){
+				synchronized(holder.cover) {
+					// Save the work details
+					holder.work = mList.get(position);
+					// get the cover (or put it in background task)
+					holder.work.fillImageView(mTaskQueue, holder.cover);
 
-			// Update the views based on the work
-			holder.author.setText(holder.work.authorName);
-			holder.title.setText(holder.work.title);
+					// Update the views based on the work
+					holder.author.setText(holder.work.authorName);
+					holder.title.setText(holder.work.title);					
+				}
+			}
 
 
 			return convertView;

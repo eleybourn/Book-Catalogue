@@ -348,7 +348,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			return;
 		}
 
-		QueueManager.getQueueManager().enqueueTask(new SendAllBooksTask(), "main");
+		QueueManager.getQueueManager().enqueueTask(new SendAllBooksTask(), BcQueueManager.QUEUE_MAIN, 0);
 	}
 	
 	/**

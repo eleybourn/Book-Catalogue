@@ -241,7 +241,8 @@ public class BookEvents {
 		public void retry() {
 			QueueManager qm = BookCatalogueApp.getQueueManager();
 			SendOneBookTask task = new SendOneBookTask(m_bookId);
-			qm.enqueueTask(task, BcQueueManager.QUEUE_SMALL_JOBS);
+			// TODO: MAKE IT USE THE SAME QUEUE
+			qm.enqueueTask(task, BcQueueManager.QUEUE_SMALL_JOBS, 0);
 			qm.deleteEvent(this.getId());
 		}
 

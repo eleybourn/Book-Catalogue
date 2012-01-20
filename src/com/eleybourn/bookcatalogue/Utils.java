@@ -63,6 +63,10 @@ public class Utils {
 	private static String UTF8 = "utf8";
 	private static int BUFFER_SIZE = 8192;
 
+	// External DB for cover thumbnails
+	private static boolean mCoversDbCreateFail = false;
+	private static CoversDbHelper mCoversDb;
+
 	// Used for date parsing
 	static SimpleDateFormat mDateSqlSdf = new SimpleDateFormat("yyyy-MM-dd");
 	static SimpleDateFormat mDate1Sdf = new SimpleDateFormat("dd-MMM-yyyy");
@@ -881,7 +885,17 @@ public class Utils {
 		}
 	}
 	
-	public static Bitmap fetchFileIntoImageView(File file, ImageView destView, int maxWidth, int maxHeight, boolean exact) {
+	public static Bitmap fetchFileIntoImageView(File file, ImageView destView, int maxWidth, int maxHeight, boolean exact, SimpleTaskQueue queue, long bookId) {
+		//
+		// Remove any tasks that may be getting the image because they may overwrite anything we do.
+		// Remember: the view may have been re-purposed and have a different associated task which
+		// must be removed from the view and removed from the queue.
+		//
+		if (queue != null)
+			synchronized(destView) {
+				GetThumbnailTask.clearTaskFromView(queue, destView);
+			}
+
 		// Get the file, if it exists. Otherwise set 'help' icon and exit.
 		if (!file.exists()) {
 			if (destView != null)
@@ -891,7 +905,32 @@ public class Utils {
 		
 		Bitmap bm = null;					// resultant Bitmap (which we will return) 
 		String filename = file.getPath();	// Full file spec
-		
+
+		// We cache views of files if they are substantially smaller than the original file.
+		// Construct the name and see if it exists in the database.
+		String thumbFile = filename + ".thumb." + maxWidth + "x" + maxHeight + ".jpg";
+		CoversDbHelper covers = getCoversDb();
+		if (covers != null) {
+			byte[] bytes;
+			// Wrap in try/catch. It's possible the SDCard got removed and DB is now inaccessible
+			try { bytes = covers.getFile(thumbFile); } catch (Exception e) { bytes = null; };
+			if (bytes != null) {
+				bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+				if (destView != null)
+					destView.setImageBitmap(bm);
+				return bm;
+			}			
+		}
+
+		if (queue != null) {
+			synchronized(destView) {
+				destView.setImageBitmap(null);
+				GetThumbnailTask t = new GetThumbnailTask(queue, bookId, destView, maxWidth, maxHeight);
+				queue.enqueue(t);
+			}
+			return null;
+		}
+
 		// Read the file to get file size
 		BitmapFactory.Options opt = new BitmapFactory.Options();
 		opt.inJustDecodeBounds = true;
@@ -903,7 +942,9 @@ public class Utils {
 				destView.setImageResource(android.R.drawable.ic_dialog_alert);
 			return null;
 		}
-		
+
+		long origPixels = opt.outHeight * opt.outWidth;
+
 		// Next time we don't just want the bounds, we want the file
 		opt.inJustDecodeBounds = false;
 		
@@ -946,6 +987,24 @@ public class Utils {
 		// Set ImageView and return bitmap
 		if (destView != null)
 			destView.setImageBitmap(bm);
+
+		long finalPixels = bm.getHeight() * bm.getWidth();
+
+		// If the final image has 10% or fewer pixels than the original, save a copy.
+		// This should speed up scrolling in the bookshelf view at a 10% increase in
+		// storage usage.
+		if (covers != null && finalPixels <= origPixels / 10) {
+			try {
+				covers.saveFile(thumbFile, bm);
+				/*
+				FileOutputStream out = new FileOutputStream(thumbFile);
+			    bm.compress(Bitmap.CompressFormat.JPEG, 70, out);			
+			    */
+			} catch (Exception e) {
+				Logger.logError(e, "failed to save cached thumbnail");
+			}			
+		}
+
 		return bm;
 	}
 	
@@ -1139,6 +1198,22 @@ public class Utils {
 	public static String format(Context c, int id, Object...objects) {
 		String f = c.getString(id);
 		return String.format(f, objects);
+	}
+	
+	/**
+	 * Get the 'covers' DB from external storage.
+	 */
+	private static final CoversDbHelper getCoversDb() {
+		if (mCoversDb == null) {
+			if (mCoversDbCreateFail)
+				return null;
+			try {
+				mCoversDb = new CoversDbHelper();				
+			} catch (Exception e) {
+				mCoversDbCreateFail = true;
+			}
+		}
+		return mCoversDb;
 	}
 }
 

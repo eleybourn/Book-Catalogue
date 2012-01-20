@@ -7,6 +7,8 @@ import android.widget.ImageView;
 import com.eleybourn.bookcatalogue.BcQueueManager;
 import com.eleybourn.bookcatalogue.Logger;
 import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.SimpleTaskQueue;
+import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTask;
 import com.eleybourn.bookcatalogue.Utils;
 
 import net.philipwarner.taskqueue.QueueManager;
@@ -16,12 +18,11 @@ import net.philipwarner.taskqueue.Task;
 
 /**
  * Class to store the 'work' data returned via a goodreads search. It also creates a background task
- * to find images and monitors related tasks for completion.
+ * to find images and waits for completion.
  * 
  * @author Grunthos
- *
  */
-public class GoodreadsWork implements OnTaskChangeListener {
+public class GoodreadsWork {
 	public String title;
 	public String imageUrl;
 	public String smallImageUrl;
@@ -33,93 +34,79 @@ public class GoodreadsWork implements OnTaskChangeListener {
 	public Double rating;
 	public Long authorId;
 	public String authorName;
-	public byte[] image = null;
-	public long imageTaskId = 0;
-	//private static Integer mIdCounter = 0;
-	//private int mId = 0;
+	public byte[] imageBytes = null;
+	private GetImageTask mTask;
+	private static Integer mIdCounter = 0;
+	private int mId = 0;
 	private WeakReference<ImageView> mImageView = null;
 
 	public GoodreadsWork() {
 		super();
-		//mId = ++mIdCounter;
+		mId = ++mIdCounter;
 	}
 
 	/**
-	 * Listener called when a task has changed state
+	 * Called in UI thread by background task when it has finished
 	 */
-	@Override
-	public void onTaskChange(Task task, TaskActions action) {
-		if (action == TaskActions.completed) {
-			boolean isMine = false;
-			// Any code that looks at or requests image info needs to sync on this object
-			synchronized(this) {
-				// Comparison MUST be inside sync() because otherwise imageTaskId may not have been set
-				isMine = (task.getId() == imageTaskId);
-				if (isMine) {
-					image = ((GetImageTask)task).getBytes();
-					//System.out.println("Work(" + mId + "):" + ((GetImageTask)task).getDescription());
-					// Stop monitoring
-					QueueManager.getQueueManager().unregisterTaskListener(this);
-					ImageView v = mImageView.get();
-					if (v != null && ((Long)v.getTag(R.id.TAG_TASK_ID)) == task.getId())
-						v.setImageBitmap( Utils.getBitmapFromBytes(image) );
-					// Clear to say "no task running"
-					imageTaskId = 0;
+	public void handleTaskFinished(byte[] bytes) {
+		imageBytes = bytes;
+
+		ImageView v = mImageView.get();
+		if (v != null) {
+			synchronized(v) {
+				// Make sure our view is still associated with us
+				if (((GoodreadsWork)v.getTag(R.id.TAG_GOODREADS_WORK)).equals(this)) {
+					v.setImageBitmap( Utils.getBitmapFromBytes(imageBytes) );
+					//System.out.println("Work(" + mId + ") set image on view " + v.toString() + " to " +  ((GetImageTask)task).getDescription());
 				}
-			}
+			}						
 		}
 	}
 
 	/**
-	 * If the cover image has been retrieved, put it in the passed view. Otherwise, request
-	 * its retrieval and store a reference to the view for use when the image becomes
-	 * available.
+	 * If the cover image has already been retrieved, put it in the passed view. Otherwise, request
+	 * its retrieval and store a reference to the view for use when the image becomes available.
 	 * 
 	 * @param v		ImageView to display cover image
 	 */
-	public void fillImageView(ImageView v) {
+	public void fillImageView(SimpleTaskQueue queue, ImageView v) {
 		synchronized(this) {
-			if (this.image == null) {
+			if (this.imageBytes == null) {
+				// Image not retrieved yet, so clear any existing image
 				v.setImageBitmap(null);
-				// Let the work know where it is going to be displayed
+				// Save the view so we know where the image is going to be displayed
 				mImageView = new WeakReference<ImageView>(v);
-				if (imageTaskId == 0) {
-					// No task running, so request the image
-					this.requestImage();
+				// If we don't have a task already, start one.
+				if (mTask == null) {
+					// No task running, so Queue the task to get the image
+					try {
+						mTask = new GetImageTask(getBestUrl(), this);
+						queue.enqueue(mTask);
+					} catch (Exception e) {
+						Logger.logError(e, "Failed to create task to get image from goodreads");
+					}
 				}
-				// Save the task ID in the tag for verification
-				v.setTag(R.id.TAG_TASK_ID, (Long)this.imageTaskId);
+				// Save the work in the View for verification
+				v.setTag(R.id.TAG_GOODREADS_WORK, this);
+				//QueueManager.getQueueManager().bringTaskToFront(this.imageTaskId);
 			} else {
 				// We already have an image, so just expand it.
-				v.setImageBitmap( Utils.getBitmapFromBytes(this.image) );					
+				v.setImageBitmap( Utils.getBitmapFromBytes(this.imageBytes) );
+				// Clear the work in the View, in case some other job was running
+				v.setTag(R.id.TAG_GOODREADS_WORK, null);
 			}
 		}
 	}
 
 	/**
-	 * Start a background task to get the best image available and start monitoring task
-	 * completions.
-	 * 
-	 * MUST BE CALLED FROM SYNC(THIS) CODE.
+	 * Return the 'best' (largest image) URL we have.
+	 *
+	 * @return
 	 */
-	private void requestImage() {
-		// Find best (biggest) image.
-		String url = null;
-		if (!imageUrl.equals(""))
-			url = imageUrl;
+	private String getBestUrl() {
+		if (imageUrl != null && !imageUrl.equals(""))
+			return imageUrl;
 		else
-			url = smallImageUrl;
-
-		// Start monitoring
-		QueueManager.getQueueManager().registerTaskListener(this);
-
-		// Queue the task
-		try {
-			GetImageTask task = new GetImageTask(url);
-			imageTaskId = QueueManager.getQueueManager().enqueueTask(task, BcQueueManager.QUEUE_SMALL_JOBS);
-		} catch (Exception e) {
-			Logger.logError(e, "Failed to create task to get image from goodreads");
-		}
-		
+			return smallImageUrl;		
 	}
 }

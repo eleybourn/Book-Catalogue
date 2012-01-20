@@ -1390,12 +1390,12 @@ public class CatalogueDBAdapter {
 	 * 
 	 * @return The scaled bitmap for the file, or null if no file or bad file.
 	 */
-	public static Bitmap fetchThumbnailIntoImageView(long id, ImageView destView, int maxWidth, int maxHeight, boolean exact) {
+	public static Bitmap fetchThumbnailIntoImageView(long id, ImageView destView, int maxWidth, int maxHeight, boolean exact, SimpleTaskQueue queue) {
 		// Get the file, if it exists. Otherwise set 'help' icon and exit.
 		Bitmap image = null;
 		try {
 			File file = fetchThumbnail(id);
-			image = Utils.fetchFileIntoImageView(file, destView, maxWidth, maxHeight, exact );
+			image = Utils.fetchFileIntoImageView(file, destView, maxWidth, maxHeight, exact, queue, id );
 		} catch (IllegalArgumentException e) {
 			Logger.logError(e);
 		}

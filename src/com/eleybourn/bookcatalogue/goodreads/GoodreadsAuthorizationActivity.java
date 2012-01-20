@@ -37,7 +37,7 @@ public class GoodreadsAuthorizationActivity extends Activity {
 		    	verifier = "";
 		    // Handle the auth response by passing it off to a background task to check.
 		    GoodreadsAuthorizationResultCheck task = new GoodreadsAuthorizationResultCheck();
-		    QueueManager.getQueueManager().enqueueTask(task, BcQueueManager.QUEUE_SMALL_JOBS);
+		    QueueManager.getQueueManager().enqueueTask(task, BcQueueManager.QUEUE_SMALL_JOBS, 0);
 		}
 		this.finish();
 	} 

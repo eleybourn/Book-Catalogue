@@ -337,4 +337,5 @@
 <string name="x_of_y">%1$s of %2$s</string>
 <string name="send_book_to_goodreads">Send book %1$s to goodreads</string>
 <item name="NOTIFICATION" type="id"></item>
+<item name="TAG_GOODREADS_WORK" type="id"></item>
 </resources>

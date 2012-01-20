@@ -21,9 +21,11 @@
 package com.eleybourn.bookcatalogue;
 
 //import android.R;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTask;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
 import com.eleybourn.bookcatalogue.goodreads.SendOneBookTask;
@@ -38,6 +40,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -119,7 +122,10 @@ public class BookCatalogue extends ExpandableListActivity {
 	private static final int SORT_AUTHOR_ONE = 7;
 	private static final int SORT_PUBLISHED = 8;
 	private ArrayList<Integer> currentGroup = new ArrayList<Integer>();
+	private Long mLoadingGroups = 0L;
 	private boolean collapsed = false;
+
+	private SimpleTaskQueue mTaskQueue = null;
 
 	/* Side-step a bug in HONEYCOMB. It seems that startManagingCursor() in honeycomb causes
 	 * child-list cursors for ExpanadableList objects to be closed prematurely. So we seem to have
@@ -177,6 +183,9 @@ public class BookCatalogue extends ExpandableListActivity {
 	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+
+		// Queue for background tasks
+		mTaskQueue = new SimpleTaskQueue("bc-thumbs");
 
 		//check which strings.xml file is currently active
 		if (!getString(R.string.system_app_name).equals(Utils.APP_NAME)) {
@@ -539,8 +548,9 @@ public class BookCatalogue extends ExpandableListActivity {
 				if (holder.title.show)
 					holder.title.view.setText(cursor.getTitle());
 
-				if (holder.image.show)
-					CatalogueDBAdapter.fetchThumbnailIntoImageView(cursor.getId(),holder.image.view, LIST_THUMBNAIL_SIZE,LIST_THUMBNAIL_SIZE, true);
+				if (holder.image.show) {
+					CatalogueDBAdapter.fetchThumbnailIntoImageView(cursor.getId(),holder.image.view, LIST_THUMBNAIL_SIZE, LIST_THUMBNAIL_SIZE, true, mTaskQueue);
+				}
 
 				if (holder.read.show) {
 					if (cursor.getRead() == 1) {
@@ -903,14 +913,16 @@ public class BookCatalogue extends ExpandableListActivity {
 		expandableList.setOnGroupExpandListener(new OnGroupExpandListener() {
 			@Override
 			public void onGroupExpand(int groupPosition) {
-				adjustCurrentGroup(groupPosition, 1, false);
+				if (mLoadingGroups == 0)
+					adjustCurrentGroup(groupPosition, 1, false, false);
 			}
 		});
 		// Extend the onGroupClick (Close) - Every click should remove from the currentGroup array
 		expandableList.setOnGroupCollapseListener(new OnGroupCollapseListener() {
 			@Override
 			public void onGroupCollapse(int groupPosition) {
-				adjustCurrentGroup(groupPosition, -1, false);
+				if (mLoadingGroups == 0)
+					adjustCurrentGroup(groupPosition, -1, false, false);
 			}
 		});
 		
@@ -1227,7 +1239,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			while(i < count) {
 				int pos = mPrefs.getInt(STATE_CURRENT_GROUP + " " + i, -1);
 				if (pos >= 0) {
-					adjustCurrentGroup(pos, 1, true);
+					adjustCurrentGroup(pos, 1, true, false);
 				}
 				i++;
 			}
@@ -1246,6 +1258,9 @@ public class BookCatalogue extends ExpandableListActivity {
 	 */
 	public void gotoCurrentGroup() {
 		try {
+			synchronized(mLoadingGroups) {
+				mLoadingGroups += 1; 
+			}
 			ExpandableListView view = this.getExpandableListView();
 			ArrayList<Integer> localCurrentGroup = currentGroup;
 			Iterator<Integer> arrayIterator = localCurrentGroup.iterator();
@@ -1261,6 +1276,10 @@ public class BookCatalogue extends ExpandableListActivity {
 			//do nothing
 		} catch (Exception e) {
 			Logger.logError(e);
+		} finally {
+			synchronized(mLoadingGroups) {
+				mLoadingGroups -= 1; 
+			}
 		}
 		return;
 	}
@@ -1272,7 +1291,7 @@ public class BookCatalogue extends ExpandableListActivity {
 	 * @param adj	Adjustment to make (+1/-1 = open/close)
 	 * @param force	If force is true, then it will be always be added (if adj=1), even if it already exists - but moved to the end
 	 */
-	public void adjustCurrentGroup(int pos, int adj, boolean force) {
+	public void adjustCurrentGroup(int pos, int adj, boolean force, boolean save) {
 		int index = currentGroup.indexOf(pos);
 		if (index == -1) {
 			//it does not exist (so is not open), so if adj=1, add to the list
@@ -1292,8 +1311,9 @@ public class BookCatalogue extends ExpandableListActivity {
 				}				
 			}
 		}
-		saveCurrentGroup();
 		collapsed = (currentGroup.size() == 0);
+		if (save)
+			saveCurrentGroup();
 	}
 	
 	/**
@@ -1306,7 +1326,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		currentGroup = new ArrayList<Integer>();
 		int i = 0;
 		while (i < numAuthors) {
-			adjustCurrentGroup(i, 1, false);
+			adjustCurrentGroup(i, 1, false, false);
 			view.expandGroup(i);
 			i++;
 		}
@@ -1430,7 +1450,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			// get a QueueManager and queue the task.
 			QueueManager qm = BookCatalogueApp.getQueueManager();
 			SendOneBookTask task = new SendOneBookTask(info.id);
-			qm.enqueueTask(task, "main");
+			qm.enqueueTask(task, BcQueueManager.QUEUE_MAIN, 0);
 			return true;
 
 		case EDIT_SERIES_ID:
@@ -1558,7 +1578,7 @@ public class BookCatalogue extends ExpandableListActivity {
 	@Override
 	public boolean onChildClick(ExpandableListView l, View v, int position, int childPosition, long id) {
 		boolean result = super.onChildClick(l, v, position, childPosition, id);
-		adjustCurrentGroup(position, 1, true);
+		adjustCurrentGroup(position, 1, true, false);
 		editBook(id, BookEdit.TAB_EDIT);
 		return result;
 	}
@@ -1594,23 +1614,23 @@ public class BookCatalogue extends ExpandableListActivity {
 					if (sort == SORT_TITLE) {
 						justAdded = intent.getStringExtra(BookEditFields.ADDED_TITLE);
 						int position = mDbHelper.fetchBookPositionByTitle(justAdded, bookshelf);
-						adjustCurrentGroup(position, 1, true);
+						adjustCurrentGroup(position, 1, true, false);
 					} else if (sort == SORT_AUTHOR) {
 						justAdded = intent.getStringExtra(BookEditFields.ADDED_AUTHOR);
 						int position = mDbHelper.fetchAuthorPositionByName(justAdded, bookshelf);
-						adjustCurrentGroup(position, 1, true);
+						adjustCurrentGroup(position, 1, true, false);
 					} else if (sort == SORT_AUTHOR_GIVEN) {
 						justAdded = intent.getStringExtra(BookEditFields.ADDED_AUTHOR);
 						int position = mDbHelper.fetchAuthorPositionByGivenName(justAdded, bookshelf);
-						adjustCurrentGroup(position, 1, true);
+						adjustCurrentGroup(position, 1, true, false);
 					} else if (sort == SORT_SERIES) {
 						justAdded = intent.getStringExtra(BookEditFields.ADDED_SERIES);
 						int position = mDbHelper.fetchSeriesPositionBySeries(justAdded, bookshelf);
-						adjustCurrentGroup(position, 1, true);
+						adjustCurrentGroup(position, 1, true, false);
 					} else if (sort == SORT_GENRE) {
 						justAdded = intent.getStringExtra(BookEditFields.ADDED_GENRE);
 						int position = mDbHelper.fetchGenrePositionByGenre(justAdded, bookshelf);
-						adjustCurrentGroup(position, 1, true);
+						adjustCurrentGroup(position, 1, true, false);
 					}					
 				}
 			} catch (Exception e) {
@@ -1646,6 +1666,7 @@ public class BookCatalogue extends ExpandableListActivity {
 	 */
 	@Override
 	public void onPause() {
+		saveCurrentGroup();
 		SharedPreferences.Editor ed = mPrefs.edit();
 		ed.putInt(STATE_SORT, sort);
 		ed.putString(STATE_BOOKSHELF, bookshelf);
@@ -1653,7 +1674,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		saveCurrentGroup();
 		super.onPause();
 	}
-	
+
 	@Override
 	protected void onDestroy() {
 		try {
@@ -1664,6 +1685,12 @@ public class BookCatalogue extends ExpandableListActivity {
 			}
 		} catch (RuntimeException e) {
 			// could not be closed (app crash maybe). Don't worry about it
+		}
+		if (mTaskQueue != null) {
+			try {
+				mTaskQueue.finish();
+			} catch (Exception e) {};
+			mTaskQueue = null;				
 		}
 		super.onDestroy();
 	} 

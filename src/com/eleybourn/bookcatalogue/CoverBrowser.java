@@ -212,7 +212,7 @@ public class CoverBrowser {
 			file.deleteOnExit();
 			//CoverImageAdapter cia = (CoverImageAdapter) gallery.getAdapter();
 			//cia.notifyDataSetChanged();
-			Utils.fetchFileIntoImageView(file, v, mPreviewSize, mPreviewSize, true);
+			Utils.fetchFileIntoImageView(file, v, mPreviewSize, mPreviewSize, true, null, 0);
 		}
 	}
 
@@ -259,7 +259,7 @@ public class CoverBrowser {
 			File file = new File(fileSpec);
 			TextView msgVw = (TextView)mDialog.findViewById(R.id.switcherStatus);
 			if (file.exists() && file.length() > 100) {
-				Drawable d = new BitmapDrawable(Utils.fetchFileIntoImageView(file, null, mPreviewSize*4, mPreviewSize*4, true));
+				Drawable d = new BitmapDrawable(Utils.fetchFileIntoImageView(file, null, mPreviewSize*4, mPreviewSize*4, true, null, 0));
 				switcher.setImageDrawable(d);
 				switcher.setTag(file.getAbsolutePath());    			
 				msgVw.setVisibility(View.GONE);
@@ -291,10 +291,10 @@ public class CoverBrowser {
 
 		// Setup the background fetcher
 		if (mImageFetcher == null)
-			mImageFetcher = new SimpleTaskQueue();
+			mImageFetcher = new SimpleTaskQueue("cover-browser");
 
 		SimpleTask edTask = new GetEditionsTask(mIsbn);
-		mImageFetcher.request(edTask);
+		mImageFetcher.enqueue(edTask);
 
 		// Setup the basic dialog
 		mDialog = new Dialog(mContext);
@@ -343,7 +343,7 @@ public class CoverBrowser {
         		msgVw.setVisibility(View.VISIBLE);
 
 	    		GetFullImageTask task = new GetFullImageTask(position, switcher);
-	        	mImageFetcher.request(task);
+	        	mImageFetcher.enqueue(task);
 	        }
 	    });
 
@@ -529,11 +529,11 @@ public class CoverBrowser {
 			if (f == null) {
 				// Not present; request it and use a placeholder.
 				GetThumbnailTask task = new GetThumbnailTask(position, i);
-				mImageFetcher.request(task);
+				mImageFetcher.enqueue(task);
 				i.setImageResource(android.R.drawable.ic_menu_help);
 			} else {
 				// Present, so use it.
-				Utils.fetchFileIntoImageView(f, i, mPreviewSize, mPreviewSize, true);
+				Utils.fetchFileIntoImageView(f, i, mPreviewSize, mPreviewSize, true, null, 0);
 			}
 			
 			return i;

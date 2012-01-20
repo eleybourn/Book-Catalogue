@@ -20,6 +20,8 @@
 
 package com.eleybourn.bookcatalogue;
 
+import java.util.ArrayList;
+import java.util.Stack;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import android.os.Handler;
@@ -42,15 +44,19 @@ import android.os.Handler;
  * 
  * @author Grunthos
  */
-public class SimpleTaskQueue extends Thread {
+public class SimpleTaskQueue {
 	// Execution queue
-	private BlockingStack<SimpleTask> mQueue = new BlockingStack<SimpleTask>();
+	private BlockingStack<SimpleTaskWrapper> mQueue = new BlockingStack<SimpleTaskWrapper>();
 	// Results queue
 	private LinkedBlockingQueue<SimpleTask> mResultQueue = new LinkedBlockingQueue<SimpleTask>();
 	// Flag indicating this object should terminate.
 	private boolean mTerminate = false;
 	// Handler for sending tasks to the UI thread.
 	private Handler mHandler = new Handler();
+	// Name for this queue
+	private final String mName;
+	// Threads associate with this queue
+	ArrayList<SimpleTaskQueueThread> mThreads = new ArrayList<SimpleTaskQueueThread>();
 
 	/**
 	 * SimpleTask interface.
@@ -66,22 +72,38 @@ public class SimpleTaskQueue extends Thread {
 		void finished();
 	}
 
+	private static class SimpleTaskWrapper {
+		private static Long mCounter = 0L;
+		public SimpleTask task;
+		public long id;
+		SimpleTaskWrapper(SimpleTask task) {
+			this.task = task;
+			synchronized(mCounter) {
+				this.id = ++mCounter;
+			}
+		}
+	}
+
 	/**
 	 * Constructor. Nothing to see here, move along. Just start the thread.
 	 * 
 	 * @author Grunthos
 	 *
 	 */
-	SimpleTaskQueue() {
-		start();
+	public SimpleTaskQueue(String name) {
+		mName = name;
 	}
 
 	/**
 	 * Terminate processing.
 	 */
 	public void finish() {
-		mTerminate = true;
-		this.interrupt();
+		synchronized(this) {
+			mTerminate = true;
+			for(Thread t : mThreads) {
+				try { t.interrupt(); } catch (Exception e) {};
+			}
+		}
 	}
 
 	/**
@@ -89,30 +111,58 @@ public class SimpleTaskQueue extends Thread {
 	 * 
 	 * @param task		Task to run.
 	 */
-	public void request(SimpleTask task) {
+	public long enqueue(SimpleTask task) {
+		SimpleTaskWrapper wrapper = new SimpleTaskWrapper(task);
 		try {
-			mQueue.push(task);				
+			mQueue.push(wrapper);
 		} catch (InterruptedException e) {
 			// Ignore. This happens if the object is being terminated.
 		}
+		//System.out.println("SimpleTaskQueue(added): " + mQueue.size());
+		synchronized(this) {
+			int qSize = mQueue.size();
+			int nThreads = mThreads.size();
+			if (nThreads < qSize && nThreads < 5) {
+				SimpleTaskQueueThread t = new SimpleTaskQueueThread();
+				mThreads.add(t);
+				t.start();
+			}
+		}
+		return wrapper.id;
 	}
 
 	/**
-	 * Main worker thread logic
+	 * Remove a previously requested task based on ID, if present
 	 */
-	public void run() {
-		try {
-			while (!mTerminate) {
-				SimpleTask req = mQueue.pop();
-				handleRequest(req);
+	public boolean remove(long id) {
+		Stack<SimpleTaskWrapper> currTasks = mQueue.getElements();
+		for (SimpleTaskWrapper w : currTasks) {
+			if (w.id == id) {
+				mQueue.remove(w);
+				//System.out.println("SimpleTaskQueue(removeok): " + mQueue.size());			
+				return true;
 			}
-		} catch (InterruptedException e) {
-			// Ignore; these will happen when object is destroyed
-		} catch (Exception e) {
-			Logger.logError(e);
-		}
+		}			
+		//System.out.println("SimpleTaskQueue(removefail): " + mQueue.size());			
+		return false;
 	}
-
+	
+	/**
+	 * Remove a previously requested task, if present
+	 */
+	public boolean remove(SimpleTask t) {
+		Stack<SimpleTaskWrapper> currTasks = mQueue.getElements();
+		for (SimpleTaskWrapper w : currTasks) {
+			if (w.task.equals(t)) {
+				mQueue.remove(w);
+				//System.out.println("SimpleTaskQueue(removeok): " + mQueue.size());			
+				return true;
+			}
+		}
+		//System.out.println("SimpleTaskQueue(removefail): " + mQueue.size());			
+		return false;			
+	}
+	
 	/**
 	 * Method to ensure results queue is processed.
 	 */
@@ -161,6 +211,44 @@ public class SimpleTaskQueue extends Thread {
 			}
 		} catch (Exception e) {
 			Logger.logError(e, "Exception in processResults in UI thread");
+		}
+	}
+
+	/**
+	 * Class to actually run the tasks. Can start more than one. They wait until there is nothing left in
+	 * the queue before terminating.
+	 * 
+	 * @author Grunthos
+	 */
+	private class SimpleTaskQueueThread extends Thread {
+		/**
+		 * Main worker thread logic
+		 */
+		public void run() {
+			try {
+				this.setName(mName);
+				while (!mTerminate) {
+					SimpleTaskWrapper req = mQueue.pop(15000);
+					// If timeout occurred, get a lock on the queue and see if anything was queued
+					// in the intervening milliseconds. If not, delete this tread and exit.
+					if (req == null) {
+						synchronized(SimpleTaskQueue.this) {
+							req = mQueue.poll();
+							if (req == null) {
+								mThreads.remove(this);
+							}
+						}
+						return;
+					}
+
+					//System.out.println("SimpleTaskQueue(run): " + mQueue.size());						
+					handleRequest(req.task);
+				}
+			} catch (InterruptedException e) {
+				// Ignore; these will happen when object is destroyed
+			} catch (Exception e) {
+				Logger.logError(e);
+			}
 		}
 	}
 }

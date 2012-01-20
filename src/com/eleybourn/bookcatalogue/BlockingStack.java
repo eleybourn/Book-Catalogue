@@ -21,6 +21,7 @@
 package com.eleybourn.bookcatalogue;
 
 import java.util.Stack;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -49,6 +50,38 @@ public class BlockingStack<T> {
 		mStack = new Stack<T>();
 	}
 
+	/**
+	 * Get the size of the stack
+	 */
+	public int size() {
+		return mStack.size();
+	}
+
+	/**
+	 * Remove the passed element, if present.
+	 */
+	public boolean remove(T o) {
+		synchronized(mStack) {
+			return mStack.remove(o);
+		}
+	}
+	
+	/**
+	 * Return a copy of all elements for safe examination. Obviously this
+	 * collection will not reflect reality for very long, but is safe to
+	 * iterate etc.
+	 * 
+	 * @return
+	 */
+	public Stack<T> getElements() {
+		Stack<T> copy = new Stack<T>();
+		synchronized(mStack) {
+			for(T o : mStack) {
+				copy.add(o);
+			}
+		}
+		return copy;
+	}
 	/**
 	 * Add an object to the stack and signal
 	 * 
@@ -96,35 +129,29 @@ public class BlockingStack<T> {
 	 * @return
 	 * @throws InterruptedException
 	 */
-	T pop() throws InterruptedException {
+	T pop(long waitMilliseconds) throws InterruptedException {
 		final ReentrantLock popLock = mPopLock;
-		int count;
 
-		T o = null;
+		T o;
+		boolean noTimeLimit = (waitMilliseconds <= 0);
 		// Make sure we are the only popper.
 		popLock.lockInterruptibly();
 		try {
-			// Get the size
-			synchronized(mStack) {
-				count = mStack.size();
-			}
+			o = poll();
 			// If none left, wait for another thread to signal.
-			while (count ==0) {
-				// Wait for the notEmpty condition and get the current size
-				mNotEmpty.await();
-				synchronized(mStack) {
-					count = mStack.size();
+			while (o == null) {
+				// Wait for the notEmpty condition, or until timeout if one was specified
+				if (noTimeLimit)
+					mNotEmpty.await();
+				else {
+					waitMilliseconds = mNotEmpty.awaitNanos(TimeUnit.MILLISECONDS.toNanos(waitMilliseconds));
+					if (waitMilliseconds <= 0) // Ran out of time
+						break;
 				}
+				// Try getting an object
+				o = poll();
 			};
-			// Pop an item
-			synchronized(mStack) {
-				o = mStack.pop();
-			}
-			// If, after popping, there would be more left, resignal for any other threads.
-			// Note that the regignal DOES NOT apply to this thread.
-			if (count > 1) {
-				mNotEmpty.signal();
-			}
+
 		} finally {
 			popLock.unlock();
 		}
@@ -149,18 +176,16 @@ public class BlockingStack<T> {
 			// Get the current size
 			synchronized(mStack) {
 				count = mStack.size();
-			}
-			// If any present, we know no-one will delete (we are the popper) so get it.
-			if (count > 0) {
-				// Pop an item
-				synchronized(mStack) {
+				// If any present, we know no-one will delete (we are the popper) so get it.
+				if (count > 0) {
+					// Pop an item
 					o = mStack.pop();
 				}
-				// If, after popping, there would be more left, resignal.
-				if (count > 1) {
-					mNotEmpty.signal();					
-				}
 			}
+			// If, after popping, there would be more left, resignal.
+			if (count > 1)
+				mNotEmpty.signal();					
+
 		} finally {
 			popLock.unlock();
 		}

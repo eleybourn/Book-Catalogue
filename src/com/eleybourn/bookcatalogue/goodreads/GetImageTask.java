@@ -1,35 +1,35 @@
 package com.eleybourn.bookcatalogue.goodreads;
 
-import com.eleybourn.bookcatalogue.BookCatalogueApp;
-import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTask;
 import com.eleybourn.bookcatalogue.Utils;
 
-import net.philipwarner.taskqueue.QueueManager;
-import android.content.Context;
-
 /**
- * Background task to load an image from a URL. Does not store it locally; it should
- * be a fast task and the caller can listen for a result.
+ * Background task to load an image for a GoodreadsWork from a URL. Does not store it locally; 
+ * it will call the related Work when done.
  * 
  * @author Grunthos
  */
-public class GetImageTask extends GenericTask {
-	private static final long serialVersionUID = 5508460375399613510L;
+public class GetImageTask implements SimpleTask {
 	//private static Integer mIdCounter = 0;
 	//private int mId = 0;
 
-	private String mUrl = "";
+	/** URL of image to fetch */
+	private final String mUrl;
+	/** Byte data of image. NOT a Bitmap because we fetch several and store them in the related
+	 * GoodreadsWork object and Bitmap objects are much larger than JPG objects.
+	 */
 	private byte[] mBytes = null;
+	/** Related work */
+	private GoodreadsWork mWork;
 
 	/**
-	 * Constructor.
+	 * Constructor. Save the stuff we need.
 	 * 
 	 * @param url		URL to retrieve.
 	 */
-	public GetImageTask(String url) {
-		super(BookCatalogueApp.getResourceString(R.string.get_image_from, url));
+	public GetImageTask(String url, GoodreadsWork work) {
 		mUrl = url;
-		//mId = ++mIdCounter;
+		mWork = work;
 	}
 
 	/**
@@ -41,13 +41,19 @@ public class GetImageTask extends GenericTask {
 	}
 
 	/**
-	 * Run the task.
+	 * Just get the URL
 	 */
 	@Override
-	public boolean run(QueueManager manager, Context c) {
+	public void run() {
 		mBytes = Utils.getBytesFromUrl(mUrl);
-		//System.out.println("GetImage(" + mId + "): " + mUrl);
-		return true;
+	}
+
+	/**
+	 * Tell the GoodreadsWork about it.
+	 */
+	@Override
+	public void finished() {
+		mWork.handleTaskFinished(mBytes);
 	}
 
 }

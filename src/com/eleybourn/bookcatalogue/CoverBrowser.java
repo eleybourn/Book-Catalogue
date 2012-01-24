@@ -212,7 +212,7 @@ public class CoverBrowser {
 			file.deleteOnExit();
 			//CoverImageAdapter cia = (CoverImageAdapter) gallery.getAdapter();
 			//cia.notifyDataSetChanged();
-			Utils.fetchFileIntoImageView(file, v, mPreviewSize, mPreviewSize, true, null, 0);
+			Utils.fetchFileIntoImageView(file, v, mPreviewSize, mPreviewSize, true );
 		}
 	}
 
@@ -259,7 +259,7 @@ public class CoverBrowser {
 			File file = new File(fileSpec);
 			TextView msgVw = (TextView)mDialog.findViewById(R.id.switcherStatus);
 			if (file.exists() && file.length() > 100) {
-				Drawable d = new BitmapDrawable(Utils.fetchFileIntoImageView(file, null, mPreviewSize*4, mPreviewSize*4, true, null, 0));
+				Drawable d = new BitmapDrawable(Utils.fetchFileIntoImageView(file, null, mPreviewSize*4, mPreviewSize*4, true ));
 				switcher.setImageDrawable(d);
 				switcher.setTag(file.getAbsolutePath());    			
 				msgVw.setVisibility(View.GONE);
@@ -533,7 +533,7 @@ public class CoverBrowser {
 				i.setImageResource(android.R.drawable.ic_menu_help);
 			} else {
 				// Present, so use it.
-				Utils.fetchFileIntoImageView(f, i, mPreviewSize, mPreviewSize, true, null, 0);
+				Utils.fetchFileIntoImageView(f, i, mPreviewSize, mPreviewSize, true );
 			}
 			
 			return i;

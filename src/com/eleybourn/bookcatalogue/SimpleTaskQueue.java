@@ -56,7 +56,9 @@ public class SimpleTaskQueue {
 	// Name for this queue
 	private final String mName;
 	// Threads associate with this queue
-	ArrayList<SimpleTaskQueueThread> mThreads = new ArrayList<SimpleTaskQueueThread>();
+	private ArrayList<SimpleTaskQueueThread> mThreads = new ArrayList<SimpleTaskQueueThread>();
+	/** Max number of threads to create */
+	private int mMaxTasks;
 
 	/**
 	 * SimpleTask interface.
@@ -92,6 +94,20 @@ public class SimpleTaskQueue {
 	 */
 	public SimpleTaskQueue(String name) {
 		mName = name;
+		mMaxTasks = 5;
+	}
+
+	/**
+	 * Constructor. Nothing to see here, move along. Just start the thread.
+	 * 
+	 * @author Grunthos
+	 *
+	 */
+	public SimpleTaskQueue(String name, int maxTasks) {
+		mName = name;
+		mMaxTasks = maxTasks;
+		if (maxTasks < 1 || maxTasks > 10)
+			throw new RuntimeException("Illegal value for maxTasks");
 	}
 
 	/**
@@ -103,6 +119,17 @@ public class SimpleTaskQueue {
 			for(Thread t : mThreads) {
 				try { t.interrupt(); } catch (Exception e) {};
 			}
+		}
+	}
+
+	/**
+	 * Check to see if any tasks are active -- either queued, or with ending results.
+	 * 
+	 * @return
+	 */
+	public boolean hasActiveTasks() {
+		synchronized(this) {
+			return ( (mQueue.size() > 0) || (mResultQueue.size() > 0) );
 		}
 	}
 
@@ -122,7 +149,7 @@ public class SimpleTaskQueue {
 		synchronized(this) {
 			int qSize = mQueue.size();
 			int nThreads = mThreads.size();
-			if (nThreads < qSize && nThreads < 5) {
+			if (nThreads < qSize && nThreads < mMaxTasks) {
 				SimpleTaskQueueThread t = new SimpleTaskQueueThread();
 				mThreads.add(t);
 				t.start();

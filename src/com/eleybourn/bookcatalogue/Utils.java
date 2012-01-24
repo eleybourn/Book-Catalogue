@@ -67,8 +67,9 @@ public class Utils {
 	private static boolean mCoversDbCreateFail = false;
 	private static CoversDbHelper mCoversDb;
 
-	// Used for date parsing
+	// Used for date parsing and display
 	static SimpleDateFormat mDateSqlSdf = new SimpleDateFormat("yyyy-MM-dd");
+	static SimpleDateFormat mDateFullSqlSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	static SimpleDateFormat mDate1Sdf = new SimpleDateFormat("dd-MMM-yyyy");
 	static SimpleDateFormat mDate2Sdf = new SimpleDateFormat("dd-MMM-yy");
 	static SimpleDateFormat mDateUSSdf = new SimpleDateFormat("MM-dd-yyyy");
@@ -96,6 +97,9 @@ public class Utils {
 
 	public static String toSqlDate(Date d) {
 		return mDateSqlSdf.format(d);
+	}
+	public static String toSqlDateTime(Date d) {
+		return mDateFullSqlSdf.format(d);
 	}
 	public static String toPrettyDate(Date d) {
 		return mDateDispSdf.format(d);		
@@ -884,17 +888,22 @@ public class Utils {
 			Logger.logError(e, s);
 		}
 	}
-	
-	public static Bitmap fetchFileIntoImageView(File file, ImageView destView, int maxWidth, int maxHeight, boolean exact, SimpleTaskQueue queue, long bookId) {
-		//
-		// Remove any tasks that may be getting the image because they may overwrite anything we do.
-		// Remember: the view may have been re-purposed and have a different associated task which
-		// must be removed from the view and removed from the queue.
-		//
-		if (queue != null)
-			synchronized(destView) {
-				GetThumbnailTask.clearTaskFromView(queue, destView);
-			}
+
+	/**
+	 * Shrinks the image in the passed file to the specified dimensions, and places the image
+	 * in the passed view. The bitmap is returned.
+	 * 
+	 * @param file
+	 * @param destView
+	 * @param maxWidth
+	 * @param maxHeight
+	 * @param exact
+	 * 
+	 * @return
+	 */
+	public static Bitmap fetchFileIntoImageView(File file, ImageView destView, int maxWidth, int maxHeight, boolean exact) {
+
+		Bitmap bm = null;					// resultant Bitmap (which we will return) 
 
 		// Get the file, if it exists. Otherwise set 'help' icon and exit.
 		if (!file.exists()) {
@@ -902,48 +911,148 @@ public class Utils {
 				destView.setImageResource(android.R.drawable.ic_menu_help);
 			return null;
 		}
-		
-		Bitmap bm = null;					// resultant Bitmap (which we will return) 
-		String filename = file.getPath();	// Full file spec
 
-		// We cache views of files if they are substantially smaller than the original file.
-		// Construct the name and see if it exists in the database.
-		String thumbFile = filename + ".thumb." + maxWidth + "x" + maxHeight + ".jpg";
-		CoversDbHelper covers = getCoversDb();
-		if (covers != null) {
+		bm = shrinkFileIntoImageView(destView, file.getPath(), maxWidth, maxHeight, exact);
+
+		return bm;
+	}
+
+	public static final String getCoverCacheId(final long bookId, final int maxWidth, final int maxHeight) {
+		return bookId + ".thumb." + maxWidth + "x" + maxHeight + ".jpg";
+	}
+
+	/**
+	 * Called in the UI thread, will return a cached image OR NULL.
+	 * 
+	 * @param originalFile	File representing original image file
+	 * @param destView		View to populate
+	 * @param cacheId		ID of the image in the cache
+	 * 
+	 * @return				Bitmap (if cached) or NULL (if not cached)
+	 */
+	public static Bitmap fetchCachedImageIntoImageView(final File originalFile, final ImageView destView, final String cacheId) {
+		Bitmap bm = null;					// resultant Bitmap (which we will return) 
+
+		// Get the db
+		CoversDbHelper coversDb = getCoversDb();
+		if (coversDb != null) {
 			byte[] bytes;
 			// Wrap in try/catch. It's possible the SDCard got removed and DB is now inaccessible
-			try { bytes = covers.getFile(thumbFile); } catch (Exception e) { bytes = null; };
+			Date expiry;
+			if (originalFile == null)
+				expiry = new Date(0L);
+			else
+				expiry = new Date(originalFile.lastModified());
+
+			try { bytes = coversDb.getFile(cacheId, expiry); } 
+				catch (Exception e) {
+					bytes = null;
+				};
 			if (bytes != null) {
 				bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-				if (destView != null)
-					destView.setImageBitmap(bm);
-				return bm;
-			}			
+			}
 		}
 
-		if (queue != null) {
-			synchronized(destView) {
-				destView.setImageBitmap(null);
-				GetThumbnailTask t = new GetThumbnailTask(queue, bookId, destView, maxWidth, maxHeight);
-				queue.enqueue(t);
-			}
+		if (bm != null) {
+			//
+			// Remove any tasks that may be getting the image because they may overwrite anything we do.
+			// Remember: the view may have been re-purposed and have a different associated task which
+			// must be removed from the view and removed from the queue.
+			//
+			if (destView != null)
+				GetThumbnailTask.clearOldTaskFromView( destView );
+
+			// We found it in cache
+			if (destView != null)
+				destView.setImageBitmap(bm);
+			// Return the image
+		}
+		return bm;
+	}
+
+	/**
+	 * Called in the UI thread, will either use a cached cover OR start a background task to create and load it.
+	 * 
+	 * If a cached image is used a background task is still started to check the file date vs the cache date. If the
+	 * cached image date is < the file, it is rebuilt.
+	 * 
+	 * @param destView			View to populate
+	 * @param maxWidth			Max width of resulting image
+	 * @param maxHeight			Max height of resulting image
+	 * @param exact				Whether to fit dimensions exactly
+	 * @param bookId			ID of book to retrieve.
+	 * @param checkCache		Indicates if cache should be checked for this cover
+	 * @param allowBackground	Indicates if request can be put in background task.
+	 * 
+	 * @return				Bitmap (if cached) or NULL (if done in background)
+	 */
+	public static final Bitmap fetchBookCoverIntoImageView(final ImageView destView, final int maxWidth, final int maxHeight, final boolean exact, final long bookId, final boolean checkCache, final boolean allowBackground) {
+
+		// Get the original file so we can use the modification date, path etc
+		File coverFile = CatalogueDBAdapter.fetchThumbnail(bookId);
+
+		Bitmap bm = null;
+		boolean cacheWasChecked = false;
+
+		// If we want to check the cache, AND we dont have cache building happening, then check it.
+		if (checkCache && !GetThumbnailTask.hasActiveTasks() && !ThumbnailCacheWriterTask.hasActiveTasks()) {
+			final String cacheId = getCoverCacheId(bookId, maxWidth, maxHeight);
+			bm = fetchCachedImageIntoImageView(coverFile, destView, cacheId);
+			cacheWasChecked = true;
+		} else {
+			//System.out.println("Skipping cache check");
+		}
+
+		if (bm != null)
+			return bm;
+
+		// Check the file exists. Otherwise set 'help' icon and exit.
+		//if (!coverFile.exists()) {
+		//	if (destView != null)
+		//		destView.setImageResource(android.R.drawable.ic_menu_help);
+		//	return null;
+		//}
+
+		// If we get here, the image is not in the cache but the original exists. See if we can queue it.
+		if (allowBackground) {
+			destView.setImageBitmap(null);
+			GetThumbnailTask.getThumbnail(bookId, destView, maxWidth, maxHeight, cacheWasChecked);
 			return null;
 		}
+
+		//File coverFile = CatalogueDBAdapter.fetchThumbnail(bookId);
+		
+		// File is not in cache, original exists, we are in the background task (or not allowed to queue request)
+		return shrinkFileIntoImageView(destView, coverFile.getPath(), maxWidth, maxHeight, exact);
+
+	}
+
+	/**
+	 * Shrinks the passed image file spec into the specificed dimensions, and returns the bitmap. If the view 
+	 * is non-null, the image is also placed in the view.
+	 * 
+	 * @param destView
+	 * @param filename
+	 * @param maxWidth
+	 * @param maxHeight
+	 * @param exact
+	 * 
+	 * @return
+	 */
+	private static Bitmap shrinkFileIntoImageView(ImageView destView, String filename, int maxWidth, int maxHeight, boolean exact) {
+		Bitmap bm = null;
 
 		// Read the file to get file size
 		BitmapFactory.Options opt = new BitmapFactory.Options();
 		opt.inJustDecodeBounds = true;
 		BitmapFactory.decodeFile( filename, opt );
-		
+
 		// If no size info, or a single pixel, assume file bad and set the 'alert' icon
 		if ( opt.outHeight <= 0 || opt.outWidth <= 0 || (opt.outHeight== 1 && opt.outWidth == 1) ) {
 			if (destView != null)
 				destView.setImageResource(android.R.drawable.ic_dialog_alert);
 			return null;
 		}
-
-		long origPixels = opt.outHeight * opt.outWidth;
 
 		// Next time we don't just want the bounds, we want the file
 		opt.inJustDecodeBounds = false;
@@ -967,13 +1076,14 @@ public class Utils {
 				opt.inSampleSize = samplePow2 / 2;
 				if (opt.inSampleSize < 1)
 					opt.inSampleSize = 1;
-				
-				bm = BitmapFactory.decodeFile( filename, opt );
+				Bitmap tmpBm = BitmapFactory.decodeFile( filename, opt );
 				android.graphics.Matrix matrix = new android.graphics.Matrix();
 				// Fixup ratio based on new sample size and scale it.
 				ratio = ratio / (1.0f / opt.inSampleSize);
 				matrix.postScale(ratio, ratio);
-				bm = Bitmap.createBitmap(bm, 0, 0, opt.outWidth, opt.outHeight, matrix, true); 
+				bm = Bitmap.createBitmap(tmpBm, 0, 0, opt.outWidth, opt.outHeight, matrix, true); 
+				tmpBm.recycle();
+				tmpBm = null;
 			} else {
 				// Use a scale that will make image *no larger than* the desired size
 				if (ratio < 1.0f)
@@ -983,31 +1093,14 @@ public class Utils {
 		} catch (OutOfMemoryError e) {
 			return null;
 		}
-		
+
 		// Set ImageView and return bitmap
 		if (destView != null)
 			destView.setImageBitmap(bm);
 
-		long finalPixels = bm.getHeight() * bm.getWidth();
-
-		// If the final image has 10% or fewer pixels than the original, save a copy.
-		// This should speed up scrolling in the bookshelf view at a 10% increase in
-		// storage usage.
-		if (covers != null && finalPixels <= origPixels / 10) {
-			try {
-				covers.saveFile(thumbFile, bm);
-				/*
-				FileOutputStream out = new FileOutputStream(thumbFile);
-			    bm.compress(Bitmap.CompressFormat.JPEG, 70, out);			
-			    */
-			} catch (Exception e) {
-				Logger.logError(e, "failed to save cached thumbnail");
-			}			
-		}
-
-		return bm;
+		return bm;		
 	}
-	
+
 	public static void showLtAlertIfNecessary(Context context, boolean always, String suffix) {
 		if (USE_LT) {
 			LibraryThingManager ltm = new LibraryThingManager(context);
@@ -1203,7 +1296,7 @@ public class Utils {
 	/**
 	 * Get the 'covers' DB from external storage.
 	 */
-	private static final CoversDbHelper getCoversDb() {
+	public static final CoversDbHelper getCoversDb() {
 		if (mCoversDb == null) {
 			if (mCoversDbCreateFail)
 				return null;
@@ -1214,6 +1307,24 @@ public class Utils {
 			}
 		}
 		return mCoversDb;
+	}
+	
+	/**
+	 * Analyze the covers db
+	 */
+	public static void analyzeCovers() {
+		CoversDbHelper db = getCoversDb();
+		if (db != null)
+			db.analyze();
+	}
+
+	/**
+	 * Erase contents of covers cache
+	 */
+	public static void eraseCoverCache() {
+		CoversDbHelper db = getCoversDb();
+		if (db != null)
+			db.eraseCoverCache();
 	}
 }
 

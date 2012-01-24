@@ -1,11 +1,14 @@
 package com.eleybourn.bookcatalogue;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 import android.database.sqlite.SQLiteDatabase;
 
 /**
  * Utilities and classes to make defining databases a little easier.
+ * 
+ * TODO: Implement foreign key support. Would need to be FK statements, not on columns. And stored on BOTH tables so can be recreated if table dropped.
  * 
  * @author Grunthos
  *
@@ -23,6 +26,11 @@ public class DbUtils {
 			this.name = name;
 			this.definition = definition;
 		}
+		/** useful for using the DomainDefinition in place of a domain name */
+		@Override
+		public String toString() {
+			return name;
+		}
 	}
 
 	/**
@@ -33,9 +41,21 @@ public class DbUtils {
 	public static class TableDefinition {
 		String name;
 		DomainDefinition[] domains;
-		TableDefinition(String name, DomainDefinition...domains) {
+		ArrayList<IndexDefinition> indexes = new ArrayList<IndexDefinition>();
+		
+		TableDefinition(String name, DomainDefinition... domains) {
 			this.name = name;
 			this.domains = domains;
+		}
+		public TableDefinition addIndex(boolean unique, DomainDefinition...domains) {
+			String name = this.name + "_IX" + (indexes.size()+1);
+			indexes.add(new IndexDefinition(name, unique, this, domains));
+			return this;
+		}
+		/** useful for using the TableDefinition in place of a table name */
+		@Override
+		public String toString() {
+			return name;
 		}
 		public String getSql() {
 			StringBuilder sql = new StringBuilder("Create Table " + name + " (\n");
@@ -62,30 +82,24 @@ public class DbUtils {
 	 * @author Grunthos
 	 */
 	public static class IndexDefinition {
+		String name;
 		TableDefinition table;
 		DomainDefinition[] domains;
 		boolean unique;
-		IndexDefinition(boolean unique, TableDefinition table, DomainDefinition...domains) {
+		IndexDefinition(String name, boolean unique, TableDefinition table, DomainDefinition...domains) {
+			this.name = name;
 			this.unique = unique;
 			this.table = table;
 			this.domains = domains;
 		}
-		public String getSql(Hashtable<String,Integer> names) {
+		public String getSql() {
 			int count;
-			if (names.containsKey(table.name)) {
-				count = names.get(table.name) + 1;
-			} else {
-				count = 1;
-			}
-			names.put(table.name, count);
 
 			StringBuilder sql = new StringBuilder("Create ");
 			if (unique)
 				sql.append(" Unique");
 			sql.append(" Index ");
-			sql.append(table.name);
-			sql.append("_IX");
-			sql.append(count);
+			sql.append(this.name);
 			sql.append(" on " + table.name + "(\n");
 			boolean first = true;
 			for(DomainDefinition d : domains) {
@@ -109,13 +123,12 @@ public class DbUtils {
 	 * @param tables	Table list
 	 * @param indexes	Index list
 	 */
-	public static void createDatabase(SQLiteDatabase db, TableDefinition[] tables, IndexDefinition[] indexes) {
+	public static void createTables(SQLiteDatabase db, TableDefinition[] tables) {
 		for (TableDefinition t : tables) {
 			db.execSQL(t.getSql());
-		}
-		Hashtable<String, Integer> names = new Hashtable<String, Integer>();
-		for (IndexDefinition i : indexes) {
-			db.execSQL(i.getSql(names));
+			for (IndexDefinition i : t.indexes) {
+				db.execSQL(i.getSql());
+			}
 		}
 	}
 

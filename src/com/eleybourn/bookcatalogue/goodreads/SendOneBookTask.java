@@ -2,6 +2,7 @@ package com.eleybourn.bookcatalogue.goodreads;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.BooksCursor;
+import com.eleybourn.bookcatalogue.BooksRowView;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.Logger;
 import com.eleybourn.bookcatalogue.R;
@@ -82,7 +83,8 @@ public class SendOneBookTask extends GenericTask {
 		dbHelper.open();
 
 		// Open the cursor for the book
-		BooksCursor books = dbHelper.getBookForGoodreadsCursor(m_bookId);
+		final BooksCursor books = dbHelper.getBookForGoodreadsCursor(m_bookId);
+		final BooksRowView book = books.getRowView();
 		Cursor shelves = null;
 
 		try {
@@ -92,7 +94,7 @@ public class SendOneBookTask extends GenericTask {
 				ExportDisposition disposition;
 				Exception exportException = null;
 				try {
-					disposition = grManager.sendOneBook(dbHelper, books);
+					disposition = grManager.sendOneBook(dbHelper, book);
 				} catch (Exception e) {
 					disposition = ExportDisposition.error;
 					exportException = e;

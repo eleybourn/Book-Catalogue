@@ -69,6 +69,9 @@ public class Logger {
 	 * Clear the error log each time the app is started; preserve previous if non-empty
 	 */
 	public static void clearLog() {
+		// TODO: XXXX: RE_ENABLE LOG PURGING
+		if (true) return;
+
 		try {
 			try { 
 				File orig = new File(Utils.ERRORLOG_FILE);

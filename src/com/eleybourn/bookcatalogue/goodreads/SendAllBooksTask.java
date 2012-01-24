@@ -2,6 +2,7 @@ package com.eleybourn.bookcatalogue.goodreads;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.BooksCursor;
+import com.eleybourn.bookcatalogue.BooksRowView;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.Logger;
 import com.eleybourn.bookcatalogue.R;
@@ -98,6 +99,7 @@ public class SendAllBooksTask extends GenericTask {
 
 		try {
 			books = dbHelper.getAllBooksForGoodreadsCursor(mLastId);
+			final BooksRowView book = books.getRowView();
 			mTotalBooks = books.getCount() + mCount;
 
 			while (books.moveToNext()) {
@@ -106,7 +108,7 @@ public class SendAllBooksTask extends GenericTask {
 				ExportDisposition disposition;
 				Exception exportException = null;
 				try {
-					disposition = grManager.sendOneBook(dbHelper, books);
+					disposition = grManager.sendOneBook(dbHelper, book);
 				} catch (Exception e) {
 					disposition = ExportDisposition.error;
 					exportException = e;
@@ -123,11 +125,11 @@ public class SendAllBooksTask extends GenericTask {
 					mSent++;
 					break;
 				case noIsbn:
-					storeEvent( new GrNoIsbnEvent(books.getId()) );
+					storeEvent( new GrNoIsbnEvent(book.getId()) );
 					mNoIsbn++;
 					break;
 				case notFound:
-					storeEvent( new GrNoMatchEvent(books.getId()) );
+					storeEvent( new GrNoMatchEvent(book.getId()) );
 					mNotFound++;
 					break;
 				case networkError:

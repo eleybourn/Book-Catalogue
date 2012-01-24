@@ -31,6 +31,7 @@ import android.database.Cursor;
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.BooksCursor;
+import com.eleybourn.bookcatalogue.BooksRowView;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.Logger;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NotAuthorizedException;
@@ -471,7 +472,7 @@ public class GoodreadsManager {
 	 * @throws OAuthExpectationFailedException 
 	 * @throws OAuthMessageSignerException 
 	 */
-	public ExportDisposition sendOneBook(CatalogueDBAdapter dbHelper, BooksCursor books) throws InterruptedException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, IOException {
+	public ExportDisposition sendOneBook(CatalogueDBAdapter dbHelper, BooksRowView books) throws InterruptedException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, IOException {
 		long bookId = books.getId();
 		String isbn = books.getIsbn();
 

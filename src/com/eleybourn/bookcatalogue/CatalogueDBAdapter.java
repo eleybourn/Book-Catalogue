@@ -49,11 +49,14 @@ import android.widget.ImageView;
  * Book Catalogue database access helper class. Defines the basic CRUD operations
  * for the catalogue (based on the Notepad tutorial), and gives the 
  * ability to list all books as well as retrieve or modify a specific book.
+ * 
+ * TODO: Add date_added to books. Then add 'Recent Acquisitions' virtual shelf; need to resolve how this may relate to date_purchased and 'I own this book'...
+ * 
  */
 public class CatalogueDBAdapter {
 	
 	private ArrayList<SQLiteStatement> mStatements = new ArrayList<SQLiteStatement>();
-	
+
 	/** Convenience to avoid writing "String[] {}" in many DB routines */
 	public static final String[] EMPTY_STRING_ARRAY = new String[]{};
 
@@ -385,7 +388,7 @@ public class CatalogueDBAdapter {
 	 */
 	private static class DatabaseHelper extends SQLiteOpenHelper {
 		DatabaseHelper(Context context) {
-			super(context, Utils.DATABASE_NAME, null, DATABASE_VERSION);
+			super(context, Utils.DATABASE_NAME, TrackedCursor.TrackedCursorFactory, DATABASE_VERSION);
 		}
 		
 		/**
@@ -1390,12 +1393,12 @@ public class CatalogueDBAdapter {
 	 * 
 	 * @return The scaled bitmap for the file, or null if no file or bad file.
 	 */
-	public static Bitmap fetchThumbnailIntoImageView(long id, ImageView destView, int maxWidth, int maxHeight, boolean exact, SimpleTaskQueue queue) {
+	public static Bitmap fetchThumbnailIntoImageView(long id, ImageView destView, int maxWidth, int maxHeight, boolean exact) {
 		// Get the file, if it exists. Otherwise set 'help' icon and exit.
 		Bitmap image = null;
 		try {
 			File file = fetchThumbnail(id);
-			image = Utils.fetchFileIntoImageView(file, destView, maxWidth, maxHeight, exact, queue, id );
+			image = Utils.fetchFileIntoImageView(file, destView, maxWidth, maxHeight, exact );
 		} catch (IllegalArgumentException e) {
 			Logger.logError(e);
 		}
@@ -1511,14 +1514,17 @@ public class CatalogueDBAdapter {
 	 */
 	public int countBooks() {
 		int result = 0;
+		String sql = "SELECT count(*) as count FROM " + DB_TB_BOOKS + " b ";
+		Cursor count = null;
 		try {
-			String sql = "SELECT count(*) as count FROM " + DB_TB_BOOKS + " b ";
-			Cursor count = mDb.rawQuery(sql, new String[]{});
+			count = mDb.rawQuery(sql, new String[]{});
 			count.moveToNext();
 			result = count.getInt(0);
-			count.close();
 		} catch (IllegalStateException e) {
 			Logger.logError(e);
+		} finally {
+			if (count != null)
+				count.close();			
 		}
 		return result;
 	}
@@ -1900,7 +1906,7 @@ public class CatalogueDBAdapter {
 		}
 		return returnable;
 	}
-	
+
 	/**
 	 * Return a list of all books in the database by author
 	 * 
@@ -4236,7 +4242,8 @@ public class CatalogueDBAdapter {
 		SQLiteStatement insert = mDb.compileStatement("insert into " + DB_TB_BOOKS_FTS_TEMP + "(docid, author, title, description, notes, isbn) values (?,?,?,?,?,?)");
 
 		// Get all books in the DB and loop over them
-		BooksCursor c = this.fetchAllBooks("", "", "", "", "", "", "");
+		final BooksCursor c = this.fetchAllBooks("", "", "", "", "", "", "");
+		final BooksRowView book = c.getRowView();
 		while (c.moveToNext()) {
 			// Turn a list of authors into a single string
 			ArrayList<Author> authors = this.getBookAuthorList(c.getId());
@@ -4245,12 +4252,12 @@ public class CatalogueDBAdapter {
 				authorText += a.getDisplayName() + ";";
 			}
 			// Set the parameters and call
-			insert.bindLong(1, c.getId());
+			insert.bindLong(1, book.getId());
 			insert.bindString(2, authorText);
-			insert.bindString(3, c.getTitle());
-			insert.bindString(4, c.getDescription());
-			insert.bindString(5, c.getNotes());
-			insert.bindString(6, c.getIsbn());
+			insert.bindString(3, book.getTitle());
+			insert.bindString(4, book.getDescription());
+			insert.bindString(5, book.getNotes());
+			insert.bindString(6, book.getIsbn());
 			insert.execute();
 		}
 		// We're done with the cursor and statment

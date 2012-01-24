@@ -17,109 +17,18 @@ import android.database.sqlite.SQLiteQuery;
  * @author Grunthos
  *
  */
-public class BooksCursor extends SQLiteCursor {
+public class BooksCursor extends TrackedCursor {
 
-	/** Hasmap of selected book IDs */
+	/** Hashmap of selected book IDs */
 	private Hashtable<Long,Boolean> m_selections = new Hashtable<Long,Boolean>();
 
 	/**
 	 * Constructor
 	 */
-	public BooksCursor(SQLiteDatabase db, SQLiteCursorDriver driver,
-			String editTable, SQLiteQuery query) {
+	public BooksCursor(SQLiteDatabase db, SQLiteCursorDriver driver, String editTable, SQLiteQuery query) {
 		super(db, driver, editTable, query);
 	}
 
-	private int mIdCol = -2;
-	public long getId() {
-		if (mIdCol < 0) {
-			mIdCol = this.getColumnIndex(CatalogueDBAdapter.KEY_ROWID);
-			if (mIdCol < 0)
-				throw new RuntimeException("ID column not in result set");
-		}
-		return this.getLong(mIdCol);
-	}
-
-	private int mIsbnCol = -2;
-	public String getIsbn() {
-		if (mIsbnCol < 0) {
-			mIsbnCol = this.getColumnIndex(CatalogueDBAdapter.KEY_ISBN);
-			if (mIsbnCol < 0)
-				throw new RuntimeException("ISBN column not in result set");
-		}
-		return this.getString(mIsbnCol);
-	}
-
-	private int mPrimaryAuthorCol = -2;
-	public String getPrimaryAuthorName() {
-		if (mPrimaryAuthorCol < 0) {
-			mPrimaryAuthorCol = this.getColumnIndex(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED_GIVEN_FIRST);
-			if (mPrimaryAuthorCol < 0)
-				throw new RuntimeException("Primary author column not in result set");
-		}
-		return this.getString(mPrimaryAuthorCol);
-	}
-
-	private int mTitleCol = -2;
-	public String getTitle() {
-		if (mTitleCol < 0) {
-			mTitleCol = this.getColumnIndex(CatalogueDBAdapter.KEY_TITLE);
-			if (mTitleCol < 0)
-				throw new RuntimeException("Title column not in result set");
-		}
-		return this.getString(mTitleCol);
-	}
-
-	private int mDescriptionCol = -2;
-	public String getDescription() {
-		if (mDescriptionCol < 0) {
-			mDescriptionCol = this.getColumnIndex(CatalogueDBAdapter.KEY_ISBN);
-			if (mDescriptionCol < 0)
-				throw new RuntimeException("Description column not in result set");
-		}
-		return this.getString(mDescriptionCol);
-	}
-
-	private int mNotesCol = -2;
-	public String getNotes() {
-		if (mNotesCol < 0) {
-			mNotesCol = this.getColumnIndex(CatalogueDBAdapter.KEY_ISBN);
-			if (mNotesCol < 0)
-				throw new RuntimeException("Notes column not in result set");
-		}
-		return this.getString(mNotesCol);
-	}
-
-
-	private int mReadCol = -2;
-	public int getRead() {
-		if (mReadCol < 0) {
-			mReadCol = this.getColumnIndex(CatalogueDBAdapter.KEY_READ);
-			if (mTitleCol < 0)
-				throw new RuntimeException("READ column not in result set");
-		}
-		return this.getInt(mReadCol);
-	}
-
-	private int mPublisherCol = -2;
-	public String getPublisher() {
-		if (mPublisherCol < 0) {
-			mPublisherCol = this.getColumnIndex(CatalogueDBAdapter.KEY_PUBLISHER);
-			if (mPublisherCol < 0)
-				throw new RuntimeException("PUBLISHER column not in result set");
-		}
-		return this.getString(mPublisherCol);
-	}
-
-	private int mSeriesCol = -2;
-	public String getSeries() {
-		if (mSeriesCol < 0) {
-			mSeriesCol = this.getColumnIndex(CatalogueDBAdapter.KEY_SERIES_NAME);
-			if (mSeriesCol < 0)
-				throw new RuntimeException("SERIES column not in result set");
-		}
-		return this.getString(mSeriesCol);
-	}
 
 	/**
 	 * Fake attribute to handle multi-select ListViews. if we ever do them.
@@ -137,5 +46,66 @@ public class BooksCursor extends SQLiteCursor {
 
 	public void setIsSelected(boolean selected) {
 		m_selections.put(getId(), selected);
+	}
+	
+	/**
+	 * Get the row ID; need a local implementation so that get/setSelected() works.
+	 */
+	private int mIdCol = -2;
+	public final long getId() {
+		if (mIdCol < 0) {
+			mIdCol = getColumnIndex(CatalogueDBAdapter.KEY_ROWID);
+			if (mIdCol < 0)
+				throw new RuntimeException("ISBN column not in result set");
+		}
+		return getLong(mIdCol);// mCurrentRow[mIsbnCol];
+	}
+
+	/**
+	 * Get a RowView
+	 */
+	BooksRowView mView;
+	public BooksRowView getRowView() {
+		if (mView == null)
+			mView = new BooksRowView(this);
+		return mView;
+	}
+
+	/**
+	 * Snapshot cursor to use with this cursor.
+	 * 
+	 * @author Grunthos
+	 */
+	public static class BooksSnapshotCursor extends CursorSnapshotCursor {
+		BooksRowView mView;
+
+		public BooksSnapshotCursor(SQLiteCursor source) {
+			super(source);
+		}
+		
+		public BooksRowView getRowView() {
+			if (mView == null)
+				mView = new BooksRowView(this);
+			return mView;
+		}
+
+		/**
+		 * Clear the RowView and selections, if any
+		 */
+		@Override
+		public void close() {
+			super.close();
+			mView = null;
+		}
+	}
+
+	/**
+	 * Clear the RowView and selections, if any
+	 */
+	@Override
+	public void close() {
+		super.close();
+		m_selections.clear();
+		mView = null;
 	}
 }

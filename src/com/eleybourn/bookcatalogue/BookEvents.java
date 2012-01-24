@@ -255,12 +255,13 @@ public class BookEvents {
 			super.bindView(view, context, cursor, appInfo);
 
 			// get book details
-			BookEventHolder holder = (BookEventHolder)view.getTag(R.id.TAG_BOOK_EVENT_HOLDER);
-			CatalogueDBAdapter db = (CatalogueDBAdapter)appInfo;
-			BooksCursor book = db.getBookForGoodreadsCursor(m_bookId);
+			final BookEventHolder holder = (BookEventHolder)view.getTag(R.id.TAG_BOOK_EVENT_HOLDER);
+			final CatalogueDBAdapter db = (CatalogueDBAdapter)appInfo;
+			final BooksCursor booksCursor = db.getBookForGoodreadsCursor(m_bookId);
+			final BooksRowView book = booksCursor.getRowView();
 			try {
 				// Hide parts of view based on current book details.
-				if (book.moveToFirst()) {
+				if (booksCursor.moveToFirst()) {
 					if (book.getIsbn().equals("")) {
 						holder.retry.setVisibility(View.GONE);
 					} else {
@@ -273,8 +274,8 @@ public class BookEvents {
 				}				
 			} finally {
 				// Always close
-				if (book != null)
-					book.close();				
+				if (booksCursor != null)
+					booksCursor.close();				
 			}
 
 			return true;
@@ -287,25 +288,28 @@ public class BookEvents {
 		public void addContextMenuItems(final Context ctx, AdapterView<?> parent, final View v, final int position, final long id, ArrayList<ContextDialogItem> items, Object appInfo) {
 			super.addContextMenuItems(ctx, parent, v, position, id, items, appInfo);
 
-			CatalogueDBAdapter db = (CatalogueDBAdapter)appInfo;
-
-			BooksCursor book = db.getBookForGoodreadsCursor(m_bookId);
-			if (book.moveToFirst()) {
-				if (! (book.getIsbn().equals(""))) {
-					items.add(new ContextDialogItem(ctx.getString(R.string.retry_task), new Runnable() {
-						@Override
-						public void run() {
-							try {
-								GrSendBookEvent event = (GrSendBookEvent) v.getTag(R.id.TAG_EVENT);
-								event.retry();
-								QueueManager.getQueueManager().deleteEvent(id);
-							} catch (Exception e) {
-								// not a book event?
-							}
-						}}));				
-				}
+			final CatalogueDBAdapter db = (CatalogueDBAdapter)appInfo;
+			final BooksCursor booksCursor = db.getBookForGoodreadsCursor(m_bookId);
+			try {
+				final BooksRowView book = booksCursor.getRowView();
+				if (booksCursor.moveToFirst()) {
+					if (! (book.getIsbn().equals(""))) {
+						items.add(new ContextDialogItem(ctx.getString(R.string.retry_task), new Runnable() {
+							@Override
+							public void run() {
+								try {
+									GrSendBookEvent event = (GrSendBookEvent) v.getTag(R.id.TAG_EVENT);
+									event.retry();
+									QueueManager.getQueueManager().deleteEvent(id);
+								} catch (Exception e) {
+									// not a book event?
+								}
+							}}));				
+					}
+				}				
+			} finally {				
+				booksCursor.close();
 			}
-			book.close();
 		}
 	};
 

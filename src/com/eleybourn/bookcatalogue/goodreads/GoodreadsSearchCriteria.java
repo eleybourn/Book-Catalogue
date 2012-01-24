@@ -1,6 +1,7 @@
 package com.eleybourn.bookcatalogue.goodreads;
 
 import com.eleybourn.bookcatalogue.BooksCursor;
+import com.eleybourn.bookcatalogue.BooksRowView;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.R;
 
@@ -49,7 +50,8 @@ public class GoodreadsSearchCriteria extends Activity {
 		// If we have a book, fill in criteria AND try a search
 		if (mBookId != 0) {
 			setViewVisibility(R.id.original_details, true);
-			BooksCursor c = mDbHelper.fetchBookById(mBookId);
+			final BooksCursor c = mDbHelper.fetchBookById(mBookId);
+			final BooksRowView book = c.getRowView();
 			try 
 			{
 				if (!c.moveToFirst()) {
@@ -58,17 +60,17 @@ public class GoodreadsSearchCriteria extends Activity {
 					return;					
 				}
 				{
-					String s = c.getPrimaryAuthorName();
+					String s = book.getPrimaryAuthorName();
 					setViewText(R.id.author, s);
 					criteria += s + " ";
 				}
 				{
-					String s = c.getTitle();
+					String s = book.getTitle();
 					setViewText(R.id.title, s);
 					criteria += s + " ";
 				}
 				{
-					String s = c.getIsbn();
+					String s = book.getIsbn();
 					setViewText(R.id.isbn, s);
 					criteria += s + " ";
 				}

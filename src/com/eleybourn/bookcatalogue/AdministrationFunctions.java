@@ -262,6 +262,20 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			});
 		}
 
+		{
+			/* Erase covers cache Link */
+			View v = findViewById(R.id.erase_cover_cache_label);
+			// Make line flash when clicked.
+			v.setBackgroundResource(android.R.drawable.list_selector_background);
+			v.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Utils.eraseCoverCache();
+					return;
+				}
+			});
+		}
+
 		/* Task errors setup Link */
 		View errTest = findViewById(R.id.task_errors_label);
 		// Make line flash when clicked.

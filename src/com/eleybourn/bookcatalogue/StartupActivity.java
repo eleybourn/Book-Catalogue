@@ -18,12 +18,23 @@ import android.os.Bundle;
  */
 public class StartupActivity extends Activity {
 
+	private static boolean mIsReallyStartup = true;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// It's a startup...cleanup old stuff
-		Logger.clearLog();
+		final boolean wasReallyStartup = mIsReallyStartup;
+
+		// If it's a startup...cleanup old stuff
+		if (mIsReallyStartup) {
+			// Remove old logs
+			Logger.clearLog();
+			// Analyze the covers DB
+			Utils.analyzeCovers();
+			// Clear the flag
+			mIsReallyStartup = false;
+		}
 
 		// TODO: add more startup-specific code, eg. checks for old app logs, crashes, or new Events.
 		// perhaps store the max eventId the user has seen in 
@@ -32,7 +43,8 @@ public class StartupActivity extends Activity {
 		Intent i;
 		i = new Intent(this, MainMenu.class);
 		i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		i.putExtra("startup", true);
+		if (wasReallyStartup)
+			i.putExtra("startup", true);
 		this.startActivity(i);
 
 		// Die

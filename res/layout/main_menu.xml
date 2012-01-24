@@ -30,6 +30,7 @@
 			android:layout_width="fill_parent"
 			android:layout_height="fill_parent"
 			android:paddingLeft="10dp"
+			android:paddingTop="15dp"
 			>
 	    
 	  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 

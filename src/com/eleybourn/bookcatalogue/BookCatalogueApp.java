@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.os.AsyncTask;
 import android.os.IBinder;
+import android.widget.Toast;
 import net.philipwarner.taskqueue.QueueManager;
 
 /**
@@ -31,6 +33,49 @@ public class BookCatalogueApp extends Application {
 	}
 
 	/**
+	 * Initial pass at catching FC logs etc.
+	 * 
+	 * TODO: Remove/resolve for production, since it requires READ_LOGS priv.
+	 */
+	private class CheckForceCloseTask extends AsyncTask<Void, Void, Boolean> {
+		LogCollector mLogCollector = null;
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+    		mLogCollector = new LogCollector(context);
+            return mLogCollector.hasForceCloseHappened();
+        }
+        
+        @Override
+        protected void onPostExecute(Boolean result) {
+                if (true || result) {
+            		// Start LogCollector
+            		new AsyncTask<Void, Void, Boolean>() {
+                        @Override
+                        protected Boolean doInBackground(Void... params) {
+                                return mLogCollector.collect();
+                        }
+                        @Override
+                        protected void onPreExecute() {
+                                //showDialog(DIALOG_PROGRESS_COLLECTING_LOG);
+                        }
+                        @Override
+                        protected void onPostExecute(Boolean result) {
+                                //dismissDialog(DIALOG_PROGRESS_COLLECTING_LOG);
+                                if (result) {
+                                        mLogCollector.sendLog("pjw@rhyme.com.au", "BookCatalogue Error Log", "Preface line 1\nPreface line 2");
+                                        Toast.makeText(getApplicationContext(), "Logs sent.", Toast.LENGTH_LONG).show();
+                                }
+                                //else
+                                //        showDialog(DIALOG_FAILED_TO_COLLECT_LOGS);
+                        }
+            		}.execute();
+                } else
+                        Toast.makeText(getApplicationContext(), "No force close detected.", Toast.LENGTH_LONG).show();
+        }
+	}
+	
+	/**
 	 * Most real initialization should go here, since before this point, the App is still
 	 * 'Under Construction'.
 	 */
@@ -38,6 +83,10 @@ public class BookCatalogueApp extends Application {
 	public void onCreate() {
 		// Don't rely on the the context until now...
 		BookCatalogueApp.context = this.getApplicationContext();
+		// Check for FC
+		CheckForceCloseTask fcTask = new CheckForceCloseTask();
+		fcTask.execute();
+
 		// Start the queue manager
 		startQueueManager();
 	}

@@ -418,7 +418,7 @@ public class BookEditFields extends Activity {
 			} else {
 				// The thumbnail image is not automatically preserved, so reload it.
 				ImageView iv = (ImageView) findViewById(R.id.row_img);
-				CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true, null);				
+				CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);				
 				// Author and series lists
 				mAuthorList = savedInstanceState.getParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
 				fixupAuthorList();	// Will update related display fields/button
@@ -536,7 +536,7 @@ public class BookEditFields extends Activity {
 				} else {
 					dialog.setTitle(getResources().getString(R.string.cover_detail));
 					ImageView cover = new ImageView(this);
-					CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, cover, mThumbZoomSize, mThumbZoomSize, true, null);
+					CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, cover, mThumbZoomSize, mThumbZoomSize, true);
 					cover.setAdjustViewBounds(true);
 				    LayoutParams lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
 				    dialog.addContentView(cover, lp);
@@ -571,22 +571,22 @@ public class BookEditFields extends Activity {
 		switch(item.getItemId()) {
 		case DELETE_ID:
 			deleteThumbnail(mRowId);
-			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true, null);
+			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);
 			return true;
 		case ROTATE_THUMB_SUBMENU:
 			// Just a submenu; skip
 			return true;
 		case ROTATE_THUMB_CW:
 			rotateThumbnail(mRowId, 90);
-			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true, null);
+			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);
 			return true;
 		case ROTATE_THUMB_CCW:
 			rotateThumbnail(mRowId, -90);
-			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true, null);
+			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);
 			return true;
 		case ROTATE_THUMB_180:
 			rotateThumbnail(mRowId, 180);
-			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true, null);
+			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);
 			return true;
 		case ADD_PHOTO:
 			Intent pintent = null;
@@ -647,7 +647,7 @@ public class BookEditFields extends Activity {
 	 */
 	private void rotateThumbnail(long id, long angle) {
 
-		Bitmap bm = CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, null, mThumbZoomSize*2, mThumbZoomSize*2, true, null);
+		Bitmap bm = CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, null, mThumbZoomSize*2, mThumbZoomSize*2, true );
 		if (bm == null)
 			return;
 
@@ -705,7 +705,7 @@ public class BookEditFields extends Activity {
 				mFields.getField(R.id.anthology).setValue(anthNo.toString());
 				
 				ImageView iv = (ImageView) findViewById(R.id.row_img);
-				CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true, null);				
+				CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true );				
 			} finally {	
 				if (book != null)
 					book.close();
@@ -771,9 +771,9 @@ public class BookEditFields extends Activity {
 	
 	private void setCoverImage() {
 		ImageView iv = (ImageView) findViewById(R.id.row_img);
-		CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true, null);		
+		CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true );		
 	}
-	
+
 	/**
 	 * Validate the current data in all fields that have validators. Display any errors.
 	 * 

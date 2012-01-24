@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import org.acra.ErrorReporter;
+
 import net.philipwarner.taskqueue.QueueManager;
 
 import android.app.AlertDialog;

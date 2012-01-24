@@ -7,9 +7,11 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.os.AsyncTask;
 import android.os.IBinder;
-import android.widget.Toast;
+import org.acra.*;
+import org.acra.annotation.*;
+import static org.acra.ReportField.*;
+
 import net.philipwarner.taskqueue.QueueManager;
 
 /**
@@ -20,6 +22,23 @@ import net.philipwarner.taskqueue.QueueManager;
  * @author Grunthos
  *
  */
+@ReportsCrashes(formKey = "", // will not be used
+	mailTo = "grunthos@rhyme.com.au, pjw@rhyme.com.au",
+	mode = ReportingInteractionMode.NOTIFICATION,
+	customReportContent = { USER_COMMENT, USER_APP_START_DATE, USER_CRASH_DATE, APP_VERSION_NAME, APP_VERSION_CODE, ANDROID_VERSION, PHONE_MODEL, CUSTOM_DATA, STACK_TRACE },
+	//optional, displayed as soon as the crash occurs, before collecting data which can take a few seconds
+	resToastText = R.string.crash_toast_text, 
+	resNotifTickerText = R.string.crash_notif_ticker_text,
+	resNotifTitle = R.string.crash_notif_title,
+	resNotifText = R.string.crash_notif_text,
+	resNotifIcon = android.R.drawable.stat_notify_error, // optional. default is a warning sign
+	resDialogText = R.string.crash_dialog_text,
+	resDialogIcon = android.R.drawable.ic_dialog_info, //optional. default is a warning sign
+	resDialogTitle = R.string.crash_dialog_title, // optional. default is your application name
+	resDialogCommentPrompt = R.string.crash_dialog_comment_prompt, // optional. when defined, adds a user text field input with this text resource as a label
+	resDialogOkToast = R.string.crash_dialog_ok_toast // optional. displays a Toast message when the user accepts to send a report.
+)
+
 public class BookCatalogueApp extends Application {
 	
 	/** Not sure this is a good idea. Stores the Application context once created */
@@ -33,62 +52,21 @@ public class BookCatalogueApp extends Application {
 	}
 
 	/**
-	 * Initial pass at catching FC logs etc.
-	 * 
-	 * TODO: Remove/resolve for production, since it requires READ_LOGS priv.
-	 */
-	private class CheckForceCloseTask extends AsyncTask<Void, Void, Boolean> {
-		LogCollector mLogCollector = null;
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-    		mLogCollector = new LogCollector(context);
-            return mLogCollector.hasForceCloseHappened();
-        }
-        
-        @Override
-        protected void onPostExecute(Boolean result) {
-                if (true || result) {
-            		// Start LogCollector
-            		new AsyncTask<Void, Void, Boolean>() {
-                        @Override
-                        protected Boolean doInBackground(Void... params) {
-                                return mLogCollector.collect();
-                        }
-                        @Override
-                        protected void onPreExecute() {
-                                //showDialog(DIALOG_PROGRESS_COLLECTING_LOG);
-                        }
-                        @Override
-                        protected void onPostExecute(Boolean result) {
-                                //dismissDialog(DIALOG_PROGRESS_COLLECTING_LOG);
-                                if (result) {
-                                        mLogCollector.sendLog("pjw@rhyme.com.au", "BookCatalogue Error Log", "Preface line 1\nPreface line 2");
-                                        Toast.makeText(getApplicationContext(), "Logs sent.", Toast.LENGTH_LONG).show();
-                                }
-                                //else
-                                //        showDialog(DIALOG_FAILED_TO_COLLECT_LOGS);
-                        }
-            		}.execute();
-                } else
-                        Toast.makeText(getApplicationContext(), "No force close detected.", Toast.LENGTH_LONG).show();
-        }
-	}
-	
-	/**
 	 * Most real initialization should go here, since before this point, the App is still
 	 * 'Under Construction'.
 	 */
 	@Override
 	public void onCreate() {
-		// Don't rely on the the context until now...
+		// The following line triggers the initialization of ACRA
+        ACRA.init(this);
+
+        // Don't rely on the the context until now...
 		BookCatalogueApp.context = this.getApplicationContext();
-		// Check for FC
-		CheckForceCloseTask fcTask = new CheckForceCloseTask();
-		fcTask.execute();
 
 		// Start the queue manager
 		startQueueManager();
+
+		super.onCreate();
 	}
 
 	/**

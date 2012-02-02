@@ -989,204 +989,204 @@ public class CatalogueDBAdapter {
 						throw new RuntimeException("Failed to upgrade database", e);
 					}
 				} 
-				if (curVersion == 54) {
-					//createIndices(db); // All createIndices prior to the latest have been removed
-					curVersion++;
-				}
-				if (curVersion == 55) {
-					//There is a conflict between eleybourn released branch (3.3.1) and grunthos HEAD (3.4). 
-					// This is to check and skip as required
-					boolean go2 = false;
-					String checkSQL2 = "SELECT * FROM " + DB_TB_BOOKS;
-					Cursor results2 = db.rawQuery(checkSQL2, new String[]{});
-					if (results2.getCount() > 0) {
-						if (results2.getColumnIndex(KEY_AUTHOR_OLD) > -1) {
-							go2 = true;
-						}
-					} else {
+			}
+			if (curVersion == 54) {
+				//createIndices(db); // All createIndices prior to the latest have been removed
+				curVersion++;
+			}
+			if (curVersion == 55) {
+				//There is a conflict between eleybourn released branch (3.3.1) and grunthos HEAD (3.4). 
+				// This is to check and skip as required
+				boolean go2 = false;
+				String checkSQL2 = "SELECT * FROM " + DB_TB_BOOKS;
+				Cursor results2 = db.rawQuery(checkSQL2, new String[]{});
+				if (results2.getCount() > 0) {
+					if (results2.getColumnIndex(KEY_AUTHOR_OLD) > -1) {
 						go2 = true;
 					}
-					if (go2 == true) {
-						try {
-							db.execSQL(DATABASE_CREATE_SERIES);
-							// We need to create a series table with series that are unique wrt case and unicode. The old
-							// system allowed for series with slightly different case. So we capture these by using
-							// max() to pick and arbitrary matching name to use as our canonical version.
-							db.execSQL("INSERT INTO " + DB_TB_SERIES + " (" + KEY_SERIES_NAME + ") "
-										+ "SELECT name from ("
-										+ "    SELECT Upper(" + KEY_SERIES_OLD + ") " + COLLATION + " as ucName, "
-										+ "    max(" + KEY_SERIES_OLD + ")" + COLLATION + " as name FROM " + DB_TB_BOOKS
-										+ "    WHERE Coalesce(" + KEY_SERIES_OLD + ",'') <> ''"
-										+ "    Group By Upper(" + KEY_SERIES_OLD + ")"
-										+ " )"
-										);
-							
-							db.execSQL(DATABASE_CREATE_BOOK_SERIES);
-							db.execSQL(DATABASE_CREATE_BOOK_AUTHOR);
-							
-							db.execSQL("INSERT INTO " + DB_TB_BOOK_SERIES + " (" + KEY_BOOK + ", " + KEY_SERIES_ID + ", " + KEY_SERIES_NUM + ", " + KEY_SERIES_POSITION + ") "
-									+ "SELECT DISTINCT b." + KEY_ROWID + ", s." + KEY_ROWID + ", b." + KEY_SERIES_NUM + ", 1"
-									+ " FROM " + DB_TB_BOOKS + " b "
-									+ " Join " + DB_TB_SERIES + " s On Upper(s." + KEY_SERIES_NAME + ") = Upper(b." + KEY_SERIES_OLD + ")" + COLLATION
-									+ " Where Coalesce(b." + KEY_SERIES_OLD + ", '') <> ''");
-							
-							db.execSQL("INSERT INTO " + DB_TB_BOOK_AUTHOR + " (" + KEY_BOOK + ", " + KEY_AUTHOR_ID + ", " + KEY_AUTHOR_POSITION + ") "
-									+ "SELECT b." + KEY_ROWID + ", b." + KEY_AUTHOR_OLD + ", 1 FROM " + DB_TB_BOOKS + " b ");
-							
-							String tmpFields = KEY_ROWID + ", " /* + KEY_AUTHOR + ", " */ + KEY_TITLE + ", " + KEY_ISBN 
-							+ ", " + KEY_PUBLISHER + ", " + KEY_DATE_PUBLISHED + ", " + KEY_RATING + ", " + KEY_READ 
-							+ /* ", " + KEY_SERIES + */ ", " + KEY_PAGES /* + ", " + KEY_SERIES_NUM */ + ", " + KEY_NOTES 
-							+ ", " + KEY_LIST_PRICE + ", " + KEY_ANTHOLOGY + ", " + KEY_LOCATION + ", " + KEY_READ_START 
-							+ ", " + KEY_READ_END + ", " + KEY_FORMAT + ", " + KEY_SIGNED + ", " + KEY_DESCRIPTION
-							+ ", " + KEY_GENRE;
-							db.execSQL("CREATE TABLE tmpBooks AS SELECT " + tmpFields + " FROM " + DB_TB_BOOKS);
-							
-							db.execSQL("DROP TABLE " + DB_TB_BOOKS);
-							
-							db.execSQL(DATABASE_CREATE_BOOKS);
-							
-							db.execSQL("INSERT INTO " + DB_TB_BOOKS + "( " + tmpFields + ")  SELECT * FROM tmpBooks");
-							
-							db.execSQL("DROP TABLE tmpBooks");
-						} catch (Exception e) {
-							Logger.logError(e);
-							throw new RuntimeException("Failed to upgrade database", e);
-						} finally {
-						}
-					} 
-					//createIndices(db); // All createIndices prior to the latest have been removed
-					curVersion++;
+				} else {
+					go2 = true;
 				}
-				if (curVersion == 56) {
-					createIndices(db);
-					curVersion++;
-					message += "New in v3.5.4\n\n";
-					message += "* French translation available\n\n";
-					message += "* There is an option to create a duplicate book (requested by Vinika)\n\n";
-					message += "* Fixed errors caused by failed upgrades\n\n";
-					message += "* Fixed errors caused by trailing spaces in bookshelf names\n\n";
-				}
-				if (curVersion == 57) {
-					curVersion++;
-					Cursor results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_AUTHORS + "'", new String[]{});
-					if (results57.getCount() == 0) {
-						//table does not exist
-						db.execSQL(DATABASE_CREATE_AUTHORS);
-					}
-					results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_BOOKSHELF + "'", new String[]{});
-					if (results57.getCount() == 0) {
-						//table does not exist
-						db.execSQL(DATABASE_CREATE_BOOKSHELF);
-						db.execSQL(DATABASE_CREATE_BOOKSHELF_DATA);
-					}
-					results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_SERIES + "'", new String[]{});
-					if (results57.getCount() == 0) {
-						//table does not exist
+				if (go2 == true) {
+					try {
 						db.execSQL(DATABASE_CREATE_SERIES);
-						Cursor results57_2 = db.rawQuery("SELECT * FROM " + DB_TB_BOOKS, new String[]{});
-						if (results57_2.getCount() > 0) {
-							if (results57_2.getColumnIndex(KEY_SERIES_OLD) > -1) {
-								db.execSQL("INSERT INTO " + DB_TB_SERIES + " (" + KEY_SERIES_NAME + ") "
-										+ "SELECT name from ("
-										+ "    SELECT Upper(" + KEY_SERIES_OLD + ") " + COLLATION + " as ucName, "
-										+ "    max(" + KEY_SERIES_OLD + ")" + COLLATION + " as name FROM " + DB_TB_BOOKS
-										+ "    WHERE Coalesce(" + KEY_SERIES_OLD + ",'') <> ''"
-										+ "    Group By Upper(" + KEY_SERIES_OLD + ")"
-										+ " )"
-										);
-							}
-						}
-					}
-					results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_BOOKS + "'", new String[]{});
-					if (results57.getCount() == 0) {
-						//table does not exist
-						db.execSQL(DATABASE_CREATE_BOOKS);
-					}
-					results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_LOAN + "'", new String[]{});
-					if (results57.getCount() == 0) {
-						//table does not exist
-						db.execSQL(DATABASE_CREATE_LOAN);
-					}
-					results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_ANTHOLOGY + "'", new String[]{});
-					if (results57.getCount() == 0) {
-						//table does not exist
-						db.execSQL(DATABASE_CREATE_ANTHOLOGY);
-					}
-					results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_BOOK_BOOKSHELF_WEAK + "'", new String[]{});
-					if (results57.getCount() == 0) {
-						//table does not exist
-						db.execSQL(DATABASE_CREATE_BOOK_BOOKSHELF_WEAK);
-					}
-					results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_BOOK_SERIES + "'", new String[]{});
-					if (results57.getCount() == 0) {
-						//table does not exist
+						// We need to create a series table with series that are unique wrt case and unicode. The old
+						// system allowed for series with slightly different case. So we capture these by using
+						// max() to pick and arbitrary matching name to use as our canonical version.
+						db.execSQL("INSERT INTO " + DB_TB_SERIES + " (" + KEY_SERIES_NAME + ") "
+									+ "SELECT name from ("
+									+ "    SELECT Upper(" + KEY_SERIES_OLD + ") " + COLLATION + " as ucName, "
+									+ "    max(" + KEY_SERIES_OLD + ")" + COLLATION + " as name FROM " + DB_TB_BOOKS
+									+ "    WHERE Coalesce(" + KEY_SERIES_OLD + ",'') <> ''"
+									+ "    Group By Upper(" + KEY_SERIES_OLD + ")"
+									+ " )"
+									);
+						
 						db.execSQL(DATABASE_CREATE_BOOK_SERIES);
+						db.execSQL(DATABASE_CREATE_BOOK_AUTHOR);
+						
 						db.execSQL("INSERT INTO " + DB_TB_BOOK_SERIES + " (" + KEY_BOOK + ", " + KEY_SERIES_ID + ", " + KEY_SERIES_NUM + ", " + KEY_SERIES_POSITION + ") "
 								+ "SELECT DISTINCT b." + KEY_ROWID + ", s." + KEY_ROWID + ", b." + KEY_SERIES_NUM + ", 1"
 								+ " FROM " + DB_TB_BOOKS + " b "
 								+ " Join " + DB_TB_SERIES + " s On Upper(s." + KEY_SERIES_NAME + ") = Upper(b." + KEY_SERIES_OLD + ")" + COLLATION
 								+ " Where Coalesce(b." + KEY_SERIES_OLD + ", '') <> ''");
-					}
-					results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_BOOK_AUTHOR + "'", new String[]{});
-					if (results57.getCount() == 0) {
-						//table does not exist
-						db.execSQL(DATABASE_CREATE_BOOK_AUTHOR);
+						
 						db.execSQL("INSERT INTO " + DB_TB_BOOK_AUTHOR + " (" + KEY_BOOK + ", " + KEY_AUTHOR_ID + ", " + KEY_AUTHOR_POSITION + ") "
 								+ "SELECT b." + KEY_ROWID + ", b." + KEY_AUTHOR_OLD + ", 1 FROM " + DB_TB_BOOKS + " b ");
+						
+						String tmpFields = KEY_ROWID + ", " /* + KEY_AUTHOR + ", " */ + KEY_TITLE + ", " + KEY_ISBN 
+						+ ", " + KEY_PUBLISHER + ", " + KEY_DATE_PUBLISHED + ", " + KEY_RATING + ", " + KEY_READ 
+						+ /* ", " + KEY_SERIES + */ ", " + KEY_PAGES /* + ", " + KEY_SERIES_NUM */ + ", " + KEY_NOTES 
+						+ ", " + KEY_LIST_PRICE + ", " + KEY_ANTHOLOGY + ", " + KEY_LOCATION + ", " + KEY_READ_START 
+						+ ", " + KEY_READ_END + ", " + KEY_FORMAT + ", " + KEY_SIGNED + ", " + KEY_DESCRIPTION
+						+ ", " + KEY_GENRE;
+						db.execSQL("CREATE TABLE tmpBooks AS SELECT " + tmpFields + " FROM " + DB_TB_BOOKS);
+						
+						db.execSQL("DROP TABLE " + DB_TB_BOOKS);
+						
+						db.execSQL(DATABASE_CREATE_BOOKS);
+						
+						db.execSQL("INSERT INTO " + DB_TB_BOOKS + "( " + tmpFields + ")  SELECT * FROM tmpBooks");
+						
+						db.execSQL("DROP TABLE tmpBooks");
+					} catch (Exception e) {
+						Logger.logError(e);
+						throw new RuntimeException("Failed to upgrade database", e);
+					} finally {
 					}
-					Cursor results57_3 = db.rawQuery("SELECT * FROM " + DB_TB_BOOKS, new String[]{});
-					if (results57_3.getCount() > 0) {
-						if (results57_3.getColumnIndex(KEY_SERIES_OLD) > -1) {
-							String tmpFields = KEY_ROWID + ", " /* + KEY_AUTHOR + ", " */ + KEY_TITLE + ", " + KEY_ISBN 
-							+ ", " + KEY_PUBLISHER + ", " + KEY_DATE_PUBLISHED + ", " + KEY_RATING + ", " + KEY_READ 
-							+ /* ", " + KEY_SERIES + */ ", " + KEY_PAGES /* + ", " + KEY_SERIES_NUM */ + ", " + KEY_NOTES 
-							+ ", " + KEY_LIST_PRICE + ", " + KEY_ANTHOLOGY + ", " + KEY_LOCATION + ", " + KEY_READ_START 
-							+ ", " + KEY_READ_END + ", " + KEY_FORMAT + ", " + KEY_SIGNED + ", " + KEY_DESCRIPTION
-							+ ", " + KEY_GENRE;
-							db.execSQL("CREATE TABLE tmpBooks AS SELECT " + tmpFields + " FROM " + DB_TB_BOOKS);
-							db.execSQL("DROP TABLE " + DB_TB_BOOKS);
-							db.execSQL(DATABASE_CREATE_BOOKS);
-							db.execSQL("INSERT INTO " + DB_TB_BOOKS + "( " + tmpFields + ")  SELECT * FROM tmpBooks");
-							db.execSQL("DROP TABLE tmpBooks");
+				} 
+				//createIndices(db); // All createIndices prior to the latest have been removed
+				curVersion++;
+			}
+			if (curVersion == 56) {
+				createIndices(db);
+				curVersion++;
+				message += "New in v3.5.4\n\n";
+				message += "* French translation available\n\n";
+				message += "* There is an option to create a duplicate book (requested by Vinika)\n\n";
+				message += "* Fixed errors caused by failed upgrades\n\n";
+				message += "* Fixed errors caused by trailing spaces in bookshelf names\n\n";
+			}
+			if (curVersion == 57) {
+				curVersion++;
+				Cursor results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_AUTHORS + "'", new String[]{});
+				if (results57.getCount() == 0) {
+					//table does not exist
+					db.execSQL(DATABASE_CREATE_AUTHORS);
+				}
+				results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_BOOKSHELF + "'", new String[]{});
+				if (results57.getCount() == 0) {
+					//table does not exist
+					db.execSQL(DATABASE_CREATE_BOOKSHELF);
+					db.execSQL(DATABASE_CREATE_BOOKSHELF_DATA);
+				}
+				results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_SERIES + "'", new String[]{});
+				if (results57.getCount() == 0) {
+					//table does not exist
+					db.execSQL(DATABASE_CREATE_SERIES);
+					Cursor results57_2 = db.rawQuery("SELECT * FROM " + DB_TB_BOOKS, new String[]{});
+					if (results57_2.getCount() > 0) {
+						if (results57_2.getColumnIndex(KEY_SERIES_OLD) > -1) {
+							db.execSQL("INSERT INTO " + DB_TB_SERIES + " (" + KEY_SERIES_NAME + ") "
+									+ "SELECT name from ("
+									+ "    SELECT Upper(" + KEY_SERIES_OLD + ") " + COLLATION + " as ucName, "
+									+ "    max(" + KEY_SERIES_OLD + ")" + COLLATION + " as name FROM " + DB_TB_BOOKS
+									+ "    WHERE Coalesce(" + KEY_SERIES_OLD + ",'') <> ''"
+									+ "    Group By Upper(" + KEY_SERIES_OLD + ")"
+									+ " )"
+									);
 						}
 					}
-					createIndices(db);
 				}
-				if (curVersion == 58) {
-					curVersion++;
-					db.delete(DB_TB_LOAN, "("+KEY_BOOK+ "='' OR " + KEY_BOOK+ "=null OR " + KEY_LOANED_TO + "='' OR " + KEY_LOANED_TO + "=null) ", null);
-					message += "New in v3.6\n\n";
-					message += "* The LibraryThing Key will be verified when added\n\n";
-					message += "* When entering ISBN's manually, each button with vibrate the phone slightly\n\n";
-					message += "* When automatically updating fields click on each checkbox twice will give you the option to override existing fields (rather than populate only blank fields)\n\n";
-					message += "* Fixed a crash when exporting over 2000 books\n\n";
-					message += "* Orphan loan records will now be correctly managed\n\n";
-					message += "* The Amazon search will now look for English, French, German, Italian and Japanese versions\n\n";
+				results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_BOOKS + "'", new String[]{});
+				if (results57.getCount() == 0) {
+					//table does not exist
+					db.execSQL(DATABASE_CREATE_BOOKS);
 				}
-				if (curVersion == 59) {
-					curVersion++;
-					message += "New in v3.6.2\n\n";
-					message += "* Optionally restrict 'Sort By Author' to only the first Author (where there are multiple listed)\n\n";
-					message += "* Minor bug fixes\n\n";
+				results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_LOAN + "'", new String[]{});
+				if (results57.getCount() == 0) {
+					//table does not exist
+					db.execSQL(DATABASE_CREATE_LOAN);
 				}
-				if (curVersion == 60) {
-					curVersion++;
-					message += "New in v3.7\n\n";
-					message += "Hint: The export function will create an export.csv file on the sdcard\n\n";
-					message += "* You can crop cover thumbnails (both from the menu and after taking a camera image)\n\n";
-					message += "* You can tweet about a book directly from the book edit screen.\n\n";
-					message += "* Sort by Date Published added\n\n";
-					message += "* Will check for network connection prior to searching for details (new permission required)\n\n";
-					message += "* Fixed crash when opening search results\n\n";
+				results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_ANTHOLOGY + "'", new String[]{});
+				if (results57.getCount() == 0) {
+					//table does not exist
+					db.execSQL(DATABASE_CREATE_ANTHOLOGY);
 				}
-				if (curVersion == 61) {
-					curVersion++;
-					message += "New in v3.8\n\n";
-					message += "* Fixed several defects (including multiple author's and author prefix/suffix's)\n\n";
-					message += "* Fixed issue with thumbnail resolutions from LibraryThing\n\n";
-					message += "* Changed the 'Add Book' menu options to be submenu\n\n";
-					message += "* The database backup has been renamed for clarity\n\n";
+				results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_BOOK_BOOKSHELF_WEAK + "'", new String[]{});
+				if (results57.getCount() == 0) {
+					//table does not exist
+					db.execSQL(DATABASE_CREATE_BOOK_BOOKSHELF_WEAK);
 				}
+				results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_BOOK_SERIES + "'", new String[]{});
+				if (results57.getCount() == 0) {
+					//table does not exist
+					db.execSQL(DATABASE_CREATE_BOOK_SERIES);
+					db.execSQL("INSERT INTO " + DB_TB_BOOK_SERIES + " (" + KEY_BOOK + ", " + KEY_SERIES_ID + ", " + KEY_SERIES_NUM + ", " + KEY_SERIES_POSITION + ") "
+							+ "SELECT DISTINCT b." + KEY_ROWID + ", s." + KEY_ROWID + ", b." + KEY_SERIES_NUM + ", 1"
+							+ " FROM " + DB_TB_BOOKS + " b "
+							+ " Join " + DB_TB_SERIES + " s On Upper(s." + KEY_SERIES_NAME + ") = Upper(b." + KEY_SERIES_OLD + ")" + COLLATION
+							+ " Where Coalesce(b." + KEY_SERIES_OLD + ", '') <> ''");
+				}
+				results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_BOOK_AUTHOR + "'", new String[]{});
+				if (results57.getCount() == 0) {
+					//table does not exist
+					db.execSQL(DATABASE_CREATE_BOOK_AUTHOR);
+					db.execSQL("INSERT INTO " + DB_TB_BOOK_AUTHOR + " (" + KEY_BOOK + ", " + KEY_AUTHOR_ID + ", " + KEY_AUTHOR_POSITION + ") "
+							+ "SELECT b." + KEY_ROWID + ", b." + KEY_AUTHOR_OLD + ", 1 FROM " + DB_TB_BOOKS + " b ");
+				}
+				Cursor results57_3 = db.rawQuery("SELECT * FROM " + DB_TB_BOOKS, new String[]{});
+				if (results57_3.getCount() > 0) {
+					if (results57_3.getColumnIndex(KEY_SERIES_OLD) > -1) {
+						String tmpFields = KEY_ROWID + ", " /* + KEY_AUTHOR + ", " */ + KEY_TITLE + ", " + KEY_ISBN 
+						+ ", " + KEY_PUBLISHER + ", " + KEY_DATE_PUBLISHED + ", " + KEY_RATING + ", " + KEY_READ 
+						+ /* ", " + KEY_SERIES + */ ", " + KEY_PAGES /* + ", " + KEY_SERIES_NUM */ + ", " + KEY_NOTES 
+						+ ", " + KEY_LIST_PRICE + ", " + KEY_ANTHOLOGY + ", " + KEY_LOCATION + ", " + KEY_READ_START 
+						+ ", " + KEY_READ_END + ", " + KEY_FORMAT + ", " + KEY_SIGNED + ", " + KEY_DESCRIPTION
+						+ ", " + KEY_GENRE;
+						db.execSQL("CREATE TABLE tmpBooks AS SELECT " + tmpFields + " FROM " + DB_TB_BOOKS);
+						db.execSQL("DROP TABLE " + DB_TB_BOOKS);
+						db.execSQL(DATABASE_CREATE_BOOKS);
+						db.execSQL("INSERT INTO " + DB_TB_BOOKS + "( " + tmpFields + ")  SELECT * FROM tmpBooks");
+						db.execSQL("DROP TABLE tmpBooks");
+					}
+				}
+				createIndices(db);
+			}
+			if (curVersion == 58) {
+				curVersion++;
+				db.delete(DB_TB_LOAN, "("+KEY_BOOK+ "='' OR " + KEY_BOOK+ "=null OR " + KEY_LOANED_TO + "='' OR " + KEY_LOANED_TO + "=null) ", null);
+				message += "New in v3.6\n\n";
+				message += "* The LibraryThing Key will be verified when added\n\n";
+				message += "* When entering ISBN's manually, each button with vibrate the phone slightly\n\n";
+				message += "* When automatically updating fields click on each checkbox twice will give you the option to override existing fields (rather than populate only blank fields)\n\n";
+				message += "* Fixed a crash when exporting over 2000 books\n\n";
+				message += "* Orphan loan records will now be correctly managed\n\n";
+				message += "* The Amazon search will now look for English, French, German, Italian and Japanese versions\n\n";
+			}
+			if (curVersion == 59) {
+				curVersion++;
+				message += "New in v3.6.2\n\n";
+				message += "* Optionally restrict 'Sort By Author' to only the first Author (where there are multiple listed)\n\n";
+				message += "* Minor bug fixes\n\n";
+			}
+			if (curVersion == 60) {
+				curVersion++;
+				message += "New in v3.7\n\n";
+				message += "Hint: The export function will create an export.csv file on the sdcard\n\n";
+				message += "* You can crop cover thumbnails (both from the menu and after taking a camera image)\n\n";
+				message += "* You can tweet about a book directly from the book edit screen.\n\n";
+				message += "* Sort by Date Published added\n\n";
+				message += "* Will check for network connection prior to searching for details (new permission required)\n\n";
+				message += "* Fixed crash when opening search results\n\n";
+			}
+			if (curVersion == 61) {
+				curVersion++;
+				message += "New in v3.8\n\n";
+				message += "* Fixed several defects (including multiple author's and author prefix/suffix's)\n\n";
+				message += "* Fixed issue with thumbnail resolutions from LibraryThing\n\n";
+				message += "* Changed the 'Add Book' menu options to be submenu\n\n";
+				message += "* The database backup has been renamed for clarity\n\n";
 			}
 			//TODO: NOTE: END OF UPDATE
 		}

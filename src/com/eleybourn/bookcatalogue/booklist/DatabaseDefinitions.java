@@ -139,5 +139,7 @@ public class DatabaseDefinitions {
 	public static final TableDefinition TBL_BOOK_LIST_NODE_SETTINGS = new TableDefinition(TBL_BOOK_LIST_NAME + "_node_settings",
 			DOM_ID, DOM_KIND, DOM_ROOT_KEY)
 		.setAlias("blns")
+		.addIndex("ROOT_KIND", true, DOM_ROOT_KEY, DOM_KIND)
+		.addIndex("KIND_ROOT", true, DOM_KIND, DOM_ROOT_KEY);
 		;
 }

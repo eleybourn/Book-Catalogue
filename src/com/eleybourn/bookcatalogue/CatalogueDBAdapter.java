@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 import com.eleybourn.bookcatalogue.database.SqlStatementManager;
 import com.eleybourn.bookcatalogue.database.DbUtils.SynchronizedDb;
 import com.eleybourn.bookcatalogue.database.DbUtils.Synchronizer;
@@ -414,7 +415,7 @@ public class CatalogueDBAdapter {
 		
 	private final Context mCtx;
 	//TODO: Update database version
-	public static final int DATABASE_VERSION = 65;
+	public static final int DATABASE_VERSION = 66;
 
 	private TableInfo mBooksInfo = null;
 
@@ -1267,6 +1268,13 @@ public class CatalogueDBAdapter {
 				db.execSQL(DATABASE_CREATE_BOOKS);
 				db.execSQL("INSERT INTO " + DB_TB_BOOKS + " Select * FROM books_tmp");
 				db.execSQL("DROP TABLE books_tmp");
+			}
+			if (curVersion == 65) {
+				curVersion++;
+				SynchronizedDb sdb = new SynchronizedDb(db, mSynchronizer);
+				DatabaseDefinitions.TBL_BOOK_LIST_NODE_SETTINGS.drop(sdb);
+				DatabaseDefinitions.TBL_BOOK_LIST_NODE_SETTINGS.create(sdb, true);
+				DatabaseDefinitions.TBL_BOOK_LIST_NODE_SETTINGS.createIndices(sdb);
 			}
 			//TODO: NOTE: END OF UPDATE
 		}

@@ -392,6 +392,11 @@ public class DbUtils {
 		public String ref() {
 			return mName + " " + getAlias();
 		}
+		public void createIndices(SynchronizedDb db) {
+			for (IndexDefinition i : getIndexes()) {
+				db.execSQL(i.getSql());
+			}
+		}
 	}
 
 	/**

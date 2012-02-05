@@ -308,6 +308,11 @@ public class DbUtils {
 			db.execSQL(this.getSql(mName, withConstraints, false));
 			return this;
 		}
+		public TableDefinition createAll(SynchronizedDb db, boolean withConstraints) {
+			db.execSQL(this.getSql(mName, withConstraints, false));
+			createIndices(db);
+			return this;
+		}
 		public TableDefinition createIfNecessary(SynchronizedDb db, boolean withConstraints) {
 			db.execSQL(this.getSql(mName, withConstraints, true));
 			return this;
@@ -392,10 +397,11 @@ public class DbUtils {
 		public String ref() {
 			return mName + " " + getAlias();
 		}
-		public void createIndices(SynchronizedDb db) {
+		public TableDefinition createIndices(SynchronizedDb db) {
 			for (IndexDefinition i : getIndexes()) {
 				db.execSQL(i.getSql());
 			}
+			return this;
 		}
 	}
 

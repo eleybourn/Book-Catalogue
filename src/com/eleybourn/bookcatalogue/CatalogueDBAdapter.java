@@ -448,6 +448,9 @@ public class CatalogueDBAdapter {
 			db.execSQL(DATABASE_CREATE_BOOK_SERIES);
 			createIndices(db);
 
+			SynchronizedDb sdb = new SynchronizedDb(db, mSynchronizer);
+			DatabaseDefinitions.TBL_BOOK_LIST_NODE_SETTINGS.createAll(sdb, true);
+
 			new File(Utils.EXTERNAL_FILE_PATH + "/").mkdirs();
 			try {
 				new File(Utils.EXTERNAL_FILE_PATH + "/.nomedia").createNewFile();

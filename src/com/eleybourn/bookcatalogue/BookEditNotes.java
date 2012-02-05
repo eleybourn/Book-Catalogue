@@ -27,6 +27,7 @@ import java.util.Calendar;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
@@ -175,14 +176,26 @@ public class BookEditNotes extends Activity {
 					}
 					
 					saveState(values);
-					setResult(RESULT_OK);
+					Intent i = new Intent();
+					i.putExtra(CatalogueDBAdapter.KEY_ROWID, mRowId);
+					if (getParent() == null) {
+						setResult(RESULT_OK, i);
+					} else {
+						getParent().setResult(RESULT_OK, i);
+					}
 					finish();
 				}
 			});
 			
 			mCancelButton.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
-					setResult(RESULT_OK);
+					Intent i = new Intent();
+					i.putExtra(CatalogueDBAdapter.KEY_ROWID, mRowId);
+					if (getParent() == null) {
+						setResult(RESULT_OK, i);
+					} else {
+						getParent().setResult(RESULT_OK, i);
+					}
 					finish();
 				}
 			});

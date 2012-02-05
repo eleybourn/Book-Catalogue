@@ -57,6 +57,7 @@ public class MainMenu extends Activity {
 		setOnClickListener(R.id.loan_label, mLoanBookHandler);
 		setOnClickListener(R.id.search_label, mSearchHandler);
 		setOnClickListener(R.id.administration_label, mAdminHandler);
+		setOnClickListener(R.id.browse_label, mBrowseHandler);
 		setOnClickListener(R.id.about_label, mAboutHandler);
 		setOnClickListener(R.id.help_label, mHelpHandler);
 		setOnClickListener(R.id.donate_label, mDonateHandler);
@@ -106,6 +107,17 @@ public class MainMenu extends Activity {
 			Intent i = new Intent(MainMenu.this, AdministrationFunctions.class);
 			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(i);			
+		}
+	};
+
+	/**
+	 * Browse Handler
+	 */
+	private OnClickListener mBrowseHandler = new OnClickListener() {
+		@Override public void onClick(View v) {
+			Intent i = new Intent(MainMenu.this, BooksOnBookshelf.class);
+			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(i);
 		}
 	};
 

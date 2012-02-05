@@ -14,6 +14,9 @@ import android.database.sqlite.SQLiteQuery;
 /**
  * DEBUG CLASS to help debug cursor leakage.
  * 
+ * TODO: Turn this into 'SynchronizedCursor' and use non-static factory (in sync object?)
+ * to allow sync object to be passed on creation. Then...override move*() to allow locking.
+ * 
  * By using TrackedCursorFactory it is possible to use this class to analyze when and
  * where cursors are being allocated, and whether they are being deallocated in a timely
  * fashion.
@@ -52,7 +55,7 @@ public class TrackedCursor extends SQLiteCursor  {
 	private StackTraceElement[] mStackTrace;
 	/** Weak reference to this object, used in cursor collection */
 	private WeakReference<TrackedCursor> mWeakRef;
-	
+
 	/**
 	 * Constructor.
 	 *

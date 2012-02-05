@@ -32,26 +32,37 @@ public class GetThumbnailTask implements SimpleTask {
 	 * thread checks the chache only if there are no background cache-related tasks
 	 * currently running.
 	 */
-	public static void getThumbnail(long bookId, ImageView view, int width, int height, boolean cacheWasChecked) {
-		GetThumbnailTask t = new GetThumbnailTask( bookId, view, width, height, cacheWasChecked);
+	public static void getThumbnail(long bookId, ImageView view, int maxWidth, int maxHeight, boolean cacheWasChecked) {
+		GetThumbnailTask t = new GetThumbnailTask( bookId, view, maxWidth, maxHeight, cacheWasChecked);
 		mQueue.enqueue(t);
 	}
 	
+	/**
+	 * Allow other tasks (or subclasses tasks) to be queued.
+	 * 
+	 * @param t		Task to a[put in queue
+	 */
+	public static void enqueue(SimpleTask t) {
+		mQueue.enqueue(t);
+	}
+
 	/** Reference to the view we are using */
 	WeakReference<ImageView> mView = null;
 	/** ID of book whose cover we are getting */
 	private final long mBookId;
 	/** Resulting bitmap object */
 	Bitmap mBitmap = null;
-	/** Desire output width */
-	final int mWidth;
-	/** Desire output height */
-	final int mHeight;
 	/** Flag indicating original caller had checked cache */
 	private final boolean mCacheWasChecked;
 	/** Flag indicating image was found in the cache */
 	private boolean mWasInCache = false;
-
+	/** The width of the thumbnail retrieved (based on preferences) */
+	private int mWidth;
+	/** The height of the thumbnail retrieved (based on preferences) */
+	private int mHeight;
+	/** Indicated we want the queue manager to call the finished() method. */
+	private boolean  mWantFinished = true;
+	
 	public static boolean hasActiveTasks() {
 		return mQueue.hasActiveTasks();
 	}
@@ -81,14 +92,14 @@ public class GetThumbnailTask implements SimpleTask {
 	 * @param width
 	 * @param height
 	 */
-	public GetThumbnailTask( final long bookId, final ImageView v, final int width, final int height, boolean cacheWasChecked ) {
+	public GetThumbnailTask( final long bookId, final ImageView v, int maxWidth, int maxHeight, boolean cacheWasChecked ) {
 		clearOldTaskFromView(v);
 
 		mView = new WeakReference<ImageView>(v);
 		mBookId = bookId;
-		mWidth = width;
-		mHeight = height;
 		mCacheWasChecked = cacheWasChecked;
+		mWidth = maxWidth;
+		mHeight = maxHeight;
 
 		// Clear current image
 		v.setImageBitmap(null);
@@ -115,12 +126,17 @@ public class GetThumbnailTask implements SimpleTask {
 
 			// Get the view we are targeting and make sure it is valid
 			ImageView v = mView.get();
-			if (v == null)
+			if (v == null) {
+				mWantFinished = false;
 				return;
+			}
+
 			// Make sure the view is still associated with this task. We don't want to overwrite the wrong image
 			// in a recycled view.
-			if (!this.equals(v.getTag(R.id.TAG_GET_THUMBNAIL_TASK)))
+			if (!this.equals(v.getTag(R.id.TAG_GET_THUMBNAIL_TASK))) {
+				mWantFinished = false;
 				return;
+			}
 
 			File originalFile = CatalogueDBAdapter.fetchThumbnail(mBookId);
 
@@ -131,7 +147,7 @@ public class GetThumbnailTask implements SimpleTask {
 			}
 
 			if (mBitmap == null)
-				mBitmap = Utils.fetchBookCoverIntoImageView(null, mHeight, mHeight, true, mBookId, false, false);
+				mBitmap = Utils.fetchBookCoverIntoImageView(null, mWidth, mHeight, true, mBookId, false, false);
 			//}			
 		} finally {
 		}
@@ -159,9 +175,11 @@ public class GetThumbnailTask implements SimpleTask {
 				// if we don't have a valid view.
 				ThumbnailCacheWriterTask.writeToCache(Utils.getCoverCacheId(mBookId, mWidth, mHeight), mBitmap, !viewIsValid);
 			}
-			if (viewIsValid)
+			if (viewIsValid) {
+				//LayoutParams lp = new LayoutParams(mBitmap.getWidth(), mBitmap.getHeight()); 
+				//v.setLayoutParams(lp);
 				v.setImageBitmap(mBitmap);
-			else {
+			} else {
 				mBitmap.recycle();
 				mBitmap = null;
 			}
@@ -170,6 +188,11 @@ public class GetThumbnailTask implements SimpleTask {
 		}
 
 		//System.out.println("Set image for ID " + mBookId);
+	}
+
+	@Override
+	public boolean runFinished() {
+		return mWantFinished;
 	}
 
 }

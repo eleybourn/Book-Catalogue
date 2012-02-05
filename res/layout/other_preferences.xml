@@ -68,8 +68,8 @@
 				android:paddingTop="5sp"
 				/>
 		</LinearLayout>
-	
-	</LinearLayout>
+				
+	 </LinearLayout>
   </ScrollView>
 
 </LinearLayout>

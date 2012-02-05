@@ -1,4 +1,4 @@
-package com.eleybourn.bookcatalogue;
+package com.eleybourn.bookcatalogue.database;
 
 /*
  * This code is based on the SQLiteOpenHelper from Android 2.2 so that 

@@ -2,6 +2,8 @@ package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
 
+import com.eleybourn.bookcatalogue.database.DbUtils.Synchronizer.SyncLock;
+
 import android.os.Bundle;
 import android.os.Message;
 
@@ -100,15 +102,16 @@ public class ImportThread extends ManagedTask {
 
 		long lastUpdate = 0;
 		/* Iterate through each imported row */
+		SyncLock txLock = null;
 		try {
 			while (row < mExport.size() && !isCancelled()) {
 				if (inTx && txRowCount > 10) {
 					mDbHelper.setTransactionSuccessful();
-					mDbHelper.endTransaction();
+					mDbHelper.endTransaction(txLock);
 					inTx = false;
 				}
 				if (!inTx) {
-					mDbHelper.startTransaction();
+					txLock = mDbHelper.startTransaction(true);
 					inTx = true;
 					txRowCount = 0;
 				}
@@ -271,7 +274,7 @@ public class ImportThread extends ManagedTask {
 		} finally {
 			if (inTx) {
 				mDbHelper.setTransactionSuccessful();
-				mDbHelper.endTransaction();
+				mDbHelper.endTransaction(txLock);
 			}
 			mDbHelper.purgeAuthors();
 			mDbHelper.purgeSeries();

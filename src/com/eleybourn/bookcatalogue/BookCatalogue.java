@@ -23,7 +23,6 @@ package com.eleybourn.bookcatalogue;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import com.eleybourn.bookcatalogue.BooksCursor.BooksSnapshotCursor;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
 import com.eleybourn.bookcatalogue.goodreads.SendOneBookTask;
@@ -77,33 +76,29 @@ public class BookCatalogue extends ExpandableListActivity {
 	// Target size of a thumbnail in a list (bbox dim)
 	private static final int LIST_THUMBNAIL_SIZE=60;
 	
-	private static final int ACTIVITY_CREATE=0;
-	private static final int ACTIVITY_EDIT=1;
 	private static final int ACTIVITY_SORT=2;
-	private static final int ACTIVITY_ISBN=3;
-	private static final int ACTIVITY_SCAN=4;
 	private static final int ACTIVITY_ADMIN=5;
 	private static final int ACTIVITY_ADMIN_FINISH=6;
 	
 	private CatalogueDBAdapter mDbHelper;
-	private static final int SORT_BY_AUTHOR_EXPANDED = Menu.FIRST + 1; 
-	private static final int SORT_BY_AUTHOR_COLLAPSED = Menu.FIRST + 2;
-	private static final int SORT_BY = Menu.FIRST + 3; 
-	private static final int INSERT_ID = Menu.FIRST + 4;
-	private static final int INSERT_ISBN_ID = Menu.FIRST + 5;
-	private static final int INSERT_BARCODE_ID = Menu.FIRST + 6;
-	private static final int DELETE_ID = Menu.FIRST + 7;
-	private static final int ADMIN = Menu.FIRST + 9;
-	private static final int EDIT_BOOK = Menu.FIRST + 10;
-	private static final int EDIT_BOOK_NOTES = Menu.FIRST + 11;
-	private static final int EDIT_BOOK_FRIENDS = Menu.FIRST + 12;
-	private static final int SEARCH = Menu.FIRST + 13;
-	private static final int INSERT_NAME_ID = Menu.FIRST + 14;
-	private static final int DELETE_SERIES_ID = Menu.FIRST + 15;
-	private static final int EDIT_AUTHOR_ID = Menu.FIRST + 16;
-	private static final int EDIT_SERIES_ID = Menu.FIRST + 17;
-	private static final int INSERT_PARENT_ID = Menu.FIRST + 18;
-	private static final int EDIT_BOOK_SEND_TO_GR = Menu.FIRST + 19;
+	private static final int SORT_BY_AUTHOR_EXPANDED = MenuHandler.FIRST + 1; 
+	private static final int SORT_BY_AUTHOR_COLLAPSED = MenuHandler.FIRST + 2;
+	private static final int SORT_BY = MenuHandler.FIRST + 3; 
+	private static final int INSERT_ID = MenuHandler.FIRST + 4;
+	private static final int INSERT_ISBN_ID = MenuHandler.FIRST + 5;
+	private static final int INSERT_BARCODE_ID = MenuHandler.FIRST + 6;
+	private static final int DELETE_ID = MenuHandler.FIRST + 7;
+	private static final int ADMIN = MenuHandler.FIRST + 9;
+	private static final int EDIT_BOOK = MenuHandler.FIRST + 10;
+	private static final int EDIT_BOOK_NOTES = MenuHandler.FIRST + 11;
+	private static final int EDIT_BOOK_FRIENDS = MenuHandler.FIRST + 12;
+	private static final int SEARCH = MenuHandler.FIRST + 13;
+	private static final int INSERT_NAME_ID = MenuHandler.FIRST + 14;
+	private static final int DELETE_SERIES_ID = MenuHandler.FIRST + 15;
+	private static final int EDIT_AUTHOR_ID = MenuHandler.FIRST + 16;
+	private static final int EDIT_SERIES_ID = MenuHandler.FIRST + 17;
+	private static final int INSERT_PARENT_ID = MenuHandler.FIRST + 18;
+	private static final int EDIT_BOOK_SEND_TO_GR = MenuHandler.FIRST + 19;
 	
 	public static String bookshelf = "";
 	private ArrayAdapter<String> spinnerAdapter;
@@ -206,10 +201,6 @@ public class BookCatalogue extends ExpandableListActivity {
 			setContentView(R.layout.list_authors);
 			mDbHelper = new CatalogueDBAdapter(this);
 			mDbHelper.open();
-			if (savedInstanceState == null) {
-				// Analyze DB  if new instance
-				mDbHelper.analyzeDb();
-			}
 			
 			// Did the user search
 			Intent intent = getIntent();
@@ -504,19 +495,23 @@ public class BookCatalogue extends ExpandableListActivity {
 
 				// Get the DB cursor
 				SQLiteCursor children = ViewManager.this.getChildrenCursor(groupCursor);
-				// Make a snapshot of it to avoid keeping potentially hundreds of cursors open
-				CursorSnapshotCursor csc;
-				if (children instanceof BooksCursor) {
-					csc = new BooksSnapshotCursor(children);
-				} else {
-					csc = new CursorSnapshotCursor(children);
-				}
-				children.close();
+
+				// // Make a snapshot of it to avoid keeping potentially hundreds of cursors open
+				// // If we ever set Android 2.0 as minimum, do this...
+				// CursorSnapshotCursor csc;
+				// if (children instanceof BooksCursor) {
+				// 	csc = new BooksSnapshotCursor(children);
+				// } else {
+				// 	csc = new CursorSnapshotCursor(children);
+				// }
+				// children.close();
+				// BookCatalogue.this.startManagingCursor(csc);
+
 				// TODO FIND A BETTER SOLUTION!
 				// THIS CAUSES CRASH IN HONEYCOMB when viewing book details then clicking 'back', so we have 
 				// overridden startManagingCursor to only close cursors in onDestroy().
-				BookCatalogue.this.startManagingCursor(csc);
-				return csc;
+				BookCatalogue.this.startManagingCursor(children);
+				return children;
 			}
 
 			/**
@@ -575,7 +570,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			@Override 
 			protected void bindChildView(View view, Context context, Cursor origCursor, boolean isLastChild) {
 				BookHolder holder = (BookHolder) view.getTag(R.id.TAG_HOLDER);
-				final BooksSnapshotCursor snapshot = (BooksSnapshotCursor) origCursor;
+				final BooksCursor snapshot = (BooksCursor) origCursor;
 				final BooksRowView rowView = snapshot.getRowView();
 
 				if (holder.author.show)
@@ -590,7 +585,13 @@ public class BookCatalogue extends ExpandableListActivity {
 				}
 
 				if (holder.read.show) {
-					if (rowView.getRead() == 1) {
+					int read;
+					try {
+						read = rowView.getRead();
+					} catch (Exception e) {
+						read = 0;
+					}
+					if (read == 1) {
 						holder.read.view.setImageResource(R.drawable.btn_check_buttonless_on);
 					} else {
 						holder.read.view.setImageResource(R.drawable.btn_check_buttonless_off);
@@ -1222,50 +1223,26 @@ public class BookCatalogue extends ExpandableListActivity {
 		});
 	}
 	
+	private MenuHandler mMenuHandler;
 	/**
 	 * Run each time the menu button is pressed. This will setup the options menu
 	 */
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		menu.clear();
-		
-		SubMenu insert = menu.addSubMenu(0, INSERT_PARENT_ID, 0, this.getResources().getString(R.string.menu_insert) + "...");
-		insert.setIcon(android.R.drawable.ic_menu_add);
-		
-		/* Moved to submenu */
-		MenuItem insertBook = insert.add(0, INSERT_ID, 0, R.string.menu_insert);
-		insertBook.setIcon(android.R.drawable.ic_menu_add);
-		
-		if (Utils.USE_BARCODE) {
-			MenuItem insertBC = insert.add(0, INSERT_BARCODE_ID, 1, R.string.menu_insert_barcode);
-			insertBC.setIcon(R.drawable.ic_menu_insert_barcode);
-			
-			MenuItem insertISBN = insert.add(0, INSERT_ISBN_ID, 2, R.string.menu_insert_isbn);
-			insertISBN.setIcon(android.R.drawable.ic_menu_zoom);
-			
-			MenuItem insertName = insert.add(0, INSERT_NAME_ID, 2, R.string.menu_insert_name);
-			insertName.setIcon(android.R.drawable.ic_menu_zoom);
-		}
-		
-		
+		mMenuHandler = new MenuHandler();
+		mMenuHandler.init(menu);
+		mMenuHandler.addCreateBookItems(menu);
+
 		if (collapsed == true || currentGroup.size() == 0) {
-			MenuItem expand = menu.add(0, SORT_BY_AUTHOR_COLLAPSED, 3, R.string.menu_sort_by_author_expanded);
-			expand.setIcon(R.drawable.ic_menu_expand);
+			mMenuHandler.addItem(menu, SORT_BY_AUTHOR_COLLAPSED, R.string.menu_sort_by_author_expanded, R.drawable.ic_menu_expand);
 		} else {
-			MenuItem collapse = menu.add(0, SORT_BY_AUTHOR_EXPANDED, 3, R.string.menu_sort_by_author_collapsed);
-			collapse.setIcon(R.drawable.ic_menu_collapse);
+			mMenuHandler.addItem(menu, SORT_BY_AUTHOR_EXPANDED, R.string.menu_sort_by_author_collapsed, R.drawable.ic_menu_collapse);
 		}
-		
-		MenuItem sortby = menu.add(0, SORT_BY, 4, R.string.menu_sort_by);
-		sortby.setIcon(android.R.drawable.ic_menu_sort_alphabetically);
-		
-		String adminTitle = getResources().getString(R.string.help) + " & " + getResources().getString(R.string.menu_administration);
-		MenuItem admin = menu.add(0, ADMIN, 5, adminTitle);
-		admin.setIcon(android.R.drawable.ic_menu_manage);
-		
-		MenuItem search = menu.add(0, SEARCH, 4, R.string.menu_search);
-		search.setIcon(android.R.drawable.ic_menu_search);
-		
+		mMenuHandler.addItem(menu, SORT_BY, R.string.menu_sort_by, android.R.drawable.ic_menu_sort_alphabetically);
+
+		mMenuHandler.addCreateHelpItem(menu);
+		mMenuHandler.addSearchItem(menu);
+
 		return super.onPrepareOptionsMenu(menu);
 	}
 	
@@ -1275,35 +1252,19 @@ public class BookCatalogue extends ExpandableListActivity {
 	 */
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
-		switch(item.getItemId()) {
-		case SORT_BY_AUTHOR_COLLAPSED:
-			expandAll();
-			return true;
-		case SORT_BY_AUTHOR_EXPANDED:
-			collapseAll();
-			return true;
-		case SORT_BY:
-			sortOptions();
-			return true;
-		case INSERT_ID:
-			createBook();
-			return true;
-		case INSERT_ISBN_ID:
-			createBookISBN("isbn");
-			return true;
-		case INSERT_BARCODE_ID:
-			createBookScan();
-			return true;
-		case ADMIN:
-			// Start the Main Menu, not just the Admin page
-			mainMenuPage();
-			return true;
-		case SEARCH:
-			onSearchRequested();
-			return true;
-		case INSERT_NAME_ID:
-			createBookISBN("name");
-			return true;
+		// MenuHandler handles the 'standard' items, we just handle local items.
+		if (mMenuHandler == null || !mMenuHandler.onMenuItemSelected(this, featureId, item)) {
+			switch(item.getItemId()) {
+			case SORT_BY_AUTHOR_COLLAPSED:
+				expandAll();
+				return true;
+			case SORT_BY_AUTHOR_EXPANDED:
+				collapseAll();
+				return true;
+			case SORT_BY:
+				sortOptions();
+				return true;
+			}			
 		}
 		
 		return super.onMenuItemSelected(featureId, item);
@@ -1553,15 +1514,15 @@ public class BookCatalogue extends ExpandableListActivity {
 			return true;
 
 		case EDIT_BOOK:
-			editBook(info.id, BookEdit.TAB_EDIT);
+			BookEdit.editBook(this, info.id, BookEdit.TAB_EDIT);
 			return true;
 
 		case EDIT_BOOK_NOTES:
-			editBook(info.id, BookEdit.TAB_EDIT_NOTES);
+			BookEdit.editBook(this, info.id, BookEdit.TAB_EDIT_NOTES);
 			return true;
 
 		case EDIT_BOOK_FRIENDS:
-			editBook(info.id, BookEdit.TAB_EDIT_FRIENDS);
+			BookEdit.editBook(this, info.id, BookEdit.TAB_EDIT_FRIENDS);
 			return true;
 
 		case EDIT_BOOK_SEND_TO_GR:
@@ -1643,15 +1604,6 @@ public class BookCatalogue extends ExpandableListActivity {
 	}
 	
 	/**
-	 * Load the Main Menu Activity
-	 */
-	private void mainMenuPage() {
-		Intent i = new Intent(BookCatalogueApp.context, MainMenu.class);
-		i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		startActivity(i);
-	}
-	
-	/**
 	 * Load the Administration Activity
 	 */
 	private void adminPage(String auto, int activityAdmin) {
@@ -1661,55 +1613,12 @@ public class BookCatalogue extends ExpandableListActivity {
 		}
 		startActivityForResult(i, activityAdmin);
 	}
-	
-	/**
-	 * Load the BookEdit Activity
-	 */
-	private void createBook() {
-		Intent i = new Intent(this, BookEdit.class);
-		startActivityForResult(i, ACTIVITY_CREATE);
-	}
-	
-	/**
-	 * Load the Search by ISBN Activity
-	 */
-	private void createBookISBN(String by) {
-		Intent i = new Intent(this, BookISBNSearch.class);
-		i.putExtra(BookISBNSearch.BY, by);
-		startActivityForResult(i, ACTIVITY_ISBN);
-	}
-	
-	/**
-	 * Load the EditBook activity based on the provided id. Also open to the provided tab
-	 * 
-	 * @param id The id of the book to edit
-	 * @param tab Which tab to open first
-	 */
-	private void editBook(long id, int tab) {
-		Intent i = new Intent(this, BookEdit.class);
-		i.putExtra(CatalogueDBAdapter.KEY_ROWID, id);
-		i.putExtra(BookEdit.TAB, tab);
-		startActivityForResult(i, ACTIVITY_EDIT);
-		// DEBUG:
-		//System.out.print("Cursor count: " + TrackedCursor.getCursorCount());
-		//TrackedCursor.dumpCursors();
-		return;
-	}
-
-	/**
-	 * Load the Search by ISBN Activity to begin scanning.
-	 */
-	private void createBookScan() {
-		Intent i = new Intent(this, BookISBNSearch.class);
-		i.putExtra(BookISBNSearch.BY, "scan");
-		startActivityForResult(i, ACTIVITY_ISBN);
-	}
 
 	@Override
 	public boolean onChildClick(ExpandableListView l, View v, int position, int childPosition, long id) {
 		boolean result = super.onChildClick(l, v, position, childPosition, id);
 		adjustCurrentGroup(position, 1, true, false);
-		editBook(id, BookEdit.TAB_EDIT);
+		BookEdit.editBook(this, id, BookEdit.TAB_EDIT);
 		return result;
 	}
 	
@@ -1721,22 +1630,22 @@ public class BookCatalogue extends ExpandableListActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
 		switch(requestCode) {
-		case ACTIVITY_SCAN:
+		case R.id.ACTIVITY_CREATE_BOOK_SCAN:
 			try {
 				String contents = intent.getStringExtra("SCAN_RESULT");
 				Toast.makeText(this, R.string.isbn_found, Toast.LENGTH_LONG).show();
 				Intent i = new Intent(this, BookISBNSearch.class);
 				i.putExtra("isbn", contents);
-				startActivityForResult(i, ACTIVITY_ISBN);
+				startActivityForResult(i, R.id.ACTIVITY_CREATE_BOOK_SCAN);
 			} catch (NullPointerException e) {
 				// This is not a scan result, but a normal return
 				fillData();
 			}
 			break;
-		case ACTIVITY_CREATE:
-		case ACTIVITY_EDIT:
+		case R.id.ACTIVITY_CREATE_BOOK_ISBN:
+		case R.id.ACTIVITY_CREATE_BOOK_MANUALLY:
+		case R.id.ACTIVITY_EDIT_BOOK:
 		case ACTIVITY_SORT:
-		case ACTIVITY_ISBN:
 		case ACTIVITY_ADMIN:
 			try {
 				// Use the ADDED_* fields if present.

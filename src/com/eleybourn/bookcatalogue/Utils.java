@@ -47,6 +47,8 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import com.eleybourn.bookcatalogue.database.CoversDbHelper;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -986,7 +988,7 @@ public class Utils {
 	 * 
 	 * @return				Bitmap (if cached) or NULL (if done in background)
 	 */
-	public static final Bitmap fetchBookCoverIntoImageView(final ImageView destView, final int maxWidth, final int maxHeight, final boolean exact, final long bookId, final boolean checkCache, final boolean allowBackground) {
+	public static final Bitmap fetchBookCoverIntoImageView(final ImageView destView, int maxWidth, int maxHeight, final boolean exact, final long bookId, final boolean checkCache, final boolean allowBackground) {
 
 		// Get the original file so we can use the modification date, path etc
 		File coverFile = CatalogueDBAdapter.fetchThumbnail(bookId);

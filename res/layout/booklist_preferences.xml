@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:orientation="vertical"
+	android:layout_width="fill_parent" 
+	android:layout_height="fill_parent"
+	android:background="@drawable/bc_background_gradient"
+	android:paddingLeft="5sp">
+
+    <TextView 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content" 
+		android:text="@+string/booklist_preferences"
+		android:textAppearance="?android:attr/textAppearanceSmall"
+		android:paddingTop="5dp"
+		android:paddingBottom="2dp"
+		/>
+ 	<View 
+	    android:background="@drawable/main_menu_header_divider"
+	    android:layout_width="fill_parent"
+	    android:layout_height="1dp"
+		android:paddingBottom="5dp"
+	    />
+
+	<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			>
+	
+	  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+		android:orientation="vertical"
+		android:layout_width="fill_parent" 
+		android:layout_height="fill_parent"
+		android:paddingLeft="5sp">
+		
+	  	<!--  General Header -->
+	  	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+			android:orientation="horizontal"
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content"
+			android:paddingLeft="5sp">
+			<TextView 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:text="@+string/general"
+				android:textAppearance="?android:attr/textAppearanceSmall"
+				android:paddingTop="5sp"
+				/>
+		</LinearLayout>
+
+	  	<!--  Show Thumbnails -->
+		<LinearLayout android:id="@+id/show_thumbnails_label" 
+			android:orientation="horizontal"
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content"
+			android:paddingLeft="15sp">
+			<CheckBox android:id="@+id/show_thumbnails_checkbox" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:paddingLeft="10sp"
+				android:focusable="false"
+				android:src="@+drawable/ic_menu_bookshelves"
+				/>
+			<TextView 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:text="@+string/show_thumbnails"
+				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:paddingTop="5sp"
+				/>
+		</LinearLayout>
+	
+	  	<!--  Large Thumbnails -->
+		<LinearLayout android:id="@+id/large_thumbnails_label" 
+			android:orientation="horizontal"
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content"
+			android:paddingLeft="15sp">
+			<CheckBox android:id="@+id/large_thumbnails_checkbox" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:paddingLeft="10sp"
+				android:focusable="false"
+				android:src="@+drawable/ic_menu_bookshelves"
+				/>
+			<TextView 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:text="@+string/large_thumbnails"
+				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:paddingTop="5sp"
+				/>
+		</LinearLayout>
+
+	  	<!--  First then Last names -->
+		<LinearLayout android:id="@+id/display_first_then_last_names_label" 
+			android:orientation="horizontal"
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content"
+			android:paddingLeft="15sp">
+			<CheckBox android:id="@+id/display_first_then_last_names_checkbox" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:paddingLeft="10sp"
+				android:focusable="false"
+				android:src="@+drawable/ic_menu_bookshelves"
+				/>
+			<TextView 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:text="@+string/display_first_then_last_names"
+				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:paddingTop="5sp"
+				/>
+		</LinearLayout>
+		
+	  	<!--  All Authors -->
+		<LinearLayout android:id="@+id/show_all_authors_label" 
+			android:orientation="horizontal"
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content"
+			android:paddingLeft="15sp">
+			<CheckBox android:id="@+id/show_all_authors_checkbox" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:paddingLeft="10sp"
+				android:focusable="false"
+				android:src="@+drawable/ic_menu_bookshelves"
+				/>
+			<TextView 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:text="@+string/show_all_authors"
+				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:paddingTop="5sp"
+				/>
+		</LinearLayout>
+	  	<!--  All Series -->
+		<LinearLayout android:id="@+id/show_all_series_label" 
+			android:orientation="horizontal"
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content"
+			android:paddingLeft="15sp">
+			<CheckBox android:id="@+id/show_all_series_checkbox" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:paddingLeft="10sp"
+				android:focusable="false"
+				android:src="@+drawable/ic_menu_bookshelves"
+				/>
+			<TextView 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:text="@+string/show_all_series"
+				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:paddingTop="5sp"
+				/>
+		</LinearLayout>
+
+		<!--  Fields Header -->
+	  	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+			android:orientation="horizontal"
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content"
+			android:paddingLeft="5sp">
+			<TextView 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:text="@+string/fields"
+				android:textAppearance="?android:attr/textAppearanceSmall"
+				android:paddingTop="5sp"
+				/>
+		</LinearLayout>
+
+	  	<!--  All Series -->
+		<LinearLayout android:id="@+id/bookshelves_label" 
+			android:orientation="horizontal"
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content"
+			android:paddingLeft="15sp">
+			<CheckBox android:id="@+id/bookshelves_checkbox" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:paddingLeft="10sp"
+				android:focusable="false"
+				android:src="@+drawable/ic_menu_bookshelves"
+				/>
+			<TextView 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:text="@+string/bookshelves"
+				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:paddingTop="5sp"
+				/>
+		</LinearLayout>
+	  	<!--  Location -->
+		<LinearLayout android:id="@+id/location_label" 
+			android:orientation="horizontal"
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content"
+			android:paddingLeft="15sp">
+			<CheckBox android:id="@+id/location_checkbox" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:paddingLeft="10sp"
+				android:focusable="false"
+				android:src="@+drawable/ic_menu_compass"
+				/>
+			<TextView 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:text="@+string/location"
+				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:paddingTop="5sp"
+				/>
+		</LinearLayout>
+	  	<!--  Publisher -->
+		<LinearLayout android:id="@+id/publisher_label" 
+			android:orientation="horizontal"
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content"
+			android:paddingLeft="15sp">
+			<CheckBox android:id="@+id/publisher_checkbox" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:paddingLeft="10sp"
+				android:focusable="false"
+				android:src="@+drawable/ic_menu_bookshelves"
+				/>
+			<TextView 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:text="@+string/publisher"
+				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:paddingTop="5sp"
+				/>
+		</LinearLayout>
+					
+	  	<!--  MANAGEMENT Header -->
+	    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+			android:orientation="horizontal"
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content"
+			android:paddingLeft="5sp">
+			<TextView 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:text="@+string/management"
+				android:textAppearance="?android:attr/textAppearanceSmall"
+				android:paddingTop="5sp"
+				/>
+		</LinearLayout>
+
+		<!--  ERASE COVER CACHE -->
+		<LinearLayout android:id="@+id/erase_cover_cache_label" 
+			android:orientation="horizontal"
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content"
+			android:clickable="true"
+			android:paddingLeft="15sp">
+			<ImageView 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:paddingLeft="10sp"
+				android:src="@+android:drawable/ic_menu_close_clear_cancel"
+				/>
+			<TextView 
+				android:layout_width="fill_parent" 
+				android:layout_height="wrap_content" 
+				android:text="@+string/erase_cover_cache"
+				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:paddingTop="5sp"
+				/>
+		</LinearLayout>
+
+	</LinearLayout>
+  </ScrollView>
+
+</LinearLayout>
+	

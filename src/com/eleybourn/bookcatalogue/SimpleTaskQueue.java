@@ -70,8 +70,21 @@ public class SimpleTaskQueue {
 	 *
 	 */
 	public interface SimpleTask {
+		/**
+		 * Method called in queue thread to perform the background task.
+		 */
 		void run();
+		/**
+		 * Method called in UI thread after the background task has finished.
+		 */
 		void finished();
+		/**
+		 * Method called by queue manager to determine if 'finished()' needs to be called.
+		 * This is an optimization to avoid queueing unnecessary Runnables.
+		 * 
+		 * @return	boolean indicating 'finished()' should be called in UI thread.
+		 */
+		boolean runFinished();
 	}
 
 	private static class SimpleTaskWrapper {
@@ -211,12 +224,22 @@ public class SimpleTaskQueue {
 		} catch (Exception e) {
 			Logger.logError(e, "Error running task");
 		}
+		boolean wantFinished;
+		// See if we need to call finished(). Default to true.
 		try {
-			mResultQueue.put(task);	
-		} catch (InterruptedException e) {
+			wantFinished = task.runFinished();
+		} catch (Exception e) {
+			wantFinished = true;
 		}
-		// Wake up the UI thread.
-		mHandler.post(mDoProcessResults);
+		// Queue the call to finished() if necessary.
+		if (wantFinished) {
+			try {
+				mResultQueue.put(task);	
+			} catch (InterruptedException e) {
+			}
+			// Queue Runnable in the UI thread.
+			mHandler.post(mDoProcessResults);			
+		}
 	}
 
 	/**

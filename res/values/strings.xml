@@ -348,5 +348,55 @@
 <string name="crash_dialog_text">It looks like BookCatalogue has crashed. If possible describe anything you think may be relevant below and press "OK" to send us an email about the crash. You will see the email before it is sent.</string>
 <string name="crash_dialog_comment_prompt">Your comments (or just leave blank):</string>
 <string name="crash_dialog_ok_toast">Thank you!</string>
-
+<string name="browse_books">Browse all books</string>
+<string name="no_series">(no series)</string>
+<string name="booklist_read">Read</string>
+<string name="booklist_unread">Unread</string>
+<string name="no_genre">(no genre)</string>
+<string name="no_title">(no title)</string>
+<string name="no_publisher">(no publisher)</string>
+<string name="no_author">(no author)</string>
+<string name="no_date">(no date)</string>
+<item name="ACTIVITY_CREATE_BOOK_MANUALLY" type="id"/>
+<item name="ACTIVITY_CREATE_BOOK_ISBN" type="id"/>
+<item name="ACTIVITY_CREATE_BOOK_SCAN" type="id"/>
+<item name="ACTIVITY_EDIT_BOOK" type="id"/>
+<item name="ACTIVITY_ADMIN" type="id"/>
+<item name="ACTIVITY_PREFERENCES" type="id"/>
+<string name="book_lists">Book Lists</string>
+<string name="show_all_authors">Show book under each author</string>
+<string name="show_all_series">Show book in each series</string>
+<string name="show_thumbnails">Show Thumbnails</string>
+<string name="large_thumbnails">Large Thumbnails</string>
+<string name="display_first_then_last_names">Display given names first</string>
+<string name="sort_author_series">Author then Series</string>
+<string name="sort_first_author_series">Author then Series (First author only)</string>
+<string name="sort_series">Series</string>
+<string name="sort_title">Title first letter</string>
+<string name="sort_genre">Genre name</string>
+<string name="sort_loaned">Loaned</string>
+<string name="sort_unread">Unread</string>
+<string name="sort_publication_date">Publication date</string>
+<string name="sort_author_year">Author and Year</string>
+<string name="empty_with_brackets">(empty)</string>
+<string name="navigator">Navigator</string>
+<item name="MENU_DELETE_BOOK" type="id"/>
+<item name="MENU_EDIT_BOOK" type="id"/>
+<item name="MENU_EDIT_BOOK_NOTES" type="id"/>
+<item name="MENU_EDIT_BOOK_FRIENDS" type="id"/>
+<item name="MENU_SEND_BOOK_TO_GR" type="id"/>
+<item name="MENU_EDIT_AUTHOR" type="id"/>
+<item name="MENU_DELETE_SERIES" type="id"/>
+<item name="MENU_EDIT_SERIES" type="id"/>
+<string name="booklist_preferences">Book List Preferences</string>
+<string name="fields">Fields</string>
+<string name="general">General</string>
+<string name="bookshelves">Bookshelves</string>
+<string name="shelves">Shelves</string>
+<string name="location">Location</string>
+<string name="publisher">Publisher</string>
+<string name="preferences">Preferences</string>
+<string name="management">Management</string>
+<string name="credentials">Credentials</string>
+<string name="data_import_export">Data Import/Export</string>
 </resources>

@@ -56,4 +56,12 @@ public class GetImageTask implements SimpleTask {
 		mWork.handleTaskFinished(mBytes);
 	}
 
+	/**
+	 * Always want finished() to be called.
+	 */
+	@Override
+	public boolean runFinished() {
+		return true;
+	}
+
 }

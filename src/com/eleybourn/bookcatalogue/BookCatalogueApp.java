@@ -217,8 +217,13 @@ public class BookCatalogueApp extends Application {
 		/** Underlying SharedPreferences */
 		private SharedPreferences m_prefs = BookCatalogueApp.context.getSharedPreferences("bookCatalogue", MODE_PRIVATE);
 
-		/** Name to use for startup activity preferences */
+		/** Name to use for global preferences; non-global should be moved to appropriate Activity code */
 		public static final String PREF_START_IN_MY_BOOKS = "start_in_my_books";
+		public static final String PREF_LARGE_THUMBNAILS = "APP.LargeThumbnails";
+		public static final String PREF_SHOW_ALL_AUTHORS = "APP.ShowAllAuthors";
+		public static final String PREF_SHOW_ALL_SERIES = "APP.ShowAllSeries";
+		public static final String PREF_DISPLAY_FIRST_THEN_LAST_NAMES = "APP.DisplayFirstThenLast";
+		public static final String PREF_BOOKLIST_STYLE = "APP.BooklistStyle";
 
 		/** Get startup activity preference */
 		public boolean getStartInMyBook() {
@@ -230,6 +235,16 @@ public class BookCatalogueApp extends Application {
 			return this;
 		}
 		
+		/** Get thumbnail size preference */
+		public boolean getLargeThumbails() {
+			return getBoolean(PREF_LARGE_THUMBNAILS,false);
+		}
+		/** Set startup activity preference */
+		public BookCataloguePreferences setLargeThumbails(boolean value) {
+			setBoolean(PREF_LARGE_THUMBNAILS,value);
+			return this;
+		}
+
 		/** Get a named boolean preference */
 		public boolean getBoolean(String name, boolean defaultValue) {
 			boolean result;
@@ -264,6 +279,25 @@ public class BookCatalogueApp extends Application {
 			Editor ed = this.edit();
 			try {
 				ed.putString(name, value);
+			} finally {
+				ed.commit();
+			}
+		}
+		/** Get a named string preference */
+		public int getInt(String name, int defaultValue) {
+			int result;
+			try {
+				result = m_prefs.getInt(name, defaultValue);
+			} catch (Exception e) {
+				result = defaultValue;
+			}
+			return result;
+		}
+		/** Set a named string preference */
+		public void setInt(String name, int value) {
+			Editor ed = this.edit();
+			try {
+				ed.putInt(name, value);
 			} finally {
 				ed.commit();
 			}

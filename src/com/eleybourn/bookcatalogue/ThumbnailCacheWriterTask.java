@@ -3,6 +3,7 @@ package com.eleybourn.bookcatalogue;
 import android.graphics.Bitmap;
 
 import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTask;
+import com.eleybourn.bookcatalogue.database.CoversDbHelper;
 
 /**
  * Background task to save a bitmap into the covers thumbnail database. Runs in background
@@ -55,7 +56,7 @@ public class ThumbnailCacheWriterTask implements SimpleTask {
 	private final boolean mCanRecycle;
 	/** Bitmap to store */
 	private Bitmap mBitmap;
-	
+
 	/**
 	 * Create a task that will compress the passed bitmap and write it to the database, 
 	 * it will also be recycled if flag is set.
@@ -85,6 +86,12 @@ public class ThumbnailCacheWriterTask implements SimpleTask {
 
 	@Override
 	public void finished() {
+	}
+
+	@Override
+	public boolean runFinished() {
+		// We never need anything in UI thread.
+		return false;
 	}
 
 }

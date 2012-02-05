@@ -2,7 +2,6 @@ package com.eleybourn.bookcatalogue;
 
 import java.util.Hashtable;
 
-import android.database.sqlite.SQLiteCursor;
 import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQuery;
@@ -71,33 +70,35 @@ public class BooksCursor extends TrackedCursor {
 		return mView;
 	}
 
-	/**
-	 * Snapshot cursor to use with this cursor.
-	 * 
-	 * @author Grunthos
-	 */
-	public static class BooksSnapshotCursor extends CursorSnapshotCursor {
-		BooksRowView mView;
-
-		public BooksSnapshotCursor(SQLiteCursor source) {
-			super(source);
-		}
-		
-		public BooksRowView getRowView() {
-			if (mView == null)
-				mView = new BooksRowView(this);
-			return mView;
-		}
-
-		/**
-		 * Clear the RowView and selections, if any
-		 */
-		@Override
-		public void close() {
-			super.close();
-			mView = null;
-		}
-	}
+//	/**
+//	 * Snapshot cursor to use with this cursor.
+//	 * 
+//	 * NOT IMPLEMENTED: Android 1.6 SQLite interface does not support getting column types.
+//	 * 
+//	 * @author Grunthos
+//	 */
+//	public static class BooksSnapshotCursor extends CursorSnapshotCursor {
+//		BooksRowView mView;
+//
+//		public BooksSnapshotCursor(SQLiteCursor source) {
+//			super(source);
+//		}
+//		
+//		public BooksRowView getRowView() {
+//			if (mView == null)
+//				mView = new BooksRowView(this);
+//			return mView;
+//		}
+//
+//		/**
+//		 * Clear the RowView and selections, if any
+//		 */
+//		@Override
+//		public void close() {
+//			super.close();
+//			mView = null;
+//		}
+//	}
 
 	/**
 	 * Clear the RowView and selections, if any

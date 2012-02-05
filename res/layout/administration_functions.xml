@@ -5,14 +5,14 @@
 		android:background="@drawable/bc_background_gradient"
 		>
 
-  <!--  MANAGEMENT HEader -->
   <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
 	android:orientation="vertical"
 	android:layout_width="fill_parent" 
 	android:layout_height="fill_parent"
 	android:paddingLeft="5sp">
 	
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+  	<!--  PREFERENCES Header -->
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
 		android:orientation="horizontal"
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content"
@@ -20,13 +20,13 @@
 		<TextView 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
-			android:text="management"
+			android:text="@+string/preferences"
 			android:textAppearance="?android:attr/textAppearanceSmall"
 			android:paddingTop="5sp"
 			/>
 	</LinearLayout>
 
-  	<!--  BOOKSHELVES -->
+    <!--  BOOKSHELVES -->
 	<LinearLayout android:id="@+id/bookshelf_label" 
 		android:orientation="horizontal"
 		android:layout_width="fill_parent" 
@@ -70,6 +70,28 @@
 			/>
 	</LinearLayout>
 
+	<!--  BOOK LIST PREFS -->
+	<LinearLayout android:id="@+id/booklist_preferences_label" 
+		android:orientation="horizontal"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:clickable="true"
+		android:paddingLeft="15sp">
+		<ImageView
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:paddingLeft="10sp"
+			android:src="@+android:drawable/ic_menu_manage"
+			/>
+		<TextView 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:text="@+string/booklist_preferences"
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:paddingTop="5sp"
+			/>
+	</LinearLayout>
+
 	<!--  OTHER PREFS -->
 	<LinearLayout android:id="@+id/other_prefs_label" 
 		android:orientation="horizontal"
@@ -91,7 +113,22 @@
 			android:paddingTop="5sp"
 			/>
 	</LinearLayout>
-	
+
+  	<!--  MANAGEMENT Header -->
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+		android:orientation="horizontal"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:paddingLeft="5sp">
+		<TextView 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:text="@+string/management"
+			android:textAppearance="?android:attr/textAppearanceSmall"
+			android:paddingTop="5sp"
+			/>
+	</LinearLayout>
+
 	<!--  TASKs -->
 	<LinearLayout android:id="@+id/background_tasks_label" 
 		android:orientation="horizontal"
@@ -136,29 +173,7 @@
 			/>
 	</LinearLayout>
 		
-	<!--  ERASE COVER CACHE -->
-	<LinearLayout android:id="@+id/erase_cover_cache_label" 
-		android:orientation="horizontal"
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content"
-		android:clickable="true"
-		android:paddingLeft="15sp">
-		<ImageView 
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content" 
-			android:paddingLeft="10sp"
-			android:src="@+android:drawable/ic_menu_close_clear_cancel"
-			/>
-		<TextView 
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content" 
-			android:text="@+string/erase_cover_cache"
-			android:textAppearance="?android:attr/textAppearanceLarge"
-			android:paddingTop="5sp"
-			/>
-	</LinearLayout>
-		
-		<!--  CREDENTIALS HEADING -->
+	<!--  CREDENTIALS HEADING -->
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
 		android:orientation="horizontal"
 		android:layout_width="fill_parent" 
@@ -167,7 +182,7 @@
 		<TextView android:id="@+id/bookshelf_label" 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
-			android:text="credentials"
+			android:text="@+string/credentials"
 			android:textAppearance="?android:attr/textAppearanceSmall"
 			android:paddingTop="5sp"
 			/>
@@ -230,7 +245,7 @@
 		<TextView 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
-			android:text="data import/export"
+			android:text="@+string/data_import_export"
 			android:textAppearance="?android:attr/textAppearanceSmall"
 			android:paddingTop="5sp"
 			/>

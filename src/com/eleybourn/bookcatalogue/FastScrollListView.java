@@ -5,30 +5,29 @@ import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.AbsListView;
-import android.widget.ExpandableListView;
-import android.widget.AbsListView.OnScrollListener;
+import android.widget.ListView;
 
 /**
- * Subclass of ExpandableListView that uses a local implementation of FastScroller to bypass
+ * Subclass of ListView that uses a local implementation of FastScroller to bypass
  * the deficiencies in the original Android version. See fastScroller.java for a discussion.
  * 
- * We need to subclass ExpandableListView because we need access to events that are only provided
+ * We need to subclass ListView because we need access to events that are only provided
  * by the subclass.
  * 
  * @author Grunthos
  */
-public class FastScrollExpandableListView extends ExpandableListView {
+public class FastScrollListView extends ListView {
 
 	/** Active scroller, if any */
 	FastScroller mScroller = null;
-	
-	public FastScrollExpandableListView(Context context ) {
+
+	public FastScrollListView(Context context) {
 		super(context);
 	}
-	public FastScrollExpandableListView(Context context, AttributeSet attrs ) {
+	public FastScrollListView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
-	public FastScrollExpandableListView(Context context, AttributeSet attrs, int defStyle) {
+	public FastScrollListView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 	}
 
@@ -58,7 +57,6 @@ public class FastScrollExpandableListView extends ExpandableListView {
 		super.setOnScrollListener(mOnScrollDispatcher);
 	}
 
-	
 	/**
 	 * Called to create and start a new FastScroller if none already exists.
 	 * 
@@ -67,6 +65,7 @@ public class FastScrollExpandableListView extends ExpandableListView {
 	private void initScroller() {
 		if (mScroller != null)
 			return;
+
 		mScroller = new FastScroller(this.getContext(), this);
 	}
 
@@ -126,4 +125,5 @@ public class FastScrollExpandableListView extends ExpandableListView {
 			}			
 		}
 	}
+
 }

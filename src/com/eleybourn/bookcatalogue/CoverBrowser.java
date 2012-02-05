@@ -170,6 +170,14 @@ public class CoverBrowser {
 			}
 			showDialogDetails();
 		}
+
+		/**
+		 * Always want the finished() method to be called.
+		 */
+		@Override
+		public boolean runFinished() {
+			return true;
+		}
 	}
 
 	/**
@@ -213,6 +221,12 @@ public class CoverBrowser {
 			//CoverImageAdapter cia = (CoverImageAdapter) gallery.getAdapter();
 			//cia.notifyDataSetChanged();
 			Utils.fetchFileIntoImageView(file, v, mPreviewSize, mPreviewSize, true );
+		}
+
+		@Override
+		public boolean runFinished() {
+			// TODO Auto-generated method stub
+			return false;
 		}
 	}
 
@@ -269,6 +283,10 @@ public class CoverBrowser {
 				switcher.setVisibility(View.GONE);
 				msgVw.setText(R.string.image_not_found);
 			}
+		}
+		@Override
+		public boolean runFinished() {
+			return true;
 		}
 	}
 

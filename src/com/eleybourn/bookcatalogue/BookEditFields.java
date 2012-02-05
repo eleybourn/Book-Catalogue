@@ -835,9 +835,11 @@ public class BookEditFields extends Activity {
 				Intent edit = new Intent(BookEditFields.this, BookEdit.class);
 				edit.putExtra(CatalogueDBAdapter.KEY_ROWID, mRowId);
 				edit.putExtra(BookEdit.TAB, BookEdit.TAB_EDIT_NOTES);
+				edit.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
 				startActivity(edit);
 			}
 			Intent i = new Intent();
+			i.putExtra(CatalogueDBAdapter.KEY_ROWID, mRowId);
 			i.putExtra(ADDED_HAS_INFO, true);
 			i.putExtra(ADDED_GENRE, added_genre);
 			i.putExtra(ADDED_SERIES, added_series);

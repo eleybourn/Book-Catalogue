@@ -2,7 +2,6 @@ package com.eleybourn.bookcatalogue;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 /**
@@ -26,8 +25,16 @@ public class StartupActivity extends Activity {
 
 		final boolean wasReallyStartup = mIsReallyStartup;
 
+		// TODO: Display the startup message here, NOT in BookCatalogue.java.
+
 		// If it's a startup...cleanup old stuff
 		if (mIsReallyStartup) {
+			// Analyse main DB
+			CatalogueDBAdapter dba = new CatalogueDBAdapter(this);
+			dba.open();
+			dba.analyzeDb();
+			dba.close();
+
 			// Remove old logs
 			Logger.clearLog();
 			// Analyze the covers DB

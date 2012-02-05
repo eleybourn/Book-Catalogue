@@ -33,12 +33,15 @@
 		<activity android:name=".MainMenu" android:theme="@android:style/Theme.NoTitleBar" android:launchMode="singleInstance"></activity>
 		<activity android:name=".BookEdit"></activity>
 		<activity android:name=".BookISBNSearch" android:label="@string/title_isbn_search"></activity>
+		<activity android:name=".booklist.BooklistPreferences"></activity>
 		<activity android:name=".Bookshelf" android:label="@string/title_manage_bs"></activity>
 		<activity android:name=".BookshelfEdit" android:label="@string/title_edit_bs"></activity>
 		<activity android:name=".Administration" android:label="@string/administration_title"></activity>
 		<activity android:name=".BookEditFields"></activity>
 		<activity android:name=".BookEditLoaned"></activity>
 		<activity android:name=".BookEditNotes"></activity>
+		<activity android:name=".BooksOnBookshelf"></activity>
+		<activity android:name=".BooksOnBookshelfNavigator" android:theme="@style/Navigator"></activity>
 		<activity android:name=".AdministrationAbout"></activity>
 		<activity android:name=".AdministrationDonate"></activity>
 		<activity android:name=".AdministrationFunctions">

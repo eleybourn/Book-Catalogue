@@ -43,6 +43,7 @@ import android.view.View.OnClickListener;
 import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
+import com.eleybourn.bookcatalogue.booklist.BooklistPreferences;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsExportFailuresActivity;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsRegister;
@@ -264,20 +265,6 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			});
 		}
 
-		{
-			/* Erase covers cache Link */
-			View v = findViewById(R.id.erase_cover_cache_label);
-			// Make line flash when clicked.
-			v.setBackgroundResource(android.R.drawable.list_selector_background);
-			v.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Utils.eraseCoverCache();
-					return;
-				}
-			});
-		}
-
 		/* Task errors setup Link */
 		View errTest = findViewById(R.id.task_errors_label);
 		// Make line flash when clicked.
@@ -326,6 +313,20 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(AdministrationFunctions.this, OtherPreferences.class);
+				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(i);
+				return;
+			}
+		});
+
+		/* Book List Preferences Link */
+		View blPrefs = findViewById(R.id.booklist_preferences_label);
+		// Make line flash when clicked.
+		blPrefs.setBackgroundResource(android.R.drawable.list_selector_background);
+		blPrefs.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(AdministrationFunctions.this, BooklistPreferences.class);
 				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				startActivity(i);
 				return;

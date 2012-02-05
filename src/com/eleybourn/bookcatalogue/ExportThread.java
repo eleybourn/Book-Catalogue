@@ -133,6 +133,7 @@ public class ExportThread extends ManagedTask {
 			'"' + "anthology_titles" + "\"," +						//24 
 			'"' + CatalogueDBAdapter.KEY_DESCRIPTION+ "\"," + 		//25
 			'"' + CatalogueDBAdapter.KEY_GENRE+ "\"," + 			//26
+			'"' + CatalogueDBAdapter.KEY_DATE_ADDED+ "\"," + 		//27
 			"\n");
 		
 		long lastUpdate = 0;
@@ -178,6 +179,16 @@ public class ExportThread extends ManagedTask {
 						int mm = Integer.parseInt(date[1]);
 						int dd = Integer.parseInt(date[2]);
 						dateReadEndString = yyyy + "-" + mm + "-" + dd;
+					} catch (Exception e) {
+						//do nothing
+					}
+					String dateAddedString = "";
+					try {
+						String[] date = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DATE_ADDED)).split("-");
+						int yyyy = Integer.parseInt(date[0]);
+						int mm = Integer.parseInt(date[1]);
+						int dd = Integer.parseInt(date[2]);
+						dateAddedString = yyyy + "-" + mm + "-" + dd;
 					} catch (Exception e) {
 						//do nothing
 					}
@@ -237,6 +248,7 @@ public class ExportThread extends ManagedTask {
 					row.append("\"" + formatCell(anthology_titles) + "\",");
 					row.append("\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DESCRIPTION))) + "\",");
 					row.append("\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_GENRE))) + "\",");
+					row.append("\"" + formatCell(dateAddedString) + "\",");
 					row.append("\n");
 					out.write(row.toString());
 					//export.append(row);

@@ -1,10 +1,13 @@
-package com.eleybourn.bookcatalogue;
+package com.eleybourn.bookcatalogue.database;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 
-import com.eleybourn.bookcatalogue.DbUtils.*;
+import com.eleybourn.bookcatalogue.TrackedCursor;
+import com.eleybourn.bookcatalogue.Utils;
+import com.eleybourn.bookcatalogue.database.DbUtils.Synchronizer.SyncLock;
+import com.eleybourn.bookcatalogue.database.DbUtils.*;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -21,6 +24,11 @@ import android.graphics.Bitmap;
  * @author Grunthos
  */
 public class CoversDbHelper extends GenericOpenHelper {
+	private SynchronizedDb mDb;
+
+	/** Synchronizer to coordinate DB access. Must be STATIC so all instances share same sync */
+	private static final Synchronizer mSynchronizer = new Synchronizer();
+
 	/** List of statements we create so we can close them when object is closed. */
 	private ArrayList<SQLiteStatement> mStatements = new ArrayList<SQLiteStatement>();
 
@@ -31,20 +39,20 @@ public class CoversDbHelper extends GenericOpenHelper {
 
 	// Domain and table definitions
 	
-	public static final DomainDefinition DOM_ID = new DomainDefinition( "_id", "integer primary key autoincrement");
-	public static final DomainDefinition DOM_DATE = new DomainDefinition( "date", "datetime not null default current_timestamp");
-	public static final DomainDefinition DOM_TYPE = new DomainDefinition( "type", "text not null");	// T = Thumbnail; C = cover?
-	public static final DomainDefinition DOM_IMAGE = new DomainDefinition( "image", "blob not null");
-	public static final DomainDefinition DOM_WIDTH = new DomainDefinition( "width", "integer not null");
-	public static final DomainDefinition DOM_HEIGHT = new DomainDefinition( "height", "integer not null");
-	public static final DomainDefinition DOM_SIZE = new DomainDefinition( "size", "integer not null");
-	public static final DomainDefinition DOM_FILENAME = new DomainDefinition( "filename", "text");
+	public static final DomainDefinition DOM_ID = new DomainDefinition( "_id", "integer",  "primary key autoincrement", "");
+	public static final DomainDefinition DOM_DATE = new DomainDefinition( "date", "datetime", "default current_timestamp", "not null");
+	public static final DomainDefinition DOM_TYPE = new DomainDefinition( "type", "text", "", "not null");	// T = Thumbnail; C = cover?
+	public static final DomainDefinition DOM_IMAGE = new DomainDefinition( "image", "blob", "",  "not null");
+	public static final DomainDefinition DOM_WIDTH = new DomainDefinition( "width", "integer", "", "not null");
+	public static final DomainDefinition DOM_HEIGHT = new DomainDefinition( "height", "integer", "",  "not null");
+	public static final DomainDefinition DOM_SIZE = new DomainDefinition( "size", "integer", "",  "not null");
+	public static final DomainDefinition DOM_FILENAME = new DomainDefinition( "filename", "text", "", "");
 	public static final TableDefinition TBL_IMAGE = new TableDefinition("image", DOM_ID, DOM_TYPE, DOM_IMAGE, DOM_DATE, DOM_WIDTH, DOM_HEIGHT, DOM_SIZE, DOM_FILENAME );
 	static {
 		TBL_IMAGE
-			.addIndex(true, DOM_ID)
-			.addIndex(true, DOM_FILENAME)
-			.addIndex(true, DOM_FILENAME, DOM_DATE);
+			.addIndex("id", true, DOM_ID)
+			.addIndex("file", true, DOM_FILENAME)
+			.addIndex("file & date", true, DOM_FILENAME, DOM_DATE);
 	};
 
 	public static final TableDefinition TABLES[] = new TableDefinition[] {TBL_IMAGE};
@@ -60,7 +68,7 @@ public class CoversDbHelper extends GenericOpenHelper {
 	 */
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		DbUtils.createTables(db, TABLES );
+		DbUtils.createTables(new SynchronizedDb(db, mSynchronizer), TABLES, true );
 	}
 	/**
 	 * As with SQLiteOpenHelper, routine called to upgrade DB
@@ -70,20 +78,25 @@ public class CoversDbHelper extends GenericOpenHelper {
 		throw new RuntimeException("Upgrades not handled yet!");
 	}
 
+	private SynchronizedDb getDb() {
+		if (mDb == null)
+			mDb = new SynchronizedDb(this, mSynchronizer);
+		return mDb;
+	}
 	/**
 	 * Delete the named 'file'
 	 * 
 	 * @param filename
 	 */
 	public void deleteFile(final String filename) {
-		SQLiteDatabase db = this.getWritableDatabase();
-		db.beginTransaction();
+		SynchronizedDb db = getDb();
+		SyncLock txLock = db.beginTransaction(true);
 		try {
 			db.execSQL("Drop table " + TBL_IMAGE);
-			DbUtils.createTables(db, new TableDefinition[] {TBL_IMAGE});
+			DbUtils.createTables(db, new TableDefinition[] {TBL_IMAGE}, true);
 			db.setTransactionSuccessful();
 		} finally {
-			db.endTransaction();
+			db.endTransaction(txLock);
 		}
 	}
 
@@ -95,9 +108,9 @@ public class CoversDbHelper extends GenericOpenHelper {
 	 * @return	byte[] of image data
 	 */
 	public final byte[] getFile(final String filename, final Date lastModified) {
-		SQLiteDatabase db = this.getWritableDatabase();
+		SynchronizedDb db = this.getDb();
 
-		Cursor c = db.query(TBL_IMAGE.name, new String[]{DOM_IMAGE.name}, DOM_FILENAME + "=? and " + DOM_DATE + " > ?", 
+		Cursor c = db.query(TBL_IMAGE.getName(), new String[]{DOM_IMAGE.name}, DOM_FILENAME + "=? and " + DOM_DATE + " > ?", 
 							new String[]{filename, Utils.toSqlDateTime(lastModified)}, null, null, null);
 		try {
 			if (!c.moveToFirst())
@@ -116,8 +129,8 @@ public class CoversDbHelper extends GenericOpenHelper {
 	 * @return	byet[] of image data
 	 */
 	public boolean isEntryValid(String filename, Date lastModified) {
-		SQLiteDatabase db = this.getWritableDatabase();
-		Cursor c = db.query(TBL_IMAGE.name, new String[]{DOM_ID.name}, DOM_FILENAME + "=? and " + DOM_DATE + " > ?", 
+		SynchronizedDb db = this.getDb();
+		Cursor c = db.query(TBL_IMAGE.getName(), new String[]{DOM_ID.name}, DOM_FILENAME + "=? and " + DOM_DATE + " > ?", 
 								new String[]{filename, Utils.toSqlDateTime(lastModified)}, null, null, null);
 		try {
 			return c.moveToFirst();
@@ -147,7 +160,7 @@ public class CoversDbHelper extends GenericOpenHelper {
 	 */
 	private SQLiteStatement mExistsStmt = null;
 	public void saveFile(final String filename, final int height, final int width, final byte[] bytes) {
-		SQLiteDatabase db = this.getWritableDatabase();
+		SynchronizedDb db = this.getDb();
 
 		if (mExistsStmt == null) {
 			String sql = "Select Count(" + DOM_ID + ") From " + TBL_IMAGE + " Where " + DOM_FILENAME + " = ?";
@@ -169,18 +182,18 @@ public class CoversDbHelper extends GenericOpenHelper {
 		mExistsStmt.bindString(1, filename);
 		long rows = 0;
 		
-		db.beginTransaction();
+		SyncLock txLock = db.beginTransaction(true);
 		try {
 			if (mExistsStmt.simpleQueryForLong() == 0) {
-				rows = db.insert(TBL_IMAGE.name, null, cv);
+				rows = db.insert(TBL_IMAGE.getName(), null, cv);
 			} else {
-				rows = db.update(TBL_IMAGE.name, cv, DOM_FILENAME.name + " = ?", new String[] {filename});
+				rows = db.update(TBL_IMAGE.getName(), cv, DOM_FILENAME.name + " = ?", new String[] {filename});
 			}
 			if (rows == 0)
 				throw new RuntimeException("Failed to insert data");
 			db.setTransactionSuccessful();
 		} finally {
-			db.endTransaction();
+			db.endTransaction(txLock);
 		}
 	}
 
@@ -189,7 +202,7 @@ public class CoversDbHelper extends GenericOpenHelper {
 	 */
 	private SQLiteStatement mEraseCoverCacheStmt = null;
 	public void eraseCoverCache() {
-		SQLiteDatabase db = this.getWritableDatabase();
+		SynchronizedDb db = this.getDb();
 
 		if (mEraseCoverCacheStmt == null) {
 			String sql = "Delete From " + TBL_IMAGE;
@@ -203,7 +216,7 @@ public class CoversDbHelper extends GenericOpenHelper {
 	 * Analyze the database
 	 */
 	public void analyze() {
-		SQLiteDatabase db = this.getWritableDatabase();
+		SynchronizedDb db = this.getDb();
 		String sql;
 		// Don't do VACUUM -- it's a complete rebuild
 		//sql = "vacuum";

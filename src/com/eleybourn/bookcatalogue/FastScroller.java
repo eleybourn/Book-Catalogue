@@ -129,8 +129,16 @@ class FastScroller {
     private Handler mHandler = new Handler();
     
     private BaseAdapter mListAdapter;
-    private SectionIndexer mSectionIndexer;
+    private SectionIndexer mSectionIndexerV1;
+    private SectionIndexerV2 mSectionIndexerV2;
 
+    /**
+     * Better interface that just gets text for rows as needed rather
+     * than having to build a huge index at start.
+     */
+    public interface SectionIndexerV2 {
+    	String getSectionTextForPosition(int position);
+    }
     private boolean mChangedBounds;
     
     public FastScroller(Context context, AbsListView listView) {
@@ -140,7 +148,7 @@ class FastScroller {
 
     public void setState(int state) {
     	
-    	System.out.println("State: " + state);
+    	//System.out.println("State: " + state);
         switch (state) {
             case STATE_NONE:
                 mHandler.removeCallbacks(mScrollFade);
@@ -324,7 +332,8 @@ class FastScroller {
 
     private void getSections() {
         Adapter adapter = mList.getAdapter();
-        mSectionIndexer = null;
+        mSectionIndexerV1 = null;
+        mSectionIndexerV2 = null;
         if (adapter instanceof HeaderViewListAdapter) {
             mListOffset = ((HeaderViewListAdapter)adapter).getHeadersCount();
             adapter = ((HeaderViewListAdapter)adapter).getWrappedAdapter();
@@ -332,16 +341,21 @@ class FastScroller {
         if (mList instanceof ExpandableListView) {
             ExpandableListAdapter expAdapter = ((ExpandableListView)mList).getExpandableListAdapter();
             if (expAdapter instanceof SectionIndexer) {
-                mSectionIndexer = (SectionIndexer) expAdapter;
+                mSectionIndexerV1 = (SectionIndexer) expAdapter;
                 mListAdapter = (BaseAdapter) adapter;
-                mSections = mSectionIndexer.getSections();
+                mSections = mSectionIndexerV1.getSections();
+            } else if (expAdapter instanceof SectionIndexerV2) {
+                mSectionIndexerV2 = (SectionIndexerV2) expAdapter;
+                mListAdapter = (BaseAdapter) adapter;            	
             }
         } else {
             if (adapter instanceof SectionIndexer) {
                 mListAdapter = (BaseAdapter) adapter;
-                mSectionIndexer = (SectionIndexer) adapter;
-                mSections = mSectionIndexer.getSections();
-                
+                mSectionIndexerV1 = (SectionIndexer) adapter;
+                mSections = mSectionIndexerV1.getSections();
+            } else if (adapter instanceof SectionIndexerV2) {
+                    mListAdapter = (BaseAdapter) adapter;
+                    mSectionIndexerV2 = (SectionIndexerV2) adapter;
             } else {
                 mListAdapter = (BaseAdapter) adapter;
                 mSections = new String[] { " " };
@@ -361,15 +375,24 @@ class FastScroller {
 		} else {
 			mList.setSelection(index + mListOffset);
 		}
-		if (sections != null && sections.length > 1) {
-			sectionIndex = mSectionIndexer.getSectionForPosition(index);
-		} else
-			sectionIndex = -1;
+		if (mSectionIndexerV2 != null) {
+			mSectionText = mSectionIndexerV2.getSectionTextForPosition(index);
+		} else {
+			if (sections != null && sections.length > 1) {
+				sectionIndex = mSectionIndexerV1.getSectionForPosition(index);
+				if (sectionIndex >=0 && sectionIndex < sections.length)
+					mSectionText = sections[sectionIndex].toString();
+				else
+					mSectionText = null;					
+			} else {
+				sectionIndex = -1;
+				mSectionText = null;
+			}
+		}
 
-		if (sectionIndex >= 0) {
-			String text = mSectionText = sections[sectionIndex].toString();
-			mDrawOverlay = (text.length() != 1 || text.charAt(0) != ' ')
-					&& sectionIndex < sections.length;
+		if (mSectionText != null) {
+			mDrawOverlay = (mSectionText.length() != 1 || mSectionText.charAt(0) != ' ')
+							; //&& sectionIndex < sections.length;
 		} else {
 			mDrawOverlay = false;
 		}

@@ -274,7 +274,7 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 			// READ
 			if (rowView.getRead()) {
 				read.setVisibility(View.VISIBLE);
-				read.setImageResource(R.drawable.btn_check_buttonless_on);
+				read.setImageResource(R.drawable.btn_check_clipped);
 			} else {
 				read.setVisibility(View.GONE);
 			}

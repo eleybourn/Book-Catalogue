@@ -52,7 +52,7 @@ public class BooklistStyles {
 		style.addGroup(ROW_KIND_SERIES);
 
 		// Title
-		style = new BooklistStyle(R.string.sort_title);
+		style = new BooklistStyle(R.string.sort_title_first_letter);
 		styles.add(style);
 		style.addGroup(RowKinds.ROW_KIND_TITLE_LETTER);
 

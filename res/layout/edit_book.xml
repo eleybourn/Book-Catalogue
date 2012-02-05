@@ -112,7 +112,7 @@
 				<Button android:id="@+id/bookshelf" 
 					android:layout_width="120dip"
 					android:layout_height="wrap_content" 
-					android:text="@string/bookshelves"
+					android:text="@string/select_bookshelves"
 					android:nextFocusDown="@+id/pages"
 					/>
 				<TextView android:id="@+id/bookshelf_text" 

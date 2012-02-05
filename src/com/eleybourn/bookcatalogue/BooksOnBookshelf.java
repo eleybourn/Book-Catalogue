@@ -464,6 +464,9 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 	 * @param hasLevel2		flag indicating level 2 is present
 	 */
 	private void updateListHeader(ListViewHolder holder, int topItem, boolean hasLevel1, boolean hasLevel2) {
+		if (topItem < 0)
+			topItem = 0;
+
 		mLastTop = topItem;
 		if (hasLevel1) {
 			mList.moveToPosition(topItem);

@@ -1543,7 +1543,8 @@ public class BooklistBuilder {
 			mGetPositionStmt = mStatements.add("mGetPositionStmt", sql);					
 		}
 
-		mGetPositionCheckVisibleStmt.bindLong(1, absolutePosition);
+		final long rowId = absolutePosition + 1;
+		mGetPositionCheckVisibleStmt.bindLong(1, rowId);
 		long isVis;
 		try {
 			isVis = mGetPositionCheckVisibleStmt.simpleQueryForLong();
@@ -1551,12 +1552,12 @@ public class BooklistBuilder {
 			// row is not in the vurrent list at all
 			isVis = 0;
 		}
-		mGetPositionStmt.bindLong(1, absolutePosition);
+		mGetPositionStmt.bindLong(1, rowId);
 		int newPos = (int)mGetPositionStmt.simpleQueryForLong();
 		if (isVis == 1) 
 			return newPos;
 		else
-			return newPos - 1;
+			return newPos > 0 ? newPos - 1 : 0;
 
 	}
 

@@ -516,11 +516,21 @@ public class BookISBNSearch extends ActivityWithTasks {
 	 */
 	@Override
 	protected void onRestoreInstanceState(Bundle inState) {
+
 		mSearchManager = (SearchManager) getLastNonConfigurationInstance("SearchManager");
 		if (mSearchManager != null)
 			mSearchManager.reconnect( mSearchHandler );
+
+		// Now do 'standard' stuff
+		mLastBookIntent = (Intent) inState.getParcelable("LastBookIntent");
+		
 		// Call the super method only after we have the searchManager set up
 		super.onRestoreInstanceState(inState);
+	}
+	@Override
+	protected void onSaveInstanceState(Bundle inState) {
+		super.onSaveInstanceState(inState);
+		inState.putParcelable("LastBookIntent", mLastBookIntent);
 	}
 
 	/**

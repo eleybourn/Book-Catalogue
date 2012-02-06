@@ -323,8 +323,10 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 			if (mIsDead)
 				return;
 			// Dismiss the progress dialog, if present
-			if (mListDialog != null)
+			if (mListDialog != null && !mTaskQueue.hasActiveTasks()) {
 				mListDialog.dismiss();
+				mListDialog = null;
+			}
 			// Update the data
 			if (mTempList != null) {
 				displayList(mTempList, mTargetPos);
@@ -345,12 +347,14 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 	 */
 	private void setupList(boolean isFullRebuild) {
 		mTaskQueue.enqueue(new GetListTask(isFullRebuild));
-		mListDialog = ProgressDialog.show(this, "", "Getting books...", true, true, new OnCancelListener() {
-			@Override
-			public void onCancel(DialogInterface dialog) {
-				// Cancelling the list cancels the activity.
-				BooksOnBookshelf.this.finish();
-			}});
+		if (mListDialog == null) {
+			mListDialog = ProgressDialog.show(this, "", "Getting books...", true, true, new OnCancelListener() {
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					// Cancelling the list cancels the activity.
+					BooksOnBookshelf.this.finish();
+				}});			
+		}
 	}
 
 	/**
@@ -494,13 +498,18 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 			return b;
 		} else {
 			// Make sure we have a style chosen
+			mBooklistStyles = BooklistStyles.getDefinedStyles();
 			if (mCurrentStyle == null) {
-				mBooklistStyles = BooklistStyles.getDefinedStyles();
 				String prefStyle = BookCatalogueApp.getAppPreferences().getString(BookCataloguePreferences.PREF_BOOKLIST_STYLE, getString(R.string.sort_author_series));
 				mCurrentStyle = mBooklistStyles.find(prefStyle);
 				if (mCurrentStyle == null)
 					mCurrentStyle = mBooklistStyles.get(0);
 				BookCatalogueApp.getAppPreferences().setString(BookCataloguePreferences.PREF_BOOKLIST_STYLE, mCurrentStyle.getName());
+			} else {
+				// Refresh the style because prefs may have changed
+				BooklistStyle style = mBooklistStyles.find(mCurrentStyle.getName());
+				if (style != null)
+					mCurrentStyle = style;
 			}
 
 			// get a new builder and add the required extra domains

@@ -118,7 +118,7 @@ public class GoodreadsSearchResults extends ListActivity {
 	 */
 	private void doItemClick(View v) {
 		ListHolder holder = (ListHolder)v.getTag();
-		// TODO: Implement edition lookup
+		// TODO: Implement edition lookup - requires access to work.editions API from GR
 		Toast.makeText(this, "Not implemented: see " + holder.title + " by " + holder.author, Toast.LENGTH_LONG).show();			
 		//Intent i = new Intent(this, GoodreadsW)
 	}

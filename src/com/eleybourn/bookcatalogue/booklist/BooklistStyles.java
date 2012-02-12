@@ -1,12 +1,6 @@
 package com.eleybourn.bookcatalogue.booklist;
 
-import static com.eleybourn.bookcatalogue.booklist.BooklistStyle.RowKinds.ROW_KIND_AUTHOR;
-import static com.eleybourn.bookcatalogue.booklist.BooklistStyle.RowKinds.ROW_KIND_GENRE;
-import static com.eleybourn.bookcatalogue.booklist.BooklistStyle.RowKinds.ROW_KIND_LOANED;
-import static com.eleybourn.bookcatalogue.booklist.BooklistStyle.RowKinds.ROW_KIND_MONTH_PUBLISHED;
-import static com.eleybourn.bookcatalogue.booklist.BooklistStyle.RowKinds.ROW_KIND_SERIES;
-import static com.eleybourn.bookcatalogue.booklist.BooklistStyle.RowKinds.ROW_KIND_UNREAD;
-import static com.eleybourn.bookcatalogue.booklist.BooklistStyle.RowKinds.ROW_KIND_YEAR_PUBLISHED;
+import static com.eleybourn.bookcatalogue.booklist.BooklistStyle.RowKinds.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -17,19 +11,22 @@ import com.eleybourn.bookcatalogue.booklist.BooklistStyle.BooklistAuthorGroup;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyle.RowKinds;
 
 /**
- * TODO: Document!
+ * Collection of system-defined and user-defined Book List styles.
  * 
  * @author Grunthos
  */
 public class BooklistStyles {
+	/** Internal storage for defined styles represented by this object */
+	private ArrayList<BooklistStyle> mList = new ArrayList<BooklistStyle>();
 
 	/**
-	 * Get all defined styles, including user-defined styles (the latter is not supported yet).
+	 * Static method to get all defined styles, including user-defined styles (the latter is 
+	 * not supported yet).
 	 * 
 	 * NOTE: Do NOT call this in static initialization of application. This method requires the 
 	 * 		 application context to be present.
 	 * 
-	 * @return
+	 * @return		BooklistStyles object
 	 */
 	public static BooklistStyles getDefinedStyles() {
 		// First build the stock ones
@@ -90,6 +87,14 @@ public class BooklistStyles {
 		style.addGroup(ROW_KIND_AUTHOR);
 		style.addGroup(ROW_KIND_SERIES);
 
+		// Added date
+		style = new BooklistStyle(R.string.sort_added_date);
+		styles.add(style);
+		style.addGroup(ROW_KIND_YEAR_ADDED);
+		style.addGroup(ROW_KIND_MONTH_ADDED);
+		style.addGroup(ROW_KIND_DAY_ADDED);
+		style.addGroup(ROW_KIND_AUTHOR);
+
 		// Author/Publication date
 		style = new BooklistStyle(R.string.sort_author_year);
 		styles.add(style);
@@ -100,10 +105,22 @@ public class BooklistStyles {
 		return styles;
 	}
 
-	private ArrayList<BooklistStyle> mList = new ArrayList<BooklistStyle>();
+	/**
+	 * Add a style to this list
+	 * 
+	 * @param style
+	 */
 	public void add(BooklistStyle style) {
 		mList.add(style);
 	}
+	
+	/**
+	 * Find a style based on the passed name.
+	 * 
+	 * @param name
+	 * 
+	 * @return		Named style, or null
+	 */
 	public BooklistStyle find(String name) {
 		for(BooklistStyle style: mList) {
 			if (style.getName().equalsIgnoreCase(name))
@@ -111,6 +128,14 @@ public class BooklistStyles {
 		}
 		return null;
 	}
+	
+	/**
+	 * Find a style based on (transient) internal ID.
+	 * 
+	 * @param id
+	 * 
+	 * @return	Matching style, or null
+	 */
 	public BooklistStyle find(int id) {
 		for(BooklistStyle style: mList) {
 			if (style.getId() == id)
@@ -118,9 +143,23 @@ public class BooklistStyles {
 		}
 		return null;
 	}
+	
+	/**
+	 * Return the i'th style in the list
+	 * 
+	 * @param i
+	 * 
+	 * @return
+	 */
 	public BooklistStyle get(int i) {
 		return mList.get(i);
 	}
+	
+	/**
+	 * Return an iterator for the list of styles.
+	 * 
+	 * @return
+	 */
 	public Iterator<BooklistStyle> iterator() {
 		return mList.iterator();
 	}

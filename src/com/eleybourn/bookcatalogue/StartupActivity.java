@@ -25,7 +25,7 @@ public class StartupActivity extends Activity {
 
 		final boolean wasReallyStartup = mIsReallyStartup;
 
-		// TODO: Display the startup message here, NOT in BookCatalogue.java.
+		// RELEASE: Display the startup message here, NOT in BookCatalogue.java.
 
 		// If it's a startup...cleanup old stuff
 		if (mIsReallyStartup) {

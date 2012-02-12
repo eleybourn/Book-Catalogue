@@ -5,6 +5,7 @@ import java.util.Iterator;
 import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.BooksMultitypeListHandler.BooklistChangeListener;
 import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTask;
+import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTaskContext;
 import com.eleybourn.bookcatalogue.booklist.BooklistBuilder;
 import com.eleybourn.bookcatalogue.booklist.BooklistCursor;
 import com.eleybourn.bookcatalogue.booklist.BooklistPreferences;
@@ -63,6 +64,8 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 	private final static String PREF_TOP_ROW = TAG + ".TOP_ROW";
 	/** Preference name */
 	private final static String PREF_TOP_ROW_TOP = TAG + ".TOP_ROW_TOP";
+	/** Preference name */
+	private final static String PREF_LIST_STYLE = TAG + ".LIST_STYLE";
 
 	/** List of styles used in selecting the desired list style */
 	private BooklistStyles mBooklistStyles;
@@ -114,11 +117,14 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 			// sort (which is exactly what we want)
 			try {
 				BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
-				
+				// Restore bookshelf and position
 				mCurrentBookshelf = prefs.getString(PREF_BOOKSHELF, mCurrentBookshelf);
 				mTopRow = prefs.getInt(PREF_TOP_ROW, 0);
 				mTopRowTop = prefs.getInt(PREF_TOP_ROW_TOP, 0);
-
+				// Restore view style
+				String styleName = prefs.getString(PREF_LIST_STYLE, "");
+				BooklistStyles styles = BooklistStyles.getDefinedStyles();
+				mCurrentStyle = styles.find(styleName);
 			} catch (Exception e) {
 				Logger.logError(e);
 			}
@@ -267,7 +273,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		}
 
 		@Override
-		public void run() {
+		public void run(SimpleTaskContext taskContext) {
 			long t0 = System.currentTimeMillis();
 			// Build the underlying data
 			BooklistBuilder b = buildBooklist(mIsFullRebuild);
@@ -559,6 +565,10 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		View v = lv.getChildAt(0);
 		mTopRowTop = v == null ? 0 : v.getTop();
 		ed.putInt(PREF_TOP_ROW_TOP, mTopRowTop);
+
+		if (mCurrentStyle != null)
+			ed.putString(PREF_LIST_STYLE, mCurrentStyle.getName());
+
 		ed.commit();
 	}
 

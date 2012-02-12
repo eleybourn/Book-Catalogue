@@ -20,9 +20,13 @@ import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.*;
 /**
  * Class to add a book to a shelf. In this case, we do not care about the data returned.
  * 
- * TODO: Parse the result and store it against the bookshelf in the database. Currently, this
- * is not a simple thing to do because bookshelf naming rules in goodreads are much more 
- * restrictive: no spaces, punctuation (at least).
+ * RELEASE: Parse the result and store it against the bookshelf in the database. 
+ * 		 	Currently, this is not a simple thing to do because bookshelf naming rules in 
+ * 		 	goodreads are much more restrictive: no spaces, punctuation (at least).
+ * 
+ * 			Need to add the following to bookshelf table:
+ * 			- gr_bookshelf_id
+ * 			- (perhaps) gr_bookshelf_name
  * 
  * @author Grunthos
  *

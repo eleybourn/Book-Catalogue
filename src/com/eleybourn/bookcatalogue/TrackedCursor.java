@@ -4,18 +4,17 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteCursor;
+import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedCursor;
+import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer;
+
 import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteQuery;
 
 /**
  * DEBUG CLASS to help debug cursor leakage.
  * 
- * TODO: Turn this into 'SynchronizedCursor' and use non-static factory (in sync object?)
- * to allow sync object to be passed on creation. Then...override move*() to allow locking.
+ * Set the static variable DEBUG_TRACKED_CURSOR to 'false' to make most of the code a NOP.
  * 
  * By using TrackedCursorFactory it is possible to use this class to analyze when and
  * where cursors are being allocated, and whether they are being deallocated in a timely
@@ -23,23 +22,13 @@ import android.database.sqlite.SQLiteQuery;
  * 
  * @author Grunthos
  */
-public class TrackedCursor extends SQLiteCursor  {
+public class TrackedCursor extends SynchronizedCursor  {
+	
+	/** Set to TRUE to actually track cursors. Otherwise, most code is optimized out. */
+	private static final boolean DEBUG_TRACKED_CURSOR = false;
 
 	/* Static Data */
 	/* =========== */
-
-	/** Static Factory object to create the custom cursor */
-	public static final CursorFactory TrackedCursorFactory = new CursorFactory() {
-			@Override
-			public Cursor newCursor(
-					SQLiteDatabase db,
-					SQLiteCursorDriver masterQuery, 
-					String editTable,
-					SQLiteQuery query) 
-			{
-				return new TrackedCursor(db, masterQuery, editTable, query);
-			}
-	};
 
 	/** Used as a collection of known cursors */
 	private static HashSet<WeakReference<TrackedCursor>> mCursors = new HashSet<WeakReference<TrackedCursor>>();
@@ -64,21 +53,25 @@ public class TrackedCursor extends SQLiteCursor  {
 	 * @param editTable
 	 * @param query
 	 */
-	public TrackedCursor(SQLiteDatabase db, SQLiteCursorDriver driver, String editTable, SQLiteQuery query) {
-		super(db, driver, editTable, query);
+	public TrackedCursor(SQLiteDatabase db, SQLiteCursorDriver driver, String editTable, SQLiteQuery query, Synchronizer sync) {
+		super(db, driver, editTable, query, sync);
 		
-		// Record who called us. It's only from about the 7th element that matters.
-		mStackTrace = Thread.currentThread().getStackTrace();
+		if (DEBUG_TRACKED_CURSOR) {
+			// Record who called us. It's only from about the 7th element that matters.
+			mStackTrace = Thread.currentThread().getStackTrace();
 
-		// Get the next ID
-		synchronized(mIdCounter)
-		{
-			mId = ++mIdCounter;
-		}
-		// Save this cursor in the collection
-		synchronized(mCursors) {
-			mWeakRef = new WeakReference<TrackedCursor>(this);
-			mCursors.add(mWeakRef);
+			// Get the next ID
+			synchronized(mIdCounter)
+			{
+				mId = ++mIdCounter;
+			}
+			// Save this cursor in the collection
+			synchronized(mCursors) {
+				mWeakRef = new WeakReference<TrackedCursor>(this);
+				mCursors.add(mWeakRef);
+			}			
+		} else {
+			mId = 0L;
 		}
 	}
 
@@ -88,12 +81,14 @@ public class TrackedCursor extends SQLiteCursor  {
 	@Override
 	public void close() {
 		super.close();
-		if (mWeakRef != null)
-			synchronized(mCursors) {
-				mCursors.remove(mWeakRef);
-				mWeakRef.clear();
-				mWeakRef = null;
-			}
+		if (DEBUG_TRACKED_CURSOR) {
+			if (mWeakRef != null)
+				synchronized(mCursors) {
+					mCursors.remove(mWeakRef);
+					mWeakRef.clear();
+					mWeakRef = null;
+				}
+		}
 	}
 
 	/**
@@ -102,13 +97,15 @@ public class TrackedCursor extends SQLiteCursor  {
 	 */
 	@Override
 	public void finalize() {
-		if (mWeakRef != null) {
-			// This is a cursor that is being deleted before it is closed.
-			// Setting a break here is sometimes useful.
-			synchronized(mCursors) {
-				mCursors.remove(mWeakRef);
-				mWeakRef.clear();
-				mWeakRef = null;
+		if (DEBUG_TRACKED_CURSOR) {
+			if (mWeakRef != null) {
+				// This is a cursor that is being deleted before it is closed.
+				// Setting a break here is sometimes useful.
+				synchronized(mCursors) {
+					mCursors.remove(mWeakRef);
+					mWeakRef.clear();
+					mWeakRef = null;
+				}
 			}
 		}
 		super.finalize();
@@ -137,10 +134,12 @@ public class TrackedCursor extends SQLiteCursor  {
 	 */
 	public static long getCursorCountApproximate() {
 		long count = 0;
-
-		synchronized(mCursors) {
-			count = mCursors.size();
+		if (DEBUG_TRACKED_CURSOR) {
+			synchronized(mCursors) {
+				count = mCursors.size();
+			}
 		}
+
 		return count;
 	}
 
@@ -155,19 +154,22 @@ public class TrackedCursor extends SQLiteCursor  {
 	public static long getCursorCount() {
 		long count = 0;
 
-		ArrayList<WeakReference<TrackedCursor>> list = new ArrayList<WeakReference<TrackedCursor>>();
-		synchronized(mCursors) {
-			for(WeakReference<TrackedCursor> r : mCursors) {
-				TrackedCursor c = r.get();
-				if (c != null)
-					count++;
-				else
-					list.add(r);
-			}
-			for(WeakReference<TrackedCursor> r : list) {
-				mCursors.remove(r);
+		if (DEBUG_TRACKED_CURSOR) {			
+			ArrayList<WeakReference<TrackedCursor>> list = new ArrayList<WeakReference<TrackedCursor>>();
+			synchronized(mCursors) {
+				for(WeakReference<TrackedCursor> r : mCursors) {
+					TrackedCursor c = r.get();
+					if (c != null)
+						count++;
+					else
+						list.add(r);
+				}
+				for(WeakReference<TrackedCursor> r : list) {
+					mCursors.remove(r);
+				}
 			}
 		}
+
 		return count;
 	}
 
@@ -175,11 +177,13 @@ public class TrackedCursor extends SQLiteCursor  {
 	 * Dump all open cursors to System.out.
 	 */
 	public static void dumpCursors() {
-		for(TrackedCursor c : getCursors()) {
-			System.out.println("Cursor " + c.getCursorId());
-			for (StackTraceElement s : c.getStackTrace()) {
-				System.out.println(s.getFileName() + "    Line " + s.getLineNumber() + " Method " + s.getMethodName());
-			}
+		if (DEBUG_TRACKED_CURSOR) {			
+			for(TrackedCursor c : getCursors()) {
+				System.out.println("Cursor " + c.getCursorId());
+				for (StackTraceElement s : c.getStackTrace()) {
+					System.out.println(s.getFileName() + "    Line " + s.getLineNumber() + " Method " + s.getMethodName());
+				}
+			}			
 		}
 	}
 
@@ -190,12 +194,14 @@ public class TrackedCursor extends SQLiteCursor  {
 	 */
 	public static ArrayList<TrackedCursor> getCursors() {
 		ArrayList<TrackedCursor> list = new ArrayList<TrackedCursor>();
-		synchronized(mCursors) {
-			for(WeakReference<TrackedCursor> r : mCursors) {
-				TrackedCursor c = r.get();
-				if (c != null)
-					list.add(c);
-			}
+		if (DEBUG_TRACKED_CURSOR) {
+			synchronized(mCursors) {
+				for(WeakReference<TrackedCursor> r : mCursors) {
+					TrackedCursor c = r.get();
+					if (c != null)
+						list.add(c);
+				}
+			}			
 		}
 		return list;		
 	}

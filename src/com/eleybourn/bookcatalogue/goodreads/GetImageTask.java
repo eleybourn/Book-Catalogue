@@ -1,6 +1,7 @@
 package com.eleybourn.bookcatalogue.goodreads;
 
 import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTask;
+import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTaskContext;
 import com.eleybourn.bookcatalogue.Utils;
 
 /**
@@ -44,7 +45,7 @@ public class GetImageTask implements SimpleTask {
 	 * Just get the URL
 	 */
 	@Override
-	public void run() {
+	public void run(SimpleTaskContext taskContext) {
 		mBytes = Utils.getBytesFromUrl(mUrl);
 	}
 

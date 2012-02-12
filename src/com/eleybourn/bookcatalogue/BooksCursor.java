@@ -2,6 +2,8 @@ package com.eleybourn.bookcatalogue;
 
 import java.util.Hashtable;
 
+import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer;
+
 import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQuery;
@@ -24,8 +26,8 @@ public class BooksCursor extends TrackedCursor {
 	/**
 	 * Constructor
 	 */
-	public BooksCursor(SQLiteDatabase db, SQLiteCursorDriver driver, String editTable, SQLiteQuery query) {
-		super(db, driver, editTable, query);
+	public BooksCursor(SQLiteDatabase db, SQLiteCursorDriver driver, String editTable, SQLiteQuery query, Synchronizer sync) {
+		super(db, driver, editTable, query, sync);
 	}
 
 

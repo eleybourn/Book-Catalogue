@@ -48,7 +48,7 @@
 		</activity>
 		<activity android:name=".goodreads.GoodreadsRegister" android:launchMode="singleInstance"></activity>
 		<activity android:name=".goodreads.GoodreadsAuthorizationActivity" >
-		    <!--  TODO: Work out which of these filters we dont need! -->
+		    <!--  RELEASE: Work out which of these filters we dont need! -->
 		    <intent-filter>  
 				<action android:name="android.intent.action.VIEW"></action>  
 				<category android:name="android.intent.category.DEFAULT"></category>  

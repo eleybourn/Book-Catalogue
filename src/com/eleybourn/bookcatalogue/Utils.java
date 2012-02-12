@@ -36,6 +36,7 @@ import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -807,8 +808,8 @@ public class Utils {
 	/**
 	 * Passed a list of Objects, remove duplicates based on the toString result.
 	 * 
-	 * TODO Add author_aliases table to allow further pruning (eg. Joe Haldeman == Jow W Haldeman).
-	 * TODO Add series_aliases table to allow further pruning (eg. 'Amber Series' <==> 'Amber').
+	 * ENHANCE Add author_aliases table to allow further pruning (eg. Joe Haldeman == Jow W Haldeman).
+	 * ENHANCE Add series_aliases table to allow further pruning (eg. 'Amber Series' <==> 'Amber').
 	 * 
 	 * @param db		Database connection to lookup IDs
 	 * @param list		List to clean up
@@ -1247,7 +1248,7 @@ public class Utils {
 	 * Check if phone can connect to a specific host.
 	 * Does not work....
 	 * 
-	 * TODO: Find a way to make network  host checks possible
+	 * ENHANCE: Find a way to make network host checks possible
 	 * 
 	 * @return
 	 */
@@ -1328,5 +1329,22 @@ public class Utils {
 		if (db != null)
 			db.eraseCoverCache();
 	}
+	
+	/** Calendar to construct dates from month numbers */
+	private static Calendar mCalendar = null;
+	/** Formatter for month names given dates */
+	private static SimpleDateFormat mMonthNameFormatter = null;
+
+	public static String getMonthName(int month) {
+		if (mMonthNameFormatter == null)
+			mMonthNameFormatter = new SimpleDateFormat("MMMM");
+		// Create static calendar if necessary
+		if (mCalendar == null)
+			mCalendar = Calendar.getInstance();
+		// Assumes months are integers and in sequence...which everyone seems to assume
+		mCalendar.set(Calendar.MONTH, month - 1 + java.util.Calendar.JANUARY);
+		return mMonthNameFormatter.format(mCalendar.getTime());
+	}
+
 }
 

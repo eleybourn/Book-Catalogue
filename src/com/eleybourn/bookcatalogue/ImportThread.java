@@ -2,7 +2,7 @@ package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
 
-import com.eleybourn.bookcatalogue.database.DbUtils.Synchronizer.SyncLock;
+import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer.SyncLock;
 
 import android.os.Bundle;
 import android.os.Message;
@@ -87,9 +87,10 @@ public class ImportThread extends ManagedTask {
 		}
 
 		// Make sure required fields are present.
-		// TODO: Rationalize import to allow updates using 1 or 2 columns. For now we require complete data.
-		// TODO: Do a search if mandatory columns missing (eg. allow 'import' of a list of ISBNs).
-		// TODO: Only make some columns mandatory if the ID is not in import, or not in DB (ie. if not an update)
+		// ENHANCE: Rationalize import to allow updates using 1 or 2 columns. For now we require complete data.
+		// ENHANCE: Do a search if mandatory columns missing (eg. allow 'import' of a list of ISBNs).
+		// ENHANCE: Only make some columns mandatory if the ID is not in import, or not in DB (ie. if not an update)
+		// ENHANCE: Export/Import should use GUIDs for book IDs, and put GUIDs on Image file names.
 		requireColumn(values, CatalogueDBAdapter.KEY_ROWID);
 		requireColumnOr(values, CatalogueDBAdapter.KEY_FAMILY_NAME,
 								CatalogueDBAdapter.KEY_AUTHOR_FORMATTED,

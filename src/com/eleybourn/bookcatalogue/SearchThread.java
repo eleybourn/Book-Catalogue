@@ -81,7 +81,7 @@ abstract public class SearchThread extends ManagedTask {
 
 	/**
 	 * Try to extract a series from a book title.
-	 * TODO: Consider removing findSeries if LibraryThing proves reliable.
+	 * ENHANCE: Consider removing findSeries if LibraryThing proves reliable.
 	 * 
 	 * @param 	title	Book title to parse
 	 * @return

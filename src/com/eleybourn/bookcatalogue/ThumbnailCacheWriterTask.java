@@ -3,6 +3,7 @@ package com.eleybourn.bookcatalogue;
 import android.graphics.Bitmap;
 
 import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTask;
+import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTaskContext;
 import com.eleybourn.bookcatalogue.database.CoversDbHelper;
 
 /**
@@ -75,7 +76,7 @@ public class ThumbnailCacheWriterTask implements SimpleTask {
 	 * Do the main work in the background thread.
 	 */
 	@Override
-	public void run() {
+	public void run(SimpleTaskContext taskContext) {
 		mDb.saveFile(mCacheId, mBitmap);
 		if (mCanRecycle) {
 			mBitmap.recycle();

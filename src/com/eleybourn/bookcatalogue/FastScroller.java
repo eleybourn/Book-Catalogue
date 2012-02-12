@@ -67,6 +67,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -120,7 +121,8 @@ class FastScroller {
     private boolean mLongList;
     
     private Object [] mSections;
-    private String mSectionText;
+    private String mSectionTextV1;
+    private String[] mSectionTextV2;
     private boolean mDrawOverlay;
     private ScrollFade mScrollFade;
     
@@ -137,7 +139,7 @@ class FastScroller {
      * than having to build a huge index at start.
      */
     public interface SectionIndexerV2 {
-    	String getSectionTextForPosition(int position);
+    	String[] getSectionTextForPosition(int position);
     }
     private boolean mChangedBounds;
     
@@ -260,15 +262,64 @@ class FastScroller {
 
         // If user is dragging the scroll bar, draw the alphabet overlay
         if (mState == STATE_DRAGGING && mDrawOverlay) {
-            mOverlayDrawable.draw(canvas);
             final TextPaint paint = mPaint;
             float descent = paint.descent();
             final RectF rectF = mOverlayPos;
-            final String text = TextUtils.ellipsize(mSectionText, paint, (mOverlayPos.right - mOverlayPos.left) * 0.8f, TextUtils.TruncateAt.END).toString();
-            canvas.drawText(text, (int) (rectF.left + rectF.right) / 2,
+
+            // Work out what we actually need to draw
+            boolean has2Lines;
+            String line1;
+            String line2 = "";
+            // If there is no V2 data, use the V1 data
+            if (mSectionTextV2 == null) {
+            	has2Lines = false;
+            	line1 = mSectionTextV1;
+            } else {
+            	// If using V2 data, make sure line 1 is a valid straing
+            	if (mSectionTextV2[0] == null)
+            		line1 = "";
+            	else
+            		line1 = mSectionTextV2[0];
+            	// Check if line 2 is present 
+            	if (mSectionTextV2.length > 1 && mSectionTextV2[1] != null && !mSectionTextV2[1].equals("")) {
+            		has2Lines = true;
+            		line2 = mSectionTextV2[1];
+            	} else {
+                	has2Lines = false;            		
+            	}
+            }
+
+            // If there are two lines, expand the box
+            if (has2Lines) {
+            	Rect pos = mOverlayDrawable.getBounds();
+            	Rect posSave = new Rect(pos);
+            	pos.set(pos.left, pos.top, pos.right, pos.bottom + pos.height()/2);
+            	mOverlayDrawable.setBounds(pos);
+                mOverlayDrawable.draw(canvas);
+            	mOverlayDrawable.setBounds(posSave);            	
+            } else {
+                mOverlayDrawable.draw(canvas);            	
+            }
+
+            // Draw the first line
+            final String text1 = TextUtils.ellipsize(line1, paint, (mOverlayPos.right - mOverlayPos.left) * 0.8f, TextUtils.TruncateAt.END).toString();
+            canvas.drawText(text1, (int) (rectF.left + rectF.right) / 2,
             					  // Base of text at: (middle) + (half text height) - descent : so it is vertically centred
                     			  (int) (rectF.bottom + rectF.top) / 2 + mOverlaySize / 6 - descent, 
                     			  paint);
+
+            if (has2Lines) {
+            	// Draw the second line, but smaller than first
+                float s = paint.getTextSize();
+                paint.setTextSize(s * 0.7f);
+                final String text2 = TextUtils.ellipsize(line2, paint, (mOverlayPos.right - mOverlayPos.left) * 0.8f, TextUtils.TruncateAt.END).toString();
+                canvas.drawText(text2, (int) (rectF.left + rectF.right) / 2,
+  					  // Base of text at: (middle) + (half text height) - descent : so it is vertically centred
+          			  (int) (rectF.bottom + rectF.top) / 2 + mOverlaySize / 6 + s, 
+          			  paint);
+                paint.setTextSize(s);            	
+            }
+
         } else if (mState == STATE_EXIT) {
             if (alpha == 0) { // Done with exit
                 setState(STATE_NONE);
@@ -376,22 +427,22 @@ class FastScroller {
 			mList.setSelection(index + mListOffset);
 		}
 		if (mSectionIndexerV2 != null) {
-			mSectionText = mSectionIndexerV2.getSectionTextForPosition(index);
+			mSectionTextV2 = mSectionIndexerV2.getSectionTextForPosition(index);
 		} else {
 			if (sections != null && sections.length > 1) {
 				sectionIndex = mSectionIndexerV1.getSectionForPosition(index);
 				if (sectionIndex >=0 && sectionIndex < sections.length)
-					mSectionText = sections[sectionIndex].toString();
+					mSectionTextV1 = sections[sectionIndex].toString();
 				else
-					mSectionText = null;					
+					mSectionTextV1 = null;					
 			} else {
 				sectionIndex = -1;
-				mSectionText = null;
+				mSectionTextV1 = null;
 			}
 		}
 
-		if (mSectionText != null) {
-			mDrawOverlay = (mSectionText.length() != 1 || mSectionText.charAt(0) != ' ')
+		if ( (mSectionTextV2 != null ) || (mSectionTextV1 != null && mSectionTextV1.length() > 0)) {
+			mDrawOverlay = true; //(mSectionText.length() != 1 || mSectionText.charAt(0) != ' ')
 							; //&& sectionIndex < sections.length;
 		} else {
 			mDrawOverlay = false;

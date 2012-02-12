@@ -13,7 +13,7 @@ import android.os.Bundle;
  * it does not seem to be possible to get them to work from web browser callbacks. So, we just
  * do the necessary processing here and exit.
  * 
- * TODO: Ideally this activity should bring the app to the foreground.
+ * RELEASE: Ideally this activity should bring the app to the foreground.
  * 
  * @author Grunthos
  */
@@ -21,9 +21,6 @@ public class GoodreadsAuthorizationActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		// TODO: wrap this in try/catch and make the activity display a message if the 
-		// authorization fails for some reason.
 
 		// Get the payload and make sure it is what we expect
 		Intent i = this.getIntent();

@@ -377,6 +377,7 @@
 <string name="sort_loaned">Loaned</string>
 <string name="sort_unread">Unread</string>
 <string name="sort_publication_date">Publication date</string>
+<string name="sort_added_date">Added date</string>
 <string name="sort_author_year">Author and Year</string>
 <string name="empty_with_brackets">(empty)</string>
 <string name="navigator">Navigator</string>

@@ -88,5 +88,5 @@ public interface MultitypeListHandler {
 	 * 
 	 * @return		text to display
 	 */
-	public String getSectionText(Cursor cursor);
+	public String[] getSectionText(Cursor cursor);
 }

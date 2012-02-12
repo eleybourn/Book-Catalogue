@@ -23,7 +23,6 @@ package com.eleybourn.bookcatalogue;
 import java.util.ArrayList;
 import java.util.Stack;
 import java.util.concurrent.LinkedBlockingQueue;
-
 import android.os.Handler;
 
 /**
@@ -73,7 +72,7 @@ public class SimpleTaskQueue {
 		/**
 		 * Method called in queue thread to perform the background task.
 		 */
-		void run();
+		void run(SimpleTaskContext taskContext);
 		/**
 		 * Method called in UI thread after the background task has finished.
 		 */
@@ -218,9 +217,9 @@ public class SimpleTaskQueue {
 	 * 
 	 * @param task
 	 */
-	private void handleRequest(final SimpleTask task) {
+	private void handleRequest(final SimpleTaskQueueThread thread, final SimpleTask task) {
 		try {
-			task.run();
+			task.run(thread);
 		} catch (Exception e) {
 			Logger.logError(e, "Error running task");
 		}
@@ -264,13 +263,20 @@ public class SimpleTaskQueue {
 		}
 	}
 
+	public static interface SimpleTaskContext {
+		public CatalogueDBAdapter getDb();
+	}
+
 	/**
 	 * Class to actually run the tasks. Can start more than one. They wait until there is nothing left in
 	 * the queue before terminating.
 	 * 
 	 * @author Grunthos
 	 */
-	private class SimpleTaskQueueThread extends Thread {
+	private class SimpleTaskQueueThread extends Thread implements SimpleTaskContext {
+		/** DB Connection, if task requests one. Survives while thread is alive */
+		CatalogueDBAdapter mDb = null;
+
 		/**
 		 * Main worker thread logic
 		 */
@@ -292,13 +298,25 @@ public class SimpleTaskQueue {
 					}
 
 					//System.out.println("SimpleTaskQueue(run): " + mQueue.size());						
-					handleRequest(req.task);
+					handleRequest(this, req.task);
 				}
 			} catch (InterruptedException e) {
 				// Ignore; these will happen when object is destroyed
 			} catch (Exception e) {
 				Logger.logError(e);
+			} finally {
+				if (mDb != null)
+					mDb.close();
 			}
+		}
+
+		@Override
+		public CatalogueDBAdapter getDb() {
+			if (mDb == null) {
+				mDb = new CatalogueDBAdapter(BookCatalogueApp.context);
+				mDb.open();
+			}
+			return mDb;
 		}
 	}
 }

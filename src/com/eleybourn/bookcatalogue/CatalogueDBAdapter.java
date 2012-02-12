@@ -29,10 +29,11 @@ import java.util.Map;
 import java.util.Set;
 
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
+import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedStatement;
 import com.eleybourn.bookcatalogue.database.SqlStatementManager;
-import com.eleybourn.bookcatalogue.database.DbUtils.SynchronizedDb;
-import com.eleybourn.bookcatalogue.database.DbUtils.Synchronizer;
-import com.eleybourn.bookcatalogue.database.DbUtils.Synchronizer.SyncLock;
+import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedDb;
+import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer;
+import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer.SyncLock;
 
 import android.app.SearchManager;
 import android.content.ContentValues;
@@ -57,7 +58,7 @@ import android.widget.ImageView;
  * for the catalogue (based on the Notepad tutorial), and gives the 
  * ability to list all books as well as retrieve or modify a specific book.
  * 
- * TODO: Use date_added to add 'Recent Acquisitions' virtual shelf; need to resolve how this may relate to date_purchased and 'I own this book'...
+ * ENHANCE: Use date_added to add 'Recent Acquisitions' virtual shelf; need to resolve how this may relate to date_purchased and 'I own this book'...
  * 
  */
 public class CatalogueDBAdapter {
@@ -414,10 +415,23 @@ public class CatalogueDBAdapter {
 //						+ " LEFT OUTER JOIN " + DB_TB_SERIES + " s ON (s." + KEY_ROWID + "=w." + KEY_SERIES_ID + ") ";
 		
 	private final Context mCtx;
-	//TODO: Update database version
+	//TODO: RELEASE: Update database version
 	public static final int DATABASE_VERSION = 66;
 
 	private TableInfo mBooksInfo = null;
+
+	/** Static Factory object to create the custom cursor */
+	public static final CursorFactory mTrackedCursorFactory = new CursorFactory() {
+			@Override
+			public Cursor newCursor(
+					SQLiteDatabase db,
+					SQLiteCursorDriver masterQuery, 
+					String editTable,
+					SQLiteQuery query) 
+			{
+				return new TrackedCursor(db, masterQuery, editTable, query, mSynchronizer);
+			}
+	};
 
 	/**
 	 * This is a specific version of the SQLiteOpenHelper class. It handles onCreate and onUpgrade events
@@ -426,7 +440,7 @@ public class CatalogueDBAdapter {
 	 */
 	private static class DatabaseHelper extends SQLiteOpenHelper {
 		DatabaseHelper(Context context) {
-			super(context, Utils.DATABASE_NAME, TrackedCursor.TrackedCursorFactory, DATABASE_VERSION);
+			super(context, Utils.DATABASE_NAME, mTrackedCursorFactory, DATABASE_VERSION);
 		}
 		
 		/**
@@ -1815,7 +1829,7 @@ public class CatalogueDBAdapter {
 	 * 
 	 * @return SQL text for basic lookup
 	 * 
-	 * TODO: Replace exact-match String parameters with long parameters containing the ID.
+	 * ENHANCE: Replace exact-match String parameters with long parameters containing the ID.
 	 */
 	public String fetchAllBooksInnerSql(String order, String bookshelf, String authorWhere, String bookWhere, String searchText, String loaned_to, String seriesName) {
 		String where = "";
@@ -2432,7 +2446,7 @@ public class CatalogueDBAdapter {
 	 * @return Cursor positioned to matching book, if found
 	 * @throws SQLException if note could not be found/retrieved
 	 */
-	private SQLiteStatement mCheckBookExistsStmt = null;
+	private SynchronizedStatement mCheckBookExistsStmt = null;
 	public boolean checkBookExists(long rowId) {
 		if (mCheckBookExistsStmt == null) {
 			mCheckBookExistsStmt = mStatements.add("mCheckBookExistsStmt", "Select " + KEY_ROWID + " From " + DB_TB_BOOKS + " Where " + KEY_ROWID + " = ?");
@@ -2446,7 +2460,7 @@ public class CatalogueDBAdapter {
 		}
 	}
 	
-	private SQLiteStatement mCheckIsbnExistsStmt = null;
+	private SynchronizedStatement mCheckIsbnExistsStmt = null;
 	/**
 	 * 
 	 * @param isbn The isbn to search by
@@ -2491,7 +2505,7 @@ public class CatalogueDBAdapter {
 		return pos;
 	}
 
-	private SQLiteStatement mGetBookshelfNameStmt = null;
+	private SynchronizedStatement mGetBookshelfNameStmt = null;
 	/**
 	 * Return a Cursor positioned at the bookshelf that matches the given rowId
 	 * 
@@ -2543,7 +2557,7 @@ public class CatalogueDBAdapter {
 	 * @param name The bookshelf name to search for
 	 * @return A cursor containing all bookshelves with the given name
 	 */
-	private SQLiteStatement mFetchBookshelfIdByNameStmt = null;
+	private SynchronizedStatement mFetchBookshelfIdByNameStmt = null;
 	public long fetchBookshelfIdByName(String name) {
 		if (mFetchBookshelfIdByNameStmt == null) {
 			mFetchBookshelfIdByNameStmt = mStatements.add("mFetchBookshelfIdByNameStmt", "Select " + KEY_ROWID + " From " + KEY_BOOKSHELF 
@@ -2933,8 +2947,9 @@ public class CatalogueDBAdapter {
 		/* We may want to provide default values for these fields:
 		 * KEY_RATING, KEY_READ, KEY_NOTES, KEY_LOCATION, KEY_READ_START, KEY_READ_END, KEY_SIGNED, & DATE_ADDED
 		 */
-		values.putString(KEY_DATE_ADDED, Utils.toSqlDate(new Date()));
-		
+		if (!values.containsKey(KEY_DATE_ADDED))
+			values.putString(KEY_DATE_ADDED, Utils.toSqlDate(new Date()));
+
 		// Make sure we have an author
 		ArrayList<Author> authors = values.getParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
 		if (authors == null || authors.size() == 0)
@@ -2973,8 +2988,8 @@ public class CatalogueDBAdapter {
 	}
 
 	// Statements used by createBookshelfBooks
-	private SQLiteStatement mDeleteBookshelfBooksStmt = null;
-	private SQLiteStatement mInsertBookshelfBooksStmt = null;
+	private SynchronizedStatement mDeleteBookshelfBooksStmt = null;
+	private SynchronizedStatement mInsertBookshelfBooksStmt = null;
 
 	/**
 	 * Create each book/bookshelf combo in the weak entity
@@ -3108,7 +3123,7 @@ public class CatalogueDBAdapter {
 		return getAuthorIdOrCreate(names);
 	}
 
-	private SQLiteStatement mGetSeriesIdStmt = null;
+	private SynchronizedStatement mGetSeriesIdStmt = null;
 
 	private long getSeriesId(String name) {
 		if (mGetSeriesIdStmt == null) {
@@ -3134,7 +3149,7 @@ public class CatalogueDBAdapter {
 	}
 
 	// Statements used by getAuthorId
-	private SQLiteStatement mGetAuthorIdStmt = null;
+	private SynchronizedStatement mGetAuthorIdStmt = null;
 	private long getAuthorId(String[] names) {
 		if (mGetAuthorIdStmt == null) {
 			mGetAuthorIdStmt = mStatements.add("mGetAuthorIdStmt", "Select " + KEY_ROWID + " From " + DB_TB_AUTHORS 
@@ -3431,8 +3446,8 @@ public class CatalogueDBAdapter {
 	}
 
 	// Statements used by createBookAuthors
-	private SQLiteStatement mDeleteBookAuthorsStmt = null;
-	private SQLiteStatement mAddBookAuthorsStmt = null;
+	private SynchronizedStatement mDeleteBookAuthorsStmt = null;
+	private SynchronizedStatement mAddBookAuthorsStmt = null;
 
 	/**
 	 * If the passed ContentValues contains KEY_AUTHOR_LIST, parse them
@@ -3490,8 +3505,8 @@ public class CatalogueDBAdapter {
 	 * @param bookData		Book fields
 	 */
 	//
-	private SQLiteStatement mDeleteBookSeriesStmt = null;
-	private SQLiteStatement mAddBookSeriesStmt = null;
+	private SynchronizedStatement mDeleteBookSeriesStmt = null;
+	private SynchronizedStatement mAddBookSeriesStmt = null;
 	private void createBookSeries(long bookId, ArrayList<Series> series) {
 		// If we have SERIES_DETAILS, same them.
 		if (series != null) {
@@ -3699,8 +3714,8 @@ public class CatalogueDBAdapter {
 	}
 
 	// Statements for purgeAuthors
-	private SQLiteStatement mPurgeBookAuthorsStmt = null;
-	private SQLiteStatement mPurgeAuthorsStmt = null;
+	private SynchronizedStatement mPurgeBookAuthorsStmt = null;
+	private SynchronizedStatement mPurgeAuthorsStmt = null;
 	/** 
 	 * Delete the author with the given rowId
 	 * 
@@ -3741,8 +3756,8 @@ public class CatalogueDBAdapter {
 	}
 
 	// Statements for purgeSeries
-	private SQLiteStatement mPurgeBookSeriesStmt = null;
-	private SQLiteStatement mPurgeSeriesStmt = null;
+	private SynchronizedStatement mPurgeBookSeriesStmt = null;
+	private SynchronizedStatement mPurgeSeriesStmt = null;
 
 	/** 
 	 * Delete the series with no related books
@@ -3872,7 +3887,7 @@ public class CatalogueDBAdapter {
 					String editTable,
 					SQLiteQuery query) 
 			{
-				return new BooksCursor(db, masterQuery, editTable, query);
+				return new BooksCursor(db, masterQuery, editTable, query, mSynchronizer);
 			}
 	};
 
@@ -3919,7 +3934,7 @@ public class CatalogueDBAdapter {
 		String sql = "Select s." + KEY_BOOKSHELF + " from " + DB_TB_BOOKSHELF + " s"
 				 + " Join " + DB_TB_BOOK_BOOKSHELF_WEAK + " bbs On bbs." + KEY_BOOKSHELF + " = s." + KEY_ROWID
 				 + " and bbs." + KEY_BOOK + " = " + book + " Order by s." + KEY_BOOKSHELF;
-		Cursor cursor = mDb.rawQuery(sql, new String[]{});
+		Cursor cursor = mDb.rawQuery(sql, EMPTY_STRING_ARRAY);
 		return cursor;
 	}
 	
@@ -3965,7 +3980,7 @@ public class CatalogueDBAdapter {
 	    	}
     }
  
-    private SQLiteStatement mGetAuthorBookCountQuery = null;
+    private SynchronizedStatement mGetAuthorBookCountQuery = null;
     /*
      * This will return the author id based on the name. 
      * The name can be in either "family, given" or "given family" format.
@@ -3988,7 +4003,7 @@ public class CatalogueDBAdapter {
 
     }
     
-    private SQLiteStatement mGetAuthorAnthologyCountQuery = null;
+    private SynchronizedStatement mGetAuthorAnthologyCountQuery = null;
     /*
      * This will return the author id based on the name. 
      * The name can be in either "family, given" or "given family" format.
@@ -4011,7 +4026,7 @@ public class CatalogueDBAdapter {
 
     }
 
-    private SQLiteStatement mGetSeriesBookCountQuery = null;
+    private SynchronizedStatement mGetSeriesBookCountQuery = null;
     /*
      * This will return the author id based on the name. 
      * The name can be in either "family, given" or "given family" format.
@@ -4123,7 +4138,7 @@ public class CatalogueDBAdapter {
 		}
 	}
 
-    private SQLiteStatement mGetBookTitleQuery = null;
+    private SynchronizedStatement mGetBookTitleQuery = null;
     /**
      * Utility routine to return the book title based on the id. 
      */
@@ -4318,7 +4333,7 @@ public class CatalogueDBAdapter {
 	/**
 	 * Rebuild the entire FTS database. This can take a while. Minutes.
 	 * 
-	 * TODO: Finish stringification
+	 * RELEASE: Finish FTS stringification
 	 */
 	public void rebuildFts() {
 		// Delete old temp version, if it exists
@@ -4327,10 +4342,11 @@ public class CatalogueDBAdapter {
 		} catch (Exception e) {
 			// Nothing to do?
 		}
+		// TODO: Consider adding PUBLISHER, GENRE, & LOCATION
 		// Create a new temp version
 		mDb.execSQL("Create Virtual Table " + DB_TB_BOOKS_FTS_TEMP + " using fts3(author text, title text, description text, notes text, isbn text)");
 		// Compile an INSERT statement
-		SQLiteStatement insert = mDb.compileStatement("insert into " + DB_TB_BOOKS_FTS_TEMP + "(docid, author, title, description, notes, isbn) values (?,?,?,?,?,?)");
+		SynchronizedStatement insert = mDb.compileStatement("insert into " + DB_TB_BOOKS_FTS_TEMP + "(docid, author, title, description, notes, isbn) values (?,?,?,?,?,?)");
 
 		// Get all books in the DB and loop over them
 		final BooksCursor c = this.fetchAllBooks("", "", "", "", "", "", "");
@@ -4379,7 +4395,7 @@ public class CatalogueDBAdapter {
 	/**
 	 * Search the FTS table and return a cursor.
 	 * 
-	 * TODO: Finish stringification
+	 * RELEASE: Finish FTS stringification
 	 * TODO: Add another method that returns a books cursor...or modify the queries used in 
 	 * the BookCatalogue activity.
 	 * 

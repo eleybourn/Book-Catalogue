@@ -184,7 +184,8 @@ public class ExportThread extends ManagedTask {
 					}
 					String dateAddedString = "";
 					try {
-						String[] date = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DATE_ADDED)).split("-");
+						dateAddedString = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DATE_ADDED));
+						String[] date = dateAddedString.split("-");
 						int yyyy = Integer.parseInt(date[0]);
 						int mm = Integer.parseInt(date[1]);
 						int dd = Integer.parseInt(date[2]);

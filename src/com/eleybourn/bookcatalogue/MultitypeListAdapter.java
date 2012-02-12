@@ -64,14 +64,14 @@ public class MultitypeListAdapter extends CursorAdapter implements SectionIndexe
     }
 
 	@Override
-	public String getSectionTextForPosition(final int position) {
+	public String[] getSectionTextForPosition(final int position) {
 		final Cursor c = getCursor();
 		if (position < 0 || position >= c.getCount())
 			return null;
 
 		final int savedPos = c.getPosition();
 		c.moveToPosition(position);
-		final String section = mHandler.getSectionText(c);
+		final String[] section = mHandler.getSectionText(c);
 		c.moveToPosition(savedPos);
 		return section;
 	}

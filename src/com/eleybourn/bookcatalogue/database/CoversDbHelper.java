@@ -1,18 +1,22 @@
 package com.eleybourn.bookcatalogue.database;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
 import java.util.Date;
 
 import com.eleybourn.bookcatalogue.TrackedCursor;
 import com.eleybourn.bookcatalogue.Utils;
-import com.eleybourn.bookcatalogue.database.DbUtils.Synchronizer.SyncLock;
+import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedDb;
+import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedStatement;
+import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer;
+import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer.SyncLock;
 import com.eleybourn.bookcatalogue.database.DbUtils.*;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
+import android.database.sqlite.SQLiteDatabase.CursorFactory;
+import android.database.sqlite.SQLiteQuery;
 import android.graphics.Bitmap;
 
 /**
@@ -30,7 +34,7 @@ public class CoversDbHelper extends GenericOpenHelper {
 	private static final Synchronizer mSynchronizer = new Synchronizer();
 
 	/** List of statements we create so we can close them when object is closed. */
-	private ArrayList<SQLiteStatement> mStatements = new ArrayList<SQLiteStatement>();
+	private SqlStatementManager mStatements = new SqlStatementManager();
 
 	/** DB location */
 	private static final String COVERS_DATABASE_NAME = Utils.EXTERNAL_FILE_PATH + "/covers.db";
@@ -39,6 +43,19 @@ public class CoversDbHelper extends GenericOpenHelper {
 
 	// Domain and table definitions
 	
+	/** Static Factory object to create the custom cursor */
+	public static final CursorFactory mTrackedCursorFactory = new CursorFactory() {
+			@Override
+			public Cursor newCursor(
+					SQLiteDatabase db,
+					SQLiteCursorDriver masterQuery, 
+					String editTable,
+					SQLiteQuery query) 
+			{
+				return new TrackedCursor(db, masterQuery, editTable, query, mSynchronizer);
+			}
+	};
+
 	public static final DomainDefinition DOM_ID = new DomainDefinition( "_id", "integer",  "primary key autoincrement", "");
 	public static final DomainDefinition DOM_DATE = new DomainDefinition( "date", "datetime", "default current_timestamp", "not null");
 	public static final DomainDefinition DOM_TYPE = new DomainDefinition( "type", "text", "", "not null");	// T = Thumbnail; C = cover?
@@ -61,7 +78,7 @@ public class CoversDbHelper extends GenericOpenHelper {
 	 * Constructor. Fill in required fields. This is NOT based on SQLiteOpenHelper so does not need a context.
 	 */
 	public CoversDbHelper() {
-		super(COVERS_DATABASE_NAME, TrackedCursor.TrackedCursorFactory, COVERS_DATABASE_VERSION);
+		super(COVERS_DATABASE_NAME, mTrackedCursorFactory, COVERS_DATABASE_VERSION);
 	}
 	/**
 	 * As with SQLiteOpenHelper, routine called to create DB
@@ -158,14 +175,13 @@ public class CoversDbHelper extends GenericOpenHelper {
 	 * @param filename
 	 * @param bm
 	 */
-	private SQLiteStatement mExistsStmt = null;
+	private SynchronizedStatement mExistsStmt = null;
 	public void saveFile(final String filename, final int height, final int width, final byte[] bytes) {
 		SynchronizedDb db = this.getDb();
 
 		if (mExistsStmt == null) {
 			String sql = "Select Count(" + DOM_ID + ") From " + TBL_IMAGE + " Where " + DOM_FILENAME + " = ?";
-			mExistsStmt = db.compileStatement(sql);
-			mStatements.add(mExistsStmt);
+			mExistsStmt = mStatements.add(db, "mExistsStmt", sql);
 		}
 
 		ContentValues cv = new ContentValues();
@@ -200,14 +216,13 @@ public class CoversDbHelper extends GenericOpenHelper {
 	/**
 	 * Erase all images in the covers cache
 	 */
-	private SQLiteStatement mEraseCoverCacheStmt = null;
+	private SynchronizedStatement mEraseCoverCacheStmt = null;
 	public void eraseCoverCache() {
 		SynchronizedDb db = this.getDb();
 
 		if (mEraseCoverCacheStmt == null) {
 			String sql = "Delete From " + TBL_IMAGE;
-			mEraseCoverCacheStmt = db.compileStatement(sql);
-			mStatements.add(mEraseCoverCacheStmt);
+			mEraseCoverCacheStmt = mStatements.add(db, "mEraseCoverCacheStmt",  sql);
 		}
 		mEraseCoverCacheStmt.execute();
 	}
@@ -227,10 +242,7 @@ public class CoversDbHelper extends GenericOpenHelper {
 
 	@Override
 	public void close() {
-		for(SQLiteStatement s  : mStatements) {
-			try { s.close(); } catch (Exception e) {};
-		}
-		mStatements.clear();
+		mStatements.close();
 		super.close();
 	}
 	

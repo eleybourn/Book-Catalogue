@@ -94,7 +94,7 @@ public class TaskListActivity extends net.philipwarner.taskqueue.BindableItemLis
 
 	/**
 	 * Return the number of task types we might return. 50 is just paranoia.
-	 * TODO: Keep checking this value!
+	 * RELEASE: Keep checking this value!
 	 */
 	@Override
 	public int getBindableItemTypeCount() {

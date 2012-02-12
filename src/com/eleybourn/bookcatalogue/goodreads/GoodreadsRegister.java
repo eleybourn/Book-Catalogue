@@ -58,7 +58,7 @@ public class GoodreadsRegister extends Activity {
 		devkeyLink.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// TODO: put up a progress dialog...its only one web request, but it can take a few seconds
+				// RELEASE: put up a progress dialog...its only one web request, but it can take a few seconds
 				GoodreadsManager grMgr = new GoodreadsManager();
 				if (!grMgr.hasValidCredentials()) {
 					try {

@@ -6,37 +6,54 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
-import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.Logger;
 import com.eleybourn.bookcatalogue.PreferencesBase;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.Utils;
 
 /**
- * TODO: Document!
+ * Activity to manage the preferences associate with Book lists (and the BooksOnBookshelf activity).
  * 
  * @author Grunthos
  */
 public class BooklistPreferences extends PreferencesBase {
 
+	/** Prefix for all prefs */
 	public static final String TAG = "BookList";
+	/** Show list of bookshelves for each book */
 	public static final String PREF_SHOW_BOOKSHELVES = TAG + ".ShowBookshelves";
+	/** Show location for each book */
 	public static final String PREF_SHOW_LOCATION = TAG + ".ShowLocation";
+	/** Show publisher for each book */
 	public static final String PREF_SHOW_PUBLISHER = TAG + ".ShowPublisher";
+	/** Show thumbnail image for each book */
 	public static final String PREF_SHOW_THUMBNAILS = TAG + ".ShowThumbnails";
+	/** Key added to resulting Intent */
 	public static final String PREF_CHANGED = TAG + "PrefChanged";
 
+	/**
+	 * Build the activity UI
+	 */
 	@Override 
 	public void onCreate(Bundle savedInstanceState) {
 		try {
 			super.onCreate(savedInstanceState);			
-			System.out.println("In onCreate while starting prefs");
-
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
 	}
 
+	/**
+	 * Return the layout to use for this subclass
+	 */
+	@Override
+	public int getLayout() {
+		return R.layout.booklist_preferences;
+	}
+
+	/**
+	 * Setup each component of the layout using the passed preferences
+	 */
 	@Override
 	public void setupViews(BookCataloguePreferences prefs) {
 		addBooleanPreference(prefs, R.id.show_thumbnails_checkbox, R.id.show_thumbnails_label, BooklistPreferences.PREF_SHOW_THUMBNAILS);
@@ -55,18 +72,14 @@ public class BooklistPreferences extends PreferencesBase {
 			}});
 	}
 
-	@Override
-	public int getLayout() {
-		return R.layout.booklist_preferences;
-	}
-
+	/**
+	 * Trap the onPause, and if the Activity is finishing then set the result.
+	 */
 	@Override
 	public void onPause() {
 		super.onPause();
-		System.out.println("In onPause for BooklistPrefs");
 
 		if (isFinishing()) {
-			System.out.println("In onPause (FINISHING) for BooklistPrefs");
 			Intent i = new Intent();
 			i.putExtra(PREF_CHANGED, true);
 			if (getParent() == null) {
@@ -74,7 +87,6 @@ public class BooklistPreferences extends PreferencesBase {
 			} else {
 				getParent().setResult(RESULT_OK, i);
 			}
-			finish();			
 		}
 	}
 

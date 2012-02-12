@@ -71,7 +71,7 @@ public class SendAllBooksTask extends GenericTask {
 		int lastSave = mCount;
 		boolean needsRetryReset = true;
 
-		// TODO: Work out a way of checking if GR site is up
+		// ENHANCE: Work out a way of checking if GR site is up
 		//if (!Utils.hostIsAvailable(context, "www.goodreads.com"))
 		//	return false;
 

@@ -44,9 +44,9 @@ import android.os.Bundle;
  * Details via ISBN: http://www.librarything.com/services/rest/1.1/?method=librarything.ck.getwork&apikey=<DEVKEY>&isbn=<ISBN>
  * Covers via ISBN: http://covers.librarything.com/devkey/<DEVKEY>/large/isbn/<ISBN>
  *
- * TODO: extend the use of LibraryThing:
- * - Lookup title using keywords: http://www.librarything.com/api/thingTitle/hand oberon
- * - consider scraping html for covers: http://www.librarything.com/work/18998/covers
+ * ENHANCE: extend the use of LibraryThing:
+ * 			- Lookup title using keywords: http://www.librarything.com/api/thingTitle/hand oberon
+ * 			- consider scraping html for covers: http://www.librarything.com/work/18998/covers
  * 
  * @author Grunthos
  *

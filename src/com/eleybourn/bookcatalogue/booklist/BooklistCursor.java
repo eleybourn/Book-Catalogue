@@ -1,75 +1,92 @@
 package com.eleybourn.bookcatalogue.booklist;
 
 
-import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.*;
-
-import com.eleybourn.bookcatalogue.BookCatalogueApp;
-import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
-import com.eleybourn.bookcatalogue.FieldVisibility;
 import com.eleybourn.bookcatalogue.TrackedCursor;
-import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
-import com.eleybourn.bookcatalogue.database.DbUtils.Synchronizer;
-import com.eleybourn.bookcatalogue.database.DbUtils.Synchronizer.SyncLock;
+import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer;
 
-import android.database.Cursor;
 import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQuery;
 
 /**
- * TODO: Document!
+ * Cursor object that makes the underlying BooklistBuilder available to users of the Cursor, as
+ * well as providing some information about the builder objects.
  * 
  * @author Grunthos
  */
 public class BooklistCursor extends TrackedCursor {
+	/** Underlying BooklistBuilder object */
 	private final BooklistBuilder mBuilder;
+	/** Cached RowView for this cursor */
 	private BooklistRowView mRowView = null;
+	/** ID counter */
 	private static Integer mBooklistCursorIdCounter = 0;
+	/** ID of this cursor */
 	private final long mId;
 
-	public BooklistCursor(SQLiteDatabase db, SQLiteCursorDriver driver, String editTable, SQLiteQuery query, BooklistBuilder builder) {
-		super(db, driver, editTable, query);
+	/**
+	 * Constructor
+	 * 
+	 * @param db			Underlying DB. Part of standard cursor constructor.
+	 * @param driver		Part of standard cursor constructor.
+	 * @param editTable		Part of standard cursor constructor.
+	 * @param query			Part of standard cursor constructor.
+	 * @param builder		BooklistBuilder used to make the query on which this cursor is based.
+	 * @param sync			Synchronizer object
+	 */
+	public BooklistCursor(SQLiteDatabase db, SQLiteCursorDriver driver, String editTable, SQLiteQuery query, BooklistBuilder builder, Synchronizer sync) {
+		super(db, driver, editTable, query, sync);
+		// Allocate ID
 		synchronized(mBooklistCursorIdCounter) {
 			mId = ++mBooklistCursorIdCounter;
 		}
+		// Save builder.
 		mBuilder = builder;
 	}
 
+	/**
+	 * Get the ID for this cursor.
+	 * 
+	 * @return
+	 */
 	public long getId() {
 		return mId;
 	}
 
+	/**
+	 * Get the builder used to make this cursor.
+	 * 
+	 * @return
+	 */
 	public BooklistBuilder getBuilder() {
 		return mBuilder;
 	}
 
+	/**
+	 * Get a RowView for this cursor. Constructs one if necessary.
+	 * 
+	 * @return
+	 */
 	public BooklistRowView getRowView() {
 		if (mRowView == null)
 			mRowView = new BooklistRowView(this, mBuilder);
 		return mRowView;
 	}
-	
+
+	/**
+	 * Get the number of levels in the book list.
+	 * 
+	 * @return
+	 */
 	public int numLevels() {
 		return mBuilder.numLevels();
 	}	
 
-	@Override
-	public boolean requery() {
-		Synchronizer sync = CatalogueDBAdapter.getSynchronizer();
-		SyncLock l = sync.getSharedLock();
-		try {
-			System.out.println("BLC RQ");
-			return super.requery();
-		} finally {
-			l.unlock();
-		}
-	}
-
 	/*
-	 * no need for this yet; it may even die because table is deleted and reacreated.
+	 * no need for this yet; it may even die because table is deleted and recreated.
 	 */
-//	public boolean requeryRebuild() {
-//		mBuilder.rebuild();
-//		return requery();
-//	}
+	//	public boolean requeryRebuild() {
+	//		mBuilder.rebuild();
+	//		return requery();
+	//	}
 }

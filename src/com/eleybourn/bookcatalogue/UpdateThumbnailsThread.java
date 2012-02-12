@@ -98,7 +98,7 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 			return;
 		}
 
-		// TODO: Allow caller to pass cursor (again) so that specific books can be updated (eg. just one book)
+		// ENHANCE: Allow caller to pass cursor (again) so that specific books can be updated (eg. just one book)
 		Cursor books = mDbHelper.fetchAllBooks("b." + CatalogueDBAdapter.KEY_ROWID, "", "", "", "", "", "");
 		mManager.setMax(this, books.getCount());
 		try {

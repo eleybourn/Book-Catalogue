@@ -25,7 +25,6 @@ public class OtherPreferences extends PreferencesBase {
 
 	@Override
 	public int getLayout() {
-		// TODO Auto-generated method stub
 		return R.layout.other_preferences;
 	}
 

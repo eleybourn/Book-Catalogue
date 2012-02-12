@@ -45,6 +45,7 @@ import android.widget.ViewSwitcher.ViewFactory;
 
 import com.eleybourn.bookcatalogue.LibraryThingManager.ImageSizes;
 import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTask;
+import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTaskContext;
 
 /**
  * Class to display and manage a cover image browser in a dialog.
@@ -74,6 +75,8 @@ public class CoverBrowser {
 	private Dialog mDialog = null;
 	// Adapted to queue/display images
 	private CoverImageAdapter mAdapter = null;
+	/** Indicates a 'shutdown()' has been requested */
+	private boolean mShutdown = false;
 
 	/**
 	 * Interface called when image is selected.
@@ -117,6 +120,8 @@ public class CoverBrowser {
 	 * Close down everything
 	 */
 	private void shutdown() {
+		mShutdown = true;
+
 		if (mDialog != null) {
 			// Dismiss will call shutdown();
 			mDialog.dismiss();
@@ -150,9 +155,9 @@ public class CoverBrowser {
 		}
 
 		@Override
-		public void run() {
+		public void run(SimpleTaskContext taskContext) {
 			// Get some editions
-			// TODO: the list of editions should be expanded to somehow include Amazon and Google. As well
+			// ENHANCE: the list of editions should be expanded to somehow include Amazon and Google. As well
 			// as the alternate user-contributed images from LibraryThing. The latter are often the best 
 			// source but at present could only be obtained by HTML scraping.
 			try {
@@ -205,7 +210,7 @@ public class CoverBrowser {
 		}
 
 		@Override
-		public void run() {
+		public void run(SimpleTaskContext taskContext) {
 			// Start the download
 			fileSpec = mFileManager.download(isbn, ImageSizes.SMALL);
 			File file = new File(fileSpec);
@@ -225,8 +230,7 @@ public class CoverBrowser {
 
 		@Override
 		public boolean runFinished() {
-			// TODO Auto-generated method stub
-			return false;
+			return true;
 		}
 	}
 
@@ -259,7 +263,11 @@ public class CoverBrowser {
 			isbn = mEditions.get(position);
 		}
 		@Override
-		public void run() {
+		public void run(SimpleTaskContext taskContext) {
+			// If we are shutdown, just return
+			if (mShutdown)
+				return;
+
 			// Download the file
 			fileSpec = mFileManager.download(isbn, ImageSizes.LARGE);
 			File file = new File(fileSpec);
@@ -286,7 +294,7 @@ public class CoverBrowser {
 		}
 		@Override
 		public boolean runFinished() {
-			return true;
+			return !mShutdown;
 		}
 	}
 
@@ -529,7 +537,11 @@ public class CoverBrowser {
 				i = new ImageView(mContext);
 			else 
 				i = (ImageView)convertView;
-			
+
+			// If we are shutdown, just return a view
+			if (mShutdown)
+				return i;
+
 			// Initialize the view
 			i.setScaleType(ImageView.ScaleType.FIT_XY);
 			//i.setAdjustViewBounds(true);

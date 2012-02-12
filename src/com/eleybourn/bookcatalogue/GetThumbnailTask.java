@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.widget.ImageView;
 
 import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTask;
+import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTaskContext;
 
 /**
  * Task to get a thumbnail from the sdcard or cover database. It will resize it as required and 
@@ -112,7 +113,7 @@ public class GetThumbnailTask implements SimpleTask {
 	 * Do the image manipulation. We wait at start to prevent a flood of images from hitting the UI thread.
 	 */
 	@Override
-	public void run() {
+	public void run(SimpleTaskContext taskContext) {
 		try {
 			/*
 			try {

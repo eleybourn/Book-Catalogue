@@ -9,6 +9,7 @@ import java.util.Calendar;
 import net.philipwarner.taskqueue.QueueManager;
 
 import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTask;
+import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTaskContext;
 import com.eleybourn.bookcatalogue.booklist.BooklistCursor;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyle.RowKinds;
 import com.eleybourn.bookcatalogue.booklist.BooklistRowView;
@@ -38,7 +39,7 @@ import android.widget.Toast;
 public class BooksMultitypeListHandler implements MultitypeListHandler {
 	
 	/** Queue for tasks getting extra row details as necessary */
-	private static SimpleTaskQueue mInfoQueue = new SimpleTaskQueue("extra-info",1);
+	private static SimpleTaskQueue mInfoQueue = new SimpleTaskQueue("extra-info", 1);
 
 	/**
 	 * Return the row type for the current cursor position.
@@ -49,7 +50,7 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 	}
 
 	/**
-	 * Return the numbver of different View types in this list.
+	 * Return the number of different View types in this list.
 	 */
 	public int getViewTypeCount() {
 		return ROW_KIND_MAX+1;
@@ -58,9 +59,9 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 	/**
 	 * Get the text to display in the FastScroller for the row at the current cursor position.
 	 */
-	public String getSectionText(Cursor c) {
+	public String[] getSectionText(Cursor c) {
 		BooklistRowView rowView = ((BooklistCursor)c).getRowView();
-		return rowView.getLevel1Data();
+		return new String[] {rowView.getLevel1Data(), rowView.getLevel2Data()};
 	}
 
 	/**
@@ -92,8 +93,14 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 			return new GenericStringHolder(rowView, DOM_LOANED_TO, R.string.empty_with_brackets);
 		case RowKinds.ROW_KIND_YEAR_PUBLISHED:
 			return new GenericStringHolder(rowView, DOM_PUBLICATION_YEAR, R.string.empty_with_brackets);
+		case RowKinds.ROW_KIND_YEAR_ADDED:
+			return new GenericStringHolder(rowView, DOM_ADDED_YEAR, R.string.empty_with_brackets);
+		case RowKinds.ROW_KIND_DAY_ADDED:
+			return new GenericStringHolder(rowView, DOM_ADDED_DAY, R.string.empty_with_brackets);
 		case RowKinds.ROW_KIND_MONTH_PUBLISHED:
-			return new MonthHolder();
+			return new MonthHolder(rowView, DOM_PUBLICATION_MONTH.name);
+		case RowKinds.ROW_KIND_MONTH_ADDED:
+			return new MonthHolder(rowView, DOM_ADDED_MONTH.name);
 		default:
 			throw new RuntimeException("Invalid row kind " + k);
 		}
@@ -291,14 +298,23 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 				extrasTask = null;
 			}
 
+			// Build the flags indicating which extras to get.
+			int flags = 0;
+			if (rowView.getShowBookshelves())
+				flags |= GetBookExtrasTask.EXTRAS_BOOKSHELVES;
+			if (rowView.getShowLocation())
+				flags |= GetBookExtrasTask.EXTRAS_LOCATION;
+			if (rowView.getShowPublisher())
+				flags |= GetBookExtrasTask.EXTRAS_PUBLISHER;
+
 			// If there are extras to get, run the background task.
-			if (rowView.getShowBookshelves() || rowView.getShowLocation() || rowView.getShowPublisher()) {
+			if (flags != 0) {
 				// Fill in the extras field as blank initially.
 				shelves.setText("");
 				location.setText("");
 				publisher.setText("");
 				// Queue the task.
-				GetBookExtrasTask t = new GetBookExtrasTask(rowView.getBookId(), this);
+				GetBookExtrasTask t = new GetBookExtrasTask(rowView.getBookId(), this, flags);
 				mInfoQueue.enqueue(t);
 			}
 		}
@@ -317,18 +333,38 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 	 * @author Grunthos
 	 */
 	private static class GetBookExtrasTask implements SimpleTask  {
+		public static final int EXTRAS_BOOKSHELVES = 1;
+		public static final int EXTRAS_LOCATION = 2;
+		public static final int EXTRAS_PUBLISHER = 4;
+
 		/** The filled-in view holder for the book view. */
 		final BookHolder mHolder;
 		/** The book ID to fetch */
 		final long mBookId;
+
 		/** Resulting location data */
 		String mLocation;
+		/** Location column number */
+		static int mLocationCol = -2;
+		/** Location resource string */
+		static String mLocationRes = null;
+
 		/** Resulting publisher data */
 		String mPublisher;
+		/** Publisher column number */
+		static int mPublisherCol = -2;
+		/** Publisher resource string */
+		static String mPublisherRes = null;
+
 		/** Resulting shelves data */
 		String mShelves;
+		/** Shelves resource string */
+		static String mShelvesRes = null;		
+
 		/** Flag indicating we want finished() to be called */
 		private boolean mWantFinished = true;
+		/** Flags indicating which extras to get */
+		private int mFlags;
 
 		/**
 		 * Constructor.
@@ -336,16 +372,17 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 		 * @param bookId	Book to fetch
 		 * @param holder	View holder of view for the book
 		 */
-		public GetBookExtrasTask(long bookId, BookHolder holder) {
+		public GetBookExtrasTask(long bookId, BookHolder holder, int flags) {
 			mHolder = holder;
 			mBookId = bookId;
+			mFlags = flags;
 			synchronized(mHolder) {
 				mHolder.extrasTask = this;
 			}
 		}
 
 		@Override
-		public void run() {
+		public void run(SimpleTaskContext taskContext) {
 			try {
 				// Make sure we are the right task.
 				synchronized(mHolder) {
@@ -355,39 +392,55 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 					}
 				}
 				// Get a DB connection and find the book.
-				CatalogueDBAdapter dba = new CatalogueDBAdapter(BookCatalogueApp.context);
-				dba.open();
+				CatalogueDBAdapter dba = taskContext.getDb(); //new CatalogueDBAdapter(BookCatalogueApp.context);
+				//dba.open();
 				BooksCursor c = dba.fetchBookById(mBookId);
 				try {
 					// If we have a book, use it. Otherwise we are done.
 					if (c.moveToFirst()) {
-						mLocation = BookCatalogueApp.getResourceString(R.string.location) + 
-										": " + c.getString(c.getColumnIndex(CatalogueDBAdapter.KEY_LOCATION));
-						mPublisher = BookCatalogueApp.getResourceString(R.string.publisher) + 
-										": " + c.getString(c.getColumnIndex(CatalogueDBAdapter.KEY_PUBLISHER));
-						
-						// Now build a list of all bookshelves the book is on.
-						Cursor sc = dba.getAllBookBookshelvesForGoodreadsCursor(mBookId);
-						mShelves = "";
-						try {
-							if (sc.moveToFirst()) {
-								do {
-									if (mShelves != null && !mShelves.equals(""))
-										mShelves += ", ";
-									mShelves += sc.getString(0);
-								} while (sc.moveToNext());						
-							}
-						} finally {
-							sc.close();
+
+						if ( (mFlags & EXTRAS_LOCATION) != 0) {
+							if (mLocationCol < 0)
+								mLocationCol = c.getColumnIndex(CatalogueDBAdapter.KEY_LOCATION);
+							if (mLocationRes == null)
+								mLocationRes = BookCatalogueApp.getResourceString(R.string.location);
+
+							mLocation = mLocationRes + ": " + c.getString(mLocationCol);							
 						}
-						mShelves = BookCatalogueApp.getResourceString(R.string.shelves) + ": " + mShelves;
+
+						if ( (mFlags & EXTRAS_PUBLISHER) != 0) {
+							if (mPublisherCol < 0)
+								mPublisherCol = c.getColumnIndex(CatalogueDBAdapter.KEY_PUBLISHER);
+							if (mPublisherRes == null)
+								mPublisherRes = BookCatalogueApp.getResourceString(R.string.publisher);
+
+							mPublisher = mPublisherRes + ": " + c.getString(mPublisherCol);							
+						}
+
+						if ( (mFlags & EXTRAS_BOOKSHELVES) != 0) {
+							// Now build a list of all bookshelves the book is on.
+							mShelves = "";
+							Cursor sc = dba.getAllBookBookshelvesForGoodreadsCursor(mBookId);
+							try {
+								if (sc.moveToFirst()) {
+									do {
+										if (mShelves != null && !mShelves.equals(""))
+											mShelves += ", ";
+										mShelves += sc.getString(0);
+									} while (sc.moveToNext());						
+								}
+							} finally {
+								sc.close();
+							}
+							mShelves = BookCatalogueApp.getResourceString(R.string.shelves) + ": " + mShelves;							
+						}
 					} else {
 						// No data, no need for UI thread call.
 						mWantFinished = false;
 					}
 				} finally {
 					c.close();
-					dba.close();
+					//dba.close();
 				}
 			} finally {
 				// Not much to see
@@ -404,9 +457,12 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 						return;
 					}
 
-					mHolder.shelves.setText(mShelves);
-					mHolder.location.setText(mLocation);
-					mHolder.publisher.setText(mPublisher);
+					if ( (mFlags & EXTRAS_BOOKSHELVES) != 0)
+						mHolder.shelves.setText(mShelves);
+					if ( (mFlags & EXTRAS_LOCATION) != 0)
+						mHolder.location.setText(mLocation);
+					if ( (mFlags & EXTRAS_PUBLISHER) != 0)
+						mHolder.publisher.setText(mPublisher);
 				}
 			} finally {
 			}
@@ -461,7 +517,7 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 			return inflater.inflate(getDefaultLayoutId(level), parent, false);
 		}
 	}
-	
+
 	/**
 	 * Holder for a row that displays a 'month'. This code turns a month number into a 
 	 * locale-based month name.
@@ -471,10 +527,15 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 	public static class MonthHolder extends BooklistHolder {
 		/** TextView for month name */
 		TextView text;
-		/** Calendar to construct dates from month numbers */
-		private static Calendar mCalendar = null;
-		/** Formatter for month names given dates */
-		private static SimpleDateFormat mFormatter = null;
+		/** Source column name */
+		private final String mSource;
+		/** Source column number */
+		private int mSourceCol;
+		
+		public MonthHolder(BooklistRowView rowView, String source) {
+			mSource = source;
+			mSourceCol = rowView.getColumnIndex(mSource);
+		}
 
 		@Override
 		public void map(BooklistRowView rowView, View v) {
@@ -484,20 +545,13 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 		@Override
 		public void set(BooklistRowView rowView, View v, final int level) {
 			// Get the month and try to format it.
-			String s = rowView.getPublicationMonth();
+			String s = rowView.getString(mSourceCol);
 			try {
 				int i = Integer.parseInt(s);
 				// If valid, get the name
 				if (i > 0 && i <= 12) {
 					// Create static formatter if necessary
-					if (mFormatter == null)
-						mFormatter = new SimpleDateFormat("MMMM");
-					// Create static calendar if necessary
-					if (mCalendar == null)
-						mCalendar = Calendar.getInstance();
-					// Assumes months are integers and in sequence...which everyone seems to assume
-					mCalendar.set(Calendar.MONTH, i - 1 + java.util.Calendar.JANUARY);
-					s = mFormatter.format(mCalendar.getTime());
+					s = Utils.getMonthName(i);
 				}
 			} catch (Exception e) {
 				System.out.println(e.getMessage());
@@ -594,7 +648,7 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 	 * Handle the 'standard' menu items. If the passed activity implements BooklistChangeListener then
 	 * inform it when changes have been made.
 	 * 
-	 * TODO: Consider using LocalBroadcastManager instead.
+	 * ENHANCE: Consider using LocalBroadcastManager instead (requires Android compatibility library)
 	 * 
 	 * @param rowView	Row view for affected cursor row
 	 * @param context	Calling Activity

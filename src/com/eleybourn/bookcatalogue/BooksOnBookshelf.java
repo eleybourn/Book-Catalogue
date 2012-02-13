@@ -131,9 +131,11 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 
 			// This sets the search capability to local (application) search
 			setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
+			
+			// This sets the search capability to local (application) search
+			setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
 			setContentView(R.layout.booksonbookshelf);
 
-			// Did the user search
 			Intent intent = getIntent();
 			if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 				// Return the search results instead of all books (for the bookshelf)
@@ -529,7 +531,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 				mList.getBuilder().close();
 
 			// Build based on our current criteria and return
-			builder.build(mMarkBookId, mCurrentBookshelf, "", "", "", "", "");
+			builder.build(mMarkBookId, mCurrentBookshelf, "", "", "", "", mSearchText);
 
 			return builder;			
 		}
@@ -578,7 +580,8 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 	@Override
 	public void onPause() {
 		super.onPause();
-		savePosition();
+		if (mSearchText == null || mSearchText.equals(""))
+			savePosition();
 	}
 
 	/**

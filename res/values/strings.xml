@@ -23,7 +23,7 @@
 <string name="sort_title">Book Catalogue: by Title</string>
 <string name="edit_title">Book Catalogue: Edit Book</string>
 <string name="menu_insert_isbn">Add by ISBN</string>
-<string name="menu_insert_barcode">Add by Barcode</string>
+<string name="menu_insert_barcode">Add by Scanned Barcode</string>
 <string name="search">Search</string>
 <string name="cancel">Cancel</string>
 <string name="confirm_save">Save Book</string>
@@ -399,4 +399,9 @@
 <string name="management">Management</string>
 <string name="credentials">Credentials</string>
 <string name="data_import_export">Data Import/Export</string>
+<string name="unrecognized_task">Unrecognized Task</string>
+<string name="rebuilding_search_index">Rebuilding Search Index...</string>
+<string name="optimizing_databases">Optimizing databases...</string>
+<string name="starting_up">Starting up...</string>
+<string name="book_catalogue_startup">BookCatalogue Startup</string>
 </resources>

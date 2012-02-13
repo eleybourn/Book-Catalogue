@@ -5,6 +5,7 @@ import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.*;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.database.DbUtils.DomainDefinition;
 import com.eleybourn.bookcatalogue.database.DbUtils.TableDefinition;
+import com.eleybourn.bookcatalogue.database.DbUtils.TableDefinition.TableTypes;
 
 /**
  * Static definitions of database objects; this is an incomplete representation of the BookCatalogue database. It should
@@ -37,12 +38,14 @@ public class DatabaseDefinitions {
 	public static final DomainDefinition DOM_ID = new DomainDefinition("_id", "integer", "primary key autoincrement", "not null");
 	public static final DomainDefinition DOM_LEVEL = new DomainDefinition("level", "integer", "",  "not null");
 
+	public static final DomainDefinition DOM_DOCID = new DomainDefinition("docid", "integer", "primary key autoincrement", "not null");
 	public static final DomainDefinition DOM_ABSOLUTE_POSITION = new DomainDefinition("absolute_position", "integer", "", "not null");
 	public static final DomainDefinition DOM_ADDED_DATE = new DomainDefinition(KEY_DATE_ADDED, "text", "", "");
 	public static final DomainDefinition DOM_ADDED_DAY = new DomainDefinition("added_day", "int", "", "");
 	public static final DomainDefinition DOM_ADDED_MONTH = new DomainDefinition("added_month", "int", "", "");
 	public static final DomainDefinition DOM_ADDED_YEAR = new DomainDefinition("added_year", "int", "", "");
 	public static final DomainDefinition DOM_AUTHOR_ID = new DomainDefinition(KEY_AUTHOR_ID, "integer", "", "not null");
+	public static final DomainDefinition DOM_AUTHOR_NAME = new DomainDefinition(KEY_AUTHOR_NAME, "text", "", "not null");
 	public static final DomainDefinition DOM_AUTHOR_SORT = new DomainDefinition("author_sort", "text", "",  "not null");
 	public static final DomainDefinition DOM_AUTHOR_FORMATTED = new DomainDefinition(KEY_AUTHOR_FORMATTED, "text", "",  "not null");
 	public static final DomainDefinition DOM_AUTHOR_POSITION = new DomainDefinition(KEY_AUTHOR_POSITION, "integer", "", "not null");
@@ -50,13 +53,17 @@ public class DatabaseDefinitions {
 	public static final DomainDefinition DOM_BOOK_COUNT = new DomainDefinition("book_count", "integer", "", "");
 	public static final DomainDefinition DOM_BOOKSHELF_NAME = new DomainDefinition(KEY_BOOKSHELF, "text", "",  "not null");
 	public static final DomainDefinition DOM_BOOKSHELF_ID = new DomainDefinition(KEY_BOOKSHELF, "integer", "",  "not null");
+	public static final DomainDefinition DOM_DESCRIPTION = new DomainDefinition(KEY_DESCRIPTION, "text", "", "");
 	public static final DomainDefinition DOM_EXPANDED = new DomainDefinition("expanded", "int", "default 0", "");
 	public static final DomainDefinition DOM_FAMILY_NAME = new DomainDefinition(KEY_FAMILY_NAME, "text", "", "");
 	public static final DomainDefinition DOM_GENRE = new DomainDefinition("genre", "text", "", "");
 	public static final DomainDefinition DOM_GIVEN_NAMES = new DomainDefinition(KEY_GIVEN_NAMES, "text", "", "");
+	public static final DomainDefinition DOM_ISBN = new DomainDefinition(KEY_ISBN, "text", "",  "");
 	public static final DomainDefinition DOM_KIND = new DomainDefinition("kind", "integer", "",  "not null");
 	public static final DomainDefinition DOM_LOANED_TO = new DomainDefinition("loaned_to", "text", "",  "not null");
+	public static final DomainDefinition DOM_LOCATION = new DomainDefinition(KEY_LOCATION, "text", "", "");
 	public static final DomainDefinition DOM_MARK = new DomainDefinition("mark", "boolean", "default 0",  "");
+	public static final DomainDefinition DOM_NOTES = new DomainDefinition(KEY_NOTES, "text", "", "");
 	public static final DomainDefinition DOM_PRIMARY_SERIES_COUNT = new DomainDefinition("primary_series_count", "integer", "", "");
 	public static final DomainDefinition DOM_PUBLICATION_YEAR = new DomainDefinition("publication_year", "int", "", "");
 	public static final DomainDefinition DOM_PUBLICATION_MONTH = new DomainDefinition("publication_month", "int", "", "");
@@ -73,11 +80,16 @@ public class DatabaseDefinitions {
 	public static final DomainDefinition DOM_TITLE_LETTER = new DomainDefinition("title_letter", "text", "", "");
 	public static final DomainDefinition DOM_VISIBLE = new DomainDefinition("visible", "int", "default 0", "");
 
+	/** FTS Table */
+	public static final TableDefinition TBL_BOOKS_FTS = new TableDefinition("books_fts", DOM_AUTHOR_NAME, DOM_TITLE, 
+			DOM_DESCRIPTION, DOM_NOTES, DOM_PUBLISHER, DOM_GENRE, DOM_LOCATION, DOM_ISBN)
+					.setType(TableTypes.FTS3);
+
 	/** Temporary table used to store flattened bok lists */
 	public static final TableDefinition TBL_BOOK_LIST_DEFN = new TableDefinition(TBL_BOOK_LIST_NAME, DOM_ID, DOM_LEVEL, DOM_KIND, 
 			// Many others...this is a temp table created at runtime.
 			DOM_BOOK_COUNT, DOM_PRIMARY_SERIES_COUNT)
-					.setIsTemporary(true)
+					.setType(TableTypes.Temporary)
 					.setPrimaryKey(DOM_ID)
 					.setAlias(ALIAS_BOOK_LIST)
 					;		
@@ -144,7 +156,7 @@ public class DatabaseDefinitions {
 	/** Definition of ROW_NAVIGATOR temp table */
 	public static final TableDefinition TBL_ROW_NAVIGATOR_DEFN = new TableDefinition(TBL_BOOK_LIST_NAME + "_row_pos", 
 			DOM_ID, DOM_REAL_ROW_ID, DOM_LEVEL, DOM_VISIBLE, DOM_EXPANDED, DOM_ROOT_KEY)
-		.setIsTemporary(true)
+		.setType(TableTypes.Temporary)
 		.addReference(TBL_BOOK_LIST_DEFN, DOM_REAL_ROW_ID)
 		.setAlias(ALIAS_BOOK_LIST_ROW_POSITION)
 	;

@@ -24,7 +24,7 @@ import android.os.Handler;
  * number of hits more or less in real time. The user can choose to see a full list at any
  * time.
  * 
- * ENHANCE: Finish FTS activity.
+ * ENHANCE: Finish or DELETE FTS activity.
  * 
  * @author Grunthos
  */
@@ -141,9 +141,6 @@ public class SearchCatalogue extends Activity {
 
 	/**
 	 * Handle the 'FTS Rebuild' button.
-	 * 
-	 * RELEASE: Maintain FTS database via book update code!
-	 * RELEASE: Make rebuild a background admin task...and ideally unnecessary.
 	 */
 	private OnClickListener mFtsRebuildListener = new OnClickListener() {
 		@Override

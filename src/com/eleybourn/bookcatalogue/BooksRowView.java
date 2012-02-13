@@ -71,7 +71,7 @@ public class BooksRowView {
 	private int mDescriptionCol = -2;
 	public final String getDescription() {
 		if (mDescriptionCol < 0) {
-			mDescriptionCol = mCursor.getColumnIndex(CatalogueDBAdapter.KEY_ISBN);
+			mDescriptionCol = mCursor.getColumnIndex(CatalogueDBAdapter.KEY_DESCRIPTION);
 			if (mDescriptionCol < 0)
 				throw new RuntimeException("Description column not in result set");
 		}
@@ -82,7 +82,7 @@ public class BooksRowView {
 	private int mNotesCol = -2;
 	public final String getNotes() {
 		if (mNotesCol < 0) {
-			mNotesCol = mCursor.getColumnIndex(CatalogueDBAdapter.KEY_ISBN);
+			mNotesCol = mCursor.getColumnIndex(CatalogueDBAdapter.KEY_NOTES);
 			if (mNotesCol < 0)
 				throw new RuntimeException("Notes column not in result set");
 		}
@@ -111,6 +111,26 @@ public class BooksRowView {
 		}
 		return mCursor.getString(mPublisherCol);
 //		return mCurrentRow[mPublisherCol];
+	}
+
+	private int mGenreCol = -2;
+	public final String getGenre() {
+		if (mGenreCol < 0) {
+			mGenreCol = mCursor.getColumnIndex(CatalogueDBAdapter.KEY_GENRE);
+			if (mGenreCol < 0)
+				throw new RuntimeException("GENRE column not in result set");
+		}
+		return mCursor.getString(mGenreCol);
+	}
+
+	private int mLocationCol = -2;
+	public final String getLocation() {
+		if (mLocationCol < 0) {
+			mLocationCol = mCursor.getColumnIndex(CatalogueDBAdapter.KEY_LOCATION);
+			if (mLocationCol < 0)
+				throw new RuntimeException("LOCATION column not in result set");
+		}
+		return mCursor.getString(mLocationCol);
 	}
 
 	private int mSeriesCol = -2;

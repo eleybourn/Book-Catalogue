@@ -47,7 +47,7 @@ public class SimpleTaskQueue {
 	// Execution queue
 	private BlockingStack<SimpleTaskWrapper> mQueue = new BlockingStack<SimpleTaskWrapper>();
 	// Results queue
-	private LinkedBlockingQueue<SimpleTask> mResultQueue = new LinkedBlockingQueue<SimpleTask>();
+	private LinkedBlockingQueue<SimpleTaskWrapper> mResultQueue = new LinkedBlockingQueue<SimpleTaskWrapper>();
 	// Flag indicating this object should terminate.
 	private boolean mTerminate = false;
 	// Handler for sending tasks to the UI thread.
@@ -58,7 +58,12 @@ public class SimpleTaskQueue {
 	private ArrayList<SimpleTaskQueueThread> mThreads = new ArrayList<SimpleTaskQueueThread>();
 	/** Max number of threads to create */
 	private int mMaxTasks;
+	/** Number of currently queued, executing (or starting/finishing) tasks */
+	private int mManagedTaskCount = 0;
 
+	private OnTaskStartListener mTaskStartListener = null;
+	private OnTaskFinishListener mTaskFinishListener = null;
+	
 	/**
 	 * SimpleTask interface.
 	 * 
@@ -86,9 +91,68 @@ public class SimpleTaskQueue {
 		boolean runFinished();
 	}
 
+	/**
+	 * Interface for an object to listen for when tasks start.
+	 * 
+	 * @author Grunthos
+	 */
+	public interface OnTaskStartListener {
+		void onTaskStart(SimpleTask task);
+	}
+
+	/**
+	 * Interface for an object to listen for when tasks finish.
+	 * 
+	 * @author Grunthos
+	 */
+	public interface OnTaskFinishListener {
+		void onTaskFinish(SimpleTask task, Exception e);
+	}
+
+	/**
+	 * Accessor.
+	 * 
+	 * @param listener
+	 */
+	public void setTaskStartListener(OnTaskStartListener listener) {
+		mTaskStartListener = listener;
+	}
+	/**
+	 * Accessor.
+	 * 
+	 * @param listener
+	 */
+	public OnTaskStartListener getTaskStartListener() {
+		return mTaskStartListener;
+	}
+
+	/**
+	 * Accessor.
+	 * 
+	 * @param listener
+	 */
+	public void setTaskFinishListener(OnTaskFinishListener listener) {
+		mTaskFinishListener = listener;
+	}
+	/**
+	 * Accessor.
+	 * 
+	 * @param listener
+	 */
+	public OnTaskFinishListener getTaskFinishListener() {
+		return mTaskFinishListener;
+	}
+
+	/**
+	 * Class to wrap a simpleTask with more info needed by the queue.
+	 * 
+	 * @author Grunthos
+	 */
 	private static class SimpleTaskWrapper {
 		private static Long mCounter = 0L;
 		public SimpleTask task;
+		public Exception exception;
+		public boolean finishRequested = false;
 		public long id;
 		SimpleTaskWrapper(SimpleTask task) {
 			this.task = task;
@@ -141,7 +205,7 @@ public class SimpleTaskQueue {
 	 */
 	public boolean hasActiveTasks() {
 		synchronized(this) {
-			return ( (mQueue.size() > 0) || (mResultQueue.size() > 0) );
+			return ( mManagedTaskCount > 0 );
 		}
 	}
 
@@ -152,10 +216,14 @@ public class SimpleTaskQueue {
 	 */
 	public long enqueue(SimpleTask task) {
 		SimpleTaskWrapper wrapper = new SimpleTaskWrapper(task);
+
+		synchronized(this) {
+			mManagedTaskCount++;
+		}
 		try {
 			mQueue.push(wrapper);
 		} catch (InterruptedException e) {
-			// Ignore. This happens if the object is being terminated.
+			// Ignore. This happens if the queue object is being terminated.
 		}
 		//System.out.println("SimpleTaskQueue(added): " + mQueue.size());
 		synchronized(this) {
@@ -217,27 +285,44 @@ public class SimpleTaskQueue {
 	 * 
 	 * @param task
 	 */
-	private void handleRequest(final SimpleTaskQueueThread thread, final SimpleTask task) {
+	private void handleRequest(final SimpleTaskQueueThread thread, final SimpleTaskWrapper taskWrapper) {
+		final SimpleTask task = taskWrapper.task;
+
+		if (mTaskStartListener != null) {
+			try {
+				mTaskStartListener.onTaskStart(task);
+			} catch (Exception e) {
+				// Ignore
+			}
+		}
+
 		try {
 			task.run(thread);
 		} catch (Exception e) {
+			taskWrapper.exception = e;
 			Logger.logError(e, "Error running task");
 		}
-		boolean wantFinished;
 		// See if we need to call finished(). Default to true.
 		try {
-			wantFinished = task.runFinished();
+			taskWrapper.finishRequested = task.runFinished();
 		} catch (Exception e) {
-			wantFinished = true;
+			taskWrapper.finishRequested = true;
 		}
-		// Queue the call to finished() if necessary.
-		if (wantFinished) {
-			try {
-				mResultQueue.put(task);	
-			} catch (InterruptedException e) {
+		synchronized(this) {
+
+			// Queue the call to finished() if necessary.
+			if (taskWrapper.finishRequested || mTaskFinishListener != null) {
+				try {
+					mResultQueue.put(taskWrapper);	
+				} catch (InterruptedException e) {
+				}
+				// Queue Runnable in the UI thread.
+				mHandler.post(mDoProcessResults);			
+			} else {
+				// If no other methods are going to be called, then decrement
+				// managed task count. We do not care about this task any more.
+				mManagedTaskCount--;
 			}
-			// Queue Runnable in the UI thread.
-			mHandler.post(mDoProcessResults);			
 		}
 	}
 
@@ -248,15 +333,35 @@ public class SimpleTaskQueue {
 		try {
 			while (!mTerminate) {
 				// Get next; if none, exit.
-				SimpleTask req = mResultQueue.poll();
+				SimpleTaskWrapper req = mResultQueue.poll();
 				if (req == null)
 					break;
-				// Call the task handler; log and ignore errors.
-				try {
-					req.finished();
-				} catch (Exception e) {
-					Logger.logError(e, "Error processing request result");
+
+				final SimpleTask task = req.task;
+				
+				// Decrement the managed task count BEFORE we call any methods.
+				// This allows them to call hasActiveTasks() and get a useful result
+				// when they are the last task.
+				synchronized(this) {
+					mManagedTaskCount--;
 				}
+
+				// Call the task handler; log and ignore errors.
+				if (req.finishRequested) {
+					try {
+						task.finished();
+					} catch (Exception e) {
+						Logger.logError(e, "Error processing request result");
+					}
+				}
+
+				// Call the task listener; log and ignore errors.
+				if (mTaskFinishListener != null)
+					try {
+						mTaskFinishListener.onTaskFinish(task, req.exception);
+					} catch (Exception e) {
+						Logger.logError(e, "Error from listener while processing request result");
+					}
 			}
 		} catch (Exception e) {
 			Logger.logError(e, "Exception in processResults in UI thread");
@@ -285,6 +390,7 @@ public class SimpleTaskQueue {
 				this.setName(mName);
 				while (!mTerminate) {
 					SimpleTaskWrapper req = mQueue.pop(15000);
+
 					// If timeout occurred, get a lock on the queue and see if anything was queued
 					// in the intervening milliseconds. If not, delete this tread and exit.
 					if (req == null) {
@@ -292,13 +398,13 @@ public class SimpleTaskQueue {
 							req = mQueue.poll();
 							if (req == null) {
 								mThreads.remove(this);
+								return;
 							}
 						}
-						return;
 					}
 
 					//System.out.println("SimpleTaskQueue(run): " + mQueue.size());						
-					handleRequest(this, req.task);
+					handleRequest(this, req);
 				}
 			} catch (InterruptedException e) {
 				// Ignore; these will happen when object is destroyed

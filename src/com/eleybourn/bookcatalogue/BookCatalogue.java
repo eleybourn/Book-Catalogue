@@ -161,7 +161,6 @@ public class BookCatalogue extends ExpandableListActivity {
 		}
 	}
 	
-	private static boolean shown = false;
 	private String justAdded = ""; 
 	private String search_query = "";
 	// These are the states that get saved onPause
@@ -217,9 +216,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			
 			bookshelf();
 			//fillData();
-			if (!CatalogueDBAdapter.message.equals("")) {
-				upgradePopup(CatalogueDBAdapter.message);
-			}
+
 			if (CatalogueDBAdapter.do_action.equals(CatalogueDBAdapter.DO_UPDATE_FIELDS)) {
 				AlertDialog alertDialog = new AlertDialog.Builder(BookCatalogue.this).setMessage(R.string.auto_update).create();
 				alertDialog.setTitle(R.string.import_data);
@@ -243,29 +240,6 @@ public class BookCatalogue extends ExpandableListActivity {
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
-	}
-	
-	/**
-	 * This will display a popup with a provided message to the user. This will be
-	 * mostly used for upgrade notifications
-	 * 
-	 * @param message The message to display in the popup
-	 */
-	public void upgradePopup(String message) {
-		if (shown) {
-			return;
-		}
-		AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(message).create();
-		alertDialog.setTitle(R.string.upgrade_title);
-		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-		alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				return;
-			}
-		}); 
-		alertDialog.show();
-		shown = true;
-		return;
 	}
 	
 	/**
@@ -507,7 +481,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				// children.close();
 				// BookCatalogue.this.startManagingCursor(csc);
 
-				// TODO FIND A BETTER SOLUTION!
+				// TODO FIND A BETTER CURSOR MANAGEMENT SOLUTION!
 				// THIS CAUSES CRASH IN HONEYCOMB when viewing book details then clicking 'back', so we have 
 				// overridden startManagingCursor to only close cursors in onDestroy().
 				BookCatalogue.this.startManagingCursor(children);

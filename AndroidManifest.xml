@@ -13,8 +13,10 @@
 			</intent-filter>
 			<meta-data android:name="android.app.searchable" android:resource="@xml/searchable" />
 		</activity>
-		<!-- The StartupActivity activity is just a forwarder to the users chosen first screen -->
-		<activity android:name=".StartupActivity" android:theme="@style/Invisible" >
+		<!-- The StartupActivity activity is just a forwarder to the users chosen first screen; does not 
+			rebuild on orientation changes so progress dialogs are easier 
+		-->
+		<activity android:name=".StartupActivity" android:theme="@style/Invisible" android:configChanges="orientation|keyboardHidden" >
 		    <intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
@@ -40,7 +42,13 @@
 		<activity android:name=".BookEditFields"></activity>
 		<activity android:name=".BookEditLoaned"></activity>
 		<activity android:name=".BookEditNotes"></activity>
-		<activity android:name=".BooksOnBookshelf"></activity>
+		<activity android:name=".BooksOnBookshelf">
+			<intent-filter>
+				<action android:name="android.intent.action.SEARCH" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+			<meta-data android:name="android.app.searchable" android:resource="@xml/searchable" />		    
+		</activity>
 		<activity android:name=".BooksOnBookshelfNavigator" android:theme="@style/Navigator"></activity>
 		<activity android:name=".AdministrationAbout"></activity>
 		<activity android:name=".AdministrationDonate"></activity>

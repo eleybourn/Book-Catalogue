@@ -29,7 +29,9 @@ import java.util.Map;
 import java.util.Set;
 
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.*;
 import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedStatement;
+import com.eleybourn.bookcatalogue.database.DbUtils.TableDefinition;
 import com.eleybourn.bookcatalogue.database.SqlStatementManager;
 import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedDb;
 import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer;
@@ -134,8 +136,6 @@ public class CatalogueDBAdapter {
 
 	/* private database variables as static reference */
 	public static final String DB_TB_BOOKS = "books";
-	public static final String DB_TB_BOOKS_FTS = "books_fts";
-	public static final String DB_TB_BOOKS_FTS_TEMP = "books_fts_temp";
 	public static final String DB_TB_BOOK_AUTHOR = "book_author";
 	public static final String DB_TB_BOOK_BOOKSHELF_WEAK = "book_bookshelf_weak";
 	public static final String DB_TB_BOOK_SERIES = "book_series";
@@ -416,7 +416,7 @@ public class CatalogueDBAdapter {
 		
 	private final Context mCtx;
 	//TODO: RELEASE: Update database version
-	public static final int DATABASE_VERSION = 66;
+	public static final int DATABASE_VERSION = 67;
 
 	private TableInfo mBooksInfo = null;
 
@@ -464,6 +464,7 @@ public class CatalogueDBAdapter {
 
 			SynchronizedDb sdb = new SynchronizedDb(db, mSynchronizer);
 			DatabaseDefinitions.TBL_BOOK_LIST_NODE_SETTINGS.createAll(sdb, true);
+			DatabaseDefinitions.TBL_BOOKS_FTS.create(sdb, false);
 
 			new File(Utils.EXTERNAL_FILE_PATH + "/").mkdirs();
 			try {
@@ -1292,6 +1293,13 @@ public class CatalogueDBAdapter {
 				DatabaseDefinitions.TBL_BOOK_LIST_NODE_SETTINGS.drop(sdb);
 				DatabaseDefinitions.TBL_BOOK_LIST_NODE_SETTINGS.create(sdb, true);
 				DatabaseDefinitions.TBL_BOOK_LIST_NODE_SETTINGS.createIndices(sdb);
+			}
+			if (curVersion == 66) {
+				curVersion++;
+				SynchronizedDb sdb = new SynchronizedDb(db, mSynchronizer);
+				DatabaseDefinitions.TBL_BOOKS_FTS.drop(sdb);
+				DatabaseDefinitions.TBL_BOOKS_FTS.create(sdb, false);
+				StartupActivity.scheduleFtsRebuild();
 			}
 			//TODO: NOTE: END OF UPDATE
 		}
@@ -2971,6 +2979,12 @@ public class CatalogueDBAdapter {
 		ArrayList<Series> series = values.getParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY);
 		createBookSeries(rowId, series);
 
+		try {
+			insertFts(rowId);
+		} catch (Exception e) {
+			Logger.logError(e, "Failed to update FTS");
+		}
+
 		return rowId;
 	}
 	
@@ -3442,6 +3456,12 @@ public class CatalogueDBAdapter {
 			purgeSeries();			
 		}
 
+		try {
+			updateFts(rowId);
+		} catch (Exception e) {
+			Logger.logError(e, "Failed to update FTS");
+		}
+
 		return success;
 	}
 
@@ -3832,6 +3852,13 @@ public class CatalogueDBAdapter {
 		boolean success;
 		success = mDb.delete(DB_TB_BOOKS, KEY_ROWID + "=" + rowId, null) > 0;
 		purgeAuthors();
+
+		try {
+			deleteFts(rowId);
+		} catch (Exception e) {
+			Logger.logError(e, "Failed to delete FTS");
+		}
+		
 		return success;
 	}
 	
@@ -4327,57 +4354,233 @@ public class CatalogueDBAdapter {
 	}
 	
 	/****************************************************************************************************
-	 * FTS Support - ALPHA!!
+	 * FTS Support
 	 */
+
+	/**
+	 * Send the book details from the cursor to the passed fts query. 
+	 * 
+	 * NOTE: This assumes a specific order for query parameters.
+	 * 
+	 * @param books		Cursor of books to update
+	 * @param stmt		Statement to execute
+	 * 
+	 */
+	public void ftsSendBooks(BooksCursor books, SynchronizedStatement stmt) {
+
+		// Get a rowview for the cursor
+		final BooksRowView book = books.getRowView();
+		// Build the SQL to get author details for a book.
+		final String authorBaseSql = "Select " + TBL_AUTHORS.dot("*") + " from " + TBL_BOOK_AUTHOR.ref() + TBL_BOOK_AUTHOR.join(TBL_AUTHORS) +
+				" Where " + TBL_BOOK_AUTHOR.dot(DOM_BOOK) + " = ";
+
+		// Accumulator for author names for each book
+		StringBuilder authorText = new StringBuilder();
+		// Indexes of author name fields.
+		int colGivenNames = -1;
+		int colFamilyName = -1;
+		// Process each book
+		while (books.moveToNext()) {
+			// Reset authors
+			authorText.setLength(0);
+			// Get list of authors
+			Cursor c = mDb.rawQuery(authorBaseSql + book.getId());
+			try {
+				// Get column indexes, if not already got
+				if (colGivenNames < 0)
+					colGivenNames = c.getColumnIndex(KEY_GIVEN_NAMES);
+				if (colFamilyName < 0)
+					colFamilyName = c.getColumnIndex(KEY_FAMILY_NAME);
+				// Append each author
+				while (c.moveToNext()) {
+					authorText.append(c.getString(colGivenNames));
+					authorText.append(" ");
+					authorText.append(c.getString(colFamilyName));
+					authorText.append(";");					
+				}
+			} finally {
+				c.close();
+			}
+
+			// Set the parameters and call
+			bindStringOrNull(stmt, 1, authorText.toString());
+			bindStringOrNull(stmt, 2, book.getTitle());
+			bindStringOrNull(stmt, 3, book.getDescription());
+			bindStringOrNull(stmt, 4, book.getNotes());
+			bindStringOrNull(stmt, 5, book.getPublisher());
+			bindStringOrNull(stmt, 6, book.getGenre());
+			bindStringOrNull(stmt, 7, book.getLocation());
+			bindStringOrNull(stmt, 8, book.getIsbn());
+			stmt.bindLong(9, book.getId());
+
+			stmt.execute();
+		}
+	}
 	
 	/**
-	 * Rebuild the entire FTS database. This can take a while. Minutes.
+	 * Insert a book into the FTS. Assumes book does not already exist in FTS.
 	 * 
-	 * RELEASE: Finish FTS stringification
+	 * @param bookId
+	 */
+	public void insertFts(long bookId) {
+		long t0 = System.currentTimeMillis();
+		
+		// Build the FTS insert statement base. The parameter order MUST match the order expected in ftsSendBooks().
+		String sql = TBL_BOOKS_FTS.getInsert(DOM_AUTHOR_NAME, DOM_TITLE, DOM_DESCRIPTION, DOM_NOTES, 
+											DOM_PUBLISHER, DOM_GENRE, DOM_LOCATION, DOM_ISBN, DOM_DOCID)
+											+ " Values (?,?,?,?,?,?,?,?,?)";
+
+		SynchronizedStatement stmt = null;
+		BooksCursor books = null;
+
+		// Start an update TX
+		SyncLock l = mDb.beginTransaction(true);
+		try {
+			// Compile statement and get books cursor
+			stmt = mDb.compileStatement(sql);
+			books = fetchBooks("select * from " + TBL_BOOKS + " where " + DOM_ID + " = " + bookId, EMPTY_STRING_ARRAY);
+			// Send the book
+			ftsSendBooks(books, stmt);
+			mDb.setTransactionSuccessful();
+		} finally {
+			// Cleanup
+			if (stmt != null)
+				try { stmt.close(); } catch (Exception e) {};
+			if (books != null)
+				try { books.close(); } catch (Exception e) {};
+			mDb.endTransaction(l);
+			long t1 = System.currentTimeMillis();
+			System.out.println("Inserted FTS in " + (t1-t0) + "ms");
+		}
+	}
+	
+	/**
+	 * Update an existing FTS record.
+	 * 
+	 * @param bookId
+	 */
+	public void updateFts(long bookId) {
+		long t0 = System.currentTimeMillis();
+
+		// Build the FTS update statement base. The parameter order MUST match the order expected in ftsSendBooks().
+		String sql = TBL_BOOKS_FTS.getUpdate(DOM_AUTHOR_NAME, DOM_TITLE, DOM_DESCRIPTION, DOM_NOTES, 
+											DOM_PUBLISHER, DOM_GENRE, DOM_LOCATION, DOM_ISBN)
+											+ " Where " + DOM_DOCID + " = ?";
+		SynchronizedStatement update = null;
+		BooksCursor books = null;
+
+		long totUpdate = 0;
+		SyncLock l = mDb.beginTransaction(true);
+		try {
+			// Compile statement and get cursor
+			update = mDb.compileStatement(sql);
+			books = fetchBooks("select * from " + TBL_BOOKS + " where " + DOM_ID + " = " + bookId, EMPTY_STRING_ARRAY);
+			ftsSendBooks(books, update);
+			mDb.setTransactionSuccessful();
+		} finally {
+			// Cleanup
+			if (update != null)
+				try { update.close(); } catch (Exception e) {};
+			if (books != null)
+				try { books.close(); } catch (Exception e) {};
+			mDb.endTransaction(l);
+			long t1 = System.currentTimeMillis();
+			System.out.println("Updated FTS in " + (t1-t0) + "ms (" + totUpdate + "ms doing updates)");
+		}
+	}
+
+	/**
+	 * Delete an existing FTS record
+	 * 
+	 * @param bookId
+	 */
+	public void deleteFts(long bookId) {
+		long t0 = System.currentTimeMillis();
+		String sql = "Delete from " + TBL_BOOKS_FTS + " Where " + DOM_DOCID + " = " + bookId;
+		mDb.execSQL(sql);
+		long t1 = System.currentTimeMillis();
+		System.out.println("Deleted from FTS in " + (t1-t0) + "ms");
+	}
+	
+	/**
+	 * Rebuild the entire FTS database. This can take several seconds with many books or a slow phone.
+	 * 
 	 */
 	public void rebuildFts() {
-		// Delete old temp version, if it exists
-		try {
-			mDb.execSQL("Drop Table " + DB_TB_BOOKS_FTS_TEMP);
-		} catch (Exception e) {
-			// Nothing to do?
-		}
-		// TODO: Consider adding PUBLISHER, GENRE, & LOCATION
-		// Create a new temp version
-		mDb.execSQL("Create Virtual Table " + DB_TB_BOOKS_FTS_TEMP + " using fts3(author text, title text, description text, notes text, isbn text)");
-		// Compile an INSERT statement
-		SynchronizedStatement insert = mDb.compileStatement("insert into " + DB_TB_BOOKS_FTS_TEMP + "(docid, author, title, description, notes, isbn) values (?,?,?,?,?,?)");
+		long t0 = System.currentTimeMillis();
+		boolean gotError = false;
 
-		// Get all books in the DB and loop over them
-		final BooksCursor c = this.fetchAllBooks("", "", "", "", "", "", "");
-		final BooksRowView book = c.getRowView();
-		while (c.moveToNext()) {
-			// Turn a list of authors into a single string
-			ArrayList<Author> authors = this.getBookAuthorList(c.getId());
-			String authorText = "";
-			for(Author a : authors) {
-				authorText += a.getDisplayName() + ";";
-			}
-			// Set the parameters and call
-			insert.bindLong(1, book.getId());
-			insert.bindString(2, authorText);
-			insert.bindString(3, book.getTitle());
-			insert.bindString(4, book.getDescription());
-			insert.bindString(5, book.getNotes());
-			insert.bindString(6, book.getIsbn());
-			insert.execute();
-		}
-		// We're done with the cursor and statment
-		c.close();
-		insert.close();
-		// Delete old table and rename the new table
+		// Make a copy of the FTS table definition for our temp table.
+		TableDefinition ftsTemp = TBL_BOOKS_FTS.clone();
+		// Give it a new name
+		ftsTemp.setName(ftsTemp.getName() + "_temp");
+
+		SynchronizedStatement insert = null;
+		BooksCursor c = null;
+
+		SyncLock l = mDb.beginTransaction(true);
 		try {
-			mDb.execSQL("Drop Table " + DB_TB_BOOKS_FTS);
+			// Drop and recreate our temp copy
+			ftsTemp.drop(mDb);
+			ftsTemp.create(mDb, false);
+
+			// Build the FTS update statement base. The parameter order MUST match the order expected in ftsSendBooks().
+			final String sql = ftsTemp.getInsert(DOM_AUTHOR_NAME, DOM_TITLE, DOM_DESCRIPTION, DOM_NOTES, DOM_PUBLISHER, DOM_GENRE, DOM_LOCATION, DOM_ISBN, DOM_DOCID)
+							+ " values (?,?,?,?,?,?,?,?,?)";
+
+			// Compile an INSERT statement
+			insert = mDb.compileStatement(sql);
+
+			// Get ALL books in the DB
+			c = fetchBooks("select * from " + TBL_BOOKS, EMPTY_STRING_ARRAY);
+			// Send each book
+			ftsSendBooks(c, insert);
+			// Drop old table, ready for rename
+			TBL_BOOKS_FTS.drop(mDb);
+			// Done
+			mDb.setTransactionSuccessful();
 		} catch (Exception e) {
-			// Nothing to do?
+			Logger.logError(e);
+			gotError = true;
+		} finally {
+			// Cleanup
+			if (c != null) 
+				try { c.close(); } catch (Exception e) {};
+			if (insert != null) 
+				try { insert.close(); } catch (Exception e) {};
+
+			mDb.endTransaction(l);
+
+			// According to this:
+			//
+			//    http://old.nabble.com/Bug-in-FTS3-when-trying-to-rename-table-within-a-transaction-td29474500.html
+			//
+			// FTS tables should only be renamed outside of transactions. Which is a pain.
+			//
+			// Delete old table and rename the new table
+			//
+			if (!gotError)
+				mDb.execSQL("Alter Table " + ftsTemp + " rename to " + TBL_BOOKS_FTS);
 		}
-		mDb.execSQL("Alter Table " + DB_TB_BOOKS_FTS_TEMP + " rename to " + DB_TB_BOOKS_FTS);
-		
+
+		long t1 = System.currentTimeMillis();
+		System.out.println("books reindexed in " + (t1-t0) + "ms");
+	}
+
+	/**
+	 * Utility function to bind a string or NULL value to a parameter since binding a NULL
+	 * in bindString produces an error.
+	 * 
+	 * @param stmt
+	 * @param position
+	 * @param s
+	 */
+	private void bindStringOrNull(SynchronizedStatement stmt, int position, String s) {
+		if (s == null) {
+			stmt.bindNull(position);
+		} else {
+			stmt.bindString(position, s);
+		}
 	}
 
 	/**
@@ -4395,13 +4598,11 @@ public class CatalogueDBAdapter {
 	/**
 	 * Search the FTS table and return a cursor.
 	 * 
-	 * RELEASE: Finish FTS stringification
-	 * TODO: Add another method that returns a books cursor...or modify the queries used in 
-	 * the BookCatalogue activity.
+	 * ENHANCE: Integrate with existing search code, if we keep it.
 	 * 
-	 * @param author		Author-related keyworks to find
-	 * @param title			Title-related keyworks to find
-	 * @param anywhere		Keyworks to find anywhere in book
+	 * @param author		Author-related keywords to find
+	 * @param title			Title-related keywords to find
+	 * @param anywhere		Keywords to find anywhere in book
 	 * @return
 	 */
 	public Cursor searchFts(String author, String title, String anywhere) {
@@ -4415,14 +4616,14 @@ public class CatalogueDBAdapter {
 		String[] authorWords = author.split(" ");
 		String[] titleWords = title.split(" ");
 
-		String sql = "select docid from " + DB_TB_BOOKS_FTS + " where " + DB_TB_BOOKS_FTS + " match '" + anywhere;
+		String sql = "select " + DOM_DOCID + " from " + TBL_BOOKS_FTS + " where " + TBL_BOOKS_FTS + " match '" + anywhere;
 		for(String w : authorWords) {
 			if (!w.equals(""))
-				sql += " author:" + w;
+				sql += " " + DOM_AUTHOR_NAME + ":" + w;
 		}
 		for(String w : titleWords) {
 			if (!w.equals(""))
-				sql += " title:" + w;
+				sql += " " + DOM_TITLE + ":" + w;
 		}
 		sql += "'";
 

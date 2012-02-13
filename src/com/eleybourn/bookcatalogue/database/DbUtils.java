@@ -151,6 +151,8 @@ public class DbUtils {
 	 * @author Grunthos
 	 */
 	public static class TableDefinition {
+		public enum TableTypes { Standard, Temporary, FTS3, FTS4 };
+
 		/** Table name */
 		private String mName;
 		/** Table alias */
@@ -171,7 +173,7 @@ public class DbUtils {
 		/** List of index definitions for this table */
 		Hashtable<String, IndexDefinition> mIndexes = new Hashtable<String, IndexDefinition>();
 		/** Flag indicating table is temporary */
-		private boolean mIsTemporary = false;
+		private TableTypes mType = TableTypes.Standard;
 
 		/**
 		 * Accessor. Return list of domains.
@@ -210,7 +212,7 @@ public class DbUtils {
 			newTbl.setAlias(mAlias);
 			newTbl.addDomains(mDomains);
 			newTbl.setPrimaryKey(mPrimaryKey);
-			newTbl.setIsTemporary(mIsTemporary);
+			newTbl.setType(mType);
 
 			for(Entry<TableDefinition, FkReference> fkEntry : mParents.entrySet()) {
 				FkReference fk = fkEntry.getValue();
@@ -620,7 +622,8 @@ public class DbUtils {
 		}
 		
 		/**
-		 * Get a base INSERT statement for this table using the passed list of domains.
+		 * Get a base INSERT statement for this table using the passed list of domains. Returns partial
+		 * SQL of the form: 'INSERT into [table-name] ( [domain-list] )'.
 		 * 
 		 * @param domains		List of domains to use
 		 * 
@@ -629,16 +632,43 @@ public class DbUtils {
 		public String getInsert(DomainDefinition...domains) {
 			StringBuilder s = new StringBuilder("Insert Into ");
 			s.append(mName);
-			s.append(" (");
+			s.append(" (\n");
 
+			s.append("	");
 			s.append(domains[0]);
 			for(int i = 1; i < domains.length; i++) {
-				s.append(",");
+				s.append(",\n	");
 				s.append(domains[i].toString());
 			}
 			s.append(")");
 			return s.toString();
 		}
+
+		/**
+		 * Get a base UPDATE statement for this table using the passed list of domains. Returns partial
+		 * SQL of the form: 'UPDATE [table-name] Set [domain-1] = ?, ..., [domain-n] = ?'.
+		 * 
+		 * @param domains		List of domains to use
+		 * 
+		 * @return	SQL fragment
+		 */
+		public String getUpdate(DomainDefinition...domains) {
+			StringBuilder s = new StringBuilder("Update ");
+			s.append(mName);
+			s.append(" Set\n");
+
+			s.append("	");
+			s.append(domains[0]);
+			s.append(" = ?");
+			for(int i = 1; i < domains.length; i++) {
+				s.append(",\n	");
+				s.append(domains[i].toString());
+				s.append(" = ?");
+			}
+			s.append("\n");
+			return s.toString();
+		}
+
 		/**
 		 * Setter. Set flag indicating table is a TEMPORARY table.
 		 * 
@@ -646,8 +676,8 @@ public class DbUtils {
 		 * 
 		 * @return	TableDefinition (for chaining)
 		 */
-		public TableDefinition setIsTemporary(boolean flag) {
-			mIsTemporary = flag;
+		public TableDefinition setType(TableTypes type) {
+			mType = type;
 			return this;
 		}
 
@@ -668,14 +698,34 @@ public class DbUtils {
 		 */
 		private String getSql(String name, boolean withConstraints, boolean ifNecessary) {
 			StringBuilder sql = new StringBuilder("Create ");
-			if (mIsTemporary)
+			switch(mType) {
+			case Standard:
+				break;
+			case FTS3:
+			case FTS4:
+				sql.append("Virtual ");
+				break;
+			case Temporary:
 				sql.append("Temporary ");
+				break;
+			}
 
 			sql.append("Table ");
-			if (ifNecessary)
+			if (ifNecessary) {
+				if (mType == TableTypes.FTS3 || mType == TableTypes.FTS4)
+					throw new RuntimeException("'if not exists' can not be used when creating virtual tables");
 				sql.append("if not exists ");
+			}
 
-			sql.append(name + " (\n");
+			sql.append(name);
+
+			if (mType == TableTypes.FTS3) {
+				sql.append(" USING fts3");
+			} else if (mType == TableTypes.FTS3) {
+				sql.append(" USING fts4");				
+			}
+			
+			sql.append(" (\n");
 			boolean first = true;
 			for(DomainDefinition d : mDomains) {
 				if (first) {
@@ -695,7 +745,7 @@ public class DbUtils {
 		 * 
 		 * @param to	Table this table will be joined with
 		 * 
-		 * @return	SQL fragment (eg. 'join <to-name> <to-alias> On <pk/fk match>')
+		 * @return	SQL fragment (eg. 'join [to-name] [to-alias] On [pk/fk match]')
 		 */
 		public String join(TableDefinition to) {
 			return " join " + to.ref() + " On (" + fkMatch(to) + ")";			

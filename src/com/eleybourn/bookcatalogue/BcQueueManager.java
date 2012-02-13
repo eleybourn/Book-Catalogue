@@ -105,8 +105,7 @@ public class BcQueueManager extends QueueManager {
 
 		@Override
 		public String getDescription() {
-			// TODO Auto-generated method stub
-			return null;
+			return BookCatalogueApp.getResourceString(R.string.unrecognized_task);
 		}
 	}
 

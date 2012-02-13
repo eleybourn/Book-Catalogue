@@ -41,6 +41,7 @@ import com.eleybourn.bookcatalogue.booklist.BooklistStyle.BooklistGroup;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyle.BooklistSeriesGroup;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyle.CompoundKey;
 import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedStatement;
+import com.eleybourn.bookcatalogue.database.DbUtils.TableDefinition.TableTypes;
 import com.eleybourn.bookcatalogue.database.SqlStatementManager;
 import com.eleybourn.bookcatalogue.database.DbUtils.DomainDefinition;
 import com.eleybourn.bookcatalogue.database.DbUtils.JoinContext;
@@ -122,13 +123,13 @@ public class BooklistBuilder {
 		// more than one view is open.
 		mListTable = TBL_BOOK_LIST_DEFN.clone();
 		mListTable.setName(mListTable.getName() + "_" + getId());
-		mListTable.setIsTemporary(true); //RELEASE Make sure is TEMPORARY
+		mListTable.setType(TableTypes.Temporary); //RELEASE Make sure is TEMPORARY
 
 		mNavTable = TBL_ROW_NAVIGATOR_DEFN.clone()
 				.addReference(mListTable, DOM_REAL_ROW_ID)
 				;
 		mNavTable.setName(mNavTable.getName() + "_" + getId());
-		mNavTable.setIsTemporary(true); //RELEASE Make sure is TEMPORARY
+		mNavTable.setType(TableTypes.Temporary); //RELEASE Make sure is TEMPORARY
 	}
 
 	/**
@@ -390,14 +391,14 @@ public class BooklistBuilder {
 		// Rebuild the main table definition
 		mListTable = TBL_BOOK_LIST_DEFN.clone();
 		mListTable.setName(mListTable.getName() + "_" + getId());
-		mListTable.setIsTemporary(true); // RELEASE Make sure is TEMPORARY
+		mListTable.setType(TableTypes.Temporary); // RELEASE Make sure is TEMPORARY
 
 		// Rebuild the navigation table definition
 		mNavTable = TBL_ROW_NAVIGATOR_DEFN.clone()
 				.addReference(mListTable, DOM_REAL_ROW_ID)
 				;
 		mNavTable.setName(mNavTable.getName() + "_" + getId());
-		mNavTable.setIsTemporary(true); //RELEASE Make sure is TEMPORARY
+		mNavTable.setType(TableTypes.Temporary); //RELEASE Make sure is TEMPORARY
 
 		// Get a new summary builder utility object
 		SummaryBuilder summary = new SummaryBuilder();
@@ -715,7 +716,7 @@ public class BooklistBuilder {
 		if(!searchText.equals("")) {
 			if (!where.equals(""))
 				where += " and ";
-			where += "(" + TBL_BOOKS.dot(DOM_ID) + " in (select docid from " + DB_TB_BOOKS_FTS + " where " + DB_TB_BOOKS_FTS + " match '" + encodeString(searchText) + "'))";
+			where += "(" + TBL_BOOKS.dot(DOM_ID) + " in (select docid from " + TBL_BOOKS_FTS + " where " + TBL_BOOKS_FTS + " match '" + encodeString(searchText) + "'))";
 		}
 
 		// If we got any conditions, add them to the initial insert statement

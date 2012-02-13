@@ -69,7 +69,7 @@ public class CoversDbHelper extends GenericOpenHelper {
 		TBL_IMAGE
 			.addIndex("id", true, DOM_ID)
 			.addIndex("file", true, DOM_FILENAME)
-			.addIndex("file & date", true, DOM_FILENAME, DOM_DATE);
+			.addIndex("file_date", true, DOM_FILENAME, DOM_DATE);
 	};
 
 	public static final TableDefinition TABLES[] = new TableDefinition[] {TBL_IMAGE};

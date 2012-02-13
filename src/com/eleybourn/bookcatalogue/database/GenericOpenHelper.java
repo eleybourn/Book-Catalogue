@@ -105,7 +105,11 @@ public abstract class GenericOpenHelper {
 
         boolean success = false;
         SQLiteDatabase db = null;
-        if (mDatabase != null) mLock.lock();
+        boolean doUnlock = false;
+        if (mDatabase != null) {
+        	doUnlock = true;
+        	mLock.lock();
+        }
         try {
             mIsInitializing = true;
             if (mDbFilePath == null) {
@@ -139,11 +143,12 @@ public abstract class GenericOpenHelper {
                 if (mDatabase != null) {
                     try { mDatabase.close(); } catch (Exception e) { }
                 }
-                if (mLock.isLocked())
+                if (doUnlock)
 	                mLock.unlock();
                 mDatabase = db;
             } else {
-                mLock.unlock();
+            	if (doUnlock)
+	                mLock.unlock();
                 if (db != null) db.close();
             }
         }

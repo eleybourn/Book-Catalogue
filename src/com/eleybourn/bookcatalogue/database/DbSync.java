@@ -523,7 +523,16 @@ public class DbSync {
 		public SQLiteDatabase getUnderlyingDatabase() {
 			return mDb;
 		}
-		
+
+		/**
+		 * Wrapper.
+		 * 
+		 * @return
+		 */
+		public boolean inTransaction() {
+			return mDb.inTransaction();
+		}
+
 		/**
 		 * Locking-aware wrapper for underlying database method.
 		 * 

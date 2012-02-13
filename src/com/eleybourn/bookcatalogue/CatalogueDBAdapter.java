@@ -4422,33 +4422,37 @@ public class CatalogueDBAdapter {
 	 * 
 	 * @param bookId
 	 */
+	private SynchronizedStatement mInsertFtsStmt = null;
 	public void insertFts(long bookId) {
 		long t0 = System.currentTimeMillis();
 		
-		// Build the FTS insert statement base. The parameter order MUST match the order expected in ftsSendBooks().
-		String sql = TBL_BOOKS_FTS.getInsert(DOM_AUTHOR_NAME, DOM_TITLE, DOM_DESCRIPTION, DOM_NOTES, 
-											DOM_PUBLISHER, DOM_GENRE, DOM_LOCATION, DOM_ISBN, DOM_DOCID)
-											+ " Values (?,?,?,?,?,?,?,?,?)";
+		if (mInsertFtsStmt == null) {
+			// Build the FTS insert statement base. The parameter order MUST match the order expected in ftsSendBooks().
+			String sql = TBL_BOOKS_FTS.getInsert(DOM_AUTHOR_NAME, DOM_TITLE, DOM_DESCRIPTION, DOM_NOTES, 
+												DOM_PUBLISHER, DOM_GENRE, DOM_LOCATION, DOM_ISBN, DOM_DOCID)
+												+ " Values (?,?,?,?,?,?,?,?,?)";
+			mInsertFtsStmt = mStatements.add("mInsertFtsStmt", sql);
+		}
 
-		SynchronizedStatement stmt = null;
 		BooksCursor books = null;
 
 		// Start an update TX
-		SyncLock l = mDb.beginTransaction(true);
+		SyncLock l = null;
+		if (!mDb.inTransaction())
+			l = mDb.beginTransaction(true);
 		try {
 			// Compile statement and get books cursor
-			stmt = mDb.compileStatement(sql);
 			books = fetchBooks("select * from " + TBL_BOOKS + " where " + DOM_ID + " = " + bookId, EMPTY_STRING_ARRAY);
 			// Send the book
-			ftsSendBooks(books, stmt);
-			mDb.setTransactionSuccessful();
+			ftsSendBooks(books, mInsertFtsStmt);
+			if (l != null)
+				mDb.setTransactionSuccessful();
 		} finally {
 			// Cleanup
-			if (stmt != null)
-				try { stmt.close(); } catch (Exception e) {};
 			if (books != null)
 				try { books.close(); } catch (Exception e) {};
-			mDb.endTransaction(l);
+			if (l != null)
+				mDb.endTransaction(l);
 			long t1 = System.currentTimeMillis();
 			System.out.println("Inserted FTS in " + (t1-t0) + "ms");
 		}
@@ -4459,33 +4463,36 @@ public class CatalogueDBAdapter {
 	 * 
 	 * @param bookId
 	 */
+	private SynchronizedStatement mUpdateFtsStmt = null;
 	public void updateFts(long bookId) {
 		long t0 = System.currentTimeMillis();
 
-		// Build the FTS update statement base. The parameter order MUST match the order expected in ftsSendBooks().
-		String sql = TBL_BOOKS_FTS.getUpdate(DOM_AUTHOR_NAME, DOM_TITLE, DOM_DESCRIPTION, DOM_NOTES, 
-											DOM_PUBLISHER, DOM_GENRE, DOM_LOCATION, DOM_ISBN)
-											+ " Where " + DOM_DOCID + " = ?";
-		SynchronizedStatement update = null;
+		if (mUpdateFtsStmt == null) {
+			// Build the FTS update statement base. The parameter order MUST match the order expected in ftsSendBooks().
+			String sql = TBL_BOOKS_FTS.getUpdate(DOM_AUTHOR_NAME, DOM_TITLE, DOM_DESCRIPTION, DOM_NOTES, 
+												DOM_PUBLISHER, DOM_GENRE, DOM_LOCATION, DOM_ISBN)
+												+ " Where " + DOM_DOCID + " = ?";
+			mUpdateFtsStmt = mStatements.add("mUpdateFtsStmt", sql);
+		}
 		BooksCursor books = null;
 
-		long totUpdate = 0;
-		SyncLock l = mDb.beginTransaction(true);
+		SyncLock l = null;
+		if (!mDb.inTransaction())
+			l = mDb.beginTransaction(true);
 		try {
 			// Compile statement and get cursor
-			update = mDb.compileStatement(sql);
 			books = fetchBooks("select * from " + TBL_BOOKS + " where " + DOM_ID + " = " + bookId, EMPTY_STRING_ARRAY);
-			ftsSendBooks(books, update);
-			mDb.setTransactionSuccessful();
+			ftsSendBooks(books, mUpdateFtsStmt);
+			if (l != null)
+				mDb.setTransactionSuccessful();
 		} finally {
 			// Cleanup
-			if (update != null)
-				try { update.close(); } catch (Exception e) {};
 			if (books != null)
 				try { books.close(); } catch (Exception e) {};
-			mDb.endTransaction(l);
+			if (l != null)
+				mDb.endTransaction(l);
 			long t1 = System.currentTimeMillis();
-			System.out.println("Updated FTS in " + (t1-t0) + "ms (" + totUpdate + "ms doing updates)");
+			System.out.println("Updated FTS in " + (t1-t0) + "ms");
 		}
 	}
 
@@ -4494,10 +4501,15 @@ public class CatalogueDBAdapter {
 	 * 
 	 * @param bookId
 	 */
+	private SynchronizedStatement mDeleteFtsStmt = null;
 	public void deleteFts(long bookId) {
 		long t0 = System.currentTimeMillis();
-		String sql = "Delete from " + TBL_BOOKS_FTS + " Where " + DOM_DOCID + " = " + bookId;
-		mDb.execSQL(sql);
+		if (mDeleteFtsStmt == null) {
+			String sql = "Delete from " + TBL_BOOKS_FTS + " Where " + DOM_DOCID + " = ?";
+			mDeleteFtsStmt = mStatements.add("mDeleteFtsStmt", sql);
+		}
+		mDeleteFtsStmt.bindLong(1, bookId);
+		mDeleteFtsStmt.execute();
 		long t1 = System.currentTimeMillis();
 		System.out.println("Deleted from FTS in " + (t1-t0) + "ms");
 	}
@@ -4518,7 +4530,9 @@ public class CatalogueDBAdapter {
 		SynchronizedStatement insert = null;
 		BooksCursor c = null;
 
-		SyncLock l = mDb.beginTransaction(true);
+		SyncLock l = null;
+		if (!mDb.inTransaction())
+			l = mDb.beginTransaction(true);
 		try {
 			// Drop and recreate our temp copy
 			ftsTemp.drop(mDb);
@@ -4538,7 +4552,8 @@ public class CatalogueDBAdapter {
 			// Drop old table, ready for rename
 			TBL_BOOKS_FTS.drop(mDb);
 			// Done
-			mDb.setTransactionSuccessful();
+			if (l != null)
+				mDb.setTransactionSuccessful();
 		} catch (Exception e) {
 			Logger.logError(e);
 			gotError = true;
@@ -4548,8 +4563,8 @@ public class CatalogueDBAdapter {
 				try { c.close(); } catch (Exception e) {};
 			if (insert != null) 
 				try { insert.close(); } catch (Exception e) {};
-
-			mDb.endTransaction(l);
+			if (l != null)
+				mDb.endTransaction(l);
 
 			// According to this:
 			//

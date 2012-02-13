@@ -271,7 +271,10 @@ public class ImportThread extends ManagedTask {
 
 				// Increment row count
 				row++;
-			}			
+			}	
+		} catch (Exception e) {
+			Logger.logError(e);
+			throw new RuntimeException(e);
 		} finally {
 			if (inTx) {
 				mDbHelper.setTransactionSuccessful();

@@ -142,7 +142,7 @@ public abstract class ListProperty<T extends Object> extends ValuePropertyWithGl
 	 * @param <T>		Underlying list item data type.
 	 */
 	public static class ItemEntries<T> implements Iterable<ItemEntry<T>> {
-		ArrayList<ItemEntry<T>> mList;
+		ArrayList<ItemEntry<T>> mList = new ArrayList<ItemEntry<T>>();
 
 		/**
 		 * Utility to make adding items easier.

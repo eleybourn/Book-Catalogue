@@ -41,6 +41,30 @@ Features include;
   case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+new in 4.0
+* goodreads support including
+  - import
+  - export
+  - search
+* new front screen
+* new catalogue view which:
+  - is much faster for large libraries
+  - has many new list styles
+  - allows user-defined list styles
+* a 'hints' system (not available everywhere yet)
+* Better text searching using FTS
+  - allows for searches like 'food -apples' to search for any book mentioning 'food' but not 'apples'
+* Thumbnail cache
+* Smoother scrolling of lists with thumbnails
+* More bug fixes
+* More bugs introduced
+* email bug reports after application crashes 
+
+TODO: goodreads IMPORT
+TODO: Disable thumbnail cache if no external media?
+TODO: User preference to disable thumbnail cache
+
+
 new in v3.8.1
 * Italian translation added
 * Crash during searching fixed

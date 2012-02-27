@@ -120,6 +120,20 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 		style.addGroup(a);
 		style.addGroup(ROW_KIND_SERIES);
 
+		// Unread
+		style = new BooklistStyle(R.string.sort_unread);
+		styles.add(style);
+		style.addGroup(ROW_KIND_AUTHOR);
+		style.addGroup(ROW_KIND_SERIES);
+		style.setReadUnreadAll(BooklistStyle.FILTER_UNREAD);
+
+		// Compact
+		style = new BooklistStyle(R.string.compact);
+		styles.add(style);
+		style.addGroup(ROW_KIND_AUTHOR);
+		style.setCondensed(true);
+		style.setShowThumbnails(false);
+
 		// Title
 		style = new BooklistStyle(R.string.sort_title_first_letter);
 		styles.add(style);
@@ -150,12 +164,6 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 		style.addGroup(ROW_KIND_READ_AND_UNREAD);
 		style.addGroup(ROW_KIND_AUTHOR);
 		style.addGroup(ROW_KIND_SERIES);
-
-		// Compact
-		style = new BooklistStyle(R.string.compact);
-		styles.add(style);
-		style.addGroup(ROW_KIND_AUTHOR);
-		style.setCondensed(true);
 
 		// Publication date
 		style = new BooklistStyle(R.string.sort_publication_date);

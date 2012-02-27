@@ -493,4 +493,5 @@
 <string name="compact">Compact</string>
 <string name="user_defined">User-defined</string>
 <string name="builtin">Builtin</string>
+<string name="sort_unread">Unread (Author/Series)</string>
 </resources>

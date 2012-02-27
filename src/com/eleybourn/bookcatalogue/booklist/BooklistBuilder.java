@@ -748,10 +748,10 @@ public class BooklistBuilder {
 		{
 			String extra = null;
 			switch(mStyle.getReadFilter()) {
-				case BooklistStyle.SELECT_READ:
+				case BooklistStyle.FILTER_READ:
 					extra = TBL_BOOKS.dot(DOM_READ) + " = 1\n";
 					break;
-				case BooklistStyle.SELECT_UNREAD:
+				case BooklistStyle.FILTER_UNREAD:
 					extra = TBL_BOOKS.dot(DOM_READ) + " = 0\n";
 					break;
 				default:

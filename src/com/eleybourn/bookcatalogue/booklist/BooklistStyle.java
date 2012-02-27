@@ -162,18 +162,18 @@ public class BooklistStyle implements Iterable<BooklistGroup>, Serializable {
 		}
 	}
 
-	public static final int SELECT_READ = 1;
-	public static final int SELECT_UNREAD = 2;
-	public static final int SELECT_READ_AND_UNREAD = 3;
+	public static final int FILTER_READ = 1;
+	public static final int FILTER_UNREAD = 2;
+	public static final int FILTER_READ_AND_UNREAD = 3;
 
 	// ENHANCE: Add filters based on 'loaned', 'anthology' and (maybe) duplicate books
 	
 	/** Support for 'READ' filter */
 	private static ItemEntries<Integer> mReadFilterListItems = new ItemEntries<Integer>();
 	static {
-		mReadFilterListItems.add(SELECT_UNREAD, R.string.select_unread_only);
-		mReadFilterListItems.add(SELECT_READ, R.string.select_read_only);
-		mReadFilterListItems.add(SELECT_READ_AND_UNREAD, R.string.all_books);
+		mReadFilterListItems.add(FILTER_UNREAD, R.string.select_unread_only);
+		mReadFilterListItems.add(FILTER_READ, R.string.select_read_only);
+		mReadFilterListItems.add(FILTER_READ_AND_UNREAD, R.string.all_books);
 	}
 
 	/** Support for 'Condensed' property */
@@ -330,7 +330,7 @@ public class BooklistStyle implements Iterable<BooklistGroup>, Serializable {
 										PREF_SHOW_PUBLISHER, false);
 		mXtraShowAuthor = new BooleanProperty("XAuthor", PropertyGroup.GRP_EXTRA_BOOK_DETAILS, R.string.author,
 										PREF_SHOW_AUTHOR, false);
-		mXtraReadUnreadAll = new IntegerListProperty(mReadFilterListItems, "XReadUnreadAll", PropertyGroup.GRP_EXTRA_FILTERS, R.string.select_based_on_read_status, SELECT_READ_AND_UNREAD);
+		mXtraReadUnreadAll = new IntegerListProperty(mReadFilterListItems, "XReadUnreadAll", PropertyGroup.GRP_EXTRA_FILTERS, R.string.select_based_on_read_status, FILTER_READ_AND_UNREAD);
 
 		mNameProperty = new StringProperty("StyleName", PropertyGroup.GRP_GENERAL, R.string.name);
 		mNameProperty.setRequireNonBlank(true);
@@ -538,6 +538,24 @@ public class BooklistStyle implements Iterable<BooklistGroup>, Serializable {
 	}
 	public void setCondensed(boolean condensed) {
 		mCondensed.set(condensed);
+	}
+	/**
+	 * Accessor
+	 */
+	public boolean showThumbnails() {
+		return mXtraShowThumbnails.getResolvedValue();
+	}
+	public void setShowThumbnails(boolean show) {
+		mXtraShowThumbnails.set(show);
+	}
+	/**
+	 * Accessor
+	 */
+	public Integer getReadUnreadAll() {
+		return mXtraReadUnreadAll.getResolvedValue();
+	}
+	public void setReadUnreadAll(Integer readUnreadAll) {
+		mXtraReadUnreadAll.set(readUnreadAll);
 	}
 
 	/**

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="com.eleybourn.bookcatalogue"
-	android:installLocation="preferExternal" android:versionName="4.0" android:versionCode="70">
+	android:installLocation="internalOnly" android:versionName="4.0" android:versionCode="70">
 	<application android:name=".BookCatalogueApp" android:label="@string/app_name" android:icon="@drawable/logo_bc" android:debuggable="true">
 		<provider android:name=".SearchSuggestionProvider" android:authorities="com.eleybourn.bookcatalogue.SearchSuggestionProvider" />		
 		<service android:enabled="true" android:name=".BcQueueManager" />
@@ -32,10 +32,13 @@
 		<!-- The StartupActivity activity is just a forwarder to the users chosen first screen, which could
 			 be the  MainMenu Activity. So in theory it is OK to make is singleInstance  
 			 -->
-		<activity android:name=".MainMenu" android:theme="@android:style/Theme.NoTitleBar" android:launchMode="singleInstance"></activity>
+		<activity android:name=".MainMenu" android:theme="@android:style/Theme.NoTitleBar" ></activity> <!-- android:launchMode="singleInstance" -->
 		<activity android:name=".BookEdit"></activity>
 		<activity android:name=".BookISBNSearch" android:label="@string/title_isbn_search"></activity>
-		<activity android:name=".booklist.BooklistPreferences"></activity>
+		<activity android:name=".booklist.BooklistPreferencesActivity"></activity>
+		<activity android:name=".booklist.BooklistStyleGroupsActivity"></activity>
+		<activity android:name=".booklist.BooklistStylePropertiesActivity" android:windowSoftInputMode="stateHidden"></activity>
+		<activity android:name=".booklist.BooklistStylesActivity"></activity>
 		<activity android:name=".Bookshelf" android:label="@string/title_manage_bs"></activity>
 		<activity android:name=".BookshelfEdit" android:label="@string/title_edit_bs"></activity>
 		<activity android:name=".Administration" android:label="@string/administration_title"></activity>

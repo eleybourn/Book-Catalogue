@@ -1,8 +1,29 @@
+/*
+ * @copyright 2012 Philip Warner
+ * @license GNU General Public License
+ * 
+ * This file is part of Book Catalogue.
+ *
+ * Book Catalogue is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Book Catalogue is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.eleybourn.bookcatalogue.goodreads;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -21,29 +42,41 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.os.Bundle;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
-import com.eleybourn.bookcatalogue.BooksCursor;
 import com.eleybourn.bookcatalogue.BooksRowView;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.Logger;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.BookNotFoundException;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NotAuthorizedException;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.*;
 import com.eleybourn.bookcatalogue.goodreads.api.AuthUserApiHandler;
 import com.eleybourn.bookcatalogue.goodreads.api.IsbnToId;
+import com.eleybourn.bookcatalogue.goodreads.api.SearchBooksApiHandler;
 import com.eleybourn.bookcatalogue.goodreads.api.ShelfAddBookHandler;
+import com.eleybourn.bookcatalogue.goodreads.api.ShowBookByIdApiHandler;
+import com.eleybourn.bookcatalogue.goodreads.api.ShowBookByIsbnApiHandler;
 
 /**
  * Class to wrap all GoodReads API calls and manage an API connection.
  * 
- * @author Grunthos
+ * RELEASE: Add 'send to goodreads'/'update from internet' option in book edit menu
+ * RELEASE: Change 'update from internet' to include goodreads AND allow source selection and single-book execution
+ * RELEASE: Link an Event to a book, and display in book list with exclamation triangle overwriting cover.
+ * RELEASE: MAYBE Replace Events with something similar in local DB?
+ * 
+ * @author Philip Warner
  */
 public class GoodreadsManager {
 
@@ -95,7 +128,7 @@ public class GoodreadsManager {
 	/**
 	 * Standard constructor; call common code.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	public GoodreadsManager() {
 		sharedInit();
@@ -104,7 +137,7 @@ public class GoodreadsManager {
 	/**
 	 * Common constructor code.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	private void sharedInit() {
 
@@ -119,7 +152,7 @@ public class GoodreadsManager {
 	/**
 	 * Return the public developer key, used for GET queries.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	public String getDeveloperKey() {
 		return DEV_KEY;
@@ -129,7 +162,7 @@ public class GoodreadsManager {
 	 * Check if the current credentials (either cached or in prefs) are valid. If they
 	 * have been previously checked and were valid, just use that result.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	public boolean hasValidCredentials() {
 		// If credentials have already been accepted, don't re-check.
@@ -146,7 +179,7 @@ public class GoodreadsManager {
 	 * If cached credentials were used, call recursively after clearing the cached
 	 * values.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	private boolean validateCredentials() {
 		// Get the stored token values from prefs, and setup the consumer
@@ -184,7 +217,7 @@ public class GoodreadsManager {
 	/**
 	 * Request authorization from the current user by going to the OAuth web page.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 * @throws NetworkException 
 	 */
 	public void requestAuthorization(Activity ctx) throws NetworkException {
@@ -223,7 +256,7 @@ public class GoodreadsManager {
 	 * Called by the callback activity, GoodReadsAuthorizationActivity, when a request has been 
 	 * authorized by the user.
 	 *
-	 * @author Grunthos
+	 * @author Philip Warner
 	 * @throws NotAuthorizedException 
 	 */
 	public void handleAuthentication() throws NotAuthorizedException {
@@ -259,20 +292,38 @@ public class GoodreadsManager {
 	}
 
 	/**
+	 * Create an HttpClient with specifically set buffer sizes to deal with
+	 * potentially exorbitant settings on some HTC handsets.
+	 * 
+	 * @return
+	 */
+	private HttpClient newHttpClient() {
+		HttpParams params = new BasicHttpParams();
+		HttpConnectionParams.setConnectionTimeout(params, 30000);
+		HttpConnectionParams.setSocketBufferSize(params, 8192);
+		HttpConnectionParams.setLinger(params, 0);
+		HttpConnectionParams.setTcpNoDelay(params, false);
+		HttpClient httpClient = new DefaultHttpClient(params);		
+		return httpClient;
+	}
+
+	/**
 	 * Utility routine called to sign a request and submit it then pass it off to a parser.
 	 *
-	 * @author Grunthos
+	 * @author Philip Warner
 	 * @throws NotAuthorizedException 
 	 * @throws BookNotFoundException 
 	 */
-	public HttpResponse execute(HttpUriRequest request, DefaultHandler requestHandler) throws ClientProtocolException, IOException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException {
+	public HttpResponse execute(HttpUriRequest request, DefaultHandler requestHandler, boolean requiresSignature) throws ClientProtocolException, IOException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException {
 
 		// Get a new client
-		HttpClient httpClient = new DefaultHttpClient();
+		HttpClient httpClient = newHttpClient();
 
 		// Sign the request and wait until we can submit it legally.
-		m_consumer.setTokenWithSecret(m_accessToken, m_accessSecret);
-		m_consumer.sign(request);
+		if (requiresSignature) {
+			m_consumer.setTokenWithSecret(m_accessToken, m_accessSecret);
+			m_consumer.sign(request);			
+		}
     	waitUntilRequestAllowed();
 
     	// Submit the request and process result.
@@ -295,7 +346,7 @@ public class GoodreadsManager {
 	/**
 	 * Utility routine called to sign a request and submit it then return the raw text output.
 	 *
-	 * @author Grunthos
+	 * @author Philip Warner
 	 * @throws OAuthCommunicationException 
 	 * @throws OAuthExpectationFailedException 
 	 * @throws OAuthMessageSignerException 
@@ -308,7 +359,7 @@ public class GoodreadsManager {
 	public String executeRaw(HttpUriRequest request) throws OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, ClientProtocolException, IOException, NotAuthorizedException, BookNotFoundException, NetworkException {
 
 		// Get a new client
-		HttpClient httpClient = new DefaultHttpClient();
+		HttpClient httpClient = newHttpClient();
 
 		// Sign the request and wait until we can submit it legally.
 		m_consumer.setTokenWithSecret(m_accessToken, m_accessSecret);
@@ -352,7 +403,7 @@ public class GoodreadsManager {
 	/**
 	 * Utility routine called to pass a response off to a parser.
 	 *
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	private boolean parseResponse(HttpResponse response, DefaultHandler requestHandler) throws IllegalStateException, IOException {
 		boolean parseOk = false;
@@ -512,6 +563,84 @@ public class GoodreadsManager {
 		
 	}
 
+	/**
+	 * Wrapper to search for a book.
+	 * 
+	 * @param query		String to search for
+	 * 
+	 * @return	Array of GoodreadsWork objects
+	 * 
+	 * @throws ClientProtocolException
+	 * @throws OAuthMessageSignerException
+	 * @throws OAuthExpectationFailedException
+	 * @throws OAuthCommunicationException
+	 * @throws NotAuthorizedException
+	 * @throws BookNotFoundException
+	 * @throws IOException
+	 */
+	public ArrayList<GoodreadsWork> search(String query) throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException, IOException {
+
+		if (!query.equals("")) {
+			SearchBooksApiHandler searcher = new SearchBooksApiHandler(this);
+			// Run the search
+			return searcher.search(query);
+		} else {
+			throw new RuntimeException("No search criteria specified");
+		}
+		
+	}
+
+	/**
+	 * Wrapper to search for a book.
+	 * 
+	 * @param query		String to search for
+	 * 
+	 * @return	Array of GoodreadsWork objects
+	 * 
+	 * @throws ClientProtocolException
+	 * @throws OAuthMessageSignerException
+	 * @throws OAuthExpectationFailedException
+	 * @throws OAuthCommunicationException
+	 * @throws NotAuthorizedException
+	 * @throws BookNotFoundException
+	 * @throws IOException
+	 */
+	public Bundle getBookById(long bookId) throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException, IOException {
+		if (bookId != 0) {
+			ShowBookByIdApiHandler api = new ShowBookByIdApiHandler(this);
+			// Run the search
+			return api.get(bookId, true);
+		} else {
+			throw new RuntimeException("No work ID specified");
+		}
+		
+	}
+
+	/**
+	 * Wrapper to search for a book.
+	 * 
+	 * @param query		String to search for
+	 * 
+	 * @return	Array of GoodreadsWork objects
+	 * 
+	 * @throws ClientProtocolException
+	 * @throws OAuthMessageSignerException
+	 * @throws OAuthExpectationFailedException
+	 * @throws OAuthCommunicationException
+	 * @throws NotAuthorizedException
+	 * @throws BookNotFoundException
+	 * @throws IOException
+	 */
+	public Bundle getBookByIsbn(String isbn) throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException, IOException {
+		if (isbn != null && isbn.length() > 0) {
+			ShowBookByIsbnApiHandler api = new ShowBookByIsbnApiHandler(this);
+			// Run the search
+			return api.get(isbn, true);
+		} else {
+			throw new RuntimeException("No work ID specified");
+		}
+		
+	}
 }
 
 

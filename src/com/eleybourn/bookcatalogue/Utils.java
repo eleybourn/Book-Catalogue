@@ -67,8 +67,9 @@ public class Utils {
 	private static int BUFFER_SIZE = 8192;
 
 	// External DB for cover thumbnails
-	private static boolean mCoversDbCreateFail = false;
-	private static CoversDbHelper mCoversDb;
+	private boolean mCoversDbCreateFail = false;
+	/** Database is non-static member so we don't make it linger longer than necessary */
+	private CoversDbHelper mCoversDb = null;
 
 	// Used for date parsing and display
 	static SimpleDateFormat mDateSqlSdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -189,7 +190,7 @@ public class Utils {
 	 * 
 	 * @return		Converted string
 	 */
-	static String encodeListItem(String s, char delim) {
+	public static String encodeListItem(String s, char delim) {
 		StringBuilder ns = new StringBuilder();
 		for (int i = 0; i < s.length(); i++){
 		    char c = s.charAt(i);        
@@ -258,7 +259,7 @@ public class Utils {
 		 * @param s		String to convert
 		 * @return		Converted string
 		 */
-		String encodeList(ArrayList<T> sa, char delim) {
+		public String encodeList(ArrayList<T> sa, char delim) {
 			Iterator<T> si = sa.iterator();
 			return encodeList(si, delim);
 		}
@@ -342,7 +343,7 @@ public class Utils {
 	 * @param s		String representing the list
 	 * @return		Array of strings resulting from list
 	 */
-	static ArrayList<String> decodeList(String s, char delim) {
+	public static ArrayList<String> decodeList(String s, char delim) {
 		StringBuilder ns = new StringBuilder();
 		ArrayList<String> list = new java.util.ArrayList<String>();
 		boolean inEsc = false;
@@ -846,6 +847,58 @@ public class Utils {
 	}
 
 	/**
+	 * Remove series from the list where the names are the same, but one entry has a null or empty position.
+	 * eg. the followig list should be processed as indicated:
+	 * 
+	 * fred(5)
+	 * fred <-- delete
+	 * bill <-- delete
+	 * bill <-- delete
+	 * bill(1)
+	 * 
+	 * @param list
+	 */
+	public static void pruneSeriesList(ArrayList<Series> list) {
+		ArrayList<Series> toDelete = new ArrayList<Series>();
+		Hashtable<String, Series> index = new Hashtable<String, Series> ();
+
+		for(Series s: list) {
+			final boolean emptyNum = s.num == null || s.num.trim().equals("");
+			final String lcName = s.name.trim().toLowerCase();
+			final boolean inNames = index.containsKey(lcName);
+			if (!inNames) {
+				// Just add and continue
+				index.put(lcName, s);
+			} else {
+				// See if we can purge either
+				if (emptyNum) {
+					// Always delete series with empty numbers if an equally or more specific one exists
+					toDelete.add(s);
+				} else {
+					// See if the one in 'index' also has a num
+					Series orig = index.get(lcName);
+					if (orig.num == null || orig.num.trim().equals("")) {
+						// Replace with this one, and mark orig for delete
+						index.put(lcName, s);
+						toDelete.add(orig);
+					} else {
+						// Both have numbers. See if they are the same.
+						if (s.num.trim().toLowerCase().equals(orig.num.trim().toLowerCase())) {
+							// Same exact series, delete this one
+							toDelete.add(s);
+						} else {
+							// Nothing to do: this is a different series position							
+						}
+					}
+				}
+			}
+		}
+		
+		for (Series s: toDelete) 
+			list.remove(s);
+
+	}
+	/**
 	 * Convert a array of objects to a string.
 	 * 
 	 * @param <T>
@@ -933,7 +986,7 @@ public class Utils {
 	 * 
 	 * @return				Bitmap (if cached) or NULL (if not cached)
 	 */
-	public static Bitmap fetchCachedImageIntoImageView(final File originalFile, final ImageView destView, final String cacheId) {
+	public Bitmap fetchCachedImageIntoImageView(final File originalFile, final ImageView destView, final String cacheId) {
 		Bitmap bm = null;					// resultant Bitmap (which we will return) 
 
 		// Get the db
@@ -952,7 +1005,11 @@ public class Utils {
 					bytes = null;
 				};
 			if (bytes != null) {
-				bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+				try {
+					bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+				} catch (Exception e) {
+					bytes = null;
+				};
 			}
 		}
 
@@ -989,7 +1046,7 @@ public class Utils {
 	 * 
 	 * @return				Bitmap (if cached) or NULL (if done in background)
 	 */
-	public static final Bitmap fetchBookCoverIntoImageView(final ImageView destView, int maxWidth, int maxHeight, final boolean exact, final long bookId, final boolean checkCache, final boolean allowBackground) {
+	public final Bitmap fetchBookCoverIntoImageView(final ImageView destView, int maxWidth, int maxHeight, final boolean exact, final long bookId, final boolean checkCache, final boolean allowBackground) {
 
 		// Get the original file so we can use the modification date, path etc
 		File coverFile = CatalogueDBAdapter.fetchThumbnail(bookId);
@@ -1299,7 +1356,7 @@ public class Utils {
 	/**
 	 * Get the 'covers' DB from external storage.
 	 */
-	public static final CoversDbHelper getCoversDb() {
+	public final CoversDbHelper getCoversDb() {
 		if (mCoversDb == null) {
 			if (mCoversDbCreateFail)
 				return null;
@@ -1313,9 +1370,17 @@ public class Utils {
 	}
 	
 	/**
+	 * Cleanup DB connection, if present
+	 */
+	public void close() {
+		if (mCoversDb != null)
+			mCoversDb.close();
+	}
+
+	/**
 	 * Analyze the covers db
 	 */
-	public static void analyzeCovers() {
+	public void analyzeCovers() {
 		CoversDbHelper db = getCoversDb();
 		if (db != null)
 			db.analyze();
@@ -1324,7 +1389,7 @@ public class Utils {
 	/**
 	 * Erase contents of covers cache
 	 */
-	public static void eraseCoverCache() {
+	public void eraseCoverCache() {
 		CoversDbHelper db = getCoversDb();
 		if (db != null)
 			db.eraseCoverCache();

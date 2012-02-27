@@ -1,3 +1,23 @@
+/*
+ * @copyright 2012 Philip Warner
+ * @license GNU General Public License
+ * 
+ * This file is part of Book Catalogue.
+ *
+ * Book Catalogue is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Book Catalogue is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.eleybourn.bookcatalogue.goodreads;
 
 import com.eleybourn.bookcatalogue.R;
@@ -12,6 +32,7 @@ import android.widget.TextView;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
+import com.eleybourn.bookcatalogue.ViewTagger;
 
 import net.philipwarner.taskqueue.BindableItem;
 import net.philipwarner.taskqueue.BindableItemSQLiteCursor;
@@ -26,7 +47,7 @@ import net.philipwarner.taskqueue.Listeners.OnEventChangeListener;
  * 
  * TODO: Decide if this should be renamed, and consider adding event selection methods.
  * 
- * @author Grunthos
+ * @author Philip Warner
  */
 public class GoodreadsExportFailuresActivity extends  net.philipwarner.taskqueue.BindableItemListActivity 
 {
@@ -96,7 +117,7 @@ public class GoodreadsExportFailuresActivity extends  net.philipwarner.taskqueue
 	 */
 	@Override
 	public void onListItemClick(AdapterView<?> parent, final View v, final int position, final long id) {
-		Event event = (Event) v.getTag(R.id.TAG_EVENT);
+		Event event = (Event) ViewTagger.getTag(v, R.id.TAG_EVENT);
 		ArrayList<ContextDialogItem> items = new ArrayList<ContextDialogItem>();
 
 		event.addContextMenuItems(this, parent, v, position, id, items, m_db);
@@ -151,7 +172,7 @@ public class GoodreadsExportFailuresActivity extends  net.philipwarner.taskqueue
 	 */
 	@Override
 	public void bindViewToItem(Context context, View view, BindableItemSQLiteCursor cursor, BindableItem bindable) {
-		view.setTag(R.id.TAG_EVENT, bindable);
+		ViewTagger.setTag(view, R.id.TAG_EVENT, bindable);
 		bindable.bindView(view, context, cursor, m_db);
 	}
 

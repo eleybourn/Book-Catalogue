@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:background="@drawable/bc_background_gradient"
+		android:background="@drawable/bc_background_gradient_dim"
 		>
 
   <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
@@ -129,7 +129,29 @@
 			/>
 	</LinearLayout>
 
-	<!--  TASKs -->
+	<!--  FIELDS -->
+	<LinearLayout android:id="@+id/reset_hints_label" 
+		android:orientation="horizontal"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:clickable="true"
+		android:paddingLeft="15sp">
+		<ImageView android:id="@+id/fields_img" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:paddingLeft="10sp"
+			android:src="@+android:drawable/ic_menu_agenda"
+			/>
+		<TextView 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:text="@+string/reset_hints"
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:paddingTop="5sp"
+			/>
+	</LinearLayout>
+
+    <!--  TASKs -->
 	<LinearLayout android:id="@+id/background_tasks_label" 
 		android:orientation="horizontal"
 		android:layout_width="fill_parent" 

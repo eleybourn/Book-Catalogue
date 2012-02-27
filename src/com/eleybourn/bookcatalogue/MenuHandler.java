@@ -1,3 +1,23 @@
+/*
+ * @copyright 2012 Philip Warner
+ * @license GNU General Public License
+ * 
+ * This file is part of Book Catalogue.
+ *
+ * Book Catalogue is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Book Catalogue is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.eleybourn.bookcatalogue;
 
 import android.app.Activity;
@@ -10,7 +30,7 @@ import android.view.SubMenu;
  * Class to make building menus simpler. Implements some default menu items and allows
  * selecting which need to be added as well as the addition of custom items.
  * 
- * @author Grunthos
+ * @author Philip Warner
  */
 public class MenuHandler {
 	private static final int MNU_ADD_BOOK = Menu.FIRST+1;
@@ -157,7 +177,6 @@ public class MenuHandler {
 	 */
 	private void mainMenuPage(Activity a) {
 		Intent i = new Intent(BookCatalogueApp.context, MainMenu.class);
-		i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		a.startActivityForResult(i, R.id.ACTIVITY_ADMIN);
 	}
 	

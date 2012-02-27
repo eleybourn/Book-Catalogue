@@ -45,7 +45,7 @@ import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
  *  - ManagedTask -- Background task that is managed by TaskManager and uses TaskManager to 
  *    do all display activities.
  *    
- * @author Grunthos
+ * @author Philip Warner
  */
 public class TaskManager {
 	// Application context (for getting resources)
@@ -124,7 +124,7 @@ public class TaskManager {
 	/**
 	 * Allows other objects to know when a task completed. See SearchManager for an example.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	public interface OnTaskEndedListener {
 		void onTaskEnded(TaskManager manager, ManagedTask task);
@@ -293,7 +293,7 @@ public class TaskManager {
 	/**
 	 * Handler for internal UI thread messages.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	private class MessageHandler extends Handler {
 		public void handleMessage(Message msg) {

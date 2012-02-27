@@ -19,7 +19,7 @@ import android.widget.Toast;
 /**
  * Class to handle export in a separate thread.
  * 
- * @author Grunthos
+ * @author Philip Warner
  */
 public class ExportThread extends ManagedTask {
 	private static String mFilePath = Utils.EXTERNAL_FILE_PATH;

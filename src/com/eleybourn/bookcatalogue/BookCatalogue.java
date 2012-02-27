@@ -119,6 +119,11 @@ public class BookCatalogue extends ExpandableListActivity {
 	private Long mLoadingGroups = 0L;
 	private boolean collapsed = false;
 
+	/** Utils object; we need an instance for cover retrieval because it uses a DB connection
+	 * that we do not want to make static.
+	 */
+	private Utils mUtils = new Utils();
+
 	private SimpleTaskQueue mTaskQueue = null;
 
 	/* Side-step a bug in HONEYCOMB. It seems that startManagingCursor() in honeycomb causes
@@ -400,7 +405,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		 * Adapter for the the expandable list of books. Uses ViewManager to manage
 		 * cursor.
 		 * 
-		 * @author Grunthos
+		 * @author Philip Warner
 		 */
 		public class BasicBookListAdapter extends ResourceCursorTreeAdapter implements android.widget.SectionIndexer {
 
@@ -532,7 +537,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				initViewInfo(v, holder.read, R.id.row_read_image_view, FieldVisibility.prefix + "read");
 				initViewInfo(v, holder.series, R.id.row_series, FieldVisibility.prefix + CatalogueDBAdapter.KEY_SERIES_NAME);
 
-				v.setTag(R.id.TAG_HOLDER, holder);
+				ViewTagger.setTag(v, R.id.TAG_HOLDER, holder);
 
 				return v;
 			}
@@ -543,7 +548,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			 */
 			@Override 
 			protected void bindChildView(View view, Context context, Cursor origCursor, boolean isLastChild) {
-				BookHolder holder = (BookHolder) view.getTag(R.id.TAG_HOLDER);
+				BookHolder holder = (BookHolder) ViewTagger.getTag(view, R.id.TAG_HOLDER);
 				final BooksCursor snapshot = (BooksCursor) origCursor;
 				final BooksRowView rowView = snapshot.getRowView();
 
@@ -555,7 +560,7 @@ public class BookCatalogue extends ExpandableListActivity {
 
 				if (holder.image.show) {
 					//CatalogueDBAdapter.fetchThumbnailIntoImageView(cursor.getId(),holder.image.view, LIST_THUMBNAIL_SIZE, LIST_THUMBNAIL_SIZE, true, mTaskQueue);
-					Utils.fetchBookCoverIntoImageView(holder.image.view, LIST_THUMBNAIL_SIZE, LIST_THUMBNAIL_SIZE, true, rowView.getId(), true, true);
+					mUtils.fetchBookCoverIntoImageView(holder.image.view, LIST_THUMBNAIL_SIZE, LIST_THUMBNAIL_SIZE, true, rowView.getId(), true, true);
 				}
 
 				if (holder.read.show) {
@@ -1704,6 +1709,12 @@ public class BookCatalogue extends ExpandableListActivity {
 				mTaskQueue.finish();
 			} catch (Exception e) {};
 			mTaskQueue = null;				
+		}
+		if (mUtils != null) {
+			try {
+				mUtils.close();
+			} catch (Exception e) {};
+			mUtils = null;				
 		}
 		super.onDestroy();
 	} 

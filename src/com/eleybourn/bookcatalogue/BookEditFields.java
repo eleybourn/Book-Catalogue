@@ -249,9 +249,9 @@ public class BookEditFields extends Activity {
 						// Save the original value, if its an integer
 						try {
 							Integer i = Integer.parseInt(s);
-							f.getView().setTag(R.id.TAG_ORIGINAL_VALUE,i);
+							ViewTagger.setTag(f.getView(), R.id.TAG_ORIGINAL_VALUE,i);
 						} catch (Exception e) {
-							f.getView().setTag(R.id.TAG_ORIGINAL_VALUE,0);
+							ViewTagger.setTag(f.getView(), R.id.TAG_ORIGINAL_VALUE,0);
 						}
 						// Just pass the string onwards to the accessor.
 						return s;
@@ -259,7 +259,7 @@ public class BookEditFields extends Activity {
 					public String extract(Field f, String s) {
 						// Parse the string the CheckBox returns us (0 or 1)
 						Integer i = Integer.parseInt(s);
-						Integer orig = (Integer) f.getView().getTag(R.id.TAG_ORIGINAL_VALUE);
+						Integer orig = (Integer) ViewTagger.getTag(f.getView(), R.id.TAG_ORIGINAL_VALUE);
 						try {
 							if (i != 0 && orig > 0) {
 								// If non-zero, and original was non-zero, re-use original
@@ -420,9 +420,9 @@ public class BookEditFields extends Activity {
 				ImageView iv = (ImageView) findViewById(R.id.row_img);
 				CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);				
 				// Author and series lists
-				mAuthorList = savedInstanceState.getParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
+				mAuthorList = (ArrayList<Author>) savedInstanceState.getSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
 				fixupAuthorList();	// Will update related display fields/button
-				mSeriesList = savedInstanceState.getParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY);
+				mSeriesList = (ArrayList<Series>) savedInstanceState.getSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY);
 				fixupSeriesList();	// Will update related display fields/button
 				mFields.getField(R.id.date_published).setValue(savedInstanceState.getString(CatalogueDBAdapter.KEY_DATE_PUBLISHED));
 				mFields.getField(R.id.bookshelf_text).setValue(savedInstanceState.getString("bookshelf_text"));
@@ -742,8 +742,8 @@ public class BookEditFields extends Activity {
 					} else {
 						mFields.getField(R.id.bookshelf_text).setValue(BookCatalogue.bookshelf + BOOKSHELF_SEPERATOR);
 					}
-					mAuthorList = values.getParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
-					mSeriesList = values.getParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY);
+					mAuthorList = (ArrayList<Author>) values.getSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
+					mSeriesList = (ArrayList<Series>) values.getSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY);
 				}
 				
 			} catch (NullPointerException e) {
@@ -891,8 +891,8 @@ public class BookEditFields extends Activity {
 		}
 		// DONT FORGET TO UPDATE onCreate to read these values back.
 		// Need to save local data that is not stored in editable views
-		outState.putParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mAuthorList);
-		outState.putParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY, mSeriesList);
+		outState.putSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mAuthorList);
+		outState.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, mSeriesList);
 		// ...including special text stored in TextViews and the like
 		outState.putString(CatalogueDBAdapter.KEY_DATE_PUBLISHED, mFields.getField(R.id.date_published).getValue().toString());
 		outState.putString("bookshelf_text", mFields.getField(R.id.bookshelf_text).getValue().toString());
@@ -961,8 +961,8 @@ public class BookEditFields extends Activity {
 			return;			
 		}
 
-		mStateValues.putParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mAuthorList);
-		mStateValues.putParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY, mSeriesList);
+		mStateValues.putSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mAuthorList);
+		mStateValues.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, mSeriesList);
 
 		if (mRowId == null || mRowId == 0) {
 			String isbn = mStateValues.getString(CatalogueDBAdapter.KEY_ISBN);
@@ -1018,7 +1018,7 @@ public class BookEditFields extends Activity {
 
 		/* These are global variables that will be sent via intent back to the list view, if added/created */
 		try {
-			ArrayList<Author> authors = mStateValues.getParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
+			ArrayList<Author> authors = (ArrayList<Author>) mStateValues.getSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
 			if (authors.size() > 0) {
 				added_author = authors.get(0).getSortName();
 			} else { 
@@ -1028,7 +1028,7 @@ public class BookEditFields extends Activity {
 			Logger.logError(e);
 		};
 		try {
-			ArrayList<Series> series = mStateValues.getParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY);
+			ArrayList<Series> series = (ArrayList<Series>) mStateValues.getSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY);
 			if (series.size() > 0)
 				added_series = series.get(0).name;
 			else 
@@ -1100,7 +1100,7 @@ public class BookEditFields extends Activity {
 			return;
 		case ACTIVITY_EDIT_AUTHORS:
 			if (resultCode == Activity.RESULT_OK && intent.hasExtra(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)){
-				mAuthorList = intent.getParcelableArrayListExtra(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
+				mAuthorList = (ArrayList<Author>) intent.getSerializableExtra(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
 			} else {
 				// Even though the dialog was terminated, some authors MAY have been updated/added.
 				for(Author a : mAuthorList) {
@@ -1110,7 +1110,7 @@ public class BookEditFields extends Activity {
 			fixupAuthorList();
 		case ACTIVITY_EDIT_SERIES:
 			if (resultCode == Activity.RESULT_OK && intent.hasExtra(CatalogueDBAdapter.KEY_SERIES_ARRAY)){
-				mSeriesList = intent.getParcelableArrayListExtra(CatalogueDBAdapter.KEY_SERIES_ARRAY);
+				mSeriesList = (ArrayList<Series>) intent.getSerializableExtra(CatalogueDBAdapter.KEY_SERIES_ARRAY);
 				fixupSeriesList();
 			}
 		}
@@ -1142,6 +1142,7 @@ public class BookEditFields extends Activity {
 		if (size == 0)
 			newText = getResources().getString(R.string.set_series);
 		else {
+			Utils.pruneSeriesList(mSeriesList);
 			Utils.pruneList(mDbHelper, mSeriesList);
 			newText = mSeriesList.get(0).getDisplayName();
 			if (mSeriesList.size() > 1)

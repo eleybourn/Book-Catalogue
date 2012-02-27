@@ -17,11 +17,7 @@
 		<ImageView android:id="@+id/cover" 
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			/>
-		 <TextView android:id="@+id/row_img" 
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:visibility="gone"
+			android:adjustViewBounds="true"
 			/>
 	</LinearLayout>
 	<LinearLayout
@@ -62,6 +58,21 @@
 				android:paddingLeft="5dp"
 				/>
 		</LinearLayout>
+
+	    <LinearLayout
+			android:orientation="horizontal"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			>
+	        <TextView android:id="@+id/author" 
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:singleLine="true"
+			    android:textAppearance="?android:attr/textAppearanceSmall"
+				android:paddingLeft="5dp"
+				/>
+		</LinearLayout>
+
 	    <LinearLayout
 			android:orientation="horizontal"
 			android:layout_width="fill_parent"
@@ -75,6 +86,7 @@
 				android:paddingLeft="5dp"
 				/>
 		</LinearLayout>
+
 	    <LinearLayout
 			android:orientation="horizontal"
 			android:layout_width="fill_parent"
@@ -112,14 +124,9 @@
 		android:layout_weight="0"
 		>
 		<ImageView android:id="@+id/read" 
-			android:layout_width="30dp"
 			android:layout_height="wrap_content"
-			android:src="@drawable/btn_check_buttonless_off"
-			android:visibility="gone"
-			/>
-		 <TextView android:id="@+id/row_read" 
 			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
+			android:src="@drawable/btn_check_buttonless_off"
 			android:visibility="gone"
 			/>
 	</LinearLayout>

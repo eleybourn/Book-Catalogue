@@ -43,7 +43,6 @@ import android.view.View.OnClickListener;
 import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
-import com.eleybourn.bookcatalogue.booklist.BooklistPreferences;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsExportFailuresActivity;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsRegister;
@@ -285,7 +284,6 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(AdministrationFunctions.this, AdministrationLibraryThing.class);
-				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				startActivity(i);
 				return;
 			}
@@ -299,7 +297,6 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(AdministrationFunctions.this, GoodreadsRegister.class);
-				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				startActivity(i);
 				return;
 			}
@@ -313,7 +310,6 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(AdministrationFunctions.this, OtherPreferences.class);
-				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				startActivity(i);
 				return;
 			}
@@ -326,9 +322,19 @@ public class AdministrationFunctions extends ActivityWithTasks {
 		blPrefs.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent i = new Intent(AdministrationFunctions.this, BooklistPreferences.class);
-				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				startActivity(i);
+				BookCatalogueApp.startPreferencesActivity(AdministrationFunctions.this);
+				return;
+			}
+		});
+		
+		/* Reset Hints Link */
+		View hints = findViewById(R.id.reset_hints_label);
+		// Make line flash when clicked.
+		hints.setBackgroundResource(android.R.drawable.list_selector_background);
+		hints.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				HintManager.resetHints();
 				return;
 			}
 		});
@@ -339,7 +345,6 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	 */
 	private void showBackgroundTasks() {
 		Intent i = new Intent(this, TaskListActivity.class);
-		i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		startActivity(i);
 	}
 	/**
@@ -347,7 +352,6 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	 */
 	private void showEvents() {
 		Intent i = new Intent(this, GoodreadsExportFailuresActivity.class);
-		i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		startActivity(i);
 	}
 

@@ -46,7 +46,7 @@ public class UpdateFromInternet extends ActivityWithTasks {
 	 * Class to manage a collection of fields and the rules for importing them.
 	 * Inherits from LinkedHashMap to guarantee iteration order.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	static public class FieldUsages extends LinkedHashMap<String,FieldUsage>  {
 		private static final long serialVersionUID = 1L;
@@ -79,15 +79,17 @@ public class UpdateFromInternet extends ActivityWithTasks {
 	}
 	
 	public class FieldUsage {
-		String fieldName;
-		int stringId;
+		final String fieldName;
+		final int stringId;
 		Usages usage;
 		boolean selected;
-		FieldUsage(String name, int id, Usages usage) {
+		final boolean canAppend;
+		FieldUsage(String name, int id, Usages usage, boolean canAppend) {
 			this.fieldName = name;
 			this.stringId = id;
 			this.usage = usage;
 			this.selected = true;
+			this.canAppend = canAppend;
 		}
 	}
 
@@ -99,29 +101,29 @@ public class UpdateFromInternet extends ActivityWithTasks {
 	 * @param stringId	ID of field label string
 	 * @param usage		Usage to apply.
 	 */
-	private void addIfVisible(String field, String visField, int stringId, Usages usage) {
+	private void addIfVisible(String field, String visField, int stringId, Usages usage, boolean canAppend) {
 		if (visField == null || visField.trim().length() == 0)
 			visField = field;
 		if (mPrefs.getBoolean(FieldVisibility.prefix + visField, true))
-			mFieldUsages.put(new FieldUsage(field, stringId, usage));		
+			mFieldUsages.put(new FieldUsage(field, stringId, usage, canAppend));		
 	}
 	/**
 	 * This function builds the manage field visibility by adding onClick events
 	 * to each field checkbox
 	 */
 	public void setupFields() {
-		addIfVisible(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, CatalogueDBAdapter.KEY_AUTHOR_ID, R.string.author, Usages.ADD_EXTRA);
-		addIfVisible(CatalogueDBAdapter.KEY_TITLE, null, R.string.title, Usages.COPY_IF_BLANK);
-		addIfVisible(CatalogueDBAdapter.KEY_ISBN, null, R.string.isbn, Usages.COPY_IF_BLANK);
-		addIfVisible(CatalogueDBAdapter.KEY_THUMBNAIL, null, R.string.thumbnail, Usages.COPY_IF_BLANK);
-		addIfVisible(CatalogueDBAdapter.KEY_SERIES_ARRAY, CatalogueDBAdapter.KEY_SERIES_NAME, R.string.series, Usages.ADD_EXTRA);
-		addIfVisible(CatalogueDBAdapter.KEY_PUBLISHER, null, R.string.publisher, Usages.COPY_IF_BLANK);
-		addIfVisible(CatalogueDBAdapter.KEY_DATE_PUBLISHED, null, R.string.date_published, Usages.COPY_IF_BLANK);
-		addIfVisible(CatalogueDBAdapter.KEY_PAGES, null, R.string.pages, Usages.COPY_IF_BLANK);
-		addIfVisible(CatalogueDBAdapter.KEY_LIST_PRICE, null, R.string.list_price, Usages.COPY_IF_BLANK);
-		addIfVisible(CatalogueDBAdapter.KEY_FORMAT, null, R.string.format, Usages.COPY_IF_BLANK);
-		addIfVisible(CatalogueDBAdapter.KEY_DESCRIPTION, null, R.string.description, Usages.COPY_IF_BLANK);
-		addIfVisible(CatalogueDBAdapter.KEY_GENRE, null, R.string.genre, Usages.COPY_IF_BLANK);
+		addIfVisible(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, CatalogueDBAdapter.KEY_AUTHOR_ID, R.string.author, Usages.ADD_EXTRA, true);
+		addIfVisible(CatalogueDBAdapter.KEY_TITLE, null, R.string.title, Usages.COPY_IF_BLANK, false);
+		addIfVisible(CatalogueDBAdapter.KEY_ISBN, null, R.string.isbn, Usages.COPY_IF_BLANK, false);
+		addIfVisible(CatalogueDBAdapter.KEY_THUMBNAIL, null, R.string.thumbnail, Usages.COPY_IF_BLANK, false);
+		addIfVisible(CatalogueDBAdapter.KEY_SERIES_ARRAY, CatalogueDBAdapter.KEY_SERIES_NAME, R.string.series, Usages.ADD_EXTRA, true);
+		addIfVisible(CatalogueDBAdapter.KEY_PUBLISHER, null, R.string.publisher, Usages.COPY_IF_BLANK, false);
+		addIfVisible(CatalogueDBAdapter.KEY_DATE_PUBLISHED, null, R.string.date_published, Usages.COPY_IF_BLANK, false);
+		addIfVisible(CatalogueDBAdapter.KEY_PAGES, null, R.string.pages, Usages.COPY_IF_BLANK, false);
+		addIfVisible(CatalogueDBAdapter.KEY_LIST_PRICE, null, R.string.list_price, Usages.COPY_IF_BLANK, false);
+		addIfVisible(CatalogueDBAdapter.KEY_FORMAT, null, R.string.format, Usages.COPY_IF_BLANK, false);
+		addIfVisible(CatalogueDBAdapter.KEY_DESCRIPTION, null, R.string.description, Usages.COPY_IF_BLANK, false);
+		addIfVisible(CatalogueDBAdapter.KEY_GENRE, null, R.string.genre, Usages.COPY_IF_BLANK, false);
 
 		// Display the list of fields
 		LinearLayout parent = (LinearLayout) findViewById(R.id.manage_fields_scrollview);
@@ -133,7 +135,7 @@ public class UpdateFromInternet extends ActivityWithTasks {
 			//Create the checkbox
 			CheckBox cb = new CheckBox(this);
 			cb.setChecked(usage.selected);
-			cb.setTag(usage);
+			ViewTagger.setTag(cb, usage);
 			cb.setId(R.id.fieldCheckbox);
 			//add override capability
 			cb.setOnClickListener(new OnClickListener() {
@@ -141,20 +143,37 @@ public class UpdateFromInternet extends ActivityWithTasks {
 				public void onClick(View v) {
 					CheckBox thiscb = (CheckBox) v;
 					if (thiscb.isChecked() == false && thiscb.getText().toString().contains(getResources().getString(R.string.usage_copy_if_blank))) {
-						FieldUsage usage = (FieldUsage) thiscb.getTag();
+						FieldUsage usage = (FieldUsage) ViewTagger.getTag(thiscb);
+						if (usage.canAppend) {
+							String extra = getResources().getString(R.string.usage_add_extra);
+							String text = getResources().getString(usage.stringId);
+							thiscb.setText(text + " (" + extra + ")");
+							thiscb.setChecked(true); //reset to checked
+							usage.usage = FieldUsages.Usages.ADD_EXTRA;
+							ViewTagger.setTag(thiscb, usage);
+						} else {
+							String extra = getResources().getString(R.string.usage_overwrite);
+							String text = getResources().getString(usage.stringId);
+							thiscb.setText(text + " (" + extra + ")");
+							thiscb.setChecked(true); //reset to checked
+							usage.usage = FieldUsages.Usages.OVERWRITE;
+							ViewTagger.setTag(thiscb, usage);
+						}
+					} else if (thiscb.getText().toString().contains(getResources().getString(R.string.usage_add_extra))) {
+						FieldUsage usage = (FieldUsage) ViewTagger.getTag(thiscb);
 						String extra = getResources().getString(R.string.usage_overwrite);
 						String text = getResources().getString(usage.stringId);
 						thiscb.setText(text + " (" + extra + ")");
 						thiscb.setChecked(true); //reset to checked
 						usage.usage = FieldUsages.Usages.OVERWRITE;
-						thiscb.setTag(usage);
+						ViewTagger.setTag(thiscb, usage);
 					} else if (thiscb.getText().toString().contains(getResources().getString(R.string.usage_overwrite))) {
-						FieldUsage usage = (FieldUsage) thiscb.getTag();
+						FieldUsage usage = (FieldUsage) ViewTagger.getTag(thiscb);
 						String extra = getResources().getString(R.string.usage_copy_if_blank);
 						String text = getResources().getString(usage.stringId);
 						thiscb.setText(text + " (" + extra + ")");
 						usage.usage = FieldUsages.Usages.COPY_IF_BLANK;
-						thiscb.setTag(usage);
+						ViewTagger.setTag(thiscb, usage);
 					}
 				}
 			});
@@ -253,7 +272,7 @@ public class UpdateFromInternet extends ActivityWithTasks {
 			View v = parent.getChildAt(i);
 			CheckBox cb = (CheckBox) v.findViewById(R.id.fieldCheckbox);
 			if (cb != null) {
-				FieldUsage usage = (FieldUsage) cb.getTag();
+				FieldUsage usage = (FieldUsage) ViewTagger.getTag(cb);
 				usage.selected = cb.isChecked();
 				if (usage.selected)
 					nSelected++;

@@ -50,7 +50,10 @@ import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTaskContext;
 /**
  * Class to display and manage a cover image browser in a dialog.
  *
- * @author Grunthos
+ * ENHANCE: For each ISBN returned by LT, add TWO images and get the second from GoodReads
+ * ENHANCE: (Somehow) remove non-existent images from ImageSelector. Probably start with 1 image and GROW it.
+ * 
+ * @author Philip Warner
  */
 public class CoverBrowser {
 	// used in setting images sizes
@@ -81,7 +84,7 @@ public class CoverBrowser {
 	/**
 	 * Interface called when image is selected.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	public interface OnImageSelectedListener {
 		void onImageSelected(String fileSpec);
@@ -139,7 +142,7 @@ public class CoverBrowser {
 	/**
 	 * SimpleTask to fetch a thumbnail image and apply it to an ImageView
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	private class GetEditionsTask implements SimpleTask {
 		String isbn;
@@ -167,7 +170,7 @@ public class CoverBrowser {
 			}
 		}
 		@Override
-		public void finished() {
+		public void onFinish() {
 			if (mEditions.size() == 0) {
 				Toast.makeText(mContext, R.string.no_editions, Toast.LENGTH_LONG).show();
 				shutdown();
@@ -180,7 +183,7 @@ public class CoverBrowser {
 		 * Always want the finished() method to be called.
 		 */
 		@Override
-		public boolean runFinished() {
+		public boolean requiresOnFinish() {
 			return true;
 		}
 	}
@@ -188,7 +191,7 @@ public class CoverBrowser {
 	/**
 	 * SimpleTask to fetch a thumbnail image and apply it to an ImageView
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	@SuppressWarnings("unused")
 	private class GetThumbnailTask implements SimpleTask {
@@ -219,7 +222,7 @@ public class CoverBrowser {
 			}
 		}
 		@Override
-		public void finished() {
+		public void onFinish() {
 			// Load the file and apply to view
 			File file = new File(fileSpec);
 			file.deleteOnExit();
@@ -229,7 +232,7 @@ public class CoverBrowser {
 		}
 
 		@Override
-		public boolean runFinished() {
+		public boolean requiresOnFinish() {
 			return true;
 		}
 	}
@@ -237,7 +240,7 @@ public class CoverBrowser {
 	/**
 	 * SimpleTask to download an image and apply it to the ImageSwitcher.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	@SuppressWarnings("unused")
 	private class GetFullImageTask implements SimpleTask {
@@ -276,14 +279,14 @@ public class CoverBrowser {
 			}
 		}
 		@Override
-		public void finished() {
+		public void onFinish() {
 			// Update the ImageSwitcher
 			File file = new File(fileSpec);
 			TextView msgVw = (TextView)mDialog.findViewById(R.id.switcherStatus);
 			if (file.exists() && file.length() > 100) {
 				Drawable d = new BitmapDrawable(Utils.fetchFileIntoImageView(file, null, mPreviewSize*4, mPreviewSize*4, true ));
 				switcher.setImageDrawable(d);
-				switcher.setTag(file.getAbsolutePath());    			
+				ViewTagger.setTag(switcher, file.getAbsolutePath());    			
 				msgVw.setVisibility(View.GONE);
 				switcher.setVisibility(View.VISIBLE);
 			} else {
@@ -293,7 +296,7 @@ public class CoverBrowser {
 			}
 		}
 		@Override
-		public boolean runFinished() {
+		public boolean requiresOnFinish() {
 			return !mShutdown;
 		}
 	}
@@ -384,7 +387,7 @@ public class CoverBrowser {
 		switcher.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Object newSpec = switcher.getTag();
+				Object newSpec = ViewTagger.getTag(switcher);
 				if (newSpec != null) {
 					if (mOnImageSelectedListener != null)
 						mOnImageSelectedListener.onImageSelected((String)newSpec);
@@ -412,7 +415,7 @@ public class CoverBrowser {
 	/**
 	 * Simple utility class to (try) to cleanup and prevent files from accumulating.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	private class FileManager {
 		private Bundle mFiles = new Bundle();
@@ -503,7 +506,7 @@ public class CoverBrowser {
 	/**
 	 * ImageAdapter for gallery. Queues image requests.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	public class CoverImageAdapter extends BaseAdapter {
 		private int mGalleryItemBackground;

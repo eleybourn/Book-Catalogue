@@ -1,6 +1,6 @@
 /*
  * @copyright 2011 Philip Warner
- * @license GNU General Public License
+ * @license GNU General Public License V3
  * 
  * This file is part of Book Catalogue.
  *
@@ -23,6 +23,9 @@ package com.eleybourn.bookcatalogue;
 import java.util.ArrayList;
 import java.util.Stack;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import com.eleybourn.bookcatalogue.database.CoversDbHelper;
+
 import android.os.Handler;
 
 /**
@@ -41,7 +44,7 @@ import android.os.Handler;
  * 3 classes: SimpleTaskQueueBase, SimpleTaskQueueFIFO and SimpleTaskQueueLIFO. For now, this is
  * not needed.
  * 
- * @author Grunthos
+ * @author Philip Warner
  */
 public class SimpleTaskQueue {
 	// Execution queue
@@ -70,7 +73,7 @@ public class SimpleTaskQueue {
 	 * run() is called in worker thread
 	 * finished() is called in UI thread.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 *
 	 */
 	public interface SimpleTask {
@@ -81,20 +84,20 @@ public class SimpleTaskQueue {
 		/**
 		 * Method called in UI thread after the background task has finished.
 		 */
-		void finished();
+		void onFinish();
 		/**
 		 * Method called by queue manager to determine if 'finished()' needs to be called.
 		 * This is an optimization to avoid queueing unnecessary Runnables.
 		 * 
 		 * @return	boolean indicating 'finished()' should be called in UI thread.
 		 */
-		boolean runFinished();
+		boolean requiresOnFinish();
 	}
 
 	/**
 	 * Interface for an object to listen for when tasks start.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	public interface OnTaskStartListener {
 		void onTaskStart(SimpleTask task);
@@ -103,7 +106,7 @@ public class SimpleTaskQueue {
 	/**
 	 * Interface for an object to listen for when tasks finish.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	public interface OnTaskFinishListener {
 		void onTaskFinish(SimpleTask task, Exception e);
@@ -146,7 +149,7 @@ public class SimpleTaskQueue {
 	/**
 	 * Class to wrap a simpleTask with more info needed by the queue.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	private static class SimpleTaskWrapper {
 		private static Long mCounter = 0L;
@@ -165,7 +168,7 @@ public class SimpleTaskQueue {
 	/**
 	 * Constructor. Nothing to see here, move along. Just start the thread.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 *
 	 */
 	public SimpleTaskQueue(String name) {
@@ -176,7 +179,7 @@ public class SimpleTaskQueue {
 	/**
 	 * Constructor. Nothing to see here, move along. Just start the thread.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 *
 	 */
 	public SimpleTaskQueue(String name, int maxTasks) {
@@ -217,11 +220,11 @@ public class SimpleTaskQueue {
 	public long enqueue(SimpleTask task) {
 		SimpleTaskWrapper wrapper = new SimpleTaskWrapper(task);
 
-		synchronized(this) {
-			mManagedTaskCount++;
-		}
 		try {
-			mQueue.push(wrapper);
+			synchronized(this) {
+				mQueue.push(wrapper);
+				mManagedTaskCount++;
+			}
 		} catch (InterruptedException e) {
 			// Ignore. This happens if the queue object is being terminated.
 		}
@@ -245,7 +248,10 @@ public class SimpleTaskQueue {
 		Stack<SimpleTaskWrapper> currTasks = mQueue.getElements();
 		for (SimpleTaskWrapper w : currTasks) {
 			if (w.id == id) {
-				mQueue.remove(w);
+				synchronized(this) {
+					if (mQueue.remove(w))
+						mManagedTaskCount--;					
+				}
 				//System.out.println("SimpleTaskQueue(removeok): " + mQueue.size());			
 				return true;
 			}
@@ -261,7 +267,10 @@ public class SimpleTaskQueue {
 		Stack<SimpleTaskWrapper> currTasks = mQueue.getElements();
 		for (SimpleTaskWrapper w : currTasks) {
 			if (w.task.equals(t)) {
-				mQueue.remove(w);
+				synchronized(this) {
+					if (mQueue.remove(w))
+						mManagedTaskCount--;					
+				}
 				//System.out.println("SimpleTaskQueue(removeok): " + mQueue.size());			
 				return true;
 			}
@@ -304,7 +313,7 @@ public class SimpleTaskQueue {
 		}
 		// See if we need to call finished(). Default to true.
 		try {
-			taskWrapper.finishRequested = task.runFinished();
+			taskWrapper.finishRequested = task.requiresOnFinish();
 		} catch (Exception e) {
 			taskWrapper.finishRequested = true;
 		}
@@ -349,7 +358,7 @@ public class SimpleTaskQueue {
 				// Call the task handler; log and ignore errors.
 				if (req.finishRequested) {
 					try {
-						task.finished();
+						task.onFinish();
 					} catch (Exception e) {
 						Logger.logError(e, "Error processing request result");
 					}
@@ -370,17 +379,24 @@ public class SimpleTaskQueue {
 
 	public static interface SimpleTaskContext {
 		public CatalogueDBAdapter getDb();
+		/** 'Covers' database helper */
+		public CoversDbHelper getCoversDb();
+		public Utils getUtils();
 	}
 
 	/**
 	 * Class to actually run the tasks. Can start more than one. They wait until there is nothing left in
 	 * the queue before terminating.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	private class SimpleTaskQueueThread extends Thread implements SimpleTaskContext {
 		/** DB Connection, if task requests one. Survives while thread is alive */
 		CatalogueDBAdapter mDb = null;
+		/** Covers DB Connection, if task requests one. Survives while thread is alive */
+		CoversDbHelper mCoversDb = null;
+		/** Utils object, if needed. Survives while thread is alive */
+		Utils mUtils = null;
 
 		/**
 		 * Main worker thread logic
@@ -411,8 +427,18 @@ public class SimpleTaskQueue {
 			} catch (Exception e) {
 				Logger.logError(e);
 			} finally {
-				if (mDb != null)
-					mDb.close();
+				try {
+					if (mDb != null)
+						mDb.close();					
+				} catch (Exception e) {}
+				try {
+					if (mCoversDb != null)
+						mCoversDb.close();					
+				} catch (Exception e) {}
+				try {
+					if (mUtils != null)
+						mUtils.close();					
+				} catch (Exception e) {}
 			}
 		}
 
@@ -423,6 +449,20 @@ public class SimpleTaskQueue {
 				mDb.open();
 			}
 			return mDb;
+		}
+
+		@Override
+		public Utils getUtils() {
+			if (mUtils == null)
+				mUtils = new Utils();
+			return mUtils;
+		}
+
+		@Override
+		public CoversDbHelper getCoversDb() {
+			if (mCoversDb == null)
+				mCoversDb = new CoversDbHelper();
+			return mCoversDb;
 		}
 	}
 }

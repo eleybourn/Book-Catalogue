@@ -10,7 +10,7 @@
 		<shape xmlns:android="http://schemas.android.com/apk/res/android" >
 		   <gradient 
 		       android:startColor="#E0000000"
-		       android:centerColor="#E0000000"
+		       android:centerColor="#D0000000"
 		       android:endColor="#30000000"
 		       android:angle="0"
 		       android:dither="true"

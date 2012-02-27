@@ -31,6 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import android.os.Build;
+import android.util.Log;
 
 public class Logger {
 	
@@ -57,6 +58,8 @@ public class Logger {
 		//Log.e("BookCatalogue", error);
 		
 		try {
+			// RELEASE Remove Log.e!
+			Log.e("BC Logger", error);
 			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Utils.ERRORLOG_FILE), "utf8"), 8192);
 			out.write(error);
 			out.close();

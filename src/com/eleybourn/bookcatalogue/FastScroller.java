@@ -502,7 +502,8 @@ class FastScroller {
                 } else if (newThumbY + mThumbH > viewHeight) {
                     newThumbY = viewHeight - mThumbH;
                 }
-                if (Math.abs(mThumbY - newThumbY) < 2) {
+                // ENHANCE would be nice to use ViewConfiguration.get(context).getScaledTouchSlop()???
+                if (Math.abs(mThumbY - newThumbY) < 2) { 
                     return true;
                 }
                 mThumbY = newThumbY;

@@ -1,3 +1,23 @@
+/*
+ * @copyright 2012 Philip Warner
+ * @license GNU General Public License
+ * 
+ * This file is part of Book Catalogue.
+ *
+ * Book Catalogue is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Book Catalogue is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
@@ -20,7 +40,7 @@ import android.widget.AdapterView;
 /**
  * Activity to display the available QueueManager Task object subclasses to the user.
  * 
- * @author Grunthos
+ * @author Philip Warner
  */
 public class TaskListActivity extends net.philipwarner.taskqueue.BindableItemListActivity {
 	private CatalogueDBAdapter m_db = null;
@@ -82,7 +102,7 @@ public class TaskListActivity extends net.philipwarner.taskqueue.BindableItemLis
 	 */
 	@Override
 	public void onListItemClick(AdapterView<?> parent, final View v, final int position, final long id) {
-		Task task = (Task) v.getTag(R.id.TAG_TASK);
+		Task task = (Task) ViewTagger.getTag(v, R.id.TAG_TASK);
 		ArrayList<ContextDialogItem> items = new ArrayList<ContextDialogItem>();
 
 		task.addContextMenuItems(this, parent, v, position, id, items, m_db);
@@ -106,7 +126,7 @@ public class TaskListActivity extends net.philipwarner.taskqueue.BindableItemLis
 	 */
 	@Override
 	public void bindViewToItem(Context context, View view, BindableItemSQLiteCursor cursor, BindableItem bindable) {
-		view.setTag(R.id.TAG_TASK, bindable);
+		ViewTagger.setTag(view, R.id.TAG_TASK, bindable);
 		bindable.bindView(view, context, cursor, m_db);
 	}
 

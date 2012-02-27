@@ -21,6 +21,7 @@
 package com.eleybourn.bookcatalogue;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
@@ -37,7 +38,7 @@ import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsages.Usages;
 /**
  * Class to update all thumbnails (and some other data) in a background thread.
  *
- * @author Grunthos
+ * @author Philip Warner
  */
 public class UpdateThumbnailsThread extends ManagedTask implements SearchManager.SearchResultHandler {
 	// The fields that the user requested to update
@@ -72,12 +73,9 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 	/**
 	 * Constructor.
 	 * 
-	 * @param ctx				Context to use for constructing progressdialog
-	 * @param fieldHash			Hastable containing entries for fields to update
-	 * @param overwrite			Whether to overwrite details
-	 * @param books				Cursor to scan
+	 * @param manager			Object to manage background tasks
+	 * @param requestedFields	fields to update
 	 * @param lookupHandler		Interface object to handle events in this thread.
-	 * 
 	 */
 	public UpdateThumbnailsThread(TaskManager manager, FieldUsages requestedFields, LookupHandler lookupHandler) {
 		super(manager, lookupHandler);
@@ -115,8 +113,8 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 				// Get the book ID
 				mCurrId = Utils.getAsLong(mOrigData, CatalogueDBAdapter.KEY_ROWID);
 				// Get the extra data about the book
-				mOrigData.putParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mDbHelper.getBookAuthorList(mCurrId));
-				mOrigData.putParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY, mDbHelper.getBookSeriesList(mCurrId));
+				mOrigData.putSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mDbHelper.getBookAuthorList(mCurrId));
+				mOrigData.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, mDbHelper.getBookSeriesList(mCurrId));
 
 				// Grab the searchable fields. Ideally we will have an ISBN but we may not.
 				String isbn = mOrigData.getString(CatalogueDBAdapter.KEY_ISBN);
@@ -146,13 +144,13 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 							} else if (usage.fieldName.equals(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)) {
 								// We should never have a book with no authors, but lets be paranoid
 								if (mOrigData.containsKey(usage.fieldName)) {
-									ArrayList<Author> origAuthors = mOrigData.getParcelableArrayList(usage.fieldName);
+									ArrayList<Author> origAuthors = (ArrayList<Author>) mOrigData.getSerializable(usage.fieldName);
 									if (origAuthors == null || origAuthors.size() == 0)
 										mCurrFieldUsages.put(usage);
 								}
 							} else if (usage.fieldName.equals(CatalogueDBAdapter.KEY_SERIES_ARRAY)) {
 								if (mOrigData.containsKey(usage.fieldName)) {
-									ArrayList<Series> origSeries = mOrigData.getParcelableArrayList(usage.fieldName);
+									ArrayList<Series> origSeries = (ArrayList<Series>) mOrigData.getSerializable(usage.fieldName);
 									if (origSeries == null || origSeries.size() == 0)
 										mCurrFieldUsages.put(usage);
 								}
@@ -195,7 +193,8 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 
 				// Start searching if we need it, then wait...
 				if (wantSearch) {
-					mSearchManager.search(author, title, isbn, tmpThumbWanted);
+					// RELEASE: Allow user-selection of search sources
+					mSearchManager.search(author, title, isbn, tmpThumbWanted, SearchManager.SEARCH_ALL);
 					// Wait for the search to complete; when the search has completed it uses class-level state
 					// data when processing the results. It will signal this lock when it no longer needs any class
 					// level state data (eg. mOrigData).
@@ -318,13 +317,13 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 						// Handle special cases
 						if (usage.fieldName.equals(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)) {
 							if (origData.containsKey(usage.fieldName)) {
-								ArrayList<Author> origAuthors = origData.getParcelableArrayList(usage.fieldName);
+								ArrayList<Author> origAuthors = (ArrayList<Author>) origData.getSerializable(usage.fieldName);
 								if (origAuthors != null && origAuthors.size() > 0)
 									newData.remove(usage.fieldName);								
 							}
 						} else if (usage.fieldName.equals(CatalogueDBAdapter.KEY_SERIES_ARRAY)) {
 							if (origData.containsKey(usage.fieldName)) {
-								ArrayList<Series> origSeries = origData.getParcelableArrayList(usage.fieldName);
+								ArrayList<Series> origSeries = (ArrayList<Series>) origData.getSerializable(usage.fieldName);
 								if (origSeries != null && origSeries.size() > 0)
 									newData.remove(usage.fieldName);								
 							}
@@ -357,13 +356,13 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 		
 	}
 
-	private static<T extends Parcelable> void combineArrays(String key, Bundle origData, Bundle newData) {
+	private static<T extends Serializable> void combineArrays(String key, Bundle origData, Bundle newData) {
 		// Each of the lists to combine
 		ArrayList<T> origList = null;
 		ArrayList<T> newList = null;
 		// Get the list from the original, if present. 
 		if (origData.containsKey(key)) {
-			origList = origData.getParcelableArrayList(key);
+			origList = (ArrayList<T>) origData.getSerializable(key);
 		}
 		// Otherwise an empty list
 		if (origList == null)
@@ -371,13 +370,13 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 
 		// Get from the new data
 		if (newData.containsKey(key)) {
-			newList = newData.getParcelableArrayList(key);			
+			newList = (ArrayList<T>) newData.getSerializable(key);			
 		}
 		if (newList == null)
 			newList = new ArrayList<T>();
 		origList.addAll(newList);
 		// Save combined version to the new data
-		newData.putParcelableArrayList(key, origList);
+		newData.putSerializable(key, origList);
 	}
 	
 	/**

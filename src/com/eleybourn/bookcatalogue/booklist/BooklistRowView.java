@@ -1,19 +1,38 @@
+/*
+ * @copyright 2012 Philip Warner
+ * @license GNU General Public License
+ * 
+ * This file is part of Book Catalogue.
+ *
+ * Book Catalogue is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Book Catalogue is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.eleybourn.bookcatalogue.booklist;
 
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.*;
 
-import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
-import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.Utils;
-import com.eleybourn.bookcatalogue.booklist.BooklistStyle.RowKinds;
+import com.eleybourn.bookcatalogue.booklist.BooklistGroup;
+import com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds;
 
 /**
  * RowView object for the BooklistCursor.
  * 
  * Implements methods to perform common tasks on the 'current' row of the cursor.
  * 
- * @author Grunthos
+ * @author Philip Warner
  */
 public class BooklistRowView {
 	/** ID counter */
@@ -29,15 +48,6 @@ public class BooklistRowView {
 	/** Internal ID for this RowView */
 	private final long mId;
 
-	/** Preference setting cached when object was created */
-	private final boolean mShowBookshelves;
-	/** Preference setting cached when object was created */
-	private final boolean mShowLocation;
-	/** Preference setting cached when object was created */
-	private final boolean mShowPublisher;
-	/** Preference setting cached when object was created */
-	private final boolean mShowThumbnails;
-	
 	/**
 	 * Constructor
 	 * 
@@ -54,19 +64,30 @@ public class BooklistRowView {
 		mCursor = c;
 		mBuilder = builder;
 
+		final int extras = mBuilder.getStyle().getExtras();
+
 		// Cache preferences
-		if (BookCatalogueApp.getAppPreferences().getBoolean(BookCataloguePreferences.PREF_LARGE_THUMBNAILS, false)) {
+		if ( (extras & BooklistStyle.EXTRAS_THUMBNAIL_LARGE) != 0) {
 			mMaxThumbnailWidth = 120;
 			mMaxThumbnailHeight = 120;
 		} else {
 			mMaxThumbnailWidth = 60;
 			mMaxThumbnailHeight = 60;
-		}
-		mShowBookshelves = BookCatalogueApp.getAppPreferences().getBoolean(BooklistPreferences.PREF_SHOW_BOOKSHELVES, false);
-		mShowThumbnails = BookCatalogueApp.getAppPreferences().getBoolean(BooklistPreferences.PREF_SHOW_THUMBNAILS, false);
-		mShowLocation = BookCatalogueApp.getAppPreferences().getBoolean(BooklistPreferences.PREF_SHOW_LOCATION, false);
-		mShowPublisher = BookCatalogueApp.getAppPreferences().getBoolean(BooklistPreferences.PREF_SHOW_PUBLISHER, false);
-		
+		}		
+	}
+
+	/**
+	 * Get Utils from underlying cursor
+	 */
+	public Utils getUtils() {
+		return mCursor.getUtils();
+	}
+
+	/**
+	 * Accessor
+	 */
+	public BooklistStyle getStyle() {
+		return mBuilder.getStyle();
 	}
 
 	/**
@@ -93,38 +114,6 @@ public class BooklistRowView {
 	 */
 	public int getMaxThumbnailWidth() {
 		return mMaxThumbnailWidth;
-	}
-	/**
-	 * Accessor
-	 * 
-	 * @return
-	 */
-	public boolean getShowBookshelves() {
-		return mShowBookshelves;
-	}
-	/**
-	 * Accessor
-	 * 
-	 * @return
-	 */
-	public boolean getShowLocation() {
-		return mShowLocation;
-	}
-	/**
-	 * Accessor
-	 * 
-	 * @return
-	 */
-	public boolean getShowPublisher() {
-		return mShowPublisher;
-	}
-	/**
-	 * Accessor
-	 * 
-	 * @return
-	 */
-	public boolean getShowThumbnails() {
-		return mShowThumbnails;
 	}
 
 	/**
@@ -185,7 +174,7 @@ public class BooklistRowView {
 		}
 		String s = mCursor.getString(mLevel2Col);
 
-		switch(mBuilder.getStyle().get(1).kind) {
+		switch(mBuilder.getStyle().getGroupAt(1).kind) {
 		case RowKinds.ROW_KIND_MONTH_ADDED:
 		case RowKinds.ROW_KIND_MONTH_PUBLISHED:
 			try {

@@ -1,3 +1,23 @@
+/*
+ * @copyright 2012 Philip Warner
+ * @license GNU General Public License
+ * 
+ * This file is part of Book Catalogue.
+ *
+ * Book Catalogue is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Book Catalogue is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.eleybourn.bookcatalogue.booklist;
 
 import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.*;
@@ -12,7 +32,7 @@ import com.eleybourn.bookcatalogue.database.DbUtils.TableDefinition.TableTypes;
  * probably become the 'real' representation of the database when DbUtils is more mature. For now, it suffices to build
  * the complex queries used in BooklistBuilder.
  * 
- * @author Grunthos
+ * @author Philip Warner
  */
 public class DatabaseDefinitions {
 
@@ -22,6 +42,8 @@ public class DatabaseDefinitions {
 	 */
 	private static final String ALIAS_BOOK_BOOKSHELF = "bbsh";
 	private static final String ALIAS_BOOKSHELF = "bsh";
+	private static final String ALIAS_BOOK_LIST_NODE_SETTINGS = "blns";
+	private static final String ALIAS_BOOK_LIST_STYLES = "bls";
 	private static final String ALIAS_BOOK_SERIES = "bs";
 	private static final String ALIAS_SERIES = "s";
 	private static final String ALIAS_BOOKS = "b";
@@ -64,6 +86,7 @@ public class DatabaseDefinitions {
 	public static final DomainDefinition DOM_LOCATION = new DomainDefinition(KEY_LOCATION, "text", "", "");
 	public static final DomainDefinition DOM_MARK = new DomainDefinition("mark", "boolean", "default 0",  "");
 	public static final DomainDefinition DOM_NOTES = new DomainDefinition(KEY_NOTES, "text", "", "");
+	public static final DomainDefinition DOM_POSITION = new DomainDefinition("position", "integer", "",  "not null");
 	public static final DomainDefinition DOM_PRIMARY_SERIES_COUNT = new DomainDefinition("primary_series_count", "integer", "", "");
 	public static final DomainDefinition DOM_PUBLICATION_YEAR = new DomainDefinition("publication_year", "int", "", "");
 	public static final DomainDefinition DOM_PUBLICATION_MONTH = new DomainDefinition("publication_month", "int", "", "");
@@ -76,6 +99,7 @@ public class DatabaseDefinitions {
 	public static final DomainDefinition DOM_SERIES_NAME = new DomainDefinition(KEY_SERIES_NAME, "text", "", "");
 	public static final DomainDefinition DOM_SERIES_NUM = new DomainDefinition(KEY_SERIES_NUM, "integer", "", "");
 	public static final DomainDefinition DOM_SERIES_POSITION = new DomainDefinition(KEY_SERIES_POSITION, "integer", "", "");
+	public static final DomainDefinition DOM_STYLE = new DomainDefinition("style", "blob", "",  "not null");
 	public static final DomainDefinition DOM_TITLE = new DomainDefinition(KEY_TITLE, "text", "", "");
 	public static final DomainDefinition DOM_TITLE_LETTER = new DomainDefinition("title_letter", "text", "", "");
 	public static final DomainDefinition DOM_VISIBLE = new DomainDefinition("visible", "int", "default 0", "");
@@ -164,8 +188,17 @@ public class DatabaseDefinitions {
 	/** Definition of BOOK_LIST_NODE_SETTINGS temp table. This IS definitive */
 	public static final TableDefinition TBL_BOOK_LIST_NODE_SETTINGS = new TableDefinition(TBL_BOOK_LIST_NAME + "_node_settings",
 			DOM_ID, DOM_KIND, DOM_ROOT_KEY)
-		.setAlias("blns")
+		.setAlias(ALIAS_BOOK_LIST_NODE_SETTINGS)
 		.addIndex("ROOT_KIND", true, DOM_ROOT_KEY, DOM_KIND)
 		.addIndex("KIND_ROOT", true, DOM_KIND, DOM_ROOT_KEY);
 		;
+		
+	/** Definition for the custom boooklist styles table */
+	public static final TableDefinition TBL_BOOK_LIST_STYLES = new TableDefinition("book_list_styles",
+			DOM_ID, DOM_STYLE)
+		.setAlias(ALIAS_BOOK_LIST_STYLES)
+		.addIndex("id", true, DOM_ID)
+		;
+		
+		
 }

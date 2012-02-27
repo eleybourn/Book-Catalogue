@@ -1,3 +1,23 @@
+/*
+ * @copyright 2012 Philip Warner
+ * @license GNU General Public License
+ * 
+ * This file is part of Book Catalogue.
+ *
+ * Book Catalogue is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Book Catalogue is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.eleybourn.bookcatalogue.database;
 
 import java.util.Enumeration;
@@ -22,7 +42,7 @@ import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer.SyncLock;
 /**
  * Classes used to help synchronize database access across threads.
  * 
- * @author Grunthos
+ * @author Philip Warner
  */
 public class DbSync {
 	/**
@@ -42,7 +62,7 @@ public class DbSync {
 	 * 
 	 * NOTE: This lock can cause writer starvation since it does not introduce pending locks.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	public static class Synchronizer {
 		/** Main lock for synchronization */
@@ -62,7 +82,7 @@ public class DbSync {
 		/**
 		 * Interface common to all lock types.
 		 * 
-		 * @author Grunthos
+		 * @author Philip Warner
 		 */
 		public interface SyncLock {
 			void unlock();
@@ -72,7 +92,7 @@ public class DbSync {
 		/**
 		 * Internal implementation of a Shared Lock.
 		 * 
-		 * @author Grunthos
+		 * @author Philip Warner
 		 */
 		private class SharedLock implements SyncLock {
 			@Override
@@ -87,7 +107,7 @@ public class DbSync {
 		/**
 		 * Internal implementation of an Exclusive Lock.
 		 * 
-		 * @author Grunthos
+		 * @author Philip Warner
 		 */
 		private class ExclusiveLock implements SyncLock {
 			@Override
@@ -238,7 +258,7 @@ public class DbSync {
 	/**
 	 * Database wrapper class that performs thread synchronization on all operations.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	public static class SynchronizedDb {
 		/** Underlying database */
@@ -297,7 +317,7 @@ public class DbSync {
 		 * Factory for Synchronized Cursor objects. This can be subclassed by other
 		 * Cursor implementations.
 		 * 
-		 * @author Grunthos
+		 * @author Philip Warner
 		 */
 		public class SynchronizedCursorFactory implements CursorFactory {
 			@Override
@@ -598,7 +618,7 @@ public class DbSync {
 	/**
 	 * Wrapper for statements that ensures locking is used.
 	 *
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	public static class SynchronizedStatement {
 		/** Synchronizer from database */

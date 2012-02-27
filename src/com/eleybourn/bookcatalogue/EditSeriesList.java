@@ -23,6 +23,7 @@ package com.eleybourn.bookcatalogue;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
@@ -62,7 +63,8 @@ public class EditSeriesList extends EditObjectList<Series> {
 				et.setText(object.num);
 		}
 	}
-	
+
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		try {
@@ -110,7 +112,7 @@ public class EditSeriesList extends EditObjectList<Series> {
 	}
 
 	@Override
-	protected void onRowClick(View target, final Series object) {
+	protected void onRowClick(View target, int position, final Series object) {
 		editSeries(object);
 	}
 	
@@ -168,6 +170,7 @@ public class EditSeriesList extends EditObjectList<Series> {
 		if (nameIsSame) {
 			// Same name, different number... just update
 			oldSeries.copyFrom(newSeries);
+			Utils.pruneSeriesList(mList);
 			Utils.pruneList(mDbHelper, mList);
 			mAdapter.notifyDataSetChanged();
 			return;
@@ -185,6 +188,7 @@ public class EditSeriesList extends EditObjectList<Series> {
 		if (newSeries.id == oldSeries.id || !oldHasOthers) {
 			// Just update with the most recent spelling and format
 			oldSeries.copyFrom(newSeries);
+			Utils.pruneSeriesList(mList);
 			Utils.pruneList(mDbHelper, mList);
 			mDbHelper.sendSeries(oldSeries);
 			mAdapter.notifyDataSetChanged();
@@ -204,6 +208,7 @@ public class EditSeriesList extends EditObjectList<Series> {
 		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, thisBook, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				oldSeries.copyFrom(newSeries);
+				Utils.pruneSeriesList(mList);
 				Utils.pruneList(mDbHelper, mList);
 				mAdapter.notifyDataSetChanged();
 				alertDialog.dismiss();
@@ -214,6 +219,7 @@ public class EditSeriesList extends EditObjectList<Series> {
 			public void onClick(DialogInterface dialog, int which) {
 				mDbHelper.globalReplaceSeries(oldSeries, newSeries);
 				oldSeries.copyFrom(newSeries);
+				Utils.pruneSeriesList(mList);
 				Utils.pruneList(mDbHelper, mList);
 				mAdapter.notifyDataSetChanged();
 				alertDialog.dismiss();
@@ -224,7 +230,7 @@ public class EditSeriesList extends EditObjectList<Series> {
 	}
 	
 	@Override
-	protected boolean onSave() {
+	protected boolean onSave(Intent intent) {
 		final AutoCompleteTextView t = ((AutoCompleteTextView)EditSeriesList.this.findViewById(R.id.series));
 		Resources res = this.getResources();
 		String s = t.getText().toString().trim();

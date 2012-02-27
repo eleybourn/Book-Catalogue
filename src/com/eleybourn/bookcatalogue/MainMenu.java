@@ -1,3 +1,23 @@
+/*
+ * @copyright 2012 Philip Warner
+ * @license GNU General Public License
+ * 
+ * This file is part of Book Catalogue.
+ *
+ * Book Catalogue is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Book Catalogue is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
@@ -22,11 +42,10 @@ import android.view.View.OnClickListener;
  * - Help
  * - Export/Import/Sync
  * 
- * @author Grunthos
+ * @author Philip Warner
  * 
  */
 public class MainMenu extends Activity {
-	private CatalogueDBAdapter mDbHelper;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -47,17 +66,25 @@ public class MainMenu extends Activity {
 		}
 
 		// If we get here, we're meant to be in this activity.
-		mDbHelper = new CatalogueDBAdapter(this);
-		mDbHelper.open();
 		setContentView(R.layout.main_menu);
 
+		// Display/hide the 'classic' my books item
+		int classicVis;
+		if (prefs.getBoolean(BookCataloguePreferences.PREF_INCLUDE_CLASSIC_MY_BOOKS, false))
+			classicVis = View.VISIBLE;
+		else
+			classicVis = View.GONE;
+
+		View v = findViewById(R.id.my_books_classic_label);
+		v.setVisibility(classicVis);
+
 		// Setup handlers for items. It's just a menu after all.
-		setOnClickListener(R.id.my_books_label, mMyBooksHandler);
+		setOnClickListener(R.id.my_books_label, mBrowseHandler);
+		setOnClickListener(R.id.my_books_classic_label, mMyBooksHandler);
 		setOnClickListener(R.id.add_book_label, mAddBookHandler);
 		setOnClickListener(R.id.loan_label, mLoanBookHandler);
 		setOnClickListener(R.id.search_label, mSearchHandler);
 		setOnClickListener(R.id.administration_label, mAdminHandler);
-		setOnClickListener(R.id.browse_label, mBrowseHandler);
 		setOnClickListener(R.id.about_label, mAboutHandler);
 		setOnClickListener(R.id.help_label, mHelpHandler);
 		setOnClickListener(R.id.donate_label, mDonateHandler);
@@ -105,7 +132,6 @@ public class MainMenu extends Activity {
 	private OnClickListener mAdminHandler = new OnClickListener() {
 		@Override public void onClick(View v) {
 			Intent i = new Intent(MainMenu.this, AdministrationFunctions.class);
-			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(i);			
 		}
 	};
@@ -116,7 +142,6 @@ public class MainMenu extends Activity {
 	private OnClickListener mBrowseHandler = new OnClickListener() {
 		@Override public void onClick(View v) {
 			Intent i = new Intent(MainMenu.this, BooksOnBookshelf.class);
-			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(i);
 		}
 	};
@@ -127,7 +152,6 @@ public class MainMenu extends Activity {
 	private OnClickListener mAboutHandler = new OnClickListener() {
 		@Override public void onClick(View v) {
 			Intent i = new Intent(MainMenu.this, AdministrationAbout.class);
-			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(i);
 		}
 	};
@@ -138,7 +162,6 @@ public class MainMenu extends Activity {
 	private OnClickListener mHelpHandler = new OnClickListener() {
 		@Override public void onClick(View v) {
 			Intent i = new Intent(MainMenu.this, Help.class);
-			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(i);			
 		}
 	};
@@ -149,7 +172,6 @@ public class MainMenu extends Activity {
 	private OnClickListener mDonateHandler = new OnClickListener() {
 		@Override public void onClick(View v) {
 			Intent i = new Intent(MainMenu.this, AdministrationDonate.class);
-			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(i);
 		}
 	};
@@ -178,7 +200,6 @@ public class MainMenu extends Activity {
 	 */
 	private void doMyBooks() {
 		Intent i = new Intent(this, BookCatalogue.class);
-		i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		startActivity(i);
 	}
 
@@ -235,7 +256,5 @@ public class MainMenu extends Activity {
 	@Override 
 	public void onDestroy() {
 		super.onDestroy();
-		if (mDbHelper != null)
-			mDbHelper.close();
 	}
 }

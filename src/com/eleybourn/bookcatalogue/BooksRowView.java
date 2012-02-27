@@ -1,3 +1,23 @@
+/*
+ * @copyright 2012 Philip Warner
+ * @license GNU General Public License
+ * 
+ * This file is part of Book Catalogue.
+ *
+ * Book Catalogue is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Book Catalogue is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.eleybourn.bookcatalogue;
 
 import android.database.Cursor;
@@ -10,7 +30,7 @@ import android.database.Cursor;
  * Both BooksCursor and BooksSnapshotCursor implement a getRowView() method that returns
  * a cached BookRowView based on the cursor.
  * 
- * @author Grunthos
+ * @author Philip Warner
  */
 public class BooksRowView {
 
@@ -110,7 +130,16 @@ public class BooksRowView {
 				throw new RuntimeException("PUBLISHER column not in result set");
 		}
 		return mCursor.getString(mPublisherCol);
-//		return mCurrentRow[mPublisherCol];
+	}
+
+	private int mDatePublishedCol = -2;
+	public final String getDatePublished() {
+		if (mDatePublishedCol < 0) {
+			mDatePublishedCol = mCursor.getColumnIndex(CatalogueDBAdapter.KEY_DATE_PUBLISHED);
+			if (mDatePublishedCol < 0)
+				throw new RuntimeException("DATE_PUBLISHED column not in result set");
+		}
+		return mCursor.getString(mDatePublishedCol);
 	}
 
 	private int mGenreCol = -2;
@@ -141,6 +170,12 @@ public class BooksRowView {
 				throw new RuntimeException("SERIES column not in result set");
 		}
 		return mCursor.getString(mSeriesCol);
-//		return mCurrentRow[mSeriesCol];
+	}
+	
+	public String getString(int position) {
+		return mCursor.getString(position);
+	}
+	public String getString(String columnName) {
+		return mCursor.getString(mCursor.getColumnIndex(columnName));
 	}
 }

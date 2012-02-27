@@ -32,7 +32,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * A much-simplified blocking stack that satisfies the need of this application. Should be 
  * replaceable with BlockingDeque when we set the min. version requirement to 2.3!
  * 
- * @author Grunthos
+ * @author Philip Warner
  * @param <T>
  */
 public class BlockingStack<T> {

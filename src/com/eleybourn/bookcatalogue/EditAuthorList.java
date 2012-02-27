@@ -23,6 +23,7 @@ package com.eleybourn.bookcatalogue;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
@@ -37,7 +38,7 @@ import android.widget.Toast;
  * Activity to edit a list of authors provided in an ArrayList<Author> and
  * return an updated list.
  * 
- * @author Grunthos
+ * @author Philip Warner
  */
 public class EditAuthorList extends EditObjectList<Author> {
 
@@ -112,7 +113,7 @@ public class EditAuthorList extends EditObjectList<Author> {
 	}
 
 	@Override
-	protected void onRowClick(View target, final Author object) {
+	protected void onRowClick(View target, int position, final Author object) {
 		editAuthor(object);
 	}
 
@@ -213,7 +214,7 @@ public class EditAuthorList extends EditObjectList<Author> {
 	}
 	
 	@Override
-	protected boolean onSave() {
+	protected boolean onSave(Intent intent) {
 		final AutoCompleteTextView t = ((AutoCompleteTextView)EditAuthorList.this.findViewById(R.id.author));
 		Resources res = this.getResources();
 		String s = t.getText().toString().trim();

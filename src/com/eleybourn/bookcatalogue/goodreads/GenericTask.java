@@ -1,8 +1,29 @@
+/*
+ * @copyright 2012 Philip Warner
+ * @license GNU General Public License
+ * 
+ * This file is part of Book Catalogue.
+ *
+ * Book Catalogue is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Book Catalogue is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.eleybourn.bookcatalogue.goodreads;
 
 import java.util.ArrayList;
 
 import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.ViewTagger;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -23,7 +44,7 @@ import net.philipwarner.taskqueue.TasksCursor;
  * Base class for tasks in BookCatalogue. This builds and populates simple
  * View objects to display the task.
  * 
- * @author Grunthos
+ * @author Philip Warner
  */
 public abstract class GenericTask extends RunnableTask {
 	private static final long serialVersionUID = -5985866222873741455L;
@@ -35,7 +56,7 @@ public abstract class GenericTask extends RunnableTask {
 	/**
 	 * Holder class record to maintain task views.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	public class TaskHolder {
 		Task task;
@@ -55,7 +76,7 @@ public abstract class GenericTask extends RunnableTask {
 	@Override
 	public View newListItemView(LayoutInflater inflater, Context context, BindableItemSQLiteCursor cursor, ViewGroup parent) {
 		View view = inflater.inflate(R.layout.task_info, parent, false);
-		view.setTag(R.id.TAG_TASK, this);
+		ViewTagger.setTag(view, R.id.TAG_TASK, this);
 		TaskHolder holder = new TaskHolder();
 		holder.task = this;
 		holder.rowId = cursor.getId();
@@ -68,9 +89,9 @@ public abstract class GenericTask extends RunnableTask {
 		holder.checkbox = (CheckBox)view.findViewById(R.id.checked);
 		holder.retry = (Button)view.findViewById(R.id.retry);
 
-		view.setTag(R.id.TAG_TASK_HOLDER, holder);
+		ViewTagger.setTag(view, R.id.TAG_TASK_HOLDER, holder);
 
-		holder.checkbox.setTag(R.id.TAG_BOOK_EVENT_HOLDER, holder);
+		ViewTagger.setTag(holder.checkbox, R.id.TAG_BOOK_EVENT_HOLDER, holder);
 
 		return view;
 	}
@@ -80,7 +101,7 @@ public abstract class GenericTask extends RunnableTask {
 	 */
 	@Override
 	public boolean bindView(View view, Context context, BindableItemSQLiteCursor bindableCursor, Object appInfo) {
-		TaskHolder holder = (TaskHolder)view.getTag(R.id.TAG_TASK_HOLDER);
+		TaskHolder holder = (TaskHolder)ViewTagger.getTag(view, R.id.TAG_TASK_HOLDER);
 		TasksCursor cursor = (TasksCursor)bindableCursor;
 
 		// Update task info binding

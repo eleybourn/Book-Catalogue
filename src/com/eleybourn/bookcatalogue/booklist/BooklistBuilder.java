@@ -25,7 +25,7 @@ import java.util.Map.Entry;
 
 import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.*;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.*;
-import static com.eleybourn.bookcatalogue.booklist.BooklistStyle.RowKinds.*;
+import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.*;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
@@ -36,9 +36,9 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.booklist.BooklistStyle.BooklistAuthorGroup;
-import com.eleybourn.bookcatalogue.booklist.BooklistStyle.BooklistGroup;
-import com.eleybourn.bookcatalogue.booklist.BooklistStyle.BooklistSeriesGroup;
+import com.eleybourn.bookcatalogue.booklist.BooklistGroup.BooklistAuthorGroup;
+import com.eleybourn.bookcatalogue.booklist.BooklistGroup;
+import com.eleybourn.bookcatalogue.booklist.BooklistGroup.BooklistSeriesGroup;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyle.CompoundKey;
 import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedStatement;
 import com.eleybourn.bookcatalogue.database.DbUtils.TableDefinition.TableTypes;
@@ -54,7 +54,7 @@ import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer.SyncLock;
  * display books in a ListView control and perform operation like 'expand/collapse' on pseudo nodes
  * in the list.
  * 
- * @author Grunthos
+ * @author Philip Warner
  */
 public class BooklistBuilder {
 	/** Counter for BooklistBuilder IDs */
@@ -63,7 +63,7 @@ public class BooklistBuilder {
 	/**
 	 * Details of extra domain requested by caller before the build() method is called.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	private class ExtraDomainDetails {
 		/** Domain definition of domain to add */
@@ -102,6 +102,9 @@ public class BooklistBuilder {
 	/** Collection of statements used to build remaining data */
 	private ArrayList<SynchronizedStatement> mLevelBuildStmts = null;
 
+	/** Debug counter */
+	private static Integer mInstanceCount = 0;
+
 	/**
 	 * Constructor
 	 * 
@@ -109,6 +112,11 @@ public class BooklistBuilder {
 	 * @param style		Book list style to use
 	 */
 	public BooklistBuilder(CatalogueDBAdapter adapter, BooklistStyle style) {
+		synchronized(mInstanceCount) {
+			mInstanceCount++;
+			System.out.println("Builder instances: " + mInstanceCount);
+		}
+
 		// Allocate ID
 		synchronized(mBooklistBuilderIdCounter) {
 			mBooklistBuilderId = ++mBooklistBuilderIdCounter;
@@ -196,7 +204,7 @@ public class BooklistBuilder {
 	/**
 	 * Utility class to accumulate date for the build() method.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	private class SummaryBuilder {
 
@@ -238,15 +246,21 @@ public class BooklistBuilder {
 		 * @param flags			Flags indicating attributes of new domain
 		 */
 		public void addDomain(DomainDefinition domain, String expression, int flags) {
-			// Add to table
-			mListTable.addDomain(domain);
-
 			// Add to various collections. We use a map to improve lookups and ArrayLists
 			// so we can preserve order. Order preservation makes reading the SQL easier
 			// but is unimportant for code correctness.
-			mDomains.add(domain);
-			mExpressions.add(expression);
-			mExpressionMap.put(domain, expression);
+
+			// Add to table
+			mListTable.addDomain(domain);
+
+			// Domains and Expressions must be synchronized; we should probably use a map.
+			// For now, just check if mExpression is null. If it IS null, it means that
+			// the domain is just for the lowest level of the hierarchy.
+			if (expression != null) {
+				mDomains.add(domain);
+				mExpressions.add(expression);
+				mExpressionMap.put(domain, expression);				
+			}
 
 			// Based on the flags, add the domain to other lists.
 			if ((flags & FLAG_GROUPED) != 0)
@@ -375,8 +389,8 @@ public class BooklistBuilder {
 	/**
 	 * Clear and the build the temporary list of books based on the passed criteria.
 	 * 
-	 * @param primarySeriesOnly		Only fetch books primary series
-	 * @param showSeries			If false, will not cross with series at al
+	 * @param preferredState		State to display: expanded, collaped or remembered
+	 * @param markId				TODO: ID of book to 'mark'. DEPRECATED?
 	 * @param bookshelf				Search criteria: limit to shelf
 	 * @param authorWhere			Search criteria: additional conditions that apply to authors table
 	 * @param bookWhere				Search criteria: additional conditions that apply to book table
@@ -385,7 +399,7 @@ public class BooklistBuilder {
 	 * @param searchText			Search criteria: book details must in some way contain the passed text
 	 * 
 	 */
-	public void build(long markId, String bookshelf, String authorWhere, String bookWhere, String loaned_to, String seriesName, String searchText) {
+	public void build(int preferredState, long markId, String bookshelf, String authorWhere, String bookWhere, String loaned_to, String seriesName, String searchText) {
 		long t0 = System.currentTimeMillis();
 
 		// Rebuild the main table definition
@@ -442,8 +456,6 @@ public class BooklistBuilder {
 				summary.addDomain(DOM_SERIES_NAME, TBL_SERIES.dot(DOM_SERIES_NAME), SummaryBuilder.FLAG_GROUPED + SummaryBuilder.FLAG_SORTED);
 				// Group by ID (we want the ID available and there is a *chance* two series will have the same name...with bad data */
 				summary.addDomain(DOM_SERIES_ID, TBL_BOOK_SERIES.dot(DOM_SERIES_ID), SummaryBuilder.FLAG_GROUPED);
-				// We want the series number in the base data in sorted order
-				summary.addDomain(DOM_SERIES_NUM, TBL_BOOK_SERIES.dot(DOM_SERIES_NUM), SummaryBuilder.FLAG_SORTED);
 				// We want the series position in the base data
 				summary.addDomain(DOM_SERIES_POSITION, TBL_BOOK_SERIES.dot(DOM_SERIES_POSITION), SummaryBuilder.FLAG_NONE);
 				// We want a counter of how many books use the series as a primary series, so we can skip some series
@@ -459,7 +471,7 @@ public class BooklistBuilder {
 				// Always group & sort by 'Last, Given' expression
 				summary.addDomain(DOM_AUTHOR_SORT, AUTHOR_FORMATTED_LAST_FIRST_EXPRESSION, SummaryBuilder.FLAG_GROUPED + SummaryBuilder.FLAG_SORTED);
 				// Add the 'formatted' field of the requested type
-				if (authorGroup.givenName)
+				if (authorGroup.getGivenName())
 					summary.addDomain(DOM_AUTHOR_FORMATTED, AUTHOR_FORMATTED_FIRST_LAST_EXPRESSION, SummaryBuilder.FLAG_GROUPED);
 				else
 					summary.addDomain(DOM_AUTHOR_FORMATTED, AUTHOR_FORMATTED_LAST_FIRST_EXPRESSION, SummaryBuilder.FLAG_GROUPED);
@@ -473,17 +485,17 @@ public class BooklistBuilder {
 
 			case ROW_KIND_GENRE:
 				g.displayDomain = DOM_GENRE;
-				summary.addDomain(DOM_GENRE, TBL_BOOKS.dot(DOM_GENRE), SummaryBuilder.FLAG_GROUPED + SummaryBuilder.FLAG_SORTED);
+				summary.addDomain(DOM_GENRE, TBL_BOOKS.dot(DOM_GENRE), SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED);
 				g.setKeyComponents("g", DOM_GENRE);
 				break;
 
 			case ROW_KIND_PUBLISHER:
 				g.displayDomain = DOM_PUBLISHER;
-				summary.addDomain(DOM_PUBLISHER, TBL_BOOKS.dot(DOM_PUBLISHER), SummaryBuilder.FLAG_GROUPED + SummaryBuilder.FLAG_SORTED);
+				summary.addDomain(DOM_PUBLISHER, TBL_BOOKS.dot(DOM_PUBLISHER), SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED);
 				g.setKeyComponents("p", DOM_PUBLISHER);
 				break;
 
-			case ROW_KIND_UNREAD:
+			case ROW_KIND_READ_AND_UNREAD:
 				g.displayDomain = DOM_READ_STATUS;
 				String unreadExpr = "Case When " + TBL_BOOKS.dot(DOM_READ) + " = 1\n" +
 						"	Then '" + BookCatalogueApp.getResourceString(R.string.booklist_read) + "'\n" +
@@ -563,16 +575,23 @@ public class BooklistBuilder {
 			case ROW_KIND_DAY_ADDED:
 				g.displayDomain = DOM_ADDED_DAY;
 				// Just look for 4 leading numbers followed by 2 or 1 digit. We don't care about anything else.
-				String dayAddedExpr = "case when " + TBL_BOOKS.dot(DOM_ADDED_DATE) + 
-										" glob '[0123456789][01234567890][01234567890][01234567890]-[0123456789][01234567890]-[0123456789][01234567890]*'\n" +
+				String dayAddedExpr = "case " +
+										" when " + TBL_BOOKS.dot(DOM_ADDED_DATE) + 
+										" glob '[0123456789][0123456789][0123456789][0123456789]-[0123456789][0123456789]-[0123456789][0123456789]*'\n" +
 										"	Then substr(" + TBL_BOOKS.dot(DOM_ADDED_DATE) + ", 9, 2) \n" +
 										" when " + TBL_BOOKS.dot(DOM_ADDED_DATE) + 
-										" glob '[0123456789][01234567890][01234567890][01234567890]-[0123456789][01234567890]-[0123456789]*'\n" +
+										" glob '[0123456789][0123456789][0123456789][0123456789]-[0123456789]-[0123456789][0123456789]*'\n" +
+										"	Then substr(" + TBL_BOOKS.dot(DOM_ADDED_DATE) + ", 8, 2) \n" +
+										" when " + TBL_BOOKS.dot(DOM_ADDED_DATE) + 
+										" glob '[0123456789][0123456789][0123456789][0123456789]-[0123456789][0123456789]-[0123456789]*'\n" +
 										"	Then substr(" + TBL_BOOKS.dot(DOM_ADDED_DATE) + ", 9, 1) \n" +
-										" else 'UNKNOWN' end";
+										" when " + TBL_BOOKS.dot(DOM_ADDED_DATE) + 
+										" glob '[0123456789][0123456789][0123456789][0123456789]-[0123456789]-[0123456789]*'\n" +
+										"	Then substr(" + TBL_BOOKS.dot(DOM_ADDED_DATE) + ", 8, 1) \n" +
+										" else " + TBL_BOOKS.dot(DOM_ADDED_DATE) + " end";
 				// We don't use DESCENDING sort yet because the 'header' ends up below the detail rows in the flattened table.
 				summary.addDomain(DOM_ADDED_DAY, dayAddedExpr, SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED ); // | SummaryBuilder.FLAG_SORT_DESCENDING);
-				g.setKeyComponents("dya", DOM_ADDED_MONTH);
+				g.setKeyComponents("dya", DOM_ADDED_DAY);
 				break;
 
 			default:
@@ -589,6 +608,12 @@ public class BooklistBuilder {
 		if (markId != 0) {
 			summary.addDomain(DOM_MARK, TBL_BOOKS.dot(DOM_ID) + " = " + markId, SummaryBuilder.FLAG_NONE);
 		}
+
+		if (seriesGroup != null) {
+			// We want the series number in the base data in sorted order
+			summary.addDomain(DOM_SERIES_NUM, TBL_BOOK_SERIES.dot(DOM_SERIES_NUM), SummaryBuilder.FLAG_SORTED);			
+		}
+		summary.addDomain(DOM_LEVEL, null, SummaryBuilder.FLAG_SORTED);
 
 		// Ensure any caller-specified extras (eg. title) are added at the end.
 		for(Entry<String,ExtraDomainDetails> d : mExtraDomains.entrySet()) {
@@ -613,7 +638,7 @@ public class BooklistBuilder {
 		// 
 		// Aside: The sql used prior to using DbUtils is included as comments below the doce that replaced it.
 		//
-		String sql = summary.buildBaseInsert(mStyle.get(0).getCompoundKey());
+		String sql = summary.buildBaseInsert(mStyle.getGroupAt(0).getCompoundKey());
 
 		long t0d = System.currentTimeMillis();
 
@@ -650,7 +675,7 @@ public class BooklistBuilder {
 		// joined was one of BOOKS or LOAN and we don't know which. So we explicitly use books.
 		join.join(TBL_BOOKS, TBL_BOOK_AUTHOR);
 		// If there is no author group, or the user only wants primary author, get primary only
-		if (authorGroup == null || !authorGroup.allAuthors) {
+		if (authorGroup == null || !authorGroup.getAllAuthors()) {
 			join.append( "		and " + TBL_BOOK_AUTHOR.dot(DOM_AUTHOR_POSITION) + " == 1\n");
 		}
 		// Join with authors to make the names available
@@ -665,7 +690,7 @@ public class BooklistBuilder {
 			*/
 
 		// If there was no series group, or user requests primary series only, then just get primary series.
-		if (seriesGroup == null || !seriesGroup.allSeries) {
+		if (seriesGroup == null || !seriesGroup.getAllSeries()) {
 			join.append( "		and " + TBL_BOOK_SERIES.dot(DOM_SERIES_POSITION) + " == 1\n");
 		}
 		// Join with series to get name
@@ -719,13 +744,33 @@ public class BooklistBuilder {
 			where += "(" + TBL_BOOKS.dot(DOM_ID) + " in (select docid from " + TBL_BOOKS_FTS + " where " + TBL_BOOKS_FTS + " match '" + encodeString(searchText) + "'))";
 		}
 
+		// Add support for book filter: READ
+		{
+			String extra = null;
+			switch(mStyle.getReadFilter()) {
+				case BooklistStyle.SELECT_READ:
+					extra = TBL_BOOKS.dot(DOM_READ) + " = 1\n";
+					break;
+				case BooklistStyle.SELECT_UNREAD:
+					extra = TBL_BOOKS.dot(DOM_READ) + " = 0\n";
+					break;
+				default:
+					break;
+			}
+			if (extra != null) {
+				if (!where.equals(""))
+					where += " and ";
+				where += " " + extra;
+			}
+		}
+
 		// If we got any conditions, add them to the initial insert statement
 		if (!where.equals(""))
 			sql += " where " + where.toString();
 
 		long t1 = System.currentTimeMillis();
 
-		// Process the 'sory-by' columns into a list suitable for a sort-by statement, or index
+		// Process the 'sort-by' columns into a list suitable for a sort-by statement, or index
 		{
 			final ArrayList<SortedDomainInfo> sort = summary.getSortedColumns();
 			final StringBuilder sortCols = new StringBuilder();
@@ -791,7 +836,7 @@ public class BooklistBuilder {
 			int pos=0;
 			// Loop from innermost group to outermost, building summary at each level
 			for (int i = mStyle.size()-1; i >= 0; i--) {
-				final BooklistGroup g = mStyle.get(i);
+				final BooklistGroup g = mStyle.getGroupAt(i);
 				final int levelId = i + 1;
 				// cols is the list of column names for the 'Insert' and 'Select' parts
 				String cols = "";
@@ -839,6 +884,7 @@ public class BooklistBuilder {
 			// is especially useful in expan/collapse operations.
 			mNavTable.drop(mDb);
 			mNavTable.create(mDb, true);
+			
 			sql = mNavTable.getInsert(DOM_REAL_ROW_ID, DOM_LEVEL, DOM_ROOT_KEY, DOM_VISIBLE, DOM_EXPANDED) + 
 					" Select " + mListTable.dot(DOM_ID) + "," + mListTable.dot(DOM_LEVEL) + "," + mListTable.dot(DOM_ROOT_KEY) +
 					" ,\n	Case When " + DOM_LEVEL + " = 1 Then 1 \n" +
@@ -846,12 +892,31 @@ public class BooklistBuilder {
 					"	Case When " + TBL_BOOK_LIST_NODE_SETTINGS.dot(DOM_ROOT_KEY) + " is null Then 0 Else 1 end\n"+
 					" From " + mListTable.ref() + "\n	left outer join " + TBL_BOOK_LIST_NODE_SETTINGS.ref() + 
 					"\n		On " + TBL_BOOK_LIST_NODE_SETTINGS.dot(DOM_ROOT_KEY) + " = " + mListTable.dot(DOM_ROOT_KEY) +
-					"\n			And " + TBL_BOOK_LIST_NODE_SETTINGS.dot(DOM_KIND) + " = " + mStyle.get(0).kind +
+					"\n			And " + TBL_BOOK_LIST_NODE_SETTINGS.dot(DOM_KIND) + " = " + mStyle.getGroupAt(0).kind +
 					"\n	Order by " + mSortColumnList;
-
+			// Always save the state-preserving navigator for rebuilds
 			stmt = mStatements.add("InsNav", sql);
 			mLevelBuildStmts.add(stmt);
-			stmt.execute();
+
+			// On first-time builds, get the pref-based list
+			if (preferredState == BooklistPreferencesActivity.BOOKLISTS_ALWAYS_COLLAPSED) {
+				sql = mNavTable.getInsert(DOM_REAL_ROW_ID, DOM_LEVEL, DOM_ROOT_KEY, DOM_VISIBLE, DOM_EXPANDED) + 
+						" Select " + mListTable.dot(DOM_ID) + "," + mListTable.dot(DOM_LEVEL) + "," + mListTable.dot(DOM_ROOT_KEY) +
+						" ,\n	Case When " + DOM_LEVEL + " = 1 Then 1 Else 0 End, 0\n" +
+						" From " + mListTable.ref() +
+						"\n	Order by " + mSortColumnList;				
+				mDb.execSQL(sql);
+			} else if (preferredState == BooklistPreferencesActivity.BOOKLISTS_ALWAYS_EXPANDED) {
+				sql = mNavTable.getInsert(DOM_REAL_ROW_ID, DOM_LEVEL, DOM_ROOT_KEY, DOM_VISIBLE, DOM_EXPANDED) + 
+						" Select " + mListTable.dot(DOM_ID) + "," + mListTable.dot(DOM_LEVEL) + "," + mListTable.dot(DOM_ROOT_KEY) +
+						" , 1, 1 \n" +
+						" From " + mListTable.ref() +
+						"\n	Order by " + mSortColumnList;
+				mDb.execSQL(sql);
+			} else {
+				// Use already-defined SQL
+				stmt.execute();
+			}
 
 			long t4 = System.currentTimeMillis();
 			// Create index on nav table
@@ -946,7 +1011,7 @@ public class BooklistBuilder {
 	public void saveNodeSettings() {
 		SyncLock l = mDb.beginTransaction(true);
 		try {
-			int kind = mStyle.get(0).kind;
+			int kind = mStyle.getGroupAt(0).kind;
 			if (mDeleteSettingsStmt == null) {
 				String sql = "Delete from " + TBL_BOOK_LIST_NODE_SETTINGS + " Where kind = ?";
 				mDeleteSettingsStmt = mStatements.add("mDeleteSettingsStmt", sql);
@@ -968,32 +1033,44 @@ public class BooklistBuilder {
 	}
 
 	/**
+	 * Record containing details of the positions of all instances of a single book.
+	 * 
+	 * @author Philip Warner
+	 */
+	public static class BookRowInfo {
+		public int absolutePosition;
+		public boolean visible;
+		public int listPosition;
+		BookRowInfo(int absPos, int listPos, int vis) {
+			absolutePosition = absPos;
+			listPosition = listPos;
+			visible = (vis == 1);
+		}
+	}
+
+	/**
 	 * Get all positions at which the specified book appears.
 	 * 
 	 * @param bookId
 	 * 
-	 * @return		Array of absolute positions, or null if not present
+	 * @return		Array of row details, including absolute positions and visibility. Null if not present
 	 */
-	public int[] getBookAbsolutePositions(long bookId) {
-		String sql = "select " + mNavTable.dot(DOM_ID) + " From " + mListTable + " bl " 
+	public ArrayList<BookRowInfo> getBookAbsolutePositions(long bookId) {
+		String sql = "select " + mNavTable.dot(DOM_ID) + ", " + mNavTable.dot(DOM_VISIBLE) + " From " + mListTable + " bl " 
 				+ mListTable.join(mNavTable) + " Where " + mListTable.dot(DOM_BOOK) + " = " + bookId;
 
 		Cursor c = mDb.rawQuery(sql, EMPTY_STRING_ARRAY);
 		try {
-			ArrayList<Integer> rows = new ArrayList<Integer>();
+			ArrayList<BookRowInfo> rows = new ArrayList<BookRowInfo>();
 			if (c.moveToFirst()) {
 				do {
-					rows.add(c.getInt(0));
+					int absPos = c.getInt(0) - 1;
+					rows.add(new BookRowInfo(absPos, getPosition(absPos), c.getInt(1)));
 				} while (c.moveToNext());
-				int[] rowsInt = new int[rows.size()];
-				int pos = 0;
-				// Copy the IDs to row #, and fix (IDs start at 1)
-				for(Integer i : rows)
-					rowsInt[pos++] = i-1;
-				return rowsInt;
+				return rows;
 			} else {
 				return null;
-			}			
+			}
 		} finally {
 			c.close();
 		}
@@ -1051,7 +1128,7 @@ public class BooklistBuilder {
 	 * @return			Name of the display field for this level
 	 */
 	public DomainDefinition getDisplayDomain(int level) {
-		return mStyle.get(level-1).displayDomain;
+		return mStyle.getGroupAt(level-1).displayDomain;
 	}
 
 	/**
@@ -1259,6 +1336,14 @@ public class BooklistBuilder {
 	 */
 	public void close() {
 		mStatements.close();
+		if (mNavTable != null)
+			mNavTable.close();
+		if (mListTable != null)
+			mListTable.close();
+		synchronized(mInstanceCount) {
+			mInstanceCount--;
+			System.out.println("Builder instances: " + mInstanceCount);
+		}
 	}
 	
 	public void finalize() {

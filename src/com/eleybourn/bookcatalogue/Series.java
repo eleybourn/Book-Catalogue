@@ -20,26 +20,31 @@
 
 package com.eleybourn.bookcatalogue;
 
+import java.io.Serializable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
  * Class to hold book-related series data. Used in lists and import/export.
  * 
- * @author Grunthos
+ * @author Philip Warner
  */
-public class Series implements Parcelable, Utils.ItemWithIdFixup {
+public class Series implements Serializable, Utils.ItemWithIdFixup {
+	private static final long serialVersionUID = 1L;
 	public long		id;
 	public String 	name;
 	public String	num;
 
-	private java.util.regex.Pattern mPattern = java.util.regex.Pattern.compile("^(.*)\\s*\\((.*)\\)$");
+	private java.util.regex.Pattern mPattern = java.util.regex.Pattern.compile("^(.*)\\s*\\((.*)\\)\\s*$");
 
 	Series(String name) {
 		java.util.regex.Matcher m = mPattern.matcher(name);
 		if (m.find()) {
 			this.name = m.group(1).trim();
-			this.num = m.group(2).trim();
+			this.num = cleanupSeriesPosition(m.group(2));
 		} else {
 			this.name = name.trim();
 			this.num = "";
@@ -51,14 +56,14 @@ public class Series implements Parcelable, Utils.ItemWithIdFixup {
 		this(id, name, "");
 	}
 
-	Series(String name, String num) {
+	public Series(String name, String num) {
 		this(0L, name, num);
 	}
 
 	Series(long id, String name, String num) {
 		this.id = id;
 		this.name = name.trim();
-		this.num = num.trim();
+		this.num = cleanupSeriesPosition(num);
 	}
 
 	public String getDisplayName() {
@@ -107,18 +112,6 @@ public class Series implements Parcelable, Utils.ItemWithIdFixup {
     	id = in.readLong();
     }
 
-    @Override
-	public int describeContents() {
-		return 0;
-	}
-
-	@Override
-	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeString(name);
-		dest.writeString(num);
-		dest.writeLong(id);
-	}
-
 	@Override
 	public long fixupId(CatalogueDBAdapter db) {
 		this.id = db.lookupSeriesId(this);
@@ -138,4 +131,80 @@ public class Series implements Parcelable, Utils.ItemWithIdFixup {
 	public boolean isUniqueById() {
 		return false;
 	}
+
+
+	/**
+	 * Data class giving resulting series info after parsing a series name
+	 * 
+	 * @author Philip Warner
+	 */
+	public static class SeriesDetails {
+		public String name;
+		public String position = null;
+		public int startChar;
+	}
+
+	/** Pattern used to recognize series numbers embedded in names */
+	private static Pattern mSeriesPat = null;
+	private static final String mSeriesNumberPrefixes = "(#|number|num|num.|no|no.|nr|nr.|book|bk|bk.|volume|vol|vol.|tome|part|pt.|)";
+
+	/**
+	 * Try to extract a series from a book title.
+	 * 
+	 * @param 	title	Book title to parse
+	 * @return
+	 */
+	public static SeriesDetails findSeries(String title) {
+		SeriesDetails details = null;
+		int last = title.lastIndexOf("(");
+		if (last >= 1) { // We want a title that does not START with a bracket!
+			int close = title.lastIndexOf(")");
+			if (close > -1 && last < close) {
+				details = new SeriesDetails();
+				details.name = title.substring((last+1), close);
+				details.startChar = last;
+				if (mSeriesPat == null) {
+					// NOTE: Changes to this pattern should be mirrored in cleanupSeriesPosition().
+					String seriesExp = "(.*?)(,|\\s)\\s*" + mSeriesNumberPrefixes + "\\s*([0-9\\.\\-]+|[ivxlcm\\.\\-]+)\\s*$";
+					// Compile and get a reference to a Pattern object. <br>  
+					mSeriesPat = Pattern.compile(seriesExp, Pattern.CASE_INSENSITIVE|Pattern.UNICODE_CASE);
+				}
+				Matcher matcher = mSeriesPat.matcher(details.name);
+				if (matcher.find()) {
+					details.name = matcher.group(1);
+					details.position = matcher.group(4);
+				}
+			}
+		}
+		return details;
+	}
+
+	/** Pattern used to remove extraneous text from series positions */
+	private static Pattern mSeriesPosCleanupPat = null;
+
+	/**
+	 * Try to cleanup a series position number by removing superfluous text.
+	 * 
+	 * @param 	position	Position name to cleanup
+	 * @return
+	 */
+	public static String cleanupSeriesPosition(String position) {
+		if (position == null)
+			return "";
+		position = position.trim();
+
+		if (mSeriesPosCleanupPat == null) {
+			// NOTE: Changes to this pattern should be mirrored in findSeries().
+			String seriesExp = "^\\s*" + mSeriesNumberPrefixes + "\\s*([0-9\\.\\-]+|[ivxlcm\\.\\-]+)\\s*$";
+			// Compile and get a reference to a Pattern object. <br>
+			mSeriesPosCleanupPat = Pattern.compile(seriesExp, Pattern.CASE_INSENSITIVE|Pattern.UNICODE_CASE);
+		}
+		Matcher matcher = mSeriesPosCleanupPat.matcher(position);
+		if (matcher.find()) {
+			return matcher.group(2);
+		} else {
+			return position;
+		}
+	}
+
 }

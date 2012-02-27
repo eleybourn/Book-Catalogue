@@ -28,10 +28,12 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.*;
 import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedStatement;
 import com.eleybourn.bookcatalogue.database.DbUtils.TableDefinition;
+import com.eleybourn.bookcatalogue.database.SerializationUtils;
 import com.eleybourn.bookcatalogue.database.SqlStatementManager;
 import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedDb;
 import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer;
@@ -64,6 +66,9 @@ import android.widget.ImageView;
  * 
  */
 public class CatalogueDBAdapter {
+	
+	/** Debug counter */
+	private static Integer mInstanceCount = 0;
 	
 	private SqlStatementManager mStatements;
 
@@ -414,9 +419,8 @@ public class CatalogueDBAdapter {
 //						+ " ON (b." + KEY_ROWID + "=w." + KEY_BOOK + ") "
 //						+ " LEFT OUTER JOIN " + DB_TB_SERIES + " s ON (s." + KEY_ROWID + "=w." + KEY_SERIES_ID + ") ";
 		
-	private final Context mCtx;
 	//TODO: RELEASE: Update database version
-	public static final int DATABASE_VERSION = 67;
+	public static final int DATABASE_VERSION = 68;
 
 	private TableInfo mBooksInfo = null;
 
@@ -463,8 +467,10 @@ public class CatalogueDBAdapter {
 			createIndices(db);
 
 			SynchronizedDb sdb = new SynchronizedDb(db, mSynchronizer);
+
 			DatabaseDefinitions.TBL_BOOK_LIST_NODE_SETTINGS.createAll(sdb, true);
 			DatabaseDefinitions.TBL_BOOKS_FTS.create(sdb, false);
+			DatabaseDefinitions.TBL_BOOK_LIST_STYLES.createAll(sdb, true);
 
 			new File(Utils.EXTERNAL_FILE_PATH + "/").mkdirs();
 			try {
@@ -1287,19 +1293,23 @@ public class CatalogueDBAdapter {
 				db.execSQL("INSERT INTO " + DB_TB_BOOKS + " Select * FROM books_tmp");
 				db.execSQL("DROP TABLE books_tmp");
 			}
+			SynchronizedDb sdb = new SynchronizedDb(db, mSynchronizer);
 			if (curVersion == 65) {
 				curVersion++;
-				SynchronizedDb sdb = new SynchronizedDb(db, mSynchronizer);
 				DatabaseDefinitions.TBL_BOOK_LIST_NODE_SETTINGS.drop(sdb);
 				DatabaseDefinitions.TBL_BOOK_LIST_NODE_SETTINGS.create(sdb, true);
 				DatabaseDefinitions.TBL_BOOK_LIST_NODE_SETTINGS.createIndices(sdb);
 			}
 			if (curVersion == 66) {
 				curVersion++;
-				SynchronizedDb sdb = new SynchronizedDb(db, mSynchronizer);
 				DatabaseDefinitions.TBL_BOOKS_FTS.drop(sdb);
 				DatabaseDefinitions.TBL_BOOKS_FTS.create(sdb, false);
 				StartupActivity.scheduleFtsRebuild();
+			}
+			if (curVersion == 67) {
+				curVersion++;
+				DatabaseDefinitions.TBL_BOOK_LIST_STYLES.drop(sdb);
+				DatabaseDefinitions.TBL_BOOK_LIST_STYLES.createAll(sdb, true);
 			}
 			//TODO: NOTE: END OF UPDATE
 		}
@@ -1312,7 +1322,11 @@ public class CatalogueDBAdapter {
 	 * @param ctx the Context within which to work
 	 */
 	public CatalogueDBAdapter(Context ctx) {
-		this.mCtx = ctx;
+		synchronized(mInstanceCount) {
+			mInstanceCount++;
+			System.out.println("CatDBA instances: " + mInstanceCount);
+		}
+		mDbHelper = new DatabaseHelper(ctx);
 	}
 	
 	/**
@@ -1326,7 +1340,6 @@ public class CatalogueDBAdapter {
 	public CatalogueDBAdapter open() throws SQLException {
 		/* Create the bookCatalogue directory if it does not exist */
 		new File(Utils.EXTERNAL_FILE_PATH + "/").mkdirs();
-		mDbHelper = new DatabaseHelper(mCtx);
 		mDb = new SynchronizedDb(mDbHelper, mSynchronizer);
 		// Turn on foreign key support so that CASCADE works.
 		mDb.execSQL("PRAGMA foreign_keys = ON");
@@ -1345,6 +1358,10 @@ public class CatalogueDBAdapter {
 			mDbHelper.close();
 		} catch (Exception e) {
 			//do nothing - already closed
+		}
+		synchronized(mInstanceCount) {
+			mInstanceCount--;
+			System.out.println("CatDBA instances: " + mInstanceCount);
 		}
 	}
 	
@@ -2878,7 +2895,7 @@ public class CatalogueDBAdapter {
 			String authorId = getAuthorIdOrCreate(names);
 			long result;
 			int position = fetchAnthologyPositionByBook(book) + 1;
-			
+
 			initialValues.put(KEY_BOOK, book);
 			initialValues.put(KEY_AUTHOR_ID, authorId);
 			initialValues.put(KEY_TITLE, title);
@@ -2959,7 +2976,7 @@ public class CatalogueDBAdapter {
 			values.putString(KEY_DATE_ADDED, Utils.toSqlDate(new Date()));
 
 		// Make sure we have an author
-		ArrayList<Author> authors = values.getParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
+		ArrayList<Author> authors = (ArrayList<Author>) values.getSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
 		if (authors == null || authors.size() == 0)
 			throw new IllegalArgumentException();
 		ContentValues initialValues = filterValues(values, mBooksInfo);
@@ -2976,7 +2993,7 @@ public class CatalogueDBAdapter {
 		}
 
 		createBookAuthors(rowId, authors);
-		ArrayList<Series> series = values.getParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY);
+		ArrayList<Series> series = (ArrayList<Series>) values.getSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY);
 		createBookSeries(rowId, series);
 
 		try {
@@ -3440,11 +3457,11 @@ public class CatalogueDBAdapter {
 		}
 
 		if (values.containsKey(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)) {
-			ArrayList<Author> authors = values.getParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
+			ArrayList<Author> authors = (ArrayList<Author>) values.getSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
 			createBookAuthors(rowId, authors);			
 		}
 		if (values.containsKey(CatalogueDBAdapter.KEY_SERIES_ARRAY)) {
-			ArrayList<Series> series = values.getParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY);
+			ArrayList<Series> series = (ArrayList<Series>) values.getSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY);
 			createBookSeries(rowId, series);			
 		}
 
@@ -4241,7 +4258,7 @@ public class CatalogueDBAdapter {
 	 * Column info support. This is useful for auto-building queries from maps that have
 	 * more columns than are in the table.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	@SuppressWarnings("unused")
 	private class ColumnInfo {
@@ -4257,7 +4274,7 @@ public class CatalogueDBAdapter {
 	/**
 	 * Details of a database table.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	private class TableInfo {
 		private Map<String,ColumnInfo> mColumns;
@@ -4353,6 +4370,69 @@ public class CatalogueDBAdapter {
 		}
 	}
 	
+	/**
+	 * Return a list of all defined styles in the database
+	 * 
+	 * @return
+	 */
+	public Cursor getBooklistStyles() {
+		final String sql = "Select " + TBL_BOOK_LIST_STYLES.ref(DOM_ID, DOM_STYLE) 
+						+ " From " +  TBL_BOOK_LIST_STYLES.ref();
+						// + " Order By " + TBL_BOOK_LIST_STYLES.ref(DOM_POSITION, DOM_ID);
+		return mDb.rawQuery(sql);
+	}
+
+	/**
+	 * Create a new booklist style
+	 * 
+	 * @return
+	 */
+	private SynchronizedStatement mInsertBooklistStyleStmt = null;
+	public long insertBooklistStyle(BooklistStyle s) {
+		if (mInsertBooklistStyleStmt == null) {
+			final String sql = TBL_BOOK_LIST_STYLES.getInsert(DOM_STYLE) 
+						+ " Values (?)";
+			mInsertBooklistStyleStmt = mStatements.add("mInsertBooklistStyleStmt", sql);
+		}
+		byte[] blob = SerializationUtils.serializeObject(s);
+		mInsertBooklistStyleStmt.bindBlob(1, blob);
+		return mInsertBooklistStyleStmt.executeInsert();
+	}
+
+	/**
+	 * Update an existing booklist style
+	 * 
+	 * @return
+	 */
+	private SynchronizedStatement mUpdateBooklistStyleStmt = null;
+	public void updateBooklistStyle(BooklistStyle s) {
+		if (mUpdateBooklistStyleStmt == null) {
+			final String sql = TBL_BOOK_LIST_STYLES.getUpdate(DOM_STYLE) 
+						+ " Where " +  DOM_ID + " = ?";
+			mUpdateBooklistStyleStmt = mStatements.add("mUpdateBooklistStyleStmt", sql);
+		}
+		byte[] blob = SerializationUtils.serializeObject(s);
+		mUpdateBooklistStyleStmt.bindBlob(1, blob);
+		mUpdateBooklistStyleStmt.bindLong(2, s.getRowId());
+		mUpdateBooklistStyleStmt.execute();
+	}
+
+	/**
+	 * Delete an existing booklist style
+	 * 
+	 * @return
+	 */
+	private SynchronizedStatement mDeleteBooklistStyleStmt = null;
+	public void deleteBooklistStyle(long id) {
+		if (mDeleteBooklistStyleStmt == null) {
+			final String sql = "Delete from " + TBL_BOOK_LIST_STYLES 
+						+ " Where " +  DOM_ID + " = ?";
+			mDeleteBooklistStyleStmt = mStatements.add("mDeleteBooklistStyleStmt", sql);
+		}
+		mDeleteBooklistStyleStmt.bindLong( 1, id );
+		mDeleteBooklistStyleStmt.execute();
+	}
+
 	/****************************************************************************************************
 	 * FTS Support
 	 */

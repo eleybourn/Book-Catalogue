@@ -1,3 +1,23 @@
+/*
+ * @copyright 2012 Philip Warner
+ * @license GNU General Public License
+ * 
+ * This file is part of Book Catalogue.
+ *
+ * Book Catalogue is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Book Catalogue is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.eleybourn.bookcatalogue.database;
 
 import java.io.ByteArrayOutputStream;
@@ -25,10 +45,13 @@ import android.graphics.Bitmap;
  * In the initial pass, the covers database has a single table whose members are accessed via unique
  * 'file names'.
  * 
- * @author Grunthos
+ * @author Philip Warner
  */
 public class CoversDbHelper extends GenericOpenHelper {
 	private SynchronizedDb mDb;
+
+	/** Debug counter */
+	private static Integer mInstanceCount = 0;
 
 	/** Synchronizer to coordinate DB access. Must be STATIC so all instances share same sync */
 	private static final Synchronizer mSynchronizer = new Synchronizer();
@@ -79,6 +102,10 @@ public class CoversDbHelper extends GenericOpenHelper {
 	 */
 	public CoversDbHelper() {
 		super(COVERS_DATABASE_NAME, mTrackedCursorFactory, COVERS_DATABASE_VERSION);
+		synchronized(mInstanceCount) {
+			mInstanceCount++;
+			System.out.println("CovDBA instances: " + mInstanceCount);
+		}
 	}
 	/**
 	 * As with SQLiteOpenHelper, routine called to create DB
@@ -244,6 +271,10 @@ public class CoversDbHelper extends GenericOpenHelper {
 	public void close() {
 		mStatements.close();
 		super.close();
+		synchronized(mInstanceCount) {
+			mInstanceCount--;
+			System.out.println("CovDBA instances: " + mInstanceCount);
+		}
 	}
 	
 }

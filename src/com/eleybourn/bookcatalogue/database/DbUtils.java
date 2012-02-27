@@ -1,3 +1,23 @@
+/*
+ * @copyright 2012 Philip Warner
+ * @license GNU General Public License
+ * 
+ * This file is part of Book Catalogue.
+ *
+ * Book Catalogue is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Book Catalogue is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.eleybourn.bookcatalogue.database;
 
 import java.util.ArrayList;
@@ -11,13 +31,13 @@ import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedDb;
 /**
  * Utilities and classes to make defining databases a little easier and provide synchronization across threads.
  * 
- * @author Grunthos
+ * @author Philip Warner
  */
 public class DbUtils {
 	/**
 	 * Class to store domain name and definition.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	public static class DomainDefinition {
 		public String name;
@@ -48,7 +68,7 @@ public class DbUtils {
 	 * Class used to build complex joins. Maintaing context and uses foreign keys
 	 * to automatically build standard joins.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	public static class JoinContext {
 		/** Last table added to join */
@@ -148,7 +168,7 @@ public class DbUtils {
 	/**
 	 * Class to store table name and a list of domain definitions.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	public static class TableDefinition {
 		public enum TableTypes { Standard, Temporary, FTS3, FTS4 };
@@ -194,13 +214,24 @@ public class DbUtils {
 			mPrimaryKey.clear();
 			mIndexes.clear();
 
+			// Need to make local copies to avoid 'collection modified' errors
+			ArrayList<TableDefinition> tmpParents = new ArrayList<TableDefinition>(); 
 			for(Entry<TableDefinition, FkReference> fkEntry : mParents.entrySet()) {
 				FkReference fk = fkEntry.getValue();
-				removeReference(fk.parent);
+				tmpParents.add(fk.parent);
 			}
+			for(TableDefinition parent: tmpParents) {
+				removeReference(parent);
+			}
+
+			// Need to make local copies to avoid 'collection modified' errors
+			ArrayList<TableDefinition> tmpChildren = new ArrayList<TableDefinition>(); 
 			for(Entry<TableDefinition, FkReference> fkEntry : mChildren.entrySet()) {
 				FkReference fk = fkEntry.getValue();
-				fk.child.removeReference(this);
+				tmpChildren.add(fk.child);
+			}
+			for(TableDefinition child: tmpChildren) {
+				child.removeReference(this);
 			}
 		}
 		/**
@@ -241,7 +272,7 @@ public class DbUtils {
 		/**
 		 * Class used to represent a foreign key reference
 		 * 
-		 * @author Grunthos
+		 * @author Philip Warner
 		 */
 		private class FkReference {
 			/** Owner of primary key in FK reference */
@@ -645,6 +676,30 @@ public class DbUtils {
 		}
 
 		/**
+		 * Get a base list of fields for this table using the passed list of domains. Returns partial
+		 * SQL of the form: '[alias].[domain-1], ..., [alias].[domain-n]'.
+		 * 
+		 * @param domains		List of domains to use
+		 * 
+		 * @return	SQL fragment
+		 */
+		public String ref(DomainDefinition...domains) {
+			if (domains == null || domains.length == 0)
+				return "";
+
+			final String aliasDot = getAlias() + ".";
+			final StringBuilder s = new StringBuilder(aliasDot);
+			s.append(domains[0].name);
+
+			for(int i = 1; i < domains.length; i++) {
+				s.append(",\n");
+				s.append(aliasDot);
+				s.append(domains[i].name);
+			}
+			return s.toString();
+		}
+
+		/**
 		 * Get a base UPDATE statement for this table using the passed list of domains. Returns partial
 		 * SQL of the form: 'UPDATE [table-name] Set [domain-1] = ?, ..., [domain-n] = ?'.
 		 * 
@@ -807,7 +862,7 @@ public class DbUtils {
 	/**
 	 * Class to store an index using a table name and a list of domian definitions.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	public static class IndexDefinition {
 		/** Full name of index */

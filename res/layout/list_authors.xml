@@ -4,9 +4,10 @@
 	android:layout_width="fill_parent" 
 	android:layout_height="fill_parent"
 	android:paddingLeft="5sp"
-	android:background="@drawable/bc_background_gradient_dark"
+	android:background="#2d2d2d"
 	>
-
+<!-- android:background="@drawable/bc_background_gradient_dark"  -->
+    
 	<TextView android:id="@+id/bookshelf_label" 
 		android:layout_width="wrap_content" 
 		android:layout_height="32sp" 

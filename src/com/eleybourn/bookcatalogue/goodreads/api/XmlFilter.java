@@ -1,3 +1,23 @@
+/*
+ * @copyright 2012 Philip Warner
+ * @license GNU General Public License
+ * 
+ * This file is part of Book Catalogue.
+ *
+ * Book Catalogue is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Book Catalogue is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.eleybourn.bookcatalogue.goodreads.api;
 
 import java.util.ArrayList;
@@ -12,7 +32,7 @@ import org.xml.sax.Attributes;
  * 
  * See SearchBooksApiHandler for an example of usage.
  * 
- * @author Grunthos
+ * @author Philip Warner
  */
 public class XmlFilter {
 	/** The tag for this specific filter */
@@ -23,18 +43,28 @@ public class XmlFilter {
 	ArrayList<XmlFilter> mSubFilters = new ArrayList<XmlFilter>();
 	/** Action to perform, if any, when the associated tag is started */
 	XmlHandler mStartAction = null;
+	/** Optional parameter put in context before action is called */
+	Object mStartArg = null;
+	
 	/** Action to perform, if any, when the associated tag is finished */
 	XmlHandler mEndAction = null;
+	/** Optional parameter put in context before action is called */
+	Object mEndArg = null;
 
 	/** Interface definition for filter handlers */
 	public interface XmlHandler {
 		void process(ElementContext context);
 	}
 
+	/** Interface definition for filter handlers */
+	public interface XmlHandlerExt<T> {
+		void process(ElementContext context, T arg);
+	}
+
 	/**
 	 * Class used to define the context of a specific tag. The 'body' element will only be
 	 * filled in the call to the 'processEnd' method.
-	 * @author Grunthos
+	 * @author Philip Warner
 	 *
 	 */
 	public static class ElementContext {
@@ -52,6 +82,7 @@ public class XmlFilter {
 			this.attributes = attributes;
 			this.preText = preText;
 		}
+		Object userArg;
 	}
 
 	/**
@@ -103,8 +134,10 @@ public class XmlFilter {
 	 * @param context
 	 */
 	public void processStart(ElementContext context) {
-		if (mStartAction != null)
-			mStartAction.process(context);
+		if (mStartAction != null) {
+			context.userArg = mStartArg;
+			mStartAction.process(context);			
+		}
 	}
 	/**
 	 * Called when associated tag is finished.
@@ -112,8 +145,10 @@ public class XmlFilter {
 	 * @param context
 	 */
 	public void processEnd(ElementContext context) {
-		if (mEndAction != null)
-			mEndAction.process(context);
+		if (mEndAction != null) {
+			context.userArg = mEndArg;
+			mEndAction.process(context);			
+		}
 	}
 	/**
 	 * Get the tag that this filter will match
@@ -131,11 +166,16 @@ public class XmlFilter {
 	 * @return		This XmlFilter, to allow chaining
 	 */
 	public XmlFilter setEndAction(XmlHandler endAction) {
+		return setEndAction(endAction, null);
+	}
+	public XmlFilter setEndAction(XmlHandler endAction, Object userArg) {
 		if (mEndAction != null)
 			throw new RuntimeException("End Action already set");			
 		mEndAction = endAction;
+		mEndArg = userArg;
 		return this;
 	}
+
 	/**
 	 * Set the action to perform when the tag associated with this filter is started.
 	 * 
@@ -144,9 +184,13 @@ public class XmlFilter {
 	 * @return		This XmlFilter, to allow chaining
 	 */
 	public XmlFilter setStartAction(XmlHandler startAction) {
+		return setStartAction(startAction, null);
+	}
+	public XmlFilter setStartAction(XmlHandler startAction, Object userArg) {
 		if (mStartAction != null)
 			throw new RuntimeException("Start Action already set");			
 		mStartAction = startAction;
+		mStartArg = userArg;
 		return this;
 	}
 

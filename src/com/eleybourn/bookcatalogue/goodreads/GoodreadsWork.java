@@ -1,26 +1,40 @@
+/*
+ * @copyright 2012 Philip Warner
+ * @license GNU General Public License
+ * 
+ * This file is part of Book Catalogue.
+ *
+ * Book Catalogue is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Book Catalogue is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.eleybourn.bookcatalogue.goodreads;
 
 import java.lang.ref.WeakReference;
 
 import android.widget.ImageView;
 
-import com.eleybourn.bookcatalogue.BcQueueManager;
 import com.eleybourn.bookcatalogue.Logger;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.SimpleTaskQueue;
-import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTask;
 import com.eleybourn.bookcatalogue.Utils;
-
-import net.philipwarner.taskqueue.QueueManager;
-import net.philipwarner.taskqueue.Listeners.OnTaskChangeListener;
-import net.philipwarner.taskqueue.Listeners.TaskActions;
-import net.philipwarner.taskqueue.Task;
+import com.eleybourn.bookcatalogue.ViewTagger;
 
 /**
  * Class to store the 'work' data returned via a goodreads search. It also creates a background task
  * to find images and waits for completion.
  * 
- * @author Grunthos
+ * @author Philip Warner
  */
 public class GoodreadsWork {
 	public String title;
@@ -55,7 +69,7 @@ public class GoodreadsWork {
 		if (v != null) {
 			synchronized(v) {
 				// Make sure our view is still associated with us
-				if (((GoodreadsWork)v.getTag(R.id.TAG_GOODREADS_WORK)).equals(this)) {
+				if (((GoodreadsWork)ViewTagger.getTag(v, R.id.TAG_GOODREADS_WORK)).equals(this)) {
 					v.setImageBitmap( Utils.getBitmapFromBytes(imageBytes) );
 					//System.out.println("Work(" + mId + ") set image on view " + v.toString() + " to " +  ((GetImageTask)task).getDescription());
 				}
@@ -87,13 +101,13 @@ public class GoodreadsWork {
 					}
 				}
 				// Save the work in the View for verification
-				v.setTag(R.id.TAG_GOODREADS_WORK, this);
+				ViewTagger.setTag(v, R.id.TAG_GOODREADS_WORK, this);
 				//QueueManager.getQueueManager().bringTaskToFront(this.imageTaskId);
 			} else {
 				// We already have an image, so just expand it.
 				v.setImageBitmap( Utils.getBitmapFromBytes(this.imageBytes) );
 				// Clear the work in the View, in case some other job was running
-				v.setTag(R.id.TAG_GOODREADS_WORK, null);
+				ViewTagger.setTag(v, R.id.TAG_GOODREADS_WORK, null);
 			}
 		}
 	}

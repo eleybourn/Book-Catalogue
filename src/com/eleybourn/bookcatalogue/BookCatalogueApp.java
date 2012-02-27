@@ -1,5 +1,26 @@
+/*
+ * @copyright 2012 Philip Warner
+ * @license GNU General Public License
+ * 
+ * This file is part of Book Catalogue.
+ *
+ * Book Catalogue is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Book Catalogue is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.eleybourn.bookcatalogue;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
@@ -10,6 +31,9 @@ import android.content.SharedPreferences.Editor;
 import android.os.IBinder;
 import org.acra.*;
 import org.acra.annotation.*;
+
+import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
+
 import static org.acra.ReportField.*;
 
 import net.philipwarner.taskqueue.QueueManager;
@@ -19,7 +43,7 @@ import net.philipwarner.taskqueue.QueueManager;
  * and for being a central location for logically application-specific objects such
  * as preferences.
  * 
- * @author Grunthos
+ * @author Philip Warner
  *
  */
 @ReportsCrashes(formKey = "", // will not be used
@@ -200,7 +224,6 @@ public class BookCatalogueApp extends Application {
 		Intent i;
 		if (prefs.getStartInMyBook()) {
 			i = new Intent(this, BookCatalogue.class);
-			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		} else {
 			i = new Intent(this, MainMenu.class);
 		}
@@ -211,7 +234,7 @@ public class BookCatalogueApp extends Application {
 	 * Class to manage application preferences rather than rely on each activity knowing how to 
 	 * access them.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	public static class BookCataloguePreferences {
 		/** Underlying SharedPreferences */
@@ -219,7 +242,7 @@ public class BookCatalogueApp extends Application {
 
 		/** Name to use for global preferences; non-global should be moved to appropriate Activity code */
 		public static final String PREF_START_IN_MY_BOOKS = "start_in_my_books";
-		public static final String PREF_LARGE_THUMBNAILS = "APP.LargeThumbnails";
+		public static final String PREF_INCLUDE_CLASSIC_MY_BOOKS = "App.includeClassicView";
 		public static final String PREF_SHOW_ALL_AUTHORS = "APP.ShowAllAuthors";
 		public static final String PREF_SHOW_ALL_SERIES = "APP.ShowAllSeries";
 		public static final String PREF_DISPLAY_FIRST_THEN_LAST_NAMES = "APP.DisplayFirstThenLast";
@@ -232,16 +255,6 @@ public class BookCatalogueApp extends Application {
 		/** Set startup activity preference */
 		public BookCataloguePreferences setStartInMyBook(boolean value) {
 			setBoolean(PREF_START_IN_MY_BOOKS,value);
-			return this;
-		}
-		
-		/** Get thumbnail size preference */
-		public boolean getLargeThumbails() {
-			return getBoolean(PREF_LARGE_THUMBNAILS,false);
-		}
-		/** Set startup activity preference */
-		public BookCataloguePreferences setLargeThumbails(boolean value) {
-			setBoolean(PREF_LARGE_THUMBNAILS,value);
 			return this;
 		}
 
@@ -306,5 +319,10 @@ public class BookCatalogueApp extends Application {
 		public Editor edit() {
 			return m_prefs.edit();
 		}
+	}
+
+	public static void startPreferencesActivity(Activity a) {
+		Intent i = new Intent(a, BooklistPreferencesActivity.class);
+		a.startActivity(i);
 	}
 }

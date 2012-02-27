@@ -3,7 +3,7 @@
 	android:orientation="vertical"
 	android:layout_width="fill_parent" 
 	android:layout_height="fill_parent"
-	android:background="@drawable/bc_background_gradient"
+	android:background="@drawable/bc_background_gradient_dim"
 	android:paddingLeft="5sp">
 
     <TextView 
@@ -64,6 +64,28 @@
 				android:layout_width="wrap_content" 
 				android:layout_height="wrap_content" 
 				android:text="@+string/start_in_my_books"
+				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:paddingTop="5sp"
+				/>
+		</LinearLayout>
+
+	  	<!--  Startup Screen -->
+		<LinearLayout android:id="@+id/include_classic_label" 
+			android:orientation="horizontal"
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content"
+			android:paddingLeft="15sp">
+			<CheckBox android:id="@+id/include_classic_checkbox" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:paddingLeft="10sp"
+				android:focusable="false"
+				android:src="@+drawable/ic_menu_bookshelves"
+				/>
+			<TextView 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:text="@+string/include_classic_catalogue_view"
 				android:textAppearance="?android:attr/textAppearanceLarge"
 				android:paddingTop="5sp"
 				/>

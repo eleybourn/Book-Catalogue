@@ -417,7 +417,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 				// Start the lookup in background.
 				//mTaskManager.doProgress("Searching");
 				mSearchManager = new SearchManager(mTaskManager, mSearchHandler);
-				mSearchManager.search(mAuthor, mTitle, mIsbn, true);
+				mSearchManager.search(mAuthor, mTitle, mIsbn, true, SearchManager.SEARCH_ALL);
 				// reset the details so we don't restart the search unnecessarily
 				mAuthor = "";
 				mTitle = "";

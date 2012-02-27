@@ -1,3 +1,23 @@
+/*
+ * @copyright 2012 Philip Warner
+ * @license GNU General Public License
+ * 
+ * This file is part of Book Catalogue.
+ *
+ * Book Catalogue is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Book Catalogue is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.eleybourn.bookcatalogue;
 
 import android.graphics.Bitmap;
@@ -13,7 +33,7 @@ import com.eleybourn.bookcatalogue.database.CoversDbHelper;
  * 
  * This class also has its onw statis SimpleTaskQueue.
  * 
- * @author Grunthos
+ * @author Philip Warner
  */
 public class ThumbnailCacheWriterTask implements SimpleTask {
 
@@ -24,8 +44,6 @@ public class ThumbnailCacheWriterTask implements SimpleTask {
 	 * the database will force serialization of the updates.
 	 */
 	private static SimpleTaskQueue mQueue = new SimpleTaskQueue("cachewriter", 1);
-	/** 'Covers' database helper */
-	private static CoversDbHelper mDb = new CoversDbHelper();
 
 	/**
 	 * Queue the passed bitmap to be compresed and written to the database, will be recycled if
@@ -77,7 +95,8 @@ public class ThumbnailCacheWriterTask implements SimpleTask {
 	 */
 	@Override
 	public void run(SimpleTaskContext taskContext) {
-		mDb.saveFile(mCacheId, mBitmap);
+		CoversDbHelper db = taskContext.getCoversDb();
+		db.saveFile(mCacheId, mBitmap);
 		if (mCanRecycle) {
 			mBitmap.recycle();
 			mBitmap = null;
@@ -86,11 +105,11 @@ public class ThumbnailCacheWriterTask implements SimpleTask {
 	}
 
 	@Override
-	public void finished() {
+	public void onFinish() {
 	}
 
 	@Override
-	public boolean runFinished() {
+	public boolean requiresOnFinish() {
 		// We never need anything in UI thread.
 		return false;
 	}

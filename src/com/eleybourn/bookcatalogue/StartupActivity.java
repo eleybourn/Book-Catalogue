@@ -1,5 +1,26 @@
+/*
+ * @copyright 2012 Philip Warner
+ * @license GNU General Public License
+ * 
+ * This file is part of Book Catalogue.
+ *
+ * Book Catalogue is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Book Catalogue is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.eleybourn.bookcatalogue;
 
+import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.SimpleTaskQueue.OnTaskFinishListener;
 import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTask;
 import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTaskContext;
@@ -22,7 +43,7 @@ import android.os.Handler;
  * a startup. This approach mostly works, but results in an apparent misordering of the activity 
  * stack, which we can live with for now.
  * 
- * @author Grunthos
+ * @author Philip Warner
  */
 public class StartupActivity extends Activity {
 	/** Indicates the upgrade message has been shown */
@@ -170,16 +191,42 @@ public class StartupActivity extends Activity {
 		}
 	}
 	
-	private void stage3Startup() {
-		// Just start MainMenu...it will start the users chosen startup page. Bizarre.
-		Intent i;
-		i = new Intent(this, MainMenu.class);
-		i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+	/**
+	 * Start the main book list
+	 */
+	private void doMyBooks() {
+		Intent i = new Intent(this, BooksOnBookshelf.class);
 		if (mWasReallyStartup)
 			i.putExtra("startup", true);
-		this.startActivity(i);
+		startActivity(i);
+	}
+	
+	/**
+	 * Start the main menu
+	 */
+	private void doMainMenu() {
+		Intent i = new Intent(this, MainMenu.class);
+		if (mWasReallyStartup)
+			i.putExtra("startup", true);
+		startActivity(i);
+	}
 
-		// Die
+	/**
+	 * Start whatever activity the user expects
+	 */
+	private void stage3Startup() {
+		BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
+		Bundle extras = this.getIntent().getExtras();
+
+		// Handle startup specially.
+		// Check if we really want to start this activity.
+		if (prefs.getStartInMyBook()) {
+			doMyBooks();
+		} else {			
+			doMainMenu();
+		}
+
+		// We are done
 		finish();		
 	}
 
@@ -214,7 +261,7 @@ public class StartupActivity extends Activity {
 	/**
 	 * Task to rebuild FTS in background. Can take several seconds, so not done in onUpgrade().
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 *
 	 */
 	public class RebuildFtsTask implements SimpleTask {
@@ -227,10 +274,10 @@ public class StartupActivity extends Activity {
 		}
 
 		@Override
-		public void finished() {}
+		public void onFinish() {}
 
 		@Override
-		public boolean runFinished() { return false; }
+		public boolean requiresOnFinish() { return false; }
 
 	}
 
@@ -243,14 +290,15 @@ public class StartupActivity extends Activity {
 			// Analyze DB
 			db.analyzeDb();
 			// Analyze the covers DB
-			Utils.analyzeCovers();
+			Utils utils = taskContext.getUtils();
+			utils.analyzeCovers();				
 		}
 
 		@Override
-		public void finished() {}
+		public void onFinish() {}
 
 		@Override
-		public boolean runFinished() { return false; }
+		public boolean requiresOnFinish() { return false; }
 	}
 	
 }

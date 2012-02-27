@@ -1,3 +1,23 @@
+/*
+ * @copyright 2012 Philip Warner
+ * @license GNU General Public License
+ * 
+ * This file is part of Book Catalogue.
+ *
+ * Book Catalogue is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Book Catalogue is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.eleybourn.bookcatalogue;
 
 import java.io.File;
@@ -16,7 +36,7 @@ import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTaskContext;
  * This object also has it's own statically defined SimpleTaskQueue for getting thumbnails in
  * background.
  * 
- * @author Grunthos
+ * @author Philip Warner
  */
 public class GetThumbnailTask implements SimpleTask {
 
@@ -77,9 +97,9 @@ public class GetThumbnailTask implements SimpleTask {
 	 * @param v
 	 */
 	public static void clearOldTaskFromView(final ImageView v) {
-		final GetThumbnailTask oldTask = (GetThumbnailTask)v.getTag(R.id.TAG_GET_THUMBNAIL_TASK);
+		final GetThumbnailTask oldTask = (GetThumbnailTask)ViewTagger.getTag(v, R.id.TAG_GET_THUMBNAIL_TASK);
 		if (oldTask != null) {
-			v.setTag(R.id.TAG_GET_THUMBNAIL_TASK, null);
+			ViewTagger.setTag(v, R.id.TAG_GET_THUMBNAIL_TASK, null);
 			mQueue.remove(oldTask);
 		}		
 	}
@@ -106,7 +126,7 @@ public class GetThumbnailTask implements SimpleTask {
 		v.setImageBitmap(null);
 
 		// Associate the view with this task
-		v.setTag(R.id.TAG_GET_THUMBNAIL_TASK, this);
+		ViewTagger.setTag(v, R.id.TAG_GET_THUMBNAIL_TASK, this);
 	}
 
 	/**
@@ -128,13 +148,14 @@ public class GetThumbnailTask implements SimpleTask {
 			// Get the view we are targeting and make sure it is valid
 			ImageView v = mView.get();
 			if (v == null) {
+				mView.clear();
 				mWantFinished = false;
 				return;
 			}
 
 			// Make sure the view is still associated with this task. We don't want to overwrite the wrong image
 			// in a recycled view.
-			if (!this.equals(v.getTag(R.id.TAG_GET_THUMBNAIL_TASK))) {
+			if (!this.equals(ViewTagger.getTag(v, R.id.TAG_GET_THUMBNAIL_TASK))) {
 				mWantFinished = false;
 				return;
 			}
@@ -143,12 +164,12 @@ public class GetThumbnailTask implements SimpleTask {
 
 			if (!mCacheWasChecked) {
 				final String cacheId = Utils.getCoverCacheId(mBookId, mWidth, mHeight);
-				mBitmap = Utils.fetchCachedImageIntoImageView(originalFile, null, cacheId);
+				mBitmap = taskContext.getUtils().fetchCachedImageIntoImageView(originalFile, null, cacheId);
 				mWasInCache = (mBitmap != null);
 			}
 
 			if (mBitmap == null)
-				mBitmap = Utils.fetchBookCoverIntoImageView(null, mWidth, mHeight, true, mBookId, false, false);
+				mBitmap = taskContext.getUtils().fetchBookCoverIntoImageView(null, mWidth, mHeight, true, mBookId, false, false);
 			//}			
 		} finally {
 		}
@@ -158,16 +179,16 @@ public class GetThumbnailTask implements SimpleTask {
 	 * Handle the results of the task.
 	 */
 	@Override
-	public void finished() {
+	public void onFinish() {
 		// Get the view we are targetting and make sure it is valid
 		ImageView v = mView.get();
 		// Make sure the view is still associated with this task. We dont want to overwrite the wrong image
 		// in a recycled view.
-		final boolean viewIsValid = (v != null && this.equals(v.getTag(R.id.TAG_GET_THUMBNAIL_TASK)));
+		final boolean viewIsValid = (v != null && this.equals(ViewTagger.getTag(v, R.id.TAG_GET_THUMBNAIL_TASK)));
 
 		// Clear the view tag
 		if (viewIsValid)
-			v.setTag(R.id.TAG_GET_THUMBNAIL_TASK, null);
+			ViewTagger.setTag(v, R.id.TAG_GET_THUMBNAIL_TASK, null);
 
 		if (mBitmap != null) {
 			if (!mWasInCache)  {
@@ -188,11 +209,12 @@ public class GetThumbnailTask implements SimpleTask {
 			v.setImageResource(android.R.drawable.ic_dialog_alert);
 		}
 
+		mView.clear();
 		//System.out.println("Set image for ID " + mBookId);
 	}
 
 	@Override
-	public boolean runFinished() {
+	public boolean requiresOnFinish() {
 		return mWantFinished;
 	}
 

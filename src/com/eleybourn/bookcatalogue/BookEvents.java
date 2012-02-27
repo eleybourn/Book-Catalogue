@@ -1,3 +1,23 @@
+/*
+ * @copyright 2012 Philip Warner
+ * @license GNU General Public License
+ * 
+ * This file is part of Book Catalogue.
+ *
+ * Book Catalogue is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Book Catalogue is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
@@ -34,14 +54,14 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
  * for), but it is better to present data to the users cleanly.
  * *************!!!!!!!!!!!!*************!!!!!!!!!!!!*************!!!!!!!!!!!!*************
  * 
- * @author Grunthos
+ * @author Philip Warner
  */
 public class BookEvents {
 	/**
 	 * Base class for all book-related events. Has a book ID and is capable of 
 	 * displaying basic book data in a View.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	public static class BookEvent extends Event {
 		private static final long serialVersionUID = 74746691665235897L;
@@ -83,7 +103,7 @@ public class BookEvents {
 		/**
 		 * Class to implement the 'holder' model for view we create.
 		 *
-		 * @author Grunthos
+		 * @author Philip Warner
 		 */
 		protected class BookEventHolder {
 			long rowId;
@@ -103,7 +123,7 @@ public class BookEvents {
 		@Override
 		public View newListItemView(LayoutInflater inflater, Context context, BindableItemSQLiteCursor cursor, ViewGroup parent) {
 			View view = inflater.inflate(R.layout.book_event_info, parent, false);
-			view.setTag(R.id.TAG_EVENT, this);
+			ViewTagger.setTag(view, R.id.TAG_EVENT, this);
 			BookEventHolder holder = new BookEventHolder();
 			holder.event = this;
 			holder.rowId = cursor.getId();
@@ -115,9 +135,9 @@ public class BookEvents {
 			holder.retry = (Button)view.findViewById(com.eleybourn.bookcatalogue.R.id.retry);
 			holder.title = ((TextView)view.findViewById(com.eleybourn.bookcatalogue.R.id.title));
 
-			view.setTag(R.id.TAG_BOOK_EVENT_HOLDER, holder);
-			holder.checkbox.setTag(R.id.TAG_BOOK_EVENT_HOLDER, holder);
-			holder.retry.setTag(R.id.TAG_BOOK_EVENT_HOLDER, holder);
+			ViewTagger.setTag(view, R.id.TAG_BOOK_EVENT_HOLDER, holder);
+			ViewTagger.setTag(holder.checkbox, R.id.TAG_BOOK_EVENT_HOLDER, holder);
+			ViewTagger.setTag(holder.retry, R.id.TAG_BOOK_EVENT_HOLDER, holder);
 
 			return view;
 		}
@@ -128,7 +148,7 @@ public class BookEvents {
 		@Override
 		public boolean bindView(View view, Context context, BindableItemSQLiteCursor bindableCursor, Object appInfo) {
 			final EventsCursor cursor = (EventsCursor)bindableCursor;
-			BookEventHolder holder = (BookEventHolder)view.getTag(R.id.TAG_BOOK_EVENT_HOLDER);
+			BookEventHolder holder = (BookEventHolder)ViewTagger.getTag(view, R.id.TAG_BOOK_EVENT_HOLDER);
 			CatalogueDBAdapter db = (CatalogueDBAdapter)appInfo;
 
 			// Update event info binding; the Views in the holder are unchanged, but when it is reused
@@ -173,7 +193,7 @@ public class BookEvents {
 			holder.checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 				@Override
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-					BookEventHolder holder = (BookEventHolder)buttonView.getTag(R.id.TAG_BOOK_EVENT_HOLDER);
+					BookEventHolder holder = (BookEventHolder)ViewTagger.getTag(buttonView, R.id.TAG_BOOK_EVENT_HOLDER);
 					cursor.setIsSelected(holder.rowId,isChecked);
 				}});
 
@@ -192,7 +212,7 @@ public class BookEvents {
 				@Override
 				public void run() {
 					try {
-						GrSendBookEvent event = (GrSendBookEvent) v.getTag(R.id.TAG_EVENT);
+						GrSendBookEvent event = (GrSendBookEvent) ViewTagger.getTag(v, R.id.TAG_EVENT);
 						editBook(ctx, event.getBookId());
 					} catch (Exception e) {
 						// not a book event?
@@ -202,9 +222,8 @@ public class BookEvents {
 			items.add(new ContextDialogItem(ctx.getString(R.string.visit_goodreads), new Runnable() {
 				@Override
 				public void run() {
-					BookEventHolder holder = (BookEventHolder)v.getTag(R.id.TAG_BOOK_EVENT_HOLDER);
+					BookEventHolder holder = (BookEventHolder)ViewTagger.getTag(v, R.id.TAG_BOOK_EVENT_HOLDER);
 					Intent i = new Intent(ctx, GoodreadsSearchCriteria.class);
-					i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					i.putExtra(GoodreadsSearchCriteria.EXTRA_BOOK_ID, holder.event.getBookId());
 					ctx.startActivity(i);
 				}}));
@@ -222,7 +241,7 @@ public class BookEvents {
 	 * Subclass of BookEvent that is the base class for all Event objects resulting from 
 	 * sending books to goodreads.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	public static class GrSendBookEvent extends BookEvent {
 		private static final long serialVersionUID = 1L;
@@ -255,7 +274,7 @@ public class BookEvents {
 			super.bindView(view, context, cursor, appInfo);
 
 			// get book details
-			final BookEventHolder holder = (BookEventHolder)view.getTag(R.id.TAG_BOOK_EVENT_HOLDER);
+			final BookEventHolder holder = (BookEventHolder)ViewTagger.getTag(view, R.id.TAG_BOOK_EVENT_HOLDER);
 			final CatalogueDBAdapter db = (CatalogueDBAdapter)appInfo;
 			final BooksCursor booksCursor = db.getBookForGoodreadsCursor(m_bookId);
 			final BooksRowView book = booksCursor.getRowView();
@@ -266,7 +285,7 @@ public class BookEvents {
 						holder.retry.setVisibility(View.GONE);
 					} else {
 						holder.retry.setVisibility(View.VISIBLE);
-						holder.retry.setTag(this);
+						ViewTagger.setTag(holder.retry, this);
 						holder.retry.setOnClickListener(m_retryButtonListener);
 					}
 				} else {
@@ -298,7 +317,7 @@ public class BookEvents {
 							@Override
 							public void run() {
 								try {
-									GrSendBookEvent event = (GrSendBookEvent) v.getTag(R.id.TAG_EVENT);
+									GrSendBookEvent event = (GrSendBookEvent) ViewTagger.getTag(v, R.id.TAG_EVENT);
 									event.retry();
 									QueueManager.getQueueManager().deleteEvent(id);
 								} catch (Exception e) {
@@ -319,7 +338,7 @@ public class BookEvents {
 	private static OnClickListener m_retryButtonListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			BookEvent.BookEventHolder holder = (BookEvent.BookEventHolder)v.getTag(R.id.TAG_BOOK_EVENT_HOLDER);
+			BookEvent.BookEventHolder holder = (BookEvent.BookEventHolder)ViewTagger.getTag(v, R.id.TAG_BOOK_EVENT_HOLDER);
 			((GrSendBookEvent)holder.event).retry();
 		}
 	};
@@ -338,7 +357,7 @@ public class BookEvents {
 	 * 
 	 * 'General' purpose exception class
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	public static class GrGeneralBookEvent extends GrSendBookEvent {
 		private static final long serialVersionUID = -7684121345325648066L;
@@ -351,7 +370,7 @@ public class BookEvents {
 	/**
 	 * Exception indicating the book's ISBN could not be found at GoodReads
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 *
 	 */
 	public static class GrNoMatchEvent extends GrSendBookEvent {
@@ -365,7 +384,7 @@ public class BookEvents {
 	/**
 	 * Exception indicating the book's ISBN was blank
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 *
 	 */
 	public static class GrNoIsbnEvent extends GrSendBookEvent {

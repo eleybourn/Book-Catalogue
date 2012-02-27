@@ -48,7 +48,7 @@ import android.os.Bundle;
  * 			- Lookup title using keywords: http://www.librarything.com/api/thingTitle/hand oberon
  * 			- consider scraping html for covers: http://www.librarything.com/work/18998/covers
  * 
- * @author Grunthos
+ * @author Philip Warner
  *
  */
 public class LibraryThingManager {
@@ -469,7 +469,7 @@ public class LibraryThingManager {
 	/**
 	 * Parser Handler to collect the book data.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	private class SearchLibraryThingEntryHandler extends DefaultHandler  {
 		private Bundle mBookData = null;
@@ -675,7 +675,7 @@ public class LibraryThingManager {
 	 *  ...etc...
 	 *  <isbn>2207301907</isbn>
 	 * </idlist>
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	static private class SearchLibraryThingEditionHandler extends DefaultHandler  {
 		private StringBuilder mBuilder = new StringBuilder();

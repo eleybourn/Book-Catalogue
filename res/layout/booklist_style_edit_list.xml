@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:id="@+id/list_wrapper"
+	android:orientation="vertical"
+	android:layout_width="fill_parent" 
+	android:layout_height="fill_parent"
+	android:paddingLeft="5sp"
+	android:background="#2d2d2d">
+
+	<LinearLayout
+	    android:id="@+id/top_buttons"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:gravity="top"
+	    android:orientation="vertical" >
+
+	</LinearLayout>
+
+	<LinearLayout	 android:id="@+id/bottom_buttons" 
+		android:gravity="bottom" 
+		android:orientation="horizontal"
+		android:padding="5dp"
+		android:layout_height="wrap_content" 
+		android:layout_width="fill_parent" 
+		android:layout_alignParentBottom="true">
+
+		<Button
+		    android:id="@+id/confirm"
+		    style="?android:attr/buttonStyleSmall"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_gravity="center_vertical|left"
+		    android:layout_weight="10"
+		    android:text="@string/save"
+		    android:textAppearance="?android:attr/textAppearanceSmall"
+		    />
+
+		<Button
+		    android:id="@+id/cancel"
+		    style="?android:attr/buttonStyleSmall"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_gravity="center_vertical|right"
+		    android:layout_weight="10"
+		    android:text="@string/cancel"
+		    android:textAppearance="?android:attr/textAppearanceSmall"
+		    />
+
+	</LinearLayout>
+
+	<LinearLayout	 android:id="@+id/body" 
+		android:gravity="top" 
+		android:orientation="vertical"
+		android:layout_width="fill_parent" 
+		android:layout_height="fill_parent" 
+		android:layout_below="@+id/top_buttons"
+		android:layout_above="@+id/bottom_buttons"
+		>
+
+	   	<com.eleybourn.bookcatalogue.TouchListView 
+			xmlns:tlv="http://schemas.android.com/apk/res/com.eleybourn.bookcatalogue"
+	
+			android:fadingEdge="none"
+	    	android:id="@+id/android:list" 
+	    	android:layout_width="fill_parent" 
+			android:layout_height="fill_parent" 
+			tlv:grabber="@+id/grabber"
+			tlv:normal_height="32dp"
+			tlv:remove_mode="none"
+	    	android:textSize="16sp" />
+	  	<TextView android:id="@+id/android:empty" 
+	  		android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+	  		android:text="@+string/noseries"
+	  		android:textSize="16sp" />
+	</LinearLayout>
+
+</RelativeLayout>

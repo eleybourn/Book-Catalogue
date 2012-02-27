@@ -1,3 +1,23 @@
+/*
+ * @copyright 2012 Philip Warner
+ * @license GNU General Public License
+ * 
+ * This file is part of Book Catalogue.
+ *
+ * Book Catalogue is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Book Catalogue is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.eleybourn.bookcatalogue;
 
 import java.lang.ref.WeakReference;
@@ -20,12 +40,12 @@ import android.database.sqlite.SQLiteQuery;
  * where cursors are being allocated, and whether they are being deallocated in a timely
  * fashion.
  * 
- * @author Grunthos
+ * @author Philip Warner
  */
 public class TrackedCursor extends SynchronizedCursor  {
 	
 	/** Set to TRUE to actually track cursors. Otherwise, most code is optimized out. */
-	private static final boolean DEBUG_TRACKED_CURSOR = false;
+	private static final boolean DEBUG_TRACKED_CURSOR = true;
 
 	/* Static Data */
 	/* =========== */
@@ -45,6 +65,9 @@ public class TrackedCursor extends SynchronizedCursor  {
 	/** Weak reference to this object, used in cursor collection */
 	private WeakReference<TrackedCursor> mWeakRef;
 
+	/** Debug counter */
+	public static Integer mInstanceCount = 0;
+
 	/**
 	 * Constructor.
 	 *
@@ -55,7 +78,12 @@ public class TrackedCursor extends SynchronizedCursor  {
 	 */
 	public TrackedCursor(SQLiteDatabase db, SQLiteCursorDriver driver, String editTable, SQLiteQuery query, Synchronizer sync) {
 		super(db, driver, editTable, query, sync);
-		
+
+		synchronized(mInstanceCount) {
+			mInstanceCount++;
+			System.out.println("Cursor instances: " + mInstanceCount);
+		}
+
 		if (DEBUG_TRACKED_CURSOR) {
 			// Record who called us. It's only from about the 7th element that matters.
 			mStackTrace = Thread.currentThread().getStackTrace();
@@ -81,6 +109,10 @@ public class TrackedCursor extends SynchronizedCursor  {
 	@Override
 	public void close() {
 		super.close();
+		synchronized(mInstanceCount) {
+			mInstanceCount--;
+			System.out.println("Cursor instances: " + mInstanceCount);
+		}
 		if (DEBUG_TRACKED_CURSOR) {
 			if (mWeakRef != null)
 				synchronized(mCursors) {

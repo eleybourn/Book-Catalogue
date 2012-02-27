@@ -252,8 +252,8 @@ public class BookEdit extends TabActivity {
 					book.putString(CatalogueDBAdapter.KEY_DESCRIPTION, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_DESCRIPTION)));
 					book.putString(CatalogueDBAdapter.KEY_GENRE, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_GENRE)));
 					
-					book.putParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mDbHelper.getBookAuthorList(mRowId));
-					book.putParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY, mDbHelper.getBookSeriesList(mRowId));
+					book.putSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mDbHelper.getBookAuthorList(mRowId));
+					book.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, mDbHelper.getBookSeriesList(mRowId));
 					
 					i.putExtra("bookData", book);
 					startActivityForResult(i, DUPLICATE_ID);

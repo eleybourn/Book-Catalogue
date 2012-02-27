@@ -10,7 +10,7 @@ import android.os.Message;
 /**
  * Class to handle import in a separate thread.
  *
- * @author Grunthos
+ * @author Philip Warner
  */
 public class ImportThread extends ManagedTask {
 	public ArrayList<String> mExport = null;
@@ -166,7 +166,7 @@ public class ImportThread extends ManagedTask {
 					// Now build the array for authors
 					ArrayList<Author> aa = Utils.getAuthorUtils().decodeList(authorDetails, '|', false);
 					Utils.pruneList(mDbHelper, aa);
-					values.putParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, aa);
+					values.putSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, aa);
 				}
 
 				// Keep series handling local
@@ -189,8 +189,9 @@ public class ImportThread extends ManagedTask {
 					}
 					// Handle the series
 					ArrayList<Series> sa = Utils.getSeriesUtils().decodeList(seriesDetails, '|', false);
+					Utils.pruneSeriesList(sa);
 					Utils.pruneList(mDbHelper, sa);
-					values.putParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY, sa);				
+					values.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, sa);				
 				}
 				
 				

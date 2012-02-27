@@ -58,6 +58,26 @@
 				android:paddingTop="5dp"
 				/>
 		</LinearLayout>
+
+		<LinearLayout android:id="@+id/my_books_classic_label" 
+			android:orientation="horizontal"
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content"
+			android:clickable="true"
+			android:paddingLeft="5dp">
+			<ImageView android:id="@+id/bookshelf_img" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:src="@+drawable/ic_menu_bookshelves"
+				/>
+			<TextView 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:text="@+string/my_books_classic"
+				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:paddingTop="5dp"
+				/>
+		</LinearLayout>
 		
 		<LinearLayout android:id="@+id/add_book_label" 
 			android:orientation="horizontal"
@@ -159,6 +179,7 @@
 				/>
 		</LinearLayout>
 	
+		<!--  Now in 'My Books'
 		<LinearLayout android:id="@+id/browse_label" 
 			android:orientation="horizontal"
 			android:layout_width="fill_parent" 
@@ -178,7 +199,7 @@
 				android:paddingTop="5dp"
 				/>
 		</LinearLayout>
-	
+		 -->	
 		<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 		    android:orientation="horizontal"
 			android:layout_width="fill_parent" 

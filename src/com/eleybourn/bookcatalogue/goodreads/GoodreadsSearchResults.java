@@ -1,3 +1,23 @@
+/*
+ * @copyright 2012 Philip Warner
+ * @license GNU General Public License
+ * 
+ * This file is part of Book Catalogue.
+ *
+ * Book Catalogue is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Book Catalogue is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.eleybourn.bookcatalogue.goodreads;
 
 import java.util.ArrayList;
@@ -6,6 +26,7 @@ import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.Logger;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.SimpleTaskQueue;
+import com.eleybourn.bookcatalogue.ViewTagger;
 import com.eleybourn.bookcatalogue.goodreads.api.SearchBooksApiHandler;
 
 import android.app.ListActivity;
@@ -23,7 +44,7 @@ import android.widget.Toast;
 /**
  * Search goodreads for a book and display the list of results. Use background tasks to get thumbnails and update when retrieved.
  * 
- * @author Grunthos
+ * @author Philip Warner
  */
 public class GoodreadsSearchResults extends ListActivity {
 	//private static Integer mIdCounter = 0;
@@ -101,7 +122,7 @@ public class GoodreadsSearchResults extends ListActivity {
 	/**
 	 * Class used in implementing holder pattern for search results.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	private class ListHolder {
 		GoodreadsWork work;
@@ -117,7 +138,7 @@ public class GoodreadsSearchResults extends ListActivity {
 	 * @param v		View that was clicked.
 	 */
 	private void doItemClick(View v) {
-		ListHolder holder = (ListHolder)v.getTag();
+		ListHolder holder = (ListHolder)ViewTagger.getTag(v);
 		// TODO: Implement edition lookup - requires access to work.editions API from GR
 		Toast.makeText(this, "Not implemented: see " + holder.title + " by " + holder.author, Toast.LENGTH_LONG).show();			
 		//Intent i = new Intent(this, GoodreadsW)
@@ -126,7 +147,7 @@ public class GoodreadsSearchResults extends ListActivity {
 	/**
 	 * ArrayAdapter that uses holder pattern to display goodreads books and allows for background image retrieval.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 *
 	 */
 	private class ResultsAdapter extends ArrayAdapter<GoodreadsWork> {
@@ -152,7 +173,7 @@ public class GoodreadsSearchResults extends ListActivity {
 					holder.cover = (ImageView)convertView.findViewById(R.id.cover);
 
 					// Save the holder
-					convertView.setTag(holder);
+					ViewTagger.setTag(convertView, holder);
 
 					// Set the click listener
 					convertView.setOnClickListener(new OnClickListener(){
@@ -167,7 +188,7 @@ public class GoodreadsSearchResults extends ListActivity {
 				}
 	        } else {
 	        	// Recycling: just get the holder
-	        	holder = (ListHolder)convertView.getTag();
+	        	holder = (ListHolder)ViewTagger.getTag(convertView);
 	        }
 
 			synchronized(convertView){

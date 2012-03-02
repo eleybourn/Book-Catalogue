@@ -252,13 +252,13 @@ public class AdministrationFunctions extends ActivityWithTasks {
 
 		/* Goodreads EXPORT Link */
 		{
-			View v = findViewById(R.id.send_all_to_goodreads_label);
+			View v = findViewById(R.id.send_books_to_goodreads_label);
 			// Make line flash when clicked.
 			v.setBackgroundResource(android.R.drawable.list_selector_background);
 			v.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					sendAllToGoodreads();
+					sendBooksToGoodreads();
 					return;
 				}
 			});
@@ -355,6 +355,51 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	}
 
 	/**
+	 * Display a dialog warning the user that goodreads authentication is required; gives them
+	 * the options: 'request now', 'more info' or 'cancel'.
+	 */
+	public void sendBooksToGoodreads() {
+		// Make sure GR is authorized for this app
+		GoodreadsManager grMgr = new GoodreadsManager();
+
+		if (!grMgr.hasCredentials()) {
+			StandardDialogs.goodreadsAuthAlert(this);
+			return;
+		}
+
+		if (!grMgr.hasValidCredentials()) {
+			StandardDialogs.goodreadsAuthAlert(this);
+			return;
+		}
+
+		// Get the title		
+		final AlertDialog alertDialog = new AlertDialog.Builder(this).setTitle(R.string.send_books_to_goodreads).setMessage(R.string.send_books_to_goodreads_blurb).create();
+
+		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
+		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, getResources().getString(R.string.send_updated), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				alertDialog.dismiss();
+				AdministrationFunctions.this.sendToGoodreads(true);
+			}
+		});
+		
+		alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, getResources().getString(R.string.send_all), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				alertDialog.dismiss();
+				AdministrationFunctions.this.sendToGoodreads(false);
+			}
+		});
+
+		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				alertDialog.dismiss();
+			}
+		}); 
+
+		alertDialog.show();		
+	}
+
+	/**
 	 * Start the activity that shows the basic details of background tasks.
 	 */
 	private void showBackgroundTasks() {
@@ -400,13 +445,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	/**
 	 * Start a background task that exports all books to goodreads.
 	 */
-	private void sendAllToGoodreads() {
-		GoodreadsManager grMgr = new GoodreadsManager();
-
-		if (!grMgr.hasCredentials()) {
-			StandardDialogs.goodreadsAuthAlert(this);
-			return;
-		}
+	private void sendToGoodreads(boolean updatesOnly) {
 
 		if (BcQueueManager.getQueueManager().hasActiveTasks(BcQueueManager.CAT_GOODREADS_EXPORT_ALL)) {
 			Toast.makeText(this, R.string.requested_task_is_already_queued, Toast.LENGTH_LONG).show();
@@ -417,12 +456,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			return;
 		}
 
-		if (!grMgr.hasValidCredentials()) {
-			StandardDialogs.goodreadsAuthAlert(this);
-			return;
-		}
-
-		QueueManager.getQueueManager().enqueueTask(new SendAllBooksTask(), BcQueueManager.QUEUE_MAIN, 0);
+		QueueManager.getQueueManager().enqueueTask(new SendAllBooksTask(updatesOnly), BcQueueManager.QUEUE_MAIN, 0);
 	}
 	
 	/**

@@ -46,7 +46,9 @@ public class SendAllBooksTask extends GenericTask {
 
 	/** Last book ID processed */
 	private long mLastId = 0;
-
+	/** Flag indicating if it should only send UPDATED books to goodreads; false == all books */
+	private final boolean mUpdatesOnly;
+	
 	/** Number of books with no ISBN */
 	private int mNoIsbn = 0;
 	/** Number of books that had ISBN but could not be found */
@@ -61,8 +63,9 @@ public class SendAllBooksTask extends GenericTask {
 	/**
 	 * Constructor
 	 */
-	public SendAllBooksTask() {
-		super(BookCatalogueApp.getResourceString(R.string.send_all_to_goodreads));
+	public SendAllBooksTask(boolean updatesOnly) {
+		super(BookCatalogueApp.getResourceString(R.string.send_books_to_goodreads));
+		mUpdatesOnly = updatesOnly;
 	}
 
 	/**
@@ -119,7 +122,7 @@ public class SendAllBooksTask extends GenericTask {
 		Cursor shelves = null;
 
 		try {
-			books = dbHelper.getAllBooksForGoodreadsCursor(mLastId);
+			books = dbHelper.getAllBooksForGoodreadsCursor(mLastId, mUpdatesOnly);
 			final BooksRowView book = books.getRowView();
 			mTotalBooks = books.getCount() + mCount;
 
@@ -210,7 +213,7 @@ public class SendAllBooksTask extends GenericTask {
 		// Notify the user: '15 books processed: 3 sent successfully, 5 with no ISBN and 7 with ISBN but not found in goodreads'
 		String s = context.getString(R.string.send_all_to_goodreads_result, mCount, mSent, mNoIsbn, mNotFound);
 		qmanager.showNotification(R.id.NOTIFICATION, 
-							context.getString(R.string.send_all_to_goodreads), s, 
+							context.getString(R.string.send_books_to_goodreads), s, 
 							BookCatalogueApp.getAppToForegroundIntent(context));
 
 		return true;

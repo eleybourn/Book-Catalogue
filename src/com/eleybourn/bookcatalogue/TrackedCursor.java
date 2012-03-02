@@ -64,6 +64,8 @@ public class TrackedCursor extends SynchronizedCursor  {
 	private StackTraceElement[] mStackTrace;
 	/** Weak reference to this object, used in cursor collection */
 	private WeakReference<TrackedCursor> mWeakRef;
+	/** Already closed */
+	private boolean mIsClosedFlg = false;
 
 	/** Debug counter */
 	public static Integer mInstanceCount = 0;
@@ -110,16 +112,19 @@ public class TrackedCursor extends SynchronizedCursor  {
 	public void close() {
 		super.close();
 		if (DEBUG_TRACKED_CURSOR) {
-			synchronized(mInstanceCount) {
-				mInstanceCount--;
-				System.out.println("Cursor instances: " + mInstanceCount);
-			}
-			if (mWeakRef != null)
-				synchronized(mCursors) {
-					mCursors.remove(mWeakRef);
-					mWeakRef.clear();
-					mWeakRef = null;
+			if (!mIsClosedFlg) {
+				synchronized(mInstanceCount) {
+					mInstanceCount--;
+					System.out.println("Cursor instances: " + mInstanceCount);
 				}
+				if (mWeakRef != null)
+					synchronized(mCursors) {
+						mCursors.remove(mWeakRef);
+						mWeakRef.clear();
+						mWeakRef = null;
+					}
+				mIsClosedFlg = true;
+			}
 		}
 	}
 

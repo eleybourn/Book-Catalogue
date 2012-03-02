@@ -4160,11 +4160,16 @@ public class CatalogueDBAdapter {
 	/**
 	 * Query to get all book IDs and ISBN for sending to goodreads.
 	 */
-	public BooksCursor getAllBooksForGoodreadsCursor(long startId) {
+	public BooksCursor getAllBooksForGoodreadsCursor(long startId, boolean updatesOnly) {
 		//if (m_allBooksForGoodreadsStmt == null) {
 		//	m_allBooksForGoodreadsStmt = compileStatement("Select isbn, " + KEY_BOOK + " from " + DB_TB_BOOKS + " Order by " + KEY_BOOK);
 		//}
-		String sql = "Select " + KEY_ISBN + ", " + KEY_ROWID + ", " + DOM_GOODREADS_BOOK_ID + " from " + DB_TB_BOOKS + " Where " + KEY_ROWID + " > " + startId + " Order by " + KEY_ROWID;
+		String sql = "Select " + KEY_ISBN + ", " + KEY_ROWID + ", " + DOM_GOODREADS_BOOK_ID + " from " + DB_TB_BOOKS + " Where " + KEY_ROWID + " > " + startId;
+		if (updatesOnly) {
+			sql += " and " + DOM_LAST_UPDATE_DATE + " > " + DOM_LAST_GOODREADS_SYNC_DATE;
+		}
+		sql += " Order by " + KEY_ROWID;
+
 		BooksCursor cursor = fetchBooks(sql, EMPTY_STRNG_ARRAY);
 		return cursor;
 	}

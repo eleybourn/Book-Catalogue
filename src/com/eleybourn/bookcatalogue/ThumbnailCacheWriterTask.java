@@ -96,10 +96,15 @@ public class ThumbnailCacheWriterTask implements SimpleTask {
 	@Override
 	public void run(SimpleTaskContext taskContext) {
 		CoversDbHelper db = taskContext.getCoversDb();
-		db.saveFile(mCacheId, mBitmap);
-		if (mCanRecycle) {
-			mBitmap.recycle();
+		if (mBitmap.isRecycled()) {
+			// Was probably recycled by rapid scrolling of view
 			mBitmap = null;
+		} else {
+			db.saveFile(mCacheId, mBitmap);
+			if (mCanRecycle) {
+				mBitmap.recycle();
+				mBitmap = null;
+			}
 		}
 		mCacheId = null;
 	}

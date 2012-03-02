@@ -290,7 +290,7 @@
 <string name="my_books_classic">My Books (Classic)</string>
 <string name="loan_return_book">Loan, Return or Edit Book</string>
 <string name="admin_and_prefs">Administration and Preferences</string>
-<string name="edit_book_send_to_gr">Send to GoodReads</string>
+<string name="edit_book_send_to_gr">Send to goodreads</string>
 <string name="goodreads">goodreads</string>
 <string name="goodreads_label">Goodreads</string>
 <string name="goodreads_auth_blurb_part1">goodreads is a web site whose stated mission is "to help people find and share books they love". They have an extensive database of books and reviews, and if you are a registered goodreads user, BookCatalogue can export your books, shelves and reviews to goodreads and import your books, shelves and reviews from goodreads. BookCatalogue is a stand-alone application and does not require goodreads, but if you are interested you can register at:</string>
@@ -317,7 +317,7 @@
 <string name="show_results">Show Results</string>
 <string name="rebuild_fts">Rebuild FTS (alpha only!)</string>
 <string name="search_in">Search In</string>
-<string name="send_all_to_goodreads">Send all to goodreads</string>
+<string name="send_books_to_goodreads">Send books to goodreads</string>
 <string name="legacy_task">Legacy Task</string>
 <string name="occurred_at">occurred at %1$s</string>
 <string name="unknown_uc">UNKNOWN</string>
@@ -506,5 +506,13 @@
 <string name="failed">Failed</string>
 <string name="queued">Queued</string>
 <string name="unknown">Unknown</string>
+<string name="send_books_to_goodreads_blurb">This will send your library to goodreads.
+    										\n\nYou can choose to send all of your books, or only the books you have updated 
+    										since they were last copied to or from goodreads (including all books that have 
+    										not been sent yet) or you can cancel the update.
+    										\n\nIf you have never sent any books then there is no
+    										difference between the first two options.</string>
+<string name="send_all">Send all</string>
+<string name="send_updated">Send updated</string>
 </resources>
 

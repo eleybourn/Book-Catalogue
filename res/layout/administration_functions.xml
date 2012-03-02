@@ -359,7 +359,7 @@
 			/>
 	</LinearLayout>
 
-	<LinearLayout android:id="@+id/send_all_to_goodreads_label"  
+	<LinearLayout android:id="@+id/send_books_to_goodreads_label"  
 		android:orientation="horizontal"
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content"
@@ -374,7 +374,7 @@
 		<TextView 
 			android:layout_width="fill_parent" 
 			android:layout_height="wrap_content" 
-			android:text="@+string/send_all_to_goodreads"
+			android:text="@+string/send_books_to_goodreads"
 			android:textAppearance="?android:attr/textAppearanceLarge"
 			android:paddingTop="5sp"
 			/>

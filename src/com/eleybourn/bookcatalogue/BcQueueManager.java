@@ -41,6 +41,12 @@ public class BcQueueManager extends QueueManager {
 	public static final String QUEUE_MAIN = "main";
 	public static final String QUEUE_SMALL_JOBS = "small_jobs";
 
+	public static final long CAT_LEGACY = 1;
+	public static final long CAT_GOODREADS_AUTH = 2;
+	public static final long CAT_GOODREADS_IMPORT_ALL = 3;
+	public static final long CAT_GOODREADS_EXPORT_ALL = 4;
+	public static final long CAT_GOODREADS_EXPORT_ONE = 5;
+	
 	/**
 	 * Create the queue we need, if they do not already exist.
 	 * 
@@ -117,7 +123,7 @@ public class BcQueueManager extends QueueManager {
 			items.add(new ContextDialogItem(ctx.getString(R.string.delete_entry), new Runnable() {
 				@Override
 				public void run() {
-					QueueManager.getQueueManager().deleteEvent(BcLegacyTask.this.getId());
+					QueueManager.getQueueManager().deleteTask(BcLegacyTask.this.getId());
 				}}));
 
 		}
@@ -125,6 +131,11 @@ public class BcQueueManager extends QueueManager {
 		@Override
 		public String getDescription() {
 			return BookCatalogueApp.getResourceString(R.string.unrecognized_task);
+		}
+
+		@Override
+		public long getCategory() {
+			return CAT_LEGACY;
 		}
 	}
 

@@ -40,7 +40,7 @@ import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.*;
 /**
  * Class to add a book to a shelf. In this case, we do not care about the data returned.
  * 
- * RELEASE: Parse the result and store it against the bookshelf in the database. 
+ * ENHANCE: Parse the result and store it against the bookshelf in the database. 
  * 		 	Currently, this is not a simple thing to do because bookshelf naming rules in 
  * 		 	goodreads are much more restrictive: no spaces, punctuation (at least).
  * 

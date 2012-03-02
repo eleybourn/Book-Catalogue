@@ -22,6 +22,8 @@ package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
 
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsRegister;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -170,4 +172,38 @@ public class StandardDialogs {
 		
 	}
 
+	/**
+	 * Display a dialog warning the user that goodreads authentication is required; gives them
+	 * the options: 'request now', 'more info' or 'cancel'.
+	 */
+	public static int goodreadsAuthAlert(final Context context) {
+		// Get the title		
+		final AlertDialog alertDialog = new AlertDialog.Builder(context).setTitle(R.string.authorize_access).setMessage(R.string.goodreads_action_cannot_blah_blah).create();
+
+		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
+		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				alertDialog.dismiss();
+				GoodreadsRegister.requestAuthorization(context);
+			}
+		});
+		
+		alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, context.getResources().getString(R.string.tell_me_more), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				alertDialog.dismiss();
+				Intent i = new Intent(context, GoodreadsRegister.class);
+				context.startActivity(i);				
+			}
+		});
+
+		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				alertDialog.dismiss();
+			}
+		}); 
+
+		alertDialog.show();
+		return 0;
+		
+	}
 }

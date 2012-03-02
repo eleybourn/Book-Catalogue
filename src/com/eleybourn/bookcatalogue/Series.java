@@ -181,6 +181,7 @@ public class Series implements Serializable, Utils.ItemWithIdFixup {
 
 	/** Pattern used to remove extraneous text from series positions */
 	private static Pattern mSeriesPosCleanupPat = null;
+	private static Pattern mSeriesIntegerPat = null;
 
 	/**
 	 * Try to cleanup a series position number by removing superfluous text.
@@ -199,9 +200,22 @@ public class Series implements Serializable, Utils.ItemWithIdFixup {
 			// Compile and get a reference to a Pattern object. <br>
 			mSeriesPosCleanupPat = Pattern.compile(seriesExp, Pattern.CASE_INSENSITIVE|Pattern.UNICODE_CASE);
 		}
+		if (mSeriesIntegerPat == null) {
+			String numericExp = "^[0-9]+$";
+			mSeriesIntegerPat = Pattern.compile(numericExp);
+		}
+
 		Matcher matcher = mSeriesPosCleanupPat.matcher(position);
+
 		if (matcher.find()) {
-			return matcher.group(2);
+			// Try to remove leading zeros.
+			String pos = matcher.group(2);
+			Matcher intMatch = mSeriesIntegerPat.matcher(pos);
+			if (intMatch.find()) {
+				return Long.parseLong(pos) + "";
+			} else {
+				return pos;
+			}
 		} else {
 			return position;
 		}

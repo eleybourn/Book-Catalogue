@@ -79,12 +79,12 @@ public class TrackedCursor extends SynchronizedCursor  {
 	public TrackedCursor(SQLiteDatabase db, SQLiteCursorDriver driver, String editTable, SQLiteQuery query, Synchronizer sync) {
 		super(db, driver, editTable, query, sync);
 
-		synchronized(mInstanceCount) {
-			mInstanceCount++;
-			System.out.println("Cursor instances: " + mInstanceCount);
-		}
-
 		if (DEBUG_TRACKED_CURSOR) {
+			synchronized(mInstanceCount) {
+				mInstanceCount++;
+				System.out.println("Cursor instances: " + mInstanceCount);
+			}
+
 			// Record who called us. It's only from about the 7th element that matters.
 			mStackTrace = Thread.currentThread().getStackTrace();
 
@@ -109,11 +109,11 @@ public class TrackedCursor extends SynchronizedCursor  {
 	@Override
 	public void close() {
 		super.close();
-		synchronized(mInstanceCount) {
-			mInstanceCount--;
-			System.out.println("Cursor instances: " + mInstanceCount);
-		}
 		if (DEBUG_TRACKED_CURSOR) {
+			synchronized(mInstanceCount) {
+				mInstanceCount--;
+				System.out.println("Cursor instances: " + mInstanceCount);
+			}
 			if (mWeakRef != null)
 				synchronized(mCursors) {
 					mCursors.remove(mWeakRef);

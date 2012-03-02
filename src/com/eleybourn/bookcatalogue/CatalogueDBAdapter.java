@@ -22,6 +22,7 @@ package com.eleybourn.bookcatalogue;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -50,7 +51,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDoneException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQuery;
-import android.database.sqlite.SQLiteStatement;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -178,8 +178,94 @@ public class CatalogueDBAdapter {
 	private static final String DATABASE_CREATE_BOOKSHELF_DATA =
 		"INSERT INTO " + DB_TB_BOOKSHELF + 
 		" (" + KEY_BOOKSHELF + ") VALUES ('Default')";
-	
+
+	// NOTE: **NEVER** change this. Rename it, and create a new one. Unless you know what you are doing.
 	private static final String DATABASE_CREATE_BOOKS =
+			"create table " + DB_TB_BOOKS + 
+			" (_id integer primary key autoincrement, " +
+			/* KEY_AUTHOR + " integer not null REFERENCES " + DB_TB_AUTHORS + ", " + */
+			KEY_TITLE + " text not null, " +
+			KEY_ISBN + " text, " +
+			KEY_PUBLISHER + " text, " +
+			KEY_DATE_PUBLISHED + " date, " +
+			KEY_RATING + " float not null default 0, " +
+			KEY_READ + " boolean not null default 0, " +
+			/* KEY_SERIES + " text, " + */
+			KEY_PAGES + " int, " +
+			/* KEY_SERIES_NUM + " text, " + */
+			KEY_NOTES + " text, " +
+			KEY_LIST_PRICE + " text, " +
+			KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO + ", " + 
+			KEY_LOCATION + " text, " +
+			KEY_READ_START + " date, " +
+			KEY_READ_END + " date, " +
+			KEY_FORMAT + " text, " +
+			KEY_SIGNED + " boolean not null default 0, " +
+			KEY_DESCRIPTION + " text, " +
+			KEY_GENRE + " text, " +
+			KEY_DATE_ADDED + " datetime default current_timestamp, " +
+			DOM_GOODREADS_BOOK_ID.getDefinition(true) + ", " +
+			DOM_LAST_GOODREADS_SYNC_DATE.getDefinition(true) + ", " +
+			DOM_BOOK_UUID.getDefinition(true) + ", " +
+			DOM_LAST_UPDATE_DATE.getDefinition(true) +
+			")";
+
+	private static final String DATABASE_CREATE_BOOKS_70 =
+			"create table " + DB_TB_BOOKS + 
+			" (_id integer primary key autoincrement, " +
+			/* KEY_AUTHOR + " integer not null REFERENCES " + DB_TB_AUTHORS + ", " + */
+			KEY_TITLE + " text not null, " +
+			KEY_ISBN + " text, " +
+			KEY_PUBLISHER + " text, " +
+			KEY_DATE_PUBLISHED + " date, " +
+			KEY_RATING + " float not null default 0, " +
+			KEY_READ + " boolean not null default 0, " +
+			/* KEY_SERIES + " text, " + */
+			KEY_PAGES + " int, " +
+			/* KEY_SERIES_NUM + " text, " + */
+			KEY_NOTES + " text, " +
+			KEY_LIST_PRICE + " text, " +
+			KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO + ", " + 
+			KEY_LOCATION + " text, " +
+			KEY_READ_START + " date, " +
+			KEY_READ_END + " date, " +
+			KEY_FORMAT + " text, " +
+			KEY_SIGNED + " boolean not null default 0, " +
+			KEY_DESCRIPTION + " text, " +
+			KEY_GENRE + " text, " +
+			KEY_DATE_ADDED + " datetime default current_timestamp, " +
+			DOM_GOODREADS_BOOK_ID.getDefinition(true) + ", " +
+			DOM_BOOK_UUID.getDefinition(true) +
+			")";
+
+	private static final String DATABASE_CREATE_BOOKS_69 =
+			"create table " + DB_TB_BOOKS + 
+			" (_id integer primary key autoincrement, " +
+			/* KEY_AUTHOR + " integer not null REFERENCES " + DB_TB_AUTHORS + ", " + */
+			KEY_TITLE + " text not null, " +
+			KEY_ISBN + " text, " +
+			KEY_PUBLISHER + " text, " +
+			KEY_DATE_PUBLISHED + " date, " +
+			KEY_RATING + " float not null default 0, " +
+			KEY_READ + " boolean not null default 0, " +
+			/* KEY_SERIES + " text, " + */
+			KEY_PAGES + " int, " +
+			/* KEY_SERIES_NUM + " text, " + */
+			KEY_NOTES + " text, " +
+			KEY_LIST_PRICE + " text, " +
+			KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO + ", " + 
+			KEY_LOCATION + " text, " +
+			KEY_READ_START + " date, " +
+			KEY_READ_END + " date, " +
+			KEY_FORMAT + " text, " +
+			KEY_SIGNED + " boolean not null default 0, " +
+			KEY_DESCRIPTION + " text, " +
+			KEY_GENRE + " text, " +
+			KEY_DATE_ADDED + " datetime default current_timestamp, " +
+			DOM_GOODREADS_BOOK_ID.getDefinition(true) +
+			")";
+
+	private static final String DATABASE_CREATE_BOOKS_68 =
 			"create table " + DB_TB_BOOKS + 
 			" (_id integer primary key autoincrement, " +
 			/* KEY_AUTHOR + " integer not null REFERENCES " + DB_TB_AUTHORS + ", " + */
@@ -312,6 +398,8 @@ public class CatalogueDBAdapter {
 		"CREATE INDEX IF NOT EXISTS books_isbn ON "+DB_TB_BOOKS+" ("+KEY_ISBN+");",
 		/* "CREATE INDEX IF NOT EXISTS books_series ON "+DB_TB_BOOKS+" ("+KEY_SERIES+");",*/
 		"CREATE INDEX IF NOT EXISTS books_publisher ON "+DB_TB_BOOKS+" ("+KEY_PUBLISHER+");",
+		"CREATE UNIQUE INDEX IF NOT EXISTS books_uuid ON "+DB_TB_BOOKS+" ("+DOM_BOOK_UUID+");",
+		"CREATE INDEX IF NOT EXISTS books_gr_book ON "+DB_TB_BOOKS+" ("+DOM_GOODREADS_BOOK_ID.name+");",
 		"CREATE INDEX IF NOT EXISTS anthology_book ON "+DB_TB_ANTHOLOGY+" ("+KEY_BOOK+");",
 		"CREATE INDEX IF NOT EXISTS anthology_author ON "+DB_TB_ANTHOLOGY+" ("+KEY_AUTHOR_ID+");",
 		"CREATE INDEX IF NOT EXISTS anthology_title ON "+DB_TB_ANTHOLOGY+" ("+KEY_TITLE+");",
@@ -407,7 +495,11 @@ public class CatalogueDBAdapter {
 			alias + "." + KEY_SIGNED + " as " + KEY_SIGNED + ", " + 
 			alias + "." + KEY_DESCRIPTION + " as " + KEY_DESCRIPTION + ", " + 
 			alias + "." + KEY_GENRE  + " as " + KEY_GENRE + ", " +
-			alias + "." + KEY_DATE_ADDED  + " as " + KEY_DATE_ADDED;
+			alias + "." + KEY_DATE_ADDED  + " as " + KEY_DATE_ADDED + ", " +
+			alias + "." + DOM_GOODREADS_BOOK_ID  + " as " + DOM_GOODREADS_BOOK_ID + ", " +
+			alias + "." + DOM_LAST_GOODREADS_SYNC_DATE  + " as " + DOM_LAST_GOODREADS_SYNC_DATE + ", " +
+			alias + "." + DOM_LAST_UPDATE_DATE  + " as " + DOM_LAST_UPDATE_DATE + ", " +
+			alias + "." + DOM_BOOK_UUID  + " as " + DOM_BOOK_UUID;
 		}
 
 //	private static String SERIES_FIELDS = "s." + KEY_ROWID + " as " + KEY_SERIES_ID
@@ -418,9 +510,9 @@ public class CatalogueDBAdapter {
 //						+ " b LEFT OUTER JOIN " + DB_TB_BOOK_SERIES + " w "
 //						+ " ON (b." + KEY_ROWID + "=w." + KEY_BOOK + ") "
 //						+ " LEFT OUTER JOIN " + DB_TB_SERIES + " s ON (s." + KEY_ROWID + "=w." + KEY_SERIES_ID + ") ";
-		
-	//TODO: RELEASE: Update database version
-	public static final int DATABASE_VERSION = 68;
+
+	//TODO: Update database version RELEASE: Update database version
+	public static final int DATABASE_VERSION = 71;
 
 	private TableInfo mBooksInfo = null;
 
@@ -518,7 +610,8 @@ public class CatalogueDBAdapter {
 				} finally {
 					//db.endTransaction();
 				}
-			}			
+			}	
+			db.execSQL("analyze");
 		}
 		
 		/**
@@ -1135,7 +1228,6 @@ public class CatalogueDBAdapter {
 				}
 			}
 			if (curVersion == 56) {
-				createIndices(db);
 				curVersion++;
 				message += "New in v3.5.4\n\n";
 				message += "* French translation available\n\n";
@@ -1227,7 +1319,6 @@ public class CatalogueDBAdapter {
 						db.execSQL("DROP TABLE tmpBooks");
 					}
 				}
-				createIndices(db);
 			}
 			if (curVersion == 58) {
 				curVersion++;
@@ -1289,7 +1380,7 @@ public class CatalogueDBAdapter {
 				db.execSQL("UPDATE " + DB_TB_BOOKS + " Set " + KEY_SIGNED + " = 1 Where " + KEY_SIGNED + " = 't'");
 				db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " Add " + KEY_DATE_ADDED + " datetime"); // Just want a null value for old records
 				db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " RENAME TO books_tmp");
-				db.execSQL(DATABASE_CREATE_BOOKS);
+				db.execSQL(DATABASE_CREATE_BOOKS_68);
 				db.execSQL("INSERT INTO " + DB_TB_BOOKS + " Select * FROM books_tmp");
 				db.execSQL("DROP TABLE books_tmp");
 			}
@@ -1311,10 +1402,55 @@ public class CatalogueDBAdapter {
 				DatabaseDefinitions.TBL_BOOK_LIST_STYLES.drop(sdb);
 				DatabaseDefinitions.TBL_BOOK_LIST_STYLES.createAll(sdb, true);
 			}
+			if (curVersion == 68) {
+				curVersion++;
+				db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " Add " + DOM_GOODREADS_BOOK_ID.getDefinition(true));
+			}
+			if (curVersion == 69 || curVersion == 70) {
+				curVersion = 71;
+				db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " RENAME TO books_tmp");
+				db.execSQL(DATABASE_CREATE_BOOKS);
+				copyTableSafely(sdb, "books_tmp", DB_TB_BOOKS);
+				db.execSQL("DROP TABLE books_tmp");
+			}
+			// Rebuild all indices
+			createIndices(db);
+
 			//TODO: NOTE: END OF UPDATE
 		}
 	}
 	
+	/**
+	 * Provide a safe table copy method that is insulated from risks associated with column reordering. This
+	 * method will copy ALL columns from the source to the destination; if columns do not exist in the 
+	 * destination, an error will occur. Columns in the destination that are not in the source will be 
+	 * defaulted or set to NULL if no default is defined.
+	 * 
+	 * ENHANCE: allow an exclusion list to be added as a parameter so the some 'from' columns can be ignored.
+	 * 
+	 * @param sdb
+	 * @param from
+	 * @param to
+	 */
+	private static void copyTableSafely(SynchronizedDb sdb, String from, String to) {
+		// Get the source info
+		TableInfo src = new TableInfo(sdb, from);
+		// Build the column list
+		StringBuilder cols = new StringBuilder();
+		boolean first = true;
+		for(ColumnInfo ci: src) {
+			if (first) {
+				first = false;
+			} else {
+				cols.append(", ");
+			}
+			cols.append(ci.name);
+		}
+		String colList = cols.toString();
+		String sql = "Insert into " + to + "(" + colList + ") select " + colList + " from " + from;
+		sdb.execSQL(sql);
+	}
+
 	/**
 	 * Constructor - takes the context to allow the database to be
 	 * opened/created
@@ -1666,16 +1802,16 @@ public class CatalogueDBAdapter {
 	/**
 	 * A complete export of all tables (flattened) in the database 
 	 * 
-	 * @return Cursor over all books, authors, etc
+	 * @return BooksCursor over all books, authors, etc
 	 */
-	public Cursor exportBooks() {
+	public BooksCursor exportBooks() {
 		String sql = "SELECT DISTINCT " +
 				getBookFields("b",KEY_ROWID) + ", " +
 				"l." + KEY_LOANED_TO + " as " + KEY_LOANED_TO + " " +  
 			" FROM " + DB_TB_BOOKS + " b" +
 				" LEFT OUTER JOIN " + DB_TB_LOAN +" l ON (l." + KEY_BOOK + "=b." + KEY_ROWID + ") " +
 			" ORDER BY b._id";
-		return mDb.rawQuery(sql, new String[]{});
+		return fetchBooks(sql, EMPTY_STRING_ARRAY);
 	}
 	
 	/**
@@ -2465,13 +2601,58 @@ public class CatalogueDBAdapter {
 	}
 	
 	/**
-	 * Return a book (Cursor) that matches the given rowId
+	 * Return a book (Cursor) that matches the given goodreads book Id.
+	 * Note: MAYE RETURN MORE THAN ONE BOOK
 	 * 
-	 * @param rowId id of book to retrieve
+	 * @param gdId Goodreads id of book(s) to retrieve
+	 *
+	 * @return Cursor positioned to matching book, if found
+	 * 
+	 * @throws SQLException if note could not be found/retrieved
+	 */
+	public BooksCursor fetchBooksByGoodreadsBookId(long grId) throws SQLException {
+		String where = TBL_BOOKS.dot(DOM_GOODREADS_BOOK_ID) + "=" + grId;
+		return fetchAllBooks("", "", "", where, "", "", "");
+	}
+	
+	/**
+	 * Return a book (Cursor) that matches the given ISBN.
+	 * Note: MAYBE RETURN MORE THAN ONE BOOK
+	 * 
+	 * @param isbn ISBN of book(s) to retrieve
 	 * @return Cursor positioned to matching book, if found
 	 * @throws SQLException if note could not be found/retrieved
 	 */
+	public BooksCursor fetchBooksByIsbns(ArrayList<String> isbns) throws SQLException {
+		if (isbns.size() == 0)
+			throw new RuntimeException("No ISBNs specified in lookup");
+
+		String where;
+		if (isbns.size() == 1) {
+			where = TBL_BOOKS.dot(DOM_ISBN) + " = '" + encodeString(isbns.get(0)) + "'";
+		} else {
+			where = TBL_BOOKS.dot(DOM_ISBN) + " in (";
+			boolean first = true;
+			for(String isbn: isbns) {
+				if (first)
+					first = false;
+				else
+					where += ",";
+				where += "'" + encodeString(isbn) + "'";
+			}
+			where += ")";
+		}
+		return fetchAllBooks("", "", "", where, "", "", "");
+	}
+	
 	private SynchronizedStatement mCheckBookExistsStmt = null;
+	/**
+	 * Check that a book with the passed ID exists
+	 * 
+	 * @param rowId		id of book
+	 * 
+	 * @return			Boolean indicating it exists
+	 */
 	public boolean checkBookExists(long rowId) {
 		if (mCheckBookExistsStmt == null) {
 			mCheckBookExistsStmt = mStatements.add("mCheckBookExistsStmt", "Select " + KEY_ROWID + " From " + DB_TB_BOOKS + " Where " + KEY_ROWID + " = ?");
@@ -2482,6 +2663,26 @@ public class CatalogueDBAdapter {
 			return true;
 		} catch (SQLiteDoneException e) {
 			return false;
+		}
+	}
+	
+	/**
+	 * Check that a book with the passed UUID exists and return the ID of the book, or zero
+	 * 
+	 * @param rowId		UUID of book
+	 * 
+	 * @return			Boolean indicating it exists
+	 */
+	private SynchronizedStatement mGetBookIdFromUuidStmt = null;
+	public long getBookIdFromUuid(String uuid) {
+		if (mGetBookIdFromUuidStmt == null) {
+			mGetBookIdFromUuidStmt = mStatements.add("mGetBookIdFromUuidStmt", "Select " + KEY_ROWID + " From " + DB_TB_BOOKS + " Where " + DOM_BOOK_UUID + " = ?");
+		}
+		mGetBookIdFromUuidStmt.bindString(1, uuid);
+		try {
+			return mGetBookIdFromUuidStmt.simpleQueryForLong();
+		} catch (SQLiteDoneException e) {
+			return 0L;
 		}
 	}
 	
@@ -2965,9 +3166,9 @@ public class CatalogueDBAdapter {
 
 		// Make sure we have the target table details
 		if (mBooksInfo == null)
-			mBooksInfo = new TableInfo(DB_TB_BOOKS);
+			mBooksInfo = new TableInfo(mDb, DB_TB_BOOKS);
 
-		preprocessOutput(id, values);
+		preprocessOutput(id == 0, values);
 
 		/* We may want to provide default values for these fields:
 		 * KEY_RATING, KEY_READ, KEY_NOTES, KEY_LOCATION, KEY_READ_START, KEY_READ_END, KEY_SIGNED, & DATE_ADDED
@@ -2984,6 +3185,9 @@ public class CatalogueDBAdapter {
 		if (id > 0) {
 			initialValues.put(KEY_ROWID, id);
 		}
+
+		if (!initialValues.containsKey(DOM_LAST_UPDATE_DATE.name))
+			initialValues.put(DOM_LAST_UPDATE_DATE.name, Utils.toSqlDateTime(new Date()));
 
 		long rowId = mDb.insert(DB_TB_BOOKS, null, initialValues);
 
@@ -3260,7 +3464,7 @@ public class CatalogueDBAdapter {
 		return authorList;
 	}
 
-	ArrayList<Series> getBookSeriesList(long id) {
+	public ArrayList<Series> getBookSeriesList(long id) {
 		ArrayList<Series> seriesList = new ArrayList<Series>();
 		Cursor series = null;
 		try {
@@ -3376,7 +3580,7 @@ public class CatalogueDBAdapter {
 	 * 
 	 * @param values	Collection of field values.
 	 */
-	private void preprocessOutput(long rowId, Bundle values) {
+	private void preprocessOutput(boolean isNew, Bundle values) {
 		String authorId;
 
 		// Handle AUTHOR
@@ -3399,7 +3603,7 @@ public class CatalogueDBAdapter {
 		}
 		
 		// Handle TITLE; but only for new books
-		if (rowId == 0 && values.containsKey(KEY_TITLE)) {
+		if (isNew && values.containsKey(KEY_TITLE)) {
 			/* Move "The, A, An" to the end of the string */
 			String title = values.getString(KEY_TITLE);
 			String newTitle = "";
@@ -3437,17 +3641,20 @@ public class CatalogueDBAdapter {
 
 		// Make sure we have the target table details
 		if (mBooksInfo == null)
-			mBooksInfo = new TableInfo(DB_TB_BOOKS);
+			mBooksInfo = new TableInfo(mDb, DB_TB_BOOKS);
 
-		preprocessOutput(rowId, values);
+		preprocessOutput(rowId == 0, values);
 
 		ContentValues args = filterValues(values, mBooksInfo);
 
-		// Allow for the possibility we are just updating series, or author lists.
-		if (args.size() > 0)
-			success = mDb.update(DB_TB_BOOKS, args, KEY_ROWID + "=" + rowId, null) > 0;
-		else
-			success = true;
+		// Disallow UUID updates
+		if (args.containsKey(DOM_BOOK_UUID.name))
+			args.remove(DOM_BOOK_UUID.name);
+
+		// We may be just updating series, or author lists but we still update the last_update_date.
+		if (!args.containsKey(DOM_LAST_UPDATE_DATE.name))
+			args.put(DOM_LAST_UPDATE_DATE.name, Utils.toSqlDateTime(Calendar.getInstance().getTime()));
+		success = mDb.update(DB_TB_BOOKS, args, KEY_ROWID + "=" + rowId, null) > 0;
 
 		if (values.containsKey("bookshelf_text")) {
 			String bookshelf = values.getString("bookshelf_text");
@@ -3957,7 +4164,7 @@ public class CatalogueDBAdapter {
 		//if (m_allBooksForGoodreadsStmt == null) {
 		//	m_allBooksForGoodreadsStmt = compileStatement("Select isbn, " + KEY_BOOK + " from " + DB_TB_BOOKS + " Order by " + KEY_BOOK);
 		//}
-		String sql = "Select isbn, " + KEY_ROWID + " from " + DB_TB_BOOKS + " Where " + KEY_ROWID + " > " + startId + " Order by " + KEY_ROWID;
+		String sql = "Select " + KEY_ISBN + ", " + KEY_ROWID + ", " + DOM_GOODREADS_BOOK_ID + " from " + DB_TB_BOOKS + " Where " + KEY_ROWID + " > " + startId + " Order by " + KEY_ROWID;
 		BooksCursor cursor = fetchBooks(sql, EMPTY_STRNG_ARRAY);
 		return cursor;
 	}
@@ -3966,7 +4173,7 @@ public class CatalogueDBAdapter {
 	 * Query to get a specific book ISBN from the ID for sending to goodreads.
 	 */
 	public BooksCursor getBookForGoodreadsCursor(long bookId) {
-		String sql = "Select " + KEY_ROWID + ", " + KEY_ISBN + " from " + DB_TB_BOOKS + " Where " + KEY_ROWID + " = " + bookId + " Order by " + KEY_ROWID;
+		String sql = "Select " + KEY_ROWID + ", " + KEY_ISBN + ", " + DOM_GOODREADS_BOOK_ID + " from " + DB_TB_BOOKS + " Where " + KEY_ROWID + " = " + bookId + " Order by " + KEY_ROWID;
 		BooksCursor cursor = fetchBooks(sql, EMPTY_STRNG_ARRAY);
 		return cursor;
 	}
@@ -3980,6 +4187,41 @@ public class CatalogueDBAdapter {
 				 + " and bbs." + KEY_BOOK + " = " + book + " Order by s." + KEY_BOOKSHELF;
 		Cursor cursor = mDb.rawQuery(sql, EMPTY_STRING_ARRAY);
 		return cursor;
+	}
+
+	/** Support statement for setGoodreadsBookId() */
+	private SynchronizedStatement mSetGoodreadsBookIdStmt = null;
+	/**
+	 * Set the goodreads book id for this passed book. This is used by other goodreads-related 
+	 * functions.
+	 * 
+	 * @param bookId			Book to update
+	 * @param goodreadsBookId	GR book id
+	 */
+	public void setGoodreadsBookId(long bookId, long goodreadsBookId) {
+		if (mSetGoodreadsBookIdStmt == null ) {
+			String sql = "Update " + TBL_BOOKS + " Set " + DOM_GOODREADS_BOOK_ID + " = ? Where " + DOM_ID + " = ?";
+			mSetGoodreadsBookIdStmt = mStatements.add("mSetGoodreadsBookIdStmt", sql);
+		}
+		mSetGoodreadsBookIdStmt.bindLong(1, goodreadsBookId);
+		mSetGoodreadsBookIdStmt.bindLong(2, bookId);
+		mSetGoodreadsBookIdStmt.execute();
+	}
+
+	/** Support statement for setGoodreadsBookId() */
+	private SynchronizedStatement mSetGoodreadsSyncDateStmt = null;
+	/** 
+	 * Set the goodreads sync date to the current time
+	 * 
+	 * @param bookId
+	 */
+	public void setGoodreadsSyncDate(long bookId) {
+		if (mSetGoodreadsSyncDateStmt == null) {
+			String sql = "Update " + DB_TB_BOOKS + " Set " + DOM_LAST_GOODREADS_SYNC_DATE + " = current_timestamp Where " + KEY_ROWID + " = ?";
+			mSetGoodreadsSyncDateStmt = mStatements.add("mSetGoodreadsSyncDateStmt", sql);			
+		}
+		mSetGoodreadsSyncDateStmt.bindLong(1, bookId);
+		mSetGoodreadsSyncDateStmt.execute();		
 	}
 	
 /**************************************************************************************/
@@ -4261,7 +4503,7 @@ public class CatalogueDBAdapter {
 	 * @author Philip Warner
 	 */
 	@SuppressWarnings("unused")
-	private class ColumnInfo {
+	private static class ColumnInfo {
 		public int position;
 		public String name;
 		public String typeName;
@@ -4276,15 +4518,17 @@ public class CatalogueDBAdapter {
 	 * 
 	 * @author Philip Warner
 	 */
-	private class TableInfo {
+	private static class TableInfo implements Iterable<ColumnInfo> {
 		private Map<String,ColumnInfo> mColumns;
 		private String mName;
-		
+		private SynchronizedDb mDb;
+
 		public static final int CLASS_INTEGER = 1;
 		public static final int CLASS_TEXT = 2;
 		public static final int CLASS_REAL = 3;
 		
-		TableInfo(String tableName) {
+		TableInfo(SynchronizedDb db, String tableName) {
+			mDb = db;
 			mName = tableName;
 			mColumns = describeTable(mName);
 		}
@@ -4296,6 +4540,11 @@ public class CatalogueDBAdapter {
 			return mColumns.get(lcName);
 		}
 		
+		@Override
+		public Iterator<ColumnInfo> iterator() {
+			return mColumns.values().iterator();
+		}
+
 		/**
 		 * Get the column details for the given table.
 		 * 
@@ -4352,13 +4601,13 @@ public class CatalogueDBAdapter {
 		}
 	}
 	
-	SyncLock startTransaction(boolean isUpdate) {
+	public SyncLock startTransaction(boolean isUpdate) {
 		return mDb.beginTransaction(isUpdate);
 	}
-	void endTransaction(SyncLock lock) {
+	public void endTransaction(SyncLock lock) {
 		mDb.endTransaction(lock);
 	}
-	void setTransactionSuccessful() {
+	public void setTransactionSuccessful() {
 		mDb.setTransactionSuccessful();
 	}
 	

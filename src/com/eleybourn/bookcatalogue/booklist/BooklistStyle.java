@@ -113,7 +113,7 @@ public class BooklistStyle implements Iterable<BooklistGroup>, Serializable {
 	private int mNameStringId;
 
 	/** User-defined name of this style. Used for user-defined styles */
-	private String mName; // TODO: Legacy field designed forbackward serialization compatibility
+	private String mName; // TODO: Legacy field designed for backward serialization compatibility
 	private transient StringProperty mNameProperty;
 
 	/** Extra fields to show at the book level */

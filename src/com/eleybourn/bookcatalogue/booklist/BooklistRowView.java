@@ -22,9 +22,10 @@ package com.eleybourn.bookcatalogue.booklist;
 
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.*;
 
+import android.database.Cursor;
+
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.Utils;
-import com.eleybourn.bookcatalogue.booklist.BooklistGroup;
 import com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds;
 
 /**
@@ -38,7 +39,7 @@ public class BooklistRowView {
 	/** ID counter */
 	private static Integer mBooklistRowViewIdCounter = 0;
 	/** Underlying cursor */
-	private final BooklistCursor mCursor;
+	private final Cursor mCursor;
 	/** Underlying builder object */
 	private final BooklistBuilder mBuilder;
 	/** Max size of thumbnails based on preferences at object creation time */
@@ -77,10 +78,39 @@ public class BooklistRowView {
 	}
 
 	/**
+	 * Constructor
+	 * 
+	 * @param c			Underlying Cursor
+	 * @param builder	Underlying Builder
+	 */
+	public BooklistRowView(BooklistPseudoCursor c, BooklistBuilder builder) {
+		// Allocate ID
+		synchronized(mBooklistRowViewIdCounter) {
+			mId = ++mBooklistRowViewIdCounter;
+		}
+
+		// Save underlying objects.
+		mCursor = c;
+
+		mBuilder = builder;
+
+		final int extras = mBuilder.getStyle().getExtras();
+
+		// Cache preferences
+		if ( (extras & BooklistStyle.EXTRAS_THUMBNAIL_LARGE) != 0) {
+			mMaxThumbnailWidth = 120;
+			mMaxThumbnailHeight = 120;
+		} else {
+			mMaxThumbnailWidth = 60;
+			mMaxThumbnailHeight = 60;
+		}		
+	}
+
+	/**
 	 * Get Utils from underlying cursor
 	 */
 	public Utils getUtils() {
-		return mCursor.getUtils();
+		return ((BooklistSupportProvider)mCursor).getUtils();
 	}
 
 	/**

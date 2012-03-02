@@ -6,6 +6,7 @@ import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer.SyncLock;
 
 import android.os.Bundle;
 import android.os.Message;
+import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 
 /**
  * Class to handle import in a separate thread.
@@ -91,7 +92,7 @@ public class ImportThread extends ManagedTask {
 		// ENHANCE: Do a search if mandatory columns missing (eg. allow 'import' of a list of ISBNs).
 		// ENHANCE: Only make some columns mandatory if the ID is not in import, or not in DB (ie. if not an update)
 		// ENHANCE: Export/Import should use GUIDs for book IDs, and put GUIDs on Image file names.
-		requireColumn(values, CatalogueDBAdapter.KEY_ROWID);
+		requireColumnOr(values, CatalogueDBAdapter.KEY_ROWID, DatabaseDefinitions.DOM_BOOK_UUID.name);
 		requireColumnOr(values, CatalogueDBAdapter.KEY_FAMILY_NAME,
 								CatalogueDBAdapter.KEY_AUTHOR_FORMATTED,
 								CatalogueDBAdapter.KEY_AUTHOR_NAME,
@@ -126,11 +127,32 @@ public class ImportThread extends ManagedTask {
 					values.putString(names[i], imported[i]);
 				}
 
+				boolean hasNumericId;
 				// Validate ID
-				String idVal = values.getString(CatalogueDBAdapter.KEY_ROWID.toLowerCase());
-				if (idVal == "") {
-					idVal = "0";
-					values.putString(CatalogueDBAdapter.KEY_ROWID, idVal);
+				String idStr = values.getString(CatalogueDBAdapter.KEY_ROWID.toLowerCase());
+				Long idLong;
+				if (idStr == "") {
+					hasNumericId = false;
+					idLong = 0L;
+				} else {
+					try {
+						idLong = Long.parseLong(idStr);
+						hasNumericId = true;
+					} catch (Exception e) {
+						hasNumericId = false;
+						idLong = 0L;
+					}
+				}
+				if (!hasNumericId) {
+					values.putString(CatalogueDBAdapter.KEY_ROWID, "0");					
+				}
+
+				boolean hasUuid;
+				String uuidVal = values.getString(DatabaseDefinitions.DOM_BOOK_UUID.name.toLowerCase());
+				if (!uuidVal.equals("")) {
+					hasUuid = true;
+				} else {
+					hasUuid = false;
 				}
 
 				requireNonblank(values, row, CatalogueDBAdapter.KEY_TITLE);
@@ -201,28 +223,36 @@ public class ImportThread extends ManagedTask {
 				}
 
 				try {
-					if (idVal.equals("0")) {
+					if (!hasUuid && !hasNumericId) {
 						// Always import empty IDs...even if the are duplicates.
 						Long id = mDbHelper.createBook(values);
-						idVal = id.toString();
-						values.putString(CatalogueDBAdapter.KEY_ROWID, idVal);
+						values.putString(CatalogueDBAdapter.KEY_ROWID, id.toString());
 						mImportCreated++;
 					} else {
-						Long id;
-						try {
-							id = Long.parseLong(idVal);
-						} catch (Exception e) {
-							id = 0L;
-						}
-						if (id == 0 || !mDbHelper.checkBookExists(id)) {
-							id = mDbHelper.createBook(id, values);
-							mImportCreated++;
-							idVal = id.toString();
-							values.putString(CatalogueDBAdapter.KEY_ROWID, idVal);
+						boolean exists;
+						// Let the UUID trump the ID; we may be importing someone elses list with bogus IDs
+						if (hasUuid) {
+							Long l = mDbHelper.getBookIdFromUuid(uuidVal);
+							if (l != 0) {
+								exists = true;
+								idLong = l;
+							} else {
+								exists = false;
+								// We have a UUID, but book does not exist. We will create a book.
+								// Make sure the ID (if present) is not already used.
+								if (hasNumericId && mDbHelper.checkBookExists(idLong))
+									idLong = 0L;
+							}
 						} else {
-							// Book exists and should be updated if it has changed
-							mDbHelper.updateBook(id, values, false);
+							exists = mDbHelper.checkBookExists(idLong);							
+						}
+						if (exists) {
+							mDbHelper.updateBook(idLong, values, false);								
 							mImportUpdated++;
+						} else {
+							idLong = mDbHelper.createBook(idLong, values);
+							mImportCreated++;
+							values.putString(CatalogueDBAdapter.KEY_ROWID, idLong.toString());							
 						}
 					}
 				} catch (Exception e) {

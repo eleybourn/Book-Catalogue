@@ -978,7 +978,7 @@ public class BooklistBuilder {
 //			System.out.println("T8: " + (t8-t4c));
 //			System.out.println("T9: " + (t9-t8));
 //			System.out.println("T10: " + (t10-t9));
-//			System.out.println("T10: " + (t11-t10));
+//			System.out.println("T11: " + (t11-t10));
 
 			mDb.setTransactionSuccessful();
 
@@ -1077,18 +1077,27 @@ public class BooklistBuilder {
 	}
 
 	/**
-	 * Return the list of books built by the build() method.
-	 * 
-	 * @return
+	 * Utility routine to return a list of column names that will be in the list
+	 * for cursor implementations.
 	 */
-	public BooklistCursor getList() {
-		//
-		// We can not use '.*' notation here because something (Android/SQLite) seems to remember previous queries
-		// and incorrectly assume the table is unchanged in the background with the result that subtle changes in table
-		// format result in off-by-one errors in sqlite getColumnIndex(name). Putting explicit column names here fixes it.
-		//
+	public String[] getListColumnNames() {
+		// Get the domains
+		ArrayList<DomainDefinition> domains = mListTable.getDomains();
+		// Make the array and allow for ABSOLUTE_POSITION
+		String[] names = new String[domains.size()+1];
+		// Copy domains
+		for(int i = 0; i < domains.size(); i++)
+			names[i] = domains.get(i).name;
+		// Add ABSOLUTE_POSITION
+		names[domains.size()] = DOM_ABSOLUTE_POSITION.name;
+		return names;
+	}
 
-		// Build a list of columns.
+	/**
+	 * Return a list cursor starting at a given offset, using a given limit.
+	 */
+	public BooklistCursor getOffsetCursor(int position, int size) {
+		// Get the domains
 		StringBuilder domains = new StringBuilder();
 		final String prefix = mListTable.getAlias() + ".";
 		for(DomainDefinition d: mListTable.getDomains()) {
@@ -1096,28 +1105,66 @@ public class BooklistBuilder {
 			domains.append(d.name);
 			domains.append(", ");
 		}
-		// Build the sort cols
-		StringBuilder sortCols = new StringBuilder();
-		for(SortedDomainInfo sdi: mSummary.getSortedColumns()) {
-			sortCols.append(prefix);
-			sortCols.append(sdi.domain.name);
-			sortCols.append(" Collate UNICODE");
-			if (sdi.isDescending)
-				sortCols.append(" desc");
-			sortCols.append(", ");
-		}
-		sortCols.append(prefix);
-		sortCols.append(DOM_LEVEL.name);
-		
-		// Build the final SQL
+
+		// Build the SQL, adding ABS POS.
 		final String sql = "select " + domains + " (" + mNavTable.dot(DOM_ID) + " - 1) As " + DOM_ABSOLUTE_POSITION + 
 				" from " + mListTable.ref() + mListTable.join(mNavTable) + 
-				" Where " + mNavTable.dot(DOM_VISIBLE) + " = 1 Order by " + sortCols;	
+				" Where " + mNavTable.dot(DOM_VISIBLE) + " = 1 Order by " + mNavTable.dot(DOM_ID) +
+				" Limit " + size + " Offset " + position 
+				;	
 
 		// Get and return the cursor
-		final BooklistCursor c = (BooklistCursor) mDb.rawQueryWithFactory(mBooklistCursorFactory, sql, EMPTY_STRING_ARRAY, "");
+		return (BooklistCursor) mDb.rawQueryWithFactory(mBooklistCursorFactory, sql, EMPTY_STRING_ARRAY, "");		
+	}
 
-		return c;			
+	/**
+	 * Return a BooklistPseudoCursor instead of a real cursor.
+	 */
+	public BooklistPseudoCursor getList() {
+		return new BooklistPseudoCursor(this);		
+	}
+
+
+//	private void psuedoCursor(String sql, int pos) {
+//		long tc0 = System.currentTimeMillis();
+//		final BooklistCursor cfoo = (BooklistCursor) mDb.rawQueryWithFactory(mBooklistCursorFactory, sql + " Limit 80 offset " + pos, EMPTY_STRING_ARRAY, "");
+//		long tc1 = System.currentTimeMillis();
+//		long cCnt = cfoo.getCount();
+//		long tc2 = System.currentTimeMillis();
+//		cfoo.close();
+//
+//		System.out.println("Limit cursor @" + pos + " create in " + (tc1 - tc0) + "ms, count (" + cCnt + ") in " + (tc2-tc1) + "ms");			
+//	}
+
+//	private void pseudoCount(TableDefinition table, String condition) {
+//		String foo = "Select count(*) from " + table + (condition == null ? "" : condition);
+//		pseudoCount(table.getName(), foo);
+//	}
+
+
+	private Integer mPseudoCount = null;
+	/**
+	 * All pseudo list cursors work with the static data in the tenp. table. Get the
+	 * logical count of rows using a simple query rather than scanning the entire result set.
+	 */
+	public int getPseudoCount() {
+		if (mPseudoCount == null) {
+			mPseudoCount = pseudoCount("NavTable", "Select count(*) from " + mNavTable + " Where " + DOM_VISIBLE + " = 1");
+		}
+		return mPseudoCount;
+	}
+
+	/**
+	 * Utiity routine to perform a single count query.
+	 */
+	private int pseudoCount(String name, String foo) {
+		long tc0 = System.currentTimeMillis();
+		SynchronizedStatement fooStmt = mDb.compileStatement(foo);
+		int cnt = (int)fooStmt.simpleQueryForLong();
+		fooStmt.close();
+		long tc1 = System.currentTimeMillis();
+		System.out.println("Pseudo-count (" + name + ") = " + cnt + " completed in " + (tc1 - tc0) + "ms");
+		return cnt;
 	}
 
 	/**

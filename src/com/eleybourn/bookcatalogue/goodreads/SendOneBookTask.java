@@ -20,6 +20,7 @@
 
 package com.eleybourn.bookcatalogue.goodreads;
 
+import com.eleybourn.bookcatalogue.BcQueueManager;
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.BooksCursor;
 import com.eleybourn.bookcatalogue.BooksRowView;
@@ -127,7 +128,8 @@ public class SendOneBookTask extends GenericTask {
 					qmanager.saveTask(this);
 					return false;
 				case sent:
-					// Nothing to do
+					// Record the change
+					dbHelper.setGoodreadsSyncDate(books.getId());
 					break;
 				case noIsbn:
 					storeEvent(new GrNoIsbnEvent(books.getId()));
@@ -167,6 +169,11 @@ public class SendOneBookTask extends GenericTask {
 			{}
 		}
 		return true;
+	}
+
+	@Override
+	public long getCategory() {
+		return BcQueueManager.CAT_GOODREADS_EXPORT_ONE;
 	}
 
 }

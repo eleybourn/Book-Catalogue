@@ -132,7 +132,14 @@ public abstract class ShowBookApiHandler extends ApiHandler {
         		mBook.putString(CatalogueDBAdapter.KEY_ISBN, s);
         }
 
-    	// RELEASE Store BOOK_ID = "__book_id" into GR_BOOK_ID;
+        // TODO: Evaluate if ShowBook should store GR book ID.
+        // Pros: easier sync
+        // Cons: Overwrite GR id when it should not
+        
+        //if (mBook.containsKey(BOOK_ID)) {
+        //	mBook.putLong(DatabaseDefinitions.DOM_GOODREADS_BOOK_ID.name, mBook.getLong(BOOK_ID));
+        //}
+
         if (fetchThumbnail) {
             String bestImage = null;
             if (mBook.containsKey(IMAGE)) {
@@ -151,7 +158,7 @@ public abstract class ShowBookApiHandler extends ApiHandler {
         }
 
         /** Build the pub date based on the components */
-        buildDate(PUBLICATION_YEAR, PUBLICATION_MONTH, PUBLICATION_DAY, CatalogueDBAdapter.KEY_DATE_PUBLISHED);
+        GoodreadsManager.buildDate(mBook, PUBLICATION_YEAR, PUBLICATION_MONTH, PUBLICATION_DAY, CatalogueDBAdapter.KEY_DATE_PUBLISHED);
 
         if (mBook.containsKey(IS_EBOOK) && mBook.getBoolean(IS_EBOOK))
         	mBook.putString(CatalogueDBAdapter.KEY_FORMAT, "Ebook");
@@ -181,7 +188,7 @@ public abstract class ShowBookApiHandler extends ApiHandler {
         
         // If no published date, try original date
         if (!mBook.containsKey(CatalogueDBAdapter.KEY_DATE_PUBLISHED)) {
-            String origDate = buildDate(ORIG_PUBLICATION_YEAR, ORIG_PUBLICATION_MONTH, ORIG_PUBLICATION_DAY, null);
+            String origDate = GoodreadsManager.buildDate(mBook, ORIG_PUBLICATION_YEAR, ORIG_PUBLICATION_MONTH, ORIG_PUBLICATION_DAY, null);
         	if (origDate != null && origDate.length() > 0)
         		mBook.putString(CatalogueDBAdapter.KEY_DATE_PUBLISHED, origDate);
         }
@@ -199,30 +206,6 @@ public abstract class ShowBookApiHandler extends ApiHandler {
         return mBook;
 	}
 
-	/**
-	 * Construct a full or partial date string based on the y/m/d fields.
-	 * 
-	 * @param yearField
-	 * @param monthField
-	 * @param dayField
-	 * @param resultField
-	 * @return
-	 */
-	private String buildDate(String yearField, String monthField, String dayField, String resultField) {
-		String date = null;
-	    if (mBook.containsKey(yearField)) {
-	    	date = String.format("%04d", mBook.getLong(yearField));
-	        if (mBook.containsKey(monthField)) {
-	        	date += "-" + String.format("%02d", mBook.getLong(monthField));
-	            if (mBook.containsKey(dayField)) {
-	            	date += "-" + String.format("%02d", mBook.getLong(dayField));
-	            }
-	        }
-	        if (resultField != null && date != null && date.length() > 0)
-	        	mBook.putString(resultField, date);
-	    }
-	    return date;
-	}
 	/*
 	 * Typical result:
 

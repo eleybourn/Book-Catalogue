@@ -20,6 +20,7 @@
 
 package com.eleybourn.bookcatalogue.goodreads;
 
+import com.eleybourn.bookcatalogue.BcQueueManager;
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.BooksCursor;
 import com.eleybourn.bookcatalogue.BooksRowView;
@@ -141,7 +142,8 @@ public class SendAllBooksTask extends GenericTask {
 					qmanager.saveTask(this);
 					return false;
 				case sent:
-					// Nothing to do
+					// Record the change
+					dbHelper.setGoodreadsSyncDate(books.getId());
 					mSent++;
 					break;
 				case noIsbn:
@@ -170,9 +172,15 @@ public class SendAllBooksTask extends GenericTask {
 				}
 
 				// Save every few rows in case phone dies (and to allow task queries to see data)
-				if (mCount - lastSave >= 5) {
+				// Actually, save every row because it updates the UI, and sending a row takes a while.
+				//if (mCount - lastSave >= 5) {
 					qmanager.saveTask(this);
 					lastSave = mCount;
+				//}
+
+				if (this.isAborting()) {
+					qmanager.saveTask(this);
+					return false;
 				}
 			}
 
@@ -215,5 +223,10 @@ public class SendAllBooksTask extends GenericTask {
 	public String getDescription() {
 		String base = super.getDescription();
 		return base + " (" + BookCatalogueApp.getResourceString(R.string.x_of_y, mCount, mTotalBooks);
+	}
+
+	@Override
+	public long getCategory() {
+		return BcQueueManager.CAT_GOODREADS_EXPORT_ALL;
 	}
 }

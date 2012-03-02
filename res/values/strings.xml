@@ -49,7 +49,7 @@
 <string name="export_data">Export Books</string>
 <string name="export_complete">Export (to SDCard) of data complete. </string>
 <string name="import_data">Import Books</string>
-<string name="import_alert">Warning. Importing data may update existing book records with new information if the id in the import file is the same as an existing id. This is usually fine if you changed a field in an exported file. If you created a new book record, ensure the id field is blank.</string>
+<string name="import_alert">Warning. Importing data may update existing book records with new information if the uuid column is not present and the id in the import file is the same as an existing id. This is usually fine if you changed a field in an exported file. If you created a new book record, or are importing someone elses books, ensure the uuid field is present or the id field is blank.</string>
 <string name="export_failed">ERROR: Export (to SDCard) of data failed. </string>
 <string name="import_failed">ERROR: Import of data (from SDCard) failed. Is the file in the correct place?</string>
 <string name="search_title">Book Catalogue: Search Results</string>
@@ -291,14 +291,15 @@
 <string name="loan_return_book">Loan, Return or Edit Book</string>
 <string name="admin_and_prefs">Administration and Preferences</string>
 <string name="edit_book_send_to_gr">Send to GoodReads</string>
-<string name="goodreads_label">GoodReads</string>
+<string name="goodreads">goodreads</string>
+<string name="goodreads_label">Goodreads</string>
 <string name="goodreads_auth_blurb_part1">goodreads is a web site whose stated mission is "to help people find and share books they love". They have an extensive database of books and reviews, and if you are a registered goodreads user, BookCatalogue can export your books, shelves and reviews to goodreads and import your books, shelves and reviews from goodreads. BookCatalogue is a stand-alone application and does not require goodreads, but if you are interested you can register at:</string>
 <string name="goodreads_auth_blurb_part2">Once you are registered, or if you are already a goodreads user, you can authorize BookCatalogue to access your goodreads data by pressing the button below. It will take you to a web page where you will need to login to goodreads and authorize this application. We will never see your password, and you can disable access via the goodreads website. Due to the vagueries of the web, you may end up on a blank web page. Just click the back button to return here!</string>
 <string name="goodreads_auth_blurb_part3">But remember&#8230;there is no need to do any of this: BookCatalogue works just fine without it!</string>
 <string name="goodreads_url">http://www.goodreads.com</string>
 <string name="authorize_access">Authorize Access</string>
 <string name="authorize_access_already_auth">It looks like you have already authorized this application. All goodreads functions should be available already</string>
-<string name="goodreads_access_error">There was a problem accessing goodreads. If the problem persists please contact support</string>
+<string name="goodreads_access_error">There was a network problem while accessing goodreads. Please check if the goodreads web site it up, and if the problem persists please contact support</string>
 <string name="other_preferences">Other Preferences</string>
 <string name="user_interface">User Interface</string>
 <string name="start_in_my_books">Start in \'My Books\'</string>
@@ -494,4 +495,16 @@
 <string name="user_defined">User-defined</string>
 <string name="builtin">Builtin</string>
 <string name="sort_unread">Unread (Author/Series)</string>
+<string name="import_all_from_goodreads">Import all from goodreads</string>
+<string name="requested_task_is_already_queued">Requested task is already queued</string>
+<string name="export_task_is_already_queued">An export task is already queued and must compete before this task can run</string>
+<string name="import_task_is_already_queued">An import task is already queued and must compete before this task can run</string>
+<string name="goodreads_action_cannot_blah_blah">This action can not be completed until this application is authorized via the goodreads web site. Once you have authorized this application, please retry. \n\nDo you want to authorize it now?</string>
+<string name="tell_me_more">Tell me more</string>
+<string name="retry_x_of_y_next_at_z">Retry %1$s of %2$s next at %3$s</string>
+<string name="completed">Completed</string>
+<string name="failed">Failed</string>
+<string name="queued">Queued</string>
+<string name="unknown">Unknown</string>
 </resources>
+

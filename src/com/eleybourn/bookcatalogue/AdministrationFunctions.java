@@ -46,7 +46,7 @@ import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsExportFailuresActivity;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsRegister;
-import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.*;
+import com.eleybourn.bookcatalogue.goodreads.ImportAllTask;
 import com.eleybourn.bookcatalogue.goodreads.SendAllBooksTask;
 
 /**
@@ -235,8 +235,22 @@ public class AdministrationFunctions extends ActivityWithTasks {
 				return;
 			}
 		});
+		
+		/* Goodreads IMPORT Link */
+		{
+			View v = findViewById(R.id.import_all_from_goodreads_label);
+			// Make line flash when clicked.
+			v.setBackgroundResource(android.R.drawable.list_selector_background);
+			v.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					importAllFromGoodreads();
+					return;
+				}
+			});
+		}
 
-		/* Goodreads export Link */
+		/* Goodreads EXPORT Link */
 		{
 			View v = findViewById(R.id.send_all_to_goodreads_label);
 			// Make line flash when clicked.
@@ -358,14 +372,53 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	/**
 	 * Start a background task that exports all books to goodreads.
 	 */
+	private void importAllFromGoodreads() {
+		GoodreadsManager grMgr = new GoodreadsManager();
+
+		if (!grMgr.hasCredentials()) {
+			StandardDialogs.goodreadsAuthAlert(this);
+			return;
+		}
+
+		if (BcQueueManager.getQueueManager().hasActiveTasks(BcQueueManager.CAT_GOODREADS_IMPORT_ALL)) {
+			Toast.makeText(this, R.string.requested_task_is_already_queued, Toast.LENGTH_LONG).show();
+			return;
+		}
+		if (BcQueueManager.getQueueManager().hasActiveTasks(BcQueueManager.CAT_GOODREADS_EXPORT_ALL)) {
+			Toast.makeText(this, R.string.export_task_is_already_queued, Toast.LENGTH_LONG).show();
+			return;
+		}
+
+		if (!grMgr.hasValidCredentials()) {
+			StandardDialogs.goodreadsAuthAlert(this);
+			return;
+		}
+
+		QueueManager.getQueueManager().enqueueTask(new ImportAllTask(), BcQueueManager.QUEUE_MAIN, 0);
+	}
+	
+	/**
+	 * Start a background task that exports all books to goodreads.
+	 */
 	private void sendAllToGoodreads() {
 		GoodreadsManager grMgr = new GoodreadsManager();
+
+		if (!grMgr.hasCredentials()) {
+			StandardDialogs.goodreadsAuthAlert(this);
+			return;
+		}
+
+		if (BcQueueManager.getQueueManager().hasActiveTasks(BcQueueManager.CAT_GOODREADS_EXPORT_ALL)) {
+			Toast.makeText(this, R.string.requested_task_is_already_queued, Toast.LENGTH_LONG).show();
+			return;
+		}
+		if (BcQueueManager.getQueueManager().hasActiveTasks(BcQueueManager.CAT_GOODREADS_IMPORT_ALL)) {
+			Toast.makeText(this, R.string.import_task_is_already_queued, Toast.LENGTH_LONG).show();
+			return;
+		}
+
 		if (!grMgr.hasValidCredentials()) {
-			try {
-				grMgr.requestAuthorization(this);
-			} catch (NetworkException e) {
-				Logger.logError(e, "Network error while requesting OAuth Authorization");
-			}
+			StandardDialogs.goodreadsAuthAlert(this);
 			return;
 		}
 

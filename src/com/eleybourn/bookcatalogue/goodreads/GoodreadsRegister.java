@@ -21,6 +21,7 @@
 package com.eleybourn.bookcatalogue.goodreads;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
@@ -78,23 +79,37 @@ public class GoodreadsRegister extends Activity {
 		devkeyLink.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// RELEASE: put up a progress dialog...its only one web request, but it can take a few seconds
-				// RELEASE: sort out GR validation
-				GoodreadsManager grMgr = new GoodreadsManager();
-				if (!grMgr.hasValidCredentials()) {
-					try {
-						grMgr.requestAuthorization(GoodreadsRegister.this);
-					} catch (NetworkException e) {
-						Logger.logError(e, "Error while requesting Goodreads authorization");
-						Toast.makeText(GoodreadsRegister.this, R.string.goodreads_access_error, Toast.LENGTH_LONG).show();
-					}
-				} else {
-					Toast.makeText(GoodreadsRegister.this, R.string.authorize_access_already_auth, Toast.LENGTH_LONG).show();
-				}
+				doRequestAuthorization();
 				return;
 			}
 		});
 
 	}
 
+	/**
+	 * Called by button click to call static method.
+	 */
+	private void doRequestAuthorization() {
+		requestAuthorization(this);
+	}
+
+	/**
+	 * Static method to request authorization from goodreads.
+	 */
+	public static void requestAuthorization(Context context) {
+		// RELEASE: put up a progress dialog...its only one web request, but it can take a few seconds
+		// RELEASE: sort out GR validation
+		GoodreadsManager grMgr = new GoodreadsManager();
+		// This next step can take several seconds....
+		if (!grMgr.hasValidCredentials()) {
+			try {
+				grMgr.requestAuthorization(context);
+			} catch (NetworkException e) {
+				Logger.logError(e, "Error while requesting Goodreads authorization");
+				Toast.makeText(context, R.string.goodreads_access_error, Toast.LENGTH_LONG).show();
+			}
+		} else {
+			Toast.makeText(context, R.string.authorize_access_already_auth, Toast.LENGTH_LONG).show();
+		}		
+	}
 }

@@ -49,6 +49,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -58,8 +59,6 @@ import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.BooksRowView;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.Logger;
-import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.BookNotFoundException;
-import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NotAuthorizedException;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.*;
 import com.eleybourn.bookcatalogue.goodreads.api.AuthUserApiHandler;
 import com.eleybourn.bookcatalogue.goodreads.api.IsbnToId;
@@ -72,7 +71,7 @@ import com.eleybourn.bookcatalogue.goodreads.api.ShowBookByIsbnApiHandler;
  * Class to wrap all GoodReads API calls and manage an API connection.
  * 
  * RELEASE: Add 'send to goodreads'/'update from internet' option in book edit menu
- * RELEASE: Change 'update from internet' to include goodreads AND allow source selection and single-book execution
+ * RELEASE: Change 'update from internet' to allow source selection and single-book execution
  * RELEASE: Link an Event to a book, and display in book list with exclamation triangle overwriting cover.
  * RELEASE: MAYBE Replace Events with something similar in local DB?
  * 
@@ -147,8 +146,25 @@ public class GoodreadsManager {
 				"http://www.goodreads.com/oauth/access_token",
 				"http://www.goodreads.com/oauth/authorize");
 
+		// Get the stored token values from prefs, and setup the consumer if present
+		BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
+
+		m_accessToken = prefs.getString("GoodReads.AccessToken.Token", "");
+		m_accessSecret = prefs.getString("GoodReads.AccessToken.Secret", "");
+
+		if (hasCredentials())
+			m_consumer.setTokenWithSecret(m_accessToken, m_accessSecret);
 	}
 	
+	/**
+	 * Utility method to check if the access tokens are available (not if they are valid).
+	 * 
+	 * @return
+	 */
+	public boolean hasCredentials() {
+		return (m_accessToken != null && m_accessSecret != null && 
+					!m_accessToken.equals("") && !m_accessSecret.equals(""));		
+	}
 	/**
 	 * Return the public developer key, used for GET queries.
 	 * 
@@ -220,7 +236,7 @@ public class GoodreadsManager {
 	 * @author Philip Warner
 	 * @throws NetworkException 
 	 */
-	public void requestAuthorization(Activity ctx) throws NetworkException {
+	public void requestAuthorization(Context ctx) throws NetworkException {
         String authUrl;
 
         // Dont do this; this is just part of OAuth and not the API
@@ -525,21 +541,27 @@ public class GoodreadsManager {
 	 */
 	public ExportDisposition sendOneBook(CatalogueDBAdapter dbHelper, BooksRowView books) throws InterruptedException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, IOException {
 		long bookId = books.getId();
+		long grId;
 		String isbn = books.getIsbn();
 
-		if (!isbn.equals("")) {
-			long grId;
+		try {
+			grId = books.getGoodreadsBookId();
+		} catch (Exception e) {
+			grId = 0;
+		}
+
+		if (grId == 0 && !isbn.equals("")) {
 			try {
 				grId = this.isbnToId(isbn);
-				if (grId == 0) {
-					Thread.sleep(1000);
-					grId = this.isbnToId(isbn);							
-				}
+				dbHelper.setGoodreadsBookId(bookId, grId);
 			} catch (BookNotFoundException e) {
 				return ExportDisposition.notFound;
 			} catch (NetworkException e) {
 				return ExportDisposition.networkError;
-			}
+			}			
+		}
+
+		if (grId != 0) {
 
 			Cursor shelves = dbHelper.getAllBookBookshelvesForGoodreadsCursor(bookId);
 			try {
@@ -640,6 +662,31 @@ public class GoodreadsManager {
 			throw new RuntimeException("No work ID specified");
 		}
 		
+	}
+	
+	/**
+	 * Construct a full or partial date string based on the y/m/d fields.
+	 * 
+	 * @param yearField
+	 * @param monthField
+	 * @param dayField
+	 * @param resultField
+	 * @return
+	 */
+	public static String buildDate(Bundle data, String yearField, String monthField, String dayField, String resultField) {
+		String date = null;
+	    if (data.containsKey(yearField)) {
+	    	date = String.format("%04d", data.getLong(yearField));
+	        if (data.containsKey(monthField)) {
+	        	date += "-" + String.format("%02d", data.getLong(monthField));
+	            if (data.containsKey(dayField)) {
+	            	date += "-" + String.format("%02d", data.getLong(dayField));
+	            }
+	        }
+	        if (resultField != null && date != null && date.length() > 0)
+	        	data.putString(resultField, date);
+	    }
+	    return date;
 	}
 }
 

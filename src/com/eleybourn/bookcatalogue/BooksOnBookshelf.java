@@ -31,6 +31,7 @@ import com.eleybourn.bookcatalogue.booklist.BooklistBuilder;
 import com.eleybourn.bookcatalogue.booklist.BooklistBuilder.BookRowInfo;
 import com.eleybourn.bookcatalogue.booklist.BooklistCursor;
 import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
+import com.eleybourn.bookcatalogue.booklist.BooklistPseudoCursor;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
 import com.eleybourn.bookcatalogue.booklist.BooklistStylePropertiesActivity;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyles;
@@ -119,7 +120,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 	/** Handler to manage all Views on the list */
 	private BooksMultitypeListHandler mListHandler;
 	/** Current displayed list cursor */
-	private BooklistCursor mList;
+	private BooklistPseudoCursor mList;
 	/** Multi-type adapter to manage list connection to cursor */
 	private MultitypeListAdapter mAdapter;
 	/** Task queue to get book lists in background */
@@ -297,7 +298,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		/** Indicates whole table structure needs rebuild, vs. just do a reselect of underlying data */
 		private final boolean mIsFullRebuild;
 		/** Resulting Cursor */
-		BooklistCursor mTempList = null;
+		BooklistPseudoCursor mTempList = null;
 		/** used to determine new cursor position */
 		ArrayList<BookRowInfo> mTargetRows = null;
 
@@ -454,7 +455,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 	 * @param newList		New cursor to use
 	 * @param targetPos		
 	 */
-	private void displayList(BooklistCursor newList, final ArrayList<BookRowInfo> targetRows) {	
+	private void displayList(BooklistPseudoCursor newList, final ArrayList<BookRowInfo> targetRows) {	
 		if (newList == null) {
 			throw new RuntimeException("Unexpected empty list");
 		}
@@ -463,7 +464,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		
 		long t0 = System.currentTimeMillis();
 		// Save the old list so we can close it later, and set the new list locally
-		BooklistCursor oldList = mList;
+		BooklistPseudoCursor oldList = mList;
 		mList = newList;
 
 		// Get new handler and adapter since list may be radically different structure
@@ -473,7 +474,6 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		// Get the ListView and set it up
 		final FastScrollListView lv = (FastScrollListView)getListView();
 		final ListViewHolder lvHolder = new ListViewHolder();
-		// RELEASE: Implement ViewTagger
 		ViewTagger.setTag(lv, R.id.TAG_HOLDER, lvHolder);
 
 		lv.setAdapter(mAdapter);
@@ -575,7 +575,9 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		lv.setOnScrollListener(new OnScrollListener() {
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-				if (mLastTop != firstVisibleItem) {
+				// TODO: Investigate why BooklistPseudoCursor causes a scroll even when it is closed!
+				// Need to check isDead because BooklistPseudoCursor misbehaves when activity terminates and closes cursor
+				if (mLastTop != firstVisibleItem && !mIsDead) {
 					ListViewHolder holder = (ListViewHolder)ViewTagger.getTag(view, R.id.TAG_HOLDER);
 					updateListHeader(holder, firstVisibleItem, hasLevel1, hasLevel2);
 				}
@@ -730,6 +732,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 	public void onDestroy() {
 		super.onDestroy();
 		System.out.println("onDestroy");
+		mIsDead = true;
 
 		mTaskQueue.finish();
 
@@ -747,7 +750,6 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		} catch (Exception e) {
 			Logger.logError(e);			
 		};
-		mIsDead = true;
 		mListHandler = null;
 		mAdapter = null;
 		mBookshelfSpinner = null;
@@ -890,7 +892,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 				savePosition();
 				mList.getBuilder().expandAll(true);
 				mTopRow = mList.getBuilder().getPosition(oldAbsPos);
-				BooklistCursor newList = mList.getBuilder().getList();
+				BooklistPseudoCursor newList = mList.getBuilder().getList();
 				displayList(newList, null);							
 				break;
 			}
@@ -973,7 +975,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 			break;
 		case R.id.ACTIVITY_BOOKLIST_STYLE_PROPERTIES:
 			try {
-				if (intent.hasExtra(BooklistStylePropertiesActivity.KEY_STYLE)) {
+				if (intent != null && intent.hasExtra(BooklistStylePropertiesActivity.KEY_STYLE)) {
 					BooklistStyle style = (BooklistStyle)intent.getSerializableExtra(BooklistStylePropertiesActivity.KEY_STYLE);
 					if (style != null)
 						mCurrentStyle = style;

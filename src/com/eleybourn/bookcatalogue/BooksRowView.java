@@ -21,6 +21,7 @@
 package com.eleybourn.bookcatalogue;
 
 import android.database.Cursor;
+import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 
 /**
  * Convenience class to avoid having to write the same code in more than one place. This
@@ -54,6 +55,26 @@ public class BooksRowView {
 				throw new RuntimeException("ISBN column not in result set");
 		}
 		return mCursor.getLong(mIdCol);// mCurrentRow[mIsbnCol];
+	}
+
+	private int mGoodreadsBookIdCol = -2;
+	public final long getGoodreadsBookId() {
+		if (mGoodreadsBookIdCol < 0) {
+			mGoodreadsBookIdCol = mCursor.getColumnIndex(DatabaseDefinitions.DOM_GOODREADS_BOOK_ID.name);
+			if (mGoodreadsBookIdCol < 0)
+				throw new RuntimeException("Goodreads Book ID column not in result set");
+		}
+		return mCursor.getLong(mGoodreadsBookIdCol);// mCurrentRow[mIsbnCol];
+	}
+
+	private int mBookUuidCol = -2;
+	public final String getBookUuid() {
+		if (mBookUuidCol < 0) {
+			mBookUuidCol = mCursor.getColumnIndex(DatabaseDefinitions.DOM_BOOK_UUID.name);
+			if (mBookUuidCol < 0)
+				throw new RuntimeException("UUID column not in result set");
+		}
+		return mCursor.getString(mBookUuidCol);// mCurrentRow[mIsbnCol];
 	}
 
 	private int mIsbnCol = -2;
@@ -115,7 +136,7 @@ public class BooksRowView {
 	public final int getRead() {
 		if (mReadCol < 0) {
 			mReadCol = mCursor.getColumnIndex(CatalogueDBAdapter.KEY_READ);
-			if (mTitleCol < 0)
+			if (mReadCol < 0)
 				throw new RuntimeException("READ column not in result set");
 		}
 		return mCursor.getInt(mReadCol);

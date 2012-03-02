@@ -227,7 +227,7 @@
 		<TextView  
 			android:layout_width="fill_parent" 
 			android:layout_height="wrap_content" 
-			android:text="goodreads"
+			android:text="@+string/goodreads"
 			android:textAppearance="?android:attr/textAppearanceLarge"
 			android:paddingTop="5sp"
 			android:gravity="left|center_vertical"
@@ -380,6 +380,26 @@
 			/>
 	</LinearLayout>
 
+	<LinearLayout android:id="@+id/import_all_from_goodreads_label"  
+		android:orientation="horizontal"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:clickable="true"
+		android:paddingLeft="15sp">
+		<ImageView
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:paddingLeft="10sp"
+			android:src="@+android:drawable/ic_menu_gallery"
+			/>
+		<TextView 
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:text="@+string/import_all_from_goodreads"
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:paddingTop="5sp"
+			/>
+	</LinearLayout>
 
 	</LinearLayout>
 </ScrollView>

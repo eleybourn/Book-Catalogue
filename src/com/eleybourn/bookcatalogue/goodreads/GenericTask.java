@@ -21,6 +21,7 @@
 package com.eleybourn.bookcatalogue.goodreads;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.ViewTagger;
@@ -112,21 +113,23 @@ public abstract class GenericTask extends RunnableTask {
 		String statusCode = cursor.getStatusCode();
 		String statusText = "";
 		if (statusCode.equalsIgnoreCase("S")) {
-			statusText = "Completed";
+			statusText = context.getString(R.string.completed);
 			holder.retry_info.setVisibility(View.GONE);
 			holder.retry.setVisibility(View.GONE);
 		} else if (statusCode.equalsIgnoreCase("F")) {
-			statusText = "Failed";
+			statusText = context.getString(R.string.failed);
 			holder.retry_info.setVisibility(View.GONE);
 			holder.retry.setVisibility(View.VISIBLE);
 		} else if (statusCode.equalsIgnoreCase("Q")) {
-			statusText = "Queued";
+			statusText = context.getString(R.string.queued);
 			holder.retry_info.setVisibility(View.VISIBLE);
-			holder.retry_info.setText("Retry " + this.getRetries() + " of " + this.getRetryLimit() + " next at " + cursor.getRetryDate().toLocaleString());
-			holder.retry.setVisibility(View.VISIBLE);
+			holder.retry_info.setText(context.getString(R.string.retry_x_of_y_next_at_z, 
+							this.getRetries(), this.getRetryLimit(), cursor.getRetryDate().toLocaleString()));
+
+			holder.retry.setVisibility(View.GONE);
 		} else {
 			holder.retry_info.setVisibility(View.GONE);
-			statusText = "UNKNOWN";
+			statusText = context.getString(R.string.unknown);
 			holder.retry.setVisibility(View.GONE);
 		}
 
@@ -141,7 +144,8 @@ public abstract class GenericTask extends RunnableTask {
 			holder.error.setVisibility(View.GONE);
 		}
 		//"Job ID 123, Queued at 20 Jul 2012 17:50:23 GMT"
-		holder.job_info.setText("Task ID " + this.getId() + ", Queued at " + cursor.getQueuedDate().toLocaleString());
+		Date qd = cursor.getQueuedDate();
+		holder.job_info.setText("Task ID " + this.getId() + ", Queued at " + qd.toLocaleString());
 		//view.requestLayout();
 		return true;
 	}

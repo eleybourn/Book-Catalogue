@@ -20,6 +20,7 @@
 
 package com.eleybourn.bookcatalogue.goodreads;
 
+import com.eleybourn.bookcatalogue.BcQueueManager;
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NotAuthorizedException;
@@ -72,6 +73,11 @@ public class GoodreadsAuthorizationResultCheck extends GenericTask {
 	    }
 
 		return true;
+	}
+
+	@Override
+	public long getCategory() {
+		return BcQueueManager.CAT_GOODREADS_AUTH;
 	}
 
 }

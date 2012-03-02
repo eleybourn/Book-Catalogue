@@ -73,6 +73,8 @@ public class TaskListActivity extends net.philipwarner.taskqueue.BindableItemLis
 					}});				
 			}
 
+			this.setTitle(R.string.background_tasks);
+
 		} catch (Exception e) {
 			Logger.logError(e);
 		}

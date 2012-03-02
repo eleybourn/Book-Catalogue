@@ -21,7 +21,9 @@
 package com.eleybourn.bookcatalogue.goodreads.api;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
+import java.util.Iterator;
 
 import org.xml.sax.Attributes;
 
@@ -218,7 +220,20 @@ public class XmlFilter {
 	public static XmlFilter buildFilter(XmlFilter root, String... filters ) {
 		if (filters.length <= 0)
 			return null;
-		return buildFilter(root, 0, filters);
+		return buildFilter(root, 0, Arrays.asList(filters).iterator());
+	}
+	/**
+	 * Static method to add a filter to a passed tree and return the matching XmlFilter
+	 * 
+	 * @param root		Root XmlFilter object.
+	 * @param filters	Names of tags to add to tree, if not present. 
+	 * 
+	 * @return			The filter matching the final tag name passed.
+	 */
+	public static XmlFilter buildFilter(XmlFilter root, ArrayList<String> filters ) {
+		if (filters.size() <= 0)
+			return null;
+		return buildFilter(root, 0, filters.iterator());
 	}
 	/**
 	 * Internal implementation of method to add a filter to a passed tree and return the matching XmlFilter.
@@ -230,21 +245,22 @@ public class XmlFilter {
 	 *
 	 * @return			The filter matching the final tag name passed.
 	 */
-	private static XmlFilter buildFilter(XmlFilter root, int depth, String... filters ) {
+	private static XmlFilter buildFilter(XmlFilter root, int depth, Iterator<String> iter ) {
 		//if (!root.matches(filters[depth]))
 		//	throw new RuntimeException("Filter at depth=" + depth + " does not match first filter parameter");
-
-		XmlFilter sub = root.getSubFilter(filters[depth]);
+		final String curr = iter.next();
+		XmlFilter sub = root.getSubFilter(curr);
 		if (sub == null) {
-			sub = new XmlFilter(filters[depth]);
+			sub = new XmlFilter(curr);
 			root.addFilter(sub);
 		}
-		if (depth == (filters.length-1)) {
+		if (!iter.hasNext()) {
 			// At end
 			return sub;
 		} else {
 			// We are still finding leaf
-			return buildFilter( sub, depth+1, filters );			
+			return buildFilter( sub, depth+1, iter );			
 		}
 	}
+	
 }

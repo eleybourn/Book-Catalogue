@@ -38,9 +38,6 @@ import com.eleybourn.bookcatalogue.TaskManager.OnTaskEndedListener;
  * processes the data. Once all tasks are complete, it sends a message to its
  * creator via its SearchHandler.
  * 
- * RELEASE Fix bad series detection: 'In The Light of Sigman Dreaconis': 9780380756377
- * 
- * 
  * @author Philip Warner
  */
 public class SearchManager implements OnTaskEndedListener {

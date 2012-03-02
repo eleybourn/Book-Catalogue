@@ -27,10 +27,10 @@ import net.philipwarner.taskqueue.QueueManager;
 
 import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTask;
 import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTaskContext;
-import com.eleybourn.bookcatalogue.booklist.BooklistCursor;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
 import com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds;
 import com.eleybourn.bookcatalogue.booklist.BooklistRowView;
+import com.eleybourn.bookcatalogue.booklist.BooklistSupportProvider;
 import com.eleybourn.bookcatalogue.database.DbUtils.DomainDefinition;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
@@ -65,7 +65,7 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 	 * Return the row type for the current cursor position.
 	 */
 	public int getItemViewType(Cursor c) {
-		BooklistRowView rowView = ((BooklistCursor)c).getRowView();
+		BooklistRowView rowView = ((BooklistSupportProvider)c).getRowView();
 		return rowView.getKind();
 	}
 
@@ -80,7 +80,7 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 	 * Get the text to display in the FastScroller for the row at the current cursor position.
 	 */
 	public String[] getSectionText(Cursor c) {
-		BooklistRowView rowView = ((BooklistCursor)c).getRowView();
+		BooklistRowView rowView = ((BooklistSupportProvider)c).getRowView();
 		return new String[] {rowView.getLevel1Data(), rowView.getLevel2Data()};
 	}
 
@@ -672,7 +672,7 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 
 	@Override
 	public View getView(Cursor c, LayoutInflater inflater, View convertView, ViewGroup parent) {
-		final BooklistRowView rowView = ((BooklistCursor)c).getRowView();
+		final BooklistRowView rowView = ((BooklistSupportProvider)c).getRowView();
 		BooklistHolder holder;
 		final int level = rowView.getLevel();
 		if (convertView == null) {

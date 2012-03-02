@@ -34,7 +34,7 @@ import android.database.sqlite.SQLiteQuery;
  * 
  * @author Philip Warner
  */
-public class BooklistCursor extends TrackedCursor {
+public class BooklistCursor extends TrackedCursor implements BooklistSupportProvider {
 	/** Underlying BooklistBuilder object */
 	private final BooklistBuilder mBuilder;
 	/** Cached RowView for this cursor */

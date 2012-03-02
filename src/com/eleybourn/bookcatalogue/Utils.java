@@ -40,6 +40,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.TimeZone;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -71,9 +72,16 @@ public class Utils {
 	/** Database is non-static member so we don't make it linger longer than necessary */
 	private CoversDbHelper mCoversDb = null;
 
+	// Used for formatting dates for sql; everything is assumed to be UTC, or converted to UTC since 
+	// UTC is the default SQLite TZ. 
+	static TimeZone tzUtc = TimeZone.getTimeZone("UTC");
+
 	// Used for date parsing and display
 	static SimpleDateFormat mDateSqlSdf = new SimpleDateFormat("yyyy-MM-dd");
+	static { mDateSqlSdf.setTimeZone(tzUtc); }
 	static SimpleDateFormat mDateFullSqlSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	static { mDateFullSqlSdf.setTimeZone(tzUtc); }
+
 	static SimpleDateFormat mDate1Sdf = new SimpleDateFormat("dd-MMM-yyyy");
 	static SimpleDateFormat mDate2Sdf = new SimpleDateFormat("dd-MMM-yy");
 	static SimpleDateFormat mDateUSSdf = new SimpleDateFormat("MM-dd-yyyy");

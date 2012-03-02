@@ -84,6 +84,8 @@ public class GoodreadsExportFailuresActivity extends  net.philipwarner.taskqueue
 				}});
 		}
 	
+		this.setTitle(R.string.task_errors);
+
 	}
 
 	/**

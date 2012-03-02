@@ -136,6 +136,8 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 	 */
 	@Override
 	public boolean onMove(int oldPosition, int newPosition) {
+		if (newPosition < 0)
+			return false;
 		// Get the ID we use for the cursor at the new position
 		Integer cursorId = newPosition / CURSOR_SIZE;
 		// Determine the actual start position
@@ -285,12 +287,18 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 	}	
 
 	/**
-	 * Close this cursor and all related cursors.
+	 * Implement requery; this needs to invalidate our existing cursors and 
+	 * call the superclass
 	 */
 	@Override
-	public void close() {
-		super.close();
+	public boolean requery() {
+		clearCursors();
+		onMove(getPosition(), getPosition());
 
+		return super.requery();
+	}
+
+	private void clearCursors() {
 		for(Entry<Integer, BooklistCursor> cursorEntry: mCursors.entrySet()) {
 			cursorEntry.getValue().close();
 		}
@@ -299,6 +307,19 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 			mActiveCursor.close();
 
 		mActiveCursor = null;
+
+		for(int i = 0 ; i < mMruList.length; i++)
+			mMruList[i] = -1;
+	}
+
+	/**
+	 * Close this cursor and all related cursors.
+	 */
+	@Override
+	public void close() {
+		super.close();
+
+		clearCursors();
 
 		if (mUtils != null)
 			mUtils.close();

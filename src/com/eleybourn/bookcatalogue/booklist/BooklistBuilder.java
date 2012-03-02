@@ -374,6 +374,9 @@ public class BooklistBuilder {
 	 * Drop and recreate all the data based on previous criteria
 	 */
 	public void rebuild() {
+		// This will invalidate cached count
+		mPseudoCount = null;
+
 		mSummary.recreateTable();
 
 		mNavTable.drop(mDb);
@@ -400,6 +403,9 @@ public class BooklistBuilder {
 	 * 
 	 */
 	public void build(int preferredState, long markId, String bookshelf, String authorWhere, String bookWhere, String loaned_to, String seriesName, String searchText) {
+		// This will invalidate cached count
+		mPseudoCount = null;
+
 		long t0 = System.currentTimeMillis();
 
 		// Rebuild the main table definition
@@ -1299,6 +1305,9 @@ public class BooklistBuilder {
 	 * @param expand
 	 */
 	public void expandAll(boolean expand) {
+		// This will invalidate cached count
+		mPseudoCount = null;
+
 		long t0 = System.currentTimeMillis();
 		if (expand) {
 			String sql = "Update " + mNavTable + " Set expanded = 1, visible = 1";
@@ -1319,6 +1328,9 @@ public class BooklistBuilder {
 	 * @param absPos
 	 */
 	public void toggleExpandNode(long absPos) {
+		// This will invalidate cached count
+		mPseudoCount = null;
+
 		buildExpandNodeStatements();
 
 		// row position starts at 0, id's start at 1...

@@ -56,7 +56,7 @@ import com.eleybourn.bookcatalogue.goodreads.api.SimpleXmlFilter.XmlListener;
 public class ListReviewsApiHandler extends ApiHandler {
 
 	/** Date format used for parsing 'last_update_date' */
-	private static final SimpleDateFormat mUpdateDateFmt = new SimpleDateFormat("EEE MMM dd kk:mm:ss ZZZZ yyyy");
+	private static final SimpleDateFormat mUpdateDateFmt = new SimpleDateFormat("EEE MMM dd HH:mm:ss ZZZZ yyyy");
 
 	/**
 	 * Field names we add to the bundle based on parsed XML data.

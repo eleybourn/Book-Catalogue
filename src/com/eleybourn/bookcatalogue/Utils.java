@@ -77,29 +77,29 @@ public class Utils {
 	static TimeZone tzUtc = TimeZone.getTimeZone("UTC");
 
 	// Used for date parsing and display
-	private static SimpleDateFormat mDateFullHMSSqlSdf = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
+	private static SimpleDateFormat mDateFullHMSSqlSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	static { mDateFullHMSSqlSdf.setTimeZone(tzUtc); }
-	private static SimpleDateFormat mDateFullHMSqlSdf = new SimpleDateFormat("yyyy-MM-dd kk:mm");
+	private static SimpleDateFormat mDateFullHMSqlSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	static { mDateFullHMSqlSdf.setTimeZone(tzUtc); }
 	private static SimpleDateFormat mDateSqlSdf = new SimpleDateFormat("yyyy-MM-dd");
 	static { mDateSqlSdf.setTimeZone(tzUtc); }
 
-	private static SimpleDateFormat mDate1HMSSdf = new SimpleDateFormat("dd-MMM-yyyy kk:mm:ss");
-	private static SimpleDateFormat mDate1HMSdf = new SimpleDateFormat("dd-MMM-yyyy kk:mm");
+	private static SimpleDateFormat mDate1HMSSdf = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
+	private static SimpleDateFormat mDate1HMSdf = new SimpleDateFormat("dd-MMM-yyyy HH:mm");
 	private static SimpleDateFormat mDate1Sdf = new SimpleDateFormat("dd-MMM-yyyy");
-	private static SimpleDateFormat mDate2HMSSdf = new SimpleDateFormat("dd-MMM-yy kk:mm:ss");
-	private static SimpleDateFormat mDate2HMSdf = new SimpleDateFormat("dd-MMM-yy kk:mm");
+	private static SimpleDateFormat mDate2HMSSdf = new SimpleDateFormat("dd-MMM-yy HH:mm:ss");
+	private static SimpleDateFormat mDate2HMSdf = new SimpleDateFormat("dd-MMM-yy HH:mm");
 	private static SimpleDateFormat mDate2Sdf = new SimpleDateFormat("dd-MMM-yy");
-	private static SimpleDateFormat mDateUSHMSSdf = new SimpleDateFormat("MM-dd-yyyy kk:mm:ss");
-	private static SimpleDateFormat mDateUSHMSdf = new SimpleDateFormat("MM-dd-yyyy kk:mm");
+	private static SimpleDateFormat mDateUSHMSSdf = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+	private static SimpleDateFormat mDateUSHMSdf = new SimpleDateFormat("MM-dd-yyyy HH:mm");
 	private static SimpleDateFormat mDateUSSdf = new SimpleDateFormat("MM-dd-yyyy");
-	private static SimpleDateFormat mDateEngHMSSdf = new SimpleDateFormat("dd-MM-yyyy kk:mm:ss");
-	private static SimpleDateFormat mDateEngHMSdf = new SimpleDateFormat("dd-MM-yyyy kk:mm");
+	private static SimpleDateFormat mDateEngHMSSdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+	private static SimpleDateFormat mDateEngHMSdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
 	private static SimpleDateFormat mDateEngSdf = new SimpleDateFormat("dd-MM-yyyy");
 	private static DateFormat mDateDispSdf = DateFormat.getDateInstance(java.text.DateFormat.MEDIUM);
 	// Dates of the form: 'Fri May 5 17:23:11 -0800 2012'
-	private static final SimpleDateFormat mLongUnixHMSSdf = new SimpleDateFormat("EEE MMM dd kk:mm:ss ZZZZ yyyy");
-	private static final SimpleDateFormat mLongUnixHMSdf = new SimpleDateFormat("EEE MMM dd kk:mm ZZZZ yyyy");
+	private static final SimpleDateFormat mLongUnixHMSSdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss ZZZZ yyyy");
+	private static final SimpleDateFormat mLongUnixHMSdf = new SimpleDateFormat("EEE MMM dd HH:mm ZZZZ yyyy");
 	private static final SimpleDateFormat mLongUnixSdf = new SimpleDateFormat("EEE MMM dd ZZZZ yyyy");
 
 	/** List of all formats, keep the ones with timezone info near the start */

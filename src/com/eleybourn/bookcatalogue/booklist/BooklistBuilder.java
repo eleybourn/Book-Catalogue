@@ -384,10 +384,6 @@ public class BooklistBuilder {
 		// Rebuild all the rest
 		for(SynchronizedStatement s : mLevelBuildStmts)
 			s.execute();
-
-		// This will invalidate cached count
-		// RELEASE remove refs to pseudocount in BB
-		//mPseudoCount = null;
 	}
 	
 	/**
@@ -997,9 +993,6 @@ public class BooklistBuilder {
 
 			//return (BooklistCursor) mDb.rawQueryWithFactory(mBooklistCursorFactory, sql, EMPTY_STRING_ARRAY, "");					
 
-			// This will invalidate cached count
-			///mPseudoCount = null;
-
 			return;
 
 		} finally {
@@ -1149,18 +1142,12 @@ public class BooklistBuilder {
 //	}
 
 
-// Cant put this in builder; on a rebuild old cursor can mess up new count
-//	private Integer mPseudoCount = null;
 	/**
 	 * All pseudo list cursors work with the static data in the tenp. table. Get the
 	 * logical count of rows using a simple query rather than scanning the entire result set.
 	 */
 	public int getPseudoCount() {
 		return pseudoCount("NavTable", "Select count(*) from " + mNavTable + " Where " + DOM_VISIBLE + " = 1");
-//		if (mPseudoCount == null) {
-//			mPseudoCount = pseudoCount("NavTable", "Select count(*) from " + mNavTable + " Where " + DOM_VISIBLE + " = 1");
-//		}
-//		return mPseudoCount;
 	}
 
 	/**
@@ -1308,9 +1295,6 @@ public class BooklistBuilder {
 	 * @param expand
 	 */
 	public void expandAll(boolean expand) {
-		// This will invalidate cached count
-		//mPseudoCount = null;
-
 		long t0 = System.currentTimeMillis();
 		if (expand) {
 			String sql = "Update " + mNavTable + " Set expanded = 1, visible = 1";
@@ -1331,8 +1315,6 @@ public class BooklistBuilder {
 	 * @param absPos
 	 */
 	public void toggleExpandNode(long absPos) {
-		// This will invalidate cached count
-		//mPseudoCount = null;
 
 		buildExpandNodeStatements();
 

@@ -77,28 +77,36 @@ public class Utils {
 	static TimeZone tzUtc = TimeZone.getTimeZone("UTC");
 
 	// Used for date parsing and display
-	static SimpleDateFormat mDateFullHMSSqlSdf = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
+	private static SimpleDateFormat mDateFullHMSSqlSdf = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
 	static { mDateFullHMSSqlSdf.setTimeZone(tzUtc); }
-	static SimpleDateFormat mDateFullHMSqlSdf = new SimpleDateFormat("yyyy-MM-dd kk:mm");
+	private static SimpleDateFormat mDateFullHMSqlSdf = new SimpleDateFormat("yyyy-MM-dd kk:mm");
 	static { mDateFullHMSqlSdf.setTimeZone(tzUtc); }
-	static SimpleDateFormat mDateSqlSdf = new SimpleDateFormat("yyyy-MM-dd");
+	private static SimpleDateFormat mDateSqlSdf = new SimpleDateFormat("yyyy-MM-dd");
 	static { mDateSqlSdf.setTimeZone(tzUtc); }
 
-	static SimpleDateFormat mDate1HMSSdf = new SimpleDateFormat("dd-MMM-yyyy kk:mm:ss");
-	static SimpleDateFormat mDate1HMSdf = new SimpleDateFormat("dd-MMM-yyyy kk:mm");
-	static SimpleDateFormat mDate1Sdf = new SimpleDateFormat("dd-MMM-yyyy");
-	static SimpleDateFormat mDate2HMSSdf = new SimpleDateFormat("dd-MMM-yy kk:mm:ss");
-	static SimpleDateFormat mDate2HMSdf = new SimpleDateFormat("dd-MMM-yy kk:mm");
-	static SimpleDateFormat mDate2Sdf = new SimpleDateFormat("dd-MMM-yy");
-	static SimpleDateFormat mDateUSHMSSdf = new SimpleDateFormat("MM-dd-yyyy kk:mm:ss");
-	static SimpleDateFormat mDateUSHMSdf = new SimpleDateFormat("MM-dd-yyyy kk:mm");
-	static SimpleDateFormat mDateUSSdf = new SimpleDateFormat("MM-dd-yyyy");
-	static SimpleDateFormat mDateEngHMSSdf = new SimpleDateFormat("dd-MM-yyyy kk:mm:ss");
-	static SimpleDateFormat mDateEngHMSdf = new SimpleDateFormat("dd-MM-yyyy kk:mm");
-	static SimpleDateFormat mDateEngSdf = new SimpleDateFormat("dd-MM-yyyy");
-	static DateFormat mDateDispSdf = DateFormat.getDateInstance(java.text.DateFormat.MEDIUM);
+	private static SimpleDateFormat mDate1HMSSdf = new SimpleDateFormat("dd-MMM-yyyy kk:mm:ss");
+	private static SimpleDateFormat mDate1HMSdf = new SimpleDateFormat("dd-MMM-yyyy kk:mm");
+	private static SimpleDateFormat mDate1Sdf = new SimpleDateFormat("dd-MMM-yyyy");
+	private static SimpleDateFormat mDate2HMSSdf = new SimpleDateFormat("dd-MMM-yy kk:mm:ss");
+	private static SimpleDateFormat mDate2HMSdf = new SimpleDateFormat("dd-MMM-yy kk:mm");
+	private static SimpleDateFormat mDate2Sdf = new SimpleDateFormat("dd-MMM-yy");
+	private static SimpleDateFormat mDateUSHMSSdf = new SimpleDateFormat("MM-dd-yyyy kk:mm:ss");
+	private static SimpleDateFormat mDateUSHMSdf = new SimpleDateFormat("MM-dd-yyyy kk:mm");
+	private static SimpleDateFormat mDateUSSdf = new SimpleDateFormat("MM-dd-yyyy");
+	private static SimpleDateFormat mDateEngHMSSdf = new SimpleDateFormat("dd-MM-yyyy kk:mm:ss");
+	private static SimpleDateFormat mDateEngHMSdf = new SimpleDateFormat("dd-MM-yyyy kk:mm");
+	private static SimpleDateFormat mDateEngSdf = new SimpleDateFormat("dd-MM-yyyy");
+	private static DateFormat mDateDispSdf = DateFormat.getDateInstance(java.text.DateFormat.MEDIUM);
+	// Dates of the form: 'Fri May 5 17:23:11 -0800 2012'
+	private static final SimpleDateFormat mLongUnixHMSSdf = new SimpleDateFormat("EEE MMM dd kk:mm:ss ZZZZ yyyy");
+	private static final SimpleDateFormat mLongUnixHMSdf = new SimpleDateFormat("EEE MMM dd kk:mm ZZZZ yyyy");
+	private static final SimpleDateFormat mLongUnixSdf = new SimpleDateFormat("EEE MMM dd ZZZZ yyyy");
 
+	/** List of all formats, keep the ones with timezone info near the start */
 	private static final SimpleDateFormat[] mParseDateFormats = new SimpleDateFormat[] {
+			mLongUnixHMSSdf,
+			mLongUnixHMSdf,
+			mLongUnixSdf,
 			mDateFullHMSSqlSdf,
 			mDateFullHMSqlSdf,
 			mDateSqlSdf,
@@ -1169,9 +1177,12 @@ public class Utils {
 				// Fixup ratio based on new sample size and scale it.
 				ratio = ratio / (1.0f / opt.inSampleSize);
 				matrix.postScale(ratio, ratio);
-				bm = Bitmap.createBitmap(tmpBm, 0, 0, opt.outWidth, opt.outHeight, matrix, true); 
-				tmpBm.recycle();
-				tmpBm = null;
+				bm = Bitmap.createBitmap(tmpBm, 0, 0, opt.outWidth, opt.outHeight, matrix, true);
+				// Recycle if original was not returned
+				if (bm != tmpBm) {
+					tmpBm.recycle();
+					tmpBm = null;
+				}
 			} else {
 				// Use a scale that will make image *no larger than* the desired size
 				if (ratio < 1.0f)

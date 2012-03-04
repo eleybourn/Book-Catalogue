@@ -391,7 +391,8 @@ public class ListReviewsApiHandler extends ApiHandler {
 		//			<read_at></read_at>
 					.stringBody("read_at", DB_READ_END)
 		//			<date_added>Mon Feb 13 05:32:30 -0800 2012</date_added>
-					.stringBody("date_added", ADDED)
+					//.stringBody("date_added", ADDED)
+					.s("date_added").stringBody(ADDED).setListener(mAddedListener).pop()
 		//			<date_updated>Mon Feb 13 05:32:31 -0800 2012</date_updated>
 					.s("date_updated").stringBody(UPDATED).setListener(mUpdatedListener).pop()
 		//			...
@@ -406,6 +407,18 @@ public class ListReviewsApiHandler extends ApiHandler {
 		.done();
 	}
 
+	void date2Sql(Bundle b, String key) {
+        if (b.containsKey(key)) {
+        	String date = b.getString(key);
+        	try {
+        		Date d = mUpdateDateFmt.parse(date);
+        		date = Utils.toSqlDateTime(d);
+        		b.putString(key, date);
+        	} catch (Exception e) {
+        		b.remove(key);
+        	}
+        }		
+	}
 	/**
 	 * Listener to handle the contents of the date_updated field. We only
 	 * keep it if it is a valid date, and we store it in SQL format using 
@@ -418,18 +431,23 @@ public class ListReviewsApiHandler extends ApiHandler {
 
 		@Override
 		public void onFinish(BuilderContext bc, ElementContext c) {
-			Bundle b = bc.getData();
-	        if (b.containsKey(UPDATED)) {
-	        	String date = b.getString(UPDATED);
-	        	try {
-	        		Date d = mUpdateDateFmt.parse(date);
-	        		date = Utils.toSqlDateTime(d);
-	        		b.putString(UPDATED, date);
-	        	} catch (Exception e) {
-	        		b.remove(UPDATED);
-	        	}
-	        }
-	        
+			date2Sql(bc.getData(), UPDATED);
+		}
+	};
+
+	/**
+	 * Listener to handle the contents of the date_added field. We only
+	 * keep it if it is a valid date, and we store it in SQL format using 
+	 * UTC TZ so comparisons work.
+	 */
+	XmlListener mAddedListener = new XmlListener() {
+		@Override
+		public void onStart(BuilderContext bc, ElementContext c) {
+		}
+
+		@Override
+		public void onFinish(BuilderContext bc, ElementContext c) {
+			date2Sql(bc.getData(), ADDED);
 		}
 	};
 }

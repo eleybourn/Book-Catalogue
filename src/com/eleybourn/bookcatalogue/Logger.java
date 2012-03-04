@@ -58,7 +58,7 @@ public class Logger {
 		//Log.e("BookCatalogue", error);
 		
 		try {
-			// RELEASE Remove Log.e!
+			// RELEASE Remove Log.e! Replace with ACRA?
 			Log.e("BC Logger", error);
 			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Utils.ERRORLOG_FILE), "utf8"), 8192);
 			out.write(error);

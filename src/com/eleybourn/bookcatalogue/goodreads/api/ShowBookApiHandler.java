@@ -47,6 +47,8 @@ import com.eleybourn.bookcatalogue.goodreads.api.XmlFilter.XmlHandler;
  * designed to be used by other classes that implement specific search methods. It does
  * the heavy lifting of parsing the results etc.
  * 
+ * RELEASE: Capture myReview; use it in sendOneBook to delete shelves that are not present
+ * 
  * @author Philip Warner
  */
 public abstract class ShowBookApiHandler extends ApiHandler {
@@ -265,7 +267,34 @@ public abstract class ShowBookApiHandler extends ApiHandler {
 							<text_reviews_count>9049</text_reviews_count>
 						</author>
 					</authors>
-					<friend_reviews>
+					<my_review>
+						<id>255221284</id>
+						<rating>0</rating>
+						<votes>0</votes>
+						<spoiler_flag>false</spoiler_flag>
+						<spoilers_state>none</spoilers_state>
+						<shelves>
+							<shelf name="sci-fi-fantasy"/>
+							<shelf name="to-read"/>
+							<shelf name="default"/>
+							<shelf name="environment"/>
+							<shelf name="games"/>
+							<shelf name="history"/>
+						</shelves>
+						<recommended_for></recommended_for>
+						<recommended_by></recommended_by>
+						<started_at/>
+						<read_at/>
+						<date_added>Mon Jan 02 19:07:11 -0800 2012</date_added>
+						<date_updated>Sat Mar 03 08:10:09 -0800 2012</date_updated>
+						<read_count/>
+						<body>Test again</body>
+						<comments_count>0</comments_count>
+						<url>http://www.goodreads.com/review/show/255221284</url>
+						<link>http://www.goodreads.com/review/show/255221284</link>
+						<owned>0</owned>
+					</my_review>
+   					<friend_reviews>
 					</friend_reviews>
 					<reviews_widget>....</reviews_widget>
 					<popular_shelves>

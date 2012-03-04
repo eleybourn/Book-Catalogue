@@ -461,7 +461,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		}
 
 		initBackground();
-		
+
 		long t0 = System.currentTimeMillis();
 		// Save the old list so we can close it later, and set the new list locally
 		BooklistPseudoCursor oldList = mList;

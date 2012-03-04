@@ -91,9 +91,7 @@ public class TrivialParser extends DefaultHandler {
 			m_Builder.append(uri + ":");
 		if (localName != null && !localName.equals(""))
 			m_Builder.append(localName);
-
-		if (name != null && !name.equals("")) {
-			m_Builder.append(" ");
+		else if (name != null && !name.equals("")) {
 			m_Builder.append(name);
 		}
 		m_Builder.append(">");

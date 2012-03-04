@@ -26,9 +26,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-
-import org.acra.ErrorReporter;
-
 import net.philipwarner.taskqueue.QueueManager;
 
 import android.app.AlertDialog;
@@ -236,6 +233,20 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			}
 		});
 		
+		/* Goodreads SYNC Link */
+		{
+			View v = findViewById(R.id.sync_with_goodreads_label);
+			// Make line flash when clicked.
+			v.setBackgroundResource(android.R.drawable.list_selector_background);
+			v.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					importAllFromGoodreads(true);
+					return;
+				}
+			});
+		}
+
 		/* Goodreads IMPORT Link */
 		{
 			View v = findViewById(R.id.import_all_from_goodreads_label);
@@ -244,7 +255,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			v.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					importAllFromGoodreads();
+					importAllFromGoodreads(false);
 					return;
 				}
 			});
@@ -359,18 +370,9 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	 * the options: 'request now', 'more info' or 'cancel'.
 	 */
 	public void sendBooksToGoodreads() {
-		// Make sure GR is authorized for this app
-		GoodreadsManager grMgr = new GoodreadsManager();
 
-		if (!grMgr.hasCredentials()) {
-			StandardDialogs.goodreadsAuthAlert(this);
+		if (!checkCanSendToGoodreads())
 			return;
-		}
-
-		if (!grMgr.hasValidCredentials()) {
-			StandardDialogs.goodreadsAuthAlert(this);
-			return;
-		}
 
 		// Get the title		
 		final AlertDialog alertDialog = new AlertDialog.Builder(this).setTitle(R.string.send_books_to_goodreads).setMessage(R.string.send_books_to_goodreads_blurb).create();
@@ -415,15 +417,9 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	}
 
 	/**
-	 * Start a background task that exports all books to goodreads.
+	 * Start a background task that imports books from goodreads.
 	 */
-	private void importAllFromGoodreads() {
-		GoodreadsManager grMgr = new GoodreadsManager();
-
-		if (!grMgr.hasCredentials()) {
-			StandardDialogs.goodreadsAuthAlert(this);
-			return;
-		}
+	private void importAllFromGoodreads(boolean isSync) {
 
 		if (BcQueueManager.getQueueManager().hasActiveTasks(BcQueueManager.CAT_GOODREADS_IMPORT_ALL)) {
 			Toast.makeText(this, R.string.requested_task_is_already_queued, Toast.LENGTH_LONG).show();
@@ -434,27 +430,59 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			return;
 		}
 
-		if (!grMgr.hasValidCredentials()) {
-			StandardDialogs.goodreadsAuthAlert(this);
+		if (!checkGoodreadsAuth())
 			return;
+
+		QueueManager.getQueueManager().enqueueTask(new ImportAllTask(isSync), BcQueueManager.QUEUE_MAIN, 0);
+	}
+
+	/**
+	 * Check that goodreads is authorized for this app, and optionally allow user to request auth or more info
+	 * 
+	 * @return	Flag indicating OK
+	 */
+	private boolean checkGoodreadsAuth() {
+		// Make sure GR is authorized for this app
+		GoodreadsManager grMgr = new GoodreadsManager();
+
+		if (!grMgr.hasCredentials()) {
+			StandardDialogs.goodreadsAuthAlert(this);
+			return false;
 		}
 
-		QueueManager.getQueueManager().enqueueTask(new ImportAllTask(), BcQueueManager.QUEUE_MAIN, 0);
+		if (!grMgr.hasValidCredentials()) {
+			StandardDialogs.goodreadsAuthAlert(this);
+			return false;
+		}
+
+		return true;		
 	}
 	
+	/**
+	 * Check that no other sync-related jobs are queued, and that goodreads is authorized for this app
+	 * 
+	 * @return	Flag indicating OK
+	 */
+	private boolean checkCanSendToGoodreads() {
+		if (BcQueueManager.getQueueManager().hasActiveTasks(BcQueueManager.CAT_GOODREADS_EXPORT_ALL)) {
+			Toast.makeText(this, R.string.requested_task_is_already_queued, Toast.LENGTH_LONG).show();
+			return false;
+		}
+		if (BcQueueManager.getQueueManager().hasActiveTasks(BcQueueManager.CAT_GOODREADS_IMPORT_ALL)) {
+			Toast.makeText(this, R.string.import_task_is_already_queued, Toast.LENGTH_LONG).show();
+			return false;
+		}
+
+		return checkGoodreadsAuth();
+	}
+
 	/**
 	 * Start a background task that exports all books to goodreads.
 	 */
 	private void sendToGoodreads(boolean updatesOnly) {
 
-		if (BcQueueManager.getQueueManager().hasActiveTasks(BcQueueManager.CAT_GOODREADS_EXPORT_ALL)) {
-			Toast.makeText(this, R.string.requested_task_is_already_queued, Toast.LENGTH_LONG).show();
+		if (!checkCanSendToGoodreads())
 			return;
-		}
-		if (BcQueueManager.getQueueManager().hasActiveTasks(BcQueueManager.CAT_GOODREADS_IMPORT_ALL)) {
-			Toast.makeText(this, R.string.import_task_is_already_queued, Toast.LENGTH_LONG).show();
-			return;
-		}
 
 		QueueManager.getQueueManager().enqueueTask(new SendAllBooksTask(updatesOnly), BcQueueManager.QUEUE_MAIN, 0);
 	}

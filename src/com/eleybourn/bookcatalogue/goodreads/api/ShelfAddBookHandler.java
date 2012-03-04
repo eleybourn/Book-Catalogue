@@ -20,6 +20,7 @@
 
 package com.eleybourn.bookcatalogue.goodreads.api;
 
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,8 @@ import org.apache.http.message.BasicNameValuePair;
 
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.*;
+import com.eleybourn.bookcatalogue.goodreads.api.XmlFilter.ElementContext;
+import com.eleybourn.bookcatalogue.goodreads.api.XmlFilter.XmlHandler;
 
 /**
  * Class to add a book to a shelf. In this case, we do not care about the data returned.
@@ -55,9 +58,12 @@ public class ShelfAddBookHandler extends ApiHandler {
 
 	public ShelfAddBookHandler(GoodreadsManager manager) {
 		super(manager);
+		buildFilters();
 	}
 
-    /*
+	private long mReviewId = 0;
+
+	/*
      * <shelf>
      *  <created-at type='datetime' nil='true'></created-at>
      *  <position type='integer' nil='true'></position>
@@ -68,10 +74,12 @@ public class ShelfAddBookHandler extends ApiHandler {
      * </shelf>
      */
 
-	public void add(String shelfName, long grBookId) 
+	public long add(String shelfName, long grBookId) 
 			throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, IOException, 
 			NotAuthorizedException, BookNotFoundException
 	{
+		mReviewId = 0;
+
 		HttpPost post = new HttpPost("http://www.goodreads.com/shelf/add_to_shelf.xml");
 
         List<NameValuePair> parameters = new ArrayList<NameValuePair>();
@@ -80,8 +88,38 @@ public class ShelfAddBookHandler extends ApiHandler {
         
         post.setEntity(new UrlEncodedFormEntity(parameters));	        	
 
+        // Use a parser based on the filters
+        XmlResponseParser handler = new XmlResponseParser(mRootFilter);
         // Send call. Errors will result in an exception.
-        mManager.execute(post, null, true);
+        mManager.execute(post, handler, true);
+
+        return mReviewId;
 	}
 
+	private void buildFilters() {
+		/* Typical output. 
+			<shelf>
+			  <created-at type='datetime'>2012-01-02T19:07:12-08:00</created-at>
+			  <id type='integer'>167676018</id>
+			  <position type='integer'>13</position>
+			  <review-id type='integer'>255221284</review-id>
+			  <updated-at type='datetime'>2012-01-02T19:07:12-08:00</updated-at>
+			  <user-shelf-id type='integer'>16737904</user-shelf-id>
+			  <name>sci-fi-fantasy</name>
+			</shelf>
+		 */
+		// We only care about review-id:
+		XmlFilter.buildFilter(mRootFilter, "shelf", "review-id").setEndAction(mHandleReviewId);
+	}
+
+	private XmlHandler mHandleReviewId = new XmlHandler() {
+		@Override
+		public void process(ElementContext context) {
+			try {
+				mReviewId = Long.parseLong(context.body.trim());
+			} catch (Exception e) {
+				// Ignore?
+			}
+		}
+	};
 }

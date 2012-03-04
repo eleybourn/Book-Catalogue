@@ -77,16 +77,42 @@ public class Utils {
 	static TimeZone tzUtc = TimeZone.getTimeZone("UTC");
 
 	// Used for date parsing and display
+	static SimpleDateFormat mDateFullHMSSqlSdf = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
+	static { mDateFullHMSSqlSdf.setTimeZone(tzUtc); }
+	static SimpleDateFormat mDateFullHMSqlSdf = new SimpleDateFormat("yyyy-MM-dd kk:mm");
+	static { mDateFullHMSqlSdf.setTimeZone(tzUtc); }
 	static SimpleDateFormat mDateSqlSdf = new SimpleDateFormat("yyyy-MM-dd");
 	static { mDateSqlSdf.setTimeZone(tzUtc); }
-	static SimpleDateFormat mDateFullSqlSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	static { mDateFullSqlSdf.setTimeZone(tzUtc); }
 
+	static SimpleDateFormat mDate1HMSSdf = new SimpleDateFormat("dd-MMM-yyyy kk:mm:ss");
+	static SimpleDateFormat mDate1HMSdf = new SimpleDateFormat("dd-MMM-yyyy kk:mm");
 	static SimpleDateFormat mDate1Sdf = new SimpleDateFormat("dd-MMM-yyyy");
+	static SimpleDateFormat mDate2HMSSdf = new SimpleDateFormat("dd-MMM-yy kk:mm:ss");
+	static SimpleDateFormat mDate2HMSdf = new SimpleDateFormat("dd-MMM-yy kk:mm");
 	static SimpleDateFormat mDate2Sdf = new SimpleDateFormat("dd-MMM-yy");
+	static SimpleDateFormat mDateUSHMSSdf = new SimpleDateFormat("MM-dd-yyyy kk:mm:ss");
+	static SimpleDateFormat mDateUSHMSdf = new SimpleDateFormat("MM-dd-yyyy kk:mm");
 	static SimpleDateFormat mDateUSSdf = new SimpleDateFormat("MM-dd-yyyy");
+	static SimpleDateFormat mDateEngHMSSdf = new SimpleDateFormat("dd-MM-yyyy kk:mm:ss");
+	static SimpleDateFormat mDateEngHMSdf = new SimpleDateFormat("dd-MM-yyyy kk:mm");
 	static SimpleDateFormat mDateEngSdf = new SimpleDateFormat("dd-MM-yyyy");
 	static DateFormat mDateDispSdf = DateFormat.getDateInstance(java.text.DateFormat.MEDIUM);
+
+	private static final SimpleDateFormat[] mParseDateFormats = new SimpleDateFormat[] {
+			mDateFullHMSSqlSdf,
+			mDateFullHMSqlSdf,
+			mDateSqlSdf,
+			mDate1HMSSdf,
+			mDate1HMSdf,
+			mDate1Sdf,
+			mDate2HMSSdf,
+			mDate2HMSdf,
+			mDate2Sdf,
+			mDateUSSdf,
+			mDateEngHMSSdf,
+			mDateEngHMSdf,
+			mDateEngSdf,
+			};
 
 	public static final String APP_NAME = "Book Catalogue";
 	public static final String LOCATION = "bookCatalogue";
@@ -107,25 +133,19 @@ public class Utils {
 	public static final String EXTERNAL_FILE_PATH = Environment.getExternalStorageDirectory() + "/" + LOCATION;
 	public static final String ERRORLOG_FILE = EXTERNAL_FILE_PATH + "/error.log";
 
-	public static String toSqlDate(Date d) {
+	public static String toSqlDateOnly(Date d) {
 		return mDateSqlSdf.format(d);
 	}
 	public static String toSqlDateTime(Date d) {
-		return mDateFullSqlSdf.format(d);
+		return mDateFullHMSSqlSdf.format(d);
 	}
 	public static String toPrettyDate(Date d) {
 		return mDateDispSdf.format(d);		
 	}
 
 	public static Date parseDate(String s) {
-		SimpleDateFormat[] formats = new SimpleDateFormat[] {
-				mDateSqlSdf,
-				mDate1Sdf,
-				mDate2Sdf,
-				mDateUSSdf,
-				mDateEngSdf};
 		Date d;
-		for ( SimpleDateFormat sdf : formats ) {
+		for ( SimpleDateFormat sdf : mParseDateFormats ) {
 			try {
 				// Parse as SQL/ANSI date
 				d = sdf.parse(s);

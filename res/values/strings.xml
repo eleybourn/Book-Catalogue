@@ -514,5 +514,6 @@
     										difference between the first two options.</string>
 <string name="send_all">Send all</string>
 <string name="send_updated">Send updated</string>
+<string name="sync_with_goodreads">Synchronize with goodreads</string>
 </resources>
 

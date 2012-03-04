@@ -21,7 +21,8 @@
 package com.eleybourn.bookcatalogue.goodreads.api;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
@@ -33,9 +34,11 @@ import org.apache.http.client.methods.HttpGet;
 import android.os.Bundle;
 
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
+import com.eleybourn.bookcatalogue.Utils;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.*;
 import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.FieldNames.*;
+
 import com.eleybourn.bookcatalogue.goodreads.api.XmlFilter.ElementContext;
 import com.eleybourn.bookcatalogue.goodreads.api.SimpleXmlFilter.BuilderContext;
 import com.eleybourn.bookcatalogue.goodreads.api.SimpleXmlFilter.XmlListener;
@@ -51,6 +54,9 @@ import com.eleybourn.bookcatalogue.goodreads.api.SimpleXmlFilter.XmlListener;
  * @author Philip Warner
  */
 public class ListReviewsApiHandler extends ApiHandler {
+
+	/** Date format used for parsing 'last_update_date' */
+	private static final SimpleDateFormat mUpdateDateFmt = new SimpleDateFormat("EEE MMM dd kk:mm:ss ZZZZ yyyy");
 
 	/**
 	 * Field names we add to the bundle based on parsed XML data.
@@ -120,7 +126,8 @@ public class ListReviewsApiHandler extends ApiHandler {
 	{
 		long t0 = System.currentTimeMillis();
 
-		final String urlBase = "http://www.goodreads.com/review/list/%4$s.xml?key=%1$s&v=2&page=%2$s&per_page=%3$s&sort=position";
+		// Sort by update_dte (descending) so sync is faster.
+		final String urlBase = "http://www.goodreads.com/review/list/%4$s.xml?key=%1$s&v=2&page=%2$s&per_page=%3$s&sort=date_updated&order=d";
 		final String url = String.format(urlBase, mManager.getDeveloperKey(), page, perPage, mManager.getUserid());
 		HttpGet get = new HttpGet(url);
 
@@ -364,10 +371,12 @@ public class ListReviewsApiHandler extends ApiHandler {
 								.stringBody("name", DB_AUTHOR_NAME)
 		//						...
 		//					</author>
+							.pop()
 		//				</authors>
 		//				...
 		//			</book>
 						.pop()
+					.pop()
 		//
 		//			<rating>0</rating>
 					.doubleBody("rating", DB_RATING)
@@ -384,7 +393,7 @@ public class ListReviewsApiHandler extends ApiHandler {
 		//			<date_added>Mon Feb 13 05:32:30 -0800 2012</date_added>
 					.stringBody("date_added", ADDED)
 		//			<date_updated>Mon Feb 13 05:32:31 -0800 2012</date_updated>
-					.stringBody("date_updated", UPDATED)
+					.s("date_updated").stringBody(UPDATED).setListener(mUpdatedListener).pop()
 		//			...
 		//			<body><![CDATA[]]></body>
 					.stringBody("body", DB_NOTES).pop()
@@ -397,4 +406,30 @@ public class ListReviewsApiHandler extends ApiHandler {
 		.done();
 	}
 
+	/**
+	 * Listener to handle the contents of the date_updated field. We only
+	 * keep it if it is a valid date, and we store it in SQL format using 
+	 * UTC TZ so comparisons work.
+	 */
+	XmlListener mUpdatedListener = new XmlListener() {
+		@Override
+		public void onStart(BuilderContext bc, ElementContext c) {
+		}
+
+		@Override
+		public void onFinish(BuilderContext bc, ElementContext c) {
+			Bundle b = bc.getData();
+	        if (b.containsKey(UPDATED)) {
+	        	String date = b.getString(UPDATED);
+	        	try {
+	        		Date d = mUpdateDateFmt.parse(date);
+	        		date = Utils.toSqlDateTime(d);
+	        		b.putString(UPDATED, date);
+	        	} catch (Exception e) {
+	        		b.remove(UPDATED);
+	        	}
+	        }
+	        
+		}
+	};
 }

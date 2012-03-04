@@ -374,9 +374,6 @@ public class BooklistBuilder {
 	 * Drop and recreate all the data based on previous criteria
 	 */
 	public void rebuild() {
-		// This will invalidate cached count
-		mPseudoCount = null;
-
 		mSummary.recreateTable();
 
 		mNavTable.drop(mDb);
@@ -387,6 +384,10 @@ public class BooklistBuilder {
 		// Rebuild all the rest
 		for(SynchronizedStatement s : mLevelBuildStmts)
 			s.execute();
+
+		// This will invalidate cached count
+		// RELEASE remove refs to pseudocount in BB
+		//mPseudoCount = null;
 	}
 	
 	/**
@@ -403,9 +404,6 @@ public class BooklistBuilder {
 	 * 
 	 */
 	public void build(int preferredState, long markId, String bookshelf, String authorWhere, String bookWhere, String loaned_to, String seriesName, String searchText) {
-		// This will invalidate cached count
-		mPseudoCount = null;
-
 		long t0 = System.currentTimeMillis();
 
 		// Rebuild the main table definition
@@ -999,6 +997,9 @@ public class BooklistBuilder {
 
 			//return (BooklistCursor) mDb.rawQueryWithFactory(mBooklistCursorFactory, sql, EMPTY_STRING_ARRAY, "");					
 
+			// This will invalidate cached count
+			///mPseudoCount = null;
+
 			return;
 
 		} finally {
@@ -1148,16 +1149,18 @@ public class BooklistBuilder {
 //	}
 
 
-	private Integer mPseudoCount = null;
+// Cant put this in builder; on a rebuild old cursor can mess up new count
+//	private Integer mPseudoCount = null;
 	/**
 	 * All pseudo list cursors work with the static data in the tenp. table. Get the
 	 * logical count of rows using a simple query rather than scanning the entire result set.
 	 */
 	public int getPseudoCount() {
-		if (mPseudoCount == null) {
-			mPseudoCount = pseudoCount("NavTable", "Select count(*) from " + mNavTable + " Where " + DOM_VISIBLE + " = 1");
-		}
-		return mPseudoCount;
+		return pseudoCount("NavTable", "Select count(*) from " + mNavTable + " Where " + DOM_VISIBLE + " = 1");
+//		if (mPseudoCount == null) {
+//			mPseudoCount = pseudoCount("NavTable", "Select count(*) from " + mNavTable + " Where " + DOM_VISIBLE + " = 1");
+//		}
+//		return mPseudoCount;
 	}
 
 	/**
@@ -1306,7 +1309,7 @@ public class BooklistBuilder {
 	 */
 	public void expandAll(boolean expand) {
 		// This will invalidate cached count
-		mPseudoCount = null;
+		//mPseudoCount = null;
 
 		long t0 = System.currentTimeMillis();
 		if (expand) {
@@ -1329,7 +1332,7 @@ public class BooklistBuilder {
 	 */
 	public void toggleExpandNode(long absPos) {
 		// This will invalidate cached count
-		mPseudoCount = null;
+		//mPseudoCount = null;
 
 		buildExpandNodeStatements();
 

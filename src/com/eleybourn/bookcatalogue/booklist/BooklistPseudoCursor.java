@@ -78,7 +78,9 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 	private final int[] mMruList;
 	/** Current MRU ring buffer position */
 	private int mMruListPos = 0;
-
+	/** Pseudo-count obtained from Builder */
+	private Integer mPseudoCount = null;
+	
 
 	/** Utils object; we need an instance for cover retrieval because it uses a DB connection
 	 * that we do not want to make static. This instance is used by BookMultitypeListHandler.
@@ -209,7 +211,9 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 	 */
 	@Override
 	public int getCount() {
-		return mBuilder.getPseudoCount();
+		if (mPseudoCount == null)
+			mPseudoCount = mBuilder.getPseudoCount();
+		return mPseudoCount;
 	}
 
 	/**
@@ -293,6 +297,7 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 	@Override
 	public boolean requery() {
 		clearCursors();
+		mPseudoCount = null;
 		onMove(getPosition(), getPosition());
 
 		return super.requery();
@@ -303,8 +308,8 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 			cursorEntry.getValue().close();
 		}
 		mCursors.clear();
-		if (!mActiveCursor.isClosed())
-			mActiveCursor.close();
+//		if (mActiveCursor != null)
+//			mActiveCursor.close();
 
 		mActiveCursor = null;
 
@@ -321,7 +326,9 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 
 		clearCursors();
 
-		if (mUtils != null)
+		if (mUtils != null) {
 			mUtils.close();
+			mUtils = null;
+		}
 	}
 }

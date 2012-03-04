@@ -48,9 +48,13 @@ import com.eleybourn.bookcatalogue.Series;
 import com.eleybourn.bookcatalogue.Utils;
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 import com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.FieldNames;
+import com.eleybourn.bookcatalogue.goodreads.api.SimpleXmlFilter.BuilderContext;
+import com.eleybourn.bookcatalogue.goodreads.api.SimpleXmlFilter.XmlListener;
+import com.eleybourn.bookcatalogue.goodreads.api.XmlFilter.ElementContext;
 import com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler;
 
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.*;
+import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.FieldNames.UPDATED;
 import static com.eleybourn.bookcatalogue.goodreads.api.ShowBookApiHandler.FieldNames.ORIG_TITLE;
 
 /**
@@ -68,6 +72,12 @@ public class ImportAllTask extends GenericTask {
 	private int mTotalBooks;
 	/** Flag indicating this is the first time *this* object instance has been called */
 	private transient boolean mFirstCall = true;
+	/** Date before which updates are irrelevant. Can be null, which implies all dates are included. */
+	private final String mUpdatesAfter;
+	/** Flag indicating this job is a sync job: on completion, it will start an export. */
+	private final boolean mIsSync;
+	/** Date at which this job started downloading first page */
+	private Date mStartDate = null;
 
 	/** Number of books to retrieve in one batch; we are encouarged to make fewer API calls, so
 	 * setting this number high is good. 50 seems to take several seconds to retrieve, so it 
@@ -78,9 +88,22 @@ public class ImportAllTask extends GenericTask {
 	/**
 	 * Constructor
 	 */
-	public ImportAllTask() {
+	public ImportAllTask(boolean isSync) {
 		super(BookCatalogueApp.getResourceString(R.string.import_all_from_goodreads));
 		mPosition = 0;
+		mIsSync = isSync;
+		// If it's a sync job, then find date of last successful sync and only apply
+		// records from after that date. If no other job, then get all.
+		if (mIsSync) {
+			Date lastSync = GoodreadsManager.getLastSyncDate();
+			if (lastSync == null) {
+				mUpdatesAfter = null;
+			} else {
+				mUpdatesAfter = Utils.toSqlDateTime(lastSync);			
+			}
+		} else {
+			mUpdatesAfter = null;
+		}
 	}
 
 	/**
@@ -90,9 +113,16 @@ public class ImportAllTask extends GenericTask {
 	public boolean run(QueueManager qMgr, Context context) {
 		CatalogueDBAdapter db = new CatalogueDBAdapter(context);
 		db.open();
-		
+
 		try {
-			return processReviews(qMgr, db);
+			// Load the goodreads reviews
+			boolean ok = processReviews(qMgr, db);
+			// If it's a sync job, then start the 'send' part and save last syn date
+			if (mIsSync) {
+				GoodreadsManager.setLastSyncDate(mStartDate);
+				QueueManager.getQueueManager().enqueueTask(new SendAllBooksTask(true), BcQueueManager.QUEUE_MAIN, 0);
+			}
+			return ok;
 		} finally {
 			if (db != null)
 				db.close();
@@ -123,7 +153,17 @@ public class ImportAllTask extends GenericTask {
 
 			// Call the API, return false if failed.
 			try {
+				// If we have not started successfully yet, record the date at which the run() was called.
+				// This date is used if the job is a sync job.
+				Date runDate = null;
+				if (mStartDate == null) {
+					runDate = new Date();
+				}
 				books = api.run(currPage, BOOKS_PER_PAGE);
+				// If we succeeded, and this is the first time, save the date
+				if (mStartDate == null) {
+					mStartDate = runDate;
+				}
 			} catch (Exception e) {
 				this.setException(e);
 				return false;
@@ -148,6 +188,11 @@ public class ImportAllTask extends GenericTask {
 				if (this.isAborting())
 					return false;
 
+				if (mUpdatesAfter != null && review.containsKey(FieldNames.UPDATED)) {
+					if (mUpdatesAfter.compareTo(review.getString(FieldNames.UPDATED)) > 0)
+						return true;
+				}
+					
 				// Processing may involve a SLOW thumbnail download...don't run in TX!
 				processReview(db, review);
 				//SyncLock tx = db.startTransaction(true);
@@ -240,6 +285,17 @@ public class ImportAllTask extends GenericTask {
 	 * @param review
 	 */
 	private void updateBook(CatalogueDBAdapter db, BooksRowView rv, Bundle review) {
+		// Get last date book was sent to GR (may be null)
+		final String lastGrSync = rv.getString(DOM_LAST_GOODREADS_SYNC_DATE.name);
+		// If the review has an 'updated' date, then see if we can compare to book
+		if (lastGrSync != null && review.containsKey(UPDATED)) {
+			final String lastUpdate = review.getString(FieldNames.UPDATED);
+			// If last update in GR was before last GR sync of book, then don't bother updating book.
+			// This typically happens if the last update in GR was from us.
+			if (lastUpdate != null && lastUpdate.compareTo(lastGrSync) < 0)
+				return;
+		}
+
 		// We build a new book bundle each time since it will build on the existing
 		// data for the given book, not just replace it.
 		Bundle book = buildBundle(db, rv, review);
@@ -373,7 +429,7 @@ public class ImportAllTask extends GenericTask {
         // We need to set BOTH of these fields, otherwise the add/update method will set the
         // last_update_date for us, and that will most likely be set ahead of the GR update date
         Date now = new Date();
-        book.putString(DOM_LAST_GOODREADS_SYNC_DATE.name, Utils.toSqlDate(now));
+        book.putString(DOM_LAST_GOODREADS_SYNC_DATE.name, Utils.toSqlDateTime(now));
         book.putString(DOM_LAST_UPDATE_DATE.name, Utils.toSqlDateTime(now));
 
         return book;
@@ -429,7 +485,10 @@ public class ImportAllTask extends GenericTask {
 	@Override 
 	public String getDescription() {
 		String base = super.getDescription();
-		return base + " (" + BookCatalogueApp.getResourceString(R.string.x_of_y, mPosition, mTotalBooks) + ")";
+		if (mUpdatesAfter == null)
+			return base + " (" + BookCatalogueApp.getResourceString(R.string.x_of_y, mPosition, mTotalBooks) + ")";
+		else
+			return base + " (" + mPosition + ")";
 	}
 
 	@Override

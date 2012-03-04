@@ -319,7 +319,7 @@ public class SearchManager implements OnTaskEndedListener {
 					if (newDate != null) {
 						String curr = mBookData.getString(k);
 						if (Utils.parseDate(curr) == null) {
-							mBookData.putString(k, Utils.toSqlDate(newDate));
+							mBookData.putString(k, Utils.toSqlDateOnly(newDate));
 						}
 					}
 				} else if (k.equals("__thumbnail")) {

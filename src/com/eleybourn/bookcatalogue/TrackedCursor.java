@@ -45,7 +45,7 @@ import android.database.sqlite.SQLiteQuery;
 public class TrackedCursor extends SynchronizedCursor  {
 	
 	/** Set to TRUE to actually track cursors. Otherwise, most code is optimized out. */
-	private static final boolean DEBUG_TRACKED_CURSOR = true;
+	private static final boolean DEBUG_TRACKED_CURSOR = false;
 
 	/* Static Data */
 	/* =========== */

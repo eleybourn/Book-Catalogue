@@ -52,7 +52,7 @@ public class ReviewUpdateHandler extends ApiHandler {
 		
 	}
 	
-	public void update(int reviewId, ArrayList<String> shelves, String readAt, String review, int rating) 
+	public void update(long reviewId, ArrayList<String> shelves, String readAt, String review, int rating) 
 			throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, IOException, 
 					NotAuthorizedException, BookNotFoundException
 	{

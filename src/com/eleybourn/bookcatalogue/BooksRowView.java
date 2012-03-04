@@ -131,6 +131,26 @@ public class BooksRowView {
 //		return mCurrentRow[mNotesCol];
 	}
 
+	private int mRatingCol = -2;
+	public final double getRating() {
+		if (mRatingCol < 0) {
+			mRatingCol = mCursor.getColumnIndex(CatalogueDBAdapter.KEY_RATING);
+			if (mRatingCol < 0)
+				throw new RuntimeException("Rating column not in result set");
+		}
+		return mCursor.getDouble(mRatingCol);
+	}
+
+	private int mReadEndCol = -2;
+	public final String getReadEnd() {
+		if (mReadEndCol < 0) {
+			mReadEndCol = mCursor.getColumnIndex(CatalogueDBAdapter.KEY_READ_END);
+			if (mReadEndCol < 0)
+				throw new RuntimeException("Read-End column not in result set");
+		}
+		return mCursor.getString(mReadEndCol);
+	}
+
 
 	private int mReadCol = -2;
 	public final int getRead() {
@@ -193,10 +213,14 @@ public class BooksRowView {
 		return mCursor.getString(mSeriesCol);
 	}
 	
-	public String getString(int position) {
-		return mCursor.getString(position);
+	public String getString(final int position) {
+		if (mCursor.isNull(position))
+			return null;
+		else
+			return mCursor.getString(position);
 	}
-	public String getString(String columnName) {
-		return mCursor.getString(mCursor.getColumnIndex(columnName));
+	public String getString(final String columnName) {
+		final int position = mCursor.getColumnIndexOrThrow(columnName);
+		return getString(position);
 	}
 }

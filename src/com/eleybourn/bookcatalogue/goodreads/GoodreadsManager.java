@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -59,9 +60,13 @@ import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.BooksRowView;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.Logger;
+import com.eleybourn.bookcatalogue.Utils;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.BookNotFoundException;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NotAuthorizedException;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.*;
 import com.eleybourn.bookcatalogue.goodreads.api.AuthUserApiHandler;
 import com.eleybourn.bookcatalogue.goodreads.api.IsbnToId;
+import com.eleybourn.bookcatalogue.goodreads.api.ReviewUpdateHandler;
 import com.eleybourn.bookcatalogue.goodreads.api.SearchBooksApiHandler;
 import com.eleybourn.bookcatalogue.goodreads.api.ShelfAddBookHandler;
 import com.eleybourn.bookcatalogue.goodreads.api.ShowBookByIdApiHandler;
@@ -82,6 +87,7 @@ public class GoodreadsManager {
 	/** Enum to handle possible results of sending a book to goodreads */
 	public static enum ExportDisposition { error, sent, noIsbn, notFound, networkError };
 	
+	private static final String LAST_SYNC_DATE = "GoodreadsManager.LastSyncDate";
 
 	/**
 	 * Exceptions that may be thrown and used to wrap more varied inner exceptions
@@ -519,10 +525,18 @@ public class GoodreadsManager {
 	/**
 	 * Wrapper to call API to add book to shelf
 	 */
-	public void addBookToShelf(String shelfName,long grBookId) throws OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException, NetworkException, IOException {
+	public long addBookToShelf(String shelfName,long grBookId) throws OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException, NetworkException, IOException {
 		if (m_addBookHandler == null)
 			m_addBookHandler = new ShelfAddBookHandler(this);
-		m_addBookHandler.add(shelfName, grBookId);
+		return m_addBookHandler.add(shelfName, grBookId);
+	}
+
+	private ReviewUpdateHandler mReviewUpdater = null;
+	public void updateReview(long reviewId, ArrayList<String> shelves, String readAt, String review, int rating) throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException, IOException {
+		if (mReviewUpdater == null) {
+			mReviewUpdater = new ReviewUpdateHandler(this);
+		}
+		mReviewUpdater.update(reviewId, shelves, readAt, review, rating);
 	}
 
 	/**
@@ -550,6 +564,7 @@ public class GoodreadsManager {
 			grId = 0;
 		}
 
+		// RELEASE Call book.show or book.showby_isbn to get book details so that we can delete unused shelves
 		if (grId == 0 && !isbn.equals("")) {
 			try {
 				grId = this.isbnToId(isbn);
@@ -562,22 +577,31 @@ public class GoodreadsManager {
 		}
 
 		if (grId != 0) {
-
-			Cursor shelves = dbHelper.getAllBookBookshelvesForGoodreadsCursor(bookId);
+			long reviewId = 0;
+			ArrayList<String> shelves = new ArrayList<String>();
+			Cursor shelfCsr = dbHelper.getAllBookBookshelvesForGoodreadsCursor(bookId);
 			try {
-				int	shelfCol = shelves.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_BOOKSHELF);
+				int	shelfCol = shelfCsr.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_BOOKSHELF);
 
-				while (shelves.moveToNext()) {
-					String shelfName = shelves.getString(shelfCol);
-					try {
-						this.addBookToShelf(shelfName, grId);								
-					} catch (Exception e) {
-						return ExportDisposition.error;
-					}
-				}				
+				while (shelfCsr.moveToNext()) {
+					String shelfName = shelfCsr.getString(shelfCol);
+					shelves.add(shelfName);
+					//if (reviewId == 0)
+						try {
+							reviewId = this.addBookToShelf(shelfName, grId);								
+						} catch (Exception e) {
+							return ExportDisposition.error;
+						}
+				}
 			} finally {
-				shelves.close();
+				shelfCsr.close();
 			}
+			try {
+				this.updateReview(reviewId, shelves, books.getReadEnd(), books.getNotes(), ((int)books.getRating()) );
+			} catch (BookNotFoundException e) {
+				return ExportDisposition.error;
+			}
+
 			return ExportDisposition.sent;
 		} else {
 			return ExportDisposition.noIsbn;
@@ -688,7 +712,38 @@ public class GoodreadsManager {
 	    }
 	    return date;
 	}
+	
+	/** 
+	 * Get the date at which the last goodreads synchronization was run
+	 * 
+	 * @return	Last date
+	 */
+	public static Date getLastSyncDate() {
+		String last = BookCatalogueApp.getAppPreferences().getString(LAST_SYNC_DATE,null);
+		if (last == null || last.equals("")) {
+			return null;
+		} else {
+			try {
+				Date d = Utils.parseDate(last);
+				return d;
+			} catch (Exception e) {
+				Logger.logError(e);
+				return null;
+			}
+		}
+	}
+
+	/**
+	 * Set the date at which the last goodreads synchronization was run
+	 * 
+	 * @param d		Last date
+	 */
+	public static void setLastSyncDate(Date d) {
+		if (d == null) {
+			BookCatalogueApp.getAppPreferences().setString(LAST_SYNC_DATE,null);			
+		} else {
+			BookCatalogueApp.getAppPreferences().setString(LAST_SYNC_DATE,Utils.toSqlDateTime(d));
+		}
+	}
 }
-
-
 

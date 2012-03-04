@@ -49,6 +49,7 @@ import com.eleybourn.bookcatalogue.BooksCursor;
 import com.eleybourn.bookcatalogue.BooksRowView;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.BookNotFoundException;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NotAuthorizedException;
 import com.eleybourn.bookcatalogue.goodreads.api.TrivialParser;
 
@@ -79,7 +80,7 @@ public class GoodreadsCsv {
 		.add("Publisher", CatalogueDBAdapter.KEY_PUBLISHER)
 		.add("Binding", CatalogueDBAdapter.KEY_FORMAT)
 		.add("Year Published", mPubDateHandler)
-		// RELEASE: Handle ORIGINAL PUB DATE
+		// ENHANCE: Handle ORIGINAL PUB DATE
 		//.add("Original Publicaltion Year", mOrigDateHandler)
 		.add("Original Publicaltion Year", mIgnoreHandler)
 		.add("Date Read", CatalogueDBAdapter.KEY_READ_END)
@@ -213,8 +214,9 @@ public class GoodreadsCsv {
 	 * @throws OAuthCommunicationException 
 	 * @throws OAuthExpectationFailedException 
 	 * @throws OAuthMessageSignerException 
+	 * @throws NetworkException 
 	 */
-	public void sendAllToGoodreads() throws IOException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException {
+	public void sendAllToGoodreads() throws IOException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException, NetworkException {
 		CatalogueDBAdapter db = getDb();
 		long lastId = mLastId;
 		BooksCursor books = null;
@@ -277,7 +279,7 @@ public class GoodreadsCsv {
 		return mDb;
 	}
 
-	public void sendCsv(final String csvData) throws IOException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException {
+	public void sendCsv(final String csvData) throws IOException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException, NetworkException {
 
 		GoodreadsManager grMgr = new GoodreadsManager();
 	

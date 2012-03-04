@@ -222,6 +222,18 @@ public class SimpleXmlFilter {
 		return this;
 	}
 
+	public SimpleXmlFilter popTo(String tag) {
+		int last = mTags.size() - 1;
+		while( ! mTags.get(last).equalsIgnoreCase(tag) ) {
+			if (last == 0)
+				throw new RuntimeException("Unable to find parent tag :" + tag);
+			mContexts.remove(last);
+			mTags.remove(last);
+			last--;
+		}
+		return this;
+	}
+
 	private static XmlHandler mHandleStart = new XmlHandler() {
 		@Override
 		public void process(ElementContext context) {

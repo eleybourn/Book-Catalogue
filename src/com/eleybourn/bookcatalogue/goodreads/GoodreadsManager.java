@@ -62,13 +62,15 @@ import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.Logger;
 import com.eleybourn.bookcatalogue.Utils;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.BookNotFoundException;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NotAuthorizedException;
-import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.*;
 import com.eleybourn.bookcatalogue.goodreads.api.AuthUserApiHandler;
 import com.eleybourn.bookcatalogue.goodreads.api.IsbnToId;
+import com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames;
 import com.eleybourn.bookcatalogue.goodreads.api.ReviewUpdateHandler;
 import com.eleybourn.bookcatalogue.goodreads.api.SearchBooksApiHandler;
 import com.eleybourn.bookcatalogue.goodreads.api.ShelfAddBookHandler;
+import com.eleybourn.bookcatalogue.goodreads.api.ShowBookApiHandler.ShowBookFieldNames;
 import com.eleybourn.bookcatalogue.goodreads.api.ShowBookByIdApiHandler;
 import com.eleybourn.bookcatalogue.goodreads.api.ShowBookByIsbnApiHandler;
 
@@ -335,8 +337,9 @@ public class GoodreadsManager {
 	 * @author Philip Warner
 	 * @throws NotAuthorizedException 
 	 * @throws BookNotFoundException 
+	 * @throws NetworkException 
 	 */
-	public HttpResponse execute(HttpUriRequest request, DefaultHandler requestHandler, boolean requiresSignature) throws ClientProtocolException, IOException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException {
+	public HttpResponse execute(HttpUriRequest request, DefaultHandler requestHandler, boolean requiresSignature) throws ClientProtocolException, IOException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException, NetworkException {
 
 		// Get a new client
 		HttpClient httpClient = newHttpClient();
@@ -349,7 +352,12 @@ public class GoodreadsManager {
     	waitUntilRequestAllowed();
 
     	// Submit the request and process result.
-    	HttpResponse response = httpClient.execute(request);
+    	HttpResponse response;
+    	try {
+    		response = httpClient.execute(request);
+    	} catch (Exception e) {
+    		throw new NetworkException(e);
+    	}
 
     	int code = response.getStatusLine().getStatusCode();
     	if (code == 200 || code == 201)
@@ -530,20 +538,28 @@ public class GoodreadsManager {
 			m_addBookHandler = new ShelfAddBookHandler(this);
 		return m_addBookHandler.add(shelfName, grBookId);
 	}
+	/**
+	 * Wrapper to call API to remove a book from a shelf
+	 */
+	public void removeBookFromShelf(String shelfName,long grBookId) throws OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException, NetworkException, IOException {
+		if (m_addBookHandler == null)
+			m_addBookHandler = new ShelfAddBookHandler(this);
+		m_addBookHandler.remove(shelfName, grBookId);
+	}
 
 	private ReviewUpdateHandler mReviewUpdater = null;
-	public void updateReview(long reviewId, ArrayList<String> shelves, String readAt, String review, int rating) throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException, IOException {
+	public void updateReview(long reviewId, boolean isRead, String readAt, String review, int rating) throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException, IOException, NetworkException {
 		if (mReviewUpdater == null) {
 			mReviewUpdater = new ReviewUpdateHandler(this);
 		}
-		mReviewUpdater.update(reviewId, shelves, readAt, review, rating);
+		mReviewUpdater.update(reviewId, isRead, readAt, review, rating);
 	}
 
 	/**
 	 * Wrapper to send an entire book, including shelves, to Goodreads.
 	 * 
 	 * @param dbHelper	DB connection
-	 * @param books		Cursor poiting to single book to send
+	 * @param books		Cursor pointing to single book to send
 	 *
 	 * @return			Disposition of book
 	 * @throws InterruptedException 
@@ -552,23 +568,44 @@ public class GoodreadsManager {
 	 * @throws OAuthCommunicationException 
 	 * @throws OAuthExpectationFailedException 
 	 * @throws OAuthMessageSignerException 
+	 * @throws NetworkException 
 	 */
-	public ExportDisposition sendOneBook(CatalogueDBAdapter dbHelper, BooksRowView books) throws InterruptedException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, IOException {
+	public ExportDisposition sendOneBook(CatalogueDBAdapter dbHelper, BooksRowView books) throws InterruptedException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, IOException, NetworkException {
 		long bookId = books.getId();
 		long grId;
+		long reviewId = 0;
+		Bundle grBookInfo = null;
+		boolean isNew;
+
+		// Get the book ISBN
 		String isbn = books.getIsbn();
 
+		// See if the book has a goodreads ID and if it is valid.
 		try {
 			grId = books.getGoodreadsBookId();
+			if (grId != 0) {
+				// Get the book details to make sure we have a valid book ID
+				grBookInfo = this.getBookById(grId);
+				if (grBookInfo == null)
+					grId = 0;
+			}
 		} catch (Exception e) {
 			grId = 0;
 		}
 
-		// RELEASE Call book.show or book.showby_isbn to get book details so that we can delete unused shelves
+		isNew = (grId == 0);
+
 		if (grId == 0 && !isbn.equals("")) {
 			try {
-				grId = this.isbnToId(isbn);
-				dbHelper.setGoodreadsBookId(bookId, grId);
+				// Get the book details using ISBN
+				grBookInfo = this.getBookByIsbn(isbn);
+				if (grBookInfo != null && grBookInfo.containsKey(ShowBookFieldNames.BOOK_ID))
+					grId = grBookInfo.getLong(ListReviewsFieldNames.GR_BOOK_ID);
+
+				// If we got an ID, save it against the book
+				if (grId != 0) {
+					dbHelper.setGoodreadsBookId(bookId, grId);
+				}
 			} catch (BookNotFoundException e) {
 				return ExportDisposition.notFound;
 			} catch (NetworkException e) {
@@ -576,28 +613,81 @@ public class GoodreadsManager {
 			}			
 		}
 
+		// If we found a goodreads book, update it
 		if (grId != 0) {
-			long reviewId = 0;
+			// Get the review ID if we have the book details. For new books, it will not be present.
+			if (!isNew && grBookInfo != null && grBookInfo.containsKey(ShowBookFieldNames.REVIEW_ID)) {
+				reviewId = grBookInfo.getLong(ShowBookFieldNames.REVIEW_ID);
+			}
+
+			// Lists of shelf names and our best guess at the goodreads canonical name
 			ArrayList<String> shelves = new ArrayList<String>();
+			ArrayList<String> canonicalShelves = new ArrayList<String>();
+
+			// Build the list of shelves that we have for the book
 			Cursor shelfCsr = dbHelper.getAllBookBookshelvesForGoodreadsCursor(bookId);
 			try {
 				int	shelfCol = shelfCsr.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_BOOKSHELF);
-
+				// Collect all shelf names for this book
 				while (shelfCsr.moveToNext()) {
-					String shelfName = shelfCsr.getString(shelfCol);
+					final String shelfName = shelfCsr.getString(shelfCol);
+					final String canonicalShelfName = canonicalizeBookshelfName(shelfName);
 					shelves.add(shelfName);
-					//if (reviewId == 0)
-						try {
-							reviewId = this.addBookToShelf(shelfName, grId);								
-						} catch (Exception e) {
-							return ExportDisposition.error;
-						}
+					canonicalShelves.add(canonicalShelfName);
 				}
 			} finally {
 				shelfCsr.close();
 			}
+
+			// Get the shelf names the book is currently on in goodreads
+			ArrayList<String> grShelves;
+			if (!isNew && grBookInfo.containsKey(ShowBookFieldNames.SHELVES)) {
+				grShelves = grBookInfo.getStringArrayList(ShowBookFieldNames.SHELVES);
+			} else {
+				grShelves = new ArrayList<String>();
+			}
+
+			// Remove from any shelves from goodreads that are not in our local list
+			for(String grShelf: grShelves) {
+				if (!canonicalShelves.contains(grShelf)) {
+					try {
+						// Goodreads does not seem to like removing books from the special shelves.
+						if (! ( grShelf.equals("read") || grShelf.equals("to-read") || grShelf.equals("currently-reading") ) )
+							this.removeBookFromShelf(grShelf, grId);
+					} catch (BookNotFoundException e) {
+						// Ignore for now; probably means book not on shelf anyway
+					} catch (Exception e) {
+						return ExportDisposition.error;
+					}
+				}
+			}
+
+			// Add shelves to goodreads if they are not currently there
+			for(String shelf: shelves) {
+				final String canonicalShelfName = canonicalizeBookshelfName(shelf);
+				if (grShelves == null || !grShelves.contains(canonicalShelfName) )
+					try {
+						reviewId = this.addBookToShelf(shelf, grId);								
+					} catch (Exception e) {
+						return ExportDisposition.error;
+					}					
+			}
+
+			/* We should be safe always updating here because:
+			 * - all books that are already added have a review ID, which we would have got from the bundle
+			 * - all new books will be added to at least one shelf, which will have returned a review ID.
+			 * But, just in case, we check the review ID, and if 0, we add the book to the 'Default' shelf.
+			 */
+			if (reviewId == 0) {
+				try {
+					reviewId = this.addBookToShelf("Default", grId);
+				} catch (Exception e) {
+					return ExportDisposition.error;
+				}				
+			}
+			// Now update the remaining review details.
 			try {
-				this.updateReview(reviewId, shelves, books.getReadEnd(), books.getNotes(), ((int)books.getRating()) );
+				this.updateReview(reviewId, books.getRead() != 0, books.getReadEnd(), books.getNotes(), ((int)books.getRating()) );
 			} catch (BookNotFoundException e) {
 				return ExportDisposition.error;
 			}
@@ -607,6 +697,23 @@ public class GoodreadsManager {
 			return ExportDisposition.noIsbn;
 		}
 		
+	}
+
+	/**
+	 * Create canonical representation based on the best guess as to the goodreads rules.
+	 */
+	public static String canonicalizeBookshelfName(String name) {
+		StringBuilder canonical = new StringBuilder();
+		name = name.toLowerCase();
+		for(int i = 0; i < name.length() ; i++) {
+			Character c = name.charAt(i);
+			if (Character.isLetterOrDigit(c)) {
+				canonical.append(c);
+			} else {
+				canonical.append('-');
+			}
+		}
+		return canonical.toString();
 	}
 
 	/**
@@ -623,8 +730,9 @@ public class GoodreadsManager {
 	 * @throws NotAuthorizedException
 	 * @throws BookNotFoundException
 	 * @throws IOException
+	 * @throws NetworkException 
 	 */
-	public ArrayList<GoodreadsWork> search(String query) throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException, IOException {
+	public ArrayList<GoodreadsWork> search(String query) throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException, IOException, NetworkException {
 
 		if (!query.equals("")) {
 			SearchBooksApiHandler searcher = new SearchBooksApiHandler(this);
@@ -650,8 +758,9 @@ public class GoodreadsManager {
 	 * @throws NotAuthorizedException
 	 * @throws BookNotFoundException
 	 * @throws IOException
+	 * @throws NetworkException 
 	 */
-	public Bundle getBookById(long bookId) throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException, IOException {
+	public Bundle getBookById(long bookId) throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException, IOException, NetworkException {
 		if (bookId != 0) {
 			ShowBookByIdApiHandler api = new ShowBookByIdApiHandler(this);
 			// Run the search
@@ -676,8 +785,9 @@ public class GoodreadsManager {
 	 * @throws NotAuthorizedException
 	 * @throws BookNotFoundException
 	 * @throws IOException
+	 * @throws NetworkException 
 	 */
-	public Bundle getBookByIsbn(String isbn) throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException, IOException {
+	public Bundle getBookByIsbn(String isbn) throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException, IOException, NetworkException {
 		if (isbn != null && isbn.length() > 0) {
 			ShowBookByIsbnApiHandler api = new ShowBookByIsbnApiHandler(this);
 			// Run the search

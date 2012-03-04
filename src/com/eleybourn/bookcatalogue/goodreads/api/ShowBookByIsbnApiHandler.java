@@ -37,9 +37,8 @@ import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.Series;
 import com.eleybourn.bookcatalogue.Utils;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.*;
-import com.eleybourn.bookcatalogue.goodreads.api.XmlFilter.ElementContext;
-import com.eleybourn.bookcatalogue.goodreads.api.XmlFilter.XmlHandler;
 
 /**
  * Class to call the search.books api (using an ISBN).
@@ -65,8 +64,9 @@ public class ShowBookByIsbnApiHandler extends ShowBookApiHandler {
 	 * @throws OAuthExpectationFailedException 
 	 * @throws OAuthMessageSignerException 
 	 * @throws ClientProtocolException 
+	 * @throws NetworkException 
 	 */
-	public Bundle get(String isbn, boolean fetchThumbnail) throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException, IOException {
+	public Bundle get(String isbn, boolean fetchThumbnail) throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException, IOException, NetworkException {
 		// Setup API call //
 		final String urlBase = "http://www.goodreads.com/book/isbn?isbn=%1$s&key=%2$s";
 		final String url = String.format(urlBase, isbn, mManager.getDeveloperKey());

@@ -36,6 +36,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.*;
 import com.eleybourn.bookcatalogue.goodreads.api.XmlFilter.ElementContext;
 import com.eleybourn.bookcatalogue.goodreads.api.XmlFilter.XmlHandler;
@@ -74,18 +75,43 @@ public class ShelfAddBookHandler extends ApiHandler {
      * </shelf>
      */
 
+	/**
+	 * Add the passed book to the passed shelf
+	 */
 	public long add(String shelfName, long grBookId) 
 			throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, IOException, 
-			NotAuthorizedException, BookNotFoundException
+			NotAuthorizedException, BookNotFoundException, NetworkException
+	{
+        return doCall(shelfName, grBookId, false);
+	}
+
+	/**
+	 * Remove the passed book from the passed shelf
+	 */	
+	public long remove(String shelfName, long grBookId) 
+			throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, IOException, 
+			NotAuthorizedException, BookNotFoundException, NetworkException
+	{
+        return doCall(shelfName, grBookId, true);
+	}
+
+	/**
+	 * Do the main work; same API call for add & remove
+	 */
+	private long doCall(String shelfName, long grBookId, boolean isRemove) 
+			throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, IOException, 
+			NotAuthorizedException, BookNotFoundException, NetworkException
 	{
 		mReviewId = 0;
 
 		HttpPost post = new HttpPost("http://www.goodreads.com/shelf/add_to_shelf.xml");
 
         List<NameValuePair> parameters = new ArrayList<NameValuePair>();
+        if (isRemove)
+            parameters.add(new BasicNameValuePair("a", "remove"));
         parameters.add(new BasicNameValuePair("book_id", Long.toString(grBookId)));
         parameters.add(new BasicNameValuePair("name", shelfName));
-        
+
         post.setEntity(new UrlEncodedFormEntity(parameters));	        	
 
         // Use a parser based on the filters

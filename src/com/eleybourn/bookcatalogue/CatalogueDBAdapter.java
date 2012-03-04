@@ -4165,7 +4165,7 @@ public class CatalogueDBAdapter {
 		//	m_allBooksForGoodreadsStmt = compileStatement("Select isbn, " + KEY_BOOK + " from " + DB_TB_BOOKS + " Order by " + KEY_BOOK);
 		//}
 		String sql = "Select " + KEY_ISBN + ", " + KEY_ROWID + ", " + DOM_GOODREADS_BOOK_ID + 
-				", " + KEY_NOTES + ", " + KEY_READ_END + ", " + KEY_RATING + 
+				", " + KEY_NOTES + ", " + KEY_READ + ", " + KEY_READ_END + ", " + KEY_RATING + 
 				" from " + DB_TB_BOOKS + " Where " + KEY_ROWID + " > " + startId;
 		if (updatesOnly) {
 			sql += " and " + DOM_LAST_UPDATE_DATE + " > " + DOM_LAST_GOODREADS_SYNC_DATE;
@@ -4181,7 +4181,7 @@ public class CatalogueDBAdapter {
 	 */
 	public BooksCursor getBookForGoodreadsCursor(long bookId) {
 		String sql = "Select " + KEY_ROWID + ", " + KEY_ISBN + ", " + DOM_GOODREADS_BOOK_ID + 
-				", " + KEY_NOTES + ", " + KEY_READ_END + ", " + KEY_RATING + 
+				", " + KEY_NOTES + ", " + KEY_READ + ", " + KEY_READ_END + ", " + KEY_RATING + 
 				" from " + DB_TB_BOOKS + " Where " + KEY_ROWID + " = " + bookId + " Order by " + KEY_ROWID;
 		BooksCursor cursor = fetchBooks(sql, EMPTY_STRNG_ARRAY);
 		return cursor;

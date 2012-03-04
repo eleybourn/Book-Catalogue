@@ -34,11 +34,12 @@ import android.os.Bundle;
 
 import com.eleybourn.bookcatalogue.Author;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
+import com.eleybourn.bookcatalogue.Logger;
 import com.eleybourn.bookcatalogue.Series;
 import com.eleybourn.bookcatalogue.Utils;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.*;
-import static com.eleybourn.bookcatalogue.goodreads.api.ShowBookApiHandler.FieldNames.*;
+import static com.eleybourn.bookcatalogue.goodreads.api.ShowBookApiHandler.ShowBookFieldNames.*;
 import com.eleybourn.bookcatalogue.goodreads.api.XmlFilter.ElementContext;
 import com.eleybourn.bookcatalogue.goodreads.api.XmlFilter.XmlHandler;
 
@@ -58,8 +59,9 @@ public abstract class ShowBookApiHandler extends ApiHandler {
 	 * 
 	 * @author Philip Warner
 	 */
-	public static final class FieldNames {
+	public static final class ShowBookFieldNames {
 		public static final String BOOK_ID = "__book_id";
+		public static final String REVIEW_ID = "__review_id";
 		public static final String ISBN13 = "__isbn13";
 		public static final String IMAGE = "__image";
 		public static final String SMALL_IMAGE = "__smallImage";
@@ -73,7 +75,8 @@ public abstract class ShowBookApiHandler extends ApiHandler {
 		public static final String ORIG_PUBLICATION_DAY = "__orig_pub_day";
 		public static final String ORIG_TITLE = "__orig_title";
 		public static final String RATING = "__rating";
-		public static final String BOOK_URL = "__url";		
+		public static final String SHELVES = "__shelves";
+		public static final String BOOK_URL = "__url";
 	}
 
 	/** Transient global data for current work in search results. */
@@ -82,6 +85,9 @@ public abstract class ShowBookApiHandler extends ApiHandler {
 	private ArrayList<Series> mSeries = null;
 	/** Local storage for series book appears in */
 	private ArrayList<Author> mAuthors = null;
+	
+	/** Local storage for shelf names */
+	private ArrayList<String> mShelves = null;
 	
 	/** Current author being processed */
 	private String mCurrAuthorName = null;
@@ -116,10 +122,13 @@ public abstract class ShowBookApiHandler extends ApiHandler {
 	 * @throws OAuthExpectationFailedException 
 	 * @throws OAuthMessageSignerException 
 	 * @throws ClientProtocolException 
+	 * @throws NetworkException 
 	 */
-	public Bundle sendRequest(HttpGet request, boolean fetchThumbnail) throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException, IOException {
+	public Bundle sendRequest(HttpGet request, boolean fetchThumbnail) throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException, IOException, NetworkException {
     
 		mBook = new Bundle();
+
+		mShelves = null;
 
         // Get a handler and run query.
         XmlResponseParser handler = new XmlResponseParser(mRootFilter);
@@ -204,6 +213,8 @@ public abstract class ShowBookApiHandler extends ApiHandler {
         if (mSeries != null && mSeries.size() > 0)
 			mBook.putString(CatalogueDBAdapter.KEY_SERIES_DETAILS, Utils.getSeriesUtils().encodeList(mSeries, '|'));
 
+        if (mShelves != null && mShelves.size() > 0)
+        	mBook.putStringArrayList(SHELVES, mShelves);
         // Return parsed results.
         return mBook;
 	}
@@ -409,6 +420,23 @@ public abstract class ShowBookApiHandler extends ApiHandler {
 							...
 						</author>
 					</authors>
+					<my_review>
+						<id>255221284</id>
+						<rating>0</rating>
+						...
+						<shelves>
+							<shelf name="sci-fi-fantasy"/>
+							<shelf name="to-read"/>
+							<shelf name="default"/>
+							<shelf name="environment"/>
+							<shelf name="games"/>
+							<shelf name="history"/>
+						</shelves>
+						...
+						<date_added>Mon Jan 02 19:07:11 -0800 2012</date_added>
+						<date_updated>Sat Mar 03 08:10:09 -0800 2012</date_updated>
+						<body>Test again</body>
+					</my_review>
 					...
 					<series_works>
 						<series_work>
@@ -456,7 +484,11 @@ public abstract class ShowBookApiHandler extends ApiHandler {
 			.setEndAction(mHandleAuthorEnd);
 		XmlFilter.buildFilter(mRootFilter, "GoodreadsResponse", "book", "authors", "author", "id").setEndAction(mHandleAuthorId);
 		XmlFilter.buildFilter(mRootFilter, "GoodreadsResponse", "book", "authors", "author", "name").setEndAction(mHandleAuthorName);
-	
+
+		XmlFilter.buildFilter(mRootFilter, "GoodreadsResponse", "book", "my_review", "id").setEndAction(mHandleLong, REVIEW_ID);
+		XmlFilter.buildFilter(mRootFilter, "GoodreadsResponse", "book", "my_review", "shelves").setStartAction(mHandleShelvesStart);
+		XmlFilter.buildFilter(mRootFilter, "GoodreadsResponse", "book", "my_review", "shelves", "shelf").setStartAction(mHandleShelf);
+		
 		XmlFilter.buildFilter(mRootFilter, "GoodreadsResponse", "book", "series_works", "series_work")
 			.setStartAction(mHandleSeriesStart)
 			.setEndAction(mHandleSeriesEnd);
@@ -551,6 +583,33 @@ public abstract class ShowBookApiHandler extends ApiHandler {
 			mCurrAuthorName = context.body.trim();
 		}
 	};
+	
+
+	/**
+	 * Create a new shelves collection when the "shelves" tag is encountered.
+	 */
+	private XmlHandler mHandleShelvesStart = new XmlHandler(){
+		@Override
+		public void process(ElementContext context) {
+			mShelves = new ArrayList<String>();
+		}
+	};
+	/**
+	 * Add a shelf to the array
+	 */
+	private XmlHandler mHandleShelf = new XmlHandler(){
+		@Override
+		public void process(ElementContext context) {
+			String name = null;
+			try {
+				name = context.attributes.getValue("name");
+				mShelves.add(name);
+			} catch (Exception e) {
+				Logger.logError(e);
+			}
+		}
+	};
+
 	
 	private XmlHandler mHandleText = new XmlHandler() {
 

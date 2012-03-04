@@ -193,7 +193,7 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 
 				// Start searching if we need it, then wait...
 				if (wantSearch) {
-					// RELEASE: Allow user-selection of search sources
+					// TODO: Allow user-selection of search sources
 					mSearchManager.search(author, title, isbn, tmpThumbWanted, SearchManager.SEARCH_ALL);
 					// Wait for the search to complete; when the search has completed it uses class-level state
 					// data when processing the results. It will signal this lock when it no longer needs any class

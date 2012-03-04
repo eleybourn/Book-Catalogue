@@ -36,8 +36,9 @@ import android.os.Bundle;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.Utils;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.*;
-import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.FieldNames.*;
+import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.*;
 
 import com.eleybourn.bookcatalogue.goodreads.api.XmlFilter.ElementContext;
 import com.eleybourn.bookcatalogue.goodreads.api.SimpleXmlFilter.BuilderContext;
@@ -67,7 +68,7 @@ public class ListReviewsApiHandler extends ApiHandler {
 	 * 
 	 * @author Philip Warner
 	 */
-	public static final class FieldNames {
+	public static final class ListReviewsFieldNames {
 		public static final String START = "__start";
 		public static final String END = "__end";
 		public static final String TOTAL = "__total";
@@ -83,6 +84,7 @@ public class ListReviewsApiHandler extends ApiHandler {
 		public static final String UPDATED = "__updated";
 		public static final String REVIEWS = "__reviews";
 		public static final String AUTHORS = "__authors";
+		public static final String SHELF = "__shelf";
 		public static final String SHELVES = "__shelves";
 		public static final String DB_PAGES = CatalogueDBAdapter.KEY_PAGES;
 		public static final String DB_ISBN = CatalogueDBAdapter.KEY_ISBN;
@@ -119,10 +121,11 @@ public class ListReviewsApiHandler extends ApiHandler {
 	 * @throws NotAuthorizedException
 	 * @throws BookNotFoundException
 	 * @throws IOException
+	 * @throws NetworkException 
 	 */
 	public Bundle run(int page, int perPage) 
 			throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, 
-					OAuthCommunicationException, NotAuthorizedException, BookNotFoundException, IOException 
+					OAuthCommunicationException, NotAuthorizedException, BookNotFoundException, IOException, NetworkException 
 	{
 		long t0 = System.currentTimeMillis();
 
@@ -371,18 +374,22 @@ public class ListReviewsApiHandler extends ApiHandler {
 								.stringBody("name", DB_AUTHOR_NAME)
 		//						...
 		//					</author>
-							.pop()
 		//				</authors>
 		//				...
 		//			</book>
-						.pop()
-					.pop()
+					.popTo("review")
 		//
 		//			<rating>0</rating>
 					.doubleBody("rating", DB_RATING)
 		//			...
 		//			<shelves>
+					.s("shelves")
+					.isArray(SHELVES)
 		//				<shelf name="sci-fi-fantasy" />
+						.s("shelf")
+							.isArrayItem()
+							.stringAttr("name", SHELF)
+					.popTo("review")
 		//				<shelf name="to-read" />
 		//			</shelves>
 		//			...

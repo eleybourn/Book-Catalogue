@@ -35,6 +35,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.*;
 
 /**
@@ -52,26 +53,28 @@ public class ReviewUpdateHandler extends ApiHandler {
 		
 	}
 	
-	public void update(long reviewId, ArrayList<String> shelves, String readAt, String review, int rating) 
+	public void update(long reviewId, boolean isRead, String readAt, String review, int rating) 
 			throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, IOException, 
-					NotAuthorizedException, BookNotFoundException
+					NotAuthorizedException, BookNotFoundException, NetworkException
 	{
 		HttpPost post = new HttpPost("http://www.goodreads.com/review/" + reviewId + ".xml");
 
-        StringBuilder shelvesString = null;
-        if (shelves != null && shelves.size() > 0) {
-        	shelvesString = new StringBuilder();
-            if (shelves.size() > 0) {
-                shelvesString.append(shelves.get(0));
-            }
-            for (int i = 1; i < shelves.size(); i++) {
-                shelvesString.append("," + shelves.get(i));
-            }
-        }
+		//StringBuilder shelvesString = null;
+		//if (shelves != null && shelves.size() > 0) {
+		//	shelvesString = new StringBuilder();
+		//    if (shelves.size() > 0) {
+		//        shelvesString.append(shelves.get(0));
+		//    }
+		//    for (int i = 1; i < shelves.size(); i++) {
+		//        shelvesString.append("," + shelves.get(i));
+		//    }
+		//}
 
         List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-        if (shelvesString != null)
-	        parameters.add(new BasicNameValuePair("shelf", shelvesString.toString()));
+        if (isRead)
+        	parameters.add(new BasicNameValuePair("shelf", "read"));
+        //if (shelvesString != null)
+	    //    parameters.add(new BasicNameValuePair("shelf", shelvesString.toString()));
         
         if (review != null)
 	        parameters.add(new BasicNameValuePair("review[review]", review));
@@ -84,10 +87,10 @@ public class ReviewUpdateHandler extends ApiHandler {
 
         post.setEntity(new UrlEncodedFormEntity(parameters));	        	
 
-        ReviewUpdateParser handler = new ReviewUpdateParser();
-        mManager.execute(post, handler, true);
-        String s = handler.getHtml();
-        System.out.print(s);
+        //ReviewUpdateParser handler = new ReviewUpdateParser();
+        mManager.execute(post, null, true);
+        //String s = handler.getHtml();
+        //System.out.print(s);
         /* Typical response can be ignored, but is:
            <review>
 			  <book-id type='integer'>375802</book-id>

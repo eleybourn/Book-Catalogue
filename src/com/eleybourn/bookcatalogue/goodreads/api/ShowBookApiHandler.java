@@ -132,6 +132,7 @@ public abstract class ShowBookApiHandler extends ApiHandler {
 
         // Get a handler and run query.
         XmlResponseParser handler = new XmlResponseParser(mRootFilter);
+        // We sign the GET request so we get shelves
         mManager.execute(request, handler, true);
 
         // When we get here, the data has been collected but needs to be processed into standard form.

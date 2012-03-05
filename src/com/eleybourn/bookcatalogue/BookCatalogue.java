@@ -560,7 +560,7 @@ public class BookCatalogue extends ExpandableListActivity {
 
 				if (holder.image.show) {
 					//CatalogueDBAdapter.fetchThumbnailIntoImageView(cursor.getId(),holder.image.view, LIST_THUMBNAIL_SIZE, LIST_THUMBNAIL_SIZE, true, mTaskQueue);
-					mUtils.fetchBookCoverIntoImageView(holder.image.view, LIST_THUMBNAIL_SIZE, LIST_THUMBNAIL_SIZE, true, rowView.getId(), true, true);
+					mUtils.fetchBookCoverIntoImageView(holder.image.view, LIST_THUMBNAIL_SIZE, LIST_THUMBNAIL_SIZE, true, rowView.getBookUuid(), true, true);
 				}
 
 				if (holder.read.show) {

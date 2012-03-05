@@ -604,6 +604,9 @@ public class BooklistBuilder {
 		}
 		long t0b = System.currentTimeMillis();
 
+		// Want the UUID for the book so we can get thumbs
+		summary.addDomain(DOM_BOOK_UUID, TBL_BOOKS.dot(DOM_BOOK_UUID), SummaryBuilder.FLAG_NONE);
+
 		// If we have a bok ID to mark, then add the MARK field, and setup the expression.
 		if (markId != 0) {
 			summary.addDomain(DOM_MARK, TBL_BOOKS.dot(DOM_ID) + " = " + markId, SummaryBuilder.FLAG_NONE);

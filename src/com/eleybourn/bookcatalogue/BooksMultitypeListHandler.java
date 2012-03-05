@@ -335,7 +335,7 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 
 			// Thumbnail
 			if ( (extras & BooklistStyle.EXTRAS_THUMBNAIL) != 0)
-				rowView.getUtils().fetchBookCoverIntoImageView(cover, rowView.getMaxThumbnailWidth(), rowView.getMaxThumbnailHeight(), true, rowView.getBookId(), true, true);
+				rowView.getUtils().fetchBookCoverIntoImageView(cover, rowView.getMaxThumbnailWidth(), rowView.getMaxThumbnailHeight(), true, rowView.getBookUuid(), true, true);
 
 			// Extras
 			

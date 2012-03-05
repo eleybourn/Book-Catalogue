@@ -70,9 +70,13 @@ public class ReviewUpdateHandler extends ApiHandler {
 		//    }
 		//}
 
+		// Set the 'read' or 'to-read' shelf based on status.
+		// Note a lot of point...it does not update goodreads!
         List<NameValuePair> parameters = new ArrayList<NameValuePair>();
         if (isRead)
         	parameters.add(new BasicNameValuePair("shelf", "read"));
+        else
+	    	parameters.add(new BasicNameValuePair("shelf", "to-read"));
         //if (shelvesString != null)
 	    //    parameters.add(new BasicNameValuePair("shelf", shelvesString.toString()));
         

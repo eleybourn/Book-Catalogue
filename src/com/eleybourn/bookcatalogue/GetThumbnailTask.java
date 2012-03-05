@@ -53,8 +53,8 @@ public class GetThumbnailTask implements SimpleTask {
 	 * thread checks the chache only if there are no background cache-related tasks
 	 * currently running.
 	 */
-	public static void getThumbnail(long bookId, ImageView view, int maxWidth, int maxHeight, boolean cacheWasChecked) {
-		GetThumbnailTask t = new GetThumbnailTask( bookId, view, maxWidth, maxHeight, cacheWasChecked);
+	public static void getThumbnail(String hash, ImageView view, int maxWidth, int maxHeight, boolean cacheWasChecked) {
+		GetThumbnailTask t = new GetThumbnailTask( hash, view, maxWidth, maxHeight, cacheWasChecked);
 		mQueue.enqueue(t);
 	}
 	
@@ -70,7 +70,7 @@ public class GetThumbnailTask implements SimpleTask {
 	/** Reference to the view we are using */
 	WeakReference<ImageView> mView = null;
 	/** ID of book whose cover we are getting */
-	private final long mBookId;
+	private final String mBookHash;
 	/** Resulting bitmap object */
 	Bitmap mBitmap = null;
 	/** Flag indicating original caller had checked cache */
@@ -113,11 +113,11 @@ public class GetThumbnailTask implements SimpleTask {
 	 * @param width
 	 * @param height
 	 */
-	public GetThumbnailTask( final long bookId, final ImageView v, int maxWidth, int maxHeight, boolean cacheWasChecked ) {
+	public GetThumbnailTask( final String hash, final ImageView v, int maxWidth, int maxHeight, boolean cacheWasChecked ) {
 		clearOldTaskFromView(v);
 
 		mView = new WeakReference<ImageView>(v);
-		mBookId = bookId;
+		mBookHash = hash;
 		mCacheWasChecked = cacheWasChecked;
 		mWidth = maxWidth;
 		mHeight = maxHeight;
@@ -160,16 +160,16 @@ public class GetThumbnailTask implements SimpleTask {
 				return;
 			}
 
-			File originalFile = CatalogueDBAdapter.fetchThumbnail(mBookId);
+			File originalFile = CatalogueDBAdapter.fetchThumbnailByUuid(mBookHash);
 
 			if (!mCacheWasChecked) {
-				final String cacheId = Utils.getCoverCacheId(mBookId, mWidth, mHeight);
+				final String cacheId = Utils.getCoverCacheId(mBookHash, mWidth, mHeight);
 				mBitmap = taskContext.getUtils().fetchCachedImageIntoImageView(originalFile, null, cacheId);
 				mWasInCache = (mBitmap != null);
 			}
 
 			if (mBitmap == null)
-				mBitmap = taskContext.getUtils().fetchBookCoverIntoImageView(null, mWidth, mHeight, true, mBookId, false, false);
+				mBitmap = taskContext.getUtils().fetchBookCoverIntoImageView(null, mWidth, mHeight, true, mBookHash, false, false);
 			//}			
 		} finally {
 		}
@@ -195,7 +195,7 @@ public class GetThumbnailTask implements SimpleTask {
 				// Queue the image to be written to the cache. Do it in a separate queue to avoid delays in displaying image
 				// and to avoid contention -- the cache queue only has one thread. Tell the cache write it can be recycled
 				// if we don't have a valid view.
-				ThumbnailCacheWriterTask.writeToCache(Utils.getCoverCacheId(mBookId, mWidth, mHeight), mBitmap, !viewIsValid);
+				ThumbnailCacheWriterTask.writeToCache(Utils.getCoverCacheId(mBookHash, mWidth, mHeight), mBitmap, !viewIsValid);
 			}
 			if (viewIsValid) {
 				//LayoutParams lp = new LayoutParams(mBitmap.getWidth(), mBitmap.getHeight()); 

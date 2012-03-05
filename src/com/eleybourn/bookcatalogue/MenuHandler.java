@@ -59,18 +59,18 @@ public class MenuHandler {
 		SubMenu addMenu = menu.addSubMenu(0, MNU_ADD_BOOK, mSort++, BookCatalogueApp.getResourceString(R.string.menu_insert) + "...");
 		addMenu.setIcon(android.R.drawable.ic_menu_add);
 		{
-			MenuItem insertBook = addMenu.add(0, MNU_ITM_ADD_BOOK_MANUAL, mSort++, R.string.menu_insert);
-			insertBook.setIcon(android.R.drawable.ic_menu_add);
-			
 			if (Utils.USE_BARCODE) {
-				MenuItem insertBC = addMenu.add(0, MNU_ITM_ADD_BOOK_BARCODE, mSort++, R.string.menu_insert_barcode);
+				MenuItem insertBC = addMenu.add(0, MNU_ITM_ADD_BOOK_BARCODE, mSort++, R.string.scan_barcode);
 				insertBC.setIcon(R.drawable.ic_menu_insert_barcode);			
 			}
-			MenuItem insertISBN = addMenu.add(0, MNU_ITM_ADD_BOOK_ISBN, mSort++, R.string.menu_insert_isbn);
+			MenuItem insertISBN = addMenu.add(0, MNU_ITM_ADD_BOOK_ISBN, mSort++, R.string.enter_barcode);
 			insertISBN.setIcon(android.R.drawable.ic_menu_zoom);
 			
-			MenuItem insertName = addMenu.add(0, MNU_ITM_ADD_BOOK_NAMES, mSort++, R.string.menu_insert_name);
+			MenuItem insertName = addMenu.add(0, MNU_ITM_ADD_BOOK_NAMES, mSort++, R.string.search_internet);
 			insertName.setIcon(android.R.drawable.ic_menu_zoom);
+
+			MenuItem insertBook = addMenu.add(0, MNU_ITM_ADD_BOOK_MANUAL, mSort++, R.string.add_manually);
+			insertBook.setIcon(android.R.drawable.ic_menu_add);
 		}
 	}
 

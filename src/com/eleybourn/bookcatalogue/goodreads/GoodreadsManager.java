@@ -600,7 +600,7 @@ public class GoodreadsManager {
 				// Get the book details using ISBN
 				grBookInfo = this.getBookByIsbn(isbn);
 				if (grBookInfo != null && grBookInfo.containsKey(ShowBookFieldNames.BOOK_ID))
-					grId = grBookInfo.getLong(ListReviewsFieldNames.GR_BOOK_ID);
+					grId = grBookInfo.getLong(ShowBookFieldNames.BOOK_ID);
 
 				// If we got an ID, save it against the book
 				if (grId != 0) {
@@ -637,6 +637,18 @@ public class GoodreadsManager {
 				}
 			} finally {
 				shelfCsr.close();
+			}
+
+			// Add pseudo-shelf to match goodreads becaause review.update does not seem to update them properly
+			String pseudoShelf;
+			if (books.getRead() == 0) {
+				pseudoShelf = "To Read";
+			} else {				
+				pseudoShelf = "Read";
+			}
+			if (!shelves.contains(pseudoShelf)) {
+				shelves.add(pseudoShelf);
+				canonicalShelves.add(canonicalizeBookshelfName(pseudoShelf));
 			}
 
 			// Get the shelf names the book is currently on in goodreads

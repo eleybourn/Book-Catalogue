@@ -339,8 +339,9 @@ public class ImportAllTask extends GenericTask {
 		Bundle book = buildBundle(db, null, review);
 		long id = db.createBook(book);
 		if (book.getBoolean(CatalogueDBAdapter.KEY_THUMBNAIL)) {
-			File thumb = CatalogueDBAdapter.fetchThumbnail(0);
-			File real = CatalogueDBAdapter.fetchThumbnail(id);
+			String uuid = db.getBookUuid(id);
+			File thumb = CatalogueDBAdapter.getTempThumbnail();
+			File real = CatalogueDBAdapter.fetchThumbnailByUuid(uuid);
 			thumb.renameTo(real);			
 		}
 		//db.setGoodreadsSyncDate(id);

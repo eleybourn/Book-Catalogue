@@ -402,9 +402,9 @@ public class BookISBNSearch extends ActivityWithTasks {
 
 	private void doSearchBook() {
 		// System.out.println(mId + " doSearchBook");
-		/* Delete any hanging around thumbs */
+		/* Delete any hanging around temporary thumbs */
 		try {
-			File thumb = CatalogueDBAdapter.fetchThumbnail(0);
+			File thumb = CatalogueDBAdapter.getTempThumbnail();
 			thumb.delete();
 		} catch (Exception e) {
 			// do nothing - this is the expected behaviour

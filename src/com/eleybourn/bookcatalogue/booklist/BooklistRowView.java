@@ -260,6 +260,20 @@ public class BooklistRowView {
 		}
 		return mCursor.getLong(mBookIdCol);
 	}
+
+	/**
+	 * Convenience function to retrieve column value.
+	 */
+	private int mBookUuidCol = -2;
+	public String getBookUuid() {
+		if (mBookUuidCol < 0) {
+			mBookUuidCol = mCursor.getColumnIndex(DOM_BOOK_UUID.name);
+			if (mBookUuidCol < 0)
+				throw new RuntimeException("Column " + DOM_BOOK_UUID + " not present in cursor");
+		}
+		return mCursor.getString(mBookUuidCol);
+	}
+
 	/**
 	 * Convenience function to retrieve column value.
 	 */

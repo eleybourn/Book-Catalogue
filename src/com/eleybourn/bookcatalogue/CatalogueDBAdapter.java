@@ -512,7 +512,7 @@ public class CatalogueDBAdapter {
 //						+ " LEFT OUTER JOIN " + DB_TB_SERIES + " s ON (s." + KEY_ROWID + "=w." + KEY_SERIES_ID + ") ";
 
 	//TODO: Update database version RELEASE: Update database version
-	public static final int DATABASE_VERSION = 71;
+	public static final int DATABASE_VERSION = 72;
 
 	private TableInfo mBooksInfo = null;
 
@@ -1356,11 +1356,7 @@ public class CatalogueDBAdapter {
 				message += "* The database backup has been renamed for clarity\n\n";
 			}
 			if (curVersion == 62) {
-				// A bit of presumption here...
 				curVersion++;
-				message += "New in v4.0\n\n";
-				message += "* New look, new startup page, new search\n\n";
-				message += "* Synchronization with GoodReads\n\n";
 			}
 			if (curVersion == 63) {
 				// Fix up old default 'f' values to be 0 (true = 1).
@@ -1413,6 +1409,21 @@ public class CatalogueDBAdapter {
 				copyTableSafely(sdb, "books_tmp", DB_TB_BOOKS);
 				db.execSQL("DROP TABLE books_tmp");
 			}
+			if (curVersion == 71) {
+				renameIdFilesToHash(sdb);
+				// A bit of presumption here...
+				message += "New in v4.0 - Updates courtesy of (mainly) Philip Warner (a.k.a Grunthos) -- blame him, politely, if it toasts your data\n\n";
+				message += "* New look, new startup page\n\n";
+				message += "* Synchronization with GoodReads\n\n";
+				message += "* New styles for book lists (including 'Compact' and 'Unread')\n\n";
+				message += "* User-defined styles for book lists\n\n";
+				message += "* More efficient memory usage\n\n";
+				message += "* New preferences, including 'always expanded/collapsed' lists\n\n";
+				message += "* Faster expand/collapse with large collections\n\n";
+				message += "* Cached covers for faster scrolling lists\n\n";
+				message += "* Cover images now have globally unique names, and books have globally unique IDs, so sharing and combining collections is easy\n\n";
+			}
+
 			// Rebuild all indices
 			createIndices(db);
 
@@ -1420,6 +1431,33 @@ public class CatalogueDBAdapter {
 		}
 	}
 	
+	/**
+	 * For the upgrade to version 4 (db version 72), all cover files were renamed based on the hash value in
+	 * the books table to avoid future collisions.
+	 * 
+	 * This routine renames all files, if they exist.
+	 * 
+	 * @param db
+	 */
+	private static void renameIdFilesToHash(SynchronizedDb db) {
+		String sql = "select " + KEY_ROWID + ", " + DOM_BOOK_UUID + " from " + DB_TB_BOOKS + " Order by " + KEY_ROWID;
+		Cursor c = db.rawQuery(sql);
+		try {
+			while (c.moveToNext()) {
+				final long id = c.getLong(0);
+				final String hash = c.getString(1);
+				File f = CatalogueDBAdapter.fetchThumbnailByName(Long.toString(id),"");
+				if ( f.exists() ) {
+					File newFile = CatalogueDBAdapter.fetchThumbnailByUuid(hash);
+					f.renameTo(newFile);
+				}
+			}
+		} finally {
+			if (c != null)
+				c.close();
+		}
+	}
+
 	/**
 	 * Provide a safe table copy method that is insulated from risks associated with column reordering. This
 	 * method will copy ALL columns from the source to the destination; if columns do not exist in the 
@@ -1568,14 +1606,38 @@ public class CatalogueDBAdapter {
 	}
 
 	/**
-	 * return the thumbnail (as a File object) for the given id
-	 * 
-	 * @param id The id of the book
-	 * @return The File object
+	 * Get the 'standard' temp file name for new books
 	 */
-	public static File fetchThumbnail(long id) {
-		return fetchThumbnail(id, "");
+	public static final File getTempThumbnail() {
+		return getTempThumbnail("");
 	}
+
+	/**
+	 * Get the 'standard' temp file name for new books, including a suffix
+	 */
+	public static final File getTempThumbnail(String suffix) {
+		return new File(Utils.EXTERNAL_FILE_PATH + "/tmp" + suffix + ".jpg");
+	}
+
+	/**
+	 * return the thumbnail (as a File object) for the given hash
+	 * 
+	 * @param id 	The uuid of the book
+	 * @return 		The File object
+	 */
+	public static File fetchThumbnailByUuid(String uuid) {
+		return fetchThumbnailByUuid(uuid, "");
+	}
+
+//	/**
+//	 * return the thumbnail (as a File object) for the given id
+//	 * 
+//	 * @param id The id of the book
+//	 * @return The File object
+//	 */
+//	private static File fetchThumbnailById(long id) {
+//		return fetchThumbnailById(id, "");
+//	}
 
 	/**
 	 * return the thumbnail (as a File object) for the given id. Optionally use a suffix
@@ -1584,41 +1646,48 @@ public class CatalogueDBAdapter {
 	 * @param id The id of the book
 	 * @return The File object
 	 */
-	public static File fetchThumbnail(long id, String suffix) {
-		String filename = "";
+	private static File fetchThumbnailByName(String prefix, String suffix) {
+		if (suffix == null)
+			suffix = "";
+
 		File file = null;
-		if (id == 0) {
-			filename = Utils.EXTERNAL_FILE_PATH + "/tmp" + suffix + ".png";
-			file = new File(filename);
+		if (prefix == null || prefix.equals("")) {
+			return getTempThumbnail(suffix);
 		} else {
-			filename = Utils.EXTERNAL_FILE_PATH + "/" + id + suffix + ".jpg";
-			file = new File(filename);
+			final String base = Utils.EXTERNAL_FILE_PATH + "/" + prefix + suffix;
+			file = new File(base + ".jpg");
 			if (!file.exists()) {
-				filename = Utils.EXTERNAL_FILE_PATH + "/" + id + suffix + ".png";
-				file = new File(filename);
+				File png = new File(base + ".png");
+				if (png.exists())
+					return png;
+				else
+					return file;
+			} else {
+				return file;
 			}
 		}
-		return file;
 	}
 	
 	/**
-	 * Return the filename for the thumbnail. Usually used to loadup bitmaps into imageviews
+	 * return the thumbnail (as a File object) for the given id. Optionally use a suffix
+	 * on the file name.
 	 * 
 	 * @param id The id of the book
-	 * @param force Normally this function will return "" if the file does not exist. If forces it will return the filename regardless of whether the file exists
-	 * @return The filename string
+	 * @return The File object
 	 */
-	public static String fetchThumbnailFilename(long id, boolean force) {
-		return fetchThumbnailFilename(id, force, "");
-	}
-
-	public static String fetchThumbnailFilename(long id, boolean force, String suffix) {
-		File file = fetchThumbnail(id, suffix);
-		String filename = null;
-		if (force == true || file.exists()) {
-			filename = file.getPath(); 
-		}
-		return filename;
+//	private static File fetchThumbnailById(long id, String suffix) {
+//		return fetchThumbnailByName(Long.toString(id), suffix);
+//	}
+	
+	/**
+	 * return the thumbnail (as a File object) for the given id. Optionally use a suffix
+	 * on the file name.
+	 * 
+	 * @param id The id of the book
+	 * @return The File object
+	 */
+	public static File fetchThumbnailByUuid(String uuid, String suffix) {
+		return fetchThumbnailByName(uuid, suffix);
 	}
 
 	/**
@@ -1634,11 +1703,11 @@ public class CatalogueDBAdapter {
 	 * 
 	 * @return The scaled bitmap for the file, or null if no file or bad file.
 	 */
-	public static Bitmap fetchThumbnailIntoImageView(long id, ImageView destView, int maxWidth, int maxHeight, boolean exact) {
+	public static Bitmap fetchThumbnailIntoImageView(String uuid, ImageView destView, int maxWidth, int maxHeight, boolean exact) {
 		// Get the file, if it exists. Otherwise set 'help' icon and exit.
 		Bitmap image = null;
 		try {
-			File file = fetchThumbnail(id);
+			File file = fetchThumbnailByUuid(uuid);
 			image = Utils.fetchFileIntoImageView(file, destView, maxWidth, maxHeight, exact );
 		} catch (IllegalArgumentException e) {
 			Logger.logError(e);
@@ -4449,6 +4518,26 @@ public class CatalogueDBAdapter {
 		}
 	}
 
+    private SynchronizedStatement mGetBookUuidQuery = null;
+    /**
+     * Utility routine to return the book title based on the id. 
+     */
+    public String getBookUuid(long id) {
+    	if (mGetBookUuidQuery == null) {
+        	String sql = "Select " + DOM_BOOK_UUID + " From " + DB_TB_BOOKS + " Where " + KEY_ROWID + "=?";
+        	mGetBookUuidQuery = mStatements.add("mGetBookUuidQuery", sql);
+    	}
+    	// Be cautious; other threads may call this and set parameters.
+    	synchronized(mGetBookUuidQuery) {
+    		mGetBookUuidQuery.bindLong(1, id);
+    		//try {
+            	return mGetBookUuidQuery.simpleQueryForString();    			
+    		//} catch (SQLiteDoneException e) {
+    		//	return null;
+    		//}
+    	}
+    }
+    
     private SynchronizedStatement mGetBookTitleQuery = null;
     /**
      * Utility routine to return the book title based on the id. 
@@ -4458,7 +4547,7 @@ public class CatalogueDBAdapter {
         	String sql = "Select " + KEY_TITLE + " From " + DB_TB_BOOKS + " Where " + KEY_ROWID + "=?";
         	mGetBookTitleQuery = mStatements.add("mGetBookTitleQuery", sql);
     	}
-    	// Be cautious
+    	// Be cautious; other threads may call this and set parameters.
     	synchronized(mGetBookTitleQuery) {
     		mGetBookTitleQuery.bindLong(1, id);
         	return mGetBookTitleQuery.simpleQueryForString();

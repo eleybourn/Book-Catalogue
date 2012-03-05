@@ -31,6 +31,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.text.DateFormat;
@@ -46,6 +47,12 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.entity.BufferedHttpEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -461,13 +468,29 @@ public class Utils {
 		HttpURLConnection c;
 		InputStream in = null;
 		try {
-			c = (HttpURLConnection) u.openConnection();
-			c.setConnectTimeout(30000);
-			c.setRequestMethod("GET");
-			c.setDoOutput(true);
-			c.connect();
-			in = c.getInputStream();
+            HttpGet httpRequest = null;
+
+			httpRequest = new HttpGet(u.toURI());
+
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpResponse response = (HttpResponse) httpclient.execute(httpRequest);
+
+            HttpEntity entity = response.getEntity();
+            BufferedHttpEntity bufHttpEntity = new BufferedHttpEntity(entity);
+            in = bufHttpEntity.getContent();
+
+            // The defaut URL fetcher does not cope well with pages that have not content
+            // header (including goodreads images!). So use the more advanced one.
+			//c = (HttpURLConnection) u.openConnection();
+			//c.setConnectTimeout(30000);
+			//c.setRequestMethod("GET");
+			//c.setDoOutput(true);
+			//c.connect();
+			//in = c.getInputStream();
 		} catch (IOException e) {
+			Logger.logError(e);
+			return "";
+		} catch (URISyntaxException e) {
 			Logger.logError(e);
 			return "";
 		}
@@ -475,7 +498,8 @@ public class Utils {
 		String filename = "";
 		FileOutputStream f = null;
 		try {
-			filename = CatalogueDBAdapter.fetchThumbnailFilename(0, true, filenameSuffix);
+			File file = CatalogueDBAdapter.getTempThumbnail(filenameSuffix);
+			filename = file.getAbsolutePath();
 			f = new FileOutputStream(filename);
 		} catch (FileNotFoundException e) {
 			Logger.logError(e);
@@ -671,7 +695,7 @@ public class Utils {
     		// Get the best file (if present) and rename it.
 			if (bestFile >= 0) {
 	    		File file = new File(files.get(bestFile));
-	    		file.renameTo(CatalogueDBAdapter.fetchThumbnail(0));
+	    		file.renameTo(CatalogueDBAdapter.getTempThumbnail());
 			}
     		// Finally, cleanup the data
     		result.remove("__thumbnail");
@@ -1009,8 +1033,8 @@ public class Utils {
 		return bm;
 	}
 
-	public static final String getCoverCacheId(final long bookId, final int maxWidth, final int maxHeight) {
-		return bookId + ".thumb." + maxWidth + "x" + maxHeight + ".jpg";
+	public static final String getCoverCacheId(final String hash, final int maxWidth, final int maxHeight) {
+		return hash + ".thumb." + maxWidth + "x" + maxHeight + ".jpg";
 	}
 
 	/**
@@ -1082,17 +1106,17 @@ public class Utils {
 	 * 
 	 * @return				Bitmap (if cached) or NULL (if done in background)
 	 */
-	public final Bitmap fetchBookCoverIntoImageView(final ImageView destView, int maxWidth, int maxHeight, final boolean exact, final long bookId, final boolean checkCache, final boolean allowBackground) {
+	public final Bitmap fetchBookCoverIntoImageView(final ImageView destView, int maxWidth, int maxHeight, final boolean exact, final String hash, final boolean checkCache, final boolean allowBackground) {
 
 		// Get the original file so we can use the modification date, path etc
-		File coverFile = CatalogueDBAdapter.fetchThumbnail(bookId);
+		File coverFile = CatalogueDBAdapter.fetchThumbnailByUuid(hash);
 
 		Bitmap bm = null;
 		boolean cacheWasChecked = false;
 
 		// If we want to check the cache, AND we dont have cache building happening, then check it.
 		if (checkCache && !GetThumbnailTask.hasActiveTasks() && !ThumbnailCacheWriterTask.hasActiveTasks()) {
-			final String cacheId = getCoverCacheId(bookId, maxWidth, maxHeight);
+			final String cacheId = getCoverCacheId(hash, maxWidth, maxHeight);
 			bm = fetchCachedImageIntoImageView(coverFile, destView, cacheId);
 			cacheWasChecked = true;
 		} else {
@@ -1112,7 +1136,7 @@ public class Utils {
 		// If we get here, the image is not in the cache but the original exists. See if we can queue it.
 		if (allowBackground) {
 			destView.setImageBitmap(null);
-			GetThumbnailTask.getThumbnail(bookId, destView, maxWidth, maxHeight, cacheWasChecked);
+			GetThumbnailTask.getThumbnail(hash, destView, maxWidth, maxHeight, cacheWasChecked);
 			return null;
 		}
 

@@ -418,7 +418,7 @@ public class BookEditFields extends Activity {
 			} else {
 				// The thumbnail image is not automatically preserved, so reload it.
 				ImageView iv = (ImageView) findViewById(R.id.row_img);
-				CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);				
+				CatalogueDBAdapter.fetchThumbnailIntoImageView(mDbHelper.getBookUuid(mRowId), iv, mThumbEditSize, mThumbEditSize, true);				
 				// Author and series lists
 				mAuthorList = (ArrayList<Author>) savedInstanceState.getSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
 				fixupAuthorList();	// Will update related display fields/button
@@ -521,14 +521,15 @@ public class BookEditFields extends Activity {
 			dialog.setContentView(R.layout.zoom_thumb_dialog);
 
 			// Check if we have a file and/or it is valid
-			String filename = CatalogueDBAdapter.fetchThumbnailFilename(mRowId, false);
+			File thumbFile = getCoverFile();
 
-			if (filename == null) {
+			if (thumbFile == null || !thumbFile.exists()) {
 				dialog.setTitle(getResources().getString(R.string.cover_not_set));
 			} else {
+				
 				BitmapFactory.Options opt = new BitmapFactory.Options();
 				opt.inJustDecodeBounds = true;
-			    BitmapFactory.decodeFile( filename, opt );
+			    BitmapFactory.decodeFile( thumbFile.getAbsolutePath(), opt );
 
 			    // If no size info, assume file bad and return appropriate icon
 			    if ( opt.outHeight <= 0 || opt.outWidth <= 0 ) {
@@ -536,7 +537,7 @@ public class BookEditFields extends Activity {
 				} else {
 					dialog.setTitle(getResources().getString(R.string.cover_detail));
 					ImageView cover = new ImageView(this);
-					CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, cover, mThumbZoomSize, mThumbZoomSize, true);
+					Utils.fetchFileIntoImageView(thumbFile, cover, mThumbZoomSize, mThumbZoomSize, true);
 					cover.setAdjustViewBounds(true);
 				    LayoutParams lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
 				    dialog.addContentView(cover, lp);
@@ -549,6 +550,16 @@ public class BookEditFields extends Activity {
 		return dialog;
 	}
 
+	/**
+	 * Get the File object for the cover of the book we are editing. If the boo
+	 * is new, return the standard temp file.
+	 */
+	private File getCoverFile() {
+		if (mRowId == 0) 
+			return CatalogueDBAdapter.getTempThumbnail();
+		else
+			return CatalogueDBAdapter.fetchThumbnailByUuid(mDbHelper.getBookUuid(mRowId));			
+	}
 	// the callback received when the user "sets" the date in the dialog
 	private DatePickerDialog.OnDateSetListener mDateSetListener = new DatePickerDialog.OnDateSetListener() {
 		public void onDateSet(DatePicker view, int year, int month, int day) {
@@ -568,25 +579,27 @@ public class BookEditFields extends Activity {
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		ImageView iv = (ImageView)findViewById(R.id.row_img);
+		File thumbFile = getCoverFile();
+
 		switch(item.getItemId()) {
 		case DELETE_ID:
 			deleteThumbnail(mRowId);
-			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);
+			Utils.fetchFileIntoImageView(thumbFile, iv, mThumbEditSize, mThumbEditSize, true);
 			return true;
 		case ROTATE_THUMB_SUBMENU:
 			// Just a submenu; skip
 			return true;
 		case ROTATE_THUMB_CW:
 			rotateThumbnail(mRowId, 90);
-			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);
+			Utils.fetchFileIntoImageView(thumbFile, iv, mThumbEditSize, mThumbEditSize, true);
 			return true;
 		case ROTATE_THUMB_CCW:
 			rotateThumbnail(mRowId, -90);
-			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);
+			Utils.fetchFileIntoImageView(thumbFile, iv, mThumbEditSize, mThumbEditSize, true);
 			return true;
 		case ROTATE_THUMB_180:
 			rotateThumbnail(mRowId, 180);
-			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);
+			Utils.fetchFileIntoImageView(thumbFile, iv, mThumbEditSize, mThumbEditSize, true);
 			return true;
 		case ADD_PHOTO:
 			Intent pintent = null;
@@ -604,9 +617,8 @@ public class BookEditFields extends Activity {
 			return true;
 		case CROP_THUMB:
 			Intent crop_intent = new Intent(this, CropCropImage.class);
-			String filename = CatalogueDBAdapter.fetchThumbnailFilename(mRowId, false);
 			// here you have to pass absolute path to your file
-			crop_intent.putExtra("image-path", filename);
+			crop_intent.putExtra("image-path", thumbFile.getAbsolutePath());
 			crop_intent.putExtra("scale", true);
 			startActivityForResult(crop_intent, CAMERA_RESULT);
 			return true;
@@ -630,11 +642,9 @@ public class BookEditFields extends Activity {
 	 */
 	private void deleteThumbnail(long id) {
 		try {
-			File thumb = CatalogueDBAdapter.fetchThumbnail(id);
-			thumb.delete();
-			
-			thumb = CatalogueDBAdapter.fetchThumbnail(id);
-			thumb.delete();
+			File thumbFile = getCoverFile();
+			if (thumbFile != null && thumbFile.exists())
+				thumbFile.delete();
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
@@ -646,8 +656,9 @@ public class BookEditFields extends Activity {
 	 * @param id
 	 */
 	private void rotateThumbnail(long id, long angle) {
+		File thumbFile = getCoverFile();
 
-		Bitmap bm = CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, null, mThumbZoomSize*2, mThumbZoomSize*2, true );
+		Bitmap bm = Utils.fetchFileIntoImageView(thumbFile, null, mThumbZoomSize*2, mThumbZoomSize*2, true );
 		if (bm == null)
 			return;
 
@@ -657,8 +668,7 @@ public class BookEditFields extends Activity {
 		/* Create a file to copy the thumbnail into */
 		FileOutputStream f = null;
 		try {
-			String filename = CatalogueDBAdapter.fetchThumbnailFilename(mRowId, false);
-			f = new FileOutputStream(filename);
+			f = new FileOutputStream(thumbFile.getAbsoluteFile());
 		} catch (FileNotFoundException e) {
 			Logger.logError(e);
 			return;
@@ -705,7 +715,7 @@ public class BookEditFields extends Activity {
 				mFields.getField(R.id.anthology).setValue(anthNo.toString());
 				
 				ImageView iv = (ImageView) findViewById(R.id.row_img);
-				CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true );				
+				Utils.fetchFileIntoImageView(getCoverFile(), iv, mThumbEditSize, mThumbEditSize, true );				
 			} finally {	
 				if (book != null)
 					book.close();
@@ -771,7 +781,7 @@ public class BookEditFields extends Activity {
 	
 	private void setCoverImage() {
 		ImageView iv = (ImageView) findViewById(R.id.row_img);
-		CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true );		
+		Utils.fetchFileIntoImageView(getCoverFile(), iv, mThumbEditSize, mThumbEditSize, true );		
 	}
 
 	/**
@@ -1008,8 +1018,8 @@ public class BookEditFields extends Activity {
 
 			if (id > 0) {
 				mRowId = id;
-				File thumb = CatalogueDBAdapter.fetchThumbnail(0);
-				File real = CatalogueDBAdapter.fetchThumbnail(id);
+				File thumb = CatalogueDBAdapter.getTempThumbnail();
+				File real = CatalogueDBAdapter.fetchThumbnailByUuid(mDbHelper.getBookUuid(id));
 				thumb.renameTo(real);
 			}
 		} else {
@@ -1047,7 +1057,7 @@ public class BookEditFields extends Activity {
 		switch(requestCode) {
 		case ADD_PHOTO:
 			if (resultCode == Activity.RESULT_OK){
-				String filename = CatalogueDBAdapter.fetchThumbnailFilename(mRowId, true);
+				File thumbFile = getCoverFile();
 				Bitmap x = (Bitmap) intent.getExtras().get("data");
 				Matrix m = new Matrix();
 				m.postRotate(90);
@@ -1055,7 +1065,7 @@ public class BookEditFields extends Activity {
 				/* Create a file to copy the thumbnail into */
 				FileOutputStream f = null;
 				try {
-					f = new FileOutputStream(filename);
+					f = new FileOutputStream(thumbFile.getAbsoluteFile());
 				} catch (FileNotFoundException e) {
 					Logger.logError(e);
 					return;
@@ -1065,7 +1075,7 @@ public class BookEditFields extends Activity {
 				
 				Intent crop_intent = new Intent(this, CropCropImage.class);
 				// here you have to pass absolute path to your file
-				crop_intent.putExtra("image-path", filename);
+				crop_intent.putExtra("image-path", thumbFile.getAbsolutePath());
 				crop_intent.putExtra("scale", true);
 				startActivityForResult(crop_intent, CAMERA_RESULT);
 				
@@ -1088,7 +1098,7 @@ public class BookEditFields extends Activity {
 				String selectedImagePath = cursor.getString(column_index);
 				
 				File thumb = new File(selectedImagePath);
-				File real = CatalogueDBAdapter.fetchThumbnail(mRowId);
+				File real = getCoverFile();
 				try {
 					copyFile(thumb, real);
 				} catch (IOException e) {
@@ -1178,7 +1188,7 @@ public class BookEditFields extends Activity {
 		public void onImageSelected(String fileSpec) {
 			if (mCoverBrowser != null && fileSpec != null) {
 				// Get the current file
-				File bookFile = CatalogueDBAdapter.fetchThumbnail(mRowId);
+				File bookFile = getCoverFile();
 				// Get the new file
 				File newFile = new File(fileSpec);					
 				// Overwrite with new file

@@ -31,6 +31,7 @@ import android.os.Bundle;
 import android.os.Message;
 import android.os.Parcelable;
 
+import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsage;
 import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsages;
 import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsages.Usages;
@@ -56,6 +57,8 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 	private Bundle mOrigData = null;
 	// - current book ID
 	private long mCurrId = 0;
+	// - current book UUID
+	private String mCurrUuid = null;
 	// - The (subset) of fields relevant to the current book
 	private FieldUsages mCurrFieldUsages;
 
@@ -112,6 +115,8 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 				}
 				// Get the book ID
 				mCurrId = Utils.getAsLong(mOrigData, CatalogueDBAdapter.KEY_ROWID);
+				// Get the book UUID
+				mCurrUuid = mOrigData.getString( DatabaseDefinitions.DOM_BOOK_UUID.name );
 				// Get the extra data about the book
 				mOrigData.putSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mDbHelper.getBookAuthorList(mCurrId));
 				mOrigData.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, mDbHelper.getBookSeriesList(mCurrId));
@@ -138,7 +143,7 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 							// Handle special cases
 							// - If it's a thumbnail, then see if it's missing or empty. 
 							if (usage.fieldName.equals(CatalogueDBAdapter.KEY_THUMBNAIL)) {
-								File file = CatalogueDBAdapter.fetchThumbnail(mCurrId);
+								File file = CatalogueDBAdapter.fetchThumbnailByUuid(mCurrUuid);
 								if (!file.exists() || file.length() == 0)
 									mCurrFieldUsages.put(usage);
 							} else if (usage.fieldName.equals(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)) {
@@ -170,7 +175,7 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 				if (tmpThumbWanted) {
 					// delete any temporary thumbnails //
 					try {
-						File delthumb = CatalogueDBAdapter.fetchThumbnail(0);
+						File delthumb = CatalogueDBAdapter.getTempThumbnail();
 						delthumb.delete();
 					} catch (Exception e) {
 						// do nothing - this is the expected behaviour 
@@ -268,7 +273,7 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 			}});
 
 		if (!isCancelled() && bookData != null)
-			processSearchResults(rowId, requestedFields, bookData, origData);
+			processSearchResults(rowId, mCurrUuid, requestedFields, bookData, origData);
 	}
 
 	/**
@@ -278,7 +283,7 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 	 * @param newData	Data gathered from internet
 	 * @param origData	Original data
 	 */
-	private void processSearchResults(long rowId, FieldUsages requestedFields, Bundle newData, Bundle origData) {
+	private void processSearchResults(long bookId, String bookUuid, FieldUsages requestedFields, Bundle newData, Bundle origData) {
 		// First, filter the data to remove keys we don't care about
 		ArrayList<String> toRemove = new ArrayList<String>();
 		for(String key : newData.keySet()) {
@@ -294,16 +299,16 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 			if (newData.containsKey(usage.fieldName)) {
 				// Handle thumbnail specially
 				if (usage.fieldName.equals(CatalogueDBAdapter.KEY_THUMBNAIL)) {
-					File downloadedFile = CatalogueDBAdapter.fetchThumbnail(0);
+					File downloadedFile = CatalogueDBAdapter.getTempThumbnail();
 					boolean copyThumb = false;
 					if (usage.usage == Usages.COPY_IF_BLANK) {
-						File file = CatalogueDBAdapter.fetchThumbnail(rowId);
+						File file = CatalogueDBAdapter.fetchThumbnailByUuid(bookUuid);
 						copyThumb = (!file.exists() || file.length() == 0);
 					} else if (usage.usage == Usages.OVERWRITE) {
 						copyThumb = true;
 					}
 					if (copyThumb) {
-						File file = CatalogueDBAdapter.fetchThumbnail(rowId);
+						File file = CatalogueDBAdapter.fetchThumbnailByUuid(bookUuid);
 						downloadedFile.renameTo(file);
 					} else {
 						downloadedFile.delete();
@@ -352,7 +357,7 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 
 		// Update
 		if (newData.size() > 0)
-			mDbHelper.updateBook(rowId, newData, true);
+			mDbHelper.updateBook(bookId, newData, true);
 		
 	}
 

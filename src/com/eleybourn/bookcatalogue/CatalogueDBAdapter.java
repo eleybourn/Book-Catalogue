@@ -1422,6 +1422,7 @@ public class CatalogueDBAdapter {
 				message += "* Faster expand/collapse with large collections\n\n";
 				message += "* Cached covers for faster scrolling lists\n\n";
 				message += "* Cover images now have globally unique names, and books have globally unique IDs, so sharing and combining collections is easy\n\n";
+				message += "* Improved detection of series names in book titles\n\n";
 			}
 
 			// Rebuild all indices

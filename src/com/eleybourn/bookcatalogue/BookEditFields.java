@@ -1200,4 +1200,12 @@ public class BookEditFields extends Activity {
 				mCoverBrowser.dismiss();
 			mCoverBrowser = null;
 		}};
+		
+	/**
+	 * Show the context menu for the cover thumbnail
+	 */
+	public void showCoverContextMenu() {
+		View v = findViewById(R.id.row_img);
+		v.showContextMenu();
+	}
 }

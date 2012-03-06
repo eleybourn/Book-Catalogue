@@ -22,11 +22,13 @@
 		<TextView android:id="@+id/version_label" 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
+			android:textAppearance="?android:attr/textAppearanceMedium"
 			android:text="@+string/version_number"
 			/>
 		<TextView android:id="@+id/version_label" 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
+			android:textAppearance="?android:attr/textAppearanceMedium"
 			android:text=": "
 			/>
 		<TextView android:id="@+id/version" 
@@ -34,6 +36,7 @@
 			android:layout_height="wrap_content" 
 			android:color="#cccccc"
 			android:paddingLeft="5sp"
+			android:textAppearance="?android:attr/textAppearanceMedium"
 			android:paddingBottom="5sp"
 			/>
 	</LinearLayout>
@@ -46,6 +49,7 @@
 		<TextView android:id="@+id/webpage_label" 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
+			android:textAppearance="?android:attr/textAppearanceMedium"
 			android:text="@+string/webpage_label"
 			/>
 		<TextView android:id="@+id/webpage_colon" 
@@ -61,6 +65,7 @@
 		android:paddingLeft="15sp"
 		android:paddingBottom="5sp"
 		android:text="@+string/webpage"
+			android:textAppearance="?android:attr/textAppearanceMedium"
 		android:textColor="#006699"
 		/>
 	
@@ -72,11 +77,13 @@
 		<TextView android:id="@+id/sourcecode_label" 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
+			android:textAppearance="?android:attr/textAppearanceMedium"
 			android:text="@+string/sourcecode_label"
 			/>
 		<TextView android:id="@+id/sourcecode_colon" 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
+			android:textAppearance="?android:attr/textAppearanceMedium"
 			android:text=": "
 			/>
 	</LinearLayout>
@@ -87,6 +94,7 @@
 		android:paddingLeft="15sp"
 		android:paddingBottom="5sp"
 		android:text="@+string/sourcecode"
+		android:textAppearance="?android:attr/textAppearanceMedium"
 		android:textColor="#006699"
 		/>
 	
@@ -95,24 +103,37 @@
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content"
 		android:paddingLeft="5sp">
-		<TextView android:id="@+id/contact_label" 
+		<TextView android:id="@+id/contact1_label" 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
+			android:textAppearance="?android:attr/textAppearanceMedium"
 			android:text="@+string/contact_label"
 			/>
-		<TextView android:id="@+id/contact_colon" 
+		<TextView android:id="@+id/contact1_colon" 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
+			android:textAppearance="?android:attr/textAppearanceMedium"
 			android:text=": "
 			/>
 	</LinearLayout>
-	<TextView android:id="@+id/contact" 
+	<TextView android:id="@+id/contact1" 
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content" 
 		android:color="#cccccc"
 		android:paddingLeft="15sp"
 		android:paddingBottom="5sp"
-		android:text="@+string/contact"
+		android:text="@+string/contact1"
+		android:textAppearance="?android:attr/textAppearanceMedium"
+		android:textColor="#006699"
+		/>
+	<TextView android:id="@+id/contact2" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" 
+		android:color="#cccccc"
+		android:paddingLeft="15sp"
+		android:paddingBottom="5sp"
+		android:text="@+string/contact2"
+			android:textAppearance="?android:attr/textAppearanceMedium"
 		android:textColor="#006699"
 		/>
 

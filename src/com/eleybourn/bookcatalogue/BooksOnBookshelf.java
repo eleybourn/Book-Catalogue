@@ -958,7 +958,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 						mMarkBookId = newId;
 					}
 				}
-				// Always rebuild, even after a cancelled edit becuase the series may have had global edits
+				// Always rebuild, even after a cancelled edit because the series may have had global edits
 				// ENHANCE: Allow detection of global changes to avoid unnecessary rebuilds
 				this.setupList(false);
 			} catch (NullPointerException e) {
@@ -976,7 +976,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 						mMarkBookId = id;
 					}
 				}
-				// Always rebuild, even after a cancelled edit becuase the series may have had global edits
+				// Always rebuild, even after a cancelled edit because the series may have had global edits
 				// ENHANCE: Allow detection of global changes to avoid unnecessary rebuilds
 				this.setupList(false);
 			} catch (Exception e) {

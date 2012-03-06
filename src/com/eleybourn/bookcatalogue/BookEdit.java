@@ -47,9 +47,12 @@ public class BookEdit extends TabActivity {
 	public static final int TAB_EDIT = 0;
 	public static final int TAB_EDIT_NOTES = 1;
 	public static final int TAB_EDIT_FRIENDS = 2;
-	public static final int DELETE_ID = 1;
-	public static final int DUPLICATE_ID = 3; //2 is taken by populate in anthology
-	public static final int TWEET_ID = 4; //2 is taken by populate in anthology
+
+	private static final int DELETE_ID = 1;
+	private static final int DUPLICATE_ID = 3; //2 is taken by populate in anthology
+	private static final int TWEET_ID = 4; //2 is taken by populate in anthology
+	private static final int THUMBNAIL_OPTIONS_ID = 5;
+
 	public int currentTab = 0;
 	private Long mRowId;
 	private CatalogueDBAdapter mDbHelper = new CatalogueDBAdapter(this);
@@ -176,6 +179,11 @@ public class BookEdit extends TabActivity {
 		duplicate.setIcon(android.R.drawable.ic_menu_add);
 		MenuItem tweet = menu.add(0, TWEET_ID, 0, R.string.menu_share_this);
 		tweet.setIcon(R.drawable.ic_menu_twitter);
+		boolean thumbVisible = BookCatalogueApp.getAppPreferences().getBoolean(FieldVisibility.prefix + "thumbnail", true);
+		if (thumbVisible && getCurrentActivity() instanceof BookEditFields) {
+			MenuItem thumbOptions = menu.add(0, THUMBNAIL_OPTIONS_ID, 0, R.string.cover_options_cc_ellipsis);
+			thumbOptions.setIcon(android.R.drawable.ic_menu_camera);			
+		}
 		
 		return super.onPrepareOptionsMenu(menu);
 	}
@@ -189,6 +197,12 @@ public class BookEdit extends TabActivity {
 		Cursor thisBook = null;
 		try {
 			switch(item.getItemId()) {
+			case THUMBNAIL_OPTIONS_ID:
+				Activity a = this.getCurrentActivity();
+				if (a instanceof BookEditFields) {
+					((BookEditFields)a).showCoverContextMenu();
+				}
+				break;
 			case TWEET_ID:
 				thisBook = mDbHelper.fetchBookById(mRowId);
 				thisBook.moveToFirst();

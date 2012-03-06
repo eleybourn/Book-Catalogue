@@ -79,7 +79,8 @@
 <string name="webpage">https://wiki.github.com/eleybourn/Book-Catalogue/</string>
 <string name="sourcecode">https://github.com/eleybourn/Book-Catalogue</string>
 <string name="helppage">https://github.com/eleybourn/Book-Catalogue/wiki/Help</string>
-<string name="contact">eleybourn@gmail.com</string>
+<string name="contact1">eleybourn@gmail.com</string>
+<string name="contact2">philip.warner@rhyme.com.au</string>
 <string name="donate_label">Donate</string>
 <string name="about_label">About this App</string>
 <string name="administration_functions_label">Functions</string>
@@ -523,5 +524,6 @@
 <string name="send_all">Send all</string>
 <string name="send_updated">Send updated</string>
 <string name="sync_with_goodreads">Synchronize with goodreads</string>
+<string name="cover_options_cc_ellipsis">Cover Options&#8230;</string>
 </resources>
 

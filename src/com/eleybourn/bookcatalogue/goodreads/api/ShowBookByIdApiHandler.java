@@ -48,7 +48,7 @@ import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.*;
 public class ShowBookByIdApiHandler extends ShowBookApiHandler {
 	
 	public ShowBookByIdApiHandler(GoodreadsManager manager) {
-		super(manager);
+		super(manager, true);
 	}
 
 	/**

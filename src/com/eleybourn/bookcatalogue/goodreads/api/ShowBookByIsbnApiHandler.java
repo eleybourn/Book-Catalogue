@@ -49,7 +49,8 @@ public class ShowBookByIsbnApiHandler extends ShowBookApiHandler {
 
 	
 	public ShowBookByIsbnApiHandler(GoodreadsManager manager) {
-		super(manager);
+		// TODO: If goodreads fix signed book.show_by_isbn requests, change false to true...
+		super(manager, false);
 	}
 
 	/**

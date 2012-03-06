@@ -100,9 +100,14 @@ public abstract class ShowBookApiHandler extends ApiHandler {
 	private Integer mCurrSeriesPosition = null;
 	/** Current series being processed */
 	private int mCurrSeriesId = 0;
+	/** Flag to indicate if request should be signed. Signed requests via ISB cause server errors
+	 *  and unsigned requests do not return review (not a big problem for searches)
+	 */
+	private final boolean mSignRequest;
 	
-	public ShowBookApiHandler(GoodreadsManager manager) {
+	public ShowBookApiHandler(GoodreadsManager manager, boolean signRequest) {
 		super(manager);
+		mSignRequest = signRequest;
 		// Build the XML filters needed to get the data we're interested in.
 		buildFilters();
 	}
@@ -133,7 +138,7 @@ public abstract class ShowBookApiHandler extends ApiHandler {
         // Get a handler and run query.
         XmlResponseParser handler = new XmlResponseParser(mRootFilter);
         // We sign the GET request so we get shelves
-        mManager.execute(request, handler, true);
+        mManager.execute(request, handler, mSignRequest);
 
         // When we get here, the data has been collected but needs to be processed into standard form.
         

@@ -49,13 +49,13 @@
 
 	</LinearLayout>
 
+    <!-- incompatible with APIL4 android:fadeScrollbars="false" -->
 	<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
 	    android:id="@+id/scroll_view" 
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:layout_below="@+id/top_buttons"
 		android:layout_above="@+id/bottom_buttons"
-	    android:fadeScrollbars="false"
 		>
 		<!-- NOTE: This view (id=body) will be EMPTIED by the activity that uses this layout
 			 DON'T ADD ANYTHING TO IT

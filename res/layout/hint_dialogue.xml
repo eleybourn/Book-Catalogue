@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- incompatible with APIL4 android:fadeScrollbars="false" -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
     android:id="@+id/scroll_view" 
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
 	android:layout_alignParentTop="true"
-    android:fadeScrollbars="false"
 	>
 
 	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 

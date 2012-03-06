@@ -293,8 +293,16 @@
 <string name="edit_book_send_to_gr">Send to goodreads</string>
 <string name="goodreads">goodreads</string>
 <string name="goodreads_label">Goodreads</string>
-<string name="goodreads_auth_blurb_part1">goodreads is a web site whose stated mission is "to help people find and share books they love". They have an extensive database of books and reviews, and if you are a registered goodreads user, BookCatalogue can export your books, shelves and reviews to goodreads and import your books, shelves and reviews from goodreads. BookCatalogue is a stand-alone application and does not require goodreads, but if you are interested you can register at:</string>
-<string name="goodreads_auth_blurb_part2">Once you are registered, or if you are already a goodreads user, you can authorize BookCatalogue to access your goodreads data by pressing the button below. It will take you to a web page where you will need to login to goodreads and authorize this application. We will never see your password, and you can disable access via the goodreads website. Due to the vagueries of the web, you may end up on a blank web page. Just click the back button to return here!</string>
+<string name="goodreads_auth_blurb_part1">goodreads is a web site whose stated mission is "to help people find and share books they love". 
+    										They have an extensive database of books and reviews, and if you are a registered goodreads user, 
+    										BookCatalogue can export your books, shelves and reviews to goodreads and import your books, 
+    										shelves and reviews from goodreads. BookCatalogue is a stand-alone application and does not 
+    										require goodreads, but if you are interested you can register at:</string>
+<string name="goodreads_auth_blurb_part2">Once you are registered, or if you are already a goodreads user, you can authorize BookCatalogue 
+    										to access your goodreads data by pressing the button below. It will take you to a web page 
+    										where you will need to login to goodreads and authorize this application. We will never see 
+    										your password, and you can disable access via the goodreads website. Due to the vagueries of 
+    										the web, you may end up on a blank web page. Just click the back button to return here!</string>
 <string name="goodreads_auth_blurb_part3">But remember&#8230;there is no need to do any of this: BookCatalogue works just fine without it!</string>
 <string name="goodreads_url">http://www.goodreads.com</string>
 <string name="authorize_access">Authorize Access</string>

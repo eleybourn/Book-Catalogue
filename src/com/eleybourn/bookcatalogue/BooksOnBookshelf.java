@@ -538,12 +538,18 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 						lv.setSelectionFromTop(best.listPosition, 0);
 						// Code below does not behave as expected. Results in items often being near bottom.
 						//lv.setSelectionFromTop(best.listPosition, lv.getHeight() / 2);
-						final int newPos = best.listPosition;
-						getListView().post(new Runnable() {
-							@Override
-							public void run() {
-								lv.smoothScrollToPosition(newPos);
-							}});
+						
+						// smoothScrollToPosition is only available at API level 8.
+						// Without this call some positioning may be off by one row (see above).
+						if (android.os.Build.VERSION.SDK_INT >= 8) {
+							final int newPos = best.listPosition;
+							getListView().post(new Runnable() {
+								@Override
+								public void run() {
+									lv.smoothScrollToPosition(newPos);
+								}});
+						}
+
 						//int newTop = best.listPosition - (last-first)/2;
 						//System.out.println("New Top @" + newTop );
 						//lv.setSelection(newTop);

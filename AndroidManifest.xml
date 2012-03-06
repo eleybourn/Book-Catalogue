@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--  android:installLocation="preferExternal" when building with API > 4 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="com.eleybourn.bookcatalogue"
-	android:installLocation="internalOnly" android:versionName="4.0" android:versionCode="70">
-	<application android:name=".BookCatalogueApp" android:label="@string/app_name" android:icon="@drawable/logo_bc" android:debuggable="true">
+	 android:versionName="4.0" android:versionCode="70">
+	<application android:installLocation="preferExternal" android:name=".BookCatalogueApp" android:label="@string/app_name" android:icon="@drawable/logo_bc" android:debuggable="true">
 		<provider android:name=".SearchSuggestionProvider" android:authorities="com.eleybourn.bookcatalogue.SearchSuggestionProvider" />		
 		<service android:enabled="true" android:name=".BcQueueManager" />
 

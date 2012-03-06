@@ -639,7 +639,7 @@ public class GoodreadsManager {
 				shelfCsr.close();
 			}
 
-			// Add pseudo-shelf to match goodreads becaause review.update does not seem to update them properly
+			// Add pseudo-shelf to match goodreads because review.update does not seem to update them properly
 			String pseudoShelf;
 			if (books.getRead() == 0) {
 				pseudoShelf = "To Read";

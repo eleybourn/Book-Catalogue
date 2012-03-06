@@ -956,9 +956,11 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 					long newId = intent.getLongExtra(CatalogueDBAdapter.KEY_ROWID, 0);
 					if (newId != 0) {
 						mMarkBookId = newId;
-						this.setupList(false);
 					}
 				}
+				// Always rebuild, even after a cancelled edit becuase the series may have had global edits
+				// ENHANCE: Allow detection of global changes to avoid unnecessary rebuilds
+				this.setupList(false);
 			} catch (NullPointerException e) {
 				// This is not a scan result, but a normal return
 				//fillData();
@@ -972,9 +974,11 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 					long id = intent.getLongExtra(CatalogueDBAdapter.KEY_ROWID, 0);
 					if (id != 0) {
 						mMarkBookId = id;
-						this.setupList(false);
 					}
 				}
+				// Always rebuild, even after a cancelled edit becuase the series may have had global edits
+				// ENHANCE: Allow detection of global changes to avoid unnecessary rebuilds
+				this.setupList(false);
 			} catch (Exception e) {
 				Logger.logError(e);
 			}

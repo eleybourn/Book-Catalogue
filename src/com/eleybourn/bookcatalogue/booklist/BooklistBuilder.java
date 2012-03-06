@@ -1106,6 +1106,8 @@ public class BooklistBuilder {
 		for(DomainDefinition d: mListTable.getDomains()) {
 			domains.append(prefix);
 			domains.append(d.name);
+			domains.append(" as ");
+			domains.append(d.name);
 			domains.append(", ");
 		}
 

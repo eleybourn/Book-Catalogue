@@ -388,6 +388,31 @@ public class DbUtils {
 		}
 
 		/**
+		 * Utility routine to return [table-alias].[domain-name] as [domain_name]; this format
+		 * is useful in older SQLite installations that add make the alias part of the output
+		 * column name.
+		 * 
+		 * @param d		Domain
+		 * 
+		 * @return	SQL fragment
+		 */
+		public String dotAs(DomainDefinition d) {
+			return getAlias() + "." + d.name + " as " + d.name;
+		}
+
+		/**
+		 * Utility routine to return [table-alias].[domain-name] as [asDomain]; this format
+		 * is useful when multiple differing versions of a domain are retrieved.
+		 * 
+		 * @param d		Domain
+		 * 
+		 * @return	SQL fragment
+		 */
+		public String dotAs(DomainDefinition d, DomainDefinition asDomain) {
+			return getAlias() + "." + d.name + " as " + asDomain.name;
+		}
+
+		/**
 		 * Utility routine to return <table-alias>.<name>.
 		 * 
 		 * @param s		Domain name

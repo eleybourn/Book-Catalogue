@@ -4867,7 +4867,7 @@ public class CatalogueDBAdapter {
 	 */
 	private SynchronizedStatement mInsertFtsStmt = null;
 	public void insertFts(long bookId) {
-		long t0 = System.currentTimeMillis();
+		//long t0 = System.currentTimeMillis();
 		
 		if (mInsertFtsStmt == null) {
 			// Build the FTS insert statement base. The parameter order MUST match the order expected in ftsSendBooks().
@@ -4896,8 +4896,8 @@ public class CatalogueDBAdapter {
 				try { books.close(); } catch (Exception e) {};
 			if (l != null)
 				mDb.endTransaction(l);
-			long t1 = System.currentTimeMillis();
-			System.out.println("Inserted FTS in " + (t1-t0) + "ms");
+			//long t1 = System.currentTimeMillis();
+			//System.out.println("Inserted FTS in " + (t1-t0) + "ms");
 		}
 	}
 	
@@ -4908,7 +4908,7 @@ public class CatalogueDBAdapter {
 	 */
 	private SynchronizedStatement mUpdateFtsStmt = null;
 	public void updateFts(long bookId) {
-		long t0 = System.currentTimeMillis();
+		//long t0 = System.currentTimeMillis();
 
 		if (mUpdateFtsStmt == null) {
 			// Build the FTS update statement base. The parameter order MUST match the order expected in ftsSendBooks().
@@ -4934,8 +4934,8 @@ public class CatalogueDBAdapter {
 				try { books.close(); } catch (Exception e) {};
 			if (l != null)
 				mDb.endTransaction(l);
-			long t1 = System.currentTimeMillis();
-			System.out.println("Updated FTS in " + (t1-t0) + "ms");
+			//long t1 = System.currentTimeMillis();
+			//System.out.println("Updated FTS in " + (t1-t0) + "ms");
 		}
 	}
 
@@ -4946,15 +4946,15 @@ public class CatalogueDBAdapter {
 	 */
 	private SynchronizedStatement mDeleteFtsStmt = null;
 	public void deleteFts(long bookId) {
-		long t0 = System.currentTimeMillis();
+		//long t0 = System.currentTimeMillis();
 		if (mDeleteFtsStmt == null) {
 			String sql = "Delete from " + TBL_BOOKS_FTS + " Where " + DOM_DOCID + " = ?";
 			mDeleteFtsStmt = mStatements.add("mDeleteFtsStmt", sql);
 		}
 		mDeleteFtsStmt.bindLong(1, bookId);
 		mDeleteFtsStmt.execute();
-		long t1 = System.currentTimeMillis();
-		System.out.println("Deleted from FTS in " + (t1-t0) + "ms");
+		//long t1 = System.currentTimeMillis();
+		//System.out.println("Deleted from FTS in " + (t1-t0) + "ms");
 	}
 	
 	/**

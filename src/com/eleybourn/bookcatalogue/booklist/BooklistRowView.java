@@ -281,7 +281,7 @@ public class BooklistRowView {
 	public long getSeriesId() {
 		if (mSeriesIdCol < 0) {
 			mSeriesIdCol = mCursor.getColumnIndex(DOM_SERIES_ID.name);
-			if (mBookIdCol < 0)
+			if (mSeriesIdCol < 0)
 				throw new RuntimeException("Column " + DOM_SERIES_ID + " not present in cursor");
 		}
 		return mCursor.getLong(mSeriesIdCol);

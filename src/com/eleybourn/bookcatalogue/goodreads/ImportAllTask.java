@@ -40,6 +40,7 @@ import com.eleybourn.bookcatalogue.BookEditFields;
 import com.eleybourn.bookcatalogue.BooksCursor;
 import com.eleybourn.bookcatalogue.BooksRowView;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
+import com.eleybourn.bookcatalogue.Logger;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.Series;
 import com.eleybourn.bookcatalogue.Utils;
@@ -202,7 +203,13 @@ public class ImportAllTask extends GenericTask {
 				qMgr.saveTask(this);
 				mPosition++;
 			}
-		}	
+		}
+		try {
+			db.analyzeDb();
+		} catch (Exception e) {
+			// Do nothing. Not a critical step.
+			Logger.logError(e);
+		}
 		return true;
 	}
 

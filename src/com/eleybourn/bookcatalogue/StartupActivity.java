@@ -61,7 +61,7 @@ public class StartupActivity extends Activity {
 	private boolean mWasReallyStartup = false;
 	
 	/** Database connection */
-	CatalogueDBAdapter mDb = null;
+	//CatalogueDBAdapter mDb = null;
 
 	/** Handler to post runnables to UI thread */
 	private Handler mHandler = new Handler();
@@ -91,14 +91,12 @@ public class StartupActivity extends Activity {
 
 		// If it's a real application startup...cleanup old stuff
 		if (mWasReallyStartup) {
+			updateProgress("Starting");
 
 			SimpleTaskQueue q = getQueue();
-			mDb = new CatalogueDBAdapter(this);
-			mDb.open();
-			if (mFtsRebuildRequired) {
-				q.enqueue(new RebuildFtsTask());
-				mFtsRebuildRequired = false;
-			}
+
+			// Always enqueue it; it will get a DB and check if required...
+			q.enqueue(new RebuildFtsTask());
 			q.enqueue(new AnalyzeDbTask());				
 
 			// Remove old logs
@@ -254,8 +252,6 @@ public class StartupActivity extends Activity {
 		super.onDestroy();
 		if (mTaskQueue != null)
 			mTaskQueue.finish();
-		if (mDb != null)
-			mDb.close();
 	}
 	
 	/**
@@ -268,9 +264,14 @@ public class StartupActivity extends Activity {
 
 		@Override
 		public void run(SimpleTaskContext taskContext) {
+			// Get a DB to make sure the FTS rebuild flag is set appropriately
 			CatalogueDBAdapter db = taskContext.getDb();
-			updateProgress(getString(R.string.rebuilding_search_index));
-			db.rebuildFts();
+
+			if (mFtsRebuildRequired) {
+				updateProgress(getString(R.string.rebuilding_search_index));
+				db.rebuildFts();
+				mFtsRebuildRequired = false;				
+			}
 		}
 
 		@Override

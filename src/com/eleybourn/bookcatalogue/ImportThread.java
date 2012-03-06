@@ -314,6 +314,12 @@ public class ImportThread extends ManagedTask {
 			mDbHelper.purgeAuthors();
 			mDbHelper.purgeSeries();
 		}
+		try {
+			mDbHelper.analyzeDb();
+		} catch (Exception e) {
+			// Do nothing. Not a critical step.
+			Logger.logError(e);
+		}
 		doToast("Import Complete");
 	}
 

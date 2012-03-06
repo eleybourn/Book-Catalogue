@@ -136,7 +136,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 
 			if (savedInstanceState == null)
 				// Get preferred booklist state to use from preferences
-				mRebuildState = BookCatalogueApp.getAppPreferences().getInt(BooklistPreferencesActivity.PREF_BOOKLISTS_STATE, BooklistPreferencesActivity.BOOKLISTS_STATE_PRESERVED);
+				mRebuildState = BookCatalogueApp.getAppPreferences().getInt(BooklistPreferencesActivity.PREF_BOOKLISTS_STATE, BooklistPreferencesActivity.BOOKLISTS_ALWAYS_EXPANDED);
 			else
 				// Always preserve state when rebuilding/recreating etc
 				mRebuildState = BooklistPreferencesActivity.BOOKLISTS_STATE_PRESERVED;

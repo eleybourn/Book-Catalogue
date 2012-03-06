@@ -135,8 +135,8 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 			super.onCreate(savedInstanceState);
 
 			if (savedInstanceState == null)
-				// Get preferred booklist state to use from preferences
-				mRebuildState = BookCatalogueApp.getAppPreferences().getInt(BooklistPreferencesActivity.PREF_BOOKLISTS_STATE, BooklistPreferencesActivity.BOOKLISTS_ALWAYS_EXPANDED);
+				// Get preferred booklist state to use from preferences; default to always expanded (MUCH faster than 'preserve' with lots of books)
+				mRebuildState = BooklistPreferencesActivity.getRebuildState();
 			else
 				// Always preserve state when rebuilding/recreating etc
 				mRebuildState = BooklistPreferencesActivity.BOOKLISTS_STATE_PRESERVED;
@@ -283,7 +283,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		} catch (Exception e) {};
 
 		// New style, so use user-pref for rebuild
-		mRebuildState = BookCatalogueApp.getAppPreferences().getInt(BooklistPreferencesActivity.PREF_BOOKLISTS_STATE, BooklistPreferencesActivity.BOOKLISTS_STATE_PRESERVED);
+		mRebuildState = BooklistPreferencesActivity.getRebuildState();
 		// Do a rebuild
 		mCurrentStyle = style;
 		setupList(true);

@@ -109,6 +109,14 @@ public class BooklistPreferencesActivity extends PreferencesBase {
 	}
 
 	/**
+	 * Get the current preferred rebuild state for the list
+	 * @return
+	 */
+	public static int getRebuildState() {
+		return mBooklistStateProperty.get();
+	}
+
+	/**
 	 * Return the layout to use for this subclass
 	 */
 	@Override

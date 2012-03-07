@@ -50,12 +50,14 @@
 				android:layout_width="wrap_content" 
 				android:layout_height="wrap_content" 
 				android:src="@+drawable/ic_menu_bookshelves"
+				android:layout_gravity="center_vertical"
 				/>
 			<TextView 
 				android:layout_width="wrap_content" 
 				android:layout_height="wrap_content" 
 				android:text="@+string/my_books"
 				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:layout_gravity="center_vertical"
 				android:paddingTop="5dp"
 				/>
 		</LinearLayout>
@@ -70,6 +72,7 @@
 			<ImageView android:id="@+id/bookshelf_img" 
 				android:layout_width="wrap_content" 
 				android:layout_height="wrap_content" 
+				android:layout_gravity="center_vertical"
 				android:src="@+drawable/ic_menu_bookshelves"
 				/>
 			<TextView 
@@ -77,6 +80,7 @@
 				android:layout_height="wrap_content" 
 				android:text="@+string/my_books_classic"
 				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:layout_gravity="center_vertical"
 				android:paddingTop="5dp"
 				/>
 		</LinearLayout>
@@ -87,6 +91,7 @@
 			android:layout_height="wrap_content"
 			android:clickable="true"
 			android:paddingTop="30dp"
+				android:layout_gravity="center_vertical"
 			android:paddingLeft="5dp">
 			<ImageView  
 				android:layout_width="wrap_content" 
@@ -98,6 +103,7 @@
 				android:layout_height="wrap_content" 
 				android:text="@+string/menu_insert"
 				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:layout_gravity="center_vertical"
 				android:paddingTop="5dp"
 				/>
 		</LinearLayout>
@@ -112,6 +118,7 @@
 			<ImageView 
 				android:layout_width="wrap_content" 
 				android:layout_height="wrap_content" 
+				android:layout_gravity="center_vertical"
 				android:src="@+android:drawable/ic_menu_send"
 				/>
 			<TextView 
@@ -119,6 +126,7 @@
 				android:layout_height="wrap_content" 
 				android:text="@+string/loan_return_book"
 				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:layout_gravity="center_vertical"
 				android:paddingTop="5dp"
 				/>
 		</LinearLayout>
@@ -133,6 +141,7 @@
 			<ImageView 
 				android:layout_width="wrap_content" 
 				android:layout_height="wrap_content" 
+				android:layout_gravity="center_vertical"
 				android:src="@+android:drawable/ic_menu_search"
 				/>
 			<TextView
@@ -140,6 +149,7 @@
 				android:layout_height="wrap_content" 
 				android:text="@+string/search"
 				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:layout_gravity="center_vertical"
 				android:paddingTop="5dp"
 				/>
 		</LinearLayout>
@@ -154,6 +164,7 @@
 			<ImageView 
 				android:layout_width="wrap_content" 
 				android:layout_height="wrap_content" 
+				android:layout_gravity="center_vertical"
 				android:src="@+android:drawable/ic_menu_manage"
 				/>
 			<TextView 
@@ -161,6 +172,7 @@
 				android:layout_height="wrap_content" 
 				android:text="@+string/admin_and_prefs"
 				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:layout_gravity="center_vertical"
 				android:paddingTop="5dp"
 				/>
 		</LinearLayout>
@@ -175,6 +187,7 @@
 			<ImageView 
 				android:layout_width="wrap_content" 
 				android:layout_height="wrap_content" 
+				android:layout_gravity="center_vertical"
 				android:src="@+android:drawable/ic_menu_info_details"
 				/>
 			<TextView 
@@ -182,6 +195,7 @@
 				android:layout_height="wrap_content" 
 				android:text="@+string/about_label"
 				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:layout_gravity="center_vertical"
 				android:paddingTop="5dp"
 				/>
 		</LinearLayout>
@@ -228,12 +242,14 @@
 				<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
 					android:layout_width="wrap_content" 
 					android:layout_height="wrap_content" 
+					android:layout_gravity="center_vertical"
 					android:src="@+android:drawable/ic_menu_help"
 					/>
 				<TextView xmlns:android="http://schemas.android.com/apk/res/android"
 					android:layout_width="wrap_content" 
 					android:layout_height="wrap_content" 
 					android:text="@+string/help"
+					android:layout_gravity="center_vertical"
 					android:textAppearance="?android:attr/textAppearanceLarge"
 					android:paddingTop="5dp"
 					/>
@@ -251,12 +267,14 @@
 				<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
 					android:layout_width="wrap_content" 
 					android:layout_height="wrap_content" 
+					android:layout_gravity="center_vertical"
 					android:src="@drawable/ic_menu_donate"
 					/>
 				<TextView xmlns:android="http://schemas.android.com/apk/res/android"
 					android:layout_width="wrap_content" 
 					android:layout_height="wrap_content" 
 					android:text="@+string/donate_label"
+					android:layout_gravity="center_vertical"
 					android:textAppearance="?android:attr/textAppearanceLarge"
 					android:paddingTop="5dp"
 					/>

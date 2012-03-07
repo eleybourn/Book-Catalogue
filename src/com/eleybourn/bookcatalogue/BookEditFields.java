@@ -417,8 +417,7 @@ public class BookEditFields extends Activity {
 				populateFields();
 			} else {
 				// The thumbnail image is not automatically preserved, so reload it.
-				ImageView iv = (ImageView) findViewById(R.id.row_img);
-				CatalogueDBAdapter.fetchThumbnailIntoImageView(mDbHelper.getBookUuid(mRowId), iv, mThumbEditSize, mThumbEditSize, true);				
+				setCoverImage();
 				// Author and series lists
 				mAuthorList = (ArrayList<Author>) savedInstanceState.getSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
 				fixupAuthorList();	// Will update related display fields/button
@@ -1113,9 +1112,10 @@ public class BookEditFields extends Activity {
 				mAuthorList = (ArrayList<Author>) intent.getSerializableExtra(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
 			} else {
 				// Even though the dialog was terminated, some authors MAY have been updated/added.
-				for(Author a : mAuthorList) {
-					mDbHelper.refreshAuthor(a);
-				}
+				if (mAuthorList != null)
+					for(Author a : mAuthorList) {
+						mDbHelper.refreshAuthor(a);
+					}
 			}
 			fixupAuthorList();
 		case ACTIVITY_EDIT_SERIES:

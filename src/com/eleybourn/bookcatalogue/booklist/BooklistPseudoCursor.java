@@ -158,7 +158,55 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 
 				// Remove any stale cursors
 				purgeOldCursors(cursorId);
+			} else {
+				// Bring to top of MRU list, if present. It may not be in the MRU list if it was
+				// preserved because it was in the window
+				int oldPos = -1;
+				for(int i = 0; i < MRU_LIST_SIZE; i++) {
+					if (mMruList[i] == cursorId) {
+						// TODO (4.1+): Remove Sanity check for debug; should just 'break' from loop after setting oldPos
+						if (oldPos >= 0)
+							throw new RuntimeException("Cursor appears twice in MRU list");
+						oldPos = i;
+					}
+				}
+				if (oldPos < 0) {
+					// Not in MRU; just add it to the top
+					mMruListPos = (mMruListPos + 1) % MRU_LIST_SIZE;
+					mMruList[mMruListPos] = cursorId;
+				} else {
+					if (oldPos <= mMruListPos) {
+						// Just shuffle intervening items down
+						int n = oldPos;
+						int i;
+						while(n < mMruListPos) {
+							i = n++;
+							mMruList[i] = mMruList[n];
+						}
+					} else {
+						// Need to shuffle intervening items 'down' with a wrap; this code
+						// would actually work for the above case, but it's slower. Not sure
+						// it really matters.
+						int n = oldPos; // 'next' position
+						int i; // current position
+						// Count of rows to move
+						int c = (MRU_LIST_SIZE - (oldPos - mMruListPos)) % MRU_LIST_SIZE; // Only really need '%' for case where oldPos<=listPos.
+						while(c-- > 0) {
+							i = n;
+							n = (n + 1) % MRU_LIST_SIZE;
+							mMruList[i] = mMruList[n];
+						}
+					}
+					mMruList[mMruListPos] = cursorId;					
+				}
+
 			}
+			// DEBUG: Remove dump of MRU list!
+			//System.out.print("MRU: ");
+			//for(int i = 0; i < MRU_LIST_SIZE; i++)
+			//	System.out.print(mMruList[(mMruListPos+1+i)%MRU_LIST_SIZE] + " ");
+			//System.out.println();
+
 			// Set the active cursor, and set its position correctly
 			mActiveCursor = mCursors.get(cursorId);
 			mActiveCursor.moveToPosition(newPosition - cursorStartPos);

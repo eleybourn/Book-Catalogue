@@ -138,7 +138,7 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 	 */
 	@Override
 	public boolean onMove(int oldPosition, int newPosition) {
-		if (newPosition < 0)
+		if (newPosition < 0 || newPosition >= getCount())
 			return false;
 		// Get the ID we use for the cursor at the new position
 		Integer cursorId = newPosition / CURSOR_SIZE;

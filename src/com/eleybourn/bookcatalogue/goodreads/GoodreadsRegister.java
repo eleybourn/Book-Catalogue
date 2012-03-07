@@ -97,8 +97,7 @@ public class GoodreadsRegister extends Activity {
 	 * Static method to request authorization from goodreads.
 	 */
 	public static void requestAuthorization(Context context) {
-		// RELEASE: put up a progress dialog...its only one web request, but it can take a few seconds
-		// RELEASE: sort out GR validation
+		// ENHANCE: put up a progress dialog...its only one web request, but it can take a few seconds
 		GoodreadsManager grMgr = new GoodreadsManager();
 		// This next step can take several seconds....
 		if (!grMgr.hasValidCredentials()) {

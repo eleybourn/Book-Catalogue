@@ -48,8 +48,6 @@ import com.eleybourn.bookcatalogue.goodreads.api.XmlFilter.XmlHandler;
  * designed to be used by other classes that implement specific search methods. It does
  * the heavy lifting of parsing the results etc.
  * 
- * RELEASE: Capture myReview; use it in sendOneBook to delete shelves that are not present
- * 
  * @author Philip Warner
  */
 public abstract class ShowBookApiHandler extends ApiHandler {
@@ -200,8 +198,8 @@ public abstract class ShowBookApiHandler extends ApiHandler {
         	mBook.putString(CatalogueDBAdapter.KEY_TITLE, mBook.getString(ORIG_TITLE));
         }
 
-    	// RELEASE Store WORK_ID = "__work_id" into GR_WORK_ID;
-        // RELEASE: Store ORIGINAL_PUBLICATION_DATE in database
+    	// ENHANCE Store WORK_ID = "__work_id" into GR_WORK_ID;
+        // ENHANCE: Store ORIGINAL_PUBLICATION_DATE in database
         
         // If no published date, try original date
         if (!mBook.containsKey(CatalogueDBAdapter.KEY_DATE_PUBLISHED)) {

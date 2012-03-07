@@ -279,7 +279,8 @@
 <string name="edit_bookElipsis">Edit Book&#8230;</string>
 <string name="retry_task">Retry</string>
 <string name="visit_goodreads">Visit GoodReads&#8230;</string>
-<string name="delete_entry">Delete</string>
+<string name="delete_event">Delete Event</string>
+<string name="delete_task">Delete Task</string>
 <item name="TAG_EVENT" type="id"></item>
 <item name="TAG_HOLDER" type="id"></item>
 <item name="TAG_TASK" type="id"></item>
@@ -538,5 +539,26 @@
 <string name="task_has_been_queued_in_background">Task has been queued in background</string>
 <string name="hint_startup_screen">This is the standard BookCatalogue startup screen. If you prefer, you can startup directly in \'My Books\'; the preferred startup screen can be changed in preferences.</string>
 <string name="upgrading_ellipsis">Upgrading&#8230;</string>
+<string name="explain_goodreads_no_isbn">The selected book does not have an ISBN; it is not possible to automatically synchronize it with goodreads. 
+    									The simplest solution is to:
+    									\n\n(1) delete the book from BookCatalogue
+    									\n\n(2) add the book in goodreads manually via their web interface
+    									\n\n(3) Synchronize with goodreads
+    									\n\nThis will result in the book being recreated in BookCatalogue and the two will remain linked from that point onwards.</string>
+<string name="explain_goodreads_no_match">The ISBN of the selected book could not be found on goodreads. There are two possible causes for this: 
+    									either the data for the book is wrong (you should check the ISBN), or the book is not in goodreads. 
+    									\n\nIf you make any changes to the data in BookCatalogue, just press the \'Retry\' button and check to see if the 
+    									resulting background task succeeds. 
+    									\n\nIf the data looks correct and the book is still not found, then a book with that ISBN needs to be added to goodreads manually
+										via their web site. Once that is done, you can retry sending the book.</string>    									    
+<string name="read_amp_unread">Read &amp; Unread</string>
+<string name="loaned">Loaned</string>
+<string name="publication_year">Publication Year</string>
+<string name="publication_month">Publication Month</string>
+<string name="publication_day">Publication Day</string>
+<string name="added_year">Added Year</string>
+<string name="added_month">Added Month</string>
+<string name="added_day">Added Day</string>
+<string name="book">Book</string>
 </resources>
 

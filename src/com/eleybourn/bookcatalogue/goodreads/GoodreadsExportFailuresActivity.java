@@ -35,6 +35,7 @@ import android.widget.TextView;
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.HintManager;
+import com.eleybourn.bookcatalogue.HintManager.HintOwner;
 import com.eleybourn.bookcatalogue.ViewTagger;
 
 import net.philipwarner.taskqueue.BindableItem;
@@ -72,7 +73,6 @@ public class GoodreadsExportFailuresActivity extends  net.philipwarner.taskqueue
 
 	@Override 
 	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
 		// Get a DB adapter
 		m_db = new CatalogueDBAdapter(this);
 		m_db.open();
@@ -83,6 +83,9 @@ public class GoodreadsExportFailuresActivity extends  net.philipwarner.taskqueue
 		} else {
 			mTaskId = 0;
 		}
+		
+		// Once the basic criteria have been setup, call the parent
+		super.onCreate(savedInstanceState);
 		
 		//When any Event is added/changed/deleted, update the list. Lazy, yes.
 		BookCatalogueApp.getQueueManager().registerEventListener(m_OnEventChangeListener);		
@@ -136,17 +139,36 @@ public class GoodreadsExportFailuresActivity extends  net.philipwarner.taskqueue
 	 * Build a context menu dialogue when an item is clicked.
 	 */
 	@Override
-	public void onListItemClick(AdapterView<?> parent, final View v, final int position, final long id) {
-		Event event = (Event) ViewTagger.getTag(v, R.id.TAG_EVENT);
-		ArrayList<ContextDialogItem> items = new ArrayList<ContextDialogItem>();
+	public void onListItemClick(final AdapterView<?> parent, final View v, final int position, final long id) {
+		// get the event object
+		final Event event = (Event) ViewTagger.getTag(v, R.id.TAG_EVENT);
+
+		// If it owns a hint, display it
+		if (event instanceof HintOwner) {
+			HintOwner h = (HintOwner)event;
+			// Show the hint if necessary; fall through to the runnable
+			HintManager.displayHint(this, h.getHint(), new Runnable() {
+				@Override
+				public void run() {
+					doContextMenu(parent, v, position, id);
+				}});
+		} else {
+			// Just display context menu
+			doContextMenu(parent, v, position, id);
+		}
+	};
+
+	private void doContextMenu(final AdapterView<?> parent, final View v, final int position, final long id) {
+		final Event event = (Event) ViewTagger.getTag(v, R.id.TAG_EVENT);
+		final ArrayList<ContextDialogItem> items = new ArrayList<ContextDialogItem>();
 
 		event.addContextMenuItems(this, parent, v, position, id, items, m_db);
 
 		if (items.size() > 0) {
 			showContextDialogue("Select an Action", items);
-		}
-	};
-
+		}		
+	}
+	
 	/**
 	 * Capture calls to refreshData() so we can update the header.
 	 */

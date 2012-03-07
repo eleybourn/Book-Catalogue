@@ -22,6 +22,7 @@ package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
 
+import com.eleybourn.bookcatalogue.HintManager.HintOwner;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsSearchCriteria;
 import com.eleybourn.bookcatalogue.goodreads.SendOneBookTask;
 
@@ -218,17 +219,18 @@ public class BookEvents {
 						// not a book event?
 					}
 				}}));
-			// SEARCH GOODREADS
-			items.add(new ContextDialogItem(ctx.getString(R.string.visit_goodreads), new Runnable() {
-				@Override
-				public void run() {
-					BookEventHolder holder = (BookEventHolder)ViewTagger.getTag(v, R.id.TAG_BOOK_EVENT_HOLDER);
-					Intent i = new Intent(ctx, GoodreadsSearchCriteria.class);
-					i.putExtra(GoodreadsSearchCriteria.EXTRA_BOOK_ID, holder.event.getBookId());
-					ctx.startActivity(i);
-				}}));
+				// TODO Reinstate goodreads search when goodreads work.editions API is available
+				//// SEARCH GOODREADS
+				//items.add(new ContextDialogItem(ctx.getString(R.string.visit_goodreads), new Runnable() {
+				//	@Override
+				//	public void run() {
+				//		BookEventHolder holder = (BookEventHolder)ViewTagger.getTag(v, R.id.TAG_BOOK_EVENT_HOLDER);
+				//		Intent i = new Intent(ctx, GoodreadsSearchCriteria.class);
+				//		i.putExtra(GoodreadsSearchCriteria.EXTRA_BOOK_ID, holder.event.getBookId());
+				//		ctx.startActivity(i);
+				//	}}));
 			// DELETE EVENT
-			items.add(new ContextDialogItem(ctx.getString(R.string.delete_entry), new Runnable() {
+			items.add(new ContextDialogItem(ctx.getString(R.string.delete_event), new Runnable() {
 				@Override
 				public void run() {
 					BookCatalogueApp.getQueueManager().deleteEvent(id);
@@ -373,12 +375,18 @@ public class BookEvents {
 	 * @author Philip Warner
 	 *
 	 */
-	public static class GrNoMatchEvent extends GrSendBookEvent {
+	public static class GrNoMatchEvent extends GrSendBookEvent implements HintOwner {
 		private static final long serialVersionUID = -7684121345325648066L;
 
 		public GrNoMatchEvent(long bookId) {
 			super(bookId, BookCatalogueApp.getResourceString(R.string.no_matching_book_found));
 		}
+
+		@Override
+		public int getHint() {
+			return R.string.explain_goodreads_no_match;
+		}		
+
 	};
 
 	/**
@@ -387,11 +395,16 @@ public class BookEvents {
 	 * @author Philip Warner
 	 *
 	 */
-	public static class GrNoIsbnEvent extends GrSendBookEvent {
+	public static class GrNoIsbnEvent extends GrSendBookEvent implements HintOwner {
 		private static final long serialVersionUID = 7260496259505914311L;
 
 		public GrNoIsbnEvent(long bookId) {
 			super(bookId, BookCatalogueApp.getResourceString(R.string.no_isbn_stored_for_book));
+		}
+
+		@Override
+		public int getHint() {
+			return R.string.explain_goodreads_no_isbn;
 		}		
 
 	}

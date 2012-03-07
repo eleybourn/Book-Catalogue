@@ -159,7 +159,7 @@ public abstract class GenericTask extends RunnableTask {
 			int position, final long id, ArrayList<ContextDialogItem> items,
 			Object appInfo) {
 
-		items.add( new ContextDialogItem(ctx.getString(R.string.delete_entry), new Runnable(){
+		items.add( new ContextDialogItem(ctx.getString(R.string.delete_task), new Runnable(){
 			@Override
 			public void run() {
 				QueueManager.getQueueManager().deleteTask(id);

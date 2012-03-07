@@ -623,12 +623,13 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 
 		mLastTop = topItem;
 		if (hasLevel1) {
-			mList.moveToPosition(topItem);
-			holder.level1Text.setText(mList.getRowView().getLevel1Data());
-			String s = null;
-			if (hasLevel2) {
-				s = mList.getRowView().getLevel2Data();
-				holder.level2Text.setText(s);
+			if ( mList.moveToPosition(topItem) ) {
+				holder.level1Text.setText(mList.getRowView().getLevel1Data());
+				String s = null;
+				if (hasLevel2) {
+					s = mList.getRowView().getLevel2Data();
+					holder.level2Text.setText(s);
+				}				
 			}
 		}		
 	}

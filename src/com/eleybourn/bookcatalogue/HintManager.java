@@ -66,8 +66,14 @@ public class HintManager {
 		.add("BACKGROUND_TASKS", R.string.hint_background_tasks)
 		.add("BACKGROUND_TASK_EVENTS", R.string.hint_background_task_events)
 		.add("STARTUP_SCREEN", R.string.hint_startup_screen)
+		.add("explain_goodreads_no_isbn", R.string.explain_goodreads_no_isbn)
+		.add("explain_goodreads_no_match", R.string.explain_goodreads_no_match)
 		;
 
+	public static interface HintOwner {
+		public int getHint();
+	}
+	
 	/** Reset all hints to that they will be displayed again */
 	public static void resetHints() {
 		Enumeration<Hint> hints = mHints.getHints();
@@ -75,7 +81,7 @@ public class HintManager {
 			hints.nextElement().setVisible(true);
 		}
 	}
-	
+
 	/** Display the passed hint, if the user has not disabled it */
 	public static boolean displayHint(Context context, int stringId, final Runnable postRun) {
 		// Get the hint and return if it has been disabled.

@@ -33,7 +33,7 @@ import android.os.Bundle;
  * it does not seem to be possible to get them to work from web browser callbacks. So, we just
  * do the necessary processing here and exit.
  * 
- * RELEASE: This activity should bring the app to the foreground.
+ * TODO: This activity should bring the app to the foreground.
  * 
  * @author Philip Warner
  */

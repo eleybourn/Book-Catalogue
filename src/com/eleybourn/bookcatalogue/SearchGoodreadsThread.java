@@ -58,10 +58,7 @@ public class SearchGoodreadsThread extends SearchThread {
 		GoodreadsManager grMgr = new GoodreadsManager();
 		try {
 			if (mIsbn != null && mIsbn.trim().length() > 0) {
-				// RELEASE: Determine how to handle GR validation
-				//if (grMgr.hasValidCredentials()) {
-					mBookData = grMgr.getBookByIsbn(mIsbn);
-				//}
+				mBookData = grMgr.getBookByIsbn(mIsbn);
 			} else {
 				ArrayList<GoodreadsWork> list = grMgr.search(mAuthor + " " + mTitle);
 				if (list != null && list.size() > 0) {

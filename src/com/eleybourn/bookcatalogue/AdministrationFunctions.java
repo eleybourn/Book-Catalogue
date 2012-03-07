@@ -289,17 +289,17 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			});
 		}
 
-		/* Task errors setup Link */
-		View errTest = findViewById(R.id.task_errors_label);
-		// Make line flash when clicked.
-		errTest.setBackgroundResource(android.R.drawable.list_selector_background);
-		errTest.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				showEvents();
-				return;
-			}
-		});
+		///* Task errors setup Link */
+		//View errTest = findViewById(R.id.task_errors_label);
+		//// Make line flash when clicked.
+		//errTest.setBackgroundResource(android.R.drawable.list_selector_background);
+		//errTest.setOnClickListener(new OnClickListener() {
+		//	@Override
+		//	public void onClick(View v) {
+		//		showEvents();
+		//		return;
+		//	}
+		//});
 
 		/* LibraryThing auth Link */
 		View ltAuth = findViewById(R.id.librarything_auth);
@@ -408,13 +408,14 @@ public class AdministrationFunctions extends ActivityWithTasks {
 		Intent i = new Intent(this, TaskListActivity.class);
 		startActivity(i);
 	}
-	/**
-	 * Show the activity that displays all Event objects created by the QueueManager.
-	 */
-	private void showEvents() {
-		Intent i = new Intent(this, GoodreadsExportFailuresActivity.class);
-		startActivity(i);
-	}
+
+	///**
+	// * Show the activity that displays all Event objects created by the QueueManager.
+	// */
+	//private void showEvents() {
+	//	Intent i = new Intent(this, GoodreadsExportFailuresActivity.class);
+	//	startActivity(i);
+	//}
 
 	/**
 	 * Start a background task that imports books from goodreads.

@@ -80,7 +80,7 @@ public class BooklistStylesActivity extends EditObjectList<BooklistStyle> {
 			//((AutoCompleteTextView)this.findViewById(R.id.series)).setAdapter(mAdapter);
 
 			if (savedInstanceState == null)
-				HintManager.displayHint(this, R.string.hint_booklist_styles_editor);
+				HintManager.displayHint(this, R.string.hint_booklist_styles_editor, null);
 
 		} catch (Exception e) {
 			Logger.logError(e);

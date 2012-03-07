@@ -23,7 +23,9 @@ package com.eleybourn.bookcatalogue.goodreads;
 import com.eleybourn.bookcatalogue.R;
 import java.util.ArrayList;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,6 +34,7 @@ import android.widget.TextView;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
+import com.eleybourn.bookcatalogue.HintManager;
 import com.eleybourn.bookcatalogue.ViewTagger;
 
 import net.philipwarner.taskqueue.BindableItem;
@@ -51,8 +54,13 @@ import net.philipwarner.taskqueue.Listeners.OnEventChangeListener;
  */
 public class GoodreadsExportFailuresActivity extends  net.philipwarner.taskqueue.BindableItemListActivity 
 {
+	/** Key to store optional task ID hen activity is started */
+	public static final String KEY_TASK_ID = "GoodreadsExportFailuresActivity.TaskId";
+	/** DB connection */
 	private CatalogueDBAdapter m_db = null;
 	private BindableItemSQLiteCursor m_cursor;
+	/** Task ID, if provided in intent */
+	private long mTaskId = 0;
 
 	/**
 	 * Constructor. Tell superclass the resource for the list.
@@ -69,6 +77,13 @@ public class GoodreadsExportFailuresActivity extends  net.philipwarner.taskqueue
 		m_db = new CatalogueDBAdapter(this);
 		m_db.open();
 
+		Intent i = getIntent();
+		if (i != null && i.hasExtra(KEY_TASK_ID)) {
+			mTaskId = i.getLongExtra(KEY_TASK_ID, 0);
+		} else {
+			mTaskId = 0;
+		}
+		
 		//When any Event is added/changed/deleted, update the list. Lazy, yes.
 		BookCatalogueApp.getQueueManager().registerEventListener(m_OnEventChangeListener);		
 		// Update the header.
@@ -85,6 +100,9 @@ public class GoodreadsExportFailuresActivity extends  net.philipwarner.taskqueue
 		}
 	
 		this.setTitle(R.string.task_errors);
+
+		if (savedInstanceState == null)
+			HintManager.displayHint(this, R.string.hint_background_task_events, null);
 
 	}
 
@@ -183,8 +201,33 @@ public class GoodreadsExportFailuresActivity extends  net.philipwarner.taskqueue
 	 */
 	@Override
 	protected BindableItemSQLiteCursor getBindableItemCursor(Bundle savedInstanceState) {
-		m_cursor = BookCatalogueApp.getQueueManager().getAllEvents();
+		if (mTaskId == 0)
+			m_cursor = BookCatalogueApp.getQueueManager().getAllEvents();
+		else
+			m_cursor = BookCatalogueApp.getQueueManager().getTaskEvents(mTaskId);
+
 		return m_cursor;
+	}
+	
+	/** 
+	 * Get the unique ID associated with this activity. Used in activity results.
+	 * 
+	 * @return
+	 */
+	public static int getActivityId() {
+		return R.id.ACTIVITY_GOODREADS_EXPORT_FAILURES;
+	}
+
+	/**
+	 * Utility routine to start this activity on behalf of the passed activity.
+	 *
+	 * @param from
+	 * @param taskId
+	 */
+	public static void start(Activity from, long taskId) {
+		Intent i = new Intent(from, GoodreadsExportFailuresActivity.class);
+		i.putExtra(KEY_TASK_ID, taskId);
+		from.startActivityForResult(i, getActivityId());
 	}
 	
 }

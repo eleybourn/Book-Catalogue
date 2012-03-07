@@ -22,6 +22,8 @@ package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
 
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsExportFailuresActivity;
+
 import net.philipwarner.taskqueue.BindableItem;
 import net.philipwarner.taskqueue.BindableItemSQLiteCursor;
 import net.philipwarner.taskqueue.ContextDialogItem;
@@ -75,6 +77,9 @@ public class TaskListActivity extends net.philipwarner.taskqueue.BindableItemLis
 
 			this.setTitle(R.string.background_tasks);
 
+			if (savedInstanceState == null)
+				HintManager.displayHint(this, R.string.hint_background_tasks, null);
+
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
@@ -107,6 +112,12 @@ public class TaskListActivity extends net.philipwarner.taskqueue.BindableItemLis
 		Task task = (Task) ViewTagger.getTag(v, R.id.TAG_TASK);
 		ArrayList<ContextDialogItem> items = new ArrayList<ContextDialogItem>();
 
+		items.add(new ContextDialogItem(getString(R.string.show_events_ellipsis), new Runnable(){
+			@Override
+			public void run() {
+				doShowTaskEvents(id);
+			}}));
+
 		task.addContextMenuItems(this, parent, v, position, id, items, m_db);
 
 		if (items.size() > 0) {
@@ -114,6 +125,10 @@ public class TaskListActivity extends net.philipwarner.taskqueue.BindableItemLis
 		}
 	};
 
+	private void doShowTaskEvents(long taskId) {
+		GoodreadsExportFailuresActivity.start(this, taskId);
+	}
+	
 	/**
 	 * Return the number of task types we might return. 50 is just paranoia.
 	 * RELEASE: Keep checking this value!

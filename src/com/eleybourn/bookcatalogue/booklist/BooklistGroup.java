@@ -170,6 +170,7 @@ public class BooklistGroup implements Serializable {
 
 		private void initProperties() {
 			mAllSeries = new BooleanListProperty(mAllSeriesItems, "AllSeries", PropertyGroup.GRP_SERIES, R.string.books_in_multiple_series, null, BookCataloguePreferences.PREF_SHOW_ALL_SERIES, false);
+			mAllSeries.setHint(R.string.hint_series_book_may_appear_more_than_once);
 		}
 
 		/**
@@ -243,6 +244,7 @@ public class BooklistGroup implements Serializable {
 		 */
 		private void initProperties() {
 			mAllAuthors = new BooleanListProperty(mAllAuthorsItems, "AllAuthors", PropertyGroup.GRP_AUTHOR, R.string.books_with_multiple_authors, BookCataloguePreferences.PREF_SHOW_ALL_AUTHORS);
+			mAllAuthors.setHint(R.string.hint_authors_book_may_appear_more_than_once);
 			mGivenName = new BooleanListProperty(mGivenNameFirstItems, "GivenName", PropertyGroup.GRP_AUTHOR, R.string.format_of_author_names, BookCataloguePreferences.PREF_DISPLAY_FIRST_THEN_LAST_NAMES);
 		}
 
@@ -283,6 +285,7 @@ public class BooklistGroup implements Serializable {
 		public boolean getAllAuthors() {
 			return mAllAuthors.getResolvedValue();
 		}
+
 		/**
 		 * Accessor
 		 * 

@@ -129,7 +129,7 @@ public class BooklistStyleGroupsActivity extends EditObjectList<GroupWrapper> {
 				this.setTitle(getString(R.string.edit_style_colon_name, mStyle.getDisplayName()));
 
 			if (savedInstanceState == null)
-				HintManager.displayHint(this, R.string.hint_booklist_style_groups);
+				HintManager.displayHint(this, R.string.hint_booklist_style_groups, null);
 
 		} catch (Exception e) {
 			Logger.logError(e);

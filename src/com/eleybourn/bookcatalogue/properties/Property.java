@@ -58,6 +58,8 @@ public abstract class Property {
 	private transient String mName = null;
 	/** Property weight (for sorting). Most will remain set at 0. */
 	private int mWeight = 0;
+	/** Hint associated with this property. Subclasses need t ouse, where appropriate */
+	private int mHint = 0;
 
 	/**
 	 * Exception used by validation code.
@@ -179,6 +181,25 @@ public abstract class Property {
 	 */
 	void setNameResourceId(int id) {
 		mNameResourceId = id;
+	}
+
+	/**
+	 * Accessor
+	 */
+	public boolean hasHint() {
+		return mHint != 0;
+	}
+	/**
+	 * Accessor
+	 */
+	public int getHint() {
+		return mHint;
+	}
+	/**
+	 * Accessor
+	 */
+	public void setHint(int hint) {
+		mHint = hint;
 	}
 
 	/**

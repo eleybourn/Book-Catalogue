@@ -33,6 +33,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
+import com.eleybourn.bookcatalogue.HintManager;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.ViewTagger;
 
@@ -72,7 +73,7 @@ public abstract class ListProperty<T extends Object> extends ValuePropertyWithGl
 		v.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				displayList(v, inflater, getListItems());
+				handleClick(v, inflater);
 			}
 		});
 
@@ -97,6 +98,19 @@ public abstract class ListProperty<T extends Object> extends ValuePropertyWithGl
 		setValueInView(v, val);
 
 		return v;
+	}
+
+	private void handleClick(final View base, final LayoutInflater inflater) {
+		final ItemEntries<T> items = getListItems();
+		if (this.hasHint()) {
+			HintManager.displayHint(base.getContext(), this.getHint(), new Runnable(){
+				@Override
+				public void run() {
+					displayList(base, inflater, items);
+				}});
+		} else {
+			displayList(base, inflater, items);
+		}
 	}
 
 	/**

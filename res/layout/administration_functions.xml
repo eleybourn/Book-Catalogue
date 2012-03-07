@@ -173,7 +173,8 @@
 			/>
 	</LinearLayout>
 
-	<!--  TASK ERRORS -->
+	<!-- 
+	-  TASK ERRORS - 
 	<LinearLayout android:id="@+id/task_errors_label" 
 		android:orientation="horizontal"
 		android:layout_width="fill_parent" 
@@ -194,7 +195,8 @@
 			android:paddingTop="5sp"
 			/>
 	</LinearLayout>
-		
+ 	-->
+ 	
 	<!--  CREDENTIALS HEADING -->
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
 		android:orientation="horizontal"

@@ -102,7 +102,7 @@ public class BooklistPreferencesActivity extends PreferencesBase {
 			super.onCreate(savedInstanceState);	
 			setTitle(R.string.booklist_preferences);
 			if (savedInstanceState == null)
-				HintManager.displayHint(this, R.string.hint_booklist_global_properties);
+				HintManager.displayHint(this, R.string.hint_booklist_global_properties, null);
 		} catch (Exception e) {
 			Logger.logError(e);
 		}

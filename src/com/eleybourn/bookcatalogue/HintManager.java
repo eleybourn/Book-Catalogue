@@ -29,6 +29,9 @@ import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.SharedPreferences.Editor;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -58,6 +61,10 @@ public class HintManager {
 		.add("BOOKLIST_STYLE_GROUPS", R.string.hint_booklist_style_groups)
 		.add("BOOKLIST_STYLE_PROPERTIES", R.string.hint_booklist_style_properties)
 		.add("BOOKLIST_GLOBAL_PROPERTIES", R.string.hint_booklist_global_properties)
+		.add("BOOKLIST_MULTI_AUTHORS", R.string.hint_authors_book_may_appear_more_than_once)
+		.add("BOOKLIST_MULTI_SERIES", R.string.hint_series_book_may_appear_more_than_once)
+		.add("BACKGROUND_TASKS", R.string.hint_background_tasks)
+		.add("BACKGROUND_TASK_EVENTS", R.string.hint_background_task_events)
 		;
 
 	/** Reset all hints to that they will be displayed again */
@@ -69,11 +76,14 @@ public class HintManager {
 	}
 	
 	/** Display the passed hint, if the user has not disabled it */
-	public static boolean displayHint(Activity context, int stringId) {
+	public static boolean displayHint(Context context, int stringId, final Runnable postRun) {
 		// Get the hint and return if it has been disabled.
 		final Hint h = mHints.getHint(stringId);
-		if (!h.isVisible())
-			return false;
+		if (!h.isVisible()) {
+			if (postRun != null)
+				postRun.run();
+			return false;			
+		}
 
 		// Build the hint dialog
 		final Dialog dialog = new Dialog(context);
@@ -99,7 +109,15 @@ public class HintManager {
 				}
 			}
 		});
-		
+
+		dialog.setOnDismissListener(new OnDismissListener() {
+			@Override
+			public void onDismiss(DialogInterface dialog) {
+				if (postRun != null)
+					postRun.run();
+			}
+		});
+
 		dialog.show();		
 		return true;
 	}

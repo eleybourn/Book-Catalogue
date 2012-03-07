@@ -41,6 +41,7 @@
 				/>
 		</LinearLayout>
 
+	</LinearLayout>
 	  	<!--  Edit Styles -->
 		<LinearLayout android:id="@+id/edit_styles_label" 
 			android:orientation="horizontal"
@@ -84,9 +85,6 @@
 				android:paddingTop="5sp"
 				/>
 		</LinearLayout>
-
-	</LinearLayout>
-  </ScrollView>
-
+	  </ScrollView>
 </LinearLayout>
 	

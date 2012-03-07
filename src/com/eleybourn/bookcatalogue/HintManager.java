@@ -65,6 +65,7 @@ public class HintManager {
 		.add("BOOKLIST_MULTI_SERIES", R.string.hint_series_book_may_appear_more_than_once)
 		.add("BACKGROUND_TASKS", R.string.hint_background_tasks)
 		.add("BACKGROUND_TASK_EVENTS", R.string.hint_background_task_events)
+		.add("STARTUP_SCREEN", R.string.hint_startup_screen)
 		;
 
 	/** Reset all hints to that they will be displayed again */

@@ -375,6 +375,7 @@
 <item name="ACTIVITY_CREATE_BOOK_SCAN" type="id"/>
 <item name="ACTIVITY_EDIT_BOOK" type="id"/>
 <item name="ACTIVITY_ADMIN" type="id"/>
+<item name="ACTIVITY_HELP" type="id"/>
 <item name="ACTIVITY_PREFERENCES" type="id"/>
 <item name="ACTIVITY_BOOKLIST_STYLE" type="id"/>
 <item name="ACTIVITY_BOOKLIST_STYLE_PROPERTIES" type="id"/>
@@ -533,5 +534,9 @@
     								Clicking on a task will allow you to see the events associated with that task as well as delete the task (and related events).</string>
 <string name="hint_background_task_events">From here you can see the events associated with a background task. 
     								Clicking on a event will allow you to perform a variety of actions appropriate for that event.</string>
+<string name="hints_have_been_reset">Hints have been reset</string>
+<string name="task_has_been_queued_in_background">Task has been queued in background</string>
+<string name="hint_startup_screen">This is the standard BookCatalogue startup screen. If you prefer, you can startup directly in \'My Books\'; the preferred startup screen can be changed in preferences.</string>
+<string name="upgrading_ellipsis">Upgrading&#8230;</string>
 </resources>
 

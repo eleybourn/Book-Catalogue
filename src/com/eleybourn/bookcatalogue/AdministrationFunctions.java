@@ -360,6 +360,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			@Override
 			public void onClick(View v) {
 				HintManager.resetHints();
+				Toast.makeText(AdministrationFunctions.this, R.string.hints_have_been_reset, Toast.LENGTH_LONG).show();
 				return;
 			}
 		});
@@ -435,6 +436,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			return;
 
 		QueueManager.getQueueManager().enqueueTask(new ImportAllTask(isSync), BcQueueManager.QUEUE_MAIN, 0);
+		Toast.makeText(AdministrationFunctions.this, R.string.task_has_been_queued_in_background, Toast.LENGTH_LONG).show();
 	}
 
 	/**
@@ -486,6 +488,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			return;
 
 		QueueManager.getQueueManager().enqueueTask(new SendAllBooksTask(updatesOnly), BcQueueManager.QUEUE_MAIN, 0);
+		Toast.makeText(AdministrationFunctions.this, R.string.task_has_been_queued_in_background, Toast.LENGTH_LONG).show();
 	}
 	
 	/**

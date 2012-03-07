@@ -112,13 +112,13 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 		style.addGroup(ROW_KIND_AUTHOR);
 		style.addGroup(ROW_KIND_SERIES);
 
-		// Author(first)/Series
-		style = new BooklistStyle(R.string.sort_first_author_series);
-		styles.add(style);
-		a = new BooklistAuthorGroup();
-		a.setAllAuthors(false);
-		style.addGroup(a);
-		style.addGroup(ROW_KIND_SERIES);
+		//// Author(first)/Series
+		//style = new BooklistStyle(R.string.sort_first_author_series);
+		//styles.add(style);
+		//a = new BooklistAuthorGroup();
+		//a.setAllAuthors(false);
+		//style.addGroup(a);
+		//style.addGroup(ROW_KIND_SERIES);
 
 		// Unread
 		style = new BooklistStyle(R.string.sort_unread);

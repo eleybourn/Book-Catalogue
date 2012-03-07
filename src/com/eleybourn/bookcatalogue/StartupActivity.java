@@ -20,6 +20,8 @@
 
 package com.eleybourn.bookcatalogue;
 
+import java.lang.ref.WeakReference;
+
 import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.SimpleTaskQueue.OnTaskFinishListener;
 import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTask;
@@ -73,6 +75,8 @@ public class StartupActivity extends Activity {
 		mFtsRebuildRequired = true;
 	}
 	
+	public static WeakReference<StartupActivity> mStartupActivity = null;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -91,6 +95,8 @@ public class StartupActivity extends Activity {
 
 		// If it's a real application startup...cleanup old stuff
 		if (mWasReallyStartup) {
+			mStartupActivity = new WeakReference<StartupActivity>(this);
+
 			updateProgress("Starting");
 
 			SimpleTaskQueue q = getQueue();
@@ -114,11 +120,31 @@ public class StartupActivity extends Activity {
 	}
 
 	/**
+	 * Kludge to get a reference to the currently running StartupActivity, if defined.
+	 * 
+	 * @return		Reference or null.
+	 */
+	public static StartupActivity getActiveActivity() {
+		if (mStartupActivity != null)
+			return mStartupActivity.get();
+		else
+			return null;
+	}
+
+	/**
 	 * Update the progress dialog, if it has not been dismissed.
 	 * 
 	 * @param message
 	 */
-	private void updateProgress(final String message) {
+	public void updateProgress(final int stringId) {
+		updateProgress(getString(stringId));
+	}
+	/**
+	 * Update the progress dialog, if it has not been dismissed.
+	 * 
+	 * @param message
+	 */
+	public void updateProgress(final String message) {
 		// If mProgress is null, it has been dismissed. Don't update.
 		if (mProgress == null) {
 			return;
@@ -175,6 +201,8 @@ public class StartupActivity extends Activity {
 	 * Called in UI thread after last startup task completes, or if there are no tasks to queue.
 	 */
 	private void stage2Startup() {
+		// Remove the weak reference. Only used by db onUpgrade.
+		mStartupActivity.clear();
 		// Get rid of the progress dialog
 		if (mProgress != null) {
 			mProgress.dismiss();

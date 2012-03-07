@@ -38,10 +38,11 @@ public class MenuHandler {
 	private static final int MNU_ITM_ADD_BOOK_BARCODE = Menu.FIRST+3;
 	private static final int MNU_ITM_ADD_BOOK_ISBN = Menu.FIRST+4;
 	private static final int MNU_ITM_ADD_BOOK_NAMES = Menu.FIRST+5;
-	private static final int MNU_ITM_ADMIN = Menu.FIRST+7;
-	private static final int MNU_ITM_SEARCH = Menu.FIRST+8;
+	private static final int MNU_ITM_HELP = Menu.FIRST+7;
+	private static final int MNU_ITM_ADMIN = Menu.FIRST+8;
+	private static final int MNU_ITM_SEARCH = Menu.FIRST+9;
 	
-	public static final int FIRST = Menu.FIRST+9;
+	public static final int FIRST = Menu.FIRST+10;
 
 	private int mSort = 0;
 
@@ -95,10 +96,17 @@ public class MenuHandler {
 	 * 
 	 * @param menu	root menu
 	 */
-	public void addCreateHelpItem(Menu menu) {
-		String adminTitle = BookCatalogueApp.getResourceString(R.string.help) + " & " + BookCatalogueApp.getResourceString(R.string.menu_administration);
-		MenuItem admin = menu.add(0, MNU_ITM_ADMIN, mSort++, adminTitle);
-		admin.setIcon(android.R.drawable.ic_menu_manage);
+	public void addCreateHelpAndAdminItems(Menu menu) {
+		{
+			String helpTitle = BookCatalogueApp.getResourceString(R.string.help);
+			MenuItem help = menu.add(0, MNU_ITM_HELP, mSort++, helpTitle);
+			help.setIcon(android.R.drawable.ic_menu_help);
+		}
+		{
+			String adminTitle = BookCatalogueApp.getResourceString(R.string.menu_administration);
+			MenuItem admin = menu.add(0, MNU_ITM_ADMIN, mSort++, adminTitle);
+			admin.setIcon(android.R.drawable.ic_menu_manage);
+		}
 	}
 	
 	/**
@@ -134,9 +142,13 @@ public class MenuHandler {
 		case MNU_ITM_ADD_BOOK_NAMES:
 			createBookISBN(a,"name");
 			return true;
+		case MNU_ITM_HELP:
+			// Start the Main Menu, not just the Admin page
+			helpPage(a);
+			return true;
 		case MNU_ITM_ADMIN:
 			// Start the Main Menu, not just the Admin page
-			mainMenuPage(a);
+			adminPage(a);
 			return true;
 		case MNU_ITM_SEARCH:
 			a.onSearchRequested();
@@ -173,13 +185,22 @@ public class MenuHandler {
 	}
 
 	/**
-	 * Load the Main Menu Activity
+	 * Load the Admin Activity
 	 */
-	private void mainMenuPage(Activity a) {
-		Intent i = new Intent(BookCatalogueApp.context, MainMenu.class);
+	private void adminPage(Activity a) {
+		Intent i = new Intent(BookCatalogueApp.context, AdministrationFunctions.class);
+		i.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
 		a.startActivityForResult(i, R.id.ACTIVITY_ADMIN);
 	}
 	
+	/**
+	 * Load the Main Menu Activity
+	 */
+	private void helpPage(Activity a) {
+		Intent i = new Intent(BookCatalogueApp.context, Help.class);
+		i.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+		a.startActivityForResult(i, R.id.ACTIVITY_HELP);
+	}
 
 	/**
 	 * Load the EditBook activity based on the provided id. Also open to the provided tab

@@ -627,6 +627,10 @@ public class CatalogueDBAdapter {
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 			int curVersion = oldVersion;
 			
+			StartupActivity startup = StartupActivity.getActiveActivity();
+			if (startup != null)
+				startup.updateProgress(R.string.upgrading_ellipsis);
+
 			if (oldVersion != newVersion)
 				backupDbFile(db, Utils.LOCATION + "DbUpgrade-" + oldVersion + "-" + newVersion);
 			

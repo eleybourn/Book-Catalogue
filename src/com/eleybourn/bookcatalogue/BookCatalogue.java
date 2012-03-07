@@ -1219,7 +1219,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		}
 		mMenuHandler.addItem(menu, SORT_BY, R.string.menu_sort_by, android.R.drawable.ic_menu_sort_alphabetically);
 
-		mMenuHandler.addCreateHelpItem(menu);
+		mMenuHandler.addCreateHelpAndAdminItems(menu);
 		mMenuHandler.addSearchItem(menu);
 
 		return super.onPrepareOptionsMenu(menu);

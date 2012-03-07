@@ -88,6 +88,9 @@ public class MainMenu extends Activity {
 		setOnClickListener(R.id.about_label, mAboutHandler);
 		setOnClickListener(R.id.help_label, mHelpHandler);
 		setOnClickListener(R.id.donate_label, mDonateHandler);
+
+		if (savedInstanceState == null)
+			HintManager.displayHint(this, R.string.hint_startup_screen, null);
 	}
 
 	/**

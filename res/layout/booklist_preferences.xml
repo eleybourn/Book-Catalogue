@@ -37,7 +37,7 @@
 				android:layout_height="wrap_content" 
 				android:text="@+string/management"
 				android:textAppearance="?android:attr/textAppearanceSmall"
-				android:paddingTop="5sp"
+				android:paddingTop="0sp"
 				/>
 		</LinearLayout>
 

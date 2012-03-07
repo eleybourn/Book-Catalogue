@@ -171,6 +171,10 @@ public class TaskListActivity extends net.philipwarner.taskqueue.BindableItemLis
 		try {
 			BookCatalogueApp.getQueueManager().unregisterTaskListener(m_OnTaskChangeListener);					
 		} catch (Exception e) {/* Ignore */}
+		try {
+			if (m_cursor != null)
+				m_cursor.close();
+		} catch (Exception e) {/* Ignore */}
 	} 
 
 }

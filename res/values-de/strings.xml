@@ -266,4 +266,9 @@
 <string name="incorrect_key">Der eingegebene LibraryThing Entwicklerschlüssel war falsch oder es konnte keine Netzwerkverbindung zur Verifizierung hergestellt werden.</string>
 <string name="correct_key">Ihr LibraryThing Entwicklerschlüssel ist gültig.</string>
 <string name="sortby_author_one">Sortieren nach Autor (nur erster Autor)</string>
+<string name="no_connection">Internet Verbindung nicht verfügbar.</string>
+<string name="sortby_published">Sortieren nach Veröffentlichungsdatum</string>
+<string name="menu_share_this">Teilen</string>
+<string name="email_export">Möchten Sie diesen Export als E-Mail versenden?</string>
+<string name="menu_crop_thumb">Cover-Bild zuschneiden</string>
 </resources>

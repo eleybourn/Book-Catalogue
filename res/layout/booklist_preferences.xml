@@ -17,6 +17,7 @@
 		android:layout_height="fill_parent"
 		android:paddingLeft="5sp">
 
+	    <!--  This is where the automatically generated properties will go -->
 		<LinearLayout	 android:id="@+id/style_properties" 
 			android:gravity="top" 
 			android:orientation="vertical"
@@ -31,7 +32,7 @@
 			android:orientation="horizontal"
 			android:layout_width="fill_parent" 
 			android:layout_height="wrap_content"
-			android:paddingLeft="5sp">
+			android:paddingLeft="0sp">
 			<TextView 
 				android:layout_width="wrap_content" 
 				android:layout_height="wrap_content" 
@@ -41,7 +42,6 @@
 				/>
 		</LinearLayout>
 
-	</LinearLayout>
 	  	<!--  Edit Styles -->
 		<LinearLayout android:id="@+id/edit_styles_label" 
 			android:orientation="horizontal"
@@ -85,6 +85,7 @@
 				android:paddingTop="5sp"
 				/>
 		</LinearLayout>
-	  </ScrollView>
+	</LinearLayout>
+  </ScrollView>
 </LinearLayout>
 	

@@ -1414,7 +1414,7 @@ public class CatalogueDBAdapter {
 				// A bit of presumption here...
 				message += "New in v4.0 - Updates courtesy of (mainly) Philip Warner (a.k.a Grunthos) -- blame him, politely, if it toasts your data\n\n";
 				message += "* New look, new startup page\n\n";
-				message += "* Synchronization with GoodReads\n\n";
+				message += "* Synchronization with goodreads (www.goodreads.com)\n\n";
 				message += "* New styles for book lists (including 'Compact' and 'Unread')\n\n";
 				message += "* User-defined styles for book lists\n\n";
 				message += "* More efficient memory usage\n\n";
@@ -1422,7 +1422,7 @@ public class CatalogueDBAdapter {
 				message += "* Faster expand/collapse with large collections\n\n";
 				message += "* Cached covers for faster scrolling lists\n\n";
 				message += "* Cover images now have globally unique names, and books have globally unique IDs, so sharing and combining collections is easy\n\n";
-				message += "* Improved detection of series names in book titles\n\n";
+				message += "* Improved detection of series names\n\n";
 			}
 
 			// Rebuild all indices

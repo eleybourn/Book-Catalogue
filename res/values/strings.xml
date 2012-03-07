@@ -529,7 +529,7 @@
 <string name="show_events_ellipsis">Show events&#8230;</string>
 <string name="hint_authors_book_may_appear_more_than_once">If shown for every author, a single book may appear more than once in a list. In such a case deleting one of those books will delete all instances from the list.</string>
 <string name="hint_series_book_may_appear_more_than_once">If shown in every series, a single book may appear more than once in a list. In such a case deleting one of those books will delete all instances from the list.</string>
-<string name="hint_background_tasks">From here you can see the currently running tasks as well as previous tasks that have completed, but with errors or other notable events. 
+<string name="hint_background_tasks">From here you can see the currently running tasks as well as previous tasks that have completed with errors or other notable events. 
     								Clicking on a task will allow you to see the events associated with that task as well as delete the task (and related events).</string>
 <string name="hint_background_task_events">From here you can see the events associated with a background task. 
     								Clicking on a event will allow you to perform a variety of actions appropriate for that event.</string>

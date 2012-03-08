@@ -239,7 +239,6 @@ public class StandardDialogs {
 		if (title != null && !title.equals("")) {
 			builder.setTitle(title);
 		}
-		builder.setMessage("An item must be selected from the list because I am a Nazi.");
 		final AlertDialog dialog = builder.create();
 
 		// Create the listener for each item

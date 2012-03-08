@@ -71,9 +71,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 public class Utils {
-	private static String UTF8 = "utf8";
-	private static int BUFFER_SIZE = 8192;
-
 	// External DB for cover thumbnails
 	private boolean mCoversDbCreateFail = false;
 	/** Database is non-static member so we don't make it linger longer than necessary */
@@ -104,6 +101,7 @@ public class Utils {
 	private static SimpleDateFormat mDateEngHMSdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
 	private static SimpleDateFormat mDateEngSdf = new SimpleDateFormat("dd-MM-yyyy");
 	private static DateFormat mDateDispSdf = DateFormat.getDateInstance(java.text.DateFormat.MEDIUM);
+	//private static DateFormat mDateTimeDispSdf = DateFormat.getDateInstance(java.text.DateFormat.FULL);
 	// Dates of the form: 'Fri May 5 17:23:11 -0800 2012'
 	private static final SimpleDateFormat mLongUnixHMSSdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss ZZZZ yyyy");
 	private static final SimpleDateFormat mLongUnixHMSdf = new SimpleDateFormat("EEE MMM dd HH:mm ZZZZ yyyy");
@@ -130,8 +128,6 @@ public class Utils {
 			};
 
 	public static final String APP_NAME = "Book Catalogue";
-	public static final String LOCATION = "bookCatalogue";
-	public static final String DATABASE_NAME = "book_catalogue";
 	public static final boolean USE_LT = true;
 	public static final boolean USE_BARCODE = true;
 	//public static final String APP_NAME = "DVD Catalogue";
@@ -145,9 +141,6 @@ public class Utils {
 	//public static final boolean USE_LT = true;
 	//public static final boolean USE_BARCODE = false;
 
-	public static final String EXTERNAL_FILE_PATH = Environment.getExternalStorageDirectory() + "/" + LOCATION;
-	public static final String ERRORLOG_FILE = EXTERNAL_FILE_PATH + "/error.log";
-
 	public static String toSqlDateOnly(Date d) {
 		return mDateSqlSdf.format(d);
 	}
@@ -156,6 +149,9 @@ public class Utils {
 	}
 	public static String toPrettyDate(Date d) {
 		return mDateDispSdf.format(d);		
+	}
+	public static String toPrettyDateTime(Date d) {
+		return DateFormat.getDateTimeInstance().format(d);		
 	}
 
 	public static Date parseDate(String s) {
@@ -203,23 +199,6 @@ public class Utils {
 				}});
 		}
 		return mSeriesUtils;
-	}
-
-	/**
-	 * Check if the sdcard is writable
-	 * 
-	 * @return	success or failure
-	 */
-	static public boolean sdCardWritable() {
-		/* Test write to the SDCard */
-		try {
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(EXTERNAL_FILE_PATH + "/.nomedia"), UTF8), BUFFER_SIZE);
-			out.write("");
-			out.close();
-			return true;
-		} catch (IOException e) {
-			return false;
-		}		
 	}
 
 	/**
@@ -1232,122 +1211,6 @@ public class Utils {
 		}
 	}
 
-	private static String[] mPurgeableFilePrefixes = new String[]{Utils.LOCATION + "DbUpgrade", Utils.LOCATION + "DbExport", "error.log", "tmp"};
-	private static String[] mDebugFilePrefixes = new String[]{Utils.LOCATION + "DbUpgrade", Utils.LOCATION + "DbExport", "error.log", "export.csv"};
-
-	/**
-	 * Collect and send debug info to a support email address. 
-	 * 
-	 * THIS SHOULD NOT BE A PUBLICALLY AVAILABLE MAINING LIST OR FORUM!
-	 * 
-	 * @param context
-	 * @param dbHelper
-	 */
-	public static void sendDebugInfo(Context context, CatalogueDBAdapter dbHelper) {
-		// Create a temp DB copy.
-		String tmpName = Utils.LOCATION + "DbExport-tmp.db";
-		dbHelper.backupDbFile(tmpName);
-		File dbFile = new File(Utils.EXTERNAL_FILE_PATH + "/" + tmpName);
-		dbFile.deleteOnExit();
-		// setup the mail message
-		final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND_MULTIPLE);
-		emailIntent.setType("plain/text");
-		emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, context.getString(R.string.debug_email).split(";"));
-		String subject = "[" + context.getString(R.string.app_name) + "] " + context.getString(R.string.debug_subject);
-		emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
-		emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, context.getString(R.string.debug_body));
-		//has to be an ArrayList
-		ArrayList<Uri> uris = new ArrayList<Uri>();
-		//convert from paths to Android friendly Parcelable Uri's
-		ArrayList<String> files = new ArrayList<String>();
-		
-		// Find all files of interest to send
-		File dir = new File(Utils.EXTERNAL_FILE_PATH);
-		try {
-			for (String name : dir.list()) {
-				boolean send = false;
-				for(String prefix : mDebugFilePrefixes)
-					if (name.startsWith(prefix)) {
-						send = true;
-						break;
-					}
-				if (send)
-					files.add(name);
-			}
-			
-			// Build the attachment list
-			for (String file : files)
-			{
-				File fileIn = new File(Utils.EXTERNAL_FILE_PATH + "/" + file);
-				if (fileIn.exists() && fileIn.length() > 0) {
-					Uri u = Uri.fromFile(fileIn);
-					uris.add(u);
-				}
-			}
-			// Send it, if there are any files to send.
-			if (uris.size() == 0) {
-				Toast.makeText(context, R.string.no_debug_info, Toast.LENGTH_LONG).show();
-			} else {
-				emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-				context.startActivity(Intent.createChooser(emailIntent, "Send mail..."));        	
-			}
-		} catch (NullPointerException e) {
-			Logger.logError(e);
-			Toast.makeText(context, R.string.export_failed_sdcard, Toast.LENGTH_LONG).show();
-		}
-	}
-
-	/**
-	 * Cleanup any purgeable files.
-	 */
-	public static void cleanupFiles() {
-		if (Utils.sdCardWritable()) {
-	        File dir = new File(Utils.EXTERNAL_FILE_PATH);
-	        for (String name : dir.list()) {
-	        	boolean purge = false;
-	        	for(String prefix : mPurgeableFilePrefixes)
-	        		if (name.startsWith(prefix)) {
-	        			purge = true;
-	        			break;
-	        		}
-	        	if (purge)
-		        	try {
-		        		File file = new File(Utils.EXTERNAL_FILE_PATH + "/" + name);
-			        	file.delete();
-		        	} catch (Exception e) {        		
-		        	}
-	        }
-		}
-	}
-
-	/**
-	 * Get the total size of purgeable files.
-	 * @return	size, in bytes
-	 */
-	public static long cleanupFilesTotalSize() {
-		if (!Utils.sdCardWritable())
-			return 0;
-
-		long totalSize = 0;
-
-		File dir = new File(Utils.EXTERNAL_FILE_PATH);
-        for (String name : dir.list()) {
-        	boolean purge = false;
-        	for(String prefix : mPurgeableFilePrefixes)
-        		if (name.startsWith(prefix)) {
-        			purge = true;
-        			break;
-        		}
-        	if (purge)
-	        	try {
-	        		File file = new File(Utils.EXTERNAL_FILE_PATH + "/" + name);
-	        		totalSize += file.length();
-	        	} catch (Exception e) {        		
-	        	}
-        }
-        return totalSize;
-	}
-	
 	/**
 	 * Check if phone has a network connection
 	 * 
@@ -1474,5 +1337,22 @@ public class Utils {
 		return mMonthNameFormatter.format(mCalendar.getTime());
 	}
 
+	/**
+	 * Format a number of bytes in a human readable form
+	 */
+	public static String formatFileSize(float space) {
+		String sizeFmt;
+		String msg;
+		if (space < 3072) { // Show 'bytes' if < 3k
+			sizeFmt = BookCatalogueApp.getResourceString(R.string.bytes);
+		} else if (space < 250 * 1024) { // Show Kb if less than 250kB
+			sizeFmt = BookCatalogueApp.getResourceString(R.string.kilobytes);
+			space = space / 1024;
+		} else { // Show MB otherwise...
+			sizeFmt = BookCatalogueApp.getResourceString(R.string.megabytes);
+			space = space / (1024 * 1024);
+		}
+		return String.format(sizeFmt,space);		
+	}
 }
 

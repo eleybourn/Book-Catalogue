@@ -512,7 +512,7 @@ public class CatalogueDBAdapter {
 //						+ " LEFT OUTER JOIN " + DB_TB_SERIES + " s ON (s." + KEY_ROWID + "=w." + KEY_SERIES_ID + ") ";
 
 	//TODO: Update database version RELEASE: Update database version
-	public static final int DATABASE_VERSION = 72;
+	public static final int DATABASE_VERSION = 73;
 
 	private TableInfo mBooksInfo = null;
 
@@ -536,7 +536,7 @@ public class CatalogueDBAdapter {
 	 */
 	private static class DatabaseHelper extends SQLiteOpenHelper {
 		DatabaseHelper(Context context) {
-			super(context, Utils.DATABASE_NAME, mTrackedCursorFactory, DATABASE_VERSION);
+			super(context, StorageUtils.getDatabaseName(), mTrackedCursorFactory, DATABASE_VERSION);
 		}
 		
 		/**
@@ -564,12 +564,30 @@ public class CatalogueDBAdapter {
 			DatabaseDefinitions.TBL_BOOKS_FTS.create(sdb, false);
 			DatabaseDefinitions.TBL_BOOK_LIST_STYLES.createAll(sdb, true);
 
-			new File(Utils.EXTERNAL_FILE_PATH + "/").mkdirs();
-			try {
-				new File(Utils.EXTERNAL_FILE_PATH + "/.nomedia").createNewFile();
-			} catch (IOException e) {
-				Logger.logError(e);
-			}
+			createTriggers(sdb);
+
+			StorageUtils.initSharedDirectory();
+		}
+
+
+		/**
+		 * Create the database triggers. Currently only one, and the implementation needs refinining!
+		 *
+		 * @param db
+		 */
+		private void createTriggers(SynchronizedDb db) {
+			String name = "books_tg_reset_goodreads";
+			String body = " after update of isbn on books for each row\n" + 
+						" When New." + KEY_ISBN + " <> Old." + KEY_ISBN + "\n" +
+						"	Begin \n" +
+						"		Update books Set \n" +
+						"		    goodreads_book_id = 0,\n" +
+						"		    last_goodreads_sync_date = ''\n" +
+						"		Where\n" +
+						"			" + KEY_ROWID + " = new." + KEY_ROWID + ";\n" +
+						"	End";
+			db.execSQL("Drop Trigger if Exists " + name);
+			db.execSQL("Create Trigger " + name + body);
 		}
 
 		private void createIndices(SQLiteDatabase db) {
@@ -632,7 +650,7 @@ public class CatalogueDBAdapter {
 				startup.updateProgress(R.string.upgrading_ellipsis);
 
 			if (oldVersion != newVersion)
-				backupDbFile(db, Utils.LOCATION + "DbUpgrade-" + oldVersion + "-" + newVersion);
+				StorageUtils.backupDbFile(db, "DbUpgrade-" + oldVersion + "-" + newVersion);
 			
 			if (curVersion < 11) {
 				onCreate(db);
@@ -867,7 +885,7 @@ public class CatalogueDBAdapter {
 			if (curVersion == 39) {
 				curVersion++;
 				try {
-					new File(Utils.EXTERNAL_FILE_PATH + "/.nomedia").createNewFile();
+					new File(StorageUtils.getSharedStoragePath() + "/.nomedia").createNewFile();
 				} catch (Exception e) {
 					// Don't care about this exception
 					Logger.logError(e);
@@ -1414,6 +1432,7 @@ public class CatalogueDBAdapter {
 				db.execSQL("DROP TABLE books_tmp");
 			}
 			if (curVersion == 71) {
+				curVersion++;
 				renameIdFilesToHash(sdb);
 				// A bit of presumption here...
 				message += "New in v4.0 - Updates courtesy of (mainly) Philip Warner (a.k.a Grunthos) -- blame him, politely, if it toasts your data\n\n";
@@ -1428,9 +1447,15 @@ public class CatalogueDBAdapter {
 				message += "* Cover images now have globally unique names, and books have globally unique IDs, so sharing and combining collections is easy\n\n";
 				message += "* Improved detection of series names\n\n";
 			}
+			if (curVersion == 72) {
+				curVersion++;
+				// Just to get the triggers applied
+			}
 
 			// Rebuild all indices
 			createIndices(db);
+			// Rebuild all triggers
+			createTriggers(sdb);
 
 			//TODO: NOTE: END OF UPDATE
 		}
@@ -1518,7 +1543,8 @@ public class CatalogueDBAdapter {
 	 */
 	public CatalogueDBAdapter open() throws SQLException {
 		/* Create the bookCatalogue directory if it does not exist */
-		new File(Utils.EXTERNAL_FILE_PATH + "/").mkdirs();
+		StorageUtils.getSharedStorage();
+		// Get the DB wrapper
 		mDb = new SynchronizedDb(mDbHelper, mSynchronizer);
 		// Turn on foreign key support so that CASCADE works.
 		mDb.execSQL("PRAGMA foreign_keys = ON");
@@ -1559,7 +1585,7 @@ public class CatalogueDBAdapter {
 	 * @throws Exception 
 	 */
 	public void backupDbFile() {
-		backupDbFile(Utils.LOCATION + "DbExport.db");
+		backupDbFile("DbExport.db");
 	}
 	
 	/**
@@ -1567,49 +1593,14 @@ public class CatalogueDBAdapter {
 	 *
 	 * @throws Exception 
 	 */
-	public void backupDbFile(String filename) {
+	public void backupDbFile(String suffix) {
 		try {
-			backupDbFile(mDb.getUnderlyingDatabase(), filename);
+			StorageUtils.backupDbFile(mDb.getUnderlyingDatabase(), suffix);
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
 	}
 	
-	/**
-	 * Backup database file
-	 * @throws Exception 
-	 */
-	private static void backupDbFile(SQLiteDatabase db, String filename) {
-		try {
-			java.io.InputStream dbOrig = new java.io.FileInputStream(db.getPath());
-			File dir = new File(Utils.EXTERNAL_FILE_PATH);
-			dir.mkdir();
-			// Path to the external backup
-			String fullFilename = dir.getPath() + "/" + filename;
-			//check if it exists
-			File existing = new File(fullFilename);
-			if (existing.exists()) {
-				String backupFilename = dir.getPath() + "/" + filename + ".bak";
-				File backup = new File(backupFilename);
-				existing.renameTo(backup);
-			}
-			java.io.OutputStream dbCopy = new java.io.FileOutputStream(fullFilename);
-			
-			byte[] buffer = new byte[1024];
-			int length;
-			while ((length = dbOrig.read(buffer))>0) {
-				dbCopy.write(buffer, 0, length);
-			}
-			
-			dbCopy.flush();
-			dbCopy.close();
-			dbOrig.close();
-			
-		} catch (Exception e) {
-			Logger.logError(e);
-		}
-	}
-
 	/**
 	 * Get the 'standard' temp file name for new books
 	 */
@@ -1621,7 +1612,7 @@ public class CatalogueDBAdapter {
 	 * Get the 'standard' temp file name for new books, including a suffix
 	 */
 	public static final File getTempThumbnail(String suffix) {
-		return new File(Utils.EXTERNAL_FILE_PATH + "/tmp" + suffix + ".jpg");
+		return new File(StorageUtils.getSharedStoragePath() + "/tmp" + suffix + ".jpg");
 	}
 
 	/**
@@ -1659,7 +1650,7 @@ public class CatalogueDBAdapter {
 		if (prefix == null || prefix.equals("")) {
 			return getTempThumbnail(suffix);
 		} else {
-			final String base = Utils.EXTERNAL_FILE_PATH + "/" + prefix + suffix;
+			final String base = StorageUtils.getSharedStorage() + "/" + prefix + suffix;
 			file = new File(base + ".jpg");
 			if (!file.exists()) {
 				File png = new File(base + ".png");

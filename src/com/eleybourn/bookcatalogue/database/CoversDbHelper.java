@@ -23,6 +23,7 @@ package com.eleybourn.bookcatalogue.database;
 import java.io.ByteArrayOutputStream;
 import java.util.Date;
 
+import com.eleybourn.bookcatalogue.StorageUtils;
 import com.eleybourn.bookcatalogue.TrackedCursor;
 import com.eleybourn.bookcatalogue.Utils;
 import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedDb;
@@ -60,7 +61,7 @@ public class CoversDbHelper extends GenericOpenHelper {
 	private SqlStatementManager mStatements = new SqlStatementManager();
 
 	/** DB location */
-	private static final String COVERS_DATABASE_NAME = Utils.EXTERNAL_FILE_PATH + "/covers.db";
+	private static final String COVERS_DATABASE_NAME = StorageUtils.getSharedStoragePath() + "/covers.db";
 	/** DB Version */
 	private static final int COVERS_DATABASE_VERSION = 1;
 

@@ -23,8 +23,10 @@ import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
  * @author Philip Warner
  */
 public class ExportThread extends ManagedTask {
-	private static String mFilePath = Utils.EXTERNAL_FILE_PATH;
-	private static String mFileName = mFilePath + "/export.csv";
+	// Changed the paths to non-static variable because if this code is called 
+	// while a phone sync is in progress, they will not be set correctly
+	private String mFilePath = StorageUtils.getSharedStorage().getAbsolutePath();
+	private String mFileName = mFilePath + "/export.csv";
 	private static String UTF8 = "utf8";
 	private static int BUFFER_SIZE = 8192;
 	private CatalogueDBAdapter mDbHelper;
@@ -60,7 +62,7 @@ public class ExportThread extends ManagedTask {
 				ArrayList<Uri> uris = new ArrayList<Uri>();
 				// Find all files of interest to send
 				try {
-					File fileIn = new File(Utils.EXTERNAL_FILE_PATH + "/" + "export.csv");
+					File fileIn = new File(StorageUtils.getSharedStoragePath() + "/" + "export.csv");
 					Uri u = Uri.fromFile(fileIn);
 					uris.add(u);
 					// Send it, if there are any files to send.
@@ -104,7 +106,7 @@ public class ExportThread extends ManagedTask {
 	@Override
 	protected void onRun() {
 		int num = 0;
-		if (!Utils.sdCardWritable()) {
+		if (!StorageUtils.sdCardWritable()) {
 			mManager.doToast("Export Failed - Could not write to SDCard");
 			return;			
 		}

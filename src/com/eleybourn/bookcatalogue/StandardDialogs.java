@@ -20,7 +20,9 @@
 
 package com.eleybourn.bookcatalogue;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsRegister;
 
@@ -30,6 +32,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 public class StandardDialogs {
 
@@ -205,5 +212,101 @@ public class StandardDialogs {
 		alertDialog.show();
 		return 0;
 		
+	}
+
+	/**
+	 * Interface for item that displays in a custom dialog list
+	 */
+	public static interface SimpleDialogItem {
+		View getView(LayoutInflater inflater);
+	}
+	/**
+	 * Interface to listen for item selection in a custom dialog list
+	 */
+	public static interface SimpleDialogOnClickListener {
+		void onClick(SimpleDialogItem item);
+	}
+
+	/**
+	 * Select a custom item from a list, and call halder when/if item is selected.
+	 */
+	public static void selectItemDialog(LayoutInflater inflater, String title, ArrayList<SimpleDialogItem> items, final SimpleDialogOnClickListener handler) {
+		// Get the view and the radio group
+		View root = inflater.inflate(R.layout.select_list_dialog, null);
+
+		// Build the base dialog
+		final AlertDialog.Builder builder = new AlertDialog.Builder(inflater.getContext()).setView(root);
+		if (title != null && !title.equals("")) {
+			builder.setTitle(title);
+		}
+		builder.setMessage("An item must be selected from the list because I am a Nazi.");
+		final AlertDialog dialog = builder.create();
+
+		// Create the listener for each item
+		OnClickListener listener = new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				dialog.dismiss();
+				SimpleDialogItem item = (SimpleDialogItem)ViewTagger.getTag(v, R.id.TAG_DIALOG_ITEM);
+				handler.onClick(item);				
+			}};		
+
+		// Add the items to the dialog
+		LinearLayout list = (LinearLayout)root.findViewById(R.id.list);
+		for(SimpleDialogItem item: items) {
+			View v = item.getView(inflater);
+			ViewTagger.setTag(v, R.id.TAG_DIALOG_ITEM, item);
+			list.addView(v);
+			v.setOnClickListener(listener);
+		}
+		dialog.show();
+	}
+
+	/**
+	 * Wrapper class to present a list of files for selection
+	 */
+	public static void selectFileDialog(LayoutInflater inflater, String title, ArrayList<File> files, final SimpleDialogOnClickListener handler) {
+		ArrayList<SimpleDialogItem> items = new ArrayList<SimpleDialogItem>();
+		for(File file: files) {
+			items.add(new SimpleDialogFileItem(file));
+		}
+		selectItemDialog(inflater, title, items, handler);
+	}
+
+	/**
+	 * Simple item to manage a File object in a list of items.
+	 */
+	public static class SimpleDialogFileItem implements SimpleDialogItem {
+		private final File mFile; 
+		
+		public SimpleDialogFileItem(File file) {
+			mFile = file;
+		}
+		
+		public File getFile() {
+			return mFile;
+		}
+
+		/**
+		 * Get a View to display the file
+		 */
+		public View getView(LayoutInflater inflater) {
+			// Create the view
+			View v = inflater.inflate(R.layout.file_list_item, null);
+			// Set the file name
+			TextView name = (TextView) v.findViewById(R.id.name);
+			name.setText(mFile.getName());
+			// Set the path
+			TextView location = (TextView) v.findViewById(R.id.path);
+			location.setText(mFile.getParent());
+			// Set the size
+			TextView size = (TextView) v.findViewById(R.id.size);
+			size.setText(Utils.formatFileSize(mFile.length()));
+			// Set the last modified date
+			TextView update = (TextView) v.findViewById(R.id.updated);
+			update.setText(Utils.toPrettyDateTime(new Date(mFile.lastModified())));
+			// Return it
+			return v;
+		}
 	}
 }

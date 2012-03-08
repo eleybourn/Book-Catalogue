@@ -288,6 +288,7 @@
 <item name="TAG_BOOK_EVENT_HOLDER" type="id"></item>
 <item name="TAG_TASK_HOLDER" type="id"></item>
 <item name="TAG_PROPERTY" type="id"></item>
+<item name="TAG_DIALOG_ITEM" type="id"></item>
 <string name="my_books">My Books</string>
 <string name="my_books_classic">My Books (Classic)</string>
 <string name="loan_return_book">Loan, Return or Edit Book</string>
@@ -560,5 +561,10 @@
 <string name="added_month">Added Month</string>
 <string name="added_day">Added Day</string>
 <string name="book">Book</string>
+<string name="in">In</string>
+<string name="size">Size</string>
+<string name="updated">Updated</string>
+<string name="no_export_files_found">No export files found</string>
+<string name="more_than_one_export_file_blah">More than one export file was found; please select an export file to import from the list below</string>
 </resources>
 

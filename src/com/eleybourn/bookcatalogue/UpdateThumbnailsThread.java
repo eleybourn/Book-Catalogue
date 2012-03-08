@@ -94,7 +94,7 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 	public void onRun() throws InterruptedException {
 		int counter = 0;
 		/* Test write to the SDCard; abort if not writable */
-		if (!Utils.sdCardWritable()) {
+		if (!StorageUtils.sdCardWritable()) {
 			mFinalMessage = getString(R.string.thumbnail_failed_sdcard);
 			return;
 		}

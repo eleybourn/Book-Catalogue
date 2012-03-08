@@ -230,15 +230,19 @@ public class StandardDialogs {
 	/**
 	 * Select a custom item from a list, and call halder when/if item is selected.
 	 */
-	public static void selectItemDialog(LayoutInflater inflater, String title, ArrayList<SimpleDialogItem> items, final SimpleDialogOnClickListener handler) {
+	public static void selectItemDialog(LayoutInflater inflater, String message, ArrayList<SimpleDialogItem> items, final SimpleDialogOnClickListener handler) {
 		// Get the view and the radio group
 		View root = inflater.inflate(R.layout.select_list_dialog, null);
+		TextView msg = (TextView) root.findViewById(R.id.message);
 
 		// Build the base dialog
 		final AlertDialog.Builder builder = new AlertDialog.Builder(inflater.getContext()).setView(root);
-		if (title != null && !title.equals("")) {
-			builder.setTitle(title);
+		if (message != null && !message.equals("")) {
+			msg.setText(message);
+		} else {
+			msg.setVisibility(View.GONE);
 		}
+
 		final AlertDialog dialog = builder.create();
 
 		// Create the listener for each item

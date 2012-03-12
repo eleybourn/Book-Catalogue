@@ -64,8 +64,6 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	private CatalogueDBAdapter mDbHelper;
 	//private int importUpdated = 0;
 	//private int importCreated = 0;
-	public static String UTF8 = "utf8";
-	public static int BUFFER_SIZE = 8192;
 	private ProgressDialog pd = null;
 	private int num = 0;
 	private boolean finish_after = false;
@@ -531,32 +529,6 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	}
 
 	/**
-	 * This program reads a text file line by line and print to the console. It uses
-	 * FileOutputStream to read the file.
-	 * 
-	 */
-	private ArrayList<String> readFile(String fileSpec) {
-		ArrayList<String> importedString = new ArrayList<String>();
-
-		try {
-			BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(fileSpec), UTF8),BUFFER_SIZE);
-			String line = "";
-			while ((line = in.readLine()) != null) {
-				importedString.add(line);
-			}
-			in.close();
-		} catch (FileNotFoundException e) {
-			Toast.makeText(this, R.string.import_failed, Toast.LENGTH_LONG).show();
-			Logger.logError(e);
-		} catch (IOException e) {
-			Toast.makeText(this, R.string.import_failed, Toast.LENGTH_LONG).show();
-			Logger.logError(e);
-		}
-		return importedString;
-	}
-	
-	
-	/**
 	 * Import all data from somewhere on shared storage; ask user to disambiguate if necessary
 	 * 
 	 * return void
@@ -568,18 +540,20 @@ public class AdministrationFunctions extends ActivityWithTasks {
 		if (files == null || files.size() == 0) {
 			Toast.makeText(this, R.string.no_export_files_found, Toast.LENGTH_LONG).show();
 			return;
-		} else if (files.size() == 1) {
-			// If only 1, just use it
-			importData(files.get(0).getAbsolutePath());
 		} else {
-			// If more than one, ask user which file
-			// RELEASE: Consider asking about importing cover images.
-			StandardDialogs.selectFileDialog(getLayoutInflater(), getString(R.string.more_than_one_export_file_blah), files, new SimpleDialogOnClickListener() {
-				@Override
-				public void onClick(SimpleDialogItem item) {
-					SimpleDialogFileItem fileItem = (SimpleDialogFileItem) item;
-					importData(fileItem.getFile().getAbsolutePath());
-				}});
+			if (files.size() == 1) {
+				// If only 1, just use it
+				importData(files.get(0).getAbsolutePath());
+			} else {
+				// If more than one, ask user which file
+				// RELEASE: Consider asking about importing cover images.
+				StandardDialogs.selectFileDialog(getLayoutInflater(), getString(R.string.more_than_one_export_file_blah), files, new SimpleDialogOnClickListener() {
+					@Override
+					public void onClick(SimpleDialogItem item) {
+						SimpleDialogFileItem fileItem = (SimpleDialogFileItem) item;
+						importData(fileItem.getFile().getAbsolutePath());
+					}});
+			}				
 		}
 	}
 
@@ -587,11 +561,18 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	 * Import all data from the passed CSV file spec
 	 * 
 	 * return void
+	 * @throws IOException 
 	 */
 	private void importData(String filespec) {
-		ArrayList<String> export = readFile(filespec);
-		ImportThread thread = new ImportThread(mTaskManager, mImportHandler, export);
-		thread.start();			
+		ImportThread thread;
+		try {
+			thread = new ImportThread(mTaskManager, mImportHandler, filespec);
+		} catch (IOException e) {
+			Logger.logError(e);
+			Toast.makeText(this, getString(R.string.problem_starting_import_arg, e.getMessage()), Toast.LENGTH_LONG).show();
+			return;
+		}
+		thread.start();
 	}
 	
 	@Override

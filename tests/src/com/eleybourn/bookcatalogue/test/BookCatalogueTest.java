@@ -524,7 +524,7 @@ public class BookCatalogueTest extends ActivityInstrumentationTestCase2 {
 		
 	}
 	
-	public void test203AdminBackupDatabase() {
+	/*public void test203AdminBackupDatabase() {
 		//weak test
 		t.clickOnMenuItem("Help & Admin");
 		t.assertCurrentActivity("Expected Administration activity", "Administration");
@@ -536,7 +536,7 @@ public class BookCatalogueTest extends ActivityInstrumentationTestCase2 {
 		Log.e("BC", filename);
 		File file = new File(filename);
 		assertTrue("Backup file does not exist", file.exists());
-	}
+	}*/
 	
 	public void test204AdminFieldInvisibility() {
 		t.clickOnMenuItem("Help & Admin");
@@ -710,7 +710,7 @@ public class BookCatalogueTest extends ActivityInstrumentationTestCase2 {
 		//assertTrue("Location is not visible", t.searchText("Location of the book", true));
 	}
 	
-	public void test206AdminExport() {
+	/*public void test206AdminExport() {
 		t.clickOnText("Nation");
 		//check
 		assertTrue("Author is not visible", t.searchText("Terry Pratchett", true));
@@ -736,7 +736,7 @@ public class BookCatalogueTest extends ActivityInstrumentationTestCase2 {
 		t.sleep(10000);
 		export = new File(mFileName);
 		assertTrue("File does not exist", export.exists());
-	}
+	}*/
 	
 	public void test207AdminImport() {
 		//delete book

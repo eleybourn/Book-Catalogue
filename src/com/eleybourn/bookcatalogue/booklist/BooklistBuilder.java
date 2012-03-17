@@ -81,8 +81,6 @@ public class BooklistBuilder {
 	/** Internal ID */
 	private final int mBooklistBuilderId;
 
-	/** List of columns for the sort-by clause, including COLLATE clauses. Set by build() method. */
-	private String mSortColumnList;
 	/** List of columns for the group-by clause, including COLLATE clauses. Set by build() method. */
 	private String mGroupColumnList;
 	/** Collection of 'extra' domains requested by caller */
@@ -772,20 +770,45 @@ public class BooklistBuilder {
 			sql += " where " + where.toString();
 
 		long t1 = System.currentTimeMillis();
+		// Check if the UNICODE collation is case sensitive; bug introduced in ICS
+		boolean unicodeIsCs = BookCatalogueApp.isUnicodeCaseSensitive(mDb.getUnderlyingDatabase());
+
+		// List of column names appropriate for 'Order By' clause
+		String sortColNameList;
+		// List of column names appropriate for 'Create Index' column list
+		String sortIndexColumnList;
 
 		// Process the 'sort-by' columns into a list suitable for a sort-by statement, or index
 		{
 			final ArrayList<SortedDomainInfo> sort = summary.getSortedColumns();
 			final StringBuilder sortCols = new StringBuilder();
+			final StringBuilder indexCols = new StringBuilder();
 			for (SortedDomainInfo sdi: sort) {
-				sortCols.append(sdi.domain.name);
-				sortCols.append(" Collate UNICODE");
-				if (sdi.isDescending)
-					sortCols.append(" desc");
+				indexCols.append(sdi.domain.name);
+				if (sdi.domain.type.toLowerCase().equals("text")) {
+					indexCols.append(" Collate UNICODE");
+
+					// RELEASE: *If* UNICODE is case-sensitive, handle it.
+					if (unicodeIsCs)
+						sortCols.append("lower(");
+					sortCols.append(sdi.domain.name);
+					if (unicodeIsCs)
+						sortCols.append(")");
+					sortCols.append(" Collate UNICODE");
+				} else {
+					sortCols.append(sdi.domain.name);					
+				}
+				if (sdi.isDescending) {
+					indexCols.append(" desc");					
+					sortCols.append(" desc");					
+				}
 				sortCols.append(", ");
+				indexCols.append(", ");
 			}
 			sortCols.append(DOM_LEVEL.name);
-			mSortColumnList = sortCols.toString();
+			indexCols.append(DOM_LEVEL.name);
+			sortColNameList = sortCols.toString();
+			sortIndexColumnList = indexCols.toString();
 		}
 
 		// Process the group-by columns suitable for a group-by statement or index
@@ -800,7 +823,7 @@ public class BooklistBuilder {
 			mGroupColumnList = groupCols.toString();
 		}
 
-		String ix1Sql = "Create Index " + mListTable + "_IX1 on " + mListTable + "(" + mSortColumnList + ")";
+		String ix1Sql = "Create Index " + mListTable + "_IX1 on " + mListTable + "(" + sortIndexColumnList + ")";
 		/* Indexes that were tried. None had a substantial impact with 800 books.
 		String ix1aSql = "Create Index " + mListTable + "_IX1a on " + mListTable + "(" + DOM_LEVEL + ", " + mSortColumnList + ")";
 		String ix2Sql = "Create Unique Index " + mListTable + "_IX2 on " + mListTable + "(" + DOM_BOOK + ", " + DOM_ID + ")";
@@ -873,9 +896,14 @@ public class BooklistBuilder {
 			// Build an index
 			SynchronizedStatement stmt;
 			long t3 = System.currentTimeMillis();
-			stmt = mStatements.add("ix1", ix1Sql);
-			mLevelBuildStmts.add(stmt);
-			stmt.execute();
+			// Build an index if it will help sorting
+			// - *If* UNICODE is case-sensitive, don't bother with index, since everything is wrapped in lower().
+			// ENHANCE: ICS UNICODE: Consider adding a duplicate _lc (lower case) column to the SUMMARY table. Ugh.
+			if (!unicodeIsCs) {
+				stmt = mStatements.add("ix1", ix1Sql);
+				mLevelBuildStmts.add(stmt);
+				stmt.execute();				
+			}
 			
 			// Analyze the table
 			long t3a = System.currentTimeMillis();
@@ -896,7 +924,7 @@ public class BooklistBuilder {
 					" From " + mListTable.ref() + "\n	left outer join " + TBL_BOOK_LIST_NODE_SETTINGS.ref() + 
 					"\n		On " + TBL_BOOK_LIST_NODE_SETTINGS.dot(DOM_ROOT_KEY) + " = " + mListTable.dot(DOM_ROOT_KEY) +
 					"\n			And " + TBL_BOOK_LIST_NODE_SETTINGS.dot(DOM_KIND) + " = " + mStyle.getGroupAt(0).kind +
-					"\n	Order by " + mSortColumnList;
+					"\n	Order by " + sortColNameList;
 			// Always save the state-preserving navigator for rebuilds
 			stmt = mStatements.add("InsNav", sql);
 			mLevelBuildStmts.add(stmt);
@@ -907,14 +935,14 @@ public class BooklistBuilder {
 						" Select " + mListTable.dot(DOM_ID) + "," + mListTable.dot(DOM_LEVEL) + "," + mListTable.dot(DOM_ROOT_KEY) +
 						" ,\n	Case When " + DOM_LEVEL + " = 1 Then 1 Else 0 End, 0\n" +
 						" From " + mListTable.ref() +
-						"\n	Order by " + mSortColumnList;				
+						"\n	Order by " + sortColNameList;				
 				mDb.execSQL(sql);
 			} else if (preferredState == BooklistPreferencesActivity.BOOKLISTS_ALWAYS_EXPANDED) {
 				sql = mNavTable.getInsert(DOM_REAL_ROW_ID, DOM_LEVEL, DOM_ROOT_KEY, DOM_VISIBLE, DOM_EXPANDED) + 
 						" Select " + mListTable.dot(DOM_ID) + "," + mListTable.dot(DOM_LEVEL) + "," + mListTable.dot(DOM_ROOT_KEY) +
 						" , 1, 1 \n" +
 						" From " + mListTable.ref() +
-						"\n	Order by " + mSortColumnList;
+						"\n	Order by " + sortColNameList;
 				mDb.execSQL(sql);
 			} else {
 				// Use already-defined SQL

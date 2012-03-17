@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.IBinder;
 import org.acra.*;
 import org.acra.annotation.*;
@@ -68,6 +69,9 @@ public class BookCatalogueApp extends Application {
 	/** Not sure this is a good idea. Stores the Application context once created */
 	public static Context context = null;
 
+	/** Flag indicating the current database has a broken unicode collation */
+	private static Boolean mUnicodeBroken = null;
+	
 	/**
 	 * Constructor.
 	 */
@@ -93,6 +97,20 @@ public class BookCatalogueApp extends Application {
 		super.onCreate();
 	}
 
+	/**
+	 * Check if sqlite unicode collation is broken (ie. case sensitive); cache the result.
+	 * This bug was introduced in ICS and present in 4.0-4.0.3, at least.
+	 * 
+	 * @param db	Any sqlite database connection
+	 * 
+	 * @return	Flag indicating 'Collate UNICODE' is broken.
+	 */
+	public static boolean isUnicodeCaseSensitive(SQLiteDatabase db) {
+		if (mUnicodeBroken == null)
+			mUnicodeBroken = UnicodeBroken.isCaseSensitive(db);
+		return mUnicodeBroken;
+	}
+	
 	/**
 	 * Currently the QueueManager is implemented as a service. This is not clearly necessary
 	 * but has the huge advantage of making a 'context' object available in the Service

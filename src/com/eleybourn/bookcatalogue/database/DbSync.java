@@ -561,15 +561,24 @@ public class DbSync {
 		 * @return
 		 */
 		public SyncLock beginTransaction(boolean isUpdate) {
+			if (mTxLock != null)
+				throw new RuntimeException("Starting a transaction when one is already started");
+
 			SyncLock l;
 			if (isUpdate) {
 				l = mSync.getExclusiveLock();
 			} else {
 				l = mSync.getSharedLock();
 			}
-			mDb.beginTransaction();
+			// We have the lock, but if the real beginTransaction() throws an exception, we need to release the lock
+			try {
+				mDb.beginTransaction();
+			} catch (Exception e) {
+				l.unlock();
+				throw new RuntimeException("Unable to start database transaction: " + e.getMessage(), e);
+			}
 			mTxLock = l;
-			return l;
+			return l;				
 		}
 		/**
 		 * Locking-aware wrapper for underlying database method.
@@ -583,10 +592,10 @@ public class DbSync {
 				throw new RuntimeException("Ending a transaction with wrong transaction lock");
 				
 			try {
-				mDb.endTransaction();				
-				mTxLock = null;
+				mDb.endTransaction();			
 			} finally {
 				l.unlock();
+				mTxLock = null;
 			}
 		}
 		/**

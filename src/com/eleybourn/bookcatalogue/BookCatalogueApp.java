@@ -22,6 +22,9 @@ package com.eleybourn.bookcatalogue;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -72,6 +75,9 @@ public class BookCatalogueApp extends Application {
 	/** Flag indicating the current database has a broken unicode collation */
 	private static Boolean mUnicodeBroken = null;
 	
+	/** Used to sent notifications regarding tasks */
+	private static NotificationManager mNotifier;
+
 	/**
 	 * Constructor.
 	 */
@@ -88,7 +94,10 @@ public class BookCatalogueApp extends Application {
 		// The following line triggers the initialization of ACRA
         ACRA.init(this);
 
-        // Don't rely on the the context until now...
+    	// Create the notifier
+    	mNotifier = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+
+    	// Don't rely on the the context until now...
 		BookCatalogueApp.context = this.getApplicationContext();
 
 		// Start the queue manager
@@ -343,4 +352,31 @@ public class BookCatalogueApp extends Application {
 		Intent i = new Intent(a, BooklistPreferencesActivity.class);
 		a.startActivity(i);
 	}
+
+	/**
+     * Show a notification while this app is running.
+	 * 
+	 * @param title
+	 * @param message
+	 */
+    public static void showNotification(int id, String title, String message, Intent i) {
+        // In this sample, we'll use the same text for the ticker and the expanded notification
+        CharSequence text = message; //getText(R.string.local_service_started);
+
+        // Set the icon, scrolling text and timestamp
+        Notification notification = new Notification(R.drawable.ic_stat_logo, text, System.currentTimeMillis());
+        // Auto-cancel the notification
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+
+        // The PendingIntent to launch our activity if the user selects this notification
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, i, 0);
+
+        // Set the info for the views that show in the notification panel.
+        notification.setLatestEventInfo(context, title, //getText(R.string.local_service_label),
+                       text, contentIntent);
+
+        // Send the notification.
+        mNotifier.notify(id, notification);
+    }
+
 }

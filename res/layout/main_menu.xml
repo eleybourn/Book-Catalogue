@@ -96,7 +96,7 @@
 			<ImageView  
 				android:layout_width="wrap_content" 
 				android:layout_height="wrap_content" 
-				android:src="@+android:drawable/ic_menu_agenda"
+				android:src="@drawable/ic_menu_add_book"
 				/>
 			<TextView 
 				android:layout_width="wrap_content" 
@@ -165,7 +165,7 @@
 				android:layout_width="wrap_content" 
 				android:layout_height="wrap_content" 
 				android:layout_gravity="center_vertical"
-				android:src="@+android:drawable/ic_menu_manage"
+				android:src="@drawable/ic_menu_preferences"
 				/>
 			<TextView 
 				android:layout_width="fill_parent" 
@@ -188,7 +188,7 @@
 				android:layout_width="wrap_content" 
 				android:layout_height="wrap_content" 
 				android:layout_gravity="center_vertical"
-				android:src="@+android:drawable/ic_menu_info_details"
+				android:src="@drawable/ic_menu_info_details"
 				/>
 			<TextView 
 				android:layout_width="fill_parent" 
@@ -243,13 +243,15 @@
 					android:layout_width="wrap_content" 
 					android:layout_height="wrap_content" 
 					android:layout_gravity="center_vertical"
-					android:src="@+android:drawable/ic_menu_help"
+					android:gravity="center_vertical"
+					android:src="@drawable/ic_menu_help"
 					/>
 				<TextView xmlns:android="http://schemas.android.com/apk/res/android"
 					android:layout_width="wrap_content" 
 					android:layout_height="wrap_content" 
 					android:text="@+string/help"
 					android:layout_gravity="center_vertical"
+					android:gravity="center_vertical"
 					android:textAppearance="?android:attr/textAppearanceLarge"
 					android:paddingTop="5dp"
 					/>
@@ -268,6 +270,7 @@
 					android:layout_width="wrap_content" 
 					android:layout_height="wrap_content" 
 					android:layout_gravity="center_vertical"
+					android:gravity="center_vertical"
 					android:src="@drawable/ic_menu_donate"
 					/>
 				<TextView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -275,6 +278,7 @@
 					android:layout_height="wrap_content" 
 					android:text="@+string/donate_label"
 					android:layout_gravity="center_vertical"
+					android:gravity="center_vertical"
 					android:textAppearance="?android:attr/textAppearanceLarge"
 					android:paddingTop="5dp"
 					/>

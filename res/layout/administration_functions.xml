@@ -59,7 +59,7 @@
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
 			android:paddingLeft="10sp"
-			android:src="@+android:drawable/ic_menu_agenda"
+			android:src="@drawable/ic_menu_agenda"
 			/>
 		<TextView 
 			android:layout_width="wrap_content" 
@@ -81,7 +81,7 @@
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
 			android:paddingLeft="10sp"
-			android:src="@+android:drawable/ic_menu_manage"
+			android:src="@drawable/ic_menu_manage"
 			/>
 		<TextView 
 			android:layout_width="wrap_content" 
@@ -103,7 +103,7 @@
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
 			android:paddingLeft="10sp"
-			android:src="@+android:drawable/ic_menu_manage"
+			android:src="@drawable/ic_menu_manage"
 			/>
 		<TextView 
 			android:layout_width="wrap_content" 
@@ -140,7 +140,7 @@
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
 			android:paddingLeft="10sp"
-			android:src="@+android:drawable/ic_menu_agenda"
+			android:src="@drawable/ic_menu_agenda"
 			/>
 		<TextView 
 			android:layout_width="wrap_content" 
@@ -162,7 +162,7 @@
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
 			android:paddingLeft="10sp"
-			android:src="@+android:drawable/ic_menu_gallery"
+			android:src="@drawable/ic_menu_recent_history"
 			/>
 		<TextView 
 			android:layout_width="fill_parent" 
@@ -248,7 +248,7 @@
 			android:layout_height="wrap_content" 
 			android:paddingLeft="10sp"
 			android:layout_gravity="center_vertical|left"
-			android:src="@+android:drawable/ic_menu_gallery"
+			android:src="@drawable/ic_menu_gallery"
 			/>
 		<TextView 
 			android:layout_width="fill_parent" 
@@ -285,7 +285,7 @@
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
 			android:paddingLeft="10sp"
-			android:src="@+android:drawable/ic_menu_save"
+			android:src="@drawable/ic_menu_save"
 			/>
 		<TextView 
 			android:layout_width="fill_parent" 
@@ -306,7 +306,7 @@
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
 			android:paddingLeft="10sp"
-			android:src="@+android:drawable/ic_menu_upload"
+			android:src="@drawable/ic_menu_upload"
 			/>
 		<TextView 
 			android:layout_width="fill_parent" 
@@ -328,7 +328,7 @@
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
 			android:paddingLeft="10sp"
-			android:src="@+android:drawable/ic_menu_gallery"
+			android:src="@drawable/ic_menu_archive"
 			/>
 		<TextView 
 			android:layout_width="fill_parent" 
@@ -350,7 +350,7 @@
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
 			android:paddingLeft="10sp"
-			android:src="@+android:drawable/ic_menu_gallery"
+			android:src="@drawable/ic_menu_gallery"
 			/>
 		<TextView 
 			android:layout_width="fill_parent" 
@@ -371,7 +371,7 @@
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
 			android:paddingLeft="10sp"
-			android:src="@+android:drawable/ic_menu_gallery"
+			android:src="@drawable/ic_menu_refresh"
 			/>
 		<TextView 
 			android:layout_width="fill_parent" 
@@ -392,7 +392,7 @@
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
 			android:paddingLeft="10sp"
-			android:src="@+android:drawable/ic_menu_gallery"
+			android:src="@drawable/ic_menu_upload"
 			/>
 		<TextView 
 			android:layout_width="fill_parent" 
@@ -413,7 +413,7 @@
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
 			android:paddingLeft="10sp"
-			android:src="@+android:drawable/ic_menu_gallery"
+			android:src="@drawable/ic_menu_archive"
 			/>
 		<TextView 
 			android:layout_width="fill_parent" 

@@ -359,7 +359,7 @@ public class ListReviewsApiHandler extends ApiHandler {
 		//				<publication_month>4</publication_month>
 						.longBody("publication_month", PUB_MONTH)
 		//				<description><![CDATA[]]></description>
-						.longBody("description", DB_DESCRIPTION)
+						.stringBody("description", DB_DESCRIPTION)
 		//				...
 		//
 		//				<authors>

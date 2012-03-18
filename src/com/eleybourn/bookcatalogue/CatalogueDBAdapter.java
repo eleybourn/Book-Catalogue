@@ -138,6 +138,10 @@ public class CatalogueDBAdapter {
 
 	private DatabaseHelper mDbHelper;
 	private SynchronizedDb mDb;
+	/** Instance of Utils created if necessary */
+	private Utils mUtils = null;
+	/** Flag indicating close() has been called */
+	private boolean mCloseWasCalled = false;
 
 	/* private database variables as static reference */
 	public static final String DB_TB_BOOKS = "books";
@@ -1553,20 +1557,34 @@ public class CatalogueDBAdapter {
 
 		return this;
 	}
+
+	/**
+	 * Get a Utils instance; create if necessary.
+	 * 
+	 * @return	Utils instance
+	 */
+	public Utils getUtils() {
+		if (mUtils == null)
+			mUtils = new Utils();
+		return mUtils;
+	}
 	
 	/**
 	 * Generic function to close the database
 	 */
 	public void close() {
-		try {
-			mStatements.close();
-			mDbHelper.close();
-		} catch (Exception e) {
-			//do nothing - already closed
-		}
-		synchronized(mInstanceCount) {
-			mInstanceCount--;
-			System.out.println("CatDBA instances: " + mInstanceCount);
+
+		if (!mCloseWasCalled) {
+			mCloseWasCalled = true;
+
+			try { mStatements.close(); } catch (Exception e) { Logger.logError(e); }
+			try { mDbHelper.close(); } catch (Exception e) { Logger.logError(e); }
+			try { if (mUtils != null) mUtils.close(); } catch (Exception e) { Logger.logError(e); }
+
+			synchronized(mInstanceCount) {
+				mInstanceCount--;
+				System.out.println("CatDBA instances: " + mInstanceCount);
+			}
 		}
 	}
 	
@@ -4165,6 +4183,11 @@ public class CatalogueDBAdapter {
 			} catch (Exception e) {
 				Logger.logError(e, "Failed to delete cover thumbnail");
 			}
+		}
+
+		if (uuid != null && !uuid.equals("")) {
+			int delCount = getUtils().eraseCachedBookCover(uuid);
+			//System.out.println(delCount + " cached images deleted");
 		}
 
 		return success;

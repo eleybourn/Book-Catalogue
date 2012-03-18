@@ -1012,7 +1012,18 @@ public class Utils {
 		return bm;
 	}
 
+	/**
+	 * Construct the cache ID for a given thumbnail spec.
+	 * 
+	 * NOTE: Any changes to the resulting name MUST be reflect in CoversDbHelper.eraseCachedBookCover()
+	 * 
+	 * @param hash
+	 * @param maxWidth
+	 * @param maxHeight
+	 * @return
+	 */
 	public static final String getCoverCacheId(final String hash, final int maxWidth, final int maxHeight) {
+		// NOTE: Any changes to the resulting name MUST be reflect in CoversDbHelper.eraseCachedBookCover()
 		return hash + ".thumb." + maxWidth + "x" + maxHeight + ".jpg";
 	}
 
@@ -1319,6 +1330,17 @@ public class Utils {
 		CoversDbHelper db = getCoversDb();
 		if (db != null)
 			db.eraseCoverCache();
+	}
+	
+	/**
+	 * Erase contents of covers cache
+	 */
+	public int eraseCachedBookCover(String uuid) {
+		CoversDbHelper db = getCoversDb();
+		if (db != null)
+			return db.eraseCachedBookCover(uuid);
+		else 
+			return 0;
 	}
 	
 	/** Calendar to construct dates from month numbers */

@@ -23,6 +23,7 @@ package com.eleybourn.bookcatalogue.database;
 import java.io.ByteArrayOutputStream;
 import java.util.Date;
 
+import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.StorageUtils;
 import com.eleybourn.bookcatalogue.TrackedCursor;
 import com.eleybourn.bookcatalogue.Utils;
@@ -255,6 +256,18 @@ public class CoversDbHelper extends GenericOpenHelper {
 		mEraseCoverCacheStmt.execute();
 	}
 
+	/**
+	 * Erase all cached images relating to the passed book UUID.
+	 * 
+	 * @param uuid
+	 */
+	public int eraseCachedBookCover(String uuid) {
+		SynchronizedDb db = this.getDb();
+
+		String sql = DOM_FILENAME + " glob '" + uuid + ".*'";
+		return db.delete(TBL_IMAGE.getName(), sql, CatalogueDBAdapter.EMPTY_STRING_ARRAY);
+	}
+	
 	/**
 	 * Analyze the database
 	 */

@@ -6,18 +6,32 @@
 		android:layout_height="fill_parent"
 		>
 
-    <TextView 
-		android:background="#00000000"
-		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content" 
-		android:text="@+string/app_name"
-		android:textAppearance="?android:attr/textAppearanceLarge"
-		android:textSize="30dp"
-		android:paddingTop="5dp"
-		android:paddingBottom="6dp"
-		android:gravity="center"
-		android:layout_gravity="center"
-		/>
+	<LinearLayout
+		android:orientation="horizontal"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		>
+		<ImageView
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:layout_gravity="left"
+			android:src="@drawable/ic_launcher2"
+			/>
+   
+	    <TextView 
+			android:background="#00000000"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:text="@string/app_name"
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:textSize="30dp"
+			android:paddingTop="5dp"
+			android:paddingBottom="6dp"
+			android:gravity="center"
+			android:layout_gravity="center"
+			/>
+    </LinearLayout>
+
 	<View 
 	    android:background="@drawable/main_menu_header_divider"
 	    android:layout_width="fill_parent"

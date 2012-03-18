@@ -887,12 +887,19 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		if (mMenuHandler != null && !mMenuHandler.onMenuItemSelected(this, featureId, item)) {
 			switch(item.getItemId()) {
+
 			case MNU_SORT:
-				doSortMenu(false);
+				HintManager.displayHint(this, R.string.hint_booklist_style_menu, new Runnable() {
+					@Override
+					public void run() {
+						doSortMenu(false);
+					}});
 				return true;
+
 			case MNU_EDIT_STYLE:
 				doEditStyle();
 				return true;
+
 			case MNU_EXPAND:
 			{
 				int oldAbsPos = mListHandler.getAbsolutePosition(getListView().getChildAt(0));

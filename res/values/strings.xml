@@ -567,5 +567,7 @@
 <string name="no_export_files_found">No export files found</string>
 <string name="more_than_one_export_file_blah">More than one export file was found; please select an export file to import from the list below</string>
 <string name="problem_starting_import_arg">There was a problem starting the import: %1$s</string>
+<string name="hint_booklist_style_menu">This menu allows you to select the style of the list. 
+    								\n\nYou can also customize this menu, as well as create your own list styles, by clicking \'Customize\' at the end of the list.</string>
 </resources>
 

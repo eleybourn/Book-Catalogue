@@ -68,6 +68,7 @@ public class HintManager {
 		.add("STARTUP_SCREEN", R.string.hint_startup_screen)
 		.add("explain_goodreads_no_isbn", R.string.explain_goodreads_no_isbn)
 		.add("explain_goodreads_no_match", R.string.explain_goodreads_no_match)
+		.add("hint_booklist_style_menu", R.string.hint_booklist_style_menu)
 		;
 
 	public static interface HintOwner {

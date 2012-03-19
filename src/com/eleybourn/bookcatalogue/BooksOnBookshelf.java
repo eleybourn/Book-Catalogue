@@ -50,6 +50,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -442,7 +443,14 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 			header.setBackgroundDrawable(getResources().getDrawable(R.drawable.bc_vertical_gradient));
 		} else {
 			lv.setCacheColorHint(0x00000000);
-			lv.setBackgroundColor(0x00000000);
+			// ICS does not cope well with transparent ListView backgrounds with a 0 cache hint, but it does
+			// seem to cope with a background image on the ListView itself.
+			if (Build.VERSION.SDK_INT >= 11) {
+				// Honeycomb
+				lv.setBackgroundDrawable(getResources().getDrawable(R.drawable.bc_background_gradient_dim));
+			} else {
+				lv.setBackgroundColor(0x00000000);				
+			}
 			root.setBackgroundDrawable(getResources().getDrawable(R.drawable.bc_background_gradient_dim));
 			header.setBackgroundColor(0x00000000);
 		}
@@ -472,7 +480,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		mAdapter = new MultitypeListAdapter(this, mList, mListHandler);
 
 		// Get the ListView and set it up
-		final FastScrollListView lv = (FastScrollListView)getListView();
+		final ListView lv = (ListView)getListView();
 		final ListViewHolder lvHolder = new ListViewHolder();
 		ViewTagger.setTag(lv, R.id.TAG_HOLDER, lvHolder);
 

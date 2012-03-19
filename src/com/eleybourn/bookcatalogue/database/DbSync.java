@@ -561,9 +561,6 @@ public class DbSync {
 		 * @return
 		 */
 		public SyncLock beginTransaction(boolean isUpdate) {
-			if (mTxLock != null)
-				throw new RuntimeException("Starting a transaction when one is already started");
-
 			SyncLock l;
 			if (isUpdate) {
 				l = mSync.getExclusiveLock();
@@ -572,6 +569,15 @@ public class DbSync {
 			}
 			// We have the lock, but if the real beginTransaction() throws an exception, we need to release the lock
 			try {
+				// If we have a lock, and there is currently a TX active...die
+				// Note: because we get a lock, two 'isUpdate' transactions will
+				// block, this is only likely to happen with two TXs on the current thread
+				// or two non-update TXs on different thread.
+				// ENHANCE: Consider allowing nested TXs
+				// ENHANCE: Consider returning NULL if TX active and handle null locks...
+				if (mTxLock != null)
+					throw new RuntimeException("Starting a transaction when one is already started");
+
 				mDb.beginTransaction();
 			} catch (Exception e) {
 				l.unlock();
@@ -594,8 +600,10 @@ public class DbSync {
 			try {
 				mDb.endTransaction();			
 			} finally {
-				l.unlock();
+				// Clear mTxLock before unlocking so another thread does not
+				// see the old lock when it gets the lock
 				mTxLock = null;
+				l.unlock();
 			}
 		}
 		/**

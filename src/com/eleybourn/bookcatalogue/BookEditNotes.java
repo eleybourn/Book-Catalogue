@@ -1,7 +1,7 @@
 /*
  * @copyright 2010 Evan Leybourn
  * @license GNU General Public License
- * 
+ *
  * This file is part of Book Catalogue.
  *
  * Book Catalogue is free software: you can redistribute it and/or modify
@@ -58,12 +58,12 @@ public class BookEditNotes extends Activity {
 		Bundle extras = getIntent().getExtras();
 		mRowId = extras != null ? extras.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
 	}
-	
+
 	/**
 	 * Validate the current data in all fields that have validators. Display any errors.
-	 * 
+	 *
 	 * @param values The values to use
-	 * 
+	 *
 	 * @return Boolean success or failure.
 	 */
 	private boolean validate(Bundle values) {
@@ -76,7 +76,7 @@ public class BookEditNotes extends Activity {
 
 	/**
 	 * Returns a unique list of all locations in the database
-	 *  
+	 *
 	 * @return The list
 	 */
 	protected ArrayList<String> getLocations() {
@@ -92,39 +92,39 @@ public class BookEditNotes extends Activity {
 				} catch (NullPointerException e) {
 					// do nothing
 				}
-			}			
+			}
 		} finally {
 			location_cur.close();
 		}
 		return location_list;
 	}
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		try {
 			super.onCreate(savedInstanceState);
 			mDbHelper = new CatalogueDBAdapter(this);
 			mDbHelper.open();
-			
+
 			setContentView(R.layout.edit_book_notes);
-			
+
 			mFields = new Fields(this);
 			Field f;
-			
+
 			// Generic validators; if field-specific defaults are needed, create a new one.
 			FieldValidator booleanValidator = new Fields.BooleanValidator();
 			FieldValidator blankOrDateValidator = new Fields.OrValidator(new Fields.BlankValidator(), new Fields.DateValidator());
 			FieldFormatter dateFormatter = new Fields.DateFieldFormatter();
-			
+
 			mFields.add(R.id.rating, CatalogueDBAdapter.KEY_RATING, new Fields.FloatValidator());
 			mFields.add(R.id.rating_label, "",  CatalogueDBAdapter.KEY_RATING, null);
 			mFields.add(R.id.read, CatalogueDBAdapter.KEY_READ, booleanValidator);
 			mFields.add(R.id.notes, CatalogueDBAdapter.KEY_NOTES, null);
-			
+
 			ArrayAdapter<String> location_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getLocations());
 			mFields.add(R.id.location, CatalogueDBAdapter.KEY_LOCATION, null);
 			mFields.setAdapter(R.id.location, location_adapter);
-			
+
 			f = mFields.add(R.id.read_start_button, "",  CatalogueDBAdapter.KEY_READ_START, null);
 			f.getView().setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
@@ -132,7 +132,7 @@ public class BookEditNotes extends Activity {
 				}
 			});
 			mFields.add(R.id.read_start, CatalogueDBAdapter.KEY_READ_START, blankOrDateValidator, dateFormatter);
-			
+
 			f = mFields.add(R.id.read_end_button, "",  CatalogueDBAdapter.KEY_READ_END, null);
 			f.getView().setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
@@ -140,9 +140,9 @@ public class BookEditNotes extends Activity {
 				}
 			});
 			f = mFields.add(R.id.read_end, CatalogueDBAdapter.KEY_READ_END, blankOrDateValidator, dateFormatter);
-			
+
 			mFields.add(R.id.signed, CatalogueDBAdapter.KEY_SIGNED,  booleanValidator);
-			
+
 			mFields.addCrossValidator(new Fields.FieldCrossValidator() {
 				public void validate(Fields fields, Bundle values) {
 					String start = values.getString(CatalogueDBAdapter.KEY_READ_START);
@@ -152,21 +152,21 @@ public class BookEditNotes extends Activity {
 					if (end == null || end.equals(""))
 						return;
 					if (start.compareToIgnoreCase(end) > 0)
-						throw new Fields.ValidatorException(R.string.vldt_read_start_after_end,new Object[]{});							
+						throw new Fields.ValidatorException(R.string.vldt_read_start_after_end,new Object[]{});
 				}
 			});
-			
+
 			mConfirmButton = (Button) findViewById(R.id.confirm);
 			mCancelButton = (Button) findViewById(R.id.cancel);
-			
+
 			mRowId = savedInstanceState != null ? savedInstanceState.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
 			if (mRowId == null) {
 				getRowId();
 			}
-			
+
 			if (savedInstanceState == null)
 				populateFields();
-			
+
 			mConfirmButton.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
 					Bundle values = new Bundle();
@@ -174,7 +174,7 @@ public class BookEditNotes extends Activity {
 						//return;
 						// Ignore...nothing here is that important...but warn the users.
 					}
-					
+
 					saveState(values);
 					Intent i = new Intent();
 					i.putExtra(CatalogueDBAdapter.KEY_ROWID, mRowId);
@@ -186,7 +186,7 @@ public class BookEditNotes extends Activity {
 					finish();
 				}
 			});
-			
+
 			mCancelButton.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
 					Intent i = new Intent();
@@ -203,7 +203,7 @@ public class BookEditNotes extends Activity {
 			Logger.logError(e);
 		}
 	}
-	
+
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
@@ -251,7 +251,7 @@ public class BookEditNotes extends Activity {
 			break;
 		}
 		return null;
-	}	
+	}
 
 	// the callback received when the user "sets" the date in the dialog
 	private DatePickerDialog.OnDateSetListener mReadStartSetListener = new DatePickerDialog.OnDateSetListener() {
@@ -283,12 +283,12 @@ public class BookEditNotes extends Activity {
 			mFields.getField(R.id.read_end).setValue(year + "-" + mm + "-" + dd);
 		}
 	};
-	
+
 	private void populateFields() {
 		if (mRowId == null) {
 			getRowId();
 		}
-		
+
 		if (mRowId != null && mRowId > 0) {
 			// From the database (edit)
 			Cursor book = mDbHelper.fetchBookById(mRowId);
@@ -296,17 +296,17 @@ public class BookEditNotes extends Activity {
 				if (book != null) {
 					book.moveToFirst();
 				}
-				getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + 
+				getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " +
 							book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE)));
 
 				mFields.setFromCursor(book);
 
 				mConfirmButton.setText(R.string.confirm_save);
-				
+
 			} finally {
 				// Tidy up
 				if (book != null)
-					book.close();				
+					book.close();
 			}
 		} else {
 			// Manual Add
@@ -344,7 +344,7 @@ public class BookEditNotes extends Activity {
 		}
 		return;
 	}
-	
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();

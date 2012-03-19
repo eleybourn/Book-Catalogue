@@ -51,8 +51,6 @@ public class AmazonManager {
 			Logger.logError(e);
 		} catch (SAXException e) {
 			Logger.logError(e);
-		} catch (ParseException e) {
-			Logger.logError(e);
 		} catch (Exception e) {
 			Logger.logError(e);
 		}

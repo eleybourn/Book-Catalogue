@@ -79,6 +79,7 @@ public class DatabaseDefinitions {
 	public static final DomainDefinition DOM_DESCRIPTION = new DomainDefinition(KEY_DESCRIPTION, "text", "", "");
 	public static final DomainDefinition DOM_EXPANDED = new DomainDefinition("expanded", "int", "default 0", "");
 	public static final DomainDefinition DOM_FAMILY_NAME = new DomainDefinition(KEY_FAMILY_NAME, "text", "", "");
+	public static final DomainDefinition DOM_FORMAT = new DomainDefinition(KEY_FORMAT, "text", "default ''", "");
 	public static final DomainDefinition DOM_GENRE = new DomainDefinition("genre", "text", "", "");
 	public static final DomainDefinition DOM_GIVEN_NAMES = new DomainDefinition(KEY_GIVEN_NAMES, "text", "", "");
 	public static final DomainDefinition DOM_GOODREADS_BOOK_ID = new DomainDefinition("goodreads_book_id", "int", "", "");
@@ -87,7 +88,7 @@ public class DatabaseDefinitions {
 	public static final DomainDefinition DOM_LAST_UPDATE_DATE = new DomainDefinition("last_update_date", "date", "default current_timestamp", "not null");
 	public static final DomainDefinition DOM_LAST_GOODREADS_SYNC_DATE = new DomainDefinition("last_goodreads_sync_date", "date", "default '0000-00-00'", "");
 	public static final DomainDefinition DOM_LOANED_TO = new DomainDefinition("loaned_to", "text", "",  "not null");
-	public static final DomainDefinition DOM_LOCATION = new DomainDefinition(KEY_LOCATION, "text", "", "");
+	public static final DomainDefinition DOM_LOCATION = new DomainDefinition(KEY_LOCATION, "text", "default ''", "");
 	public static final DomainDefinition DOM_MARK = new DomainDefinition("mark", "boolean", "default 0",  "");
 	public static final DomainDefinition DOM_NOTES = new DomainDefinition(KEY_NOTES, "text", "", "");
 	public static final DomainDefinition DOM_POSITION = new DomainDefinition("position", "integer", "",  "not null");

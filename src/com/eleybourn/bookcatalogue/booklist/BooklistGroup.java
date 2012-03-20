@@ -74,7 +74,9 @@ public class BooklistGroup implements Serializable {
 		public static final int ROW_KIND_YEAR_ADDED = 10;		// Supported
 		public static final int ROW_KIND_MONTH_ADDED = 11;		// Supported
 		public static final int ROW_KIND_DAY_ADDED = 12;		// Supported
-		public static final int ROW_KIND_MAX = 12; 				// **** NOTE **** ALWAYS update after adding a row kind...				
+		public static final int ROW_KIND_FORMAT = 13;			// Supported
+		// NEWKIND: Add new kinds here
+		public static final int ROW_KIND_MAX = 13; 				// **** NOTE **** ALWAYS update after adding a row kind...				
 	}
 	
 	private static final Hashtable<Integer, String> mRowKindNames = new Hashtable<Integer, String>();
@@ -91,7 +93,9 @@ public class BooklistGroup implements Serializable {
 		mRowKindNames.put(ROW_KIND_YEAR_ADDED, BookCatalogueApp.getResourceString(R.string.added_year));
 		mRowKindNames.put(ROW_KIND_MONTH_ADDED, BookCatalogueApp.getResourceString(R.string.added_month));
 		mRowKindNames.put(ROW_KIND_DAY_ADDED, BookCatalogueApp.getResourceString(R.string.added_day));
-		mRowKindNames.put(ROW_KIND_BOOK, BookCatalogueApp.getResourceString(R.string.book));
+		mRowKindNames.put(ROW_KIND_FORMAT, BookCatalogueApp.getResourceString(R.string.format));
+		// NEWKIND: Add new kinds here
+		mRowKindNames.put(ROW_KIND_BOOK, BookCatalogueApp.getResourceString(R.string.book));		
 	}
 
 	/**

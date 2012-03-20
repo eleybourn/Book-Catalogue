@@ -95,6 +95,8 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 		final int k = rowView.getKind();
 
 		switch(k) {
+		// NEWKIND: Add new kinds to this list
+
 		case ROW_KIND_BOOK:
 			return new BookHolder();
 		case ROW_KIND_SERIES:
@@ -105,6 +107,8 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 			return new GenericStringHolder(rowView, DOM_GENRE, R.string.no_genre);
 		case ROW_KIND_AUTHOR:
 			return new GenericStringHolder(rowView, DOM_AUTHOR_FORMATTED, R.string.no_author);
+		case ROW_KIND_FORMAT:
+			return new GenericStringHolder(rowView, DOM_FORMAT, R.string.empty_with_brackets);
 		case ROW_KIND_PUBLISHER:
 			return new GenericStringHolder(rowView, DOM_PUBLISHER, R.string.no_publisher);
 		case ROW_KIND_READ_AND_UNREAD:

@@ -188,6 +188,13 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 		style.addGroup(ROW_KIND_YEAR_PUBLISHED);
 		style.addGroup(ROW_KIND_SERIES);
 
+		// Format
+		style = new BooklistStyle(R.string.format);
+		styles.add(style);
+		style.addGroup(ROW_KIND_FORMAT);
+
+		// NEWKIND: Add new kinds to this list so the user sees them (Optional)
+
 	}
 
 	/**

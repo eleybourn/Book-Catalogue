@@ -446,6 +446,8 @@ public class BooklistBuilder {
 			//
 			switch (g.kind) {
 
+			// NEWKIND: Add new kinds to this list
+
 			case ROW_KIND_SERIES:
 				g.displayDomain = DOM_SERIES_NAME;
 				// Save this for later use
@@ -491,6 +493,12 @@ public class BooklistBuilder {
 				g.displayDomain = DOM_PUBLISHER;
 				summary.addDomain(DOM_PUBLISHER, TBL_BOOKS.dot(DOM_PUBLISHER), SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED);
 				g.setKeyComponents("p", DOM_PUBLISHER);
+				break;
+
+			case ROW_KIND_FORMAT:
+				g.displayDomain = DOM_FORMAT;
+				summary.addDomain(DOM_FORMAT, TBL_BOOKS.dot(DOM_FORMAT), SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED);
+				g.setKeyComponents("fmt", DOM_FORMAT);
 				break;
 
 			case ROW_KIND_READ_AND_UNREAD:

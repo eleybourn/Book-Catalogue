@@ -4594,6 +4594,23 @@ public class CatalogueDBAdapter {
 		}
 	}
 
+    public void globalReplaceFormat(String oldFormat, String newFormat) {
+
+		SyncLock l = mDb.beginTransaction(true);
+		try {
+			String sql;
+
+			// Update books but prevent duplicate index errors
+			sql = "Update " + DB_TB_BOOKS + " Set " + KEY_FORMAT + " = '" + encodeString(newFormat) + "'"
+					+ " Where " + KEY_FORMAT + " = '" + encodeString(oldFormat) + "'";
+			mDb.execSQL(sql);	
+			
+			mDb.setTransactionSuccessful();
+		} finally {
+			mDb.endTransaction(l);
+		}
+	}
+
     private SynchronizedStatement mGetBookUuidQuery = null;
     /**
      * Utility routine to return the book title based on the id. 

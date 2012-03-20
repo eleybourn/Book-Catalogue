@@ -745,6 +745,11 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 				addMenuItem(menu, R.id.MENU_EDIT_SERIES, R.string.menu_edit_series, android.R.drawable.ic_menu_edit);
 				break;
 			}
+			case ROW_KIND_FORMAT:
+			{
+				addMenuItem(menu, R.id.MENU_EDIT_FORMAT, R.string.menu_edit_format, android.R.drawable.ic_menu_edit);
+				break;
+			}
 			}
 		} catch (Exception e) {
 			Logger.logError(e);
@@ -754,6 +759,7 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 	public interface BooklistChangeListener {
 		public static final int FLAG_AUTHOR = 1;
 		public static final int FLAG_SERIES = 2;
+		public static final int FLAG_FORMAT = 4;
 		void onBooklistChange(int flags);
 	}
 
@@ -859,21 +865,36 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 				break;			
 			}
 		case R.id.MENU_EDIT_AUTHOR:
-			{
-				long id = rowView.getAuthorId();
-				EditAuthorDialog d = new EditAuthorDialog(context, dba, new Runnable() {
-					@Override
-					public void run() {
-						dba.purgeAuthors();
-						// Let the Activity know
-						if (context instanceof BooklistChangeListener) {
-							final BooklistChangeListener l = (BooklistChangeListener) context;
-							l.onBooklistChange(BooklistChangeListener.FLAG_AUTHOR);
-						}
-					}});
-				d.editAuthor(dba.getAuthorById(id));
-				break;
-			}
+		{
+			long id = rowView.getAuthorId();
+			EditAuthorDialog d = new EditAuthorDialog(context, dba, new Runnable() {
+				@Override
+				public void run() {
+					dba.purgeAuthors();
+					// Let the Activity know
+					if (context instanceof BooklistChangeListener) {
+						final BooklistChangeListener l = (BooklistChangeListener) context;
+						l.onBooklistChange(BooklistChangeListener.FLAG_AUTHOR);
+					}
+				}});
+			d.editAuthor(dba.getAuthorById(id));
+			break;
+		}
+		case R.id.MENU_EDIT_FORMAT:
+		{
+			String format = rowView.getFormat();
+			EditFormatDialog d = new EditFormatDialog(context, dba, new Runnable() {
+				@Override
+				public void run() {
+					// Let the Activity know
+					if (context instanceof BooklistChangeListener) {
+						final BooklistChangeListener l = (BooklistChangeListener) context;
+						l.onBooklistChange(BooklistChangeListener.FLAG_FORMAT);
+					}
+				}});
+			d.edit(format);
+			break;
+		}
 		}
 		return false;
 	}

@@ -362,6 +362,18 @@ public class BooklistRowView {
 	/**
 	 * Convenience function to retrieve column value.
 	 */
+	private int mFormatCol = -2;
+	public String getFormat() {
+		if (mFormatCol < 0) {
+			mFormatCol = mCursor.getColumnIndex(DOM_FORMAT.name);
+			if (mFormatCol < 0)
+				throw new RuntimeException("Column " + DOM_FORMAT + " not present in cursor");
+		}
+		return mCursor.getString(mFormatCol);
+	}
+	/**
+	 * Convenience function to retrieve column value.
+	 */
 	private int mGenreCol = -2;
 	public String getGenre() {
 		if (mGenreCol < 0) {

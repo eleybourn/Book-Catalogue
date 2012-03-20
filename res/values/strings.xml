@@ -409,6 +409,7 @@
 <item name="MENU_EDIT_BOOK_FRIENDS" type="id"/>
 <item name="MENU_SEND_BOOK_TO_GR" type="id"/>
 <item name="MENU_EDIT_AUTHOR" type="id"/>
+<item name="MENU_EDIT_FORMAT" type="id"/>
 <item name="MENU_DELETE_SERIES" type="id"/>
 <item name="MENU_EDIT_SERIES" type="id"/>
 <item name="MENU_DELETE_STYLE" type="id"/>
@@ -570,5 +571,8 @@
 <string name="problem_starting_import_arg">There was a problem starting the import: %1$s</string>
 <string name="hint_booklist_style_menu">This menu allows you to select the style of the list. 
     								\n\nYou can also customize this menu, as well as create your own list styles, by clicking \'Customize\' at the end of the list.</string>
+<string name="menu_edit_format">Edit Format&#8230;</string>
+<string name="edit_format_name">Edit Format Name</string>
+<string name="name_can_not_be_blank">Name can not be blank</string>
 </resources>
 

@@ -277,6 +277,18 @@ public class StandardDialogs {
 	}
 
 	/**
+	 * Wrapper class to present a list of arbitrary objects for selection; it uses
+	 * the toString() method to display a simple list.
+	 */
+	public static <T extends Object> void selectStringDialog(LayoutInflater inflater, String title, ArrayList<T> objects, final SimpleDialogOnClickListener handler) {
+		ArrayList<SimpleDialogItem> items = new ArrayList<SimpleDialogItem>();
+		for(T o: objects) {
+			items.add(new SimpleDialogObjectItem(o));
+		}
+		selectItemDialog(inflater, title, items, handler);
+	}
+
+	/**
 	 * Simple item to manage a File object in a list of items.
 	 */
 	public static class SimpleDialogFileItem implements SimpleDialogItem {
@@ -310,6 +322,42 @@ public class StandardDialogs {
 			update.setText(Utils.toPrettyDateTime(new Date(mFile.lastModified())));
 			// Return it
 			return v;
+		}
+	}
+
+	/**
+	 * Item to manage an Object in a list of items.
+	 */
+	public static class SimpleDialogObjectItem implements SimpleDialogItem {
+		private final Object mObject; 
+		
+		public SimpleDialogObjectItem(Object object) {
+			mObject = object;
+		}
+		
+		public Object getObject() {
+			return mObject;
+		}
+
+		/**
+		 * Get a View to display the object
+		 */
+		public View getView(LayoutInflater inflater) {
+			// Create the view
+			View v = inflater.inflate(R.layout.string_list_item, null);
+			// Set the name
+			TextView name = (TextView) v.findViewById(R.id.name);
+			name.setText(mObject.toString());
+			// Return it
+			return v;
+		}
+		
+		/**
+		 * Get the underlying object as a string
+		 */
+		@Override
+		public String toString() {
+			return mObject.toString();
 		}
 	}
 }

@@ -150,6 +150,7 @@
 <string name="format3">eBook</string>
 <string name="format4">Audiobook</string>
 <string name="format5">Guide / Companion</string>
+<!-- NOTE: Adding a new format will involve changing code that references this list -->
 <string name="description">Description</string>
 <string name="genre">Genre</string>
 <string name="auto_update">Would you like to automatically update the following fields now \n* Genre \n* Description \n* Thumbnails\n\n If you select Cancel you can always run this again from the Administration page</string>

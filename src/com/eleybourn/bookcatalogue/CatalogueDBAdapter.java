@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
@@ -3523,6 +3524,42 @@ public class CatalogueDBAdapter {
 		return mDb.rawQuery(sql, new String[]{});
 	}
 
+	/**
+	 * Returns a unique list of all formats in the database; uses the pre-defined formats if none.
+	 *
+	 * @return The list
+	 */
+	protected ArrayList<String> getFormats() {
+		// Hash to *try* to avoid duplicates
+		HashSet<String> foundSoFar = new HashSet<String>();
+		ArrayList<String> list = new ArrayList<String>();
+		Cursor c = mDb.rawQuery("Select distinct " + KEY_FORMAT + " from " + DB_TB_BOOKS + " Order by lower(" + KEY_FORMAT + ") collate UNICODE");
+		try {
+			while (c.moveToNext()) {
+				String name = c.getString(0).trim();
+				try {
+					if (name.length() > 0 && !foundSoFar.contains(name.toLowerCase())) {
+						foundSoFar.add(name.toLowerCase());
+						list.add(name);
+					}
+				} catch (NullPointerException e) {
+					// do nothing
+				}
+			}
+		} finally {
+			c.close();
+		}
+		if (list.size() == 0) {
+			list.add(BookCatalogueApp.getResourceString(R.string.format1));
+			list.add(BookCatalogueApp.getResourceString(R.string.format2));
+			list.add(BookCatalogueApp.getResourceString(R.string.format3));
+			list.add(BookCatalogueApp.getResourceString(R.string.format4));
+			list.add(BookCatalogueApp.getResourceString(R.string.format5));
+		}
+		return list;
+	}
+
+	
 	public ArrayList<Author> getBookAuthorList(long id) {
 		ArrayList<Author> authorList = new ArrayList<Author>();
 		Cursor authors = null;

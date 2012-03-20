@@ -54,6 +54,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
@@ -66,6 +67,8 @@ import android.widget.Toast;
 import com.eleybourn.bookcatalogue.CoverBrowser.OnImageSelectedListener;
 import com.eleybourn.bookcatalogue.Fields.Field;
 import com.eleybourn.bookcatalogue.Fields.FieldValidator;
+import com.eleybourn.bookcatalogue.StandardDialogs.SimpleDialogItem;
+import com.eleybourn.bookcatalogue.StandardDialogs.SimpleDialogOnClickListener;
 
 public class BookEditFields extends Activity {
 
@@ -278,7 +281,7 @@ public class BookEditFields extends Activity {
 			
 			mFields.add(R.id.genre, CatalogueDBAdapter.KEY_GENRE, null);
 			mFields.add(R.id.row_img, "", "thumbnail", null);
-			Field formatField = mFields.add(R.id.format, CatalogueDBAdapter.KEY_FORMAT, null);
+			final Field formatField = mFields.add(R.id.format, CatalogueDBAdapter.KEY_FORMAT, null);
 			
 			mFields.add(R.id.bookshelf_text, "bookshelf_text", null).doNoFetch = true; // Output-only field
 			Field bookshelfButtonFe = mFields.add(R.id.bookshelf, "", null);
@@ -293,15 +296,31 @@ public class BookEditFields extends Activity {
 				}
 			});
 
-			Spinner formatSpinner = (Spinner) formatField.getView();
-			ArrayAdapter<String> formatArr = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
-			formatArr.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-			formatSpinner.setAdapter(formatArr);
-			formatArr.add(getString(R.string.format1));
-			formatArr.add(getString(R.string.format2));
-			formatArr.add(getString(R.string.format3));
-			formatArr.add(getString(R.string.format4));
-			formatArr.add(getString(R.string.format5));
+			// Get the formats to use in the AutoComplete stuff
+			ArrayAdapter<String> formatAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, mDbHelper.getFormats());
+			AutoCompleteTextView formatText = (AutoCompleteTextView) formatField.getView();
+			formatText.setAdapter(formatAdapter);
+			// Get the drop-down button for the formats list and setup dialog
+			ImageView formatButton = (ImageView)findViewById(R.id.format_button);
+			formatButton.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					StandardDialogs.selectStringDialog(getLayoutInflater(), getString(R.string.format), mDbHelper.getFormats(), new SimpleDialogOnClickListener() {
+						@Override
+						public void onClick(SimpleDialogItem item) {
+							formatField.setValue(item.toString());
+						}});
+				}});
+
+			//Spinner formatSpinner = (Spinner) formatField.getView();
+			//ArrayAdapter<String> formatArr = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
+			//formatArr.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			//formatSpinner.setAdapter(formatArr);
+			//formatArr.add(getString(R.string.format1));
+			//formatArr.add(getString(R.string.format2));
+			//formatArr.add(getString(R.string.format3));
+			//formatArr.add(getString(R.string.format4));
+			//formatArr.add(getString(R.string.format5));
 
 			mConfirmButton = (Button) findViewById(R.id.confirm);
 			mCancelButton = (Button) findViewById(R.id.cancel);

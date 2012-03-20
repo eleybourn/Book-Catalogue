@@ -3536,15 +3536,16 @@ public class CatalogueDBAdapter {
 		Cursor c = mDb.rawQuery("Select distinct " + KEY_FORMAT + " from " + DB_TB_BOOKS + " Order by lower(" + KEY_FORMAT + ") collate UNICODE");
 		try {
 			while (c.moveToNext()) {
-				String name = c.getString(0).trim();
-				try {
-					if (name.length() > 0 && !foundSoFar.contains(name.toLowerCase())) {
-						foundSoFar.add(name.toLowerCase());
-						list.add(name);
+				String name = c.getString(0);
+				if (name != null)
+					try {
+						if (name.length() > 0 && !foundSoFar.contains(name.toLowerCase())) {
+							foundSoFar.add(name.toLowerCase());
+							list.add(name);
+						}
+					} catch (NullPointerException e) {
+						// do nothing
 					}
-				} catch (NullPointerException e) {
-					// do nothing
-				}
 			}
 		} finally {
 			c.close();

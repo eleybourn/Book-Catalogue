@@ -276,7 +276,7 @@ public class BookEditFields extends Activity {
 						}
 					}
 			});
-			
+
 			mFields.add(R.id.description, CatalogueDBAdapter.KEY_DESCRIPTION, null);
 			
 			mFields.add(R.id.genre, CatalogueDBAdapter.KEY_GENRE, null);
@@ -305,7 +305,7 @@ public class BookEditFields extends Activity {
 			formatButton.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					StandardDialogs.selectStringDialog(getLayoutInflater(), getString(R.string.format), mDbHelper.getFormats(), new SimpleDialogOnClickListener() {
+					StandardDialogs.selectStringDialog(getLayoutInflater(), getString(R.string.format), mDbHelper.getFormats(), formatField.getValue().toString(), new SimpleDialogOnClickListener() {
 						@Override
 						public void onClick(SimpleDialogItem item) {
 							formatField.setValue(item.toString());

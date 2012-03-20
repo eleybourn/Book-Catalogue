@@ -35,7 +35,11 @@ import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 public class StandardDialogs {
@@ -219,6 +223,7 @@ public class StandardDialogs {
 	 */
 	public static interface SimpleDialogItem {
 		View getView(LayoutInflater inflater);
+		RadioButton getSelector(View v);
 	}
 	/**
 	 * Interface to listen for item selection in a custom dialog list
@@ -230,9 +235,9 @@ public class StandardDialogs {
 	/**
 	 * Select a custom item from a list, and call halder when/if item is selected.
 	 */
-	public static void selectItemDialog(LayoutInflater inflater, String message, ArrayList<SimpleDialogItem> items, final SimpleDialogOnClickListener handler) {
+	public static void selectItemDialog(LayoutInflater inflater, String message, ArrayList<SimpleDialogItem> items, SimpleDialogItem selectedItem, final SimpleDialogOnClickListener handler) {
 		// Get the view and the radio group
-		View root = inflater.inflate(R.layout.select_list_dialog, null);
+		final View root = inflater.inflate(R.layout.select_list_dialog, null);
 		TextView msg = (TextView) root.findViewById(R.id.message);
 
 		// Build the base dialog
@@ -249,8 +254,30 @@ public class StandardDialogs {
 		OnClickListener listener = new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				dialog.dismiss();
 				SimpleDialogItem item = (SimpleDialogItem)ViewTagger.getTag(v, R.id.TAG_DIALOG_ITEM);
+				// For a consistent UI, make sure the selector is checked as well. NOT mandatory from
+				// a functional point of view, just consistent
+				if (! (v instanceof RadioButton) ) {
+					RadioButton btn = item.getSelector(v);
+					if (btn != null) {
+						btn.setChecked(true);
+						btn.invalidate();
+					}
+				}
+				//
+				// It would be nice to have the other radio buttons reflect the new state before it
+				// disappears, but not really worth the effort. Esp. since the code below does not work...
+				// and the dialog disappears too fast to make this worthwhile.
+				//
+				//LinearLayout list = (LinearLayout)root.findViewById(R.id.list);
+				//for(int i = 0; i < list.getChildCount(); i++) {
+				//	View child = list.getChildAt(i);
+				//	SimpleDialogItem other = (SimpleDialogItem)ViewTagger.getTag(child, R.id.TAG_DIALOG_ITEM);
+				//	RadioButton btn = other.getSelector(child);
+				//	btn.setSelected(other == item);
+				//	btn.invalidate();
+				//}
+				dialog.dismiss();
 				handler.onClick(item);				
 			}};		
 
@@ -258,9 +285,16 @@ public class StandardDialogs {
 		LinearLayout list = (LinearLayout)root.findViewById(R.id.list);
 		for(SimpleDialogItem item: items) {
 			View v = item.getView(inflater);
+			v.setBackgroundResource(android.R.drawable.list_selector_background);
 			ViewTagger.setTag(v, R.id.TAG_DIALOG_ITEM, item);
 			list.addView(v);
 			v.setOnClickListener(listener);
+			RadioButton btn = item.getSelector(v);
+			if (btn != null) {
+				ViewTagger.setTag(btn, R.id.TAG_DIALOG_ITEM, item);
+				btn.setChecked(item == selectedItem);
+				btn.setOnClickListener(listener);
+			}
 		}
 		dialog.show();
 	}
@@ -273,19 +307,23 @@ public class StandardDialogs {
 		for(File file: files) {
 			items.add(new SimpleDialogFileItem(file));
 		}
-		selectItemDialog(inflater, title, items, handler);
+		selectItemDialog(inflater, title, items, null, handler);
 	}
 
 	/**
 	 * Wrapper class to present a list of arbitrary objects for selection; it uses
 	 * the toString() method to display a simple list.
 	 */
-	public static <T extends Object> void selectStringDialog(LayoutInflater inflater, String title, ArrayList<T> objects, final SimpleDialogOnClickListener handler) {
+	public static <T extends Object> void selectStringDialog(LayoutInflater inflater, String title, ArrayList<T> objects, String current, final SimpleDialogOnClickListener handler) {
 		ArrayList<SimpleDialogItem> items = new ArrayList<SimpleDialogItem>();
+		SimpleDialogItem selectedItem = null;
 		for(T o: objects) {
-			items.add(new SimpleDialogObjectItem(o));
+			SimpleDialogObjectItem item = new SimpleDialogObjectItem(o);
+			if (current != null && o.toString().equalsIgnoreCase(current))
+				selectedItem = item;
+			items.add(item);
 		}
-		selectItemDialog(inflater, title, items, handler);
+		selectItemDialog(inflater, title, items, selectedItem, handler);
 	}
 
 	/**
@@ -300,6 +338,10 @@ public class StandardDialogs {
 		
 		public File getFile() {
 			return mFile;
+		}
+
+		public RadioButton getSelector(View v) {
+			return null;
 		}
 
 		/**
@@ -330,7 +372,7 @@ public class StandardDialogs {
 	 */
 	public static class SimpleDialogObjectItem implements SimpleDialogItem {
 		private final Object mObject; 
-		
+
 		public SimpleDialogObjectItem(Object object) {
 			mObject = object;
 		}
@@ -352,6 +394,10 @@ public class StandardDialogs {
 			return v;
 		}
 		
+		public RadioButton getSelector(View v) {
+			return (RadioButton) v.findViewById(R.id.selector);
+		}
+
 		/**
 		 * Get the underlying object as a string
 		 */

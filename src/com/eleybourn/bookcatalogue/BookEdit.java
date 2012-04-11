@@ -21,6 +21,7 @@
 package com.eleybourn.bookcatalogue;
 
 //import android.R;
+import android.app.Activity;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -46,9 +47,12 @@ public class BookEdit extends TabActivity {
 	public static final int TAB_EDIT = 0;
 	public static final int TAB_EDIT_NOTES = 1;
 	public static final int TAB_EDIT_FRIENDS = 2;
-	public static final int DELETE_ID = 1;
-	public static final int DUPLICATE_ID = 3; //2 is taken by populate in anthology
-	public static final int TWEET_ID = 4; //2 is taken by populate in anthology
+
+	private static final int DELETE_ID = 1;
+	private static final int DUPLICATE_ID = 3; //2 is taken by populate in anthology
+	private static final int TWEET_ID = 4; //2 is taken by populate in anthology
+	private static final int THUMBNAIL_OPTIONS_ID = 5;
+
 	public int currentTab = 0;
 	private Long mRowId;
 	private CatalogueDBAdapter mDbHelper = new CatalogueDBAdapter(this);
@@ -175,6 +179,11 @@ public class BookEdit extends TabActivity {
 		duplicate.setIcon(android.R.drawable.ic_menu_add);
 		MenuItem tweet = menu.add(0, TWEET_ID, 0, R.string.menu_share_this);
 		tweet.setIcon(R.drawable.ic_menu_twitter);
+		boolean thumbVisible = BookCatalogueApp.getAppPreferences().getBoolean(FieldVisibility.prefix + "thumbnail", true);
+		if (thumbVisible && getCurrentActivity() instanceof BookEditFields) {
+			MenuItem thumbOptions = menu.add(0, THUMBNAIL_OPTIONS_ID, 0, R.string.cover_options_cc_ellipsis);
+			thumbOptions.setIcon(android.R.drawable.ic_menu_camera);			
+		}
 		
 		return super.onPrepareOptionsMenu(menu);
 	}
@@ -188,6 +197,12 @@ public class BookEdit extends TabActivity {
 		Cursor thisBook = null;
 		try {
 			switch(item.getItemId()) {
+			case THUMBNAIL_OPTIONS_ID:
+				Activity a = this.getCurrentActivity();
+				if (a instanceof BookEditFields) {
+					((BookEditFields)a).showCoverContextMenu();
+				}
+				break;
 			case TWEET_ID:
 				thisBook = mDbHelper.fetchBookById(mRowId);
 				thisBook.moveToFirst();
@@ -251,8 +266,8 @@ public class BookEdit extends TabActivity {
 					book.putString(CatalogueDBAdapter.KEY_DESCRIPTION, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_DESCRIPTION)));
 					book.putString(CatalogueDBAdapter.KEY_GENRE, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_GENRE)));
 					
-					book.putParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mDbHelper.getBookAuthorList(mRowId));
-					book.putParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY, mDbHelper.getBookSeriesList(mRowId));
+					book.putSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mDbHelper.getBookAuthorList(mRowId));
+					book.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, mDbHelper.getBookSeriesList(mRowId));
 					
 					i.putExtra("bookData", book);
 					startActivityForResult(i, DUPLICATE_ID);
@@ -267,4 +282,24 @@ public class BookEdit extends TabActivity {
 		}
 		return true;
 	}
+	
+	/********************************************************
+	 * Standard STATIC Methods
+	 * ******************************************************
+	 */
+
+	/**
+	 * Load the EditBook activity based on the provided id. Also open to the provided tab.
+	 * 
+	 * @param id The id of the book to edit
+	 * @param tab Which tab to open first
+	 */
+	public static void editBook(Activity a, long id, int tab) {
+		Intent i = new Intent(a, BookEdit.class);
+		i.putExtra(CatalogueDBAdapter.KEY_ROWID, id);
+		i.putExtra(BookEdit.TAB, tab);
+		a.startActivityForResult(i, R.id.ACTIVITY_EDIT_BOOK);
+		return;
+	}
+
 }

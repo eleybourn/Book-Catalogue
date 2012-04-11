@@ -80,7 +80,7 @@ public class Help extends Activity {
 			sendInfo.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					Utils.sendDebugInfo(Help.this, mDbHelper);
+					StorageUtils.sendDebugInfo(Help.this, mDbHelper);
 				}
 			});
 			
@@ -99,13 +99,13 @@ public class Help extends Activity {
 			cleanupBtn.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					Utils.cleanupFiles();
+					StorageUtils.cleanupFiles();
 					setupCleanupButton();
 				}
 			});
 
 
-			float space = Utils.cleanupFilesTotalSize();
+			float space = StorageUtils.cleanupFilesTotalSize();
 			if (space == 0) {
 				cleanupBtn.setVisibility(View.GONE);
 				cleanupTxt.setVisibility(View.GONE);
@@ -113,19 +113,8 @@ public class Help extends Activity {
 				cleanupBtn.setVisibility(View.VISIBLE);
 				cleanupTxt.setVisibility(View.VISIBLE);
 				String fmt = getString(R.string.cleanup_files_text);
-				String sizeFmt;
-				String msg;
-				if (space < 3072) { // Show 'bytes' if < 3k
-					sizeFmt = getString(R.string.bytes);
-				} else if (space < 250 * 1024) { // Show Kb if less than 250kB
-					sizeFmt = getString(R.string.kilobytes);
-					space = space / 1024;
-				} else { // Show MB otherwise...
-					sizeFmt = getString(R.string.megabytes);
-					space = space / (1024 * 1024);
-				}
-				msg = String.format(fmt, String.format(sizeFmt,space));
-				cleanupTxt.setText(msg);
+				String sizeStr = Utils.formatFileSize(space);
+				cleanupTxt.setText(String.format(fmt, sizeStr));
 
 			}			
 		} catch (Exception e) {
@@ -137,6 +126,19 @@ public class Help extends Activity {
 	protected void onResume() {
 		super.onResume();
 		setupCleanupButton();		
+	}
+
+	/**
+	 * Called when activity destroyed
+	 */
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		try {
+			mDbHelper.close();
+		} catch (Exception e) {
+			Logger.logError(e);
+		}
 	}
 
 }

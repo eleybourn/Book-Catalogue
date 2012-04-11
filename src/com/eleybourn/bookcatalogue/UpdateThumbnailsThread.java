@@ -21,6 +21,7 @@
 package com.eleybourn.bookcatalogue;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
@@ -30,6 +31,7 @@ import android.os.Bundle;
 import android.os.Message;
 import android.os.Parcelable;
 
+import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsage;
 import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsages;
 import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsages.Usages;
@@ -37,7 +39,7 @@ import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsages.Usages;
 /**
  * Class to update all thumbnails (and some other data) in a background thread.
  *
- * @author Grunthos
+ * @author Philip Warner
  */
 public class UpdateThumbnailsThread extends ManagedTask implements SearchManager.SearchResultHandler {
 	// The fields that the user requested to update
@@ -55,6 +57,8 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 	private Bundle mOrigData = null;
 	// - current book ID
 	private long mCurrId = 0;
+	// - current book UUID
+	private String mCurrUuid = null;
 	// - The (subset) of fields relevant to the current book
 	private FieldUsages mCurrFieldUsages;
 
@@ -72,12 +76,9 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 	/**
 	 * Constructor.
 	 * 
-	 * @param ctx				Context to use for constructing progressdialog
-	 * @param fieldHash			Hastable containing entries for fields to update
-	 * @param overwrite			Whether to overwrite details
-	 * @param books				Cursor to scan
+	 * @param manager			Object to manage background tasks
+	 * @param requestedFields	fields to update
 	 * @param lookupHandler		Interface object to handle events in this thread.
-	 * 
 	 */
 	public UpdateThumbnailsThread(TaskManager manager, FieldUsages requestedFields, LookupHandler lookupHandler) {
 		super(manager, lookupHandler);
@@ -93,12 +94,12 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 	public void onRun() throws InterruptedException {
 		int counter = 0;
 		/* Test write to the SDCard; abort if not writable */
-		if (!Utils.sdCardWritable()) {
+		if (!StorageUtils.sdCardWritable()) {
 			mFinalMessage = getString(R.string.thumbnail_failed_sdcard);
 			return;
 		}
 
-		// TODO: Allow caller to pass cursor (again) so that specific books can be updated (eg. just one book)
+		// ENHANCE: Allow caller to pass cursor (again) so that specific books can be updated (eg. just one book)
 		Cursor books = mDbHelper.fetchAllBooks("b." + CatalogueDBAdapter.KEY_ROWID, "", "", "", "", "", "");
 		mManager.setMax(this, books.getCount());
 		try {
@@ -114,9 +115,11 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 				}
 				// Get the book ID
 				mCurrId = Utils.getAsLong(mOrigData, CatalogueDBAdapter.KEY_ROWID);
+				// Get the book UUID
+				mCurrUuid = mOrigData.getString( DatabaseDefinitions.DOM_BOOK_UUID.name );
 				// Get the extra data about the book
-				mOrigData.putParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mDbHelper.getBookAuthorList(mCurrId));
-				mOrigData.putParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY, mDbHelper.getBookSeriesList(mCurrId));
+				mOrigData.putSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mDbHelper.getBookAuthorList(mCurrId));
+				mOrigData.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, mDbHelper.getBookSeriesList(mCurrId));
 
 				// Grab the searchable fields. Ideally we will have an ISBN but we may not.
 				String isbn = mOrigData.getString(CatalogueDBAdapter.KEY_ISBN);
@@ -140,19 +143,19 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 							// Handle special cases
 							// - If it's a thumbnail, then see if it's missing or empty. 
 							if (usage.fieldName.equals(CatalogueDBAdapter.KEY_THUMBNAIL)) {
-								File file = CatalogueDBAdapter.fetchThumbnail(mCurrId);
+								File file = CatalogueDBAdapter.fetchThumbnailByUuid(mCurrUuid);
 								if (!file.exists() || file.length() == 0)
 									mCurrFieldUsages.put(usage);
 							} else if (usage.fieldName.equals(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)) {
 								// We should never have a book with no authors, but lets be paranoid
 								if (mOrigData.containsKey(usage.fieldName)) {
-									ArrayList<Author> origAuthors = mOrigData.getParcelableArrayList(usage.fieldName);
+									ArrayList<Author> origAuthors = (ArrayList<Author>) mOrigData.getSerializable(usage.fieldName);
 									if (origAuthors == null || origAuthors.size() == 0)
 										mCurrFieldUsages.put(usage);
 								}
 							} else if (usage.fieldName.equals(CatalogueDBAdapter.KEY_SERIES_ARRAY)) {
 								if (mOrigData.containsKey(usage.fieldName)) {
-									ArrayList<Series> origSeries = mOrigData.getParcelableArrayList(usage.fieldName);
+									ArrayList<Series> origSeries = (ArrayList<Series>) mOrigData.getSerializable(usage.fieldName);
 									if (origSeries == null || origSeries.size() == 0)
 										mCurrFieldUsages.put(usage);
 								}
@@ -172,7 +175,7 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 				if (tmpThumbWanted) {
 					// delete any temporary thumbnails //
 					try {
-						File delthumb = CatalogueDBAdapter.fetchThumbnail(0);
+						File delthumb = CatalogueDBAdapter.getTempThumbnail();
 						delthumb.delete();
 					} catch (Exception e) {
 						// do nothing - this is the expected behaviour 
@@ -195,7 +198,8 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 
 				// Start searching if we need it, then wait...
 				if (wantSearch) {
-					mSearchManager.search(author, title, isbn, tmpThumbWanted);
+					// TODO: Allow user-selection of search sources
+					mSearchManager.search(author, title, isbn, tmpThumbWanted, SearchManager.SEARCH_ALL);
 					// Wait for the search to complete; when the search has completed it uses class-level state
 					// data when processing the results. It will signal this lock when it no longer needs any class
 					// level state data (eg. mOrigData).
@@ -269,7 +273,7 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 			}});
 
 		if (!isCancelled() && bookData != null)
-			processSearchResults(rowId, requestedFields, bookData, origData);
+			processSearchResults(rowId, mCurrUuid, requestedFields, bookData, origData);
 	}
 
 	/**
@@ -279,7 +283,7 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 	 * @param newData	Data gathered from internet
 	 * @param origData	Original data
 	 */
-	private void processSearchResults(long rowId, FieldUsages requestedFields, Bundle newData, Bundle origData) {
+	private void processSearchResults(long bookId, String bookUuid, FieldUsages requestedFields, Bundle newData, Bundle origData) {
 		// First, filter the data to remove keys we don't care about
 		ArrayList<String> toRemove = new ArrayList<String>();
 		for(String key : newData.keySet()) {
@@ -295,16 +299,16 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 			if (newData.containsKey(usage.fieldName)) {
 				// Handle thumbnail specially
 				if (usage.fieldName.equals(CatalogueDBAdapter.KEY_THUMBNAIL)) {
-					File downloadedFile = CatalogueDBAdapter.fetchThumbnail(0);
+					File downloadedFile = CatalogueDBAdapter.getTempThumbnail();
 					boolean copyThumb = false;
 					if (usage.usage == Usages.COPY_IF_BLANK) {
-						File file = CatalogueDBAdapter.fetchThumbnail(rowId);
+						File file = CatalogueDBAdapter.fetchThumbnailByUuid(bookUuid);
 						copyThumb = (!file.exists() || file.length() == 0);
 					} else if (usage.usage == Usages.OVERWRITE) {
 						copyThumb = true;
 					}
 					if (copyThumb) {
-						File file = CatalogueDBAdapter.fetchThumbnail(rowId);
+						File file = CatalogueDBAdapter.fetchThumbnailByUuid(bookUuid);
 						downloadedFile.renameTo(file);
 					} else {
 						downloadedFile.delete();
@@ -318,13 +322,13 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 						// Handle special cases
 						if (usage.fieldName.equals(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)) {
 							if (origData.containsKey(usage.fieldName)) {
-								ArrayList<Author> origAuthors = origData.getParcelableArrayList(usage.fieldName);
+								ArrayList<Author> origAuthors = (ArrayList<Author>) origData.getSerializable(usage.fieldName);
 								if (origAuthors != null && origAuthors.size() > 0)
 									newData.remove(usage.fieldName);								
 							}
 						} else if (usage.fieldName.equals(CatalogueDBAdapter.KEY_SERIES_ARRAY)) {
 							if (origData.containsKey(usage.fieldName)) {
-								ArrayList<Series> origSeries = origData.getParcelableArrayList(usage.fieldName);
+								ArrayList<Series> origSeries = (ArrayList<Series>) origData.getSerializable(usage.fieldName);
 								if (origSeries != null && origSeries.size() > 0)
 									newData.remove(usage.fieldName);								
 							}
@@ -353,17 +357,17 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 
 		// Update
 		if (newData.size() > 0)
-			mDbHelper.updateBook(rowId, newData, true);
+			mDbHelper.updateBook(bookId, newData, true);
 		
 	}
 
-	private static<T extends Parcelable> void combineArrays(String key, Bundle origData, Bundle newData) {
+	private static<T extends Serializable> void combineArrays(String key, Bundle origData, Bundle newData) {
 		// Each of the lists to combine
 		ArrayList<T> origList = null;
 		ArrayList<T> newList = null;
 		// Get the list from the original, if present. 
 		if (origData.containsKey(key)) {
-			origList = origData.getParcelableArrayList(key);
+			origList = (ArrayList<T>) origData.getSerializable(key);
 		}
 		// Otherwise an empty list
 		if (origList == null)
@@ -371,13 +375,13 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 
 		// Get from the new data
 		if (newData.containsKey(key)) {
-			newList = newData.getParcelableArrayList(key);			
+			newList = (ArrayList<T>) newData.getSerializable(key);			
 		}
 		if (newList == null)
 			newList = new ArrayList<T>();
 		origList.addAll(newList);
 		// Save combined version to the new data
-		newData.putParcelableArrayList(key, origList);
+		newData.putSerializable(key, origList);
 	}
 	
 	/**

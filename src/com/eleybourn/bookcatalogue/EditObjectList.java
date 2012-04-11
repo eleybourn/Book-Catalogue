@@ -20,13 +20,13 @@
 
 package com.eleybourn.bookcatalogue;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +34,7 @@ import android.view.ViewParent;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 /**
@@ -75,11 +76,11 @@ import android.widget.TextView;
  * - (OPTIONAL) a subview with an ID of "@+id/row_details"; when clicked, this will result 
  *   in the onRowClick event.
  * 
- * @author Grunthos
+ * @author Philip Warner
  *
  * @param <T>
  */
-abstract public class EditObjectList<T extends Parcelable> extends ListActivity {
+abstract public class EditObjectList<T extends Serializable> extends ListActivity {
 
 	// List
 	protected ArrayList<T> mList = null;
@@ -125,7 +126,7 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
 	 * @param target	The view clicked
 	 * @param object	The object associated with this row
 	 */
-	abstract protected void onRowClick(View target, T object);
+	abstract protected void onRowClick(View target, int position, T object);
 	
 	/**
 	 * Called when user clicks the 'Save' button (if present). Primary task is
@@ -137,7 +138,7 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
 	 * 
 	 * @return		True if activity should exit, false to abort exit.
 	 */
-	protected boolean onSave() { return true; };
+	protected boolean onSave(Intent intent) { return true; };
  
 	/**
 	 * Called when user presses 'Cancel' button if present. Primary task is
@@ -150,15 +151,45 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
 	protected boolean onCancel() { return true;};
 
 	/**
+	 * Called when the list had been modified in some way.
+	 */
+	protected void onListChanged() { };
+
+	/**
+	 * Called to get the list if it was not in the intent.
+	 */
+	protected ArrayList<T> getList() { return null; };
+
+	/**
 	 * Constructor
 	 * 
 	 * @param baseViewId	Resource id of base view
 	 * @param rowViewId		Resource id of row view
 	 */
-	EditObjectList(String key, int baseViewId, int rowViewId) {
+	protected EditObjectList(String key, int baseViewId, int rowViewId) {
 		mKey = key;
 		mBaseViewId = baseViewId;
 		mRowViewId = rowViewId;
+	}
+
+	/**
+	 * Update the current list
+	 */
+	protected void setList(ArrayList<T> newList) {
+		final int savedRow = getListView().getFirstVisiblePosition();
+		View v = getListView().getChildAt(0);
+		final int savedTop = v == null ? 0 : v.getTop();
+
+		mList = newList;
+		// Set up list handling
+        this.mAdapter = new ListAdapter(this, mRowViewId, mList);
+        setListAdapter(this.mAdapter);
+
+        getListView().post(new Runnable() {
+			@Override
+			public void run() {
+				getListView().setSelectionFromTop(savedRow, savedTop);
+			}});
 	}
 
 	@Override
@@ -179,16 +210,19 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
 
 			// Ask the subclass to setup the list; we need this before 
 			// building the adapter.
-			if (savedInstanceState != null && savedInstanceState.containsKey(mKey)) {
-				mList = savedInstanceState.getParcelableArrayList(mKey);
+			if (savedInstanceState != null && mKey != null && savedInstanceState.containsKey(mKey)) {
+				mList = (ArrayList<T>) savedInstanceState.getSerializable(mKey);//.getParcelableArrayList(mKey);
 			}
 
 			if (mList == null) {
 				/* Get any information from the extras bundle */
 				Bundle extras = getIntent().getExtras();
-				if (extras != null) {
-					mList = extras.getParcelableArrayList(mKey);
+				if (extras != null && mKey != null) {
+					mList = (ArrayList<T>) extras.getSerializable(mKey); // .getParcelableArrayList(mKey);
 				}
+				if (mList == null)
+					mList = getList();
+
 				if (mList == null) {
 					throw new RuntimeException("Unable to find list key '" + mKey + "' in passed data");
 				}
@@ -218,12 +252,48 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
 		}
 	}
 
+	/**
+	 * Handle drop events; also preserves current position.
+	 */
 	private TouchListView.DropListener mDropListener=new TouchListView.DropListener() {
 		@Override
-		public void drop(int from, int to) {
-				T item=mAdapter.getItem(from);				
-				mAdapter.remove(item);
-				mAdapter.insert(item, to);
+		public void drop(int from, final int to) {
+            final ListView lv = getListView();
+            final int firstPos = lv.getFirstVisiblePosition();
+
+			T item=mAdapter.getItem(from);				
+			mAdapter.remove(item);
+			mAdapter.insert(item, to);
+            onListChanged();
+
+            int first2 = lv.getFirstVisiblePosition();
+            System.out.println(from + " -> " + to + ", first " + firstPos + "(" + first2 + ")");
+            final int newFirst = (to > from && from < firstPos) ? (firstPos - 1) : firstPos;
+
+            View firstView = lv.getChildAt(0);
+            final int offset = firstView.getTop();
+            lv.post(new Runnable() {
+				@Override
+				public void run() {
+					System.out.println("Positioning to " + newFirst + "+{" + offset + "}");
+					lv.requestFocusFromTouch();
+					lv.setSelectionFromTop(newFirst, offset);
+					lv.post(new Runnable() {
+						@Override
+						public void run() {
+							for(int i = 0; ; i++) {
+								View c = lv.getChildAt(i);
+								if (c == null)
+									break;
+								if (lv.getPositionForView(c) == to) {
+									lv.setSelectionFromTop(to, c.getTop());
+									//c.requestFocusFromTouch();
+									break;
+								}
+							}
+						}});
+				}});
+
 		}
 	};
 
@@ -283,8 +353,8 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
 		@Override
 		public void onClick(View v) {
 			Intent i = new Intent();
-			i.putParcelableArrayListExtra(mKey, mList);
-			if (onSave()) {
+			i.putExtra(mKey, mList);
+			if (onSave(i)) {
 				setResult(RESULT_OK, i);
 				finish();
 			}
@@ -309,6 +379,7 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
 		@Override
 		public void onClick(View v) {
 			onAdd(v);
+			onListChanged();
 		}		
 	};
 
@@ -329,7 +400,10 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
 				throw new RuntimeException("Could not find row view in view ancestors");
 			pv = (View) p;
 		}
-		return (Integer) pv.getTag(R.id.TAG_POSITION);
+		Object o = ViewTagger.getTag(pv, R.id.TAG_POSITION);
+		if (o == null)
+			throw new RuntimeException("A view with the tag R.id.row was found, but it is not the view for the row");
+		return (Integer) o;
 	}
 
 	/**
@@ -339,9 +413,13 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
 
 		@Override
 		public void onClick(View v) {
+			if (v == null)
+				return;
+
 			int pos = getViewRow(v);
             mList.remove(pos);
             mAdapter.notifyDataSetChanged();
+            onListChanged();
 		}
 	};
 
@@ -359,6 +437,7 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
             mList.set(pos-1, mList.get(pos));
             mList.set(pos, old);
             mAdapter.notifyDataSetChanged();
+            onListChanged();
 		}
 		
 	};
@@ -377,6 +456,7 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
             mList.set(pos, mList.get(pos+1));
             mList.set(pos+1, old);
             mAdapter.notifyDataSetChanged();
+            onListChanged();
 		}
 		
 	};
@@ -389,7 +469,7 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
 		@Override
 		public void onClick(View v) {
 			int pos = getViewRow(v);
-			onRowClick(v, mList.get(pos));
+			onRowClick(v, pos, mList.get(pos));
 		}
 		
 	};
@@ -397,7 +477,7 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
 	/**
 	 * Adapter to manage the rows.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	final class ListAdapter extends ArrayAdapter<T> {
 
@@ -423,14 +503,16 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
             }
             
             // Save this views position
-            v.setTag(R.id.TAG_POSITION, new Integer(position));
+            ViewTagger.setTag(v, R.id.TAG_POSITION, new Integer(position));
 
             {
             	// Giving the whole row ad onClickListener seems to interfere
             	// with drag/drop.
             	View details = v.findViewById(R.id.row_details);
-            	if (details != null)
+            	if (details != null) {
                     details.setOnClickListener(mRowClickListener);
+                    details.setFocusable(false);
+            	}
             }
 
             // Get the object, if not null, do some processing
@@ -493,7 +575,7 @@ abstract public class EditObjectList<T extends Parcelable> extends ListActivity 
 	protected void onSaveInstanceState(Bundle outState) {    	
     	super.onSaveInstanceState(outState);
     	// save list
-    	outState.putParcelableArrayList(mKey, mList);
+    	outState.putSerializable(mKey, mList);
     }
 
 	@Override

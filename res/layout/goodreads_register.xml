@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:background="@drawable/bc_background_gradient_dim"
+		>
+
+  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:orientation="vertical"
+	android:layout_width="fill_parent" 
+	android:layout_height="fill_parent"
+	android:paddingLeft="5sp">
+
+    <!--  BLURB 1 -->
+	<TextView
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" 
+		android:text="@+string/goodreads_auth_blurb_part1"
+		android:textAppearance="?android:attr/textAppearanceMedium"
+		android:paddingBottom="20sp"
+		/>
+
+	<!--  URL -->
+
+	<TextView android:id="@+id/goodreads_url" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" 
+		android:text="@+string/goodreads_url"
+		android:paddingBottom="10sp"
+		android:gravity="center"
+		android:textColor="#006699"
+		android:textAppearance="?android:attr/textAppearanceMedium"
+		/>
+
+    <!--  BLURB 2 -->
+	
+	<TextView 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" 
+		android:text="@+string/goodreads_auth_blurb_part2"
+		android:paddingTop="20sp"
+		android:paddingBottom="20sp"
+		android:textAppearance="?android:attr/textAppearanceMedium"
+		/>
+
+    <!--  BUTTON -->
+	
+	<Button android:id="@+id/authorize" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content" 
+		android:text="@+string/authorize_access" 
+		android:layout_gravity="center"
+		android:gravity="center"
+		/>
+
+    <!--  BLURB 3 -->
+		
+	<TextView 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" 
+		android:text="@+string/goodreads_auth_blurb_part3"
+		android:paddingTop="20sp"
+		android:paddingBottom="20sp"
+		android:textAppearance="?android:attr/textAppearanceMedium"
+		/>
+
+  </LinearLayout>
+</ScrollView>

@@ -22,10 +22,24 @@ package com.eleybourn.bookcatalogue;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
+import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.*;
+import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedStatement;
+import com.eleybourn.bookcatalogue.database.DbUtils.TableDefinition;
+import com.eleybourn.bookcatalogue.database.SerializationUtils;
+import com.eleybourn.bookcatalogue.database.SqlStatementManager;
+import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedDb;
+import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer;
+import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer.SyncLock;
 
 import android.app.SearchManager;
 import android.content.ContentValues;
@@ -33,10 +47,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.database.SQLException;
+import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDoneException;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteStatement;
+import android.database.sqlite.SQLiteQuery;
+import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.BaseColumns;
@@ -46,11 +62,23 @@ import android.widget.ImageView;
  * Book Catalogue database access helper class. Defines the basic CRUD operations
  * for the catalogue (based on the Notepad tutorial), and gives the 
  * ability to list all books as well as retrieve or modify a specific book.
+ * 
+ * ENHANCE: Use date_added to add 'Recent Acquisitions' virtual shelf; need to resolve how this may relate to date_purchased and 'I own this book'...
+ * 
  */
 public class CatalogueDBAdapter {
 	
-	private ArrayList<SQLiteStatement> mStatements = new ArrayList<SQLiteStatement>();
+	/** Debug counter */
+	private static Integer mInstanceCount = 0;
 	
+	private SqlStatementManager mStatements;
+
+	/** Synchronizer to coordinate DB access. Must be STATIC so all instances share same sync */
+	private static final Synchronizer mSynchronizer = new Synchronizer();
+
+	/** Convenience to avoid writing "String[] {}" in many DB routines */
+	public static final String[] EMPTY_STRING_ARRAY = new String[]{};
+
 	/* This is the list of all column names as static variables for reference
 	 * 
 	 * NOTE!!! Because Java String comparisons are not case-insensitive, it is 
@@ -95,30 +123,37 @@ public class CatalogueDBAdapter {
 	public static final String KEY_SIGNED = "signed";
 	public static final String KEY_DESCRIPTION = "description";
 	public static final String KEY_GENRE = "genre";
+	public static final String KEY_DATE_ADDED = "date_added";
 	
 	public static final String KEY_AUTHOR_FORMATTED = "author_formatted";
 	public static final String KEY_AUTHOR_FORMATTED_GIVEN_FIRST = "author_formatted_given_first";
 	public static final String KEY_SERIES_FORMATTED = "series_formatted";
 	public static final String KEY_SERIES_NUM_FORMATTED = "series_num_formatted";
-	
+
 	// We tried 'Collate UNICODE' but it seemed to be case sensitive. We ended
 	// up with 'Ursula Le Guin' and 'Ursula le Guin'.
 	//public static final String COLLATION = "Collate NOCASE";
 	public static final String COLLATION = " Collate UNICODE ";
 
+	public static final String[] EMPTY_STRNG_ARRAY = new String[] {};
+
 	private DatabaseHelper mDbHelper;
-	private SQLiteDatabase mDb;
+	private SynchronizedDb mDb;
+	/** Instance of Utils created if necessary */
+	private Utils mUtils = null;
+	/** Flag indicating close() has been called */
+	private boolean mCloseWasCalled = false;
 
 	/* private database variables as static reference */
-	private static final String DB_TB_BOOKS = "books";
-	private static final String DB_TB_BOOK_AUTHOR = "book_author";
-	private static final String DB_TB_BOOK_BOOKSHELF_WEAK = "book_bookshelf_weak";
-	private static final String DB_TB_BOOK_SERIES = "book_series";
-	private static final String DB_TB_ANTHOLOGY = "anthology";
-	private static final String DB_TB_AUTHORS = "authors";
-	private static final String DB_TB_BOOKSHELF = "bookshelf";
-	private static final String DB_TB_LOAN = "loan";
-	private static final String DB_TB_SERIES = "series";
+	public static final String DB_TB_BOOKS = "books";
+	public static final String DB_TB_BOOK_AUTHOR = "book_author";
+	public static final String DB_TB_BOOK_BOOKSHELF_WEAK = "book_bookshelf_weak";
+	public static final String DB_TB_BOOK_SERIES = "book_series";
+	public static final String DB_TB_ANTHOLOGY = "anthology";
+	public static final String DB_TB_AUTHORS = "authors";
+	public static final String DB_TB_BOOKSHELF = "bookshelf";
+	public static final String DB_TB_LOAN = "loan";
+	public static final String DB_TB_SERIES = "series";
 	public static String message = "";
 	public static String do_action = "";
 	public static String DO_UPDATE_FIELDS = "do_update_fields";
@@ -148,31 +183,143 @@ public class CatalogueDBAdapter {
 	private static final String DATABASE_CREATE_BOOKSHELF_DATA =
 		"INSERT INTO " + DB_TB_BOOKSHELF + 
 		" (" + KEY_BOOKSHELF + ") VALUES ('Default')";
-	
+
+	// NOTE: **NEVER** change this. Rename it, and create a new one. Unless you know what you are doing.
 	private static final String DATABASE_CREATE_BOOKS =
-		"create table " + DB_TB_BOOKS + 
-		" (_id integer primary key autoincrement, " +
-		/* KEY_AUTHOR + " integer not null REFERENCES " + DB_TB_AUTHORS + ", " + */
-		KEY_TITLE + " text not null, " +
-		KEY_ISBN + " text, " +
-		KEY_PUBLISHER + " text, " +
-		KEY_DATE_PUBLISHED + " date, " +
-		KEY_RATING + " float not null default 0, " +
-		KEY_READ + " boolean not null default 'f', " +
-		/* KEY_SERIES + " text, " + */
-		KEY_PAGES + " int, " +
-		/* KEY_SERIES_NUM + " text, " + */
-		KEY_NOTES + " text, " +
-		KEY_LIST_PRICE + " text, " +
-		KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO + ", " + 
-		KEY_LOCATION + " text, " +
-		KEY_READ_START + " date, " +
-		KEY_READ_END + " date, " +
-		KEY_FORMAT + " text, " +
-		KEY_SIGNED + " boolean not null default 'f', " +
-		KEY_DESCRIPTION + " text, " +
-		KEY_GENRE + " text " +
-		")";
+			"create table " + DB_TB_BOOKS + 
+			" (_id integer primary key autoincrement, " +
+			/* KEY_AUTHOR + " integer not null REFERENCES " + DB_TB_AUTHORS + ", " + */
+			KEY_TITLE + " text not null, " +
+			KEY_ISBN + " text, " +
+			KEY_PUBLISHER + " text, " +
+			KEY_DATE_PUBLISHED + " date, " +
+			KEY_RATING + " float not null default 0, " +
+			KEY_READ + " boolean not null default 0, " +
+			/* KEY_SERIES + " text, " + */
+			KEY_PAGES + " int, " +
+			/* KEY_SERIES_NUM + " text, " + */
+			KEY_NOTES + " text, " +
+			KEY_LIST_PRICE + " text, " +
+			KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO + ", " + 
+			KEY_LOCATION + " text, " +
+			KEY_READ_START + " date, " +
+			KEY_READ_END + " date, " +
+			KEY_FORMAT + " text, " +
+			KEY_SIGNED + " boolean not null default 0, " +
+			KEY_DESCRIPTION + " text, " +
+			KEY_GENRE + " text, " +
+			KEY_DATE_ADDED + " datetime default current_timestamp, " +
+			DOM_GOODREADS_BOOK_ID.getDefinition(true) + ", " +
+			DOM_LAST_GOODREADS_SYNC_DATE.getDefinition(true) + ", " +
+			DOM_BOOK_UUID.getDefinition(true) + ", " +
+			DOM_LAST_UPDATE_DATE.getDefinition(true) +
+			")";
+
+	private static final String DATABASE_CREATE_BOOKS_70 =
+			"create table " + DB_TB_BOOKS + 
+			" (_id integer primary key autoincrement, " +
+			/* KEY_AUTHOR + " integer not null REFERENCES " + DB_TB_AUTHORS + ", " + */
+			KEY_TITLE + " text not null, " +
+			KEY_ISBN + " text, " +
+			KEY_PUBLISHER + " text, " +
+			KEY_DATE_PUBLISHED + " date, " +
+			KEY_RATING + " float not null default 0, " +
+			KEY_READ + " boolean not null default 0, " +
+			/* KEY_SERIES + " text, " + */
+			KEY_PAGES + " int, " +
+			/* KEY_SERIES_NUM + " text, " + */
+			KEY_NOTES + " text, " +
+			KEY_LIST_PRICE + " text, " +
+			KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO + ", " + 
+			KEY_LOCATION + " text, " +
+			KEY_READ_START + " date, " +
+			KEY_READ_END + " date, " +
+			KEY_FORMAT + " text, " +
+			KEY_SIGNED + " boolean not null default 0, " +
+			KEY_DESCRIPTION + " text, " +
+			KEY_GENRE + " text, " +
+			KEY_DATE_ADDED + " datetime default current_timestamp, " +
+			DOM_GOODREADS_BOOK_ID.getDefinition(true) + ", " +
+			DOM_BOOK_UUID.getDefinition(true) +
+			")";
+
+	private static final String DATABASE_CREATE_BOOKS_69 =
+			"create table " + DB_TB_BOOKS + 
+			" (_id integer primary key autoincrement, " +
+			/* KEY_AUTHOR + " integer not null REFERENCES " + DB_TB_AUTHORS + ", " + */
+			KEY_TITLE + " text not null, " +
+			KEY_ISBN + " text, " +
+			KEY_PUBLISHER + " text, " +
+			KEY_DATE_PUBLISHED + " date, " +
+			KEY_RATING + " float not null default 0, " +
+			KEY_READ + " boolean not null default 0, " +
+			/* KEY_SERIES + " text, " + */
+			KEY_PAGES + " int, " +
+			/* KEY_SERIES_NUM + " text, " + */
+			KEY_NOTES + " text, " +
+			KEY_LIST_PRICE + " text, " +
+			KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO + ", " + 
+			KEY_LOCATION + " text, " +
+			KEY_READ_START + " date, " +
+			KEY_READ_END + " date, " +
+			KEY_FORMAT + " text, " +
+			KEY_SIGNED + " boolean not null default 0, " +
+			KEY_DESCRIPTION + " text, " +
+			KEY_GENRE + " text, " +
+			KEY_DATE_ADDED + " datetime default current_timestamp, " +
+			DOM_GOODREADS_BOOK_ID.getDefinition(true) +
+			")";
+
+	private static final String DATABASE_CREATE_BOOKS_68 =
+			"create table " + DB_TB_BOOKS + 
+			" (_id integer primary key autoincrement, " +
+			/* KEY_AUTHOR + " integer not null REFERENCES " + DB_TB_AUTHORS + ", " + */
+			KEY_TITLE + " text not null, " +
+			KEY_ISBN + " text, " +
+			KEY_PUBLISHER + " text, " +
+			KEY_DATE_PUBLISHED + " date, " +
+			KEY_RATING + " float not null default 0, " +
+			KEY_READ + " boolean not null default 0, " +
+			/* KEY_SERIES + " text, " + */
+			KEY_PAGES + " int, " +
+			/* KEY_SERIES_NUM + " text, " + */
+			KEY_NOTES + " text, " +
+			KEY_LIST_PRICE + " text, " +
+			KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO + ", " + 
+			KEY_LOCATION + " text, " +
+			KEY_READ_START + " date, " +
+			KEY_READ_END + " date, " +
+			KEY_FORMAT + " text, " +
+			KEY_SIGNED + " boolean not null default 0, " +
+			KEY_DESCRIPTION + " text, " +
+			KEY_GENRE + " text, " +
+			KEY_DATE_ADDED + " datetime default current_timestamp" +
+			")";
+
+	private static final String DATABASE_CREATE_BOOKS_63 =
+			"create table " + DB_TB_BOOKS + 
+			" (_id integer primary key autoincrement, " +
+			/* KEY_AUTHOR + " integer not null REFERENCES " + DB_TB_AUTHORS + ", " + */
+			KEY_TITLE + " text not null, " +
+			KEY_ISBN + " text, " +
+			KEY_PUBLISHER + " text, " +
+			KEY_DATE_PUBLISHED + " date, " +
+			KEY_RATING + " float not null default 0, " +
+			KEY_READ + " boolean not null default 0, " +
+			/* KEY_SERIES + " text, " + */
+			KEY_PAGES + " int, " +
+			/* KEY_SERIES_NUM + " text, " + */
+			KEY_NOTES + " text, " +
+			KEY_LIST_PRICE + " text, " +
+			KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO + ", " + 
+			KEY_LOCATION + " text, " +
+			KEY_READ_START + " date, " +
+			KEY_READ_END + " date, " +
+			KEY_FORMAT + " text, " +
+			KEY_SIGNED + " boolean not null default 0, " +
+			KEY_DESCRIPTION + " text, " +
+			KEY_GENRE + " text " +
+			")";
 
 	private static final String KEY_AUDIOBOOK_V41 = "audiobook";
 	private static final String DATABASE_CREATE_BOOKS_V41 =
@@ -256,6 +403,8 @@ public class CatalogueDBAdapter {
 		"CREATE INDEX IF NOT EXISTS books_isbn ON "+DB_TB_BOOKS+" ("+KEY_ISBN+");",
 		/* "CREATE INDEX IF NOT EXISTS books_series ON "+DB_TB_BOOKS+" ("+KEY_SERIES+");",*/
 		"CREATE INDEX IF NOT EXISTS books_publisher ON "+DB_TB_BOOKS+" ("+KEY_PUBLISHER+");",
+		"CREATE UNIQUE INDEX IF NOT EXISTS books_uuid ON "+DB_TB_BOOKS+" ("+DOM_BOOK_UUID+");",
+		"CREATE INDEX IF NOT EXISTS books_gr_book ON "+DB_TB_BOOKS+" ("+DOM_GOODREADS_BOOK_ID.name+");",
 		"CREATE INDEX IF NOT EXISTS anthology_book ON "+DB_TB_ANTHOLOGY+" ("+KEY_BOOK+");",
 		"CREATE INDEX IF NOT EXISTS anthology_author ON "+DB_TB_ANTHOLOGY+" ("+KEY_AUTHOR_ID+");",
 		"CREATE INDEX IF NOT EXISTS anthology_title ON "+DB_TB_ANTHOLOGY+" ("+KEY_TITLE+");",
@@ -350,7 +499,12 @@ public class CatalogueDBAdapter {
 			alias + "." + KEY_FORMAT + " as " + KEY_FORMAT + ", " +
 			alias + "." + KEY_SIGNED + " as " + KEY_SIGNED + ", " + 
 			alias + "." + KEY_DESCRIPTION + " as " + KEY_DESCRIPTION + ", " + 
-			alias + "." + KEY_GENRE  + " as " + KEY_GENRE;
+			alias + "." + KEY_GENRE  + " as " + KEY_GENRE + ", " +
+			alias + "." + KEY_DATE_ADDED  + " as " + KEY_DATE_ADDED + ", " +
+			alias + "." + DOM_GOODREADS_BOOK_ID  + " as " + DOM_GOODREADS_BOOK_ID + ", " +
+			alias + "." + DOM_LAST_GOODREADS_SYNC_DATE  + " as " + DOM_LAST_GOODREADS_SYNC_DATE + ", " +
+			alias + "." + DOM_LAST_UPDATE_DATE  + " as " + DOM_LAST_UPDATE_DATE + ", " +
+			alias + "." + DOM_BOOK_UUID  + " as " + DOM_BOOK_UUID;
 		}
 
 //	private static String SERIES_FIELDS = "s." + KEY_ROWID + " as " + KEY_SERIES_ID
@@ -361,12 +515,24 @@ public class CatalogueDBAdapter {
 //						+ " b LEFT OUTER JOIN " + DB_TB_BOOK_SERIES + " w "
 //						+ " ON (b." + KEY_ROWID + "=w." + KEY_BOOK + ") "
 //						+ " LEFT OUTER JOIN " + DB_TB_SERIES + " s ON (s." + KEY_ROWID + "=w." + KEY_SERIES_ID + ") ";
-		
-	private final Context mCtx;
-	//TODO: Update database version
-	public static final int DATABASE_VERSION = 62;
+
+	//TODO: Update database version RELEASE: Update database version
+	public static final int DATABASE_VERSION = 73;
 
 	private TableInfo mBooksInfo = null;
+
+	/** Static Factory object to create the custom cursor */
+	public static final CursorFactory mTrackedCursorFactory = new CursorFactory() {
+			@Override
+			public Cursor newCursor(
+					SQLiteDatabase db,
+					SQLiteCursorDriver masterQuery, 
+					String editTable,
+					SQLiteQuery query) 
+			{
+				return new TrackedCursor(db, masterQuery, editTable, query, mSynchronizer);
+			}
+	};
 
 	/**
 	 * This is a specific version of the SQLiteOpenHelper class. It handles onCreate and onUpgrade events
@@ -375,7 +541,7 @@ public class CatalogueDBAdapter {
 	 */
 	private static class DatabaseHelper extends SQLiteOpenHelper {
 		DatabaseHelper(Context context) {
-			super(context, Utils.DATABASE_NAME, null, DATABASE_VERSION);
+			super(context, StorageUtils.getDatabaseName(), mTrackedCursorFactory, DATABASE_VERSION);
 		}
 		
 		/**
@@ -397,12 +563,36 @@ public class CatalogueDBAdapter {
 			db.execSQL(DATABASE_CREATE_BOOK_SERIES);
 			createIndices(db);
 
-			new File(Utils.EXTERNAL_FILE_PATH + "/").mkdirs();
-			try {
-				new File(Utils.EXTERNAL_FILE_PATH + "/.nomedia").createNewFile();
-			} catch (IOException e) {
-				Logger.logError(e);
-			}
+			SynchronizedDb sdb = new SynchronizedDb(db, mSynchronizer);
+
+			DatabaseDefinitions.TBL_BOOK_LIST_NODE_SETTINGS.createAll(sdb, true);
+			DatabaseDefinitions.TBL_BOOKS_FTS.create(sdb, false);
+			DatabaseDefinitions.TBL_BOOK_LIST_STYLES.createAll(sdb, true);
+
+			createTriggers(sdb);
+
+			StorageUtils.initSharedDirectory();
+		}
+
+
+		/**
+		 * Create the database triggers. Currently only one, and the implementation needs refinining!
+		 *
+		 * @param db
+		 */
+		private void createTriggers(SynchronizedDb db) {
+			String name = "books_tg_reset_goodreads";
+			String body = " after update of isbn on books for each row\n" + 
+						" When New." + KEY_ISBN + " <> Old." + KEY_ISBN + "\n" +
+						"	Begin \n" +
+						"		Update books Set \n" +
+						"		    goodreads_book_id = 0,\n" +
+						"		    last_goodreads_sync_date = ''\n" +
+						"		Where\n" +
+						"			" + KEY_ROWID + " = new." + KEY_ROWID + ";\n" +
+						"	End";
+			db.execSQL("Drop Trigger if Exists " + name);
+			db.execSQL("Create Trigger " + name + body);
 		}
 
 		private void createIndices(SQLiteDatabase db) {
@@ -422,6 +612,7 @@ public class CatalogueDBAdapter {
 					//db.endTransaction();
 				}
 			}
+			current.close();
 			
 			String[] indices = DATABASE_CREATE_INDICES;
 			for (int i = 0; i < indices.length; i++) {
@@ -442,7 +633,8 @@ public class CatalogueDBAdapter {
 				} finally {
 					//db.endTransaction();
 				}
-			}			
+			}	
+			db.execSQL("analyze");
 		}
 		
 		/**
@@ -458,8 +650,12 @@ public class CatalogueDBAdapter {
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 			int curVersion = oldVersion;
 			
+			StartupActivity startup = StartupActivity.getActiveActivity();
+			if (startup != null)
+				startup.updateProgress(R.string.upgrading_ellipsis);
+
 			if (oldVersion != newVersion)
-				backupDbFile(db, Utils.LOCATION + "DbUpgrade-" + oldVersion + "-" + newVersion);
+				StorageUtils.backupDbFile(db, "DbUpgrade-" + oldVersion + "-" + newVersion);
 			
 			if (curVersion < 11) {
 				onCreate(db);
@@ -694,7 +890,7 @@ public class CatalogueDBAdapter {
 			if (curVersion == 39) {
 				curVersion++;
 				try {
-					new File(Utils.EXTERNAL_FILE_PATH + "/.nomedia").createNewFile();
+					new File(StorageUtils.getSharedStoragePath() + "/.nomedia").createNewFile();
 				} catch (Exception e) {
 					// Don't care about this exception
 					Logger.logError(e);
@@ -979,7 +1175,7 @@ public class CatalogueDBAdapter {
 						
 						db.execSQL("DROP TABLE " + DB_TB_BOOKS);
 						
-						db.execSQL(DATABASE_CREATE_BOOKS);
+						db.execSQL(DATABASE_CREATE_BOOKS_63);
 						
 						db.execSQL("INSERT INTO " + DB_TB_BOOKS + "( " + tmpFields + ")  SELECT * FROM tmpBooks");
 						
@@ -989,77 +1185,76 @@ public class CatalogueDBAdapter {
 						throw new RuntimeException("Failed to upgrade database", e);
 					}
 				} 
-			}
-			if (curVersion == 54) {
-				//createIndices(db); // All createIndices prior to the latest have been removed
-				curVersion++;
-			}
-			if (curVersion == 55) {
-				//There is a conflict between eleybourn released branch (3.3.1) and grunthos HEAD (3.4). 
-				// This is to check and skip as required
-				boolean go2 = false;
-				String checkSQL2 = "SELECT * FROM " + DB_TB_BOOKS;
-				Cursor results2 = db.rawQuery(checkSQL2, new String[]{});
-				if (results2.getCount() > 0) {
-					if (results2.getColumnIndex(KEY_AUTHOR_OLD) > -1) {
+				if (curVersion == 54) {
+					//createIndices(db); // All createIndices prior to the latest have been removed
+					curVersion++;
+				}
+				if (curVersion == 55) {
+					//There is a conflict between eleybourn released branch (3.3.1) and grunthos HEAD (3.4). 
+					// This is to check and skip as required
+					boolean go2 = false;
+					String checkSQL2 = "SELECT * FROM " + DB_TB_BOOKS;
+					Cursor results2 = db.rawQuery(checkSQL2, new String[]{});
+					if (results2.getCount() > 0) {
+						if (results2.getColumnIndex(KEY_AUTHOR_OLD) > -1) {
+							go2 = true;
+						}
+					} else {
 						go2 = true;
 					}
-				} else {
-					go2 = true;
+					if (go2 == true) {
+						try {
+							db.execSQL(DATABASE_CREATE_SERIES);
+							// We need to create a series table with series that are unique wrt case and unicode. The old
+							// system allowed for series with slightly different case. So we capture these by using
+							// max() to pick and arbitrary matching name to use as our canonical version.
+							db.execSQL("INSERT INTO " + DB_TB_SERIES + " (" + KEY_SERIES_NAME + ") "
+										+ "SELECT name from ("
+										+ "    SELECT Upper(" + KEY_SERIES_OLD + ") " + COLLATION + " as ucName, "
+										+ "    max(" + KEY_SERIES_OLD + ")" + COLLATION + " as name FROM " + DB_TB_BOOKS
+										+ "    WHERE Coalesce(" + KEY_SERIES_OLD + ",'') <> ''"
+										+ "    Group By Upper(" + KEY_SERIES_OLD + ")"
+										+ " )"
+										);
+							
+							db.execSQL(DATABASE_CREATE_BOOK_SERIES);
+							db.execSQL(DATABASE_CREATE_BOOK_AUTHOR);
+							
+							db.execSQL("INSERT INTO " + DB_TB_BOOK_SERIES + " (" + KEY_BOOK + ", " + KEY_SERIES_ID + ", " + KEY_SERIES_NUM + ", " + KEY_SERIES_POSITION + ") "
+									+ "SELECT DISTINCT b." + KEY_ROWID + ", s." + KEY_ROWID + ", b." + KEY_SERIES_NUM + ", 1"
+									+ " FROM " + DB_TB_BOOKS + " b "
+									+ " Join " + DB_TB_SERIES + " s On Upper(s." + KEY_SERIES_NAME + ") = Upper(b." + KEY_SERIES_OLD + ")" + COLLATION
+									+ " Where Coalesce(b." + KEY_SERIES_OLD + ", '') <> ''");
+							
+							db.execSQL("INSERT INTO " + DB_TB_BOOK_AUTHOR + " (" + KEY_BOOK + ", " + KEY_AUTHOR_ID + ", " + KEY_AUTHOR_POSITION + ") "
+									+ "SELECT b." + KEY_ROWID + ", b." + KEY_AUTHOR_OLD + ", 1 FROM " + DB_TB_BOOKS + " b ");
+							
+							String tmpFields = KEY_ROWID + ", " /* + KEY_AUTHOR + ", " */ + KEY_TITLE + ", " + KEY_ISBN 
+							+ ", " + KEY_PUBLISHER + ", " + KEY_DATE_PUBLISHED + ", " + KEY_RATING + ", " + KEY_READ 
+							+ /* ", " + KEY_SERIES + */ ", " + KEY_PAGES /* + ", " + KEY_SERIES_NUM */ + ", " + KEY_NOTES 
+							+ ", " + KEY_LIST_PRICE + ", " + KEY_ANTHOLOGY + ", " + KEY_LOCATION + ", " + KEY_READ_START 
+							+ ", " + KEY_READ_END + ", " + KEY_FORMAT + ", " + KEY_SIGNED + ", " + KEY_DESCRIPTION
+							+ ", " + KEY_GENRE;
+							db.execSQL("CREATE TABLE tmpBooks AS SELECT " + tmpFields + " FROM " + DB_TB_BOOKS);
+							
+							db.execSQL("DROP TABLE " + DB_TB_BOOKS);
+							
+							db.execSQL(DATABASE_CREATE_BOOKS_63);
+							
+							db.execSQL("INSERT INTO " + DB_TB_BOOKS + "( " + tmpFields + ")  SELECT * FROM tmpBooks");
+							
+							db.execSQL("DROP TABLE tmpBooks");
+						} catch (Exception e) {
+							Logger.logError(e);
+							throw new RuntimeException("Failed to upgrade database", e);
+						} finally {
+						}
+					} 
+					//createIndices(db); // All createIndices prior to the latest have been removed
+					curVersion++;
 				}
-				if (go2 == true) {
-					try {
-						db.execSQL(DATABASE_CREATE_SERIES);
-						// We need to create a series table with series that are unique wrt case and unicode. The old
-						// system allowed for series with slightly different case. So we capture these by using
-						// max() to pick and arbitrary matching name to use as our canonical version.
-						db.execSQL("INSERT INTO " + DB_TB_SERIES + " (" + KEY_SERIES_NAME + ") "
-									+ "SELECT name from ("
-									+ "    SELECT Upper(" + KEY_SERIES_OLD + ") " + COLLATION + " as ucName, "
-									+ "    max(" + KEY_SERIES_OLD + ")" + COLLATION + " as name FROM " + DB_TB_BOOKS
-									+ "    WHERE Coalesce(" + KEY_SERIES_OLD + ",'') <> ''"
-									+ "    Group By Upper(" + KEY_SERIES_OLD + ")"
-									+ " )"
-									);
-						
-						db.execSQL(DATABASE_CREATE_BOOK_SERIES);
-						db.execSQL(DATABASE_CREATE_BOOK_AUTHOR);
-						
-						db.execSQL("INSERT INTO " + DB_TB_BOOK_SERIES + " (" + KEY_BOOK + ", " + KEY_SERIES_ID + ", " + KEY_SERIES_NUM + ", " + KEY_SERIES_POSITION + ") "
-								+ "SELECT DISTINCT b." + KEY_ROWID + ", s." + KEY_ROWID + ", b." + KEY_SERIES_NUM + ", 1"
-								+ " FROM " + DB_TB_BOOKS + " b "
-								+ " Join " + DB_TB_SERIES + " s On Upper(s." + KEY_SERIES_NAME + ") = Upper(b." + KEY_SERIES_OLD + ")" + COLLATION
-								+ " Where Coalesce(b." + KEY_SERIES_OLD + ", '') <> ''");
-						
-						db.execSQL("INSERT INTO " + DB_TB_BOOK_AUTHOR + " (" + KEY_BOOK + ", " + KEY_AUTHOR_ID + ", " + KEY_AUTHOR_POSITION + ") "
-								+ "SELECT b." + KEY_ROWID + ", b." + KEY_AUTHOR_OLD + ", 1 FROM " + DB_TB_BOOKS + " b ");
-						
-						String tmpFields = KEY_ROWID + ", " /* + KEY_AUTHOR + ", " */ + KEY_TITLE + ", " + KEY_ISBN 
-						+ ", " + KEY_PUBLISHER + ", " + KEY_DATE_PUBLISHED + ", " + KEY_RATING + ", " + KEY_READ 
-						+ /* ", " + KEY_SERIES + */ ", " + KEY_PAGES /* + ", " + KEY_SERIES_NUM */ + ", " + KEY_NOTES 
-						+ ", " + KEY_LIST_PRICE + ", " + KEY_ANTHOLOGY + ", " + KEY_LOCATION + ", " + KEY_READ_START 
-						+ ", " + KEY_READ_END + ", " + KEY_FORMAT + ", " + KEY_SIGNED + ", " + KEY_DESCRIPTION
-						+ ", " + KEY_GENRE;
-						db.execSQL("CREATE TABLE tmpBooks AS SELECT " + tmpFields + " FROM " + DB_TB_BOOKS);
-						
-						db.execSQL("DROP TABLE " + DB_TB_BOOKS);
-						
-						db.execSQL(DATABASE_CREATE_BOOKS);
-						
-						db.execSQL("INSERT INTO " + DB_TB_BOOKS + "( " + tmpFields + ")  SELECT * FROM tmpBooks");
-						
-						db.execSQL("DROP TABLE tmpBooks");
-					} catch (Exception e) {
-						Logger.logError(e);
-						throw new RuntimeException("Failed to upgrade database", e);
-					} finally {
-					}
-				} 
-				//createIndices(db); // All createIndices prior to the latest have been removed
-				curVersion++;
 			}
 			if (curVersion == 56) {
-				createIndices(db);
 				curVersion++;
 				message += "New in v3.5.4\n\n";
 				message += "* French translation available\n\n";
@@ -1101,7 +1296,7 @@ public class CatalogueDBAdapter {
 				results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_BOOKS + "'", new String[]{});
 				if (results57.getCount() == 0) {
 					//table does not exist
-					db.execSQL(DATABASE_CREATE_BOOKS);
+					db.execSQL(DATABASE_CREATE_BOOKS_63);
 				}
 				results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_LOAN + "'", new String[]{});
 				if (results57.getCount() == 0) {
@@ -1146,12 +1341,11 @@ public class CatalogueDBAdapter {
 						+ ", " + KEY_GENRE;
 						db.execSQL("CREATE TABLE tmpBooks AS SELECT " + tmpFields + " FROM " + DB_TB_BOOKS);
 						db.execSQL("DROP TABLE " + DB_TB_BOOKS);
-						db.execSQL(DATABASE_CREATE_BOOKS);
+						db.execSQL(DATABASE_CREATE_BOOKS_63);
 						db.execSQL("INSERT INTO " + DB_TB_BOOKS + "( " + tmpFields + ")  SELECT * FROM tmpBooks");
 						db.execSQL("DROP TABLE tmpBooks");
 					}
 				}
-				createIndices(db);
 			}
 			if (curVersion == 58) {
 				curVersion++;
@@ -1188,10 +1382,148 @@ public class CatalogueDBAdapter {
 				message += "* Changed the 'Add Book' menu options to be submenu\n\n";
 				message += "* The database backup has been renamed for clarity\n\n";
 			}
+			if (curVersion == 62) {
+				curVersion++;
+			}
+			if (curVersion == 63) {
+				// Fix up old default 'f' values to be 0 (true = 1).
+				curVersion++;
+				db.execSQL("UPDATE " + DB_TB_BOOKS + " Set " + KEY_READ + " = 0 Where " + KEY_READ + " = 'f'");
+				db.execSQL("UPDATE " + DB_TB_BOOKS + " Set " + KEY_READ + " = 1 Where " + KEY_READ + " = 't'");
+				db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " RENAME TO books_tmp");
+				db.execSQL(DATABASE_CREATE_BOOKS_63);
+				db.execSQL("INSERT INTO " + DB_TB_BOOKS + " Select * FROM books_tmp");
+				db.execSQL("DROP TABLE books_tmp");
+			}
+			if (curVersion == 64) {
+				// Changed SIGNED to boolean {0,1} and added DATE_ADDED
+				// Fix up old default 'f' values to be 0 (true = 1).
+				curVersion++;
+				db.execSQL("UPDATE " + DB_TB_BOOKS + " Set " + KEY_SIGNED + " = 0 Where " + KEY_SIGNED + " = 'f'");
+				db.execSQL("UPDATE " + DB_TB_BOOKS + " Set " + KEY_SIGNED + " = 1 Where " + KEY_SIGNED + " = 't'");
+				db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " Add " + KEY_DATE_ADDED + " datetime"); // Just want a null value for old records
+				db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " RENAME TO books_tmp");
+				db.execSQL(DATABASE_CREATE_BOOKS_68);
+				db.execSQL("INSERT INTO " + DB_TB_BOOKS + " Select * FROM books_tmp");
+				db.execSQL("DROP TABLE books_tmp");
+			}
+			SynchronizedDb sdb = new SynchronizedDb(db, mSynchronizer);
+			if (curVersion == 65) {
+				curVersion++;
+				DatabaseDefinitions.TBL_BOOK_LIST_NODE_SETTINGS.drop(sdb);
+				DatabaseDefinitions.TBL_BOOK_LIST_NODE_SETTINGS.create(sdb, true);
+				DatabaseDefinitions.TBL_BOOK_LIST_NODE_SETTINGS.createIndices(sdb);
+			}
+			if (curVersion == 66) {
+				curVersion++;
+				DatabaseDefinitions.TBL_BOOKS_FTS.drop(sdb);
+				DatabaseDefinitions.TBL_BOOKS_FTS.create(sdb, false);
+				StartupActivity.scheduleFtsRebuild();
+			}
+			if (curVersion == 67) {
+				curVersion++;
+				DatabaseDefinitions.TBL_BOOK_LIST_STYLES.drop(sdb);
+				DatabaseDefinitions.TBL_BOOK_LIST_STYLES.createAll(sdb, true);
+			}
+			if (curVersion == 68) {
+				curVersion++;
+				db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " Add " + DOM_GOODREADS_BOOK_ID.getDefinition(true));
+			}
+			if (curVersion == 69 || curVersion == 70) {
+				curVersion = 71;
+				db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " RENAME TO books_tmp");
+				db.execSQL(DATABASE_CREATE_BOOKS);
+				copyTableSafely(sdb, "books_tmp", DB_TB_BOOKS);
+				db.execSQL("DROP TABLE books_tmp");
+			}
+			if (curVersion == 71) {
+				curVersion++;
+				renameIdFilesToHash(sdb);
+				// A bit of presumption here...
+				message += "New in v4.0 - Updates courtesy of (mainly) Philip Warner (a.k.a Grunthos) -- blame him, politely, if it toasts your data\n\n";
+				message += "* New look, new startup page\n\n";
+				message += "* Synchronization with goodreads (www.goodreads.com)\n\n";
+				message += "* New styles for book lists (including 'Compact' and 'Unread')\n\n";
+				message += "* User-defined styles for book lists\n\n";
+				message += "* More efficient memory usage\n\n";
+				message += "* New preferences, including 'always expanded/collapsed' lists\n\n";
+				message += "* Faster expand/collapse with large collections\n\n";
+				message += "* Cached covers for faster scrolling lists\n\n";
+				message += "* Cover images now have globally unique names, and books have globally unique IDs, so sharing and combining collections is easy\n\n";
+				message += "* Improved detection of series names\n\n";
+			}
+			if (curVersion == 72) {
+				curVersion++;
+				// Just to get the triggers applied
+			}
+
+			// Rebuild all indices
+			createIndices(db);
+			// Rebuild all triggers
+			createTriggers(sdb);
+
 			//TODO: NOTE: END OF UPDATE
 		}
 	}
 	
+	/**
+	 * For the upgrade to version 4 (db version 72), all cover files were renamed based on the hash value in
+	 * the books table to avoid future collisions.
+	 * 
+	 * This routine renames all files, if they exist.
+	 * 
+	 * @param db
+	 */
+	private static void renameIdFilesToHash(SynchronizedDb db) {
+		String sql = "select " + KEY_ROWID + ", " + DOM_BOOK_UUID + " from " + DB_TB_BOOKS + " Order by " + KEY_ROWID;
+		Cursor c = db.rawQuery(sql);
+		try {
+			while (c.moveToNext()) {
+				final long id = c.getLong(0);
+				final String hash = c.getString(1);
+				File f = CatalogueDBAdapter.fetchThumbnailByName(Long.toString(id),"");
+				if ( f.exists() ) {
+					File newFile = CatalogueDBAdapter.fetchThumbnailByUuid(hash);
+					f.renameTo(newFile);
+				}
+			}
+		} finally {
+			if (c != null)
+				c.close();
+		}
+	}
+
+	/**
+	 * Provide a safe table copy method that is insulated from risks associated with column reordering. This
+	 * method will copy ALL columns from the source to the destination; if columns do not exist in the 
+	 * destination, an error will occur. Columns in the destination that are not in the source will be 
+	 * defaulted or set to NULL if no default is defined.
+	 * 
+	 * ENHANCE: allow an exclusion list to be added as a parameter so the some 'from' columns can be ignored.
+	 * 
+	 * @param sdb
+	 * @param from
+	 * @param to
+	 */
+	private static void copyTableSafely(SynchronizedDb sdb, String from, String to) {
+		// Get the source info
+		TableInfo src = new TableInfo(sdb, from);
+		// Build the column list
+		StringBuilder cols = new StringBuilder();
+		boolean first = true;
+		for(ColumnInfo ci: src) {
+			if (first) {
+				first = false;
+			} else {
+				cols.append(", ");
+			}
+			cols.append(ci.name);
+		}
+		String colList = cols.toString();
+		String sql = "Insert into " + to + "(" + colList + ") select " + colList + " from " + from;
+		sdb.execSQL(sql);
+	}
+
 	/**
 	 * Constructor - takes the context to allow the database to be
 	 * opened/created
@@ -1199,7 +1531,11 @@ public class CatalogueDBAdapter {
 	 * @param ctx the Context within which to work
 	 */
 	public CatalogueDBAdapter(Context ctx) {
-		this.mCtx = ctx;
+		synchronized(mInstanceCount) {
+			mInstanceCount++;
+			System.out.println("CatDBA instances: " + mInstanceCount);
+		}
+		mDbHelper = new DatabaseHelper(ctx);
 	}
 	
 	/**
@@ -1212,30 +1548,44 @@ public class CatalogueDBAdapter {
 	 */
 	public CatalogueDBAdapter open() throws SQLException {
 		/* Create the bookCatalogue directory if it does not exist */
-		new File(Utils.EXTERNAL_FILE_PATH + "/").mkdirs();
-		mDbHelper = new DatabaseHelper(mCtx);
-		mDb = mDbHelper.getWritableDatabase();
+		StorageUtils.getSharedStorage();
+		// Get the DB wrapper
+		mDb = new SynchronizedDb(mDbHelper, mSynchronizer);
 		// Turn on foreign key support so that CASCADE works.
 		mDb.execSQL("PRAGMA foreign_keys = ON");
+		//mDb.execSQL("PRAGMA temp_store = FILE");
+		mStatements = new SqlStatementManager(mDb);
+
 		return this;
+	}
+
+	/**
+	 * Get a Utils instance; create if necessary.
+	 * 
+	 * @return	Utils instance
+	 */
+	public Utils getUtils() {
+		if (mUtils == null)
+			mUtils = new Utils();
+		return mUtils;
 	}
 	
 	/**
 	 * Generic function to close the database
 	 */
 	public void close() {
-		try {
-			for(SQLiteStatement s : mStatements)
-				try {
-					s.close();
-				} catch (Exception e)
-				{};
 
-			mDbHelper.close();
-		} catch (Exception e) {
-			//do nothing - already closed
-		} finally {
-			mStatements.clear();
+		if (!mCloseWasCalled) {
+			mCloseWasCalled = true;
+
+			try { mStatements.close(); } catch (Exception e) { Logger.logError(e); }
+			try { mDbHelper.close(); } catch (Exception e) { Logger.logError(e); }
+			try { if (mUtils != null) mUtils.close(); } catch (Exception e) { Logger.logError(e); }
+
+			synchronized(mInstanceCount) {
+				mInstanceCount--;
+				System.out.println("CatDBA instances: " + mInstanceCount);
+			}
 		}
 	}
 	
@@ -1254,7 +1604,7 @@ public class CatalogueDBAdapter {
 	 * @throws Exception 
 	 */
 	public void backupDbFile() {
-		backupDbFile(Utils.LOCATION + "DbExport.db");
+		backupDbFile("DbExport.db");
 	}
 	
 	/**
@@ -1262,58 +1612,47 @@ public class CatalogueDBAdapter {
 	 *
 	 * @throws Exception 
 	 */
-	public void backupDbFile(String filename) {
+	public void backupDbFile(String suffix) {
 		try {
-			backupDbFile(mDb, filename);
+			StorageUtils.backupDbFile(mDb.getUnderlyingDatabase(), suffix);
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
 	}
 	
 	/**
-	 * Backup database file
-	 * @throws Exception 
+	 * Get the 'standard' temp file name for new books
 	 */
-	private static void backupDbFile(SQLiteDatabase db, String filename) {
-		try {
-			java.io.InputStream dbOrig = new java.io.FileInputStream(db.getPath());
-			File dir = new File(Utils.EXTERNAL_FILE_PATH);
-			dir.mkdir();
-			// Path to the external backup
-			String fullFilename = dir.getPath() + "/" + filename;
-			//check if it exists
-			File existing = new File(fullFilename);
-			if (existing.exists()) {
-				String backupFilename = dir.getPath() + "/" + filename + ".bak";
-				File backup = new File(backupFilename);
-				existing.renameTo(backup);
-			}
-			java.io.OutputStream dbCopy = new java.io.FileOutputStream(fullFilename);
-			
-			byte[] buffer = new byte[1024];
-			int length;
-			while ((length = dbOrig.read(buffer))>0) {
-				dbCopy.write(buffer, 0, length);
-			}
-			
-			dbCopy.flush();
-			dbCopy.close();
-			dbOrig.close();
-			
-		} catch (Exception e) {
-			Logger.logError(e);
-		}
+	public static final File getTempThumbnail() {
+		return getTempThumbnail("");
 	}
 
 	/**
-	 * return the thumbnail (as a File object) for the given id
-	 * 
-	 * @param id The id of the book
-	 * @return The File object
+	 * Get the 'standard' temp file name for new books, including a suffix
 	 */
-	public static File fetchThumbnail(long id) {
-		return fetchThumbnail(id, "");
+	public static final File getTempThumbnail(String suffix) {
+		return new File(StorageUtils.getSharedStoragePath() + "/tmp" + suffix + ".jpg");
 	}
+
+	/**
+	 * return the thumbnail (as a File object) for the given hash
+	 * 
+	 * @param id 	The uuid of the book
+	 * @return 		The File object
+	 */
+	public static File fetchThumbnailByUuid(String uuid) {
+		return fetchThumbnailByUuid(uuid, "");
+	}
+
+//	/**
+//	 * return the thumbnail (as a File object) for the given id
+//	 * 
+//	 * @param id The id of the book
+//	 * @return The File object
+//	 */
+//	private static File fetchThumbnailById(long id) {
+//		return fetchThumbnailById(id, "");
+//	}
 
 	/**
 	 * return the thumbnail (as a File object) for the given id. Optionally use a suffix
@@ -1322,41 +1661,48 @@ public class CatalogueDBAdapter {
 	 * @param id The id of the book
 	 * @return The File object
 	 */
-	public static File fetchThumbnail(long id, String suffix) {
-		String filename = "";
+	private static File fetchThumbnailByName(String prefix, String suffix) {
+		if (suffix == null)
+			suffix = "";
+
 		File file = null;
-		if (id == 0) {
-			filename = Utils.EXTERNAL_FILE_PATH + "/tmp" + suffix + ".png";
-			file = new File(filename);
+		if (prefix == null || prefix.equals("")) {
+			return getTempThumbnail(suffix);
 		} else {
-			filename = Utils.EXTERNAL_FILE_PATH + "/" + id + suffix + ".jpg";
-			file = new File(filename);
+			final String base = StorageUtils.getSharedStorage() + "/" + prefix + suffix;
+			file = new File(base + ".jpg");
 			if (!file.exists()) {
-				filename = Utils.EXTERNAL_FILE_PATH + "/" + id + suffix + ".png";
-				file = new File(filename);
+				File png = new File(base + ".png");
+				if (png.exists())
+					return png;
+				else
+					return file;
+			} else {
+				return file;
 			}
 		}
-		return file;
 	}
 	
 	/**
-	 * Return the filename for the thumbnail. Usually used to loadup bitmaps into imageviews
+	 * return the thumbnail (as a File object) for the given id. Optionally use a suffix
+	 * on the file name.
 	 * 
 	 * @param id The id of the book
-	 * @param force Normally this function will return "" if the file does not exist. If forces it will return the filename regardless of whether the file exists
-	 * @return The filename string
+	 * @return The File object
 	 */
-	public static String fetchThumbnailFilename(long id, boolean force) {
-		return fetchThumbnailFilename(id, force, "");
-	}
-
-	public static String fetchThumbnailFilename(long id, boolean force, String suffix) {
-		File file = fetchThumbnail(id, suffix);
-		String filename = null;
-		if (force == true || file.exists()) {
-			filename = file.getPath(); 
-		}
-		return filename;
+//	private static File fetchThumbnailById(long id, String suffix) {
+//		return fetchThumbnailByName(Long.toString(id), suffix);
+//	}
+	
+	/**
+	 * return the thumbnail (as a File object) for the given id. Optionally use a suffix
+	 * on the file name.
+	 * 
+	 * @param id The id of the book
+	 * @return The File object
+	 */
+	public static File fetchThumbnailByUuid(String uuid, String suffix) {
+		return fetchThumbnailByName(uuid, suffix);
 	}
 
 	/**
@@ -1372,11 +1718,11 @@ public class CatalogueDBAdapter {
 	 * 
 	 * @return The scaled bitmap for the file, or null if no file or bad file.
 	 */
-	public static Bitmap fetchThumbnailIntoImageView(long id, ImageView destView, int maxWidth, int maxHeight, boolean exact) {
+	public static Bitmap fetchThumbnailIntoImageView(String uuid, ImageView destView, int maxWidth, int maxHeight, boolean exact) {
 		// Get the file, if it exists. Otherwise set 'help' icon and exit.
 		Bitmap image = null;
 		try {
-			File file = fetchThumbnail(id);
+			File file = fetchThumbnailByUuid(uuid);
 			image = Utils.fetchFileIntoImageView(file, destView, maxWidth, maxHeight, exact );
 		} catch (IllegalArgumentException e) {
 			Logger.logError(e);
@@ -1493,14 +1839,17 @@ public class CatalogueDBAdapter {
 	 */
 	public int countBooks() {
 		int result = 0;
+		String sql = "SELECT count(*) as count FROM " + DB_TB_BOOKS + " b ";
+		Cursor count = null;
 		try {
-			String sql = "SELECT count(*) as count FROM " + DB_TB_BOOKS + " b ";
-			Cursor count = mDb.rawQuery(sql, new String[]{});
+			count = mDb.rawQuery(sql, new String[]{});
 			count.moveToNext();
 			result = count.getInt(0);
-			count.close();
 		} catch (IllegalStateException e) {
 			Logger.logError(e);
+		} finally {
+			if (count != null)
+				count.close();			
 		}
 		return result;
 	}
@@ -1537,16 +1886,16 @@ public class CatalogueDBAdapter {
 	/**
 	 * A complete export of all tables (flattened) in the database 
 	 * 
-	 * @return Cursor over all books, authors, etc
+	 * @return BooksCursor over all books, authors, etc
 	 */
-	public Cursor exportBooks() {
+	public BooksCursor exportBooks() {
 		String sql = "SELECT DISTINCT " +
 				getBookFields("b",KEY_ROWID) + ", " +
 				"l." + KEY_LOANED_TO + " as " + KEY_LOANED_TO + " " +  
 			" FROM " + DB_TB_BOOKS + " b" +
 				" LEFT OUTER JOIN " + DB_TB_LOAN +" l ON (l." + KEY_BOOK + "=b." + KEY_ROWID + ") " +
 			" ORDER BY b._id";
-		return mDb.rawQuery(sql, new String[]{});
+		return fetchBooks(sql, EMPTY_STRING_ARRAY);
 	}
 	
 	/**
@@ -1693,7 +2042,7 @@ public class CatalogueDBAdapter {
 	 * @return Cursor over all Books
 	 */
 	public Cursor fetchAllBookChars(String bookshelf) {
-		String baseSql = this.fetchAllBooksSql("1", bookshelf, "", "", "", "", "");
+		String baseSql = this.fetchAllBooksInnerSql("1", bookshelf, "", "", "", "", "");
 		String sql = "SELECT DISTINCT upper(substr(b." + KEY_TITLE + ", 1, 1)) AS " + KEY_ROWID + " " + baseSql;
 
 		Cursor returnable = null;
@@ -1725,9 +2074,9 @@ public class CatalogueDBAdapter {
 	 * 
 	 * @return SQL text for basic lookup
 	 * 
-	 * TODO: Replace exact-match String parameters with long parameters containing the ID.
+	 * ENHANCE: Replace exact-match String parameters with long parameters containing the ID.
 	 */
-	public String fetchAllBooksSql(String order, String bookshelf, String authorWhere, String bookWhere, String searchText, String loaned_to, String seriesName) {
+	public String fetchAllBooksInnerSql(String order, String bookshelf, String authorWhere, String bookWhere, String searchText, String loaned_to, String seriesName) {
 		String where = "";
 
 		if (bookWhere.length() > 0) {
@@ -1807,15 +2156,31 @@ public class CatalogueDBAdapter {
 		return sql;
 	}
 
+	public static String join(String[] strings) {
+		if (strings == null || strings.length ==0)
+			return null;
+		String s = strings[0];
+		final int len = strings.length;
+		for(int i = 1; i < len; i++)
+			s += "," + strings[i];
+		return s;
+	}
+	
 	/**
-	 * Return a list of all books in the database
+	 * Return the SQL for a list of all books in the database
 	 * 
-	 * @param order What order to return the books
-	 * @param bookshelf Which bookshelf is it in. Can be "All Books"
-	 * @return Cursor over all Books
+	 * @param order 		What order to return the books; comman separated list of column names
+	 * @param bookshelf 	Which bookshelf is it in. Can be "All Books"
+	 * @param authorWhere	clause to add to author search criteria
+	 * @param bookWhere		clause to add to books search criteria
+	 * @param searchText	text to search for
+	 * @param loaned_to		name of person to whom book is loaned
+	 * @param seriesName	name of series to look for
+	 *
+	 * @return				A full piece of SQL to perform the search
 	 */
-	public Cursor fetchAllBooks(String order, String bookshelf, String authorWhere, String bookWhere, String searchText, String loaned_to, String seriesName) {
-		String baseSql = this.fetchAllBooksSql("", bookshelf, authorWhere, bookWhere, searchText, loaned_to, seriesName);
+	public String fetchAllBooksSql(String order, String bookshelf, String authorWhere, String bookWhere, String searchText, String loaned_to, String seriesName) {
+		String baseSql = this.fetchAllBooksInnerSql("", bookshelf, authorWhere, bookWhere, searchText, loaned_to, seriesName);
 
 		// Get the basic query; we will use it as a sub-query
 		String sql = "SELECT DISTINCT " + getBookFields("b", KEY_ROWID) + baseSql;
@@ -1872,17 +2237,32 @@ public class CatalogueDBAdapter {
 		if (!order.equals("")) {
 			fullSql += " ORDER BY " + order;
 		}
-		Cursor returnable = null;
+		return fullSql;
+	}
+
+	/**
+	 * Return a list of all books in the database
+	 * 
+	 * @param order What order to return the books
+	 * @param bookshelf Which bookshelf is it in. Can be "All Books"
+	 * @return Cursor over all Books
+	 */
+	public BooksCursor fetchAllBooks(String order, String bookshelf, String authorWhere, String bookWhere, String searchText, String loaned_to, String seriesName) {
+		// Get the SQL
+		String fullSql = fetchAllBooksSql( order, bookshelf, authorWhere, bookWhere, searchText, loaned_to, seriesName);
+
+		// Build and return a cursor.
+		BooksCursor returnable = null;
 		try {
-			returnable = mDb.rawQuery(fullSql, new String[]{});
+			returnable = fetchBooks(fullSql, EMPTY_STRING_ARRAY);
 		} catch (IllegalStateException e) {
 			open();
-			returnable = mDb.rawQuery(fullSql, new String[]{});
+			returnable = fetchBooks(fullSql, EMPTY_STRING_ARRAY);
 			Logger.logError(e);
 		}
 		return returnable;
 	}
-	
+
 	/**
 	 * Return a list of all books in the database by author
 	 * 
@@ -1890,7 +2270,7 @@ public class CatalogueDBAdapter {
 	 * @param bookshelf Which bookshelf is it in. Can be "All Books"
 	 * @return Cursor over all Books
 	 */
-	public Cursor fetchAllBooksByAuthor(int author, String bookshelf, String search_term, boolean firstOnly) {
+	public BooksCursor fetchAllBooksByAuthor(int author, String bookshelf, String search_term, boolean firstOnly) {
 		String where = " a._id=" + author;
 		if (firstOnly == true) {
 			where += " AND ba." + KEY_AUTHOR_POSITION + "=1 ";
@@ -1905,7 +2285,7 @@ public class CatalogueDBAdapter {
 	 * @param char The first title character
 	 * @return Cursor over all books
 	 */
-	public Cursor fetchAllBooksByChar(String first_char, String bookshelf, String search_term) {
+	public BooksCursor fetchAllBooksByChar(String first_char, String bookshelf, String search_term) {
 		String where = " " + makeTextTerm("substr(b." + KEY_TITLE + ",1,1)", "=", first_char);
 		return fetchAllBooks("", bookshelf, "", where, search_term, "", "");
 	}
@@ -1917,7 +2297,7 @@ public class CatalogueDBAdapter {
 	 * @param bookshelf The bookshelf to search within. Can be the string "All Books"
 	 * @return Cursor over all books
 	 */
-	public Cursor fetchAllBooksByDatePublished(String date, String bookshelf, String search_term) {
+	public BooksCursor fetchAllBooksByDatePublished(String date, String bookshelf, String search_term) {
 		String where = "";
 		if (date == null) {
 			date = META_EMPTY_DATE_PUBLISHED;
@@ -1937,7 +2317,7 @@ public class CatalogueDBAdapter {
 	 * @param bookshelf The bookshelf to search within. Can be the string "All Books"
 	 * @return Cursor over all books
 	 */
-	public Cursor fetchAllBooksByGenre(String genre, String bookshelf, String search_term) {
+	public BooksCursor fetchAllBooksByGenre(String genre, String bookshelf, String search_term) {
 		String where = "";
 		if (genre.equals(META_EMPTY_GENRE)) {
 			where = "(b." + KEY_GENRE + "='' OR b." + KEY_GENRE + " IS NULL)";
@@ -1953,7 +2333,7 @@ public class CatalogueDBAdapter {
 	 * @param loaned_to The person who had books loaned to
 	 * @return Cursor over all books
 	 */
-	public Cursor fetchAllBooksByLoan(String loaned_to, String search_term) {
+	public BooksCursor fetchAllBooksByLoan(String loaned_to, String search_term) {
 		return fetchAllBooks("", "", "", "", search_term, loaned_to, "");
 	}
 	
@@ -1963,7 +2343,7 @@ public class CatalogueDBAdapter {
 	 * @param read "Read" or "Unread"
 	 * @return Cursor over all books
 	 */
-	public Cursor fetchAllBooksByRead(String read, String bookshelf, String search_term) {
+	public BooksCursor fetchAllBooksByRead(String read, String bookshelf, String search_term) {
 		String where = "";
 		if (read.equals("Read")) {
 			where += " b." + KEY_READ + "=1";
@@ -1980,7 +2360,7 @@ public class CatalogueDBAdapter {
 	 * @param bookshelf The bookshelf to search within. Can be the string "All Books"
 	 * @return Cursor over all books
 	 */
-	public Cursor fetchAllBooksBySeries(String series, String bookshelf, String search_term) {
+	public BooksCursor fetchAllBooksBySeries(String series, String bookshelf, String search_term) {
 		if (series.length() == 0 || series.equals(META_EMPTY_SERIES)) {
 			return fetchAllBooks("", bookshelf, "", "", search_term, "", META_EMPTY_SERIES);
 		} else {
@@ -2045,7 +2425,7 @@ public class CatalogueDBAdapter {
 	 */
 	public Cursor fetchAllDatePublished(String bookshelf) {
 		// Null 'order' to suppress ordering
-		String baseSql = fetchAllBooksSql(null, bookshelf, "", "", "", "", "");
+		String baseSql = fetchAllBooksInnerSql(null, bookshelf, "", "", "", "", "");
 
 		String sql = "SELECT DISTINCT "
 				+ " Case When (b." + KEY_DATE_PUBLISHED + " = '' or b." + KEY_DATE_PUBLISHED + " is NULL or cast(strftime('%Y', b." + KEY_DATE_PUBLISHED + ") as int)<0 or cast(strftime('%Y', b." + KEY_DATE_PUBLISHED + ") as int) is null) Then '" + META_EMPTY_DATE_PUBLISHED + "'"
@@ -2062,7 +2442,7 @@ public class CatalogueDBAdapter {
 	 */
 	public Cursor fetchAllGenres(String bookshelf) {
 		// Null 'order' to suppress ordering
-		String baseSql = fetchAllBooksSql(null, bookshelf, "", "", "", "", "");
+		String baseSql = fetchAllBooksInnerSql(null, bookshelf, "", "", "", "", "");
 
 		String sql = "SELECT DISTINCT "
 				+ " Case When (b." + KEY_GENRE + " = '' or b." + KEY_GENRE + " is NULL) Then '" + META_EMPTY_GENRE + "'"
@@ -2299,22 +2679,67 @@ public class CatalogueDBAdapter {
 	 * @return Cursor positioned to matching book, if found
 	 * @throws SQLException if note could not be found/retrieved
 	 */
-	public Cursor fetchBookById(long rowId) throws SQLException {
+	public BooksCursor fetchBookById(long rowId) throws SQLException {
 		String where = "b." + KEY_ROWID + "=" + rowId;
 		return fetchAllBooks("", "", "", where, "", "", "");
 	}
 	
 	/**
-	 * Return a book (Cursor) that matches the given rowId
+	 * Return a book (Cursor) that matches the given goodreads book Id.
+	 * Note: MAYE RETURN MORE THAN ONE BOOK
 	 * 
-	 * @param rowId id of book to retrieve
+	 * @param gdId Goodreads id of book(s) to retrieve
+	 *
+	 * @return Cursor positioned to matching book, if found
+	 * 
+	 * @throws SQLException if note could not be found/retrieved
+	 */
+	public BooksCursor fetchBooksByGoodreadsBookId(long grId) throws SQLException {
+		String where = TBL_BOOKS.dot(DOM_GOODREADS_BOOK_ID) + "=" + grId;
+		return fetchAllBooks("", "", "", where, "", "", "");
+	}
+	
+	/**
+	 * Return a book (Cursor) that matches the given ISBN.
+	 * Note: MAYBE RETURN MORE THAN ONE BOOK
+	 * 
+	 * @param isbn ISBN of book(s) to retrieve
 	 * @return Cursor positioned to matching book, if found
 	 * @throws SQLException if note could not be found/retrieved
 	 */
-	private SQLiteStatement mCheckBookExistsStmt = null;
+	public BooksCursor fetchBooksByIsbns(ArrayList<String> isbns) throws SQLException {
+		if (isbns.size() == 0)
+			throw new RuntimeException("No ISBNs specified in lookup");
+
+		String where;
+		if (isbns.size() == 1) {
+			where = TBL_BOOKS.dot(DOM_ISBN) + " = '" + encodeString(isbns.get(0)) + "'";
+		} else {
+			where = TBL_BOOKS.dot(DOM_ISBN) + " in (";
+			boolean first = true;
+			for(String isbn: isbns) {
+				if (first)
+					first = false;
+				else
+					where += ",";
+				where += "'" + encodeString(isbn) + "'";
+			}
+			where += ")";
+		}
+		return fetchAllBooks("", "", "", where, "", "", "");
+	}
+	
+	private SynchronizedStatement mCheckBookExistsStmt = null;
+	/**
+	 * Check that a book with the passed ID exists
+	 * 
+	 * @param rowId		id of book
+	 * 
+	 * @return			Boolean indicating it exists
+	 */
 	public boolean checkBookExists(long rowId) {
 		if (mCheckBookExistsStmt == null) {
-			mCheckBookExistsStmt = compileStatement("Select " + KEY_ROWID + " From " + DB_TB_BOOKS + " Where " + KEY_ROWID + " = ?");
+			mCheckBookExistsStmt = mStatements.add("mCheckBookExistsStmt", "Select " + KEY_ROWID + " From " + DB_TB_BOOKS + " Where " + KEY_ROWID + " = ?");
 		}
 		mCheckBookExistsStmt.bindLong(1, rowId);
 		try {
@@ -2325,7 +2750,27 @@ public class CatalogueDBAdapter {
 		}
 	}
 	
-	private SQLiteStatement mCheckIsbnExistsStmt = null;
+	/**
+	 * Check that a book with the passed UUID exists and return the ID of the book, or zero
+	 * 
+	 * @param rowId		UUID of book
+	 * 
+	 * @return			Boolean indicating it exists
+	 */
+	private SynchronizedStatement mGetBookIdFromUuidStmt = null;
+	public long getBookIdFromUuid(String uuid) {
+		if (mGetBookIdFromUuidStmt == null) {
+			mGetBookIdFromUuidStmt = mStatements.add("mGetBookIdFromUuidStmt", "Select " + KEY_ROWID + " From " + DB_TB_BOOKS + " Where " + DOM_BOOK_UUID + " = ?");
+		}
+		mGetBookIdFromUuidStmt.bindString(1, uuid);
+		try {
+			return mGetBookIdFromUuidStmt.simpleQueryForLong();
+		} catch (SQLiteDoneException e) {
+			return 0L;
+		}
+	}
+	
+	private SynchronizedStatement mCheckIsbnExistsStmt = null;
 	/**
 	 * 
 	 * @param isbn The isbn to search by
@@ -2333,7 +2778,7 @@ public class CatalogueDBAdapter {
 	 */
 	public boolean checkIsbnExists(String isbn) {
 		if (mCheckIsbnExistsStmt == null) {
-			mCheckIsbnExistsStmt = compileStatement("Select Count(*) From " + DB_TB_BOOKS + " Where Upper(" + KEY_ISBN + ") = Upper(?)");
+			mCheckIsbnExistsStmt = mStatements.add("mCheckIsbnExistsStmt", "Select Count(*) From " + DB_TB_BOOKS + " Where Upper(" + KEY_ISBN + ") = Upper(?)");
 		}
 		mCheckIsbnExistsStmt.bindString(1, isbn);
 		return mCheckIsbnExistsStmt.simpleQueryForLong() > 0;
@@ -2346,7 +2791,7 @@ public class CatalogueDBAdapter {
 	 * @param title Title of book
 	 * @return Cursor of the book
 	 */
-	public Cursor fetchByAuthorAndTitle(String family, String given, String title) {
+	public BooksCursor fetchByAuthorAndTitle(String family, String given, String title) {
 		String authorWhere = makeTextTerm("a." + KEY_FAMILY_NAME, "=", family) 
 							+ " AND " + makeTextTerm("a." + KEY_GIVEN_NAMES, "=", given);
 		String bookWhere = makeTextTerm("b." + KEY_TITLE, "=", title);
@@ -2361,7 +2806,7 @@ public class CatalogueDBAdapter {
 	 * @return The position of the book
 	 */
 	public int fetchBookPositionByTitle(String title, String bookshelf) {
-		String baseSql = this.fetchAllBooksSql("1", bookshelf, "", makeTextTerm("Substr(b." + KEY_TITLE + ",1,1)", "<", title.substring(0,1)), "", "", "");
+		String baseSql = this.fetchAllBooksInnerSql("1", bookshelf, "", makeTextTerm("Substr(b." + KEY_TITLE + ",1,1)", "<", title.substring(0,1)), "", "", "");
 		String sql = "SELECT Count(Distinct Upper(Substr(" + KEY_TITLE + ",1,1))" + COLLATION + ") as count " + baseSql;
 
 		Cursor results = mDb.rawQuery(sql, null);
@@ -2370,7 +2815,7 @@ public class CatalogueDBAdapter {
 		return pos;
 	}
 
-	private SQLiteStatement mGetBookshelfNameStmt = null;
+	private SynchronizedStatement mGetBookshelfNameStmt = null;
 	/**
 	 * Return a Cursor positioned at the bookshelf that matches the given rowId
 	 * 
@@ -2379,7 +2824,7 @@ public class CatalogueDBAdapter {
 	 */
 	public String getBookshelfName(long rowId) throws SQLiteDoneException {
 		if (mGetBookshelfNameStmt == null) {
-			mGetBookshelfNameStmt = compileStatement("Select " + KEY_BOOKSHELF + " From " + DB_TB_BOOKSHELF + " Where " + KEY_ROWID + " = ?");
+			mGetBookshelfNameStmt = mStatements.add("mGetBookshelfNameStmt", "Select " + KEY_BOOKSHELF + " From " + DB_TB_BOOKSHELF + " Where " + KEY_ROWID + " = ?");
 		}
 		mGetBookshelfNameStmt.bindLong(1, rowId);
 		return mGetBookshelfNameStmt.simpleQueryForString();
@@ -2422,10 +2867,10 @@ public class CatalogueDBAdapter {
 	 * @param name The bookshelf name to search for
 	 * @return A cursor containing all bookshelves with the given name
 	 */
-	private SQLiteStatement mFetchBookshelfIdByNameStmt = null;
+	private SynchronizedStatement mFetchBookshelfIdByNameStmt = null;
 	public long fetchBookshelfIdByName(String name) {
 		if (mFetchBookshelfIdByNameStmt == null) {
-			mFetchBookshelfIdByNameStmt = compileStatement("Select " + KEY_ROWID + " From " + KEY_BOOKSHELF 
+			mFetchBookshelfIdByNameStmt = mStatements.add("mFetchBookshelfIdByNameStmt", "Select " + KEY_ROWID + " From " + KEY_BOOKSHELF 
 											+ " Where Upper(" + KEY_BOOKSHELF + ") = Upper(?)" + COLLATION);
 		}
 		mFetchBookshelfIdByNameStmt.bindString(1, name);
@@ -2465,7 +2910,7 @@ public class CatalogueDBAdapter {
 			return 0;
 
 		String where = makeTextTerm("b." + KEY_GENRE, "<", genre);
-		String baseSql = fetchAllBooksSql("", bookshelf, "", where, "", "", "");
+		String baseSql = fetchAllBooksInnerSql("", bookshelf, "", where, "", "", "");
 
 		String sql = "SELECT Count(DISTINCT Upper(" + KEY_GENRE + "))" + baseSql;
 		Cursor results = mDb.rawQuery(sql, null);
@@ -2646,16 +3091,16 @@ public class CatalogueDBAdapter {
 	 * @param bookshelf The bookshelf to search within. Can be the string "All Books"
 	 * @return A Cursor of book meeting the search criteria
 	 */
-	public Cursor searchBooksByChar(String searchText, String first_char, String bookshelf) {
+	public BooksCursor searchBooksByChar(String searchText, String first_char, String bookshelf) {
 		String where = " " + makeTextTerm("substr(b." + KEY_TITLE + ",1,1)", "=", first_char);
 		return fetchAllBooks("", bookshelf, "", where, searchText, "", "");
 	}
 	
-	public Cursor searchBooksByDatePublished(String searchText, String date, String bookshelf) {
+	public BooksCursor searchBooksByDatePublished(String searchText, String date, String bookshelf) {
 		return fetchAllBooks("", bookshelf, "", " strftime('%Y', b." + KEY_DATE_PUBLISHED + ")='" + date + "' " + COLLATION + " ", searchText, "", "");
 	}
 	
-	public Cursor searchBooksByGenre(String searchText, String genre, String bookshelf) {
+	public BooksCursor searchBooksByGenre(String searchText, String genre, String bookshelf) {
 		return fetchAllBooks("", bookshelf, "", " " + KEY_GENRE + "='" + genre + "' " + COLLATION + " ", searchText, "", "");
 	}
 	
@@ -2669,7 +3114,7 @@ public class CatalogueDBAdapter {
 	 * @return A Cursor of book meeting the search criteria
 	 */
 	public Cursor searchBooksChars(String searchText, String bookshelf) {
-		String baseSql = this.fetchAllBooksSql("1", bookshelf, "", "", searchText, "", "");
+		String baseSql = this.fetchAllBooksInnerSql("1", bookshelf, "", "", searchText, "", "");
 		String sql = "SELECT DISTINCT upper(substr(b." + KEY_TITLE + ", 1, 1)) " + COLLATION + " AS " + KEY_ROWID + " " + baseSql;
 		return mDb.rawQuery(sql, new String[]{});
 	}
@@ -2683,7 +3128,7 @@ public class CatalogueDBAdapter {
 	 * @return Cursor over all notes
 	 */
 	public Cursor searchDatePublished(String searchText, String bookshelf) {
-		String baseSql = this.fetchAllBooksSql("1", bookshelf, "", "", searchText, "", "");
+		String baseSql = this.fetchAllBooksInnerSql("1", bookshelf, "", "", searchText, "", "");
 		String sql = "SELECT DISTINCT Case When " + KEY_DATE_PUBLISHED + " = '' Then '" + META_EMPTY_DATE_PUBLISHED + "' else strftime('%Y', b." + KEY_DATE_PUBLISHED + ") End " + COLLATION + " AS " + KEY_ROWID + " " + baseSql;
 		return mDb.rawQuery(sql, new String[]{});
 	}
@@ -2697,7 +3142,7 @@ public class CatalogueDBAdapter {
 	 * @return Cursor over all notes
 	 */
 	public Cursor searchGenres(String searchText, String bookshelf) {
-		String baseSql = this.fetchAllBooksSql("1", bookshelf, "", "", searchText, "", "");
+		String baseSql = this.fetchAllBooksInnerSql("1", bookshelf, "", "", searchText, "", "");
 		String sql = "SELECT DISTINCT Case When " + KEY_GENRE + " = '' Then '" + META_EMPTY_GENRE + "' else " + KEY_GENRE + " End " + COLLATION + " AS " + KEY_ROWID + " " + baseSql;
 		return mDb.rawQuery(sql, new String[]{});
 	}
@@ -2713,7 +3158,7 @@ public class CatalogueDBAdapter {
 	public Cursor searchSeries(String searchText, String bookshelf) {
 		/// Need to know when to add the 'no series' series...
 		String sql;
-		String baseSql = this.fetchAllBooksSql("1", bookshelf, "", "", searchText, "", "");
+		String baseSql = this.fetchAllBooksInnerSql("1", bookshelf, "", "", searchText, "", "");
 
 		sql = "Select DISTINCT Case When s." + KEY_ROWID + " is NULL Then -1 Else s." + KEY_ROWID + " End as " + KEY_ROWID + ","
 			+ " Case When s." + KEY_SERIES_NAME + " is NULL Then '" + META_EMPTY_SERIES + "'"
@@ -2735,7 +3180,7 @@ public class CatalogueDBAdapter {
 			String authorId = getAuthorIdOrCreate(names);
 			long result;
 			int position = fetchAnthologyPositionByBook(book) + 1;
-			
+
 			initialValues.put(KEY_BOOK, book);
 			initialValues.put(KEY_AUTHOR_ID, authorId);
 			initialValues.put(KEY_TITLE, title);
@@ -2805,16 +3250,18 @@ public class CatalogueDBAdapter {
 
 		// Make sure we have the target table details
 		if (mBooksInfo == null)
-			mBooksInfo = new TableInfo(DB_TB_BOOKS);
+			mBooksInfo = new TableInfo(mDb, DB_TB_BOOKS);
 
-		preprocessOutput(id, values);
+		preprocessOutput(id == 0, values);
 
 		/* We may want to provide default values for these fields:
-		 * KEY_RATING, KEY_READ, KEY_NOTES, KEY_LOCATION, KEY_READ_START, KEY_READ_END, KEY_SIGNED
+		 * KEY_RATING, KEY_READ, KEY_NOTES, KEY_LOCATION, KEY_READ_START, KEY_READ_END, KEY_SIGNED, & DATE_ADDED
 		 */
+		if (!values.containsKey(KEY_DATE_ADDED))
+			values.putString(KEY_DATE_ADDED, Utils.toSqlDateTime(new Date()));
 
 		// Make sure we have an author
-		ArrayList<Author> authors = values.getParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
+		ArrayList<Author> authors = (ArrayList<Author>) values.getSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
 		if (authors == null || authors.size() == 0)
 			throw new IllegalArgumentException();
 		ContentValues initialValues = filterValues(values, mBooksInfo);
@@ -2822,6 +3269,9 @@ public class CatalogueDBAdapter {
 		if (id > 0) {
 			initialValues.put(KEY_ROWID, id);
 		}
+
+		if (!initialValues.containsKey(DOM_LAST_UPDATE_DATE.name))
+			initialValues.put(DOM_LAST_UPDATE_DATE.name, Utils.toSqlDateTime(new Date()));
 
 		long rowId = mDb.insert(DB_TB_BOOKS, null, initialValues);
 
@@ -2831,8 +3281,14 @@ public class CatalogueDBAdapter {
 		}
 
 		createBookAuthors(rowId, authors);
-		ArrayList<Series> series = values.getParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY);
+		ArrayList<Series> series = (ArrayList<Series>) values.getSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY);
 		createBookSeries(rowId, series);
+
+		try {
+			insertFts(rowId);
+		} catch (Exception e) {
+			Logger.logError(e, "Failed to update FTS");
+		}
 
 		return rowId;
 	}
@@ -2851,8 +3307,8 @@ public class CatalogueDBAdapter {
 	}
 
 	// Statements used by createBookshelfBooks
-	private SQLiteStatement mDeleteBookshelfBooksStmt = null;
-	private SQLiteStatement mInsertBookshelfBooksStmt = null;
+	private SynchronizedStatement mDeleteBookshelfBooksStmt = null;
+	private SynchronizedStatement mInsertBookshelfBooksStmt = null;
 
 	/**
 	 * Create each book/bookshelf combo in the weak entity
@@ -2862,13 +3318,13 @@ public class CatalogueDBAdapter {
 	 */
 	public void createBookshelfBooks(long mRowId, String bookshelf) {
 		if (mDeleteBookshelfBooksStmt == null) {
-			mDeleteBookshelfBooksStmt = compileStatement("Delete from " + DB_TB_BOOK_BOOKSHELF_WEAK + " Where " + KEY_BOOK + " = ?");
+			mDeleteBookshelfBooksStmt = mStatements.add("mDeleteBookshelfBooksStmt", "Delete from " + DB_TB_BOOK_BOOKSHELF_WEAK + " Where " + KEY_BOOK + " = ?");
 		}
 		mDeleteBookshelfBooksStmt.bindLong(1, mRowId);
 		mDeleteBookshelfBooksStmt.execute();
 
 		if (mInsertBookshelfBooksStmt == null) {
-			mInsertBookshelfBooksStmt = compileStatement("Insert Into " 
+			mInsertBookshelfBooksStmt = mStatements.add("mInsertBookshelfBooksStmt", "Insert Into " 
 								+ DB_TB_BOOK_BOOKSHELF_WEAK + "(" + KEY_BOOK + ", " + KEY_BOOKSHELF + ")"
 								+ " Values (?,?)");
 		}
@@ -2986,11 +3442,11 @@ public class CatalogueDBAdapter {
 		return getAuthorIdOrCreate(names);
 	}
 
-	private SQLiteStatement mGetSeriesIdStmt = null;
+	private SynchronizedStatement mGetSeriesIdStmt = null;
 
 	private long getSeriesId(String name) {
 		if (mGetSeriesIdStmt == null) {
-			mGetSeriesIdStmt = compileStatement("Select " + KEY_ROWID + " From " + DB_TB_SERIES 
+			mGetSeriesIdStmt = mStatements.add("mGetSeriesIdStmt", "Select " + KEY_ROWID + " From " + DB_TB_SERIES 
 								+ " Where Upper(" + KEY_SERIES_NAME + ") = Upper(?)" + COLLATION);
 		}
 		long id;
@@ -3012,10 +3468,10 @@ public class CatalogueDBAdapter {
 	}
 
 	// Statements used by getAuthorId
-	private SQLiteStatement mGetAuthorIdStmt = null;
+	private SynchronizedStatement mGetAuthorIdStmt = null;
 	private long getAuthorId(String[] names) {
 		if (mGetAuthorIdStmt == null) {
-			mGetAuthorIdStmt = compileStatement("Select " + KEY_ROWID + " From " + DB_TB_AUTHORS 
+			mGetAuthorIdStmt = mStatements.add("mGetAuthorIdStmt", "Select " + KEY_ROWID + " From " + DB_TB_AUTHORS 
 								+ " Where Upper(" + KEY_FAMILY_NAME + ") = Upper(?) " + COLLATION
 								+ " And Upper(" + KEY_GIVEN_NAMES + ") = Upper(?)" + COLLATION);
 		}
@@ -3068,7 +3524,44 @@ public class CatalogueDBAdapter {
 		return mDb.rawQuery(sql, new String[]{});
 	}
 
-	ArrayList<Author> getBookAuthorList(long id) {
+	/**
+	 * Returns a unique list of all formats in the database; uses the pre-defined formats if none.
+	 *
+	 * @return The list
+	 */
+	protected ArrayList<String> getFormats() {
+		// Hash to *try* to avoid duplicates
+		HashSet<String> foundSoFar = new HashSet<String>();
+		ArrayList<String> list = new ArrayList<String>();
+		Cursor c = mDb.rawQuery("Select distinct " + KEY_FORMAT + " from " + DB_TB_BOOKS + " Order by lower(" + KEY_FORMAT + ") collate UNICODE");
+		try {
+			while (c.moveToNext()) {
+				String name = c.getString(0);
+				if (name != null)
+					try {
+						if (name.length() > 0 && !foundSoFar.contains(name.toLowerCase())) {
+							foundSoFar.add(name.toLowerCase());
+							list.add(name);
+						}
+					} catch (NullPointerException e) {
+						// do nothing
+					}
+			}
+		} finally {
+			c.close();
+		}
+		if (list.size() == 0) {
+			list.add(BookCatalogueApp.getResourceString(R.string.format1));
+			list.add(BookCatalogueApp.getResourceString(R.string.format2));
+			list.add(BookCatalogueApp.getResourceString(R.string.format3));
+			list.add(BookCatalogueApp.getResourceString(R.string.format4));
+			list.add(BookCatalogueApp.getResourceString(R.string.format5));
+		}
+		return list;
+	}
+
+	
+	public ArrayList<Author> getBookAuthorList(long id) {
 		ArrayList<Author> authorList = new ArrayList<Author>();
 		Cursor authors = null;
 		try {
@@ -3092,7 +3585,7 @@ public class CatalogueDBAdapter {
 		return authorList;
 	}
 
-	ArrayList<Series> getBookSeriesList(long id) {
+	public ArrayList<Series> getBookSeriesList(long id) {
 		ArrayList<Series> seriesList = new ArrayList<Series>();
 		Cursor series = null;
 		try {
@@ -3208,7 +3701,7 @@ public class CatalogueDBAdapter {
 	 * 
 	 * @param values	Collection of field values.
 	 */
-	private void preprocessOutput(long rowId, Bundle values) {
+	private void preprocessOutput(boolean isNew, Bundle values) {
 		String authorId;
 
 		// Handle AUTHOR
@@ -3231,7 +3724,7 @@ public class CatalogueDBAdapter {
 		}
 		
 		// Handle TITLE; but only for new books
-		if (rowId == 0 && values.containsKey(KEY_TITLE)) {
+		if (isNew && values.containsKey(KEY_TITLE)) {
 			/* Move "The, A, An" to the end of the string */
 			String title = values.getString(KEY_TITLE);
 			String newTitle = "";
@@ -3269,17 +3762,20 @@ public class CatalogueDBAdapter {
 
 		// Make sure we have the target table details
 		if (mBooksInfo == null)
-			mBooksInfo = new TableInfo(DB_TB_BOOKS);
+			mBooksInfo = new TableInfo(mDb, DB_TB_BOOKS);
 
-		preprocessOutput(rowId, values);
+		preprocessOutput(rowId == 0, values);
 
 		ContentValues args = filterValues(values, mBooksInfo);
 
-		// Allow for the possibillity we are just updating series, or author lists.
-		if (args.size() > 0)
-			success = mDb.update(DB_TB_BOOKS, args, KEY_ROWID + "=" + rowId, null) > 0;
-		else
-			success = true;
+		// Disallow UUID updates
+		if (args.containsKey(DOM_BOOK_UUID.name))
+			args.remove(DOM_BOOK_UUID.name);
+
+		// We may be just updating series, or author lists but we still update the last_update_date.
+		if (!args.containsKey(DOM_LAST_UPDATE_DATE.name))
+			args.put(DOM_LAST_UPDATE_DATE.name, Utils.toSqlDateTime(Calendar.getInstance().getTime()));
+		success = mDb.update(DB_TB_BOOKS, args, KEY_ROWID + "=" + rowId, null) > 0;
 
 		if (values.containsKey("bookshelf_text")) {
 			String bookshelf = values.getString("bookshelf_text");
@@ -3289,11 +3785,11 @@ public class CatalogueDBAdapter {
 		}
 
 		if (values.containsKey(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)) {
-			ArrayList<Author> authors = values.getParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
+			ArrayList<Author> authors = (ArrayList<Author>) values.getSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
 			createBookAuthors(rowId, authors);			
 		}
 		if (values.containsKey(CatalogueDBAdapter.KEY_SERIES_ARRAY)) {
-			ArrayList<Series> series = values.getParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY);
+			ArrayList<Series> series = (ArrayList<Series>) values.getSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY);
 			createBookSeries(rowId, series);			
 		}
 
@@ -3305,12 +3801,18 @@ public class CatalogueDBAdapter {
 			purgeSeries();			
 		}
 
+		try {
+			updateFts(rowId);
+		} catch (Exception e) {
+			Logger.logError(e, "Failed to update FTS");
+		}
+
 		return success;
 	}
 
 	// Statements used by createBookAuthors
-	private SQLiteStatement mDeleteBookAuthorsStmt = null;
-	private SQLiteStatement mAddBookAuthorsStmt = null;
+	private SynchronizedStatement mDeleteBookAuthorsStmt = null;
+	private SynchronizedStatement mAddBookAuthorsStmt = null;
 
 	/**
 	 * If the passed ContentValues contains KEY_AUTHOR_LIST, parse them
@@ -3323,10 +3825,10 @@ public class CatalogueDBAdapter {
 		// If we have AUTHOR_DETAILS, same them.
 		if (authors != null) {
 			if (mDeleteBookAuthorsStmt == null) {
-				mDeleteBookAuthorsStmt = compileStatement("Delete from " + DB_TB_BOOK_AUTHOR + " Where " + KEY_BOOK + " = ?");
+				mDeleteBookAuthorsStmt = mStatements.add("mDeleteBookAuthorsStmt", "Delete from " + DB_TB_BOOK_AUTHOR + " Where " + KEY_BOOK + " = ?");
 			}
 			if (mAddBookAuthorsStmt == null) {
-				mAddBookAuthorsStmt = compileStatement("Insert Into " + DB_TB_BOOK_AUTHOR 
+				mAddBookAuthorsStmt = mStatements.add("mAddBookAuthorsStmt", "Insert Into " + DB_TB_BOOK_AUTHOR 
 															+ "(" + KEY_BOOK + "," + KEY_AUTHOR_ID + "," + KEY_AUTHOR_POSITION + ")"
 															+ "Values(?,?,?)");
 
@@ -3368,16 +3870,16 @@ public class CatalogueDBAdapter {
 	 * @param bookData		Book fields
 	 */
 	//
-	private SQLiteStatement mDeleteBookSeriesStmt = null;
-	private SQLiteStatement mAddBookSeriesStmt = null;
+	private SynchronizedStatement mDeleteBookSeriesStmt = null;
+	private SynchronizedStatement mAddBookSeriesStmt = null;
 	private void createBookSeries(long bookId, ArrayList<Series> series) {
 		// If we have SERIES_DETAILS, same them.
 		if (series != null) {
 			if (mDeleteBookSeriesStmt == null) {
-				mDeleteBookSeriesStmt = compileStatement("Delete from " + DB_TB_BOOK_SERIES + " Where " + KEY_BOOK + " = ?");
+				mDeleteBookSeriesStmt = mStatements.add("mDeleteBookSeriesStmt", "Delete from " + DB_TB_BOOK_SERIES + " Where " + KEY_BOOK + " = ?");
 			}
 			if (mAddBookSeriesStmt == null) {
-				mAddBookSeriesStmt = compileStatement("Insert Into " + DB_TB_BOOK_SERIES 
+				mAddBookSeriesStmt = mStatements.add("mAddBookSeriesStmt", "Insert Into " + DB_TB_BOOK_SERIES 
 															+ "(" + KEY_BOOK + "," + KEY_SERIES_ID + "," + KEY_SERIES_NUM + "," + KEY_SERIES_POSITION + ")"
 															+ " Values(?,?,?,?)");
 
@@ -3577,8 +4079,8 @@ public class CatalogueDBAdapter {
 	}
 
 	// Statements for purgeAuthors
-	private SQLiteStatement mPurgeBookAuthorsStmt = null;
-	private SQLiteStatement mPurgeAuthorsStmt = null;
+	private SynchronizedStatement mPurgeBookAuthorsStmt = null;
+	private SynchronizedStatement mPurgeAuthorsStmt = null;
 	/** 
 	 * Delete the author with the given rowId
 	 * 
@@ -3588,7 +4090,7 @@ public class CatalogueDBAdapter {
 	public boolean purgeAuthors() {
 		// Delete DB_TB_BOOK_AUTHOR with no books
 		if (mPurgeBookAuthorsStmt == null) {
-			mPurgeBookAuthorsStmt = compileStatement("Delete from " + DB_TB_BOOK_AUTHOR + " Where " + KEY_BOOK 
+			mPurgeBookAuthorsStmt = mStatements.add("mPurgeBookAuthorsStmt", "Delete from " + DB_TB_BOOK_AUTHOR + " Where " + KEY_BOOK 
 									+ " Not In (SELECT DISTINCT " + KEY_ROWID + " FROM " + DB_TB_BOOKS + ") ");
 		}
 
@@ -3602,7 +4104,7 @@ public class CatalogueDBAdapter {
 		}
 
 		if (mPurgeAuthorsStmt == null) {
-			mPurgeAuthorsStmt = compileStatement("Delete from " + DB_TB_AUTHORS + " Where "
+			mPurgeAuthorsStmt = mStatements.add("mPurgeAuthorsStmt", "Delete from " + DB_TB_AUTHORS + " Where "
 					 			+ KEY_ROWID + " Not In (SELECT DISTINCT " + KEY_AUTHOR_ID + " FROM " + DB_TB_BOOK_AUTHOR + ")"
 								+ " And " + KEY_ROWID + " Not In (SELECT DISTINCT " + KEY_AUTHOR_ID + " FROM " + DB_TB_ANTHOLOGY + ")");
 		}
@@ -3619,8 +4121,8 @@ public class CatalogueDBAdapter {
 	}
 
 	// Statements for purgeSeries
-	private SQLiteStatement mPurgeBookSeriesStmt = null;
-	private SQLiteStatement mPurgeSeriesStmt = null;
+	private SynchronizedStatement mPurgeBookSeriesStmt = null;
+	private SynchronizedStatement mPurgeSeriesStmt = null;
 
 	/** 
 	 * Delete the series with no related books
@@ -3629,7 +4131,7 @@ public class CatalogueDBAdapter {
 	 */
 	public boolean purgeSeries() {
 		if (mPurgeBookSeriesStmt == null) {
-			mPurgeBookSeriesStmt = compileStatement("Delete From "+ DB_TB_BOOK_SERIES + " Where " 
+			mPurgeBookSeriesStmt = mStatements.add("mPurgeBookSeriesStmt", "Delete From "+ DB_TB_BOOK_SERIES + " Where " 
 									+ KEY_BOOK + " NOT IN (SELECT DISTINCT " + KEY_ROWID + " FROM " + DB_TB_BOOKS + ")");
 		}
 		boolean success;
@@ -3643,7 +4145,7 @@ public class CatalogueDBAdapter {
 		}
 
 		if (mPurgeSeriesStmt == null) {
-			mPurgeSeriesStmt = compileStatement("Delete from " + DB_TB_SERIES + " Where "
+			mPurgeSeriesStmt = mStatements.add("mPurgeSeriesStmt", "Delete from " + DB_TB_SERIES + " Where "
 					+ KEY_ROWID + " NOT IN (SELECT DISTINCT " + KEY_SERIES_ID + " FROM " + DB_TB_BOOK_SERIES + ") ");
 		}
 		// Delete series entries with no Book_Series
@@ -3693,8 +4195,39 @@ public class CatalogueDBAdapter {
 	 */
 	public boolean deleteBook(long rowId) {
 		boolean success;
+		String uuid = null;
+		try {
+			uuid = this.getBookUuid(rowId);
+		} catch (Exception e) {
+			Logger.logError(e, "Failed to get book UUID");
+		}
+
 		success = mDb.delete(DB_TB_BOOKS, KEY_ROWID + "=" + rowId, null) > 0;
 		purgeAuthors();
+
+		try {
+			deleteFts(rowId);
+		} catch (Exception e) {
+			Logger.logError(e, "Failed to delete FTS");
+		}
+		// Delete thumbnail(s)
+		if (uuid != null) {
+			try {
+				File f = fetchThumbnailByUuid(uuid);
+				while (f.exists()) {
+					f.delete();				
+					f = fetchThumbnailByUuid(uuid);
+				}	
+			} catch (Exception e) {
+				Logger.logError(e, "Failed to delete cover thumbnail");
+			}
+		}
+
+		if (uuid != null && !uuid.equals("")) {
+			int delCount = getUtils().eraseCachedBookCover(uuid);
+			//System.out.println(delCount + " cached images deleted");
+		}
+
 		return success;
 	}
 	
@@ -3738,8 +4271,128 @@ public class CatalogueDBAdapter {
 		return success;
 	}
 	
+/***************************************************************************************
+ * GoodReads support
+ **************************************************************************************/
+	/** Static Factory object to create the custom cursor */
+	private static final CursorFactory m_booksFactory = new CursorFactory() {
+			@Override
+			public Cursor newCursor(
+					SQLiteDatabase db,
+					SQLiteCursorDriver masterQuery, 
+					String editTable,
+					SQLiteQuery query) 
+			{
+				return new BooksCursor(db, masterQuery, editTable, query, mSynchronizer);
+			}
+	};
+
+	/**
+	 * Static method to get a BooksCursor Cursor. The passed sql should at least return 
+	 * some of the fields from the books table! If a method call is made to retrieve 
+	 * a column that does not exists, an exceptio will be thrown.
+	 * 
+	 * @param db		Database
+	 * @param taskId	ID of the task whose exceptions we want
+	 * 
+	 * @return			A new TaskExceptionsCursor
+	 */
+	public BooksCursor fetchBooks(String sql, String[] selectionArgs) {
+		return (BooksCursor) mDb.rawQueryWithFactory(m_booksFactory, sql, selectionArgs, "");
+	}
+
+
+	/**
+	 * Query to get all book IDs and ISBN for sending to goodreads.
+	 */
+	public BooksCursor getAllBooksForGoodreadsCursor(long startId, boolean updatesOnly) {
+		//if (m_allBooksForGoodreadsStmt == null) {
+		//	m_allBooksForGoodreadsStmt = compileStatement("Select isbn, " + KEY_BOOK + " from " + DB_TB_BOOKS + " Order by " + KEY_BOOK);
+		//}
+		String sql = "Select " + KEY_ISBN + ", " + KEY_ROWID + ", " + DOM_GOODREADS_BOOK_ID + 
+				", " + KEY_NOTES + ", " + KEY_READ + ", " + KEY_READ_END + ", " + KEY_RATING + 
+				" from " + DB_TB_BOOKS + " Where " + KEY_ROWID + " > " + startId;
+		if (updatesOnly) {
+			sql += " and " + DOM_LAST_UPDATE_DATE + " > " + DOM_LAST_GOODREADS_SYNC_DATE;
+		}
+		sql += " Order by " + KEY_ROWID;
+
+		BooksCursor cursor = fetchBooks(sql, EMPTY_STRNG_ARRAY);
+		return cursor;
+	}
+
+	/**
+	 * Query to get a specific book ISBN from the ID for sending to goodreads.
+	 */
+	public BooksCursor getBookForGoodreadsCursor(long bookId) {
+		String sql = "Select " + KEY_ROWID + ", " + KEY_ISBN + ", " + DOM_GOODREADS_BOOK_ID + 
+				", " + KEY_NOTES + ", " + KEY_READ + ", " + KEY_READ_END + ", " + KEY_RATING + 
+				" from " + DB_TB_BOOKS + " Where " + KEY_ROWID + " = " + bookId + " Order by " + KEY_ROWID;
+		BooksCursor cursor = fetchBooks(sql, EMPTY_STRNG_ARRAY);
+		return cursor;
+	}
+
+	/**
+	 * Query to get a all bookshelves for a book, for sending to goodreads.
+	 */
+	public Cursor getAllBookBookshelvesForGoodreadsCursor(long book) {
+		String sql = "Select s." + KEY_BOOKSHELF + " from " + DB_TB_BOOKSHELF + " s"
+				 + " Join " + DB_TB_BOOK_BOOKSHELF_WEAK + " bbs On bbs." + KEY_BOOKSHELF + " = s." + KEY_ROWID
+				 + " and bbs." + KEY_BOOK + " = " + book + " Order by s." + KEY_BOOKSHELF;
+		Cursor cursor = mDb.rawQuery(sql, EMPTY_STRING_ARRAY);
+		return cursor;
+	}
+
+	/** Support statement for setGoodreadsBookId() */
+	private SynchronizedStatement mSetGoodreadsBookIdStmt = null;
+	/**
+	 * Set the goodreads book id for this passed book. This is used by other goodreads-related 
+	 * functions.
+	 * 
+	 * @param bookId			Book to update
+	 * @param goodreadsBookId	GR book id
+	 */
+	public void setGoodreadsBookId(long bookId, long goodreadsBookId) {
+		if (mSetGoodreadsBookIdStmt == null ) {
+			String sql = "Update " + TBL_BOOKS + " Set " + DOM_GOODREADS_BOOK_ID + " = ? Where " + DOM_ID + " = ?";
+			mSetGoodreadsBookIdStmt = mStatements.add("mSetGoodreadsBookIdStmt", sql);
+		}
+		mSetGoodreadsBookIdStmt.bindLong(1, goodreadsBookId);
+		mSetGoodreadsBookIdStmt.bindLong(2, bookId);
+		mSetGoodreadsBookIdStmt.execute();
+	}
+
+	/** Support statement for setGoodreadsSyncDate() */
+	private SynchronizedStatement mSetGoodreadsSyncDateStmt = null;
+	/** 
+	 * Set the goodreads sync date to the current time
+	 * 
+	 * @param bookId
+	 */
+	public void setGoodreadsSyncDate(long bookId) {
+		if (mSetGoodreadsSyncDateStmt == null) {
+			String sql = "Update " + DB_TB_BOOKS + " Set " + DOM_LAST_GOODREADS_SYNC_DATE + " = current_timestamp Where " + KEY_ROWID + " = ?";
+			mSetGoodreadsSyncDateStmt = mStatements.add("mSetGoodreadsSyncDateStmt", sql);			
+		}
+		mSetGoodreadsSyncDateStmt.bindLong(1, bookId);
+		mSetGoodreadsSyncDateStmt.execute();		
+	}
 	
-	
+//	/** Support statement for getGoodreadsSyncDate() */
+//	private SynchronizedStatement mGetGoodreadsSyncDateStmt = null;
+//	/** 
+//	 * Set the goodreads sync date to the current time
+//	 * 
+//	 * @param bookId
+//	 */
+//	public String getGoodreadsSyncDate(long bookId) {
+//		if (mGetGoodreadsSyncDateStmt == null) {
+//			String sql = "Select " + DOM_LAST_GOODREADS_SYNC_DATE + " From " + DB_TB_BOOKS + " Where " + KEY_ROWID + " = ?";
+//			mGetGoodreadsSyncDateStmt = mStatements.add("mGetGoodreadsSyncDateStmt", sql);			
+//		}
+//		mGetGoodreadsSyncDateStmt.bindLong(1, bookId);
+//		return mGetGoodreadsSyncDateStmt.simpleQueryForString();			
+//	}
 	
 /**************************************************************************************/
 	
@@ -3783,7 +4436,7 @@ public class CatalogueDBAdapter {
 	    	}
     }
  
-    private SQLiteStatement mGetAuthorBookCountQuery = null;
+    private SynchronizedStatement mGetAuthorBookCountQuery = null;
     /*
      * This will return the author id based on the name. 
      * The name can be in either "family, given" or "given family" format.
@@ -3796,7 +4449,7 @@ public class CatalogueDBAdapter {
  
     	if (mGetAuthorBookCountQuery == null) {
         	String sql = "Select Count(" + KEY_BOOK + ") From " + DB_TB_BOOK_AUTHOR + " Where " + KEY_AUTHOR_ID + "=?";
-        	mGetAuthorBookCountQuery = compileStatement(sql);
+        	mGetAuthorBookCountQuery = mStatements.add("mGetAuthorBookCountQuery", sql);
     	}
     	// Be cautious
     	synchronized(mGetAuthorBookCountQuery) {
@@ -3806,7 +4459,7 @@ public class CatalogueDBAdapter {
 
     }
     
-    private SQLiteStatement mGetAuthorAnthologyCountQuery = null;
+    private SynchronizedStatement mGetAuthorAnthologyCountQuery = null;
     /*
      * This will return the author id based on the name. 
      * The name can be in either "family, given" or "given family" format.
@@ -3819,7 +4472,7 @@ public class CatalogueDBAdapter {
  
     	if (mGetAuthorAnthologyCountQuery == null) {
         	String sql = "Select Count(" + KEY_ROWID + ") From " + DB_TB_ANTHOLOGY + " Where " + KEY_AUTHOR_ID + "=?";
-        	mGetAuthorAnthologyCountQuery = compileStatement(sql);
+        	mGetAuthorAnthologyCountQuery = mStatements.add("mGetAuthorAnthologyCountQuery", sql);
     	}
     	// Be cautious
     	synchronized(mGetAuthorAnthologyCountQuery) {
@@ -3829,7 +4482,7 @@ public class CatalogueDBAdapter {
 
     }
 
-    private SQLiteStatement mGetSeriesBookCountQuery = null;
+    private SynchronizedStatement mGetSeriesBookCountQuery = null;
     /*
      * This will return the author id based on the name. 
      * The name can be in either "family, given" or "given family" format.
@@ -3842,7 +4495,7 @@ public class CatalogueDBAdapter {
  
     	if (mGetSeriesBookCountQuery == null) {
         	String sql = "Select Count(" + KEY_BOOK + ") From " + DB_TB_BOOK_SERIES + " Where " + KEY_SERIES_ID + "=?";
-        	mGetSeriesBookCountQuery = compileStatement(sql);
+        	mGetSeriesBookCountQuery = mStatements.add("mGetSeriesBookCountQuery", sql);
     	}
     	// Be cautious
     	synchronized(mGetSeriesBookCountQuery) {
@@ -3868,8 +4521,8 @@ public class CatalogueDBAdapter {
 		if (oldAuthor.id == newAuthor.id)
 			return;
 
+		SyncLock l = mDb.beginTransaction(true);
 		try {
-			mDb.beginTransaction();
 			// First handle anthologies; they have a single author and are easy
 			String sql = "Update " + DB_TB_ANTHOLOGY + " set " + KEY_AUTHOR_ID + " = " + newAuthor.id
 						+ " Where " + KEY_AUTHOR_ID + " = " + oldAuthor.id;
@@ -3894,7 +4547,7 @@ public class CatalogueDBAdapter {
 
 			mDb.setTransactionSuccessful();
 		} finally {
-			mDb.endTransaction();
+			mDb.endTransaction(l);
 		}
 	}
 
@@ -3914,8 +4567,8 @@ public class CatalogueDBAdapter {
 		if (oldSeries.id == newSeries.id)
 			return;
 
+		SyncLock l = mDb.beginTransaction(true);
 		try {
-			mDb.beginTransaction();
 			String sql;
 
 			// Update books but prevent duplicate index errors
@@ -3937,10 +4590,64 @@ public class CatalogueDBAdapter {
 
 			mDb.setTransactionSuccessful();
 		} finally {
-			mDb.endTransaction();
+			mDb.endTransaction(l);
 		}
 	}
 
+    public void globalReplaceFormat(String oldFormat, String newFormat) {
+
+		SyncLock l = mDb.beginTransaction(true);
+		try {
+			String sql;
+
+			// Update books but prevent duplicate index errors
+			sql = "Update " + DB_TB_BOOKS + " Set " + KEY_FORMAT + " = '" + encodeString(newFormat) + "'"
+					+ " Where " + KEY_FORMAT + " = '" + encodeString(oldFormat) + "'";
+			mDb.execSQL(sql);	
+			
+			mDb.setTransactionSuccessful();
+		} finally {
+			mDb.endTransaction(l);
+		}
+	}
+
+    private SynchronizedStatement mGetBookUuidQuery = null;
+    /**
+     * Utility routine to return the book title based on the id. 
+     */
+    public String getBookUuid(long id) {
+    	if (mGetBookUuidQuery == null) {
+        	String sql = "Select " + DOM_BOOK_UUID + " From " + DB_TB_BOOKS + " Where " + KEY_ROWID + "=?";
+        	mGetBookUuidQuery = mStatements.add("mGetBookUuidQuery", sql);
+    	}
+    	// Be cautious; other threads may call this and set parameters.
+    	synchronized(mGetBookUuidQuery) {
+    		mGetBookUuidQuery.bindLong(1, id);
+    		//try {
+            	return mGetBookUuidQuery.simpleQueryForString();    			
+    		//} catch (SQLiteDoneException e) {
+    		//	return null;
+    		//}
+    	}
+    }
+    
+    private SynchronizedStatement mGetBookTitleQuery = null;
+    /**
+     * Utility routine to return the book title based on the id. 
+     */
+    public String getBookTitle(long id) {
+    	if (mGetBookTitleQuery == null) {
+        	String sql = "Select " + KEY_TITLE + " From " + DB_TB_BOOKS + " Where " + KEY_ROWID + "=?";
+        	mGetBookTitleQuery = mStatements.add("mGetBookTitleQuery", sql);
+    	}
+    	// Be cautious; other threads may call this and set parameters.
+    	synchronized(mGetBookTitleQuery) {
+    		mGetBookTitleQuery.bindLong(1, id);
+        	return mGetBookTitleQuery.simpleQueryForString();
+    	}
+
+    }
+    
     /**
      * Utility routine to fill an array with the specified column from the passed SQL.
      * 
@@ -3992,7 +4699,7 @@ public class CatalogueDBAdapter {
     	return fetchArray(sql, KEY_AUTHOR_FORMATTED);
 	}
 
-    public String encodeString(String value) {
+    public static String encodeString(String value) {
     	return value.replace("'", "''");
     }
 	
@@ -4000,10 +4707,10 @@ public class CatalogueDBAdapter {
 	 * Column info support. This is useful for auto-building queries from maps that have
 	 * more columns than are in the table.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	@SuppressWarnings("unused")
-	private class ColumnInfo {
+	private static class ColumnInfo {
 		public int position;
 		public String name;
 		public String typeName;
@@ -4016,17 +4723,19 @@ public class CatalogueDBAdapter {
 	/**
 	 * Details of a database table.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
-	private class TableInfo {
+	private static class TableInfo implements Iterable<ColumnInfo> {
 		private Map<String,ColumnInfo> mColumns;
 		private String mName;
-		
+		private SynchronizedDb mDb;
+
 		public static final int CLASS_INTEGER = 1;
 		public static final int CLASS_TEXT = 2;
 		public static final int CLASS_REAL = 3;
 		
-		TableInfo(String tableName) {
+		TableInfo(SynchronizedDb db, String tableName) {
+			mDb = db;
 			mName = tableName;
 			mColumns = describeTable(mName);
 		}
@@ -4038,6 +4747,11 @@ public class CatalogueDBAdapter {
 			return mColumns.get(lcName);
 		}
 		
+		@Override
+		public Iterator<ColumnInfo> iterator() {
+			return mColumns.values().iterator();
+		}
+
 		/**
 		 * Get the column details for the given table.
 		 * 
@@ -4057,8 +4771,7 @@ public class CatalogueDBAdapter {
 				
 				if (!colCsr.moveToFirst())
 					throw new RuntimeException("Unable to get column details");
-				
-				
+
 				while (true) {
 					ColumnInfo col = new ColumnInfo();
 					col.position = colCsr.getInt(0);
@@ -4074,7 +4787,7 @@ public class CatalogueDBAdapter {
 						col.typeClass = CLASS_TEXT;            		
 					} else if (tName.equals("float") || tName.equals("real") || tName.equals("double")) {
 						col.typeClass = CLASS_REAL;
-					} else if (tName.equals("date")) {
+					} else if ( (tName.equals("date")) || (tName.equals("datetime")) ) {
 						col.typeClass = CLASS_TEXT;
 					} else if (tName.equals("boolean")) {
 						col.typeClass = CLASS_INTEGER;
@@ -4095,13 +4808,13 @@ public class CatalogueDBAdapter {
 		}
 	}
 	
-	void startTransaction() {
-		mDb.beginTransaction();
+	public SyncLock startTransaction(boolean isUpdate) {
+		return mDb.beginTransaction(isUpdate);
 	}
-	void endTransaction() {
-		mDb.endTransaction();
+	public void endTransaction(SyncLock lock) {
+		mDb.endTransaction(lock);
 	}
-	void setTransactionSuccessful() {
+	public void setTransactionSuccessful() {
 		mDb.setTransactionSuccessful();
 	}
 	
@@ -4113,9 +4826,382 @@ public class CatalogueDBAdapter {
 		}
 	}
 	
-	private SQLiteStatement compileStatement(String sql) {
-		SQLiteStatement s = mDb.compileStatement(sql);
-		mStatements.add(s);
-		return s;
+	/**
+	 * Return a list of all defined styles in the database
+	 * 
+	 * @return
+	 */
+	public Cursor getBooklistStyles() {
+		final String sql = "Select " + TBL_BOOK_LIST_STYLES.ref(DOM_ID, DOM_STYLE) 
+						+ " From " +  TBL_BOOK_LIST_STYLES.ref();
+						// + " Order By " + TBL_BOOK_LIST_STYLES.ref(DOM_POSITION, DOM_ID);
+		return mDb.rawQuery(sql);
+	}
+
+	/**
+	 * Create a new booklist style
+	 * 
+	 * @return
+	 */
+	private SynchronizedStatement mInsertBooklistStyleStmt = null;
+	public long insertBooklistStyle(BooklistStyle s) {
+		if (mInsertBooklistStyleStmt == null) {
+			final String sql = TBL_BOOK_LIST_STYLES.getInsert(DOM_STYLE) 
+						+ " Values (?)";
+			mInsertBooklistStyleStmt = mStatements.add("mInsertBooklistStyleStmt", sql);
+		}
+		byte[] blob = SerializationUtils.serializeObject(s);
+		mInsertBooklistStyleStmt.bindBlob(1, blob);
+		return mInsertBooklistStyleStmt.executeInsert();
+	}
+
+	/**
+	 * Update an existing booklist style
+	 * 
+	 * @return
+	 */
+	private SynchronizedStatement mUpdateBooklistStyleStmt = null;
+	public void updateBooklistStyle(BooklistStyle s) {
+		if (mUpdateBooklistStyleStmt == null) {
+			final String sql = TBL_BOOK_LIST_STYLES.getUpdate(DOM_STYLE) 
+						+ " Where " +  DOM_ID + " = ?";
+			mUpdateBooklistStyleStmt = mStatements.add("mUpdateBooklistStyleStmt", sql);
+		}
+		byte[] blob = SerializationUtils.serializeObject(s);
+		mUpdateBooklistStyleStmt.bindBlob(1, blob);
+		mUpdateBooklistStyleStmt.bindLong(2, s.getRowId());
+		mUpdateBooklistStyleStmt.execute();
+	}
+
+	/**
+	 * Delete an existing booklist style
+	 * 
+	 * @return
+	 */
+	private SynchronizedStatement mDeleteBooklistStyleStmt = null;
+	public void deleteBooklistStyle(long id) {
+		if (mDeleteBooklistStyleStmt == null) {
+			final String sql = "Delete from " + TBL_BOOK_LIST_STYLES 
+						+ " Where " +  DOM_ID + " = ?";
+			mDeleteBooklistStyleStmt = mStatements.add("mDeleteBooklistStyleStmt", sql);
+		}
+		mDeleteBooklistStyleStmt.bindLong( 1, id );
+		mDeleteBooklistStyleStmt.execute();
+	}
+
+	/****************************************************************************************************
+	 * FTS Support
+	 */
+
+	/**
+	 * Send the book details from the cursor to the passed fts query. 
+	 * 
+	 * NOTE: This assumes a specific order for query parameters.
+	 * 
+	 * @param books		Cursor of books to update
+	 * @param stmt		Statement to execute
+	 * 
+	 */
+	public void ftsSendBooks(BooksCursor books, SynchronizedStatement stmt) {
+
+		// Get a rowview for the cursor
+		final BooksRowView book = books.getRowView();
+		// Build the SQL to get author details for a book.
+		final String authorBaseSql = "Select " + TBL_AUTHORS.dot("*") + " from " + TBL_BOOK_AUTHOR.ref() + TBL_BOOK_AUTHOR.join(TBL_AUTHORS) +
+				" Where " + TBL_BOOK_AUTHOR.dot(DOM_BOOK) + " = ";
+
+		// Accumulator for author names for each book
+		StringBuilder authorText = new StringBuilder();
+		// Indexes of author name fields.
+		int colGivenNames = -1;
+		int colFamilyName = -1;
+		// Process each book
+		while (books.moveToNext()) {
+			// Reset authors
+			authorText.setLength(0);
+			// Get list of authors
+			Cursor c = mDb.rawQuery(authorBaseSql + book.getId());
+			try {
+				// Get column indexes, if not already got
+				if (colGivenNames < 0)
+					colGivenNames = c.getColumnIndex(KEY_GIVEN_NAMES);
+				if (colFamilyName < 0)
+					colFamilyName = c.getColumnIndex(KEY_FAMILY_NAME);
+				// Append each author
+				while (c.moveToNext()) {
+					authorText.append(c.getString(colGivenNames));
+					authorText.append(" ");
+					authorText.append(c.getString(colFamilyName));
+					authorText.append(";");					
+				}
+			} finally {
+				c.close();
+			}
+
+			// Set the parameters and call
+			bindStringOrNull(stmt, 1, authorText.toString());
+			bindStringOrNull(stmt, 2, book.getTitle());
+			bindStringOrNull(stmt, 3, book.getDescription());
+			bindStringOrNull(stmt, 4, book.getNotes());
+			bindStringOrNull(stmt, 5, book.getPublisher());
+			bindStringOrNull(stmt, 6, book.getGenre());
+			bindStringOrNull(stmt, 7, book.getLocation());
+			bindStringOrNull(stmt, 8, book.getIsbn());
+			stmt.bindLong(9, book.getId());
+
+			stmt.execute();
+		}
+	}
+	
+	/**
+	 * Insert a book into the FTS. Assumes book does not already exist in FTS.
+	 * 
+	 * @param bookId
+	 */
+	private SynchronizedStatement mInsertFtsStmt = null;
+	public void insertFts(long bookId) {
+		//long t0 = System.currentTimeMillis();
+		
+		if (mInsertFtsStmt == null) {
+			// Build the FTS insert statement base. The parameter order MUST match the order expected in ftsSendBooks().
+			String sql = TBL_BOOKS_FTS.getInsert(DOM_AUTHOR_NAME, DOM_TITLE, DOM_DESCRIPTION, DOM_NOTES, 
+												DOM_PUBLISHER, DOM_GENRE, DOM_LOCATION, DOM_ISBN, DOM_DOCID)
+												+ " Values (?,?,?,?,?,?,?,?,?)";
+			mInsertFtsStmt = mStatements.add("mInsertFtsStmt", sql);
+		}
+
+		BooksCursor books = null;
+
+		// Start an update TX
+		SyncLock l = null;
+		if (!mDb.inTransaction())
+			l = mDb.beginTransaction(true);
+		try {
+			// Compile statement and get books cursor
+			books = fetchBooks("select * from " + TBL_BOOKS + " where " + DOM_ID + " = " + bookId, EMPTY_STRING_ARRAY);
+			// Send the book
+			ftsSendBooks(books, mInsertFtsStmt);
+			if (l != null)
+				mDb.setTransactionSuccessful();
+		} finally {
+			// Cleanup
+			if (books != null)
+				try { books.close(); } catch (Exception e) {};
+			if (l != null)
+				mDb.endTransaction(l);
+			//long t1 = System.currentTimeMillis();
+			//System.out.println("Inserted FTS in " + (t1-t0) + "ms");
+		}
+	}
+	
+	/**
+	 * Update an existing FTS record.
+	 * 
+	 * @param bookId
+	 */
+	private SynchronizedStatement mUpdateFtsStmt = null;
+	public void updateFts(long bookId) {
+		//long t0 = System.currentTimeMillis();
+
+		if (mUpdateFtsStmt == null) {
+			// Build the FTS update statement base. The parameter order MUST match the order expected in ftsSendBooks().
+			String sql = TBL_BOOKS_FTS.getUpdate(DOM_AUTHOR_NAME, DOM_TITLE, DOM_DESCRIPTION, DOM_NOTES, 
+												DOM_PUBLISHER, DOM_GENRE, DOM_LOCATION, DOM_ISBN)
+												+ " Where " + DOM_DOCID + " = ?";
+			mUpdateFtsStmt = mStatements.add("mUpdateFtsStmt", sql);
+		}
+		BooksCursor books = null;
+
+		SyncLock l = null;
+		if (!mDb.inTransaction())
+			l = mDb.beginTransaction(true);
+		try {
+			// Compile statement and get cursor
+			books = fetchBooks("select * from " + TBL_BOOKS + " where " + DOM_ID + " = " + bookId, EMPTY_STRING_ARRAY);
+			ftsSendBooks(books, mUpdateFtsStmt);
+			if (l != null)
+				mDb.setTransactionSuccessful();
+		} finally {
+			// Cleanup
+			if (books != null)
+				try { books.close(); } catch (Exception e) {};
+			if (l != null)
+				mDb.endTransaction(l);
+			//long t1 = System.currentTimeMillis();
+			//System.out.println("Updated FTS in " + (t1-t0) + "ms");
+		}
+	}
+
+	/**
+	 * Delete an existing FTS record
+	 * 
+	 * @param bookId
+	 */
+	private SynchronizedStatement mDeleteFtsStmt = null;
+	public void deleteFts(long bookId) {
+		//long t0 = System.currentTimeMillis();
+		if (mDeleteFtsStmt == null) {
+			String sql = "Delete from " + TBL_BOOKS_FTS + " Where " + DOM_DOCID + " = ?";
+			mDeleteFtsStmt = mStatements.add("mDeleteFtsStmt", sql);
+		}
+		mDeleteFtsStmt.bindLong(1, bookId);
+		mDeleteFtsStmt.execute();
+		//long t1 = System.currentTimeMillis();
+		//System.out.println("Deleted from FTS in " + (t1-t0) + "ms");
+	}
+	
+	/**
+	 * Rebuild the entire FTS database. This can take several seconds with many books or a slow phone.
+	 * 
+	 */
+	public void rebuildFts() {
+		long t0 = System.currentTimeMillis();
+		boolean gotError = false;
+
+		// Make a copy of the FTS table definition for our temp table.
+		TableDefinition ftsTemp = TBL_BOOKS_FTS.clone();
+		// Give it a new name
+		ftsTemp.setName(ftsTemp.getName() + "_temp");
+
+		SynchronizedStatement insert = null;
+		BooksCursor c = null;
+
+		SyncLock l = null;
+		if (!mDb.inTransaction())
+			l = mDb.beginTransaction(true);
+		try {
+			// Drop and recreate our temp copy
+			ftsTemp.drop(mDb);
+			ftsTemp.create(mDb, false);
+
+			// Build the FTS update statement base. The parameter order MUST match the order expected in ftsSendBooks().
+			final String sql = ftsTemp.getInsert(DOM_AUTHOR_NAME, DOM_TITLE, DOM_DESCRIPTION, DOM_NOTES, DOM_PUBLISHER, DOM_GENRE, DOM_LOCATION, DOM_ISBN, DOM_DOCID)
+							+ " values (?,?,?,?,?,?,?,?,?)";
+
+			// Compile an INSERT statement
+			insert = mDb.compileStatement(sql);
+
+			// Get ALL books in the DB
+			c = fetchBooks("select * from " + TBL_BOOKS, EMPTY_STRING_ARRAY);
+			// Send each book
+			ftsSendBooks(c, insert);
+			// Drop old table, ready for rename
+			TBL_BOOKS_FTS.drop(mDb);
+			// Done
+			if (l != null)
+				mDb.setTransactionSuccessful();
+		} catch (Exception e) {
+			Logger.logError(e);
+			gotError = true;
+		} finally {
+			// Cleanup
+			if (c != null) 
+				try { c.close(); } catch (Exception e) {};
+			if (insert != null) 
+				try { insert.close(); } catch (Exception e) {};
+			if (l != null)
+				mDb.endTransaction(l);
+
+			// According to this:
+			//
+			//    http://old.nabble.com/Bug-in-FTS3-when-trying-to-rename-table-within-a-transaction-td29474500.html
+			//
+			// FTS tables should only be renamed outside of transactions. Which is a pain.
+			//
+			// Delete old table and rename the new table
+			//
+			if (!gotError)
+				mDb.execSQL("Alter Table " + ftsTemp + " rename to " + TBL_BOOKS_FTS);
+		}
+
+		long t1 = System.currentTimeMillis();
+		System.out.println("books reindexed in " + (t1-t0) + "ms");
+	}
+
+	/**
+	 * Utility function to bind a string or NULL value to a parameter since binding a NULL
+	 * in bindString produces an error.
+	 * 
+	 * @param stmt
+	 * @param position
+	 * @param s
+	 */
+	private void bindStringOrNull(SynchronizedStatement stmt, int position, String s) {
+		if (s == null) {
+			stmt.bindNull(position);
+		} else {
+			stmt.bindString(position, s);
+		}
+	}
+
+	/**
+	 * Cleanup a search string to remove all quotes etc.
+	 * 
+	 * TODO: Consider adding a '*' to the end of all words. Or make it an option.
+	 * 
+	 * @param s		Search criteria to clean
+	 * @return		Clean string
+	 */
+	private String cleanupFtsCriterion(String s) {
+		return s.replace("'", " ").replace("\"", " ").trim();
+	}
+
+	/**
+	 * Search the FTS table and return a cursor.
+	 * 
+	 * ENHANCE: Integrate with existing search code, if we keep it.
+	 * 
+	 * @param author		Author-related keywords to find
+	 * @param title			Title-related keywords to find
+	 * @param anywhere		Keywords to find anywhere in book
+	 * @return
+	 */
+	public Cursor searchFts(String author, String title, String anywhere) {
+		author = cleanupFtsCriterion(author);
+		title = cleanupFtsCriterion(title);
+		anywhere = cleanupFtsCriterion(anywhere);
+
+		if ( (author.length() + title.length() + anywhere.length()) == 0)
+			return null;
+
+		String[] authorWords = author.split(" ");
+		String[] titleWords = title.split(" ");
+
+		String sql = "select " + DOM_DOCID + " from " + TBL_BOOKS_FTS + " where " + TBL_BOOKS_FTS + " match '" + anywhere;
+		for(String w : authorWords) {
+			if (!w.equals(""))
+				sql += " " + DOM_AUTHOR_NAME + ":" + w;
+		}
+		for(String w : titleWords) {
+			if (!w.equals(""))
+				sql += " " + DOM_TITLE + ":" + w;
+		}
+		sql += "'";
+
+		return mDb.rawQuery(sql, EMPTY_STRING_ARRAY);
+	}
+	
+	/**
+	 * Get the local database.
+	 * DO NOT CALL THIS UNLESS YOU REALLY NEED TO. DATABASE ACCESS SHOULD GO THROUGH THIS CLASS.
+	 * 
+	 * @return	Database connection
+	 */
+	public SynchronizedDb getDb() {
+		if (mDb == null || !mDb.isOpen())
+			this.open();
+		return mDb;
+	}
+
+	/**
+	 * Get the synchronizer object for this database in case there is some other activity that needs to
+	 * be synced.
+	 * 
+	 * Note: Cursor requery() is the only thing found so far.
+	 * 
+	 * @return
+	 */
+	public static Synchronizer getSynchronizer() {
+		return mSynchronizer;
 	}
 }

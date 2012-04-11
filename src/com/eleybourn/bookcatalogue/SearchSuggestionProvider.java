@@ -19,13 +19,17 @@ public class SearchSuggestionProvider extends SearchRecentSuggestionsProvider {
 		setupSuggestions(AUTHORITY, MODE);
 	}
 	
+	CatalogueDBAdapter mDbHelper = null;
+	
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
 		if (selectionArgs[0].equals("")) {
 			return null;
 		}
-		CatalogueDBAdapter mDbHelper = new CatalogueDBAdapter(getContext());
-		mDbHelper.open();
+		if (mDbHelper == null) {
+			mDbHelper = new CatalogueDBAdapter(getContext());
+			mDbHelper.open();
+		}
 		Cursor mCursor = mDbHelper.fetchSearchSuggestions(selectionArgs[0]);
 		return mCursor;
 	}

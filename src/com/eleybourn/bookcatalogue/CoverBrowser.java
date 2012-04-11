@@ -45,11 +45,15 @@ import android.widget.ViewSwitcher.ViewFactory;
 
 import com.eleybourn.bookcatalogue.LibraryThingManager.ImageSizes;
 import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTask;
+import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTaskContext;
 
 /**
  * Class to display and manage a cover image browser in a dialog.
  *
- * @author Grunthos
+ * ENHANCE: For each ISBN returned by LT, add TWO images and get the second from GoodReads
+ * ENHANCE: (Somehow) remove non-existent images from ImageSelector. Probably start with 1 image and GROW it.
+ * 
+ * @author Philip Warner
  */
 public class CoverBrowser {
 	// used in setting images sizes
@@ -74,11 +78,13 @@ public class CoverBrowser {
 	private Dialog mDialog = null;
 	// Adapted to queue/display images
 	private CoverImageAdapter mAdapter = null;
+	/** Indicates a 'shutdown()' has been requested */
+	private boolean mShutdown = false;
 
 	/**
 	 * Interface called when image is selected.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	public interface OnImageSelectedListener {
 		void onImageSelected(String fileSpec);
@@ -117,6 +123,8 @@ public class CoverBrowser {
 	 * Close down everything
 	 */
 	private void shutdown() {
+		mShutdown = true;
+
 		if (mDialog != null) {
 			// Dismiss will call shutdown();
 			mDialog.dismiss();
@@ -134,7 +142,7 @@ public class CoverBrowser {
 	/**
 	 * SimpleTask to fetch a thumbnail image and apply it to an ImageView
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	private class GetEditionsTask implements SimpleTask {
 		String isbn;
@@ -150,9 +158,9 @@ public class CoverBrowser {
 		}
 
 		@Override
-		public void run() {
+		public void run(SimpleTaskContext taskContext) {
 			// Get some editions
-			// TODO: the list of editions should be expanded to somehow include Amazon and Google. As well
+			// ENHANCE: the list of editions should be expanded to somehow include Amazon and Google. As well
 			// as the alternate user-contributed images from LibraryThing. The latter are often the best 
 			// source but at present could only be obtained by HTML scraping.
 			try {
@@ -162,7 +170,7 @@ public class CoverBrowser {
 			}
 		}
 		@Override
-		public void finished() {
+		public void onFinish() {
 			if (mEditions.size() == 0) {
 				Toast.makeText(mContext, R.string.no_editions, Toast.LENGTH_LONG).show();
 				shutdown();
@@ -170,12 +178,20 @@ public class CoverBrowser {
 			}
 			showDialogDetails();
 		}
+
+		/**
+		 * Always want the finished() method to be called.
+		 */
+		@Override
+		public boolean requiresOnFinish() {
+			return true;
+		}
 	}
 
 	/**
 	 * SimpleTask to fetch a thumbnail image and apply it to an ImageView
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	@SuppressWarnings("unused")
 	private class GetThumbnailTask implements SimpleTask {
@@ -197,7 +213,7 @@ public class CoverBrowser {
 		}
 
 		@Override
-		public void run() {
+		public void run(SimpleTaskContext taskContext) {
 			// Start the download
 			fileSpec = mFileManager.download(isbn, ImageSizes.SMALL);
 			File file = new File(fileSpec);
@@ -206,20 +222,25 @@ public class CoverBrowser {
 			}
 		}
 		@Override
-		public void finished() {
+		public void onFinish() {
 			// Load the file and apply to view
 			File file = new File(fileSpec);
 			file.deleteOnExit();
 			//CoverImageAdapter cia = (CoverImageAdapter) gallery.getAdapter();
 			//cia.notifyDataSetChanged();
-			Utils.fetchFileIntoImageView(file, v, mPreviewSize, mPreviewSize, true);
+			Utils.fetchFileIntoImageView(file, v, mPreviewSize, mPreviewSize, true );
+		}
+
+		@Override
+		public boolean requiresOnFinish() {
+			return true;
 		}
 	}
 
 	/**
 	 * SimpleTask to download an image and apply it to the ImageSwitcher.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	@SuppressWarnings("unused")
 	private class GetFullImageTask implements SimpleTask {
@@ -245,7 +266,11 @@ public class CoverBrowser {
 			isbn = mEditions.get(position);
 		}
 		@Override
-		public void run() {
+		public void run(SimpleTaskContext taskContext) {
+			// If we are shutdown, just return
+			if (mShutdown)
+				return;
+
 			// Download the file
 			fileSpec = mFileManager.download(isbn, ImageSizes.LARGE);
 			File file = new File(fileSpec);
@@ -254,14 +279,14 @@ public class CoverBrowser {
 			}
 		}
 		@Override
-		public void finished() {
+		public void onFinish() {
 			// Update the ImageSwitcher
 			File file = new File(fileSpec);
 			TextView msgVw = (TextView)mDialog.findViewById(R.id.switcherStatus);
 			if (file.exists() && file.length() > 100) {
-				Drawable d = new BitmapDrawable(Utils.fetchFileIntoImageView(file, null, mPreviewSize*4, mPreviewSize*4, true));
+				Drawable d = new BitmapDrawable(Utils.fetchFileIntoImageView(file, null, mPreviewSize*4, mPreviewSize*4, true ));
 				switcher.setImageDrawable(d);
-				switcher.setTag(file.getAbsolutePath());    			
+				ViewTagger.setTag(switcher, file.getAbsolutePath());    			
 				msgVw.setVisibility(View.GONE);
 				switcher.setVisibility(View.VISIBLE);
 			} else {
@@ -269,6 +294,10 @@ public class CoverBrowser {
 				switcher.setVisibility(View.GONE);
 				msgVw.setText(R.string.image_not_found);
 			}
+		}
+		@Override
+		public boolean requiresOnFinish() {
+			return !mShutdown;
 		}
 	}
 
@@ -291,10 +320,10 @@ public class CoverBrowser {
 
 		// Setup the background fetcher
 		if (mImageFetcher == null)
-			mImageFetcher = new SimpleTaskQueue();
+			mImageFetcher = new SimpleTaskQueue("cover-browser");
 
 		SimpleTask edTask = new GetEditionsTask(mIsbn);
-		mImageFetcher.request(edTask);
+		mImageFetcher.enqueue(edTask);
 
 		// Setup the basic dialog
 		mDialog = new Dialog(mContext);
@@ -343,7 +372,7 @@ public class CoverBrowser {
         		msgVw.setVisibility(View.VISIBLE);
 
 	    		GetFullImageTask task = new GetFullImageTask(position, switcher);
-	        	mImageFetcher.request(task);
+	        	mImageFetcher.enqueue(task);
 	        }
 	    });
 
@@ -358,7 +387,7 @@ public class CoverBrowser {
 		switcher.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Object newSpec = switcher.getTag();
+				Object newSpec = ViewTagger.getTag(switcher);
 				if (newSpec != null) {
 					if (mOnImageSelectedListener != null)
 						mOnImageSelectedListener.onImageSelected((String)newSpec);
@@ -386,7 +415,7 @@ public class CoverBrowser {
 	/**
 	 * Simple utility class to (try) to cleanup and prevent files from accumulating.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	private class FileManager {
 		private Bundle mFiles = new Bundle();
@@ -477,7 +506,7 @@ public class CoverBrowser {
 	/**
 	 * ImageAdapter for gallery. Queues image requests.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	public class CoverImageAdapter extends BaseAdapter {
 		private int mGalleryItemBackground;
@@ -511,7 +540,11 @@ public class CoverBrowser {
 				i = new ImageView(mContext);
 			else 
 				i = (ImageView)convertView;
-			
+
+			// If we are shutdown, just return a view
+			if (mShutdown)
+				return i;
+
 			// Initialize the view
 			i.setScaleType(ImageView.ScaleType.FIT_XY);
 			//i.setAdjustViewBounds(true);
@@ -529,11 +562,11 @@ public class CoverBrowser {
 			if (f == null) {
 				// Not present; request it and use a placeholder.
 				GetThumbnailTask task = new GetThumbnailTask(position, i);
-				mImageFetcher.request(task);
+				mImageFetcher.enqueue(task);
 				i.setImageResource(android.R.drawable.ic_menu_help);
 			} else {
 				// Present, so use it.
-				Utils.fetchFileIntoImageView(f, i, mPreviewSize, mPreviewSize, true);
+				Utils.fetchFileIntoImageView(f, i, mPreviewSize, mPreviewSize, true );
 			}
 			
 			return i;

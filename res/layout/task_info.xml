@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+	android:gravity="top" 
+    android:orientation="horizontal" >
+
+	<LinearLayout
+	    android:id="@+id/left_panel"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:gravity="top"
+	    android:orientation="vertical" >
+
+	    <CheckBox
+	        android:id="@+id/checked"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:focusable="false"
+	        android:visibility="gone"
+	        android:text="" />
+	
+	</LinearLayout>
+   	<LinearLayout	 android:id="@+id/details" 
+		android:gravity="top" 
+		android:orientation="vertical"
+		android:layout_weight="2"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" 
+		>
+
+    	<TextView android:id="@+id/description" 
+	  		android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:layout_weight="2"
+			android:textStyle="bold"
+			android:hint="Export all books to GoodReads"
+		    android:textAppearance="?android:attr/textAppearanceMedium"
+	  		 />
+
+    	<TextView android:id="@+id/state" 
+	  		android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:hint="Running (17 events recorded)"
+			android:layout_weight="2"
+		    android:textAppearance="?android:attr/textAppearanceMedium"
+	  		/>
+	
+		<LinearLayout
+		    android:id="@+id/left_panel"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:gravity="top"
+		    android:orientation="horizontal" >
+	
+
+			<TextView android:id="@+id/retry_info" 
+				android:hint="Retry 0 of 17, next at July 20, 2012 17:45:32 GMT"
+		  		android:layout_width="fill_parent" 
+				android:layout_height="wrap_content" 
+				android:layout_weight="2"
+				android:textColor="#ffff30"
+				android:textStyle="bold"
+		  		android:textAppearance="?android:attr/textAppearanceSmall" />
+		    		
+			<Button
+			    android:id="@+id/retry"
+				android:focusable="false"
+			    style="?android:attr/buttonStyleSmall"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:text="@+string/retry"
+			    />
+			
+		</LinearLayout>
+
+		<TextView android:id="@+id/error" 
+			android:hint="Last error: foo bar, not sure what really happened"
+	  		android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:layout_weight="2"
+			android:textColor="#ffff30"
+			android:textStyle="bold"
+	  		android:textAppearance="?android:attr/textAppearanceSmall" />
+
+		<LinearLayout
+		    android:id="@+id/boring_stuff"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:gravity="top"
+		    android:orientation="horizontal" >
+
+		    <TextView android:id="@+id/job_info" 
+				android:text="Job ID 123, Queued at 20 Jul 2012 17:50:23 GMT"
+		  		android:layout_width="fill_parent" 
+				android:layout_height="wrap_content" 
+				android:layout_weight="2"
+		  		android:textAppearance="?android:attr/textAppearanceSmall" />    
+		    		    	    	
+	   	</LinearLayout>
+
+
+	</LinearLayout>
+
+	<LinearLayout
+	    android:id="@+id/right_panel"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:gravity="top"
+	    android:orientation="vertical" >
+
+
+	</LinearLayout>
+</LinearLayout>

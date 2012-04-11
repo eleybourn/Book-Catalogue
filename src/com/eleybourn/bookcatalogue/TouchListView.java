@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2010 CommonsWare, LLC
+ * Copyright (c) 2012 Philip Warner
+ * Portions Copyright (c) 2010 CommonsWare, LLC
  * Portions Copyright (C) 2008 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -61,6 +62,9 @@ public class TouchListView extends ListView {
 	private int mItemHeightExpanded=-1;
 	private int grabberId=-1;
 	private int dragndropBackgroundColor=0x00000000; 
+	private boolean mWasFirstExpansion = false;	// Set to true at start of a new drag operation
+
+	private Integer mSavedHeight = null;
 
 	public TouchListView(Context context, AttributeSet attrs) {
 		this(context, attrs, 0);
@@ -85,6 +89,30 @@ public class TouchListView extends ListView {
 			
 			a.recycle();
 		}
+  }
+	
+	@Override
+	final public void addHeaderView (View v, Object data, boolean isSelectable) {
+		throw new RuntimeException("Headers are not supported with TouchListView");
+	}
+	
+	@Override
+	final public void addHeaderView (View v) {
+		throw new RuntimeException("Headers are not supported with TouchListView");
+	}
+  
+  @Override
+  final public void addFooterView (View v, Object data, boolean isSelectable) {
+    if (mRemoveMode == SLIDE_LEFT || mRemoveMode == SLIDE_RIGHT) {
+      throw new RuntimeException("Footers are not supported with TouchListView in conjunction with remove_mode");
+    }
+  }
+  
+  @Override
+  final public void addFooterView (View v) {
+    if (mRemoveMode == SLIDE_LEFT || mRemoveMode == SLIDE_RIGHT) {
+      throw new RuntimeException("Footers are not supported with TouchListView in conjunction with remove_mode");
+    }
   }
     
 	@Override
@@ -123,37 +151,54 @@ public class TouchListView extends ListView {
 									if (itemnum == AdapterView.INVALID_POSITION) {
 											break;
 									}
-									ViewGroup item = (ViewGroup) getChildAt(itemnum - getFirstVisiblePosition());
-									mDragPoint = y - item.getTop();
-									mCoordOffset = ((int)ev.getRawY()) - y;
-									View dragger = item.findViewById(grabberId);
-									Rect r = mTempRect;
-//									dragger.getDrawingRect(r);
 									
-									r.left=dragger.getLeft();
-									r.right=dragger.getRight();
-									r.top=dragger.getTop();
-									r.bottom=dragger.getBottom();									
+									View item = (View) getChildAt(itemnum - getFirstVisiblePosition());
 									
-									if ((r.left<x) && (x<r.right)) {
-											item.setDrawingCacheEnabled(true);
-											// Create a copy of the drawing cache so that it does not get recycled
-											// by the framework when the list tries to clean up memory
-											Bitmap bitmap = Bitmap.createBitmap(item.getDrawingCache());
-											startDragging(bitmap, y);
-											mDragPos = itemnum;
-											mFirstDragPos = mDragPos;
-											mHeight = getHeight();
-											int touchSlop = mTouchSlop;
-											mUpperBound = Math.min(y - touchSlop, mHeight / 3);
-											mLowerBound = Math.max(y + touchSlop, mHeight * 2 /3);
-											return false;
+									if (isDraggableRow(item)) {
+										mDragPoint = y - item.getTop();
+										mCoordOffset = ((int)ev.getRawY()) - y;
+										View dragger = item.findViewById(grabberId);
+										Rect r = mTempRect;
+//										dragger.getDrawingRect(r);
+									
+										r.left=dragger.getLeft();
+										r.right=dragger.getRight();
+										r.top=dragger.getTop();
+										r.bottom=dragger.getBottom();									
+										
+										if ((r.left<x) && (x<r.right)) {
+												item.setDrawingCacheEnabled(true);
+												// Create a copy of the drawing cache so that it does not get recycled
+												// by the framework when the list tries to clean up memory
+												Bitmap bitmap = Bitmap.createBitmap(item.getDrawingCache());
+												item.setDrawingCacheEnabled(false);
+												
+												Rect listBounds=new Rect();
+												
+												getGlobalVisibleRect(listBounds, null);
+												
+												startDragging(bitmap, listBounds.left, y);
+												mDragPos = itemnum;
+												mFirstDragPos = mDragPos;
+												mWasFirstExpansion = true;
+												mHeight = getHeight();
+												int touchSlop = mTouchSlop;
+												mUpperBound = Math.min(y - touchSlop, mHeight / 3);
+												mLowerBound = Math.max(y + touchSlop, mHeight * 2 /3);
+												return false;
+										}
+										
+										mDragView = null;
 									}
-									mDragView = null;
+									
 									break;
 					}
 			}
 			return super.onInterceptTouchEvent(ev);
+	}
+	
+	protected boolean isDraggableRow(View view) {
+    return(view.findViewById(grabberId)!=null);
 	}
 	
 	/*
@@ -174,7 +219,7 @@ public class TouchListView extends ListView {
 	}
 	
 	private int getItemForPosition(int y) {
-			int adjustedy = y - mDragPoint - 32;
+			int adjustedy = y - mDragPoint - (mItemHeightNormal/2);
 			int pos = myPointToPosition(0, adjustedy);
 			if (pos >= 0) {
 					if (pos <= mFirstDragPos) {
@@ -199,6 +244,7 @@ public class TouchListView extends ListView {
 	 * Restore size and visibility for all listitems
 	 */
 	private void unExpandViews(boolean deletion) {
+		//if(true) return;
 			for (int i = 0;; i++) {
 					View v = getChildAt(i);
 					if (v == null) {
@@ -216,10 +262,19 @@ public class TouchListView extends ListView {
 									break;
 							}
 					}
-					ViewGroup.LayoutParams params = v.getLayoutParams();
-					params.height = mItemHeightNormal;
-					v.setLayoutParams(params);
-					v.setVisibility(View.VISIBLE);
+					
+					if (isDraggableRow(v)) {
+						ViewGroup.LayoutParams params = v.getLayoutParams();
+						if (mSavedHeight != null)
+							params.height = mSavedHeight;
+						else
+							params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+						//params.height = mItemHeightNormal;
+						v.setLayoutParams(params);
+						v.setVisibility(View.VISIBLE);
+						//v.setBackgroundColor(0x00000000);
+						v.setPadding(v.getPaddingLeft(),0,v.getPaddingRight(),0);
+					}
 			}
 	}
 	
@@ -235,40 +290,81 @@ public class TouchListView extends ListView {
 	 * If the dragged item is not on screen, only expand the item
 	 * below the current insertpoint.
 	 */
-	private void doExpansion() {
-			int childnum = mDragPos - getFirstVisiblePosition();
+	private void doExpansion(boolean firstTime) {
+
+			// Find the effective child number that we are hovering over
+			int childnum = mDragPos - getFirstVisiblePosition() - 1;
 			if (mDragPos > mFirstDragPos) {
+					// If the current drag position is past the 'invisible' dragged position, add 1
 					childnum++;
 			}
 
+			// Get the view that corresponds to the row being dragged, if present in current set of rows
 			View first = getChildAt(mFirstDragPos - getFirstVisiblePosition());
 
+			// Loop through all visible views, adjusting them
 			for (int i = 0;; i++) {
+					// Get next child, break if finished
 					View vv = getChildAt(i);
 					if (vv == null) {
 							break;
 					}
-					int height = mItemHeightNormal;
-					int visibility = View.VISIBLE;
-					if (vv.equals(first)) {
-							// processing the item that is being dragged
-							if (mDragPos == mFirstDragPos) {
-									// hovering over the original location
-									visibility = View.INVISIBLE;
+					
+					// If this is a 'dragable' row, process it
+					if (isDraggableRow(vv)) {
+						// Set the default padding at top/bot (we may have previously changed it)
+						vv.setPadding(vv.getPaddingLeft(),0,vv.getPaddingRight(),0);
+
+						// Get the height of the current view, and save it if not saved already
+						ViewGroup.LayoutParams params = vv.getLayoutParams();
+						if (mSavedHeight == null) {
+							// Save the hight the first time we get it. We make the assumption that
+							// all rows will be the same height, whether that is a fixed value
+							// or 'wrap-contents'/'fill-parent'.
+							mSavedHeight = params.height;
+						}
+						// Set the height to the previously saved height.
+						params.height = mSavedHeight;
+						
+						int visibility = View.VISIBLE;
+
+						// If this view is the actual row we are dragging...then shrink it...except
+						if (vv.equals(first)) {
+							// ...if we are here the first time. The first time in, the user is hovering on 
+							// the row, so we just make it invisible.
+							if (!firstTime) {
+								// processing the item that is being dragged
+								params.height = 1;
+								//visibility = View.INVISIBLE;
 							} else {
-									// not hovering over it
-									height = 1;
+								visibility = View.INVISIBLE;								
 							}
-					} else if (i == childnum) {
-							if (mDragPos < getCount() - 1) {
-									height = mItemHeightExpanded;
+						}
+
+						// If the drag position is above the top of the list then pad the top item
+						if (childnum < 0) {
+							// If the current view is the first item OR second item and we are dragging first 
+							// then pad its top.
+							if (i == 0 || (i == 1 && mFirstDragPos == 0)) {
+								// Position prior to first item; so pad top
+								vv.setPadding(vv.getPaddingLeft(), mDragView.getHeight(), vv.getPaddingRight(), 0);
+							} else {
+								// No other rows need special handling
 							}
+						} else if (i == childnum) {
+							// The user is hovering over the current row, so pad the bottom
+							vv.setPadding(vv.getPaddingLeft(), 0, vv.getPaddingRight(), mDragView.getHeight());
+						}
+						// Now apply the height and visibility to the current view, invalidate it, and loop.
+						vv.setLayoutParams(params);
+						vv.setVisibility(visibility);
+						vv.invalidate();
 					}
-					ViewGroup.LayoutParams params = vv.getLayoutParams();
-					params.height = height;
-					vv.setLayoutParams(params);
-					vv.setVisibility(visibility);
 			}
+			// Request re-layout since we changed the items layout
+			// and not doing this would cause bogus hitbox calculation
+			// in myPointToPosition
+			layoutChildren();
 	}
 	
 	@Override
@@ -310,12 +406,15 @@ public class TouchListView extends ListView {
 									dragView(x, y);
 									int itemnum = getItemForPosition(y);
 									if (itemnum >= 0) {
-											if (action == MotionEvent.ACTION_DOWN || itemnum != mDragPos) {
+											if (action == MotionEvent.ACTION_DOWN || itemnum != mDragPos ) {
 													if (mDragListener != null) {
 															mDragListener.drag(mDragPos, itemnum);
 													}
 													mDragPos = itemnum;
-													doExpansion();
+													doExpansion(mWasFirstExpansion);
+													if (mWasFirstExpansion) {
+														mWasFirstExpansion = false;
+													}
 											}
 											int speed = 0;
 											adjustScrollBounds(y);
@@ -346,12 +445,12 @@ public class TouchListView extends ListView {
 			return super.onTouchEvent(ev);
 	}
 	
-	private void startDragging(Bitmap bm, int y) {
+	private void startDragging(Bitmap bm, int x, int y) {
 			stopDragging();
 
 			mWindowParams = new WindowManager.LayoutParams();
-			mWindowParams.gravity = Gravity.TOP;
-			mWindowParams.x = 0;
+			mWindowParams.gravity = Gravity.TOP|Gravity.LEFT;
+			mWindowParams.x = x;
 			mWindowParams.y = y - mDragPoint + mCoordOffset;
 
 			mWindowParams.height = WindowManager.LayoutParams.WRAP_CONTENT;

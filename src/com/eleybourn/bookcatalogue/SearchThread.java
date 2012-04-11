@@ -20,6 +20,10 @@
 
 package com.eleybourn.bookcatalogue;
 
+import java.util.ArrayList;
+
+import com.eleybourn.bookcatalogue.Series.SeriesDetails;
+
 import android.os.Bundle;
 import android.os.Message;
 
@@ -54,11 +58,13 @@ abstract public class SearchThread extends ManagedTask {
 		//mBookData.putString(CatalogueDBAdapter.KEY_ISBN, mIsbn);
 	}
 
+	public abstract int getSearchId();
+
 	/**
 	 * Task handler for thread management; caller MUST implement this to get
 	 * search results.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	public interface SearchTaskHandler extends ManagedTask.TaskHandler {
 		void onSearchThreadFinish(SearchThread t, Bundle bookData, boolean cancelled);
@@ -80,23 +86,6 @@ abstract public class SearchThread extends ManagedTask {
 	}
 
 	/**
-	 * Try to extract a series from a book title.
-	 * TODO: Consider removing findSeries if LibraryThing proves reliable.
-	 * 
-	 * @param 	title	Book title to parse
-	 * @return
-	 */
-	public String findSeries(String title) {
-		String series = "";
-		int last = title.lastIndexOf("(");
-		int close = title.lastIndexOf(")");
-		if (last > -1 && close > -1 && last < close) {
-			series = title.substring((last+1), close);
-		}
-		return series;
-	}
-
-	/**
 	 * Look in the data for a title, if present try to get a series name from it.
 	 * In any case, clear the title (and save if none saved already) so that the 
 	 * next lookup will overwrite with a possibly new title.
@@ -105,10 +94,19 @@ abstract public class SearchThread extends ManagedTask {
 		try {
 			if (mBookData.containsKey(CatalogueDBAdapter.KEY_TITLE)) {
 				String thisTitle = mBookData.getString(CatalogueDBAdapter.KEY_TITLE);
-				String tmpSeries = findSeries(thisTitle);
-				if (tmpSeries != null && tmpSeries.length() > 0)
-					Utils.appendOrAdd(mBookData, CatalogueDBAdapter.KEY_SERIES_DETAILS, tmpSeries);				
-			}							
+				SeriesDetails details = Series.findSeries(thisTitle);
+				if (details != null && details.name.length() > 0) {
+					ArrayList<Series> sl;
+					if (mBookData.containsKey(CatalogueDBAdapter.KEY_SERIES_DETAILS)) {
+						sl = Utils.getSeriesUtils().decodeList(mBookData.getString(CatalogueDBAdapter.KEY_SERIES_DETAILS), '|', false);
+					} else {
+						sl = new ArrayList<Series>();
+					}
+					sl.add(new Series(details.name, details.position));
+					mBookData.putString(CatalogueDBAdapter.KEY_SERIES_DETAILS, Utils.getSeriesUtils().encodeList(sl, '|'));
+					mBookData.putString(CatalogueDBAdapter.KEY_TITLE, thisTitle.substring(0, details.startChar-1));
+				}
+			}
 		} catch (Exception e) {
 			Logger.logError(e);
 		};		

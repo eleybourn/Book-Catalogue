@@ -43,7 +43,7 @@ import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
  *  - ManagedTask -- Background task that is managed by TaskManager and uses TaskManager to 
  *    do all display activities.
  *    
- * @author Grunthos
+ * @author Philip Warner
  */
 abstract public class ActivityWithTasks extends Activity {
 	protected TaskManager mTaskManager = null;

@@ -20,6 +20,7 @@
 
 package com.eleybourn.bookcatalogue;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import android.os.Parcel;
@@ -28,9 +29,10 @@ import android.os.Parcelable;
 /**
  * Class to hold author data. Used in lists and import/export.
  * 
- * @author Grunthos
+ * @author Philip Warner
  */
-public class Author implements Parcelable, Utils.ItemWithIdFixup {
+public class Author implements Serializable, Utils.ItemWithIdFixup {
+	private static final long serialVersionUID = 4597779234440821872L;
 
 	public String 	familyName;
 	public String 	givenNames;
@@ -41,7 +43,7 @@ public class Author implements Parcelable, Utils.ItemWithIdFixup {
 	 * 
 	 * @param name
 	 */
-	Author(String name) {
+	public Author(String name) {
 		id = 0;
 		fromString(name);
 	}
@@ -153,18 +155,6 @@ public class Author implements Parcelable, Utils.ItemWithIdFixup {
     	givenNames = in.readString();
     	id = in.readLong();
     }
-
-    @Override
-	public int describeContents() {
-		return 0;
-	}
-
-	@Override
-	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeString(familyName);
-		dest.writeString(givenNames);
-		dest.writeLong(id);
-	}
 
 	@Override
 	public long fixupId(CatalogueDBAdapter db) {

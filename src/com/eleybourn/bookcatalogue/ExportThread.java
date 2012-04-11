@@ -15,15 +15,18 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Message;
 import android.widget.Toast;
+import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 
 /**
  * Class to handle export in a separate thread.
  * 
- * @author Grunthos
+ * @author Philip Warner
  */
 public class ExportThread extends ManagedTask {
-	private static String mFilePath = Utils.EXTERNAL_FILE_PATH;
-	private static String mFileName = mFilePath + "/export.csv";
+	// Changed the paths to non-static variable because if this code is called 
+	// while a phone sync is in progress, they will not be set correctly
+	private String mFilePath = StorageUtils.getSharedStorage().getAbsolutePath();
+	private String mFileName = mFilePath + "/export.csv";
 	private static String UTF8 = "utf8";
 	private static int BUFFER_SIZE = 8192;
 	private CatalogueDBAdapter mDbHelper;
@@ -59,7 +62,7 @@ public class ExportThread extends ManagedTask {
 				ArrayList<Uri> uris = new ArrayList<Uri>();
 				// Find all files of interest to send
 				try {
-					File fileIn = new File(Utils.EXTERNAL_FILE_PATH + "/" + "export.csv");
+					File fileIn = new File(StorageUtils.getSharedStoragePath() + "/" + "export.csv");
 					Uri u = Uri.fromFile(fileIn);
 					uris.add(u);
 					// Send it, if there are any files to send.
@@ -103,7 +106,7 @@ public class ExportThread extends ManagedTask {
 	@Override
 	protected void onRun() {
 		int num = 0;
-		if (!Utils.sdCardWritable()) {
+		if (!StorageUtils.sdCardWritable()) {
 			mManager.doToast("Export Failed - Could not write to SDCard");
 			return;			
 		}
@@ -133,13 +136,20 @@ public class ExportThread extends ManagedTask {
 			'"' + "anthology_titles" + "\"," +						//24 
 			'"' + CatalogueDBAdapter.KEY_DESCRIPTION+ "\"," + 		//25
 			'"' + CatalogueDBAdapter.KEY_GENRE+ "\"," + 			//26
+			'"' + CatalogueDBAdapter.KEY_DATE_ADDED+ "\"," + 		//27
+			'"' + DatabaseDefinitions.DOM_GOODREADS_BOOK_ID + "\"," + 		//28
+			'"' + DatabaseDefinitions.DOM_LAST_GOODREADS_SYNC_DATE + "\"," + 		//29
+			'"' + DatabaseDefinitions.DOM_LAST_UPDATE_DATE + "\"," + 		//30
+			'"' + DatabaseDefinitions.DOM_BOOK_UUID + "\"," + 		//31
 			"\n");
 		
 		long lastUpdate = 0;
 		
 		StringBuilder row = new StringBuilder();
 		
-		Cursor books = mDbHelper.exportBooks();
+		BooksCursor books = mDbHelper.exportBooks();
+		BooksRowView rv = books.getRowView();
+
 		mManager.setMax(this, books.getCount());
 		
 		try {
@@ -181,6 +191,18 @@ public class ExportThread extends ManagedTask {
 					} catch (Exception e) {
 						//do nothing
 					}
+					String dateAddedString = "";
+					try {
+						dateAddedString = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DATE_ADDED));
+						String[] date = dateAddedString.split("-");
+						int yyyy = Integer.parseInt(date[0]);
+						int mm = Integer.parseInt(date[1]);
+						int dd = Integer.parseInt(date[2]);
+						dateAddedString = yyyy + "-" + mm + "-" + dd;
+					} catch (Exception e) {
+						//do nothing
+					}
+
 					String anthology = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
 					String anthology_titles = "";
 					if (anthology.equals(CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS + "") || anthology.equals(CatalogueDBAdapter.ANTHOLOGY_SAME_AUTHOR + "")) {
@@ -216,27 +238,32 @@ public class ExportThread extends ManagedTask {
 					row.append("\"" + formatCell(id) + "\",");
 					row.append("\"" + formatCell(authorDetails) + "\",");
 					row.append( "\"" + formatCell(title) + "\"," );
-					row.append("\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ISBN))) + "\",");
-					row.append("\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PUBLISHER))) + "\",");
+					row.append("\"" + formatCell(rv.getIsbn()) + "\",");
+					row.append("\"" + formatCell(rv.getPublisher()) + "\",");
 					row.append("\"" + formatCell(dateString) + "\",");
 					row.append("\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_RATING))) + "\",");
 					row.append("\"" + formatCell(bookshelves_id_text) + "\",");
 					row.append("\"" + formatCell(bookshelves_name_text) + "\",");
-					row.append("\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ))) + "\",");
+					row.append("\"" + formatCell(rv.getRead()) + "\",");
 					row.append("\"" + formatCell(seriesDetails) + "\",");
 					row.append("\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PAGES))) + "\",");
-					row.append("\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_NOTES))) + "\",");
+					row.append("\"" + formatCell(rv.getNotes()) + "\",");
 					row.append("\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LIST_PRICE))) + "\",");
 					row.append("\"" + formatCell(anthology) + "\",");
-					row.append("\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOCATION))) + "\",");
+					row.append("\"" + formatCell(rv.getLocation()) + "\",");
 					row.append("\"" + formatCell(dateReadStartString) + "\",");
 					row.append("\"" + formatCell(dateReadEndString) + "\",");
 					row.append("\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_FORMAT))) + "\",");
 					row.append("\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SIGNED))) + "\",");
 					row.append("\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOANED_TO))+"") + "\",");
 					row.append("\"" + formatCell(anthology_titles) + "\",");
-					row.append("\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DESCRIPTION))) + "\",");
-					row.append("\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_GENRE))) + "\",");
+					row.append("\"" + formatCell(rv.getDescription()) + "\",");
+					row.append("\"" + formatCell(rv.getGenre()) + "\",");
+					row.append("\"" + formatCell(dateAddedString) + "\",");
+					row.append("\"" + formatCell(rv.getGoodreadsBookId()) + "\",");
+					row.append("\"" + formatCell(books.getString(books.getColumnIndexOrThrow(DatabaseDefinitions.DOM_LAST_GOODREADS_SYNC_DATE.name))) + "\",");
+					row.append("\"" + formatCell(books.getString(books.getColumnIndexOrThrow(DatabaseDefinitions.DOM_LAST_UPDATE_DATE.name))) + "\",");
+					row.append("\"" + formatCell(rv.getBookUuid()) + "\",");
 					row.append("\n");
 					out.write(row.toString());
 					//export.append(row);

@@ -54,6 +54,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
@@ -66,6 +67,8 @@ import android.widget.Toast;
 import com.eleybourn.bookcatalogue.CoverBrowser.OnImageSelectedListener;
 import com.eleybourn.bookcatalogue.Fields.Field;
 import com.eleybourn.bookcatalogue.Fields.FieldValidator;
+import com.eleybourn.bookcatalogue.StandardDialogs.SimpleDialogItem;
+import com.eleybourn.bookcatalogue.StandardDialogs.SimpleDialogOnClickListener;
 
 public class BookEditFields extends Activity {
 
@@ -249,9 +252,9 @@ public class BookEditFields extends Activity {
 						// Save the original value, if its an integer
 						try {
 							Integer i = Integer.parseInt(s);
-							f.getView().setTag(R.id.TAG_ORIGINAL_VALUE,i);
+							ViewTagger.setTag(f.getView(), R.id.TAG_ORIGINAL_VALUE,i);
 						} catch (Exception e) {
-							f.getView().setTag(R.id.TAG_ORIGINAL_VALUE,0);
+							ViewTagger.setTag(f.getView(), R.id.TAG_ORIGINAL_VALUE,0);
 						}
 						// Just pass the string onwards to the accessor.
 						return s;
@@ -259,7 +262,7 @@ public class BookEditFields extends Activity {
 					public String extract(Field f, String s) {
 						// Parse the string the CheckBox returns us (0 or 1)
 						Integer i = Integer.parseInt(s);
-						Integer orig = (Integer) f.getView().getTag(R.id.TAG_ORIGINAL_VALUE);
+						Integer orig = (Integer) ViewTagger.getTag(f.getView(), R.id.TAG_ORIGINAL_VALUE);
 						try {
 							if (i != 0 && orig > 0) {
 								// If non-zero, and original was non-zero, re-use original
@@ -273,12 +276,12 @@ public class BookEditFields extends Activity {
 						}
 					}
 			});
-			
+
 			mFields.add(R.id.description, CatalogueDBAdapter.KEY_DESCRIPTION, null);
 			
 			mFields.add(R.id.genre, CatalogueDBAdapter.KEY_GENRE, null);
 			mFields.add(R.id.row_img, "", "thumbnail", null);
-			Field formatField = mFields.add(R.id.format, CatalogueDBAdapter.KEY_FORMAT, null);
+			final Field formatField = mFields.add(R.id.format, CatalogueDBAdapter.KEY_FORMAT, null);
 			
 			mFields.add(R.id.bookshelf_text, "bookshelf_text", null).doNoFetch = true; // Output-only field
 			Field bookshelfButtonFe = mFields.add(R.id.bookshelf, "", null);
@@ -293,15 +296,31 @@ public class BookEditFields extends Activity {
 				}
 			});
 
-			Spinner formatSpinner = (Spinner) formatField.getView();
-			ArrayAdapter<String> formatArr = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
-			formatArr.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-			formatSpinner.setAdapter(formatArr);
-			formatArr.add(getString(R.string.format1));
-			formatArr.add(getString(R.string.format2));
-			formatArr.add(getString(R.string.format3));
-			formatArr.add(getString(R.string.format4));
-			formatArr.add(getString(R.string.format5));
+			// Get the formats to use in the AutoComplete stuff
+			ArrayAdapter<String> formatAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, mDbHelper.getFormats());
+			AutoCompleteTextView formatText = (AutoCompleteTextView) formatField.getView();
+			formatText.setAdapter(formatAdapter);
+			// Get the drop-down button for the formats list and setup dialog
+			ImageView formatButton = (ImageView)findViewById(R.id.format_button);
+			formatButton.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					StandardDialogs.selectStringDialog(getLayoutInflater(), getString(R.string.format), mDbHelper.getFormats(), formatField.getValue().toString(), new SimpleDialogOnClickListener() {
+						@Override
+						public void onClick(SimpleDialogItem item) {
+							formatField.setValue(item.toString());
+						}});
+				}});
+
+			//Spinner formatSpinner = (Spinner) formatField.getView();
+			//ArrayAdapter<String> formatArr = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
+			//formatArr.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			//formatSpinner.setAdapter(formatArr);
+			//formatArr.add(getString(R.string.format1));
+			//formatArr.add(getString(R.string.format2));
+			//formatArr.add(getString(R.string.format3));
+			//formatArr.add(getString(R.string.format4));
+			//formatArr.add(getString(R.string.format5));
 
 			mConfirmButton = (Button) findViewById(R.id.confirm);
 			mCancelButton = (Button) findViewById(R.id.cancel);
@@ -417,12 +436,11 @@ public class BookEditFields extends Activity {
 				populateFields();
 			} else {
 				// The thumbnail image is not automatically preserved, so reload it.
-				ImageView iv = (ImageView) findViewById(R.id.row_img);
-				CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);				
+				setCoverImage();
 				// Author and series lists
-				mAuthorList = savedInstanceState.getParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
+				mAuthorList = (ArrayList<Author>) savedInstanceState.getSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
 				fixupAuthorList();	// Will update related display fields/button
-				mSeriesList = savedInstanceState.getParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY);
+				mSeriesList = (ArrayList<Series>) savedInstanceState.getSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY);
 				fixupSeriesList();	// Will update related display fields/button
 				mFields.getField(R.id.date_published).setValue(savedInstanceState.getString(CatalogueDBAdapter.KEY_DATE_PUBLISHED));
 				mFields.getField(R.id.bookshelf_text).setValue(savedInstanceState.getString("bookshelf_text"));
@@ -521,14 +539,15 @@ public class BookEditFields extends Activity {
 			dialog.setContentView(R.layout.zoom_thumb_dialog);
 
 			// Check if we have a file and/or it is valid
-			String filename = CatalogueDBAdapter.fetchThumbnailFilename(mRowId, false);
+			File thumbFile = getCoverFile();
 
-			if (filename == null) {
+			if (thumbFile == null || !thumbFile.exists()) {
 				dialog.setTitle(getResources().getString(R.string.cover_not_set));
 			} else {
+				
 				BitmapFactory.Options opt = new BitmapFactory.Options();
 				opt.inJustDecodeBounds = true;
-			    BitmapFactory.decodeFile( filename, opt );
+			    BitmapFactory.decodeFile( thumbFile.getAbsolutePath(), opt );
 
 			    // If no size info, assume file bad and return appropriate icon
 			    if ( opt.outHeight <= 0 || opt.outWidth <= 0 ) {
@@ -536,7 +555,7 @@ public class BookEditFields extends Activity {
 				} else {
 					dialog.setTitle(getResources().getString(R.string.cover_detail));
 					ImageView cover = new ImageView(this);
-					CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, cover, mThumbZoomSize, mThumbZoomSize, true);
+					Utils.fetchFileIntoImageView(thumbFile, cover, mThumbZoomSize, mThumbZoomSize, true);
 					cover.setAdjustViewBounds(true);
 				    LayoutParams lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
 				    dialog.addContentView(cover, lp);
@@ -549,6 +568,16 @@ public class BookEditFields extends Activity {
 		return dialog;
 	}
 
+	/**
+	 * Get the File object for the cover of the book we are editing. If the boo
+	 * is new, return the standard temp file.
+	 */
+	private File getCoverFile() {
+		if (mRowId == 0) 
+			return CatalogueDBAdapter.getTempThumbnail();
+		else
+			return CatalogueDBAdapter.fetchThumbnailByUuid(mDbHelper.getBookUuid(mRowId));			
+	}
 	// the callback received when the user "sets" the date in the dialog
 	private DatePickerDialog.OnDateSetListener mDateSetListener = new DatePickerDialog.OnDateSetListener() {
 		public void onDateSet(DatePicker view, int year, int month, int day) {
@@ -568,25 +597,27 @@ public class BookEditFields extends Activity {
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		ImageView iv = (ImageView)findViewById(R.id.row_img);
+		File thumbFile = getCoverFile();
+
 		switch(item.getItemId()) {
 		case DELETE_ID:
 			deleteThumbnail(mRowId);
-			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);
+			Utils.fetchFileIntoImageView(thumbFile, iv, mThumbEditSize, mThumbEditSize, true);
 			return true;
 		case ROTATE_THUMB_SUBMENU:
 			// Just a submenu; skip
 			return true;
 		case ROTATE_THUMB_CW:
 			rotateThumbnail(mRowId, 90);
-			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);
+			Utils.fetchFileIntoImageView(thumbFile, iv, mThumbEditSize, mThumbEditSize, true);
 			return true;
 		case ROTATE_THUMB_CCW:
 			rotateThumbnail(mRowId, -90);
-			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);
+			Utils.fetchFileIntoImageView(thumbFile, iv, mThumbEditSize, mThumbEditSize, true);
 			return true;
 		case ROTATE_THUMB_180:
 			rotateThumbnail(mRowId, 180);
-			CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);
+			Utils.fetchFileIntoImageView(thumbFile, iv, mThumbEditSize, mThumbEditSize, true);
 			return true;
 		case ADD_PHOTO:
 			Intent pintent = null;
@@ -604,9 +635,8 @@ public class BookEditFields extends Activity {
 			return true;
 		case CROP_THUMB:
 			Intent crop_intent = new Intent(this, CropCropImage.class);
-			String filename = CatalogueDBAdapter.fetchThumbnailFilename(mRowId, false);
 			// here you have to pass absolute path to your file
-			crop_intent.putExtra("image-path", filename);
+			crop_intent.putExtra("image-path", thumbFile.getAbsolutePath());
 			crop_intent.putExtra("scale", true);
 			startActivityForResult(crop_intent, CAMERA_RESULT);
 			return true;
@@ -630,11 +660,9 @@ public class BookEditFields extends Activity {
 	 */
 	private void deleteThumbnail(long id) {
 		try {
-			File thumb = CatalogueDBAdapter.fetchThumbnail(id);
-			thumb.delete();
-			
-			thumb = CatalogueDBAdapter.fetchThumbnail(id);
-			thumb.delete();
+			File thumbFile = getCoverFile();
+			if (thumbFile != null && thumbFile.exists())
+				thumbFile.delete();
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
@@ -646,8 +674,9 @@ public class BookEditFields extends Activity {
 	 * @param id
 	 */
 	private void rotateThumbnail(long id, long angle) {
+		File thumbFile = getCoverFile();
 
-		Bitmap bm = CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, null, mThumbZoomSize*2, mThumbZoomSize*2, true);
+		Bitmap bm = Utils.fetchFileIntoImageView(thumbFile, null, mThumbZoomSize*2, mThumbZoomSize*2, true );
 		if (bm == null)
 			return;
 
@@ -657,8 +686,7 @@ public class BookEditFields extends Activity {
 		/* Create a file to copy the thumbnail into */
 		FileOutputStream f = null;
 		try {
-			String filename = CatalogueDBAdapter.fetchThumbnailFilename(mRowId, false);
-			f = new FileOutputStream(filename);
+			f = new FileOutputStream(thumbFile.getAbsoluteFile());
 		} catch (FileNotFoundException e) {
 			Logger.logError(e);
 			return;
@@ -705,7 +733,7 @@ public class BookEditFields extends Activity {
 				mFields.getField(R.id.anthology).setValue(anthNo.toString());
 				
 				ImageView iv = (ImageView) findViewById(R.id.row_img);
-				CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);				
+				Utils.fetchFileIntoImageView(getCoverFile(), iv, mThumbEditSize, mThumbEditSize, true );				
 			} finally {	
 				if (book != null)
 					book.close();
@@ -742,8 +770,8 @@ public class BookEditFields extends Activity {
 					} else {
 						mFields.getField(R.id.bookshelf_text).setValue(BookCatalogue.bookshelf + BOOKSHELF_SEPERATOR);
 					}
-					mAuthorList = values.getParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
-					mSeriesList = values.getParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY);
+					mAuthorList = (ArrayList<Author>) values.getSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
+					mSeriesList = (ArrayList<Series>) values.getSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY);
 				}
 				
 			} catch (NullPointerException e) {
@@ -771,9 +799,9 @@ public class BookEditFields extends Activity {
 	
 	private void setCoverImage() {
 		ImageView iv = (ImageView) findViewById(R.id.row_img);
-		CatalogueDBAdapter.fetchThumbnailIntoImageView(mRowId, iv, mThumbEditSize, mThumbEditSize, true);		
+		Utils.fetchFileIntoImageView(getCoverFile(), iv, mThumbEditSize, mThumbEditSize, true );		
 	}
-	
+
 	/**
 	 * Validate the current data in all fields that have validators. Display any errors.
 	 * 
@@ -835,9 +863,11 @@ public class BookEditFields extends Activity {
 				Intent edit = new Intent(BookEditFields.this, BookEdit.class);
 				edit.putExtra(CatalogueDBAdapter.KEY_ROWID, mRowId);
 				edit.putExtra(BookEdit.TAB, BookEdit.TAB_EDIT_NOTES);
+				edit.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
 				startActivity(edit);
 			}
 			Intent i = new Intent();
+			i.putExtra(CatalogueDBAdapter.KEY_ROWID, mRowId);
 			i.putExtra(ADDED_HAS_INFO, true);
 			i.putExtra(ADDED_GENRE, added_genre);
 			i.putExtra(ADDED_SERIES, added_series);
@@ -889,8 +919,8 @@ public class BookEditFields extends Activity {
 		}
 		// DONT FORGET TO UPDATE onCreate to read these values back.
 		// Need to save local data that is not stored in editable views
-		outState.putParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mAuthorList);
-		outState.putParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY, mSeriesList);
+		outState.putSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mAuthorList);
+		outState.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, mSeriesList);
 		// ...including special text stored in TextViews and the like
 		outState.putString(CatalogueDBAdapter.KEY_DATE_PUBLISHED, mFields.getField(R.id.date_published).getValue().toString());
 		outState.putString("bookshelf_text", mFields.getField(R.id.bookshelf_text).getValue().toString());
@@ -959,8 +989,8 @@ public class BookEditFields extends Activity {
 			return;			
 		}
 
-		mStateValues.putParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mAuthorList);
-		mStateValues.putParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY, mSeriesList);
+		mStateValues.putSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mAuthorList);
+		mStateValues.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, mSeriesList);
 
 		if (mRowId == null || mRowId == 0) {
 			String isbn = mStateValues.getString(CatalogueDBAdapter.KEY_ISBN);
@@ -1006,8 +1036,8 @@ public class BookEditFields extends Activity {
 
 			if (id > 0) {
 				mRowId = id;
-				File thumb = CatalogueDBAdapter.fetchThumbnail(0);
-				File real = CatalogueDBAdapter.fetchThumbnail(id);
+				File thumb = CatalogueDBAdapter.getTempThumbnail();
+				File real = CatalogueDBAdapter.fetchThumbnailByUuid(mDbHelper.getBookUuid(id));
 				thumb.renameTo(real);
 			}
 		} else {
@@ -1016,7 +1046,7 @@ public class BookEditFields extends Activity {
 
 		/* These are global variables that will be sent via intent back to the list view, if added/created */
 		try {
-			ArrayList<Author> authors = mStateValues.getParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
+			ArrayList<Author> authors = (ArrayList<Author>) mStateValues.getSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
 			if (authors.size() > 0) {
 				added_author = authors.get(0).getSortName();
 			} else { 
@@ -1026,7 +1056,7 @@ public class BookEditFields extends Activity {
 			Logger.logError(e);
 		};
 		try {
-			ArrayList<Series> series = mStateValues.getParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY);
+			ArrayList<Series> series = (ArrayList<Series>) mStateValues.getSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY);
 			if (series.size() > 0)
 				added_series = series.get(0).name;
 			else 
@@ -1045,7 +1075,7 @@ public class BookEditFields extends Activity {
 		switch(requestCode) {
 		case ADD_PHOTO:
 			if (resultCode == Activity.RESULT_OK){
-				String filename = CatalogueDBAdapter.fetchThumbnailFilename(mRowId, true);
+				File thumbFile = getCoverFile();
 				Bitmap x = (Bitmap) intent.getExtras().get("data");
 				Matrix m = new Matrix();
 				m.postRotate(90);
@@ -1053,7 +1083,7 @@ public class BookEditFields extends Activity {
 				/* Create a file to copy the thumbnail into */
 				FileOutputStream f = null;
 				try {
-					f = new FileOutputStream(filename);
+					f = new FileOutputStream(thumbFile.getAbsoluteFile());
 				} catch (FileNotFoundException e) {
 					Logger.logError(e);
 					return;
@@ -1063,7 +1093,7 @@ public class BookEditFields extends Activity {
 				
 				Intent crop_intent = new Intent(this, CropCropImage.class);
 				// here you have to pass absolute path to your file
-				crop_intent.putExtra("image-path", filename);
+				crop_intent.putExtra("image-path", thumbFile.getAbsolutePath());
 				crop_intent.putExtra("scale", true);
 				startActivityForResult(crop_intent, CAMERA_RESULT);
 				
@@ -1086,7 +1116,7 @@ public class BookEditFields extends Activity {
 				String selectedImagePath = cursor.getString(column_index);
 				
 				File thumb = new File(selectedImagePath);
-				File real = CatalogueDBAdapter.fetchThumbnail(mRowId);
+				File real = getCoverFile();
 				try {
 					copyFile(thumb, real);
 				} catch (IOException e) {
@@ -1098,17 +1128,18 @@ public class BookEditFields extends Activity {
 			return;
 		case ACTIVITY_EDIT_AUTHORS:
 			if (resultCode == Activity.RESULT_OK && intent.hasExtra(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)){
-				mAuthorList = intent.getParcelableArrayListExtra(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
+				mAuthorList = (ArrayList<Author>) intent.getSerializableExtra(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
 			} else {
 				// Even though the dialog was terminated, some authors MAY have been updated/added.
-				for(Author a : mAuthorList) {
-					mDbHelper.refreshAuthor(a);
-				}
+				if (mAuthorList != null)
+					for(Author a : mAuthorList) {
+						mDbHelper.refreshAuthor(a);
+					}
 			}
 			fixupAuthorList();
 		case ACTIVITY_EDIT_SERIES:
 			if (resultCode == Activity.RESULT_OK && intent.hasExtra(CatalogueDBAdapter.KEY_SERIES_ARRAY)){
-				mSeriesList = intent.getParcelableArrayListExtra(CatalogueDBAdapter.KEY_SERIES_ARRAY);
+				mSeriesList = (ArrayList<Series>) intent.getSerializableExtra(CatalogueDBAdapter.KEY_SERIES_ARRAY);
 				fixupSeriesList();
 			}
 		}
@@ -1140,6 +1171,7 @@ public class BookEditFields extends Activity {
 		if (size == 0)
 			newText = getResources().getString(R.string.set_series);
 		else {
+			Utils.pruneSeriesList(mSeriesList);
 			Utils.pruneList(mDbHelper, mSeriesList);
 			newText = mSeriesList.get(0).getDisplayName();
 			if (mSeriesList.size() > 1)
@@ -1175,7 +1207,7 @@ public class BookEditFields extends Activity {
 		public void onImageSelected(String fileSpec) {
 			if (mCoverBrowser != null && fileSpec != null) {
 				// Get the current file
-				File bookFile = CatalogueDBAdapter.fetchThumbnail(mRowId);
+				File bookFile = getCoverFile();
 				// Get the new file
 				File newFile = new File(fileSpec);					
 				// Overwrite with new file
@@ -1187,4 +1219,12 @@ public class BookEditFields extends Activity {
 				mCoverBrowser.dismiss();
 			mCoverBrowser = null;
 		}};
+		
+	/**
+	 * Show the context menu for the cover thumbnail
+	 */
+	public void showCoverContextMenu() {
+		View v = findViewById(R.id.row_img);
+		v.showContextMenu();
+	}
 }

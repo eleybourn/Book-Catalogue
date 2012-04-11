@@ -52,7 +52,7 @@ public class AdministrationDonate extends Activity {
 			Logger.logError(e);
 		}
 	}
-	
+
 	/**
 	 * This function builds the Admin page in 4 sections. 
 	 * 1. The button to goto the manage bookshelves activity
@@ -62,23 +62,27 @@ public class AdministrationDonate extends Activity {
 	 * 5. The link to paypal for donation
 	 */
 	public void setupAdmin() {
+		OnClickListener payPalClick = new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Intent loadweb = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WHD6PFWXXTPX8&lc=AU&item_name=BookCatalogue&item_number=BCPP&currency_code=AUD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted"));
+					startActivity(loadweb); 
+					return;
+				}
+			};
+
 		/* Donation Link */
-		ImageView donate = (ImageView) findViewById(R.id.donate_url);
-		donate.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent loadweb = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=94US4N9MQGDMY&lc=AU&currency_code=AUD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted"));
-				startActivity(loadweb); 
-				return;
-			}
-		});
-		
+		View donate = findViewById(R.id.donate_url);
+		donate.setOnClickListener(payPalClick);
+		View donate2 = findViewById(R.id.donate_url_image);
+		donate2.setOnClickListener(payPalClick);
+
 		/* Donation Link */
-		TextView amazon = (TextView) findViewById(R.id.amazon_url);
+		View amazon = findViewById(R.id.amazon_url);
 		amazon.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent loadweb = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.amazon.com/registry/wishlist/27ISBYRXBGXO3/"));
+				Intent loadweb = new Intent(Intent.ACTION_VIEW, Uri.parse("http://amzn.com/w/23LH4CAJ7776O"));
 				startActivity(loadweb); 
 				return;
 			}

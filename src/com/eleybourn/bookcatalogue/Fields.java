@@ -95,7 +95,7 @@ import android.widget.TextView;
  * The add() method of Fields returns a new Field object which exposes the 'view' member; this
  * can be used to perform view-specific tasks like setting onClick() handlers.
  *
- * @author Grunthos
+ * @author Philip Warner
  *
  */
 public class Fields extends ArrayList<Fields.Field> {
@@ -192,7 +192,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	 * Interface for view-specific accessors. One of these will be implemented for each view type that
 	 * is supported.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 *
 	 */
 	public interface FieldDataAccessor {
@@ -234,7 +234,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	 * Implementation that stores and retrieves data from a string variable.
 	 * Only used when a Field fails to find a layout.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 *
 	 */
 	static public class StringDataAccessor implements FieldDataAccessor {
@@ -257,7 +257,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	 * Implementation that stores and retrieves data from a TextView.
 	 * Just uses for defined formatter and setText() and getText().
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 *
 	 */
 	static public class TextViewAccessor implements FieldDataAccessor {
@@ -280,7 +280,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	/**
 	 * CheckBox accessor. Attempt to convert data to/from a boolean.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 *
 	 */
 	static public class CheckBoxAccessor implements FieldDataAccessor {
@@ -316,7 +316,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	/**
 	 * RatingBar accessor. Attempt to convert data to/from a Float.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 *
 	 */
 	static public class RatingBarAccessor implements FieldDataAccessor {
@@ -354,7 +354,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	 * Spinner accessor. Assumes the Spinner contains a list of Strings and
 	 * sets the spinner to the matching item.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 *
 	 */
 	static public class SpinnerAccessor implements FieldDataAccessor {
@@ -409,7 +409,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	 * they are all called a second time with the flag set to true. This is an alternate
 	 * method of applying cross-validation.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	public interface FieldValidator {
 		/**
@@ -431,7 +431,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	 * Interface for all cross-validators; these are applied after all field-level validators
 	 * have succeeded.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 *
 	 */
 	public interface FieldCrossValidator {
@@ -447,7 +447,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	 * Exception class for all validation errors. String ID and args are stored
 	 * for later retrieval.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 *
 	 */
 	static public class ValidatorException extends RuntimeException {
@@ -471,7 +471,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	/**
 	 * Validator to apply a default String value to empty fields.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 *
 	 */
 	static abstract public class DefaultFieldValidator implements FieldValidator {
@@ -515,7 +515,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	/**
 	 * Validator to apply a default value and validate as integer.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 *
 	 */
 	static public class IntegerValidator extends DefaultFieldValidator {
@@ -559,7 +559,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	/**
 	 * Validator to apply a default value and validate as Float
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 *
 	 */
 	static public class FloatValidator extends DefaultFieldValidator {
@@ -603,7 +603,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	/**
 	 * Validator to apply a default value and validate as a Date
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 *
 	 */
 	static public class DateValidator extends DefaultFieldValidator {
@@ -638,7 +638,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	/**
 	 * Validator to apply a default value and validate as Boolean
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 *
 	 */
 	static public class BooleanValidator extends DefaultFieldValidator {
@@ -682,7 +682,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	/**
 	 * Validator to require a non-blank field
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 *
 	 */
 	static public class NonBlankValidator implements FieldValidator {
@@ -713,7 +713,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	/**
 	 * Validator that requires a blank field
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 *
 	 */
 	static public class BlankValidator implements FieldValidator {
@@ -746,7 +746,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	/**
 	 * Base class for validators that operate on a list of other validators.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	static abstract public class MetaValidator extends ArrayList<FieldValidator> implements FieldValidator {
 		// Java likes this
@@ -789,7 +789,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	/**
 	 * 'Meta' Validator to evaluate a list of validators; any one being true is OK.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 *
 	 */
 	static public class OrValidator extends MetaValidator implements FieldValidator {
@@ -827,7 +827,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	/**
 	 * 'Meta' Validator to evaluate a list of validators; ALL validators must be true.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 *
 	 */
 	static public class AndValidator extends MetaValidator implements FieldValidator {
@@ -857,7 +857,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	/**
 	 * Interface definition for Field formatters.
 	 *
-	 * @author Grunthos
+	 * @author Philip Warner
 	 *
 	 */
 	public interface FieldFormatter {
@@ -880,7 +880,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	/**
 	 * Formatter for date fields. On failure just return the raw string.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 *
 	 */
 	static public class DateFieldFormatter implements FieldFormatter {
@@ -914,7 +914,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	 * Field definition contains all information and methods necessary to manage display and
 	 * extraction of data in a view.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 *
 	 */
 	public class Field {

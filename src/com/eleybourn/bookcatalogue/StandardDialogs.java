@@ -20,7 +20,11 @@
 
 package com.eleybourn.bookcatalogue;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
+
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsRegister;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -28,6 +32,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 
 public class StandardDialogs {
 
@@ -170,4 +183,227 @@ public class StandardDialogs {
 		
 	}
 
+	/**
+	 * Display a dialog warning the user that goodreads authentication is required; gives them
+	 * the options: 'request now', 'more info' or 'cancel'.
+	 */
+	public static int goodreadsAuthAlert(final Context context) {
+		// Get the title		
+		final AlertDialog alertDialog = new AlertDialog.Builder(context).setTitle(R.string.authorize_access).setMessage(R.string.goodreads_action_cannot_blah_blah).create();
+
+		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
+		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				alertDialog.dismiss();
+				GoodreadsRegister.requestAuthorization(context);
+			}
+		});
+		
+		alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, context.getResources().getString(R.string.tell_me_more), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				alertDialog.dismiss();
+				Intent i = new Intent(context, GoodreadsRegister.class);
+				context.startActivity(i);				
+			}
+		});
+
+		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				alertDialog.dismiss();
+			}
+		}); 
+
+		alertDialog.show();
+		return 0;
+		
+	}
+
+	/**
+	 * Interface for item that displays in a custom dialog list
+	 */
+	public static interface SimpleDialogItem {
+		View getView(LayoutInflater inflater);
+		RadioButton getSelector(View v);
+	}
+	/**
+	 * Interface to listen for item selection in a custom dialog list
+	 */
+	public static interface SimpleDialogOnClickListener {
+		void onClick(SimpleDialogItem item);
+	}
+
+	/**
+	 * Select a custom item from a list, and call halder when/if item is selected.
+	 */
+	public static void selectItemDialog(LayoutInflater inflater, String message, ArrayList<SimpleDialogItem> items, SimpleDialogItem selectedItem, final SimpleDialogOnClickListener handler) {
+		// Get the view and the radio group
+		final View root = inflater.inflate(R.layout.select_list_dialog, null);
+		TextView msg = (TextView) root.findViewById(R.id.message);
+
+		// Build the base dialog
+		final AlertDialog.Builder builder = new AlertDialog.Builder(inflater.getContext()).setView(root);
+		if (message != null && !message.equals("")) {
+			msg.setText(message);
+		} else {
+			msg.setVisibility(View.GONE);
+		}
+
+		final AlertDialog dialog = builder.create();
+
+		// Create the listener for each item
+		OnClickListener listener = new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				SimpleDialogItem item = (SimpleDialogItem)ViewTagger.getTag(v, R.id.TAG_DIALOG_ITEM);
+				// For a consistent UI, make sure the selector is checked as well. NOT mandatory from
+				// a functional point of view, just consistent
+				if (! (v instanceof RadioButton) ) {
+					RadioButton btn = item.getSelector(v);
+					if (btn != null) {
+						btn.setChecked(true);
+						btn.invalidate();
+					}
+				}
+				//
+				// It would be nice to have the other radio buttons reflect the new state before it
+				// disappears, but not really worth the effort. Esp. since the code below does not work...
+				// and the dialog disappears too fast to make this worthwhile.
+				//
+				//LinearLayout list = (LinearLayout)root.findViewById(R.id.list);
+				//for(int i = 0; i < list.getChildCount(); i++) {
+				//	View child = list.getChildAt(i);
+				//	SimpleDialogItem other = (SimpleDialogItem)ViewTagger.getTag(child, R.id.TAG_DIALOG_ITEM);
+				//	RadioButton btn = other.getSelector(child);
+				//	btn.setSelected(other == item);
+				//	btn.invalidate();
+				//}
+				dialog.dismiss();
+				handler.onClick(item);				
+			}};		
+
+		// Add the items to the dialog
+		LinearLayout list = (LinearLayout)root.findViewById(R.id.list);
+		for(SimpleDialogItem item: items) {
+			View v = item.getView(inflater);
+			v.setBackgroundResource(android.R.drawable.list_selector_background);
+			ViewTagger.setTag(v, R.id.TAG_DIALOG_ITEM, item);
+			list.addView(v);
+			v.setOnClickListener(listener);
+			RadioButton btn = item.getSelector(v);
+			if (btn != null) {
+				ViewTagger.setTag(btn, R.id.TAG_DIALOG_ITEM, item);
+				btn.setChecked(item == selectedItem);
+				btn.setOnClickListener(listener);
+			}
+		}
+		dialog.show();
+	}
+
+	/**
+	 * Wrapper class to present a list of files for selection
+	 */
+	public static void selectFileDialog(LayoutInflater inflater, String title, ArrayList<File> files, final SimpleDialogOnClickListener handler) {
+		ArrayList<SimpleDialogItem> items = new ArrayList<SimpleDialogItem>();
+		for(File file: files) {
+			items.add(new SimpleDialogFileItem(file));
+		}
+		selectItemDialog(inflater, title, items, null, handler);
+	}
+
+	/**
+	 * Wrapper class to present a list of arbitrary objects for selection; it uses
+	 * the toString() method to display a simple list.
+	 */
+	public static <T extends Object> void selectStringDialog(LayoutInflater inflater, String title, ArrayList<T> objects, String current, final SimpleDialogOnClickListener handler) {
+		ArrayList<SimpleDialogItem> items = new ArrayList<SimpleDialogItem>();
+		SimpleDialogItem selectedItem = null;
+		for(T o: objects) {
+			SimpleDialogObjectItem item = new SimpleDialogObjectItem(o);
+			if (current != null && o.toString().equalsIgnoreCase(current))
+				selectedItem = item;
+			items.add(item);
+		}
+		selectItemDialog(inflater, title, items, selectedItem, handler);
+	}
+
+	/**
+	 * Simple item to manage a File object in a list of items.
+	 */
+	public static class SimpleDialogFileItem implements SimpleDialogItem {
+		private final File mFile; 
+		
+		public SimpleDialogFileItem(File file) {
+			mFile = file;
+		}
+		
+		public File getFile() {
+			return mFile;
+		}
+
+		public RadioButton getSelector(View v) {
+			return null;
+		}
+
+		/**
+		 * Get a View to display the file
+		 */
+		public View getView(LayoutInflater inflater) {
+			// Create the view
+			View v = inflater.inflate(R.layout.file_list_item, null);
+			// Set the file name
+			TextView name = (TextView) v.findViewById(R.id.name);
+			name.setText(mFile.getName());
+			// Set the path
+			TextView location = (TextView) v.findViewById(R.id.path);
+			location.setText(mFile.getParent());
+			// Set the size
+			TextView size = (TextView) v.findViewById(R.id.size);
+			size.setText(Utils.formatFileSize(mFile.length()));
+			// Set the last modified date
+			TextView update = (TextView) v.findViewById(R.id.updated);
+			update.setText(Utils.toPrettyDateTime(new Date(mFile.lastModified())));
+			// Return it
+			return v;
+		}
+	}
+
+	/**
+	 * Item to manage an Object in a list of items.
+	 */
+	public static class SimpleDialogObjectItem implements SimpleDialogItem {
+		private final Object mObject; 
+
+		public SimpleDialogObjectItem(Object object) {
+			mObject = object;
+		}
+		
+		public Object getObject() {
+			return mObject;
+		}
+
+		/**
+		 * Get a View to display the object
+		 */
+		public View getView(LayoutInflater inflater) {
+			// Create the view
+			View v = inflater.inflate(R.layout.string_list_item, null);
+			// Set the name
+			TextView name = (TextView) v.findViewById(R.id.name);
+			name.setText(mObject.toString());
+			// Return it
+			return v;
+		}
+		
+		public RadioButton getSelector(View v) {
+			return (RadioButton) v.findViewById(R.id.selector);
+		}
+
+		/**
+		 * Get the underlying object as a string
+		 */
+		@Override
+		public String toString() {
+			return mObject.toString();
+		}
+	}
 }

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:id="@+id/list_wrapper"
+	android:orientation="vertical"
+	android:layout_width="fill_parent" 
+	android:layout_height="fill_parent"
+	android:paddingLeft="5sp"
+	android:background="@drawable/bc_background_gradient_dim"
+	>
+
+	<LinearLayout
+	    android:id="@+id/top_buttons"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:gravity="top"
+	    android:background="#00000000"
+	    android:orientation="horizontal" >
+
+	</LinearLayout>
+
+	<LinearLayout	 android:id="@+id/bottom_buttons" 
+		android:gravity="bottom" 
+		android:orientation="horizontal"
+		android:layout_height="wrap_content" 
+		android:padding="5dp"
+		android:layout_width="fill_parent" 
+	    android:background="#00000000"
+		android:layout_alignParentBottom="true">
+		<Button android:id="@+id/confirm" 
+		    android:visibility="gone"
+			android:text="@string/save"
+			android:width="150sp"
+		    android:background="#00000000"
+			android:layout_width="wrap_content"
+			android:layout_height="fill_parent" />
+		
+		<Button android:id="@+id/cancel" 
+			android:text="@string/cancel"
+		    android:visibility="gone"
+			android:width="150sp"
+		    android:background="#00000000"
+			android:layout_width="wrap_content"
+			android:layout_height="fill_parent" />
+	</LinearLayout>
+
+	<LinearLayout	 android:id="@+id/body" 
+		android:gravity="top" 
+		android:orientation="vertical"
+	    android:background="#00000000"
+		android:layout_width="fill_parent" 
+		android:layout_height="fill_parent" 
+		android:layout_below="@+id/top_buttons"
+		android:layout_above="@+id/bottom_buttons"
+		>
+
+	   	<com.eleybourn.bookcatalogue.TouchListView 
+			xmlns:tlv="http://schemas.android.com/apk/res/com.eleybourn.bookcatalogue"
+	
+			android:fadingEdge="none"
+	    	android:id="@+id/android:list" 
+	    	android:layout_width="fill_parent" 
+			android:layout_height="fill_parent" 
+			tlv:grabber="@+id/grabber"
+			tlv:normal_height="32dp"
+			tlv:remove_mode="none"
+			android:cacheColorHint="#00000000"
+		    android:background="#00000000"
+	    	android:textSize="16sp" />
+	  	<TextView android:id="@+id/android:empty" 
+	  		android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+	  		android:text="@+string/noseries"
+		    android:background="#00000000"
+	  		android:textSize="16sp" />
+	</LinearLayout>
+
+</RelativeLayout>

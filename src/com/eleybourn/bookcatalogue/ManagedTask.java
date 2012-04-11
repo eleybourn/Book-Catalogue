@@ -35,7 +35,7 @@ import android.os.Message;
  *  - ManagedTask -- Background task that is managed by TaskManager and uses TaskManager to 
  *    do all display activities.
  * 
- * @author Grunthos
+ * @author Philip Warner
  */
 abstract public class ManagedTask extends Thread {
 	// The manager who we will use for progress etc, and who we will inform about our state.
@@ -70,7 +70,7 @@ abstract public class ManagedTask extends Thread {
 	 * Interface allowing the caller to be informed of events in this thread. Stug that can be extended
 	 * if necessary by a subclass.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 */
 	public interface TaskHandler {
 	}
@@ -235,7 +235,7 @@ abstract public class ManagedTask extends Thread {
 	/**
 	 * Dispatcher for messages to the UI thread.
 	 * 
-	 * @author Grunthos
+	 * @author Philip Warner
 	 *
 	 */
 	private class TaskMessageHandler extends Handler {

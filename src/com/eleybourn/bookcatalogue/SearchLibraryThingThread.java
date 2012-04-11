@@ -35,4 +35,12 @@ public class SearchLibraryThingThread extends SearchThread {
 		}
 	}
 
+	/**
+	 * Return the global ID for this searcher
+	 */
+	@Override
+	public int getSearchId() {
+		return SearchManager.SEARCH_LIBRARY_THING;
+	}
+
 }

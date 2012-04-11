@@ -31,6 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import android.os.Build;
+import android.util.Log;
 
 public class Logger {
 	
@@ -57,7 +58,9 @@ public class Logger {
 		//Log.e("BookCatalogue", error);
 		
 		try {
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Utils.ERRORLOG_FILE), "utf8"), 8192);
+			// RELEASE Remove Log.e! Replace with ACRA?
+			Log.e("BC Logger", error);
+			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(StorageUtils.getErrorLog()), "utf8"), 8192);
 			out.write(error);
 			out.close();
 		} catch (Exception e1) {
@@ -69,16 +72,19 @@ public class Logger {
 	 * Clear the error log each time the app is started; preserve previous if non-empty
 	 */
 	public static void clearLog() {
+		// RELEASE: XXXX: RE_ENABLE LOG PURGING TODO: RE_ENABLE LOG PURGING
+		if (true) return;
+
 		try {
 			try { 
-				File orig = new File(Utils.ERRORLOG_FILE);
-				File backup = new File(Utils.ERRORLOG_FILE + ".bak");
+				File orig = new File(StorageUtils.getErrorLog());
+				File backup = new File(StorageUtils.getErrorLog() + ".bak");
 				if (orig.exists() && orig.length() > 0)
 					orig.renameTo(backup);
 			} catch (Exception e) {
 				// Ignore backup failure...
 			}
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Utils.ERRORLOG_FILE), "utf8"), 8192);
+			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(StorageUtils.getErrorLog()), "utf8"), 8192);
 			out.write("");
 			out.close();
 		} catch (Exception e1) {

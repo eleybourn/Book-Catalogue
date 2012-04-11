@@ -4,13 +4,16 @@
 	android:layout_width="fill_parent" 
 	android:layout_height="fill_parent"
 	android:paddingLeft="5sp"
-	android:background="#2d2d2d">
+	android:background="#2d2d2d"
+	>
+<!-- android:background="@drawable/bc_background_gradient_dark"  -->
+    
 	<TextView android:id="@+id/bookshelf_label" 
 		android:layout_width="wrap_content" 
 		android:layout_height="32sp" 
 		android:text="@+string/bookshelf_label"
 		android:textAppearance="?android:attr/textAppearanceLarge"
-		android:background="#2d2d2d"
+		android:background="#00000000"
 		android:paddingRight="5sp"
 		/>
 	<Spinner android:id="@+id/bookshelf_name" 
@@ -18,14 +21,14 @@
 		android:layout_height="wrap_content" 
 		android:layout_toRightOf="@id/bookshelf_label"
 		android:paddingBottom="2sp"
-		android:background="#2d2d2d"
+		android:background="#00000000"
 		/>
 	<TextView android:id="@+id/bookshelf_num" 
 		android:layout_width="wrap_content" 
 		android:layout_height="32sp" 
 		android:layout_toRightOf="@+id/bookshelf_name"
 		android:textAppearance="?android:attr/textAppearanceLarge"
-		android:background="#2d2d2d"
+		android:background="#00000000"
 		android:paddingLeft="5sp"
 		/>
 	<ImageView android:id="@+id/bookshelf_down" 
@@ -39,12 +42,12 @@
 		android:layout_width="fill_parent" 
 		android:layout_height="fill_parent"
 		android:layout_below="@id/bookshelf_label">
-		<ExpandableListView android:id="@+id/android:list" 
+	    <com.eleybourn.bookcatalogue.FastScrollExpandableListView android:id="@+id/android:list" 
+		    android:cacheColorHint="#00000000"
 			android:layout_width="fill_parent" 
 			android:layout_height="wrap_content"
-			android:fastScrollEnabled="true"
 			android:textSize="16sp" />
-		<TextView android:id="@+id/android:empty" 
+	    <TextView android:id="@+id/android:empty" 
 			android:layout_width="fill_parent" 
 			android:layout_height="wrap_content" 
 			android:text="@+string/nobooks"

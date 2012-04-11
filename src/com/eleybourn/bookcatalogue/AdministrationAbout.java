@@ -96,24 +96,34 @@ public class AdministrationAbout extends Activity {
 				return;
 			}
 		});
-		TextView contact = (TextView) findViewById(R.id.contact);
-		contact.setOnClickListener(new OnClickListener() {
+		TextView contact1 = (TextView) findViewById(R.id.contact1);
+		contact1.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				try {
-					Intent msg = new Intent(Intent.ACTION_SEND);
-					msg.setType("text/plain");
-					msg.putExtra(Intent.EXTRA_EMAIL, new String[]{res.getString(R.string.contact)});
-					String subject = "[" + res.getString(R.string.app_name) + "] ";
-					msg.putExtra(Intent.EXTRA_SUBJECT, subject);
-					AdministrationAbout.this.startActivity(Intent.createChooser(msg, "Send email..."));
-					//startActivity(msg);
-				} catch (ActivityNotFoundException e) {
-					Logger.logError(e);
-				}
+				sendContactEmail(R.string.contact1);
+				return;
+			}
+		});
+		TextView contact2 = (TextView) findViewById(R.id.contact2);
+		contact2.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				sendContactEmail(R.string.contact2);
 				return;
 			}
 		});
 	}
 
+	private void sendContactEmail(int stringId) {
+		try {
+			Intent msg = new Intent(Intent.ACTION_SEND);
+			msg.setType("text/plain");
+			msg.putExtra(Intent.EXTRA_EMAIL, new String[]{getString(stringId)});
+			String subject = "[" + getString(R.string.app_name) + "] ";
+			msg.putExtra(Intent.EXTRA_SUBJECT, subject);
+			AdministrationAbout.this.startActivity(Intent.createChooser(msg, "Send email..."));
+		} catch (ActivityNotFoundException e) {
+			Logger.logError(e);
+		}		
+	}
 }

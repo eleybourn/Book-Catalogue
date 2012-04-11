@@ -1,17 +1,37 @@
 package com.eleybourn.bookcatalogue;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.ArrayList;
+
+import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer.SyncLock;
 
 import android.os.Bundle;
 import android.os.Message;
+import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 
 /**
  * Class to handle import in a separate thread.
  *
- * @author Grunthos
+ * @author Philip Warner
  */
 public class ImportThread extends ManagedTask {
-	public ArrayList<String> mExport = null;
+	public static String UTF8 = "utf8";
+	public static int BUFFER_SIZE = 8192;
+
+	private final File mFile;
+	private String mFileSpec;
+	private boolean mFileIsForeign;
+	private boolean mImageCopyFailed = false;
+	private final String mSharedStoragePath;
 	private CatalogueDBAdapter mDbHelper;
 	
 	public class ImportException extends RuntimeException {
@@ -29,12 +49,16 @@ public class ImportThread extends ManagedTask {
 		void onFinish();
 	}
 
-	public ImportThread(TaskManager manager, TaskHandler taskHandler, ArrayList<String> export) {
+	public ImportThread(TaskManager manager, TaskHandler taskHandler, String fileSpec) throws IOException {
 		super(manager, taskHandler);
-		mExport = export;
+		mFile = new File(fileSpec);
+		mFileSpec = mFile.getCanonicalPath();
+		mSharedStoragePath = StorageUtils.getSharedStorage().getCanonicalPath();
+
 		mDbHelper = new CatalogueDBAdapter(manager.getAppContext());
 		mDbHelper.open();
-		manager.setMax(this, mExport.size());
+		
+		mFileIsForeign = !(mFileSpec.startsWith(mSharedStoragePath));
 		//Debug.startMethodTracing();
 	}
 
@@ -56,15 +80,50 @@ public class ImportThread extends ManagedTask {
 
 	@Override
 	protected void onMessage(Message msg) {
-		// Nothing to do. we don't sent any
+		// Nothing to do. we don't send any
 	}
 
+	/**
+	 * This program reads a text file line by line and print to the console. It uses
+	 * FileOutputStream to read the file.
+	 */
+	private ArrayList<String> readFile(String fileSpec) {
+		ArrayList<String> importedString = new ArrayList<String>();
+
+		try {
+			BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(fileSpec), UTF8),BUFFER_SIZE);
+			String line = "";
+			while ((line = in.readLine()) != null) {
+				importedString.add(line);
+			}
+			in.close();
+		} catch (FileNotFoundException e) {
+			doToast(BookCatalogueApp.getResourceString(R.string.import_failed));
+			Logger.logError(e);
+		} catch (IOException e) {
+			doToast(BookCatalogueApp.getResourceString(R.string.import_failed));
+			Logger.logError(e);
+		}
+		return importedString;
+	}
+	
+	
 	@Override
 	protected void onRun() {
+		// Initialize
+		mImageCopyFailed = false;
+
+		ArrayList<String> export = readFile(mFileSpec);
+		
+		if (export == null || export.size() == 0)
+			return;
+
+		mManager.setMax(this, export.size());
+
 		// Container for values.
 		Bundle values = new Bundle();
 
-		String[] names = returnRow(mExport.get(0), true);
+		String[] names = returnRow(export.get(0), true);
 
 		// Store the names so we can check what is present
 		for(int i = 0; i < names.length; i++) {
@@ -85,10 +144,11 @@ public class ImportThread extends ManagedTask {
 		}
 
 		// Make sure required fields are present.
-		// TODO: Rationalize import to allow updates using 1 or 2 columns. For now we require complete data.
-		// TODO: Do a search if mandatory columns missing (eg. allow 'import' of a list of ISBNs).
-		// TODO: Only make some columns mandatory if the ID is not in import, or not in DB (ie. if not an update)
-		requireColumn(values, CatalogueDBAdapter.KEY_ROWID);
+		// ENHANCE: Rationalize import to allow updates using 1 or 2 columns. For now we require complete data.
+		// ENHANCE: Do a search if mandatory columns missing (eg. allow 'import' of a list of ISBNs).
+		// ENHANCE: Only make some columns mandatory if the ID is not in import, or not in DB (ie. if not an update)
+		// ENHANCE: Export/Import should use GUIDs for book IDs, and put GUIDs on Image file names.
+		requireColumnOr(values, CatalogueDBAdapter.KEY_ROWID, DatabaseDefinitions.DOM_BOOK_UUID.name);
 		requireColumnOr(values, CatalogueDBAdapter.KEY_FAMILY_NAME,
 								CatalogueDBAdapter.KEY_AUTHOR_FORMATTED,
 								CatalogueDBAdapter.KEY_AUTHOR_NAME,
@@ -100,33 +160,55 @@ public class ImportThread extends ManagedTask {
 
 		long lastUpdate = 0;
 		/* Iterate through each imported row */
+		SyncLock txLock = null;
 		try {
-			while (row < mExport.size() && !isCancelled()) {
+			while (row < export.size() && !isCancelled()) {
 				if (inTx && txRowCount > 10) {
 					mDbHelper.setTransactionSuccessful();
-					mDbHelper.endTransaction();
+					mDbHelper.endTransaction(txLock);
 					inTx = false;
 				}
 				if (!inTx) {
-					mDbHelper.startTransaction();
+					txLock = mDbHelper.startTransaction(true);
 					inTx = true;
 					txRowCount = 0;
 				}
 				txRowCount++;
 
 				// Get row
-				String[] imported = returnRow(mExport.get(row), fullEscaping);
+				String[] imported = returnRow(export.get(row), fullEscaping);
 
 				values.clear();
 				for(int i = 0; i < names.length; i++) {
 					values.putString(names[i], imported[i]);
 				}
 
+				boolean hasNumericId;
 				// Validate ID
-				String idVal = values.getString(CatalogueDBAdapter.KEY_ROWID.toLowerCase());
-				if (idVal == "") {
-					idVal = "0";
-					values.putString(CatalogueDBAdapter.KEY_ROWID, idVal);
+				String idStr = values.getString(CatalogueDBAdapter.KEY_ROWID.toLowerCase());
+				Long idLong;
+				if (idStr == "") {
+					hasNumericId = false;
+					idLong = 0L;
+				} else {
+					try {
+						idLong = Long.parseLong(idStr);
+						hasNumericId = true;
+					} catch (Exception e) {
+						hasNumericId = false;
+						idLong = 0L;
+					}
+				}
+				if (!hasNumericId) {
+					values.putString(CatalogueDBAdapter.KEY_ROWID, "0");					
+				}
+
+				boolean hasUuid;
+				String uuidVal = values.getString(DatabaseDefinitions.DOM_BOOK_UUID.name.toLowerCase());
+				if (uuidVal != null && !uuidVal.equals("")) {
+					hasUuid = true;
+				} else {
+					hasUuid = false;
 				}
 
 				requireNonblank(values, row, CatalogueDBAdapter.KEY_TITLE);
@@ -162,7 +244,7 @@ public class ImportThread extends ManagedTask {
 					// Now build the array for authors
 					ArrayList<Author> aa = Utils.getAuthorUtils().decodeList(authorDetails, '|', false);
 					Utils.pruneList(mDbHelper, aa);
-					values.putParcelableArrayList(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, aa);
+					values.putSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, aa);
 				}
 
 				// Keep series handling local
@@ -185,8 +267,9 @@ public class ImportThread extends ManagedTask {
 					}
 					// Handle the series
 					ArrayList<Series> sa = Utils.getSeriesUtils().decodeList(seriesDetails, '|', false);
+					Utils.pruneSeriesList(sa);
 					Utils.pruneList(mDbHelper, sa);
-					values.putParcelableArrayList(CatalogueDBAdapter.KEY_SERIES_ARRAY, sa);				
+					values.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, sa);				
 				}
 				
 				
@@ -196,28 +279,59 @@ public class ImportThread extends ManagedTask {
 				}
 
 				try {
-					if (idVal.equals("0")) {
-						// Always import empty IDs...even if the are duplicates.
+					if (!hasUuid && !hasNumericId) {
+						// Always import empty IDs...even if they are duplicates.
 						Long id = mDbHelper.createBook(values);
-						idVal = id.toString();
-						values.putString(CatalogueDBAdapter.KEY_ROWID, idVal);
+						values.putString(CatalogueDBAdapter.KEY_ROWID, id.toString());
+						// Would be nice to import a cover, but with no ID/UUID thats not possible
 						mImportCreated++;
 					} else {
-						Long id;
-						try {
-							id = Long.parseLong(idVal);
-						} catch (Exception e) {
-							id = 0L;
-						}
-						if (id == 0 || !mDbHelper.checkBookExists(id)) {
-							id = mDbHelper.createBook(id, values);
-							mImportCreated++;
-							idVal = id.toString();
-							values.putString(CatalogueDBAdapter.KEY_ROWID, idVal);
+						boolean exists;
+						// Save the original ID from the file for use in checing for images
+						Long idFromFile = idLong;
+						// newId will get the ID allocated if a book is created
+						Long newId = 0L;
+
+						// Let the UUID trump the ID; we may be importing someone else's list with bogus IDs
+						if (hasUuid) {
+							Long l = mDbHelper.getBookIdFromUuid(uuidVal);
+							if (l != 0) {
+								exists = true;
+								idLong = l;
+							} else {
+								exists = false;
+								// We have a UUID, but book does not exist. We will create a book.
+								// Make sure the ID (if present) is not already used.
+								if (hasNumericId && mDbHelper.checkBookExists(idLong))
+									idLong = 0L;
+							}
+
 						} else {
-							// Book exists and should be updated if it has changed
-							mDbHelper.updateBook(id, values, false);
+							exists = mDbHelper.checkBookExists(idLong);							
+						}
+
+						if (exists) {
+							mDbHelper.updateBook(idLong, values, false);								
 							mImportUpdated++;
+						} else {
+							newId = mDbHelper.createBook(idLong, values);
+							mImportCreated++;
+							values.putString(CatalogueDBAdapter.KEY_ROWID, newId.toString());							
+							idLong = newId;
+						}
+						// When importing a file that has an ID or UUID, try to import a cover.
+						if (hasUuid) {
+							// Only copy UUID files if they are foreign...since they already exists, otherwise.
+							if (mFileIsForeign)
+								copyCoverImageIfMissing(uuidVal);							
+						} else {
+							if (idFromFile != 0) {
+								// This will be a rename or a copy
+								if (mFileIsForeign)
+									copyCoverImageIfMissing(idFromFile, idLong);
+								else
+									renameCoverImageIfMissing(idFromFile, idLong);																
+							}
 						}
 					}
 				} catch (Exception e) {
@@ -267,18 +381,195 @@ public class ImportThread extends ManagedTask {
 
 				// Increment row count
 				row++;
-			}			
+			}	
+		} catch (Exception e) {
+			Logger.logError(e);
+			throw new RuntimeException(e);
 		} finally {
 			if (inTx) {
 				mDbHelper.setTransactionSuccessful();
-				mDbHelper.endTransaction();
+				mDbHelper.endTransaction(txLock);
 			}
 			mDbHelper.purgeAuthors();
 			mDbHelper.purgeSeries();
 		}
+		try {
+			mDbHelper.analyzeDb();
+		} catch (Exception e) {
+			// Do nothing. Not a critical step.
+			Logger.logError(e);
+		}
 		doToast("Import Complete");
 	}
 
+	private File findExternalCover(String name) {
+		// Find the original, if present.
+		File orig = new File(mFile.getParent() + "/" + name + ".jpg");
+		if (!orig.exists()) {
+			orig = new File(mFile.getParent() + "/" + name + ".png");
+		}
+
+		// Nothing to copy?
+		if (!orig.exists())
+			return null;
+		else
+			return orig;
+		
+	}
+
+	/**
+	 * Find the current cover file (or new file) based on the passed source and UUID.
+	 * 
+	 * @param orig		Original file to be copied/renamed if no existing file.
+	 * @param newUuid	UUID of file
+	 * 
+	 * @return			Existing file (if length > 0), or new file object
+	 */
+	private File getNewCoverFile(File orig, String newUuid) {
+		File newFile;
+		// Check for ANY current image; delete empty ones and retry
+		newFile = CatalogueDBAdapter.fetchThumbnailByUuid(newUuid);
+		while (newFile.exists()) {
+			if (newFile.length() > 0)
+				return newFile;
+			else
+				newFile.delete();
+			newFile = CatalogueDBAdapter.fetchThumbnailByUuid(newUuid);
+		}
+		
+		// Get the new path based on the input file type.
+		if (orig.getAbsolutePath().toLowerCase().endsWith(".png")) 
+			newFile = new File(mSharedStoragePath + "/" + newUuid + ".png");
+		else
+			newFile = new File(mSharedStoragePath + "/" + newUuid + ".jpg");
+
+		return newFile;
+	}
+	/**
+	 * Copy a specified source file into the default cover location for a new file.
+	 * DO NO OVERWRITE EXISTING FILES.
+	 * 
+	 * @param orig
+	 * @param newUuid
+	 * @throws IOException
+	 */
+	private void copyFileToCoverImageIfMissing(File orig, String newUuid) throws IOException {
+		// Nothing to copy?
+		if (orig == null || !orig.exists() || orig.length() == 0)
+			return;
+
+		// Check for ANY current image
+		File newFile = getNewCoverFile(orig, newUuid);
+		if (newFile.exists())
+			return;
+
+		// Copy it.
+		InputStream in = null;
+		OutputStream out = null;
+		try {
+			// Open in & out
+			in = new FileInputStream(orig);
+			out = new FileOutputStream(newFile);
+			// Get a buffer
+			byte[] buffer = new byte[8192];
+			int nRead = 0;
+			// Copy
+			while( (nRead = in.read(buffer)) > 0){
+			    out.write(buffer, 0, nRead);
+			}
+			// Close both. We close them here so exceptions are signalled
+			in.close();
+			in = null;
+			out.close();
+			out = null;
+		} finally {
+			// If not already closed, close.
+			try {
+				if (in != null)
+					in.close();
+			} catch (Exception e) {};
+			try {
+				if (out != null)
+					out.close();
+			} catch (Exception e) {};
+		}
+	}
+
+	/**
+	 * Rename/move a specified source file into the default cover location for a new file.
+	 * DO NO OVERWRITE EXISTING FILES.
+	 * 
+	 * @param orig
+	 * @param newUuid
+	 * @throws IOException
+	 */
+	private void renameFileToCoverImageIfMissing(File orig, String newUuid) throws IOException {
+		// Nothing to copy?
+		if (orig == null || !orig.exists() || orig.length() == 0)
+			return;
+
+		// Check for ANY current image
+		File newFile = getNewCoverFile(orig, newUuid);
+		if (newFile.exists())
+			return;
+
+		orig.renameTo(newFile);
+	}
+
+	/**
+	 * Copy the ID-based cover from its current location to the correct location in shared 
+	 * storage, if it exists.
+	 * 
+	 * @param externalId		The file ID in external media
+	 * @param newId				The new file ID
+	 * @throws IOException 
+	 */
+	private void renameCoverImageIfMissing(long externalId, long newId) throws IOException {
+		File orig = findExternalCover(Long.toString(externalId));
+		// Nothing to copy?
+		if (orig == null || !orig.exists() || orig.length() == 0)
+			return;
+
+		String newUuid = mDbHelper.getBookUuid(newId);
+
+		renameFileToCoverImageIfMissing(orig, newUuid);
+	}
+
+	/**
+	 * Copy the ID-based cover from its current location to the correct location in shared 
+	 * storage, if it exists.
+	 * 
+	 * @param externalId		The file ID in external media
+	 * @param newId				The new file ID
+	 * @throws IOException 
+	 */
+	private void copyCoverImageIfMissing(long externalId, long newId) throws IOException {
+		File orig = findExternalCover(Long.toString(externalId));
+		// Nothing to copy?
+		if (orig == null || !orig.exists() || orig.length() == 0)
+			return;
+
+		String newUuid = mDbHelper.getBookUuid(newId);
+
+		copyFileToCoverImageIfMissing(orig, newUuid);
+	}
+
+	/**
+	 * Copy the UUID-based cover from its current location to the correct location in shared 
+	 * storage, if it exists.
+	 * 
+	 * @param uuid
+	 * @throws IOException 
+	 */
+	private void copyCoverImageIfMissing(String uuid) throws IOException {
+		File orig = findExternalCover(uuid);
+		// Nothing to copy?
+		if (orig == null || !orig.exists())
+			return;
+
+		copyFileToCoverImageIfMissing(orig, uuid);
+	}
+	
 	private final static char QUOTE_CHAR = '"';
 	private final static char ESCAPE_CHAR = '\\';
 	private final static char SEPARATOR = ',';

@@ -4,8 +4,10 @@
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
 	android:orientation="vertical"
+	android:background="@drawable/bc_background_gradient"
 	android:id="@+id/edit_book_fields" >
-	<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
+
+   	<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginBottom="50dip">
@@ -15,11 +17,30 @@
 			android:orientation="vertical"
 			android:padding="10sp">
 		
-			<ImageView android:id="@+id/row_img" 
+		    <FrameLayout
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:layout_weight="1"
-			/>
+				>
+				<!--  
+				<ImageView
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:scaleType="center"
+					android:src="@drawable/lectern_200x200"
+				/>
+				-->
+				<ImageView android:id="@+id/row_img" 
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:gravity="center"
+					android:background="#80808080"
+					android:padding="5dp"
+					android:layout_gravity="center"
+				/>
+		    </FrameLayout>		        
 
 			<Button android:id="@+id/author" 
 				android:layout_width="fill_parent"
@@ -91,7 +112,7 @@
 				<Button android:id="@+id/bookshelf" 
 					android:layout_width="120dip"
 					android:layout_height="wrap_content" 
-					android:text="@string/bookshelves"
+					android:text="@string/select_bookshelves"
 					android:nextFocusDown="@+id/pages"
 					/>
 				<TextView android:id="@+id/bookshelf_text" 
@@ -117,12 +138,38 @@
 				android:inputType="numberDecimal"
 				/>
 			
+
+			<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+				android:orientation="horizontal"
+				android:layout_width="fill_parent" 
+				android:layout_height="wrap_content" 
+				>
+
+				<ImageView android:id="@+id/format_button" 
+					android:layout_width="wrap_content" 
+					android:layout_height="wrap_content" 
+					android:layout_alignParentRight="true"
+					android:src="@drawable/expander_ic_maximized"
+					android:paddingLeft="5sp"
+					android:focusable="true"
+					/>
+				<AutoCompleteTextView android:id="@+id/format" 
+					android:layout_alignParentLeft="true"
+					android:layout_toLeftOf="@id/format_button"
+					android:layout_width="wrap_content" 
+					android:layout_height="wrap_content" 
+					android:hint="@string/format"
+					android:completionThreshold="2"
+					/>
+			</RelativeLayout>
+			<!-- 
 			<Spinner android:id="@+id/format" 
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content" 
 				android:layout_weight="1"
 				/>
-			
+			 -->
+
 			<AutoCompleteTextView android:id="@+id/genre" 
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content" 

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -41,50 +42,10 @@ public class ExportThread extends ManagedTask {
 		context = thisContext;
 		mDbHelper = new CatalogueDBAdapter(ctx.getAppContext());
 		mDbHelper.open();
-
 	}
 
 	@Override
 	protected boolean onFinish() {
-		AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-		alertDialog.setTitle(R.string.email_export);
-		alertDialog.setIcon(android.R.drawable.ic_menu_send);
-		alertDialog.setButton(context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				// setup the mail message
-				final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND_MULTIPLE);
-				emailIntent.setType("plain/text");
-				//emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, context.getString(R.string.debug_email).split(";"));
-				String subject = "[" + context.getString(R.string.app_name) + "] " + context.getString(R.string.export_data);
-				emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
-				//emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, context.getString(R.string.debug_body));
-				//has to be an ArrayList
-				ArrayList<Uri> uris = new ArrayList<Uri>();
-				// Find all files of interest to send
-				try {
-					File fileIn = new File(StorageUtils.getSharedStoragePath() + "/" + "export.csv");
-					Uri u = Uri.fromFile(fileIn);
-					uris.add(u);
-					// Send it, if there are any files to send.
-					emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-					context.startActivity(Intent.createChooser(emailIntent, "Send mail..."));        	
-				} catch (NullPointerException e) {
-					Logger.logError(e);
-					Toast.makeText(context, R.string.export_failed_sdcard, Toast.LENGTH_LONG).show();
-				}
-
-				return;
-			}
-		}); 
-		alertDialog.setButton2(context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				//do nothing
-				return;
-			}
-		}); 
-		alertDialog.show();
-
-		
 		try {
 			ExportHandler h = (ExportHandler)getTaskHandler();
 			if (h != null) {
@@ -110,7 +71,8 @@ public class ExportThread extends ManagedTask {
 			mManager.doToast("Export Failed - Could not write to SDCard");
 			return;			
 		}
-		
+		mManager.doProgress(getString(R.string.export_starting_ellipsis));
+
 		StringBuilder export = new StringBuilder(
 			'"' + CatalogueDBAdapter.KEY_ROWID + "\"," + 			//0
 			'"' + CatalogueDBAdapter.KEY_AUTHOR_DETAILS + "\"," + 	//2

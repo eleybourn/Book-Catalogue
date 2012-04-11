@@ -574,5 +574,7 @@
 <string name="menu_edit_format">Edit Format&#8230;</string>
 <string name="edit_format_name">Edit Format Name</string>
 <string name="name_can_not_be_blank">Name can not be blank</string>
+<item name="ACTIVITY_ADMIN_FINISH" type="id"/>
+<string name="export_starting_ellipsis">Export starting&#8230;</string>
 </resources>
 

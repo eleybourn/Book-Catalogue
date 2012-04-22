@@ -20,6 +20,7 @@
 
 package com.eleybourn.bookcatalogue;
 
+import android.app.Activity;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -114,5 +115,17 @@ public class Administration extends TabActivity {
 		setResult(resultCode, intent);
 		finish();
 	}
+
+	/**
+	 * Load the Administration Activity
+	 */
+	public static void adminPage(Activity a, String auto, int activityAdmin) {
+		Intent i = new Intent(a, Administration.class);
+		if (!auto.equals("")) {
+			i.putExtra(AdministrationFunctions.DOAUTO, auto);
+		}
+		a.startActivityForResult(i, activityAdmin);
+	}
+
 
 }

@@ -309,7 +309,6 @@ public class BooklistStyle implements Iterable<BooklistGroup>, Serializable {
 	 *
 	 * @return
 	 */
-	// RELEASE Verify isUserDefined() is correct
 	public boolean isUserDefined() {
 		return (mNameStringId == 0 || mRowId != 0);
 	}

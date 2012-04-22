@@ -33,6 +33,8 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnDismissListener;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -73,6 +75,51 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	final ExportThread.ExportHandler mExportHandler = new ExportThread.ExportHandler() {
 		@Override
 		public void onFinish() {
+
+			AlertDialog alertDialog = new AlertDialog.Builder(AdministrationFunctions.this).create();
+			alertDialog.setTitle(R.string.email_export);
+			alertDialog.setIcon(android.R.drawable.ic_menu_send);
+			alertDialog.setButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					// setup the mail message
+					final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND_MULTIPLE);
+					emailIntent.setType("plain/text");
+					//emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, context.getString(R.string.debug_email).split(";"));
+					String subject = "[" + getString(R.string.app_name) + "] " + getString(R.string.export_data);
+					emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
+					//emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, context.getString(R.string.debug_body));
+					//has to be an ArrayList
+					ArrayList<Uri> uris = new ArrayList<Uri>();
+					// Find all files of interest to send
+					try {
+						File fileIn = new File(StorageUtils.getSharedStoragePath() + "/" + "export.csv");
+						Uri u = Uri.fromFile(fileIn);
+						uris.add(u);
+						// Send it, if there are any files to send.
+						emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+						startActivity(Intent.createChooser(emailIntent, "Send mail..."));        	
+					} catch (NullPointerException e) {
+						Logger.logError(e);
+						Toast.makeText(AdministrationFunctions.this, R.string.export_failed_sdcard, Toast.LENGTH_LONG).show();
+					}
+
+					dialog.dismiss();
+				}
+			}); 
+			alertDialog.setButton2(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					//do nothing
+					dialog.dismiss();
+				}
+			}); 
+
+			alertDialog.setOnDismissListener(new OnDismissListener() {
+				@Override
+				public void onDismiss(DialogInterface dialog) {
+					if (finish_after)
+						finish();
+				}});
+			alertDialog.show();
 		}
 	};
 
@@ -115,7 +162,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			mDbHelper.open();
 			setContentView(R.layout.administration_functions);
 			Bundle extras = getIntent().getExtras();
-			if (extras != null && extras.containsKey("DOAUTO")) {
+			if (extras != null && extras.containsKey(DOAUTO)) {
 				try {
 					if (extras.getString(DOAUTO).equals("export")) {
 						finish_after = true;
@@ -546,7 +593,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 				importData(files.get(0).getAbsolutePath());
 			} else {
 				// If more than one, ask user which file
-				// RELEASE: Consider asking about importing cover images.
+				// ENHANCE: Consider asking about importing cover images.
 				StandardDialogs.selectFileDialog(getLayoutInflater(), getString(R.string.more_than_one_export_file_blah), files, new SimpleDialogOnClickListener() {
 					@Override
 					public void onClick(SimpleDialogItem item) {
@@ -590,6 +637,9 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		if (mTaskManager != null) {
+			mTaskManager.close();
+		}
 		mDbHelper.close();
 	} 
 

@@ -31,8 +31,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 
@@ -48,6 +50,9 @@ import android.os.Handler;
  * @author Philip Warner
  */
 public class StartupActivity extends Activity {
+	private static final String STATE_OPENED = "state_opened";
+	private static final int BACKUP_PROMPT_WAIT = 5;
+
 	/** Indicates the upgrade message has been shown */
 	private static boolean mUpgradeMessageShown = false;
 	/** Flag to indicate FTS rebuild is required at startup */
@@ -62,6 +67,9 @@ public class StartupActivity extends Activity {
 	/** Flag indicating THIS instance was really the startup instance */
 	private boolean mWasReallyStartup = false;
 	
+	/** Flag indicating an export is required after startup */
+	private boolean mExportRequired = false;
+
 	/** Database connection */
 	//CatalogueDBAdapter mDb = null;
 
@@ -237,10 +245,52 @@ public class StartupActivity extends Activity {
 		startActivity(i);
 	}
 
+	public void stage3Startup() {
+		BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
+		int opened = prefs.getInt(STATE_OPENED, BACKUP_PROMPT_WAIT);
+
+		Editor ed = prefs.edit();
+		if (opened == 0) {
+			ed.putInt(STATE_OPENED, BACKUP_PROMPT_WAIT);
+		} else {
+			ed.putInt(STATE_OPENED, opened - 1);
+		}
+		ed.commit();			
+
+		
+		mExportRequired = false;
+
+		if (opened == 0) {
+
+			AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(R.string.backup_request).create();
+			alertDialog.setTitle(R.string.backup_title);
+			alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
+			alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					mExportRequired = true;
+					dialog.dismiss();
+				}
+			}); 
+			alertDialog.setButton2("Cancel", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			}); 
+			alertDialog.setOnDismissListener(new OnDismissListener() {
+				@Override
+				public void onDismiss(DialogInterface dialog) {
+					stage4Startup();
+				}});
+			alertDialog.show();
+		} else {
+			stage4Startup();
+		}
+	}
+
 	/**
 	 * Start whatever activity the user expects
 	 */
-	private void stage3Startup() {
+	private void stage4Startup() {
 		BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
 		Bundle extras = this.getIntent().getExtras();
 
@@ -251,6 +301,9 @@ public class StartupActivity extends Activity {
 		} else {			
 			doMainMenu();
 		}
+
+		if (mExportRequired)
+			Administration.adminPage(StartupActivity.this, "export", R.id.ACTIVITY_ADMIN);
 
 		// We are done
 		finish();		

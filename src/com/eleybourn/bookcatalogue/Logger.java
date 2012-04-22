@@ -72,15 +72,13 @@ public class Logger {
 	 * Clear the error log each time the app is started; preserve previous if non-empty
 	 */
 	public static void clearLog() {
-		// RELEASE: XXXX: RE_ENABLE LOG PURGING TODO: RE_ENABLE LOG PURGING
-		if (true) return;
-
 		try {
 			try { 
 				File orig = new File(StorageUtils.getErrorLog());
-				File backup = new File(StorageUtils.getErrorLog() + ".bak");
-				if (orig.exists() && orig.length() > 0)
-					orig.renameTo(backup);
+				if (orig.exists() && orig.length() > 0) {
+					File backup = new File(StorageUtils.getErrorLog() + ".bak");
+					orig.renameTo(backup);					
+				}
 			} catch (Exception e) {
 				// Ignore backup failure...
 			}

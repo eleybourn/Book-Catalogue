@@ -796,7 +796,7 @@ public class BooklistBuilder {
 				if (sdi.domain.type.toLowerCase().equals("text")) {
 					indexCols.append(" Collate UNICODE");
 
-					// RELEASE: *If* UNICODE is case-sensitive, handle it.
+					// *If* UNICODE is case-sensitive, handle it.
 					if (unicodeIsCs)
 						sortCols.append("lower(");
 					sortCols.append(sdi.domain.name);

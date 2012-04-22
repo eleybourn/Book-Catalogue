@@ -71,6 +71,9 @@ public class TaskManager {
 	// Current value of progress.
 	int mProgressCount = 0;
 
+	/** Flag indicating the TaskManager is terminating; will close after last task exits */
+	private boolean mIsClosing = false;
+
 	// List of tasks being managed by this object
 	ArrayList<TaskInfo> mTasks = new ArrayList<TaskInfo> ();
 
@@ -160,6 +163,9 @@ public class TaskManager {
 	 * @param t		Task to add
 	 */
 	void addTask(ManagedTask t) {
+		if (mIsClosing)
+			throw new RuntimeException("Can not add a task when closing down");
+
 		synchronized(mTasks) {
 			if (getTaskInfo(t) == null)
 					mTasks.add(new TaskInfo(t));
@@ -172,6 +178,8 @@ public class TaskManager {
 	 * @param task
 	 */
 	public void taskEnded(ManagedTask task) {
+		boolean doClose;
+		
 		// Remove from the list of tasks. From now on, it should
 		// not send any progress requests.
 		synchronized(mTasks) {
@@ -181,6 +189,7 @@ public class TaskManager {
 					break;
 				}
 			}
+			doClose = (mIsClosing && mTasks.size() == 0);
 		}
 
 		// Tell all listeners that it has ended.
@@ -199,6 +208,14 @@ public class TaskManager {
 
 		// Update the progress dialog
 		updateProgressDialog();
+		
+		// Schedule the close()
+		if (doClose)
+			this.postToUiThread(new Runnable() {
+				@Override
+				public void run() {
+					close();
+				}});
 	}
 
 	/**
@@ -218,7 +235,7 @@ public class TaskManager {
 		synchronized(this) {
 			if (mProgress != null) {
 				try { 
-					mProgress.dismiss(); 
+					mProgress.dismiss();
 				} catch (Exception e) {
 					Logger.logError(e);
 				};
@@ -578,6 +595,28 @@ public class TaskManager {
 			updateProgressDialog();
 			return;
 		}
+	}
+
+	private void doClose() {
+		destroyProgress();
+		mAppContext = null;
+		mActivity = null;	
+		mUiThread = null;
+		mMessageHandler = null;		
+	}
+
+	/**
+	 * Cancel all tasks and close dialogs then cleanup; if no tasks running, just close dialogs and cleanup
+	 */
+	protected void close() {
+		mIsClosing = true;
+		disconnect();
+		synchronized(mTasks) {
+			for(TaskInfo t : mTasks) {
+				t.task.cancelTask();
+			}
+		}
+		doClose();
 	}
 
 	@Override

@@ -23,6 +23,7 @@ package com.eleybourn.bookcatalogue;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
 import com.eleybourn.bookcatalogue.goodreads.SendOneBookTask;
@@ -78,7 +79,6 @@ public class BookCatalogue extends ExpandableListActivity {
 	
 	private static final int ACTIVITY_SORT=2;
 	private static final int ACTIVITY_ADMIN=5;
-	private static final int ACTIVITY_ADMIN_FINISH=6;
 	
 	private CatalogueDBAdapter mDbHelper;
 	private static final int SORT_BY_AUTHOR_EXPANDED = MenuHandler.FIRST + 1; 
@@ -228,7 +228,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
 				alertDialog.setButton(BookCatalogue.this.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
-						adminPage("update_fields", ACTIVITY_ADMIN);
+						Administration.adminPage(BookCatalogue.this, "update_fields", ACTIVITY_ADMIN);
 						return;
 					}
 				}); 
@@ -560,7 +560,8 @@ public class BookCatalogue extends ExpandableListActivity {
 
 				if (holder.image.show) {
 					//CatalogueDBAdapter.fetchThumbnailIntoImageView(cursor.getId(),holder.image.view, LIST_THUMBNAIL_SIZE, LIST_THUMBNAIL_SIZE, true, mTaskQueue);
-					mUtils.fetchBookCoverIntoImageView(holder.image.view, LIST_THUMBNAIL_SIZE, LIST_THUMBNAIL_SIZE, true, rowView.getBookUuid(), true, true);
+					mUtils.fetchBookCoverIntoImageView(holder.image.view, LIST_THUMBNAIL_SIZE, LIST_THUMBNAIL_SIZE, true, rowView.getBookUuid(), 
+														BooklistPreferencesActivity.isThumbnailCacheEnabled(), BooklistPreferencesActivity.isBackgroundThumbnailsEnabled());
 				}
 
 				if (holder.read.show) {
@@ -1582,17 +1583,6 @@ public class BookCatalogue extends ExpandableListActivity {
 		
 	}
 	
-	/**
-	 * Load the Administration Activity
-	 */
-	private void adminPage(String auto, int activityAdmin) {
-		Intent i = new Intent(this, Administration.class);
-		if (!auto.equals("")) {
-			i.putExtra(AdministrationFunctions.DOAUTO, auto);
-		}
-		startActivityForResult(i, activityAdmin);
-	}
-
 	@Override
 	public boolean onChildClick(ExpandableListView l, View v, int position, int childPosition, long id) {
 		boolean result = super.onChildClick(l, v, position, childPosition, id);
@@ -1657,7 +1647,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			// We call bookshelf not fillData in case the bookshelves have been updated.
 			bookshelf();
 			break;
-		case ACTIVITY_ADMIN_FINISH:
+		case R.id.ACTIVITY_ADMIN_FINISH:
 			finish();
 			break;
 		}
@@ -1719,50 +1709,27 @@ public class BookCatalogue extends ExpandableListActivity {
 		super.onDestroy();
 	} 
 	
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			if (search_query.equals("")) {
-				int opened = mPrefs.getInt(STATE_OPENED, BACKUP_PROMPT_WAIT);
-				SharedPreferences.Editor ed = mPrefs.edit();
-				if (opened == 0){
-					ed.putInt(STATE_OPENED, BACKUP_PROMPT_WAIT);
-					ed.commit();
-					backupPopup();
-					return true;
-				} else {
-					ed.putInt(STATE_OPENED, opened - 1);
-					ed.commit();
-				}
-			}
-		}
-		return super.onKeyDown(keyCode, event);
-	}
+	//@Override
+	//public boolean onKeyDown(int keyCode, KeyEvent event) {
+	//	if (keyCode == KeyEvent.KEYCODE_BACK) {
+	//		if (search_query.equals("")) {
+	//			int opened = mPrefs.getInt(STATE_OPENED, BACKUP_PROMPT_WAIT);
+	//			SharedPreferences.Editor ed = mPrefs.edit();
+	//			if (opened == 0){
+	//				ed.putInt(STATE_OPENED, BACKUP_PROMPT_WAIT);
+	//				ed.commit();
+	//				BookCatalogueApp.backupPopup(this);
+	//				return true;
+	//			} else {
+	//				ed.putInt(STATE_OPENED, opened - 1);
+	//				ed.commit();
+	//			}
+	//		}
+	//	}
+	//	return super.onKeyDown(keyCode, event);
+	//}
 	
 	
-	/**
-	 * This will display a popup asking if the user would like to backup.
-	 */
-	public void backupPopup() {
-		AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(R.string.backup_request).create();
-		alertDialog.setTitle(R.string.backup_title);
-		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-		alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				adminPage("export", ACTIVITY_ADMIN_FINISH);
-				return;
-			}
-		}); 
-		alertDialog.setButton2("Cancel", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				finish();
-				return;
-			}
-		}); 
-		alertDialog.show();
-		return;
-	}
-
 	/**
 	 * When the adapter is changed, we need to rebuild the FastScroller.
 	 */

@@ -28,6 +28,7 @@ import android.widget.ImageView;
 
 import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTask;
 import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTaskContext;
+import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
 
 /**
  * Task to get a thumbnail from the sdcard or cover database. It will resize it as required and 
@@ -191,7 +192,7 @@ public class GetThumbnailTask implements SimpleTask {
 			ViewTagger.setTag(v, R.id.TAG_GET_THUMBNAIL_TASK, null);
 
 		if (mBitmap != null) {
-			if (!mWasInCache)  {
+			if (!mWasInCache && BooklistPreferencesActivity.isThumbnailCacheEnabled())  {
 				// Queue the image to be written to the cache. Do it in a separate queue to avoid delays in displaying image
 				// and to avoid contention -- the cache queue only has one thread. Tell the cache write it can be recycled
 				// if we don't have a valid view.

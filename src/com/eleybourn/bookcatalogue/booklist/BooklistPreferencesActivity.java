@@ -52,8 +52,12 @@ public class BooklistPreferencesActivity extends PreferencesBase {
 	public static final String TAG = "BookList.Global.";
 
 	/** Show flat backgrounds in Book lists */
+	public static final String PREF_BACKGROUND_THUMBNAILS = TAG + "BackgroundThumbnails";
+	/** Show flat backgrounds in Book lists */
+	public static final String PREF_CACHE_THUMBNAILS = TAG + "CacheThumbnails";
+	/** Show flat backgrounds in Book lists */
 	public static final String PREF_FLAT_BACKGROUND = TAG + "FlatBackground";
-	
+
 	/** Key added to resulting Intent */
 	public static final String PREF_CHANGED = TAG + "PrefChanged";
 	/** Always expand/collapse/preserve book list state */
@@ -91,6 +95,36 @@ public class BooklistPreferencesActivity extends PreferencesBase {
 		mFlatBackgroundListItems.add(false, R.string.textured_backgroud);
 		mFlatBackgroundListItems.add(true, R.string.plain_background_b_reduces_flicker_b);
 		mFlatBackgroundProperty.setGlobal(true);
+	}
+
+	/** Enable Thumbnail Cache property definition */
+	private static ItemEntries<Boolean> mCacheThumbnailsListItems = new ItemEntries<Boolean>();
+	private static BooleanListProperty mCacheThumbnailsProperty = new BooleanListProperty(
+				mCacheThumbnailsListItems, 
+				PREF_CACHE_THUMBNAILS, 
+				PropertyGroup.GRP_GENERAL, 
+				R.string.resizing_cover_thumbnails, null, PREF_CACHE_THUMBNAILS, false);
+	static {
+		mCacheThumbnailsListItems.add(null, R.string.use_default_setting);
+		mCacheThumbnailsListItems.add(false, R.string.resize_each_time);
+		mCacheThumbnailsListItems.add(true, R.string.cache_resized_thumbnails_for_later_use);
+		mCacheThumbnailsProperty.setWeight(100);
+		mCacheThumbnailsProperty.setGlobal(true);
+	}
+
+	/** Enable Background Thumbnail fetch property definition */
+	private static ItemEntries<Boolean> mBackgroundThumbnailsListItems = new ItemEntries<Boolean>();
+	private static BooleanListProperty mBackgroundThumbnailsProperty = new BooleanListProperty(
+				mBackgroundThumbnailsListItems, 
+				PREF_BACKGROUND_THUMBNAILS, 
+				PropertyGroup.GRP_GENERAL, 
+				R.string.generating_cover_thumbnails, null, PREF_BACKGROUND_THUMBNAILS, false);
+	static {
+		mBackgroundThumbnailsListItems.add(null, R.string.use_default_setting);
+		mBackgroundThumbnailsListItems.add(false, R.string.generate_immediately);
+		mBackgroundThumbnailsListItems.add(true, R.string.use_background_thread);
+		mBackgroundThumbnailsProperty.setWeight(100);
+		mBackgroundThumbnailsProperty.setGlobal(true);
 	}
 
 	/**
@@ -173,6 +207,8 @@ public class BooklistPreferencesActivity extends PreferencesBase {
 		// Add the locally constructed porperties
 		globalProps.add(mFlatBackgroundProperty);
 		globalProps.add(mBooklistStateProperty);
+		globalProps.add(mCacheThumbnailsProperty);
+		globalProps.add(mBackgroundThumbnailsProperty);
 
 		// Get the parent view and put the properties under it.
 		ViewGroup styleProps = (ViewGroup) findViewById(R.id.style_properties);
@@ -204,5 +240,23 @@ public class BooklistPreferencesActivity extends PreferencesBase {
 	 */
 	public static final boolean isBackgroundFlat() {
 		return mFlatBackgroundProperty.getResolvedValue();
+	}
+
+	/**
+	 * Convenience Accessor.
+	 * 
+	 * @return
+	 */
+	public static final boolean isThumbnailCacheEnabled() {
+		return mCacheThumbnailsProperty.getResolvedValue();
+	}
+
+	/**
+	 * Convenience Accessor.
+	 * 
+	 * @return
+	 */
+	public static final boolean isBackgroundThumbnailsEnabled() {
+		return mBackgroundThumbnailsProperty.getResolvedValue();
 	}
 }

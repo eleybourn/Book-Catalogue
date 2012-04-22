@@ -576,5 +576,11 @@
 <string name="name_can_not_be_blank">Name can not be blank</string>
 <item name="ACTIVITY_ADMIN_FINISH" type="id"/>
 <string name="export_starting_ellipsis">Export starting&#8230;</string>
+<string name="resizing_cover_thumbnails">Resizing cover thumbnails</string>
+<string name="resize_each_time">Resize each time they are needed (less storage, slower)</string>
+<string name="cache_resized_thumbnails_for_later_use">Cache resized thumbnails (more space, faster)</string>
+<string name="generating_cover_thumbnails">Generating cover thumbnails</string>
+<string name="use_background_thread">Use background thread (faster scrolling, delayed images)</string>
+<string name="generate_immediately">Generate immediately (slower scrolling, instant images)</string>
 </resources>
 

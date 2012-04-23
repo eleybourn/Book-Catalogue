@@ -216,10 +216,18 @@ public class BookISBNSearch extends ActivityWithTasks {
 			setContentView(R.layout.name_search);
 			ArrayAdapter<String> author_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, mDbHelper.getAllAuthors());
 			mAuthorText = (AutoCompleteTextView) findViewById(R.id.author);
-			mAuthorText.setAdapter(author_adapter);							
-
-			mShowResultsInList = (CheckBox) findViewById(R.id.showResultsInList);			
+			mAuthorText.setAdapter(author_adapter);	
 			
+			mShowResultsInList = (CheckBox) findViewById(R.id.showResultsInList);
+			
+			mShowResultsInList.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+			    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked){
+			        if(isChecked){
+			        	displayListHint();
+			        }
+			    }
+			});			
+
 			mTitleText = (EditText) findViewById(R.id.title);
 			mConfirmButton = (Button) findViewById(R.id.search);
 
@@ -284,6 +292,13 @@ public class BookISBNSearch extends ActivityWithTasks {
 				return;
 			}
 		}
+	}
+	
+	/*
+	 * Display hint about showing search results in list.
+	 */	
+	private void displayListHint(){
+		HintManager.displayHint(this, R.string.hint_show_search_results_in_list, null);
 	}
 
 	/*

@@ -321,7 +321,7 @@
 <string name="add_manually">Přidat ručně</string>
 <string name="scan_barcode">Naskenovat čárový kód</string>
 <string name="enter_barcode">Vložit ISBN kód</string>
-<string name="search_internet">Prohledat internet</string>
+<string name="search_internet">Hledat podle názvu a autora</string>
 <string name="show_results">Zobrazit výsledky</string>
 <string name="rebuild_fts">Obnovit FTS (neotestovaná funkce!)</string>
 <string name="search_in">Vyhledat v</string>
@@ -562,4 +562,14 @@
 <string name="menu_edit_format">Upravit formát&#8230;</string>
 <string name="edit_format_name">Upravit jméno formátu</string>
 <string name="name_can_not_be_blank">Jméno nesmí být prázdné</string>    								
+<item name="ACTIVITY_ADMIN_FINISH" type="id"/>
+<string name="export_starting_ellipsis">Exportování začíná&#8230;</string>
+<string name="resizing_cover_thumbnails">Upravování velikosti náhledů obálek</string>
+<string name="resize_each_time">Upravit velikost náhledu vždy, když je potřeba (méně paměti, pomalejší)</string>
+<string name="cache_resized_thumbnails_for_later_use">Ukládát upravené náhledy do mezipaměti (více paměti, rychlejší)</string>
+<string name="generating_cover_thumbnails">Generování náhledů obálek</string>
+<string name="use_background_thread">Použít vlákno na pozadí (rychlejší posouvání, zpožděné vykreslení)</string>
+<string name="generate_immediately">Generovat okamžitě (pomalejší posouvání, okamžité vykreslení)</string>
+<string name="show_search_results_in_list">Zobrazit seznam nalezených výsledků</string>
+<string name="hint_show_search_results_in_list">Tato funkce může nějaký čas trvat. V současné verzi aplikace budou knihy hledány pouze na Amazonu a Google Books.</string>
 </resources>

@@ -1732,6 +1732,22 @@ public class CatalogueDBAdapter {
 		}
 		return image;
 	}
+	
+	public static Bitmap fetchThumbnailIntoListImageView(String name, ImageView destView, int maxWidth, int maxHeight, boolean exact) {
+		// Get the file, if it exists. Otherwise set 'help' icon and exit.
+		Bitmap image = null;
+		try {
+			File file;
+			if(name.length() > 0)
+				file = getTempThumbnail(name.substring(name.lastIndexOf("tmp")+3, name.lastIndexOf(".")));
+			else
+				file = getTempThumbnail();
+			image = Utils.fetchFileIntoImageView(file, destView, maxWidth, maxHeight, exact );
+		} catch (IllegalArgumentException e) {
+			Logger.logError(e);
+		}
+		return image;
+	}	
 
 	/**
 	 * This will return the parsed author name based on a String. 

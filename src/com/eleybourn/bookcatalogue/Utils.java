@@ -427,6 +427,45 @@ public class Utils {
 			values.putString(key, curr + "|" + s);
 		}
 	}
+	
+	/**
+	 * Append a flag indicating how to display the search results. 
+	 * 
+	 * @param 	value	Text without flag
+	 * 
+	 * @return	Text with appended flag	
+	 */	
+	static public String appendListFlag(String value) {
+		return value + "|" + CatalogueDBAdapter.SHOW_SEARCH_RESULTS_IN_LIST;
+	}		
+	
+	/**
+	 * Remove from given text a flag indicating how to display the search results. 
+	 * 
+	 * @param 	value	Text with flag
+	 * 
+	 * @return	Text without flag	
+	 */		
+	static public String removeListFlag(String value) {
+		if(value.contains("|"))
+			return value.substring(0, value.lastIndexOf("|"));
+		return value;
+	}
+	
+	/**
+	 * Return value of a flag indicating how to display the search results. 
+	 * 
+	 * @param 	value	Text with flag
+	 * 
+	 * @return	True, if search results should be shown in list, otherwise return false
+	 */		
+	static public boolean getListFlag(String value) {
+		if(value.contains("|")){
+			if(value.substring(value.lastIndexOf("|")+1, value.length()).equals(CatalogueDBAdapter.SHOW_SEARCH_RESULTS_IN_LIST))
+				return true;
+		}
+		return false;
+	}	
 
 	/**
 	 * Given a URL, get an image and save to a file, optionally appending a suffic to the file.

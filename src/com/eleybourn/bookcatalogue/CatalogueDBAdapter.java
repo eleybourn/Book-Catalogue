@@ -129,6 +129,8 @@ public class CatalogueDBAdapter {
 	public static final String KEY_AUTHOR_FORMATTED_GIVEN_FIRST = "author_formatted_given_first";
 	public static final String KEY_SERIES_FORMATTED = "series_formatted";
 	public static final String KEY_SERIES_NUM_FORMATTED = "series_num_formatted";
+	
+	public static final String SHOW_SEARCH_RESULTS_IN_LIST = "show_search_results_in_list";
 
 	// We tried 'Collate UNICODE' but it seemed to be case sensitive. We ended
 	// up with 'Ursula Le Guin' and 'Ursula le Guin'.

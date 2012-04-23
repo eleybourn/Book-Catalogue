@@ -33,6 +33,9 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -47,6 +50,7 @@ import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
  */
 public class BookISBNSearch extends ActivityWithTasks {
 	private static final int CREATE_BOOK = 0;
+	private static final int SEARCH_RESULT_LIST = 1;
 	public static final String BY = "by";
 
 //	private static Integer mIdCounter = 0;
@@ -65,6 +69,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 	private AutoCompleteTextView mAuthorText;
 	private Button mConfirmButton;
 	private CatalogueDBAdapter mDbHelper;
+	private CheckBox mShowResultsInList;
 
 	private String mAuthor;
 	private String mTitle;
@@ -90,7 +95,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 	private Intent mLastBookIntent = null;
 
 	// Object managing current search.
-	SearchManager mSearchManager = null;
+	SearchManager mSearchManager = null;	
 
 	/**
 	 * Called when the activity is first created. This function will search the interwebs for
@@ -211,7 +216,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 			setContentView(R.layout.name_search);
 			ArrayAdapter<String> author_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, mDbHelper.getAllAuthors());
 			mAuthorText = (AutoCompleteTextView) findViewById(R.id.author);
-			mAuthorText.setAdapter(author_adapter);
+			mAuthorText.setAdapter(author_adapter);							
 
 			mTitleText = (EditText) findViewById(R.id.title);
 			mConfirmButton = (Button) findViewById(R.id.search);
@@ -416,8 +421,14 @@ public class BookISBNSearch extends ActivityWithTasks {
 			try {
 				// Start the lookup in background.
 				//mTaskManager.doProgress("Searching");
-				mSearchManager = new SearchManager(mTaskManager, mSearchHandler);
-				mSearchManager.search(mAuthor, mTitle, mIsbn, true, SearchManager.SEARCH_ALL);
+				mSearchManager = new SearchManager(mTaskManager, mSearchHandler);							
+				
+				if(mShowResultsInList != null && mShowResultsInList.isChecked()){					
+					mSearchManager.search(Utils.appendListFlag(mAuthor), mTitle, mIsbn, true, SearchManager.SEARCH_ALL);
+				}else{
+					mSearchManager.search(mAuthor, mTitle, mIsbn, true, SearchManager.SEARCH_ALL);					
+				}
+
 				// reset the details so we don't restart the search unnecessarily
 				mAuthor = "";
 				mTitle = "";
@@ -449,12 +460,25 @@ public class BookISBNSearch extends ActivityWithTasks {
 			if (mMode == MODE_SCAN)
 				startScannerActivity();
 		} else {
-			mTaskManager.doProgress("Adding Book...");
-			createBook(bookData);
-			// Clear the data entry fields ready for the next one
-			clearFields();
-			// Make sure the message will be empty.
-			mTaskManager.doProgress(null);
+			if(mShowResultsInList != null && !mShowResultsInList.isChecked()){
+				mTaskManager.doProgress("Adding Book...");
+				createBook(bookData);
+				// Clear the data entry fields ready for the next one
+				clearFields();
+				// Make sure the message will be empty.
+				mTaskManager.doProgress(null);
+			}else{
+				mTaskManager.doProgress("Preparing results...");				
+				if(bookData.containsKey(CatalogueDBAdapter.KEY_BOOKLIST)){
+					showSearchResults(bookData);						
+				}else{
+					createBook(bookData);
+				}								
+				// Clear the data entry fields ready for the next one
+				clearFields();
+				// Make sure the message will be empty.
+				mTaskManager.doProgress(null);										
+			}
 		}
 		// Clean up
 		mSearchManager = null;
@@ -512,6 +536,17 @@ public class BookISBNSearch extends ActivityWithTasks {
 		startActivityForResult(i, CREATE_BOOK);
 		//dismissProgress();
 	}
+	
+	/*
+	 * Load the SearchResultList Activity
+	 *
+	 * return void
+	 */
+	private void showSearchResults(Bundle bookList) {
+		Intent i = new Intent(this, SearchResultList.class);				
+		i.putExtra("bookData", bookList);
+		startActivityForResult(i, SEARCH_RESULT_LIST);
+	}	
 
 	/**
 	 * This is a straight passthrough
@@ -556,6 +591,14 @@ public class BookISBNSearch extends ActivityWithTasks {
 				this.setResult(RESULT_CANCELED, mLastBookIntent);
 
 			break;
+		case SEARCH_RESULT_LIST: 
+			if (intent != null)
+				mLastBookIntent = intent;
+
+			// If the 'Back' button is pressed on a normal activity, set the default result to cancelled by setting it here.
+			this.setResult(RESULT_CANCELED, mLastBookIntent);
+
+			break;						
 		}
 	}
 

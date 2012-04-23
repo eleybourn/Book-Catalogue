@@ -1175,6 +1175,21 @@ public class Utils {
 		return shrinkFileIntoImageView(destView, coverFile.getPath(), maxWidth, maxHeight, exact);
 
 	}
+	
+	/**
+	 * Rename file from given path - use given suffix.
+	 * 
+	 * @param file		Original file
+	 * @param suffix	Suffix to rename
+	 * 
+	 * @return			New name of file.
+	 */	
+	static public String renameFile(String file, String suffix){		
+		ArrayList<String> files = Utils.decodeList(file, '|');		
+		File f = new File(files.get(files.size() - 1));
+		f.renameTo(new File(StorageUtils.getSharedStoragePath() + "/tmp" + suffix + ".jpg"));		
+		return StorageUtils.getSharedStoragePath() + "/tmp" + suffix + ".jpg";		
+	}	
 
 	/**
 	 * Shrinks the passed image file spec into the specificed dimensions, and returns the bitmap. If the view 

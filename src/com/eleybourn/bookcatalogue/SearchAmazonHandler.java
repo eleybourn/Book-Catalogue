@@ -20,6 +20,8 @@
 
 package com.eleybourn.bookcatalogue;
 
+import java.util.ArrayList;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -176,6 +178,13 @@ public class SearchAmazonHandler extends DefaultHandler {
 	private boolean image = false;
 	private boolean done = false;
 	
+	/* A flag to identify if we want to show books in the list*/
+	private boolean mShowResultsInList = false;
+		
+	private Book mBook;
+	private int mCounter = 0;
+	private ArrayList<Book> mBookList;	
+	
 	/* The XML element names */
 	public static String ID = "id";
 	public static String TOTALRESULTS = "TotalResults";
@@ -193,9 +202,10 @@ public class SearchAmazonHandler extends DefaultHandler {
 	public static String LARGEIMAGE = "LargeImage";
 	public static String DESCRIPTION = "Content";
 
-	SearchAmazonHandler(Bundle bookData, boolean fetchThumbnail) {
+	SearchAmazonHandler(Bundle bookData, boolean fetchThumbnail, boolean showResultsInList) {
 		mBookData = bookData;
 		mFetchThumbnail = fetchThumbnail;
+		mShowResultsInList = showResultsInList;
 	}
 //	/*
 //	 * A public function the return a book structure
@@ -235,15 +245,21 @@ public class SearchAmazonHandler extends DefaultHandler {
 	}
 
 	/**
-	 * 	Overridden method to get the best thumbnail, if present.
+	 * 	Overridden method to get the best thumbnail, if present. 
+	 *  If the user want to show books in the list, put list to bundle.
+	 * 
 	 */
 	@Override
 	public void endDocument() {
-		if (mFetchThumbnail && mThumbnailUrl.length() > 0) {
-			String filename = Utils.saveThumbnailFromUrl(mThumbnailUrl, "_AM");
-			if (filename.length() > 0)
-				Utils.appendOrAdd(mBookData, "__thumbnail", filename);			
-		}		
+		if(mShowResultsInList){
+			mBookData.putSerializable(CatalogueDBAdapter.KEY_BOOKLIST, mBookList);
+		}else{
+			if (mFetchThumbnail && mThumbnailUrl.length() > 0) {
+				String filename = Utils.saveThumbnailFromUrl(mThumbnailUrl, "_AM");
+				if (filename.length() > 0)
+					Utils.appendOrAdd(mBookData, "__thumbnail", filename);			
+			}		
+		}
 	}
 
 	/*
@@ -257,41 +273,84 @@ public class SearchAmazonHandler extends DefaultHandler {
 	public void endElement(String uri, String localName, String name) throws SAXException {
 		super.endElement(uri, localName, name);
 		try {
-			if (localName.equalsIgnoreCase(TOTALRESULTS)){
-				count = Integer.parseInt(mBuilder.toString());
-			} else if (localName.equalsIgnoreCase(THUMBNAIL)){
-				if (image == true) {
-					mThumbnailUrl = mBuilder.toString();
-					image = false;
+			if(mShowResultsInList){
+				if(localName.equalsIgnoreCase(TOTALRESULTS)){
+					count = Integer.parseInt(mBuilder.toString());
+				} else if (localName.equalsIgnoreCase(ENTRY)){			
+					entry = false;
+					if (mBook.getTHUMBNAIL().length() > 0) {
+						String filename = Utils.saveThumbnailFromUrl(mBook.getTHUMBNAIL(), "_AM" + Integer.toString(mCounter++));
+						if (filename != null && filename.length() > 0)
+							mBook.setTHUMBNAIL(filename);		
+					}					
+					mBookList.add(mBook);
+					mBookData.remove("tmp_author");					
+				} else if (entry == true) {					
+					if (localName.equalsIgnoreCase(THUMBNAIL)){
+						if(mFetchThumbnail)
+							mBook.setTHUMBNAIL(mBuilder.toString());				
+					} else if (localName.equalsIgnoreCase(AUTHOR)){					
+						Utils.appendOrAdd(mBookData, "tmp_author", mBuilder.toString());
+						mBook.setAUTHOR(mBookData.getString("tmp_author"));
+					} else if (localName.equalsIgnoreCase(TITLE)){
+						mBook.setTITLE(mBuilder.toString());
+					} else if (localName.equalsIgnoreCase(ISBN)){
+						String tmp = mBuilder.toString();
+						if (mBook.getISBN() == null || mBook.getISBN().equals("") || mBook.getISBN().length() < tmp.length()) {
+							mBook.setISBN(tmp);
+						}
+					} else if (localName.equalsIgnoreCase(ISBNOLD)){
+						String tmp = mBuilder.toString();
+						if (mBook.getISBN() == null || mBook.getISBN().equals("") || mBook.getISBN().length() < tmp.length()) {
+							mBook.setISBN(tmp);
+						}
+					} else if (localName.equalsIgnoreCase(PUBLISHER)){
+						mBook.setPUBLISHER(mBuilder.toString());
+					} else if (localName.equalsIgnoreCase(DATE_PUBLISHED)){
+						mBook.setDATE_PUBLISHED(mBuilder.toString());
+					} else if (localName.equalsIgnoreCase(PAGES)){
+						mBook.setPAGES(mBuilder.toString());
+					} else if (localName.equalsIgnoreCase(DESCRIPTION)){
+						mBook.setDESCRIPTION(mBuilder.toString());
+					}
 				}
-			} else if (localName.equalsIgnoreCase(ENTRY)){
-				done = true;
-				entry = false;
-			} else if (entry == true) {
-				if (localName.equalsIgnoreCase(AUTHOR)){
-					Utils.appendOrAdd(mBookData, CatalogueDBAdapter.KEY_AUTHOR_DETAILS, mBuilder.toString());
-				} else if (localName.equalsIgnoreCase(TITLE)){
-					addIfNotPresent(CatalogueDBAdapter.KEY_TITLE);
-				} else if (localName.equalsIgnoreCase(ISBN)){
-					String tmp = mBuilder.toString();
-					if (!mBookData.containsKey(CatalogueDBAdapter.KEY_ISBN) 
-							|| mBookData.getString(CatalogueDBAdapter.KEY_ISBN).length() < tmp.length()) {
-						mBookData.putString(CatalogueDBAdapter.KEY_ISBN, tmp);
-					}					
-				} else if (localName.equalsIgnoreCase(ISBNOLD)){
-					String tmp = mBuilder.toString();
-					if (!mBookData.containsKey(CatalogueDBAdapter.KEY_ISBN) 
-							|| mBookData.getString(CatalogueDBAdapter.KEY_ISBN).length() < tmp.length()) {
-						mBookData.putString(CatalogueDBAdapter.KEY_ISBN, tmp);
-					}					
-				} else if (localName.equalsIgnoreCase(PUBLISHER)){
-					addIfNotPresent(CatalogueDBAdapter.KEY_PUBLISHER);
-				} else if (localName.equalsIgnoreCase(DATE_PUBLISHED)){
-					addIfNotPresent(CatalogueDBAdapter.KEY_DATE_PUBLISHED);
-				} else if (localName.equalsIgnoreCase(PAGES)){
-					addIfNotPresentOrEqual(CatalogueDBAdapter.KEY_PAGES, "0");
-				} else if (localName.equalsIgnoreCase(DESCRIPTION)){
-					addIfNotPresent(CatalogueDBAdapter.KEY_DESCRIPTION);
+			}else{
+				if (localName.equalsIgnoreCase(TOTALRESULTS)){
+					count = Integer.parseInt(mBuilder.toString());
+				} else if (localName.equalsIgnoreCase(THUMBNAIL)){
+					if (image == true) {
+						mThumbnailUrl = mBuilder.toString();
+						image = false;
+					}
+				} else if (localName.equalsIgnoreCase(ENTRY)){
+					done = true;
+					entry = false;
+				} else if (entry == true) {
+					if (localName.equalsIgnoreCase(AUTHOR)){
+						Utils.appendOrAdd(mBookData, CatalogueDBAdapter.KEY_AUTHOR_DETAILS, mBuilder.toString());
+					} else if (localName.equalsIgnoreCase(TITLE)){
+						addIfNotPresent(CatalogueDBAdapter.KEY_TITLE);
+					} else if (localName.equalsIgnoreCase(ISBN)){
+						String tmp = mBuilder.toString();
+						if (!mBookData.containsKey(CatalogueDBAdapter.KEY_ISBN) 
+								|| mBookData.getString(CatalogueDBAdapter.KEY_ISBN).length() < tmp.length()) {
+							mBookData.putString(CatalogueDBAdapter.KEY_ISBN, tmp);
+						}					
+					} else if (localName.equalsIgnoreCase(ISBNOLD)){
+						String tmp = mBuilder.toString();
+						if (!mBookData.containsKey(CatalogueDBAdapter.KEY_ISBN) 
+								|| mBookData.getString(CatalogueDBAdapter.KEY_ISBN).length() < tmp.length()) {
+							mBookData.putString(CatalogueDBAdapter.KEY_ISBN, tmp);
+						}					
+					} else if (localName.equalsIgnoreCase(PUBLISHER)){
+						addIfNotPresent(CatalogueDBAdapter.KEY_PUBLISHER);
+					} else if (localName.equalsIgnoreCase(DATE_PUBLISHED)){
+						addIfNotPresent(CatalogueDBAdapter.KEY_DATE_PUBLISHED);
+					} else if (localName.equalsIgnoreCase(PAGES)){
+						addIfNotPresentOrEqual(CatalogueDBAdapter.KEY_PAGES, "0");
+					} else if (localName.equalsIgnoreCase(DESCRIPTION)){
+						addIfNotPresent(CatalogueDBAdapter.KEY_DESCRIPTION);
+					}
 				}
 			}
 			mBuilder.setLength(0);			
@@ -310,6 +369,9 @@ public class SearchAmazonHandler extends DefaultHandler {
 	public void startDocument() throws SAXException {
 		super.startDocument();
 		mBuilder = new StringBuilder();
+		if (mShowResultsInList){
+			mBookList = new ArrayList<Book>();
+		}			
 	}
 
 	/*
@@ -321,7 +383,12 @@ public class SearchAmazonHandler extends DefaultHandler {
 	@Override
 	public void startElement(String uri, String localName, String name, Attributes attributes) throws SAXException {
 		super.startElement(uri, localName, name, attributes);
-		if (done == false && localName.equalsIgnoreCase(ENTRY)){
+		if (mShowResultsInList && localName.equalsIgnoreCase(ENTRY)){
+			mBookData.remove("tmp_author");
+			mBook = new Book();
+			entry = true;
+		} 
+		if (done == false && localName.equalsIgnoreCase(ENTRY) && !mShowResultsInList){
 			entry = true;
 		} else if (localName.equalsIgnoreCase(SMALLIMAGE)) {
 			if (mThumbnailSize < 1) {

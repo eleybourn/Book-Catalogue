@@ -582,5 +582,6 @@
 <string name="generating_cover_thumbnails">Generating cover thumbnails</string>
 <string name="use_background_thread">Use background thread (faster scrolling, delayed images)</string>
 <string name="generate_immediately">Generate immediately (slower scrolling, instant images)</string>
+<string name="show_search_results_in_list">Show search results in the list</string>
 </resources>
 

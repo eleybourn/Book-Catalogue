@@ -218,6 +218,8 @@ public class BookISBNSearch extends ActivityWithTasks {
 			mAuthorText = (AutoCompleteTextView) findViewById(R.id.author);
 			mAuthorText.setAdapter(author_adapter);							
 
+			mShowResultsInList = (CheckBox) findViewById(R.id.showResultsInList);			
+			
 			mTitleText = (EditText) findViewById(R.id.title);
 			mConfirmButton = (Button) findViewById(R.id.search);
 

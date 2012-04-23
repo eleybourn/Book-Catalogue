@@ -23,10 +23,12 @@ package com.eleybourn.bookcatalogue;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
@@ -720,6 +722,61 @@ public class Utils {
     		result.putBoolean(CatalogueDBAdapter.KEY_THUMBNAIL, true);
     	}
 	}
+	
+	/**
+	 * Make temp thumbnail from file from given path.
+	 * 
+	 * @param path	Path to thumbnail
+	 */	
+	static public void makeTempThumbnail(String path) {		
+		File file = new File(path);   			
+		File f = new File(path+"_copy");	    			
+		copyFile(file, f);	    			
+		f.renameTo(CatalogueDBAdapter.getTempThumbnail());
+	}	
+	
+	/**
+	 * Delete actual temp thumbnail.
+	 * 
+	 */		
+    static public void deleteTempThumbnail(){
+    	File f = CatalogueDBAdapter.getTempThumbnail();
+    	f.delete();
+    }
+    
+	/**
+	 * Delete given thumbnail.
+	 * 
+	 * @param path	Path to thumbnail
+	 */		
+    static public void deleteThumbnail(String path){
+    	File f = new File(path);
+    	if(f.exists())
+    		f.delete();
+    }    
+	
+	/**
+	 * Make copy of source file.
+	 * 
+	 * @param f1	Source
+	 * @param f2	Target
+	 */	    
+	private static void copyFile(File f1, File f2){
+		try{			
+			InputStream in = new FileInputStream(f1);
+			OutputStream out = new FileOutputStream(f2);	
+			byte[] buf = new byte[1024];
+			int len;
+			while ((len = in.read(buf)) > 0){
+				out.write(buf, 0, len);
+			}
+			in.close();
+			out.close();
+		}
+		catch(Exception ex){
+			//nothing
+		}
+	}	
 
 	/**
 	 * Convert text at specified key to proper case.

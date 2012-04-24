@@ -120,21 +120,21 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class SearchGoogleBooksHandler extends DefaultHandler {
 	private StringBuilder builder;
-	public String id = "";
+	public String[] id;
 	public int count = 0;
+	private int counter = 0;
 	private boolean entry = false;
-	private boolean done = false;
 	
 	public static String ID = "id";
 	public static String TOTALRESULTS = "totalResults";
 	public static String ENTRY = "entry";
 	
 	/**
-	 * Return the id of the first book found
+	 * Return the ids of founded books
 	 * 
-	 * @return The book id (to be passed to the entry handler)
+	 * @return The books ids (to be passed to the entry handler)
 	 */
-	public String getId(){
+	public String[] getId(){
 		return id;
 	}
 	
@@ -158,14 +158,19 @@ public class SearchGoogleBooksHandler extends DefaultHandler {
 		super.endElement(uri, localName, name);
 		if (localName.equalsIgnoreCase(TOTALRESULTS)){
 			count = Integer.parseInt(builder.toString());
+			if(count <= 10){
+				id = new String[count];
+			}else{
+				id = new String[10];
+			}			
 		}
 		if (localName.equalsIgnoreCase(ENTRY)){
 			entry = false;
-			done = true;
 		}
-		if (entry == true && id == "") {
+		if (entry == true) {
 			if (localName.equalsIgnoreCase(ID)){
-				id = builder.toString();
+				if(count > 0)
+					id[counter++] = builder.toString();
 			}
 		}
 		builder.setLength(0);
@@ -180,7 +185,7 @@ public class SearchGoogleBooksHandler extends DefaultHandler {
 	@Override
 	public void startElement(String uri, String localName, String name, Attributes attributes) throws SAXException {
 		super.startElement(uri, localName, name, attributes);
-		if (done == false && localName.equalsIgnoreCase(ENTRY)){
+		if (localName.equalsIgnoreCase(ENTRY)){
 			entry = true;
 		}
 	}

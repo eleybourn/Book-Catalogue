@@ -56,6 +56,7 @@
 		<activity android:name=".BooksOnBookshelfNavigator" android:theme="@style/Navigator"></activity>
 		<activity android:name=".AdministrationAbout"></activity>
 		<activity android:name=".AdministrationDonate"></activity>
+		<activity android:name=".SearchResultList"></activity>
 		<activity android:name=".AdministrationFunctions">
 		</activity>
 		<activity android:name=".goodreads.GoodreadsRegister" android:launchMode="singleInstance"></activity>

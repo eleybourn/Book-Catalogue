@@ -124,11 +124,14 @@ public class CatalogueDBAdapter {
 	public static final String KEY_DESCRIPTION = "description";
 	public static final String KEY_GENRE = "genre";
 	public static final String KEY_DATE_ADDED = "date_added";
+	public static final String KEY_BOOKLIST = "book_list";
 	
 	public static final String KEY_AUTHOR_FORMATTED = "author_formatted";
 	public static final String KEY_AUTHOR_FORMATTED_GIVEN_FIRST = "author_formatted_given_first";
 	public static final String KEY_SERIES_FORMATTED = "series_formatted";
 	public static final String KEY_SERIES_NUM_FORMATTED = "series_num_formatted";
+	
+	public static final String SHOW_SEARCH_RESULTS_IN_LIST = "show_search_results_in_list";
 
 	// We tried 'Collate UNICODE' but it seemed to be case sensitive. We ended
 	// up with 'Ursula Le Guin' and 'Ursula le Guin'.
@@ -1729,6 +1732,22 @@ public class CatalogueDBAdapter {
 		}
 		return image;
 	}
+	
+	public static Bitmap fetchThumbnailIntoListImageView(String name, ImageView destView, int maxWidth, int maxHeight, boolean exact) {
+		// Get the file, if it exists. Otherwise set 'help' icon and exit.
+		Bitmap image = null;
+		try {
+			File file;
+			if(name.length() > 0)
+				file = getTempThumbnail(name.substring(name.lastIndexOf("tmp")+3, name.lastIndexOf(".")));
+			else
+				file = getTempThumbnail();
+			image = Utils.fetchFileIntoImageView(file, destView, maxWidth, maxHeight, exact );
+		} catch (IllegalArgumentException e) {
+			Logger.logError(e);
+		}
+		return image;
+	}	
 
 	/**
 	 * This will return the parsed author name based on a String. 

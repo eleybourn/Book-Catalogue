@@ -79,7 +79,8 @@
 <string name="webpage">https://wiki.github.com/eleybourn/Book-Catalogue/</string>
 <string name="sourcecode">https://github.com/eleybourn/Book-Catalogue</string>
 <string name="helppage">https://github.com/eleybourn/Book-Catalogue/wiki/Help</string>
-<string name="contact">eleybourn@gmail.com</string>
+<string name="contact1">eleybourn@gmail.com</string>
+<string name="contact2">philip.warner@rhyme.com.au</string>
 <string name="donate_label">Podpořit</string>
 <string name="about_label">O této aplikaci</string>
 <string name="administration_functions_label">Funkce</string>
@@ -131,6 +132,7 @@
 <string name="signed">Byla tato kniha podepsána</string>
 <string name="read_start">Datum začátku čtení</string>
 <string name="read_end">Datum ukončení čtení</string>
+<string name="location_of_book">Umístění knihy</string>
 <string name="location">Umístění knihy</string>
 <string name="duplicate_title">Duplicitní kniha</string>
 <string name="duplicate_book_title">Duplicitní kniha</string>
@@ -143,6 +145,7 @@
 <string name="searching_library_thing">Vyhledávám na LibraryThing</string>
 <string name="bookshelf_title">Zvolte knihovnu pro tuto knihu</string>
 <string name="bookshelves">Zvolte knihovnu</string>
+<string name="select_bookshelves">Zvolte knihovny</string>
 <string name="format">Formát</string>
 <string name="format1">Brožovaná kniha</string>
 <string name="format2">Pevná vazba</string>
@@ -279,6 +282,8 @@
 <string name="retry_task">Opakovat</string>
 <string name="visit_goodreads">Navštívit GoodReads&#8230;</string>
 <string name="delete_entry">Smazat</string>
+<string name="delete_event">Smazat událost</string>
+<string name="delete_task">Smazat úlohu</string>
 <item name="TAG_EVENT" type="id"></item>
 <item name="TAG_HOLDER" type="id"></item>
 <item name="TAG_TASK" type="id"></item>
@@ -321,7 +326,7 @@
 <string name="add_manually">Přidat ručně</string>
 <string name="scan_barcode">Naskenovat čárový kód</string>
 <string name="enter_barcode">Vložit ISBN kód</string>
-<string name="search_internet">Prohledat internet</string>
+<string name="search_internet">Hledat podle názvu a autora</string>
 <string name="show_results">Zobrazit výsledky</string>
 <string name="rebuild_fts">Obnovit FTS (neotestovaná funkce!)</string>
 <string name="search_in">Vyhledat v</string>
@@ -562,4 +567,14 @@
 <string name="menu_edit_format">Upravit formát&#8230;</string>
 <string name="edit_format_name">Upravit jméno formátu</string>
 <string name="name_can_not_be_blank">Jméno nesmí být prázdné</string>    								
+<item name="ACTIVITY_ADMIN_FINISH" type="id"/>
+<string name="export_starting_ellipsis">Exportování začíná&#8230;</string>
+<string name="resizing_cover_thumbnails">Upravování velikosti náhledů obálek</string>
+<string name="resize_each_time">Upravit velikost náhledu vždy, když je potřeba (méně paměti, pomalejší)</string>
+<string name="cache_resized_thumbnails_for_later_use">Ukládát upravené náhledy do mezipaměti (více paměti, rychlejší)</string>
+<string name="generating_cover_thumbnails">Generování náhledů obálek</string>
+<string name="use_background_thread">Použít vlákno na pozadí (rychlejší posouvání, zpožděné vykreslení)</string>
+<string name="generate_immediately">Generovat okamžitě (pomalejší posouvání, okamžité vykreslení)</string>
+<string name="show_search_results_in_list">Zobrazit seznam nalezených výsledků</string>
+<string name="hint_show_search_results_in_list">Tato funkce může nějaký čas trvat. V současné verzi aplikace budou knihy hledány pouze na Amazonu a Google Books.</string>
 </resources>

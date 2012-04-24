@@ -30,6 +30,14 @@
 			android:textAppearance="?android:attr/textAppearanceLarge"
 			android:inputType="textCapWords"
 			/>
+
+		<CheckBox
+		    android:id="@+id/showResultsInList"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1"
+		    android:checked="false"
+		    android:text="@string/show_search_results_in_list" />
 		
 		<Button android:id="@+id/search" 
 			android:text="@string/search"

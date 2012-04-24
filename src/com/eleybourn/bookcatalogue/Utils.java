@@ -23,10 +23,12 @@ package com.eleybourn.bookcatalogue;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
@@ -427,6 +429,45 @@ public class Utils {
 			values.putString(key, curr + "|" + s);
 		}
 	}
+	
+	/**
+	 * Append a flag indicating how to display the search results. 
+	 * 
+	 * @param 	value	Text without flag
+	 * 
+	 * @return	Text with appended flag	
+	 */	
+	static public String appendListFlag(String value) {
+		return value + "|" + CatalogueDBAdapter.SHOW_SEARCH_RESULTS_IN_LIST;
+	}		
+	
+	/**
+	 * Remove from given text a flag indicating how to display the search results. 
+	 * 
+	 * @param 	value	Text with flag
+	 * 
+	 * @return	Text without flag	
+	 */		
+	static public String removeListFlag(String value) {
+		if(value.contains("|"))
+			return value.substring(0, value.lastIndexOf("|"));
+		return value;
+	}
+	
+	/**
+	 * Return value of a flag indicating how to display the search results. 
+	 * 
+	 * @param 	value	Text with flag
+	 * 
+	 * @return	True, if search results should be shown in list, otherwise return false
+	 */		
+	static public boolean getListFlag(String value) {
+		if(value.contains("|")){
+			if(value.substring(value.lastIndexOf("|")+1, value.length()).equals(CatalogueDBAdapter.SHOW_SEARCH_RESULTS_IN_LIST))
+				return true;
+		}
+		return false;
+	}	
 
 	/**
 	 * Given a URL, get an image and save to a file, optionally appending a suffic to the file.
@@ -681,6 +722,61 @@ public class Utils {
     		result.putBoolean(CatalogueDBAdapter.KEY_THUMBNAIL, true);
     	}
 	}
+	
+	/**
+	 * Make temp thumbnail from file from given path.
+	 * 
+	 * @param path	Path to thumbnail
+	 */	
+	static public void makeTempThumbnail(String path) {		
+		File file = new File(path);   			
+		File f = new File(path+"_copy");	    			
+		copyFile(file, f);	    			
+		f.renameTo(CatalogueDBAdapter.getTempThumbnail());
+	}	
+	
+	/**
+	 * Delete actual temp thumbnail.
+	 * 
+	 */		
+    static public void deleteTempThumbnail(){
+    	File f = CatalogueDBAdapter.getTempThumbnail();
+    	f.delete();
+    }
+    
+	/**
+	 * Delete given thumbnail.
+	 * 
+	 * @param path	Path to thumbnail
+	 */		
+    static public void deleteThumbnail(String path){
+    	File f = new File(path);
+    	if(f.exists())
+    		f.delete();
+    }    
+	
+	/**
+	 * Make copy of source file.
+	 * 
+	 * @param f1	Source
+	 * @param f2	Target
+	 */	    
+	private static void copyFile(File f1, File f2){
+		try{			
+			InputStream in = new FileInputStream(f1);
+			OutputStream out = new FileOutputStream(f2);	
+			byte[] buf = new byte[1024];
+			int len;
+			while ((len = in.read(buf)) > 0){
+				out.write(buf, 0, len);
+			}
+			in.close();
+			out.close();
+		}
+		catch(Exception ex){
+			//nothing
+		}
+	}	
 
 	/**
 	 * Convert text at specified key to proper case.
@@ -1136,6 +1232,21 @@ public class Utils {
 		return shrinkFileIntoImageView(destView, coverFile.getPath(), maxWidth, maxHeight, exact);
 
 	}
+	
+	/**
+	 * Rename file from given path - use given suffix.
+	 * 
+	 * @param file		Original file
+	 * @param suffix	Suffix to rename
+	 * 
+	 * @return			New name of file.
+	 */	
+	static public String renameFile(String file, String suffix){		
+		ArrayList<String> files = Utils.decodeList(file, '|');		
+		File f = new File(files.get(files.size() - 1));
+		f.renameTo(new File(StorageUtils.getSharedStoragePath() + "/tmp" + suffix + ".jpg"));		
+		return StorageUtils.getSharedStoragePath() + "/tmp" + suffix + ".jpg";		
+	}	
 
 	/**
 	 * Shrinks the passed image file spec into the specificed dimensions, and returns the bitmap. If the view 

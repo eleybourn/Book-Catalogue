@@ -23,6 +23,14 @@ public class AmazonManager {
 	 */
 	static public void searchAmazon(String mIsbn, String mAuthor, String mTitle, Bundle bookData, boolean fetchThumbnail) {
 		//replace spaces with %20
+		
+		boolean showResultsInList = false;
+		
+		if(Utils.getListFlag(mAuthor)){
+			showResultsInList = true;
+			mAuthor = Utils.removeListFlag(mAuthor);
+		}
+		
 		mAuthor = mAuthor.replace(" ", "%20");
 		mTitle = mTitle.replace(" ", "%20");
 		
@@ -36,7 +44,12 @@ public class AmazonManager {
 		
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		SAXParser parser;
-		SearchAmazonHandler handler = new SearchAmazonHandler(bookData, fetchThumbnail);
+		SearchAmazonHandler handler;
+		if (showResultsInList){
+			handler = new SearchAmazonHandler(bookData, fetchThumbnail, true);
+		}else{
+			handler = new SearchAmazonHandler(bookData, fetchThumbnail, false);
+		}
 
 		try {
 			url = new URL(path);

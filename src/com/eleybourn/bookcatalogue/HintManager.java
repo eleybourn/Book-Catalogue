@@ -69,6 +69,7 @@ public class HintManager {
 		.add("explain_goodreads_no_isbn", R.string.explain_goodreads_no_isbn)
 		.add("explain_goodreads_no_match", R.string.explain_goodreads_no_match)
 		.add("hint_booklist_style_menu", R.string.hint_booklist_style_menu)
+		.add("hint_show_search_results_in_list", R.string.hint_show_search_results_in_list)
 		;
 
 	public static interface HintOwner {

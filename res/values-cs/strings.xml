@@ -79,7 +79,8 @@
 <string name="webpage">https://wiki.github.com/eleybourn/Book-Catalogue/</string>
 <string name="sourcecode">https://github.com/eleybourn/Book-Catalogue</string>
 <string name="helppage">https://github.com/eleybourn/Book-Catalogue/wiki/Help</string>
-<string name="contact">eleybourn@gmail.com</string>
+<string name="contact1">eleybourn@gmail.com</string>
+<string name="contact2">philip.warner@rhyme.com.au</string>
 <string name="donate_label">Podpořit</string>
 <string name="about_label">O této aplikaci</string>
 <string name="administration_functions_label">Funkce</string>
@@ -131,6 +132,7 @@
 <string name="signed">Byla tato kniha podepsána</string>
 <string name="read_start">Datum začátku čtení</string>
 <string name="read_end">Datum ukončení čtení</string>
+<string name="location_of_book">Umístění knihy</string>
 <string name="location">Umístění knihy</string>
 <string name="duplicate_title">Duplicitní kniha</string>
 <string name="duplicate_book_title">Duplicitní kniha</string>
@@ -143,6 +145,7 @@
 <string name="searching_library_thing">Vyhledávám na LibraryThing</string>
 <string name="bookshelf_title">Zvolte knihovnu pro tuto knihu</string>
 <string name="bookshelves">Zvolte knihovnu</string>
+<string name="select_bookshelves">Zvolte knihovny</string>
 <string name="format">Formát</string>
 <string name="format1">Brožovaná kniha</string>
 <string name="format2">Pevná vazba</string>
@@ -279,6 +282,8 @@
 <string name="retry_task">Opakovat</string>
 <string name="visit_goodreads">Navštívit GoodReads&#8230;</string>
 <string name="delete_entry">Smazat</string>
+<string name="delete_event">Smazat událost</string>
+<string name="delete_task">Smazat úlohu</string>
 <item name="TAG_EVENT" type="id"></item>
 <item name="TAG_HOLDER" type="id"></item>
 <item name="TAG_TASK" type="id"></item>

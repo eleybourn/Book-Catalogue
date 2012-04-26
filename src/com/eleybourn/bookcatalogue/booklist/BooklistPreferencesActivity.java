@@ -102,7 +102,7 @@ public class BooklistPreferencesActivity extends PreferencesBase {
 	private static BooleanListProperty mCacheThumbnailsProperty = new BooleanListProperty(
 				mCacheThumbnailsListItems, 
 				PREF_CACHE_THUMBNAILS, 
-				PropertyGroup.GRP_GENERAL, 
+				PropertyGroup.GRP_THUMBNAILS, 
 				R.string.resizing_cover_thumbnails, null, PREF_CACHE_THUMBNAILS, false);
 	static {
 		mCacheThumbnailsListItems.add(null, R.string.use_default_setting);
@@ -117,7 +117,7 @@ public class BooklistPreferencesActivity extends PreferencesBase {
 	private static BooleanListProperty mBackgroundThumbnailsProperty = new BooleanListProperty(
 				mBackgroundThumbnailsListItems, 
 				PREF_BACKGROUND_THUMBNAILS, 
-				PropertyGroup.GRP_GENERAL, 
+				PropertyGroup.GRP_THUMBNAILS, 
 				R.string.generating_cover_thumbnails, null, PREF_BACKGROUND_THUMBNAILS, false);
 	static {
 		mBackgroundThumbnailsListItems.add(null, R.string.use_default_setting);

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+    	android:id="@+id/root"
 		android:orientation="vertical"
 		android:background="@drawable/bc_background_gradient"
 		android:layout_width="fill_parent" 

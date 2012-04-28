@@ -499,6 +499,9 @@ public class BookEditFields extends Activity {
 					finish();
 				}
 			});
+			
+			Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
+
 		} catch (IndexOutOfBoundsException e) {
 			Logger.logError(e);
 		} catch (SQLException e) {
@@ -936,9 +939,13 @@ public class BookEditFields extends Activity {
 		}
 	}
 	
-	@Override
-	protected void onResume() {
+	/**
+	 * Fix background
+	 */
+	@Override 
+	public void onResume() {
 		super.onResume();
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
 	}
 	
 	private class SaveAlert extends AlertDialog {

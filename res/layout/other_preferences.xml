@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/root" 
 	android:orientation="vertical"
 	android:layout_width="fill_parent" 
 	android:layout_height="fill_parent"
@@ -86,6 +87,27 @@
 				android:layout_width="wrap_content" 
 				android:layout_height="wrap_content" 
 				android:text="@+string/include_classic_catalogue_view"
+				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:paddingTop="5sp"
+				/>
+		</LinearLayout>
+
+		<!--  Background image -->
+		<LinearLayout android:id="@+id/disable_background_image_label" 
+			android:orientation="horizontal"
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content"
+			android:paddingLeft="15sp">
+			<CheckBox android:id="@+id/disable_background_image_checkbox" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:paddingLeft="10sp"
+				android:focusable="false"
+				/>
+			<TextView 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:text="@+string/disable_background_image"
 				android:textAppearance="?android:attr/textAppearanceLarge"
 				android:paddingTop="5sp"
 				/>

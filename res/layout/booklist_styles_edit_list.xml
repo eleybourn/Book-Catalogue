@@ -6,8 +6,7 @@
 	android:layout_height="fill_parent"
 	android:paddingLeft="5sp"
 	android:background="@drawable/bc_background_gradient_dim"
-	>
-
+	>
 	<LinearLayout
 	    android:id="@+id/top_buttons"
 	    android:layout_width="fill_parent"

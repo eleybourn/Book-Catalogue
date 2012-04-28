@@ -34,6 +34,16 @@ public class OtherPreferences extends PreferencesBase {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
+	}
+
+	/**
+	 * Fix background
+	 */
+	@Override 
+	public void onResume() {
+		super.onResume();
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
 	}
 
 	/**
@@ -42,6 +52,7 @@ public class OtherPreferences extends PreferencesBase {
 	public void setupViews(final BookCataloguePreferences prefs) {
 		addBooleanPreference(prefs, R.id.startup_my_books_checkbox, R.id.startup_in_my_books_label, BookCataloguePreferences.PREF_START_IN_MY_BOOKS);
 		addBooleanPreference(prefs, R.id.include_classic_checkbox, R.id.include_classic_label, BookCataloguePreferences.PREF_INCLUDE_CLASSIC_MY_BOOKS);
+		addBooleanPreference(prefs, R.id.disable_background_image_checkbox, R.id.disable_background_image_label, BookCataloguePreferences.PREF_DISABLE_BACKGROUND_IMAGE);
 	}
 
 	@Override

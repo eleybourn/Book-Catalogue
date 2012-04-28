@@ -95,8 +95,18 @@ public class Bookshelf extends ListActivity {
 		mDbHelper.open();
 		fillBookshelves();
 		registerForContextMenu(getListView());
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
 	}
 	
+	/**
+	 * Fix background
+	 */
+	@Override 
+	public void onResume() {
+		super.onResume();
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
+	}
+
 	private void fillBookshelves() {
 		// base the layout and the query on the sort order
 		int layout = R.layout.row_bookshelf;

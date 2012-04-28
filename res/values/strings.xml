@@ -583,5 +583,6 @@
 <string name="use_background_thread">Use background thread (lists scroll faster, images may be delayed)</string>
 <string name="generate_immediately">Generate immediately (lists scroll slower, images will be displayed immediately)</string>
 <string name="sort_and_style_ellipsis">Sort &amp; Style&#8230;</string>
+<string name="disable_background_image">Disable background image</string>
 </resources>
 

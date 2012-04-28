@@ -137,6 +137,7 @@ public class BooklistPreferencesActivity extends PreferencesBase {
 			setTitle(R.string.booklist_preferences);
 			if (savedInstanceState == null)
 				HintManager.displayHint(this, R.string.hint_booklist_global_properties, null);
+			Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
@@ -231,6 +232,15 @@ public class BooklistPreferencesActivity extends PreferencesBase {
 				getParent().setResult(RESULT_OK, i);
 			}
 		}
+	}
+
+	/**
+	 * Fix background
+	 */
+	@Override 
+	public void onResume() {
+		super.onResume();
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
 	}
 
 	/**

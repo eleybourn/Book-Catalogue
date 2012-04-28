@@ -439,8 +439,13 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		if (BooklistPreferencesActivity.isBackgroundFlat()) {
 			lv.setBackgroundColor(0xFF202020);
 			lv.setCacheColorHint(0xFF202020);
-			root.setBackgroundDrawable(getResources().getDrawable(R.drawable.bc_background_gradient));
-			header.setBackgroundDrawable(getResources().getDrawable(R.drawable.bc_vertical_gradient));
+			if (BookCatalogueApp.isBackgroundImageDisabled()) {
+				root.setBackgroundColor(0xFF202020);
+				header.setBackgroundColor(0xFF202020);
+			} else {
+				root.setBackgroundDrawable(getResources().getDrawable(R.drawable.bc_background_gradient));
+				header.setBackgroundDrawable(getResources().getDrawable(R.drawable.bc_vertical_gradient));
+			}
 		} else {
 			lv.setCacheColorHint(0x00000000);
 			// ICS does not cope well with transparent ListView backgrounds with a 0 cache hint, but it does
@@ -457,6 +462,15 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		root.invalidate();
 	}
 	
+	/**
+	 * Fix background
+	 */
+	@Override 
+	public void onResume() {
+		super.onResume();
+		initBackground();		
+	}
+
 	/**
 	 * Display the passed cursor in the ListView, and change the position to targetRow.
 	 * 

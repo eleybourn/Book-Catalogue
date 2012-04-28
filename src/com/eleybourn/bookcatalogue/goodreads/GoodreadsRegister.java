@@ -34,6 +34,7 @@ import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.Logger;
 import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.Utils;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
 
 /**
@@ -54,11 +55,21 @@ public class GoodreadsRegister extends Activity {
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.goodreads_register);
 			setupViews();
+			Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
 	}
-	
+
+	/**
+	 * Fix background
+	 */
+	@Override 
+	public void onResume() {
+		super.onResume();
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
+	}
+
 	public void setupViews() {
 		final Resources res = this.getResources();
 		/* GR Reg Link */

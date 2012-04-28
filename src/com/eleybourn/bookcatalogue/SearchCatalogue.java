@@ -89,6 +89,7 @@ public class SearchCatalogue extends Activity {
 		ftsRebuild.setOnClickListener(mFtsRebuildListener);
 
 		// Note: Timer will be started in OnResume().
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, R.id.layout_root);
 	}
 
 	/** start the idle timer */
@@ -289,6 +290,7 @@ public class SearchCatalogue extends Activity {
 	protected void onResume() {
 		super.onResume();
 		userIsActive(true);
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
 	}
 
 	/**

@@ -24,6 +24,7 @@ import com.eleybourn.bookcatalogue.BooksCursor;
 import com.eleybourn.bookcatalogue.BooksRowView;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.Utils;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -111,6 +112,16 @@ public class GoodreadsSearchCriteria extends Activity {
 				doSearch();
 			}});
 		
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
+	}
+
+	/**
+	 * Fix background
+	 */
+	@Override 
+	public void onResume() {
+		super.onResume();
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
 	}
 
 	/**

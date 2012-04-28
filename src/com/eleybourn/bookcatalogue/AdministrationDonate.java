@@ -48,9 +48,19 @@ public class AdministrationDonate extends Activity {
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.administration_donate);
 			setupAdmin();
+			Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
+	}
+
+	/**
+	 * Fix background
+	 */
+	@Override 
+	public void onResume() {
+		super.onResume();
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
 	}
 
 	/**

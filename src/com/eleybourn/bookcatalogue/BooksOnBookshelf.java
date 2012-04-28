@@ -875,7 +875,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 
 		mMenuHandler.addCreateBookItems(menu);
 
-		mMenuHandler.addItem(menu, MNU_SORT, R.string.select_style, android.R.drawable.ic_menu_sort_alphabetically);
+		mMenuHandler.addItem(menu, MNU_SORT, R.string.sort_and_style_ellipsis, android.R.drawable.ic_menu_sort_alphabetically);
 		//mMenuHandler.addItem(menu, MNU_EDIT_STYLE, R.string.edit_style, android.R.drawable.ic_menu_manage);
 
 		mMenuHandler.addItem(menu, MNU_EXPAND, R.string.menu_sort_by_author_expanded, R.drawable.ic_menu_expand);

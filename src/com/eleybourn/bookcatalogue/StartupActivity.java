@@ -26,6 +26,7 @@ import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.SimpleTaskQueue.OnTaskFinishListener;
 import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTask;
 import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTaskContext;
+import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -371,9 +372,11 @@ public class StartupActivity extends Activity {
 			updateProgress(getString(R.string.optimizing_databases));
 			// Analyze DB
 			db.analyzeDb();
-			// Analyze the covers DB
-			Utils utils = taskContext.getUtils();
-			utils.analyzeCovers();				
+			if (BooklistPreferencesActivity.isThumbnailCacheEnabled()) {
+				// Analyze the covers DB
+				Utils utils = taskContext.getUtils();
+				utils.analyzeCovers();								
+			}
 		}
 
 		@Override

@@ -44,7 +44,7 @@ public class GetThumbnailTask implements SimpleTask {
 	// Queue for background thumbnail retrieval; allow 2 threads. More is nice, but with 
 	// many books to process it introduces what looks like lag when scrolling: 5 tasks
 	// building now-invisible views is pointless. 
-	private static final SimpleTaskQueue mQueue = new SimpleTaskQueue("thumbnails", 2);
+	private static final SimpleTaskQueue mQueue = new SimpleTaskQueue("thumbnails", 1);
 
 	/**
 	 * Create a task to convert, set and store the thumbnail for the passed book.

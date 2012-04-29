@@ -64,6 +64,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Shader.TileMode;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -1404,7 +1408,9 @@ public class Utils {
 					ListView lv = ((ListView)root);
 					lv.setCacheColorHint(0x00000000);				
 				}
-				root.setBackgroundDrawable(a.getResources().getDrawable(bgResource));
+				Drawable d = cleanupTiledBackground(a.getResources().getDrawable(bgResource));
+
+				root.setBackgroundDrawable(d);
 			}
 			root.invalidate();
 		} catch (Exception e) {
@@ -1412,7 +1418,35 @@ public class Utils {
 			Logger.logError(e, "Error setting background");
 		}
 	}
-	
 
+	/**
+ 	 * Reuse of bitmaps in tiled backgrounds is a known cause of problems:
+     *		http://stackoverflow.com/questions/4077487/background-image-not-repeating-in-android-layout
+	 * So we avoid reusing them
+	 *
+	 * @param d		Drawable background that may be a BitmapDrawable or a layered drawablewhose first 
+	 * 				layer is a tiled bitmap
+	 * 
+	 * @return		Modified Drawable
+	 */
+	public static Drawable cleanupTiledBackground(Drawable d) {
+
+		if (d instanceof LayerDrawable) {
+			System.out.println("BG is layered");
+			LayerDrawable ld = (LayerDrawable)d;
+			Drawable l = ld.getDrawable(0);
+			if (l instanceof BitmapDrawable) {
+				System.out.println("Layer0 is BMP");
+				BitmapDrawable bmp = (BitmapDrawable) l;
+				bmp.mutate(); // make sure that we aren't sharing state anymore
+				bmp.setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);
+			}
+		} else if (d instanceof BitmapDrawable) {
+			BitmapDrawable bmp = (BitmapDrawable) d;
+			bmp.mutate(); // make sure that we aren't sharing state anymore
+			bmp.setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);			
+		}
+		return d;
+	}
 }
 

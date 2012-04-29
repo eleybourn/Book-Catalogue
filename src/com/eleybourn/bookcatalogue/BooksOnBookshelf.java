@@ -436,15 +436,15 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		ListView lv = getListView();
 		View root = findViewById(R.id.root);
 		View header = findViewById(R.id.header);
-		if (BooklistPreferencesActivity.isBackgroundFlat()) {
+		if (BooklistPreferencesActivity.isBackgroundFlat() || BookCatalogueApp.isBackgroundImageDisabled()) {
 			lv.setBackgroundColor(0xFF202020);
 			lv.setCacheColorHint(0xFF202020);
 			if (BookCatalogueApp.isBackgroundImageDisabled()) {
 				root.setBackgroundColor(0xFF202020);
 				header.setBackgroundColor(0xFF202020);
 			} else {
-				root.setBackgroundDrawable(getResources().getDrawable(R.drawable.bc_background_gradient));
-				header.setBackgroundDrawable(getResources().getDrawable(R.drawable.bc_vertical_gradient));
+				root.setBackgroundDrawable(Utils.cleanupTiledBackground(getResources().getDrawable(R.drawable.bc_background_gradient)));
+				header.setBackgroundDrawable(Utils.cleanupTiledBackground(getResources().getDrawable(R.drawable.bc_vertical_gradient)));
 			}
 		} else {
 			lv.setCacheColorHint(0x00000000);
@@ -452,11 +452,11 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 			// seem to cope with a background image on the ListView itself.
 			if (Build.VERSION.SDK_INT >= 11) {
 				// Honeycomb
-				lv.setBackgroundDrawable(getResources().getDrawable(R.drawable.bc_background_gradient_dim));
+				lv.setBackgroundDrawable(Utils.cleanupTiledBackground(getResources().getDrawable(R.drawable.bc_background_gradient_dim)));
 			} else {
 				lv.setBackgroundColor(0x00000000);				
 			}
-			root.setBackgroundDrawable(getResources().getDrawable(R.drawable.bc_background_gradient_dim));
+			root.setBackgroundDrawable(Utils.cleanupTiledBackground(getResources().getDrawable(R.drawable.bc_background_gradient_dim)));
 			header.setBackgroundColor(0x00000000);
 		}
 		root.invalidate();

@@ -260,22 +260,22 @@ public class BookCatalogueApp extends Application {
 	}
 
 
-	/**
-	 * Used by the Manifest-based startup activity to determine the desired first activity for the user.
-	 * 
-	 * @return	Intent for preference-based startup activity.
-	 */
-	public Intent getStartupIntent() {
-		BookCataloguePreferences prefs = getAppPreferences();
-
-		Intent i;
-		if (prefs.getStartInMyBook()) {
-			i = new Intent(this, BookCatalogue.class);
-		} else {
-			i = new Intent(this, MainMenu.class);
-		}
-		return i;
-	}
+//	/**
+//	 * Used by the Manifest-based startup activity to determine the desired first activity for the user.
+//	 * 
+//	 * @return	Intent for preference-based startup activity.
+//	 */
+//	public Intent getStartupIntent() {
+//		BookCataloguePreferences prefs = getAppPreferences();
+//
+//		Intent i;
+//		if (prefs.getStartInMyBook()) {
+//			i = new Intent(this, BookCatalogue.class);
+//		} else {
+//			i = new Intent(this, MainMenu.class);
+//		}
+//		return i;
+//	}
 
 	/**
 	 * Class to manage application preferences rather than rely on each activity knowing how to 

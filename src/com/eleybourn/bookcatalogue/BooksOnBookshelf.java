@@ -924,21 +924,27 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 
 			case MNU_EXPAND:
 			{
-				int oldAbsPos = mListHandler.getAbsolutePosition(getListView().getChildAt(0));
-				savePosition();
-				mList.getBuilder().expandAll(true);
-				mTopRow = mList.getBuilder().getPosition(oldAbsPos);
-				BooklistPseudoCursor newList = mList.getBuilder().getList();
-				displayList(newList, null);							
+				// It is possible that the list will be empty, if so, ignore
+				if (getListView().getChildCount() != 0) {
+					int oldAbsPos = mListHandler.getAbsolutePosition(getListView().getChildAt(0));
+					savePosition();
+					mList.getBuilder().expandAll(true);
+					mTopRow = mList.getBuilder().getPosition(oldAbsPos);
+					BooklistPseudoCursor newList = mList.getBuilder().getList();
+					displayList(newList, null);							
+				}
 				break;
 			}
 			case MNU_COLLAPSE:
 			{
-				int oldAbsPos = mListHandler.getAbsolutePosition(getListView().getChildAt(0));
-				savePosition();
-				mList.getBuilder().expandAll(false);
-				mTopRow = mList.getBuilder().getPosition(oldAbsPos);
-				displayList(mList.getBuilder().getList(), null);							
+				// It is possible that the list will be empty, if so, ignore
+				if (getListView().getChildCount() != 0) {
+					int oldAbsPos = mListHandler.getAbsolutePosition(getListView().getChildAt(0));
+					savePosition();
+					mList.getBuilder().expandAll(false);
+					mTopRow = mList.getBuilder().getPosition(oldAbsPos);
+					displayList(mList.getBuilder().getList(), null);												
+				}
 				break;
 			}
 			/*

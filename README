@@ -47,6 +47,7 @@ new in 4.0.1
 * Fixed: tiled background bitmap is no longer stretched in some android versions
 * Fixed: crash in classic book list if certain fields were hidden
 * Fixed: crash when dragging only author or series above top of list
+* Fixed: problem with godreads and UNICODE characters in bookshelf names
 * Fixed: rare crash when returning from scanning or adding books
 * Fixed: rare crash when interacting with goodreads
 * Fixed: rare crash when returning to Task list from other application

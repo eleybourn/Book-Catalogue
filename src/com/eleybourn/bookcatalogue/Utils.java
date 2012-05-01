@@ -1436,14 +1436,18 @@ public class Utils {
 			LayerDrawable ld = (LayerDrawable)d;
 			Drawable l = ld.getDrawable(0);
 			if (l instanceof BitmapDrawable) {
+				d.mutate();
+				l.mutate();
 				System.out.println("Layer0 is BMP");
 				BitmapDrawable bmp = (BitmapDrawable) l;
 				bmp.mutate(); // make sure that we aren't sharing state anymore
+				bmp.setTileModeXY(TileMode.CLAMP, TileMode.CLAMP);			
 				bmp.setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);
 			}
 		} else if (d instanceof BitmapDrawable) {
 			BitmapDrawable bmp = (BitmapDrawable) d;
 			bmp.mutate(); // make sure that we aren't sharing state anymore
+			bmp.setTileModeXY(TileMode.CLAMP, TileMode.CLAMP);			
 			bmp.setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);			
 		}
 		return d;

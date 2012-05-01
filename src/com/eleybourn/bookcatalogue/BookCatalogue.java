@@ -190,6 +190,23 @@ public class BookCatalogue extends ExpandableListActivity {
 		bookshelf = getString(R.string.all_books);
 		try {
 			super.onCreate(savedInstanceState);
+
+			// In V4.0 the startup activity is StartupActivity, but we need to deal with old icons. 
+			// So we check the intent.
+			// TODO: Consider renaming 'BookCatalogue' activity to 'BookCatalogueClassic' and creating a dummy BookCatalgue activity stub to avoid this check
+			if ( ! StartupActivity.hasBeenCalled() ) {
+				// The startup activity has NOT been called
+				Intent i = getIntent();
+				if (i.getAction().equals("android.intent.action.MAIN") && i.hasCategory("android.intent.category.LAUNCHER")) {
+					// This is a startup for the main application, so defer it to the StartupActivity
+					System.out.println("Old shortcut detected, redirecting");
+					i = new Intent(this.getApplicationContext(), StartupActivity.class);
+					startActivity(i);
+					finish();
+					return;
+				}
+			}
+
 			// Extract the sort type from the bundle. getInt will return 0 if there is no attribute 
 			// sort (which is exactly what we want)
 			try {

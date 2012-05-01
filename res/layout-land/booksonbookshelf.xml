@@ -31,28 +31,34 @@
 			android:paddingBottom="2dp"
 			android:background="#00000000"
 			/>
-		<TextView android:id="@+id/bookshelf_count" 
-			android:layout_width="wrap_content" 
-			android:layout_height="32sp" 
-			android:layout_toRightOf="@+id/bookshelf_name"
-			android:textAppearance="?android:attr/textAppearanceLarge"
-			android:background="#00000000"
-			android:paddingLeft="5sp"
-			/>
 
 		<ImageView android:id="@+id/bookshelf_down" 
 			android:layout_width="wrap_content" 
 			android:layout_height="32sp" 
-			android:layout_toRightOf="@+id/bookshelf_count"
+			android:layout_alignParentRight="true"
 			android:paddingLeft="5sp"
-		 	android:src="@+drawable/ic_dialog_menu_generic"
+		 	android:src="@drawable/expander_ic_maximized"
 			/>
 	
+		<!-- 
+			android:layout_toRightOf="@+id/bookshelf_name"
+			android:layout_toLeftOf="@+id/bookshelf_down"
+		 -->
+		<TextView android:id="@+id/bookshelf_count" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:layout_below="@+id/bookshelf_label"
+			android:layout_alignParentLeft="true"
+			android:textAppearance="?android:attr/textAppearanceSmall"
+			android:background="#00000000"
+			android:paddingLeft="5sp"
+			/>
+
 		<LinearLayout android:id="@+id/current_info"
 		    android:orientation="horizontal"
 			android:layout_width="fill_parent" 
 			android:layout_height="wrap_content"
-			android:layout_below="@id/bookshelf_label">
+			android:layout_below="@id/bookshelf_count">
 			
 			<TextView android:id="@+id/level_1_text" 
 				android:layout_width="fill_parent" 

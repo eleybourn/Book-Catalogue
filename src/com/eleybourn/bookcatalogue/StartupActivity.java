@@ -60,6 +60,8 @@ public class StartupActivity extends Activity {
 	private static boolean mFtsRebuildRequired = false;
 	/** Flag set to true on first call */
 	private static boolean mIsReallyStartup = true;
+	/** Flag indicating a StartupActivity has been created in this session */
+	private static boolean mHasBeenCalled = false;
 
 	/** Queue for executing startup tasks, if any */
 	private SimpleTaskQueue mTaskQueue = null;
@@ -90,6 +92,7 @@ public class StartupActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		mHasBeenCalled = true;
 		mUiThread = Thread.currentThread();
 
 		// Create a progress dialog; we may not use it...but we need it to be created in the UI thread.
@@ -386,4 +389,7 @@ public class StartupActivity extends Activity {
 		public boolean requiresOnFinish() { return false; }
 	}
 	
+	public static boolean hasBeenCalled() {
+		return mHasBeenCalled;
+	}
 }

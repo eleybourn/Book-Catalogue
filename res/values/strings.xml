@@ -584,5 +584,7 @@
 <string name="generate_immediately">Generate immediately (lists scroll slower, images will be displayed immediately)</string>
 <string name="sort_and_style_ellipsis">Sort &amp; Style&#8230;</string>
 <string name="disable_background_image">Disable background image</string>
+<string name="displaying_n_books_in_m_entries">displaying %1$s books, in %2$s entries</string>
+<string name="displaying_n_books">displaying %1$s books</string>
 </resources>
 

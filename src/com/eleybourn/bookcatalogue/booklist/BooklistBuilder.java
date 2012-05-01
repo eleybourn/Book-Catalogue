@@ -923,7 +923,8 @@ public class BooklistBuilder {
 			// is especially useful in expan/collapse operations.
 			mNavTable.drop(mDb);
 			mNavTable.create(mDb, true);
-			
+
+			// TODO: Rebuild with state preserved is SLOWEST option. Need a better way to preserve state.
 			sql = mNavTable.getInsert(DOM_REAL_ROW_ID, DOM_LEVEL, DOM_ROOT_KEY, DOM_VISIBLE, DOM_EXPANDED) + 
 					" Select " + mListTable.dot(DOM_ID) + "," + mListTable.dot(DOM_LEVEL) + "," + mListTable.dot(DOM_ROOT_KEY) +
 					" ,\n	Case When " + DOM_LEVEL + " = 1 Then 1 \n" +
@@ -989,35 +990,35 @@ public class BooklistBuilder {
 			//mDb.execSQL("analyze " + mTableName);
 			long t11 = System.currentTimeMillis();
 			
-//			System.out.println("T0a: " + (t0a-t0));
-//			System.out.println("T0b: " + (t0b-t0a));
-//			System.out.println("T0c: " + (t0c-t0b));
-//			System.out.println("T0d: " + (t0d-t0c));
-//			System.out.println("T0e: " + (t0e-t0d));
-//			System.out.println("T1: " + (t1-t0));
-//			System.out.println("T1a: " + (t1a-t1));
-//			System.out.println("T1b: " + (t1b-t1a));
-//			System.out.println("T1c: " + (t1c-t1b));
-//			System.out.println("T1d: " + (t1d-t1c));
-//			System.out.println("T2: " + (t2-t1d));
-//			System.out.println("T2a[0]: " + (t2a[0]-t2));
-//			for(int i = 1; i < mStyle.size(); i++) {
-//				System.out.println("T2a[" + i + "]: " + (t2a[i]-t2a[i-1]));				
-//			}
-//			System.out.println("T3: " + (t3-t2a[mStyle.size()-1]));
-//			System.out.println("T3a: " + (t3a-t3));
-//			System.out.println("T3b: " + (t3b-t3a));
-//			System.out.println("T4: " + (t4-t3b));
-//			System.out.println("T4a: " + (t4a-t4));
-//			System.out.println("T4b: " + (t4b-t4a));
-//			System.out.println("T4c: " + (t4c-t4b));
-//			//System.out.println("T5: " + (t5-t4));
-//			//System.out.println("T6: " + (t6-t5));
-//			//System.out.println("T7: " + (t7-t6));
-//			System.out.println("T8: " + (t8-t4c));
-//			System.out.println("T9: " + (t9-t8));
-//			System.out.println("T10: " + (t10-t9));
-//			System.out.println("T11: " + (t11-t10));
+			System.out.println("T0a: " + (t0a-t0));
+			System.out.println("T0b: " + (t0b-t0a));
+			System.out.println("T0c: " + (t0c-t0b));
+			System.out.println("T0d: " + (t0d-t0c));
+			System.out.println("T0e: " + (t0e-t0d));
+			System.out.println("T1: " + (t1-t0));
+			System.out.println("T1a: " + (t1a-t1));
+			System.out.println("T1b: " + (t1b-t1a));
+			System.out.println("T1c: " + (t1c-t1b));
+			System.out.println("T1d: " + (t1d-t1c));
+			System.out.println("T2: " + (t2-t1d));
+			System.out.println("T2a[0]: " + (t2a[0]-t2));
+			for(int i = 1; i < mStyle.size(); i++) {
+				System.out.println("T2a[" + i + "]: " + (t2a[i]-t2a[i-1]));				
+			}
+			System.out.println("T3: " + (t3-t2a[mStyle.size()-1]));
+			System.out.println("T3a: " + (t3a-t3));
+			System.out.println("T3b: " + (t3b-t3a));
+			System.out.println("T4: " + (t4-t3b));
+			System.out.println("T4a: " + (t4a-t4));
+			System.out.println("T4b: " + (t4b-t4a));
+			System.out.println("T4c: " + (t4c-t4b));
+			//System.out.println("T5: " + (t5-t4));
+			//System.out.println("T6: " + (t6-t5));
+			//System.out.println("T7: " + (t7-t6));
+			System.out.println("T8: " + (t8-t4c));
+			System.out.println("T9: " + (t9-t8));
+			System.out.println("T10: " + (t10-t9));
+			System.out.println("T11: " + (t11-t10));
 
 			mDb.setTransactionSuccessful();
 
@@ -1189,6 +1190,20 @@ public class BooklistBuilder {
 	 */
 	public int getPseudoCount() {
 		return pseudoCount("NavTable", "Select count(*) from " + mNavTable + " Where " + DOM_VISIBLE + " = 1");
+	}
+
+	/**
+	 * Get the number of book records in the list
+	 */
+	public int getBookCount() {
+		return pseudoCount("ListTableBooks", "Select count(*) from " + mListTable + " Where " + DOM_LEVEL + " = " + (mStyle.size()+1) );
+	}
+
+	/**
+	 * Get the number of unique book records in the list
+	 */
+	public int getUniqueBookCount() {
+		return pseudoCount("ListTableUniqueBooks", "Select count(distinct " + DOM_BOOK + ") from " + mListTable + " Where " + DOM_LEVEL + " = " + (mStyle.size()+1) );
 	}
 
 	/**

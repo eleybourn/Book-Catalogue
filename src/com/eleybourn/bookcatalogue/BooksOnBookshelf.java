@@ -129,6 +129,11 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 	/** Preferred booklist state in next rebuild */
 	private int mRebuildState;
 
+	/** Total number of books in current list */
+	private int mTotalBooks = 0;
+	/** Total number of unique books in current list */
+	private int mUniqueBooks = 0;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
@@ -377,13 +382,17 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 			long t3 = System.currentTimeMillis();
 			int count = mTempList.getCount();
 			long t4 = System.currentTimeMillis();
+			mUniqueBooks = mTempList.getUniqueBookCount();
+			long t5 = System.currentTimeMillis();
+			mTotalBooks = mTempList.getBookCount();
+			long t6 = System.currentTimeMillis();
 
 			System.out.println("Build: " + (t1-t0));
 			System.out.println("Position: " + (t2-t1));
 			System.out.println("Select: " + (t3-t2));
-			System.out.println("Count(" + count + "): " + (t4-t3));
+			System.out.println("Count(" + count + "): " + (t4-t3) + "/" + (t5-t4) + "/" + (t6-t5));
 			System.out.println("====== " );
-			System.out.println("Total: " + (t4-t0));
+			System.out.println("Total: " + (t6-t0));
 		}
 
 		@Override
@@ -484,6 +493,12 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 
 		initBackground();
 
+		TextView bookCounts = (TextView)findViewById(R.id.bookshelf_count);
+		if (mUniqueBooks != mTotalBooks) 
+			bookCounts.setText("(" + this.getString(R.string.displaying_n_books_in_m_entries, mUniqueBooks, mTotalBooks) + ")");
+		else
+			bookCounts.setText("(" + this.getString(R.string.displaying_n_books, mUniqueBooks) + ")");
+			
 		long t0 = System.currentTimeMillis();
 		// Save the old list so we can close it later, and set the new list locally
 		BooklistPseudoCursor oldList = mList;
@@ -666,10 +681,12 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 	private BooklistBuilder buildBooklist(boolean isFullRebuild) {
 		// If not a full rebuild then just use the current builder to requery the underlying data
 		if (mList != null && !isFullRebuild) {
+			System.out.println("Doing rebuild()");
 			BooklistBuilder b = mList.getBuilder();
 			b.rebuild();
 			return b;
 		} else {
+			System.out.println("Doing full reconstruct");
 			// Make sure we have a style chosen
 			BooklistStyles styles = BooklistStyles.getAllStyles(mDb);
 			if (mCurrentStyle == null) {

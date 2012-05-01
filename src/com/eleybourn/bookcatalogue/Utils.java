@@ -1196,6 +1196,11 @@ public class Utils {
 				if (opt.inSampleSize < 1)
 					opt.inSampleSize = 1;
 				Bitmap tmpBm = BitmapFactory.decodeFile( filename, opt );
+				if (tmpBm == null) {
+					// We ran out of memory, most likely
+					Logger.logError(new RuntimeException("Unexpectedly failed to decode bitmap; memory exhausted?"));
+					return null;
+				}
 				android.graphics.Matrix matrix = new android.graphics.Matrix();
 				// Fixup ratio based on new sample size and scale it.
 				ratio = ratio / (1.0f / opt.inSampleSize);

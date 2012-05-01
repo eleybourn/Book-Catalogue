@@ -102,7 +102,7 @@ public class BooklistPreferencesActivity extends PreferencesBase {
 	private static BooleanListProperty mCacheThumbnailsProperty = new BooleanListProperty(
 				mCacheThumbnailsListItems, 
 				PREF_CACHE_THUMBNAILS, 
-				PropertyGroup.GRP_GENERAL, 
+				PropertyGroup.GRP_THUMBNAILS, 
 				R.string.resizing_cover_thumbnails, null, PREF_CACHE_THUMBNAILS, false);
 	static {
 		mCacheThumbnailsListItems.add(null, R.string.use_default_setting);
@@ -117,7 +117,7 @@ public class BooklistPreferencesActivity extends PreferencesBase {
 	private static BooleanListProperty mBackgroundThumbnailsProperty = new BooleanListProperty(
 				mBackgroundThumbnailsListItems, 
 				PREF_BACKGROUND_THUMBNAILS, 
-				PropertyGroup.GRP_GENERAL, 
+				PropertyGroup.GRP_THUMBNAILS, 
 				R.string.generating_cover_thumbnails, null, PREF_BACKGROUND_THUMBNAILS, false);
 	static {
 		mBackgroundThumbnailsListItems.add(null, R.string.use_default_setting);
@@ -137,6 +137,7 @@ public class BooklistPreferencesActivity extends PreferencesBase {
 			setTitle(R.string.booklist_preferences);
 			if (savedInstanceState == null)
 				HintManager.displayHint(this, R.string.hint_booklist_global_properties, null);
+			Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
@@ -231,6 +232,15 @@ public class BooklistPreferencesActivity extends PreferencesBase {
 				getParent().setResult(RESULT_OK, i);
 			}
 		}
+	}
+
+	/**
+	 * Fix background
+	 */
+	@Override 
+	public void onResume() {
+		super.onResume();
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
 	}
 
 	/**

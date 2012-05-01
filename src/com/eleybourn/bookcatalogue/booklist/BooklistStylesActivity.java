@@ -42,6 +42,7 @@ import com.eleybourn.bookcatalogue.EditObjectList;
 import com.eleybourn.bookcatalogue.HintManager;
 import com.eleybourn.bookcatalogue.Logger;
 import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.Utils;
 import com.eleybourn.bookcatalogue.ViewTagger;
 
 /**
@@ -82,9 +83,20 @@ public class BooklistStylesActivity extends EditObjectList<BooklistStyle> {
 			if (savedInstanceState == null)
 				HintManager.displayHint(this, R.string.hint_booklist_styles_editor, null);
 
+			Utils.initBackground(R.drawable.bc_background_gradient_dim, this, R.id.list_wrapper);
+
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
+	}
+
+	/**
+	 * Fix background
+	 */
+	@Override 
+	public void onResume() {
+		super.onResume();
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
 	}
 
 	/**

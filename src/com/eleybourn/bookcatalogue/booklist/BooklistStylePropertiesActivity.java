@@ -24,6 +24,7 @@ import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.HintManager;
 import com.eleybourn.bookcatalogue.Logger;
 import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.Utils;
 import com.eleybourn.bookcatalogue.ViewTagger;
 import com.eleybourn.bookcatalogue.properties.Properties;
 import com.eleybourn.bookcatalogue.properties.Property;
@@ -110,7 +111,17 @@ public class BooklistStylePropertiesActivity extends Activity {
 		// Display hint if required
 		if (savedInstanceState == null)
 			HintManager.displayHint(this, R.string.hint_booklist_style_properties, null);
-	
+
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
+	}
+
+	/**
+	 * Fix background
+	 */
+	@Override 
+	public void onResume() {
+		super.onResume();
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
 	}
 
 	/**

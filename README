@@ -41,6 +41,19 @@ Features include;
   case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+new in 4.0.1
+* Added: preference to completely disable background bitmap
+* Added: book counts to book lists
+* Fixed: crash when expanding/collapsing empty lists
+* Fixed: tiled background bitmap is no longer stretched in some android versions
+* Fixed: crash in classic book list if certain fields were hidden
+* Fixed: crash when dragging only author or series above top of list
+* Fixed: problem with goodreads and UNICODE characters in bookshelf names
+* Fixed: problem caused by using old shortcuts to start app
+* Fixed: rare crash when returning from scanning or adding books
+* Fixed: rare crash when interacting with goodreads
+* Fixed: rare crash when returning to Task list from other application
+
 new in 4.0
 * goodreads support including
   - import

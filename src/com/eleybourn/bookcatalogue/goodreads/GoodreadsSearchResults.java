@@ -26,6 +26,7 @@ import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.Logger;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.SimpleTaskQueue;
+import com.eleybourn.bookcatalogue.Utils;
 import com.eleybourn.bookcatalogue.ViewTagger;
 import com.eleybourn.bookcatalogue.goodreads.api.SearchBooksApiHandler;
 
@@ -86,6 +87,16 @@ public class GoodreadsSearchResults extends ListActivity {
 			finish();
 			return;
 		}
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
+	}
+
+	/**
+	 * Fix background
+	 */
+	@Override 
+	public void onResume() {
+		super.onResume();
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
 	}
 
 	/**

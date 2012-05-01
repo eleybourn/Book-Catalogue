@@ -53,11 +53,21 @@ public class AdministrationLibraryThing extends Activity {
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.administration_librarything);
 			setupAdmin();
+			Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
 	}
 	
+	/**
+	 * Fix background
+	 */
+	@Override 
+	public void onResume() {
+		super.onResume();
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
+	}
+
 	public void setupAdmin() {
 		/* LT Reg Link */
 		TextView register = (TextView) findViewById(R.id.register_url);

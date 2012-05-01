@@ -49,11 +49,21 @@ public class FieldVisibility extends Activity {
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.field_visibility);
 			setupFields();
+			Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
 	}
 	
+	/**
+	 * Fix background
+	 */
+	@Override 
+	public void onResume() {
+		super.onResume();
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
+	}
+
 	/**
 	 * This function builds the manage field visibility by adding onClick events
 	 * to each field checkbox

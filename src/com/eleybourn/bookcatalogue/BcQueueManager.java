@@ -38,6 +38,19 @@ import net.philipwarner.taskqueue.QueueManager;
  * @author Philip Warner
  */
 public class BcQueueManager extends QueueManager {
+
+	/**
+	 * Create the queue we need, if they do not already exist.
+	 * 
+	 * main: long-running tasks, or tasks that can just wait
+	 * small_jobs: trivial background tasks that will only take a few seconds.
+	 */
+	public BcQueueManager(Context context) {
+		super(context);
+		initializeQueue(QUEUE_MAIN);
+		initializeQueue(QUEUE_SMALL_JOBS);
+	}
+
 	public static final String QUEUE_MAIN = "main";
 	public static final String QUEUE_SMALL_JOBS = "small_jobs";
 
@@ -47,19 +60,19 @@ public class BcQueueManager extends QueueManager {
 	public static final long CAT_GOODREADS_EXPORT_ALL = 4;
 	public static final long CAT_GOODREADS_EXPORT_ONE = 5;
 	
-	/**
-	 * Create the queue we need, if they do not already exist.
-	 * 
-	 * main: long-running tasks, or tasks that can just wait
-	 * small_jobs: trivial background tasks that will only take a few seconds.
-	 */
-	@Override
-    public void onCreate() {
-		super.onCreate();
-
-		initializeQueue(QUEUE_MAIN);
-		initializeQueue(QUEUE_SMALL_JOBS);
-	}
+//	/**
+//	 * Create the queue we need, if they do not already exist.
+//	 * 
+//	 * main: long-running tasks, or tasks that can just wait
+//	 * small_jobs: trivial background tasks that will only take a few seconds.
+//	 */
+//	@Override
+//    public void onCreate() {
+//		super.onCreate();
+//
+//		initializeQueue(QUEUE_MAIN);
+//		initializeQueue(QUEUE_SMALL_JOBS);
+//	}
 
 	/**
 	 * Return a localized LegacyEvent for the passed blob.
@@ -145,5 +158,10 @@ public class BcQueueManager extends QueueManager {
 	@Override
 	public LegacyTask newLegacyTask(byte[] original) {
 		return new BcLegacyTask(original, BookCatalogueApp.context.getResources().getString(R.string.legacy_task));
+	}
+
+	@Override
+	public Context getApplicationContext() {
+		return BookCatalogueApp.context;
 	}
 }

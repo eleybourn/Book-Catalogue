@@ -80,6 +80,7 @@ public class TaskListActivity extends net.philipwarner.taskqueue.BindableItemLis
 			if (savedInstanceState == null)
 				HintManager.displayHint(this, R.string.hint_background_tasks, null);
 
+			Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
@@ -102,6 +103,7 @@ public class TaskListActivity extends net.philipwarner.taskqueue.BindableItemLis
 	protected void onResume() {
 		super.onResume();
 		refreshData();
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
 	} 
 
 	/**

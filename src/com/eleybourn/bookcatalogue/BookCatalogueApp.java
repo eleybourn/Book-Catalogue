@@ -80,11 +80,15 @@ public class BookCatalogueApp extends Application {
 	/** Used to sent notifications regarding tasks */
 	private static NotificationManager mNotifier;
 
+	private static BcQueueManager mQueueManager = null;
+
+
 	/**
 	 * Constructor.
 	 */
 	public BookCatalogueApp() {
 		super();
+
 	}
 
 	/**
@@ -103,7 +107,8 @@ public class BookCatalogueApp extends Application {
 		BookCatalogueApp.context = this.getApplicationContext();
 
 		// Start the queue manager
-		startQueueManager();
+		if (mQueueManager == null)
+			mQueueManager = new BcQueueManager(this.getApplicationContext());
 
 		super.onCreate();
 	}
@@ -122,22 +127,32 @@ public class BookCatalogueApp extends Application {
 		return mUnicodeBroken;
 	}
 	
-	/**
-	 * Currently the QueueManager is implemented as a service. This is not clearly necessary
-	 * but has the huge advantage of making a 'context' object available in the Service
-	 * implementation.
-	 * 
-	 * By binding it here, the service will not die when the last Activity is closed. We
-	 * could call StartService to keep it awake indefinitely also, but we do want the binding
-	 * object...so we bind it.
-	 */
-	private void startQueueManager() {
-		doBindService();		
-	}
-	/**
-	 * Points to the bound service, once it is started.
-	 */
-	private static BcQueueManager mBoundService = null;
+//	/**
+//	 * Currently the QueueManager is implemented as a service. This is not clearly necessary
+//	 * but has the huge advantage of making a 'context' object available in the Service
+//	 * implementation.
+//	 * 
+//	 * By binding it here, the service will not die when the last Activity is closed. We
+//	 * could call StartService to keep it awake indefinitely also, but we do want the binding
+//	 * object...so we bind it.
+//	 */
+//	private void startQueueManager() {
+//		doBindService();		
+//	}
+//
+//	/**
+//	 * Points to the bound service, once it is started.
+//	 */
+//	private static BcQueueManager mBoundService = null;
+//
+//	/**
+//	 * Utility routine to get the current QueueManager.
+//	 * 
+//	 * @return	QueueManager object
+//	 */
+//	public static BcQueueManager getQueueManager() {
+//		return mBoundService;
+//	}
 
 	/**
 	 * Utility routine to get the current QueueManager.
@@ -145,7 +160,7 @@ public class BookCatalogueApp extends Application {
 	 * @return	QueueManager object
 	 */
 	public static BcQueueManager getQueueManager() {
-		return mBoundService;
+		return mQueueManager;
 	}
 
 	/**
@@ -179,54 +194,57 @@ public class BookCatalogueApp extends Application {
 		return new BookCataloguePreferences();
 	}
 
-	/**
-	 * Code based on Google sample code to bind the service.
-	 */
-	private ServiceConnection mConnection = new ServiceConnection() {
-	    public void onServiceConnected(ComponentName className, IBinder service) {
-	        // This is called when the connection with the service has been
-	        // established, giving us the service object we can use to
-	        // interact with the service.  Because we have bound to a explicit
-	        // service that we know is running in our own process, we can
-	        // cast its IBinder to a concrete class and directly access it.
-	        mBoundService = (BcQueueManager)((QueueManager.QueueManagerBinder)service).getService();
-
-	        // Tell the user about this for our demo.
-	        //Toast.makeText(BookCatalogueApp.this, "Connected", Toast.LENGTH_SHORT).show();
-	    }
-
-	    public void onServiceDisconnected(ComponentName className) {
-	        // This is called when the connection with the service has been
-	        // unexpectedly disconnected -- that is, its process crashed.
-	        // Because it is running in our same process, we should never
-	        // see this happen.
-	        mBoundService = null;
-	        //Toast.makeText(BookCatalogueApp.this, "Disconnected", Toast.LENGTH_SHORT).show();
-	    }
-	};
-
-	/** Indicates service has been bound. Really. */
-	boolean mIsBound;
-
-	/**
-	 * Establish a connection with the service.  We use an explicit
-	 * class name because we want a specific service implementation that
-	 * we know will be running in our own process (and thus won't be
-	 * supporting component replacement by other applications).
-	 */
-	void doBindService() {
-	    bindService(new Intent(BookCatalogueApp.this, BcQueueManager.class), mConnection, Context.BIND_AUTO_CREATE);
-	    mIsBound = true;
+	public static boolean isBackgroundImageDisabled() {
+		return getAppPreferences().getBoolean(BookCataloguePreferences.PREF_DISABLE_BACKGROUND_IMAGE, false);
 	}
-	/**
-	 * Detach existiing service connection.
-	 */
-	void doUnbindService() {
-	    if (mIsBound) {
-	        unbindService(mConnection);
-	        mIsBound = false;
-	    }
-	}
+//	/**
+//	 * Code based on Google sample code to bind the service.
+//	 */
+//	private ServiceConnection mConnection = new ServiceConnection() {
+//	    public void onServiceConnected(ComponentName className, IBinder service) {
+//	        // This is called when the connection with the service has been
+//	        // established, giving us the service object we can use to
+//	        // interact with the service.  Because we have bound to a explicit
+//	        // service that we know is running in our own process, we can
+//	        // cast its IBinder to a concrete class and directly access it.
+//	        mBoundService = (BcQueueManager)((QueueManager.QueueManagerBinder)service).getService();
+//
+//	        // Tell the user about this for our demo.
+//	        //Toast.makeText(BookCatalogueApp.this, "Connected", Toast.LENGTH_SHORT).show();
+//	    }
+//
+//	    public void onServiceDisconnected(ComponentName className) {
+//	        // This is called when the connection with the service has been
+//	        // unexpectedly disconnected -- that is, its process crashed.
+//	        // Because it is running in our same process, we should never
+//	        // see this happen.
+//	        mBoundService = null;
+//	        //Toast.makeText(BookCatalogueApp.this, "Disconnected", Toast.LENGTH_SHORT).show();
+//	    }
+//	};
+//
+//	/** Indicates service has been bound. Really. */
+//	boolean mIsBound;
+//
+//	/**
+//	 * Establish a connection with the service.  We use an explicit
+//	 * class name because we want a specific service implementation that
+//	 * we know will be running in our own process (and thus won't be
+//	 * supporting component replacement by other applications).
+//	 */
+//	void doBindService() {
+//	    bindService(new Intent(BookCatalogueApp.this, BcQueueManager.class), mConnection, Context.BIND_AUTO_CREATE);
+//	    mIsBound = true;
+//	}
+//	/**
+//	 * Detach existiing service connection.
+//	 */
+//	void doUnbindService() {
+//	    if (mIsBound) {
+//	        unbindService(mConnection);
+//	        mIsBound = false;
+//	    }
+//	}
 
 	/**
 	 * Return the Intent that will be used by the notifications manager when a notification
@@ -242,22 +260,22 @@ public class BookCatalogueApp extends Application {
 	}
 
 
-	/**
-	 * Used by the Manifest-based startup activity to determine the desired first activity for the user.
-	 * 
-	 * @return	Intent for preference-based startup activity.
-	 */
-	public Intent getStartupIntent() {
-		BookCataloguePreferences prefs = getAppPreferences();
-
-		Intent i;
-		if (prefs.getStartInMyBook()) {
-			i = new Intent(this, BookCatalogue.class);
-		} else {
-			i = new Intent(this, MainMenu.class);
-		}
-		return i;
-	}
+//	/**
+//	 * Used by the Manifest-based startup activity to determine the desired first activity for the user.
+//	 * 
+//	 * @return	Intent for preference-based startup activity.
+//	 */
+//	public Intent getStartupIntent() {
+//		BookCataloguePreferences prefs = getAppPreferences();
+//
+//		Intent i;
+//		if (prefs.getStartInMyBook()) {
+//			i = new Intent(this, BookCatalogue.class);
+//		} else {
+//			i = new Intent(this, MainMenu.class);
+//		}
+//		return i;
+//	}
 
 	/**
 	 * Class to manage application preferences rather than rely on each activity knowing how to 
@@ -272,6 +290,7 @@ public class BookCatalogueApp extends Application {
 		/** Name to use for global preferences; non-global should be moved to appropriate Activity code */
 		public static final String PREF_START_IN_MY_BOOKS = "start_in_my_books";
 		public static final String PREF_INCLUDE_CLASSIC_MY_BOOKS = "App.includeClassicView";
+		public static final String PREF_DISABLE_BACKGROUND_IMAGE = "App.DisableBackgroundImage";
 		public static final String PREF_SHOW_ALL_AUTHORS = "APP.ShowAllAuthors";
 		public static final String PREF_SHOW_ALL_SERIES = "APP.ShowAllSeries";
 		public static final String PREF_DISPLAY_FIRST_THEN_LAST_NAMES = "APP.DisplayFirstThenLast";

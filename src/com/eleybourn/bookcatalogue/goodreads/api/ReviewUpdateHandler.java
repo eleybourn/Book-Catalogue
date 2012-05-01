@@ -89,7 +89,7 @@ public class ReviewUpdateHandler extends ApiHandler {
         if (rating >= 0)
 	        parameters.add(new BasicNameValuePair("review[rating]", Integer.toString(rating)));
 
-        post.setEntity(new UrlEncodedFormEntity(parameters));	        	
+        post.setEntity(new UrlEncodedFormEntity(parameters, "UTF8"));	        	
 
         //ReviewUpdateParser handler = new ReviewUpdateParser();
         mManager.execute(post, null, true);

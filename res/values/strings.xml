@@ -577,10 +577,14 @@
 <item name="ACTIVITY_ADMIN_FINISH" type="id"/>
 <string name="export_starting_ellipsis">Export starting&#8230;</string>
 <string name="resizing_cover_thumbnails">Resizing cover thumbnails</string>
-<string name="resize_each_time">Resize each time they are needed (less storage, slower)</string>
-<string name="cache_resized_thumbnails_for_later_use">Cache resized thumbnails (more space, faster)</string>
+<string name="resize_each_time">Resize each time they are needed (uses less storage, scrolling will be slower)</string>
+<string name="cache_resized_thumbnails_for_later_use">Cache resized thumbnails (uses more storage, lists will scroll faster)</string>
 <string name="generating_cover_thumbnails">Generating cover thumbnails</string>
-<string name="use_background_thread">Use background thread (faster scrolling, delayed images)</string>
-<string name="generate_immediately">Generate immediately (slower scrolling, instant images)</string>
+<string name="use_background_thread">Use background thread (lists scroll faster, images may be delayed)</string>
+<string name="generate_immediately">Generate immediately (lists scroll slower, images will be displayed immediately)</string>
+<string name="sort_and_style_ellipsis">Sort &amp; Style&#8230;</string>
+<string name="disable_background_image">Disable background image</string>
+<string name="displaying_n_books_in_m_entries">displaying %1$s books, in %2$s entries</string>
+<string name="displaying_n_books">displaying %1$s books</string>
 </resources>
 

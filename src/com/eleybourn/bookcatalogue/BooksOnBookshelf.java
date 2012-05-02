@@ -129,6 +129,11 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 	/** Preferred booklist state in next rebuild */
 	private int mRebuildState;
 
+	/** Total number of books in current list */
+	private int mTotalBooks = 0;
+	/** Total number of unique books in current list */
+	private int mUniqueBooks = 0;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
@@ -377,13 +382,17 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 			long t3 = System.currentTimeMillis();
 			int count = mTempList.getCount();
 			long t4 = System.currentTimeMillis();
+			mUniqueBooks = mTempList.getUniqueBookCount();
+			long t5 = System.currentTimeMillis();
+			mTotalBooks = mTempList.getBookCount();
+			long t6 = System.currentTimeMillis();
 
 			System.out.println("Build: " + (t1-t0));
 			System.out.println("Position: " + (t2-t1));
 			System.out.println("Select: " + (t3-t2));
-			System.out.println("Count(" + count + "): " + (t4-t3));
+			System.out.println("Count(" + count + "): " + (t4-t3) + "/" + (t5-t4) + "/" + (t6-t5));
 			System.out.println("====== " );
-			System.out.println("Total: " + (t4-t0));
+			System.out.println("Total: " + (t6-t0));
 		}
 
 		@Override
@@ -436,27 +445,41 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		ListView lv = getListView();
 		View root = findViewById(R.id.root);
 		View header = findViewById(R.id.header);
-		if (BooklistPreferencesActivity.isBackgroundFlat()) {
+		if (BooklistPreferencesActivity.isBackgroundFlat() || BookCatalogueApp.isBackgroundImageDisabled()) {
 			lv.setBackgroundColor(0xFF202020);
 			lv.setCacheColorHint(0xFF202020);
-			root.setBackgroundDrawable(getResources().getDrawable(R.drawable.bc_background_gradient));
-			header.setBackgroundDrawable(getResources().getDrawable(R.drawable.bc_vertical_gradient));
+			if (BookCatalogueApp.isBackgroundImageDisabled()) {
+				root.setBackgroundColor(0xFF202020);
+				header.setBackgroundColor(0xFF202020);
+			} else {
+				root.setBackgroundDrawable(Utils.cleanupTiledBackground(getResources().getDrawable(R.drawable.bc_background_gradient)));
+				header.setBackgroundDrawable(Utils.cleanupTiledBackground(getResources().getDrawable(R.drawable.bc_vertical_gradient)));
+			}
 		} else {
 			lv.setCacheColorHint(0x00000000);
 			// ICS does not cope well with transparent ListView backgrounds with a 0 cache hint, but it does
 			// seem to cope with a background image on the ListView itself.
 			if (Build.VERSION.SDK_INT >= 11) {
 				// Honeycomb
-				lv.setBackgroundDrawable(getResources().getDrawable(R.drawable.bc_background_gradient_dim));
+				lv.setBackgroundDrawable(Utils.cleanupTiledBackground(getResources().getDrawable(R.drawable.bc_background_gradient_dim)));
 			} else {
 				lv.setBackgroundColor(0x00000000);				
 			}
-			root.setBackgroundDrawable(getResources().getDrawable(R.drawable.bc_background_gradient_dim));
+			root.setBackgroundDrawable(Utils.cleanupTiledBackground(getResources().getDrawable(R.drawable.bc_background_gradient_dim)));
 			header.setBackgroundColor(0x00000000);
 		}
 		root.invalidate();
 	}
 	
+	/**
+	 * Fix background
+	 */
+	@Override 
+	public void onResume() {
+		super.onResume();
+		initBackground();		
+	}
+
 	/**
 	 * Display the passed cursor in the ListView, and change the position to targetRow.
 	 * 
@@ -470,6 +493,12 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 
 		initBackground();
 
+		TextView bookCounts = (TextView)findViewById(R.id.bookshelf_count);
+		if (mUniqueBooks != mTotalBooks) 
+			bookCounts.setText("(" + this.getString(R.string.displaying_n_books_in_m_entries, mUniqueBooks, mTotalBooks) + ")");
+		else
+			bookCounts.setText("(" + this.getString(R.string.displaying_n_books, mUniqueBooks) + ")");
+			
 		long t0 = System.currentTimeMillis();
 		// Save the old list so we can close it later, and set the new list locally
 		BooklistPseudoCursor oldList = mList;
@@ -652,10 +681,12 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 	private BooklistBuilder buildBooklist(boolean isFullRebuild) {
 		// If not a full rebuild then just use the current builder to requery the underlying data
 		if (mList != null && !isFullRebuild) {
+			System.out.println("Doing rebuild()");
 			BooklistBuilder b = mList.getBuilder();
 			b.rebuild();
 			return b;
 		} else {
+			System.out.println("Doing full reconstruct");
 			// Make sure we have a style chosen
 			BooklistStyles styles = BooklistStyles.getAllStyles(mDb);
 			if (mCurrentStyle == null) {
@@ -875,7 +906,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 
 		mMenuHandler.addCreateBookItems(menu);
 
-		mMenuHandler.addItem(menu, MNU_SORT, R.string.select_style, android.R.drawable.ic_menu_sort_alphabetically);
+		mMenuHandler.addItem(menu, MNU_SORT, R.string.sort_and_style_ellipsis, android.R.drawable.ic_menu_sort_alphabetically);
 		//mMenuHandler.addItem(menu, MNU_EDIT_STYLE, R.string.edit_style, android.R.drawable.ic_menu_manage);
 
 		mMenuHandler.addItem(menu, MNU_EXPAND, R.string.menu_sort_by_author_expanded, R.drawable.ic_menu_expand);
@@ -910,21 +941,27 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 
 			case MNU_EXPAND:
 			{
-				int oldAbsPos = mListHandler.getAbsolutePosition(getListView().getChildAt(0));
-				savePosition();
-				mList.getBuilder().expandAll(true);
-				mTopRow = mList.getBuilder().getPosition(oldAbsPos);
-				BooklistPseudoCursor newList = mList.getBuilder().getList();
-				displayList(newList, null);							
+				// It is possible that the list will be empty, if so, ignore
+				if (getListView().getChildCount() != 0) {
+					int oldAbsPos = mListHandler.getAbsolutePosition(getListView().getChildAt(0));
+					savePosition();
+					mList.getBuilder().expandAll(true);
+					mTopRow = mList.getBuilder().getPosition(oldAbsPos);
+					BooklistPseudoCursor newList = mList.getBuilder().getList();
+					displayList(newList, null);							
+				}
 				break;
 			}
 			case MNU_COLLAPSE:
 			{
-				int oldAbsPos = mListHandler.getAbsolutePosition(getListView().getChildAt(0));
-				savePosition();
-				mList.getBuilder().expandAll(false);
-				mTopRow = mList.getBuilder().getPosition(oldAbsPos);
-				displayList(mList.getBuilder().getList(), null);							
+				// It is possible that the list will be empty, if so, ignore
+				if (getListView().getChildCount() != 0) {
+					int oldAbsPos = mListHandler.getAbsolutePosition(getListView().getChildAt(0));
+					savePosition();
+					mList.getBuilder().expandAll(false);
+					mTopRow = mList.getBuilder().getPosition(oldAbsPos);
+					displayList(mList.getBuilder().getList(), null);												
+				}
 				break;
 			}
 			/*

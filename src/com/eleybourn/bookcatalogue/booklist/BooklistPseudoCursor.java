@@ -265,6 +265,20 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 	}
 
 	/**
+	 * Get the number of book records in the list
+	 */
+	public int getBookCount() {
+		return mBuilder.getBookCount();
+	}
+
+	/**
+	 * Get the number of unique book records in the list
+	 */
+	public int getUniqueBookCount() {
+		return mBuilder.getUniqueBookCount();
+	}
+
+	/**
 	 * Cursor AbstractCursor method
 	 */
 	@Override

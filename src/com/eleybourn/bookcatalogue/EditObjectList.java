@@ -259,6 +259,10 @@ abstract public class EditObjectList<T extends Serializable> extends ListActivit
 		@Override
 		public void drop(int from, final int to) {
             final ListView lv = getListView();
+			// Check if nothing to do; also avoids the nasty case where list size == 1
+			if (from == to)
+				return;
+
             final int firstPos = lv.getFirstVisiblePosition();
 
 			T item=mAdapter.getItem(from);				

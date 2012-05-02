@@ -102,7 +102,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		//System.out.println(mId + " OnCreate SIS=" + (savedInstanceState == null? "N" : "Y"));
+		//System.out.println("BookISBNSearch OnCreate SIS=" + (savedInstanceState == null? "N" : "Y"));
 
 		//do we have a network connection?
 		boolean network_available = Utils.isNetworkAvailable(this);
@@ -126,6 +126,36 @@ public class BookISBNSearch extends ActivityWithTasks {
 				mScannerStarted = savedInstanceState.getBoolean("mScannerStarted");
 			else {
 				//System.out.println(mId + " OnCreate mScannerStarted NOT PRESENT");
+			}
+		}
+
+		// BUG NOTE 1:
+		//
+		// There is a bizarre bug that seems to only affect some users in which this activity
+		// is called AFTER the user has finished and the passed Intent has neither a ISBN nor a
+		// "BY" in the Extras. Following all the code that starts this activity suggests that 
+		// the activity is ALWAYS started with the intent data. The problems always occur AFTER
+		// adding a book, which confirms that the activity has been started correctly.
+		// 
+		// In order to avoid this problem, we just check for nulls and finish(). THIS IS NOT A FIX
+		// it is a MESSY WORK-AROUND.
+		//
+		// TODO: Find out why BookISBNSearch gets restarted with no data
+		//
+		// So...we save the extras in savedInstanceState, and look for it when missing
+		//
+		if (mIsbn == null && (by == null || by.equals("") ) ) {
+			Logger.logError(new RuntimeException("Empty args for BookISBNSearch"));
+			if (savedInstanceState != null) {
+				if (mIsbn == null && savedInstanceState.containsKey("isbn")) 
+					mIsbn = savedInstanceState.getString("isbn");
+				if ( (by == null || by.equals("") ) && savedInstanceState.containsKey(BY)) 
+					by = savedInstanceState.getString(BY);
+			}
+			// If they are still null, we can't proceed.
+			if (mIsbn == null && (by == null || by.equals("") ) ) {
+				finish();
+				return;
 			}
 		}
 
@@ -518,7 +548,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 	 */
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-		//System.out.println(mId + " onActivityResult");
+		//System.out.println("BookISBNSearch onActivityResult " + resultCode);
 		super.onActivityResult(requestCode, resultCode, intent);
 		switch(requestCode) {
 		case ACTIVITY_SCAN:
@@ -595,9 +625,21 @@ public class BookISBNSearch extends ActivityWithTasks {
 		// Call the super method only after we have the searchManager set up
 		super.onRestoreInstanceState(inState);
 	}
+
 	@Override
 	protected void onSaveInstanceState(Bundle inState) {
 		super.onSaveInstanceState(inState);
+
+		// Saving intent data is a kludge due to an apparent Android bug in some
+		// handsets. Search for "BUG NOTE 1" in this source file for a discussion
+		Bundle b = getIntent().getExtras();
+		if (b != null) {
+			if (b.containsKey("isbn"))
+				inState.putString("isbn", b.getString("isbn"));
+			if (b.containsKey(BY))
+				inState.putString(BY, b.getString(BY));
+		}
+
 		inState.putParcelable("LastBookIntent", mLastBookIntent);
 		// Save the current search details as this may be called as a result of a rotate during an alert dialog.
 		inState.putString("author", mAuthor);
@@ -616,7 +658,6 @@ public class BookISBNSearch extends ActivityWithTasks {
 			mSearchManager.disconnect();
 			mSearchManager = null;
 		}
-
 	}
 
 	@Override

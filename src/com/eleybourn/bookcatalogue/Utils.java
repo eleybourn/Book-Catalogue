@@ -56,18 +56,27 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
 import com.eleybourn.bookcatalogue.database.CoversDbHelper;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Shader.TileMode;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 public class Utils {
@@ -1375,6 +1384,69 @@ public class Utils {
 			space = space / (1024 * 1024);
 		}
 		return String.format(sizeFmt,space);		
+	}
+	
+	/**
+	 * Set the passed Activity background based on user preferences
+	 */
+	public static void initBackground(int bgResource, Activity a) {
+		initBackground(bgResource, a, R.id.root);
+	}
+	/**
+	 * Set the passed Activity background based on user preferences
+	 */
+	public static void initBackground(int bgResource, Activity a, int rootId) {
+		try {
+			View root = a.findViewById(rootId);
+			if (BookCatalogueApp.isBackgroundImageDisabled()) {
+				root.setBackgroundColor(0xFF202020);
+				if (root instanceof ListView) {
+					((ListView)root).setCacheColorHint(0xFF202020);				
+				}
+			} else {
+				if (root instanceof ListView) {
+					ListView lv = ((ListView)root);
+					lv.setCacheColorHint(0x00000000);				
+				}
+				Drawable d = cleanupTiledBackground(a.getResources().getDrawable(bgResource));
+
+				root.setBackgroundDrawable(d);
+			}
+			root.invalidate();
+		} catch (Exception e) {
+			// This is a purely cosmetic function; just log the error
+			Logger.logError(e, "Error setting background");
+		}
+	}
+
+	/**
+ 	 * Reuse of bitmaps in tiled backgrounds is a known cause of problems:
+     *		http://stackoverflow.com/questions/4077487/background-image-not-repeating-in-android-layout
+	 * So we avoid reusing them
+	 *
+	 * @param d		Drawable background that may be a BitmapDrawable or a layered drawablewhose first 
+	 * 				layer is a tiled bitmap
+	 * 
+	 * @return		Modified Drawable
+	 */
+	public static Drawable cleanupTiledBackground(Drawable d) {
+
+		if (d instanceof LayerDrawable) {
+			System.out.println("BG is layered");
+			LayerDrawable ld = (LayerDrawable)d;
+			Drawable l = ld.getDrawable(0);
+			if (l instanceof BitmapDrawable) {
+				System.out.println("Layer0 is BMP");
+				BitmapDrawable bmp = (BitmapDrawable) l;
+				bmp.mutate(); // make sure that we aren't sharing state anymore
+				bmp.setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);
+			}
+		} else if (d instanceof BitmapDrawable) {
+			BitmapDrawable bmp = (BitmapDrawable) d;
+			bmp.mutate(); // make sure that we aren't sharing state anymore
+			bmp.setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);			
+		}
+		return d;
 	}
 }
 

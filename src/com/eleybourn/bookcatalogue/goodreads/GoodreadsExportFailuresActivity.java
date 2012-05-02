@@ -35,6 +35,7 @@ import android.widget.TextView;
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.HintManager;
+import com.eleybourn.bookcatalogue.Utils;
 import com.eleybourn.bookcatalogue.HintManager.HintOwner;
 import com.eleybourn.bookcatalogue.ViewTagger;
 
@@ -107,6 +108,7 @@ public class GoodreadsExportFailuresActivity extends  net.philipwarner.taskqueue
 		if (savedInstanceState == null)
 			HintManager.displayHint(this, R.string.hint_background_task_events, null);
 
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
 	}
 
 	/**
@@ -133,6 +135,7 @@ public class GoodreadsExportFailuresActivity extends  net.philipwarner.taskqueue
 	protected void onResume() {
 		super.onResume();
 		refreshData();
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
 	} 
 
 	/**

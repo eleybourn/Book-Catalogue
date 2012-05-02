@@ -517,7 +517,7 @@ public class CatalogueDBAdapter {
 //						+ " LEFT OUTER JOIN " + DB_TB_SERIES + " s ON (s." + KEY_ROWID + "=w." + KEY_SERIES_ID + ") ";
 
 	//TODO: Update database version RELEASE: Update database version
-	public static final int DATABASE_VERSION = 73;
+	public static final int DATABASE_VERSION = 74;
 
 	private TableInfo mBooksInfo = null;
 
@@ -1455,6 +1455,15 @@ public class CatalogueDBAdapter {
 			if (curVersion == 72) {
 				curVersion++;
 				// Just to get the triggers applied
+			}
+
+			if (curVersion == 73) {
+				//do nothing
+				curVersion++;
+				message += "New in v4.0.1 - many bugs fixed\n\n";
+				message += "* Added a preference to completely disable background bitmap\n\n";
+				message += "* Added book counts to book lists\n\n";
+				message += "Thank you to all those people who reported bugs.\n\n";
 			}
 
 			// Rebuild all indices

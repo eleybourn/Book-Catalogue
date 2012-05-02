@@ -190,6 +190,23 @@ public class BookCatalogue extends ExpandableListActivity {
 		bookshelf = getString(R.string.all_books);
 		try {
 			super.onCreate(savedInstanceState);
+
+			// In V4.0 the startup activity is StartupActivity, but we need to deal with old icons. 
+			// So we check the intent.
+			// TODO: Consider renaming 'BookCatalogue' activity to 'BookCatalogueClassic' and creating a dummy BookCatalgue activity stub to avoid this check
+			if ( ! StartupActivity.hasBeenCalled() ) {
+				// The startup activity has NOT been called
+				Intent i = getIntent();
+				if (i.getAction().equals("android.intent.action.MAIN") && i.hasCategory("android.intent.category.LAUNCHER")) {
+					// This is a startup for the main application, so defer it to the StartupActivity
+					System.out.println("Old shortcut detected, redirecting");
+					i = new Intent(this.getApplicationContext(), StartupActivity.class);
+					startActivity(i);
+					finish();
+					return;
+				}
+			}
+
 			// Extract the sort type from the bundle. getInt will return 0 if there is no attribute 
 			// sort (which is exactly what we want)
 			try {
@@ -500,7 +517,8 @@ public class BookCatalogue extends ExpandableListActivity {
 				info.show = mPrefs.getBoolean(setting, true);
 				info.view = (TextView) v.findViewById(id);
 				if (!info.show) {
-					info.view.setVisibility(View.GONE);
+					if (info.view != null)
+						info.view.setVisibility(View.GONE);
 				} else {
 					info.show = (info.view != null);
 					if (info.show)
@@ -1602,10 +1620,15 @@ public class BookCatalogue extends ExpandableListActivity {
 		case R.id.ACTIVITY_CREATE_BOOK_SCAN:
 			try {
 				String contents = intent.getStringExtra("SCAN_RESULT");
-				Toast.makeText(this, R.string.isbn_found, Toast.LENGTH_LONG).show();
-				Intent i = new Intent(this, BookISBNSearch.class);
-				i.putExtra("isbn", contents);
-				startActivityForResult(i, R.id.ACTIVITY_CREATE_BOOK_SCAN);
+				// Handle the possibility of null/empty scanned string
+				if (contents != null && !contents.equals("")) {
+					Toast.makeText(this, R.string.isbn_found, Toast.LENGTH_LONG).show();
+					Intent i = new Intent(this, BookISBNSearch.class);
+					i.putExtra("isbn", contents);
+					startActivityForResult(i, R.id.ACTIVITY_CREATE_BOOK_SCAN);
+				} else {
+					fillData();				
+				}
 			} catch (NullPointerException e) {
 				// This is not a scan result, but a normal return
 				fillData();

@@ -175,6 +175,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 				}				
 			}
 			setupAdmin();
+			Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
@@ -647,10 +648,14 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	protected void onPause() {
 		super.onPause();
 	} 
-	@Override
-	protected void onResume() {
+	/**
+	 * Fix background
+	 */
+	@Override 
+	public void onResume() {
 		super.onResume();
-	} 
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
+	}
 
 	@Override
 	TaskHandler getTaskHandler(ManagedTask t) {

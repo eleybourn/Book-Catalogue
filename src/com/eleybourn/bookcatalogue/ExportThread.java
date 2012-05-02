@@ -72,6 +72,7 @@ public class ExportThread extends ManagedTask {
 			return;			
 		}
 		mManager.doProgress(getString(R.string.export_starting_ellipsis));
+		boolean displayingStartupMessage = true;
 
 		StringBuilder export = new StringBuilder(
 			'"' + CatalogueDBAdapter.KEY_ROWID + "\"," + 			//0
@@ -232,6 +233,10 @@ public class ExportThread extends ManagedTask {
 					
 					long now = System.currentTimeMillis();
 					if ( (now - lastUpdate) > 200) {
+						if (displayingStartupMessage) {
+							mManager.doProgress("");
+							displayingStartupMessage = false;
+						}
 						doProgress(title, num);
 						lastUpdate = now;
 					}
@@ -245,6 +250,10 @@ public class ExportThread extends ManagedTask {
 			Logger.logError(e);
 			mManager.doToast(getString(R.string.export_failed_sdcard));
 		} finally {
+			if (displayingStartupMessage) {
+				mManager.doProgress("");
+				displayingStartupMessage = false;
+			}
 			mManager.doToast( getString(R.string.export_complete) );
 			if (books != null)
 				books.close();

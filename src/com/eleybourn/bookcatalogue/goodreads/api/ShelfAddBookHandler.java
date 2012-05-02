@@ -112,7 +112,7 @@ public class ShelfAddBookHandler extends ApiHandler {
         parameters.add(new BasicNameValuePair("book_id", Long.toString(grBookId)));
         parameters.add(new BasicNameValuePair("name", shelfName));
 
-        post.setEntity(new UrlEncodedFormEntity(parameters));	        	
+        post.setEntity(new UrlEncodedFormEntity(parameters, "UTF8"));	        	
 
         // Use a parser based on the filters
         XmlResponseParser handler = new XmlResponseParser(mRootFilter);

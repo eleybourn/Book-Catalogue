@@ -397,7 +397,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 
 		@Override
 		public void onFinish() {
-			// Make sure activity is not dead.
+			// If activity dead, just do a local cleanup and exit.
 			if (mIsDead) {
 				mTempList.close();
 				return;
@@ -447,7 +447,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		View header = findViewById(R.id.header);
 		if (BooklistPreferencesActivity.isBackgroundFlat() || BookCatalogueApp.isBackgroundImageDisabled()) {
 			lv.setBackgroundColor(0xFF202020);
-			lv.setCacheColorHint(0xFF202020);
+			Utils.setCacheColorHintSafely(lv, 0xFF202020);
 			if (BookCatalogueApp.isBackgroundImageDisabled()) {
 				root.setBackgroundColor(0xFF202020);
 				header.setBackgroundColor(0xFF202020);
@@ -456,7 +456,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 				header.setBackgroundDrawable(Utils.cleanupTiledBackground(getResources().getDrawable(R.drawable.bc_vertical_gradient)));
 			}
 		} else {
-			lv.setCacheColorHint(0x00000000);
+			Utils.setCacheColorHintSafely(lv, 0x00000000);
 			// ICS does not cope well with transparent ListView backgrounds with a 0 cache hint, but it does
 			// seem to cope with a background image on the ListView itself.
 			if (Build.VERSION.SDK_INT >= 11) {
@@ -477,6 +477,14 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 	@Override 
 	public void onResume() {
 		super.onResume();
+
+		// Try to prevent null-pointer errors for rapidly pressing 'back'; this
+		// is in response to errors reporting NullPointerException when, most likely,
+		// a null is returned by getResources(). The most likely explanation for that
+		// is the call occurs after Activity is destroyed.
+		if (mIsDead) 
+			return;
+
 		initBackground();		
 	}
 

@@ -84,11 +84,18 @@
 		android:paddingBottom="2dp"
 	    />
 	<LinearLayout 
+	    xmlns:android="http://schemas.android.com/apk/res/android" 
 		android:layout_width="fill_parent" 
 		android:layout_height="fill_parent"
 		android:layout_below="@id/header_divider">
 	<!-- android:cacheColorHint="#00000000" - but only if using a nice BG  -->
-	    <com.eleybourn.bookcatalogue.FastScrollListView android:id="@+id/android:list" 
+	
+		<!--  Name space added below in response to 
+					http://stackoverflow.com/questions/1691569
+		 -->
+	    <com.eleybourn.bookcatalogue.FastScrollListView
+	        xmlns:android="http://schemas.android.com/apk/res/android" 
+	        android:id="@+id/android:list" 
 			android:cacheColorHint="#FF202020"
 		    android:background ="#FF202020"
 			android:layout_width="fill_parent" 

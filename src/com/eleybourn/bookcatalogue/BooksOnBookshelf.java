@@ -441,6 +441,20 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		ListView lv = getListView();
 		View root = findViewById(R.id.root);
 		View header = findViewById(R.id.header);
+
+		//
+		// Sanity checks as a result of user bug report that was caused by either:
+		// (a) root being null
+		// or
+		// (b) getResources() returning null
+		//
+		if (root == null)
+			throw new RuntimeException("Sanity Check Fail: Root view not found; isFinishing() = " + isFinishing());
+		if (header == null)
+			throw new RuntimeException("Sanity Check Fail: Header view not found; isFinishing() = " + isFinishing());
+		if (getResources() == null)
+			throw new RuntimeException("Sanity Check Fail: getResources() returned null; isFinishing() = " + isFinishing());
+
 		if (BooklistPreferencesActivity.isBackgroundFlat() || BookCatalogueApp.isBackgroundImageDisabled()) {
 			lv.setBackgroundColor(0xFF202020);
 			Utils.setCacheColorHintSafely(lv, 0xFF202020);

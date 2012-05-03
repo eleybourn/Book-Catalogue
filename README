@@ -41,6 +41,12 @@ Features include;
   case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+new in 4.0.2
+* Fixed: Tiled backgrounds now tile correctly. Really.
+* Fixed: Crash when rapidly scrolling very large book lists
+* Fixed: Crash resulting from intermittent android bug in android 2.2-2.3.
+* Fixed: Blank screen in classic view that occurs after prior FC
+
 new in 4.0.1
 * Added: preference to completely disable background bitmap
 * Added: book counts to book lists

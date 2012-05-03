@@ -195,9 +195,10 @@ public class BookCatalogue extends ExpandableListActivity {
 			// So we check the intent.
 			// TODO: Consider renaming 'BookCatalogue' activity to 'BookCatalogueClassic' and creating a dummy BookCatalgue activity stub to avoid this check
 			if ( ! StartupActivity.hasBeenCalled() ) {
-				// The startup activity has NOT been called
+				// The startup activity has NOT been called; this may be because of a restart after FC, in which case the action may be null, or may be valid
 				Intent i = getIntent();
-				if (i.getAction().equals("android.intent.action.MAIN") && i.hasCategory("android.intent.category.LAUNCHER")) {
+				final String action = i.getAction();
+				if (action != null && action.equals("android.intent.action.MAIN") && i.hasCategory("android.intent.category.LAUNCHER")) {
 					// This is a startup for the main application, so defer it to the StartupActivity
 					System.out.println("Old shortcut detected, redirecting");
 					i = new Intent(this.getApplicationContext(), StartupActivity.class);
@@ -261,6 +262,8 @@ public class BookCatalogue extends ExpandableListActivity {
 			registerForContextMenu(getExpandableListView());
 		} catch (Exception e) {
 			Logger.logError(e);
+			// Need to finish this activity, otherwise we end up in an invalid state.
+			finish();
 		}
 	}
 	

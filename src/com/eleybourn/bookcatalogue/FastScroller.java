@@ -134,6 +134,9 @@ class FastScroller {
     private SectionIndexer mSectionIndexerV1;
     private SectionIndexerV2 mSectionIndexerV2;
 
+    // This value is in SP taken from the Android sources
+    private static final int mLargeTextSize = 22; //Units=SP
+
     /**
      * Better interface that just gets text for rows as needed rather
      * than having to build a huge index at start.
@@ -145,6 +148,15 @@ class FastScroller {
     
     public FastScroller(Context context, AbsListView listView) {
         mList = listView;
+        // Determine the overlay size based on 3xLargeTextSize; if 
+        // we get an error, just use a hard-coded guess.
+        try {
+	        final float scale = context.getResources().getDisplayMetrics().scaledDensity;
+	        mOverlaySize = (int) (3 * mLargeTextSize * scale);
+        } catch (Exception e) {
+        	// Not a critical value; just try to get it close.
+        	mOverlaySize = (int) (3 * mLargeTextSize);
+        }
         init(context);
     }
 
@@ -179,14 +191,22 @@ class FastScroller {
     private void resetThumbPos() {
         final int viewWidth = mList.getWidth();
         // Bounds are always top right. Y coordinate get's translated during draw
+        // For reference, the thumb itself is approximately 50% as wide as the underlying graphic
+        // so 1/6th of the width means the thumb is approximately 1/12 the width.
+        mThumbW = viewWidth / 6 ; //mOverlaySize *3/4 ; //64; //mCurrentThumb.getIntrinsicWidth();
+        mThumbH = viewWidth / 6 ; //mOverlaySize *3/4; //52; //mCurrentThumb.getIntrinsicHeight();
+
         mThumbDrawable.setBounds(viewWidth - mThumbW, 0, viewWidth, mThumbH);
         mThumbDrawable.setAlpha(ScrollFade.ALPHA_MAX);
     }
     
     private void useThumbDrawable(Drawable drawable) {
         mThumbDrawable = drawable;
-        mThumbW = mOverlaySize *3/4 ; //64; //mCurrentThumb.getIntrinsicWidth();
-        mThumbH = mOverlaySize *3/4; //52; //mCurrentThumb.getIntrinsicHeight();
+        // Can't use the view width yet, because it has probably not been set up
+        // so we just use the native width. It will be set later when we come to
+        // actually draw it.
+        mThumbW = mThumbDrawable.getIntrinsicWidth();
+        mThumbH = mThumbDrawable.getIntrinsicHeight();
         mChangedBounds = true;
     }
 

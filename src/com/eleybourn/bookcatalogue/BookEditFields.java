@@ -1081,29 +1081,30 @@ public class BookEditFields extends Activity {
 		super.onActivityResult(requestCode, resultCode, intent);
 		switch(requestCode) {
 		case ADD_PHOTO:
-			if (resultCode == Activity.RESULT_OK){
+			if (resultCode == Activity.RESULT_OK && intent != null && intent.getExtras() != null){
 				File thumbFile = getCoverFile();
 				Bitmap x = (Bitmap) intent.getExtras().get("data");
-				Matrix m = new Matrix();
-				m.postRotate(90);
-				x = Bitmap.createBitmap(x, 0, 0, x.getWidth(), x.getHeight(), m, true);
-				/* Create a file to copy the thumbnail into */
-				FileOutputStream f = null;
-				try {
-					f = new FileOutputStream(thumbFile.getAbsoluteFile());
-				} catch (FileNotFoundException e) {
-					Logger.logError(e);
-					return;
+				if (x != null && x.getWidth() > 0 && x.getHeight() > 0) {
+					Matrix m = new Matrix();
+					m.postRotate(90);
+					x = Bitmap.createBitmap(x, 0, 0, x.getWidth(), x.getHeight(), m, true);
+					/* Create a file to copy the thumbnail into */
+					FileOutputStream f = null;
+					try {
+						f = new FileOutputStream(thumbFile.getAbsoluteFile());
+					} catch (FileNotFoundException e) {
+						Logger.logError(e);
+						return;
+					}
+					
+					x.compress(Bitmap.CompressFormat.PNG, 100, f);
+					
+					Intent crop_intent = new Intent(this, CropCropImage.class);
+					// here you have to pass absolute path to your file
+					crop_intent.putExtra("image-path", thumbFile.getAbsolutePath());
+					crop_intent.putExtra("scale", true);
+					startActivityForResult(crop_intent, CAMERA_RESULT);					
 				}
-				
-				x.compress(Bitmap.CompressFormat.PNG, 100, f);
-				
-				Intent crop_intent = new Intent(this, CropCropImage.class);
-				// here you have to pass absolute path to your file
-				crop_intent.putExtra("image-path", thumbFile.getAbsolutePath());
-				crop_intent.putExtra("scale", true);
-				startActivityForResult(crop_intent, CAMERA_RESULT);
-				
 			}
 			return;
 		case CAMERA_RESULT:

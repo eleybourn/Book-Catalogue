@@ -1198,6 +1198,7 @@ public class Utils {
 				Bitmap tmpBm = BitmapFactory.decodeFile( filename, opt );
 				if (tmpBm == null) {
 					// We ran out of memory, most likely
+					// TODO: Need a way to try loading images after GC(), or something. Otherwise, covers in cover browser wil stay blank.
 					Logger.logError(new RuntimeException("Unexpectedly failed to decode bitmap; memory exhausted?"));
 					return null;
 				}

@@ -164,9 +164,18 @@ public class StartupActivity extends Activity {
 
 		// If we are in the UI thread, update the progress.
 		if (Thread.currentThread().equals(mUiThread)) {
-			mProgress.setMessage(message);
-			if (!mProgress.isShowing())
-				mProgress.show();
+			// There is a small chance that this message could be set to display *after* the activity is finished,
+			// so we check and we also trap, log and ignore errors.
+			// See http://code.google.com/p/android/issues/detail?id=3953
+			if (!isFinishing()) {
+				try {
+					mProgress.setMessage(message);
+					if (!mProgress.isShowing())
+						mProgress.show();					
+				} catch (Exception e) {
+					Logger.logError(e);
+				}				
+			}
 		} else {
 			// If we are NOT in the UI thread, queue it to the UI thread.
 			mHandler.post(new Runnable() {

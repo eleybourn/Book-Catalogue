@@ -110,7 +110,7 @@ class FastScroller {
     private int mThumbY;
 
     private RectF mOverlayPos;
-    private int mOverlaySize = 104;
+    private final int mOverlaySize;
 
     private AbsListView mList;
     private boolean mScrollCompleted;
@@ -135,7 +135,8 @@ class FastScroller {
     private SectionIndexerV2 mSectionIndexerV2;
 
     // This value is in SP taken from the Android sources
-    private static final int mLargeTextSize = 22; //Units=SP
+    private static final int mLargeTextSpSize = 22; //Units=SP
+    private static int mLargeTextScaledSize = 22; //Units=SP
 
     /**
      * Better interface that just gets text for rows as needed rather
@@ -148,15 +149,19 @@ class FastScroller {
     
     public FastScroller(Context context, AbsListView listView) {
         mList = listView;
+        int overlaySize;
         // Determine the overlay size based on 3xLargeTextSize; if 
         // we get an error, just use a hard-coded guess.
         try {
 	        final float scale = context.getResources().getDisplayMetrics().scaledDensity;
-	        mOverlaySize = (int) (3 * mLargeTextSize * scale);
+        	mLargeTextScaledSize = (int) (mLargeTextSpSize * scale);
+        	overlaySize = (int) (3 * mLargeTextScaledSize);
         } catch (Exception e) {
         	// Not a critical value; just try to get it close.
-        	mOverlaySize = (int) (3 * mLargeTextSize);
+        	mLargeTextScaledSize = mLargeTextSpSize;
+        	overlaySize = (int) (3 * mLargeTextScaledSize);
         }
+        mOverlaySize = overlaySize;
         init(context);
     }
 
@@ -193,8 +198,8 @@ class FastScroller {
         // Bounds are always top right. Y coordinate get's translated during draw
         // For reference, the thumb itself is approximately 50% as wide as the underlying graphic
         // so 1/6th of the width means the thumb is approximately 1/12 the width.
-        mThumbW = viewWidth / 6 ; //mOverlaySize *3/4 ; //64; //mCurrentThumb.getIntrinsicWidth();
-        mThumbH = viewWidth / 6 ; //mOverlaySize *3/4; //52; //mCurrentThumb.getIntrinsicHeight();
+        mThumbW = (int)(mLargeTextScaledSize * 2.5); // viewWidth / 6 ; //mOverlaySize *3/4 ; //64; //mCurrentThumb.getIntrinsicWidth();
+        mThumbH = (int)(mLargeTextScaledSize * 2.5); //viewWidth / 6 ; //mOverlaySize *3/4; //52; //mCurrentThumb.getIntrinsicHeight();
 
         mThumbDrawable.setBounds(viewWidth - mThumbW, 0, viewWidth, mThumbH);
         mThumbDrawable.setAlpha(ScrollFade.ALPHA_MAX);

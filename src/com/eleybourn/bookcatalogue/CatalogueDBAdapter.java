@@ -3898,9 +3898,17 @@ public class CatalogueDBAdapter {
 			mDeleteBookSeriesStmt.bindLong(1, bookId);
 			mDeleteBookSeriesStmt.execute();
 
-			// Setup the book in the ADD statement
-			mAddBookSeriesStmt.bindLong(1, bookId);
-
+			//
+			// Setup the book in the ADD statement. This was once good enough, but
+			// Android 4 (at least) causes the bindings to clean when executed. So
+			// now we do it each time in loop.
+			// mAddBookSeriesStmt.bindLong(1, bookId);
+			// See call to releaseAndUnlock in:
+			// 		http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/4.0.1_r1/android/database/sqlite/SQLiteStatement.java#SQLiteStatement.executeUpdateDelete%28%29
+			// which calls clearBindings():
+			//		http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/4.0.1_r1/android/database/sqlite/SQLiteStatement.java#SQLiteStatement.releaseAndUnlock%28%29
+			//
+			
 			// Get the authors and turn into a list of names
 			Iterator<Series> i = series.iterator();
 			// The list MAY contain duplicates (eg. from Internet lookups of multiple
@@ -3917,6 +3925,7 @@ public class CatalogueDBAdapter {
 				if (!idHash.containsKey(uniqueId)) {
 					idHash.put(uniqueId, true);
 					pos++;
+					mAddBookSeriesStmt.bindLong(1, bookId);
 					mAddBookSeriesStmt.bindLong(2, seriesId);
 					mAddBookSeriesStmt.bindString(3, s.num);
 					mAddBookSeriesStmt.bindLong(4, pos);

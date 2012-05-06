@@ -100,7 +100,7 @@ public class BookCatalogue extends ExpandableListActivity {
 	private static final int INSERT_PARENT_ID = MenuHandler.FIRST + 18;
 	private static final int EDIT_BOOK_SEND_TO_GR = MenuHandler.FIRST + 19;
 	
-	public static String bookshelf = "";
+	private String bookshelf = "";
 	private ArrayAdapter<String> spinnerAdapter;
 	private Spinner mBookshelfText;
 
@@ -170,7 +170,7 @@ public class BookCatalogue extends ExpandableListActivity {
 	private String search_query = "";
 	// These are the states that get saved onPause
 	private static final String STATE_SORT = "state_sort"; 
-	private static final String STATE_BOOKSHELF = "state_bookshelf"; 
+	//private static final String STATE_BOOKSHELF = "state_bookshelf"; 
 	private static final String STATE_CURRENT_GROUP_COUNT = "state_current_group_count"; 
 	private static final String STATE_CURRENT_GROUP = "state_current_group"; 
 	private static final String STATE_OPENED = "state_opened";
@@ -213,7 +213,7 @@ public class BookCatalogue extends ExpandableListActivity {
 			try {
 				mPrefs = getSharedPreferences("bookCatalogue", MODE_PRIVATE);
 				sort = mPrefs.getInt(STATE_SORT, sort);
-				bookshelf = mPrefs.getString(STATE_BOOKSHELF, bookshelf);
+				bookshelf = mPrefs.getString(BooksOnBookshelf.PREF_BOOKSHELF, bookshelf);
 				loadCurrentGroup();
 			} catch (Exception e) {
 				Logger.logError(e);
@@ -317,7 +317,7 @@ public class BookCatalogue extends ExpandableListActivity {
 				bookshelf = new_bookshelf;
 				// save the current bookshelf into the preferences
 				SharedPreferences.Editor ed = mPrefs.edit();
-				ed.putString(STATE_BOOKSHELF, bookshelf);
+				ed.putString(BooksOnBookshelf.PREF_BOOKSHELF, bookshelf);
 				ed.commit();
 				fillData();
 			}
@@ -1687,7 +1687,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		try {
 			mPrefs = getSharedPreferences("bookCatalogue", MODE_PRIVATE);
 			sort = mPrefs.getInt(STATE_SORT, sort);
-			bookshelf = mPrefs.getString(STATE_BOOKSHELF, bookshelf);
+			bookshelf = mPrefs.getString(BooksOnBookshelf.PREF_BOOKSHELF, bookshelf);
 			loadCurrentGroup();
 		} catch (Exception e) {
 			Logger.logError(e);
@@ -1703,7 +1703,7 @@ public class BookCatalogue extends ExpandableListActivity {
 		saveCurrentGroup();
 		SharedPreferences.Editor ed = mPrefs.edit();
 		ed.putInt(STATE_SORT, sort);
-		ed.putString(STATE_BOOKSHELF, bookshelf);
+		ed.putString(BooksOnBookshelf.PREF_BOOKSHELF, bookshelf);
 		ed.commit();
 		saveCurrentGroup();
 		super.onPause();

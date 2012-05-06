@@ -768,10 +768,11 @@ public class BookEditFields extends Activity {
 						}
 					}
 					//Display the selected bookshelves
-					if (BookCatalogue.bookshelf.equals("")) {
+					final String currShelf = BookCatalogueApp.getAppPreferences().getString(BooksOnBookshelf.PREF_BOOKSHELF, "");
+					if (currShelf.equals("")) {
 						mFields.getField(R.id.bookshelf_text).setValue(mDbHelper.getBookshelfName(1) + BOOKSHELF_SEPERATOR);
 					} else {
-						mFields.getField(R.id.bookshelf_text).setValue(BookCatalogue.bookshelf + BOOKSHELF_SEPERATOR);
+						mFields.getField(R.id.bookshelf_text).setValue(currShelf + BOOKSHELF_SEPERATOR);
 					}
 					mAuthorList = (ArrayList<Author>) values.getSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
 					mSeriesList = (ArrayList<Series>) values.getSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY);
@@ -786,10 +787,11 @@ public class BookEditFields extends Activity {
 			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + this.getResources().getString(R.string.menu_insert));
 			
 			//Display the selected bookshelves
-			if (BookCatalogue.bookshelf.equals("")) {
+			final String currShelf = BookCatalogueApp.getAppPreferences().getString(BooksOnBookshelf.PREF_BOOKSHELF, "");
+			if (currShelf.equals("")) {
 				mFields.getField(R.id.bookshelf_text).setValue(mDbHelper.getBookshelfName(1) + BOOKSHELF_SEPERATOR);
 			} else {
-				mFields.getField(R.id.bookshelf_text).setValue(BookCatalogue.bookshelf + BOOKSHELF_SEPERATOR);
+				mFields.getField(R.id.bookshelf_text).setValue(currShelf + BOOKSHELF_SEPERATOR);
 			}			
 			mAuthorList = new ArrayList<Author>();
 			mSeriesList = new ArrayList<Series>();

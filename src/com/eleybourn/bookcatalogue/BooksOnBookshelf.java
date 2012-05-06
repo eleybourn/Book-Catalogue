@@ -87,7 +87,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 	private final static String TAG = "BooksOnBookshelf";
 
 	/** Preference name */
-	private final static String PREF_BOOKSHELF = TAG + ".BOOKSHELF";
+	public final static String PREF_BOOKSHELF = TAG + ".BOOKSHELF";
 	/** Preference name */
 	private final static String PREF_TOP_ROW = TAG + ".TOP_ROW";
 	/** Preference name */

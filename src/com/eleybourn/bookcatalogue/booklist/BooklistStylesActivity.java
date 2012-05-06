@@ -96,7 +96,7 @@ public class BooklistStylesActivity extends EditObjectList<BooklistStyle> {
 	@Override 
 	public void onResume() {
 		super.onResume();
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, R.id.list_wrapper);		
 	}
 
 	/**

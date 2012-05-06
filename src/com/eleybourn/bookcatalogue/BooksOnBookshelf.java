@@ -509,13 +509,20 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 			throw new RuntimeException("Unexpected empty list");
 		}
 
+		final boolean showHeaderInfo = (mCurrentStyle == null ? true : mCurrentStyle.getShowHeaderInfo());
+
 		initBackground();
 
 		TextView bookCounts = (TextView)findViewById(R.id.bookshelf_count);
-		if (mUniqueBooks != mTotalBooks) 
-			bookCounts.setText("(" + this.getString(R.string.displaying_n_books_in_m_entries, mUniqueBooks, mTotalBooks) + ")");
-		else
-			bookCounts.setText("(" + this.getString(R.string.displaying_n_books, mUniqueBooks) + ")");
+		if (showHeaderInfo) {
+			if (mUniqueBooks != mTotalBooks) 
+				bookCounts.setText("(" + this.getString(R.string.displaying_n_books_in_m_entries, mUniqueBooks, mTotalBooks) + ")");
+			else
+				bookCounts.setText("(" + this.getString(R.string.displaying_n_books, mUniqueBooks) + ")");
+			bookCounts.setVisibility(View.VISIBLE);
+		} else {
+			bookCounts.setVisibility(View.GONE);
+		}
 			
 		long t0 = System.currentTimeMillis();
 		// Save the old list so we can close it later, and set the new list locally
@@ -616,20 +623,20 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		final boolean hasLevel1 = (mList.numLevels() > 1);
 		final boolean hasLevel2 = (mList.numLevels() > 2);
 
-		if (hasLevel2) {
+		if (hasLevel2 && showHeaderInfo) {
 			lvHolder.level2Text.setVisibility(View.VISIBLE);
 			lvHolder.level2Text.setText("");
 		} else {
 			lvHolder.level2Text.setVisibility(View.GONE);
 		}
-		if (hasLevel1) {
+		if (hasLevel1 && showHeaderInfo) {
 			lvHolder.level1Text.setVisibility(View.VISIBLE);
 			lvHolder.level1Text.setText("");
 		} else
 			lvHolder.level1Text.setVisibility(View.GONE);
 
 		// Update the header details
-		if (count > 0)
+		if (count > 0 && showHeaderInfo)
 			updateListHeader(lvHolder, mTopRow, hasLevel1, hasLevel2);
 
 		// Define a scroller to update header detail when top row changes
@@ -638,7 +645,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 				// TODO: Investigate why BooklistPseudoCursor causes a scroll even when it is closed!
 				// Need to check isDead because BooklistPseudoCursor misbehaves when activity terminates and closes cursor
-				if (mLastTop != firstVisibleItem && !mIsDead) {
+				if (mLastTop != firstVisibleItem && !mIsDead && showHeaderInfo) {
 					ListViewHolder holder = (ListViewHolder)ViewTagger.getTag(view, R.id.TAG_HOLDER);
 					updateListHeader(holder, firstVisibleItem, hasLevel1, hasLevel2);
 				}

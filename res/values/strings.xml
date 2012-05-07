@@ -591,5 +591,7 @@
 <string name="summary_details_in_header">Summary details in header</string>
 <string name="hide_summary_details">Hide summary details</string>
 <string name="show_summary_details">Show summary details</string>
+<string name="x_is_not_a_valid_isbn">%1$s is not a valid ISBN</string>
+<string name="beep_if_scanned_isbn_invalid">Beep if scanned ISBN is invalid</string>
 </resources>
 

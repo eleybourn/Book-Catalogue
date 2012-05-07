@@ -393,7 +393,19 @@ public class BookISBNSearch extends ActivityWithTasks {
 		try {
 			if (isbn != null && !isbn.equals("")) {
 
-				if (mDbHelper.checkIsbnExists(isbn)) {
+				if (!IsbnUtils.isValid(isbn)) {
+					Toast.makeText(this, getString(R.string.x_is_not_a_valid_isbn, isbn), Toast.LENGTH_LONG).show();
+					if (mMode == MODE_SCAN) {
+						// Optionally beep if scan failed.
+						SoundManager.beepLow();
+						// reset the now-discarded details
+						mIsbn = "";
+						mAuthor = "";
+						mTitle = "";
+						startScannerActivity();
+					}
+					return;					
+				} else if (mDbHelper.checkIsbnExists(isbn)) {
 					// Verify - this can be a dangerous operation
 					AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(R.string.duplicate_book_message).create();
 					alertDialog.setTitle(R.string.duplicate_book_title);
@@ -557,7 +569,6 @@ public class BookISBNSearch extends ActivityWithTasks {
 				if (resultCode == RESULT_OK) {
 					// Scanner returned an ISBN...process it.
 					String contents = intent.getStringExtra("SCAN_RESULT");
-					Toast.makeText(this, R.string.isbn_found, Toast.LENGTH_LONG).show();
 					mIsbnText.setText(contents);
 					go(contents, "", "");
 				} else {

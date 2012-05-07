@@ -1446,10 +1446,14 @@ public class BooklistBuilder {
 	 */
 	public void close() {
 		mStatements.close();
-		if (mNavTable != null)
+		if (mNavTable != null) {
 			mNavTable.close();
-		if (mListTable != null)
+			mNavTable.drop(mDb);
+		}
+		if (mListTable != null) {
 			mListTable.close();
+			mListTable.drop(mDb);
+		}
 		synchronized(mInstanceCount) {
 			mInstanceCount--;
 			System.out.println("Builder instances: " + mInstanceCount);

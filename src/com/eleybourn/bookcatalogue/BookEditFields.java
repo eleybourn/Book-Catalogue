@@ -576,7 +576,7 @@ public class BookEditFields extends Activity {
 	 * is new, return the standard temp file.
 	 */
 	private File getCoverFile() {
-		if (mRowId == 0) 
+		if (mRowId == null || mRowId == 0) 
 			return CatalogueDBAdapter.getTempThumbnail();
 		else
 			return CatalogueDBAdapter.fetchThumbnailByUuid(mDbHelper.getBookUuid(mRowId));			

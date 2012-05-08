@@ -4714,6 +4714,8 @@ public class CatalogueDBAdapter {
 				moveStmt.close();
 			if (checkMinStmt != null)
 				checkMinStmt.close();
+			if (replacementIdPosStmt != null)
+				replacementIdPosStmt.close();
 		}
 	}
 

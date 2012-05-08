@@ -1075,6 +1075,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 			this.setupList(true);
 			break;
 		case R.id.ACTIVITY_BOOKLIST_STYLES:
+		case R.id.ACTIVITY_ADMIN:
 		case R.id.ACTIVITY_PREFERENCES:
 			// Refresh the style because prefs may have changed
 			refreshStyle();

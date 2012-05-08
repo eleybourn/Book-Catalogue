@@ -768,10 +768,11 @@ public class BookEditFields extends Activity {
 						}
 					}
 					//Display the selected bookshelves
-					if (BookCatalogue.bookshelf.equals("")) {
+					final String currShelf = BookCatalogueApp.getAppPreferences().getString(BooksOnBookshelf.PREF_BOOKSHELF, "");
+					if (currShelf.equals("")) {
 						mFields.getField(R.id.bookshelf_text).setValue(mDbHelper.getBookshelfName(1) + BOOKSHELF_SEPERATOR);
 					} else {
-						mFields.getField(R.id.bookshelf_text).setValue(BookCatalogue.bookshelf + BOOKSHELF_SEPERATOR);
+						mFields.getField(R.id.bookshelf_text).setValue(currShelf + BOOKSHELF_SEPERATOR);
 					}
 					mAuthorList = (ArrayList<Author>) values.getSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
 					mSeriesList = (ArrayList<Series>) values.getSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY);
@@ -786,10 +787,11 @@ public class BookEditFields extends Activity {
 			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + this.getResources().getString(R.string.menu_insert));
 			
 			//Display the selected bookshelves
-			if (BookCatalogue.bookshelf.equals("")) {
+			final String currShelf = BookCatalogueApp.getAppPreferences().getString(BooksOnBookshelf.PREF_BOOKSHELF, "");
+			if (currShelf.equals("")) {
 				mFields.getField(R.id.bookshelf_text).setValue(mDbHelper.getBookshelfName(1) + BOOKSHELF_SEPERATOR);
 			} else {
-				mFields.getField(R.id.bookshelf_text).setValue(BookCatalogue.bookshelf + BOOKSHELF_SEPERATOR);
+				mFields.getField(R.id.bookshelf_text).setValue(currShelf + BOOKSHELF_SEPERATOR);
 			}			
 			mAuthorList = new ArrayList<Author>();
 			mSeriesList = new ArrayList<Series>();
@@ -1081,29 +1083,30 @@ public class BookEditFields extends Activity {
 		super.onActivityResult(requestCode, resultCode, intent);
 		switch(requestCode) {
 		case ADD_PHOTO:
-			if (resultCode == Activity.RESULT_OK){
+			if (resultCode == Activity.RESULT_OK && intent != null && intent.getExtras() != null){
 				File thumbFile = getCoverFile();
 				Bitmap x = (Bitmap) intent.getExtras().get("data");
-				Matrix m = new Matrix();
-				m.postRotate(90);
-				x = Bitmap.createBitmap(x, 0, 0, x.getWidth(), x.getHeight(), m, true);
-				/* Create a file to copy the thumbnail into */
-				FileOutputStream f = null;
-				try {
-					f = new FileOutputStream(thumbFile.getAbsoluteFile());
-				} catch (FileNotFoundException e) {
-					Logger.logError(e);
-					return;
+				if (x != null && x.getWidth() > 0 && x.getHeight() > 0) {
+					Matrix m = new Matrix();
+					m.postRotate(90);
+					x = Bitmap.createBitmap(x, 0, 0, x.getWidth(), x.getHeight(), m, true);
+					/* Create a file to copy the thumbnail into */
+					FileOutputStream f = null;
+					try {
+						f = new FileOutputStream(thumbFile.getAbsoluteFile());
+					} catch (FileNotFoundException e) {
+						Logger.logError(e);
+						return;
+					}
+					
+					x.compress(Bitmap.CompressFormat.PNG, 100, f);
+					
+					Intent crop_intent = new Intent(this, CropCropImage.class);
+					// here you have to pass absolute path to your file
+					crop_intent.putExtra("image-path", thumbFile.getAbsolutePath());
+					crop_intent.putExtra("scale", true);
+					startActivityForResult(crop_intent, CAMERA_RESULT);					
 				}
-				
-				x.compress(Bitmap.CompressFormat.PNG, 100, f);
-				
-				Intent crop_intent = new Intent(this, CropCropImage.class);
-				// here you have to pass absolute path to your file
-				crop_intent.putExtra("image-path", thumbFile.getAbsolutePath());
-				crop_intent.putExtra("scale", true);
-				startActivityForResult(crop_intent, CAMERA_RESULT);
-				
 			}
 			return;
 		case CAMERA_RESULT:

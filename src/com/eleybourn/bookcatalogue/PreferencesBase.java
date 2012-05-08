@@ -65,15 +65,15 @@ public abstract class PreferencesBase extends Activity {
 	 * @param viewId	Containing ViewGroup from XML file (for clicking and highlighting)
 	 * @param key		Preferences key associated with this CheckBox
 	 */
-	protected void addBooleanPreference(final BookCataloguePreferences prefs, final int cbId, int viewId, final String key) {
+	protected void addBooleanPreference(final BookCataloguePreferences prefs, final int cbId, int viewId, final String key, final boolean defaultValue) {
 		// Setup the checkbox
 		{
 			CheckBox v = (CheckBox)this.findViewById(cbId);
-			v.setChecked(prefs.getBoolean(key, false));
+			v.setChecked(prefs.getBoolean(key, defaultValue));
 			v.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 				@Override
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-					prefs.setBoolean(key,isChecked);
+					prefs.setBoolean(key, isChecked);
 				}});
 		}
 		// Allow clicking of entire row.
@@ -85,7 +85,7 @@ public abstract class PreferencesBase extends Activity {
 				@Override
 				public void onClick(View v) {
 					CheckBox cb = (CheckBox)v.findViewById(cbId);
-					cb.setChecked(!prefs.getBoolean(key, false));
+					cb.setChecked(!prefs.getBoolean(key, defaultValue));
 				}});
 		}
 	}

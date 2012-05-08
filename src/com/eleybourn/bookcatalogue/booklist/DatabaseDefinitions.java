@@ -88,6 +88,7 @@ public class DatabaseDefinitions {
 	public static final DomainDefinition DOM_LAST_UPDATE_DATE = new DomainDefinition("last_update_date", "date", "default current_timestamp", "not null");
 	public static final DomainDefinition DOM_LAST_GOODREADS_SYNC_DATE = new DomainDefinition("last_goodreads_sync_date", "date", "default '0000-00-00'", "");
 	public static final DomainDefinition DOM_LOANED_TO = new DomainDefinition("loaned_to", "text", "",  "not null");
+	public static final DomainDefinition DOM_LOANED_TO_SORT = new DomainDefinition("loaned_to_sort", "int", "",  "not null");
 	public static final DomainDefinition DOM_LOCATION = new DomainDefinition(KEY_LOCATION, "text", "default ''", "");
 	public static final DomainDefinition DOM_MARK = new DomainDefinition("mark", "boolean", "default 0",  "");
 	public static final DomainDefinition DOM_NOTES = new DomainDefinition(KEY_NOTES, "text", "", "");

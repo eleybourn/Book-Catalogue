@@ -119,7 +119,19 @@ public class AdministrationFunctions extends ActivityWithTasks {
 					if (finish_after)
 						finish();
 				}});
-			alertDialog.show();
+
+			if (!isFinishing()) {
+				try {
+					//
+					// Catch errors resulting from 'back' being pressed multiple times so that the activity is destroyed
+					// before the dialog can be shown.
+					// See http://code.google.com/p/android/issues/detail?id=3953
+					//
+					alertDialog.show();				
+				} catch (Exception e) {
+					Logger.logError(e);
+				}
+			}
 		}
 	};
 

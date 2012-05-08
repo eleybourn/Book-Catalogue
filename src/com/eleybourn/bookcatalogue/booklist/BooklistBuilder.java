@@ -364,9 +364,16 @@ public class BooklistBuilder {
 			+ " Else " + TBL_AUTHORS.dot(DOM_GIVEN_NAMES) + "|| ' ' || " + TBL_AUTHORS.dot(DOM_FAMILY_NAME)
 			+ " End";
 
-	/** Convenience expression for the SQL which gets the name of the person to whom a book has been loaned, if any */
-	private static final String LOANED_TO_EXPRESSION = "(Select " + TBL_LOAN.dot(KEY_LOANED_TO) + " From " + TBL_LOAN.ref() + 
-															" Where " + TBL_LOAN.dot(DOM_BOOK) + " = " + TBL_BOOKS.dot(DOM_ID) + ")";
+	/** Convenience expression for the SQL which gets the name of the person to whom a book has been loaned, if any 
+	 *  We do not initialize it here because it needs the app context to be setup for R.string.avaiable */
+	private static String LOANED_TO_SQL = null;
+	private static String getLoanedToSql() {
+		if (LOANED_TO_SQL == null) {
+			LOANED_TO_SQL = "Coalesce( (Select " + TBL_LOAN.dot(KEY_LOANED_TO) + " From " + TBL_LOAN.ref() + 
+					" Where " + TBL_LOAN.dot(DOM_BOOK) + " = " + TBL_BOOKS.dot(DOM_ID) + "), '" + BookCatalogueApp.getResourceString(R.string.available) + ")";			
+		}
+		return LOANED_TO_SQL;
+	}
 
 	/**
 	 * Drop and recreate all the data based on previous criteria
@@ -516,7 +523,10 @@ public class BooklistBuilder {
 				// Saved for later to indicate group was present
 				hasGroupLOANED = true;
 				g.displayDomain = DOM_LOANED_TO;
-				summary.addDomain(DOM_LOANED_TO, LOANED_TO_EXPRESSION, SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED);
+				summary.addDomain(DOM_LOANED_TO_SORT, "Case When " + TBL_LOAN.dot(KEY_LOANED_TO) + " is null then 1 else 0 end", SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED);
+				summary.addDomain(DOM_LOANED_TO, "Case When " + TBL_LOAN.dot(KEY_LOANED_TO) + " is null then '" + BookCatalogueApp.getResourceString(R.string.available) + "'" +
+									" else '" + BookCatalogueApp.getResourceString(R.string.loaned_to_2) + "' || " + TBL_LOAN.dot(KEY_LOANED_TO) + " end", 
+									SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED);
 				g.setKeyComponents("l", DOM_LOANED_TO);
 				break;
 
@@ -677,7 +687,7 @@ public class BooklistBuilder {
 
 		// If a LOANED level is present, we are ONLY interested in loaned books. So cross it here.
 		if (hasGroupLOANED) {
-			join.join(TBL_LOAN);
+			join.leftOuterJoin(TBL_LOAN);
 		}
 		
 		// Now join with author; we must specify a parent in the join, because the last table 
@@ -1436,10 +1446,14 @@ public class BooklistBuilder {
 	 */
 	public void close() {
 		mStatements.close();
-		if (mNavTable != null)
+		if (mNavTable != null) {
 			mNavTable.close();
-		if (mListTable != null)
+			mNavTable.drop(mDb);
+		}
+		if (mListTable != null) {
 			mListTable.close();
+			mListTable.drop(mDb);
+		}
 		synchronized(mInstanceCount) {
 			mInstanceCount--;
 			System.out.println("Builder instances: " + mInstanceCount);

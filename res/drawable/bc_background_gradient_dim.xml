@@ -3,7 +3,13 @@
     <item>
 		<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
 		    android:src="@drawable/books_bg" 
-		    android:tileMode="repeat">
+		    >
+		    <!-- 
+		    Removed XML tiling because it does not work properly. Tiling will be set in code.
+		    See http://stackoverflow.com/questions/4336286/tiled-drawable-sometimes-stretches/10393117#10393117
+
+		     android:tileMode="repeat"
+		     -->
 		</bitmap>
     </item>
     <item>

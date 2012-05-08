@@ -53,7 +53,7 @@ import net.philipwarner.taskqueue.QueueManager;
  *
  */
 @ReportsCrashes(formKey = "", // will not be used
-	mailTo = "grunthos@rhyme.com.au, pjw@rhyme.com.au",
+	mailTo = "philip.warner@rhyme.com.au,eleybourn@gmail.com",
 	mode = ReportingInteractionMode.NOTIFICATION,
 	customReportContent = { USER_COMMENT, USER_APP_START_DATE, USER_CRASH_DATE, APP_VERSION_NAME, APP_VERSION_CODE, ANDROID_VERSION, PHONE_MODEL, CUSTOM_DATA, STACK_TRACE },
 	//optional, displayed as soon as the crash occurs, before collecting data which can take a few seconds

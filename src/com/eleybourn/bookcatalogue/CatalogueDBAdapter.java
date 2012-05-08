@@ -517,7 +517,7 @@ public class CatalogueDBAdapter {
 //						+ " LEFT OUTER JOIN " + DB_TB_SERIES + " s ON (s." + KEY_ROWID + "=w." + KEY_SERIES_ID + ") ";
 
 	//TODO: Update database version RELEASE: Update database version
-	public static final int DATABASE_VERSION = 74;
+	public static final int DATABASE_VERSION = 75;
 
 	private TableInfo mBooksInfo = null;
 
@@ -1464,6 +1464,20 @@ public class CatalogueDBAdapter {
 				message += "* Added a preference to completely disable background bitmap\n\n";
 				message += "* Added book counts to book lists\n\n";
 				message += "Thank you to all those people who reported bugs.\n\n";
+			}
+			
+			if (curVersion == 74) {
+				//do nothing
+				curVersion++;
+				StartupActivity.scheduleAuthorSeriesFixup();
+				message += "New in v4.0.3\n\n";
+				message += "* ISBN validation when searching/scanning and error beep when scanning (with preference to turn it off)\n\n";
+				message += "* 'Loaned' list now shows available books under the heading 'Available'\n\n";
+				message += "* Added preference to hide list headers (for small phones)\n\n";
+				message += "* Restored functionality to use current bookshelf when adding book\n\n";
+				message += "* FastScroller sizing improved\n\n";
+				message += "* Several bugs fixed\n\n";
+				message += "Thank you to all those people who reported bugs and helped tracking them down.\n\n";
 			}
 
 			// Rebuild all indices
@@ -3898,9 +3912,17 @@ public class CatalogueDBAdapter {
 			mDeleteBookSeriesStmt.bindLong(1, bookId);
 			mDeleteBookSeriesStmt.execute();
 
-			// Setup the book in the ADD statement
-			mAddBookSeriesStmt.bindLong(1, bookId);
-
+			//
+			// Setup the book in the ADD statement. This was once good enough, but
+			// Android 4 (at least) causes the bindings to clean when executed. So
+			// now we do it each time in loop.
+			// mAddBookSeriesStmt.bindLong(1, bookId);
+			// See call to releaseAndUnlock in:
+			// 		http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/4.0.1_r1/android/database/sqlite/SQLiteStatement.java#SQLiteStatement.executeUpdateDelete%28%29
+			// which calls clearBindings():
+			//		http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/4.0.1_r1/android/database/sqlite/SQLiteStatement.java#SQLiteStatement.releaseAndUnlock%28%29
+			//
+			
 			// Get the authors and turn into a list of names
 			Iterator<Series> i = series.iterator();
 			// The list MAY contain duplicates (eg. from Internet lookups of multiple
@@ -3917,6 +3939,7 @@ public class CatalogueDBAdapter {
 				if (!idHash.containsKey(uniqueId)) {
 					idHash.put(uniqueId, true);
 					pos++;
+					mAddBookSeriesStmt.bindLong(1, bookId);
 					mAddBookSeriesStmt.bindLong(2, seriesId);
 					mAddBookSeriesStmt.bindString(3, s.num);
 					mAddBookSeriesStmt.bindLong(4, pos);
@@ -4537,29 +4560,20 @@ public class CatalogueDBAdapter {
 						+ " Where " + KEY_AUTHOR_ID + " = " + oldAuthor.id;
 			mDb.execSQL(sql);
 
-			// Next, update books but prevent duplicate index errors
-			sql = "Update " + DB_TB_BOOK_AUTHOR + " Set " + KEY_AUTHOR_ID + " = " + newAuthor.id 
-					+ " Where " + KEY_AUTHOR_ID + " = " + oldAuthor.id
-					+ " and Not Exists(Select NULL From " + DB_TB_BOOK_AUTHOR + " ba Where "
-					+ "                 ba." + KEY_BOOK + " = " + DB_TB_BOOK_AUTHOR + "." + KEY_BOOK
-					+ "                 and ba." + KEY_AUTHOR_ID + " = " + newAuthor.id + ")";
-			mDb.execSQL(sql);	
-			
-			// Finally, delete the rows that would have caused duplicates. Be cautious by using the 
-			// EXISTS statement again; it's not necessary, but we do it to reduce the risk of data
-			// loss if one of the prior statements failed silently.
-			sql = "Delete from " + DB_TB_BOOK_AUTHOR + " Where " + KEY_AUTHOR_ID + " = " + oldAuthor.id 
-			+ " And Exists(Select NULL From " + DB_TB_BOOK_AUTHOR + " ba Where "
-			+ "                 ba." + KEY_BOOK + " = " + DB_TB_BOOK_AUTHOR + "." + KEY_BOOK
-			+ "                 and ba." + KEY_AUTHOR_ID + " = " + newAuthor.id + ")";
-			mDb.execSQL(sql);
+			globalReplacePositionedBookItem(DB_TB_BOOK_AUTHOR, KEY_AUTHOR_ID, KEY_AUTHOR_POSITION, oldAuthor.id, newAuthor.id);
+
+			//sql = "Delete from " + DB_TB_BOOK_AUTHOR + " Where " + KEY_AUTHOR_ID + " = " + oldAuthor.id 
+			//+ " And Exists(Select NULL From " + DB_TB_BOOK_AUTHOR + " ba Where "
+			//+ "                 ba." + KEY_BOOK + " = " + DB_TB_BOOK_AUTHOR + "." + KEY_BOOK
+			//+ "                 and ba." + KEY_AUTHOR_ID + " = " + newAuthor.id + ")";
+			//mDb.execSQL(sql);
 
 			mDb.setTransactionSuccessful();
 		} finally {
 			mDb.endTransaction(l);
 		}
 	}
-
+    
     public void globalReplaceSeries(Series oldSeries, Series newSeries) {
 		// Create or update the new author
 		if (newSeries.id == 0)
@@ -4587,15 +4601,14 @@ public class CatalogueDBAdapter {
 					+ "                 bs." + KEY_BOOK + " = " + DB_TB_BOOK_SERIES + "." + KEY_BOOK
 					+ "                 and bs." + KEY_SERIES_ID + " = " + newSeries.id + ")";
 			mDb.execSQL(sql);	
-			
-			// Finally, delete the rows that would have caused duplicates. Be cautious by using the 
-			// EXISTS statement again; it's not necessary, but we do it to reduce the risk of data
-			// loss if one of the prior statements failed silently.
-			sql = "Delete from " + DB_TB_BOOK_SERIES + " Where " + KEY_SERIES_ID + " = " + oldSeries.id 
-			+ " and Exists(Select NULL From " + DB_TB_BOOK_SERIES + " bs Where "
-			+ "                 bs." + KEY_BOOK + " = " + DB_TB_BOOK_SERIES + "." + KEY_BOOK
-			+ "                 and bs." + KEY_SERIES_ID + " = " + newSeries.id + ")";
-			mDb.execSQL(sql);
+
+			globalReplacePositionedBookItem(DB_TB_BOOK_SERIES, KEY_SERIES_ID, KEY_SERIES_POSITION, oldSeries.id, newSeries.id);
+
+			//sql = "Delete from " + DB_TB_BOOK_SERIES + " Where " + KEY_SERIES_ID + " = " + oldSeries.id 
+			//+ " and Exists(Select NULL From " + DB_TB_BOOK_SERIES + " bs Where "
+			//+ "                 bs." + KEY_BOOK + " = " + DB_TB_BOOK_SERIES + "." + KEY_BOOK
+			//+ "                 and bs." + KEY_SERIES_ID + " = " + newSeries.id + ")";
+			//mDb.execSQL(sql);
 
 			mDb.setTransactionSuccessful();
 		} finally {
@@ -4603,6 +4616,166 @@ public class CatalogueDBAdapter {
 		}
 	}
 
+    private void globalReplacePositionedBookItem(String tableName, String objectIdField, String positionField, long oldId, long newId) {
+    	String sql;
+ 
+    	if ( !mDb.inTransaction() )
+    		throw new RuntimeException("globalReplacePositionedBookItem must be called in a transaction");
+
+		// Update books but prevent duplicate index errors - update books for which the new ID is not already present
+		sql = "Update " + tableName + " Set " + objectIdField + " = " + newId
+				+ " Where " + objectIdField + " = " + oldId
+				+ " and Not Exists(Select NULL From " + tableName + " ba Where "
+				+ "                 ba." + KEY_BOOK + " = " + tableName + "." + KEY_BOOK
+				+ "                 and ba." + objectIdField + " = " + newId + ")";
+		mDb.execSQL(sql);	
+		
+		// Finally, delete the rows that would have caused duplicates. Be cautious by using the 
+		// EXISTS statement again; it's not necessary, but we do it to reduce the risk of data
+		// loss if one of the prior statements failed silently.
+		//
+		// We also move remaining items up one place to ensure positions remain correct
+		//
+		sql = "select * from " + tableName + " Where " + objectIdField + " = " + oldId
+		+ " And Exists(Select NULL From " + tableName + " ba Where "
+		+ "                 ba." + KEY_BOOK + " = " + tableName + "." + KEY_BOOK
+		+ "                 and ba." + objectIdField + " = " + newId + ")";			
+		Cursor c = mDb.rawQuery(sql);
+		SynchronizedStatement delStmt = null;
+		SynchronizedStatement replacementIdPosStmt = null;
+		SynchronizedStatement checkMinStmt = null;
+		SynchronizedStatement moveStmt = null;
+		try {
+			// Get the column indexes we need
+			final int bookCol = c.getColumnIndexOrThrow(KEY_BOOK);
+			final int posCol = c.getColumnIndexOrThrow(positionField);
+
+			// Statement to delete a specific object record
+			sql = "Delete from " + tableName + " Where " + objectIdField + " = ? and " + KEY_BOOK + " = ?";
+			delStmt = mDb.compileStatement(sql);
+
+			// Statement to get the position of the already-existing 'new/replacement' object
+			sql = "Select " + positionField + " From " + tableName + " Where " + KEY_BOOK + " = ? and " + objectIdField + " = " + newId;
+			replacementIdPosStmt = mDb.compileStatement(sql);
+
+			// Move statement; move a single entry to a new position
+			sql = "Update " + tableName + " Set " + positionField + " = ? Where " + KEY_BOOK + " = ? and " + positionField + " = ?";
+			moveStmt = mDb.compileStatement(sql);
+
+			// Sanity check to deal with legacy bad data
+			sql = "Select min(" + positionField + ") From " + tableName + " Where " + KEY_BOOK + " = ?";
+			checkMinStmt = mDb.compileStatement(sql);
+
+			// Loop through all instances of the old author appearing
+			while (c.moveToNext()) {
+				// Get the details of the old object
+				long book = c.getLong(bookCol);
+				long pos = c.getLong(posCol);
+
+				// Get the position of the new/replacement object
+				replacementIdPosStmt.bindLong(1, book);
+				long replacementIdPos = replacementIdPosStmt.simpleQueryForLong();
+
+				// Delete the old record
+				delStmt.bindLong(1, oldId);
+				delStmt.bindLong(2, book);
+				delStmt.execute();
+
+				// If the deleted object was more prominent than the new object, move the new one up
+				if (replacementIdPos > pos) {
+					moveStmt.bindLong(1, pos);
+					moveStmt.bindLong(2, book);
+					moveStmt.bindLong(3, replacementIdPos);
+					moveStmt.execute();
+				}
+					
+				//
+				// It is tempting to move all rows up by one when we delete something, but that would have to be 
+				// done in another sorted cursor in order to prevent duplicate index errors. So we just make
+				// sure we have something in position 1.
+				//
+
+				// Get the minimum position
+				checkMinStmt.bindLong(1, book);
+				long minPos = checkMinStmt.simpleQueryForLong();
+				// If it's > 1, move it to 1
+				if (minPos > 1) {
+					moveStmt.bindLong(1, 1);
+					moveStmt.bindLong(2, book);
+					moveStmt.bindLong(3, minPos);
+					moveStmt.execute();
+				}
+			}			
+		} finally {
+			c.close();
+			if (delStmt != null)
+				delStmt.close();
+			if (moveStmt != null)
+				moveStmt.close();
+			if (checkMinStmt != null)
+				checkMinStmt.close();
+		}
+	}
+
+    /**
+     * Data cleanup routine called on upgrade to v4.0.3 to cleanup data integrity issues cased 
+     * by earlier merge code that could have left the first author or series for a book having
+     * a position number > 1.
+     */
+    public void fixupAuthorsAndSeries() {
+		SyncLock l = mDb.beginTransaction(true);
+		try {
+			fixupPositionedBookItems(DB_TB_BOOK_AUTHOR, KEY_AUTHOR_ID, KEY_AUTHOR_POSITION);
+			fixupPositionedBookItems(DB_TB_BOOK_SERIES, KEY_SERIES_ID, KEY_SERIES_POSITION);
+			mDb.setTransactionSuccessful();
+		} finally {
+			mDb.endTransaction(l);
+		}
+    	
+    }
+
+    /**
+     * Data cleaning routine for upgrade to version 4.0.3 to cleanup any books that have no primary author/series.
+     * 
+     * @param tableName
+     * @param objectIdField
+     * @param positionField
+     */
+    private void fixupPositionedBookItems(String tableName, String objectIdField, String positionField) {
+		String sql = "select b." + KEY_ROWID + " as " + KEY_ROWID + ", min(o." + positionField + ") as pos" +
+				" from " + TBL_BOOKS + " b join " + tableName + " o On o." + KEY_BOOK + " = b." + KEY_ROWID +
+				" Group by b." + KEY_ROWID; 
+		Cursor c = mDb.rawQuery(sql);
+		SynchronizedStatement moveStmt = null;
+		try {
+			// Get the column indexes we need
+			final int bookCol = c.getColumnIndexOrThrow(KEY_ROWID);
+			final int posCol = c.getColumnIndexOrThrow("pos");
+			// Loop through all instances of the old author appearing
+			while (c.moveToNext()) {
+				// Get the details
+				long pos = c.getLong(posCol);
+				if (pos > 1) {
+					if (moveStmt == null) {
+						// Statement to move records up by a given offset
+						sql = "Update " + tableName + " Set " + positionField + " = 1 Where " + KEY_BOOK + " = ? and " + positionField + " = ?";
+						moveStmt = mDb.compileStatement(sql);						
+					}
+
+					long book = c.getLong(bookCol);
+					// Move subsequent records up by one
+					moveStmt.bindLong(1, book);
+					moveStmt.bindLong(2, pos);
+					moveStmt.execute();	
+				}
+			}			
+		} finally {
+			c.close();
+			if (moveStmt != null)
+				moveStmt.close();
+		}
+    }
+    
     public void globalReplaceFormat(String oldFormat, String newFormat) {
 
 		SyncLock l = mDb.beginTransaction(true);

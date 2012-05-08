@@ -63,7 +63,7 @@ import com.eleybourn.bookcatalogue.properties.StringProperty;
  */
 public class BooklistStyle implements Iterable<BooklistGroup>, Serializable {
 	private static final long serialVersionUID = 6615877148246388549L;
-	private static final long realSerialVersion = 2;
+	private static final long realSerialVersion = 3;
 
 	/** Extra book data to show at lowest level */
 	public static final int EXTRAS_BOOKSHELVES = 1;
@@ -87,6 +87,7 @@ public class BooklistStyle implements Iterable<BooklistGroup>, Serializable {
 	public static final String SFX_SHOW_THUMBNAILS = "ShowThumbnails";
 	public static final String SFX_LARGE_THUMBNAILS = "LargeThumbnails";
 	public static final String SFX_CONDENSED = "Condensed";
+	public static final String SFX_SHOW_HEADER_INFO = "ShowHeaderInfo";
 
 	/** Prefix for all prefs */
 	public static final String TAG = "BookList";
@@ -94,6 +95,8 @@ public class BooklistStyle implements Iterable<BooklistGroup>, Serializable {
 	/** Show list of bookshelves for each book */
 	public static final String PREF_SHOW_EXTRAS_PREFIX = TAG + ".";
 
+	/** Show header info in list */
+	public static final String PREF_SHOW_HEADER_INFO = PREF_SHOW_EXTRAS_PREFIX + BooklistStyle.SFX_SHOW_HEADER_INFO;	
 	/** Show list of bookshelves for each book */
 	public static final String PREF_CONDENSED_TEXT = PREF_SHOW_EXTRAS_PREFIX + BooklistStyle.SFX_CONDENSED;	
 	/** Show list of bookshelves for each book */
@@ -138,6 +141,8 @@ public class BooklistStyle implements Iterable<BooklistGroup>, Serializable {
 	private transient IntegerListProperty mXtraReadUnreadAll; 
 	/** Show list using smaller text */
 	private transient BooleanListProperty mCondensed; 
+	/** Show list header info */
+	private transient BooleanListProperty mShowHeaderInfo; 
 			
 	/**
 	 * Flag indicating this style was in the 'preferred' set when it was added to its Styles collection 
@@ -182,6 +187,14 @@ public class BooklistStyle implements Iterable<BooklistGroup>, Serializable {
 		mCondensedListItems.add(null, R.string.use_default_setting);
 		mCondensedListItems.add(false, R.string.normal);
 		mCondensedListItems.add(true, R.string.smaller);
+	}
+
+	/** Support for 'Show List Header Info' property */
+	private static ItemEntries<Boolean> mShowHeaderInfoListItems = new ItemEntries<Boolean>();
+	static {
+		mShowHeaderInfoListItems.add(null, R.string.use_default_setting);
+		mShowHeaderInfoListItems.add(false, R.string.hide_summary_details);
+		mShowHeaderInfoListItems.add(true, R.string.show_summary_details);
 	}
 
 	/**
@@ -337,7 +350,9 @@ public class BooklistStyle implements Iterable<BooklistGroup>, Serializable {
 		mNameProperty.setWeight(-100);
 
 		mCondensed = new BooleanListProperty(mCondensedListItems, PREF_CONDENSED_TEXT, PropertyGroup.GRP_GENERAL, R.string.size_of_booklist_items,
-										null, PREF_CONDENSED_TEXT, false);
+				null, PREF_CONDENSED_TEXT, false);
+		mShowHeaderInfo = new BooleanListProperty(mShowHeaderInfoListItems, PREF_SHOW_HEADER_INFO, PropertyGroup.GRP_GENERAL, R.string.summary_details_in_header,
+				null, PREF_SHOW_HEADER_INFO, true);
 	}
 
 	/**
@@ -355,6 +370,7 @@ public class BooklistStyle implements Iterable<BooklistGroup>, Serializable {
 		props.add(mXtraReadUnreadAll);
 		props.add(mCondensed);
 		props.add(mNameProperty);
+		props.add(mShowHeaderInfo);
 
 		for(BooklistGroup g: mGroups) {
 			g.getStyleProperties(props);
@@ -496,6 +512,7 @@ public class BooklistStyle implements Iterable<BooklistGroup>, Serializable {
 		out.writeObject(mXtraReadUnreadAll.get());
 		out.writeObject(mCondensed.get());
 		out.writeObject(mNameProperty.get());
+		out.writeObject(mShowHeaderInfo.get());
 	}
 
 	/**
@@ -527,6 +544,9 @@ public class BooklistStyle implements Iterable<BooklistGroup>, Serializable {
 			mNameProperty.set((String)in.readObject());	
 		else
 			mNameProperty.set(mName);
+		// Added mShowHeaderInfo with version 3
+		if (version > 2)
+			mShowHeaderInfo.set((Boolean)in.readObject());
 	}
 	
 	/**
@@ -555,6 +575,15 @@ public class BooklistStyle implements Iterable<BooklistGroup>, Serializable {
 	}
 	public void setReadUnreadAll(Integer readUnreadAll) {
 		mXtraReadUnreadAll.set(readUnreadAll);
+	}
+	
+	/**
+	 * Accessor
+	 * 
+	 * @return
+	 */
+	public boolean getShowHeaderInfo() {
+		return mShowHeaderInfo.getResolvedValue();
 	}
 
 	/**

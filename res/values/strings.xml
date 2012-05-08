@@ -586,5 +586,12 @@
 <string name="disable_background_image">Disable background image</string>
 <string name="displaying_n_books_in_m_entries">displaying %1$s books, in %2$s entries</string>
 <string name="displaying_n_books">displaying %1$s books</string>
+<string name="available">Available</string>
+<string name="loaned_to_2">\u2192</string>
+<string name="summary_details_in_header">Summary details in header</string>
+<string name="hide_summary_details">Hide summary details</string>
+<string name="show_summary_details">Show summary details</string>
+<string name="x_is_not_a_valid_isbn">%1$s is not a valid ISBN</string>
+<string name="beep_if_scanned_isbn_invalid">Beep if scanned ISBN is invalid</string>
 </resources>
 

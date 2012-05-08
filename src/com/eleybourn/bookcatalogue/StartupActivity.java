@@ -51,13 +51,16 @@ import android.os.Handler;
  * @author Philip Warner
  */
 public class StartupActivity extends Activity {
+	private static String TAG = "StartupActivity";
+	/** Flag to indicate FTS rebuild is required at startup */
+	private static String PREF_FTS_REBUILD_REQUIRED = TAG + ".FtsRebuildRequired";
+	private static String PREF_AUTHOR_SERIES_FIXUP_REQUIRED = TAG + ".FAuthorSeriesFixupRequired";
+	
 	private static final String STATE_OPENED = "state_opened";
 	private static final int BACKUP_PROMPT_WAIT = 5;
 
 	/** Indicates the upgrade message has been shown */
 	private static boolean mUpgradeMessageShown = false;
-	/** Flag to indicate FTS rebuild is required at startup */
-	private static boolean mFtsRebuildRequired = false;
 	/** Flag set to true on first call */
 	private static boolean mIsReallyStartup = true;
 	/** Flag indicating a StartupActivity has been created in this session */
@@ -83,7 +86,12 @@ public class StartupActivity extends Activity {
 
 	/** Set the flag to indicate an FTS rebuild is required */
 	public static void scheduleFtsRebuild() {
-		mFtsRebuildRequired = true;
+		BookCatalogueApp.getAppPreferences().setBoolean(PREF_FTS_REBUILD_REQUIRED, true);
+	}
+
+	/** Set the flag to indicate an FTS rebuild is required */
+	public static void scheduleAuthorSeriesFixup() {
+		BookCatalogueApp.getAppPreferences().setBoolean(PREF_AUTHOR_SERIES_FIXUP_REQUIRED, true);
 	}
 	
 	public static WeakReference<StartupActivity> mStartupActivity = null;
@@ -164,9 +172,18 @@ public class StartupActivity extends Activity {
 
 		// If we are in the UI thread, update the progress.
 		if (Thread.currentThread().equals(mUiThread)) {
-			mProgress.setMessage(message);
-			if (!mProgress.isShowing())
-				mProgress.show();
+			// There is a small chance that this message could be set to display *after* the activity is finished,
+			// so we check and we also trap, log and ignore errors.
+			// See http://code.google.com/p/android/issues/detail?id=3953
+			if (!isFinishing()) {
+				try {
+					mProgress.setMessage(message);
+					if (!mProgress.isShowing())
+						mProgress.show();					
+				} catch (Exception e) {
+					Logger.logError(e);
+				}				
+			}
 		} else {
 			// If we are NOT in the UI thread, queue it to the UI thread.
 			mHandler.post(new Runnable() {
@@ -351,11 +368,11 @@ public class StartupActivity extends Activity {
 		public void run(SimpleTaskContext taskContext) {
 			// Get a DB to make sure the FTS rebuild flag is set appropriately
 			CatalogueDBAdapter db = taskContext.getDb();
-
-			if (mFtsRebuildRequired) {
+			BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
+			if (prefs.getBoolean(PREF_FTS_REBUILD_REQUIRED, false)) {
 				updateProgress(getString(R.string.rebuilding_search_index));
 				db.rebuildFts();
-				mFtsRebuildRequired = false;				
+				prefs.setBoolean(PREF_FTS_REBUILD_REQUIRED, false);					
 			}
 		}
 
@@ -372,6 +389,8 @@ public class StartupActivity extends Activity {
 		@Override
 		public void run(SimpleTaskContext taskContext) {
 			CatalogueDBAdapter db = taskContext.getDb();
+			BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
+
 			updateProgress(getString(R.string.optimizing_databases));
 			// Analyze DB
 			db.analyzeDb();
@@ -379,6 +398,11 @@ public class StartupActivity extends Activity {
 				// Analyze the covers DB
 				Utils utils = taskContext.getUtils();
 				utils.analyzeCovers();								
+			}
+			
+			if (prefs.getBoolean(PREF_AUTHOR_SERIES_FIXUP_REQUIRED, false)) {
+				db.fixupAuthorsAndSeries();
+				prefs.setBoolean(PREF_AUTHOR_SERIES_FIXUP_REQUIRED, false);
 			}
 		}
 

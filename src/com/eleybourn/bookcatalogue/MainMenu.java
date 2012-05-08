@@ -212,7 +212,7 @@ public class MainMenu extends Activity {
 	 * as from a menu item.
 	 */
 	private void doMyBooks() {
-		Intent i = new Intent(this, BookCatalogue.class);
+		Intent i = new Intent(this, BookCatalogueClassic.class);
 		startActivity(i);
 	}
 

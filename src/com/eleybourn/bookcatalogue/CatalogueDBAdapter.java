@@ -1470,13 +1470,13 @@ public class CatalogueDBAdapter {
 				//do nothing
 				curVersion++;
 				StartupActivity.scheduleAuthorSeriesFixup();
-				message += "New in v4.0.3 - bugs fixed\n\n";
-				message += "* ISBN validation and error beep (with preference to turn it off)\n\n";
+				message += "New in v4.0.3\n\n";
+				message += "* ISBN validation when searching/scanning and error beep when scanning (with preference to turn it off)\n\n";
 				message += "* 'Loaned' list now shows available books under the heading 'Available'\n\n";
 				message += "* Added preference to hide list headers (for small phones)\n\n";
 				message += "* Restored functionality to use current bookshelf when adding book\n\n";
 				message += "* FastScroller sizing improved\n\n";
-				message += "* Bug fixes\n\n";
+				message += "* Several bugs fixed\n\n";
 				message += "Thank you to all those people who reported bugs and helped tracking them down.\n\n";
 			}
 

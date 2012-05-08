@@ -1196,6 +1196,12 @@ public class Utils {
 				if (opt.inSampleSize < 1)
 					opt.inSampleSize = 1;
 				Bitmap tmpBm = BitmapFactory.decodeFile( filename, opt );
+				if (tmpBm == null) {
+					// We ran out of memory, most likely
+					// TODO: Need a way to try loading images after GC(), or something. Otherwise, covers in cover browser wil stay blank.
+					Logger.logError(new RuntimeException("Unexpectedly failed to decode bitmap; memory exhausted?"));
+					return null;
+				}
 				android.graphics.Matrix matrix = new android.graphics.Matrix();
 				// Fixup ratio based on new sample size and scale it.
 				ratio = ratio / (1.0f / opt.inSampleSize);
@@ -1401,12 +1407,12 @@ public class Utils {
 			if (BookCatalogueApp.isBackgroundImageDisabled()) {
 				root.setBackgroundColor(0xFF202020);
 				if (root instanceof ListView) {
-					((ListView)root).setCacheColorHint(0xFF202020);				
+					setCacheColorHintSafely((ListView)root, 0xFF202020);				
 				}
 			} else {
 				if (root instanceof ListView) {
 					ListView lv = ((ListView)root);
-					lv.setCacheColorHint(0x00000000);				
+					setCacheColorHintSafely(lv, 0x00000000);				
 				}
 				Drawable d = cleanupTiledBackground(a.getResources().getDrawable(bgResource));
 
@@ -1436,17 +1442,43 @@ public class Utils {
 			LayerDrawable ld = (LayerDrawable)d;
 			Drawable l = ld.getDrawable(0);
 			if (l instanceof BitmapDrawable) {
+				d.mutate();
+				l.mutate();
 				System.out.println("Layer0 is BMP");
 				BitmapDrawable bmp = (BitmapDrawable) l;
 				bmp.mutate(); // make sure that we aren't sharing state anymore
+				bmp.setTileModeXY(TileMode.CLAMP, TileMode.CLAMP);			
 				bmp.setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);
 			}
 		} else if (d instanceof BitmapDrawable) {
 			BitmapDrawable bmp = (BitmapDrawable) d;
 			bmp.mutate(); // make sure that we aren't sharing state anymore
+			bmp.setTileModeXY(TileMode.CLAMP, TileMode.CLAMP);			
 			bmp.setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);			
 		}
 		return d;
+	}
+
+	/**
+	 * Call setCacheColorHint on a listview and trap IndexOutOfBoundsException. 
+	 * 
+	 * There is a bug in Android 2.2-2.3 (approx) that causes this call to throw 
+	 * exceptions *sometimes* (circumstances unclear):
+	 * 
+	 *     http://code.google.com/p/android/issues/detail?id=9775
+	 * 
+	 * Ideally this code should use reflection to set it, or check android versions.
+	 * 
+	 * @param lv		ListView to set
+	 * @param hint		Colour hint
+	 */
+	public static void setCacheColorHintSafely(ListView lv, int hint) {
+		try {
+			lv.setCacheColorHint(hint);
+		} catch (IndexOutOfBoundsException e) {
+			// Ignore
+			System.out.println("Android Bug avoided");
+		}
 	}
 }
 

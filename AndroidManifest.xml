@@ -2,19 +2,22 @@
 <!--  android:installLocation="preferExternal" when building with API > 4 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="com.eleybourn.bookcatalogue"
-	android:installLocation="preferExternal"  android:versionName="4.0.1" android:versionCode="78">
-	<application android:name=".BookCatalogueApp" android:label="@string/app_name" android:icon="@drawable/ic_launcher2">
+	android:installLocation="preferExternal"  android:versionName="4.0.3" android:versionCode="81">
+	<application android:name=".BookCatalogueApp" android:label="@string/app_name" android:icon="@drawable/ic_launcher2" >
 		<provider android:name=".SearchSuggestionProvider" android:authorities="com.eleybourn.bookcatalogue.SearchSuggestionProvider" />		
 		<service android:enabled="true" android:name=".BcQueueManager" />
 
-	 	<activity android:name=".BookCatalogue" android:label="@string/app_name">
+	 	<activity android:name=".BookCatalogueClassic" android:label="@string/app_name">
 			<intent-filter>
 				<action android:name="android.intent.action.SEARCH" />
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 			<meta-data android:name="android.app.searchable" android:resource="@xml/searchable" />
 		</activity>
-		<!-- The StartupActivity activity is just a forwarder to the users chosen first screen; does not 
+
+	 	<!-- .BookCatalogue is now just a forwarder to .StartupActivity.  -->
+	 	<activity android:name=".BookCatalogue" android:label="@string/app_name"></activity>
+	 	<!-- The StartupActivity activity is just a forwarder to the users chosen first screen; does not 
 			rebuild on orientation changes so progress dialogs are easier 
 		-->
 		<activity android:name=".StartupActivity" android:theme="@style/Invisible" android:configChanges="orientation|keyboardHidden" >

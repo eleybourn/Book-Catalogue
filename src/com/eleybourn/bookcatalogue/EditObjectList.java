@@ -582,6 +582,25 @@ abstract public class EditObjectList<T extends Serializable> extends ListActivit
     	outState.putSerializable(mKey, mList);
     }
 
+	/**
+	 * This is totally bizarre. Without this piece of code, under Android 1.6, the
+	 * native onRestoreInstanceState() fails to restore custom classes, throwing
+	 * a ClassNotFoundException, when the activity is resumed.
+	 * 
+	 * To test this, remove this line, edit a custom style, and save it. App will
+	 * crash in AVD under Android 1.6.
+	 * 
+	 * It is not entirely clear how this happens but since the Bundle has a classLoader
+	 * it is fair to surmise that the code that creates the bundle determines the class
+	 * loader to use based (somehow) on the class being called, and if we don't implement
+	 * this method, then in Android 1.6, the class is a basic android class NOT and app 
+	 * class.
+	 */
+	@Override
+	public void onRestoreInstanceState(Bundle state) {
+		super.onRestoreInstanceState(state);
+	}
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();

@@ -282,6 +282,7 @@ public class BookEditFields extends Activity {
 			mFields.add(R.id.genre, CatalogueDBAdapter.KEY_GENRE, null);
 			mFields.add(R.id.row_img, "", "thumbnail", null);
 			final Field formatField = mFields.add(R.id.format, CatalogueDBAdapter.KEY_FORMAT, null);
+			mFields.add(R.id.format_button, "", CatalogueDBAdapter.KEY_FORMAT, null);
 			
 			mFields.add(R.id.bookshelf_text, "bookshelf_text", null).doNoFetch = true; // Output-only field
 			Field bookshelfButtonFe = mFields.add(R.id.bookshelf, "", null);

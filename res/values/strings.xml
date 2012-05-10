@@ -324,7 +324,7 @@
 <string name="search_criteria">Search Criteria</string>
 <string name="add_manually">Add Manually</string>
 <string name="scan_barcode">Scan Barcode</string>
-<string name="enter_barcode">Enter Barcode</string>
+<string name="enter_barcode">Enter ISBN</string>
 <string name="search_internet">Search Internet</string>
 <string name="show_results">Show Results</string>
 <string name="rebuild_fts">Rebuild FTS (alpha only!)</string>

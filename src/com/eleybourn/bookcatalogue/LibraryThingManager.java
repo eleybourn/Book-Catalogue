@@ -716,6 +716,7 @@ public class LibraryThingManager {
 
 	private String getDevKey() {
 		SharedPreferences prefs = mAppContext.getSharedPreferences("bookCatalogue", android.content.Context.MODE_PRIVATE);
-		return prefs.getString(LT_DEVKEY_PREF_NAME, "");
+		String key = prefs.getString(LT_DEVKEY_PREF_NAME, "");
+		return key.replaceAll("[\\r\\t\\n\\s]*", "");
 	}
 }

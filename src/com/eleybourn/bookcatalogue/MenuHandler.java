@@ -61,10 +61,10 @@ public class MenuHandler {
 		addMenu.setIcon(android.R.drawable.ic_menu_add);
 		{
 			if (Utils.USE_BARCODE) {
-				MenuItem insertBC = addMenu.add(0, MNU_ITM_ADD_BOOK_BARCODE, mSort++, R.string.scan_barcode);
+				MenuItem insertBC = addMenu.add(0, MNU_ITM_ADD_BOOK_BARCODE, mSort++, R.string.scan_barcode_isbn);
 				insertBC.setIcon(R.drawable.ic_menu_insert_barcode);			
 			}
-			MenuItem insertISBN = addMenu.add(0, MNU_ITM_ADD_BOOK_ISBN, mSort++, R.string.enter_barcode);
+			MenuItem insertISBN = addMenu.add(0, MNU_ITM_ADD_BOOK_ISBN, mSort++, R.string.enter_isbn);
 			insertISBN.setIcon(android.R.drawable.ic_menu_zoom);
 			
 			MenuItem insertName = addMenu.add(0, MNU_ITM_ADD_BOOK_NAMES, mSort++, R.string.search_internet);

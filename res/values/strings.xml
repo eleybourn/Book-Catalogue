@@ -323,8 +323,8 @@
 <string name="text_and_or_isbn">Text and/or ISBN</string>
 <string name="search_criteria">Search Criteria</string>
 <string name="add_manually">Add Manually</string>
-<string name="scan_barcode">Scan Barcode</string>
-<string name="enter_barcode">Enter Barcode</string>
+<string name="scan_barcode">Scan Barcode/ISBN</string>
+<string name="enter_barcode">Enter Barcode/ISBN</string>
 <string name="search_internet">Search Internet</string>
 <string name="show_results">Show Results</string>
 <string name="rebuild_fts">Rebuild FTS (alpha only!)</string>
@@ -596,6 +596,8 @@
 <string name="no_image_found">No image found</string>
 <string name="could_not_copy_image">Could not copy image</string>
 <string name="this_option_is_not_available_until_the_book_is_saved">This option is not available until the book is saved</string>
+<string name="scan_barcode_isbn">Scan Barcode/ISBN</string>
+<string name="enter_isbn">Enter ISBN</string>
 
 </resources>
 

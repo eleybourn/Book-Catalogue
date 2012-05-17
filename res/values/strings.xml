@@ -595,6 +595,7 @@
 <string name="beep_if_scanned_isbn_invalid">Beep if scanned ISBN is invalid</string>
 <string name="no_image_found">No image found</string>
 <string name="could_not_copy_image">Could not copy image</string>
+<string name="this_option_is_not_available_until_the_book_is_saved">This option is not available until the book is saved</string>
 
 </resources>
 

@@ -593,5 +593,8 @@
 <string name="show_summary_details">Show summary details</string>
 <string name="x_is_not_a_valid_isbn">%1$s is not a valid ISBN</string>
 <string name="beep_if_scanned_isbn_invalid">Beep if scanned ISBN is invalid</string>
+<string name="no_image_found">No image found</string>
+<string name="could_not_copy_image">Could not copy image</string>
+
 </resources>
 

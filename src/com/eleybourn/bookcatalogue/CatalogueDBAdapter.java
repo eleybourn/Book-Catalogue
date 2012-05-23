@@ -3750,7 +3750,7 @@ public class CatalogueDBAdapter {
 				values.putString(KEY_AUTHOR_ID, authorId);
 			}
 		}
-		
+
 		// Handle TITLE; but only for new books
 		if (isNew && values.containsKey(KEY_TITLE)) {
 			/* Move "The, A, An" to the end of the string */
@@ -3773,6 +3773,19 @@ public class CatalogueDBAdapter {
 			}
 		}
 
+		// Remove blank/null fields that have default values defined in the database
+		for(String name: new String[] {DatabaseDefinitions.DOM_BOOK_UUID.name, KEY_ANTHOLOGY, KEY_RATING, 
+										KEY_READ, KEY_SIGNED, KEY_DATE_ADDED, 
+										DatabaseDefinitions.DOM_LAST_GOODREADS_SYNC_DATE.name, 
+										DatabaseDefinitions.DOM_LAST_UPDATE_DATE.name })
+		{
+			if (values.containsKey(name)) {
+				String value = values.getString(name);
+				if (value == null || value.equals(""))
+					values.remove(name);
+				
+			}			
+		}
 	}
 
 	/**

@@ -1480,5 +1480,27 @@ public class Utils {
 			System.out.println("Android Bug avoided");
 		}
 	}
+	
+	/**
+	 * Format the passed bundle in a way that is convenient for display
+	 * 
+	 * @param b		Bundle to format
+	 * 
+	 * @return		Formatted string
+	 */
+	public static String bundleToString(Bundle b) {
+		StringBuilder sb = new StringBuilder();
+		for(String k: b.keySet()) {
+			sb.append(k);
+			sb.append("->");
+			try {
+				sb.append(b.get(k).toString());
+			} catch (Exception e) {
+				sb.append("<<Unknown>>");
+			}
+			sb.append("\n");
+		}
+		return sb.toString();
+	}
 }
 

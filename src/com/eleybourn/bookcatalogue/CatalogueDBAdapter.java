@@ -3271,49 +3271,54 @@ public class CatalogueDBAdapter {
 	//public long createBook(long id, String author, String title, String isbn, String publisher, String date_published, float rating, String bookshelf, Boolean read, String series, int pages, String series_num, String notes, String list_price, int anthology, String location, String read_start, String read_end, String format, boolean signed, String description, String genre) {
 	public long createBook(long id, Bundle values) {
 
-		// Make sure we have the target table details
-		if (mBooksInfo == null)
-			mBooksInfo = new TableInfo(mDb, DB_TB_BOOKS);
-
-		preprocessOutput(id == 0, values);
-
-		/* We may want to provide default values for these fields:
-		 * KEY_RATING, KEY_READ, KEY_NOTES, KEY_LOCATION, KEY_READ_START, KEY_READ_END, KEY_SIGNED, & DATE_ADDED
-		 */
-		if (!values.containsKey(KEY_DATE_ADDED))
-			values.putString(KEY_DATE_ADDED, Utils.toSqlDateTime(new Date()));
-
-		// Make sure we have an author
-		ArrayList<Author> authors = (ArrayList<Author>) values.getSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
-		if (authors == null || authors.size() == 0)
-			throw new IllegalArgumentException();
-		ContentValues initialValues = filterValues(values, mBooksInfo);
-
-		if (id > 0) {
-			initialValues.put(KEY_ROWID, id);
-		}
-
-		if (!initialValues.containsKey(DOM_LAST_UPDATE_DATE.name))
-			initialValues.put(DOM_LAST_UPDATE_DATE.name, Utils.toSqlDateTime(new Date()));
-
-		long rowId = mDb.insert(DB_TB_BOOKS, null, initialValues);
-
-		String bookshelf = values.getString("bookshelf_text");
-		if (bookshelf != null) {
-			createBookshelfBooks(rowId, bookshelf);
-		}
-
-		createBookAuthors(rowId, authors);
-		ArrayList<Series> series = (ArrayList<Series>) values.getSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY);
-		createBookSeries(rowId, series);
-
 		try {
-			insertFts(rowId);
-		} catch (Exception e) {
-			Logger.logError(e, "Failed to update FTS");
-		}
+			// Make sure we have the target table details
+			if (mBooksInfo == null)
+				mBooksInfo = new TableInfo(mDb, DB_TB_BOOKS);
 
-		return rowId;
+			preprocessOutput(id == 0, values);
+
+			/* We may want to provide default values for these fields:
+			 * KEY_RATING, KEY_READ, KEY_NOTES, KEY_LOCATION, KEY_READ_START, KEY_READ_END, KEY_SIGNED, & DATE_ADDED
+			 */
+			if (!values.containsKey(KEY_DATE_ADDED))
+				values.putString(KEY_DATE_ADDED, Utils.toSqlDateTime(new Date()));
+
+			// Make sure we have an author
+			ArrayList<Author> authors = (ArrayList<Author>) values.getSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
+			if (authors == null || authors.size() == 0)
+				throw new IllegalArgumentException();
+			ContentValues initialValues = filterValues(values, mBooksInfo);
+
+			if (id > 0) {
+				initialValues.put(KEY_ROWID, id);
+			}
+
+			if (!initialValues.containsKey(DOM_LAST_UPDATE_DATE.name))
+				initialValues.put(DOM_LAST_UPDATE_DATE.name, Utils.toSqlDateTime(new Date()));
+
+			long rowId = mDb.insert(DB_TB_BOOKS, null, initialValues);
+
+			String bookshelf = values.getString("bookshelf_text");
+			if (bookshelf != null) {
+				createBookshelfBooks(rowId, bookshelf);
+			}
+
+			createBookAuthors(rowId, authors);
+			ArrayList<Series> series = (ArrayList<Series>) values.getSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY);
+			createBookSeries(rowId, series);
+
+			try {
+				insertFts(rowId);
+			} catch (Exception e) {
+				Logger.logError(e, "Failed to update FTS");
+			}
+
+			return rowId;
+		} catch (Exception e) {
+			Logger.logError(e);
+			throw new RuntimeException("Error creating book from " + Utils.bundleToString(values) + ": " + e.getMessage(), e);
+		}
 	}
 	
 	/**
@@ -3783,54 +3788,58 @@ public class CatalogueDBAdapter {
 	public boolean updateBook(long rowId, Bundle values, boolean doPurge) {
 		boolean success = true;
 
-		// Make sure we have the target table details
-		if (mBooksInfo == null)
-			mBooksInfo = new TableInfo(mDb, DB_TB_BOOKS);
-
-		preprocessOutput(rowId == 0, values);
-
-		ContentValues args = filterValues(values, mBooksInfo);
-
-		// Disallow UUID updates
-		if (args.containsKey(DOM_BOOK_UUID.name))
-			args.remove(DOM_BOOK_UUID.name);
-
-		// We may be just updating series, or author lists but we still update the last_update_date.
-		if (!args.containsKey(DOM_LAST_UPDATE_DATE.name))
-			args.put(DOM_LAST_UPDATE_DATE.name, Utils.toSqlDateTime(Calendar.getInstance().getTime()));
-		success = mDb.update(DB_TB_BOOKS, args, KEY_ROWID + "=" + rowId, null) > 0;
-
-		if (values.containsKey("bookshelf_text")) {
-			String bookshelf = values.getString("bookshelf_text");
-			if (bookshelf != null) {
-				createBookshelfBooks(rowId, bookshelf);
-			}			
-		}
-
-		if (values.containsKey(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)) {
-			ArrayList<Author> authors = (ArrayList<Author>) values.getSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
-			createBookAuthors(rowId, authors);			
-		}
-		if (values.containsKey(CatalogueDBAdapter.KEY_SERIES_ARRAY)) {
-			ArrayList<Series> series = (ArrayList<Series>) values.getSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY);
-			createBookSeries(rowId, series);			
-		}
-
-		// Only really skip the purge if a batch update of multiple books is being done.
-		if (doPurge) {
-			// Delete any unused authors
-			purgeAuthors();
-			// Delete any unused series
-			purgeSeries();			
-		}
-
 		try {
-			updateFts(rowId);
-		} catch (Exception e) {
-			Logger.logError(e, "Failed to update FTS");
-		}
+			// Make sure we have the target table details
+			if (mBooksInfo == null)
+				mBooksInfo = new TableInfo(mDb, DB_TB_BOOKS);
 
-		return success;
+			preprocessOutput(rowId == 0, values);
+
+			ContentValues args = filterValues(values, mBooksInfo);
+
+			// Disallow UUID updates
+			if (args.containsKey(DOM_BOOK_UUID.name))
+				args.remove(DOM_BOOK_UUID.name);
+
+			// We may be just updating series, or author lists but we still update the last_update_date.
+			if (!args.containsKey(DOM_LAST_UPDATE_DATE.name))
+				args.put(DOM_LAST_UPDATE_DATE.name, Utils.toSqlDateTime(Calendar.getInstance().getTime()));
+			success = mDb.update(DB_TB_BOOKS, args, KEY_ROWID + "=" + rowId, null) > 0;
+
+			if (values.containsKey("bookshelf_text")) {
+				String bookshelf = values.getString("bookshelf_text");
+				if (bookshelf != null) {
+					createBookshelfBooks(rowId, bookshelf);
+				}			
+			}
+
+			if (values.containsKey(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)) {
+				ArrayList<Author> authors = (ArrayList<Author>) values.getSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
+				createBookAuthors(rowId, authors);			
+			}
+			if (values.containsKey(CatalogueDBAdapter.KEY_SERIES_ARRAY)) {
+				ArrayList<Series> series = (ArrayList<Series>) values.getSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY);
+				createBookSeries(rowId, series);			
+			}
+
+			// Only really skip the purge if a batch update of multiple books is being done.
+			if (doPurge) {
+				// Delete any unused authors
+				purgeAuthors();
+				// Delete any unused series
+				purgeSeries();			
+			}
+
+			try {
+				updateFts(rowId);
+			} catch (Exception e) {
+				Logger.logError(e, "Failed to update FTS");
+			}
+			return success;
+		} catch (Exception e) {
+			Logger.logError(e);
+			throw new RuntimeException("Error updating book from " + Utils.bundleToString(values) + ": " + e.getMessage(), e);
+		}
 	}
 
 	// Statements used by createBookAuthors
@@ -3854,7 +3863,6 @@ public class CatalogueDBAdapter {
 				mAddBookAuthorsStmt = mStatements.add("mAddBookAuthorsStmt", "Insert Into " + DB_TB_BOOK_AUTHOR 
 															+ "(" + KEY_BOOK + "," + KEY_AUTHOR_ID + "," + KEY_AUTHOR_POSITION + ")"
 															+ "Values(?,?,?)");
-
 			}
 			// Need to delete the current records because they may have been reordered and a simple set of updates
 			// could result in unique key or index violations.
@@ -3868,18 +3876,25 @@ public class CatalogueDBAdapter {
 			Hashtable<String, Boolean> idHash = new Hashtable<String, Boolean>();
 			int pos = 0;
 			while (i.hasNext()) {
-				// Get the name and find/add the author
-				Author a = i.next();
-				String authorIdStr = getAuthorIdOrCreate(new String[] {a.familyName, a.givenNames});
-				long authorId = Long.parseLong(authorIdStr);
-				if (!idHash.containsKey(authorIdStr)) {
-					idHash.put(authorIdStr, true);
-					pos++;
-					mAddBookAuthorsStmt.bindLong(1, bookId);
-					mAddBookAuthorsStmt.bindLong(2, authorId);
-					mAddBookAuthorsStmt.bindLong(3, pos);
-					mAddBookAuthorsStmt.executeInsert();
-					mAddBookAuthorsStmt.clearBindings();
+				Author a = null;
+				String authorIdStr = null;
+				try {
+					// Get the name and find/add the author
+					a = i.next();
+					authorIdStr = getAuthorIdOrCreate(new String[] {a.familyName, a.givenNames});
+					long authorId = Long.parseLong(authorIdStr);
+					if (!idHash.containsKey(authorIdStr)) {
+						idHash.put(authorIdStr, true);
+						pos++;
+						mAddBookAuthorsStmt.bindLong(1, bookId);
+						mAddBookAuthorsStmt.bindLong(2, authorId);
+						mAddBookAuthorsStmt.bindLong(3, pos);
+						mAddBookAuthorsStmt.executeInsert();
+						mAddBookAuthorsStmt.clearBindings();
+					}
+				} catch (Exception e) {
+					Logger.logError(e);
+					throw new RuntimeException("Error adding author '" + a.familyName + "," + a.givenNames + "' {" + authorIdStr + "} to book " + bookId + ": " + e.getMessage(), e);
 				}
 			}
 		}
@@ -3930,20 +3945,27 @@ public class CatalogueDBAdapter {
 			Hashtable<String, Boolean> idHash = new Hashtable<String, Boolean>();
 			int pos = 0;
 			while (i.hasNext()) {
-				// Get the name and find/add the author
-				Series s = i.next();
-				String seriesName = s.name;
-				String seriesIdTxt = getSeriesIdOrCreate(seriesName);
-				long seriesId = Long.parseLong(seriesIdTxt);
-				String uniqueId = seriesIdTxt + "(" + s.num.trim().toUpperCase() + ")";
-				if (!idHash.containsKey(uniqueId)) {
-					idHash.put(uniqueId, true);
-					pos++;
-					mAddBookSeriesStmt.bindLong(1, bookId);
-					mAddBookSeriesStmt.bindLong(2, seriesId);
-					mAddBookSeriesStmt.bindString(3, s.num);
-					mAddBookSeriesStmt.bindLong(4, pos);
-					mAddBookSeriesStmt.execute();
+				Series s = null;
+				String seriesIdTxt = null;
+				try {
+					// Get the name and find/add the author
+					s = i.next();
+					String seriesName = s.name;
+					seriesIdTxt = getSeriesIdOrCreate(seriesName);
+					long seriesId = Long.parseLong(seriesIdTxt);
+					String uniqueId = seriesIdTxt + "(" + s.num.trim().toUpperCase() + ")";
+					if (!idHash.containsKey(uniqueId)) {
+						idHash.put(uniqueId, true);
+						pos++;
+						mAddBookSeriesStmt.bindLong(1, bookId);
+						mAddBookSeriesStmt.bindLong(2, seriesId);
+						mAddBookSeriesStmt.bindString(3, s.num);
+						mAddBookSeriesStmt.bindLong(4, pos);
+						mAddBookSeriesStmt.execute();
+					}					
+				} catch (Exception e) {
+					Logger.logError(e);
+					throw new RuntimeException("Error adding series '" + s.name + "' {" + seriesIdTxt + "} to book " + bookId + ": " + e.getMessage(), e);					
 				}
 			}
 		}		

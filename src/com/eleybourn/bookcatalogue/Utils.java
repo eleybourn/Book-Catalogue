@@ -41,6 +41,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.TimeZone;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -75,6 +76,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -1501,6 +1503,123 @@ public class Utils {
 			sb.append("\n");
 		}
 		return sb.toString();
+	}
+	
+	private interface INextView {
+		int getNext(View v);
+		void setNext(View v, int id);
+	}
+
+	/**
+	 * Ensure that next up/down/left/right View is visible for all sub-views of the 
+	 * passed view.
+	 * 
+	 * @param root
+	 */
+	public static void fixFocusSettings(View root) {
+		final INextView getDown = new INextView() {
+			@Override public int getNext(View v) { return v.getNextFocusDownId(); }
+			@Override public void setNext(View v, int id) { v.setNextFocusDownId(id); }
+		};
+		final INextView getUp = new INextView() {
+			@Override public int getNext(View v) { return v.getNextFocusUpId(); }
+			@Override public void setNext(View v, int id) { v.setNextFocusUpId(id); }
+		};
+		final INextView getLeft = new INextView() {
+			@Override public int getNext(View v) { return v.getNextFocusLeftId(); }
+			@Override public void setNext(View v, int id) { v.setNextFocusLeftId(id); }
+		};
+		final INextView getRight = new INextView() {
+			@Override public int getNext(View v) { return v.getNextFocusRightId(); }
+			@Override public void setNext(View v, int id) { v.setNextFocusRightId(id); }
+		};
+
+		Hashtable<Integer,View> vh = getViews(root);
+
+		for(Entry<Integer, View> ve: vh.entrySet()) {
+			final View v = ve.getValue();
+			if (v.getVisibility() == View.VISIBLE) {
+				fixNextView(vh, v, getDown);
+				fixNextView(vh, v, getUp);
+				fixNextView(vh, v, getLeft);
+				fixNextView(vh, v, getRight);
+			}
+		}
+	}
+
+	/**
+	 * Passed a collection of views, a specific View and an INextView, ensure that the 
+	 * currently set 'next' view is actually a visible view, updating it if necessary.
+	 * 
+	 * @param vh		Collection of all views
+	 * @param v			View to check
+	 * @param getter	Methods to get/set 'next' view
+	 */
+	private static void fixNextView(Hashtable<Integer,View> vh, View v, INextView getter) {
+		int nextId = getter.getNext(v);
+		if (nextId != View.NO_ID) {
+			int actualNextId = getNextView(vh, nextId, getter);
+			if (actualNextId != nextId)
+				getter.setNext(v, actualNextId);
+		}
+	}
+
+	/**
+	 * Passed a collection of views, a specific view and an INextView object find the 
+	 * first VISIBLE object returned by INextView when called recursively.
+	 * 
+	 * @param vh		Collection of all views
+	 * @param nextId	ID of 'next' view to get
+	 * @param getter	Interface to lookup 'next' ID given a view
+	 * 
+	 * @return			ID if first visible 'next' view
+	 */
+	private static int getNextView(Hashtable<Integer,View> vh, int nextId, INextView getter) {
+		final View v = vh.get(nextId);
+		if (v == null)
+			return View.NO_ID;
+
+		if (v.getVisibility() == View.VISIBLE)
+			return nextId;
+		
+		return getNextView(vh, getter.getNext(v), getter);
+	}
+
+	/**
+	 * Passed a parent View return a collection of all child views that have IDs.
+	 * 
+	 * @param v		Parent View
+	 *
+	 * @return	Hashtable of descendants with ID != NO_ID
+	 */
+	private static Hashtable<Integer,View> getViews(View v) {
+		Hashtable<Integer,View> vh = new Hashtable<Integer,View>();
+		getViews(v, vh);
+		return vh;
+	}
+	
+	/**
+	 * Passed a parent view, add it and all children view (if any) to the passed collection
+	 * 
+	 * @param p		Parent View
+	 * @param vh	Collection
+	 */
+	private static void getViews(View p, Hashtable<Integer,View> vh) {
+		// Get the view ID and add it to collection if not already present.
+		final int id = p.getId();
+		if (id != View.NO_ID && !vh.containsKey(id)) {
+			vh.put(id, p);
+		}
+		// If it's a ViewGroup, then process children recursively.
+		if (p instanceof ViewGroup) {
+			final ViewGroup g = (ViewGroup)p;
+			final int nChildren = g.getChildCount();
+			for(int i = 0; i < nChildren; i++) {
+				getViews(g.getChildAt(i), vh);
+			}
+		}
+
+		
 	}
 }
 

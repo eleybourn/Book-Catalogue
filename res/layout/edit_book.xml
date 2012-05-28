@@ -83,7 +83,7 @@
 				android:hint="@string/publisher"
 				android:inputType="textCapWords"
 				android:completionThreshold="2"
-				android:nextFocusDown="@+id/date_published"
+				android:nextFocusDown="@+id/pages"
 				/>
 			
 			<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -136,6 +136,7 @@
 				android:layout_weight="1"
 				android:hint="@string/list_price"
 				android:inputType="numberDecimal"
+				android:nextFocusDown="@+id/format"
 				/>
 			
 
@@ -159,7 +160,9 @@
 					android:layout_width="wrap_content" 
 					android:layout_height="wrap_content" 
 					android:hint="@string/format"
+					android:singleLine="true"
 					android:completionThreshold="2"
+					android:nextFocusDown="@+id/genre"
 					/>
 			</RelativeLayout>
 			<!-- 
@@ -176,6 +179,7 @@
 				android:layout_weight="1"
 				android:hint="@string/genre"
 				android:completionThreshold="2"
+				android:nextFocusDown="@+id/description"
 				/>
 			
 			<EditText android:id="@+id/description" 
@@ -184,6 +188,7 @@
 				android:layout_weight="1"
 				android:hint="@string/description"
 				android:capitalize="sentences"
+				android:nextFocusDown="@+id/anthology"
 				/>
 				
 			<CheckBox android:id="@+id/anthology" 

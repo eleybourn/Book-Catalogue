@@ -501,6 +501,14 @@ public class BookEditFields extends Activity {
 				}
 			});
 			
+			try {
+				Utils.fixFocusSettings(findViewById(android.R.id.content));				
+			} catch (Exception e) {
+				// Log, but ignore. This is a non-critical feature that prevents crashes when the
+				// 'next' key is pressed and some views have been hidden.
+				Logger.logError(e);
+			}
+
 			Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
 
 		} catch (IndexOutOfBoundsException e) {

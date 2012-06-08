@@ -423,6 +423,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 	 * @param isFullRebuild		Indicates whole table structure needs rebuild, vs. just do a reselect of underlying data
 	 */
 	private void setupList(boolean isFullRebuild) {
+		Logger.logError(new RuntimeException("SetupList!"));
 		mTaskQueue.enqueue(new GetListTask(isFullRebuild));
 		if (mListDialog == null) {
 			mListDialog = ProgressDialog.show(this, "", "Getting books...", true, true, new OnCancelListener() {
@@ -711,6 +712,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 			b.rebuild();
 			return b;
 		} else {
+			Logger.logError(new RuntimeException("Full recon"));
 			System.out.println("Doing full reconstruct");
 			// Make sure we have a style chosen
 			BooklistStyles styles = BooklistStyles.getAllStyles(mDb);

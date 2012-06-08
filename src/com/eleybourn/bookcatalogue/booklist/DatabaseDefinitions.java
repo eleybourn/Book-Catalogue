@@ -103,6 +103,7 @@ public class DatabaseDefinitions {
 	public static final DomainDefinition DOM_ROOT_KEY = new DomainDefinition("root_key", "text", "", "");
 	public static final DomainDefinition DOM_SERIES_ID = new DomainDefinition(KEY_SERIES_ID, "integer", "", "");
 	public static final DomainDefinition DOM_SERIES_NAME = new DomainDefinition(KEY_SERIES_NAME, "text", "", "");
+	public static final DomainDefinition DOM_SERIES_NUM_FLOAT = new DomainDefinition(KEY_SERIES_NUM + "_float", "float", "", "");
 	public static final DomainDefinition DOM_SERIES_NUM = new DomainDefinition(KEY_SERIES_NUM, "integer", "", "");
 	public static final DomainDefinition DOM_SERIES_POSITION = new DomainDefinition(KEY_SERIES_POSITION, "integer", "", "");
 	public static final DomainDefinition DOM_STYLE = new DomainDefinition("style", "blob", "",  "not null");

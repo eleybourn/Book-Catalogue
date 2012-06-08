@@ -633,7 +633,7 @@ public class BooklistBuilder {
 			
 			// Allow for the possibility of 3.1, or even "3.1|Omnibus 3-10" as a series name. so we convert it to 
 			// a float. 
-			//summary.addDomain(DOM_SERIES_NUM_FLOAT, "cast(" + TBL_BOOK_SERIES.dot(DOM_SERIES_NUM) + " as float)", SummaryBuilder.FLAG_SORTED);		
+			summary.addDomain(DOM_SERIES_NUM_FLOAT, "cast(" + TBL_BOOK_SERIES.dot(DOM_SERIES_NUM) + " as float)", SummaryBuilder.FLAG_SORTED);		
 			// We also add the base name as a sorted field for display purposes and in case of non-numeric data.
 			summary.addDomain(DOM_SERIES_NUM, TBL_BOOK_SERIES.dot(DOM_SERIES_NUM), SummaryBuilder.FLAG_SORTED);			
 		}

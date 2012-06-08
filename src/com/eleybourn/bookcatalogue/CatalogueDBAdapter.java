@@ -5161,8 +5161,10 @@ public class CatalogueDBAdapter {
 
 		// Process each book
 		while (books.moveToNext()) {
-			// Reset authors
+			// Reset authors/series/title
 			authorText.setLength(0);
+			seriesText.setLength(0);
+			titleText.setLength(0);
 			// Get list of authors
 			{
 				Cursor c = mDb.rawQuery(authorBaseSql + book.getId());

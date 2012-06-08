@@ -517,7 +517,7 @@ public class CatalogueDBAdapter {
 //						+ " LEFT OUTER JOIN " + DB_TB_SERIES + " s ON (s." + KEY_ROWID + "=w." + KEY_SERIES_ID + ") ";
 
 	//TODO: Update database version RELEASE: Update database version
-	public static final int DATABASE_VERSION = 75;
+	public static final int DATABASE_VERSION = 76;
 
 	private TableInfo mBooksInfo = null;
 
@@ -1478,6 +1478,15 @@ public class CatalogueDBAdapter {
 				message += "* FastScroller sizing improved\n\n";
 				message += "* Several bugs fixed\n\n";
 				message += "Thank you to all those people who reported bugs and helped tracking them down.\n\n";
+			}
+
+			if (curVersion == 75) {
+				//do nothing
+				curVersion++;
+				StartupActivity.scheduleFtsRebuild();
+				message += "New in v4.0.4\n\n";
+				message += "* Search now searches series and anthology data\n\n";
+				message += "* Several bug fixes\n\n";
 			}
 
 			// Rebuild all indices
@@ -5126,40 +5135,96 @@ public class CatalogueDBAdapter {
 		// Get a rowview for the cursor
 		final BooksRowView book = books.getRowView();
 		// Build the SQL to get author details for a book.
+		// ... all authors
 		final String authorBaseSql = "Select " + TBL_AUTHORS.dot("*") + " from " + TBL_BOOK_AUTHOR.ref() + TBL_BOOK_AUTHOR.join(TBL_AUTHORS) +
 				" Where " + TBL_BOOK_AUTHOR.dot(DOM_BOOK) + " = ";
-
+		// ... all series
+		final String seriesBaseSql = "Select " + TBL_SERIES.dot(DOM_SERIES_NAME) + " || ' ' || Coalesce(" + TBL_BOOK_SERIES.dot(DOM_SERIES_NUM) + ",'') as seriesInfo from " + TBL_BOOK_SERIES.ref() + TBL_BOOK_SERIES.join(TBL_SERIES) +
+				" Where " + TBL_BOOK_SERIES.dot(DOM_BOOK) + " = ";
+		// ... all anthology titles
+		final String anthologyBaseSql = "Select " + TBL_AUTHORS.dot(KEY_GIVEN_NAMES) + " || ' ' || " + TBL_AUTHORS.dot(KEY_FAMILY_NAME) + " as anthologyAuthorInfo, " + DOM_TITLE + " as anthologyTitleInfo "
+				+ " from " + TBL_ANTHOLOGY.ref() + TBL_ANTHOLOGY.join(TBL_AUTHORS) +
+				" Where " + TBL_ANTHOLOGY.dot(DOM_BOOK) + " = ";
+		
 		// Accumulator for author names for each book
 		StringBuilder authorText = new StringBuilder();
+		// Accumulator for series names for each book
+		StringBuilder seriesText = new StringBuilder();
+		// Accumulator for title names for each anthology
+		StringBuilder titleText = new StringBuilder();
 		// Indexes of author name fields.
 		int colGivenNames = -1;
 		int colFamilyName = -1;
+		int colSeriesInfo = -1;
+		int colAnthologyAuthorInfo = -1;
+		int colAnthologyTitleInfo = -1;
+
 		// Process each book
 		while (books.moveToNext()) {
 			// Reset authors
 			authorText.setLength(0);
 			// Get list of authors
-			Cursor c = mDb.rawQuery(authorBaseSql + book.getId());
-			try {
-				// Get column indexes, if not already got
-				if (colGivenNames < 0)
-					colGivenNames = c.getColumnIndex(KEY_GIVEN_NAMES);
-				if (colFamilyName < 0)
-					colFamilyName = c.getColumnIndex(KEY_FAMILY_NAME);
-				// Append each author
-				while (c.moveToNext()) {
-					authorText.append(c.getString(colGivenNames));
-					authorText.append(" ");
-					authorText.append(c.getString(colFamilyName));
-					authorText.append(";");					
+			{
+				Cursor c = mDb.rawQuery(authorBaseSql + book.getId());
+				try {
+					// Get column indexes, if not already got
+					if (colGivenNames < 0)
+						colGivenNames = c.getColumnIndex(KEY_GIVEN_NAMES);
+					if (colFamilyName < 0)
+						colFamilyName = c.getColumnIndex(KEY_FAMILY_NAME);
+					// Append each author
+					while (c.moveToNext()) {
+						authorText.append(c.getString(colGivenNames));
+						authorText.append(" ");
+						authorText.append(c.getString(colFamilyName));
+						authorText.append(";");
+					}
+				} finally {
+					c.close();
 				}
-			} finally {
-				c.close();
+			}
+
+			// Get list of series
+			{
+				Cursor c = mDb.rawQuery(seriesBaseSql + book.getId());
+				try {
+					// Get column indexes, if not already got
+					if (colSeriesInfo < 0)
+						colSeriesInfo = c.getColumnIndex("seriesInfo");
+					// Append each series
+					while (c.moveToNext()) {
+						seriesText.append(c.getString(colSeriesInfo));
+						seriesText.append(";");
+					}
+				} finally {
+					c.close();
+				}				
+			}
+
+			// Get list of anthology data (author and title)
+			{
+				Cursor c = mDb.rawQuery(anthologyBaseSql + book.getId());
+				try {
+					// Get column indexes, if not already got
+					if (colAnthologyAuthorInfo < 0)
+						colAnthologyAuthorInfo = c.getColumnIndex("anthologyAuthorInfo");
+					if (colAnthologyTitleInfo < 0)
+						colAnthologyTitleInfo = c.getColumnIndex("anthologyTitleInfo");
+					// Append each series
+					while (c.moveToNext()) {
+						authorText.append(c.getString(colAnthologyAuthorInfo));
+						authorText.append(";");
+						titleText.append(c.getString(colAnthologyTitleInfo));
+						titleText.append(";");
+					}
+				} finally {
+					c.close();
+				}				
 			}
 
 			// Set the parameters and call
 			bindStringOrNull(stmt, 1, authorText.toString());
-			bindStringOrNull(stmt, 2, book.getTitle());
+			bindStringOrNull(stmt, 2, book.getTitle() + "; " + titleText.toString() + seriesText.toString());
 			bindStringOrNull(stmt, 3, book.getDescription());
 			bindStringOrNull(stmt, 4, book.getNotes());
 			bindStringOrNull(stmt, 5, book.getPublisher());

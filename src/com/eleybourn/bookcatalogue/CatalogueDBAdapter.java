@@ -1486,6 +1486,8 @@ public class CatalogueDBAdapter {
 				StartupActivity.scheduleFtsRebuild();
 				message += "New in v4.0.4\n\n";
 				message += "* Search now searches series and anthology data\n\n";
+				message += "* Allows non-numeric data entry in series position\n\n";
+				message += "* Better sorting of leading numerics in series position\n\n";
 				message += "* Several bug fixes\n\n";
 			}
 

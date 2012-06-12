@@ -3784,19 +3784,20 @@ public class CatalogueDBAdapter {
 			}
 		}
 
-		// Remove blank/null fields that have default values defined in the database
-		for(String name: new String[] {DatabaseDefinitions.DOM_BOOK_UUID.name, KEY_ANTHOLOGY, KEY_RATING, 
-										KEY_READ, KEY_SIGNED, KEY_DATE_ADDED, 
-										DatabaseDefinitions.DOM_LAST_GOODREADS_SYNC_DATE.name, 
-										DatabaseDefinitions.DOM_LAST_UPDATE_DATE.name })
-		{
+		// Remove blank/null fields that have default values defined in the database or which should
+		// never be blank.
+		for (String name : new String[] {
+				DatabaseDefinitions.DOM_BOOK_UUID.name, KEY_ANTHOLOGY,
+				KEY_RATING, KEY_READ, KEY_SIGNED, KEY_DATE_ADDED,
+				DatabaseDefinitions.DOM_LAST_GOODREADS_SYNC_DATE.name,
+				DatabaseDefinitions.DOM_LAST_UPDATE_DATE.name }) {
 			if (values.containsKey(name)) {
 				Object o = values.get(name);
-				// Need to allow for the possibility the stored value is not a string, in which case
-				// getString() would return a NULL...
+				// Need to allow for the possibility the stored value is not
+				// a string, in which case getString() would return a NULL.
 				if (o == null || o.toString().equals(""))
-					values.remove(name);				
-			}			
+					values.remove(name);
+			}
 		}
 	}
 

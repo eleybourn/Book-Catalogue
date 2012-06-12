@@ -3791,10 +3791,11 @@ public class CatalogueDBAdapter {
 										DatabaseDefinitions.DOM_LAST_UPDATE_DATE.name })
 		{
 			if (values.containsKey(name)) {
-				String value = values.getString(name);
-				if (value == null || value.equals(""))
-					values.remove(name);
-				
+				Object o = values.get(name);
+				// Need to allow for the possibility the stored value is not a string, in which case
+				// getString() would return a NULL...
+				if (o == null || o.toString().equals(""))
+					values.remove(name);				
 			}			
 		}
 	}

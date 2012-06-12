@@ -41,6 +41,8 @@ Features include;
   case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+new in 4.0.5
+* fix bug when updating books
 new in 4.0.4
 * search now searches series and anthology data
 * allows non-numeric data entry in series position

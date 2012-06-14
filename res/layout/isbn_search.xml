@@ -117,11 +117,28 @@
 				android:layout_height="75sp" />
 		</LinearLayout>
 		
-		<Button android:id="@+id/search" 
-			android:text="@string/search"
+		<RelativeLayout
+			android:orientation="horizontal" 
+			android:gravity="center_horizontal"
 			android:layout_width="fill_parent"
-			android:width="175sp"
-			android:layout_height="wrap_content" />
-		
+			android:layout_height="wrap_content">
+			<CheckBox
+			    android:id="@+id/asinCheckbox"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+		        android:layout_alignParentLeft="true"
+			    android:text="@string/allow_asin" />
+
+		    <Button
+		        android:id="@+id/search"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginLeft="10sp"
+		        android:layout_toRightOf="@+id/asinCheckbox"
+		        android:layout_alignParentRight="true"
+		        android:text="@string/search" />
+
+		</RelativeLayout>
+					
 	</LinearLayout>
 </ScrollView>

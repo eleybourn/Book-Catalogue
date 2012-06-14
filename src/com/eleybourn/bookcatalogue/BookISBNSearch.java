@@ -33,6 +33,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -393,8 +394,16 @@ public class BookISBNSearch extends ActivityWithTasks {
 		try {
 			if (isbn != null && !isbn.equals("")) {
 
-				if (!IsbnUtils.isValid(isbn)) {
-					Toast.makeText(this, getString(R.string.x_is_not_a_valid_isbn, isbn), Toast.LENGTH_LONG).show();
+				final boolean allowAsin = ((CheckBox) BookISBNSearch.this.findViewById(R.id.asinCheckbox) ).isChecked();
+
+				if (!IsbnUtils.isValid(isbn) && (!allowAsin || !AsinUtils.isValid(isbn) ) ) {
+					int msg;
+					if (allowAsin) {
+						msg = R.string.x_is_not_a_valid_isbn_or_asin;
+					} else {
+						msg = R.string.x_is_not_a_valid_isbn;
+					}
+					Toast.makeText(this, getString(msg, isbn), Toast.LENGTH_LONG).show();
 					if (mMode == MODE_SCAN) {
 						// Optionally beep if scan failed.
 						SoundManager.beepLow();
@@ -404,7 +413,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 						mTitle = "";
 						startScannerActivity();
 					}
-					return;					
+					return;
 				} else if (mDbHelper.checkIsbnExists(isbn)) {
 					// Verify - this can be a dangerous operation
 					AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(R.string.duplicate_book_message).create();

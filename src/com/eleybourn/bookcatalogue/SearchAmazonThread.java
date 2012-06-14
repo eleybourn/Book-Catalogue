@@ -16,6 +16,8 @@ public class SearchAmazonThread extends SearchThread {
 
 		try {
 			AmazonManager.searchAmazon(mIsbn, mAuthor, mTitle, mBookData, mFetchThumbnail);
+			if (mBookData.size() == 0)
+				throw new RuntimeException("No data found for " + mIsbn + "/" + mAuthor + "/" + mTitle);
 			// Look for series name and clear KEY_TITLE
 			checkForSeriesName();
 		} catch (Exception e) {

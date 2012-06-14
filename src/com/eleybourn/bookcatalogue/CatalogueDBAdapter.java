@@ -517,7 +517,7 @@ public class CatalogueDBAdapter {
 //						+ " LEFT OUTER JOIN " + DB_TB_SERIES + " s ON (s." + KEY_ROWID + "=w." + KEY_SERIES_ID + ") ";
 
 	//TODO: Update database version RELEASE: Update database version
-	public static final int DATABASE_VERSION = 76;
+	public static final int DATABASE_VERSION = 77;
 
 	private TableInfo mBooksInfo = null;
 
@@ -1489,6 +1489,13 @@ public class CatalogueDBAdapter {
 				message += "* Allows non-numeric data entry in series position\n\n";
 				message += "* Better sorting of leading numerics in series position\n\n";
 				message += "* Several bug fixes\n\n";
+			}
+
+			if (curVersion == 76) {
+				//do nothing
+				curVersion++;
+				message += "New in v4.0.6\n\n";
+				message += "* Allow ASINs to be entered manually as well as ISBNs\n\n";
 			}
 
 			// Rebuild all indices

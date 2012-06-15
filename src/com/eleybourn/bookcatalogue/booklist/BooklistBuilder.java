@@ -623,13 +623,18 @@ public class BooklistBuilder {
 		// Want the UUID for the book so we can get thumbs
 		summary.addDomain(DOM_BOOK_UUID, TBL_BOOKS.dot(DOM_BOOK_UUID), SummaryBuilder.FLAG_NONE);
 
-		// If we have a bok ID to mark, then add the MARK field, and setup the expression.
+		// If we have a book ID to mark, then add the MARK field, and setup the expression.
 		if (markId != 0) {
 			summary.addDomain(DOM_MARK, TBL_BOOKS.dot(DOM_ID) + " = " + markId, SummaryBuilder.FLAG_NONE);
 		}
 
 		if (seriesGroup != null) {
 			// We want the series number in the base data in sorted order
+			
+			// Allow for the possibility of 3.1, or even "3.1|Omnibus 3-10" as a series name. so we convert it to 
+			// a float. 
+			summary.addDomain(DOM_SERIES_NUM_FLOAT, "cast(" + TBL_BOOK_SERIES.dot(DOM_SERIES_NUM) + " as float)", SummaryBuilder.FLAG_SORTED);		
+			// We also add the base name as a sorted field for display purposes and in case of non-numeric data.
 			summary.addDomain(DOM_SERIES_NUM, TBL_BOOK_SERIES.dot(DOM_SERIES_NUM), SummaryBuilder.FLAG_SORTED);			
 		}
 		summary.addDomain(DOM_LEVEL, null, SummaryBuilder.FLAG_SORTED);

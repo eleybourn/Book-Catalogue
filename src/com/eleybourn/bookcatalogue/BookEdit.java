@@ -173,12 +173,18 @@ public class BookEdit extends TabActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		menu.clear();
-		MenuItem delete = menu.add(0, DELETE_ID, 0, R.string.menu_delete);
-		delete.setIcon(android.R.drawable.ic_menu_delete);
-		MenuItem duplicate = menu.add(0, DUPLICATE_ID, 0, R.string.menu_duplicate);
-		duplicate.setIcon(android.R.drawable.ic_menu_add);
+		if (mRowId != null && mRowId != 0) {
+			MenuItem delete = menu.add(0, DELETE_ID, 0, R.string.menu_delete);
+			delete.setIcon(android.R.drawable.ic_menu_delete);
+
+			MenuItem duplicate = menu.add(0, DUPLICATE_ID, 0, R.string.menu_duplicate);
+			duplicate.setIcon(android.R.drawable.ic_menu_add);
+		}
+
+		// TODO: Consider allowing Tweets (or other sharig methods) to work on un-added books.
 		MenuItem tweet = menu.add(0, TWEET_ID, 0, R.string.menu_share_this);
 		tweet.setIcon(R.drawable.ic_menu_twitter);
+
 		boolean thumbVisible = BookCatalogueApp.getAppPreferences().getBoolean(FieldVisibility.prefix + "thumbnail", true);
 		if (thumbVisible && getCurrentActivity() instanceof BookEditFields) {
 			MenuItem thumbOptions = menu.add(0, THUMBNAIL_OPTIONS_ID, 0, R.string.cover_options_cc_ellipsis);
@@ -204,6 +210,11 @@ public class BookEdit extends TabActivity {
 				}
 				break;
 			case TWEET_ID:
+				if (mRowId == null || mRowId == 0) {
+					Toast.makeText(this, R.string.this_option_is_not_available_until_the_book_is_saved, Toast.LENGTH_LONG).show();
+					return true;
+				}
+				
 				thisBook = mDbHelper.fetchBookById(mRowId);
 				thisBook.moveToFirst();
 				String title = thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_TITLE));
@@ -227,9 +238,13 @@ public class BookEdit extends TabActivity {
 				
 				String url = "https://twitter.com/intent/tweet?related=eleybourn&text=%23reading " + title + " by " + author + series + " " + ratingString;
 				Intent loadweb = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-				startActivity(loadweb); 
+				startActivity(loadweb); 					
 				return true;
 			case DELETE_ID:
+				if (mRowId == null || mRowId == 0) {
+					Toast.makeText(this, R.string.this_option_is_not_available_until_the_book_is_saved, Toast.LENGTH_LONG).show();
+					return true;
+				}
 				int res = StandardDialogs.deleteBookAlert(this, mDbHelper, mRowId, new Runnable() {
 					@Override
 					public void run() {
@@ -243,6 +258,10 @@ public class BookEdit extends TabActivity {
 				}
 				return true;
 			case DUPLICATE_ID:
+				if (mRowId == null || mRowId == 0) {
+					Toast.makeText(this, R.string.this_option_is_not_available_until_the_book_is_saved, Toast.LENGTH_LONG).show();
+					return true;
+				}
 				Intent i = new Intent(this, BookEdit.class);
 				Bundle book = new Bundle();
 				thisBook = mDbHelper.fetchBookById(mRowId);

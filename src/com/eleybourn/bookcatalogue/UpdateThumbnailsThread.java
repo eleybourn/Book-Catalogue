@@ -123,6 +123,9 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 
 				// Grab the searchable fields. Ideally we will have an ISBN but we may not.
 				String isbn = mOrigData.getString(CatalogueDBAdapter.KEY_ISBN);
+				// Make sure ISBN is not NULL (legacy data, and possibly set to null when adding new book)
+				if (isbn == null)
+					isbn = "";
 				String author = mOrigData.getString(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);
 				String title = mOrigData.getString(CatalogueDBAdapter.KEY_TITLE);
 

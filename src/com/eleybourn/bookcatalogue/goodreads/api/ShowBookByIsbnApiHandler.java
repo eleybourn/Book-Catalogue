@@ -34,6 +34,7 @@ import android.os.Bundle;
 
 import com.eleybourn.bookcatalogue.Author;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
+import com.eleybourn.bookcatalogue.IsbnUtils;
 import com.eleybourn.bookcatalogue.Series;
 import com.eleybourn.bookcatalogue.Utils;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
@@ -68,9 +69,15 @@ public class ShowBookByIsbnApiHandler extends ShowBookApiHandler {
 	 * @throws NetworkException 
 	 */
 	public Bundle get(String isbn, boolean fetchThumbnail) throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException, IOException, NetworkException {
+		if (isbn == null)
+			throw new RuntimeException("Null ISBN specified in search");
+		isbn = isbn.trim();
+		if (!IsbnUtils.isValid(isbn))
+			throw new RuntimeException("Invalid ISBN '" + isbn + "' specified in search");
+
 		// Setup API call //
 		final String urlBase = "http://www.goodreads.com/book/isbn?format=xml&isbn=%1$s&key=%2$s"; //format=xml&
-		final String url = String.format(urlBase, isbn, mManager.getDeveloperKey());
+		final String url = String.format(urlBase, isbn.trim(), mManager.getDeveloperKey());
 		HttpGet get = new HttpGet(url);
 
 		return sendRequest(get, fetchThumbnail);

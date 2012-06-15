@@ -282,6 +282,7 @@ public class BookEditFields extends Activity {
 			mFields.add(R.id.genre, CatalogueDBAdapter.KEY_GENRE, null);
 			mFields.add(R.id.row_img, "", "thumbnail", null);
 			final Field formatField = mFields.add(R.id.format, CatalogueDBAdapter.KEY_FORMAT, null);
+			mFields.add(R.id.format_button, "", CatalogueDBAdapter.KEY_FORMAT, null);
 			
 			mFields.add(R.id.bookshelf_text, "bookshelf_text", null).doNoFetch = true; // Output-only field
 			Field bookshelfButtonFe = mFields.add(R.id.bookshelf, "", null);
@@ -500,6 +501,14 @@ public class BookEditFields extends Activity {
 				}
 			});
 			
+			try {
+				Utils.fixFocusSettings(findViewById(android.R.id.content));				
+			} catch (Exception e) {
+				// Log, but ignore. This is a non-critical feature that prevents crashes when the
+				// 'next' key is pressed and some views have been hidden.
+				Logger.logError(e);
+			}
+
 			Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
 
 		} catch (IndexOutOfBoundsException e) {
@@ -576,7 +585,7 @@ public class BookEditFields extends Activity {
 	 * is new, return the standard temp file.
 	 */
 	private File getCoverFile() {
-		if (mRowId == 0) 
+		if (mRowId == null || mRowId == 0) 
 			return CatalogueDBAdapter.getTempThumbnail();
 		else
 			return CatalogueDBAdapter.fetchThumbnailByUuid(mDbHelper.getBookUuid(mRowId));			
@@ -677,24 +686,41 @@ public class BookEditFields extends Activity {
 	 * @param id
 	 */
 	private void rotateThumbnail(long id, long angle) {
-		File thumbFile = getCoverFile();
+		boolean retry = true;
+		while (retry) {
+			try {
+				File thumbFile = getCoverFile();
 
-		Bitmap bm = Utils.fetchFileIntoImageView(thumbFile, null, mThumbZoomSize*2, mThumbZoomSize*2, true );
-		if (bm == null)
-			return;
+				Bitmap origBm = Utils.fetchFileIntoImageView(thumbFile, null, mThumbZoomSize*2, mThumbZoomSize*2, true );
+				if (origBm == null)
+					return;
 
-		Matrix m = new Matrix();
-		m.postRotate(angle);
-		bm = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), m, true);
-		/* Create a file to copy the thumbnail into */
-		FileOutputStream f = null;
-		try {
-			f = new FileOutputStream(thumbFile.getAbsoluteFile());
-		} catch (FileNotFoundException e) {
-			Logger.logError(e);
-			return;
+				Matrix m = new Matrix();
+				m.postRotate(angle);
+				Bitmap rotBm = Bitmap.createBitmap(origBm, 0, 0, origBm.getWidth(), origBm.getHeight(), m, true);
+				if (rotBm != origBm) {
+					origBm.recycle();
+				}
+
+				/* Create a file to copy the thumbnail into */
+				FileOutputStream f = null;
+				try {
+					f = new FileOutputStream(thumbFile.getAbsoluteFile());
+				} catch (FileNotFoundException e) {
+					Logger.logError(e);
+					return;
+				}
+				rotBm.compress(Bitmap.CompressFormat.PNG, 100, f);
+				rotBm.recycle();
+			} catch (java.lang.OutOfMemoryError e) {
+				if (retry) {
+					System.gc();
+				} else {
+					throw new RuntimeException(e);
+				}
+			}
+			retry = false;
 		}
-		bm.compress(Bitmap.CompressFormat.PNG, 100, f);				
 	}
 
 	/**
@@ -1121,19 +1147,27 @@ public class BookEditFields extends Activity {
 				
 				String[] projection = { MediaStore.Images.Media.DATA };
 				Cursor cursor = managedQuery(selectedImageUri, projection, null, null, null);
-				int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-				cursor.moveToFirst();
-				String selectedImagePath = cursor.getString(column_index);
-				
-				File thumb = new File(selectedImagePath);
-				File real = getCoverFile();
-				try {
-					copyFile(thumb, real);
-				} catch (IOException e) {
-					Logger.logError(e);
+				int column_index = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
+				if (column_index < 0 || !cursor.moveToFirst()) {
+					Logger.logError(new RuntimeException("Add from gallery failed (col = " + column_index +"), name = " + MediaStore.Images.Media.DATA));
+					// This should not happen, but tell the user and log something
+					String s = getResources().getString(R.string.no_image_found) + ". " + getResources().getString(R.string.if_the_problem_persists);
+					Toast.makeText(this, s, Toast.LENGTH_LONG).show();
+				} else {
+					String selectedImagePath = cursor.getString(column_index);
+					
+					File thumb = new File(selectedImagePath);
+					File real = getCoverFile();
+					try {
+						copyFile(thumb, real);
+					} catch (IOException e) {
+						Logger.logError(e, "copyImage failed in add from gallery");
+						String s = getResources().getString(R.string.could_not_copy_image) + ". " + getResources().getString(R.string.if_the_problem_persists);
+						Toast.makeText(this, s, Toast.LENGTH_LONG).show();
+					}
+					// Update the ImageView with the new image
+					setCoverImage();					
 				}
-				// Update the ImageView with the new image
-				setCoverImage();
 			}
 			return;
 		case ACTIVITY_EDIT_AUTHORS:

@@ -109,8 +109,8 @@ public class MainMenu extends Activity {
 	private OnClickListener mAddBookHandler = new OnClickListener() {
 		@Override public void onClick(View v) {
 			ArrayList<AlertDialogItem> items = new ArrayList<AlertDialogItem>();
-			items.add( new AlertDialogItem(getString(R.string.scan_barcode), mCreateBookScan) );
-			items.add( new AlertDialogItem(getString(R.string.enter_barcode), mCreateBookIsbn) );
+			items.add( new AlertDialogItem(getString(R.string.scan_barcode_isbn), mCreateBookScan) );
+			items.add( new AlertDialogItem(getString(R.string.enter_isbn), mCreateBookIsbn) );
 			items.add( new AlertDialogItem(getString(R.string.search_internet), mCreateBookName) );
 			items.add( new AlertDialogItem(getString(R.string.add_manually), mCreateBookManually) );
 			AlertDialogUtils.showContextDialogue(MainMenu.this, getString(R.string.menu_insert), items);

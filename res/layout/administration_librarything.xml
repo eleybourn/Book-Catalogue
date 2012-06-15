@@ -44,6 +44,7 @@
 	<EditText android:id="@+id/devkey" 
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content" 
+		android:singleLine="true"
 		android:hint="@string/developer_key"
 		/>
 	<Button android:id="@+id/confirm" 

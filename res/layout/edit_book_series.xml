@@ -38,13 +38,17 @@
 			android:completionThreshold="2"
 			android:paddingLeft="5sp"
 			/>
+		<!--
+			Removed:
+		 			android:inputType="numberDecimal"
+		 	based on user feedback (Issue 233)
+		 -->
 		<EditText android:id="@+id/series_num" 
 			android:layout_width="150sp"
 			android:layout_height="fill_parent"
 			android:singleLine="true"
 			android:gravity="left"
 			android:hint="@string/series_num"
-			android:inputType="numberDecimal"
 			
 			android:layout_toRightOf="@+id/series"
 			android:layout_toLeftOf="@+id/add"

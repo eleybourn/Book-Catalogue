@@ -72,6 +72,8 @@ public class SearchBooksApiHandler extends ApiHandler {
 	 * @throws NetworkException 
 	 */
 	public ArrayList<GoodreadsWork> search(String query) throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException, IOException, NetworkException {
+		query = query.trim();
+
 		// Setup API call
 		HttpPost post = new HttpPost("http://www.goodreads.com/search/index.xml");
         List<NameValuePair> parameters = new ArrayList<NameValuePair>();

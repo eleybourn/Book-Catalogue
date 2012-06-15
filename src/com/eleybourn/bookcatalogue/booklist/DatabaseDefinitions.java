@@ -50,6 +50,7 @@ public class DatabaseDefinitions {
 	private static final String ALIAS_BOOK_LIST = "bl";
 	private static final String ALIAS_BOOK_LIST_ROW_POSITION = "blrp";
 	private static final String ALIAS_AUTHORS = "a";
+	private static final String ALIAS_ANTHOLOGY = "an";
 	private static final String ALIAS_BOOK_AUTHOR = "ba";
 	private static final String ALIAS_LOAN = "l";
 
@@ -103,6 +104,7 @@ public class DatabaseDefinitions {
 	public static final DomainDefinition DOM_ROOT_KEY = new DomainDefinition("root_key", "text", "", "");
 	public static final DomainDefinition DOM_SERIES_ID = new DomainDefinition(KEY_SERIES_ID, "integer", "", "");
 	public static final DomainDefinition DOM_SERIES_NAME = new DomainDefinition(KEY_SERIES_NAME, "text", "", "");
+	public static final DomainDefinition DOM_SERIES_NUM_FLOAT = new DomainDefinition(KEY_SERIES_NUM + "_float", "float", "", "");
 	public static final DomainDefinition DOM_SERIES_NUM = new DomainDefinition(KEY_SERIES_NUM, "integer", "", "");
 	public static final DomainDefinition DOM_SERIES_POSITION = new DomainDefinition(KEY_SERIES_POSITION, "integer", "", "");
 	public static final DomainDefinition DOM_STYLE = new DomainDefinition("style", "blob", "",  "not null");
@@ -140,6 +142,14 @@ public class DatabaseDefinitions {
 	public static final TableDefinition TBL_BOOK_AUTHOR = new TableDefinition(CatalogueDBAdapter.DB_TB_BOOK_AUTHOR)
 		.addDomains(DOM_BOOK, DOM_AUTHOR_ID)
 		.setAlias(ALIAS_BOOK_AUTHOR)
+		.addReference(TBL_BOOKS, DOM_BOOK)
+		.addReference(TBL_AUTHORS, DOM_AUTHOR_ID);
+		;
+
+	/** Partial representation of ANTHOLOGY table */
+	public static final TableDefinition TBL_ANTHOLOGY = new TableDefinition(CatalogueDBAdapter.DB_TB_ANTHOLOGY)
+		.addDomains(DOM_ID, DOM_BOOK, DOM_AUTHOR_ID, DOM_TITLE, DOM_POSITION)
+		.setAlias(ALIAS_ANTHOLOGY)
 		.addReference(TBL_BOOKS, DOM_BOOK)
 		.addReference(TBL_AUTHORS, DOM_AUTHOR_ID);
 		;

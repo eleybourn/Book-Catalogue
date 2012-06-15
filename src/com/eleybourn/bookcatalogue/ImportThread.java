@@ -203,11 +203,16 @@ public class ImportThread extends ManagedTask {
 					values.putString(CatalogueDBAdapter.KEY_ROWID, "0");					
 				}
 
+				// Get the UUID, and remove from collection if null/blank
 				boolean hasUuid;
-				String uuidVal = values.getString(DatabaseDefinitions.DOM_BOOK_UUID.name.toLowerCase());
+				final String uuidColumnName = DatabaseDefinitions.DOM_BOOK_UUID.name.toLowerCase();
+				String uuidVal = values.getString(uuidColumnName);
 				if (uuidVal != null && !uuidVal.equals("")) {
 					hasUuid = true;
 				} else {
+					// Remove any blank UUID column, just in case
+					if (values.containsKey(uuidColumnName))
+						values.remove(uuidColumnName);
 					hasUuid = false;
 				}
 

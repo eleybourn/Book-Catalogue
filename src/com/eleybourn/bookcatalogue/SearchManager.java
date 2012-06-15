@@ -259,8 +259,16 @@ public class SearchManager implements OnTaskEndedListener {
 		boolean tasksStarted = false;
 		try {
 			if (mIsbn != null && mIsbn.length() > 0) {
-				mWaitingForIsbn = false;
-				tasksStarted = this.startSearches(mSearchFlags);
+				if (IsbnUtils.isValid(mIsbn)) {
+					// We have an ISBN, just do the search
+					mWaitingForIsbn = false;
+					tasksStarted = this.startSearches(mSearchFlags);
+				} else {
+					// Assume it's an ASIN, and just search Amazon
+					mWaitingForIsbn = false;
+					mSearchFlags = SEARCH_AMAZON;
+					tasksStarted = this.startSearches(mSearchFlags);
+				}
 			} else {
 				// Run one at a time, startNext() defined the order.
 				mWaitingForIsbn = true;

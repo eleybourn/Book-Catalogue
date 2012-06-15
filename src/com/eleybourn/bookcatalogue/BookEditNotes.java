@@ -199,6 +199,15 @@ public class BookEditNotes extends Activity {
 					finish();
 				}
 			});
+			
+			try {
+				Utils.fixFocusSettings(findViewById(android.R.id.content));				
+			} catch (Exception e) {
+				// Log, but ignore. This is a non-critical feature that prevents crashes when the
+				// 'next' key is pressed and some views have been hidden.
+				Logger.logError(e);
+			}
+
 		} catch (Exception e) {
 			Logger.logError(e);
 		}

@@ -793,8 +793,10 @@ public class BooklistBuilder {
 			sql += " where " + where.toString();
 
 		long t1 = System.currentTimeMillis();
-		// Check if the UNICODE collation is case sensitive; bug introduced in ICS
-		boolean unicodeIsCs = BookCatalogueApp.isUnicodeCaseSensitive(mDb.getUnderlyingDatabase());
+		// Check if the collation we use is case sensitive; bug introduced in ICS was to make UNICODE not CI.
+		// Due to bugs in other language sorting, we are now forced to use a different collation  anyway, but
+		// we still check if it is CI.
+		boolean collationIsCs = BookCatalogueApp.isCollationCaseSensitive(mDb.getUnderlyingDatabase());
 
 		// List of column names appropriate for 'Order By' clause
 		String sortColNameList;
@@ -809,15 +811,15 @@ public class BooklistBuilder {
 			for (SortedDomainInfo sdi: sort) {
 				indexCols.append(sdi.domain.name);
 				if (sdi.domain.type.toLowerCase().equals("text")) {
-					indexCols.append(" Collate UNICODE");
+					indexCols.append(CatalogueDBAdapter.COLLATION);
 
-					// *If* UNICODE is case-sensitive, handle it.
-					if (unicodeIsCs)
+					// *If* collations is case-sensitive, handle it.
+					if (collationIsCs)
 						sortCols.append("lower(");
 					sortCols.append(sdi.domain.name);
-					if (unicodeIsCs)
+					if (collationIsCs)
 						sortCols.append(")");
-					sortCols.append(" Collate UNICODE");
+					sortCols.append(CatalogueDBAdapter.COLLATION);
 				} else {
 					sortCols.append(sdi.domain.name);					
 				}
@@ -840,7 +842,8 @@ public class BooklistBuilder {
 			final StringBuilder groupCols = new StringBuilder();;
 			for (DomainDefinition d: group) {
 				groupCols.append(d.name);
-				groupCols.append(" Collate UNICODE, ");
+				groupCols.append(CatalogueDBAdapter.COLLATION);
+				groupCols.append(", ");
 			}
 			groupCols.append( DOM_LEVEL.name );
 			mGroupColumnList = groupCols.toString();
@@ -854,7 +857,7 @@ public class BooklistBuilder {
 		String ix3Sql = "Create Index " + mListTable + "_IX3 on " + mListTable + "(" + mGroupColumnList + ")";
 		String ix3aSql = "Create Index " + mListTable + "_IX3 on " + mListTable + "(" + DOM_LEVEL + ", " + mGroupColumnList + ")";
 		String ix3bSql = "Create Index " + mListTable + "_IX3 on " + mListTable + "(" + mGroupColumnList +  ", " + DOM_LEVEL + ")";
-		String ix3cSql = "Create Index " + mListTable + "_IX3 on " + mListTable + "(" + mGroupColumnList +  ", " + DOM_ROOT_KEY + " Collate UNICODE)";
+		String ix3cSql = "Create Index " + mListTable + "_IX3 on " + mListTable + "(" + mGroupColumnList +  ", " + DOM_ROOT_KEY + CatalogueDBAdapter.COLLATION + ")";
 		String ix3dSql = "Create Index " + mListTable + "_IX3 on " + mListTable + "(" + DOM_LEVEL + ", " + mGroupColumnList +  ", " + DOM_ROOT_KEY + ")";
 		String ix3eSql = "Create Index " + mListTable + "_IX3 on " + mListTable + "(" + mGroupColumnList +  ", " + DOM_ROOT_KEY + "," + DOM_LEVEL + ")";
 		String ix4Sql = "Create Index " + mListTable + "_IX4 on " + mListTable + "(" + DOM_LEVEL + "," + DOM_EXPANDED + "," + DOM_ROOT_KEY + ")";
@@ -897,7 +900,7 @@ public class BooklistBuilder {
 					if (!collatedCols.equals(""))
 						collatedCols += ",";
 					cols += ",\n	" + d.name;
-					collatedCols += "\n	" + d.name + " Collate UNICODE";
+					collatedCols += "\n	" + d.name + CatalogueDBAdapter.COLLATION;
 				}
 				// Construct the summarization statement for this group
 				sql = "Insert Into " + mListTable + "(\n	" + DOM_LEVEL + ",\n	" + DOM_KIND + 
@@ -906,7 +909,7 @@ public class BooklistBuilder {
 						"\n select " + levelId + " as " + DOM_LEVEL + ",\n	" + g.kind + " as " + DOM_KIND +
 						cols + "," + DOM_ROOT_KEY +
 						"\n from " + mListTable + "\n " + " where level = " + (levelId+1) +
-						"\n Group by " + collatedCols + "," + DOM_ROOT_KEY + " Collate UNICODE";
+						"\n Group by " + collatedCols + "," + DOM_ROOT_KEY + CatalogueDBAdapter.COLLATION;
 						//"\n Group by " + DOM_LEVEL + ", " + DOM_KIND + collatedCols;
 
 				// Save, compile and run this statement
@@ -920,9 +923,9 @@ public class BooklistBuilder {
 			SynchronizedStatement stmt;
 			long t3 = System.currentTimeMillis();
 			// Build an index if it will help sorting
-			// - *If* UNICODE is case-sensitive, don't bother with index, since everything is wrapped in lower().
+			// - *If* collation is case-sensitive, don't bother with index, since everything is wrapped in lower().
 			// ENHANCE: ICS UNICODE: Consider adding a duplicate _lc (lower case) column to the SUMMARY table. Ugh.
-			if (!unicodeIsCs) {
+			if (!collationIsCs) {
 				stmt = mStatements.add("ix1", ix1Sql);
 				mLevelBuildStmts.add(stmt);
 				stmt.execute();				
@@ -1751,7 +1754,7 @@ public class BooklistBuilder {
 //			final StringBuilder sortCols = new StringBuilder();
 //			for (DomainDefinition d: sort) {
 //				sortCols.append(d.name);
-//				sortCols.append(" Collate UNICODE, ");
+//				sortCols.append(CatalogueDBAdapter.COLLATION + ", ");
 //			}
 //			sortCols.append(DOM_LEVEL.name);
 //			mSortColumnList = sortCols.toString();
@@ -1762,7 +1765,7 @@ public class BooklistBuilder {
 //			final StringBuilder groupCols = new StringBuilder();;
 //			for (DomainDefinition d: group) {
 //				groupCols.append(d.name);
-//				groupCols.append(" Collate UNICODE, ");
+//				groupCols.append(CatalogueDBAdapter.COLLATION + ", ");
 //			}
 //			groupCols.append( DOM_LEVEL.name );
 //			mGroupColumnList = groupCols.toString();
@@ -1773,7 +1776,7 @@ public class BooklistBuilder {
 //			final StringBuilder keyCols = new StringBuilder();;
 //			for (DomainDefinition d: keys) {
 //				keyCols.append(d.name);
-//				keyCols.append(" Collate UNICODE, ");
+//				keyCols.append(CatalogueDBAdapter.COLLATION + ", ");
 //			}
 //			keyCols.append( DOM_LEVEL.name );
 //			mKeyColumnList = keyCols.toString();
@@ -1844,7 +1847,7 @@ public class BooklistBuilder {
 //				insertSql += ", " + d;
 //				valuesSql += ", new." + d;
 //				if (summary.getKeys().contains(d))
-//					conditionSql += "	and l." + d + " = new." + d + " Collate UNICODE\n";
+//					conditionSql += "	and l." + d + " = new." + d + CatalogueDBAdapter.COLLATION + "\n";
 //			}
 //			//insertSql += ")\n	Select " + valuesSql + " Where not exists(Select 1 From " + mListTable + " l where " + conditionSql + ")";
 //			//tgLines[i] = insertSql;
@@ -1926,8 +1929,8 @@ public class BooklistBuilder {
 //					if (!collatedCols.equals(""))
 //						collatedCols += ",";
 //					cols += ",\n	" + d.name;
-//					//collatedCols += ",\n	" + d.name + " Collate UNICODE";
-//					collatedCols += "\n	" + d.name + " Collate UNICODE";
+//					//collatedCols += ",\n	" + d.name + CatalogueDBAdapter.COLLATION;
+//					collatedCols += "\n	" + d.name + CatalogueDBAdapter.COLLATION;
 //				}
 //				sql = "Insert Into " + mListTable + "(\n	" + DOM_LEVEL + ",\n	" + DOM_KIND + 
 //						//",\n	" + DOM_PARENT_KEY +
@@ -1937,7 +1940,7 @@ public class BooklistBuilder {
 //						//l.getKeyExpression() +
 //						cols + "," + DOM_ROOT_KEY +
 //						"\n from " + mListTable + "\n " + " where level = " + (levelId+1) +
-//						"\n Group by " + collatedCols + "," + DOM_ROOT_KEY + " Collate UNICODE";
+//						"\n Group by " + collatedCols + "," + DOM_ROOT_KEY + CatalogueDBAdapter.COLLATION;
 //						//"\n Group by " + DOM_LEVEL + ", " + DOM_KIND + collatedCols;
 //
 //				SQLiteStatement stmt = mStatements.add("L" + i, sql);

@@ -74,8 +74,8 @@ public class BookCatalogueApp extends Application {
 	/** Not sure this is a good idea. Stores the Application context once created */
 	public static Context context = null;
 
-	/** Flag indicating the current database has a broken unicode collation */
-	private static Boolean mUnicodeBroken = null;
+	/** Flag indicating the collation we use in the current database is case-sensitive */
+	private static Boolean mCollationCaseSensitive = null;
 	
 	/** Used to sent notifications regarding tasks */
 	private static NotificationManager mNotifier;
@@ -114,17 +114,18 @@ public class BookCatalogueApp extends Application {
 	}
 
 	/**
-	 * Check if sqlite unicode collation is broken (ie. case sensitive); cache the result.
-	 * This bug was introduced in ICS and present in 4.0-4.0.3, at least.
+	 * Check if sqlite collation is case sensitive; cache the result.
+	 * This bug was introduced in ICS and present in 4.0-4.0.3, at least that meant that
+	 * UNICODE collation became CS. We now use a LOCALIZED Collation, but still check if CI.
 	 * 
 	 * @param db	Any sqlite database connection
 	 * 
-	 * @return	Flag indicating 'Collate UNICODE' is broken.
+	 * @return	Flag indicating 'Collate <our-collation>' is broken.
 	 */
-	public static boolean isUnicodeCaseSensitive(SQLiteDatabase db) {
-		if (mUnicodeBroken == null)
-			mUnicodeBroken = UnicodeBroken.isCaseSensitive(db);
-		return mUnicodeBroken;
+	public static boolean isCollationCaseSensitive(SQLiteDatabase db) {
+		if (mCollationCaseSensitive == null)
+			mCollationCaseSensitive = CollationCaseSensitive.isCaseSensitive(db);
+		return mCollationCaseSensitive;
 	}
 	
 //	/**

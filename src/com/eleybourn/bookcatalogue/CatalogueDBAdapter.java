@@ -132,8 +132,13 @@ public class CatalogueDBAdapter {
 
 	// We tried 'Collate UNICODE' but it seemed to be case sensitive. We ended
 	// up with 'Ursula Le Guin' and 'Ursula le Guin'.
+	//
+	//	We now use Collate LOCALE and check to see if it is case sensitive. We *hope* in the
+	// future Android will add LOCALE_CI (or equivalent).
+	//
 	//public static final String COLLATION = "Collate NOCASE";
-	public static final String COLLATION = " Collate UNICODE ";
+	//public static final String COLLATION = " Collate UNICODE ";
+	public static final String COLLATION = " Collate LOCALIZED "; // NOTE: Important to have start/end spaces!
 
 	public static final String[] EMPTY_STRNG_ARRAY = new String[] {};
 
@@ -517,7 +522,7 @@ public class CatalogueDBAdapter {
 //						+ " LEFT OUTER JOIN " + DB_TB_SERIES + " s ON (s." + KEY_ROWID + "=w." + KEY_SERIES_ID + ") ";
 
 	//TODO: Update database version RELEASE: Update database version
-	public static final int DATABASE_VERSION = 77;
+	public static final int DATABASE_VERSION = 78;
 
 	private TableInfo mBooksInfo = null;
 
@@ -1494,8 +1499,14 @@ public class CatalogueDBAdapter {
 			if (curVersion == 76) {
 				//do nothing
 				curVersion++;
+			}
+			if (curVersion == 77) {
+				//do nothing
+				curVersion++;
 				message += "New in v4.0.6\n\n";
-				message += "* Allow ASINs to be entered manually as well as ISBNs\n\n";
+				message += "* When adding books, scanning or typing an existing ISBN allows you the option to edit the book.\n";
+				message += "* Allow ASINs to be entered manually as well as ISBNs\n";
+				message += "* German translation updates (Robert Wetzlmayr)\n";
 			}
 
 			// Rebuild all indices
@@ -2810,19 +2821,28 @@ public class CatalogueDBAdapter {
 			return 0L;
 		}
 	}
+
+	private SynchronizedStatement mGetIdFromIsbnStmt = null;
+	/**
+	 * 
+	 * @param isbn The isbn to search by
+	 * @return boolean indicating ISBN already in DB
+	 */
+	public long getIdFromIsbn(String isbn) {
+		if (mGetIdFromIsbnStmt == null) {
+			mGetIdFromIsbnStmt = mStatements.add("mGetIdFromIsbnStmt", "Select Coalesce(max(" + KEY_ROWID + "), -1) From " + DB_TB_BOOKS + " Where Upper(" + KEY_ISBN + ") = Upper(?)");
+		}
+		mGetIdFromIsbnStmt.bindString(1, isbn);
+		return mGetIdFromIsbnStmt.simpleQueryForLong();
+	}
 	
-	private SynchronizedStatement mCheckIsbnExistsStmt = null;
 	/**
 	 * 
 	 * @param isbn The isbn to search by
 	 * @return boolean indicating ISBN already in DB
 	 */
 	public boolean checkIsbnExists(String isbn) {
-		if (mCheckIsbnExistsStmt == null) {
-			mCheckIsbnExistsStmt = mStatements.add("mCheckIsbnExistsStmt", "Select Count(*) From " + DB_TB_BOOKS + " Where Upper(" + KEY_ISBN + ") = Upper(?)");
-		}
-		mCheckIsbnExistsStmt.bindString(1, isbn);
-		return mCheckIsbnExistsStmt.simpleQueryForLong() > 0;
+		return getIdFromIsbn(isbn) > 0;
 	}
 	
 	/**
@@ -3579,7 +3599,7 @@ public class CatalogueDBAdapter {
 		// Hash to *try* to avoid duplicates
 		HashSet<String> foundSoFar = new HashSet<String>();
 		ArrayList<String> list = new ArrayList<String>();
-		Cursor c = mDb.rawQuery("Select distinct " + KEY_FORMAT + " from " + DB_TB_BOOKS + " Order by lower(" + KEY_FORMAT + ") collate UNICODE");
+		Cursor c = mDb.rawQuery("Select distinct " + KEY_FORMAT + " from " + DB_TB_BOOKS + " Order by lower(" + KEY_FORMAT + ") " + COLLATION);
 		try {
 			while (c.moveToNext()) {
 				String name = c.getString(0);

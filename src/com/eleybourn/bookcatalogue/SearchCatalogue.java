@@ -185,8 +185,8 @@ public class SearchCatalogue extends Activity {
 		long t0 = System.currentTimeMillis();
 
 		//BooksCursor c = mDbHelper.fetchAllBooks(""/*order*/, ""/*bookshelf*/,
-		//		"(" + CatalogueDBAdapter.KEY_FAMILY_NAME + " like '%" + author + "%' Collate UNICODE or " + CatalogueDBAdapter.KEY_GIVEN_NAMES + " like '%" + author + "%' Collate UNICODE)", 
-		//		"b." + CatalogueDBAdapter.KEY_TITLE + " like '%" + title + "%' Collate UNICODE",
+		//		"(" + CatalogueDBAdapter.KEY_FAMILY_NAME + " like '%" + author + "%' " + CatalogueDBAdapter.COLLATION + " or " + CatalogueDBAdapter.KEY_GIVEN_NAMES + " like '%" + author + "%' " + CatalogueDBAdapter.COLLATION + ")", 
+		//		"b." + CatalogueDBAdapter.KEY_TITLE + " like '%" + title + "%' " + CatalogueDBAdapter.COLLATION + ",
 		//		""/*searchText*/, ""/*loaned_to*/, ""/*seriesName*/);	
 
 		// Get the cursor

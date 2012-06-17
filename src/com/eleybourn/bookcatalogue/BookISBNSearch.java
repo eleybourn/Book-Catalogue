@@ -47,7 +47,7 @@ import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
  * It currently only searches Google Books, but Amazon will be coming soon.
  */
 public class BookISBNSearch extends ActivityWithTasks {
-	private static final int CREATE_BOOK = 0;
+	//private static final int CREATE_BOOK = 0;
 	public static final String BY = "by";
 
 //	private static Integer mIdCounter = 0;
@@ -394,7 +394,9 @@ public class BookISBNSearch extends ActivityWithTasks {
 		try {
 			if (isbn != null && !isbn.equals("")) {
 
-				final boolean allowAsin = ((CheckBox) BookISBNSearch.this.findViewById(R.id.asinCheckbox) ).isChecked();
+				// If the layout has an 'Allow ASIN' checkbox, see if it is checked.
+				final CheckBox allowAsinCb = (CheckBox) BookISBNSearch.this.findViewById(R.id.asinCheckbox);
+				final boolean allowAsin = allowAsinCb != null ? allowAsinCb.isChecked() : false;
 
 				if (!IsbnUtils.isValid(isbn) && (!allowAsin || !AsinUtils.isValid(isbn) ) ) {
 					int msg;
@@ -414,32 +416,40 @@ public class BookISBNSearch extends ActivityWithTasks {
 						startScannerActivity();
 					}
 					return;
-				} else if (mDbHelper.checkIsbnExists(isbn)) {
-					// Verify - this can be a dangerous operation
-					AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(R.string.duplicate_book_message).create();
-					alertDialog.setTitle(R.string.duplicate_book_title);
-					alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-					alertDialog.setButton(this.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
-							doSearchBook();
-							return;
-						}
-					});
-					alertDialog.setButton2(this.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
-							//do nothing
-							if (mMode == MODE_SCAN) {
-								// reset the now-discarded details
-								mIsbn = "";
-								mAuthor = "";
-								mTitle = "";
-								startScannerActivity();
+				} else {
+					final long existingId = mDbHelper.getIdFromIsbn(isbn);
+					if (existingId > 0) {
+						// Verify - this can be a dangerous operation
+						AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(R.string.duplicate_book_message).create();
+						alertDialog.setTitle(R.string.duplicate_book_title);
+						alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
+						alertDialog.setButton(this.getResources().getString(R.string.add), new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								doSearchBook();
+								return;
 							}
-							return;
-						}
-					});
-					alertDialog.show();
-					return;
+						});
+						alertDialog.setButton3(this.getResources().getString(R.string.edit_book), new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								BookEdit.editBook(BookISBNSearch.this, existingId, BookEdit.TAB_EDIT);
+							}
+						});
+						alertDialog.setButton2(this.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								//do nothing
+								if (mMode == MODE_SCAN) {
+									// reset the now-discarded details
+									mIsbn = "";
+									mAuthor = "";
+									mTitle = "";
+									startScannerActivity();
+								}
+								return;
+							}
+						});
+						alertDialog.show();
+						return;
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -560,7 +570,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 	private void createBook(Bundle book) {
 		Intent i = new Intent(this, BookEdit.class);
 		i.putExtra("bookData", book);
-		startActivityForResult(i, CREATE_BOOK);
+		startActivityForResult(i, R.id.ACTIVITY_EDIT_BOOK);
 		//dismissProgress();
 	}
 
@@ -594,7 +604,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 				finish();
 			}
 			break;
-		case CREATE_BOOK:
+		case R.id.ACTIVITY_EDIT_BOOK:
 			if (intent != null)
 				mLastBookIntent = intent;
 

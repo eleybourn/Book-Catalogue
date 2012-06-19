@@ -422,7 +422,8 @@ public class DbSync {
 		}
 		
 		/**
-		 * Locking-aware wrapper for underlying database method.
+		 * Locking-aware wrapper for underlying database method; actually
+		 * calls insertOrThrow since this method also throws exceptions
 		 * 
 		 * @param sql
 		 * @param selectionArgs
@@ -437,7 +438,7 @@ public class DbSync {
 				l = mSync.getExclusiveLock();
 
 			try {
-				return mDb.insert(table, nullColumnHack, values);				
+				return mDb.insertOrThrow(table, nullColumnHack, values);				
 			} finally {
 				if (l != null)
 					l.unlock();

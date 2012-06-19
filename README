@@ -41,13 +41,21 @@ Features include;
   case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+new in 4.0.6
+* When adding books, scanning or typing an existing ISBN allows you the option to edit the book.
+* Allow ASINs to be manually entered as well as ISBNs
+* German translation updates
+* Bug fixes when cropping cover images
+
 new in 4.0.5
 * fix bug when updating books
+
 new in 4.0.4
 * search now searches series and anthology data
 * allows non-numeric data entry in series position
 * better sorting of leading numerics in series position
 * various esoteric bugs fixed
+
 new in 4.0.3
 * ISBNs are now validated when searching or scanning (new beep sound and related preference)
 * Loaned & Not Loaned list now includes all books

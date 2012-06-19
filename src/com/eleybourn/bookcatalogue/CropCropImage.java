@@ -183,9 +183,11 @@ public class CropCropImage extends CropMonitoredActivity {
 		mHandler.post(new Runnable() {
 		    public void run() {
 			if (b != mBitmap && b != null) {
-			    mImageView.setImageBitmapResetBase(b, true);
-			    mBitmap.recycle();
+				// Do not recycle until mBitmap has been set to the new bitmap!
+				Bitmap toRecycle = mBitmap;
 			    mBitmap = b;
+			    mImageView.setImageBitmapResetBase(mBitmap, true);
+			    toRecycle.recycle();
 			}
 			if (mImageView.getScale() == 1F) {
 			    mImageView.center(true, true);
@@ -388,14 +390,17 @@ public class CropCropImage extends CropMonitoredActivity {
 
     @Override
     protected void onPause() {
-	super.onPause();
-	CropBitmapManager.instance().cancelThreadDecoding(mDecodingThreads);
-        mBitmap.recycle();
+    	super.onPause();
+    	CropBitmapManager.instance().cancelThreadDecoding(mDecodingThreads);
+    	// DO NOT RECYCLE HERE; will leave mBitmap unusable after a resume.
+        //mBitmap.recycle();
     }
 
     @Override
     protected void onDestroy() {
-	super.onDestroy();
+		super.onDestroy();
+        if (mBitmap != null && !mBitmap.isRecycled())
+        	mBitmap.recycle();
     }
 
 

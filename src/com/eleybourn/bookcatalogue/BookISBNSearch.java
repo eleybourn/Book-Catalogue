@@ -240,7 +240,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 		} else if (by.equals("name")) {
 			// System.out.println(mId + " OnCreate BY NAME");
 			setContentView(R.layout.name_search);
-			ArrayAdapter<String> author_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, mDbHelper.getAllAuthors());
+			final ArrayAdapter<String> author_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, mDbHelper.getAllAuthors());
 			mAuthorText = (AutoCompleteTextView) findViewById(R.id.author);
 			mAuthorText.setAdapter(author_adapter);
 
@@ -251,6 +251,11 @@ public class BookISBNSearch extends ActivityWithTasks {
 				public void onClick(View view) {
 					String mAuthor = mAuthorText.getText().toString();
 					String mTitle = mTitleText.getText().toString();
+					
+					if (author_adapter.getPosition(mAuthor) < 0){
+						author_adapter.add(mAuthor);
+					}
+					
 					go("", mAuthor, mTitle);
 				}
 			});

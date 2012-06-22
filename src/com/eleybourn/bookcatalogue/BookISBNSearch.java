@@ -21,6 +21,8 @@
 package com.eleybourn.bookcatalogue;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Hashtable;
 
 import android.app.AlertDialog;
@@ -92,6 +94,9 @@ public class BookISBNSearch extends ActivityWithTasks {
 
 	// Object managing current search.
 	SearchManager mSearchManager = null;
+
+	// A list of author names we have already searched for in this session
+	ArrayList<String> mAuthorNames = new ArrayList<String>();
 
 	/**
 	 * Called when the activity is first created. This function will search the interwebs for
@@ -240,9 +245,8 @@ public class BookISBNSearch extends ActivityWithTasks {
 		} else if (by.equals("name")) {
 			// System.out.println(mId + " OnCreate BY NAME");
 			setContentView(R.layout.name_search);
-			final ArrayAdapter<String> author_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, mDbHelper.getAllAuthors());
-			mAuthorText = (AutoCompleteTextView) findViewById(R.id.author);
-			mAuthorText.setAdapter(author_adapter);
+
+			this.initAuthorList();
 
 			mTitleText = (EditText) findViewById(R.id.title);
 			mConfirmButton = (Button) findViewById(R.id.search);
@@ -251,12 +255,31 @@ public class BookISBNSearch extends ActivityWithTasks {
 				public void onClick(View view) {
 					String mAuthor = mAuthorText.getText().toString();
 					String mTitle = mTitleText.getText().toString();
-					
-					if (author_adapter.getPosition(mAuthor) < 0){
-						author_adapter.add(mAuthor);
+
+					ArrayAdapter<String> adapter = (ArrayAdapter<String>)mAuthorText.getAdapter();
+					if (adapter.getPosition(mAuthor) < 0){
+						// Based on code from filipeximenes we also need to update the adapter here in
+						// case no author or book is added, but we still want to see 'recent' entries.
+						if (!mAuthor.trim().equals("")) {
+							boolean found = false;
+							for(String s: mAuthorNames) {
+								if (s.equalsIgnoreCase(mAuthor)) {
+									found = true;
+									break;
+								}
+							}
+
+							if (!found) {
+								// Keep a list of names as typed to use when we recreate list
+								mAuthorNames.add(mAuthor);
+								// Add to adapter, in case search produces no results
+								adapter.add(mAuthor);							
+							}
+						}
 					}
-					
+
 					go("", mAuthor, mTitle);
+
 				}
 			});
 		} else if (by.equals("scan")) {
@@ -622,6 +645,31 @@ public class BookISBNSearch extends ActivityWithTasks {
 
 			break;
 		}
+
+		// No matter what the activity was, rebuild the author list in case a new author was added.
+		initAuthorList();
+
+	}
+
+	private void initAuthorList() {
+		// Get all known authors and build a hash of the names
+		final ArrayList<String> authors = mDbHelper.getAllAuthors();
+		final HashSet<String> uniqueNames =  new HashSet<String>();
+		for(String s: authors)
+			uniqueNames.add(s.toUpperCase());
+
+		// Add the names the user has already tried (to handle errors and mistakes) 
+		for(String s: mAuthorNames) {
+			if (!uniqueNames.contains(s.toUpperCase()))
+				authors.add(s);
+		}
+		
+		// Now get an adapter based on the combined names
+		final ArrayAdapter<String> author_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, authors);
+
+		// Set the adapter
+		mAuthorText = (AutoCompleteTextView) findViewById(R.id.author);
+		mAuthorText.setAdapter(author_adapter);	
 	}
 
 	/*

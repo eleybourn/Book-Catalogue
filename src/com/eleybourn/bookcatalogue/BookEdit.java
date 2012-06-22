@@ -236,9 +236,21 @@ public class BookEdit extends TabActivity {
 					}
 				}
 				
-				String url = "https://twitter.com/intent/tweet?related=eleybourn&text=%23reading " + title + " by " + author + series + " " + ratingString;
-				Intent loadweb = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-				startActivity(loadweb); 					
+				if (ratingString.length() > 0){
+					ratingString = "(" + ratingString + ")";
+				}
+				
+				/*
+				 * There's a problem with the facebook app in android, so 
+				 * despite it beeing showed on the list
+				 * it will not post any text unless the user type it.
+				*/
+				
+				Intent sendMailIntent = new Intent(Intent.ACTION_SEND); 
+				sendMailIntent.putExtra(Intent.EXTRA_TEXT, "I'm reading " + title + " by " + author + series + " " + ratingString);
+                sendMailIntent.setType("text/plain");
+                startActivity(Intent.createChooser(sendMailIntent, "Share"));
+                
 				return true;
 			case DELETE_ID:
 				if (mRowId == null || mRowId == 0) {

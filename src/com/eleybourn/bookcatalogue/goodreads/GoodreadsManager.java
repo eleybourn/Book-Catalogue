@@ -125,8 +125,8 @@ public class GoodreadsManager {
 	// Stores the last time an API request was made to avoid breaking API rules.
 	private static Long m_LastRequestTime = 0L;
 
-	private final static String DEV_KEY = GoodreadsApiKeys.GOODREADS_DEV_KEY;
-	private final static String DEV_SECRET = GoodreadsApiKeys.GOODREADS_DEV_SECRET;
+	private final static String DEV_KEY = "";//GoodreadsApiKeys.GOODREADS_DEV_KEY;
+	private final static String DEV_SECRET = "" ;//GoodreadsApiKeys.GOODREADS_DEV_SECRET;
 
 	// OAuth helpers
 	CommonsHttpOAuthConsumer m_consumer;

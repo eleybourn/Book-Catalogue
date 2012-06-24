@@ -21,6 +21,8 @@
 package com.eleybourn.bookcatalogue;
 
 //import android.R;
+import java.io.File;
+
 import android.app.Activity;
 import android.app.TabActivity;
 import android.content.Intent;
@@ -29,6 +31,7 @@ import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TabHost;
@@ -217,11 +220,14 @@ public class BookEdit extends TabActivity {
 				
 				thisBook = mDbHelper.fetchBookById(mRowId);
 				thisBook.moveToFirst();
+				String id = thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_ROWID));
 				String title = thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_TITLE));
 				double rating = thisBook.getDouble(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_RATING));
 				String ratingString = "";
 				String author = thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED_GIVEN_FIRST));
 				String series = thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_SERIES_FORMATTED));
+				File image = CatalogueDBAdapter.fetchThumbnailByUuid(mDbHelper.getBookUuid(Long.parseLong(id)));
+				
 				if (series.length() > 0) {
 					series = " (" + series.replace("#", "%23") + ")";
 				}
@@ -246,10 +252,12 @@ public class BookEdit extends TabActivity {
 				 * it will not post any text unless the user type it.
 				*/
 				
-				Intent sendMailIntent = new Intent(Intent.ACTION_SEND); 
-				sendMailIntent.putExtra(Intent.EXTRA_TEXT, "I'm reading " + title + " by " + author + series + " " + ratingString);
-                sendMailIntent.setType("text/plain");
-                startActivity(Intent.createChooser(sendMailIntent, "Share"));
+				Intent share = new Intent(Intent.ACTION_SEND); 
+				share.putExtra(Intent.EXTRA_TEXT, "I'm reading " + title + " by " + author + series + " " + ratingString);
+				share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + image.getPath()));
+                share.setType("text/plain");
+                
+                startActivity(Intent.createChooser(share, "Share"));
                 
 				return true;
 			case DELETE_ID:

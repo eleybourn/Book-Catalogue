@@ -652,24 +652,27 @@ public class BookISBNSearch extends ActivityWithTasks {
 	}
 
 	private void initAuthorList() {
-		// Get all known authors and build a hash of the names
-		final ArrayList<String> authors = mDbHelper.getAllAuthors();
-		final HashSet<String> uniqueNames =  new HashSet<String>();
-		for(String s: authors)
-			uniqueNames.add(s.toUpperCase());
-
-		// Add the names the user has already tried (to handle errors and mistakes) 
-		for(String s: mAuthorNames) {
-			if (!uniqueNames.contains(s.toUpperCase()))
-				authors.add(s);
-		}
-		
-		// Now get an adapter based on the combined names
-		final ArrayAdapter<String> author_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, authors);
-
-		// Set the adapter
+		// Get the author field, if present
 		mAuthorText = (AutoCompleteTextView) findViewById(R.id.author);
-		mAuthorText.setAdapter(author_adapter);	
+		if (mAuthorText != null) {
+			// Get all known authors and build a hash of the names
+			final ArrayList<String> authors = mDbHelper.getAllAuthors();
+			final HashSet<String> uniqueNames =  new HashSet<String>();
+			for(String s: authors)
+				uniqueNames.add(s.toUpperCase());
+
+			// Add the names the user has already tried (to handle errors and mistakes) 
+			for(String s: mAuthorNames) {
+				if (!uniqueNames.contains(s.toUpperCase()))
+					authors.add(s);
+			}
+			
+			// Now get an adapter based on the combined names
+			final ArrayAdapter<String> author_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, authors);
+
+			// Set it
+			mAuthorText.setAdapter(author_adapter);				
+		}
 	}
 
 	/*

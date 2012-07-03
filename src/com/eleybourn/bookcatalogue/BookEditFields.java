@@ -32,6 +32,7 @@ import java.util.Iterator;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TabActivity;
@@ -47,10 +48,11 @@ import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
@@ -60,7 +62,6 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.Toast;
 
@@ -158,7 +159,7 @@ public class BookEditFields extends Activity {
 		}
 		return genre_list;
 	}
-
+	
 	/**
 	 * Display the edit fields page
 	 */
@@ -958,15 +959,52 @@ public class BookEditFields extends Activity {
 	}
 	
 	@Override
+	public void onBackPressed() {
+		showConfirmUnsavedEditsDialog();
+	}
+	
+	private void callSuperOnBackPressed(){
+		super.onBackPressed();
+	}
+	
+	private void showConfirmUnsavedEditsDialog(){
+		if (mFields.isThereAModifiedField()){
+			AlertDialog.Builder dialog = new Builder(this);
+			
+			dialog.setTitle(R.string.confirm_exit_without_saving);
+			dialog.setMessage(R.string.confirm_exit_message);
+			
+			dialog.setPositiveButton(R.string.ok, new AlertDialog.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					callSuperOnBackPressed();
+				}
+			});
+			
+			dialog.setNegativeButton(R.string.cancel, new AlertDialog.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			});
+			dialog.setCancelable(false);
+			dialog.create().show();
+		}else{
+			callSuperOnBackPressed();
+		}
+	}
+	
+	@Override
 	protected void onPause() {
 		super.onPause();
+		
 		// Close down the cover browser.
 		if (mCoverBrowser != null) {
 			mCoverBrowser.dismiss();
 			mCoverBrowser = null;
 		}
 	}
-	
+
 	/**
 	 * Fix background
 	 */

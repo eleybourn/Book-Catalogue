@@ -600,5 +600,7 @@
 <string name="enter_isbn">Enter ISBN</string>
 <string name="allow_asin">Allow ASIN</string>
 <string name="x_is_not_a_valid_isbn_or_asin">%1$s is not a valid ISBN or ASIN</string>
+<string name="confirm_exit_without_saving">Confirm Exit</string>
+<string name="confirm_exit_message">Looks like you have unsaved changes. Are you sure you want to exit without saving?</string>
 </resources>
 

@@ -473,7 +473,7 @@
 	    										\n\nVous pouvez envoyer tous vos livres ou uniquement ceux que vous avez mis à jour  
 	    										depuis qu\'ils ont été copiés depuis ou vers Goodreads (y compris 
 	    										ceux qui n\'ont pas encore été envoyés) ou vous pouvez annuler cette mise à jour.
-	    										\n\nSi vous n'avez encore jamais envoyé aucun livre, il n\'y a alors 
+	    										\n\nSi vous n\'avez encore jamais envoyé aucun livre, il n\'y a alors 
 	    										aucune différence entre les deux options.</string>
 	<string name="hint_authors_book_may_appear_more_than_once">S\'il est affiché pour chacun de ses auteurs, un livre peut apparaître plusieurs fois dans la liste. 
 	    													Dans ce cas, supprimer l\'un de ces livres supprimera toutes ses copies de la liste.</string>
@@ -481,29 +481,23 @@
 	    													Dans ce cas, supprimer l\'un de ces livres supprimera toutes ses copies de la liste.</string>	    															
 	<string name="hint_background_tasks">Vous pouvez voir ici les tâches en cours d\'exécution ainsi que les tâches préalablement exécutées qui se sont terminées avec des erreurs, ou d\'autres événements notables. 
 	    								En cliquant sur une tâche, vous pourrez voir les événements associés ainsi que supprimer la tâche.</string>
-	<string name="hint_background_task_events">Vous pouvez voir ici les événements associés à une tâche d'arrière plan. 
-	    								Cliquer sur un événements vous permettra de réaliser un ensemble d'actions appropriées pour cet événement.</string>
+	<string name="hint_background_task_events">Vous pouvez voir ici les événements associés à une tâche d\'arrière plan. 
+	    								Cliquer sur un événement vous permettra de réaliser un ensemble d\'actions appropriées pour cet événement.</string>
 	<string name="hints_have_been_reset">Les astuces ont été réinitialisées.</string>				
 	<string name="task_has_been_queued_in_background">La tâche a été placée en file d\'attente.</string>
 	<string name="hint_startup_screen">"Voici l'écran de démarrage par défaut de BookCatalogue. Si vous le souhaitez, vous pouvez démarrer directement dans 'Mes livres'; l'écran de démarrage préféré peut être modifié dans les préférences."</string>
 	<string name="upgrading_ellipsis">Mise à niveau&#8230;</string>
-	<string name="explain_goodreads_no_isbn">Les livres sélectionnés n\'ont pas d'ISBN; il est impossible de les synchroniser avec Goodreads. 
+	<string name="explain_goodreads_no_isbn">Les livres sélectionnés n\'ont pas d\'ISBN ; il est impossible de les synchroniser avec Goodreads. 
 	    									La solution la plus simple est de:
 	    									\n\n(1) supprimer le livre de BookCatalogue
 	    									\n\n(2) ajouter manuellement le livre à Goodreads par leur interface web
-	    									\n\n(3) Syncrhoniser avec goodreads
-	    									\n\nLe livre sera re-créé dans BookCatalogue et les deux livres seront alors liés.</string>
-	<string name="explain_goodreads_no_match">The ISBN of the selected book could not be found on goodreads. There are two possible causes for this: 
-	    									either the data for the book is wrong (you should check the ISBN), or the book is not in goodreads. 
-	    									\n\nIf you make any changes to the data in BookCatalogue, just press the \'Retry\' button and check to see if the 
-	    									resulting background task succeeds. 
-	    									\n\nIf the data looks correct and the book is still not found, then a book with that ISBN needs to be added to goodreads manually
-											via their web site. Once that is done, you can retry sending the book.</string>    									    
-	<string name="explain_goodreads_no_match">L'ISBN du livre choisi n\'a pas pu être trouvé sur goodreads. Il est existe de multiples causes à ça : 
-	    									soit les données du livres sont erronées (Vérifiez l\'ISBN), soit le livre n\'est pas sur goodreads. 
+	    									\n\n(3) Synchroniser avec goodreads
+	    									\n\nLe livre sera re-créé dans BookCatalogue et les deux livres seront alors liés.</string>   									    
+	<string name="explain_goodreads_no_match">L\'ISBN du livre choisi n\'a pas pu être trouvé sur goodreads. Il existe de multiples causes à ça : 
+	    									soit les données du livre sont erronées (Vérifiez l\'ISBN), soit le livre n\'est pas sur Goodreads. 
 	    									\n\nSi vous modifiez les données sur BookCatalogue, pressez simplement sur le bouton \'Ré-essayer\' et assurez vous 
 	    									que la tâche associée est exécutée avec succès. 
-	    									\n\nSi les données semblent correctes et que le livre n\'est toujours pas trouvé, il est alors nécessaire d'ajouter manuellement un livre portant cet ISBN à Goodreads 
+	    									\n\nSi les données semblent correctes et que le livre n\'est toujours pas trouvé, il est alors nécessaire d\'ajouter manuellement un livre portant cet ISBN à Goodreads 
 											sur leur site Web. Une fois que c\est fait, vous pouvez essayer de renvoyer le livre.</string>    									    
 	<string name="read_amp_unread">Lu &amp; Non lu</string>				
 	<string name="loaned">Prêté</string>
@@ -527,8 +521,8 @@
 	<string name="name_can_not_be_blank">Le nom ne peut pas être vide</string>
 	<string name="export_starting_ellipsis">Démarrage de l\'export&#8230;</string>
 	<string name="resizing_cover_thumbnails">Redimensionner les miniatures des couvertures</string>
-	<string name="resize_each_time">Redimensionner à chaque fois que nécessaire (moins d'espace nécessaire, défilement des listes plus lent)</string>
-	<string name="cache_resized_thumbnails_for_later_use">Mettre les miniatures en cache (plus d'espace nécessaire, défilement des listes plus rapide)</string>
+	<string name="resize_each_time">Redimensionner à chaque fois que nécessaire (moins d\'espace nécessaire, défilement des listes plus lent)</string>
+	<string name="cache_resized_thumbnails_for_later_use">Mettre les miniatures en cache (plus d\'espace nécessaire, défilement des listes plus rapide)</string>
 	<string name="generating_cover_thumbnails">Création des miniatures en cours</string>
 	<string name="use_background_thread">Utiliser un thread (défilement des listes plus rapide, affichage décalé des images)</string>
 	<string name="generate_immediately">Générer immédiatement (défilement des listes plus lent, affichage immédiat des images)</string>
@@ -537,18 +531,18 @@
 	<string name="displaying_n_books_in_m_entries">Affichage de %1$s livres, parmi %2$s entrées</string>
 	<string name="displaying_n_books">Affichage de %1$s livres</string>
 	<string name="available">Disponible</string>
-	<string name="summary_details_in_header">Détails du résumé dans l'en-tête</string>
+	<string name="summary_details_in_header">Détails du résumé dans l\'en-tête</string>
 	<string name="hide_summary_details">Cacher les détails du résumé</string>
 	<string name="show_summary_details">Montrer les détails du résumé</string>
-	<string name="x_is_not_a_valid_isbn">%1$s n'est pas un ISBN valable</string>
+	<string name="x_is_not_a_valid_isbn">%1$s n\'est pas un ISBN valable</string>
 	<string name="beep_if_scanned_isbn_invalid">Beeper si l\'ISBN scanné est invalide</string>
 	<string name="no_image_found">Aucune image trouvée</string>
-	<string name="could_not_copy_image">Impossible de copier l'image</string>
+	<string name="could_not_copy_image">Impossible de copier l\'image</string>
 	<string name="this_option_is_not_available_until_the_book_is_saved">Cette option n\'est pas valable avant la sauvegarde du livre</string>
 	<string name="scan_barcode_isbn">Scanner le code barre / ISBN</string>
 	<string name="enter_isbn">Entrer l\'ISBN</string>
 	<string name="allow_asin">Autoriser l\'ASIN</string>
-	<string name="x_is_not_a_valid_isbn_or_asin">%1$s n'est pas un ISBN / ASIN valable</string>
+	<string name="x_is_not_a_valid_isbn_or_asin">%1$s n\'est pas un ISBN / ASIN valable</string>
 
 	<!-- Not translated beyond this point : missing context -->
 	

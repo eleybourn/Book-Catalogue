@@ -43,6 +43,7 @@ Features include;
 
 new in 4.0.7
 * Fix bug in Google Books URL causing wrong books to be returned
+* Re-prioritize data sources based on reliability and the data returned
 * Make Comments field auto-resize
 * Show recent authors in author pop-down list
 * Minor bug fixes

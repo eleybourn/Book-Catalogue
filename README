@@ -41,6 +41,12 @@ Features include;
   case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+new in 4.0.7
+* Fix bug in Google Books URL causing wrong books to be returned
+* Make Comments field auto-resize
+* Show recent authors in author pop-down list
+* Minor bug fixes
+
 new in 4.0.6
 * When adding books, scanning or typing an existing ISBN allows you the option to edit the book.
 * Allow ASINs to be manually entered as well as ISBNs

@@ -54,7 +54,9 @@ public class SearchManager implements OnTaskEndedListener {
 	public static final int SEARCH_ALL = SEARCH_GOOGLE | SEARCH_AMAZON | SEARCH_LIBRARY_THING | SEARCH_GOODREADS;
 	
 	// ENHANCE: Allow user to change the default search data priority
-	public static final int[] mSearchPriority = new int[] {SEARCH_GOOGLE, SEARCH_AMAZON, SEARCH_GOODREADS, SEARCH_LIBRARY_THING};
+	public static final int[] mDefaultSearchOrder = new int[] {SEARCH_AMAZON, SEARCH_GOODREADS, SEARCH_GOOGLE, SEARCH_LIBRARY_THING};
+	// ENHANCE: Allow user to change the default search data priority
+	public static final int[] mDefaultReliabilityOrder = new int[] {SEARCH_GOODREADS, SEARCH_AMAZON, SEARCH_GOOGLE, SEARCH_LIBRARY_THING};
 
 	/** Flags applicable to *current* search */
 	int mSearchFlags;
@@ -75,6 +77,8 @@ public class SearchManager implements OnTaskEndedListener {
 	private String mTitle;
 	// Original ISBN for search
 	private String mIsbn;
+	// Indicates original ISBN is really present
+	private boolean mHasIsbn;
 	// Whether of not to fetch thumbnails
 	private boolean mFetchThumbnail;
 
@@ -189,7 +193,7 @@ public class SearchManager implements OnTaskEndedListener {
 	 * Start an Amazon search
 	 */
 	private boolean startLibraryThing(){
-		if (!mCancelledFlg && mIsbn != null && mIsbn.trim().length() > 0) {
+		if (!mCancelledFlg && mHasIsbn) {
 			startOne( new SearchLibraryThingThread(mTaskManager, mGenericSearchHandler, mAuthor, mTitle, mIsbn, mFetchThumbnail));		
 			return true;
 		} else {
@@ -198,10 +202,10 @@ public class SearchManager implements OnTaskEndedListener {
 	}
 
 	/**
-	 * Start an Amazon search
+	 * Start an Goodreads search
 	 */
 	private boolean startGoodreads(){
-		if (!mCancelledFlg && mIsbn != null && mIsbn.trim().length() > 0) {
+		if (!mCancelledFlg) {
 			startOne( new SearchGoodreadsThread(mTaskManager, mGenericSearchHandler, mAuthor, mTitle, mIsbn, mFetchThumbnail));		
 			return true;
 		} else {
@@ -237,6 +241,8 @@ public class SearchManager implements OnTaskEndedListener {
 		mAuthor = author;
 		mTitle = title;
 		mIsbn = isbn;
+		mHasIsbn = mIsbn != null && mIsbn.trim().length() > 0 && IsbnUtils.isValid(mIsbn);
+
 		mFetchThumbnail = fetchThumbnail;
 
 		if (mTaskManager.runningInUiThread()) {
@@ -341,10 +347,42 @@ public class SearchManager implements OnTaskEndedListener {
 	 * Combine all the data and create a book or display an error.
 	 */
 	private void finish() {
-		// Merge the data we have. We do this in a fixed order rather than as the threads finish.
-		for(int i: mSearchPriority)
-			accumulateData(i);
+		// This list will be the actual order of the result we apply, based on the
+		// actual results and the default order.
+		ArrayList<Integer> results = new ArrayList<Integer>();
 		
+		if (mHasIsbn) {
+			// If ISBN was passed, ignore entries with the wrong ISBN, and put entries with no ISBN at the end
+			ArrayList<Integer> uncertain = new ArrayList<Integer>();
+			for(int i: mDefaultReliabilityOrder) {
+				if (mSearchResults.containsKey(i)) {
+					Bundle bookData = mSearchResults.get(i);
+					if (bookData.containsKey(CatalogueDBAdapter.KEY_ISBN)) {
+						String isbn = bookData.getString(CatalogueDBAdapter.KEY_ISBN);
+						if (IsbnUtils.matches(mIsbn, isbn)) {
+							results.add(i);
+						}
+					} else {
+						uncertain.add(i);
+					}						
+				}
+			}
+			for(Integer i: uncertain) {
+				results.add(i);
+			}
+			// Add the passed ISBN first; avoid overwriting
+			mBookData.putString(CatalogueDBAdapter.KEY_ISBN, mIsbn);
+		} else {
+			// If ISBN was not passed, then just used the default order
+			for(int i: mDefaultReliabilityOrder)
+				results.add(i);
+		}
+
+		
+		// Merge the data we have. We do this in a fixed order rather than as the threads finish.
+		for(int i: results)
+			accumulateData(i);
+
 		// If there are thumbnails present, pick the biggest, delete others and rename.
 		Utils.cleanupThumbnails(mBookData);
 		
@@ -397,11 +435,12 @@ public class SearchManager implements OnTaskEndedListener {
 
 	/**
 	 * When running in single-stream mode, start the next thread that has no data.
-	 * Google is reputedly most likely to succeed. Amazon is fastest, and LT REQUIRES an ISBN.
+	 * While Google is reputedly most likely to succeed, it also produces garbage a lot. 
+	 * So we search Amazon, Goodreads, Google and LT last as it REQUIRES an ISBN.
 	 */
 	private boolean startNext() {
 		// Loop though in 'search-priority' order
-		for (int source: mSearchPriority) {
+		for (int source: mDefaultSearchOrder) {
 			// If this search includes the source, check it
 			if ( (mSearchFlags & source) != 0) {
 				// If the source has not been search, search it
@@ -421,7 +460,7 @@ public class SearchManager implements OnTaskEndedListener {
 	private boolean startSearches(int sources) {
 		// Scan searches in priority order
 		boolean started = false;
-		for(int source: mSearchPriority) {
+		for(int source: mDefaultSearchOrder) {
 			// If requested search contains this source...
 			if ((sources & source) != 0)
 				// If we have not run this search...

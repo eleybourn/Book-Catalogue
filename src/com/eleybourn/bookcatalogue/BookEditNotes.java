@@ -25,8 +25,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -324,7 +327,43 @@ public class BookEditNotes extends Activity {
 			finish();
 		}
 	}
-
+	
+	@Override
+	public void onBackPressed() {
+		showConfirmUnsavedEditsDialog();
+	}
+	
+	private void callSuperOnBackPressed(){
+		super.onBackPressed();
+	}
+	
+	private void showConfirmUnsavedEditsDialog(){
+		if (mFields.isThereAModifiedField()){
+			AlertDialog.Builder dialog = new Builder(this);
+			
+			dialog.setTitle(R.string.confirm_exit_without_saving);
+			dialog.setMessage(R.string.confirm_exit_message);
+			
+			dialog.setPositiveButton(R.string.ok, new AlertDialog.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					callSuperOnBackPressed();
+				}
+			});
+			
+			dialog.setNegativeButton(R.string.cancel, new AlertDialog.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			});
+			dialog.setCancelable(false);
+			dialog.create().show();
+		}else{
+			callSuperOnBackPressed();
+		}
+	}
+	
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);

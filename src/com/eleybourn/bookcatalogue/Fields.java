@@ -30,6 +30,7 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -939,6 +940,12 @@ public class Fields extends ArrayList<Fields.Field> {
 
 		/** Accessor to use (automatically defined) */
 		private FieldDataAccessor mAccessor = null;
+		
+		/** Edited verifier 
+		 * true in case the view is clicked
+		 * This a good and simple metric to identify if a field was changed despite not being 100% accurate
+		 * */ 
+		private boolean edited = false;
 
 		/**
 		 * Constructor.
@@ -966,7 +973,7 @@ public class Fields extends ArrayList<Fields.Field> {
 				return;
 
 			// Lookup the view
-			View view = a.findViewById(id);
+			final View view = a.findViewById(id);
 
 			// Set the appropriate accessor
 			if (view == null) {
@@ -988,8 +995,18 @@ public class Fields extends ArrayList<Fields.Field> {
 				visible = fields.getPreferences().getBoolean(FieldVisibility.prefix + group, true);
 				if (!visible) {
 					view.setVisibility(View.GONE);
-				}				
+				}			
 			}
+			
+			view.setOnTouchListener(new View.OnTouchListener(){
+	            @Override
+			    public boolean onTouch(View v, MotionEvent event) {
+			        if (MotionEvent.ACTION_UP == event.getAction()) {
+						edited = true;
+			        }
+			        return false;
+			    }
+		    });
 		}
 
 		/**
@@ -1070,6 +1087,10 @@ public class Fields extends ArrayList<Fields.Field> {
 					throw new RuntimeException("Column '" + this.column + "' not found in cursor",e);
 				}
 			}
+		}
+		
+		public boolean isEdited(){
+			return edited;
 		}
 	}
 	
@@ -1307,7 +1328,17 @@ public class Fields extends ArrayList<Fields.Field> {
 	public void addCrossValidator(FieldCrossValidator v) {
 		mCrossValidators.add(v);
 	}
-
-
+	
+	public boolean isThereAModifiedField(){
+		boolean result = false;
+		
+		for (Field field :this){
+			if (field.isEdited()){
+				result = true;
+			}
+		}
+		
+		return result;
+	}
 }
 

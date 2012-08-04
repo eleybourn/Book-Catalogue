@@ -328,42 +328,18 @@ public class BookEditNotes extends Activity {
 		}
 	}
 	
+	/**
+	 * If 'back' is pressed, and the user has made changes, ask them if they really want to lose the changes
+	 */
 	@Override
 	public void onBackPressed() {
-		showConfirmUnsavedEditsDialog();
-	}
-	
-	private void callSuperOnBackPressed(){
-		super.onBackPressed();
-	}
-	
-	private void showConfirmUnsavedEditsDialog(){
-		if (mFields.isThereAModifiedField()){
-			AlertDialog.Builder dialog = new Builder(this);
-			
-			dialog.setTitle(R.string.confirm_exit_without_saving);
-			dialog.setMessage(R.string.confirm_exit_message);
-			
-			dialog.setPositiveButton(R.string.ok, new AlertDialog.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					callSuperOnBackPressed();
-				}
-			});
-			
-			dialog.setNegativeButton(R.string.cancel, new AlertDialog.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					dialog.dismiss();
-				}
-			});
-			dialog.setCancelable(false);
-			dialog.create().show();
-		}else{
-			callSuperOnBackPressed();
+		if (mFields.isEdited()) {
+			StandardDialogs.showConfirmUnsavedEditsDialog(this);
+		} else {
+			super.onBackPressed();			
 		}
 	}
-	
+
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);

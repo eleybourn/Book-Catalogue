@@ -158,7 +158,7 @@ public class BookEditFields extends Activity {
 		}
 		return genre_list;
 	}
-	
+
 	/**
 	 * Display the edit fields page
 	 */
@@ -956,47 +956,23 @@ public class BookEditFields extends Activity {
 		outState.putString(CatalogueDBAdapter.KEY_DATE_PUBLISHED, mFields.getField(R.id.date_published).getValue().toString());
 		outState.putString("bookshelf_text", mFields.getField(R.id.bookshelf_text).getValue().toString());
 	}
-	
+
+	/**
+	 * If 'back' is pressed, and the user has made changes, ask them if they really want to lose the changes
+	 */
 	@Override
 	public void onBackPressed() {
-		showConfirmUnsavedEditsDialog();
-	}
-	
-	private void callSuperOnBackPressed(){
-		super.onBackPressed();
-	}
-	
-	private void showConfirmUnsavedEditsDialog(){
-		if (mFields.isThereAModifiedField()){
-			AlertDialog.Builder dialog = new Builder(this);
-			
-			dialog.setTitle(R.string.confirm_exit_without_saving);
-			dialog.setMessage(R.string.confirm_exit_message);
-			
-			dialog.setPositiveButton(R.string.ok, new AlertDialog.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					callSuperOnBackPressed();
-				}
-			});
-			
-			dialog.setNegativeButton(R.string.cancel, new AlertDialog.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					dialog.dismiss();
-				}
-			});
-			dialog.setCancelable(false);
-			dialog.create().show();
-		}else{
-			callSuperOnBackPressed();
+		if (mFields.isEdited()) {
+			StandardDialogs.showConfirmUnsavedEditsDialog(this);
+		} else {
+			super.onBackPressed();			
 		}
 	}
-	
+
 	@Override
 	protected void onPause() {
 		super.onPause();
-		
+
 		// Close down the cover browser.
 		if (mCoverBrowser != null) {
 			mCoverBrowser.dismiss();

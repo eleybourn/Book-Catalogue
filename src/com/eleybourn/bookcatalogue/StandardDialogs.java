@@ -26,7 +26,9 @@ import java.util.Date;
 
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsRegister;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -43,6 +45,33 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 public class StandardDialogs {
+
+	/**
+	 * Show a dialog asking if unsaved edits should be ignored. Finish if so.
+	 */
+	public static void showConfirmUnsavedEditsDialog(final Activity a){
+		AlertDialog.Builder dialog = new Builder(a);
+
+		dialog.setTitle(R.string.confirm_exit);
+		dialog.setMessage(R.string.you_may_have_unsaved_changes);
+		
+		dialog.setPositiveButton(R.string.ok, new AlertDialog.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+				a.finish();
+			}
+		});
+
+		dialog.setNegativeButton(R.string.cancel, new AlertDialog.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
+		dialog.setCancelable(false);
+		dialog.create().show();
+	}
 
 	public static void needLibraryThingAlert(final Context context, final boolean ltRequired, final String prefSuffix) {
 		boolean showAlert;

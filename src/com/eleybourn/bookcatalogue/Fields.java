@@ -940,12 +940,14 @@ public class Fields extends ArrayList<Fields.Field> {
 
 		/** Accessor to use (automatically defined) */
 		private FieldDataAccessor mAccessor = null;
-		
-		/** Edited verifier 
-		 * true in case the view is clicked
+
+		/** Property used to determine if edits have been made.
+		 * 
+		 * Set to true in case the view is clicked
+		 *
 		 * This a good and simple metric to identify if a field was changed despite not being 100% accurate
 		 * */ 
-		private boolean edited = false;
+		private boolean mWasClicked = false;
 
 		/**
 		 * Constructor.
@@ -995,14 +997,14 @@ public class Fields extends ArrayList<Fields.Field> {
 				visible = fields.getPreferences().getBoolean(FieldVisibility.prefix + group, true);
 				if (!visible) {
 					view.setVisibility(View.GONE);
-				}			
+				}
 			}
-			
+
 			view.setOnTouchListener(new View.OnTouchListener(){
 	            @Override
 			    public boolean onTouch(View v, MotionEvent event) {
 			        if (MotionEvent.ACTION_UP == event.getAction()) {
-						edited = true;
+						mWasClicked = true;
 			        }
 			        return false;
 			    }
@@ -1088,9 +1090,9 @@ public class Fields extends ArrayList<Fields.Field> {
 				}
 			}
 		}
-		
+
 		public boolean isEdited(){
-			return edited;
+			return mWasClicked;
 		}
 	}
 	
@@ -1328,17 +1330,21 @@ public class Fields extends ArrayList<Fields.Field> {
 	public void addCrossValidator(FieldCrossValidator v) {
 		mCrossValidators.add(v);
 	}
-	
-	public boolean isThereAModifiedField(){
-		boolean result = false;
-		
-		for (Field field :this){
+
+	/**
+	 * Check if any field has been modified
+	 * 
+	 * @return	true if a field has been edited (or clicked)
+	 */
+	public boolean isEdited(){
+
+		for (Field field : this){
 			if (field.isEdited()){
-				result = true;
+				return true;
 			}
 		}
-		
-		return result;
+
+		return false;
 	}
 }
 

@@ -21,6 +21,8 @@
 package com.eleybourn.bookcatalogue;
 
 //import android.R;
+import java.io.File;
+
 import android.app.Activity;
 import android.app.TabActivity;
 import android.content.Intent;
@@ -217,11 +219,14 @@ public class BookEdit extends TabActivity {
 				
 				thisBook = mDbHelper.fetchBookById(mRowId);
 				thisBook.moveToFirst();
+				String id = thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_ROWID));
 				String title = thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_TITLE));
 				double rating = thisBook.getDouble(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_RATING));
 				String ratingString = "";
 				String author = thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED_GIVEN_FIRST));
 				String series = thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_SERIES_FORMATTED));
+				File image = CatalogueDBAdapter.fetchThumbnailByUuid(mDbHelper.getBookUuid(Long.parseLong(id)));
+				
 				if (series.length() > 0) {
 					series = " (" + series.replace("#", "%23") + ")";
 				}
@@ -236,9 +241,23 @@ public class BookEdit extends TabActivity {
 					}
 				}
 				
-				String url = "https://twitter.com/intent/tweet?related=eleybourn&text=%23reading " + title + " by " + author + series + " " + ratingString;
-				Intent loadweb = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-				startActivity(loadweb); 					
+				if (ratingString.length() > 0){
+					ratingString = "(" + ratingString + ")";
+				}
+				
+				/*
+				 * There's a problem with the facebook app in android, so 
+				 * despite it beeing showed on the list
+				 * it will not post any text unless the user type it.
+				*/
+				
+				Intent share = new Intent(Intent.ACTION_SEND); 
+				share.putExtra(Intent.EXTRA_TEXT, "I'm reading " + title + " by " + author + series + " " + ratingString);
+				share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + image.getPath()));
+                share.setType("text/plain");
+                
+                startActivity(Intent.createChooser(share, "Share"));
+                
 				return true;
 			case DELETE_ID:
 				if (mRowId == null || mRowId == 0) {

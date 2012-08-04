@@ -199,7 +199,11 @@ public class BookEditNotes extends Activity {
 					} else {
 						getParent().setResult(RESULT_OK, i);
 					}
-					finish();
+					if (mFields.isEdited()) {
+						StandardDialogs.showConfirmUnsavedEditsDialog(BookEditNotes.this);
+					} else {
+						finish();
+					}
 				}
 			});
 			

@@ -497,7 +497,12 @@ public class BookEditFields extends Activity {
 					mDbHelper.purgeSeries();
 					// We're done.
 					setResult(RESULT_OK);
-					finish();
+
+					if (mFields.isEdited()) {
+						StandardDialogs.showConfirmUnsavedEditsDialog(BookEditFields.this);
+					} else {
+						finish();
+					}
 				}
 			});
 			

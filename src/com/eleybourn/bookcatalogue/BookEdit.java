@@ -52,7 +52,7 @@ public class BookEdit extends TabActivity {
 
 	private static final int DELETE_ID = 1;
 	private static final int DUPLICATE_ID = 3; //2 is taken by populate in anthology
-	private static final int TWEET_ID = 4; //2 is taken by populate in anthology
+	private static final int SHARE_ID = 4;
 	private static final int THUMBNAIL_OPTIONS_ID = 5;
 
 	public int currentTab = 0;
@@ -184,7 +184,7 @@ public class BookEdit extends TabActivity {
 		}
 
 		// TODO: Consider allowing Tweets (or other sharig methods) to work on un-added books.
-		MenuItem tweet = menu.add(0, TWEET_ID, 0, R.string.menu_share_this);
+		MenuItem tweet = menu.add(0, SHARE_ID, 0, R.string.menu_share_this);
 		tweet.setIcon(R.drawable.ic_menu_twitter);
 
 		boolean thumbVisible = BookCatalogueApp.getAppPreferences().getBoolean(FieldVisibility.prefix + "thumbnail", true);
@@ -211,7 +211,7 @@ public class BookEdit extends TabActivity {
 					((BookEditFields)a).showCoverContextMenu();
 				}
 				break;
-			case TWEET_ID:
+			case SHARE_ID:
 				if (mRowId == null || mRowId == 0) {
 					Toast.makeText(this, R.string.this_option_is_not_available_until_the_book_is_saved, Toast.LENGTH_LONG).show();
 					return true;
@@ -219,14 +219,13 @@ public class BookEdit extends TabActivity {
 				
 				thisBook = mDbHelper.fetchBookById(mRowId);
 				thisBook.moveToFirst();
-				String id = thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_ROWID));
 				String title = thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_TITLE));
 				double rating = thisBook.getDouble(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_RATING));
 				String ratingString = "";
 				String author = thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED_GIVEN_FIRST));
 				String series = thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_SERIES_FORMATTED));
-				File image = CatalogueDBAdapter.fetchThumbnailByUuid(mDbHelper.getBookUuid(Long.parseLong(id)));
-				
+				File image = CatalogueDBAdapter.fetchThumbnailByUuid(mDbHelper.getBookUuid(mRowId));
+
 				if (series.length() > 0) {
 					series = " (" + series.replace("#", "%23") + ")";
 				}
@@ -244,13 +243,12 @@ public class BookEdit extends TabActivity {
 				if (ratingString.length() > 0){
 					ratingString = "(" + ratingString + ")";
 				}
-				
+
 				/*
 				 * There's a problem with the facebook app in android, so 
-				 * despite it beeing showed on the list
-				 * it will not post any text unless the user type it.
+				 * despite it being shown on the list
+				 * it will not post any text unless the user types it.
 				*/
-				
 				Intent share = new Intent(Intent.ACTION_SEND); 
 				share.putExtra(Intent.EXTRA_TEXT, "I'm reading " + title + " by " + author + series + " " + ratingString);
 				share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + image.getPath()));

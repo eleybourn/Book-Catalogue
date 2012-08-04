@@ -25,8 +25,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -196,7 +199,11 @@ public class BookEditNotes extends Activity {
 					} else {
 						getParent().setResult(RESULT_OK, i);
 					}
-					finish();
+					if (mFields.isEdited()) {
+						StandardDialogs.showConfirmUnsavedEditsDialog(BookEditNotes.this);
+					} else {
+						finish();
+					}
 				}
 			});
 			
@@ -322,6 +329,18 @@ public class BookEditNotes extends Activity {
 			//This should never happen
 			Toast.makeText(this, R.string.unknown_error, Toast.LENGTH_LONG).show();
 			finish();
+		}
+	}
+	
+	/**
+	 * If 'back' is pressed, and the user has made changes, ask them if they really want to lose the changes
+	 */
+	@Override
+	public void onBackPressed() {
+		if (mFields.isEdited()) {
+			StandardDialogs.showConfirmUnsavedEditsDialog(this);
+		} else {
+			super.onBackPressed();			
 		}
 	}
 

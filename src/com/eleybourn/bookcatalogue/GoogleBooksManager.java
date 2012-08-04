@@ -24,7 +24,7 @@ public class GoogleBooksManager {
 		if (mIsbn.equals("")) {
 			path += "?q=" + "intitle:"+title+"+inauthor:"+author+"";
 		} else {
-			path += "?q=ISBN" + mIsbn;
+			path += "?q=ISBN:" + mIsbn;
 		}
 		URL url;
 

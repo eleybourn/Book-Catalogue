@@ -32,6 +32,7 @@ import java.util.Iterator;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TabActivity;
@@ -48,9 +49,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
@@ -60,7 +61,6 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.Toast;
 
@@ -497,7 +497,12 @@ public class BookEditFields extends Activity {
 					mDbHelper.purgeSeries();
 					// We're done.
 					setResult(RESULT_OK);
-					finish();
+
+					if (mFields.isEdited()) {
+						StandardDialogs.showConfirmUnsavedEditsDialog(BookEditFields.this);
+					} else {
+						finish();
+					}
 				}
 			});
 			
@@ -956,17 +961,30 @@ public class BookEditFields extends Activity {
 		outState.putString(CatalogueDBAdapter.KEY_DATE_PUBLISHED, mFields.getField(R.id.date_published).getValue().toString());
 		outState.putString("bookshelf_text", mFields.getField(R.id.bookshelf_text).getValue().toString());
 	}
-	
+
+	/**
+	 * If 'back' is pressed, and the user has made changes, ask them if they really want to lose the changes
+	 */
+	@Override
+	public void onBackPressed() {
+		if (mFields.isEdited()) {
+			StandardDialogs.showConfirmUnsavedEditsDialog(this);
+		} else {
+			super.onBackPressed();			
+		}
+	}
+
 	@Override
 	protected void onPause() {
 		super.onPause();
+
 		// Close down the cover browser.
 		if (mCoverBrowser != null) {
 			mCoverBrowser.dismiss();
 			mCoverBrowser = null;
 		}
 	}
-	
+
 	/**
 	 * Fix background
 	 */

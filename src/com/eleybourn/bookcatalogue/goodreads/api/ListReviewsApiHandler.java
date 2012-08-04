@@ -129,8 +129,9 @@ public class ListReviewsApiHandler extends ApiHandler {
 	{
 		long t0 = System.currentTimeMillis();
 
-		// Sort by update_dte (descending) so sync is faster.
-		final String urlBase = "http://www.goodreads.com/review/list/%4$s.xml?key=%1$s&v=2&page=%2$s&per_page=%3$s&sort=date_updated&order=d";
+		// Sort by update_dte (descending) so sync is faster. Specify 'shelf=all' because it seems goodreads returns 
+		// the shelf that is selected in 'My Books' on the web interface by default.
+		final String urlBase = "http://www.goodreads.com/review/list/%4$s.xml?key=%1$s&v=2&page=%2$s&per_page=%3$s&sort=date_updated&order=d&shelf=all";
 		final String url = String.format(urlBase, mManager.getDeveloperKey(), page, perPage, mManager.getUserid());
 		HttpGet get = new HttpGet(url);
 

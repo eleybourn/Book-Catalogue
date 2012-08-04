@@ -30,6 +30,7 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -940,6 +941,14 @@ public class Fields extends ArrayList<Fields.Field> {
 		/** Accessor to use (automatically defined) */
 		private FieldDataAccessor mAccessor = null;
 
+		/** Property used to determine if edits have been made.
+		 * 
+		 * Set to true in case the view is clicked
+		 *
+		 * This a good and simple metric to identify if a field was changed despite not being 100% accurate
+		 * */ 
+		private boolean mWasClicked = false;
+
 		/**
 		 * Constructor.
 		 * 
@@ -966,7 +975,7 @@ public class Fields extends ArrayList<Fields.Field> {
 				return;
 
 			// Lookup the view
-			View view = a.findViewById(id);
+			final View view = a.findViewById(id);
 
 			// Set the appropriate accessor
 			if (view == null) {
@@ -988,8 +997,18 @@ public class Fields extends ArrayList<Fields.Field> {
 				visible = fields.getPreferences().getBoolean(FieldVisibility.prefix + group, true);
 				if (!visible) {
 					view.setVisibility(View.GONE);
-				}				
+				}
 			}
+
+			view.setOnTouchListener(new View.OnTouchListener(){
+	            @Override
+			    public boolean onTouch(View v, MotionEvent event) {
+			        if (MotionEvent.ACTION_UP == event.getAction()) {
+						mWasClicked = true;
+			        }
+			        return false;
+			    }
+		    });
 		}
 
 		/**
@@ -1070,6 +1089,10 @@ public class Fields extends ArrayList<Fields.Field> {
 					throw new RuntimeException("Column '" + this.column + "' not found in cursor",e);
 				}
 			}
+		}
+
+		public boolean isEdited(){
+			return mWasClicked;
 		}
 	}
 	
@@ -1308,6 +1331,20 @@ public class Fields extends ArrayList<Fields.Field> {
 		mCrossValidators.add(v);
 	}
 
+	/**
+	 * Check if any field has been modified
+	 * 
+	 * @return	true if a field has been edited (or clicked)
+	 */
+	public boolean isEdited(){
 
+		for (Field field : this){
+			if (field.isEdited()){
+				return true;
+			}
+		}
+
+		return false;
+	}
 }
 

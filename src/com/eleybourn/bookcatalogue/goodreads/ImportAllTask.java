@@ -373,9 +373,16 @@ public class ImportAllTask extends GenericTask {
 		//addStringIfNonBlank(review, ListReviewsFieldNames.DB_NOTES, book, ListReviewsFieldNames.DB_NOTES);
 		addLongIfPresent(review, ListReviewsFieldNames.DB_PAGES, book, ListReviewsFieldNames.DB_PAGES);
 		addStringIfNonBlank(review, ListReviewsFieldNames.DB_PUBLISHER, book, ListReviewsFieldNames.DB_PUBLISHER);
-		addDoubleIfPresent(review, ListReviewsFieldNames.DB_RATING, book, ListReviewsFieldNames.DB_RATING);
-		addStringIfNonBlank(review, ListReviewsFieldNames.DB_READ_END, book, ListReviewsFieldNames.DB_READ_END);
+		Double rating = addDoubleIfPresent(review, ListReviewsFieldNames.DB_RATING, book, ListReviewsFieldNames.DB_RATING);
 		addStringIfNonBlank(review, ListReviewsFieldNames.DB_READ_START, book, ListReviewsFieldNames.DB_READ_START);
+		String readEnd = addStringIfNonBlank(review, ListReviewsFieldNames.DB_READ_END, book, ListReviewsFieldNames.DB_READ_END);
+
+		// If it has a rating or a 'read_end' date, assume it's read. If these are missing then
+		// DO NOT overwrite existing data since it *may* be read even without these fields.
+		if ( (rating != null && rating > 0) || (readEnd != null && readEnd.length() > 0) ) {
+			book.putBoolean(CatalogueDBAdapter.KEY_READ, true);
+		}
+
 		addStringIfNonBlank(review, ListReviewsFieldNames.DB_TITLE, book, ListReviewsFieldNames.DB_TITLE);
 		addLongIfPresent(review, ListReviewsFieldNames.GR_BOOK_ID, book, DOM_GOODREADS_BOOK_ID.name);
 
@@ -495,11 +502,17 @@ public class ImportAllTask extends GenericTask {
 	 * @param dest
 	 * @param destField
 	 */
-	private void addStringIfNonBlank(Bundle source, String sourceField, Bundle dest, String destField) {
+	private String addStringIfNonBlank(Bundle source, String sourceField, Bundle dest, String destField) {
 		if (source.containsKey(sourceField)) {
 			String val = source.getString(sourceField);
-			if (val != null && !val.equals(""))
+			if (val != null && !val.equals("")) {
 				dest.putString(destField, val);
+				return val;
+			} else {
+				return null;
+			}
+		} else {
+			return null;
 		}
 	}
 	/**
@@ -524,10 +537,13 @@ public class ImportAllTask extends GenericTask {
 	 * @param dest
 	 * @param destField
 	 */
-	private void addDoubleIfPresent(Bundle source, String sourceField, Bundle dest, String destField) {
+	private Double addDoubleIfPresent(Bundle source, String sourceField, Bundle dest, String destField) {
 		if (source.containsKey(sourceField)) {
 			double val = source.getDouble(sourceField);
 			dest.putDouble(destField, val);
+			return val;
+		} else {
+			return null;
 		}
 	}
 

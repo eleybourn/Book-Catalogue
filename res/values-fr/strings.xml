@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="menu_insert">Ajouter un livre</string>
-	<string name="menu_delete">Supprime un livre</string>
+	<string name="menu_delete">Supprimer un livre</string>
 	<string name="author">Auteur</string>
 	<string name="title">Titre</string>
 	<string name="publisher">Éditeur</string>
@@ -18,7 +18,7 @@
 	<string name="menu_sort_by">Trier par</string>
 	<string name="menu_sort_by_author_collapsed">Tout réduire</string>
 	<string name="sort_title">Book Catalogue : par titre</string>
-	<string name="edit_title">Book Catalogue: Éditer le livre</string>
+	<string name="edit_title">Book Catalogue : Éditer le livre</string>
 	<string name="menu_insert_isbn">Ajouter par ISBN</string>
 	<string name="menu_insert_barcode">Ajouter par code barre</string>
 	<string name="search">Recherche</string>
@@ -34,10 +34,10 @@
 	<string name="bookshelf_label">Bibliothèque : </string>
 	<string name="all_books">Tous les livres</string>
 	<string name="isbn_found">ISBN scanné. Recherche en cours.</string>
-	<string name="title_isbn_search">Book Catalogue: recherche ISBN</string>
-	<string name="title_manage_bs">Book Catalogue: gérer les biblothèques</string>
-	<string name="title_edit_bs">Book Catalogue: éditer la bibliothèque</string>
-	<string name="book_exists">Le livre que vous tentez d\'ajouter existe déjà. .</string>
+	<string name="title_isbn_search">Book Catalogue : recherche ISBN</string>
+	<string name="title_manage_bs">Book Catalogue : gérer les biblothèques</string>
+	<string name="title_edit_bs">Book Catalogue : éditer la bibliothèque</string>
+	<string name="book_exists">Le livre que vous tentez d\'ajouter existe déjà.</string>
 	<string name="search_label">Rechercher des livres</string>
 	<string name="search_hint">Rechercher un auteur ou un titre</string>
 	<string name="book_not_found">Le livre n\'a pas été trouvé. Il est parfois possible de trouver le code barre à l\'intérieur de la première page de couverture. Sinon merci d\'entrer les détails manuellement.</string>
@@ -46,14 +46,14 @@
 	<string name="export_complete">Export vers la carte SD terminé.</string>
 	<string name="import_data">Importer les livres</string>
 	<string name="import_alert">Attention ! L\'import de données peut provoquer la mise à jour de livres avec de nouvelles informations si les identifiants importés sont les mêmes que des identifiants existants. Cela est généralement correct si vous n\'avez modifié qu\'un champ dans un fichier exporté. Si vous avez intégralement créé un livre, assurez vous que le champ identifiant est vide.</string>
-	<string name="export_failed">ERREUR: Export vers la carte SD en échec. </string>
-	<string name="import_failed">ERREUR: Import depuis la carte SD en échec. Le fichier se trouve-t-il au bon endroit ?</string>
-	<string name="search_title">Book Catalogue: Résultats de recherche</string>
-	<string name="results_found">Des résultats ont été trouvés</string>
+	<string name="export_failed">ERREUR : l\'export vers la carte SD a échoué. </string>
+	<string name="import_failed">ERREUR: l\'import depuis la carte SD a échoué. Le fichier se trouve-t-il au bon endroit ?</string>
+	<string name="search_title">Book Catalogue : Résultats de recherche</string>
+	<string name="results_found">Des résultats ont été trouvés.</string>
 	<string name="administration_label">Administration</string>
-	<string name="administration_title">Book Catalogue: Administration</string>
+	<string name="administration_title">Book Catalogue : Administration</string>
 	<string name="menu_administration">Admin</string>
-	<string name="install_scan">Pour scanner vos livres en utilisant le code barre ISBN, vous devez installer le scanner de codes barre zxing. Appuyez sur OK pour installer, ou sur Annuler pour passer cette étape.</string>
+	<string name="install_scan">Pour scanner vos livres en utilisant le code barre ISBN, vous pouvez installer le scanner de codes barre zxing. Appuyez sur OK pour installer, ou sur Annuler pour passer cette étape.</string>
 	<string name="install_scan_title">Installer le scanner de code barre</string>
 	<string name="version_number">Numéro de version</string>
 	<string name="donate">Si vous souhaitez supporter le développement de cette application, les donations sont possibles par Amazon Wishlist ou par le bouton Paypal ci-dessous. Je suis en Australie, ce qui rend impossible la publication d\'une version payante :-) .</string>
@@ -87,12 +87,12 @@
 	<string name="update_fields">Mettre les champs à jour automatiquement</string>
 	<string name="select_fields_to_update">Sélectionner les champs à mettre à jour</string>
 	<string name="select_fields_to_update_help">Les champs sélectionnés vont être mis à jour à partir d\'Internet. Les champs non sélectionnés ne seront pas modifiés.</string>
-	<string name="overwrite_thumbnail">Les champs sélectionnés vont être mis à jour tels que montré; en option, les vignettes peuvent être téléchargées pour TOUS les livres.\n\nVoulez vous remplacer toutes les vignettes existantes ? Attention, cela peut prendre du temps. </string>
+	<string name="overwrite_thumbnail">Les champs sélectionnés vont être mis à jour tels que montré; en option, les vignettes peuvent être téléchargées pour TOUS les livres.\n\nVoulez vous remplacer toutes les vignettes existantes ? Attention, cela peut prendre du temps.</string>
 	<string name="yes">Oui</string>
 	<string name="no">Non</string>
 	<string name="ok">OK</string>
 	<string name="download_thumbs">Les vignettes sont en cours de téléchargement en arrière plan.</string>
-	<string name="search_fail">La recherche du livre a échoué. Merci de vérifie vos réglages réseau.</string>
+	<string name="search_fail">La recherche du livre a échoué. Merci de vérifier vos réglages réseau.</string>
 	<string name="search_exception">Recherche en échec pendant %1$s: %2$s</string>
 	<string name="hello">Book Catalogue !</string>
 	<string name="menu_delete_thumb">Supprimer la vignette</string>
@@ -119,7 +119,7 @@
 	<string name="menu_rotate_thumb_180">Faire tourner à 180°</string>
 	<string name="menu_zoom_thumb">Zoomer sur la vignette</string>
 	<string name="help_title_nutshell">En résumé</string>
-	<string name="signed">Ce livre a-t-il été dédicacé ?</string>
+	<string name="signed">Ce livre est il dédicacé ?</string>
 	<string name="read_start">Date de début de lecture</string>
 	<string name="read_end">Date de fin de lecture</string>
 	<string name="location">Emplacement du livre</string>
@@ -187,7 +187,7 @@
 	<string name="cancelled_info">Annulé - %s</string>
 	<string name="edit_book_series">Éditer les séries</string>
 	<string name="family_name">Nom de famille</string>
-	<string name="given_names">Noms donnés</string>
+	<string name="given_names">Prénoms</string>
 	<string name="edit_author_details">Éditer les détails de l\'auteur</string>
 	<string name="immediate_global_changes">NOTE: Toutes les modifications sont prises en compte immédiatement et globalement.</string>
 	<string name="menu_replace_thumb">Remplacer les vignettes&#8230;</string>
@@ -247,7 +247,7 @@
 	<string name="kilobytes">%.2fkB</string>
 	<string name="bytes">%.0f bytes</string>
 
-	<string name="sortby_author_given">Trier par auteur (Nom donné)</string>
+	<string name="sortby_author_given">Trier par auteur (Prénom)</string>
 	<string name="select_bookshelves">Choisir des bibliothèques</string>
 	<string name="debug_subject">Collecte des informations de débogage en cours</string>
 	<string name="debug_body">Merci de prendre le temps de décrire brièvement le problèmeque vous rencontrez.</string>
@@ -543,7 +543,11 @@
 	<string name="enter_isbn">Entrer l\'ISBN</string>
 	<string name="allow_asin">Autoriser l\'ASIN</string>
 	<string name="x_is_not_a_valid_isbn_or_asin">%1$s n\'est pas un ISBN / ASIN valable</string>
-
+	<string name="confirm_exit">Confirmer la sortie</string>
+	<string name="you_may_have_unsaved_changes">Des modifications pourraient ne pas avoir été sauvegardées. Êtes vous sûr de vouloir quitter sans sauvegarder ?</string>
+	
+	<!-- Not translated yet  -->
+		
 	<!-- Not translated beyond this point : missing context -->
 	
 	<string name="show_book_under_primary_thing">Under primary %1$s only</string>	
@@ -570,5 +574,5 @@
 	<string name="series_num">#</string>
 	<item name="TAG_POSITION" type="id"></item>
 	<item type="id" name="TAG_ORIGINAL_VALUE"></item>
-		
+	<string name="optionsElipsis">Options&#8230;</string>	
 </resources>

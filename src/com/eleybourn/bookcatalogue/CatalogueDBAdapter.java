@@ -522,7 +522,7 @@ public class CatalogueDBAdapter {
 //						+ " LEFT OUTER JOIN " + DB_TB_SERIES + " s ON (s." + KEY_ROWID + "=w." + KEY_SERIES_ID + ") ";
 
 	//TODO: Update database version RELEASE: Update database version
-	public static final int DATABASE_VERSION = 78;
+	public static final int DATABASE_VERSION = 79;
 
 	private TableInfo mBooksInfo = null;
 
@@ -1507,6 +1507,16 @@ public class CatalogueDBAdapter {
 				message += "* When adding books, scanning or typing an existing ISBN allows you the option to edit the book.\n";
 				message += "* Allow ASINs to be entered manually as well as ISBNs\n";
 				message += "* German translation updates (Robert Wetzlmayr)\n";
+			}
+			if (curVersion == 78) {
+				//do nothing
+				curVersion++;
+				message += "New in v4.1\n\n";
+				message += "* New style groups: Location and Date Read\n";
+				message += "* Improved 'Share' functionality (filipeximenes)\n";
+				message += "* French translation updates (Djiko)\n";
+				message += "* Better handling of the 'back' key when editing books (filipeximenes)\n";
+				message += "* Various bug fixes\n";
 			}
 
 			// Rebuild all indices

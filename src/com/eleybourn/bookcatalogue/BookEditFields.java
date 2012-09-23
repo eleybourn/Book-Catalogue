@@ -964,7 +964,9 @@ public class BookEditFields extends Activity {
 	}
 
 	/**
-	 * If 'back' is pressed, and the user has made changes, ask them if they really want to lose the changes
+	 * If 'back' is pressed, and the user has made changes, ask them if they really want to lose the changes.
+	 * 
+	 * This code is only called in API level 5, so we tag the method as such to avoid API warnings.
 	 */
 	@TargetApi(5)
 	@Override

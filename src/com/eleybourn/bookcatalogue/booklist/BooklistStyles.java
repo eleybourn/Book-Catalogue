@@ -193,6 +193,20 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 		styles.add(style);
 		style.addGroup(ROW_KIND_FORMAT);
 
+		// Read date
+		style = new BooklistStyle(R.string.sort_read_date);
+		styles.add(style);
+		style.addGroup(ROW_KIND_YEAR_READ);
+		style.addGroup(ROW_KIND_MONTH_READ);
+		style.addGroup(ROW_KIND_AUTHOR);
+
+		// Location
+		style = new BooklistStyle(R.string.location);
+		styles.add(style);
+		style.addGroup(ROW_KIND_LOCATION);
+		style.addGroup(ROW_KIND_AUTHOR);
+		style.addGroup(ROW_KIND_SERIES);
+
 		// NEWKIND: Add new kinds to this list so the user sees them (Optional)
 
 	}

@@ -41,6 +41,15 @@ Features include;
   case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+new in 4.1
+* new style options: location and date read
+* sharing can now send via any app that advertises the interface (eg. mail)
+* if fields have been edited, and 'back' is pressed, ask the user for confirmation
+* assume book is read when importing from goodreads if the user has rated it
+* change install location to avoid problems with encrypted SD cards
+* changes to French translations
+* bug fixes in file import and data import
+
 new in 4.0.7
 * Fix bug in Google Books URL causing wrong books to be returned
 * Re-prioritize data sources based on reliability and the data returned

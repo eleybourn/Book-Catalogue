@@ -392,6 +392,67 @@ public class BooklistBuilder {
 	}
 	
 	/**
+	 * Utility function to retrun a glob expression to get the 'year' from a text date field in a standard way.
+	 * 
+	 * Just look for 4 leading numbers. We don't care about anything else.
+	 * 
+	 * @param fieldSpec fully qualified field name
+	 * 
+	 * @return expression
+	 */
+	private String yearGlob(final String fieldSpec) {
+		return "case when " + fieldSpec + " glob '[0123456789][01234567890][01234567890][01234567890]*'\n" +
+				"	Then substr(" + fieldSpec + ", 1, 4) \n" +
+				" else 'UNKNOWN' end";
+	}
+
+	/**
+	 * Utility function to retrun a glob expression to get the 'month' from a text date field in a standard way.
+	 * 
+	 * Just look for 4 leading numbers followed by 2 or 1 digit. We don't care about anything else.
+	 * 
+	 * @param fieldSpec fully qualified field name
+	 * 
+	 * @return expression
+	 */
+	private String monthGlob(final String fieldSpec) {
+		return "case when " + fieldSpec + 
+								" glob '[0123456789][01234567890][01234567890][01234567890]-[0123456789][01234567890]*'\n" +
+								"	Then substr(" + fieldSpec + ", 6, 2) \n" +
+								" when " + fieldSpec + 
+								" glob '[0123456789][01234567890][01234567890][01234567890]-[0123456789]*'\n" +
+								"	Then substr(" + fieldSpec + ", 6, 1) \n" +
+								" else 'UNKNOWN' end";
+	}
+
+	/**
+	 * Utility function to retrun a glob expression to get the 'day' from a text date field in a standard way.
+	 * 
+	 * Just look for 4 leading numbers followed by 2 or 1 digit, and then 1 or two digits. We don't care about anything else.
+	 * 
+	 * @param fieldSpec fully qualified field name
+	 * 
+	 * @return expression
+	 */
+	private String dayGlob(final String fieldSpec) {
+		// Just look for 4 leading numbers followed by 2 or 1 digit. We don't care about anything else.
+		return "case " +
+								" when " + fieldSpec + 
+								" glob '[0123456789][0123456789][0123456789][0123456789]-[0123456789][0123456789]-[0123456789][0123456789]*'\n" +
+								"	Then substr(" + fieldSpec + ", 9, 2) \n" +
+								" when " + fieldSpec + 
+								" glob '[0123456789][0123456789][0123456789][0123456789]-[0123456789]-[0123456789][0123456789]*'\n" +
+								"	Then substr(" + fieldSpec + ", 8, 2) \n" +
+								" when " + fieldSpec + 
+								" glob '[0123456789][0123456789][0123456789][0123456789]-[0123456789][0123456789]-[0123456789]*'\n" +
+								"	Then substr(" + fieldSpec + ", 9, 1) \n" +
+								" when " + fieldSpec + 
+								" glob '[0123456789][0123456789][0123456789][0123456789]-[0123456789]-[0123456789]*'\n" +
+								"	Then substr(" + fieldSpec + ", 8, 1) \n" +
+								" else " + fieldSpec + " end";
+	}
+
+	/**
 	 * Clear and the build the temporary list of books based on the passed criteria.
 	 * 
 	 * @param preferredState		State to display: expanded, collaped or remembered
@@ -496,6 +557,12 @@ public class BooklistBuilder {
 				g.setKeyComponents("g", DOM_GENRE);
 				break;
 
+			case ROW_KIND_LOCATION:
+				g.displayDomain = DOM_LOCATION;
+				summary.addDomain(DOM_LOCATION, "Coalesce(" + TBL_BOOKS.dot(DOM_LOCATION) + ", '')", SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED);
+				g.setKeyComponents("loc", DOM_LOCATION);
+				break;
+
 			case ROW_KIND_PUBLISHER:
 				g.displayDomain = DOM_PUBLISHER;
 				summary.addDomain(DOM_PUBLISHER, TBL_BOOKS.dot(DOM_PUBLISHER), SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED);
@@ -504,7 +571,7 @@ public class BooklistBuilder {
 
 			case ROW_KIND_FORMAT:
 				g.displayDomain = DOM_FORMAT;
-				summary.addDomain(DOM_FORMAT, TBL_BOOKS.dot(DOM_FORMAT), SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED);
+				summary.addDomain(DOM_FORMAT, "Coalesce(" + TBL_BOOKS.dot(DOM_FORMAT) + ", '')", SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED);
 				g.setKeyComponents("fmt", DOM_FORMAT);
 				break;
 
@@ -539,34 +606,24 @@ public class BooklistBuilder {
 
 			case ROW_KIND_YEAR_PUBLISHED:
 				g.displayDomain = DOM_PUBLICATION_YEAR;
-				// Just look for 4 leading numbers. We don't care about anything else.
-				String yearPubExpr = "case when " + TBL_BOOKS.dot(KEY_DATE_PUBLISHED) + " glob '[0123456789][01234567890][01234567890][01234567890]*'\n" +
-										"	Then substr(date_published, 1, 4) \n" +
-										" else 'UNKNOWN' end";
+				// Use our standard glob expression
+				String yearPubExpr = yearGlob(TBL_BOOKS.dot(KEY_DATE_PUBLISHED));
 				summary.addDomain(DOM_PUBLICATION_YEAR, yearPubExpr, SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED);
 				g.setKeyComponents("yrp", DOM_PUBLICATION_YEAR);
 				break;
 
 			case ROW_KIND_MONTH_PUBLISHED:
 				g.displayDomain = DOM_PUBLICATION_MONTH;
-				// Just look for 4 leading numbers followed by 2 or 1 digit. We don't care about anything else.
-				String monthPubExpr = "case when " + TBL_BOOKS.dot(KEY_DATE_PUBLISHED) + 
-										" glob '[0123456789][01234567890][01234567890][01234567890]-[0123456789][01234567890]*'\n" +
-										"	Then substr(date_published, 6, 2) \n" +
-										" when " + TBL_BOOKS.dot(KEY_DATE_PUBLISHED) + 
-										" glob '[0123456789][01234567890][01234567890][01234567890]-[0123456789]*'\n" +
-										"	Then substr(date_published, 6, 1) \n" +
-										" else 'UNKNOWN' end";
-				summary.addDomain(DOM_PUBLICATION_MONTH, monthPubExpr, SummaryBuilder.FLAG_GROUPED + SummaryBuilder.FLAG_SORTED);
+				// Use our standard glob expression
+				String monthPubExpr = monthGlob(TBL_BOOKS.dot(KEY_DATE_PUBLISHED));
+				summary.addDomain(DOM_PUBLICATION_MONTH, monthPubExpr, SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED);
 				g.setKeyComponents("mnp", DOM_PUBLICATION_MONTH);
 				break;
 
 			case ROW_KIND_YEAR_ADDED:
 				g.displayDomain = DOM_ADDED_YEAR;
-				// Just look for 4 leading numbers. We don't care about anything else.
-				String yearAddedExpr = "case when " + TBL_BOOKS.dot(DOM_ADDED_DATE) + " glob '[0123456789][01234567890][01234567890][01234567890]*'\n" +
-										"	Then substr(" + TBL_BOOKS.dot(DOM_ADDED_DATE) + ", 1, 4) \n" +
-										" else 'UNKNOWN' end";
+				// Use our standard glob expression
+				String yearAddedExpr = yearGlob(TBL_BOOKS.dot(DOM_ADDED_DATE));
 				// TODO: Handle 'DESCENDING'. Requires the navigator construction to use max/min for non-grouped domains that appear in sublevels based on desc/asc.
 				// We don't use DESCENDING sort yet because the 'header' ends up below the detail rows in the flattened table.
 				summary.addDomain(DOM_ADDED_YEAR, yearAddedExpr, SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED) ; // | SummaryBuilder.FLAG_SORT_DESCENDING);
@@ -575,14 +632,8 @@ public class BooklistBuilder {
 
 			case ROW_KIND_MONTH_ADDED:
 				g.displayDomain = DOM_ADDED_MONTH;
-				// Just look for 4 leading numbers followed by 2 or 1 digit. We don't care about anything else.
-				String monthAddedExpr = "case when " + TBL_BOOKS.dot(DOM_ADDED_DATE) + 
-										" glob '[0123456789][01234567890][01234567890][01234567890]-[0123456789][01234567890]*'\n" +
-										"	Then substr(" + TBL_BOOKS.dot(DOM_ADDED_DATE) + ", 6, 2) \n" +
-										" when " + TBL_BOOKS.dot(DOM_ADDED_DATE) + 
-										" glob '[0123456789][01234567890][01234567890][01234567890]-[0123456789]*'\n" +
-										"	Then substr(" + TBL_BOOKS.dot(DOM_ADDED_DATE) + ", 6, 1) \n" +
-										" else 'UNKNOWN' end";
+				// Use our standard glob expression
+				String monthAddedExpr = monthGlob(TBL_BOOKS.dot(DOM_ADDED_DATE));
 				// We don't use DESCENDING sort yet because the 'header' ends up below the detail rows in the flattened table.
 				summary.addDomain(DOM_ADDED_MONTH, monthAddedExpr, SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED ); // | SummaryBuilder.FLAG_SORT_DESCENDING);
 				g.setKeyComponents("mna", DOM_ADDED_MONTH);
@@ -590,24 +641,33 @@ public class BooklistBuilder {
 
 			case ROW_KIND_DAY_ADDED:
 				g.displayDomain = DOM_ADDED_DAY;
-				// Just look for 4 leading numbers followed by 2 or 1 digit. We don't care about anything else.
-				String dayAddedExpr = "case " +
-										" when " + TBL_BOOKS.dot(DOM_ADDED_DATE) + 
-										" glob '[0123456789][0123456789][0123456789][0123456789]-[0123456789][0123456789]-[0123456789][0123456789]*'\n" +
-										"	Then substr(" + TBL_BOOKS.dot(DOM_ADDED_DATE) + ", 9, 2) \n" +
-										" when " + TBL_BOOKS.dot(DOM_ADDED_DATE) + 
-										" glob '[0123456789][0123456789][0123456789][0123456789]-[0123456789]-[0123456789][0123456789]*'\n" +
-										"	Then substr(" + TBL_BOOKS.dot(DOM_ADDED_DATE) + ", 8, 2) \n" +
-										" when " + TBL_BOOKS.dot(DOM_ADDED_DATE) + 
-										" glob '[0123456789][0123456789][0123456789][0123456789]-[0123456789][0123456789]-[0123456789]*'\n" +
-										"	Then substr(" + TBL_BOOKS.dot(DOM_ADDED_DATE) + ", 9, 1) \n" +
-										" when " + TBL_BOOKS.dot(DOM_ADDED_DATE) + 
-										" glob '[0123456789][0123456789][0123456789][0123456789]-[0123456789]-[0123456789]*'\n" +
-										"	Then substr(" + TBL_BOOKS.dot(DOM_ADDED_DATE) + ", 8, 1) \n" +
-										" else " + TBL_BOOKS.dot(DOM_ADDED_DATE) + " end";
+				// Use our standard glob expression
+				String dayAddedExpr = dayGlob(TBL_BOOKS.dot(DOM_ADDED_DATE));
 				// We don't use DESCENDING sort yet because the 'header' ends up below the detail rows in the flattened table.
 				summary.addDomain(DOM_ADDED_DAY, dayAddedExpr, SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED ); // | SummaryBuilder.FLAG_SORT_DESCENDING);
 				g.setKeyComponents("dya", DOM_ADDED_DAY);
+				break;
+
+			case ROW_KIND_YEAR_READ:
+				g.displayDomain = DOM_READ_YEAR;
+				// TODO: Handle 'DESCENDING'. Requires the navigator construction to use max/min for non-grouped domains that appear in sublevels based on desc/asc.
+				// We don't use DESCENDING sort yet because the 'header' ends up below the detail rows in the flattened table.
+				summary.addDomain(DOM_ADDED_YEAR, yearGlob(TBL_BOOKS.dot(DOM_READ_END)), SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED) ; // | SummaryBuilder.FLAG_SORT_DESCENDING);
+				g.setKeyComponents("yrr", DOM_READ_YEAR);
+				break;
+
+			case ROW_KIND_MONTH_READ:
+				g.displayDomain = DOM_READ_MONTH;
+				// We don't use DESCENDING sort yet because the 'header' ends up below the detail rows in the flattened table.
+				summary.addDomain(DOM_READ_MONTH, monthGlob(TBL_BOOKS.dot(DOM_READ_END)), SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED ); // | SummaryBuilder.FLAG_SORT_DESCENDING);
+				g.setKeyComponents("mnr", DOM_READ_MONTH);
+				break;
+
+			case ROW_KIND_DAY_READ:
+				g.displayDomain = DOM_READ_DAY;
+				// We don't use DESCENDING sort yet because the 'header' ends up below the detail rows in the flattened table.
+				summary.addDomain(DOM_READ_DAY, dayGlob(TBL_BOOKS.dot(DOM_READ_END)), SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED ); // | SummaryBuilder.FLAG_SORT_DESCENDING);
+				g.setKeyComponents("dyr", DOM_READ_DAY);
 				break;
 
 			default:

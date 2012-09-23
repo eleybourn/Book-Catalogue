@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -965,6 +966,7 @@ public class BookEditFields extends Activity {
 	/**
 	 * If 'back' is pressed, and the user has made changes, ask them if they really want to lose the changes
 	 */
+	@TargetApi(5)
 	@Override
 	public void onBackPressed() {
 		if (mFields.isEdited()) {
@@ -1162,29 +1164,36 @@ public class BookEditFields extends Activity {
 		case ADD_GALLERY:
 			if (resultCode == Activity.RESULT_OK){
 				Uri selectedImageUri = intent.getData();
-				
-				String[] projection = { MediaStore.Images.Media.DATA };
-				Cursor cursor = managedQuery(selectedImageUri, projection, null, null, null);
-				int column_index = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
-				if (column_index < 0 || !cursor.moveToFirst()) {
-					Logger.logError(new RuntimeException("Add from gallery failed (col = " + column_index +"), name = " + MediaStore.Images.Media.DATA));
-					// This should not happen, but tell the user and log something
-					String s = getResources().getString(R.string.no_image_found) + ". " + getResources().getString(R.string.if_the_problem_persists);
-					Toast.makeText(this, s, Toast.LENGTH_LONG).show();
-				} else {
-					String selectedImagePath = cursor.getString(column_index);
-					
-					File thumb = new File(selectedImagePath);
-					File real = getCoverFile();
-					try {
-						copyFile(thumb, real);
-					} catch (IOException e) {
-						Logger.logError(e, "copyImage failed in add from gallery");
-						String s = getResources().getString(R.string.could_not_copy_image) + ". " + getResources().getString(R.string.if_the_problem_persists);
+
+				if (selectedImageUri != null) {
+					String[] projection = { MediaStore.Images.Media.DATA };
+					Cursor cursor = managedQuery(selectedImageUri, projection, null, null, null);
+					int column_index = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
+					if (column_index < 0 || !cursor.moveToFirst()) {
+						Logger.logError(new RuntimeException("Add from gallery failed (col = " + column_index +"), name = " + MediaStore.Images.Media.DATA));
+						// This should not happen, but tell the user and log something
+						String s = getResources().getString(R.string.no_image_found) + ". " + getResources().getString(R.string.if_the_problem_persists);
 						Toast.makeText(this, s, Toast.LENGTH_LONG).show();
+					} else {
+						String selectedImagePath = cursor.getString(column_index);
+						
+						File thumb = new File(selectedImagePath);
+						File real = getCoverFile();
+						try {
+							copyFile(thumb, real);
+						} catch (IOException e) {
+							Logger.logError(e, "copyImage failed in add from gallery");
+							String s = getResources().getString(R.string.could_not_copy_image) + ". " + getResources().getString(R.string.if_the_problem_persists);
+							Toast.makeText(this, s, Toast.LENGTH_LONG).show();
+						}
+						// Update the ImageView with the new image
+						setCoverImage();					
 					}
-					// Update the ImageView with the new image
-					setCoverImage();					
+				} else {
+					// Deal with the case where the chooser returns a null intent. This seems to happen when the filename
+					// is not properly understood by the choose (eg. an apostrophe in the file name confuses ES File Explorer
+					// in the current version as of 23-Sep-2012.
+					Toast.makeText(this, R.string.could_not_copy_image, Toast.LENGTH_LONG).show();
 				}
 			}
 			return;

@@ -475,6 +475,7 @@ public class ImportAllTask extends GenericTask {
         	for(Bundle sb: shelves) {
         		String shelf = translateBookshelf(db, sb.getString(ListReviewsFieldNames.SHELF));
         		if (shelf != null && !shelf.equals("")) {
+        			shelf = Utils.encodeListItem(shelf, BookEditFields.BOOKSHELF_SEPERATOR);
         			if (shelfNames == null)
 		        		shelfNames = shelf;
         			else
@@ -482,7 +483,7 @@ public class ImportAllTask extends GenericTask {
         		}
         	}
         	if (shelfNames != null && shelfNames.length() > 0)
-        		book.putString("bookshelf_text", shelfNames);
+        		book.putString("bookshelf_list", shelfNames);
         }
         
         // We need to set BOTH of these fields, otherwise the add/update method will set the

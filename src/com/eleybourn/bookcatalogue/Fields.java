@@ -941,6 +941,9 @@ public class Fields extends ArrayList<Fields.Field> {
 		/** Accessor to use (automatically defined) */
 		private FieldDataAccessor mAccessor = null;
 
+		/** Optional field-specific tag object */
+		private Object mTag = null;
+		
 		/** Property used to determine if edits have been made.
 		 * 
 		 * Set to true in case the view is clicked
@@ -1024,6 +1027,22 @@ public class Fields extends ArrayList<Fields.Field> {
 			if (a == null)
 				return null;
 			return a.findViewById(this.id);
+		}
+
+		/**
+		 * Return the current value of the tag field.
+		 * @return	Current value of tag.
+		 */
+		public Object getTag() {
+			return mTag;
+		}
+
+		/**
+		 * Set the current value of the tag field.
+		 * @return	Current value of tag.
+		 */
+		public void setTag(Object tag) {
+			mTag = tag;
 		}
 
 		/**

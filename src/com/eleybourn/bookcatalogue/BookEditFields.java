@@ -113,7 +113,7 @@ public class BookEditFields extends Activity {
 	private static final int ZOOM_THUMB_DIALOG_ID = 2;
 	private static final int CAMERA_RESULT = 41;
 	
-	public static final String BOOKSHELF_SEPERATOR = ", ";
+	public static final Character BOOKSHELF_SEPERATOR = ',';
 	
 	private ArrayList<Author> mAuthorList = null;
 	private ArrayList<Series> mSeriesList = null;
@@ -353,9 +353,9 @@ public class BookEditFields extends Activity {
 							final CheckBox cb = new CheckBox(BookEditFields.this);
 							boolean checked = false;
 							String db_bookshelf = bookshelves_for_book.getString(bookshelves_for_book.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)).trim();
-							
+							String db_encoded_bookshelf = Utils.encodeListItem(db_bookshelf, BOOKSHELF_SEPERATOR);
 							Field fe = mFields.getField(R.id.bookshelf_text);
-							if (fe.getValue().toString().indexOf(db_bookshelf + BOOKSHELF_SEPERATOR) > -1) {
+							if (fe.getTag().toString().indexOf(db_encoded_bookshelf + BOOKSHELF_SEPERATOR) > -1) {
 								checked = true;
 							}
 							cb.setChecked(checked);
@@ -365,17 +365,48 @@ public class BookEditFields extends Activity {
 								@Override
 								public void onClick(View v) {
 									String hint = cb.getHint() + "";
-									String name = hint.trim() + BOOKSHELF_SEPERATOR;
+									String name = hint.trim();
+									String encoded_name = Utils.encodeListItem(name, BOOKSHELF_SEPERATOR);
 									Field fe = mFields.getField(R.id.bookshelf_text);
+									// If box is checked, then we just append to list
 									if (cb.isChecked()) {
-										fe.setValue(fe.getValue().toString()+name);
-									} else {
-										String text = fe.getValue().toString();
-										int index = text.indexOf(name);
-										if (index > -1) {
-											text = text.substring(0, index) + text.substring(index + name.length());
+										String curr = fe.getValue().toString();
+										String list = fe.getTag().toString();
+										if (curr == null || curr.equals("")) {
+											curr = name;
+											list = encoded_name;
+										} else {
+											curr += ", " + name;
+											list += BOOKSHELF_SEPERATOR + encoded_name;
 										}
-										fe.setValue(text);
+										fe.setValue(curr);
+										fe.setTag(list);
+									} else {
+										// Get the underlying list
+										ArrayList<String> shelves = Utils.decodeList(fe.getTag().toString(), BOOKSHELF_SEPERATOR);
+										// Start a new list
+										String newList = "";
+										String newText = "";
+										for(String s : shelves) {
+											// If item in underlying list is non-blank...
+											if (s != null && !s.equals("")) {
+												// If item in underlying list does not match...
+												if (!s.equalsIgnoreCase(name)) {
+													// Encode item
+													String item = Utils.encodeListItem(s, BOOKSHELF_SEPERATOR);
+													// Append to list (or set to only element if list empty)
+													if (newList.equals("")) {
+														newList = Utils.encodeListItem(s, BOOKSHELF_SEPERATOR);
+														newText = s;
+													} else {
+														newList += BOOKSHELF_SEPERATOR + item;
+														newText += ", " + s;
+													}
+												}
+											}
+										}
+										fe.setValue(newText);
+										fe.setTag(newList);
 									}
 									return;
 								}
@@ -445,7 +476,9 @@ public class BookEditFields extends Activity {
 				mSeriesList = (ArrayList<Series>) savedInstanceState.getSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY);
 				fixupSeriesList();	// Will update related display fields/button
 				mFields.getField(R.id.date_published).setValue(savedInstanceState.getString(CatalogueDBAdapter.KEY_DATE_PUBLISHED));
-				mFields.getField(R.id.bookshelf_text).setValue(savedInstanceState.getString("bookshelf_text"));
+				Field fe = mFields.getField(R.id.bookshelf_text);
+				fe.setValue(savedInstanceState.getString("bookshelf_text"));
+				fe.setTag(savedInstanceState.getString("bookshelf_list"));
 			}
 
 			// Setup the Save/Add/Anthology UI elements
@@ -759,11 +792,21 @@ public class BookEditFields extends Activity {
 				Field bookshelfTextFe = mFields.getField(R.id.bookshelf_text);
 				bookshelves = mDbHelper.fetchAllBookshelvesByBook(mRowId);
 				String bookshelves_text = "";
+				String bookshelves_list = "";
 				while (bookshelves.moveToNext()) {
-					bookshelves_text += bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)) + BOOKSHELF_SEPERATOR;
+					String name = bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF));
+					String encoded_name = Utils.encodeListItem(name, BOOKSHELF_SEPERATOR);
+					if (bookshelves_text.equals("")) {
+						bookshelves_text = name;
+						bookshelves_list = encoded_name;
+					} else {
+						bookshelves_text += ", " + name;
+						bookshelves_list += BOOKSHELF_SEPERATOR + encoded_name;
+					}
 				}
 				bookshelfTextFe.setValue(bookshelves_text);
-				
+				bookshelfTextFe.setTag(bookshelves_list);
+
 				Integer anthNo = book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
 				mFields.getField(R.id.anthology).setValue(anthNo.toString());
 				
@@ -799,13 +842,10 @@ public class BookEditFields extends Activity {
 							}
 						}
 					}
-					//Display the selected bookshelves
-					final String currShelf = BookCatalogueApp.getAppPreferences().getString(BooksOnBookshelf.PREF_BOOKSHELF, "");
-					if (currShelf.equals("")) {
-						mFields.getField(R.id.bookshelf_text).setValue(mDbHelper.getBookshelfName(1) + BOOKSHELF_SEPERATOR);
-					} else {
-						mFields.getField(R.id.bookshelf_text).setValue(currShelf + BOOKSHELF_SEPERATOR);
-					}
+
+					initDefaultShelf();
+
+					// Author/Series
 					mAuthorList = (ArrayList<Author>) values.getSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
 					mSeriesList = (ArrayList<Series>) values.getSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY);
 				}
@@ -818,13 +858,9 @@ public class BookEditFields extends Activity {
 			// Manual Add
 			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + this.getResources().getString(R.string.menu_insert));
 			
-			//Display the selected bookshelves
-			final String currShelf = BookCatalogueApp.getAppPreferences().getString(BooksOnBookshelf.PREF_BOOKSHELF, "");
-			if (currShelf.equals("")) {
-				mFields.getField(R.id.bookshelf_text).setValue(mDbHelper.getBookshelfName(1) + BOOKSHELF_SEPERATOR);
-			} else {
-				mFields.getField(R.id.bookshelf_text).setValue(currShelf + BOOKSHELF_SEPERATOR);
-			}			
+			initDefaultShelf();
+
+			// Author/Series
 			mAuthorList = new ArrayList<Author>();
 			mSeriesList = new ArrayList<Series>();
 		}
@@ -834,6 +870,20 @@ public class BookEditFields extends Activity {
 		
 	}
 	
+	/**
+ 	 * Use the currently selected bookshelf as default
+	 */
+	private void initDefaultShelf() {
+		String currShelf = BookCatalogueApp.getAppPreferences().getString(BooksOnBookshelf.PREF_BOOKSHELF, "");
+		if (currShelf.equals("")) {
+			currShelf = mDbHelper.getBookshelfName(1);
+		}
+		String encoded_shelf = Utils.encodeListItem(currShelf, BOOKSHELF_SEPERATOR);
+		Field fe = mFields.getField(R.id.bookshelf_text);
+		fe.setValue(currShelf);
+		fe.setTag(encoded_shelf);		
+	}
+
 	private void setCoverImage() {
 		ImageView iv = (ImageView) findViewById(R.id.row_img);
 		Utils.fetchFileIntoImageView(getCoverFile(), iv, mThumbEditSize, mThumbEditSize, true );		
@@ -960,7 +1010,10 @@ public class BookEditFields extends Activity {
 		outState.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, mSeriesList);
 		// ...including special text stored in TextViews and the like
 		outState.putString(CatalogueDBAdapter.KEY_DATE_PUBLISHED, mFields.getField(R.id.date_published).getValue().toString());
-		outState.putString("bookshelf_text", mFields.getField(R.id.bookshelf_text).getValue().toString());
+		
+		Field fe = mFields.getField(R.id.bookshelf_text);
+		outState.putString("bookshelf_list", fe.getTag().toString());
+		outState.putString("bookshelf_text", fe.getValue().toString());
 	}
 
 	/**
@@ -1045,6 +1098,9 @@ public class BookEditFields extends Activity {
 			Toast.makeText(this, getResources().getText(R.string.title_required), Toast.LENGTH_LONG).show();
 			return;			
 		}
+
+		Field fe = mFields.getField(R.id.bookshelf_text);
+		mStateValues.putString("bookshelf_list", fe.getTag().toString());
 
 		mStateValues.putSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mAuthorList);
 		mStateValues.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, mSeriesList);

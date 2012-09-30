@@ -279,8 +279,8 @@ public class ImportThread extends ManagedTask {
 				
 				
 				// Make sure we have bookself_text if we imported bookshelf
-				if (values.containsKey(CatalogueDBAdapter.KEY_BOOKSHELF) && !values.containsKey("bookshelf_text")) {
-					values.putString("bookshelf_text", values.getString(CatalogueDBAdapter.KEY_BOOKSHELF));
+				if (values.containsKey(CatalogueDBAdapter.KEY_BOOKSHELF) && !values.containsKey(CatalogueDBAdapter.KEY_BOOKSHELF)) {
+					values.putString("bookshelf_list", values.getString(CatalogueDBAdapter.KEY_BOOKSHELF));
 				}
 
 				try {
@@ -356,6 +356,8 @@ public class ImportThread extends ManagedTask {
 					}
 					int id = Integer.parseInt(Utils.getAsString(values, CatalogueDBAdapter.KEY_ROWID));
 					if (anthology == CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS || anthology == CatalogueDBAdapter.ANTHOLOGY_SAME_AUTHOR) {
+						// We have anthology details, delete the current details.
+						mDbHelper.deleteAnthologyTitles(id);
 						int oldi = 0;
 						String anthology_titles = values.getString("anthology_titles");
 						try {

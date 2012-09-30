@@ -3347,9 +3347,9 @@ public class CatalogueDBAdapter {
 
 			long rowId = mDb.insert(DB_TB_BOOKS, null, initialValues);
 
-			String bookshelf = values.getString("bookshelf_text");
+			String bookshelf = values.getString("bookshelf_list");
 			if (bookshelf != null) {
-				createBookshelfBooks(rowId, bookshelf);
+				createBookshelfBooks(rowId, Utils.decodeList(bookshelf, BookEditFields.BOOKSHELF_SEPERATOR));
 			}
 
 			createBookAuthors(rowId, authors);
@@ -3392,7 +3392,7 @@ public class CatalogueDBAdapter {
 	 * @param mRowId The book id
 	 * @param bookshelf A separated string of bookshelf names
 	 */
-	public void createBookshelfBooks(long mRowId, String bookshelf) {
+	public void createBookshelfBooks(long mRowId, ArrayList<String> bookshelves) {
 		if (mDeleteBookshelfBooksStmt == null) {
 			mDeleteBookshelfBooksStmt = mStatements.add("mDeleteBookshelfBooksStmt", "Delete from " + DB_TB_BOOK_BOOKSHELF_WEAK + " Where " + KEY_BOOK + " = ?");
 		}
@@ -3406,9 +3406,9 @@ public class CatalogueDBAdapter {
 		}
 
 		//Insert the new ones
-		String[] bookshelves = bookshelf.split(BookEditFields.BOOKSHELF_SEPERATOR.trim());
-		for (int i = 0; i<bookshelves.length; i++) {
-			String name = bookshelves[i].trim();
+		//String[] bookshelves = bookshelf.split(BookEditFields.BOOKSHELF_SEPERATOR.toString());
+		for (int i = 0; i < bookshelves.size(); i++) {
+			String name = bookshelves.get(i).trim();
 			if (name.equals("")) {
 				continue;
 			}
@@ -3869,10 +3869,10 @@ public class CatalogueDBAdapter {
 				args.put(DOM_LAST_UPDATE_DATE.name, Utils.toSqlDateTime(Calendar.getInstance().getTime()));
 			success = mDb.update(DB_TB_BOOKS, args, KEY_ROWID + "=" + rowId, null) > 0;
 
-			if (values.containsKey("bookshelf_text")) {
-				String bookshelf = values.getString("bookshelf_text");
+			if (values.containsKey("bookshelf_list")) {
+				String bookshelf = values.getString("bookshelf_list");
 				if (bookshelf != null) {
-					createBookshelfBooks(rowId, bookshelf);
+					createBookshelfBooks(rowId, Utils.decodeList(bookshelf, BookEditFields.BOOKSHELF_SEPERATOR));
 				}			
 			}
 
@@ -4170,14 +4170,29 @@ public class CatalogueDBAdapter {
 	}
 
 	/**
-	 * Delete the anthology record with the given rowId (not to be confused with the book rowId
+	 * Delete ALL the anthology records for a given book rowId, if any
 	 * 
-	 * @param rowId id of the anthology to delete
+	 * @param bookRowId id of the book
 	 * @return true if deleted, false otherwise
 	 */
-	public boolean deleteAnthologyTitle(long rowId) {
+	public boolean deleteAnthologyTitles(long bookRowId) {
+		boolean success;
+		// Delete the anthology entries for the book
+		success = mDb.delete(DB_TB_ANTHOLOGY, KEY_BOOK + "=" + bookRowId, null) > 0;
+		// Cleanup the author list, if necessary (we may have deleted the only work by an author)
+		purgeAuthors();
+		return success;
+	}
+
+	/**
+	 * Delete the anthology record with the given rowId (not to be confused with the book rowId
+	 * 
+	 * @param anthRowId id of the anthology to delete
+	 * @return true if deleted, false otherwise
+	 */
+	public boolean deleteAnthologyTitle(long anthRowId) {
 		// Find the soon to be deleted title position#
-		Cursor anthology = fetchAnthologyTitleById(rowId);
+		Cursor anthology = fetchAnthologyTitleById(anthRowId);
 		anthology.moveToFirst();
 		int position = anthology.getInt(anthology.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_POSITION));
 		int book = anthology.getInt(anthology.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_BOOK));
@@ -4185,7 +4200,7 @@ public class CatalogueDBAdapter {
 
 		boolean success;
 		// Delete the title
-		success = mDb.delete(DB_TB_ANTHOLOGY, KEY_ROWID + "=" + rowId, null) > 0;
+		success = mDb.delete(DB_TB_ANTHOLOGY, KEY_ROWID + "=" + anthRowId, null) > 0;
 		purgeAuthors();
 		// Move all titles past the deleted book up one position
 		String sql = "UPDATE " + DB_TB_ANTHOLOGY + 

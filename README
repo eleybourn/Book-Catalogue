@@ -41,6 +41,9 @@ Features include;
   case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+new in 4.1.x
+* Fix bug relating to commas in bookshelf names
+
 new in 4.1
 * new style options: location and date read
 * sharing can now send via any app that advertises the interface (eg. mail)

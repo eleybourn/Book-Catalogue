@@ -190,13 +190,13 @@ public class ExportThread extends ManagedTask {
 					String bookshelves_name_text = "";
 					while (bookshelves.moveToNext()) {
 						bookshelves_id_text += bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_ROWID)) + BookEditFields.BOOKSHELF_SEPERATOR;
-						bookshelves_name_text += bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)) + BookEditFields.BOOKSHELF_SEPERATOR;
+						bookshelves_name_text += Utils.encodeListItem(bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)),BookEditFields.BOOKSHELF_SEPERATOR) + BookEditFields.BOOKSHELF_SEPERATOR;
 					}
 					bookshelves.close();
-					
+
 					String authorDetails = Utils.getAuthorUtils().encodeList( mDbHelper.getBookAuthorList(id), '|' );
 					String seriesDetails = Utils.getSeriesUtils().encodeList( mDbHelper.getBookSeriesList(id), '|' );
-					
+
 					row.setLength(0);
 					row.append("\"" + formatCell(id) + "\",");
 					row.append("\"" + formatCell(authorDetails) + "\",");

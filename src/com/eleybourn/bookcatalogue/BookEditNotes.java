@@ -24,6 +24,7 @@ package com.eleybourn.bookcatalogue;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -33,6 +34,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -49,6 +51,8 @@ import com.eleybourn.bookcatalogue.Fields.FieldValidator;
 public class BookEditNotes extends Activity {
 
 	private Fields mFields;
+	private boolean mIsDirty = false;
+
 	private Button mConfirmButton;
 	private Button mCancelButton;
 	private Long mRowId;
@@ -110,6 +114,10 @@ public class BookEditNotes extends Activity {
 			mDbHelper.open();
 
 			setContentView(R.layout.edit_book_notes);
+
+			if (savedInstanceState != null) {
+				mIsDirty = savedInstanceState.getBoolean("Dirty");
+			}
 
 			mFields = new Fields(this);
 			Field f;
@@ -333,14 +341,17 @@ public class BookEditNotes extends Activity {
 	}
 	
 	/**
-	 * If 'back' is pressed, and the user has made changes, ask them if they really want to lose the changes
+	 * If 'back' is pressed, and the user has made changes, ask them if they really want to lose the changes.
+	 * 
+	 * We don't use onBackPressed because it does not work with API level 4.
 	 */
 	@Override
-	public void onBackPressed() {
-		if (mFields.isEdited()) {
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK && (mIsDirty || mFields.isEdited())) {
 			StandardDialogs.showConfirmUnsavedEditsDialog(this);
+			return true;
 		} else {
-			super.onBackPressed();			
+			return super.onKeyDown(keyCode, event);
 		}
 	}
 
@@ -348,6 +359,9 @@ public class BookEditNotes extends Activity {
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		outState.putLong(CatalogueDBAdapter.KEY_ROWID, mRowId);
+		if (!mIsDirty)
+			mIsDirty = mFields.isEdited();
+		outState.putBoolean("Dirty", mIsDirty);
 	}
 
 	@Override

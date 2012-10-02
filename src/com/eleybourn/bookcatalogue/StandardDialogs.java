@@ -52,10 +52,10 @@ public class StandardDialogs {
 	public static void showConfirmUnsavedEditsDialog(final Activity a){
 		AlertDialog.Builder dialog = new Builder(a);
 
-		dialog.setTitle(R.string.confirm_exit);
-		dialog.setMessage(R.string.you_may_have_unsaved_changes);
+		dialog.setTitle(R.string.details_have_changed);
+		dialog.setMessage(R.string.you_have_unsaved_changes);
 		
-		dialog.setPositiveButton(R.string.ok, new AlertDialog.OnClickListener() {
+		dialog.setPositiveButton(R.string.exit, new AlertDialog.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.dismiss();
@@ -63,7 +63,7 @@ public class StandardDialogs {
 			}
 		});
 
-		dialog.setNegativeButton(R.string.cancel, new AlertDialog.OnClickListener() {
+		dialog.setNegativeButton(R.string.continue_editing, new AlertDialog.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.dismiss();

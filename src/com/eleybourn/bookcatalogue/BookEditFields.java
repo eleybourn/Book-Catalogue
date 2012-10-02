@@ -51,6 +51,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -74,6 +75,7 @@ import com.eleybourn.bookcatalogue.StandardDialogs.SimpleDialogOnClickListener;
 public class BookEditFields extends Activity {
 
 	private Fields mFields = null;
+	private boolean mIsDirty = false;
 
 	private Button mConfirmButton;
 	private Button mCancelButton;
@@ -170,7 +172,11 @@ public class BookEditFields extends Activity {
 			if (mRowId == null) {
 				getRowId();
 			}
-			
+
+			if (savedInstanceState != null) {
+				mIsDirty = savedInstanceState.getBoolean("Dirty");
+			}
+
 			super.onCreate(savedInstanceState);
 			mDbHelper = new CatalogueDBAdapter(this);
 			mDbHelper.open();
@@ -1014,20 +1020,24 @@ public class BookEditFields extends Activity {
 		Field fe = mFields.getField(R.id.bookshelf_text);
 		outState.putString("bookshelf_list", fe.getTag().toString());
 		outState.putString("bookshelf_text", fe.getValue().toString());
+
+		if (!mIsDirty)
+			mIsDirty = mFields.isEdited();
+		outState.putBoolean("Dirty", mIsDirty);
 	}
 
 	/**
 	 * If 'back' is pressed, and the user has made changes, ask them if they really want to lose the changes.
 	 * 
-	 * This code is only called in API level 5, so we tag the method as such to avoid API warnings.
+	 * We don't use onBackPressed because it does not work with API level 4.
 	 */
-	@TargetApi(5)
 	@Override
-	public void onBackPressed() {
-		if (mFields.isEdited()) {
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK && (mIsDirty || mFields.isEdited())) {
 			StandardDialogs.showConfirmUnsavedEditsDialog(this);
+			return true;
 		} else {
-			super.onBackPressed();			
+			return super.onKeyDown(keyCode, event);
 		}
 	}
 

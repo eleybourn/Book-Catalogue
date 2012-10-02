@@ -606,6 +606,10 @@
 <string name="read_month">Added Month</string>
 <string name="read_day">Added Day</string>
 <string name="sort_read_date">Date Read</string>
+<string name="details_have_changed">Details Have Changed</string>
+<string name="you_have_unsaved_changes">You have unsaved changes, if you exit now they will be lost.</string>
+<string name="exit">Exit</string>
+<string name="continue_editing">Continue Editing</string>
 
 </resources>
 

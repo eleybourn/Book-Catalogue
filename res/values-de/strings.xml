@@ -585,4 +585,13 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
 <string name="show_summary_details">Zusammenfassung anzeigen</string>
 <string name="x_is_not_a_valid_isbn">%1$s ist keine gültige ISBN</string>
 <string name="beep_if_scanned_isbn_invalid">Tonsignal, falls die gescannte ISBN ungültig ist</string>
+<string name="no_image_found">Kein Bild gefunden</string>
+<string name="could_not_copy_image">Konnte Bild nicht kopieren</string>
+<string name="this_option_is_not_available_until_the_book_is_saved">Diese Option ist erst verfügbar, wenn das Buch gespeichert wurde.</string>
+<string name="scan_barcode_isbn">Barcode/ISBN scannen</string>
+<string name="enter_isbn">ISBN eingeben</string>
+<string name="allow_asin">ASIN erlauben</string>
+<string name="x_is_not_a_valid_isbn_or_asin">%1$s ist keine gültige ISBN oder ASIN</string>
+<string name="confirm_exit">Wirklich beenden?</string>
+<string name="you_may_have_unsaved_changes">Einige Änderungen wurden noch nicht gespeichert. Wollen Sie die Anwendung beenden, ohne die Änderungen zu speichern?</string>
 </resources>

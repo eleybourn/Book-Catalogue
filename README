@@ -41,6 +41,10 @@ Features include;
   case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+new in 4.1.2
+* Translation updates (Robert Wetzlmayr)
+* Bug fix for 'read' date import from goodreads
+
 new in 4.1.1
 * Fix bug relating to commas in bookshelf names creating extra shelves
 * Removed use of onBackPressed to ensure compatible with Android 1.6

@@ -135,6 +135,16 @@ public class BookEditLoaned extends Activity {
 		
 	}
 	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+
+		// Need to save local data that is not stored in EDITABLE views 
+		// ...including special text stored in TextViews and the like (TextViews are not restored automatically)
+		outState.putLong(CatalogueDBAdapter.KEY_ROWID, mRowId);
+	}
+
+
 	/**
 	 * Display the loan to page. It is slightly different to the existing loan page
 	 */

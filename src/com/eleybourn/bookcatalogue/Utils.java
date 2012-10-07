@@ -41,6 +41,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.TimeZone;
 
@@ -98,45 +99,36 @@ public class Utils {
 	static { mDateFullHMSqlSdf.setTimeZone(tzUtc); }
 	private static SimpleDateFormat mDateSqlSdf = new SimpleDateFormat("yyyy-MM-dd");
 	static { mDateSqlSdf.setTimeZone(tzUtc); }
+	static DateFormat mDateDispSdf = DateFormat.getDateInstance(java.text.DateFormat.MEDIUM);
 
-	private static SimpleDateFormat mDate1HMSSdf = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
-	private static SimpleDateFormat mDate1HMSdf = new SimpleDateFormat("dd-MMM-yyyy HH:mm");
-	private static SimpleDateFormat mDate1Sdf = new SimpleDateFormat("dd-MMM-yyyy");
-	private static SimpleDateFormat mDate2HMSSdf = new SimpleDateFormat("dd-MMM-yy HH:mm:ss");
-	private static SimpleDateFormat mDate2HMSdf = new SimpleDateFormat("dd-MMM-yy HH:mm");
-	private static SimpleDateFormat mDate2Sdf = new SimpleDateFormat("dd-MMM-yy");
-	private static SimpleDateFormat mDateUSHMSSdf = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
-	private static SimpleDateFormat mDateUSHMSdf = new SimpleDateFormat("MM-dd-yyyy HH:mm");
-	private static SimpleDateFormat mDateUSSdf = new SimpleDateFormat("MM-dd-yyyy");
-	private static SimpleDateFormat mDateEngHMSSdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-	private static SimpleDateFormat mDateEngHMSdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-	private static SimpleDateFormat mDateEngSdf = new SimpleDateFormat("dd-MM-yyyy");
-	private static DateFormat mDateDispSdf = DateFormat.getDateInstance(java.text.DateFormat.MEDIUM);
-	//private static DateFormat mDateTimeDispSdf = DateFormat.getDateInstance(java.text.DateFormat.FULL);
-	// Dates of the form: 'Fri May 5 17:23:11 -0800 2012'
-	private static final SimpleDateFormat mLongUnixHMSSdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss ZZZZ yyyy");
-	private static final SimpleDateFormat mLongUnixHMSdf = new SimpleDateFormat("EEE MMM dd HH:mm ZZZZ yyyy");
-	private static final SimpleDateFormat mLongUnixSdf = new SimpleDateFormat("EEE MMM dd ZZZZ yyyy");
+	private static final ArrayList<SimpleDateFormat> mParseDateFormats = new ArrayList<SimpleDateFormat>();
+	static {
+		final boolean isEnglish = (Locale.getDefault().getLanguage() == Locale.ENGLISH.getLanguage());
+		addParseDateFormat(!isEnglish, "dd-MMM-yyyy HH:mm:ss");
+		addParseDateFormat(!isEnglish, "dd-MMM-yyyy HH:mm");
+		addParseDateFormat(!isEnglish, "dd-MMM-yyyy");
+		
+		addParseDateFormat(!isEnglish, "dd-MMM-yy HH:mm:ss");
+		addParseDateFormat(!isEnglish, "dd-MMM-yy HH:mm");
+		addParseDateFormat(!isEnglish, "dd-MMM-yy");
 
-	/** List of all formats, keep the ones with timezone info near the start */
-	private static final SimpleDateFormat[] mParseDateFormats = new SimpleDateFormat[] {
-			mLongUnixHMSSdf,
-			mLongUnixHMSdf,
-			mLongUnixSdf,
-			mDateFullHMSSqlSdf,
-			mDateFullHMSqlSdf,
-			mDateSqlSdf,
-			mDate1HMSSdf,
-			mDate1HMSdf,
-			mDate1Sdf,
-			mDate2HMSSdf,
-			mDate2HMSdf,
-			mDate2Sdf,
-			mDateUSSdf,
-			mDateEngHMSSdf,
-			mDateEngHMSdf,
-			mDateEngSdf,
-			};
+		addParseDateFormat(false, "MM-dd-yyyy HH:mm:ss");
+		addParseDateFormat(false, "MM-dd-yyyy HH:mm");
+		addParseDateFormat(false, "MM-dd-yyyy");
+
+		addParseDateFormat(false, "dd-MM-yyyy HH:mm:ss");
+		addParseDateFormat(false, "dd-MM-yyyy HH:mm");
+		addParseDateFormat(false, "dd-MM-yyyy");
+
+		// Dates of the form: 'Fri May 5 17:23:11 -0800 2012'
+		addParseDateFormat(!isEnglish, "EEE MMM dd HH:mm:ss ZZZZ yyyy");
+		addParseDateFormat(!isEnglish, "EEE MMM dd HH:mm ZZZZ yyyy");
+		addParseDateFormat(!isEnglish, "EEE MMM dd ZZZZ yyyy");
+
+		mParseDateFormats.add(mDateFullHMSSqlSdf);
+		mParseDateFormats.add(mDateFullHMSqlSdf);
+		mParseDateFormats.add(mDateSqlSdf);
+	}
 
 	public static final String APP_NAME = "Book Catalogue";
 	public static final boolean USE_LT = true;
@@ -152,6 +144,18 @@ public class Utils {
 	//public static final boolean USE_LT = true;
 	//public static final boolean USE_BARCODE = false;
 
+	/**
+	 * Add a format to the parser list; if nedEnglish is set, also add the localized english version
+	 * 
+	 * @param needEnglish
+	 * @param format
+	 */
+	private static void addParseDateFormat(boolean needEnglish, String format) {
+		mParseDateFormats.add(new SimpleDateFormat(format));
+		if (needEnglish)
+			mParseDateFormats.add(new SimpleDateFormat(format, Locale.ENGLISH));
+	}
+	
 	public static String toSqlDateOnly(Date d) {
 		return mDateSqlSdf.format(d);
 	}

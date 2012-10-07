@@ -175,8 +175,15 @@ public class BookEditNotes extends Activity {
 				getRowId();
 			}
 
-			if (savedInstanceState == null)
+			if (savedInstanceState == null) {
 				populateFields();
+			} else {
+				restoreField(savedInstanceState, CatalogueDBAdapter.KEY_READ_START, R.id.read_start);
+				restoreField(savedInstanceState, CatalogueDBAdapter.KEY_READ_END, R.id.read_end);
+			}
+
+			if (mRowId != null && mRowId > 0)
+				mConfirmButton.setText(R.string.confirm_save);
 
 			mConfirmButton.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
@@ -226,6 +233,18 @@ public class BookEditNotes extends Activity {
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
+	}
+
+	/**
+	 * Restore a single field from a saved state
+	 *
+	 * @param savedInstanceState 	the saved state
+	 * @param key					key in state for value to restore
+	 * @param fieldId				field to set
+	 */
+	private void restoreField(Bundle savedInstanceState, String key, int fieldId) {
+		final Field fe = mFields.getField(fieldId);
+		fe.setValue(savedInstanceState.getString(key));
 	}
 
 	@Override
@@ -325,8 +344,6 @@ public class BookEditNotes extends Activity {
 
 				mFields.setFromCursor(book);
 
-				mConfirmButton.setText(R.string.confirm_save);
-
 			} finally {
 				// Tidy up
 				if (book != null)
@@ -361,7 +378,13 @@ public class BookEditNotes extends Activity {
 		outState.putLong(CatalogueDBAdapter.KEY_ROWID, mRowId);
 		if (!mIsDirty)
 			mIsDirty = mFields.isEdited();
+
+		// DONT FORGET TO UPDATE onCreate to read these values back.
 		outState.putBoolean("Dirty", mIsDirty);
+		// Need to save local data that is not stored in EDITABLE views 
+		// ...including special text stored in TextViews and the like (TextViews are not restored automatically)
+		outState.putString(CatalogueDBAdapter.KEY_READ_START, mFields.getField(R.id.read_start).getValue().toString());
+		outState.putString(CatalogueDBAdapter.KEY_READ_END, mFields.getField(R.id.read_end).getValue().toString());
 	}
 
 	@Override

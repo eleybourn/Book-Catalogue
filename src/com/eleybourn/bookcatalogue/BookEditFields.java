@@ -355,13 +355,13 @@ public class BookEditFields extends Activity {
 					LinearLayout root = (LinearLayout) dialog.findViewById(R.id.bookshelf_dialog_root);
 					
 					if (bookshelves_for_book.moveToFirst()) { 
+						final String shelves = BOOKSHELF_SEPERATOR + mFields.getField(R.id.bookshelf_text).getTag().toString() + BOOKSHELF_SEPERATOR;
 						do { 
 							final CheckBox cb = new CheckBox(BookEditFields.this);
 							boolean checked = false;
 							String db_bookshelf = bookshelves_for_book.getString(bookshelves_for_book.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)).trim();
 							String db_encoded_bookshelf = Utils.encodeListItem(db_bookshelf, BOOKSHELF_SEPERATOR);
-							Field fe = mFields.getField(R.id.bookshelf_text);
-							if (fe.getTag().toString().indexOf(db_encoded_bookshelf + BOOKSHELF_SEPERATOR) > -1) {
+							if (shelves.indexOf(BOOKSHELF_SEPERATOR + db_encoded_bookshelf + BOOKSHELF_SEPERATOR) > -1) {
 								checked = true;
 							}
 							cb.setChecked(checked);

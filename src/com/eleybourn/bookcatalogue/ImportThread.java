@@ -34,7 +34,7 @@ public class ImportThread extends ManagedTask {
 	private final String mSharedStoragePath;
 	private CatalogueDBAdapter mDbHelper;
 	
-	public class ImportException extends RuntimeException {
+	public static class ImportException extends RuntimeException {
 		private static final long serialVersionUID = 1660687786319003483L;
 
 		ImportException(String s) {
@@ -187,7 +187,7 @@ public class ImportThread extends ManagedTask {
 				// Validate ID
 				String idStr = values.getString(CatalogueDBAdapter.KEY_ROWID.toLowerCase());
 				Long idLong;
-				if (idStr == "") {
+				if (idStr == null || idStr == "") {
 					hasNumericId = false;
 					idLong = 0L;
 				} else {
@@ -279,7 +279,7 @@ public class ImportThread extends ManagedTask {
 				
 				
 				// Make sure we have bookself_text if we imported bookshelf
-				if (values.containsKey(CatalogueDBAdapter.KEY_BOOKSHELF) && !values.containsKey(CatalogueDBAdapter.KEY_BOOKSHELF)) {
+				if (values.containsKey(CatalogueDBAdapter.KEY_BOOKSHELF) && !values.containsKey("bookshelf_text")) {
 					values.putString("bookshelf_list", values.getString(CatalogueDBAdapter.KEY_BOOKSHELF));
 				}
 

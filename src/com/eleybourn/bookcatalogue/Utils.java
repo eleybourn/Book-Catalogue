@@ -319,7 +319,7 @@ public class Utils {
 		 * @param s		String representing the list
 		 * @return		Array of strings resulting from list
 		 */
-		ArrayList<T> decodeList(String s, char delim, boolean allowBlank) {
+		public ArrayList<T> decodeList(String s, char delim, boolean allowBlank) {
 			StringBuilder ns = new StringBuilder();
 			ArrayList<T> list = new ArrayList<T>();
 			if (s == null)
@@ -801,7 +801,7 @@ public class Utils {
 	 * 
 	 * @return			The joined strings
 	 */
-	static String join(String[] sa, String delim) {
+	public static String join(String[] sa, String delim) {
 		// Simple case, return empty string
 		if (sa.length <= 0)
 			return "";

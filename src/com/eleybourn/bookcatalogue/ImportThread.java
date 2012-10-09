@@ -344,6 +344,8 @@ public class ImportThread extends ManagedTask {
 				}
 
 				if (values.containsKey(CatalogueDBAdapter.KEY_LOANED_TO) && !values.get(CatalogueDBAdapter.KEY_LOANED_TO).equals("")) {
+					int id = Integer.parseInt(Utils.getAsString(values, CatalogueDBAdapter.KEY_ROWID));
+					mDbHelper.deleteLoan(id);
 					mDbHelper.createLoan(values);
 				}
 
@@ -354,8 +356,8 @@ public class ImportThread extends ManagedTask {
 					} catch (Exception e) {
 						anthology = 0;
 					}
-					int id = Integer.parseInt(Utils.getAsString(values, CatalogueDBAdapter.KEY_ROWID));
 					if (anthology == CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS || anthology == CatalogueDBAdapter.ANTHOLOGY_SAME_AUTHOR) {
+						int id = Integer.parseInt(Utils.getAsString(values, CatalogueDBAdapter.KEY_ROWID));
 						// We have anthology details, delete the current details.
 						mDbHelper.deleteAnthologyTitles(id);
 						int oldi = 0;
@@ -369,7 +371,7 @@ public class ImportThread extends ManagedTask {
 								if (j > -1) {
 									String anth_title = extracted_title.substring(0, j).trim();
 									String anth_author = extracted_title.substring((j+1)).trim();
-									mDbHelper.createAnthologyTitle(id, anth_author, anth_title);
+									mDbHelper.createAnthologyTitle(id, anth_author, anth_title, true);
 								}
 								oldi = i + 1;
 								i = anthology_titles.indexOf("|", oldi);

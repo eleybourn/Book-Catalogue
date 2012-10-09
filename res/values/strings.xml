@@ -610,6 +610,7 @@
 <string name="you_have_unsaved_changes">You have unsaved changes, if you exit now they will be lost.</string>
 <string name="exit">Exit</string>
 <string name="continue_editing">Continue Editing</string>
+<string name="the_title_already_exists">The title already exists</string>
 
 </resources>
 

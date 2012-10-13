@@ -80,7 +80,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 public class Utils {
 	// External DB for cover thumbnails
@@ -869,7 +868,7 @@ public class Utils {
 	 * @param db		Database connection to lookup IDs
 	 * @param list		List to clean up
 	 */
-	public static <T extends ItemWithIdFixup> void pruneList(CatalogueDBAdapter db, ArrayList<T> list) {
+	public static <T extends ItemWithIdFixup> boolean pruneList(CatalogueDBAdapter db, ArrayList<T> list) {
 		Hashtable<String,Boolean> names = new Hashtable<String,Boolean>();
 		Hashtable<Long,Boolean> ids = new Hashtable<Long,Boolean>();
 
@@ -898,6 +897,7 @@ public class Utils {
 		}
 		for(int i = toDelete.size() - 1; i >= 0; i--)
 			list.remove(toDelete.get(i).intValue());
+		return toDelete.size() > 0;
 	}
 
 	/**
@@ -1625,5 +1625,30 @@ public class Utils {
 
 		
 	}
+	
+	/**
+	 * Debug utility to dump an entire view hierarchy to the output.
+	 * 
+	 * @param depth
+	 * @param v
+	 */
+	//public static void dumpViewTree(int depth, View v) {
+	//	for(int i = 0; i < depth*4; i++)
+	//		System.out.print(" ");
+	//	System.out.print(v.getClass().getName() + " (" + v.getId() + ")" + (v.getId() == R.id.descriptionLabelzzz? "DESC! ->" : " ->"));
+	//	if (v instanceof TextView) {
+	//		String s = ((TextView)v).getText().toString();
+	//		System.out.println(s.substring(0, Math.min(s.length(), 20)));
+	//	} else {
+	//		System.out.println();
+	//	}
+	//	if (v instanceof ViewGroup) {
+	//		ViewGroup g = (ViewGroup)v;
+	//		for(int i = 0; i < g.getChildCount(); i++) {
+	//			dumpViewTree(depth+1, g.getChildAt(i));
+	//		}
+	//	}
+	//}
+
 }
 

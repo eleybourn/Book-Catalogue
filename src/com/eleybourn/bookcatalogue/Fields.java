@@ -30,11 +30,16 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.Html;
+import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.Spinner;
@@ -111,6 +116,12 @@ public class Fields extends ArrayList<Fields.Field> {
 	private WeakReference<Activity> mActivity = null;
 	SharedPreferences mPrefs = null;
 
+	public interface AfterFieldChangeListener {
+		void afterFieldChange(Field field, String newValue);
+	}
+	
+	private AfterFieldChangeListener mAfterFieldChangeListener = null;
+	
 	/**
 	 * Constructor
 	 * 
@@ -121,6 +132,18 @@ public class Fields extends ArrayList<Fields.Field> {
 		super();
 		mActivity = new WeakReference<Activity>(a);
 		mPrefs = a.getSharedPreferences("bookCatalogue", android.content.Context.MODE_PRIVATE);
+	}
+
+	/**
+	 * Set the listener for field changes
+	 * 
+	 * @param listener
+	 * @return
+	 */
+	public AfterFieldChangeListener setAfterFieldChangeListener(AfterFieldChangeListener listener) {
+		AfterFieldChangeListener old = mAfterFieldChangeListener;
+		mAfterFieldChangeListener = listener;
+		return old;
 	}
 
 	/**
@@ -256,18 +279,75 @@ public class Fields extends ArrayList<Fields.Field> {
 
 	/**
 	 * Implementation that stores and retrieves data from a TextView.
-	 * Just uses for defined formatter and setText() and getText().
+	 * This is treated differently to an EditText in that HTML is 
+	 * displayed properly.
 	 * 
 	 * @author Philip Warner
 	 *
 	 */
 	static public class TextViewAccessor implements FieldDataAccessor {
+		private boolean mFormatHtml;
+		private String mRawValue;
+
+		public TextViewAccessor(boolean formatHtml) {
+			mFormatHtml = formatHtml;
+		}
 		public void set(Field field, Cursor c) {
 			set(field, c.getString(c.getColumnIndex(field.column)));
 		}
 		public void set(Field field, String s) {
+			mRawValue = s;
 			TextView v = (TextView) field.getView();
-			v.setText(field.format(s));
+			if (mFormatHtml && s != null) {
+				v.setText(Html.fromHtml(field.format(s)));
+				v.setFocusable(false);
+				v.setTextColor(BookCatalogueApp.context.getResources().getColor(android.R.color.primary_text_dark_nodisable));
+			} else {
+				v.setText(field.format(s));
+			}
+		}
+		public void get(Field field, Bundle values) {
+			//TextView v = (TextView) field.getView();
+			//values.putString(field.column, field.extract(v.getText().toString()));
+			values.putString(field.column, mRawValue);
+		}
+		public Object get(Field field) {
+			return mRawValue;
+			//return field.extract(((TextView) field.getView()).getText().toString());
+		}
+	}
+
+	/**
+	 * Implementation that stores and retrieves data from an EditText.
+	 * Just uses for defined formatter and setText() and getText().
+	 * 
+	 * @author Philip Warner
+	 *
+	 */
+	static public class EditTextAccessor implements FieldDataAccessor {
+		private boolean mIsSetting = false;
+
+		public void set(Field field, Cursor c) {
+			set(field, c.getString(c.getColumnIndex(field.column)));
+		}
+		public void set(Field field, String s) {
+			synchronized(this) {
+				if (mIsSetting)
+					return; // Avoid recursion now we watch text
+				mIsSetting = true;				
+			}
+			try {
+				TextView v = (TextView) field.getView();
+				String newVal = field.format(s);
+				String oldVal = v.getText().toString();
+				if (newVal == null && oldVal == null)
+					return;
+				if (newVal != null && oldVal != null && newVal.equals(oldVal))
+					return;
+				v.setText(newVal);
+			} finally {
+				mIsSetting = false;				
+			}
 		}
 		public void get(Field field, Bundle values) {
 			TextView v = (TextView) field.getView();
@@ -944,13 +1024,13 @@ public class Fields extends ArrayList<Fields.Field> {
 		/** Optional field-specific tag object */
 		private Object mTag = null;
 		
-		/** Property used to determine if edits have been made.
-		 * 
-		 * Set to true in case the view is clicked
-		 *
-		 * This a good and simple metric to identify if a field was changed despite not being 100% accurate
-		 * */ 
-		private boolean mWasClicked = false;
+		///** Property used to determine if edits have been made.
+		// * 
+		// * Set to true in case the view is clicked
+		// *
+		// * This a good and simple metric to identify if a field was changed despite not being 100% accurate
+		// * */ 
+		//private boolean mWasClicked = false;
 
 		/**
 		 * Constructor.
@@ -988,12 +1068,32 @@ public class Fields extends ArrayList<Fields.Field> {
 					mAccessor = new SpinnerAccessor();
 				} else if (view instanceof CheckBox) {
 					mAccessor = new CheckBoxAccessor();
+					addTouchSignalsDirty(view);
+				} else if (view instanceof EditText) {
+					mAccessor = new EditTextAccessor();
+					EditText et = (EditText) view;
+					et.addTextChangedListener(new TextWatcher() {
+
+						@Override
+						public void afterTextChanged(Editable arg0) {
+							Field.this.setValue(arg0.toString());
+						}
+
+						@Override
+						public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
+						@Override
+						public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}}
+					);
+
+				} else if (view instanceof Button) {
+					mAccessor = new TextViewAccessor(false);
 				} else if (view instanceof TextView) {
-					mAccessor = new TextViewAccessor();
+					mAccessor = new TextViewAccessor(true);
 				} else if (view instanceof ImageView) {
-					mAccessor = new TextViewAccessor();
+					mAccessor = new TextViewAccessor(true);
 				} else if (view instanceof RatingBar) {
 					mAccessor = new RatingBarAccessor();
+					addTouchSignalsDirty(view);
 				} else {
 					throw new IllegalArgumentException();
 				}
@@ -1002,18 +1102,28 @@ public class Fields extends ArrayList<Fields.Field> {
 					view.setVisibility(View.GONE);
 				}
 			}
+		}
 
+		/**
+		 * Add on onTouch listener that signals a 'dirty' event when touched.
+		 * 
+		 * @param view		The view to watch
+		 */
+		private void addTouchSignalsDirty(View view) {
+			// Touching this is considered a change
+			// We need to introduce a better way to handle this.
 			view.setOnTouchListener(new View.OnTouchListener(){
-	            @Override
+			    @Override
 			    public boolean onTouch(View v, MotionEvent event) {
 			        if (MotionEvent.ACTION_UP == event.getAction()) {
-						mWasClicked = true;
+						if (mAfterFieldChangeListener != null) {
+							mAfterFieldChangeListener.afterFieldChange(Field.this, null);
+						}
 			        }
 			        return false;
 			    }
-		    });
+			});			
 		}
-
 		/**
 		 * Get the view associated with this Field, if available.
 		 * @param id	View ID.
@@ -1068,6 +1178,9 @@ public class Fields extends ArrayList<Fields.Field> {
 		 */
 		public void setValue(String s) {
 			mAccessor.set(this, s);
+			if (mAfterFieldChangeListener != null) {
+				mAfterFieldChangeListener.afterFieldChange(this, s);
+			}
 		}
 
 		/**
@@ -1110,9 +1223,9 @@ public class Fields extends ArrayList<Fields.Field> {
 			}
 		}
 
-		public boolean isEdited(){
-			return mWasClicked;
-		}
+		//public boolean isEdited(){
+		//	return mWasClicked;
+		//}
 	}
 	
 	/**
@@ -1350,20 +1463,20 @@ public class Fields extends ArrayList<Fields.Field> {
 		mCrossValidators.add(v);
 	}
 
-	/**
-	 * Check if any field has been modified
-	 * 
-	 * @return	true if a field has been edited (or clicked)
-	 */
-	public boolean isEdited(){
-
-		for (Field field : this){
-			if (field.isEdited()){
-				return true;
-			}
-		}
-
-		return false;
-	}
+	///**
+	// * Check if any field has been modified
+	// * 
+	// * @return	true if a field has been edited (or clicked)
+	// */
+	//public boolean isEdited(){
+	//
+	//	for (Field field : this){
+	//		if (field.isEdited()){
+	//			return true;
+	//		}
+	//	}
+	//
+	//	return false;
+	//}
 }
 

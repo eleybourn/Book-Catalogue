@@ -1,0 +1,416 @@
+package com.eleybourn.bookcatalogue.dialogs;
+
+import java.util.Calendar;
+
+import com.eleybourn.bookcatalogue.R;
+
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.text.format.DateFormat;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
+
+/**
+ * Dialog class to allow for selection of partial dates from 0AD to 9999AD.
+ * 
+ * @author pjw
+ */
+public class BigDatePicker extends AlertDialog {
+	/** Calling context */
+	private Context mContext;
+
+	/** Currently displayed year; null if empty/invalid */
+	private Integer mYear;
+	/** Currently displayed month; null if empty/invalid */
+	private Integer mMonth;
+	/** Currently displayed day; null if empty/invalid */
+	private Integer mDay;
+
+	/** Local ref to month spinner */
+	private Spinner mMonthSpinner;
+	/** Local ref to day spinner */
+	private Spinner mDaySpinner;
+	/** Local ref to year text view */
+	private EditText mYearView;
+	
+	/** Listener to be called when date is set or dialog cancelled */
+	private OnDateSetListener mListener;
+
+	/**
+	 * Listener to receive notifications when dialog is closed by any means.
+	 * 
+	 * @author pjw
+	 */
+	public static interface OnDateSetListener {
+		public void onDateSet(BigDatePicker dialog, Integer year, Integer month, Integer day);
+		public void onCancel(BigDatePicker dialog);
+	}
+
+	/**
+	 * Constructor
+	 * 
+	 * @param context		Calling context
+	 * @param listener		Listener for dialog events
+	 * @param year			Starting year
+	 * @param month			Starting month
+	 * @param day			Starting day
+	 */
+	public BigDatePicker(Context context, OnDateSetListener listener, Integer year, Integer month, Integer day) {
+		super(context);
+
+		mContext = context;
+		mListener= listener;
+
+		mYear = year;
+		mMonth = month;
+		mDay = day;
+
+		// Get the layout
+		LayoutInflater inf = this.getLayoutInflater();
+		View root = inf.inflate(R.layout.date_picker, null);
+
+		// Ensure components match current locale order
+		reorderPickers(root);
+		
+		// Set the view
+		setView(root);
+
+		// Get UI components for later use
+		mYearView = (EditText)root.findViewById(R.id.year);
+		mMonthSpinner = (Spinner)root.findViewById(R.id.month);
+		mDaySpinner = (Spinner)root.findViewById(R.id.day);
+
+		// Create month spinner adapter
+		ArrayAdapter<String> monthAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item);
+		monthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		mMonthSpinner.setAdapter(monthAdapter);
+
+		// Create day spinner adapter
+		ArrayAdapter<String> dayAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item);
+		dayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		mDaySpinner.setAdapter(dayAdapter);
+
+		// First entry is 'unknown'
+		monthAdapter.add("-"); 
+
+		// Get a calendar for locale-related info
+		Calendar cal = Calendar.getInstance();
+		// Add all month named (abbreviated)
+		for(int i = 0; i < 12; i++) {
+			cal.set(Calendar.MONTH, i);
+			monthAdapter.add(String.format("%tb",cal));
+		}
+
+		// Handle selections from the MONTH spinner
+		mMonthSpinner.setOnItemSelectedListener(new OnItemSelectedListener(){
+
+			@Override
+			public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+				int pos = mMonthSpinner.getSelectedItemPosition();
+				handleMonth(pos);
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				handleMonth(null);
+			}}
+		);
+		
+		// Handle selections from the DAY spinner
+		mDaySpinner.setOnItemSelectedListener(new OnItemSelectedListener(){
+
+			@Override
+			public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+				int pos = mDaySpinner.getSelectedItemPosition();
+				handleDay(pos);
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				handleDay(null);
+			}}
+		);
+
+		// Handle all changes to the YEAR text
+		mYearView.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				handleYear();
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+			}});
+		
+
+		// Handle YEAR +/-
+		((Button)root.findViewById(R.id.plus)).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (mYear != null) {
+					mYearView.setText((++mYear).toString());
+				} else {
+					mYearView.setText(Calendar.getInstance().get(Calendar.YEAR) + "");
+				}
+			}}
+		);
+
+		((Button)root.findViewById(R.id.minus)).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (mYear != null) {
+					mYearView.setText((--mYear).toString());
+				} else {
+					mYearView.setText(Calendar.getInstance().get(Calendar.YEAR) + "");
+				}
+			}}
+		);
+
+		// Handle MONTH +/-
+		((Button)root.findViewById(R.id.plusMonth)).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (mYear != null) {
+					int pos = (mMonthSpinner.getSelectedItemPosition() + 1) % mMonthSpinner.getCount();
+					mMonthSpinner.setSelection(pos);
+				}
+			}}
+		);
+
+		((Button)root.findViewById(R.id.minusMonth)).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (mYear != null) {
+					int pos = (mMonthSpinner.getSelectedItemPosition() - 1 + mMonthSpinner.getCount()) % mMonthSpinner.getCount();
+					mMonthSpinner.setSelection(pos);
+				}
+			}}
+		);
+
+		// Handle MONTH +/-
+		((Button)root.findViewById(R.id.plusDay)).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (mMonth != null) {
+					int pos = (mDaySpinner.getSelectedItemPosition() + 1) % mDaySpinner.getCount();
+					mDaySpinner.setSelection(pos);
+				}
+			}}
+		);
+
+		((Button)root.findViewById(R.id.minusDay)).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (mMonth != null) {
+					int pos = (mDaySpinner.getSelectedItemPosition() - 1 + mDaySpinner.getCount()) % mDaySpinner.getCount();
+					mDaySpinner.setSelection(pos);
+				}
+			}}
+		);
+
+		// Handle OK
+		((Button)root.findViewById(R.id.ok)).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mListener.onDateSet(BigDatePicker.this, mYear, mMonth, mDay);
+			}}
+		);
+
+		// Handle Cancel
+		((Button)root.findViewById(R.id.cancel)).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mListener.onCancel(BigDatePicker.this);				
+			}}
+		);
+
+		// Handle any other form of cancellation
+		this.setOnCancelListener(new OnCancelListener() {
+
+			@Override
+			public void onCancel(DialogInterface arg0) {
+				mListener.onCancel(BigDatePicker.this);				
+			}});
+
+		// We are all set up!
+		
+		// Set the initial date
+		setDate(year, month, day);
+	}
+
+	/**
+	 * Set the date to display
+	 * 
+	 * @param year		Year (or null)
+	 * @param month		Month (or null)
+	 * @param day		Day (or null)
+	 */
+	public void setDate(Integer year, Integer month, Integer day) {
+		mYear = year;
+		mMonth = month;
+		mDay = day;
+		
+		if (mYear != null) {
+			mYearView.setText(mYear.toString());
+		} else {
+			mYearView.setText("");
+		}
+		
+		if (mMonth == null || mMonth == 0) {
+			mMonthSpinner.setSelection(0);
+		} else {
+			mMonthSpinner.setSelection(mMonth);			
+		}
+
+		if (mDay == null || mDay == 0) {
+			mDaySpinner.setSelection(0);
+		} else {
+			mDaySpinner.setSelection(mDay);			
+		}
+	}
+
+	/**
+	 * Handle changes to the YEAR field.
+	 */
+	private void handleYear() {
+		// Try to convert to integer
+		String val = mYearView.getText().toString();
+		try {
+			int year = Integer.parseInt(val);
+			mYear = year;
+		} catch (Exception e) {
+			mYear = null;
+		}
+
+		// Handle the result
+		if (mYear == null) {
+			// Disable other spinners if year invalid
+			mMonthSpinner.setEnabled(false);			
+			mDaySpinner.setEnabled(false);			
+		} else {
+			// Enable other spinners as appropriate
+			mMonthSpinner.setEnabled(true);			
+			mDaySpinner.setEnabled(mMonthSpinner.getSelectedItemPosition() > 0);
+			regenDaysOfMonth();
+		}
+	}
+
+	/**
+	 * Handle changes to the MONTH field
+	 * @param pos
+	 */
+	private void handleMonth(Integer pos) {
+		// See if we got a valid month
+		boolean isMonth = (pos != null && pos > 0);
+		if (!isMonth) {
+			// If not, disable DAY spinner; we leave current value intact in case a valid month is set later
+			mDaySpinner.setEnabled(false);
+			mMonth = null;
+		} else {
+			// Set the month and make sure DAY spinner is valid
+			mMonth = pos;
+			mDaySpinner.setEnabled(true);
+			regenDaysOfMonth();
+		}
+	}
+
+	/**
+	 * Handle changes to the DAY spinner
+	 * 
+	 * @param pos
+	 */
+	private void handleDay(Integer pos) {
+		boolean isSelected = (pos != null && pos > 0);
+		if (!isSelected) {
+			mDay = null;
+		} else {
+			mDay = pos;
+		}
+	}
+
+	/**
+	 * Depending on year/month selected, generate the DAYS spinner values
+	 */
+	private void regenDaysOfMonth() {
+		ArrayAdapter<String> days = (ArrayAdapter<String>)mDaySpinner.getAdapter();
+		days.clear();
+
+		if (mYear != null && mMonth != null && mMonth > 0) {
+			days.add("-"); 
+			// Get a calendar for the year/month
+			Calendar cal = Calendar.getInstance();
+			cal.set(Calendar.YEAR, mYear);
+			cal.set(Calendar.MONTH, mMonth-1);
+			// Add appropriae days
+			int maxDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+			for(int i = 1; i <= maxDay; i++) {
+				days.add(i + ""); 				
+			}
+			// Ensure selected day is valid
+			if (mDay == null || mDay == 0) {
+				mDaySpinner.setSelection(0);
+			} else {
+				if (mDay > maxDay)
+					mDay = maxDay;
+				mDaySpinner.setSelection(mDay);
+			}			
+		}
+	}
+	
+	/**
+	 * Reorder the views in the dialog to suit the curret locale.
+	 * 
+	 * @param root	Root view
+	 */
+    private void reorderPickers(View root) {
+        char[] order = DateFormat.getDateFormatOrder(mContext);
+        
+        /* Default order is month, date, year so if that's the order then
+         * do nothing.
+         */
+        if ((order[0] == DateFormat.YEAR) && (order[1] == DateFormat.MONTH)) {
+            return;
+        }
+        
+        /* Remove the 3 pickers from their parent and then add them back in the
+         * required order.
+         */
+        LinearLayout parent = (LinearLayout) root.findViewById(R.id.dateSelector);
+        // Get the three views
+        View y = root.findViewById(R.id.yearSelector);
+        View m = root.findViewById(R.id.monthSelector);
+        View d = root.findViewById(R.id.daySelector);
+        // Remove them
+        parent.removeAllViews();
+        // Re-add in the correct order.
+        for (char c : order) {
+            if (c == DateFormat.DATE) {
+                parent.addView(d);
+            } else if (c == DateFormat.MONTH) {
+                parent.addView(m);
+            } else {
+                parent.addView (y);
+            }
+        }
+    }
+}

@@ -49,6 +49,11 @@ import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
@@ -60,19 +65,40 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.eleybourn.bookcatalogue.BookEdit.OnRestoreTabInstanceStateListener;
 import com.eleybourn.bookcatalogue.CoverBrowser.OnImageSelectedListener;
+import com.eleybourn.bookcatalogue.Fields.AfterFieldChangeListener;
 import com.eleybourn.bookcatalogue.Fields.Field;
 import com.eleybourn.bookcatalogue.Fields.FieldValidator;
 import com.eleybourn.bookcatalogue.StandardDialogs.SimpleDialogItem;
 import com.eleybourn.bookcatalogue.StandardDialogs.SimpleDialogOnClickListener;
+import com.eleybourn.bookcatalogue.dialogs.BigDatePicker;
+import com.eleybourn.bookcatalogue.dialogs.TextFieldEditor;
 
-public class BookEditFields extends Activity {
+
+public class BookEditFields extends Activity implements OnRestoreTabInstanceStateListener {
+
+	/**
+	 * Class to implement a clickable span of text and call a listener when text os clicked.
+	 */
+	static class InternalSpan extends ClickableSpan {  
+	    OnClickListener mListener;  
+	    
+	    public InternalSpan(OnClickListener listener) {  
+	        mListener = listener;  
+	    }  
+	  
+	    @Override  
+	    public void onClick(View widget) {  
+	        mListener.onClick(widget);  
+	    }  
+	} 
 
 	private Fields mFields = null;
 	private boolean mIsDirty = false;
@@ -113,6 +139,7 @@ public class BookEditFields extends Activity {
 	private static final int CROP_THUMB = 6;
 	private static final int DATE_DIALOG_ID = 1;
 	private static final int ZOOM_THUMB_DIALOG_ID = 2;
+	private static final int DESCRIPTION_DIALOG_ID = 3;
 	private static final int CAMERA_RESULT = 41;
 	
 	public static final Character BOOKSHELF_SEPERATOR = ',';
@@ -482,10 +509,18 @@ public class BookEditFields extends Activity {
 				mSeriesList = (ArrayList<Series>) savedInstanceState.getSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY);
 				fixupSeriesList();	// Will update related display fields/button
 				mFields.getField(R.id.date_published).setValue(savedInstanceState.getString(CatalogueDBAdapter.KEY_DATE_PUBLISHED));
+				// Restore bookshelves
 				Field fe = mFields.getField(R.id.bookshelf_text);
 				fe.setValue(savedInstanceState.getString("bookshelf_text"));
 				fe.setTag(savedInstanceState.getString("bookshelf_list"));
+				// Restore description (it's a read-only text and not managed by Android)
+				fe = mFields.getField(R.id.description);
+				fe.setValue(savedInstanceState.getString(CatalogueDBAdapter.KEY_DESCRIPTION));
 			}
+
+			// Build the label for the book description if this is first time, otherwise will be built later
+			if (savedInstanceState == null)
+				buildDescription();
 
 			// Setup the Save/Add/Anthology UI elements
 			setupUi();
@@ -538,7 +573,7 @@ public class BookEditFields extends Activity {
 					// We're done.
 					setResult(RESULT_OK);
 
-					if (mFields.isEdited()) {
+					if (mIsDirty) {
 						StandardDialogs.showConfirmUnsavedEditsDialog(BookEditFields.this);
 					} else {
 						finish();
@@ -555,6 +590,12 @@ public class BookEditFields extends Activity {
 			}
 
 			Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
+
+			mFields.setAfterFieldChangeListener(new AfterFieldChangeListener(){
+				@Override
+				public void afterFieldChange(Field field, String newValue) {
+					mIsDirty = true;
+				}});
 
 		} catch (IndexOutOfBoundsException e) {
 			Logger.logError(e);
@@ -573,23 +614,33 @@ public class BookEditFields extends Activity {
 				String dateString = (String) mFields.getField(R.id.date_published).getValue().toString();
 				// get the current date
 				final Calendar c = Calendar.getInstance();
-				int yyyy = c.get(Calendar.YEAR);
-				int mm = c.get(Calendar.MONTH);
-				int dd = c.get(Calendar.DAY_OF_MONTH);
+				Integer yyyy = null; //c.get(Calendar.YEAR);
+				Integer mm = null; //c.get(Calendar.MONTH);
+				Integer dd = null; //c.get(Calendar.DAY_OF_MONTH);
 				try {
 					String[] date = dateString.split("-");
 					yyyy = Integer.parseInt(date[0]);
-					mm = Integer.parseInt(date[1])-1;
+					mm = Integer.parseInt(date[1]);
 					dd = Integer.parseInt(date[2]);
 				} catch (Exception e) {
 					//do nothing
 				}
-				dialog = new DatePickerDialog(this, mDateSetListener, yyyy, mm, dd);
+
+				dialog = new BigDatePicker(this, mBigDateSetListener, yyyy, mm, dd);
+				dialog.setTitle(R.string.date_published);
 			} catch (Exception e) {
+				Logger.logError(e);
 				// use the default date
 				dialog = null;
 			}
 			break;
+
+		case DESCRIPTION_DIALOG_ID:
+			dialog = new TextFieldEditor(this);
+			dialog.setTitle(R.string.description);
+			// The rest of the details will be set in onPrepareDialog
+			break;
+
 		case ZOOM_THUMB_DIALOG_ID:
 			// Create dialog and set layout
 			dialog = new Dialog(BookEditFields.this);
@@ -625,6 +676,65 @@ public class BookEditFields extends Activity {
 		return dialog;
 	}
 
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog) {
+		System.out.println("Prep dialog " + id);
+
+		switch (id) {
+		case DATE_DIALOG_ID:
+			try {
+				String dateString = (String) mFields.getField(R.id.date_published).getValue().toString();
+				// get the current date
+				final Calendar c = Calendar.getInstance();
+				Integer yyyy = null; //c.get(Calendar.YEAR);
+				Integer mm = null; //c.get(Calendar.MONTH);
+				Integer dd = null; //c.get(Calendar.DAY_OF_MONTH);
+				try {
+					String[] date = dateString.split("-");
+					yyyy = Integer.parseInt(date[0]);
+					mm = Integer.parseInt(date[1]);
+					dd = Integer.parseInt(date[2]);
+				} catch (Exception e) {
+					//do nothing
+				}
+
+				((BigDatePicker)dialog).setDate(yyyy, mm, dd);
+
+			} catch (Exception e) {
+				Logger.logError(e);
+				// use the default date
+				dialog = null;
+			}
+			break;
+
+		case DESCRIPTION_DIALOG_ID:
+			{
+				TextFieldEditor dlg = (TextFieldEditor)dialog;
+
+				Object o = mFields.getField(R.id.description).getValue();
+				String description = (o == null? null : o.toString());
+				dlg.setText(description);
+
+				dlg.setOnEditListener(mOnDescriptionEditListener);
+			}
+			break;
+		}
+	}
+
+	/**
+	 * Object to handle changes to a description field.
+	 */
+	private TextFieldEditor.OnEditListener mOnDescriptionEditListener = new TextFieldEditor.OnEditListener(){
+		@Override
+		public void onSaved(TextFieldEditor dialog, String newText) {
+			mFields.getField(R.id.description).setValue(newText);
+			removeDialog(DESCRIPTION_DIALOG_ID);
+		}
+		@Override
+		public void onCancel(TextFieldEditor dialog) {
+			removeDialog(DESCRIPTION_DIALOG_ID);
+		}};
+
 	/**
 	 * Get the File object for the cover of the book we are editing. If the boo
 	 * is new, return the standard temp file.
@@ -635,19 +745,44 @@ public class BookEditFields extends Activity {
 		else
 			return CatalogueDBAdapter.fetchThumbnailByUuid(mDbHelper.getBookUuid(mRowId));			
 	}
-	// the callback received when the user "sets" the date in the dialog
-	private DatePickerDialog.OnDateSetListener mDateSetListener = new DatePickerDialog.OnDateSetListener() {
-		public void onDateSet(DatePicker view, int year, int month, int day) {
-			month = month + 1;
-			String mm = month + "";
-			if (mm.length() == 1) {
-				mm = "0" + mm;
+
+	/**
+	 *  The callback received when the user "sets" the date in the dialog.
+	 *  
+	 *  Build a full or partial date in SQL format
+	 */
+	private BigDatePicker.OnDateSetListener mBigDateSetListener = new BigDatePicker.OnDateSetListener() {
+		public void onDateSet(BigDatePicker dialog, Integer year, Integer month, Integer day) {
+			String value;
+			if (year == null) {
+				value = "";
+			} else {
+				value = String.format("%04d", year);
+				if (month != null && month > 0) {
+					String mm = month.toString();
+					if (mm.length() == 1) {
+						mm = "0" + mm;
+					}
+
+					value += "-" + mm;
+
+					if (day != null && day > 0) {
+						String dd = day.toString();
+						if (dd.length() == 1) {
+							dd = "0" + dd;
+						}
+						value += "-" + dd;
+					}
+				}
 			}
-			String dd = day + "";
-			if (dd.length() == 1) {
-				dd = "0" + dd;
-			}
-			mFields.getField(R.id.date_published).setValue(year + "-" + mm + "-" + dd);
+				
+			mFields.getField(R.id.date_published).setValue(value);
+			dismissDialog(DATE_DIALOG_ID);
+		}
+
+		@Override
+		public void onCancel(BigDatePicker dialog) {
+			dismissDialog(DATE_DIALOG_ID);
 		}
 	};
 	
@@ -873,7 +1008,7 @@ public class BookEditFields extends Activity {
 		
 		fixupAuthorList();
 		fixupSeriesList();
-		
+
 	}
 	
 	/**
@@ -1003,8 +1138,58 @@ public class BookEditFields extends Activity {
 	}
 
 	@Override
+	/**
+	 * Method called when the containing TabActivity is running OnRestoreInstanceState; otherwise
+	 * locally made changes in our own OnRestoreInstanceState may get overwritten
+	 */
+	public void restoreTabInstanceState(Bundle savedInstanceState) {
+		buildDescription();
+	}
+
+	/**
+	 * Setup the 'description' header field to have a clickable link.
+	 */
+	private void buildDescription() {
+		// get the view
+		final TextView tv = (TextView)findViewById(R.id.descriptionLabel);
+		// Build the prefic text ('Description ')
+		String baseText = getString(R.string.description) + " ";
+		// Create the span ('Description (edit...)').
+		SpannableString f = new SpannableString(baseText + "(" + getString(R.string.edit_lc_ellipsis) + ")");
+		f.setSpan(new InternalSpan(new OnClickListener() {  
+		        public void onClick(View v) {  
+		        	showDialog(DESCRIPTION_DIALOG_ID);
+		        }
+		    }), baseText.length(), f.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+		// Quirks in Android mean old spans may be preserved; delete them
+		clearOldInternalSpans(tv);
+		// Set the text
+		tv.setText(f);
+
+		// Set the MovementMethod to allow clicks
+		tv.setMovementMethod(LinkMovementMethod.getInstance());
+		// Prevent focus...not precisely sure why, but sample code does this
+		tv.setFocusable(false);
+		// Set the colout to prevent flicker on click
+		tv.setTextColor(this.getResources().getColor(android.R.color.primary_text_dark_nodisable));
+	}
+
+	private void clearOldInternalSpans(TextView tv) {
+		CharSequence cs = tv.getText();
+		if (cs instanceof Spannable) {
+			final Spannable s = (Spannable)cs;
+			InternalSpan[] spans = s.getSpans(0, tv.getText().length(), InternalSpan.class);
+			for (int i = 0; i < spans.length; i++) {
+			    s.removeSpan(spans[i]);
+			}
+		}		
+	}
+
+	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
+
 		if (mRowId != null) {
 			outState.putLong(CatalogueDBAdapter.KEY_ROWID, mRowId);
 		} else {
@@ -1021,8 +1206,14 @@ public class BookEditFields extends Activity {
 		outState.putString("bookshelf_list", fe.getTag().toString());
 		outState.putString("bookshelf_text", fe.getValue().toString());
 
-		if (!mIsDirty)
-			mIsDirty = mFields.isEdited();
+		fe = mFields.getField(R.id.description);
+
+		// Save the current description
+		Object o = fe.getValue();
+		if (o != null)
+			outState.putString(CatalogueDBAdapter.KEY_DESCRIPTION, o.toString());
+
+		// Save flag indicating 'dirty'
 		outState.putBoolean("Dirty", mIsDirty);
 	}
 
@@ -1033,7 +1224,7 @@ public class BookEditFields extends Activity {
 	 */
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK && (mIsDirty || mFields.isEdited())) {
+		if (keyCode == KeyEvent.KEYCODE_BACK && mIsDirty) {
 			StandardDialogs.showConfirmUnsavedEditsDialog(this);
 			return true;
 		} else {
@@ -1268,6 +1459,7 @@ public class BookEditFields extends Activity {
 		case ACTIVITY_EDIT_AUTHORS:
 			if (resultCode == Activity.RESULT_OK && intent.hasExtra(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)){
 				mAuthorList = (ArrayList<Author>) intent.getSerializableExtra(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
+				mIsDirty = true;
 			} else {
 				// Even though the dialog was terminated, some authors MAY have been updated/added.
 				if (mAuthorList != null)
@@ -1275,11 +1467,17 @@ public class BookEditFields extends Activity {
 						mDbHelper.refreshAuthor(a);
 					}
 			}
+			// We do the fixup here because the user may have edited or merged authors; this will
+			// have already been applied to the database so no update is necessary, but we do need 
+			// to update the data we display.
+			boolean oldDirty = mIsDirty;
 			fixupAuthorList();
+			mIsDirty = oldDirty;
 		case ACTIVITY_EDIT_SERIES:
 			if (resultCode == Activity.RESULT_OK && intent.hasExtra(CatalogueDBAdapter.KEY_SERIES_ARRAY)){
 				mSeriesList = (ArrayList<Series>) intent.getSerializableExtra(CatalogueDBAdapter.KEY_SERIES_ARRAY);
 				fixupSeriesList();
+				mIsDirty = true;
 			}
 		}
 	}
@@ -1290,12 +1488,12 @@ public class BookEditFields extends Activity {
 		if (mAuthorList.size() == 0)
 			newText = getResources().getString(R.string.set_authors);
 		else {
-			Utils.pruneList(mDbHelper, mAuthorList);
+			mIsDirty = mIsDirty || Utils.pruneList(mDbHelper, mAuthorList);
 			newText = mAuthorList.get(0).getDisplayName();
 			if (mAuthorList.size() > 1)
 				newText += " " + getResources().getString(R.string.and_others);
 		}
-		mFields.getField(R.id.author).setValue(newText);		
+		mFields.getField(R.id.author).setValue(newText);	
 	}
 
 	private void fixupSeriesList() {

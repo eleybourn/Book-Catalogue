@@ -11,6 +11,7 @@
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginBottom="50dip">
+		
 		<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 			android:layout_width="fill_parent"
 			android:layout_height="fill_parent"
@@ -181,7 +182,7 @@
 				android:completionThreshold="2"
 				android:nextFocusDown="@+id/description"
 				/>
-			
+			<!-- 
 			<EditText android:id="@+id/description" 
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content" 
@@ -190,14 +191,42 @@
 				android:capitalize="sentences"
 				android:nextFocusDown="@+id/anthology"
 				/>
-				
+				 -->
 			<CheckBox android:id="@+id/anthology" 
 				android:layout_width="wrap_content"
 				android:layout_height="fill_parent" 
 				android:layout_weight="1"
 				android:hint="@string/is_anthology"
+				android:nextFocusDown="@+id/description"
 				/>
-		
+
+
+			<TextView android:id="@+id/descriptionLabel" 
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content" 
+				android:layout_weight="1"
+				android:text="@+string/description"
+				android:capitalize="sentences"
+				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:paddingTop="12dp"
+				/>
+
+			<View android:id="@+id/header_divider" 
+			    android:background="@drawable/main_menu_header_divider"
+			    android:layout_width="fill_parent"
+			    android:layout_height="1dp"
+				android:paddingTop="2dp"
+				android:paddingBottom="2dp"
+			    />
+			<TextView android:id="@+id/description" 
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content" 
+				android:layout_weight="1"
+				android:hint="@string/description"
+				android:textAppearance="?android:attr/textAppearanceMedium"
+				android:inputType="textMultiLine|textNoSuggestions"
+				/>
+													
 		</LinearLayout>
 	</ScrollView>
 	<LinearLayout	

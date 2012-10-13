@@ -611,6 +611,10 @@
 <string name="exit">Exit</string>
 <string name="continue_editing">Continue Editing</string>
 <string name="the_title_already_exists">The title already exists</string>
+<string name="year">Year</string>
+<string name="month">Month</string>
+<string name="day">Day</string>
+<string name="edit_lc_ellipsis">edit&#8230;</string>
 
 </resources>
 

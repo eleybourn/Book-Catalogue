@@ -41,6 +41,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.Toast;
 
+import com.eleybourn.bookcatalogue.Fields.AfterFieldChangeListener;
 import com.eleybourn.bookcatalogue.Fields.Field;
 import com.eleybourn.bookcatalogue.Fields.FieldFormatter;
 import com.eleybourn.bookcatalogue.Fields.FieldValidator;
@@ -214,7 +215,7 @@ public class BookEditNotes extends Activity {
 					} else {
 						getParent().setResult(RESULT_OK, i);
 					}
-					if (mFields.isEdited()) {
+					if (mIsDirty) {
 						StandardDialogs.showConfirmUnsavedEditsDialog(BookEditNotes.this);
 					} else {
 						finish();
@@ -230,6 +231,12 @@ public class BookEditNotes extends Activity {
 				Logger.logError(e);
 			}
 
+			mFields.setAfterFieldChangeListener(new AfterFieldChangeListener(){
+				@Override
+				public void afterFieldChange(Field field, String newValue) {
+					mIsDirty = true;
+				}});
+			
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
@@ -364,7 +371,7 @@ public class BookEditNotes extends Activity {
 	 */
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK && (mIsDirty || mFields.isEdited())) {
+		if (keyCode == KeyEvent.KEYCODE_BACK && mIsDirty) {
 			StandardDialogs.showConfirmUnsavedEditsDialog(this);
 			return true;
 		} else {
@@ -376,8 +383,6 @@ public class BookEditNotes extends Activity {
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		outState.putLong(CatalogueDBAdapter.KEY_ROWID, mRowId);
-		if (!mIsDirty)
-			mIsDirty = mFields.isEdited();
 
 		// DONT FORGET TO UPDATE onCreate to read these values back.
 		outState.putBoolean("Dirty", mIsDirty);

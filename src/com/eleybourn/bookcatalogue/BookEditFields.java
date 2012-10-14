@@ -29,6 +29,7 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
+import java.util.List;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -39,6 +40,7 @@ import android.app.Dialog;
 import android.app.TabActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -141,6 +143,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 	private static final int ZOOM_THUMB_DIALOG_ID = 2;
 	private static final int DESCRIPTION_DIALOG_ID = 3;
 	private static final int CAMERA_RESULT = 41;
+	private static final int CROP_RESULT = 42;
 	
 	public static final Character BOOKSHELF_SEPERATOR = ',';
 	
@@ -611,7 +614,8 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 		switch (id) {
 		case DATE_DIALOG_ID:
 			try {
-				String dateString = (String) mFields.getField(R.id.date_published).getValue().toString();
+				Object o = mFields.getField(R.id.date_published).getValue();
+				String dateString = o == null ? "" : o.toString();
 				// get the current date
 				final Calendar c = Calendar.getInstance();
 				Integer yyyy = null; //c.get(Calendar.YEAR);
@@ -683,7 +687,8 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 		switch (id) {
 		case DATE_DIALOG_ID:
 			try {
-				String dateString = (String) mFields.getField(R.id.date_published).getValue().toString();
+				Object o = mFields.getField(R.id.date_published).getValue();
+				String dateString = o == null ? "" : o.toString();
 				// get the current date
 				final Calendar c = Calendar.getInstance();
 				Integer yyyy = null; //c.get(Calendar.YEAR);
@@ -785,7 +790,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 			dismissDialog(DATE_DIALOG_ID);
 		}
 	};
-	
+
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		ImageView iv = (ImageView)findViewById(R.id.row_img);
@@ -800,15 +805,15 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 			// Just a submenu; skip
 			return true;
 		case ROTATE_THUMB_CW:
-			rotateThumbnail(mRowId, 90);
+			rotateThumbnail(90);
 			Utils.fetchFileIntoImageView(thumbFile, iv, mThumbEditSize, mThumbEditSize, true);
 			return true;
 		case ROTATE_THUMB_CCW:
-			rotateThumbnail(mRowId, -90);
+			rotateThumbnail(-90);
 			Utils.fetchFileIntoImageView(thumbFile, iv, mThumbEditSize, mThumbEditSize, true);
 			return true;
 		case ROTATE_THUMB_180:
-			rotateThumbnail(mRowId, 180);
+			rotateThumbnail(180);
 			Utils.fetchFileIntoImageView(thumbFile, iv, mThumbEditSize, mThumbEditSize, true);
 			return true;
 		case ADD_PHOTO:
@@ -826,11 +831,13 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 			showDialog(ZOOM_THUMB_DIALOG_ID);
 			return true;
 		case CROP_THUMB:
-			Intent crop_intent = new Intent(this, CropCropImage.class);
-			// here you have to pass absolute path to your file
-			crop_intent.putExtra("image-path", thumbFile.getAbsolutePath());
-			crop_intent.putExtra("scale", true);
-			startActivityForResult(crop_intent, CAMERA_RESULT);
+			cropCoverImage(thumbFile);
+			
+//			Intent crop_intent = new Intent(this, CropCropImage.class);
+//			// here you have to pass absolute path to your file
+//			crop_intent.putExtra("image-path", thumbFile.getAbsolutePath());
+//			crop_intent.putExtra("scale", true);
+//			startActivityForResult(crop_intent, CAMERA_RESULT);
 			return true;
 		case SHOW_ALT_COVERS:
 			String isbn = mFields.getField(R.id.isbn).getValue().toString();
@@ -845,6 +852,35 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 		return super.onContextItemSelected(item);
 	}
 	
+	private void cropCoverImage(File thumbFile) {
+		Intent intent = new Intent("com.android.camera.action.CROP");
+		// this will open any image file
+		intent.setDataAndType(Uri.fromFile(new File(thumbFile.getAbsolutePath())), "image/*");
+		intent.putExtra("crop", "true");
+		// this defines the aspect ratio
+		//intent.putExtra("aspectX", 1);
+		//intent.putExtra("aspectY", 1);
+		// this defines the output bitmap size
+		//intent.putExtra("outputX", 3264);
+		//intent.putExtra("outputY", 2448);
+		//intent.putExtra("outputX", mThumbZoomSize*2);
+		//intent.putExtra("outputY", mThumbZoomSize*2);
+		intent.putExtra("scale", false);
+		intent.putExtra("noFaceDetection", true);
+		// true to return a Bitmap, false to directly save the cropped iamge
+		intent.putExtra("return-data", false);
+		//save output image in uri
+		intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(thumbFile.getAbsolutePath() + ".cropped.jpg")));
+
+		List<ResolveInfo> list = getPackageManager().queryIntentActivities( intent, 0 );
+	    int size = list.size();
+	    if (size == 0) {
+	        Toast.makeText(this, "Can not find image crop app", Toast.LENGTH_SHORT).show();
+	    } else {
+			startActivityForResult(intent, CROP_RESULT);		    	
+	    }
+		
+	}
 	/**
 	 * Delete the provided thumbnail from the sdcard
 	 * 
@@ -865,7 +901,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 	 * 
 	 * @param id
 	 */
-	private void rotateThumbnail(long id, long angle) {
+	private void rotateThumbnail(long angle) {
 		boolean retry = true;
 		while (retry) {
 			try {
@@ -1200,8 +1236,12 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 		outState.putSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mAuthorList);
 		outState.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, mSeriesList);
 		// ...including special text stored in TextViews and the like
-		outState.putString(CatalogueDBAdapter.KEY_DATE_PUBLISHED, mFields.getField(R.id.date_published).getValue().toString());
-		
+		{
+			Object o = mFields.getField(R.id.date_published).getValue();
+			if (o != null)
+				outState.putString(CatalogueDBAdapter.KEY_DATE_PUBLISHED, o.toString());
+		}
+
 		Field fe = mFields.getField(R.id.bookshelf_text);
 		outState.putString("bookshelf_list", fe.getTag().toString());
 		outState.putString("bookshelf_text", fe.getValue().toString());
@@ -1209,9 +1249,11 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 		fe = mFields.getField(R.id.description);
 
 		// Save the current description
-		Object o = fe.getValue();
-		if (o != null)
-			outState.putString(CatalogueDBAdapter.KEY_DESCRIPTION, o.toString());
+		{
+			Object o = fe.getValue();
+			if (o != null)
+				outState.putString(CatalogueDBAdapter.KEY_DESCRIPTION, o.toString());
+		}
 
 		// Save flag indicating 'dirty'
 		outState.putBoolean("Dirty", mIsDirty);
@@ -1406,11 +1448,23 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 					
 					x.compress(Bitmap.CompressFormat.PNG, 100, f);
 					
-					Intent crop_intent = new Intent(this, CropCropImage.class);
-					// here you have to pass absolute path to your file
-					crop_intent.putExtra("image-path", thumbFile.getAbsolutePath());
-					crop_intent.putExtra("scale", true);
-					startActivityForResult(crop_intent, CAMERA_RESULT);					
+					cropCoverImage(thumbFile);
+					//Intent crop_intent = new Intent(this, CropCropImage.class);
+					//// here you have to pass absolute path to your file
+					//crop_intent.putExtra("image-path", thumbFile.getAbsolutePath());
+					//crop_intent.putExtra("scale", true);
+					//startActivityForResult(crop_intent, CAMERA_RESULT);					
+				}
+			}
+			return;
+		case CROP_RESULT:
+			if (resultCode == Activity.RESULT_OK){
+				File thumbFile = getCoverFile();
+				File cropped = new File(thumbFile.getAbsoluteFile() + ".cropped.jpg");
+				if (cropped.exists()) {
+					cropped.renameTo(thumbFile);
+					// Update the ImageView with the new image
+					setCoverImage();
 				}
 			}
 			return;

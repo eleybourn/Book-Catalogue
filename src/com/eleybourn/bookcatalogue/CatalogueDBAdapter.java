@@ -3813,7 +3813,8 @@ public class CatalogueDBAdapter {
 						}
 
 					} catch (Exception e) {
-						args.put(c.name, v.toString());						
+						if (v != null)
+							args.put(c.name, v.toString());						
 					}
 				}
 			}

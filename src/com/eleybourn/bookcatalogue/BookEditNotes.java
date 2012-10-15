@@ -24,13 +24,8 @@ package com.eleybourn.bookcatalogue;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
-import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -38,13 +33,13 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.Fields.AfterFieldChangeListener;
 import com.eleybourn.bookcatalogue.Fields.Field;
 import com.eleybourn.bookcatalogue.Fields.FieldFormatter;
 import com.eleybourn.bookcatalogue.Fields.FieldValidator;
+import com.eleybourn.bookcatalogue.dialogs.BigDatePicker;
 
 /*
  * A book catalogue application that integrates with Google Books.
@@ -259,42 +254,14 @@ public class BookEditNotes extends Activity {
 		switch (id) {
 		case READ_START_DIALOG_ID:
 			try {
-				String dateString = mFields.getField(R.id.read_start).getValue().toString();
-				// get the current date
-				final Calendar c = Calendar.getInstance();
-				int yyyy = c.get(Calendar.YEAR);
-				int mm = c.get(Calendar.MONTH);
-				int dd = c.get(Calendar.DAY_OF_MONTH);
-				try {
-					String[] date = dateString.split("-");
-					yyyy = Integer.parseInt(date[0]);
-					mm = Integer.parseInt(date[1])-1;
-					dd = Integer.parseInt(date[2]);
-				} catch (Exception e) {
-					//do nothing
-				}
-				return new DatePickerDialog(this, mReadStartSetListener, yyyy, mm, dd);
+				return Utils.buildDateDialog(this, R.string.read_start, mReadStartSetListener);
 			} catch (Exception e) {
 				// use the default date
 			}
 			break;
 		case READ_END_DIALOG_ID:
 			try {
-				String dateString = mFields.getField(R.id.read_end).getValue().toString();
-				// get the current date
-				final Calendar c = Calendar.getInstance();
-				int yyyy = c.get(Calendar.YEAR);
-				int mm = c.get(Calendar.MONTH);
-				int dd = c.get(Calendar.DAY_OF_MONTH);
-				try {
-					String[] date = dateString.split("-");
-					yyyy = Integer.parseInt(date[0]);
-					mm = Integer.parseInt(date[1])-1;
-					dd = Integer.parseInt(date[2]);
-				} catch (Exception e) {
-					//do nothing
-				}
-				return new DatePickerDialog(this, mReadEndSetListener, yyyy, mm, dd);
+				return Utils.buildDateDialog(this, R.string.read_end, mReadEndSetListener);
 			} catch (Exception e) {
 				// use the default date
 			}
@@ -303,34 +270,57 @@ public class BookEditNotes extends Activity {
 		return null;
 	}
 
-	// the callback received when the user "sets" the date in the dialog
-	private DatePickerDialog.OnDateSetListener mReadStartSetListener = new DatePickerDialog.OnDateSetListener() {
-		public void onDateSet(DatePicker view, int year, int month, int day) {
-			month = month + 1;
-			String mm = month + "";
-			if (mm.length() == 1) {
-				mm = "0" + mm;
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog) {
+		switch (id) {
+		case READ_START_DIALOG_ID:
+			try {
+				Utils.prepareDateDialog((BigDatePicker)dialog, mFields.getField(R.id.read_start).getValue(), mReadStartSetListener);
+			} catch (Exception e) {
+				// use the default date
 			}
-			String dd = day + "";
-			if (dd.length() == 1) {
-				dd = "0" + dd;
+			break;
+		case READ_END_DIALOG_ID:
+			try {
+				Utils.prepareDateDialog((BigDatePicker)dialog, mFields.getField(R.id.read_end).getValue(), mReadEndSetListener);
+			} catch (Exception e) {
+				// use the default date
 			}
-			mFields.getField(R.id.read_start).setValue(year + "-" + mm + "-" + dd);
+			break;
+		}
+	}
+
+	/**
+	 * the callback received when the user "sets" the read-start date in the dialog
+	 */
+	private BigDatePicker.OnDateSetListener mReadStartSetListener = new BigDatePicker.OnDateSetListener() {
+		@Override
+		public void onDateSet(BigDatePicker dialog, Integer year, Integer month, Integer day) {
+			String value = Utils.buildPartialDate(year, month, day);
+			mFields.getField(R.id.read_start).setValue(value);
+			dismissDialog(READ_START_DIALOG_ID);
+		}
+
+		@Override
+		public void onCancel(BigDatePicker dialog) {
+			dismissDialog(READ_START_DIALOG_ID);
 		}
 	};
-	// the callback received when the user "sets" the date in the dialog
-	private DatePickerDialog.OnDateSetListener mReadEndSetListener = new DatePickerDialog.OnDateSetListener() {
-		public void onDateSet(DatePicker view, int year, int month, int day) {
-			month = month + 1;
-			String mm = month + "";
-			if (mm.length() == 1) {
-				mm = "0" + mm;
-			}
-			String dd = day + "";
-			if (dd.length() == 1) {
-				dd = "0" + dd;
-			}
-			mFields.getField(R.id.read_end).setValue(year + "-" + mm + "-" + dd);
+
+	/**
+	 * the callback received when the user "sets" the read-end date in the dialog
+	 */
+	private BigDatePicker.OnDateSetListener mReadEndSetListener = new BigDatePicker.OnDateSetListener() {
+		@Override
+		public void onDateSet(BigDatePicker dialog, Integer year, Integer month, Integer day) {
+			String value = Utils.buildPartialDate(year, month, day);
+			mFields.getField(R.id.read_end).setValue(value);
+			dismissDialog(READ_END_DIALOG_ID);
+		}
+
+		@Override
+		public void onCancel(BigDatePicker dialog) {
+			dismissDialog(READ_END_DIALOG_ID);
 		}
 	};
 

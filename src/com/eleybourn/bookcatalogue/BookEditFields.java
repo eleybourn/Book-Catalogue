@@ -614,24 +614,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 		switch (id) {
 		case DATE_DIALOG_ID:
 			try {
-				Object o = mFields.getField(R.id.date_published).getValue();
-				String dateString = o == null ? "" : o.toString();
-				// get the current date
-				final Calendar c = Calendar.getInstance();
-				Integer yyyy = null; //c.get(Calendar.YEAR);
-				Integer mm = null; //c.get(Calendar.MONTH);
-				Integer dd = null; //c.get(Calendar.DAY_OF_MONTH);
-				try {
-					String[] date = dateString.split("-");
-					yyyy = Integer.parseInt(date[0]);
-					mm = Integer.parseInt(date[1]);
-					dd = Integer.parseInt(date[2]);
-				} catch (Exception e) {
-					//do nothing
-				}
-
-				dialog = new BigDatePicker(this, mBigDateSetListener, yyyy, mm, dd);
-				dialog.setTitle(R.string.date_published);
+				dialog = Utils.buildDateDialog(this, R.string.date_published, mBigDateSetListener);
 			} catch (Exception e) {
 				Logger.logError(e);
 				// use the default date
@@ -687,28 +670,10 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 		switch (id) {
 		case DATE_DIALOG_ID:
 			try {
-				Object o = mFields.getField(R.id.date_published).getValue();
-				String dateString = o == null ? "" : o.toString();
-				// get the current date
-				final Calendar c = Calendar.getInstance();
-				Integer yyyy = null; //c.get(Calendar.YEAR);
-				Integer mm = null; //c.get(Calendar.MONTH);
-				Integer dd = null; //c.get(Calendar.DAY_OF_MONTH);
-				try {
-					String[] date = dateString.split("-");
-					yyyy = Integer.parseInt(date[0]);
-					mm = Integer.parseInt(date[1]);
-					dd = Integer.parseInt(date[2]);
-				} catch (Exception e) {
-					//do nothing
-				}
-
-				((BigDatePicker)dialog).setDate(yyyy, mm, dd);
+				Utils.prepareDateDialog((BigDatePicker)dialog, mFields.getField(R.id.date_published).getValue(), mBigDateSetListener);
 
 			} catch (Exception e) {
 				Logger.logError(e);
-				// use the default date
-				dialog = null;
 			}
 			break;
 
@@ -758,29 +723,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 	 */
 	private BigDatePicker.OnDateSetListener mBigDateSetListener = new BigDatePicker.OnDateSetListener() {
 		public void onDateSet(BigDatePicker dialog, Integer year, Integer month, Integer day) {
-			String value;
-			if (year == null) {
-				value = "";
-			} else {
-				value = String.format("%04d", year);
-				if (month != null && month > 0) {
-					String mm = month.toString();
-					if (mm.length() == 1) {
-						mm = "0" + mm;
-					}
-
-					value += "-" + mm;
-
-					if (day != null && day > 0) {
-						String dd = day.toString();
-						if (dd.length() == 1) {
-							dd = "0" + dd;
-						}
-						value += "-" + dd;
-					}
-				}
-			}
-				
+			String value = Utils.buildPartialDate(year, month, day);
 			mFields.getField(R.id.date_published).setValue(value);
 			dismissDialog(DATE_DIALOG_ID);
 		}

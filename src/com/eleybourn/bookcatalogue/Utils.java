@@ -60,10 +60,11 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
 import com.eleybourn.bookcatalogue.database.CoversDbHelper;
+import com.eleybourn.bookcatalogue.dialogs.BigDatePicker;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Shader.TileMode;
@@ -72,10 +73,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -1649,6 +1647,81 @@ public class Utils {
 	//		}
 	//	}
 	//}
+	
+	/**
+	 * Passed date components build a (partial) SQL format date string.
+	 * 
+	 * @param year
+	 * @param month
+	 * @param day
+	 * 
+	 * @return		Formatted date, eg. '2011-11-01' or '2011-11'
+	 */
+	public static String buildPartialDate(Integer year, Integer month, Integer day) {
+		String value;
+		if (year == null) {
+			value = "";
+		} else {
+			value = String.format("%04d", year);
+			if (month != null && month > 0) {
+				String mm = month.toString();
+				if (mm.length() == 1) {
+					mm = "0" + mm;
+				}
+
+				value += "-" + mm;
+
+				if (day != null && day > 0) {
+					String dd = day.toString();
+					if (dd.length() == 1) {
+						dd = "0" + dd;
+					}
+					value += "-" + dd;
+				}
+			}
+		}
+		return value;
+	}
+
+	/**
+	 * Set the relevant fields in a BigDateDialog
+	 * 
+	 * @param dialog		Dialog to set
+	 * @param current		Current value (may be null)
+	 * @param listener		Listener to be called on dialg completion.
+	 */
+	public static void prepareDateDialog(BigDatePicker dialog, Object current, BigDatePicker.OnDateSetListener listener) {
+		String dateString = current == null ? "" : current.toString();
+		// get the current date
+		final Calendar c = Calendar.getInstance();
+		Integer yyyy = null; //c.get(Calendar.YEAR);
+		Integer mm = null; //c.get(Calendar.MONTH);
+		Integer dd = null; //c.get(Calendar.DAY_OF_MONTH);
+		try {
+			String[] date = dateString.split("-");
+			yyyy = Integer.parseInt(date[0]);
+			mm = Integer.parseInt(date[1]);
+			dd = Integer.parseInt(date[2]);
+		} catch (Exception e) {
+			//do nothing
+		}
+		dialog.setDate(yyyy, mm, dd);
+	}
+
+	/**
+	 * Build a new BigDateDialog and return it.
+	 * 
+	 * @param context
+	 * @param titleId
+	 * @param listener
+	 * @return
+	 */
+	public static Dialog buildDateDialog(Context context, int titleId, BigDatePicker.OnDateSetListener listener) {
+		BigDatePicker dialog = new BigDatePicker(context, listener);
+		dialog.setTitle(titleId);
+		return dialog;
+	}
+
 
 }
 

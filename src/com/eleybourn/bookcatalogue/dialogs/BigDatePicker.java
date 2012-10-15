@@ -17,11 +17,9 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 
 /**
  * Dialog class to allow for selection of partial dates from 0AD to 9999AD.
@@ -57,6 +55,16 @@ public class BigDatePicker extends AlertDialog {
 	public static interface OnDateSetListener {
 		public void onDateSet(BigDatePicker dialog, Integer year, Integer month, Integer day);
 		public void onCancel(BigDatePicker dialog);
+	}
+
+	/**
+	 * Constructor
+	 * 
+	 * @param context		Calling context
+	 * @param listener		Listener for dialog events
+	 */
+	public BigDatePicker(Context context, OnDateSetListener listener) {
+		this(context, listener, null, null, null);
 	}
 
 	/**
@@ -104,7 +112,12 @@ public class BigDatePicker extends AlertDialog {
 		mDaySpinner.setAdapter(dayAdapter);
 
 		// First entry is 'unknown'
-		monthAdapter.add("-"); 
+		monthAdapter.add("---"); 
+		dayAdapter.add("--"); 
+
+		// Make sure that the spinner can initially take any 'day' value. Otherwise, when a dialog is
+		// reconstructed after rotation, the 'day' field will not be restorable by Android.
+		regenDaysOfMonth(31);
 
 		// Get a calendar for locale-related info
 		Calendar cal = Calendar.getInstance();
@@ -270,22 +283,22 @@ public class BigDatePicker extends AlertDialog {
 		mMonth = month;
 		mDay = day;
 		
-		if (mYear != null) {
-			mYearView.setText(mYear.toString());
+		if (year != null) {
+			mYearView.setText(year.toString());
 		} else {
 			mYearView.setText("");
 		}
-		
-		if (mMonth == null || mMonth == 0) {
+
+		if (month == null || month == 0) {
 			mMonthSpinner.setSelection(0);
 		} else {
-			mMonthSpinner.setSelection(mMonth);			
+			mMonthSpinner.setSelection(month);			
 		}
 
-		if (mDay == null || mDay == 0) {
+		if (day == null || day == 0) {
 			mDaySpinner.setSelection(0);
 		} else {
-			mDaySpinner.setSelection(mDay);			
+			mDaySpinner.setSelection(day);			
 		}
 	}
 
@@ -311,7 +324,7 @@ public class BigDatePicker extends AlertDialog {
 			// Enable other spinners as appropriate
 			mMonthSpinner.setEnabled(true);			
 			mDaySpinner.setEnabled(mMonthSpinner.getSelectedItemPosition() > 0);
-			regenDaysOfMonth();
+			regenDaysOfMonth(null);
 		}
 	}
 
@@ -330,7 +343,7 @@ public class BigDatePicker extends AlertDialog {
 			// Set the month and make sure DAY spinner is valid
 			mMonth = pos;
 			mDaySpinner.setEnabled(true);
-			regenDaysOfMonth();
+			regenDaysOfMonth(null);
 		}
 	}
 
@@ -351,32 +364,50 @@ public class BigDatePicker extends AlertDialog {
 	/**
 	 * Depending on year/month selected, generate the DAYS spinner values
 	 */
-	private void regenDaysOfMonth() {
+	private void regenDaysOfMonth(Integer totalDays) {
+		// Save the current day in case the regen alters it
+		Integer daySave = mDay;
 		ArrayAdapter<String> days = (ArrayAdapter<String>)mDaySpinner.getAdapter();
-		days.clear();
 
-		if (mYear != null && mMonth != null && mMonth > 0) {
-			days.add("-"); 
-			// Get a calendar for the year/month
-			Calendar cal = Calendar.getInstance();
-			cal.set(Calendar.YEAR, mYear);
-			cal.set(Calendar.MONTH, mMonth-1);
-			// Add appropriae days
-			int maxDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-			for(int i = 1; i <= maxDay; i++) {
-				days.add(i + ""); 				
+		// Make sure we have the 'no-day' value in the dialog
+		if (days.getCount() == 0)
+			days.add("--");
+
+		// Determine the total days if not passed to us
+		if (totalDays == null || totalDays == 0) {
+			if (mYear != null && mMonth != null && mMonth > 0) {
+				// Get a calendar for the year/month
+				Calendar cal = Calendar.getInstance();
+				cal.set(Calendar.YEAR, mYear);
+				cal.set(Calendar.MONTH, mMonth-1);
+				// Add appropriae days
+				totalDays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
 			}
+		}
+		
+		// If we have a valid total number of days, then update the list
+		if (totalDays != null) {
+			if (days.getCount() < totalDays) {
+				for(int i = days.getCount(); i <= totalDays; i++) {
+					days.add(i + "");
+				}
+			} else {
+				for(int i = days.getCount() - 1; i > totalDays; i--) {
+					days.remove(i + "");
+				}
+			}
+
 			// Ensure selected day is valid
-			if (mDay == null || mDay == 0) {
+			if (daySave == null || daySave == 0) {
 				mDaySpinner.setSelection(0);
 			} else {
-				if (mDay > maxDay)
-					mDay = maxDay;
-				mDaySpinner.setSelection(mDay);
+				if (daySave > totalDays)
+					daySave = totalDays;
+				mDaySpinner.setSelection(daySave);
 			}			
 		}
 	}
-	
+
 	/**
 	 * Reorder the views in the dialog to suit the curret locale.
 	 * 

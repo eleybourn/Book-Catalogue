@@ -41,8 +41,14 @@ Features include;
   case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
-new in 4.1.x
+new in 4.1.6-B4
 * Fix handling of duplicate anthology titles
+* Various import bugs fixed
+* Date-Picker that supports dates down to 0AD
+* Better detection of 'changes' when editing books
+* HTML descriptions dsplay correctly with click to edit
+* Uses Gallery (or other app) to crop images
+* Various NPEs fixed
 
 new in 4.1.5
 * improved import robustness

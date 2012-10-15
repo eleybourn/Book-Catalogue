@@ -124,44 +124,33 @@ public class ExportThread extends ManagedTask {
 				do { 
 					num++;
 					long id = books.getLong(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROWID));
+					// Just get the string from the database and save it. It should be in standard SQL form already.
 					String dateString = "";
 					try {
-						String[] date = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DATE_PUBLISHED)).split("-");
-						int yyyy = Integer.parseInt(date[0]);
-						int mm = Integer.parseInt(date[1]);
-						int dd = Integer.parseInt(date[2]);
-						dateString = yyyy + "-" + mm + "-" + dd;
+						dateString = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DATE_PUBLISHED));
 					} catch (Exception e) {
 						//do nothing
 					}
+					// Just get the string from the database and save it. It should be in standard SQL form already.
 					String dateReadStartString = "";
 					try {
-						String[] date = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_START)).split("-");
-						int yyyy = Integer.parseInt(date[0]);
-						int mm = Integer.parseInt(date[1]);
-						int dd = Integer.parseInt(date[2]);
-						dateReadStartString = yyyy + "-" + mm + "-" + dd;
+						dateReadStartString = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_START));
 					} catch (Exception e) {
+						Logger.logError(e);
 						//do nothing
 					}
+					// Just get the string from the database and save it. It should be in standard SQL form already.
 					String dateReadEndString = "";
 					try {
-						String[] date = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_END)).split("-");
-						int yyyy = Integer.parseInt(date[0]);
-						int mm = Integer.parseInt(date[1]);
-						int dd = Integer.parseInt(date[2]);
-						dateReadEndString = yyyy + "-" + mm + "-" + dd;
+						dateReadEndString = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_READ_END));
 					} catch (Exception e) {
+						Logger.logError(e);
 						//do nothing
 					}
+					// Just get the string from the database and save it. It should be in standard SQL form already.
 					String dateAddedString = "";
 					try {
 						dateAddedString = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DATE_ADDED));
-						String[] date = dateAddedString.split("-");
-						int yyyy = Integer.parseInt(date[0]);
-						int mm = Integer.parseInt(date[1]);
-						int dd = Integer.parseInt(date[2]);
-						dateAddedString = yyyy + "-" + mm + "-" + dd;
 					} catch (Exception e) {
 						//do nothing
 					}

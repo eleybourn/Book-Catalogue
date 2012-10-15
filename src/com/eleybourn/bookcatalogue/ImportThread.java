@@ -118,7 +118,7 @@ public class ImportThread extends ManagedTask {
 		if (export == null || export.size() == 0)
 			return;
 
-		mManager.setMax(this, export.size());
+		mManager.setMax(this, export.size() - 1);
 
 		// Container for values.
 		Bundle values = new Bundle();

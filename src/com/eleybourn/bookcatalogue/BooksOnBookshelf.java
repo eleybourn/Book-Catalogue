@@ -39,6 +39,7 @@ import com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds;
 
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.*;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -606,6 +607,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 						if (android.os.Build.VERSION.SDK_INT >= 8) {
 							final int newPos = best.listPosition;
 							getListView().post(new Runnable() {
+								@TargetApi(8)
 								@Override
 								public void run() {
 									lv.smoothScrollToPosition(newPos);

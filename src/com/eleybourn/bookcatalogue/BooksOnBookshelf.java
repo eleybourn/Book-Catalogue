@@ -875,6 +875,11 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		 */
 		mBookshelfSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			public void onItemSelected(AdapterView<?> parentView, View view, int position, long id) {
+				// Check to see if mBookshelfAdapter is null, which should only occur if
+				// the activity is being torn down: see Issue 370.
+				if (mBookshelfAdapter == null)
+					return;
+
 				String new_bookshelf = mBookshelfAdapter.getItem(position);
 				if (position == 0) {
 					new_bookshelf = "";

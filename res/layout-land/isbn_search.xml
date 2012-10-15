@@ -89,17 +89,17 @@
 				android:layout_width="75sp"
 				android:layout_height="75sp" />
 		
-			<Button android:id="@+id/isbn_X"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:layout_width="75sp"
-				android:width="75sp"
-				android:text="X"
-				android:layout_height="75sp" />
 			<Button android:id="@+id/isbn_0"
 				android:textAppearance="?android:attr/textAppearanceLarge"
 				android:layout_width="75sp"
 				android:width="75sp"
 				android:text="0"
+				android:layout_height="75sp" />
+			<Button android:id="@+id/isbn_X"
+				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:layout_width="75sp"
+				android:width="75sp"
+				android:text="X"
 				android:layout_height="75sp" />
 			<ImageButton android:id="@+id/isbn_del"
 				android:src="@+drawable/sym_keyboard_feedback_delete"

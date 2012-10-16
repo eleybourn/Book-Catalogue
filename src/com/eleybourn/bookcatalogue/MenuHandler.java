@@ -163,7 +163,7 @@ public class MenuHandler {
 	 */
 	private void createBook(Activity a) {
 		Intent i = new Intent(a, BookEdit.class);
-		a.startActivityForResult(i, R.id.ACTIVITY_CREATE_BOOK_MANUALLY);
+		a.startActivityForResult(i, UniqueId.ACTIVITY_CREATE_BOOK_MANUALLY);
 	}
 
 	/**
@@ -172,7 +172,7 @@ public class MenuHandler {
 	private void createBookISBN(Activity a, String by) {
 		Intent i = new Intent(a, BookISBNSearch.class);
 		i.putExtra(BookISBNSearch.BY, by);
-		a.startActivityForResult(i, R.id.ACTIVITY_CREATE_BOOK_ISBN);
+		a.startActivityForResult(i, UniqueId.ACTIVITY_CREATE_BOOK_ISBN);
 	}
 	
 	/**
@@ -181,7 +181,7 @@ public class MenuHandler {
 	private void createBookScan(Activity a) {
 		Intent i = new Intent(a, BookISBNSearch.class);
 		i.putExtra(BookISBNSearch.BY, "scan");
-		a.startActivityForResult(i, R.id.ACTIVITY_CREATE_BOOK_SCAN);
+		a.startActivityForResult(i, UniqueId.ACTIVITY_CREATE_BOOK_SCAN);
 	}
 
 	/**
@@ -190,7 +190,7 @@ public class MenuHandler {
 	private void adminPage(Activity a) {
 		Intent i = new Intent(BookCatalogueApp.context, AdministrationFunctions.class);
 		i.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
-		a.startActivityForResult(i, R.id.ACTIVITY_ADMIN);
+		a.startActivityForResult(i, UniqueId.ACTIVITY_ADMIN);
 	}
 	
 	/**
@@ -199,7 +199,7 @@ public class MenuHandler {
 	private void helpPage(Activity a) {
 		Intent i = new Intent(BookCatalogueApp.context, Help.class);
 		i.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
-		a.startActivityForResult(i, R.id.ACTIVITY_HELP);
+		a.startActivityForResult(i, UniqueId.ACTIVITY_HELP);
 	}
 
 	/**
@@ -212,7 +212,7 @@ public class MenuHandler {
 		Intent i = new Intent(a, BookEdit.class);
 		i.putExtra(CatalogueDBAdapter.KEY_ROWID, id);
 		i.putExtra(BookEdit.TAB, tab);
-		a.startActivityForResult(i, R.id.ACTIVITY_EDIT_BOOK);
+		a.startActivityForResult(i, UniqueId.ACTIVITY_EDIT_BOOK);
 		return;
 	}
 }

@@ -373,18 +373,6 @@
 <string name="no_publisher">(no publisher)</string>
 <string name="no_author">(no author)</string>
 <string name="no_date">(no date)</string>
-<item name="ACTIVITY_CREATE_BOOK_MANUALLY" type="id"/>
-<item name="ACTIVITY_CREATE_BOOK_ISBN" type="id"/>
-<item name="ACTIVITY_CREATE_BOOK_SCAN" type="id"/>
-<item name="ACTIVITY_EDIT_BOOK" type="id"/>
-<item name="ACTIVITY_ADMIN" type="id"/>
-<item name="ACTIVITY_HELP" type="id"/>
-<item name="ACTIVITY_PREFERENCES" type="id"/>
-<item name="ACTIVITY_BOOKLIST_STYLE" type="id"/>
-<item name="ACTIVITY_BOOKLIST_STYLE_PROPERTIES" type="id"/>
-<item name="ACTIVITY_BOOKLIST_STYLE_GROUPS" type="id"/>
-<item name="ACTIVITY_BOOKLIST_STYLES" type="id"/>
-<item name="ACTIVITY_GOODREADS_EXPORT_FAILURES" type="id"/>
 <string name="book_lists">Book Lists</string>
 <string name="show_all_authors">Show book under each author</string>
 <string name="show_all_series">Show book in each series</string>
@@ -574,7 +562,6 @@
 <string name="menu_edit_format">Edit Format&#8230;</string>
 <string name="edit_format_name">Edit Format Name</string>
 <string name="name_can_not_be_blank">Name can not be blank</string>
-<item name="ACTIVITY_ADMIN_FINISH" type="id"/>
 <string name="export_starting_ellipsis">Export starting&#8230;</string>
 <string name="resizing_cover_thumbnails">Resizing cover thumbnails</string>
 <string name="resize_each_time">Resize each time they are needed (uses less storage, scrolling will be slower)</string>

@@ -324,7 +324,7 @@ public class StartupActivity extends Activity {
 		}
 
 		if (mExportRequired)
-			Administration.adminPage(StartupActivity.this, "export", R.id.ACTIVITY_ADMIN);
+			Administration.adminPage(StartupActivity.this, "export", UniqueId.ACTIVITY_ADMIN);
 
 		// We are done
 		finish();		

@@ -378,7 +378,7 @@ public class BookEdit extends TabActivity {
 		Intent i = new Intent(a, BookEdit.class);
 		i.putExtra(CatalogueDBAdapter.KEY_ROWID, id);
 		i.putExtra(BookEdit.TAB, tab);
-		a.startActivityForResult(i, R.id.ACTIVITY_EDIT_BOOK);
+		a.startActivityForResult(i, UniqueId.ACTIVITY_EDIT_BOOK);
 		return;
 	}
 

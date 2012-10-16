@@ -569,7 +569,6 @@
 	<string name="contact">eleybourn@gmail.com</string>
 	<string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
 	<string name="loaned_to_2">\u2192</string>
-	<item name="ACTIVITY_ADMIN_FINISH" type="id"/>
 	<string name="isbn">ISBN</string>
 	<string name="series_num">#</string>
 	<item name="TAG_POSITION" type="id"></item>

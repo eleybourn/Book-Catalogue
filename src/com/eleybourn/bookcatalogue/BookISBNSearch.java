@@ -76,8 +76,6 @@ public class BookISBNSearch extends ActivityWithTasks {
 	private String mTitle;
 	private String mIsbn;
 
-	private static final int ACTIVITY_SCAN=4;
-
 	/*
 	 *  Mode this activity is in; MANUAL = data entry, SCAN = data from scanner.
 	 *  For SCAN, it loops repeatedly starting the scanner.
@@ -613,7 +611,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 	private void createBook(Bundle book) {
 		Intent i = new Intent(this, BookEdit.class);
 		i.putExtra("bookData", book);
-		startActivityForResult(i, R.id.ACTIVITY_EDIT_BOOK);
+		startActivityForResult(i, UniqueId.ACTIVITY_EDIT_BOOK);
 		//dismissProgress();
 	}
 
@@ -625,7 +623,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 		//System.out.println("BookISBNSearch onActivityResult " + resultCode);
 		super.onActivityResult(requestCode, resultCode, intent);
 		switch(requestCode) {
-		case ACTIVITY_SCAN:
+		case UniqueId.ACTIVITY_SCAN:
 			mScannerStarted = false;
 			try {
 				if (resultCode == RESULT_OK) {
@@ -647,7 +645,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 				finish();
 			}
 			break;
-		case R.id.ACTIVITY_EDIT_BOOK:
+		case UniqueId.ACTIVITY_EDIT_BOOK:
 			if (intent != null)
 				mLastBookIntent = intent;
 
@@ -703,7 +701,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 		if (!mScannerStarted) {
 			//System.out.println(mId + " startScannerActivity STARTING");
 			mScannerStarted = true;
-			startActivityForResult(mScannerIntent, ACTIVITY_SCAN);
+			startActivityForResult(mScannerIntent, UniqueId.ACTIVITY_SCAN);
 		} else {
 			//System.out.println(mId + " startScannerActivity SKIPPED");
 		}

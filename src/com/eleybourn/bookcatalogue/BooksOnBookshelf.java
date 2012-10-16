@@ -1035,7 +1035,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		mMarkBookId = 0;
 
 		switch(requestCode) {
-		case R.id.ACTIVITY_CREATE_BOOK_SCAN:
+		case UniqueId.ACTIVITY_CREATE_BOOK_SCAN:
 			try {
 				if (intent != null && intent.hasExtra(CatalogueDBAdapter.KEY_ROWID)) {
 					long newId = intent.getLongExtra(CatalogueDBAdapter.KEY_ROWID, 0);
@@ -1051,9 +1051,9 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 				//fillData();
 			}
 			break;
-		case R.id.ACTIVITY_CREATE_BOOK_ISBN:
-		case R.id.ACTIVITY_CREATE_BOOK_MANUALLY:
-		case R.id.ACTIVITY_EDIT_BOOK:
+		case UniqueId.ACTIVITY_CREATE_BOOK_ISBN:
+		case UniqueId.ACTIVITY_CREATE_BOOK_MANUALLY:
+		case UniqueId.ACTIVITY_EDIT_BOOK:
 			try {
 				if (intent != null && intent.hasExtra(CatalogueDBAdapter.KEY_ROWID)) {
 					long id = intent.getLongExtra(CatalogueDBAdapter.KEY_ROWID, 0);
@@ -1068,7 +1068,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 				Logger.logError(e);
 			}
 			break;
-		case R.id.ACTIVITY_BOOKLIST_STYLE_PROPERTIES:
+		case UniqueId.ACTIVITY_BOOKLIST_STYLE_PROPERTIES:
 			try {
 				if (intent != null && intent.hasExtra(BooklistStylePropertiesActivity.KEY_STYLE)) {
 					BooklistStyle style = (BooklistStyle)intent.getSerializableExtra(BooklistStylePropertiesActivity.KEY_STYLE);
@@ -1081,9 +1081,9 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 			this.savePosition();
 			this.setupList(true);
 			break;
-		case R.id.ACTIVITY_BOOKLIST_STYLES:
-		case R.id.ACTIVITY_ADMIN:
-		case R.id.ACTIVITY_PREFERENCES:
+		case UniqueId.ACTIVITY_BOOKLIST_STYLES:
+		case UniqueId.ACTIVITY_ADMIN:
+		case UniqueId.ACTIVITY_PREFERENCES:
 			// Refresh the style because prefs may have changed
 			refreshStyle();
 			this.savePosition();
@@ -1245,7 +1245,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		Intent i = new Intent(this, BooklistStylePropertiesActivity.class);
 		i.putExtra(BooklistStylePropertiesActivity.KEY_STYLE, mCurrentStyle);
 		i.putExtra(BooklistStylePropertiesActivity.KEY_SAVE_TO_DATABASE, false);
-		startActivityForResult(i, R.id.ACTIVITY_BOOKLIST_STYLE_PROPERTIES);		
+		startActivityForResult(i, UniqueId.ACTIVITY_BOOKLIST_STYLE_PROPERTIES);		
 	}
 
 	@Override

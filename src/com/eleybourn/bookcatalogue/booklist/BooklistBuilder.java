@@ -1120,33 +1120,117 @@ public class BooklistBuilder {
 		}
 	}
 
-	private SynchronizedStatement mDeleteSettingsStmt = null;
-	private SynchronizedStatement mSaveSettingsStmt = null;
+	private SynchronizedStatement mDeleteListNodeSettingsStmt = null;
+
+	/**
+	 * Clear the list of expanded nodes in the current view
+	 */
+	private void deleteListNodeSettings() {
+		SyncLock l = null;
+
+		try {
+			if (!mDb.inTransaction())
+				l = mDb.beginTransaction(true);
+
+			int kind = mStyle.getGroupAt(0).kind;
+			if (mDeleteListNodeSettingsStmt == null) {
+				String sql = "Delete from " + TBL_BOOK_LIST_NODE_SETTINGS + " Where kind = ?";
+				mDeleteListNodeSettingsStmt = mStatements.add("mDeleteListNodeSettingsStmt", sql);
+			}
+			mDeleteListNodeSettingsStmt.bindLong(1, kind);
+			mDeleteListNodeSettingsStmt.execute();
+			if (l != null)
+				mDb.setTransactionSuccessful();
+		} finally {
+			if (l != null)
+				mDb.endTransaction(l);
+		}
+	}
+
+	private SynchronizedStatement mSaveListNodeSettingsStmt = null;
 	/**
 	 * Save the currently expanded top level nodes, and the top level group kind, to the database
 	 * so that the next time this view is opened, the user will see the same opened/closed nodes.
 	 */
-	public void saveNodeSettings() {
-		SyncLock l = mDb.beginTransaction(true);
+	public void saveListNodeSettings() {
+		SyncLock l = null;
 		try {
-			int kind = mStyle.getGroupAt(0).kind;
-			if (mDeleteSettingsStmt == null) {
-				String sql = "Delete from " + TBL_BOOK_LIST_NODE_SETTINGS + " Where kind = ?";
-				mDeleteSettingsStmt = mStatements.add("mDeleteSettingsStmt", sql);
-			}
-			mDeleteSettingsStmt.bindLong(1, kind);
-			mDeleteSettingsStmt.execute();
+			if (!mDb.inTransaction())
+				l = mDb.beginTransaction(true);
 
-			if (mSaveSettingsStmt == null) {
+			deleteListNodeSettings();
+
+			if (mSaveListNodeSettingsStmt == null) {
 				String sql = TBL_BOOK_LIST_NODE_SETTINGS.getInsert(DOM_KIND,DOM_ROOT_KEY) + 
 						" Select Distinct ?, " + DOM_ROOT_KEY + " From " + mNavTable + " Where expanded = 1 and level = 1";
-				mSaveSettingsStmt = mStatements.add("mSaveSettingsStmt", sql);
+				mSaveListNodeSettingsStmt = mStatements.add("mSaveListNodeSettingsStmt", sql);
 			}
-			mSaveSettingsStmt.bindLong(1, kind);
-			mSaveSettingsStmt.execute();			
+			int kind = mStyle.getGroupAt(0).kind;
+
+			mSaveListNodeSettingsStmt.bindLong(1, kind);
+			mSaveListNodeSettingsStmt.execute();			
+			if (l != null)
+				mDb.setTransactionSuccessful();
+		} finally {
+			if (l != null)
+				mDb.endTransaction(l);
+		}
+	}
+
+	private SynchronizedStatement mDeleteListNodeSettingStmt = null;
+
+	/**
+	 * Clear the list of expanded nodes in the current view
+	 */
+	private void deleteListNodeSetting(long rowId) {
+		SyncLock l = null;
+
+		try {
+			if (!mDb.inTransaction())
+				l = mDb.beginTransaction(true);
+
+			int kind = mStyle.getGroupAt(0).kind;
+			if (mDeleteListNodeSettingStmt == null) {
+				String sql = "Delete from " + TBL_BOOK_LIST_NODE_SETTINGS + " Where kind = ? and " + DOM_ROOT_KEY +
+						" In (Select Distinct " + DOM_ROOT_KEY + " From " + mNavTable + " Where " + DOM_ID + " = ?)"
+						;
+				mDeleteListNodeSettingStmt = mStatements.add("mDeleteSettingsStmt", sql);
+			}
+			mDeleteListNodeSettingStmt.bindLong(1, kind);
+			mDeleteListNodeSettingStmt.bindLong(2, rowId);
+			mDeleteListNodeSettingStmt.execute();		
+		} finally {
+			if (l != null)
+				mDb.endTransaction(l);
+		}
+	}
+
+	private SynchronizedStatement mSaveListNodeSettingStmt = null;
+	/**
+	 * Save the specified node state.
+	 */
+	private void saveListNodeSetting(long rowId, boolean expanded) {
+		SyncLock l = null;
+		try {
+			if (!mDb.inTransaction())
+				l = mDb.beginTransaction(true);
+
+			deleteListNodeSetting(rowId);
+
+			if (mSaveListNodeSettingStmt == null) {
+				String sql = TBL_BOOK_LIST_NODE_SETTINGS.getInsert(DOM_KIND,DOM_ROOT_KEY) + 
+						" Select ?, " + DOM_ROOT_KEY + " From " + mNavTable + " Where expanded = 1 and level = 1 and " + DOM_ID + " = ?";
+				mSaveListNodeSettingStmt = mStatements.add("mSaveListNodeSettingsStmt", sql);
+			}
+			int kind = mStyle.getGroupAt(0).kind;
+
+			mSaveListNodeSettingStmt.bindLong(1, kind);
+			mSaveListNodeSettingStmt.bindLong(2, rowId);
+			mSaveListNodeSettingStmt.execute();			
 			mDb.setTransactionSuccessful();
 		} finally {
-			mDb.endTransaction(l);
+			if (l != null)
+				mDb.endTransaction(l);
 		}
 	}
 
@@ -1433,11 +1517,13 @@ public class BooklistBuilder {
 		if (expand) {
 			String sql = "Update " + mNavTable + " Set expanded = 1, visible = 1";
 			mDb.execSQL(sql);
+			saveListNodeSettings();
 		} else {				
 			String sql = "Update " + mNavTable + " Set expanded = 0, visible = 0 Where level > 1";
 			mDb.execSQL(sql);
 			sql = "Update " + mNavTable + " Set expanded = 0 Where level = 1";
 			mDb.execSQL(sql);
+			deleteListNodeSettings();
 		}
 		long t1 = System.currentTimeMillis() - t0;
 		System.out.println("Expand All: " + t1);
@@ -1481,7 +1567,9 @@ public class BooklistBuilder {
 		mExpandStmt.bindLong(1, exp);
 		mExpandStmt.bindLong(2, rowId);
 		mExpandStmt.execute();
-			
+
+		// Update settings
+		saveListNodeSetting(rowId, exp == 1);
 	}
 	
 	/**

@@ -103,6 +103,9 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 
 	/** Flag indicating activity has been destroyed. Used for background tasks */
 	private boolean mIsDead = false;
+	/** Flag to indicate that a list has been successfully loaded -- affects the way we save state */
+	private boolean mListHasBeenLoaded = false;
+
 	/** Used by onScroll to detect when the top row has actuallt changed. */
 	private int mLastTop = -1;
 	/** ProgressDialog used to display "Getting books...". Needed here so we can dismiss it on close. */
@@ -390,6 +393,8 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 			System.out.println("Count(" + count + "): " + (t4-t3) + "/" + (t5-t4) + "/" + (t6-t5));
 			System.out.println("====== " );
 			System.out.println("Total: " + (t6-t0));
+			// Save a flag to say list was loaded at least once successfully
+			mListHasBeenLoaded = true;
 		}
 
 		@Override
@@ -768,18 +773,17 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		if (mIsDead) 
 			return;
 
-		// Save expanded nodes
-		if (mList != null && mList.getBuilder() != null)
-			mList.getBuilder().saveNodeSettings();
+		final Editor ed = BookCatalogueApp.getAppPreferences().edit();
 
 		// Save position in list
-		final ListView lv = getListView();
-		final Editor ed = BookCatalogueApp.getAppPreferences().edit();
-		mTopRow = lv.getFirstVisiblePosition();
-		ed.putInt(PREF_TOP_ROW, mTopRow);
-		View v = lv.getChildAt(0);
-		mTopRowTop = v == null ? 0 : v.getTop();
-		ed.putInt(PREF_TOP_ROW_TOP, mTopRowTop);
+		if (mListHasBeenLoaded) {
+			final ListView lv = getListView();
+			mTopRow = lv.getFirstVisiblePosition();
+			ed.putInt(PREF_TOP_ROW, mTopRow);
+			View v = lv.getChildAt(0);
+			mTopRowTop = v == null ? 0 : v.getTop();
+			ed.putInt(PREF_TOP_ROW_TOP, mTopRowTop);			
+		}
 
 		if (mCurrentStyle != null)
 			ed.putString(PREF_LIST_STYLE, mCurrentStyle.getCanonicalName());

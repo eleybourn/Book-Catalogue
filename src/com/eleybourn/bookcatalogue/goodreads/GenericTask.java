@@ -23,6 +23,7 @@ package com.eleybourn.bookcatalogue.goodreads;
 import java.util.ArrayList;
 import java.util.Date;
 
+import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.ViewTagger;
 
@@ -139,7 +140,7 @@ public abstract class GenericTask extends RunnableTask {
 		Exception e = this.getException();
 		if (e != null) {
 			holder.error.setVisibility(View.VISIBLE);
-			holder.error.setText("Last Error: " + e.getMessage());			
+			holder.error.setText(BookCatalogueApp.getResourceString(R.string.last_error_e, e.getMessage()));
 		} else {
 			holder.error.setVisibility(View.GONE);
 		}

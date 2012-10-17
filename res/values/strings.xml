@@ -589,9 +589,9 @@
 <string name="x_is_not_a_valid_isbn_or_asin">%1$s is not a valid ISBN or ASIN</string>
 <string name="confirm_exit">Confirm Exit</string>
 <string name="you_may_have_unsaved_changes">You may have unsaved changes. Are you sure you want to exit without saving?</string>
-<string name="read_year">Added Year</string>
-<string name="read_month">Added Month</string>
-<string name="read_day">Added Day</string>
+<string name="read_year">Read Year</string>
+<string name="read_month">Read Month</string>
+<string name="read_day">Read Day</string>
 <string name="sort_read_date">Date Read</string>
 <string name="details_have_changed">Details Have Changed</string>
 <string name="you_have_unsaved_changes">You have unsaved changes, if you exit now they will be lost.</string>
@@ -602,6 +602,10 @@
 <string name="month">Month</string>
 <string name="day">Day</string>
 <string name="edit_lc_ellipsis">edit&#8230;</string>
+<string name="getting_books_ellipsis">Getting books&#8230;</string>
+<string name="n_events_found">%1$s Events found</string>
+<string name="last_error_e">Last Error: %1$s</string>
+<string name="invalid_isbn_x_specified_in_search">Invalid ISBN \'%1$s\' specified in search</string>
 
 </resources>
 

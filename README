@@ -42,6 +42,7 @@ Features include;
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
 new in 4.1.6-B5
+* French translation updates (Patrice Leonard)
 * Fix handling of duplicate anthology titles
 * Various import bugs fixed
 * Date-Picker that supports dates down to 0AD

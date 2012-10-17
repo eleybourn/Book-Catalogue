@@ -426,7 +426,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 	private void setupList(boolean isFullRebuild) {
 		mTaskQueue.enqueue(new GetListTask(isFullRebuild));
 		if (mListDialog == null) {
-			mListDialog = ProgressDialog.show(this, "", "Getting books...", true, true, new OnCancelListener() {
+			mListDialog = ProgressDialog.show(this, "", getString(R.string.getting_books_ellipsis), true, true, new OnCancelListener() {
 				@Override
 				public void onCancel(DialogInterface dialog) {
 					// Cancelling the list cancels the activity.

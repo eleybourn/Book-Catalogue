@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 /**
  * Dialog class to allow for selection of partial dates from 0AD to 9999AD.
@@ -176,7 +177,7 @@ public class BigDatePicker extends AlertDialog {
 			}});
 		
 
-		// Handle YEAR +/-
+		// Handle YEAR +
 		((Button)root.findViewById(R.id.plus)).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -188,6 +189,7 @@ public class BigDatePicker extends AlertDialog {
 			}}
 		);
 
+		// Handle YEAR -
 		((Button)root.findViewById(R.id.minus)).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -199,45 +201,39 @@ public class BigDatePicker extends AlertDialog {
 			}}
 		);
 
-		// Handle MONTH +/-
+		// Handle MONTH +
 		((Button)root.findViewById(R.id.plusMonth)).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (mYear != null) {
-					int pos = (mMonthSpinner.getSelectedItemPosition() + 1) % mMonthSpinner.getCount();
-					mMonthSpinner.setSelection(pos);
-				}
+				int pos = (mMonthSpinner.getSelectedItemPosition() + 1) % mMonthSpinner.getCount();
+				mMonthSpinner.setSelection(pos);
 			}}
 		);
 
+		// Handle MONTH -
 		((Button)root.findViewById(R.id.minusMonth)).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (mYear != null) {
-					int pos = (mMonthSpinner.getSelectedItemPosition() - 1 + mMonthSpinner.getCount()) % mMonthSpinner.getCount();
-					mMonthSpinner.setSelection(pos);
-				}
+				int pos = (mMonthSpinner.getSelectedItemPosition() - 1 + mMonthSpinner.getCount()) % mMonthSpinner.getCount();
+				mMonthSpinner.setSelection(pos);
 			}}
 		);
 
-		// Handle MONTH +/-
+		// Handle DAY +
 		((Button)root.findViewById(R.id.plusDay)).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (mMonth != null) {
-					int pos = (mDaySpinner.getSelectedItemPosition() + 1) % mDaySpinner.getCount();
-					mDaySpinner.setSelection(pos);
-				}
+				int pos = (mDaySpinner.getSelectedItemPosition() + 1) % mDaySpinner.getCount();
+				mDaySpinner.setSelection(pos);
 			}}
 		);
 
+		// Handle DAY -
 		((Button)root.findViewById(R.id.minusDay)).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (mMonth != null) {
-					int pos = (mDaySpinner.getSelectedItemPosition() - 1 + mDaySpinner.getCount()) % mDaySpinner.getCount();
-					mDaySpinner.setSelection(pos);
-				}
+				int pos = (mDaySpinner.getSelectedItemPosition() - 1 + mDaySpinner.getCount()) % mDaySpinner.getCount();
+				mDaySpinner.setSelection(pos);
 			}}
 		);
 
@@ -245,7 +241,14 @@ public class BigDatePicker extends AlertDialog {
 		((Button)root.findViewById(R.id.ok)).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				mListener.onDateSet(BigDatePicker.this, mYear, mMonth, mDay);
+				// Ensure the date is 'hierarchically valid'; require year, if month is non-null, require month if day non-null
+				if (mDay != null && mDay > 0 && (mMonth == null || mMonth == 0)) {
+					Toast.makeText(mContext, R.string.if_day_is_specified_month_and_year_must_be, Toast.LENGTH_LONG).show();
+				} else if (mMonth != null && mMonth > 0 && mYear == null) {
+					Toast.makeText(mContext, R.string.if_month_is_specified_year_must_be, Toast.LENGTH_LONG).show();					
+				} else {
+					mListener.onDateSet(BigDatePicker.this, mYear, mMonth, mDay);					
+				}
 			}}
 		);
 
@@ -315,17 +318,21 @@ public class BigDatePicker extends AlertDialog {
 			mYear = null;
 		}
 
+		// Seems reasonable to disable other spinners if year invalid, but it actually
+		// not very friendly when entering data for new books.
+		regenDaysOfMonth(null);
+
 		// Handle the result
-		if (mYear == null) {
-			// Disable other spinners if year invalid
-			mMonthSpinner.setEnabled(false);			
-			mDaySpinner.setEnabled(false);			
-		} else {
-			// Enable other spinners as appropriate
-			mMonthSpinner.setEnabled(true);			
-			mDaySpinner.setEnabled(mMonthSpinner.getSelectedItemPosition() > 0);
-			regenDaysOfMonth(null);
-		}
+		//if (mYear == null) {
+		//	mMonthSpinner.setEnabled(false);			
+		//	mDaySpinner.setEnabled(false);			
+		//} else {
+		//	// Enable other spinners as appropriate
+		//	mMonthSpinner.setEnabled(true);			
+		//	mDaySpinner.setEnabled(mMonthSpinner.getSelectedItemPosition() > 0);
+		//	regenDaysOfMonth(null);
+		//}
+
 	}
 
 	/**
@@ -335,16 +342,20 @@ public class BigDatePicker extends AlertDialog {
 	private void handleMonth(Integer pos) {
 		// See if we got a valid month
 		boolean isMonth = (pos != null && pos > 0);
+
+		// Seems reasonable to disable other spinners if year invalid, but it actually
+		// not very friendly when entering data for new books.
 		if (!isMonth) {
 			// If not, disable DAY spinner; we leave current value intact in case a valid month is set later
-			mDaySpinner.setEnabled(false);
+			//mDaySpinner.setEnabled(false);
 			mMonth = null;
 		} else {
 			// Set the month and make sure DAY spinner is valid
 			mMonth = pos;
-			mDaySpinner.setEnabled(true);
-			regenDaysOfMonth(null);
+			//mDaySpinner.setEnabled(true);
+			//regenDaysOfMonth(null);
 		}
+		regenDaysOfMonth(null);
 	}
 
 	/**
@@ -382,6 +393,8 @@ public class BigDatePicker extends AlertDialog {
 				cal.set(Calendar.MONTH, mMonth-1);
 				// Add appropriae days
 				totalDays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+			} else {
+				totalDays = 31;
 			}
 		}
 		

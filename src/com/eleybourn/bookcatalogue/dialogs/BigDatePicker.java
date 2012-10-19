@@ -194,7 +194,13 @@ public class BigDatePicker extends AlertDialog {
 			@Override
 			public void onClick(View v) {
 				if (mYear != null) {
-					mYearView.setText((--mYear).toString());
+					// We can't support negatvive years yet because of sorting issues and the fact that 
+					// the Calendar object bugs out with them. To fix the calendar object interface we 
+					// would need to translate -ve years to Epoch settings throughout the app. For now,
+					// not many people have books written before 0AD, so it's a low priority.
+					if (mYear > 0) {
+						mYearView.setText((--mYear).toString());
+					}
 				} else {
 					mYearView.setText(Calendar.getInstance().get(Calendar.YEAR) + "");
 				}

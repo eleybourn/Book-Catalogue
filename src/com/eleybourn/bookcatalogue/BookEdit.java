@@ -22,6 +22,8 @@ package com.eleybourn.bookcatalogue;
 
 //import android.R;
 import java.io.File;
+import java.util.Hashtable;
+import java.util.Map.Entry;
 
 import android.app.Activity;
 import android.app.LocalActivityManager;
@@ -52,10 +54,12 @@ public class BookEdit extends TabActivity {
 	 * *AFTER* OnRestoreInstanceState in a contained activity, and will restore THE SAME fields.
 	 * 
 	 * This results in some fields (eg. description) being overwritten after the containing
-	 * acticity has restored them.
-	 * 
+	 * activity has restored them. It also results in the child activity being marked as 'dirty'
+	 * because the fields are updated after it's own 'restore' is done.
 	 */
 	public interface OnRestoreTabInstanceStateListener {
+		boolean isDirty();
+		void setDirty(boolean dirty);
 		void restoreTabInstanceState(Bundle savedInstanceState);
 	}
 
@@ -203,13 +207,20 @@ public class BookEdit extends TabActivity {
 	 * This only seems to be relevant for TextView objects that have Spannable text.
 	 */
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
-		super.onRestoreInstanceState(savedInstanceState);
 		LocalActivityManager mgr = this.getLocalActivityManager();
+
+		Hashtable<OnRestoreTabInstanceStateListener, Boolean> tabs = new Hashtable<OnRestoreTabInstanceStateListener, Boolean>();
 		for(String name: mTabNames) {
 			Activity a = mgr.getActivity(name);
 			if (a instanceof OnRestoreTabInstanceStateListener) {
-				((OnRestoreTabInstanceStateListener)a).restoreTabInstanceState(savedInstanceState);
+				OnRestoreTabInstanceStateListener l = (OnRestoreTabInstanceStateListener)a;
+				tabs.put(l, l.isDirty());
 			}			
+		}
+		super.onRestoreInstanceState(savedInstanceState);
+		for(Entry<OnRestoreTabInstanceStateListener, Boolean> e: tabs.entrySet()) {
+			e.getKey().restoreTabInstanceState(savedInstanceState);
+			e.getKey().setDirty(e.getValue());
 		}
 	}
 	

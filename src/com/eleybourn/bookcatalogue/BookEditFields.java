@@ -103,7 +103,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 	} 
 
 	private Fields mFields = null;
-	private boolean mIsDirty = false;
+	private boolean mIsDirtyFlg = false;
 
 	private Button mConfirmButton;
 	private Button mCancelButton;
@@ -204,7 +204,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 			}
 
 			if (savedInstanceState != null) {
-				mIsDirty = savedInstanceState.getBoolean("Dirty");
+				setDirty(savedInstanceState.getBoolean("Dirty"));
 			}
 
 			super.onCreate(savedInstanceState);
@@ -576,7 +576,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 					// We're done.
 					setResult(RESULT_OK);
 
-					if (mIsDirty) {
+					if (isDirty()) {
 						StandardDialogs.showConfirmUnsavedEditsDialog(BookEditFields.this);
 					} else {
 						finish();
@@ -597,7 +597,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 			mFields.setAfterFieldChangeListener(new AfterFieldChangeListener(){
 				@Override
 				public void afterFieldChange(Field field, String newValue) {
-					mIsDirty = true;
+					setDirty(true);
 				}});
 
 		} catch (IndexOutOfBoundsException e) {
@@ -1119,10 +1119,13 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 	@Override
 	/**
 	 * Method called when the containing TabActivity is running OnRestoreInstanceState; otherwise
-	 * locally made changes in our own OnRestoreInstanceState may get overwritten
+	 * locally made changes in our own OnRestoreInstanceState may get overwritten.
+	 * 
+	 * Also, make sure we are marked as 'dirty' based on saved state after a restore.
 	 */
 	public void restoreTabInstanceState(Bundle savedInstanceState) {
 		buildDescription();
+		setDirty(savedInstanceState.getBoolean("Dirty"));
 	}
 
 	/**
@@ -1199,7 +1202,16 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 		}
 
 		// Save flag indicating 'dirty'
-		outState.putBoolean("Dirty", mIsDirty);
+		outState.putBoolean("Dirty", isDirty());
+	}
+
+	@Override
+	/**
+	 * Prevent state restoration from falsely marking this activity as dirty
+	 */
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		setDirty(savedInstanceState.getBoolean("Dirty"));
 	}
 
 	/**
@@ -1209,7 +1221,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 	 */
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK && mIsDirty) {
+		if (keyCode == KeyEvent.KEYCODE_BACK && isDirty()) {
 			StandardDialogs.showConfirmUnsavedEditsDialog(this);
 			return true;
 		} else {
@@ -1456,7 +1468,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 		case ACTIVITY_EDIT_AUTHORS:
 			if (resultCode == Activity.RESULT_OK && intent.hasExtra(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)){
 				mAuthorList = (ArrayList<Author>) intent.getSerializableExtra(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
-				mIsDirty = true;
+				setDirty(true);
 			} else {
 				// Even though the dialog was terminated, some authors MAY have been updated/added.
 				if (mAuthorList != null)
@@ -1467,14 +1479,14 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 			// We do the fixup here because the user may have edited or merged authors; this will
 			// have already been applied to the database so no update is necessary, but we do need 
 			// to update the data we display.
-			boolean oldDirty = mIsDirty;
+			boolean oldDirty = isDirty();
 			fixupAuthorList();
-			mIsDirty = oldDirty;
+			setDirty(oldDirty);
 		case ACTIVITY_EDIT_SERIES:
 			if (resultCode == Activity.RESULT_OK && intent.hasExtra(CatalogueDBAdapter.KEY_SERIES_ARRAY)){
 				mSeriesList = (ArrayList<Series>) intent.getSerializableExtra(CatalogueDBAdapter.KEY_SERIES_ARRAY);
 				fixupSeriesList();
-				mIsDirty = true;
+				setDirty(true);
 			}
 		}
 	}
@@ -1485,12 +1497,28 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 		if (mAuthorList.size() == 0)
 			newText = getResources().getString(R.string.set_authors);
 		else {
-			mIsDirty = mIsDirty || Utils.pruneList(mDbHelper, mAuthorList);
+			if (Utils.pruneList(mDbHelper, mAuthorList) )
+				setDirty(true);
+
 			newText = mAuthorList.get(0).getDisplayName();
 			if (mAuthorList.size() > 1)
 				newText += " " + getResources().getString(R.string.and_others);
 		}
 		mFields.getField(R.id.author).setValue(newText);	
+	}
+
+	/**
+	 * Mark the data as dirty (or not)
+	 */
+	public void setDirty(boolean dirty) {
+		mIsDirtyFlg = dirty;
+	}
+
+	/**
+	 * Get the current status of the data in this activity
+	 */
+	public boolean isDirty() {
+		return mIsDirtyFlg;
 	}
 
 	private void fixupSeriesList() {

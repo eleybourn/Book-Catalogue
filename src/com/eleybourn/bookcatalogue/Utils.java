@@ -166,20 +166,47 @@ public class Utils {
 		return DateFormat.getDateTimeInstance().format(d);		
 	}
 
+	/**
+	 * Attempt to parse a date string based on a range of possible formats.
+	 * 
+	 * @param s		String to parse
+	 * @return		Resulting date if parsed, otherwise null
+	 */
 	public static Date parseDate(String s) {
+		Date d;
+		// First try to parse using strict rules
+		d = parseDate(s, false);
+		// If we got a date, exit
+		if (d != null)
+			return d;
+		// OK, be lenient
+		return parseDate(s, true);
+	}
+
+	/**
+	 * Attempt to parse a date string based on a range of possible formats; allow
+	 * for caller to specify if the parsing should be strict or lenient.
+	 * 
+	 * @param s				String to parse
+	 * @param lenient		True if parsing should be lenient
+	 * 
+	 * @return				Resulting date if parsed, otherwise null
+	 */
+	private static Date parseDate(String s, boolean lenient) {
 		Date d;
 		for ( SimpleDateFormat sdf : mParseDateFormats ) {
 			try {
-				// Parse as SQL/ANSI date
+				sdf.setLenient(lenient);
 				d = sdf.parse(s);
 				return d;
 			} catch (Exception e) {
 				// Ignore 
 			}			
 		}
-		// All SDFs failed, try one more...
+		// All SDFs failed, try locale-specific...
 		try {
 			java.text.DateFormat df = java.text.DateFormat.getDateInstance(java.text.DateFormat.SHORT);
+			df.setLenient(lenient);
 			d = df.parse(s);
 			return d;
 		} catch (Exception e) {
@@ -1698,10 +1725,11 @@ public class Utils {
 		Integer mm = null; //c.get(Calendar.MONTH);
 		Integer dd = null; //c.get(Calendar.DAY_OF_MONTH);
 		try {
-			String[] date = dateString.split("-");
+			String[] dateAndTime = dateString.split(" ");
+			String[] date = dateAndTime[0].split("-");
 			yyyy = Integer.parseInt(date[0]);
 			mm = Integer.parseInt(date[1]);
-			dd = Integer.parseInt(date[2]);
+			dd = Integer.parseInt(date[2]);				
 		} catch (Exception e) {
 			//do nothing
 		}

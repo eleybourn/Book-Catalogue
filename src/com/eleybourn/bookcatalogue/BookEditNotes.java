@@ -23,6 +23,7 @@ package com.eleybourn.bookcatalogue;
 //import android.R;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -35,6 +36,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.eleybourn.bookcatalogue.BookEdit.OnRestoreTabInstanceStateListener;
 import com.eleybourn.bookcatalogue.Fields.AfterFieldChangeListener;
 import com.eleybourn.bookcatalogue.Fields.Field;
 import com.eleybourn.bookcatalogue.Fields.FieldFormatter;
@@ -44,10 +46,10 @@ import com.eleybourn.bookcatalogue.dialogs.BigDatePicker;
 /*
  * A book catalogue application that integrates with Google Books.
  */
-public class BookEditNotes extends Activity {
+public class BookEditNotes extends Activity implements OnRestoreTabInstanceStateListener {
 
 	private Fields mFields;
-	private boolean mIsDirty = false;
+	private boolean mIsDirtyFlg = false;
 
 	private Button mConfirmButton;
 	private Button mCancelButton;
@@ -112,7 +114,7 @@ public class BookEditNotes extends Activity {
 			setContentView(R.layout.edit_book_notes);
 
 			if (savedInstanceState != null) {
-				mIsDirty = savedInstanceState.getBoolean("Dirty");
+				setDirty(savedInstanceState.getBoolean("Dirty"));
 			}
 
 			mFields = new Fields(this);
@@ -210,7 +212,7 @@ public class BookEditNotes extends Activity {
 					} else {
 						getParent().setResult(RESULT_OK, i);
 					}
-					if (mIsDirty) {
+					if (isDirty()) {
 						StandardDialogs.showConfirmUnsavedEditsDialog(BookEditNotes.this);
 					} else {
 						finish();
@@ -229,7 +231,7 @@ public class BookEditNotes extends Activity {
 			mFields.setAfterFieldChangeListener(new AfterFieldChangeListener(){
 				@Override
 				public void afterFieldChange(Field field, String newValue) {
-					mIsDirty = true;
+					setDirty(true);
 				}});
 			
 		} catch (Exception e) {
@@ -275,14 +277,28 @@ public class BookEditNotes extends Activity {
 		switch (id) {
 		case READ_START_DIALOG_ID:
 			try {
-				Utils.prepareDateDialog((BigDatePicker)dialog, mFields.getField(R.id.read_start).getValue(), mReadStartSetListener);
+				String dateString;
+				Object o = mFields.getField(R.id.read_start).getValue();
+				if (o == null || o.toString().equals("")) {
+					dateString = Utils.toSqlDateTime(new Date());
+				} else {
+					dateString = o.toString();
+				}
+				Utils.prepareDateDialog((BigDatePicker)dialog, dateString, mReadStartSetListener);
 			} catch (Exception e) {
 				// use the default date
 			}
 			break;
 		case READ_END_DIALOG_ID:
 			try {
-				Utils.prepareDateDialog((BigDatePicker)dialog, mFields.getField(R.id.read_end).getValue(), mReadEndSetListener);
+				String dateString;
+				Object o = mFields.getField(R.id.read_end).getValue();
+				if (o == null || o.toString().equals("")) {
+					dateString = Utils.toSqlDateTime(new Date());
+				} else {
+					dateString = o.toString();
+				}
+				Utils.prepareDateDialog((BigDatePicker)dialog, dateString, mReadEndSetListener);
 			} catch (Exception e) {
 				// use the default date
 			}
@@ -361,7 +377,7 @@ public class BookEditNotes extends Activity {
 	 */
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK && mIsDirty) {
+		if (keyCode == KeyEvent.KEYCODE_BACK && isDirty()) {
 			StandardDialogs.showConfirmUnsavedEditsDialog(this);
 			return true;
 		} else {
@@ -375,11 +391,25 @@ public class BookEditNotes extends Activity {
 		outState.putLong(CatalogueDBAdapter.KEY_ROWID, mRowId);
 
 		// DONT FORGET TO UPDATE onCreate to read these values back.
-		outState.putBoolean("Dirty", mIsDirty);
+		outState.putBoolean("Dirty", isDirty());
 		// Need to save local data that is not stored in EDITABLE views 
 		// ...including special text stored in TextViews and the like (TextViews are not restored automatically)
 		outState.putString(CatalogueDBAdapter.KEY_READ_START, mFields.getField(R.id.read_start).getValue().toString());
 		outState.putString(CatalogueDBAdapter.KEY_READ_END, mFields.getField(R.id.read_end).getValue().toString());
+	}
+
+	/**
+	 * Mark the data as dirty (or not)
+	 */
+	public void setDirty(boolean dirty) {
+		mIsDirtyFlg = dirty;
+	}
+
+	/**
+	 * Get the current status of the data in this activity
+	 */
+	public boolean isDirty() {
+		return mIsDirtyFlg;
 	}
 
 	@Override
@@ -409,6 +439,14 @@ public class BookEditNotes extends Activity {
 	protected void onDestroy() {
 		super.onDestroy();
 		mDbHelper.close();
+	}
+
+	@Override
+	/**
+	 * Make sure we are marked as 'dirty' based on saved state after a restore.
+	 */
+	public void restoreTabInstanceState(Bundle savedInstanceState) {
+		setDirty(savedInstanceState.getBoolean("Dirty"));
 	}
 
 }

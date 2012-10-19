@@ -27,7 +27,7 @@ import android.widget.Toast;
  * 
  * @author pjw
  */
-public class BigDatePicker extends AlertDialog {
+public class PartialDatePicker extends AlertDialog {
 	/** Calling context */
 	private Context mContext;
 
@@ -54,8 +54,8 @@ public class BigDatePicker extends AlertDialog {
 	 * @author pjw
 	 */
 	public static interface OnDateSetListener {
-		public void onDateSet(BigDatePicker dialog, Integer year, Integer month, Integer day);
-		public void onCancel(BigDatePicker dialog);
+		public void onDateSet(PartialDatePicker dialog, Integer year, Integer month, Integer day);
+		public void onCancel(PartialDatePicker dialog);
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class BigDatePicker extends AlertDialog {
 	 * @param context		Calling context
 	 * @param listener		Listener for dialog events
 	 */
-	public BigDatePicker(Context context, OnDateSetListener listener) {
+	public PartialDatePicker(Context context, OnDateSetListener listener) {
 		this(context, listener, null, null, null);
 	}
 
@@ -77,7 +77,7 @@ public class BigDatePicker extends AlertDialog {
 	 * @param month			Starting month
 	 * @param day			Starting day
 	 */
-	public BigDatePicker(Context context, OnDateSetListener listener, Integer year, Integer month, Integer day) {
+	public PartialDatePicker(Context context, OnDateSetListener listener, Integer year, Integer month, Integer day) {
 		super(context);
 
 		mContext = context;
@@ -253,7 +253,7 @@ public class BigDatePicker extends AlertDialog {
 				} else if (mMonth != null && mMonth > 0 && mYear == null) {
 					Toast.makeText(mContext, R.string.if_month_is_specified_year_must_be, Toast.LENGTH_LONG).show();					
 				} else {
-					mListener.onDateSet(BigDatePicker.this, mYear, mMonth, mDay);					
+					mListener.onDateSet(PartialDatePicker.this, mYear, mMonth, mDay);					
 				}
 			}}
 		);
@@ -262,7 +262,7 @@ public class BigDatePicker extends AlertDialog {
 		((Button)root.findViewById(R.id.cancel)).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				mListener.onCancel(BigDatePicker.this);				
+				mListener.onCancel(PartialDatePicker.this);				
 			}}
 		);
 
@@ -271,7 +271,7 @@ public class BigDatePicker extends AlertDialog {
 
 			@Override
 			public void onCancel(DialogInterface arg0) {
-				mListener.onCancel(BigDatePicker.this);				
+				mListener.onCancel(PartialDatePicker.this);				
 			}});
 
 		// We are all set up!

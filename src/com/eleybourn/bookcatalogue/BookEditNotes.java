@@ -41,7 +41,7 @@ import com.eleybourn.bookcatalogue.Fields.AfterFieldChangeListener;
 import com.eleybourn.bookcatalogue.Fields.Field;
 import com.eleybourn.bookcatalogue.Fields.FieldFormatter;
 import com.eleybourn.bookcatalogue.Fields.FieldValidator;
-import com.eleybourn.bookcatalogue.dialogs.BigDatePicker;
+import com.eleybourn.bookcatalogue.dialogs.PartialDatePicker;
 
 /*
  * A book catalogue application that integrates with Google Books.
@@ -284,7 +284,7 @@ public class BookEditNotes extends Activity implements OnRestoreTabInstanceState
 				} else {
 					dateString = o.toString();
 				}
-				Utils.prepareDateDialog((BigDatePicker)dialog, dateString, mReadStartSetListener);
+				Utils.prepareDateDialog((PartialDatePicker)dialog, dateString, mReadStartSetListener);
 			} catch (Exception e) {
 				// use the default date
 			}
@@ -298,7 +298,7 @@ public class BookEditNotes extends Activity implements OnRestoreTabInstanceState
 				} else {
 					dateString = o.toString();
 				}
-				Utils.prepareDateDialog((BigDatePicker)dialog, dateString, mReadEndSetListener);
+				Utils.prepareDateDialog((PartialDatePicker)dialog, dateString, mReadEndSetListener);
 			} catch (Exception e) {
 				// use the default date
 			}
@@ -309,16 +309,16 @@ public class BookEditNotes extends Activity implements OnRestoreTabInstanceState
 	/**
 	 * the callback received when the user "sets" the read-start date in the dialog
 	 */
-	private BigDatePicker.OnDateSetListener mReadStartSetListener = new BigDatePicker.OnDateSetListener() {
+	private PartialDatePicker.OnDateSetListener mReadStartSetListener = new PartialDatePicker.OnDateSetListener() {
 		@Override
-		public void onDateSet(BigDatePicker dialog, Integer year, Integer month, Integer day) {
+		public void onDateSet(PartialDatePicker dialog, Integer year, Integer month, Integer day) {
 			String value = Utils.buildPartialDate(year, month, day);
 			mFields.getField(R.id.read_start).setValue(value);
 			dismissDialog(READ_START_DIALOG_ID);
 		}
 
 		@Override
-		public void onCancel(BigDatePicker dialog) {
+		public void onCancel(PartialDatePicker dialog) {
 			dismissDialog(READ_START_DIALOG_ID);
 		}
 	};
@@ -326,16 +326,16 @@ public class BookEditNotes extends Activity implements OnRestoreTabInstanceState
 	/**
 	 * the callback received when the user "sets" the read-end date in the dialog
 	 */
-	private BigDatePicker.OnDateSetListener mReadEndSetListener = new BigDatePicker.OnDateSetListener() {
+	private PartialDatePicker.OnDateSetListener mReadEndSetListener = new PartialDatePicker.OnDateSetListener() {
 		@Override
-		public void onDateSet(BigDatePicker dialog, Integer year, Integer month, Integer day) {
+		public void onDateSet(PartialDatePicker dialog, Integer year, Integer month, Integer day) {
 			String value = Utils.buildPartialDate(year, month, day);
 			mFields.getField(R.id.read_end).setValue(value);
 			dismissDialog(READ_END_DIALOG_ID);
 		}
 
 		@Override
-		public void onCancel(BigDatePicker dialog) {
+		public void onCancel(PartialDatePicker dialog) {
 			dismissDialog(READ_END_DIALOG_ID);
 		}
 	};

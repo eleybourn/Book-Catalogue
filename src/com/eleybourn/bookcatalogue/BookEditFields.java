@@ -80,7 +80,7 @@ import com.eleybourn.bookcatalogue.Fields.Field;
 import com.eleybourn.bookcatalogue.Fields.FieldValidator;
 import com.eleybourn.bookcatalogue.StandardDialogs.SimpleDialogItem;
 import com.eleybourn.bookcatalogue.StandardDialogs.SimpleDialogOnClickListener;
-import com.eleybourn.bookcatalogue.dialogs.BigDatePicker;
+import com.eleybourn.bookcatalogue.dialogs.PartialDatePicker;
 import com.eleybourn.bookcatalogue.dialogs.TextFieldEditor;
 
 
@@ -670,7 +670,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 		switch (id) {
 		case DATE_DIALOG_ID:
 			try {
-				Utils.prepareDateDialog((BigDatePicker)dialog, mFields.getField(R.id.date_published).getValue(), mBigDateSetListener);
+				Utils.prepareDateDialog((PartialDatePicker)dialog, mFields.getField(R.id.date_published).getValue(), mBigDateSetListener);
 
 			} catch (Exception e) {
 				Logger.logError(e);
@@ -721,15 +721,15 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 	 *  
 	 *  Build a full or partial date in SQL format
 	 */
-	private BigDatePicker.OnDateSetListener mBigDateSetListener = new BigDatePicker.OnDateSetListener() {
-		public void onDateSet(BigDatePicker dialog, Integer year, Integer month, Integer day) {
+	private PartialDatePicker.OnDateSetListener mBigDateSetListener = new PartialDatePicker.OnDateSetListener() {
+		public void onDateSet(PartialDatePicker dialog, Integer year, Integer month, Integer day) {
 			String value = Utils.buildPartialDate(year, month, day);
 			mFields.getField(R.id.date_published).setValue(value);
 			dismissDialog(DATE_DIALOG_ID);
 		}
 
 		@Override
-		public void onCancel(BigDatePicker dialog) {
+		public void onCancel(PartialDatePicker dialog) {
 			dismissDialog(DATE_DIALOG_ID);
 		}
 	};

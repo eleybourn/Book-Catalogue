@@ -60,7 +60,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
 import com.eleybourn.bookcatalogue.database.CoversDbHelper;
-import com.eleybourn.bookcatalogue.dialogs.BigDatePicker;
+import com.eleybourn.bookcatalogue.dialogs.PartialDatePicker;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -1717,7 +1717,7 @@ public class Utils {
 	 * @param current		Current value (may be null)
 	 * @param listener		Listener to be called on dialg completion.
 	 */
-	public static void prepareDateDialog(BigDatePicker dialog, Object current, BigDatePicker.OnDateSetListener listener) {
+	public static void prepareDateDialog(PartialDatePicker dialog, Object current, PartialDatePicker.OnDateSetListener listener) {
 		String dateString = current == null ? "" : current.toString();
 		// get the current date
 		final Calendar c = Calendar.getInstance();
@@ -1744,8 +1744,8 @@ public class Utils {
 	 * @param listener
 	 * @return
 	 */
-	public static Dialog buildDateDialog(Context context, int titleId, BigDatePicker.OnDateSetListener listener) {
-		BigDatePicker dialog = new BigDatePicker(context, listener);
+	public static Dialog buildDateDialog(Context context, int titleId, PartialDatePicker.OnDateSetListener listener) {
+		PartialDatePicker dialog = new PartialDatePicker(context, listener);
 		dialog.setTitle(titleId);
 		return dialog;
 	}

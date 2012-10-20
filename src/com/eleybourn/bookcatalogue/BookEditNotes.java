@@ -394,8 +394,20 @@ public class BookEditNotes extends Activity implements OnRestoreTabInstanceState
 		outState.putBoolean("Dirty", isDirty());
 		// Need to save local data that is not stored in EDITABLE views 
 		// ...including special text stored in TextViews and the like (TextViews are not restored automatically)
-		outState.putString(CatalogueDBAdapter.KEY_READ_START, mFields.getField(R.id.read_start).getValue().toString());
-		outState.putString(CatalogueDBAdapter.KEY_READ_END, mFields.getField(R.id.read_end).getValue().toString());
+		putStringSafely(outState, CatalogueDBAdapter.KEY_READ_START, mFields.getField(R.id.read_start).getValue());
+		putStringSafely(outState, CatalogueDBAdapter.KEY_READ_END, mFields.getField(R.id.read_end).getValue());
+	}
+
+	/**
+	 * If the object is null, then don't output. Otherwise, output the result of 'toString()'
+	 * 
+	 * @param outState		Bundle to store value in
+	 * @param key			Key in bundle
+	 * @param value			value to store
+	 */
+	private void putStringSafely(Bundle outState, String key, Object value) {
+		if (value != null)
+			outState.putString(key, value.toString());
 	}
 
 	/**

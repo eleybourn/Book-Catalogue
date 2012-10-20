@@ -41,8 +41,10 @@ public class MenuHandler {
 	private static final int MNU_ITM_HELP = Menu.FIRST+7;
 	private static final int MNU_ITM_ADMIN = Menu.FIRST+8;
 	private static final int MNU_ITM_SEARCH = Menu.FIRST+9;
+	private static final int MNU_ITM_ABOUT = Menu.FIRST+10;
+	private static final int MNU_ITM_DONATE = Menu.FIRST+11;
 	
-	public static final int FIRST = Menu.FIRST+10;
+	public static final int FIRST = Menu.FIRST+12;
 
 	private int mSort = 0;
 
@@ -107,6 +109,16 @@ public class MenuHandler {
 			MenuItem admin = menu.add(0, MNU_ITM_ADMIN, mSort++, adminTitle);
 			admin.setIcon(android.R.drawable.ic_menu_manage);
 		}
+		{
+			String aboutTitle = BookCatalogueApp.getResourceString(R.string.about_label);
+			MenuItem admin = menu.add(0, MNU_ITM_ABOUT, mSort++, aboutTitle);
+			admin.setIcon(R.drawable.ic_menu_info_details);
+		}
+		{
+			String aboutTitle = BookCatalogueApp.getResourceString(R.string.donate_label);
+			MenuItem admin = menu.add(0, MNU_ITM_DONATE, mSort++, aboutTitle);
+			admin.setIcon(R.drawable.ic_menu_donate);
+		}
 	}
 	
 	/**
@@ -143,12 +155,16 @@ public class MenuHandler {
 			createBookISBN(a,"name");
 			return true;
 		case MNU_ITM_HELP:
-			// Start the Main Menu, not just the Admin page
 			helpPage(a);
 			return true;
 		case MNU_ITM_ADMIN:
-			// Start the Main Menu, not just the Admin page
 			adminPage(a);
+			return true;
+		case MNU_ITM_DONATE:
+			donatePage(a);
+			return true;
+		case MNU_ITM_ABOUT:
+			aboutPage(a);
 			return true;
 		case MNU_ITM_SEARCH:
 			a.onSearchRequested();
@@ -191,6 +207,24 @@ public class MenuHandler {
 		Intent i = new Intent(BookCatalogueApp.context, AdministrationFunctions.class);
 		i.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
 		a.startActivityForResult(i, UniqueId.ACTIVITY_ADMIN);
+	}
+	
+	/**
+	 * Load the About Activity
+	 */
+	private void aboutPage(Activity a) {
+		Intent i = new Intent(BookCatalogueApp.context, AdministrationAbout.class);
+		i.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+		a.startActivityForResult(i, UniqueId.ACTIVITY_ABOUT);
+	}
+	
+	/**
+	 * Load the Donate Activity
+	 */
+	private void donatePage(Activity a) {
+		Intent i = new Intent(BookCatalogueApp.context, AdministrationDonate.class);
+		i.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+		a.startActivityForResult(i, UniqueId.ACTIVITY_DONATE);
 	}
 	
 	/**

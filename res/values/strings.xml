@@ -608,6 +608,7 @@
 <string name="invalid_isbn_x_specified_in_search">Invalid ISBN \'%1$s\' specified in search</string>
 <string name="if_day_is_specified_month_and_year_must_be">If day is specified, then both month and year must also be specified.</string>
 <string name="if_month_is_specified_year_must_be">If month is specified, then year must also be specified.</string>
+<string name="main_menu">Main Menu</string>
 
 </resources>
 

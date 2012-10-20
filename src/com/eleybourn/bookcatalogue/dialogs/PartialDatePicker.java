@@ -9,10 +9,12 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.text.Editable;
+import android.text.Selection;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -292,10 +294,18 @@ public class PartialDatePicker extends AlertDialog {
 		mMonth = month;
 		mDay = day;
 		
+		String yearVal;
 		if (year != null) {
-			mYearView.setText(year.toString());
+			yearVal = year.toString();
 		} else {
-			mYearView.setText("");
+			yearVal = "";
+		}
+		mYearView.setText(yearVal);
+		Editable e = mYearView.getEditableText();
+		Selection.setSelection(e, e.length(), e.length());
+		if (yearVal.equals("")) {
+			mYearView.requestFocus();
+			getWindow().setSoftInputMode (WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 		}
 
 		if (month == null || month == 0) {
@@ -309,6 +319,7 @@ public class PartialDatePicker extends AlertDialog {
 		} else {
 			mDaySpinner.setSelection(day);			
 		}
+
 	}
 
 	/**

@@ -53,17 +53,16 @@
 		                android:layout_alignRight="@+id/year"
 		                android:layout_alignLeft="@+id/year"
 		                android:text="+" />
-						
-
+						
 			        <EditText
-		                android:id="@+id/year"
-		                android:layout_width="wrap_content"
-		                android:layout_height="wrap_content"
-						android:layout_below="@+id/plus"
-		                android:inputType="number|numberSigned"
-		                android:text="2000"
-		                android:textAppearance="?android:attr/textAppearanceMedium" 
-		                android:minEms="3" />
+			            android:id="@+id/year"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:layout_below="@+id/plus"
+			            android:inputType="number"
+			            android:minEms="3"
+			            android:text="2000"
+			            android:textAppearance="?android:attr/textAppearanceMedium" />
 
 			        <Button
 			            android:id="@+id/minus"

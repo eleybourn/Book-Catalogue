@@ -18,4 +18,5 @@ public class UniqueId {
 	public static final int ACTIVITY_SCAN = 15;
 	public static final int ACTIVITY_ABOUT = 16;
 	public static final int ACTIVITY_DONATE = 17;
+	public static final int ACTIVITY_BOOKSHELF = 18;
 }

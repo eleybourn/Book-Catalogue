@@ -43,8 +43,9 @@ public class MenuHandler {
 	private static final int MNU_ITM_SEARCH = Menu.FIRST+9;
 	private static final int MNU_ITM_ABOUT = Menu.FIRST+10;
 	private static final int MNU_ITM_DONATE = Menu.FIRST+11;
+	private static final int MNU_ITM_BOOKSHELVES = Menu.FIRST+12;
 	
-	public static final int FIRST = Menu.FIRST+12;
+	public static final int FIRST = Menu.FIRST+13;
 
 	private int mSort = 0;
 
@@ -99,6 +100,11 @@ public class MenuHandler {
 	 * @param menu	root menu
 	 */
 	public void addCreateHelpAndAdminItems(Menu menu) {
+		{
+			String title = BookCatalogueApp.getResourceString(R.string.menu_bookshelf);
+			MenuItem item = menu.add(0, MNU_ITM_BOOKSHELVES, mSort++, title);
+			item.setIcon(R.drawable.ic_menu_bookshelves);
+		}
 		{
 			String helpTitle = BookCatalogueApp.getResourceString(R.string.help);
 			MenuItem help = menu.add(0, MNU_ITM_HELP, mSort++, helpTitle);
@@ -166,6 +172,9 @@ public class MenuHandler {
 		case MNU_ITM_ABOUT:
 			aboutPage(a);
 			return true;
+		case MNU_ITM_BOOKSHELVES:
+			bookshelvesPage(a);
+			return true;
 		case MNU_ITM_SEARCH:
 			a.onSearchRequested();
 			return true;
@@ -207,6 +216,15 @@ public class MenuHandler {
 		Intent i = new Intent(BookCatalogueApp.context, AdministrationFunctions.class);
 		i.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
 		a.startActivityForResult(i, UniqueId.ACTIVITY_ADMIN);
+	}
+	
+	/**
+	 * Load the Bookshelves Activity
+	 */
+	private void bookshelvesPage(Activity a) {
+		Intent i = new Intent(BookCatalogueApp.context, Bookshelf.class);
+		i.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+		a.startActivityForResult(i, UniqueId.ACTIVITY_BOOKSHELF);
 	}
 	
 	/**

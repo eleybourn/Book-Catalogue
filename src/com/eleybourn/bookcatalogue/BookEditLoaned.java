@@ -21,6 +21,8 @@
 package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
+
+import debug.Tracker;
 import android.app.Activity;
 import android.database.Cursor;
 import android.net.Uri;
@@ -97,42 +99,46 @@ public class BookEditLoaned extends Activity {
 	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		mDbHelper = new CatalogueDBAdapter(this);
-		mDbHelper.open();
-		
-		getRowId(savedInstanceState);
-		if (mRowId == null || mRowId == 0) {
-			/* This activity must have a row id, i.e. you can't loan a book you haven't created yet */
-			Toast.makeText(this, R.string.unknown_error, Toast.LENGTH_LONG).show();
-			finish();
-			return;
-		}
-		
+		Tracker.enterOnCreate(this);
 		try {
-			Cursor book = mDbHelper.fetchBookById(mRowId);
-			try {
-				if (book != null) {
-					book.moveToFirst();
-				}
-				String title = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE)); 
-				getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + title);
-				
-			} finally {
-				if (book != null)
-					book.close();
+			super.onCreate(savedInstanceState);
+			mDbHelper = new CatalogueDBAdapter(this);
+			mDbHelper.open();
+			
+			getRowId(savedInstanceState);
+			if (mRowId == null || mRowId == 0) {
+				/* This activity must have a row id, i.e. you can't loan a book you haven't created yet */
+				Toast.makeText(this, R.string.unknown_error, Toast.LENGTH_LONG).show();
+				finish();
+				return;
 			}
-		} catch (Exception e) {
-			// do nothing - default title
+			
+			try {
+				Cursor book = mDbHelper.fetchBookById(mRowId);
+				try {
+					if (book != null) {
+						book.moveToFirst();
+					}
+					String title = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE)); 
+					getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + title);
+					
+				} finally {
+					if (book != null)
+						book.close();
+				}
+			} catch (Exception e) {
+				// do nothing - default title
+			}
+	
+			String user = mDbHelper.fetchLoanByBook(mRowId);
+			if (user == null) {
+				loanTo();
+			} else {
+				loaned(user);
+			}
+		} finally {
+			Tracker.exitOnCreate(this);			
 		}
-
-		String user = mDbHelper.fetchLoanByBook(mRowId);
-		if (user == null) {
-			loanTo();
-		} else {
-			loaned(user);
-		}
-		
 	}
 	
 	@Override

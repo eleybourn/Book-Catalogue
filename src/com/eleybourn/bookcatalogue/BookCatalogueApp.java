@@ -37,8 +37,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.IBinder;
 import org.acra.*;
 import org.acra.annotation.*;
+import org.acra.sender.ReportSender;
+import org.acra.sender.ReportSenderException;
 
 import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
+
+import debug.Tracker;
 
 import static org.acra.ReportField.*;
 
@@ -91,6 +95,18 @@ public class BookCatalogueApp extends Application {
 
 	}
 
+	public class BcReportSender extends org.acra.sender.EmailIntentSender {
+
+		public BcReportSender(Context ctx) {
+			super(ctx);
+		}
+
+		@Override
+	    public void send(CrashReportData report) throws ReportSenderException {
+			//report.put(USER_COMMENT, report.get(USER_COMMENT) + "\n\n" + Tracker.getEventsInfo());
+			super.send(report);
+	    }
+	}
 	/**
 	 * Most real initialization should go here, since before this point, the App is still
 	 * 'Under Construction'.
@@ -99,8 +115,10 @@ public class BookCatalogueApp extends Application {
 	public void onCreate() {
 		// The following line triggers the initialization of ACRA
         ACRA.init(this);
+        BcReportSender bcSender = new BcReportSender(this);
+        ErrorReporter.getInstance().setReportSender(bcSender);
 
-    	// Create the notifier
+        // Create the notifier
     	mNotifier = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 
     	// Don't rely on the the context until now...

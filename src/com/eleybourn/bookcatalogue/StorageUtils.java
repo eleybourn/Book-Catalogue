@@ -15,6 +15,8 @@ import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import debug.Tracker;
+
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -249,7 +251,7 @@ public class StorageUtils {
 		emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, context.getString(R.string.debug_email).split(";"));
 		String subject = "[" + context.getString(R.string.app_name) + "] " + context.getString(R.string.debug_subject);
 		emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
-		emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, context.getString(R.string.debug_body));
+		emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, context.getString(R.string.debug_body) + "\n\n" + Tracker.getEventsInfo());
 		//has to be an ArrayList
 		ArrayList<Uri> uris = new ArrayList<Uri>();
 		//convert from paths to Android friendly Parcelable Uri's

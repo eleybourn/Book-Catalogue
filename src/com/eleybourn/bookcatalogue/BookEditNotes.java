@@ -43,6 +43,8 @@ import com.eleybourn.bookcatalogue.Fields.FieldFormatter;
 import com.eleybourn.bookcatalogue.Fields.FieldValidator;
 import com.eleybourn.bookcatalogue.dialogs.PartialDatePicker;
 
+import debug.Tracker;
+
 /*
  * A book catalogue application that integrates with Google Books.
  */
@@ -106,6 +108,7 @@ public class BookEditNotes extends Activity implements OnRestoreTabInstanceState
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		Tracker.enterOnCreate(this);
 		try {
 			super.onCreate(savedInstanceState);
 			mDbHelper = new CatalogueDBAdapter(this);
@@ -237,6 +240,7 @@ public class BookEditNotes extends Activity implements OnRestoreTabInstanceState
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
+		Tracker.exitOnCreate(this);
 	}
 
 	/**
@@ -387,6 +391,7 @@ public class BookEditNotes extends Activity implements OnRestoreTabInstanceState
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
+		Tracker.enterOnSaveInstanceState(this);
 		super.onSaveInstanceState(outState);
 		outState.putLong(CatalogueDBAdapter.KEY_ROWID, mRowId);
 
@@ -396,6 +401,7 @@ public class BookEditNotes extends Activity implements OnRestoreTabInstanceState
 		// ...including special text stored in TextViews and the like (TextViews are not restored automatically)
 		putStringSafely(outState, CatalogueDBAdapter.KEY_READ_START, mFields.getField(R.id.read_start).getValue());
 		putStringSafely(outState, CatalogueDBAdapter.KEY_READ_END, mFields.getField(R.id.read_end).getValue());
+		Tracker.exitOnSaveInstanceState(this);
 	}
 
 	/**
@@ -426,12 +432,16 @@ public class BookEditNotes extends Activity implements OnRestoreTabInstanceState
 
 	@Override
 	protected void onPause() {
+		Tracker.enterOnPause(this);
 		super.onPause();
+		Tracker.exitOnPause(this);
 	}
 
 	@Override
 	protected void onResume() {
+		Tracker.enterOnResume(this);
 		super.onResume();
+		Tracker.exitOnResume(this);
 	}
 
 	private void saveState(Bundle values) {
@@ -449,8 +459,10 @@ public class BookEditNotes extends Activity implements OnRestoreTabInstanceState
 
 	@Override
 	protected void onDestroy() {
+		Tracker.enterOnDestroy(this);
 		super.onDestroy();
 		mDbHelper.close();
+		Tracker.exitOnDestroy(this);
 	}
 
 	@Override

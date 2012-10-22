@@ -25,6 +25,8 @@ import java.io.File;
 import java.util.Hashtable;
 import java.util.Map.Entry;
 
+import debug.Tracker;
+
 import android.app.Activity;
 import android.app.LocalActivityManager;
 import android.app.TabActivity;
@@ -90,6 +92,7 @@ public class BookEdit extends TabActivity {
 	private CatalogueDBAdapter mDbHelper = new CatalogueDBAdapter(this);
 
 	public void onCreate(Bundle savedInstanceState) {
+		Tracker.enterOnCreate(this);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tabhost);
 		
@@ -167,6 +170,7 @@ public class BookEdit extends TabActivity {
 		}
 		
 		tabHost.setCurrentTab(currentTab);
+		Tracker.exitOnCreate(this);
 	}
 	
 	/**
@@ -185,18 +189,22 @@ public class BookEdit extends TabActivity {
 	
 	@Override
 	protected void onDestroy() {
+		Tracker.enterOnDestroy(this);
 		super.onDestroy();
 		mDbHelper.close();
+		Tracker.exitOnDestroy(this);
 	} 
 	
 	@Override 
 	protected void onSaveInstanceState(Bundle outState) { 
+		Tracker.enterOnSaveInstanceState(this);
 		super.onSaveInstanceState(outState);
 		try {
 			outState.putLong(CatalogueDBAdapter.KEY_ROWID, mRowId);
 		} catch (Exception e) {
 			//do nothing
 		}
+		Tracker.exitOnSaveInstanceState(this);
 	}
 	
 	@Override
@@ -207,6 +215,7 @@ public class BookEdit extends TabActivity {
 	 * This only seems to be relevant for TextView objects that have Spannable text.
 	 */
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		Tracker.enterOnRestoreInstanceState(this);
 		LocalActivityManager mgr = this.getLocalActivityManager();
 
 		Hashtable<OnRestoreTabInstanceStateListener, Boolean> tabs = new Hashtable<OnRestoreTabInstanceStateListener, Boolean>();
@@ -222,6 +231,7 @@ public class BookEdit extends TabActivity {
 			e.getKey().restoreTabInstanceState(savedInstanceState);
 			e.getKey().setDirty(e.getValue());
 		}
+		Tracker.exitOnRestoreInstanceState(this);
 	}
 	
 	/**

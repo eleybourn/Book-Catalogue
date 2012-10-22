@@ -48,8 +48,8 @@ import com.eleybourn.bookcatalogue.database.DbUtils.JoinContext;
 import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedDb;
 import com.eleybourn.bookcatalogue.database.DbUtils.TableDefinition;
 import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer.SyncLock;
+import com.eleybourn.bookcatalogue.debug.Tracker;
 
-import debug.Tracker;
 
 /**
  * Class used to build and populate temporary tables with details of a flattened book list used to

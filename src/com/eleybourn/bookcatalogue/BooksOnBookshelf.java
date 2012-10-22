@@ -36,8 +36,8 @@ import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
 import com.eleybourn.bookcatalogue.booklist.BooklistStylePropertiesActivity;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyles;
 import com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds;
+import com.eleybourn.bookcatalogue.debug.Tracker;
 
-import debug.Tracker;
 
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.*;
 

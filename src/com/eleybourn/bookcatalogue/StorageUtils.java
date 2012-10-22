@@ -15,7 +15,8 @@ import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import debug.Tracker;
+import com.eleybourn.bookcatalogue.debug.Tracker;
+
 
 import android.content.Context;
 import android.content.Intent;
@@ -232,7 +233,7 @@ public class StorageUtils {
 	private static String[] mDebugFilePrefixes = new String[]{StorageUtils.LOCATION + "DbUpgrade", StorageUtils.LOCATION + "DbExport", "error.log", "export.csv"};
 
 	/**
-	 * Collect and send debug info to a support email address. 
+	 * Collect and send com.eleybourn.bookcatalogue.debug info to a support email address. 
 	 * 
 	 * THIS SHOULD NOT BE A PUBLICALLY AVAILABLE MAINING LIST OR FORUM!
 	 * 

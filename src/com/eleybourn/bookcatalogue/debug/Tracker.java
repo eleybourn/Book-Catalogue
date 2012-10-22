@@ -1,4 +1,4 @@
-package debug;
+package com.eleybourn.bookcatalogue.debug;
 
 import java.util.Date;
 

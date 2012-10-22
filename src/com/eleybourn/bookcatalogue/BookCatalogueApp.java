@@ -41,8 +41,8 @@ import org.acra.sender.ReportSender;
 import org.acra.sender.ReportSenderException;
 
 import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
+import com.eleybourn.bookcatalogue.debug.Tracker;
 
-import debug.Tracker;
 
 import static org.acra.ReportField.*;
 

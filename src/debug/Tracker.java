@@ -36,40 +36,40 @@ public class Tracker {
 	private static Event[] mEventBuffer = new Event[K_MAX_EVENTS];
 	private static int mNextEventBufferPos = 0;
 
-	public static void enterOnCreate(Activity a) {
+	public static void enterOnCreate(Object a) {
 		handleEvent(a,"OnCreate", States.Enter);
 	}
-	public static void exitOnCreate(Activity a) {
+	public static void exitOnCreate(Object a) {
 		handleEvent(a,"OnCreate", States.Exit);		
 	}
-	public static void enterOnDestroy(Activity a) {
+	public static void enterOnDestroy(Object a) {
 		handleEvent(a,"OnDestroy", States.Enter);
 	}
-	public static void exitOnDestroy(Activity a) {
+	public static void exitOnDestroy(Object a) {
 		handleEvent(a,"OnDestroy", States.Exit);		
 	}
-	public static void enterOnPause(Activity a) {
+	public static void enterOnPause(Object a) {
 		handleEvent(a,"OnPause", States.Enter);		
 	}
-	public static void exitOnPause(Activity a) {
+	public static void exitOnPause(Object a) {
 		handleEvent(a,"OnPause", States.Exit);				
 	}
-	public static void enterOnResume(Activity a) {
+	public static void enterOnResume(Object a) {
 		handleEvent(a,"OnResume", States.Enter);				
 	}
-	public static void exitOnResume(Activity a) {
+	public static void exitOnResume(Object a) {
 		handleEvent(a,"OnResume", States.Exit);						
 	}
-	public static void enterOnSaveInstanceState(Activity a) {
+	public static void enterOnSaveInstanceState(Object a) {
 		handleEvent(a,"OnSaveInstanceState", States.Enter);		
 	}
-	public static void exitOnSaveInstanceState(Activity a) {
+	public static void exitOnSaveInstanceState(Object a) {
 		handleEvent(a,"OnSaveInstanceState", States.Exit);
 	}
-	public static void enterOnRestoreInstanceState(Activity a) {
+	public static void enterOnRestoreInstanceState(Object a) {
 		handleEvent(a,"OnRestoreInstanceState", States.Enter);		
 	}
-	public static void exitOnRestoreInstanceState(Activity a) {
+	public static void exitOnRestoreInstanceState(Object a) {
 		handleEvent(a,"OnRestoreInstanceState", States.Exit);		
 	}
 	

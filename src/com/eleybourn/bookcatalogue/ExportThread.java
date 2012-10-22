@@ -17,7 +17,7 @@ import android.net.Uri;
 import android.os.Message;
 import android.widget.Toast;
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
-import messaging.MessageSwitch;
+import com.eleybourn.bookcatalogue.messaging.MessageSwitch;
 
 /**
  * Class to handle export in a separate thread.

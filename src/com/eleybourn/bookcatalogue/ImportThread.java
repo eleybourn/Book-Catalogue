@@ -49,8 +49,8 @@ public class ImportThread extends ManagedTask {
 		void onFinish();
 	}
 
-	public ImportThread(TaskManager manager, TaskHandler taskHandler, String fileSpec) throws IOException {
-		super(manager, taskHandler);
+	public ImportThread(TaskManager manager, ImportHandler taskHandler, String fileSpec) throws IOException {
+		super(manager, (ManagedTask.TaskHandler)taskHandler);
 		mFile = new File(fileSpec);
 		mFileSpec = mFile.getCanonicalPath();
 		mSharedStoragePath = StorageUtils.getSharedStorage().getCanonicalPath();

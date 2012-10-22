@@ -44,6 +44,8 @@ abstract public class ManagedTask extends Thread {
 	private boolean mFinished = false;
 	// Indicates the user has requested a cancel. Up to subclass to decice what to do. Set by TaskManager.
 	private boolean mCancelFlg = false;
+	// Each task has a handler object that can be used to communicate with the main thread.
+	private TaskHandler mTaskHandler;
 	// Handler for UI thread messages. Used to manage thread-based comms.
 	protected Handler mMessageHandler;
 
@@ -85,19 +87,29 @@ abstract public class ManagedTask extends Thread {
 	}
 
 	/**
+	 * Accessor for the task handler.
+	 * 
+	 * @return
+	 */
+	TaskHandler getTaskHandler() {
+		return mTaskHandler;
+	}
+
+	/**
 	 * Constructor.
 	 * 
 	 * @param manager			Associated task manager
 	 * @param taskHandler		Object to inform of life0cycle events
 	 * 
 	 */
-	public ManagedTask(TaskManager manager) {
+	public ManagedTask(TaskManager manager, TaskHandler taskHandler) {
 		// Must be non-null
 		if (manager == null)
 			throw new IllegalArgumentException();
 
 		// Save the stuff for mater
 		mManager = manager;
+		mTaskHandler = taskHandler;
 		// Add to my manager
 		mManager.addTask(this);
 		// Create a new Handler.

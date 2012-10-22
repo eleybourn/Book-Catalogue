@@ -23,8 +23,9 @@ package com.eleybourn.bookcatalogue;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-import messaging.MessageSwitch;
-import messaging.MessageSwitch.Message;
+import com.eleybourn.bookcatalogue.messaging.MessageSwitch;
+import com.eleybourn.bookcatalogue.messaging.MessageSwitch.Message;
+
 
 /**
  * Class used to manager a collection of backgroud threads for an AcitivityWithTasks subclass.

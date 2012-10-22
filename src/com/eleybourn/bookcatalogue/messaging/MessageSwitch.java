@@ -1,4 +1,4 @@
-package messaging;
+package com.eleybourn.bookcatalogue.messaging;
 
 import java.util.ArrayList;
 import java.util.Hashtable;

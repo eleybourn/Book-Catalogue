@@ -44,8 +44,6 @@ abstract public class ManagedTask extends Thread {
 	private boolean mFinished = false;
 	// Indicates the user has requested a cancel. Up to subclass to decice what to do. Set by TaskManager.
 	private boolean mCancelFlg = false;
-	// Each task has a handler object that can be used to communicate with the main thread.
-	private TaskHandler mTaskHandler;
 	// Handler for UI thread messages. Used to manage thread-based comms.
 	protected Handler mMessageHandler;
 
@@ -59,7 +57,7 @@ abstract public class ManagedTask extends Thread {
 	// was executed (if necessary). TaskHandler objects will be cleared by the disconnect() call
 	// and reset by the reconnect() call.
 	//
-	abstract protected boolean onFinish();
+	abstract protected void onFinish();
 	// Called to do the main thread work. Can use doProgress() and doToast() to display messages.
 	abstract protected void onRun() throws InterruptedException, ClosedByInterruptException;
 	// Called to handle any messages posted via the sendMessage() method. Messages can be constructed
@@ -67,7 +65,7 @@ abstract public class ManagedTask extends Thread {
 	abstract protected void onMessage(Message msg);
 
 	/**
-	 * Interface allowing the caller to be informed of events in this thread. Stug that can be extended
+	 * Interface allowing the caller to be informed of events in this thread. Stub that can be extended
 	 * if necessary by a subclass.
 	 * 
 	 * @author Philip Warner
@@ -83,16 +81,7 @@ abstract public class ManagedTask extends Thread {
 	 * @return		Result
 	 */
 	String getString(int id) {
-		return mManager.getString(id);
-	}
-
-	/**
-	 * Accessor for the task handler.
-	 * 
-	 * @return
-	 */
-	TaskHandler getTaskHandler() {
-		return mTaskHandler;
+		return BookCatalogueApp.getResourceString(id);
 	}
 
 	/**
@@ -102,14 +91,13 @@ abstract public class ManagedTask extends Thread {
 	 * @param taskHandler		Object to inform of life0cycle events
 	 * 
 	 */
-	public ManagedTask(TaskManager manager, TaskHandler taskHandler) {
+	public ManagedTask(TaskManager manager) {
 		// Must be non-null
 		if (manager == null)
 			throw new IllegalArgumentException();
 
 		// Save the stuff for mater
 		mManager = manager;
-		mTaskHandler = taskHandler;
 		// Add to my manager
 		mManager.addTask(this);
 		// Create a new Handler.
@@ -162,12 +150,9 @@ abstract public class ManagedTask extends Thread {
 	 * tell the task manager it has ended.
 	 */
 	private void doFinish() {
-		mFinished = true;	
-		if (mManager.isConnected()) {
-			if (onFinish()) {
-				mManager.taskEnded(this);
-			}
-		}
+		mFinished = true;
+		onFinish();
+		mManager.taskEnded(this);
 	}
 
 	/**
@@ -208,28 +193,6 @@ abstract public class ManagedTask extends Thread {
 	 */
 	public void sendMessage(Message msg) {
 		mMessageHandler.sendMessage(msg);
-	}
-
-	/**
-	 * Called when an activity reconnects with the associated TaskManager to 
-	 * allow the task to get a new taskHandler.
-	 * 
-	 * @param taskHandler
-	 */
-	public void reconnect(TaskHandler taskHandler) {
-		mTaskHandler = taskHandler;
-		synchronized(this) {
-			if (mFinished) {
-				doFinish();
-			}
-		}
-	}
-
-	/**
-	 * Called when an activity disconnects; must remove taskHandler.
-	 */
-	public void disconnect() {
-		mTaskHandler = null;
 	}
 
 	/**

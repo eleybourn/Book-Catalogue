@@ -23,17 +23,8 @@ package com.eleybourn.bookcatalogue;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
-import android.content.DialogInterface.OnKeyListener;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.view.KeyEvent;
-
-import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
+import messaging.MessageSwitch;
+import messaging.MessageSwitch.Message;
 
 /**
  * Class used to manager a collection of backgroud threads for an AcitivityWithTasks subclass.
@@ -48,18 +39,116 @@ import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
  * @author Philip Warner
  */
 public class TaskManager {
-	// Application context (for getting resources)
-	private Context mAppContext = null;
-	// Calling activity
-	private ActivityWithTasks mActivity = null;
-	// ProgressDialog
-	private ProgressDialog mProgress = null;
-	// Ref to UI thread; assumed to be thread that created this object
-	private WeakReference<Thread> mUiThread;
-	// Handler for UI thread messages
-	private Handler mMessageHandler;
 
-	private ArrayList<OnTaskEndedListener> mOnTaskEndedListeners = new ArrayList<OnTaskEndedListener>();
+	/**
+	 * Allows other objects to know when a task completed. See SearchManager for an example.
+	 * 
+	 * @author Philip Warner
+	 */
+	public interface OnTaskManagerListener {
+		void onTaskEnded(TaskManager manager, ManagedTask task);
+		void onProgress(int count, int max, String message);
+		void onToast(String message);
+		void onFinished();
+	}
+
+	public interface OnTaskManagerControl {
+		void finishRequested();
+		TaskManager getManager();
+	}
+
+	private OnTaskManagerControl mController = new OnTaskManagerControl() {
+		@Override
+		public void finishRequested() {
+			TaskManager.this.cancelAllTasks();
+		}
+
+		@Override
+		public TaskManager getManager() {
+			return TaskManager.this;
+		}
+	};
+	
+	public class OnTaskEndedMessage implements Message<OnTaskManagerListener> {
+		private TaskManager mManager;
+		private ManagedTask mTask;
+
+		public OnTaskEndedMessage(TaskManager manager, ManagedTask task) {
+			mManager = manager;
+			mTask = task;
+		}
+
+		@Override
+		public void deliver(OnTaskManagerListener listener) {
+			listener.onTaskEnded(mManager, mTask);
+		}
+	};
+	public class OnProgressMessage implements Message<OnTaskManagerListener> {
+		private int mCount;
+		private int mMax;
+		private String mMessage;
+		
+		public OnProgressMessage(int count, int max, String message) {
+			mCount = count;
+			mMax = max;
+			mMessage = message;
+		}
+
+		@Override
+		public void deliver(OnTaskManagerListener listener) {
+			listener.onProgress(mCount, mMax, mMessage);
+		}
+	};
+	public class OnToastMessage implements Message<OnTaskManagerListener> {
+		private String mMessage;
+		
+		public OnToastMessage(String message) {
+			mMessage = message;
+		}
+
+		@Override
+		public void deliver(OnTaskManagerListener listener) {
+			listener.onToast(mMessage);
+		}
+	};
+	public class OnFinshedMessage implements Message<OnTaskManagerListener> {
+		private String mMessage;
+
+		@Override
+		public void deliver(OnTaskManagerListener listener) {
+			listener.onFinished();
+		}
+	};
+
+	/* ====================================================================================================
+	 *  OnTaskManagerListener handling
+	 */
+
+	/**
+	 * 	STATIC Object for passing messages from background tasks to activities that may be recreated 
+	 *
+	 *  This object handles all underlying OnTaskEndedListener messages for every instance of this class.
+	 */
+	private static final MessageSwitch<OnTaskManagerListener, OnTaskManagerControl> mMessageSwitch = new MessageSwitch<OnTaskManagerListener, OnTaskManagerControl>();
+
+	public static final MessageSwitch<OnTaskManagerListener, OnTaskManagerControl> getMessageSwitch() {
+		return mMessageSwitch;
+	}
+
+	/** 
+	 * Object for SENDING messages specific to this instance 
+	 */
+	private final long mMessageSenderId = mMessageSwitch.createSender(mController);
+
+	public long getSenderId() {
+		return mMessageSenderId;
+	}
+
+	/* ====================================================================================================
+	 *  END OnTaskManagerListener handling
+	 */
+
+	
 	
 	// Current progress message to display, even if no tasks running. Setting to blank 
 	// will remove the ProgressDialog
@@ -97,64 +186,8 @@ public class TaskManager {
 	/**
 	 * Constructor.
 	 * 
-	 * @param ctx	An ActivityWithTasks that owns this TaskManager.
 	 */
-	TaskManager(ActivityWithTasks activity) {
-		// Must not be null
-		if (activity == null)
-			throw new IllegalArgumentException();
-		mAppContext = activity.getApplicationContext();
-		mActivity = activity;	
-		// Assumes the current thread is the UI thread.
-		mUiThread = new WeakReference<Thread>(Thread.currentThread());
-		// New handler to send messages to the UI thread.
-		mMessageHandler = new MessageHandler();
-	}
-
-	/**
-	 * Check if running in UI thread.
-	 * 
-	 * @return	true if in UI thread
-	 */
-	public boolean runningInUiThread() {
-		return (Thread.currentThread() == mUiThread.get());
-	}
-
-	public void postToUiThread(Runnable r) {
-		mMessageHandler.post(r);
-	}
-
-	/**
-	 * Allows other objects to know when a task completed. See SearchManager for an example.
-	 * 
-	 * @author Philip Warner
-	 */
-	public interface OnTaskEndedListener {
-		void onTaskEnded(TaskManager manager, ManagedTask task);
-	}
-
-	/**
-	 * Add a listener.
-	 * 
-	 * @param listener	Object to add
-	 */
-	public void addOnTaskEndedListener(OnTaskEndedListener listener) {
-		// Sync. because it *may* get modified in another thread.
-		synchronized (mOnTaskEndedListeners) {
-			mOnTaskEndedListeners.add(listener);
-		}
-	}
-
-	/**
-	 * Remove a listener
-	 *
-	 * @param listener	object to remove
-	 */
-	public void removeOnTaskEndedListener(OnTaskEndedListener listener) {
-		// Sync. because it *may* get modified in another thread.
-		synchronized (mOnTaskEndedListeners) {
-			mOnTaskEndedListeners.remove(listener);			
-		}
+	TaskManager() {
 	}
 
 	/**
@@ -193,29 +226,14 @@ public class TaskManager {
 		}
 
 		// Tell all listeners that it has ended.
-		// Make a copy of the list in case it gets modified by a listener or in another thread.
-		ArrayList<OnTaskEndedListener> tmpList ;
-		synchronized(mOnTaskEndedListeners) {
-			tmpList = new ArrayList<OnTaskEndedListener>(mOnTaskEndedListeners);
-		}
-
-		for(OnTaskEndedListener l : tmpList)
-			try {
-				l.onTaskEnded(this, task);
-			} catch (Exception e) {
-				Logger.logError(e);
-			}
+		mMessageSwitch.send(mMessageSenderId, new OnTaskEndedMessage(TaskManager.this, task));
 
 		// Update the progress dialog
 		updateProgressDialog();
-		
-		// Schedule the close()
+
+		// Call close() if necessary
 		if (doClose)
-			this.postToUiThread(new Runnable() {
-				@Override
-				public void run() {
-					close();
-				}});
+			close();
 	}
 
 	/**
@@ -228,38 +246,6 @@ public class TaskManager {
 	}
 
 	/**
-	 * Called to completely remove the ProgressDialog as a result of disconnect() or
-	 * having no messages to display.
-	 */
-	private void destroyProgress() {
-		synchronized(this) {
-			if (mProgress != null) {
-				try { 
-					mProgress.dismiss();
-				} catch (Exception e) {
-					Logger.logError(e);
-				};
-				mProgress = null;
-			}
-		}
-	}
-
-	/**
-	 * Utility for ManagedTask objects to get a string from an ID.
-	 * 
-	 * @param id		String resource ID
-	 * 
-	 * @return			The associated string
-	 */
-	public String getString(int id) {
-		return mAppContext.getResources().getString(id);
-	}
-
-	public boolean isConnected() {
-		return (mActivity != null);
-	}
-
-	/**
 	 * Return the associated activity object.
 	 * 
 	 * @return	The context
@@ -269,75 +255,6 @@ public class TaskManager {
 //		return mContext;
 //	}
 //}
-
-	public Context getAppContext() {
-		return mAppContext;
-}
-
-	/**
-	 * Called by ActivityWithTasks to reconnect to this TaskManager (eg. this
-	 * is called after an orientation change). It asks the ActivityWithTasks
-	 * for the TaskHandler for each task then calls the tasks reconnect() method.
-	 * 
-	 * @param context	ActivityWithTasks to connect
-	 */
-	public void reconnect(ActivityWithTasks context) {
-		mActivity = context;
-		if (mTasks.size() > 0) {
-			initProgress();
-			synchronized(mTasks) {
-				for(TaskInfo t : mTasks) {
-					TaskHandler h = context.getTaskHandler(t.task);
-					t.task.reconnect(h);
-				}
-			}
-		}
-	}
-
-	/**
-	 * Disconnect from the associated ActivityWithTasks. Let each task know.
-	 */
-	public void disconnect() {
-		mActivity = null;
-		destroyProgress();
-		synchronized(mTasks) {
-			for(TaskInfo t : mTasks) {
-				t.task.disconnect();
-			}
-		}
-	}
-
-	/**
-	 * Handler for internal UI thread messages.
-	 * 
-	 * @author Philip Warner
-	 */
-	private class MessageHandler extends Handler {
-		public void handleMessage(Message msg) {
-			Bundle b = msg.getData();
-			if (b.containsKey("__internal")) {
-				String kind = b.getString("__internal");
-				if (kind.equals("toast")) {
-					doToast(b.getString("message"));
-				} else if (kind.equals("initProgress")) {
-					initProgress();
-				} else {
-					updateProgressDialog();
-				}
-			} else {
-				throw new RuntimeException("Unknown message");
-			}
-		}		
-	}
-
-	/**
-	 * Handler for the user cancelling the progress dialog.
-	 */
-	private OnCancelListener mCancelHandler = new OnCancelListener() {
-		public void onCancel(DialogInterface i) {
-			cancelAllTasks();
-		}
-	};
 
 	/** 
 	 * Utility routine to cancel all tasks.
@@ -384,87 +301,53 @@ public class TaskManager {
 	 */
 	private void updateProgressDialog() {
 		try {
-			if (Thread.currentThread() == mUiThread.get()) {
-				// Start with the base message if present
-				if (mBaseMessage != null && mBaseMessage.length() > 0)
-					mProgressMessage = mBaseMessage;
-				else
-					mProgressMessage = "";
+			// Start with the base message if present
+			if (mBaseMessage != null && mBaseMessage.length() > 0)
+				mProgressMessage = mBaseMessage;
+			else
+				mProgressMessage = "";
 
-				synchronized(mTasks) {
-					// Append each task message
-					if (mTasks.size() > 0) {
-						if (mProgressMessage.length() > 0)
-							mProgressMessage += "\n";
-						if (mTasks.size() == 1) {
-							String oneMsg = mTasks.get(0).progressMessage;
-							if (oneMsg != null && oneMsg.trim().length() > 0)
-								mProgressMessage += oneMsg;						
-						} else {
-							String taskMsgs = "";
-							boolean got = false;
-							// Don't append blank messages; allows tasks to hide.
-							for(int i = 0; i < mTasks.size(); i++) {
-								String oneMsg = mTasks.get(i).progressMessage;
-								if (oneMsg != null && oneMsg.trim().length() > 0) {
-									if (got)
-										taskMsgs += "\n";
-									else
-										got = true;
-									taskMsgs += " - " + oneMsg;									
-								}
-							}
-							if (taskMsgs.length() > 0)
-								mProgressMessage += taskMsgs;
-						}
-					}				
-				}
-
-				// Sum the current & max values for each active task. This will be our new values.
-				mProgressMax = 0;
-				mProgressCount = 0;
-				synchronized(mTasks) {
-					for (TaskInfo t : mTasks) {
-						mProgressMax += t.progressMax;
-						mProgressCount += t.progressCurrent;
-					}				
-				}
-
-				// Now, display it if we have a context; if it is empty and complete, delete the progress.
-				synchronized(this) {
-					if (mProgressMessage.trim().length() == 0 && mProgressMax == mProgressCount) {
-						destroyProgress();
+			synchronized(mTasks) {
+				// Append each task message
+				if (mTasks.size() > 0) {
+					if (mProgressMessage.length() > 0)
+						mProgressMessage += "\n";
+					if (mTasks.size() == 1) {
+						String oneMsg = mTasks.get(0).progressMessage;
+						if (oneMsg != null && oneMsg.trim().length() > 0)
+							mProgressMessage += oneMsg;						
 					} else {
-						if (mProgress == null) {
-							if (isConnected()) {
-								initProgress();
+						String taskMsgs = "";
+						boolean got = false;
+						// Don't append blank messages; allows tasks to hide.
+						for(int i = 0; i < mTasks.size(); i++) {
+							String oneMsg = mTasks.get(i).progressMessage;
+							if (oneMsg != null && oneMsg.trim().length() > 0) {
+								if (got)
+									taskMsgs += "\n";
+								else
+									got = true;
+								taskMsgs += " - " + oneMsg;									
 							}
 						}
-						if (mProgress != null && isConnected()) {
-							mProgress.setMessage(mProgressMessage);
-							if (mProgressMax > 0) {
-								if (mProgress.isIndeterminate()) {
-									ProgressDialog oldDialog = mProgress;
-									mProgress = null;
-									initProgress();
-									oldDialog.dismiss();
-								}
-								mProgress.setMax(mProgressMax);
-								mProgress.setProgress(mProgressCount);						
-							}
-							if (!mProgress.isShowing())
-								mProgress.show();
-						}	
+						if (taskMsgs.length() > 0)
+							mProgressMessage += taskMsgs;
 					}
-				}
-			} else {
-				/* Send message to the handler */
-				Message msg = mMessageHandler.obtainMessage();
-				Bundle b = new Bundle();
-				b.putString("__internal", "progress");
-				msg.setData(b);
-				mMessageHandler.sendMessage(msg);
-			}			
+				}				
+			}
+
+			// Sum the current & max values for each active task. This will be our new values.
+			mProgressMax = 0;
+			mProgressCount = 0;
+			synchronized(mTasks) {
+				for (TaskInfo t : mTasks) {
+					mProgressMax += t.progressMax;
+					mProgressCount += t.progressCurrent;
+				}				
+			}
+
+			// Now, display it if we have a context; if it is empty and complete, delete the progress.
+			mMessageSwitch.send(mMessageSenderId, new OnProgressMessage(mProgressCount, mProgressMax, mProgressMessage));
 		} catch (Exception e) {
 			Logger.logError(e, "Error updating progress");
 		}
@@ -476,78 +359,9 @@ public class TaskManager {
 	 * @param message	Message to send
 	 */
 	public void doToast(String message) {
-		if (Thread.currentThread() == mUiThread.get()) {
-			synchronized(this) {
-				android.widget.Toast.makeText(mAppContext, message, android.widget.Toast.LENGTH_LONG).show();			
-			}
-		} else {
-			/* Send message to the handler */
-			Message msg = mMessageHandler.obtainMessage();
-			Bundle b = new Bundle();
-			b.putString("__internal", "toast");
-			b.putString("message", message);
-			msg.setData(b);
-			mMessageHandler.sendMessage(msg);			
-		}
+		mMessageSwitch.send(mMessageSenderId, new OnToastMessage(message));
 	}
 
-	/**
-	 * Setup the progress dialog.
-	 * 
-	 * If not called in the UI thread it will just queue initProgress().
-	 * 
-	 */
-	private void initProgress() {
-
-		if (Thread.currentThread() == mUiThread.get()) {
-			synchronized(this) {
-				// Get the context; if null or we already have a PD, just skip
-				Context ctx = mActivity;
-				if (ctx != null && mProgress == null) {
-					mProgress = new ProgressDialog(ctx);
-					if (mProgressMax > 0) {
-						mProgress.setIndeterminate(false);
-						mProgress.setMax(mProgressMax);
-						mProgress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-					} else {
-						mProgress.setIndeterminate(true);					
-						mProgress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-					}
-					mProgress.setMessage(mProgressMessage);
-					mProgress.setCancelable(true);
-					mProgress.setOnKeyListener(mDialogKeyListener);
-					mProgress.setOnCancelListener(mCancelHandler);
-					mProgress.show();
-					mProgress.setProgress(mProgressCount);
-				}
-			}		
-		} else {
-			/* Send message to the handler */
-			Message msg = mMessageHandler.obtainMessage();
-			Bundle b = new Bundle();
-			b.putString("__internal", "initProgress");
-			msg.setData(b);
-			mMessageHandler.sendMessage(msg);						
-		}
-	}
-
-	/**
-	 * Wait for the 'Back' key and cancel all tasks on keyUp.
-	 */
-	private OnKeyListener mDialogKeyListener = new OnKeyListener() {
-		@Override
-		public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-			if (event.getAction() == KeyEvent.ACTION_UP) {
-				if (keyCode == KeyEvent.KEYCODE_BACK) {
-					// Toasting a message here makes the app look less responsive, because
-					// the final 'Cancelled...' message is delayed too much.
-					doToast(getString(R.string.cancelling));
-					cancelAllTasks();
-					return true;
-				}
-			}
-			return false;
-		}};
 	
 	/**
 	 * Lookup the TaskInfo for the passed task.
@@ -597,35 +411,20 @@ public class TaskManager {
 		}
 	}
 
-	private void doClose() {
-		destroyProgress();
-		mAppContext = null;
-		mActivity = null;	
-		mUiThread = null;
-		mMessageHandler = null;		
-	}
-
 	/**
 	 * Cancel all tasks and close dialogs then cleanup; if no tasks running, just close dialogs and cleanup
 	 */
 	protected void close() {
 		mIsClosing = true;
-		disconnect();
 		synchronized(mTasks) {
 			for(TaskInfo t : mTasks) {
 				t.task.cancelTask();
 			}
 		}
-		doClose();
 	}
 
 	@Override
 	protected void finalize() throws Throwable {
-		destroyProgress();
-		mAppContext = null;
-		mActivity = null;	
-		mUiThread = null;
-		mMessageHandler = null;
 		super.finalize();
 	}
 }

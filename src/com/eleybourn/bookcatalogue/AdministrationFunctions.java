@@ -69,12 +69,16 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	private ProgressDialog pd = null;
 	private int num = 0;
 	private boolean finish_after = false;
+	protected Long mExportSenderId = null;
 
 	public static final String DOAUTO = "do_auto";
 
-	final ExportThread.ExportHandler mExportHandler = new ExportThread.ExportHandler() {
+	final ExportThread.OnExportListener mExportListener = new ExportThread.OnExportListener() {
+
 		@Override
-		public void onFinish() {
+		public void onFinished() {
+			ExportThread.getMessageSwitch().removeListener(mExportSenderId, mExportListener);
+			mExportSenderId = null;
 
 			AlertDialog alertDialog = new AlertDialog.Builder(AdministrationFunctions.this).create();
 			alertDialog.setTitle(R.string.email_export);
@@ -132,9 +136,8 @@ public class AdministrationFunctions extends ActivityWithTasks {
 					Logger.logError(e);
 				}
 			}
-		}
-	};
-
+		}};
+	
 	final ImportThread.ImportHandler mImportHandler = new ImportThread.ImportHandler() {
 		@Override
 		public void onFinish() {
@@ -187,6 +190,13 @@ public class AdministrationFunctions extends ActivityWithTasks {
 				}				
 			}
 			setupAdmin();
+
+			if (savedInstanceState != null) {
+				mExportSenderId = savedInstanceState.getLong("ExportSenderId");
+			}
+			if (mExportSenderId != null)
+				ExportThread.getMessageSwitch().addListener(mExportSenderId, mExportListener, true);
+			
 			Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
 		} catch (Exception e) {
 			Logger.logError(e);
@@ -584,8 +594,10 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	 * return void
 	 */
 	public void exportData() {
-		ExportThread thread = new ExportThread(mTaskManager, mExportHandler, this);
-		thread.start();		
+		ExportThread thread = new ExportThread(mTaskManager);
+		mExportSenderId = thread.getSenderId();
+		ExportThread.getMessageSwitch().addListener(mExportSenderId, mExportListener, false);
+		thread.start();
 	}
 
 	/**
@@ -657,6 +669,13 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	} 
 
 	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+
+		outState.putLong("ExportSenderId", mExportSenderId);
+	}
+
+	@Override
 	protected void onPause() {
 		super.onPause();
 	} 
@@ -667,18 +686,6 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	public void onResume() {
 		super.onResume();
 		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
-	}
-
-	@Override
-	TaskHandler getTaskHandler(ManagedTask t) {
-		// If we had a task, create the progress dialog and reset the pointers.
-		if (t instanceof ExportThread) {
-			return mExportHandler;
-		} else if (t instanceof ImportThread) {
-			return mImportHandler;
-		} else {
-			return null;
-		}
 	}
 
 }

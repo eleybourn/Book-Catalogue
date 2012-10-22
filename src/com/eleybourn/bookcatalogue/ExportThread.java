@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.Message;
 import android.widget.Toast;
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
+import messaging.MessageSwitch;
 
 /**
  * Class to handle export in a separate thread.
@@ -31,29 +32,67 @@ public class ExportThread extends ManagedTask {
 	private static String UTF8 = "utf8";
 	private static int BUFFER_SIZE = 8192;
 	private CatalogueDBAdapter mDbHelper;
-	private Context context;
 
-	public interface ExportHandler extends ManagedTask.TaskHandler {
-		void onFinish();
+	/**
+	 * Allows other objects to know when a task completed. See SearchManager for an example.
+	 * 
+	 * @author Philip Warner
+	 */
+	public interface OnExportListener {
+		void onFinished();
 	}
 
-	public ExportThread(TaskManager ctx, ExportHandler taskHandler, AdministrationFunctions thisContext) {
-		super(ctx, taskHandler);
-		context = thisContext;
-		mDbHelper = new CatalogueDBAdapter(ctx.getAppContext());
+	public interface OnExportControl {
+		void cancel();
+	}
+
+	private OnExportControl mController = new OnExportControl() {
+		@Override
+		public void cancel() {
+			ExportThread.this.cancelTask();
+		}};
+	
+	public static class OnExportMessage implements MessageSwitch.Message<OnExportListener> {
+		@Override
+		public void deliver(OnExportListener listener) {
+			listener.onFinished();
+		}
+	};
+
+	public ExportThread(TaskManager ctx) {
+		super(ctx);
+		mDbHelper = new CatalogueDBAdapter(BookCatalogueApp.context);
 		mDbHelper.open();
 	}
 
+	/* ====================================================================================================
+	 *  OnExportListener handling
+	 */
+
+	/**
+	 * 	STATIC Object for passing messages from background tasks to activities that may be recreated 
+	 *
+	 *  This object handles all underlying OnTaskEndedListener messages for every instance of this class.
+	 */
+	private static final MessageSwitch<OnExportListener, OnExportControl> mMessageSwitch = new MessageSwitch<OnExportListener, OnExportControl>();
+
+	public static final MessageSwitch<OnExportListener, OnExportControl> getMessageSwitch() {
+		return mMessageSwitch;
+	}
+
+	/** 
+	 * Object for SENDING messages specific to this instance 
+	 */
+	private final long mMessageSenderId = mMessageSwitch.createSender(mController);
+
+	public long getSenderId() {
+		return mMessageSenderId;
+	}
+
 	@Override
-	protected boolean onFinish() {
+	protected void onFinish() {
 		try {
-			ExportHandler h = (ExportHandler)getTaskHandler();
-			if (h != null) {
-				h.onFinish();
-				return true;
-			} else {
-				return false;
-			}
+			mMessageSwitch.send(mMessageSenderId, new OnExportMessage());
 		} finally {
 			cleanup();
 		}

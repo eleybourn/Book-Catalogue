@@ -22,7 +22,8 @@ package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
 
-import debug.Tracker;
+import com.eleybourn.bookcatalogue.debug.Tracker;
+
 import android.app.Activity;
 import android.database.Cursor;
 import android.net.Uri;

@@ -36,8 +36,8 @@ import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
 import com.eleybourn.bookcatalogue.booklist.BooklistStylePropertiesActivity;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyles;
 import com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds;
+import com.eleybourn.bookcatalogue.debug.Tracker;
 
-import debug.Tracker;
 
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.*;
 
@@ -83,7 +83,7 @@ import android.widget.Toast;
  * @author Philip Warner
  */
 public class BooksOnBookshelf extends ListActivity implements BooklistChangeListener {
-	/** Counter for debug purposes */
+	/** Counter for com.eleybourn.bookcatalogue.debug purposes */
 	private static Integer mInstanceCount = 0;
 
 	/** Prefix used in preferences for this activity */

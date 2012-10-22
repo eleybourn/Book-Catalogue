@@ -25,7 +25,8 @@ import java.io.File;
 import java.util.Hashtable;
 import java.util.Map.Entry;
 
-import debug.Tracker;
+import com.eleybourn.bookcatalogue.debug.Tracker;
+
 
 import android.app.Activity;
 import android.app.LocalActivityManager;

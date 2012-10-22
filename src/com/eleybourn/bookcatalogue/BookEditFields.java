@@ -73,6 +73,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.BookEdit.OnRestoreTabInstanceStateListener;
 import com.eleybourn.bookcatalogue.CoverBrowser.OnImageSelectedListener;
 import com.eleybourn.bookcatalogue.Fields.AfterFieldChangeListener;
@@ -145,7 +146,8 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 	private static final int ZOOM_THUMB_DIALOG_ID = 2;
 	private static final int DESCRIPTION_DIALOG_ID = 3;
 //	private static final int CAMERA_RESULT = 41;
-	private static final int CROP_RESULT = 42;
+	private static final int CROP_EXTERNAL_RESULT = 42;
+	private static final int CROP_INTERNAL_RESULT = 43;
 	
 	public static final Character BOOKSHELF_SEPERATOR = ',';
 	
@@ -804,9 +806,26 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 			Tracker.handleEvent(this, "Context Menu Item " + item.getItemId(), Tracker.States.Exit);			
 		}
 	}
-	
+
 	private void cropCoverImage(File thumbFile) {
-		Tracker.handleEvent(this, "cropCoverImage", Tracker.States.Enter);			
+		boolean useExt = BookCatalogueApp.getAppPreferences().getBoolean(BookCataloguePreferences.PREF_USE_EXTERNAL_IMAGE_CROPPER, false);
+		if (useExt) {
+			cropCoverImageExternal(thumbFile);
+		} else {
+			cropCoverImageInternal(thumbFile);
+		}
+	}
+
+	private void cropCoverImageInternal(File thumbFile) {
+		Intent crop_intent = new Intent(this, CropCropImage.class);
+		// here you have to pass absolute path to your file
+		crop_intent.putExtra("image-path", thumbFile.getAbsolutePath());
+		crop_intent.putExtra("scale", true);
+		startActivityForResult(crop_intent, CROP_INTERNAL_RESULT);
+	}
+	
+	private void cropCoverImageExternal(File thumbFile) {
+		Tracker.handleEvent(this, "cropCoverImageExternal", Tracker.States.Enter);			
 		try {
 			Intent intent = new Intent("com.android.camera.action.CROP");
 			// this will open any image file
@@ -835,10 +854,10 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 		    if (size == 0) {
 		        Toast.makeText(this, "Can not find image crop app", Toast.LENGTH_SHORT).show();
 		    } else {
-				startActivityForResult(intent, CROP_RESULT);		    	
+				startActivityForResult(intent, CROP_EXTERNAL_RESULT);		    	
 		    }
 		} finally {
-			Tracker.handleEvent(this, "cropCoverImage", Tracker.States.Exit);			
+			Tracker.handleEvent(this, "cropCoverImageExternal", Tracker.States.Exit);			
 		}
 	}
 	/**
@@ -1419,7 +1438,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 					Bitmap x = (Bitmap) intent.getExtras().get("data");
 					if (x != null && x.getWidth() > 0 && x.getHeight() > 0) {
 						Matrix m = new Matrix();
-						//m.postRotate(90);
+						m.postRotate(90);
 						x = Bitmap.createBitmap(x, 0, 0, x.getWidth(), x.getHeight(), m, true);
 						/* Create a file to copy the thumbnail into */
 						FileOutputStream f = null;
@@ -1443,7 +1462,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 					}
 				}
 				return;
-			case CROP_RESULT:
+			case CROP_EXTERNAL_RESULT:
 				File thumbFile = getCoverFile();
 				File cropped = new File(thumbFile.getAbsoluteFile() + ".cropped.jpg");
 				if (resultCode == Activity.RESULT_OK){
@@ -1460,12 +1479,14 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 						cropped.delete();				
 				}
 				return;
+
+			case CROP_INTERNAL_RESULT:
 //			case CAMERA_RESULT:
-//				if (resultCode == Activity.RESULT_OK){
-//					// Update the ImageView with the new image
-//					setCoverImage();
-//				}
-//				return;
+				if (resultCode == Activity.RESULT_OK){
+					// Update the ImageView with the new image
+					setCoverImage();
+				}
+				return;
 			case ADD_GALLERY:
 				if (resultCode == Activity.RESULT_OK){
 					Uri selectedImageUri = intent.getData();

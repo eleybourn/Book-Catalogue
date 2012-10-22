@@ -54,6 +54,7 @@ public class OtherPreferences extends PreferencesBase {
 		addBooleanPreference(prefs, R.id.include_classic_checkbox, R.id.include_classic_label, BookCataloguePreferences.PREF_INCLUDE_CLASSIC_MY_BOOKS, false);
 		addBooleanPreference(prefs, R.id.disable_background_image_checkbox, R.id.disable_background_image_label, BookCataloguePreferences.PREF_DISABLE_BACKGROUND_IMAGE, false);
 		addBooleanPreference(prefs, R.id.beep_if_scanned_isbn_invalid_checkbox, R.id.beep_if_scanned_isbn_invalid_label, SoundManager.PREF_BEEP_IF_SCANNED_ISBN_INVALID, true);
+		addBooleanPreference(prefs, R.id.use_external_image_cropper_checkbox, R.id.use_external_image_cropper_label, BookCataloguePreferences.PREF_USE_EXTERNAL_IMAGE_CROPPER, false);
 	}
 
 	@Override

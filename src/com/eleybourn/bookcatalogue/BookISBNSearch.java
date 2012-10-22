@@ -43,8 +43,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
-
 /**
  * This class is called by the BookCatalogue activity and will search the interwebs for
  * book details based on either a typed in or scanned ISBN.
@@ -94,7 +92,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 	private Intent mLastBookIntent = null;
 
 	// Object managing current search.
-	SearchManager mSearchManager = null;
+	Long mSearchManagerId = null;
 
 	// A list of author names we have already searched for in this session
 	ArrayList<String> mAuthorNames = new ArrayList<String>();
@@ -497,7 +495,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 			Logger.logError(e);
 		}
 
-		if (mSearchManager == null)
+		if (mSearchManagerId == null)
 			doSearchBook();
 
 	}
@@ -518,8 +516,10 @@ public class BookISBNSearch extends ActivityWithTasks {
 			try {
 				// Start the lookup in background.
 				//mTaskManager.doProgress("Searching");
-				mSearchManager = new SearchManager(mTaskManager, mSearchHandler);
-				mSearchManager.search(mAuthor, mTitle, mIsbn, true, SearchManager.SEARCH_ALL);
+				SearchManager sm = new SearchManager(mTaskManager, mSearchHandler);
+				mSearchManagerId = sm.getSenderId();
+
+				sm.search(mAuthor, mTitle, mIsbn, true, SearchManager.SEARCH_ALL);
 				// reset the details so we don't restart the search unnecessarily
 				mAuthor = "";
 				mTitle = "";
@@ -538,7 +538,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 		}
 	}
 
-	private SearchManager.SearchResultHandler mSearchHandler = new SearchManager.SearchResultHandler() {
+	private SearchManager.SearchListener mSearchHandler = new SearchManager.SearchListener() {
 		@Override
 		public void onSearchFinished(Bundle bookData, boolean cancelled) {
 			BookISBNSearch.this.onSearchFinished(bookData, cancelled);
@@ -559,7 +559,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 			mTaskManager.doProgress(null);
 		}
 		// Clean up
-		mSearchManager = null;
+		mSearchManagerId = null;
 	}
 
 	@Override
@@ -714,9 +714,9 @@ public class BookISBNSearch extends ActivityWithTasks {
 	protected void onRestoreInstanceState(Bundle inState) {
 		//System.out.println(mId + " onRestoreInstanceState");
 
-		mSearchManager = (SearchManager) getLastNonConfigurationInstance("SearchManager");
-		if (mSearchManager != null)
-			mSearchManager.reconnect( mSearchHandler );
+		mSearchManagerId = inState.getLong("SearchManagerId");
+		if (mSearchManagerId != null)
+			SearchManager.getMessageSwitch().addListener(mSearchManagerId, mSearchHandler, true);
 
 		// Now do 'standard' stuff
 		mLastBookIntent = (Intent) inState.getParcelable("LastBookIntent");
@@ -747,26 +747,4 @@ public class BookISBNSearch extends ActivityWithTasks {
 		inState.putBoolean("mScannerStarted", mScannerStarted);
 	}
 
-	/**
-	 * Ensure the TaskManager is saved.
-	 */
-	@Override
-	public void onRetainNonConfigurationInstance(Hashtable<String,Object> store) {
-		if (mSearchManager != null) {
-			store.put("SearchManager", mSearchManager);
-			mSearchManager.disconnect();
-			mSearchManager = null;
-		}
-	}
-
-	@Override
-	TaskHandler getTaskHandler(ManagedTask t) {
-		if (mSearchManager == null)
-			throw new RuntimeException("Tasks running, but no SearchManager");
-		TaskHandler h = mSearchManager.getTaskHandler( t );
-		if (h == null)
-			throw new RuntimeException("Unable to find handler for task " + t.toString());
-
-		return h;
-	}
 }

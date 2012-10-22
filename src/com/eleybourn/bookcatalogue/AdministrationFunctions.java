@@ -42,7 +42,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 
-import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
 import com.eleybourn.bookcatalogue.StandardDialogs.SimpleDialogFileItem;
 import com.eleybourn.bookcatalogue.StandardDialogs.SimpleDialogItem;
 import com.eleybourn.bookcatalogue.StandardDialogs.SimpleDialogOnClickListener;
@@ -73,10 +72,10 @@ public class AdministrationFunctions extends ActivityWithTasks {
 
 	public static final String DOAUTO = "do_auto";
 
-	final ExportThread.OnExportListener mExportListener = new ExportThread.OnExportListener() {
+	final ManagedTask.TaskListener mExportListener = new ManagedTask.TaskListener() {
 
 		@Override
-		public void onFinished() {
+		public void onFinish() {
 			ExportThread.getMessageSwitch().removeListener(mExportSenderId, mExportListener);
 			mExportSenderId = null;
 
@@ -138,7 +137,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			}
 		}};
 	
-	final ImportThread.ImportHandler mImportHandler = new ImportThread.ImportHandler() {
+	final ManagedTask.TaskListener mImportHandler = new ManagedTask.TaskListener() {
 		@Override
 		public void onFinish() {
 		}

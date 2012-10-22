@@ -46,21 +46,21 @@ public class TaskManager {
 	 * 
 	 * @author Philip Warner
 	 */
-	public interface OnTaskManagerListener {
+	public interface TaskManagerListener {
 		void onTaskEnded(TaskManager manager, ManagedTask task);
 		void onProgress(int count, int max, String message);
 		void onToast(String message);
 		void onFinished();
 	}
 
-	public interface OnTaskManagerControl {
-		void finishRequested();
+	public interface TaskManagerController {
+		void requestAbort();
 		TaskManager getManager();
 	}
 
-	private OnTaskManagerControl mController = new OnTaskManagerControl() {
+	private TaskManagerController mController = new TaskManagerController() {
 		@Override
-		public void finishRequested() {
+		public void requestAbort() {
 			TaskManager.this.cancelAllTasks();
 		}
 
@@ -70,7 +70,7 @@ public class TaskManager {
 		}
 	};
 	
-	public class OnTaskEndedMessage implements Message<OnTaskManagerListener> {
+	public static class OnTaskEndedMessage implements Message<TaskManagerListener> {
 		private TaskManager mManager;
 		private ManagedTask mTask;
 
@@ -80,11 +80,11 @@ public class TaskManager {
 		}
 
 		@Override
-		public void deliver(OnTaskManagerListener listener) {
+		public void deliver(TaskManagerListener listener) {
 			listener.onTaskEnded(mManager, mTask);
 		}
 	};
-	public class OnProgressMessage implements Message<OnTaskManagerListener> {
+	public static class OnProgressMessage implements Message<TaskManagerListener> {
 		private int mCount;
 		private int mMax;
 		private String mMessage;
@@ -96,11 +96,11 @@ public class TaskManager {
 		}
 
 		@Override
-		public void deliver(OnTaskManagerListener listener) {
+		public void deliver(TaskManagerListener listener) {
 			listener.onProgress(mCount, mMax, mMessage);
 		}
 	};
-	public class OnToastMessage implements Message<OnTaskManagerListener> {
+	public static class OnToastMessage implements Message<TaskManagerListener> {
 		private String mMessage;
 		
 		public OnToastMessage(String message) {
@@ -108,15 +108,14 @@ public class TaskManager {
 		}
 
 		@Override
-		public void deliver(OnTaskManagerListener listener) {
+		public void deliver(TaskManagerListener listener) {
 			listener.onToast(mMessage);
 		}
 	};
-	public class OnFinshedMessage implements Message<OnTaskManagerListener> {
-		private String mMessage;
+	public static class OnFinshedMessage implements Message<TaskManagerListener> {
 
 		@Override
-		public void deliver(OnTaskManagerListener listener) {
+		public void deliver(TaskManagerListener listener) {
 			listener.onFinished();
 		}
 	};
@@ -130,9 +129,9 @@ public class TaskManager {
 	 *
 	 *  This object handles all underlying OnTaskEndedListener messages for every instance of this class.
 	 */
-	private static final MessageSwitch<OnTaskManagerListener, OnTaskManagerControl> mMessageSwitch = new MessageSwitch<OnTaskManagerListener, OnTaskManagerControl>();
+	private static final MessageSwitch<TaskManagerListener, TaskManagerController> mMessageSwitch = new MessageSwitch<TaskManagerListener, TaskManagerController>();
 
-	public static final MessageSwitch<OnTaskManagerListener, OnTaskManagerControl> getMessageSwitch() {
+	public static final MessageSwitch<TaskManagerListener, TaskManagerController> getMessageSwitch() {
 		return mMessageSwitch;
 	}
 
@@ -260,7 +259,7 @@ public class TaskManager {
 	/** 
 	 * Utility routine to cancel all tasks.
 	 */
-	private void cancelAllTasks() {
+	public void cancelAllTasks() {
 		synchronized(mTasks) {
 			for(TaskInfo t : mTasks) {
 				t.task.cancelTask();

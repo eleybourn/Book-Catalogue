@@ -41,7 +41,7 @@ import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsages.Usages;
  *
  * @author Philip Warner
  */
-public class UpdateThumbnailsThread extends ManagedTask implements SearchManager.SearchResultHandler {
+public class UpdateThumbnailsThread extends ManagedTask implements SearchManager.SearchListener {
 	// The fields that the user requested to update
 	private FieldUsages mRequestedFields;
 
@@ -68,10 +68,10 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 	// DB connection
 	protected CatalogueDBAdapter mDbHelper;
 
-	// Handler in caller to be notified when this task completes.
-	public interface LookupHandler extends ManagedTask.TaskHandler {
-		void onFinish();
-	}
+//	// Handler in caller to be notified when this task completes.
+//	public interface LookupHandler extends ManagedTask.TaskHandler {
+//		void onFinish();
+//	}
 
 	/**
 	 * Constructor.
@@ -80,14 +80,15 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 	 * @param requestedFields	fields to update
 	 * @param lookupHandler		Interface object to handle events in this thread.
 	 */
-	public UpdateThumbnailsThread(TaskManager manager, FieldUsages requestedFields, LookupHandler lookupHandler) {
-		super(manager, lookupHandler);
-		mDbHelper = new CatalogueDBAdapter(manager.getAppContext());
+	public UpdateThumbnailsThread(TaskManager manager, FieldUsages requestedFields, TaskListener listener) {
+		super(manager);
+		mDbHelper = new CatalogueDBAdapter(BookCatalogueApp.context);
 		mDbHelper.open();
 		
 		mRequestedFields = requestedFields;
 		mSearchManager = new SearchManager(mManager, this);
-		mManager.doProgress(mManager.getString(R.string.starting_search));
+		mManager.doProgress(BookCatalogueApp.getResourceString(R.string.starting_search));
+		getMessageSwitch().addListener(getSenderId(), listener, false);
 	}
 
 	@Override
@@ -225,20 +226,15 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 			// Make the final message
 			mFinalMessage = String.format(getString(R.string.num_books_searched), "" + counter);
 			if (isCancelled()) 
-				mFinalMessage = String.format(getString(R.string.cancelled_info), mFinalMessage);
+				mFinalMessage = String.format(BookCatalogueApp.getResourceString(R.string.cancelled_info), mFinalMessage);
 		}
 	}
 
 	@Override
-	protected boolean onFinish() {
+	public void onFinish() {
 		try {
 			mManager.doToast(mFinalMessage);
-			if (getTaskHandler() != null) {
-				((LookupHandler)getTaskHandler()).onFinish();
-				return true;
-			} else {
-				return false;
-			}
+			sendOnFinish();
 		} finally {
 			cleanup();
 		}
@@ -269,11 +265,12 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 		FieldUsages requestedFields = mCurrFieldUsages;
 
 		// Dispatch to UI thread so we can fire the lock...can't do from same thread.
-		mMessageHandler.post(new Runnable() {
-			@Override
-			public void run() {
-				doSearchDone();
-			}});
+		doSearchDone();
+//		mMessageHandler.post(new Runnable() {
+//			@Override
+//			public void run() {
+//				doSearchDone();
+//			}});
 
 		if (!isCancelled() && bookData != null)
 			processSearchResults(rowId, mCurrUuid, requestedFields, bookData, origData);
@@ -415,17 +412,6 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 	protected void finalize() throws Throwable {
 		cleanup();
 		super.finalize();
-	}
-
-	/**
-	 * Since this thread is the only one created directly by the calling activity, we need to 
-	 * provide a way to get the handlers for each task. We just defer to the SearchManager.
-	 * 
-	 * @param t
-	 * @return
-	 */
-	public TaskHandler getTaskHandler(ManagedTask t) {
-		return mSearchManager.getTaskHandler(t);
 	}
 
 }

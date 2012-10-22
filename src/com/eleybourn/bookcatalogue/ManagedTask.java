@@ -22,6 +22,8 @@ package com.eleybourn.bookcatalogue;
 
 import java.nio.channels.ClosedByInterruptException;
 
+import com.eleybourn.bookcatalogue.messaging.MessageSwitch;
+
 import android.os.Handler;
 import android.os.Message;
 
@@ -45,9 +47,9 @@ abstract public class ManagedTask extends Thread {
 	// Indicates the user has requested a cancel. Up to subclass to decice what to do. Set by TaskManager.
 	private boolean mCancelFlg = false;
 	// Each task has a handler object that can be used to communicate with the main thread.
-	private TaskHandler mTaskHandler;
+//	private TaskHandler mTaskHandler;
 	// Handler for UI thread messages. Used to manage thread-based comms.
-	protected Handler mMessageHandler;
+//	protected Handler mMessageHandler;
 
 	//
 	// Called when the task has finished, but *only* if the TaskManager has a context (ie. is
@@ -66,14 +68,14 @@ abstract public class ManagedTask extends Thread {
 	// by calling obtainMessage().
 	abstract protected void onMessage(Message msg);
 
-	/**
-	 * Interface allowing the caller to be informed of events in this thread. Stub that can be extended
-	 * if necessary by a subclass.
-	 * 
-	 * @author Philip Warner
-	 */
-	public interface TaskHandler {
-	}
+//	/**
+//	 * Interface allowing the caller to be informed of events in this thread. Stub that can be extended
+//	 * if necessary by a subclass.
+//	 * 
+//	 * @author Philip Warner
+//	 */
+//	public interface TaskHandler {
+//	}
 
 	/**
 	 * Utility routine to ask the Taskmanager to get a String from a resource ID.
@@ -86,14 +88,14 @@ abstract public class ManagedTask extends Thread {
 		return BookCatalogueApp.getResourceString(id);
 	}
 
-	/**
-	 * Accessor for the task handler.
-	 * 
-	 * @return
-	 */
-	TaskHandler getTaskHandler() {
-		return mTaskHandler;
-	}
+//	/**
+//	 * Accessor for the task handler.
+//	 * 
+//	 * @return
+//	 */
+//	TaskHandler getTaskHandler() {
+//		return mTaskHandler;
+//	}
 
 	/**
 	 * Constructor.
@@ -102,18 +104,18 @@ abstract public class ManagedTask extends Thread {
 	 * @param taskHandler		Object to inform of life0cycle events
 	 * 
 	 */
-	public ManagedTask(TaskManager manager, TaskHandler taskHandler) {
+	public ManagedTask(TaskManager manager) { //, TaskHandler taskHandler) {
 		// Must be non-null
 		if (manager == null)
 			throw new IllegalArgumentException();
 
 		// Save the stuff for mater
 		mManager = manager;
-		mTaskHandler = taskHandler;
+//		mTaskHandler = taskHandler;
 		// Add to my manager
 		mManager.addTask(this);
 		// Create a new Handler.
-		mMessageHandler = new TaskMessageHandler();
+//		mMessageHandler = new TaskMessageHandler();
 		// Let the subclass create DB if they need it for now.
 		// mDbHelper = new CatalogueDBAdapter(mContext);
 	}
@@ -152,9 +154,11 @@ abstract public class ManagedTask extends Thread {
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
-		mMessageHandler.post(new Runnable() {
-			public void run() { doFinish(); };
-		});
+		doFinish();
+// XXX: Not clear why these were run in UI thread
+//		mMessageHandler.post(new Runnable() {
+//			public void run() { doFinish(); };
+//		});
 	}
 
 	/**
@@ -191,31 +195,83 @@ abstract public class ManagedTask extends Thread {
 		return mFinished;
 	}
 
-	/**
-	 * Utility for subclass to get a Message object.
-	 * @return
-	 */
-	public Message obtainMessage() {
-		return mMessageHandler.obtainMessage();
-	}
+//	/**
+//	 * Utility for subclass to get a Message object.
+//	 * @return
+//	 */
+//	public Message obtainMessage() {
+//		return mMessageHandler.obtainMessage();
+//	}
+//
+//	/**
+//	 * Utility for subclass to send a Message to the UI thread.
+//	 * @param msg
+//	 */
+//	public void sendMessage(Message msg) {
+//		mMessageHandler.sendMessage(msg);
+//	}
+//
+//	/**
+//	 * Dispatcher for messages to the UI thread.
+//	 * 
+//	 * @author Philip Warner
+//	 *
+//	 */
+//	private class TaskMessageHandler extends Handler {
+//		public void handleMessage(Message msg) {
+//			onMessage(msg);
+//		}		
+//	}
 
-	/**
-	 * Utility for subclass to send a Message to the UI thread.
-	 * @param msg
-	 */
-	public void sendMessage(Message msg) {
-		mMessageHandler.sendMessage(msg);
-	}
 
+	/* ===================================================================== 
+	 * Message Switchboard implementation
+	 * =====================================================================
+	 */
 	/**
-	 * Dispatcher for messages to the UI thread.
+	 * Allows other objects to know when a task completed.
 	 * 
 	 * @author Philip Warner
-	 *
 	 */
-	private class TaskMessageHandler extends Handler {
-		public void handleMessage(Message msg) {
-			onMessage(msg);
-		}		
+	public interface TaskListener {
+		void onFinish();
+	}
+
+	public interface TaskController {
+		void requestAbort();
+		ManagedTask getTask();
+	}
+	
+	private TaskController mController = new TaskController() {
+		@Override
+		public void requestAbort() {
+			ManagedTask.this.cancelTask();
+		}
+		@Override
+		public ManagedTask getTask() {
+			return ManagedTask.this;
+		}
+	};
+
+	/**
+	 * 	STATIC Object for passing messages from background tasks to activities that may be recreated 
+	 *
+	 *  This object handles all underlying OnTaskEndedListener messages for every instance of this class.
+	 */
+	protected static class TaskSwitch extends MessageSwitch<TaskListener, TaskController> {};
+
+	private static final TaskSwitch mMessageSwitch = new TaskSwitch();
+	protected static final TaskSwitch getMessageSwitch() { return mMessageSwitch; }
+
+	private final long mMessageSenderId = mMessageSwitch.createSender(mController);
+	public long getSenderId() { return mMessageSenderId; }
+
+	public void sendOnFinish() {
+		mMessageSwitch.send(mMessageSenderId, new MessageSwitch.Message<TaskListener>() {
+			@Override
+			public void deliver(TaskListener listener) {
+				listener.onFinish();
+			}}
+		);
 	}
 }

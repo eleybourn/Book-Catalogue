@@ -22,7 +22,9 @@ package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
 
+import com.eleybourn.bookcatalogue.ManagedTask.TaskListener;
 import com.eleybourn.bookcatalogue.Series.SeriesDetails;
+import com.eleybourn.bookcatalogue.messaging.MessageSwitch;
 
 import android.os.Bundle;
 import android.os.Message;
@@ -46,8 +48,8 @@ abstract public class SearchThread extends ManagedTask {
 	 * @param title			Title to search for
 	 * @param isbn			ISBN to search for.
 	 */
-	public SearchThread(TaskManager manager, TaskHandler taskHandler, String author, String title, String isbn, boolean fetchThumbnail) {
-		super(manager, taskHandler);
+	public SearchThread(TaskManager manager, SearchTaskHandler taskHandler, String author, String title, String isbn, boolean fetchThumbnail) {
+		super(manager);
 		mAuthor = author;
 		mTitle = title;
 		mIsbn = isbn;
@@ -56,6 +58,7 @@ abstract public class SearchThread extends ManagedTask {
 		//mBookData.putString(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, mAuthor);
 		//mBookData.putString(CatalogueDBAdapter.KEY_TITLE, mTitle);
 		//mBookData.putString(CatalogueDBAdapter.KEY_ISBN, mIsbn);
+		getMessageSwitch().addListener(getSenderId(), taskHandler, false);
 	}
 
 	public abstract int getSearchId();
@@ -66,19 +69,19 @@ abstract public class SearchThread extends ManagedTask {
 	 * 
 	 * @author Philip Warner
 	 */
-	public interface SearchTaskHandler extends ManagedTask.TaskHandler {
+	public interface SearchTaskHandler extends ManagedTask.TaskListener {
 		void onSearchThreadFinish(SearchThread t, Bundle bookData, boolean cancelled);
 	}
 
 	@Override
-	protected boolean onFinish() {
+	protected void onFinish() {
 		doProgress("Done",0);
-		if (getTaskHandler() != null) {
-			((SearchTaskHandler)getTaskHandler()).onSearchThreadFinish(this, mBookData, isCancelled());				
-			return true;
-		} else {
-			return false;
-		}
+		getMessageSwitch().send(getSenderId(), new MessageSwitch.Message<TaskListener>() {
+			@Override
+			public void deliver(TaskListener listener) {
+				((SearchTaskHandler)listener).onSearchThreadFinish(SearchThread.this, mBookData, isCancelled());				
+			}}
+		);
 	}
 
 	@Override

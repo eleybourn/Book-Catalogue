@@ -13,9 +13,13 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 
 import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer.SyncLock;
+import com.eleybourn.bookcatalogue.messaging.MessageSwitch;
 
 import android.os.Bundle;
 import android.os.Message;
+
+import com.eleybourn.bookcatalogue.TaskManager.TaskManagerController;
+import com.eleybourn.bookcatalogue.TaskManager.TaskManagerListener;
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 
 /**
@@ -44,35 +48,26 @@ public class ImportThread extends ManagedTask {
 
 	private int mImportUpdated;
 	private int mImportCreated;
-	
-	public interface ImportHandler extends ManagedTask.TaskHandler {
-		void onFinish();
-	}
 
-	public ImportThread(TaskManager manager, ImportHandler taskHandler, String fileSpec) throws IOException {
-		super(manager, (ManagedTask.TaskHandler)taskHandler);
+
+	public ImportThread(TaskManager manager, TaskListener taskHandler, String fileSpec) throws IOException {
+		super(manager);
 		mFile = new File(fileSpec);
 		mFileSpec = mFile.getCanonicalPath();
 		mSharedStoragePath = StorageUtils.getSharedStorage().getCanonicalPath();
 
-		mDbHelper = new CatalogueDBAdapter(manager.getAppContext());
+		mDbHelper = new CatalogueDBAdapter(BookCatalogueApp.context);
 		mDbHelper.open();
-		
+
 		mFileIsForeign = !(mFileSpec.startsWith(mSharedStoragePath));
+		getMessageSwitch().addListener(getSenderId(), taskHandler, false);
 		//Debug.startMethodTracing();
 	}
 
 	@Override
-	protected boolean onFinish() {
+	protected void onFinish() {
 		try {
-			//Debug.stopMethodTracing();
-			ImportHandler h = (ImportHandler)getTaskHandler();
-			if (h != null) {
-				h.onFinish();
-				return true;
-			} else {
-				return false;
-			}			
+			sendOnFinish();
 		} finally {
 			cleanup();
 		}
@@ -242,7 +237,7 @@ public class ImportThread extends ManagedTask {
 					}
 
 					if (authorDetails == null || authorDetails.length() == 0) {
-						String s = mManager.getString(R.string.column_is_blank);
+						String s = BookCatalogueApp.getResourceString(R.string.column_is_blank);
 						throw new ImportException(String.format(s, CatalogueDBAdapter.KEY_AUTHOR_DETAILS, row));
 					}
 
@@ -704,7 +699,7 @@ public class ImportThread extends ManagedTask {
 		if (values.containsKey(name))
 			return;
 
-		String s = mManager.getString(R.string.file_must_contain_column);
+		String s = BookCatalogueApp.getResourceString(R.string.file_must_contain_column);
 		throw new ImportException(String.format(s,name));
 	}
 
@@ -714,14 +709,14 @@ public class ImportThread extends ManagedTask {
 			if (values.containsKey(names[i]))
 				return;
 		
-		String s = mManager.getString(R.string.file_must_contain_any_column);
+		String s = BookCatalogueApp.getResourceString(R.string.file_must_contain_any_column);
 		throw new ImportException(String.format(s, Utils.join(names, ",")));
 	}
 
 	private void requireNonblank(Bundle values, int row, String name) {
 		if (values.getString(name).length() != 0)
 			return;
-		String s = mManager.getString(R.string.column_is_blank);
+		String s = BookCatalogueApp.getResourceString(R.string.column_is_blank);
 		throw new ImportException(String.format(s, name, row));
 	}
 
@@ -730,7 +725,7 @@ public class ImportThread extends ManagedTask {
 			if (values.containsKey(names[i]) && values.getString(names[i]).length() != 0)
 				return;
 
-		String s = mManager.getString(R.string.columns_are_blank);
+		String s = BookCatalogueApp.getResourceString(R.string.columns_are_blank);
 		throw new ImportException(String.format(s, Utils.join( names, ","), row));
 	}
 

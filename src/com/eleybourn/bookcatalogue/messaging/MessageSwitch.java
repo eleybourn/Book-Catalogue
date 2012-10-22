@@ -8,7 +8,7 @@ import android.os.Handler;
 
 public class MessageSwitch<T,U> {
 	private static Long mSenderIdCounter = 0L;
-	private Hashtable<Long,MessageSender<T,U>> mSenders = new Hashtable<Long,MessageSender<T,U>>();
+	private Hashtable<Long,MessageSender<U>> mSenders = new Hashtable<Long,MessageSender<U>>();
 	private LinkedBlockingQueue<RoutingSlip> mMessageQueue = new LinkedBlockingQueue<RoutingSlip>();
 	private Hashtable<Long, MessageListeners> mListeners = new Hashtable<Long, MessageListeners>();
 
@@ -34,15 +34,17 @@ public class MessageSwitch<T,U> {
 			queue.add(listener);
 			if (deliverLast) {
 				final RoutingSlip m = queue.getLastMessage();
-				if (mHandler.getLooper().getThread() == Thread.currentThread()) {
-					m.deliver();
-				} else {
-					mHandler.post(new Runnable() {
-						@Override
-						public void run() {
-							m.deliver();
-						}
-					});
+				if (m != null) {
+					if (mHandler.getLooper().getThread() == Thread.currentThread()) {
+						m.deliver();
+					} else {
+						mHandler.post(new Runnable() {
+							@Override
+							public void run() {
+								m.deliver();
+							}
+						});
+					}					
 				}
 			}
 		}
@@ -74,7 +76,7 @@ public class MessageSwitch<T,U> {
 	}
 
 	public U getController(long senderId) {
-		MessageSender<T,U> sender = mSenders.get(senderId);
+		MessageSender<U> sender = mSenders.get(senderId);
 		if (sender != null) {
 			return sender.getReplyHandler();
 		} else {
@@ -82,7 +84,7 @@ public class MessageSwitch<T,U> {
 		}
 	}
 
-	private interface MessageSender<T,U> {
+	private interface MessageSender<U> {
 		public Long getId();
 		public void close();
 		public U getReplyHandler();
@@ -104,7 +106,7 @@ public class MessageSwitch<T,U> {
 		//}
 	}
 
-	private void removeSender(MessageSender<T,U> s) {
+	private void removeSender(MessageSender<U> s) {
 		synchronized(mSenders) {
 			mSenders.remove(s.getId());
 		}
@@ -153,7 +155,7 @@ public class MessageSwitch<T,U> {
 		@Override
 		public void deliver() {
 			synchronized(mSenders) {
-				MessageSender<T,U> sender = mSenders.get(this.destination);
+				MessageSender<U> sender = mSenders.get(this.destination);
 				if (sender != null) {
 					message.deliver(sender.getReplyHandler());
 				}
@@ -170,7 +172,7 @@ public class MessageSwitch<T,U> {
 //		}
 //	}
 
-	private class MessageSenderImpl implements MessageSender<T,U> {
+	private class MessageSenderImpl implements MessageSender<U> {
 		private final Long mId = ++mSenderIdCounter;
 		private final U mReplyHandler;
 

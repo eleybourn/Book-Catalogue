@@ -4,7 +4,7 @@ package com.eleybourn.bookcatalogue;
 public class SearchLibraryThingThread extends SearchThread {
 
 	public SearchLibraryThingThread(TaskManager manager,
-			TaskHandler taskHandler, String author, String title, String isbn, boolean fetchThumbnail) {
+			SearchTaskHandler taskHandler, String author, String title, String isbn, boolean fetchThumbnail) {
 		super(manager, taskHandler, author, title, isbn, fetchThumbnail);
 	}
 
@@ -20,7 +20,7 @@ public class SearchLibraryThingThread extends SearchThread {
 			String isbn = mIsbn;
 			if (isbn.length() > 0) {
 				this.doProgress(getString(R.string.searching_library_thing), 0);
-				LibraryThingManager ltm = new LibraryThingManager(mManager.getAppContext());
+				LibraryThingManager ltm = new LibraryThingManager(BookCatalogueApp.context);
 				if (ltm.isAvailable()) {
 					try {
 						ltm.searchByIsbn(isbn, mFetchThumbnail, mBookData);

@@ -33,8 +33,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
 
-import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
-import com.eleybourn.bookcatalogue.TaskManager.OnTaskManagerListener;
+import com.eleybourn.bookcatalogue.TaskManager.TaskManagerListener;
 
 /**
  * Class to used as a base class for any Activity that wants to run one or more threads that
@@ -75,7 +74,7 @@ abstract public class ActivityWithTasks extends Activity {
 			TaskManager.getMessageSwitch().addListener(mTaskManagerId, mTaskListener, true);
 	}
 
-	private OnTaskManagerListener mTaskListener = new OnTaskManagerListener() {
+	private TaskManagerListener mTaskListener = new TaskManagerListener() {
 
 		@Override
 		public void onTaskEnded(TaskManager manager, ManagedTask task) {
@@ -90,7 +89,8 @@ abstract public class ActivityWithTasks extends Activity {
 			mProgressMessage = message;
 			
 			if (mProgressMessage.trim().length() == 0 && mProgressMax == mProgressCount) {
-				ActivityWithTasks.this.dismissDialog(UniqueId.DIALOG_PROGRESS);
+				if (mProgressDialog != null)
+					ActivityWithTasks.this.dismissDialog(UniqueId.DIALOG_PROGRESS);
 			} else {
 				if (mProgressDialog == null) {
 					ActivityWithTasks.this.showDialog(UniqueId.DIALOG_PROGRESS);

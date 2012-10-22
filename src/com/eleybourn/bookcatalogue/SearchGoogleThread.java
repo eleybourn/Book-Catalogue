@@ -2,7 +2,7 @@ package com.eleybourn.bookcatalogue;
 
 public class SearchGoogleThread extends SearchThread {
 
-	public SearchGoogleThread(TaskManager manager, TaskHandler taskHandler,
+	public SearchGoogleThread(TaskManager manager, SearchTaskHandler taskHandler,
 			String author, String title, String isbn, boolean fetchThumbnail) {
 		super(manager, taskHandler, author, title, isbn, fetchThumbnail);
 	}

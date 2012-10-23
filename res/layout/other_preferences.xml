@@ -134,6 +134,27 @@
 				/>
 		</LinearLayout>
 
+		<!--  Use external cropper -->
+		<LinearLayout android:id="@+id/use_external_image_cropper_label" 
+			android:orientation="horizontal"
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content"
+			android:paddingLeft="15sp">
+			<CheckBox android:id="@+id/use_external_image_cropper_checkbox" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:paddingLeft="10sp"
+				android:focusable="false"
+				/>
+			<TextView 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:text="@+string/use_external_image_cropper"
+				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:paddingTop="5sp"
+				/>
+		</LinearLayout>
+				
 	</LinearLayout>
   </ScrollView>
 

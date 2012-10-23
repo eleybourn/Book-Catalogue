@@ -46,6 +46,7 @@ import android.widget.ViewSwitcher.ViewFactory;
 import com.eleybourn.bookcatalogue.LibraryThingManager.ImageSizes;
 import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTask;
 import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTaskContext;
+import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
 
 /**
  * Class to display and manage a cover image browser in a dialog.

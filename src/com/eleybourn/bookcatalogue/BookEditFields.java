@@ -109,6 +109,8 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 
 	private Fields mFields = null;
 	private boolean mIsDirtyFlg = false;
+	/** Used to display a hint if user rotates a camera image */
+	private boolean mGotCameraImage = false;
 
 	private Button mConfirmButton;
 	private Button mCancelButton;
@@ -756,7 +758,11 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 				Utils.fetchFileIntoImageView(thumbFile, iv, mThumbEditSize, mThumbEditSize, true);
 				return true;
 			case ROTATE_THUMB_SUBMENU:
-				// Just a submenu; skip
+				// Just a submenu; skip, but display a hint if user is rotating a camera image
+				if (mGotCameraImage) {
+					HintManager.displayHint(this, R.string.hint_autorotate_camera_images, null);
+					mGotCameraImage = false;
+				}
 				return true;
 			case ROTATE_THUMB_CW:
 				rotateThumbnail(90);
@@ -1459,6 +1465,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 						//crop_intent.putExtra("image-path", thumbFile.getAbsolutePath());
 						//crop_intent.putExtra("scale", true);
 						//startActivityForResult(crop_intent, CAMERA_RESULT);					
+						mGotCameraImage = true;
 					} else {
 						Tracker.handleEvent(this, "onActivityResult(" + requestCode + "," + resultCode + ") - camera image empty", Tracker.States.Running);						
 					}

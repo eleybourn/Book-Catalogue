@@ -2,7 +2,7 @@
 <!--  Use android:installLocation="auto" when building with API > 4, "preferExternal" causes it to install on encrypted sdcards, which fails -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="com.eleybourn.bookcatalogue"
-	android:installLocation="auto"  android:versionName="4.1.6-Beta-9" android:versionCode="107">
+	android:installLocation="auto"  android:versionName="4.1.6-Beta-10" android:versionCode="108">
 	<application android:name=".BookCatalogueApp" android:label="@string/app_name" android:icon="@drawable/ic_launcher2" >
 		<provider android:name=".SearchSuggestionProvider" android:authorities="com.eleybourn.bookcatalogue.SearchSuggestionProvider" />		
 		<service android:enabled="true" android:name=".BcQueueManager" />

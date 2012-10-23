@@ -61,6 +61,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
 import com.eleybourn.bookcatalogue.database.CoversDbHelper;
 import com.eleybourn.bookcatalogue.dialogs.PartialDatePicker;
+import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
 
 import android.app.Activity;
 import android.app.Dialog;

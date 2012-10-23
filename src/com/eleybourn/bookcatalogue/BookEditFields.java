@@ -79,12 +79,13 @@ import com.eleybourn.bookcatalogue.CoverBrowser.OnImageSelectedListener;
 import com.eleybourn.bookcatalogue.Fields.AfterFieldChangeListener;
 import com.eleybourn.bookcatalogue.Fields.Field;
 import com.eleybourn.bookcatalogue.Fields.FieldValidator;
-import com.eleybourn.bookcatalogue.StandardDialogs.SimpleDialogItem;
-import com.eleybourn.bookcatalogue.StandardDialogs.SimpleDialogOnClickListener;
 import com.eleybourn.bookcatalogue.cropper.CropCropImage;
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.dialogs.PartialDatePicker;
+import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
 import com.eleybourn.bookcatalogue.dialogs.TextFieldEditor;
+import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogItem;
+import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogOnClickListener;
 
 
 

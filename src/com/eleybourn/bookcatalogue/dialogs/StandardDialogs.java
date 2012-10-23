@@ -18,12 +18,24 @@
  * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.eleybourn.bookcatalogue;
+package com.eleybourn.bookcatalogue.dialogs;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 
+import com.eleybourn.bookcatalogue.AdministrationLibraryThing;
+import com.eleybourn.bookcatalogue.Author;
+import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
+import com.eleybourn.bookcatalogue.LibraryThingManager;
+import com.eleybourn.bookcatalogue.Logger;
+import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.Series;
+import com.eleybourn.bookcatalogue.Utils;
+import com.eleybourn.bookcatalogue.ViewTagger;
+import com.eleybourn.bookcatalogue.R.id;
+import com.eleybourn.bookcatalogue.R.layout;
+import com.eleybourn.bookcatalogue.R.string;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsRegister;
 
 import android.app.Activity;

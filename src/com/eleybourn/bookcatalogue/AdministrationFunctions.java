@@ -43,9 +43,10 @@ import android.view.View.OnClickListener;
 import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
-import com.eleybourn.bookcatalogue.StandardDialogs.SimpleDialogFileItem;
-import com.eleybourn.bookcatalogue.StandardDialogs.SimpleDialogItem;
-import com.eleybourn.bookcatalogue.StandardDialogs.SimpleDialogOnClickListener;
+import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
+import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogFileItem;
+import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogItem;
+import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogOnClickListener;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsRegister;
 import com.eleybourn.bookcatalogue.goodreads.ImportAllTask;

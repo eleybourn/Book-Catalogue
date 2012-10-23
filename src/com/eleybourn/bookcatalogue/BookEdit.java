@@ -26,6 +26,7 @@ import java.util.Hashtable;
 import java.util.Map.Entry;
 
 import com.eleybourn.bookcatalogue.debug.Tracker;
+import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
 
 
 import android.app.Activity;

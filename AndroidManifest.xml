@@ -129,8 +129,8 @@
 		<activity android:name=".EditAuthorList"></activity>
 		<activity android:name=".EditSeriesList"></activity>
 		<activity android:name=".UpdateFromInternet"></activity>
-		<activity android:name=".CropCropImage"></activity>
-		<activity android:name=".CropMonitoredActivity"></activity>
+		<activity android:name=".cropper.CropCropImage"></activity>
+		<activity android:name=".cropper.CropMonitoredActivityActivity"></activity>
 	</application>
 	<uses-sdk android:minSdkVersion="4" />
 	<uses-permission android:name="android.permission.INTERNET"></uses-permission>

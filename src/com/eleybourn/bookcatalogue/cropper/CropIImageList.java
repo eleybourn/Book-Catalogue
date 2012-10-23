@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.eleybourn.bookcatalogue;
+package com.eleybourn.bookcatalogue.cropper;
 
 import android.content.ContentResolver;
 import android.net.Uri;

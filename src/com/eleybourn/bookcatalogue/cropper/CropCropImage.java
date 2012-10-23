@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.eleybourn.bookcatalogue;
+package com.eleybourn.bookcatalogue.cropper;
 
 
 import java.io.File;
@@ -23,6 +23,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.CountDownLatch;
+
+import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.R.id;
+import com.eleybourn.bookcatalogue.R.layout;
 
 import android.app.Activity;
 import android.content.ContentResolver;

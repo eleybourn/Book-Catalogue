@@ -1,4 +1,4 @@
-package com.eleybourn.bookcatalogue;
+package com.eleybourn.bookcatalogue.cropper;
 /*
  * Copyright (C) 2009 The Android Open Source Project
  *

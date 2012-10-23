@@ -1440,7 +1440,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 					Bitmap x = (Bitmap) intent.getExtras().get("data");
 					if (x != null && x.getWidth() > 0 && x.getHeight() > 0) {
 						Matrix m = new Matrix();
-						m.postRotate(90);
+						m.postRotate(BookCatalogueApp.getAppPreferences().getInt(BookCataloguePreferences.PREF_AUTOROTATE_CAMERA_IMAGES, 90));
 						x = Bitmap.createBitmap(x, 0, 0, x.getWidth(), x.getHeight(), m, true);
 						/* Create a file to copy the thumbnail into */
 						FileOutputStream f = null;

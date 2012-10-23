@@ -163,7 +163,7 @@ public class BooklistStylePropertiesActivity extends Activity {
 		 * Can not be 'set'. Will be edited vi the button->activity.
 		 */
 		@Override
-		public void set(String value) {
+		public GroupsProperty set(String value) {
 			throw new RuntimeException("Attempt to set read-only property string");
 		}
 

@@ -610,6 +610,7 @@
 <string name="if_month_is_specified_year_must_be">If month is specified, then year must also be specified.</string>
 <string name="main_menu">Main Menu</string>
 <string name="use_external_image_cropper">Use external image cropper (experimental)</string>
+<string name="auto_rotate_camera_images">Automatically rotate images captured by camera</string>
 
 </resources>
 

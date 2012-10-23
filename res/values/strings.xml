@@ -609,7 +609,7 @@
 <string name="if_day_is_specified_month_and_year_must_be">If day is specified, then both month and year must also be specified.</string>
 <string name="if_month_is_specified_year_must_be">If month is specified, then year must also be specified.</string>
 <string name="main_menu">Main Menu</string>
-<string name="use_external_image_cropper">Use external image cropper</string>
+<string name="use_external_image_cropper">Use external image cropper (experimental)</string>
 
 </resources>
 

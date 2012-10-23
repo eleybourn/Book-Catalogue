@@ -824,7 +824,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 		crop_intent.putExtra("scale", true);
 		startActivityForResult(crop_intent, CROP_INTERNAL_RESULT);
 	}
-	
+
 	private void cropCoverImageExternal(File thumbFile) {
 		Tracker.handleEvent(this, "cropCoverImageExternal", Tracker.States.Enter);			
 		try {

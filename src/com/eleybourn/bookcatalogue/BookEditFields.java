@@ -777,7 +777,11 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 				Utils.fetchFileIntoImageView(thumbFile, iv, mThumbEditSize, mThumbEditSize, true);
 				return true;
 			case ADD_PHOTO:
+				// Increment the temp counter and cleanup the temp directory
+				mTempImageCounter++;
+				cleanupTempImages();
 				Intent pintent = null;
+				// Get a photo
 				pintent = new Intent("android.media.action.IMAGE_CAPTURE");
 				startActivityForResult(pintent, ADD_PHOTO);
 				return true;
@@ -829,6 +833,12 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 		// here you have to pass absolute path to your file
 		crop_intent.putExtra("image-path", thumbFile.getAbsolutePath());
 		crop_intent.putExtra("scale", true);
+		// Get and set the output file spec, and make sure it does not already exist.
+		File cropped = this.getCroppedImageFileName();
+		if (cropped.exists())
+			cropped.delete();
+		crop_intent.putExtra("output", cropped.getAbsolutePath());
+
 		startActivityForResult(crop_intent, CROP_INTERNAL_RESULT);
 	}
 
@@ -852,7 +862,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 			// true to return a Bitmap, false to directly save the cropped iamge
 			intent.putExtra("return-data", false);
 			//save output image in uri
-			File cropped = new File(thumbFile.getAbsoluteFile() + ".cropped.jpg");
+			File cropped = this.getCroppedImageFileName();
 			if (cropped.exists())
 				cropped.delete();
 			intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(cropped.getAbsolutePath())));
@@ -881,6 +891,8 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
+		// Make sure the cached thumbnails (if present) are deleted
+		invalidateCachedThumbnail();
 	}
 	
 	/**
@@ -1048,9 +1060,26 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 		fe.setTag(encoded_shelf);		
 	}
 
+	/**
+	 * Ensure that the cached thumbnails for this book are deleted (if present)
+	 */
+	private void invalidateCachedThumbnail() {
+		if (mRowId != null && mRowId != 0) {
+			try {
+				String hash = mDbHelper.getBookUuid(mRowId);			
+				Utils u = new Utils();
+				u.deleteCachedBookCovers(hash);
+			} catch (Exception e) {
+				Logger.logError(e,"Error cleaning up cached cover images");
+			}
+		}		
+	}
+
 	private void setCoverImage() {
 		ImageView iv = (ImageView) findViewById(R.id.row_img);
-		Utils.fetchFileIntoImageView(getCoverFile(), iv, mThumbEditSize, mThumbEditSize, true );		
+		Utils.fetchFileIntoImageView(getCoverFile(), iv, mThumbEditSize, mThumbEditSize, true );
+		// Make sure the cached thumbnails (if present) are deleted
+		invalidateCachedThumbnail();
 	}
 
 	/**
@@ -1434,6 +1463,42 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 		added_genre = mStateValues.getString(CatalogueDBAdapter.KEY_GENRE);
 	}
 
+	/**
+	 * Get a temp directory for image manipulation (create if necessary)
+	 */
+	private File getTempImageDir() {
+		File f = new File(StorageUtils.getSharedStoragePath() + "/tmp_images/");
+		if (!f.exists())
+			f.mkdirs();
+		return f;
+	}
+
+	/** Counter used to prevent images being reused accidentally */
+	private static int mTempImageCounter = 0;
+	/**
+	 * Get a temp file for camera images
+	 */
+	private File getCameraImageFile() {
+		return new File(getTempImageDir().getAbsolutePath() + "/camera" + mTempImageCounter + ".jpg");
+	}
+	
+	/**
+	 * Get a temp fie for cropping output
+	 */
+	private File getCroppedImageFileName() {
+		return new File(getTempImageDir().getAbsolutePath() + "/cropped" + mTempImageCounter + ".jpg");
+	}
+	
+	/**
+	 * Delete everything in the temp file directory
+	 */
+	private void cleanupTempImages() {
+		File[] files = getTempImageDir().listFiles();
+		for (File f: files) {
+			f.delete();
+		}
+	}
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		Tracker.handleEvent(this, "onActivityResult(" + requestCode + "," + resultCode + ")", Tracker.States.Enter);			
@@ -1442,7 +1507,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 			switch(requestCode) {
 			case ADD_PHOTO:
 				if (resultCode == Activity.RESULT_OK && intent != null && intent.getExtras() != null){
-					File thumbFile = getCoverFile();
+					File cameraFile = getCameraImageFile();
 					Bitmap x = (Bitmap) intent.getExtras().get("data");
 					if (x != null && x.getWidth() > 0 && x.getHeight() > 0) {
 						Matrix m = new Matrix();
@@ -1451,15 +1516,15 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 						/* Create a file to copy the thumbnail into */
 						FileOutputStream f = null;
 						try {
-							f = new FileOutputStream(thumbFile.getAbsoluteFile());
+							f = new FileOutputStream(cameraFile.getAbsoluteFile());
 						} catch (FileNotFoundException e) {
 							Logger.logError(e);
 							return;
 						}
 						
 						x.compress(Bitmap.CompressFormat.PNG, 100, f);
-						
-						cropCoverImage(thumbFile);
+
+						cropCoverImage(cameraFile);
 						//Intent crop_intent = new Intent(this, CropCropImage.class);
 						//// here you have to pass absolute path to your file
 						//crop_intent.putExtra("image-path", thumbFile.getAbsolutePath());
@@ -1472,12 +1537,13 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 				}
 				return;
 			case CROP_EXTERNAL_RESULT:
+			{
 				File thumbFile = getCoverFile();
-				File cropped = new File(thumbFile.getAbsoluteFile() + ".cropped.jpg");
+				File cropped = this.getCroppedImageFileName();
 				if (resultCode == Activity.RESULT_OK){
 					if (cropped.exists()) {
-						cropped.renameTo(thumbFile);
 						// Update the ImageView with the new image
+						cropped.renameTo(thumbFile);
 						setCoverImage();
 					} else {
 						Tracker.handleEvent(this, "onActivityResult(" + requestCode + "," + resultCode + ") - result OK, no image file", Tracker.States.Running);												
@@ -1488,14 +1554,21 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 						cropped.delete();				
 				}
 				return;
-
+			}
 			case CROP_INTERNAL_RESULT:
 //			case CAMERA_RESULT:
-				if (resultCode == Activity.RESULT_OK){
-					// Update the ImageView with the new image
-					setCoverImage();
+			{
+				File thumbFile = getCoverFile();
+				File cropped = this.getCroppedImageFileName();
+				if (resultCode == Activity.RESULT_OK) {
+					if (cropped.exists()) {
+						cropped.renameTo(thumbFile);
+						// Update the ImageView with the new image
+						setCoverImage();
+					}
 				}
 				return;
+			}
 			case ADD_GALLERY:
 				if (resultCode == Activity.RESULT_OK){
 					Uri selectedImageUri = intent.getData();

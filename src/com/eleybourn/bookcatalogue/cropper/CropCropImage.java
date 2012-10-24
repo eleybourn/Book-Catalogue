@@ -114,7 +114,13 @@ public class CropCropImage extends CropMonitoredActivity {
 	    
 	    mImagePath = extras.getString("image-path");
 
-	    mSaveUri = getImageUri(mImagePath);
+	    // Use the "output" parameter if present, otherwise overwrite existing file
+	    String imgUri = extras.getString("output");
+	    if (imgUri == null) 
+	    	imgUri = mImagePath;
+
+	    mSaveUri = getImageUri(imgUri);
+	   
 	    mBitmap = getBitmap(mImagePath);
 
 	    mAspectX = extras.getInt("aspectX");

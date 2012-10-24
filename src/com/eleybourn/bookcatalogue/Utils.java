@@ -1069,6 +1069,15 @@ public class Utils {
 	}
 
 	/**
+	 * Utility routine to delete all cached covers of a specified book
+	 */
+	public void deleteCachedBookCovers(String hash) {
+		CoversDbHelper coversDb = getCoversDb();
+		if (coversDb != null) {
+			coversDb.deleteBookCover(hash);
+		}
+	}
+	/**
 	 * Called in the UI thread, will return a cached image OR NULL.
 	 * 
 	 * @param originalFile	File representing original image file

@@ -31,7 +31,7 @@ public abstract class ValuePropertyWithGlobalDefault<T extends Object> extends P
 	/** Underlying value */
 	private T mValue;
 	/** Key in preferences for default value */
-	private String mDefaultPref;
+	private String mDefaultPrefKey;
 	/** Default value, for case when not in preferences, or no preferences given */
 	private T mDefaultValue;
 	/** Indicates that this instance is to only use the global default */
@@ -40,7 +40,7 @@ public abstract class ValuePropertyWithGlobalDefault<T extends Object> extends P
 	/** Children must implement accessor for global default */
 	protected abstract T getGlobalDefault();
 	/** Children must implement accessor for global default */	
-	protected abstract void setGlobalDefault(T value);
+	protected abstract ValuePropertyWithGlobalDefault<T> setGlobalDefault(T value);
 
 	/**
 	 * Constructor
@@ -51,14 +51,32 @@ public abstract class ValuePropertyWithGlobalDefault<T extends Object> extends P
 	 * @param value				Current value (may be null)
 	 * @param preferenceKey		Key into Preferences for default value (may be null)
 	 * @param defaultValue		Default value used in case preferences is or returns null
+	 * @param isGlobal			Make this a global property definition
+	 * 
+	 * Note: it is a good idea to provide a non-null value for defaultValue!
+	 */
+	public ValuePropertyWithGlobalDefault(String uniqueId, PropertyGroup group, int nameResourceId, T value, String preferenceKey, T defaultValue, boolean isGlobal) {
+		super(uniqueId, group, nameResourceId);
+		mValue = value;
+		mDefaultPrefKey = preferenceKey;
+		mDefaultValue = defaultValue;
+		mIsGlobal = isGlobal;
+	}
+
+	/**
+	 * Constructor
+	 * 
+	 * @param uniqueId			Unique property name; just needs to be unique for the collection it belongs to. Simplest to use a pref name, if there is one.
+	 * @param group				PropertyGroup it belongs to
+	 * @param nameResourceId	Resource ID for name string
+	 * @param value				Current value (may be null)
+	 * @param preferenceKey		Key into Preferences for default value (may be null)
+	 * @param defaultValue		Default value used in case preferences is or returns null
 	 * 
 	 * Note: it is a good idea to provide a non-null value for defaultValue!
 	 */
 	public ValuePropertyWithGlobalDefault(String uniqueId, PropertyGroup group, int nameResourceId, T value, String preferenceKey, T defaultValue) {
-		super(uniqueId, group, nameResourceId);
-		mValue = value;
-		mDefaultPref = preferenceKey;
-		mDefaultValue = defaultValue;
+		this(uniqueId, group, nameResourceId, value, preferenceKey, defaultValue, false);
 	}
 
 	/**
@@ -75,10 +93,11 @@ public abstract class ValuePropertyWithGlobalDefault<T extends Object> extends P
 	 * Accessor for underlying (or global) value
 	 * @return
 	 */
-	public void set(T value) {
+	public ValuePropertyWithGlobalDefault<T> set(T value) {
 		mValue = value;
 		if (mIsGlobal)
 			setGlobalDefault(value);
+		return this;
 	}
 
 	/**
@@ -107,10 +126,11 @@ public abstract class ValuePropertyWithGlobalDefault<T extends Object> extends P
 	/**
 	 * Accessor
 	 */
-	public void setGlobal(boolean isGlobal) {
+	public ValuePropertyWithGlobalDefault<T> setGlobal(boolean isGlobal) {
 		if (isGlobal && !hasGlobalDefault())
 			throw new RuntimeException("Can not set a parameter to global if preference value has not been specified");
 		mIsGlobal = isGlobal;
+		return this;
 	}
 	/**
 	 * Accessor
@@ -122,21 +142,36 @@ public abstract class ValuePropertyWithGlobalDefault<T extends Object> extends P
 	/**
 	 * Accessor
 	 */
-	public T getDefaultValue() {
-		return mDefaultValue;
+	public ValuePropertyWithGlobalDefault<T> setDefaultValue(T value) {
+		mDefaultValue = value;
+		return this;
 	}
 	/**
 	 * Accessor
 	 */
+	public T getDefaultValue() {
+		return mDefaultValue;
+	}
+
+	/**
+	 * Accessor
+	 */
 	public String getPreferenceKey() {
-		return mDefaultPref;
+		return mDefaultPrefKey;
+	}
+	/**
+	 * Accessor
+	 */
+	public ValuePropertyWithGlobalDefault<T> setPreferenceKey(String key) {
+		mDefaultPrefKey = key;
+		return this;
 	}
 
 	/**
 	 * Utility to check if a global default is available
 	 */
 	public boolean hasGlobalDefault() {
-		return (mDefaultPref != null && !mDefaultPref.equals(""));
+		return (mDefaultPrefKey != null && !mDefaultPrefKey.equals(""));
 	}
 
 	/**

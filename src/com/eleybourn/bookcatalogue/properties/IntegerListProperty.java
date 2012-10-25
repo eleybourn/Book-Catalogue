@@ -21,6 +21,7 @@
 package com.eleybourn.bookcatalogue.properties;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
+import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.properties.Property.IntegerValue;
 
 /**
@@ -39,22 +40,30 @@ public class IntegerListProperty extends ListProperty<Integer> implements Intege
 	public IntegerListProperty(ItemEntries<Integer> list, String uniqueId, PropertyGroup group, int nameResourceId, Integer value) {
 		super(list, uniqueId, group, nameResourceId, value, null, value);
 	}
+	public IntegerListProperty(ItemEntries<Integer> list, String uniqueId, PropertyGroup group, int nameResourceId) {
+		super(list, uniqueId, group, nameResourceId, null, null, null);
+	}
+	public IntegerListProperty(ItemEntries<Integer> list, String uniqueId) {
+		super(list, uniqueId, PropertyGroup.GRP_GENERAL, R.string.unknown, null, null, null);
+	}
 
 	@Override
 	protected Integer getGlobalDefault() {
 		return BookCatalogueApp.getAppPreferences().getInt(getPreferenceKey(), getDefaultValue());
 	}
 	@Override
-	protected void setGlobalDefault(Integer value) {
-		BookCatalogueApp.getAppPreferences().setInt(getPreferenceKey(), value);			
+	protected IntegerListProperty setGlobalDefault(Integer value) {
+		BookCatalogueApp.getAppPreferences().setInt(getPreferenceKey(), value);	
+		return this;
 	}
 
 	@Override
-	public void set(Property p) {
+	public IntegerListProperty set(Property p) {
 		if (! (p instanceof IntegerValue) )
 			throw new RuntimeException("Can not find a compatible interface for integer parameter");
 		IntegerValue v = (IntegerValue) p;
 		set(v.get());
+		return this;
 	}
 }
 

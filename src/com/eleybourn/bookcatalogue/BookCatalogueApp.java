@@ -315,6 +315,8 @@ public class BookCatalogueApp extends Application {
 		public static final String PREF_DISPLAY_FIRST_THEN_LAST_NAMES = "APP.DisplayFirstThenLast";
 		public static final String PREF_BOOKLIST_STYLE = "APP.BooklistStyle";
 		public static final String PREF_USE_EXTERNAL_IMAGE_CROPPER = "App.UseExternalImageCropper";
+		public static final String PREF_AUTOROTATE_CAMERA_IMAGES = "App.AutorotateCameraImages";
+		public static final String PREF_CROP_FRAME_WHOLE_IMAGE = "App.CropFrameWholeImage";
 
 		/** Get startup activity preference */
 		public boolean getStartInMyBook() {

@@ -19,7 +19,7 @@
 		android:paddingLeft="5sp">
 
 	    <!--  This is where the automatically generated properties will go -->
-		<LinearLayout	 android:id="@+id/style_properties" 
+		<LinearLayout	 android:id="@+id/dynamic_properties" 
 			android:gravity="top" 
 			android:orientation="vertical"
 			android:layout_width="fill_parent" 

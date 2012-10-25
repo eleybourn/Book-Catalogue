@@ -56,9 +56,10 @@ public class Properties implements Iterable<Property> {
 	 * 
 	 * @param p
 	 */
-	public void add(Property p) {
+	public Properties add(Property p) {
 		mList.add(p);
 		mHash.put(p.getUniqueName(), p);
+		return this;
 	}
 
 	/** 

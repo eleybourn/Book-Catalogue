@@ -41,14 +41,14 @@ import com.eleybourn.bookcatalogue.properties.Property.BooleanValue;
  */
 public class BooleanProperty extends ValuePropertyWithGlobalDefault<Boolean> implements BooleanValue {
 
-	public BooleanProperty(String uniqueId, PropertyGroup group, int nameResourceId, Boolean value, String defaultPref, Boolean defaultValue) {
-		super(uniqueId, group, nameResourceId, value, defaultPref, defaultValue);
+	public BooleanProperty(String uniqueId, PropertyGroup group, int nameResourceId, Boolean value, String preferenceKey, Boolean defaultValue) {
+		super(uniqueId, group, nameResourceId, value, preferenceKey, defaultValue);
 	}
 	public BooleanProperty(String uniqueId, PropertyGroup group, int nameResourceId, String defaultPref) {
 		super(uniqueId, group, nameResourceId, null, defaultPref, false);
 	}
-	public BooleanProperty(String uniqueId, PropertyGroup group, int nameResourceId, String defaultPref, Boolean defaultValue) {
-		super(uniqueId, group, nameResourceId, null, defaultPref, defaultValue);
+	public BooleanProperty(String uniqueId, PropertyGroup group, int nameResourceId, String preferenceKey, Boolean defaultValue) {
+		super(uniqueId, group, nameResourceId, null, preferenceKey, defaultValue);
 	}
 	public BooleanProperty(String uniqueId, PropertyGroup group, int nameResourceId, Boolean value, Boolean defaultValue) {
 		super(uniqueId, group, nameResourceId, value, null, defaultValue);
@@ -58,6 +58,9 @@ public class BooleanProperty extends ValuePropertyWithGlobalDefault<Boolean> imp
 	}
 	public BooleanProperty(String uniqueId, PropertyGroup group, int nameResourceId) {
 		super(uniqueId, group, nameResourceId, false, null, false);
+	}
+	public BooleanProperty(String uniqueId) {
+		super(uniqueId, PropertyGroup.GRP_GENERAL, R.string.unknown, false, null, false);
 	}
 
 	private static class Holder {
@@ -156,16 +159,38 @@ public class BooleanProperty extends ValuePropertyWithGlobalDefault<Boolean> imp
 		return BookCatalogueApp.getAppPreferences().getBoolean(getPreferenceKey(), getDefaultValue());
 	}
 	@Override
-	protected void setGlobalDefault(Boolean value) {
-		BookCatalogueApp.getAppPreferences().setBoolean(getPreferenceKey(), value);			
+	protected BooleanProperty setGlobalDefault(Boolean value) {
+		BookCatalogueApp.getAppPreferences().setBoolean(getPreferenceKey(), value);
+		return this;
 	}
 
 	@Override
-	public void set(Property p) {
+	public BooleanProperty set(Property p) {
 		if (! (p instanceof BooleanValue) )
 			throw new RuntimeException("Can not find a compatible interface for boolean parameter");
 		BooleanValue bv = (BooleanValue) p;
 		set(bv.get());
+		return this;
+	}
+
+	@Override
+	public BooleanProperty setGlobal(boolean isGlobal) {
+		super.setGlobal(isGlobal);
+		return this;
+	}
+	
+	@Override
+	public BooleanProperty setDefaultValue(Boolean value) {
+		super.setDefaultValue(value);
+		return this;
+	}
+
+	/**
+	 * Accessor
+	 */
+	public BooleanProperty setPreferenceKey(String key) {
+		super.setPreferenceKey(key);
+		return this;
 	}
 
 }

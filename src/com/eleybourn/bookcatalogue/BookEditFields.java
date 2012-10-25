@@ -833,6 +833,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 		// here you have to pass absolute path to your file
 		crop_intent.putExtra("image-path", thumbFile.getAbsolutePath());
 		crop_intent.putExtra("scale", true);
+		crop_intent.putExtra("whole-image", BookCatalogueApp.getAppPreferences().getBoolean(BookCataloguePreferences.PREF_CROP_FRAME_WHOLE_IMAGE, false));
 		// Get and set the output file spec, and make sure it does not already exist.
 		File cropped = this.getCroppedImageFileName();
 		if (cropped.exists())
@@ -857,7 +858,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 			//intent.putExtra("outputY", 2448);
 			//intent.putExtra("outputX", mThumbZoomSize*2);
 			//intent.putExtra("outputY", mThumbZoomSize*2);
-			intent.putExtra("scale", false);
+			intent.putExtra("scale", true);
 			intent.putExtra("noFaceDetection", true);
 			// true to return a Bitmap, false to directly save the cropped iamge
 			intent.putExtra("return-data", false);

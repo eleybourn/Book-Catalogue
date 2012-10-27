@@ -20,24 +20,17 @@
 
 package com.eleybourn.bookcatalogue;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import net.philipwarner.taskqueue.QueueManager;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnDismissListener;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
@@ -64,107 +57,9 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	private static final int ACTIVITY_FIELD_VISIBILITY=2;
 	private static final int ACTIVITY_UPDATE_FROM_INTERNET=3;
 	private CatalogueDBAdapter mDbHelper;
-	//private int importUpdated = 0;
-	//private int importCreated = 0;
-	private ProgressDialog pd = null;
-	private int num = 0;
 	private boolean finish_after = false;
-	protected Long mExportSenderId = null;
 
 	public static final String DOAUTO = "do_auto";
-
-	final ManagedTask.TaskListener mExportListener = new ManagedTask.TaskListener() {
-
-		@Override
-		public void onFinish() {
-			ExportThread.getMessageSwitch().removeListener(mExportSenderId, mExportListener);
-			mExportSenderId = null;
-
-			AlertDialog alertDialog = new AlertDialog.Builder(AdministrationFunctions.this).create();
-			alertDialog.setTitle(R.string.email_export);
-			alertDialog.setIcon(android.R.drawable.ic_menu_send);
-			alertDialog.setButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					// setup the mail message
-					final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND_MULTIPLE);
-					emailIntent.setType("plain/text");
-					//emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, context.getString(R.string.debug_email).split(";"));
-					String subject = "[" + getString(R.string.app_name) + "] " + getString(R.string.export_data);
-					emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
-					//emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, context.getString(R.string.debug_body));
-					//has to be an ArrayList
-					ArrayList<Uri> uris = new ArrayList<Uri>();
-					// Find all files of interest to send
-					try {
-						File fileIn = new File(StorageUtils.getSharedStoragePath() + "/" + "export.csv");
-						Uri u = Uri.fromFile(fileIn);
-						uris.add(u);
-						// Send it, if there are any files to send.
-						emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-						startActivity(Intent.createChooser(emailIntent, "Send mail..."));        	
-					} catch (NullPointerException e) {
-						Logger.logError(e);
-						Toast.makeText(AdministrationFunctions.this, R.string.export_failed_sdcard, Toast.LENGTH_LONG).show();
-					}
-
-					dialog.dismiss();
-				}
-			}); 
-			alertDialog.setButton2(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					//do nothing
-					dialog.dismiss();
-				}
-			}); 
-
-			alertDialog.setOnDismissListener(new OnDismissListener() {
-				@Override
-				public void onDismiss(DialogInterface dialog) {
-					if (finish_after)
-						finish();
-				}});
-
-			if (!isFinishing()) {
-				try {
-					//
-					// Catch errors resulting from 'back' being pressed multiple times so that the activity is destroyed
-					// before the dialog can be shown.
-					// See http://code.google.com/p/android/issues/detail?id=3953
-					//
-					alertDialog.show();				
-				} catch (Exception e) {
-					Logger.logError(e);
-				}
-			}
-		}};
-	
-	final ManagedTask.TaskListener mImportHandler = new ManagedTask.TaskListener() {
-		@Override
-		public void onFinish() {
-		}
-	};
-
-	final Handler mProgressHandler = new Handler() {
-		public void handleMessage(Message msg) {
-			int total = msg.getData().getInt("total");
-			String title = msg.getData().getString("title");
-			if (total == 0) {
-				pd.dismiss();
-				if (finish_after == true) {
-					finish();
-				}
-				Toast.makeText(AdministrationFunctions.this, title, Toast.LENGTH_LONG).show();
-				//progressThread.setState(UpdateThumbnailsThread.STATE_DONE);
-			} else {
-				num += 1;
-				pd.incrementProgressBy(1);
-				if (title.length() > 21) {
-					title = title.substring(0, 20) + "...";
-				}
-				pd.setMessage(title);
-			}
-		}
-	};
 
 	/**
 	 * Called when the activity is first created. 
@@ -190,13 +85,6 @@ public class AdministrationFunctions extends ActivityWithTasks {
 				}				
 			}
 			setupAdmin();
-
-			if (savedInstanceState != null) {
-				mExportSenderId = savedInstanceState.getLong("ExportSenderId");
-			}
-			if (mExportSenderId != null)
-				ExportThread.getMessageSwitch().addListener(mExportSenderId, mExportListener, true);
-			
 			Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
 		} catch (Exception e) {
 			Logger.logError(e);
@@ -595,8 +483,6 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	 */
 	public void exportData() {
 		ExportThread thread = new ExportThread(mTaskManager);
-		mExportSenderId = thread.getSenderId();
-		ExportThread.getMessageSwitch().addListener(mExportSenderId, mExportListener, false);
 		thread.start();
 	}
 
@@ -638,7 +524,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	private void importData(String filespec) {
 		ImportThread thread;
 		try {
-			thread = new ImportThread(mTaskManager, mImportHandler, filespec);
+			thread = new ImportThread(mTaskManager, filespec);
 		} catch (IOException e) {
 			Logger.logError(e);
 			Toast.makeText(this, getString(R.string.problem_starting_import_arg, e.getMessage()), Toast.LENGTH_LONG).show();
@@ -662,30 +548,88 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		if (mTaskManager != null) {
-			mTaskManager.close();
-		}
 		mDbHelper.close();
 	} 
 
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-
-		outState.putLong("ExportSenderId", mExportSenderId);
-	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-	} 
 	/**
 	 * Fix background
 	 */
 	@Override 
 	public void onResume() {
 		super.onResume();
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
 	}
 
+	/**
+	 * Called when any background task completes
+	 */
+	@Override
+	public void onTaskEnded(ManagedTask task) {
+		// If it's an export, then handle it
+		if (task instanceof ExportThread) {
+			onExportFinished((ExportThread)task);
+		}
+	}
+
+	public void onExportFinished(ExportThread task) {
+		if (task.isCancelled())
+			return;
+
+		AlertDialog alertDialog = new AlertDialog.Builder(AdministrationFunctions.this).create();
+		alertDialog.setTitle(R.string.email_export);
+		alertDialog.setIcon(android.R.drawable.ic_menu_send);
+		alertDialog.setButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				// setup the mail message
+				final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND_MULTIPLE);
+				emailIntent.setType("plain/text");
+				//emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, context.getString(R.string.debug_email).split(";"));
+				String subject = "[" + getString(R.string.app_name) + "] " + getString(R.string.export_data);
+				emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
+				//emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, context.getString(R.string.debug_body));
+				//has to be an ArrayList
+				ArrayList<Uri> uris = new ArrayList<Uri>();
+				// Find all files of interest to send
+				try {
+					File fileIn = new File(StorageUtils.getSharedStoragePath() + "/" + "export.csv");
+					Uri u = Uri.fromFile(fileIn);
+					uris.add(u);
+					// Send it, if there are any files to send.
+					emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+					startActivity(Intent.createChooser(emailIntent, "Send mail..."));        	
+				} catch (NullPointerException e) {
+					Logger.logError(e);
+					Toast.makeText(AdministrationFunctions.this, R.string.export_failed_sdcard, Toast.LENGTH_LONG).show();
+				}
+
+				dialog.dismiss();
+			}
+		}); 
+		alertDialog.setButton2(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				//do nothing
+				dialog.dismiss();
+			}
+		}); 
+
+		alertDialog.setOnDismissListener(new OnDismissListener() {
+			@Override
+			public void onDismiss(DialogInterface dialog) {
+				if (finish_after)
+					finish();
+			}});
+
+		if (!isFinishing()) {
+			try {
+				//
+				// Catch errors resulting from 'back' being pressed multiple times so that the activity is destroyed
+				// before the dialog can be shown.
+				// See http://code.google.com/p/android/issues/detail?id=3953
+				//
+				alertDialog.show();				
+			} catch (Exception e) {
+				Logger.logError(e);
+			}
+		}
+	}
 }

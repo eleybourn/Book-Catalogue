@@ -13,13 +13,9 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 
 import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer.SyncLock;
-import com.eleybourn.bookcatalogue.messaging.MessageSwitch;
 
 import android.os.Bundle;
 import android.os.Message;
-
-import com.eleybourn.bookcatalogue.TaskManager.TaskManagerController;
-import com.eleybourn.bookcatalogue.TaskManager.TaskManagerListener;
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 
 /**
@@ -49,8 +45,7 @@ public class ImportThread extends ManagedTask {
 	private int mImportUpdated;
 	private int mImportCreated;
 
-
-	public ImportThread(TaskManager manager, TaskListener taskHandler, String fileSpec) throws IOException {
+	public ImportThread(TaskManager manager, String fileSpec) throws IOException {
 		super(manager);
 		mFile = new File(fileSpec);
 		// Changed getCanonicalPath to getAbsolutePath based on this bug in Android 2.1:
@@ -62,7 +57,7 @@ public class ImportThread extends ManagedTask {
 		mDbHelper.open();
 
 		mFileIsForeign = !(mFileSpec.startsWith(mSharedStoragePath));
-		getMessageSwitch().addListener(getSenderId(), taskHandler, false);
+		//getMessageSwitch().addListener(getSenderId(), taskHandler, false);
 		//Debug.startMethodTracing();
 	}
 
@@ -73,11 +68,6 @@ public class ImportThread extends ManagedTask {
 		} finally {
 			cleanup();
 		}
-	}
-
-	@Override
-	protected void onMessage(Message msg) {
-		// Nothing to do. we don't send any
 	}
 
 	/**

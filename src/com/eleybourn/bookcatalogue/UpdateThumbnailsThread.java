@@ -68,11 +68,6 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 	// DB connection
 	protected CatalogueDBAdapter mDbHelper;
 
-//	// Handler in caller to be notified when this task completes.
-//	public interface LookupHandler extends ManagedTask.TaskHandler {
-//		void onFinish();
-//	}
-
 	/**
 	 * Constructor.
 	 * 
@@ -240,10 +235,6 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 		}
 	}
 
-	@Override
-	protected void onMessage(Message msg) {
-	}
-
 	/**
 	 * Called in the main thread for this object when a search has completed.
 	 *
@@ -264,13 +255,8 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 		Bundle origData = mOrigData;
 		FieldUsages requestedFields = mCurrFieldUsages;
 
-		// Dispatch to UI thread so we can fire the lock...can't do from same thread.
+		// Done!
 		doSearchDone();
-//		mMessageHandler.post(new Runnable() {
-//			@Override
-//			public void run() {
-//				doSearchDone();
-//			}});
 
 		if (!isCancelled() && bookData != null)
 			processSearchResults(rowId, mCurrUuid, requestedFields, bookData, origData);

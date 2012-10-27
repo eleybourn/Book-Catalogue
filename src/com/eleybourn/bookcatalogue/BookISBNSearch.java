@@ -92,7 +92,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 	private Intent mLastBookIntent = null;
 
 	// Object managing current search.
-	Long mSearchManagerId = null;
+	long mSearchManagerId = 0;
 
 	// A list of author names we have already searched for in this session
 	ArrayList<String> mAuthorNames = new ArrayList<String>();
@@ -495,7 +495,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 			Logger.logError(e);
 		}
 
-		if (mSearchManagerId == null)
+		if (mSearchManagerId == 0)
 			doSearchBook();
 
 	}
@@ -559,17 +559,21 @@ public class BookISBNSearch extends ActivityWithTasks {
 			mTaskManager.doProgress(null);
 		}
 		// Clean up
-		mSearchManagerId = null;
+		mSearchManagerId = 0;
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
+		if (mSearchManagerId != 0)
+			SearchManager.getMessageSwitch().removeListener(mSearchManagerId, mSearchHandler);
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
+		if (mSearchManagerId != 0)
+			SearchManager.getMessageSwitch().addListener(mSearchManagerId, mSearchHandler, true);
 	}
 
 	@Override
@@ -715,8 +719,6 @@ public class BookISBNSearch extends ActivityWithTasks {
 		//System.out.println(mId + " onRestoreInstanceState");
 
 		mSearchManagerId = inState.getLong("SearchManagerId");
-		if (mSearchManagerId != null)
-			SearchManager.getMessageSwitch().addListener(mSearchManagerId, mSearchHandler, true);
 
 		// Now do 'standard' stuff
 		mLastBookIntent = (Intent) inState.getParcelable("LastBookIntent");
@@ -745,6 +747,8 @@ public class BookISBNSearch extends ActivityWithTasks {
 		inState.putString("isbn", mIsbn);
 		inState.putString("title", mTitle);
 		inState.putBoolean("mScannerStarted", mScannerStarted);
+		if (mSearchManagerId != 0)
+			inState.putLong("SearchManagerId", mSearchManagerId);
 	}
 
 }

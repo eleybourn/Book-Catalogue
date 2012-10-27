@@ -37,8 +37,8 @@ import android.widget.Toast;
 import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsages.Usages;
 
 public class UpdateFromInternet extends ActivityWithTasks {
-	
-	private UpdateThumbnailsThread mUpdateThread;
+
+	private long mUpdateSenderId = 0;
 	private SharedPreferences mPrefs = null;
 
 	/**
@@ -281,14 +281,16 @@ public class UpdateFromInternet extends ActivityWithTasks {
 	}
 
 	private void startUpdate() {
-		mUpdateThread = new UpdateThumbnailsThread(mTaskManager, mFieldUsages, mThumbnailsHandler);
-		mUpdateThread.start();	
+		UpdateThumbnailsThread t = new UpdateThumbnailsThread(mTaskManager, mFieldUsages, mThumbnailsHandler);
+		mUpdateSenderId = t.getSenderId();
+		ExportThread.getMessageSwitch().addListener(mUpdateSenderId, mThumbnailsHandler, false);
+		t.start();	
 	}
 
 	final ManagedTask.TaskListener mThumbnailsHandler = new ManagedTask.TaskListener() {
 		@Override
 		public void onFinish() {
-			mUpdateThread = null;
+			mUpdateSenderId = 0;
 			finish();
 		}
 	};

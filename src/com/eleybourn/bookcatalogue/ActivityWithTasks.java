@@ -20,8 +20,6 @@
 
 package com.eleybourn.bookcatalogue;
 
-import java.util.Hashtable;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -30,19 +28,13 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnKeyListener;
 import android.os.Bundle;
 import android.view.KeyEvent;
-import android.view.View;
 import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.TaskManager.TaskManagerListener;
 
 /**
  * Class to used as a base class for any Activity that wants to run one or more threads that
- * use a ProgressDialog. Even a good choice for Activities that run a ProgressDialog because
- * PDs don't play well with orientation changes.
- * 
- * NOTE: If an activity needs to use onRetainNonConfigurationInstance() it should use the
- * overridable method onRetainNonConfigurationInstance() to save object references then use
- * getLastNonConfigurationInstance(String key) to retrieve the values.
+ * use a ProgressDialog.
  * 
  * Part of three components that make this easier:
  *  - TaskManager -- handles the management of multiple threads sharing a progressDialog
@@ -54,98 +46,160 @@ import com.eleybourn.bookcatalogue.TaskManager.TaskManagerListener;
  * @author Philip Warner
  */
 abstract public class ActivityWithTasks extends Activity {
-	protected Long mTaskManagerId = null;
+	/** ID of associated TaskManager */
+	protected long mTaskManagerId = 0;
+	/** Associated TaskManager */
 	protected TaskManager mTaskManager = null;
+	/** ProgressDialog for this activity */
 	protected ProgressDialog mProgressDialog = null;
-	
+	/** Max value for ProgressDialog */
+	private int mProgressMax = 0;
+	/** Current value for ProgressDialog */
+	private int mProgressCount = 0;
+	/** Message for ProgressDialog */
+	private String mProgressMessage = "";
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
+		// Restore mTaskManagerId if present 
 		if (savedInstanceState != null) {
 			mTaskManagerId = savedInstanceState.getLong("TaskManagerId");
+		};
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		// Stop listening
+		if (mTaskManagerId != 0) {
+			TaskManager.getMessageSwitch().removeListener(mTaskManagerId, mTaskListener);
+			// If it's finishing, the remove all tasks and cleanup
+			if (isFinishing())
+				mTaskManager.close();
+		}
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		
+		// Restore mTaskManager if present 
+		if (mTaskManagerId != 0) {
 			mTaskManager = TaskManager.getMessageSwitch().getController(mTaskManagerId).getManager();
-		} else {
+		};
+
+		// Create if necessary
+		if (mTaskManager == null) {
 			TaskManager tm = new TaskManager();
 			mTaskManagerId = tm.getSenderId();
 			mTaskManager = tm;
 		}
-		if (mTaskManager != null)
-			TaskManager.getMessageSwitch().addListener(mTaskManagerId, mTaskListener, true);
+
+		// Listen
+		TaskManager.getMessageSwitch().addListener(mTaskManagerId, mTaskListener, true);
 	}
 
+	/**
+	 * Method to allow subclasses easy access to terminating tasks
+	 * 
+	 * @param task
+	 */
+	public void onTaskEnded(ManagedTask task) {	}
+
+	/**
+	 * Object to handle all TaskManager events
+	 */
 	private TaskManagerListener mTaskListener = new TaskManagerListener() {
 
 		@Override
 		public void onTaskEnded(TaskManager manager, ManagedTask task) {
-			// TODO Auto-generated method stub
-			
+			// Just pass this one on
+			ActivityWithTasks.this.onTaskEnded(task);
 		}
 
 		@Override
 		public void onProgress(int count, int max, String message) {
+			// Save the details
 			mProgressCount = count;
 			mProgressMax = max;
 			mProgressMessage = message;
-			
-			if (mProgressMessage.trim().length() == 0 && mProgressMax == mProgressCount) {
+
+			// If empty, close any dialog
+			if ((mProgressMessage == null || mProgressMessage.trim().length() == 0) && mProgressMax == mProgressCount) {
 				if (mProgressDialog != null)
 					ActivityWithTasks.this.dismissDialog(UniqueId.DIALOG_PROGRESS);
 			} else {
 				if (mProgressDialog == null) {
+					// Create dialog if necessary
 					ActivityWithTasks.this.showDialog(UniqueId.DIALOG_PROGRESS);
 				} else {
 					if (mProgressMax > 0 && mProgressDialog.isIndeterminate()) {
-						ActivityWithTasks.this.dismissDialog(UniqueId.DIALOG_PROGRESS);
+						// Destroy and recreate if dialog is unsuitable
+						ActivityWithTasks.this.removeDialog(UniqueId.DIALOG_PROGRESS);
 						ActivityWithTasks.this.showDialog(UniqueId.DIALOG_PROGRESS);
 					} else {
-						prepareProgressDialog(mProgressDialog);						
+						// Set message and display
+						prepareProgressDialog(mProgressDialog, true);						
 					}
 				}				
 			}
 
 		}
 
+		/**
+		 * Display a Toast message
+		 */
 		@Override
 		public void onToast(String message) {
-			// TODO Auto-generated method stub
-			
+			Toast.makeText(ActivityWithTasks.this, message, Toast.LENGTH_LONG).show();
 		}
 
+		/**
+		 * TaskManager is finishing...cleanup.
+		 */
 		@Override
 		public void onFinished() {
-			// TODO Auto-generated method stub
-			
-		}};
+			mTaskManager.close();
+			mTaskManager = null;
+			mTaskManagerId = 0;
+		}
+	};
 
-		@Override
-		protected Dialog onCreateDialog(int id) {
-			Dialog dialog;
+	/**
+	 * Handle ProgressDialog creation
+	 */
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		Dialog dialog;
 
-			switch(id) {
+		switch(id) {
 			case UniqueId.DIALOG_PROGRESS:
 				dialog = createProgressDialog();
 				break;
 			default:
 				dialog = super.onCreateDialog(id);
-			}
-			return dialog;
-		}
-		
-		@Override
-		protected void onPrepareDialog(int id, Dialog dialog) {
-			switch(id) {
-			case UniqueId.DIALOG_PROGRESS:
-				prepareProgressDialog(dialog);
 				break;
-			default:
-				super.onPrepareDialog(id, dialog);
-			}
 		}
+		return dialog;
+	}
+	
+	/**
+	 * Handle ProgressDialog setup
+	 */
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog) {
 
-	private int mProgressMax = 0;
-	private int mProgressCount = 0;
-	private String mProgressMessage = "";
+		switch(id) {
+		case UniqueId.DIALOG_PROGRESS:
+			prepareProgressDialog(dialog, true);
+			break;
+		default:
+			super.onPrepareDialog(id, dialog);
+			break;
+		}
+	}
 
 	/**
 	 * Setup the progress dialog.
@@ -156,11 +210,22 @@ abstract public class ActivityWithTasks extends Activity {
 	private Dialog createProgressDialog() {
 		ProgressDialog p;
 		p = new ProgressDialog(this);
+		prepareProgressDialog(p, false);
 		return p;
 	}
-	
-	private void prepareProgressDialog(Dialog d) {
+
+	/**
+	 * Setup the ProgressDialog according to our needs
+	 * 
+	 * @param d		Dialog
+	 * @param show	Flag indicating if show() should be called.
+	 * 
+	 */
+	private void prepareProgressDialog(Dialog d, boolean show) {
+
 		ProgressDialog p = (ProgressDialog)d;
+
+		// Set style
 		if (mProgressMax > 0) {
 			p.setIndeterminate(false);
 			p.setMax(mProgressMax);
@@ -169,12 +234,17 @@ abstract public class ActivityWithTasks extends Activity {
 			p.setIndeterminate(true);					
 			p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 		}
+
+		// Set message and other attrs
 		p.setMessage(mProgressMessage);
 		p.setCancelable(true);
 		p.setOnKeyListener(mDialogKeyListener);
 		p.setOnCancelListener(mCancelHandler);
-		p.show();
+		// Show it if necessary
+		if (show)
+			p.show();
 		p.setProgress(mProgressCount);
+		// Save a reference
 		mProgressDialog = p;
 	}
 
@@ -184,7 +254,7 @@ abstract public class ActivityWithTasks extends Activity {
 	private OnCancelListener mCancelHandler = new OnCancelListener() {
 		public void onCancel(DialogInterface i) {
 			if (mTaskManager != null)
-				mTaskManager.close();
+				mTaskManager.cancelAllTasks();
 			ActivityWithTasks.this.dismissDialog(UniqueId.DIALOG_PROGRESS);
 			mProgressDialog = null;
 		}
@@ -202,7 +272,7 @@ abstract public class ActivityWithTasks extends Activity {
 					// the final 'Cancelled...' message is delayed too much.
 					Toast.makeText(ActivityWithTasks.this, R.string.cancelling, Toast.LENGTH_LONG).show();
 					if (mTaskManager != null)
-						mTaskManager.close();
+						mTaskManager.cancelAllTasks();
 					return true;
 				}
 			}
@@ -211,76 +281,13 @@ abstract public class ActivityWithTasks extends Activity {
 	};
 	
 	@Override
+	/**
+	 * Save the TaskManager ID for later retrieval
+	 */
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 
-		outState.putLong("TaskManagerId", mTaskManagerId);
+		if (mTaskManagerId != 0)
+			outState.putLong("TaskManagerId", mTaskManagerId);
 	}
-	
-//	private class NonConfigInstance {
-//		TaskManager taskManager = mTaskManager;
-//		Hashtable<String,Object> extra = new Hashtable<String,Object>();
-//	}
-//
-//	/**
-//	 * Ensure the TaskManager is restored.
-//	 */
-//	@Override
-//	protected void onRestoreInstanceState(Bundle inState) {
-//		NonConfigInstance info = (NonConfigInstance) getLastNonConfigurationInstance();
-//		if (info != null && info.taskManager != null) {
-//			mTaskManager = info.taskManager;
-//			mTaskManager.reconnect(this);		
-//		}
-//		super.onRestoreInstanceState(inState);
-//	}
-//
-//	/**
-//	 * Ensure the TaskManager is saved and call a onRetainNonConfigurationInstance(store)
-//	 * to allow subclasses to save data as well.
-//	 * 
-//	 * Marked as final to ensure this does not get overwritten.
-//	 */
-//	@Override
-//	final public Object onRetainNonConfigurationInstance() {
-//		NonConfigInstance info = new NonConfigInstance();
-//		if (mTaskManager != null) {
-//			mTaskManager.disconnect();
-//			mTaskManager = null;
-//		}
-//		onRetainNonConfigurationInstance(info.extra);
-//		return info;
-//	}
-//
-//	/**
-//	 * Method to get a value from the store that was saved in onRetainNonConfigurationInstance().
-//	 * 
-//	 * @param key	Key to lookup
-//	 * 
-//	 * @return		Object from key in hashtable
-//	 */
-//	Object getLastNonConfigurationInstance(String key) {
-//		NonConfigInstance info = (NonConfigInstance) getLastNonConfigurationInstance();
-//		if (info != null && info.extra.containsKey(key)) {
-//			return info.extra.get(key);
-//		} else {
-//			return null;
-//		}
-//	}
-//
-//	/**
-//	 * Passed a task find the appropriate handler to use. Called on reconnect().
-//	 * 
-//	 * @param t		Task reference to lookup
-//	 * 
-//	 * @return		Appropriate handler for the task
-//	 */
-//	abstract TaskHandler getTaskHandler(ManagedTask t);
-//	
-//	/**
-//	 * Method to save names instance state objects.
-//	 * 
-//	 * @param store
-//	 */
-//	void onRetainNonConfigurationInstance(Hashtable<String,Object> store) {};
 }

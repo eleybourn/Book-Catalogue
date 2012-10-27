@@ -49,11 +49,6 @@ public class ExportThread extends ManagedTask {
 	}
 	
 	@Override
-	protected void onMessage(Message msg) {
-		// Nothing to do. we don't sent any
-	}
-	
-	@Override
 	protected void onRun() {
 		int num = 0;
 		if (!StorageUtils.sdCardWritable()) {

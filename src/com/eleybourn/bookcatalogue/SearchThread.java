@@ -84,10 +84,6 @@ abstract public class SearchThread extends ManagedTask {
 		);
 	}
 
-	@Override
-	protected void onMessage(Message msg) {
-	}
-
 	/**
 	 * Look in the data for a title, if present try to get a series name from it.
 	 * In any case, clear the title (and save if none saved already) so that the 

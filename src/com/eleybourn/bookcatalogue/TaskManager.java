@@ -415,6 +415,7 @@ public class TaskManager {
 	 * Cancel all tasks and close dialogs then cleanup; if no tasks running, just close dialogs and cleanup
 	 */
 	protected void close() {
+		System.out.println("DBG: Task Manager close requested");
 		mIsClosing = true;
 		synchronized(mTasks) {
 			for(TaskInfo t : mTasks) {

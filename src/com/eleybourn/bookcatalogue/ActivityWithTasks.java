@@ -23,6 +23,7 @@ package com.eleybourn.bookcatalogue;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnKeyListener;
@@ -30,6 +31,7 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.widget.Toast;
 
+import com.eleybourn.bookcatalogue.TaskManager.TaskManagerController;
 import com.eleybourn.bookcatalogue.TaskManager.TaskManagerListener;
 
 /**
@@ -69,6 +71,27 @@ abstract public class ActivityWithTasks extends Activity {
 		};
 	}
 	
+	private class ProgressIndet extends ProgressDialog {
+
+		public ProgressIndet(Context context) {
+			super(context);
+			this.setIndeterminate(true);
+			this.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			this.setCancelable(false);
+			this.setCanceledOnTouchOutside(false);
+		}
+	};
+	private class ProgressDet extends ProgressDialog {
+
+		public ProgressDet(Context context) {
+			super(context);
+			this.setIndeterminate(false);
+			this.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+			this.setCancelable(false);
+			this.setCanceledOnTouchOutside(false);
+		}
+	};
+
 	@Override
 	protected void onPause() {
 		super.onPause();
@@ -79,15 +102,24 @@ abstract public class ActivityWithTasks extends Activity {
 			if (isFinishing())
 				mTaskManager.close();
 		}
+		if (mProgressDialog != null) {
+			mProgressDialog.dismiss();
+			mProgressDialog = null;
+		}
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
+
 		// Restore mTaskManager if present 
 		if (mTaskManagerId != 0) {
-			mTaskManager = TaskManager.getMessageSwitch().getController(mTaskManagerId).getManager();
+			TaskManagerController c = TaskManager.getMessageSwitch().getController(mTaskManagerId);
+			if (c != null) {
+				mTaskManager = c.getManager();
+			} else {
+				Logger.logError(new RuntimeException("Have ID, but can not find controller when resuming activity"));
+			}
 		};
 
 		// Create if necessary
@@ -129,21 +161,9 @@ abstract public class ActivityWithTasks extends Activity {
 			// If empty, close any dialog
 			if ((mProgressMessage == null || mProgressMessage.trim().length() == 0) && mProgressMax == mProgressCount) {
 				if (mProgressDialog != null)
-					ActivityWithTasks.this.dismissDialog(UniqueId.DIALOG_PROGRESS);
+					mProgressDialog.dismiss();
 			} else {
-				if (mProgressDialog == null) {
-					// Create dialog if necessary
-					ActivityWithTasks.this.showDialog(UniqueId.DIALOG_PROGRESS);
-				} else {
-					if (mProgressMax > 0 && mProgressDialog.isIndeterminate()) {
-						// Destroy and recreate if dialog is unsuitable
-						ActivityWithTasks.this.removeDialog(UniqueId.DIALOG_PROGRESS);
-						ActivityWithTasks.this.showDialog(UniqueId.DIALOG_PROGRESS);
-					} else {
-						// Set message and display
-						prepareProgressDialog(mProgressDialog, true);						
-					}
-				}				
+				updateProgress();
 			}
 
 		}
@@ -167,51 +187,8 @@ abstract public class ActivityWithTasks extends Activity {
 		}
 	};
 
-	/**
-	 * Handle ProgressDialog creation
-	 */
-	@Override
-	protected Dialog onCreateDialog(int id) {
-		Dialog dialog;
-
-		switch(id) {
-			case UniqueId.DIALOG_PROGRESS:
-				dialog = createProgressDialog();
-				break;
-			default:
-				dialog = super.onCreateDialog(id);
-				break;
-		}
-		return dialog;
-	}
-	
-	/**
-	 * Handle ProgressDialog setup
-	 */
-	@Override
-	protected void onPrepareDialog(int id, Dialog dialog) {
-
-		switch(id) {
-		case UniqueId.DIALOG_PROGRESS:
-			prepareProgressDialog(dialog, true);
-			break;
-		default:
-			super.onPrepareDialog(id, dialog);
-			break;
-		}
-	}
-
-	/**
-	 * Setup the progress dialog.
-	 * 
-	 * If not called in the UI thread it will just queue initProgress().
-	 * 
-	 */
-	private Dialog createProgressDialog() {
-		ProgressDialog p;
-		p = new ProgressDialog(this);
-		prepareProgressDialog(p, false);
-		return p;
+	private boolean wantDeterminateProgress() {
+		return (mProgressMax > 0);
 	}
 
 	/**
@@ -221,31 +198,37 @@ abstract public class ActivityWithTasks extends Activity {
 	 * @param show	Flag indicating if show() should be called.
 	 * 
 	 */
-	private void prepareProgressDialog(Dialog d, boolean show) {
+	private void updateProgress() {
+		boolean wantDet = wantDeterminateProgress();
+		
+		if (mProgressDialog != null) {
+			if ((wantDet && mProgressDialog instanceof ProgressIndet) || (!wantDet && mProgressDialog instanceof ProgressDet)) {
+				mProgressDialog.dismiss();
+				mProgressDialog = null;
+			}			
+		}
 
-		ProgressDialog p = (ProgressDialog)d;
+		// Create dialog if necessary
+		if (mProgressDialog == null) {
+			if (wantDet) {
+				mProgressDialog = new ProgressDet(ActivityWithTasks.this);
+			} else {
+				mProgressDialog = new ProgressIndet(ActivityWithTasks.this);
+			}
+		}
 
 		// Set style
 		if (mProgressMax > 0) {
-			p.setIndeterminate(false);
-			p.setMax(mProgressMax);
-			p.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-		} else {
-			p.setIndeterminate(true);					
-			p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			mProgressDialog.setMax(mProgressMax);
 		}
 
 		// Set message and other attrs
-		p.setMessage(mProgressMessage);
-		p.setCancelable(true);
-		p.setOnKeyListener(mDialogKeyListener);
-		p.setOnCancelListener(mCancelHandler);
+		mProgressDialog.setMessage(mProgressMessage);
+		mProgressDialog.setOnKeyListener(mDialogKeyListener);
+		mProgressDialog.setOnCancelListener(mCancelHandler);
 		// Show it if necessary
-		if (show)
-			p.show();
-		p.setProgress(mProgressCount);
-		// Save a reference
-		mProgressDialog = p;
+		mProgressDialog.show();
+		mProgressDialog.setProgress(mProgressCount);
 	}
 
 	/**
@@ -253,10 +236,10 @@ abstract public class ActivityWithTasks extends Activity {
 	 */
 	private OnCancelListener mCancelHandler = new OnCancelListener() {
 		public void onCancel(DialogInterface i) {
-			if (mTaskManager != null)
+			if (mTaskManager != null) {
 				mTaskManager.cancelAllTasks();
-			ActivityWithTasks.this.dismissDialog(UniqueId.DIALOG_PROGRESS);
-			mProgressDialog = null;
+			}
+			displayCancellingProgress();
 		}
 	};
 
@@ -270,16 +253,23 @@ abstract public class ActivityWithTasks extends Activity {
 				if (keyCode == KeyEvent.KEYCODE_BACK) {
 					// Toasting a message here makes the app look less responsive, because
 					// the final 'Cancelled...' message is delayed too much.
-					Toast.makeText(ActivityWithTasks.this, R.string.cancelling, Toast.LENGTH_LONG).show();
+					//Toast.makeText(ActivityWithTasks.this, R.string.cancelling, Toast.LENGTH_LONG).show();
 					if (mTaskManager != null)
 						mTaskManager.cancelAllTasks();
+					displayCancellingProgress();
 					return true;
 				}
 			}
 			return false;
 		}
 	};
-	
+
+	private void displayCancellingProgress() {
+		mProgressMessage = getString(R.string.cancelling);
+		mProgressMax = 0;
+		updateProgress();		
+	}
+
 	@Override
 	/**
 	 * Save the TaskManager ID for later retrieval

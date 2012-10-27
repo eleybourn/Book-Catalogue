@@ -323,8 +323,11 @@ public class StartupActivity extends Activity {
 			doMainMenu();
 		}
 
-		if (mExportRequired)
-			Administration.adminPage(StartupActivity.this, "export", UniqueId.ACTIVITY_ADMIN);
+		if (mExportRequired) {
+			Intent i = new Intent(this, AdministrationFunctions.class);
+			i.putExtra(AdministrationFunctions.DOAUTO, "export");
+			startActivity(i);			
+		}
 
 		// We are done
 		finish();		

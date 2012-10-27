@@ -613,6 +613,8 @@
 <string name="auto_rotate_camera_images">Automatically rotate images captured by camera</string>
 <string name="hint_autorotate_camera_images">If you find yourself always rotating camera images in the same direction, try changing the application settings to specify a rotation to apply automatically.</string>
 <string name="default_crop_frame_is_whole_image">Default crop frame is whole image</string>
+<string name="cancelled">Cancelled</string>
+<string name="import_complete">Import Complete</string>
 
 </resources>
 

@@ -370,7 +370,7 @@ public class ImportThread extends ManagedTask {
 				}
 
 				long now = System.currentTimeMillis();
-				if ( (now - lastUpdate) > 200) {
+				if ( (now - lastUpdate) > 200 && !isCancelled()) {
 					doProgress(title, row);
 					lastUpdate = now;
 				}
@@ -395,7 +395,11 @@ public class ImportThread extends ManagedTask {
 			// Do nothing. Not a critical step.
 			Logger.logError(e);
 		}
-		doToast("Import Complete");
+		if (isCancelled()) {
+			doToast(getString(R.string.cancelled));
+		} else {
+			doToast(getString(R.string.import_complete));
+		}
 	}
 
 	private File findExternalCover(String name) {

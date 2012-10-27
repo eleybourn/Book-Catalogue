@@ -58,6 +58,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	private static final int ACTIVITY_UPDATE_FROM_INTERNET=3;
 	private CatalogueDBAdapter mDbHelper;
 	private boolean finish_after = false;
+	private boolean mExportOnStartup = false;
 
 	public static final String DOAUTO = "do_auto";
 
@@ -76,7 +77,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 				try {
 					if (extras.getString(DOAUTO).equals("export")) {
 						finish_after = true;
-						exportData();
+						mExportOnStartup = true;
 					} else {
 						throw new RuntimeException("Unsupported DOAUTO option");
 					}
@@ -558,6 +559,8 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	public void onResume() {
 		super.onResume();
 		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
+		if (mExportOnStartup)
+			exportData();
 	}
 
 	/**
@@ -572,8 +575,11 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	}
 
 	public void onExportFinished(ExportThread task) {
-		if (task.isCancelled())
+		if (task.isCancelled()) {
+			if (finish_after)
+				finish();
 			return;
+		}
 
 		AlertDialog alertDialog = new AlertDialog.Builder(AdministrationFunctions.this).create();
 		alertDialog.setTitle(R.string.email_export);

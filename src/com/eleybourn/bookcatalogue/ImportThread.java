@@ -53,8 +53,10 @@ public class ImportThread extends ManagedTask {
 	public ImportThread(TaskManager manager, TaskListener taskHandler, String fileSpec) throws IOException {
 		super(manager);
 		mFile = new File(fileSpec);
-		mFileSpec = mFile.getCanonicalPath();
-		mSharedStoragePath = StorageUtils.getSharedStorage().getCanonicalPath();
+		// Changed getCanonicalPath to getAbsolutePath based on this bug in Android 2.1:
+		//     http://code.google.com/p/android/issues/detail?id=4961
+		mFileSpec = mFile.getAbsolutePath();
+		mSharedStoragePath = StorageUtils.getSharedStorage().getAbsolutePath();
 
 		mDbHelper = new CatalogueDBAdapter(BookCatalogueApp.context);
 		mDbHelper.open();

@@ -589,7 +589,7 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
 <string name="you_have_unsaved_changes">Einige Änderungen wurden noch nicht gespeichert. Beim Beenden gehen diese Änderungen verloren.</string>
 <string name="exit">Beenden</string>
 <string name="continue_editing">Bearbeiten fortsetzen</string>
-<string name="the_title_already_exists">Der Titel exisitert bereits</string>
+<string name="the_title_already_exists">Der Titel existiert bereits</string>
 <string name="year">Jahr</string>
 <string name="month">Monat</string>
 <string name="day">Tag</string>

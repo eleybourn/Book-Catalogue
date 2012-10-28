@@ -507,7 +507,7 @@ abstract public class EditObjectList<T extends Serializable> extends ListActivit
             }
             
             // Save this views position
-            ViewTagger.setTag(v, R.id.TAG_POSITION, new Integer(position));
+            ViewTagger.setTag(v, R.id.TAG_POSITION, Integer.valueOf(position));
 
             {
             	// Giving the whole row ad onClickListener seems to interfere

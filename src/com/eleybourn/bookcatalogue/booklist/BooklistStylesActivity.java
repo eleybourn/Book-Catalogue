@@ -295,7 +295,7 @@ public class BooklistStylesActivity extends EditObjectList<BooklistStyle> {
 				style.setName(style.getDisplayName());
 			} catch (Exception e) {
 				Logger.logError(e);
-				Toast.makeText(this, R.string.unexpected_error, Toast.LENGTH_LONG);
+				Toast.makeText(this, R.string.unexpected_error, Toast.LENGTH_LONG).show();
 				return;
 			}
 		}

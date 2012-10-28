@@ -1226,7 +1226,7 @@ public class Utils {
 		
 		// Note that inSampleSize seems to ALWAYS be forced to a power of 2, no matter what we
 		// specify, so we just work with powers of 2.
-		int idealSampleSize = (int)Math.ceil(1/ratio); // This is the sample size we want to use
+		int idealSampleSize = (int)android.util.FloatMath.ceil(1/ratio); // This is the sample size we want to use
 		// Get the nearest *bigger* power of 2.
 		int samplePow2 = (int)Math.ceil(Math.log(idealSampleSize)/Math.log(2));
 		

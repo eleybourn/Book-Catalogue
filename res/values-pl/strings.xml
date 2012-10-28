@@ -96,7 +96,7 @@
 <string name="update_fields">Automatycznie aktualizuj pola wg danych z sieci</string>
 <string name="select_fields_to_update">Wybierz pola do aktualizacji</string>
 <string name="select_fields_to_update_help">Wybrane pola będą zaktualizowane wg danych z sieci. Pozostałe nie zostaną zmienione.</string>
-<string name="overwrite_thumbnail">Wybrane pola zostaną zaktualizowane, natomiast okładki mogą by opcjonalnie pobrane dla wszystkich książek.\n\nCzy chcesz zastąpić wszystkie istniejące okładki? Uwaga - może to zająć sporo czasu... </string>
+<string name="overwrite_thumbnail">Wybrane pola zostaną zaktualizowane, natomiast okładki mogą by opcjonalnie pobrane dla wszystkich książek.\n\nCzy chcesz zastąpić wszystkie istniejące okładki? Uwaga - może to zająć sporo czasu&#8230;</string>
 <string name="yes">Tak</string>
 <string name="no">Nie</string>
 <string name="ok">OK</string>

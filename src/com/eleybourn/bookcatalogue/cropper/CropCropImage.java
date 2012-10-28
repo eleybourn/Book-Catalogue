@@ -588,7 +588,7 @@ public class CropCropImage extends CropMonitoredActivity {
 	}
 
 	if (noStorageText != null) {
-	    Toast.makeText(activity, noStorageText, 5000).show();
+	    Toast.makeText(activity, noStorageText, Toast.LENGTH_LONG).show();
 	}
     }
 

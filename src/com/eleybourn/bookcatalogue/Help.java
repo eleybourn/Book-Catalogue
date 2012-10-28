@@ -49,7 +49,7 @@ public class Help extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		try {
-			// Needed for sending debug info...
+			// Needed for sending com.eleybourn.bookcatalogue.debug info...
 			mDbHelper = new CatalogueDBAdapter(this);
 			mDbHelper.open();
 			

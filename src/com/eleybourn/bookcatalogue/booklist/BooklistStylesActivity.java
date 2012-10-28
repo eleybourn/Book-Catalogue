@@ -42,6 +42,7 @@ import com.eleybourn.bookcatalogue.EditObjectList;
 import com.eleybourn.bookcatalogue.HintManager;
 import com.eleybourn.bookcatalogue.Logger;
 import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.UniqueId;
 import com.eleybourn.bookcatalogue.Utils;
 import com.eleybourn.bookcatalogue.ViewTagger;
 
@@ -299,7 +300,7 @@ public class BooklistStylesActivity extends EditObjectList<BooklistStyle> {
 			}
 		}
 		i.putExtra(BooklistStylePropertiesActivity.KEY_STYLE, style);
-		startActivityForResult(i, R.id.ACTIVITY_BOOKLIST_STYLE);		
+		startActivityForResult(i, UniqueId.ACTIVITY_BOOKLIST_STYLE);		
 	}
 
 	@Override
@@ -314,7 +315,7 @@ public class BooklistStylesActivity extends EditObjectList<BooklistStyle> {
 		super.onActivityResult(requestCode, resultCode, data);
 
 		switch(requestCode) {
-		case R.id.ACTIVITY_BOOKLIST_STYLE:
+		case UniqueId.ACTIVITY_BOOKLIST_STYLE:
 			handleStyleResult(data);
 			break;
 		}

@@ -2,7 +2,7 @@ package com.eleybourn.bookcatalogue;
 
 public class SearchAmazonThread extends SearchThread {
 
-	public SearchAmazonThread(TaskManager manager, TaskHandler taskHandler,
+	public SearchAmazonThread(TaskManager manager, SearchTaskHandler taskHandler,
 			String author, String title, String isbn, boolean fetchThumbnail) {
 		super(manager, taskHandler, author, title, isbn, fetchThumbnail);
 	}

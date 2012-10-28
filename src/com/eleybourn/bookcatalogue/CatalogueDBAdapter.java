@@ -522,7 +522,7 @@ public class CatalogueDBAdapter {
 //						+ " LEFT OUTER JOIN " + DB_TB_SERIES + " s ON (s." + KEY_ROWID + "=w." + KEY_SERIES_ID + ") ";
 
 	//TODO: Update database version RELEASE: Update database version
-	public static final int DATABASE_VERSION = 78;
+	public static final int DATABASE_VERSION = 79;
 
 	private TableInfo mBooksInfo = null;
 
@@ -1507,6 +1507,16 @@ public class CatalogueDBAdapter {
 				message += "* When adding books, scanning or typing an existing ISBN allows you the option to edit the book.\n";
 				message += "* Allow ASINs to be entered manually as well as ISBNs\n";
 				message += "* German translation updates (Robert Wetzlmayr)\n";
+			}
+			if (curVersion == 78) {
+				//do nothing
+				curVersion++;
+				message += "New in v4.1\n\n";
+				message += "* New style groups: Location and Date Read\n";
+				message += "* Improved 'Share' functionality (filipeximenes)\n";
+				message += "* French translation updates (Djiko)\n";
+				message += "* Better handling of the 'back' key when editing books (filipeximenes)\n";
+				message += "* Various bug fixes\n";
 			}
 
 			// Rebuild all indices
@@ -3234,11 +3244,28 @@ public class CatalogueDBAdapter {
 		return mDb.rawQuery(sql, new String[]{});
 	}
 	
-	public long createAnthologyTitle(long book, String author, String title) {
+	public class AnthologyTitleExistsException extends RuntimeException {
+		private static final long serialVersionUID = -9052087086134217566L;
+
+		public AnthologyTitleExistsException() {
+			super("Anthology title already exists");
+		}
+	}
+	/**
+	 * Create an anthology title for a book.
+	 * 
+	 * @param book			id of book
+	 * @param author		name of author
+	 * @param title			title of anthology title
+	 * @param returnDupId	If title already exists then if true, will return existing ID, if false, will thrown an error
+	 * 
+	 * @return				ID of anthology title record
+	 */
+	public long createAnthologyTitle(long book, String author, String title, boolean returnDupId) {
 		if (title.length() > 0) {
 			ContentValues initialValues = new ContentValues();
 			String[] names = processAuthorName(author);
-			String authorId = getAuthorIdOrCreate(names);
+			long authorId = Long.parseLong(getAuthorIdOrCreate(names));
 			long result;
 			int position = fetchAnthologyPositionByBook(book) + 1;
 
@@ -3246,14 +3273,42 @@ public class CatalogueDBAdapter {
 			initialValues.put(KEY_AUTHOR_ID, authorId);
 			initialValues.put(KEY_TITLE, title);
 			initialValues.put(KEY_POSITION, position);
-			result = mDb.insert(DB_TB_ANTHOLOGY, null, initialValues);
+			result = getAnthologyTitleId(book, authorId, title);
+			if (result < 0) {
+				result = mDb.insert(DB_TB_ANTHOLOGY, null, initialValues);
+			} else {
+				if (!returnDupId)
+					throw new AnthologyTitleExistsException();
+			}
 				
 			return result;
 		} else {
 			return -1;
 		}
 	}
-	
+
+	private SynchronizedStatement mGetAnthologyTitleIdStmt = null;
+	/**
+	 * Return the antholgy title ID for a given book/author/title
+	 * 
+	 * @param bookId		id of book
+	 * @param authorId		id of author
+	 * @param title			title
+	 * 
+	 * @return				ID, or -1 if it does not exist
+	 */
+	private long getAnthologyTitleId(long bookId, long authorId, String title) {
+		if (mGetAnthologyTitleIdStmt == null) {
+			// Build the FTS update statement base. The parameter order MUST match the order expected in ftsSendBooks().
+			String sql = "Select Coalesce( Min(" + KEY_ROWID + "),-1) from " + DB_TB_ANTHOLOGY + " Where " + KEY_BOOK + " = ? and " + KEY_AUTHOR_ID + " = ? and " + KEY_TITLE + " = ? " + COLLATION;
+			mGetAnthologyTitleIdStmt = mStatements.add("mGetAnthologyTitleIdStmt", sql);
+		}
+		mGetAnthologyTitleIdStmt.bindLong(1, bookId);
+		mGetAnthologyTitleIdStmt.bindLong(2, authorId);
+		mGetAnthologyTitleIdStmt.bindString(3, title);
+		return mGetAnthologyTitleIdStmt.simpleQueryForLong();
+	}
+
 	/**
 	 * This function will create a new author in the database
 	 * 
@@ -3337,9 +3392,9 @@ public class CatalogueDBAdapter {
 
 			long rowId = mDb.insert(DB_TB_BOOKS, null, initialValues);
 
-			String bookshelf = values.getString("bookshelf_text");
+			String bookshelf = values.getString("bookshelf_list");
 			if (bookshelf != null) {
-				createBookshelfBooks(rowId, bookshelf);
+				createBookshelfBooks(rowId, Utils.decodeList(bookshelf, BookEditFields.BOOKSHELF_SEPERATOR));
 			}
 
 			createBookAuthors(rowId, authors);
@@ -3382,7 +3437,7 @@ public class CatalogueDBAdapter {
 	 * @param mRowId The book id
 	 * @param bookshelf A separated string of bookshelf names
 	 */
-	public void createBookshelfBooks(long mRowId, String bookshelf) {
+	public void createBookshelfBooks(long mRowId, ArrayList<String> bookshelves) {
 		if (mDeleteBookshelfBooksStmt == null) {
 			mDeleteBookshelfBooksStmt = mStatements.add("mDeleteBookshelfBooksStmt", "Delete from " + DB_TB_BOOK_BOOKSHELF_WEAK + " Where " + KEY_BOOK + " = ?");
 		}
@@ -3396,9 +3451,9 @@ public class CatalogueDBAdapter {
 		}
 
 		//Insert the new ones
-		String[] bookshelves = bookshelf.split(BookEditFields.BOOKSHELF_SEPERATOR.trim());
-		for (int i = 0; i<bookshelves.length; i++) {
-			String name = bookshelves[i].trim();
+		//String[] bookshelves = bookshelf.split(BookEditFields.BOOKSHELF_SEPERATOR.toString());
+		for (int i = 0; i < bookshelves.size(); i++) {
+			String name = bookshelves.get(i).trim();
 			if (name.equals("")) {
 				continue;
 			}
@@ -3453,7 +3508,11 @@ public class CatalogueDBAdapter {
 		ContentValues args = new ContentValues();
 		String[] names = processAuthorName(author);
 		long authorId = Long.parseLong(getAuthorIdOrCreate(names));
-		
+
+		long existingId = getAnthologyTitleId(book, authorId, title);
+		if (existingId >= 0 && existingId != rowId)
+			throw new AnthologyTitleExistsException();
+
 		args.put(KEY_BOOK, book);
 		args.put(KEY_AUTHOR_ID, authorId);
 		args.put(KEY_TITLE, title);
@@ -3754,7 +3813,8 @@ public class CatalogueDBAdapter {
 						}
 
 					} catch (Exception e) {
-						args.put(c.name, v.toString());						
+						if (v != null)
+							args.put(c.name, v.toString());						
 					}
 				}
 			}
@@ -3859,10 +3919,10 @@ public class CatalogueDBAdapter {
 				args.put(DOM_LAST_UPDATE_DATE.name, Utils.toSqlDateTime(Calendar.getInstance().getTime()));
 			success = mDb.update(DB_TB_BOOKS, args, KEY_ROWID + "=" + rowId, null) > 0;
 
-			if (values.containsKey("bookshelf_text")) {
-				String bookshelf = values.getString("bookshelf_text");
+			if (values.containsKey("bookshelf_list")) {
+				String bookshelf = values.getString("bookshelf_list");
 				if (bookshelf != null) {
-					createBookshelfBooks(rowId, bookshelf);
+					createBookshelfBooks(rowId, Utils.decodeList(bookshelf, BookEditFields.BOOKSHELF_SEPERATOR));
 				}			
 			}
 
@@ -4160,14 +4220,29 @@ public class CatalogueDBAdapter {
 	}
 
 	/**
-	 * Delete the anthology record with the given rowId (not to be confused with the book rowId
+	 * Delete ALL the anthology records for a given book rowId, if any
 	 * 
-	 * @param rowId id of the anthology to delete
+	 * @param bookRowId id of the book
 	 * @return true if deleted, false otherwise
 	 */
-	public boolean deleteAnthologyTitle(long rowId) {
+	public boolean deleteAnthologyTitles(long bookRowId) {
+		boolean success;
+		// Delete the anthology entries for the book
+		success = mDb.delete(DB_TB_ANTHOLOGY, KEY_BOOK + "=" + bookRowId, null) > 0;
+		// Cleanup the author list, if necessary (we may have deleted the only work by an author)
+		purgeAuthors();
+		return success;
+	}
+
+	/**
+	 * Delete the anthology record with the given rowId (not to be confused with the book rowId
+	 * 
+	 * @param anthRowId id of the anthology to delete
+	 * @return true if deleted, false otherwise
+	 */
+	public boolean deleteAnthologyTitle(long anthRowId) {
 		// Find the soon to be deleted title position#
-		Cursor anthology = fetchAnthologyTitleById(rowId);
+		Cursor anthology = fetchAnthologyTitleById(anthRowId);
 		anthology.moveToFirst();
 		int position = anthology.getInt(anthology.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_POSITION));
 		int book = anthology.getInt(anthology.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_BOOK));
@@ -4175,7 +4250,7 @@ public class CatalogueDBAdapter {
 
 		boolean success;
 		// Delete the title
-		success = mDb.delete(DB_TB_ANTHOLOGY, KEY_ROWID + "=" + rowId, null) > 0;
+		success = mDb.delete(DB_TB_ANTHOLOGY, KEY_ROWID + "=" + anthRowId, null) > 0;
 		purgeAuthors();
 		// Move all titles past the deleted book up one position
 		String sql = "UPDATE " + DB_TB_ANTHOLOGY + 
@@ -4356,8 +4431,9 @@ public class CatalogueDBAdapter {
 	/** 
 	 * Delete the loan with the given rowId
 	 * 
-	 * @param rowId id of note to delete
-	 * @return true if deleted, false otherwise
+	 * @param rowId 	id of book whose loan is to be deleted
+	 * 
+	 * @return 			true if deleted, false otherwise
 	 */
 	public boolean deleteLoan(long rowId) {
 		boolean success;

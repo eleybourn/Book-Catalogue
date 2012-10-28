@@ -41,6 +41,51 @@ Features include;
   case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+new in 4.1.6-B15
+* Date-Picker that supports dates down to 0AD and partial dates
+* HTML descriptions display correctly with click to edit
+* Preference for pre-selecting whole image when cropping
+* Preference for auto-rotating images from camera
+* Preference to use external cropping tool (experimental)
+* Added more options to the options menus
+* More reliable date handling on import/export/sync
+* French translation updates (Patrice Leonard)
+* Fix handling of duplicate anthology titles
+* Various import bugs fixed
+* Better detection of 'changes' when editing books
+* Full keyboard available when entering ASINs
+* Keeps 5 previous export files
+* Various NPEs fixed
+
+new in 4.1.5
+* improved import robustness
+* fixed bug introduced by 'comma-in-bookshelf' bug fix
+
+new in 4.1.4
+* minor bug fix in bookshelf maintenance
+
+new in 4.1.3
+* fix for long-standing bug during rotation while editing a book
+* fix for  for long-standing bug in date parsing when in non-english locales
+
+new in 4.1.2
+* Translation updates (Robert Wetzlmayr)
+* Bug fix for 'read' date import from goodreads
+
+new in 4.1.1
+* Fix bug relating to commas in bookshelf names creating extra shelves
+* Removed use of onBackPressed to ensure compatible with Android 1.6
+* Clarified strings in 'back' code
+
+new in 4.1
+* new style options: location and date read
+* sharing can now send via any app that advertises the interface (eg. mail)
+* if fields have been edited, and 'back' is pressed, ask the user for confirmation
+* assume book is read when importing from goodreads if the user has rated it
+* change install location to avoid problems with encrypted SD cards
+* changes to French translations
+* bug fixes in file import and data import
+
 new in 4.0.7
 * Fix bug in Google Books URL causing wrong books to be returned
 * Re-prioritize data sources based on reliability and the data returned

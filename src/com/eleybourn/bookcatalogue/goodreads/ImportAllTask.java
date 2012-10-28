@@ -374,8 +374,8 @@ public class ImportAllTask extends GenericTask {
 		addLongIfPresent(review, ListReviewsFieldNames.DB_PAGES, book, ListReviewsFieldNames.DB_PAGES);
 		addStringIfNonBlank(review, ListReviewsFieldNames.DB_PUBLISHER, book, ListReviewsFieldNames.DB_PUBLISHER);
 		Double rating = addDoubleIfPresent(review, ListReviewsFieldNames.DB_RATING, book, ListReviewsFieldNames.DB_RATING);
-		addStringIfNonBlank(review, ListReviewsFieldNames.DB_READ_START, book, ListReviewsFieldNames.DB_READ_START);
-		String readEnd = addStringIfNonBlank(review, ListReviewsFieldNames.DB_READ_END, book, ListReviewsFieldNames.DB_READ_END);
+		addDateIfValid(review, ListReviewsFieldNames.DB_READ_START, book, ListReviewsFieldNames.DB_READ_START);
+		String readEnd = addDateIfValid(review, ListReviewsFieldNames.DB_READ_END, book, ListReviewsFieldNames.DB_READ_END);
 
 		// If it has a rating or a 'read_end' date, assume it's read. If these are missing then
 		// DO NOT overwrite existing data since it *may* be read even without these fields.
@@ -475,6 +475,7 @@ public class ImportAllTask extends GenericTask {
         	for(Bundle sb: shelves) {
         		String shelf = translateBookshelf(db, sb.getString(ListReviewsFieldNames.SHELF));
         		if (shelf != null && !shelf.equals("")) {
+        			shelf = Utils.encodeListItem(shelf, BookEditFields.BOOKSHELF_SEPERATOR);
         			if (shelfNames == null)
 		        		shelfNames = shelf;
         			else
@@ -482,7 +483,7 @@ public class ImportAllTask extends GenericTask {
         		}
         	}
         	if (shelfNames != null && shelfNames.length() > 0)
-        		book.putString("bookshelf_text", shelfNames);
+        		book.putString("bookshelf_list", shelfNames);
         }
         
         // We need to set BOTH of these fields, otherwise the add/update method will set the
@@ -494,6 +495,34 @@ public class ImportAllTask extends GenericTask {
         return book;
 	}
 
+	/**
+	 * Utility to copy a non-blank and valid date string to the book bundle; will
+	 * attempt to translate as appropriate and will not add the date if it cannot
+	 * be parsed.
+	 * 
+	 * @param source
+	 * @param sourceField
+	 * @param dest
+	 * @param destField
+	 * 
+	 * @Return reformatted sql date, or null if not able to parse
+	 */
+	private String addDateIfValid(Bundle source, String sourceField, Bundle dest, String destField) {
+		if (!source.containsKey(sourceField))
+			return null;
+
+		String val = source.getString(sourceField);
+		if (val == null || val.equals(""))
+			return null;
+
+		Date d = Utils.parseDate(val);
+		if (d == null)
+			return null;
+
+		val = Utils.toSqlDateTime(d);
+		dest.putString(destField, val);
+		return val;
+	}
 	/**
 	 * Utility to copy a non-blank string to the book bundle.
 	 * 

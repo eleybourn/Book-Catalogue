@@ -33,6 +33,7 @@ import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
 import com.eleybourn.bookcatalogue.booklist.BooklistRowView;
 import com.eleybourn.bookcatalogue.booklist.BooklistSupportProvider;
 import com.eleybourn.bookcatalogue.database.DbUtils.DomainDefinition;
+import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
 import com.eleybourn.bookcatalogue.goodreads.SendOneBookTask;
@@ -126,6 +127,17 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 			return new MonthHolder(rowView, DOM_PUBLICATION_MONTH.name);
 		case RowKinds.ROW_KIND_MONTH_ADDED:
 			return new MonthHolder(rowView, DOM_ADDED_MONTH.name);
+
+		case RowKinds.ROW_KIND_YEAR_READ:
+			return new GenericStringHolder(rowView, DOM_READ_YEAR, R.string.empty_with_brackets);
+		case RowKinds.ROW_KIND_MONTH_READ:
+			return new GenericStringHolder(rowView, DOM_READ_MONTH, R.string.empty_with_brackets);
+		case RowKinds.ROW_KIND_DAY_READ:
+			return new GenericStringHolder(rowView, DOM_READ_DAY, R.string.empty_with_brackets);
+
+		case ROW_KIND_LOCATION:
+			return new GenericStringHolder(rowView, DOM_LOCATION, R.string.empty_with_brackets);
+
 		default:
 			throw new RuntimeException("Invalid row kind " + k);
 		}

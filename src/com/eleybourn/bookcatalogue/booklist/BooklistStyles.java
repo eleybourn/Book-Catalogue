@@ -33,6 +33,7 @@ import android.database.Cursor;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
+import com.eleybourn.bookcatalogue.UniqueId;
 import com.eleybourn.bookcatalogue.Utils;
 import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.R;
@@ -192,6 +193,20 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 		style = new BooklistStyle(R.string.format);
 		styles.add(style);
 		style.addGroup(ROW_KIND_FORMAT);
+
+		// Read date
+		style = new BooklistStyle(R.string.sort_read_date);
+		styles.add(style);
+		style.addGroup(ROW_KIND_YEAR_READ);
+		style.addGroup(ROW_KIND_MONTH_READ);
+		style.addGroup(ROW_KIND_AUTHOR);
+
+		// Location
+		style = new BooklistStyle(R.string.location);
+		styles.add(style);
+		style.addGroup(ROW_KIND_LOCATION);
+		style.addGroup(ROW_KIND_AUTHOR);
+		style.addGroup(ROW_KIND_SERIES);
 
 		// NEWKIND: Add new kinds to this list so the user sees them (Optional)
 
@@ -399,7 +414,7 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 	 */
 	public static void startEditActivity(Activity a) {
 		Intent i = new Intent(a, BooklistStylesActivity.class);
-		a.startActivityForResult(i, R.id.ACTIVITY_BOOKLIST_STYLES);			
+		a.startActivityForResult(i, UniqueId.ACTIVITY_BOOKLIST_STYLES);			
 	}
 }
 

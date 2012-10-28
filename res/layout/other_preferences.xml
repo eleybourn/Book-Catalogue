@@ -7,133 +7,18 @@
 	android:background="@drawable/bc_background_gradient_dim"
 	android:paddingLeft="5sp">
 
-    <TextView 
-		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content" 
-		android:text="@+string/other_preferences"
-		android:textAppearance="?android:attr/textAppearanceSmall"
-		android:paddingTop="5dp"
-		android:paddingBottom="2dp"
-		/>
- 	<View 
-	    android:background="@drawable/main_menu_header_divider"
-	    android:layout_width="fill_parent"
-	    android:layout_height="1dp"
-		android:paddingBottom="5dp"
-	    />
-
 	<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
 			>
 	
 	  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	    android:id="@+id/dynamic_properties" 
 		android:orientation="vertical"
 		android:layout_width="fill_parent" 
 		android:layout_height="fill_parent"
 		android:paddingLeft="5sp">
 		
-	  	<!--  UI Header -->
-	  	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-			android:orientation="horizontal"
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content"
-			android:paddingLeft="5sp">
-			<TextView 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content" 
-				android:text="@+string/user_interface"
-				android:textAppearance="?android:attr/textAppearanceSmall"
-				android:paddingTop="5sp"
-				/>
-		</LinearLayout>
-	
-	  	<!--  Startup Screen -->
-		<LinearLayout android:id="@+id/startup_in_my_books_label" 
-			android:orientation="horizontal"
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content"
-			android:paddingLeft="15sp">
-			<CheckBox android:id="@+id/startup_my_books_checkbox" 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content" 
-				android:paddingLeft="10sp"
-				android:focusable="false"
-				android:src="@+drawable/ic_menu_bookshelves"
-				/>
-			<TextView 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content" 
-				android:text="@+string/start_in_my_books"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:paddingTop="5sp"
-				/>
-		</LinearLayout>
-
-	  	<!--  Startup Screen -->
-		<LinearLayout android:id="@+id/include_classic_label" 
-			android:orientation="horizontal"
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content"
-			android:paddingLeft="15sp">
-			<CheckBox android:id="@+id/include_classic_checkbox" 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content" 
-				android:paddingLeft="10sp"
-				android:focusable="false"
-				android:src="@+drawable/ic_menu_bookshelves"
-				/>
-			<TextView 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content" 
-				android:text="@+string/include_classic_catalogue_view"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:paddingTop="5sp"
-				/>
-		</LinearLayout>
-
-		<!--  Background image -->
-		<LinearLayout android:id="@+id/disable_background_image_label" 
-			android:orientation="horizontal"
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content"
-			android:paddingLeft="15sp">
-			<CheckBox android:id="@+id/disable_background_image_checkbox" 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content" 
-				android:paddingLeft="10sp"
-				android:focusable="false"
-				/>
-			<TextView 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content" 
-				android:text="@+string/disable_background_image"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:paddingTop="5sp"
-				/>
-		</LinearLayout>
-				
-		<!--  Beep on scan invalid ISBN -->
-		<LinearLayout android:id="@+id/beep_if_scanned_isbn_invalid_label" 
-			android:orientation="horizontal"
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content"
-			android:paddingLeft="15sp">
-			<CheckBox android:id="@+id/beep_if_scanned_isbn_invalid_checkbox" 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content" 
-				android:paddingLeft="10sp"
-				android:focusable="false"
-				/>
-			<TextView 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content" 
-				android:text="@+string/beep_if_scanned_isbn_invalid"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:paddingTop="5sp"
-				/>
-		</LinearLayout>
-
 	</LinearLayout>
   </ScrollView>
 

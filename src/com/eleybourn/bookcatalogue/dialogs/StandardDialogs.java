@@ -18,12 +18,24 @@
  * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.eleybourn.bookcatalogue;
+package com.eleybourn.bookcatalogue.dialogs;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 
+import com.eleybourn.bookcatalogue.AdministrationLibraryThing;
+import com.eleybourn.bookcatalogue.Author;
+import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
+import com.eleybourn.bookcatalogue.LibraryThingManager;
+import com.eleybourn.bookcatalogue.Logger;
+import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.Series;
+import com.eleybourn.bookcatalogue.Utils;
+import com.eleybourn.bookcatalogue.ViewTagger;
+import com.eleybourn.bookcatalogue.R.id;
+import com.eleybourn.bookcatalogue.R.layout;
+import com.eleybourn.bookcatalogue.R.string;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsRegister;
 
 import android.app.Activity;
@@ -52,10 +64,10 @@ public class StandardDialogs {
 	public static void showConfirmUnsavedEditsDialog(final Activity a){
 		AlertDialog.Builder dialog = new Builder(a);
 
-		dialog.setTitle(R.string.confirm_exit);
-		dialog.setMessage(R.string.you_may_have_unsaved_changes);
+		dialog.setTitle(R.string.details_have_changed);
+		dialog.setMessage(R.string.you_have_unsaved_changes);
 		
-		dialog.setPositiveButton(R.string.ok, new AlertDialog.OnClickListener() {
+		dialog.setPositiveButton(R.string.exit, new AlertDialog.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.dismiss();
@@ -63,7 +75,7 @@ public class StandardDialogs {
 			}
 		});
 
-		dialog.setNegativeButton(R.string.cancel, new AlertDialog.OnClickListener() {
+		dialog.setNegativeButton(R.string.continue_editing, new AlertDialog.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.dismiss();

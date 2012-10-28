@@ -23,32 +23,37 @@ package com.eleybourn.bookcatalogue;
 //import android.R;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
-import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.Toast;
 
+import com.eleybourn.bookcatalogue.BookEdit.OnRestoreTabInstanceStateListener;
+import com.eleybourn.bookcatalogue.Fields.AfterFieldChangeListener;
 import com.eleybourn.bookcatalogue.Fields.Field;
 import com.eleybourn.bookcatalogue.Fields.FieldFormatter;
 import com.eleybourn.bookcatalogue.Fields.FieldValidator;
+import com.eleybourn.bookcatalogue.debug.Tracker;
+import com.eleybourn.bookcatalogue.dialogs.PartialDatePicker;
+import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
+
 
 /*
  * A book catalogue application that integrates with Google Books.
  */
-public class BookEditNotes extends Activity {
+public class BookEditNotes extends Activity implements OnRestoreTabInstanceStateListener {
 
 	private Fields mFields;
+	private boolean mIsDirtyFlg = false;
+
 	private Button mConfirmButton;
 	private Button mCancelButton;
 	private Long mRowId;
@@ -104,12 +109,17 @@ public class BookEditNotes extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		Tracker.enterOnCreate(this);
 		try {
 			super.onCreate(savedInstanceState);
 			mDbHelper = new CatalogueDBAdapter(this);
 			mDbHelper.open();
 
 			setContentView(R.layout.edit_book_notes);
+
+			if (savedInstanceState != null) {
+				setDirty(savedInstanceState.getBoolean("Dirty"));
+			}
 
 			mFields = new Fields(this);
 			Field f;
@@ -167,8 +177,15 @@ public class BookEditNotes extends Activity {
 				getRowId();
 			}
 
-			if (savedInstanceState == null)
+			if (savedInstanceState == null) {
 				populateFields();
+			} else {
+				restoreField(savedInstanceState, CatalogueDBAdapter.KEY_READ_START, R.id.read_start);
+				restoreField(savedInstanceState, CatalogueDBAdapter.KEY_READ_END, R.id.read_end);
+			}
+
+			if (mRowId != null && mRowId > 0)
+				mConfirmButton.setText(R.string.confirm_save);
 
 			mConfirmButton.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
@@ -199,7 +216,7 @@ public class BookEditNotes extends Activity {
 					} else {
 						getParent().setResult(RESULT_OK, i);
 					}
-					if (mFields.isEdited()) {
+					if (isDirty()) {
 						StandardDialogs.showConfirmUnsavedEditsDialog(BookEditNotes.this);
 					} else {
 						finish();
@@ -215,9 +232,28 @@ public class BookEditNotes extends Activity {
 				Logger.logError(e);
 			}
 
+			mFields.setAfterFieldChangeListener(new AfterFieldChangeListener(){
+				@Override
+				public void afterFieldChange(Field field, String newValue) {
+					setDirty(true);
+				}});
+			
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
+		Tracker.exitOnCreate(this);
+	}
+
+	/**
+	 * Restore a single field from a saved state
+	 *
+	 * @param savedInstanceState 	the saved state
+	 * @param key					key in state for value to restore
+	 * @param fieldId				field to set
+	 */
+	private void restoreField(Bundle savedInstanceState, String key, int fieldId) {
+		final Field fe = mFields.getField(fieldId);
+		fe.setValue(savedInstanceState.getString(key));
 	}
 
 	@Override
@@ -225,42 +261,14 @@ public class BookEditNotes extends Activity {
 		switch (id) {
 		case READ_START_DIALOG_ID:
 			try {
-				String dateString = mFields.getField(R.id.read_start).getValue().toString();
-				// get the current date
-				final Calendar c = Calendar.getInstance();
-				int yyyy = c.get(Calendar.YEAR);
-				int mm = c.get(Calendar.MONTH);
-				int dd = c.get(Calendar.DAY_OF_MONTH);
-				try {
-					String[] date = dateString.split("-");
-					yyyy = Integer.parseInt(date[0]);
-					mm = Integer.parseInt(date[1])-1;
-					dd = Integer.parseInt(date[2]);
-				} catch (Exception e) {
-					//do nothing
-				}
-				return new DatePickerDialog(this, mReadStartSetListener, yyyy, mm, dd);
+				return Utils.buildDateDialog(this, R.string.read_start, mReadStartSetListener);
 			} catch (Exception e) {
 				// use the default date
 			}
 			break;
 		case READ_END_DIALOG_ID:
 			try {
-				String dateString = mFields.getField(R.id.read_end).getValue().toString();
-				// get the current date
-				final Calendar c = Calendar.getInstance();
-				int yyyy = c.get(Calendar.YEAR);
-				int mm = c.get(Calendar.MONTH);
-				int dd = c.get(Calendar.DAY_OF_MONTH);
-				try {
-					String[] date = dateString.split("-");
-					yyyy = Integer.parseInt(date[0]);
-					mm = Integer.parseInt(date[1])-1;
-					dd = Integer.parseInt(date[2]);
-				} catch (Exception e) {
-					//do nothing
-				}
-				return new DatePickerDialog(this, mReadEndSetListener, yyyy, mm, dd);
+				return Utils.buildDateDialog(this, R.string.read_end, mReadEndSetListener);
 			} catch (Exception e) {
 				// use the default date
 			}
@@ -269,34 +277,71 @@ public class BookEditNotes extends Activity {
 		return null;
 	}
 
-	// the callback received when the user "sets" the date in the dialog
-	private DatePickerDialog.OnDateSetListener mReadStartSetListener = new DatePickerDialog.OnDateSetListener() {
-		public void onDateSet(DatePicker view, int year, int month, int day) {
-			month = month + 1;
-			String mm = month + "";
-			if (mm.length() == 1) {
-				mm = "0" + mm;
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog) {
+		switch (id) {
+		case READ_START_DIALOG_ID:
+			try {
+				String dateString;
+				Object o = mFields.getField(R.id.read_start).getValue();
+				if (o == null || o.toString().equals("")) {
+					dateString = Utils.toSqlDateTime(new Date());
+				} else {
+					dateString = o.toString();
+				}
+				Utils.prepareDateDialog((PartialDatePicker)dialog, dateString, mReadStartSetListener);
+			} catch (Exception e) {
+				// use the default date
 			}
-			String dd = day + "";
-			if (dd.length() == 1) {
-				dd = "0" + dd;
+			break;
+		case READ_END_DIALOG_ID:
+			try {
+				String dateString;
+				Object o = mFields.getField(R.id.read_end).getValue();
+				if (o == null || o.toString().equals("")) {
+					dateString = Utils.toSqlDateTime(new Date());
+				} else {
+					dateString = o.toString();
+				}
+				Utils.prepareDateDialog((PartialDatePicker)dialog, dateString, mReadEndSetListener);
+			} catch (Exception e) {
+				// use the default date
 			}
-			mFields.getField(R.id.read_start).setValue(year + "-" + mm + "-" + dd);
+			break;
+		}
+	}
+
+	/**
+	 * the callback received when the user "sets" the read-start date in the dialog
+	 */
+	private PartialDatePicker.OnDateSetListener mReadStartSetListener = new PartialDatePicker.OnDateSetListener() {
+		@Override
+		public void onDateSet(PartialDatePicker dialog, Integer year, Integer month, Integer day) {
+			String value = Utils.buildPartialDate(year, month, day);
+			mFields.getField(R.id.read_start).setValue(value);
+			dismissDialog(READ_START_DIALOG_ID);
+		}
+
+		@Override
+		public void onCancel(PartialDatePicker dialog) {
+			dismissDialog(READ_START_DIALOG_ID);
 		}
 	};
-	// the callback received when the user "sets" the date in the dialog
-	private DatePickerDialog.OnDateSetListener mReadEndSetListener = new DatePickerDialog.OnDateSetListener() {
-		public void onDateSet(DatePicker view, int year, int month, int day) {
-			month = month + 1;
-			String mm = month + "";
-			if (mm.length() == 1) {
-				mm = "0" + mm;
-			}
-			String dd = day + "";
-			if (dd.length() == 1) {
-				dd = "0" + dd;
-			}
-			mFields.getField(R.id.read_end).setValue(year + "-" + mm + "-" + dd);
+
+	/**
+	 * the callback received when the user "sets" the read-end date in the dialog
+	 */
+	private PartialDatePicker.OnDateSetListener mReadEndSetListener = new PartialDatePicker.OnDateSetListener() {
+		@Override
+		public void onDateSet(PartialDatePicker dialog, Integer year, Integer month, Integer day) {
+			String value = Utils.buildPartialDate(year, month, day);
+			mFields.getField(R.id.read_end).setValue(value);
+			dismissDialog(READ_END_DIALOG_ID);
+		}
+
+		@Override
+		public void onCancel(PartialDatePicker dialog) {
+			dismissDialog(READ_END_DIALOG_ID);
 		}
 	};
 
@@ -317,8 +362,6 @@ public class BookEditNotes extends Activity {
 
 				mFields.setFromCursor(book);
 
-				mConfirmButton.setText(R.string.confirm_save);
-
 			} finally {
 				// Tidy up
 				if (book != null)
@@ -333,31 +376,73 @@ public class BookEditNotes extends Activity {
 	}
 	
 	/**
-	 * If 'back' is pressed, and the user has made changes, ask them if they really want to lose the changes
+	 * If 'back' is pressed, and the user has made changes, ask them if they really want to lose the changes.
+	 * 
+	 * We don't use onBackPressed because it does not work with API level 4.
 	 */
 	@Override
-	public void onBackPressed() {
-		if (mFields.isEdited()) {
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK && isDirty()) {
 			StandardDialogs.showConfirmUnsavedEditsDialog(this);
+			return true;
 		} else {
-			super.onBackPressed();			
+			return super.onKeyDown(keyCode, event);
 		}
 	}
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
+		Tracker.enterOnSaveInstanceState(this);
 		super.onSaveInstanceState(outState);
 		outState.putLong(CatalogueDBAdapter.KEY_ROWID, mRowId);
+
+		// DONT FORGET TO UPDATE onCreate to read these values back.
+		outState.putBoolean("Dirty", isDirty());
+		// Need to save local data that is not stored in EDITABLE views 
+		// ...including special text stored in TextViews and the like (TextViews are not restored automatically)
+		putStringSafely(outState, CatalogueDBAdapter.KEY_READ_START, mFields.getField(R.id.read_start).getValue());
+		putStringSafely(outState, CatalogueDBAdapter.KEY_READ_END, mFields.getField(R.id.read_end).getValue());
+		Tracker.exitOnSaveInstanceState(this);
+	}
+
+	/**
+	 * If the object is null, then don't output. Otherwise, output the result of 'toString()'
+	 * 
+	 * @param outState		Bundle to store value in
+	 * @param key			Key in bundle
+	 * @param value			value to store
+	 */
+	private void putStringSafely(Bundle outState, String key, Object value) {
+		if (value != null)
+			outState.putString(key, value.toString());
+	}
+
+	/**
+	 * Mark the data as dirty (or not)
+	 */
+	public void setDirty(boolean dirty) {
+		mIsDirtyFlg = dirty;
+	}
+
+	/**
+	 * Get the current status of the data in this activity
+	 */
+	public boolean isDirty() {
+		return mIsDirtyFlg;
 	}
 
 	@Override
 	protected void onPause() {
+		Tracker.enterOnPause(this);
 		super.onPause();
+		Tracker.exitOnPause(this);
 	}
 
 	@Override
 	protected void onResume() {
+		Tracker.enterOnResume(this);
 		super.onResume();
+		Tracker.exitOnResume(this);
 	}
 
 	private void saveState(Bundle values) {
@@ -375,8 +460,18 @@ public class BookEditNotes extends Activity {
 
 	@Override
 	protected void onDestroy() {
+		Tracker.enterOnDestroy(this);
 		super.onDestroy();
 		mDbHelper.close();
+		Tracker.exitOnDestroy(this);
+	}
+
+	@Override
+	/**
+	 * Make sure we are marked as 'dirty' based on saved state after a restore.
+	 */
+	public void restoreTabInstanceState(Bundle savedInstanceState) {
+		setDirty(savedInstanceState.getBoolean("Dirty"));
 	}
 
 }

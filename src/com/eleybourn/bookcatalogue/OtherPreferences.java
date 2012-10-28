@@ -54,6 +54,7 @@ public class OtherPreferences extends PreferencesBase {
 		.setDefaultValue(false)
 		.setPreferenceKey(BookCataloguePreferences.PREF_START_IN_MY_BOOKS)
 		.setGlobal(true)
+		.setWeight(0)
 		.setNameResourceId(R.string.start_in_my_books)
 		.setGroup(PropertyGroup.GRP_USER_INTERFACE))	
 
@@ -68,6 +69,7 @@ public class OtherPreferences extends PreferencesBase {
 		.setDefaultValue(false)
 		.setPreferenceKey(BookCataloguePreferences.PREF_INCLUDE_CLASSIC_MY_BOOKS)
 		.setGlobal(true)
+		.setWeight(100)
 		.setNameResourceId(R.string.include_classic_catalogue_view)
 		.setGroup(PropertyGroup.GRP_USER_INTERFACE) )
 
@@ -75,6 +77,7 @@ public class OtherPreferences extends PreferencesBase {
 		.setDefaultValue(false)
 		.setPreferenceKey(BookCataloguePreferences.PREF_DISABLE_BACKGROUND_IMAGE)
 		.setGlobal(true)
+		.setWeight(200)
 		.setNameResourceId(R.string.disable_background_image)
 		.setGroup(PropertyGroup.GRP_USER_INTERFACE) )
 
@@ -82,6 +85,7 @@ public class OtherPreferences extends PreferencesBase {
 		.setDefaultValue(true)
 		.setPreferenceKey(SoundManager.PREF_BEEP_IF_SCANNED_ISBN_INVALID)
 		.setGlobal(true)
+		.setWeight(300)
 		.setNameResourceId(R.string.beep_if_scanned_isbn_invalid)
 		.setGroup(PropertyGroup.GRP_USER_INTERFACE) )
 

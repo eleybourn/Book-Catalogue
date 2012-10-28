@@ -164,24 +164,6 @@ public class BooklistPreferencesActivity extends PreferencesBase {
 	 */
 	@Override
 	public void setupViews(BookCataloguePreferences prefs, Properties globalProps) {
-		addClickablePref(prefs, R.id.erase_cover_cache_label, new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Utils utils = new Utils();
-				try {
-					utils.eraseCoverCache();					
-				} finally {
-					utils.close();
-				}
-				return;
-			}});
-
-		addClickablePref(prefs, R.id.edit_styles_label, new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				BooklistStyles.startEditActivity(BooklistPreferencesActivity.this);
-			}});
-
 		/**
 		 * This activity predominantly shows 'Property' objects; we build that collection here.
 		 */

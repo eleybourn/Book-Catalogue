@@ -97,8 +97,9 @@ public abstract class Property {
 	 * 
 	 * @param weight
 	 */
-	public void setWeight(int weight) {
+	public Property setWeight(int weight) {
 		mWeight = weight;
+		return this;
 	}
 	/**
 	 * Accessor

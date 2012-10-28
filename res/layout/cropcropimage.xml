@@ -29,29 +29,35 @@
                 android:layout_height="fill_parent"
                 android:layout_x="0dip"
                 android:layout_y="0dip"
+                android:layout_alignParentTop="true"
+                android:layout_above="@+id/buttons"
         />
-        <RelativeLayout android:layout_width="wrap_content"
+        <LinearLayout android:id="@+id/buttons"
+            	android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingLeft="10dip"
-                android:paddingRight="10dip"
+                android:paddingLeft="5dip"
+                android:paddingRight="5dip"
+                android:paddingTop="20dip"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true">
             <Button
-                    android:id="@+id/save"
-                    android:layout_width="100dip"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:text="Save"
-            />
-            <Button
                     android:id="@+id/discard"
-                    android:layout_width="100dip"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:text="Discard"
+                    android:text="@+string/cancel"
             />
-        </RelativeLayout>
+            
+            <Button
+                    android:id="@+id/save"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@+string/save"
+            />
+            
+        </LinearLayout>
     </RelativeLayout>
 
 </FrameLayout>

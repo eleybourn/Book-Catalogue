@@ -58,7 +58,7 @@ public class PropertyGroup {
 	/** Global PropertyGroup definition */
 	public static final PropertyGroup GRP_THUMBNAILS = mGroups.addGroup(GRP_THUMBNAILS_ID, R.string.thumbnails, 40);
 	/** Global PropertyGroup definition */
-	public static final PropertyGroup GRP_USER_INTERFACE = mGroups.addGroup(GRP_USER_INTERFACE_ID, R.string.user_interface, 40);
+	public static final PropertyGroup GRP_USER_INTERFACE = mGroups.addGroup(GRP_USER_INTERFACE_ID, R.string.user_interface, 35);
 
 	/**
 	 * Collection class for all PropertyGroups

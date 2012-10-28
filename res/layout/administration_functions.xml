@@ -18,7 +18,7 @@
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content"
 		android:paddingLeft="5sp">
-		<TextView 
+		<com.eleybourn.bookcatalogue.widgets.CapitalizedTextView 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
 			android:text="@+string/preferences"
@@ -93,6 +93,28 @@
 			/>
 	</LinearLayout>
 
+  	<!--  Edit Styles -->
+	<LinearLayout android:id="@+id/edit_styles_label" 
+		android:orientation="horizontal"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:paddingLeft="15sp">
+
+		<ImageView
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:paddingLeft="10sp"
+			android:src="@drawable/ic_menu_manage"
+			/>
+		<TextView 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:text="@+string/edit_book_list_styles"
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:paddingTop="5sp"
+			/>
+	</LinearLayout>
+			
 	<!--  OTHER PREFS -->
 	<LinearLayout android:id="@+id/other_prefs_label" 
 		android:orientation="horizontal"
@@ -121,7 +143,7 @@
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content"
 		android:paddingLeft="5sp">
-		<TextView 
+		<com.eleybourn.bookcatalogue.widgets.CapitalizedTextView 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
 			android:text="@+string/management"
@@ -174,6 +196,28 @@
 			/>
 	</LinearLayout>
 
+	<!--  ERASE COVER CACHE -->
+	<LinearLayout android:id="@+id/erase_cover_cache_label" 
+		android:orientation="horizontal"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:clickable="true"
+		android:paddingLeft="15sp">
+		<ImageView 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:paddingLeft="10sp"
+			android:src="@drawable/ic_menu_close_clear_cancel"
+			/>
+		<TextView 
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:text="@+string/erase_cover_cache"
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:paddingTop="5sp"
+			/>
+	</LinearLayout>
+
 	<!-- 
 	-  TASK ERRORS - 
 	<LinearLayout android:id="@+id/task_errors_label" 
@@ -204,7 +248,7 @@
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content"
 		android:paddingLeft="5sp">
-		<TextView android:id="@+id/bookshelf_label" 
+		<com.eleybourn.bookcatalogue.widgets.CapitalizedTextView android:id="@+id/bookshelf_label" 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
 			android:text="@+string/credentials"
@@ -267,7 +311,7 @@
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content"
 		android:paddingLeft="5sp">
-		<TextView 
+		<com.eleybourn.bookcatalogue.widgets.CapitalizedTextView 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
 			android:text="@+string/data_import_export"

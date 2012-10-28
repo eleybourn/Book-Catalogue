@@ -28,13 +28,13 @@
 	
 		</LinearLayout>
 
-	  	<!--  MANAGEMENT Header -->
+	  	<!--  MANAGEMENT Header 
 	    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
 			android:orientation="horizontal"
 			android:layout_width="fill_parent" 
 			android:layout_height="wrap_content"
 			android:paddingLeft="0sp">
-			<TextView 
+			<com.eleybourn.bookcatalogue.widgets.CapitalizedTextView 
 				android:layout_width="wrap_content" 
 				android:layout_height="wrap_content" 
 				android:text="@+string/management"
@@ -42,50 +42,7 @@
 				android:paddingTop="0sp"
 				/>
 		</LinearLayout>
-
-	  	<!--  Edit Styles -->
-		<LinearLayout android:id="@+id/edit_styles_label" 
-			android:orientation="horizontal"
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content"
-			android:paddingLeft="15sp">
-
-			<ImageView
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content" 
-				android:paddingLeft="10sp"
-				android:src="@+android:drawable/ic_menu_manage"
-				/>
-			<TextView 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content" 
-				android:text="@+string/edit_book_list_styles"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:paddingTop="5sp"
-				/>
-		</LinearLayout>
-			
-	    <!--  ERASE COVER CACHE -->
-		<LinearLayout android:id="@+id/erase_cover_cache_label" 
-			android:orientation="horizontal"
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content"
-			android:clickable="true"
-			android:paddingLeft="15sp">
-			<ImageView 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content" 
-				android:paddingLeft="10sp"
-				android:src="@+android:drawable/ic_menu_close_clear_cancel"
-				/>
-			<TextView 
-				android:layout_width="fill_parent" 
-				android:layout_height="wrap_content" 
-				android:text="@+string/erase_cover_cache"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:paddingTop="5sp"
-				/>
-		</LinearLayout>
+		-->
 	</LinearLayout>
   </ScrollView>
 </LinearLayout>

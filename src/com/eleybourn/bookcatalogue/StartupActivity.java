@@ -286,14 +286,14 @@ public class StartupActivity extends Activity {
 			AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(R.string.backup_request).create();
 			alertDialog.setTitle(R.string.backup_title);
 			alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-			alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+			alertDialog.setButton("Cancel", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
-					mExportRequired = true;
 					dialog.dismiss();
 				}
 			}); 
-			alertDialog.setButton2("Cancel", new DialogInterface.OnClickListener() {
+			alertDialog.setButton2("OK", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
+					mExportRequired = true;
 					dialog.dismiss();
 				}
 			}); 

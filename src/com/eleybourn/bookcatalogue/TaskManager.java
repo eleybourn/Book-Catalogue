@@ -160,6 +160,9 @@ public class TaskManager {
 	// Current value of progress.
 	int mProgressCount = 0;
 
+	/** Flag indicating tasks are being cancelled. This is reset when a new task is added */
+	private boolean mCancelling = false;
+	
 	/** Flag indicating the TaskManager is terminating; will close after last task exits */
 	private boolean mIsClosing = false;
 
@@ -199,10 +202,19 @@ public class TaskManager {
 		if (mIsClosing)
 			throw new RuntimeException("Can not add a task when closing down");
 
+		mCancelling = false;
+
 		synchronized(mTasks) {
 			if (getTaskInfo(t) == null)
 					mTasks.add(new TaskInfo(t));
 		}
+	}
+
+	/**
+	 * Accessor
+	 */
+	public boolean isCancelling() {
+		return mCancelling;
 	}
 
 	/**
@@ -261,6 +273,7 @@ public class TaskManager {
 	 */
 	public void cancelAllTasks() {
 		synchronized(mTasks) {
+			mCancelling = true;
 			for(TaskInfo t : mTasks) {
 				t.task.cancelTask();
 			}

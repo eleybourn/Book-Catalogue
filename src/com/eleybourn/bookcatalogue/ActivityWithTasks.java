@@ -53,7 +53,7 @@ abstract public class ActivityWithTasks extends Activity {
 	/** Associated TaskManager */
 	protected TaskManager mTaskManager = null;
 	/** ProgressDialog for this activity */
-	protected ProgressDialog mProgressDialog = null;
+	protected ProgressBase mProgressDialog = null;
 	/** Max value for ProgressDialog */
 	private int mProgressMax = 0;
 	/** Current value for ProgressDialog */
@@ -70,25 +70,45 @@ abstract public class ActivityWithTasks extends Activity {
 			mTaskManagerId = savedInstanceState.getLong("TaskManagerId");
 		};
 	}
-	
-	private class ProgressIndet extends ProgressDialog {
+
+	/**
+	 * Trivial internal class to implement our base progress object
+	 * 
+	 * @author pjw
+	 */
+	private class ProgressBase extends ProgressDialog {
+		public ProgressBase(Context context) {
+			super(context);
+			this.setCancelable(false);
+			this.setCanceledOnTouchOutside(false);
+		}
+	}
+
+	/**
+	 * ProgressDialog for Indeterminate states.
+	 * 
+	 * @author pjw
+	 */
+	private class ProgressIndet extends ProgressBase {
 
 		public ProgressIndet(Context context) {
 			super(context);
 			this.setIndeterminate(true);
 			this.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			this.setCancelable(false);
-			this.setCanceledOnTouchOutside(false);
 		}
 	};
-	private class ProgressDet extends ProgressDialog {
+
+	/**
+	 * ProgressDialog for Determinate states.
+	 * 
+	 * @author pjw
+	 */
+	private class ProgressDet extends ProgressBase {
 
 		public ProgressDet(Context context) {
 			super(context);
 			this.setIndeterminate(false);
 			this.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-			this.setCancelable(false);
-			this.setCanceledOnTouchOutside(false);
 		}
 	};
 
@@ -160,8 +180,10 @@ abstract public class ActivityWithTasks extends Activity {
 
 			// If empty, close any dialog
 			if ((mProgressMessage == null || mProgressMessage.trim().length() == 0) && mProgressMax == mProgressCount) {
-				if (mProgressDialog != null)
+				if (mProgressDialog != null) {
 					mProgressDialog.dismiss();
+					mProgressDialog = null;
+				}
 			} else {
 				updateProgress();
 			}
@@ -187,6 +209,11 @@ abstract public class ActivityWithTasks extends Activity {
 		}
 	};
 
+	/**
+	 * Utility routine to standardize checking for desired dialog type.
+	 * 
+	 * @return	true if dialog should be determinate
+	 */
 	private boolean wantDeterminateProgress() {
 		return (mProgressMax > 0);
 	}
@@ -222,8 +249,14 @@ abstract public class ActivityWithTasks extends Activity {
 			mProgressDialog.setMax(mProgressMax);
 		}
 
-		// Set message and other attrs
-		mProgressDialog.setMessage(mProgressMessage);
+		// Set message; if we are cancelling we override the message
+		if (mTaskManager.isCancelling()) {
+			mProgressDialog.setMessage(getString(R.string.cancelling));
+		} else {
+			mProgressDialog.setMessage(mProgressMessage);
+		}
+		
+		// Set other attrs
 		mProgressDialog.setOnKeyListener(mDialogKeyListener);
 		mProgressDialog.setOnCancelListener(mCancelHandler);
 		// Show it if necessary
@@ -236,10 +269,7 @@ abstract public class ActivityWithTasks extends Activity {
 	 */
 	private OnCancelListener mCancelHandler = new OnCancelListener() {
 		public void onCancel(DialogInterface i) {
-			if (mTaskManager != null) {
-				mTaskManager.cancelAllTasks();
-			}
-			displayCancellingProgress();
+			cancelAndUpdateProgress();
 		}
 	};
 
@@ -254,9 +284,7 @@ abstract public class ActivityWithTasks extends Activity {
 					// Toasting a message here makes the app look less responsive, because
 					// the final 'Cancelled...' message is delayed too much.
 					//Toast.makeText(ActivityWithTasks.this, R.string.cancelling, Toast.LENGTH_LONG).show();
-					if (mTaskManager != null)
-						mTaskManager.cancelAllTasks();
-					displayCancellingProgress();
+					cancelAndUpdateProgress();
 					return true;
 				}
 			}
@@ -264,10 +292,15 @@ abstract public class ActivityWithTasks extends Activity {
 		}
 	};
 
-	private void displayCancellingProgress() {
-		mProgressMessage = getString(R.string.cancelling);
-		mProgressMax = 0;
-		updateProgress();		
+	/**
+	 * Cancel all tasks, and if the progress is showing, update it (it will check task manager status)
+	 */
+	private void cancelAndUpdateProgress() {
+		if (mTaskManager != null)
+			mTaskManager.cancelAllTasks();
+		if (mProgressDialog != null && mProgressDialog.isShowing()) {
+			updateProgress();
+		}
 	}
 
 	@Override

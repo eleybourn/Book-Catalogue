@@ -157,7 +157,7 @@ public abstract class CropBaseCancelable<T> implements CropCancelable<T> {
      * @param cancelable the sub task
      * @return the result of the subtask
      */
-    protected <T> T runSubTask(CropCancelable<T> cancelable)
+    protected <X> X runSubTask(CropCancelable<X> cancelable)
             throws InterruptedException, ExecutionException {
         synchronized (this) {
             if (mCurrentTask != null) {

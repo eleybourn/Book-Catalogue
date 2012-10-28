@@ -22,9 +22,6 @@ package com.eleybourn.bookcatalogue.booklist;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.PreferencesBase;
@@ -179,7 +176,7 @@ public class BooklistPreferencesActivity extends PreferencesBase {
 		Properties allProps = style.getProperties();
 		for(Property p: allProps) {
 			if (p instanceof ValuePropertyWithGlobalDefault) {
-				ValuePropertyWithGlobalDefault gp = (ValuePropertyWithGlobalDefault)p;
+				ValuePropertyWithGlobalDefault<?> gp = (ValuePropertyWithGlobalDefault<?>)p;
 				if (gp.hasGlobalDefault()) {
 					gp.setGlobal(true);
 					globalProps.add(gp);

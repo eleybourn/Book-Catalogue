@@ -84,20 +84,13 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 	private static final int SORT_BY_AUTHOR_EXPANDED = MenuHandler.FIRST + 1; 
 	private static final int SORT_BY_AUTHOR_COLLAPSED = MenuHandler.FIRST + 2;
 	private static final int SORT_BY = MenuHandler.FIRST + 3; 
-	private static final int INSERT_ID = MenuHandler.FIRST + 4;
-	private static final int INSERT_ISBN_ID = MenuHandler.FIRST + 5;
-	private static final int INSERT_BARCODE_ID = MenuHandler.FIRST + 6;
 	private static final int DELETE_ID = MenuHandler.FIRST + 7;
-	private static final int ADMIN = MenuHandler.FIRST + 9;
 	private static final int EDIT_BOOK = MenuHandler.FIRST + 10;
 	private static final int EDIT_BOOK_NOTES = MenuHandler.FIRST + 11;
 	private static final int EDIT_BOOK_FRIENDS = MenuHandler.FIRST + 12;
-	private static final int SEARCH = MenuHandler.FIRST + 13;
-	private static final int INSERT_NAME_ID = MenuHandler.FIRST + 14;
 	private static final int DELETE_SERIES_ID = MenuHandler.FIRST + 15;
 	private static final int EDIT_AUTHOR_ID = MenuHandler.FIRST + 16;
 	private static final int EDIT_SERIES_ID = MenuHandler.FIRST + 17;
-	private static final int INSERT_PARENT_ID = MenuHandler.FIRST + 18;
 	private static final int EDIT_BOOK_SEND_TO_GR = MenuHandler.FIRST + 19;
 	
 	private String bookshelf = "";
@@ -173,8 +166,6 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 	//private static final String STATE_BOOKSHELF = "state_bookshelf"; 
 	private static final String STATE_CURRENT_GROUP_COUNT = "state_current_group_count"; 
 	private static final String STATE_CURRENT_GROUP = "state_current_group"; 
-	private static final String STATE_OPENED = "state_opened";
-	private static final int BACKUP_PROMPT_WAIT = 5;
 
 	/** 
 	 * Called when the activity is first created. 

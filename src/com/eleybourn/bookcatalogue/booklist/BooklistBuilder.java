@@ -84,7 +84,7 @@ public class BooklistBuilder {
 	private final int mBooklistBuilderId;
 
 	/** List of columns for the group-by clause, including COLLATE clauses. Set by build() method. */
-	private String mGroupColumnList;
+	//private String mGroupColumnList;
 	/** Collection of 'extra' domains requested by caller */
 	private Hashtable<String, ExtraDomainDetails> mExtraDomains = new Hashtable<String, ExtraDomainDetails>();
 	/** Style to use in building the list */
@@ -282,6 +282,7 @@ public class BooklistBuilder {
 		 * 
 		 * @return
 		 */
+		@SuppressWarnings("unchecked")
 		public ArrayList<DomainDefinition> cloneGroups() {
 			return (ArrayList<DomainDefinition>)mGroups.clone();				
 		}
@@ -366,16 +367,16 @@ public class BooklistBuilder {
 			+ " Else " + TBL_AUTHORS.dot(DOM_GIVEN_NAMES) + "|| ' ' || " + TBL_AUTHORS.dot(DOM_FAMILY_NAME)
 			+ " End";
 
-	/** Convenience expression for the SQL which gets the name of the person to whom a book has been loaned, if any 
-	 *  We do not initialize it here because it needs the app context to be setup for R.string.avaiable */
-	private static String LOANED_TO_SQL = null;
-	private static String getLoanedToSql() {
-		if (LOANED_TO_SQL == null) {
-			LOANED_TO_SQL = "Coalesce( (Select " + TBL_LOAN.dot(KEY_LOANED_TO) + " From " + TBL_LOAN.ref() + 
-					" Where " + TBL_LOAN.dot(DOM_BOOK) + " = " + TBL_BOOKS.dot(DOM_ID) + "), '" + BookCatalogueApp.getResourceString(R.string.available) + ")";			
-		}
-		return LOANED_TO_SQL;
-	}
+	///** Convenience expression for the SQL which gets the name of the person to whom a book has been loaned, if any 
+	// *  We do not initialize it here because it needs the app context to be setup for R.string.avaiable */
+	//private static String LOANED_TO_SQL = null;
+	//private static String getLoanedToSql() {
+	//	if (LOANED_TO_SQL == null) {
+	//		LOANED_TO_SQL = "Coalesce( (Select " + TBL_LOAN.dot(KEY_LOANED_TO) + " From " + TBL_LOAN.ref() + 
+	//				" Where " + TBL_LOAN.dot(DOM_BOOK) + " = " + TBL_BOOKS.dot(DOM_ID) + "), '" + BookCatalogueApp.getResourceString(R.string.available) + ")";			
+	//	}
+	//	return LOANED_TO_SQL;
+	//}
 
 	/**
 	 * Drop and recreate all the data based on previous criteria
@@ -910,7 +911,7 @@ public class BooklistBuilder {
 					groupCols.append(", ");
 				}
 				groupCols.append( DOM_LEVEL.name );
-				mGroupColumnList = groupCols.toString();
+				//mGroupColumnList = groupCols.toString();
 			}
 	
 			String ix1Sql = "Create Index " + mListTable + "_IX1 on " + mListTable + "(" + sortIndexColumnList + ")";

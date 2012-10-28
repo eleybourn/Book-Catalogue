@@ -50,13 +50,11 @@ public class GoodreadsWork {
 	public String authorName;
 	public byte[] imageBytes = null;
 	private GetImageTask mTask;
-	private static Integer mIdCounter = 0;
-	private int mId = 0;
+	//private static Integer mIdCounter = 0;
 	private WeakReference<ImageView> mImageView = null;
 
 	public GoodreadsWork() {
 		super();
-		mId = ++mIdCounter;
 	}
 
 	/**

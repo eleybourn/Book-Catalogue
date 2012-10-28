@@ -148,13 +148,13 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 							} else if (usage.fieldName.equals(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)) {
 								// We should never have a book with no authors, but lets be paranoid
 								if (mOrigData.containsKey(usage.fieldName)) {
-									ArrayList<Author> origAuthors = (ArrayList<Author>) mOrigData.getSerializable(usage.fieldName);
+									ArrayList<Author> origAuthors = Utils.getAuthorsFromBundle(mOrigData);
 									if (origAuthors == null || origAuthors.size() == 0)
 										mCurrFieldUsages.put(usage);
 								}
 							} else if (usage.fieldName.equals(CatalogueDBAdapter.KEY_SERIES_ARRAY)) {
 								if (mOrigData.containsKey(usage.fieldName)) {
-									ArrayList<Series> origSeries = (ArrayList<Series>) mOrigData.getSerializable(usage.fieldName);
+									ArrayList<Series> origSeries = Utils.getSeriesFromBundle(mOrigData);
 									if (origSeries == null || origSeries.size() == 0)
 										mCurrFieldUsages.put(usage);
 								}
@@ -308,13 +308,13 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 						// Handle special cases
 						if (usage.fieldName.equals(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)) {
 							if (origData.containsKey(usage.fieldName)) {
-								ArrayList<Author> origAuthors = (ArrayList<Author>) origData.getSerializable(usage.fieldName);
+								ArrayList<Author> origAuthors = Utils.getAuthorsFromBundle(origData);
 								if (origAuthors != null && origAuthors.size() > 0)
 									newData.remove(usage.fieldName);								
 							}
 						} else if (usage.fieldName.equals(CatalogueDBAdapter.KEY_SERIES_ARRAY)) {
 							if (origData.containsKey(usage.fieldName)) {
-								ArrayList<Series> origSeries = (ArrayList<Series>) origData.getSerializable(usage.fieldName);
+								ArrayList<Series> origSeries = Utils.getSeriesFromBundle(origData);
 								if (origSeries != null && origSeries.size() > 0)
 									newData.remove(usage.fieldName);								
 							}
@@ -327,9 +327,9 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 					case ADD_EXTRA:
 						// Handle arrays
 						if (usage.fieldName.equals(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)) {
-							UpdateThumbnailsThread.<Author>combineArrays(usage.fieldName,origData, newData);
+							UpdateThumbnailsThread.<Author>combineArrays(usage.fieldName, origData, newData);
 						} else if (usage.fieldName.equals(CatalogueDBAdapter.KEY_SERIES_ARRAY)) {
-							UpdateThumbnailsThread.<Series>combineArrays(usage.fieldName,origData, newData);
+							UpdateThumbnailsThread.<Series>combineArrays(usage.fieldName, origData, newData);
 						} else {
 							// No idea how to handle this for non-arrays
 							throw new RuntimeException("Illegal usage '" + usage.usage + "' specified for field '" + usage.fieldName + "'");

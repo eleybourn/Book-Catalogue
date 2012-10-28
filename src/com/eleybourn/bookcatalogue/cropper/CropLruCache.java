@@ -19,7 +19,6 @@ package com.eleybourn.bookcatalogue.cropper;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -32,7 +31,9 @@ public class CropLruCache<K, V> {
 
     public CropLruCache(final int capacity) {
         mLruMap = new LinkedHashMap<K, V>(16, 0.75f, true) {
-            @Override
+			private static final long serialVersionUID = -1044766493056756020L;
+
+			@Override
             protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
                 return size() > capacity;
             }
@@ -42,7 +43,7 @@ public class CropLruCache<K, V> {
     private static class Entry<K, V> extends WeakReference<V> {
         K mKey;
 
-        public Entry(K key, V value, ReferenceQueue queue) {
+        public Entry(K key, V value, ReferenceQueue<V> queue) {
             super(value, queue);
             mKey = key;
         }

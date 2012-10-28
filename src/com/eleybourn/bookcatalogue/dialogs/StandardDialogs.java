@@ -30,9 +30,6 @@ import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.LibraryThingManager;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.Series;
-import com.eleybourn.bookcatalogue.R.id;
-import com.eleybourn.bookcatalogue.R.layout;
-import com.eleybourn.bookcatalogue.R.string;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsRegister;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
@@ -49,11 +46,8 @@ import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 public class StandardDialogs {

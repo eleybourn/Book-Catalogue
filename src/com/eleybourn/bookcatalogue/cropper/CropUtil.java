@@ -19,16 +19,13 @@ package com.eleybourn.bookcatalogue.cropper;
 
 
 import java.io.Closeable;
-import java.io.IOException;
 
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Rect;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.ParcelFileDescriptor;
 import android.view.View;
@@ -38,7 +35,7 @@ import android.view.View.OnClickListener;
  * Collection of utility functions used in this package.
  */
 public class CropUtil {
-    private static final String TAG = "db.CropUtil";
+    //private static final String TAG = "db.CropUtil";
 
     private static OnClickListener sNullOnClickListener;
 
@@ -260,30 +257,24 @@ public class CropUtil {
      *
      * @param uri
      */
-   
-
-    
-
-    
-    private static ParcelFileDescriptor makeInputStream(
-            Uri uri, ContentResolver cr) {
-        try {
-            return cr.openFileDescriptor(uri, "r");
-        } catch (IOException ex) {
-            return null;
-        }
-    }
-
-    public static void debugWhere(String tag, String msg) {
-        StackTraceElement elements[] = Thread.currentThread().getStackTrace();
-        // skip first 3 element, they are not related to the caller
-        for (int i = 3, n = elements.length; i < n; ++i) {
-            StackTraceElement st = elements[i];
-            String message = String.format("    at %s.%s(%s:%s)",
-                    st.getClassName(), st.getMethodName(), st.getFileName(),
-                    st.getLineNumber());
-        }
-    }
+	//private static ParcelFileDescriptor makeInputStream(Uri uri, ContentResolver cr) {
+	//    try {
+	//        return cr.openFileDescriptor(uri, "r");
+	//    } catch (IOException ex) {
+	//        return null;
+	//    }
+	//}
+	//
+	//public static void debugWhere(String tag, String msg) {
+	//    StackTraceElement elements[] = Thread.currentThread().getStackTrace();
+	//    // skip first 3 element, they are not related to the caller
+	//    for (int i = 3, n = elements.length; i < n; ++i) {
+	//        StackTraceElement st = elements[i];
+	//        String message = String.format("    at %s.%s(%s:%s)",
+	//                st.getClassName(), st.getMethodName(), st.getFileName(),
+	//                st.getLineNumber());
+	//    }
+	//}
 
     public static synchronized OnClickListener getNullOnClickListener() {
         if (sNullOnClickListener == null) {

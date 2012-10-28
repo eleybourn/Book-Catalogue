@@ -64,8 +64,6 @@ import com.eleybourn.bookcatalogue.LibraryThingManager;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.Series;
 import com.eleybourn.bookcatalogue.ThumbnailCacheWriterTask;
-import com.eleybourn.bookcatalogue.R.id;
-import com.eleybourn.bookcatalogue.R.string;
 import com.eleybourn.bookcatalogue.database.CoversDbHelper;
 import com.eleybourn.bookcatalogue.dialogs.PartialDatePicker;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
@@ -491,7 +489,6 @@ public class Utils {
 			Logger.logError(e);
 			return "";
 		}
-		HttpURLConnection c;
 		InputStream in = null;
 		try {
             HttpGet httpRequest = null;
@@ -1427,7 +1424,6 @@ public class Utils {
 	 */
 	public static String formatFileSize(float space) {
 		String sizeFmt;
-		String msg;
 		if (space < 3072) { // Show 'bytes' if < 3k
 			sizeFmt = BookCatalogueApp.getResourceString(R.string.bytes);
 		} else if (space < 250 * 1024) { // Show Kb if less than 250kB
@@ -1737,10 +1733,9 @@ public class Utils {
 	public static void prepareDateDialog(PartialDatePicker dialog, Object current, PartialDatePicker.OnDateSetListener listener) {
 		String dateString = current == null ? "" : current.toString();
 		// get the current date
-		final Calendar c = Calendar.getInstance();
-		Integer yyyy = null; //c.get(Calendar.YEAR);
-		Integer mm = null; //c.get(Calendar.MONTH);
-		Integer dd = null; //c.get(Calendar.DAY_OF_MONTH);
+		Integer yyyy = null;
+		Integer mm = null;
+		Integer dd = null;
 		try {
 			String[] dateAndTime = dateString.split(" ");
 			String[] date = dateAndTime[0].split("-");
@@ -1767,6 +1762,27 @@ public class Utils {
 		return dialog;
 	}
 
+	/**
+	 * Utility routine to get an author list from the intent extras
+	 * 
+	 * @param i		Intent with author list
+	 * @return		List of authors
+	 */
+	@SuppressWarnings("unchecked")
+	public static ArrayList<Author> getAuthorsFromBundle(Bundle b) {
+		return (ArrayList<Author>) b.getSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
+	}
 
+	/**
+	 * Utility routine to get a series list from the intent extras
+	 * 
+	 * @param i		Intent with series list
+	 * @return		List of series
+	 */
+	@SuppressWarnings("unchecked")
+	public
+	static ArrayList<Series> getSeriesFromBundle(Bundle b) {
+		return (ArrayList<Series>) b.getSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY);
+	}
 }
 

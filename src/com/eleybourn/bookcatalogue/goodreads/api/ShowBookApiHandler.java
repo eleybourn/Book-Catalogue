@@ -90,14 +90,14 @@ public abstract class ShowBookApiHandler extends ApiHandler {
 	/** Current author being processed */
 	private String mCurrAuthorName = null;
 	/** Current author being processed */
-	private long mCurrAuthorId = 0;
+	//private long mCurrAuthorId = 0;
 
 	/** Current series being processed */
 	private String mCurrSeriesName = null;
 	/** Current series being processed */
 	private Integer mCurrSeriesPosition = null;
 	/** Current series being processed */
-	private int mCurrSeriesId = 0;
+	//private int mCurrSeriesId = 0;
 	/** Flag to indicate if request should be signed. Signed requests via ISB cause server errors
 	 *  and unsigned requests do not return review (not a big problem for searches)
 	 */
@@ -548,7 +548,7 @@ public abstract class ShowBookApiHandler extends ApiHandler {
 		@Override
 		public void process(ElementContext context) {
 			try {
-				mCurrSeriesId = Integer.parseInt(context.body.trim());
+				//mCurrSeriesId = Integer.parseInt(context.body.trim());
 			} catch (Exception e) {
 				// Ignore
 			}
@@ -577,7 +577,7 @@ public abstract class ShowBookApiHandler extends ApiHandler {
 		@Override
 		public void process(ElementContext context) {
 			try {
-				mCurrAuthorId = Long.parseLong(context.body.trim());
+				//mCurrAuthorId = Long.parseLong(context.body.trim());
 			} catch (Exception e) {
 				// Ignore
 			}

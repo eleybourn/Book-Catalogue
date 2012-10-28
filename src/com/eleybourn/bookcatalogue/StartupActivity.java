@@ -316,7 +316,6 @@ public class StartupActivity extends Activity {
 	 */
 	private void stage4Startup() {
 		BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
-		Bundle extras = this.getIntent().getExtras();
 
 		// Handle startup specially.
 		// Check if we really want to start this activity.

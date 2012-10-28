@@ -21,7 +21,6 @@
 package com.eleybourn.bookcatalogue.goodreads.api;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
@@ -32,12 +31,8 @@ import org.apache.http.client.methods.HttpGet;
 
 import android.os.Bundle;
 
-import com.eleybourn.bookcatalogue.Author;
-import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
-import com.eleybourn.bookcatalogue.Series;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.*;
-import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Class to call the search.books api (using a goodreads work ID).

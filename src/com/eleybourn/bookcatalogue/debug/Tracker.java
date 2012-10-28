@@ -6,8 +6,6 @@ import org.acra.ErrorReporter;
 
 import com.eleybourn.bookcatalogue.utils.Utils;
 
-import android.app.Activity;
-
 public class Tracker {
 
 	public enum States {

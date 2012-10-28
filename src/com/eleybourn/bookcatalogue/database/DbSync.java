@@ -208,9 +208,7 @@ public class DbSync {
 			// Synchronize with other code
 			mLock.lock();
 			try {
-				int i = 0;
 				while (true) {
-					i++;
 					// Cleanup any old threads that are dead.
 					purgeOldLocks();
 					//System.out.println(t.getName() + " requesting EXCLUSIVE lock with " + mSharedOwners.size() + " shared locks (attempt #" + i + ")");
@@ -245,7 +243,7 @@ public class DbSync {
 		 * Release the lock previously taken
 		 */
 		public void releaseExclusiveLock() {
-			final Thread t = Thread.currentThread();
+			//final Thread t = Thread.currentThread();
 			//System.out.println(t.getName() + " releasing EXCLUSIVE lock");
 			if (!mLock.isHeldByCurrentThread())
 				throw new RuntimeException("Exclusive Lock is not held by this thread");

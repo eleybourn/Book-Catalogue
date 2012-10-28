@@ -8,7 +8,6 @@ import android.media.MediaPlayer;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.R.raw;
 
 public class SoundManager {
 

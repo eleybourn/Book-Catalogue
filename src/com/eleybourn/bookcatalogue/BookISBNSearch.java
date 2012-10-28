@@ -72,6 +72,8 @@ public class BookISBNSearch extends ActivityWithTasks {
 	private EditText mIsbnText;
 	private EditText mTitleText;
 	private AutoCompleteTextView mAuthorText;
+	private ArrayAdapter<String> mAuthorAdapter = null;
+
 	private Button mConfirmButton;
 	private CatalogueDBAdapter mDbHelper;
 
@@ -272,7 +274,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 					String mAuthor = mAuthorText.getText().toString();
 					String mTitle = mTitleText.getText().toString();
 
-					ArrayAdapter<String> adapter = (ArrayAdapter<String>)mAuthorText.getAdapter();
+					ArrayAdapter<String> adapter = mAuthorAdapter;
 					if (adapter.getPosition(mAuthor) < 0){
 						// Based on code from filipeximenes we also need to update the adapter here in
 						// case no author or book is added, but we still want to see 'recent' entries.
@@ -690,10 +692,10 @@ public class BookISBNSearch extends ActivityWithTasks {
 			}
 			
 			// Now get an adapter based on the combined names
-			final ArrayAdapter<String> author_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, authors);
+			mAuthorAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, authors);
 
 			// Set it
-			mAuthorText.setAdapter(author_adapter);				
+			mAuthorText.setAdapter(mAuthorAdapter);				
 		}
 	}
 

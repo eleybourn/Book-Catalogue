@@ -25,8 +25,6 @@ import java.io.OutputStream;
 import java.util.concurrent.CountDownLatch;
 
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.R.id;
-import com.eleybourn.bookcatalogue.R.layout;
 import com.eleybourn.bookcatalogue.utils.Logger;
 
 import android.app.Activity;
@@ -59,7 +57,7 @@ import android.widget.Toast;
  * The activity can crop specific region of interest from an image.
  */
 public class CropCropImage extends CropMonitoredActivity {
-    private static final String TAG = "CropImage";
+    //private static final String TAG = "CropImage";
 
     // These are various options can be specified in the intent.
     private Bitmap.CompressFormat mOutputFormat =

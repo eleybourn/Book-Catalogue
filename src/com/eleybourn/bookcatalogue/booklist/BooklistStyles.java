@@ -37,7 +37,6 @@ import com.eleybourn.bookcatalogue.UniqueId;
 import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
-import com.eleybourn.bookcatalogue.booklist.BooklistGroup.BooklistAuthorGroup;
 import com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds;
 import com.eleybourn.bookcatalogue.database.SerializationUtils;
 import com.eleybourn.bookcatalogue.database.SerializationUtils.DeserializationException;
@@ -105,7 +104,6 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 	private static void getBuiltinStyles(BooklistStyles styles) {
 		// First build the stock ones
 		BooklistStyle style;
-		BooklistAuthorGroup a;
 
 		// Author/Series
 		style = new BooklistStyle(R.string.sort_author_series);

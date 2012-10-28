@@ -793,7 +793,7 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 	 * @return			True, if handled.
 	 */
 	public boolean onContextItemSelected(BooklistRowView rowView, final Activity context, final CatalogueDBAdapter dba, final MenuItem item) {
-		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+		//AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 		switch(item.getItemId()) {
 
 		case R.id.MENU_DELETE_BOOK:

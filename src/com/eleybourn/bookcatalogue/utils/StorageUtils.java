@@ -17,7 +17,6 @@ import java.util.regex.Pattern;
 
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.R.string;
 import com.eleybourn.bookcatalogue.debug.Tracker;
 
 

@@ -39,9 +39,8 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
  * @author Philip Warner
  */
 public abstract class PreferencesBase extends Activity {
-	private int mLayout;
 
-	/** Get the layour of the subclass */
+	/** Get the layout of the subclass */
 	public abstract int getLayout();
 	/** Setup the views in the layout */
 	public abstract void setupViews(BookCataloguePreferences prefs, Properties globalProps);

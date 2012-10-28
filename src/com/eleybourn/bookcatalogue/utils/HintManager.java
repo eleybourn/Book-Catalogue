@@ -26,9 +26,6 @@ import java.util.Hashtable;
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
-import com.eleybourn.bookcatalogue.R.id;
-import com.eleybourn.bookcatalogue.R.layout;
-import com.eleybourn.bookcatalogue.R.string;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -191,7 +188,7 @@ public class HintManager {
 		/** Preferences key suffix specific to this hint */
 		public final String key;
 		/** String to display for this hint */
-		public final int stringId;
+		//public final int stringId;
 
 		/**
 		 * Constructor
@@ -201,7 +198,7 @@ public class HintManager {
 		 */
 		private Hint(String key, int stringId) {
 			this.key = key;
-			this.stringId = stringId;
+			//this.stringId = stringId;
 		}
 		
 		/**

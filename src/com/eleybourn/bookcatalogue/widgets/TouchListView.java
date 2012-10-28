@@ -19,7 +19,6 @@
 package com.eleybourn.bookcatalogue.widgets;
 
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.R.styleable;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -62,7 +61,7 @@ public class TouchListView extends ListView {
 	private Bitmap mDragBitmap;
 	private final int mTouchSlop;
 	private int mItemHeightNormal=-1;
-	private int mItemHeightExpanded=-1;
+	//private int mItemHeightExpanded=-1;
 	private int grabberId=-1;
 	private int dragndropBackgroundColor=0x00000000; 
 	private boolean mWasFirstExpansion = false;	// Set to true at start of a new drag operation
@@ -85,7 +84,7 @@ public class TouchListView extends ListView {
 																							0, 0);
 		
 			mItemHeightNormal=a.getDimensionPixelSize(R.styleable.TouchListView_normal_height, 0);
-			mItemHeightExpanded=a.getDimensionPixelSize(R.styleable.TouchListView_expanded_height, mItemHeightNormal);
+			//mItemHeightExpanded=a.getDimensionPixelSize(R.styleable.TouchListView_expanded_height, mItemHeightNormal);
 			grabberId=a.getResourceId(R.styleable.TouchListView_grabber, -1);
 			dragndropBackgroundColor=a.getColor(R.styleable.TouchListView_dragndrop_background, 0x00000000);
 			mRemoveMode=a.getInt(R.styleable.TouchListView_remove_mode, -1);

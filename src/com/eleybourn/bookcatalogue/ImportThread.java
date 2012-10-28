@@ -31,7 +31,6 @@ public class ImportThread extends ManagedTask {
 	private final File mFile;
 	private String mFileSpec;
 	private boolean mFileIsForeign;
-	private boolean mImageCopyFailed = false;
 	private final String mSharedStoragePath;
 	private CatalogueDBAdapter mDbHelper;
 	
@@ -43,8 +42,8 @@ public class ImportThread extends ManagedTask {
 		}
 	};
 
-	private int mImportUpdated;
-	private int mImportCreated;
+	//private int mImportUpdated;
+	//private int mImportCreated;
 
 	public ImportThread(TaskManager manager, String fileSpec) throws IOException {
 		super(manager);
@@ -99,8 +98,6 @@ public class ImportThread extends ManagedTask {
 	@Override
 	protected void onRun() {
 		// Initialize
-		mImageCopyFailed = false;
-
 		ArrayList<String> export = readFile(mFileSpec);
 		
 		if (export == null || export.size() == 0)
@@ -277,7 +274,7 @@ public class ImportThread extends ManagedTask {
 						Long id = mDbHelper.createBook(values);
 						values.putString(CatalogueDBAdapter.KEY_ROWID, id.toString());
 						// Would be nice to import a cover, but with no ID/UUID thats not possible
-						mImportCreated++;
+						//mImportCreated++;
 					} else {
 						boolean exists;
 						// Save the original ID from the file for use in checing for images
@@ -305,10 +302,10 @@ public class ImportThread extends ManagedTask {
 
 						if (exists) {
 							mDbHelper.updateBook(idLong, values, false);								
-							mImportUpdated++;
+							//mImportUpdated++;
 						} else {
 							newId = mDbHelper.createBook(idLong, values);
-							mImportCreated++;
+							//mImportCreated++;
 							values.putString(CatalogueDBAdapter.KEY_ROWID, newId.toString());							
 							idLong = newId;
 						}
@@ -692,6 +689,7 @@ public class ImportThread extends ManagedTask {
 	}
 
 	// Require a column
+	@SuppressWarnings("unused")
 	private void requireColumn(Bundle values, String name) {
 		if (values.containsKey(name))
 			return;
@@ -717,6 +715,7 @@ public class ImportThread extends ManagedTask {
 		throw new ImportException(String.format(s, name, row));
 	}
 
+	@SuppressWarnings("unused")
 	private void requireAnyNonblank(Bundle values, int row, String... names) {
 		for(int i = 0; i < names.length; i++)
 			if (values.containsKey(names[i]) && values.getString(names[i]).length() != 0)

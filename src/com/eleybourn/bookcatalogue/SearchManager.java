@@ -70,8 +70,6 @@ public class SearchManager implements TaskManagerListener {
 	private boolean mWaitingForIsbn = false;
 	// Flag indicating a task was cancelled.
 	private boolean mCancelledFlg = false;
-	// Flag to indicate search finished
-	private boolean mFinished = false;
 	// Original author for search
 	private String mAuthor;
 	// Original title for search
@@ -220,7 +218,6 @@ public class SearchManager implements TaskManagerListener {
 
 		mWaitingForIsbn = false;
 		mCancelledFlg = false;
-		mFinished = false;
 
 		mAuthor = author;
 		mTitle = title;
@@ -413,7 +410,6 @@ public class SearchManager implements TaskManagerListener {
 			}
 		}
 		sendSearchFinished();
-		mFinished = true;
 	}
 
 	private void sendSearchFinished() {

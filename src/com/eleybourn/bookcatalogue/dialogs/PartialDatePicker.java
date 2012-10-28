@@ -5,7 +5,6 @@ import java.util.Calendar;
 import com.eleybourn.bookcatalogue.R;
 
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.text.Editable;
@@ -44,6 +43,8 @@ public class PartialDatePicker extends AlertDialog {
 	private Spinner mMonthSpinner;
 	/** Local ref to day spinner */
 	private Spinner mDaySpinner;
+	/** Local ref to day spinner adapter */
+	private ArrayAdapter<String> mDayAdapter;
 	/** Local ref to year text view */
 	private EditText mYearView;
 	
@@ -110,13 +111,13 @@ public class PartialDatePicker extends AlertDialog {
 		mMonthSpinner.setAdapter(monthAdapter);
 
 		// Create day spinner adapter
-		ArrayAdapter<String> dayAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item);
-		dayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		mDaySpinner.setAdapter(dayAdapter);
+		mDayAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item);
+		mDayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		mDaySpinner.setAdapter(mDayAdapter);
 
 		// First entry is 'unknown'
 		monthAdapter.add("---"); 
-		dayAdapter.add("--"); 
+		mDayAdapter.add("--"); 
 
 		// Make sure that the spinner can initially take any 'day' value. Otherwise, when a dialog is
 		// reconstructed after rotation, the 'day' field will not be restorable by Android.
@@ -395,11 +396,11 @@ public class PartialDatePicker extends AlertDialog {
 	private void regenDaysOfMonth(Integer totalDays) {
 		// Save the current day in case the regen alters it
 		Integer daySave = mDay;
-		ArrayAdapter<String> days = (ArrayAdapter<String>)mDaySpinner.getAdapter();
+		//ArrayAdapter<String> days = (ArrayAdapter<String>)mDaySpinner.getAdapter();
 
 		// Make sure we have the 'no-day' value in the dialog
-		if (days.getCount() == 0)
-			days.add("--");
+		if (mDayAdapter.getCount() == 0)
+			mDayAdapter.add("--");
 
 		// Determine the total days if not passed to us
 		if (totalDays == null || totalDays == 0) {
@@ -417,13 +418,13 @@ public class PartialDatePicker extends AlertDialog {
 		
 		// If we have a valid total number of days, then update the list
 		if (totalDays != null) {
-			if (days.getCount() < totalDays) {
-				for(int i = days.getCount(); i <= totalDays; i++) {
-					days.add(i + "");
+			if (mDayAdapter.getCount() < totalDays) {
+				for(int i = mDayAdapter.getCount(); i <= totalDays; i++) {
+					mDayAdapter.add(i + "");
 				}
 			} else {
-				for(int i = days.getCount() - 1; i > totalDays; i--) {
-					days.remove(i + "");
+				for(int i = mDayAdapter.getCount() - 1; i > totalDays; i--) {
+					mDayAdapter.remove(i + "");
 				}
 			}
 

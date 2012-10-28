@@ -223,60 +223,60 @@ public class CatalogueDBAdapter {
 			DOM_LAST_UPDATE_DATE.getDefinition(true) +
 			")";
 
-	private static final String DATABASE_CREATE_BOOKS_70 =
-			"create table " + DB_TB_BOOKS + 
-			" (_id integer primary key autoincrement, " +
-			/* KEY_AUTHOR + " integer not null REFERENCES " + DB_TB_AUTHORS + ", " + */
-			KEY_TITLE + " text not null, " +
-			KEY_ISBN + " text, " +
-			KEY_PUBLISHER + " text, " +
-			KEY_DATE_PUBLISHED + " date, " +
-			KEY_RATING + " float not null default 0, " +
-			KEY_READ + " boolean not null default 0, " +
-			/* KEY_SERIES + " text, " + */
-			KEY_PAGES + " int, " +
-			/* KEY_SERIES_NUM + " text, " + */
-			KEY_NOTES + " text, " +
-			KEY_LIST_PRICE + " text, " +
-			KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO + ", " + 
-			KEY_LOCATION + " text, " +
-			KEY_READ_START + " date, " +
-			KEY_READ_END + " date, " +
-			KEY_FORMAT + " text, " +
-			KEY_SIGNED + " boolean not null default 0, " +
-			KEY_DESCRIPTION + " text, " +
-			KEY_GENRE + " text, " +
-			KEY_DATE_ADDED + " datetime default current_timestamp, " +
-			DOM_GOODREADS_BOOK_ID.getDefinition(true) + ", " +
-			DOM_BOOK_UUID.getDefinition(true) +
-			")";
-
-	private static final String DATABASE_CREATE_BOOKS_69 =
-			"create table " + DB_TB_BOOKS + 
-			" (_id integer primary key autoincrement, " +
-			/* KEY_AUTHOR + " integer not null REFERENCES " + DB_TB_AUTHORS + ", " + */
-			KEY_TITLE + " text not null, " +
-			KEY_ISBN + " text, " +
-			KEY_PUBLISHER + " text, " +
-			KEY_DATE_PUBLISHED + " date, " +
-			KEY_RATING + " float not null default 0, " +
-			KEY_READ + " boolean not null default 0, " +
-			/* KEY_SERIES + " text, " + */
-			KEY_PAGES + " int, " +
-			/* KEY_SERIES_NUM + " text, " + */
-			KEY_NOTES + " text, " +
-			KEY_LIST_PRICE + " text, " +
-			KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO + ", " + 
-			KEY_LOCATION + " text, " +
-			KEY_READ_START + " date, " +
-			KEY_READ_END + " date, " +
-			KEY_FORMAT + " text, " +
-			KEY_SIGNED + " boolean not null default 0, " +
-			KEY_DESCRIPTION + " text, " +
-			KEY_GENRE + " text, " +
-			KEY_DATE_ADDED + " datetime default current_timestamp, " +
-			DOM_GOODREADS_BOOK_ID.getDefinition(true) +
-			")";
+	//private static final String DATABASE_CREATE_BOOKS_70 =
+	//		"create table " + DB_TB_BOOKS + 
+	//		" (_id integer primary key autoincrement, " +
+	//		/* KEY_AUTHOR + " integer not null REFERENCES " + DB_TB_AUTHORS + ", " + */
+	//		KEY_TITLE + " text not null, " +
+	//		KEY_ISBN + " text, " +
+	//		KEY_PUBLISHER + " text, " +
+	//		KEY_DATE_PUBLISHED + " date, " +
+	//		KEY_RATING + " float not null default 0, " +
+	//		KEY_READ + " boolean not null default 0, " +
+	//		/* KEY_SERIES + " text, " + */
+	//		KEY_PAGES + " int, " +
+	//		/* KEY_SERIES_NUM + " text, " + */
+	//		KEY_NOTES + " text, " +
+	//		KEY_LIST_PRICE + " text, " +
+	//		KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO + ", " + 
+	//		KEY_LOCATION + " text, " +
+	//		KEY_READ_START + " date, " +
+	//		KEY_READ_END + " date, " +
+	//		KEY_FORMAT + " text, " +
+	//		KEY_SIGNED + " boolean not null default 0, " +
+	//		KEY_DESCRIPTION + " text, " +
+	//		KEY_GENRE + " text, " +
+	//		KEY_DATE_ADDED + " datetime default current_timestamp, " +
+	//		DOM_GOODREADS_BOOK_ID.getDefinition(true) + ", " +
+	//		DOM_BOOK_UUID.getDefinition(true) +
+	//		")";
+	//
+	//private static final String DATABASE_CREATE_BOOKS_69 =
+	//		"create table " + DB_TB_BOOKS + 
+	//		" (_id integer primary key autoincrement, " +
+	//		/* KEY_AUTHOR + " integer not null REFERENCES " + DB_TB_AUTHORS + ", " + */
+	//		KEY_TITLE + " text not null, " +
+	//		KEY_ISBN + " text, " +
+	//		KEY_PUBLISHER + " text, " +
+	//		KEY_DATE_PUBLISHED + " date, " +
+	//		KEY_RATING + " float not null default 0, " +
+	//		KEY_READ + " boolean not null default 0, " +
+	//		/* KEY_SERIES + " text, " + */
+	//		KEY_PAGES + " int, " +
+	//		/* KEY_SERIES_NUM + " text, " + */
+	//		KEY_NOTES + " text, " +
+	//		KEY_LIST_PRICE + " text, " +
+	//		KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO + ", " + 
+	//		KEY_LOCATION + " text, " +
+	//		KEY_READ_START + " date, " +
+	//		KEY_READ_END + " date, " +
+	//		KEY_FORMAT + " text, " +
+	//		KEY_SIGNED + " boolean not null default 0, " +
+	//		KEY_DESCRIPTION + " text, " +
+	//		KEY_GENRE + " text, " +
+	//		KEY_DATE_ADDED + " datetime default current_timestamp, " +
+	//		DOM_GOODREADS_BOOK_ID.getDefinition(true) +
+	//		")";
 
 	private static final String DATABASE_CREATE_BOOKS_68 =
 			"create table " + DB_TB_BOOKS + 
@@ -3381,7 +3381,7 @@ public class CatalogueDBAdapter {
 				values.putString(KEY_DATE_ADDED, Utils.toSqlDateTime(new Date()));
 
 			// Make sure we have an author
-			ArrayList<Author> authors = (ArrayList<Author>) values.getSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
+			ArrayList<Author> authors = Utils.getAuthorsFromBundle(values);
 			if (authors == null || authors.size() == 0)
 				throw new IllegalArgumentException();
 			ContentValues initialValues = filterValues(values, mBooksInfo);
@@ -3401,7 +3401,7 @@ public class CatalogueDBAdapter {
 			}
 
 			createBookAuthors(rowId, authors);
-			ArrayList<Series> series = (ArrayList<Series>) values.getSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY);
+			ArrayList<Series> series = Utils.getSeriesFromBundle(values);
 			createBookSeries(rowId, series);
 
 			try {
@@ -3930,11 +3930,11 @@ public class CatalogueDBAdapter {
 			}
 
 			if (values.containsKey(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)) {
-				ArrayList<Author> authors = (ArrayList<Author>) values.getSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
+				ArrayList<Author> authors = Utils.getAuthorsFromBundle(values);
 				createBookAuthors(rowId, authors);			
 			}
 			if (values.containsKey(CatalogueDBAdapter.KEY_SERIES_ARRAY)) {
-				ArrayList<Series> series = (ArrayList<Series>) values.getSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY);
+				ArrayList<Series> series = Utils.getSeriesFromBundle(values);
 				createBookSeries(rowId, series);			
 			}
 
@@ -4409,8 +4409,7 @@ public class CatalogueDBAdapter {
 		}
 
 		if (uuid != null && !uuid.equals("")) {
-			int delCount = getUtils().eraseCachedBookCover(uuid);
-			//System.out.println(delCount + " cached images deleted");
+			getUtils().eraseCachedBookCover(uuid);
 		}
 
 		return success;

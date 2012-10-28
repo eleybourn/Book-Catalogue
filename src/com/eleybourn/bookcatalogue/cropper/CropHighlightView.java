@@ -18,7 +18,6 @@ package com.eleybourn.bookcatalogue.cropper;
 
 
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.R.drawable;
 
 import android.graphics.Canvas;
 import android.graphics.Matrix;

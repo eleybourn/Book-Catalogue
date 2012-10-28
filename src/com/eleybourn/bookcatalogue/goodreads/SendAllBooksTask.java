@@ -92,7 +92,7 @@ public class SendAllBooksTask extends GenericTask {
 	 * @throws NotAuthorizedException
 	 */
 	public boolean sendAllBooks(QueueManager qmanager, Context context) throws NotAuthorizedException {
-		int lastSave = mCount;
+		//int lastSave = mCount;
 		boolean needsRetryReset = true;
 
 		// ENHANCE: Work out a way of checking if GR site is up
@@ -177,9 +177,10 @@ public class SendAllBooksTask extends GenericTask {
 				// Save every few rows in case phone dies (and to allow task queries to see data)
 				// Actually, save every row because it updates the UI, and sending a row takes a while.
 				//if (mCount - lastSave >= 5) {
-					qmanager.saveTask(this);
-					lastSave = mCount;
+				//	qmanager.saveTask(this);
+				//	lastSave = mCount;
 				//}
+				qmanager.saveTask(this);
 
 				if (this.isAborting()) {
 					qmanager.saveTask(this);

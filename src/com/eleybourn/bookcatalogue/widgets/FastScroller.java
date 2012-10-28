@@ -62,7 +62,6 @@ package com.eleybourn.bookcatalogue.widgets;
  */
 
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.R.drawable;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -96,8 +95,8 @@ public class FastScroller {
     private static int MIN_PAGES = 4;
     // Scroll thumb not showing
     private static final int STATE_NONE = 0;
-    // Not implemented yet - fade-in transition
-    private static final int STATE_ENTER = 1;
+    // ENHANCE: Not implemented yet - fade-in transition
+    // private static final int STATE_ENTER = 1;
     // Scroll thumb visible and moving along with the scrollbar
     private static final int STATE_VISIBLE = 2;
     // Scroll thumb being dragged by user

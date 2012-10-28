@@ -479,7 +479,6 @@ public class LibraryThingManager {
 		private StringBuilder mBuilder = new StringBuilder();
 		
 		private FieldTypes mFieldType = FieldTypes.OTHER;
-		private String mWorkId;
 		
 		SearchLibraryThingEntryHandler(Bundle bookData) {
 			mBookData = bookData;
@@ -521,13 +520,13 @@ public class LibraryThingManager {
 
 			if (localName.equalsIgnoreCase(RESPONSE)){
 				// Not really much to do; we *could* look for the <err> element, then report it.
-				String stat = attributes.getValue("", "stat");
+				//String stat = attributes.getValue("", "stat");
 			} else if (localName.equalsIgnoreCase(ITEM)){
 				// We don't use it yet, but this contains the Work ID. LibraryThing supports
 				// retrieval of other editions etc via the Work ID.
 				String type = attributes.getValue("","type");
 				if (type != null && type.equalsIgnoreCase("work")) {
-					mWorkId = attributes.getValue("", "id");
+					//mWorkId = attributes.getValue("", "id");
 				}
 			} else if (localName.equalsIgnoreCase(FIELD)){
 				// FIELDs are the main things we want. Once we are in a fieldm we wait for a FACT; these

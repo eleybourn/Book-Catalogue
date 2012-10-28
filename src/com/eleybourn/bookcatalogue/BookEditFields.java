@@ -517,9 +517,9 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 				// The thumbnail image is not automatically preserved, so reload it.
 				setCoverImage();
 				// Author and series lists
-				mAuthorList = (ArrayList<Author>) savedInstanceState.getSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
+				mAuthorList = Utils.getAuthorsFromBundle(savedInstanceState);
 				fixupAuthorList();	// Will update related display fields/button
-				mSeriesList = (ArrayList<Series>) savedInstanceState.getSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY);
+				mSeriesList = Utils.getSeriesFromBundle(savedInstanceState);
 				fixupSeriesList();	// Will update related display fields/button
 				mFields.getField(R.id.date_published).setValue(savedInstanceState.getString(CatalogueDBAdapter.KEY_DATE_PUBLISHED));
 				// Restore bookshelves
@@ -1024,8 +1024,8 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 					initDefaultShelf();
 
 					// Author/Series
-					mAuthorList = (ArrayList<Author>) values.getSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
-					mSeriesList = (ArrayList<Series>) values.getSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY);
+					mAuthorList = Utils.getAuthorsFromBundle(values);
+					mSeriesList = Utils.getSeriesFromBundle(values);
 				}
 				
 			} catch (NullPointerException e) {
@@ -1442,7 +1442,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 
 		/* These are global variables that will be sent via intent back to the list view, if added/created */
 		try {
-			ArrayList<Author> authors = (ArrayList<Author>) mStateValues.getSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
+			ArrayList<Author> authors = Utils.getAuthorsFromBundle(mStateValues);
 			if (authors.size() > 0) {
 				added_author = authors.get(0).getSortName();
 			} else { 
@@ -1452,7 +1452,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 			Logger.logError(e);
 		};
 		try {
-			ArrayList<Series> series = (ArrayList<Series>) mStateValues.getSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY);
+			ArrayList<Series> series = Utils.getSeriesFromBundle(mStateValues);
 			if (series.size() > 0)
 				added_series = series.get(0).name;
 			else 
@@ -1609,7 +1609,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 				return;
 			case ACTIVITY_EDIT_AUTHORS:
 				if (resultCode == Activity.RESULT_OK && intent.hasExtra(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)){
-					mAuthorList = (ArrayList<Author>) intent.getSerializableExtra(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
+					mAuthorList = Utils.getAuthorsFromBundle(intent.getExtras());
 					setDirty(true);
 				} else {
 					// Even though the dialog was terminated, some authors MAY have been updated/added.
@@ -1626,7 +1626,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 				setDirty(oldDirty);
 			case ACTIVITY_EDIT_SERIES:
 				if (resultCode == Activity.RESULT_OK && intent.hasExtra(CatalogueDBAdapter.KEY_SERIES_ARRAY)){
-					mSeriesList = (ArrayList<Series>) intent.getSerializableExtra(CatalogueDBAdapter.KEY_SERIES_ARRAY);
+					mSeriesList = Utils.getSeriesFromBundle(intent.getExtras());
 					fixupSeriesList();
 					setDirty(true);
 				}
@@ -1635,7 +1635,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 			Tracker.handleEvent(this, "onActivityResult", Tracker.States.Exit);			
 		}
 	}
-	
+
 	private void fixupAuthorList() {
 
 		String newText;

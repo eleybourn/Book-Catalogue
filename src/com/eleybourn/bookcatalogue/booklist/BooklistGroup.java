@@ -35,11 +35,8 @@ import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.properties.BooleanListProperty;
 import com.eleybourn.bookcatalogue.properties.Properties;
-import com.eleybourn.bookcatalogue.properties.Property;
-import com.eleybourn.bookcatalogue.properties.BooleanProperty;
 import com.eleybourn.bookcatalogue.properties.PropertyGroup;
 import com.eleybourn.bookcatalogue.properties.ListProperty.ItemEntries;
-import com.eleybourn.bookcatalogue.properties.ListProperty.ItemEntry;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyle.CompoundKey;
 import com.eleybourn.bookcatalogue.database.DbUtils.DomainDefinition;
 

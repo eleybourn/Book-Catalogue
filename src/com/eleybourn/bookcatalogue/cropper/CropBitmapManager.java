@@ -21,7 +21,6 @@ import android.graphics.BitmapFactory;
 
 import java.io.FileDescriptor;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.WeakHashMap;
 
 /**
@@ -39,7 +38,7 @@ import java.util.WeakHashMap;
  * so you don't need to remove Thread from it if some thread dies.
  */
 public class CropBitmapManager {
-    private static final String TAG = "BitmapManager";
+    //private static final String TAG = "BitmapManager";
     private static enum State {CANCEL, ALLOW}
     private static class ThreadStatus {
         public State mState = State.ALLOW;
@@ -160,17 +159,17 @@ public class CropBitmapManager {
         notifyAll();
     }
 
-    /**
-     * A debugging routine.
-     */
-    public synchronized void dump() {
-        Iterator<Map.Entry<Thread, ThreadStatus>> i =
-                mThreadStatus.entrySet().iterator();
-
-        while (i.hasNext()) {
-            Map.Entry<Thread, ThreadStatus> entry = i.next();
-        }
-    }
+	///**
+	// * A debugging routine.
+	// */
+	//public synchronized void dump() {
+	//    Iterator<Map.Entry<Thread, ThreadStatus>> i =
+	//            mThreadStatus.entrySet().iterator();
+	//
+	//    while (i.hasNext()) {
+	//        Map.Entry<Thread, ThreadStatus> entry = i.next();
+	//    }
+	//}
 
     public static synchronized CropBitmapManager instance() {
         if (sManager == null) {

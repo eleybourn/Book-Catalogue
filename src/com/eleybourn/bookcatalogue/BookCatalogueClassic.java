@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
+import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
 import com.eleybourn.bookcatalogue.goodreads.SendOneBookTask;
@@ -76,10 +77,7 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 	
 	// Target size of a thumbnail in a list (bbox dim)
 	private static final int LIST_THUMBNAIL_SIZE=60;
-	
-	private static final int ACTIVITY_SORT=2;
-	private static final int ACTIVITY_ADMIN=5;
-	
+		
 	private CatalogueDBAdapter mDbHelper;
 	private static final int SORT_BY_AUTHOR_EXPANDED = MenuHandler.FIRST + 1; 
 	private static final int SORT_BY_AUTHOR_COLLAPSED = MenuHandler.FIRST + 2;
@@ -246,7 +244,7 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 				alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
 				alertDialog.setButton(BookCatalogueClassic.this.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
-						Administration.adminPage(BookCatalogueClassic.this, "update_fields", ACTIVITY_ADMIN);
+						Administration.adminPage(BookCatalogueClassic.this, "update_fields", UniqueId.ACTIVITY_ADMIN);
 						return;
 					}
 				}); 
@@ -1620,7 +1618,7 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
 		switch(requestCode) {
-		case R.id.ACTIVITY_CREATE_BOOK_SCAN:
+		case UniqueId.ACTIVITY_CREATE_BOOK_SCAN:
 			try {
 				String contents = intent.getStringExtra("SCAN_RESULT");
 				// Handle the possibility of null/empty scanned string
@@ -1628,7 +1626,7 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 					Toast.makeText(this, R.string.isbn_found, Toast.LENGTH_LONG).show();
 					Intent i = new Intent(this, BookISBNSearch.class);
 					i.putExtra("isbn", contents);
-					startActivityForResult(i, R.id.ACTIVITY_CREATE_BOOK_SCAN);
+					startActivityForResult(i, UniqueId.ACTIVITY_CREATE_BOOK_SCAN);
 				} else {
 					fillData();				
 				}
@@ -1637,11 +1635,11 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 				fillData();
 			}
 			break;
-		case R.id.ACTIVITY_CREATE_BOOK_ISBN:
-		case R.id.ACTIVITY_CREATE_BOOK_MANUALLY:
-		case R.id.ACTIVITY_EDIT_BOOK:
-		case ACTIVITY_SORT:
-		case ACTIVITY_ADMIN:
+		case UniqueId.ACTIVITY_CREATE_BOOK_ISBN:
+		case UniqueId.ACTIVITY_CREATE_BOOK_MANUALLY:
+		case UniqueId.ACTIVITY_EDIT_BOOK:
+		case UniqueId.ACTIVITY_SORT:
+		case UniqueId.ACTIVITY_ADMIN:
 			try {
 				// Use the ADDED_* fields if present.
 				if (intent != null && intent.hasExtra(BookEditFields.ADDED_HAS_INFO)) {
@@ -1673,7 +1671,7 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 			// We call bookshelf not fillData in case the bookshelves have been updated.
 			bookshelf();
 			break;
-		case R.id.ACTIVITY_ADMIN_FINISH:
+		case UniqueId.ACTIVITY_ADMIN_FINISH:
 			finish();
 			break;
 		}

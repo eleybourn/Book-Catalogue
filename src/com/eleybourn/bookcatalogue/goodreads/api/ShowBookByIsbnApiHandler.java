@@ -33,12 +33,13 @@ import org.apache.http.client.methods.HttpGet;
 import android.os.Bundle;
 
 import com.eleybourn.bookcatalogue.Author;
+import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.IsbnUtils;
+import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.Series;
 import com.eleybourn.bookcatalogue.Utils;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
-import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.*;
 
 /**
@@ -73,7 +74,7 @@ public class ShowBookByIsbnApiHandler extends ShowBookApiHandler {
 			throw new RuntimeException("Null ISBN specified in search");
 		isbn = isbn.trim();
 		if (!IsbnUtils.isValid(isbn))
-			throw new RuntimeException("Invalid ISBN '" + isbn + "' specified in search");
+			throw new RuntimeException(BookCatalogueApp.getResourceString(R.string.invalid_isbn_x_specified_in_search, isbn));
 
 		// Setup API call //
 		final String urlBase = "http://www.goodreads.com/book/isbn?format=xml&isbn=%1$s&key=%2$s"; //format=xml&

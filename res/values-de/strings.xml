@@ -372,18 +372,6 @@ anschließend auf eine leeren Seite landen. Klicken Sie einfach auf den "Zurück
 <string name="no_publisher">(kein Verlag)</string>
 <string name="no_author">(kein Autor)</string>
 <string name="no_date">(kein Datum)</string>
-<item name="ACTIVITY_CREATE_BOOK_MANUALLY" type="id" />
-<item name="ACTIVITY_CREATE_BOOK_ISBN" type="id" />
-<item name="ACTIVITY_CREATE_BOOK_SCAN" type="id" />
-<item name="ACTIVITY_EDIT_BOOK" type="id" />
-<item name="ACTIVITY_ADMIN" type="id" />
-<item name="ACTIVITY_HELP" type="id" />
-<item name="ACTIVITY_PREFERENCES" type="id" />
-<item name="ACTIVITY_BOOKLIST_STYLE" type="id" />
-<item name="ACTIVITY_BOOKLIST_STYLE_PROPERTIES" type="id" />
-<item name="ACTIVITY_BOOKLIST_STYLE_GROUPS" type="id" />
-<item name="ACTIVITY_BOOKLIST_STYLES" type="id" />
-<item name="ACTIVITY_GOODREADS_EXPORT_FAILURES" type="id" />
 <string name="book_lists">Bücherliste</string>
 <string name="show_all_authors">Zeige Bücher unter jedem Autor</string>
 <string name="show_all_series">Zeige alle Bücher einer Serie</string>
@@ -566,7 +554,6 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
 <string name="menu_edit_format">Format bearbeiten…</string>
 <string name="edit_format_name">Formatname bearbeiten</string>
 <string name="name_can_not_be_blank">Name darf nicht leer sein</string>
-<item name="ACTIVITY_ADMIN_FINISH" type="id" />
 <string name="export_starting_ellipsis">Export startet…</string>
 <string name="resizing_cover_thumbnails">Größe der Cover-Bilder ändern</string>
 <string name="resize_each_time">Größe bei Bedarf ändern (geringerer Speicherverbrauch, langsamerer Bildlauf)</string>

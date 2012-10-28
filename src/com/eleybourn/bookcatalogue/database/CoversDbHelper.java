@@ -145,6 +145,31 @@ public class CoversDbHelper extends GenericOpenHelper {
 			db.endTransaction(txLock);
 		}
 	}
+	
+	/**
+	 * Delete the cached covers associated with the passed hash
+	 * 
+	 * @param filename
+	 */
+	private SynchronizedStatement mDeleteBookCoversStmt = null;
+	public void deleteBookCover(final String bookHash) {
+		SynchronizedDb db = getDb();
+
+		if (mDeleteBookCoversStmt == null) {
+			String sql = "Delete From " + TBL_IMAGE + " Where " + DOM_FILENAME + " LIKE ?";
+			mDeleteBookCoversStmt = mStatements.add(db, "mDeleteBookCoversStmt", sql);
+		}
+
+		mDeleteBookCoversStmt.bindString(1, bookHash + "%");
+
+		SyncLock txLock = db.beginTransaction(true);
+		try {
+			mDeleteBookCoversStmt.execute();
+			db.setTransactionSuccessful();
+		} finally {
+			db.endTransaction(txLock);
+		}
+	}
 
 	/**
 	 * Get the named 'file'

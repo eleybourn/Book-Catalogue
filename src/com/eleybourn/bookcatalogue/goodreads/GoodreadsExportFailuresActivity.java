@@ -35,6 +35,7 @@ import android.widget.TextView;
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.HintManager;
+import com.eleybourn.bookcatalogue.UniqueId;
 import com.eleybourn.bookcatalogue.Utils;
 import com.eleybourn.bookcatalogue.HintManager.HintOwner;
 import com.eleybourn.bookcatalogue.ViewTagger;
@@ -240,7 +241,7 @@ public class GoodreadsExportFailuresActivity extends  net.philipwarner.taskqueue
 	 * @return
 	 */
 	public static int getActivityId() {
-		return R.id.ACTIVITY_GOODREADS_EXPORT_FAILURES;
+		return UniqueId.ACTIVITY_GOODREADS_EXPORT_FAILURES;
 	}
 
 	/**

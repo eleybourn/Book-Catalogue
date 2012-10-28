@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.eleybourn.bookcatalogue;
+package com.eleybourn.bookcatalogue.cropper;
 
 
 import java.io.File;
@@ -23,6 +23,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.CountDownLatch;
+
+import com.eleybourn.bookcatalogue.Logger;
+import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.R.id;
+import com.eleybourn.bookcatalogue.R.layout;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -69,8 +74,10 @@ public class CropCropImage extends CropMonitoredActivity {
     private int mOutputX, mOutputY;
     private boolean mScale;
     private boolean mScaleUp = true;
+    // Flag indicating if default crop rect is whole image
+    private boolean mCropWholeImage = false;
 
-    private boolean mDoFaceDetection = true;
+    private boolean mDoFaceDetection = false;
 
     boolean mWaitingToPick; // Whether we are wait the user to pick a face.
     boolean mSaving;  // Whether the "save" button is already clicked.
@@ -110,7 +117,13 @@ public class CropCropImage extends CropMonitoredActivity {
 	    
 	    mImagePath = extras.getString("image-path");
 
-	    mSaveUri = getImageUri(mImagePath);
+	    // Use the "output" parameter if present, otherwise overwrite existing file
+	    String imgUri = extras.getString("output");
+	    if (imgUri == null) 
+	    	imgUri = mImagePath;
+
+	    mSaveUri = getImageUri(imgUri);
+	   
 	    mBitmap = getBitmap(mImagePath);
 
 	    mAspectX = extras.getInt("aspectX");
@@ -119,6 +132,7 @@ public class CropCropImage extends CropMonitoredActivity {
 	    mOutputY = extras.getInt("outputY");
 	    mScale = extras.getBoolean("scale", true);
 	    mScaleUp = extras.getBoolean("scaleUpIfNeeded", true);
+	    mCropWholeImage = extras.getBoolean("whole-image", false);
 	}
 
 
@@ -323,7 +337,8 @@ public class CropCropImage extends CropMonitoredActivity {
 		    croppedImage.compress(mOutputFormat, 75, outputStream);
 		}
 	    } catch (IOException ex) {
-		// TODO: report error to caller
+	    	// TODO: report error to caller
+	    	Logger.logError(ex, "Error while saving image");
 	    } finally {
 		CropUtil.closeSilently(outputStream);
 	    }
@@ -464,16 +479,24 @@ public class CropCropImage extends CropMonitoredActivity {
 
 	    Rect imageRect = new Rect(0, 0, width, height);
 
-	    // make the default size about 4/5 of the width or height
-	    int cropWidth = Math.min(width, height) * 4 / 5;
-	    int cropHeight = cropWidth;
+	    int cropWidth;
+	    int cropHeight;
+	    if (mCropWholeImage) {
+		    cropWidth = width;
+		    cropHeight = height;
+	    } else {
+		    // make the default size about 4/5 of the width or height
+		    cropWidth = Math.min(width, height) ;// XXXX * 4 / 5;
+		    cropHeight = cropWidth;
+	    }
 
+	    // Even though we may be set to 'crop-whole-image', we need to obey aspect ratio if set.
 	    if (mAspectX != 0 && mAspectY != 0) {
-		if (mAspectX > mAspectY) {
-		    cropHeight = cropWidth * mAspectY / mAspectX;
-		} else {
-		    cropWidth = cropHeight * mAspectX / mAspectY;
-		}
+			if (mAspectX > mAspectY) {
+			    cropHeight = cropWidth * mAspectY / mAspectX;
+			} else {
+			    cropWidth = cropHeight * mAspectX / mAspectY;
+			}
 	    }
 
 	    int x = (width - cropWidth) / 2;

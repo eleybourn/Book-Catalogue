@@ -33,6 +33,7 @@ import android.database.Cursor;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
+import com.eleybourn.bookcatalogue.UniqueId;
 import com.eleybourn.bookcatalogue.Utils;
 import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.R;
@@ -413,7 +414,7 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 	 */
 	public static void startEditActivity(Activity a) {
 		Intent i = new Intent(a, BooklistStylesActivity.class);
-		a.startActivityForResult(i, R.id.ACTIVITY_BOOKLIST_STYLES);			
+		a.startActivityForResult(i, UniqueId.ACTIVITY_BOOKLIST_STYLES);			
 	}
 }
 

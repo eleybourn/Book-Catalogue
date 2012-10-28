@@ -41,6 +41,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.TimeZone;
 
@@ -59,10 +60,12 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
 import com.eleybourn.bookcatalogue.database.CoversDbHelper;
+import com.eleybourn.bookcatalogue.dialogs.PartialDatePicker;
+import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Shader.TileMode;
@@ -71,15 +74,11 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 public class Utils {
 	// External DB for cover thumbnails
@@ -98,45 +97,36 @@ public class Utils {
 	static { mDateFullHMSqlSdf.setTimeZone(tzUtc); }
 	private static SimpleDateFormat mDateSqlSdf = new SimpleDateFormat("yyyy-MM-dd");
 	static { mDateSqlSdf.setTimeZone(tzUtc); }
+	static DateFormat mDateDispSdf = DateFormat.getDateInstance(java.text.DateFormat.MEDIUM);
 
-	private static SimpleDateFormat mDate1HMSSdf = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
-	private static SimpleDateFormat mDate1HMSdf = new SimpleDateFormat("dd-MMM-yyyy HH:mm");
-	private static SimpleDateFormat mDate1Sdf = new SimpleDateFormat("dd-MMM-yyyy");
-	private static SimpleDateFormat mDate2HMSSdf = new SimpleDateFormat("dd-MMM-yy HH:mm:ss");
-	private static SimpleDateFormat mDate2HMSdf = new SimpleDateFormat("dd-MMM-yy HH:mm");
-	private static SimpleDateFormat mDate2Sdf = new SimpleDateFormat("dd-MMM-yy");
-	private static SimpleDateFormat mDateUSHMSSdf = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
-	private static SimpleDateFormat mDateUSHMSdf = new SimpleDateFormat("MM-dd-yyyy HH:mm");
-	private static SimpleDateFormat mDateUSSdf = new SimpleDateFormat("MM-dd-yyyy");
-	private static SimpleDateFormat mDateEngHMSSdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-	private static SimpleDateFormat mDateEngHMSdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-	private static SimpleDateFormat mDateEngSdf = new SimpleDateFormat("dd-MM-yyyy");
-	private static DateFormat mDateDispSdf = DateFormat.getDateInstance(java.text.DateFormat.MEDIUM);
-	//private static DateFormat mDateTimeDispSdf = DateFormat.getDateInstance(java.text.DateFormat.FULL);
-	// Dates of the form: 'Fri May 5 17:23:11 -0800 2012'
-	private static final SimpleDateFormat mLongUnixHMSSdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss ZZZZ yyyy");
-	private static final SimpleDateFormat mLongUnixHMSdf = new SimpleDateFormat("EEE MMM dd HH:mm ZZZZ yyyy");
-	private static final SimpleDateFormat mLongUnixSdf = new SimpleDateFormat("EEE MMM dd ZZZZ yyyy");
+	private static final ArrayList<SimpleDateFormat> mParseDateFormats = new ArrayList<SimpleDateFormat>();
+	static {
+		final boolean isEnglish = (Locale.getDefault().getLanguage() == Locale.ENGLISH.getLanguage());
+		addParseDateFormat(!isEnglish, "dd-MMM-yyyy HH:mm:ss");
+		addParseDateFormat(!isEnglish, "dd-MMM-yyyy HH:mm");
+		addParseDateFormat(!isEnglish, "dd-MMM-yyyy");
+		
+		addParseDateFormat(!isEnglish, "dd-MMM-yy HH:mm:ss");
+		addParseDateFormat(!isEnglish, "dd-MMM-yy HH:mm");
+		addParseDateFormat(!isEnglish, "dd-MMM-yy");
 
-	/** List of all formats, keep the ones with timezone info near the start */
-	private static final SimpleDateFormat[] mParseDateFormats = new SimpleDateFormat[] {
-			mLongUnixHMSSdf,
-			mLongUnixHMSdf,
-			mLongUnixSdf,
-			mDateFullHMSSqlSdf,
-			mDateFullHMSqlSdf,
-			mDateSqlSdf,
-			mDate1HMSSdf,
-			mDate1HMSdf,
-			mDate1Sdf,
-			mDate2HMSSdf,
-			mDate2HMSdf,
-			mDate2Sdf,
-			mDateUSSdf,
-			mDateEngHMSSdf,
-			mDateEngHMSdf,
-			mDateEngSdf,
-			};
+		addParseDateFormat(false, "MM-dd-yyyy HH:mm:ss");
+		addParseDateFormat(false, "MM-dd-yyyy HH:mm");
+		addParseDateFormat(false, "MM-dd-yyyy");
+
+		addParseDateFormat(false, "dd-MM-yyyy HH:mm:ss");
+		addParseDateFormat(false, "dd-MM-yyyy HH:mm");
+		addParseDateFormat(false, "dd-MM-yyyy");
+
+		// Dates of the form: 'Fri May 5 17:23:11 -0800 2012'
+		addParseDateFormat(!isEnglish, "EEE MMM dd HH:mm:ss ZZZZ yyyy");
+		addParseDateFormat(!isEnglish, "EEE MMM dd HH:mm ZZZZ yyyy");
+		addParseDateFormat(!isEnglish, "EEE MMM dd ZZZZ yyyy");
+
+		mParseDateFormats.add(mDateFullHMSSqlSdf);
+		mParseDateFormats.add(mDateFullHMSqlSdf);
+		mParseDateFormats.add(mDateSqlSdf);
+	}
 
 	public static final String APP_NAME = "Book Catalogue";
 	public static final boolean USE_LT = true;
@@ -152,6 +142,18 @@ public class Utils {
 	//public static final boolean USE_LT = true;
 	//public static final boolean USE_BARCODE = false;
 
+	/**
+	 * Add a format to the parser list; if nedEnglish is set, also add the localized english version
+	 * 
+	 * @param needEnglish
+	 * @param format
+	 */
+	private static void addParseDateFormat(boolean needEnglish, String format) {
+		mParseDateFormats.add(new SimpleDateFormat(format));
+		if (needEnglish)
+			mParseDateFormats.add(new SimpleDateFormat(format, Locale.ENGLISH));
+	}
+	
 	public static String toSqlDateOnly(Date d) {
 		return mDateSqlSdf.format(d);
 	}
@@ -165,20 +167,47 @@ public class Utils {
 		return DateFormat.getDateTimeInstance().format(d);		
 	}
 
+	/**
+	 * Attempt to parse a date string based on a range of possible formats.
+	 * 
+	 * @param s		String to parse
+	 * @return		Resulting date if parsed, otherwise null
+	 */
 	public static Date parseDate(String s) {
+		Date d;
+		// First try to parse using strict rules
+		d = parseDate(s, false);
+		// If we got a date, exit
+		if (d != null)
+			return d;
+		// OK, be lenient
+		return parseDate(s, true);
+	}
+
+	/**
+	 * Attempt to parse a date string based on a range of possible formats; allow
+	 * for caller to specify if the parsing should be strict or lenient.
+	 * 
+	 * @param s				String to parse
+	 * @param lenient		True if parsing should be lenient
+	 * 
+	 * @return				Resulting date if parsed, otherwise null
+	 */
+	private static Date parseDate(String s, boolean lenient) {
 		Date d;
 		for ( SimpleDateFormat sdf : mParseDateFormats ) {
 			try {
-				// Parse as SQL/ANSI date
+				sdf.setLenient(lenient);
 				d = sdf.parse(s);
 				return d;
 			} catch (Exception e) {
 				// Ignore 
 			}			
 		}
-		// All SDFs failed, try one more...
+		// All SDFs failed, try locale-specific...
 		try {
 			java.text.DateFormat df = java.text.DateFormat.getDateInstance(java.text.DateFormat.SHORT);
+			df.setLenient(lenient);
 			d = df.parse(s);
 			return d;
 		} catch (Exception e) {
@@ -315,7 +344,7 @@ public class Utils {
 		 * @param s		String representing the list
 		 * @return		Array of strings resulting from list
 		 */
-		ArrayList<T> decodeList(String s, char delim, boolean allowBlank) {
+		public ArrayList<T> decodeList(String s, char delim, boolean allowBlank) {
 			StringBuilder ns = new StringBuilder();
 			ArrayList<T> list = new ArrayList<T>();
 			if (s == null)
@@ -797,7 +826,7 @@ public class Utils {
 	 * 
 	 * @return			The joined strings
 	 */
-	static String join(String[] sa, String delim) {
+	public static String join(String[] sa, String delim) {
 		// Simple case, return empty string
 		if (sa.length <= 0)
 			return "";
@@ -865,7 +894,7 @@ public class Utils {
 	 * @param db		Database connection to lookup IDs
 	 * @param list		List to clean up
 	 */
-	public static <T extends ItemWithIdFixup> void pruneList(CatalogueDBAdapter db, ArrayList<T> list) {
+	public static <T extends ItemWithIdFixup> boolean pruneList(CatalogueDBAdapter db, ArrayList<T> list) {
 		Hashtable<String,Boolean> names = new Hashtable<String,Boolean>();
 		Hashtable<Long,Boolean> ids = new Hashtable<Long,Boolean>();
 
@@ -894,6 +923,7 @@ public class Utils {
 		}
 		for(int i = toDelete.size() - 1; i >= 0; i--)
 			list.remove(toDelete.get(i).intValue());
+		return toDelete.size() > 0;
 	}
 
 	/**
@@ -1038,6 +1068,15 @@ public class Utils {
 		return hash + ".thumb." + maxWidth + "x" + maxHeight + ".jpg";
 	}
 
+	/**
+	 * Utility routine to delete all cached covers of a specified book
+	 */
+	public void deleteCachedBookCovers(String hash) {
+		CoversDbHelper coversDb = getCoversDb();
+		if (coversDb != null) {
+			coversDb.deleteBookCover(hash);
+		}
+	}
 	/**
 	 * Called in the UI thread, will return a cached image OR NULL.
 	 * 
@@ -1621,5 +1660,106 @@ public class Utils {
 
 		
 	}
+	
+	/**
+	 * Debug utility to dump an entire view hierarchy to the output.
+	 * 
+	 * @param depth
+	 * @param v
+	 */
+	//public static void dumpViewTree(int depth, View v) {
+	//	for(int i = 0; i < depth*4; i++)
+	//		System.out.print(" ");
+	//	System.out.print(v.getClass().getName() + " (" + v.getId() + ")" + (v.getId() == R.id.descriptionLabelzzz? "DESC! ->" : " ->"));
+	//	if (v instanceof TextView) {
+	//		String s = ((TextView)v).getText().toString();
+	//		System.out.println(s.substring(0, Math.min(s.length(), 20)));
+	//	} else {
+	//		System.out.println();
+	//	}
+	//	if (v instanceof ViewGroup) {
+	//		ViewGroup g = (ViewGroup)v;
+	//		for(int i = 0; i < g.getChildCount(); i++) {
+	//			dumpViewTree(depth+1, g.getChildAt(i));
+	//		}
+	//	}
+	//}
+	
+	/**
+	 * Passed date components build a (partial) SQL format date string.
+	 * 
+	 * @param year
+	 * @param month
+	 * @param day
+	 * 
+	 * @return		Formatted date, eg. '2011-11-01' or '2011-11'
+	 */
+	public static String buildPartialDate(Integer year, Integer month, Integer day) {
+		String value;
+		if (year == null) {
+			value = "";
+		} else {
+			value = String.format("%04d", year);
+			if (month != null && month > 0) {
+				String mm = month.toString();
+				if (mm.length() == 1) {
+					mm = "0" + mm;
+				}
+
+				value += "-" + mm;
+
+				if (day != null && day > 0) {
+					String dd = day.toString();
+					if (dd.length() == 1) {
+						dd = "0" + dd;
+					}
+					value += "-" + dd;
+				}
+			}
+		}
+		return value;
+	}
+
+	/**
+	 * Set the relevant fields in a BigDateDialog
+	 * 
+	 * @param dialog		Dialog to set
+	 * @param current		Current value (may be null)
+	 * @param listener		Listener to be called on dialg completion.
+	 */
+	public static void prepareDateDialog(PartialDatePicker dialog, Object current, PartialDatePicker.OnDateSetListener listener) {
+		String dateString = current == null ? "" : current.toString();
+		// get the current date
+		final Calendar c = Calendar.getInstance();
+		Integer yyyy = null; //c.get(Calendar.YEAR);
+		Integer mm = null; //c.get(Calendar.MONTH);
+		Integer dd = null; //c.get(Calendar.DAY_OF_MONTH);
+		try {
+			String[] dateAndTime = dateString.split(" ");
+			String[] date = dateAndTime[0].split("-");
+			yyyy = Integer.parseInt(date[0]);
+			mm = Integer.parseInt(date[1]);
+			dd = Integer.parseInt(date[2]);				
+		} catch (Exception e) {
+			//do nothing
+		}
+		dialog.setDate(yyyy, mm, dd);
+	}
+
+	/**
+	 * Build a new BigDateDialog and return it.
+	 * 
+	 * @param context
+	 * @param titleId
+	 * @param listener
+	 * @return
+	 */
+	public static Dialog buildDateDialog(Context context, int titleId, PartialDatePicker.OnDateSetListener listener) {
+		PartialDatePicker dialog = new PartialDatePicker(context, listener);
+		dialog.setTitle(titleId);
+		return dialog;
+	}
+
+
 }
 

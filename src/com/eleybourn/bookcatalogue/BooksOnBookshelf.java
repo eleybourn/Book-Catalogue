@@ -36,9 +36,12 @@ import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
 import com.eleybourn.bookcatalogue.booklist.BooklistStylePropertiesActivity;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyles;
 import com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds;
+import com.eleybourn.bookcatalogue.debug.Tracker;
+
 
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.*;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -80,7 +83,7 @@ import android.widget.Toast;
  * @author Philip Warner
  */
 public class BooksOnBookshelf extends ListActivity implements BooklistChangeListener {
-	/** Counter for debug purposes */
+	/** Counter for com.eleybourn.bookcatalogue.debug purposes */
 	private static Integer mInstanceCount = 0;
 
 	/** Prefix used in preferences for this activity */
@@ -102,6 +105,9 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 
 	/** Flag indicating activity has been destroyed. Used for background tasks */
 	private boolean mIsDead = false;
+	/** Flag to indicate that a list has been successfully loaded -- affects the way we save state */
+	private boolean mListHasBeenLoaded = false;
+
 	/** Used by onScroll to detect when the top row has actuallt changed. */
 	private int mLastTop = -1;
 	/** ProgressDialog used to display "Getting books...". Needed here so we can dismiss it on close. */
@@ -136,72 +142,76 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-
-		super.onCreate(savedInstanceState);
-
-		if (savedInstanceState == null)
-			// Get preferred booklist state to use from preferences; default to always expanded (MUCH faster than 'preserve' with lots of books)
-			mRebuildState = BooklistPreferencesActivity.getRebuildState();
-		else
-			// Always preserve state when rebuilding/recreating etc
-			mRebuildState = BooklistPreferencesActivity.BOOKLISTS_STATE_PRESERVED;
-
-		mDb = new CatalogueDBAdapter(this);
-		mDb.open();
-
-		// Extract the sort type from the bundle. getInt will return 0 if there is no attribute 
-		// sort (which is exactly what we want)
+		Tracker.enterOnCreate(this);
 		try {
-			BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
-			// Restore bookshelf and position
-			mCurrentBookshelf = prefs.getString(PREF_BOOKSHELF, mCurrentBookshelf);
-			mTopRow = prefs.getInt(PREF_TOP_ROW, 0);
-			mTopRowTop = prefs.getInt(PREF_TOP_ROW_TOP, 0);
-		} catch (Exception e) {
-			Logger.logError(e);
+			super.onCreate(savedInstanceState);
+	
+			if (savedInstanceState == null)
+				// Get preferred booklist state to use from preferences; default to always expanded (MUCH faster than 'preserve' with lots of books)
+				mRebuildState = BooklistPreferencesActivity.getRebuildState();
+			else
+				// Always preserve state when rebuilding/recreating etc
+				mRebuildState = BooklistPreferencesActivity.BOOKLISTS_STATE_PRESERVED;
+	
+			mDb = new CatalogueDBAdapter(this);
+			mDb.open();
+	
+			// Extract the sort type from the bundle. getInt will return 0 if there is no attribute 
+			// sort (which is exactly what we want)
+			try {
+				BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
+				// Restore bookshelf and position
+				mCurrentBookshelf = prefs.getString(PREF_BOOKSHELF, mCurrentBookshelf);
+				mTopRow = prefs.getInt(PREF_TOP_ROW, 0);
+				mTopRowTop = prefs.getInt(PREF_TOP_ROW_TOP, 0);
+			} catch (Exception e) {
+				Logger.logError(e);
+			}
+	
+			// Restore view style
+			refreshStyle();
+	
+			// This sets the search capability to local (application) search
+			setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
+			
+			// This sets the search capability to local (application) search
+			setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
+			setContentView(R.layout.booksonbookshelf);
+	
+			Intent intent = getIntent();
+			if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+				// Return the search results instead of all books (for the bookshelf)
+				mSearchText = intent.getStringExtra(SearchManager.QUERY).trim();
+			} else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+				// Handle a suggestions click (because the suggestions all use ACTION_VIEW)
+				mSearchText = intent.getDataString();
+			}
+			if (mSearchText == null || mSearchText.equals(".")) {
+				mSearchText = "";
+			}
+	
+			// We want context menus to be available
+			registerForContextMenu(getListView());
+	
+			// use the custom fast scroller (the ListView in the XML is our custome version).
+			getListView().setFastScrollEnabled(true);
+	
+			// Handle item click events
+			getListView().setOnItemClickListener(new OnItemClickListener() {
+				@Override
+				public void onItemClick(AdapterView<?> arg0, View view, int position, long rowId) {
+					handleItemClick(arg0, view, position, rowId);
+				}});
+			
+			// Debug; makes list structures vary across calls to ensure code is correct...
+			mMarkBookId = -1;
+			
+			// This will cause the list to be generated.
+			initBookshelfSpinner();
+			setupList(true);
+		} finally {
+			Tracker.exitOnCreate(this);
 		}
-
-		// Restore view style
-		refreshStyle();
-
-		// This sets the search capability to local (application) search
-		setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
-		
-		// This sets the search capability to local (application) search
-		setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
-		setContentView(R.layout.booksonbookshelf);
-
-		Intent intent = getIntent();
-		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-			// Return the search results instead of all books (for the bookshelf)
-			mSearchText = intent.getStringExtra(SearchManager.QUERY).trim();
-		} else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
-			// Handle a suggestions click (because the suggestions all use ACTION_VIEW)
-			mSearchText = intent.getDataString();
-		}
-		if (mSearchText == null || mSearchText.equals(".")) {
-			mSearchText = "";
-		}
-
-		// We want context menus to be available
-		registerForContextMenu(getListView());
-
-		// use the custom fast scroller (the ListView in the XML is our custome version).
-		getListView().setFastScrollEnabled(true);
-
-		// Handle item click events
-		getListView().setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View view, int position, long rowId) {
-				handleItemClick(arg0, view, position, rowId);
-			}});
-		
-		// Debug; makes list structures vary across calls to ensure code is correct...
-		mMarkBookId = -1;
-		
-		// This will cause the list to be generated.
-		initBookshelfSpinner();
-		setupList(true);
 	}
 
 	/**
@@ -389,6 +399,8 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 			System.out.println("Count(" + count + "): " + (t4-t3) + "/" + (t5-t4) + "/" + (t6-t5));
 			System.out.println("====== " );
 			System.out.println("Total: " + (t6-t0));
+			// Save a flag to say list was loaded at least once successfully
+			mListHasBeenLoaded = true;
 		}
 
 		@Override
@@ -425,7 +437,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 	private void setupList(boolean isFullRebuild) {
 		mTaskQueue.enqueue(new GetListTask(isFullRebuild));
 		if (mListDialog == null) {
-			mListDialog = ProgressDialog.show(this, "", "Getting books...", true, true, new OnCancelListener() {
+			mListDialog = ProgressDialog.show(this, "", getString(R.string.getting_books_ellipsis), true, true, new OnCancelListener() {
 				@Override
 				public void onCancel(DialogInterface dialog) {
 					// Cancelling the list cancels the activity.
@@ -486,6 +498,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 	 */
 	@Override 
 	public void onResume() {
+		Tracker.enterOnResume(this);
 		super.onResume();
 
 		// Try to prevent null-pointer errors for rapidly pressing 'back'; this
@@ -496,6 +509,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 			return;
 
 		initBackground();		
+		Tracker.exitOnResume(this);
 	}
 
 	/**
@@ -606,6 +620,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 						if (android.os.Build.VERSION.SDK_INT >= 8) {
 							final int newPos = best.listPosition;
 							getListView().post(new Runnable() {
+								@TargetApi(8)
 								@Override
 								public void run() {
 									lv.smoothScrollToPosition(newPos);
@@ -766,18 +781,17 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		if (mIsDead) 
 			return;
 
-		// Save expanded nodes
-		if (mList != null && mList.getBuilder() != null)
-			mList.getBuilder().saveNodeSettings();
+		final Editor ed = BookCatalogueApp.getAppPreferences().edit();
 
 		// Save position in list
-		final ListView lv = getListView();
-		final Editor ed = BookCatalogueApp.getAppPreferences().edit();
-		mTopRow = lv.getFirstVisiblePosition();
-		ed.putInt(PREF_TOP_ROW, mTopRow);
-		View v = lv.getChildAt(0);
-		mTopRowTop = v == null ? 0 : v.getTop();
-		ed.putInt(PREF_TOP_ROW_TOP, mTopRowTop);
+		if (mListHasBeenLoaded) {
+			final ListView lv = getListView();
+			mTopRow = lv.getFirstVisiblePosition();
+			ed.putInt(PREF_TOP_ROW, mTopRow);
+			View v = lv.getChildAt(0);
+			mTopRowTop = v == null ? 0 : v.getTop();
+			ed.putInt(PREF_TOP_ROW_TOP, mTopRowTop);			
+		}
 
 		if (mCurrentStyle != null)
 			ed.putString(PREF_LIST_STYLE, mCurrentStyle.getCanonicalName());
@@ -790,10 +804,12 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 	 */
 	@Override
 	public void onPause() {
+		Tracker.enterOnPause(this);
 		super.onPause();
 		System.out.println("onPause");
 		if (mSearchText == null || mSearchText.equals(""))
 			savePosition();
+		Tracker.exitOnPause(this);
 	}
 
 	/**
@@ -801,6 +817,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 	 */
 	@Override
 	public void onDestroy() {
+		Tracker.enterOnDestroy(this);
 		super.onDestroy();
 		System.out.println("onDestroy");
 		mIsDead = true;
@@ -830,6 +847,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 			System.out.println("BoB instances: " + mInstanceCount);
 		}
 		TrackedCursor.dumpCursors();
+		Tracker.exitOnDestroy(this);
 	}
 	
 	/**
@@ -875,6 +893,11 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		 */
 		mBookshelfSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			public void onItemSelected(AdapterView<?> parentView, View view, int position, long id) {
+				// Check to see if mBookshelfAdapter is null, which should only occur if
+				// the activity is being torn down: see Issue 370.
+				if (mBookshelfAdapter == null)
+					return;
+
 				String new_bookshelf = mBookshelfAdapter.getItem(position);
 				if (position == 0) {
 					new_bookshelf = "";
@@ -1028,7 +1051,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		mMarkBookId = 0;
 
 		switch(requestCode) {
-		case R.id.ACTIVITY_CREATE_BOOK_SCAN:
+		case UniqueId.ACTIVITY_CREATE_BOOK_SCAN:
 			try {
 				if (intent != null && intent.hasExtra(CatalogueDBAdapter.KEY_ROWID)) {
 					long newId = intent.getLongExtra(CatalogueDBAdapter.KEY_ROWID, 0);
@@ -1044,9 +1067,9 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 				//fillData();
 			}
 			break;
-		case R.id.ACTIVITY_CREATE_BOOK_ISBN:
-		case R.id.ACTIVITY_CREATE_BOOK_MANUALLY:
-		case R.id.ACTIVITY_EDIT_BOOK:
+		case UniqueId.ACTIVITY_CREATE_BOOK_ISBN:
+		case UniqueId.ACTIVITY_CREATE_BOOK_MANUALLY:
+		case UniqueId.ACTIVITY_EDIT_BOOK:
 			try {
 				if (intent != null && intent.hasExtra(CatalogueDBAdapter.KEY_ROWID)) {
 					long id = intent.getLongExtra(CatalogueDBAdapter.KEY_ROWID, 0);
@@ -1061,7 +1084,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 				Logger.logError(e);
 			}
 			break;
-		case R.id.ACTIVITY_BOOKLIST_STYLE_PROPERTIES:
+		case UniqueId.ACTIVITY_BOOKLIST_STYLE_PROPERTIES:
 			try {
 				if (intent != null && intent.hasExtra(BooklistStylePropertiesActivity.KEY_STYLE)) {
 					BooklistStyle style = (BooklistStyle)intent.getSerializableExtra(BooklistStylePropertiesActivity.KEY_STYLE);
@@ -1074,9 +1097,9 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 			this.savePosition();
 			this.setupList(true);
 			break;
-		case R.id.ACTIVITY_BOOKLIST_STYLES:
-		case R.id.ACTIVITY_ADMIN:
-		case R.id.ACTIVITY_PREFERENCES:
+		case UniqueId.ACTIVITY_BOOKLIST_STYLES:
+		case UniqueId.ACTIVITY_ADMIN:
+		case UniqueId.ACTIVITY_PREFERENCES:
 			// Refresh the style because prefs may have changed
 			refreshStyle();
 			this.savePosition();
@@ -1238,7 +1261,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		Intent i = new Intent(this, BooklistStylePropertiesActivity.class);
 		i.putExtra(BooklistStylePropertiesActivity.KEY_STYLE, mCurrentStyle);
 		i.putExtra(BooklistStylePropertiesActivity.KEY_SAVE_TO_DATABASE, false);
-		startActivityForResult(i, R.id.ACTIVITY_BOOKLIST_STYLE_PROPERTIES);		
+		startActivityForResult(i, UniqueId.ACTIVITY_BOOKLIST_STYLE_PROPERTIES);		
 	}
 
 	@Override

@@ -163,7 +163,7 @@ public class BooklistPreferencesActivity extends PreferencesBase {
 	 * Setup each component of the layout using the passed preferences
 	 */
 	@Override
-	public void setupViews(BookCataloguePreferences prefs) {
+	public void setupViews(BookCataloguePreferences prefs, Properties globalProps) {
 		addClickablePref(prefs, R.id.erase_cover_cache_label, new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -195,7 +195,6 @@ public class BooklistPreferencesActivity extends PreferencesBase {
 		
 		// Get all the properties from the style that have global defaults.
 		Properties allProps = style.getProperties();
-		Properties globalProps = new Properties();
 		for(Property p: allProps) {
 			if (p instanceof ValuePropertyWithGlobalDefault) {
 				ValuePropertyWithGlobalDefault gp = (ValuePropertyWithGlobalDefault)p;
@@ -211,9 +210,6 @@ public class BooklistPreferencesActivity extends PreferencesBase {
 		globalProps.add(mCacheThumbnailsProperty);
 		globalProps.add(mBackgroundThumbnailsProperty);
 
-		// Get the parent view and put the properties under it.
-		ViewGroup styleProps = (ViewGroup) findViewById(R.id.style_properties);
-		globalProps.buildView(getLayoutInflater(), styleProps);
 	}
 
 	/**

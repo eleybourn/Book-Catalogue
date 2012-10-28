@@ -32,7 +32,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQuery;
 
 /**
- * DEBUG CLASS to help debug cursor leakage.
+ * DEBUG CLASS to help com.eleybourn.bookcatalogue.debug cursor leakage.
  * 
  * Set the static variable DEBUG_TRACKED_CURSOR to 'false' to make most of the code a NOP.
  * 

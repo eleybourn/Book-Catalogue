@@ -31,16 +31,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
-
-import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
 
 /**
  * This class is called by the BookCatalogue activity and will search the interwebs for
@@ -73,8 +74,6 @@ public class BookISBNSearch extends ActivityWithTasks {
 	private String mTitle;
 	private String mIsbn;
 
-	private static final int ACTIVITY_SCAN=4;
-
 	/*
 	 *  Mode this activity is in; MANUAL = data entry, SCAN = data from scanner.
 	 *  For SCAN, it loops repeatedly starting the scanner.
@@ -93,7 +92,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 	private Intent mLastBookIntent = null;
 
 	// Object managing current search.
-	SearchManager mSearchManager = null;
+	long mSearchManagerId = 0;
 
 	// A list of author names we have already searched for in this session
 	ArrayList<String> mAuthorNames = new ArrayList<String>();
@@ -189,6 +188,18 @@ public class BookISBNSearch extends ActivityWithTasks {
 
 			// For now, just make sure it's hidden on entry
 			getWindow().setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+			final CheckBox allowAsinCb = (CheckBox) BookISBNSearch.this.findViewById(R.id.asinCheckbox);
+			allowAsinCb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					if (isChecked) {
+						mIsbnText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS|InputType.TYPE_CLASS_TEXT);
+						getWindow().setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+					} else {
+						mIsbnText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS|InputType.TYPE_CLASS_TEXT);
+						getWindow().setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+					}
+				}});
 
 			// Set the number buttons
 			Button button1 = (Button) findViewById(R.id.isbn_1);
@@ -484,7 +495,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 			Logger.logError(e);
 		}
 
-		if (mSearchManager == null)
+		if (mSearchManagerId == 0)
 			doSearchBook();
 
 	}
@@ -505,8 +516,10 @@ public class BookISBNSearch extends ActivityWithTasks {
 			try {
 				// Start the lookup in background.
 				//mTaskManager.doProgress("Searching");
-				mSearchManager = new SearchManager(mTaskManager, mSearchHandler);
-				mSearchManager.search(mAuthor, mTitle, mIsbn, true, SearchManager.SEARCH_ALL);
+				SearchManager sm = new SearchManager(mTaskManager, mSearchHandler);
+				mSearchManagerId = sm.getSenderId();
+
+				sm.search(mAuthor, mTitle, mIsbn, true, SearchManager.SEARCH_ALL);
 				// reset the details so we don't restart the search unnecessarily
 				mAuthor = "";
 				mTitle = "";
@@ -525,7 +538,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 		}
 	}
 
-	private SearchManager.SearchResultHandler mSearchHandler = new SearchManager.SearchResultHandler() {
+	private SearchManager.SearchListener mSearchHandler = new SearchManager.SearchListener() {
 		@Override
 		public void onSearchFinished(Bundle bookData, boolean cancelled) {
 			BookISBNSearch.this.onSearchFinished(bookData, cancelled);
@@ -546,17 +559,21 @@ public class BookISBNSearch extends ActivityWithTasks {
 			mTaskManager.doProgress(null);
 		}
 		// Clean up
-		mSearchManager = null;
+		mSearchManagerId = 0;
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
+		if (mSearchManagerId != 0)
+			SearchManager.getMessageSwitch().removeListener(mSearchManagerId, mSearchHandler);
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
+		if (mSearchManagerId != 0)
+			SearchManager.getMessageSwitch().addListener(mSearchManagerId, mSearchHandler, true);
 	}
 
 	@Override
@@ -598,7 +615,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 	private void createBook(Bundle book) {
 		Intent i = new Intent(this, BookEdit.class);
 		i.putExtra("bookData", book);
-		startActivityForResult(i, R.id.ACTIVITY_EDIT_BOOK);
+		startActivityForResult(i, UniqueId.ACTIVITY_EDIT_BOOK);
 		//dismissProgress();
 	}
 
@@ -610,7 +627,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 		//System.out.println("BookISBNSearch onActivityResult " + resultCode);
 		super.onActivityResult(requestCode, resultCode, intent);
 		switch(requestCode) {
-		case ACTIVITY_SCAN:
+		case UniqueId.ACTIVITY_SCAN:
 			mScannerStarted = false;
 			try {
 				if (resultCode == RESULT_OK) {
@@ -632,7 +649,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 				finish();
 			}
 			break;
-		case R.id.ACTIVITY_EDIT_BOOK:
+		case UniqueId.ACTIVITY_EDIT_BOOK:
 			if (intent != null)
 				mLastBookIntent = intent;
 
@@ -688,7 +705,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 		if (!mScannerStarted) {
 			//System.out.println(mId + " startScannerActivity STARTING");
 			mScannerStarted = true;
-			startActivityForResult(mScannerIntent, ACTIVITY_SCAN);
+			startActivityForResult(mScannerIntent, UniqueId.ACTIVITY_SCAN);
 		} else {
 			//System.out.println(mId + " startScannerActivity SKIPPED");
 		}
@@ -701,9 +718,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 	protected void onRestoreInstanceState(Bundle inState) {
 		//System.out.println(mId + " onRestoreInstanceState");
 
-		mSearchManager = (SearchManager) getLastNonConfigurationInstance("SearchManager");
-		if (mSearchManager != null)
-			mSearchManager.reconnect( mSearchHandler );
+		mSearchManagerId = inState.getLong("SearchManagerId");
 
 		// Now do 'standard' stuff
 		mLastBookIntent = (Intent) inState.getParcelable("LastBookIntent");
@@ -732,28 +747,8 @@ public class BookISBNSearch extends ActivityWithTasks {
 		inState.putString("isbn", mIsbn);
 		inState.putString("title", mTitle);
 		inState.putBoolean("mScannerStarted", mScannerStarted);
+		if (mSearchManagerId != 0)
+			inState.putLong("SearchManagerId", mSearchManagerId);
 	}
 
-	/**
-	 * Ensure the TaskManager is saved.
-	 */
-	@Override
-	public void onRetainNonConfigurationInstance(Hashtable<String,Object> store) {
-		if (mSearchManager != null) {
-			store.put("SearchManager", mSearchManager);
-			mSearchManager.disconnect();
-			mSearchManager = null;
-		}
-	}
-
-	@Override
-	TaskHandler getTaskHandler(ManagedTask t) {
-		if (mSearchManager == null)
-			throw new RuntimeException("Tasks running, but no SearchManager");
-		TaskHandler h = mSearchManager.getTaskHandler( t );
-		if (h == null)
-			throw new RuntimeException("Unable to find handler for task " + t.toString());
-
-		return h;
-	}
 }

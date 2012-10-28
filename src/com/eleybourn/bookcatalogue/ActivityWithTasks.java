@@ -20,21 +20,23 @@
 
 package com.eleybourn.bookcatalogue;
 
-import java.util.Hashtable;
-
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
+import android.content.DialogInterface.OnKeyListener;
 import android.os.Bundle;
+import android.view.KeyEvent;
+import android.widget.Toast;
 
-import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
+import com.eleybourn.bookcatalogue.TaskManager.TaskManagerController;
+import com.eleybourn.bookcatalogue.TaskManager.TaskManagerListener;
 
 /**
  * Class to used as a base class for any Activity that wants to run one or more threads that
- * use a ProgressDialog. Even a good choice for Activities that run a ProgressDialog because
- * PDs don't play well with orientation changes.
- * 
- * NOTE: If an activity needs to use onRetainNonConfigurationInstance() it should use the
- * overridable method onRetainNonConfigurationInstance() to save object references then use
- * getLastNonConfigurationInstance(String key) to retrieve the values.
+ * use a ProgressDialog.
  * 
  * Part of three components that make this easier:
  *  - TaskManager -- handles the management of multiple threads sharing a progressDialog
@@ -46,77 +48,269 @@ import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
  * @author Philip Warner
  */
 abstract public class ActivityWithTasks extends Activity {
+	/** ID of associated TaskManager */
+	protected long mTaskManagerId = 0;
+	/** Associated TaskManager */
 	protected TaskManager mTaskManager = null;
+	/** ProgressDialog for this activity */
+	protected ProgressBase mProgressDialog = null;
+	/** Max value for ProgressDialog */
+	private int mProgressMax = 0;
+	/** Current value for ProgressDialog */
+	private int mProgressCount = 0;
+	/** Message for ProgressDialog */
+	private String mProgressMessage = "";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mTaskManager = new TaskManager(this);
-	}
 
-	private class NonConfigInstance {
-		TaskManager taskManager = mTaskManager;
-		Hashtable<String,Object> extra = new Hashtable<String,Object>();
-	}
-	/**
-	 * Ensure the TaskManager is restored.
-	 */
-	@Override
-	protected void onRestoreInstanceState(Bundle inState) {
-		NonConfigInstance info = (NonConfigInstance) getLastNonConfigurationInstance();
-		if (info != null && info.taskManager != null) {
-			mTaskManager = info.taskManager;
-			mTaskManager.reconnect(this);				
-		}
-		super.onRestoreInstanceState(inState);
+		// Restore mTaskManagerId if present 
+		if (savedInstanceState != null) {
+			mTaskManagerId = savedInstanceState.getLong("TaskManagerId");
+		};
 	}
 
 	/**
-	 * Ensure the TaskManager is saved and call a onRetainNonConfigurationInstance(store)
-	 * to allow subclasses to save data as well.
+	 * Trivial internal class to implement our base progress object
 	 * 
-	 * Marked as final to ensure this does not get overwritten.
+	 * @author pjw
 	 */
+	private class ProgressBase extends ProgressDialog {
+		public ProgressBase(Context context) {
+			super(context);
+			this.setCancelable(false);
+			this.setCanceledOnTouchOutside(false);
+		}
+	}
+
+	/**
+	 * ProgressDialog for Indeterminate states.
+	 * 
+	 * @author pjw
+	 */
+	private class ProgressIndet extends ProgressBase {
+
+		public ProgressIndet(Context context) {
+			super(context);
+			this.setIndeterminate(true);
+			this.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		}
+	};
+
+	/**
+	 * ProgressDialog for Determinate states.
+	 * 
+	 * @author pjw
+	 */
+	private class ProgressDet extends ProgressBase {
+
+		public ProgressDet(Context context) {
+			super(context);
+			this.setIndeterminate(false);
+			this.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+		}
+	};
+
 	@Override
-	final public Object onRetainNonConfigurationInstance() {
-		NonConfigInstance info = new NonConfigInstance();
-		if (mTaskManager != null) {
-			mTaskManager.disconnect();
+	protected void onPause() {
+		super.onPause();
+		// Stop listening
+		if (mTaskManagerId != 0) {
+			TaskManager.getMessageSwitch().removeListener(mTaskManagerId, mTaskListener);
+			// If it's finishing, the remove all tasks and cleanup
+			if (isFinishing())
+				mTaskManager.close();
+		}
+		if (mProgressDialog != null) {
+			mProgressDialog.dismiss();
+			mProgressDialog = null;
+		}
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		// Restore mTaskManager if present 
+		if (mTaskManagerId != 0) {
+			TaskManagerController c = TaskManager.getMessageSwitch().getController(mTaskManagerId);
+			if (c != null) {
+				mTaskManager = c.getManager();
+			} else {
+				Logger.logError(new RuntimeException("Have ID, but can not find controller when resuming activity"));
+			}
+		};
+
+		// Create if necessary
+		if (mTaskManager == null) {
+			TaskManager tm = new TaskManager();
+			mTaskManagerId = tm.getSenderId();
+			mTaskManager = tm;
+		}
+
+		// Listen
+		TaskManager.getMessageSwitch().addListener(mTaskManagerId, mTaskListener, true);
+	}
+
+	/**
+	 * Method to allow subclasses easy access to terminating tasks
+	 * 
+	 * @param task
+	 */
+	public void onTaskEnded(ManagedTask task) {	}
+
+	/**
+	 * Object to handle all TaskManager events
+	 */
+	private TaskManagerListener mTaskListener = new TaskManagerListener() {
+
+		@Override
+		public void onTaskEnded(TaskManager manager, ManagedTask task) {
+			// Just pass this one on
+			ActivityWithTasks.this.onTaskEnded(task);
+		}
+
+		@Override
+		public void onProgress(int count, int max, String message) {
+			// Save the details
+			mProgressCount = count;
+			mProgressMax = max;
+			mProgressMessage = message;
+
+			// If empty, close any dialog
+			if ((mProgressMessage == null || mProgressMessage.trim().length() == 0) && mProgressMax == mProgressCount) {
+				if (mProgressDialog != null) {
+					mProgressDialog.dismiss();
+					mProgressDialog = null;
+				}
+			} else {
+				updateProgress();
+			}
+
+		}
+
+		/**
+		 * Display a Toast message
+		 */
+		@Override
+		public void onToast(String message) {
+			Toast.makeText(ActivityWithTasks.this, message, Toast.LENGTH_LONG).show();
+		}
+
+		/**
+		 * TaskManager is finishing...cleanup.
+		 */
+		@Override
+		public void onFinished() {
+			mTaskManager.close();
 			mTaskManager = null;
+			mTaskManagerId = 0;
 		}
-		onRetainNonConfigurationInstance(info.extra);
-		return info;
+	};
+
+	/**
+	 * Utility routine to standardize checking for desired dialog type.
+	 * 
+	 * @return	true if dialog should be determinate
+	 */
+	private boolean wantDeterminateProgress() {
+		return (mProgressMax > 0);
 	}
 
 	/**
-	 * Method to get a value from the store that was saved in onRetainNonConfigurationInstance().
+	 * Setup the ProgressDialog according to our needs
 	 * 
-	 * @param key	Key to lookup
+	 * @param d		Dialog
+	 * @param show	Flag indicating if show() should be called.
 	 * 
-	 * @return		Object from key in hashtable
 	 */
-	Object getLastNonConfigurationInstance(String key) {
-		NonConfigInstance info = (NonConfigInstance) getLastNonConfigurationInstance();
-		if (info != null && info.extra.containsKey(key)) {
-			return info.extra.get(key);
+	private void updateProgress() {
+		boolean wantDet = wantDeterminateProgress();
+		
+		if (mProgressDialog != null) {
+			if ((wantDet && mProgressDialog instanceof ProgressIndet) || (!wantDet && mProgressDialog instanceof ProgressDet)) {
+				mProgressDialog.dismiss();
+				mProgressDialog = null;
+			}			
+		}
+
+		// Create dialog if necessary
+		if (mProgressDialog == null) {
+			if (wantDet) {
+				mProgressDialog = new ProgressDet(ActivityWithTasks.this);
+			} else {
+				mProgressDialog = new ProgressIndet(ActivityWithTasks.this);
+			}
+		}
+
+		// Set style
+		if (mProgressMax > 0) {
+			mProgressDialog.setMax(mProgressMax);
+		}
+
+		// Set message; if we are cancelling we override the message
+		if (mTaskManager.isCancelling()) {
+			mProgressDialog.setMessage(getString(R.string.cancelling));
 		} else {
-			return null;
+			mProgressDialog.setMessage(mProgressMessage);
 		}
+		
+		// Set other attrs
+		mProgressDialog.setOnKeyListener(mDialogKeyListener);
+		mProgressDialog.setOnCancelListener(mCancelHandler);
+		// Show it if necessary
+		mProgressDialog.show();
+		mProgressDialog.setProgress(mProgressCount);
 	}
 
 	/**
-	 * Passed a task find the appropriate handler to use. Called on reconnect().
-	 * 
-	 * @param t		Task reference to lookup
-	 * 
-	 * @return		Appropriate handler for the task
+	 * Handler for the user cancelling the progress dialog.
 	 */
-	abstract TaskHandler getTaskHandler(ManagedTask t);
-	
+	private OnCancelListener mCancelHandler = new OnCancelListener() {
+		public void onCancel(DialogInterface i) {
+			cancelAndUpdateProgress();
+		}
+	};
+
 	/**
-	 * Method to save names instance state objects.
-	 * 
-	 * @param store
+	 * Wait for the 'Back' key and cancel all tasks on keyUp.
 	 */
-	void onRetainNonConfigurationInstance(Hashtable<String,Object> store) {};
+	private OnKeyListener mDialogKeyListener = new OnKeyListener() {
+		@Override
+		public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+			if (event.getAction() == KeyEvent.ACTION_UP) {
+				if (keyCode == KeyEvent.KEYCODE_BACK) {
+					// Toasting a message here makes the app look less responsive, because
+					// the final 'Cancelled...' message is delayed too much.
+					//Toast.makeText(ActivityWithTasks.this, R.string.cancelling, Toast.LENGTH_LONG).show();
+					cancelAndUpdateProgress();
+					return true;
+				}
+			}
+			return false;
+		}
+	};
+
+	/**
+	 * Cancel all tasks, and if the progress is showing, update it (it will check task manager status)
+	 */
+	private void cancelAndUpdateProgress() {
+		if (mTaskManager != null)
+			mTaskManager.cancelAllTasks();
+		if (mProgressDialog != null && mProgressDialog.isShowing()) {
+			updateProgress();
+		}
+	}
+
+	@Override
+	/**
+	 * Save the TaskManager ID for later retrieval
+	 */
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+
+		if (mTaskManagerId != 0)
+			outState.putLong("TaskManagerId", mTaskManagerId);
+	}
 }

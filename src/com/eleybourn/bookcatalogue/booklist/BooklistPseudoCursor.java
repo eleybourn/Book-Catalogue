@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map.Entry;
 
-import com.eleybourn.bookcatalogue.SimpleTaskQueue;
-import com.eleybourn.bookcatalogue.Utils;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 
 import android.database.AbstractCursor;

@@ -23,15 +23,13 @@
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
-
 import android.os.Bundle;
-
-import com.eleybourn.bookcatalogue.ManagedTask.TaskController;
-import com.eleybourn.bookcatalogue.ManagedTask.TaskListener;
-import com.eleybourn.bookcatalogue.ManagedTask.TaskSwitch;
 import com.eleybourn.bookcatalogue.SearchThread.SearchTaskHandler;
 import com.eleybourn.bookcatalogue.TaskManager.TaskManagerListener;
 import com.eleybourn.bookcatalogue.messaging.MessageSwitch;
+import com.eleybourn.bookcatalogue.utils.IsbnUtils;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Class to co-ordinate multiple SearchThread objects using an existing TaskManager.

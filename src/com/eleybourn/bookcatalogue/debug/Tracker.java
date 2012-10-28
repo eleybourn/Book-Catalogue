@@ -4,7 +4,7 @@ import java.util.Date;
 
 import org.acra.ErrorReporter;
 
-import com.eleybourn.bookcatalogue.Utils;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 import android.app.Activity;
 

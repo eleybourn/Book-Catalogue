@@ -34,7 +34,6 @@ import android.database.Cursor;
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.UniqueId;
-import com.eleybourn.bookcatalogue.Utils;
 import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
@@ -42,6 +41,7 @@ import com.eleybourn.bookcatalogue.booklist.BooklistGroup.BooklistAuthorGroup;
 import com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds;
 import com.eleybourn.bookcatalogue.database.SerializationUtils;
 import com.eleybourn.bookcatalogue.database.SerializationUtils.DeserializationException;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Collection of system-defined and user-defined Book List styles.

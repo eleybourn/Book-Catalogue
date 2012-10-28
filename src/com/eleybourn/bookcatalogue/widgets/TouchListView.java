@@ -16,7 +16,10 @@
  * limitations under the License.
  */
 
-package com.eleybourn.bookcatalogue;
+package com.eleybourn.bookcatalogue.widgets;
+
+import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.R.styleable;
 
 import android.content.Context;
 import android.content.res.TypedArray;

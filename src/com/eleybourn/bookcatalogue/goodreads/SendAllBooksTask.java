@@ -25,12 +25,12 @@ import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.BooksCursor;
 import com.eleybourn.bookcatalogue.BooksRowView;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
-import com.eleybourn.bookcatalogue.Logger;
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.Utils;
 import com.eleybourn.bookcatalogue.BookEvents.*;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.ExportDisposition;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.*;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 import android.content.Context;
 import android.database.Cursor;

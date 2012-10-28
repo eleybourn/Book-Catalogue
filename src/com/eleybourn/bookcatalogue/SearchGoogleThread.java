@@ -1,5 +1,7 @@
 package com.eleybourn.bookcatalogue;
 
+import com.eleybourn.bookcatalogue.utils.Logger;
+
 public class SearchGoogleThread extends SearchThread {
 
 	public SearchGoogleThread(TaskManager manager, SearchTaskHandler taskHandler,

@@ -18,16 +18,14 @@
  * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.eleybourn.bookcatalogue;
+package com.eleybourn.bookcatalogue.utils;
 
-import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
@@ -58,7 +56,16 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
+import com.eleybourn.bookcatalogue.Author;
+import com.eleybourn.bookcatalogue.BookCatalogueApp;
+import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
+import com.eleybourn.bookcatalogue.GetThumbnailTask;
+import com.eleybourn.bookcatalogue.LibraryThingManager;
+import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.Series;
+import com.eleybourn.bookcatalogue.ThumbnailCacheWriterTask;
+import com.eleybourn.bookcatalogue.R.id;
+import com.eleybourn.bookcatalogue.R.string;
 import com.eleybourn.bookcatalogue.database.CoversDbHelper;
 import com.eleybourn.bookcatalogue.dialogs.PartialDatePicker;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;

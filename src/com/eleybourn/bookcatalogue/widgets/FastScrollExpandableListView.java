@@ -18,7 +18,7 @@
  * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.eleybourn.bookcatalogue;
+package com.eleybourn.bookcatalogue.widgets;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -26,7 +26,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.AbsListView;
 import android.widget.ExpandableListView;
-import android.widget.AbsListView.OnScrollListener;
 
 /**
  * Subclass of ExpandableListView that uses a local implementation of FastScroller to bypass

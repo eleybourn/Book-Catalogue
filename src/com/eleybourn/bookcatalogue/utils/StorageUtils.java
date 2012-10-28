@@ -1,4 +1,4 @@
-package com.eleybourn.bookcatalogue;
+package com.eleybourn.bookcatalogue.utils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -15,6 +15,9 @@ import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
+import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.R.string;
 import com.eleybourn.bookcatalogue.debug.Tracker;
 
 

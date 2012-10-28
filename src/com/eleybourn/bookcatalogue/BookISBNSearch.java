@@ -23,7 +23,12 @@ package com.eleybourn.bookcatalogue;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Hashtable;
+
+import com.eleybourn.bookcatalogue.utils.AsinUtils;
+import com.eleybourn.bookcatalogue.utils.IsbnUtils;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.SoundManager;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;

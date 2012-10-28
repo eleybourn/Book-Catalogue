@@ -20,6 +20,8 @@
 
 package com.eleybourn.bookcatalogue;
 
+import com.eleybourn.bookcatalogue.utils.Logger;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.view.View;

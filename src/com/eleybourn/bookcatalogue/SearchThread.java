@@ -22,12 +22,12 @@ package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
 
-import com.eleybourn.bookcatalogue.ManagedTask.TaskListener;
 import com.eleybourn.bookcatalogue.Series.SeriesDetails;
 import com.eleybourn.bookcatalogue.messaging.MessageSwitch;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 import android.os.Bundle;
-import android.os.Message;
 
 abstract public class SearchThread extends ManagedTask {
 	protected String mAuthor;

@@ -21,7 +21,6 @@
 package com.eleybourn.bookcatalogue;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -33,6 +32,7 @@ import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.TaskManager.TaskManagerController;
 import com.eleybourn.bookcatalogue.TaskManager.TaskManagerListener;
+import com.eleybourn.bookcatalogue.utils.Logger;
 
 /**
  * Class to used as a base class for any Activity that wants to run one or more threads that

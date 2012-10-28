@@ -20,6 +20,10 @@
 
 package com.eleybourn.bookcatalogue;
 
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.StorageUtils;
+import com.eleybourn.bookcatalogue.utils.Utils;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;

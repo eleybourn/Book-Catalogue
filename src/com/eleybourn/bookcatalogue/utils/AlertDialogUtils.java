@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.eleybourn.bookcatalogue;
+package com.eleybourn.bookcatalogue.utils;
 
 import java.util.ArrayList;
 

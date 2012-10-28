@@ -34,14 +34,14 @@ import android.os.Bundle;
 
 import com.eleybourn.bookcatalogue.Author;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
-import com.eleybourn.bookcatalogue.Logger;
 import com.eleybourn.bookcatalogue.Series;
-import com.eleybourn.bookcatalogue.Utils;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.*;
 import static com.eleybourn.bookcatalogue.goodreads.api.ShowBookApiHandler.ShowBookFieldNames.*;
 import com.eleybourn.bookcatalogue.goodreads.api.XmlFilter.ElementContext;
 import com.eleybourn.bookcatalogue.goodreads.api.XmlFilter.XmlHandler;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Class to query and response to search.books api call. This is an abstract class

@@ -21,17 +21,17 @@
 package com.eleybourn.bookcatalogue.booklist;
 
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
-import com.eleybourn.bookcatalogue.HintManager;
-import com.eleybourn.bookcatalogue.Logger;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.UniqueId;
-import com.eleybourn.bookcatalogue.Utils;
-import com.eleybourn.bookcatalogue.ViewTagger;
 import com.eleybourn.bookcatalogue.properties.Properties;
 import com.eleybourn.bookcatalogue.properties.Property;
 import com.eleybourn.bookcatalogue.properties.Property.ValidationException;
 import com.eleybourn.bookcatalogue.properties.PropertyGroup;
 import com.eleybourn.bookcatalogue.properties.StringProperty;
+import com.eleybourn.bookcatalogue.utils.HintManager;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
+import com.eleybourn.bookcatalogue.utils.ViewTagger;
 
 import android.app.Activity;
 import android.content.Intent;

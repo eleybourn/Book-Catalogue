@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.concurrent.LinkedBlockingQueue;
-import com.eleybourn.bookcatalogue.Logger;
+
+import com.eleybourn.bookcatalogue.utils.Logger;
+
 import android.os.Handler;
 /**
  * Switchboard class for disconnecting listener instances from task instances. Maintains

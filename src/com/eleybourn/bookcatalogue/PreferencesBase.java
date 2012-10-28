@@ -22,6 +22,7 @@ package com.eleybourn.bookcatalogue;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.properties.Properties;
+import com.eleybourn.bookcatalogue.utils.Logger;
 
 import android.app.Activity;
 import android.os.Bundle;

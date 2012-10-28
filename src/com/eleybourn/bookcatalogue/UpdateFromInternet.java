@@ -20,7 +20,6 @@
 
 package com.eleybourn.bookcatalogue;
 
-import java.util.Hashtable;
 import java.util.LinkedHashMap;
 
 import android.app.AlertDialog;
@@ -35,6 +34,9 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsages.Usages;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
+import com.eleybourn.bookcatalogue.utils.ViewTagger;
 
 public class UpdateFromInternet extends ActivityWithTasks {
 

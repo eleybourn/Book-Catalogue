@@ -32,6 +32,9 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -87,7 +90,7 @@ public class LibraryThingManager {
 	// Sizes of thumbnails
 	public enum ImageSizes { SMALL, MEDIUM, LARGE };
 
-	LibraryThingManager(Context context) {
+	public LibraryThingManager(Context context) {
 		mAppContext = context.getApplicationContext();
 	}
 

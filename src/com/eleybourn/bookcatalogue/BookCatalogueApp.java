@@ -21,32 +21,23 @@
 package com.eleybourn.bookcatalogue;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Application;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.IBinder;
 import org.acra.*;
 import org.acra.annotation.*;
-import org.acra.sender.ReportSender;
 import org.acra.sender.ReportSenderException;
 
 import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
-import com.eleybourn.bookcatalogue.debug.Tracker;
 
 
 import static org.acra.ReportField.*;
-
-import net.philipwarner.taskqueue.QueueManager;
 
 /**
  * BookCatalogue Application implementation. Useful for making globals available

@@ -1,4 +1,4 @@
-package com.eleybourn.bookcatalogue;
+package com.eleybourn.bookcatalogue.widgets;
 
 /*
  * Copyright (C) 2008 The Android Open Source Project
@@ -61,6 +61,9 @@ package com.eleybourn.bookcatalogue;
  * limitations under the License.
  */
 
+import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.R.drawable;
+
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -87,7 +90,7 @@ import android.widget.SectionIndexer;
 /**
  * Helper class for AbsListView to draw and control the Fast Scroll thumb
  */
-class FastScroller {
+public class FastScroller {
    
     // Minimum number of pages to justify showing a fast scroll thumb
     private static int MIN_PAGES = 4;

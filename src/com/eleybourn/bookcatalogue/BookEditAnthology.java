@@ -31,6 +31,8 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.SAXException;
 
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter.AnthologyTitleExistsException;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;

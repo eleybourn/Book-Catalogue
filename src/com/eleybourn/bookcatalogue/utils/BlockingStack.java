@@ -18,7 +18,7 @@
  * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.eleybourn.bookcatalogue;
+package com.eleybourn.bookcatalogue.utils;
 
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
@@ -46,7 +46,7 @@ public class BlockingStack<T> {
 	// Lock held by push(). Probably not needed since we sync on mStack...
 	private final ReentrantLock mPushLock = new ReentrantLock();
 
-	BlockingStack() {
+	public BlockingStack() {
 		mStack = new Stack<T>();
 	}
 
@@ -89,7 +89,7 @@ public class BlockingStack<T> {
 	 * 
 	 * @throws InterruptedException
 	 */
-	void push(T object) throws InterruptedException {
+	public void push(T object) throws InterruptedException {
 		final ReentrantLock pushLock = this.mPushLock;
 
 		// This will hold the original stack size, before push.
@@ -129,7 +129,7 @@ public class BlockingStack<T> {
 	 * @return
 	 * @throws InterruptedException
 	 */
-	T pop(long waitMilliseconds) throws InterruptedException {
+	public T pop(long waitMilliseconds) throws InterruptedException {
 		final ReentrantLock popLock = mPopLock;
 
 		T o;
@@ -165,7 +165,7 @@ public class BlockingStack<T> {
 	 * 
 	 * @throws InterruptedException
 	 */
-	T poll() throws InterruptedException {
+	public T poll() throws InterruptedException {
 		final ReentrantLock popLock = mPopLock;
 
 		T o = null;

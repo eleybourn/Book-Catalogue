@@ -1,4 +1,4 @@
-package com.eleybourn.bookcatalogue;
+package com.eleybourn.bookcatalogue.utils;
 
 /**
  * <p>Encodes and decodes to and from Base64 notation.</p>

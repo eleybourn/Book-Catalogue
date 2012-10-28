@@ -23,6 +23,10 @@ package com.eleybourn.bookcatalogue;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.ViewTagger;
+import com.eleybourn.bookcatalogue.widgets.TouchListView;
+
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;

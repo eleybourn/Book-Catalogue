@@ -23,6 +23,7 @@ package com.eleybourn.bookcatalogue;
 import java.nio.channels.ClosedByInterruptException;
 
 import com.eleybourn.bookcatalogue.messaging.MessageSwitch;
+import com.eleybourn.bookcatalogue.utils.Logger;
 
 /**
  * Base class for handling tasks in background while displaying a ProgressDialog.

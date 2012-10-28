@@ -29,8 +29,8 @@ import android.widget.TextView;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.ViewTagger;
 import com.eleybourn.bookcatalogue.properties.Property.StringValue;
+import com.eleybourn.bookcatalogue.utils.ViewTagger;
 
 /**
  * Implement a String-based property with optional (non-empty) validation.

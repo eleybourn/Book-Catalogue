@@ -1,7 +1,6 @@
 package com.eleybourn.bookcatalogue;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -13,9 +12,11 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 
 import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer.SyncLock;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.StorageUtils;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 import android.os.Bundle;
-import android.os.Message;
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 
 /**

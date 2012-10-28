@@ -22,7 +22,6 @@ package com.eleybourn.bookcatalogue;
 
 //import android.R;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 import android.app.Activity;
@@ -44,6 +43,8 @@ import com.eleybourn.bookcatalogue.Fields.FieldValidator;
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.dialogs.PartialDatePicker;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 
 /*

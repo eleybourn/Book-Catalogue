@@ -20,6 +20,9 @@
 
 package com.eleybourn.bookcatalogue;
 
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
+
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;

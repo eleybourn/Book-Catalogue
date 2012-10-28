@@ -18,12 +18,14 @@
  * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.eleybourn.bookcatalogue;
+package com.eleybourn.bookcatalogue.utils;
 
 import java.util.ArrayList;
 import java.util.Stack;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import com.eleybourn.bookcatalogue.BookCatalogueApp;
+import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.database.CoversDbHelper;
 
 import android.os.Handler;

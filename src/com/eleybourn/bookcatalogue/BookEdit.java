@@ -27,6 +27,7 @@ import java.util.Map.Entry;
 
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
+import com.eleybourn.bookcatalogue.utils.Logger;
 
 
 import android.app.Activity;

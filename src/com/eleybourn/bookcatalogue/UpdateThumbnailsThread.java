@@ -28,10 +28,10 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Message;
-import android.os.Parcelable;
 
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
+import com.eleybourn.bookcatalogue.utils.StorageUtils;
+import com.eleybourn.bookcatalogue.utils.Utils;
 import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsage;
 import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsages;
 import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsages.Usages;

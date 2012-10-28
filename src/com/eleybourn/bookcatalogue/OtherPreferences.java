@@ -27,9 +27,10 @@ import com.eleybourn.bookcatalogue.properties.Properties;
 import com.eleybourn.bookcatalogue.properties.Property;
 import com.eleybourn.bookcatalogue.properties.PropertyGroup;
 import com.eleybourn.bookcatalogue.properties.ListProperty.ItemEntries;
+import com.eleybourn.bookcatalogue.utils.SoundManager;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 import android.os.Bundle;
-import android.view.ViewGroup;
 
 /**
  * Activity to display the 'Other Preferences' dialog and maintain the preferences.

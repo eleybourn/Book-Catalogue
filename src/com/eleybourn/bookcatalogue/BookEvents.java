@@ -22,9 +22,10 @@ package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
 
-import com.eleybourn.bookcatalogue.HintManager.HintOwner;
-import com.eleybourn.bookcatalogue.goodreads.GoodreadsSearchCriteria;
 import com.eleybourn.bookcatalogue.goodreads.SendOneBookTask;
+import com.eleybourn.bookcatalogue.utils.Utils;
+import com.eleybourn.bookcatalogue.utils.ViewTagger;
+import com.eleybourn.bookcatalogue.utils.HintManager.HintOwner;
 
 import net.philipwarner.taskqueue.BindableItemSQLiteCursor;
 import net.philipwarner.taskqueue.ContextDialogItem;

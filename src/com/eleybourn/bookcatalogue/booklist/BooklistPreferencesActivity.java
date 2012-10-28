@@ -27,11 +27,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
-import com.eleybourn.bookcatalogue.HintManager;
-import com.eleybourn.bookcatalogue.Logger;
 import com.eleybourn.bookcatalogue.PreferencesBase;
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.Utils;
 import com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds;
 import com.eleybourn.bookcatalogue.properties.BooleanListProperty;
 import com.eleybourn.bookcatalogue.properties.IntegerListProperty;
@@ -40,6 +37,9 @@ import com.eleybourn.bookcatalogue.properties.Properties;
 import com.eleybourn.bookcatalogue.properties.Property;
 import com.eleybourn.bookcatalogue.properties.PropertyGroup;
 import com.eleybourn.bookcatalogue.properties.ValuePropertyWithGlobalDefault;
+import com.eleybourn.bookcatalogue.utils.HintManager;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Activity to manage the preferences associate with Book lists (and the BooksOnBookshelf activity).

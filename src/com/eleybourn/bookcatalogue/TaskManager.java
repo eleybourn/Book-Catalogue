@@ -20,11 +20,11 @@
 
 package com.eleybourn.bookcatalogue;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import com.eleybourn.bookcatalogue.messaging.MessageSwitch;
 import com.eleybourn.bookcatalogue.messaging.MessageSwitch.Message;
+import com.eleybourn.bookcatalogue.utils.Logger;
 
 
 /**

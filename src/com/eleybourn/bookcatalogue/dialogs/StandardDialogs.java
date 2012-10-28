@@ -28,15 +28,15 @@ import com.eleybourn.bookcatalogue.AdministrationLibraryThing;
 import com.eleybourn.bookcatalogue.Author;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.LibraryThingManager;
-import com.eleybourn.bookcatalogue.Logger;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.Series;
-import com.eleybourn.bookcatalogue.Utils;
-import com.eleybourn.bookcatalogue.ViewTagger;
 import com.eleybourn.bookcatalogue.R.id;
 import com.eleybourn.bookcatalogue.R.layout;
 import com.eleybourn.bookcatalogue.R.string;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsRegister;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
+import com.eleybourn.bookcatalogue.utils.ViewTagger;
 
 import android.app.Activity;
 import android.app.AlertDialog;

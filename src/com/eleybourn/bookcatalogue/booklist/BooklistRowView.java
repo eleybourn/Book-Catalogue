@@ -25,8 +25,8 @@ import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.*;
 import android.database.Cursor;
 
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
-import com.eleybourn.bookcatalogue.Utils;
 import com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * RowView object for the BooklistCursor.

@@ -20,9 +20,9 @@
 
 package com.eleybourn.bookcatalogue.goodreads;
 
-import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTask;
-import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTaskContext;
-import com.eleybourn.bookcatalogue.Utils;
+import com.eleybourn.bookcatalogue.utils.Utils;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTask;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTaskContext;
 
 /**
  * Background task to load an image for a GoodreadsWork from a URL. Does not store it locally; 

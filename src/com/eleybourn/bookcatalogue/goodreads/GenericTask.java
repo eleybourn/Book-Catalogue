@@ -25,7 +25,7 @@ import java.util.Date;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.ViewTagger;
+import com.eleybourn.bookcatalogue.utils.ViewTagger;
 
 import android.content.Context;
 import android.view.LayoutInflater;

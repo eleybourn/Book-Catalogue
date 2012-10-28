@@ -25,8 +25,6 @@ import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.*;
 
 import net.philipwarner.taskqueue.QueueManager;
 
-import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTask;
-import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTaskContext;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
 import com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds;
 import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
@@ -37,6 +35,12 @@ import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
 import com.eleybourn.bookcatalogue.goodreads.SendOneBookTask;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue;
+import com.eleybourn.bookcatalogue.utils.Utils;
+import com.eleybourn.bookcatalogue.utils.ViewTagger;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTask;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTaskContext;
 
 import android.app.Activity;
 import android.database.Cursor;
@@ -422,8 +426,6 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 
 		/** Resulting shelves data */
 		String mShelves;
-		/** Shelves resource string */
-		static String mShelvesRes = null;		
 
 		/** Flag indicating we want finished() to be called */
 		private boolean mWantFinished = true;

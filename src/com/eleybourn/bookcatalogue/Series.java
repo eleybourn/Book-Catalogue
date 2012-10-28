@@ -24,6 +24,8 @@ import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.eleybourn.bookcatalogue.utils.Utils;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -40,7 +42,7 @@ public class Series implements Serializable, Utils.ItemWithIdFixup {
 
 	private java.util.regex.Pattern mPattern = java.util.regex.Pattern.compile("^(.*)\\s*\\((.*)\\)\\s*$");
 
-	Series(String name) {
+	public Series(String name) {
 		java.util.regex.Matcher m = mPattern.matcher(name);
 		if (m.find()) {
 			this.name = m.group(1).trim();

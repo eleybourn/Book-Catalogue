@@ -24,10 +24,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.CountDownLatch;
 
-import com.eleybourn.bookcatalogue.Logger;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.R.id;
 import com.eleybourn.bookcatalogue.R.layout;
+import com.eleybourn.bookcatalogue.utils.Logger;
 
 import android.app.Activity;
 import android.content.ContentResolver;

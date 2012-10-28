@@ -22,8 +22,11 @@ package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
 
-import com.eleybourn.bookcatalogue.AlertDialogUtils.AlertDialogItem;
 import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
+import com.eleybourn.bookcatalogue.utils.AlertDialogUtils;
+import com.eleybourn.bookcatalogue.utils.HintManager;
+import com.eleybourn.bookcatalogue.utils.Utils;
+import com.eleybourn.bookcatalogue.utils.AlertDialogUtils.AlertDialogItem;
 
 import android.app.Activity;
 import android.content.Intent;

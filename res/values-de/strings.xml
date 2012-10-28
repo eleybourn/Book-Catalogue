@@ -589,4 +589,22 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
 <string name="you_have_unsaved_changes">Einige Änderungen wurden noch nicht gespeichert. Beim Beenden gehen diese Änderungen verloren.</string>
 <string name="exit">Beenden</string>
 <string name="continue_editing">Bearbeiten fortsetzen</string>
+<string name="the_title_already_exists">Der Titel exisitert bereits</string>
+<string name="year">Jahr</string>
+<string name="month">Monat</string>
+<string name="day">Tag</string>
+<string name="edit_lc_ellipsis">bearbeiten&#8230;</string>
+<string name="getting_books_ellipsis">Hole Bücher&#8230;</string>
+<string name="n_events_found">%1$s Ereignisse gefunden</string>
+<string name="last_error_e">Letzter Fehler: %1$s</string>
+<string name="invalid_isbn_x_specified_in_search">Ungültige ISBN \'%1$s\' gesucht</string>
+<string name="if_day_is_specified_month_and_year_must_be">Wenn der Tag angegeben wird, muss auch Monat und Jahr angegeben werden.</string>
+<string name="if_month_is_specified_year_must_be">Wenn das Monat angegeben wird, muss auch das Jahr angegeben werden.</string>
+<string name="main_menu">Hauptmenü</string>
+<string name="use_external_image_cropper">Externe Bildbearbeitung verwenden (experimentell)</string>
+<string name="auto_rotate_camera_images">Bilder von der Kamera automatisch rotieren</string>
+<string name="hint_autorotate_camera_images">Wenn Sie Bilder von der Kamera immer in die selbe Richtung drehen müssen, versuchen Sie, die automatische Drehrichtung in den Einstellungen festzulegen.</string>
+<string name="default_crop_frame_is_whole_image">Standardbeschnitt besteht aus dem gesamten Bild</string>
+<string name="cancelled">Abgebrochen</string>
+<string name="import_complete">Import vollständig</string>
 </resources>

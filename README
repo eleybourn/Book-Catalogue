@@ -41,7 +41,7 @@ Features include;
   case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
-new in 4.1.6-B14
+new in 4.1.6-B15
 * Date-Picker that supports dates down to 0AD and partial dates
 * HTML descriptions display correctly with click to edit
 * Preference for pre-selecting whole image when cropping

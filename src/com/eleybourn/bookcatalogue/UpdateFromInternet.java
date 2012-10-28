@@ -283,7 +283,7 @@ public class UpdateFromInternet extends ActivityWithTasks {
 	}
 
 	private void startUpdate() {
-		UpdateThumbnailsThread t = new UpdateThumbnailsThread(mTaskManager, mFieldUsages, mThumbnailsHandler);
+		UpdateThumbnailsThread t = new UpdateThumbnailsThread(getTaskManager(), mFieldUsages, mThumbnailsHandler);
 		mUpdateSenderId = t.getSenderId();
 		ExportThread.getMessageSwitch().addListener(mUpdateSenderId, mThumbnailsHandler, false);
 		t.start();	

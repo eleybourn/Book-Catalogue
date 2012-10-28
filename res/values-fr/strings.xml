@@ -562,7 +562,15 @@
 	<string name="getting_books_ellipsis">Chargement&#8230;</string>
 	<string name="n_events_found">%1$s évènements trouvés</string>
 	<string name="last_error_e">Dernière erreur: %1$s</string>
-		
+	<string name="invalid_isbn_x_specified_in_search">ISBN incoorect dans la recherche \'%1$s\'</string>
+	<string name="if_day_is_specified_month_and_year_must_be">Si le jour est précisé, le mois et l\'année doivent l\'être aussi.</string>
+	<string name="if_month_is_specified_year_must_be">Si le mois est précisé, l\'année doit l\'être aussi.</string>
+	<string name="main_menu">Menu principal</string>
+	<string name="use_external_image_cropper">Réduction d\'image avec un outil externe (Expérimental)</string>
+	<string name="hint_autorotate_camera_images">Si vous devez systematiquement tournez vos photos dans le même sens, envisagez d\'autoriser la rotation automatique en changeant vos paramètres.</string>
+	<string name="default_crop_frame_is_whole_image">Par défaut, la sélection de l\'image à réduie sera l\'image complète</string>
+	<string name="cancelled">Annulé</string>
+	<string name="import_complete">Import terminé</string>
 	<!-- Not translated yet  -->
 		
 	<!-- Not translated beyond this point : missing context -->

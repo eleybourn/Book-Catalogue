@@ -521,7 +521,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	 * return void
 	 */
 	public void exportData() {
-		ExportThread thread = new ExportThread(mTaskManager);
+		ExportThread thread = new ExportThread(getTaskManager());
 		thread.start();
 	}
 
@@ -563,7 +563,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	private void importData(String filespec) {
 		ImportThread thread;
 		try {
-			thread = new ImportThread(mTaskManager, filespec);
+			thread = new ImportThread(getTaskManager(), filespec);
 		} catch (IOException e) {
 			Logger.logError(e);
 			Toast.makeText(this, getString(R.string.problem_starting_import_arg, e.getMessage()), Toast.LENGTH_LONG).show();

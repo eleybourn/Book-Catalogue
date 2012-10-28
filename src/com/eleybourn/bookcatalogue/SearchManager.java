@@ -105,6 +105,8 @@ public class SearchManager implements TaskManagerListener {
 	 */
 	SearchManager(TaskManager taskManager, SearchListener taskHandler) {
 		mTaskManager = taskManager;
+		if (taskManager == null)
+			throw new RuntimeException("TaskManager must be specified");
 		getMessageSwitch().addListener(getSenderId(), taskHandler, false);
 	}
 

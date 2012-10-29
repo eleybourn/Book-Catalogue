@@ -49,7 +49,7 @@ new in 4.1.6-B18
 * Preference to use external cropping tool (experimental)
 * Added more options to the options menus
 * More reliable date handling on import/export/sync
-* French translation updates (Patrice Leonard)
+* French translation updates (Imkal)
 * German translation updates (Robert Wetzlmayr)
 * Updated OK/Cancel button positions to conform to current Android standards
 * Fix handling of duplicate anthology titles

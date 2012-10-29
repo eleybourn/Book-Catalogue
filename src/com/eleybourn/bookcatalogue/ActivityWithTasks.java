@@ -126,7 +126,7 @@ abstract public class ActivityWithTasks extends Activity {
 					Logger.logError(new RuntimeException("Have ID, but can not find controller getting TaskManager"));
 				}
 			} else {
-				Logger.logError(new RuntimeException("Task manager requested, but no ID available"));				
+				//Logger.logError(new RuntimeException("Task manager requested, but no ID available"));				
 			}
 
 			// Create if necessary

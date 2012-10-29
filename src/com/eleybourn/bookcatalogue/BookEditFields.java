@@ -1401,14 +1401,14 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 					alert.setMessage(getResources().getString(R.string.duplicate_book_message));
 					alert.setTitle(R.string.duplicate_book_title);
 					alert.setIcon(android.R.drawable.ic_menu_info_details);
-					alert.setButton(this.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+					alert.setButton2(this.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
 							updateOrCreate();
 							nextStep.success();
 							return;
 						}
 					}); 
-					alert.setButton2(this.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+					alert.setButton(this.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
 							nextStep.failure();
 							return;

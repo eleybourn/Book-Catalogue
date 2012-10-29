@@ -478,7 +478,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 						AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(R.string.duplicate_book_message).create();
 						alertDialog.setTitle(R.string.duplicate_book_title);
 						alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-						alertDialog.setButton(this.getResources().getString(R.string.add), new DialogInterface.OnClickListener() {
+						alertDialog.setButton2(this.getResources().getString(R.string.add), new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
 								doSearchBook();
 								return;
@@ -489,7 +489,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 								BookEdit.editBook(BookISBNSearch.this, existingId, BookEdit.TAB_EDIT);
 							}
 						});
-						alertDialog.setButton2(this.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+						alertDialog.setButton(this.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
 								//do nothing
 								if (mMode == MODE_SCAN) {

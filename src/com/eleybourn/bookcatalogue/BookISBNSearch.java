@@ -557,12 +557,12 @@ public class BookISBNSearch extends ActivityWithTasks {
 
 	private SearchManager.SearchListener mSearchHandler = new SearchManager.SearchListener() {
 		@Override
-		public void onSearchFinished(Bundle bookData, boolean cancelled) {
-			BookISBNSearch.this.onSearchFinished(bookData, cancelled);
+		public boolean onSearchFinished(Bundle bookData, boolean cancelled) {
+			return BookISBNSearch.this.onSearchFinished(bookData, cancelled);
 		}
 	};
 
-	private void onSearchFinished(Bundle bookData, boolean cancelled) {
+	private boolean onSearchFinished(Bundle bookData, boolean cancelled) {
 		Tracker.handleEvent(this, "onSearchFinished" + mSearchManagerId, Tracker.States.Running);
 		//System.out.println(mId + " onSearchFinished");
 		if (cancelled || bookData == null) {
@@ -575,9 +575,11 @@ public class BookISBNSearch extends ActivityWithTasks {
 			clearFields();
 			// Make sure the message will be empty.
 			getTaskManager().doProgress(null);
+			// Flush the message queue for this search manager to avoid this being added twice
 		}
 		// Clean up
 		mSearchManagerId = 0;
+		return true;
 	}
 
 	@Override

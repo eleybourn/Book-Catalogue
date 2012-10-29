@@ -242,7 +242,7 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 	 * @param cancelled
 	 */
 	@Override
-	public void onSearchFinished(Bundle bookData, boolean cancelled) {
+	public boolean onSearchFinished(Bundle bookData, boolean cancelled) {
 		// Set cancelled flag if the task was cancelled
 		if (cancelled) {
 			cancelTask();
@@ -260,6 +260,8 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 
 		if (!isCancelled() && bookData != null)
 			processSearchResults(rowId, mCurrUuid, requestedFields, bookData, origData);
+		
+		return true;
 	}
 
 	/**

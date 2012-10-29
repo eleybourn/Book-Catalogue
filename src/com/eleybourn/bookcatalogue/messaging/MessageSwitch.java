@@ -45,7 +45,15 @@ public class MessageSwitch<T,U> {
 
 	/** Interface that must be implemented by any message that will be sent via send() */
 	public interface Message<T> {
-		public void deliver(T listener);
+		/**
+		 * Method to deliver a message.
+		 * 
+		 * @param listener		Listener to who message must be delivered
+		 * 
+		 * @return		true if message should not be delievered to any other listeners or stored for delievery as 'last message'
+		 * 				should only return true if the message has been handled and would break the app if delivered more than once.
+		 */
+		public boolean deliver(T listener);
 	}
 
 	/** Register a new sender and it's controller object; return the unique ID for this sender */
@@ -297,26 +305,35 @@ public class MessageSwitch<T,U> {
 			// Iterator for iterating queue
 			Iterator<T> i = null;
 
+			MessageListeners queue = null;
 			// Get the queue and find the iterator
 			synchronized(mListeners) {
 				// Queue for given ID
-				MessageListeners queue = mListeners.get(destination);
+				queue = mListeners.get(destination);
 				if (queue != null) {
 					queue.setLastMessage(this);
 					i = queue.iterator();
 				}
 			}
 			// If we have an iterator, send the message to each listener
-			if (i != null)
+			if (i != null) {
+				boolean handled = false;
 				while(i.hasNext()) {
 					T l = i.next();
 					try {
-						message.deliver(l);
+						if (message.deliver(l)) {
+							handled = true;
+							break;
+						}
+							
 					} catch (Exception e) {
 						Logger.logError(e, "Error delivering message to listener");					
 					}
 				}
-
+				if (handled) {
+					queue.setLastMessage(null);
+				}
+			}
 		}
 	}
 

@@ -417,8 +417,8 @@ public class SearchManager implements TaskManagerListener {
 	private void sendSearchFinished() {
 		mMessageSwitch.send(mMessageSenderId, new MessageSwitch.Message<SearchListener>() {
 			@Override
-			public void deliver(SearchListener listener) {
-				listener.onSearchFinished(mBookData, mCancelledFlg);
+			public boolean deliver(SearchListener listener) {
+				return listener.onSearchFinished(mBookData, mCancelledFlg);
 			}}
 		);		
 	}
@@ -523,7 +523,7 @@ public class SearchManager implements TaskManagerListener {
 	 * @author Philip Warner
 	 */
 	public interface SearchListener {
-		void onSearchFinished(Bundle bookData, boolean cancelled);
+		boolean onSearchFinished(Bundle bookData, boolean cancelled);
 	}
 
 	public interface SearchController {

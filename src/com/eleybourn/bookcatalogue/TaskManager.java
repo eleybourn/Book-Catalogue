@@ -80,8 +80,9 @@ public class TaskManager {
 		}
 
 		@Override
-		public void deliver(TaskManagerListener listener) {
+		public boolean deliver(TaskManagerListener listener) {
 			listener.onTaskEnded(mManager, mTask);
+			return false;
 		}
 	};
 	public static class OnProgressMessage implements Message<TaskManagerListener> {
@@ -96,8 +97,9 @@ public class TaskManager {
 		}
 
 		@Override
-		public void deliver(TaskManagerListener listener) {
+		public boolean deliver(TaskManagerListener listener) {
 			listener.onProgress(mCount, mMax, mMessage);
+			return false;
 		}
 	};
 	public static class OnToastMessage implements Message<TaskManagerListener> {
@@ -108,15 +110,17 @@ public class TaskManager {
 		}
 
 		@Override
-		public void deliver(TaskManagerListener listener) {
+		public boolean deliver(TaskManagerListener listener) {
 			listener.onToast(mMessage);
+			return false;
 		}
 	};
 	public static class OnFinshedMessage implements Message<TaskManagerListener> {
 
 		@Override
-		public void deliver(TaskManagerListener listener) {
+		public boolean deliver(TaskManagerListener listener) {
 			listener.onFinished();
+			return false;
 		}
 	};
 

@@ -214,8 +214,9 @@ abstract public class ManagedTask extends Thread {
 	public void sendOnFinish() {
 		mMessageSwitch.send(mMessageSenderId, new MessageSwitch.Message<TaskListener>() {
 			@Override
-			public void deliver(TaskListener listener) {
+			public boolean deliver(TaskListener listener) {
 				listener.onFinish();
+				return false;
 			}}
 		);
 	}

@@ -78,8 +78,9 @@ abstract public class SearchThread extends ManagedTask {
 		doProgress("Done",0);
 		getMessageSwitch().send(getSenderId(), new MessageSwitch.Message<TaskListener>() {
 			@Override
-			public void deliver(TaskListener listener) {
-				((SearchTaskHandler)listener).onSearchThreadFinish(SearchThread.this, mBookData, isCancelled());				
+			public boolean deliver(TaskListener listener) {
+				((SearchTaskHandler)listener).onSearchThreadFinish(SearchThread.this, mBookData, isCancelled());	
+				return false;
 			}}
 		);
 	}

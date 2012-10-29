@@ -569,7 +569,7 @@
 	<string name="use_external_image_cropper">Recadrage d\'image avec un outil externe (Expérimental)</string>
 	<string name="auto_rotate_camera_images">Rotation automatique des photos</string>
 	<string name="hint_autorotate_camera_images">Si vous devez systematiquement tournez vos photos dans le même sens, envisagez d\'autoriser la rotation automatique en changeant vos paramètres.</string>
-	<string name="default_crop_frame_is_whole_image">Le cadre par défaut de l'image à recadrer sera l'image complète</string>
+	<string name="default_crop_frame_is_whole_image">Le cadre par défaut de l\'image à recadrer sera l\'image complète</string>
 	<string name="cancelled">Annulé</string>
 	<string name="import_complete">Import terminé</string>
 

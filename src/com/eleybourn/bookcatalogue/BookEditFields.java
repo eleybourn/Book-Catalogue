@@ -25,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -1574,31 +1575,50 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 			case ADD_GALLERY:
 				if (resultCode == Activity.RESULT_OK){
 					Uri selectedImageUri = intent.getData();
-	
+
 					if (selectedImageUri != null) {
-						String[] projection = { MediaStore.Images.Media.DATA };
-						Cursor cursor = managedQuery(selectedImageUri, projection, null, null, null);
-						int column_index = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
-						if (column_index < 0 || !cursor.moveToFirst()) {
-							Logger.logError(new RuntimeException("Add from gallery failed (col = " + column_index +"), name = " + MediaStore.Images.Media.DATA));
-							// This should not happen, but tell the user and log something
-							String s = getResources().getString(R.string.no_image_found) + ". " + getResources().getString(R.string.if_the_problem_persists);
-							Toast.makeText(this, s, Toast.LENGTH_LONG).show();
-						} else {
-							String selectedImagePath = cursor.getString(column_index);
-							
-							File thumb = new File(selectedImagePath);
-							File real = getCoverFile();
-							try {
-								copyFile(thumb, real);
-							} catch (IOException e) {
-								Logger.logError(e, "copyImage failed in add from gallery");
-								String s = getResources().getString(R.string.could_not_copy_image) + ". " + getResources().getString(R.string.if_the_problem_persists);
+						// Use the original BC code for anything that has a 'content' scheme.
+						if (selectedImageUri.getScheme().equalsIgnoreCase("content")) {
+							String[] projection = { MediaStore.Images.Media.DATA };
+							Cursor cursor = managedQuery(selectedImageUri, projection, null, null, null);
+							int column_index = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
+							if (column_index < 0 || !cursor.moveToFirst()) {
+								Logger.logError(new RuntimeException("Add from gallery failed (col = " + column_index +"), name = " + MediaStore.Images.Media.DATA));
+								// This should not happen, but tell the user and log something
+								String s = getResources().getString(R.string.no_image_found) + ". " + getResources().getString(R.string.if_the_problem_persists);
 								Toast.makeText(this, s, Toast.LENGTH_LONG).show();
+							} else {
+								String selectedImagePath = cursor.getString(column_index);
+								
+								File thumb = new File(selectedImagePath);
+								File real = getCoverFile();
+								try {
+									copyFile(thumb, real);
+								} catch (IOException e) {
+									Logger.logError(e, "copyImage failed in add from gallery");
+									String s = getResources().getString(R.string.could_not_copy_image) + ". " + getResources().getString(R.string.if_the_problem_persists);
+									Toast.makeText(this, s, Toast.LENGTH_LONG).show();
+								}
+								// Update the ImageView with the new image
+								setCoverImage();					
 							}
-							// Update the ImageView with the new image
-							setCoverImage();					
-						}
+						} else {
+							boolean imageOk = false;
+							// If no 'content' scheme, then use the content resolver.
+							try {
+								InputStream in = getContentResolver().openInputStream(selectedImageUri);
+								imageOk = Utils.saveInputToFile(in, getCoverFile());
+							} catch (FileNotFoundException e) {
+								Logger.logError(e, "Unable to copy content to file");
+							}
+							if (imageOk) {
+								// Update the ImageView with the new image
+								setCoverImage();									
+							} else {
+								String s = getResources().getString(R.string.could_not_copy_image) + ". " + getResources().getString(R.string.if_the_problem_persists);
+								Toast.makeText(this, s, Toast.LENGTH_LONG).show();								
+							}								
+						}						
 					} else {
 						// Deal with the case where the chooser returns a null intent. This seems to happen when the filename
 						// is not properly understood by the choose (eg. an apostrophe in the file name confuses ES File Explorer

@@ -544,6 +544,36 @@ public class Utils {
 	}
 
 	/**
+	 * Given a InputStream, save it to a file.
+	 * 
+	 * @param in		InputStream to read
+	 * @param out		File to save
+	 * @return			true if successful
+	 */
+	static public boolean saveInputToFile(InputStream in, File out) {
+		boolean isOk = false;
+		FileOutputStream f = null;
+		try {
+			File temp = File.createTempFile("cover", null, StorageUtils.getSharedStorage());
+			f = new FileOutputStream(temp);
+
+			byte[] buffer = new byte[65536];
+			int len1 = 0;
+			while ( (len1 = in.read(buffer)) > 0 ) {
+				f.write(buffer,0, len1);
+			}
+			f.close();
+			temp.renameTo(out);
+			isOk = true;
+		} catch (FileNotFoundException e) {
+			Logger.logError(e);
+		} catch (IOException e) {
+			Logger.logError(e);
+		}
+		return isOk;
+	}
+
+	/**
 	 * Given a URL, get an image and return as a bitmap.
 	 * 
 	 * @param urlText			Image file URL

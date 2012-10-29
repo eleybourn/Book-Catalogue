@@ -56,6 +56,7 @@ new in 4.1.6-B18
 * Full keyboard available when entering ASINs
 * Keeps 5 previous export files
 * Better detection of 'changes' when editing books
+* Support for a wider range of Gallery and file browsers
 * Various import bugs fixed
 * Various NPEs fixed
 * Internal: prep for fragments by separating message delivery from activities

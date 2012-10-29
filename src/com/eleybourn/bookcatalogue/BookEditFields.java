@@ -267,7 +267,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 			mFields.add(R.id.publisher, CatalogueDBAdapter.KEY_PUBLISHER, null);
 			mFields.add(R.id.date_published_button, "", CatalogueDBAdapter.KEY_DATE_PUBLISHED, null);
 			mFields.add(R.id.date_published, CatalogueDBAdapter.KEY_DATE_PUBLISHED, CatalogueDBAdapter.KEY_DATE_PUBLISHED, 
-							blankOrDateValidator, new Fields.DateFieldFormatter());
+							null, new Fields.DateFieldFormatter());
 
 			mFields.add(R.id.series, CatalogueDBAdapter.KEY_SERIES_NAME, CatalogueDBAdapter.KEY_SERIES_NAME, null);
 			{

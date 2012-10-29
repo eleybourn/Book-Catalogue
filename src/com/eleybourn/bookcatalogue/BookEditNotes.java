@@ -145,7 +145,9 @@ public class BookEditNotes extends Activity implements OnRestoreTabInstanceState
 					showDialog(READ_START_DIALOG_ID);
 				}
 			});
-			mFields.add(R.id.read_start, CatalogueDBAdapter.KEY_READ_START, blankOrDateValidator, dateFormatter);
+			// ENHANCE: Add a partial date validator. Or not.
+			//mFields.add(R.id.read_start, CatalogueDBAdapter.KEY_READ_START, blankOrDateValidator, dateFormatter);
+			mFields.add(R.id.read_start, CatalogueDBAdapter.KEY_READ_START, null, dateFormatter);
 
 			f = mFields.add(R.id.read_end_button, "",  CatalogueDBAdapter.KEY_READ_END, null);
 			f.getView().setOnClickListener(new View.OnClickListener() {
@@ -153,7 +155,8 @@ public class BookEditNotes extends Activity implements OnRestoreTabInstanceState
 					showDialog(READ_END_DIALOG_ID);
 				}
 			});
-			f = mFields.add(R.id.read_end, CatalogueDBAdapter.KEY_READ_END, blankOrDateValidator, dateFormatter);
+			//f = mFields.add(R.id.read_end, CatalogueDBAdapter.KEY_READ_END, blankOrDateValidator, dateFormatter);
+			f = mFields.add(R.id.read_end, CatalogueDBAdapter.KEY_READ_END, null, dateFormatter);
 
 			mFields.add(R.id.signed, CatalogueDBAdapter.KEY_SIGNED,  booleanValidator);
 

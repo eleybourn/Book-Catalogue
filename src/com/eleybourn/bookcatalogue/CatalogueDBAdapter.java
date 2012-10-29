@@ -145,8 +145,8 @@ public class CatalogueDBAdapter {
 
 	public static final String[] EMPTY_STRNG_ARRAY = new String[] {};
 
-	private DatabaseHelper mDbHelper;
-	private SynchronizedDb mDb;
+	private static DatabaseHelper mDbHelper;
+	private static SynchronizedDb mDb;
 	/** Instance of Utils created if necessary */
 	private Utils mUtils = null;
 	/** Flag indicating close() has been called */
@@ -1600,7 +1600,8 @@ public class CatalogueDBAdapter {
 			mInstanceCount++;
 			System.out.println("CatDBA instances: " + mInstanceCount);
 		}
-		mDbHelper = new DatabaseHelper(ctx);
+		if (mDbHelper == null)
+			mDbHelper = new DatabaseHelper(ctx);
 	}
 	
 	/**
@@ -1614,10 +1615,12 @@ public class CatalogueDBAdapter {
 	public CatalogueDBAdapter open() throws SQLException {
 		/* Create the bookCatalogue directory if it does not exist */
 		StorageUtils.getSharedStorage();
-		// Get the DB wrapper
-		mDb = new SynchronizedDb(mDbHelper, mSynchronizer);
-		// Turn on foreign key support so that CASCADE works.
-		mDb.execSQL("PRAGMA foreign_keys = ON");
+		if (mDb == null) {
+			// Get the DB wrapper
+			mDb = new SynchronizedDb(mDbHelper, mSynchronizer);
+			// Turn on foreign key support so that CASCADE works.
+			mDb.execSQL("PRAGMA foreign_keys = ON");
+		}
 		//mDb.execSQL("PRAGMA temp_store = FILE");
 		mStatements = new SqlStatementManager(mDb);
 
@@ -1644,7 +1647,7 @@ public class CatalogueDBAdapter {
 			mCloseWasCalled = true;
 
 			try { mStatements.close(); } catch (Exception e) { Logger.logError(e); }
-			try { mDbHelper.close(); } catch (Exception e) { Logger.logError(e); }
+			//try { mDbHelper.close(); } catch (Exception e) { Logger.logError(e); }
 			try { if (mUtils != null) mUtils.close(); } catch (Exception e) { Logger.logError(e); }
 
 			synchronized(mInstanceCount) {

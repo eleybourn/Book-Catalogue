@@ -297,12 +297,12 @@ public class DbSync {
 		 * @return			The opened database
 		 */
 		private SQLiteDatabase openWithRetries(DbOpener opener) {
-			SyncLock l = mSync.getExclusiveLock();
-			try {
-				int wait = 10;
-				int retriesLeft = 5;
+				int wait = 10; // 10ms
+				//int retriesLeft = 5; // up to 320ms
+				int retriesLeft = 10; // 2^10 * 10ms = 10.24sec (actually 2x that due to total wait time)
 				SQLiteDatabase db = null;
 				do {
+					SyncLock l = mSync.getExclusiveLock();
 					try {
 						db = opener.open();	
 						return db;
@@ -319,11 +319,10 @@ public class DbSync {
 						} catch (InterruptedException e1) {
 							throw new RuntimeException("Unable to open database, interrupted", e1);							
 						}
-					}
+					} finally {
+						l.unlock();
+					}				
 				} while (true);
-			} finally {
-				l.unlock();
-			}				
 			
 		}
 		/**

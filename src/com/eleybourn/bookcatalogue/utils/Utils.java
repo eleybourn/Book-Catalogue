@@ -482,6 +482,7 @@ public class Utils {
 	 * @return	Downloaded filespec
 	 */
 	static public String saveThumbnailFromUrl(String urlText, String filenameSuffix) {
+		// Get the URL
 		URL u;
 		try {
 			u = new URL(urlText);
@@ -489,6 +490,7 @@ public class Utils {
 			Logger.logError(e);
 			return "";
 		}
+		// Turn the URL into an InputStream
 		InputStream in = null;
 		try {
             HttpGet httpRequest = null;
@@ -518,29 +520,12 @@ public class Utils {
 			return "";
 		}
 
-		String filename = "";
-		FileOutputStream f = null;
-		try {
-			File file = CatalogueDBAdapter.getTempThumbnail(filenameSuffix);
-			filename = file.getAbsolutePath();
-			f = new FileOutputStream(filename);
-		} catch (FileNotFoundException e) {
-			Logger.logError(e);
-			return "";
-		}
-		
-		try {
-			byte[] buffer = new byte[1024];
-			int len1 = 0;
-			while ( (len1 = in.read(buffer)) > 0 ) {
-				f.write(buffer,0, len1);
-			}
-			f.close();
-		} catch (IOException e) {
-			Logger.logError(e);
-			return "";
-		}
-		return filename;
+		// Get the output file
+		File file = CatalogueDBAdapter.getTempThumbnail(filenameSuffix);
+		// Save to file
+		saveInputToFile(in, file);
+		// Return new file path
+		return file.getAbsolutePath();
 	}
 
 	/**
@@ -551,24 +536,32 @@ public class Utils {
 	 * @return			true if successful
 	 */
 	static public boolean saveInputToFile(InputStream in, File out) {
+		File temp = null;
 		boolean isOk = false;
-		FileOutputStream f = null;
-		try {
-			File temp = File.createTempFile("cover", null, StorageUtils.getSharedStorage());
-			f = new FileOutputStream(temp);
 
+		try {
+			// Get a temp file to avoid overwriting output unless copy works
+			temp = File.createTempFile("temp_", null, StorageUtils.getSharedStorage());
+			FileOutputStream f = new FileOutputStream(temp);
+
+			// Copy from input to temp file
 			byte[] buffer = new byte[65536];
 			int len1 = 0;
 			while ( (len1 = in.read(buffer)) > 0 ) {
 				f.write(buffer,0, len1);
 			}
 			f.close();
+			// All OK, so rename to real output file
 			temp.renameTo(out);
 			isOk = true;
 		} catch (FileNotFoundException e) {
 			Logger.logError(e);
 		} catch (IOException e) {
 			Logger.logError(e);
+		} finally {
+			// Delete temp file if it still exists
+			if (temp != null && temp.exists())
+				try { temp.delete(); } catch (Exception e) {};
 		}
 		return isOk;
 	}

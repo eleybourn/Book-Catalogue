@@ -447,7 +447,9 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 				public void onCancel(DialogInterface dialog) {
 					// Cancelling the list cancels the activity.
 					BooksOnBookshelf.this.finish();
-				}});			
+					dialog.dismiss();
+					mListDialog = null;
+				}});
 		}
 	}
 
@@ -814,6 +816,13 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		System.out.println("onPause");
 		if (mSearchText == null || mSearchText.equals(""))
 			savePosition();
+		
+		if (isFinishing())
+			mTaskQueue.finish();
+
+		if (mListDialog != null)
+			mListDialog.dismiss();
+
 		Tracker.exitOnPause(this);
 	}
 

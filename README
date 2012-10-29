@@ -41,8 +41,8 @@ Features include;
   case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
-new in 4.1.6-B15
-* Date-Picker that supports dates down to 0AD and partial dates
+new in 4.1.6-B17
+* Date-Picker that supports dates down to 0AD as well as partial dates
 * HTML descriptions display correctly with click to edit
 * Preference for pre-selecting whole image when cropping
 * Preference for auto-rotating images from camera
@@ -50,12 +50,16 @@ new in 4.1.6-B15
 * Added more options to the options menus
 * More reliable date handling on import/export/sync
 * French translation updates (Patrice Leonard)
+* German translation updates (Robert Wetzlmayr)
+* Updated OK/Cancel button positions to conform to current Android standards
 * Fix handling of duplicate anthology titles
-* Various import bugs fixed
-* Better detection of 'changes' when editing books
 * Full keyboard available when entering ASINs
 * Keeps 5 previous export files
+* Better detection of 'changes' when editing books
+* Various import bugs fixed
 * Various NPEs fixed
+* Internal: prep for fragments by separating message delivery from activities
+* Internal: one database connection for all activities and threads
 
 new in 4.1.5
 * improved import robustness

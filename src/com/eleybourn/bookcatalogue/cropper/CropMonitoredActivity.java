@@ -21,7 +21,7 @@ import android.os.Bundle;
 
 import java.util.ArrayList;
 
-public class CropMonitoredActivity extends Activity {
+public abstract class CropMonitoredActivity extends Activity {
 
     private final ArrayList<LifeCycleListener> mListeners =
             new ArrayList<LifeCycleListener>();

@@ -59,7 +59,7 @@
 		android:layout_above="@+id/bottom_buttons"
 		>
 
-	   	<com.eleybourn.bookcatalogue.TouchListView 
+	   	<com.eleybourn.bookcatalogue.widgets.TouchListView 
 			xmlns:tlv="http://schemas.android.com/apk/res/com.eleybourn.bookcatalogue"
 	
 			android:fadingEdge="none"

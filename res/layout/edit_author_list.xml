@@ -10,7 +10,6 @@
   	<TextView android:id="@+id/title" 
   		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content" 
-		android:layout_weight="2"
 		android:hint="@string/title"
   		android:textSize="16sp" />
 
@@ -43,7 +42,6 @@
     	android:id="@+id/android:list" 
     	android:layout_width="fill_parent" 
 		android:layout_height="wrap_content" 
-		android:layout_weight="2"
 		android:layout_below="@+id/top_buttons"
 		android:layout_above="@+id/bottom_buttons"
 
@@ -70,12 +68,14 @@
 			android:text="@string/cancel"
 			android:width="0dp"
 			android:layout_weight="1"
+			android:layout_width="0dp"
 			android:layout_height="wrap_content" />
 
 		<Button android:id="@+id/confirm" 
 			android:text="@string/save"
 			android:width="0dp"
 			android:layout_weight="1"
+			android:layout_width="0dp"
 			android:layout_height="wrap_content" />
 	</LinearLayout>
 </RelativeLayout>

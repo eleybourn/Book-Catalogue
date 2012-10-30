@@ -33,7 +33,7 @@
     <string name="confirm_add_bs">Добавить книжную полку</string>
     <string name="menu_bookshelf">Управлять книжными полками</string>
     <string name="confirm_save_bs">Сохранить книжную полку</string>
-    <string name="menu_delete_bs">Удалить книжную полку<</string>
+    <string name="menu_delete_bs">Удалить книжную полку</string>
     <string name="delete_1st_bs">Невозможно удалить единственную книжную полку</string>
     <string name="bookshelf_label">Книжная полка: </string>
     <string name="all_books">Все книги</string>
@@ -43,7 +43,7 @@
     <string name="title_edit_bs">Книжный каталог: редактирование книжной полки</string>
     <string name="book_exists">Книга, которую вы пытаетесь добавить, уже существует. .</string>
     <string name="search_label">Поиск книг</string>
-    <string name="search_hint">Поиск автора или названия<</string>
+    <string name="search_hint">Поиск автора или названия</string>
     <string name="book_not_found">Не найдена книга, соответствующая отсканированному штрих-коду. Возможно правильный штрих-код находится внутри книги. Иначе, пожалуйста, введите детализированную информацию о книге вручную.</string>
     <string name="series_num">№</string>
     <string name="unable_to_connect_google">Невозможно подключиться к Google Books</string>
@@ -184,7 +184,6 @@
 
     <item name="TAG_POSITION" type="id"></item>
     <item name="TAG_ORIGINAL_VALUE" type="id"></item>
-
     <string name="cover_not_set">Обложка не установлена</string>
     <string name="cover_corrupt">Обложка испорчена</string>
     <string name="cover_detail">Детальная информация об обложке</string>
@@ -233,8 +232,8 @@
     <string name="finding_editions">Поиск изданий&#8230;</string>
     <string name="click_on_thumb">Щёлкните по миниатюре для просмотра большого изображения</string>
     <string name="loading">Загрузка&#8230;</string>
-    <string name="image_not_found">Изображение не найдено/string>
-
+    <string name="image_not_found">Изображение не найдено</string>
+        
     <item name="fieldCheckbox" type="id"></item>
 
     <string name="select_min_1_field">Выберите хотя бы одно поле для обновления</string>
@@ -444,7 +443,7 @@
     <string name="book_catalogue_startup">Запуск BookCatalogue</string>
     <string name="book_list_state">Состояние списка книг</string>
     <string name="always_start_booklists_expanded">Всегда открывать списки раскрытыми</string>
-    <string name="always_start_booklists_collapsed">Всегда открывать списоки свернутыми<</string>
+    <string name="always_start_booklists_collapsed">Всегда открывать списоки свернутыми</string>
     <string name="remember_booklists_state">Запоминать состояние списков</string>
     <string name="searching_goodreads">Поиск Goodreads</string>
     <string name="edit_book_list_styles">Редактировать стили списков книг</string>

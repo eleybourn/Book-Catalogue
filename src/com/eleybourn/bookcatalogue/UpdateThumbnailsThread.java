@@ -229,7 +229,6 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 	public void onFinish() {
 		try {
 			mManager.doToast(mFinalMessage);
-			sendOnFinish();
 		} finally {
 			cleanup();
 		}

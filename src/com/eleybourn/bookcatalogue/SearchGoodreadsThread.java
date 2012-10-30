@@ -45,8 +45,8 @@ public class SearchGoodreadsThread extends SearchThread {
 	 * @param fetchThumbnail
 	 */
 	public SearchGoodreadsThread(TaskManager manager,
-			SearchTaskHandler taskHandler, String author, String title, String isbn, boolean fetchThumbnail) {
-		super(manager, taskHandler, author, title, isbn, fetchThumbnail);
+			String author, String title, String isbn, boolean fetchThumbnail) {
+		super(manager, author, title, isbn, fetchThumbnail);
 	}
 
 	@Override

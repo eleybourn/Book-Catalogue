@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import android.os.Bundle;
-import com.eleybourn.bookcatalogue.SearchThread.SearchTaskHandler;
 import com.eleybourn.bookcatalogue.TaskManager.TaskManagerListener;
 import com.eleybourn.bookcatalogue.messaging.MessageSwitch;
 import com.eleybourn.bookcatalogue.utils.IsbnUtils;
@@ -117,6 +116,12 @@ public class SearchManager implements TaskManagerListener {
 	@Override
 	public void onTaskEnded(TaskManager manager, ManagedTask task) {
 		int size;
+
+		// Handle the result, and optionally queue another task
+		if (task instanceof SearchThread)
+			handleSearchTaskFinished((SearchThread)task);
+
+		// Remove the finished task, and terminate if no more.
 		synchronized(mRunningTasks) {
 			mRunningTasks.remove(task);
 			size = mRunningTasks.size();
@@ -146,6 +151,7 @@ public class SearchManager implements TaskManagerListener {
 	private void startOne(SearchThread thread) {
 		synchronized(mRunningTasks) {
 			mRunningTasks.add(thread);
+			mTaskManager.addTask(thread);
 		}
 		thread.start();
 	}
@@ -155,7 +161,7 @@ public class SearchManager implements TaskManagerListener {
 	 */
 	private boolean startAmazon() {
 		if (!mCancelledFlg) {
-			startOne( new SearchAmazonThread(mTaskManager, mGenericSearchHandler, mAuthor, mTitle, mIsbn, mFetchThumbnail) );		
+			startOne( new SearchAmazonThread(mTaskManager, mAuthor, mTitle, mIsbn, mFetchThumbnail) );		
 			return true;
 		} else {
 			return false;
@@ -167,7 +173,7 @@ public class SearchManager implements TaskManagerListener {
 	 */
 	private boolean startGoogle() {
 		if (!mCancelledFlg) {
-			startOne( new SearchGoogleThread(mTaskManager, mGenericSearchHandler, mAuthor, mTitle, mIsbn, mFetchThumbnail) );		
+			startOne( new SearchGoogleThread(mTaskManager, mAuthor, mTitle, mIsbn, mFetchThumbnail) );		
 			return true;
 		} else {
 			return false;			
@@ -178,7 +184,7 @@ public class SearchManager implements TaskManagerListener {
 	 */
 	private boolean startLibraryThing(){
 		if (!mCancelledFlg && mHasIsbn) {
-			startOne( new SearchLibraryThingThread(mTaskManager, mGenericSearchHandler, mAuthor, mTitle, mIsbn, mFetchThumbnail));		
+			startOne( new SearchLibraryThingThread(mTaskManager, mAuthor, mTitle, mIsbn, mFetchThumbnail));		
 			return true;
 		} else {
 			return false;
@@ -190,7 +196,7 @@ public class SearchManager implements TaskManagerListener {
 	 */
 	private boolean startGoodreads(){
 		if (!mCancelledFlg) {
-			startOne( new SearchGoodreadsThread(mTaskManager, mGenericSearchHandler, mAuthor, mTitle, mIsbn, mFetchThumbnail));		
+			startOne( new SearchGoodreadsThread(mTaskManager, mAuthor, mTitle, mIsbn, mFetchThumbnail));		
 			return true;
 		} else {
 			return false;			
@@ -483,35 +489,31 @@ public class SearchManager implements TaskManagerListener {
 	}
 
 	/**
-	 * Handle SearchThread completion; just save the results and if waiting for ISBN, start 
-	 * next/rest depending on whether we now have an ISBN.
+	 * Handle task search results; start another task if necessary.
+	 * 
+	 * @param t
 	 */
-	private SearchTaskHandler mGenericSearchHandler = new SearchTaskHandler() {
-		@Override
-		public void onSearchThreadFinish(SearchThread t, Bundle bookData, boolean cancelled) {
-			mCancelledFlg = cancelled;
-			mSearchResults.put(t.getSearchId(), bookData);
-			if (cancelled) {
-				mWaitingForIsbn = false;
-			} else {
-				if (mWaitingForIsbn) {
-					if (Utils.isNonBlankString(bookData, CatalogueDBAdapter.KEY_ISBN)) {
-						mWaitingForIsbn = false;
-						// Start the other two...even if they have run before
-						mIsbn = bookData.getString(CatalogueDBAdapter.KEY_ISBN);
-						startSearches(mSearchFlags);
-					} else {
-						// Start next one that has not run. 
-						startNext();
-					}
-				}				
-			}
+	private void handleSearchTaskFinished(SearchThread t) {
+		SearchThread st = (SearchThread)t;
+		mCancelledFlg = st.isCancelled();
+		Bundle bookData = st.getBookData();
+		mSearchResults.put(st.getSearchId(), bookData);
+		if (mCancelledFlg) {
+			mWaitingForIsbn = false;
+		} else {
+			if (mWaitingForIsbn) {
+				if (Utils.isNonBlankString(bookData, CatalogueDBAdapter.KEY_ISBN)) {
+					mWaitingForIsbn = false;
+					// Start the other two...even if they have run before
+					mIsbn = bookData.getString(CatalogueDBAdapter.KEY_ISBN);
+					startSearches(mSearchFlags);
+				} else {
+					// Start next one that has not run. 
+					startNext();
+				}
+			}				
 		}
-
-		@Override
-		public void onFinish() {
-		}
-	};
+	}		
 
 	/* ===================================================================== 
 	 * Message Switchboard implementation

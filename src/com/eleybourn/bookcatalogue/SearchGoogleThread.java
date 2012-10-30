@@ -4,9 +4,9 @@ import com.eleybourn.bookcatalogue.utils.Logger;
 
 public class SearchGoogleThread extends SearchThread {
 
-	public SearchGoogleThread(TaskManager manager, SearchTaskHandler taskHandler,
+	public SearchGoogleThread(TaskManager manager,
 			String author, String title, String isbn, boolean fetchThumbnail) {
-		super(manager, taskHandler, author, title, isbn, fetchThumbnail);
+		super(manager, author, title, isbn, fetchThumbnail);
 	}
 
 	@Override

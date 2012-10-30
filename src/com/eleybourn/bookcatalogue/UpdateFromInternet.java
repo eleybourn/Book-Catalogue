@@ -291,7 +291,7 @@ public class UpdateFromInternet extends ActivityWithTasks {
 
 	final ManagedTask.TaskListener mThumbnailsHandler = new ManagedTask.TaskListener() {
 		@Override
-		public void onFinish() {
+		public void onTaskFinished(ManagedTask t) {
 			mUpdateSenderId = 0;
 			finish();
 		}

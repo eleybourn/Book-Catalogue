@@ -1,7 +1,9 @@
 package com.eleybourn.bookcatalogue;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -25,9 +27,21 @@ public class AmazonManager {
 	 * @return The book array
 	 */
 	static public void searchAmazon(String mIsbn, String mAuthor, String mTitle, Bundle bookData, boolean fetchThumbnail) {
+
 		//replace spaces with %20
 		mAuthor = mAuthor.replace(" ", "%20");
+		//try {
+		//	mAuthor = URLEncoder.encode(mAuthor, "utf-8");
+		//} catch (UnsupportedEncodingException e1) {
+		//	// Just use raw author...
+		//}
+
 		mTitle = mTitle.replace(" ", "%20");
+		//try {
+		//	mTitle = URLEncoder.encode(mTitle, "utf-8");
+		//} catch (UnsupportedEncodingException e1) {
+		//	// Just use raw title...
+		//} 
 		
 		String path = "http://theagiledirector.com/getRest_v3.php";
 		if (mIsbn.equals("")) {

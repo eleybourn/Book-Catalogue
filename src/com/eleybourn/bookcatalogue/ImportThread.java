@@ -63,11 +63,7 @@ public class ImportThread extends ManagedTask {
 
 	@Override
 	protected void onFinish() {
-		try {
-			sendOnFinish();
-		} finally {
-			cleanup();
-		}
+		cleanup();
 	}
 
 	/**

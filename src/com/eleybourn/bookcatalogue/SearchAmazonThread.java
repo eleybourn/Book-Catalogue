@@ -4,9 +4,9 @@ import com.eleybourn.bookcatalogue.utils.Logger;
 
 public class SearchAmazonThread extends SearchThread {
 
-	public SearchAmazonThread(TaskManager manager, SearchTaskHandler taskHandler,
+	public SearchAmazonThread(TaskManager manager,
 			String author, String title, String isbn, boolean fetchThumbnail) {
-		super(manager, taskHandler, author, title, isbn, fetchThumbnail);
+		super(manager, author, title, isbn, fetchThumbnail);
 	}
 
 	@Override

@@ -209,10 +209,22 @@ public class TaskManager {
 		mCancelling = false;
 
 		synchronized(mTasks) {
-			if (getTaskInfo(t) == null)
-					mTasks.add(new TaskInfo(t));
+			if (getTaskInfo(t) == null) {
+				mTasks.add(new TaskInfo(t));
+				ManagedTask.getMessageSwitch().addListener(t.getSenderId(), mTaskListener, true);
+			}
 		}
 	}
+
+	/**
+	 * Listen for task messages, specifically, task termination
+	 */
+	private ManagedTask.TaskListener mTaskListener = new ManagedTask.TaskListener() {
+		@Override
+		public void onTaskFinished(ManagedTask t) {
+			TaskManager.this.onTaskFinished(t);
+		}
+	};
 
 	/**
 	 * Accessor
@@ -222,11 +234,11 @@ public class TaskManager {
 	}
 
 	/**
-	 * Called by a task when it ends.
+	 * Called when the onTaskFinished message is received by the listener object.
 	 * 
 	 * @param task
 	 */
-	public void taskEnded(ManagedTask task) {
+	private void onTaskFinished(ManagedTask task) {
 		boolean doClose;
 		
 		// Remove from the list of tasks. From now on, it should

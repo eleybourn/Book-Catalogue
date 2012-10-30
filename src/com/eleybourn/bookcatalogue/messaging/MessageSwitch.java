@@ -41,7 +41,7 @@ public class MessageSwitch<T,U> {
 	private Hashtable<Long, MessageListeners> mListeners = new Hashtable<Long, MessageListeners>();
 
 	/** Handler object for posting to main thread and for testing if running on UI thread */
-	Handler mHandler = new Handler();
+	private static Handler mHandler = new Handler();
 
 	/** Interface that must be implemented by any message that will be sent via send() */
 	public interface Message<T> {
@@ -418,4 +418,12 @@ public class MessageSwitch<T,U> {
 		} while (true);
 	}
 
+	/**
+	 * Accessor. Sometimes senders (or receivers) need to check which thread they are on and possibly post runnables.
+	 * 
+	 * @return the Handler object
+	 */
+	public static Handler getHandler() {
+		return mHandler;
+	}
 }

@@ -122,17 +122,19 @@ abstract public class ManagedTask extends Thread {
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
-		doFinish();
-	}
 
-	/**
-	 * Called in UI thread to call the onFinish() method and, if successful,
-	 * tell the task manager it has ended.
-	 */
-	private void doFinish() {
 		mFinished = true;
+		// Let the implementation know it is finished
 		onFinish();
-		mManager.taskEnded(this);
+
+		// Queue the 'onTaskFinished' message; this should also inform the TaskManager
+		mMessageSwitch.send(mMessageSenderId, new MessageSwitch.Message<TaskListener>() {
+			@Override
+			public boolean deliver(TaskListener listener) {
+				listener.onTaskFinished(ManagedTask.this);
+				return false;
+			}}
+		);
 	}
 
 	/**
@@ -170,7 +172,7 @@ abstract public class ManagedTask extends Thread {
 	 * @author Philip Warner
 	 */
 	public interface TaskListener {
-		void onFinish();
+		void onTaskFinished(ManagedTask t);
 	}
 
 	/**
@@ -207,17 +209,4 @@ abstract public class ManagedTask extends Thread {
 
 	private final long mMessageSenderId = mMessageSwitch.createSender(mController);
 	public long getSenderId() { return mMessageSenderId; }
-
-	/**
-	 * Utility routine to send the onFinish() method call to any task listeners
-	 */
-	public void sendOnFinish() {
-		mMessageSwitch.send(mMessageSenderId, new MessageSwitch.Message<TaskListener>() {
-			@Override
-			public boolean deliver(TaskListener listener) {
-				listener.onFinish();
-				return false;
-			}}
-		);
-	}
 }

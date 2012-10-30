@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="fill_parent"
-  android:layout_height="fill_parent"
-  android:orientation="vertical"
-  >
-  <Gallery
-      android:id="@+id/gallery"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <Gallery
+        android:id="@+id/gallery"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
       android:padding="2sp"
       android:visibility="gone"
-      android:layout_weight="1"
-  </Gallery>
-  <LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
-      android:id="@+id/main"
-	  android:layout_width="fill_parent"
-	  android:layout_height="wrap_content"
-	  android:orientation="vertical"
-      android:gravity="center"
-      android:padding="3sp"
-      android:layout_weight="4"
-  >
-  	<ImageSwitcher
-      android:id="@+id/switcher"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"  
-      android:gravity="center"
-      android:visibility="gone"
-  	/>
-    <TextView
-      android:id="@+id/switcherStatus"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content">
+      android:layout_weight="1"
+    </Gallery>
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/main"
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
+        android:layout_weight="4"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="3sp" >
+
+        <ImageSwitcher
+            android:id="@+id/switcher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/switcherStatus"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
       android:padding="2sp"
-      android:visibility="gone"
-    </TextView>
-  </LinearLayout>
-  
+      android:visibility="gone"
+        </TextView>
+    </LinearLayout>
 
 </LinearLayout>

@@ -70,14 +70,12 @@
 			android:text="@string/cancel"
 			android:width="0dp"
 			android:layout_weight="1"
-			android:layout_width="wrap_content"
-			android:layout_height="fill_parent" />
+			android:layout_height="wrap_content" />
 
 		<Button android:id="@+id/confirm" 
 			android:text="@string/save"
 			android:width="0dp"
 			android:layout_weight="1"
-			android:layout_width="wrap_content"
-			android:layout_height="fill_parent" />
+			android:layout_height="wrap_content" />
 	</LinearLayout>
 </RelativeLayout>

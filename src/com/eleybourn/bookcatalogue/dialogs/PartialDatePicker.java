@@ -125,6 +125,8 @@ public class PartialDatePicker extends AlertDialog {
 
 		// Get a calendar for locale-related info
 		Calendar cal = Calendar.getInstance();
+		// Set the day to 1...so avoid wrap on short months (default to current date)
+		cal.set(Calendar.DAY_OF_MONTH, 1);
 		// Add all month named (abbreviated)
 		for(int i = 0; i < 12; i++) {
 			cal.set(Calendar.MONTH, i);

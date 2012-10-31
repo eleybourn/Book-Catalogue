@@ -354,7 +354,7 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 		ArrayList<T> newList = null;
 		// Get the list from the original, if present. 
 		if (origData.containsKey(key)) {
-			origList = (ArrayList<T>) origData.getSerializable(key);
+			origList = Utils.getListFromBundle(origData, key);
 		}
 		// Otherwise an empty list
 		if (origList == null)
@@ -362,7 +362,7 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 
 		// Get from the new data
 		if (newData.containsKey(key)) {
-			newList = (ArrayList<T>) newData.getSerializable(key);			
+			newList = Utils.getListFromBundle(newData, key);			
 		}
 		if (newList == null)
 			newList = new ArrayList<T>();

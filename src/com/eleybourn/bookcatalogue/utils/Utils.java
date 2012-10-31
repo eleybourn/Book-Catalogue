@@ -1807,5 +1807,15 @@ public class Utils {
 	static ArrayList<Series> getSeriesFromBundle(Bundle b) {
 		return (ArrayList<Series>) b.getSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY);
 	}
+	
+	/**
+	 * Utility routine to get the list from the passed bundle. Added to reduce lint warnings...
+	 * 
+	 * @param b		Bundle containig list
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> ArrayList<T> getListFromBundle(Bundle b, String key) {
+		return (ArrayList<T>) b.getSerializable(key);
+	}
 }
 

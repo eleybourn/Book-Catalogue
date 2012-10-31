@@ -32,6 +32,8 @@ import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.TaskManager.TaskManagerController;
 import com.eleybourn.bookcatalogue.TaskManager.TaskManagerListener;
+import com.eleybourn.bookcatalogue.debug.Tracker;
+import com.eleybourn.bookcatalogue.debug.Tracker.States;
 import com.eleybourn.bookcatalogue.utils.Logger;
 
 /**
@@ -186,6 +188,11 @@ abstract public class ActivityWithTasks extends Activity {
 
 		@Override
 		public void onProgress(int count, int max, String message) {
+			// RELEASE: Remove these lines!
+			String dbgMsg =  count + "/" + max + ", '" + message.replace("\n", "\\n") + "'";
+			Tracker.handleEvent(ActivityWithTasks.this, "SearchProgress " + dbgMsg, States.Running);
+			System.out.println("PRG: " + dbgMsg);
+
 			// Save the details
 			mProgressCount = count;
 			mProgressMax = max;

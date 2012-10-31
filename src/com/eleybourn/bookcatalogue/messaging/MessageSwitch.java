@@ -410,15 +410,20 @@ public class MessageSwitch<T,U> {
 	}
 
 	/**
-	 * Post a new runnable to handle the queued  messages
+	 * If in UI thread, then process the queue, otherwise post a new runnable 
+	 * to process the queued messages
 	 */
 	private void startProcessingMessages() {
-		mHandler.post(new Runnable() {
-			@Override
-			public void run() {
-				processMessages();
-			}}
-		);		
+		if (mHandler.getLooper().getThread() == Thread.currentThread()) {
+			processMessages();
+		} else {
+			mHandler.post(new Runnable() {
+				@Override
+				public void run() {
+					processMessages();
+				}}
+			);		
+		}
 	}
 
 	/**

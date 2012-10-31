@@ -1,12 +1,15 @@
-package com.eleybourn.bookcatalogue;
+package com.eleybourn.bookcatalogue.utils;
 
 import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
 
+import com.eleybourn.bookcatalogue.BookCatalogueApp;
+import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
+import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
-import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.R.string;
 
 /**
  * Class to manage the message that is displayed when the application is upgraded.
@@ -17,16 +20,18 @@ import com.eleybourn.bookcatalogue.utils.Logger;
  * to store the current app version in preferences and so prevent re-display of the
  * messages.
  * 
- * ENHANCE: Put these strings in strings.xml to allow translations....
- * 
  * @author pjw
  */
 public class UpgradeMessageManager {
 	private final static String PREF_LAST_MESSAGE = "UpgradeMessages.LastMessage";
 
+	// New messages go here in order of increasing version ID.
 	/** List of version-specific messages */
 	private static final UpgradeMessages mMessages = new UpgradeMessages() 
+	
 	.add(118, R.string.new_in_42);
+	
+	
 	//* Internal: prep for fragments by separating message delivery from activities
 	//* Internal: one database connection for all activities and threads
 	;

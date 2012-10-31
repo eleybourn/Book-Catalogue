@@ -127,7 +127,7 @@ public class BookEditNotes extends Activity implements OnRestoreTabInstanceState
 
 			// Generic validators; if field-specific defaults are needed, create a new one.
 			FieldValidator booleanValidator = new Fields.BooleanValidator();
-			FieldValidator blankOrDateValidator = new Fields.OrValidator(new Fields.BlankValidator(), new Fields.DateValidator());
+			//FieldValidator blankOrDateValidator = new Fields.OrValidator(new Fields.BlankValidator(), new Fields.DateValidator());
 			FieldFormatter dateFormatter = new Fields.DateFieldFormatter();
 
 			mFields.add(R.id.rating, CatalogueDBAdapter.KEY_RATING, new Fields.FloatValidator());

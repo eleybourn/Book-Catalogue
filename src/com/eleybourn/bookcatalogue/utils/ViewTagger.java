@@ -93,12 +93,13 @@ public class ViewTagger {
 	 * 
 	 * @return		Object with specified tag
 	 */
-	public static Object getTag(View v, int key) {
+	@SuppressWarnings("unchecked")
+	public static<T> T getTag(View v, int key) {
 		ViewTagger tagger = getTagger(v, false);
 		if (tagger == null)
 			return null;
 
-		return tagger.get(key);
+		return (T)tagger.get(key);
 	}
 
 	/**

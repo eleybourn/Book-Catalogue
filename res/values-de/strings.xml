@@ -420,7 +420,7 @@ anschließend auf eine leeren Seite landen. Klicken Sie einfach auf den "Zurück
 <string name="always_start_booklists_expanded">Bücherliste immer erweitern</string>
 <string name="always_start_booklists_collapsed">Bücherliste immer einklappen</string>
 <string name="remember_booklists_state">Darstellung beibehalten</string>
-<string name="searching_goodreads">Durchsuche Goodreads</string>
+<string name="searching_goodreads">Suche bei Goodreads</string>
 <string name="edit_book_list_styles">Stile der Bücherlisten bearbeiten</string>
 <string name="show_more_ellipsis">Mehr anzeigen…</string>
 <string name="show_fewer_ellipsis">Weniger anzeigen…</string>
@@ -607,4 +607,7 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
 <string name="default_crop_frame_is_whole_image">Standardbeschnitt besteht aus dem gesamten Bild</string>
 <string name="cancelled">Abgebrochen</string>
 <string name="import_complete">Import vollständig</string>
+<string name="amazon_books">Amazon</string>
+<string name="google_books">Google Books</string>
+<string name="library_thing">LibraryThing</string>
 </resources>

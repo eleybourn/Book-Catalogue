@@ -572,8 +572,10 @@
 	<string name="default_crop_frame_is_whole_image">Le cadre par défaut de l\'image à recadrer sera l\'image complète</string>
 	<string name="cancelled">Annulé</string>
 	<string name="import_complete">Import terminé</string>
+	<string name="amazon_books">Amazon</string>
+	<string name="google_books">Google Books</string>
+	<string name="library_thing">LibraryThing</string>
 
-	
 	<!-- Not translated yet  -->
 		
 	<!-- Not translated beyond this point : missing context -->

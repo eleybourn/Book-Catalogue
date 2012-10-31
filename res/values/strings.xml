@@ -620,6 +620,7 @@
 <string name="google_books">Google Books</string>
 <string name="library_thing">LibraryThing</string>
 <string name="searching_elipsis">Searching&#8230;</string>
+
 <string name="adding_book_elipsis">Adding book&#8230;</string>
 
 <string name="new_in_42"><![CDATA[
@@ -640,6 +641,8 @@
 			* More reliable date handling on import/export/sync\n\n
 			* Fix handling of duplicate anthology titles\n\n
 			* Various bugs fixed\n\n
+			Many thanks to our dedicated beta testers!\n\n
+			Blame Grunthos for all bugs. And send us bug reports.
 			</p>
 		]]>
 </string>

@@ -128,8 +128,6 @@
 		<activity android:name=".BookEditAnthology"></activity>
 		<activity android:name=".EditAuthorList"></activity>
 		<activity android:name=".EditSeriesList"></activity>
-		<activity android:name=".AdministrationDonate"></activity>
-		<activity android:name=".TaskListActivity"></activity>
 		<activity android:name=".UpdateFromInternet"></activity>
 		<activity android:name=".CropCropImage"></activity>
 		<activity android:name=".CropMonitoredActivity"></activity>

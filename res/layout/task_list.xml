@@ -48,7 +48,6 @@
         android:layout_height="fill_parent"
         android:layout_above="@id/footer"
         android:layout_below="@id/header"
-        android:layout_weight="1"
         android:background="#00000000"
         android:cacheColorHint="#00000000" >
     </ListView>

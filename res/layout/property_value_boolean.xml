@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/property_boolean"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="#40000000"
@@ -41,7 +40,7 @@
 
     <View
         android:layout_width="fill_parent"
-        android:layout_height="1px"
+        android:layout_height="1dp"
         android:layout_alignParentBottom="true"
         android:background="@drawable/property_divider" />
 

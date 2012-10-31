@@ -23,7 +23,7 @@
         android:focusableInTouchMode="false"
         android:gravity="right"
         android:paddingRight="5sp"
-        android:src="@+drawable/down" />
+        android:src="@drawable/down" />
 
     <ImageView
         android:id="@+id/row_up"
@@ -36,7 +36,7 @@
         android:focusableInTouchMode="false"
         android:gravity="right"
         android:paddingRight="5sp"
-        android:src="@+drawable/up" />
+        android:src="@drawable/up" />
 
     <TextView
         android:id="@+id/row_position"

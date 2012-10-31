@@ -136,7 +136,8 @@
                 android:layout_height="75sp"
                 android:text="X"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:width="75sp" />
+                android:width="75sp" 
+                tools:ignore="HardcodedText"/>
 
             <Button
                 android:id="@+id/isbn_0"

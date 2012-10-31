@@ -589,8 +589,8 @@
     <string name="generate_immediately">Создавать немедленно (списки пролистываются медленнее, зато картинки показываются сразу)</string>
     <string name="sort_and_style_ellipsis">Сортировать &amp; Стиль&#8230;</string>
     <string name="disable_background_image">Отключить фоновый рисунок</string>
-    <string name="displaying_n_books_in_m_entries">отображается %1$s книг, в %2$s элементах</string>
-    <string name="displaying_n_books">отображается %1$s книг</string>
+    <string name="displaying_n_books_in_m_entries">Отображается %1$s книг, в %2$s элементах</string>
+    <string name="displaying_n_books">Количество книг на полке: %1$s</string>
     <string name="available">Доступно</string>
     <string name="loaned_to_2">\u2192</string>
     <string name="summary_details_in_header">Суммарная информация в заголовке</string>

@@ -66,6 +66,9 @@ import android.widget.ImageView;
  * for the catalogue (based on the Notepad tutorial), and gives the 
  * ability to list all books as well as retrieve or modify a specific book.
  * 
+ * NOTE: As of 4.2, DO NOT USE OnUpgrade TO DISPLAY UPGRADE MESSAGES. Use the UpgradeMessageManager class
+ * This change separated messages from DB changes (most releases do not involve DB upgrades).
+ * 
  * ENHANCE: Use date_added to add 'Recent Acquisitions' virtual shelf; need to resolve how this may relate to date_purchased and 'I own this book'...
  * 
  */
@@ -73,7 +76,7 @@ public class CatalogueDBAdapter {
 	
 	/** Debug counter */
 	private static Integer mInstanceCount = 0;
-	
+
 	private SqlStatementManager mStatements;
 
 	/** Synchronizer to coordinate DB access. Must be STATIC so all instances share same sync */
@@ -548,10 +551,21 @@ public class CatalogueDBAdapter {
 	 * @author evan
 	 */
 	private static class DatabaseHelper extends SQLiteOpenHelper {
+		private static boolean mDbWasCreated;
+
 		DatabaseHelper(Context context) {
 			super(context, StorageUtils.getDatabaseName(), mTrackedCursorFactory, DATABASE_VERSION);
 		}
-		
+
+		/**
+		 * Return a boolean indicating if this was a new install
+		 * 
+		 * @return
+		 */
+		public boolean isNewInstall() {
+			return mDbWasCreated;
+		}
+
 		/**
 		 * This function is called when the database is first created
 		 * 
@@ -559,6 +573,7 @@ public class CatalogueDBAdapter {
 		 */
 		@Override
 		public void onCreate(SQLiteDatabase db) {
+			mDbWasCreated = true;
 			db.execSQL(DATABASE_CREATE_AUTHORS);
 			db.execSQL(DATABASE_CREATE_BOOKSHELF);
 			db.execSQL(DATABASE_CREATE_BOOKS);
@@ -649,6 +664,8 @@ public class CatalogueDBAdapter {
 		 * This function is called each time the database is upgraded. The function will run all 
 		 * upgrade scripts between the oldVersion and the newVersion. 
 		 * 
+		 * NOTE: As of 4.2, DO NOT USE OnUpgrade TO DISPLAY UPGRADE MESSAGES. See header for details.
+		 * 
 		 * @see DATABASE_VERSION
 		 * @param db The database to be upgraded
 		 * @param oldVersion The current version number of the database
@@ -656,6 +673,8 @@ public class CatalogueDBAdapter {
 		 */
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+			mDbWasCreated = false;
+
 			int curVersion = oldVersion;
 			
 			StartupActivity startup = StartupActivity.getActiveActivity();
@@ -1521,6 +1540,11 @@ public class CatalogueDBAdapter {
 				message += "* Better handling of the 'back' key when editing books (filipeximenes)\n";
 				message += "* Various bug fixes\n";
 			}
+			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			// vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+			// NOTE: As of 4.2, DO NOT USE OnUpgrade TO DISPLAY UPGRADE MESSAGES. See header for details.
+			// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 			// Rebuild all indices
 			createIndices(db);
@@ -1646,7 +1670,7 @@ public class CatalogueDBAdapter {
 		if (!mCloseWasCalled) {
 			mCloseWasCalled = true;
 
-			try { mStatements.close(); } catch (Exception e) { Logger.logError(e); }
+			try { if (mStatements != null) mStatements.close(); } catch (Exception e) { Logger.logError(e); }
 			//try { mDbHelper.close(); } catch (Exception e) { Logger.logError(e); }
 			try { if (mUtils != null) mUtils.close(); } catch (Exception e) { Logger.logError(e); }
 
@@ -5602,4 +5626,14 @@ public class CatalogueDBAdapter {
 	public static Synchronizer getSynchronizer() {
 		return mSynchronizer;
 	}
+
+	/**
+	 * Return a boolean indicating this instance was a new installation
+	 *
+	 * @return
+	 */
+	public boolean isNewInstall() {
+		return mDbHelper.isNewInstall();
+	}
 }
+

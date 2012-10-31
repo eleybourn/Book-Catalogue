@@ -41,6 +41,7 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Html;
 
 /**
  * Single Activity to be the 'Main' activity for the app. I does app-startup stuff which is initially
@@ -242,10 +243,10 @@ public class StartupActivity extends Activity {
 		}
 
 		// Display upgrade message if necessary, otherwise go on to stage 3
-		if (mUpgradeMessageShown || CatalogueDBAdapter.message.equals("")) {
+		if (mUpgradeMessageShown || UpgradeMessageManager.getUpgradeMessage().equals("")) {
 			stage3Startup();
 		} else {
-			upgradePopup(CatalogueDBAdapter.message);
+			upgradePopup(UpgradeMessageManager.getUpgradeMessage());
 		}
 	}
 	
@@ -342,11 +343,12 @@ public class StartupActivity extends Activity {
 	 * @param message The message to display in the popup
 	 */
 	public void upgradePopup(String message) {
-		AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(message).create();
+		AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(Html.fromHtml(message)).create();
 		alertDialog.setTitle(R.string.upgrade_title);
 		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
 		alertDialog.setButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
+				UpgradeMessageManager.setMessageAcknowledged();
 				stage3Startup();
 			}
 		});

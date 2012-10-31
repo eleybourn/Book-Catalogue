@@ -29,7 +29,7 @@ public class UpgradeMessageManager {
 	.add(118, R.string.new_in_42);
 	//* Internal: prep for fragments by separating message delivery from activities
 	//* Internal: one database connection for all activities and threads
-			;
+	;
 
 	/**
 	 * Class to store one version-specific message
@@ -83,7 +83,7 @@ public class UpgradeMessageManager {
 		BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
 
 		long lastVersion = prefs.getInt(PREF_LAST_MESSAGE, 0);
-		if (true || lastVersion == 0) {
+		if (lastVersion == 0) {
 			// It's either a new install, or an install using old database-based message system
 
 			// Up until version 98, messages were handled via the CatalogueDBAdapter object, so create one

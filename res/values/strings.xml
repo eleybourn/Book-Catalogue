@@ -615,6 +615,13 @@
 <string name="default_crop_frame_is_whole_image">Default crop frame is whole image</string>
 <string name="cancelled">Cancelled</string>
 <string name="import_complete">Import Complete</string>
+
+<string name="amazon_books">Amazon</string>
+<string name="google_books">Google Books</string>
+<string name="library_thing">LibraryThing</string>
+<string name="searching_elipsis">Searching&#8230;</string>
+<string name="adding_book_elipsis">Adding book&#8230;</string>
+
 <string name="new_in_42"><![CDATA[
     <p><b>New in 4.2</b>\n\n
 			* Date-Picker that supports dates down to 0AD as well as partial dates\n\n
@@ -638,4 +645,3 @@
 </string>
 
 </resources>
-

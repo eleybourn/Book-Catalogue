@@ -536,6 +536,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 				mSearchManagerId = sm.getSenderId();
 				Tracker.handleEvent(this, "Searching" + mSearchManagerId, Tracker.States.Running);
 
+				this.getTaskManager().doProgress(getString(R.string.searching_elipsis));
 				sm.search(mAuthor, mTitle, mIsbn, true, SearchManager.SEARCH_ALL);
 				// reset the details so we don't restart the search unnecessarily
 				mAuthor = "";
@@ -564,22 +565,24 @@ public class BookISBNSearch extends ActivityWithTasks {
 
 	private boolean onSearchFinished(Bundle bookData, boolean cancelled) {
 		Tracker.handleEvent(this, "onSearchFinished" + mSearchManagerId, Tracker.States.Running);
-		//System.out.println(mId + " onSearchFinished");
-		if (cancelled || bookData == null) {
-			if (mMode == MODE_SCAN)
-				startScannerActivity();
-		} else {
-			getTaskManager().doProgress("Adding Book...");
-			createBook(bookData);
-			// Clear the data entry fields ready for the next one
-			clearFields();
-			// Make sure the message will be empty.
-			getTaskManager().doProgress(null);
-			// Flush the message queue for this search manager to avoid this being added twice
+		try {
+			//System.out.println(mId + " onSearchFinished");
+			if (cancelled || bookData == null) {
+				if (mMode == MODE_SCAN)
+					startScannerActivity();
+			} else {
+				getTaskManager().doProgress(getString(R.string.adding_book_elipsis));
+				createBook(bookData);
+				// Clear the data entry fields ready for the next one
+				clearFields();
+			}
+			return true;
+		} finally {
+			// Clean up
+			mSearchManagerId = 0;
+			// Make sure the base message will be empty.
+			this.getTaskManager().doProgress(null);
 		}
-		// Clean up
-		mSearchManagerId = 0;
-		return true;
 	}
 
 	@Override
@@ -776,5 +779,4 @@ public class BookISBNSearch extends ActivityWithTasks {
 		if (mSearchManagerId != 0)
 			inState.putLong("SearchManagerId", mSearchManagerId);
 	}
-
 }

@@ -1,98 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/bc_background_gradient_dim"
-    android:orientation="vertical"
-    android:paddingLeft="5sp" >
+    android:fillViewport="true" >
 
-    <ScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/padding_border" >
+
+        <!-- This is where the automatically generated properties will go -->
 
         <LinearLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/style_properties"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingLeft="5sp" >
-
-            <!-- This is where the automatically generated properties will go -->
-
-            <LinearLayout
-                android:id="@+id/style_properties"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:gravity="top"
-                android:orientation="vertical" >
-            </LinearLayout>
-
-            <!-- MANAGEMENT Header -->
-
-            <LinearLayout
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingLeft="0sp" >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="0sp"
-                    android:text="@string/management"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
-            </LinearLayout>
-
-            <!-- Edit Styles -->
-
-            <LinearLayout
-                android:id="@+id/edit_styles_label"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingLeft="15sp" >
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="10sp"
-                    android:src="@android:drawable/ic_menu_manage" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="5sp"
-                    android:text="@string/edit_book_list_styles"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
-            </LinearLayout>
-
-            <!-- ERASE COVER CACHE -->
-
-            <LinearLayout
-                android:id="@+id/erase_cover_cache_label"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:orientation="horizontal"
-                android:paddingLeft="15sp" >
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="10sp"
-                    android:src="@android:drawable/ic_menu_close_clear_cancel" />
-
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="5sp"
-                    android:text="@string/erase_cover_cache"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
-            </LinearLayout>
+            android:gravity="top"
+            android:orientation="vertical" >
         </LinearLayout>
-    </ScrollView>
 
-</LinearLayout>
+        <!-- MANAGEMENT Header -->
+		
+		<TextView
+            style="@style/prefs_header"
+            android:text="@string/management"/>
+
+        <!-- Edit Styles -->
+		<TextView
+            android:id="@+id/edit_styles_label"
+            style="@style/prefs_item"
+            android:drawableLeft="@android:drawable/ic_menu_manage"
+            android:text="@string/edit_book_list_styles"/>
+
+        <!-- ERASE COVER CACHE -->
+		<TextView
+            android:id="@+id/erase_cover_cache_label"
+            style="@style/prefs_item"
+            android:drawableLeft="@android:drawable/ic_menu_close_clear_cancel"
+            android:text="@string/erase_cover_cache"/>
+    </LinearLayout>
+
+</ScrollView>

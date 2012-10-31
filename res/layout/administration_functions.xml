@@ -13,129 +13,129 @@
 
 	<!-- PREFERENCES Header -->
         <TextView
-            style="@style/admin_functions_header"
+            style="@style/prefs_header"
             android:text="@string/preferences"/>
 
         <!-- BOOKSHELVES -->
         <TextView
             android:id="@+id/bookshelf_label"
-            style="@style/admin_functions_item"
+            style="@style/prefs_item"
             android:drawableLeft="@drawable/ic_menu_shelves"
             android:text="@string/menu_bookshelf" />
 
         <!-- FIELDS -->
         <TextView
             android:id="@+id/fields_label"
-            style="@style/admin_functions_item"
+            style="@style/prefs_item"
             android:drawableLeft="@drawable/ic_menu_agenda"
             android:text="@string/menu_manage_fields"/>
 
         <!-- BOOK LIST PREFS -->
 		<TextView
             android:id="@+id/booklist_preferences_label"
-            style="@style/admin_functions_item"
+            style="@style/prefs_item"
             android:drawableLeft="@drawable/ic_menu_manage"
             android:text="@string/booklist_preferences"/>
 
         <!-- OTHER PREFS -->
 		<TextView
             android:id="@+id/other_prefs_label"
-            style="@style/admin_functions_item"
+            style="@style/prefs_item"
             android:drawableLeft="@drawable/ic_menu_manage"
             android:text="@string/other_preferences"/>
 		
 	<!-- MANAGEMENT Header -->
 		<TextView
-		    style="@style/admin_functions_header"
+		    style="@style/prefs_header"
             android:text="@string/management"/>
 		
         <!-- HINTS -->
 		<TextView
             android:id="@+id/reset_hints_label"
-            style="@style/admin_functions_item"
+            style="@style/prefs_item"
             android:drawableLeft="@drawable/ic_menu_agenda"
             android:text="@string/reset_hints"/>
 		
         <!-- TASKs -->
 		<TextView
             android:id="@+id/background_tasks_label"
-            style="@style/admin_functions_item"
+            style="@style/prefs_item"
             android:drawableLeft="@drawable/ic_menu_recent_history"
             android:text="@string/background_tasks"/>
 		
 		<!-- TASK ERRORS -->		
 <!-- 		<TextView -->
 <!--             android:id="@+id/task_errors_label" -->
-<!--             style="@style/admin_functions_item" -->
+<!--             style="@style/prefs_item" -->
 <!--             android:drawableLeft="@android:drawable/ic_menu_gallery" -->
 <!--             android:text="@string/task_errors"/> -->
 		
 	<!-- CREDENTIALS HEADING -->
 		<TextView
-            style="@style/admin_functions_header"
+            style="@style/prefs_header"
             android:text="@string/credentials"/>
 		
         <!-- GOODREADS CREDENTIALS -->
 		<TextView
             android:id="@+id/goodreads_auth"
-            style="@style/admin_functions_item"
+            style="@style/prefs_item"
             android:drawableLeft="@drawable/ic_menu_gr_logo"
             android:text="@string/goodreads"/>
 		
 		<!-- LIBRARYTHING CREDENTIALS -->
 		<TextView
             android:id="@+id/librarything_auth"
-            style="@style/admin_functions_item"
+            style="@style/prefs_item"
             android:drawableLeft="@drawable/ic_menu_gallery"
             android:text="@string/librarything"/>
 	
 	<!-- IMPORT/EXPORT HEADING -->
 		<TextView
-            style="@style/admin_functions_header"
+            style="@style/prefs_header"
             android:text="@string/data_import_export"/>
 		
 		<!-- EXPORT -->
 		<TextView
             android:id="@+id/export_label"
-            style="@style/admin_functions_item"
+            style="@style/prefs_item"
             android:drawableLeft="@drawable/ic_menu_save"
             android:text="@string/export_data"/>
 		
 		<!-- IMPORT -->
 		<TextView
             android:id="@+id/import_label"
-            style="@style/admin_functions_item"
+            style="@style/prefs_item"
             android:drawableLeft="@drawable/ic_menu_upload"
             android:text="@string/import_data"/>
 		
         <!-- DEBUG ONLY! -->
 		<TextView
             android:id="@+id/backup_label"
-            style="@style/admin_functions_item"
+            style="@style/prefs_item"
             android:drawableLeft="@drawable/ic_menu_archive"
             android:text="@string/backup_database"/>
 		
 		<TextView
             android:id="@+id/thumb_label"
-            style="@style/admin_functions_item"
+            style="@style/prefs_item"
             android:drawableLeft="@drawable/ic_menu_gallery"
             android:text="@string/update_fields"/>
 		
 		<TextView
             android:id="@+id/sync_with_goodreads_label"
-            style="@style/admin_functions_item"
+            style="@style/prefs_item"
             android:drawableLeft="@drawable/ic_menu_refresh"
             android:text="@string/sync_with_goodreads"/>
 		
 		<TextView
             android:id="@+id/import_all_from_goodreads_label"
-            style="@style/admin_functions_item"
+            style="@style/prefs_item"
             android:drawableLeft="@drawable/ic_menu_upload"
             android:text="@string/import_all_from_goodreads"/>
 		
         <TextView
             android:id="@+id/send_books_to_goodreads_label"
-            style="@style/admin_functions_item"
+            style="@style/prefs_item"
             android:drawableLeft="@drawable/ic_menu_archive"
             android:text="@string/send_books_to_goodreads"/>
         

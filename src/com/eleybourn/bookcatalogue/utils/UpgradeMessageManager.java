@@ -116,6 +116,7 @@ public class UpgradeMessageManager {
 				// On new installs, there is no upgrade message
 				if (tmpDb.isNewInstall()) {
 					mMessage = "";
+					setMessageAcknowledged();
 					return mMessage;					
 				}
 				// It's not a new install, so we use the 'old' message format and set the version to the

@@ -1,57 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-    android:orientation="horizontal"
-	android:layout_width="fill_parent" 
-	android:layout_height="wrap_content"
-    android:gravity="center_vertical"
-	android:id="@+id/row"
-    >
-    <LinearLayout android:id="@+id/row_info" 
-	    android:orientation="vertical"
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content"
-	    android:paddingTop="3dp"
-	    android:paddingBottom="2dp"
-        >        
-	    <LinearLayout android:id="@+id/row_info" 
-		    android:orientation="horizontal"
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content"
-	        >        
-        
-			<ImageView android:id="@+id/marker" 
-				android:layout_width="10dp"
-				android:layout_height="10dp"
-				android:src="@drawable/btn_circle_normal"
-				android:gravity="center_vertical|center_horizontal" 
-				android:layout_gravity="center_vertical|center_horizontal" 
-				/>
-		   	<TextView android:id="@+id/name" 
-			    android:paddingLeft="2dp"
-			    android:layout_width="wrap_content"
-			    android:layout_height="wrap_content"
-			    android:layout_toRightOf="@id/marker"
-			    android:textAppearance="?android:attr/textAppearanceSmall"
-			    android:textStyle="bold"
-				android:gravity="center_vertical|center_horizontal" 
-				android:layout_gravity="center_vertical|center_horizontal" 
-			    />
-			<ImageView android:id="@+id/marker" 
-			    android:paddingLeft="2dp"
-				android:layout_width="10dp"
-				android:layout_height="10dp"
-				android:src="@drawable/btn_circle_normal"
-				android:gravity="center_vertical|center_horizontal" 
-				android:layout_gravity="center_vertical|center_horizontal" 
-				/>
-		</LinearLayout>
-		<View 
-		    android:background="@drawable/fading_grey_list_divider"
-		    android:layout_width="fill_parent"
-		    android:layout_height="1sp"
-			android:paddingTop="2dp"
-			android:paddingBottom="2dp"
-		    />
-	</LinearLayout>
-</RelativeLayout>
-    
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/row"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="2dp"
+    android:paddingTop="3dp" >
+
+    <LinearLayout
+        android:id="@+id/row_info"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/padding_border"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_gravity="center"
+            android:src="@drawable/btn_circle_normal" />
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:paddingLeft="2dp"
+            android:text="Some text"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textStyle="bold" 
+            tools:ignore="HardcodedText"/>
+
+        <ImageView
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_gravity="center"
+            android:paddingLeft="2dp"
+            android:src="@drawable/btn_circle_normal" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/fading_grey_list_divider"
+        android:paddingBottom="2dp"
+        android:paddingTop="2dp" />
+
+</LinearLayout>

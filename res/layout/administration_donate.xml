@@ -1,54 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-    android:id="@+id/root" 
-	android:orientation="vertical"
-	android:layout_width="fill_parent" 
-	android:layout_height="fill_parent"
-	android:paddingLeft="5sp"
-	android:background="@drawable/bc_background_gradient_dim"
-	>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fillViewport="true" >
 
-	<TextView android:id="@+id/url" 
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content" 
-		android:text="@+string/donate"
-	    android:textAppearance="?android:attr/textAppearanceMedium"
-		android:paddingBottom="20sp"
-		/>
+    <LinearLayout
+        android:id="@+id/root"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bc_background_gradient_dim"
+        android:orientation="vertical"
+        android:paddingLeft="5sp" >
 
-	<TextView android:id="@+id/amazon_url" 
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content" 
-		android:text="@+string/amazon_wishlist"
-		android:paddingBottom="20sp"
-		android:gravity="center"
-	    android:textAppearance="?android:attr/textAppearanceLarge"
-		android:textColor="#11D2EF"
-		/>
+        <TextView
+            android:id="@+id/url"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="20sp"
+            android:text="@string/donate"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
-	<TextView 
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content" 
-		android:text="@+string/dash_or_dash"
-		android:paddingBottom="20sp"
-		android:gravity="center"
-	    android:textAppearance="?android:attr/textAppearanceMedium"
-		/>
-	
-	<TextView android:id="@+id/donate_url" 
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content" 
-		android:text="@+string/paypal_donation"
-		android:paddingBottom="20sp"
-		android:gravity="center"
-	    android:textAppearance="?android:attr/textAppearanceLarge"
-		android:textColor="#11D2EF"
-		/>
+        <TextView
+            android:id="@+id/amazon_url"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="20sp"
+            android:text="@string/amazon_wishlist"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#11D2EF" />
 
-	<ImageView android:id="@+id/donate_url_image" 
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content" 
-		android:src="@+drawable/ic_paypal"
-		/>
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="20sp"
+            android:text="@string/dash_or_dash"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/donate_url"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="20sp"
+            android:text="@string/paypal_donation"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#11D2EF" />
+
+        <ImageView
+            android:id="@+id/donate_url_image"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_paypal" />
+    </LinearLayout>
+
+</ScrollView>

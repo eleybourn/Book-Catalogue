@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+	<!-- Style for item in preferences lists -->
+    <style name="prefs_item">
+        <item name="android:layout_width">fill_parent</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:gravity">center_vertical</item>
+		<item name="android:paddingLeft">@dimen/padding_border</item>
+		<item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+    </style>
+    <!-- Style for headers in preferences lists -->
+    <style name="prefs_header">
+        <item name="android:layout_width">fill_parent</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:paddingTop">@dimen/padding_border</item>
+		<item name="android:paddingLeft">@dimen/padding_border</item>
+		<item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+    </style>
+    <!-- Style for item in main menu -->
+    <style name="main_menu_item">
+        <item name="android:layout_width">fill_parent</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:gravity">center_vertical</item>
+		<item name="android:paddingLeft">@dimen/padding_border</item>
+		<item name="android:paddingTop">20dp</item>
+		<item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+    </style>
+</resources>

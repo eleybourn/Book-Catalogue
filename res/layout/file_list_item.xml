@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
@@ -11,8 +12,9 @@
         android:layout_alignParentTop="true"
         android:singleLine="false"
         android:text="export.csv"
-		android:textColor="#ff2d2d2d"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#ff2d2d2d" 
+        tools:ignore="HardcodedText"/>
 
     <TextView
         android:id="@+id/updated_label"
@@ -22,21 +24,22 @@
         android:layout_below="@+id/name"
         android:layout_marginTop="4sp"
         android:text="@string/updated"
-		android:textColor="#ff2d2d2d"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="#ff2d2d2d" />
 
     <TextView
         android:id="@+id/updated"
-        android:layout_marginLeft="4dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/updated_label"
         android:layout_alignBottom="@+id/updated_label"
+        android:layout_marginLeft="4dp"
         android:layout_toRightOf="@+id/updated_label"
         android:singleLine="false"
         android:text="Fri, 23 July, 17:54:01 2011"
-		android:textColor="#ff2d2d2d"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#ff2d2d2d" 
+        tools:ignore="HardcodedText"/>
 
     <TextView
         android:id="@+id/size_label"
@@ -46,56 +49,58 @@
         android:layout_below="@+id/updated_label"
         android:layout_marginTop="4sp"
         android:text="@string/size"
-		android:textColor="#ff2d2d2d"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="#ff2d2d2d" />
 
     <TextView
         android:id="@+id/size"
-        android:layout_marginLeft="4dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/size_label"
         android:layout_alignBottom="@+id/size_label"
+        android:layout_marginLeft="4dp"
         android:layout_toRightOf="@+id/size_label"
         android:singleLine="false"
         android:text="154kb"
-		android:textColor="#ff2d2d2d"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#ff2d2d2d" 
+        tools:ignore="HardcodedText"/>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:id="@+id/path_info"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-        android:layout_below="@+id/size_label"
-        android:layout_marginTop="4sp"
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/path_info"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-	    android:orientation="horizontal">
+        android:layout_below="@+id/size_label"
+        android:layout_marginTop="4sp"
+        android:orientation="horizontal" >
 
-	    <TextView
-	        android:id="@+id/path_label"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:text="@string/in"
-			android:textColor="#ff2d2d2d"
-	        android:textAppearance="?android:attr/textAppearanceSmall" />
-	
-	    <TextView
-	        android:id="@+id/path"
-	        android:layout_marginLeft="2sp"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:singleLine="false"
-	        android:text="/mnt/sdcard/foobar/bookCatalogue/asasd/asd/asd/asd/asd/as/da/sd/asd"
-			android:textColor="#ff2d2d2d"
-	        android:textAppearance="?android:attr/textAppearanceSmall" />
+        <TextView
+            android:id="@+id/path_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/in"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="#ff2d2d2d" />
 
-	</LinearLayout>
-    
-	<View 
-	    android:background="@drawable/property_divider"
-	    android:layout_width="fill_parent"
-	    android:layout_height="1dp"
+        <TextView
+            android:id="@+id/path"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2sp"
+            android:singleLine="false"
+            android:text="/mnt/sdcard/foobar/bookCatalogue/asasd/asd/asd/asd/asd/as/da/sd/asd"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="#ff2d2d2d" 
+            tools:ignore="HardcodedText"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
         android:layout_below="@+id/path_info"
-	    />
+        android:background="@drawable/property_divider" />
+
 </RelativeLayout>

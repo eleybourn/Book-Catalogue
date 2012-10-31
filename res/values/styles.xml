@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+	<!-- Style for item in list of administration_function.xml -->
+    <style name="admin_functions_item">
+        <item name="android:layout_width">fill_parent</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:gravity">left|center_vertical</item>
+		<item name="android:paddingLeft">@dimen/padding_border</item>
+		<item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+    </style>
+    <!-- Style for headers in list of administration_function.xml -->
+    <style name="admin_functions_header">
+        <item name="android:layout_width">fill_parent</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:paddingTop">@dimen/padding_border</item>
+		<item name="android:paddingLeft">@dimen/padding_border</item>
+		<item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+    </style>
+    
+</resources>

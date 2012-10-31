@@ -6,458 +6,138 @@
     android:background="@drawable/bc_background_gradient_dim" >
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingLeft="5sp" >
+        android:paddingLeft="@dimen/padding_border" >
 
-        <!-- PREFERENCES Header -->
-
-        <LinearLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingLeft="5sp" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="5sp"
-                android:text="@string/preferences"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
-        </LinearLayout>
+	<!-- PREFERENCES Header -->
+        <TextView
+            style="@style/admin_functions_header"
+            android:text="@string/preferences"/>
 
         <!-- BOOKSHELVES -->
-
-        <LinearLayout
+        <TextView
             android:id="@+id/bookshelf_label"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:orientation="horizontal"
-            android:paddingLeft="15sp" >
-
-            <ImageView
-                android:id="@+id/bookshelf_img"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="10sp"
-                android:src="@drawable/ic_menu_shelves" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="5sp"
-                android:text="@string/menu_bookshelf"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-        </LinearLayout>
+            style="@style/admin_functions_item"
+            android:drawableLeft="@drawable/ic_menu_shelves"
+            android:text="@string/menu_bookshelf" />
 
         <!-- FIELDS -->
-
-        <LinearLayout
+        <TextView
             android:id="@+id/fields_label"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:orientation="horizontal"
-            android:paddingLeft="15sp" >
-
-            <ImageView
-                android:id="@+id/fields_img"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="10sp"
-                android:src="@drawable/ic_menu_agenda" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="5sp"
-                android:text="@string/menu_manage_fields"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-        </LinearLayout>
+            style="@style/admin_functions_item"
+            android:drawableLeft="@drawable/ic_menu_agenda"
+            android:text="@string/menu_manage_fields"/>
 
         <!-- BOOK LIST PREFS -->
-
-        <LinearLayout
+		<TextView
             android:id="@+id/booklist_preferences_label"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:orientation="horizontal"
-            android:paddingLeft="15sp" >
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="10sp"
-                android:src="@drawable/ic_menu_manage" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="5sp"
-                android:text="@string/booklist_preferences"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-        </LinearLayout>
+            style="@style/admin_functions_item"
+            android:drawableLeft="@drawable/ic_menu_manage"
+            android:text="@string/booklist_preferences"/>
 
         <!-- OTHER PREFS -->
-
-        <LinearLayout
+		<TextView
             android:id="@+id/other_prefs_label"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:orientation="horizontal"
-            android:paddingLeft="15sp" >
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="10sp"
-                android:src="@drawable/ic_menu_manage" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="5sp"
-                android:text="@string/other_preferences"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-        </LinearLayout>
-
-        <!-- MANAGEMENT Header -->
-
-        <LinearLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingLeft="5sp" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="5sp"
-                android:text="@string/management"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
-        </LinearLayout>
-
-        <!-- FIELDS -->
-
-        <LinearLayout
+            style="@style/admin_functions_item"
+            android:drawableLeft="@drawable/ic_menu_manage"
+            android:text="@string/other_preferences"/>
+		
+	<!-- MANAGEMENT Header -->
+		<TextView
+		    style="@style/admin_functions_header"
+            android:text="@string/management"/>
+		
+        <!-- HINTS -->
+		<TextView
             android:id="@+id/reset_hints_label"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:orientation="horizontal"
-            android:paddingLeft="15sp" >
-
-            <ImageView
-                android:id="@+id/fields_img"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="10sp"
-                android:src="@drawable/ic_menu_agenda" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="5sp"
-                android:text="@string/reset_hints"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-        </LinearLayout>
-
+            style="@style/admin_functions_item"
+            android:drawableLeft="@drawable/ic_menu_agenda"
+            android:text="@string/reset_hints"/>
+		
         <!-- TASKs -->
-
-        <LinearLayout
+		<TextView
             android:id="@+id/background_tasks_label"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:orientation="horizontal"
-            android:paddingLeft="15sp" >
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="10sp"
-                android:src="@drawable/ic_menu_recent_history" />
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="5sp"
-                android:text="@string/background_tasks"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-        </LinearLayout>
-
-        <!--
-	-  TASK ERRORS - 
-	<LinearLayout android:id="@+id/task_errors_label" 
-		android:orientation="horizontal"
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content"
-		android:clickable="true"
-		android:paddingLeft="15sp">
-		<ImageView 
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content" 
-			android:paddingLeft="10sp"
-			android:src="@+android:drawable/ic_menu_gallery"
-			/>
-		<TextView 
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content" 
-			android:text="@+string/task_errors"
-			android:textAppearance="?android:attr/textAppearanceLarge"
-			android:paddingTop="5sp"
-			/>
-	</LinearLayout>
-        -->
-
-
-        <!-- CREDENTIALS HEADING -->
-
-        <LinearLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingLeft="5sp" >
-
-            <TextView
-                android:id="@+id/bookshelf_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="5sp"
-                android:text="@string/credentials"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
-        </LinearLayout>
-
+            style="@style/admin_functions_item"
+            android:drawableLeft="@drawable/ic_menu_recent_history"
+            android:text="@string/background_tasks"/>
+		
+		<!-- TASK ERRORS -->		
+<!-- 		<TextView -->
+<!--             android:id="@+id/task_errors_label" -->
+<!--             style="@style/admin_functions_item" -->
+<!--             android:drawableLeft="@android:drawable/ic_menu_gallery" -->
+<!--             android:text="@string/task_errors"/> -->
+		
+	<!-- CREDENTIALS HEADING -->
+		<TextView
+            style="@style/admin_functions_header"
+            android:text="@string/credentials"/>
+		
         <!-- GOODREADS CREDENTIALS -->
-
-        <LinearLayout
+		<TextView
             android:id="@+id/goodreads_auth"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:orientation="horizontal"
-            android:paddingLeft="0sp" >
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|left"
-                android:paddingLeft="10sp"
-                android:src="@drawable/ic_menu_gr_logo" />
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="left|center_vertical"
-                android:paddingTop="5sp"
-                android:text="@string/goodreads"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-        </LinearLayout>
-
-        <LinearLayout
+            style="@style/admin_functions_item"
+            android:drawableLeft="@drawable/ic_menu_gr_logo"
+            android:text="@string/goodreads"/>
+		
+		<!-- LIBRARYTHING CREDENTIALS -->
+		<TextView
             android:id="@+id/librarything_auth"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:orientation="horizontal"
-            android:paddingLeft="0sp" >
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|left"
-                android:paddingLeft="10sp"
-                android:src="@drawable/ic_menu_gallery" />
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="left|center_vertical"
-                android:paddingTop="5sp"
-                android:text="LibraryThing"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingLeft="5sp" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="5sp"
-                android:text="@string/data_import_export"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
-        </LinearLayout>
-
-        <LinearLayout
+            style="@style/admin_functions_item"
+            android:drawableLeft="@drawable/ic_menu_gallery"
+            android:text="@string/librarything"/>
+	
+	<!-- IMPORT/EXPORT HEADING -->
+		<TextView
+            style="@style/admin_functions_header"
+            android:text="@string/data_import_export"/>
+		
+		<!-- EXPORT -->
+		<TextView
             android:id="@+id/export_label"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:orientation="horizontal"
-            android:paddingLeft="100sp" >
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="10sp"
-                android:src="@drawable/ic_menu_save" />
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="5sp"
-                android:text="@string/export_data"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-        </LinearLayout>
-
-        <LinearLayout
+            style="@style/admin_functions_item"
+            android:drawableLeft="@drawable/ic_menu_save"
+            android:text="@string/export_data"/>
+		
+		<!-- IMPORT -->
+		<TextView
             android:id="@+id/import_label"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:orientation="horizontal"
-            android:paddingLeft="30dp" >
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="10sp"
-                android:src="@drawable/ic_menu_upload" />
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="5sp"
-                android:text="@string/import_data"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-        </LinearLayout>
-
+            style="@style/admin_functions_item"
+            android:drawableLeft="@drawable/ic_menu_upload"
+            android:text="@string/import_data"/>
+		
         <!-- DEBUG ONLY! -->
-
-        <LinearLayout
+		<TextView
             android:id="@+id/backup_label"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:orientation="horizontal"
-            android:paddingLeft="15sp" >
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="10sp"
-                android:src="@drawable/ic_menu_archive" />
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="5sp"
-                android:text="@string/backup_database"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-        </LinearLayout>
-        <!--  -->
-
-        <LinearLayout
+            style="@style/admin_functions_item"
+            android:drawableLeft="@drawable/ic_menu_archive"
+            android:text="@string/backup_database"/>
+		
+		<TextView
             android:id="@+id/thumb_label"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:orientation="horizontal"
-            android:paddingLeft="15sp" >
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="10sp"
-                android:src="@drawable/ic_menu_gallery" />
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="5sp"
-                android:text="@string/update_fields"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-        </LinearLayout>
-
-        <LinearLayout
+            style="@style/admin_functions_item"
+            android:drawableLeft="@drawable/ic_menu_gallery"
+            android:text="@string/update_fields"/>
+		
+		<TextView
             android:id="@+id/sync_with_goodreads_label"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:orientation="horizontal"
-            android:paddingLeft="15sp" >
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="10sp"
-                android:src="@drawable/ic_menu_refresh" />
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="5sp"
-                android:text="@string/sync_with_goodreads"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-        </LinearLayout>
-
-        <LinearLayout
+            style="@style/admin_functions_item"
+            android:drawableLeft="@drawable/ic_menu_refresh"
+            android:text="@string/sync_with_goodreads"/>
+		
+		<TextView
             android:id="@+id/import_all_from_goodreads_label"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:orientation="horizontal"
-            android:paddingLeft="15sp" >
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="10sp"
-                android:src="@drawable/ic_menu_upload" />
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="5sp"
-                android:text="@string/import_all_from_goodreads"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-        </LinearLayout>
-
-        <LinearLayout
+            style="@style/admin_functions_item"
+            android:drawableLeft="@drawable/ic_menu_upload"
+            android:text="@string/import_all_from_goodreads"/>
+		
+        <TextView
             android:id="@+id/send_books_to_goodreads_label"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:orientation="horizontal"
-            android:paddingLeft="15sp" >
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="10sp"
-                android:src="@drawable/ic_menu_archive" />
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="5sp"
-                android:text="@string/send_books_to_goodreads"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-        </LinearLayout>
+            style="@style/admin_functions_item"
+            android:drawableLeft="@drawable/ic_menu_archive"
+            android:text="@string/send_books_to_goodreads"/>
+        
     </LinearLayout>
-
 </ScrollView>

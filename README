@@ -41,7 +41,7 @@ Features include;
   case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
-new in 4.1.6-B20
+new in 4.1.6-B23
 * Date-Picker that supports dates down to 0AD as well as partial dates
 * HTML descriptions display correctly with click to edit
 * Preference for pre-selecting whole image when cropping
@@ -51,6 +51,7 @@ new in 4.1.6-B20
 * More reliable date handling on import/export/sync
 * French translation updates (Imkal)
 * German translation updates (Robert Wetzlmayr)
+* Russian translation updates (silin)
 * Updated OK/Cancel button positions to conform to current Android standards
 * Fix handling of duplicate anthology titles
 * Full keyboard available when entering ASINs

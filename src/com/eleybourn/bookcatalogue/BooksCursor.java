@@ -22,12 +22,12 @@ package com.eleybourn.bookcatalogue;
 
 import java.util.Hashtable;
 
-import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer;
-import com.eleybourn.bookcatalogue.utils.TrackedCursor;
-
 import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQuery;
+
+import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer;
+import com.eleybourn.bookcatalogue.utils.TrackedCursor;
 
 /**
  * Cursor implementation for book-related queries. The cursor wraps common

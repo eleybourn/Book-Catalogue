@@ -1,18 +1,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/layout_root"
-	android:orientation="horizontal"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
-	android:padding="10dp"
-	>
-	<CheckBox android:id="@+id/bs_checkbox" 
-		android:layout_width="wrap_content" 
-		android:layout_height="fill_parent"
-		/>
-	<TextView android:id="@+id/bs_label"
-		android:layout_width="wrap_content"
-		android:layout_height="fill_parent"
-		android:textColor="#FFF"
-		android:textSize="16sp"
-		/>
+    android:id="@+id/layout_root"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal"
+    android:padding="10dp" >
+
+    <CheckBox
+        android:id="@+id/bs_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent" />
+
+    <TextView
+        android:id="@+id/bs_label"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:textColor="#FFF"
+        android:textSize="16sp" />
+
 </LinearLayout>

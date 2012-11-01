@@ -12,27 +12,26 @@
         android:paddingLeft="5sp" >
 
         <!-- PREFERENCES Header -->
-		<com.eleybourn.bookcatalogue.widgets.CapitalizedTextView
+
+        <com.eleybourn.bookcatalogue.widgets.CapitalizedTextView
             style="@style/prefs_header"
-            android:text="@string/preferences"/>
-		
+            android:text="@string/preferences" />
 
         <!-- BOOKSHELVES -->
-		<TextView
+
+        <TextView
             android:id="@+id/bookshelf_label"
             style="@style/prefs_item"
             android:drawableLeft="@drawable/ic_menu_shelves"
             android:text="@string/menu_bookshelf" />
-		
 
         <!-- FIELDS -->
-		
-		<TextView
+
+        <TextView
             android:id="@+id/fields_label"
             style="@style/prefs_item"
             android:drawableLeft="@drawable/ic_menu_agenda"
             android:text="@string/menu_manage_fields" />
-		
 
         <!-- BOOK LIST PREFS -->
 
@@ -62,7 +61,7 @@
 
         <com.eleybourn.bookcatalogue.widgets.CapitalizedTextView
             style="@style/prefs_header"
-            android:text="@string/management"/>
+            android:text="@string/management" />
 
         <!-- FIELDS -->
 
@@ -88,19 +87,19 @@
             android:drawableLeft="@drawable/ic_menu_close_clear_cancel"
             android:text="@string/erase_cover_cache" />
 
-		<!-- TASK ERRORS -->
-<!--         <TextView -->
-<!--             android:id="@+id/task_errors_label" -->
-<!--             style="@style/prefs_item" -->
-<!--             android:drawableLeft="@android:drawable/ic_menu_gallery" -->
-<!--             android:text="@string/task_errors" /> -->
+        <!-- TASK ERRORS -->
+        <!-- <TextView -->
+        <!-- android:id="@+id/task_errors_label" -->
+        <!-- style="@style/prefs_item" -->
+        <!-- android:drawableLeft="@android:drawable/ic_menu_gallery" -->
+        <!-- android:text="@string/task_errors" /> -->
 
 
         <!-- CREDENTIALS HEADING -->
 
         <com.eleybourn.bookcatalogue.widgets.CapitalizedTextView
             style="@style/prefs_header"
-            android:text="@string/credentials"/>
+            android:text="@string/credentials" />
 
         <!-- GOODREADS CREDENTIALS -->
 
@@ -118,7 +117,7 @@
 
         <com.eleybourn.bookcatalogue.widgets.CapitalizedTextView
             style="@style/prefs_header"
-            android:text="@string/data_import_export"/>
+            android:text="@string/data_import_export" />
 
         <TextView
             android:id="@+id/export_label"

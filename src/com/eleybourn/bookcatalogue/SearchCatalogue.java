@@ -23,9 +23,10 @@ package com.eleybourn.bookcatalogue;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.eleybourn.bookcatalogue.utils.Utils;
-
+import android.app.Activity;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MotionEvent;
@@ -35,9 +36,8 @@ import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.app.Activity;
-import android.database.Cursor;
-import android.os.Handler;
+
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Catalogue search based on the SQLite FTS engine. Due to the speed of FTS it updates the 

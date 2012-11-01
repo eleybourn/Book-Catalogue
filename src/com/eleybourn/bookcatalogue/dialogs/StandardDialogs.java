@@ -24,17 +24,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 
-import com.eleybourn.bookcatalogue.AdministrationLibraryThing;
-import com.eleybourn.bookcatalogue.Author;
-import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
-import com.eleybourn.bookcatalogue.LibraryThingManager;
-import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.Series;
-import com.eleybourn.bookcatalogue.goodreads.GoodreadsRegister;
-import com.eleybourn.bookcatalogue.utils.Logger;
-import com.eleybourn.bookcatalogue.utils.Utils;
-import com.eleybourn.bookcatalogue.utils.ViewTagger;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -49,6 +38,17 @@ import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
+
+import com.eleybourn.bookcatalogue.AdministrationLibraryThing;
+import com.eleybourn.bookcatalogue.Author;
+import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
+import com.eleybourn.bookcatalogue.LibraryThingManager;
+import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.Series;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsRegister;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
+import com.eleybourn.bookcatalogue.utils.ViewTagger;
 
 public class StandardDialogs {
 

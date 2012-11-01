@@ -1,144 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:padding="5sp" >
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content"
-	android:padding="5sp">
-	<LinearLayout 
-		android:orientation="vertical" 
-		android:gravity="center_horizontal"
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent">
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical" >
 
-		<EditText android:id="@+id/isbn" 
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content" 
-			android:layout_weight="1"
-			android:hint="@string/isbn"
-			android:padding="10sp"
-			android:textAppearance="?android:attr/textAppearanceLarge"
-			android:inputType="text"
-			android:digits="1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"
-			/>
-		<LinearLayout
-			android:orientation="horizontal" 
-			android:gravity="center_horizontal"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content">
-			<Button android:id="@+id/isbn_1" 
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:text="1"
-				android:width="75sp"
-				android:layout_width="75sp"
-				android:layout_height="75sp" />
-			<Button android:id="@+id/isbn_2" 
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:text="2"
-				android:width="75sp"
-				android:layout_width="75sp"
-				android:layout_height="75sp" />
-			<Button android:id="@+id/isbn_3" 
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:text="3"
-				android:width="75sp"
-				android:layout_width="75sp"
-				android:layout_height="75sp" />
-		</LinearLayout>
-		<LinearLayout
-			android:orientation="horizontal" 
-			android:gravity="center_horizontal"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content">
-			<Button android:id="@+id/isbn_4" 
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:text="4"
-				android:width="75sp"
-				android:layout_width="75sp"
-				android:layout_height="75sp" />
-			<Button android:id="@+id/isbn_5" 
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:text="5"
-				android:width="75sp"
-				android:layout_width="75sp"
-				android:layout_height="75sp" />
-			<Button android:id="@+id/isbn_6" 
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:text="6"
-				android:width="75sp"
-				android:layout_width="75sp"
-				android:layout_height="75sp" />
-		</LinearLayout>
-		<LinearLayout
-			android:orientation="horizontal" 
-			android:gravity="center_horizontal"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content">
-			<Button android:id="@+id/isbn_7" 
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:text="7"
-				android:width="75sp"
-				android:layout_width="75sp"
-				android:layout_height="75sp" />
-			<Button android:id="@+id/isbn_8" 
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:text="8"
-				android:width="75sp"
-				android:layout_width="75sp"
-				android:layout_height="75sp" />
-			<Button android:id="@+id/isbn_9" 
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:text="9"
-				android:width="75sp"
-				android:layout_width="75sp"
-				android:layout_height="75sp" />
-		</LinearLayout>
-		<LinearLayout
-			android:orientation="horizontal" 
-			android:gravity="center_horizontal"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content">
-			<Button android:id="@+id/isbn_X" 
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:text="X"
-				android:width="75sp"
-				android:layout_width="75sp"
-				android:layout_height="75sp" />
-			<Button android:id="@+id/isbn_0" 
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:text="0"
-				android:width="75sp"
-				android:layout_width="75sp"
-				android:layout_height="75sp" />
-			<ImageButton android:id="@+id/isbn_del" 
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:src="@+drawable/sym_keyboard_feedback_delete"
-				android:width="75sp"
-				android:layout_width="75sp"
-				android:layout_height="75sp" />
-		</LinearLayout>
-		
-		<RelativeLayout
-			android:orientation="horizontal" 
-			android:gravity="center_horizontal"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content">
-			<CheckBox
-			    android:id="@+id/asinCheckbox"
-			    android:layout_width="wrap_content"
-			    android:layout_height="wrap_content"
-		        android:layout_alignParentLeft="true"
-			    android:text="@string/allow_asin" />
-
-		    <Button
-		        android:id="@+id/search"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_marginLeft="10sp"
-		        android:layout_toRightOf="@+id/asinCheckbox"
-		        android:layout_alignParentRight="true"
-		        android:text="@string/search" />
+        <EditText
+            android:id="@+id/isbn"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:digits="1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"
+            android:hint="@string/isbn"
+            android:inputType="text"
+            android:padding="10sp"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-		</RelativeLayout>
-					
-	</LinearLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/isbn_1"
+                android:layout_width="75sp"
+                android:layout_height="75sp"
+                android:text="1"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:width="75sp" />
+
+            <Button
+                android:id="@+id/isbn_2"
+                android:layout_width="75sp"
+                android:layout_height="75sp"
+                android:text="2"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:width="75sp" />
+
+            <Button
+                android:id="@+id/isbn_3"
+                android:layout_width="75sp"
+                android:layout_height="75sp"
+                android:text="3"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:width="75sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/isbn_4"
+                android:layout_width="75sp"
+                android:layout_height="75sp"
+                android:text="4"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:width="75sp" />
+
+            <Button
+                android:id="@+id/isbn_5"
+                android:layout_width="75sp"
+                android:layout_height="75sp"
+                android:text="5"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:width="75sp" />
+
+            <Button
+                android:id="@+id/isbn_6"
+                android:layout_width="75sp"
+                android:layout_height="75sp"
+                android:text="6"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:width="75sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/isbn_7"
+                android:layout_width="75sp"
+                android:layout_height="75sp"
+                android:text="7"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:width="75sp" />
+
+            <Button
+                android:id="@+id/isbn_8"
+                android:layout_width="75sp"
+                android:layout_height="75sp"
+                android:text="8"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:width="75sp" />
+
+            <Button
+                android:id="@+id/isbn_9"
+                android:layout_width="75sp"
+                android:layout_height="75sp"
+                android:text="9"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:width="75sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/isbn_X"
+                android:layout_width="75sp"
+                android:layout_height="75sp"
+                android:text="X"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:width="75sp" />
+
+            <Button
+                android:id="@+id/isbn_0"
+                android:layout_width="75sp"
+                android:layout_height="75sp"
+                android:text="0"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:width="75sp" />
+
+            <ImageButton
+                android:id="@+id/isbn_del"
+                android:layout_width="75sp"
+                android:layout_height="75sp"
+                android:src="@+drawable/sym_keyboard_feedback_delete"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:width="75sp" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal" >
+
+            <CheckBox
+                android:id="@+id/asinCheckbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="@string/allow_asin" />
+
+            <Button
+                android:id="@+id/search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="10sp"
+                android:layout_toRightOf="@+id/asinCheckbox"
+                android:text="@string/search" />
+        </RelativeLayout>
+    </LinearLayout>
+
 </ScrollView>

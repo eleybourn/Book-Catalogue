@@ -3,7 +3,6 @@
     android:id="@+id/radio"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:singleLine="false"
+    android:checked="false"
     android:paddingRight="10dp"
-    android:checked="false"/>
-
+    android:singleLine="false" />

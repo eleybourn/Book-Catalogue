@@ -21,6 +21,7 @@
 package com.eleybourn.bookcatalogue;
 
 import android.database.Cursor;
+
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 
 /**

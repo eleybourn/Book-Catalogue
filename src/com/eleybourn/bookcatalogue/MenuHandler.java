@@ -20,13 +20,13 @@
 
 package com.eleybourn.bookcatalogue;
 
-import com.eleybourn.bookcatalogue.utils.Utils;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
+
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Class to make building menus simpler. Implements some default menu items and allows

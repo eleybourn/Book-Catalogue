@@ -23,12 +23,12 @@ package com.eleybourn.bookcatalogue;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import net.philipwarner.taskqueue.QueueManager;
 
+import net.philipwarner.taskqueue.QueueManager;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.DialogInterface.OnDismissListener;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;

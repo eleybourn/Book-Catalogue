@@ -20,7 +20,28 @@
 
 package com.eleybourn.bookcatalogue.booklist;
 
-import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.*;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_AUTHOR_FORMATTED;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_AUTHOR_ID;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_AUTHOR_NAME;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_AUTHOR_POSITION;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_BOOK;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_BOOKSHELF;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_DATE_ADDED;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_DESCRIPTION;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_FAMILY_NAME;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_FORMAT;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_GIVEN_NAMES;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_ISBN;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_LOCATION;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_NOTES;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_PUBLISHER;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_READ;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_READ_END;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_SERIES_ID;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_SERIES_NAME;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_SERIES_NUM;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_SERIES_POSITION;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_TITLE;
 
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.database.DbUtils.DomainDefinition;

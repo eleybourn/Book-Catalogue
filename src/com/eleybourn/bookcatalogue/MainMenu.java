@@ -22,17 +22,17 @@ package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
 
-import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
-import com.eleybourn.bookcatalogue.utils.AlertDialogUtils;
-import com.eleybourn.bookcatalogue.utils.HintManager;
-import com.eleybourn.bookcatalogue.utils.Utils;
-import com.eleybourn.bookcatalogue.utils.AlertDialogUtils.AlertDialogItem;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+
+import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
+import com.eleybourn.bookcatalogue.utils.AlertDialogUtils;
+import com.eleybourn.bookcatalogue.utils.AlertDialogUtils.AlertDialogItem;
+import com.eleybourn.bookcatalogue.utils.HintManager;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Implement the 'Main Menu' for BookCatalogue. This is one of two possible start screens.

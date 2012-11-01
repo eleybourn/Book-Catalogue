@@ -25,11 +25,6 @@ import java.io.File;
 import java.util.Hashtable;
 import java.util.Map.Entry;
 
-import com.eleybourn.bookcatalogue.debug.Tracker;
-import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
-import com.eleybourn.bookcatalogue.utils.Logger;
-
-
 import android.app.Activity;
 import android.app.LocalActivityManager;
 import android.app.TabActivity;
@@ -43,6 +38,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TabHost;
 import android.widget.Toast;
+
+import com.eleybourn.bookcatalogue.debug.Tracker;
+import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
+import com.eleybourn.bookcatalogue.utils.Logger;
 
 /**
  * A tab host activity which holds the three edit book tabs

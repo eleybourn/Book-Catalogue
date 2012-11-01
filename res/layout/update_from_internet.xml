@@ -1,54 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
-	android:orientation="vertical">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
 
-	<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:layout_marginBottom="50dip">
-		<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-			android:orientation="vertical"
-			android:id="@+id/manage_fields_scrollview" 
-			android:layout_width="fill_parent" 
-			android:layout_height="fill_parent"
-			android:paddingLeft="5sp">
-			
-			<TextView android:id="@+id/select_fields" 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content" 
-				android:text="@+string/select_fields_to_update"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:paddingTop="5sp"
-				/>
-			
-			<TextView android:id="@+id/select_fields_help_text" 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content" 
-				android:text="@+string/select_fields_to_update_help"
-				android:paddingTop="5sp"
-				/>
-		
-		</LinearLayout>
-	</ScrollView>
-	
-	<LinearLayout	
-		android:layout_marginTop="-50dip" 
-		android:gravity="bottom" 
-		android:orientation="horizontal"
-		android:layout_height="wrap_content" 
-		android:layout_width="fill_parent">
-		<Button android:id="@+id/cancel" 
-			android:text="@string/cancel"
-			android:width="150sp"
-			android:layout_width="wrap_content"
-			android:layout_height="fill_parent" />
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dip" >
 
-		<Button android:id="@+id/confirm" 
-			android:text="@string/confirm_update"
-			android:width="150sp"
-			android:layout_width="wrap_content"
-			android:layout_height="fill_parent" />
-	</LinearLayout>
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/manage_fields_scrollview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:paddingLeft="5sp" >
+
+            <TextView
+                android:id="@+id/select_fields"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="5sp"
+                android:text="@+string/select_fields_to_update"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/select_fields_help_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="5sp"
+                android:text="@+string/select_fields_to_update_help" />
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-50dip"
+        android:gravity="bottom"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:text="@string/cancel"
+            android:width="150sp" />
+
+        <Button
+            android:id="@+id/confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:text="@string/confirm_update"
+            android:width="150sp" />
+    </LinearLayout>
+
 </LinearLayout>

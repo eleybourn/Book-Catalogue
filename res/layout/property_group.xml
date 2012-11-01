@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-   	android:id="@+id/property_string" 
-	android:gravity="top" 
-	android:orientation="vertical"
-	android:layout_width="fill_parent" 
-	android:layout_height="wrap_content" 
-	>
-	<com.eleybourn.bookcatalogue.widgets.CapitalizedTextView 
-	   	android:id="@+id/name" 
-		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content" 
-		android:textAppearance="?android:attr/textAppearanceSmall"
-		android:textStyle="bold"
-		android:paddingTop="10sp"
-		/>
-	<View 
-	    android:background="@drawable/property_divider"
-	    android:layout_width="fill_parent"
-	    android:layout_height="1px"
-	    />
+    android:id="@+id/property_string"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="top"
+    android:orientation="vertical" >
+
+    <com.eleybourn.bookcatalogue.widgets.CapitalizedTextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="10sp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textStyle="bold" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="@drawable/property_divider" />
+
 </LinearLayout>

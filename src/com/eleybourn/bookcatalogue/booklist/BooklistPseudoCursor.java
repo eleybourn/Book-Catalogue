@@ -23,10 +23,9 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map.Entry;
 
-import com.eleybourn.bookcatalogue.utils.Utils;
-
-
 import android.database.AbstractCursor;
+
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Yet Another Rabbit Burrow ("YARB" -- did I invent a new acronym?). What led to this?

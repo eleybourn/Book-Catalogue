@@ -20,9 +20,15 @@
 
 package com.eleybourn.bookcatalogue.goodreads;
 
-import com.eleybourn.bookcatalogue.R;
 import java.util.ArrayList;
 
+import net.philipwarner.taskqueue.BindableItem;
+import net.philipwarner.taskqueue.BindableItemSQLiteCursor;
+import net.philipwarner.taskqueue.ContextDialogItem;
+import net.philipwarner.taskqueue.Event;
+import net.philipwarner.taskqueue.Listeners.EventActions;
+import net.philipwarner.taskqueue.Listeners.OnEventChangeListener;
+import net.philipwarner.taskqueue.QueueManager;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -34,19 +40,12 @@ import android.widget.TextView;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
+import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.UniqueId;
 import com.eleybourn.bookcatalogue.utils.HintManager;
+import com.eleybourn.bookcatalogue.utils.HintManager.HintOwner;
 import com.eleybourn.bookcatalogue.utils.Utils;
 import com.eleybourn.bookcatalogue.utils.ViewTagger;
-import com.eleybourn.bookcatalogue.utils.HintManager.HintOwner;
-
-import net.philipwarner.taskqueue.BindableItem;
-import net.philipwarner.taskqueue.BindableItemSQLiteCursor;
-import net.philipwarner.taskqueue.ContextDialogItem;
-import net.philipwarner.taskqueue.Event;
-import net.philipwarner.taskqueue.QueueManager;
-import net.philipwarner.taskqueue.Listeners.EventActions;
-import net.philipwarner.taskqueue.Listeners.OnEventChangeListener;
 
 /**
  * Activity to display all Events in the QueueManager.

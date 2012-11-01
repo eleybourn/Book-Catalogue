@@ -20,6 +20,24 @@
 
 package com.eleybourn.bookcatalogue.goodreads.api;
 
+import static com.eleybourn.bookcatalogue.goodreads.api.ShowBookApiHandler.ShowBookFieldNames.BOOK_ID;
+import static com.eleybourn.bookcatalogue.goodreads.api.ShowBookApiHandler.ShowBookFieldNames.BOOK_URL;
+import static com.eleybourn.bookcatalogue.goodreads.api.ShowBookApiHandler.ShowBookFieldNames.IMAGE;
+import static com.eleybourn.bookcatalogue.goodreads.api.ShowBookApiHandler.ShowBookFieldNames.ISBN13;
+import static com.eleybourn.bookcatalogue.goodreads.api.ShowBookApiHandler.ShowBookFieldNames.IS_EBOOK;
+import static com.eleybourn.bookcatalogue.goodreads.api.ShowBookApiHandler.ShowBookFieldNames.ORIG_PUBLICATION_DAY;
+import static com.eleybourn.bookcatalogue.goodreads.api.ShowBookApiHandler.ShowBookFieldNames.ORIG_PUBLICATION_MONTH;
+import static com.eleybourn.bookcatalogue.goodreads.api.ShowBookApiHandler.ShowBookFieldNames.ORIG_PUBLICATION_YEAR;
+import static com.eleybourn.bookcatalogue.goodreads.api.ShowBookApiHandler.ShowBookFieldNames.ORIG_TITLE;
+import static com.eleybourn.bookcatalogue.goodreads.api.ShowBookApiHandler.ShowBookFieldNames.PUBLICATION_DAY;
+import static com.eleybourn.bookcatalogue.goodreads.api.ShowBookApiHandler.ShowBookFieldNames.PUBLICATION_MONTH;
+import static com.eleybourn.bookcatalogue.goodreads.api.ShowBookApiHandler.ShowBookFieldNames.PUBLICATION_YEAR;
+import static com.eleybourn.bookcatalogue.goodreads.api.ShowBookApiHandler.ShowBookFieldNames.RATING;
+import static com.eleybourn.bookcatalogue.goodreads.api.ShowBookApiHandler.ShowBookFieldNames.REVIEW_ID;
+import static com.eleybourn.bookcatalogue.goodreads.api.ShowBookApiHandler.ShowBookFieldNames.SHELVES;
+import static com.eleybourn.bookcatalogue.goodreads.api.ShowBookApiHandler.ShowBookFieldNames.SMALL_IMAGE;
+import static com.eleybourn.bookcatalogue.goodreads.api.ShowBookApiHandler.ShowBookFieldNames.WORK_ID;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -36,8 +54,9 @@ import com.eleybourn.bookcatalogue.Author;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.Series;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
-import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.*;
-import static com.eleybourn.bookcatalogue.goodreads.api.ShowBookApiHandler.ShowBookFieldNames.*;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.BookNotFoundException;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NotAuthorizedException;
 import com.eleybourn.bookcatalogue.goodreads.api.XmlFilter.ElementContext;
 import com.eleybourn.bookcatalogue.goodreads.api.XmlFilter.XmlHandler;
 import com.eleybourn.bookcatalogue.utils.Logger;

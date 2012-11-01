@@ -61,8 +61,6 @@ package com.eleybourn.bookcatalogue.widgets;
  * limitations under the License.
  */
 
-import com.eleybourn.bookcatalogue.R;
-
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -85,6 +83,8 @@ import android.widget.ExpandableListView;
 import android.widget.HeaderViewListAdapter;
 import android.widget.ListView;
 import android.widget.SectionIndexer;
+
+import com.eleybourn.bookcatalogue.R;
 
 /**
  * Helper class for AbsListView to draw and control the Fast Scroll thumb

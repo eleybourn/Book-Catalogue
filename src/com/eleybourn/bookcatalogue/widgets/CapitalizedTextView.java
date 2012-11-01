@@ -19,8 +19,8 @@
  */
 package com.eleybourn.bookcatalogue.widgets;
 
-import android.content.Context; 
-import android.util.AttributeSet; 
+import android.content.Context;
+import android.util.AttributeSet;
 import android.widget.TextView;
 
 /**

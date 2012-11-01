@@ -1,34 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-    android:id="@+id/root" 
-	android:orientation="vertical"
-	android:layout_width="fill_parent" 
-	android:layout_height="fill_parent"
-	android:background="@drawable/bc_background_gradient_dim"
-	android:paddingLeft="5sp">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/bc_background_gradient_dim"
+    android:orientation="vertical"
+    android:paddingLeft="5sp" >
 
-	<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			>
-	
-	  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-		android:orientation="vertical"
-		android:layout_width="fill_parent" 
-		android:layout_height="fill_parent"
-		android:paddingLeft="5sp">
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
 
-	    <!--  This is where the automatically generated properties will go -->
-		<LinearLayout	 android:id="@+id/dynamic_properties" 
-			android:gravity="top" 
-			android:orientation="vertical"
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content" 
-			>
-	
-		</LinearLayout>
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:paddingLeft="5sp" >
 
-	  	<!--  MANAGEMENT Header 
+            <!-- This is where the automatically generated properties will go -->
+
+            <LinearLayout
+                android:id="@+id/dynamic_properties"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top"
+                android:orientation="vertical" >
+            </LinearLayout>
+
+            <!--
+        MANAGEMENT Header 
 	    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
 			android:orientation="horizontal"
 			android:layout_width="fill_parent" 
@@ -41,9 +43,9 @@
 				android:textAppearance="?android:attr/textAppearanceSmall"
 				android:paddingTop="0sp"
 				/>
-		</LinearLayout>
-		-->
-	</LinearLayout>
-  </ScrollView>
+		</LinearLayout>
+            -->
+        </LinearLayout>
+    </ScrollView>
+
 </LinearLayout>
-	

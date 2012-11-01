@@ -224,7 +224,6 @@
 				android:layout_weight="1"
 				android:hint="@string/description"
 				android:textAppearance="?android:attr/textAppearanceMedium"
-				android:inputType="textMultiLine|textNoSuggestions"
 				/>
 													
 		</LinearLayout>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<!-- Common for all dimensions -->
+    <dimen name="padding_border">5dp</dimen>
+    
+    <dimen name="padding_prefs_item">20dp</dimen>
+    
+</resources>

@@ -22,6 +22,9 @@ package com.eleybourn.bookcatalogue;
 
 import java.io.File;
 
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;

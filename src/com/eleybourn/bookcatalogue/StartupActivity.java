@@ -23,10 +23,14 @@ package com.eleybourn.bookcatalogue;
 import java.lang.ref.WeakReference;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
-import com.eleybourn.bookcatalogue.SimpleTaskQueue.OnTaskFinishListener;
-import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTask;
-import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTaskContext;
 import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue;
+import com.eleybourn.bookcatalogue.utils.UpgradeMessageManager;
+import com.eleybourn.bookcatalogue.utils.Utils;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.OnTaskFinishListener;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTask;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTaskContext;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -38,6 +42,7 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Html;
 
 /**
  * Single Activity to be the 'Main' activity for the app. I does app-startup stuff which is initially
@@ -239,10 +244,10 @@ public class StartupActivity extends Activity {
 		}
 
 		// Display upgrade message if necessary, otherwise go on to stage 3
-		if (mUpgradeMessageShown || CatalogueDBAdapter.message.equals("")) {
+		if (mUpgradeMessageShown || UpgradeMessageManager.getUpgradeMessage().equals("")) {
 			stage3Startup();
 		} else {
-			upgradePopup(CatalogueDBAdapter.message);
+			upgradePopup(UpgradeMessageManager.getUpgradeMessage());
 		}
 	}
 	
@@ -286,14 +291,14 @@ public class StartupActivity extends Activity {
 			AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(R.string.backup_request).create();
 			alertDialog.setTitle(R.string.backup_title);
 			alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-			alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+			alertDialog.setButton("Cancel", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
-					mExportRequired = true;
 					dialog.dismiss();
 				}
 			}); 
-			alertDialog.setButton2("Cancel", new DialogInterface.OnClickListener() {
+			alertDialog.setButton2("OK", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
+					mExportRequired = true;
 					dialog.dismiss();
 				}
 			}); 
@@ -313,7 +318,6 @@ public class StartupActivity extends Activity {
 	 */
 	private void stage4Startup() {
 		BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
-		Bundle extras = this.getIntent().getExtras();
 
 		// Handle startup specially.
 		// Check if we really want to start this activity.
@@ -323,8 +327,11 @@ public class StartupActivity extends Activity {
 			doMainMenu();
 		}
 
-		if (mExportRequired)
-			Administration.adminPage(StartupActivity.this, "export", R.id.ACTIVITY_ADMIN);
+		if (mExportRequired) {
+			Intent i = new Intent(this, AdministrationFunctions.class);
+			i.putExtra(AdministrationFunctions.DOAUTO, "export");
+			startActivity(i);			
+		}
 
 		// We are done
 		finish();		
@@ -337,11 +344,12 @@ public class StartupActivity extends Activity {
 	 * @param message The message to display in the popup
 	 */
 	public void upgradePopup(String message) {
-		AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(message).create();
+		AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(Html.fromHtml(message)).create();
 		alertDialog.setTitle(R.string.upgrade_title);
 		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
 		alertDialog.setButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
+				UpgradeMessageManager.setMessageAcknowledged();
 				stage3Startup();
 			}
 		});

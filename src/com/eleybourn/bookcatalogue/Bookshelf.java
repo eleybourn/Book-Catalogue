@@ -22,6 +22,8 @@ package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
 
+import com.eleybourn.bookcatalogue.utils.Utils;
+
 import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;

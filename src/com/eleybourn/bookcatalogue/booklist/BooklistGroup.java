@@ -35,11 +35,8 @@ import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.properties.BooleanListProperty;
 import com.eleybourn.bookcatalogue.properties.Properties;
-import com.eleybourn.bookcatalogue.properties.Property;
-import com.eleybourn.bookcatalogue.properties.BooleanProperty;
 import com.eleybourn.bookcatalogue.properties.PropertyGroup;
 import com.eleybourn.bookcatalogue.properties.ListProperty.ItemEntries;
-import com.eleybourn.bookcatalogue.properties.ListProperty.ItemEntry;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyle.CompoundKey;
 import com.eleybourn.bookcatalogue.database.DbUtils.DomainDefinition;
 
@@ -75,8 +72,12 @@ public class BooklistGroup implements Serializable {
 		public static final int ROW_KIND_MONTH_ADDED = 11;		// Supported
 		public static final int ROW_KIND_DAY_ADDED = 12;		// Supported
 		public static final int ROW_KIND_FORMAT = 13;			// Supported
+		public static final int ROW_KIND_YEAR_READ = 14;		// Supported
+		public static final int ROW_KIND_MONTH_READ = 15;		// Supported
+		public static final int ROW_KIND_DAY_READ = 16;			// Supported
+		public static final int ROW_KIND_LOCATION = 17;			// Supported
 		// NEWKIND: Add new kinds here
-		public static final int ROW_KIND_MAX = 13; 				// **** NOTE **** ALWAYS update after adding a row kind...				
+		public static final int ROW_KIND_MAX = 17; 				// **** NOTE **** ALWAYS update after adding a row kind...				
 	}
 	
 	private static final Hashtable<Integer, String> mRowKindNames = new Hashtable<Integer, String>();
@@ -94,6 +95,10 @@ public class BooklistGroup implements Serializable {
 		mRowKindNames.put(ROW_KIND_MONTH_ADDED, BookCatalogueApp.getResourceString(R.string.added_month));
 		mRowKindNames.put(ROW_KIND_DAY_ADDED, BookCatalogueApp.getResourceString(R.string.added_day));
 		mRowKindNames.put(ROW_KIND_FORMAT, BookCatalogueApp.getResourceString(R.string.format));
+		mRowKindNames.put(ROW_KIND_YEAR_READ, BookCatalogueApp.getResourceString(R.string.read_year));
+		mRowKindNames.put(ROW_KIND_MONTH_READ, BookCatalogueApp.getResourceString(R.string.read_month));
+		mRowKindNames.put(ROW_KIND_DAY_READ, BookCatalogueApp.getResourceString(R.string.read_day));
+		mRowKindNames.put(ROW_KIND_LOCATION, BookCatalogueApp.getResourceString(R.string.location));
 		// NEWKIND: Add new kinds here
 		mRowKindNames.put(ROW_KIND_BOOK, BookCatalogueApp.getResourceString(R.string.book));		
 	}

@@ -20,6 +20,8 @@
 
 package com.eleybourn.bookcatalogue;
 
+import com.eleybourn.bookcatalogue.utils.Utils;
+
 import android.app.Activity;
 import android.app.TabActivity;
 import android.content.Intent;

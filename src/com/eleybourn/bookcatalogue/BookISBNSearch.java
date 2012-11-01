@@ -23,7 +23,13 @@ package com.eleybourn.bookcatalogue;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Hashtable;
+
+import com.eleybourn.bookcatalogue.debug.Tracker;
+import com.eleybourn.bookcatalogue.utils.AsinUtils;
+import com.eleybourn.bookcatalogue.utils.IsbnUtils;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.SoundManager;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -31,16 +37,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
-
-import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
 
 /**
  * This class is called by the BookCatalogue activity and will search the interwebs for
@@ -66,14 +73,14 @@ public class BookISBNSearch extends ActivityWithTasks {
 	private EditText mIsbnText;
 	private EditText mTitleText;
 	private AutoCompleteTextView mAuthorText;
+	private ArrayAdapter<String> mAuthorAdapter = null;
+
 	private Button mConfirmButton;
 	private CatalogueDBAdapter mDbHelper;
 
 	private String mAuthor;
 	private String mTitle;
 	private String mIsbn;
-
-	private static final int ACTIVITY_SCAN=4;
 
 	/*
 	 *  Mode this activity is in; MANUAL = data entry, SCAN = data from scanner.
@@ -93,7 +100,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 	private Intent mLastBookIntent = null;
 
 	// Object managing current search.
-	SearchManager mSearchManager = null;
+	long mSearchManagerId = 0;
 
 	// A list of author names we have already searched for in this session
 	ArrayList<String> mAuthorNames = new ArrayList<String>();
@@ -106,235 +113,255 @@ public class BookISBNSearch extends ActivityWithTasks {
 	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+		Tracker.enterOnCreate(this);
+		try {
+			super.onCreate(savedInstanceState);
 
-		//System.out.println("BookISBNSearch OnCreate SIS=" + (savedInstanceState == null? "N" : "Y"));
+			if (savedInstanceState != null)
+				mSearchManagerId = savedInstanceState.getLong("SearchManagerId");
 
-		//do we have a network connection?
-		boolean network_available = Utils.isNetworkAvailable(this);
-		if (network_available == false) {
-			Toast.makeText(this, R.string.no_connection, Toast.LENGTH_LONG).show();
-			finish();
-		}
+			//System.out.println("BookISBNSearch OnCreate SIS=" + (savedInstanceState == null? "N" : "Y"));
 
-
-		Utils.showLtAlertIfNecessary(this, false, "search");
-
-		Bundle extras = getIntent().getExtras();
-		mDbHelper = new CatalogueDBAdapter(this);
-		mDbHelper.open();
-
-		mIsbn = extras.getString("isbn");
-		String by = extras.getString(BY);
-
-		if (savedInstanceState != null) {
-			if (savedInstanceState.containsKey("mScannerStarted"))
-				mScannerStarted = savedInstanceState.getBoolean("mScannerStarted");
-			else {
-				//System.out.println(mId + " OnCreate mScannerStarted NOT PRESENT");
-			}
-		}
-
-		// BUG NOTE 1:
-		//
-		// There is a bizarre bug that seems to only affect some users in which this activity
-		// is called AFTER the user has finished and the passed Intent has neither a ISBN nor a
-		// "BY" in the Extras. Following all the code that starts this activity suggests that 
-		// the activity is ALWAYS started with the intent data. The problems always occur AFTER
-		// adding a book, which confirms that the activity has been started correctly.
-		// 
-		// In order to avoid this problem, we just check for nulls and finish(). THIS IS NOT A FIX
-		// it is a MESSY WORK-AROUND.
-		//
-		// TODO: Find out why BookISBNSearch gets restarted with no data
-		//
-		// So...we save the extras in savedInstanceState, and look for it when missing
-		//
-		if (mIsbn == null && (by == null || by.equals("") ) ) {
-			Logger.logError(new RuntimeException("Empty args for BookISBNSearch"));
-			if (savedInstanceState != null) {
-				if (mIsbn == null && savedInstanceState.containsKey("isbn")) 
-					mIsbn = savedInstanceState.getString("isbn");
-				if ( (by == null || by.equals("") ) && savedInstanceState.containsKey(BY)) 
-					by = savedInstanceState.getString(BY);
-			}
-			// If they are still null, we can't proceed.
-			if (mIsbn == null && (by == null || by.equals("") ) ) {
+			//do we have a network connection?
+			boolean network_available = Utils.isNetworkAvailable(this);
+			if (network_available == false) {
+				Toast.makeText(this, R.string.no_connection, Toast.LENGTH_LONG).show();
 				finish();
-				return;
 			}
-		}
 
-		// Default to MANUAL
-		mMode = MODE_MANUAL;
 
-		if (mIsbn != null) {
-			//System.out.println(mId + " OnCreate got ISBN");
-			//ISBN has been passed by another component
-			setContentView(R.layout.isbn_search);
-			mIsbnText = (EditText) findViewById(R.id.isbn);
-			mIsbnText.setText(mIsbn);
-			go(mIsbn, "", "");
-		} else if (by.equals("isbn")) {
-			// System.out.println(mId + " OnCreate BY ISBN");
-			setContentView(R.layout.isbn_search);
-			mIsbnText = (EditText) findViewById(R.id.isbn);
-			mConfirmButton = (Button) findViewById(R.id.search);
+			Utils.showLtAlertIfNecessary(this, false, "search");
 
-			// Not sure this is a great idea; we CAN diable keypad for this item completely.
-			//android.view.inputmethod.InputMethodManager imm
-			//	= (android.view.inputmethod.InputMethodManager)
-			//	getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
-			//imm.hideSoftInputFromWindow(mIsbnText.getWindowToken(), 0);
+			Bundle extras = getIntent().getExtras();
+			mDbHelper = new CatalogueDBAdapter(this);
+			mDbHelper.open();
 
-			// For now, just make sure it's hidden on entry
-			getWindow().setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+			mIsbn = extras.getString("isbn");
+			String by = extras.getString(BY);
 
-			// Set the number buttons
-			Button button1 = (Button) findViewById(R.id.isbn_1);
-			button1.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("1"); } });
-			Button button2 = (Button) findViewById(R.id.isbn_2);
-			button2.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("2"); } });
-			Button button3 = (Button) findViewById(R.id.isbn_3);
-			button3.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("3"); } });
-			Button button4 = (Button) findViewById(R.id.isbn_4);
-			button4.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("4"); } });
-			Button button5 = (Button) findViewById(R.id.isbn_5);
-			button5.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("5"); } });
-			Button button6 = (Button) findViewById(R.id.isbn_6);
-			button6.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("6"); } });
-			Button button7 = (Button) findViewById(R.id.isbn_7);
-			button7.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("7"); } });
-			Button button8 = (Button) findViewById(R.id.isbn_8);
-			button8.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("8"); } });
-			Button button9 = (Button) findViewById(R.id.isbn_9);
-			button9.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("9"); } });
-			Button buttonX = (Button) findViewById(R.id.isbn_X);
-			buttonX.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("X"); } });
-			Button button0 = (Button) findViewById(R.id.isbn_0);
-			button0.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("0"); } });
-			ImageButton buttonDel = (ImageButton) findViewById(R.id.isbn_del);
-			buttonDel.setOnClickListener(new View.OnClickListener() {
-				public void onClick(View view) {
-					try {
-						int start = mIsbnText.getSelectionStart();
-						int end = mIsbnText.getSelectionEnd();
-						if (start < end) {
-							// We have a selection. Delete it.
-							mIsbnText.getText().replace(start, end, "");
-							mIsbnText.setSelection(start, start);
+			if (savedInstanceState != null) {
+				if (savedInstanceState.containsKey("mScannerStarted"))
+					mScannerStarted = savedInstanceState.getBoolean("mScannerStarted");
+				else {
+					//System.out.println(mId + " OnCreate mScannerStarted NOT PRESENT");
+				}
+			}
+
+			// BUG NOTE 1:
+			//
+			// There is a bizarre bug that seems to only affect some users in which this activity
+			// is called AFTER the user has finished and the passed Intent has neither a ISBN nor a
+			// "BY" in the Extras. Following all the code that starts this activity suggests that 
+			// the activity is ALWAYS started with the intent data. The problems always occur AFTER
+			// adding a book, which confirms that the activity has been started correctly.
+			// 
+			// In order to avoid this problem, we just check for nulls and finish(). THIS IS NOT A FIX
+			// it is a MESSY WORK-AROUND.
+			//
+			// TODO: Find out why BookISBNSearch gets restarted with no data
+			//
+			// So...we save the extras in savedInstanceState, and look for it when missing
+			//
+			if (mIsbn == null && (by == null || by.equals("") ) ) {
+				Logger.logError(new RuntimeException("Empty args for BookISBNSearch"));
+				if (savedInstanceState != null) {
+					if (mIsbn == null && savedInstanceState.containsKey("isbn")) 
+						mIsbn = savedInstanceState.getString("isbn");
+					if ( (by == null || by.equals("") ) && savedInstanceState.containsKey(BY)) 
+						by = savedInstanceState.getString(BY);
+				}
+				// If they are still null, we can't proceed.
+				if (mIsbn == null && (by == null || by.equals("") ) ) {
+					finish();
+					return;
+				}
+			}
+
+			// Default to MANUAL
+			mMode = MODE_MANUAL;
+
+			if (mIsbn != null) {
+				//System.out.println(mId + " OnCreate got ISBN");
+				//ISBN has been passed by another component
+				setContentView(R.layout.isbn_search);
+				mIsbnText = (EditText) findViewById(R.id.isbn);
+				mIsbnText.setText(mIsbn);
+				go(mIsbn, "", "");
+			} else if (by.equals("isbn")) {
+				// System.out.println(mId + " OnCreate BY ISBN");
+				setContentView(R.layout.isbn_search);
+				mIsbnText = (EditText) findViewById(R.id.isbn);
+				mConfirmButton = (Button) findViewById(R.id.search);
+
+				// Not sure this is a great idea; we CAN diable keypad for this item completely.
+				//android.view.inputmethod.InputMethodManager imm
+				//	= (android.view.inputmethod.InputMethodManager)
+				//	getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
+				//imm.hideSoftInputFromWindow(mIsbnText.getWindowToken(), 0);
+
+				// For now, just make sure it's hidden on entry
+				getWindow().setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+				final CheckBox allowAsinCb = (CheckBox) BookISBNSearch.this.findViewById(R.id.asinCheckbox);
+				allowAsinCb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+					@Override
+					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+						if (isChecked) {
+							mIsbnText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS|InputType.TYPE_CLASS_TEXT);
+							getWindow().setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 						} else {
-							// Delete char before cursor
-							if (start > 0) {
-								mIsbnText.getText().replace(start-1, start, "");
-								mIsbnText.setSelection(start-1, start-1);
-							}
+							mIsbnText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS|InputType.TYPE_CLASS_TEXT);
+							getWindow().setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 						}
-					} catch (StringIndexOutOfBoundsException e) {
-						//do nothing - empty string
-					}
-				}
-			});
+					}});
 
-			mConfirmButton.setOnClickListener(new View.OnClickListener() {
-				public void onClick(View view) {
-					String mIsbn = mIsbnText.getText().toString();
-					go(mIsbn, "", "");
-				}
-			});
-		} else if (by.equals("name")) {
-			// System.out.println(mId + " OnCreate BY NAME");
-			setContentView(R.layout.name_search);
-
-			this.initAuthorList();
-
-			mTitleText = (EditText) findViewById(R.id.title);
-			mConfirmButton = (Button) findViewById(R.id.search);
-
-			mConfirmButton.setOnClickListener(new View.OnClickListener() {
-				public void onClick(View view) {
-					String mAuthor = mAuthorText.getText().toString();
-					String mTitle = mTitleText.getText().toString();
-
-					ArrayAdapter<String> adapter = (ArrayAdapter<String>)mAuthorText.getAdapter();
-					if (adapter.getPosition(mAuthor) < 0){
-						// Based on code from filipeximenes we also need to update the adapter here in
-						// case no author or book is added, but we still want to see 'recent' entries.
-						if (!mAuthor.trim().equals("")) {
-							boolean found = false;
-							for(String s: mAuthorNames) {
-								if (s.equalsIgnoreCase(mAuthor)) {
-									found = true;
-									break;
+				// Set the number buttons
+				Button button1 = (Button) findViewById(R.id.isbn_1);
+				button1.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("1"); } });
+				Button button2 = (Button) findViewById(R.id.isbn_2);
+				button2.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("2"); } });
+				Button button3 = (Button) findViewById(R.id.isbn_3);
+				button3.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("3"); } });
+				Button button4 = (Button) findViewById(R.id.isbn_4);
+				button4.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("4"); } });
+				Button button5 = (Button) findViewById(R.id.isbn_5);
+				button5.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("5"); } });
+				Button button6 = (Button) findViewById(R.id.isbn_6);
+				button6.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("6"); } });
+				Button button7 = (Button) findViewById(R.id.isbn_7);
+				button7.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("7"); } });
+				Button button8 = (Button) findViewById(R.id.isbn_8);
+				button8.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("8"); } });
+				Button button9 = (Button) findViewById(R.id.isbn_9);
+				button9.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("9"); } });
+				Button buttonX = (Button) findViewById(R.id.isbn_X);
+				buttonX.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("X"); } });
+				Button button0 = (Button) findViewById(R.id.isbn_0);
+				button0.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("0"); } });
+				ImageButton buttonDel = (ImageButton) findViewById(R.id.isbn_del);
+				buttonDel.setOnClickListener(new View.OnClickListener() {
+					public void onClick(View view) {
+						try {
+							int start = mIsbnText.getSelectionStart();
+							int end = mIsbnText.getSelectionEnd();
+							if (start < end) {
+								// We have a selection. Delete it.
+								mIsbnText.getText().replace(start, end, "");
+								mIsbnText.setSelection(start, start);
+							} else {
+								// Delete char before cursor
+								if (start > 0) {
+									mIsbnText.getText().replace(start-1, start, "");
+									mIsbnText.setSelection(start-1, start-1);
 								}
 							}
-
-							if (!found) {
-								// Keep a list of names as typed to use when we recreate list
-								mAuthorNames.add(mAuthor);
-								// Add to adapter, in case search produces no results
-								adapter.add(mAuthor);							
-							}
+						} catch (StringIndexOutOfBoundsException e) {
+							//do nothing - empty string
 						}
 					}
+				});
 
-					go("", mAuthor, mTitle);
+				mConfirmButton.setOnClickListener(new View.OnClickListener() {
+					public void onClick(View view) {
+						String mIsbn = mIsbnText.getText().toString();
+						go(mIsbn, "", "");
+					}
+				});
+			} else if (by.equals("name")) {
+				// System.out.println(mId + " OnCreate BY NAME");
+				setContentView(R.layout.name_search);
 
+				this.initAuthorList();
+
+				mTitleText = (EditText) findViewById(R.id.title);
+				mConfirmButton = (Button) findViewById(R.id.search);
+
+				mConfirmButton.setOnClickListener(new View.OnClickListener() {
+					public void onClick(View view) {
+						String mAuthor = mAuthorText.getText().toString();
+						String mTitle = mTitleText.getText().toString();
+
+						ArrayAdapter<String> adapter = mAuthorAdapter;
+						if (adapter.getPosition(mAuthor) < 0){
+							// Based on code from filipeximenes we also need to update the adapter here in
+							// case no author or book is added, but we still want to see 'recent' entries.
+							if (!mAuthor.trim().equals("")) {
+								boolean found = false;
+								for(String s: mAuthorNames) {
+									if (s.equalsIgnoreCase(mAuthor)) {
+										found = true;
+										break;
+									}
+								}
+
+								if (!found) {
+									// Keep a list of names as typed to use when we recreate list
+									mAuthorNames.add(mAuthor);
+									// Add to adapter, in case search produces no results
+									adapter.add(mAuthor);							
+								}
+							}
+						}
+
+						go("", mAuthor, mTitle);
+
+					}
+				});
+			} else if (by.equals("scan")) {
+				// System.out.println(mId + " OnCreate BY SCAN");
+				// Use the scanner to get ISBNs
+				mMode = MODE_SCAN;
+				setContentView(R.layout.isbn_scan);
+				mIsbnText = (EditText) findViewById(R.id.isbn);
+
+				/**
+				 * Use the zxing barcode scanner to search for a isbn
+				 * Prompt users to install the application if they do not have it installed.
+				 */
+				try {
+					// Start the scanner IF this is a real 'first time' call.
+					if (savedInstanceState == null) {
+						startScannerActivity();
+					} else {
+						// It's a saved state, so see if we have an ISBN
+						if (savedInstanceState.containsKey("isbn")) {
+							go(savedInstanceState.getString("isbn"),"","");
+						}
+					}
+				} catch (ActivityNotFoundException e) {
+					// Verify - this can be a dangerous operation
+					BookISBNSearch pthis = this;
+					AlertDialog alertDialog = new AlertDialog.Builder(pthis).setMessage(R.string.install_scan).create();
+					alertDialog.setTitle(R.string.install_scan_title);
+					alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
+					alertDialog.setButton("Google Goggles", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							//TODO
+							Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.google.android.apps.unveil"));
+							startActivity(marketIntent);
+							finish();
+						}
+					});
+					alertDialog.setButton3("ZXing", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.google.zxing.client.android"));
+							startActivity(marketIntent);
+							finish();
+						}
+					});
+					alertDialog.setButton2("Cancel", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							//do nothing
+							finish();
+						}
+					});
+					// Prevent the activity result from closing this activity.
+					mDisplayingAlert = true;
+					alertDialog.show();
+					return;
 				}
-			});
-		} else if (by.equals("scan")) {
-			// System.out.println(mId + " OnCreate BY SCAN");
-			// Use the scanner to get ISBNs
-			mMode = MODE_SCAN;
-			setContentView(R.layout.isbn_scan);
-			mIsbnText = (EditText) findViewById(R.id.isbn);
-
-			/**
-			 * Use the zxing barcode scanner to search for a isbn
-			 * Prompt users to install the application if they do not have it installed.
-			 */
-			try {
-				// Start the scanner IF this is a real 'first time' call.
-				if (savedInstanceState == null) {
-					startScannerActivity();
-				} else {
-					// It's a saved state, so see if we have an ISBN
-					if (savedInstanceState.containsKey("isbn")) {
-						go(savedInstanceState.getString("isbn"),"","");
-					}
-				}
-			} catch (ActivityNotFoundException e) {
-				// Verify - this can be a dangerous operation
-				BookISBNSearch pthis = this;
-				AlertDialog alertDialog = new AlertDialog.Builder(pthis).setMessage(R.string.install_scan).create();
-				alertDialog.setTitle(R.string.install_scan_title);
-				alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-				alertDialog.setButton("Google Goggles", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						//TODO
-						Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.google.android.apps.unveil"));
-						startActivity(marketIntent);
-						finish();
-					}
-				});
-				alertDialog.setButton3("ZXing", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.google.zxing.client.android"));
-						startActivity(marketIntent);
-						finish();
-					}
-				});
-				alertDialog.setButton2("Cancel", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						//do nothing
-						finish();
-					}
-				});
-				// Prevent the activity result from closing this activity.
-				mDisplayingAlert = true;
-				alertDialog.show();
-				return;
 			}
+		} finally {
+			Tracker.exitOnCreate(this);			
 		}
 	}
 
@@ -451,7 +478,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 						AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(R.string.duplicate_book_message).create();
 						alertDialog.setTitle(R.string.duplicate_book_title);
 						alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-						alertDialog.setButton(this.getResources().getString(R.string.add), new DialogInterface.OnClickListener() {
+						alertDialog.setButton2(this.getResources().getString(R.string.add), new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
 								doSearchBook();
 								return;
@@ -462,7 +489,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 								BookEdit.editBook(BookISBNSearch.this, existingId, BookEdit.TAB_EDIT);
 							}
 						});
-						alertDialog.setButton2(this.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+						alertDialog.setButton(this.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
 								//do nothing
 								if (mMode == MODE_SCAN) {
@@ -484,7 +511,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 			Logger.logError(e);
 		}
 
-		if (mSearchManager == null)
+		if (mSearchManagerId == 0)
 			doSearchBook();
 
 	}
@@ -505,8 +532,12 @@ public class BookISBNSearch extends ActivityWithTasks {
 			try {
 				// Start the lookup in background.
 				//mTaskManager.doProgress("Searching");
-				mSearchManager = new SearchManager(mTaskManager, mSearchHandler);
-				mSearchManager.search(mAuthor, mTitle, mIsbn, true, SearchManager.SEARCH_ALL);
+				SearchManager sm = new SearchManager(getTaskManager(), mSearchHandler);
+				mSearchManagerId = sm.getSenderId();
+				Tracker.handleEvent(this, "Searching" + mSearchManagerId, Tracker.States.Running);
+
+				this.getTaskManager().doProgress(getString(R.string.searching_elipsis));
+				sm.search(mAuthor, mTitle, mIsbn, true, SearchManager.SEARCH_ALL);
 				// reset the details so we don't restart the search unnecessarily
 				mAuthor = "";
 				mTitle = "";
@@ -525,44 +556,59 @@ public class BookISBNSearch extends ActivityWithTasks {
 		}
 	}
 
-	private SearchManager.SearchResultHandler mSearchHandler = new SearchManager.SearchResultHandler() {
+	private SearchManager.SearchListener mSearchHandler = new SearchManager.SearchListener() {
 		@Override
-		public void onSearchFinished(Bundle bookData, boolean cancelled) {
-			BookISBNSearch.this.onSearchFinished(bookData, cancelled);
+		public boolean onSearchFinished(Bundle bookData, boolean cancelled) {
+			return BookISBNSearch.this.onSearchFinished(bookData, cancelled);
 		}
 	};
 
-	private void onSearchFinished(Bundle bookData, boolean cancelled) {
-		//System.out.println(mId + " onSearchFinished");
-		if (cancelled || bookData == null) {
-			if (mMode == MODE_SCAN)
-				startScannerActivity();
-		} else {
-			mTaskManager.doProgress("Adding Book...");
-			createBook(bookData);
-			// Clear the data entry fields ready for the next one
-			clearFields();
-			// Make sure the message will be empty.
-			mTaskManager.doProgress(null);
+	private boolean onSearchFinished(Bundle bookData, boolean cancelled) {
+		Tracker.handleEvent(this, "onSearchFinished" + mSearchManagerId, Tracker.States.Running);
+		try {
+			//System.out.println(mId + " onSearchFinished");
+			if (cancelled || bookData == null) {
+				if (mMode == MODE_SCAN)
+					startScannerActivity();
+			} else {
+				getTaskManager().doProgress(getString(R.string.adding_book_elipsis));
+				createBook(bookData);
+				// Clear the data entry fields ready for the next one
+				clearFields();
+			}
+			return true;
+		} finally {
+			// Clean up
+			mSearchManagerId = 0;
+			// Make sure the base message will be empty.
+			this.getTaskManager().doProgress(null);
 		}
-		// Clean up
-		mSearchManager = null;
 	}
 
 	@Override
 	protected void onPause() {
+		Tracker.enterOnPause(this);
 		super.onPause();
+		if (mSearchManagerId != 0)
+			SearchManager.getMessageSwitch().removeListener(mSearchManagerId, mSearchHandler);
+		Tracker.exitOnPause(this);
 	}
 
 	@Override
 	protected void onResume() {
+		Tracker.enterOnResume(this);
 		super.onResume();
+		if (mSearchManagerId != 0)
+			SearchManager.getMessageSwitch().addListener(mSearchManagerId, mSearchHandler, true);
+		Tracker.exitOnResume(this);
 	}
 
 	@Override
 	protected void onDestroy() {
+		Tracker.enterOnDestroy(this);
 		super.onDestroy();
 		mDbHelper.close();
+		Tracker.exitOnDestroy(this);
 	}
 
 	public String convertDate(String date) {
@@ -598,7 +644,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 	private void createBook(Bundle book) {
 		Intent i = new Intent(this, BookEdit.class);
 		i.putExtra("bookData", book);
-		startActivityForResult(i, R.id.ACTIVITY_EDIT_BOOK);
+		startActivityForResult(i, UniqueId.ACTIVITY_EDIT_BOOK);
 		//dismissProgress();
 	}
 
@@ -610,7 +656,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 		//System.out.println("BookISBNSearch onActivityResult " + resultCode);
 		super.onActivityResult(requestCode, resultCode, intent);
 		switch(requestCode) {
-		case ACTIVITY_SCAN:
+		case UniqueId.ACTIVITY_SCAN:
 			mScannerStarted = false;
 			try {
 				if (resultCode == RESULT_OK) {
@@ -632,7 +678,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 				finish();
 			}
 			break;
-		case R.id.ACTIVITY_EDIT_BOOK:
+		case UniqueId.ACTIVITY_EDIT_BOOK:
 			if (intent != null)
 				mLastBookIntent = intent;
 
@@ -668,10 +714,10 @@ public class BookISBNSearch extends ActivityWithTasks {
 			}
 			
 			// Now get an adapter based on the combined names
-			final ArrayAdapter<String> author_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, authors);
+			mAuthorAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, authors);
 
 			// Set it
-			mAuthorText.setAdapter(author_adapter);				
+			mAuthorText.setAdapter(mAuthorAdapter);				
 		}
 	}
 
@@ -688,7 +734,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 		if (!mScannerStarted) {
 			//System.out.println(mId + " startScannerActivity STARTING");
 			mScannerStarted = true;
-			startActivityForResult(mScannerIntent, ACTIVITY_SCAN);
+			startActivityForResult(mScannerIntent, UniqueId.ACTIVITY_SCAN);
 		} else {
 			//System.out.println(mId + " startScannerActivity SKIPPED");
 		}
@@ -701,9 +747,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 	protected void onRestoreInstanceState(Bundle inState) {
 		//System.out.println(mId + " onRestoreInstanceState");
 
-		mSearchManager = (SearchManager) getLastNonConfigurationInstance("SearchManager");
-		if (mSearchManager != null)
-			mSearchManager.reconnect( mSearchHandler );
+		mSearchManagerId = inState.getLong("SearchManagerId");
 
 		// Now do 'standard' stuff
 		mLastBookIntent = (Intent) inState.getParcelable("LastBookIntent");
@@ -732,28 +776,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 		inState.putString("isbn", mIsbn);
 		inState.putString("title", mTitle);
 		inState.putBoolean("mScannerStarted", mScannerStarted);
-	}
-
-	/**
-	 * Ensure the TaskManager is saved.
-	 */
-	@Override
-	public void onRetainNonConfigurationInstance(Hashtable<String,Object> store) {
-		if (mSearchManager != null) {
-			store.put("SearchManager", mSearchManager);
-			mSearchManager.disconnect();
-			mSearchManager = null;
-		}
-	}
-
-	@Override
-	TaskHandler getTaskHandler(ManagedTask t) {
-		if (mSearchManager == null)
-			throw new RuntimeException("Tasks running, but no SearchManager");
-		TaskHandler h = mSearchManager.getTaskHandler( t );
-		if (h == null)
-			throw new RuntimeException("Unable to find handler for task " + t.toString());
-
-		return h;
+		if (mSearchManagerId != 0)
+			inState.putLong("SearchManagerId", mSearchManagerId);
 	}
 }

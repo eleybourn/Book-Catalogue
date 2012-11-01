@@ -34,14 +34,14 @@ import android.os.Bundle;
 
 import com.eleybourn.bookcatalogue.Author;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
-import com.eleybourn.bookcatalogue.Logger;
 import com.eleybourn.bookcatalogue.Series;
-import com.eleybourn.bookcatalogue.Utils;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.*;
 import static com.eleybourn.bookcatalogue.goodreads.api.ShowBookApiHandler.ShowBookFieldNames.*;
 import com.eleybourn.bookcatalogue.goodreads.api.XmlFilter.ElementContext;
 import com.eleybourn.bookcatalogue.goodreads.api.XmlFilter.XmlHandler;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Class to query and response to search.books api call. This is an abstract class
@@ -90,14 +90,14 @@ public abstract class ShowBookApiHandler extends ApiHandler {
 	/** Current author being processed */
 	private String mCurrAuthorName = null;
 	/** Current author being processed */
-	private long mCurrAuthorId = 0;
+	//private long mCurrAuthorId = 0;
 
 	/** Current series being processed */
 	private String mCurrSeriesName = null;
 	/** Current series being processed */
 	private Integer mCurrSeriesPosition = null;
 	/** Current series being processed */
-	private int mCurrSeriesId = 0;
+	//private int mCurrSeriesId = 0;
 	/** Flag to indicate if request should be signed. Signed requests via ISB cause server errors
 	 *  and unsigned requests do not return review (not a big problem for searches)
 	 */
@@ -548,7 +548,7 @@ public abstract class ShowBookApiHandler extends ApiHandler {
 		@Override
 		public void process(ElementContext context) {
 			try {
-				mCurrSeriesId = Integer.parseInt(context.body.trim());
+				//mCurrSeriesId = Integer.parseInt(context.body.trim());
 			} catch (Exception e) {
 				// Ignore
 			}
@@ -577,7 +577,7 @@ public abstract class ShowBookApiHandler extends ApiHandler {
 		@Override
 		public void process(ElementContext context) {
 			try {
-				mCurrAuthorId = Long.parseLong(context.body.trim());
+				//mCurrAuthorId = Long.parseLong(context.body.trim());
 			} catch (Exception e) {
 				// Ignore
 			}

@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="10dp" 
+    android:paddingRight="10dp" 
+    >
+
+    <!-- -->
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:scrollbars="vertical"
+        android:layout_width="fill_parent"
+        android:layout_weight="0"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="wrap_content" >
+<!-- -->
+	    <LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:layout_gravity="center_horizontal"
+	        android:orientation="vertical" >
+
+	        <LinearLayout android:id="@+id/dateSelector"
+	            android:layout_width="wrap_content"
+	            android:layout_height="fill_parent"
+		        android:layout_gravity="center_horizontal"
+		        android:orientation="horizontal"
+			    >
+
+			    <RelativeLayout  android:id="@+id/yearSelector"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:orientation="vertical"
+			         >
+			        <TextView
+			            android:id="@+id/yearLabel"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+		                android:textAppearance="?android:attr/textAppearanceSmall" 
+		                android:layout_alignParentTop="true"
+		                android:layout_alignParentLeft="true"
+			            android:text="@string/year" />
+			        
+			        <Button
+		                android:id="@+id/plus"
+		                style="?android:attr/buttonStyleSmall"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:layout_below="@+id/yearLabel"
+		                android:layout_alignRight="@+id/year"
+		                android:layout_alignLeft="@+id/year"
+		                android:text="+" />
+						
+			        <EditText
+			            android:id="@+id/year"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:layout_below="@+id/plus"
+			            android:inputType="number"
+			            android:minEms="3"
+			            android:text="2000"
+			            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+			        <Button
+			            android:id="@+id/minus"
+			            style="?android:attr/buttonStyleSmall"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:layout_marginTop="-2dip"
+						android:layout_below="@+id/year"
+		                android:layout_alignRight="@+id/year"
+		                android:layout_alignLeft="@+id/year"
+			            android:text="-" />
+
+				</RelativeLayout>		            	            
+			    <RelativeLayout android:id="@+id/monthSelector"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:orientation="vertical"
+			         >
+			        <TextView
+			            android:id="@+id/monthLabel"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+		                android:textAppearance="?android:attr/textAppearanceSmall" 
+		                android:layout_alignParentTop="true"
+		                android:layout_alignParentLeft="true"
+			            android:text="@string/month" />
+			        			        
+			        <Button
+		                android:id="@+id/plusMonth"
+		                style="?android:attr/buttonStyleSmall"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:layout_alignRight="@+id/month"
+		                android:layout_alignLeft="@+id/month"
+		                android:layout_below="@+id/monthLabel"
+		                android:text="+" />
+						
+		            <Spinner
+		                android:id="@+id/month"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+						android:layout_below="@+id/plusMonth"
+		                android:textAppearance="?android:attr/textAppearanceMedium" 
+		                />
+	
+			        <Button
+			            android:id="@+id/minusMonth"
+			            style="?android:attr/buttonStyleSmall"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:layout_marginTop="-2dip"
+						android:layout_below="@+id/month"
+		                android:layout_alignRight="@+id/month"
+		                android:layout_alignLeft="@+id/month"
+			            android:text="-" />
+			        			        
+				</RelativeLayout>
+					
+
+			    <RelativeLayout android:id="@+id/daySelector"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:orientation="vertical"
+			         >
+			        <TextView
+			            android:id="@+id/dayLabel"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+		                android:textAppearance="?android:attr/textAppearanceSmall" 
+		                android:layout_alignParentTop="true"
+		                android:layout_alignParentLeft="true"
+			            android:text="@string/day" />
+			        
+			        <Button
+		                android:id="@+id/plusDay"
+		                style="?android:attr/buttonStyleSmall"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:layout_alignRight="@+id/day"
+		                android:layout_alignLeft="@+id/day"
+		                android:layout_below="@+id/dayLabel"
+		                android:text="+" />
+						
+				    <Spinner
+				        android:id="@+id/day"
+				        android:layout_width="wrap_content"
+				        android:layout_height="wrap_content"
+						android:layout_below="@+id/plusDay"
+		                android:textAppearance="?android:attr/textAppearanceMedium" 
+				         />
+			        
+			        <Button
+			            android:id="@+id/minusDay"
+			            style="?android:attr/buttonStyleSmall"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:layout_marginTop="-2dip"
+						android:layout_below="@+id/day"
+		                android:layout_alignRight="@+id/day"
+		                android:layout_alignLeft="@+id/day"
+			            android:text="-" />
+			    
+			    </RelativeLayout>	            			    
+
+	        </LinearLayout>
+		    		
+		    <LinearLayout
+				android:id="@+id/buttons"
+		        android:orientation="horizontal" 
+		        android:layout_width="fill_parent"
+		        android:gravity="bottom"
+		        android:layout_weight="100"
+				android:paddingTop="10dp"
+		        android:layout_height="wrap_content" >
+		
+				<Button
+					android:id="@+id/cancel"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="100"
+		            style="?android:attr/buttonStyleSmall"
+					android:text="@+string/cancel" />
+				
+				<Button
+					android:id="@+id/ok"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="100"
+		            style="?android:attr/buttonStyleSmall"
+					android:text="@+string/ok" />
+		
+			</LinearLayout>
+	        				
+	    </LinearLayout>
+	<!-- -->
+	</ScrollView>
+	<!-- -->
+
+</LinearLayout>

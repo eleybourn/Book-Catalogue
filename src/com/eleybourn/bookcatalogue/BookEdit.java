@@ -22,8 +22,16 @@ package com.eleybourn.bookcatalogue;
 
 //import android.R;
 import java.io.File;
+import java.util.Hashtable;
+import java.util.Map.Entry;
+
+import com.eleybourn.bookcatalogue.debug.Tracker;
+import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
+import com.eleybourn.bookcatalogue.utils.Logger;
+
 
 import android.app.Activity;
+import android.app.LocalActivityManager;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -45,11 +53,38 @@ import android.widget.Toast;
  * @author Evan Leybourn
  */
 public class BookEdit extends TabActivity {
+	
+	/** Interface to be notified when OnRestoreInstanceState is called on this activity
+	 * This is important because OnRestoreInstanceState in the tab host activity gets called
+	 * *AFTER* OnRestoreInstanceState in a contained activity, and will restore THE SAME fields.
+	 * 
+	 * This results in some fields (eg. description) being overwritten after the containing
+	 * activity has restored them. It also results in the child activity being marked as 'dirty'
+	 * because the fields are updated after it's own 'restore' is done.
+	 */
+	public interface OnRestoreTabInstanceStateListener {
+		boolean isDirty();
+		void setDirty(boolean dirty);
+		void restoreTabInstanceState(Bundle savedInstanceState);
+	}
+
 	public static final String TAB = "tab";
 	public static final int TAB_EDIT = 0;
 	public static final int TAB_EDIT_NOTES = 1;
 	public static final int TAB_EDIT_FRIENDS = 2;
 
+	/** 
+	 * Standardize the names of tabs 
+	 * ANY NEW NAMES NEED TO BE ADDED TO mTabNames, below 
+	 */
+	private static String TAB_NAME_EDIT_BOOK = "edit_book";
+	private static String TAB_NAME_EDIT_NOTES = "edit_book_notes";
+	private static String TAB_NAME_EDIT_FRIENDS = "edit_book_friends";
+	private static String TAB_NAME_EDIT_ANTHOLOGY = "edit_book_anthology";
+
+	/** Create a collection of tab names for easy iteration */
+	private static String[] mTabNames = { TAB_NAME_EDIT_BOOK, TAB_NAME_EDIT_NOTES, TAB_NAME_EDIT_FRIENDS, TAB_NAME_EDIT_ANTHOLOGY };
+	
 	private static final int DELETE_ID = 1;
 	private static final int DUPLICATE_ID = 3; //2 is taken by populate in anthology
 	private static final int SHARE_ID = 4;
@@ -60,6 +95,7 @@ public class BookEdit extends TabActivity {
 	private CatalogueDBAdapter mDbHelper = new CatalogueDBAdapter(this);
 
 	public void onCreate(Bundle savedInstanceState) {
+		Tracker.enterOnCreate(this);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tabhost);
 		
@@ -105,7 +141,7 @@ public class BookEdit extends TabActivity {
 			name = res.getString(R.string.edit_book);
 		}
 		// Initialise a TabSpec for each tab and add it to the TabHost
-		spec = tabHost.newTabSpec("edit_book").setIndicator(name, res.getDrawable(R.drawable.ic_tab_edit)).setContent(intent);
+		spec = tabHost.newTabSpec(TAB_NAME_EDIT_BOOK).setIndicator(name, res.getDrawable(R.drawable.ic_tab_edit)).setContent(intent);
 		tabHost.addTab(spec);
 		
 		// Only show the other tabs if it is an edited book, otherwise only show the first tab
@@ -115,14 +151,14 @@ public class BookEdit extends TabActivity {
 			if (extras != null) {
 				intent.putExtras(extras);
 			}
-			spec = tabHost.newTabSpec("edit_book_notes").setIndicator(res.getString(R.string.edit_book_notes), res.getDrawable(R.drawable.ic_tab_notes)).setContent(intent);
+			spec = tabHost.newTabSpec(TAB_NAME_EDIT_NOTES).setIndicator(res.getString(R.string.edit_book_notes), res.getDrawable(R.drawable.ic_tab_notes)).setContent(intent);
 			tabHost.addTab(spec);
 			
 			intent = new Intent().setClass(this, BookEditLoaned.class);
 			if (extras != null) {
 				intent.putExtras(extras);
 			}
-			spec = tabHost.newTabSpec("edit_book_friends").setIndicator(res.getString(R.string.edit_book_friends), res.getDrawable(R.drawable.ic_tab_friends)).setContent(intent);
+			spec = tabHost.newTabSpec(TAB_NAME_EDIT_FRIENDS).setIndicator(res.getString(R.string.edit_book_friends), res.getDrawable(R.drawable.ic_tab_friends)).setContent(intent);
 			tabHost.addTab(spec);
 			
 			// Only show the anthology tab if the book is marked as an anthology
@@ -131,12 +167,13 @@ public class BookEdit extends TabActivity {
 				if (extras != null) {
 					intent.putExtras(extras);
 				}
-				spec = tabHost.newTabSpec("edit_book_anthology").setIndicator(res.getString(R.string.edit_book_anthology), res.getDrawable(R.drawable.ic_tab_anthology)).setContent(intent);
+				spec = tabHost.newTabSpec(TAB_NAME_EDIT_ANTHOLOGY).setIndicator(res.getString(R.string.edit_book_anthology), res.getDrawable(R.drawable.ic_tab_anthology)).setContent(intent);
 				tabHost.addTab(spec);
 			}
 		}
 		
 		tabHost.setCurrentTab(currentTab);
+		Tracker.exitOnCreate(this);
 	}
 	
 	/**
@@ -155,19 +192,50 @@ public class BookEdit extends TabActivity {
 	
 	@Override
 	protected void onDestroy() {
+		Tracker.enterOnDestroy(this);
 		super.onDestroy();
 		mDbHelper.close();
+		Tracker.exitOnDestroy(this);
 	} 
 	
 	@Override 
 	protected void onSaveInstanceState(Bundle outState) { 
+		Tracker.enterOnSaveInstanceState(this);
 		super.onSaveInstanceState(outState);
 		try {
 			outState.putLong(CatalogueDBAdapter.KEY_ROWID, mRowId);
 		} catch (Exception e) {
 			//do nothing
 		}
-	} 
+		Tracker.exitOnSaveInstanceState(this);
+	}
+	
+	@Override
+	/**
+	 * Inform the hosted tabsl that they may have been overwritten, if they implements the
+	 * relevant interface.
+	 * 
+	 * This only seems to be relevant for TextView objects that have Spannable text.
+	 */
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		Tracker.enterOnRestoreInstanceState(this);
+		LocalActivityManager mgr = this.getLocalActivityManager();
+
+		Hashtable<OnRestoreTabInstanceStateListener, Boolean> tabs = new Hashtable<OnRestoreTabInstanceStateListener, Boolean>();
+		for(String name: mTabNames) {
+			Activity a = mgr.getActivity(name);
+			if (a instanceof OnRestoreTabInstanceStateListener) {
+				OnRestoreTabInstanceStateListener l = (OnRestoreTabInstanceStateListener)a;
+				tabs.put(l, l.isDirty());
+			}			
+		}
+		super.onRestoreInstanceState(savedInstanceState);
+		for(Entry<OnRestoreTabInstanceStateListener, Boolean> e: tabs.entrySet()) {
+			e.getKey().restoreTabInstanceState(savedInstanceState);
+			e.getKey().setDirty(e.getValue());
+		}
+		Tracker.exitOnRestoreInstanceState(this);
+	}
 	
 	/**
 	 * Run each time the menu button is pressed. This will setup the options menu
@@ -334,7 +402,7 @@ public class BookEdit extends TabActivity {
 		Intent i = new Intent(a, BookEdit.class);
 		i.putExtra(CatalogueDBAdapter.KEY_ROWID, id);
 		i.putExtra(BookEdit.TAB, tab);
-		a.startActivityForResult(i, R.id.ACTIVITY_EDIT_BOOK);
+		a.startActivityForResult(i, UniqueId.ACTIVITY_EDIT_BOOK);
 		return;
 	}
 

@@ -21,28 +21,25 @@
 package com.eleybourn.bookcatalogue.booklist;
 
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
-import com.eleybourn.bookcatalogue.HintManager;
-import com.eleybourn.bookcatalogue.Logger;
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.Utils;
-import com.eleybourn.bookcatalogue.ViewTagger;
+import com.eleybourn.bookcatalogue.UniqueId;
 import com.eleybourn.bookcatalogue.properties.Properties;
-import com.eleybourn.bookcatalogue.properties.Property;
 import com.eleybourn.bookcatalogue.properties.Property.ValidationException;
 import com.eleybourn.bookcatalogue.properties.PropertyGroup;
 import com.eleybourn.bookcatalogue.properties.StringProperty;
+import com.eleybourn.bookcatalogue.utils.HintManager;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
+import com.eleybourn.bookcatalogue.utils.ViewTagger;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -162,7 +159,7 @@ public class BooklistStylePropertiesActivity extends Activity {
 		 * Can not be 'set'. Will be edited vi the button->activity.
 		 */
 		@Override
-		public void set(String value) {
+		public GroupsProperty set(String value) {
 			throw new RuntimeException("Attempt to set read-only property string");
 		}
 
@@ -197,7 +194,7 @@ public class BooklistStylePropertiesActivity extends Activity {
 		Intent i = new Intent(this, BooklistStyleGroupsActivity.class);
 		i.putExtra(BooklistStyleGroupsActivity.KEY_STYLE, mStyle);
 		i.putExtra(BooklistStyleGroupsActivity.KEY_SAVE_TO_DATABASE, false);
-		startActivityForResult(i, R.id.ACTIVITY_BOOKLIST_STYLE_GROUPS);		
+		startActivityForResult(i, UniqueId.ACTIVITY_BOOKLIST_STYLE_GROUPS);		
 	}
 
 	/**
@@ -225,7 +222,7 @@ public class BooklistStylePropertiesActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
 		switch(requestCode) {
-		case R.id.ACTIVITY_BOOKLIST_STYLE_GROUPS:
+		case UniqueId.ACTIVITY_BOOKLIST_STYLE_GROUPS:
 			// When groups have been edited, copy them to this style.
 			if (intent != null && intent.hasExtra(BooklistStyleGroupsActivity.KEY_STYLE)) {
 				BooklistStyle editedStyle = null;

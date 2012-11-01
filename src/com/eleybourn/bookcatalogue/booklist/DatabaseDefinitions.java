@@ -100,6 +100,10 @@ public class DatabaseDefinitions {
 	public static final DomainDefinition DOM_PUBLISHER = new DomainDefinition(KEY_PUBLISHER, "text", "", "");
 	public static final DomainDefinition DOM_READ = new DomainDefinition(KEY_READ, "integer", "", "");
 	public static final DomainDefinition DOM_READ_STATUS = new DomainDefinition("read_status", "text", "", "not null");
+	public static final DomainDefinition DOM_READ_END = new DomainDefinition(KEY_READ_END, "date", "", "");
+	public static final DomainDefinition DOM_READ_DAY = new DomainDefinition("added_day", "int", "", "");
+	public static final DomainDefinition DOM_READ_MONTH = new DomainDefinition("added_month", "int", "", "");
+	public static final DomainDefinition DOM_READ_YEAR = new DomainDefinition("added_year", "int", "", "");
 	public static final DomainDefinition DOM_REAL_ROW_ID = new DomainDefinition("real_row_id", "int", "", "");
 	public static final DomainDefinition DOM_ROOT_KEY = new DomainDefinition("root_key", "text", "", "");
 	public static final DomainDefinition DOM_SERIES_ID = new DomainDefinition(KEY_SERIES_ID, "integer", "", "");

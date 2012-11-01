@@ -1,7 +1,6 @@
 package com.eleybourn.bookcatalogue;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -13,9 +12,11 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 
 import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer.SyncLock;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.StorageUtils;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 import android.os.Bundle;
-import android.os.Message;
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 
 /**
@@ -30,11 +31,10 @@ public class ImportThread extends ManagedTask {
 	private final File mFile;
 	private String mFileSpec;
 	private boolean mFileIsForeign;
-	private boolean mImageCopyFailed = false;
 	private final String mSharedStoragePath;
 	private CatalogueDBAdapter mDbHelper;
 	
-	public class ImportException extends RuntimeException {
+	public static class ImportException extends RuntimeException {
 		private static final long serialVersionUID = 1660687786319003483L;
 
 		ImportException(String s) {
@@ -42,45 +42,28 @@ public class ImportThread extends ManagedTask {
 		}
 	};
 
-	private int mImportUpdated;
-	private int mImportCreated;
-	
-	public interface ImportHandler extends ManagedTask.TaskHandler {
-		void onFinish();
-	}
+	//private int mImportUpdated;
+	//private int mImportCreated;
 
-	public ImportThread(TaskManager manager, TaskHandler taskHandler, String fileSpec) throws IOException {
-		super(manager, taskHandler);
+	public ImportThread(TaskManager manager, String fileSpec) throws IOException {
+		super(manager);
 		mFile = new File(fileSpec);
-		mFileSpec = mFile.getCanonicalPath();
-		mSharedStoragePath = StorageUtils.getSharedStorage().getCanonicalPath();
+		// Changed getCanonicalPath to getAbsolutePath based on this bug in Android 2.1:
+		//     http://code.google.com/p/android/issues/detail?id=4961
+		mFileSpec = mFile.getAbsolutePath();
+		mSharedStoragePath = StorageUtils.getSharedStorage().getAbsolutePath();
 
-		mDbHelper = new CatalogueDBAdapter(manager.getAppContext());
+		mDbHelper = new CatalogueDBAdapter(BookCatalogueApp.context);
 		mDbHelper.open();
-		
+
 		mFileIsForeign = !(mFileSpec.startsWith(mSharedStoragePath));
+		//getMessageSwitch().addListener(getSenderId(), taskHandler, false);
 		//Debug.startMethodTracing();
 	}
 
 	@Override
-	protected boolean onFinish() {
-		try {
-			//Debug.stopMethodTracing();
-			ImportHandler h = (ImportHandler)getTaskHandler();
-			if (h != null) {
-				h.onFinish();
-				return true;
-			} else {
-				return false;
-			}			
-		} finally {
-			cleanup();
-		}
-	}
-
-	@Override
-	protected void onMessage(Message msg) {
-		// Nothing to do. we don't send any
+	protected void onFinish() {
+		cleanup();
 	}
 
 	/**
@@ -111,14 +94,12 @@ public class ImportThread extends ManagedTask {
 	@Override
 	protected void onRun() {
 		// Initialize
-		mImageCopyFailed = false;
-
 		ArrayList<String> export = readFile(mFileSpec);
 		
 		if (export == null || export.size() == 0)
 			return;
 
-		mManager.setMax(this, export.size());
+		mManager.setMax(this, export.size() - 1);
 
 		// Container for values.
 		Bundle values = new Bundle();
@@ -187,7 +168,7 @@ public class ImportThread extends ManagedTask {
 				// Validate ID
 				String idStr = values.getString(CatalogueDBAdapter.KEY_ROWID.toLowerCase());
 				Long idLong;
-				if (idStr == "") {
+				if (idStr == null || idStr == "") {
 					hasNumericId = false;
 					idLong = 0L;
 				} else {
@@ -242,7 +223,7 @@ public class ImportThread extends ManagedTask {
 					}
 
 					if (authorDetails == null || authorDetails.length() == 0) {
-						String s = mManager.getString(R.string.column_is_blank);
+						String s = BookCatalogueApp.getResourceString(R.string.column_is_blank);
 						throw new ImportException(String.format(s, CatalogueDBAdapter.KEY_AUTHOR_DETAILS, row));
 					}
 
@@ -280,7 +261,7 @@ public class ImportThread extends ManagedTask {
 				
 				// Make sure we have bookself_text if we imported bookshelf
 				if (values.containsKey(CatalogueDBAdapter.KEY_BOOKSHELF) && !values.containsKey("bookshelf_text")) {
-					values.putString("bookshelf_text", values.getString(CatalogueDBAdapter.KEY_BOOKSHELF));
+					values.putString("bookshelf_list", values.getString(CatalogueDBAdapter.KEY_BOOKSHELF));
 				}
 
 				try {
@@ -289,7 +270,7 @@ public class ImportThread extends ManagedTask {
 						Long id = mDbHelper.createBook(values);
 						values.putString(CatalogueDBAdapter.KEY_ROWID, id.toString());
 						// Would be nice to import a cover, but with no ID/UUID thats not possible
-						mImportCreated++;
+						//mImportCreated++;
 					} else {
 						boolean exists;
 						// Save the original ID from the file for use in checing for images
@@ -317,10 +298,10 @@ public class ImportThread extends ManagedTask {
 
 						if (exists) {
 							mDbHelper.updateBook(idLong, values, false);								
-							mImportUpdated++;
+							//mImportUpdated++;
 						} else {
 							newId = mDbHelper.createBook(idLong, values);
-							mImportCreated++;
+							//mImportCreated++;
 							values.putString(CatalogueDBAdapter.KEY_ROWID, newId.toString());							
 							idLong = newId;
 						}
@@ -343,7 +324,9 @@ public class ImportThread extends ManagedTask {
 					Logger.logError(e, "Import at row " + row);
 				}
 
-				if (!values.get(CatalogueDBAdapter.KEY_LOANED_TO).equals("")) {
+				if (values.containsKey(CatalogueDBAdapter.KEY_LOANED_TO) && !values.get(CatalogueDBAdapter.KEY_LOANED_TO).equals("")) {
+					int id = Integer.parseInt(Utils.getAsString(values, CatalogueDBAdapter.KEY_ROWID));
+					mDbHelper.deleteLoan(id);
 					mDbHelper.createLoan(values);
 				}
 
@@ -354,8 +337,10 @@ public class ImportThread extends ManagedTask {
 					} catch (Exception e) {
 						anthology = 0;
 					}
-					int id = Integer.parseInt(Utils.getAsString(values, CatalogueDBAdapter.KEY_ROWID));
 					if (anthology == CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS || anthology == CatalogueDBAdapter.ANTHOLOGY_SAME_AUTHOR) {
+						int id = Integer.parseInt(Utils.getAsString(values, CatalogueDBAdapter.KEY_ROWID));
+						// We have anthology details, delete the current details.
+						mDbHelper.deleteAnthologyTitles(id);
 						int oldi = 0;
 						String anthology_titles = values.getString("anthology_titles");
 						try {
@@ -367,7 +352,7 @@ public class ImportThread extends ManagedTask {
 								if (j > -1) {
 									String anth_title = extracted_title.substring(0, j).trim();
 									String anth_author = extracted_title.substring((j+1)).trim();
-									mDbHelper.createAnthologyTitle(id, anth_author, anth_title);
+									mDbHelper.createAnthologyTitle(id, anth_author, anth_title, true);
 								}
 								oldi = i + 1;
 								i = anthology_titles.indexOf("|", oldi);
@@ -379,7 +364,7 @@ public class ImportThread extends ManagedTask {
 				}
 
 				long now = System.currentTimeMillis();
-				if ( (now - lastUpdate) > 200) {
+				if ( (now - lastUpdate) > 200 && !isCancelled()) {
 					doProgress(title, row);
 					lastUpdate = now;
 				}
@@ -404,7 +389,11 @@ public class ImportThread extends ManagedTask {
 			// Do nothing. Not a critical step.
 			Logger.logError(e);
 		}
-		doToast("Import Complete");
+		if (isCancelled()) {
+			doToast(getString(R.string.cancelled));
+		} else {
+			doToast(getString(R.string.import_complete));
+		}
 	}
 
 	private File findExternalCover(String name) {
@@ -696,11 +685,12 @@ public class ImportThread extends ManagedTask {
 	}
 
 	// Require a column
+	@SuppressWarnings("unused")
 	private void requireColumn(Bundle values, String name) {
 		if (values.containsKey(name))
 			return;
 
-		String s = mManager.getString(R.string.file_must_contain_column);
+		String s = BookCatalogueApp.getResourceString(R.string.file_must_contain_column);
 		throw new ImportException(String.format(s,name));
 	}
 
@@ -710,23 +700,24 @@ public class ImportThread extends ManagedTask {
 			if (values.containsKey(names[i]))
 				return;
 		
-		String s = mManager.getString(R.string.file_must_contain_any_column);
+		String s = BookCatalogueApp.getResourceString(R.string.file_must_contain_any_column);
 		throw new ImportException(String.format(s, Utils.join(names, ",")));
 	}
 
 	private void requireNonblank(Bundle values, int row, String name) {
 		if (values.getString(name).length() != 0)
 			return;
-		String s = mManager.getString(R.string.column_is_blank);
+		String s = BookCatalogueApp.getResourceString(R.string.column_is_blank);
 		throw new ImportException(String.format(s, name, row));
 	}
 
+	@SuppressWarnings("unused")
 	private void requireAnyNonblank(Bundle values, int row, String... names) {
 		for(int i = 0; i < names.length; i++)
 			if (values.containsKey(names[i]) && values.getString(names[i]).length() != 0)
 				return;
 
-		String s = mManager.getString(R.string.columns_are_blank);
+		String s = BookCatalogueApp.getResourceString(R.string.columns_are_blank);
 		throw new ImportException(String.format(s, Utils.join( names, ","), row));
 	}
 

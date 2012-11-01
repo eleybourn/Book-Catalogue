@@ -23,12 +23,12 @@
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
-
 import android.os.Bundle;
-
-import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
-import com.eleybourn.bookcatalogue.SearchThread.SearchTaskHandler;
-import com.eleybourn.bookcatalogue.TaskManager.OnTaskEndedListener;
+import com.eleybourn.bookcatalogue.TaskManager.TaskManagerListener;
+import com.eleybourn.bookcatalogue.messaging.MessageSwitch;
+import com.eleybourn.bookcatalogue.utils.IsbnUtils;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Class to co-ordinate multiple SearchThread objects using an existing TaskManager.
@@ -40,7 +40,7 @@ import com.eleybourn.bookcatalogue.TaskManager.OnTaskEndedListener;
  * 
  * @author Philip Warner
  */
-public class SearchManager implements OnTaskEndedListener {
+public class SearchManager implements TaskManagerListener {
 	
 	/** Flag indicating a search source to use */
 	public static final int SEARCH_GOOGLE = 1;
@@ -69,8 +69,6 @@ public class SearchManager implements OnTaskEndedListener {
 	private boolean mWaitingForIsbn = false;
 	// Flag indicating a task was cancelled.
 	private boolean mCancelledFlg = false;
-	// Flag to indicate search finished
-	private boolean mFinished = false;
 	// Original author for search
 	private String mAuthor;
 	// Original title for search
@@ -85,56 +83,30 @@ public class SearchManager implements OnTaskEndedListener {
 	/** Output from search threads */
 	private Hashtable<Integer,Bundle> mSearchResults = new Hashtable<Integer,Bundle>();
 
-	// Handler for search results
-	private SearchResultHandler mSearchHandler = null;
-
 	// List of threads created by *this* object.
 	private ArrayList<ManagedTask> mRunningTasks = new ArrayList<ManagedTask>();
 
-	/**
-	 * Task handler for thread management; caller MUST implement this to get
-	 * search results.
-	 * 
-	 * @author Philip Warner
-	 */
-	public interface SearchResultHandler extends ManagedTask.TaskHandler {
-		void onSearchFinished(Bundle bookData, boolean cancelled);
-	}
-	
+//	/**
+//	 * Task handler for thread management; caller MUST implement this to get
+//	 * search results.
+//	 * 
+//	 * @author Philip Warner
+//	 */
+//	public interface SearchResultHandler extends ManagedTask.TaskListener {
+//		void onSearchFinished(Bundle bookData, boolean cancelled);
+//	}
+
 	/**
 	 * Constructor.
 	 * 
 	 * @param taskManager	TaskManager to use
 	 * @param taskHandler	SearchHandler to send results
 	 */
-	SearchManager(TaskManager taskManager, SearchResultHandler taskHandler) {
+	SearchManager(TaskManager taskManager, SearchListener taskHandler) {
 		mTaskManager = taskManager;
-		mSearchHandler = taskHandler;
-	}
-
-	/**
-	 * Disconnect from handler so that underlying activity can rebuild.
-	 */
-	public void disconnect() {
-		mSearchHandler = null;
-	}
-
-	/**
-	 * Reconnect and (possibly)send the completion message.
-	 * @param handler
-	 */
-	public void reconnect(SearchResultHandler handler) {
-		mSearchHandler = handler;
-		if (mFinished)
-			mSearchHandler.onSearchFinished(mBookData, mCancelledFlg);
-	}
-	
-	public TaskHandler getTaskHandler(ManagedTask t) {
-		if (t instanceof SearchThread) {
-			return mGenericSearchHandler;
-		} else {
-			return null;
-		}
+		if (taskManager == null)
+			throw new RuntimeException("TaskManager must be specified");
+		getMessageSwitch().addListener(getSenderId(), taskHandler, false);
 	}
 
 	/**
@@ -144,15 +116,32 @@ public class SearchManager implements OnTaskEndedListener {
 	@Override
 	public void onTaskEnded(TaskManager manager, ManagedTask task) {
 		int size;
+
+		// Handle the result, and optionally queue another task
+		if (task instanceof SearchThread)
+			handleSearchTaskFinished((SearchThread)task);
+
+		// Remove the finished task, and terminate if no more.
 		synchronized(mRunningTasks) {
 			mRunningTasks.remove(task);
 			size = mRunningTasks.size();
 		}
 		if (size == 0) {
 			finish();
-			mTaskManager.removeOnTaskEndedListener(this);
+			TaskManager.getMessageSwitch().removeListener(mTaskManager.getSenderId(), this);
 		}
 	}
+
+	/**
+	 * Other taskManager messages...we ignore them
+	 */
+	@Override
+	public void onProgress(int count, int max, String message) { }
+	@Override
+	public void onToast(String message) { }
+	@Override
+	public void onFinished() { }
+
 
 	/**
 	 * Utility routine to start a task
@@ -162,6 +151,7 @@ public class SearchManager implements OnTaskEndedListener {
 	private void startOne(SearchThread thread) {
 		synchronized(mRunningTasks) {
 			mRunningTasks.add(thread);
+			mTaskManager.addTask(thread);
 		}
 		thread.start();
 	}
@@ -171,7 +161,7 @@ public class SearchManager implements OnTaskEndedListener {
 	 */
 	private boolean startAmazon() {
 		if (!mCancelledFlg) {
-			startOne( new SearchAmazonThread(mTaskManager, mGenericSearchHandler, mAuthor, mTitle, mIsbn, mFetchThumbnail) );		
+			startOne( new SearchAmazonThread(mTaskManager, mAuthor, mTitle, mIsbn, mFetchThumbnail) );		
 			return true;
 		} else {
 			return false;
@@ -183,7 +173,7 @@ public class SearchManager implements OnTaskEndedListener {
 	 */
 	private boolean startGoogle() {
 		if (!mCancelledFlg) {
-			startOne( new SearchGoogleThread(mTaskManager, mGenericSearchHandler, mAuthor, mTitle, mIsbn, mFetchThumbnail) );		
+			startOne( new SearchGoogleThread(mTaskManager, mAuthor, mTitle, mIsbn, mFetchThumbnail) );		
 			return true;
 		} else {
 			return false;			
@@ -194,7 +184,7 @@ public class SearchManager implements OnTaskEndedListener {
 	 */
 	private boolean startLibraryThing(){
 		if (!mCancelledFlg && mHasIsbn) {
-			startOne( new SearchLibraryThingThread(mTaskManager, mGenericSearchHandler, mAuthor, mTitle, mIsbn, mFetchThumbnail));		
+			startOne( new SearchLibraryThingThread(mTaskManager, mAuthor, mTitle, mIsbn, mFetchThumbnail));		
 			return true;
 		} else {
 			return false;
@@ -206,7 +196,7 @@ public class SearchManager implements OnTaskEndedListener {
 	 */
 	private boolean startGoodreads(){
 		if (!mCancelledFlg) {
-			startOne( new SearchGoodreadsThread(mTaskManager, mGenericSearchHandler, mAuthor, mTitle, mIsbn, mFetchThumbnail));		
+			startOne( new SearchGoodreadsThread(mTaskManager, mAuthor, mTitle, mIsbn, mFetchThumbnail));		
 			return true;
 		} else {
 			return false;			
@@ -236,7 +226,6 @@ public class SearchManager implements OnTaskEndedListener {
 
 		mWaitingForIsbn = false;
 		mCancelledFlg = false;
-		mFinished = false;
 
 		mAuthor = author;
 		mTitle = title;
@@ -245,19 +234,22 @@ public class SearchManager implements OnTaskEndedListener {
 
 		mFetchThumbnail = fetchThumbnail;
 
-		if (mTaskManager.runningInUiThread()) {
-			doSearch();
-		} else {
-			mTaskManager.postToUiThread(new Runnable() {
-				@Override
-				public void run() {
-					doSearch();
-				}});
-		}
+		// XXXX: Not entirely sure why this code was targetted at the UI thread.
+		doSearch();
+		//if (mTaskManager.runningInUiThread()) {
+		//	doSearch();
+		//} else {
+		//	mTaskManager.postToUiThread(new Runnable() {
+		//		@Override
+		//		public void run() {
+		//			doSearch();
+		//		}});
+		//}
 	}
+
 	private void doSearch() {
 		// List for task ends
-		mTaskManager.addOnTaskEndedListener(this);
+		TaskManager.getMessageSwitch().addListener(mTaskManager.getSenderId(), this, false);
 		
 		// We really want to ensure we get the same book from each, so if isbn is not present, do
 		// these in series.
@@ -283,7 +275,7 @@ public class SearchManager implements OnTaskEndedListener {
 		} finally {
 			if (!tasksStarted) {
 				finish();
-				mTaskManager.removeOnTaskEndedListener(this);
+				TaskManager.getMessageSwitch().removeListener(mTaskManager.getSenderId(), this);
 			}
 		}
 
@@ -397,7 +389,7 @@ public class SearchManager implements OnTaskEndedListener {
 		} catch (Exception e) {}
 		if (authors == null || authors.length() == 0 || title == null || title.length() == 0) {
 			
-			mTaskManager.doToast(mTaskManager.getString(R.string.book_not_found));
+			mTaskManager.doToast(BookCatalogueApp.getResourceString(R.string.book_not_found));
 			mBookData.putString(CatalogueDBAdapter.KEY_ISBN, mIsbn);
 			mBookData.putString(CatalogueDBAdapter.KEY_TITLE, mTitle);
 			ArrayList<Author> aa = Utils.getAuthorUtils().decodeList(mAuthor, '|', false);
@@ -405,9 +397,6 @@ public class SearchManager implements OnTaskEndedListener {
 			//add series to stop crashing
 			ArrayList<Series> sa = Utils.getSeriesUtils().decodeList("", '|', false);
 			mBookData.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, sa);
-			if (mSearchHandler != null) {
-				mSearchHandler.onSearchFinished(mBookData, mCancelledFlg);
-			}
 
 		} else {
 			Utils.doProperCase(mBookData, CatalogueDBAdapter.KEY_TITLE);
@@ -427,12 +416,18 @@ public class SearchManager implements OnTaskEndedListener {
 			} catch (Exception e) {
 				Logger.logError(e);
 			}
-			if (mSearchHandler != null)
-				mSearchHandler.onSearchFinished(mBookData, mCancelledFlg);
 		}
-		mFinished = true;
+		sendSearchFinished();
 	}
 
+	private void sendSearchFinished() {
+		mMessageSwitch.send(mMessageSenderId, new MessageSwitch.Message<SearchListener>() {
+			@Override
+			public boolean deliver(SearchListener listener) {
+				return listener.onSearchFinished(mBookData, mCancelledFlg);
+			}}
+		);		
+	}
 	/**
 	 * When running in single-stream mode, start the next thread that has no data.
 	 * While Google is reputedly most likely to succeed, it also produces garbage a lot. 
@@ -494,30 +489,72 @@ public class SearchManager implements OnTaskEndedListener {
 	}
 
 	/**
-	 * Handle SearchThread completion; just save the results and if waiting for ISBN, start 
-	 * next/rest depending on whether we now have an ISBN.
+	 * Handle task search results; start another task if necessary.
+	 * 
+	 * @param t
 	 */
-	private SearchTaskHandler mGenericSearchHandler = new SearchTaskHandler() {
+	private void handleSearchTaskFinished(SearchThread t) {
+		SearchThread st = (SearchThread)t;
+		mCancelledFlg = st.isCancelled();
+		Bundle bookData = st.getBookData();
+		mSearchResults.put(st.getSearchId(), bookData);
+		if (mCancelledFlg) {
+			mWaitingForIsbn = false;
+		} else {
+			if (mWaitingForIsbn) {
+				if (Utils.isNonBlankString(bookData, CatalogueDBAdapter.KEY_ISBN)) {
+					mWaitingForIsbn = false;
+					// Start the other two...even if they have run before
+					mIsbn = bookData.getString(CatalogueDBAdapter.KEY_ISBN);
+					startSearches(mSearchFlags);
+				} else {
+					// Start next one that has not run. 
+					startNext();
+				}
+			}				
+		}
+	}		
+
+	/* ===================================================================== 
+	 * Message Switchboard implementation
+	 * =====================================================================
+	 */
+	/**
+	 * Allows other objects to know when a task completed.
+	 * 
+	 * @author Philip Warner
+	 */
+	public interface SearchListener {
+		boolean onSearchFinished(Bundle bookData, boolean cancelled);
+	}
+
+	public interface SearchController {
+		void requestAbort();
+		SearchManager getSearchManager();
+	}
+	
+	private SearchController mController = new SearchController() {
 		@Override
-		public void onSearchThreadFinish(SearchThread t, Bundle bookData, boolean cancelled) {
-			mCancelledFlg = cancelled;
-			mSearchResults.put(t.getSearchId(), bookData);
-			if (cancelled) {
-				mWaitingForIsbn = false;
-			} else {
-				if (mWaitingForIsbn) {
-					if (Utils.isNonBlankString(bookData, CatalogueDBAdapter.KEY_ISBN)) {
-						mWaitingForIsbn = false;
-						// Start the other two...even if they have run before
-						mIsbn = bookData.getString(CatalogueDBAdapter.KEY_ISBN);
-						startSearches(mSearchFlags);
-					} else {
-						// Start next one that has not run. 
-						startNext();
-					}
-				}				
-			}
+		public void requestAbort() {
+			mTaskManager.cancelAllTasks();
+		}
+		@Override
+		public SearchManager getSearchManager() {
+			return SearchManager.this;
 		}
 	};
+
+	/**
+	 * 	STATIC Object for passing messages from background tasks to activities that may be recreated 
+	 *
+	 *  This object handles all underlying OnTaskEndedListener messages for every instance of this class.
+	 */
+	protected static class TaskSwitch extends MessageSwitch<SearchListener, SearchController> {};
+
+	private static final TaskSwitch mMessageSwitch = new TaskSwitch();
+	protected static final TaskSwitch getMessageSwitch() { return mMessageSwitch; }
+
+	private final long mMessageSenderId = mMessageSwitch.createSender(mController);
+	public long getSenderId() { return mMessageSenderId; }
 
 }

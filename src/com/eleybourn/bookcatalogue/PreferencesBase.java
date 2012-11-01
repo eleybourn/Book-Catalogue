@@ -21,10 +21,13 @@
 package com.eleybourn.bookcatalogue;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
+import com.eleybourn.bookcatalogue.properties.Properties;
+import com.eleybourn.bookcatalogue.utils.Logger;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -36,12 +39,11 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
  * @author Philip Warner
  */
 public abstract class PreferencesBase extends Activity {
-	private int mLayout;
 
-	/** Get the layour of the subclass */
+	/** Get the layout of the subclass */
 	public abstract int getLayout();
 	/** Setup the views in the layout */
-	public abstract void setupViews(BookCataloguePreferences prefs);
+	public abstract void setupViews(BookCataloguePreferences prefs, Properties globalProps);
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -50,7 +52,14 @@ public abstract class PreferencesBase extends Activity {
 			System.out.println("In onCreate in PreferencesBase");
 			setContentView(this.getLayout());
 			final BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
-			setupViews(prefs);
+
+			// Get a properties collection.
+			Properties globalProps = new Properties();
+			setupViews(prefs, globalProps);
+
+			ViewGroup styleProps = (ViewGroup) findViewById(R.id.dynamic_properties);
+			globalProps.buildView(getLayoutInflater(), styleProps);
+
 		} catch (Exception e) {
 			Logger.logError(e);
 		}

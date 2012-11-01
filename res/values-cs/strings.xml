@@ -79,7 +79,8 @@
 <string name="webpage">https://wiki.github.com/eleybourn/Book-Catalogue/</string>
 <string name="sourcecode">https://github.com/eleybourn/Book-Catalogue</string>
 <string name="helppage">https://github.com/eleybourn/Book-Catalogue/wiki/Help</string>
-<string name="contact">eleybourn@gmail.com</string>
+<string name="contact1">eleybourn@gmail.com</string>
+<string name="contact2">philip.warner@rhyme.com.au</string>
 <string name="donate_label">Podpořit</string>
 <string name="about_label">O této aplikaci</string>
 <string name="administration_functions_label">Funkce</string>
@@ -369,17 +370,6 @@
 <string name="no_publisher">(žádný vydavatel)</string>
 <string name="no_author">(žádný autor)</string>
 <string name="no_date">(žádné datum)</string>
-<item name="ACTIVITY_CREATE_BOOK_MANUALLY" type="id"/>
-<item name="ACTIVITY_CREATE_BOOK_ISBN" type="id"/>
-<item name="ACTIVITY_CREATE_BOOK_SCAN" type="id"/>
-<item name="ACTIVITY_EDIT_BOOK" type="id"/>
-<item name="ACTIVITY_ADMIN" type="id"/>
-<item name="ACTIVITY_PREFERENCES" type="id"/>
-<item name="ACTIVITY_BOOKLIST_STYLE" type="id"/>
-<item name="ACTIVITY_BOOKLIST_STYLE_PROPERTIES" type="id"/>
-<item name="ACTIVITY_BOOKLIST_STYLE_GROUPS" type="id"/>
-<item name="ACTIVITY_BOOKLIST_STYLES" type="id"/>
-<item name="ACTIVITY_GOODREADS_EXPORT_FAILURES" type="id"/>
 <string name="book_lists">Seznam knih</string>
 <string name="show_all_authors">Zobrazit knihy od všech autorů</string>
 <string name="show_all_series">Zobrazit knihy ze všech sérií</string>

@@ -208,9 +208,7 @@ public class DbSync {
 			// Synchronize with other code
 			mLock.lock();
 			try {
-				int i = 0;
 				while (true) {
-					i++;
 					// Cleanup any old threads that are dead.
 					purgeOldLocks();
 					//System.out.println(t.getName() + " requesting EXCLUSIVE lock with " + mSharedOwners.size() + " shared locks (attempt #" + i + ")");
@@ -245,7 +243,7 @@ public class DbSync {
 		 * Release the lock previously taken
 		 */
 		public void releaseExclusiveLock() {
-			final Thread t = Thread.currentThread();
+			//final Thread t = Thread.currentThread();
 			//System.out.println(t.getName() + " releasing EXCLUSIVE lock");
 			if (!mLock.isHeldByCurrentThread())
 				throw new RuntimeException("Exclusive Lock is not held by this thread");
@@ -282,19 +280,64 @@ public class DbSync {
 		}
 
 		/**
+		 * Interface to an object that can return an open SQLite database object
+		 * 
+		 * @author pjw
+		 */
+		private interface DbOpener {
+			SQLiteDatabase open();
+		}
+
+		/**
+		 * Call the passed database opener with retries to reduce risks of access conflicts 
+		 * causing crashes.
+		 * 
+		 * @param opener	DbOpener interface
+		 * 
+		 * @return			The opened database
+		 */
+		private SQLiteDatabase openWithRetries(DbOpener opener) {
+				int wait = 10; // 10ms
+				//int retriesLeft = 5; // up to 320ms
+				int retriesLeft = 10; // 2^10 * 10ms = 10.24sec (actually 2x that due to total wait time)
+				SQLiteDatabase db = null;
+				do {
+					SyncLock l = mSync.getExclusiveLock();
+					try {
+						db = opener.open();	
+						return db;
+					} catch (Exception e) {
+						if (retriesLeft == 0) {
+							throw new RuntimeException("Unable to open database, retries exhausted", e);
+						}
+						try {
+							Thread.sleep(wait);
+							// Decrement tries
+							retriesLeft--;
+							// Wait longer next time
+							wait *= 2;
+						} catch (InterruptedException e1) {
+							throw new RuntimeException("Unable to open database, interrupted", e1);							
+						}
+					} finally {
+						l.unlock();
+					}				
+				} while (true);
+			
+		}
+		/**
 		 * Constructor.
 		 * 
 		 * @param helper	DBHelper to open underlying database
 		 * @param sync		Synchronizer to use
 		 */
-		public SynchronizedDb(SQLiteOpenHelper helper, Synchronizer sync) {
+		public SynchronizedDb(final SQLiteOpenHelper helper, Synchronizer sync) {
 			mSync = sync;
-			SyncLock l = mSync.getExclusiveLock();
-			try {
-				mDb = helper.getWritableDatabase();
-			} finally {
-				l.unlock();
-			}				
+			mDb = openWithRetries(new DbOpener() {
+				@Override
+				public SQLiteDatabase open() {
+					return helper.getWritableDatabase();
+				}});			
 		}
 
 		/**
@@ -303,14 +346,13 @@ public class DbSync {
 		 * @param helper	DBHelper to open underlying database
 		 * @param sync		Synchronizer to use
 		 */
-		public SynchronizedDb(GenericOpenHelper helper, Synchronizer sync) {
+		public SynchronizedDb(final GenericOpenHelper helper, Synchronizer sync) {
 			mSync = sync;
-			SyncLock l = mSync.getExclusiveLock();
-			try {
-				mDb = helper.getWritableDatabase();
-			} finally {
-				l.unlock();
-			}				
+			mDb = openWithRetries(new DbOpener() {
+				@Override
+				public SQLiteDatabase open() {
+					return helper.getWritableDatabase();
+				}});			
 		}
 		
 		/**

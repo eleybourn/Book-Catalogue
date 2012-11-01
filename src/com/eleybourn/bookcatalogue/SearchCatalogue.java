@@ -23,14 +23,14 @@ package com.eleybourn.bookcatalogue;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.eleybourn.bookcatalogue.utils.Utils;
+
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.EditText;

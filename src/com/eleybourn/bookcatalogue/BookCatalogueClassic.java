@@ -24,9 +24,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
+import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
 import com.eleybourn.bookcatalogue.goodreads.SendOneBookTask;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue;
+import com.eleybourn.bookcatalogue.utils.Utils;
+import com.eleybourn.bookcatalogue.utils.ViewTagger;
+import com.eleybourn.bookcatalogue.widgets.FastScrollExpandableListView;
 
 import net.philipwarner.taskqueue.QueueManager;
 
@@ -41,13 +47,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteCursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Debug;
 import android.view.ContextMenu;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -76,28 +79,18 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 	
 	// Target size of a thumbnail in a list (bbox dim)
 	private static final int LIST_THUMBNAIL_SIZE=60;
-	
-	private static final int ACTIVITY_SORT=2;
-	private static final int ACTIVITY_ADMIN=5;
-	
+		
 	private CatalogueDBAdapter mDbHelper;
 	private static final int SORT_BY_AUTHOR_EXPANDED = MenuHandler.FIRST + 1; 
 	private static final int SORT_BY_AUTHOR_COLLAPSED = MenuHandler.FIRST + 2;
 	private static final int SORT_BY = MenuHandler.FIRST + 3; 
-	private static final int INSERT_ID = MenuHandler.FIRST + 4;
-	private static final int INSERT_ISBN_ID = MenuHandler.FIRST + 5;
-	private static final int INSERT_BARCODE_ID = MenuHandler.FIRST + 6;
 	private static final int DELETE_ID = MenuHandler.FIRST + 7;
-	private static final int ADMIN = MenuHandler.FIRST + 9;
 	private static final int EDIT_BOOK = MenuHandler.FIRST + 10;
 	private static final int EDIT_BOOK_NOTES = MenuHandler.FIRST + 11;
 	private static final int EDIT_BOOK_FRIENDS = MenuHandler.FIRST + 12;
-	private static final int SEARCH = MenuHandler.FIRST + 13;
-	private static final int INSERT_NAME_ID = MenuHandler.FIRST + 14;
 	private static final int DELETE_SERIES_ID = MenuHandler.FIRST + 15;
 	private static final int EDIT_AUTHOR_ID = MenuHandler.FIRST + 16;
 	private static final int EDIT_SERIES_ID = MenuHandler.FIRST + 17;
-	private static final int INSERT_PARENT_ID = MenuHandler.FIRST + 18;
 	private static final int EDIT_BOOK_SEND_TO_GR = MenuHandler.FIRST + 19;
 	
 	private String bookshelf = "";
@@ -173,8 +166,6 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 	//private static final String STATE_BOOKSHELF = "state_bookshelf"; 
 	private static final String STATE_CURRENT_GROUP_COUNT = "state_current_group_count"; 
 	private static final String STATE_CURRENT_GROUP = "state_current_group"; 
-	private static final String STATE_OPENED = "state_opened";
-	private static final int BACKUP_PROMPT_WAIT = 5;
 
 	/** 
 	 * Called when the activity is first created. 
@@ -246,7 +237,7 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 				alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
 				alertDialog.setButton(BookCatalogueClassic.this.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
-						Administration.adminPage(BookCatalogueClassic.this, "update_fields", ACTIVITY_ADMIN);
+						Administration.adminPage(BookCatalogueClassic.this, "update_fields", UniqueId.ACTIVITY_ADMIN);
 						return;
 					}
 				}); 
@@ -1620,7 +1611,7 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
 		switch(requestCode) {
-		case R.id.ACTIVITY_CREATE_BOOK_SCAN:
+		case UniqueId.ACTIVITY_CREATE_BOOK_SCAN:
 			try {
 				String contents = intent.getStringExtra("SCAN_RESULT");
 				// Handle the possibility of null/empty scanned string
@@ -1628,7 +1619,7 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 					Toast.makeText(this, R.string.isbn_found, Toast.LENGTH_LONG).show();
 					Intent i = new Intent(this, BookISBNSearch.class);
 					i.putExtra("isbn", contents);
-					startActivityForResult(i, R.id.ACTIVITY_CREATE_BOOK_SCAN);
+					startActivityForResult(i, UniqueId.ACTIVITY_CREATE_BOOK_SCAN);
 				} else {
 					fillData();				
 				}
@@ -1637,11 +1628,11 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 				fillData();
 			}
 			break;
-		case R.id.ACTIVITY_CREATE_BOOK_ISBN:
-		case R.id.ACTIVITY_CREATE_BOOK_MANUALLY:
-		case R.id.ACTIVITY_EDIT_BOOK:
-		case ACTIVITY_SORT:
-		case ACTIVITY_ADMIN:
+		case UniqueId.ACTIVITY_CREATE_BOOK_ISBN:
+		case UniqueId.ACTIVITY_CREATE_BOOK_MANUALLY:
+		case UniqueId.ACTIVITY_EDIT_BOOK:
+		case UniqueId.ACTIVITY_SORT:
+		case UniqueId.ACTIVITY_ADMIN:
 			try {
 				// Use the ADDED_* fields if present.
 				if (intent != null && intent.hasExtra(BookEditFields.ADDED_HAS_INFO)) {
@@ -1673,7 +1664,7 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 			// We call bookshelf not fillData in case the bookshelves have been updated.
 			bookshelf();
 			break;
-		case R.id.ACTIVITY_ADMIN_FINISH:
+		case UniqueId.ACTIVITY_ADMIN_FINISH:
 			finish();
 			break;
 		}

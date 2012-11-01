@@ -30,6 +30,10 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
 
+import com.eleybourn.bookcatalogue.CatalogueDBAdapter.AnthologyTitleExistsException;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
+
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
@@ -184,22 +188,26 @@ public class BookEditAnthology extends ListActivity {
 		mAdd = (Button) findViewById(R.id.row_add);
 		mAdd.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
-				String title = mTitleText.getText().toString();
-				String author = mAuthorText.getText().toString(); 
-				if (mEditId == null) {
-					if (mSame.isChecked()) {
-						author = bookAuthor; 
+				try {
+					String title = mTitleText.getText().toString();
+					String author = mAuthorText.getText().toString(); 
+					if (mEditId == null) {
+						if (mSame.isChecked()) {
+							author = bookAuthor; 
+						}
+						mDbHelper.createAnthologyTitle(mRowId, author, title, false);
+					} else {
+						mDbHelper.updateAnthologyTitle(mEditId, mRowId, author, title);
+						mEditId = null;
+						mAdd.setText(R.string.anthology_add);
 					}
-					mDbHelper.createAnthologyTitle(mRowId, author, title);
-				} else {
-					mDbHelper.updateAnthologyTitle(mEditId, mRowId, author, title);
-					mEditId = null;
-					mAdd.setText(R.string.anthology_add);
+					mTitleText.setText("");
+					mAuthorText.setText("");
+					fillAnthology(currentPosition);
+					currentPosition = maxPosition;
+				} catch(AnthologyTitleExistsException e) {
+					Toast.makeText(BookEditAnthology.this, R.string.the_title_already_exists, Toast.LENGTH_LONG).show();
 				}
-				mTitleText.setText("");
-				mAuthorText.setText("");
-				fillAnthology(currentPosition);
-				currentPosition = maxPosition;
 			}
 		});
 		
@@ -403,7 +411,7 @@ public class BookEditAnthology extends ListActivity {
 					// Trim extraneous punctionaction and whitespace from the titles and authors
 					anthology_author = anthology_author.trim().replace("\n", " ").replaceAll("[\\,\\.\\'\\:\\;\\`\\~\\@\\#\\$\\%\\^\\&\\*\\(\\)\\-\\=\\_\\+]*$", "").trim();
 					anthology_title = anthology_title.trim().replace("\n", " ").replaceAll("[\\,\\.\\'\\:\\;\\`\\~\\@\\#\\$\\%\\^\\&\\*\\(\\)\\-\\=\\_\\+]*$", "").trim();
-					mDbHelper.createAnthologyTitle(mRowId, anthology_author, anthology_title);
+					mDbHelper.createAnthologyTitle(mRowId, anthology_author, anthology_title, true);
 				}
 				fillAnthology();
 				return;

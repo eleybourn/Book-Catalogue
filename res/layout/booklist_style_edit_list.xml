@@ -25,27 +25,29 @@
 		android:layout_alignParentBottom="true">
 
 		<Button
-		    android:id="@+id/confirm"
-		    style="?android:attr/buttonStyleSmall"
+		    android:id="@+id/cancel"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:layout_gravity="center_vertical|left"
 		    android:layout_weight="10"
-		    android:text="@string/save"
-		    android:textAppearance="?android:attr/textAppearanceSmall"
+		    android:text="@string/cancel"
 		    />
-
+<!--	    style="?android:attr/buttonStyleSmall"
+		    android:textAppearance="?android:attr/textAppearanceSmall" 
+-->
+		
 		<Button
-		    android:id="@+id/cancel"
-		    style="?android:attr/buttonStyleSmall"
+		    android:id="@+id/confirm"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:layout_gravity="center_vertical|right"
 		    android:layout_weight="10"
-		    android:text="@string/cancel"
-		    android:textAppearance="?android:attr/textAppearanceSmall"
+		    android:text="@string/save"
 		    />
-
+<!--	    style="?android:attr/buttonStyleSmall"
+		    android:textAppearance="?android:attr/textAppearanceSmall" 
+-->
+		
 	</LinearLayout>
 
 	<LinearLayout	 android:id="@+id/body" 
@@ -57,7 +59,7 @@
 		android:layout_above="@+id/bottom_buttons"
 		>
 
-	   	<com.eleybourn.bookcatalogue.TouchListView 
+	   	<com.eleybourn.bookcatalogue.widgets.TouchListView 
 			xmlns:tlv="http://schemas.android.com/apk/res/com.eleybourn.bookcatalogue"
 	
 			android:fadingEdge="none"

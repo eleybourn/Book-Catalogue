@@ -24,7 +24,7 @@ import com.eleybourn.bookcatalogue.BooksCursor;
 import com.eleybourn.bookcatalogue.BooksRowView;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.Utils;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 import android.app.Activity;
 import android.content.Intent;

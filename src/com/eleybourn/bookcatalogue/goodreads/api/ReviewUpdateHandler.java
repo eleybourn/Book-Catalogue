@@ -49,10 +49,6 @@ public class ReviewUpdateHandler extends ApiHandler {
 		super(manager);
 	}
 
-	private class ReviewUpdateParser extends TrivialParser {
-		
-	}
-	
 	public void update(long reviewId, boolean isRead, String readAt, String review, int rating) 
 			throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, IOException, 
 					NotAuthorizedException, BookNotFoundException, NetworkException

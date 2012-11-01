@@ -23,6 +23,7 @@ package com.eleybourn.bookcatalogue;
 import java.util.Hashtable;
 
 import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer;
+import com.eleybourn.bookcatalogue.utils.TrackedCursor;
 
 import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;

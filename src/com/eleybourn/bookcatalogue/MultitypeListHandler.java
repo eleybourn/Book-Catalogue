@@ -24,7 +24,6 @@ import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 /**
  * Interface for handling the View-related tasks in a multi-type ListView.

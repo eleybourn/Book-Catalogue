@@ -621,5 +621,61 @@
     <string name="x_is_not_a_valid_isbn_or_asin">%1$s неправильный ISBN или ASIN</string>
     <string name="confirm_exit">Подтвердить выход</string>
     <string name="you_may_have_unsaved_changes">Возможно, есть несохраненные изменения. Вы уверены, что хотите выйти без сохранения?</string>
+	<string name="read_year">Год прочтения</string>
+    <string name="read_month">Месяц прочтения</string>
+    <string name="read_day">День прочтения</string>
+    <string name="sort_read_date">Дата прочтения</string>
+    <string name="details_have_changed">Детали были измененны</string>
+    <string name="you_have_unsaved_changes">Если вы выйдете сейчас, не сохраненные изменения будут потеряны.</string>
+    <string name="exit">Выход</string>
+    <string name="continue_editing">Продолжить редактирование</string>
+    <string name="the_title_already_exists">Название уже существует</string>
+    <string name="year">Год</string>
+    <string name="month">Месяц</string>
+    <string name="day">День</string>
+    <string name="edit_lc_ellipsis">редактировать&#8230;</string>
+    <string name="getting_books_ellipsis">Получение книг&#8230;</string>
+    <string name="n_events_found">Событий найдено: %1$s</string>
+    <string name="last_error_e">Последняя ошибка: %1$s</string>
+    <string name="invalid_isbn_x_specified_in_search">В поиске указан неверный ISBN \'%1$s\'</string>
+    <string name="if_day_is_specified_month_and_year_must_be">Если указан день, также необходимо указать месяц и год.</string>
+    <string name="if_month_is_specified_year_must_be">Если указан месяц, также необходимо указать год.</string>
+    <string name="main_menu">Главное меню</string>
+    <string name="use_external_image_cropper">Использовать внешний редактор рисунков (экспериментально)</string>
+    <string name="auto_rotate_camera_images">Автоматически поворачивать фото, полученное камерой</string>
+    <string name="hint_autorotate_camera_images">Если вы заметили, что всегда поворачиваете камеру в одном направлении, попробуйте установить в настройках опцию автоматического поворота.</string>
+    <string name="default_crop_frame_is_whole_image">Рамка по умолчанию: всё изображение</string>
+    <string name="cancelled">Отменено</string>
+    <string name="import_complete">Импорт завершен</string>
+    <string name="amazon_books">Amazon</string>
+    <string name="google_books">Google Books</string>
+    <string name="library_thing">LibraryThing</string>
+    <string name="searching_elipsis">Поиск&#8230;</string>
+    <string name="adding_book_elipsis">Добавление книги&#8230;</string>
+    <string name="new_in_42">
+		<![CDATA[
+    		<p><b>Новое в версии 4.2</b>\n\n
+			* Диалог выбора даты, поддерживающий как даты вплоть до 0 года нашей эры так и отдельные.\n\n
+			* Исправлено отображение описание книги в формате HTML. Добавлена кнопка редактирования.\n\n
+			* Добавлена возможность выбора всего изображения при обрезании\n\n
+			* Добавлена возможность автоповорота изображений с камеры\n\n
+			* Добавлена возможность использования внешнего редактора изображений (экспериментально)\n\n
+			* Больше элементов в меню настроек\n\n
+			* Обновление перевода на французский (Imkal)\n\n
+			* Обновление перевода на немецкий (Robert Wetzlmayr)\n\n
+			* Обновление перевода на русский (Коля Силин)\n\n
+			* Обновлено положение кнопок ОК/Отмена\n\n
+			* Доступна полная клавиатура при вводе кодов ASIN\n\n
+			* Хранение предыдущих 5 файлов экспорта\n\n
+			* Улучшено определение изменений во время редактирования\n\n
+			* Поддержка большего числа внешних приложений\n\n
+			* Повышена надежность импорта/экспорта/синхронизации\n\n
+			* Исправлена работа с названиями антологий\n\n
+			* Исправлено множество ошибок\n\n
+			Огромное спасибо всем тем, кто принимал участие в тестировании и переводе!\n\n
+			Bо всех багах и ошибках вините Grunthos:) И шлите нам отчеты с ошибками.
+			</p>
+		]]>
+    </string>
 
 </resources>

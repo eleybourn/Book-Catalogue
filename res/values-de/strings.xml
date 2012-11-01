@@ -610,4 +610,32 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
 <string name="amazon_books">Amazon</string>
 <string name="google_books">Google Books</string>
 <string name="library_thing">LibraryThing</string>
+<string name="searching_elipsis">Suche&#8230;</string>
+
+<string name="adding_book_elipsis">Buch hinzufügen&#8230;</string>
+
+<string name="new_in_42"><![CDATA[
+<p><b>Neu in 4.2</b>\n\n
+        * Datumswähler unterstützt Datumsangaben ab dem Jahr 0 und unvollständige Datumsangaben\n\n
+        * Beschreibungen in HTML werden korrekt dargestellt und bearbeitet\n\n
+        * Einstellung zur Auswahl des gesamten Bilds beim Beschnitt\n\n
+        * Einstellung zur automatischen Drehung des Bilds von der Kamera\n\n
+        * Einstellung zur Auswahl eines externen Werkzeugs zum Bildbeschnitt (experimentell)\n\n
+        * Zusätzliche Einträge im Optionsmenü\n\n
+        * Aktualisierte französische Übersetzung (Imkal)\n\n
+        * Aktualisierte deutsche Übersetzung (Robert Wetzlmayr)\n\n
+        * Aktualisierte Positionen der Buttons OK/Abbrechen in Übereinstimmung mit den Android-Standards\n\n
+        * Vollständige Tastatur bei der Eingabe von ASINs\n\n
+        * Die fünf letzten Exportdateien bleiben erhalten\n\n
+        * Bessere Erkennung von \'Änderungen\' beim Bearbeiten von Büchern\n\n
+        * Unterstützung für eine größere Auswahl von Galerien und Dateibrowsern\n\n
+        * Verlässlichere Verarbeitung von Datumswerten beim Import/Export/Sync\n\n
+        * Bessere Erkennung von doppelten Anthologietitlen\n\n
+        * Verschiedene Fehlerkorrekturen\n\n
+        Vielen Dank an alle Betatester und Übersetzer!\n\n
+        Grunthos ist an allen Fehlern und Bugs schuld. Und schicken Sie uns Bugreports.
+        </p>
+    ]]>
+</string>
+
 </resources>

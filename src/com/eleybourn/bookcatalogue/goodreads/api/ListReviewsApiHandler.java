@@ -34,15 +34,14 @@ import org.apache.http.client.methods.HttpGet;
 import android.os.Bundle;
 
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
-import com.eleybourn.bookcatalogue.Utils;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
-import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.*;
 import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.*;
 
 import com.eleybourn.bookcatalogue.goodreads.api.XmlFilter.ElementContext;
 import com.eleybourn.bookcatalogue.goodreads.api.SimpleXmlFilter.BuilderContext;
 import com.eleybourn.bookcatalogue.goodreads.api.SimpleXmlFilter.XmlListener;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Class to implement the reviews.list api call. It queries based on the passed parameters and returns

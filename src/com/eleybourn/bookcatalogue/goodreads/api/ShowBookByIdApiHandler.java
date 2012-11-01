@@ -21,7 +21,6 @@
 package com.eleybourn.bookcatalogue.goodreads.api;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
@@ -32,12 +31,7 @@ import org.apache.http.client.methods.HttpGet;
 
 import android.os.Bundle;
 
-import com.eleybourn.bookcatalogue.Author;
-import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
-import com.eleybourn.bookcatalogue.Series;
-import com.eleybourn.bookcatalogue.Utils;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
-import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.*;
 
 /**

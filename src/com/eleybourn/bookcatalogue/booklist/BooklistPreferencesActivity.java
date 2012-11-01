@@ -22,16 +22,10 @@ package com.eleybourn.bookcatalogue.booklist;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
-import com.eleybourn.bookcatalogue.HintManager;
-import com.eleybourn.bookcatalogue.Logger;
 import com.eleybourn.bookcatalogue.PreferencesBase;
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.Utils;
 import com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds;
 import com.eleybourn.bookcatalogue.properties.BooleanListProperty;
 import com.eleybourn.bookcatalogue.properties.IntegerListProperty;
@@ -40,6 +34,9 @@ import com.eleybourn.bookcatalogue.properties.Properties;
 import com.eleybourn.bookcatalogue.properties.Property;
 import com.eleybourn.bookcatalogue.properties.PropertyGroup;
 import com.eleybourn.bookcatalogue.properties.ValuePropertyWithGlobalDefault;
+import com.eleybourn.bookcatalogue.utils.HintManager;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Activity to manage the preferences associate with Book lists (and the BooksOnBookshelf activity).
@@ -163,25 +160,7 @@ public class BooklistPreferencesActivity extends PreferencesBase {
 	 * Setup each component of the layout using the passed preferences
 	 */
 	@Override
-	public void setupViews(BookCataloguePreferences prefs) {
-		addClickablePref(prefs, R.id.erase_cover_cache_label, new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Utils utils = new Utils();
-				try {
-					utils.eraseCoverCache();					
-				} finally {
-					utils.close();
-				}
-				return;
-			}});
-
-		addClickablePref(prefs, R.id.edit_styles_label, new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				BooklistStyles.startEditActivity(BooklistPreferencesActivity.this);
-			}});
-
+	public void setupViews(BookCataloguePreferences prefs, Properties globalProps) {
 		/**
 		 * This activity predominantly shows 'Property' objects; we build that collection here.
 		 */
@@ -195,10 +174,9 @@ public class BooklistPreferencesActivity extends PreferencesBase {
 		
 		// Get all the properties from the style that have global defaults.
 		Properties allProps = style.getProperties();
-		Properties globalProps = new Properties();
 		for(Property p: allProps) {
 			if (p instanceof ValuePropertyWithGlobalDefault) {
-				ValuePropertyWithGlobalDefault gp = (ValuePropertyWithGlobalDefault)p;
+				ValuePropertyWithGlobalDefault<?> gp = (ValuePropertyWithGlobalDefault<?>)p;
 				if (gp.hasGlobalDefault()) {
 					gp.setGlobal(true);
 					globalProps.add(gp);
@@ -211,9 +189,6 @@ public class BooklistPreferencesActivity extends PreferencesBase {
 		globalProps.add(mCacheThumbnailsProperty);
 		globalProps.add(mBackgroundThumbnailsProperty);
 
-		// Get the parent view and put the properties under it.
-		ViewGroup styleProps = (ViewGroup) findViewById(R.id.style_properties);
-		globalProps.buildView(getLayoutInflater(), styleProps);
 	}
 
 	/**

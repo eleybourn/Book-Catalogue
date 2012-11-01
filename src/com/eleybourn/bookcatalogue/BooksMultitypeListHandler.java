@@ -25,17 +25,22 @@ import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.*;
 
 import net.philipwarner.taskqueue.QueueManager;
 
-import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTask;
-import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTaskContext;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
 import com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds;
 import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
 import com.eleybourn.bookcatalogue.booklist.BooklistRowView;
 import com.eleybourn.bookcatalogue.booklist.BooklistSupportProvider;
 import com.eleybourn.bookcatalogue.database.DbUtils.DomainDefinition;
+import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
 import com.eleybourn.bookcatalogue.goodreads.SendOneBookTask;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue;
+import com.eleybourn.bookcatalogue.utils.Utils;
+import com.eleybourn.bookcatalogue.utils.ViewTagger;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTask;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTaskContext;
 
 import android.app.Activity;
 import android.database.Cursor;
@@ -126,6 +131,17 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 			return new MonthHolder(rowView, DOM_PUBLICATION_MONTH.name);
 		case RowKinds.ROW_KIND_MONTH_ADDED:
 			return new MonthHolder(rowView, DOM_ADDED_MONTH.name);
+
+		case RowKinds.ROW_KIND_YEAR_READ:
+			return new GenericStringHolder(rowView, DOM_READ_YEAR, R.string.empty_with_brackets);
+		case RowKinds.ROW_KIND_MONTH_READ:
+			return new GenericStringHolder(rowView, DOM_READ_MONTH, R.string.empty_with_brackets);
+		case RowKinds.ROW_KIND_DAY_READ:
+			return new GenericStringHolder(rowView, DOM_READ_DAY, R.string.empty_with_brackets);
+
+		case ROW_KIND_LOCATION:
+			return new GenericStringHolder(rowView, DOM_LOCATION, R.string.empty_with_brackets);
+
 		default:
 			throw new RuntimeException("Invalid row kind " + k);
 		}
@@ -410,8 +426,6 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 
 		/** Resulting shelves data */
 		String mShelves;
-		/** Shelves resource string */
-		static String mShelvesRes = null;		
 
 		/** Flag indicating we want finished() to be called */
 		private boolean mWantFinished = true;
@@ -779,7 +793,7 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 	 * @return			True, if handled.
 	 */
 	public boolean onContextItemSelected(BooklistRowView rowView, final Activity context, final CatalogueDBAdapter dba, final MenuItem item) {
-		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+		//AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 		switch(item.getItemId()) {
 
 		case R.id.MENU_DELETE_BOOK:

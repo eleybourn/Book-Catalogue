@@ -23,12 +23,10 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map.Entry;
 
-import com.eleybourn.bookcatalogue.SimpleTaskQueue;
-import com.eleybourn.bookcatalogue.Utils;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 
 import android.database.AbstractCursor;
-import android.database.Cursor;
 
 /**
  * Yet Another Rabbit Burrow ("YARB" -- did I invent a new acronym?). What led to this?
@@ -164,7 +162,7 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 				int oldPos = -1;
 				for(int i = 0; i < MRU_LIST_SIZE; i++) {
 					if (mMruList[i] == cursorId) {
-						// TODO (4.1+): Remove Sanity check for debug; should just 'break' from loop after setting oldPos
+						// TODO (4.1+): Remove Sanity check for com.eleybourn.bookcatalogue.debug; should just 'break' from loop after setting oldPos
 						if (oldPos >= 0)
 							throw new RuntimeException("Cursor appears twice in MRU list");
 						oldPos = i;

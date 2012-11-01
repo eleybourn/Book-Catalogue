@@ -190,7 +190,7 @@
 	<string name="given_names">Prénoms</string>
 	<string name="edit_author_details">Éditer les détails de l\'auteur</string>
 	<string name="immediate_global_changes">NOTE: Toutes les modifications sont prises en compte immédiatement et globalement.</string>
-	<string name="menu_replace_thumb">Remplacer les vignettes&#8230;</string>
+	<string name="menu_replace_thumb">Remplacer la vignette&#8230;</string>
 	<string name="menu_thumb_alt_editions">À partir d\'autres éditions&#8230;</string>
 	<string name="author_required">Au moins un auteur doit être spécifié</string>
 	<string name="title_required">un titre non vide doit être spécifié</string>
@@ -284,14 +284,14 @@
 	<string name="location_of_book">Emplacement du livre</string>
 	<string name="incorrect_key">Votre clé de développeur LibraryThing est incorrecte ou nous n\'avons pas pu nous connecter au réseau pour la vérifier.</string>
 	<string name="correct_key">Votre clé de développeur LibraryThing est valable.</string>
-	<string name="menu_crop_thumb">Rogner les miniatures</string>	
+	<string name="menu_crop_thumb">Recadrer la vignette</string>	
 	<string name="goodreads_auth_blurb_part3">Mais rappelez vous&#8230; il n\'est pas nécessaire de faire tout cela : BookCatalogue fonctionne très bien sans ça !</string>
 	<string name="authorize_access">Autoriser l\'accès</string>
 	<string name="authorize_access_already_auth">Il semble que vous avez déjà autorisé cette application. Toutes les fonctionnalités Goodreads devraient être déjà disponibles.</string>
 	<string name="goodreads_access_error">Problème réseau lors de l\'accès à Goodreads : vérifiez que le site Goodreads est disponible et si le problème persiste, prenez contact avec le support.</string>
 	<string name="other_preferences">Autres préférences</string>
 	<string name="user_interface">Interface utilisateur</string>
-	<string name="start_in_my_books">CVommancer dans \'Mes livres\'</string>
+	<string name="start_in_my_books">Commencer dans \'Mes livres\'</string>
 	<string name="include_classic_catalogue_view">Inclure la vue catalogue classique</string>
 	<string name="background_tasks">Tâches en arrière plan</string>
 	<string name="cleanup_old_tasks">Nettoyer les anciennes tâches</string>
@@ -504,9 +504,9 @@
 	<string name="publication_year">Année de publication</string>
 	<string name="publication_month">Mois de publication</string>
 	<string name="publication_day">Jour de publication</string>
-	<string name="added_year">Ajouté (année)</string>
-	<string name="added_month">Ajouté (mois)</string>
-	<string name="added_day">Ajouté (jour)</string>
+	<string name="added_year">Année d\'ajout</string>
+	<string name="added_month">Mois d\'ajout</string>
+	<string name="added_day">Jour d\'ajout</string>
 	<string name="book">Livre</string>
 	<string name="in">Dans</string>		
 	<string name="size">Taille</string>
@@ -545,7 +545,37 @@
 	<string name="x_is_not_a_valid_isbn_or_asin">%1$s n\'est pas un ISBN / ASIN valable</string>
 	<string name="confirm_exit">Confirmer la sortie</string>
 	<string name="you_may_have_unsaved_changes">Des modifications pourraient ne pas avoir été sauvegardées. Êtes vous sûr de vouloir quitter sans sauvegarder ?</string>
-	
+	<!-- Added 17/10/2012 -->
+	<string name="read_year">Année de lecture</string>
+	<string name="read_month">Mois de lecture</string>
+	<string name="read_day">Jour de lecture</string>
+	<string name="sort_read_date">Date de lecture</string>
+	<string name="details_have_changed">Modification en cours</string>
+	<string name="you_have_unsaved_changes">Des modifications ne sont pas sauvées, si vous quittez maintenant elles seront perdues.</string>
+	<string name="exit">Quitter</string>
+	<string name="continue_editing">Continuer l\'édition</string>
+	<string name="the_title_already_exists">Le titre existe déjà</string>
+	<string name="year">Année</string>
+	<string name="month">Mois</string>
+	<string name="day">Jour</string>
+	<string name="edit_lc_ellipsis">modifier&#8230;</string>
+	<string name="getting_books_ellipsis">Chargement&#8230;</string>
+	<string name="n_events_found">%1$s évènements trouvés</string>
+	<string name="last_error_e">Dernière erreur: %1$s</string>
+	<string name="invalid_isbn_x_specified_in_search">ISBN incorrect dans la recherche \'%1$s\'</string>
+	<string name="if_day_is_specified_month_and_year_must_be">Si le jour est précisé, le mois et l\'année doivent l\'être aussi.</string>
+	<string name="if_month_is_specified_year_must_be">Si le mois est précisé, l\'année doit l\'être aussi.</string>
+	<string name="main_menu">Menu principal</string>
+	<string name="use_external_image_cropper">Recadrage d\'image avec un outil externe (Expérimental)</string>
+	<string name="auto_rotate_camera_images">Rotation automatique des photos</string>
+	<string name="hint_autorotate_camera_images">Si vous devez systematiquement tournez vos photos dans le même sens, envisagez d\'autoriser la rotation automatique en changeant vos paramètres.</string>
+	<string name="default_crop_frame_is_whole_image">Le cadre par défaut de l\'image à recadrer sera l\'image complète</string>
+	<string name="cancelled">Annulé</string>
+	<string name="import_complete">Import terminé</string>
+	<string name="amazon_books">Amazon</string>
+	<string name="google_books">Google Books</string>
+	<string name="library_thing">LibraryThing</string>
+
 	<!-- Not translated yet  -->
 		
 	<!-- Not translated beyond this point : missing context -->
@@ -569,7 +599,6 @@
 	<string name="contact">eleybourn@gmail.com</string>
 	<string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
 	<string name="loaned_to_2">\u2192</string>
-	<item name="ACTIVITY_ADMIN_FINISH" type="id"/>
 	<string name="isbn">ISBN</string>
 	<string name="series_num">#</string>
 	<item name="TAG_POSITION" type="id"></item>

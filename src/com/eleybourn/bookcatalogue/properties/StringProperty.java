@@ -29,8 +29,8 @@ import android.widget.TextView;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.ViewTagger;
 import com.eleybourn.bookcatalogue.properties.Property.StringValue;
+import com.eleybourn.bookcatalogue.utils.ViewTagger;
 
 /**
  * Implement a String-based property with optional (non-empty) validation.
@@ -105,16 +105,18 @@ public class StringProperty extends ValuePropertyWithGlobalDefault<String> imple
 	 * Set underlying preferences value
 	 */
 	@Override
-	protected void setGlobalDefault(String value) {
-		BookCatalogueApp.getAppPreferences().setString(getPreferenceKey(), value);			
+	protected StringProperty setGlobalDefault(String value) {
+		BookCatalogueApp.getAppPreferences().setString(getPreferenceKey(), value);	
+		return this;
 	}
 
 	@Override
-	public void set(Property p) {
+	public StringProperty set(Property p) {
 		if (! (p instanceof StringValue) )
 			throw new RuntimeException("Can not find a compatible interface for string parameter");
 		StringValue bv = (StringValue) p;
 		set(bv.get());
+		return this;
 	}
 
 	/**

@@ -26,24 +26,20 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.EditObjectList;
-import com.eleybourn.bookcatalogue.HintManager;
-import com.eleybourn.bookcatalogue.Logger;
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.Utils;
-import com.eleybourn.bookcatalogue.ViewTagger;
+import com.eleybourn.bookcatalogue.UniqueId;
+import com.eleybourn.bookcatalogue.utils.HintManager;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
+import com.eleybourn.bookcatalogue.utils.ViewTagger;
 
 /**
  * Activity to edit the list of styles and enable/disable their presence in the
@@ -294,12 +290,12 @@ public class BooklistStylesActivity extends EditObjectList<BooklistStyle> {
 				style.setName(style.getDisplayName());
 			} catch (Exception e) {
 				Logger.logError(e);
-				Toast.makeText(this, R.string.unexpected_error, Toast.LENGTH_LONG);
+				Toast.makeText(this, R.string.unexpected_error, Toast.LENGTH_LONG).show();
 				return;
 			}
 		}
 		i.putExtra(BooklistStylePropertiesActivity.KEY_STYLE, style);
-		startActivityForResult(i, R.id.ACTIVITY_BOOKLIST_STYLE);		
+		startActivityForResult(i, UniqueId.ACTIVITY_BOOKLIST_STYLE);		
 	}
 
 	@Override
@@ -314,7 +310,7 @@ public class BooklistStylesActivity extends EditObjectList<BooklistStyle> {
 		super.onActivityResult(requestCode, resultCode, data);
 
 		switch(requestCode) {
-		case R.id.ACTIVITY_BOOKLIST_STYLE:
+		case UniqueId.ACTIVITY_BOOKLIST_STYLE:
 			handleStyleResult(data);
 			break;
 		}

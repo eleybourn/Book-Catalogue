@@ -20,6 +20,10 @@
 
 package com.eleybourn.bookcatalogue;
 
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.StorageUtils;
+import com.eleybourn.bookcatalogue.utils.Utils;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -49,7 +53,7 @@ public class Help extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		try {
-			// Needed for sending debug info...
+			// Needed for sending com.eleybourn.bookcatalogue.debug info...
 			mDbHelper = new CatalogueDBAdapter(this);
 			mDbHelper.open();
 			

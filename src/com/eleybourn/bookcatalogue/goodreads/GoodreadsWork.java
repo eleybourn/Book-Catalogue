@@ -24,11 +24,11 @@ import java.lang.ref.WeakReference;
 
 import android.widget.ImageView;
 
-import com.eleybourn.bookcatalogue.Logger;
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.SimpleTaskQueue;
-import com.eleybourn.bookcatalogue.Utils;
-import com.eleybourn.bookcatalogue.ViewTagger;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue;
+import com.eleybourn.bookcatalogue.utils.Utils;
+import com.eleybourn.bookcatalogue.utils.ViewTagger;
 
 /**
  * Class to store the 'work' data returned via a goodreads search. It also creates a background task
@@ -50,13 +50,11 @@ public class GoodreadsWork {
 	public String authorName;
 	public byte[] imageBytes = null;
 	private GetImageTask mTask;
-	private static Integer mIdCounter = 0;
-	private int mId = 0;
+	//private static Integer mIdCounter = 0;
 	private WeakReference<ImageView> mImageView = null;
 
 	public GoodreadsWork() {
 		super();
-		mId = ++mIdCounter;
 	}
 
 	/**

@@ -20,7 +20,7 @@
 
 package com.eleybourn.bookcatalogue.booklist;
 
-import com.eleybourn.bookcatalogue.Utils;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Interface for objects that can provide long-lived instances of Booklist-related items.

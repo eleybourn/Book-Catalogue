@@ -93,7 +93,7 @@
 		<!--  Name space added below in response to 
 					http://stackoverflow.com/questions/1691569
 		 -->
-	    <com.eleybourn.bookcatalogue.FastScrollListView
+	    <com.eleybourn.bookcatalogue.widgets.FastScrollListView
 	        xmlns:android="http://schemas.android.com/apk/res/android" 
 	        android:id="@+id/android:list" 
 			android:cacheColorHint="#FF202020"

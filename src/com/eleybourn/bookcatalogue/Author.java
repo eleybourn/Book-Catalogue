@@ -23,6 +23,8 @@ package com.eleybourn.bookcatalogue;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import com.eleybourn.bookcatalogue.utils.Utils;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 

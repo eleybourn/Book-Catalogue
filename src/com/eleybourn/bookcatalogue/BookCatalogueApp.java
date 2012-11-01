@@ -21,28 +21,23 @@
 package com.eleybourn.bookcatalogue;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Application;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.IBinder;
 import org.acra.*;
 import org.acra.annotation.*;
+import org.acra.sender.ReportSenderException;
 
 import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
 
-import static org.acra.ReportField.*;
 
-import net.philipwarner.taskqueue.QueueManager;
+import static org.acra.ReportField.*;
 
 /**
  * BookCatalogue Application implementation. Useful for making globals available
@@ -91,6 +86,18 @@ public class BookCatalogueApp extends Application {
 
 	}
 
+	public class BcReportSender extends org.acra.sender.EmailIntentSender {
+
+		public BcReportSender(Context ctx) {
+			super(ctx);
+		}
+
+		@Override
+	    public void send(CrashReportData report) throws ReportSenderException {
+			//report.put(USER_COMMENT, report.get(USER_COMMENT) + "\n\n" + Tracker.getEventsInfo());
+			super.send(report);
+	    }
+	}
 	/**
 	 * Most real initialization should go here, since before this point, the App is still
 	 * 'Under Construction'.
@@ -99,8 +106,10 @@ public class BookCatalogueApp extends Application {
 	public void onCreate() {
 		// The following line triggers the initialization of ACRA
         ACRA.init(this);
+        BcReportSender bcSender = new BcReportSender(this);
+        ErrorReporter.getInstance().setReportSender(bcSender);
 
-    	// Create the notifier
+        // Create the notifier
     	mNotifier = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 
     	// Don't rely on the the context until now...
@@ -296,6 +305,9 @@ public class BookCatalogueApp extends Application {
 		public static final String PREF_SHOW_ALL_SERIES = "APP.ShowAllSeries";
 		public static final String PREF_DISPLAY_FIRST_THEN_LAST_NAMES = "APP.DisplayFirstThenLast";
 		public static final String PREF_BOOKLIST_STYLE = "APP.BooklistStyle";
+		public static final String PREF_USE_EXTERNAL_IMAGE_CROPPER = "App.UseExternalImageCropper";
+		public static final String PREF_AUTOROTATE_CAMERA_IMAGES = "App.AutorotateCameraImages";
+		public static final String PREF_CROP_FRAME_WHOLE_IMAGE = "App.CropFrameWholeImage";
 
 		/** Get startup activity preference */
 		public boolean getStartInMyBook() {

@@ -97,8 +97,9 @@ public abstract class Property {
 	 * 
 	 * @param weight
 	 */
-	public void setWeight(int weight) {
+	public Property setWeight(int weight) {
 		mWeight = weight;
+		return this;
 	}
 	/**
 	 * Accessor
@@ -167,20 +168,30 @@ public abstract class Property {
 	public PropertyGroup getGroup() {
 		return mGroup;
 	}
+	/**
+	 * Accessor
+	 * 
+	 * @return
+	 */
+	public Property setGroup(PropertyGroup group) {
+		mGroup = group;
+		return this;
+	}
 
 	/**
 	 * Accessor
 	 * 
 	 * @return
 	 */
-	int getNameResourceId() {
+	public int getNameResourceId() {
 		return mNameResourceId;
 	}
 	/**
 	 * Accessor
 	 */
-	void setNameResourceId(int id) {
+	public Property setNameResourceId(int id) {
 		mNameResourceId = id;
+		return this;
 	}
 
 	/**
@@ -198,8 +209,9 @@ public abstract class Property {
 	/**
 	 * Accessor
 	 */
-	public void setHint(int hint) {
+	public Property setHint(int hint) {
 		mHint = hint;
+		return this;
 	}
 
 	/**
@@ -209,7 +221,7 @@ public abstract class Property {
 	}
 
 	/** Children must implement set(Property) */
-	public abstract void set(Property p);
+	public abstract Property set(Property p);
 	/** Children must method to return an editor for this object */
 	public abstract View getView(LayoutInflater inflater);
 }

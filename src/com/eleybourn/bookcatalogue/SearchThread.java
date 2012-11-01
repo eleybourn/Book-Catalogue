@@ -23,9 +23,10 @@ package com.eleybourn.bookcatalogue;
 import java.util.ArrayList;
 
 import com.eleybourn.bookcatalogue.Series.SeriesDetails;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 import android.os.Bundle;
-import android.os.Message;
 
 abstract public class SearchThread extends ManagedTask {
 	protected String mAuthor;
@@ -46,8 +47,8 @@ abstract public class SearchThread extends ManagedTask {
 	 * @param title			Title to search for
 	 * @param isbn			ISBN to search for.
 	 */
-	public SearchThread(TaskManager manager, TaskHandler taskHandler, String author, String title, String isbn, boolean fetchThumbnail) {
-		super(manager, taskHandler);
+	public SearchThread(TaskManager manager, String author, String title, String isbn, boolean fetchThumbnail) {
+		super(manager);
 		mAuthor = author;
 		mTitle = title;
 		mIsbn = isbn;
@@ -56,33 +57,14 @@ abstract public class SearchThread extends ManagedTask {
 		//mBookData.putString(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, mAuthor);
 		//mBookData.putString(CatalogueDBAdapter.KEY_TITLE, mTitle);
 		//mBookData.putString(CatalogueDBAdapter.KEY_ISBN, mIsbn);
+		//getMessageSwitch().addListener(getSenderId(), taskHandler, false);
 	}
 
 	public abstract int getSearchId();
 
-	/**
-	 * Task handler for thread management; caller MUST implement this to get
-	 * search results.
-	 * 
-	 * @author Philip Warner
-	 */
-	public interface SearchTaskHandler extends ManagedTask.TaskHandler {
-		void onSearchThreadFinish(SearchThread t, Bundle bookData, boolean cancelled);
-	}
-
 	@Override
-	protected boolean onFinish() {
+	protected void onFinish() {
 		doProgress("Done",0);
-		if (getTaskHandler() != null) {
-			((SearchTaskHandler)getTaskHandler()).onSearchThreadFinish(this, mBookData, isCancelled());				
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	@Override
-	protected void onMessage(Message msg) {
 	}
 
 	/**
@@ -117,5 +99,12 @@ abstract public class SearchThread extends ManagedTask {
 		try {s = e.getMessage(); } catch (Exception e2) {s = "Unknown Exception";};
 		String msg = String.format(getString(R.string.search_exception), getString(id), s);
 		doToast(msg);		
+	}
+	
+	/**
+	 * Accessor, so when thread has finished, data can be retrieved.
+	 */
+	public Bundle getBookData() {
+		return mBookData;
 	}
 }

@@ -33,9 +33,9 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
-import com.eleybourn.bookcatalogue.HintManager;
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.ViewTagger;
+import com.eleybourn.bookcatalogue.utils.HintManager;
+import com.eleybourn.bookcatalogue.utils.ViewTagger;
 
 /**
  * Implement a generic list-of-values property.
@@ -248,7 +248,7 @@ public abstract class ListProperty<T extends Object> extends ValuePropertyWithGl
 			@Override
 			public void onClick(View v) {
 				dialog.dismiss();
-				Holder<T> h = (Holder<T>) ViewTagger.getTag(v, R.id.TAG_HOLDER);
+				Holder<T> h = ViewTagger.getTag(v, R.id.TAG_HOLDER);
 				set(h.item.value);
 				setValueInView(h.baseView, h.item);
 			}

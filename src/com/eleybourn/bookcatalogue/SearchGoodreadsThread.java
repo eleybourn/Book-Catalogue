@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.BookNotFoundException;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsWork;
+import com.eleybourn.bookcatalogue.utils.Logger;
 
 /**
  * SearchManager for goodreads.
@@ -44,8 +45,8 @@ public class SearchGoodreadsThread extends SearchThread {
 	 * @param fetchThumbnail
 	 */
 	public SearchGoodreadsThread(TaskManager manager,
-			TaskHandler taskHandler, String author, String title, String isbn, boolean fetchThumbnail) {
-		super(manager, taskHandler, author, title, isbn, fetchThumbnail);
+			String author, String title, String isbn, boolean fetchThumbnail) {
+		super(manager, author, title, isbn, fetchThumbnail);
 	}
 
 	@Override

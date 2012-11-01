@@ -20,6 +20,8 @@
 
 package com.eleybourn.bookcatalogue;
 
+import com.eleybourn.bookcatalogue.utils.Utils;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
@@ -41,8 +43,11 @@ public class MenuHandler {
 	private static final int MNU_ITM_HELP = Menu.FIRST+7;
 	private static final int MNU_ITM_ADMIN = Menu.FIRST+8;
 	private static final int MNU_ITM_SEARCH = Menu.FIRST+9;
+	private static final int MNU_ITM_ABOUT = Menu.FIRST+10;
+	private static final int MNU_ITM_DONATE = Menu.FIRST+11;
+	private static final int MNU_ITM_BOOKSHELVES = Menu.FIRST+12;
 	
-	public static final int FIRST = Menu.FIRST+10;
+	public static final int FIRST = Menu.FIRST+13;
 
 	private int mSort = 0;
 
@@ -98,6 +103,11 @@ public class MenuHandler {
 	 */
 	public void addCreateHelpAndAdminItems(Menu menu) {
 		{
+			String title = BookCatalogueApp.getResourceString(R.string.menu_bookshelf);
+			MenuItem item = menu.add(0, MNU_ITM_BOOKSHELVES, mSort++, title);
+			item.setIcon(R.drawable.ic_menu_bookshelves);
+		}
+		{
 			String helpTitle = BookCatalogueApp.getResourceString(R.string.help);
 			MenuItem help = menu.add(0, MNU_ITM_HELP, mSort++, helpTitle);
 			help.setIcon(android.R.drawable.ic_menu_help);
@@ -106,6 +116,16 @@ public class MenuHandler {
 			String adminTitle = BookCatalogueApp.getResourceString(R.string.menu_administration);
 			MenuItem admin = menu.add(0, MNU_ITM_ADMIN, mSort++, adminTitle);
 			admin.setIcon(android.R.drawable.ic_menu_manage);
+		}
+		{
+			String aboutTitle = BookCatalogueApp.getResourceString(R.string.about_label);
+			MenuItem admin = menu.add(0, MNU_ITM_ABOUT, mSort++, aboutTitle);
+			admin.setIcon(R.drawable.ic_menu_info_details);
+		}
+		{
+			String aboutTitle = BookCatalogueApp.getResourceString(R.string.donate_label);
+			MenuItem admin = menu.add(0, MNU_ITM_DONATE, mSort++, aboutTitle);
+			admin.setIcon(R.drawable.ic_menu_donate);
 		}
 	}
 	
@@ -143,12 +163,19 @@ public class MenuHandler {
 			createBookISBN(a,"name");
 			return true;
 		case MNU_ITM_HELP:
-			// Start the Main Menu, not just the Admin page
 			helpPage(a);
 			return true;
 		case MNU_ITM_ADMIN:
-			// Start the Main Menu, not just the Admin page
 			adminPage(a);
+			return true;
+		case MNU_ITM_DONATE:
+			donatePage(a);
+			return true;
+		case MNU_ITM_ABOUT:
+			aboutPage(a);
+			return true;
+		case MNU_ITM_BOOKSHELVES:
+			bookshelvesPage(a);
 			return true;
 		case MNU_ITM_SEARCH:
 			a.onSearchRequested();
@@ -163,7 +190,7 @@ public class MenuHandler {
 	 */
 	private void createBook(Activity a) {
 		Intent i = new Intent(a, BookEdit.class);
-		a.startActivityForResult(i, R.id.ACTIVITY_CREATE_BOOK_MANUALLY);
+		a.startActivityForResult(i, UniqueId.ACTIVITY_CREATE_BOOK_MANUALLY);
 	}
 
 	/**
@@ -172,7 +199,7 @@ public class MenuHandler {
 	private void createBookISBN(Activity a, String by) {
 		Intent i = new Intent(a, BookISBNSearch.class);
 		i.putExtra(BookISBNSearch.BY, by);
-		a.startActivityForResult(i, R.id.ACTIVITY_CREATE_BOOK_ISBN);
+		a.startActivityForResult(i, UniqueId.ACTIVITY_CREATE_BOOK_ISBN);
 	}
 	
 	/**
@@ -181,7 +208,7 @@ public class MenuHandler {
 	private void createBookScan(Activity a) {
 		Intent i = new Intent(a, BookISBNSearch.class);
 		i.putExtra(BookISBNSearch.BY, "scan");
-		a.startActivityForResult(i, R.id.ACTIVITY_CREATE_BOOK_SCAN);
+		a.startActivityForResult(i, UniqueId.ACTIVITY_CREATE_BOOK_SCAN);
 	}
 
 	/**
@@ -190,7 +217,34 @@ public class MenuHandler {
 	private void adminPage(Activity a) {
 		Intent i = new Intent(BookCatalogueApp.context, AdministrationFunctions.class);
 		i.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
-		a.startActivityForResult(i, R.id.ACTIVITY_ADMIN);
+		a.startActivityForResult(i, UniqueId.ACTIVITY_ADMIN);
+	}
+	
+	/**
+	 * Load the Bookshelves Activity
+	 */
+	private void bookshelvesPage(Activity a) {
+		Intent i = new Intent(BookCatalogueApp.context, Bookshelf.class);
+		i.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+		a.startActivityForResult(i, UniqueId.ACTIVITY_BOOKSHELF);
+	}
+	
+	/**
+	 * Load the About Activity
+	 */
+	private void aboutPage(Activity a) {
+		Intent i = new Intent(BookCatalogueApp.context, AdministrationAbout.class);
+		i.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+		a.startActivityForResult(i, UniqueId.ACTIVITY_ABOUT);
+	}
+	
+	/**
+	 * Load the Donate Activity
+	 */
+	private void donatePage(Activity a) {
+		Intent i = new Intent(BookCatalogueApp.context, AdministrationDonate.class);
+		i.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+		a.startActivityForResult(i, UniqueId.ACTIVITY_DONATE);
 	}
 	
 	/**
@@ -199,7 +253,7 @@ public class MenuHandler {
 	private void helpPage(Activity a) {
 		Intent i = new Intent(BookCatalogueApp.context, Help.class);
 		i.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
-		a.startActivityForResult(i, R.id.ACTIVITY_HELP);
+		a.startActivityForResult(i, UniqueId.ACTIVITY_HELP);
 	}
 
 	/**
@@ -212,7 +266,7 @@ public class MenuHandler {
 		Intent i = new Intent(a, BookEdit.class);
 		i.putExtra(CatalogueDBAdapter.KEY_ROWID, id);
 		i.putExtra(BookEdit.TAB, tab);
-		a.startActivityForResult(i, R.id.ACTIVITY_EDIT_BOOK);
+		a.startActivityForResult(i, UniqueId.ACTIVITY_EDIT_BOOK);
 		return;
 	}
 }

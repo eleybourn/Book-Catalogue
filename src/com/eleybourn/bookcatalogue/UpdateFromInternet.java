@@ -20,7 +20,6 @@
 
 package com.eleybourn.bookcatalogue;
 
-import java.util.Hashtable;
 import java.util.LinkedHashMap;
 
 import android.app.AlertDialog;
@@ -34,12 +33,14 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.eleybourn.bookcatalogue.ManagedTask.TaskHandler;
 import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsages.Usages;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
+import com.eleybourn.bookcatalogue.utils.ViewTagger;
 
 public class UpdateFromInternet extends ActivityWithTasks {
-	
-	private UpdateThumbnailsThread mUpdateThread;
+
+	private long mUpdateSenderId = 0;
 	private SharedPreferences mPrefs = null;
 
 	/**
@@ -282,47 +283,18 @@ public class UpdateFromInternet extends ActivityWithTasks {
 	}
 
 	private void startUpdate() {
-		mUpdateThread = new UpdateThumbnailsThread(mTaskManager, mFieldUsages, mThumbnailsHandler);
-		mUpdateThread.start();	
+		UpdateThumbnailsThread t = new UpdateThumbnailsThread(getTaskManager(), mFieldUsages, mThumbnailsHandler);
+		mUpdateSenderId = t.getSenderId();
+		ExportThread.getMessageSwitch().addListener(mUpdateSenderId, mThumbnailsHandler, false);
+		t.start();	
 	}
 
-	final UpdateThumbnailsThread.LookupHandler mThumbnailsHandler = new UpdateThumbnailsThread.LookupHandler() {
+	final ManagedTask.TaskListener mThumbnailsHandler = new ManagedTask.TaskListener() {
 		@Override
-		public void onFinish() {
-			mUpdateThread = null;
+		public void onTaskFinished(ManagedTask t) {
+			mUpdateSenderId = 0;
 			finish();
 		}
 	};
 
-	@Override
-	TaskHandler getTaskHandler(ManagedTask t) {
-		if (t instanceof UpdateThumbnailsThread)
-			return mThumbnailsHandler;
-		else
-			if (mUpdateThread != null)
-				return mUpdateThread.getTaskHandler(t);
-			else
-				return null;
-	}
-
-	/**
-	 * Ensure the mUpdateThread is restored.
-	 */
-	@Override
-	protected void onRestoreInstanceState(Bundle inState) {
-		mUpdateThread = (UpdateThumbnailsThread) getLastNonConfigurationInstance("UpdateThread");
-		// Call the super method only after we have the searchManager set up
-		super.onRestoreInstanceState(inState);
-	}
-
-	/**
-	 * Ensure the TaskManager is saved.
-	 */
-	@Override
-	public void onRetainNonConfigurationInstance(Hashtable<String,Object> store) {
-		if (mUpdateThread != null) {
-			store.put("UpdateThread", mUpdateThread);
-			mUpdateThread = null;
-		}
-	}
 }

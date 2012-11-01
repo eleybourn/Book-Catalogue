@@ -373,18 +373,6 @@
 <string name="no_publisher">(no publisher)</string>
 <string name="no_author">(no author)</string>
 <string name="no_date">(no date)</string>
-<item name="ACTIVITY_CREATE_BOOK_MANUALLY" type="id"/>
-<item name="ACTIVITY_CREATE_BOOK_ISBN" type="id"/>
-<item name="ACTIVITY_CREATE_BOOK_SCAN" type="id"/>
-<item name="ACTIVITY_EDIT_BOOK" type="id"/>
-<item name="ACTIVITY_ADMIN" type="id"/>
-<item name="ACTIVITY_HELP" type="id"/>
-<item name="ACTIVITY_PREFERENCES" type="id"/>
-<item name="ACTIVITY_BOOKLIST_STYLE" type="id"/>
-<item name="ACTIVITY_BOOKLIST_STYLE_PROPERTIES" type="id"/>
-<item name="ACTIVITY_BOOKLIST_STYLE_GROUPS" type="id"/>
-<item name="ACTIVITY_BOOKLIST_STYLES" type="id"/>
-<item name="ACTIVITY_GOODREADS_EXPORT_FAILURES" type="id"/>
 <string name="book_lists">Book Lists</string>
 <string name="show_all_authors">Show book under each author</string>
 <string name="show_all_series">Show book in each series</string>
@@ -574,7 +562,6 @@
 <string name="menu_edit_format">Edit Format&#8230;</string>
 <string name="edit_format_name">Edit Format Name</string>
 <string name="name_can_not_be_blank">Name can not be blank</string>
-<item name="ACTIVITY_ADMIN_FINISH" type="id"/>
 <string name="export_starting_ellipsis">Export starting&#8230;</string>
 <string name="resizing_cover_thumbnails">Resizing cover thumbnails</string>
 <string name="resize_each_time">Resize each time they are needed (uses less storage, scrolling will be slower)</string>
@@ -602,5 +589,62 @@
 <string name="x_is_not_a_valid_isbn_or_asin">%1$s is not a valid ISBN or ASIN</string>
 <string name="confirm_exit">Confirm Exit</string>
 <string name="you_may_have_unsaved_changes">You may have unsaved changes. Are you sure you want to exit without saving?</string>
-</resources>
+<string name="read_year">Read Year</string>
+<string name="read_month">Read Month</string>
+<string name="read_day">Read Day</string>
+<string name="sort_read_date">Date Read</string>
+<string name="details_have_changed">Details Have Changed</string>
+<string name="you_have_unsaved_changes">You have unsaved changes, if you exit now they will be lost.</string>
+<string name="exit">Exit</string>
+<string name="continue_editing">Continue Editing</string>
+<string name="the_title_already_exists">The title already exists</string>
+<string name="year">Year</string>
+<string name="month">Month</string>
+<string name="day">Day</string>
+<string name="edit_lc_ellipsis">edit&#8230;</string>
+<string name="getting_books_ellipsis">Getting books&#8230;</string>
+<string name="n_events_found">%1$s Events found</string>
+<string name="last_error_e">Last Error: %1$s</string>
+<string name="invalid_isbn_x_specified_in_search">Invalid ISBN \'%1$s\' specified in search</string>
+<string name="if_day_is_specified_month_and_year_must_be">If day is specified, then both month and year must also be specified.</string>
+<string name="if_month_is_specified_year_must_be">If month is specified, then year must also be specified.</string>
+<string name="main_menu">Main Menu</string>
+<string name="use_external_image_cropper">Use external image cropper (experimental)</string>
+<string name="auto_rotate_camera_images">Automatically rotate images captured by camera</string>
+<string name="hint_autorotate_camera_images">If you find yourself always rotating camera images in the same direction, try changing the application settings to specify a rotation to apply automatically.</string>
+<string name="default_crop_frame_is_whole_image">Default crop frame is whole image</string>
+<string name="cancelled">Cancelled</string>
+<string name="import_complete">Import Complete</string>
 
+<string name="amazon_books">Amazon</string>
+<string name="google_books">Google Books</string>
+<string name="library_thing">LibraryThing</string>
+<string name="searching_elipsis">Searching&#8230;</string>
+
+<string name="adding_book_elipsis">Adding book&#8230;</string>
+
+<string name="new_in_42"><![CDATA[
+    <p><b>New in 4.2</b>\n\n
+			* Date-Picker that supports dates down to 0AD as well as partial dates\n\n
+			* HTML descriptions display correctly with click to edit\n\n
+			* Preference for pre-selecting whole image when cropping\n\n
+			* Preference for auto-rotating images from camera\n\n
+			* Preference to use external cropping tool (experimental)\n\n
+			* Added more items to the options menus\n\n
+			* French translation updates (Imkal)\n\n
+			* German translation updates (Robert Wetzlmayr)\n\n
+			* Updated OK/Cancel button positions to conform to current Android standards\n\n
+			* Full keyboard available when entering ASINs\n\n
+			* Keeps 5 previous export files\n\n
+			* Better detection of \'changes\' when editing books\n\n
+			* Support for a wider range of Gallery and file browsers\n\n
+			* More reliable date handling on import/export/sync\n\n
+			* Fix handling of duplicate anthology titles\n\n
+			* Various bugs fixed\n\n
+			Many thanks to our dedicated beta testers and translators!\n\n
+			Blame Grunthos for all bugs and errors. And send us bug reports.
+			</p>
+		]]>
+</string>
+
+</resources>

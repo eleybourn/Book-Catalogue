@@ -20,8 +20,6 @@
 
 package com.eleybourn.bookcatalogue;
 
-import com.eleybourn.bookcatalogue.utils.Logger;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
@@ -29,6 +27,8 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.eleybourn.bookcatalogue.utils.Logger;
 
 public class EditFormatDialog {
 	private final Context mContext;

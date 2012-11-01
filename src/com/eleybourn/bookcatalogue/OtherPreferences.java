@@ -20,17 +20,17 @@
 
 package com.eleybourn.bookcatalogue;
 
+import android.os.Bundle;
+
 import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.properties.BooleanProperty;
 import com.eleybourn.bookcatalogue.properties.IntegerListProperty;
+import com.eleybourn.bookcatalogue.properties.ListProperty.ItemEntries;
 import com.eleybourn.bookcatalogue.properties.Properties;
 import com.eleybourn.bookcatalogue.properties.Property;
 import com.eleybourn.bookcatalogue.properties.PropertyGroup;
-import com.eleybourn.bookcatalogue.properties.ListProperty.ItemEntries;
 import com.eleybourn.bookcatalogue.utils.SoundManager;
 import com.eleybourn.bookcatalogue.utils.Utils;
-
-import android.os.Bundle;
 
 /**
  * Activity to display the 'Other Preferences' dialog and maintain the preferences.

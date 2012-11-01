@@ -21,8 +21,6 @@ package com.eleybourn.bookcatalogue.dialogs;
 
 import java.util.Calendar;
 
-import com.eleybourn.bookcatalogue.R;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -41,6 +39,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.eleybourn.bookcatalogue.R;
 
 /**
  * Dialog class to allow for selection of partial dates from 0AD to 9999AD.

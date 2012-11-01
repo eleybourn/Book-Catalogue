@@ -21,13 +21,13 @@ package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
 
-import android.content.Context;
-import android.view.View;
-import android.widget.AdapterView;
 import net.philipwarner.taskqueue.ContextDialogItem;
 import net.philipwarner.taskqueue.LegacyEvent;
 import net.philipwarner.taskqueue.LegacyTask;
 import net.philipwarner.taskqueue.QueueManager;
+import android.content.Context;
+import android.view.View;
+import android.widget.AdapterView;
 
 /**
  * BookCatalogue implementation of QueueManager.

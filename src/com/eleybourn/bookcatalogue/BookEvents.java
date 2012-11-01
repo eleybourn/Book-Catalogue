@@ -22,11 +22,6 @@ package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
 
-import com.eleybourn.bookcatalogue.goodreads.SendOneBookTask;
-import com.eleybourn.bookcatalogue.utils.Utils;
-import com.eleybourn.bookcatalogue.utils.ViewTagger;
-import com.eleybourn.bookcatalogue.utils.HintManager.HintOwner;
-
 import net.philipwarner.taskqueue.BindableItemSQLiteCursor;
 import net.philipwarner.taskqueue.ContextDialogItem;
 import net.philipwarner.taskqueue.Event;
@@ -37,14 +32,19 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDoneException;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.TextView;
+
+import com.eleybourn.bookcatalogue.goodreads.SendOneBookTask;
+import com.eleybourn.bookcatalogue.utils.HintManager.HintOwner;
+import com.eleybourn.bookcatalogue.utils.Utils;
+import com.eleybourn.bookcatalogue.utils.ViewTagger;
 
 /**
  * Class to define all book-related events that may be stored in the QueueManager.

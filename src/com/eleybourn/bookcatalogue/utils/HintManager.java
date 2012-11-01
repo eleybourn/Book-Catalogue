@@ -23,10 +23,6 @@ package com.eleybourn.bookcatalogue.utils;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import com.eleybourn.bookcatalogue.BookCatalogueApp;
-import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -37,6 +33,10 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
+
+import com.eleybourn.bookcatalogue.BookCatalogueApp;
+import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
+import com.eleybourn.bookcatalogue.R;
 
 /**
  * Class to manage the display of 'hints' withing the application. Each hint dialog has 

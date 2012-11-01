@@ -20,11 +20,10 @@
 
 package com.eleybourn.bookcatalogue.properties;
 
-import com.eleybourn.bookcatalogue.BookCatalogueApp;
-import com.eleybourn.bookcatalogue.properties.PropertyGroup;
-
 import android.view.LayoutInflater;
 import android.view.View;
+
+import com.eleybourn.bookcatalogue.BookCatalogueApp;
 
 /**
  * Base class for generic properties.

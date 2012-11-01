@@ -20,6 +20,23 @@
 
 package com.eleybourn.bookcatalogue;
 
+import static org.acra.ReportField.ANDROID_VERSION;
+import static org.acra.ReportField.APP_VERSION_CODE;
+import static org.acra.ReportField.APP_VERSION_NAME;
+import static org.acra.ReportField.CUSTOM_DATA;
+import static org.acra.ReportField.PHONE_MODEL;
+import static org.acra.ReportField.STACK_TRACE;
+import static org.acra.ReportField.USER_APP_START_DATE;
+import static org.acra.ReportField.USER_COMMENT;
+import static org.acra.ReportField.USER_CRASH_DATE;
+
+import org.acra.ACRA;
+import org.acra.CrashReportData;
+import org.acra.ErrorReporter;
+import org.acra.ReportingInteractionMode;
+import org.acra.annotation.ReportsCrashes;
+import org.acra.sender.ReportSenderException;
+
 import android.app.Activity;
 import android.app.Application;
 import android.app.Notification;
@@ -30,14 +47,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.sqlite.SQLiteDatabase;
-import org.acra.*;
-import org.acra.annotation.*;
-import org.acra.sender.ReportSenderException;
 
 import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
-
-
-import static org.acra.ReportField.*;
 
 /**
  * BookCatalogue Application implementation. Useful for making globals available

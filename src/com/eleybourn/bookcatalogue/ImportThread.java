@@ -11,13 +11,13 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
+import android.os.Bundle;
+
+import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer.SyncLock;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.StorageUtils;
 import com.eleybourn.bookcatalogue.utils.Utils;
-
-import android.os.Bundle;
-import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 
 /**
  * Class to handle import in a separate thread.

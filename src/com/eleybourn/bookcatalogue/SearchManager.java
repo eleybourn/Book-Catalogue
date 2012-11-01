@@ -23,7 +23,9 @@
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
+
 import android.os.Bundle;
+
 import com.eleybourn.bookcatalogue.TaskManager.TaskManagerListener;
 import com.eleybourn.bookcatalogue.messaging.MessageSwitch;
 import com.eleybourn.bookcatalogue.utils.IsbnUtils;

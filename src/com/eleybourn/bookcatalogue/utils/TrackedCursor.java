@@ -24,12 +24,12 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedCursor;
-import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer;
-
 import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQuery;
+
+import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedCursor;
+import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer;
 
 /**
  * DEBUG CLASS to help com.eleybourn.bookcatalogue.debug cursor leakage.

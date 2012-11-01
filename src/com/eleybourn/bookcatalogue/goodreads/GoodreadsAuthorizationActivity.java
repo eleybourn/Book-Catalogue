@@ -21,12 +21,11 @@
 package com.eleybourn.bookcatalogue.goodreads;
 
 import net.philipwarner.taskqueue.QueueManager;
-
-import com.eleybourn.bookcatalogue.BcQueueManager;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+
+import com.eleybourn.bookcatalogue.BcQueueManager;
 
 /**
  * Trivial Activity to handle the callback URI; while using a broadcast receiver would be nicer, 

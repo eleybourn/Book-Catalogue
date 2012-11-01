@@ -1,110 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root"
-	android:orientation="vertical"
-	android:layout_width="fill_parent" 
-	android:layout_height="fill_parent"
-	android:paddingLeft="5sp"
-	android:background="@drawable/bc_background_gradient_dim"
-	>
-    
-	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-	    android:id="@+id/header"
-		android:orientation="vertical"
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content"
-		android:background="@drawable/bc_vertical_gradient"
-		>
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/bc_background_gradient_dim"
+    android:orientation="vertical"
+    android:paddingLeft="5sp" >
 
-	    <TextView android:id="@+id/bookshelf_label" 
-			android:layout_width="wrap_content" 
-			android:layout_height="32sp" 
-			android:text="@+string/bookshelf_label"
-			android:textAppearance="?android:attr/textAppearanceLarge"
-			android:background="#00000000"
-			android:paddingRight="5sp"
-			/>
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/header"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bc_vertical_gradient"
+        android:orientation="vertical" >
 
-		<Spinner android:id="@+id/bookshelf_name" 
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content" 
-			android:layout_toRightOf="@id/bookshelf_label"
-			android:paddingBottom="2dp"
-			android:background="#00000000"
-			/>
-		<ImageView android:id="@+id/bookshelf_down" 
-			android:layout_width="wrap_content" 
-			android:layout_height="32sp" 
-			android:layout_alignParentRight="true"
-			android:paddingLeft="5sp"
-		 	android:src="@drawable/expander_ic_maximized"
-			/>
+        <TextView
+            android:id="@+id/bookshelf_label"
+            android:layout_width="wrap_content"
+            android:layout_height="32sp"
+            android:background="#00000000"
+            android:paddingRight="5sp"
+            android:text="@+string/bookshelf_label"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-		<!-- 
+        <Spinner
+            android:id="@+id/bookshelf_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/bookshelf_label"
+            android:background="#00000000"
+            android:paddingBottom="2dp" />
+
+        <ImageView
+            android:id="@+id/bookshelf_down"
+            android:layout_width="wrap_content"
+            android:layout_height="32sp"
+            android:layout_alignParentRight="true"
+            android:paddingLeft="5sp"
+            android:src="@drawable/expander_ic_maximized" />
+
+        <!--
 			android:layout_toRightOf="@+id/bookshelf_name"
-			android:layout_toLeftOf="@+id/bookshelf_down"
-		 -->
-		<TextView android:id="@+id/bookshelf_count" 
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content" 
-			android:layout_below="@+id/bookshelf_label"
-			android:layout_alignParentLeft="true"
-			android:textAppearance="?android:attr/textAppearanceSmall"
-			android:background="#00000000"
-			android:paddingLeft="5sp"
-			/>
+			android:layout_toLeftOf="@+id/bookshelf_down"
+        -->
+
+        <TextView
+            android:id="@+id/bookshelf_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/bookshelf_label"
+            android:background="#00000000"
+            android:paddingLeft="5sp"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/level_1_text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/bookshelf_count"
+            android:background="#00000000"
+            android:paddingLeft="5sp"
+            android:singleLine="true"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/level_2_text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/level_1_text"
+            android:background="#00000000"
+            android:paddingLeft="5sp"
+            android:singleLine="true"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/header_divider"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/header"
+        android:background="@drawable/main_menu_header_divider"
+        android:paddingBottom="2dp"
+        android:paddingTop="2dp" />
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/header_divider" >
+
+        <!-- android:cacheColorHint="#00000000" - but only if using a nice BG -->
 
 
-		<TextView android:id="@+id/level_1_text" 
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content" 
-			android:singleLine="true"
-			android:layout_below="@id/bookshelf_count"
-			android:textAppearance="?android:attr/textAppearanceSmall"
-			android:background="#00000000"
-			android:paddingLeft="5sp"
-			/>
-		<TextView android:id="@+id/level_2_text" 
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content" 
-			android:singleLine="true"
-			android:layout_below="@id/level_1_text"
-			android:textAppearance="?android:attr/textAppearanceSmall"
-			android:background="#00000000"
-			android:paddingLeft="5sp"
-			/>
-	</RelativeLayout>
+        <!--
+              Name space added below in response to 
+					http://stackoverflow.com/questions/1691569
+        -->
 
-	<View android:id="@+id/header_divider" 
-	    android:background="@drawable/main_menu_header_divider"
-	    android:layout_width="fill_parent"
-	    android:layout_height="1dp"
-		android:paddingTop="2dp"
-		android:layout_below="@id/header"
-		android:paddingBottom="2dp"
-	    />
-	<LinearLayout 
-	    xmlns:android="http://schemas.android.com/apk/res/android" 
-		android:layout_width="fill_parent" 
-		android:layout_height="fill_parent"
-		android:layout_below="@id/header_divider">
-	<!-- android:cacheColorHint="#00000000" - but only if using a nice BG  -->
-	
-		<!--  Name space added below in response to 
-					http://stackoverflow.com/questions/1691569
-		 -->
-	    <com.eleybourn.bookcatalogue.widgets.FastScrollListView
-	        xmlns:android="http://schemas.android.com/apk/res/android" 
-	        android:id="@+id/android:list" 
-			android:cacheColorHint="#FF202020"
-		    android:background ="#FF202020"
-			android:layout_width="fill_parent" 
-			android:layout_height="fill_parent"
-			android:textSize="16sp" />
-	    <TextView android:id="@+id/android:empty" 
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content" 
-			android:text="@+string/nobooks"
-			android:textSize="16sp" />
-	</LinearLayout>
+        <com.eleybourn.bookcatalogue.widgets.FastScrollListView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/android:list"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="#FF202020"
+            android:cacheColorHint="#FF202020"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/android:empty"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@+string/nobooks"
+            android:textSize="16sp" />
+    </LinearLayout>
+
 </RelativeLayout>

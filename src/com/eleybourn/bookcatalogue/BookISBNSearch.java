@@ -24,13 +24,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import com.eleybourn.bookcatalogue.debug.Tracker;
-import com.eleybourn.bookcatalogue.utils.AsinUtils;
-import com.eleybourn.bookcatalogue.utils.IsbnUtils;
-import com.eleybourn.bookcatalogue.utils.Logger;
-import com.eleybourn.bookcatalogue.utils.SoundManager;
-import com.eleybourn.bookcatalogue.utils.Utils;
-
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
@@ -48,6 +41,13 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
+import com.eleybourn.bookcatalogue.debug.Tracker;
+import com.eleybourn.bookcatalogue.utils.AsinUtils;
+import com.eleybourn.bookcatalogue.utils.IsbnUtils;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.SoundManager;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * This class is called by the BookCatalogue activity and will search the interwebs for

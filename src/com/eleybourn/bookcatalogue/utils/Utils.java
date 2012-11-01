@@ -56,18 +56,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.eleybourn.bookcatalogue.Author;
-import com.eleybourn.bookcatalogue.BookCatalogueApp;
-import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
-import com.eleybourn.bookcatalogue.GetThumbnailTask;
-import com.eleybourn.bookcatalogue.LibraryThingManager;
-import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.Series;
-import com.eleybourn.bookcatalogue.ThumbnailCacheWriterTask;
-import com.eleybourn.bookcatalogue.database.CoversDbHelper;
-import com.eleybourn.bookcatalogue.dialogs.PartialDatePicker;
-import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -84,6 +72,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
+
+import com.eleybourn.bookcatalogue.Author;
+import com.eleybourn.bookcatalogue.BookCatalogueApp;
+import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
+import com.eleybourn.bookcatalogue.GetThumbnailTask;
+import com.eleybourn.bookcatalogue.LibraryThingManager;
+import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.Series;
+import com.eleybourn.bookcatalogue.ThumbnailCacheWriterTask;
+import com.eleybourn.bookcatalogue.database.CoversDbHelper;
+import com.eleybourn.bookcatalogue.dialogs.PartialDatePicker;
+import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
 
 public class Utils {
 	// External DB for cover thumbnails

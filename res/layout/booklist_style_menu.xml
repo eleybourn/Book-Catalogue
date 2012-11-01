@@ -5,11 +5,12 @@
     android:orientation="vertical" >
 
     <!-- incompatible with APIL4 android:fadeScrollbars="false" -->
+
     <ScrollView
         android:id="@+id/scrollView"
-        android:scrollbars="vertical"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="fill_parent"
+        android:scrollbars="vertical" >
 
         <LinearLayout
             android:id="@+id/menu"
@@ -23,14 +24,12 @@
                 android:layout_height="wrap_content" >
             </RadioGroup>
 
-		 	<View 
-			    android:background="@drawable/main_menu_header_divider"
-			    android:layout_width="fill_parent"
-			    android:layout_height="1dp"
-				android:paddingBottom="10dp"
-			    />
-
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="@drawable/main_menu_header_divider"
+                android:paddingBottom="10dp" />
         </LinearLayout>
     </ScrollView>
-   	
+
 </LinearLayout>

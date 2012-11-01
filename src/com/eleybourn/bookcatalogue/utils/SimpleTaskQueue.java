@@ -24,11 +24,11 @@ import java.util.ArrayList;
 import java.util.Stack;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import android.os.Handler;
+
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.database.CoversDbHelper;
-
-import android.os.Handler;
 
 /**
  * Class to perform time consuming but light-weight tasks in a worker thread. Users of this

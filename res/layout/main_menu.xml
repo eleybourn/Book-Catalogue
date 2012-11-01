@@ -56,14 +56,14 @@
                 android:id="@+id/loan_label"
                 style="@style/main_menu_item"
                 android:drawableLeft="@android:drawable/ic_menu_send"
-                android:text="@string/loan_return_book" 
+                android:text="@string/loan_return_book"
                 android:visibility="gone" />
 
             <TextView
                 android:id="@+id/search_label"
                 style="@style/main_menu_item"
                 android:drawableLeft="@android:drawable/ic_menu_search"
-                android:text="@string/search" 
+                android:text="@string/search"
                 android:visibility="gone" />
 
             <TextView
@@ -78,12 +78,12 @@
                 android:drawableLeft="@drawable/ic_menu_info_details"
                 android:text="@string/about_label" />
 
-			<!-- Now in 'My Books' -->
-<!--             <TextView -->
-<!--                 android:id="@+id/browse_label" -->
-<!--                 style="@style/main_menu_item" -->
-<!--                 android:drawableLeft="@android:drawable/ic_menu_compass" -->
-<!--                 android:text="@string/browse_books" /> -->
+            <!-- Now in 'My Books' -->
+            <!-- <TextView -->
+            <!-- android:id="@+id/browse_label" -->
+            <!-- style="@style/main_menu_item" -->
+            <!-- android:drawableLeft="@android:drawable/ic_menu_compass" -->
+            <!-- android:text="@string/browse_books" /> -->
 
             <LinearLayout
                 android:layout_width="fill_parent"

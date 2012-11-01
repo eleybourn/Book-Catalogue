@@ -1,63 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
- <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
- 	android:id="@+id/root"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
-	android:background="@drawable/bc_background_gradient_dim"
-	>
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-		android:orientation="vertical"
-		android:layout_width="fill_parent" 
-		android:layout_height="fill_parent"
-		android:paddingLeft="5sp">
-	
-		<TextView android:id="@+id/helpinstructions" 
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content" 
-			android:textAppearance="?android:attr/textAppearanceLarge"
-			android:text="@+string/help"
-			/>
-		<TextView android:id="@+id/click_here" 
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content" 
-			android:text="@+string/help_click_here"
-			android:textAppearance="?android:attr/textAppearanceMedium"
-			/>
-		<TextView android:id="@+id/helppage" 
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content" 
-			android:color="#cccccc"
-			android:paddingLeft="15sp"
-			android:paddingBottom="5sp"
-			android:text="@+string/helppage"
-			android:textAppearance="?android:attr/textAppearanceMedium"
-			android:textColor="#006699"
-			/>
-		<TextView
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content" 
-			android:text="@+string/send_info_text"
-			android:paddingBottom="20sp"
-			android:textAppearance="?android:attr/textAppearanceMedium"
-			android:paddingTop="10sp"
-			/>
-		<Button android:id="@+id/send_info" 
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content" 
-			android:text="@+string/send_info"
-			/>
-		<TextView android:id="@+id/cleanup_text" 
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content" 
-			android:text="@+string/cleanup_files_text"
-			android:paddingBottom="20sp"
-			android:textAppearance="?android:attr/textAppearanceMedium"
-			android:paddingTop="10sp"
-			/>
-		<Button android:id="@+id/cleanup_button" 
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content" 
-			android:text="@+string/cleanup_files"
-			/>
-	</LinearLayout>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/bc_background_gradient_dim" >
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:paddingLeft="5sp" >
+
+        <TextView
+            android:id="@+id/helpinstructions"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@+string/help"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/click_here"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@+string/help_click_here"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/helppage"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="5sp"
+            android:paddingLeft="15sp"
+            android:text="@+string/helppage"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#006699"
+            android:color="#cccccc" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="20sp"
+            android:paddingTop="10sp"
+            android:text="@+string/send_info_text"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <Button
+            android:id="@+id/send_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@+string/send_info" />
+
+        <TextView
+            android:id="@+id/cleanup_text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="20sp"
+            android:paddingTop="10sp"
+            android:text="@+string/cleanup_files_text"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <Button
+            android:id="@+id/cleanup_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@+string/cleanup_files" />
+    </LinearLayout>
+
 </ScrollView>

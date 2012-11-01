@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:padding="5sp" >
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content"
-	android:padding="5sp">
-	<LinearLayout 
-		android:orientation="vertical" 
-		android:gravity="center_horizontal"
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent">
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical" >
 
-		<EditText android:id="@+id/isbn" 
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content" 
-			android:layout_weight="1"
-			android:hint="@string/isbn"
-			android:inputType="number"
-			android:digits="0123456789Xx"
-			android:padding="10sp"
-			android:textAppearance="?android:attr/textAppearanceLarge"
-			/>
-	</LinearLayout>
+        <EditText
+            android:id="@+id/isbn"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:digits="0123456789Xx"
+            android:hint="@string/isbn"
+            android:inputType="number"
+            android:padding="10sp"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+    </LinearLayout>
+
 </ScrollView>

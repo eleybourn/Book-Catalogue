@@ -1,57 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- incompatible with APIL4 android:fadeScrollbars="false" -->
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
-    android:id="@+id/scroll_view" 
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content"
-	android:layout_alignParentTop="true"
-	>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scroll_view"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentTop="true" >
 
-	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-		android:orientation="vertical"
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content"
-		android:paddingLeft="5sp"
-		android:background="#2d2d2d">
-   	    
-	  	<TextView android:id="@+id/hint" 
-	  		android:layout_width="fill_parent" 
-			android:layout_height="wrap_content" 
-			android:textAppearance="?android:attr/textAppearanceMedium"
-	  		/>
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#2d2d2d"
+        android:orientation="vertical"
+        android:paddingLeft="5sp" >
 
-		<CheckBox
-		    android:id="@+id/hide_hint_checkbox"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:layout_below="@+id/hint"
-		    android:focusable="false"
-		    android:text="@string/do_not_show_again" />
-	 
-	   	<LinearLayout	 android:id="@+id/bottom_buttons" 
-			android:gravity="bottom" 
-			android:orientation="vertical"
-			android:layout_height="wrap_content" 
-			android:layout_width="fill_parent" 
-			android:padding="10dp"
-			android:layout_below="@+id/hide_hint_checkbox"
-			>
-			<!-- 
-			android:layout_alignParentBottom="true">
-			 -->
-	
-			<Button
-			    android:id="@+id/confirm"
-			    android:layout_width="wrap_content"
-			    android:layout_height="fill_parent"
-			    android:layout_gravity="center|center_horizontal"
-			    android:gravity="center|center_horizontal"
-			    android:text="@string/ok"
-			    android:width="150sp" />
-	
-		</LinearLayout>
-	  	
-	</RelativeLayout>
+        <TextView
+            android:id="@+id/hint"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <CheckBox
+            android:id="@+id/hide_hint_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/hint"
+            android:focusable="false"
+            android:text="@string/do_not_show_again" />
+
+        <LinearLayout
+            android:id="@+id/bottom_buttons"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/hide_hint_checkbox"
+            android:gravity="bottom"
+            android:orientation="vertical"
+            android:padding="10dp" >
+
+<!-- 			android:layout_alignParentBottom="true"> -->
+
+            <Button
+                android:id="@+id/confirm"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center|center_horizontal"
+                android:gravity="center|center_horizontal"
+                android:text="@string/ok"
+                android:width="150sp" />
+        </LinearLayout>
+    </RelativeLayout>
+
 </ScrollView>
-
-

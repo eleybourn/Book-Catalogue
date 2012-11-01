@@ -24,10 +24,10 @@ import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.eleybourn.bookcatalogue.utils.Utils;
-
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Class to hold book-related series data. Used in lists and import/export.

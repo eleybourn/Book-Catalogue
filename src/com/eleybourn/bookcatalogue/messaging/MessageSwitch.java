@@ -25,9 +25,9 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import com.eleybourn.bookcatalogue.utils.Logger;
-
 import android.os.Handler;
+
+import com.eleybourn.bookcatalogue.utils.Logger;
 /**
  * Switchboard class for disconnecting listener instances from task instances. Maintains
  * separate lists and each 'sender' queue maintains a last-message for re-transmission

@@ -1,40 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content">
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:layout_width="fill_parent"
-	    android:layout_height="fill_parent"
-	    android:orientation="vertical"
-	    android:padding="10sp">
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:padding="10sp" >
 
-			<EditText android:id="@+id/bookshelf" 
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content" 
-				android:layout_weight="1"
-				android:hint="@string/bookshelf"
-				/>
+        <EditText
+            android:id="@+id/bookshelf"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/bookshelf" />
 
-			<LinearLayout	
-				android:orientation="horizontal"
-				android:layout_width="fill_parent"
-				android:layout_height="fill_parent"
-				android:layout_weight="1">
-				<Button android:id="@+id/cancel" 
-				  	android:text="@string/cancel"
-				  	android:width="150sp"
-					android:layout_width="0dp"
-					android:layout_weight="1"
-					android:layout_height="fill_parent" />
-				<Button android:id="@+id/confirm" 
-				  	android:text="@string/confirm_add_bs"
-				  	android:width="0dp"
-					android:layout_weight="1"
-					android:layout_width="wrap_content"
-					android:layout_height="fill_parent" />
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
 
-			</LinearLayout>
-	
-	</LinearLayout>
+            <Button
+                android:id="@+id/cancel"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:text="@string/cancel"
+                android:width="150sp" />
+
+            <Button
+                android:id="@+id/confirm"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:text="@string/confirm_add_bs"
+                android:width="0dp" />
+        </LinearLayout>
+    </LinearLayout>
+
 </ScrollView>

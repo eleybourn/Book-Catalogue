@@ -1,221 +1,228 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-    	android:id="@+id/root"
-		android:orientation="vertical"
-		android:background="@drawable/bc_background_gradient"
-		android:layout_width="fill_parent" 
-		android:layout_height="fill_parent"
-		>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/bc_background_gradient"
+    android:orientation="vertical" >
 
-	<LinearLayout
-		android:orientation="horizontal"
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content"
-		>
-		<ImageView
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content" 
-			android:layout_gravity="left"
-			android:src="@drawable/ic_launcher2"
-			/>
-   
-	    <TextView 
-			android:background="#00000000"
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content" 
-			android:text="@string/app_name"
-			android:textAppearance="?android:attr/textAppearanceLarge"
-			android:textSize="30dp"
-			android:paddingTop="5dp"
-			android:paddingBottom="6dp"
-			android:gravity="center"
-			android:layout_gravity="center"
-			/>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:src="@drawable/ic_launcher2" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="#00000000"
+            android:gravity="center"
+            android:paddingBottom="6dp"
+            android:paddingTop="5dp"
+            android:text="@string/app_name"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="30dp" />
     </LinearLayout>
 
-	<View 
-	    android:background="@drawable/main_menu_header_divider"
-	    android:layout_width="fill_parent"
-	    android:layout_height="1dp"
-		android:paddingBottom="12dp"
-	    />
-  
-	<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
-	    	android:id="@+id/main_menu_view" 
-			android:layout_width="fill_parent"
-			android:layout_height="fill_parent"
-			android:paddingLeft="10dp"
-			android:paddingTop="15dp"
-			>
-	    
-	  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-		android:orientation="vertical"
-		android:layout_width="fill_parent" 
-		android:layout_height="fill_parent"
-		android:paddingLeft="5dp">
-	
-		<LinearLayout android:id="@+id/my_books_label" 
-			android:orientation="horizontal"
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content"
-			android:clickable="true"
-			android:paddingTop="20dp"
-			android:paddingLeft="5dp">
-			<ImageView android:id="@+id/bookshelf_img" 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content" 
-				android:src="@+drawable/ic_menu_shelves"
-				android:layout_gravity="center_vertical"
-				/>
-			<TextView 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content" 
-				android:text="@+string/my_books"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:layout_gravity="center_vertical"
-				android:paddingTop="5dp"
-				/>
-		</LinearLayout>
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/main_menu_header_divider"
+        android:paddingBottom="12dp" />
 
-		<LinearLayout android:id="@+id/my_books_classic_label" 
-			android:orientation="horizontal"
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content"
-			android:clickable="true"
-			android:paddingTop="30dp"
-			android:paddingLeft="5dp">
-			<ImageView android:id="@+id/bookshelf_img" 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content" 
-				android:layout_gravity="center_vertical"
-				android:src="@+drawable/ic_menu_bookshelves"
-				/>
-			<TextView 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content" 
-				android:text="@+string/my_books_classic"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:layout_gravity="center_vertical"
-				android:paddingTop="5dp"
-				/>
-		</LinearLayout>
-		
-		<LinearLayout android:id="@+id/add_book_label" 
-			android:orientation="horizontal"
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content"
-			android:clickable="true"
-			android:paddingTop="30dp"
-				android:layout_gravity="center_vertical"
-			android:paddingLeft="5dp">
-			<ImageView  
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content" 
-				android:src="@drawable/ic_menu_add_book"
-				/>
-			<TextView 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content" 
-				android:text="@+string/menu_insert"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:layout_gravity="center_vertical"
-				android:paddingTop="5dp"
-				/>
-		</LinearLayout>
-	
-		<LinearLayout android:id="@+id/loan_label" 
-		    android:visibility="gone"
-			android:orientation="horizontal"
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content"
-			android:clickable="true"
-			android:paddingLeft="5dp">
-			<ImageView 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content" 
-				android:layout_gravity="center_vertical"
-				android:src="@+android:drawable/ic_menu_send"
-				/>
-			<TextView 
-				android:layout_width="fill_parent" 
-				android:layout_height="wrap_content" 
-				android:text="@+string/loan_return_book"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:layout_gravity="center_vertical"
-				android:paddingTop="5dp"
-				/>
-		</LinearLayout>
-		
-		<LinearLayout  android:id="@+id/search_label" 
-		    android:visibility="gone"
-			android:orientation="horizontal"
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content"
-			android:clickable="true"
-			android:paddingLeft="5dp">
-			<ImageView 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content" 
-				android:layout_gravity="center_vertical"
-				android:src="@+android:drawable/ic_menu_search"
-				/>
-			<TextView
-				android:layout_width="fill_parent" 
-				android:layout_height="wrap_content" 
-				android:text="@+string/search"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:layout_gravity="center_vertical"
-				android:paddingTop="5dp"
-				/>
-		</LinearLayout>
-		
-		<LinearLayout android:id="@+id/administration_label" 
-			android:orientation="horizontal"
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content"
-			android:clickable="true"
-			android:paddingTop="30dp"
-			android:paddingLeft="5dp">
-			<ImageView 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content" 
-				android:layout_gravity="center_vertical"
-				android:src="@drawable/ic_menu_preferences"
-				/>
-			<TextView 
-				android:layout_width="fill_parent" 
-				android:layout_height="wrap_content" 
-				android:text="@+string/admin_and_prefs"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:layout_gravity="center_vertical"
-				android:paddingTop="5dp"
-				/>
-		</LinearLayout>
-	
-		<LinearLayout android:id="@+id/about_label" 
-			android:orientation="horizontal"
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content"
-			android:clickable="true"
-			android:paddingTop="30dp"
-			android:paddingLeft="5dp">
-			<ImageView 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content" 
-				android:layout_gravity="center_vertical"
-				android:src="@drawable/ic_menu_info_details"
-				/>
-			<TextView 
-				android:layout_width="fill_parent" 
-				android:layout_height="wrap_content" 
-				android:text="@+string/about_label"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:layout_gravity="center_vertical"
-				android:paddingTop="5dp"
-				/>
-		</LinearLayout>
-	
-		<!--  Now in 'My Books'
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/main_menu_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:paddingLeft="10dp"
+        android:paddingTop="15dp" >
+
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:paddingLeft="5dp" >
+
+            <LinearLayout
+                android:id="@+id/my_books_label"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:orientation="horizontal"
+                android:paddingLeft="5dp"
+                android:paddingTop="20dp" >
+
+                <ImageView
+                    android:id="@+id/bookshelf_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:src="@+drawable/ic_menu_shelves" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:paddingTop="5dp"
+                    android:text="@+string/my_books"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/my_books_classic_label"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:orientation="horizontal"
+                android:paddingLeft="5dp"
+                android:paddingTop="30dp" >
+
+                <ImageView
+                    android:id="@+id/bookshelf_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:src="@+drawable/ic_menu_bookshelves" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:paddingTop="5dp"
+                    android:text="@+string/my_books_classic"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/add_book_label"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:clickable="true"
+                android:orientation="horizontal"
+                android:paddingLeft="5dp"
+                android:paddingTop="30dp" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_menu_add_book" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:paddingTop="5dp"
+                    android:text="@+string/menu_insert"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/loan_label"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:orientation="horizontal"
+                android:paddingLeft="5dp"
+                android:visibility="gone" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:src="@+android:drawable/ic_menu_send" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:paddingTop="5dp"
+                    android:text="@+string/loan_return_book"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/search_label"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:orientation="horizontal"
+                android:paddingLeft="5dp"
+                android:visibility="gone" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:src="@+android:drawable/ic_menu_search" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:paddingTop="5dp"
+                    android:text="@+string/search"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/administration_label"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:orientation="horizontal"
+                android:paddingLeft="5dp"
+                android:paddingTop="30dp" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_menu_preferences" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:paddingTop="5dp"
+                    android:text="@+string/admin_and_prefs"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/about_label"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:orientation="horizontal"
+                android:paddingLeft="5dp"
+                android:paddingTop="30dp" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_menu_info_details" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:paddingTop="5dp"
+                    android:text="@+string/about_label"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+            </LinearLayout>
+
+            <!--
+        Now in 'My Books'
 		<LinearLayout android:id="@+id/browse_label" 
 			android:orientation="horizontal"
 			android:layout_width="fill_parent" 
@@ -234,74 +241,79 @@
 				android:textAppearance="?android:attr/textAppearanceLarge"
 				android:paddingTop="5dp"
 				/>
-		</LinearLayout>
-		 -->	
-		<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		    android:orientation="horizontal"
-			android:layout_width="fill_parent" 
-			android:paddingTop="20dp"
-			android:layout_height="wrap_content"
-		    >
-		    
-			<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-			    android:id="@+id/help_label" 
-				android:orientation="horizontal"
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content"
-				android:layout_alignParentLeft="true"
-				android:layout_gravity="left"
-				android:layout_weight="1"
-				android:clickable="true"
-				android:paddingLeft="5dp">
+		</LinearLayout>
+            -->
 
-				<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
-					android:layout_width="wrap_content" 
-					android:layout_height="wrap_content" 
-					android:layout_gravity="center_vertical"
-					android:gravity="center_vertical"
-					android:src="@drawable/ic_menu_help"
-					/>
-				<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-					android:layout_width="wrap_content" 
-					android:layout_height="wrap_content" 
-					android:text="@string/help"
-					android:layout_gravity="center_vertical"
-					android:gravity="center_vertical"
-					android:textAppearance="?android:attr/textAppearanceLarge"
-					android:paddingTop="5dp"
-					/>
-			</LinearLayout>
-		
-			<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-			    android:id="@+id/donate_label" 
-				android:orientation="horizontal"
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content"
-				android:layout_gravity="left"
-				android:layout_weight="1"
-				android:paddingLeft="10sp"
-				android:clickable="true"
-				android:paddingRight="5dp">
-				<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
-					android:layout_width="wrap_content" 
-					android:layout_height="wrap_content" 
-					android:layout_gravity="center_vertical"
-					android:gravity="center_vertical"
-					android:src="@drawable/ic_menu_donate"
-					/>
-				<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-					android:layout_width="wrap_content" 
-					android:layout_height="wrap_content" 
-					android:text="@string/donate_label"
-					android:layout_gravity="center_vertical"
-					android:gravity="center_vertical"
-					android:textAppearance="?android:attr/textAppearanceLarge"
-					android:paddingTop="5dp"
-					/>
-			</LinearLayout>
-		</LinearLayout>		
-	  </LinearLayout>
-	</ScrollView>
-    
+            <LinearLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="20dp" >
+
+                <LinearLayout
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/help_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_gravity="left"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:orientation="horizontal"
+                    android:paddingLeft="5dp" >
+
+                    <ImageView
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:src="@drawable/ic_menu_help" />
+
+                    <TextView
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:paddingTop="5dp"
+                        android:text="@string/help"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+                </LinearLayout>
+
+                <LinearLayout
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/donate_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10sp"
+                    android:paddingRight="5dp" >
+
+                    <ImageView
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:src="@drawable/ic_menu_donate" />
+
+                    <TextView
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:paddingTop="5dp"
+                        android:text="@string/donate_label"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
 </LinearLayout>
-  

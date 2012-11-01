@@ -51,7 +51,7 @@ new in 4.1.6-B23
 * More reliable date handling on import/export/sync
 * French translation updates (Imkal)
 * German translation updates (Robert Wetzlmayr)
-* Russian translation updates (silin)
+* Russian translation updates (Nick Silin)
 * Updated OK/Cancel button positions to conform to current Android standards
 * Fix handling of duplicate anthology titles
 * Full keyboard available when entering ASINs
@@ -59,7 +59,7 @@ new in 4.1.6-B23
 * Better detection of 'changes' when editing books
 * Support for a wider range of Gallery and file browsers
 * Various import bugs fixed
-* Various NPEs fixed
+* Various code cleanups and NPEs fixed
 * Internal: prep for fragments by separating message delivery from activities
 * Internal: one database connection for all activities and threads
 

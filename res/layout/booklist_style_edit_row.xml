@@ -19,7 +19,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="0dp" 
         tools:ignore="UselessParent">
 
         <!-- Used to be the id=row_delete item. Now deletions are handled via context menu. -->

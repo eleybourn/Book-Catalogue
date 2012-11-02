@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="link_blue">#006699</color>
-    
+    <color name="link_donate">#11D2EF</color>
 </resources>

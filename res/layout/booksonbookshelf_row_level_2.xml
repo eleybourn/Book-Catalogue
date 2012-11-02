@@ -21,7 +21,6 @@
             android:orientation="horizontal" >
 
             <ImageView
-                android:id="@+id/marker"
                 android:layout_width="10dp"
                 android:layout_height="10dp"
                 android:layout_gravity="center_vertical|center_horizontal"
@@ -33,7 +32,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|center_horizontal"
-                android:layout_toRightOf="@id/marker"
                 android:gravity="center_vertical|center_horizontal"
                 android:paddingLeft="2dp"
                 android:textAppearance="?android:attr/textAppearanceSmall"

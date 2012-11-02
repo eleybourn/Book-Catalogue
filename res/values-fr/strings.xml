@@ -568,7 +568,7 @@
 	<string name="main_menu">Menu principal</string>
 	<string name="use_external_image_cropper">Recadrage d\'image avec un outil externe (Expérimental)</string>
 	<string name="auto_rotate_camera_images">Rotation automatique des photos</string>
-	<string name="hint_autorotate_camera_images">Si vous devez systematiquement tournez vos photos dans le même sens, envisagez d\'autoriser la rotation automatique en changeant vos paramètres.</string>
+	<string name="hint_autorotate_camera_images">Si vous devez systematiquement tourner vos photos dans le même sens, envisagez d\'autoriser la rotation automatique en changeant vos paramètres.</string>
 	<string name="default_crop_frame_is_whole_image">Le cadre par défaut de l\'image à recadrer sera l\'image complète</string>
 	<string name="cancelled">Annulé</string>
 	<string name="import_complete">Import terminé</string>
@@ -582,24 +582,24 @@
 	
 	<string name="new_in_42"><![CDATA[
 			<p><b>Nouveautés de la 4.2</b>\n\n
-	            * Dates supportées jusqu\'en l\'an 0 ainsi que les dates partiellesn\n
+	            * Dates supportées jusqu\'en l\'an 0 ainsi que les dates partielles\n\n
 	            * Les descriptions en HTML s\'affichent correctement lors du click sur \"Modifier\"\n\n
 	            * Paramètre de sélection de l\'image entière lors du recadrage\n\n
 	            * Paramètre de rotation automatique des photos\n\n
 	            * Paramètre pour l\'utilisation d\'un outil de recadrage externe (Expérimental)\n\n
-	            * Plus d\'options dans le menu "Plus" \n\n
+	            * Nouvelles options dans le menu "Plus" \n\n
 	            * Mise à jour de la version française (Imkal)\n\n
 	            * Mise à jour de la version allemande (Robert Wetzlmayr)\n\n
 	            * Mise à jour de la version russe (Nick Silin)\n\n
 	            * Mise à jour des boutons OK & Annuler pour se conformer aux nouveaux standards Android\n\n
-	            * Clavie complet disponible pour l\'introduction d\'ASINs\n\n
-	            * Sauvegardes des 5 derniers fichiers d\'export\n\n
-	            * Meilleur détection des changements lors de l\'édition d\'un livre\n\n
-	            * Support d\'un choix plus large d\'explorateur de la Galerie et de fichiers\n\n
-	            * Meilleur gestion des dates lors de l\'import/export/sync\n\n
-	            * Correction de la gestion des doubles dans les titres d\'une anthologies\n\n
+	            * Clavier complet disponible pour l\'introduction d\'ASINs\n\n
+	            * Sauvegarde des 5 derniers fichiers d\'export\n\n
+	            * Meilleure détection des changements lors de l\'édition d\'un livre\n\n
+	            * Support d\'un choix plus large d\'explorateurs de la Galerie et de fichiers\n\n
+	            * Meilleure gestion des dates lors de l\'import/export/sync\n\n
+	            * Correction de la gestion des doubles dans les titres d\'une anthologie\n\n
 	            * Correction d\'un certain nombre de bugs\n\n
-	            Tout nos remerciements à nos dévoués Beta Testeur et nos traducteurs.\n\n
+	            Tous nos remerciements à nos dévoués Beta Testeurs et nos traducteurs.\n\n
 	            Tous les bugs et erreurs sont à imputer à Grunthos. Et envoyez-nous vos rapports de bugs.
             </p>
 			]]>

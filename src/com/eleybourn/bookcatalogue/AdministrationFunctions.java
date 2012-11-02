@@ -622,7 +622,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 		AlertDialog alertDialog = new AlertDialog.Builder(AdministrationFunctions.this).create();
 		alertDialog.setTitle(R.string.email_export);
 		alertDialog.setIcon(android.R.drawable.ic_menu_send);
-		alertDialog.setButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+		alertDialog.setButton2(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				// setup the mail message
 				final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND_MULTIPLE);
@@ -649,7 +649,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 				dialog.dismiss();
 			}
 		}); 
-		alertDialog.setButton2(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+		alertDialog.setButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				//do nothing
 				dialog.dismiss();

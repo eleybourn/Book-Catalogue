@@ -60,7 +60,7 @@
     <string name="menu_administration">Настройки</string>
     <string name="install_scan">Чтобы определить ваши книги по ISBN штрих-коду, вы должны установить приложение Google Googles или zxing.</string>
     <string name="install_scan_title">Установить сканер штрих-кодов</string>
-    <string name="version_number">Номер версии</string>
+    <string name="version_number">Номер версии:</string>
     <string name="donate">Если Вы хотите поддержать разработку этого приложения, пожалуйста сделайте пожертвование или через Amazon Wishlist или через PayPal кнопкой внизу. Я не могу опубликовать &quot;платную&quot; версию приложения в Австралии. :-) </string>
     <string name="unable_to_connect_amazon">Невозможно подключиться к Amazon</string>
     <string name="upgrade_title">После Вашего последнего обновления</string>
@@ -74,9 +74,9 @@
     <string name="loan_to">Одолжить книгу:</string>
     <string name="returned">Возвращена</string>
     <string name="name">Имя</string>
-    <string name="webpage_label">Веб-страница</string>
-    <string name="sourcecode_label">Исходный код</string>
-    <string name="contact_label">Контакт</string>
+    <string name="webpage_label">Веб-адрес проекта:</string>
+    <string name="sourcecode_label">Исходный код:</string>
+    <string name="contact_label">Контакты разработчиков:</string>
     <string name="webpage">https://wiki.github.com/eleybourn/Book-Catalogue/</string>
     <string name="sourcecode">https://github.com/eleybourn/Book-Catalogue</string>
     <string name="helppage">https://github.com/eleybourn/Book-Catalogue/wiki/Help</string>

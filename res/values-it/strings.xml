@@ -59,7 +59,7 @@
 <string name="menu_administration">Amministratore</string>
 <string name="install_scan">Per scansionare i libri con il barcode ISBN, devi installare Google Googles o lo scanner barcode zxing barcode.</string>
 <string name="install_scan_title">Installa Barcode Scanner</string>
-<string name="version_number">Numero versione</string>
+<string name="version_number">Numero versione:</string>
 <string name="donate">Se vuoi supportare lo sviluppatore di questa applicazione, effettua una donazione utilizzando my Amazon Wishlist o il pulsante di paypal qui sotto. Essendo in Australia non posso pubblicare una versione a &quot;pagamento&quot;. :-) </string>
 <string name="unable_to_connect_amazon">Impossibile connettersi ad Amazon</string>
 <string name="upgrade_title">Dal tuo ultimo aggiornamento</string>
@@ -73,9 +73,9 @@
 <string name="loan_to">Libro prestato a:</string>
 <string name="returned">Ritornato</string>
 <string name="name">Nome</string>
-<string name="webpage_label">Pagina web</string>
-<string name="sourcecode_label">Codice sorgente</string>
-<string name="contact_label">Contatto</string>
+<string name="webpage_label">Pagina web:</string>
+<string name="sourcecode_label">Codice sorgente:</string>
+<string name="contact_label">Contatto:</string>
 <string name="webpage">https://wiki.github.com/eleybourn/Book-Catalogue/</string>
 <string name="sourcecode">https://github.com/eleybourn/Book-Catalogue</string>
 <string name="helppage">https://github.com/eleybourn/Book-Catalogue/wiki/Help</string>

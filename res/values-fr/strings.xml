@@ -55,7 +55,7 @@
 	<string name="menu_administration">Admin</string>
 	<string name="install_scan">Pour scanner vos livres en utilisant le code barre ISBN, vous pouvez installer le scanner de codes barre zxing. Appuyez sur OK pour installer, ou sur Annuler pour passer cette étape.</string>
 	<string name="install_scan_title">Installer le scanner de code barre</string>
-	<string name="version_number">Numéro de version</string>
+	<string name="version_number">Numéro de version:</string>
 	<string name="donate">Si vous souhaitez supporter le développement de cette application, les donations sont possibles par Amazon Wishlist ou par le bouton Paypal ci-dessous. Je suis en Australie, ce qui rend impossible la publication d\'une version payante :-) .</string>
 	<string name="unable_to_connect_amazon">Connexion à Amazon impossible</string>
 	<string name="upgrade_title">Depuis votre dernière mise à jour</string>
@@ -69,8 +69,8 @@
 	<string name="loan_to">Prêter le livre à :</string>
 	<string name="returned">Rendu</string>
 	<string name="name">Nom</string>
-	<string name="webpage_label">Site web</string>
-	<string name="sourcecode_label">Code source</string>
+	<string name="webpage_label">Site web:</string>
+	<string name="sourcecode_label">Code source:</string>
 	<string name="donate_label">Don</string>
 	<string name="about_label">À propos de cette application</string>
 	<string name="administration_functions_label">Fonctions</string>
@@ -622,7 +622,7 @@
 	<string name="goodreads">goodreads</string>
 	<string name="goodreads_label">Goodreads</string>
 	<string name="goodreads_url">http://www.goodreads.com</string>
-	<string name="contact_label">Contact</string>
+	<string name="contact_label">Contact:</string>
 	<string name="webpage">https://wiki.github.com/eleybourn/Book-Catalogue/</string>
 	<string name="sourcecode">https://github.com/eleybourn/Book-Catalogue</string>
 	<string name="helppage">https://github.com/eleybourn/Book-Catalogue/wiki/Help</string>

@@ -2,7 +2,7 @@
 <!--  Use android:installLocation="auto" when building with API > 4, "preferExternal" causes it to install on encrypted sdcards, which fails -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="com.eleybourn.bookcatalogue"
-	android:installLocation="auto"  android:versionName="4.1.6-Beta-24" android:versionCode="121">
+	android:installLocation="auto"  android:versionName="4.1.6-Beta-25" android:versionCode="122">
 	<uses-sdk android:minSdkVersion="4" />
 	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>

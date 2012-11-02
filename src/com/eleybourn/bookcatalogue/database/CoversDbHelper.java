@@ -50,8 +50,9 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * 
  * @author Philip Warner
  */
-public class CoversDbHelper extends GenericOpenHelper {
-	private SynchronizedDb mDb;
+public class CoversDbHelper {
+	private static GenericOpenHelper mHelper;
+	private static SynchronizedDb mSharedDb;
 
 	/** Debug counter */
 	private static Integer mInstanceCount = 0;
@@ -82,6 +83,28 @@ public class CoversDbHelper extends GenericOpenHelper {
 			}
 	};
 
+	private static class CoversHelper extends GenericOpenHelper {
+
+		public CoversHelper(String dbFilePath, CursorFactory factory, int version) {
+			super(dbFilePath, factory, version);
+		}
+
+		/**
+		 * As with SQLiteOpenHelper, routine called to create DB
+		 */
+		@Override
+		public void onCreate(SQLiteDatabase db) {
+			DbUtils.createTables(new SynchronizedDb(db, mSynchronizer), TABLES, true );
+		}
+		/**
+		 * As with SQLiteOpenHelper, routine called to upgrade DB
+		 */
+		@Override
+		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+			throw new RuntimeException("Upgrades not handled yet!");
+		}
+
+	}
 	public static final DomainDefinition DOM_ID = new DomainDefinition( "_id", "integer",  "primary key autoincrement", "");
 	public static final DomainDefinition DOM_DATE = new DomainDefinition( "date", "datetime", "default current_timestamp", "not null");
 	public static final DomainDefinition DOM_TYPE = new DomainDefinition( "type", "text", "", "not null");	// T = Thumbnail; C = cover?
@@ -104,31 +127,18 @@ public class CoversDbHelper extends GenericOpenHelper {
 	 * Constructor. Fill in required fields. This is NOT based on SQLiteOpenHelper so does not need a context.
 	 */
 	public CoversDbHelper() {
-		super(COVERS_DATABASE_NAME, mTrackedCursorFactory, COVERS_DATABASE_VERSION);
+		if (mHelper == null)
+			mHelper = new CoversHelper(COVERS_DATABASE_NAME, mTrackedCursorFactory, COVERS_DATABASE_VERSION);
 		synchronized(mInstanceCount) {
 			mInstanceCount++;
 			System.out.println("CovDBA instances: " + mInstanceCount);
 		}
 	}
-	/**
-	 * As with SQLiteOpenHelper, routine called to create DB
-	 */
-	@Override
-	public void onCreate(SQLiteDatabase db) {
-		DbUtils.createTables(new SynchronizedDb(db, mSynchronizer), TABLES, true );
-	}
-	/**
-	 * As with SQLiteOpenHelper, routine called to upgrade DB
-	 */
-	@Override
-	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		throw new RuntimeException("Upgrades not handled yet!");
-	}
 
 	private SynchronizedDb getDb() {
-		if (mDb == null)
-			mDb = new SynchronizedDb(this, mSynchronizer);
-		return mDb;
+		if (mSharedDb == null)
+			mSharedDb = new SynchronizedDb(mHelper, mSynchronizer);
+		return mSharedDb;
 	}
 	/**
 	 * Delete the named 'file'
@@ -307,10 +317,8 @@ public class CoversDbHelper extends GenericOpenHelper {
 		db.execSQL(sql);
 	}
 
-	@Override
 	public void close() {
 		mStatements.close();
-		super.close();
 		synchronized(mInstanceCount) {
 			mInstanceCount--;
 			System.out.println("CovDBA instances: " + mInstanceCount);

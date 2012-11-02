@@ -6,21 +6,15 @@
     android:orientation="horizontal"
     android:scaleType="fitStart" >
 
-    <LinearLayout
+    <!-- NOTE: layout width/height will be set to a specific value at runtime -->
+
+    <ImageView
+        android:id="@+id/cover"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="0"
-        android:gravity="left"
-        android:orientation="horizontal" >
-
-        <!-- NOTE: layout width/height will be set to a specific value at runtime -->
-
-        <ImageView
-            android:id="@+id/cover"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true" />
-    </LinearLayout>
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/thumbnail" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -59,78 +53,49 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
         </LinearLayout>
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/author"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:paddingLeft="5dp"
+            android:singleLine="true"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
 
-            <TextView
-                android:id="@+id/author"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="5dp"
-                android:singleLine="true"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
-        </LinearLayout>
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/shelves"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:paddingLeft="5dp"
+            android:singleLine="true"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
 
-            <TextView
-                android:id="@+id/shelves"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="5dp"
-                android:singleLine="true"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
-        </LinearLayout>
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/location"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:paddingLeft="5dp"
+            android:singleLine="true"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
 
-            <TextView
-                android:id="@+id/location"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="5dp"
-                android:singleLine="true"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
-        </LinearLayout>
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/publisher"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-
-            <TextView
-                android:id="@+id/publisher"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="5dp"
-                android:singleLine="true"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
-        </LinearLayout>
+            android:paddingLeft="5dp"
+            android:singleLine="true"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
     </LinearLayout>
 
-    <LinearLayout
+    <ImageView
+        android:id="@+id/read"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="0"
+        android:contentDescription="@string/_empty_"
         android:gravity="right"
-        android:orientation="horizontal"
         android:paddingLeft="10dp"
-        android:paddingRight="10dp" >
-
-        <ImageView
-            android:id="@+id/read"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/btn_check_buttonless_off"
-            android:visibility="gone" />
-    </LinearLayout>
+        android:paddingRight="10dp"
+        android:src="@drawable/btn_check_buttonless_off"
+        android:visibility="gone" />
 
 </LinearLayout>

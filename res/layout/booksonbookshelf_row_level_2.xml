@@ -15,7 +15,6 @@
         android:paddingTop="3dp" >
 
         <LinearLayout
-            android:id="@+id/row_info"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
@@ -24,6 +23,7 @@
                 android:layout_width="10dp"
                 android:layout_height="10dp"
                 android:layout_gravity="center_vertical|center_horizontal"
+                android:contentDescription="@string/_empty_"
                 android:gravity="center_vertical|center_horizontal"
                 android:src="@drawable/btn_circle_normal" />
 
@@ -42,6 +42,7 @@
                 android:layout_width="10dp"
                 android:layout_height="10dp"
                 android:layout_gravity="center_vertical|center_horizontal"
+                android:contentDescription="@string/_empty_"
                 android:gravity="center_vertical|center_horizontal"
                 android:paddingLeft="2dp"
                 android:src="@drawable/btn_circle_normal" />

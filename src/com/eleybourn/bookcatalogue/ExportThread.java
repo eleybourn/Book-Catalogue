@@ -35,7 +35,7 @@ public class ExportThread extends ManagedTask {
 	}
 
 	@Override
-	protected void onFinish() {
+	protected void onThreadFinish() {
 		cleanup();
 	}
 	

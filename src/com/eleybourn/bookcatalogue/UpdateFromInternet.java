@@ -34,6 +34,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsages.Usages;
+import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 import com.eleybourn.bookcatalogue.utils.ViewTagger;
@@ -285,7 +286,7 @@ public class UpdateFromInternet extends ActivityWithTasks {
 	private void startUpdate() {
 		UpdateThumbnailsThread t = new UpdateThumbnailsThread(getTaskManager(), mFieldUsages, mThumbnailsHandler);
 		mUpdateSenderId = t.getSenderId();
-		ExportThread.getMessageSwitch().addListener(mUpdateSenderId, mThumbnailsHandler, false);
+		UpdateThumbnailsThread.getMessageSwitch().addListener(mUpdateSenderId, mThumbnailsHandler, false);
 		t.start();	
 	}
 
@@ -296,5 +297,23 @@ public class UpdateFromInternet extends ActivityWithTasks {
 			finish();
 		}
 	};
+
+	@Override
+	protected void onPause() {
+		Tracker.enterOnPause(this);
+		super.onPause();
+		if (mUpdateSenderId != 0)
+			UpdateThumbnailsThread.getMessageSwitch().removeListener(mUpdateSenderId, mThumbnailsHandler);
+		Tracker.exitOnPause(this);
+	}
+
+	@Override
+	protected void onResume() {
+		Tracker.enterOnResume(this);
+		super.onResume();
+		if (mUpdateSenderId != 0)
+			UpdateThumbnailsThread.getMessageSwitch().addListener(mUpdateSenderId, mThumbnailsHandler, true);
+		Tracker.exitOnResume(this);
+	}
 
 }

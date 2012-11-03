@@ -21,6 +21,7 @@
 package com.eleybourn.bookcatalogue.database;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.Date;
 
 import android.content.ContentValues;
@@ -38,6 +39,7 @@ import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer;
 import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer.SyncLock;
 import com.eleybourn.bookcatalogue.database.DbUtils.DomainDefinition;
 import com.eleybourn.bookcatalogue.database.DbUtils.TableDefinition;
+import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.StorageUtils;
 import com.eleybourn.bookcatalogue.utils.TrackedCursor;
 import com.eleybourn.bookcatalogue.utils.Utils;
@@ -53,6 +55,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
 public class CoversDbHelper {
 	private static GenericOpenHelper mHelper;
 	private static SynchronizedDb mSharedDb;
+	private static boolean mSharedDbUnavailable = false;
 
 	/** Debug counter */
 	private static Integer mInstanceCount = 0;
@@ -127,8 +130,32 @@ public class CoversDbHelper {
 	 * Constructor. Fill in required fields. This is NOT based on SQLiteOpenHelper so does not need a context.
 	 */
 	public CoversDbHelper() {
-		if (mHelper == null)
+		if (mSharedDbUnavailable)
+			throw new RuntimeException("Covers database unavailable");
+
+		if (mHelper == null) {
 			mHelper = new CoversHelper(COVERS_DATABASE_NAME, mTrackedCursorFactory, COVERS_DATABASE_VERSION);
+		}
+		if (mSharedDb == null) {
+			// Try to connect.
+			try {
+				mSharedDb = new SynchronizedDb(mHelper, mSynchronizer);				
+			} catch (Exception e) {
+				// Assume exception means DB corrupt. Log, rename, and retry
+				Logger.logError(e, "Failed to open covers db");
+				File f = new File(COVERS_DATABASE_NAME);
+				f.renameTo(new File(COVERS_DATABASE_NAME + ".dead"));
+
+				// Connect again...
+				try {
+					mSharedDb = new SynchronizedDb(mHelper, mSynchronizer);									
+				} catch (Exception e2) {
+					// If we fail a second time (creating a new DB), then just give up.
+					mSharedDbUnavailable = true;
+					throw new RuntimeException("Covers database unavailable");
+				}
+			}
+		}
 		synchronized(mInstanceCount) {
 			mInstanceCount++;
 			System.out.println("CovDBA instances: " + mInstanceCount);
@@ -136,8 +163,6 @@ public class CoversDbHelper {
 	}
 
 	private SynchronizedDb getDb() {
-		if (mSharedDb == null)
-			mSharedDb = new SynchronizedDb(mHelper, mSynchronizer);
 		return mSharedDb;
 	}
 	/**

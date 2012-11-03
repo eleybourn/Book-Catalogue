@@ -142,7 +142,8 @@ public class StandardDialogs {
 
 		alertDialog.setTitle(R.string.delete_series);
 		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+		//alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+		alertDialog.setButton2(context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				dbHelper.deleteSeries(series);
 				alertDialog.dismiss();
@@ -150,7 +151,8 @@ public class StandardDialogs {
 			}
 		});
 
-		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+		//alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+		alertDialog.setButton(context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				alertDialog.dismiss();
 			}
@@ -199,7 +201,8 @@ public class StandardDialogs {
 
 		alertDialog.setTitle(R.string.menu_delete);
 		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+		//alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+		alertDialog.setButton2(context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				dbHelper.deleteBook(id);
 				alertDialog.dismiss();
@@ -207,7 +210,8 @@ public class StandardDialogs {
 			}
 		});
 
-		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+		//alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+		alertDialog.setButton(context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				alertDialog.dismiss();
 			}

@@ -118,6 +118,7 @@ public class SearchManager implements TaskManagerListener {
 	@Override
 	public void onTaskEnded(TaskManager manager, ManagedTask task) {
 		int size;
+		//System.out.println(task.getClass().getSimpleName() + "(" +  + task.getId() + ") FINISHED starting");
 
 		// Handle the result, and optionally queue another task
 		if (task instanceof SearchThread)
@@ -127,11 +128,19 @@ public class SearchManager implements TaskManagerListener {
 		synchronized(mRunningTasks) {
 			mRunningTasks.remove(task);
 			size = mRunningTasks.size();
+			//for(ManagedTask t: mRunningTasks) {
+			//	System.out.println(t.getClass().getSimpleName() + "(" +  + t.getId() + ") still running");
+			//}
 		}
 		if (size == 0) {
-			finish();
+			// Stop listening FIRST...otherwise, if sendResults() calls a listener that starts
+			// a new task, we will stop listening for the new task.
 			TaskManager.getMessageSwitch().removeListener(mTaskManager.getSenderId(), this);
+			System.out.println("Not listening(1)");
+			// Notify the listeners.
+			sendResults();
 		}
+		//System.out.println(task.getClass().getSimpleName() + "(" +  + task.getId() + ") FINISHED Exiting");
 	}
 
 	/**
@@ -154,6 +163,7 @@ public class SearchManager implements TaskManagerListener {
 		synchronized(mRunningTasks) {
 			mRunningTasks.add(thread);
 			mTaskManager.addTask(thread);
+			//System.out.println(thread.getClass().getSimpleName() + "(" +  + thread.getId() + ") STARTING");
 		}
 		thread.start();
 	}
@@ -216,6 +226,10 @@ public class SearchManager implements TaskManagerListener {
 		if ( (searchFlags & SEARCH_ALL) == 0)
 			throw new RuntimeException("Must specify at least one source to use");
 
+		if (mRunningTasks.size() > 0) {
+			throw new RuntimeException("Attempting to start new search while previous search running");			
+		}
+
 		// Save the flags
 		mSearchFlags = searchFlags;
 		if (!Utils.USE_LT) {
@@ -252,7 +266,8 @@ public class SearchManager implements TaskManagerListener {
 	private void doSearch() {
 		// List for task ends
 		TaskManager.getMessageSwitch().addListener(mTaskManager.getSenderId(), this, false);
-		
+		//System.out.println("Listening");
+
 		// We really want to ensure we get the same book from each, so if isbn is not present, do
 		// these in series.
 
@@ -276,8 +291,9 @@ public class SearchManager implements TaskManagerListener {
 			}			
 		} finally {
 			if (!tasksStarted) {
-				finish();
+				sendResults();
 				TaskManager.getMessageSwitch().removeListener(mTaskManager.getSenderId(), this);
+				//System.out.println("Not listening(2)");
 			}
 		}
 
@@ -340,7 +356,7 @@ public class SearchManager implements TaskManagerListener {
 	/**
 	 * Combine all the data and create a book or display an error.
 	 */
-	private void finish() {
+	private void sendResults() {
 		// This list will be the actual order of the result we apply, based on the
 		// actual results and the default order.
 		ArrayList<Integer> results = new ArrayList<Integer>();

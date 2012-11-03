@@ -307,6 +307,10 @@ public class DbSync {
 						db = opener.open();	
 						return db;
 					} catch (Exception e) {
+						if (l != null) {
+							l.unlock();
+							l = null;
+						}
 						if (retriesLeft == 0) {
 							throw new RuntimeException("Unable to open database, retries exhausted", e);
 						}
@@ -320,7 +324,10 @@ public class DbSync {
 							throw new RuntimeException("Unable to open database, interrupted", e1);							
 						}
 					} finally {
-						l.unlock();
+						if (l != null) {
+							l.unlock();
+							l = null;
+						}
 					}				
 				} while (true);
 			

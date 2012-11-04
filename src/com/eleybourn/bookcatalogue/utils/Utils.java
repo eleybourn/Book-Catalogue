@@ -1381,7 +1381,7 @@ public class Utils {
 			if (mCoversDbCreateFail)
 				return null;
 			try {
-				mCoversDb = new CoversDbHelper();				
+				mCoversDb = new CoversDbHelper();
 			} catch (Exception e) {
 				mCoversDbCreateFail = true;
 			}

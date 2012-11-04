@@ -55,7 +55,7 @@ abstract public class ManagedTask extends Thread {
 	// was executed (if necessary). TaskHandler objects will be cleared by the disconnect() call
 	// and reset by the reconnect() call.
 	//
-	abstract protected void onFinish();
+	abstract protected void onThreadFinish();
 	// Called to do the main thread work. Can use doProgress() and doToast() to display messages.
 	abstract protected void onRun() throws InterruptedException, ClosedByInterruptException;
 
@@ -125,7 +125,7 @@ abstract public class ManagedTask extends Thread {
 
 		mFinished = true;
 		// Let the implementation know it is finished
-		onFinish();
+		onThreadFinish();
 
 		// Queue the 'onTaskFinished' message; this should also inform the TaskManager
 		mMessageSwitch.send(mMessageSenderId, new MessageSwitch.Message<TaskListener>() {

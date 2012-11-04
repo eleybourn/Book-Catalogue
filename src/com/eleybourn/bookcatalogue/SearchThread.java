@@ -63,7 +63,7 @@ abstract public class SearchThread extends ManagedTask {
 	public abstract int getSearchId();
 
 	@Override
-	protected void onFinish() {
+	protected void onThreadFinish() {
 		doProgress("Done",0);
 	}
 

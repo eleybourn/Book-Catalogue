@@ -41,7 +41,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  *
  * @author Philip Warner
  */
-public class UpdateThumbnailsThread extends ManagedTask implements SearchManager.SearchListener {
+public class UpdateThumbnailsThread extends ManagedTask {
 	// The fields that the user requested to update
 	private FieldUsages mRequestedFields;
 
@@ -68,6 +68,13 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 	// DB connection
 	protected CatalogueDBAdapter mDbHelper;
 
+	private SearchManager.SearchListener mSearchListener = new SearchManager.SearchListener() {
+
+		@Override
+		public boolean onSearchFinished(Bundle bookData, boolean cancelled) {
+			return handleSearchFinished(bookData, cancelled);
+		}};
+	
 	/**
 	 * Constructor.
 	 * 
@@ -81,7 +88,7 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 		mDbHelper.open();
 		
 		mRequestedFields = requestedFields;
-		mSearchManager = new SearchManager(mManager, this);
+		mSearchManager = new SearchManager(mManager, mSearchListener);
 		mManager.doProgress(BookCatalogueApp.getResourceString(R.string.starting_search));
 		getMessageSwitch().addListener(getSenderId(), listener, false);
 	}
@@ -226,7 +233,7 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 	}
 
 	@Override
-	public void onFinish() {
+	public void onThreadFinish() {
 		try {
 			mManager.doToast(mFinalMessage);
 		} finally {
@@ -240,8 +247,9 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 	 * @param bookData
 	 * @param cancelled
 	 */
-	@Override
-	public boolean onSearchFinished(Bundle bookData, boolean cancelled) {
+	private boolean handleSearchFinished(Bundle bookData, boolean cancelled) {
+		System.out.println("onSearchFinished (cancel = " + cancelled + ")");
+	
 		// Set cancelled flag if the task was cancelled
 		if (cancelled) {
 			cancelTask();
@@ -254,12 +262,13 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 		Bundle origData = mOrigData;
 		FieldUsages requestedFields = mCurrFieldUsages;
 
-		// Done!
-		doSearchDone();
-
 		if (!isCancelled() && bookData != null)
 			processSearchResults(rowId, mCurrUuid, requestedFields, bookData, origData);
 		
+		// Done! This need to go after processSearchResults() because doSearchDone() frees
+		// main thread which may disconnect database connection if on last book.
+		doSearchDone();
+
 		return true;
 	}
 

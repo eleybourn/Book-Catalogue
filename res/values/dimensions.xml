@@ -5,4 +5,5 @@
     
     <dimen name="padding_prefs_item">20dp</dimen>
     
+    <dimen name="isbn_key_size">75dp</dimen>
 </resources>

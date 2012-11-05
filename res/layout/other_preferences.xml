@@ -1,25 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/bc_background_gradient_dim"
-    android:orientation="vertical"
-    android:paddingLeft="5sp" >
+    android:background="@drawable/bc_background_gradient_dim" >
 
-    <ScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
+        android:id="@+id/dynamic_properties"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/padding_border" >
+    </LinearLayout>
 
-        <LinearLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/dynamic_properties"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:orientation="vertical"
-            android:paddingLeft="5sp" >
-        </LinearLayout>
-    </ScrollView>
-
-</LinearLayout>
+</ScrollView>

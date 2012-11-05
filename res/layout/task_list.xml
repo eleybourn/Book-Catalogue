@@ -12,14 +12,13 @@
         android:layout_height="1dp"
         android:layout_alignParentTop="true"
         android:background="@drawable/main_menu_header_divider"
-        android:paddingBottom="5dp" />
+        android:paddingBottom="@dimen/padding_border" />
 
     <LinearLayout
         android:id="@+id/footer"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#00000000"
         android:orientation="horizontal" >
 
         <Button
@@ -28,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:focusable="false"
-            android:text="@+string/cleanup_old_tasks" />
+            android:text="@string/cleanup_old_tasks" />
     </LinearLayout>
     <!--
  	<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
@@ -48,10 +47,7 @@
         android:layout_height="fill_parent"
         android:layout_above="@id/footer"
         android:layout_below="@id/header"
-        android:layout_weight="1"
-        android:background="#00000000"
         android:cacheColorHint="#00000000" >
     </ListView>
-<!-- 	  		</ScrollView> -->
 
 </RelativeLayout>

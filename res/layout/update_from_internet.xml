@@ -5,33 +5,31 @@
     android:orientation="vertical" >
 
     <ScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="50dip" >
 
         <LinearLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/manage_fields_scrollview"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingLeft="5sp" >
+            android:paddingLeft="@dimen/padding_border" >
 
             <TextView
                 android:id="@+id/select_fields"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="5sp"
-                android:text="@+string/select_fields_to_update"
+                android:paddingTop="@dimen/padding_border"
+                android:text="@string/select_fields_to_update"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <TextView
                 android:id="@+id/select_fields_help_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="5sp"
-                android:text="@+string/select_fields_to_update_help" />
+                android:paddingTop="@dimen/padding_border"
+                android:text="@string/select_fields_to_update_help" />
         </LinearLayout>
     </ScrollView>
 
@@ -46,15 +44,15 @@
             android:id="@+id/cancel"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:text="@string/cancel"
-            android:width="150sp" />
+            android:layout_weight="1"
+            android:text="@string/cancel" />
 
         <Button
             android:id="@+id/confirm"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:text="@string/confirm_update"
-            android:width="150sp" />
+            android:layout_weight="1"
+            android:text="@string/confirm_update" />
     </LinearLayout>
 
 </LinearLayout>

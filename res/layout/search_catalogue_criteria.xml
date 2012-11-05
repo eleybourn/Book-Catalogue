@@ -96,7 +96,7 @@
                 android:id="@+id/books_found"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:marginTop="@dimen/padding_border"
+                android:layout_marginTop="@dimen/padding_border"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <View

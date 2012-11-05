@@ -12,35 +12,31 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:background="#00000000"
         android:orientation="vertical"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp" >
+        android:paddingLeft="@dimen/padding_border"
+        android:paddingRight="@dimen/padding_border" >
 
         <LinearLayout
             android:id="@+id/original_details"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="#00000000"
             android:orientation="vertical" >
 
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:background="#00000000"
                 android:orientation="vertical" >
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="#00000000"
                     android:text="@string/author"
                     android:textAppearance="?android:attr/textAppearanceSmall" />
 
                 <TextView
                     android:id="@+id/author"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dip"
                     android:layout_weight="1"
                     android:hint="@string/author"
                     android:singleLine="false"
@@ -50,20 +46,18 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:background="#00000000"
                 android:orientation="vertical" >
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="#00000000"
                     android:text="@string/title"
                     android:textAppearance="?android:attr/textAppearanceSmall" />
 
                 <TextView
                     android:id="@+id/title"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dip"
                     android:layout_weight="1"
                     android:hint="@string/title"
                     android:singleLine="false"
@@ -73,23 +67,20 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:background="#00000000"
                 android:orientation="vertical" >
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="#00000000"
                     android:text="@string/isbn"
                     android:textAppearance="?android:attr/textAppearanceSmall" />
 
                 <TextView
                     android:id="@+id/isbn"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dip"
                     android:layout_weight="1"
                     android:hint="@string/isbn"
-                    android:inputType="textCapWords"
                     android:singleLine="false"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
             </LinearLayout>
@@ -104,21 +95,19 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="#00000000"
             android:orientation="vertical"
-            android:paddingTop="5dp" >
+            android:paddingTop="@dimen/padding_border" >
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="#00000000"
                 android:text="@string/search_criteria"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <EditText
                 android:id="@+id/search_text"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dip"
                 android:layout_weight="1"
                 android:hint="@string/text_and_or_isbn"
                 android:inputType="textCapWords|textMultiLine"
@@ -131,9 +120,9 @@
                 android:id="@+id/search"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="center_horizontal"
                 android:focusable="false"
-                android:text="@+string/search" />
+                android:text="@string/search" />
         </LinearLayout>
 
         <View
@@ -148,10 +137,9 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#00000000"
         android:orientation="vertical"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp" >
+        android:paddingLeft="@dimen/padding_border"
+        android:paddingRight="@dimen/padding_border" >
 
         <View
             android:layout_width="fill_parent"
@@ -163,7 +151,6 @@
             android:id="@+id/works_found"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="#00000000"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
 

@@ -733,7 +733,7 @@ public class BooklistBuilder {
 					g.displayDomain = DOM_READ_YEAR;
 					// TODO: Handle 'DESCENDING'. Requires the navigator construction to use max/min for non-grouped domains that appear in sublevels based on desc/asc.
 					// We don't use DESCENDING sort yet because the 'header' ends up below the detail rows in the flattened table.
-					summary.addDomain(DOM_ADDED_YEAR, yearGlob(TBL_BOOKS.dot(DOM_READ_END)), SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED) ; // | SummaryBuilder.FLAG_SORT_DESCENDING);
+					summary.addDomain(DOM_READ_YEAR, yearGlob(TBL_BOOKS.dot(DOM_READ_END)), SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED) ; // | SummaryBuilder.FLAG_SORT_DESCENDING);
 					g.setKeyComponents("yrr", DOM_READ_YEAR);
 					break;
 	

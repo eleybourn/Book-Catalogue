@@ -47,7 +47,7 @@ public class UpgradeMessageManager {
 	/** List of version-specific messages */
 	private static final UpgradeMessages mMessages = new UpgradeMessages() 
 	
-	.add(120, R.string.new_in_42);
+	.add(124, R.string.new_in_42);
 	
 	
 	//* Internal: prep for fragments by separating message delivery from activities

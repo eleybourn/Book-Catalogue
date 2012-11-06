@@ -785,6 +785,13 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 				Intent pintent = null;
 				// Get a photo
 				pintent = new Intent("android.media.action.IMAGE_CAPTURE");
+				// We don't do this because we have no reliable way to rotate a large image
+				// without producing memory exhaustion; Andoid does not include a file-based
+				// image rotation.
+				//File f = this.getCameraImageFile();
+				//if (f.exists())
+				//	f.delete();
+				//pintent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
 				startActivityForResult(pintent, ADD_PHOTO);
 				return true;
 			case ADD_GALLERY:

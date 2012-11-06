@@ -603,6 +603,8 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 		 */
 		private GenericStringHolder(BooklistRowView rowView, DomainDefinition domain, int noDataId) {
 			mColIndex = rowView.getColumnIndex(domain.name);
+			if (mColIndex < 0)
+				throw new RuntimeException("Domain '" + domain.name + "'not found in row view");
 			mNoDataId = noDataId;
 		}
 

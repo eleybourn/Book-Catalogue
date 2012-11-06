@@ -29,13 +29,13 @@
     <string name="cancel">Отмена</string>
     <string name="confirm_save">Сохранить книгу</string>
     <string name="nobookshelves">Вы не создали ни одной книжной полки. Пожалуйста, добавьте книжную полку, используя меню в нижней части этого экрана.</string>
-    <string name="menu_insert_bs">Создать книжную полку</string>
-    <string name="confirm_add_bs">Добавить книжную полку</string>
-    <string name="menu_bookshelf">Управлять книжными полками</string>
-    <string name="confirm_save_bs">Сохранить книжную полку</string>
-    <string name="menu_delete_bs">Удалить книжную полку</string>
+    <string name="menu_insert_bs">Создать полку</string>
+    <string name="confirm_add_bs">Добавить полку</string>
+    <string name="menu_bookshelf">Полки</string>
+    <string name="confirm_save_bs">Сохранить полку</string>
+    <string name="menu_delete_bs">Удалить полку</string>
     <string name="delete_1st_bs">Невозможно удалить единственную книжную полку</string>
-    <string name="bookshelf_label">Книжная полка: </string>
+    <string name="bookshelf_label">Полка: </string>
     <string name="all_books">Все книги</string>
     <string name="isbn_found">ISBN отсканирован. Поиск в Интернете.</string>
     <string name="title_isbn_search">Книжный каталог: поиск по ISBN</string>
@@ -109,7 +109,7 @@
     <string name="menu_delete_thumb">Удалить миниатюру</string>
     <string name="help">Помощь</string>
     <string name="filler_help_text">Полное справочное руководство ожидается в ближайшее время. </string>
-    <string name="menu_manage_fields">Управлять видимостью полей</string>
+    <string name="menu_manage_fields">Видимость полей</string>
     <string name="manage_fields_help">Выбранные поля видны на экранах добавления/редактирования книги. Невыбранные поля скрыты.</string>
     <string name="edit_book_anthology">Названия антологий</string>
     <string name="amazon_wishlist">Amazon Wishlist</string>
@@ -144,7 +144,7 @@
     <string name="searching_google_books">Поиск в Google Books</string>
     <string name="searching_library_thing">Поиск в LibraryThing</string>
     <string name="bookshelf_title">Выберите книжные полки для этой книги</string>
-    <string name="select_bookshelves">Выбор книжных полок</string>
+    <string name="select_bookshelves">Выбор полок</string>
     <string name="format">Формат</string>
     <string name="format1">Мягкий переплет</string>
     <string name="format2">Твёрдый переплёт</string>
@@ -427,7 +427,7 @@
     <item name="MENU_EDIT_STYLE" type="id"/>
     <item name="MENU_CLONE_STYLE" type="id"/>
 
-    <string name="booklist_preferences">Настройки списка книг</string>
+    <string name="booklist_preferences">Список книг</string>
     <string name="extra_book_details">Дополнительная информация</string>
     <string name="general">Основные</string>
     <string name="bookshelves">Книжные полки</string>
@@ -604,7 +604,7 @@
     <string name="sort_and_style_ellipsis">Сортировать &amp; Стиль&#8230;</string>
     <string name="disable_background_image">Отключить фоновый рисунок</string>
     <string name="displaying_n_books_in_m_entries">отображается %1$s книг, в %2$s элементах</string>
-    <string name="displaying_n_books">отображается %1$s книг</string>
+    <string name="displaying_n_books">Книг на полке: %1$s</string>
     <string name="available">Доступно</string>
     <string name="loaned_to_2">\u2192</string>
     <string name="summary_details_in_header">Суммарная информация в заголовке</string>

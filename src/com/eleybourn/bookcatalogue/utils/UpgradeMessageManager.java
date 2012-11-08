@@ -47,8 +47,9 @@ public class UpgradeMessageManager {
 	/** List of version-specific messages */
 	private static final UpgradeMessages mMessages = new UpgradeMessages() 
 	
-	.add(124, R.string.new_in_42);
-	
+	.add(124, R.string.new_in_42)
+	.add(125, R.string.new_in_421);
+
 	
 	//* Internal: prep for fragments by separating message delivery from activities
 	//* Internal: one database connection for all activities and threads

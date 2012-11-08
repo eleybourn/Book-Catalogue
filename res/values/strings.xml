@@ -649,5 +649,10 @@
 </string>
 
 <string name="_empty_"></string>
+<string name="new_in_421"><![CDATA[
+    <p><b>New in 4.2.1</b>\n\n
+			* Fix crash when expanding list items and using \'Expand All\'\n\n
+			</p>
+		]]></string>
 
 </resources>

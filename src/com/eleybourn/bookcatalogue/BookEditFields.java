@@ -603,7 +603,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 				Logger.logError(e);
 			}
 
-			Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
+			Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 
 			mFields.setAfterFieldChangeListener(new AfterFieldChangeListener(){
 				@Override
@@ -1338,7 +1338,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 	public void onResume() {
 		Tracker.enterOnResume(this);
 		super.onResume();
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
 		Tracker.exitOnResume(this);
 	}
 	

@@ -14,7 +14,8 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/lt_info" />
+            android:text="@string/lt_info"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
             android:id="@+id/register_url"
@@ -24,6 +25,7 @@
             android:paddingBottom="10dp"
             android:paddingTop="20dp"
             android:text="@string/lt_register_text"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/link_blue" />
 
         <TextView
@@ -34,12 +36,14 @@
             android:paddingBottom="20dp"
             android:paddingTop="10dp"
             android:text="@string/lt_devkey_text"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/link_blue" />
 
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/lt_gotkey" />
+            android:text="@string/lt_gotkey"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <EditText
             android:id="@+id/devkey"
@@ -61,7 +65,8 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/lt_reset_messages_info" />
+            android:text="@string/lt_reset_messages_info"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <Button
             android:id="@+id/reset_messages"

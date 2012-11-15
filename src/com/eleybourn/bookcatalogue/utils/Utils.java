@@ -32,6 +32,7 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.security.MessageDigest;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -59,6 +60,10 @@ import org.xml.sax.helpers.DefaultHandler;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.Signature;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -1871,6 +1876,66 @@ public class Utils {
 	@SuppressWarnings("unchecked")
 	public static <T> ArrayList<T> getListFromBundle(Bundle b, String key) {
 		return (ArrayList<T>) b.getSerializable(key);
+	}
+
+	/** 
+	 * Saved copy of the MD5 hash of the public key that signed this app, or a useful
+	 * text message if an error or other problem occurred.
+	 */
+	private static String mSignedBy = null;
+
+	/**
+	 * Return the MD5 hash of the public key that signed this app, or a useful 
+	 * text message if an error or other problem occurred.
+	 */
+	public static String signedBy(Context context) {
+		// Get value if no cached value exists
+		if (mSignedBy == null) {
+			try {
+		    	// Get app info
+		        PackageManager manager = context.getPackageManager(); 
+		        PackageInfo appInfo = manager.getPackageInfo( context.getPackageName(), PackageManager.GET_SIGNATURES);
+		        // Each sig is a PK of the signer:
+		        //     https://groups.google.com/forum/?fromgroups=#!topic/android-developers/fPtdt6zDzns
+		        for(Signature sig: appInfo.signatures) {
+			        if (sig != null) {
+	                    final MessageDigest sha1 = MessageDigest.getInstance("MD5");
+	                    final byte[] publicKey = sha1.digest(sig.toByteArray());
+	                    // Turn the hex bytes into a more traditional MD5 string representation.
+	                    final StringBuffer hexString = new StringBuffer();
+	                    boolean first = true;
+	                    for (int i = 0; i < publicKey.length; i++)
+	                    {
+	                        if (!first) {
+	                        	hexString.append(":");
+	                        } else {
+	                        	first = false;
+	                        }
+	                        String byteString = Integer.toHexString(0xFF & publicKey[i]);
+	                        if (byteString.length() == 1) 
+	                        	hexString.append("0");
+	                        hexString.append(byteString);
+	                    }
+	                    String fingerprint = hexString.toString();
+
+	                    // Append as needed (theoretically could have more than one sig */
+	                    if (mSignedBy == null)
+	                    	mSignedBy = fingerprint;
+	                    else
+	                    	mSignedBy += "/" + fingerprint;
+			        }
+		        }
+
+		    } catch (NameNotFoundException e) {
+				// Default if package not found...kind of unlikely
+				mSignedBy = "NOPACKAGE";
+
+		    } catch (Exception e) {
+				// Default if we die
+				mSignedBy = e.getMessage();
+		    }			
+		}
+		return mSignedBy;
 	}
 }
 

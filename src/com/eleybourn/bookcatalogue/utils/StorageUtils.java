@@ -17,6 +17,9 @@ import java.util.regex.Pattern;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Environment;
@@ -253,7 +256,25 @@ public class StorageUtils {
 		emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, context.getString(R.string.debug_email).split(";"));
 		String subject = "[" + context.getString(R.string.app_name) + "] " + context.getString(R.string.debug_subject);
 		emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
-		emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, context.getString(R.string.debug_body) + "\n\n" + Tracker.getEventsInfo());
+		String message = "";
+
+        try {
+        	// Get app info
+            PackageManager manager = context.getPackageManager(); 
+			PackageInfo appInfo = manager.getPackageInfo( context.getPackageName(), 0);
+			message += "App: " + appInfo.packageName + "\n";
+			message += "Version: " + appInfo.versionName + " (" + appInfo.versionCode + ")\n";
+		} catch (Exception e1) {
+			// Not much we can do inside error logger...
+		}
+
+        message += "Signed-By: " + Utils.signedBy(context) + "\n";
+
+		message += "\nHistory:\n" + Tracker.getEventsInfo();
+
+        message += "Details:\n\n" + context.getString(R.string.debug_body).toUpperCase() + "\n\n";
+
+		emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, message);
 		//has to be an ArrayList
 		ArrayList<Uri> uris = new ArrayList<Uri>();
 		//convert from paths to Android friendly Parcelable Uri's

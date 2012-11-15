@@ -318,8 +318,6 @@ public class BookISBNSearch extends ActivityWithTasks {
 				 * Prompt users to install the application if they do not have it installed.
 				 */
 				try {
-					if (true) 
-						throw new java.lang.SecurityException();
 					// Start the scanner IF this is a real 'first time' call.
 					if (savedInstanceState == null) {
 						startScannerActivity();

@@ -22,6 +22,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.widget.Toast;
 
@@ -267,6 +268,15 @@ public class StorageUtils {
 		} catch (Exception e1) {
 			// Not much we can do inside error logger...
 		}
+        
+        
+        message += "SDK: " + Build.VERSION.SDK + " (" + Build.VERSION.SDK_INT + " " + Build.TAGS + ")\n";
+        message += "Phone Model: " + Build.MODEL + "\n";
+        message += "Phone Manufacturer: " + Build.MANUFACTURER + "\n";
+        message += "Phone Device: " + Build.DEVICE + "\n";
+        message += "Phone Product: " + Build.PRODUCT + "\n";
+        message += "Phone Brand: " + Build.BRAND + "\n";
+        message += "Phone ID: " + Build.ID + "\n";
 
         message += "Signed-By: " + Utils.signedBy(context) + "\n";
 

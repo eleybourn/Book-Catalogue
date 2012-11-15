@@ -4,13 +4,11 @@
     android:layout_height="wrap_content" >
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/loaned_to"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -21,11 +19,10 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:paddingBottom="5sp"
+            android:paddingBottom="@dimen/padding_border"
             android:text="@string/nobody" />
 
-        <TextView
-            android:id="@+id/line"
+        <View
             android:layout_width="fill_parent"
             android:layout_height="2sp"
             android:layout_weight="1"
@@ -35,7 +32,7 @@
             android:id="@+id/confirm"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:paddingTop="5sp"
+            android:paddingTop="@dimen/padding_border"
             android:text="@string/returned"
             android:width="150sp" />
     </LinearLayout>

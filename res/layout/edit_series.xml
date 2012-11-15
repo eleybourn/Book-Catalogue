@@ -3,34 +3,24 @@
     android:id="@+id/edit_series_list_wrapper"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="#2d2d2d"
+    android:background="@color/background_grey"
     android:orientation="vertical"
-    android:paddingLeft="5sp" >
+    android:paddingLeft="@dimen/padding_border" >
 
-    <LinearLayout
-        android:id="@+id/top_buttons"
+    <AutoCompleteTextView
+        android:id="@+id/series"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/title"
-        android:gravity="top"
-        android:orientation="horizontal" >
-
-        <AutoCompleteTextView
-            android:id="@+id/series"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:completionThreshold="2"
-            android:hint="@string/series"
-            android:inputType="textCapWords"
-            android:paddingLeft="5sp" />
-    </LinearLayout>
+        android:completionThreshold="2"
+        android:hint="@string/series"
+        android:inputType="textCapWords"
+        android:paddingLeft="@dimen/padding_border" />
 
     <LinearLayout
         android:id="@+id/bottom_buttons"
         android:layout_width="fill_parent"
         android:layout_height="60sp"
-        android:layout_below="@+id/top_buttons"
+        android:layout_below="@+id/series"
         android:orientation="horizontal" >
 
         <Button
@@ -38,16 +28,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/cancel"
-            android:width="0dp" />
+            android:text="@string/cancel" />
 
         <Button
             android:id="@+id/confirm"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/save"
-            android:width="0dp" />
+            android:text="@string/save" />
     </LinearLayout>
 
 </RelativeLayout>

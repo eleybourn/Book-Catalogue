@@ -2,19 +2,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#2d2d2d"
+    android:background="@color/background_grey"
     android:orientation="vertical"
-    android:paddingLeft="5sp" >
+    android:paddingLeft="@dimen/padding_border" >
 
     <!-- android:background="@drawable/bc_background_gradient_dark" -->
 
     <TextView
         android:id="@+id/bookshelf_label"
         android:layout_width="wrap_content"
-        android:layout_height="32sp"
-        android:background="#00000000"
-        android:paddingRight="5sp"
-        android:text="@+string/bookshelf_label"
+        android:layout_height="32dp"
+        android:paddingRight="5dp"
+        android:text="@string/bookshelf_label"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <Spinner
@@ -22,25 +21,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/bookshelf_label"
-        android:background="#00000000"
-        android:paddingBottom="2sp" />
+        android:background="@android:color/transparent"
+        android:paddingBottom="2dp" />
 
     <TextView
         android:id="@+id/bookshelf_num"
         android:layout_width="wrap_content"
-        android:layout_height="32sp"
+        android:layout_height="32dp"
         android:layout_toRightOf="@+id/bookshelf_name"
-        android:background="#00000000"
-        android:paddingLeft="5sp"
+        android:paddingLeft="@dimen/padding_border"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <ImageView
         android:id="@+id/bookshelf_down"
         android:layout_width="wrap_content"
-        android:layout_height="32sp"
+        android:layout_height="32dp"
         android:layout_toRightOf="@+id/bookshelf_num"
-        android:paddingLeft="5sp"
-        android:src="@+drawable/ic_dialog_menu_generic" />
+        android:paddingLeft="@dimen/padding_border"
+        android:src="@drawable/ic_dialog_menu_generic" />
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -51,14 +49,13 @@
             android:id="@+id/android:list"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:cacheColorHint="#00000000"
             android:textSize="16sp" />
 
         <TextView
             android:id="@+id/android:empty"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@+string/nobooks"
+            android:text="@string/nobooks"
             android:textSize="16sp" />
     </LinearLayout>
 

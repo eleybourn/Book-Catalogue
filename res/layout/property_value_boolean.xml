@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/property_boolean"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="#40000000"
     android:gravity="top"
     android:orientation="vertical"
-    android:paddingLeft="5dp"
+    android:paddingLeft="@dimen/padding_border"
     android:paddingRight="10dp" >
 
     <CheckBox
@@ -25,7 +24,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_toLeftOf="@id/checkbox"
-        android:paddingTop="5sp"
+        android:paddingTop="@dimen/padding_border"
         android:singleLine="false"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -41,7 +40,7 @@
 
     <View
         android:layout_width="fill_parent"
-        android:layout_height="1px"
+        android:layout_height="1dp"
         android:layout_alignParentBottom="true"
         android:background="@drawable/property_divider" />
 

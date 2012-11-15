@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/row"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
@@ -18,19 +19,18 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="0dp" >
+        tools:ignore="UselessParent" >
 
         <!-- Used to be the id=row_delete item. Now deletions are handled via context menu. -->
 
         <ImageView
             android:id="@+id/preferred"
-            android:layout_width="45sp"
-            android:layout_height="25sp"
+            android:layout_width="45dp"
+            android:layout_height="25dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_centerVertical="true"
-            android:layout_weight="1"
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:paddingLeft="10dp"
@@ -50,7 +50,7 @@
         <View
             android:id="@+id/top_divider"
             android:layout_width="fill_parent"
-            android:layout_height="1px"
+            android:layout_height="1dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
@@ -104,7 +104,7 @@
 
         <View
             android:layout_width="fill_parent"
-            android:layout_height="1px"
+            android:layout_height="1dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"

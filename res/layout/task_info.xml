@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:baselineAligned="false"
     android:gravity="top"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    tools:ignore="HardcodedText, UnusedIds" >
 
     <LinearLayout
         android:id="@+id/left_panel"
@@ -23,11 +26,12 @@
 
     <LinearLayout
         android:id="@+id/details"
-        android:layout_width="fill_parent"
+        android:layout_width="0dip"
         android:layout_height="wrap_content"
         android:layout_weight="2"
         android:gravity="top"
-        android:orientation="vertical" >
+        android:orientation="vertical" 
+        tools:ignore="NestedWeights">
 
         <TextView
             android:id="@+id/description"
@@ -47,7 +51,6 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <LinearLayout
-            android:id="@+id/left_panel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="top"
@@ -55,7 +58,7 @@
 
             <TextView
                 android:id="@+id/retry_info"
-                android:layout_width="fill_parent"
+                android:layout_width="0dip"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:hint="Retry 0 of 17, next at July 20, 2012 17:45:32 GMT"
@@ -69,7 +72,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:focusable="false"
-                android:text="@+string/retry" />
+                android:text="@string/retry" />
         </LinearLayout>
 
         <TextView
@@ -91,7 +94,7 @@
 
             <TextView
                 android:id="@+id/job_info"
-                android:layout_width="fill_parent"
+                android:layout_width="0dip"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:text="Job ID 123, Queued at 20 Jul 2012 17:50:23 GMT"

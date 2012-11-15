@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/edit_series_list_wrapper"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="#2d2d2d"
+    android:background="@color/background_grey"
     android:orientation="vertical"
-    android:paddingLeft="5sp" >
+    android:paddingLeft="@dimen/padding_border" >
 
     <LinearLayout
         android:id="@+id/top_buttons"
@@ -14,7 +13,7 @@
         android:layout_alignParentTop="true"
         android:gravity="top"
         android:orientation="vertical"
-        android:paddingTop="5sp" >
+        android:paddingTop="@dimen/padding_border" >
 
         <TextView
             android:layout_width="fill_parent"
@@ -55,8 +54,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/top_buttons"
         android:hint="@string/title"
-        android:paddingBottom="5sp"
-        android:paddingTop="5sp"
+        android:paddingBottom="@dimen/padding_border"
+        android:paddingTop="@dimen/padding_border"
         android:text="@string/immediate_global_changes"
         android:textSize="16sp" />
 
@@ -72,16 +71,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/cancel"
-            android:width="0dp" />
+            android:text="@string/cancel" />
 
         <Button
             android:id="@+id/confirm"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/save"
-            android:width="0dp" />
+            android:text="@string/save" />
     </LinearLayout>
 
 </RelativeLayout>

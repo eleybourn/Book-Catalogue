@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/row"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
@@ -13,7 +14,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingBottom="2dp"
-        android:paddingTop="3dp" >
+        android:paddingTop="3dp" 
+        tools:ignore="UselessParent">
 
         <TextView
             android:id="@+id/name"

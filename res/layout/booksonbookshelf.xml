@@ -5,10 +5,9 @@
     android:layout_height="fill_parent"
     android:background="@drawable/bc_background_gradient_dim"
     android:orientation="vertical"
-    android:paddingLeft="5sp" >
+    android:paddingLeft="@dimen/padding_border" >
 
     <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/header"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -18,10 +17,9 @@
         <TextView
             android:id="@+id/bookshelf_label"
             android:layout_width="wrap_content"
-            android:layout_height="32sp"
-            android:background="#00000000"
-            android:paddingRight="5sp"
-            android:text="@+string/bookshelf_label"
+            android:layout_height="32dp"
+            android:paddingRight="@dimen/padding_border"
+            android:text="@string/bookshelf_label"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <Spinner
@@ -35,15 +33,14 @@
         <ImageView
             android:id="@+id/bookshelf_down"
             android:layout_width="wrap_content"
-            android:layout_height="32sp"
+            android:layout_height="32dp"
             android:layout_alignParentRight="true"
-            android:paddingLeft="5sp"
+            android:paddingLeft="@dimen/padding_border"
             android:src="@drawable/expander_ic_maximized" />
 
         <!--
 			android:layout_toRightOf="@+id/bookshelf_name"
-			android:layout_toLeftOf="@+id/bookshelf_down"
-        -->
+			android:layout_toLeftOf="@+id/bookshelf_down"        -->
 
         <TextView
             android:id="@+id/bookshelf_count"
@@ -51,8 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/bookshelf_label"
-            android:background="#00000000"
-            android:paddingLeft="5sp"
+            android:paddingLeft="@dimen/padding_border"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
@@ -60,8 +56,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/bookshelf_count"
-            android:background="#00000000"
-            android:paddingLeft="5sp"
+            android:paddingLeft="@dimen/padding_border"
             android:singleLine="true"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
@@ -70,8 +65,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/level_1_text"
-            android:background="#00000000"
-            android:paddingLeft="5sp"
+            android:paddingLeft="@dimen/padding_border"
             android:singleLine="true"
             android:textAppearance="?android:attr/textAppearanceSmall" />
     </RelativeLayout>
@@ -92,15 +86,11 @@
         android:layout_below="@id/header_divider" >
 
         <!-- android:cacheColorHint="#00000000" - but only if using a nice BG -->
-
-
         <!--
               Name space added below in response to 
-					http://stackoverflow.com/questions/1691569
-        -->
+					http://stackoverflow.com/questions/1691569        -->
 
         <com.eleybourn.bookcatalogue.widgets.FastScrollListView
-            xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/android:list"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
@@ -112,7 +102,7 @@
             android:id="@+id/android:empty"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@+string/nobooks"
+            android:text="@string/nobooks"
             android:textSize="16sp" />
     </LinearLayout>
 

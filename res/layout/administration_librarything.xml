@@ -6,44 +6,40 @@
     android:background="@drawable/bc_background_gradient_dim" >
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingLeft="5sp" >
+        android:paddingLeft="@dimen/padding_border" >
 
         <TextView
-            android:id="@+id/info1"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="20sp"
-            android:text="@+string/lt_info" />
+            android:text="@string/lt_info" />
 
         <TextView
             android:id="@+id/register_url"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:paddingBottom="10sp"
-            android:text="@+string/lt_register_text"
-            android:textColor="#006699" />
+            android:paddingBottom="10dp"
+            android:paddingTop="20dp"
+            android:text="@string/lt_register_text"
+            android:textColor="@color/link_blue" />
 
         <TextView
             android:id="@+id/devkey_url"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:paddingBottom="10sp"
-            android:text="@+string/lt_devkey_text"
-            android:textColor="#006699" />
+            android:paddingBottom="20dp"
+            android:paddingTop="10dp"
+            android:text="@string/lt_devkey_text"
+            android:textColor="@color/link_blue" />
 
         <TextView
-            android:id="@+id/info2"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="20sp"
-            android:paddingTop="20sp"
-            android:text="@+string/lt_gotkey" />
+            android:text="@string/lt_gotkey" />
 
         <EditText
             android:id="@+id/devkey"
@@ -56,23 +52,26 @@
             android:id="@+id/confirm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center|center_horizontal"
-            android:text="@+string/save" />
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:paddingLeft="60dp"
+            android:paddingRight="60dp"
+            android:text="@string/save" />
 
         <TextView
-            android:id="@+id/info3"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="20sp"
-            android:paddingTop="20sp"
-            android:text="@+string/lt_reset_messages_info" />
+            android:text="@string/lt_reset_messages_info" />
 
         <Button
             android:id="@+id/reset_messages"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center|center_horizontal"
-            android:text="@+string/reset" />
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:paddingLeft="60dp"
+            android:paddingRight="60dp"
+            android:text="@string/reset" />
     </LinearLayout>
 
 </ScrollView>

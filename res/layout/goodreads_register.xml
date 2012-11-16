@@ -2,13 +2,12 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="fill_parent"
     android:background="@drawable/bc_background_gradient_dim" >
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingLeft="5sp" >
 
@@ -17,8 +16,8 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="20sp"
-            android:text="@+string/goodreads_auth_blurb_part1"
+            android:paddingBottom="20dp"
+            android:text="@string/goodreads_auth_blurb_part1"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <!-- URL -->
@@ -28,19 +27,19 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:paddingBottom="10sp"
-            android:text="@+string/goodreads_url"
+            android:paddingBottom="10dp"
+            android:text="@string/goodreads_url"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#006699" />
+            android:textColor="@color/link_blue" />
 
         <!-- BLURB 2 -->
 
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="20sp"
-            android:paddingTop="20sp"
-            android:text="@+string/goodreads_auth_blurb_part2"
+            android:paddingBottom="20dp"
+            android:paddingTop="20dp"
+            android:text="@string/goodreads_auth_blurb_part2"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <!-- BUTTON -->
@@ -49,18 +48,17 @@
             android:id="@+id/authorize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="@+string/authorize_access" />
+            android:layout_gravity="center_horizontal"
+            android:text="@string/authorize_access" />
 
         <!-- BLURB 3 -->
 
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="20sp"
-            android:paddingTop="20sp"
-            android:text="@+string/goodreads_auth_blurb_part3"
+            android:paddingBottom="20dp"
+            android:paddingTop="20dp"
+            android:text="@string/goodreads_auth_blurb_part3"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
 

@@ -1304,7 +1304,7 @@ public class BooklistBuilder {
 			if (mSaveListNodeSettingStmt == null) {
 				String sql = TBL_BOOK_LIST_NODE_SETTINGS.getInsert(DOM_KIND,DOM_ROOT_KEY) + 
 						" Select ?, " + DOM_ROOT_KEY + " From " + mNavTable + " Where expanded = 1 and level = 1 and " + DOM_ID + " = ?";
-				mSaveListNodeSettingStmt = mStatements.add("mSaveListNodeSettingsStmt", sql);
+				mSaveListNodeSettingStmt = mStatements.add("mSaveListNodeSettingStmt", sql);
 			}
 			int kind = mStyle.getGroupAt(0).kind;
 
@@ -1619,6 +1619,8 @@ public class BooklistBuilder {
 	 * @param absPos
 	 */
 	public void toggleExpandNode(long absPos) {
+		// This seems to get called sometimes after the database is closed...
+		// RELEASE: remove statements as members, and look them up in mStatements via static keys
 
 		buildExpandNodeStatements();
 

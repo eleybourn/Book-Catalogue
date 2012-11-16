@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/edit_series_list_wrapper"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="#2d2d2d"
+    android:background="@color/background_grey"
     android:orientation="vertical"
-    android:paddingLeft="5sp" >
+    android:paddingLeft="@dimen/padding_border" >
 
     <TextView
         android:id="@+id/title_label"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_weight="2"
         android:hint="Label"
-        android:textSize="12sp" />
+        android:textSize="12sp" 
+        tools:ignore="HardcodedText"/>
 
     <TextView
         android:id="@+id/title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/title_label"
-        android:layout_weight="2"
         android:hint="@string/title"
         android:textSize="16sp" />
 
@@ -41,7 +40,7 @@
             android:completionThreshold="2"
             android:hint="@string/series"
             android:inputType="textCapWords"
-            android:paddingLeft="5sp" />
+            android:paddingLeft="@dimen/padding_border" />
         <!--
 			Removed:
 		 			android:inputType="numberDecimal"
@@ -52,10 +51,7 @@
             android:id="@+id/series_num"
             android:layout_width="150sp"
             android:layout_height="fill_parent"
-            android:layout_toLeftOf="@+id/add"
-            android:layout_toRightOf="@+id/series"
             android:layout_weight="1"
-            android:gravity="left"
             android:hint="@string/series_num"
             android:singleLine="true" />
     </LinearLayout>
@@ -72,16 +68,14 @@
 	        android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/cancel"
-            android:width="0dp" />
+            android:text="@string/cancel" />
 
         <Button
             android:id="@+id/confirm"
             android:layout_height="wrap_content"
 	        android:layout_width="0dp"
             android:layout_weight="1"
-            android:text="@string/save"
-            android:width="0dp" />
+            android:text="@string/save" />
     </LinearLayout>
 
 </RelativeLayout>

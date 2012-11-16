@@ -55,7 +55,7 @@ public class AdministrationAbout extends Activity {
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.administration_about);
 			setupAdmin();
-			Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
+			Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
@@ -67,7 +67,7 @@ public class AdministrationAbout extends Activity {
 	@Override 
 	public void onResume() {
 		super.onResume();
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
 	}
 	/**
 	 * This function builds the Admin page in 4 sections. 

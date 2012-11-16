@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/edit_author_list_wrapper"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#2d2d2d"
+    android:background="@color/background_grey"
     android:orientation="vertical"
-    android:paddingLeft="5sp" >
+    android:paddingLeft="@dimen/padding_border" >
 
     <TextView
         android:id="@+id/title"
@@ -24,14 +23,14 @@
 
         <AutoCompleteTextView
             android:id="@+id/author"
-            android:layout_width="fill_parent"
+            android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:completionThreshold="2"
             android:hint="@string/author"
             android:inputType="textCapWords"
             android:nextFocusDown="@+id/title"
-            android:paddingLeft="5sp" />
+            android:paddingLeft="@dimen/padding_border" />
 
         <Button
             android:id="@+id/add"
@@ -58,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/bottom_buttons"
         android:layout_below="@+id/top_buttons"
-        android:text="@+string/noauthors"
+        android:text="@string/noauthors"
         android:textSize="16sp" />
 
     <LinearLayout
@@ -74,16 +73,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/cancel"
-            android:width="0dp" />
+            android:text="@string/cancel" />
 
         <Button
             android:id="@+id/confirm"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/save"
-            android:width="0dp" />
+            android:text="@string/save" />
     </LinearLayout>
 
 </RelativeLayout>

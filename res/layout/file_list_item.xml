@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent" 
+    tools:ignore="HardcodedText" >
 
     <TextView
         android:id="@+id/name"
@@ -12,7 +14,7 @@
         android:singleLine="false"
         android:text="export.csv"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="#ff2d2d2d" />
+        android:textColor="@color/background_grey" />
 
     <TextView
         android:id="@+id/updated_label"
@@ -20,10 +22,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/name"
-        android:layout_marginTop="4sp"
+        android:layout_marginTop="4dp"
         android:text="@string/updated"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="#ff2d2d2d" />
+        android:textColor="@color/background_grey" />
 
     <TextView
         android:id="@+id/updated"
@@ -36,7 +38,7 @@
         android:singleLine="false"
         android:text="Fri, 23 July, 17:54:01 2011"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#ff2d2d2d" />
+        android:textColor="@color/background_grey" />
 
     <TextView
         android:id="@+id/size_label"
@@ -44,10 +46,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/updated_label"
-        android:layout_marginTop="4sp"
+        android:layout_marginTop="4dp"
         android:text="@string/size"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="#ff2d2d2d" />
+        android:textColor="@color/background_grey" />
 
     <TextView
         android:id="@+id/size"
@@ -60,7 +62,7 @@
         android:singleLine="false"
         android:text="154kb"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#ff2d2d2d" />
+        android:textColor="@color/background_grey" />
 
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -79,7 +81,7 @@
             android:layout_height="wrap_content"
             android:text="@string/in"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="#ff2d2d2d" />
+            android:textColor="@color/background_grey" />
 
         <TextView
             android:id="@+id/path"
@@ -89,7 +91,7 @@
             android:singleLine="false"
             android:text="/mnt/sdcard/foobar/bookCatalogue/asasd/asd/asd/asd/asd/as/da/sd/asd"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="#ff2d2d2d" />
+            android:textColor="@color/background_grey" />
     </LinearLayout>
 
     <View

@@ -25,7 +25,7 @@
         android:singleLine="false"
         android:text=""
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="#ff2d2d2d" />
+        android:textColor="@color/background_grey" />
 
     <View
         android:layout_width="fill_parent"

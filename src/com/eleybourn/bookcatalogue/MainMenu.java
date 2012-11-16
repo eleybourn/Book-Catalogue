@@ -94,7 +94,8 @@ public class MainMenu extends Activity {
 
 		if (savedInstanceState == null)
 			HintManager.displayHint(this, R.string.hint_startup_screen, null);
-		Utils.initBackground(R.drawable.bc_background_gradient, this);
+
+		Utils.initBackground(R.drawable.bc_background_gradient, this, true);
 	}
 
 	/**
@@ -103,7 +104,7 @@ public class MainMenu extends Activity {
 	@Override 
 	public void onResume() {
 		super.onResume();
-		Utils.initBackground(R.drawable.bc_background_gradient, this);		
+		Utils.initBackground(R.drawable.bc_background_gradient, this, true);		
 	}
 
 	/**

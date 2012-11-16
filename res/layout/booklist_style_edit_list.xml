@@ -3,9 +3,8 @@
     android:id="@+id/list_wrapper"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#2d2d2d"
-    android:orientation="vertical"
-    android:paddingLeft="5sp" >
+    android:background="@color/background_grey"
+    android:orientation="vertical" >
 
     <LinearLayout
         android:id="@+id/top_buttons"
@@ -20,20 +19,18 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:gravity="bottom"
-        android:orientation="horizontal"
-        android:padding="5dp" >
+        android:padding="@dimen/padding_border" >
 
         <Button
             android:id="@+id/cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|left"
-            android:layout_weight="10"
+            android:layout_weight="1"
             android:text="@string/cancel" />
         <!--
     	    style="?android:attr/buttonStyleSmall"
-		    android:textAppearance="?android:attr/textAppearanceSmall" 
+		    android:textAppearance="?android:attr/textAppearanceSmall"
         -->
 
         <Button
@@ -41,12 +38,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|right"
-            android:layout_weight="10"
+            android:layout_weight="1"
             android:text="@string/save" />
         <!--
     	    style="?android:attr/buttonStyleSmall"
-		    android:textAppearance="?android:attr/textAppearanceSmall" 
-        -->
+		    android:textAppearance="?android:attr/textAppearanceSmall"         -->
 
     </LinearLayout>
 
@@ -57,7 +53,8 @@
         android:layout_above="@+id/bottom_buttons"
         android:layout_below="@+id/top_buttons"
         android:gravity="top"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/padding_border" >
 
         <com.eleybourn.bookcatalogue.widgets.TouchListView
             xmlns:tlv="http://schemas.android.com/apk/res/com.eleybourn.bookcatalogue"
@@ -74,7 +71,7 @@
             android:id="@+id/android:empty"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@+string/noseries"
+            android:text="@string/noseries"
             android:textSize="16sp" />
     </LinearLayout>
 

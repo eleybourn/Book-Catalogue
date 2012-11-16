@@ -28,5 +28,12 @@
         <item name="android:paddingTop">20dp</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
     </style>
+    
+    <!-- Style for key of isbn search keybouard -->
+    <style name="isbn_search_key">
+        <item name="android:layout_width">@dimen/isbn_key_size</item>
+        <item name="android:layout_height">@dimen/isbn_key_size</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+    </style>
 
 </resources>

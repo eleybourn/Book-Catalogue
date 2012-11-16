@@ -41,7 +41,17 @@ Features include;
   case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
-new in 4.1.6-B23
+new in 4.2.2
+* Fix tiling of background image for some Android versions
+* Better handling of incompatible scanner apps
+* Send more details on crash or when asking for help
+* Cleanup of layouts (Nick Silin)
+* Bug fixes
+
+new in 4.2.1
+* Fix crash when expanding list items and using 'Expand All'
+
+new in 4.2
 * Date-Picker that supports dates down to 0AD as well as partial dates
 * HTML descriptions display correctly with click to edit
 * Preference for pre-selecting whole image when cropping

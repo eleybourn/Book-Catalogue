@@ -32,6 +32,7 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.security.MessageDigest;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -59,11 +60,17 @@ import org.xml.sax.helpers.DefaultHandler;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.Signature;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Shader.TileMode;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -1462,15 +1469,16 @@ public class Utils {
 	/**
 	 * Set the passed Activity background based on user preferences
 	 */
-	public static void initBackground(int bgResource, Activity a) {
-		initBackground(bgResource, a, R.id.root);
+	public static void initBackground(int bgResource, Activity a, boolean bright) {
+		initBackground(bgResource, a, R.id.root, bright);
 	}
 	/**
 	 * Set the passed Activity background based on user preferences
 	 */
-	public static void initBackground(int bgResource, Activity a, int rootId) {
+	public static void initBackground(int bgResource, Activity a, int rootId, boolean bright) {
 		try {
 			View root = a.findViewById(rootId);
+
 			if (BookCatalogueApp.isBackgroundImageDisabled()) {
 				root.setBackgroundColor(0xFF202020);
 				if (root instanceof ListView) {
@@ -1481,7 +1489,8 @@ public class Utils {
 					ListView lv = ((ListView)root);
 					setCacheColorHintSafely(lv, 0x00000000);				
 				}
-				Drawable d = cleanupTiledBackground(a.getResources().getDrawable(bgResource));
+				//Drawable d = cleanupTiledBackground(a.getResources().getDrawable(bgResource));
+				Drawable d = makeTiledBackground(a, bright);
 
 				root.setBackgroundDrawable(d);
 			}
@@ -1491,40 +1500,91 @@ public class Utils {
 			Logger.logError(e, "Error setting background");
 		}
 	}
-
+	
 	/**
  	 * Reuse of bitmaps in tiled backgrounds is a known cause of problems:
      *		http://stackoverflow.com/questions/4077487/background-image-not-repeating-in-android-layout
-	 * So we avoid reusing them
-	 *
-	 * @param d		Drawable background that may be a BitmapDrawable or a layered drawablewhose first 
-	 * 				layer is a tiled bitmap
+	 * So we avoid reusing them.
 	 * 
-	 * @return		Modified Drawable
+	 * This seems to have become further messed up in 4.1 so now, we just created them manually. No references,
+	 * but the old cleanup method (see below for cleanupTiledBackground()) no longer works. Since it effectively
+	 * un-cached the background, we just create it here.
+	 * 
+	 * The main problem with this approach is that the style is defined in code rather than XML.
+	 *
+	 * @param a			Activity context
+	 * @param bright	Flag indicating if background should be 'bright'
+	 * 
+	 * @return			Background Drawable
 	 */
-	public static Drawable cleanupTiledBackground(Drawable d) {
+	public static Drawable makeTiledBackground(Activity a, boolean bright) {
+		// Storage for the layers
+		Drawable[] drawables = new Drawable[2];
+		// Get the BG image, put in tiled drawable
+		Bitmap b = BitmapFactory.decodeResource(a.getResources(), R.drawable.books_bg);
+		BitmapDrawable bmD = new BitmapDrawable(a.getResources(), b);
+		bmD.setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);
+		// Add to layers
+		drawables[0] = bmD;
 
-		if (d instanceof LayerDrawable) {
-			System.out.println("BG is layered");
-			LayerDrawable ld = (LayerDrawable)d;
-			Drawable l = ld.getDrawable(0);
-			if (l instanceof BitmapDrawable) {
-				d.mutate();
-				l.mutate();
-				System.out.println("Layer0 is BMP");
-				BitmapDrawable bmp = (BitmapDrawable) l;
-				bmp.mutate(); // make sure that we aren't sharing state anymore
-				bmp.setTileModeXY(TileMode.CLAMP, TileMode.CLAMP);			
-				bmp.setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);
-			}
-		} else if (d instanceof BitmapDrawable) {
-			BitmapDrawable bmp = (BitmapDrawable) d;
-			bmp.mutate(); // make sure that we aren't sharing state anymore
-			bmp.setTileModeXY(TileMode.CLAMP, TileMode.CLAMP);			
-			bmp.setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);			
+		// Set up the gradient colours based on 'bright' setting
+		int[] colours = new int[3];
+		if (bright) {
+			colours[0] = Color.argb(224, 0, 0, 0);
+			colours[1] = Color.argb(208, 0, 0, 0);
+			colours[2] = Color.argb(48, 0, 0, 0);			
+		} else {
+			colours[0] = Color.argb(255, 0, 0, 0);
+			colours[1] = Color.argb(208, 0, 0, 0);
+			colours[2] = Color.argb(160, 0, 0, 0);
 		}
-		return d;
+
+		// Create a gradient and add to layers
+		GradientDrawable gd = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, colours);
+		drawables[1] = gd;
+
+		// Make the layers and we are done.
+		LayerDrawable ll = new LayerDrawable(drawables);
+		ll.setDither(true);
+		
+		return ll;
 	}
+
+	///**
+	// * Reuse of bitmaps in tiled backgrounds is a known cause of problems:
+	// *		http://stackoverflow.com/questions/4077487/background-image-not-repeating-in-android-layout
+	// * So we avoid reusing them
+	// *
+	// * @param d		Drawable background that may be a BitmapDrawable or a layered drawablewhose first 
+	// * 				layer is a tiled bitmap
+	// * 
+	// * @return		Modified Drawable
+	// */
+	//private static Drawable cleanupTiledBackground(Drawable d) {
+	//	if (d instanceof LayerDrawable) {
+	//		System.out.println("BG: BG is layered");
+	//		LayerDrawable ld = (LayerDrawable)d;
+	//		Drawable l = ld.getDrawable(0);
+	//		if (l instanceof BitmapDrawable) {
+	//			d.mutate();
+	//			l.mutate();
+	//			System.out.println("BG: Layer0 is BMP");
+	//			BitmapDrawable bmp = (BitmapDrawable) l;
+	//			bmp.mutate(); // make sure that we aren't sharing state anymore
+	//			//bmp.setTileModeXY(TileMode.CLAMP, TileMode.CLAMP);			
+	//			bmp.setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);
+	//		} else {
+	//			System.out.println("BG: Layer0 is " + l.getClass().getSimpleName() + " (ignored)");				
+	//		}
+	//	} else if (d instanceof BitmapDrawable) {
+	//		System.out.println("BG: Drawable is BMP");
+	//		BitmapDrawable bmp = (BitmapDrawable) d;
+	//		bmp.mutate(); // make sure that we aren't sharing state anymore
+	//		//bmp.setTileModeXY(TileMode.CLAMP, TileMode.CLAMP);			
+	//		bmp.setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);			
+	//	}
+	//	return d;
+	//}
 
 	/**
 	 * Call setCacheColorHint on a listview and trap IndexOutOfBoundsException. 
@@ -1816,6 +1876,66 @@ public class Utils {
 	@SuppressWarnings("unchecked")
 	public static <T> ArrayList<T> getListFromBundle(Bundle b, String key) {
 		return (ArrayList<T>) b.getSerializable(key);
+	}
+
+	/** 
+	 * Saved copy of the MD5 hash of the public key that signed this app, or a useful
+	 * text message if an error or other problem occurred.
+	 */
+	private static String mSignedBy = null;
+
+	/**
+	 * Return the MD5 hash of the public key that signed this app, or a useful 
+	 * text message if an error or other problem occurred.
+	 */
+	public static String signedBy(Context context) {
+		// Get value if no cached value exists
+		if (mSignedBy == null) {
+			try {
+		    	// Get app info
+		        PackageManager manager = context.getPackageManager(); 
+		        PackageInfo appInfo = manager.getPackageInfo( context.getPackageName(), PackageManager.GET_SIGNATURES);
+		        // Each sig is a PK of the signer:
+		        //     https://groups.google.com/forum/?fromgroups=#!topic/android-developers/fPtdt6zDzns
+		        for(Signature sig: appInfo.signatures) {
+			        if (sig != null) {
+	                    final MessageDigest sha1 = MessageDigest.getInstance("MD5");
+	                    final byte[] publicKey = sha1.digest(sig.toByteArray());
+	                    // Turn the hex bytes into a more traditional MD5 string representation.
+	                    final StringBuffer hexString = new StringBuffer();
+	                    boolean first = true;
+	                    for (int i = 0; i < publicKey.length; i++)
+	                    {
+	                        if (!first) {
+	                        	hexString.append(":");
+	                        } else {
+	                        	first = false;
+	                        }
+	                        String byteString = Integer.toHexString(0xFF & publicKey[i]);
+	                        if (byteString.length() == 1) 
+	                        	hexString.append("0");
+	                        hexString.append(byteString);
+	                    }
+	                    String fingerprint = hexString.toString();
+
+	                    // Append as needed (theoretically could have more than one sig */
+	                    if (mSignedBy == null)
+	                    	mSignedBy = fingerprint;
+	                    else
+	                    	mSignedBy += "/" + fingerprint;
+			        }
+		        }
+
+		    } catch (NameNotFoundException e) {
+				// Default if package not found...kind of unlikely
+				mSignedBy = "NOPACKAGE";
+
+		    } catch (Exception e) {
+				// Default if we die
+				mSignedBy = e.getMessage();
+		    }			
+		}
+		return mSignedBy;
 	}
 }
 

@@ -9,24 +9,24 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/manage_fields_scrollview"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingLeft="5sp" >
+        android:paddingLeft="@dimen/padding_border" >
 
         <TextView
             android:id="@+id/manage_field_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="5sp"
-            android:text="@+string/menu_manage_fields"
+            android:paddingTop="@dimen/padding_border"
+            android:text="@string/menu_manage_fields"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
             android:id="@+id/manage_field_help_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="5sp"
-            android:text="@+string/manage_fields_help" />
+            android:paddingTop="@dimen/padding_border"
+            android:text="@string/manage_fields_help" />
     </LinearLayout>
 
 </ScrollView>

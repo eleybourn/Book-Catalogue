@@ -327,10 +327,30 @@ public class BookISBNSearch extends ActivityWithTasks {
 							go(savedInstanceState.getString("isbn"),"","");
 						}
 					}
+				} catch (java.lang.SecurityException e) {
+					AlertDialog alertDialog = new AlertDialog.Builder(BookISBNSearch.this).setMessage(R.string.bad_scanner).create();
+					alertDialog.setTitle(R.string.install_scan_title);
+					alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
+					alertDialog.setButton2("ZXing", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.google.zxing.client.android"));
+							startActivity(marketIntent);
+							finish();
+						}
+					});
+					alertDialog.setButton("Cancel", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							//do nothing
+							finish();
+						}
+					});
+					// Prevent the activity result from closing this activity.
+					mDisplayingAlert = true;
+					alertDialog.show();
+					return;					
 				} catch (ActivityNotFoundException e) {
 					// Verify - this can be a dangerous operation
-					BookISBNSearch pthis = this;
-					AlertDialog alertDialog = new AlertDialog.Builder(pthis).setMessage(R.string.install_scan).create();
+					AlertDialog alertDialog = new AlertDialog.Builder(BookISBNSearch.this).setMessage(R.string.install_scan).create();
 					alertDialog.setTitle(R.string.install_scan_title);
 					alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
 					alertDialog.setButton("Google Goggles", new DialogInterface.OnClickListener() {

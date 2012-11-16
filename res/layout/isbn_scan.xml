@@ -2,23 +2,23 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:padding="5sp" >
+    android:padding="@dimen/padding_border" >
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="vertical" >
 
         <EditText
             android:id="@+id/isbn"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dip"
             android:layout_weight="1"
             android:digits="0123456789Xx"
             android:hint="@string/isbn"
             android:inputType="number"
-            android:padding="10sp"
+            android:padding="10dp"
             android:textAppearance="?android:attr/textAppearanceLarge" />
     </LinearLayout>
 

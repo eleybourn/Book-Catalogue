@@ -1504,8 +1504,14 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 	 */
 	private void cleanupTempImages() {
 		File[] files = getTempImageDir().listFiles();
-		for (File f: files) {
-			f.delete();
+		if (files != null) {
+			for (File f: files) {
+				try {
+					f.delete();					
+				} catch (Exception e) {
+					Logger.logError(e, "Unable to clean up temp file");
+				}
+			}			
 		}
 	}
 

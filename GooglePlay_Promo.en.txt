@@ -1,1 +1,1 @@
-An easy to use open source (GPL) book cataloging application.
+An easy to use open source (GPL) book cataloguing application.

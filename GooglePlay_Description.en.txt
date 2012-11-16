@@ -1,31 +1,32 @@
-An open source book cataloguing application (source on github). Books can be added manually, by ISBN, or barcode.
+An open source book cataloguing application (source on github). Books can be added by scanning/typing ISBNs, searching by author/title, or added manually.
 
-Remember to backup and export your existing catalogue before you upgrade!
+This application is ad free but does require the internet permission for searching, and uses vibration for optional haptic feedback.
+
+Important! Remember to backup and export your existing catalogue before you upgrade! Nothing should go wrong, but it's always good to be safe.
 
 Features include:
-* Sorting by author (last name), title, series, etc.
-* user-defined sort and list styles
-* Search Amazon, Google Books, goodreads and LibraryThing for data
-* Searching
-* Thumbnails (download, gallery or camera)
-* Loaning books
+
+* User-customized sorting by any combination of author name(s), title, series, published-date, read-date, and many other fields.
+* Searches Amazon, Google Books, goodreads and LibraryThing for data
+* Bookshelves (books can be on multiple shelves, think of them as keywords or categories to be associated with the book)
+* Automatic retrieval of cover thumbnails, which can be replaced via download, gallery or camera
+* Lending of books
 * goodreads synchronization
 * Export and Backup
-* Bookshelves (books can be on multiple shelves)
 
 Want a wishlist? Just create a bookshelf called 'Wishlist' and start adding books.
 
-Please email us (below) if you have any issues after an upgrade.
+Please email us (below) if you have any problems or suggestions, or experience any issues after an upgrade. Also email us if you want to help improve the translation into your language.
 
-Wiki can be found at:
+For the complete list of changes and a list of frequently asked questions, please visit our wiki at:
 
 https://github.com/eleybourn/Book-Catalogue/wiki
 
-Full history at:
+The full release history is also availble at:
 
 https://raw.github.com/eleybourn/Book-Catalogue/master/README
 
-Recent History:
+Recent update history:
 
 New in 4.2.2
 
@@ -63,44 +64,8 @@ Many thanks to our dedicated beta testers and translators!
 
 Blame Grunthos for all bugs and errors. And send us bug reports.
 
-New in 4.1-4.1.5
 
-* New style options: location and date read
-* Sharing can now send via any app that advertises the interface (eg. mail) (filipeximenes)
-* French translation updates (Djiko)
-* If fields have been edited, and 'back' is pressed, ask the user for confirmation (filipeximenes)
-* Assume book is read when importing from goodreads if the user has rated it
-* Change install location to avoid problems with encrypted SD cards
-* Bug fixes in file import and data import
-* improved import robustness
-* fix for long-standing bugs if rotation while editing a book, and for a bug in date parsing when in non-english locales
-* Translation updates (Robert Wetzlmayr)
-* Bug fix for 'read' date import from goodreads
-* Fix bug relating to commas in bookshelf names creating extra shelves
+The source code of this free and open source application is available at: 
 
-New in V4.0-4.0.7
+https://github.com/eleybourn/Book-Catalogue
 
-* New look & startup page
-* Synchronize with goodreads
-* New and user-defined sort styles 
-* Better memory usage (eg. in large collections)
-* New preferences
-* Better detection of series names
-* Fix bug in Google Books URL causing wrong books to be returned
-* Re-prioritize data sources based on reliability and the data returned
-* Make Comments field auto-resize
-* Show recent authors in author pop-down list
-* When adding books, scanning or typing an existing ISBN allows you the option to edit the book.
-* Allow ASINs to be manually entered as well as ISBNs
-* German translation updates
-* ISBNs are now validated when searching or scanning
-* Loaned & Not Loaned list now includes all books
-* Added preference to hide list headers 
-* Use current bookshelf when adding book
-* FastScroller sizing improved
-* Preference to disable background image
-* Added book counts
-* search now searches series and anthology data
-* allows non-numeric data entry in series position
-* better sorting of leading numerics in series position
-* Fixed various bugs

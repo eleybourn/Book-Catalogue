@@ -1,4 +1,4 @@
-New in 4.2.1-2
+New in 4.2.2
 
 * Fix tiling of background image for some Android versions
 * Better handling of incompatible scanner apps
@@ -6,4 +6,6 @@ New in 4.2.1-2
 * Cleanup of layouts (Nick Silin)
 * Bug fixes
 
-See main description for a release summary, and README at web site for full history.
+See main description for a release summary, and README link below for a detailed release history.
+
+    https://raw.github.com/eleybourn/Book-Catalogue/master/README

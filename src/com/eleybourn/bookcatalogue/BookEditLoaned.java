@@ -35,6 +35,7 @@ import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * This class is called by the BookEdit activity and displays the Loaned Tab
@@ -138,6 +139,8 @@ public class BookEditLoaned extends Activity {
 			} else {
 				loaned(user);
 			}
+			// Setup the background
+			Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 		} finally {
 			Tracker.exitOnCreate(this);			
 		}

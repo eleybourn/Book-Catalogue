@@ -56,7 +56,7 @@ public class AdministrationLibraryThing extends Activity {
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.administration_librarything);
 			setupAdmin();
-			Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
+			Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
@@ -68,7 +68,7 @@ public class AdministrationLibraryThing extends Activity {
 	@Override 
 	public void onResume() {
 		super.onResume();
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
 	}
 
 	public void setupAdmin() {

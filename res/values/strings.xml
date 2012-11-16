@@ -649,5 +649,22 @@
 </string>
 
 <string name="_empty_"></string>
+<string name="new_in_421"><![CDATA[
+    <p><b>New in 4.2.1</b>\n\n
+			* Fix crash when expanding list items and using \'Expand All\'\n\n
+			</p>
+		]]></string>
+
+<string name="bad_scanner">It looks like your extising barcode scanner app is not compatible with Book Catalogue. We recommend installing the Zxing barcode scanner application, and if it is already installed, we recommend uninstalling it and reinstalling it.</string>
+
+<string name="new_in_422"><![CDATA[
+    <p><b>New in 4.2.2</b>\n\n
+			* Fix tiling of background image for some Android versions\n\n
+			* Better handling of incompatible scanner apps\n\n
+			* Send more details on crash or when asking for help\n\n
+			* Cleanup of layouts (Nick Silin)\n\n
+			* Bug fixes\n\n
+			</p>
+		]]></string>
 
 </resources>

@@ -108,7 +108,7 @@ public class GoodreadsExportFailuresActivity extends  net.philipwarner.taskqueue
 		if (savedInstanceState == null)
 			HintManager.displayHint(this, R.string.hint_background_task_events, null);
 
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 	}
 
 	/**
@@ -135,7 +135,7 @@ public class GoodreadsExportFailuresActivity extends  net.philipwarner.taskqueue
 	protected void onResume() {
 		super.onResume();
 		refreshData();
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
 	} 
 
 	/**

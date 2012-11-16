@@ -109,7 +109,7 @@ public class OtherPreferences extends PreferencesBase {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setTitle(R.string.other_preferences);
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 	}
 
 	/**
@@ -118,7 +118,7 @@ public class OtherPreferences extends PreferencesBase {
 	@Override 
 	public void onResume() {
 		super.onResume();
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
 	}
 
 	/**

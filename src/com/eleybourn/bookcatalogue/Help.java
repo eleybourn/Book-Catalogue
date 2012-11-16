@@ -90,7 +90,7 @@ public class Help extends Activity {
 			
 			setupCleanupButton();
 			
-			Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
+			Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 
 		} catch (Exception e) {
 			Logger.logError(e);
@@ -132,7 +132,7 @@ public class Help extends Activity {
 	protected void onResume() {
 		super.onResume();
 		setupCleanupButton();		
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
 	}
 
 	/**

@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/anthology_wrapper"
+    android:id="@+id/root"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#2d2d2d"
+    android:background="@color/background_grey"
     android:orientation="vertical"
-    android:paddingLeft="5sp" >
+    android:paddingLeft="@dimen/padding_border" >
 
     <TextView
         android:id="@+id/anthology_title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:text="@+string/edit_book_anthology"
+        android:text="@string/edit_book_anthology"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <CheckBox
@@ -20,9 +20,9 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/anthology_title"
-        android:paddingBottom="10sp"
-        android:paddingTop="10sp"
-        android:text="@+string/same_author"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:text="@string/same_author"
         android:textSize="16sp" />
 
     <Button
@@ -31,9 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_weight="2"
-        android:gravity="right"
-        android:text="@+string/anthology_add" />
+        android:text="@string/anthology_add" />
 
     <EditText
         android:id="@+id/add_title"
@@ -42,7 +40,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_toLeftOf="@id/row_add"
-        android:hint="@+string/title"
+        android:hint="@string/title"
         android:inputType="textCapWords" />
 
     <AutoCompleteTextView
@@ -51,12 +49,11 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/add_title"
         android:layout_alignParentLeft="true"
-        android:hint="@+string/author"
+        android:hint="@string/author"
         android:inputType="textCapWords"
         android:paddingLeft="10dp" />
 
     <LinearLayout
-        android:id="@+id/anthology_list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_above="@id/add_author"

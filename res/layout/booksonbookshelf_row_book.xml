@@ -22,9 +22,9 @@
         android:layout_weight="1"
         android:gravity="left"
         android:orientation="vertical"
-        android:paddingBottom="5dp"
-        android:paddingLeft="5dp"
-        android:paddingTop="5dp" >
+        android:paddingBottom="@dimen/padding_border"
+        android:paddingLeft="@dimen/padding_border"
+        android:paddingTop="@dimen/padding_border" >
 
         <TextView
             android:id="@+id/series_num_long"
@@ -48,7 +48,7 @@
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="5dp"
+                android:paddingLeft="@dimen/padding_border"
                 android:singleLine="false"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
         </LinearLayout>
@@ -57,7 +57,7 @@
             android:id="@+id/author"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
+            android:paddingLeft="@dimen/padding_border"
             android:singleLine="true"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
@@ -65,7 +65,7 @@
             android:id="@+id/shelves"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
+            android:paddingLeft="@dimen/padding_border"
             android:singleLine="true"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
@@ -73,7 +73,7 @@
             android:id="@+id/location"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
+            android:paddingLeft="@dimen/padding_border"
             android:singleLine="true"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
@@ -81,7 +81,7 @@
             android:id="@+id/publisher"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
+            android:paddingLeft="@dimen/padding_border"
             android:singleLine="true"
             android:textAppearance="?android:attr/textAppearanceSmall" />
     </LinearLayout>

@@ -51,7 +51,7 @@ public class FieldVisibility extends Activity {
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.field_visibility);
 			setupFields();
-			Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
+			Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
@@ -63,7 +63,7 @@ public class FieldVisibility extends Activity {
 	@Override 
 	public void onResume() {
 		super.onResume();
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
 	}
 
 	/**

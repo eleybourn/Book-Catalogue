@@ -59,7 +59,7 @@
 <string name="menu_administration">Verwaltung</string>
 <string name="install_scan">Um die Bücher über den ISBN-Barcode zu scannen, muss die App zxing barcode scanner installiert werden. Drücken Sie OK zum Installieren oder Abbrechen um die Installation zu überspringen.</string>
 <string name="install_scan_title">Installiere Barcode Scanner</string>
-<string name="version_number">Versionsnummer</string>
+<string name="version_number">Versionsnummer:</string>
 <string name="donate">Wenn Sie die Entwicklung dieser App unterstützen möchten, können Sie über meine Amazon-Wunschliste oder den PayPal-Knopf spenden. Weil ich in Australien bin, kann ich keine "Kaufversion" der App anbieten. :-) </string>
 <string name="unable_to_connect_amazon">Keine Verbindung zu Amazon</string>
 <string name="upgrade_title">Seit der letzten Aktualisierung</string>
@@ -73,9 +73,9 @@
 <string name="loan_to">Verleihe Buch an:</string>
 <string name="returned">Zurückgegeben</string>
 <string name="name">Name</string>
-<string name="webpage_label">Webseite</string>
-<string name="sourcecode_label">Quellcode</string>
-<string name="contact_label">Kontakt</string>
+<string name="webpage_label">Webseite:</string>
+<string name="sourcecode_label">Quellcode:</string>
+<string name="contact_label">Kontakt:</string>
 <string name="webpage">https://wiki.github.com/eleybourn/Book-Catalogue/</string>
 <string name="sourcecode">https://github.com/eleybourn/Book-Catalogue</string>
 <string name="helppage">https://github.com/eleybourn/Book-Catalogue/wiki/Help</string>

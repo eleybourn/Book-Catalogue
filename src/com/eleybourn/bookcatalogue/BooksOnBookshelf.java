@@ -39,6 +39,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -482,20 +483,26 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 				root.setBackgroundColor(0xFF202020);
 				header.setBackgroundColor(0xFF202020);
 			} else {
-				root.setBackgroundDrawable(Utils.cleanupTiledBackground(getResources().getDrawable(R.drawable.bc_background_gradient)));
-				header.setBackgroundDrawable(Utils.cleanupTiledBackground(getResources().getDrawable(R.drawable.bc_vertical_gradient)));
+				Drawable d = Utils.makeTiledBackground(this, false);
+				root.setBackgroundDrawable(d);
+				header.setBackgroundDrawable(d);
+//				root.setBackgroundDrawable(Utils.cleanupTiledBackground(getResources().getDrawable(R.drawable.bc_background_gradient)));
+//				header.setBackgroundDrawable(Utils.cleanupTiledBackground(getResources().getDrawable(R.drawable.bc_vertical_gradient)));
 			}
 		} else {
 			Utils.setCacheColorHintSafely(lv, 0x00000000);
 			// ICS does not cope well with transparent ListView backgrounds with a 0 cache hint, but it does
 			// seem to cope with a background image on the ListView itself.
+			Drawable d = Utils.makeTiledBackground(this, false);
 			if (Build.VERSION.SDK_INT >= 11) {
 				// Honeycomb
-				lv.setBackgroundDrawable(Utils.cleanupTiledBackground(getResources().getDrawable(R.drawable.bc_background_gradient_dim)));
+				lv.setBackgroundDrawable(d);
+//				lv.setBackgroundDrawable(Utils.cleanupTiledBackground(getResources().getDrawable(R.drawable.bc_background_gradient_dim)));
 			} else {
 				lv.setBackgroundColor(0x00000000);				
 			}
-			root.setBackgroundDrawable(Utils.cleanupTiledBackground(getResources().getDrawable(R.drawable.bc_background_gradient_dim)));
+			root.setBackgroundDrawable(d);
+//			root.setBackgroundDrawable(Utils.cleanupTiledBackground(getResources().getDrawable(R.drawable.bc_background_gradient_dim)));
 			header.setBackgroundColor(0x00000000);
 		}
 		root.invalidate();

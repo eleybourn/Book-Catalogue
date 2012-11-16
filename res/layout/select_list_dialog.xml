@@ -8,33 +8,24 @@
         android:id="@+id/message"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="2sp"
+        android:layout_marginLeft="2dp"
         android:singleLine="false"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
-        android:background="#FFFFFFFF"
-        android:orientation="vertical" >
+        android:background="@android:color/white" >
 
-        <ScrollView
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/scroll_view"
+        <LinearLayout
+            android:id="@+id/list"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp" >
-
-            <LinearLayout
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/list"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:orientation="vertical" >
-            </LinearLayout>
-        </ScrollView>
-    </LinearLayout>
+            android:orientation="vertical" >
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

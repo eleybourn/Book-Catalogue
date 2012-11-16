@@ -15,11 +15,8 @@
      limitations under the License.
 -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
-
     <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="horizontal" >
@@ -30,8 +27,6 @@
             android:layout_height="fill_parent"
             android:layout_above="@+id/buttons"
             android:layout_alignParentTop="true"
-            android:layout_x="0dip"
-            android:layout_y="0dip"
             class="com.eleybourn.bookcatalogue.cropper.CropImageView"
             android:background="#55000000" />
 
@@ -42,8 +37,8 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:orientation="horizontal"
-            android:paddingLeft="5dip"
-            android:paddingRight="5dip"
+            android:paddingLeft="@dimen/padding_border"
+            android:paddingRight="@dimen/padding_border"
             android:paddingTop="20dip" >
 
             <Button
@@ -51,15 +46,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@+string/cancel" />
+                android:text="@string/cancel" />
 
             <Button
                 android:id="@+id/save"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@+string/save" />
+                android:text="@string/save" />
         </LinearLayout>
     </RelativeLayout>
-
-</FrameLayout>

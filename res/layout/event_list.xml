@@ -12,14 +12,12 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:background="#00000000"
         android:orientation="vertical" >
 
         <TextView
             android:id="@+id/events_found"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="#00000000"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <View
@@ -30,31 +28,21 @@
             android:paddingBottom="2dp" />
     </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/footer"
-        android:layout_width="fill_parent"
+    <Button
+        android:id="@+id/cleanup"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#00000000"
-        android:orientation="horizontal" >
-
-        <Button
-            android:id="@+id/cleanup"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:focusable="false"
-            android:text="@+string/cleanup_old_events" />
-    </LinearLayout>
+        android:focusable="false"
+        android:text="@string/cleanup_old_events" />
 
     <ListView
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/android:list"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/footer"
+        android:layout_above="@id/cleanup"
         android:layout_below="@id/header"
-        android:background="#00000000"
         android:cacheColorHint="#00000000" >
     </ListView>
 

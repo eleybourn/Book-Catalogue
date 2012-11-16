@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/row"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
@@ -18,21 +19,21 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="10dp" >
+        android:padding="10dp" 
+        tools:ignore="UselessParent" >
 
         <ImageView
             android:id="@+id/row_delete"
-            android:layout_width="25sp"
-            android:layout_height="25sp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:layout_weight="1"
             android:clickable="true"
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:gravity="left"
-            android:paddingRight="5sp" />
+            android:paddingRight="@dimen/padding_border" />
 
         <ImageView
             android:id="@+id/grabber"
@@ -58,7 +59,6 @@
         -->
 
         <RelativeLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/row_details"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -66,7 +66,6 @@
             android:layout_alignParentTop="true"
             android:layout_toLeftOf="@+id/grabber"
             android:layout_toRightOf="@id/row_delete"
-            android:layout_weight="0"
             android:orientation="vertical"
             android:padding="2dp" >
 
@@ -75,10 +74,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:layout_weight="0"
                 android:ellipsize="marquee"
                 android:gravity="left"
-                android:paddingRight="5sp"
+                android:paddingRight="@dimen/padding_border"
                 android:singleLine="true"
                 android:textSize="16sp" />
 
@@ -88,10 +86,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_below="@+id/row_author"
-                android:layout_weight="0"
                 android:ellipsize="marquee"
                 android:gravity="left"
-                android:paddingRight="5sp"
+                android:paddingRight="@dimen/padding_border"
                 android:singleLine="true"
                 android:textSize="12sp" />
         </RelativeLayout>

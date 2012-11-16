@@ -49,6 +49,7 @@ import android.content.SharedPreferences.Editor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * BookCatalogue Application implementation. Useful for making globals available
@@ -119,6 +120,9 @@ public class BookCatalogueApp extends Application {
         ACRA.init(this);
         BcReportSender bcSender = new BcReportSender(this);
         ErrorReporter.getInstance().setReportSender(bcSender);
+
+        // Save the app signer
+        ErrorReporter.getInstance().putCustomData("Signed-By", Utils.signedBy(this));
 
         // Create the notifier
     	mNotifier = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);

@@ -59,7 +59,7 @@
 <string name="menu_administration">Administracja</string>
 <string name="install_scan">Do skanowania kodów kreskowych ISBN musisz zainstalować program Zxing Barcode Scanner. Naciśnij OK by to zrobić, lub Anuluj by zrezygnować z instalacji.</string>
 <string name="install_scan_title">Zainstaluj Barcode Scanner</string>
-<string name="version_number">Wersja programu</string>
+<string name="version_number">Wersja programu:</string>
 <string name="donate">Jeśli chciałbyś wesprzeć rozwój programu, zrób to poprzez mój Amazon Wishlist lub PayPal. Będąc obywatelem Australii nie mam póki co możliwości opublikowania &quot;płatnej&quot; wersji. :-) </string>
 <string name="unable_to_connect_amazon">Nie mogę połączyć się z serwisem Amazon</string>
 <string name="upgrade_title">Od ostatniej aktualizacji</string>
@@ -73,9 +73,9 @@
 <string name="loan_to">Wypożycz książkę:</string>
 <string name="returned">Zwrócona</string>
 <string name="name">Imię i nazwisko</string>
-<string name="webpage_label">Strona	 WWW</string>
-<string name="sourcecode_label">Kod źródłowy</string>
-<string name="contact_label">Kontakt</string>
+<string name="webpage_label">Strona	 WWW:</string>
+<string name="sourcecode_label">Kod źródłowy:</string>
+<string name="contact_label">Kontakt:</string>
 <string name="webpage">https://wiki.github.com/eleybourn/Book-Catalogue/</string>
 <string name="sourcecode">https://github.com/eleybourn/Book-Catalogue</string>
 <string name="helppage">https://github.com/eleybourn/Book-Catalogue/wiki/Help</string>

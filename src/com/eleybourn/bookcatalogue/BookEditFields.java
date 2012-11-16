@@ -603,7 +603,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 				Logger.logError(e);
 			}
 
-			Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
+			Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 
 			mFields.setAfterFieldChangeListener(new AfterFieldChangeListener(){
 				@Override
@@ -1338,7 +1338,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 	public void onResume() {
 		Tracker.enterOnResume(this);
 		super.onResume();
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
 		Tracker.exitOnResume(this);
 	}
 	
@@ -1504,8 +1504,14 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 	 */
 	private void cleanupTempImages() {
 		File[] files = getTempImageDir().listFiles();
-		for (File f: files) {
-			f.delete();
+		if (files != null) {
+			for (File f: files) {
+				try {
+					f.delete();					
+				} catch (Exception e) {
+					Logger.logError(e, "Unable to clean up temp file");
+				}
+			}			
 		}
 	}
 

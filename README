@@ -46,6 +46,7 @@ new in 4.2.2
 * Better handling of incompatible scanner apps
 * Send more details on crash or when asking for help
 * Cleanup of layouts (Nick Silin)
+* Bug fixes
 
 new in 4.2.1
 * Fix crash when expanding list items and using 'Expand All'

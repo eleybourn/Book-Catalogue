@@ -213,6 +213,8 @@ public class BookEditAnthology extends ListActivity {
 		
 		fillAnthology();
 		
+		// Setup the background
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 	}
 	
 	public void fillAnthology(int scroll_to_id) {

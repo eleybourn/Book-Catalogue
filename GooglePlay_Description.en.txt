@@ -1,0 +1,106 @@
+An open source book cataloguing application (source on github). Books can be added manually, by ISBN, or barcode.
+
+Remember to backup and export your existing catalogue before you upgrade!
+
+Features include:
+* Sorting by author (last name), title, series, etc.
+* user-defined sort and list styles
+* Search Amazon, Google Books, goodreads and LibraryThing for data
+* Searching
+* Thumbnails (download, gallery or camera)
+* Loaning books
+* goodreads synchronization
+* Export and Backup
+* Bookshelves (books can be on multiple shelves)
+
+Want a wishlist? Just create a bookshelf called 'Wishlist' and start adding books.
+
+Please email us (below) if you have any issues after an upgrade.
+
+Wiki can be found at:
+
+https://github.com/eleybourn/Book-Catalogue/wiki
+
+Full history at:
+
+https://raw.github.com/eleybourn/Book-Catalogue/master/README
+
+Recent History:
+
+New in 4.2.2
+
+* Fix tiling of background image for some Android versions
+* Better handling of incompatible scanner apps
+* Send more details on crash or when asking for help
+* Cleanup of layouts (Nick Silin)
+* Bug fixes
+
+New in 4.2.1
+
+* Fix crash when expanding list items and using 'Expand All'
+
+New in 4.2
+
+* Date-Picker that supports dates down to 0AD as well as partial dates
+* HTML descriptions display correctly with click to edit
+* Preference for pre-selecting whole image when cropping
+* Preference for auto-rotating images from camera
+* Preference to use external cropping tool (experimental)
+* Added more items to the options menus
+* French translation updates (Imkal)
+* German translation updates (Robert Wetzlmayr)
+* Russian translation updates (Nick Silin)
+* Updated OK/Cancel button positions to conform to current Android standards
+* Full keyboard available when entering ASINs
+* Keeps 5 previous export files
+* Better detection of \'changes\' when editing books
+* Support for a wider range of Gallery and file browsers
+* More reliable date handling on import/export/sync
+* Fix handling of duplicate anthology titles
+* Various bugs fixed
+
+Many thanks to our dedicated beta testers and translators!
+
+Blame Grunthos for all bugs and errors. And send us bug reports.
+
+New in 4.1-4.1.5
+
+* New style options: location and date read
+* Sharing can now send via any app that advertises the interface (eg. mail) (filipeximenes)
+* French translation updates (Djiko)
+* If fields have been edited, and 'back' is pressed, ask the user for confirmation (filipeximenes)
+* Assume book is read when importing from goodreads if the user has rated it
+* Change install location to avoid problems with encrypted SD cards
+* Bug fixes in file import and data import
+* improved import robustness
+* fix for long-standing bugs if rotation while editing a book, and for a bug in date parsing when in non-english locales
+* Translation updates (Robert Wetzlmayr)
+* Bug fix for 'read' date import from goodreads
+* Fix bug relating to commas in bookshelf names creating extra shelves
+
+New in V4.0-4.0.7
+
+* New look & startup page
+* Synchronize with goodreads
+* New and user-defined sort styles 
+* Better memory usage (eg. in large collections)
+* New preferences
+* Better detection of series names
+* Fix bug in Google Books URL causing wrong books to be returned
+* Re-prioritize data sources based on reliability and the data returned
+* Make Comments field auto-resize
+* Show recent authors in author pop-down list
+* When adding books, scanning or typing an existing ISBN allows you the option to edit the book.
+* Allow ASINs to be manually entered as well as ISBNs
+* German translation updates
+* ISBNs are now validated when searching or scanning
+* Loaned & Not Loaned list now includes all books
+* Added preference to hide list headers 
+* Use current bookshelf when adding book
+* FastScroller sizing improved
+* Preference to disable background image
+* Added book counts
+* search now searches series and anthology data
+* allows non-numeric data entry in series position
+* better sorting of leading numerics in series position
+* Fixed various bugs

@@ -477,11 +477,12 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 			throw new RuntimeException("Sanity Check Fail: getResources() returned null; isFinishing() = " + isFinishing());
 
 		if (BooklistPreferencesActivity.isBackgroundFlat() || BookCatalogueApp.isBackgroundImageDisabled()) {
-			lv.setBackgroundColor(0xFF202020);
-			Utils.setCacheColorHintSafely(lv, 0xFF202020);
+			final int backgroundColor = getResources().getColor(R.color.background_grey);
+			lv.setBackgroundColor(backgroundColor);
+			Utils.setCacheColorHintSafely(lv, backgroundColor);
 			if (BookCatalogueApp.isBackgroundImageDisabled()) {
-				root.setBackgroundColor(0xFF202020);
-				header.setBackgroundColor(0xFF202020);
+				root.setBackgroundColor(backgroundColor);
+				header.setBackgroundColor(backgroundColor);
 			} else {
 				Drawable d = Utils.makeTiledBackground(this, false);
 				root.setBackgroundDrawable(d);

@@ -20,7 +20,6 @@
 
 package com.eleybourn.bookcatalogue;
 
-//import android.R;
 import java.io.File;
 import java.util.Hashtable;
 import java.util.Map.Entry;
@@ -32,6 +31,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -39,13 +39,14 @@ import android.view.MenuItem;
 import android.widget.TabHost;
 import android.widget.Toast;
 
+import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
 import com.eleybourn.bookcatalogue.utils.Logger;
 
 /**
  * A tab host activity which holds the three edit book tabs
- * 1. Edit Details
+ * 1. Edit Details / Book Details
  * 2. Edit Comments
  * 3. Loan Book
  * 
@@ -89,7 +90,7 @@ public class BookEdit extends TabActivity {
 	private static final int SHARE_ID = 4;
 	private static final int THUMBNAIL_OPTIONS_ID = 5;
 
-	public int currentTab = 0;
+	public int mCurrentTab = 0;
 	private Long mRowId;
 	private CatalogueDBAdapter mDbHelper = new CatalogueDBAdapter(this);
 
@@ -98,15 +99,12 @@ public class BookEdit extends TabActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tabhost);
 		
-		Resources res = getResources(); // Resource object to get Drawables
 		TabHost tabHost = getTabHost();  // The activity TabHost
-		TabHost.TabSpec spec;  // Resusable TabSpec for each tab
-		Intent intent;  // Reusable Intent for each tab
 		mDbHelper.open();
 		
 		//get the passed parameters
 		Bundle extras = getIntent().getExtras();
-		currentTab = extras != null ? extras.getInt(BookEdit.TAB) : 0;
+		mCurrentTab = extras != null ? extras.getInt(BookEdit.TAB) : 0;
 		mRowId = savedInstanceState != null ? savedInstanceState.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
 		if (mRowId == null) {
 			mRowId = extras != null ? extras.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
@@ -127,51 +125,35 @@ public class BookEdit extends TabActivity {
 			}
 		}
 		
-		// Create an Intent to launch an Activity for the tab (to be reused)
-		intent = new Intent().setClass(this, BookEditFields.class);
-		if (extras != null) {
-			intent.putExtras(extras);
-		}
 		//Change the name depending on whether it is a new or existing book
-		String name = "";
+		boolean isReadOnly = BookCatalogueApp.getAppPreferences()
+				.getBoolean(BookCataloguePreferences.PREF_OPEN_BOOK_READ_ONLY, false);
+		int firstTabTitleResId;
+		// Class needed for the first tab: BookEditFields except when book is exist and read-only mode enabled
+		Class<?> neededClass = BookEditFields.class;  
 		if (mRowId == null || mRowId == 0) {
-			name = res.getString(R.string.menu_insert);
+			firstTabTitleResId = R.string.menu_insert;
 		} else {
-			name = res.getString(R.string.edit_book);
+			firstTabTitleResId = isReadOnly ? R.string.book : R.string.edit_book; //Just use R.string.book for read-only title now
+			if (isReadOnly) {
+				neededClass = BookDetails.class;
+			}
 		}
-		// Initialise a TabSpec for each tab and add it to the TabHost
-		spec = tabHost.newTabSpec(TAB_NAME_EDIT_BOOK).setIndicator(name, res.getDrawable(R.drawable.ic_tab_edit)).setContent(intent);
-		tabHost.addTab(spec);
 		
-		// Only show the other tabs if it is an edited book, otherwise only show the first tab
+		initTab(tabHost, neededClass, TAB_NAME_EDIT_BOOK, firstTabTitleResId, R.drawable.ic_tab_edit, extras);
+		
+		// Only show the other tabs if it is not new book, otherwise only show the first tab
 		if (mRowId != null && mRowId > 0) {
-			// Do the same for the other tabs
-			intent = new Intent().setClass(this, BookEditNotes.class);
-			if (extras != null) {
-				intent.putExtras(extras);
-			}
-			spec = tabHost.newTabSpec(TAB_NAME_EDIT_NOTES).setIndicator(res.getString(R.string.edit_book_notes), res.getDrawable(R.drawable.ic_tab_notes)).setContent(intent);
-			tabHost.addTab(spec);
-			
-			intent = new Intent().setClass(this, BookEditLoaned.class);
-			if (extras != null) {
-				intent.putExtras(extras);
-			}
-			spec = tabHost.newTabSpec(TAB_NAME_EDIT_FRIENDS).setIndicator(res.getString(R.string.edit_book_friends), res.getDrawable(R.drawable.ic_tab_friends)).setContent(intent);
-			tabHost.addTab(spec);
+			initTab(tabHost, BookEditNotes.class, TAB_NAME_EDIT_NOTES, R.string.edit_book_notes, R.drawable.ic_tab_notes, extras);
+			initTab(tabHost, BookEditLoaned.class, TAB_NAME_EDIT_FRIENDS, R.string.edit_book_friends, R.drawable.ic_tab_friends, extras);
 			
 			// Only show the anthology tab if the book is marked as an anthology
 			if (anthology_num != 0) {
-				intent = new Intent().setClass(this, BookEditAnthology.class);
-				if (extras != null) {
-					intent.putExtras(extras);
-				}
-				spec = tabHost.newTabSpec(TAB_NAME_EDIT_ANTHOLOGY).setIndicator(res.getString(R.string.edit_book_anthology), res.getDrawable(R.drawable.ic_tab_anthology)).setContent(intent);
-				tabHost.addTab(spec);
+				initTab(tabHost, BookEditAnthology.class, TAB_NAME_EDIT_ANTHOLOGY, R.string.edit_book_anthology, R.drawable.ic_tab_anthology, extras);
 			}
 		}
 		
-		tabHost.setCurrentTab(currentTab);
+		tabHost.setCurrentTab(mCurrentTab);
 		Tracker.exitOnCreate(this);
 	}
 	
@@ -404,5 +386,27 @@ public class BookEdit extends TabActivity {
 		a.startActivityForResult(i, UniqueId.ACTIVITY_EDIT_BOOK);
 		return;
 	}
-
+	
+	/**
+	 * Initialize a TabSpec according to defined parameters and add it to the TabHost. 
+	 * @param tabHost parent TabHost
+	 * @param intentClass class for specifying intent. It`s the Activity class contained in this tab.
+	 * @param tabTag  required tag of tab
+	 * @param titleResId resource id of a title of the tab
+	 * @param iconResId resource id of an icon (drawable) of the tab
+	 * @param extras extras for putting in the intent. If extras is null they will not be added.
+	 */
+	private void initTab(TabHost tabHost, Class<?> intentClass, String tabTag, int titleResId, int iconResId, Bundle extras){
+		Resources resources = getResources();
+		String tabTitle = resources.getString(titleResId);
+		Drawable tabIcon = resources.getDrawable(iconResId);
+		TabHost.TabSpec spec = tabHost.newTabSpec(tabTag).setIndicator(tabTitle, tabIcon);
+		
+		Intent intent = new Intent(this, intentClass);
+		if (extras != null) {
+			intent.putExtras(extras);
+		}
+		spec.setContent(intent);
+		tabHost.addTab(spec);
+	}
 }

@@ -46,7 +46,7 @@ import com.eleybourn.bookcatalogue.utils.Logger;
 
 /**
  * A tab host activity which holds the three edit book tabs
- * 1. Edit Details / Book
+ * 1. Edit Details / Book Details
  * 2. Edit Comments
  * 3. Loan Book
  * 
@@ -126,15 +126,21 @@ public class BookEdit extends TabActivity {
 		}
 		
 		//Change the name depending on whether it is a new or existing book
-		int firstTabTitleResId; 
+		boolean isReadOnly = BookCatalogueApp.getAppPreferences()
+				.getBoolean(BookCataloguePreferences.PREF_OPEN_BOOK_READ_ONLY, false);
+		int firstTabTitleResId;
+		// Class needed for the first tab: BookEditFields except when book is exist and read-only mode enabled
+		Class<?> neededClass = BookEditFields.class;  
 		if (mRowId == null || mRowId == 0) {
 			firstTabTitleResId = R.string.menu_insert;
 		} else {
-			boolean isReadOnly = BookCatalogueApp.getAppPreferences()
-					.getBoolean(BookCataloguePreferences.PREF_OPEN_BOOK_READ_ONLY, false);
 			firstTabTitleResId = isReadOnly ? R.string.book : R.string.edit_book; //Just use R.string.book for read-only title now
+			if (isReadOnly) {
+				neededClass = BookDetails.class;
+			}
 		}
-		initTab(tabHost, BookEditFields.class, TAB_NAME_EDIT_BOOK, firstTabTitleResId, R.drawable.ic_tab_edit, extras);
+		
+		initTab(tabHost, neededClass, TAB_NAME_EDIT_BOOK, firstTabTitleResId, R.drawable.ic_tab_edit, extras);
 		
 		// Only show the other tabs if it is not new book, otherwise only show the first tab
 		if (mRowId != null && mRowId > 0) {

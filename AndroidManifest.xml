@@ -55,6 +55,7 @@
 		<activity android:name=".BookEditFields"></activity>
 		<activity android:name=".BookEditLoaned"></activity>
 		<activity android:name=".BookEditNotes"></activity>
+		<activity android:name=".BookDetails"></activity>
 		<activity android:name=".BooksOnBookshelf">
 			<intent-filter>
 				<action android:name="android.intent.action.SEARCH" />

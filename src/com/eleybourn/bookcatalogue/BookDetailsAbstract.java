@@ -1,6 +1,7 @@
 package com.eleybourn.bookcatalogue;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import com.eleybourn.bookcatalogue.Fields.Field;
 import com.eleybourn.bookcatalogue.Fields.FieldValidator;
@@ -14,10 +15,10 @@ import android.os.Bundle;
 import android.widget.ImageView;
 
 /**
- * 
- * 
+ * Abstract class for creating activities containing book details. 
+ * @author n.silin
  */
-public abstract class BookDetails extends Activity /* implements OnRestoreTabInstanceStateListener */{
+public abstract class BookDetailsAbstract extends Activity {
 
 	public static final Character BOOKSHELF_SEPERATOR = ',';
 	
@@ -32,6 +33,9 @@ public abstract class BookDetails extends Activity /* implements OnRestoreTabIns
 	protected android.util.DisplayMetrics mMetrics;
 	protected Integer mThumbEditSize;
 	protected Integer mThumbZoomSize;
+	
+	protected ArrayList<Author> mAuthorList = null;
+	protected ArrayList<Series> mSeriesList = null;
 	
 	@Override
 	/* Note that you should use setContentView() method in descendant before
@@ -79,6 +83,40 @@ public abstract class BookDetails extends Activity /* implements OnRestoreTabIns
 			return CatalogueDBAdapter.getTempThumbnail();
 		else
 			return CatalogueDBAdapter.fetchThumbnailByUuid(mDbHelper.getBookUuid(rowId));			
+	}
+	
+	protected void fixupAuthorList() {
+
+		String newText;
+		if (mAuthorList.size() == 0)
+			newText = getResources().getString(R.string.set_authors);
+		else {
+			newText = mAuthorList.get(0).getDisplayName();
+			if (mAuthorList.size() > 1)
+				newText += " " + getResources().getString(R.string.and_others);
+		}
+		mFields.getField(R.id.author).setValue(newText);	
+	}
+	
+	protected void fixupSeriesList() {
+
+		String newText;
+		int size = 0;
+		try {
+			size = mSeriesList.size();
+		} catch (NullPointerException e) {
+			size = 0;
+		}
+		if (size == 0)
+			newText = getResources().getString(R.string.set_series);
+		else {
+			Utils.pruneSeriesList(mSeriesList);
+			Utils.pruneList(mDbHelper, mSeriesList);
+			newText = mSeriesList.get(0).getDisplayName();
+			if (mSeriesList.size() > 1)
+				newText += " " + getResources().getString(R.string.and_others);
+		}
+		mFields.getField(R.id.series).setValue(newText);		
 	}
 	
 	/**
@@ -233,5 +271,8 @@ public abstract class BookDetails extends Activity /* implements OnRestoreTabIns
 			if (bookshelves != null)
 				bookshelves.close();
 		}
+		
+		mAuthorList = mDbHelper.getBookAuthorList(mRowId);
+		mSeriesList = mDbHelper.getBookSeriesList(mRowId);
 	}
 }

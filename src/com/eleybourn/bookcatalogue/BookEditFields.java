@@ -89,7 +89,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
 
 
 
-public class BookEditFields extends BookDetails implements OnRestoreTabInstanceStateListener {
+public class BookEditFields extends BookDetailsAbstract implements OnRestoreTabInstanceStateListener {
 
 	/**
 	 * Class to implement a clickable span of text and call a listener when text os clicked.
@@ -144,10 +144,7 @@ public class BookEditFields extends BookDetails implements OnRestoreTabInstanceS
 	private static final int CROP_EXTERNAL_RESULT = 42;
 	private static final int CROP_INTERNAL_RESULT = 43;
 	
-	private ArrayList<Author> mAuthorList = null;
-	private ArrayList<Series> mSeriesList = null;
 	CoverBrowser mCoverBrowser = null;
-
 
 	// Global value for values from UI. Recreated periodically; at least 
 	// in saveState(). Needs to be global so an Alert can be displayed 
@@ -848,10 +845,6 @@ public class BookEditFields extends BookDetails implements OnRestoreTabInstanceS
 		
 		if (mRowId != null && mRowId > 0) { //Populating from database
 			populateFieldsFromDb(mRowId);
-			
-			mAuthorList = mDbHelper.getBookAuthorList(mRowId);
-			mSeriesList = mDbHelper.getBookSeriesList(mRowId);
-			
 		} else if (extras != null) {
 			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + this.getResources().getString(R.string.menu_insert));
 			// From the ISBN Search (add)
@@ -1501,21 +1494,12 @@ public class BookEditFields extends BookDetails implements OnRestoreTabInstanceS
 			Tracker.handleEvent(this, "onActivityResult", Tracker.States.Exit);			
 		}
 	}
-
-	private void fixupAuthorList() {
-
-		String newText;
-		if (mAuthorList.size() == 0)
-			newText = getResources().getString(R.string.set_authors);
-		else {
-			if (Utils.pruneList(mDbHelper, mAuthorList) )
-				setDirty(true);
-
-			newText = mAuthorList.get(0).getDisplayName();
-			if (mAuthorList.size() > 1)
-				newText += " " + getResources().getString(R.string.and_others);
-		}
-		mFields.getField(R.id.author).setValue(newText);	
+	
+	@Override
+	protected void fixupAuthorList() {
+		if (mAuthorList.size() != 0 && Utils.pruneList(mDbHelper, mAuthorList) )
+			setDirty(true);
+		super.fixupAuthorList();
 	}
 
 	/**
@@ -1530,27 +1514,6 @@ public class BookEditFields extends BookDetails implements OnRestoreTabInstanceS
 	 */
 	public boolean isDirty() {
 		return mIsDirtyFlg;
-	}
-
-	private void fixupSeriesList() {
-
-		String newText;
-		int size = 0;
-		try {
-			size = mSeriesList.size();
-		} catch (NullPointerException e) {
-			size = 0;
-		}
-		if (size == 0)
-			newText = getResources().getString(R.string.set_series);
-		else {
-			Utils.pruneSeriesList(mSeriesList);
-			Utils.pruneList(mDbHelper, mSeriesList);
-			newText = mSeriesList.get(0).getDisplayName();
-			if (mSeriesList.size() > 1)
-				newText += " " + getResources().getString(R.string.and_others);
-		}
-		mFields.getField(R.id.series).setValue(newText);		
 	}
 
 	private void copyFile(File src, File dst) throws IOException {

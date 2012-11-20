@@ -117,7 +117,7 @@ public class BookCatalogueApp extends Application {
 	@Override
 	public void onCreate() {
 		// The following line triggers the initialization of ACRA
-        ACRA.init(this);
+//        ACRA.init(this);
         BcReportSender bcSender = new BcReportSender(this);
         ErrorReporter.getInstance().setReportSender(bcSender);
 

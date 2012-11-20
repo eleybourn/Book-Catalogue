@@ -136,7 +136,7 @@ public class BookEdit extends TabActivity {
 		} else {
 			firstTabTitleResId = isReadOnly ? R.string.book : R.string.edit_book; //Just use R.string.book for read-only title now
 			if (isReadOnly) {
-				neededClass = BookDetails.class;
+				neededClass = BookDetailsReadOnly.class;
 			}
 		}
 		

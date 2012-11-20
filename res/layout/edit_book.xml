@@ -23,7 +23,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_weight="1"
-                    android:background="#80808080"
+                    android:background="@color/background_thumb"
                     android:gravity="center"
                     android:padding="@dimen/padding_border" />
 

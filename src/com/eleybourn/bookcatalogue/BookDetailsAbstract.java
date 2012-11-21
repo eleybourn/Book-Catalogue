@@ -4,8 +4,13 @@ import java.io.File;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 
 import com.eleybourn.bookcatalogue.Fields.Field;
@@ -58,6 +63,15 @@ public abstract class BookDetailsAbstract extends Activity {
 		initThumbSizes();
 		
 		initFields();
+		
+		//Set zooming by default on clicking on image
+		findViewById(R.id.row_img).setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				showZoomedThumb(mRowId);
+			}
+		});
 		
 		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 		
@@ -314,5 +328,47 @@ public abstract class BookDetailsAbstract extends Activity {
 		// Get author and series lists
 		mAuthorList = mDbHelper.getBookAuthorList(mRowId);
 		mSeriesList = mDbHelper.getBookSeriesList(mRowId);
+	}
+	
+	/**
+	 * Shows zoomed thumbnail in dialog. Closed by click on image area.
+	 * @param rowId database row id for getting correct file
+	 */
+	private void showZoomedThumb(Long rowId) {
+		// Create dialog and set layout
+		final Dialog dialog = new Dialog(this);
+		dialog.setContentView(R.layout.zoom_thumb_dialog);
+		
+		// Check if we have a file and/or it is valid
+		File thumbFile = getCoverFile(rowId);
+
+		if (thumbFile == null || !thumbFile.exists()) {
+			dialog.setTitle(getResources().getString(R.string.cover_not_set));
+		} else {
+
+			BitmapFactory.Options opt = new BitmapFactory.Options();
+			opt.inJustDecodeBounds = true;
+			BitmapFactory.decodeFile(thumbFile.getAbsolutePath(), opt);
+
+			// If no size info, assume file bad and return appropriate icon
+			if (opt.outHeight <= 0 || opt.outWidth <= 0) {
+				dialog.setTitle(getResources().getString(R.string.cover_corrupt));
+			} else {
+				dialog.setTitle(getResources().getString(R.string.cover_detail));
+				ImageView cover = new ImageView(this);
+				Utils.fetchFileIntoImageView(thumbFile, cover, mThumbZoomSize, mThumbZoomSize, true);
+				cover.setAdjustViewBounds(true);
+				cover.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						dialog.dismiss();						
+					}
+				});
+				
+				LayoutParams lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+				dialog.addContentView(cover, lp);
+			}
+		}
+		dialog.show();
 	}
 }

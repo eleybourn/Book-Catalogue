@@ -42,7 +42,6 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.net.Uri;
@@ -59,7 +58,6 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -135,10 +133,8 @@ public class BookEditFields extends BookDetailsAbstract implements OnRestoreTabI
 	private static final int ROTATE_THUMB_CW = 31;
 	private static final int ROTATE_THUMB_CCW = 32;
 	private static final int ROTATE_THUMB_180 = 33;
-	private static final int ZOOM_THUMB = 5;
 	private static final int CROP_THUMB = 6;
 	private static final int DATE_DIALOG_ID = 1;
-	private static final int ZOOM_THUMB_DIALOG_ID = 2;
 	private static final int DESCRIPTION_DIALOG_ID = 3;
 //	private static final int CAMERA_RESULT = 41;
 	private static final int CROP_EXTERNAL_RESULT = 42;
@@ -463,9 +459,6 @@ public class BookEditFields extends BookDetailsAbstract implements OnRestoreTabI
 					MenuItem rotate_photo_180 = submenu.add(0, ROTATE_THUMB_180, 3, R.string.menu_rotate_thumb_180);
 					rotate_photo_180.setIcon(android.R.drawable.ic_menu_rotate);
 
-					MenuItem zoom_thumb = menu.add(0, ZOOM_THUMB, 4, R.string.menu_zoom_thumb);
-					zoom_thumb.setIcon(android.R.drawable.ic_menu_zoom);
-
 					MenuItem crop_thumb = menu.add(0, CROP_THUMB, 4, R.string.menu_crop_thumb);
 					crop_thumb.setIcon(android.R.drawable.ic_menu_crop);
 
@@ -532,36 +525,6 @@ public class BookEditFields extends BookDetailsAbstract implements OnRestoreTabI
 			dialog = new TextFieldEditor(this);
 			dialog.setTitle(R.string.description);
 			// The rest of the details will be set in onPrepareDialog
-			break;
-
-		case ZOOM_THUMB_DIALOG_ID:
-			// Create dialog and set layout
-			dialog = new Dialog(BookEditFields.this);
-			dialog.setContentView(R.layout.zoom_thumb_dialog);
-
-			// Check if we have a file and/or it is valid
-			File thumbFile = getCoverFile(mRowId);
-
-			if (thumbFile == null || !thumbFile.exists()) {
-				dialog.setTitle(getResources().getString(R.string.cover_not_set));
-			} else {
-				
-				BitmapFactory.Options opt = new BitmapFactory.Options();
-				opt.inJustDecodeBounds = true;
-			    BitmapFactory.decodeFile( thumbFile.getAbsolutePath(), opt );
-
-			    // If no size info, assume file bad and return appropriate icon
-			    if ( opt.outHeight <= 0 || opt.outWidth <= 0 ) {
-			    	dialog.setTitle(getResources().getString(R.string.cover_corrupt));
-				} else {
-					dialog.setTitle(getResources().getString(R.string.cover_detail));
-					ImageView cover = new ImageView(this);
-					Utils.fetchFileIntoImageView(thumbFile, cover, mThumbZoomSize, mThumbZoomSize, true);
-					cover.setAdjustViewBounds(true);
-				    LayoutParams lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
-				    dialog.addContentView(cover, lp);
-				}
-			}
 			break;
 		default:
 			dialog = null;
@@ -682,9 +645,6 @@ public class BookEditFields extends BookDetailsAbstract implements OnRestoreTabI
 				gintent.setType("image/*");
 				gintent.setAction(Intent.ACTION_GET_CONTENT);
 				startActivityForResult(Intent.createChooser(gintent, getResources().getString(R.string.select_picture)), ADD_GALLERY);
-				return true;
-			case ZOOM_THUMB:
-				showDialog(ZOOM_THUMB_DIALOG_ID);
 				return true;
 			case CROP_THUMB:
 				cropCoverImage(thumbFile);

@@ -125,7 +125,7 @@
                     style="@style/bookDetailsTitlesStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/select_bookshelves" />
+                    android:text="@string/bookshelves" />
 
                 <TextView
                     android:id="@+id/bookshelf_text"
@@ -192,6 +192,9 @@
                     android:layout_weight="1"
                     android:hint="@string/notset" />
             </TableRow>
+
+            <!-- Checkbox below is unused now. Disabled in code. -->
+            <!-- Used only for compatibility with edit_book -->
 
             <CheckBox
                 android:id="@+id/anthology"

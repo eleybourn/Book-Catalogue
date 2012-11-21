@@ -413,9 +413,9 @@ public class BookEditFields extends BookDetailsAbstract implements OnRestoreTabI
 				setCoverImage();
 				// Author and series lists
 				mAuthorList = Utils.getAuthorsFromBundle(savedInstanceState);
-				fixupAuthorList();	// Will update related display fields/button
+				populateAuthorList();	// Will update related display fields/button
 				mSeriesList = Utils.getSeriesFromBundle(savedInstanceState);
-				fixupSeriesList();	// Will update related display fields/button
+				populateSeriesList();	// Will update related display fields/button
 				mFields.getField(R.id.date_published).setValue(savedInstanceState.getString(CatalogueDBAdapter.KEY_DATE_PUBLISHED));
 				// Restore bookshelves
 				Field fe = mFields.getField(R.id.bookshelf_text);
@@ -888,8 +888,8 @@ public class BookEditFields extends BookDetailsAbstract implements OnRestoreTabI
 			mSeriesList = new ArrayList<Series>();
 		}
 		
-		fixupAuthorList();
-		fixupSeriesList();
+		populateAuthorList();
+		populateSeriesList();
 
 	}
 	
@@ -1481,12 +1481,12 @@ public class BookEditFields extends BookDetailsAbstract implements OnRestoreTabI
 				// have already been applied to the database so no update is necessary, but we do need 
 				// to update the data we display.
 				boolean oldDirty = isDirty();
-				fixupAuthorList();
+				populateAuthorList();
 				setDirty(oldDirty);
 			case ACTIVITY_EDIT_SERIES:
 				if (resultCode == Activity.RESULT_OK && intent.hasExtra(CatalogueDBAdapter.KEY_SERIES_ARRAY)){
 					mSeriesList = Utils.getSeriesFromBundle(intent.getExtras());
-					fixupSeriesList();
+					populateSeriesList();
 					setDirty(true);
 				}
 			}
@@ -1496,10 +1496,10 @@ public class BookEditFields extends BookDetailsAbstract implements OnRestoreTabI
 	}
 	
 	@Override
-	protected void fixupAuthorList() {
+	protected void populateAuthorList() {
 		if (mAuthorList.size() != 0 && Utils.pruneList(mDbHelper, mAuthorList) )
 			setDirty(true);
-		super.fixupAuthorList();
+		super.populateAuthorList();
 	}
 
 	/**

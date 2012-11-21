@@ -3,19 +3,21 @@ package com.eleybourn.bookcatalogue;
 import java.io.File;
 import java.util.ArrayList;
 
+import android.app.Activity;
+import android.database.Cursor;
+import android.os.Bundle;
+import android.widget.ImageView;
+
 import com.eleybourn.bookcatalogue.Fields.Field;
 import com.eleybourn.bookcatalogue.Fields.FieldValidator;
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.utils.Utils;
 import com.eleybourn.bookcatalogue.utils.ViewTagger;
 
-import android.app.Activity;
-import android.database.Cursor;
-import android.os.Bundle;
-import android.widget.ImageView;
-
 /**
  * Abstract class for creating activities containing book details. 
+ * Here we define common method for all childs: database and background initializing,
+ * initializing fields and display metrics and other common tasks.
  * @author n.silin
  */
 public abstract class BookDetailsAbstract extends Activity {
@@ -26,12 +28,20 @@ public abstract class BookDetailsAbstract extends Activity {
 	private static final int MAX_EDIT_THUMBNAIL_SIZE = 256;
 	private static final int MAX_ZOOM_THUMBNAIL_SIZE=1024;
 	
+	/**
+	 * Database row id of the selected book.
+	 */
 	protected Long mRowId;
+	/**
+	 * Fileds containing book information
+	 */
 	protected Fields mFields = null;
 	protected CatalogueDBAdapter mDbHelper;
 	
 	protected android.util.DisplayMetrics mMetrics;
+	/** Minimum of MAX_EDIT_THUMBNAIL_SIZE and 1/3rd of largest screen dimension */
 	protected Integer mThumbEditSize;
+	/** Zoom size is minimum of MAX_ZOOM_THUMBNAIL_SIZE and largest screen dimension. */
 	protected Integer mThumbZoomSize;
 	
 	protected ArrayList<Author> mAuthorList = null;
@@ -44,7 +54,7 @@ public abstract class BookDetailsAbstract extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		// See how big the display is and use that to set bitmap sizes
-		getDisplayMetrics();
+		setDisplayMetrics();
 		initThumbSizes();
 		
 		initFields();
@@ -52,16 +62,15 @@ public abstract class BookDetailsAbstract extends Activity {
 		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 		
 		mDbHelper = new CatalogueDBAdapter(this);
-		mDbHelper.open();
+		mDbHelper.open(); //Open here. We will close it in onDestroy method later.
 	}
 	
-	/**
-	 * Fix background
-	 */
 	@Override 
 	protected void onResume() {
 		Tracker.enterOnResume(this);
 		super.onResume();
+		
+		// Fix background
 		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
 		Tracker.exitOnResume(this);
 	}
@@ -85,7 +94,14 @@ public abstract class BookDetailsAbstract extends Activity {
 			return CatalogueDBAdapter.fetchThumbnailByUuid(mDbHelper.getBookUuid(rowId));			
 	}
 	
-	protected void fixupAuthorList() {
+	/**
+	 * Populate Author field by data from {@link #mAuthorList}.
+	 * If there is no data shows "Set author" text defined in resources.
+	 * <p>
+	 * Be sure that you get {@link #mAuthorList}. See {@link #populateFieldsFromDb(Long)}
+	 * for example. 
+	 */
+	protected void populateAuthorList() {
 
 		String newText;
 		if (mAuthorList.size() == 0)
@@ -98,7 +114,14 @@ public abstract class BookDetailsAbstract extends Activity {
 		mFields.getField(R.id.author).setValue(newText);	
 	}
 	
-	protected void fixupSeriesList() {
+	/**
+	 * Populate Series field by data from {@link #mSeriesList}.
+	 * If there is no data shows "Set series..." text defined in resources.
+	 * <p>
+	 * Be sure that you get {@link #mSeriesList}. See {@link #populateFieldsFromDb(Long)}
+	 * for example. 
+	 */
+	protected void populateSeriesList() {
 
 		String newText;
 		int size = 0;
@@ -213,18 +236,34 @@ public abstract class BookDetailsAbstract extends Activity {
 																					// field
 	}
 	
+	/**
+	 * Initializes {@link #mThumbEditSize} and {@link #mThumbZoomSize} values according
+	 * to screen size and {@link #MAX_EDIT_THUMBNAIL_SIZE}, {@link #MAX_ZOOM_THUMBNAIL_SIZE}
+	 * values.<p> 
+	 * Be sure that you set {@link #mMetrics} before. See {@link #setDisplayMetrics()}
+	 * for it. 
+	 */
 	private void initThumbSizes() {
-		// Minimum of MAX_EDIT_THUMBNAIL_SIZE and 1/3rd of largest screen dimension
 		mThumbEditSize = Math.min(MAX_EDIT_THUMBNAIL_SIZE, Math.max(mMetrics.widthPixels, mMetrics.heightPixels) / 3);
-		// Zoom size is minimum of MAX_ZOOM_THUMBNAIL_SIZE and largest screen dimension.
 		mThumbZoomSize = Math.min(MAX_ZOOM_THUMBNAIL_SIZE, Math.max(mMetrics.widthPixels, mMetrics.heightPixels));
 	}
 	
-	private void getDisplayMetrics(){
+	/**
+	 * Get display metrics and set {@link #mMetrics} with it.
+	 */
+	private void setDisplayMetrics(){
 		mMetrics = new android.util.DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(mMetrics);
 	}
 	
+	/**
+	 * Populate all fields (See {@link #mFields} ) except of authors and series fileds with 
+	 * data from database. To set authors and series fields use {@link #populateAuthorList()}
+	 * and {@link #populateSeriesList()} methods.<br>
+	 * Also sets {@link #mAuthorList} and {@link #mSeriesList} values with data from database.
+	 * Data defined by its _id in db. 
+	 * @param rowId database row id of the selected book.
+	 */
 	protected void populateFieldsFromDb(Long rowId) {
 		// From the database (edit)
 		Cursor book = mDbHelper.fetchBookById(rowId);
@@ -272,6 +311,7 @@ public abstract class BookDetailsAbstract extends Activity {
 				bookshelves.close();
 		}
 		
+		// Get author and series lists
 		mAuthorList = mDbHelper.getBookAuthorList(mRowId);
 		mSeriesList = mDbHelper.getBookSeriesList(mRowId);
 	}

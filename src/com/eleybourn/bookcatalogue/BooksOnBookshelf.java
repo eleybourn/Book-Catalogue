@@ -234,7 +234,14 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		mList.moveToPosition(position);
 		// If it's a book, edit it.
 		if (mList.getRowView().getKind() == RowKinds.ROW_KIND_BOOK) {
-			BookEdit.editBook(this, mList.getRowView().getBookId(), BookEdit.TAB_EDIT);
+			BookEdit.openBook(this, mList.getRowView().getBookId());
+//			boolean isReadOnly = BookCatalogueApp.getAppPreferences()
+//					.getBoolean(BookCataloguePreferences.PREF_OPEN_BOOK_READ_ONLY, false);
+//			if (isReadOnly){
+//				BookEdit.viewBook(this, mList.getRowView().getBookId());
+//			} else {
+//				BookEdit.editBook(this, mList.getRowView().getBookId(), BookEdit.TAB_EDIT);
+//			}
 		} else {
 			// If it's leve1, expand/collapse. Technically, we could expand/collapse any level
 			// but storing and recovering the view becomes unmanageable.

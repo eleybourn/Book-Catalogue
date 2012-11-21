@@ -85,11 +85,15 @@ public class BookEdit extends TabActivity {
 	/** Create a collection of tab names for easy iteration */
 	private static String[] mTabNames = { TAB_NAME_EDIT_BOOK, TAB_NAME_EDIT_NOTES, TAB_NAME_EDIT_FRIENDS, TAB_NAME_EDIT_ANTHOLOGY };
 	
+	/** Key using in intent to start this class in read-only mode */
+	public static final String KEY_READ_ONLY = "key_read_only";
+	
 	private static final int DELETE_ID = 1;
 	private static final int DUPLICATE_ID = 3; //2 is taken by populate in anthology
 	private static final int SHARE_ID = 4;
 	private static final int THUMBNAIL_OPTIONS_ID = 5;
-
+	private static final int EDIT_OPTIONS_ID = 6;
+	
 	public int mCurrentTab = 0;
 	private Long mRowId;
 	private CatalogueDBAdapter mDbHelper = new CatalogueDBAdapter(this);
@@ -126,8 +130,9 @@ public class BookEdit extends TabActivity {
 		}
 		
 		//Change the name depending on whether it is a new or existing book
-		boolean isReadOnly = BookCatalogueApp.getAppPreferences()
-				.getBoolean(BookCataloguePreferences.PREF_OPEN_BOOK_READ_ONLY, false);
+//		boolean isReadOnly = BookCatalogueApp.getAppPreferences()
+//				.getBoolean(BookCataloguePreferences.PREF_OPEN_BOOK_READ_ONLY, false);
+		boolean isReadOnly = extras.containsKey(KEY_READ_ONLY);
 		int firstTabTitleResId;
 		// Class needed for the first tab: BookEditFields except when book is exist and read-only mode enabled
 		Class<?> neededClass = BookEditFields.class;  
@@ -164,9 +169,9 @@ public class BookEdit extends TabActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
 		setResult(resultCode, intent);
-		switch(requestCode) {
-		case DUPLICATE_ID:
-			finish();
+		switch (requestCode) {
+			case DUPLICATE_ID:
+				finish();
 		}
 		finish();
 	}
@@ -240,6 +245,11 @@ public class BookEdit extends TabActivity {
 		if (thumbVisible && getCurrentActivity() instanceof BookEditFields) {
 			MenuItem thumbOptions = menu.add(0, THUMBNAIL_OPTIONS_ID, 0, R.string.cover_options_cc_ellipsis);
 			thumbOptions.setIcon(android.R.drawable.ic_menu_camera);			
+		}
+		
+		if(getCurrentActivity() instanceof BookDetailsReadOnly){
+			MenuItem thumbOptions = menu.add(0, EDIT_OPTIONS_ID, 0, R.string.edit_book);
+			thumbOptions.setIcon(android.R.drawable.ic_menu_edit);	
 		}
 		
 		return super.onPrepareOptionsMenu(menu);
@@ -361,6 +371,9 @@ public class BookEdit extends TabActivity {
 					Logger.logError(e);
 				}
 				return true;
+			case EDIT_OPTIONS_ID:
+				BookEdit.editBook(getCurrentActivity(), mRowId, BookEdit.TAB_EDIT);
+				return true;
 			}
 		} catch (NullPointerException e) {
 			Logger.logError(e);
@@ -372,9 +385,26 @@ public class BookEdit extends TabActivity {
 	 * Standard STATIC Methods
 	 * ******************************************************
 	 */
-
+	
 	/**
-	 * Load the EditBook activity based on the provided id. Also open to the provided tab.
+	 * Open book for viewing in edit or read-only mode. The mode depends
+	 * on {@link BookCataloguePreferences#PREF_OPEN_BOOK_READ_ONLY} preference
+	 * option. If it set book opened in read-only mode otherwise in edit mode (default).
+	 * @param a current activity from which we start
+	 * @param id The id of the book to view
+	 */
+	public static void openBook(Activity a, long id){
+		boolean isReadOnly = BookCatalogueApp.getAppPreferences()
+				.getBoolean(BookCataloguePreferences.PREF_OPEN_BOOK_READ_ONLY, false);
+		if (isReadOnly){
+			BookEdit.viewBook(a, id);
+		} else {
+			BookEdit.editBook(a, id, BookEdit.TAB_EDIT);
+		}
+	}
+	
+	/**
+	 * Load the EditBook activity based on the provided id in edit mode. Also open to the provided tab.
 	 * 
 	 * @param id The id of the book to edit
 	 * @param tab Which tab to open first
@@ -384,6 +414,20 @@ public class BookEdit extends TabActivity {
 		i.putExtra(CatalogueDBAdapter.KEY_ROWID, id);
 		i.putExtra(BookEdit.TAB, tab);
 		a.startActivityForResult(i, UniqueId.ACTIVITY_EDIT_BOOK);
+		return;
+	}
+	
+	/**
+	 * Load the EditBook tab activity in read-only mode. The first tab is book details.
+	 * @param a current activity from which we start
+	 * @param id The id of the book to view
+	 */
+	public static void viewBook(Activity a, long id) {
+		Intent i = new Intent(a, BookEdit.class);
+		i.putExtra(CatalogueDBAdapter.KEY_ROWID, id);
+		i.putExtra(BookEdit.TAB, BookEdit.TAB_EDIT); //needed extra for creating BookEdit
+		i.putExtra(BookEdit.KEY_READ_ONLY, true);
+		a.startActivity(i);
 		return;
 	}
 	

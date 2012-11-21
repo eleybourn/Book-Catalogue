@@ -602,7 +602,7 @@ public class BookEditFields extends BookDetailsAbstract implements OnRestoreTabI
 	
 			switch(item.getItemId()) {
 			case DELETE_ID:
-				deleteThumbnail(mRowId);
+				deleteThumbnail();
 				Utils.fetchFileIntoImageView(thumbFile, iv, mThumbEditSize, mThumbEditSize, true);
 				return true;
 			case ROTATE_THUMB_SUBMENU:
@@ -736,7 +736,7 @@ public class BookEditFields extends BookDetailsAbstract implements OnRestoreTabI
 	 * 
 	 * @param id The id of the book (and thumbnail) to delete
 	 */
-	private void deleteThumbnail(long id) {
+	private void deleteThumbnail() {
 		try {
 			File thumbFile = getCoverFile(mRowId);
 			if (thumbFile != null && thumbFile.exists())

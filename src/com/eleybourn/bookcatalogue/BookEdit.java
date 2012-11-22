@@ -36,6 +36,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TabHost;
 import android.widget.Toast;
 
@@ -142,18 +143,31 @@ public class BookEdit extends TabActivity {
 				neededClass = BookDetailsReadOnly.class;
 			}
 		}
-		
+		//Init tab with book details (for both read-only or edit mode)
 		initTab(tabHost, neededClass, TAB_NAME_EDIT_BOOK, firstTabTitleResId, R.drawable.ic_tab_edit, extras);
 		
-		// Only show the other tabs if it is not new book, otherwise only show the first tab
-		if (mRowId != null && mRowId > 0) {
-			initTab(tabHost, BookEditNotes.class, TAB_NAME_EDIT_NOTES, R.string.edit_book_notes, R.drawable.ic_tab_notes, extras);
-			initTab(tabHost, BookEditLoaned.class, TAB_NAME_EDIT_FRIENDS, R.string.edit_book_friends, R.drawable.ic_tab_friends, extras);
-			
-			// Only show the anthology tab if the book is marked as an anthology
-			if (anthology_num != 0) {
-				initTab(tabHost, BookEditAnthology.class, TAB_NAME_EDIT_ANTHOLOGY, R.string.edit_book_anthology, R.drawable.ic_tab_anthology, extras);
+		/*
+		 * Here we initialize other tabs only if we are in the edit mode. 
+		 * If we are in read-only mode we just hide tabs to emulate non-tabs
+		 * activity (really we have only one tab activity initialized above but 
+		 * with hided tab button at the top)
+		 */
+		if (!isReadOnly) {
+			// Only show the other tabs if it is not new book, otherwise only show the first tab
+			if (mRowId != null && mRowId > 0) {
+				initTab(tabHost, BookEditNotes.class, TAB_NAME_EDIT_NOTES, R.string.edit_book_notes,
+						R.drawable.ic_tab_notes, extras);
+				initTab(tabHost, BookEditLoaned.class, TAB_NAME_EDIT_FRIENDS, R.string.edit_book_friends,
+						R.drawable.ic_tab_friends, extras);
+
+				// Only show the anthology tab if the book is marked as an anthology
+				if (anthology_num != 0) {
+					initTab(tabHost, BookEditAnthology.class, TAB_NAME_EDIT_ANTHOLOGY, R.string.edit_book_anthology,
+							R.drawable.ic_tab_anthology, extras);
+				}
 			}
+		} else { //Hide tab buttons at the top of activity
+			findViewById(android.R.id.tabs).setVisibility(View.GONE);
 		}
 		
 		tabHost.setCurrentTab(mCurrentTab);
@@ -186,17 +200,14 @@ public class BookEdit extends TabActivity {
 	protected void onSaveInstanceState(Bundle outState) { 
 		Tracker.enterOnSaveInstanceState(this);
 		super.onSaveInstanceState(outState);
-		try {
-			outState.putLong(CatalogueDBAdapter.KEY_ROWID, mRowId);
-		} catch (Exception e) {
-			//do nothing
-		}
+		
+		outState.putLong(CatalogueDBAdapter.KEY_ROWID, mRowId);
 		Tracker.exitOnSaveInstanceState(this);
 	}
 	
 	@Override
 	/**
-	 * Inform the hosted tabsl that they may have been overwritten, if they implements the
+	 * Inform the hosted tabs that they may have been overwritten, if they implements the
 	 * relevant interface.
 	 * 
 	 * This only seems to be relevant for TextView objects that have Spannable text.
@@ -235,7 +246,7 @@ public class BookEdit extends TabActivity {
 			duplicate.setIcon(android.R.drawable.ic_menu_add);
 		}
 
-		// TODO: Consider allowing Tweets (or other sharig methods) to work on un-added books.
+		// TODO: Consider allowing Tweets (or other sharing methods) to work on un-added books.
 		MenuItem tweet = menu.add(0, SHARE_ID, 0, R.string.menu_share_this);
 		tweet.setIcon(R.drawable.ic_menu_twitter);
 

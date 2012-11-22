@@ -13,48 +13,123 @@
         android:orientation="vertical"
         android:padding="@dimen/padding_border" >
 
-        <ImageView
-            android:id="@+id/row_img"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:background="@color/background_thumb"
-            android:gravity="center"
-            android:padding="@dimen/padding_border" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <ImageView
+                android:id="@+id/row_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="@color/background_thumb"
+                android:gravity="center"
+                android:padding="@dimen/padding_border"
+                android:src="@drawable/ic_launcher2" />
+
+            <ImageView
+                android:id="@+id/read"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/row_img"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:src="@drawable/btn_check_buttonless_off"
+                android:visibility="gone" />
+        </RelativeLayout>
+
+        <!-- Title -->
+
+        <TextView
+            style="@style/bookDetailsTitlesStyle"
+            android:text="@string/title" />
+
+        <TextView
+            android:id="@+id/title"
+            style="@style/bookDetailsTextStyle"
+            android:hint="@string/notset" />
+
+        <!-- Author -->
+
+        <TextView
+            style="@style/bookDetailsTitlesStyle"
+            android:text="@string/author" />
+
+        <TextView
+            android:id="@+id/author"
+            style="@style/bookDetailsTextStyle"
+            android:hint="@string/notset" />
+
+        <!-- Series -->
+
+        <TextView
+            style="@style/bookDetailsTitlesStyle"
+            android:text="@string/series" />
+
+        <TextView
+            android:id="@+id/series"
+            style="@style/bookDetailsTextStyle"
+            android:hint="@string/notset" />
+
+        <!-- Publishing -->
+
+        <TextView
+            style="@style/bookDetailsTitlesStyle"
+            android:text="Publishing" />
+
+        <TextView
+            android:id="@+id/publisher"
+            style="@style/bookDetailsTextStyle"
+            android:hint="@string/notset" />
+
+        <TextView
+            android:id="@+id/date_published"
+            style="@style/bookDetailsTextStyle"
+            android:hint="@string/notset" />
+
+        <!-- Format -->
+
+        <TextView
+            style="@style/bookDetailsTitlesStyle"
+            android:text="@string/format" />
+
+        <TextView
+            android:id="@+id/format"
+            style="@style/bookDetailsTextStyle"
+            android:hint="@string/notset" />
+
+        <TextView
+            android:id="@+id/pages"
+            style="@style/bookDetailsTextStyle"
+            android:hint="@string/notset" />
+
+        <!-- Shelves -->
+
+        <TextView
+            style="@style/bookDetailsTitlesStyle"
+            android:text="@string/bookshelves" />
+
+        <TextView
+            android:id="@+id/bookshelf_text"
+            style="@style/bookDetailsTextStyle"
+            android:hint="@string/notset" />
+
+        <!-- Genre -->
+
+        <TextView
+            style="@style/bookDetailsTitlesStyle"
+            android:text="@string/genre" />
+
+        <TextView
+            android:id="@+id/genre"
+            style="@style/bookDetailsTextStyle"
+            android:hint="@string/notset" />
 
         <TableLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" >
-
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content" >
-
-                <TextView
-                    style="@style/bookDetailsTitlesStyle"
-                    android:text="@string/author" />
-
-                <TextView
-                    android:id="@+id/author"
-                    style="@style/bookDetailsTextStyle"
-                    android:layout_weight="1"
-                    android:hint="@string/notset" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content" >
-
-                <TextView
-                    style="@style/bookDetailsTitlesStyle"
-                    android:text="@string/title" />
-
-                <TextView
-                    android:id="@+id/title"
-                    style="@style/bookDetailsTextStyle"
-                    android:layout_weight="1"
-                    android:hint="@string/notset" />
-            </TableRow>
 
             <TableRow
                 android:layout_width="fill_parent"
@@ -77,117 +152,10 @@
 
                 <TextView
                     style="@style/bookDetailsTitlesStyle"
-                    android:text="@string/series" />
-
-                <TextView
-                    android:id="@+id/series"
-                    style="@style/bookDetailsTextStyle"
-                    android:layout_weight="1"
-                    android:hint="@string/notset" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
-
-                <TextView
-                    style="@style/bookDetailsTitlesStyle"
-                    android:text="@string/publisher" />
-
-                <TextView
-                    android:id="@+id/publisher"
-                    style="@style/bookDetailsTextStyle"
-                    android:layout_weight="1"
-                    android:hint="@string/notset" />
-            </TableRow>
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content" >
-
-                <TextView
-                    style="@style/bookDetailsTitlesStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/date_published" />
-
-                <TextView
-                    android:id="@+id/date_published"
-                    style="@style/bookDetailsTextStyle"
-                    android:hint="@string/notset" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content" >
-
-                <TextView
-                    style="@style/bookDetailsTitlesStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/bookshelves" />
-
-                <TextView
-                    android:id="@+id/bookshelf_text"
-                    style="@style/bookDetailsTextStyle"
-                    android:hint="@string/notset" />
-            </LinearLayout>
-
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content" >
-
-                <TextView
-                    style="@style/bookDetailsTitlesStyle"
-                    android:text="@string/pages" />
-
-                <TextView
-                    android:id="@+id/pages"
-                    style="@style/bookDetailsTextStyle"
-                    android:layout_weight="1"
-                    android:hint="@string/notset" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content" >
-
-                <TextView
-                    style="@style/bookDetailsTitlesStyle"
                     android:text="@string/list_price" />
 
                 <TextView
                     android:id="@+id/list_price"
-                    style="@style/bookDetailsTextStyle"
-                    android:layout_weight="1"
-                    android:hint="@string/notset" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content" >
-
-                <TextView
-                    style="@style/bookDetailsTitlesStyle"
-                    android:text="@string/format" />
-
-                <TextView
-                    android:id="@+id/format"
-                    style="@style/bookDetailsTextStyle"
-                    android:layout_weight="1"
-                    android:hint="@string/notset" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content" >
-
-                <TextView
-                    style="@style/bookDetailsTitlesStyle"
-                    android:text="@string/genre" />
-
-                <TextView
-                    android:id="@+id/genre"
                     style="@style/bookDetailsTextStyle"
                     android:layout_weight="1"
                     android:hint="@string/notset" />

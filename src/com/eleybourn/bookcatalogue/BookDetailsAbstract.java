@@ -115,7 +115,7 @@ public abstract class BookDetailsAbstract extends Activity {
 	 * Be sure that you get {@link #mAuthorList}. See {@link #populateFieldsFromDb(Long)}
 	 * for example. 
 	 */
-	protected void populateAuthorList() {
+	protected void populateAuthorListField() {
 
 		String newText;
 		if (mAuthorList.size() == 0)
@@ -135,7 +135,7 @@ public abstract class BookDetailsAbstract extends Activity {
 	 * Be sure that you get {@link #mSeriesList}. See {@link #populateFieldsFromDb(Long)}
 	 * for example. 
 	 */
-	protected void populateSeriesList() {
+	protected void populateSeriesListField() {
 
 		String newText;
 		int size = 0;
@@ -272,8 +272,8 @@ public abstract class BookDetailsAbstract extends Activity {
 	
 	/**
 	 * Populate all fields (See {@link #mFields} ) except of authors and series fileds with 
-	 * data from database. To set authors and series fields use {@link #populateAuthorList()}
-	 * and {@link #populateSeriesList()} methods.<br>
+	 * data from database. To set authors and series fields use {@link #populateAuthorListField()}
+	 * and {@link #populateSeriesListField()} methods.<br>
 	 * Also sets {@link #mAuthorList} and {@link #mSeriesList} values with data from database.
 	 * Data defined by its _id in db. 
 	 * @param rowId database row id of the selected book.

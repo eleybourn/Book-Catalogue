@@ -32,14 +32,14 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 		if (mRowId != null && mRowId > 0) {
 			populateFieldsFromDb(mRowId);
 			//Populate author and series fields
-			populateAuthorList();
-			populateSeriesList();
+			populateAuthorListField();
+			populateSeriesListField();
 		}
 	}
 	
 	@Override
 	// Override only one line from superclass method. See description below
-	protected void populateSeriesList(){
+	protected void populateSeriesListField(){
 		String newText;
 		int size = 0;
 		try {

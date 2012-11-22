@@ -409,9 +409,9 @@ public class BookEditFields extends BookDetailsAbstract implements OnRestoreTabI
 				setCoverImage();
 				// Author and series lists
 				mAuthorList = Utils.getAuthorsFromBundle(savedInstanceState);
-				populateAuthorList();	// Will update related display fields/button
+				populateAuthorListField();	// Will update related display fields/button
 				mSeriesList = Utils.getSeriesFromBundle(savedInstanceState);
-				populateSeriesList();	// Will update related display fields/button
+				populateSeriesListField();	// Will update related display fields/button
 				mFields.getField(R.id.date_published).setValue(savedInstanceState.getString(CatalogueDBAdapter.KEY_DATE_PUBLISHED));
 				// Restore bookshelves
 				Field fe = mFields.getField(R.id.bookshelf_text);
@@ -848,8 +848,8 @@ public class BookEditFields extends BookDetailsAbstract implements OnRestoreTabI
 			mSeriesList = new ArrayList<Series>();
 		}
 		
-		populateAuthorList();
-		populateSeriesList();
+		populateAuthorListField();
+		populateSeriesListField();
 
 	}
 	
@@ -1441,12 +1441,12 @@ public class BookEditFields extends BookDetailsAbstract implements OnRestoreTabI
 				// have already been applied to the database so no update is necessary, but we do need 
 				// to update the data we display.
 				boolean oldDirty = isDirty();
-				populateAuthorList();
+				populateAuthorListField();
 				setDirty(oldDirty);
 			case ACTIVITY_EDIT_SERIES:
 				if (resultCode == Activity.RESULT_OK && intent.hasExtra(CatalogueDBAdapter.KEY_SERIES_ARRAY)){
 					mSeriesList = Utils.getSeriesFromBundle(intent.getExtras());
-					populateSeriesList();
+					populateSeriesListField();
 					setDirty(true);
 				}
 			}
@@ -1456,10 +1456,10 @@ public class BookEditFields extends BookDetailsAbstract implements OnRestoreTabI
 	}
 	
 	@Override
-	protected void populateAuthorList() {
+	protected void populateAuthorListField() {
 		if (mAuthorList.size() != 0 && Utils.pruneList(mDbHelper, mAuthorList) )
 			setDirty(true);
-		super.populateAuthorList();
+		super.populateAuthorListField();
 	}
 
 	/**

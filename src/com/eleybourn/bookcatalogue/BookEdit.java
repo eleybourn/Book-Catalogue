@@ -130,8 +130,6 @@ public class BookEdit extends TabActivity {
 		}
 		
 		//Change the name depending on whether it is a new or existing book
-//		boolean isReadOnly = BookCatalogueApp.getAppPreferences()
-//				.getBoolean(BookCataloguePreferences.PREF_OPEN_BOOK_READ_ONLY, false);
 		boolean isReadOnly = extras.containsKey(KEY_READ_ONLY);
 		int firstTabTitleResId;
 		// Class needed for the first tab: BookEditFields except when book is exist and read-only mode enabled

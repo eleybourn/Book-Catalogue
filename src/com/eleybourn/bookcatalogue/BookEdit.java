@@ -143,7 +143,7 @@ public class BookEdit extends TabActivity {
 				neededClass = BookDetailsReadOnly.class;
 			}
 		}
-		//Init tab with book details (for both read-only or edit mode)
+		//Initialize tab with book details (for both read-only or edit mode)
 		initTab(tabHost, neededClass, TAB_NAME_EDIT_BOOK, firstTabTitleResId, R.drawable.ic_tab_edit, extras);
 		
 		/*
@@ -270,7 +270,6 @@ public class BookEdit extends TabActivity {
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		Cursor thisBook = null;
 		try {
 			switch(item.getItemId()) {
 			case THUMBNAIL_OPTIONS_ID:
@@ -280,105 +279,13 @@ public class BookEdit extends TabActivity {
 				}
 				break;
 			case SHARE_ID:
-				if (mRowId == null || mRowId == 0) {
-					Toast.makeText(this, R.string.this_option_is_not_available_until_the_book_is_saved, Toast.LENGTH_LONG).show();
-					return true;
-				}
-				
-				thisBook = mDbHelper.fetchBookById(mRowId);
-				thisBook.moveToFirst();
-				String title = thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_TITLE));
-				double rating = thisBook.getDouble(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_RATING));
-				String ratingString = "";
-				String author = thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED_GIVEN_FIRST));
-				String series = thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_SERIES_FORMATTED));
-				File image = CatalogueDBAdapter.fetchThumbnailByUuid(mDbHelper.getBookUuid(mRowId));
-
-				if (series.length() > 0) {
-					series = " (" + series.replace("#", "%23") + ")";
-				}
-				//remove trailing 0's
-				if (rating > 0) {
-					int ratingTmp = (int)rating;
-					double decimal = rating - ratingTmp;
-					if (decimal > 0) {
-						ratingString = rating + "/5";
-					} else {
-						ratingString = ratingTmp + "/5";
-					}
-				}
-				
-				if (ratingString.length() > 0){
-					ratingString = "(" + ratingString + ")";
-				}
-
-				/*
-				 * There's a problem with the facebook app in android, so 
-				 * despite it being shown on the list
-				 * it will not post any text unless the user types it.
-				*/
-				Intent share = new Intent(Intent.ACTION_SEND); 
-				share.putExtra(Intent.EXTRA_TEXT, "I'm reading " + title + " by " + author + series + " " + ratingString);
-				share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + image.getPath()));
-                share.setType("text/plain");
-                
-                startActivity(Intent.createChooser(share, "Share"));
-                
+				performSharingBook(mRowId);
 				return true;
 			case DELETE_ID:
-				if (mRowId == null || mRowId == 0) {
-					Toast.makeText(this, R.string.this_option_is_not_available_until_the_book_is_saved, Toast.LENGTH_LONG).show();
-					return true;
-				}
-				int res = StandardDialogs.deleteBookAlert(this, mDbHelper, mRowId, new Runnable() {
-					@Override
-					public void run() {
-						mDbHelper.purgeAuthors();
-						mDbHelper.purgeSeries();
-						finish();
-					}});
-				if (res != 0) {
-					Toast.makeText(this, res, Toast.LENGTH_LONG).show();
-					finish();
-				}
+				performDeletingBook(mRowId);
 				return true;
 			case DUPLICATE_ID:
-				if (mRowId == null || mRowId == 0) {
-					Toast.makeText(this, R.string.this_option_is_not_available_until_the_book_is_saved, Toast.LENGTH_LONG).show();
-					return true;
-				}
-				Intent i = new Intent(this, BookEdit.class);
-				Bundle book = new Bundle();
-				thisBook = mDbHelper.fetchBookById(mRowId);
-				try {
-					thisBook.moveToFirst();
-					book.putString(CatalogueDBAdapter.KEY_TITLE, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_TITLE)));
-					book.putString(CatalogueDBAdapter.KEY_ISBN, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_ISBN)));
-					book.putString(CatalogueDBAdapter.KEY_PUBLISHER, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_PUBLISHER)));
-					book.putString(CatalogueDBAdapter.KEY_DATE_PUBLISHED, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_DATE_PUBLISHED)));
-					book.putString(CatalogueDBAdapter.KEY_RATING, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_RATING)));
-					book.putString(CatalogueDBAdapter.KEY_READ, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_READ)));
-					book.putString(CatalogueDBAdapter.KEY_PAGES, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_PAGES)));
-					book.putString(CatalogueDBAdapter.KEY_NOTES, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_NOTES)));
-					book.putString(CatalogueDBAdapter.KEY_LIST_PRICE, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_LIST_PRICE)));
-					book.putString(CatalogueDBAdapter.KEY_ANTHOLOGY, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_ANTHOLOGY)));
-					book.putString(CatalogueDBAdapter.KEY_LOCATION, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_LOCATION)));
-					book.putString(CatalogueDBAdapter.KEY_READ_START, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_READ_START)));
-					book.putString(CatalogueDBAdapter.KEY_READ_END, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_READ_END)));
-					book.putString(CatalogueDBAdapter.KEY_FORMAT, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_FORMAT)));
-					book.putString(CatalogueDBAdapter.KEY_SIGNED, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_SIGNED)));
-					book.putString(CatalogueDBAdapter.KEY_DESCRIPTION, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_DESCRIPTION)));
-					book.putString(CatalogueDBAdapter.KEY_GENRE, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_GENRE)));
-					
-					book.putSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mDbHelper.getBookAuthorList(mRowId));
-					book.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, mDbHelper.getBookSeriesList(mRowId));
-					
-					i.putExtra("bookData", book);
-					startActivityForResult(i, DUPLICATE_ID);
-				} catch (CursorIndexOutOfBoundsException e) {
-					Toast.makeText(this, R.string.unknown_error, Toast.LENGTH_LONG).show();
-					Logger.logError(e);
-				}
+				performDuplicatingBook(mRowId);
 				return true;
 			case EDIT_OPTIONS_ID:
 				BookEdit.editBook(getCurrentActivity(), mRowId, BookEdit.TAB_EDIT);
@@ -461,5 +368,123 @@ public class BookEdit extends TabActivity {
 		}
 		spec.setContent(intent);
 		tabHost.addTab(spec);
+	}
+	
+	/**
+	 * Open a new book editing activity with fields copied from saved book.
+	 * Saved book (original of duplicating) is defined by its row _id in database.
+	 * @param rowId The id of the book to copy fields
+	 */
+	private void performDuplicatingBook(Long rowId){
+		if (rowId == null || rowId == 0) {
+			Toast.makeText(this, R.string.this_option_is_not_available_until_the_book_is_saved, Toast.LENGTH_LONG).show();
+		}
+		Intent i = new Intent(this, BookEdit.class);
+		Bundle book = new Bundle();
+		Cursor thisBook = mDbHelper.fetchBookById(rowId);
+		try {
+			thisBook.moveToFirst();
+			book.putString(CatalogueDBAdapter.KEY_TITLE, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_TITLE)));
+			book.putString(CatalogueDBAdapter.KEY_ISBN, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_ISBN)));
+			book.putString(CatalogueDBAdapter.KEY_PUBLISHER, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_PUBLISHER)));
+			book.putString(CatalogueDBAdapter.KEY_DATE_PUBLISHED, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_DATE_PUBLISHED)));
+			book.putString(CatalogueDBAdapter.KEY_RATING, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_RATING)));
+			book.putString(CatalogueDBAdapter.KEY_READ, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_READ)));
+			book.putString(CatalogueDBAdapter.KEY_PAGES, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_PAGES)));
+			book.putString(CatalogueDBAdapter.KEY_NOTES, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_NOTES)));
+			book.putString(CatalogueDBAdapter.KEY_LIST_PRICE, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_LIST_PRICE)));
+			book.putString(CatalogueDBAdapter.KEY_ANTHOLOGY, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_ANTHOLOGY)));
+			book.putString(CatalogueDBAdapter.KEY_LOCATION, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_LOCATION)));
+			book.putString(CatalogueDBAdapter.KEY_READ_START, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_READ_START)));
+			book.putString(CatalogueDBAdapter.KEY_READ_END, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_READ_END)));
+			book.putString(CatalogueDBAdapter.KEY_FORMAT, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_FORMAT)));
+			book.putString(CatalogueDBAdapter.KEY_SIGNED, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_SIGNED)));
+			book.putString(CatalogueDBAdapter.KEY_DESCRIPTION, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_DESCRIPTION)));
+			book.putString(CatalogueDBAdapter.KEY_GENRE, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_GENRE)));
+			
+			book.putSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mDbHelper.getBookAuthorList(rowId));
+			book.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, mDbHelper.getBookSeriesList(mRowId));
+			
+			i.putExtra("bookData", book);
+			startActivityForResult(i, DUPLICATE_ID);
+		} catch (CursorIndexOutOfBoundsException e) {
+			Toast.makeText(this, R.string.unknown_error, Toast.LENGTH_LONG).show();
+			Logger.logError(e);
+		}
+	}
+	
+	/**
+	 * Delete book by its database row _id and close current activity. 
+	 * @param rowId The database id of the book for deleting
+	 */
+	private void performDeletingBook(Long rowId){
+		if (rowId == null || rowId == 0) {
+			Toast.makeText(this, R.string.this_option_is_not_available_until_the_book_is_saved, Toast.LENGTH_LONG).show();
+			return;
+		}
+		int res = StandardDialogs.deleteBookAlert(this, mDbHelper, rowId, new Runnable() {
+			@Override
+			public void run() {
+				mDbHelper.purgeAuthors();
+				mDbHelper.purgeSeries();
+				finish();
+			}});
+		if (res != 0) {
+			Toast.makeText(this, res, Toast.LENGTH_LONG).show();
+			finish();
+		}
+	}
+	
+	/**
+	 * Perform sharing of book by its database rowId. Create chooser with matched 
+	 * apps for sharing some text like the next:<br>
+	 * <b>"I'm reading " + title + " by " + author + series + " " + ratingString</b>
+	 * @param rowId The database id of the book for deleting
+	 */
+	private void performSharingBook(Long rowId){
+		if (rowId == null || rowId == 0) {
+			Toast.makeText(this, R.string.this_option_is_not_available_until_the_book_is_saved, Toast.LENGTH_LONG).show();
+			return;
+		}
+		
+		Cursor thisBook = mDbHelper.fetchBookById(rowId);
+		thisBook.moveToFirst();
+		String title = thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_TITLE));
+		double rating = thisBook.getDouble(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_RATING));
+		String ratingString = "";
+		String author = thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED_GIVEN_FIRST));
+		String series = thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_SERIES_FORMATTED));
+		File image = CatalogueDBAdapter.fetchThumbnailByUuid(mDbHelper.getBookUuid(rowId));
+
+		if (series.length() > 0) {
+			series = " (" + series.replace("#", "%23") + ")";
+		}
+		//remove trailing 0's
+		if (rating > 0) {
+			int ratingTmp = (int)rating;
+			double decimal = rating - ratingTmp;
+			if (decimal > 0) {
+				ratingString = rating + "/5";
+			} else {
+				ratingString = ratingTmp + "/5";
+			}
+		}
+		
+		if (ratingString.length() > 0){
+			ratingString = "(" + ratingString + ")";
+		}
+
+		/*
+		 * There's a problem with the facebook app in android, so despite it being shown on the list
+		 * it will not post any text unless the user types it.
+		 */
+		Intent share = new Intent(Intent.ACTION_SEND); 
+		//TODO Externalize hardcoded text below to allow translating and simple editing
+		String text = "I'm reading " + title + " by " + author + series + " " + ratingString;
+		share.putExtra(Intent.EXTRA_TEXT, text); 
+		share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + image.getPath()));
+        share.setType("text/plain");
+        
+        startActivity(Intent.createChooser(share, "Share"));
 	}
 }

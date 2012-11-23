@@ -38,7 +38,7 @@ public abstract class BookDetailsAbstract extends Activity {
 	 */
 	protected Long mRowId;
 	/**
-	 * Fileds containing book information
+	 * Fields containing book information
 	 */
 	protected Fields mFields = null;
 	protected CatalogueDBAdapter mDbHelper;
@@ -271,7 +271,7 @@ public abstract class BookDetailsAbstract extends Activity {
 	}
 	
 	/**
-	 * Populate all fields (See {@link #mFields} ) except of authors and series fileds with 
+	 * Populate all fields (See {@link #mFields} ) except of authors and series fields with 
 	 * data from database. To set authors and series fields use {@link #populateAuthorListField()}
 	 * and {@link #populateSeriesListField()} methods.<br>
 	 * Also sets {@link #mAuthorList} and {@link #mSeriesList} values with data from database.
@@ -281,53 +281,48 @@ public abstract class BookDetailsAbstract extends Activity {
 	protected void populateFieldsFromDb(Long rowId) {
 		// From the database (edit)
 		Cursor book = mDbHelper.fetchBookById(rowId);
-		Cursor bookshelves = null;
 		try {
 			if (book != null) {
 				book.moveToFirst();
 			}
 
-			// Set any field that has a 'column' non blank.
-			mFields.setFromCursor(book);
-
-			getParent().setTitle(
-					this.getResources().getString(R.string.app_name) + ": "
-							+ mFields.getField(R.id.title).getValue().toString());
-
-			// Display the selected bookshelves
-			Field bookshelfTextFe = mFields.getField(R.id.bookshelf_text);
-			bookshelves = mDbHelper.fetchAllBookshelvesByBook(rowId);
-			String bookshelves_text = "";
-			String bookshelves_list = "";
-			while (bookshelves.moveToNext()) {
-				String name = bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF));
-				String encoded_name = Utils.encodeListItem(name, BOOKSHELF_SEPERATOR);
-				if (bookshelves_text.equals("")) {
-					bookshelves_text = name;
-					bookshelves_list = encoded_name;
-				} else {
-					bookshelves_text += ", " + name;
-					bookshelves_list += BOOKSHELF_SEPERATOR + encoded_name;
-				}
-			}
-			bookshelfTextFe.setValue(bookshelves_text);
-			bookshelfTextFe.setTag(bookshelves_list);
-
-			Integer anthNo = book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
-			mFields.getField(R.id.anthology).setValue(anthNo.toString());
-
-			ImageView iv = (ImageView) findViewById(R.id.row_img);
-			Utils.fetchFileIntoImageView(getCoverFile(rowId), iv, mThumbEditSize, mThumbEditSize, true);
-		} finally {
+			populateBookDetailsFields(rowId, book);
+			
+			String title = mFields.getField(R.id.title).getValue().toString();
+			setActivityTitle(title);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+		finally {
 			if (book != null)
 				book.close();
-			if (bookshelves != null)
-				bookshelves.close();
 		}
 		
+		populateBookshelvesField(mFields, rowId);
+		
 		// Get author and series lists
-		mAuthorList = mDbHelper.getBookAuthorList(mRowId);
-		mSeriesList = mDbHelper.getBookSeriesList(mRowId);
+		mAuthorList = mDbHelper.getBookAuthorList(rowId);
+		mSeriesList = mDbHelper.getBookSeriesList(rowId);
+	}
+	
+	/**
+	 * Inflates all fields with data from cursor and populates UI fields with it.
+	 * Also set thumbnail of the book. 
+	 * @param rowId database row _id of the book
+	 * @param bookCursor cursor with information of the book
+	 */
+	protected void populateBookDetailsFields(Long rowId, Cursor bookCursor){
+		// Set any field that has a 'column' non blank.
+		mFields.setFromCursor(bookCursor);
+		
+		//Set anthology field
+		int columnIndex = bookCursor.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY);
+		Integer anthNo = bookCursor.getInt(columnIndex);
+		mFields.getField(R.id.anthology).setValue(anthNo.toString()); // Set checked if anthNo != 0
+		
+		//Sets book thumbnail
+		ImageView iv = (ImageView) findViewById(R.id.row_img);
+		Utils.fetchFileIntoImageView(getCoverFile(rowId), iv, mThumbEditSize, mThumbEditSize, true);
 	}
 	
 	/**
@@ -370,5 +365,51 @@ public abstract class BookDetailsAbstract extends Activity {
 			}
 		}
 		dialog.show();
+	}
+	
+	/**
+	 * Gets all bookshelves for the book from database and populate corresponding 
+	 * filed with them.
+	 * @param fields Fields containing book information
+	 * @param rowId Database row _id of the book
+	 */
+	protected void populateBookshelvesField(Fields fields, Long rowId){
+		Cursor bookshelves = null;
+		try {
+			// Display the selected bookshelves
+			Field bookshelfTextFe = fields.getField(R.id.bookshelf_text);
+			bookshelves = mDbHelper.fetchAllBookshelvesByBook(rowId);
+			String bookshelves_text = "";
+			String bookshelves_list = "";
+			while (bookshelves.moveToNext()) {
+				String name = bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF));
+				String encoded_name = Utils.encodeListItem(name, BOOKSHELF_SEPERATOR);
+				if (bookshelves_text.equals("")) {
+					bookshelves_text = name;
+					bookshelves_list = encoded_name;
+				} else {
+					bookshelves_text += ", " + name;
+					bookshelves_list += BOOKSHELF_SEPERATOR + encoded_name;
+				}
+			}
+			bookshelfTextFe.setValue(bookshelves_text);
+			bookshelfTextFe.setTag(bookshelves_list);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (bookshelves != null) {
+				bookshelves.close();
+			}
+		}
+	}
+	
+	/**
+	 * Sets title of the parent activity in the next format:<br>
+	 * <i>"Application name + : + title"</i>
+	 * @param title
+	 */
+	protected void setActivityTitle(String title) {
+		String activityTitle = getResources().getString(R.string.app_name) + ": " + title;
+		getParent().setTitle(activityTitle);
 	}
 }

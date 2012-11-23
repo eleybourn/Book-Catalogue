@@ -36,8 +36,23 @@
                 android:layout_toRightOf="@+id/row_img"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:src="@drawable/btn_check_buttonless_off"
-                android:visibility="gone" />
+                android:src="@drawable/btn_check_buttonless_off" />
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/row_img" >
+
+                <RatingBar
+                    android:id="@+id/rating"
+                    style="?android:attr/ratingBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:numStars="5" />
+            </FrameLayout>
         </RelativeLayout>
 
         <!-- Title -->

@@ -667,4 +667,11 @@
 			</p>
 		]]></string>
 
+<string name="new_in_423"><![CDATA[
+    <p><b>New in 4.2.3</b>\n\n
+			* Improve handling of invalid ISBNs when sending to goodreads\n\n
+			* Other minor bug fixes\n\n
+			</p>
+		]]></string>
+
 </resources>

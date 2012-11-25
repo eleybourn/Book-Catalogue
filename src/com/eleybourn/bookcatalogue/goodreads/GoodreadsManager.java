@@ -69,6 +69,7 @@ import com.eleybourn.bookcatalogue.goodreads.api.ShelfAddBookHandler;
 import com.eleybourn.bookcatalogue.goodreads.api.ShowBookApiHandler.ShowBookFieldNames;
 import com.eleybourn.bookcatalogue.goodreads.api.ShowBookByIdApiHandler;
 import com.eleybourn.bookcatalogue.goodreads.api.ShowBookByIsbnApiHandler;
+import com.eleybourn.bookcatalogue.utils.IsbnUtils;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
@@ -594,6 +595,10 @@ public class GoodreadsManager {
 		isNew = (grId == 0);
 
 		if (grId == 0 && !isbn.equals("")) {
+
+			if (!IsbnUtils.isValid(isbn))
+				return ExportDisposition.notFound;
+
 			try {
 				// Get the book details using ISBN
 				grBookInfo = this.getBookByIsbn(isbn);

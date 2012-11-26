@@ -1,10 +1,7 @@
-New in 4.2.2
+New in 4.2.3
 
-* Fix tiling of background image for some Android versions
-* Better handling of incompatible scanner apps
-* Send more details on crash or when asking for help
-* Cleanup of layouts (Nick Silin)
-* Bug fixes
+* Improve handling of invalid ISBNs when sending to goodreads
+* Other minor bug fixes
 
 See main description for a release summary, and README link below for a detailed release history.
 

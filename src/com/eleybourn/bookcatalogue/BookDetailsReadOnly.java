@@ -26,10 +26,6 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 		// Set additional (non book deatils) fields before thier populating
 		addFields();
 		
-		/* Disable Anthology field. User will see Anthology tab if it set,
-		 * so we need show that in read-only details. */
-		findViewById(R.id.anthology).setVisibility(View.GONE);
-
 		if (mRowId != null && mRowId > 0) {
 			populateFieldsFromDb(mRowId);
 			// Populate author and series fields
@@ -71,6 +67,30 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 		// Get author and series lists
 		mAuthorList = mDbHelper.getBookAuthorList(rowId);
 		mSeriesList = mDbHelper.getBookSeriesList(rowId);
+	}
+	
+	@Override
+	/*
+	 * Override populating author field. Hide the field if author not set or 
+	 * shows author (or authors through ',') with 'by' at the beginning. 
+	 */
+	protected void populateAuthorListField() {
+		int authorsCount = mAuthorList.size();
+		if (authorsCount == 0){
+			// Hide author field if it is not set
+			findViewById(R.id.author).setVisibility(View.GONE);
+		} else {
+			StringBuilder builder = new StringBuilder();
+			builder.append(getResources().getString(R.string.book_details_readonly_by));
+			builder.append(" ");
+			for(int i =  0; i < authorsCount; i++){
+				builder.append(mAuthorList.get(i).getDisplayName());
+				if(i != authorsCount - 1){
+					builder.append(", ");
+				}
+			}
+			mFields.getField(R.id.author).setValue(builder.toString());
+		}
 	}
 	
 	@Override

@@ -58,19 +58,12 @@
         <!-- Title -->
 
         <TextView
-            style="@style/bookDetailsTitlesStyle"
-            android:text="@string/title" />
-
-        <TextView
             android:id="@+id/title"
             style="@style/bookDetailsTextStyle"
-            android:hint="@string/notset" />
+            android:hint="@string/notset"
+            android:textStyle="italic" />
 
         <!-- Author -->
-
-        <TextView
-            style="@style/bookDetailsTitlesStyle"
-            android:text="@string/author" />
 
         <TextView
             android:id="@+id/author"

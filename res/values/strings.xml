@@ -623,6 +623,7 @@
 
 <string name="adding_book_elipsis">Adding book&#8230;</string>
 <string name="prefs_global_opening_book_mode">Open book in read-only mode</string>
+<string name="book_details_readonly_by">by</string>
 
 <string name="new_in_42"><![CDATA[
     <p><b>New in 4.2</b>\n\n

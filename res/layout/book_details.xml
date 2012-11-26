@@ -176,7 +176,7 @@
                     android:hint="@string/notset" />
             </TableRow>
 
-            <!-- Checkbox below is unused now.  -->
+            <!-- Checkbox below is unused now. -->
             <!-- Used only for compatibility with edit_book -->
 
             <CheckBox
@@ -185,28 +185,6 @@
                 android:layout_height="wrap_content"
                 android:visibility="gone" />
         </TableLayout>
-
-        <TextView
-            android:id="@+id/descriptionLabel"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="@string/description"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:background="@drawable/main_menu_header_divider"
-            android:paddingBottom="2dp"
-            android:paddingTop="2dp" />
-
-        <TextView
-            android:id="@+id/description"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/description"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
             android:id="@+id/my_comments"
@@ -316,6 +294,32 @@
             style="@style/bookDetailsTextStyle"
             android:hint="@string/notset"
             android:visibility="gone" />
+        
+        <!-- Description -->
+
+        <TextView
+            android:id="@+id/descriptionLabel"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/description"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@drawable/main_menu_header_divider"
+            android:paddingBottom="2dp"
+            android:paddingTop="2dp" />
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/description"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+        
+        
     </LinearLayout>
 
 </ScrollView>

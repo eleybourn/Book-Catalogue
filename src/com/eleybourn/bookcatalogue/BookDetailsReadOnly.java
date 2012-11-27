@@ -1,5 +1,7 @@
 package com.eleybourn.bookcatalogue;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
@@ -28,13 +30,26 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 		addFields();
 
 		if (mRowId != null && mRowId > 0) {
-			populateFieldsFromDb(mRowId);
-			// Populate author and series fields
-			populateAuthorListField();
-			populateSeriesListField();
+			updateFields();
 		}
 	}
-
+	
+	/**
+	 * This is a straight passthrough
+	 */
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+		super.onActivityResult(requestCode, resultCode, intent);
+		switch (requestCode) {
+			case UniqueId.ACTIVITY_EDIT_BOOK:
+				// Update fields of read-only book after editing
+				if (resultCode == Activity.RESULT_OK) {
+					updateFields();
+				}
+				break;
+		}
+	}
+	
 	@Override
 	/* The only difference from super class method is initializing of additional
 	 * fields needed for read-only mode (user notes, loaned, etc.) */
@@ -250,6 +265,16 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 			findViewById(resId).setVisibility(View.GONE);
 		}
 		return !isExist;
+	}
+	
+	/**
+	 * Updates all fields of book from database.
+	 */
+	private void updateFields(){
+		populateFieldsFromDb(mRowId);
+		// Populate author and series fields
+		populateAuthorListField();
+		populateSeriesListField();
 	}
 
 }

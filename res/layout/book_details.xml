@@ -60,86 +60,97 @@
         <TextView
             android:id="@+id/title"
             style="@style/bookDetailsTextStyle"
-            android:hint="@string/notset"
             android:textStyle="italic" />
 
         <!-- Author -->
 
         <TextView
             android:id="@+id/author"
-            style="@style/bookDetailsTextStyle"
-            android:hint="@string/notset" />
+            style="@style/bookDetailsTextStyle" />
 
         <!-- Series -->
 
         <TextView
+            android:id="@+id/lbl_series"
             style="@style/bookDetailsTitlesStyle"
             android:text="@string/series" />
 
         <TextView
             android:id="@+id/series"
             style="@style/bookDetailsTextStyle"
-            android:hint="@string/notset" />
+            android:text="Series name (1)"
+            tools:ignore="HardcodedText" />
 
         <!-- Publishing -->
 
         <TextView
+            android:id="@+id/lbl_publishing"
             style="@style/bookDetailsTitlesStyle"
-            android:text="Publishing" />
+            android:text="@string/book_details_readonly_publishing" />
 
         <TextView
             android:id="@+id/publisher"
             style="@style/bookDetailsTextStyle"
-            android:hint="@string/notset" />
+            android:text="Publisher name"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/date_published"
             style="@style/bookDetailsTextStyle"
-            android:hint="@string/notset" />
+            android:text="Jan 25, 2012"
+            tools:ignore="HardcodedText" />
 
         <!-- Format -->
 
         <TextView
+            android:id="@+id/lbl_format"
             style="@style/bookDetailsTitlesStyle"
             android:text="@string/format" />
 
         <TextView
             android:id="@+id/format"
             style="@style/bookDetailsTextStyle"
-            android:hint="@string/notset" />
+            android:text="Hardcover"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/pages"
             style="@style/bookDetailsTextStyle"
-            android:hint="@string/notset" />
+            android:text="573 pages"
+            tools:ignore="HardcodedText" />
 
         <!-- Shelves -->
 
         <TextView
+            android:id="@+id/lbl_bookshelves"
             style="@style/bookDetailsTitlesStyle"
             android:text="@string/bookshelves" />
 
         <TextView
             android:id="@+id/bookshelf_text"
             style="@style/bookDetailsTextStyle"
-            android:hint="@string/notset" />
+            android:text="The best books, Wanted"
+            tools:ignore="HardcodedText" />
 
         <!-- Genre -->
 
         <TextView
+            android:id="@+id/lbl_genre"
             style="@style/bookDetailsTitlesStyle"
             android:text="@string/genre" />
 
         <TextView
             android:id="@+id/genre"
             style="@style/bookDetailsTextStyle"
-            android:hint="@string/notset" />
+            android:text="Science Fiction"
+            tools:ignore="HardcodedText" />
 
         <TableLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" >
 
             <TableRow
+                android:id="@+id/row_isbn"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content" >
 
@@ -151,10 +162,12 @@
                     android:id="@+id/isbn"
                     style="@style/bookDetailsTextStyle"
                     android:layout_weight="1"
-                    android:hint="@string/notset" />
+                    android:text="97834579862"
+                    tools:ignore="HardcodedText" />
             </TableRow>
 
             <TableRow
+                android:id="@+id/row_list_price"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content" >
 
@@ -166,7 +179,8 @@
                     android:id="@+id/list_price"
                     style="@style/bookDetailsTextStyle"
                     android:layout_weight="1"
-                    android:hint="@string/notset" />
+                    android:text="45"
+                    tools:ignore="HardcodedText" />
             </TableRow>
 
             <!-- Checkbox below is unused now. -->
@@ -184,7 +198,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="My comments"
+            android:text="@string/edit_book_notes"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <View
@@ -197,13 +211,15 @@
         <!-- Notes -->
 
         <TextView
+            android:id="@+id/lbl_notes"
             style="@style/bookDetailsTitlesStyle"
             android:text="@string/notes" />
 
         <TextView
             android:id="@+id/notes"
             style="@style/bookDetailsTextStyle"
-            android:hint="@string/notset" />
+            android:text="The best book of all times"
+            tools:ignore="HardcodedText" />
 
         <TableLayout
             android:layout_width="fill_parent"
@@ -229,6 +245,7 @@
             <!-- Start and end of reading -->
 
             <TableRow
+                android:id="@+id/row_read_start"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content" >
 
@@ -240,10 +257,12 @@
                     android:id="@+id/read_start"
                     style="@style/bookDetailsTextStyle"
                     android:layout_weight="1"
-                    android:hint="@string/notset" />
+                    android:text="Nov 10, 2011"
+                    tools:ignore="HardcodedText" />
             </TableRow>
 
             <TableRow
+                android:id="@+id/row_read_end"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content" >
 
@@ -255,12 +274,14 @@
                     android:id="@+id/read_end"
                     style="@style/bookDetailsTextStyle"
                     android:layout_weight="1"
-                    android:hint="@string/notset" />
+                    android:text="Dec 15, 2011"
+                    tools:ignore="HardcodedText" />
             </TableRow>
 
             <!-- Location of the book -->
 
             <TableRow
+                android:id="@+id/row_location"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content" >
 
@@ -272,22 +293,17 @@
                     android:id="@+id/location"
                     style="@style/bookDetailsTextStyle"
                     android:layout_weight="1"
-                    android:hint="@string/notset" />
+                    android:text="Library"
+                    tools:ignore="HardcodedText" />
             </TableRow>
         </TableLayout>
-
-        <TextView
-            android:id="@+id/lbl_loaned_to"
-            style="@style/bookDetailsTitlesStyle"
-            android:text="@string/loaned_to"
-            android:visibility="gone" />
 
         <TextView
             android:id="@+id/who"
             style="@style/bookDetailsTextStyle"
             android:hint="@string/notset"
             android:visibility="gone" />
-        
+
         <!-- Description -->
 
         <TextView
@@ -299,6 +315,7 @@
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <View
+            android:id="@+id/description_divider"
             android:layout_width="fill_parent"
             android:layout_height="1dp"
             android:background="@drawable/main_menu_header_divider"
@@ -309,10 +326,9 @@
             android:id="@+id/description"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/description"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-        
-        
+            android:text="I hereby nominate Lizard the humongous football player and Sylphide the mysterious ballerina as two of my favorite characters of 2012. Rarely have such elite and outsize personalities felt so true on the page--a joy to be with, worth rooting for."
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            tools:ignore="HardcodedText" />
     </LinearLayout>
 
 </ScrollView>

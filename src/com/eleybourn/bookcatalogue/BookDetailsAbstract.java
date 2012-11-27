@@ -372,9 +372,11 @@ public abstract class BookDetailsAbstract extends Activity {
 	 * filed with them.
 	 * @param fields Fields containing book information
 	 * @param rowId Database row _id of the book
+	 * @return true if populated, false otherwise
 	 */
-	protected void populateBookshelvesField(Fields fields, Long rowId){
+	protected boolean populateBookshelvesField(Fields fields, Long rowId){
 		Cursor bookshelves = null;
+		boolean result = false;
 		try {
 			// Display the selected bookshelves
 			Field bookshelfTextFe = fields.getField(R.id.bookshelf_text);
@@ -394,6 +396,9 @@ public abstract class BookDetailsAbstract extends Activity {
 			}
 			bookshelfTextFe.setValue(bookshelves_text);
 			bookshelfTextFe.setTag(bookshelves_list);
+			if (bookshelves.getCount() > 0) {
+				result = true; // One or more bookshelves have been set
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -401,6 +406,7 @@ public abstract class BookDetailsAbstract extends Activity {
 				bookshelves.close();
 			}
 		}
+		return result;
 	}
 	
 	/**

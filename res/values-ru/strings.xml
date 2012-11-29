@@ -17,7 +17,7 @@
     <string name="pages">Страницы</string>
     <string name="confirm_add">Добавить книгу</string>
     <string name="confirm_update">Обновить</string>
-    <string name="nobooks">На этой книжной полке нет книг. Пожалуйста, добавьте книги, используя меню в нижней части этого экрана.</string>
+    <string name="nobooks">На этой полке нет книг. Пожалуйста, добавьте книги, используя меню в нижней части этого экрана.</string>
     <string name="menu_sort_by_author_expanded">Развернуть всё</string>
     <string name="menu_sort_by">Отсортировать по</string>
     <string name="menu_sort_by_author_collapsed">Свернуть всё</string>
@@ -28,7 +28,7 @@
     <string name="search">Поиск</string>
     <string name="cancel">Отмена</string>
     <string name="confirm_save">Сохранить книгу</string>
-    <string name="nobookshelves">Вы не создали ни одной книжной полки. Пожалуйста, добавьте книжную полку, используя меню в нижней части этого экрана.</string>
+    <string name="nobookshelves">Вы не создали ни одной полки. Пожалуйста, добавьте полку, используя меню в нижней части этого экрана.</string>
     <string name="menu_insert_bs">Создать полку</string>
     <string name="confirm_add_bs">Добавить полку</string>
     <string name="menu_bookshelf">Полки</string>
@@ -65,7 +65,7 @@
     <string name="unable_to_connect_amazon">Невозможно подключиться к Amazon</string>
     <string name="upgrade_title">После Вашего последнего обновления</string>
     <string name="edit_book">Редактировать книгу</string>
-    <string name="edit_book_notes">Ваши комментарии</string>
+    <string name="edit_book_notes">Комментарии</string>
     <string name="edit_book_friends">Одолжить книгу</string>
     <string name="unknown_error">Произошла неизвестная ошибка</string>
     <string name="notes">Заметки</string>
@@ -93,8 +93,8 @@
     <string name="sortby_unread">Отсортировать по непрочитанным</string>
     <string name="sortby_genre">Отсортировать по жанру</string>
     <string name="list_price">Список цен</string>
-    <string name="date_started_reading">Дата начала чтения</string>
-    <string name="date_finished_reading">Дата завершения чтения</string>
+    <string name="date_started_reading">Начало чтения</string>
+    <string name="date_finished_reading">Конец чтения</string>
     <string name="update_fields">Автоматическое обновление полей</string>
     <string name="select_fields_to_update">Выберите поля для обновления</string>
     <string name="select_fields_to_update_help">Выбранные поля будут обновлены через интернет. Остальные останутся неизменными.</string>
@@ -131,8 +131,8 @@
     <string name="menu_zoom_thumb">Увеличить эскиз</string>
     <string name="help_title_nutshell">В двух словах</string>
     <string name="signed">Книга подписана?</string>
-    <string name="read_start">Дата начала чтения</string>
-    <string name="read_end">Дата завершения чтения</string>
+    <string name="read_start">Начало чтения</string>
+    <string name="read_end">Конец чтения</string>
     <string name="location_of_book">Местоположение книги</string>
     <string name="duplicate_title">Копия книги</string>
     <string name="duplicate_book_title">Копия книги</string>
@@ -638,6 +638,12 @@
     <string name="library_thing">LibraryThing</string>
     <string name="searching_elipsis">Поиск&#8230;</string>
     <string name="adding_book_elipsis">Добавление книги&#8230;</string>
+    <string name="prefs_global_opening_book_mode">Просмотр книги в режиме чтения</string>
+    <string name="book_details_readonly_publishing">Публикация</string>
+    <string name="book_details_readonly_by">by</string>
+    <string name="book_details_readonly_loaned_to">Дана вдолг: %1$s</string>
+    <string name="book_details_readonly_pages">Страниц: %1$s</string>
+    <string name="brackets">(%1$s)</string>
     <string name="new_in_42">
 <![CDATA[
     		<p><b>Новое в версии 4.2</b>\n\n
@@ -663,23 +669,29 @@
 			</p>
 		]]>
     </string>
-    <string name="new_in_421"><![CDATA[
+    <string name="new_in_421">
+<![CDATA[
     		<p><b>Новое в 4.2.1</b>\n\n
 			* Исправлена ошибка, возникающая при раскрытии списка с использованием \'Раскрыть всё\'\n\n
-			</p>]]></string>
+			</p>]]>
+    </string>
     <string name="bad_scanner">Возможно, ваше приложение-сканер не совместимо с Book Catalogue. Мы рекомендуем установить Zxing сканер, или если он уже установлен, удалите его, затем снова установите.</string>
-    <string name="new_in_422"><![CDATA[
+    <string name="new_in_422">
+<![CDATA[
     	<p><b>Новое в 4.2.2</b>\n\n
 			* Исправление отображения фонового изображения для некоторых версии\n\n
 			* Улучшено взаимодействие со сторонними программами-сканерами\n\n
 			* Улучшены отправляемые подробности об аварийном завершении или просьбе о помощи\n\n
 			* Исправлены шаблоны пользовательского интерфейса (Коля Силин)\n\n
 			* Исправлены некоторые баги\n\n
-			</p>]]></string>
-    <string name="new_in_423"><![CDATA[
+			</p>]]>
+    </string>
+    <string name="new_in_423">
+<![CDATA[
     	<p><b>Новое в 4.2.3</b>\n\n
 			* Улучшена обработка неверного ISBN при отправке на Goodreads\n\n
 			* Исправление небольших багов\n\n
-			</p>]]></string>
+			</p>]]>
+    </string>
 
 </resources>

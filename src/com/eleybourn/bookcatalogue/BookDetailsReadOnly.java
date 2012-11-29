@@ -30,7 +30,7 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 		addFields();
 		
 		/* 
-		 * We should override this value to initialize book thumb with right size.
+		 * We have to override this value to initialize book thumb with right size.
 		 * You have to see in book_details.xml to get dividing coefficient
 		 */
 		mThumbEditSize = mMetrics.widthPixels / 3;
@@ -73,7 +73,8 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 			showReadStatus(book);
 			showLoanedInfo(rowId);
 			showSignedStatus(book);
-
+			formatFormatSection();
+			
 			hideEmptyFields();
 
 			String title = mFields.getField(R.id.title).getValue().toString();
@@ -163,7 +164,28 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 		mFields.add(R.id.read_end, CatalogueDBAdapter.KEY_READ_END, null, new Fields.DateFieldFormatter());
 		mFields.add(R.id.location, CatalogueDBAdapter.KEY_LOCATION, null);
 	}
-
+	
+	/**
+	 * Formats 'format' section of the book depending on values
+	 * of 'pages' and 'format' fields.
+	 */
+	private void formatFormatSection(){
+		Field field = mFields.getField(R.id.pages);
+		String value = (String) field.getValue();
+		boolean isExist = value != null && !value.equals("");
+		if (isExist) { //If 'pages' field is set format it
+			field.setValue(getString(R.string.book_details_readonly_pages, value));
+		}
+		// Format 'format' field
+		field = mFields.getField(R.id.format);
+		value = (String) field.getValue();
+		if(isExist && value != null && !value.equals("")){
+			/* Surround 'format' field with braces if 'pages' field is set 
+			 * and 'format' field is not empty */
+			field.setValue(getString(R.string.brackets, value));
+		}
+	}
+	
 	/**
 	 * Inflates 'Loaned' field showing a person the book loaned to.
 	 * If book is not loaned field is invisible.
@@ -216,11 +238,6 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 		}
 		// Check format information
 		boolean hasPages = !hideFieldIfEmpty(R.id.pages);
-		if (hasPages) { // Add 'pages' word to numbers
-			Field pagesField = mFields.getField(R.id.pages);
-			String numPages = (String) pagesField.getValue();
-			pagesField.setValue(getString(R.string.book_details_readonly_pages, numPages));
-		}
 		if (hideFieldIfEmpty(R.id.format) && !hasPages) {
 			findViewById(R.id.lbl_format).setVisibility(View.GONE);
 		}

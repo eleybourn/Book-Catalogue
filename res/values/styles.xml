@@ -35,5 +35,20 @@
         <item name="android:layout_height">@dimen/isbn_key_size</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
     </style>
-
+	
+    <!-- Style for detail titles in read-only book details -->
+    <style name="bookDetailsTitlesStyle">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    
+    <!-- Style for text details in read-only book details -->
+    <style name="bookDetailsTextStyle">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">@dimen/padding_book_details_info</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+    </style>
 </resources>

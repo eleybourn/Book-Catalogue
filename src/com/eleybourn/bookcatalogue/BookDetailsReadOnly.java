@@ -74,6 +74,7 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 			showLoanedInfo(rowId);
 			showSignedStatus(book);
 			formatFormatSection();
+			formatPublishingSection();
 			
 			hideEmptyFields();
 
@@ -187,6 +188,24 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 	}
 	
 	/**
+	 * Formats 'Publishing' section of the book depending on values
+	 * of 'publisher' and 'date published' fields.
+	 */
+	private void formatPublishingSection(){
+		Field field = mFields.getField(R.id.date_published);
+		String value = (String) field.getValue();
+		boolean isDateExist = value != null && !value.equals("");
+
+		// Format 'publisher' field
+		field = mFields.getField(R.id.publisher);
+		value = (String) field.getValue();
+		if(isDateExist && value != null && !value.equals("")){
+			// Add comma to the end
+			field.setValue(value + ", ");
+		}
+	}
+	
+	/**
 	 * Inflates 'Loaned' field showing a person the book loaned to.
 	 * If book is not loaned field is invisible.
 	 * @param rowId Database row _id of the loaned book
@@ -286,9 +305,7 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 	private boolean hideFieldIfEmpty(int resId) {
 		String value = (String) mFields.getField(resId).getValue();
 		boolean isExist = value != null && !value.equals("");
-		if (!isExist) {
-			findViewById(resId).setVisibility(View.GONE);
-		}
+		findViewById(resId).setVisibility(isExist ? View.VISIBLE : View.GONE);
 		return !isExist;
 	}
 	

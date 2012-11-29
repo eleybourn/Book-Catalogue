@@ -16,23 +16,36 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:baselineAligned="false"
             android:orientation="horizontal" >
 
-            <FrameLayout
+            <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|center_horizontal"
                 android:layout_weight="1" >
 
-                <ImageView
-                    android:id="@+id/row_img"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:background="@color/background_thumb"
-                    android:padding="@dimen/padding_border"
-                    android:src="@drawable/ic_launcher2" />
-            </FrameLayout>
+                    <ImageView
+                        android:id="@+id/row_img"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_alignParentTop="true"
+                        android:background="@color/background_thumb"
+                        android:padding="@dimen/padding_border"
+                        android:src="@drawable/ic_launcher2" />
+
+                    <ImageView
+                        android:id="@+id/read"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignRight="@+id/row_img"
+                        android:layout_alignTop="@+id/row_img"
+                        android:layout_gravity="top|right"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/btn_check_buttonless_off"
+                        android:visibility="gone" />
+            </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="0dp"
@@ -44,37 +57,32 @@
                 <TextView
                     android:id="@+id/title"
                     style="@style/bookDetailsTextStyle"
-                    android:layout_width="wrap_content"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
                     android:layout_alignWithParentIfMissing="true"
-                    android:layout_toLeftOf="@+id/read"
                     android:text="Anna Karenina"
                     android:textStyle="italic"
                     tools:ignore="HardcodedText" />
 
-                <ImageView
-                    android:id="@+id/read"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/btn_check_buttonless_off"
-                    android:visibility="gone" />
+<!--                 <ImageView -->
+<!--                     android:id="@+id/read" -->
+<!--                     android:layout_width="wrap_content" -->
+<!--                     android:layout_height="wrap_content" -->
+<!--                     android:layout_alignParentRight="true" -->
+<!--                     android:scaleType="fitXY" -->
+<!--                     android:src="@drawable/btn_check_buttonless_off" -->
+<!--                     android:visibility="gone" /> -->
 
                 <!-- Author -->
 
                 <TextView
                     android:id="@+id/author"
                     style="@style/bookDetailsTextStyle"
-                    android:layout_width="wrap_content"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignWithParentIfMissing="true"
                     android:layout_below="@+id/title"
                     android:layout_marginTop="@dimen/padding_border"
-                    android:layout_toLeftOf="@+id/read"
                     android:text="Lev Tolstoy"
                     tools:ignore="HardcodedText" />
 

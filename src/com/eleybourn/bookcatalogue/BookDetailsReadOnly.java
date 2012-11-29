@@ -28,7 +28,13 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 		super.onCreate(savedInstanceState);
 		// Set additional (non book deatils) fields before thier populating
 		addFields();
-
+		
+		/* 
+		 * We should override this value to initialize book thumb with right size.
+		 * You have to see in book_details.xml to get dividing coefficient
+		 */
+		mThumbEditSize = mMetrics.widthPixels / 3;
+		
 		if (mRowId != null && mRowId > 0) {
 			updateFields();
 		}
@@ -133,9 +139,9 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 			if (seriesCount > 0) {
 				StringBuilder builder = new StringBuilder();
 				for (int i = 0; i < seriesCount; i++) {
-					builder.append(mSeriesList.get(i).getDisplayName());
+					builder.append("    " + mSeriesList.get(i).getDisplayName());
 					if (i != seriesCount - 1) {
-						builder.append(", ");
+						builder.append("<br/>");
 					}
 				}
 				newText = builder.toString();
@@ -181,7 +187,9 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 		Integer isRead = book.getInt(book.getColumnIndex(CatalogueDBAdapter.KEY_READ));
 		boolean isBookRead = isRead == 1;
 		if (isBookRead) {
-			((ImageView) findViewById(R.id.read)).setImageResource(R.drawable.btn_check_buttonless_on);
+			ImageView image = (ImageView) findViewById(R.id.read);
+			image.setVisibility(View.VISIBLE);
+			image.setImageResource(R.drawable.btn_check_buttonless_on);
 		}
 	}
 

@@ -30,8 +30,8 @@ public abstract class BookDetailsAbstract extends Activity {
 	public static final Character BOOKSHELF_SEPERATOR = ',';
 	
 	// Target size of a thumbnail in edit dialog and zoom dialog (bbox dim)
-	private static final int MAX_EDIT_THUMBNAIL_SIZE = 256;
-	private static final int MAX_ZOOM_THUMBNAIL_SIZE=1024;
+	protected static final int MAX_EDIT_THUMBNAIL_SIZE = 256;
+	protected static final int MAX_ZOOM_THUMBNAIL_SIZE=1024;
 	
 	/**
 	 * Database row id of the selected book.
@@ -390,7 +390,7 @@ public abstract class BookDetailsAbstract extends Activity {
 					bookshelves_text = name;
 					bookshelves_list = encoded_name;
 				} else {
-					bookshelves_text += ", " + name;
+					bookshelves_text += "<br/>" + name;
 					bookshelves_list += BOOKSHELF_SEPERATOR + encoded_name;
 				}
 			}

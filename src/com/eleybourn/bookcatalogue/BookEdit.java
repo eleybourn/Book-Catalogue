@@ -20,7 +20,6 @@
 
 package com.eleybourn.bookcatalogue;
 
-//import android.R;
 import java.io.File;
 import java.util.Hashtable;
 import java.util.Map.Entry;
@@ -32,20 +31,23 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TabHost;
 import android.widget.Toast;
 
+import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
 import com.eleybourn.bookcatalogue.utils.Logger;
 
 /**
  * A tab host activity which holds the three edit book tabs
- * 1. Edit Details
+ * 1. Edit Details / Book Details
  * 2. Edit Comments
  * 3. Loan Book
  * 
@@ -84,12 +86,16 @@ public class BookEdit extends TabActivity {
 	/** Create a collection of tab names for easy iteration */
 	private static String[] mTabNames = { TAB_NAME_EDIT_BOOK, TAB_NAME_EDIT_NOTES, TAB_NAME_EDIT_FRIENDS, TAB_NAME_EDIT_ANTHOLOGY };
 	
+	/** Key using in intent to start this class in read-only mode */
+	public static final String KEY_READ_ONLY = "key_read_only";
+	
 	private static final int DELETE_ID = 1;
 	private static final int DUPLICATE_ID = 3; //2 is taken by populate in anthology
 	private static final int SHARE_ID = 4;
 	private static final int THUMBNAIL_OPTIONS_ID = 5;
-
-	public int currentTab = 0;
+	private static final int EDIT_OPTIONS_ID = 6;
+	
+	public int mCurrentTab = 0;
 	private Long mRowId;
 	private CatalogueDBAdapter mDbHelper = new CatalogueDBAdapter(this);
 
@@ -98,15 +104,12 @@ public class BookEdit extends TabActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tabhost);
 		
-		Resources res = getResources(); // Resource object to get Drawables
 		TabHost tabHost = getTabHost();  // The activity TabHost
-		TabHost.TabSpec spec;  // Resusable TabSpec for each tab
-		Intent intent;  // Reusable Intent for each tab
 		mDbHelper.open();
 		
 		//get the passed parameters
 		Bundle extras = getIntent().getExtras();
-		currentTab = extras != null ? extras.getInt(BookEdit.TAB) : 0;
+		mCurrentTab = extras != null ? extras.getInt(BookEdit.TAB) : 0;
 		mRowId = savedInstanceState != null ? savedInstanceState.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
 		if (mRowId == null) {
 			mRowId = extras != null ? extras.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
@@ -127,51 +130,47 @@ public class BookEdit extends TabActivity {
 			}
 		}
 		
-		// Create an Intent to launch an Activity for the tab (to be reused)
-		intent = new Intent().setClass(this, BookEditFields.class);
-		if (extras != null) {
-			intent.putExtras(extras);
-		}
 		//Change the name depending on whether it is a new or existing book
-		String name = "";
+		boolean isReadOnly = extras.containsKey(KEY_READ_ONLY);
+		int firstTabTitleResId;
+		// Class needed for the first tab: BookEditFields except when book is exist and read-only mode enabled
+		Class<?> neededClass = BookEditFields.class;  
 		if (mRowId == null || mRowId == 0) {
-			name = res.getString(R.string.menu_insert);
+			firstTabTitleResId = R.string.menu_insert;
 		} else {
-			name = res.getString(R.string.edit_book);
+			firstTabTitleResId = isReadOnly ? R.string.book : R.string.edit_book; //Just use R.string.book for read-only title now
+			if (isReadOnly) {
+				neededClass = BookDetailsReadOnly.class;
+			}
 		}
-		// Initialise a TabSpec for each tab and add it to the TabHost
-		spec = tabHost.newTabSpec(TAB_NAME_EDIT_BOOK).setIndicator(name, res.getDrawable(R.drawable.ic_tab_edit)).setContent(intent);
-		tabHost.addTab(spec);
+		//Initialize tab with book details (for both read-only or edit mode)
+		initTab(tabHost, neededClass, TAB_NAME_EDIT_BOOK, firstTabTitleResId, R.drawable.ic_tab_edit, extras);
 		
-		// Only show the other tabs if it is an edited book, otherwise only show the first tab
-		if (mRowId != null && mRowId > 0) {
-			// Do the same for the other tabs
-			intent = new Intent().setClass(this, BookEditNotes.class);
-			if (extras != null) {
-				intent.putExtras(extras);
-			}
-			spec = tabHost.newTabSpec(TAB_NAME_EDIT_NOTES).setIndicator(res.getString(R.string.edit_book_notes), res.getDrawable(R.drawable.ic_tab_notes)).setContent(intent);
-			tabHost.addTab(spec);
-			
-			intent = new Intent().setClass(this, BookEditLoaned.class);
-			if (extras != null) {
-				intent.putExtras(extras);
-			}
-			spec = tabHost.newTabSpec(TAB_NAME_EDIT_FRIENDS).setIndicator(res.getString(R.string.edit_book_friends), res.getDrawable(R.drawable.ic_tab_friends)).setContent(intent);
-			tabHost.addTab(spec);
-			
-			// Only show the anthology tab if the book is marked as an anthology
-			if (anthology_num != 0) {
-				intent = new Intent().setClass(this, BookEditAnthology.class);
-				if (extras != null) {
-					intent.putExtras(extras);
+		/*
+		 * Here we initialize other tabs only if we are in the edit mode. 
+		 * If we are in read-only mode we just hide tabs to emulate non-tabs
+		 * activity (really we have only one tab activity initialized above but 
+		 * with hided tab button at the top)
+		 */
+		if (!isReadOnly) {
+			// Only show the other tabs if it is not new book, otherwise only show the first tab
+			if (mRowId != null && mRowId > 0) {
+				initTab(tabHost, BookEditNotes.class, TAB_NAME_EDIT_NOTES, R.string.edit_book_notes,
+						R.drawable.ic_tab_notes, extras);
+				initTab(tabHost, BookEditLoaned.class, TAB_NAME_EDIT_FRIENDS, R.string.edit_book_friends,
+						R.drawable.ic_tab_friends, extras);
+
+				// Only show the anthology tab if the book is marked as an anthology
+				if (anthology_num != 0) {
+					initTab(tabHost, BookEditAnthology.class, TAB_NAME_EDIT_ANTHOLOGY, R.string.edit_book_anthology,
+							R.drawable.ic_tab_anthology, extras);
 				}
-				spec = tabHost.newTabSpec(TAB_NAME_EDIT_ANTHOLOGY).setIndicator(res.getString(R.string.edit_book_anthology), res.getDrawable(R.drawable.ic_tab_anthology)).setContent(intent);
-				tabHost.addTab(spec);
 			}
+		} else { //Hide tab buttons at the top of activity
+			findViewById(android.R.id.tabs).setVisibility(View.GONE);
 		}
 		
-		tabHost.setCurrentTab(currentTab);
+		tabHost.setCurrentTab(mCurrentTab);
 		Tracker.exitOnCreate(this);
 	}
 	
@@ -182,9 +181,9 @@ public class BookEdit extends TabActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
 		setResult(resultCode, intent);
-		switch(requestCode) {
-		case DUPLICATE_ID:
-			finish();
+		switch (requestCode) {
+			case DUPLICATE_ID:
+				finish();
 		}
 		finish();
 	}
@@ -201,17 +200,14 @@ public class BookEdit extends TabActivity {
 	protected void onSaveInstanceState(Bundle outState) { 
 		Tracker.enterOnSaveInstanceState(this);
 		super.onSaveInstanceState(outState);
-		try {
-			outState.putLong(CatalogueDBAdapter.KEY_ROWID, mRowId);
-		} catch (Exception e) {
-			//do nothing
-		}
+		
+		outState.putLong(CatalogueDBAdapter.KEY_ROWID, mRowId);
 		Tracker.exitOnSaveInstanceState(this);
 	}
 	
 	@Override
 	/**
-	 * Inform the hosted tabsl that they may have been overwritten, if they implements the
+	 * Inform the hosted tabs that they may have been overwritten, if they implements the
 	 * relevant interface.
 	 * 
 	 * This only seems to be relevant for TextView objects that have Spannable text.
@@ -250,7 +246,7 @@ public class BookEdit extends TabActivity {
 			duplicate.setIcon(android.R.drawable.ic_menu_add);
 		}
 
-		// TODO: Consider allowing Tweets (or other sharig methods) to work on un-added books.
+		// TODO: Consider allowing Tweets (or other sharing methods) to work on un-added books.
 		MenuItem tweet = menu.add(0, SHARE_ID, 0, R.string.menu_share_this);
 		tweet.setIcon(R.drawable.ic_menu_twitter);
 
@@ -258,6 +254,11 @@ public class BookEdit extends TabActivity {
 		if (thumbVisible && getCurrentActivity() instanceof BookEditFields) {
 			MenuItem thumbOptions = menu.add(0, THUMBNAIL_OPTIONS_ID, 0, R.string.cover_options_cc_ellipsis);
 			thumbOptions.setIcon(android.R.drawable.ic_menu_camera);			
+		}
+		
+		if(getCurrentActivity() instanceof BookDetailsReadOnly){
+			MenuItem thumbOptions = menu.add(0, EDIT_OPTIONS_ID, 0, R.string.edit_book);
+			thumbOptions.setIcon(android.R.drawable.ic_menu_edit);	
 		}
 		
 		return super.onPrepareOptionsMenu(menu);
@@ -269,7 +270,6 @@ public class BookEdit extends TabActivity {
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		Cursor thisBook = null;
 		try {
 			switch(item.getItemId()) {
 			case THUMBNAIL_OPTIONS_ID:
@@ -279,105 +279,16 @@ public class BookEdit extends TabActivity {
 				}
 				break;
 			case SHARE_ID:
-				if (mRowId == null || mRowId == 0) {
-					Toast.makeText(this, R.string.this_option_is_not_available_until_the_book_is_saved, Toast.LENGTH_LONG).show();
-					return true;
-				}
-				
-				thisBook = mDbHelper.fetchBookById(mRowId);
-				thisBook.moveToFirst();
-				String title = thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_TITLE));
-				double rating = thisBook.getDouble(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_RATING));
-				String ratingString = "";
-				String author = thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED_GIVEN_FIRST));
-				String series = thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_SERIES_FORMATTED));
-				File image = CatalogueDBAdapter.fetchThumbnailByUuid(mDbHelper.getBookUuid(mRowId));
-
-				if (series.length() > 0) {
-					series = " (" + series.replace("#", "%23") + ")";
-				}
-				//remove trailing 0's
-				if (rating > 0) {
-					int ratingTmp = (int)rating;
-					double decimal = rating - ratingTmp;
-					if (decimal > 0) {
-						ratingString = rating + "/5";
-					} else {
-						ratingString = ratingTmp + "/5";
-					}
-				}
-				
-				if (ratingString.length() > 0){
-					ratingString = "(" + ratingString + ")";
-				}
-
-				/*
-				 * There's a problem with the facebook app in android, so 
-				 * despite it being shown on the list
-				 * it will not post any text unless the user types it.
-				*/
-				Intent share = new Intent(Intent.ACTION_SEND); 
-				share.putExtra(Intent.EXTRA_TEXT, "I'm reading " + title + " by " + author + series + " " + ratingString);
-				share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + image.getPath()));
-                share.setType("text/plain");
-                
-                startActivity(Intent.createChooser(share, "Share"));
-                
+				performSharingBook(mRowId);
 				return true;
 			case DELETE_ID:
-				if (mRowId == null || mRowId == 0) {
-					Toast.makeText(this, R.string.this_option_is_not_available_until_the_book_is_saved, Toast.LENGTH_LONG).show();
-					return true;
-				}
-				int res = StandardDialogs.deleteBookAlert(this, mDbHelper, mRowId, new Runnable() {
-					@Override
-					public void run() {
-						mDbHelper.purgeAuthors();
-						mDbHelper.purgeSeries();
-						finish();
-					}});
-				if (res != 0) {
-					Toast.makeText(this, res, Toast.LENGTH_LONG).show();
-					finish();
-				}
+				performDeletingBook(mRowId);
 				return true;
 			case DUPLICATE_ID:
-				if (mRowId == null || mRowId == 0) {
-					Toast.makeText(this, R.string.this_option_is_not_available_until_the_book_is_saved, Toast.LENGTH_LONG).show();
-					return true;
-				}
-				Intent i = new Intent(this, BookEdit.class);
-				Bundle book = new Bundle();
-				thisBook = mDbHelper.fetchBookById(mRowId);
-				try {
-					thisBook.moveToFirst();
-					book.putString(CatalogueDBAdapter.KEY_TITLE, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_TITLE)));
-					book.putString(CatalogueDBAdapter.KEY_ISBN, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_ISBN)));
-					book.putString(CatalogueDBAdapter.KEY_PUBLISHER, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_PUBLISHER)));
-					book.putString(CatalogueDBAdapter.KEY_DATE_PUBLISHED, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_DATE_PUBLISHED)));
-					book.putString(CatalogueDBAdapter.KEY_RATING, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_RATING)));
-					book.putString(CatalogueDBAdapter.KEY_READ, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_READ)));
-					book.putString(CatalogueDBAdapter.KEY_PAGES, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_PAGES)));
-					book.putString(CatalogueDBAdapter.KEY_NOTES, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_NOTES)));
-					book.putString(CatalogueDBAdapter.KEY_LIST_PRICE, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_LIST_PRICE)));
-					book.putString(CatalogueDBAdapter.KEY_ANTHOLOGY, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_ANTHOLOGY)));
-					book.putString(CatalogueDBAdapter.KEY_LOCATION, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_LOCATION)));
-					book.putString(CatalogueDBAdapter.KEY_READ_START, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_READ_START)));
-					book.putString(CatalogueDBAdapter.KEY_READ_END, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_READ_END)));
-					book.putString(CatalogueDBAdapter.KEY_FORMAT, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_FORMAT)));
-					book.putString(CatalogueDBAdapter.KEY_SIGNED, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_SIGNED)));
-					book.putString(CatalogueDBAdapter.KEY_DESCRIPTION, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_DESCRIPTION)));
-					book.putString(CatalogueDBAdapter.KEY_GENRE, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_GENRE)));
-					
-					book.putSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mDbHelper.getBookAuthorList(mRowId));
-					book.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, mDbHelper.getBookSeriesList(mRowId));
-					
-					i.putExtra("bookData", book);
-					startActivityForResult(i, DUPLICATE_ID);
-				} catch (CursorIndexOutOfBoundsException e) {
-					Toast.makeText(this, R.string.unknown_error, Toast.LENGTH_LONG).show();
-					Logger.logError(e);
-				}
+				performDuplicatingBook(mRowId);
+				return true;
+			case EDIT_OPTIONS_ID:
+				BookEdit.editBook(getCurrentActivity(), mRowId, BookEdit.TAB_EDIT);
 				return true;
 			}
 		} catch (NullPointerException e) {
@@ -390,9 +301,26 @@ public class BookEdit extends TabActivity {
 	 * Standard STATIC Methods
 	 * ******************************************************
 	 */
-
+	
 	/**
-	 * Load the EditBook activity based on the provided id. Also open to the provided tab.
+	 * Open book for viewing in edit or read-only mode. The mode depends
+	 * on {@link BookCataloguePreferences#PREF_OPEN_BOOK_READ_ONLY} preference
+	 * option. If it set book opened in read-only mode otherwise in edit mode (default).
+	 * @param a current activity from which we start
+	 * @param id The id of the book to view
+	 */
+	public static void openBook(Activity a, long id){
+		boolean isReadOnly = BookCatalogueApp.getAppPreferences()
+				.getBoolean(BookCataloguePreferences.PREF_OPEN_BOOK_READ_ONLY, false);
+		if (isReadOnly){
+			BookEdit.viewBook(a, id);
+		} else {
+			BookEdit.editBook(a, id, BookEdit.TAB_EDIT);
+		}
+	}
+	
+	/**
+	 * Load the EditBook activity based on the provided id in edit mode. Also open to the provided tab.
 	 * 
 	 * @param id The id of the book to edit
 	 * @param tab Which tab to open first
@@ -404,5 +332,159 @@ public class BookEdit extends TabActivity {
 		a.startActivityForResult(i, UniqueId.ACTIVITY_EDIT_BOOK);
 		return;
 	}
+	
+	/**
+	 * Load the EditBook tab activity in read-only mode. The first tab is book details.
+	 * @param a current activity from which we start
+	 * @param id The id of the book to view
+	 */
+	public static void viewBook(Activity a, long id) {
+		Intent i = new Intent(a, BookEdit.class);
+		i.putExtra(CatalogueDBAdapter.KEY_ROWID, id);
+		i.putExtra(BookEdit.TAB, BookEdit.TAB_EDIT); //needed extra for creating BookEdit
+		i.putExtra(BookEdit.KEY_READ_ONLY, true);
+		a.startActivity(i);
+		return;
+	}
+	
+	/**
+	 * Initialize a TabSpec according to defined parameters and add it to the TabHost. 
+	 * @param tabHost parent TabHost
+	 * @param intentClass class for specifying intent. It`s the Activity class contained in this tab.
+	 * @param tabTag  required tag of tab
+	 * @param titleResId resource id of a title of the tab
+	 * @param iconResId resource id of an icon (drawable) of the tab
+	 * @param extras extras for putting in the intent. If extras is null they will not be added.
+	 */
+	private void initTab(TabHost tabHost, Class<?> intentClass, String tabTag, int titleResId, int iconResId, Bundle extras){
+		Resources resources = getResources();
+		String tabTitle = resources.getString(titleResId);
+		Drawable tabIcon = resources.getDrawable(iconResId);
+		TabHost.TabSpec spec = tabHost.newTabSpec(tabTag).setIndicator(tabTitle, tabIcon);
+		
+		Intent intent = new Intent(this, intentClass);
+		if (extras != null) {
+			intent.putExtras(extras);
+		}
+		spec.setContent(intent);
+		tabHost.addTab(spec);
+	}
+	
+	/**
+	 * Open a new book editing activity with fields copied from saved book.
+	 * Saved book (original of duplicating) is defined by its row _id in database.
+	 * @param rowId The id of the book to copy fields
+	 */
+	private void performDuplicatingBook(Long rowId){
+		if (rowId == null || rowId == 0) {
+			Toast.makeText(this, R.string.this_option_is_not_available_until_the_book_is_saved, Toast.LENGTH_LONG).show();
+		}
+		Intent i = new Intent(this, BookEdit.class);
+		Bundle book = new Bundle();
+		Cursor thisBook = mDbHelper.fetchBookById(rowId);
+		try {
+			thisBook.moveToFirst();
+			book.putString(CatalogueDBAdapter.KEY_TITLE, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_TITLE)));
+			book.putString(CatalogueDBAdapter.KEY_ISBN, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_ISBN)));
+			book.putString(CatalogueDBAdapter.KEY_PUBLISHER, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_PUBLISHER)));
+			book.putString(CatalogueDBAdapter.KEY_DATE_PUBLISHED, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_DATE_PUBLISHED)));
+			book.putString(CatalogueDBAdapter.KEY_RATING, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_RATING)));
+			book.putString(CatalogueDBAdapter.KEY_READ, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_READ)));
+			book.putString(CatalogueDBAdapter.KEY_PAGES, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_PAGES)));
+			book.putString(CatalogueDBAdapter.KEY_NOTES, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_NOTES)));
+			book.putString(CatalogueDBAdapter.KEY_LIST_PRICE, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_LIST_PRICE)));
+			book.putString(CatalogueDBAdapter.KEY_ANTHOLOGY, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_ANTHOLOGY)));
+			book.putString(CatalogueDBAdapter.KEY_LOCATION, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_LOCATION)));
+			book.putString(CatalogueDBAdapter.KEY_READ_START, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_READ_START)));
+			book.putString(CatalogueDBAdapter.KEY_READ_END, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_READ_END)));
+			book.putString(CatalogueDBAdapter.KEY_FORMAT, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_FORMAT)));
+			book.putString(CatalogueDBAdapter.KEY_SIGNED, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_SIGNED)));
+			book.putString(CatalogueDBAdapter.KEY_DESCRIPTION, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_DESCRIPTION)));
+			book.putString(CatalogueDBAdapter.KEY_GENRE, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_GENRE)));
+			
+			book.putSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mDbHelper.getBookAuthorList(rowId));
+			book.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, mDbHelper.getBookSeriesList(mRowId));
+			
+			i.putExtra("bookData", book);
+			startActivityForResult(i, DUPLICATE_ID);
+		} catch (CursorIndexOutOfBoundsException e) {
+			Toast.makeText(this, R.string.unknown_error, Toast.LENGTH_LONG).show();
+			Logger.logError(e);
+		}
+	}
+	
+	/**
+	 * Delete book by its database row _id and close current activity. 
+	 * @param rowId The database id of the book for deleting
+	 */
+	private void performDeletingBook(Long rowId){
+		if (rowId == null || rowId == 0) {
+			Toast.makeText(this, R.string.this_option_is_not_available_until_the_book_is_saved, Toast.LENGTH_LONG).show();
+			return;
+		}
+		int res = StandardDialogs.deleteBookAlert(this, mDbHelper, rowId, new Runnable() {
+			@Override
+			public void run() {
+				mDbHelper.purgeAuthors();
+				mDbHelper.purgeSeries();
+				finish();
+			}});
+		if (res != 0) {
+			Toast.makeText(this, res, Toast.LENGTH_LONG).show();
+			finish();
+		}
+	}
+	
+	/**
+	 * Perform sharing of book by its database rowId. Create chooser with matched 
+	 * apps for sharing some text like the next:<br>
+	 * <b>"I'm reading " + title + " by " + author + series + " " + ratingString</b>
+	 * @param rowId The database id of the book for deleting
+	 */
+	private void performSharingBook(Long rowId){
+		if (rowId == null || rowId == 0) {
+			Toast.makeText(this, R.string.this_option_is_not_available_until_the_book_is_saved, Toast.LENGTH_LONG).show();
+			return;
+		}
+		
+		Cursor thisBook = mDbHelper.fetchBookById(rowId);
+		thisBook.moveToFirst();
+		String title = thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_TITLE));
+		double rating = thisBook.getDouble(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_RATING));
+		String ratingString = "";
+		String author = thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED_GIVEN_FIRST));
+		String series = thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_SERIES_FORMATTED));
+		File image = CatalogueDBAdapter.fetchThumbnailByUuid(mDbHelper.getBookUuid(rowId));
 
+		if (series.length() > 0) {
+			series = " (" + series.replace("#", "%23") + ")";
+		}
+		//remove trailing 0's
+		if (rating > 0) {
+			int ratingTmp = (int)rating;
+			double decimal = rating - ratingTmp;
+			if (decimal > 0) {
+				ratingString = rating + "/5";
+			} else {
+				ratingString = ratingTmp + "/5";
+			}
+		}
+		
+		if (ratingString.length() > 0){
+			ratingString = "(" + ratingString + ")";
+		}
+
+		/*
+		 * There's a problem with the facebook app in android, so despite it being shown on the list
+		 * it will not post any text unless the user types it.
+		 */
+		Intent share = new Intent(Intent.ACTION_SEND); 
+		//TODO Externalize hardcoded text below to allow translating and simple editing
+		String text = "I'm reading " + title + " by " + author + series + " " + ratingString;
+		share.putExtra(Intent.EXTRA_TEXT, text); 
+		share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + image.getPath()));
+        share.setType("text/plain");
+        
+        startActivity(Intent.createChooser(share, "Share"));
+	}
 }

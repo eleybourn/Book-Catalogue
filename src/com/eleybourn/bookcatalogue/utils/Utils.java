@@ -1478,11 +1478,12 @@ public class Utils {
 	public static void initBackground(int bgResource, Activity a, int rootId, boolean bright) {
 		try {
 			View root = a.findViewById(rootId);
+			final int backgroundColor = a.getResources().getColor(R.color.background_grey);
 
 			if (BookCatalogueApp.isBackgroundImageDisabled()) {
-				root.setBackgroundColor(0xFF202020);
+				root.setBackgroundColor(backgroundColor);
 				if (root instanceof ListView) {
-					setCacheColorHintSafely((ListView)root, 0xFF202020);				
+					setCacheColorHintSafely((ListView)root, backgroundColor);				
 				}
 			} else {
 				if (root instanceof ListView) {

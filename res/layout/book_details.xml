@@ -33,6 +33,7 @@
                         android:layout_alignParentTop="true"
                         android:background="@color/background_thumb"
                         android:padding="@dimen/padding_border"
+                        android:scaleType="centerInside"
                         android:src="@drawable/ic_launcher2" />
 
                     <ImageView

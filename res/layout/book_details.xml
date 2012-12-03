@@ -66,15 +66,6 @@
                     android:textStyle="italic"
                     tools:ignore="HardcodedText" />
 
-<!--                 <ImageView -->
-<!--                     android:id="@+id/read" -->
-<!--                     android:layout_width="wrap_content" -->
-<!--                     android:layout_height="wrap_content" -->
-<!--                     android:layout_alignParentRight="true" -->
-<!--                     android:scaleType="fitXY" -->
-<!--                     android:src="@drawable/btn_check_buttonless_off" -->
-<!--                     android:visibility="gone" /> -->
-
                 <!-- Author -->
 
                 <TextView

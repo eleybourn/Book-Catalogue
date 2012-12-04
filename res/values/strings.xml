@@ -64,7 +64,7 @@
 <string name="unable_to_connect_amazon">Unable to Connect to Amazon</string>
 <string name="upgrade_title">Since your last upgrade</string>
 <string name="edit_book">Edit Book</string>
-<string name="edit_book_notes">Your Comments</string>
+<string name="edit_book_notes">My Comments</string>
 <string name="edit_book_friends">Loan Book</string>
 <string name="unknown_error">An unknown error occured</string>
 <string name="notes">Notes</string>
@@ -622,6 +622,12 @@
 <string name="searching_elipsis">Searching&#8230;</string>
 
 <string name="adding_book_elipsis">Adding book&#8230;</string>
+<string name="prefs_global_opening_book_mode">Open book in read-only mode</string>
+<string name="book_details_readonly_publishing">Publishing</string>
+<string name="book_details_readonly_by">by</string>
+<string name="book_details_readonly_loaned_to">On Loan to %1$s</string>
+<string name="book_details_readonly_pages">%1$s pages</string>
+<string name="brackets">(%1$s)</string>
 
 <string name="new_in_42"><![CDATA[
     <p><b>New in 4.2</b>\n\n

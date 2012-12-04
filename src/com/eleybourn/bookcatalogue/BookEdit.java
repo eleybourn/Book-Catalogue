@@ -201,7 +201,9 @@ public class BookEdit extends TabActivity {
 		Tracker.enterOnSaveInstanceState(this);
 		super.onSaveInstanceState(outState);
 		
-		outState.putLong(CatalogueDBAdapter.KEY_ROWID, mRowId);
+		if (mRowId != null) {
+			outState.putLong(CatalogueDBAdapter.KEY_ROWID, mRowId);
+		}
 		Tracker.exitOnSaveInstanceState(this);
 	}
 	

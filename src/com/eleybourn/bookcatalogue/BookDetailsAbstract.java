@@ -801,6 +801,7 @@ public abstract class BookDetailsAbstract extends Activity {
 			}
 
 			populateBookDetailsFields(rowId, book);
+			setBookThumbnail(rowId, mThumbEditSize, mThumbEditSize);
 			
 			String title = mFields.getField(R.id.title).getValue().toString();
 			setActivityTitle(title);
@@ -833,10 +834,15 @@ public abstract class BookDetailsAbstract extends Activity {
 		int columnIndex = bookCursor.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY);
 		Integer anthNo = bookCursor.getInt(columnIndex);
 		mFields.getField(R.id.anthology).setValue(anthNo.toString()); // Set checked if anthNo != 0
-		
-		//Sets book thumbnail
+	}
+	
+	/**
+	 * Sets book thumbnail
+	 */
+	protected void setBookThumbnail(Long rowId, int maxWidth, int maxHeight){
+		// Sets book thumbnail
 		ImageView iv = (ImageView) findViewById(R.id.row_img);
-		Utils.fetchFileIntoImageView(getCoverFile(rowId), iv, mThumbEditSize, mThumbEditSize, true);
+		Utils.fetchFileIntoImageView(getCoverFile(rowId), iv, maxWidth, maxHeight, true);
 	}
 	
 	/**

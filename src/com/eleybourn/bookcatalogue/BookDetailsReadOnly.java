@@ -68,7 +68,9 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 			}
 
 			populateBookDetailsFields(rowId, book);
-
+			// Set maximum aspect ratio width : height = 1 : 2
+			setBookThumbnail(rowId, mThumbEditSize, mThumbEditSize * 2);
+			
 			// Additional fields for read-only mode which are not initialized automatically
 			showReadStatus(book);
 			showLoanedInfo(rowId);

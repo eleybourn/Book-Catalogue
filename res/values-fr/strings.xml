@@ -604,8 +604,28 @@
             </p>
 			]]>
 	</string>
-		
-	
+	<string name="bad_scanner">Votre scanner de code barre ne semble pas être compatible avec Book Catalogue. Nous vous recommandons d\'installer le scanner de code barre de Zxing et, s\'il est déjà installé, de désinstaller puis de le réinstaller.</string>
+	<string name="new_in_421"><![CDATA[
+	    <p><b>Nouveautés de la version 4.2.1</b>\n\n
+			* Correction de crash lors de l\'utilisation Tout étendre\n\n
+			</p>
+		]]></string>
+	<string name="new_in_422"><![CDATA[
+    	<p><b>Nouveautés de la version 4.2.2</b>\n\n
+    		* Correction : mosaïque de l\'image de fond pour certaines versions d\'Android\n\n
+			* Meilleure prise en charge des scanners de code barre incompatibles\n\n
+			* Plus important niveau de détails envoyés lors d\'un crash ou d\'une demande d\'aide\n\n
+			* Nettoyage des mises en page (Nick Silin)\n\n
+			* Correction de bugs\n\n
+			</p>
+		]]></string>
+	<string name="new_in_423"><![CDATA[
+    <p><b>Nouveautés de la version 4.2.3</b>\n\n
+			* Meilleure prise en charge des ISBN invalides lors de l\'envoi à goodreads\n\n
+			* Autres corrections de bugs mineurs\n\n
+			</p>
+		]]></string>
+			
 	<!-- Not translated yet  -->
 		
 	<!-- Not translated beyond this point : missing context -->
@@ -626,7 +646,6 @@
 	<string name="webpage">https://wiki.github.com/eleybourn/Book-Catalogue/</string>
 	<string name="sourcecode">https://github.com/eleybourn/Book-Catalogue</string>
 	<string name="helppage">https://github.com/eleybourn/Book-Catalogue/wiki/Help</string>
-	<string name="contact">eleybourn@gmail.com</string>
 	<string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
 	<string name="loaned_to_2">\u2192</string>
 	<string name="isbn">ISBN</string>
@@ -634,4 +653,6 @@
 	<item name="TAG_POSITION" type="id"></item>
 	<item type="id" name="TAG_ORIGINAL_VALUE"></item>
 	<string name="optionsElipsis">Options&#8230;</string>	
+	<string name="_empty_"></string>
+	
 </resources>

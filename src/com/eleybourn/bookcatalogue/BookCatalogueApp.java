@@ -47,6 +47,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 
 import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
 import com.eleybourn.bookcatalogue.utils.Utils;
@@ -135,6 +136,25 @@ public class BookCatalogueApp extends Application {
 			mQueueManager = new BcQueueManager(this.getApplicationContext());
 
 		super.onCreate();
+		
+		if (Build.VERSION.SDK_INT < 16) {
+			//
+			// Avoid possible bug in SQLite which resuts in database being closed without an explicit call. 
+			// Based on the grepcode Android sources, it looks like this bug was fixed an/or addressed in
+			// 4.1.1, but not in 4.0.4.
+			//
+			// See:
+			//
+			//		https://code.google.com/p/android/issues/detail?id=4282
+			//	    http://darutk-oboegaki.blogspot.com.au/2011/03/sqlitedatabase-is-closed-automatically.html
+			//
+			// a pdf of the second link is in 'support' folder. 
+			//
+			CatalogueDBAdapter dbh = new CatalogueDBAdapter(this);
+			dbh.open();
+			dbh.getDb().getUnderlyingDatabase().acquireReference();
+			dbh.close();
+		}
 	}
 
 	/**

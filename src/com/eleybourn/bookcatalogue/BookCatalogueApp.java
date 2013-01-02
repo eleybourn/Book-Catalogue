@@ -47,6 +47,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 
 import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
 import com.eleybourn.bookcatalogue.utils.Utils;
@@ -135,6 +136,25 @@ public class BookCatalogueApp extends Application {
 			mQueueManager = new BcQueueManager(this.getApplicationContext());
 
 		super.onCreate();
+		
+		if (Build.VERSION.SDK_INT < 16) {
+			//
+			// Avoid possible bug in SQLite which resuts in database being closed without an explicit call. 
+			// Based on the grepcode Android sources, it looks like this bug was fixed an/or addressed in
+			// 4.1.1, but not in 4.0.4.
+			//
+			// See:
+			//
+			//		https://code.google.com/p/android/issues/detail?id=4282
+			//	    http://darutk-oboegaki.blogspot.com.au/2011/03/sqlitedatabase-is-closed-automatically.html
+			//
+			// a pdf of the second link is in 'support' folder. 
+			//
+			CatalogueDBAdapter dbh = new CatalogueDBAdapter(this);
+			dbh.open();
+			dbh.getDb().getUnderlyingDatabase().acquireReference();
+			dbh.close();
+		}
 	}
 
 	/**
@@ -312,7 +332,7 @@ public class BookCatalogueApp extends Application {
 		/** Underlying SharedPreferences */
 		private SharedPreferences m_prefs = BookCatalogueApp.context.getSharedPreferences("bookCatalogue", MODE_PRIVATE);
 
-		/** Name to use for global preferences; non-global should be moved to appropriate Activity code */
+		/* Name to use for global preferences; non-global should be moved to appropriate Activity code */
 		public static final String PREF_START_IN_MY_BOOKS = "start_in_my_books";
 		public static final String PREF_INCLUDE_CLASSIC_MY_BOOKS = "App.includeClassicView";
 		public static final String PREF_DISABLE_BACKGROUND_IMAGE = "App.DisableBackgroundImage";
@@ -323,6 +343,8 @@ public class BookCatalogueApp extends Application {
 		public static final String PREF_USE_EXTERNAL_IMAGE_CROPPER = "App.UseExternalImageCropper";
 		public static final String PREF_AUTOROTATE_CAMERA_IMAGES = "App.AutorotateCameraImages";
 		public static final String PREF_CROP_FRAME_WHOLE_IMAGE = "App.CropFrameWholeImage";
+		/** Is book info opened in read-only mode. Default is false (opened in edit mode) */
+		public static final String PREF_OPEN_BOOK_READ_ONLY = "App.OpenBookReadOnly";
 
 		/** Get startup activity preference */
 		public boolean getStartInMyBook() {

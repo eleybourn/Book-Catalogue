@@ -127,6 +127,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 			if (network_available == false) {
 				Toast.makeText(this, R.string.no_connection, Toast.LENGTH_LONG).show();
 				finish();
+				return;
 			}
 
 
@@ -627,7 +628,8 @@ public class BookISBNSearch extends ActivityWithTasks {
 	protected void onDestroy() {
 		Tracker.enterOnDestroy(this);
 		super.onDestroy();
-		mDbHelper.close();
+		if (mDbHelper != null)
+			mDbHelper.close();
 		Tracker.exitOnDestroy(this);
 	}
 

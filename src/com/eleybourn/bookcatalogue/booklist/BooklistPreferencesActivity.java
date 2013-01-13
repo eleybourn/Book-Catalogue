@@ -23,7 +23,7 @@ package com.eleybourn.bookcatalogue.booklist;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
+import com.eleybourn.bookcatalogue.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.PreferencesBase;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds;

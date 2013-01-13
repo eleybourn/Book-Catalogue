@@ -28,7 +28,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.utils.AlertDialogUtils;
 import com.eleybourn.bookcatalogue.utils.AlertDialogUtils.AlertDialogItem;
 import com.eleybourn.bookcatalogue.utils.HintManager;

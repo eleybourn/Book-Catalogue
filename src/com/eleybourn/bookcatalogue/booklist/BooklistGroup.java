@@ -48,7 +48,7 @@ import java.util.Hashtable;
 import java.util.Map.Entry;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
-import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
+import com.eleybourn.bookcatalogue.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyle.CompoundKey;
 import com.eleybourn.bookcatalogue.database.DbUtils.DomainDefinition;

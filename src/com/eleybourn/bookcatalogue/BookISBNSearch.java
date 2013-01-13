@@ -43,6 +43,10 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.debug.Tracker;
+import com.eleybourn.bookcatalogue.scanner.Pic2ShopScanner;
+import com.eleybourn.bookcatalogue.scanner.Scanner;
+import com.eleybourn.bookcatalogue.scanner.ScannerManager;
+import com.eleybourn.bookcatalogue.scanner.ZxingScanner;
 import com.eleybourn.bookcatalogue.utils.AsinUtils;
 import com.eleybourn.bookcatalogue.utils.IsbnUtils;
 import com.eleybourn.bookcatalogue.utils.Logger;
@@ -94,8 +98,9 @@ public class BookISBNSearch extends ActivityWithTasks {
 	// an alert is being displayed. The Alter will call finish().
 	private boolean mDisplayingAlert = false;
 
-	// The intent used to start the scanner.
-	private Intent mScannerIntent = null;
+	// Object to manage preferred (or found) scanner
+	private Scanner mScanner = null;
+
 	// The last Intent returned as a result of creating a book.
 	private Intent mLastBookIntent = null;
 
@@ -315,7 +320,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 				mIsbnText = (EditText) findViewById(R.id.isbn);
 
 				/**
-				 * Use the zxing barcode scanner to search for a isbn
+				 * Use the preferred barcode scanner to search for a isbn
 				 * Prompt users to install the application if they do not have it installed.
 				 */
 				try {
@@ -354,10 +359,10 @@ public class BookISBNSearch extends ActivityWithTasks {
 					AlertDialog alertDialog = new AlertDialog.Builder(BookISBNSearch.this).setMessage(R.string.install_scan).create();
 					alertDialog.setTitle(R.string.install_scan_title);
 					alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-					alertDialog.setButton("Google Goggles", new DialogInterface.OnClickListener() {
+					alertDialog.setButton("pic2shop", new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
 							//TODO
-							Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.google.android.apps.unveil"));
+							Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.visionsmarts.pic2shop"));
 							startActivity(marketIntent);
 							finish();
 						}
@@ -493,6 +498,9 @@ public class BookISBNSearch extends ActivityWithTasks {
 					}
 					return;
 				} else {
+					// Optionally beep if scan was valid.
+					SoundManager.beepHigh();
+					// See if ISBN exists in catalogue
 					final long existingId = mDbHelper.getIdFromIsbn(isbn);
 					if (existingId > 0) {
 						// Verify - this can be a dangerous operation
@@ -683,7 +691,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 			try {
 				if (resultCode == RESULT_OK) {
 					// Scanner returned an ISBN...process it.
-					String contents = intent.getStringExtra("SCAN_RESULT");
+					String contents = mScanner.getBarcode(intent);
 					mIsbnText.setText(contents);
 					go(contents, "", "");
 				} else {
@@ -748,15 +756,13 @@ public class BookISBNSearch extends ActivityWithTasks {
 	 */
 	private void startScannerActivity() {
 		//System.out.println(mId + " startScannerActivity");
-
-		if (mScannerIntent == null) {
-			mScannerIntent = new Intent("com.google.zxing.client.android.SCAN");
-			//intent.putExtra("SCAN_MODE", "EAN_13");
+		if (mScanner == null) {
+			mScanner = ScannerManager.getScanner();
 		}
 		if (!mScannerStarted) {
 			//System.out.println(mId + " startScannerActivity STARTING");
 			mScannerStarted = true;
-			startActivityForResult(mScannerIntent, UniqueId.ACTIVITY_SCAN);
+			mScanner.startActivityForResult(this, UniqueId.ACTIVITY_SCAN);
 		} else {
 			//System.out.println(mId + " startScannerActivity SKIPPED");
 		}

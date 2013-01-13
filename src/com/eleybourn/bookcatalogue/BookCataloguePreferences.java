@@ -24,7 +24,6 @@ public class BookCataloguePreferences {
 	public static final String PREF_USE_EXTERNAL_IMAGE_CROPPER = "App.UseExternalImageCropper";
 	public static final String PREF_AUTOROTATE_CAMERA_IMAGES = "App.AutorotateCameraImages";
 	public static final String PREF_CROP_FRAME_WHOLE_IMAGE = "App.CropFrameWholeImage";
-	public static final String PREF_PREFERRED_SCANNER = "App.PreferredScanner";
 
 	/** Get startup activity preference */
 	public boolean getStartInMyBook() {

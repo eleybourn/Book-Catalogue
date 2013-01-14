@@ -44,9 +44,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 
 import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
 import com.eleybourn.bookcatalogue.utils.Utils;
@@ -135,6 +134,25 @@ public class BookCatalogueApp extends Application {
 			mQueueManager = new BcQueueManager(this.getApplicationContext());
 
 		super.onCreate();
+		
+		if (Build.VERSION.SDK_INT < 16) {
+			//
+			// Avoid possible bug in SQLite which resuts in database being closed without an explicit call. 
+			// Based on the grepcode Android sources, it looks like this bug was fixed an/or addressed in
+			// 4.1.1, but not in 4.0.4.
+			//
+			// See:
+			//
+			//		https://code.google.com/p/android/issues/detail?id=4282
+			//	    http://darutk-oboegaki.blogspot.com.au/2011/03/sqlitedatabase-is-closed-automatically.html
+			//
+			// a pdf of the second link is in 'support' folder. 
+			//
+			CatalogueDBAdapter dbh = new CatalogueDBAdapter(this);
+			dbh.open();
+			dbh.getDb().getUnderlyingDatabase().acquireReference();
+			dbh.close();
+		}
 	}
 
 	/**
@@ -301,101 +319,6 @@ public class BookCatalogueApp extends Application {
 //		}
 //		return i;
 //	}
-
-	/**
-	 * Class to manage application preferences rather than rely on each activity knowing how to 
-	 * access them.
-	 * 
-	 * @author Philip Warner
-	 */
-	public static class BookCataloguePreferences {
-		/** Underlying SharedPreferences */
-		private SharedPreferences m_prefs = BookCatalogueApp.context.getSharedPreferences("bookCatalogue", MODE_PRIVATE);
-
-		/** Name to use for global preferences; non-global should be moved to appropriate Activity code */
-		public static final String PREF_START_IN_MY_BOOKS = "start_in_my_books";
-		public static final String PREF_INCLUDE_CLASSIC_MY_BOOKS = "App.includeClassicView";
-		public static final String PREF_DISABLE_BACKGROUND_IMAGE = "App.DisableBackgroundImage";
-		public static final String PREF_SHOW_ALL_AUTHORS = "APP.ShowAllAuthors";
-		public static final String PREF_SHOW_ALL_SERIES = "APP.ShowAllSeries";
-		public static final String PREF_DISPLAY_FIRST_THEN_LAST_NAMES = "APP.DisplayFirstThenLast";
-		public static final String PREF_BOOKLIST_STYLE = "APP.BooklistStyle";
-		public static final String PREF_USE_EXTERNAL_IMAGE_CROPPER = "App.UseExternalImageCropper";
-		public static final String PREF_AUTOROTATE_CAMERA_IMAGES = "App.AutorotateCameraImages";
-		public static final String PREF_CROP_FRAME_WHOLE_IMAGE = "App.CropFrameWholeImage";
-
-		/** Get startup activity preference */
-		public boolean getStartInMyBook() {
-			return getBoolean(PREF_START_IN_MY_BOOKS,false);
-		}
-		/** Set startup activity preference */
-		public BookCataloguePreferences setStartInMyBook(boolean value) {
-			setBoolean(PREF_START_IN_MY_BOOKS,value);
-			return this;
-		}
-
-		/** Get a named boolean preference */
-		public boolean getBoolean(String name, boolean defaultValue) {
-			boolean result;
-			try {
-				result = m_prefs.getBoolean(name, defaultValue);
-			} catch (Exception e) {
-				result = defaultValue;
-			}
-			return result;
-		}
-		/** Set a named boolean preference */
-		public void setBoolean(String name, boolean value) {
-			Editor ed = this.edit();
-			try {
-				ed.putBoolean(name, value);
-			} finally {
-				ed.commit();
-			}
-		}
-		/** Get a named string preference */
-		public String getString(String name, String defaultValue) {
-			String result;
-			try {
-				result = m_prefs.getString(name, defaultValue);
-			} catch (Exception e) {
-				result = defaultValue;
-			}
-			return result;
-		}
-		/** Set a named string preference */
-		public void setString(String name, String value) {
-			Editor ed = this.edit();
-			try {
-				ed.putString(name, value);
-			} finally {
-				ed.commit();
-			}
-		}
-		/** Get a named string preference */
-		public int getInt(String name, int defaultValue) {
-			int result;
-			try {
-				result = m_prefs.getInt(name, defaultValue);
-			} catch (Exception e) {
-				result = defaultValue;
-			}
-			return result;
-		}
-		/** Set a named string preference */
-		public void setInt(String name, int value) {
-			Editor ed = this.edit();
-			try {
-				ed.putInt(name, value);
-			} finally {
-				ed.commit();
-			}
-		}
-		/** Get a standard preferences editor for mass updates */
-		public Editor edit() {
-			return m_prefs.edit();
-		}
-	}
 
 	public static void startPreferencesActivity(Activity a) {
 		Intent i = new Intent(a, BooklistPreferencesActivity.class);

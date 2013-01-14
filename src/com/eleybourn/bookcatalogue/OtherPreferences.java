@@ -22,13 +22,13 @@ package com.eleybourn.bookcatalogue;
 
 import android.os.Bundle;
 
-import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.properties.BooleanProperty;
 import com.eleybourn.bookcatalogue.properties.IntegerListProperty;
 import com.eleybourn.bookcatalogue.properties.ListProperty.ItemEntries;
 import com.eleybourn.bookcatalogue.properties.Properties;
 import com.eleybourn.bookcatalogue.properties.Property;
 import com.eleybourn.bookcatalogue.properties.PropertyGroup;
+import com.eleybourn.bookcatalogue.scanner.ScannerManager;
 import com.eleybourn.bookcatalogue.utils.SoundManager;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
@@ -47,7 +47,11 @@ public class OtherPreferences extends PreferencesBase {
 			.add(-90, R.string.menu_rotate_thumb_ccw)
 			.add(180, R.string.menu_rotate_thumb_180);
 
-	
+	/** Preferred Scanner property values */
+	private static ItemEntries<Integer> mScannerListItems = new ItemEntries<Integer>()
+			.add(null, R.string.use_default_setting)
+			.add(ScannerManager.SCANNER_ZXING_COMPATIBLE, R.string.zxing_compatible_scanner)
+			.add(ScannerManager.SCANNER_PIC2SHOP, R.string.pic2shop_scanner);
 	
 	private static final Properties mProperties = new Properties()
 
@@ -88,8 +92,25 @@ public class OtherPreferences extends PreferencesBase {
 		.setGlobal(true)
 		.setWeight(300)
 		.setNameResourceId(R.string.beep_if_scanned_isbn_invalid)
-		.setGroup(PropertyGroup.GRP_USER_INTERFACE) )
+		.setGroup(PropertyGroup.GRP_SCANNER) )
 
+	.add(new BooleanProperty(SoundManager.PREF_BEEP_IF_SCANNED_ISBN_VALID)
+		.setDefaultValue(false)
+		.setPreferenceKey(SoundManager.PREF_BEEP_IF_SCANNED_ISBN_VALID)
+		.setGlobal(true)
+		.setWeight(300)
+		.setNameResourceId(R.string.beep_if_scanned_isbn_valid)
+		.setGroup(PropertyGroup.GRP_SCANNER) )
+
+	.add(new IntegerListProperty( mScannerListItems, ScannerManager.PREF_PREFERRED_SCANNER)
+		.setDefaultValue(ScannerManager.SCANNER_ZXING_COMPATIBLE)
+		.setPreferenceKey(ScannerManager.PREF_PREFERRED_SCANNER)
+		.setGlobal(true)
+		.setNameResourceId(R.string.preferred_scanner)
+		.setGroup(PropertyGroup.GRP_SCANNER) )
+
+
+		
 	.add(new IntegerListProperty( mRotationListItems, BookCataloguePreferences.PREF_AUTOROTATE_CAMERA_IMAGES)
 		.setDefaultValue(90)
 		.setPreferenceKey(BookCataloguePreferences.PREF_AUTOROTATE_CAMERA_IMAGES)

@@ -13,12 +13,26 @@ public class SoundManager {
 
 	public static final String TAG = "SoundManager";
 	public static final String PREF_BEEP_IF_SCANNED_ISBN_INVALID = TAG + "." + "BeepIfScannedIsbnInvalid";
+	public static final String PREF_BEEP_IF_SCANNED_ISBN_VALID = TAG + "." + "BeepIfScannedIsbnValid";
 
 	public static void beepLow() {
 		try {
 			if (BookCatalogueApp.getAppPreferences().getBoolean(PREF_BEEP_IF_SCANNED_ISBN_INVALID, true)) {
 				MediaPlayer player = initPlayer();
 				AssetFileDescriptor file = BookCatalogueApp.context.getResources().openRawResourceFd(R.raw.beep_low);
+				playFile(player, file);
+			}
+		} catch (Exception e) {
+			// No sound is critical. Just log errors
+			Logger.logError(e);
+		}
+	}
+	
+	public static void beepHigh() {
+		try {
+			if (BookCatalogueApp.getAppPreferences().getBoolean(PREF_BEEP_IF_SCANNED_ISBN_VALID, false)) {
+				MediaPlayer player = initPlayer();
+				AssetFileDescriptor file = BookCatalogueApp.context.getResources().openRawResourceFd(R.raw.beep_high);
 				playFile(player, file);
 			}
 		} catch (Exception e) {

@@ -57,7 +57,7 @@
 <string name="administration_label">Administration Functions</string>
 <string name="administration_title">Book Catalogue: Administration</string>
 <string name="menu_administration">Admin</string>
-<string name="install_scan">To scan your books via the ISBN barcode, you must install Google Googles or zxing barcode scanner application.</string>
+<string name="install_scan">To scan your books via the ISBN barcode, you must install one of the Zxing, pic2shop or Google Googles barcode scanner applications.</string>
 <string name="install_scan_title">Install Barcode Scanner</string>
 <string name="version_number">Version Number:</string>
 <string name="donate">If you would like to support the development of this application, please donate using a my Amazon Wishlist or the paypal button below. Being in Australia means I cannot publish a &quot;paid&quot; version. :-) </string>
@@ -673,5 +673,11 @@
 			* Other minor bug fixes\n\n
 			</p>
 		]]></string>
+
+<string name="scanning">Scanning</string>
+<string name="preferred_scanner">Preferred Scanner</string>
+<string name="zxing_compatible_scanner">Zxing Compatible Scanner</string>
+<string name="pic2shop_scanner">Pic2Shop Scanner</string>
+<string name="beep_if_scanned_isbn_valid">Beep if scanned ISBN is valid</string>
 
 </resources>

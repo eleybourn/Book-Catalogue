@@ -64,7 +64,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.BooksMultitypeListHandler.BooklistChangeListener;
 import com.eleybourn.bookcatalogue.booklist.BooklistBuilder;
 import com.eleybourn.bookcatalogue.booklist.BooklistBuilder.BookRowInfo;
@@ -927,7 +926,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 				if (!new_bookshelf.equalsIgnoreCase(mCurrentBookshelf)) {
 					mCurrentBookshelf = new_bookshelf;
 					// save the current bookshelf into the preferences
-					BookCatalogueApp.BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
+					BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
 					SharedPreferences.Editor ed = prefs.edit();
 					ed.putString(PREF_BOOKSHELF, mCurrentBookshelf);
 					ed.commit();

@@ -41,6 +41,11 @@ Features include;
   case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+new in 4.2.4 (unreleased)
+* Support for pic2shop scanner (better for fixed focus, low light and in front-facing cameras)
+* Check internet connection earlier when trying to scan books
+* More French translation updates (Djiko)
+
 new in 4.2.3
 * Improve handling of invalid ISBNs when sending to goodreads
 * Other minor bug fixes

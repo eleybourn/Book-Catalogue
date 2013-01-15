@@ -62,7 +62,18 @@ public class OtherPreferences extends PreferencesBase {
 		.setWeight(0)
 		.setNameResourceId(R.string.start_in_my_books)
 		.setGroup(PropertyGroup.GRP_USER_INTERFACE))	
-
+	
+		/*
+		 * Enabling/disabling read-only mode when opening book. If enabled book
+		 * is opened in read-only mode (editing through menu), else in edit mode.
+		 */
+	.add (new BooleanProperty(BookCataloguePreferences.PREF_OPEN_BOOK_READ_ONLY)
+		.setDefaultValue(false)
+		.setPreferenceKey(BookCataloguePreferences.PREF_OPEN_BOOK_READ_ONLY)
+		.setGlobal(true)
+		.setNameResourceId(R.string.prefs_global_opening_book_mode)
+		.setGroup(PropertyGroup.GRP_USER_INTERFACE))
+		
 	.add(new BooleanProperty(BookCataloguePreferences.PREF_CROP_FRAME_WHOLE_IMAGE)
 		.setDefaultValue(false)
 		.setPreferenceKey(BookCataloguePreferences.PREF_CROP_FRAME_WHOLE_IMAGE)

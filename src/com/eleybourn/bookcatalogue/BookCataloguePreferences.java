@@ -24,6 +24,8 @@ public class BookCataloguePreferences {
 	public static final String PREF_USE_EXTERNAL_IMAGE_CROPPER = "App.UseExternalImageCropper";
 	public static final String PREF_AUTOROTATE_CAMERA_IMAGES = "App.AutorotateCameraImages";
 	public static final String PREF_CROP_FRAME_WHOLE_IMAGE = "App.CropFrameWholeImage";
+	/** Is book info opened in read-only mode. Default is false (opened in edit mode) */
+	public static final String PREF_OPEN_BOOK_READ_ONLY = "App.OpenBookReadOnly";
 
 	/** Get startup activity preference */
 	public boolean getStartInMyBook() {

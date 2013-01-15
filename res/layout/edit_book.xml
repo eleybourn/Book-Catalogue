@@ -23,7 +23,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_weight="1"
-                    android:background="#80808080"
+                    android:background="@color/background_thumb"
                     android:gravity="center"
                     android:padding="@dimen/padding_border" />
 
@@ -151,13 +151,6 @@
                     android:nextFocusDown="@+id/genre"
                     android:singleLine="true" />
             </RelativeLayout>
-            <!--
-			<Spinner android:id="@+id/format" 
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content" 
-				android:layout_weight="1"
-				/>
-            -->
 
             <AutoCompleteTextView
                 android:id="@+id/genre"
@@ -167,16 +160,6 @@
                 android:completionThreshold="2"
                 android:hint="@string/genre"
                 android:nextFocusDown="@+id/description" />
-            <!--
-			<EditText android:id="@+id/description" 
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content" 
-				android:layout_weight="1"
-				android:hint="@string/description"
-				android:capitalize="sentences"
-				android:nextFocusDown="@+id/anthology"
-				/>
-            -->
 
             <CheckBox
                 android:id="@+id/anthology"

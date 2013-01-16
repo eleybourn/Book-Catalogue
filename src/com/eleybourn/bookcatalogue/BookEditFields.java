@@ -21,48 +21,29 @@
 package com.eleybourn.bookcatalogue;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Iterator;
-import java.util.List;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
-import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TabActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.SQLException;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Matrix;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -73,23 +54,21 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.BookEdit.OnRestoreTabInstanceStateListener;
-import com.eleybourn.bookcatalogue.CoverBrowser.OnImageSelectedListener;
 import com.eleybourn.bookcatalogue.Fields.AfterFieldChangeListener;
 import com.eleybourn.bookcatalogue.Fields.Field;
-import com.eleybourn.bookcatalogue.Fields.FieldValidator;
-import com.eleybourn.bookcatalogue.cropper.CropCropImage;
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.dialogs.PartialDatePicker;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
-import com.eleybourn.bookcatalogue.dialogs.TextFieldEditor;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogItem;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogOnClickListener;
+import com.eleybourn.bookcatalogue.dialogs.TextFieldEditor;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 
 
-public class BookEditFields extends Activity implements OnRestoreTabInstanceStateListener {
+public class BookEditFields extends BookDetailsAbstract implements OnRestoreTabInstanceStateListener {
 
 	/**
 	 * Class to implement a clickable span of text and call a listener when text os clicked.
@@ -107,17 +86,10 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 	    }  
 	} 
 
-	private Fields mFields = null;
 	private boolean mIsDirtyFlg = false;
-	/** Used to display a hint if user rotates a camera image */
-	private boolean mGotCameraImage = false;
 
 	private Button mConfirmButton;
 	private Button mCancelButton;
-	private Long mRowId;
-	private CatalogueDBAdapter mDbHelper;
-	private Integer mThumbEditSize;
-	private Integer mThumbZoomSize;
 	private String added_genre = "";
 	private String added_series = "";
 	private String added_title = "";
@@ -131,47 +103,14 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 	public static final int ACTIVITY_EDIT_AUTHORS = 1000;
 	public static final int ACTIVITY_EDIT_SERIES = 1001;
 	
-	// Target size of a thumbnail in edit dialog and zoom dialog (bbox dim)
-	private static final int MAX_EDIT_THUMBNAIL_SIZE=256;
-	private static final int MAX_ZOOM_THUMBNAIL_SIZE=1024;
-
-	private static final int DELETE_ID = 1;
-	private static final int REPLACE_THUMB_SUBMENU = 2;
-	private static final int ADD_PHOTO = 21;
-	private static final int ADD_GALLERY = 22;
-	private static final int SHOW_ALT_COVERS = 23;
-	private static final int ROTATE_THUMB_SUBMENU = 3;
-	private static final int ROTATE_THUMB_CW = 31;
-	private static final int ROTATE_THUMB_CCW = 32;
-	private static final int ROTATE_THUMB_180 = 33;
-	private static final int ZOOM_THUMB = 5;
-	private static final int CROP_THUMB = 6;
 	private static final int DATE_DIALOG_ID = 1;
-	private static final int ZOOM_THUMB_DIALOG_ID = 2;
 	private static final int DESCRIPTION_DIALOG_ID = 3;
-//	private static final int CAMERA_RESULT = 41;
-	private static final int CROP_EXTERNAL_RESULT = 42;
-	private static final int CROP_INTERNAL_RESULT = 43;
 	
-	public static final Character BOOKSHELF_SEPERATOR = ',';
-	
-	private ArrayList<Author> mAuthorList = null;
-	private ArrayList<Series> mSeriesList = null;
-	CoverBrowser mCoverBrowser = null;
-
-	private android.util.DisplayMetrics mMetrics;
-
 	// Global value for values from UI. Recreated periodically; at least 
 	// in saveState(). Needs to be global so an Alert can be displayed 
 	// during a save.
 	private Bundle mStateValues = null;
 
-	protected void getRowId() {
-		/* Get any information from the extras bundle */
-		Bundle extras = getIntent().getExtras();
-		mRowId = extras != null ? extras.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
-	}
-	
 	protected ArrayList<String> getPublishers() {
 		ArrayList<String> publisher_list = new ArrayList<String>();
 		Cursor publisher_cur = mDbHelper.fetchAllPublishers();
@@ -207,9 +146,10 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 	protected void onCreate(Bundle savedInstanceState) {
 		try {
 			Tracker.enterOnCreate(this);
+			setContentView(R.layout.edit_book);
 			mRowId = savedInstanceState != null ? savedInstanceState.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
 			if (mRowId == null) {
-				getRowId();
+				setRowIdByExtras();
 			}
 
 			if (savedInstanceState != null) {
@@ -217,121 +157,35 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 			}
 
 			super.onCreate(savedInstanceState);
-			mDbHelper = new CatalogueDBAdapter(this);
-			mDbHelper.open();
-
-			// See how big the display is and use that to set bitmap sizes
-			mMetrics = new android.util.DisplayMetrics();
-			getWindowManager().getDefaultDisplay().getMetrics(mMetrics);
-			// Minimum of MAX_EDIT_THUMBNAIL_SIZE and 1/3rd of largest screen dimension 
-			mThumbEditSize = Math.min(MAX_EDIT_THUMBNAIL_SIZE, Math.max(mMetrics.widthPixels, mMetrics.heightPixels)/3);
-			// Zoom size is minimum of MAX_ZOOM_THUMBNAIL_SIZE and largest screen dimension.
-			mThumbZoomSize = Math.min(MAX_ZOOM_THUMBNAIL_SIZE, Math.max(mMetrics.widthPixels, mMetrics.heightPixels));
-
-			setContentView(R.layout.edit_book);
-
-			// Generic validators; if field-specific defaults are needed, create a new one.
-			FieldValidator integerValidator = new Fields.IntegerValidator("0");
-			FieldValidator nonBlankValidator = new Fields.NonBlankValidator();
-			FieldValidator blankOrIntegerValidator = new Fields.OrValidator(new Fields.BlankValidator(), new Fields.IntegerValidator("0"));
-			FieldValidator blankOrFloatValidator = new Fields.OrValidator(new Fields.BlankValidator(), new Fields.FloatValidator("0.00"));
-			FieldValidator blankOrDateValidator = new Fields.OrValidator(new Fields.BlankValidator(), new Fields.DateValidator());
-
-			mFields = new Fields(this);
-
-			mFields.add(R.id.author, "", CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, nonBlankValidator);
-			{
-				View v = findViewById(R.id.author);
-				v.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						Intent i = new Intent(BookEditFields.this, EditAuthorList.class);
-						i.putExtra(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mAuthorList);
-						i.putExtra(CatalogueDBAdapter.KEY_ROWID, mRowId);
-						i.putExtra("title_label", CatalogueDBAdapter.KEY_TITLE);
-						i.putExtra("title", mFields.getField(R.id.title).getValue().toString());
-						startActivityForResult(i, ACTIVITY_EDIT_AUTHORS);						
-					}
-				});
-			}
-
-			// Title has some post-processing on the text, to move leading 'A', 'The' etc to the end.
-			// While we could do it in a formatter, it it not really a display-oriented function and
-			// is handled in preprocessing in the database layer since it also needs to be applied
-			// to imported record etc.
-			mFields.add(R.id.title, CatalogueDBAdapter.KEY_TITLE, nonBlankValidator);
-
-			mFields.add(R.id.isbn, CatalogueDBAdapter.KEY_ISBN, null);
-			mFields.add(R.id.publisher, CatalogueDBAdapter.KEY_PUBLISHER, null);
-			mFields.add(R.id.date_published_button, "", CatalogueDBAdapter.KEY_DATE_PUBLISHED, null);
-			mFields.add(R.id.date_published, CatalogueDBAdapter.KEY_DATE_PUBLISHED, CatalogueDBAdapter.KEY_DATE_PUBLISHED, 
-							blankOrDateValidator, new Fields.DateFieldFormatter());
-
-			mFields.add(R.id.series, CatalogueDBAdapter.KEY_SERIES_NAME, CatalogueDBAdapter.KEY_SERIES_NAME, null);
-			{
-				View v = findViewById(R.id.series);
-				v.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						Intent i = new Intent(BookEditFields.this, EditSeriesList.class);
-						i.putExtra(CatalogueDBAdapter.KEY_SERIES_ARRAY, mSeriesList);
-						i.putExtra(CatalogueDBAdapter.KEY_ROWID, mRowId);
-						i.putExtra("title_label", CatalogueDBAdapter.KEY_TITLE);
-						i.putExtra("title", mFields.getField(R.id.title).getValue().toString());
-						startActivityForResult(i, ACTIVITY_EDIT_SERIES);						
-					}
-				});
-			}
-
-			mFields.add(R.id.list_price, "list_price", blankOrFloatValidator);
-			mFields.add(R.id.pages, "pages", blankOrIntegerValidator);
 			
-			// Anthology needs special handling, and we use a formatter to do this. If the original value was 0 or 1, then 
-			// setting/clearing it here should just set the new value to 0 or 1.
-			// However...if if the original value was 2, then we want setting/clearing to alternate between 2 and 0, not 1
-			// and 0.
-			//
-			// So, despite if being a checkbox, we use an integerValidator and use a special formatter.
-			// We also store it in the tag field so that it is automatically serialized with the activity.
-			mFields.add(R.id.anthology, CatalogueDBAdapter.KEY_ANTHOLOGY, integerValidator, new Fields.FieldFormatter() {
-					public String format(Field f, String s) {
-						// Save the original value, if its an integer
-						try {
-							Integer i = Integer.parseInt(s);
-							ViewTagger.setTag(f.getView(), R.id.TAG_ORIGINAL_VALUE,i);
-						} catch (Exception e) {
-							ViewTagger.setTag(f.getView(), R.id.TAG_ORIGINAL_VALUE,0);
-						}
-						// Just pass the string onwards to the accessor.
-						return s;
-					}
-					public String extract(Field f, String s) {
-						// Parse the string the CheckBox returns us (0 or 1)
-						Integer i = Integer.parseInt(s);
-						Integer orig = (Integer) ViewTagger.getTag(f.getView(), R.id.TAG_ORIGINAL_VALUE);
-						try {
-							if (i != 0 && orig > 0) {
-								// If non-zero, and original was non-zero, re-use original
-								return orig.toString();
-							} else {
-								// Just return what we got.
-								return s;
-							}
-						} catch (NullPointerException e) {
-							return s;
-						}
-					}
+			//Set click listener on Author field
+			View v = findViewById(R.id.author); //Reusable view for setting listeners
+			v.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Intent i = new Intent(BookEditFields.this, EditAuthorList.class);
+					i.putExtra(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mAuthorList);
+					i.putExtra(CatalogueDBAdapter.KEY_ROWID, mRowId);
+					i.putExtra("title_label", CatalogueDBAdapter.KEY_TITLE);
+					i.putExtra("title", mFields.getField(R.id.title).getValue().toString());
+					startActivityForResult(i, ACTIVITY_EDIT_AUTHORS);
+				}
 			});
-
-			mFields.add(R.id.description, CatalogueDBAdapter.KEY_DESCRIPTION, null);
 			
-			mFields.add(R.id.genre, CatalogueDBAdapter.KEY_GENRE, null);
-			mFields.add(R.id.row_img, "", "thumbnail", null);
-			final Field formatField = mFields.add(R.id.format, CatalogueDBAdapter.KEY_FORMAT, null);
-			mFields.add(R.id.format_button, "", CatalogueDBAdapter.KEY_FORMAT, null);
+			//Set click listener on Series field
+			v = findViewById(R.id.series);
+			v.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Intent i = new Intent(BookEditFields.this, EditSeriesList.class);
+					i.putExtra(CatalogueDBAdapter.KEY_SERIES_ARRAY, mSeriesList);
+					i.putExtra(CatalogueDBAdapter.KEY_ROWID, mRowId);
+					i.putExtra("title_label", CatalogueDBAdapter.KEY_TITLE);
+					i.putExtra("title", mFields.getField(R.id.title).getValue().toString());
+					startActivityForResult(i, ACTIVITY_EDIT_SERIES);
+				}
+			});
 			
-			mFields.add(R.id.bookshelf_text, "bookshelf_text", null).doNoFetch = true; // Output-only field
-			Field bookshelfButtonFe = mFields.add(R.id.bookshelf, "", null);
 			ArrayAdapter<String> publisher_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getPublishers());
 			mFields.setAdapter(R.id.publisher, publisher_adapter);
 			ArrayAdapter<String> genre_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getGenres());
@@ -342,22 +196,26 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 					showDialog(DATE_DIALOG_ID);
 				}
 			});
-
+			
+			final Field formatField = mFields.getField(R.id.format);
 			// Get the formats to use in the AutoComplete stuff
-			ArrayAdapter<String> formatAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, mDbHelper.getFormats());
 			AutoCompleteTextView formatText = (AutoCompleteTextView) formatField.getView();
-			formatText.setAdapter(formatAdapter);
+			formatText.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, mDbHelper.getFormats()));
 			// Get the drop-down button for the formats list and setup dialog
-			ImageView formatButton = (ImageView)findViewById(R.id.format_button);
+			ImageView formatButton = (ImageView) findViewById(R.id.format_button);
 			formatButton.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					StandardDialogs.selectStringDialog(getLayoutInflater(), getString(R.string.format), mDbHelper.getFormats(), formatField.getValue().toString(), new SimpleDialogOnClickListener() {
-						@Override
-						public void onClick(SimpleDialogItem item) {
-							formatField.setValue(item.toString());
-						}});
-				}});
+					StandardDialogs.selectStringDialog(getLayoutInflater(), getString(R.string.format),
+							mDbHelper.getFormats(), formatField.getValue().toString(),
+							new SimpleDialogOnClickListener() {
+								@Override
+								public void onClick(SimpleDialogItem item) {
+									formatField.setValue(item.toString());
+								}
+							});
+				}
+			});
 
 			//Spinner formatSpinner = (Spinner) formatField.getView();
 			//ArrayAdapter<String> formatArr = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
@@ -371,7 +229,8 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 
 			mConfirmButton = (Button) findViewById(R.id.confirm);
 			mCancelButton = (Button) findViewById(R.id.cancel);
-
+			
+			Field bookshelfButtonFe = mFields.getField(R.id.bookshelf);
 			bookshelfButtonFe.getView().setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v) {
 					Cursor bookshelves_for_book = null;
@@ -494,9 +353,6 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 				}
 			});
 			
-			
-			
-			
 			//spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
 			//spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			//mBookshelfText.setAdapter(spinnerAdapter);
@@ -516,10 +372,10 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 				// The thumbnail image is not automatically preserved, so reload it.
 				setCoverImage();
 				// Author and series lists
-				mAuthorList = (ArrayList<Author>) savedInstanceState.getSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
-				fixupAuthorList();	// Will update related display fields/button
-				mSeriesList = (ArrayList<Series>) savedInstanceState.getSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY);
-				fixupSeriesList();	// Will update related display fields/button
+				mAuthorList = Utils.getAuthorsFromBundle(savedInstanceState);
+				populateAuthorListField();	// Will update related display fields/button
+				mSeriesList = Utils.getSeriesFromBundle(savedInstanceState);
+				populateSeriesListField();	// Will update related display fields/button
 				mFields.getField(R.id.date_published).setValue(savedInstanceState.getString(CatalogueDBAdapter.KEY_DATE_PUBLISHED));
 				// Restore bookshelves
 				Field fe = mFields.getField(R.id.bookshelf_text);
@@ -536,45 +392,6 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 
 			// Setup the Save/Add/Anthology UI elements
 			setupUi();
-
-			// Set up the thumbnail context menu.
-			mFields.getField(R.id.row_img).getView().setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
-				@Override
-				public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-					MenuItem delete = menu.add(0, DELETE_ID, 0, R.string.menu_delete_thumb);
-					delete.setIcon(android.R.drawable.ic_menu_delete);
-
-					// Submenu for rotate
-					android.view.SubMenu replaceSubmenu = menu.addSubMenu(0, REPLACE_THUMB_SUBMENU, 2, R.string.menu_replace_thumb);
-					replaceSubmenu.setIcon(android.R.drawable.ic_menu_gallery);
-
-
-					MenuItem add_photo = replaceSubmenu.add(0, ADD_PHOTO, 1, R.string.menu_add_thumb_photo);
-					add_photo.setIcon(android.R.drawable.ic_menu_camera);
-					MenuItem add_gallery = replaceSubmenu.add(0, ADD_GALLERY, 2, R.string.menu_add_thumb_gallery);
-					add_gallery.setIcon(android.R.drawable.ic_menu_gallery);
-					MenuItem alt_covers = replaceSubmenu.add(0, SHOW_ALT_COVERS, 3, R.string.menu_thumb_alt_editions);
-					alt_covers.setIcon(android.R.drawable.ic_menu_zoom);
-
-					// Submenu for rotate
-					android.view.SubMenu submenu = menu.addSubMenu(0, ROTATE_THUMB_SUBMENU, 3, R.string.menu_rotate_thumb);
-					add_gallery.setIcon(android.R.drawable.ic_menu_rotate);
-
-					MenuItem rotate_photo_cw = submenu.add(0, ROTATE_THUMB_CW, 1, R.string.menu_rotate_thumb_cw);
-					rotate_photo_cw.setIcon(android.R.drawable.ic_menu_rotate);
-					MenuItem rotate_photo_ccw = submenu.add(0, ROTATE_THUMB_CCW, 2, R.string.menu_rotate_thumb_ccw);
-					rotate_photo_ccw.setIcon(android.R.drawable.ic_menu_rotate);
-					MenuItem rotate_photo_180 = submenu.add(0, ROTATE_THUMB_180, 3, R.string.menu_rotate_thumb_180);
-					rotate_photo_180.setIcon(android.R.drawable.ic_menu_rotate);
-
-					MenuItem zoom_thumb = menu.add(0, ZOOM_THUMB, 4, R.string.menu_zoom_thumb);
-					zoom_thumb.setIcon(android.R.drawable.ic_menu_zoom);
-
-					MenuItem crop_thumb = menu.add(0, CROP_THUMB, 4, R.string.menu_crop_thumb);
-					crop_thumb.setIcon(android.R.drawable.ic_menu_crop);
-
-				}
-			});
 
 			// mConfirmButton.setOnClickListener - This is set in populate fields. The behaviour changes depending on if it is adding or saving
 			mCancelButton.setOnClickListener(new View.OnClickListener() {
@@ -601,7 +418,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 				Logger.logError(e);
 			}
 
-			Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
+//			Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 
 			mFields.setAfterFieldChangeListener(new AfterFieldChangeListener(){
 				@Override
@@ -636,36 +453,6 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 			dialog = new TextFieldEditor(this);
 			dialog.setTitle(R.string.description);
 			// The rest of the details will be set in onPrepareDialog
-			break;
-
-		case ZOOM_THUMB_DIALOG_ID:
-			// Create dialog and set layout
-			dialog = new Dialog(BookEditFields.this);
-			dialog.setContentView(R.layout.zoom_thumb_dialog);
-
-			// Check if we have a file and/or it is valid
-			File thumbFile = getCoverFile();
-
-			if (thumbFile == null || !thumbFile.exists()) {
-				dialog.setTitle(getResources().getString(R.string.cover_not_set));
-			} else {
-				
-				BitmapFactory.Options opt = new BitmapFactory.Options();
-				opt.inJustDecodeBounds = true;
-			    BitmapFactory.decodeFile( thumbFile.getAbsolutePath(), opt );
-
-			    // If no size info, assume file bad and return appropriate icon
-			    if ( opt.outHeight <= 0 || opt.outWidth <= 0 ) {
-			    	dialog.setTitle(getResources().getString(R.string.cover_corrupt));
-				} else {
-					dialog.setTitle(getResources().getString(R.string.cover_detail));
-					ImageView cover = new ImageView(this);
-					Utils.fetchFileIntoImageView(thumbFile, cover, mThumbZoomSize, mThumbZoomSize, true);
-					cover.setAdjustViewBounds(true);
-				    LayoutParams lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
-				    dialog.addContentView(cover, lp);
-				}
-			}
 			break;
 		default:
 			dialog = null;
@@ -716,17 +503,6 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 		}};
 
 	/**
-	 * Get the File object for the cover of the book we are editing. If the boo
-	 * is new, return the standard temp file.
-	 */
-	private File getCoverFile() {
-		if (mRowId == null || mRowId == 0) 
-			return CatalogueDBAdapter.getTempThumbnail();
-		else
-			return CatalogueDBAdapter.fetchThumbnailByUuid(mDbHelper.getBookUuid(mRowId));			
-	}
-
-	/**
 	 *  The callback received when the user "sets" the date in the dialog.
 	 *  
 	 *  Build a full or partial date in SQL format
@@ -744,201 +520,6 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 		}
 	};
 
-	@Override
-	public boolean onContextItemSelected(MenuItem item) {
-		Tracker.handleEvent(this, "Context Menu Item " + item.getItemId(), Tracker.States.Enter);
-
-		try {
-			ImageView iv = (ImageView)findViewById(R.id.row_img);
-			File thumbFile = getCoverFile();
-	
-			switch(item.getItemId()) {
-			case DELETE_ID:
-				deleteThumbnail(mRowId);
-				Utils.fetchFileIntoImageView(thumbFile, iv, mThumbEditSize, mThumbEditSize, true);
-				return true;
-			case ROTATE_THUMB_SUBMENU:
-				// Just a submenu; skip, but display a hint if user is rotating a camera image
-				if (mGotCameraImage) {
-					HintManager.displayHint(this, R.string.hint_autorotate_camera_images, null);
-					mGotCameraImage = false;
-				}
-				return true;
-			case ROTATE_THUMB_CW:
-				rotateThumbnail(90);
-				Utils.fetchFileIntoImageView(thumbFile, iv, mThumbEditSize, mThumbEditSize, true);
-				return true;
-			case ROTATE_THUMB_CCW:
-				rotateThumbnail(-90);
-				Utils.fetchFileIntoImageView(thumbFile, iv, mThumbEditSize, mThumbEditSize, true);
-				return true;
-			case ROTATE_THUMB_180:
-				rotateThumbnail(180);
-				Utils.fetchFileIntoImageView(thumbFile, iv, mThumbEditSize, mThumbEditSize, true);
-				return true;
-			case ADD_PHOTO:
-				// Increment the temp counter and cleanup the temp directory
-				mTempImageCounter++;
-				cleanupTempImages();
-				Intent pintent = null;
-				// Get a photo
-				pintent = new Intent("android.media.action.IMAGE_CAPTURE");
-				startActivityForResult(pintent, ADD_PHOTO);
-				return true;
-			case ADD_GALLERY:
-				Intent gintent = new Intent();
-				gintent.setType("image/*");
-				gintent.setAction(Intent.ACTION_GET_CONTENT);
-				startActivityForResult(Intent.createChooser(gintent, getResources().getString(R.string.select_picture)), ADD_GALLERY);
-				return true;
-			case ZOOM_THUMB:
-				showDialog(ZOOM_THUMB_DIALOG_ID);
-				return true;
-			case CROP_THUMB:
-				cropCoverImage(thumbFile);
-				
-	//			Intent crop_intent = new Intent(this, CropCropImage.class);
-	//			// here you have to pass absolute path to your file
-	//			crop_intent.putExtra("image-path", thumbFile.getAbsolutePath());
-	//			crop_intent.putExtra("scale", true);
-	//			startActivityForResult(crop_intent, CAMERA_RESULT);
-				return true;
-			case SHOW_ALT_COVERS:
-				String isbn = mFields.getField(R.id.isbn).getValue().toString();
-				if (isbn == null || isbn.trim().length() == 0) {
-					Toast.makeText(this, getResources().getString(R.string.editions_require_isbn), Toast.LENGTH_LONG).show();
-				} else {
-					mCoverBrowser = new CoverBrowser(this, mMetrics, isbn, mOnImageSelectedListener);
-					mCoverBrowser.showEditionCovers();				
-				}
-				return true;
-			}
-			return super.onContextItemSelected(item);
-		} finally {
-			Tracker.handleEvent(this, "Context Menu Item " + item.getItemId(), Tracker.States.Exit);			
-		}
-	}
-
-	private void cropCoverImage(File thumbFile) {
-		boolean useExt = BookCatalogueApp.getAppPreferences().getBoolean(BookCataloguePreferences.PREF_USE_EXTERNAL_IMAGE_CROPPER, false);
-		if (useExt) {
-			cropCoverImageExternal(thumbFile);
-		} else {
-			cropCoverImageInternal(thumbFile);
-		}
-	}
-
-	private void cropCoverImageInternal(File thumbFile) {
-		Intent crop_intent = new Intent(this, CropCropImage.class);
-		// here you have to pass absolute path to your file
-		crop_intent.putExtra("image-path", thumbFile.getAbsolutePath());
-		crop_intent.putExtra("scale", true);
-		crop_intent.putExtra("whole-image", BookCatalogueApp.getAppPreferences().getBoolean(BookCataloguePreferences.PREF_CROP_FRAME_WHOLE_IMAGE, false));
-		// Get and set the output file spec, and make sure it does not already exist.
-		File cropped = this.getCroppedImageFileName();
-		if (cropped.exists())
-			cropped.delete();
-		crop_intent.putExtra("output", cropped.getAbsolutePath());
-
-		startActivityForResult(crop_intent, CROP_INTERNAL_RESULT);
-	}
-
-	private void cropCoverImageExternal(File thumbFile) {
-		Tracker.handleEvent(this, "cropCoverImageExternal", Tracker.States.Enter);			
-		try {
-			Intent intent = new Intent("com.android.camera.action.CROP");
-			// this will open any image file
-			intent.setDataAndType(Uri.fromFile(new File(thumbFile.getAbsolutePath())), "image/*");
-			intent.putExtra("crop", "true");
-			// this defines the aspect ratio
-			//intent.putExtra("aspectX", 1);
-			//intent.putExtra("aspectY", 1);
-			// this defines the output bitmap size
-			//intent.putExtra("outputX", 3264);
-			//intent.putExtra("outputY", 2448);
-			//intent.putExtra("outputX", mThumbZoomSize*2);
-			//intent.putExtra("outputY", mThumbZoomSize*2);
-			intent.putExtra("scale", true);
-			intent.putExtra("noFaceDetection", true);
-			// true to return a Bitmap, false to directly save the cropped iamge
-			intent.putExtra("return-data", false);
-			//save output image in uri
-			File cropped = this.getCroppedImageFileName();
-			if (cropped.exists())
-				cropped.delete();
-			intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(cropped.getAbsolutePath())));
-	
-			List<ResolveInfo> list = getPackageManager().queryIntentActivities( intent, 0 );
-		    int size = list.size();
-		    if (size == 0) {
-		        Toast.makeText(this, "Can not find image crop app", Toast.LENGTH_SHORT).show();
-		    } else {
-				startActivityForResult(intent, CROP_EXTERNAL_RESULT);		    	
-		    }
-		} finally {
-			Tracker.handleEvent(this, "cropCoverImageExternal", Tracker.States.Exit);			
-		}
-	}
-	/**
-	 * Delete the provided thumbnail from the sdcard
-	 * 
-	 * @param id The id of the book (and thumbnail) to delete
-	 */
-	private void deleteThumbnail(long id) {
-		try {
-			File thumbFile = getCoverFile();
-			if (thumbFile != null && thumbFile.exists())
-				thumbFile.delete();
-		} catch (Exception e) {
-			Logger.logError(e);
-		}
-		// Make sure the cached thumbnails (if present) are deleted
-		invalidateCachedThumbnail();
-	}
-	
-	/**
-	 * Rotate the thumbnail a specified amount
-	 * 
-	 * @param id
-	 */
-	private void rotateThumbnail(long angle) {
-		boolean retry = true;
-		while (retry) {
-			try {
-				File thumbFile = getCoverFile();
-
-				Bitmap origBm = Utils.fetchFileIntoImageView(thumbFile, null, mThumbZoomSize*2, mThumbZoomSize*2, true );
-				if (origBm == null)
-					return;
-
-				Matrix m = new Matrix();
-				m.postRotate(angle);
-				Bitmap rotBm = Bitmap.createBitmap(origBm, 0, 0, origBm.getWidth(), origBm.getHeight(), m, true);
-				if (rotBm != origBm) {
-					origBm.recycle();
-				}
-
-				/* Create a file to copy the thumbnail into */
-				FileOutputStream f = null;
-				try {
-					f = new FileOutputStream(thumbFile.getAbsoluteFile());
-				} catch (FileNotFoundException e) {
-					Logger.logError(e);
-					return;
-				}
-				rotBm.compress(Bitmap.CompressFormat.PNG, 100, f);
-				rotBm.recycle();
-			} catch (java.lang.OutOfMemoryError e) {
-				if (retry) {
-					System.gc();
-				} else {
-					throw new RuntimeException(e);
-				}
-			}
-			retry = false;
-		}
-	}
-
 	/**
 	 * This function will populate the forms elements in three different ways
 	 * 1. If a valid rowId exists it will populate the fields from the database
@@ -948,57 +529,11 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 	private void populateFields() {
 		Bundle extras = getIntent().getExtras();
 		if (mRowId == null) {
-			getRowId();
+			setRowIdByExtras();
 		}
 		
-		if (mRowId != null && mRowId > 0) {
-			// From the database (edit)
-			Cursor book = mDbHelper.fetchBookById(mRowId);
-			Cursor bookshelves = null;
-			try {
-				if (book != null) {
-					book.moveToFirst();
-				}
-				
-				// Set any field that has a 'column' non blank.
-				mFields.setFromCursor(book);
-				
-				getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + mFields.getField(R.id.title).getValue().toString());
-				
-				//Display the selected bookshelves
-				Field bookshelfTextFe = mFields.getField(R.id.bookshelf_text);
-				bookshelves = mDbHelper.fetchAllBookshelvesByBook(mRowId);
-				String bookshelves_text = "";
-				String bookshelves_list = "";
-				while (bookshelves.moveToNext()) {
-					String name = bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF));
-					String encoded_name = Utils.encodeListItem(name, BOOKSHELF_SEPERATOR);
-					if (bookshelves_text.equals("")) {
-						bookshelves_text = name;
-						bookshelves_list = encoded_name;
-					} else {
-						bookshelves_text += ", " + name;
-						bookshelves_list += BOOKSHELF_SEPERATOR + encoded_name;
-					}
-				}
-				bookshelfTextFe.setValue(bookshelves_text);
-				bookshelfTextFe.setTag(bookshelves_list);
-
-				Integer anthNo = book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
-				mFields.getField(R.id.anthology).setValue(anthNo.toString());
-				
-				ImageView iv = (ImageView) findViewById(R.id.row_img);
-				Utils.fetchFileIntoImageView(getCoverFile(), iv, mThumbEditSize, mThumbEditSize, true );				
-			} finally {	
-				if (book != null)
-					book.close();
-				if (bookshelves != null)
-					bookshelves.close();
-			}
-			
-			mAuthorList = mDbHelper.getBookAuthorList(mRowId);
-			mSeriesList = mDbHelper.getBookSeriesList(mRowId);
-			
+		if (mRowId != null && mRowId > 0) { //Populating from database
+			populateFieldsFromDb(mRowId);
 		} else if (extras != null) {
 			getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + this.getResources().getString(R.string.menu_insert));
 			// From the ISBN Search (add)
@@ -1023,8 +558,8 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 					initDefaultShelf();
 
 					// Author/Series
-					mAuthorList = (ArrayList<Author>) values.getSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
-					mSeriesList = (ArrayList<Series>) values.getSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY);
+					mAuthorList = Utils.getAuthorsFromBundle(values);
+					mSeriesList = Utils.getSeriesFromBundle(values);
 				}
 				
 			} catch (NullPointerException e) {
@@ -1042,8 +577,8 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 			mSeriesList = new ArrayList<Series>();
 		}
 		
-		fixupAuthorList();
-		fixupSeriesList();
+		populateAuthorListField();
+		populateSeriesListField();
 
 	}
 	
@@ -1059,28 +594,6 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 		Field fe = mFields.getField(R.id.bookshelf_text);
 		fe.setValue(currShelf);
 		fe.setTag(encoded_shelf);		
-	}
-
-	/**
-	 * Ensure that the cached thumbnails for this book are deleted (if present)
-	 */
-	private void invalidateCachedThumbnail() {
-		if (mRowId != null && mRowId != 0) {
-			try {
-				String hash = mDbHelper.getBookUuid(mRowId);			
-				Utils u = new Utils();
-				u.deleteCachedBookCovers(hash);
-			} catch (Exception e) {
-				Logger.logError(e,"Error cleaning up cached cover images");
-			}
-		}		
-	}
-
-	private void setCoverImage() {
-		ImageView iv = (ImageView) findViewById(R.id.row_img);
-		Utils.fetchFileIntoImageView(getCoverFile(), iv, mThumbEditSize, mThumbEditSize, true );
-		// Make sure the cached thumbnails (if present) are deleted
-		invalidateCachedThumbnail();
 	}
 
 	/**
@@ -1308,31 +821,6 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 		}
 	}
 
-	@Override
-	protected void onPause() {
-		Tracker.enterOnPause(this);
-
-		super.onPause();
-
-		// Close down the cover browser.
-		if (mCoverBrowser != null) {
-			mCoverBrowser.dismiss();
-			mCoverBrowser = null;
-		}
-		Tracker.exitOnPause(this);
-	}
-
-	/**
-	 * Fix background
-	 */
-	@Override 
-	public void onResume() {
-		Tracker.enterOnResume(this);
-		super.onResume();
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
-		Tracker.exitOnResume(this);
-	}
-	
 	private class SaveAlert extends AlertDialog {
 
 		protected SaveAlert() {
@@ -1400,14 +888,14 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 					alert.setMessage(getResources().getString(R.string.duplicate_book_message));
 					alert.setTitle(R.string.duplicate_book_title);
 					alert.setIcon(android.R.drawable.ic_menu_info_details);
-					alert.setButton(this.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+					alert.setButton2(this.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
 							updateOrCreate();
 							nextStep.success();
 							return;
 						}
 					}); 
-					alert.setButton2(this.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+					alert.setButton(this.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
 							nextStep.failure();
 							return;
@@ -1441,7 +929,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 
 		/* These are global variables that will be sent via intent back to the list view, if added/created */
 		try {
-			ArrayList<Author> authors = (ArrayList<Author>) mStateValues.getSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
+			ArrayList<Author> authors = Utils.getAuthorsFromBundle(mStateValues);
 			if (authors.size() > 0) {
 				added_author = authors.get(0).getSortName();
 			} else { 
@@ -1451,7 +939,7 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 			Logger.logError(e);
 		};
 		try {
-			ArrayList<Series> series = (ArrayList<Series>) mStateValues.getSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY);
+			ArrayList<Series> series = Utils.getSeriesFromBundle(mStateValues);
 			if (series.size() > 0)
 				added_series = series.get(0).name;
 			else 
@@ -1464,151 +952,15 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 		added_genre = mStateValues.getString(CatalogueDBAdapter.KEY_GENRE);
 	}
 
-	/**
-	 * Get a temp directory for image manipulation (create if necessary)
-	 */
-	private File getTempImageDir() {
-		File f = new File(StorageUtils.getSharedStoragePath() + "/tmp_images/");
-		if (!f.exists())
-			f.mkdirs();
-		return f;
-	}
-
-	/** Counter used to prevent images being reused accidentally */
-	private static int mTempImageCounter = 0;
-	/**
-	 * Get a temp file for camera images
-	 */
-	private File getCameraImageFile() {
-		return new File(getTempImageDir().getAbsolutePath() + "/camera" + mTempImageCounter + ".jpg");
-	}
-	
-	/**
-	 * Get a temp fie for cropping output
-	 */
-	private File getCroppedImageFileName() {
-		return new File(getTempImageDir().getAbsolutePath() + "/cropped" + mTempImageCounter + ".jpg");
-	}
-	
-	/**
-	 * Delete everything in the temp file directory
-	 */
-	private void cleanupTempImages() {
-		File[] files = getTempImageDir().listFiles();
-		for (File f: files) {
-			f.delete();
-		}
-	}
-
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		Tracker.handleEvent(this, "onActivityResult(" + requestCode + "," + resultCode + ")", Tracker.States.Enter);			
 		try {
 			super.onActivityResult(requestCode, resultCode, intent);
 			switch(requestCode) {
-			case ADD_PHOTO:
-				if (resultCode == Activity.RESULT_OK && intent != null && intent.getExtras() != null){
-					File cameraFile = getCameraImageFile();
-					Bitmap x = (Bitmap) intent.getExtras().get("data");
-					if (x != null && x.getWidth() > 0 && x.getHeight() > 0) {
-						Matrix m = new Matrix();
-						m.postRotate(BookCatalogueApp.getAppPreferences().getInt(BookCataloguePreferences.PREF_AUTOROTATE_CAMERA_IMAGES, 90));
-						x = Bitmap.createBitmap(x, 0, 0, x.getWidth(), x.getHeight(), m, true);
-						/* Create a file to copy the thumbnail into */
-						FileOutputStream f = null;
-						try {
-							f = new FileOutputStream(cameraFile.getAbsoluteFile());
-						} catch (FileNotFoundException e) {
-							Logger.logError(e);
-							return;
-						}
-						
-						x.compress(Bitmap.CompressFormat.PNG, 100, f);
-
-						cropCoverImage(cameraFile);
-						//Intent crop_intent = new Intent(this, CropCropImage.class);
-						//// here you have to pass absolute path to your file
-						//crop_intent.putExtra("image-path", thumbFile.getAbsolutePath());
-						//crop_intent.putExtra("scale", true);
-						//startActivityForResult(crop_intent, CAMERA_RESULT);					
-						mGotCameraImage = true;
-					} else {
-						Tracker.handleEvent(this, "onActivityResult(" + requestCode + "," + resultCode + ") - camera image empty", Tracker.States.Running);						
-					}
-				}
-				return;
-			case CROP_EXTERNAL_RESULT:
-			{
-				File thumbFile = getCoverFile();
-				File cropped = this.getCroppedImageFileName();
-				if (resultCode == Activity.RESULT_OK){
-					if (cropped.exists()) {
-						// Update the ImageView with the new image
-						cropped.renameTo(thumbFile);
-						setCoverImage();
-					} else {
-						Tracker.handleEvent(this, "onActivityResult(" + requestCode + "," + resultCode + ") - result OK, no image file", Tracker.States.Running);												
-					}
-				} else {
-					Tracker.handleEvent(this, "onActivityResult(" + requestCode + "," + resultCode + ") - bad result", Tracker.States.Running);						
-					if (cropped.exists())
-						cropped.delete();				
-				}
-				return;
-			}
-			case CROP_INTERNAL_RESULT:
-//			case CAMERA_RESULT:
-			{
-				File thumbFile = getCoverFile();
-				File cropped = this.getCroppedImageFileName();
-				if (resultCode == Activity.RESULT_OK) {
-					if (cropped.exists()) {
-						cropped.renameTo(thumbFile);
-						// Update the ImageView with the new image
-						setCoverImage();
-					}
-				}
-				return;
-			}
-			case ADD_GALLERY:
-				if (resultCode == Activity.RESULT_OK){
-					Uri selectedImageUri = intent.getData();
-	
-					if (selectedImageUri != null) {
-						String[] projection = { MediaStore.Images.Media.DATA };
-						Cursor cursor = managedQuery(selectedImageUri, projection, null, null, null);
-						int column_index = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
-						if (column_index < 0 || !cursor.moveToFirst()) {
-							Logger.logError(new RuntimeException("Add from gallery failed (col = " + column_index +"), name = " + MediaStore.Images.Media.DATA));
-							// This should not happen, but tell the user and log something
-							String s = getResources().getString(R.string.no_image_found) + ". " + getResources().getString(R.string.if_the_problem_persists);
-							Toast.makeText(this, s, Toast.LENGTH_LONG).show();
-						} else {
-							String selectedImagePath = cursor.getString(column_index);
-							
-							File thumb = new File(selectedImagePath);
-							File real = getCoverFile();
-							try {
-								copyFile(thumb, real);
-							} catch (IOException e) {
-								Logger.logError(e, "copyImage failed in add from gallery");
-								String s = getResources().getString(R.string.could_not_copy_image) + ". " + getResources().getString(R.string.if_the_problem_persists);
-								Toast.makeText(this, s, Toast.LENGTH_LONG).show();
-							}
-							// Update the ImageView with the new image
-							setCoverImage();					
-						}
-					} else {
-						// Deal with the case where the chooser returns a null intent. This seems to happen when the filename
-						// is not properly understood by the choose (eg. an apostrophe in the file name confuses ES File Explorer
-						// in the current version as of 23-Sep-2012.
-						Toast.makeText(this, R.string.could_not_copy_image, Toast.LENGTH_LONG).show();
-					}
-				}
-				return;
 			case ACTIVITY_EDIT_AUTHORS:
 				if (resultCode == Activity.RESULT_OK && intent.hasExtra(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)){
-					mAuthorList = (ArrayList<Author>) intent.getSerializableExtra(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
+					mAuthorList = Utils.getAuthorsFromBundle(intent.getExtras());
 					setDirty(true);
 				} else {
 					// Even though the dialog was terminated, some authors MAY have been updated/added.
@@ -1621,12 +973,12 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 				// have already been applied to the database so no update is necessary, but we do need 
 				// to update the data we display.
 				boolean oldDirty = isDirty();
-				fixupAuthorList();
+				populateAuthorListField();
 				setDirty(oldDirty);
 			case ACTIVITY_EDIT_SERIES:
 				if (resultCode == Activity.RESULT_OK && intent.hasExtra(CatalogueDBAdapter.KEY_SERIES_ARRAY)){
-					mSeriesList = (ArrayList<Series>) intent.getSerializableExtra(CatalogueDBAdapter.KEY_SERIES_ARRAY);
-					fixupSeriesList();
+					mSeriesList = Utils.getSeriesFromBundle(intent.getExtras());
+					populateSeriesListField();
 					setDirty(true);
 				}
 			}
@@ -1635,20 +987,11 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 		}
 	}
 	
-	private void fixupAuthorList() {
-
-		String newText;
-		if (mAuthorList.size() == 0)
-			newText = getResources().getString(R.string.set_authors);
-		else {
-			if (Utils.pruneList(mDbHelper, mAuthorList) )
-				setDirty(true);
-
-			newText = mAuthorList.get(0).getDisplayName();
-			if (mAuthorList.size() > 1)
-				newText += " " + getResources().getString(R.string.and_others);
-		}
-		mFields.getField(R.id.author).setValue(newText);	
+	@Override
+	protected void populateAuthorListField() {
+		if (mAuthorList.size() != 0 && Utils.pruneList(mDbHelper, mAuthorList) )
+			setDirty(true);
+		super.populateAuthorListField();
 	}
 
 	/**
@@ -1665,69 +1008,6 @@ public class BookEditFields extends Activity implements OnRestoreTabInstanceStat
 		return mIsDirtyFlg;
 	}
 
-	private void fixupSeriesList() {
-
-		String newText;
-		int size = 0;
-		try {
-			size = mSeriesList.size();
-		} catch (NullPointerException e) {
-			size = 0;
-		}
-		if (size == 0)
-			newText = getResources().getString(R.string.set_series);
-		else {
-			Utils.pruneSeriesList(mSeriesList);
-			Utils.pruneList(mDbHelper, mSeriesList);
-			newText = mSeriesList.get(0).getDisplayName();
-			if (mSeriesList.size() > 1)
-				newText += " " + getResources().getString(R.string.and_others);
-		}
-		mFields.getField(R.id.series).setValue(newText);		
-	}
-
-	private void copyFile(File src, File dst) throws IOException {
-		FileChannel inChannel = new FileInputStream(src).getChannel();
-		FileChannel outChannel = new FileOutputStream(dst).getChannel();
-		try {
-			inChannel.transferTo(0, inChannel.size(), outChannel);
-		} finally {
-			if (inChannel != null)
-				inChannel.close();
-			if (outChannel != null)
-				outChannel.close();
-		}
-	}
-	
-	@Override
-	protected void onDestroy() {
-		Tracker.enterOnDestroy(this);
-		super.onDestroy();
-		mDbHelper.close();
-		Tracker.exitOnDestroy(this);
-	}
-
-	/**
-	 * Handler to process a cover selected from the CoverBrowser.
-	 */
-	private OnImageSelectedListener mOnImageSelectedListener = new OnImageSelectedListener() {
-		@Override
-		public void onImageSelected(String fileSpec) {
-			if (mCoverBrowser != null && fileSpec != null) {
-				// Get the current file
-				File bookFile = getCoverFile();
-				// Get the new file
-				File newFile = new File(fileSpec);					
-				// Overwrite with new file
-				newFile.renameTo(bookFile);
-				// update current activity
-				setCoverImage();
-			}
-			if (mCoverBrowser != null)
-				mCoverBrowser.dismiss();
-			mCoverBrowser = null;
-		}};
-		
 	/**
 	 * Show the context menu for the cover thumbnail
 	 */

@@ -20,14 +20,14 @@
 
 package com.eleybourn.bookcatalogue.goodreads;
 
+import net.philipwarner.taskqueue.QueueManager;
+import android.content.Context;
+import android.content.Intent;
+
 import com.eleybourn.bookcatalogue.BcQueueManager;
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NotAuthorizedException;
-
-import net.philipwarner.taskqueue.QueueManager;
-import android.content.Context;
-import android.content.Intent;
 
 /**
  * Simple class to run in background and verify goodreads credentials then

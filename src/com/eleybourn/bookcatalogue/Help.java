@@ -30,6 +30,10 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.StorageUtils;
+import com.eleybourn.bookcatalogue.utils.Utils;
+
 /**
  * 
  * This is the Administration page. It contains details about the app, links
@@ -86,7 +90,7 @@ public class Help extends Activity {
 			
 			setupCleanupButton();
 			
-			Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
+			Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 
 		} catch (Exception e) {
 			Logger.logError(e);
@@ -128,7 +132,7 @@ public class Help extends Activity {
 	protected void onResume() {
 		super.onResume();
 		setupCleanupButton();		
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
 	}
 
 	/**

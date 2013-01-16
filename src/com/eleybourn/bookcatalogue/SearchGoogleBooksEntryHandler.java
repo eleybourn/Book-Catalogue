@@ -26,6 +26,8 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import android.os.Bundle;
 
+import com.eleybourn.bookcatalogue.utils.Utils;
+
 /* 
  * An XML handler for the Google Books entry return 
  * 

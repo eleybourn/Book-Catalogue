@@ -1,3 +1,22 @@
+/*
+ * @copyright 2012 Philip Warner
+ * @license GNU General Public License
+ * 
+ * This file is part of Book Catalogue.
+ *
+ * Book Catalogue is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Book Catalogue is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.eleybourn.bookcatalogue.messaging;
 
 import java.lang.ref.WeakReference;
@@ -5,8 +24,10 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.concurrent.LinkedBlockingQueue;
-import com.eleybourn.bookcatalogue.Logger;
+
 import android.os.Handler;
+
+import com.eleybourn.bookcatalogue.utils.Logger;
 /**
  * Switchboard class for disconnecting listener instances from task instances. Maintains
  * separate lists and each 'sender' queue maintains a last-message for re-transmission
@@ -39,11 +60,19 @@ public class MessageSwitch<T,U> {
 	private Hashtable<Long, MessageListeners> mListeners = new Hashtable<Long, MessageListeners>();
 
 	/** Handler object for posting to main thread and for testing if running on UI thread */
-	Handler mHandler = new Handler();
+	private static Handler mHandler = new Handler();
 
 	/** Interface that must be implemented by any message that will be sent via send() */
 	public interface Message<T> {
-		public void deliver(T listener);
+		/**
+		 * Method to deliver a message.
+		 * 
+		 * @param listener		Listener to who message must be delivered
+		 * 
+		 * @return		true if message should not be delievered to any other listeners or stored for delievery as 'last message'
+		 * 				should only return true if the message has been handled and would break the app if delivered more than once.
+		 */
+		public boolean deliver(T listener);
 	}
 
 	/** Register a new sender and it's controller object; return the unique ID for this sender */
@@ -295,26 +324,35 @@ public class MessageSwitch<T,U> {
 			// Iterator for iterating queue
 			Iterator<T> i = null;
 
+			MessageListeners queue = null;
 			// Get the queue and find the iterator
 			synchronized(mListeners) {
 				// Queue for given ID
-				MessageListeners queue = mListeners.get(destination);
+				queue = mListeners.get(destination);
 				if (queue != null) {
 					queue.setLastMessage(this);
 					i = queue.iterator();
 				}
 			}
 			// If we have an iterator, send the message to each listener
-			if (i != null)
+			if (i != null) {
+				boolean handled = false;
 				while(i.hasNext()) {
 					T l = i.next();
 					try {
-						message.deliver(l);
+						if (message.deliver(l)) {
+							handled = true;
+							break;
+						}
+							
 					} catch (Exception e) {
 						Logger.logError(e, "Error delivering message to listener");					
 					}
 				}
-
+				if (handled) {
+					queue.setLastMessage(null);
+				}
+			}
 		}
 	}
 
@@ -372,15 +410,20 @@ public class MessageSwitch<T,U> {
 	}
 
 	/**
-	 * Post a new runnable to handle the queued  messages
+	 * If in UI thread, then process the queue, otherwise post a new runnable 
+	 * to process the queued messages
 	 */
 	private void startProcessingMessages() {
-		mHandler.post(new Runnable() {
-			@Override
-			public void run() {
-				processMessages();
-			}}
-		);		
+		if (mHandler.getLooper().getThread() == Thread.currentThread()) {
+			processMessages();
+		} else {
+			mHandler.post(new Runnable() {
+				@Override
+				public void run() {
+					processMessages();
+				}}
+			);		
+		}
 	}
 
 	/**
@@ -399,4 +442,12 @@ public class MessageSwitch<T,U> {
 		} while (true);
 	}
 
+	/**
+	 * Accessor. Sometimes senders (or receivers) need to check which thread they are on and possibly post runnables.
+	 * 
+	 * @return the Handler object
+	 */
+	public static Handler getHandler() {
+		return mHandler;
+	}
 }

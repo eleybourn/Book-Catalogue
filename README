@@ -41,21 +41,46 @@ Features include;
   case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
-new in 4.1.6-B15
-* Date-Picker that supports dates down to 0AD and partial dates
+new in 4.2.4 (unreleased)
+* Support for pic2shop scanner (better for fixed focus, low light and in front-facing cameras)
+* Check internet connection earlier when trying to scan books
+* More French translation updates (Djiko)
+
+new in 4.2.3
+* Improve handling of invalid ISBNs when sending to goodreads
+* Other minor bug fixes
+
+new in 4.2.2
+* Fix tiling of background image for some Android versions
+* Better handling of incompatible scanner apps
+* Send more details on crash or when asking for help
+* Cleanup of layouts (Nick Silin)
+* Bug fixes
+
+new in 4.2.1
+* Fix crash when expanding list items and using 'Expand All'
+
+new in 4.2
+* Date-Picker that supports dates down to 0AD as well as partial dates
 * HTML descriptions display correctly with click to edit
 * Preference for pre-selecting whole image when cropping
 * Preference for auto-rotating images from camera
 * Preference to use external cropping tool (experimental)
 * Added more options to the options menus
 * More reliable date handling on import/export/sync
-* French translation updates (Patrice Leonard)
+* French translation updates (Imkal)
+* German translation updates (Robert Wetzlmayr)
+* Russian translation updates (Nick Silin)
+* Updated OK/Cancel button positions to conform to current Android standards
 * Fix handling of duplicate anthology titles
-* Various import bugs fixed
-* Better detection of 'changes' when editing books
 * Full keyboard available when entering ASINs
 * Keeps 5 previous export files
-* Various NPEs fixed
+* Better detection of 'changes' when editing books
+* Support for a wider range of Gallery and file browsers
+* Various import bugs fixed
+* Various code cleanups and NPEs fixed
+* Internal: prep for fragments by separating message delivery from activities
+* Internal: one database connection for all activities and threads
 
 new in 4.1.5
 * improved import robustness

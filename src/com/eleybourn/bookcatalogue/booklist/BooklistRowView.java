@@ -20,13 +20,27 @@
 
 package com.eleybourn.bookcatalogue.booklist;
 
-import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.*;
-
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ABSOLUTE_POSITION;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_AUTHOR_FORMATTED;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_AUTHOR_ID;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_BOOK;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_BOOK_UUID;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_FORMAT;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_GENRE;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_KIND;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LEVEL;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_PUBLICATION_MONTH;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_READ;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_SERIES_ID;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_SERIES_NAME;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_SERIES_NUM;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_TITLE;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_TITLE_LETTER;
 import android.database.Cursor;
 
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
-import com.eleybourn.bookcatalogue.Utils;
 import com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * RowView object for the BooklistCursor.

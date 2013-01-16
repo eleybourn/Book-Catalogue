@@ -1,0 +1,8 @@
+New in 4.2.3
+
+* Improve handling of invalid ISBNs when sending to goodreads
+* Other minor bug fixes
+
+See main description for a release summary, and README link below for a detailed release history.
+
+    https://raw.github.com/eleybourn/Book-Catalogue/master/README

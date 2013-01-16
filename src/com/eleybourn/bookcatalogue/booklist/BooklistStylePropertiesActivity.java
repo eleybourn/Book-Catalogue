@@ -20,32 +20,28 @@
 
 package com.eleybourn.bookcatalogue.booklist;
 
-import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
-import com.eleybourn.bookcatalogue.HintManager;
-import com.eleybourn.bookcatalogue.Logger;
-import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.UniqueId;
-import com.eleybourn.bookcatalogue.Utils;
-import com.eleybourn.bookcatalogue.ViewTagger;
-import com.eleybourn.bookcatalogue.properties.Properties;
-import com.eleybourn.bookcatalogue.properties.Property;
-import com.eleybourn.bookcatalogue.properties.Property.ValidationException;
-import com.eleybourn.bookcatalogue.properties.PropertyGroup;
-import com.eleybourn.bookcatalogue.properties.StringProperty;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
+import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.UniqueId;
+import com.eleybourn.bookcatalogue.properties.Properties;
+import com.eleybourn.bookcatalogue.properties.Property.ValidationException;
+import com.eleybourn.bookcatalogue.properties.PropertyGroup;
+import com.eleybourn.bookcatalogue.properties.StringProperty;
+import com.eleybourn.bookcatalogue.utils.HintManager;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
+import com.eleybourn.bookcatalogue.utils.ViewTagger;
 
 /**
  * Edit the properties associated with a passed style
@@ -113,7 +109,7 @@ public class BooklistStylePropertiesActivity extends Activity {
 		if (savedInstanceState == null)
 			HintManager.displayHint(this, R.string.hint_booklist_style_properties, null);
 
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 	}
 
 	/**
@@ -122,7 +118,7 @@ public class BooklistStylePropertiesActivity extends Activity {
 	@Override 
 	public void onResume() {
 		super.onResume();
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
 	}
 
 	/**

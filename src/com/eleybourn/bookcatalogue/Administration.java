@@ -27,6 +27,8 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.widget.TabHost;
 
+import com.eleybourn.bookcatalogue.utils.Utils;
+
 /**
  * 
  * This is the Administration tab host. It contains three tabs 

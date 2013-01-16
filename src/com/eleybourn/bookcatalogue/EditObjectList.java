@@ -29,13 +29,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
+import com.eleybourn.bookcatalogue.utils.ViewTagger;
+import com.eleybourn.bookcatalogue.widgets.TouchListView;
 
 /**
  * Base class for editing a list of objects. The inheritor must specify a view id
@@ -211,14 +216,14 @@ abstract public class EditObjectList<T extends Serializable> extends ListActivit
 			// Ask the subclass to setup the list; we need this before 
 			// building the adapter.
 			if (savedInstanceState != null && mKey != null && savedInstanceState.containsKey(mKey)) {
-				mList = (ArrayList<T>) savedInstanceState.getSerializable(mKey);//.getParcelableArrayList(mKey);
+				mList = Utils.getListFromBundle(savedInstanceState, mKey);//.getParcelableArrayList(mKey);
 			}
 
 			if (mList == null) {
 				/* Get any information from the extras bundle */
 				Bundle extras = getIntent().getExtras();
 				if (extras != null && mKey != null) {
-					mList = (ArrayList<T>) extras.getSerializable(mKey); // .getParcelableArrayList(mKey);
+					mList = Utils.getListFromBundle(extras, mKey); // .getParcelableArrayList(mKey);
 				}
 				if (mList == null)
 					mList = getList();
@@ -507,7 +512,7 @@ abstract public class EditObjectList<T extends Serializable> extends ListActivit
             }
             
             // Save this views position
-            ViewTagger.setTag(v, R.id.TAG_POSITION, new Integer(position));
+            ViewTagger.setTag(v, R.id.TAG_POSITION, Integer.valueOf(position));
 
             {
             	// Giving the whole row ad onClickListener seems to interfere

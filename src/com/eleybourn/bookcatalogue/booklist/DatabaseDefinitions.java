@@ -20,7 +20,28 @@
 
 package com.eleybourn.bookcatalogue.booklist;
 
-import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.*;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_AUTHOR_FORMATTED;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_AUTHOR_ID;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_AUTHOR_NAME;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_AUTHOR_POSITION;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_BOOK;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_BOOKSHELF;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_DATE_ADDED;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_DESCRIPTION;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_FAMILY_NAME;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_FORMAT;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_GIVEN_NAMES;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_ISBN;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_LOCATION;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_NOTES;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_PUBLISHER;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_READ;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_READ_END;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_SERIES_ID;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_SERIES_NAME;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_SERIES_NUM;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_SERIES_POSITION;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_TITLE;
 
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.database.DbUtils.DomainDefinition;
@@ -101,9 +122,9 @@ public class DatabaseDefinitions {
 	public static final DomainDefinition DOM_READ = new DomainDefinition(KEY_READ, "integer", "", "");
 	public static final DomainDefinition DOM_READ_STATUS = new DomainDefinition("read_status", "text", "", "not null");
 	public static final DomainDefinition DOM_READ_END = new DomainDefinition(KEY_READ_END, "date", "", "");
-	public static final DomainDefinition DOM_READ_DAY = new DomainDefinition("added_day", "int", "", "");
-	public static final DomainDefinition DOM_READ_MONTH = new DomainDefinition("added_month", "int", "", "");
-	public static final DomainDefinition DOM_READ_YEAR = new DomainDefinition("added_year", "int", "", "");
+	public static final DomainDefinition DOM_READ_DAY = new DomainDefinition("read_day", "int", "", "");
+	public static final DomainDefinition DOM_READ_MONTH = new DomainDefinition("read_month", "int", "", "");
+	public static final DomainDefinition DOM_READ_YEAR = new DomainDefinition("read_year", "int", "", "");
 	public static final DomainDefinition DOM_REAL_ROW_ID = new DomainDefinition("real_row_id", "int", "", "");
 	public static final DomainDefinition DOM_ROOT_KEY = new DomainDefinition("root_key", "text", "", "");
 	public static final DomainDefinition DOM_SERIES_ID = new DomainDefinition(KEY_SERIES_ID, "integer", "", "");

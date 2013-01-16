@@ -21,17 +21,8 @@
 package com.eleybourn.bookcatalogue.database;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.Date;
-
-import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
-import com.eleybourn.bookcatalogue.StorageUtils;
-import com.eleybourn.bookcatalogue.TrackedCursor;
-import com.eleybourn.bookcatalogue.Utils;
-import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedDb;
-import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedStatement;
-import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer;
-import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer.SyncLock;
-import com.eleybourn.bookcatalogue.database.DbUtils.*;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -41,6 +32,18 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteQuery;
 import android.graphics.Bitmap;
 
+import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
+import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedDb;
+import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedStatement;
+import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer;
+import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer.SyncLock;
+import com.eleybourn.bookcatalogue.database.DbUtils.DomainDefinition;
+import com.eleybourn.bookcatalogue.database.DbUtils.TableDefinition;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.StorageUtils;
+import com.eleybourn.bookcatalogue.utils.TrackedCursor;
+import com.eleybourn.bookcatalogue.utils.Utils;
+
 /**
  * DB Helper for Covers DB on external storage.
  * 
@@ -49,8 +52,10 @@ import android.graphics.Bitmap;
  * 
  * @author Philip Warner
  */
-public class CoversDbHelper extends GenericOpenHelper {
-	private SynchronizedDb mDb;
+public class CoversDbHelper {
+	private static GenericOpenHelper mHelper;
+	private static SynchronizedDb mSharedDb;
+	private static boolean mSharedDbUnavailable = false;
 
 	/** Debug counter */
 	private static Integer mInstanceCount = 0;
@@ -81,6 +86,28 @@ public class CoversDbHelper extends GenericOpenHelper {
 			}
 	};
 
+	private static class CoversHelper extends GenericOpenHelper {
+
+		public CoversHelper(String dbFilePath, CursorFactory factory, int version) {
+			super(dbFilePath, factory, version);
+		}
+
+		/**
+		 * As with SQLiteOpenHelper, routine called to create DB
+		 */
+		@Override
+		public void onCreate(SQLiteDatabase db) {
+			DbUtils.createTables(new SynchronizedDb(db, mSynchronizer), TABLES, true );
+		}
+		/**
+		 * As with SQLiteOpenHelper, routine called to upgrade DB
+		 */
+		@Override
+		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+			throw new RuntimeException("Upgrades not handled yet!");
+		}
+
+	}
 	public static final DomainDefinition DOM_ID = new DomainDefinition( "_id", "integer",  "primary key autoincrement", "");
 	public static final DomainDefinition DOM_DATE = new DomainDefinition( "date", "datetime", "default current_timestamp", "not null");
 	public static final DomainDefinition DOM_TYPE = new DomainDefinition( "type", "text", "", "not null");	// T = Thumbnail; C = cover?
@@ -103,31 +130,40 @@ public class CoversDbHelper extends GenericOpenHelper {
 	 * Constructor. Fill in required fields. This is NOT based on SQLiteOpenHelper so does not need a context.
 	 */
 	public CoversDbHelper() {
-		super(COVERS_DATABASE_NAME, mTrackedCursorFactory, COVERS_DATABASE_VERSION);
+		if (mSharedDbUnavailable)
+			throw new RuntimeException("Covers database unavailable");
+
+		if (mHelper == null) {
+			mHelper = new CoversHelper(COVERS_DATABASE_NAME, mTrackedCursorFactory, COVERS_DATABASE_VERSION);
+		}
+		if (mSharedDb == null) {
+			// Try to connect.
+			try {
+				mSharedDb = new SynchronizedDb(mHelper, mSynchronizer);				
+			} catch (Exception e) {
+				// Assume exception means DB corrupt. Log, rename, and retry
+				Logger.logError(e, "Failed to open covers db");
+				File f = new File(COVERS_DATABASE_NAME);
+				f.renameTo(new File(COVERS_DATABASE_NAME + ".dead"));
+
+				// Connect again...
+				try {
+					mSharedDb = new SynchronizedDb(mHelper, mSynchronizer);									
+				} catch (Exception e2) {
+					// If we fail a second time (creating a new DB), then just give up.
+					mSharedDbUnavailable = true;
+					throw new RuntimeException("Covers database unavailable");
+				}
+			}
+		}
 		synchronized(mInstanceCount) {
 			mInstanceCount++;
 			System.out.println("CovDBA instances: " + mInstanceCount);
 		}
 	}
-	/**
-	 * As with SQLiteOpenHelper, routine called to create DB
-	 */
-	@Override
-	public void onCreate(SQLiteDatabase db) {
-		DbUtils.createTables(new SynchronizedDb(db, mSynchronizer), TABLES, true );
-	}
-	/**
-	 * As with SQLiteOpenHelper, routine called to upgrade DB
-	 */
-	@Override
-	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		throw new RuntimeException("Upgrades not handled yet!");
-	}
 
 	private SynchronizedDb getDb() {
-		if (mDb == null)
-			mDb = new SynchronizedDb(this, mSynchronizer);
-		return mDb;
+		return mSharedDb;
 	}
 	/**
 	 * Delete the named 'file'
@@ -306,10 +342,8 @@ public class CoversDbHelper extends GenericOpenHelper {
 		db.execSQL(sql);
 	}
 
-	@Override
 	public void close() {
 		mStatements.close();
-		super.close();
 		synchronized(mInstanceCount) {
 			mInstanceCount--;
 			System.out.println("CovDBA instances: " + mInstanceCount);

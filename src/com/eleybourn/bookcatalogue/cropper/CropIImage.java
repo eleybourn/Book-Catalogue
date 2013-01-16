@@ -16,71 +16,79 @@
 
 package com.eleybourn.bookcatalogue.cropper;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-
 import java.io.InputStream;
+
+import android.graphics.Bitmap;
+import android.net.Uri;
 
 /**
  * The interface of all images used in gallery.
  */
 public interface CropIImage {
-    static final int THUMBNAIL_TARGET_SIZE = 320;
-    static final int MINI_THUMB_TARGET_SIZE = 96;
-    static final int UNCONSTRAINED = -1;
+	static final int THUMBNAIL_TARGET_SIZE = 320;
+	static final int MINI_THUMB_TARGET_SIZE = 96;
+	static final int UNCONSTRAINED = -1;
 
-    /** Get the image list which contains this image. */
-    public abstract CropIImageList getContainer();
+	/** Get the image list which contains this image. */
+	public abstract CropIImageList getContainer();
 
-    /** Get the bitmap for the full size image. */
-    public abstract Bitmap fullSizeBitmap(int minSideLength,
-            int maxNumberOfPixels);
-    public abstract Bitmap fullSizeBitmap(int minSideLength,
-            int maxNumberOfPixels, boolean rotateAsNeeded);
-    public abstract Bitmap fullSizeBitmap(int minSideLength,
-            int maxNumberOfPixels, boolean rotateAsNeeded, boolean useNative);
-    public abstract int getDegreesRotated();
-    public static final boolean ROTATE_AS_NEEDED = true;
-    public static final boolean NO_ROTATE = false;
-    public static final boolean USE_NATIVE = true;
-    public static final boolean NO_NATIVE = false;
+	/** Get the bitmap for the full size image. */
+	public abstract Bitmap fullSizeBitmap(int minSideLength,
+			int maxNumberOfPixels);
 
-    /** Get the input stream associated with a given full size image. */
-    public abstract InputStream fullSizeImageData();
-    public abstract long fullSizeImageId();
-    public abstract Uri fullSizeImageUri();
+	public abstract Bitmap fullSizeBitmap(int minSideLength,
+			int maxNumberOfPixels, boolean rotateAsNeeded);
 
-    /** Get the path of the (full size) image data. */
-    public abstract String getDataPath();
+	public abstract Bitmap fullSizeBitmap(int minSideLength,
+			int maxNumberOfPixels, boolean rotateAsNeeded, boolean useNative);
 
-    // Get/Set the title of the image
-    public abstract void setTitle(String name);
-    public abstract String getTitle();
+	public abstract int getDegreesRotated();
 
-    // Get metadata of the image
-    public abstract long getDateTaken();
+	public static final boolean ROTATE_AS_NEEDED = true;
+	public static final boolean NO_ROTATE = false;
+	public static final boolean USE_NATIVE = true;
+	public static final boolean NO_NATIVE = false;
 
-    public abstract String getMimeType();
+	/** Get the input stream associated with a given full size image. */
+	public abstract InputStream fullSizeImageData();
 
-    public abstract int getWidth();
+	public abstract long fullSizeImageId();
 
-    public abstract int getHeight();
+	public abstract Uri fullSizeImageUri();
 
-    public abstract String getDisplayName();
+	/** Get the path of the (full size) image data. */
+	public abstract String getDataPath();
 
-    // Get property of the image
-    public abstract boolean isReadonly();
-    public abstract boolean isDrm();
+	// Get/Set the title of the image
+	public abstract void setTitle(String name);
 
-    // Get the bitmap/uri of the medium thumbnail
-    public abstract Bitmap thumbBitmap(boolean rotateAsNeeded);
-    public abstract Uri thumbUri();
+	public abstract String getTitle();
 
-    // Get the bitmap of the mini thumbnail.
-    public abstract Bitmap miniThumbBitmap();
+	// Get metadata of the image
+	public abstract long getDateTaken();
 
-    // Rotate the image
-    public abstract boolean rotateImageBy(int degrees);
+	public abstract String getMimeType();
+
+	public abstract int getWidth();
+
+	public abstract int getHeight();
+
+	public abstract String getDisplayName();
+
+	// Get property of the image
+	public abstract boolean isReadonly();
+
+	public abstract boolean isDrm();
+
+	// Get the bitmap/uri of the medium thumbnail
+	public abstract Bitmap thumbBitmap(boolean rotateAsNeeded);
+
+	public abstract Uri thumbUri();
+
+	// Get the bitmap of the mini thumbnail.
+	public abstract Bitmap miniThumbBitmap();
+
+	// Rotate the image
+	public abstract boolean rotateImageBy(int degrees);
 
 }

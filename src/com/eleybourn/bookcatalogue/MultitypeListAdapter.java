@@ -27,7 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 
-import com.eleybourn.bookcatalogue.FastScroller.SectionIndexerV2;
+import com.eleybourn.bookcatalogue.widgets.FastScroller.SectionIndexerV2;
 
 /**
  * Cursor adapter for flattened multi-typed ListViews. Simplifies the implementation of such lists.

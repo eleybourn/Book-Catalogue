@@ -20,11 +20,11 @@
 
 package com.eleybourn.bookcatalogue;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import com.eleybourn.bookcatalogue.messaging.MessageSwitch;
 import com.eleybourn.bookcatalogue.messaging.MessageSwitch.Message;
+import com.eleybourn.bookcatalogue.utils.Logger;
 
 
 /**
@@ -80,8 +80,9 @@ public class TaskManager {
 		}
 
 		@Override
-		public void deliver(TaskManagerListener listener) {
+		public boolean deliver(TaskManagerListener listener) {
 			listener.onTaskEnded(mManager, mTask);
+			return false;
 		}
 	};
 	public static class OnProgressMessage implements Message<TaskManagerListener> {
@@ -96,8 +97,9 @@ public class TaskManager {
 		}
 
 		@Override
-		public void deliver(TaskManagerListener listener) {
+		public boolean deliver(TaskManagerListener listener) {
 			listener.onProgress(mCount, mMax, mMessage);
+			return false;
 		}
 	};
 	public static class OnToastMessage implements Message<TaskManagerListener> {
@@ -108,15 +110,17 @@ public class TaskManager {
 		}
 
 		@Override
-		public void deliver(TaskManagerListener listener) {
+		public boolean deliver(TaskManagerListener listener) {
 			listener.onToast(mMessage);
+			return false;
 		}
 	};
 	public static class OnFinshedMessage implements Message<TaskManagerListener> {
 
 		@Override
-		public void deliver(TaskManagerListener listener) {
+		public boolean deliver(TaskManagerListener listener) {
 			listener.onFinished();
+			return false;
 		}
 	};
 
@@ -205,10 +209,22 @@ public class TaskManager {
 		mCancelling = false;
 
 		synchronized(mTasks) {
-			if (getTaskInfo(t) == null)
-					mTasks.add(new TaskInfo(t));
+			if (getTaskInfo(t) == null) {
+				mTasks.add(new TaskInfo(t));
+				ManagedTask.getMessageSwitch().addListener(t.getSenderId(), mTaskListener, true);
+			}
 		}
 	}
+
+	/**
+	 * Listen for task messages, specifically, task termination
+	 */
+	private ManagedTask.TaskListener mTaskListener = new ManagedTask.TaskListener() {
+		@Override
+		public void onTaskFinished(ManagedTask t) {
+			TaskManager.this.onTaskFinished(t);
+		}
+	};
 
 	/**
 	 * Accessor
@@ -218,11 +234,11 @@ public class TaskManager {
 	}
 
 	/**
-	 * Called by a task when it ends.
+	 * Called when the onTaskFinished message is received by the listener object.
 	 * 
 	 * @param task
 	 */
-	public void taskEnded(ManagedTask task) {
+	private void onTaskFinished(ManagedTask task) {
 		boolean doClose;
 		
 		// Remove from the list of tasks. From now on, it should

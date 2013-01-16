@@ -21,7 +21,6 @@
 package com.eleybourn.bookcatalogue;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -33,6 +32,9 @@ import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.TaskManager.TaskManagerController;
 import com.eleybourn.bookcatalogue.TaskManager.TaskManagerListener;
+import com.eleybourn.bookcatalogue.debug.Tracker;
+import com.eleybourn.bookcatalogue.debug.Tracker.States;
+import com.eleybourn.bookcatalogue.utils.Logger;
 
 /**
  * Class to used as a base class for any Activity that wants to run one or more threads that
@@ -51,7 +53,7 @@ abstract public class ActivityWithTasks extends Activity {
 	/** ID of associated TaskManager */
 	protected long mTaskManagerId = 0;
 	/** Associated TaskManager */
-	protected TaskManager mTaskManager = null;
+	private TaskManager mTaskManager = null;
 	/** ProgressDialog for this activity */
 	protected ProgressBase mProgressDialog = null;
 	/** Max value for ProgressDialog */
@@ -112,6 +114,33 @@ abstract public class ActivityWithTasks extends Activity {
 		}
 	};
 
+	/**
+	 * Utility routine to get the task manager for his activity
+	 * @return
+	 */
+	protected TaskManager getTaskManager() {
+		if (mTaskManager == null) {
+			if (mTaskManagerId != 0) {
+				TaskManagerController c = TaskManager.getMessageSwitch().getController(mTaskManagerId);
+				if (c != null) {
+					mTaskManager = c.getManager();
+				} else {
+					Logger.logError(new RuntimeException("Have ID, but can not find controller getting TaskManager"));
+				}
+			} else {
+				//Logger.logError(new RuntimeException("Task manager requested, but no ID available"));				
+			}
+
+			// Create if necessary
+			if (mTaskManager == null) {
+				TaskManager tm = new TaskManager();
+				mTaskManagerId = tm.getSenderId();
+				mTaskManager = tm;
+			}
+		}
+		return mTaskManager;
+	}
+
 	@Override
 	protected void onPause() {
 		super.onPause();
@@ -120,7 +149,7 @@ abstract public class ActivityWithTasks extends Activity {
 			TaskManager.getMessageSwitch().removeListener(mTaskManagerId, mTaskListener);
 			// If it's finishing, the remove all tasks and cleanup
 			if (isFinishing())
-				mTaskManager.close();
+				getTaskManager().close();
 		}
 		if (mProgressDialog != null) {
 			mProgressDialog.dismiss();
@@ -133,21 +162,7 @@ abstract public class ActivityWithTasks extends Activity {
 		super.onResume();
 
 		// Restore mTaskManager if present 
-		if (mTaskManagerId != 0) {
-			TaskManagerController c = TaskManager.getMessageSwitch().getController(mTaskManagerId);
-			if (c != null) {
-				mTaskManager = c.getManager();
-			} else {
-				Logger.logError(new RuntimeException("Have ID, but can not find controller when resuming activity"));
-			}
-		};
-
-		// Create if necessary
-		if (mTaskManager == null) {
-			TaskManager tm = new TaskManager();
-			mTaskManagerId = tm.getSenderId();
-			mTaskManager = tm;
-		}
+		getTaskManager();
 
 		// Listen
 		TaskManager.getMessageSwitch().addListener(mTaskManagerId, mTaskListener, true);
@@ -173,6 +188,11 @@ abstract public class ActivityWithTasks extends Activity {
 
 		@Override
 		public void onProgress(int count, int max, String message) {
+			// RELEASE: Remove these lines!
+			String dbgMsg =  count + "/" + max + ", '" + message.replace("\n", "\\n") + "'";
+			Tracker.handleEvent(ActivityWithTasks.this, "SearchProgress " + dbgMsg, States.Running);
+			System.out.println("PRG: " + dbgMsg);
+
 			// Save the details
 			mProgressCount = count;
 			mProgressMax = max;

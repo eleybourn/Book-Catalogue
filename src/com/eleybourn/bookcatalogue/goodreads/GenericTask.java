@@ -23,10 +23,12 @@ package com.eleybourn.bookcatalogue.goodreads;
 import java.util.ArrayList;
 import java.util.Date;
 
-import com.eleybourn.bookcatalogue.BookCatalogueApp;
-import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.ViewTagger;
-
+import net.philipwarner.taskqueue.BindableItemSQLiteCursor;
+import net.philipwarner.taskqueue.ContextDialogItem;
+import net.philipwarner.taskqueue.QueueManager;
+import net.philipwarner.taskqueue.RunnableTask;
+import net.philipwarner.taskqueue.Task;
+import net.philipwarner.taskqueue.TasksCursor;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,12 +37,10 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import net.philipwarner.taskqueue.BindableItemSQLiteCursor;
-import net.philipwarner.taskqueue.ContextDialogItem;
-import net.philipwarner.taskqueue.QueueManager;
-import net.philipwarner.taskqueue.RunnableTask;
-import net.philipwarner.taskqueue.Task;
-import net.philipwarner.taskqueue.TasksCursor;
+
+import com.eleybourn.bookcatalogue.BookCatalogueApp;
+import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.utils.ViewTagger;
 
 /**
  * Base class for tasks in BookCatalogue. This builds and populates simple

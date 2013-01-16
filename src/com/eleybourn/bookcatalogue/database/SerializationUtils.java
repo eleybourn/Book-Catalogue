@@ -84,6 +84,7 @@ public class SerializationUtils {
 	 * @return
 	 * @throws DeserializationException
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> T deserializeObject(byte[] blob) throws DeserializationException {
 		try {
 			ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(blob));

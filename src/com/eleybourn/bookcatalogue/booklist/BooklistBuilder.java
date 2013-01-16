@@ -19,35 +19,111 @@
  */
 package com.eleybourn.bookcatalogue.booklist;
 
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.EMPTY_STRING_ARRAY;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_DATE_PUBLISHED;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_LOANED_TO;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.encodeString;
+import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_AUTHOR;
+import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_BOOK;
+import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_DAY_ADDED;
+import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_DAY_READ;
+import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_FORMAT;
+import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_GENRE;
+import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_LOANED;
+import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_LOCATION;
+import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_MONTH_ADDED;
+import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_MONTH_PUBLISHED;
+import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_MONTH_READ;
+import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_PUBLISHER;
+import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_READ_AND_UNREAD;
+import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_SERIES;
+import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_TITLE_LETTER;
+import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_YEAR_ADDED;
+import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_YEAR_PUBLISHED;
+import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_YEAR_READ;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ABSOLUTE_POSITION;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ADDED_DATE;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ADDED_DAY;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ADDED_MONTH;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ADDED_YEAR;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_AUTHOR_FORMATTED;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_AUTHOR_ID;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_AUTHOR_POSITION;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_AUTHOR_SORT;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_BOOK;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_BOOKSHELF_NAME;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_BOOK_COUNT;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_BOOK_UUID;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_EXPANDED;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_FAMILY_NAME;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_FORMAT;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_GENRE;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_GIVEN_NAMES;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ID;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_KIND;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LEVEL;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LOANED_TO;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LOANED_TO_SORT;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LOCATION;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_MARK;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_PRIMARY_SERIES_COUNT;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_PUBLICATION_MONTH;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_PUBLICATION_YEAR;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_PUBLISHER;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_READ;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_READ_DAY;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_READ_END;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_READ_MONTH;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_READ_STATUS;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_READ_YEAR;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_REAL_ROW_ID;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ROOT_KEY;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_SERIES_ID;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_SERIES_NAME;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_SERIES_NUM;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_SERIES_NUM_FLOAT;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_SERIES_POSITION;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_TITLE;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_TITLE_LETTER;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_VISIBLE;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_AUTHORS;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOKS;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOKSHELF;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOKS_FTS;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOK_AUTHOR;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOK_BOOKSHELF;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOK_LIST_DEFN;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOK_LIST_NODE_SETTINGS;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOK_SERIES;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_LOAN;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_ROW_NAVIGATOR_DEFN;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_SERIES;
+
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map.Entry;
 
-import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.*;
-import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.*;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.*;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteDoneException;
 import android.database.sqlite.SQLiteQuery;
-import android.database.sqlite.SQLiteDatabase.CursorFactory;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.booklist.BooklistGroup.BooklistAuthorGroup;
-import com.eleybourn.bookcatalogue.booklist.BooklistGroup;
 import com.eleybourn.bookcatalogue.booklist.BooklistGroup.BooklistSeriesGroup;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyle.CompoundKey;
+import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedDb;
 import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedStatement;
-import com.eleybourn.bookcatalogue.database.DbUtils.TableDefinition.TableTypes;
-import com.eleybourn.bookcatalogue.database.SqlStatementManager;
+import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer.SyncLock;
 import com.eleybourn.bookcatalogue.database.DbUtils.DomainDefinition;
 import com.eleybourn.bookcatalogue.database.DbUtils.JoinContext;
-import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedDb;
 import com.eleybourn.bookcatalogue.database.DbUtils.TableDefinition;
-import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer.SyncLock;
+import com.eleybourn.bookcatalogue.database.DbUtils.TableDefinition.TableTypes;
+import com.eleybourn.bookcatalogue.database.SqlStatementManager;
 import com.eleybourn.bookcatalogue.debug.Tracker;
 
 
@@ -84,7 +160,7 @@ public class BooklistBuilder {
 	private final int mBooklistBuilderId;
 
 	/** List of columns for the group-by clause, including COLLATE clauses. Set by build() method. */
-	private String mGroupColumnList;
+	//private String mGroupColumnList;
 	/** Collection of 'extra' domains requested by caller */
 	private Hashtable<String, ExtraDomainDetails> mExtraDomains = new Hashtable<String, ExtraDomainDetails>();
 	/** Style to use in building the list */
@@ -282,6 +358,7 @@ public class BooklistBuilder {
 		 * 
 		 * @return
 		 */
+		@SuppressWarnings("unchecked")
 		public ArrayList<DomainDefinition> cloneGroups() {
 			return (ArrayList<DomainDefinition>)mGroups.clone();				
 		}
@@ -366,16 +443,16 @@ public class BooklistBuilder {
 			+ " Else " + TBL_AUTHORS.dot(DOM_GIVEN_NAMES) + "|| ' ' || " + TBL_AUTHORS.dot(DOM_FAMILY_NAME)
 			+ " End";
 
-	/** Convenience expression for the SQL which gets the name of the person to whom a book has been loaned, if any 
-	 *  We do not initialize it here because it needs the app context to be setup for R.string.avaiable */
-	private static String LOANED_TO_SQL = null;
-	private static String getLoanedToSql() {
-		if (LOANED_TO_SQL == null) {
-			LOANED_TO_SQL = "Coalesce( (Select " + TBL_LOAN.dot(KEY_LOANED_TO) + " From " + TBL_LOAN.ref() + 
-					" Where " + TBL_LOAN.dot(DOM_BOOK) + " = " + TBL_BOOKS.dot(DOM_ID) + "), '" + BookCatalogueApp.getResourceString(R.string.available) + ")";			
-		}
-		return LOANED_TO_SQL;
-	}
+	///** Convenience expression for the SQL which gets the name of the person to whom a book has been loaned, if any 
+	// *  We do not initialize it here because it needs the app context to be setup for R.string.avaiable */
+	//private static String LOANED_TO_SQL = null;
+	//private static String getLoanedToSql() {
+	//	if (LOANED_TO_SQL == null) {
+	//		LOANED_TO_SQL = "Coalesce( (Select " + TBL_LOAN.dot(KEY_LOANED_TO) + " From " + TBL_LOAN.ref() + 
+	//				" Where " + TBL_LOAN.dot(DOM_BOOK) + " = " + TBL_BOOKS.dot(DOM_ID) + "), '" + BookCatalogueApp.getResourceString(R.string.available) + ")";			
+	//	}
+	//	return LOANED_TO_SQL;
+	//}
 
 	/**
 	 * Drop and recreate all the data based on previous criteria
@@ -656,7 +733,7 @@ public class BooklistBuilder {
 					g.displayDomain = DOM_READ_YEAR;
 					// TODO: Handle 'DESCENDING'. Requires the navigator construction to use max/min for non-grouped domains that appear in sublevels based on desc/asc.
 					// We don't use DESCENDING sort yet because the 'header' ends up below the detail rows in the flattened table.
-					summary.addDomain(DOM_ADDED_YEAR, yearGlob(TBL_BOOKS.dot(DOM_READ_END)), SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED) ; // | SummaryBuilder.FLAG_SORT_DESCENDING);
+					summary.addDomain(DOM_READ_YEAR, yearGlob(TBL_BOOKS.dot(DOM_READ_END)), SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED) ; // | SummaryBuilder.FLAG_SORT_DESCENDING);
 					g.setKeyComponents("yrr", DOM_READ_YEAR);
 					break;
 	
@@ -910,7 +987,7 @@ public class BooklistBuilder {
 					groupCols.append(", ");
 				}
 				groupCols.append( DOM_LEVEL.name );
-				mGroupColumnList = groupCols.toString();
+				//mGroupColumnList = groupCols.toString();
 			}
 	
 			String ix1Sql = "Create Index " + mListTable + "_IX1 on " + mListTable + "(" + sortIndexColumnList + ")";
@@ -1227,7 +1304,7 @@ public class BooklistBuilder {
 			if (mSaveListNodeSettingStmt == null) {
 				String sql = TBL_BOOK_LIST_NODE_SETTINGS.getInsert(DOM_KIND,DOM_ROOT_KEY) + 
 						" Select ?, " + DOM_ROOT_KEY + " From " + mNavTable + " Where expanded = 1 and level = 1 and " + DOM_ID + " = ?";
-				mSaveListNodeSettingStmt = mStatements.add("mSaveListNodeSettingsStmt", sql);
+				mSaveListNodeSettingStmt = mStatements.add("mSaveListNodeSettingStmt", sql);
 			}
 			int kind = mStyle.getGroupAt(0).kind;
 
@@ -1542,6 +1619,8 @@ public class BooklistBuilder {
 	 * @param absPos
 	 */
 	public void toggleExpandNode(long absPos) {
+		// This seems to get called sometimes after the database is closed...
+		// RELEASE: remove statements as members, and look them up in mStatements via static keys
 
 		buildExpandNodeStatements();
 

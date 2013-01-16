@@ -1,108 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-	android:orientation="vertical"
-	android:layout_width="fill_parent" 
-	android:layout_height="fill_parent"
-	android:paddingLeft="5sp"
-	android:background="@drawable/bc_background_gradient_dim"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root"
-	>
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/bc_background_gradient_dim"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/padding_border" >
 
-	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-	    android:id="@+id/header"
-		android:orientation="vertical"
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content"
-		android:background="@drawable/bc_vertical_gradient"
-		>
-	    <TextView android:id="@+id/bookshelf_label" 
-			android:layout_width="wrap_content" 
-			android:layout_height="32sp" 
-			android:text="@+string/bookshelf_label"
-			android:textAppearance="?android:attr/textAppearanceLarge"
-			android:background="#00000000"
-			android:paddingRight="5sp"
-			/>
-	
-		<Spinner android:id="@+id/bookshelf_name" 
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content" 
-			android:layout_toRightOf="@id/bookshelf_label"
-			android:paddingBottom="2dp"
-			android:background="#00000000"
-			/>
+    <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bc_vertical_gradient"
+        android:orientation="vertical" >
 
-		<ImageView android:id="@+id/bookshelf_down" 
-			android:layout_width="wrap_content" 
-			android:layout_height="32sp" 
-			android:layout_alignParentRight="true"
-			android:paddingLeft="5sp"
-		 	android:src="@drawable/expander_ic_maximized"
-			/>
-	
-		<!-- 
+        <TextView
+            android:id="@+id/bookshelf_label"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:paddingRight="@dimen/padding_border"
+            android:text="@string/bookshelf_label"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <Spinner
+            android:id="@+id/bookshelf_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/bookshelf_label"
+            android:background="@android:color/transparent"
+            android:paddingBottom="2dp" />
+
+        <ImageView
+            android:id="@+id/bookshelf_down"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_alignParentRight="true"
+            android:paddingLeft="@dimen/padding_border"
+            android:src="@drawable/expander_ic_maximized" />
+
+        <!--
 			android:layout_toRightOf="@+id/bookshelf_name"
-			android:layout_toLeftOf="@+id/bookshelf_down"
-		 -->
-		<TextView android:id="@+id/bookshelf_count" 
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content" 
-			android:layout_below="@+id/bookshelf_label"
-			android:layout_alignParentLeft="true"
-			android:textAppearance="?android:attr/textAppearanceSmall"
-			android:background="#00000000"
-			android:paddingLeft="5sp"
-			/>
+			android:layout_toLeftOf="@+id/bookshelf_down"        -->
 
-		<LinearLayout android:id="@+id/current_info"
-		    android:orientation="horizontal"
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content"
-			android:layout_below="@id/bookshelf_count">
-			
-			<TextView android:id="@+id/level_1_text" 
-				android:layout_width="fill_parent" 
-				android:layout_height="wrap_content" 
-				android:layout_weight="1"
-				android:singleLine="true"
-				android:textAppearance="?android:attr/textAppearanceSmall"
-				android:background="#00000000"
-				android:paddingLeft="5sp"
-				/>
-			<TextView android:id="@+id/level_2_text" 
-				android:layout_width="fill_parent" 
-				android:layout_height="wrap_content" 
-				android:layout_weight="1"
-				android:singleLine="true"
-				android:textAppearance="?android:attr/textAppearanceSmall"
-				android:background="#00000000"
-				android:paddingLeft="5sp"
-				/>
-		</LinearLayout>
+        <TextView
+            android:id="@+id/bookshelf_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/bookshelf_label"
+            android:paddingLeft="@dimen/padding_border"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
 
-	</RelativeLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/bookshelf_count"
+            android:orientation="horizontal" >
 
-	<View android:id="@+id/header_divider" 
-	    android:background="@drawable/main_menu_header_divider"
-	    android:layout_width="fill_parent"
-	    android:layout_height="1dp"
-		android:paddingTop="2dp"
-		android:layout_below="@id/header"
-		android:paddingBottom="2dp"
-	    />
-	<LinearLayout 
-		android:layout_width="fill_parent" 
-		android:layout_height="fill_parent"
-		android:layout_below="@id/header_divider">
-	    <com.eleybourn.bookcatalogue.FastScrollListView android:id="@+id/android:list" 
-		    android:cacheColorHint="#00000000"
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content"
-			android:textSize="16sp" />
-	    <TextView android:id="@+id/android:empty" 
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content" 
-			android:text="@+string/nobooks"
-			android:textSize="16sp" />
-	</LinearLayout>
+            <TextView
+                android:id="@+id/level_1_text"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="@dimen/padding_border"
+                android:singleLine="true"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <TextView
+                android:id="@+id/level_2_text"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="@dimen/padding_border"
+                android:singleLine="true"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/header_divider"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/header"
+        android:background="@drawable/main_menu_header_divider"
+        android:paddingBottom="2dp"
+        android:paddingTop="2dp" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/header_divider" >
+
+        <com.eleybourn.bookcatalogue.widgets.FastScrollListView
+            android:id="@+id/android:list"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:cacheColorHint="#00000000"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/android:empty"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/nobooks"
+            android:textSize="16sp" />
+    </LinearLayout>
+
 </RelativeLayout>

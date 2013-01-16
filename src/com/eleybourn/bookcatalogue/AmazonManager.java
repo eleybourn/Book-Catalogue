@@ -12,6 +12,9 @@ import org.xml.sax.SAXException;
 import android.net.ParseException;
 import android.os.Bundle;
 
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
+
 public class AmazonManager {
 	/**
 	 * 
@@ -22,9 +25,21 @@ public class AmazonManager {
 	 * @return The book array
 	 */
 	static public void searchAmazon(String mIsbn, String mAuthor, String mTitle, Bundle bookData, boolean fetchThumbnail) {
+
 		//replace spaces with %20
 		mAuthor = mAuthor.replace(" ", "%20");
+		//try {
+		//	mAuthor = URLEncoder.encode(mAuthor, "utf-8");
+		//} catch (UnsupportedEncodingException e1) {
+		//	// Just use raw author...
+		//}
+
 		mTitle = mTitle.replace(" ", "%20");
+		//try {
+		//	mTitle = URLEncoder.encode(mTitle, "utf-8");
+		//} catch (UnsupportedEncodingException e1) {
+		//	// Just use raw title...
+		//} 
 		
 		String path = "http://theagiledirector.com/getRest_v3.php";
 		if (mIsbn.equals("")) {

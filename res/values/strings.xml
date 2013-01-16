@@ -57,25 +57,25 @@
 <string name="administration_label">Administration Functions</string>
 <string name="administration_title">Book Catalogue: Administration</string>
 <string name="menu_administration">Admin</string>
-<string name="install_scan">To scan your books via the ISBN barcode, you must install Google Googles or zxing barcode scanner application.</string>
+<string name="install_scan">To scan your books via the ISBN barcode, you must install one of the Zxing, pic2shop or Google Googles barcode scanner applications.</string>
 <string name="install_scan_title">Install Barcode Scanner</string>
-<string name="version_number">Version Number</string>
+<string name="version_number">Version Number:</string>
 <string name="donate">If you would like to support the development of this application, please donate using a my Amazon Wishlist or the paypal button below. Being in Australia means I cannot publish a &quot;paid&quot; version. :-) </string>
 <string name="unable_to_connect_amazon">Unable to Connect to Amazon</string>
 <string name="upgrade_title">Since your last upgrade</string>
 <string name="edit_book">Edit Book</string>
-<string name="edit_book_notes">Your Comments</string>
+<string name="edit_book_notes">My Comments</string>
 <string name="edit_book_friends">Loan Book</string>
-<string name="unknown_error">An unknown error occured</string>
+<string name="unknown_error">An unknown error occurred</string>
 <string name="notes">Notes</string>
 <string name="loaned_to">This book has been loaned to:</string>
 <string name="nobody">Nobody</string>
 <string name="loan_to">Loan book to:</string>
 <string name="returned">Returned</string>
 <string name="name">Name</string>
-<string name="webpage_label">Webpage</string>
-<string name="sourcecode_label">Source Code</string>
-<string name="contact_label">Contact</string>
+<string name="webpage_label">Webpage:</string>
+<string name="sourcecode_label">Source Code:</string>
+<string name="contact_label">Contacts:</string>
 <string name="webpage">https://wiki.github.com/eleybourn/Book-Catalogue/</string>
 <string name="sourcecode">https://github.com/eleybourn/Book-Catalogue</string>
 <string name="helppage">https://github.com/eleybourn/Book-Catalogue/wiki/Help</string>
@@ -616,5 +616,74 @@
 <string name="cancelled">Cancelled</string>
 <string name="import_complete">Import Complete</string>
 
-</resources>
+<string name="amazon_books">Amazon</string>
+<string name="google_books">Google Books</string>
+<string name="library_thing">LibraryThing</string>
+<string name="searching_elipsis">Searching&#8230;</string>
 
+<string name="adding_book_elipsis">Adding book&#8230;</string>
+<string name="prefs_global_opening_book_mode">Open book in read-only mode</string>
+<string name="book_details_readonly_publishing">Publishing</string>
+<string name="book_details_readonly_by">by</string>
+<string name="book_details_readonly_loaned_to">On Loan to %1$s</string>
+<string name="book_details_readonly_pages">%1$s pages</string>
+<string name="brackets">(%1$s)</string>
+
+<string name="new_in_42"><![CDATA[
+    <p><b>New in 4.2</b>\n\n
+			* Date-Picker that supports dates down to 0AD as well as partial dates\n\n
+			* HTML descriptions display correctly with click to edit\n\n
+			* Preference for pre-selecting whole image when cropping\n\n
+			* Preference for auto-rotating images from camera\n\n
+			* Preference to use external cropping tool (experimental)\n\n
+			* Added more items to the options menus\n\n
+			* French translation updates (Imkal)\n\n
+			* German translation updates (Robert Wetzlmayr)\n\n
+			* Russian translation updates (Nick Silin)\n\n
+			* Updated OK/Cancel button positions to conform to current Android standards\n\n
+			* Full keyboard available when entering ASINs\n\n
+			* Keeps 5 previous export files\n\n
+			* Better detection of \'changes\' when editing books\n\n
+			* Support for a wider range of Gallery and file browsers\n\n
+			* More reliable date handling on import/export/sync\n\n
+			* Fix handling of duplicate anthology titles\n\n
+			* Various bugs fixed\n\n
+			Many thanks to our dedicated beta testers and translators!\n\n
+			Blame Grunthos for all bugs and errors. And send us bug reports.
+			</p>
+		]]>
+</string>
+
+<string name="_empty_"></string>
+<string name="new_in_421"><![CDATA[
+    <p><b>New in 4.2.1</b>\n\n
+			* Fix crash when expanding list items and using \'Expand All\'\n\n
+			</p>
+		]]></string>
+
+<string name="bad_scanner">It looks like your extising barcode scanner app is not compatible with Book Catalogue. We recommend installing the Zxing barcode scanner application, and if it is already installed, we recommend uninstalling it and reinstalling it.</string>
+
+<string name="new_in_422"><![CDATA[
+    <p><b>New in 4.2.2</b>\n\n
+			* Fix tiling of background image for some Android versions\n\n
+			* Better handling of incompatible scanner apps\n\n
+			* Send more details on crash or when asking for help\n\n
+			* Cleanup of layouts (Nick Silin)\n\n
+			* Bug fixes\n\n
+			</p>
+		]]></string>
+
+<string name="new_in_423"><![CDATA[
+    <p><b>New in 4.2.3</b>\n\n
+			* Improve handling of invalid ISBNs when sending to goodreads\n\n
+			* Other minor bug fixes\n\n
+			</p>
+		]]></string>
+
+<string name="scanning">Scanning</string>
+<string name="preferred_scanner">Preferred Scanner</string>
+<string name="zxing_compatible_scanner">Zxing Compatible Scanner</string>
+<string name="pic2shop_scanner">Pic2Shop Scanner</string>
+<string name="beep_if_scanned_isbn_valid">Beep if scanned ISBN is valid</string>
+
+</resources>

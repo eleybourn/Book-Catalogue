@@ -20,16 +20,17 @@
 
 package com.eleybourn.bookcatalogue;
 
-import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
+import android.os.Bundle;
+
 import com.eleybourn.bookcatalogue.properties.BooleanProperty;
 import com.eleybourn.bookcatalogue.properties.IntegerListProperty;
+import com.eleybourn.bookcatalogue.properties.ListProperty.ItemEntries;
 import com.eleybourn.bookcatalogue.properties.Properties;
 import com.eleybourn.bookcatalogue.properties.Property;
 import com.eleybourn.bookcatalogue.properties.PropertyGroup;
-import com.eleybourn.bookcatalogue.properties.ListProperty.ItemEntries;
-
-import android.os.Bundle;
-import android.view.ViewGroup;
+import com.eleybourn.bookcatalogue.scanner.ScannerManager;
+import com.eleybourn.bookcatalogue.utils.SoundManager;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Activity to display the 'Other Preferences' dialog and maintain the preferences.
@@ -46,7 +47,11 @@ public class OtherPreferences extends PreferencesBase {
 			.add(-90, R.string.menu_rotate_thumb_ccw)
 			.add(180, R.string.menu_rotate_thumb_180);
 
-	
+	/** Preferred Scanner property values */
+	private static ItemEntries<Integer> mScannerListItems = new ItemEntries<Integer>()
+			.add(null, R.string.use_default_setting)
+			.add(ScannerManager.SCANNER_ZXING_COMPATIBLE, R.string.zxing_compatible_scanner)
+			.add(ScannerManager.SCANNER_PIC2SHOP, R.string.pic2shop_scanner);
 	
 	private static final Properties mProperties = new Properties()
 
@@ -54,9 +59,21 @@ public class OtherPreferences extends PreferencesBase {
 		.setDefaultValue(false)
 		.setPreferenceKey(BookCataloguePreferences.PREF_START_IN_MY_BOOKS)
 		.setGlobal(true)
+		.setWeight(0)
 		.setNameResourceId(R.string.start_in_my_books)
 		.setGroup(PropertyGroup.GRP_USER_INTERFACE))	
-
+	
+		/*
+		 * Enabling/disabling read-only mode when opening book. If enabled book
+		 * is opened in read-only mode (editing through menu), else in edit mode.
+		 */
+	.add (new BooleanProperty(BookCataloguePreferences.PREF_OPEN_BOOK_READ_ONLY)
+		.setDefaultValue(false)
+		.setPreferenceKey(BookCataloguePreferences.PREF_OPEN_BOOK_READ_ONLY)
+		.setGlobal(true)
+		.setNameResourceId(R.string.prefs_global_opening_book_mode)
+		.setGroup(PropertyGroup.GRP_USER_INTERFACE))
+		
 	.add(new BooleanProperty(BookCataloguePreferences.PREF_CROP_FRAME_WHOLE_IMAGE)
 		.setDefaultValue(false)
 		.setPreferenceKey(BookCataloguePreferences.PREF_CROP_FRAME_WHOLE_IMAGE)
@@ -68,6 +85,7 @@ public class OtherPreferences extends PreferencesBase {
 		.setDefaultValue(false)
 		.setPreferenceKey(BookCataloguePreferences.PREF_INCLUDE_CLASSIC_MY_BOOKS)
 		.setGlobal(true)
+		.setWeight(100)
 		.setNameResourceId(R.string.include_classic_catalogue_view)
 		.setGroup(PropertyGroup.GRP_USER_INTERFACE) )
 
@@ -75,6 +93,7 @@ public class OtherPreferences extends PreferencesBase {
 		.setDefaultValue(false)
 		.setPreferenceKey(BookCataloguePreferences.PREF_DISABLE_BACKGROUND_IMAGE)
 		.setGlobal(true)
+		.setWeight(200)
 		.setNameResourceId(R.string.disable_background_image)
 		.setGroup(PropertyGroup.GRP_USER_INTERFACE) )
 
@@ -82,9 +101,27 @@ public class OtherPreferences extends PreferencesBase {
 		.setDefaultValue(true)
 		.setPreferenceKey(SoundManager.PREF_BEEP_IF_SCANNED_ISBN_INVALID)
 		.setGlobal(true)
+		.setWeight(300)
 		.setNameResourceId(R.string.beep_if_scanned_isbn_invalid)
-		.setGroup(PropertyGroup.GRP_USER_INTERFACE) )
+		.setGroup(PropertyGroup.GRP_SCANNER) )
 
+	.add(new BooleanProperty(SoundManager.PREF_BEEP_IF_SCANNED_ISBN_VALID)
+		.setDefaultValue(false)
+		.setPreferenceKey(SoundManager.PREF_BEEP_IF_SCANNED_ISBN_VALID)
+		.setGlobal(true)
+		.setWeight(300)
+		.setNameResourceId(R.string.beep_if_scanned_isbn_valid)
+		.setGroup(PropertyGroup.GRP_SCANNER) )
+
+	.add(new IntegerListProperty( mScannerListItems, ScannerManager.PREF_PREFERRED_SCANNER)
+		.setDefaultValue(ScannerManager.SCANNER_ZXING_COMPATIBLE)
+		.setPreferenceKey(ScannerManager.PREF_PREFERRED_SCANNER)
+		.setGlobal(true)
+		.setNameResourceId(R.string.preferred_scanner)
+		.setGroup(PropertyGroup.GRP_SCANNER) )
+
+
+		
 	.add(new IntegerListProperty( mRotationListItems, BookCataloguePreferences.PREF_AUTOROTATE_CAMERA_IMAGES)
 		.setDefaultValue(90)
 		.setPreferenceKey(BookCataloguePreferences.PREF_AUTOROTATE_CAMERA_IMAGES)
@@ -104,7 +141,7 @@ public class OtherPreferences extends PreferencesBase {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setTitle(R.string.other_preferences);
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 	}
 
 	/**
@@ -113,7 +150,7 @@ public class OtherPreferences extends PreferencesBase {
 	@Override 
 	public void onResume() {
 		super.onResume();
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
 	}
 
 	/**

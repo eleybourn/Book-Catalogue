@@ -20,21 +20,22 @@
 
 package com.eleybourn.bookcatalogue.goodreads;
 
+import net.philipwarner.taskqueue.QueueManager;
+import android.content.Context;
+import android.database.Cursor;
+
 import com.eleybourn.bookcatalogue.BcQueueManager;
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
+import com.eleybourn.bookcatalogue.BookEvents.GrNoIsbnEvent;
+import com.eleybourn.bookcatalogue.BookEvents.GrNoMatchEvent;
 import com.eleybourn.bookcatalogue.BooksCursor;
 import com.eleybourn.bookcatalogue.BooksRowView;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
-import com.eleybourn.bookcatalogue.Logger;
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.Utils;
-import com.eleybourn.bookcatalogue.BookEvents.*;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NotAuthorizedException;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.ExportDisposition;
-import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.*;
-
-import android.content.Context;
-import android.database.Cursor;
-import net.philipwarner.taskqueue.QueueManager;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Background task class to send all books in the database to goodreads.
@@ -92,7 +93,7 @@ public class SendAllBooksTask extends GenericTask {
 	 * @throws NotAuthorizedException
 	 */
 	public boolean sendAllBooks(QueueManager qmanager, Context context) throws NotAuthorizedException {
-		int lastSave = mCount;
+		//int lastSave = mCount;
 		boolean needsRetryReset = true;
 
 		// ENHANCE: Work out a way of checking if GR site is up
@@ -177,9 +178,10 @@ public class SendAllBooksTask extends GenericTask {
 				// Save every few rows in case phone dies (and to allow task queries to see data)
 				// Actually, save every row because it updates the UI, and sending a row takes a while.
 				//if (mCount - lastSave >= 5) {
-					qmanager.saveTask(this);
-					lastSave = mCount;
+				//	qmanager.saveTask(this);
+				//	lastSave = mCount;
 				//}
+				qmanager.saveTask(this);
 
 				if (this.isAborting()) {
 					qmanager.saveTask(this);

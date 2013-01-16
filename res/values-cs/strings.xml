@@ -59,7 +59,7 @@
 <string name="menu_administration">Admin</string>
 <string name="install_scan">Aby bylo možné přečíst čárový kód je nutné, aby ve Vašem telefonu byla nainstalována aplikace Google Googles nebo zxing barcode scanner.</string>
 <string name="install_scan_title">Instalovat čtečku čárových kódů</string>
-<string name="version_number">Číslo verze</string>
+<string name="version_number">Číslo verze:</string>
 <string name="donate">Pokud chcete podpořit vývoj této aplikace, učiňte tak prosím prostřednictvím mého Amazon Wishlistu nebo přes paypal tlačítko níže. Vzhledem k tomu, že jsem z Austrálie, tak nemohu nabízet &quot;placenou&quot; verzi. :-) </string>
 <string name="unable_to_connect_amazon">Nelze se připojit k Amazonu</string>
 <string name="upgrade_title">Od Vaší poslední aktualizace</string>
@@ -73,13 +73,14 @@
 <string name="loan_to">Půjčit knihu:</string>
 <string name="returned">Vráceno</string>
 <string name="name">Jméno</string>
-<string name="webpage_label">WWW stránky</string>
-<string name="sourcecode_label">Zdrojový kód</string>
-<string name="contact_label">Kontakt</string>
+<string name="webpage_label">WWW stránky:</string>
+<string name="sourcecode_label">Zdrojový kód:</string>
+<string name="contact_label">Kontakt:</string>
 <string name="webpage">https://wiki.github.com/eleybourn/Book-Catalogue/</string>
 <string name="sourcecode">https://github.com/eleybourn/Book-Catalogue</string>
 <string name="helppage">https://github.com/eleybourn/Book-Catalogue/wiki/Help</string>
-<string name="contact">eleybourn@gmail.com</string>
+<string name="contact1">eleybourn@gmail.com</string>
+<string name="contact2">philip.warner@rhyme.com.au</string>
 <string name="donate_label">Podpořit</string>
 <string name="about_label">O této aplikaci</string>
 <string name="administration_functions_label">Funkce</string>

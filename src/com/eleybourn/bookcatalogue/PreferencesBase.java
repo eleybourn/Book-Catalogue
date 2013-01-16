@@ -20,17 +20,17 @@
 
 package com.eleybourn.bookcatalogue;
 
-import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
-import com.eleybourn.bookcatalogue.properties.Properties;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+
+import com.eleybourn.bookcatalogue.properties.Properties;
+import com.eleybourn.bookcatalogue.utils.Logger;
 
 /**
  * Base class to display simple preference-based optins to the user.
@@ -38,9 +38,8 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
  * @author Philip Warner
  */
 public abstract class PreferencesBase extends Activity {
-	private int mLayout;
 
-	/** Get the layour of the subclass */
+	/** Get the layout of the subclass */
 	public abstract int getLayout();
 	/** Setup the views in the layout */
 	public abstract void setupViews(BookCataloguePreferences prefs, Properties globalProps);

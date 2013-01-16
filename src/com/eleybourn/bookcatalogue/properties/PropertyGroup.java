@@ -41,6 +41,7 @@ public class PropertyGroup {
 	private static final int GRP_EXTRA_FILTERS_ID = ++GRP_COUNT;
 	private static final int GRP_USER_INTERFACE_ID = ++GRP_COUNT;
 	private static final int GRP_THUMBNAILS_ID = ++GRP_COUNT;
+	private static final int GRP_SCANNER_ID = ++GRP_COUNT;
 
 	// Collection of all groups.
 	private static final PropertyGroups mGroups = new PropertyGroups();
@@ -58,7 +59,9 @@ public class PropertyGroup {
 	/** Global PropertyGroup definition */
 	public static final PropertyGroup GRP_THUMBNAILS = mGroups.addGroup(GRP_THUMBNAILS_ID, R.string.thumbnails, 40);
 	/** Global PropertyGroup definition */
-	public static final PropertyGroup GRP_USER_INTERFACE = mGroups.addGroup(GRP_USER_INTERFACE_ID, R.string.user_interface, 40);
+	public static final PropertyGroup GRP_USER_INTERFACE = mGroups.addGroup(GRP_USER_INTERFACE_ID, R.string.user_interface, 35);
+	/** Global PropertyGroup definition */
+	public static final PropertyGroup GRP_SCANNER = mGroups.addGroup(GRP_SCANNER_ID, R.string.scanning, 70);
 
 	/**
 	 * Collection class for all PropertyGroups

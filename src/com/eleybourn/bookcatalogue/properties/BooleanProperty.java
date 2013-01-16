@@ -28,8 +28,8 @@ import android.widget.TextView;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.ViewTagger;
 import com.eleybourn.bookcatalogue.properties.Property.BooleanValue;
+import com.eleybourn.bookcatalogue.utils.ViewTagger;
 
 /**
  * Extends ValuePropertyWithGlobalDefault to create a trinary value (or nullable boolean?) with 

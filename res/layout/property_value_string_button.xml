@@ -1,50 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-   	android:id="@+id/property_string" 
-	android:gravity="top" 
-	android:orientation="vertical"
-	android:layout_width="fill_parent" 
-	android:layout_height="wrap_content" 
-	android:paddingLeft="5dp"
-	android:paddingRight="10dp"
-	android:background="#40000000"
-	>
-	<Button
-	    android:id="@+id/edit_button"
-	    style="?android:attr/buttonStyleSmall"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-		android:layout_centerVertical="true"
-	    android:layout_alignParentRight="true"
-	    android:layout_alignParentTop="true"
-	    android:text="@string/edit"
-	    android:textAppearance="?android:attr/textAppearanceSmall"
-	    />
-    	
-	<TextView 
-	   	android:id="@+id/name" 
-		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content" 
-		android:textAppearance="?android:attr/textAppearanceMedium"
-		android:paddingTop="5sp"
-		android:layout_alignParentLeft="true"
-		android:layout_toLeftOf="@id/edit_button"
-		/>
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#40000000"
+    android:gravity="top"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/padding_border"
+    android:paddingRight="10dp" >
 
-    <TextView android:id="@+id/value" 
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content" 
-		android:paddingLeft="5sp"
-		android:textAppearance="?android:attr/textAppearanceSmall"
-		android:layout_alignParentLeft="true"
-		android:layout_toLeftOf="@id/edit_button"
-		android:layout_below="@id/name"
-		/>
+    <Button
+        android:id="@+id/edit_button"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
+        android:text="@string/edit"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
-	<View 
-	    android:background="@drawable/property_divider"
-	    android:layout_width="fill_parent"
-	    android:layout_alignParentBottom="true"
-	    android:layout_height="1px"
-	    />
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@id/edit_button"
+        android:paddingTop="@dimen/padding_border"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/value"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/name"
+        android:layout_toLeftOf="@id/edit_button"
+        android:paddingLeft="@dimen/padding_border"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/property_divider" />
+
 </RelativeLayout>

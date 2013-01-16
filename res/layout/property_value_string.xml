@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-   	android:id="@+id/property_string" 
-	android:gravity="top" 
-	android:orientation="vertical"
-	android:layout_width="fill_parent" 
-	android:layout_height="wrap_content" 
-	android:paddingLeft="5dp"
-	android:paddingRight="10dp"
-	android:background="#40000000"
-	>
-	<TextView 
-	   	android:id="@+id/name" 
-		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content" 
-		android:textAppearance="?android:attr/textAppearanceMedium"
-		android:paddingTop="5sp"
-		/>
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#40000000"
+    android:gravity="top"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/padding_border"
+    android:paddingRight="10dp" >
 
-    <EditText android:id="@+id/value" 
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content" 
-		android:layout_weight="1"
-		android:paddingLeft="5sp"
-		android:textAppearance="?android:attr/textAppearanceMedium"
-		android:focusableInTouchMode="true"
-		android:focusable="true"
-		/>
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="5sp"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
-	<View 
-	    android:background="@drawable/property_divider"
-	    android:layout_width="fill_parent"
-	    android:layout_height="1px"
-	    />
+    <EditText
+        android:id="@+id/value"
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:paddingLeft="@dimen/padding_border"
+        android:textAppearance="?android:attr/textAppearanceMedium" 
+        tools:ignore="TextFields" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/property_divider" />
+
 </LinearLayout>

@@ -34,6 +34,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
+
 /**
  * Activity to edit a list of authors provided in an ArrayList<Author> and
  * return an updated list.

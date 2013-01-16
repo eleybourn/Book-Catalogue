@@ -1,40 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-    android:id="@+id/root" 
-	android:orientation="vertical"
-	android:layout_width="fill_parent" 
-	android:layout_height="fill_parent"
-	android:background="@drawable/bc_background_gradient_dim"
-	android:paddingLeft="5sp">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/bc_background_gradient_dim"
+    android:fillViewport="true"
+    android:paddingLeft="@dimen/padding_border" >
 
-	<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			>
-	
-	  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-		android:orientation="vertical"
-		android:layout_width="fill_parent" 
-		android:layout_height="fill_parent"
-		android:paddingLeft="5sp">
+    <!-- This is where the automatically generated properties will go -->
 
-	    <!--  This is where the automatically generated properties will go -->
-		<LinearLayout	 android:id="@+id/dynamic_properties" 
-			android:gravity="top" 
-			android:orientation="vertical"
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content" 
-			>
-	
-		</LinearLayout>
+    <LinearLayout
+        android:id="@+id/dynamic_properties"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/padding_border" >
+    </LinearLayout>
 
-	  	<!--  MANAGEMENT Header -->
+    <!--
+        MANAGEMENT Header 
 	    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
 			android:orientation="horizontal"
 			android:layout_width="fill_parent" 
 			android:layout_height="wrap_content"
 			android:paddingLeft="0sp">
-			<TextView 
+			<com.eleybourn.bookcatalogue.widgets.CapitalizedTextView 
 				android:layout_width="wrap_content" 
 				android:layout_height="wrap_content" 
 				android:text="@+string/management"
@@ -42,51 +33,6 @@
 				android:paddingTop="0sp"
 				/>
 		</LinearLayout>
+    -->
 
-	  	<!--  Edit Styles -->
-		<LinearLayout android:id="@+id/edit_styles_label" 
-			android:orientation="horizontal"
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content"
-			android:paddingLeft="15sp">
-
-			<ImageView
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content" 
-				android:paddingLeft="10sp"
-				android:src="@+android:drawable/ic_menu_manage"
-				/>
-			<TextView 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content" 
-				android:text="@+string/edit_book_list_styles"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:paddingTop="5sp"
-				/>
-		</LinearLayout>
-			
-	    <!--  ERASE COVER CACHE -->
-		<LinearLayout android:id="@+id/erase_cover_cache_label" 
-			android:orientation="horizontal"
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content"
-			android:clickable="true"
-			android:paddingLeft="15sp">
-			<ImageView 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content" 
-				android:paddingLeft="10sp"
-				android:src="@+android:drawable/ic_menu_close_clear_cancel"
-				/>
-			<TextView 
-				android:layout_width="fill_parent" 
-				android:layout_height="wrap_content" 
-				android:text="@+string/erase_cover_cache"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:paddingTop="5sp"
-				/>
-		</LinearLayout>
-	</LinearLayout>
-  </ScrollView>
-</LinearLayout>
-	
+</ScrollView>

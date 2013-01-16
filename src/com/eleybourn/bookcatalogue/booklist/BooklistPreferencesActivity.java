@@ -22,16 +22,10 @@ package com.eleybourn.bookcatalogue.booklist;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 
-import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
-import com.eleybourn.bookcatalogue.HintManager;
-import com.eleybourn.bookcatalogue.Logger;
+import com.eleybourn.bookcatalogue.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.PreferencesBase;
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.Utils;
 import com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds;
 import com.eleybourn.bookcatalogue.properties.BooleanListProperty;
 import com.eleybourn.bookcatalogue.properties.IntegerListProperty;
@@ -40,6 +34,9 @@ import com.eleybourn.bookcatalogue.properties.Properties;
 import com.eleybourn.bookcatalogue.properties.Property;
 import com.eleybourn.bookcatalogue.properties.PropertyGroup;
 import com.eleybourn.bookcatalogue.properties.ValuePropertyWithGlobalDefault;
+import com.eleybourn.bookcatalogue.utils.HintManager;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Activity to manage the preferences associate with Book lists (and the BooksOnBookshelf activity).
@@ -137,7 +134,7 @@ public class BooklistPreferencesActivity extends PreferencesBase {
 			setTitle(R.string.booklist_preferences);
 			if (savedInstanceState == null)
 				HintManager.displayHint(this, R.string.hint_booklist_global_properties, null);
-			Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
+			Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
@@ -164,24 +161,6 @@ public class BooklistPreferencesActivity extends PreferencesBase {
 	 */
 	@Override
 	public void setupViews(BookCataloguePreferences prefs, Properties globalProps) {
-		addClickablePref(prefs, R.id.erase_cover_cache_label, new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Utils utils = new Utils();
-				try {
-					utils.eraseCoverCache();					
-				} finally {
-					utils.close();
-				}
-				return;
-			}});
-
-		addClickablePref(prefs, R.id.edit_styles_label, new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				BooklistStyles.startEditActivity(BooklistPreferencesActivity.this);
-			}});
-
 		/**
 		 * This activity predominantly shows 'Property' objects; we build that collection here.
 		 */
@@ -197,7 +176,7 @@ public class BooklistPreferencesActivity extends PreferencesBase {
 		Properties allProps = style.getProperties();
 		for(Property p: allProps) {
 			if (p instanceof ValuePropertyWithGlobalDefault) {
-				ValuePropertyWithGlobalDefault gp = (ValuePropertyWithGlobalDefault)p;
+				ValuePropertyWithGlobalDefault<?> gp = (ValuePropertyWithGlobalDefault<?>)p;
 				if (gp.hasGlobalDefault()) {
 					gp.setGlobal(true);
 					globalProps.add(gp);
@@ -236,7 +215,7 @@ public class BooklistPreferencesActivity extends PreferencesBase {
 	@Override 
 	public void onResume() {
 		super.onResume();
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
 	}
 
 	/**

@@ -28,20 +28,20 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Message;
-import android.os.Parcelable;
 
-import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsage;
 import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsages;
 import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsages.Usages;
+import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
+import com.eleybourn.bookcatalogue.utils.StorageUtils;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Class to update all thumbnails (and some other data) in a background thread.
  *
  * @author Philip Warner
  */
-public class UpdateThumbnailsThread extends ManagedTask implements SearchManager.SearchListener {
+public class UpdateThumbnailsThread extends ManagedTask {
 	// The fields that the user requested to update
 	private FieldUsages mRequestedFields;
 
@@ -68,6 +68,13 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 	// DB connection
 	protected CatalogueDBAdapter mDbHelper;
 
+	private SearchManager.SearchListener mSearchListener = new SearchManager.SearchListener() {
+
+		@Override
+		public boolean onSearchFinished(Bundle bookData, boolean cancelled) {
+			return handleSearchFinished(bookData, cancelled);
+		}};
+	
 	/**
 	 * Constructor.
 	 * 
@@ -81,7 +88,7 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 		mDbHelper.open();
 		
 		mRequestedFields = requestedFields;
-		mSearchManager = new SearchManager(mManager, this);
+		mSearchManager = new SearchManager(mManager, mSearchListener);
 		mManager.doProgress(BookCatalogueApp.getResourceString(R.string.starting_search));
 		getMessageSwitch().addListener(getSenderId(), listener, false);
 	}
@@ -148,13 +155,13 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 							} else if (usage.fieldName.equals(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)) {
 								// We should never have a book with no authors, but lets be paranoid
 								if (mOrigData.containsKey(usage.fieldName)) {
-									ArrayList<Author> origAuthors = (ArrayList<Author>) mOrigData.getSerializable(usage.fieldName);
+									ArrayList<Author> origAuthors = Utils.getAuthorsFromBundle(mOrigData);
 									if (origAuthors == null || origAuthors.size() == 0)
 										mCurrFieldUsages.put(usage);
 								}
 							} else if (usage.fieldName.equals(CatalogueDBAdapter.KEY_SERIES_ARRAY)) {
 								if (mOrigData.containsKey(usage.fieldName)) {
-									ArrayList<Series> origSeries = (ArrayList<Series>) mOrigData.getSerializable(usage.fieldName);
+									ArrayList<Series> origSeries = Utils.getSeriesFromBundle(mOrigData);
 									if (origSeries == null || origSeries.size() == 0)
 										mCurrFieldUsages.put(usage);
 								}
@@ -226,10 +233,9 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 	}
 
 	@Override
-	public void onFinish() {
+	public void onThreadFinish() {
 		try {
 			mManager.doToast(mFinalMessage);
-			sendOnFinish();
 		} finally {
 			cleanup();
 		}
@@ -241,8 +247,9 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 	 * @param bookData
 	 * @param cancelled
 	 */
-	@Override
-	public void onSearchFinished(Bundle bookData, boolean cancelled) {
+	private boolean handleSearchFinished(Bundle bookData, boolean cancelled) {
+		System.out.println("onSearchFinished (cancel = " + cancelled + ")");
+	
 		// Set cancelled flag if the task was cancelled
 		if (cancelled) {
 			cancelTask();
@@ -255,11 +262,14 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 		Bundle origData = mOrigData;
 		FieldUsages requestedFields = mCurrFieldUsages;
 
-		// Done!
-		doSearchDone();
-
 		if (!isCancelled() && bookData != null)
 			processSearchResults(rowId, mCurrUuid, requestedFields, bookData, origData);
+		
+		// Done! This need to go after processSearchResults() because doSearchDone() frees
+		// main thread which may disconnect database connection if on last book.
+		doSearchDone();
+
+		return true;
 	}
 
 	/**
@@ -308,13 +318,13 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 						// Handle special cases
 						if (usage.fieldName.equals(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)) {
 							if (origData.containsKey(usage.fieldName)) {
-								ArrayList<Author> origAuthors = (ArrayList<Author>) origData.getSerializable(usage.fieldName);
+								ArrayList<Author> origAuthors = Utils.getAuthorsFromBundle(origData);
 								if (origAuthors != null && origAuthors.size() > 0)
 									newData.remove(usage.fieldName);								
 							}
 						} else if (usage.fieldName.equals(CatalogueDBAdapter.KEY_SERIES_ARRAY)) {
 							if (origData.containsKey(usage.fieldName)) {
-								ArrayList<Series> origSeries = (ArrayList<Series>) origData.getSerializable(usage.fieldName);
+								ArrayList<Series> origSeries = Utils.getSeriesFromBundle(origData);
 								if (origSeries != null && origSeries.size() > 0)
 									newData.remove(usage.fieldName);								
 							}
@@ -327,9 +337,9 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 					case ADD_EXTRA:
 						// Handle arrays
 						if (usage.fieldName.equals(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)) {
-							UpdateThumbnailsThread.<Author>combineArrays(usage.fieldName,origData, newData);
+							UpdateThumbnailsThread.<Author>combineArrays(usage.fieldName, origData, newData);
 						} else if (usage.fieldName.equals(CatalogueDBAdapter.KEY_SERIES_ARRAY)) {
-							UpdateThumbnailsThread.<Series>combineArrays(usage.fieldName,origData, newData);
+							UpdateThumbnailsThread.<Series>combineArrays(usage.fieldName, origData, newData);
 						} else {
 							// No idea how to handle this for non-arrays
 							throw new RuntimeException("Illegal usage '" + usage.usage + "' specified for field '" + usage.fieldName + "'");
@@ -353,7 +363,7 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 		ArrayList<T> newList = null;
 		// Get the list from the original, if present. 
 		if (origData.containsKey(key)) {
-			origList = (ArrayList<T>) origData.getSerializable(key);
+			origList = Utils.getListFromBundle(origData, key);
 		}
 		// Otherwise an empty list
 		if (origList == null)
@@ -361,7 +371,7 @@ public class UpdateThumbnailsThread extends ManagedTask implements SearchManager
 
 		// Get from the new data
 		if (newData.containsKey(key)) {
-			newList = (ArrayList<T>) newData.getSerializable(key);			
+			newList = Utils.getListFromBundle(newData, key);			
 		}
 		if (newList == null)
 			newList = new ArrayList<T>();

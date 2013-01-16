@@ -11,6 +11,9 @@ import org.xml.sax.SAXException;
 
 import android.os.Bundle;
 
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
+
 // ENHANCE: Get editions via: http://books.google.com/books/feeds/volumes?q=editions:ISBN0380014300
 
 public class GoogleBooksManager {

@@ -26,6 +26,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 
+import com.eleybourn.bookcatalogue.utils.Utils;
+
 /**
  * Class to make building menus simpler. Implements some default menu items and allows
  * selecting which need to be added as well as the addition of custom items.

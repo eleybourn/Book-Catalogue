@@ -34,6 +34,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
+
 public class EditSeriesList extends EditObjectList<Series> {
 	
 	private ArrayAdapter<String> mSeriesAdapter;

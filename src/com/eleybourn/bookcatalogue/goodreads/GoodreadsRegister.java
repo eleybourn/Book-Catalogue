@@ -32,10 +32,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.eleybourn.bookcatalogue.Logger;
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.Utils;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Activity to allow the user to authorize the application to access their goodreads account and
@@ -55,7 +55,7 @@ public class GoodreadsRegister extends Activity {
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.goodreads_register);
 			setupViews();
-			Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
+			Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
@@ -67,7 +67,7 @@ public class GoodreadsRegister extends Activity {
 	@Override 
 	public void onResume() {
 		super.onResume();
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
 	}
 
 	public void setupViews() {

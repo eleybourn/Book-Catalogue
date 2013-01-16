@@ -20,11 +20,10 @@
 
 package com.eleybourn.bookcatalogue.properties;
 
-import com.eleybourn.bookcatalogue.BookCatalogueApp;
-import com.eleybourn.bookcatalogue.properties.PropertyGroup;
-
 import android.view.LayoutInflater;
 import android.view.View;
+
+import com.eleybourn.bookcatalogue.BookCatalogueApp;
 
 /**
  * Base class for generic properties.
@@ -97,8 +96,9 @@ public abstract class Property {
 	 * 
 	 * @param weight
 	 */
-	public void setWeight(int weight) {
+	public Property setWeight(int weight) {
 		mWeight = weight;
+		return this;
 	}
 	/**
 	 * Accessor

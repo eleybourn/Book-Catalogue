@@ -59,7 +59,7 @@
 <string name="menu_administration">Verwaltung</string>
 <string name="install_scan">Um die Bücher über den ISBN-Barcode zu scannen, muss die App zxing barcode scanner installiert werden. Drücken Sie OK zum Installieren oder Abbrechen um die Installation zu überspringen.</string>
 <string name="install_scan_title">Installiere Barcode Scanner</string>
-<string name="version_number">Versionsnummer</string>
+<string name="version_number">Versionsnummer:</string>
 <string name="donate">Wenn Sie die Entwicklung dieser App unterstützen möchten, können Sie über meine Amazon-Wunschliste oder den PayPal-Knopf spenden. Weil ich in Australien bin, kann ich keine "Kaufversion" der App anbieten. :-) </string>
 <string name="unable_to_connect_amazon">Keine Verbindung zu Amazon</string>
 <string name="upgrade_title">Seit der letzten Aktualisierung</string>
@@ -73,9 +73,9 @@
 <string name="loan_to">Verleihe Buch an:</string>
 <string name="returned">Zurückgegeben</string>
 <string name="name">Name</string>
-<string name="webpage_label">Webseite</string>
-<string name="sourcecode_label">Quellcode</string>
-<string name="contact_label">Kontakt</string>
+<string name="webpage_label">Webseite:</string>
+<string name="sourcecode_label">Quellcode:</string>
+<string name="contact_label">Kontakt:</string>
 <string name="webpage">https://wiki.github.com/eleybourn/Book-Catalogue/</string>
 <string name="sourcecode">https://github.com/eleybourn/Book-Catalogue</string>
 <string name="helppage">https://github.com/eleybourn/Book-Catalogue/wiki/Help</string>
@@ -420,7 +420,7 @@ anschließend auf eine leeren Seite landen. Klicken Sie einfach auf den "Zurück
 <string name="always_start_booklists_expanded">Bücherliste immer erweitern</string>
 <string name="always_start_booklists_collapsed">Bücherliste immer einklappen</string>
 <string name="remember_booklists_state">Darstellung beibehalten</string>
-<string name="searching_goodreads">Durchsuche Goodreads</string>
+<string name="searching_goodreads">Suche bei Goodreads</string>
 <string name="edit_book_list_styles">Stile der Bücherlisten bearbeiten</string>
 <string name="show_more_ellipsis">Mehr anzeigen…</string>
 <string name="show_fewer_ellipsis">Weniger anzeigen…</string>
@@ -589,4 +589,54 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
 <string name="you_have_unsaved_changes">Einige Änderungen wurden noch nicht gespeichert. Beim Beenden gehen diese Änderungen verloren.</string>
 <string name="exit">Beenden</string>
 <string name="continue_editing">Bearbeiten fortsetzen</string>
+<string name="the_title_already_exists">Der Titel existiert bereits</string>
+<string name="year">Jahr</string>
+<string name="month">Monat</string>
+<string name="day">Tag</string>
+<string name="edit_lc_ellipsis">bearbeiten&#8230;</string>
+<string name="getting_books_ellipsis">Hole Bücher&#8230;</string>
+<string name="n_events_found">%1$s Ereignisse gefunden</string>
+<string name="last_error_e">Letzter Fehler: %1$s</string>
+<string name="invalid_isbn_x_specified_in_search">Ungültige ISBN \'%1$s\' gesucht</string>
+<string name="if_day_is_specified_month_and_year_must_be">Wenn der Tag angegeben wird, muss auch Monat und Jahr angegeben werden.</string>
+<string name="if_month_is_specified_year_must_be">Wenn das Monat angegeben wird, muss auch das Jahr angegeben werden.</string>
+<string name="main_menu">Hauptmenü</string>
+<string name="use_external_image_cropper">Externe Bildbearbeitung verwenden (experimentell)</string>
+<string name="auto_rotate_camera_images">Bilder von der Kamera automatisch rotieren</string>
+<string name="hint_autorotate_camera_images">Wenn Sie Bilder von der Kamera immer in die selbe Richtung drehen müssen, versuchen Sie, die automatische Drehrichtung in den Einstellungen festzulegen.</string>
+<string name="default_crop_frame_is_whole_image">Standardbeschnitt besteht aus dem gesamten Bild</string>
+<string name="cancelled">Abgebrochen</string>
+<string name="import_complete">Import vollständig</string>
+<string name="amazon_books">Amazon</string>
+<string name="google_books">Google Books</string>
+<string name="library_thing">LibraryThing</string>
+<string name="searching_elipsis">Suche&#8230;</string>
+
+<string name="adding_book_elipsis">Buch hinzufügen&#8230;</string>
+
+<string name="new_in_42"><![CDATA[
+<p><b>Neu in 4.2</b>\n\n
+        * Datumswähler unterstützt Datumsangaben ab dem Jahr 0 und unvollständige Datumsangaben\n\n
+        * Beschreibungen in HTML werden korrekt dargestellt und bearbeitet\n\n
+        * Einstellung zur Auswahl des gesamten Bilds beim Beschnitt\n\n
+        * Einstellung zur automatischen Drehung des Bilds von der Kamera\n\n
+        * Einstellung zur Auswahl eines externen Werkzeugs zum Bildbeschnitt (experimentell)\n\n
+        * Zusätzliche Einträge im Optionsmenü\n\n
+        * Aktualisierte französische Übersetzung (Imkal)\n\n
+        * Aktualisierte deutsche Übersetzung (Robert Wetzlmayr)\n\n
+        * Aktualisierte russisch Übersetzung (Nick Silin)\n\n
+        * Aktualisierte Positionen der Buttons OK/Abbrechen in Übereinstimmung mit den Android-Standards\n\n
+        * Vollständige Tastatur bei der Eingabe von ASINs\n\n
+        * Die fünf letzten Exportdateien bleiben erhalten\n\n
+        * Bessere Erkennung von \'Änderungen\' beim Bearbeiten von Büchern\n\n
+        * Unterstützung für eine größere Auswahl von Galerien und Dateibrowsern\n\n
+        * Verlässlichere Verarbeitung von Datumswerten beim Import/Export/Sync\n\n
+        * Bessere Erkennung von doppelten Anthologietitlen\n\n
+        * Verschiedene Fehlerkorrekturen\n\n
+        Vielen Dank an alle Betatester und Übersetzer!\n\n
+        Grunthos ist an allen Fehlern und Bugs schuld. Und schicken Sie uns Bugreports.
+        </p>
+    ]]>
+</string>
+
 </resources>

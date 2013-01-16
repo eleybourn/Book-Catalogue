@@ -22,22 +22,26 @@ package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
 
-import com.eleybourn.bookcatalogue.goodreads.GoodreadsExportFailuresActivity;
-
 import net.philipwarner.taskqueue.BindableItem;
 import net.philipwarner.taskqueue.BindableItemSQLiteCursor;
 import net.philipwarner.taskqueue.ContextDialogItem;
+import net.philipwarner.taskqueue.Listeners.OnTaskChangeListener;
+import net.philipwarner.taskqueue.Listeners.TaskActions;
 import net.philipwarner.taskqueue.QueueManager;
 import net.philipwarner.taskqueue.Task;
 import net.philipwarner.taskqueue.TasksCursor;
-import net.philipwarner.taskqueue.Listeners.TaskActions;
-import net.philipwarner.taskqueue.Listeners.OnTaskChangeListener;
 import net.philipwarner.taskqueue.TasksCursor.TaskCursorSubtype;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsExportFailuresActivity;
+import com.eleybourn.bookcatalogue.utils.HintManager;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
+import com.eleybourn.bookcatalogue.utils.ViewTagger;
 
 /**
  * Activity to display the available QueueManager Task object subclasses to the user.
@@ -80,7 +84,7 @@ public class TaskListActivity extends net.philipwarner.taskqueue.BindableItemLis
 			if (savedInstanceState == null)
 				HintManager.displayHint(this, R.string.hint_background_tasks, null);
 
-			Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
+			Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
@@ -103,7 +107,7 @@ public class TaskListActivity extends net.philipwarner.taskqueue.BindableItemLis
 	protected void onResume() {
 		super.onResume();
 		refreshData();
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
 	} 
 
 	/**

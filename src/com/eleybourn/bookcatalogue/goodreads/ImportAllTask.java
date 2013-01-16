@@ -20,6 +20,12 @@
 
 package com.eleybourn.bookcatalogue.goodreads;
 
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ADDED_DATE;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_GOODREADS_BOOK_ID;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LAST_GOODREADS_SYNC_DATE;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LAST_UPDATE_DATE;
+import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.UPDATED;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -40,15 +46,12 @@ import com.eleybourn.bookcatalogue.BookEditFields;
 import com.eleybourn.bookcatalogue.BooksCursor;
 import com.eleybourn.bookcatalogue.BooksRowView;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
-import com.eleybourn.bookcatalogue.Logger;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.Series;
-import com.eleybourn.bookcatalogue.Utils;
-import com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames;
 import com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler;
-
-import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.*;
-import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.UPDATED;
+import com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Import all a users 'reviews' from goodreads; a users 'reviews' consistes of all the books that 

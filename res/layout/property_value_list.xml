@@ -1,48 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-   	android:id="@+id/property_list" 
-	android:gravity="top" 
-	android:orientation="horizontal"
-	android:layout_width="fill_parent" 
-	android:layout_height="wrap_content" 
-	android:paddingLeft="5dp"
-	android:paddingRight="10dp"
-	android:background="#40000000"
-	>
-	<ImageView android:id="@+id/image" 
-		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content" 
-		android:layout_alignParentRight="true"
-		android:src="@drawable/expander_ic_maximized"
-		android:paddingLeft="5sp"
-		android:focusable="true"
-		/>
-	
-   	<TextView 
-	   	android:id="@+id/name" 
-		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content" 
-		android:layout_alignParentLeft="true"
-		android:layout_toLeftOf="@id/image"
-		android:textAppearance="?android:attr/textAppearanceMedium"
-		android:paddingTop="5sp"
-		android:singleLine="false"
-		/>
-   	<TextView 
-	   	android:id="@+id/value" 
-		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content" 
-		android:layout_alignParentLeft="true"
-		android:layout_toLeftOf="@id/image"
-		android:layout_below="@id/name"
-		android:textAppearance="?android:attr/textAppearanceSmall"
-		android:singleLine="false"
-		/>
-   	
-	<View 
-	    android:background="@drawable/property_divider"
-	    android:layout_width="fill_parent"
-	    android:layout_height="1px"
-	    android:layout_alignParentBottom="true"
-	    />
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#40000000"
+    android:gravity="top"
+    android:orientation="horizontal"
+    android:paddingLeft="@dimen/padding_border"
+    android:paddingRight="10dp" >
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:focusable="true"
+        android:paddingLeft="@dimen/padding_border"
+        android:src="@drawable/expander_ic_maximized" />
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@id/image"
+        android:paddingTop="@dimen/padding_border"
+        android:singleLine="false"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/name"
+        android:layout_toLeftOf="@id/image"
+        android:singleLine="false"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/property_divider" />
+
 </RelativeLayout>

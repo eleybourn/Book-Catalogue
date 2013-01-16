@@ -1,115 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-	android:orientation="horizontal"
-	android:layout_width="fill_parent" 
-	android:layout_height="wrap_content" 
-	android:id="@+id/row"
-	>
-	<!-- NOTE: The outer layout is used because this item appears in a TouchListView which uses the outer element padding, and
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/row"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+
+    <!--
+         NOTE: The outer layout is used because this item appears in a TouchListView which uses the outer element padding, and
 				we want to set our own padding.
 				
-				With careful analysis, we could probably put padding on the right elements. But this is clearer and easier.
-	-->
+				With careful analysis, we could probably put padding on the right elements. But this is clearer and easier.
+    -->
 
-	<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android" 
-		android:orientation="horizontal"
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content" 
-		android:padding="0dp" 
-		android:id="@+id/row_real" >
-		<!--  Used to be the id=row_delete item. Now deletions are handled via context menu. -->
-		<ImageView android:id="@+id/preferred" 
-			android:layout_width="45sp"
-			android:layout_height="25sp"
-			android:paddingRight="10dp"
-			android:paddingLeft="10dp"
-			android:focusable="false"
-			android:focusableInTouchMode="false"
-			
-			android:layout_centerVertical="true"
-			android:layout_alignParentLeft="true"
-			android:layout_alignParentTop="true"
-			android:layout_alignParentBottom="true"
-			android:layout_weight="1"
-			/>
-	
-	    <ImageView android:id="@+id/grabber"
-			android:layout_centerVertical="true"
-	        android:layout_alignParentRight="true"
-	        android:layout_alignParentTop="true"
-	        android:layout_alignParentBottom="true"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-			android:src="@drawable/grabber"
-			android:background="#C0303030"
-			/>
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/row_real"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        tools:ignore="UselessParent" >
 
-		<View 
-			android:id="@+id/top_divider" 
-			android:layout_alignParentLeft="true"
-			android:layout_alignParentRight="true"
-			android:layout_alignParentTop="true"
-		    android:background="@drawable/main_menu_header_divider"
-		    android:layout_width="fill_parent"
-		    android:layout_height="1px"
-		    />
+        <!-- Used to be the id=row_delete item. Now deletions are handled via context menu. -->
 
-	   	<RelativeLayout  
-			xmlns:android="http://schemas.android.com/apk/res/android" 
-			android:id="@+id/row_details" 
-			android:orientation="vertical"
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content" 
-			android:padding="2dp"
-	
-			android:layout_alignParentBottom="true"
-			android:layout_alignParentTop="true" 
-			android:layout_toRightOf="@id/preferred"
-			android:layout_toLeftOf="@+id/grabber"
-			android:layout_below="@+id/top_divider"
-			>
-			<TextView android:id="@+id/name" 
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:ellipsize="marquee"
-				android:singleLine="false"
-				android:gravity="left"
-				
-				android:layout_alignParentLeft="true" 
-				android:layout_alignParentTop="true" 
-			    android:textAppearance="?android:attr/textAppearanceMedium"
-				/>
-			<TextView android:id="@+id/groups" 
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:ellipsize="marquee"
-				android:singleLine="false"
-				android:gravity="left"
-	
-				android:layout_below="@+id/name"
-			    android:textAppearance="?android:attr/textAppearanceSmall"
-				/>
-			<TextView android:id="@+id/kind" 
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:paddingRight="5sp"
-				android:singleLine="true"
-				android:ellipsize="marquee"
-				android:gravity="left"
-	
-				android:layout_below="@+id/groups"
-			    android:textAppearance="?android:attr/textAppearanceSmall"
-				/>
-		</RelativeLayout>
-		<View 
-			android:layout_below="@id/row_details"
-			android:layout_alignParentLeft="true"
-			android:layout_alignParentRight="true"
-			android:layout_alignParentBottom="true"
-		    android:background="@drawable/main_menu_header_divider"
-		    android:layout_width="fill_parent"
-		    android:layout_height="1px"
-		    />
-			   	
-   </RelativeLayout>
+        <ImageView
+            android:id="@+id/preferred"
+            android:layout_width="45dp"
+            android:layout_height="25dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_centerVertical="true"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" />
+
+        <ImageView
+            android:id="@+id/grabber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_centerVertical="true"
+            android:background="#C0303030"
+            android:src="@drawable/grabber" />
+
+        <View
+            android:id="@+id/top_divider"
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/main_menu_header_divider" />
+
+        <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/row_details"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentTop="true"
+            android:layout_below="@+id/top_divider"
+            android:layout_toLeftOf="@+id/grabber"
+            android:layout_toRightOf="@id/preferred"
+            android:orientation="vertical"
+            android:padding="2dp" >
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:ellipsize="marquee"
+                android:gravity="left"
+                android:singleLine="false"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/groups"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/name"
+                android:ellipsize="marquee"
+                android:gravity="left"
+                android:singleLine="false"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <TextView
+                android:id="@+id/kind"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/groups"
+                android:ellipsize="marquee"
+                android:gravity="left"
+                android:paddingRight="5sp"
+                android:singleLine="true"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/row_details"
+            android:background="@drawable/main_menu_header_divider" />
+    </RelativeLayout>
+
 </LinearLayout>

@@ -23,21 +23,21 @@ package com.eleybourn.bookcatalogue;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import android.app.Activity;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.app.Activity;
-import android.database.Cursor;
-import android.os.Handler;
+
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Catalogue search based on the SQLite FTS engine. Due to the speed of FTS it updates the 
@@ -89,7 +89,7 @@ public class SearchCatalogue extends Activity {
 		ftsRebuild.setOnClickListener(mFtsRebuildListener);
 
 		// Note: Timer will be started in OnResume().
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, R.id.layout_root);
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, R.id.layout_root, false);
 	}
 
 	/** start the idle timer */
@@ -290,7 +290,7 @@ public class SearchCatalogue extends Activity {
 	protected void onResume() {
 		super.onResume();
 		userIsActive(true);
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
 	}
 
 	/**

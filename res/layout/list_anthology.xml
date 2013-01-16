@@ -1,70 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-	android:id="@+id/anthology_wrapper"
-	android:orientation="vertical"
-	android:layout_width="fill_parent" 
-	android:layout_height="fill_parent"
-	android:paddingLeft="5sp"
-	android:background="#2d2d2d">
-	<TextView android:id="@+id/anthology_title" 
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content"
-		android:text="@+string/edit_book_anthology" 
-		android:textAppearance="?android:attr/textAppearanceLarge" 
-		android:layout_alignParentTop="true"
-		/>
-	<CheckBox android:id="@+id/same_author" 
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content"
-		android:layout_below="@id/anthology_title" 
-		android:textSize="16sp"
-		android:text="@+string/same_author" 
-		android:paddingBottom="10sp"
-		android:paddingTop="10sp" />
-	<Button android:id="@+id/row_add" 
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="@+string/anthology_add"
-		android:layout_weight="2"
-		android:gravity="right"
-		
-		android:layout_alignParentBottom="true"
-		android:layout_alignParentRight="true"
-		/>
-	<EditText android:id="@+id/add_title" 
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:hint="@+string/title"
-		android:inputType="textCapWords"
-		
-		android:layout_alignParentBottom="true"
-		android:layout_alignParentLeft="true"
-		android:layout_toLeftOf="@id/row_add"
-		/>
-	<AutoCompleteTextView android:id="@+id/add_author" 
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:paddingLeft="10dp"
-		android:hint="@+string/author"
-		android:inputType="textCapWords"
-		
-		android:layout_alignParentLeft="true"
-		android:layout_above="@id/add_title"
-		/>
-	
-	<LinearLayout android:id="@+id/anthology_list" 
-		android:layout_width="fill_parent" 
-		android:layout_height="fill_parent"
-		android:layout_below="@id/same_author" 
-		android:layout_above="@id/add_author"
-		>
-		<ListView android:id="@+id/android:list" 
-			android:layout_width="fill_parent" 
-			android:layout_height="fill_parent"
-			android:textSize="16sp" />
-		<TextView android:id="@+id/android:empty" 
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content" 
-			android:textSize="16sp" />
-	</LinearLayout>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/background_grey"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/padding_border" >
+
+    <TextView
+        android:id="@+id/anthology_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:text="@string/edit_book_anthology"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <CheckBox
+        android:id="@+id/same_author"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/anthology_title"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:text="@string/same_author"
+        android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/row_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="@string/anthology_add" />
+
+    <EditText
+        android:id="@+id/add_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@id/row_add"
+        android:hint="@string/title"
+        android:inputType="textCapWords" />
+
+    <AutoCompleteTextView
+        android:id="@+id/add_author"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/add_title"
+        android:layout_alignParentLeft="true"
+        android:hint="@string/author"
+        android:inputType="textCapWords"
+        android:paddingLeft="10dp" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@id/add_author"
+        android:layout_below="@id/same_author" >
+
+        <ListView
+            android:id="@+id/android:list"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/android:empty"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp" />
+    </LinearLayout>
+
 </RelativeLayout>

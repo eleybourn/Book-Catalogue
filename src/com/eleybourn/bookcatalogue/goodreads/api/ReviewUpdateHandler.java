@@ -35,8 +35,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.BookNotFoundException;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
-import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.*;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NotAuthorizedException;
 
 /**
  * TODO: ReviewUpdateHandler WORK IN PROGRESS
@@ -49,10 +50,6 @@ public class ReviewUpdateHandler extends ApiHandler {
 		super(manager);
 	}
 
-	private class ReviewUpdateParser extends TrivialParser {
-		
-	}
-	
 	public void update(long reviewId, boolean isRead, String readAt, String review, int rating) 
 			throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, IOException, 
 					NotAuthorizedException, BookNotFoundException, NetworkException

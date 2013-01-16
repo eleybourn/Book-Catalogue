@@ -22,9 +22,10 @@ package com.eleybourn.bookcatalogue;
 
 import android.graphics.Bitmap;
 
-import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTask;
-import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTaskContext;
 import com.eleybourn.bookcatalogue.database.CoversDbHelper;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTask;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTaskContext;
 
 /**
  * Background task to save a bitmap into the covers thumbnail database. Runs in background
@@ -95,12 +96,18 @@ public class ThumbnailCacheWriterTask implements SimpleTask {
 	 */
 	@Override
 	public void run(SimpleTaskContext taskContext) {
-		CoversDbHelper db = taskContext.getCoversDb();
 		if (mBitmap.isRecycled()) {
 			// Was probably recycled by rapid scrolling of view
 			mBitmap = null;
 		} else {
-			db.saveFile(mCacheId, mBitmap);
+			CoversDbHelper db = null;
+			try {
+				db = taskContext.getCoversDb();
+			} catch (Exception e) {
+				// No db...
+			}
+			if (db != null)
+				db.saveFile(mCacheId, mBitmap);
 			if (mCanRecycle) {
 				mBitmap.recycle();
 				mBitmap = null;

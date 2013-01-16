@@ -32,8 +32,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Gallery;
@@ -44,9 +44,13 @@ import android.widget.Toast;
 import android.widget.ViewSwitcher.ViewFactory;
 
 import com.eleybourn.bookcatalogue.LibraryThingManager.ImageSizes;
-import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTask;
-import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTaskContext;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTask;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTaskContext;
+import com.eleybourn.bookcatalogue.utils.Utils;
+import com.eleybourn.bookcatalogue.utils.ViewTagger;
 
 /**
  * Class to display and manage a cover image browser in a dialog.

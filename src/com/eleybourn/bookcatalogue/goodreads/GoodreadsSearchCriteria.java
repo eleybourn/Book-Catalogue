@@ -20,12 +20,6 @@
 
 package com.eleybourn.bookcatalogue.goodreads;
 
-import com.eleybourn.bookcatalogue.BooksCursor;
-import com.eleybourn.bookcatalogue.BooksRowView;
-import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
-import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.Utils;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,6 +27,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.eleybourn.bookcatalogue.BooksCursor;
+import com.eleybourn.bookcatalogue.BooksRowView;
+import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
+import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Activity to handle searching goodreads for books that did not automatically convert. These
@@ -112,7 +112,7 @@ public class GoodreadsSearchCriteria extends Activity {
 				doSearch();
 			}});
 		
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
 	}
 
 	/**
@@ -121,7 +121,7 @@ public class GoodreadsSearchCriteria extends Activity {
 	@Override 
 	public void onResume() {
 		super.onResume();
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
 	}
 
 	/**

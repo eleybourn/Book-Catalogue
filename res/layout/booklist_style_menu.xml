@@ -1,36 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- incompatible with APIL4 android:fadeScrollbars="false" -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:scrollbars="vertical" >
 
-    <!-- incompatible with APIL4 android:fadeScrollbars="false" -->
-    <ScrollView
-        android:id="@+id/scrollView"
-        android:scrollbars="vertical"
+    <LinearLayout
+        android:id="@+id/menu"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
 
-        <LinearLayout
-            android:id="@+id/menu"
+        <RadioGroup
+            android:id="@+id/radio_buttons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+        </RadioGroup>
+
+        <View
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:orientation="vertical" >
+            android:layout_height="1dp"
+            android:background="@drawable/main_menu_header_divider"
+            android:paddingBottom="10dp" />
+    </LinearLayout>
 
-            <RadioGroup
-                android:id="@+id/radio_buttons"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
-            </RadioGroup>
-
-		 	<View 
-			    android:background="@drawable/main_menu_header_divider"
-			    android:layout_width="fill_parent"
-			    android:layout_height="1dp"
-				android:paddingBottom="10dp"
-			    />
-
-        </LinearLayout>
-    </ScrollView>
-   	
-</LinearLayout>
+</ScrollView>

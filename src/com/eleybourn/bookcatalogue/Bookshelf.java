@@ -27,14 +27,16 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
-import android.widget.AdapterView.AdapterContextMenuInfo;
+
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /*
  * A book catalogue application that integrates with Google Books.
@@ -95,7 +97,7 @@ public class Bookshelf extends ListActivity {
 		mDbHelper.open();
 		fillBookshelves();
 		registerForContextMenu(getListView());
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 	}
 	
 	/**
@@ -104,7 +106,7 @@ public class Bookshelf extends ListActivity {
 	@Override 
 	public void onResume() {
 		super.onResume();
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
 	}
 
 	private void fillBookshelves() {

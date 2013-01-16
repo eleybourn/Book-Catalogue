@@ -1,78 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-	android:id="@+id/edit_series_list_wrapper"
-	android:orientation="vertical"
-	android:layout_width="fill_parent" 
-	android:layout_height="wrap_content"
-	android:paddingLeft="5sp"
-	android:background="#2d2d2d">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/background_grey"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/padding_border" >
 
-  	<TextView android:id="@+id/title_label" 
-  		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content" 
-		android:hint="Label"
-		android:layout_weight="2"
-		android:layout_alignParentTop="true"
-  		android:textSize="12sp" />
-  	<TextView android:id="@+id/title" 
-  		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content" 
-		android:layout_weight="2"
-		android:layout_below="@+id/title_label"
-		android:hint="@string/title"
-  		android:textSize="16sp" />
+    <TextView
+        android:id="@+id/title_label"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:hint="Label"
+        android:textSize="12sp" 
+        tools:ignore="HardcodedText"/>
 
-	<LinearLayout	 android:id="@+id/top_buttons" 
-		android:gravity="top" 
-		android:orientation="horizontal"
-		android:layout_width="fill_parent" 
-		android:layout_below="@+id/title"
-		android:layout_height="wrap_content" 
-		>
-		<AutoCompleteTextView android:id="@+id/series" 
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content" 
-			android:layout_weight="2"
-			android:hint="@string/series"
-			android:inputType="textCapWords"
-			android:completionThreshold="2"
-			android:paddingLeft="5sp"
-			/>
-		<!--
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title_label"
+        android:hint="@string/title"
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:id="@+id/top_buttons"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:gravity="top"
+        android:orientation="horizontal" >
+
+        <AutoCompleteTextView
+            android:id="@+id/series"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:completionThreshold="2"
+            android:hint="@string/series"
+            android:inputType="textCapWords"
+            android:paddingLeft="@dimen/padding_border" />
+        <!--
 			Removed:
 		 			android:inputType="numberDecimal"
-		 	based on user feedback (Issue 233)
-		 -->
-		<EditText android:id="@+id/series_num" 
-			android:layout_width="150sp"
-			android:layout_height="fill_parent"
-			android:singleLine="true"
-			android:gravity="left"
-			android:hint="@string/series_num"
-			
-			android:layout_toRightOf="@+id/series"
-			android:layout_toLeftOf="@+id/add"
-			android:layout_weight="1"
-			/>
-		
-	</LinearLayout>
+		 	based on user feedback (Issue 233)
+        -->
 
-	<LinearLayout	 android:id="@+id/bottom_buttons" 
-		android:orientation="horizontal"
-		android:layout_height="60sp" 
-		android:layout_width="fill_parent" 
-		android:layout_below="@+id/top_buttons"
-		>
-		<Button android:id="@+id/confirm" 
-			android:text="@string/save"
-			android:width="150sp"
-			android:layout_width="wrap_content"
-			android:layout_height="fill_parent" />
-		
-		<Button android:id="@+id/cancel" 
-			android:text="@string/cancel"
-			android:width="150sp"
-			android:layout_width="wrap_content"
-			android:layout_height="fill_parent" />
-	</LinearLayout>
+        <EditText
+            android:id="@+id/series_num"
+            android:layout_width="150sp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:hint="@string/series_num"
+            android:singleLine="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bottom_buttons"
+        android:layout_width="fill_parent"
+        android:layout_height="60sp"
+        android:layout_below="@+id/top_buttons"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/cancel"
+	        android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/cancel" />
+
+        <Button
+            android:id="@+id/confirm"
+            android:layout_height="wrap_content"
+	        android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@string/save" />
+    </LinearLayout>
+
 </RelativeLayout>

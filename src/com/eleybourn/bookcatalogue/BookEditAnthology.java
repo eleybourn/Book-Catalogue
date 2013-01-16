@@ -30,8 +30,6 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
 
-import com.eleybourn.bookcatalogue.CatalogueDBAdapter.AnthologyTitleExistsException;
-
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
@@ -39,11 +37,12 @@ import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -54,7 +53,10 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.AdapterContextMenuInfo;
+
+import com.eleybourn.bookcatalogue.CatalogueDBAdapter.AnthologyTitleExistsException;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 public class BookEditAnthology extends ListActivity {
 	
@@ -211,6 +213,8 @@ public class BookEditAnthology extends ListActivity {
 		
 		fillAnthology();
 		
+		// Setup the background
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 	}
 	
 	public void fillAnthology(int scroll_to_id) {

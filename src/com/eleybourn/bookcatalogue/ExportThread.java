@@ -5,19 +5,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnDismissListener;
-import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
-import android.os.Message;
-import android.widget.Toast;
+
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
-import com.eleybourn.bookcatalogue.messaging.MessageSwitch;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.StorageUtils;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Class to handle export in a separate thread.
@@ -41,12 +35,8 @@ public class ExportThread extends ManagedTask {
 	}
 
 	@Override
-	protected void onFinish() {
-		try {
-			sendOnFinish();
-		} finally {
-			cleanup();
-		}
+	protected void onThreadFinish() {
+		cleanup();
 	}
 	
 	@Override

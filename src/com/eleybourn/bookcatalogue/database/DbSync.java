@@ -30,10 +30,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteCursor;
 import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQuery;
 import android.database.sqlite.SQLiteStatement;
-import android.database.sqlite.SQLiteDatabase.CursorFactory;
 
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer.LockTypes;
@@ -208,9 +208,7 @@ public class DbSync {
 			// Synchronize with other code
 			mLock.lock();
 			try {
-				int i = 0;
 				while (true) {
-					i++;
 					// Cleanup any old threads that are dead.
 					purgeOldLocks();
 					//System.out.println(t.getName() + " requesting EXCLUSIVE lock with " + mSharedOwners.size() + " shared locks (attempt #" + i + ")");
@@ -245,7 +243,7 @@ public class DbSync {
 		 * Release the lock previously taken
 		 */
 		public void releaseExclusiveLock() {
-			final Thread t = Thread.currentThread();
+			//final Thread t = Thread.currentThread();
 			//System.out.println(t.getName() + " releasing EXCLUSIVE lock");
 			if (!mLock.isHeldByCurrentThread())
 				throw new RuntimeException("Exclusive Lock is not held by this thread");
@@ -299,16 +297,20 @@ public class DbSync {
 		 * @return			The opened database
 		 */
 		private SQLiteDatabase openWithRetries(DbOpener opener) {
-			SyncLock l = mSync.getExclusiveLock();
-			try {
-				int wait = 10;
-				int retriesLeft = 5;
+				int wait = 10; // 10ms
+				//int retriesLeft = 5; // up to 320ms
+				int retriesLeft = 10; // 2^10 * 10ms = 10.24sec (actually 2x that due to total wait time)
 				SQLiteDatabase db = null;
 				do {
+					SyncLock l = mSync.getExclusiveLock();
 					try {
 						db = opener.open();	
 						return db;
 					} catch (Exception e) {
+						if (l != null) {
+							l.unlock();
+							l = null;
+						}
 						if (retriesLeft == 0) {
 							throw new RuntimeException("Unable to open database, retries exhausted", e);
 						}
@@ -321,11 +323,13 @@ public class DbSync {
 						} catch (InterruptedException e1) {
 							throw new RuntimeException("Unable to open database, interrupted", e1);							
 						}
-					}
+					} finally {
+						if (l != null) {
+							l.unlock();
+							l = null;
+						}
+					}				
 				} while (true);
-			} finally {
-				l.unlock();
-			}				
 			
 		}
 		/**

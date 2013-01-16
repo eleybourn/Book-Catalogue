@@ -19,8 +19,34 @@
  */
 package com.eleybourn.bookcatalogue;
 
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_AUTHOR_NAME;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_BOOK;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_BOOK_UUID;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_DESCRIPTION;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_DOCID;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_GENRE;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_GOODREADS_BOOK_ID;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ID;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ISBN;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LAST_GOODREADS_SYNC_DATE;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LAST_UPDATE_DATE;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LOCATION;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_NOTES;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_PUBLISHER;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_SERIES_NAME;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_SERIES_NUM;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_STYLE;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_TITLE;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_ANTHOLOGY;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_AUTHORS;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOKS;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOKS_FTS;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOK_AUTHOR;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOK_LIST_STYLES;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOK_SERIES;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_SERIES;
+
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -30,17 +56,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
-import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
-import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.*;
-import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedStatement;
-import com.eleybourn.bookcatalogue.database.DbUtils.TableDefinition;
-import com.eleybourn.bookcatalogue.database.SerializationUtils;
-import com.eleybourn.bookcatalogue.database.SqlStatementManager;
-import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedDb;
-import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer;
-import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer.SyncLock;
-
 import android.app.SearchManager;
 import android.content.ContentValues;
 import android.content.Context;
@@ -49,19 +64,36 @@ import android.database.CursorIndexOutOfBoundsException;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteDoneException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQuery;
-import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.widget.ImageView;
 
+import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
+import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
+import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedDb;
+import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedStatement;
+import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer;
+import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer.SyncLock;
+import com.eleybourn.bookcatalogue.database.DbUtils.TableDefinition;
+import com.eleybourn.bookcatalogue.database.SerializationUtils;
+import com.eleybourn.bookcatalogue.database.SqlStatementManager;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.StorageUtils;
+import com.eleybourn.bookcatalogue.utils.TrackedCursor;
+import com.eleybourn.bookcatalogue.utils.Utils;
+
 /**
  * Book Catalogue database access helper class. Defines the basic CRUD operations
  * for the catalogue (based on the Notepad tutorial), and gives the 
  * ability to list all books as well as retrieve or modify a specific book.
+ * 
+ * NOTE: As of 4.2, DO NOT USE OnUpgrade TO DISPLAY UPGRADE MESSAGES. Use the UpgradeMessageManager class
+ * This change separated messages from DB changes (most releases do not involve DB upgrades).
  * 
  * ENHANCE: Use date_added to add 'Recent Acquisitions' virtual shelf; need to resolve how this may relate to date_purchased and 'I own this book'...
  * 
@@ -70,7 +102,7 @@ public class CatalogueDBAdapter {
 	
 	/** Debug counter */
 	private static Integer mInstanceCount = 0;
-	
+
 	private SqlStatementManager mStatements;
 
 	/** Synchronizer to coordinate DB access. Must be STATIC so all instances share same sync */
@@ -142,8 +174,8 @@ public class CatalogueDBAdapter {
 
 	public static final String[] EMPTY_STRNG_ARRAY = new String[] {};
 
-	private DatabaseHelper mDbHelper;
-	private SynchronizedDb mDb;
+	private static DatabaseHelper mDbHelper;
+	private static SynchronizedDb mDb;
 	/** Instance of Utils created if necessary */
 	private Utils mUtils = null;
 	/** Flag indicating close() has been called */
@@ -220,60 +252,60 @@ public class CatalogueDBAdapter {
 			DOM_LAST_UPDATE_DATE.getDefinition(true) +
 			")";
 
-	private static final String DATABASE_CREATE_BOOKS_70 =
-			"create table " + DB_TB_BOOKS + 
-			" (_id integer primary key autoincrement, " +
-			/* KEY_AUTHOR + " integer not null REFERENCES " + DB_TB_AUTHORS + ", " + */
-			KEY_TITLE + " text not null, " +
-			KEY_ISBN + " text, " +
-			KEY_PUBLISHER + " text, " +
-			KEY_DATE_PUBLISHED + " date, " +
-			KEY_RATING + " float not null default 0, " +
-			KEY_READ + " boolean not null default 0, " +
-			/* KEY_SERIES + " text, " + */
-			KEY_PAGES + " int, " +
-			/* KEY_SERIES_NUM + " text, " + */
-			KEY_NOTES + " text, " +
-			KEY_LIST_PRICE + " text, " +
-			KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO + ", " + 
-			KEY_LOCATION + " text, " +
-			KEY_READ_START + " date, " +
-			KEY_READ_END + " date, " +
-			KEY_FORMAT + " text, " +
-			KEY_SIGNED + " boolean not null default 0, " +
-			KEY_DESCRIPTION + " text, " +
-			KEY_GENRE + " text, " +
-			KEY_DATE_ADDED + " datetime default current_timestamp, " +
-			DOM_GOODREADS_BOOK_ID.getDefinition(true) + ", " +
-			DOM_BOOK_UUID.getDefinition(true) +
-			")";
-
-	private static final String DATABASE_CREATE_BOOKS_69 =
-			"create table " + DB_TB_BOOKS + 
-			" (_id integer primary key autoincrement, " +
-			/* KEY_AUTHOR + " integer not null REFERENCES " + DB_TB_AUTHORS + ", " + */
-			KEY_TITLE + " text not null, " +
-			KEY_ISBN + " text, " +
-			KEY_PUBLISHER + " text, " +
-			KEY_DATE_PUBLISHED + " date, " +
-			KEY_RATING + " float not null default 0, " +
-			KEY_READ + " boolean not null default 0, " +
-			/* KEY_SERIES + " text, " + */
-			KEY_PAGES + " int, " +
-			/* KEY_SERIES_NUM + " text, " + */
-			KEY_NOTES + " text, " +
-			KEY_LIST_PRICE + " text, " +
-			KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO + ", " + 
-			KEY_LOCATION + " text, " +
-			KEY_READ_START + " date, " +
-			KEY_READ_END + " date, " +
-			KEY_FORMAT + " text, " +
-			KEY_SIGNED + " boolean not null default 0, " +
-			KEY_DESCRIPTION + " text, " +
-			KEY_GENRE + " text, " +
-			KEY_DATE_ADDED + " datetime default current_timestamp, " +
-			DOM_GOODREADS_BOOK_ID.getDefinition(true) +
-			")";
+	//private static final String DATABASE_CREATE_BOOKS_70 =
+	//		"create table " + DB_TB_BOOKS + 
+	//		" (_id integer primary key autoincrement, " +
+	//		/* KEY_AUTHOR + " integer not null REFERENCES " + DB_TB_AUTHORS + ", " + */
+	//		KEY_TITLE + " text not null, " +
+	//		KEY_ISBN + " text, " +
+	//		KEY_PUBLISHER + " text, " +
+	//		KEY_DATE_PUBLISHED + " date, " +
+	//		KEY_RATING + " float not null default 0, " +
+	//		KEY_READ + " boolean not null default 0, " +
+	//		/* KEY_SERIES + " text, " + */
+	//		KEY_PAGES + " int, " +
+	//		/* KEY_SERIES_NUM + " text, " + */
+	//		KEY_NOTES + " text, " +
+	//		KEY_LIST_PRICE + " text, " +
+	//		KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO + ", " + 
+	//		KEY_LOCATION + " text, " +
+	//		KEY_READ_START + " date, " +
+	//		KEY_READ_END + " date, " +
+	//		KEY_FORMAT + " text, " +
+	//		KEY_SIGNED + " boolean not null default 0, " +
+	//		KEY_DESCRIPTION + " text, " +
+	//		KEY_GENRE + " text, " +
+	//		KEY_DATE_ADDED + " datetime default current_timestamp, " +
+	//		DOM_GOODREADS_BOOK_ID.getDefinition(true) + ", " +
+	//		DOM_BOOK_UUID.getDefinition(true) +
+	//		")";
+	//
+	//private static final String DATABASE_CREATE_BOOKS_69 =
+	//		"create table " + DB_TB_BOOKS + 
+	//		" (_id integer primary key autoincrement, " +
+	//		/* KEY_AUTHOR + " integer not null REFERENCES " + DB_TB_AUTHORS + ", " + */
+	//		KEY_TITLE + " text not null, " +
+	//		KEY_ISBN + " text, " +
+	//		KEY_PUBLISHER + " text, " +
+	//		KEY_DATE_PUBLISHED + " date, " +
+	//		KEY_RATING + " float not null default 0, " +
+	//		KEY_READ + " boolean not null default 0, " +
+	//		/* KEY_SERIES + " text, " + */
+	//		KEY_PAGES + " int, " +
+	//		/* KEY_SERIES_NUM + " text, " + */
+	//		KEY_NOTES + " text, " +
+	//		KEY_LIST_PRICE + " text, " +
+	//		KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO + ", " + 
+	//		KEY_LOCATION + " text, " +
+	//		KEY_READ_START + " date, " +
+	//		KEY_READ_END + " date, " +
+	//		KEY_FORMAT + " text, " +
+	//		KEY_SIGNED + " boolean not null default 0, " +
+	//		KEY_DESCRIPTION + " text, " +
+	//		KEY_GENRE + " text, " +
+	//		KEY_DATE_ADDED + " datetime default current_timestamp, " +
+	//		DOM_GOODREADS_BOOK_ID.getDefinition(true) +
+	//		")";
 
 	private static final String DATABASE_CREATE_BOOKS_68 =
 			"create table " + DB_TB_BOOKS + 
@@ -545,10 +577,21 @@ public class CatalogueDBAdapter {
 	 * @author evan
 	 */
 	private static class DatabaseHelper extends SQLiteOpenHelper {
+		private static boolean mDbWasCreated;
+
 		DatabaseHelper(Context context) {
 			super(context, StorageUtils.getDatabaseName(), mTrackedCursorFactory, DATABASE_VERSION);
 		}
-		
+
+		/**
+		 * Return a boolean indicating if this was a new install
+		 * 
+		 * @return
+		 */
+		public boolean isNewInstall() {
+			return mDbWasCreated;
+		}
+
 		/**
 		 * This function is called when the database is first created
 		 * 
@@ -556,6 +599,7 @@ public class CatalogueDBAdapter {
 		 */
 		@Override
 		public void onCreate(SQLiteDatabase db) {
+			mDbWasCreated = true;
 			db.execSQL(DATABASE_CREATE_AUTHORS);
 			db.execSQL(DATABASE_CREATE_BOOKSHELF);
 			db.execSQL(DATABASE_CREATE_BOOKS);
@@ -646,6 +690,8 @@ public class CatalogueDBAdapter {
 		 * This function is called each time the database is upgraded. The function will run all 
 		 * upgrade scripts between the oldVersion and the newVersion. 
 		 * 
+		 * NOTE: As of 4.2, DO NOT USE OnUpgrade TO DISPLAY UPGRADE MESSAGES. See header for details.
+		 * 
 		 * @see DATABASE_VERSION
 		 * @param db The database to be upgraded
 		 * @param oldVersion The current version number of the database
@@ -653,6 +699,8 @@ public class CatalogueDBAdapter {
 		 */
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+			mDbWasCreated = false;
+
 			int curVersion = oldVersion;
 			
 			StartupActivity startup = StartupActivity.getActiveActivity();
@@ -1518,6 +1566,11 @@ public class CatalogueDBAdapter {
 				message += "* Better handling of the 'back' key when editing books (filipeximenes)\n";
 				message += "* Various bug fixes\n";
 			}
+			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			// vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+			// NOTE: As of 4.2, DO NOT USE OnUpgrade TO DISPLAY UPGRADE MESSAGES. See header for details.
+			// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 			// Rebuild all indices
 			createIndices(db);
@@ -1597,7 +1650,8 @@ public class CatalogueDBAdapter {
 			mInstanceCount++;
 			System.out.println("CatDBA instances: " + mInstanceCount);
 		}
-		mDbHelper = new DatabaseHelper(ctx);
+		if (mDbHelper == null)
+			mDbHelper = new DatabaseHelper(ctx);
 	}
 	
 	/**
@@ -1611,10 +1665,12 @@ public class CatalogueDBAdapter {
 	public CatalogueDBAdapter open() throws SQLException {
 		/* Create the bookCatalogue directory if it does not exist */
 		StorageUtils.getSharedStorage();
-		// Get the DB wrapper
-		mDb = new SynchronizedDb(mDbHelper, mSynchronizer);
-		// Turn on foreign key support so that CASCADE works.
-		mDb.execSQL("PRAGMA foreign_keys = ON");
+		if (mDb == null) {
+			// Get the DB wrapper
+			mDb = new SynchronizedDb(mDbHelper, mSynchronizer);
+			// Turn on foreign key support so that CASCADE works.
+			mDb.execSQL("PRAGMA foreign_keys = ON");
+		}
 		//mDb.execSQL("PRAGMA temp_store = FILE");
 		mStatements = new SqlStatementManager(mDb);
 
@@ -1640,8 +1696,8 @@ public class CatalogueDBAdapter {
 		if (!mCloseWasCalled) {
 			mCloseWasCalled = true;
 
-			try { mStatements.close(); } catch (Exception e) { Logger.logError(e); }
-			try { mDbHelper.close(); } catch (Exception e) { Logger.logError(e); }
+			try { if (mStatements != null) mStatements.close(); } catch (Exception e) { Logger.logError(e); }
+			//try { mDbHelper.close(); } catch (Exception e) { Logger.logError(e); }
 			try { if (mUtils != null) mUtils.close(); } catch (Exception e) { Logger.logError(e); }
 
 			synchronized(mInstanceCount) {
@@ -3378,7 +3434,7 @@ public class CatalogueDBAdapter {
 				values.putString(KEY_DATE_ADDED, Utils.toSqlDateTime(new Date()));
 
 			// Make sure we have an author
-			ArrayList<Author> authors = (ArrayList<Author>) values.getSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
+			ArrayList<Author> authors = Utils.getAuthorsFromBundle(values);
 			if (authors == null || authors.size() == 0)
 				throw new IllegalArgumentException();
 			ContentValues initialValues = filterValues(values, mBooksInfo);
@@ -3398,7 +3454,7 @@ public class CatalogueDBAdapter {
 			}
 
 			createBookAuthors(rowId, authors);
-			ArrayList<Series> series = (ArrayList<Series>) values.getSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY);
+			ArrayList<Series> series = Utils.getSeriesFromBundle(values);
 			createBookSeries(rowId, series);
 
 			try {
@@ -3927,11 +3983,11 @@ public class CatalogueDBAdapter {
 			}
 
 			if (values.containsKey(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)) {
-				ArrayList<Author> authors = (ArrayList<Author>) values.getSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY);
+				ArrayList<Author> authors = Utils.getAuthorsFromBundle(values);
 				createBookAuthors(rowId, authors);			
 			}
 			if (values.containsKey(CatalogueDBAdapter.KEY_SERIES_ARRAY)) {
-				ArrayList<Series> series = (ArrayList<Series>) values.getSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY);
+				ArrayList<Series> series = Utils.getSeriesFromBundle(values);
 				createBookSeries(rowId, series);			
 			}
 
@@ -4406,8 +4462,7 @@ public class CatalogueDBAdapter {
 		}
 
 		if (uuid != null && !uuid.equals("")) {
-			int delCount = getUtils().eraseCachedBookCover(uuid);
-			//System.out.println(delCount + " cached images deleted");
+			getUtils().eraseCachedBookCover(uuid);
 		}
 
 		return success;
@@ -5597,4 +5652,14 @@ public class CatalogueDBAdapter {
 	public static Synchronizer getSynchronizer() {
 		return mSynchronizer;
 	}
+
+	/**
+	 * Return a boolean indicating this instance was a new installation
+	 *
+	 * @return
+	 */
+	public boolean isNewInstall() {
+		return mDbHelper.isNewInstall();
+	}
 }
+

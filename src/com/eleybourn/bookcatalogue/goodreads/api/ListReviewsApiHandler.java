@@ -20,6 +20,36 @@
 
 package com.eleybourn.bookcatalogue.goodreads.api;
 
+import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.ADDED;
+import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.AUTHORS;
+import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.DB_AUTHOR_ID;
+import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.DB_AUTHOR_NAME;
+import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.DB_DESCRIPTION;
+import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.DB_FORMAT;
+import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.DB_ISBN;
+import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.DB_NOTES;
+import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.DB_PAGES;
+import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.DB_PUBLISHER;
+import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.DB_RATING;
+import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.DB_READ_END;
+import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.DB_READ_START;
+import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.DB_TITLE;
+import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.END;
+import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.GR_BOOK_ID;
+import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.GR_REVIEW_ID;
+import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.ISBN13;
+import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.LARGE_IMAGE;
+import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.PUB_DAY;
+import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.PUB_MONTH;
+import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.PUB_YEAR;
+import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.REVIEWS;
+import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.SHELF;
+import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.SHELVES;
+import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.SMALL_IMAGE;
+import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.START;
+import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.TOTAL;
+import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.UPDATED;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -34,15 +64,14 @@ import org.apache.http.client.methods.HttpGet;
 import android.os.Bundle;
 
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
-import com.eleybourn.bookcatalogue.Utils;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.BookNotFoundException;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
-import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.*;
-import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.*;
-
-import com.eleybourn.bookcatalogue.goodreads.api.XmlFilter.ElementContext;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NotAuthorizedException;
 import com.eleybourn.bookcatalogue.goodreads.api.SimpleXmlFilter.BuilderContext;
 import com.eleybourn.bookcatalogue.goodreads.api.SimpleXmlFilter.XmlListener;
+import com.eleybourn.bookcatalogue.goodreads.api.XmlFilter.ElementContext;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Class to implement the reviews.list api call. It queries based on the passed parameters and returns

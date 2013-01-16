@@ -1,118 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
-	android:orientation="vertical">
-	<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:layout_marginBottom="50dip">
-		<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-			android:layout_width="fill_parent"
-			android:layout_height="fill_parent"
-			android:orientation="vertical"
-			android:padding="10sp">
-			
-			<CheckBox android:id="@+id/read" 
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content" 
-				android:layout_weight="1"
-				android:text="@string/read"
-				/>
-			
-			<TextView android:id="@+id/rating_label" 
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content" 
-				android:text="@string/rating" 
-				android:textSize="16sp" />
-			<RatingBar android:id="@+id/rating" 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content" 
-				android:layout_weight="1"
-				android:numStars="5"
-				/>
-			
-			<EditText android:id="@+id/notes" 
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content" 
-				android:layout_weight="1"
-				android:hint="@string/notes"
-				android:capitalize="sentences"
-				/>
-			
-			<CheckBox android:id="@+id/signed" 
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content" 
-				android:layout_weight="1"
-				android:text="@string/signed"
-				/>
-			
-			<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content"
-				android:orientation="horizontal"
-				>
-				<Button android:id="@+id/read_start_button" 
-					android:layout_width="120dip"
-					android:layout_height="wrap_content" 
-					android:text="@string/read_start"
-					/>
-				<TextView android:id="@+id/read_start" 
-					android:layout_width="fill_parent"
-					android:layout_height="wrap_content" 
-					android:text="@string/notset" 
-					android:textAppearance="?android:attr/textAppearanceMedium"
-					/>
-			</LinearLayout>
-			
-			<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content"
-				android:orientation="horizontal"
-				>
-				<Button android:id="@+id/read_end_button" 
-					android:layout_width="120dip"
-					android:layout_height="wrap_content" 
-					android:text="@string/read_end"
-					/>
-				<TextView android:id="@+id/read_end" 
-					android:layout_width="fill_parent"
-					android:layout_height="wrap_content" 
-					android:text="@string/notset" 
-					android:textAppearance="?android:attr/textAppearanceMedium"
-					/>
-			</LinearLayout>
-				
-			<AutoCompleteTextView android:id="@+id/location" 
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content" 
-				android:layout_weight="1"
-				android:hint="@string/location_of_book"
-				android:inputType="textCapWords"
-				android:completionThreshold="2"
-				/>
-			
-		</LinearLayout>
-	</ScrollView>
-			
-	<LinearLayout	
-		android:layout_marginTop="-50dip" 
-		android:gravity="bottom" 
-		android:orientation="horizontal"
-		android:layout_height="wrap_content" 
-		android:layout_width="fill_parent">
-		<Button android:id="@+id/confirm" 
-			android:text="@string/confirm_add"
-			android:width="150sp"
-			android:layout_width="wrap_content"
-			android:layout_height="fill_parent" />
-		
-		<Button android:id="@+id/cancel" 
-			android:text="@string/cancel"
-			android:width="150sp"
-			android:layout_width="wrap_content"
-			android:layout_height="fill_parent" />
-	</LinearLayout>
+    android:id="@+id/root"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dip" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp" >
+
+            <CheckBox
+                android:id="@+id/read"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/read" />
+
+            <TextView
+                android:id="@+id/rating_label"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/rating"
+                android:textSize="16sp" />
+
+            <RatingBar
+                android:id="@+id/rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:numStars="5" />
+
+            <EditText
+                android:id="@+id/notes"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/notes"
+                android:inputType="textCapSentences" />
+
+            <CheckBox
+                android:id="@+id/signed"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/signed" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <Button
+                    android:id="@+id/read_start_button"
+                    android:layout_width="120dip"
+                    android:layout_height="wrap_content"
+                    android:text="@string/read_start" />
+
+                <TextView
+                    android:id="@+id/read_start"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/notset"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <Button
+                    android:id="@+id/read_end_button"
+                    android:layout_width="120dip"
+                    android:layout_height="wrap_content"
+                    android:text="@string/read_end" />
+
+                <TextView
+                    android:id="@+id/read_end"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/notset"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+            </LinearLayout>
+
+            <AutoCompleteTextView
+                android:id="@+id/location"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:completionThreshold="2"
+                android:hint="@string/location_of_book"
+                android:inputType="textCapWords" />
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-50dip"
+        android:gravity="bottom"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="@string/cancel"
+            android:width="0dp" />
+
+        <Button
+            android:id="@+id/confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="@string/confirm_add"
+            android:width="0dp" />
+    </LinearLayout>
+
 </LinearLayout>
-	

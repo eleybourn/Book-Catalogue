@@ -23,14 +23,7 @@ package com.eleybourn.bookcatalogue;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
-import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
-import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
-import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
-import com.eleybourn.bookcatalogue.goodreads.SendOneBookTask;
-
 import net.philipwarner.taskqueue.QueueManager;
-
 import android.app.AlertDialog;
 import android.app.ExpandableListActivity;
 import android.app.SearchManager;
@@ -42,21 +35,22 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteCursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Debug;
 import android.view.ContextMenu;
-import android.view.KeyEvent;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
+import android.widget.ExpandableListView.OnGroupCollapseListener;
+import android.widget.ExpandableListView.OnGroupExpandListener;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -65,10 +59,17 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
-import android.widget.ExpandableListView.OnGroupCollapseListener;
-import android.widget.ExpandableListView.OnGroupExpandListener;
+
+import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
+import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
+import com.eleybourn.bookcatalogue.goodreads.SendOneBookTask;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue;
+import com.eleybourn.bookcatalogue.utils.Utils;
+import com.eleybourn.bookcatalogue.utils.ViewTagger;
+import com.eleybourn.bookcatalogue.widgets.FastScrollExpandableListView;
 
 /*
  * A book catalogue application that integrates with Google Books.
@@ -82,20 +83,13 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 	private static final int SORT_BY_AUTHOR_EXPANDED = MenuHandler.FIRST + 1; 
 	private static final int SORT_BY_AUTHOR_COLLAPSED = MenuHandler.FIRST + 2;
 	private static final int SORT_BY = MenuHandler.FIRST + 3; 
-	private static final int INSERT_ID = MenuHandler.FIRST + 4;
-	private static final int INSERT_ISBN_ID = MenuHandler.FIRST + 5;
-	private static final int INSERT_BARCODE_ID = MenuHandler.FIRST + 6;
 	private static final int DELETE_ID = MenuHandler.FIRST + 7;
-	private static final int ADMIN = MenuHandler.FIRST + 9;
 	private static final int EDIT_BOOK = MenuHandler.FIRST + 10;
 	private static final int EDIT_BOOK_NOTES = MenuHandler.FIRST + 11;
 	private static final int EDIT_BOOK_FRIENDS = MenuHandler.FIRST + 12;
-	private static final int SEARCH = MenuHandler.FIRST + 13;
-	private static final int INSERT_NAME_ID = MenuHandler.FIRST + 14;
 	private static final int DELETE_SERIES_ID = MenuHandler.FIRST + 15;
 	private static final int EDIT_AUTHOR_ID = MenuHandler.FIRST + 16;
 	private static final int EDIT_SERIES_ID = MenuHandler.FIRST + 17;
-	private static final int INSERT_PARENT_ID = MenuHandler.FIRST + 18;
 	private static final int EDIT_BOOK_SEND_TO_GR = MenuHandler.FIRST + 19;
 	
 	private String bookshelf = "";
@@ -171,8 +165,6 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 	//private static final String STATE_BOOKSHELF = "state_bookshelf"; 
 	private static final String STATE_CURRENT_GROUP_COUNT = "state_current_group_count"; 
 	private static final String STATE_CURRENT_GROUP = "state_current_group"; 
-	private static final String STATE_OPENED = "state_opened";
-	private static final int BACKUP_PROMPT_WAIT = 5;
 
 	/** 
 	 * Called when the activity is first created. 
@@ -1606,7 +1598,7 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 	public boolean onChildClick(ExpandableListView l, View v, int position, int childPosition, long id) {
 		boolean result = super.onChildClick(l, v, position, childPosition, id);
 		adjustCurrentGroup(position, 1, true, false);
-		BookEdit.editBook(this, id, BookEdit.TAB_EDIT);
+		BookEdit.openBook(this, id);
 		return result;
 	}
 	

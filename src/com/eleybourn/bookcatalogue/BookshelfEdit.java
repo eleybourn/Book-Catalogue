@@ -26,6 +26,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.eleybourn.bookcatalogue.utils.Logger;
+
 public class BookshelfEdit extends Activity {
 
 	private EditText mBookshelfText;

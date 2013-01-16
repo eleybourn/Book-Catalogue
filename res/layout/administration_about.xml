@@ -1,141 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-    android:id="@+id/root" 
-	android:orientation="vertical"
-	android:layout_width="fill_parent" 
-	android:layout_height="fill_parent"
-	android:paddingLeft="5sp"
-	android:background="@drawable/bc_background_gradient_dim"
-	>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/bc_background_gradient_dim"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/padding_border" >
 
-	<TextView android:id="@+id/app_name" 
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content" 
-		android:textAppearance="?android:attr/textAppearanceLarge"
-		android:text="@+string/app_name"
-		/>
-	
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-		android:orientation="horizontal"
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content"
-		android:paddingLeft="5sp">
-		<TextView android:id="@+id/version_label" 
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content" 
-			android:textAppearance="?android:attr/textAppearanceMedium"
-			android:text="@+string/version_number"
-			/>
-		<TextView android:id="@+id/version_label" 
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content" 
-			android:textAppearance="?android:attr/textAppearanceMedium"
-			android:text=": "
-			/>
-		<TextView android:id="@+id/version" 
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content" 
-			android:color="#cccccc"
-			android:paddingLeft="5sp"
-			android:textAppearance="?android:attr/textAppearanceMedium"
-			android:paddingBottom="5sp"
-			/>
-	</LinearLayout>
-	
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-		android:orientation="horizontal"
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content"
-		android:paddingLeft="5sp">
-		<TextView android:id="@+id/webpage_label" 
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content" 
-			android:textAppearance="?android:attr/textAppearanceMedium"
-			android:text="@+string/webpage_label"
-			/>
-		<TextView android:id="@+id/webpage_colon" 
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content" 
-			android:text=": "
-			/>
-	</LinearLayout>
-	<TextView android:id="@+id/webpage" 
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content" 
-		android:color="#cccccc"
-		android:paddingLeft="15sp"
-		android:paddingBottom="5sp"
-		android:text="@+string/webpage"
-			android:textAppearance="?android:attr/textAppearanceMedium"
-		android:textColor="#006699"
-		/>
-	
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-		android:orientation="horizontal"
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content"
-		android:paddingLeft="5sp">
-		<TextView android:id="@+id/sourcecode_label" 
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content" 
-			android:textAppearance="?android:attr/textAppearanceMedium"
-			android:text="@+string/sourcecode_label"
-			/>
-		<TextView android:id="@+id/sourcecode_colon" 
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content" 
-			android:textAppearance="?android:attr/textAppearanceMedium"
-			android:text=": "
-			/>
-	</LinearLayout>
-	<TextView android:id="@+id/sourcecode" 
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content" 
-		android:color="#cccccc"
-		android:paddingLeft="15sp"
-		android:paddingBottom="5sp"
-		android:text="@+string/sourcecode"
-		android:textAppearance="?android:attr/textAppearanceMedium"
-		android:textColor="#006699"
-		/>
-	
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-		android:orientation="horizontal"
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content"
-		android:paddingLeft="5sp">
-		<TextView android:id="@+id/contact1_label" 
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content" 
-			android:textAppearance="?android:attr/textAppearanceMedium"
-			android:text="@+string/contact_label"
-			/>
-		<TextView android:id="@+id/contact1_colon" 
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content" 
-			android:textAppearance="?android:attr/textAppearanceMedium"
-			android:text=": "
-			/>
-	</LinearLayout>
-	<TextView android:id="@+id/contact1" 
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content" 
-		android:color="#cccccc"
-		android:paddingLeft="15sp"
-		android:paddingBottom="5sp"
-		android:text="@+string/contact1"
-		android:textAppearance="?android:attr/textAppearanceMedium"
-		android:textColor="#006699"
-		/>
-	<TextView android:id="@+id/contact2" 
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content" 
-		android:color="#cccccc"
-		android:paddingLeft="15sp"
-		android:paddingBottom="5sp"
-		android:text="@+string/contact2"
-			android:textAppearance="?android:attr/textAppearanceMedium"
-		android:textColor="#006699"
-		/>
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/padding_border" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/version_number"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/version"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/padding_border"
+            android:paddingLeft="@dimen/padding_border"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/padding_border"
+        android:text="@string/webpage_label"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/webpage"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/padding_border"
+        android:paddingLeft="15dp"
+        android:text="@string/webpage"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/link_blue" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/padding_border"
+        android:text="@string/sourcecode_label"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/sourcecode"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/padding_border"
+        android:paddingLeft="15dp"
+        android:text="@string/sourcecode"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/link_blue" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/padding_border"
+        android:text="@string/contact_label"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/contact1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/padding_border"
+        android:paddingLeft="15dp"
+        android:text="@string/contact1"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/link_blue" />
+
+    <TextView
+        android:id="@+id/contact2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/padding_border"
+        android:paddingLeft="15dp"
+        android:text="@string/contact2"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/link_blue" />
 
 </LinearLayout>

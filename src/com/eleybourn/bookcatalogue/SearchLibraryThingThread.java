@@ -1,11 +1,13 @@
 package com.eleybourn.bookcatalogue;
 
+import com.eleybourn.bookcatalogue.utils.Logger;
+
 
 public class SearchLibraryThingThread extends SearchThread {
 
 	public SearchLibraryThingThread(TaskManager manager,
-			SearchTaskHandler taskHandler, String author, String title, String isbn, boolean fetchThumbnail) {
-		super(manager, taskHandler, author, title, isbn, fetchThumbnail);
+			String author, String title, String isbn, boolean fetchThumbnail) {
+		super(manager, author, title, isbn, fetchThumbnail);
 	}
 
 	@Override

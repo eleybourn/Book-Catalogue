@@ -23,18 +23,19 @@ package com.eleybourn.bookcatalogue;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import net.philipwarner.taskqueue.QueueManager;
 
+import net.philipwarner.taskqueue.QueueManager;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.DialogInterface.OnDismissListener;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 
+import com.eleybourn.bookcatalogue.booklist.BooklistStyles;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogFileItem;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogItem;
@@ -43,6 +44,10 @@ import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsRegister;
 import com.eleybourn.bookcatalogue.goodreads.ImportAllTask;
 import com.eleybourn.bookcatalogue.goodreads.SendAllBooksTask;
+import com.eleybourn.bookcatalogue.utils.HintManager;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.StorageUtils;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * 
@@ -86,7 +91,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 				}				
 			}
 			setupAdmin();
-			Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
+			Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
@@ -323,6 +328,39 @@ public class AdministrationFunctions extends ActivityWithTasks {
 				return;
 			}
 		});
+
+		// Edit Book list styles
+		{
+			View v = findViewById(R.id.edit_styles_label);
+			// Make line flash when clicked.
+			v.setBackgroundResource(android.R.drawable.list_selector_background);
+			v.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					BooklistStyles.startEditActivity(AdministrationFunctions.this);
+				}
+			});
+		}
+		
+		// Erase cover cache
+		{
+			View v = findViewById(R.id.erase_cover_cache_label);
+			// Make line flash when clicked.
+			v.setBackgroundResource(android.R.drawable.list_selector_background);
+			v.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Utils utils = new Utils();
+					try {
+						utils.eraseCoverCache();					
+					} finally {
+						utils.close();
+					}
+					return;
+				}
+			});
+		}
+
 	}
 
 	/**
@@ -483,7 +521,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	 * return void
 	 */
 	public void exportData() {
-		ExportThread thread = new ExportThread(mTaskManager);
+		ExportThread thread = new ExportThread(getTaskManager());
 		thread.start();
 	}
 
@@ -525,7 +563,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	private void importData(String filespec) {
 		ImportThread thread;
 		try {
-			thread = new ImportThread(mTaskManager, filespec);
+			thread = new ImportThread(getTaskManager(), filespec);
 		} catch (IOException e) {
 			Logger.logError(e);
 			Toast.makeText(this, getString(R.string.problem_starting_import_arg, e.getMessage()), Toast.LENGTH_LONG).show();
@@ -558,7 +596,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	@Override 
 	public void onResume() {
 		super.onResume();
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 		if (mExportOnStartup)
 			exportData();
 	}
@@ -584,7 +622,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 		AlertDialog alertDialog = new AlertDialog.Builder(AdministrationFunctions.this).create();
 		alertDialog.setTitle(R.string.email_export);
 		alertDialog.setIcon(android.R.drawable.ic_menu_send);
-		alertDialog.setButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+		alertDialog.setButton2(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				// setup the mail message
 				final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND_MULTIPLE);
@@ -611,7 +649,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 				dialog.dismiss();
 			}
 		}); 
-		alertDialog.setButton2(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+		alertDialog.setButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				//do nothing
 				dialog.dismiss();

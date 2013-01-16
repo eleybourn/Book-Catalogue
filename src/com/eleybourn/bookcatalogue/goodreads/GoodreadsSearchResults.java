@@ -22,25 +22,25 @@ package com.eleybourn.bookcatalogue.goodreads;
 
 import java.util.ArrayList;
 
-import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
-import com.eleybourn.bookcatalogue.Logger;
-import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.SimpleTaskQueue;
-import com.eleybourn.bookcatalogue.Utils;
-import com.eleybourn.bookcatalogue.ViewTagger;
-import com.eleybourn.bookcatalogue.goodreads.api.SearchBooksApiHandler;
-
 import android.app.ListActivity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
+import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.goodreads.api.SearchBooksApiHandler;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue;
+import com.eleybourn.bookcatalogue.utils.Utils;
+import com.eleybourn.bookcatalogue.utils.ViewTagger;
 
 /**
  * Search goodreads for a book and display the list of results. Use background tasks to get thumbnails and update when retrieved.
@@ -87,7 +87,7 @@ public class GoodreadsSearchResults extends ListActivity {
 			finish();
 			return;
 		}
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
 	}
 
 	/**
@@ -96,7 +96,7 @@ public class GoodreadsSearchResults extends ListActivity {
 	@Override 
 	public void onResume() {
 		super.onResume();
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this);		
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
 	}
 
 	/**

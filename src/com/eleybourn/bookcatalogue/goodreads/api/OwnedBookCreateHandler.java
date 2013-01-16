@@ -36,10 +36,10 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import android.content.res.Resources.NotFoundException;
-
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
-import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.*;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.BookNotFoundException;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NotAuthorizedException;
 
 /**
  * TODO: OwnedBookCreateHandler WORK IN PROGRESS
@@ -89,8 +89,8 @@ public class OwnedBookCreateHandler extends ApiHandler {
 
 		StringBuilder m_builder = new StringBuilder();
 		int m_bookId = 0;
-		int m_ownedBookId = 0;
-		int m_workId = 0;
+		//int m_ownedBookId = 0;
+		//int m_workId = 0;
 
 		@Override
 		public void characters(char[] ch, int start, int length) throws SAXException {
@@ -102,13 +102,13 @@ public class OwnedBookCreateHandler extends ApiHandler {
 			return m_bookId;
 		}
 
-		public int getOwnedBookId() {
-			return m_ownedBookId;
-		}
-
-		public int getWorkId() {
-			return m_workId;
-		}
+		//public int getOwnedBookId() {
+		//	return m_ownedBookId;
+		//}
+		//
+		//public int getWorkId() {
+		//	return m_workId;
+		//}
 
 		@Override
 		public void startElement(String uri, String localName, String name, Attributes attributes) throws SAXException {
@@ -126,9 +126,9 @@ public class OwnedBookCreateHandler extends ApiHandler {
 			if (localName.equalsIgnoreCase(BOOK_ID)) {
 				m_bookId = Integer.parseInt( m_builder.toString() );
 			} else if (localName.equalsIgnoreCase(OWNED_BOOK_ID)) {
-				m_ownedBookId = Integer.parseInt( m_builder.toString() );				
+				//m_ownedBookId = Integer.parseInt( m_builder.toString() );				
 			} else if (localName.equalsIgnoreCase(WORK_ID)) {
-				m_workId = Integer.parseInt( m_builder.toString() );				
+				//m_workId = Integer.parseInt( m_builder.toString() );				
 			}
 
 			// Note:

@@ -20,13 +20,13 @@
 
 package com.eleybourn.bookcatalogue.booklist;
 
-import com.eleybourn.bookcatalogue.TrackedCursor;
-import com.eleybourn.bookcatalogue.Utils;
-import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer;
-
 import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQuery;
+
+import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer;
+import com.eleybourn.bookcatalogue.utils.TrackedCursor;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Cursor object that makes the underlying BooklistBuilder available to users of the Cursor, as

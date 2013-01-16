@@ -4,39 +4,28 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-	<TextView
+    <TextView
         android:id="@+id/message"
-        android:layout_marginLeft="2sp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="2dp"
         android:singleLine="false"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-	<LinearLayout 
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-	    android:orientation="vertical"
-		android:layout_marginTop="8dp"
-		android:background="#FFFFFFFF"
-	    >
-	    
-		<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
-		    android:id="@+id/scroll_view" 
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:layout_marginLeft="8dp"
-			android:layout_marginRight="8dp"
-			>
-	
-	 		<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-			    android:id="@+id/list"
-			    android:layout_width="fill_parent"
-			    android:layout_height="fill_parent"
-			    android:orientation="vertical">
-	
-			</LinearLayout>
-		</ScrollView>
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@android:color/white" >
 
-	</LinearLayout>
+        <LinearLayout
+            android:id="@+id/list"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

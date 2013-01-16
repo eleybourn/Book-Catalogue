@@ -22,7 +22,6 @@ package com.eleybourn.bookcatalogue;
 
 //import android.R;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 import android.app.Activity;
@@ -44,6 +43,8 @@ import com.eleybourn.bookcatalogue.Fields.FieldValidator;
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.dialogs.PartialDatePicker;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 
 /*
@@ -126,7 +127,7 @@ public class BookEditNotes extends Activity implements OnRestoreTabInstanceState
 
 			// Generic validators; if field-specific defaults are needed, create a new one.
 			FieldValidator booleanValidator = new Fields.BooleanValidator();
-			FieldValidator blankOrDateValidator = new Fields.OrValidator(new Fields.BlankValidator(), new Fields.DateValidator());
+			//FieldValidator blankOrDateValidator = new Fields.OrValidator(new Fields.BlankValidator(), new Fields.DateValidator());
 			FieldFormatter dateFormatter = new Fields.DateFieldFormatter();
 
 			mFields.add(R.id.rating, CatalogueDBAdapter.KEY_RATING, new Fields.FloatValidator());
@@ -144,7 +145,9 @@ public class BookEditNotes extends Activity implements OnRestoreTabInstanceState
 					showDialog(READ_START_DIALOG_ID);
 				}
 			});
-			mFields.add(R.id.read_start, CatalogueDBAdapter.KEY_READ_START, blankOrDateValidator, dateFormatter);
+			// ENHANCE: Add a partial date validator. Or not.
+			//mFields.add(R.id.read_start, CatalogueDBAdapter.KEY_READ_START, blankOrDateValidator, dateFormatter);
+			mFields.add(R.id.read_start, CatalogueDBAdapter.KEY_READ_START, null, dateFormatter);
 
 			f = mFields.add(R.id.read_end_button, "",  CatalogueDBAdapter.KEY_READ_END, null);
 			f.getView().setOnClickListener(new View.OnClickListener() {
@@ -152,7 +155,8 @@ public class BookEditNotes extends Activity implements OnRestoreTabInstanceState
 					showDialog(READ_END_DIALOG_ID);
 				}
 			});
-			f = mFields.add(R.id.read_end, CatalogueDBAdapter.KEY_READ_END, blankOrDateValidator, dateFormatter);
+			//f = mFields.add(R.id.read_end, CatalogueDBAdapter.KEY_READ_END, blankOrDateValidator, dateFormatter);
+			f = mFields.add(R.id.read_end, CatalogueDBAdapter.KEY_READ_END, null, dateFormatter);
 
 			mFields.add(R.id.signed, CatalogueDBAdapter.KEY_SIGNED,  booleanValidator);
 
@@ -237,6 +241,9 @@ public class BookEditNotes extends Activity implements OnRestoreTabInstanceState
 				public void afterFieldChange(Field field, String newValue) {
 					setDirty(true);
 				}});
+
+			// Setup the background
+			Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 			
 		} catch (Exception e) {
 			Logger.logError(e);

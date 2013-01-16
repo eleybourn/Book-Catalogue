@@ -23,6 +23,7 @@ package com.eleybourn.bookcatalogue;
 import java.nio.channels.ClosedByInterruptException;
 
 import com.eleybourn.bookcatalogue.messaging.MessageSwitch;
+import com.eleybourn.bookcatalogue.utils.Logger;
 
 /**
  * Base class for handling tasks in background while displaying a ProgressDialog.
@@ -54,7 +55,7 @@ abstract public class ManagedTask extends Thread {
 	// was executed (if necessary). TaskHandler objects will be cleared by the disconnect() call
 	// and reset by the reconnect() call.
 	//
-	abstract protected void onFinish();
+	abstract protected void onThreadFinish();
 	// Called to do the main thread work. Can use doProgress() and doToast() to display messages.
 	abstract protected void onRun() throws InterruptedException, ClosedByInterruptException;
 
@@ -121,17 +122,19 @@ abstract public class ManagedTask extends Thread {
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
-		doFinish();
-	}
 
-	/**
-	 * Called in UI thread to call the onFinish() method and, if successful,
-	 * tell the task manager it has ended.
-	 */
-	private void doFinish() {
 		mFinished = true;
-		onFinish();
-		mManager.taskEnded(this);
+		// Let the implementation know it is finished
+		onThreadFinish();
+
+		// Queue the 'onTaskFinished' message; this should also inform the TaskManager
+		mMessageSwitch.send(mMessageSenderId, new MessageSwitch.Message<TaskListener>() {
+			@Override
+			public boolean deliver(TaskListener listener) {
+				listener.onTaskFinished(ManagedTask.this);
+				return false;
+			}}
+		);
 	}
 
 	/**
@@ -169,7 +172,7 @@ abstract public class ManagedTask extends Thread {
 	 * @author Philip Warner
 	 */
 	public interface TaskListener {
-		void onFinish();
+		void onTaskFinished(ManagedTask t);
 	}
 
 	/**
@@ -206,16 +209,4 @@ abstract public class ManagedTask extends Thread {
 
 	private final long mMessageSenderId = mMessageSwitch.createSender(mController);
 	public long getSenderId() { return mMessageSenderId; }
-
-	/**
-	 * Utility routine to send the onFinish() method call to any task listeners
-	 */
-	public void sendOnFinish() {
-		mMessageSwitch.send(mMessageSenderId, new MessageSwitch.Message<TaskListener>() {
-			@Override
-			public void deliver(TaskListener listener) {
-				listener.onFinish();
-			}}
-		);
-	}
 }

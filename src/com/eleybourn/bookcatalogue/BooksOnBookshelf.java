@@ -20,26 +20,12 @@
 
 package com.eleybourn.bookcatalogue;
 
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_READ;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_TITLE;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOKS;
+
 import java.util.ArrayList;
 import java.util.Iterator;
-
-import com.eleybourn.bookcatalogue.BookCatalogueApp.BookCataloguePreferences;
-import com.eleybourn.bookcatalogue.BooksMultitypeListHandler.BooklistChangeListener;
-import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTask;
-import com.eleybourn.bookcatalogue.SimpleTaskQueue.SimpleTaskContext;
-import com.eleybourn.bookcatalogue.booklist.BooklistBuilder;
-import com.eleybourn.bookcatalogue.booklist.BooklistBuilder.BookRowInfo;
-import com.eleybourn.bookcatalogue.booklist.BooklistCursor;
-import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
-import com.eleybourn.bookcatalogue.booklist.BooklistPseudoCursor;
-import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
-import com.eleybourn.bookcatalogue.booklist.BooklistStylePropertiesActivity;
-import com.eleybourn.bookcatalogue.booklist.BooklistStyles;
-import com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds;
-import com.eleybourn.bookcatalogue.debug.Tracker;
-
-
-import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.*;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -53,6 +39,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -76,6 +63,25 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.eleybourn.bookcatalogue.BooksMultitypeListHandler.BooklistChangeListener;
+import com.eleybourn.bookcatalogue.booklist.BooklistBuilder;
+import com.eleybourn.bookcatalogue.booklist.BooklistBuilder.BookRowInfo;
+import com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds;
+import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
+import com.eleybourn.bookcatalogue.booklist.BooklistPseudoCursor;
+import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
+import com.eleybourn.bookcatalogue.booklist.BooklistStylePropertiesActivity;
+import com.eleybourn.bookcatalogue.booklist.BooklistStyles;
+import com.eleybourn.bookcatalogue.debug.Tracker;
+import com.eleybourn.bookcatalogue.utils.HintManager;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTask;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTaskContext;
+import com.eleybourn.bookcatalogue.utils.TrackedCursor;
+import com.eleybourn.bookcatalogue.utils.Utils;
+import com.eleybourn.bookcatalogue.utils.ViewTagger;
 
 /**
  * Activity that displays a flattened book hierarchy based on the Booklist* classes.
@@ -227,7 +233,14 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		mList.moveToPosition(position);
 		// If it's a book, edit it.
 		if (mList.getRowView().getKind() == RowKinds.ROW_KIND_BOOK) {
-			BookEdit.editBook(this, mList.getRowView().getBookId(), BookEdit.TAB_EDIT);
+			BookEdit.openBook(this, mList.getRowView().getBookId());
+//			boolean isReadOnly = BookCatalogueApp.getAppPreferences()
+//					.getBoolean(BookCataloguePreferences.PREF_OPEN_BOOK_READ_ONLY, false);
+//			if (isReadOnly){
+//				BookEdit.viewBook(this, mList.getRowView().getBookId());
+//			} else {
+//				BookEdit.editBook(this, mList.getRowView().getBookId(), BookEdit.TAB_EDIT);
+//			}
 		} else {
 			// If it's leve1, expand/collapse. Technically, we could expand/collapse any level
 			// but storing and recovering the view becomes unmanageable.
@@ -442,7 +455,9 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 				public void onCancel(DialogInterface dialog) {
 					// Cancelling the list cancels the activity.
 					BooksOnBookshelf.this.finish();
-				}});			
+					dialog.dismiss();
+					mListDialog = null;
+				}});
 		}
 	}
 
@@ -468,26 +483,33 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 			throw new RuntimeException("Sanity Check Fail: getResources() returned null; isFinishing() = " + isFinishing());
 
 		if (BooklistPreferencesActivity.isBackgroundFlat() || BookCatalogueApp.isBackgroundImageDisabled()) {
-			lv.setBackgroundColor(0xFF202020);
-			Utils.setCacheColorHintSafely(lv, 0xFF202020);
+			final int backgroundColor = getResources().getColor(R.color.background_grey);
+			lv.setBackgroundColor(backgroundColor);
+			Utils.setCacheColorHintSafely(lv, backgroundColor);
 			if (BookCatalogueApp.isBackgroundImageDisabled()) {
-				root.setBackgroundColor(0xFF202020);
-				header.setBackgroundColor(0xFF202020);
+				root.setBackgroundColor(backgroundColor);
+				header.setBackgroundColor(backgroundColor);
 			} else {
-				root.setBackgroundDrawable(Utils.cleanupTiledBackground(getResources().getDrawable(R.drawable.bc_background_gradient)));
-				header.setBackgroundDrawable(Utils.cleanupTiledBackground(getResources().getDrawable(R.drawable.bc_vertical_gradient)));
+				Drawable d = Utils.makeTiledBackground(this, false);
+				root.setBackgroundDrawable(d);
+				header.setBackgroundDrawable(d);
+//				root.setBackgroundDrawable(Utils.cleanupTiledBackground(getResources().getDrawable(R.drawable.bc_background_gradient)));
+//				header.setBackgroundDrawable(Utils.cleanupTiledBackground(getResources().getDrawable(R.drawable.bc_vertical_gradient)));
 			}
 		} else {
 			Utils.setCacheColorHintSafely(lv, 0x00000000);
 			// ICS does not cope well with transparent ListView backgrounds with a 0 cache hint, but it does
 			// seem to cope with a background image on the ListView itself.
+			Drawable d = Utils.makeTiledBackground(this, false);
 			if (Build.VERSION.SDK_INT >= 11) {
 				// Honeycomb
-				lv.setBackgroundDrawable(Utils.cleanupTiledBackground(getResources().getDrawable(R.drawable.bc_background_gradient_dim)));
+				lv.setBackgroundDrawable(d);
+//				lv.setBackgroundDrawable(Utils.cleanupTiledBackground(getResources().getDrawable(R.drawable.bc_background_gradient_dim)));
 			} else {
 				lv.setBackgroundColor(0x00000000);				
 			}
-			root.setBackgroundDrawable(Utils.cleanupTiledBackground(getResources().getDrawable(R.drawable.bc_background_gradient_dim)));
+			root.setBackgroundDrawable(d);
+//			root.setBackgroundDrawable(Utils.cleanupTiledBackground(getResources().getDrawable(R.drawable.bc_background_gradient_dim)));
 			header.setBackgroundColor(0x00000000);
 		}
 		root.invalidate();
@@ -809,6 +831,13 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		System.out.println("onPause");
 		if (mSearchText == null || mSearchText.equals(""))
 			savePosition();
+		
+		if (isFinishing())
+			mTaskQueue.finish();
+
+		if (mListDialog != null)
+			mListDialog.dismiss();
+
 		Tracker.exitOnPause(this);
 	}
 
@@ -905,7 +934,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 				if (!new_bookshelf.equalsIgnoreCase(mCurrentBookshelf)) {
 					mCurrentBookshelf = new_bookshelf;
 					// save the current bookshelf into the preferences
-					BookCatalogueApp.BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
+					BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
 					SharedPreferences.Editor ed = prefs.edit();
 					ed.putString(PREF_BOOKSHELF, mCurrentBookshelf);
 					ed.commit();

@@ -31,16 +31,15 @@ import java.util.Iterator;
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.booklist.BooklistGroup;
 import com.eleybourn.bookcatalogue.database.DbUtils.DomainDefinition;
 import com.eleybourn.bookcatalogue.database.SerializationUtils;
 import com.eleybourn.bookcatalogue.database.SerializationUtils.DeserializationException;
 import com.eleybourn.bookcatalogue.properties.BooleanListProperty;
+import com.eleybourn.bookcatalogue.properties.BooleanProperty;
 import com.eleybourn.bookcatalogue.properties.IntegerListProperty;
 import com.eleybourn.bookcatalogue.properties.ListProperty.ItemEntries;
 import com.eleybourn.bookcatalogue.properties.Properties;
 import com.eleybourn.bookcatalogue.properties.Property;
-import com.eleybourn.bookcatalogue.properties.BooleanProperty;
 import com.eleybourn.bookcatalogue.properties.PropertyGroup;
 import com.eleybourn.bookcatalogue.properties.StringProperty;
 

@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/root" 
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content"
-	android:background="@drawable/bc_background_gradient_dim"
-	>
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-		android:orientation="vertical"
-		android:id="@+id/manage_fields_scrollview" 
-		android:layout_width="fill_parent" 
-		android:layout_height="fill_parent"
-		android:paddingLeft="5sp">
-		
-		<TextView android:id="@+id/manage_field_text" 
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content" 
-			android:text="@+string/menu_manage_fields"
-			android:textAppearance="?android:attr/textAppearanceLarge"
-			android:paddingTop="5sp"
-			/>
-		
-		<TextView android:id="@+id/manage_field_help_text" 
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content" 
-			android:text="@+string/manage_fields_help"
-			android:paddingTop="5sp"
-			/>
-	
-	</LinearLayout>
+    android:id="@+id/root"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bc_background_gradient_dim" >
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/manage_fields_scrollview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/padding_border" >
+
+        <TextView
+            android:id="@+id/manage_field_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/padding_border"
+            android:text="@string/menu_manage_fields"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/manage_field_help_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/padding_border"
+            android:text="@string/manage_fields_help" />
+    </LinearLayout>
+
 </ScrollView>

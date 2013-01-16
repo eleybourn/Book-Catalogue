@@ -24,20 +24,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 
-import com.eleybourn.bookcatalogue.AdministrationLibraryThing;
-import com.eleybourn.bookcatalogue.Author;
-import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
-import com.eleybourn.bookcatalogue.LibraryThingManager;
-import com.eleybourn.bookcatalogue.Logger;
-import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.Series;
-import com.eleybourn.bookcatalogue.Utils;
-import com.eleybourn.bookcatalogue.ViewTagger;
-import com.eleybourn.bookcatalogue.R.id;
-import com.eleybourn.bookcatalogue.R.layout;
-import com.eleybourn.bookcatalogue.R.string;
-import com.eleybourn.bookcatalogue.goodreads.GoodreadsRegister;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -49,12 +35,20 @@ import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
+
+import com.eleybourn.bookcatalogue.AdministrationLibraryThing;
+import com.eleybourn.bookcatalogue.Author;
+import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
+import com.eleybourn.bookcatalogue.LibraryThingManager;
+import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.Series;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsRegister;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
+import com.eleybourn.bookcatalogue.utils.ViewTagger;
 
 public class StandardDialogs {
 
@@ -148,7 +142,8 @@ public class StandardDialogs {
 
 		alertDialog.setTitle(R.string.delete_series);
 		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+		//alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+		alertDialog.setButton2(context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				dbHelper.deleteSeries(series);
 				alertDialog.dismiss();
@@ -156,7 +151,8 @@ public class StandardDialogs {
 			}
 		});
 
-		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+		//alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+		alertDialog.setButton(context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				alertDialog.dismiss();
 			}
@@ -205,7 +201,8 @@ public class StandardDialogs {
 
 		alertDialog.setTitle(R.string.menu_delete);
 		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+		//alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+		alertDialog.setButton2(context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				dbHelper.deleteBook(id);
 				alertDialog.dismiss();
@@ -213,7 +210,8 @@ public class StandardDialogs {
 			}
 		});
 
-		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+		//alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+		alertDialog.setButton(context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				alertDialog.dismiss();
 			}

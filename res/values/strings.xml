@@ -661,7 +661,7 @@
 			</p>
 		]]></string>
 
-<string name="bad_scanner">It looks like your extising barcode scanner app is not compatible with Book Catalogue. We recommend installing the Zxing barcode scanner application, and if it is already installed, we recommend uninstalling it and reinstalling it.</string>
+<string name="bad_scanner">It looks like your existing barcode scanner app is not compatible with Book Catalogue. We recommend installing the Zxing barcode scanner application, and if it is already installed, we recommend uninstalling it and reinstalling it.</string>
 
 <string name="new_in_422"><![CDATA[
     <p><b>New in 4.2.2</b>\n\n

@@ -259,6 +259,10 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 		if (hideFieldIfEmpty(R.id.publisher) && hideFieldIfEmpty(R.id.date_published)) {
 			findViewById(R.id.lbl_publishing).setVisibility(View.GONE);
 		}
+		boolean hasImage = findViewById(R.id.row_img).getVisibility() != View.GONE;
+		if (!hasImage) {
+			findViewById(R.id.image_wrapper).setVisibility(View.GONE);						
+		}
 		// Check format information
 		boolean hasPages = !hideFieldIfEmpty(R.id.pages);
 		if (!hasPages) {
@@ -317,7 +321,7 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 			v.setVisibility(isExist ? View.VISIBLE : View.GONE);			
 			return !isExist;
 		} else {
-			return false;
+			return true;
 		}
 	}
 	

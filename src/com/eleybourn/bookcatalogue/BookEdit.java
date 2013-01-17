@@ -41,6 +41,7 @@ import android.widget.TabHost;
 import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.BookCataloguePreferences;
+import com.eleybourn.bookcatalogue.booklist.BooklistBuilder;
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
 import com.eleybourn.bookcatalogue.utils.Logger;
@@ -310,12 +311,19 @@ public class BookEdit extends TabActivity {
 	 * option. If it set book opened in read-only mode otherwise in edit mode (default).
 	 * @param a current activity from which we start
 	 * @param id The id of the book to view
+	 * @param builder (Optional) builder for underlying book list. Only used in read-only view.
+	 * @param position (Optional) position in underlying book list. Only used in read-only view.
 	 */
-	public static void openBook(Activity a, long id){
+	public static void openBook(Activity a, long id, BooklistBuilder builder, Integer position){
 		boolean isReadOnly = BookCatalogueApp.getAppPreferences()
 				.getBoolean(BookCataloguePreferences.PREF_OPEN_BOOK_READ_ONLY, false);
 		if (isReadOnly){
-			BookEdit.viewBook(a, id);
+			// Make a flattened copy of the list of books, if available
+			String listTable = null;
+			if (builder != null) {
+				listTable = builder.createFlattenedBooklist().getTable().getName();
+			}
+			BookEdit.viewBook(a, id, listTable, position);
 		} else {
 			BookEdit.editBook(a, id, BookEdit.TAB_EDIT);
 		}
@@ -339,9 +347,15 @@ public class BookEdit extends TabActivity {
 	 * Load the EditBook tab activity in read-only mode. The first tab is book details.
 	 * @param a current activity from which we start
 	 * @param id The id of the book to view
+	 * @param listTable (Optional) name of the temp table comtaining a list of book IDs.
+	 * @param position (Optional) position in underlying book list. Only used in read-only view.
 	 */
-	public static void viewBook(Activity a, long id) {
+	public static void viewBook(Activity a, long id, String listTable, Integer position) {
 		Intent i = new Intent(a, BookEdit.class);
+		i.putExtra("FlattenedBooklist", listTable);
+		if (position != null) {
+			i.putExtra("FlattenedBooklistPosition", position);
+		}
 		i.putExtra(CatalogueDBAdapter.KEY_ROWID, id);
 		i.putExtra(BookEdit.TAB, BookEdit.TAB_EDIT); //needed extra for creating BookEdit
 		i.putExtra(BookEdit.KEY_READ_ONLY, true);

@@ -233,7 +233,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		mList.moveToPosition(position);
 		// If it's a book, edit it.
 		if (mList.getRowView().getKind() == RowKinds.ROW_KIND_BOOK) {
-			BookEdit.openBook(this, mList.getRowView().getBookId());
+			BookEdit.openBook(this, mList.getRowView().getBookId(), mList.getBuilder(), position);
 //			boolean isReadOnly = BookCatalogueApp.getAppPreferences()
 //					.getBoolean(BookCataloguePreferences.PREF_OPEN_BOOK_READ_ONLY, false);
 //			if (isReadOnly){

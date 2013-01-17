@@ -4,11 +4,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.Fields.Field;
+import com.eleybourn.bookcatalogue.booklist.FlattenedBooklist;
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
@@ -17,6 +21,8 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * @author n.silin
  */
 public class BookDetailsReadOnly extends BookDetailsAbstract {
+	private FlattenedBooklist mList = null;
+	private GestureDetector mGestureDetector;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +41,24 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 		 */
 		mThumbEditSize = Math.min(mMetrics.widthPixels, mMetrics.heightPixels) / 3;
 		
+		// See if the name of a booklist table was passed to us
+		Bundle extras = getIntent().getExtras();
+		if (extras != null) {
+			String list = extras.getString("FlattenedBooklist");
+			if (list != null && !list.equals("")) {
+				mList = new FlattenedBooklist(mDbHelper.getDb(), list);
+				if (extras.containsKey("FlattenedBooklistPosition")) {
+					mList.moveTo(extras.getInt("FlattenedBooklistPosition"));					
+				}
+				// Add a gesture lister for 'swipe' gestures
+				mGestureDetector = new GestureDetector(this, mGestureListener);
+			}
+		}
+
 		if (mRowId != null && mRowId > 0) {
 			updateFields();
 		}
+
 	}
 	
 	/**
@@ -78,9 +99,16 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 			formatFormatSection();
 			formatPublishingSection();
 			
-			hideEmptyFields();
+			// Restore defaut visibilty and hide unused/unwanted fields
+			showHideFields();
 
 			String title = mFields.getField(R.id.title).getValue().toString();
+			// If we are in a list, then append the position
+			if (mList != null) {
+				// RELEASE: Stringify!!!!
+				String info = mList.getAbsolutePosition() + " of " + mList.getCount();
+				title += " (" + info + ")";
+			}
 			setActivityTitle(title);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -254,74 +282,83 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 	 * Hides unused fields if they have not any useful data. Checks all text fields
 	 * except of author, series and loaned. 
 	 */
-	private void hideEmptyFields() {
-		// CHeck publishing information
-		if (hideFieldIfEmpty(R.id.publisher) && hideFieldIfEmpty(R.id.date_published)) {
+	private void showHideFields() {
+		// Restore the default based on user preferences.
+		mFields.resetVisibility();
+	
+		// Check publishing information
+		if (showHideFieldIfEmpty(R.id.publisher) == View.GONE && showHideFieldIfEmpty(R.id.date_published) == View.GONE) {
 			findViewById(R.id.lbl_publishing).setVisibility(View.GONE);
 		}
+
 		boolean hasImage = findViewById(R.id.row_img).getVisibility() != View.GONE;
 		if (!hasImage) {
 			findViewById(R.id.image_wrapper).setVisibility(View.GONE);						
 		}
+
 		// Check format information
-		boolean hasPages = !hideFieldIfEmpty(R.id.pages);
+		boolean hasPages = (showHideFieldIfEmpty(R.id.pages) == View.VISIBLE);
 		if (!hasPages) {
 			findViewById(R.id.pages).setVisibility(View.GONE);			
 		}
-		if (hideFieldIfEmpty(R.id.format)) {
-			findViewById(R.id.format).setVisibility(View.GONE);
-		}
+		showHideFieldIfEmpty(R.id.format);
+
 		// Check genre
-		if (hideFieldIfEmpty(R.id.genre)) {
-			findViewById(R.id.lbl_genre).setVisibility(View.GONE);
-		}
+		showHideFieldIfEmpty(R.id.genre, R.id.lbl_genre);
+
 		// Check ISBN
-		if (hideFieldIfEmpty(R.id.isbn)) {
-			findViewById(R.id.row_isbn).setVisibility(View.GONE);
-		}
+		showHideFieldIfEmpty(R.id.isbn, R.id.row_isbn);
+
 		// Check list price
-		if (hideFieldIfEmpty(R.id.list_price)) {
-			findViewById(R.id.row_list_price).setVisibility(View.GONE);
-		}
+		showHideFieldIfEmpty(R.id.list_price, R.id.row_list_price);
+
 		// Check description
-		if (hideFieldIfEmpty(R.id.description)) {
-			findViewById(R.id.descriptionLabel).setVisibility(View.GONE);
-			findViewById(R.id.description_divider).setVisibility(View.GONE);
-		}
+		showHideFieldIfEmpty(R.id.description, R.id.descriptionLabel, R.id.description_divider);
 
 		// **** MY COMMENTS SECTION ****
 		// Check notes
-		if (hideFieldIfEmpty(R.id.notes)) {
-			findViewById(R.id.lbl_notes).setVisibility(View.GONE);
-		}
+		showHideFieldIfEmpty(R.id.notes, R.id.lbl_notes);
+
 		// Check date start reading
-		if (hideFieldIfEmpty(R.id.read_start)) {
-			findViewById(R.id.row_read_start).setVisibility(View.GONE);
-		}
+		showHideFieldIfEmpty(R.id.read_start, R.id.row_read_start);
+
 		// Check date end reading
-		if (hideFieldIfEmpty(R.id.read_end)) {
-			findViewById(R.id.row_read_end).setVisibility(View.GONE);
-		}
+		showHideFieldIfEmpty(R.id.read_end, R.id.row_read_end);
+
 		// Check location
-		if (hideFieldIfEmpty(R.id.location)) {
-			findViewById(R.id.row_location).setVisibility(View.GONE);
-		}
+		showHideFieldIfEmpty(R.id.location, R.id.row_location);
+
+		// Hide the fields that we never use...
+		findViewById(R.id.anthology).setVisibility(View.GONE);
 	}
 	
 	/**
-	 * Hide text field if it has not any useful data.
+	 * Show or Hide text field if it has not any useful data.
+	 * Don't show a field if it is already hidden (assumed by user preference)
+	 *
 	 * @param resId layout resource id of the field
-	 * @return true if field was hidden, false otherwise
+	 * @param relatedFields list of fields whose visibility will also be set based on the first field
+	 *
+	 * @return The resulting visibility setting value (VISIBLE or GONE)
 	 */
-	private boolean hideFieldIfEmpty(int resId) {
+	private int showHideFieldIfEmpty(int resId, int...relatedFields) {
+		// Get the base view
 		final View v = findViewById(resId);
 		if (v.getVisibility() != View.GONE) {
+			// Determine if we should hide it
 			String value = (String) mFields.getField(resId).getValue();
 			boolean isExist = value != null && !value.equals("");
-			v.setVisibility(isExist ? View.VISIBLE : View.GONE);			
-			return !isExist;
+			int visibility = isExist ? View.VISIBLE : View.GONE;
+			v.setVisibility(visibility);
+			// Set the related views
+			for(int i: relatedFields) {
+				View rv = findViewById(i);
+				if (rv != null)
+					rv.setVisibility(visibility);
+			}
+			return visibility;
 		} else {
-			return true;
+			return View.GONE;
 		}
 	}
 	
@@ -335,4 +372,45 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 		populateSeriesListField();
 	}
 
+	@Override
+	/**
+	 * We override the dispatcher because the ScrollView will consume
+ 	 * all events otherwise.
+	 */
+	public boolean dispatchTouchEvent(MotionEvent event) {
+		if (mGestureDetector.onTouchEvent(event))
+			return true;
+
+		return super.dispatchTouchEvent(event);
+	}
+
+	/**
+	 * Listener to handle 'fling' events; we could handle others but need to be careful about possible clicks and scrolling.
+	 */
+	GestureDetector.SimpleOnGestureListener mGestureListener = new GestureDetector.SimpleOnGestureListener() {
+
+		@Override
+		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+			if (mList == null)
+				return false;
+
+			// Make sure we have more X-velocity than Y-velocity; otherwise it might be a scroll.
+			if (Math.abs(velocityX / velocityY) > 2) {
+				boolean moved;
+				// Work out which way to move, and do it.
+				if (velocityX > 0) {
+					moved = mList.movePrev();
+				} else {
+					moved = mList.moveNext();
+				}
+				if (moved) {
+					mRowId = mList.getBookId();
+					updateFields();
+				}
+				return true;
+			} else {
+				return false;
+			}
+		}
+	};
 }

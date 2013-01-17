@@ -1105,6 +1105,24 @@ public class Fields extends ArrayList<Fields.Field> {
 		}
 
 		/**
+		 * Reset one fields visibility based on user preferences
+		 */
+		private void resetVisibility(Activity a) {
+			if (a == null)
+				return;
+			// Lookup the view
+			final View view = a.findViewById(id);
+			if (view != null) {
+				visible = BookCatalogueApp.getAppPreferences().getBoolean(FieldVisibility.prefix + group, true);
+				if (visible) {
+					view.setVisibility(View.VISIBLE);					
+				} else {
+					view.setVisibility(View.GONE);
+				}
+				
+			}
+		}
+		/**
 		 * Add on onTouch listener that signals a 'dirty' event when touched.
 		 * 
 		 * @param view		The view to watch
@@ -1391,6 +1409,18 @@ public class Fields extends ArrayList<Fields.Field> {
 			}
 		}
 		return isOk;
+	}
+
+	/**
+	 * Reset all field visibility based on user preferences
+	 */
+	public void resetVisibility() {
+		Activity a = this.getActivity();
+		Iterator<Field> fi = this.iterator();		
+		while(fi.hasNext()) {
+			Field fe = fi.next();
+			fe.resetVisibility(a);
+		}
 	}
 
 	/**

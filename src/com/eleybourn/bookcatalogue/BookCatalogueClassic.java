@@ -1598,7 +1598,7 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 	public boolean onChildClick(ExpandableListView l, View v, int position, int childPosition, long id) {
 		boolean result = super.onChildClick(l, v, position, childPosition, id);
 		adjustCurrentGroup(position, 1, true, false);
-		BookEdit.openBook(this, id);
+		BookEdit.openBook(this, id, null, null);
 		return result;
 	}
 	

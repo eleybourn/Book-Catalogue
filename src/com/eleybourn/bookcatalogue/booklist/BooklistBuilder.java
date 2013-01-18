@@ -97,6 +97,7 @@ import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOK_
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOK_SERIES;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_LOAN;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_ROW_NAVIGATOR_DEFN;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_ROW_NAVIGATOR_FLATTENED_DEFN;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_SERIES;
 
 import java.util.ArrayList;
@@ -125,6 +126,7 @@ import com.eleybourn.bookcatalogue.database.DbUtils.TableDefinition;
 import com.eleybourn.bookcatalogue.database.DbUtils.TableDefinition.TableTypes;
 import com.eleybourn.bookcatalogue.database.SqlStatementManager;
 import com.eleybourn.bookcatalogue.debug.Tracker;
+import com.eleybourn.bookcatalogue.utils.Logger;
 
 
 /**
@@ -214,6 +216,30 @@ public class BooklistBuilder {
 				;
 		mNavTable.setName(mNavTable.getName() + "_" + getId());
 		mNavTable.setType(TableTypes.Temporary); //RELEASE Make sure is TEMPORARY
+	}
+
+	/** Counter for 'flattened' book temp tables */
+	private static Integer mFlatNavCounter = 0;
+	/**
+	 * Construct a flattened table of ordered book IDs based on the underlying list
+	 */
+	public FlattenedBooklist createFlattenedBooklist() {
+		int flatId;
+		synchronized(mFlatNavCounter) {
+			flatId = mFlatNavCounter++;
+		}
+		TableDefinition flat = TBL_ROW_NAVIGATOR_FLATTENED_DEFN.clone();
+		flat.setName(flat.getName() + "_" + flatId);
+		flat.setType(TableTypes.Temporary); //RELEASE Make sure is TEMPORARY
+		flat.create(mDb, true);
+		String sql = flat.getInsert(DOM_ID, DOM_BOOK)
+					+ " select " + mNavTable.dot(DOM_ID) + ", " + mListTable.dot(DOM_BOOK) 
+					+ " From " + mListTable.ref() 
+					+ mListTable.join(mNavTable) 
+					+ " Where " + mListTable.dot(DOM_BOOK) + " Not Null " 
+					+ " Order by " + mNavTable.dot(DOM_ID);
+		mDb.execSQL(sql);
+		return new FlattenedBooklist(mDb, flat);
 	}
 
 	/**
@@ -1683,33 +1709,65 @@ public class BooklistBuilder {
 		return mStyle;
 	}
 
+	private boolean mReferenceDecremented = false;
+	/**
+	 * General cleanup routine called by both 'close()' and 'finalize()'
+	 *
+	 * @param isFinalize
+	 */
+	private void cleanup(final boolean isFinalize) {
+		if (mStatements.size() != 0) {
+			if (isFinalize) {
+				System.out.println("Finalizing BooklistBuilder with active statements");				
+			}
+			try { mStatements.close(); } catch(Exception e) { Logger.logError(e); };
+		}
+		if (mNavTable != null) {
+			if (isFinalize) {
+				System.out.println("Finalizing BooklistBuilder with nav table");				
+			}
+			try { 
+				mNavTable.close();
+				mNavTable.drop(mDb);
+			} 
+			catch(Exception e) {
+				Logger.logError(e); 
+			};
+		}
+		if (mListTable != null) {
+			if (isFinalize) {
+				System.out.println("Finalizing BooklistBuilder with list table");				
+			}
+			try { 
+				mListTable.close();
+				mListTable.drop(mDb);
+			} 
+			catch(Exception e) {
+				Logger.logError(e); 
+			};
+		}
+
+		if (!mReferenceDecremented) {
+			// Only de-reference once!
+			synchronized(mInstanceCount) {
+				mInstanceCount--;
+				System.out.println("Builder instances: " + mInstanceCount);
+			}
+			mReferenceDecremented = true;
+		}
+	}
+	
 	/**
 	 * Close the builder.
 	 */
 	public void close() {
-		mStatements.close();
-		if (mNavTable != null) {
-			mNavTable.close();
-			mNavTable.drop(mDb);
-		}
-		if (mListTable != null) {
-			mListTable.close();
-			mListTable.drop(mDb);
-		}
-		synchronized(mInstanceCount) {
-			mInstanceCount--;
-			System.out.println("Builder instances: " + mInstanceCount);
-		}
+		cleanup(false);
 	}
-	
+
 	public void finalize() {
-		if (mStatements.size() != 0) {
-			System.out.println("Finalizing BooklistBuilder with active statements");
-			mStatements.close();
-		}
+		cleanup(true);
 	}
 }
-
 
 
 /*

@@ -141,4 +141,7 @@ public class FieldVisibility extends Activity {
 		}
 	}
 
+	public static boolean isVisible(String fieldName) {
+		return BookCatalogueApp.getAppPreferences().getBoolean(prefix + fieldName, true);
+	}
 }

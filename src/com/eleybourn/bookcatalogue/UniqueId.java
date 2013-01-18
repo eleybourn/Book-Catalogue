@@ -19,6 +19,7 @@ public class UniqueId {
 	public static final int ACTIVITY_ABOUT = 16;
 	public static final int ACTIVITY_DONATE = 17;
 	public static final int ACTIVITY_BOOKSHELF = 18;
+	public static final int ACTIVITY_VIEW_BOOK = 19;
 
 	public static final int DIALOG_PROGRESS_DETERMINATE = 19;
 	public static final int DIALOG_PROGRESS_INDETERMINATE = 20;

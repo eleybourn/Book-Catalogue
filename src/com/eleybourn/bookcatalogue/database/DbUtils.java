@@ -27,6 +27,7 @@ import java.util.Hashtable;
 import java.util.Map.Entry;
 
 import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedDb;
+import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedStatement;
 
 /**
  * Utilities and classes to make defining databases a little easier and provide synchronization across threads.
@@ -882,6 +883,23 @@ public class DbUtils {
 			}
 			return this;
 		}
+
+		final static String mExistsSql = "Select (SELECT count(*) FROM sqlite_master WHERE type='table' AND name=?) + "
+										+ "(SELECT count(*) FROM sqlite_temp_master WHERE type='table' AND name=?)";
+		/**
+		 * Check if the table exists within the passed DB
+		 */
+		public boolean exists(SynchronizedDb db) {
+			SynchronizedStatement stmt = db.compileStatement(mExistsSql);
+			try {
+				stmt.bindString(1, getName());
+				stmt.bindString(2, getName());
+				return (stmt.simpleQueryForLong() > 0);				
+			} finally {
+				stmt.close();
+			}
+		}
+
 	}
 
 	/**

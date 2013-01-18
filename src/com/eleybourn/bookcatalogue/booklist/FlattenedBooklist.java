@@ -5,6 +5,7 @@ import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ID;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_ROW_NAVIGATOR_FLATTENED_DEFN;
 import android.database.sqlite.SQLiteDoneException;
 
+import com.eleybourn.bookcatalogue.database.SqlStatementManager;
 import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedDb;
 import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedStatement;
 import com.eleybourn.bookcatalogue.database.DbUtils.TableDefinition;
@@ -17,22 +18,27 @@ import com.eleybourn.bookcatalogue.database.DbUtils.TableDefinition.TableTypes;
  * @author pjw
  */
 public class FlattenedBooklist {
-	private final TableDefinition mTable;
-	private final SynchronizedDb mDb;
+	private TableDefinition mTable;
+	private SynchronizedDb mDb;
 	private long mPosition = -1;
 	private Long mBookId = null;
+	private SqlStatementManager mStatements;
 
 	public FlattenedBooklist(SynchronizedDb db, TableDefinition table) {
-		mDb = db;
-		mTable = table.clone();
+		init(db, table.clone());
 	}
 
 	public FlattenedBooklist(SynchronizedDb db, String tableName) {
-		mDb = db;
 		TableDefinition flat = TBL_ROW_NAVIGATOR_FLATTENED_DEFN.clone();
 		flat.setName(tableName);
 		flat.setType(TableTypes.Temporary); //RELEASE Make sure is TEMPORARY
-		mTable = flat;
+		init(db, flat);
+	}
+
+	private void init(SynchronizedDb db, TableDefinition table) {
+		mDb = db;
+		mTable = table;
+		mStatements = new SqlStatementManager(mDb);
 	}
 
 	public TableDefinition getTable() {
@@ -44,6 +50,10 @@ public class FlattenedBooklist {
 	}
 
 	public void close() {
+		mStatements.close();
+	}
+	
+	public void deleteData() {
 		mTable.drop(mDb);
 		mTable.close();
 	}
@@ -66,39 +76,58 @@ public class FlattenedBooklist {
 		return true;
 	}
 
-	private SynchronizedStatement mNextStmt = null;
+	public boolean exists() {
+		return mTable.exists(mDb);
+	}
+
+	private static final String NEXT_STMT_NAME = "next";
 	public boolean moveNext() {
-		if (mNextStmt == null) {
+		SynchronizedStatement stmt = mStatements.get(NEXT_STMT_NAME);
+		if (stmt == null) {
 			String sql = "Select " + mTable.dot(DOM_ID) + "|| '/' || " + mTable.dot(DOM_BOOK) 
-					+ " From " + mTable.ref() + " Where " + mTable.dot(DOM_ID) + " > ?"
+					+ " From " + mTable.ref() 
+					+ " Where " + mTable.dot(DOM_ID) + " > ? and " + mTable.dot(DOM_BOOK) + " <> Coalesce(?,-1)"
 					+ " Order by " + mTable.dot(DOM_ID) + " Asc Limit 1";
-			mNextStmt = mDb.compileStatement(sql);
+			stmt = mStatements.add(NEXT_STMT_NAME, sql);
 		}
-		mNextStmt.bindLong(1, mPosition);
-		return updateDetailsFromStatement(mNextStmt);
+		stmt.bindLong(1, mPosition);
+		if (mBookId != null) {
+			stmt.bindLong(2, mBookId);
+		} else {
+			stmt.bindNull(2);
+		}
+		return updateDetailsFromStatement(stmt);
 	}
 
-	private SynchronizedStatement mPrevStmt = null;
+	private static final String PREV_STMT_NAME = "prev";
 	public boolean movePrev() {
-		if (mPrevStmt == null) {
+		SynchronizedStatement stmt = mStatements.get(PREV_STMT_NAME);
+		if (stmt == null) {
 			String sql = "Select " + mTable.dot(DOM_ID) + "|| '/' || " + mTable.dot(DOM_BOOK) 
-					+ " From " + mTable.ref() + " Where " + mTable.dot(DOM_ID) + " < ?"
+					+ " From " + mTable.ref() 
+					+ " Where " + mTable.dot(DOM_ID) + " < ? and " + mTable.dot(DOM_BOOK) + " <> Coalesce(?,-1)"
 					+ " Order by " + mTable.dot(DOM_ID) + " Desc Limit 1";
-			mPrevStmt = mDb.compileStatement(sql);
+			stmt = mStatements.add(PREV_STMT_NAME, sql);
 		}
-		mPrevStmt.bindLong(1, mPosition);
-		return updateDetailsFromStatement(mPrevStmt);
+		stmt.bindLong(1, mPosition);
+		if (mBookId != null) {
+			stmt.bindLong(2, mBookId);
+		} else {
+			stmt.bindNull(2);
+		}
+		return updateDetailsFromStatement(stmt);
 	}
 
-	private SynchronizedStatement mMoveToStmt = null;
+	private static final String MOVE_STMT_NAME = "move";
 	public boolean moveTo(Integer pos) {
-		if (mMoveToStmt == null) {
+		SynchronizedStatement stmt = mStatements.get(MOVE_STMT_NAME);
+		if (stmt == null) {
 			String sql = "Select " + mTable.dot(DOM_ID) + "|| '/' || " + mTable.dot(DOM_BOOK) 
 					+ " From " + mTable.ref() + " Where " + mTable.dot(DOM_ID) + " = ?";
-			mMoveToStmt = mDb.compileStatement(sql);
+			stmt = mStatements.add(MOVE_STMT_NAME, sql);
 		}
-		mMoveToStmt.bindLong(1, pos);
-		if ( updateDetailsFromStatement(mMoveToStmt) ) {
+		stmt.bindLong(1, pos);
+		if ( updateDetailsFromStatement(stmt) ) {
 			return true;
 		} else {
 			long posSav = mPosition;
@@ -123,23 +152,29 @@ public class FlattenedBooklist {
 		return movePrev();
 	}
 
-	private SynchronizedStatement mCountStmt = null;
+	private static final String COUNT_STMT_NAME = "count";
 	public long getCount() {
-		if (mCountStmt == null) {
+		SynchronizedStatement stmt = mStatements.get(COUNT_STMT_NAME);
+		if (stmt == null) {
 			String sql = "Select Count(*) From " + mTable.ref();
-			mCountStmt = mDb.compileStatement(sql);
+			stmt = mStatements.add(COUNT_STMT_NAME, sql);
 		}
-		return mCountStmt.simpleQueryForLong();
+		return stmt.simpleQueryForLong();
 	}
 	
-	private SynchronizedStatement mPositionStmt = null;
+	private static final String POSITION_STMT_NAME = "position";
 	public long getAbsolutePosition() {
-		if (mPositionStmt == null) {
+		SynchronizedStatement stmt = mStatements.get(POSITION_STMT_NAME);
+		if (stmt == null) {
 			String sql = "Select Count(*) From " + mTable.ref()
 					+ " where " + mTable.dot(DOM_ID) + " <= ?";
-			mPositionStmt = mDb.compileStatement(sql);
+			stmt = mStatements.add(POSITION_STMT_NAME, sql);
 		}
-		mPositionStmt.bindLong(1, mPosition);
-		return mPositionStmt.simpleQueryForLong();		
+		stmt.bindLong(1, mPosition);
+		return stmt.simpleQueryForLong();		
+	}
+	
+	public void finalize() {
+		close();
 	}
 }

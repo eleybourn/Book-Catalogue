@@ -1098,6 +1098,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 			break;
 		case UniqueId.ACTIVITY_CREATE_BOOK_ISBN:
 		case UniqueId.ACTIVITY_CREATE_BOOK_MANUALLY:
+		case UniqueId.ACTIVITY_VIEW_BOOK:
 		case UniqueId.ACTIVITY_EDIT_BOOK:
 			try {
 				if (intent != null && intent.hasExtra(CatalogueDBAdapter.KEY_ROWID)) {

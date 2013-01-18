@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,6 +15,8 @@ import android.widget.Toast;
 import com.eleybourn.bookcatalogue.Fields.Field;
 import com.eleybourn.bookcatalogue.booklist.FlattenedBooklist;
 import com.eleybourn.bookcatalogue.debug.Tracker;
+import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
+import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
@@ -47,11 +50,19 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 			String list = extras.getString("FlattenedBooklist");
 			if (list != null && !list.equals("")) {
 				mList = new FlattenedBooklist(mDbHelper.getDb(), list);
-				if (extras.containsKey("FlattenedBooklistPosition")) {
-					mList.moveTo(extras.getInt("FlattenedBooklistPosition"));					
+				// Check to see it really exists. The underlying table disappeared once in testing
+				// which is hard to explain; it theoretically should only happen if the app closes
+				// the database or if the activity pauses with 'isFinishing()' returning true.
+				if (mList.exists()) {
+					if (extras.containsKey("FlattenedBooklistPosition")) {
+						mList.moveTo(extras.getInt("FlattenedBooklistPosition"));					
+					}
+					// Add a gesture lister for 'swipe' gestures
+					mGestureDetector = new GestureDetector(this, mGestureListener);
+				} else {
+					mList.close();
+					mList = null;
 				}
-				// Add a gesture lister for 'swipe' gestures
-				mGestureDetector = new GestureDetector(this, mGestureListener);
 			}
 		}
 
@@ -61,6 +72,42 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 
 	}
 	
+	@Override
+	/**
+	 * Close the list object (frees statments) and if we are finishing, delete the temp table
+	 */
+	protected void onPause() {
+		if (mList != null) {
+			mList.close();
+			if (this.isFinishing()) {
+				mList.deleteData();
+			}
+		}
+		super.onPause();
+	}
+
+	/**
+	 * If 'back' is pressed, and the user has made changes, ask them if they really want to lose the changes.
+	 * 
+	 * We don't use onBackPressed because it does not work with API level 4.
+	 */
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			Intent i = new Intent();
+			i.putExtra(CatalogueDBAdapter.KEY_ROWID, mRowId);
+			if (getParent() == null) {
+				setResult(RESULT_OK, i);
+			} else {
+				getParent().setResult(RESULT_OK, i);
+			}
+			finish();
+			return true;
+		} else {
+			return super.onKeyDown(keyCode, event);
+		}
+	}
+
 	/**
 	 * This is a straight passthrough
 	 */
@@ -82,13 +129,14 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 	 * fields needed for read-only mode (user notes, loaned, etc.) */
 	protected void populateFieldsFromDb(Long rowId) {
 		// From the database (edit)
-		Cursor book = mDbHelper.fetchBookById(rowId);
+		BooksCursor books = mDbHelper.fetchBookById(rowId);
 		try {
-			if (book != null) {
-				book.moveToFirst();
+			if (books != null) {
+				books.moveToFirst();
 			}
+			BooksRowView book = books.getRowView();
 
-			populateBookDetailsFields(rowId, book);
+			populateBookDetailsFields(rowId, books);
 			// Set maximum aspect ratio width : height = 1 : 2
 			setBookThumbnail(rowId, mThumbEditSize, mThumbEditSize * 2);
 			
@@ -111,10 +159,10 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 			}
 			setActivityTitle(title);
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logger.logError(e);
 		} finally {
-			if (book != null)
-				book.close();
+			if (books != null)
+				books.close();
 		}
 
 		// Populate bookshelves and hide the field if bookshelves are not set.
@@ -158,12 +206,16 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 		} catch (NullPointerException e) {
 			size = 0;
 		}
-		if (size == 0) {
+		if (size == 0 || !mFields.getField(R.id.series).visible) {
 			// Hide 'Series' label and data
 			findViewById(R.id.lbl_series).setVisibility(View.GONE);
 			findViewById(R.id.series).setVisibility(View.GONE);
 			return;
 		} else {
+			// Show 'Series' label and data
+			findViewById(R.id.lbl_series).setVisibility(View.VISIBLE);
+			findViewById(R.id.series).setVisibility(View.VISIBLE);
+
 			String newText = null;
 			Utils.pruneSeriesList(mSeriesList);
 			Utils.pruneList(mDbHelper, mSeriesList);
@@ -256,13 +308,18 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 	 * Sets read status of the book if needed. Shows green tick if book is read.
 	 * @param book Cursor containing information of the book from database
 	 */
-	private void showReadStatus(Cursor book) {
-		Integer isRead = book.getInt(book.getColumnIndex(CatalogueDBAdapter.KEY_READ));
-		boolean isBookRead = isRead == 1;
-		if (isBookRead) {
+	private void showReadStatus(BooksRowView book) {
+		if (FieldVisibility.isVisible(CatalogueDBAdapter.KEY_READ)) {
 			ImageView image = (ImageView) findViewById(R.id.read);
-			image.setVisibility(View.VISIBLE);
-			image.setImageResource(R.drawable.btn_check_buttonless_on);
+			if (book.isRead()) {
+				image.setVisibility(View.VISIBLE);
+				image.setImageResource(R.drawable.btn_check_buttonless_on);
+			} else {
+				image.setVisibility(View.GONE);				
+			}
+		} else {
+			ImageView image = (ImageView) findViewById(R.id.read);
+			image.setVisibility(View.GONE);			
 		}
 	}
 
@@ -270,10 +327,8 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 	 * Show signed status of the book. Set text 'yes' if signed. Otherwise it is 'No'.
 	 * @param book Cursor containing information of the book from database
 	 */
-	private void showSignedStatus(Cursor book) {
-		Integer isSigned = book.getInt(book.getColumnIndex(CatalogueDBAdapter.KEY_SIGNED));
-		boolean isBookSigned = isSigned == 1;
-		if (isBookSigned) {
+	private void showSignedStatus(BooksRowView book) {
+		if (book.isSigned()) {
 			((TextView) findViewById(R.id.signed)).setText(getResources().getString(R.string.yes));
 		}
 	}
@@ -378,7 +433,7 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
  	 * all events otherwise.
 	 */
 	public boolean dispatchTouchEvent(MotionEvent event) {
-		if (mGestureDetector.onTouchEvent(event))
+		if (mGestureDetector != null && mGestureDetector.onTouchEvent(event))
 			return true;
 
 		return super.dispatchTouchEvent(event);
@@ -394,7 +449,7 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 			if (mList == null)
 				return false;
 
-			// Make sure we have more X-velocity than Y-velocity; otherwise it might be a scroll.
+			// Make sure we have considerably more X-velocity than Y-velocity; otherwise it might be a scroll.
 			if (Math.abs(velocityX / velocityY) > 2) {
 				boolean moved;
 				// Work out which way to move, and do it.
@@ -413,4 +468,11 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 			}
 		}
 	};
+	
+	/**
+	 * Accessor; used by parent Activity to get the real current row
+	 */
+	public Long getRowId() {
+		return mRowId;
+	}
 }

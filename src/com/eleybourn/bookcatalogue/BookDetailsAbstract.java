@@ -794,7 +794,7 @@ public abstract class BookDetailsAbstract extends Activity {
 	 */
 	protected void populateFieldsFromDb(Long rowId) {
 		// From the database (edit)
-		Cursor book = mDbHelper.fetchBookById(rowId);
+		BooksCursor book = mDbHelper.fetchBookById(rowId);
 		try {
 			if (book != null) {
 				book.moveToFirst();
@@ -826,7 +826,7 @@ public abstract class BookDetailsAbstract extends Activity {
 	 * @param rowId database row _id of the book
 	 * @param bookCursor cursor with information of the book
 	 */
-	protected void populateBookDetailsFields(Long rowId, Cursor bookCursor){
+	protected void populateBookDetailsFields(Long rowId, BooksCursor bookCursor){
 		// Set any field that has a 'column' non blank.
 		mFields.setFromCursor(bookCursor);
 		

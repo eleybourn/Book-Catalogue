@@ -17,12 +17,26 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:baselineAligned="false"
+	        android:paddingBottom="8dp"
             android:orientation="horizontal" >
 
             <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2" >
+
+                <!-- Read -->
+
+                <ImageView
+                    android:id="@+id/read"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_gravity="top|right"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/btn_check_buttonless_on"
+                    android:visibility="visible" />
 
                 <!-- Title -->
 
@@ -33,6 +47,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_alignWithParentIfMissing="true"
+                    android:layout_toLeftOf="@+id/read"
                     android:text="Anna Karenina"
                     android:textStyle="italic"
                     tools:ignore="HardcodedText" />
@@ -46,18 +61,25 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/title"
                     android:layout_marginTop="@dimen/padding_border"
+                    android:paddingBottom="8dp"
                     android:text="Lev Tolstoy"
                     tools:ignore="HardcodedText" />
 
-                <RatingBar
-                    android:id="@+id/rating"
-                    style="?android:attr/ratingBarStyleIndicator"
+                <LinearLayout
+                    android:id="@+id/rating_wrapper"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/author"
-                    android:layout_marginLeft="@dimen/padding_book_details_info"
-                    android:numStars="5"
-                    android:paddingBottom="8dp" />
+                    android:layout_below="@+id/author" >
+
+                    <RatingBar
+                        android:id="@+id/rating"
+                        style="?android:attr/ratingBarStyleIndicator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/padding_book_details_info"
+                        android:numStars="5"
+                        android:paddingBottom="8dp" />
+                </LinearLayout>
 
                 <!-- ISBN -->
 
@@ -65,7 +87,7 @@
                     android:id="@+id/row_isbn"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/rating"
+                    android:layout_below="@+id/rating_wrapper"
                     android:orientation="horizontal" >
 
                     <TextView
@@ -111,17 +133,6 @@
                         android:text="(Hardcover)"
                         tools:ignore="HardcodedText" />
                 </LinearLayout>
-
-                <ImageView
-                    android:id="@+id/read"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_gravity="top|right"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/btn_check_buttonless_on"
-                    android:visibility="visible" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -150,8 +161,7 @@
             android:layout_width="fill_parent"
             android:layout_height="1dp"
             android:background="@drawable/main_menu_header_divider"
-            android:paddingBottom="2dp"
-            android:paddingTop="2dp" />
+            />
 
         <!-- Series -->
 
@@ -382,7 +392,7 @@
             android:paddingBottom="2dp"
             android:paddingTop="2dp" />
 
-        <TextView
+        <com.eleybourn.bookcatalogue.widgets.SafeSpannedTextView
             android:id="@+id/description"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

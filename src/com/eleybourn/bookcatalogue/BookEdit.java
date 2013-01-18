@@ -97,7 +97,7 @@ public class BookEdit extends TabActivity {
 	private static final int EDIT_OPTIONS_ID = 6;
 	
 	public int mCurrentTab = 0;
-	private Long mRowId;
+	private Long mOrigRowId;
 	private CatalogueDBAdapter mDbHelper = new CatalogueDBAdapter(this);
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -111,16 +111,16 @@ public class BookEdit extends TabActivity {
 		//get the passed parameters
 		Bundle extras = getIntent().getExtras();
 		mCurrentTab = extras != null ? extras.getInt(BookEdit.TAB) : 0;
-		mRowId = savedInstanceState != null ? savedInstanceState.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
-		if (mRowId == null) {
-			mRowId = extras != null ? extras.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
+		Long rowId = savedInstanceState != null ? savedInstanceState.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
+		if (rowId == null) {
+			rowId = extras != null ? extras.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
 		}
 		int anthology_num = 0;
 
 		// Avoid unnecessary exception logging; check the rowId
-		if (mRowId != null && mRowId > 0) {
+		if (rowId != null && rowId > 0) {
 			try {
-				Cursor book = mDbHelper.fetchBookById(mRowId);
+				Cursor book = mDbHelper.fetchBookById(rowId);
 				book.moveToFirst();
 				anthology_num = book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
 				book.close(); // close the cursor
@@ -136,7 +136,7 @@ public class BookEdit extends TabActivity {
 		int firstTabTitleResId;
 		// Class needed for the first tab: BookEditFields except when book is exist and read-only mode enabled
 		Class<?> neededClass = BookEditFields.class;  
-		if (mRowId == null || mRowId == 0) {
+		if (rowId == null || rowId == 0) {
 			firstTabTitleResId = R.string.menu_insert;
 		} else {
 			firstTabTitleResId = isReadOnly ? R.string.book : R.string.edit_book; //Just use R.string.book for read-only title now
@@ -155,7 +155,7 @@ public class BookEdit extends TabActivity {
 		 */
 		if (!isReadOnly) {
 			// Only show the other tabs if it is not new book, otherwise only show the first tab
-			if (mRowId != null && mRowId > 0) {
+			if (rowId != null && rowId > 0) {
 				initTab(tabHost, BookEditNotes.class, TAB_NAME_EDIT_NOTES, R.string.edit_book_notes,
 						R.drawable.ic_tab_notes, extras);
 				initTab(tabHost, BookEditLoaned.class, TAB_NAME_EDIT_FRIENDS, R.string.edit_book_friends,
@@ -173,6 +173,8 @@ public class BookEdit extends TabActivity {
 		
 		tabHost.setCurrentTab(mCurrentTab);
 		Tracker.exitOnCreate(this);
+		
+		mOrigRowId = rowId;
 	}
 	
 	/**
@@ -202,8 +204,8 @@ public class BookEdit extends TabActivity {
 		Tracker.enterOnSaveInstanceState(this);
 		super.onSaveInstanceState(outState);
 		
-		if (mRowId != null) {
-			outState.putLong(CatalogueDBAdapter.KEY_ROWID, mRowId);
+		if (mOrigRowId != null) {
+			outState.putLong(CatalogueDBAdapter.KEY_ROWID, mOrigRowId);
 		}
 		Tracker.exitOnSaveInstanceState(this);
 	}
@@ -236,12 +238,25 @@ public class BookEdit extends TabActivity {
 	}
 	
 	/**
+     * If the child activity can provide the row, get it from there, otherwise
+	 * use the original row we were passed.
+	 */
+	private Long getRowId() {
+		final Activity a = getCurrentActivity();
+		if (a instanceof BookDetailsReadOnly) {
+			return ((BookDetailsReadOnly)a).getRowId();
+		} else {
+			return mOrigRowId;
+		}
+	}
+	/**
 	 * Run each time the menu button is pressed. This will setup the options menu
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		menu.clear();
-		if (mRowId != null && mRowId != 0) {
+		final Long currRow = getRowId();
+		if (currRow != null && currRow != 0) {
 			MenuItem delete = menu.add(0, DELETE_ID, 0, R.string.menu_delete);
 			delete.setIcon(android.R.drawable.ic_menu_delete);
 
@@ -273,6 +288,8 @@ public class BookEdit extends TabActivity {
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		final Long currRow = getRowId();
+
 		try {
 			switch(item.getItemId()) {
 			case THUMBNAIL_OPTIONS_ID:
@@ -282,16 +299,16 @@ public class BookEdit extends TabActivity {
 				}
 				break;
 			case SHARE_ID:
-				performSharingBook(mRowId);
+				performSharingBook(currRow);
 				return true;
 			case DELETE_ID:
-				performDeletingBook(mRowId);
+				performDeletingBook(currRow);
 				return true;
 			case DUPLICATE_ID:
-				performDuplicatingBook(mRowId);
+				performDuplicatingBook(currRow);
 				return true;
 			case EDIT_OPTIONS_ID:
-				BookEdit.editBook(getCurrentActivity(), mRowId, BookEdit.TAB_EDIT);
+				BookEdit.editBook(getCurrentActivity(), currRow, BookEdit.TAB_EDIT);
 				return true;
 			}
 		} catch (NullPointerException e) {
@@ -359,7 +376,7 @@ public class BookEdit extends TabActivity {
 		i.putExtra(CatalogueDBAdapter.KEY_ROWID, id);
 		i.putExtra(BookEdit.TAB, BookEdit.TAB_EDIT); //needed extra for creating BookEdit
 		i.putExtra(BookEdit.KEY_READ_ONLY, true);
-		a.startActivity(i);
+		a.startActivityForResult(i, UniqueId.ACTIVITY_VIEW_BOOK);
 		return;
 	}
 	
@@ -419,7 +436,7 @@ public class BookEdit extends TabActivity {
 			book.putString(CatalogueDBAdapter.KEY_GENRE, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_GENRE)));
 			
 			book.putSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mDbHelper.getBookAuthorList(rowId));
-			book.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, mDbHelper.getBookSeriesList(mRowId));
+			book.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, mDbHelper.getBookSeriesList(rowId));
 			
 			i.putExtra("bookData", book);
 			startActivityForResult(i, DUPLICATE_ID);

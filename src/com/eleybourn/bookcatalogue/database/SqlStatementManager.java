@@ -52,10 +52,28 @@ public class SqlStatementManager {
 		return stmt;
 	}
 	
+	public SynchronizedStatement addOrGet(final SynchronizedDb db, final String name, final String sql) {
+		SynchronizedStatement stmt = mStatements.get(name);
+		if (stmt == null) {
+			stmt = this.add(db, name, sql);
+		}
+		return stmt;
+	}
+	
+	public SynchronizedStatement get(final String name) {
+		return mStatements.get(name);
+	}
+
 	public SynchronizedStatement add(String name, String sql) {
 		if (mDb == null)
 			throw new RuntimeException("Databse not set when SqlStatementManager created");
 		return add(mDb, name, sql);
+	}
+	
+	public SynchronizedStatement addOrGet(String name, String sql) {
+		if (mDb == null)
+			throw new RuntimeException("Databse not set when SqlStatementManager created");
+		return addOrGet(mDb, name, sql);
 	}
 	
 	public void close() {

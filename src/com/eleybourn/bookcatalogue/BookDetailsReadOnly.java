@@ -438,8 +438,9 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 	public boolean dispatchTouchEvent(MotionEvent event) {
 		if (mGestureDetector != null && mGestureDetector.onTouchEvent(event))
 			return true;
-
-		return super.dispatchTouchEvent(event);
+		super.dispatchTouchEvent(event);
+		// Always return true; we want the events.
+		return true;
 	}
 
 	/**

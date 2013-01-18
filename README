@@ -42,9 +42,12 @@ Features include;
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
 new in 4.2.4 (unreleased)
+* A read-only view of books details, with 'fling' support! (Nick Silin)
 * Support for pic2shop scanner (better for fixed focus, low light and in front-facing cameras)
 * Check internet connection earlier when trying to scan books
+* More German translation updates (Robert Wetzlmayr)
 * More French translation updates (Djiko)
+* Bug fixes
 
 new in 4.2.3
 * Improve handling of invalid ISBNs when sending to goodreads

@@ -215,6 +215,9 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 			// This will cause the list to be generated.
 			initBookshelfSpinner();
 			setupList(true);
+
+			if (savedInstanceState == null)
+				HintManager.displayHint(this, R.string.hint_view_only_book_details, null);
 		} finally {
 			Tracker.exitOnCreate(this);
 		}

@@ -16,6 +16,7 @@ import com.eleybourn.bookcatalogue.Fields.Field;
 import com.eleybourn.bookcatalogue.booklist.FlattenedBooklist;
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
+import com.eleybourn.bookcatalogue.utils.HintManager;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
@@ -70,6 +71,8 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 			updateFields();
 		}
 
+		if (savedInstanceState == null)
+			HintManager.displayHint(this, R.string.hint_view_only_help, null);
 	}
 	
 	@Override

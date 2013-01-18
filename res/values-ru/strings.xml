@@ -17,7 +17,7 @@
     <string name="pages">Страницы</string>
     <string name="confirm_add">Добавить книгу</string>
     <string name="confirm_update">Обновить</string>
-    <string name="nobooks">На этой книжной полке нет книг. Пожалуйста, добавьте книги, используя меню в нижней части этого экрана.</string>
+    <string name="nobooks">На этой полке нет книг. Пожалуйста, добавьте книги, используя меню в нижней части этого экрана.</string>
     <string name="menu_sort_by_author_expanded">Развернуть всё</string>
     <string name="menu_sort_by">Отсортировать по</string>
     <string name="menu_sort_by_author_collapsed">Свернуть всё</string>
@@ -28,7 +28,7 @@
     <string name="search">Поиск</string>
     <string name="cancel">Отмена</string>
     <string name="confirm_save">Сохранить книгу</string>
-    <string name="nobookshelves">Вы не создали ни одной книжной полки. Пожалуйста, добавьте книжную полку, используя меню в нижней части этого экрана.</string>
+    <string name="nobookshelves">Вы не создали ни одной полки. Пожалуйста, добавьте полку, используя меню в нижней части этого экрана.</string>
     <string name="menu_insert_bs">Создать полку</string>
     <string name="confirm_add_bs">Добавить полку</string>
     <string name="menu_bookshelf">Полки</string>
@@ -65,7 +65,7 @@
     <string name="unable_to_connect_amazon">Невозможно подключиться к Amazon</string>
     <string name="upgrade_title">После Вашего последнего обновления</string>
     <string name="edit_book">Редактировать книгу</string>
-    <string name="edit_book_notes">Ваши комментарии</string>
+    <string name="edit_book_notes">Комментарии</string>
     <string name="edit_book_friends">Одолжить книгу</string>
     <string name="unknown_error">Произошла неизвестная ошибка</string>
     <string name="notes">Заметки</string>
@@ -93,8 +93,8 @@
     <string name="sortby_unread">Отсортировать по непрочитанным</string>
     <string name="sortby_genre">Отсортировать по жанру</string>
     <string name="list_price">Список цен</string>
-    <string name="date_started_reading">Дата начала чтения</string>
-    <string name="date_finished_reading">Дата завершения чтения</string>
+    <string name="date_started_reading">Начало чтения</string>
+    <string name="date_finished_reading">Конец чтения</string>
     <string name="update_fields">Автоматическое обновление полей</string>
     <string name="select_fields_to_update">Выберите поля для обновления</string>
     <string name="select_fields_to_update_help">Выбранные поля будут обновлены через интернет. Остальные останутся неизменными.</string>
@@ -131,8 +131,8 @@
     <string name="menu_zoom_thumb">Увеличить эскиз</string>
     <string name="help_title_nutshell">В двух словах</string>
     <string name="signed">Книга подписана?</string>
-    <string name="read_start">Дата начала чтения</string>
-    <string name="read_end">Дата завершения чтения</string>
+    <string name="read_start">Начало чтения</string>
+    <string name="read_end">Конец чтения</string>
     <string name="location_of_book">Местоположение книги</string>
     <string name="duplicate_title">Копия книги</string>
     <string name="duplicate_book_title">Копия книги</string>
@@ -184,6 +184,7 @@
 
     <item name="TAG_POSITION" type="id"></item>
     <item name="TAG_ORIGINAL_VALUE" type="id"></item>
+
     <string name="cover_not_set">Обложка не установлена</string>
     <string name="cover_corrupt">Обложка испорчена</string>
     <string name="cover_detail">Детальная информация об обложке</string>
@@ -233,7 +234,7 @@
     <string name="click_on_thumb">Щёлкните по миниатюре для просмотра большого изображения</string>
     <string name="loading">Загрузка&#8230;</string>
     <string name="image_not_found">Изображение не найдено</string>
-        
+
     <item name="fieldCheckbox" type="id"></item>
 
     <string name="select_min_1_field">Выберите хотя бы одно поле для обновления</string>
@@ -307,8 +308,7 @@
         									У них есть обширная база данных с книгами и отзывами на них. И если Вы зарегистрированный пользователь goodreads,
         									наше приложение может экспортировать и импортировать ваши книги, полки и обзоры. Наше приложение полностью 
         									автономно и не требует Goodreads, но если Вам интересно, вы можете зарегистрироваться здесь:</string>
-    <string name="goodreads_auth_blurb_part2">
-        									Как только Вы зарегистрируетесь или если уже зарегистрировались на Goodreads, Вы сможете авторизоваться через наше 
+    <string name="goodreads_auth_blurb_part2">        									Как только Вы зарегистрируетесь или если уже зарегистрировались на Goodreads, Вы сможете авторизоваться через наше 
         									приложение для доступа к вашим данным на Goodreads. Для этого нажмите на кнопку Авторизация ниже. Вы перейдете на страницу,
         									где сможете авторизоваться. Наше приложение не знает и не хранит Ваши пароли. Также Вы можете заблокировать доступ
         									через сайт Goodreads. Из-за капризов интернет соединения Вы можете увидеть пустую страницу. В этом случае просто нажмите
@@ -454,22 +454,18 @@
     <string name="reset_hints">Сбросить подсказки</string>
     <string name="do_not_show_again">Больше не показывать</string>
     <string name="other_settings_ellipsis">Другие настройки&#8230;</string>
-    <string name="hint_booklist_styles_editor">
-        	Вы можете использовать это окно, чтобы настроить список стилей, которые будут отображаться в вашем меню стилей по умолчанию. \n\n
+    <string name="hint_booklist_styles_editor">        	Вы можете использовать это окно, чтобы настроить список стилей, которые будут отображаться в вашем меню стилей по умолчанию. \n\n
         	Зеленая галочка показывает, что стиль будет показан в списке, красная - нет.\n\n
         	Если не выделен ни один стиль, будут показаны все. \n\n
         	Вы можете изменить порядок элементов, перетягивая за иконку, расположенную в правой части элемента.\n\n
         	Нажате в любой другой части элемента позволит Вам редактировать выбранный стиль (или копировать его, если он встроенный)</string>
-    <string name="hint_booklist_style_groups">
-        	Вы можете использовать это окно, чтобы редактировать иерархию заголовков для определенного стиля списка книг.\n\n
+    <string name="hint_booklist_style_groups">        	Вы можете использовать это окно, чтобы редактировать иерархию заголовков для определенного стиля списка книг.\n\n
         	Зеленая галочка показывает, что заголовок будет показан в списке, красная - нет.\n\n
         	Вы можете изменить порядок заголовков, перетягивая за иконку, расположенную в правой части элемента.\n\n</string>
-    <string name="hint_booklist_style_properties">
-        	Вы можете использовать это окно, чтобы усатновить характеристики определенного стиля списка книг.\n\n
+    <string name="hint_booklist_style_properties">        	Вы можете использовать это окно, чтобы усатновить характеристики определенного стиля списка книг.\n\n
         	Вы можете изменить имя, редактировать группировки, чтобы изменить иерархию и отрегулировать множество других настроек, чтобы создать полезный вам стиль.\n\n 
         	Также Вы можете использовать \'Фильтры книг\', чтобы изменить набор кинг, которые будут отображаться в списке, например, чтобы отобразить только прочитанные.</string>
-    <string name="hint_booklist_global_properties">
-        	Вы можете использовать это окно, чтобы установить характеристики всех стилей списков книг.\n\n
+    <string name="hint_booklist_global_properties">        	Вы можете использовать это окно, чтобы установить характеристики всех стилей списков книг.\n\n
         	Большинство свойств может быть переопределено индивидуальными стилями, но значения по умолчанию определены здесь.\n\n
 			Вы можете изменить фон, изменить как списки отображаются при запускеи отрегулировать множестов других настроек, которые будут применены ко всем стилям, если возможно.\n\n    										
 			Также вы можете редактировать меню стилей и сами стили отсюда.</string>
@@ -519,8 +515,7 @@
     <string name="requested_task_is_already_queued">Запрошенная задача уже в очереди</string>
     <string name="export_task_is_already_queued">Задача экспортирования уже в очереди и должна завершиться до того, как может начаться эта задача</string>
     <string name="import_task_is_already_queued">Задача импортирования уже в очереди и должна завершиться до того, как может начаться эта задача</string>
-    <string name="goodreads_action_cannot_blah_blah">
-        Данное действие не может быть завершено пока приложение не будет авторизовано через сайт Goodreads. 
+    <string name="goodreads_action_cannot_blah_blah">        Данное действие не может быть завершено пока приложение не будет авторизовано через сайт Goodreads. 
         Пожалуйста, попробуйте ещё раз, после авторизации приложения.\n\n
         Хотите ли Вы авторизоваться сейчас?</string>
     <string name="tell_me_more">Расскажите мне ещё</string>
@@ -529,8 +524,7 @@
     <string name="failed">Неудача</string>
     <string name="queued">В очереди</string>
     <string name="unknown">Неизвестно</string>
-    <string name="send_books_to_goodreads_blurb">
-        Это отправит Вашу библиотеку на Goodreads. 
+    <string name="send_books_to_goodreads_blurb">        Это отправит Вашу библиотеку на Goodreads. 
         \n\nВы можете выбрать так, чтобы отослать все ваши книги или только те, которые были обновлены с тех пор как были копированы с или на Goodreads
         (включая все книги, которые ещё не были отправлены). Также Вы можете отменить обновление.
         \n\nЕсли никогда не отправляли книги, тогда нет никакой разницы между первыми двумя вариантами.</string>
@@ -539,33 +533,26 @@
     <string name="sync_with_goodreads">Синхронизировать с Goodreads</string>
     <string name="cover_options_cc_ellipsis">Настройки обложек&#8230;</string>
     <string name="show_events_ellipsis">Показать события&#8230;</string>
-    <string name="hint_authors_book_may_appear_more_than_once">
-        Если показывается по авторам, то одна и та же книга может появиться в списке многократно. 
+    <string name="hint_authors_book_may_appear_more_than_once">        Если показывается по авторам, то одна и та же книга может появиться в списке многократно. 
         В этом случае удаление одной из таких книг, удалит и все остальные из списка.</string>
-    <string name="hint_series_book_may_appear_more_than_once">
-        Если показывается по сериям, то одна и та же книга может появиться в списке многократно. 
+    <string name="hint_series_book_may_appear_more_than_once">        Если показывается по сериям, то одна и та же книга может появиться в списке многократно. 
         В этом случае удаление одной из таких книг, удалит и все остальные из списка.</string>
-    <string name="hint_background_tasks">
-        Здесь Вы сможете увидеть как текущие задачи, так и те предыдущие, которые завершились с ошибками или другими примечательными событиями.
+    <string name="hint_background_tasks">        Здесь Вы сможете увидеть как текущие задачи, так и те предыдущие, которые завершились с ошибками или другими примечательными событиями.
         Клик по задаче позволяет увидеть как связанные с ней события, так и удалить её вместе с событиями.</string>
-    <string name="hint_background_task_events">
-        Здесь Вы сможете увидеть события связанные с фоновыми задачами. 
+    <string name="hint_background_task_events">        Здесь Вы сможете увидеть события связанные с фоновыми задачами. 
         Клик по событию позволит осуществить множество действий, связанных с этим событием.</string>
     <string name="hints_have_been_reset">Подсказки сброшены</string>
     <string name="task_has_been_queued_in_background">Задача поставлена в очередь в фоне</string>
-    <string name="hint_startup_screen">
-        Это стандартное стартовое окно BookCatalogue. 
+    <string name="hint_startup_screen">        Это стандартное стартовое окно BookCatalogue. 
         Если хотите, Вы можете начинать прямо с \'Мои книги\'; начальное окно может быть изменено в настройках.</string>
     <string name="upgrading_ellipsis">Обновление&#8230;</string>
-    <string name="explain_goodreads_no_isbn">
-        Выбранная книга не имеет ISBN; невозможно автоматически синхронизировать с Goodreads.
+    <string name="explain_goodreads_no_isbn">        Выбранная книга не имеет ISBN; невозможно автоматически синхронизировать с Goodreads.
         Вот самое простое решение:
         \n\n(1) Удалить книгу в этом приложении
         \n\n(2) Добавить книгу в Goodreads вручную через веб интерфейс
         \n\n(3) Синхронизировать приложение с Goodreads
         \n\nВ результате, во-первых книга будет пересоздана в BookCatalogue и во-вторых уже будет связана с Goodreads.</string>
-    <string name="explain_goodreads_no_match">
-        ISBN выбранной книги не найден на Goodreads. Для этого есть несколько причин:
+    <string name="explain_goodreads_no_match">        ISBN выбранной книги не найден на Goodreads. Для этого есть несколько причин:
         либо данные о книги не правильны (проверьте ISBN), либо книги нет на Goodreads.
         \n\nЕсли Вы сделаете какие-либо изменения в BookCatalogue, просто нажмите кнопку \'Повторить\' и проверьте выполнилась ли фоновая задача.
         \n\nЕсли данные о книге правильны и книга все еще не найдена, то эта книга должна быть добавлена на Goodreads вручную через сайт.
@@ -585,8 +572,7 @@
     <string name="no_export_files_found">Файлы экспорта не найдены</string>
     <string name="more_than_one_export_file_blah">Найдено больше одного файла экспорта; пожалуйста, выберите файл экспорта для импортирования из списка</string>
     <string name="problem_starting_import_arg">Возникла проблема при начале импорта: %1$s</string>
-    <string name="hint_booklist_style_menu">
-        Это меню позволяет Вам выбрать стиль списка. 
+    <string name="hint_booklist_style_menu">        Это меню позволяет Вам выбрать стиль списка. 
     	\n\nВы можете также настроить это меню и создать свои стили списков нажатием на \'Настроить\' в конце списка.</string>
     <string name="menu_edit_format">Редактировать формат&#8230;</string>
     <string name="edit_format_name">Редактировать имя формата</string>
@@ -621,7 +607,7 @@
     <string name="x_is_not_a_valid_isbn_or_asin">%1$s неправильный ISBN или ASIN</string>
     <string name="confirm_exit">Подтвердить выход</string>
     <string name="you_may_have_unsaved_changes">Возможно, есть несохраненные изменения. Вы уверены, что хотите выйти без сохранения?</string>
-	<string name="read_year">Год прочтения</string>
+    <string name="read_year">Год прочтения</string>
     <string name="read_month">Месяц прочтения</string>
     <string name="read_day">День прочтения</string>
     <string name="sort_read_date">Дата прочтения</string>
@@ -652,8 +638,14 @@
     <string name="library_thing">LibraryThing</string>
     <string name="searching_elipsis">Поиск&#8230;</string>
     <string name="adding_book_elipsis">Добавление книги&#8230;</string>
+    <string name="prefs_global_opening_book_mode">Просмотр книги в режиме чтения</string>
+    <string name="book_details_readonly_publishing">Публикация</string>
+    <string name="book_details_readonly_by">by</string>
+    <string name="book_details_readonly_loaned_to">Дана вдолг: %1$s</string>
+    <string name="book_details_readonly_pages">Страниц: %1$s</string>
+    <string name="brackets">(%1$s)</string>
     <string name="new_in_42">
-		<![CDATA[
+<![CDATA[
     		<p><b>Новое в версии 4.2</b>\n\n
 			* Диалог выбора даты, поддерживающий как даты вплоть до 0 года нашей эры так и отдельные.\n\n
 			* Исправлено отображение описание книги в формате HTML. Добавлена кнопка редактирования.\n\n
@@ -676,6 +668,30 @@
 			Bо всех багах и ошибках вините Grunthos:) И шлите нам отчеты с ошибками.
 			</p>
 		]]>
+    </string>
+    <string name="new_in_421">
+<![CDATA[
+    		<p><b>Новое в 4.2.1</b>\n\n
+			* Исправлена ошибка, возникающая при раскрытии списка с использованием \'Раскрыть всё\'\n\n
+			</p>]]>
+    </string>
+    <string name="bad_scanner">Возможно, ваше приложение-сканер не совместимо с Book Catalogue. Мы рекомендуем установить Zxing сканер, или если он уже установлен, удалите его, затем снова установите.</string>
+    <string name="new_in_422">
+<![CDATA[
+    	<p><b>Новое в 4.2.2</b>\n\n
+			* Исправление отображения фонового изображения для некоторых версии\n\n
+			* Улучшено взаимодействие со сторонними программами-сканерами\n\n
+			* Улучшены отправляемые подробности об аварийном завершении или просьбе о помощи\n\n
+			* Исправлены шаблоны пользовательского интерфейса (Коля Силин)\n\n
+			* Исправлены некоторые баги\n\n
+			</p>]]>
+    </string>
+    <string name="new_in_423">
+<![CDATA[
+    	<p><b>Новое в 4.2.3</b>\n\n
+			* Улучшена обработка неверного ISBN при отправке на Goodreads\n\n
+			* Исправление небольших багов\n\n
+			</p>]]>
     </string>
 
 </resources>

@@ -498,8 +498,10 @@ public class BookISBNSearch extends ActivityWithTasks {
 					}
 					return;
 				} else {
-					// Optionally beep if scan was valid.
-					SoundManager.beepHigh();
+					if (mMode == MODE_SCAN) {
+						// Optionally beep if scan was valid.
+						SoundManager.beepHigh();
+					}
 					// See if ISBN exists in catalogue
 					final long existingId = mDbHelper.getIdFromIsbn(isbn);
 					if (existingId > 0) {

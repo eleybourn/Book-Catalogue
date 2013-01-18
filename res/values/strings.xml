@@ -64,7 +64,7 @@
 <string name="unable_to_connect_amazon">Unable to Connect to Amazon</string>
 <string name="upgrade_title">Since your last upgrade</string>
 <string name="edit_book">Edit Book</string>
-<string name="edit_book_notes">Your Comments</string>
+<string name="edit_book_notes">My Comments</string>
 <string name="edit_book_friends">Loan Book</string>
 <string name="unknown_error">An unknown error occurred</string>
 <string name="notes">Notes</string>
@@ -622,6 +622,12 @@
 <string name="searching_elipsis">Searching&#8230;</string>
 
 <string name="adding_book_elipsis">Adding book&#8230;</string>
+<string name="prefs_global_opening_book_mode">Open book in read-only mode</string>
+<string name="book_details_readonly_publishing">Publishing</string>
+<string name="book_details_readonly_by">by</string>
+<string name="book_details_readonly_loaned_to">On Loan to %1$s</string>
+<string name="book_details_readonly_pages">%1$s pages</string>
+<string name="brackets">(%1$s)</string>
 
 <string name="new_in_42"><![CDATA[
     <p><b>New in 4.2</b>\n\n
@@ -679,5 +685,26 @@
 <string name="zxing_compatible_scanner">Zxing Compatible Scanner</string>
 <string name="pic2shop_scanner">Pic2Shop Scanner</string>
 <string name="beep_if_scanned_isbn_valid">Beep if scanned ISBN is valid</string>
+
+<string name="new_in_424"><![CDATA[
+	<p><b>New in 4.2.4</b>\n\n
+		* A non-editable view of book details, with \'fling\' support! (See \"Other Preferences\") (Nick Silin)\n\n
+		* Support for pic2shop scanner (better for fixed focus, low light and in front-facing cameras)\n\n
+		* Check internet connection earlier when trying to scan books\n\n
+		* More German translation updates (Robert Wetzlmayr)\n\n
+		* More French translation updates (Djiko)\n\n
+		* Bug fixes\n\n
+		</p>
+		]]></string>
+
+<string name="hint_view_only_book_details">
+When you click on an item in this list, you can now choose to go to non-editable book details view. 
+See "Other Preferences" for the relevant setting.
+</string>
+
+<string name="hint_view_only_help">
+This is the non-editable book details screen; you can fling/swipe left or right to navigate to other books, 
+and you can edit the book via the options menu using the menu button or overflow menu icon.
+</string>
 
 </resources>

@@ -8,14 +8,20 @@
     android:paddingLeft="@dimen/padding_border"
     android:paddingRight="10dp" >
 
-    <CheckBox
-        android:id="@+id/checkbox"
+    <FrameLayout
+        android:id="@+id/frame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:focusable="true"
-        android:text="" />
+        android:layout_centerVertical="true" >
+
+        <CheckBox
+            android:id="@+id/checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:text="" />
+    </FrameLayout>
 
     <TextView
         android:id="@+id/name"
@@ -23,9 +29,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@id/checkbox"
+        android:layout_toLeftOf="@+id/frame"
         android:paddingTop="@dimen/padding_border"
-        android:singleLine="false"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
@@ -34,8 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@id/name"
-        android:layout_toLeftOf="@id/checkbox"
-        android:singleLine="false"
+        android:layout_toLeftOf="@+id/frame"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <View

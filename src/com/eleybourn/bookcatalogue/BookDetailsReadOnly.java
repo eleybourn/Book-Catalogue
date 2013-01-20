@@ -439,7 +439,8 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 		if (mGestureDetector != null && mGestureDetector.onTouchEvent(event))
 			return true;
 
-		return super.dispatchTouchEvent(event);
+		super.dispatchTouchEvent(event);
+		return true;
 	}
 
 	/**

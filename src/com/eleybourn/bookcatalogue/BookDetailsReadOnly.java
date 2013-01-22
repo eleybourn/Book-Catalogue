@@ -440,6 +440,7 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 			return true;
 
 		super.dispatchTouchEvent(event);
+		// Always return true; we want the events.
 		return true;
 	}
 

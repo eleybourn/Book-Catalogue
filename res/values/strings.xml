@@ -718,4 +718,14 @@ and you can edit the book via the options menu using the menu button or overflow
     	from your SD card to another location.
     	\n\nSee our FAQ (a web link is under \'Help\') for detailed instructions.</string>
 
+<string name="new_in_430"><![CDATA[
+	<p><b>New in 4.3.0</b>\n\n
+		* Action Bar support for usability and to work better on devices without menu buttons\n\n
+		* Updated interface\n\n
+		* Internal changes in anticipation of an improved tablet interface\n\n
+		* Read-only mode is now default when clicking on a book
+		* Bug fixes\n\n
+		</p>
+		]]></string>
+
 </resources>

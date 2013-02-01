@@ -1221,18 +1221,18 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		mMenuHandler = new MenuHandler();
-		mMenuHandler.init(menu);
-		mMenuHandler.addCreateBookItems(menu);
-
-		if (collapsed == true || currentGroup.size() == 0) {
-			mMenuHandler.addItem(menu, SORT_BY_AUTHOR_COLLAPSED, R.string.menu_sort_by_author_expanded, R.drawable.ic_menu_expand);
-		} else {
-			mMenuHandler.addItem(menu, SORT_BY_AUTHOR_EXPANDED, R.string.menu_sort_by_author_collapsed, R.drawable.ic_menu_collapse);
-		}
-		mMenuHandler.addItem(menu, SORT_BY, R.string.menu_sort_by, android.R.drawable.ic_menu_sort_alphabetically);
-
-		mMenuHandler.addCreateHelpAndAdminItems(menu);
-		mMenuHandler.addSearchItem(menu);
+//		mMenuHandler.init(menu);
+//		mMenuHandler.addCreateBookItems(menu);
+//
+//		if (collapsed == true || currentGroup.size() == 0) {
+//			mMenuHandler.addItem(menu, SORT_BY_AUTHOR_COLLAPSED, R.string.menu_sort_by_author_expanded, R.drawable.ic_menu_expand);
+//		} else {
+//			mMenuHandler.addItem(menu, SORT_BY_AUTHOR_EXPANDED, R.string.menu_sort_by_author_collapsed, R.drawable.ic_menu_collapse);
+//		}
+//		mMenuHandler.addItem(menu, SORT_BY, R.string.menu_sort_by, android.R.drawable.ic_menu_sort_alphabetically);
+//
+//		mMenuHandler.addCreateHelpAndAdminItems(menu);
+//		mMenuHandler.addSearchItem(menu);
 
 		return super.onPrepareOptionsMenu(menu);
 	}
@@ -1244,19 +1244,19 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		// MenuHandler handles the 'standard' items, we just handle local items.
-		if (mMenuHandler == null || !mMenuHandler.onMenuItemSelected(this, featureId, item)) {
-			switch(item.getItemId()) {
-			case SORT_BY_AUTHOR_COLLAPSED:
-				expandAll();
-				return true;
-			case SORT_BY_AUTHOR_EXPANDED:
-				collapseAll();
-				return true;
-			case SORT_BY:
-				sortOptions();
-				return true;
-			}			
-		}
+//		if (mMenuHandler == null || !mMenuHandler.onMenuItemSelected(this, featureId, item)) {
+//			switch(item.getItemId()) {
+//			case SORT_BY_AUTHOR_COLLAPSED:
+//				expandAll();
+//				return true;
+//			case SORT_BY_AUTHOR_EXPANDED:
+//				collapseAll();
+//				return true;
+//			case SORT_BY:
+//				sortOptions();
+//				return true;
+//			}			
+//		}
 		
 		return super.onMenuItemSelected(featureId, item);
 	}
@@ -1634,25 +1634,25 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 		case UniqueId.ACTIVITY_ADMIN:
 			try {
 				// Use the ADDED_* fields if present.
-				if (intent != null && intent.hasExtra(BookEditFields.ADDED_HAS_INFO)) {
+				if (intent != null && intent.hasExtra(BookEdit.ADDED_HAS_INFO)) {
 					if (sort == SORT_TITLE) {
-						justAdded = intent.getStringExtra(BookEditFields.ADDED_TITLE);
+						justAdded = intent.getStringExtra(BookEdit.ADDED_TITLE);
 						int position = mDbHelper.fetchBookPositionByTitle(justAdded, bookshelf);
 						adjustCurrentGroup(position, 1, true, false);
 					} else if (sort == SORT_AUTHOR) {
-						justAdded = intent.getStringExtra(BookEditFields.ADDED_AUTHOR);
+						justAdded = intent.getStringExtra(BookEdit.ADDED_AUTHOR);
 						int position = mDbHelper.fetchAuthorPositionByName(justAdded, bookshelf);
 						adjustCurrentGroup(position, 1, true, false);
 					} else if (sort == SORT_AUTHOR_GIVEN) {
-						justAdded = intent.getStringExtra(BookEditFields.ADDED_AUTHOR);
+						justAdded = intent.getStringExtra(BookEdit.ADDED_AUTHOR);
 						int position = mDbHelper.fetchAuthorPositionByGivenName(justAdded, bookshelf);
 						adjustCurrentGroup(position, 1, true, false);
 					} else if (sort == SORT_SERIES) {
-						justAdded = intent.getStringExtra(BookEditFields.ADDED_SERIES);
+						justAdded = intent.getStringExtra(BookEdit.ADDED_SERIES);
 						int position = mDbHelper.fetchSeriesPositionBySeries(justAdded, bookshelf);
 						adjustCurrentGroup(position, 1, true, false);
 					} else if (sort == SORT_GENRE) {
-						justAdded = intent.getStringExtra(BookEditFields.ADDED_GENRE);
+						justAdded = intent.getStringExtra(BookEdit.ADDED_GENRE);
 						int position = mDbHelper.fetchGenrePositionByGenre(justAdded, bookshelf);
 						adjustCurrentGroup(position, 1, true, false);
 					}					

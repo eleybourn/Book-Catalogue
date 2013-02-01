@@ -64,7 +64,7 @@ public class ExportThread extends ManagedTask {
 			'"' + CatalogueDBAdapter.KEY_PAGES + "\"," + 			//14
 			'"' + CatalogueDBAdapter.KEY_NOTES + "\"," + 			//15
 			'"' + CatalogueDBAdapter.KEY_LIST_PRICE + "\"," + 		//16
-			'"' + CatalogueDBAdapter.KEY_ANTHOLOGY+ "\"," + 		//17
+			'"' + CatalogueDBAdapter.KEY_ANTHOLOGY_MASK+ "\"," + 		//17
 			'"' + CatalogueDBAdapter.KEY_LOCATION+ "\"," + 			//18
 			'"' + CatalogueDBAdapter.KEY_READ_START+ "\"," + 		//19
 			'"' + CatalogueDBAdapter.KEY_READ_END+ "\"," + 			//20
@@ -133,9 +133,9 @@ public class ExportThread extends ManagedTask {
 							//do nothing
 						}
 
-						String anthology = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
+						String anthology = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY_MASK));
 						String anthology_titles = "";
-						if (anthology.equals(CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS + "") || anthology.equals(CatalogueDBAdapter.ANTHOLOGY_SAME_AUTHOR + "")) {
+						if (anthology.equals(CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS + "") || anthology.equals(CatalogueDBAdapter.ANTHOLOGY_IS_ANTHOLOGY + "")) {
 							Cursor titles = mDbHelper.fetchAnthologyTitlesByBook(id);
 							try {
 								if (titles.moveToFirst()) {

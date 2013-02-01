@@ -152,6 +152,10 @@ public class FlattenedBooklist {
 		return movePrev();
 	}
 
+	public long getPosition() {
+		return mPosition;
+	}
+
 	private static final String COUNT_STMT_NAME = "count";
 	public long getCount() {
 		SynchronizedStatement stmt = mStatements.get(COUNT_STMT_NAME);

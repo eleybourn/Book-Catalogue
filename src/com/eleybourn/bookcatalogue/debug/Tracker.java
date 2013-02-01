@@ -59,6 +59,12 @@ public class Tracker {
 	public static void exitOnCreate(Object a) {
 		handleEvent(a,"OnCreate", States.Exit);		
 	}
+	public static void enterOnCreateView(Object a) {
+		handleEvent(a,"OnCreateView", States.Enter);
+	}
+	public static void exitOnCreateView(Object a) {
+		handleEvent(a,"OnCreateView", States.Exit);
+	}
 	public static void enterOnDestroy(Object a) {
 		handleEvent(a,"OnDestroy", States.Enter);
 	}

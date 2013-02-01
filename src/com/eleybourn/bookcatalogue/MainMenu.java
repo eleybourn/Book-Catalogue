@@ -28,6 +28,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 
+import com.actionbarsherlock.app.SherlockActivity;
 import com.eleybourn.bookcatalogue.utils.AlertDialogUtils;
 import com.eleybourn.bookcatalogue.utils.AlertDialogUtils.AlertDialogItem;
 import com.eleybourn.bookcatalogue.utils.HintManager;
@@ -47,7 +48,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * @author Philip Warner
  * 
  */
-public class MainMenu extends Activity {
+public class MainMenu extends SherlockActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -95,6 +96,7 @@ public class MainMenu extends Activity {
 			HintManager.displayHint(this, R.string.hint_startup_screen, null);
 
 		Utils.initBackground(R.drawable.bc_background_gradient, this, true);
+		this.getSupportActionBar().setHomeButtonEnabled(false);
 	}
 
 	/**

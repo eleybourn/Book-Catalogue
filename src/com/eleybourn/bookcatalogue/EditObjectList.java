@@ -37,6 +37,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.actionbarsherlock.app.SherlockListActivity;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 import com.eleybourn.bookcatalogue.utils.ViewTagger;
@@ -85,7 +86,7 @@ import com.eleybourn.bookcatalogue.widgets.TouchListView;
  *
  * @param <T>
  */
-abstract public class EditObjectList<T extends Serializable> extends ListActivity {
+abstract public class EditObjectList<T extends Serializable> extends SherlockListActivity {
 
 	// List
 	protected ArrayList<T> mList = null;

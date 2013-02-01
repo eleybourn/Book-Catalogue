@@ -102,7 +102,7 @@ public class ImportThread extends ManagedTask {
 		mManager.setMax(this, export.size() - 1);
 
 		// Container for values.
-		Bundle values = new Bundle();
+		BookData values = new BookData();
 
 		String[] names = returnRow(export.get(0), true);
 
@@ -261,7 +261,7 @@ public class ImportThread extends ManagedTask {
 				
 				// Make sure we have bookself_text if we imported bookshelf
 				if (values.containsKey(CatalogueDBAdapter.KEY_BOOKSHELF) && !values.containsKey("bookshelf_text")) {
-					values.putString("bookshelf_list", values.getString(CatalogueDBAdapter.KEY_BOOKSHELF));
+					values.setBookshelfList(values.getString(CatalogueDBAdapter.KEY_BOOKSHELF));
 				}
 
 				try {
@@ -325,20 +325,20 @@ public class ImportThread extends ManagedTask {
 				}
 
 				if (values.containsKey(CatalogueDBAdapter.KEY_LOANED_TO) && !values.get(CatalogueDBAdapter.KEY_LOANED_TO).equals("")) {
-					int id = Integer.parseInt(Utils.getAsString(values, CatalogueDBAdapter.KEY_ROWID));
+					int id = Integer.parseInt(values.getString(CatalogueDBAdapter.KEY_ROWID));
 					mDbHelper.deleteLoan(id);
 					mDbHelper.createLoan(values);
 				}
 
-				if (values.containsKey(CatalogueDBAdapter.KEY_ANTHOLOGY)) {
+				if (values.containsKey(CatalogueDBAdapter.KEY_ANTHOLOGY_MASK)) {
 					int anthology;
 					try {
-						anthology = Integer.parseInt(values.getString(CatalogueDBAdapter.KEY_ANTHOLOGY));
+						anthology = Integer.parseInt(values.getString(CatalogueDBAdapter.KEY_ANTHOLOGY_MASK));
 					} catch (Exception e) {
 						anthology = 0;
 					}
-					if (anthology == CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS || anthology == CatalogueDBAdapter.ANTHOLOGY_SAME_AUTHOR) {
-						int id = Integer.parseInt(Utils.getAsString(values, CatalogueDBAdapter.KEY_ROWID));
+					if (anthology == CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS || anthology == CatalogueDBAdapter.ANTHOLOGY_IS_ANTHOLOGY) {
+						int id = Integer.parseInt(values.getString(CatalogueDBAdapter.KEY_ROWID));
 						// We have anthology details, delete the current details.
 						mDbHelper.deleteAnthologyTitles(id);
 						int oldi = 0;
@@ -695,7 +695,7 @@ public class ImportThread extends ManagedTask {
 	}
 
 	// Require a column
-	private void requireColumnOr(Bundle values, String... names) {
+	private void requireColumnOr(BookData values, String... names) {
 		for(int i = 0; i < names.length; i++)
 			if (values.containsKey(names[i]))
 				return;
@@ -704,7 +704,7 @@ public class ImportThread extends ManagedTask {
 		throw new ImportException(String.format(s, Utils.join(names, ",")));
 	}
 
-	private void requireNonblank(Bundle values, int row, String name) {
+	private void requireNonblank(BookData values, int row, String name) {
 		if (values.getString(name).length() != 0)
 			return;
 		String s = BookCatalogueApp.getResourceString(R.string.column_is_blank);
@@ -712,7 +712,7 @@ public class ImportThread extends ManagedTask {
 	}
 
 	@SuppressWarnings("unused")
-	private void requireAnyNonblank(Bundle values, int row, String... names) {
+	private void requireAnyNonblank(BookData values, int row, String... names) {
 		for(int i = 0; i < names.length; i++)
 			if (values.containsKey(names[i]) && values.getString(names[i]).length() != 0)
 				return;

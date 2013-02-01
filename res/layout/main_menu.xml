@@ -6,21 +6,6 @@
     android:background="@drawable/bc_background_gradient"
     android:orientation="vertical" >
 
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/ic_launcher2"
-        android:gravity="center_vertical"
-        android:text="@string/app_name"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="30sp" />
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@drawable/main_menu_header_divider"
-        android:paddingBottom="12dp" />
-
     <ScrollView
         android:id="@+id/main_menu_view"
         android:layout_width="fill_parent"

@@ -707,4 +707,15 @@ This is the non-editable book details screen; you can fling/swipe left or right 
 and you can edit the book via the options menu using the menu button or overflow menu icon.
 </string>
 
+<!-- This is the heading of the 'Details' tab when editing a book. It needs to be short. "Book Details" is too long. -->
+<string name="details">Details</string>
+<!-- This is the heading of the 'Loan' tab when editing a book. It needs to be short. "Loan Book" is too long. -->
+<string name="loan">Loan</string>
+
+<!--  Hint displayed when an export or database backup is done -->
+<string name="hint_not_a_full_backup">Please note that this is not a full backup. It does not contain cover images.
+    	\n\nFor a complete backup you need to copy the contents of the \'bookCatalogue\' directory 
+    	from your SD card to another location.
+    	\n\nSee our FAQ (a web link is under \'Help\') for detailed instructions.</string>
+
 </resources>

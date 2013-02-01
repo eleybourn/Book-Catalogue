@@ -36,12 +36,14 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.SherlockListActivity;
+import com.actionbarsherlock.view.MenuInflater;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
 /*
  * A book catalogue application that integrates with Google Books.
  */
-public class Bookshelf extends ListActivity {
+public class Bookshelf extends SherlockListActivity {
 	private static final int ACTIVITY_CREATE=0;
 	private static final int ACTIVITY_EDIT=1;
 	private CatalogueDBAdapter mDbHelper;
@@ -129,9 +131,14 @@ public class Bookshelf extends ListActivity {
 	}
 	
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
+	public boolean onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		menu.add(0, INSERT_ID, 0, R.string.menu_insert_bs);
+		menu.add(0, INSERT_ID, 0, R.string.menu_insert_bs)
+			.setIcon(R.drawable.ic_action_bookshelf_add)
+			.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		
+//        MenuInflater menuInflater = getSupportMenuInflater();
+//        menuInflater.inflate(R.menu.menu_bookshelf, menu);
 		return true;
 	}
 	

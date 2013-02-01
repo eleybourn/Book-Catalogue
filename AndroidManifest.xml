@@ -1,143 +1,283 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--  Use android:installLocation="auto" when building with API > 4, "preferExternal" causes it to install on encrypted sdcards, which fails -->
+<!-- Use android:installLocation="auto" when building with API > 4, "preferExternal" causes it to install on encrypted sdcards, which fails -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="com.eleybourn.bookcatalogue"
-	android:installLocation="auto"  android:versionName="4.2.4" android:versionCode="134">
-	<uses-sdk android:minSdkVersion="4" />
-	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
-	<uses-permission android:name="android.permission.VIBRATE"></uses-permission>
-	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
-	
-	<application android:name=".BookCatalogueApp" android:label="@string/app_name" android:icon="@drawable/ic_launcher2" >
-		<provider android:name=".SearchSuggestionProvider" android:authorities="com.eleybourn.bookcatalogue.SearchSuggestionProvider" />		
-		<service android:enabled="true" android:name=".BcQueueManager" />
+    package="com.eleybourn.bookcatalogue"
+    android:installLocation="auto"
+    android:versionCode="134"
+    android:versionName="4.2.4" >
 
-	 	<activity android:name=".BookCatalogueClassic" android:label="@string/app_name">
-			<intent-filter>
-				<action android:name="android.intent.action.SEARCH" />
-				<category android:name="android.intent.category.DEFAULT" />
-			</intent-filter>
-			<meta-data android:name="android.app.searchable" android:resource="@xml/searchable" />
-		</activity>
+    <uses-sdk
+        android:minSdkVersion="7"
+        android:targetSdkVersion="16" />
 
-	 	<!-- .BookCatalogue is now just a forwarder to .StartupActivity.  -->
-	 	<activity android:name=".BookCatalogue" android:label="@string/app_name"></activity>
-	 	<!-- The StartupActivity activity is just a forwarder to the users chosen first screen; does not 
-			rebuild on orientation changes so progress dialogs are easier 
-		-->
-		<activity android:name=".StartupActivity" android:theme="@style/Invisible" android:configChanges="orientation|keyboardHidden" >
-		    <intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-				<category android:name="android.intent.category.LAUNCHER" />
-			</intent-filter>
-		</activity>
+    <uses-permission android:name="android.permission.INTERNET" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.VIBRATE" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" >
+    </uses-permission>
 
-		<activity android:name="org.acra.CrashReportDialog"
-	        android:theme="@android:style/Theme.Dialog"
-	        android:launchMode="singleInstance"
-	        android:excludeFromRecents="true"
-	        android:finishOnTaskLaunch="true" />
-		
-		<!-- The StartupActivity activity is just a forwarder to the users chosen first screen, which could
-			 be the  MainMenu Activity. So in theory it is OK to make is singleInstance  
-			 -->
-		<activity android:name=".MainMenu" android:theme="@android:style/Theme.NoTitleBar" ></activity> <!-- android:launchMode="singleInstance" -->
-		<activity android:name=".BookEdit"></activity>
-		<activity android:name=".BookISBNSearch" android:label="@string/title_isbn_search"></activity>
-		<activity android:name=".booklist.BooklistPreferencesActivity"></activity>
-		<activity android:name=".booklist.BooklistStyleGroupsActivity"></activity>
-		<activity android:name=".booklist.BooklistStylePropertiesActivity" android:windowSoftInputMode="stateHidden"></activity>
-		<activity android:name=".booklist.BooklistStylesActivity"></activity>
-		<activity android:name=".Bookshelf" android:label="@string/title_manage_bs"></activity>
-		<activity android:name=".BookshelfEdit" android:label="@string/title_edit_bs"></activity>
-		<activity android:name=".Administration" android:label="@string/administration_title"></activity>
-		<activity android:name=".BookEditFields"></activity>
-		<activity android:name=".BookEditLoaned"></activity>
-		<activity android:name=".BookEditNotes"></activity>
-		<activity android:name=".BookDetailsReadOnly"></activity>
-		<activity android:name=".BooksOnBookshelf">
-			<intent-filter>
-				<action android:name="android.intent.action.SEARCH" />
-				<category android:name="android.intent.category.DEFAULT" />
-			</intent-filter>
-			<meta-data android:name="android.app.searchable" android:resource="@xml/searchable" />		    
-		</activity>
-		<activity android:name=".BooksOnBookshelfNavigator" android:theme="@style/Navigator"></activity>
-		<activity android:name=".AdministrationAbout"></activity>
-		<activity android:name=".AdministrationDonate"></activity>
-		<activity android:name=".AdministrationFunctions">
-		</activity>
-		<activity android:name=".goodreads.GoodreadsRegister" android:launchMode="singleInstance"></activity>
-		<activity android:name=".goodreads.GoodreadsAuthorizationActivity" >
-		    <!--  RELEASE: Work out which of these filters we dont need! -->
-		    <intent-filter>  
-				<action android:name="android.intent.action.VIEW"></action>  
-				<category android:name="android.intent.category.DEFAULT"></category>  
-				<category android:name="android.intent.category.BROWSABLE"></category>  
-				<category android:name="android.intent.category.LAUNCHER"></category>  
-				<data android:scheme="http" android:host="goodreadsauth"></data>  
-			</intent-filter> 
-		    <intent-filter>  
-				<action android:name="android.intent.action.VIEW"></action>  
-				<category android:name="android.intent.category.DEFAULT"></category>  
-				<category android:name="android.intent.category.BROWSABLE"></category>  
-				<category android:name="android.intent.category.LAUNCHER"></category>  
-				<data android:scheme="com.eleybourn.bookcatalogue" android:host="goodreadsauth"></data>  
-			</intent-filter> 
-		    <intent-filter>
-				<action android:name="android.intent.action.VIEW"></action>  
-				<category android:name="android.intent.category.BROWSABLE"></category>  
-				<data android:scheme="com.eleybourn.bookcatalogue" android:host="goodreadsauth"></data>  
-			</intent-filter> 
-		    <intent-filter>  
-				<action android:name="android.intent.action.GET"></action>  
-				<category android:name="android.intent.category.DEFAULT"></category>  
-				<category android:name="android.intent.category.BROWSABLE"></category>  
-				<category android:name="android.intent.category.LAUNCHER"></category>  
-				<data android:scheme="com.eleybourn.bookcatalogue" android:host="goodreadsauth"></data>  
-			</intent-filter> 
-		    
-		    <intent-filter>  
-				<action android:name="android.intent.action.VIEW"></action>  
-				<category android:name="android.intent.category.DEFAULT"></category>  
-				<category android:name="android.intent.category.BROWSABLE"></category>  
-				<category android:name="android.intent.category.LAUNCHER"></category>  
-			</intent-filter> 
-		    <intent-filter>  
-				<category android:name="android.intent.category.LAUNCHER"></category>  
-				<category android:name="android.intent.category.BROWSABLE"></category>  
-			</intent-filter> 
-		    <intent-filter>  
-				<category android:name="android.intent.category.BROWSABLE"></category>  
-		        <category android:name="android.intent.category.DEFAULT"></category>  
-			</intent-filter> 
-		    <intent-filter>  
-				<category android:name="android.intent.category.LAUNCHER"></category>  
-		    	<category android:name="android.intent.category.DEFAULT"></category>  
-				<category android:name="android.intent.category.BROWSABLE"></category>  
-		    </intent-filter> 
-		    <intent-filter>  
-				<action android:name="android.intent.action.VIEW"></action>  
-				<category android:name="android.intent.category.DEFAULT"></category>  
-				<category android:name="android.intent.category.BROWSABLE"></category>  
-			</intent-filter> 
-  		</activity>
-		<activity android:name=".AdministrationLibraryThing"></activity>
-		<activity android:name=".goodreads.GoodreadsSearchCriteria"></activity>
-		<activity android:name=".goodreads.GoodreadsSearchResults"></activity>
-		<activity android:name=".goodreads.GoodreadsExportFailuresActivity"></activity>
-		<activity android:name=".SearchCatalogue"></activity>
-		<activity android:name=".TaskListActivity"></activity>
-		<activity android:name=".Help"></activity>
-		<activity android:name=".FieldVisibility"></activity>
-		<activity android:name=".OtherPreferences"></activity>
-		<activity android:name=".BookEditAnthology"></activity>
-		<activity android:name=".EditAuthorList"></activity>
-		<activity android:name=".EditSeriesList"></activity>
-		<activity android:name=".UpdateFromInternet"></activity>
-		<activity android:name=".cropper.CropCropImage"></activity>
-		<activity android:name=".cropper.CropMonitoredActivityActivity"></activity>
-	</application>
+    <application
+        android:name=".BookCatalogueApp"
+        android:icon="@drawable/ic_launcher3"
+        android:label="@string/app_name" android:logo="@drawable/ic_logo">
+        android:theme="@style/Theme.Sherlock"
+        <provider
+            android:name=".SearchSuggestionProvider"
+            android:authorities="com.eleybourn.bookcatalogue.SearchSuggestionProvider" />
 
-</manifest> 
+        <service
+            android:name=".BcQueueManager"
+            android:enabled="true" />
+
+        <activity
+            android:name=".BookCatalogueClassic"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
+
+        <!-- .BookCatalogue is now just a forwarder to .StartupActivity. -->
+        <activity
+            android:name=".BookCatalogue"
+            android:label="@string/app_name" >
+        </activity>
+        <!--
+            The StartupActivity activity is just a forwarder to the users chosen first screen; does not 
+			rebuild on orientation changes so progress dialogs are easier 
+        -->
+        <activity
+            android:name=".StartupActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:theme="@style/Invisible" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="org.acra.CrashReportDialog"
+            android:excludeFromRecents="true"
+            android:finishOnTaskLaunch="true"
+            android:launchMode="singleInstance"
+            android:theme="@android:style/Theme.Dialog" />
+
+        <!--
+             The StartupActivity activity is just a forwarder to the users chosen first screen, which could
+			 be the  MainMenu Activity. So in theory it is OK to make is singleInstance  
+        -->
+        <activity
+            android:name=".MainMenu"
+            android:theme="@style/Theme.Sherlock" android:label="@string/app_name">
+        </activity>
+        <!-- android:launchMode="singleInstance" -->
+        <activity android:name=".BookEdit" android:theme="@style/Theme.Sherlock">
+        </activity>
+        <activity
+            android:name=".BookISBNSearch"
+            android:label="@string/title_isbn_search" android:theme="@style/Theme.Sherlock">
+        </activity>
+        <activity android:name=".booklist.BooklistPreferencesActivity" android:theme="@style/Theme.Sherlock">
+        </activity>
+        <activity android:name=".booklist.BooklistStyleGroupsActivity" android:theme="@style/Theme.Sherlock">
+        </activity>
+        <activity
+            android:name=".booklist.BooklistStylePropertiesActivity"
+            android:windowSoftInputMode="stateHidden" android:theme="@style/Theme.Sherlock">
+        </activity>
+        <activity android:name=".booklist.BooklistStylesActivity" android:theme="@style/Theme.Sherlock">
+        </activity>
+        <activity
+            android:name=".Bookshelf"
+            android:label="@string/menu_bookshelf"
+            android:theme="@style/Theme.Sherlock" >
+        </activity>
+        <activity
+            android:name=".BookshelfEdit"
+            android:label="@string/title_edit_bs" android:theme="@style/Theme.Sherlock">
+        </activity>
+        <activity
+            android:name=".Administration"
+            android:label="@string/administration_title" android:theme="@style/Theme.Sherlock">
+        </activity>
+        <activity android:name=".BookEditFields" >
+        </activity>
+        <activity android:name=".BookEditLoaned" >
+        </activity>
+        <activity android:name=".BookEditNotes" >
+        </activity>
+        <activity android:name=".BookDetailsReadOnly" android:theme="@style/Theme.Sherlock">
+        </activity>
+        <activity android:name=".BooksOnBookshelf"         android:theme="@style/Theme.Sherlock"
+            android:label="@string/my_books">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
+        <activity
+            android:name=".BooksOnBookshelfNavigator"
+            android:theme="@style/Navigator" >
+        </activity>
+        <activity android:name=".AdministrationAbout" android:theme="@style/Theme.Sherlock">
+        </activity>
+        <activity android:name=".AdministrationDonate" android:theme="@style/Theme.Sherlock">
+        </activity>
+        <activity android:name=".AdministrationFunctions" android:theme="@style/Theme.Sherlock">
+        </activity>
+        <activity
+            android:name=".goodreads.GoodreadsRegister"
+            android:launchMode="singleInstance" android:label="@string/goodreads" android:theme="@style/Theme.Sherlock">
+        </activity>
+        <activity android:name=".goodreads.GoodreadsAuthorizationActivity" android:theme="@style/Theme.Sherlock">
+
+            <!-- RELEASE: Work out which of these filters we dont need! -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" >
+                </action>
+
+                <category android:name="android.intent.category.DEFAULT" >
+                </category>
+                <category android:name="android.intent.category.BROWSABLE" >
+                </category>
+                <category android:name="android.intent.category.LAUNCHER" >
+                </category>
+
+                <data
+                    android:host="goodreadsauth"
+                    android:scheme="http" >
+                </data>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" >
+                </action>
+
+                <category android:name="android.intent.category.DEFAULT" >
+                </category>
+                <category android:name="android.intent.category.BROWSABLE" >
+                </category>
+                <category android:name="android.intent.category.LAUNCHER" >
+                </category>
+
+                <data
+                    android:host="goodreadsauth"
+                    android:scheme="com.eleybourn.bookcatalogue" >
+                </data>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" >
+                </action>
+
+                <category android:name="android.intent.category.BROWSABLE" >
+                </category>
+
+                <data
+                    android:host="goodreadsauth"
+                    android:scheme="com.eleybourn.bookcatalogue" >
+                </data>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.GET" >
+                </action>
+
+                <category android:name="android.intent.category.DEFAULT" >
+                </category>
+                <category android:name="android.intent.category.BROWSABLE" >
+                </category>
+                <category android:name="android.intent.category.LAUNCHER" >
+                </category>
+
+                <data
+                    android:host="goodreadsauth"
+                    android:scheme="com.eleybourn.bookcatalogue" >
+                </data>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" >
+                </action>
+
+                <category android:name="android.intent.category.DEFAULT" >
+                </category>
+                <category android:name="android.intent.category.BROWSABLE" >
+                </category>
+                <category android:name="android.intent.category.LAUNCHER" >
+                </category>
+            </intent-filter>
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" >
+                </category>
+                <category android:name="android.intent.category.BROWSABLE" >
+                </category>
+            </intent-filter>
+            <intent-filter>
+                <category android:name="android.intent.category.BROWSABLE" >
+                </category>
+                <category android:name="android.intent.category.DEFAULT" >
+                </category>
+            </intent-filter>
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" >
+                </category>
+                <category android:name="android.intent.category.DEFAULT" >
+                </category>
+                <category android:name="android.intent.category.BROWSABLE" >
+                </category>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" >
+                </action>
+
+                <category android:name="android.intent.category.DEFAULT" >
+                </category>
+                <category android:name="android.intent.category.BROWSABLE" >
+                </category>
+            </intent-filter>
+        </activity>
+        <activity android:name=".AdministrationLibraryThing" android:label="@string/library_thing" android:theme="@style/Theme.Sherlock">
+        </activity>
+        <activity android:name=".goodreads.GoodreadsSearchCriteria" android:theme="@style/Theme.Sherlock">
+        </activity>
+        <activity android:name=".goodreads.GoodreadsSearchResults" android:theme="@style/Theme.Sherlock">
+        </activity>
+        <activity android:name=".goodreads.GoodreadsExportFailuresActivity" android:theme="@style/Theme.Sherlock">
+        </activity>
+        <activity android:name=".SearchCatalogue" >
+        </activity>
+        <activity android:name=".TaskListActivity" android:theme="@style/Theme.Sherlock">
+        </activity>
+        <activity android:name=".Help" android:theme="@style/Theme.Sherlock">
+        </activity>
+        <activity android:name=".FieldVisibility" android:label="@string/menu_manage_fields" android:theme="@style/Theme.Sherlock">
+        </activity>
+        <activity android:name=".OtherPreferences" >
+        </activity>
+        <activity android:name=".BookEditAnthology" >
+        </activity>
+        <activity android:name=".EditAuthorList" android:theme="@style/Theme.Sherlock">
+        </activity>
+        <activity android:name=".EditSeriesList" android:theme="@style/Theme.Sherlock">
+        </activity>
+        <activity android:name=".UpdateFromInternet" android:label="@string/update_fields" android:theme="@style/Theme.Sherlock">
+        </activity>
+        <activity android:name=".cropper.CropCropImage" >
+        </activity>
+        <activity android:name=".cropper.CropMonitoredActivityActivity" >
+        </activity>
+    </application>
+
+</manifest>

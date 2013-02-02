@@ -12,22 +12,39 @@ import com.eleybourn.bookcatalogue.database.DbUtils.TableDefinition;
 import com.eleybourn.bookcatalogue.database.DbUtils.TableDefinition.TableTypes;
 
 /**
- * Class to provide a simple interface into a temp table containing a list of book IDs on
+ * Class to provide a simple interface into a temporary table containing a list of book IDs on
  * the same order as an underlying book list.
  * 
  * @author pjw
  */
 public class FlattenedBooklist {
+	/** Underlying temporary table definition */
 	private TableDefinition mTable;
+	/** Connection to db; we need this to keep the table alive */
 	private SynchronizedDb mDb;
+	/** Default position (before start) */
 	private long mPosition = -1;
+	/** Book ID from the currently selected row */
 	private Long mBookId = null;
+	/** Collection of statements compiled for this object */
 	private SqlStatementManager mStatements;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param db	Database connection
+	 * @param table	Table definition
+	 */
 	public FlattenedBooklist(SynchronizedDb db, TableDefinition table) {
 		init(db, table.clone());
 	}
 
+	/**
+	 * Constructor
+	 * 
+	 * @param db			Database connection
+	 * @param tableName		Name of underlying table
+	 */
 	public FlattenedBooklist(SynchronizedDb db, String tableName) {
 		TableDefinition flat = TBL_ROW_NAVIGATOR_FLATTENED_DEFN.clone();
 		flat.setName(tableName);
@@ -35,16 +52,32 @@ public class FlattenedBooklist {
 		init(db, flat);
 	}
 
+	/**
+	 * Shared constructor utility routine.Save the passed values.
+	 * 
+	 * @param db	Database connection
+	 * @param table	Table definition
+	 */
 	private void init(SynchronizedDb db, TableDefinition table) {
 		mDb = db;
 		mTable = table;
 		mStatements = new SqlStatementManager(mDb);
 	}
 
+	/**
+	 * Accessor
+	 * 
+	 * @return
+	 */
 	public TableDefinition getTable() {
 		return mTable;
 	}
 	
+	/**
+	 * Accessor
+	 * 
+	 * @return
+	 */
 	public Long getBookId() {
 		return mBookId;
 	}

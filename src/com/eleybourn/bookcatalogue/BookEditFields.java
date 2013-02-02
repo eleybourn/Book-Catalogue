@@ -448,17 +448,14 @@ public class BookEditFields extends BookDetailsAbstract implements OnPartialDate
 //	}
 
 	private void setupUi() {
-		final Long rowId = mEditManager.getBookData().getRowId();
-		if (rowId != null && rowId > 0) {
-			final CheckBox cb = (CheckBox)getView().findViewById(R.id.anthology);
+		final CheckBox cb = (CheckBox)getView().findViewById(R.id.anthology);
 
-			cb.setOnClickListener(new View.OnClickListener() {
-				public void onClick(View view) {
-					mEditManager.setShowAnthology(cb.isChecked());
-					//saveState(new DoAnthologyAction(cb.isChecked()));
-				}
-			});
-		}
+		cb.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View view) {
+				mEditManager.setShowAnthology(cb.isChecked());
+				//saveState(new DoAnthologyAction(cb.isChecked()));
+			}
+		});
 	}
 
 //	@Override

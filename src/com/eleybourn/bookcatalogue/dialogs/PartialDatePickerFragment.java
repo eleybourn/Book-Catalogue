@@ -4,13 +4,9 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
 
-import com.actionbarsherlock.app.SherlockDialogFragment;
-import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.dialogs.PartialDatePicker.OnDateSetListener;
-import com.eleybourn.bookcatalogue.dialogs.TextFieldEditorFragment.OnTextFieldEditorListener;
-import com.eleybourn.bookcatalogue.utils.Utils;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueDialogFragment;
 
-public class PartialDatePickerFragment extends SherlockDialogFragment {
+public class PartialDatePickerFragment extends BookCatalogueDialogFragment {
 	/** Currently displayed year; null if empty/invalid */
 	private Integer mYear;
 	/** Currently displayed month; null if empty/invalid */

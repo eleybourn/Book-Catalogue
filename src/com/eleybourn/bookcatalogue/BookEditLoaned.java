@@ -22,7 +22,6 @@ package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
 
-import android.app.Activity;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -34,7 +33,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.utils.Logger;

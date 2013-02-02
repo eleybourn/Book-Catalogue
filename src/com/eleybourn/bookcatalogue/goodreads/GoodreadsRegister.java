@@ -20,7 +20,6 @@
 
 package com.eleybourn.bookcatalogue.goodreads;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -33,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
@@ -44,7 +44,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * @author Philip Warner
  *
  */
-public class GoodreadsRegister extends Activity {
+public class GoodreadsRegister extends BookCatalogueActivity {
 
 	/**
 	 * Called when the activity is first created. 

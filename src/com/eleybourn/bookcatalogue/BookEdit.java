@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-//import android.app.LocalActivityManager;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -43,20 +42,20 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.eleybourn.bookcatalogue.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.booklist.BooklistBuilder;
 import com.eleybourn.bookcatalogue.booklist.FlattenedBooklist;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueFragment;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueFragmentActivity;
 import com.eleybourn.bookcatalogue.datamanager.DataEditor;
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.dialogs.PartialDatePickerFragment;
-import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
 import com.eleybourn.bookcatalogue.dialogs.PartialDatePickerFragment.OnPartialDatePickerListener;
+import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
 import com.eleybourn.bookcatalogue.dialogs.TextFieldEditorFragment;
 import com.eleybourn.bookcatalogue.dialogs.TextFieldEditorFragment.OnTextFieldEditorListener;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
+//import android.app.LocalActivityManager;
 
 /**
  * A tab host activity which holds the three edit book tabs 1. Edit Details /
@@ -64,7 +63,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * 
  * @author Evan Leybourn
  */
-public class BookEdit extends SherlockFragmentActivity implements BookEditFragmentAbstract.BookEditManager,
+public class BookEdit extends BookCatalogueFragmentActivity implements BookEditFragmentAbstract.BookEditManager,
 		OnPartialDatePickerListener, OnTextFieldEditorListener {
 	private FlattenedBooklist mList = null;
 	private GestureDetector mGestureDetector;
@@ -547,7 +546,7 @@ public class BookEdit extends SherlockFragmentActivity implements BookEditFragme
 	 *            extras for putting in the intent. If extras is null they will
 	 *            not be added.
 	 */
-	private <T extends SherlockFragment> Tab initTab(ActionBar actionBar, TabListener<T> listener, int titleResId, int iconResId,
+	private <T extends BookCatalogueFragment> Tab initTab(ActionBar actionBar, TabListener<T> listener, int titleResId, int iconResId,
 			Bundle extras) {
 
 		Resources resources = getResources();
@@ -642,7 +641,7 @@ public class BookEdit extends SherlockFragmentActivity implements BookEditFragme
 
 	}
 
-	public static class TabListener<T extends SherlockFragment> implements ActionBar.TabListener {
+	public static class TabListener<T extends BookCatalogueFragment> implements ActionBar.TabListener {
 		private Fragment mFragment;
 		private final Activity mActivity;
 		private final String mTag;

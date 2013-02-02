@@ -2,8 +2,6 @@ package com.eleybourn.bookcatalogue;
 
 import java.io.Serializable;
 
-import com.eleybourn.bookcatalogue.utils.Utils;
-
 public class AnthologyTitle implements Serializable {
 	private Author mAuthor;
 	private String mTitle;

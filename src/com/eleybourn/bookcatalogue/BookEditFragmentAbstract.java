@@ -2,23 +2,22 @@ package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragment;
+import android.app.Activity;
+import android.os.Bundle;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.eleybourn.bookcatalogue.Fields.AfterFieldChangeListener;
 import com.eleybourn.bookcatalogue.Fields.Field;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueFragment;
 import com.eleybourn.bookcatalogue.datamanager.DataEditor;
 import com.eleybourn.bookcatalogue.datamanager.DataManager;
 import com.eleybourn.bookcatalogue.utils.BookUtils;
 import com.eleybourn.bookcatalogue.utils.Logger;
 
-import android.app.Activity;
-import android.os.Bundle;
 
-
-public abstract class BookEditFragmentAbstract extends SherlockFragment implements DataEditor {
+public abstract class BookEditFragmentAbstract extends BookCatalogueFragment implements DataEditor {
 	protected Fields mFields;
 	
 	private static final int DELETE_ID = 1;

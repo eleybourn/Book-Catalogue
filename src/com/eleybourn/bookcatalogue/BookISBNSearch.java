@@ -43,10 +43,8 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.debug.Tracker;
-import com.eleybourn.bookcatalogue.scanner.Pic2ShopScanner;
 import com.eleybourn.bookcatalogue.scanner.Scanner;
 import com.eleybourn.bookcatalogue.scanner.ScannerManager;
-import com.eleybourn.bookcatalogue.scanner.ZxingScanner;
 import com.eleybourn.bookcatalogue.utils.AsinUtils;
 import com.eleybourn.bookcatalogue.utils.IsbnUtils;
 import com.eleybourn.bookcatalogue.utils.Logger;

@@ -20,7 +20,6 @@
 
 package com.eleybourn.bookcatalogue;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -29,6 +28,7 @@ import android.view.View.OnClickListener;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 
+import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
@@ -39,7 +39,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * 
  * @author Evan Leybourn
  */
-public class FieldVisibility extends Activity {
+public class FieldVisibility extends BookCatalogueActivity {
 	public final static String prefix = "field_visibility_";
 	
 	/**

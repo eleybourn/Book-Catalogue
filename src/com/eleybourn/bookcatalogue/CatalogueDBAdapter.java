@@ -69,7 +69,6 @@ import android.database.sqlite.SQLiteDoneException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQuery;
 import android.graphics.Bitmap;
-import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.widget.ImageView;
 
@@ -193,8 +192,6 @@ public class CatalogueDBAdapter {
 	public static final String DB_TB_LOAN = "loan";
 	public static final String DB_TB_SERIES = "series";
 	public static String message = "";
-	public static String do_action = "";
-	public static String DO_UPDATE_FIELDS = "do_update_fields";
 	
 	public static final int ANTHOLOGY_NO = 0;
 	public static final int ANTHOLOGY_IS_ANTHOLOGY = 1;
@@ -1116,7 +1113,8 @@ public class CatalogueDBAdapter {
 			}
 			if (curVersion == 47) {
 				curVersion++;
-				do_action = DO_UPDATE_FIELDS;
+				// This used to be chaecks in BookCatalogueClassic, which is no longer called on startup...
+				//do_action = DO_UPDATE_FIELDS;
 				message += "New in v3.1\n\n";
 				message += "* The audiobook checkbox has been replaced with a format selector (inc. paperback, hardcover, companion etc)\n\n";
 				message += "* When adding books the current bookshelf will be selected as the default bookshelf\n\n";

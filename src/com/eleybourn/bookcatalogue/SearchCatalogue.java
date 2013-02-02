@@ -23,7 +23,6 @@ package com.eleybourn.bookcatalogue;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
@@ -37,6 +36,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
@@ -48,7 +48,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * 
  * @author Philip Warner
  */
-public class SearchCatalogue extends Activity {
+public class SearchCatalogue extends BookCatalogueActivity {
 	private CatalogueDBAdapter mDbHelper;
 	/** Indicates user has changed something since the last search. */
 	private boolean mSearchDirty = false;

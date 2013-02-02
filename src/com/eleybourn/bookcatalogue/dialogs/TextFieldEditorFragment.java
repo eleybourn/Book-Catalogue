@@ -4,13 +4,9 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
 
-import com.actionbarsherlock.app.SherlockDialogFragment;
-import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
-import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.BookEditFragmentAbstract.BookEditManager;
-import com.eleybourn.bookcatalogue.dialogs.TextFieldEditor.OnEditListener;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueDialogFragment;
 
-public class TextFieldEditorFragment extends SherlockDialogFragment {
+public class TextFieldEditorFragment extends BookCatalogueDialogFragment {
 	private int mDialogId;
 
 	public static interface OnTextFieldEditorListener {

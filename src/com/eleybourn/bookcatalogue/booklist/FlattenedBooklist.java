@@ -5,11 +5,11 @@ import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ID;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_ROW_NAVIGATOR_FLATTENED_DEFN;
 import android.database.sqlite.SQLiteDoneException;
 
-import com.eleybourn.bookcatalogue.database.SqlStatementManager;
 import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedDb;
 import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedStatement;
 import com.eleybourn.bookcatalogue.database.DbUtils.TableDefinition;
 import com.eleybourn.bookcatalogue.database.DbUtils.TableDefinition.TableTypes;
+import com.eleybourn.bookcatalogue.database.SqlStatementManager;
 
 /**
  * Class to provide a simple interface into a temporary table containing a list of book IDs on

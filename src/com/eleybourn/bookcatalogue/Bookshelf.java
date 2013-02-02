@@ -22,7 +22,6 @@ package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
 
-import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -36,14 +35,13 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockListActivity;
-import com.actionbarsherlock.view.MenuInflater;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueListActivity;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
 /*
  * A book catalogue application that integrates with Google Books.
  */
-public class Bookshelf extends SherlockListActivity {
+public class Bookshelf extends BookCatalogueListActivity {
 	private static final int ACTIVITY_CREATE=0;
 	private static final int ACTIVITY_EDIT=1;
 	private CatalogueDBAdapter mDbHelper;

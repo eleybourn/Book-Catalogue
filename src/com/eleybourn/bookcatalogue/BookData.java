@@ -1,19 +1,15 @@
 package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 
-import com.eleybourn.bookcatalogue.Fields.Field;
-import com.eleybourn.bookcatalogue.Fields.FieldValidator;
+import android.database.Cursor;
+import android.os.Bundle;
+
 import com.eleybourn.bookcatalogue.datamanager.DataAccessor;
 import com.eleybourn.bookcatalogue.datamanager.DataManager;
 import com.eleybourn.bookcatalogue.datamanager.Datum;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
-import com.eleybourn.bookcatalogue.utils.ViewTagger;
-
-import android.database.Cursor;
-import android.os.Bundle;
 
 public class BookData extends DataManager {
 	

@@ -22,13 +22,12 @@ package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-import com.actionbarsherlock.app.SherlockActivity;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.utils.AlertDialogUtils;
 import com.eleybourn.bookcatalogue.utils.AlertDialogUtils.AlertDialogItem;
 import com.eleybourn.bookcatalogue.utils.HintManager;
@@ -48,7 +47,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * @author Philip Warner
  * 
  */
-public class MainMenu extends SherlockActivity {
+public class MainMenu extends BookCatalogueActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

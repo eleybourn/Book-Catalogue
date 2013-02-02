@@ -1,11 +1,6 @@
 package com.eleybourn.bookcatalogue.datamanager;
 
-import android.os.Bundle;
-
-import com.eleybourn.bookcatalogue.Fields;
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.Fields.Field;
-import com.eleybourn.bookcatalogue.R.string;
 
 /**
  * Validator to apply a default value and validate as Float

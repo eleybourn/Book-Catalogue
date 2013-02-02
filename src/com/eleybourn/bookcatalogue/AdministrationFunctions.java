@@ -153,14 +153,14 @@ public class AdministrationFunctions extends ActivityWithTasks {
 				AlertDialog alertDialog = new AlertDialog.Builder(AdministrationFunctions.this).setMessage(R.string.import_alert).create();
 				alertDialog.setTitle(R.string.import_data);
 				alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-				alertDialog.setButton(AdministrationFunctions.this.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+				alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, AdministrationFunctions.this.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						importData();
 						//Toast.makeText(pthis, importUpdated + " Existing, " + importCreated + " Created", Toast.LENGTH_LONG).show();
 						return;
 					}
 				}); 
-				alertDialog.setButton2(AdministrationFunctions.this.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+				alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, AdministrationFunctions.this.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						//do nothing
 						return;

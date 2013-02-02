@@ -28,7 +28,6 @@ import android.app.AlertDialog;
 import android.app.ExpandableListActivity;
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -230,25 +229,6 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 			bookshelf();
 			//fillData();
 
-			if (CatalogueDBAdapter.do_action.equals(CatalogueDBAdapter.DO_UPDATE_FIELDS)) {
-				AlertDialog alertDialog = new AlertDialog.Builder(BookCatalogueClassic.this).setMessage(R.string.auto_update).create();
-				alertDialog.setTitle(R.string.import_data);
-				alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-				alertDialog.setButton(BookCatalogueClassic.this.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						Administration.adminPage(BookCatalogueClassic.this, "update_fields", UniqueId.ACTIVITY_ADMIN);
-						return;
-					}
-				}); 
-				alertDialog.setButton2(BookCatalogueClassic.this.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						//do nothing
-						return;
-					}
-				}); 
-				alertDialog.show();
-				return;
-			}
 			registerForContextMenu(getExpandableListView());
 		} catch (Exception e) {
 			Logger.logError(e);

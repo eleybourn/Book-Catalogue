@@ -2,13 +2,13 @@ package com.eleybourn.bookcatalogue.cropper;
 
 import java.util.ArrayList;
 
-import com.eleybourn.bookcatalogue.utils.Logger;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+
+import com.eleybourn.bookcatalogue.utils.Logger;
 
 public class CropImageView extends CropImageViewTouchBase {
 	ArrayList<CropHighlightView> mHighlightViews = new ArrayList<CropHighlightView>();

@@ -29,7 +29,6 @@ import java.util.Iterator;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.DialogInterface;
@@ -62,7 +61,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockListActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.eleybourn.bookcatalogue.BooksMultitypeListHandler.BooklistChangeListener;
@@ -74,6 +72,7 @@ import com.eleybourn.bookcatalogue.booklist.BooklistPseudoCursor;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
 import com.eleybourn.bookcatalogue.booklist.BooklistStylePropertiesActivity;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyles;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueListActivity;
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.utils.HintManager;
 import com.eleybourn.bookcatalogue.utils.Logger;
@@ -89,7 +88,7 @@ import com.eleybourn.bookcatalogue.utils.ViewTagger;
  * 
  * @author Philip Warner
  */
-public class BooksOnBookshelf extends SherlockListActivity implements BooklistChangeListener {
+public class BooksOnBookshelf extends BookCatalogueListActivity implements BooklistChangeListener {
 	/** Counter for com.eleybourn.bookcatalogue.debug purposes */
 	private static Integer mInstanceCount = 0;
 

@@ -1,5 +1,7 @@
 package com.eleybourn.bookcatalogue.dialogs;
 
+import static com.eleybourn.bookcatalogue.BookDetailsAbstract.BOOKSHELF_SEPERATOR;
+
 import java.util.ArrayList;
 
 import android.database.Cursor;
@@ -13,13 +15,12 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 
-import com.actionbarsherlock.app.SherlockDialogFragment;
-import static com.eleybourn.bookcatalogue.BookDetailsAbstract.BOOKSHELF_SEPERATOR;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueDialogFragment;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
-public class BookshelfDialogFragment extends SherlockDialogFragment {
+public class BookshelfDialogFragment extends BookCatalogueDialogFragment {
 	private OnBookshelfChangeListener mListener;
 	private Long mRowId;
 	private String mCurrText;

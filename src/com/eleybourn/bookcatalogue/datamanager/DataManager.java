@@ -9,11 +9,6 @@ import java.util.Set;
 import android.database.Cursor;
 import android.os.Bundle;
 
-import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
-import com.eleybourn.bookcatalogue.Fields;
-import com.eleybourn.bookcatalogue.Fields.Field;
-import com.eleybourn.bookcatalogue.Fields.FieldCrossValidator;
-import com.eleybourn.bookcatalogue.Fields.FieldValidator;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
 public class DataManager {

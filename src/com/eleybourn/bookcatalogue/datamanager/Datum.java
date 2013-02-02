@@ -1,8 +1,8 @@
 package com.eleybourn.bookcatalogue.datamanager;
 
-import com.eleybourn.bookcatalogue.utils.Utils;
-
 import android.os.Bundle;
+
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 public class Datum {
 	private boolean mIsVisible = true;

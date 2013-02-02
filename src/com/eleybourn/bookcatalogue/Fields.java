@@ -26,11 +26,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 
-import com.actionbarsherlock.app.SherlockFragment;
-import com.eleybourn.bookcatalogue.datamanager.DataManager;
-import com.eleybourn.bookcatalogue.datamanager.ValidatorException;
-import com.eleybourn.bookcatalogue.utils.Utils;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -50,6 +45,11 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.actionbarsherlock.app.SherlockFragment;
+import com.eleybourn.bookcatalogue.datamanager.DataManager;
+import com.eleybourn.bookcatalogue.datamanager.ValidatorException;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * This is the class that manages data and views for an activity; access to the data that

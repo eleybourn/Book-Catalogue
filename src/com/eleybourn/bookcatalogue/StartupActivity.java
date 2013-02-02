@@ -104,6 +104,8 @@ public class StartupActivity extends BookCatalogueActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		System.out.println("Startup isTaskRoot() = " + isTaskRoot());
+
 		mHasBeenCalled = true;
 		mUiThread = Thread.currentThread();
 

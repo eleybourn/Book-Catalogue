@@ -58,7 +58,8 @@
         <activity
             android:name=".StartupActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:theme="@style/Invisible" >
+            android:theme="@style/Invisible"
+            android:noHistory="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

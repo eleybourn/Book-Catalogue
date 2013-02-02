@@ -55,7 +55,7 @@ public class StandardDialogs {
 	/**
 	 * Show a dialog asking if unsaved edits should be ignored. Finish if so.
 	 */
-	public static void showConfirmUnsavedEditsDialog(final Activity a){
+	public static void showConfirmUnsavedEditsDialog(final Activity a, final Runnable r){
 		AlertDialog.Builder dialog = new Builder(a);
 
 		dialog.setTitle(R.string.details_have_changed);
@@ -65,7 +65,11 @@ public class StandardDialogs {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.dismiss();
-				a.finish();
+				if (r != null) {
+					r.run();
+				} else {
+					a.finish();					
+				}
 			}
 		});
 

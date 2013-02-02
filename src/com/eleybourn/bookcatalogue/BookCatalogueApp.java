@@ -351,4 +351,11 @@ public class BookCatalogueApp extends Application {
         mNotifier.notify(id, notification);
     }
 
+	public static void popStackToHome(Activity a) {
+	    // app icon in action bar clicked; go home
+	    Intent intentHome = new Intent(a, MainMenu.class);
+	    intentHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	    a.startActivity(intentHome);		
+	}
+
 }

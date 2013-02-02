@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.utils.AlertDialogUtils;
 import com.eleybourn.bookcatalogue.utils.AlertDialogUtils.AlertDialogItem;

@@ -92,10 +92,12 @@ public class CropCropImage extends CropMonitoredActivity {
 
 	@Override
 	public void onCreate(Bundle icicle) {
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+
 		super.onCreate(icicle);
+
 		mContentResolver = getContentResolver();
 
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.cropcropimage);
 
 		mImageView = (CropImageView) findViewById(R.id.image);

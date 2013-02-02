@@ -42,6 +42,7 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
+import com.actionbarsherlock.view.MenuItem;
 import com.eleybourn.bookcatalogue.booklist.BooklistBuilder;
 import com.eleybourn.bookcatalogue.booklist.FlattenedBooklist;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueFragment;
@@ -226,7 +227,7 @@ public class BookEdit extends BookCatalogueFragmentActivity implements BookEditF
 				setResult(Activity.RESULT_OK);
 
 				if (isDirty()) {
-					StandardDialogs.showConfirmUnsavedEditsDialog(BookEdit.this);
+					StandardDialogs.showConfirmUnsavedEditsDialog(BookEdit.this, null);
 				} else {
 					finish();
 				}
@@ -610,17 +611,33 @@ public class BookEdit extends BookCatalogueFragmentActivity implements BookEditF
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			if (isDirty()) {
-				StandardDialogs.showConfirmUnsavedEditsDialog(this);
+				StandardDialogs.showConfirmUnsavedEditsDialog(this, null);
 			} else {
-				Intent i = new Intent();
-				i.putExtra(CatalogueDBAdapter.KEY_ROWID, mBookData.getRowId());
-				setResult(Activity.RESULT_OK, i);
-				finish();
+				doFinish();
 			}
 			return true;
 		} else {
 			return super.onKeyDown(keyCode, event);
 		}
+	}
+
+	private void doFinish() {
+		if (isDirty()) {
+			StandardDialogs.showConfirmUnsavedEditsDialog(this, new Runnable() {
+				@Override
+				public void run() {
+					finishAndSendIntent();
+				}});
+		} else {
+			finishAndSendIntent();
+		}
+	}
+
+	private void finishAndSendIntent() {
+		Intent i = new Intent();
+		i.putExtra(CatalogueDBAdapter.KEY_ROWID, mBookData.getRowId());
+		setResult(Activity.RESULT_OK, i);
+		finish();		
 	}
 
 	@Override
@@ -1029,4 +1046,19 @@ public class BookEdit extends BookCatalogueFragmentActivity implements BookEditF
 		if (dialog.isVisible())
 			dialog.dismiss();
 	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+
+        case android.R.id.home:
+        	doFinish();
+			return true;
+
+        default:
+            return super.onOptionsItemSelected(item);
+		}
+		
+	}
+
 }

@@ -2,6 +2,8 @@ package com.eleybourn.bookcatalogue.cropper;
 
 import java.util.ArrayList;
 
+import com.eleybourn.bookcatalogue.utils.Logger;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -239,7 +241,7 @@ public class CropImageView extends CropImageViewTouchBase {
 				mHighlightViews.get(i).draw(canvas);
 			}
 		} catch (RuntimeException e) {
-			// do nothing
+			Logger.logError(e);
 		}
 	}
 

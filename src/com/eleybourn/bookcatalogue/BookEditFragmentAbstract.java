@@ -1,3 +1,22 @@
+/*
+ * @copyright 2013 Philip Warner
+ * @license GNU General Public License
+ * 
+ * This file is part of Book Catalogue.
+ *
+ * Book Catalogue is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Book Catalogue is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
@@ -16,7 +35,11 @@ import com.eleybourn.bookcatalogue.datamanager.DataManager;
 import com.eleybourn.bookcatalogue.utils.BookUtils;
 import com.eleybourn.bookcatalogue.utils.Logger;
 
-
+/**
+ * Based class for all fragments that appear in the BookEdit activity
+ * 
+ * @author pjw
+ */
 public abstract class BookEditFragmentAbstract extends BookCatalogueFragment implements DataEditor {
 	protected Fields mFields;
 	
@@ -26,6 +49,11 @@ public abstract class BookEditFragmentAbstract extends BookCatalogueFragment imp
 	protected static final int THUMBNAIL_OPTIONS_ID = 5;
 	private static final int EDIT_OPTIONS_ID = 6;
 	
+	/**
+	 * Interface that any containing activity must implement.
+	 * 
+	 * @author pjw
+	 */
 	public interface BookEditManager {
 		//public Fields getFields();
 		public void setShowAnthology(boolean showAnthology);
@@ -38,7 +66,9 @@ public abstract class BookEditFragmentAbstract extends BookCatalogueFragment imp
 		public ArrayList<String> getPublishers();
 	}
 
+	/** A link to the BookEditManager for this fragment (the activity) */
 	protected BookEditManager mEditManager;
+	/** Database instance */
 	protected CatalogueDBAdapter mDbHelper;
 
 	@Override
@@ -65,6 +95,9 @@ public abstract class BookEditFragmentAbstract extends BookCatalogueFragment imp
 		mFields = new Fields(this);		
 	}
 
+	/**
+	 * Define the common menu options; each subclass can add more as necessary
+	 */
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		super.onCreateOptionsMenu(menu, inflater);
@@ -84,11 +117,6 @@ public abstract class BookEditFragmentAbstract extends BookCatalogueFragment imp
 		tweet.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
 		boolean thumbVisible = BookCatalogueApp.getAppPreferences().getBoolean(FieldVisibility.prefix + "thumbnail", true);
-//		if (this instanceof BookEditFields) {
-//			MenuItem thumbOptions = menu.add(0, THUMBNAIL_OPTIONS_ID, 0, R.string.cover_options_cc_ellipsis);
-//			thumbOptions.setIcon(android.R.drawable.ic_menu_camera);			
-//			thumbOptions.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-//		}
 		
 		if(this instanceof BookDetailsReadOnly){
 			menu.add(0, EDIT_OPTIONS_ID, 0, R.string.edit_book)
@@ -143,32 +171,48 @@ public abstract class BookEditFragmentAbstract extends BookCatalogueFragment imp
 		onSaveBookDetails(mEditManager.getBookData());	
 	}
 
+	/**
+	 * Called to load data from the BookData object when needed.
+	 * 
+	 * @param book			BookData to load from
+	 * @param setAllDone	Flag indicating setAll() has already been called on the mFields object
+	 */
 	abstract protected void onLoadBookDetails(BookData book, boolean setAllDone);
-	
+
+	/**
+	 * Default implementation of code to save existing data to the BookData object
+	 * 
+	 * @param book
+	 */
 	protected void onSaveBookDetails(BookData book) {
 		mFields.getAll(book);
 	}
 	
 	@Override
 	public void onResume() {
-		double t0 = System.currentTimeMillis();
+		//double t0 = System.currentTimeMillis();
 
 		super.onResume();
+
+		// Load the data and preserve the isDirty() setting
 		mFields.setAfterFieldChangeListener(null);
 		final boolean wasDirty = mEditManager.isDirty();
 		BookData book = mEditManager.getBookData();
 		onLoadBookDetails(book, false);
-
 		mEditManager.setDirty(wasDirty);
 
+		// Set the listener to monitor edits
 		mFields.setAfterFieldChangeListener(new AfterFieldChangeListener(){
 			@Override
 			public void afterFieldChange(Field field, String newValue) {
 				mEditManager.setDirty(true);
 			}});
-		System.out.println("BEFA resume: " + (System.currentTimeMillis() - t0));
+		//System.out.println("BEFA resume: " + (System.currentTimeMillis() - t0));
 	}
 
+	/**
+	 * Cleanup
+	 */
 	@Override
 	public void onDestroy() {
 		super.onDestroy();

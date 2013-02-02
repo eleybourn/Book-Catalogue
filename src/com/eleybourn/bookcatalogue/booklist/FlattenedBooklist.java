@@ -82,16 +82,28 @@ public class FlattenedBooklist {
 		return mBookId;
 	}
 
+	/**
+	 * Release resource-consuming stuff
+	 */
 	public void close() {
 		mStatements.close();
 	}
 	
+	/**
+	 * Cleanup the underlying table
+	 */
 	public void deleteData() {
 		mTable.drop(mDb);
 		mTable.close();
 	}
-	
+
+	/**
+	 * Passed a statement update the 'current' row details based on the columns returned
+	 * @param stmt
+	 * @return
+	 */
 	private boolean updateDetailsFromStatement(SynchronizedStatement stmt) {
+		// Get a pair of ID's separated by a '/'
 		String info;
 		try {
 			info = stmt.simpleQueryForString();		
@@ -109,11 +121,26 @@ public class FlattenedBooklist {
 		return true;
 	}
 
+	/**
+	 * Check that the referenced table exists. This is important for resumed activities
+	 * where th underlying database connection may have closed and the table been deleted
+	 * as a result.
+	 * 
+	 * @return
+	 */
 	public boolean exists() {
 		return mTable.exists(mDb);
 	}
 
+	/**
+	 * Name for the 'next' statement
+	 */
 	private static final String NEXT_STMT_NAME = "next";
+	/**
+	 * Move to the next book row
+	 * 
+	 * @return	true if successful
+	 */
 	public boolean moveNext() {
 		SynchronizedStatement stmt = mStatements.get(NEXT_STMT_NAME);
 		if (stmt == null) {
@@ -132,7 +159,15 @@ public class FlattenedBooklist {
 		return updateDetailsFromStatement(stmt);
 	}
 
+	/**
+	 * Name for the 'prev' statement
+	 */
 	private static final String PREV_STMT_NAME = "prev";
+	/**
+	 * Move to the previous book row
+	 * 
+	 * @return	true if successful
+	 */
 	public boolean movePrev() {
 		SynchronizedStatement stmt = mStatements.get(PREV_STMT_NAME);
 		if (stmt == null) {
@@ -151,7 +186,16 @@ public class FlattenedBooklist {
 		return updateDetailsFromStatement(stmt);
 	}
 
+	/**
+	 * Name for the 'move-to' statement
+	 */
 	private static final String MOVE_STMT_NAME = "move";
+	/**
+	 * Move to the specified book row, based on the row ID, not the book ID or row number.
+	 * The row ID should be the row number in the table, including header-related rows.
+	 * 
+	 * @return	true if successful
+	 */
 	public boolean moveTo(Integer pos) {
 		SynchronizedStatement stmt = mStatements.get(MOVE_STMT_NAME);
 		if (stmt == null) {
@@ -173,23 +217,46 @@ public class FlattenedBooklist {
 			}
 		}
 	}
+	
+	/**
+	 * Move to the first row
+	 * 
+	 * @return	true if successful
+	 */
 	public boolean moveFirst() {
 		mPosition = -1;
 		mBookId = null;
 		return moveNext();
 	}
 
+	/**
+	 * Move to the last row
+	 * 
+	 * @return	true if successful
+	 */
 	public boolean moveLast() {
 		mPosition = Long.MAX_VALUE;
 		mBookId = null;
 		return movePrev();
 	}
 
+	/**
+	 * Get the underlying row position (row ID)
+	 * @return
+	 */
 	public long getPosition() {
 		return mPosition;
 	}
 
+	/**
+	 * Name for the 'count' statement
+	 */
 	private static final String COUNT_STMT_NAME = "count";
+	/**
+	 * Get the total row count
+	 * 
+	 * @return	number of rows
+	 */
 	public long getCount() {
 		SynchronizedStatement stmt = mStatements.get(COUNT_STMT_NAME);
 		if (stmt == null) {
@@ -199,7 +266,15 @@ public class FlattenedBooklist {
 		return stmt.simpleQueryForLong();
 	}
 	
+	/**
+	 * Name for the 'absolute-position' statement
+	 */
 	private static final String POSITION_STMT_NAME = "position";
+	/**
+	 * Get the position of the current record in the table
+	 * 
+	 * @return	position
+	 */
 	public long getAbsolutePosition() {
 		SynchronizedStatement stmt = mStatements.get(POSITION_STMT_NAME);
 		if (stmt == null) {
@@ -210,7 +285,10 @@ public class FlattenedBooklist {
 		stmt.bindLong(1, mPosition);
 		return stmt.simpleQueryForLong();		
 	}
-	
+
+	/**
+	 * Cleanup the statements
+	 */
 	public void finalize() {
 		close();
 	}

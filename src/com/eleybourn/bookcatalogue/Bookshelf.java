@@ -134,9 +134,6 @@ public class Bookshelf extends BookCatalogueListActivity {
 		menu.add(0, INSERT_ID, 0, R.string.menu_insert_bs)
 			.setIcon(R.drawable.ic_action_bookshelf_add)
 			.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		
-//        MenuInflater menuInflater = getSupportMenuInflater();
-//        menuInflater.inflate(R.menu.menu_bookshelf, menu);
 		return true;
 	}
 	

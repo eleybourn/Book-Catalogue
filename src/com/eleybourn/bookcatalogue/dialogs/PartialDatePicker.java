@@ -1,5 +1,5 @@
 /*
- * @copyright 2012 Philip Warner
+ * @copyright 2013 Philip Warner
  * @license GNU General Public License
  * 
  * This file is part of Book Catalogue.
@@ -349,12 +349,15 @@ public class PartialDatePicker extends AlertDialog {
 
 	}
 	
+	/** Accessor */
 	public Integer getYear() {
 		return mYear;
 	}
+	/** Accessor */
 	public Integer getMonth() {
 		return mMonth;
 	}
+	/** Accessor */
 	public Integer getDay() {
 		return mDay;
 	}

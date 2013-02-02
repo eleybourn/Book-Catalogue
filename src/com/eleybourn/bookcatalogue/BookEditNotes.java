@@ -44,7 +44,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
 /*
  * A book catalogue application that integrates with Google Books.
  */
-public class BookEditNotes extends BookEditFragmentAbstract implements OnPartialDatePickerListener { //implements OnRestoreTabInstanceStateListener {
+public class BookEditNotes extends BookEditFragmentAbstract implements OnPartialDatePickerListener {
 
 	/**
 	 * Returns a unique list of all locations in the database

@@ -49,7 +49,9 @@ import com.eleybourn.bookcatalogue.compat.BookCatalogueFragment;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueFragmentActivity;
 import com.eleybourn.bookcatalogue.datamanager.DataEditor;
 import com.eleybourn.bookcatalogue.debug.Tracker;
+import com.eleybourn.bookcatalogue.dialogs.BookshelfDialogFragment;
 import com.eleybourn.bookcatalogue.dialogs.PartialDatePickerFragment;
+import com.eleybourn.bookcatalogue.dialogs.BookshelfDialogFragment.OnBookshelfCheckChangeListener;
 import com.eleybourn.bookcatalogue.dialogs.PartialDatePickerFragment.OnPartialDatePickerListener;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
 import com.eleybourn.bookcatalogue.dialogs.TextFieldEditorFragment;
@@ -65,30 +67,11 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * @author Evan Leybourn
  */
 public class BookEdit extends BookCatalogueFragmentActivity implements BookEditFragmentAbstract.BookEditManager,
-		OnPartialDatePickerListener, OnTextFieldEditorListener {
+		OnPartialDatePickerListener, OnTextFieldEditorListener, OnBookshelfCheckChangeListener {
 	private FlattenedBooklist mList = null;
 	private GestureDetector mGestureDetector;
 
 	private boolean mIsDirtyFlg = false;
-
-	/**
-	 * Interface to be notified when OnRestoreInstanceState is called on this
-	 * activity This is important because OnRestoreInstanceState in the tab host
-	 * activity gets called *AFTER* OnRestoreInstanceState in a contained
-	 * activity, and will restore THE SAME fields.
-	 * 
-	 * This results in some fields (eg. description) being overwritten after the
-	 * containing activity has restored them. It also results in the child
-	 * activity being marked as 'dirty' because the fields are updated after
-	 * it's own 'restore' is done.
-	 */
-	public interface OnRestoreTabInstanceStateListener {
-		boolean isDirty();
-
-		void setDirty(boolean dirty);
-
-		void restoreTabInstanceState(Bundle savedInstanceState);
-	}
 
 	public static final String TAB = "tab";
 	public static final int TAB_EDIT = 0;
@@ -258,6 +241,12 @@ public class BookEdit extends BookCatalogueFragmentActivity implements BookEditF
 
 	}
 
+	/**
+	 * If we are passed a flatened book list, get it and validate it
+	 * 
+	 * @param extras
+	 * @param savedInstanceState
+	 */
 	private void initBooklist(Bundle extras, Bundle savedInstanceState) {
 		if (extras != null) {
 			String list = extras.getString("FlattenedBooklist");
@@ -401,51 +390,6 @@ public class BookEdit extends BookCatalogueFragmentActivity implements BookEditF
 		Tracker.exitOnSaveInstanceState(this);
 	}
 
-	// @Override
-	// /**
-	// * Inform the hosted tabs that they may have been overwritten, if they
-	// implements the
-	// * relevant interface.
-	// *
-	// * This only seems to be relevant for TextView objects that have Spannable
-	// text.
-	// */
-	// protected void onRestoreInstanceState(Bundle savedInstanceState) {
-	// Tracker.enterOnRestoreInstanceState(this);
-	// LocalActivityManager mgr = this.getLocalActivityManager();
-	//
-	// Hashtable<OnRestoreTabInstanceStateListener, Boolean> tabs = new
-	// Hashtable<OnRestoreTabInstanceStateListener, Boolean>();
-	// for(String name: mTabNames) {
-	// Activity a = mgr.getActivity(name);
-	// if (a instanceof OnRestoreTabInstanceStateListener) {
-	// OnRestoreTabInstanceStateListener l =
-	// (OnRestoreTabInstanceStateListener)a;
-	// tabs.put(l, l.isDirty());
-	// }
-	// }
-	// super.onRestoreInstanceState(savedInstanceState);
-	// for(Entry<OnRestoreTabInstanceStateListener, Boolean> e: tabs.entrySet())
-	// {
-	// e.getKey().restoreTabInstanceState(savedInstanceState);
-	// e.getKey().setDirty(e.getValue());
-	// }
-	// Tracker.exitOnRestoreInstanceState(this);
-	// }
-	//
-	// /**
-	// * If the child activity can provide the row, get it from there, otherwise
-	// * use the original row we were passed.
-	// */
-	// private Long getRowId() {
-	// final Activity a = getCurrentActivity();
-	// if (a instanceof BookDetailsReadOnly) {
-	// return ((BookDetailsReadOnly)a).getRowId();
-	// } else {
-	// return mOrigRowId;
-	// }
-	// }
-
 	/********************************************************
 	 * Standard STATIC Methods
 	 * ******************************************************
@@ -574,33 +518,6 @@ public class BookEdit extends BookCatalogueFragmentActivity implements BookEditF
 		return mIsDirtyFlg;
 	}
 
-	// @Override
-	// protected Dialog onCreateDialog(int id) {
-	// Dialog dialog;
-	//
-	// switch (id) {
-	// case DATE_DIALOG_ID:
-	// try {
-	// dialog = Utils.buildDateDialog(getActivity(), R.string.date_published,
-	// mBigDateSetListener);
-	// } catch (Exception e) {
-	// Logger.logError(e);
-	// // use the default date
-	// dialog = null;
-	// }
-	// break;
-	//
-	// case DESCRIPTION_DIALOG_ID:
-	// dialog = new TextFieldEditor(this);
-	// dialog.setTitle(R.string.description);
-	// // The rest of the details will be set in onPrepareDialog
-	// break;
-	// default:
-	// dialog = null;
-	// }
-	// return dialog;
-	// }
-
 	/**
 	 * If 'back' is pressed, and the user has made changes, ask them if they
 	 * really want to lose the changes.
@@ -621,6 +538,9 @@ public class BookEdit extends BookCatalogueFragmentActivity implements BookEditF
 		}
 	}
 
+	/**
+	 * Check if edits need saving, and finish the activity if not
+	 */
 	private void doFinish() {
 		if (isDirty()) {
 			StandardDialogs.showConfirmUnsavedEditsDialog(this, new Runnable() {
@@ -633,6 +553,9 @@ public class BookEdit extends BookCatalogueFragmentActivity implements BookEditF
 		}
 	}
 
+	/**
+	 * Actually finish this activity making sure an intent is returned.
+	 */
 	private void finishAndSendIntent() {
 		Intent i = new Intent();
 		i.putExtra(CatalogueDBAdapter.KEY_ROWID, mBookData.getRowId());
@@ -640,6 +563,9 @@ public class BookEdit extends BookCatalogueFragmentActivity implements BookEditF
 		finish();		
 	}
 
+	/**
+	 * Show or hide the anthology tab
+	 */
 	@Override
 	public void setShowAnthology(boolean showAnthology) {
 		ActionBar actionBar = this.getSupportActionBar();
@@ -658,6 +584,13 @@ public class BookEdit extends BookCatalogueFragmentActivity implements BookEditF
 
 	}
 
+	/**
+	 * Listener to create/show the relevant tabs
+	 * 
+	 * @author pjw
+	 *
+	 * @param <T>		Fragment type
+	 */
 	public static class TabListener<T extends BookCatalogueFragment> implements ActionBar.TabListener {
 		private Fragment mFragment;
 		private final Activity mActivity;
@@ -833,6 +766,9 @@ public class BookEdit extends BookCatalogueFragmentActivity implements BookEditF
 		}
 	}
 
+	/**
+	 * Save the collected book details
+	 */
 	private void updateOrCreate() {
 		if (mRowId == 0) {
 			long id = mDbHelper.createBook(mBookData);
@@ -990,6 +926,9 @@ public class BookEdit extends BookCatalogueFragmentActivity implements BookEditF
 		return mFormats;
 	}
 
+	/**
+	 * Dialog handler; pass results to relevant destination
+	 */
 	@Override
 	public void onPartialDatePickerSet(int dialogId, PartialDatePickerFragment dialog, Integer year, Integer month, Integer day) {
 		Fragment frag = getSupportFragmentManager().findFragmentById(R.id.fragment);
@@ -1004,6 +943,9 @@ public class BookEdit extends BookCatalogueFragmentActivity implements BookEditF
 			dialog.dismiss();
 	}
 
+	/**
+	 * Dialog handler; pass results to relevant destination
+	 */
 	@Override
 	public void onPartialDatePickerCancel(int dialogId, PartialDatePickerFragment dialog) {
 		Fragment frag = getSupportFragmentManager().findFragmentById(R.id.fragment);
@@ -1019,6 +961,9 @@ public class BookEdit extends BookCatalogueFragmentActivity implements BookEditF
 
 	}
 
+	/**
+	 * Dialog handler; pass results to relevant destination
+	 */
 	@Override
 	public void onTextFieldEditorSave(int dialogId, TextFieldEditorFragment dialog, String newText) {
 		Fragment frag = getSupportFragmentManager().findFragmentById(R.id.fragment);
@@ -1033,6 +978,9 @@ public class BookEdit extends BookCatalogueFragmentActivity implements BookEditF
 			dialog.dismiss();
 	}
 
+	/**
+	 * Dialog handler; pass results to relevant destination
+	 */
 	@Override
 	public void onTextFieldEditorCancel(int dialogId, TextFieldEditorFragment dialog) {
 		Fragment frag = getSupportFragmentManager().findFragmentById(R.id.fragment);
@@ -1047,6 +995,25 @@ public class BookEdit extends BookCatalogueFragmentActivity implements BookEditF
 			dialog.dismiss();
 	}
 	
+	/**
+	 * Dialog handler; pass results to relevant destination
+	 */
+	@Override
+	public void onBookshelfCheckChanged(int dialogId, BookshelfDialogFragment dialog, boolean checked, String shelf,
+			String textList, String encodedList) {
+
+		Fragment frag = getSupportFragmentManager().findFragmentById(R.id.fragment);
+		if (frag instanceof OnBookshelfCheckChangeListener) {
+			((OnBookshelfCheckChangeListener) frag).onBookshelfCheckChanged(dialogId, dialog, checked, shelf, textList, encodedList);
+		} else {
+			Toast.makeText(this, R.string.unexpected_error, Toast.LENGTH_LONG).show();
+			Logger.logError(new RuntimeException("Received onBookshelfCheckChanged result with no fragment to handle it"));
+		}
+	}
+
+	/**
+	 * menu handler; handle the 'home' key, otherwise, pass on the event
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {

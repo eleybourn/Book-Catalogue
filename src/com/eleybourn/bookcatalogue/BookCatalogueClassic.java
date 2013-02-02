@@ -1201,6 +1201,7 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		mMenuHandler = new MenuHandler();
+// RELEASE: RE-ENABLE THESE!
 //		mMenuHandler.init(menu);
 //		mMenuHandler.addCreateBookItems(menu);
 //

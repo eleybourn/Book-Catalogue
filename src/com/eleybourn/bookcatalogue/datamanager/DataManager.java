@@ -1,3 +1,22 @@
+/*
+ * @copyright 2013 Philip Warner
+ * @license GNU General Public License
+ * 
+ * This file is part of Book Catalogue.
+ *
+ * Book Catalogue is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Book Catalogue is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.eleybourn.bookcatalogue.datamanager;
 
 import java.io.Serializable;
@@ -6,11 +25,20 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
 
+import android.annotation.TargetApi;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteCursor;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.eleybourn.bookcatalogue.utils.Utils;
 
+/**
+ * Class to manage a version of a set of related data.
+ * 
+ * @author pjw
+ *
+ */
 public class DataManager {
 	// Generic validators; if field-specific defaults are needed, create a new one.
 	protected static DataValidator integerValidator = new IntegerValidator("0");
@@ -22,14 +50,21 @@ public class DataManager {
 	// FieldValidator blankOrDateValidator = new Fields.OrValidator(new Fields.BlankValidator(),
 	// new Fields.DateValidator());
 
+	/** Raw data storage */
 	protected final Bundle mBundle = new Bundle();
+	/** Storage for the data-related code */
 	private final DatumHash mData = new DatumHash();
 	
-	// The last validator exception caught by this object
+	/** The last validator exception caught by this object */
 	private ArrayList<ValidatorException> mValidationExceptions = new ArrayList<ValidatorException>();
-	// A list of cross-validators to apply if all fields pass simple validation.
+	/** A list of cross-validators to apply if all fields pass simple validation. */
 	private ArrayList<DataCrossValidator> mCrossValidators = new ArrayList<DataCrossValidator>();
 
+	/**
+	 * Erase everything in this instance
+	 * 
+	 * @return	self, for chaining
+	 */
 	public DataManager clear() {
 		mBundle.clear();
 		mData.clear();
@@ -38,18 +73,17 @@ public class DataManager {
 		return this;
 	}
 
+	/**
+	 * Class to manage the collection of Datum objects for this DataManager
+	 *
+	 * @author pjw
+	 */
 	private static class DatumHash extends Hashtable<String,Datum> {
 		private static final long serialVersionUID = -650159534364183779L;
 
-		public Datum addOrGet(String key) {
-			return this.get(key);
-//			Datum datum = this.get(key);
-//			if (datum == null) {
-//				datum = new Datum(key, null, true);
-//				this.put(key, datum);
-//			}
-//			return datum;
-		}
+		/**
+		 * Get the specified Datum, and create a stub if not present
+		 */
 		@Override 
 		public Datum get(Object key) {
 			Datum datum = super.get(key);
@@ -60,125 +94,140 @@ public class DataManager {
 			return datum;			
 		}
 	}
-//	private static class Validators {
-//		private Hashtable<String, DataValidator> mValidators = new Hashtable<String, DataValidator>();
-//
-//		public Validators add(String key, DataValidator validator) {
-//			if (mValidators.containsKey(key))
-//				throw new RuntimeException("Key '" + key + "' already present in validators");
-//			return put(key, validator);
-//		}
-//
-//		public Validators put(String key, DataValidator validator) {
-//			mValidators.put(key, validator);
-//			return this;
-//		}
-//	}
-//
-//	private static class DataAccessors {
-//		private Hashtable<String, DataAccessor> mAccessors = new Hashtable<String, DataAccessor>();
-//
-//		public DataAccessors add(String key, DataAccessor accessor) {
-//			if (mAccessors.containsKey(key))
-//				throw new RuntimeException("Key '" + key + "' already present in DataAccessors");
-//			return put(key, accessor);
-//		}
-//
-//		public DataAccessors put(String key, DataAccessor accessor) {
-//			mAccessors.put(key, accessor);
-//			return this;
-//		}
-//		
-//		public DataAccessor get(String key) {
-//			return mAccessors.get(key);
-//		}
-//	}
 
+	/**
+	 * Add a validator for the specified Datum
+	 * 
+	 * @param key			Key to the Datum
+	 * @param validator		Validator
+	 * 
+	 * @return				the DataManager, for chaining
+	 */
 	public DataManager addValidator(String key, DataValidator validator) {
-		mData.addOrGet(key).setValidator(validator);
+		mData.get(key).setValidator(validator);
 		return this;
 	}
 
+	/**
+	 * Add an Accessor for the specified Datum
+	 * 
+	 * @param key			Key to the Datum
+	 * @param accessor		Accessor
+	 * 
+	 * @return				the DataManager, for chaining
+	 */
 	public DataManager addAccessor(String key, DataAccessor accessor) {
-		mData.addOrGet(key).setAccessor(accessor);
+		mData.get(key).setAccessor(accessor);
 		return this;
 	}
 
+	/**
+	 * Get the data object specified by the passed key
+	 * 
+	 * @param key	Key of data object
+	 * 
+	 * @return		Data object
+	 */
 	public Object get(String key) {
 		return get(mData.get(key));
 	}
+	/**
+	 * Get the data object specified by the passed {@link #Datum}
+	 * 
+	 * @param datum	Datum
+	 * 
+	 * @return		Data object
+	 */
 	public Object get(Datum datum) {
 		return datum.get(this, mBundle);
 	}
 	
+	/** Retrieve a boolean value */
 	public boolean getBoolean(String key) {
 		return mData.get(key).getBoolean(this, mBundle);
 	}
+	/** Store a boolean value */
 	public DataManager putBoolean(String key, boolean value) {
-		mData.addOrGet(key).putBoolean(this, mBundle, value);
+		mData.get(key).putBoolean(this, mBundle, value);
 		return this;
 	}
+	/** Store a boolean value */
 	public DataManager putBoolean(Datum datum, boolean value) {
 		datum.putBoolean(this, mBundle, value);
 		return this;
 	}
 
+	/** Get a double value */
 	public double getDouble(String key) {
 		return mData.get(key).getDouble(this, mBundle);
 	}
+	/** Store a double value */
 	public DataManager putDouble(String key, double value) {
-		mData.addOrGet(key).putDouble(this, mBundle, value);
+		mData.get(key).putDouble(this, mBundle, value);
 		return this;
 	}
+	/** Store a double value */
 	public DataManager putDouble(Datum datum, double value) {
 		datum.putDouble(this, mBundle, value);
 		return this;
 	}
 
+	/** Get a float value */
 	public float getFloat(String key) {
 		return mData.get(key).getFloat(this, mBundle);
 	}
+	/** Store a float value */
 	public DataManager putFloat(String key, float value) {
-		mData.addOrGet(key).putFloat(this, mBundle, value);
+		mData.get(key).putFloat(this, mBundle, value);
 		return this;
 	}
+	/** Store a float value */
 	public DataManager putFloat(Datum datum, float value) {
 		datum.putFloat(this, mBundle, value);
 		return this;
 	}
 
+	/** Get an int value */
 	public int getInt(String key) {
 		return mData.get(key).getInt(this, mBundle);
 	}
+	/** Store an int value */
 	public DataManager putInt(String key, int value) {
-		mData.addOrGet(key).putInt(this, mBundle, value);
+		mData.get(key).putInt(this, mBundle, value);
 		return this;
 	}
+	/** Store an int value */
 	public DataManager putInt(Datum datum, int value) {
 		datum.putInt(this, mBundle, value);
 		return this;
 	}
 
+	/** Get a long value */
 	public long getLong(long key) {
 		return mData.get(key).getLong(this, mBundle);
 	}
+	/** Store a long value */
 	public DataManager putLong(String key, long value) {
-		mData.addOrGet(key).putLong(this, mBundle, value);
+		mData.get(key).putLong(this, mBundle, value);
 		return this;
 	}
+	/** Store a long value */
 	public DataManager putLong(Datum datum, long value) {
 		datum.putLong(this, mBundle, value);
 		return this;
 	}
 
+	/** Get a String value */
 	public String getString(String key) {
 		return mData.get(key).getString(this, mBundle);
 	}
+	/** Get a String value */
 	public String getString(Datum datum) {
 		return datum.getString(this, mBundle);
 	}
+	/** Store a String value */
 	public DataManager putString(String key, String value) {
-		mData.addOrGet(key).putString(this, mBundle, value);
+		mData.get(key).putString(this, mBundle, value);
 		return this;
 	}
 	public DataManager putString(Datum datum, String value) {
@@ -187,7 +236,8 @@ public class DataManager {
 	}
 
 	/**
-	 * We do the laborious method here to allow Accessors to do their thing.
+	 * Store all passed values in our collection.
+	 * We do the labourious method here to allow Accessors to do their thing.
 	 * 
 	 * @param src
 	 * @return
@@ -219,7 +269,26 @@ public class DataManager {
 		return this;
 	}
 
+	/**
+	 * Store the contents of the passed cursor
+	 * 
+	 * @param cursor
+	 */
 	public void putAll(Cursor cursor) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			putAll_Api11(cursor);
+		} else {
+			putAllLegacy(cursor);
+		}
+	}
+
+	/**
+	 * Store the contents of the passed cursor
+	 * For API before 11, just store as strings
+	 * 
+	 * @param cursor
+	 */
+	public void putAllLegacy(Cursor cursor) {
 		cursor.moveToFirst();
 
 		for(int i = 0; i < cursor.getColumnCount(); i++) {
@@ -229,12 +298,61 @@ public class DataManager {
 		}
 	}
 
-	public Object getSerializable(String key) {
-		return mBundle.getSerializable(key);
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	/**
+	 * Store the contents of the passed cursor
+	 * For API after 11, store the correct type
+	 * 
+	 * @param cursor
+	 */
+	private void putAll_Api11(Cursor cursor) {
+		cursor.moveToFirst();
+
+		for(int i = 0; i < cursor.getColumnCount(); i++) {
+			final String name = cursor.getColumnName(i);
+			switch(cursor.getType(i)) {
+			case SQLiteCursor.FIELD_TYPE_STRING:
+				putString(name, cursor.getString(i));
+				break;
+			case SQLiteCursor.FIELD_TYPE_INTEGER:
+				putLong(name, cursor.getLong(i));
+				break;
+			case SQLiteCursor.FIELD_TYPE_FLOAT:
+				putDouble(name, cursor.getDouble(i));
+				break;
+			case SQLiteCursor.FIELD_TYPE_NULL:
+				break;
+			case SQLiteCursor.FIELD_TYPE_BLOB:
+				throw new RuntimeException("Unsupported column type: 'blob'");
+			default:
+				throw new RuntimeException("Unsupported column type: " + cursor.getType(i));
+			}
+		}
 	}
 
+	/**
+	 * Get the serializable object from the collection.
+	 * We currently do not use a Datum for special access.
+	 * 
+	 * @param key	Key of object
+	 * 
+	 * @return		The data
+	 */
+	public Object getSerializable(String key) {
+		return mData.get(key).getSerializable(this, mBundle);
+	}
+
+	/**
+	 * Get the serializable object from the collection.
+	 * We currently do not use a Datum for special access.
+	 * 
+	 * @param key	Key of object
+	 * @param value	The serializable object
+	 * 
+	 * @return		The data manager for chaining
+	 */
 	public DataManager putSerializable(String key, Serializable value) {
-		mBundle.putSerializable(key, value);
+		mData.get(key).putSerializable(this, mBundle, value);
 		return this;
 	}
 
@@ -297,6 +415,12 @@ public class DataManager {
 		return isOk;
 	}
 
+	/**
+	 * Check if the underlying data contains the specified key.
+	 * 
+	 * @param key
+	 * @return
+	 */
 	public boolean containsKey(String key) {
 		Datum datum = mData.get(key);
 		if (datum.getAccessor() == null) {
@@ -306,10 +430,23 @@ public class DataManager {
 		}
 	}
 
+	/** 
+	 * Remove the specified key from this collection
+	 * 
+	 * @param key		Key of data to remove.
+	 * 
+	 * @return
+	 */
 	public Datum remove(String key) {
-		return mData.remove(key);
+		Datum datum = mData.remove(key);
+		mBundle.remove(key);
+		return datum;
 	}
 
+	/**
+	 * Get the current set of data
+	 * @return
+	 */
 	public Set<String> keySet() {
 		return mData.keySet();
 	}
@@ -347,6 +484,12 @@ public class DataManager {
 		return Utils.bundleToString(mBundle);
 	}
 	
+	/**
+	 * Append a string to a list value in this collection
+	 *  
+	 * @param key
+	 * @param value
+	 */
 	public void appendOrAdd(String key, String value) {
 		String s = Utils.encodeListItem(value, '|');
 		if (!containsKey(key) || getString(key).length() == 0) {

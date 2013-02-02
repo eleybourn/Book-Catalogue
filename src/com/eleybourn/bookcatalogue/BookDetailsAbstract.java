@@ -81,9 +81,6 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 	/** Zoom size is minimum of MAX_ZOOM_THUMBNAIL_SIZE and largest screen dimension. */
 	protected Integer mThumbZoomSize;
 	
-//	protected ArrayList<Author> mAuthorList = null;
-//	protected ArrayList<Series> mSeriesList = null;
-	
 	/**
 	 * Handler to process a cover selected from the CoverBrowser.
 	 */

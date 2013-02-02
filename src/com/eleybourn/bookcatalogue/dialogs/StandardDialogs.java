@@ -1,5 +1,5 @@
 /*
- * @copyright 2011 Philip Warner
+ * @copyright 2013 Philip Warner
  * @license GNU General Public License
  * 
  * This file is part of Book Catalogue.

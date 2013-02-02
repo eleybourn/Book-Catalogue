@@ -1,5 +1,5 @@
 /*
- * @copyright 2012 Philip Warner
+ * @copyright 2013 Philip Warner
  * @license GNU General Public License
  * 
  * This file is part of Book Catalogue.
@@ -98,6 +98,7 @@ public class TextFieldEditor extends AlertDialog {
 				mListener.onCancel(TextFieldEditor.this);				
 			}});	
 		
+		// Make sure the buttons move if the keyboard appears
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 	}
 

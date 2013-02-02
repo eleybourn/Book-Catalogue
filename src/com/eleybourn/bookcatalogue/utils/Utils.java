@@ -1990,7 +1990,7 @@ public class Utils {
 			return (Boolean)o;
 		}
 		if (o instanceof Integer || o instanceof Long) {
-			return (Double)o != 0;
+			return (Long)o != 0;
 		}
 		try {
 			return (Boolean)o;

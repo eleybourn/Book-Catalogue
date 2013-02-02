@@ -48,7 +48,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.eleybourn.bookcatalogue.Fields.Field;
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.dialogs.BookshelfDialogFragment;
-import com.eleybourn.bookcatalogue.dialogs.BookshelfDialogFragment.OnBookshelfChangeListener;
+import com.eleybourn.bookcatalogue.dialogs.BookshelfDialogFragment.OnBookshelfCheckChangeListener;
 import com.eleybourn.bookcatalogue.dialogs.PartialDatePickerFragment;
 import com.eleybourn.bookcatalogue.dialogs.PartialDatePickerFragment.OnPartialDatePickerListener;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
@@ -61,7 +61,8 @@ import com.eleybourn.bookcatalogue.utils.Utils;
 
 
 
-public class BookEditFields extends BookDetailsAbstract implements OnPartialDatePickerListener, OnTextFieldEditorListener { // implements OnRestoreTabInstanceStateListener {
+public class BookEditFields extends BookDetailsAbstract 
+	implements OnPartialDatePickerListener, OnTextFieldEditorListener, OnBookshelfCheckChangeListener {
 
 	/**
 	 * Class to implement a clickable span of text and call a listener when text is clicked.
@@ -79,33 +80,12 @@ public class BookEditFields extends BookDetailsAbstract implements OnPartialDate
 	    }  
 	} 
 
-//	// TODO: Aggregate in Activity
-//	private boolean mIsDirtyFlg = false;
-
-//	private Button mConfirmButton;
-//	private Button mCancelButton;
-//	private String added_genre = "";
-//	private String added_series = "";
-//	private String added_title = "";
-//	private String added_author = "";
-//	public static String ADDED_HAS_INFO = "ADDED_HAS_INFO";
-//	public static String ADDED_GENRE = "ADDED_GENRE";
-//	public static String ADDED_SERIES = "ADDED_SERIES";
-//	public static String ADDED_TITLE = "ADDED_TITLE";
-//	public static String ADDED_AUTHOR = "ADDED_AUTHOR";
-
 	public static final int ACTIVITY_EDIT_AUTHORS = 1000;
 	public static final int ACTIVITY_EDIT_SERIES = 1001;
 	
 	private static final int DATE_DIALOG_ID = 1;
 	private static final int DESCRIPTION_DIALOG_ID = 3;
 	
-	// Global value for values from UI. Recreated periodically; at least 
-	// in saveState(). Needs to be global so an Alert can be displayed 
-	// during a save.
-	private Bundle mStateValues = null;
-
-
 	/**
 	 * Display the edit fields page
 	 */
@@ -203,19 +183,11 @@ public class BookEditFields extends BookDetailsAbstract implements OnPartialDate
 				public void onClick(View v) {
 					Field f = mFields.getField(R.id.bookshelf);
 
-					BookshelfDialogFragment frag = new BookshelfDialogFragment(
+					BookshelfDialogFragment frag = BookshelfDialogFragment.newInstance(
+							R.id.bookshelf,
 							mEditManager.getBookData().getRowId(), 
 							mEditManager.getBookData().getBookshelfText(), 
-							mEditManager.getBookData().getBookshelfList(), 
-							new OnBookshelfChangeListener() {
-
-								@Override
-								public void onCheckChanged(boolean checked, String shelf, String textList, String encodedList) {
-									Field fe = mFields.getField(R.id.bookshelf);
-									fe.setValue(textList);
-									mEditManager.getBookData().setBookshelfList(encodedList);
-								}
-							}
+							mEditManager.getBookData().getBookshelfList()
 						);
 					
 					frag.show(getFragmentManager(),"bookshelves_dialog");
@@ -257,32 +229,6 @@ public class BookEditFields extends BookDetailsAbstract implements OnPartialDate
 		System.out.println("BEF oAC: " + (tn - t0));
 
 	}
-	
-//	@Override
-//	protected Dialog onCreateDialog(int id) {
-//		SherlockDialogFragment dialog;
-//
-//		switch (id) {
-//		case DATE_DIALOG_ID:
-//			try {
-//				dialog = Utils.buildDateDialog(R.string.date_published, mBigDateSetListener);
-//			} catch (Exception e) {
-//				Logger.logError(e);
-//				// use the default date
-//				dialog = null;
-//			}
-//			break;
-//
-//		case DESCRIPTION_DIALOG_ID:
-//			dialog = new TextFieldEditor(this);
-//			dialog.setTitle(R.string.description);
-//			// The rest of the details will be set in onPrepareDialog
-//			break;
-//		default:
-//			dialog = null;
-//		}
-//		return dialog;
-//	}
 
 	private void showDescriptionDialog() {
 		Object o = mFields.getField(R.id.description).getValue();
@@ -298,34 +244,6 @@ public class BookEditFields extends BookDetailsAbstract implements OnPartialDate
 		frag.setDialogId(R.id.date_published); // Set to the destination field ID
 		frag.show(getFragmentManager(), null);
 	}
-
-//	@Override
-//	protected void onPrepareDialog(int id, Dialog dialog) {
-//		System.out.println("Prep dialog " + id);
-//
-//		switch (id) {
-//		case DATE_DIALOG_ID:
-//			try {
-//				Utils.prepareDateDialog((PartialDatePicker)dialog, mFields.getField(R.id.date_published).getValue(), mBigDateSetListener);
-//
-//			} catch (Exception e) {
-//				Logger.logError(e);
-//			}
-//			break;
-//
-//		case DESCRIPTION_DIALOG_ID:
-//			{
-//				TextFieldEditor dlg = (TextFieldEditor)dialog;
-//
-//				Object o = mFields.getField(R.id.description).getValue();
-//				String description = (o == null? null : o.toString());
-//				dlg.setText(description);
-//
-//				dlg.setOnEditListener(mOnDescriptionEditListener);
-//			}
-//			break;
-//		}
-//	}
 
 	/**
 	 * This function will populate the forms elements in three different ways
@@ -392,40 +310,6 @@ public class BookEditFields extends BookDetailsAbstract implements OnPartialDate
 		fe.setTag(encoded_shelf);		
 	}
 
-//	private void showAnthologyTab() {
-//		CheckBox cb = (CheckBox)getView().findViewById(R.id.anthology);
-//		try {
-//			TabHost tabHost = ((TabActivity) getParent()).getTabHost();  // The activity TabHost
-//			if (cb.isChecked()) {
-//				Resources res = getResources();
-//				TabHost.TabSpec spec;  // Reusable TabSpec for each tab
-//				Intent intent = new Intent().setClass(BookEditFields.this, BookEditAnthology.class);
-//				intent.putExtra(CatalogueDBAdapter.KEY_ROWID, mRowId);
-//				spec = tabHost.newTabSpec("edit_book_anthology").setIndicator(res.getString(R.string.edit_book_anthology), res.getDrawable(R.drawable.ic_tab_anthology)).setContent(intent);
-//				tabHost.addTab(spec);
-//			} else {
-//				// remove tab
-//				tabHost.getTabWidget().removeViewAt(3);
-//			}
-//		} catch (Exception e) {
-//			// if this doesn't work don't add the tab. The user will have to save and reenter
-//		}
-//	}
-
-//	private class DoAnthologyAction implements BookEdit.PostSaveAction {
-//		private boolean mWasChecked;
-//		public DoAnthologyAction(boolean wasChecked) {
-//			mWasChecked = wasChecked;
-//		}
-//		public void success() {
-//			mEditManager.setShowAnthology(mWasChecked);
-//			//showAnthologyTab();
-//		}
-//		public void failure() {
-//			// Do nothing
-//		}
-//	}
-
 	private void setupUi() {
 		final CheckBox cb = (CheckBox)getView().findViewById(R.id.anthology);
 
@@ -436,18 +320,6 @@ public class BookEditFields extends BookDetailsAbstract implements OnPartialDate
 			}
 		});
 	}
-
-//	@Override
-//	/**
-//	 * Method called when the containing TabActivity is running OnRestoreInstanceState; otherwise
-//	 * locally made changes in our own OnRestoreInstanceState may get overwritten.
-//	 * 
-//	 * Also, make sure we are marked as 'dirty' based on saved state after a restore.
-//	 */
-//	public void restoreTabInstanceState(Bundle savedInstanceState) {
-//		buildDescription();
-//		mEditManager.setDirty(savedInstanceState.getBoolean("Dirty"));
-//	}
 
 	/**
 	 * Setup the 'description' header field to have a clickable link.
@@ -496,43 +368,6 @@ public class BookEditFields extends BookDetailsAbstract implements OnPartialDate
 		Tracker.enterOnSaveInstanceState(this);
 
 		super.onSaveInstanceState(outState);
-
-		// This is now done in onPause() since the view may have been deleted when this is called
-		//mFields.getAll(mEditManager.getBookData());
-
-//		final Long rowId = mEditManager.getRowId();
-//		if (rowId != null) {
-//			outState.putLong(CatalogueDBAdapter.KEY_ROWID, rowId);
-//		} else {
-//			//there is nothing todo
-//		}
-		// DONT FORGET TO UPDATE onCreate to read these values back.
-		// Need to save local data that is not stored in editable views
-//		outState.putSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mAuthorList);
-//		outState.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, mSeriesList);
-		// ...including special text stored in TextViews and the like
-//		{
-//			if (mFields == null) 
-//				throw new RuntimeException("Fields is NULL in onSaveInstanceState");
-//			Object o = mFields.getField(R.id.date_published).getValue();
-//			if (o != null) {
-//				mEditManager.getBookData().putString(CatalogueDBAdapter.KEY_DATE_PUBLISHED, o.toString());
-//				//outState.putString(CatalogueDBAdapter.KEY_DATE_PUBLISHED, o.toString());
-//			}
-//		}
-
-//		Field fe = mFields.getField(R.id.bookshelf_text);
-//		outState.putString("bookshelf_list", fe.getTag().toString());
-//		outState.putString("bookshelf_text", fe.getValue().toString());
-//
-//		fe = mFields.getField(R.id.description);
-//
-//		// Save the current description
-//		{
-//			Object o = fe.getValue();
-//			if (o != null)
-//				outState.putString(CatalogueDBAdapter.KEY_DESCRIPTION, o.toString());
-//		}
 
 		Tracker.exitOnSaveInstanceState(this);
 	}
@@ -647,6 +482,15 @@ public class BookEditFields extends BookDetailsAbstract implements OnPartialDate
 	@Override
 	public void onTextFieldEditorCancel(int dialogId, TextFieldEditorFragment dialog) {
 		dialog.dismiss();
+	}
+
+	@Override
+	public void onBookshelfCheckChanged(int dialogId, 
+			BookshelfDialogFragment dialog, boolean checked, String shelf, String textList, String encodedList) {
+
+		Field fe = mFields.getField(R.id.bookshelf);
+		fe.setValue(textList);
+		mEditManager.getBookData().setBookshelfList(encodedList);		
 	}
 
 }

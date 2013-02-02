@@ -96,7 +96,6 @@ public class MainMenu extends BookCatalogueActivity {
 			HintManager.displayHint(this, R.string.hint_startup_screen, null);
 
 		Utils.initBackground(R.drawable.bc_background_gradient, this, true);
-		this.getSupportActionBar().setHomeButtonEnabled(false);
 	}
 
 	/**

@@ -216,7 +216,6 @@ public class BooksOnBookshelf extends BookCatalogueListActivity implements Bookl
 			initBookshelfSpinner();
 			setupList(true);
 
-			//this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 			if (savedInstanceState == null)
 				HintManager.displayHint(this, R.string.hint_view_only_book_details, null);
 		} finally {

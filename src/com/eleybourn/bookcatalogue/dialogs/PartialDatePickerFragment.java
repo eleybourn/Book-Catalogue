@@ -1,3 +1,22 @@
+/*
+ * @copyright 2013 Philip Warner
+ * @license GNU General Public License
+ * 
+ * This file is part of Book Catalogue.
+ *
+ * Book Catalogue is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Book Catalogue is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.eleybourn.bookcatalogue.dialogs;
 
 import android.app.Activity;
@@ -6,6 +25,11 @@ import android.os.Bundle;
 
 import com.eleybourn.bookcatalogue.compat.BookCatalogueDialogFragment;
 
+/**
+ * Fragment wrapper for the PartialDatePicker dialog
+ * 
+ * @author pjw
+ */
 public class PartialDatePickerFragment extends BookCatalogueDialogFragment {
 	/** Currently displayed year; null if empty/invalid */
 	private Integer mYear;
@@ -19,7 +43,7 @@ public class PartialDatePickerFragment extends BookCatalogueDialogFragment {
 	private int mDialogId;
 
 	/**
-	 * Listener to receive notifications when dialog is closed by any means.
+	 * Listener interface to receive notifications when dialog is closed by any means.
 	 * 
 	 * @author pjw
 	 */
@@ -28,11 +52,19 @@ public class PartialDatePickerFragment extends BookCatalogueDialogFragment {
 		public void onPartialDatePickerCancel(int dialogId, PartialDatePickerFragment dialog);
 	}
 
+	/**
+	 * Constructor
+	 * 
+	 * @return		new instance
+	 */
 	public static PartialDatePickerFragment newInstance() {
     	PartialDatePickerFragment frag = new PartialDatePickerFragment();
         return frag;
     }
 
+	/**
+	 * Check the activity supports the interface
+	 */
 	@Override
 	public void onAttach(Activity a) {
 		super.onAttach(a);
@@ -42,8 +74,12 @@ public class PartialDatePickerFragment extends BookCatalogueDialogFragment {
 		
 	}
 
+	/**
+	 * Create the underlying dialog
+	 */
 	@Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+		// Restore saved state info
         if (savedInstanceState != null) {
         	if (savedInstanceState.containsKey("year"))
         		mYear = savedInstanceState.getInt("year");
@@ -55,6 +91,7 @@ public class PartialDatePickerFragment extends BookCatalogueDialogFragment {
         	mDialogId = savedInstanceState.getInt("dialogId");
         }
 
+        // Create the dialog and listen (locally) for its events
         PartialDatePicker editor = new PartialDatePicker(getActivity());
         editor.setDate(mYear, mMonth, mDay);
         editor.setOnDateSetListener(mDialogListener);		
@@ -62,14 +99,17 @@ public class PartialDatePickerFragment extends BookCatalogueDialogFragment {
 	        editor.setTitle(mTitleId);
         return editor;
     }
-	
+
+	/** Accessor */
 	public void setDialogId(int id) {
 		mDialogId = id;
 	}
+	/** Accessor */
 	public int getDialogId() {
 		return mDialogId;
 	}
 
+	/** Accessor. Update dialog if available. */
 	public void setTitle(int title) {
 		mTitleId = title;
 		PartialDatePicker d = (PartialDatePicker)getDialog();
@@ -78,6 +118,7 @@ public class PartialDatePickerFragment extends BookCatalogueDialogFragment {
 		}
 	}
 
+	/** Accessor. Update dialog if available. */
 	public void setDate(Integer year, Integer month, Integer day) {
     	mYear = year;
     	mMonth = month;
@@ -100,6 +141,9 @@ public class PartialDatePickerFragment extends BookCatalogueDialogFragment {
 			state.putInt("day", mDay);
 	}
 
+	/**
+	 * Make sure data is saved in onPause() because onSaveInstanceState will have lost the views
+	 */
 	@Override
 	public void onPause() {
 		super.onPause();

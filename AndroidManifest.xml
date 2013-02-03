@@ -34,7 +34,7 @@
 
         <activity
             android:name=".BookCatalogueClassic"
-            android:label="@string/app_name" >
+            android:label="@string/app_name" android:theme="@style/Theme.Sherlock">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
 
@@ -49,7 +49,7 @@
         <!-- .BookCatalogue is now just a forwarder to .StartupActivity. -->
         <activity
             android:name=".BookCatalogue"
-            android:label="@string/app_name" >
+            android:label="@string/app_name" android:theme="@style/Theme.Sherlock">
         </activity>
         <!--
             The StartupActivity activity is just a forwarder to the users chosen first screen; does not 
@@ -107,18 +107,6 @@
             android:name=".BookshelfEdit"
             android:label="@string/title_edit_bs" android:theme="@style/Theme.Sherlock">
         </activity>
-        <activity
-            android:name=".Administration"
-            android:label="@string/administration_title" android:theme="@style/Theme.Sherlock">
-        </activity>
-        <activity android:name=".BookEditFields" >
-        </activity>
-        <activity android:name=".BookEditLoaned" >
-        </activity>
-        <activity android:name=".BookEditNotes" >
-        </activity>
-        <activity android:name=".BookDetailsReadOnly" android:theme="@style/Theme.Sherlock">
-        </activity>
         <activity android:name=".BooksOnBookshelf"         android:theme="@style/Theme.Sherlock"
             android:label="@string/my_books">
             <intent-filter>
@@ -130,10 +118,6 @@
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
-        </activity>
-        <activity
-            android:name=".BooksOnBookshelfNavigator"
-            android:theme="@style/Navigator" >
         </activity>
         <activity android:name=".AdministrationAbout" android:theme="@style/Theme.Sherlock">
         </activity>
@@ -265,7 +249,7 @@
         </activity>
         <activity android:name=".FieldVisibility" android:label="@string/menu_manage_fields" android:theme="@style/Theme.Sherlock">
         </activity>
-        <activity android:name=".OtherPreferences" >
+        <activity android:name=".OtherPreferences" android:theme="@style/Theme.Sherlock">
         </activity>
         <activity android:name=".BookEditAnthology" >
         </activity>
@@ -275,9 +259,9 @@
         </activity>
         <activity android:name=".UpdateFromInternet" android:label="@string/update_fields" android:theme="@style/Theme.Sherlock">
         </activity>
-        <activity android:name=".cropper.CropCropImage" >
+        <activity android:name=".cropper.CropCropImage" android:theme="@style/Theme.Sherlock">
         </activity>
-        <activity android:name=".cropper.CropMonitoredActivityActivity" >
+        <activity android:name=".cropper.CropMonitoredActivityActivity" android:theme="@style/Theme.Sherlock">
         </activity>
     </application>
 

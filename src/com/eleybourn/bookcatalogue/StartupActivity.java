@@ -22,6 +22,7 @@ package com.eleybourn.bookcatalogue;
 
 import java.lang.ref.WeakReference;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -54,7 +55,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * 
  * @author Philip Warner
  */
-public class StartupActivity extends BookCatalogueActivity {
+public class StartupActivity extends Activity {
 	private static String TAG = "StartupActivity";
 	/** Flag to indicate FTS rebuild is required at startup */
 	private static String PREF_FTS_REBUILD_REQUIRED = TAG + ".FtsRebuildRequired";

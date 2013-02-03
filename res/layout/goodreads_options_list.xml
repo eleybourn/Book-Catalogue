@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- incompatible with APIL4 android:fadeScrollbars="false" -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:scrollbars="vertical" >
+
+    <LinearLayout
+        android:id="@+id/menu"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/sync_with_goodreads_label"
+            style="@style/prefs_item"
+            android:drawableLeft="@drawable/ic_menu_refresh"
+            android:text="@string/sync_with_goodreads" />
+
+        <TextView
+            android:id="@+id/import_all_from_goodreads_label"
+            style="@style/prefs_item"
+            android:drawableLeft="@drawable/ic_menu_upload"
+            android:text="@string/import_all_from_goodreads" />
+
+        <TextView
+            android:id="@+id/send_books_to_goodreads_label"
+            style="@style/prefs_item"
+            android:drawableLeft="@drawable/ic_menu_archive"
+            android:text="@string/send_books_to_goodreads" />
+    </LinearLayout>
+
+</ScrollView>

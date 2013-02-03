@@ -37,6 +37,8 @@ import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 import org.acra.sender.ReportSenderException;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Application;
 import android.app.Notification;
@@ -46,6 +48,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
+import android.os.StrictMode;
 
 import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
 import com.eleybourn.bookcatalogue.utils.Utils;
@@ -133,6 +136,8 @@ public class BookCatalogueApp extends Application {
 		if (mQueueManager == null)
 			mQueueManager = new BcQueueManager(this.getApplicationContext());
 
+		initStrictMode();
+
 		super.onCreate();
 		
 		if (Build.VERSION.SDK_INT < 16) {
@@ -169,7 +174,18 @@ public class BookCatalogueApp extends Application {
 			mCollationCaseSensitive = CollationCaseSensitive.isCaseSensitive(db);
 		return mCollationCaseSensitive;
 	}
-	
+
+	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
+	public static void initStrictMode() {
+		if (Build.VERSION.SDK_INT >= 9) {
+			StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+	        //.detectDiskReads()
+	        //.detectDiskWrites()
+	        //.detectNetwork()   // or .detectAll() for all detectable problems
+	        .penaltyLog()
+	        .build());			
+		}
+	}
 //	/**
 //	 * Currently the QueueManager is implemented as a service. This is not clearly necessary
 //	 * but has the huge advantage of making a 'context' object available in the Service

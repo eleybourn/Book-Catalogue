@@ -95,6 +95,24 @@ public class GoodreadsRegister extends BookCatalogueActivity {
 			}
 		});
 
+		/* Forget credentials */
+		GoodreadsManager manager = new GoodreadsManager();
+		boolean hasCred = manager.hasCredentials();
+		View blurb = findViewById(R.id.forget_blurb);
+		Button blurb_button = (Button)findViewById(R.id.forget);
+		if (hasCred) {
+			blurb.setVisibility(View.VISIBLE);
+			blurb_button.setVisibility(View.VISIBLE);
+			blurb_button.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					GoodreadsManager.forgetCredentials();
+				}});
+		} else {
+			blurb.setVisibility(View.GONE);
+			blurb_button.setVisibility(View.GONE);
+		}
 	}
 
 	/**

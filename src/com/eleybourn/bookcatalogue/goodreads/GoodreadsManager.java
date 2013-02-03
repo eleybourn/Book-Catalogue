@@ -164,6 +164,18 @@ public class GoodreadsManager {
 	}
 	
 	/**
+	 * Clear the credentials from the preferences and local cache
+	 */
+	public static void forgetCredentials() {
+		m_accessToken = "";
+		m_accessSecret = "";
+		// Get the stored token values from prefs, and setup the consumer if present
+		BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
+		prefs.setString("GoodReads.AccessToken.Token", "");
+		prefs.setString("GoodReads.AccessToken.Secret", "");
+	}
+
+	/**
 	 * Utility method to check if the access tokens are available (not if they are valid).
 	 * 
 	 * @return

@@ -21,14 +21,22 @@
 package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 
 import com.actionbarsherlock.app.ActionBar;
+import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
+import com.eleybourn.bookcatalogue.booklist.BooklistStyles;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
 import com.eleybourn.bookcatalogue.utils.AlertDialogUtils;
 import com.eleybourn.bookcatalogue.utils.AlertDialogUtils.AlertDialogItem;
 import com.eleybourn.bookcatalogue.utils.HintManager;
@@ -91,7 +99,9 @@ public class MainMenu extends BookCatalogueActivity {
 		setOnClickListener(R.id.about_label, mAboutHandler);
 		setOnClickListener(R.id.help_label, mHelpHandler);
 		setOnClickListener(R.id.donate_label, mDonateHandler);
-
+		// Goodreads will be shown/hidden in onResume()
+		setOnClickListener(R.id.goodreads_label, mGoodreadsHandler);
+		
 		if (savedInstanceState == null)
 			HintManager.displayHint(this, R.string.hint_startup_screen, null);
 
@@ -104,6 +114,17 @@ public class MainMenu extends BookCatalogueActivity {
 	@Override 
 	public void onResume() {
 		super.onResume();
+
+		GoodreadsManager grMgr = new GoodreadsManager();
+		final boolean showGr = grMgr.hasCredentials();
+
+		View grItem = findViewById(R.id.goodreads_label);
+		if (showGr) {
+			grItem.setVisibility(View.VISIBLE);
+		} else {
+			grItem.setVisibility(View.GONE);
+		}
+
 		Utils.initBackground(R.drawable.bc_background_gradient, this, true);		
 	}
 
@@ -163,6 +184,68 @@ public class MainMenu extends BookCatalogueActivity {
 		}
 	};
 
+	/**
+	 * Goodreads Menu Handler
+	 */
+	private OnClickListener mGoodreadsHandler = new OnClickListener() {
+		@Override public void onClick(View v) {
+			showGoodreadsOptions();
+		}
+	};
+
+	/**
+	 * Show the godreads options list
+	 */
+	private void showGoodreadsOptions() {
+		LayoutInflater inf = this.getLayoutInflater();
+		View root = inf.inflate(R.layout.goodreads_options_list, null);
+
+		final AlertDialog grDialog = new AlertDialog.Builder(this).setView(root).create();
+		grDialog.setTitle(R.string.select_an_action);
+		grDialog.show();
+		
+		/* Goodreads SYNC Link */
+		{
+			View v = grDialog.findViewById(R.id.sync_with_goodreads_label);
+			// Make line flash when clicked.
+			v.setBackgroundResource(android.R.drawable.list_selector_background);
+			v.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					AdministrationFunctions.importAllFromGoodreads(MainMenu.this, true);
+					grDialog.dismiss();
+				}
+			});
+		}
+
+		/* Goodreads IMPORT Link */
+		{
+			View v = grDialog.findViewById(R.id.import_all_from_goodreads_label);
+			// Make line flash when clicked.
+			v.setBackgroundResource(android.R.drawable.list_selector_background);
+			v.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					AdministrationFunctions.importAllFromGoodreads(MainMenu.this, false);
+					grDialog.dismiss();
+				}
+			});
+		}
+
+		/* Goodreads EXPORT Link */
+		{
+			View v = grDialog.findViewById(R.id.send_books_to_goodreads_label);
+			// Make line flash when clicked.
+			v.setBackgroundResource(android.R.drawable.list_selector_background);
+			v.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					AdministrationFunctions.sendBooksToGoodreads(MainMenu.this);
+					grDialog.dismiss();
+				}
+			});
+		}
+	}
 	/**
 	 * About Menu Handler
 	 */

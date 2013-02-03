@@ -728,4 +728,9 @@ and you can edit the book via the options menu using the menu button or overflow
 		</p>
 		]]></string>
 
+<string name="forget_credentials">Forget Credentials</string>
+<string name="goodreads_auth_blurb_part4">It looks like you have already authorized this app. If you would like to
+    delete the credentials from this phone, then you can do so by pressing the button below. But it is also
+    important to de-authorize the application at the goodreads website as well.
+    \n\nForgetting the credentials here will remove the goodreads option from the main application menu.</string>
 </resources>

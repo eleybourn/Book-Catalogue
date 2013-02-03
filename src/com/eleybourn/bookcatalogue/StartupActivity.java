@@ -260,6 +260,9 @@ public class StartupActivity extends Activity {
 		Intent i = new Intent(this, BooksOnBookshelf.class);
 		if (mWasReallyStartup)
 			i.putExtra("startup", true);
+		// XXX: This is nasty, now we use fragments, StartupActivity shoud be a FragmenActivity and load the right fragment
+		// then we could do away with the whole isRoot/willBeRoot thing
+		i.putExtra("willBeTaskRoot", isTaskRoot());
 		startActivity(i);
 	}
 	
@@ -270,6 +273,7 @@ public class StartupActivity extends Activity {
 		Intent i = new Intent(this, MainMenu.class);
 		if (mWasReallyStartup)
 			i.putExtra("startup", true);
+		i.putExtra("willBeTaskRoot", isTaskRoot());
 		startActivity(i);
 	}
 

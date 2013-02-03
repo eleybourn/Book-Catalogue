@@ -23,7 +23,7 @@ public class BookCatalogueActivity extends SherlockActivity {
         ActionBar bar = getSupportActionBar();
         if (bar != null) {
         	bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_USE_LOGO | ActionBar.DISPLAY_SHOW_TITLE);
-    		bar.setDisplayHomeAsUpEnabled(! (this.isTaskRoot() || getIntent().getBooleanExtra("startup", false) ) );
+    		bar.setDisplayHomeAsUpEnabled(! (this.isTaskRoot() || getIntent().getBooleanExtra("willBeTaskRoot", false) ) );
         }
     }
 	
@@ -40,4 +40,5 @@ public class BookCatalogueActivity extends SherlockActivity {
 		}
 		
 	}
+	
 }

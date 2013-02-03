@@ -53,7 +53,7 @@
         </activity>
         <!--
             The StartupActivity activity is just a forwarder to the users chosen first screen; does not 
-			rebuild on orientation changes so progress dialogs are easier 
+			rebuild on orientation changes so progress dialogs are easier 
         -->
         <activity
             android:name=".StartupActivity"

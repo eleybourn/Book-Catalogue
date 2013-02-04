@@ -394,6 +394,7 @@
 
         <com.eleybourn.bookcatalogue.widgets.SafeSpannedTextView
             android:id="@+id/description"
+            android:textIsSelectable="true"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="I hereby nominate Lizard the humongous football player and Sylphide the mysterious ballerina as two of my favorite characters of 2012. Rarely have such elite and outsize personalities felt so true on the page--a joy to be with, worth rooting for."

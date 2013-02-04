@@ -74,6 +74,8 @@ import com.eleybourn.bookcatalogue.booklist.BooklistStylePropertiesActivity;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyles;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueListActivity;
 import com.eleybourn.bookcatalogue.debug.Tracker;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsUtils;
 import com.eleybourn.bookcatalogue.utils.HintManager;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue;
@@ -976,6 +978,8 @@ public class BooksOnBookshelf extends BookCatalogueListActivity implements Bookl
 	private static final int MNU_EXPAND = MenuHandler.FIRST+2; 
 	private static final int MNU_COLLAPSE = MenuHandler.FIRST+3; 
 	private static final int MNU_EDIT_STYLE = MenuHandler.FIRST+4; 
+	private static final int MNU_GOODREADS = MenuHandler.FIRST+5; 
+	
 	/**
 	 * Run each time the menu button is pressed. This will setup the options menu
 	 */
@@ -998,6 +1002,11 @@ public class BooksOnBookshelf extends BookCatalogueListActivity implements Bookl
 		
 		mMenuHandler.addSearchItem(menu)
 					.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+		final boolean showGr = GoodreadsManager.hasCredentials();
+		if (showGr) {
+			mMenuHandler.addItem(menu, MNU_GOODREADS, R.string.goodreads, R.drawable.ic_menu_gr_logo);
+		}
 
 		mMenuHandler.addCreateHelpAndAdminItems(menu);
 		
@@ -1047,6 +1056,11 @@ public class BooksOnBookshelf extends BookCatalogueListActivity implements Bookl
 					mTopRow = mList.getBuilder().getPosition(oldAbsPos);
 					displayList(mList.getBuilder().getList(), null);												
 				}
+				break;
+			}
+			case MNU_GOODREADS:
+			{
+				GoodreadsUtils.showGoodreadsOptions(this);
 				break;
 			}
 			/*

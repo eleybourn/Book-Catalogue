@@ -43,6 +43,7 @@ import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogItem;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogOnClickListener;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsRegister;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsUtils;
 import com.eleybourn.bookcatalogue.goodreads.ImportAllTask;
 import com.eleybourn.bookcatalogue.goodreads.SendAllBooksTask;
 import com.eleybourn.bookcatalogue.utils.HintManager;
@@ -197,7 +198,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 				return;
 			}
 		});
-		
+
 		/* Goodreads SYNC Link */
 		{
 			View v = findViewById(R.id.sync_with_goodreads_label);
@@ -206,7 +207,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			v.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					importAllFromGoodreads(AdministrationFunctions.this, true);
+					GoodreadsUtils.importAllFromGoodreads(AdministrationFunctions.this, true);
 					return;
 				}
 			});
@@ -220,7 +221,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			v.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					importAllFromGoodreads(AdministrationFunctions.this, false);
+					GoodreadsUtils.importAllFromGoodreads(AdministrationFunctions.this, false);
 					return;
 				}
 			});
@@ -234,7 +235,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			v.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					sendBooksToGoodreads(AdministrationFunctions.this);
+					GoodreadsUtils.sendBooksToGoodreads(AdministrationFunctions.this);
 					return;
 				}
 			});
@@ -365,42 +366,6 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	}
 
 	/**
-	 * Display a dialog warning the user that goodreads authentication is required; gives them
-	 * the options: 'request now', 'more info' or 'cancel'.
-	 */
-	public static void sendBooksToGoodreads(final Context context) {
-
-		if (!checkCanSendToGoodreads(context))
-			return;
-
-		// Get the title		
-		final AlertDialog alertDialog = new AlertDialog.Builder(context).setTitle(R.string.send_books_to_goodreads).setMessage(R.string.send_books_to_goodreads_blurb).create();
-
-		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getResources().getString(R.string.send_updated), new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				alertDialog.dismiss();
-				sendToGoodreads(context, true);
-			}
-		});
-		
-		alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, context.getResources().getString(R.string.send_all), new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				alertDialog.dismiss();
-				sendToGoodreads(context, false);
-			}
-		});
-
-		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				alertDialog.dismiss();
-			}
-		}); 
-
-		alertDialog.show();		
-	}
-
-	/**
 	 * Start the activity that shows the basic details of background tasks.
 	 */
 	private void showBackgroundTasks() {
@@ -416,79 +381,6 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	//	startActivity(i);
 	//}
 
-	/**
-	 * Start a background task that imports books from goodreads.
-	 */
-	public static void importAllFromGoodreads(Context context, boolean isSync) {
-
-		if (BcQueueManager.getQueueManager().hasActiveTasks(BcQueueManager.CAT_GOODREADS_IMPORT_ALL)) {
-			Toast.makeText(context, R.string.requested_task_is_already_queued, Toast.LENGTH_LONG).show();
-			return;
-		}
-		if (BcQueueManager.getQueueManager().hasActiveTasks(BcQueueManager.CAT_GOODREADS_EXPORT_ALL)) {
-			Toast.makeText(context, R.string.export_task_is_already_queued, Toast.LENGTH_LONG).show();
-			return;
-		}
-
-		if (!checkGoodreadsAuth(context))
-			return;
-
-		QueueManager.getQueueManager().enqueueTask(new ImportAllTask(isSync), BcQueueManager.QUEUE_MAIN, 0);
-		Toast.makeText(context, R.string.task_has_been_queued_in_background, Toast.LENGTH_LONG).show();
-	}
-
-	/**
-	 * Check that goodreads is authorized for this app, and optionally allow user to request auth or more info
-	 * 
-	 * @return	Flag indicating OK
-	 */
-	private static boolean checkGoodreadsAuth(Context context) {
-		// Make sure GR is authorized for this app
-		GoodreadsManager grMgr = new GoodreadsManager();
-
-		if (!grMgr.hasCredentials()) {
-			StandardDialogs.goodreadsAuthAlert(context);
-			return false;
-		}
-
-		if (!grMgr.hasValidCredentials()) {
-			StandardDialogs.goodreadsAuthAlert(context);
-			return false;
-		}
-
-		return true;		
-	}
-	
-	/**
-	 * Check that no other sync-related jobs are queued, and that goodreads is authorized for this app
-	 * 
-	 * @return	Flag indicating OK
-	 */
-	private static boolean checkCanSendToGoodreads(Context context) {
-		if (BcQueueManager.getQueueManager().hasActiveTasks(BcQueueManager.CAT_GOODREADS_EXPORT_ALL)) {
-			Toast.makeText(context, R.string.requested_task_is_already_queued, Toast.LENGTH_LONG).show();
-			return false;
-		}
-		if (BcQueueManager.getQueueManager().hasActiveTasks(BcQueueManager.CAT_GOODREADS_IMPORT_ALL)) {
-			Toast.makeText(context, R.string.import_task_is_already_queued, Toast.LENGTH_LONG).show();
-			return false;
-		}
-
-		return checkGoodreadsAuth(context);
-	}
-
-	/**
-	 * Start a background task that exports all books to goodreads.
-	 */
-	private static void sendToGoodreads(Context context, boolean updatesOnly) {
-
-		if (!checkCanSendToGoodreads(context))
-			return;
-
-		QueueManager.getQueueManager().enqueueTask(new SendAllBooksTask(updatesOnly), BcQueueManager.QUEUE_MAIN, 0);
-		Toast.makeText(context, R.string.task_has_been_queued_in_background, Toast.LENGTH_LONG).show();
-	}
-	
 	/**
 	 * Load the Bookshelf Activity
 	 */

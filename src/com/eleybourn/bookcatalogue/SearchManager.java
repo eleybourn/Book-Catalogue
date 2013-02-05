@@ -67,6 +67,8 @@ public class SearchManager implements TaskManagerListener {
 	TaskManager mTaskManager;
 	// Accumulated book data
 	private Bundle mBookData = null;
+	// Flag indicating searches will be non-concurrent title/author found via ASIN
+	private boolean mSearchingAsin = false;
 	// Flag indicating searches will be non-concurrent until an ISBN is found
 	private boolean mWaitingForIsbn = false;
 	// Flag indicating a task was cancelled.
@@ -272,6 +274,7 @@ public class SearchManager implements TaskManagerListener {
 		// these in series.
 
 		boolean tasksStarted = false;
+		mSearchingAsin = false;
 		try {
 			if (mIsbn != null && mIsbn.length() > 0) {
 				if (IsbnUtils.isValid(mIsbn)) {
@@ -280,9 +283,11 @@ public class SearchManager implements TaskManagerListener {
 					tasksStarted = this.startSearches(mSearchFlags);
 				} else {
 					// Assume it's an ASIN, and just search Amazon
+					mSearchingAsin = true;
 					mWaitingForIsbn = false;
-					mSearchFlags = SEARCH_AMAZON;
-					tasksStarted = this.startSearches(mSearchFlags);
+					//mSearchFlags = SEARCH_AMAZON;
+					tasksStarted = startOneSearch(SEARCH_AMAZON);
+					//tasksStarted = this.startSearches(mSearchFlags);
 				}
 			} else {
 				// Run one at a time, startNext() defined the order.
@@ -519,6 +524,24 @@ public class SearchManager implements TaskManagerListener {
 		if (mCancelledFlg) {
 			mWaitingForIsbn = false;
 		} else {
+			if (mSearchingAsin) {
+				// If we searched AMAZON for an Asin, then see what we found
+				mSearchingAsin = false;
+				// Clear the 'isbn'
+				mIsbn = "";
+				if (Utils.isNonBlankString(bookData, CatalogueDBAdapter.KEY_ISBN)) {
+					// We got an ISBN, so pretend we were searching for an ISBN
+					mWaitingForIsbn = true;
+				} else {
+					// See if we got author/title
+					mAuthor = bookData.getString(CatalogueDBAdapter.KEY_AUTHOR_NAME);
+					mTitle = bookData.getString(CatalogueDBAdapter.KEY_TITLE);
+					if (mAuthor != null && !mAuthor.equals("") && mTitle != null && !mTitle.equals("")) {
+						// We got them, so pretend we are searching by author/title now, and waiting for an ASIN...
+						mWaitingForIsbn = true;
+					}
+				}
+			}
 			if (mWaitingForIsbn) {
 				if (Utils.isNonBlankString(bookData, CatalogueDBAdapter.KEY_ISBN)) {
 					mWaitingForIsbn = false;

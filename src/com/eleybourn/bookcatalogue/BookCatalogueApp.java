@@ -136,8 +136,6 @@ public class BookCatalogueApp extends Application {
 		if (mQueueManager == null)
 			mQueueManager = new BcQueueManager(this.getApplicationContext());
 
-		initStrictMode();
-
 		super.onCreate();
 		
 		if (Build.VERSION.SDK_INT < 16) {
@@ -175,17 +173,6 @@ public class BookCatalogueApp extends Application {
 		return mCollationCaseSensitive;
 	}
 
-	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
-	public static void initStrictMode() {
-		if (Build.VERSION.SDK_INT >= 9) {
-			StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-	        //.detectDiskReads()
-	        //.detectDiskWrites()
-	        //.detectNetwork()   // or .detectAll() for all detectable problems
-	        .penaltyLog()
-	        .build());			
-		}
-	}
 //	/**
 //	 * Currently the QueueManager is implemented as a service. This is not clearly necessary
 //	 * but has the huge advantage of making a 'context' object available in the Service

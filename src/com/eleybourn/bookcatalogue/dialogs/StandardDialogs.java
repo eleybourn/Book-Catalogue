@@ -45,6 +45,7 @@ import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.LibraryThingManager;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.Series;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsRegister;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
@@ -230,7 +231,7 @@ public class StandardDialogs {
 	 * Display a dialog warning the user that goodreads authentication is required; gives them
 	 * the options: 'request now', 'more info' or 'cancel'.
 	 */
-	public static int goodreadsAuthAlert(final Context context) {
+	public static int goodreadsAuthAlert(final BookCatalogueActivity context) {
 		// Get the title		
 		final AlertDialog alertDialog = new AlertDialog.Builder(context).setTitle(R.string.authorize_access).setMessage(R.string.goodreads_action_cannot_blah_blah).create();
 
@@ -238,7 +239,7 @@ public class StandardDialogs {
 		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				alertDialog.dismiss();
-				GoodreadsRegister.requestAuthorization(context);
+				GoodreadsRegister.requestAuthorizationInBackground(context);
 			}
 		});
 		

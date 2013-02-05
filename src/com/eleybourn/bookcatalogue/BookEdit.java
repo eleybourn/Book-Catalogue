@@ -46,7 +46,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.eleybourn.bookcatalogue.booklist.BooklistBuilder;
 import com.eleybourn.bookcatalogue.booklist.FlattenedBooklist;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueFragment;
-import com.eleybourn.bookcatalogue.compat.BookCatalogueFragmentActivity;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.datamanager.DataEditor;
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.dialogs.BookshelfDialogFragment;
@@ -66,7 +66,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * 
  * @author Evan Leybourn
  */
-public class BookEdit extends BookCatalogueFragmentActivity implements BookEditFragmentAbstract.BookEditManager,
+public class BookEdit extends BookCatalogueActivity implements BookEditFragmentAbstract.BookEditManager,
 		OnPartialDatePickerListener, OnTextFieldEditorListener, OnBookshelfCheckChangeListener {
 	private FlattenedBooklist mList = null;
 	private GestureDetector mGestureDetector;

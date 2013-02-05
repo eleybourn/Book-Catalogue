@@ -27,14 +27,14 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueListActivity;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
@@ -138,13 +138,13 @@ public class Bookshelf extends BookCatalogueListActivity {
 	}
 	
 	@Override
-	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+	public boolean onOptionsItemSelected(MenuItem item) {
 		switch(item.getItemId()) {
 		case INSERT_ID:
 			createBookshelf();
 			return true;
 		}
-		return super.onMenuItemSelected(featureId, item);
+		return super.onOptionsItemSelected(item);
 	}
 	
     @Override
@@ -154,7 +154,7 @@ public class Bookshelf extends BookCatalogueListActivity {
 	}
 
     @Override
-	public boolean onContextItemSelected(MenuItem item) {
+	public boolean onContextItemSelected(android.view.MenuItem item) {
 		switch(item.getItemId()) {
     	case DELETE_ID:
 			AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();

@@ -29,13 +29,15 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
 import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueueProgressFragment;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueueProgressFragment.FragmentTask;
 import com.eleybourn.bookcatalogue.utils.Utils;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTaskContext;
 
 /**
  * Activity to allow the user to authorize the application to access their goodreads account and
@@ -90,14 +92,13 @@ public class GoodreadsRegister extends BookCatalogueActivity {
 		devkeyLink.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				doRequestAuthorization();
+				requestAuthorizationInBackground(GoodreadsRegister.this);
 				return;
 			}
 		});
 
 		/* Forget credentials */
-		GoodreadsManager manager = new GoodreadsManager();
-		boolean hasCred = manager.hasCredentials();
+		boolean hasCred = GoodreadsManager.hasCredentials();
 		View blurb = findViewById(R.id.forget_blurb);
 		Button blurb_button = (Button)findViewById(R.id.forget);
 		if (hasCred) {
@@ -116,17 +117,46 @@ public class GoodreadsRegister extends BookCatalogueActivity {
 	}
 
 	/**
-	 * Called by button click to call static method.
+	 * Called by button click to start a non-UI-thread task to do the work.
 	 */
-	private void doRequestAuthorization() {
-		requestAuthorization(this);
+	public static void requestAuthorizationInBackground(final BookCatalogueActivity activity) {
+		FragmentTask task = new FragmentTask() {
+			private int mMessage = 0;
+
+			/**
+			 * Call the static method to start the web page; this can take a few seconds
+			 */
+			@Override
+			public void run(SimpleTaskQueueProgressFragment fragment, SimpleTaskContext taskContext) {
+				mMessage = requestAuthorizationImmediate(activity);
+			}
+
+			/**
+			 * Display any error message
+			 */
+			@Override
+			public void onFinish(SimpleTaskQueueProgressFragment fragment) {
+				if (mMessage != 0)
+					fragment.showToast(mMessage);
+			}
+
+			/**
+			 * We only need the onFinish() if there is a message
+			 */
+			@Override
+			public boolean requiresOnFinish(SimpleTaskQueueProgressFragment fragment) {
+				return (mMessage != 0);
+			}
+		};
+
+		// Get the fragment to display task progress
+		SimpleTaskQueueProgressFragment.runTaskWithProgress(activity, R.string.connecting_to_web_site, task);
 	}
 
 	/**
 	 * Static method to request authorization from goodreads.
 	 */
-	public static void requestAuthorization(Context context) {
-		// ENHANCE: put up a progress dialog...its only one web request, but it can take a few seconds
+	private static int requestAuthorizationImmediate(Context context) {
 		GoodreadsManager grMgr = new GoodreadsManager();
 		// This next step can take several seconds....
 		if (!grMgr.hasValidCredentials()) {
@@ -134,10 +164,11 @@ public class GoodreadsRegister extends BookCatalogueActivity {
 				grMgr.requestAuthorization(context);
 			} catch (NetworkException e) {
 				Logger.logError(e, "Error while requesting Goodreads authorization");
-				Toast.makeText(context, R.string.goodreads_access_error, Toast.LENGTH_LONG).show();
+				return R.string.goodreads_access_error;
 			}
 		} else {
-			Toast.makeText(context, R.string.authorize_access_already_auth, Toast.LENGTH_LONG).show();
+			return R.string.authorize_access_already_auth;
 		}		
+		return 0;
 	}
 }

@@ -1,25 +1,27 @@
 package com.eleybourn.bookcatalogue.goodreads;
 
 import net.philipwarner.taskqueue.QueueManager;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Toast;
 
-import com.eleybourn.bookcatalogue.AdministrationFunctions;
 import com.eleybourn.bookcatalogue.BcQueueManager;
 import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTaskContext;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueueProgressFragment;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueueProgressFragment.FragmentTask;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueueProgressFragment.FragmentTaskAbstract;
 
 public class GoodreadsUtils {
 	/**
 	 * Show the goodreads options list
 	 */
-	public static void showGoodreadsOptions(final Activity activity) {
+	public static void showGoodreadsOptions(final BookCatalogueActivity activity) {
 		LayoutInflater inf = activity.getLayoutInflater();
 		View root = inf.inflate(R.layout.goodreads_options_list, null);
 
@@ -69,114 +71,173 @@ public class GoodreadsUtils {
 			});
 		}
 	}
-
+	
 	/**
 	 * Start a background task that imports books from goodreads.
+	 * 
+	 * We use a FragmentTask so that network access does not occur in the UI thread.
 	 */
-	public static void importAllFromGoodreads(Context context, boolean isSync) {
+	public static void importAllFromGoodreads(final BookCatalogueActivity context, final boolean isSync) {
+		
+		FragmentTask task = new FragmentTaskAbstract() {
+			@Override
+			public void run(SimpleTaskQueueProgressFragment fragment, SimpleTaskContext taskContext) {
 
-		if (BcQueueManager.getQueueManager().hasActiveTasks(BcQueueManager.CAT_GOODREADS_IMPORT_ALL)) {
-			Toast.makeText(context, R.string.requested_task_is_already_queued, Toast.LENGTH_LONG).show();
-			return;
-		}
-		if (BcQueueManager.getQueueManager().hasActiveTasks(BcQueueManager.CAT_GOODREADS_EXPORT_ALL)) {
-			Toast.makeText(context, R.string.export_task_is_already_queued, Toast.LENGTH_LONG).show();
-			return;
-		}
+				if (BcQueueManager.getQueueManager().hasActiveTasks(BcQueueManager.CAT_GOODREADS_IMPORT_ALL)) {
+					fragment.showToast(R.string.requested_task_is_already_queued);
+					return;
+				}
+				if (BcQueueManager.getQueueManager().hasActiveTasks(BcQueueManager.CAT_GOODREADS_EXPORT_ALL)) {
+					fragment.showToast(R.string.export_task_is_already_queued);
+					return;
+				}
 
-		if (!checkGoodreadsAuth(context))
-			return;
+				int msg = checkGoodreadsAuth();
+				if (msg == -1) {
+					fragment.post(new Runnable() {
 
-		QueueManager.getQueueManager().enqueueTask(new ImportAllTask(isSync), BcQueueManager.QUEUE_MAIN, 0);
-		Toast.makeText(context, R.string.task_has_been_queued_in_background, Toast.LENGTH_LONG).show();
+						@Override
+						public void run() {
+							StandardDialogs.goodreadsAuthAlert(context);
+						}});
+					return;
+				} else if (msg != 0) {
+					fragment.showToast(msg);
+					return;
+				}
+
+				if (!fragment.isCancelled()) {
+					QueueManager.getQueueManager().enqueueTask(new ImportAllTask(isSync), BcQueueManager.QUEUE_MAIN, 0);
+					fragment.showToast(R.string.task_has_been_queued_in_background);					
+				}
+			}
+
+		};
+		SimpleTaskQueueProgressFragment.runTaskWithProgress(context, R.string.connecting_to_web_site, task);
 	}
 
 	/**
 	 * Check that goodreads is authorized for this app, and optionally allow user to request auth or more info
 	 * 
-	 * @return	Flag indicating OK
-	 */
-	private static boolean checkGoodreadsAuth(Context context) {
-		// Make sure GR is authorized for this app
-		GoodreadsManager grMgr = new GoodreadsManager();
-
-		if (!grMgr.hasCredentials()) {
-			StandardDialogs.goodreadsAuthAlert(context);
-			return false;
-		}
-
-		if (!grMgr.hasValidCredentials()) {
-			StandardDialogs.goodreadsAuthAlert(context);
-			return false;
-		}
-
-		return true;		
-	}
-	
-	/**
-	 * Check that no other sync-related jobs are queued, and that goodreads is authorized for this app
+	 * This does network comms and should not be called in the UI thread.
 	 * 
 	 * @return	Flag indicating OK
 	 */
-	public static boolean checkCanSendToGoodreads(Context context) {
-		if (BcQueueManager.getQueueManager().hasActiveTasks(BcQueueManager.CAT_GOODREADS_EXPORT_ALL)) {
-			Toast.makeText(context, R.string.requested_task_is_already_queued, Toast.LENGTH_LONG).show();
-			return false;
-		}
-		if (BcQueueManager.getQueueManager().hasActiveTasks(BcQueueManager.CAT_GOODREADS_IMPORT_ALL)) {
-			Toast.makeText(context, R.string.import_task_is_already_queued, Toast.LENGTH_LONG).show();
-			return false;
+	private static int checkGoodreadsAuth() {
+		// Make sure GR is authorized for this app
+		GoodreadsManager grMgr = new GoodreadsManager();
+
+		if (!GoodreadsManager.hasCredentials() || !grMgr.hasValidCredentials()) {
+			return -1;
 		}
 
-		return checkGoodreadsAuth(context);
+		return 0;		
+	}
+	
+	/**
+	 * Check that no other sync-related jobs are queued, and that goodreads is authorized for this app.
+	 * 
+	 * This does network comms and should not be called in the UI thread.
+	 * 
+	 * @return	Flag indicating OK
+	 */
+	private static int checkCanSendToGoodreads() {
+		if (BcQueueManager.getQueueManager().hasActiveTasks(BcQueueManager.CAT_GOODREADS_EXPORT_ALL)) {
+			return R.string.requested_task_is_already_queued;
+		}
+		if (BcQueueManager.getQueueManager().hasActiveTasks(BcQueueManager.CAT_GOODREADS_IMPORT_ALL)) {
+			return R.string.import_task_is_already_queued;
+		}
+
+		return checkGoodreadsAuth();
 	}
 
 	/**
 	 * Start a background task that exports all books to goodreads.
 	 */
-	public static void sendToGoodreads(Context context, boolean updatesOnly) {
-
-		if (!checkCanSendToGoodreads(context))
-			return;
-
-		QueueManager.getQueueManager().enqueueTask(new SendAllBooksTask(updatesOnly), BcQueueManager.QUEUE_MAIN, 0);
-		Toast.makeText(context, R.string.task_has_been_queued_in_background, Toast.LENGTH_LONG).show();
+	private static void sendToGoodreads(final FragmentActivity context, final boolean updatesOnly) {
+		FragmentTask task = new FragmentTaskAbstract() {
+			@Override
+			public void run(SimpleTaskQueueProgressFragment fragment, SimpleTaskContext taskContext) {
+				int msg = checkCanSendToGoodreads();
+				if (msg == 0) {
+					QueueManager.getQueueManager().enqueueTask(new SendAllBooksTask(updatesOnly), BcQueueManager.QUEUE_MAIN, 0);
+					msg = R.string.task_has_been_queued_in_background;
+				} else {
+					fragment.showToast(msg);
+				}
+				fragment.showToast(msg);
+			}
+		};
+		SimpleTaskQueueProgressFragment.runTaskWithProgress(context, R.string.connecting_to_web_site, task);
 	}
 	
 	/**
-	 * Display a dialog warning the user that goodreads authentication is required; gives them
+	 * Ask the user which books to send, then send them.
+	 * 
+	 * Optionally, display a dialog warning the user that goodreads authentication is required; gives them
 	 * the options: 'request now', 'more info' or 'cancel'.
 	 */
-	public static void sendBooksToGoodreads(final Context context) {
+	public static void sendBooksToGoodreads(final BookCatalogueActivity ctx) {
 
-		if (!GoodreadsUtils.checkCanSendToGoodreads(context))
-			return;
-
-		// Get the title		
-		final AlertDialog alertDialog = new AlertDialog.Builder(context).setTitle(R.string.send_books_to_goodreads).setMessage(R.string.send_books_to_goodreads_blurb).create();
-
-		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getResources().getString(R.string.send_updated), new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				alertDialog.dismiss();
-				GoodreadsUtils.sendToGoodreads(context, true);
+		FragmentTaskAbstract task = new FragmentTaskAbstract() {
+			/**
+			 * Just check we can send. If so, onFinish() will be called.
+			 */
+			@Override
+			public void run(SimpleTaskQueueProgressFragment fragment, SimpleTaskContext taskContext) {
+				int msg = GoodreadsUtils.checkCanSendToGoodreads();
+				setState(msg);
+				if (msg != 0) {
+					fragment.showToast(msg);
+				}
 			}
-		});
+
+			/**
+			 * Only need onFinish() if there was no error message
+			 */
+			@Override
+			public boolean requiresOnFinish(SimpleTaskQueueProgressFragment fragment) {
+				return (getState() == 0);
+			}
+
+			@Override
+			public void onFinish(SimpleTaskQueueProgressFragment fragment) {
+				if (getState() == 0) {
+					final FragmentActivity context = fragment.getActivity();
+					if (context != null) {
+						// Get the title		
+						final AlertDialog alertDialog = new AlertDialog.Builder(context).setTitle(R.string.send_books_to_goodreads).setMessage(R.string.send_books_to_goodreads_blurb).create();
 		
-		alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, context.getResources().getString(R.string.send_all), new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				alertDialog.dismiss();
-				GoodreadsUtils.sendToGoodreads(context, false);
+						alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
+						alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getResources().getString(R.string.send_updated), new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								alertDialog.dismiss();
+								GoodreadsUtils.sendToGoodreads(context, true);
+							}
+						});
+						
+						alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, context.getResources().getString(R.string.send_all), new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								alertDialog.dismiss();
+								GoodreadsUtils.sendToGoodreads(context, false);
+							}
+						});
+		
+						alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								alertDialog.dismiss();
+							}
+						}); 
+		
+						alertDialog.show();						
+					}
+				}
 			}
-		});
+		};
+		// Run the task
+		SimpleTaskQueueProgressFragment.runTaskWithProgress(ctx, R.string.connecting_to_web_site, task);
 
-		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				alertDialog.dismiss();
-			}
-		}); 
-
-		alertDialog.show();		
 	}
 
 }

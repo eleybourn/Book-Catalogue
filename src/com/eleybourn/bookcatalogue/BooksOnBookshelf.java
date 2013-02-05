@@ -72,6 +72,7 @@ import com.eleybourn.bookcatalogue.booklist.BooklistPseudoCursor;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
 import com.eleybourn.bookcatalogue.booklist.BooklistStylePropertiesActivity;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyles;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueListActivity;
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
@@ -90,7 +91,7 @@ import com.eleybourn.bookcatalogue.utils.ViewTagger;
  * 
  * @author Philip Warner
  */
-public class BooksOnBookshelf extends BookCatalogueListActivity implements BooklistChangeListener {
+public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistChangeListener {
 	/** Counter for com.eleybourn.bookcatalogue.debug purposes */
 	private static Integer mInstanceCount = 0;
 
@@ -223,6 +224,13 @@ public class BooksOnBookshelf extends BookCatalogueListActivity implements Bookl
 		} finally {
 			Tracker.exitOnCreate(this);
 		}
+	}
+
+	/**
+	 * Support routine now that this activity is no longer a ListActivity
+	 */
+	private ListView getListView() {
+		return (ListView)findViewById(android.R.id.list);
 	}
 
 	/**

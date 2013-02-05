@@ -163,6 +163,7 @@ public class GoodreadsManager {
 	public static void forgetCredentials() {
 		m_accessToken = "";
 		m_accessSecret = "";
+		m_hasValidCredentials = false;
 		// Get the stored token values from prefs, and setup the consumer if present
 		BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
 		prefs.setString("GoodReads.AccessToken.Token", "");

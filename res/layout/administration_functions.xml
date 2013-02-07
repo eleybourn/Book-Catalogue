@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="fill_parent"
     android:background="@drawable/bc_background_gradient_dim" >
 
     <LinearLayout
@@ -57,67 +57,23 @@
             android:drawableLeft="@drawable/ic_menu_manage"
             android:text="@string/other_preferences" />
 
-        <!-- MANAGEMENT Header -->
-
-        <com.eleybourn.bookcatalogue.widgets.CapitalizedTextView
-            style="@style/prefs_header"
-            android:text="@string/management" />
-
-        <!-- FIELDS -->
-
-        <TextView
-            android:id="@+id/reset_hints_label"
-            style="@style/prefs_item"
-            android:drawableLeft="@drawable/ic_menu_agenda"
-            android:text="@string/reset_hints" />
-
-        <!-- TASKs -->
-
-        <TextView
-            android:id="@+id/background_tasks_label"
-            style="@style/prefs_item"
-            android:drawableLeft="@drawable/ic_menu_recent_history"
-            android:text="@string/background_tasks" />
-
-        <!-- ERASE COVER CACHE -->
-
-        <TextView
-            android:id="@+id/erase_cover_cache_label"
-            style="@style/prefs_item"
-            android:drawableLeft="@drawable/ic_menu_close_clear_cancel"
-            android:text="@string/erase_cover_cache" />
-
-        <!-- TASK ERRORS -->
-        <!-- <TextView -->
-        <!-- android:id="@+id/task_errors_label" -->
-        <!-- style="@style/prefs_item" -->
-        <!-- android:drawableLeft="@android:drawable/ic_menu_gallery" -->
-        <!-- android:text="@string/task_errors" /> -->
-
-
-        <!-- CREDENTIALS HEADING -->
-
-        <com.eleybourn.bookcatalogue.widgets.CapitalizedTextView
-            style="@style/prefs_header"
-            android:text="@string/credentials" />
-
-        <!-- GOODREADS CREDENTIALS -->
-
-        <TextView
-            android:id="@+id/goodreads_auth"
-            style="@style/prefs_item"
-            android:drawableLeft="@drawable/ic_menu_gr_logo"
-            android:text="@string/goodreads" />
-
-        <TextView
-            android:id="@+id/librarything_auth"
-            style="@style/prefs_item"
-            android:drawableLeft="@drawable/ic_menu_gallery"
-            android:text="@string/library_thing" />
+        <!-- DATA IMPORT/EXPORT -->
 
         <com.eleybourn.bookcatalogue.widgets.CapitalizedTextView
             style="@style/prefs_header"
             android:text="@string/data_import_export" />
+
+        <TextView
+            android:id="@+id/backup_catalogue_label"
+            style="@style/prefs_item"
+            android:drawableLeft="@drawable/ic_menu_save"
+            android:text="@string/backup_catalogue" />
+
+        <TextView
+            android:id="@+id/restore_catalogue_label"
+            style="@style/prefs_item"
+            android:drawableLeft="@drawable/ic_menu_save"
+            android:text="@string/restore_catalogue" />
 
         <TextView
             android:id="@+id/export_label"
@@ -131,13 +87,7 @@
             android:drawableLeft="@drawable/ic_menu_upload"
             android:text="@string/import_data" />
 
-        <!-- DEBUG ONLY! -->
-
-        <TextView
-            android:id="@+id/backup_label"
-            style="@style/prefs_item"
-            android:drawableLeft="@drawable/ic_menu_archive"
-            android:text="@string/backup_database" />
+        <!-- UPDATE FIELDS -->
 
         <TextView
             android:id="@+id/thumb_label"
@@ -162,6 +112,64 @@
             style="@style/prefs_item"
             android:drawableLeft="@drawable/ic_menu_archive"
             android:text="@string/send_books_to_goodreads" />
+
+        <!-- CREDENTIALS HEADING -->
+
+        <com.eleybourn.bookcatalogue.widgets.CapitalizedTextView
+            style="@style/prefs_header"
+            android:text="@string/credentials" />
+
+        <!-- GOODREADS CREDENTIALS -->
+
+        <TextView
+            android:id="@+id/goodreads_auth"
+            style="@style/prefs_item"
+            android:drawableLeft="@drawable/ic_menu_gr_logo"
+            android:text="@string/goodreads" />
+
+        <TextView
+            android:id="@+id/librarything_auth"
+            style="@style/prefs_item"
+            android:drawableLeft="@drawable/ic_menu_gallery"
+            android:text="@string/library_thing" />
+
+        <!-- ADVANCED OPTIONS Header -->
+
+        <com.eleybourn.bookcatalogue.widgets.CapitalizedTextView
+            style="@style/prefs_header"
+            android:text="@string/advanced_options" />
+
+        <!-- BACKGROUND TASKS -->
+
+        <TextView
+            android:id="@+id/background_tasks_label"
+            style="@style/prefs_item"
+            android:drawableLeft="@drawable/ic_menu_recent_history"
+            android:text="@string/background_tasks" />
+
+        <!-- RESET HINTS -->
+
+        <TextView
+            android:id="@+id/reset_hints_label"
+            style="@style/prefs_item"
+            android:drawableLeft="@drawable/ic_menu_agenda"
+            android:text="@string/reset_hints" />
+
+        <!-- ERASE COVER CACHE -->
+
+        <TextView
+            android:id="@+id/erase_cover_cache_label"
+            style="@style/prefs_item"
+            android:drawableLeft="@drawable/ic_menu_close_clear_cancel"
+            android:text="@string/erase_cover_cache" />
+
+        <!-- BACKUP DATABASE (DEBUG ONLY!) -->
+
+        <TextView
+            android:id="@+id/backup_label"
+            style="@style/prefs_item"
+            android:drawableLeft="@drawable/ic_menu_archive"
+            android:text="@string/backup_database" />
     </LinearLayout>
 
 </ScrollView>

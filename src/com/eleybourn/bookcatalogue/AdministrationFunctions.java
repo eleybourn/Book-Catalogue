@@ -36,6 +36,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 
+import com.eleybourn.bookcatalogue.backup.BackupManager;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyles;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogFileItem;
@@ -62,7 +63,6 @@ import com.eleybourn.bookcatalogue.utils.Utils;
 public class AdministrationFunctions extends ActivityWithTasks {
 	private static final int ACTIVITY_BOOKSHELF=1;
 	private static final int ACTIVITY_FIELD_VISIBILITY=2;
-	private static final int ACTIVITY_UPDATE_FROM_INTERNET=3;
 	private CatalogueDBAdapter mDbHelper;
 	private boolean finish_after = false;
 	private boolean mExportOnStartup = false;
@@ -173,32 +173,6 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			}
 		});
 
-		// Debug ONLY!
-		/* Backup Link */
-		View backup = findViewById(R.id.backup_label);
-		// Make line flash when clicked.
-		backup.setBackgroundResource(android.R.drawable.list_selector_background);
-		backup.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				mDbHelper.backupDbFile();
-				Toast.makeText(AdministrationFunctions.this, R.string.backup_success, Toast.LENGTH_LONG).show();
-				return;
-			}
-		});
-
-		/* Export Link */
-		View thumb = findViewById(R.id.thumb_label);
-		// Make line flash when clicked.
-		thumb.setBackgroundResource(android.R.drawable.list_selector_background);
-		thumb.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				updateThumbnails();
-				return;
-			}
-		});
-
 		/* Goodreads SYNC Link */
 		{
 			View v = findViewById(R.id.sync_with_goodreads_label);
@@ -240,32 +214,6 @@ public class AdministrationFunctions extends ActivityWithTasks {
 				}
 			});
 		}
-
-		{
-			/* Tasks setup Link */
-			View v = findViewById(R.id.background_tasks_label);
-			// Make line flash when clicked.
-			v.setBackgroundResource(android.R.drawable.list_selector_background);
-			v.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					showBackgroundTasks();
-					return;
-				}
-			});
-		}
-
-		///* Task errors setup Link */
-		//View errTest = findViewById(R.id.task_errors_label);
-		//// Make line flash when clicked.
-		//errTest.setBackgroundResource(android.R.drawable.list_selector_background);
-		//errTest.setOnClickListener(new OnClickListener() {
-		//	@Override
-		//	public void onClick(View v) {
-		//		showEvents();
-		//		return;
-		//	}
-		//});
 
 		/* LibraryThing auth Link */
 		View ltAuth = findViewById(R.id.librarything_auth);
@@ -318,19 +266,6 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			}
 		});
 		
-		/* Reset Hints Link */
-		View hints = findViewById(R.id.reset_hints_label);
-		// Make line flash when clicked.
-		hints.setBackgroundResource(android.R.drawable.list_selector_background);
-		hints.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				HintManager.resetHints();
-				Toast.makeText(AdministrationFunctions.this, R.string.hints_have_been_reset, Toast.LENGTH_LONG).show();
-				return;
-			}
-		});
-
 		// Edit Book list styles
 		{
 			View v = findViewById(R.id.edit_styles_label);
@@ -344,6 +279,66 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			});
 		}
 		
+		{
+			/* Update Fields Link */
+			View thumb = findViewById(R.id.thumb_label);
+			// Make line flash when clicked.
+			thumb.setBackgroundResource(android.R.drawable.list_selector_background);
+			thumb.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					updateThumbnails();
+					return;
+				}
+			});
+		}
+
+		{
+			// Debug ONLY!
+			/* Backup Link */
+			View backup = findViewById(R.id.backup_label);
+			// Make line flash when clicked.
+			backup.setBackgroundResource(android.R.drawable.list_selector_background);
+			backup.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					mDbHelper.backupDbFile();
+					Toast.makeText(AdministrationFunctions.this, R.string.backup_success, Toast.LENGTH_LONG).show();
+					return;
+				}
+			});
+
+		}
+
+		{
+			/* Tasks setup Link */
+			View v = findViewById(R.id.background_tasks_label);
+			// Make line flash when clicked.
+			v.setBackgroundResource(android.R.drawable.list_selector_background);
+			v.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					showBackgroundTasks();
+					return;
+				}
+			});
+		}
+
+		{
+			/* Reset Hints Link */
+			View hints = findViewById(R.id.reset_hints_label);
+			// Make line flash when clicked.
+			hints.setBackgroundResource(android.R.drawable.list_selector_background);
+			hints.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					HintManager.resetHints();
+					Toast.makeText(AdministrationFunctions.this, R.string.hints_have_been_reset, Toast.LENGTH_LONG).show();
+					return;
+				}
+			});
+		}
+
 		// Erase cover cache
 		{
 			View v = findViewById(R.id.erase_cover_cache_label);
@@ -354,7 +349,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 				public void onClick(View v) {
 					Utils utils = new Utils();
 					try {
-						utils.eraseCoverCache();					
+						utils.eraseCoverCache();
 					} finally {
 						utils.close();
 					}
@@ -362,15 +357,32 @@ public class AdministrationFunctions extends ActivityWithTasks {
 				}
 			});
 		}
-
-	}
-
-	/**
-	 * Start the activity that shows the basic details of background tasks.
-	 */
-	private void showBackgroundTasks() {
-		Intent i = new Intent(this, TaskListActivity.class);
-		startActivity(i);
+		{
+			/* Backup Catalogue Link */
+			View v = findViewById(R.id.backup_catalogue_label);
+			// Make line flash when clicked.
+			v.setBackgroundResource(android.R.drawable.list_selector_background);
+			v.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					backupCatalogue();
+					return;
+				}
+			});
+		}
+		{
+			/* Restore Catalogue Link */
+			View v = findViewById(R.id.restore_catalogue_label);
+			// Make line flash when clicked.
+			v.setBackgroundResource(android.R.drawable.list_selector_background);
+			v.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					restoreCatalogue();
+					return;
+				}
+			});
+		}
 	}
 
 	///**
@@ -397,16 +409,6 @@ public class AdministrationFunctions extends ActivityWithTasks {
 		startActivityForResult(i, ACTIVITY_FIELD_VISIBILITY);
 	}
 	
-	/**
-	 * Update all (non-existent) thumbnails
-	 * 
-	 * There is a current limitation that restricts the search to only books with an ISBN
-	 */
-	private void updateThumbnails() {
-		Intent i = new Intent(this, UpdateFromInternet.class);
-		startActivityForResult(i, ACTIVITY_UPDATE_FROM_INTERNET);
-	}
-
 
 	/**
 	 * Export all data to a CSV file
@@ -471,7 +473,6 @@ public class AdministrationFunctions extends ActivityWithTasks {
 		switch(requestCode) {
 		case ACTIVITY_BOOKSHELF:
 		case ACTIVITY_FIELD_VISIBILITY:
-		case ACTIVITY_UPDATE_FROM_INTERNET:
 			//do nothing (yet)
 			break;
 		}
@@ -568,5 +569,31 @@ public class AdministrationFunctions extends ActivityWithTasks {
 				Logger.logError(e);
 			}
 		}
+	}
+
+	/**
+	 * Update all (non-existent) thumbnails
+	 * 
+	 * There is a current limitation that restricts the search to only books
+	 * with an ISBN
+	 */
+	private void updateThumbnails() {
+		Intent i = new Intent(this, UpdateFromInternet.class);
+		startActivity(i);
+	}
+
+	/**
+	 * Start the activity that shows the basic details of background tasks.
+	 */
+	private void showBackgroundTasks() {
+		Intent i = new Intent(this, TaskListActivity.class);
+		startActivity(i);
+	}
+
+	private void backupCatalogue() {
+		BackupManager.backupCatalogue(this);
+	}
+	private void restoreCatalogue() {
+		BackupManager.restoreCatalogue(this);
 	}
 }

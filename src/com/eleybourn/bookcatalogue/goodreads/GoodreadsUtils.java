@@ -113,7 +113,7 @@ public class GoodreadsUtils {
 			}
 
 		};
-		SimpleTaskQueueProgressFragment.runTaskWithProgress(context, R.string.connecting_to_web_site, task);
+		SimpleTaskQueueProgressFragment.runTaskWithProgress(context, R.string.connecting_to_web_site, task, true);
 	}
 
 	/**
@@ -169,7 +169,7 @@ public class GoodreadsUtils {
 				fragment.showToast(msg);
 			}
 		};
-		SimpleTaskQueueProgressFragment.runTaskWithProgress(context, R.string.connecting_to_web_site, task);
+		SimpleTaskQueueProgressFragment.runTaskWithProgress(context, R.string.connecting_to_web_site, task, true);
 	}
 	
 	/**
@@ -236,7 +236,7 @@ public class GoodreadsUtils {
 			}
 		};
 		// Run the task
-		SimpleTaskQueueProgressFragment.runTaskWithProgress(ctx, R.string.connecting_to_web_site, task);
+		SimpleTaskQueueProgressFragment.runTaskWithProgress(ctx, R.string.connecting_to_web_site, task, true);
 
 	}
 

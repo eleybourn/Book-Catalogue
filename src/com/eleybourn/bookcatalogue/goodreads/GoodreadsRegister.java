@@ -150,7 +150,7 @@ public class GoodreadsRegister extends BookCatalogueActivity {
 		};
 
 		// Get the fragment to display task progress
-		SimpleTaskQueueProgressFragment.runTaskWithProgress(activity, R.string.connecting_to_web_site, task);
+		SimpleTaskQueueProgressFragment.runTaskWithProgress(activity, R.string.connecting_to_web_site, task, true);
 	}
 
 	/**

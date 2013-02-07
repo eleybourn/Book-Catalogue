@@ -736,4 +736,15 @@ and you can edit the book via the options menu using the menu button or overflow
 
 <string name="connecting_to_web_site">Connecting to web site&#8230;</string>
 
+<string name="backup_catalogue">Backup Catalogue</string>
+<string name="restore_catalogue">Restore Catalogue</string>
+<!--  Hint displayed when aCatalogue Backup is done -->
+<string name="catalogue_backup_complete">A %2$s file called %1$s was created in the \"bookCatalogue\" directory on your 
+    SD card. You should manually copy it elsewhere to protect the data.</string>
+
+<string name="covers_progress">%1$s covers processed (%2$s missing)</string>
+<string name="advanced_options">Advanced Options</string>
+<string name="backing_up_ellipsis">Backing up&#8230;</string>
+<string name="restoring_ellipsis">Restoring&#8230;</string>
+
 </resources>

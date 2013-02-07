@@ -151,6 +151,7 @@ public class CatalogueDBAdapter {
 	public static final String KEY_READ_START = "read_start";
 	public static final String KEY_READ_END = "read_end";
 	public static final String KEY_FORMAT = "format";
+	public static final String KEY_LANGUAGE = "language";
 	public static final String OLD_KEY_AUDIOBOOK = "audiobook";
 	public static final String KEY_SIGNED = "signed";
 	public static final String KEY_DESCRIPTION = "description";
@@ -5317,13 +5318,12 @@ public class CatalogueDBAdapter {
 	private SynchronizedStatement mUpdateBooklistStyleStmt = null;
 	public void updateBooklistStyle(BooklistStyle s) {
 		if (mUpdateBooklistStyleStmt == null) {
-			final String sql = TBL_BOOK_LIST_STYLES.getUpdate(DOM_STYLE) 
-						+ " Where " +  DOM_ID + " = ?";
+			final String sql = TBL_BOOK_LIST_STYLES.getInsertOrReplaceValues(DOM_ID, DOM_STYLE);
 			mUpdateBooklistStyleStmt = mStatements.add("mUpdateBooklistStyleStmt", sql);
 		}
 		byte[] blob = SerializationUtils.serializeObject(s);
-		mUpdateBooklistStyleStmt.bindBlob(1, blob);
-		mUpdateBooklistStyleStmt.bindLong(2, s.getRowId());
+		mUpdateBooklistStyleStmt.bindLong(1, s.getRowId());
+		mUpdateBooklistStyleStmt.bindBlob(2, blob);
 		mUpdateBooklistStyleStmt.execute();
 	}
 
@@ -5724,6 +5724,22 @@ public class CatalogueDBAdapter {
 	 */
 	public boolean isNewInstall() {
 		return mDbHelper.isNewInstall();
+	}
+	
+	public Cursor getUuidList() {
+		String sql = "select " + DatabaseDefinitions.DOM_BOOK_UUID + " as " + DatabaseDefinitions.DOM_BOOK_UUID + " From " + DatabaseDefinitions.TBL_BOOKS.ref();
+		return mDb.rawQuery(sql);
+	}
+	
+	public long getBookCount() {
+		String sql = "select Count(*) From " + DatabaseDefinitions.TBL_BOOKS.ref();
+		Cursor c = mDb.rawQuery(sql);
+		try {
+			c.moveToFirst();
+			return c.getLong(0);
+		} finally {
+			c.close();
+		}
 	}
 }
 

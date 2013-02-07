@@ -1,11 +1,32 @@
+/*
+ * @copyright 2012 Philip Warner
+ * @license GNU General Public License
+ * 
+ * This file is part of Book Catalogue.
+ *
+ * Book Catalogue is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Book Catalogue is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.eleybourn.bookcatalogue.utils;
 
 import java.util.ArrayList;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -31,6 +52,25 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	/** Flag indicating dialog was cancelled */
 	private boolean mWasCancelled = false;
 	
+	/** Max value of progress (for determinate progress) */
+	private String mMessage = null;
+	/** Max value of progress (for determinate progress) */
+	private int mMax;
+	/** Current value of progress (for determinate progress) */
+	private int mProgress = 0;
+
+	/** Flag indicating underlying field has changed so that progress dialog will be updated */
+	private boolean mMessageChanged = false;
+	/** Flag indicating underlying field has changed so that progress dialog will be updated */
+	private boolean mProgressChanged = false;
+	/** Flag indicating underlying field has changed so that progress dialog will be updated */
+	private boolean mMaxChanged = false;
+	/** Flag indicating underlying field has changed so that progress dialog will be updated */
+	private boolean mNumberFormatChanged = false;
+
+	/** Format of number part of dialog */
+	private String mNumberFormat = null;
+
 	/**
 	 * Convenience routine to show a dialog fragment and start the task
 	 * 
@@ -38,10 +78,11 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	 * @param message	Message to display
 	 * @param task		Task to run
 	 */
-	public static void runTaskWithProgress(final FragmentActivity context, int message, FragmentTask task) {
-		SimpleTaskQueueProgressFragment frag = SimpleTaskQueueProgressFragment.newInstance(message);
+	public static SimpleTaskQueueProgressFragment runTaskWithProgress(final FragmentActivity context, int message, FragmentTask task, boolean isIndeterminate) {
+		SimpleTaskQueueProgressFragment frag = SimpleTaskQueueProgressFragment.newInstance(message, isIndeterminate);
 		frag.enqueue(task);
-		frag.show(context.getSupportFragmentManager(), (String)null);		
+		frag.show(context.getSupportFragmentManager(), (String)null);
+		return frag;
 	}
 
 	/**
@@ -152,6 +193,11 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 		}
 	}
 
+	/**
+	 * Post a runnable to the UI thread
+	 * 
+	 * @param r
+	 */
 	public void post(Runnable r) {
 		mHandler.post(r);
 	}
@@ -165,10 +211,11 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 		mQueue.enqueue(new FragmentTaskWrapper(task));
 	}
 
-	public static SimpleTaskQueueProgressFragment newInstance(int title) {
+	public static SimpleTaskQueueProgressFragment newInstance(int title, boolean isIndeterminate) {
 		SimpleTaskQueueProgressFragment frag = new SimpleTaskQueueProgressFragment();
         Bundle args = new Bundle();
         args.putInt("title", title);
+        args.putBoolean("isIndeterminate", isIndeterminate);
         frag.setArguments(args);
         return frag;
 	}
@@ -209,7 +256,23 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 		ProgressDialog dialog = new ProgressDialog(getActivity());
 		dialog.setCancelable(true);
 		dialog.setMessage(getActivity().getString(getArguments().getInt("title")));
-		dialog.setIndeterminate(true);
+		final boolean isIndet = getArguments().getBoolean("isIndeterminate");
+		dialog.setIndeterminate(isIndet);
+		if (isIndet) {
+			dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		} else {
+			dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);			
+		}
+
+		// We can't use "this.requestUpdateProgress()" because getDialog() will still return null
+		if (!isIndet) {
+			dialog.setMax(mMax);
+			dialog.setProgress(mProgress);
+			if (mMessage != null)
+				dialog.setMessage(mMessage);
+			setDialogNumberFormat(dialog);
+		}
+		
 		return dialog;
 	}
 
@@ -219,10 +282,6 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 		mWasCancelled = true;
 		mQueue.finish();		
 	}
-	//@Override
-	//public void onDismiss(DialogInterface dialog) {
-	//	//((OnSyncTaskCompleteListener)getActivity()).onSyncTaskComplete(mTaskId, true, mWasCancelled);
-	//}
 
 	@Override
     public void onResume()
@@ -233,6 +292,9 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 			dismiss();
     }
 
+	/**
+	 * Dismiss dialog if all tasks finished
+	 */
 	private SimpleTaskQueue.OnTaskFinishListener mTaskFinishListener = new SimpleTaskQueue.OnTaskFinishListener() {
 
 		@Override
@@ -246,5 +308,151 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	/** Accessor */
 	public boolean isCancelled() {
 		return mWasCancelled;
+	}
+
+	/** Flag indicating a Refresher has been posted but not run yet */
+	private boolean mRefresherQueued = false;
+	/**
+	 * Runnable object to refresh the dialog
+	 */
+	private Runnable mRefresher = new Runnable() {
+		@Override
+		public void run() {
+			synchronized(mRefresher) {
+				mRefresherQueued = false;
+				updateProgress();				
+			}
+		}
+	};
+
+	/**
+	 * Refresh the dialog, or post a refresh to the UI thread
+	 */
+	private void requestUpdateProgress() {
+		if (Thread.currentThread() == mHandler.getLooper().getThread()) {
+			updateProgress();
+		} else {
+			synchronized(mRefresher) {
+				if (!mRefresherQueued) {
+					mHandler.post(mRefresher);
+					mRefresherQueued = true;					
+				}
+			}
+		}		
+	}
+
+	/**
+	 * Convenience method to step the progress by 1.
+	 * 
+	 * @param message
+	 */
+	public void step(String message) {
+		step(message, 1);
+	}
+	
+	/**
+	 * Convenience method to step the progress by the passed delta
+	 * 
+	 * @param message
+	 */
+	public void step(String message, int delta) {
+		synchronized(this) {
+			if (message != null) {
+				mMessage = message;
+				mMessageChanged = true;
+			}
+			mProgress += delta;			
+			mProgressChanged = true;
+		}	
+		requestUpdateProgress();
+	}
+
+	/**
+	 * Direct update of message and progress value
+	 * 
+	 * @param message
+	 * @param progress
+	 */
+	public void onProgress(String message, int progress) {
+
+		synchronized(this) {
+			if (message != null) {
+				mMessage = message;
+				mMessageChanged = true;
+			}
+			mProgress = progress;			
+			mProgressChanged = true;
+		}
+
+		requestUpdateProgress();
+	}
+
+	/**
+	 * Method, run in the UI thread, that updates the various dialog fields.
+	 */
+	private void updateProgress() {
+		ProgressDialog d = (ProgressDialog)getDialog();
+		if (d != null) {
+			synchronized(this) {
+				if (mMaxChanged) {
+					d.setMax(mMax);
+					mMaxChanged = false;
+				}
+				if (mNumberFormatChanged) {
+					if (Build.VERSION.SDK_INT >= 11) {
+						// Called in a separate function so we can set API attributes
+						setDialogNumberFormat(d);
+					}
+					mNumberFormatChanged = false;
+				}
+				if (mMessageChanged) {
+					d.setMessage(mMessage);
+					mMessageChanged = false;
+				}				
+
+				if (mProgressChanged) {
+					d.setProgress(mProgress);
+					mProgressChanged = false;
+				}
+				
+			}
+		}		
+	}
+
+	/**
+	 * Set the number format on API >= 11
+	 * @param d
+	 */
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	private void setDialogNumberFormat(ProgressDialog d) {
+		if (Build.VERSION.SDK_INT >= 11) {
+			d.setProgressNumberFormat(mNumberFormat);
+		}		
+	}
+
+	/**
+	 * Set the progress max value
+	 * 
+	 * @param max
+	 */
+	public void setMax(int max) {
+		mMax = max;
+		mMaxChanged = true;
+		requestUpdateProgress();
+	}
+
+	/**
+	 * Set the progress number format, if the API will support it
+	 * 
+	 * @param max
+	 */
+	public void setNumberFormat(String format) {
+		if (Build.VERSION.SDK_INT >= 11) {
+			synchronized(this) {
+				mNumberFormat = format;
+				mNumberFormatChanged = true;			
+			}
+			requestUpdateProgress();
+		}
 	}
 }

@@ -70,11 +70,11 @@ public class XmlFilter {
 	 *
 	 */
 	public static class ElementContext {
-		String uri;
-		String localName;
-		String name;
-		Attributes attributes;
-		String preText;
+		public String uri;
+		public String localName;
+		public String name;
+		public Attributes attributes;
+		public String preText;
 		public String body;
 		public XmlFilter filter;
 		public ElementContext(String uri, String localName, String name, Attributes attributes, String preText) {
@@ -84,7 +84,7 @@ public class XmlFilter {
 			this.attributes = attributes;
 			this.preText = preText;
 		}
-		Object userArg;
+		public Object userArg;
 	}
 
 	/**

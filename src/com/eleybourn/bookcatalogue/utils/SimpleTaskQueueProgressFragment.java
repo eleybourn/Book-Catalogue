@@ -255,6 +255,8 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 
 		ProgressDialog dialog = new ProgressDialog(getActivity());
 		dialog.setCancelable(true);
+		dialog.setCanceledOnTouchOutside(false);
+
 		dialog.setMessage(getActivity().getString(getArguments().getInt("title")));
 		final boolean isIndet = getArguments().getBoolean("isIndeterminate");
 		dialog.setIndeterminate(isIndet);

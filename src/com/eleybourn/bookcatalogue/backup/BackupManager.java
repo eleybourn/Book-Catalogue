@@ -22,12 +22,15 @@ package com.eleybourn.bookcatalogue.backup;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Date;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.AdministrationFunctions;
+import com.eleybourn.bookcatalogue.BookCatalogueApp;
+import com.eleybourn.bookcatalogue.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.backup.BackupReader.BackupReaderListener;
 import com.eleybourn.bookcatalogue.backup.BackupWriter.BackupWriterListener;
@@ -92,9 +95,13 @@ public class BackupManager {
 		final File tempFile = new File(resultingFile.getAbsolutePath() + ".tmp");
 
 		FragmentTask task = new FragmentTaskAbstract() {
+			private boolean mBackupOk = false;
+			private String mBackupDate = Utils.toSqlDateTime(new Date());
+
 			@Override
 			public void run(final SimpleTaskQueueProgressFragment fragment, SimpleTaskContext taskContext) throws IOException {
 				BackupWriter wrt = null;
+
 				try {
 					System.out.println("Starting " + tempFile.getAbsolutePath());
 					TarBackupContainer bkp = new TarBackupContainer(tempFile);
@@ -124,6 +131,7 @@ public class BackupManager {
 						if (resultingFile.exists())
 							resultingFile.delete();
 						tempFile.renameTo(resultingFile);
+						mBackupOk = true;
 						System.out.println("Finished " + resultingFile.getAbsolutePath() + ", size = " + resultingFile.length());
 					}
 				} catch (Exception e) {
@@ -141,6 +149,12 @@ public class BackupManager {
 				if (exception != null) {
 					if (tempFile.exists())
 						tempFile.delete();
+				}
+				fragment.setSuccess(mBackupOk);
+				if (mBackupOk) {
+					BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
+					prefs.setString(BookCataloguePreferences.PREF_LAST_BACKUP_DATE, mBackupDate);
+					prefs.setString(BookCataloguePreferences.PREF_LAST_BACKUP_FILE, resultingFile.getAbsolutePath());
 				}
 			}
 

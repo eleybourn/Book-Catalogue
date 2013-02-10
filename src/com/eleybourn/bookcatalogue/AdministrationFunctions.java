@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import net.philipwarner.taskqueue.QueueManager;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -363,7 +364,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			v.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					backupCatalogue();
+					backupCatalogue(AdministrationFunctions.this);
 					return;
 				}
 			});
@@ -591,10 +592,10 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	/**
 	 * Start the archiving activity
 	 */
-	private void backupCatalogue() {
-		Intent i = new Intent(this, BackupChooser.class);
+	public static void backupCatalogue(Activity a) {
+		Intent i = new Intent(a, BackupChooser.class);
 		i.putExtra(BackupChooser.EXTRA_MODE, BackupChooser.EXTRA_MODE_SAVE_AS);
-		startActivity(i);
+		a.startActivity(i);
 	}
 	
 	/**

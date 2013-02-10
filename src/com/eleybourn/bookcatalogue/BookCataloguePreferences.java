@@ -26,6 +26,10 @@ public class BookCataloguePreferences {
 	public static final String PREF_CROP_FRAME_WHOLE_IMAGE = "App.CropFrameWholeImage";
 	/** Is book info opened in read-only mode. Default is false (opened in edit mode) */
 	public static final String PREF_OPEN_BOOK_READ_ONLY = "App.OpenBookReadOnly";
+	/** Last full backup date */
+	public static final String PREF_LAST_BACKUP_DATE = "Backup.LastDate";
+	/** Last full backup file path */
+	public static final String PREF_LAST_BACKUP_FILE = "Backup.LastFile";
 
 	/** Get startup activity preference */
 	public boolean getStartInMyBook() {

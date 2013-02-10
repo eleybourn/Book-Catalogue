@@ -26,6 +26,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import com.eleybourn.bookcatalogue.BookCatalogueApp;
+import com.eleybourn.bookcatalogue.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.backup.BackupManager;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueueProgressFragment;
@@ -70,7 +72,9 @@ public class BackupChooser extends FileChooser {
 	 * Create the fragment
 	 */
 	protected FileChooserFragment<?> getNewBrowserFragment() {
-		return BackupChooserFragment.newInstance(StorageUtils.getSharedStorage(), getDefaultFileName());
+		BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
+		String lastBackup = prefs.getString(BookCataloguePreferences.PREF_LAST_BACKUP_FILE, StorageUtils.getSharedStoragePath());
+		return BackupChooserFragment.newInstance(new File(lastBackup), getDefaultFileName());
 	}
 
 	/**

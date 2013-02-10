@@ -334,9 +334,10 @@ public class StartupActivity extends Activity {
 		}
 
 		if (mExportRequired) {
-			Intent i = new Intent(this, AdministrationFunctions.class);
-			i.putExtra(AdministrationFunctions.DOAUTO, "export");
-			startActivity(i);			
+			AdministrationFunctions.backupCatalogue(this);
+//			Intent i = new Intent(this, AdministrationFunctions.class);
+//			i.putExtra(AdministrationFunctions.DOAUTO, "export");
+//			startActivity(i);			
 		}
 
 		// We are done

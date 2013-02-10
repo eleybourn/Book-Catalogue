@@ -718,16 +718,6 @@ and you can edit the book via the options menu using the menu button or overflow
     	from your SD card to another location.
     	\n\nSee our FAQ (a web link is under \'Help\') for detailed instructions.</string>
 
-<string name="new_in_430"><![CDATA[
-	<p><b>New in 4.3.0</b>\n\n
-		* Action Bar support for usability and to work better on devices without menu buttons\n\n
-		* Updated interface\n\n
-		* Internal changes in anticipation of an improved tablet interface\n\n
-		* Read-only mode is now default when clicking on a book
-		* Bug fixes\n\n
-		</p>
-		]]></string>
-
 <string name="forget_credentials">Forget Credentials</string>
 <string name="goodreads_auth_blurb_part4">It looks like you have already authorized this app. If you would like to
     delete the credentials from this phone, then you can do so by pressing the button below. But it is also
@@ -764,5 +754,21 @@ and you can edit the book via the options menu using the menu button or overflow
 
 <!-- Displayed when a file/save dialog results in selecting a directory file -->
 <string name="please_select_a_non_directory">Please select a file that is not a directory</string>
+
+<!-- This is pretty close to the expected feature list! It is a merge of 424 and 430... -->
+<string name="new_in_500"><![CDATA[
+	<p><b>New in 5.0.0</b>\n\n
+		* A non-editable view of book details, with \'fling\' support! (See \"Other Preferences\") (Nick Silin)\n\n
+		* Archiving (Backup & Import) of entire catalogue, including books, covers, preferences and styles\n\n
+		* Updated interface with Action Bar support for usability and to work better on devices without menu buttons\n\n
+		* Support for pic2shop scanner (better for fixed focus, low light and in front-facing cameras)\n\n
+		* Check internet connection earlier when trying to scan books\n\n
+		* More German translation updates (Robert Wetzlmayr)\n\n
+		* More French translation updates (Imkal & Djiko)\n\n
+		* More Russian translation updates (Nick Silin)\n\n
+		* Internal changes in anticipation of an improved tablet interface\n\n
+		* Bug fixes\n\n
+		</p>
+		]]></string>
 
 </resources>

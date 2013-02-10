@@ -391,10 +391,7 @@ public class StartupActivity extends Activity {
 		}
 
 		@Override
-		public void onFinish() {}
-
-		@Override
-		public boolean requiresOnFinish() { return false; }
+		public void onFinish(Exception e) {}
 
 	}
 
@@ -421,10 +418,8 @@ public class StartupActivity extends Activity {
 		}
 
 		@Override
-		public void onFinish() {}
+		public void onFinish(Exception e) {}
 
-		@Override
-		public boolean requiresOnFinish() { return false; }
 	}
 	
 	public static boolean hasBeenCalled() {

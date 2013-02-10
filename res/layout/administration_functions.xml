@@ -67,25 +67,25 @@
             android:id="@+id/backup_catalogue_label"
             style="@style/prefs_item"
             android:drawableLeft="@drawable/ic_menu_save"
-            android:text="@string/backup_catalogue" />
+            android:text="@string/backup_to_archive" />
 
         <TextView
             android:id="@+id/restore_catalogue_label"
             style="@style/prefs_item"
-            android:drawableLeft="@drawable/ic_menu_save"
-            android:text="@string/restore_catalogue" />
+            android:drawableLeft="@drawable/ic_menu_upload"
+            android:text="@string/import_from_archive" />
 
         <TextView
             android:id="@+id/export_label"
             style="@style/prefs_item"
             android:drawableLeft="@drawable/ic_menu_save"
-            android:text="@string/export_data" />
+            android:text="@string/export_to_csv" />
 
         <TextView
             android:id="@+id/import_label"
             style="@style/prefs_item"
             android:drawableLeft="@drawable/ic_menu_upload"
-            android:text="@string/import_data" />
+            android:text="@string/import_from_csv" />
 
         <!-- UPDATE FIELDS -->
 

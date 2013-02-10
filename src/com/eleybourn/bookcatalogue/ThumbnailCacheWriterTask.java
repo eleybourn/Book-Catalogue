@@ -117,13 +117,7 @@ public class ThumbnailCacheWriterTask implements SimpleTask {
 	}
 
 	@Override
-	public void onFinish() {
-	}
-
-	@Override
-	public boolean requiresOnFinish() {
-		// We never need anything in UI thread.
-		return false;
+	public void onFinish(Exception e) {
 	}
 
 }

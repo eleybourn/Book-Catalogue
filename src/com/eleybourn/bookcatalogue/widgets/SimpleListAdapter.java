@@ -164,9 +164,9 @@ public abstract class SimpleListAdapter<T> extends ArrayAdapter<T> {
         	// Giving the whole row an onClickListener seems to interfere
         	// with drag/drop.
         	View details = v.findViewById(R.id.row_details);
-//        	if (details == null) {
-//        		details = v.findViewById(R.id.row);
-//        	}
+        	if (details == null) {
+        		details = v.findViewById(R.id.row);
+        	}
         	if (details != null) {
                 details.setOnClickListener(mRowClickListener);
                 details.setFocusable(false);

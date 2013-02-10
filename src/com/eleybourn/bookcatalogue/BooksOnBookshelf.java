@@ -430,7 +430,7 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 		}
 
 		@Override
-		public void onFinish() {
+		public void onFinish(Exception e) {
 			// If activity dead, just do a local cleanup and exit.
 			if (mIsDead) {
 				mTempList.close();
@@ -448,11 +448,6 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 			mTempList = null;
 		}
 
-		@Override
-		public boolean requiresOnFinish() {
-			return true;
-		}
-		
 	}
 	
 	/**

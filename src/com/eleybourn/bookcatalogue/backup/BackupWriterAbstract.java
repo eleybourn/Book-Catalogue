@@ -68,11 +68,17 @@ public abstract class BackupWriterAbstract implements BackupWriter {
 	public void backup(BackupWriterListener listener) throws IOException {
 		listener.setMax((int) (mDbHelper.getBookCount() * 2 + 1));
 
-		writeInfo(listener);
-		writeBooks(listener);
-		writeCovers(listener);
-		writePreferences(listener);
-		writeStyles(listener);
+		// Process each component of the Archive, unless we are cancelled, as in Nikita
+		if (!listener.isCancelled())
+			writeInfo(listener);
+		if (!listener.isCancelled())
+			writeBooks(listener);
+		if (!listener.isCancelled())
+			writeCovers(listener);
+		if (!listener.isCancelled())
+			writePreferences(listener);
+		if (!listener.isCancelled())
+			writeStyles(listener);
 
 		close();
 		System.out.println("Closed writer");
@@ -166,7 +172,7 @@ public abstract class BackupWriterAbstract implements BackupWriter {
 		Cursor c = mDbHelper.getUuidList();
 		try {
 			final int uuidCol = c.getColumnIndex(DatabaseDefinitions.DOM_BOOK_UUID.toString());
-			while(c.moveToNext()) {
+			while(c.moveToNext() && !listener.isCancelled()) {
 				File cover = CatalogueDBAdapter.fetchThumbnailByUuid(c.getString(uuidCol));
 				if (cover.exists()) {
 					putCoverFile(cover);

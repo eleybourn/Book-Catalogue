@@ -23,23 +23,22 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import net.philipwarner.taskqueue.QueueManager;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.widget.Toast;
 
-
-import com.eleybourn.bookcatalogue.BcQueueManager;
+import com.eleybourn.bookcatalogue.AdministrationFunctions;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.backup.BackupReader.BackupReaderListener;
 import com.eleybourn.bookcatalogue.backup.BackupWriter.BackupWriterListener;
 import com.eleybourn.bookcatalogue.backup.tar.TarBackupContainer;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
-import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
-import com.eleybourn.bookcatalogue.goodreads.ImportAllTask;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueueProgressFragment;
-import com.eleybourn.bookcatalogue.utils.StorageUtils;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTaskContext;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueueProgressFragment.FragmentTask;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueueProgressFragment.FragmentTaskAbstract;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Class for public static methods relating to backup/restore
@@ -72,23 +71,15 @@ public class BackupManager {
 	}
 
 	/**
-	 * Open/create a new backup
-	 * 
-	 * @param file			File to use (will overwrite)
-	 * 
-	 * @return				a new writer
-	 * 
-	 * @throws IOException
+	 * Esnure the file name extension is what we want
 	 */
-	public static BackupWriter writeBackup(File file) throws IOException {
-		//if (file.exists())
-		//	throw new java.io.FileNotFoundException("Attempt to open non-existent backup file");
-		
-		// We only support one backup format; so we use that. In future we would need to 
-		// explore the file to determine which format to use
-		TarBackupContainer bkp = new TarBackupContainer(file);
+	private static File cleanupFile(File requestedFile) {
+		if (!requestedFile.getName().toUpperCase().endsWith(".BCBK")) {
+			return new File(requestedFile.getAbsoluteFile() + ".bcbk");
+		} else {
+			return requestedFile;
+		}
 
-		return bkp.newWriter();
 	}
 
 	/**
@@ -96,15 +87,19 @@ public class BackupManager {
 	 * 
 	 * We use a FragmentTask so that long actions do not occur in the UI thread.
 	 */
-	public static void backupCatalogue(final BookCatalogueActivity context) {
+	public static File backupCatalogue(final BookCatalogueActivity context, final File requestedFile, int taskId) {
+		final File resultingFile = cleanupFile(requestedFile);
+		final File tempFile = new File(resultingFile.getAbsolutePath() + ".tmp");
 
 		FragmentTask task = new FragmentTaskAbstract() {
 			@Override
-			public void run(final SimpleTaskQueueProgressFragment fragment, SimpleTaskContext taskContext) {
+			public void run(final SimpleTaskQueueProgressFragment fragment, SimpleTaskContext taskContext) throws IOException {
+				BackupWriter wrt = null;
 				try {
-					File file = new File(StorageUtils.getSharedStoragePath() + "/bookCatalogue.bcbk");
-					System.out.println("Starting " + file.getAbsolutePath());
-					BackupWriter wrt = BackupManager.writeBackup(file);
+					System.out.println("Starting " + tempFile.getAbsolutePath());
+					TarBackupContainer bkp = new TarBackupContainer(tempFile);
+					wrt = bkp.newWriter();
+
 					wrt.backup(new BackupWriterListener() {
 						@Override
 						public void setMax(int max) {
@@ -120,15 +115,39 @@ public class BackupManager {
 						public boolean isCancelled() {
 							return fragment.isCancelled();
 						}});
-					System.out.println("Finished " + file.getAbsolutePath() + ", size = " + file.length());					
+
+					if (fragment.isCancelled()) {
+						System.out.println("Cancelled " + resultingFile.getAbsolutePath());
+						if (tempFile.exists())
+							tempFile.delete();
+					} else {
+						if (resultingFile.exists())
+							resultingFile.delete();
+						tempFile.renameTo(resultingFile);
+						System.out.println("Finished " + resultingFile.getAbsolutePath() + ", size = " + resultingFile.length());
+					}
 				} catch (Exception e) {
 					Logger.logError(e);
+					throw new RuntimeException("Error during backup", e);
+				} finally {
+					if (wrt != null)
+						wrt.close();
+				}
+			}
+
+			@Override
+			public void onFinish(SimpleTaskQueueProgressFragment fragment, Exception exception) {
+				super.onFinish(fragment, exception);
+				if (exception != null) {
+					if (tempFile.exists())
+						tempFile.delete();
 				}
 			}
 
 		};
-		SimpleTaskQueueProgressFragment frag = SimpleTaskQueueProgressFragment.runTaskWithProgress(context, R.string.backing_up_ellipsis, task, false);
+		SimpleTaskQueueProgressFragment frag = SimpleTaskQueueProgressFragment.runTaskWithProgress(context, R.string.backing_up_ellipsis, task, false, taskId);
 		frag.setNumberFormat(null);
+		return resultingFile;
 	}
 
 	/**
@@ -136,12 +155,12 @@ public class BackupManager {
 	 * 
 	 * We use a FragmentTask so that long actions do not occur in the UI thread.
 	 */
-	public static void restoreCatalogue(final BookCatalogueActivity context) {
+	public static void restoreCatalogue(final BookCatalogueActivity context, final File inputFile, int taskId) {
 
 		FragmentTask task = new FragmentTaskAbstract() {
 			@Override
 			public void run(final SimpleTaskQueueProgressFragment fragment, SimpleTaskContext taskContext) {
-				File file = new File(StorageUtils.getSharedStoragePath() + "/bookCatalogue.bcbk");
+				File file = inputFile; //new File(StorageUtils.getSharedStoragePath() + "/bookCatalogue.bcbk");
 				try {
 					System.out.println("Starting " + file.getAbsolutePath());
 					BackupReader rdr = BackupManager.readBackup(file);
@@ -162,11 +181,13 @@ public class BackupManager {
 						}});
 				} catch (Exception e) {
 					Logger.logError(e);
+					throw new RuntimeException("Error during restore", e);
 				}
 				System.out.println("Finished " + file.getAbsolutePath() + ", size = " + file.length());
 			}
 		};
-		SimpleTaskQueueProgressFragment frag = SimpleTaskQueueProgressFragment.runTaskWithProgress(context, R.string.restoring_ellipsis, task, false);
+		SimpleTaskQueueProgressFragment frag = SimpleTaskQueueProgressFragment.runTaskWithProgress(context,
+				R.string.importing_ellipsis, task, false, taskId);
 		frag.setNumberFormat(null);
 	}
 }

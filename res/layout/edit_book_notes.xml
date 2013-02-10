@@ -3,12 +3,12 @@
     android:id="@+id/root"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:focusableInTouchMode="true"
     android:orientation="vertical" >
 
     <ScrollView
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="50dip" >
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -48,7 +48,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="@string/notes"
-                android:inputType="textCapSentences" />
+                android:singleLine="false"
+                android:inputType="textCapSentences|textMultiLine" />
 
             <CheckBox
                 android:id="@+id/signed"

@@ -53,7 +53,9 @@ public class Backuptest {
 
 	public static void performBackupTar(File file) throws IOException {
 		System.out.println("Starting " + file.getAbsolutePath());
-		BackupWriter wrt = BackupManager.writeBackup(file);
+		TarBackupContainer bkp = new TarBackupContainer(file);
+		BackupWriter wrt = bkp.newWriter();
+
 		wrt.backup(new BackupWriterListener() {
 			private long mMax;
 			private String mMessage = "";
@@ -82,7 +84,13 @@ public class Backuptest {
 
 	public static void performRestoreTar(File file) throws IOException {
 		System.out.println("Starting " + file.getAbsolutePath());
-		BackupReader rdr = BackupManager.readBackup(file);
+		
+		TarBackupContainer bkp = new TarBackupContainer(file);
+		// Each format should provide a validator of some kind
+		if (!bkp.isValid())
+			throw new IOException("Not a valid backup file");
+		BackupReader rdr = bkp.newReader();
+
 		rdr.restore(new BackupReaderListener() {
 			private long mMax;
 			private String mMessage = "";

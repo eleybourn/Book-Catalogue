@@ -111,9 +111,8 @@ public class GoodreadsUtils {
 					fragment.showToast(R.string.task_has_been_queued_in_background);					
 				}
 			}
-
 		};
-		SimpleTaskQueueProgressFragment.runTaskWithProgress(context, R.string.connecting_to_web_site, task, true);
+		SimpleTaskQueueProgressFragment.runTaskWithProgress(context, R.string.connecting_to_web_site, task, true, 0);
 	}
 
 	/**
@@ -169,7 +168,7 @@ public class GoodreadsUtils {
 				fragment.showToast(msg);
 			}
 		};
-		SimpleTaskQueueProgressFragment.runTaskWithProgress(context, R.string.connecting_to_web_site, task, true);
+		SimpleTaskQueueProgressFragment.runTaskWithProgress(context, R.string.connecting_to_web_site, task, true, 0);
 	}
 	
 	/**
@@ -193,16 +192,8 @@ public class GoodreadsUtils {
 				}
 			}
 
-			/**
-			 * Only need onFinish() if there was no error message
-			 */
 			@Override
-			public boolean requiresOnFinish(SimpleTaskQueueProgressFragment fragment) {
-				return (getState() == 0);
-			}
-
-			@Override
-			public void onFinish(SimpleTaskQueueProgressFragment fragment) {
+			public void onFinish(SimpleTaskQueueProgressFragment fragment, Exception exception) {
 				if (getState() == 0) {
 					final FragmentActivity context = fragment.getActivity();
 					if (context != null) {
@@ -236,7 +227,7 @@ public class GoodreadsUtils {
 			}
 		};
 		// Run the task
-		SimpleTaskQueueProgressFragment.runTaskWithProgress(ctx, R.string.connecting_to_web_site, task, true);
+		SimpleTaskQueueProgressFragment.runTaskWithProgress(ctx, R.string.connecting_to_web_site, task, true, 0);
 
 	}
 

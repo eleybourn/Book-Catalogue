@@ -42,11 +42,9 @@ import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogFileItem;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogItem;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogOnClickListener;
-import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
+import com.eleybourn.bookcatalogue.filechooser.BackupChooser;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsRegister;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsUtils;
-import com.eleybourn.bookcatalogue.goodreads.ImportAllTask;
-import com.eleybourn.bookcatalogue.goodreads.SendAllBooksTask;
 import com.eleybourn.bookcatalogue.utils.HintManager;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.StorageUtils;
@@ -522,7 +520,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 				final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND_MULTIPLE);
 				emailIntent.setType("plain/text");
 				//emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, context.getString(R.string.debug_email).split(";"));
-				String subject = "[" + getString(R.string.app_name) + "] " + getString(R.string.export_data);
+				String subject = "[" + getString(R.string.app_name) + "] " + getString(R.string.export_to_csv);
 				emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
 				//emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, context.getString(R.string.debug_body));
 				//has to be an ArrayList
@@ -590,10 +588,21 @@ public class AdministrationFunctions extends ActivityWithTasks {
 		startActivity(i);
 	}
 
+	/**
+	 * Start the archiving activity
+	 */
 	private void backupCatalogue() {
-		BackupManager.backupCatalogue(this);
+		Intent i = new Intent(this, BackupChooser.class);
+		i.putExtra(BackupChooser.EXTRA_MODE, BackupChooser.EXTRA_MODE_SAVE_AS);
+		startActivity(i);
 	}
+	
+	/**
+	 * Start the restore activity
+	 */
 	private void restoreCatalogue() {
-		BackupManager.restoreCatalogue(this);
+		Intent i = new Intent(this, BackupChooser.class);
+		i.putExtra(BackupChooser.EXTRA_MODE, BackupChooser.EXTRA_MODE_OPEN);
+		startActivity(i);
 	}
 }

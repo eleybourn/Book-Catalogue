@@ -52,7 +52,11 @@
         <item name="android:paddingLeft">@dimen/padding_book_details_info</item>
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
     </style>
-
+    <style name="fileDetailsTextStyle" parent="bookDetailsTextStyle">
+        <!--  selectable makes clicking not work well -->
+        <item name="android:textIsSelectable">false</item>
+    </style>
+    
     <!-- Style for text header data (typically title/author) in read-only book details -->
     <style name="bookDetailsHeaderStyle">
         <item name="android:textIsSelectable">true</item>
@@ -69,6 +73,11 @@
         <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
     </style>
 
+    <style name="fileDetailsMinorDetailStyle" parent="bookDetailsMinorDetailStyle">
+        <!--  selectable makes clicking not work well -->
+        <item name="android:textIsSelectable">false</item>
+    </style>
+    
     <style name="editorFieldHeaderStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

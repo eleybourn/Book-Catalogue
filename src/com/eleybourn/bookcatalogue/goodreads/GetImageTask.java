@@ -73,16 +73,8 @@ public class GetImageTask implements SimpleTask {
 	 * Tell the GoodreadsWork about it.
 	 */
 	@Override
-	public void onFinish() {
+	public void onFinish(Exception e) {
 		mWork.handleTaskFinished(mBytes);
-	}
-
-	/**
-	 * Always want finished() to be called.
-	 */
-	@Override
-	public boolean requiresOnFinish() {
-		return true;
 	}
 
 }

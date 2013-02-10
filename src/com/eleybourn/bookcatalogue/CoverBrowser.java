@@ -175,7 +175,7 @@ public class CoverBrowser {
 			}
 		}
 		@Override
-		public void onFinish() {
+		public void onFinish(Exception e) {
 			if (mEditions.size() == 0) {
 				Toast.makeText(mContext, R.string.no_editions, Toast.LENGTH_LONG).show();
 				shutdown();
@@ -184,13 +184,6 @@ public class CoverBrowser {
 			showDialogDetails();
 		}
 
-		/**
-		 * Always want the finished() method to be called.
-		 */
-		@Override
-		public boolean requiresOnFinish() {
-			return true;
-		}
 	}
 
 	/**
@@ -227,18 +220,13 @@ public class CoverBrowser {
 			}
 		}
 		@Override
-		public void onFinish() {
+		public void onFinish(Exception e) {
 			// Load the file and apply to view
 			File file = new File(fileSpec);
 			file.deleteOnExit();
 			//CoverImageAdapter cia = (CoverImageAdapter) gallery.getAdapter();
 			//cia.notifyDataSetChanged();
 			Utils.fetchFileIntoImageView(file, v, mPreviewSize, mPreviewSize, true );
-		}
-
-		@Override
-		public boolean requiresOnFinish() {
-			return true;
 		}
 	}
 
@@ -273,8 +261,10 @@ public class CoverBrowser {
 		@Override
 		public void run(SimpleTaskContext taskContext) {
 			// If we are shutdown, just return
-			if (mShutdown)
+			if (mShutdown) {
+				taskContext.setRequiresFinish(false);
 				return;
+			}
 
 			// Download the file
 			fileSpec = mFileManager.download(isbn, ImageSizes.LARGE);
@@ -284,7 +274,9 @@ public class CoverBrowser {
 			}
 		}
 		@Override
-		public void onFinish() {
+		public void onFinish(Exception e) {
+			if (mShutdown)
+				return;
 			// Update the ImageSwitcher
 			File file = new File(fileSpec);
 			TextView msgVw = (TextView)mDialog.findViewById(R.id.switcherStatus);
@@ -299,10 +291,6 @@ public class CoverBrowser {
 				switcher.setVisibility(View.GONE);
 				msgVw.setText(R.string.image_not_found);
 			}
-		}
-		@Override
-		public boolean requiresOnFinish() {
-			return !mShutdown;
 		}
 	}
 

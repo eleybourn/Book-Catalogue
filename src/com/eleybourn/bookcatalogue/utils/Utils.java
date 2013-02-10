@@ -110,6 +110,8 @@ public class Utils {
 	private static SimpleDateFormat mDateSqlSdf = new SimpleDateFormat("yyyy-MM-dd");
 	static { mDateSqlSdf.setTimeZone(tzUtc); }
 	static DateFormat mDateDispSdf = DateFormat.getDateInstance(java.text.DateFormat.MEDIUM);
+	private static SimpleDateFormat mLocalDateSqlSdf = new SimpleDateFormat("yyyy-MM-dd");
+	static { mLocalDateSqlSdf.setTimeZone(Calendar.getInstance().getTimeZone()); }
 
 	private static final ArrayList<SimpleDateFormat> mParseDateFormats = new ArrayList<SimpleDateFormat>();
 	static {
@@ -166,6 +168,9 @@ public class Utils {
 			mParseDateFormats.add(new SimpleDateFormat(format, Locale.ENGLISH));
 	}
 	
+	public static String toLocalSqlDateOnly(Date d) {
+		return mLocalDateSqlSdf.format(d);
+	}
 	public static String toSqlDateOnly(Date d) {
 		return mDateSqlSdf.format(d);
 	}

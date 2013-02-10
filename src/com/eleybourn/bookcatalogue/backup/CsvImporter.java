@@ -49,16 +49,10 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * @author pjw
  */
 public class CsvImporter {
-	private CatalogueDBAdapter mDbHelper;
 	private String mLastError;
 
 	private static String UTF8 = "utf8";
 	private static int BUFFER_SIZE = 32768;
-
-	public CsvImporter() {
-		mDbHelper = new CatalogueDBAdapter(BookCatalogueApp.context);
-		mDbHelper.open();		
-	}
 
 	public boolean importBooks(InputStream exportStream, Importer.CoverFinder coverFinder, Importer.OnImporterListener listener) throws IOException {
 		ArrayList<String> importedString = new ArrayList<String>();
@@ -73,6 +67,7 @@ public class CsvImporter {
 	}
 
 	public boolean importBooks(ArrayList<String> export, Importer.CoverFinder coverFinder, Importer.OnImporterListener listener) {
+
 		if (export == null || export.size() == 0)
 			return true;
 
@@ -112,6 +107,10 @@ public class CsvImporter {
 								CatalogueDBAdapter.KEY_AUTHOR_NAME,
 								CatalogueDBAdapter.KEY_AUTHOR_DETAILS);
 
+		CatalogueDBAdapter db;
+		db = new CatalogueDBAdapter(BookCatalogueApp.context);
+		db.open();
+
 		int row = 1; // Start after headings.
 		boolean inTx = false;
 		int txRowCount = 0;
@@ -122,12 +121,12 @@ public class CsvImporter {
 		try {
 			while (row < export.size() && !listener.isCancelled()) {
 				if (inTx && txRowCount > 10) {
-					mDbHelper.setTransactionSuccessful();
-					mDbHelper.endTransaction(txLock);
+					db.setTransactionSuccessful();
+					db.endTransaction(txLock);
 					inTx = false;
 				}
 				if (!inTx) {
-					txLock = mDbHelper.startTransaction(true);
+					txLock = db.startTransaction(true);
 					inTx = true;
 					txRowCount = 0;
 				}
@@ -206,7 +205,7 @@ public class CsvImporter {
 
 					// Now build the array for authors
 					ArrayList<Author> aa = Utils.getAuthorUtils().decodeList(authorDetails, '|', false);
-					Utils.pruneList(mDbHelper, aa);
+					Utils.pruneList(db, aa);
 					values.putSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, aa);
 				}
 
@@ -231,7 +230,7 @@ public class CsvImporter {
 					// Handle the series
 					ArrayList<Series> sa = Utils.getSeriesUtils().decodeList(seriesDetails, '|', false);
 					Utils.pruneSeriesList(sa);
-					Utils.pruneList(mDbHelper, sa);
+					Utils.pruneList(db, sa);
 					values.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, sa);				
 				}
 				
@@ -244,7 +243,7 @@ public class CsvImporter {
 				try {
 					if (!hasUuid && !hasNumericId) {
 						// Always import empty IDs...even if they are duplicates.
-						Long id = mDbHelper.createBook(values);
+						Long id = db.createBook(values);
 						values.putString(CatalogueDBAdapter.KEY_ROWID, id.toString());
 						// Would be nice to import a cover, but with no ID/UUID thats not possible
 						//mImportCreated++;
@@ -257,7 +256,7 @@ public class CsvImporter {
 
 						// Let the UUID trump the ID; we may be importing someone else's list with bogus IDs
 						if (hasUuid) {
-							Long l = mDbHelper.getBookIdFromUuid(uuidVal);
+							Long l = db.getBookIdFromUuid(uuidVal);
 							if (l != 0) {
 								exists = true;
 								idLong = l;
@@ -265,19 +264,19 @@ public class CsvImporter {
 								exists = false;
 								// We have a UUID, but book does not exist. We will create a book.
 								// Make sure the ID (if present) is not already used.
-								if (hasNumericId && mDbHelper.checkBookExists(idLong))
+								if (hasNumericId && db.checkBookExists(idLong))
 									idLong = 0L;
 							}
 
 						} else {
-							exists = mDbHelper.checkBookExists(idLong);							
+							exists = db.checkBookExists(idLong);							
 						}
 
 						if (exists) {
-							mDbHelper.updateBook(idLong, values, false);								
+							db.updateBook(idLong, values, false);								
 							//mImportUpdated++;
 						} else {
-							newId = mDbHelper.createBook(idLong, values);
+							newId = db.createBook(idLong, values);
 							//mImportCreated++;
 							values.putString(CatalogueDBAdapter.KEY_ROWID, newId.toString());							
 							idLong = newId;
@@ -293,8 +292,8 @@ public class CsvImporter {
 
 				if (values.containsKey(CatalogueDBAdapter.KEY_LOANED_TO) && !values.get(CatalogueDBAdapter.KEY_LOANED_TO).equals("")) {
 					int id = Integer.parseInt(values.getString(CatalogueDBAdapter.KEY_ROWID));
-					mDbHelper.deleteLoan(id);
-					mDbHelper.createLoan(values);
+					db.deleteLoan(id);
+					db.createLoan(values);
 				}
 
 				if (values.containsKey(CatalogueDBAdapter.KEY_ANTHOLOGY_MASK)) {
@@ -307,7 +306,7 @@ public class CsvImporter {
 					if (anthology == CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS || anthology == CatalogueDBAdapter.ANTHOLOGY_IS_ANTHOLOGY) {
 						int id = Integer.parseInt(values.getString(CatalogueDBAdapter.KEY_ROWID));
 						// We have anthology details, delete the current details.
-						mDbHelper.deleteAnthologyTitles(id);
+						db.deleteAnthologyTitles(id);
 						int oldi = 0;
 						String anthology_titles = values.getString("anthology_titles");
 						try {
@@ -319,7 +318,7 @@ public class CsvImporter {
 								if (j > -1) {
 									String anth_title = extracted_title.substring(0, j).trim();
 									String anth_author = extracted_title.substring((j+1)).trim();
-									mDbHelper.createAnthologyTitle(id, anth_author, anth_title, true);
+									db.createAnthologyTitle(id, anth_author, anth_title, true);
 								}
 								oldi = i + 1;
 								i = anthology_titles.indexOf("|", oldi);
@@ -344,17 +343,23 @@ public class CsvImporter {
 			throw new RuntimeException(e);
 		} finally {
 			if (inTx) {
-				mDbHelper.setTransactionSuccessful();
-				mDbHelper.endTransaction(txLock);
+				db.setTransactionSuccessful();
+				db.endTransaction(txLock);
 			}
-			mDbHelper.purgeAuthors();
-			mDbHelper.purgeSeries();
-		}
-		try {
-			mDbHelper.analyzeDb();
-		} catch (Exception e) {
-			// Do nothing. Not a critical step.
-			Logger.logError(e);
+			try {
+				db.purgeAuthors();
+				db.purgeSeries();
+				db.analyzeDb();
+			} catch (Exception e) {
+				// Do nothing. Not a critical step.
+				Logger.logError(e);
+			}
+			try {
+				db.close();
+			} catch (Exception e) {
+				// Do nothing. Not a critical step.
+				Logger.logError(e);
+			}
 		}
 		
 		return true;

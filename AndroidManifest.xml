@@ -263,6 +263,8 @@
         </activity>
         <activity android:name=".cropper.CropMonitoredActivityActivity" android:theme="@style/Theme.Sherlock">
         </activity>
-    </application>
+        <activity android:name="com.eleybourn.bookcatalogue.filechooser.BackupChooser" android:theme="@style/Theme.Sherlock">
+        </activity>
+        </application>
 
 </manifest>

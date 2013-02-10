@@ -37,6 +37,8 @@ import com.eleybourn.bookcatalogue.debug.Tracker.States;
 import com.eleybourn.bookcatalogue.utils.Logger;
 
 /**
+ * TODO: Remove this!!!! Fragments makes ActivityWithTasks mostly redundant.
+ * 
  * Class to used as a base class for any Activity that wants to run one or more threads that
  * use a ProgressDialog.
  * 

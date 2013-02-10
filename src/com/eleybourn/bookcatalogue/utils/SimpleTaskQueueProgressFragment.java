@@ -33,6 +33,7 @@ import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
 
+import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueDialogFragment;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTask;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTaskContext;
@@ -71,6 +72,12 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	/** Format of number part of dialog */
 	private String mNumberFormat = null;
 
+	/** Unique ID for this task. Can be used like menu or activity IDs */
+	private int mTaskId;
+
+	/** Flag, defaults to true, that can be set by tasks and is passed to listeners */
+	private boolean mSuccess = true;
+	
 	/**
 	 * Convenience routine to show a dialog fragment and start the task
 	 * 
@@ -78,10 +85,11 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	 * @param message	Message to display
 	 * @param task		Task to run
 	 */
-	public static SimpleTaskQueueProgressFragment runTaskWithProgress(final FragmentActivity context, int message, FragmentTask task, boolean isIndeterminate) {
-		SimpleTaskQueueProgressFragment frag = SimpleTaskQueueProgressFragment.newInstance(message, isIndeterminate);
+	public static SimpleTaskQueueProgressFragment runTaskWithProgress(final FragmentActivity context, int message,
+			FragmentTask task, boolean isIndeterminate, int taskId) {
+		SimpleTaskQueueProgressFragment frag = SimpleTaskQueueProgressFragment.newInstance(message, isIndeterminate, taskId);
 		frag.enqueue(task);
-		frag.show(context.getSupportFragmentManager(), (String)null);
+		frag.show(context.getSupportFragmentManager(), (String) null);
 		return frag;
 	}
 
@@ -92,14 +100,23 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	 * @author pjw
 	 */
 	public interface FragmentTask {
-		/** Run the task in it's own thread */
-		public void run(SimpleTaskQueueProgressFragment fragment, SimpleTaskContext taskContext);
-		/** Called in UI thread after task complete */
-		public void onFinish(SimpleTaskQueueProgressFragment fragment);
-		/** Check is the task wants onFinish() to be called. Will be called in non-UI thread, after run() completes */
-		public boolean requiresOnFinish(SimpleTaskQueueProgressFragment fragment);
+		/** Run the task in it's own thread 
+		 * @throws Exception */
+		public void run(SimpleTaskQueueProgressFragment fragment, SimpleTaskContext taskContext) throws Exception;
+		/** Called in UI thread after task complete 
+		 * @param exception TODO*/
+		public void onFinish(SimpleTaskQueueProgressFragment fragment, Exception exception);
 	}
 
+	/**
+	 * Listener for users of this fragment to know when it completes.
+	 * 
+	 * @author pjw
+	 */
+	public interface OnTasksCompleteListener {
+		public void onTasksComplete(SimpleTaskQueueProgressFragment fragment, int taskId, boolean success, boolean cancelled);
+	}
+	
 	/**
 	 * Trivial implementation of FragmentTask that never calls onFinish(). The setState()/getState()
 	 * calles can be used to store state info by a caller, eg. if they override requiresOnFinish() etc.
@@ -110,14 +127,13 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 		private int mState = 0;
 
 		@Override
-		public void onFinish(SimpleTaskQueueProgressFragment fragment) {
+		public void onFinish(SimpleTaskQueueProgressFragment fragment, Exception exception) {
+			if (exception != null) {
+				Logger.logError(exception);
+				Toast.makeText(fragment.getActivity(), R.string.unexpected_error, Toast.LENGTH_LONG).show();
+			}
 		}
 
-		@Override
-		public boolean requiresOnFinish(SimpleTaskQueueProgressFragment fragment) {
-			return false;
-		}
-		
 		public void setState(int state) {
 			mState = state;
 		}
@@ -140,18 +156,18 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 		}
 
 		@Override
-		public void run(SimpleTaskContext taskContext) {
-			mInnerTask.run(SimpleTaskQueueProgressFragment.this, taskContext);
+		public void run(SimpleTaskContext taskContext) throws Exception {
+			try {
+				mInnerTask.run(SimpleTaskQueueProgressFragment.this, taskContext);				
+			} catch (Exception e) {
+				mSuccess = false;
+				throw e;
+			}
 		}
 
 		@Override
-		public void onFinish() {
-			mInnerTask.onFinish(SimpleTaskQueueProgressFragment.this);
-		}
-
-		@Override
-		public boolean requiresOnFinish() {
-			return mInnerTask.requiresOnFinish(SimpleTaskQueueProgressFragment.this);
+		public void onFinish(Exception e) {
+			mInnerTask.onFinish(SimpleTaskQueueProgressFragment.this, e);
 		}
 
 	}
@@ -211,10 +227,11 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 		mQueue.enqueue(new FragmentTaskWrapper(task));
 	}
 
-	public static SimpleTaskQueueProgressFragment newInstance(int title, boolean isIndeterminate) {
+	public static SimpleTaskQueueProgressFragment newInstance(int title, boolean isIndeterminate, int taskId) {
 		SimpleTaskQueueProgressFragment frag = new SimpleTaskQueueProgressFragment();
         Bundle args = new Bundle();
         args.putInt("title", title);
+        args.putInt("taskId", taskId);
         args.putBoolean("isIndeterminate", isIndeterminate);
         frag.setArguments(args);
         return frag;
@@ -245,6 +262,7 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 		super.onCreate(savedInstanceState);
 		// VERY IMPORTANT. We do not want this destroyed!
 		setRetainInstance(true);
+		mTaskId = getArguments().getInt("taskId");
 	}
 
 	/**
@@ -257,7 +275,9 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 		dialog.setCancelable(true);
 		dialog.setCanceledOnTouchOutside(false);
 
-		dialog.setMessage(getActivity().getString(getArguments().getInt("title")));
+		int msg = getArguments().getInt("title");
+		if (msg != 0)
+			dialog.setMessage(getActivity().getString(msg));
 		final boolean isIndet = getArguments().getBoolean("isIndeterminate");
 		dialog.setIndeterminate(isIndet);
 		if (isIndet) {
@@ -302,14 +322,27 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 		@Override
 		public void onTaskFinish(SimpleTask task, Exception e) {
 			// If there are no more tasks, close this dialog
-			if (!mQueue.hasActiveTasks())
+			if (!mQueue.hasActiveTasks()) {
 				dismiss();
+				if (getActivity() instanceof OnTasksCompleteListener) {
+					((OnTasksCompleteListener)getActivity()).onTasksComplete(SimpleTaskQueueProgressFragment.this, mTaskId, mSuccess, mWasCancelled);
+				}
+			}
 		}
 	};
 
 	/** Accessor */
 	public boolean isCancelled() {
 		return mWasCancelled;
+	}
+
+	/** Accessor */
+	public boolean getSuccess() {
+		return mSuccess;
+	}
+	/** Accessor */
+	public void setSuccess(boolean success) {
+		mSuccess = success;
 	}
 
 	/** Flag indicating a Refresher has been posted but not run yet */
@@ -331,6 +364,7 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	 * Refresh the dialog, or post a refresh to the UI thread
 	 */
 	private void requestUpdateProgress() {
+		System.out.println("STQPF: " + mMessage + " (" + mProgress + "/" + mMax + ")");
 		if (Thread.currentThread() == mHandler.getLooper().getThread()) {
 			updateProgress();
 		} else {
@@ -457,4 +491,16 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 			requestUpdateProgress();
 		}
 	}
+	
+	/**
+	 * Work-around for bug in compatibility library:
+	 * 
+	 *     http://code.google.com/p/android/issues/detail?id=17423
+	 */
+	@Override
+	 public void onDestroyView() {
+	     if (getDialog() != null && getRetainInstance())
+	         getDialog().setDismissMessage(null);
+	         super.onDestroyView();
+	 }
 }

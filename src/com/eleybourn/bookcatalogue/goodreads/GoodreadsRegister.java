@@ -135,22 +135,15 @@ public class GoodreadsRegister extends BookCatalogueActivity {
 			 * Display any error message
 			 */
 			@Override
-			public void onFinish(SimpleTaskQueueProgressFragment fragment) {
+			public void onFinish(SimpleTaskQueueProgressFragment fragment, Exception exception) {
 				if (mMessage != 0)
 					fragment.showToast(mMessage);
 			}
 
-			/**
-			 * We only need the onFinish() if there is a message
-			 */
-			@Override
-			public boolean requiresOnFinish(SimpleTaskQueueProgressFragment fragment) {
-				return (mMessage != 0);
-			}
 		};
 
 		// Get the fragment to display task progress
-		SimpleTaskQueueProgressFragment.runTaskWithProgress(activity, R.string.connecting_to_web_site, task, true);
+		SimpleTaskQueueProgressFragment.runTaskWithProgress(activity, R.string.connecting_to_web_site, task, true, 0);
 	}
 
 	/**

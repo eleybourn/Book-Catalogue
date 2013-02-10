@@ -111,6 +111,9 @@ public class MainMenu extends BookCatalogueActivity {
 	public void onResume() {
 		super.onResume();
 
+		if (CatalogueDBAdapter.DEBUG_INSTANCES)
+			CatalogueDBAdapter.dumpInstances();
+
 		final boolean showGr = GoodreadsManager.hasCredentials();
 
 		View grItem = findViewById(R.id.goodreads_label);

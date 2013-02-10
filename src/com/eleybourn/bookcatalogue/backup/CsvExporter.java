@@ -44,16 +44,10 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * @author pjw
  */
 public class CsvExporter implements Exporter {
-	private CatalogueDBAdapter mDbHelper;
 	private String mLastError;
 
 	private static String UTF8 = "utf8";
 	private static int BUFFER_SIZE = 32768;
-
-	public CsvExporter() {
-		mDbHelper = new CatalogueDBAdapter(BookCatalogueApp.context);
-		mDbHelper.open();		
-	}
 
 	public String getLastError() {
 		return mLastError;
@@ -104,7 +98,11 @@ public class CsvExporter implements Exporter {
 		
 		StringBuilder row = new StringBuilder();
 
-		BooksCursor books = mDbHelper.exportBooks();
+		CatalogueDBAdapter db;
+		db = new CatalogueDBAdapter(BookCatalogueApp.context);
+		db.open();		
+
+		BooksCursor books = db.exportBooks();
 		BooksRowView rv = books.getRowView();
 
 		try {
@@ -155,7 +153,7 @@ public class CsvExporter implements Exporter {
 						String anthology = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY_MASK));
 						String anthology_titles = "";
 						if (anthology.equals(CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS + "") || anthology.equals(CatalogueDBAdapter.ANTHOLOGY_IS_ANTHOLOGY + "")) {
-							Cursor titles = mDbHelper.fetchAnthologyTitlesByBook(id);
+							Cursor titles = db.fetchAnthologyTitlesByBook(id);
 							try {
 								if (titles.moveToFirst()) {
 									do { 
@@ -171,7 +169,7 @@ public class CsvExporter implements Exporter {
 						}
 						String title = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE));
 						//Display the selected bookshelves
-						Cursor bookshelves = mDbHelper.fetchAllBookshelvesByBook(id);
+						Cursor bookshelves = db.fetchAllBookshelvesByBook(id);
 						String bookshelves_id_text = "";
 						String bookshelves_name_text = "";
 						while (bookshelves.moveToNext()) {
@@ -180,8 +178,8 @@ public class CsvExporter implements Exporter {
 						}
 						bookshelves.close();
 
-						String authorDetails = Utils.getAuthorUtils().encodeList( mDbHelper.getBookAuthorList(id), '|' );
-						String seriesDetails = Utils.getSeriesUtils().encodeList( mDbHelper.getBookSeriesList(id), '|' );
+						String authorDetails = Utils.getAuthorUtils().encodeList( db.getBookAuthorList(id), '|' );
+						String seriesDetails = Utils.getSeriesUtils().encodeList( db.getBookSeriesList(id), '|' );
 
 						row.setLength(0);
 						row.append("\"" + formatCell(id) + "\",");
@@ -232,15 +230,20 @@ public class CsvExporter implements Exporter {
 				
 				out.close();
 			}
-			
+	
 		} finally {
 			System.out.println("Books Exported: " + num);
-			if (displayingStartupMessage) {
-				listener.onProgress("",0);
-				displayingStartupMessage = false;
-			}
+			if (displayingStartupMessage) 
+				try {
+					listener.onProgress("",0);
+					displayingStartupMessage = false;
+				} catch (Exception e) {
+					
+				}
 			if (books != null)
-				books.close();
+				try { books.close(); } catch (Exception e) {};
+			if (db != null)
+				db.close();
 		}
 		return true;
 	}

@@ -47,6 +47,7 @@ import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOK_
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_SERIES;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -98,6 +99,8 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * 
  */
 public class CatalogueDBAdapter {
+	/** DEBUG ONLY. Set to true to enable logging of instances of this class. */
+	public static boolean DEBUG_INSTANCES = false;
 	
 	/** Debug counter */
 	private static Integer mInstanceCount = 0;
@@ -1639,6 +1642,54 @@ public class CatalogueDBAdapter {
 		sdb.execSQL(sql);
 	}
 
+	private static class InstanceRef extends WeakReference<CatalogueDBAdapter> {
+		private Exception mCreationException;
+		public InstanceRef(CatalogueDBAdapter r) {
+			super(r);
+			mCreationException = new RuntimeException();
+		}
+		public Exception getCreationException() {
+			return mCreationException;
+		}		
+	}
+	private static ArrayList< InstanceRef > mInstances = new ArrayList< InstanceRef >();
+	private static void addInstance(CatalogueDBAdapter db) {
+		if (DEBUG_INSTANCES) {
+			mInstances.add(new InstanceRef(db));		
+		}
+	}
+	private static void removeInstance(CatalogueDBAdapter db) {
+		ArrayList< InstanceRef > toDelete = new ArrayList< InstanceRef >();
+		for( InstanceRef ref: mInstances) {
+			CatalogueDBAdapter refDb = ref.get();
+			if (refDb == null) {
+				System.out.println("<-- **** Missing ref (not closed?) **** vvvvvvv");
+				ref.getCreationException().printStackTrace();
+				System.out.println("--> **** Missing ref (not closed?) **** ^^^^^^^");
+			} else {
+				if (refDb == db) {
+					toDelete.add(ref);
+				}
+			}
+		}
+		for( WeakReference<CatalogueDBAdapter> ref: toDelete) {
+			mInstances.remove(ref);
+		}
+	}
+	public static void dumpInstances() {
+		for( InstanceRef ref: mInstances) {
+			CatalogueDBAdapter db = ref.get();
+			if (db == null) {
+				System.out.println("<-- **** Missing ref (not closed?) **** vvvvvvv");
+				ref.getCreationException().printStackTrace();
+				System.out.println("--> **** Missing ref (not closed?) **** ^^^^^^^");
+			} else {
+				ref.getCreationException().printStackTrace();
+			}
+		}
+	}
+	
+	
 	/**
 	 * Constructor - takes the context to allow the database to be
 	 * opened/created
@@ -1649,6 +1700,9 @@ public class CatalogueDBAdapter {
 		synchronized(mInstanceCount) {
 			mInstanceCount++;
 			System.out.println("CatDBA instances: " + mInstanceCount);
+			if (DEBUG_INSTANCES) {			
+				addInstance(this);
+			}
 		}
 		if (mDbHelper == null)
 			mDbHelper = new DatabaseHelper(ctx);
@@ -1703,6 +1757,9 @@ public class CatalogueDBAdapter {
 			synchronized(mInstanceCount) {
 				mInstanceCount--;
 				System.out.println("CatDBA instances: " + mInstanceCount);
+				if (DEBUG_INSTANCES) {
+					removeInstance(this);
+				}
 			}
 		}
 	}

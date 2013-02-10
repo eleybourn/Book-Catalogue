@@ -736,15 +736,33 @@ and you can edit the book via the options menu using the menu button or overflow
 
 <string name="connecting_to_web_site">Connecting to web site&#8230;</string>
 
-<string name="backup_catalogue">Backup Catalogue</string>
-<string name="restore_catalogue">Restore Catalogue</string>
+<string name="backup_to_archive">Backup to Archive</string>
+<string name="import_from_archive">Import from Archive</string>
 <!--  Hint displayed when aCatalogue Backup is done -->
-<string name="catalogue_backup_complete">A %2$s file called %1$s was created in the \"bookCatalogue\" directory on your 
-    SD card. You should manually copy it elsewhere to protect the data.</string>
+<string name="archive_complete_details">A %3$s file called %2$s was created in the \"%1$s\" directory on your 
+    SD card.\n\nYou should manually copy it elsewhere to protect the data in case your device is damaged, lost, or stolen.</string>
 
 <string name="covers_progress">%1$s covers processed (%2$s missing)</string>
 <string name="advanced_options">Advanced Options</string>
 <string name="backing_up_ellipsis">Backing up&#8230;</string>
-<string name="restoring_ellipsis">Restoring&#8230;</string>
+<string name="importing_ellipsis">Importing&#8230;</string>
+
+<!--  Content description for the 'up' icon in the folder browser -->
+<string name="up_folder">Up</string>
+
+<!-- Displayed when a user tries to browse higher than the root directory, or if the parent is unable to be read -->
+<string name="no_parent_directory_found">No parent directory found</string>
+
+<!--  For saving and opening exports or backups -->
+<string name="open">Open</string>
+
+<string name="export_to_csv">Export to CSV File</string>
+<string name="import_from_csv">Import from CSV File</string>
+
+<!-- Displayed when a file/open dialog results in selecting a non-exitant file -->
+<string name="please_select_an_existing_file">Please select an existing file</string>
+
+<!-- Displayed when a file/save dialog results in selecting a directory file -->
+<string name="please_select_a_non_directory">Please select a file that is not a directory</string>
 
 </resources>

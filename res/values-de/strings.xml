@@ -142,6 +142,7 @@
 <string name="searching_google_books">Suche bei Google Books</string>
 <string name="searching_library_thing">Suche bei LibraryThing</string>
 <string name="bookshelf_title">Wählen Sie Bücherregale für dieses Buch aus</string>
+<string name="select_bookshelves">Bücherregale wählen</string>
 <string name="format">Ausgaben</string>
 <string name="format1">Taschenbuch</string>
 <string name="format2">Gebundene Ausgabe</string>
@@ -417,7 +418,7 @@ anschließend auf eine leeren Seite landen. Klicken Sie einfach auf den "Zurück
 <string name="starting_up">Gleich geht\'s los…</string>
 <string name="book_catalogue_startup">Beim Start von BookCatalogue</string>
 <string name="book_list_state">Darstellung der Bücherliste</string>
-<string name="always_start_booklists_expanded">Bücherliste immer erweitern</string>
+<string name="always_start_booklists_expanded">Bücherliste immer ausklappen</string>
 <string name="always_start_booklists_collapsed">Bücherliste immer einklappen</string>
 <string name="remember_booklists_state">Darstellung beibehalten</string>
 <string name="searching_goodreads">Suche bei Goodreads</string>
@@ -639,4 +640,35 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
     ]]>
 </string>
 
+<string name="_empty_"></string>
+<string name="new_in_421"><![CDATA[
+<p><b>Neu in 4.2.1</b>\n\n
+        * Kein Absturz beim Ausklappen von Listen  mit \'Alles ausklappen\'\n\n
+        </p>
+    ]]></string>
+
+<string name="bad_scanner">Anscheinend ist Ihre derzeitige Scanner-App nicht mit Book Catalogue kompatible. Wir empfehlen, die App "Zxing Barcode Scanner" zu installieren. Falls sie bereits installiert ist, empfehlen wir eine Deinstalltion und erneute Installation.</string>
+
+<string name="new_in_422"><![CDATA[
+<p><b>Neu in 4.2.2</b>\n\n
+        * Verbesserte Kachelanordnung des Hintergrundbilds in manchen Android-Versionen\n\n
+        * Bessere Behandlung inkopatibler Scanner-Apps\n\n
+        * Sende mehr Details bei Abstürzen oder Hilfeanfragen\n\n
+        * Layout-Bereinigung (Nick Silin)\n\n
+        * Fehlerbehebungen\n\n
+        </p>
+    ]]></string>
+
+<string name="new_in_423"><![CDATA[
+<p><b>Neu in 4.2.3</b>\n\n
+        * Verbessertes Behandlung ungültiger ISBNs während der Übertragung zu Goodreads\n\n
+        * Kleinere Fehlerbehebungen\n\n
+        </p>
+    ]]></string>
+
+<string name="scanning">Scanne</string>
+<string name="preferred_scanner">Bevorzugter Scanner</string>
+<string name="zxing_compatible_scanner">Zxing-kompatibler Scanner</string>
+<string name="pic2shop_scanner">Pic2Shop-Scanner</string>
+<string name="beep_if_scanned_isbn_valid">Tonsignal bei gültig gescannter ISBN</string>
 </resources>

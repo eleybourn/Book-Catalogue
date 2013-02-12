@@ -265,11 +265,13 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 	 */
 	private void showLoanedInfo(Long rowId) {
 		String personLoanedTo = mDbHelper.fetchLoanByBook(rowId);
+		TextView textView = (TextView) getView().findViewById(R.id.who);
 		if (personLoanedTo != null) {
-			TextView textView = (TextView) getView().findViewById(R.id.who);
 			textView.setVisibility(View.VISIBLE);
 			String resultText = getString(R.string.book_details_readonly_loaned_to, personLoanedTo);
 			textView.setText(resultText);
+		} else {
+			textView.setVisibility(View.GONE);			
 		}
 	}
 

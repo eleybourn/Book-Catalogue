@@ -667,16 +667,7 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 	 * Add all book fields with corresponding validators.
 	 */
 	protected void initFields() {
-
-//		// Generic validators; if field-specific defaults are needed, create a new one.
-//		FieldValidator integerValidator = new Fields.IntegerValidator("0");
-//		FieldValidator nonBlankValidator = new Fields.NonBlankValidator();
-//		FieldValidator blankOrIntegerValidator = new Fields.OrValidator(new Fields.BlankValidator(),
-//				new Fields.IntegerValidator("0"));
-//		FieldValidator blankOrFloatValidator = new Fields.OrValidator(new Fields.BlankValidator(),
-//				new Fields.FloatValidator("0.00"));
-//		// FieldValidator blankOrDateValidator = new Fields.OrValidator(new Fields.BlankValidator(),
-//		// new Fields.DateValidator());
+		final View root = getView();
 
 		/* Title has some post-processing on the text, to move leading 'A', 'The' etc to the end.
 		 * While we could do it in a formatter, it it not really a display-oriented function and
@@ -692,63 +683,17 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 		 * We also store it in the tag field so that it is automatically serialized with the
 		 * activity. */
 		mFields.add(R.id.anthology, BookData.KEY_ANTHOLOGY, null); 
-//		, new Fields.FieldFormatter() {
-//			public String format(Field f, String s) {
-//				// Save the original value, if its an integer
-//				try {
-//					Integer i = Integer.parseInt(s);
-//					ViewTagger.setTag(f.getView(), R.id.TAG_ORIGINAL_VALUE, i);
-//				} catch (Exception e) {
-//					ViewTagger.setTag(f.getView(), R.id.TAG_ORIGINAL_VALUE, 0);
-//				}
-//				// Just pass the string onwards to the accessor.
-//				return s;
-//			}
-//
-//			public String extract(Field f, String s) {
-//				// Parse the string the CheckBox returns us (0 or 1)
-//				Integer i = Integer.parseInt(s);
-//				Integer orig = (Integer) ViewTagger.getTag(f.getView(), R.id.TAG_ORIGINAL_VALUE);
-//				try {
-//					if (i != 0 && orig > 0) {
-//						// If non-zero, and original was non-zero, re-use original
-//						return orig.toString();
-//					} else {
-//						// Just return what we got.
-//						return s;
-//					}
-//				} catch (NullPointerException e) {
-//					return s;
-//				}
-//			}
-//		});
-//
-//		mFields.add(R.id.author, "", CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, nonBlankValidator);
-//		mFields.add(R.id.isbn, CatalogueDBAdapter.KEY_ISBN, null);
-//		mFields.add(R.id.publisher, CatalogueDBAdapter.KEY_PUBLISHER, null);
-//		mFields.add(R.id.date_published_button, "", CatalogueDBAdapter.KEY_DATE_PUBLISHED, null);
-//		mFields.add(R.id.date_published, CatalogueDBAdapter.KEY_DATE_PUBLISHED, CatalogueDBAdapter.KEY_DATE_PUBLISHED,
-//				null, new Fields.DateFieldFormatter());
-//		mFields.add(R.id.series, CatalogueDBAdapter.KEY_SERIES_NAME, CatalogueDBAdapter.KEY_SERIES_NAME, null);
-//		mFields.add(R.id.list_price, "list_price", blankOrFloatValidator);
-//		mFields.add(R.id.pages, CatalogueDBAdapter.KEY_PAGES, blankOrIntegerValidator);
-//		mFields.add(R.id.format, CatalogueDBAdapter.KEY_FORMAT, null);
-//		mFields.add(R.id.bookshelf, "", null);
-//		mFields.add(R.id.description, CatalogueDBAdapter.KEY_DESCRIPTION, null);
-//		mFields.add(R.id.genre, CatalogueDBAdapter.KEY_GENRE, null);
-//		
-//		mFields.add(R.id.row_img, "", "thumbnail", null);
-//		mFields.getField(R.id.row_img).getView().setOnCreateContextMenuListener(mCreateBookThumbContextMenuListener);
-//		
-//		mFields.add(R.id.format_button, "", CatalogueDBAdapter.KEY_FORMAT, null);
-//		mFields.add(R.id.bookshelf_text, "bookshelf_text", null).doNoFetch = true; // Output-only field
-
 
 		mFields.add(R.id.author, "", CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, null);
 		mFields.add(R.id.isbn, CatalogueDBAdapter.KEY_ISBN, null);
-		mFields.add(R.id.publisher, CatalogueDBAdapter.KEY_PUBLISHER, null);
-		mFields.add(R.id.date_published, CatalogueDBAdapter.KEY_DATE_PUBLISHED, CatalogueDBAdapter.KEY_DATE_PUBLISHED,
-				null, new Fields.DateFieldFormatter());
+
+		if (root.findViewById(R.id.publisher) != null)
+			mFields.add(R.id.publisher, CatalogueDBAdapter.KEY_PUBLISHER, null);
+
+		if (root.findViewById(R.id.date_published) != null)
+			mFields.add(R.id.date_published, CatalogueDBAdapter.KEY_DATE_PUBLISHED, CatalogueDBAdapter.KEY_DATE_PUBLISHED,
+					null, new Fields.DateFieldFormatter());
+
 		mFields.add(R.id.series, CatalogueDBAdapter.KEY_SERIES_NAME, CatalogueDBAdapter.KEY_SERIES_NAME, null);
 		mFields.add(R.id.list_price, "list_price", null);
 		mFields.add(R.id.pages, CatalogueDBAdapter.KEY_PAGES, null);

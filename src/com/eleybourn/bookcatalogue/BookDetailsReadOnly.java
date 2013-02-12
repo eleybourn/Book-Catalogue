@@ -1,6 +1,7 @@
 package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -197,6 +198,7 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 		mFields.add(R.id.location, CatalogueDBAdapter.KEY_LOCATION, null);
 		// Make sure the label is hidden when the ISBN is 
 		mFields.add(R.id.isbn_label, "", CatalogueDBAdapter.KEY_ISBN, null);
+		mFields.add(R.id.publishing_details, "", CatalogueDBAdapter.KEY_PUBLISHER, null);
 	}
 	
 	/**
@@ -225,17 +227,35 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 	 * of 'publisher' and 'date published' fields.
 	 */
 	private void formatPublishingSection(BookData book){
-		Field field = mFields.getField(R.id.date_published);
-		String value = book.getString(CatalogueDBAdapter.KEY_DATE_PUBLISHED);
-		boolean isDateExist = value != null && !value.equals("");
+		String date = book.getString(CatalogueDBAdapter.KEY_DATE_PUBLISHED);
+		boolean hasDate = date != null && !date.equals("");
+		String pub = book.getString(CatalogueDBAdapter.KEY_PUBLISHER);
+		boolean hasPub = pub != null && !pub.equals("");
+		String value;
 
-		// Format 'publisher' field
-		field = mFields.getField(R.id.publisher);
-		value = book.getString(CatalogueDBAdapter.KEY_PUBLISHER);
-		if(isDateExist && value != null && !value.equals("")){
-			// Add comma to the end
-			field.setValue(value + ", ");
+		if (hasDate) {
+			try {
+				Date d = Utils.parseDate(date);
+				date = Utils.toPrettyDate(d);
+			} catch (Exception e) {
+				// Ignore; just use what we have
+			}
 		}
+
+		if (hasPub) {
+			if (hasDate) {
+				value = pub + "; " + date;
+			} else {
+				value = pub;
+			}
+		} else {
+			if (hasDate) {
+				value = date;
+			} else {
+				value = "";
+			}
+		}
+		mFields.getField(R.id.publishing_details).setValue(value);
 	}
 	
 	/**
@@ -291,9 +311,11 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 		mFields.resetVisibility();
 	
 		// Check publishing information
-		if (showHideFieldIfEmpty(R.id.publisher) == View.GONE && showHideFieldIfEmpty(R.id.date_published) == View.GONE) {
-			getView().findViewById(R.id.lbl_publishing).setVisibility(View.GONE);
-		}
+		showHideFieldIfEmpty(R.id.publishing_details, R.id.lbl_publishing);
+
+//		if (showHideFieldIfEmpty(R.id.publisher) == View.GONE && showHideFieldIfEmpty(R.id.date_published) == View.GONE) {
+//			getView().findViewById(R.id.lbl_publishing).setVisibility(View.GONE);
+//		}
 
 		boolean hasImage = getView().findViewById(R.id.row_img).getVisibility() != View.GONE;
 		if (!hasImage) {

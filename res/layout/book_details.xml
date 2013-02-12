@@ -190,20 +190,13 @@
             android:orientation="horizontal" >
 
             <TextView
-                android:id="@+id/publisher"
+                android:id="@+id/publishing_details"
                 style="@style/bookDetailsTextStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Publisher name"
+                android:text="Publisher name, Jan 25, 2012"
                 tools:ignore="HardcodedText" />
 
-            <TextView
-                android:id="@+id/date_published"
-                style="@style/bookDetailsTextStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Jan 25, 2012"
-                tools:ignore="HardcodedText" />
         </LinearLayout>
 
         <!-- Shelves -->

@@ -65,7 +65,8 @@ public class FileChooserFragment extends BookCatalogueFragment implements FileLi
 	protected static final String ARG_ROOT_PATH = "rootPath";
 	protected static final String ARG_FILE_NAME = "fileName";
 	protected static final String ARG_LIST = "list";
-	protected ArrayList<FileDetails> mList;
+	// Create an empty one in case we are rotated before generated.
+	protected ArrayList<FileDetails> mList = new ArrayList<FileDetails>();
 
 	/**
 	 * Interface that the containing Activity must implement. Called when user changes path.

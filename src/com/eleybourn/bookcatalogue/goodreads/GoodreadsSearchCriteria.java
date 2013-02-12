@@ -20,7 +20,6 @@
 
 package com.eleybourn.bookcatalogue.goodreads;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -32,6 +31,7 @@ import com.eleybourn.bookcatalogue.BooksCursor;
 import com.eleybourn.bookcatalogue.BooksRowView;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
@@ -43,7 +43,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * 
  * @author Philip Warner
  */
-public class GoodreadsSearchCriteria extends Activity {
+public class GoodreadsSearchCriteria extends BookCatalogueActivity {
 	public static final String EXTRA_BOOK_ID = "bookId";
 
 	private CatalogueDBAdapter mDbHelper;

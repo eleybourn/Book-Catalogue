@@ -1,0 +1,8 @@
+To build in Eclipse (bare bones version)
+
+- copy BookCatalogue from GIT
+- extract 'ABS 4.2.zip' into the parent directory of BookCatalogue (this is ActionBar Sherlock 4.2.0)
+- add the ABS 4.2 project to your eclipse workspace
+- set both project targets to Android 4.2
+- reference ABS as a library project in BC
+- clean and rebuild

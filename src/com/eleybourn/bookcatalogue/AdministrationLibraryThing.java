@@ -22,7 +22,6 @@ package com.eleybourn.bookcatalogue;
 
 import java.io.File;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -34,6 +33,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
@@ -45,7 +45,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * 
  * @author Philip Warner
  */
-public class AdministrationLibraryThing extends Activity {
+public class AdministrationLibraryThing extends BookCatalogueActivity {
 
 	/**
 	 * Called when the activity is first created. 

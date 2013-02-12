@@ -153,24 +153,41 @@ public class GoodreadsManager {
 				"http://www.goodreads.com/oauth/access_token",
 				"http://www.goodreads.com/oauth/authorize");
 
+		if (hasCredentials())
+			m_consumer.setTokenWithSecret(m_accessToken, m_accessSecret);
+	}
+	
+	/**
+	 * Clear the credentials from the preferences and local cache
+	 */
+	public static void forgetCredentials() {
+		m_accessToken = "";
+		m_accessSecret = "";
+		m_hasValidCredentials = false;
+		// Get the stored token values from prefs, and setup the consumer if present
+		BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
+		prefs.setString("GoodReads.AccessToken.Token", "");
+		prefs.setString("GoodReads.AccessToken.Secret", "");
+	}
+
+	/**
+	 * Utility method to check if the access tokens are available (not if they are valid).
+	 * 
+	 * @return
+	 */
+	public static boolean hasCredentials() {
+		if (m_accessToken != null && m_accessSecret != null && 
+					!m_accessToken.equals("") && !m_accessSecret.equals(""))
+			return true;
+
 		// Get the stored token values from prefs, and setup the consumer if present
 		BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
 
 		m_accessToken = prefs.getString("GoodReads.AccessToken.Token", "");
 		m_accessSecret = prefs.getString("GoodReads.AccessToken.Secret", "");
 
-		if (hasCredentials())
-			m_consumer.setTokenWithSecret(m_accessToken, m_accessSecret);
-	}
-	
-	/**
-	 * Utility method to check if the access tokens are available (not if they are valid).
-	 * 
-	 * @return
-	 */
-	public boolean hasCredentials() {
-		return (m_accessToken != null && m_accessSecret != null && 
-					!m_accessToken.equals("") && !m_accessSecret.equals(""));		
+		return m_accessToken != null && m_accessSecret != null && 
+				!m_accessToken.equals("") && !m_accessSecret.equals("");
 	}
 	/**
 	 * Return the public developer key, used for GET queries.

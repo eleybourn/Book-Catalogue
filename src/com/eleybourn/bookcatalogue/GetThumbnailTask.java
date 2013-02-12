@@ -177,13 +177,18 @@ public class GetThumbnailTask implements SimpleTask {
 			//}			
 		} finally {
 		}
+		taskContext.setRequiresFinish(mWantFinished);
 	}
 
 	/**
 	 * Handle the results of the task.
 	 */
 	@Override
-	public void onFinish() {
+	public void onFinish(Exception e) {
+
+		if (!mWantFinished)
+			return;
+
 		// Get the view we are targetting and make sure it is valid
 		ImageView v = mView.get();
 		// Make sure the view is still associated with this task. We dont want to overwrite the wrong image
@@ -215,11 +220,6 @@ public class GetThumbnailTask implements SimpleTask {
 
 		mView.clear();
 		//System.out.println("Set image for ID " + mBookId);
-	}
-
-	@Override
-	public boolean requiresOnFinish() {
-		return mWantFinished;
 	}
 
 }

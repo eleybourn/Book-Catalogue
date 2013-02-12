@@ -751,6 +751,33 @@ public class DbUtils {
 		}
 
 		/**
+		 * Get a base 'INSERT or REPLACE' statement for this table using the passed list of domains. Returns partial
+		 * SQL of the form: 'INSERT or REPLACE INTO [table-name] ( [domain-1] ) Values (?, ..., ?)'.
+		 * 
+		 * @param domains		List of domains to use
+		 * 
+		 * @return	SQL fragment
+		 */
+		public String getInsertOrReplaceValues(DomainDefinition...domains) {
+			StringBuilder s = new StringBuilder("Insert or Replace Into ");
+			StringBuilder sPlaceholders = new StringBuilder("?");
+			s.append(mName);
+			s.append(" ( ");
+			s.append(domains[0]);
+
+			for(int i = 1; i < domains.length; i++) {
+				s.append(", ");
+				s.append(domains[i].toString());
+				
+				sPlaceholders.append(", ?");
+			}
+			s.append(")\n	values (");
+			s.append(sPlaceholders.toString());
+			s.append(")\n");
+			return s.toString();
+		}
+
+		/**
 		 * Setter. Set flag indicating table is a TEMPORARY table.
 		 * 
 		 * @param flag		Flag

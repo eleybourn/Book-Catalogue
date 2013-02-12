@@ -60,6 +60,26 @@
             android:paddingTop="20dp"
             android:text="@string/goodreads_auth_blurb_part3"
             android:textAppearance="?android:attr/textAppearanceMedium" />
+        <!-- BUTTON -->
+
+        <TextView
+            android:id="@+id/forget_blurb"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="20dp"
+            android:paddingTop="20dp"
+            android:text="@string/goodreads_auth_blurb_part4"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <Button
+            android:id="@+id/forget"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/forget_credentials" />
+
+        <!-- BLURB 3 -->
+
     </LinearLayout>
 
 </ScrollView>

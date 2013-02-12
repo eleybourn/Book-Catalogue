@@ -22,16 +22,17 @@ package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
 
-import android.app.Activity;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.utils.Logger;
@@ -43,25 +44,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * Users can select a book and, from this activity, select a friend to "loan" the book to.
  * This will then be saved in the database for reference. 
  */
-public class BookEditLoaned extends Activity {
-	/* mRowId contains the id of the book */
-	private Long mRowId;
-	private CatalogueDBAdapter mDbHelper;
-
-	/**
-	 * getRowId will extract the book id from either the saved bundle (from pausing the activity) 
-	 * or from the passed extras Bundle.
-	 * 
-	 * @param savedInstanceState The saved bundle (from pausing). Can be null.
-	 */
-	protected void getRowId(Bundle savedInstanceState) {
-		/* Get any information from the extras bundle */
-		mRowId = savedInstanceState != null ? savedInstanceState.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
-		if (mRowId == null) {
-			Bundle extras = getIntent().getExtras();
-			mRowId = extras != null ? extras.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
-		}
-	}
+public class BookEditLoaned extends BookEditFragmentAbstract {
 
 	/**
 	 * Return a list of friends from your contact list. 
@@ -86,7 +69,7 @@ public class BookEditLoaned extends Activity {
 				Logger.logError(e);
 			}
 		}
-		Cursor contactsCursor = getContentResolver().query(baseUri, null, null, null, null);
+		Cursor contactsCursor = getActivity().getContentResolver().query(baseUri, null, null, null, null);
 		while (contactsCursor.moveToNext()) {
 			String name = contactsCursor.getString(contactsCursor.getColumnIndex(display_name));
 			friend_list.add(name);
@@ -94,6 +77,12 @@ public class BookEditLoaned extends Activity {
 		return friend_list;
 	}
 
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		final View root = inflater.inflate(R.layout.edit_book_loan_base, container, false);
+		return root;
+	}
+	
 	/**
 	 * Called when the activity is first created. This function will check whether a book has been loaned
 	 * and display the appropriate page as required. 
@@ -101,39 +90,11 @@ public class BookEditLoaned extends Activity {
 	 * @param savedInstanceState The saved bundle (from pausing). Can be null.
 	 */
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onActivityCreated(Bundle savedInstanceState) {
 		Tracker.enterOnCreate(this);
 		try {
-			super.onCreate(savedInstanceState);
-			mDbHelper = new CatalogueDBAdapter(this);
-			mDbHelper.open();
-			
-			getRowId(savedInstanceState);
-			if (mRowId == null || mRowId == 0) {
-				/* This activity must have a row id, i.e. you can't loan a book you haven't created yet */
-				Toast.makeText(this, R.string.unknown_error, Toast.LENGTH_LONG).show();
-				finish();
-				return;
-			}
-			
-			try {
-				Cursor book = mDbHelper.fetchBookById(mRowId);
-				try {
-					if (book != null) {
-						book.moveToFirst();
-					}
-					String title = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE)); 
-					getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " + title);
-					
-				} finally {
-					if (book != null)
-						book.close();
-				}
-			} catch (Exception e) {
-				// do nothing - default title
-			}
-	
-			String user = mDbHelper.fetchLoanByBook(mRowId);
+			super.onActivityCreated(savedInstanceState);
+			String user = mDbHelper.fetchLoanByBook(mEditManager.getBookData().getRowId());
 			if (user == null) {
 				loanTo();
 			} else {
@@ -147,12 +108,8 @@ public class BookEditLoaned extends Activity {
 	}
 	
 	@Override
-	protected void onSaveInstanceState(Bundle outState) {
+	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-
-		// Need to save local data that is not stored in EDITABLE views 
-		// ...including special text stored in TextViews and the like (TextViews are not restored automatically)
-		outState.putLong(CatalogueDBAdapter.KEY_ROWID, mRowId);
 	}
 
 
@@ -160,19 +117,22 @@ public class BookEditLoaned extends Activity {
 	 * Display the loan to page. It is slightly different to the existing loan page
 	 */
 	private void loanTo() {
-		setContentView(R.layout.edit_book_loan);
-		AutoCompleteTextView mUserText = (AutoCompleteTextView) findViewById(R.id.loan_to_who);
+		ScrollView sv = (ScrollView) getView().findViewById(R.id.root);
+		sv.removeAllViews();
+		LayoutInflater inf = getActivity().getLayoutInflater();
+		inf.inflate(R.layout.edit_book_loan, sv);
+
+		AutoCompleteTextView mUserText = (AutoCompleteTextView) sv.findViewById(R.id.loan_to_who);
 		try {
-			ArrayAdapter<String> series_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getFriends());
+			ArrayAdapter<String> series_adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, getFriends());
 			mUserText.setAdapter(series_adapter);
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
-		Button mConfirmButton = (Button) findViewById(R.id.confirm);
+		Button mConfirmButton = (Button) sv.findViewById(R.id.confirm);
 		mConfirmButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
 				String friend = saveLoan();
-				setResult(RESULT_OK);
 				loaned(friend);
 			}
 		});
@@ -184,14 +144,17 @@ public class BookEditLoaned extends Activity {
 	 * @param user The user the book was loaned to
 	 */
 	private void loaned(String user) {
-		setContentView(R.layout.edit_book_loaned);
-		TextView mWhoText = (TextView) findViewById(R.id.who);
+		ScrollView sv = (ScrollView)  getView().findViewById(R.id.root);
+		sv.removeAllViews();
+		LayoutInflater inf = getActivity().getLayoutInflater();
+		inf.inflate(R.layout.edit_book_loaned, sv);
+
+		TextView mWhoText = (TextView) sv.findViewById(R.id.who);
 		mWhoText.setText(user);
-		Button mConfirmButton = (Button) findViewById(R.id.confirm);
+		Button mConfirmButton = (Button) sv.findViewById(R.id.confirm);
 		mConfirmButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
 				removeLoan();
-				setResult(RESULT_OK);
 				loanTo();
 			}
 		});
@@ -203,10 +166,9 @@ public class BookEditLoaned extends Activity {
 	 * @return the user
 	 */
 	private String saveLoan() {
-		AutoCompleteTextView mUserText = (AutoCompleteTextView) findViewById(R.id.loan_to_who);
+		AutoCompleteTextView mUserText = (AutoCompleteTextView) getView().findViewById(R.id.loan_to_who);
 		String friend = mUserText.getText().toString();
-		Bundle values = new Bundle();
-		values.putString(CatalogueDBAdapter.KEY_ROWID, mRowId.toString());
+		BookData values = mEditManager.getBookData();
 		values.putString(CatalogueDBAdapter.KEY_LOANED_TO, friend);
 		mDbHelper.createLoan(values);
 		return friend;
@@ -216,14 +178,17 @@ public class BookEditLoaned extends Activity {
 	 * Delete the user and book combination as a loan from the database
 	 */
 	private void removeLoan() {
-		mDbHelper.deleteLoan(mRowId);
+		mDbHelper.deleteLoan(mEditManager.getBookData().getRowId());
 		return;
 	}
-	
+
 	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		mDbHelper.close();
+	protected void onLoadBookDetails(BookData book, boolean setAllDone) {
+		if (!setAllDone)
+			mFields.setAll(book);
+		// TODO Auto-generated method stub
+		
 	}
+	
 
 }

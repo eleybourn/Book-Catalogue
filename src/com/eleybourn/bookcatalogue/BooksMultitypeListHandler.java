@@ -545,14 +545,14 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 					//dba.close();
 				}
 			} finally {
-				// Not much to see
+				taskContext.setRequiresFinish(mWantFinished);
 			}
 		}
 		/**
 		 * Handle the results of the task.
 		 */
 		@Override
-		public void onFinish() {
+		public void onFinish(Exception e) {
 			try {
 				synchronized(mHolder) {
 					if (mHolder.extrasTask != this) {
@@ -572,10 +572,6 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 			}
 		}
 
-		@Override
-		public boolean requiresOnFinish() {
-			return mWantFinished;
-		}
 	}
 
 	/**

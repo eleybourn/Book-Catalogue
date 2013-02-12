@@ -48,7 +48,7 @@ import com.eleybourn.bookcatalogue.utils.ViewTagger;
  * 
  * @author Philip Warner
  */
-public class TaskListActivity extends net.philipwarner.taskqueue.BindableItemListActivity {
+public class TaskListActivity extends BindableItemListActivity {
 	private CatalogueDBAdapter m_db = null;
 	private TasksCursor m_cursor;
 

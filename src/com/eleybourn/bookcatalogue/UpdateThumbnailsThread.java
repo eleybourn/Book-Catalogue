@@ -353,7 +353,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
 
 		// Update
 		if (newData.size() > 0)
-			mDbHelper.updateBook(bookId, newData, true);
+			mDbHelper.updateBook(bookId, new BookData(newData), true);
 		
 	}
 

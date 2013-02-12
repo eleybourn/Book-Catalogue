@@ -1,5 +1,5 @@
 /*
- * @copyright 2012 Philip Warner
+ * @copyright 2013 Philip Warner
  * @license GNU General Public License
  * 
  * This file is part of Book Catalogue.
@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -31,6 +32,9 @@ import com.eleybourn.bookcatalogue.R;
 
 /**
  * Dialog to edit a specific text field.
+ * 
+ * The constructors and interface are now protected because this really should 
+ * only be called as part of the fragment version.
  * 
  * @author pjw
  */
@@ -47,7 +51,7 @@ public class TextFieldEditor extends AlertDialog {
 	 * 
 	 * @author pjw
 	 */
-	public static interface OnEditListener {
+	protected static interface OnEditListener {
 		public void onSaved(TextFieldEditor dialog, String newText);
 		public void onCancel(TextFieldEditor dialog);
 	}
@@ -57,7 +61,7 @@ public class TextFieldEditor extends AlertDialog {
 	 * 
 	 * @param context		Calling context
 	 */
-	public TextFieldEditor(Context context) {
+	protected TextFieldEditor(Context context) {
 		super(context);
 
 		// Get the layout
@@ -92,7 +96,10 @@ public class TextFieldEditor extends AlertDialog {
 			@Override
 			public void onCancel(DialogInterface arg0) {
 				mListener.onCancel(TextFieldEditor.this);				
-			}});		
+			}});	
+		
+		// Make sure the buttons move if the keyboard appears
+		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 	}
 
 	/** Set the listener */

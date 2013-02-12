@@ -25,7 +25,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import net.philipwarner.taskqueue.QueueManager;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
@@ -35,15 +37,15 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 
+import com.eleybourn.bookcatalogue.backup.BackupManager;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyles;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogFileItem;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogItem;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogOnClickListener;
-import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
+import com.eleybourn.bookcatalogue.filechooser.BackupChooser;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsRegister;
-import com.eleybourn.bookcatalogue.goodreads.ImportAllTask;
-import com.eleybourn.bookcatalogue.goodreads.SendAllBooksTask;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsUtils;
 import com.eleybourn.bookcatalogue.utils.HintManager;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.StorageUtils;
@@ -60,7 +62,6 @@ import com.eleybourn.bookcatalogue.utils.Utils;
 public class AdministrationFunctions extends ActivityWithTasks {
 	private static final int ACTIVITY_BOOKSHELF=1;
 	private static final int ACTIVITY_FIELD_VISIBILITY=2;
-	private static final int ACTIVITY_UPDATE_FROM_INTERNET=3;
 	private CatalogueDBAdapter mDbHelper;
 	private boolean finish_after = false;
 	private boolean mExportOnStartup = false;
@@ -153,14 +154,14 @@ public class AdministrationFunctions extends ActivityWithTasks {
 				AlertDialog alertDialog = new AlertDialog.Builder(AdministrationFunctions.this).setMessage(R.string.import_alert).create();
 				alertDialog.setTitle(R.string.import_data);
 				alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-				alertDialog.setButton(AdministrationFunctions.this.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+				alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, AdministrationFunctions.this.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						importData();
 						//Toast.makeText(pthis, importUpdated + " Existing, " + importCreated + " Created", Toast.LENGTH_LONG).show();
 						return;
 					}
 				}); 
-				alertDialog.setButton2(AdministrationFunctions.this.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+				alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, AdministrationFunctions.this.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						//do nothing
 						return;
@@ -171,32 +172,6 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			}
 		});
 
-		// Debug ONLY!
-		/* Backup Link */
-		View backup = findViewById(R.id.backup_label);
-		// Make line flash when clicked.
-		backup.setBackgroundResource(android.R.drawable.list_selector_background);
-		backup.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				mDbHelper.backupDbFile();
-				Toast.makeText(AdministrationFunctions.this, R.string.backup_success, Toast.LENGTH_LONG).show();
-				return;
-			}
-		});
-
-		/* Export Link */
-		View thumb = findViewById(R.id.thumb_label);
-		// Make line flash when clicked.
-		thumb.setBackgroundResource(android.R.drawable.list_selector_background);
-		thumb.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				updateThumbnails();
-				return;
-			}
-		});
-		
 		/* Goodreads SYNC Link */
 		{
 			View v = findViewById(R.id.sync_with_goodreads_label);
@@ -205,7 +180,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			v.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					importAllFromGoodreads(true);
+					GoodreadsUtils.importAllFromGoodreads(AdministrationFunctions.this, true);
 					return;
 				}
 			});
@@ -219,7 +194,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			v.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					importAllFromGoodreads(false);
+					GoodreadsUtils.importAllFromGoodreads(AdministrationFunctions.this, false);
 					return;
 				}
 			});
@@ -233,37 +208,11 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			v.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					sendBooksToGoodreads();
+					GoodreadsUtils.sendBooksToGoodreads(AdministrationFunctions.this);
 					return;
 				}
 			});
 		}
-
-		{
-			/* Tasks setup Link */
-			View v = findViewById(R.id.background_tasks_label);
-			// Make line flash when clicked.
-			v.setBackgroundResource(android.R.drawable.list_selector_background);
-			v.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					showBackgroundTasks();
-					return;
-				}
-			});
-		}
-
-		///* Task errors setup Link */
-		//View errTest = findViewById(R.id.task_errors_label);
-		//// Make line flash when clicked.
-		//errTest.setBackgroundResource(android.R.drawable.list_selector_background);
-		//errTest.setOnClickListener(new OnClickListener() {
-		//	@Override
-		//	public void onClick(View v) {
-		//		showEvents();
-		//		return;
-		//	}
-		//});
 
 		/* LibraryThing auth Link */
 		View ltAuth = findViewById(R.id.librarything_auth);
@@ -316,19 +265,6 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			}
 		});
 		
-		/* Reset Hints Link */
-		View hints = findViewById(R.id.reset_hints_label);
-		// Make line flash when clicked.
-		hints.setBackgroundResource(android.R.drawable.list_selector_background);
-		hints.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				HintManager.resetHints();
-				Toast.makeText(AdministrationFunctions.this, R.string.hints_have_been_reset, Toast.LENGTH_LONG).show();
-				return;
-			}
-		});
-
 		// Edit Book list styles
 		{
 			View v = findViewById(R.id.edit_styles_label);
@@ -342,6 +278,66 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			});
 		}
 		
+		{
+			/* Update Fields Link */
+			View thumb = findViewById(R.id.thumb_label);
+			// Make line flash when clicked.
+			thumb.setBackgroundResource(android.R.drawable.list_selector_background);
+			thumb.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					updateThumbnails();
+					return;
+				}
+			});
+		}
+
+		{
+			// Debug ONLY!
+			/* Backup Link */
+			View backup = findViewById(R.id.backup_label);
+			// Make line flash when clicked.
+			backup.setBackgroundResource(android.R.drawable.list_selector_background);
+			backup.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					mDbHelper.backupDbFile();
+					Toast.makeText(AdministrationFunctions.this, R.string.backup_success, Toast.LENGTH_LONG).show();
+					return;
+				}
+			});
+
+		}
+
+		{
+			/* Tasks setup Link */
+			View v = findViewById(R.id.background_tasks_label);
+			// Make line flash when clicked.
+			v.setBackgroundResource(android.R.drawable.list_selector_background);
+			v.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					showBackgroundTasks();
+					return;
+				}
+			});
+		}
+
+		{
+			/* Reset Hints Link */
+			View hints = findViewById(R.id.reset_hints_label);
+			// Make line flash when clicked.
+			hints.setBackgroundResource(android.R.drawable.list_selector_background);
+			hints.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					HintManager.resetHints();
+					Toast.makeText(AdministrationFunctions.this, R.string.hints_have_been_reset, Toast.LENGTH_LONG).show();
+					return;
+				}
+			});
+		}
+
 		// Erase cover cache
 		{
 			View v = findViewById(R.id.erase_cover_cache_label);
@@ -352,7 +348,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 				public void onClick(View v) {
 					Utils utils = new Utils();
 					try {
-						utils.eraseCoverCache();					
+						utils.eraseCoverCache();
 					} finally {
 						utils.close();
 					}
@@ -360,51 +356,32 @@ public class AdministrationFunctions extends ActivityWithTasks {
 				}
 			});
 		}
-
-	}
-
-	/**
-	 * Display a dialog warning the user that goodreads authentication is required; gives them
-	 * the options: 'request now', 'more info' or 'cancel'.
-	 */
-	public void sendBooksToGoodreads() {
-
-		if (!checkCanSendToGoodreads())
-			return;
-
-		// Get the title		
-		final AlertDialog alertDialog = new AlertDialog.Builder(this).setTitle(R.string.send_books_to_goodreads).setMessage(R.string.send_books_to_goodreads_blurb).create();
-
-		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, getResources().getString(R.string.send_updated), new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				alertDialog.dismiss();
-				AdministrationFunctions.this.sendToGoodreads(true);
-			}
-		});
-		
-		alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, getResources().getString(R.string.send_all), new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				alertDialog.dismiss();
-				AdministrationFunctions.this.sendToGoodreads(false);
-			}
-		});
-
-		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				alertDialog.dismiss();
-			}
-		}); 
-
-		alertDialog.show();		
-	}
-
-	/**
-	 * Start the activity that shows the basic details of background tasks.
-	 */
-	private void showBackgroundTasks() {
-		Intent i = new Intent(this, TaskListActivity.class);
-		startActivity(i);
+		{
+			/* Backup Catalogue Link */
+			View v = findViewById(R.id.backup_catalogue_label);
+			// Make line flash when clicked.
+			v.setBackgroundResource(android.R.drawable.list_selector_background);
+			v.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					backupCatalogue(AdministrationFunctions.this);
+					return;
+				}
+			});
+		}
+		{
+			/* Restore Catalogue Link */
+			View v = findViewById(R.id.restore_catalogue_label);
+			// Make line flash when clicked.
+			v.setBackgroundResource(android.R.drawable.list_selector_background);
+			v.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					restoreCatalogue();
+					return;
+				}
+			});
+		}
 	}
 
 	///**
@@ -415,79 +392,6 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	//	startActivity(i);
 	//}
 
-	/**
-	 * Start a background task that imports books from goodreads.
-	 */
-	private void importAllFromGoodreads(boolean isSync) {
-
-		if (BcQueueManager.getQueueManager().hasActiveTasks(BcQueueManager.CAT_GOODREADS_IMPORT_ALL)) {
-			Toast.makeText(this, R.string.requested_task_is_already_queued, Toast.LENGTH_LONG).show();
-			return;
-		}
-		if (BcQueueManager.getQueueManager().hasActiveTasks(BcQueueManager.CAT_GOODREADS_EXPORT_ALL)) {
-			Toast.makeText(this, R.string.export_task_is_already_queued, Toast.LENGTH_LONG).show();
-			return;
-		}
-
-		if (!checkGoodreadsAuth())
-			return;
-
-		QueueManager.getQueueManager().enqueueTask(new ImportAllTask(isSync), BcQueueManager.QUEUE_MAIN, 0);
-		Toast.makeText(AdministrationFunctions.this, R.string.task_has_been_queued_in_background, Toast.LENGTH_LONG).show();
-	}
-
-	/**
-	 * Check that goodreads is authorized for this app, and optionally allow user to request auth or more info
-	 * 
-	 * @return	Flag indicating OK
-	 */
-	private boolean checkGoodreadsAuth() {
-		// Make sure GR is authorized for this app
-		GoodreadsManager grMgr = new GoodreadsManager();
-
-		if (!grMgr.hasCredentials()) {
-			StandardDialogs.goodreadsAuthAlert(this);
-			return false;
-		}
-
-		if (!grMgr.hasValidCredentials()) {
-			StandardDialogs.goodreadsAuthAlert(this);
-			return false;
-		}
-
-		return true;		
-	}
-	
-	/**
-	 * Check that no other sync-related jobs are queued, and that goodreads is authorized for this app
-	 * 
-	 * @return	Flag indicating OK
-	 */
-	private boolean checkCanSendToGoodreads() {
-		if (BcQueueManager.getQueueManager().hasActiveTasks(BcQueueManager.CAT_GOODREADS_EXPORT_ALL)) {
-			Toast.makeText(this, R.string.requested_task_is_already_queued, Toast.LENGTH_LONG).show();
-			return false;
-		}
-		if (BcQueueManager.getQueueManager().hasActiveTasks(BcQueueManager.CAT_GOODREADS_IMPORT_ALL)) {
-			Toast.makeText(this, R.string.import_task_is_already_queued, Toast.LENGTH_LONG).show();
-			return false;
-		}
-
-		return checkGoodreadsAuth();
-	}
-
-	/**
-	 * Start a background task that exports all books to goodreads.
-	 */
-	private void sendToGoodreads(boolean updatesOnly) {
-
-		if (!checkCanSendToGoodreads())
-			return;
-
-		QueueManager.getQueueManager().enqueueTask(new SendAllBooksTask(updatesOnly), BcQueueManager.QUEUE_MAIN, 0);
-		Toast.makeText(AdministrationFunctions.this, R.string.task_has_been_queued_in_background, Toast.LENGTH_LONG).show();
-	}
-	
 	/**
 	 * Load the Bookshelf Activity
 	 */
@@ -504,16 +408,6 @@ public class AdministrationFunctions extends ActivityWithTasks {
 		startActivityForResult(i, ACTIVITY_FIELD_VISIBILITY);
 	}
 	
-	/**
-	 * Update all (non-existent) thumbnails
-	 * 
-	 * There is a current limitation that restricts the search to only books with an ISBN
-	 */
-	private void updateThumbnails() {
-		Intent i = new Intent(this, UpdateFromInternet.class);
-		startActivityForResult(i, ACTIVITY_UPDATE_FROM_INTERNET);
-	}
-
 
 	/**
 	 * Export all data to a CSV file
@@ -578,7 +472,6 @@ public class AdministrationFunctions extends ActivityWithTasks {
 		switch(requestCode) {
 		case ACTIVITY_BOOKSHELF:
 		case ACTIVITY_FIELD_VISIBILITY:
-		case ACTIVITY_UPDATE_FROM_INTERNET:
 			//do nothing (yet)
 			break;
 		}
@@ -628,7 +521,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 				final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND_MULTIPLE);
 				emailIntent.setType("plain/text");
 				//emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, context.getString(R.string.debug_email).split(";"));
-				String subject = "[" + getString(R.string.app_name) + "] " + getString(R.string.export_data);
+				String subject = "[" + getString(R.string.app_name) + "] " + getString(R.string.export_to_csv);
 				emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
 				//emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, context.getString(R.string.debug_body));
 				//has to be an ArrayList
@@ -675,5 +568,42 @@ public class AdministrationFunctions extends ActivityWithTasks {
 				Logger.logError(e);
 			}
 		}
+	}
+
+	/**
+	 * Update all (non-existent) thumbnails
+	 * 
+	 * There is a current limitation that restricts the search to only books
+	 * with an ISBN
+	 */
+	private void updateThumbnails() {
+		Intent i = new Intent(this, UpdateFromInternet.class);
+		startActivity(i);
+	}
+
+	/**
+	 * Start the activity that shows the basic details of background tasks.
+	 */
+	private void showBackgroundTasks() {
+		Intent i = new Intent(this, TaskListActivity.class);
+		startActivity(i);
+	}
+
+	/**
+	 * Start the archiving activity
+	 */
+	public static void backupCatalogue(Activity a) {
+		Intent i = new Intent(a, BackupChooser.class);
+		i.putExtra(BackupChooser.EXTRA_MODE, BackupChooser.EXTRA_MODE_SAVE_AS);
+		a.startActivity(i);
+	}
+	
+	/**
+	 * Start the restore activity
+	 */
+	private void restoreCatalogue() {
+		Intent i = new Intent(this, BackupChooser.class);
+		i.putExtra(BackupChooser.EXTRA_MODE, BackupChooser.EXTRA_MODE_OPEN);
+		startActivity(i);
 	}
 }

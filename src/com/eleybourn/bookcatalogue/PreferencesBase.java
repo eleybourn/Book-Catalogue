@@ -20,7 +20,6 @@
 
 package com.eleybourn.bookcatalogue;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,6 +28,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
+import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.properties.Properties;
 import com.eleybourn.bookcatalogue.utils.Logger;
 
@@ -37,7 +37,7 @@ import com.eleybourn.bookcatalogue.utils.Logger;
  * 
  * @author Philip Warner
  */
-public abstract class PreferencesBase extends Activity {
+public abstract class PreferencesBase extends BookCatalogueActivity {
 
 	/** Get the layout of the subclass */
 	public abstract int getLayout();

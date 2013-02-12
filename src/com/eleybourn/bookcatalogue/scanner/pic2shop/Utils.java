@@ -1,13 +1,11 @@
 package com.eleybourn.bookcatalogue.scanner.pic2shop;
 
 import static android.content.Intent.ACTION_VIEW;
-import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
-import android.widget.Toast;
 
 /**
  * Based on code from pic2shop sample at github

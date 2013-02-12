@@ -31,7 +31,7 @@ import static org.acra.ReportField.USER_COMMENT;
 import static org.acra.ReportField.USER_CRASH_DATE;
 
 import org.acra.ACRA;
-import org.acra.CrashReportData;
+import org.acra.collector.CrashReportData;
 import org.acra.ErrorReporter;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
@@ -60,7 +60,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  */
 @ReportsCrashes(formKey = "", // will not be used
 	mailTo = "philip.warner@rhyme.com.au,eleybourn@gmail.com",
-	mode = ReportingInteractionMode.NOTIFICATION,
+	mode = ReportingInteractionMode.DIALOG,
 	customReportContent = { USER_COMMENT, USER_APP_START_DATE, USER_CRASH_DATE, APP_VERSION_NAME, APP_VERSION_CODE, ANDROID_VERSION, PHONE_MODEL, CUSTOM_DATA, STACK_TRACE },
 	//optional, displayed as soon as the crash occurs, before collecting data which can take a few seconds
 	resToastText = R.string.crash_toast_text, 
@@ -169,7 +169,7 @@ public class BookCatalogueApp extends Application {
 			mCollationCaseSensitive = CollationCaseSensitive.isCaseSensitive(db);
 		return mCollationCaseSensitive;
 	}
-	
+
 //	/**
 //	 * Currently the QueueManager is implemented as a service. This is not clearly necessary
 //	 * but has the huge advantage of making a 'context' object available in the Service

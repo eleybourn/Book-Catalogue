@@ -31,17 +31,14 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.eleybourn.bookcatalogue.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.CoverBrowser.OnImageSelectedListener;
 import com.eleybourn.bookcatalogue.Fields.Field;
-import com.eleybourn.bookcatalogue.Fields.FieldValidator;
 import com.eleybourn.bookcatalogue.cropper.CropCropImage;
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.utils.HintManager;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.StorageUtils;
 import com.eleybourn.bookcatalogue.utils.Utils;
-import com.eleybourn.bookcatalogue.utils.ViewTagger;
 
 /**
  * Abstract class for creating activities containing book details. 
@@ -49,7 +46,7 @@ import com.eleybourn.bookcatalogue.utils.ViewTagger;
  * initializing fields and display metrics and other common tasks.
  * @author n.silin
  */
-public abstract class BookDetailsAbstract extends Activity {
+public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 
 	public static final Character BOOKSHELF_SEPERATOR = ',';
 	
@@ -77,24 +74,12 @@ public abstract class BookDetailsAbstract extends Activity {
 	
 	/** Used to display a hint if user rotates a camera image */
 	private boolean mGotCameraImage = false;
-	/**
-	 * Database row id of the selected book.
-	 */
-	protected Long mRowId;
-	/**
-	 * Fields containing book information
-	 */
-	protected Fields mFields = null;
-	protected CatalogueDBAdapter mDbHelper;
 	
 	protected android.util.DisplayMetrics mMetrics;
 	/** Minimum of MAX_EDIT_THUMBNAIL_SIZE and 1/3rd of largest screen dimension */
 	protected Integer mThumbEditSize;
 	/** Zoom size is minimum of MAX_ZOOM_THUMBNAIL_SIZE and largest screen dimension. */
 	protected Integer mThumbZoomSize;
-	
-	protected ArrayList<Author> mAuthorList = null;
-	protected ArrayList<Series> mSeriesList = null;
 	
 	/**
 	 * Handler to process a cover selected from the CoverBrowser.
@@ -104,7 +89,7 @@ public abstract class BookDetailsAbstract extends Activity {
 		public void onImageSelected(String fileSpec) {
 			if (mCoverBrowser != null && fileSpec != null) {
 				// Get the current file
-				File bookFile = getCoverFile(mRowId);
+				File bookFile = getCoverFile(mEditManager.getBookData().getRowId());
 				// Get the new file
 				File newFile = new File(fileSpec);					
 				// Overwrite with new file
@@ -155,7 +140,7 @@ public abstract class BookDetailsAbstract extends Activity {
 	};
 	
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		Tracker.handleEvent(this, "onActivityResult(" + requestCode + "," + resultCode + ")", Tracker.States.Enter);			
 		try {
 			super.onActivityResult(requestCode, resultCode, intent);
@@ -194,34 +179,43 @@ public abstract class BookDetailsAbstract extends Activity {
 						// Use the original BC code for anything that has a 'content' scheme.
 						if (selectedImageUri.getScheme().equalsIgnoreCase("content")) {
 							String[] projection = { MediaStore.Images.Media.DATA };
-							Cursor cursor = managedQuery(selectedImageUri, projection, null, null, null);
-							int column_index = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
-							if (column_index < 0 || !cursor.moveToFirst()) {
-								Logger.logError(new RuntimeException("Add from gallery failed (col = " + column_index +"), name = " + MediaStore.Images.Media.DATA));
-								// This should not happen, but tell the user and log something
-								String s = getResources().getString(R.string.no_image_found) + ". " + getResources().getString(R.string.if_the_problem_persists);
-								Toast.makeText(this, s, Toast.LENGTH_LONG).show();
-							} else {
-								String selectedImagePath = cursor.getString(column_index);
-								
-								File thumb = new File(selectedImagePath);
-								File real = getCoverFile(mRowId);
+							Cursor cursor = this.getActivity().getContentResolver().query(selectedImageUri, projection, null, null, null);
+							try {
+								int column_index = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
+								if (column_index < 0 || !cursor.moveToFirst()) {
+									Logger.logError(new RuntimeException("Add from gallery failed (col = " + column_index +"), name = " + MediaStore.Images.Media.DATA));
+									// This should not happen, but tell the user and log something
+									String s = getResources().getString(R.string.no_image_found) + ". " + getResources().getString(R.string.if_the_problem_persists);
+									Toast.makeText(getActivity(), s, Toast.LENGTH_LONG).show();
+								} else {
+									String selectedImagePath = cursor.getString(column_index);
+									
+									File thumb = new File(selectedImagePath);
+									File real = getCoverFile(mEditManager.getBookData().getRowId());
+									try {
+										copyFile(thumb, real);
+									} catch (IOException e) {
+										Logger.logError(e, "copyImage failed in add from gallery");
+										String s = getResources().getString(R.string.could_not_copy_image) + ". " + getResources().getString(R.string.if_the_problem_persists);
+										Toast.makeText(getActivity(), s, Toast.LENGTH_LONG).show();
+									}
+									// Update the ImageView with the new image
+									setCoverImage();					
+								}								
+							} finally {
 								try {
-									copyFile(thumb, real);
-								} catch (IOException e) {
-									Logger.logError(e, "copyImage failed in add from gallery");
-									String s = getResources().getString(R.string.could_not_copy_image) + ". " + getResources().getString(R.string.if_the_problem_persists);
-									Toast.makeText(this, s, Toast.LENGTH_LONG).show();
+									if (cursor != null && !cursor.isClosed())
+										cursor.close();									
+								} catch (Exception e) {
+									
 								}
-								// Update the ImageView with the new image
-								setCoverImage();					
 							}
 						} else {
 							boolean imageOk = false;
 							// If no 'content' scheme, then use the content resolver.
 							try {
-								InputStream in = getContentResolver().openInputStream(selectedImageUri);
-								imageOk = Utils.saveInputToFile(in, getCoverFile(mRowId));
+								InputStream in = getActivity().getContentResolver().openInputStream(selectedImageUri);
+								imageOk = Utils.saveInputToFile(in, getCoverFile(mEditManager.getBookData().getRowId()));
 							} catch (FileNotFoundException e) {
 								Logger.logError(e, "Unable to copy content to file");
 							}
@@ -230,20 +224,20 @@ public abstract class BookDetailsAbstract extends Activity {
 								setCoverImage();									
 							} else {
 								String s = getResources().getString(R.string.could_not_copy_image) + ". " + getResources().getString(R.string.if_the_problem_persists);
-								Toast.makeText(this, s, Toast.LENGTH_LONG).show();								
+								Toast.makeText(getActivity(), s, Toast.LENGTH_LONG).show();								
 							}								
 						}						
 					} else {
 						/* Deal with the case where the chooser returns a null intent. This seems to happen 
 						 * when the filename is not properly understood by the choose (eg. an apostrophe in 
 						 * the file name confuses ES File Explorer in the current version as of 23-Sep-2012. */
-						Toast.makeText(this, R.string.could_not_copy_image, Toast.LENGTH_LONG).show();
+						Toast.makeText(getActivity(), R.string.could_not_copy_image, Toast.LENGTH_LONG).show();
 					}
 				}
 				return;
 			case CODE_CROP_RESULT_EXTERNAL:
 			{
-				File thumbFile = getCoverFile(mRowId);
+				File thumbFile = getCoverFile(mEditManager.getBookData().getRowId());
 				File cropped = this.getCroppedImageFileName();
 				if (resultCode == Activity.RESULT_OK){
 					if (cropped.exists()) {
@@ -262,7 +256,7 @@ public abstract class BookDetailsAbstract extends Activity {
 			}
 			case CODE_CROP_RESULT_INTERNAL:
 			{
-				File thumbFile = getCoverFile(mRowId);
+				File thumbFile = getCoverFile(mEditManager.getBookData().getRowId());
 				File cropped = this.getCroppedImageFileName();
 				if (resultCode == Activity.RESULT_OK) {
 					if (cropped.exists()) {
@@ -279,11 +273,12 @@ public abstract class BookDetailsAbstract extends Activity {
 		}
 	}
 	
-	@Override
 	/* Note that you should use setContentView() method in descendant before
-	 * running this. */
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+	 * running this. 
+	 */
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
 		
 		// See how big the display is and use that to set bitmap sizes
 		setDisplayMetrics();
@@ -292,22 +287,20 @@ public abstract class BookDetailsAbstract extends Activity {
 		initFields();
 		
 		//Set zooming by default on clicking on image
-		findViewById(R.id.row_img).setOnClickListener(new OnClickListener() {
+		getView().findViewById(R.id.row_img).setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				showZoomedThumb(mRowId);
+				showZoomedThumb(mEditManager.getBookData().getRowId());
 			}
 		});
 		
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
+		//Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 		
-		mDbHelper = new CatalogueDBAdapter(this);
-		mDbHelper.open(); //Open here. We will close it in onDestroy method later.
 	}
 	
 	@Override
-	protected void onPause() {
+	public void onPause() {
 		Tracker.enterOnPause(this);
 		super.onPause();
 
@@ -319,18 +312,18 @@ public abstract class BookDetailsAbstract extends Activity {
 		Tracker.exitOnPause(this);
 	}
 	
-	@Override 
-	protected void onResume() {
+	@Override
+	public void onResume() {
 		Tracker.enterOnResume(this);
 		super.onResume();
 		
 		// Fix background
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
+		//Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
 		Tracker.exitOnResume(this);
 	}
 	
 	@Override
-	protected void onDestroy() {
+	public void onDestroy() {
 		Tracker.enterOnDestroy(this);
 		super.onDestroy();
 		mDbHelper.close();
@@ -342,8 +335,8 @@ public abstract class BookDetailsAbstract extends Activity {
 		Tracker.handleEvent(this, "Context Menu Item " + item.getItemId(), Tracker.States.Enter);
 
 		try {
-			ImageView iv = (ImageView)findViewById(R.id.row_img);
-			File thumbFile = getCoverFile(mRowId);
+			ImageView iv = (ImageView)getView().findViewById(R.id.row_img);
+			File thumbFile = getCoverFile(mEditManager.getBookData().getRowId());
 	
 			switch(item.getItemId()) {
 			case CONTEXT_ID_DELETE:
@@ -353,7 +346,7 @@ public abstract class BookDetailsAbstract extends Activity {
 			case CONTEXT_ID_SUBMENU_ROTATE_THUMB:
 				// Just a submenu; skip, but display a hint if user is rotating a camera image
 				if (mGotCameraImage) {
-					HintManager.displayHint(this, R.string.hint_autorotate_camera_images, null);
+					HintManager.displayHint(getActivity(), R.string.hint_autorotate_camera_images, null);
 					mGotCameraImage = false;
 				}
 				return true;
@@ -397,9 +390,9 @@ public abstract class BookDetailsAbstract extends Activity {
 			case CONTEXT_ID_SHOW_ALT_COVERS:
 				String isbn = mFields.getField(R.id.isbn).getValue().toString();
 				if (isbn == null || isbn.trim().length() == 0) {
-					Toast.makeText(this, getResources().getString(R.string.editions_require_isbn), Toast.LENGTH_LONG).show();
+					Toast.makeText(getActivity(), getResources().getString(R.string.editions_require_isbn), Toast.LENGTH_LONG).show();
 				} else {
-					mCoverBrowser = new CoverBrowser(this, mMetrics, isbn, mOnImageSelectedListener);
+					mCoverBrowser = new CoverBrowser(getActivity(), mMetrics, isbn, mOnImageSelectedListener);
 					mCoverBrowser.showEditionCovers();				
 				}
 				return true;
@@ -461,7 +454,7 @@ public abstract class BookDetailsAbstract extends Activity {
 	}
 	
 	private void cropCoverImageInternal(File thumbFile) {
-		Intent crop_intent = new Intent(this, CropCropImage.class);
+		Intent crop_intent = new Intent(getActivity(), CropCropImage.class);
 		// here you have to pass absolute path to your file
 		crop_intent.putExtra("image-path", thumbFile.getAbsolutePath());
 		crop_intent.putExtra("scale", true);
@@ -502,10 +495,10 @@ public abstract class BookDetailsAbstract extends Activity {
 				cropped.delete();
 			intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(cropped.getAbsolutePath())));
 	
-			List<ResolveInfo> list = getPackageManager().queryIntentActivities( intent, 0 );
+			List<ResolveInfo> list = getActivity().getPackageManager().queryIntentActivities( intent, 0 );
 		    int size = list.size();
 		    if (size == 0) {
-		        Toast.makeText(this, "Can not find image crop app", Toast.LENGTH_SHORT).show();
+		        Toast.makeText(getActivity(), "Can not find image crop app", Toast.LENGTH_SHORT).show();
 		    } else {
 				startActivityForResult(intent, CODE_CROP_RESULT_EXTERNAL);		    	
 		    }
@@ -520,7 +513,7 @@ public abstract class BookDetailsAbstract extends Activity {
 	 */
 	private void deleteThumbnail() {
 		try {
-			File thumbFile = getCoverFile(mRowId);
+			File thumbFile = getCoverFile(mEditManager.getBookData().getRowId());
 			if (thumbFile != null && thumbFile.exists())
 				thumbFile.delete();
 		} catch (Exception e) {
@@ -574,13 +567,9 @@ public abstract class BookDetailsAbstract extends Activity {
 	 */
 	protected void populateAuthorListField() {
 
-		String newText;
-		if (mAuthorList.size() == 0)
+		String newText = mEditManager.getBookData().getAuthorTextShort();
+		if (newText == null || newText.equals("")) {
 			newText = getResources().getString(R.string.set_authors);
-		else {
-			newText = mAuthorList.get(0).getDisplayName();
-			if (mAuthorList.size() > 1)
-				newText += " " + getResources().getString(R.string.and_others);
 		}
 		mFields.getField(R.id.author).setValue(newText);	
 	}
@@ -593,21 +582,24 @@ public abstract class BookDetailsAbstract extends Activity {
 	 * for example. 
 	 */
 	protected void populateSeriesListField() {
-
 		String newText;
 		int size = 0;
+		ArrayList<Series> list = mEditManager.getBookData().getSeriesList();
 		try {
-			size = mSeriesList.size();
+			size = list.size();
 		} catch (NullPointerException e) {
 			size = 0;
 		}
-		if (size == 0)
+		if (size == 0) {
 			newText = getResources().getString(R.string.set_series);
-		else {
-			Utils.pruneSeriesList(mSeriesList);
-			Utils.pruneList(mDbHelper, mSeriesList);
-			newText = mSeriesList.get(0).getDisplayName();
-			if (mSeriesList.size() > 1)
+		} else {
+			boolean trimmed = Utils.pruneSeriesList(list);
+			trimmed |= Utils.pruneList(mDbHelper, list);
+			if (trimmed) {
+				mEditManager.getBookData().setSeriesList(list);
+			}
+			newText = list.get(0).getDisplayName();
+			if (list.size() > 1)
 				newText += " " + getResources().getString(R.string.and_others);
 		}
 		mFields.getField(R.id.series).setValue(newText);		
@@ -621,7 +613,7 @@ public abstract class BookDetailsAbstract extends Activity {
 		boolean retry = true;
 		while (retry) {
 			try {
-				File thumbFile = getCoverFile(mRowId);
+				File thumbFile = getCoverFile(mEditManager.getBookData().getRowId());
 
 				Bitmap origBm = Utils.fetchFileIntoImageView(thumbFile, null, mThumbZoomSize*2, mThumbZoomSize*2, true );
 				if (origBm == null)
@@ -654,27 +646,15 @@ public abstract class BookDetailsAbstract extends Activity {
 			retry = false;
 		}
 	}
-	
-	/**
-	 * Set and return {@link #mRowId} value by activity intent extras. Return:<br> 
-	 * <b>null</b> if there is no extars, <br> 
-	 * <b>0</b> if extras is exist but there is no {@link CatalogueDBAdapter#KEY_ROWID} extra,<br>
-	 * <b>rowId</b> if all is OK  
-	 */
-	protected Long setRowIdByExtras() {
-		/* Get any information from the extras bundle */
-		Bundle extras = getIntent().getExtras();
-		mRowId = extras != null ? extras.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
-		return mRowId;
-	}
-	
+		
 	/**
 	 * Ensure that the cached thumbnails for this book are deleted (if present)
 	 */
 	private void invalidateCachedThumbnail() {
-		if (mRowId != null && mRowId != 0) {
+		final Long rowId = mEditManager.getBookData().getRowId();
+		if (rowId != null && rowId != 0) {
 			try {
-				String hash = mDbHelper.getBookUuid(mRowId);			
+				String hash = mDbHelper.getBookUuid(rowId);			
 				Utils u = new Utils();
 				u.deleteCachedBookCovers(hash);
 			} catch (Exception e) {
@@ -687,23 +667,22 @@ public abstract class BookDetailsAbstract extends Activity {
 	 * Add all book fields with corresponding validators.
 	 */
 	protected void initFields() {
-		mFields = new Fields(this);
 
-		// Generic validators; if field-specific defaults are needed, create a new one.
-		FieldValidator integerValidator = new Fields.IntegerValidator("0");
-		FieldValidator nonBlankValidator = new Fields.NonBlankValidator();
-		FieldValidator blankOrIntegerValidator = new Fields.OrValidator(new Fields.BlankValidator(),
-				new Fields.IntegerValidator("0"));
-		FieldValidator blankOrFloatValidator = new Fields.OrValidator(new Fields.BlankValidator(),
-				new Fields.FloatValidator("0.00"));
-		// FieldValidator blankOrDateValidator = new Fields.OrValidator(new Fields.BlankValidator(),
-		// new Fields.DateValidator());
+//		// Generic validators; if field-specific defaults are needed, create a new one.
+//		FieldValidator integerValidator = new Fields.IntegerValidator("0");
+//		FieldValidator nonBlankValidator = new Fields.NonBlankValidator();
+//		FieldValidator blankOrIntegerValidator = new Fields.OrValidator(new Fields.BlankValidator(),
+//				new Fields.IntegerValidator("0"));
+//		FieldValidator blankOrFloatValidator = new Fields.OrValidator(new Fields.BlankValidator(),
+//				new Fields.FloatValidator("0.00"));
+//		// FieldValidator blankOrDateValidator = new Fields.OrValidator(new Fields.BlankValidator(),
+//		// new Fields.DateValidator());
 
 		/* Title has some post-processing on the text, to move leading 'A', 'The' etc to the end.
 		 * While we could do it in a formatter, it it not really a display-oriented function and
 		 * is handled in preprocessing in the database layer since it also needs to be applied
 		 * to imported record etc. */
-		mFields.add(R.id.title, CatalogueDBAdapter.KEY_TITLE, nonBlankValidator);
+		mFields.add(R.id.title, CatalogueDBAdapter.KEY_TITLE, null);
 
 		/* Anthology needs special handling, and we use a formatter to do this. If the original
 		 * value was 0 or 1, then setting/clearing it here should just set the new value to 0 or 1.
@@ -712,56 +691,78 @@ public abstract class BookDetailsAbstract extends Activity {
 		 * So, despite if being a checkbox, we use an integerValidator and use a special formatter.
 		 * We also store it in the tag field so that it is automatically serialized with the
 		 * activity. */
-		mFields.add(R.id.anthology, CatalogueDBAdapter.KEY_ANTHOLOGY, integerValidator, new Fields.FieldFormatter() {
-			public String format(Field f, String s) {
-				// Save the original value, if its an integer
-				try {
-					Integer i = Integer.parseInt(s);
-					ViewTagger.setTag(f.getView(), R.id.TAG_ORIGINAL_VALUE, i);
-				} catch (Exception e) {
-					ViewTagger.setTag(f.getView(), R.id.TAG_ORIGINAL_VALUE, 0);
-				}
-				// Just pass the string onwards to the accessor.
-				return s;
-			}
+		mFields.add(R.id.anthology, BookData.KEY_ANTHOLOGY, null); 
+//		, new Fields.FieldFormatter() {
+//			public String format(Field f, String s) {
+//				// Save the original value, if its an integer
+//				try {
+//					Integer i = Integer.parseInt(s);
+//					ViewTagger.setTag(f.getView(), R.id.TAG_ORIGINAL_VALUE, i);
+//				} catch (Exception e) {
+//					ViewTagger.setTag(f.getView(), R.id.TAG_ORIGINAL_VALUE, 0);
+//				}
+//				// Just pass the string onwards to the accessor.
+//				return s;
+//			}
+//
+//			public String extract(Field f, String s) {
+//				// Parse the string the CheckBox returns us (0 or 1)
+//				Integer i = Integer.parseInt(s);
+//				Integer orig = (Integer) ViewTagger.getTag(f.getView(), R.id.TAG_ORIGINAL_VALUE);
+//				try {
+//					if (i != 0 && orig > 0) {
+//						// If non-zero, and original was non-zero, re-use original
+//						return orig.toString();
+//					} else {
+//						// Just return what we got.
+//						return s;
+//					}
+//				} catch (NullPointerException e) {
+//					return s;
+//				}
+//			}
+//		});
+//
+//		mFields.add(R.id.author, "", CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, nonBlankValidator);
+//		mFields.add(R.id.isbn, CatalogueDBAdapter.KEY_ISBN, null);
+//		mFields.add(R.id.publisher, CatalogueDBAdapter.KEY_PUBLISHER, null);
+//		mFields.add(R.id.date_published_button, "", CatalogueDBAdapter.KEY_DATE_PUBLISHED, null);
+//		mFields.add(R.id.date_published, CatalogueDBAdapter.KEY_DATE_PUBLISHED, CatalogueDBAdapter.KEY_DATE_PUBLISHED,
+//				null, new Fields.DateFieldFormatter());
+//		mFields.add(R.id.series, CatalogueDBAdapter.KEY_SERIES_NAME, CatalogueDBAdapter.KEY_SERIES_NAME, null);
+//		mFields.add(R.id.list_price, "list_price", blankOrFloatValidator);
+//		mFields.add(R.id.pages, CatalogueDBAdapter.KEY_PAGES, blankOrIntegerValidator);
+//		mFields.add(R.id.format, CatalogueDBAdapter.KEY_FORMAT, null);
+//		mFields.add(R.id.bookshelf, "", null);
+//		mFields.add(R.id.description, CatalogueDBAdapter.KEY_DESCRIPTION, null);
+//		mFields.add(R.id.genre, CatalogueDBAdapter.KEY_GENRE, null);
+//		
+//		mFields.add(R.id.row_img, "", "thumbnail", null);
+//		mFields.getField(R.id.row_img).getView().setOnCreateContextMenuListener(mCreateBookThumbContextMenuListener);
+//		
+//		mFields.add(R.id.format_button, "", CatalogueDBAdapter.KEY_FORMAT, null);
+//		mFields.add(R.id.bookshelf_text, "bookshelf_text", null).doNoFetch = true; // Output-only field
 
-			public String extract(Field f, String s) {
-				// Parse the string the CheckBox returns us (0 or 1)
-				Integer i = Integer.parseInt(s);
-				Integer orig = (Integer) ViewTagger.getTag(f.getView(), R.id.TAG_ORIGINAL_VALUE);
-				try {
-					if (i != 0 && orig > 0) {
-						// If non-zero, and original was non-zero, re-use original
-						return orig.toString();
-					} else {
-						// Just return what we got.
-						return s;
-					}
-				} catch (NullPointerException e) {
-					return s;
-				}
-			}
-		});
 
-		mFields.add(R.id.author, "", CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, nonBlankValidator);
+		mFields.add(R.id.author, "", CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, null);
 		mFields.add(R.id.isbn, CatalogueDBAdapter.KEY_ISBN, null);
 		mFields.add(R.id.publisher, CatalogueDBAdapter.KEY_PUBLISHER, null);
-		mFields.add(R.id.date_published_button, "", CatalogueDBAdapter.KEY_DATE_PUBLISHED, null);
 		mFields.add(R.id.date_published, CatalogueDBAdapter.KEY_DATE_PUBLISHED, CatalogueDBAdapter.KEY_DATE_PUBLISHED,
 				null, new Fields.DateFieldFormatter());
 		mFields.add(R.id.series, CatalogueDBAdapter.KEY_SERIES_NAME, CatalogueDBAdapter.KEY_SERIES_NAME, null);
-		mFields.add(R.id.list_price, "list_price", blankOrFloatValidator);
-		mFields.add(R.id.pages, CatalogueDBAdapter.KEY_PAGES, blankOrIntegerValidator);
+		mFields.add(R.id.list_price, "list_price", null);
+		mFields.add(R.id.pages, CatalogueDBAdapter.KEY_PAGES, null);
 		mFields.add(R.id.format, CatalogueDBAdapter.KEY_FORMAT, null);
-		mFields.add(R.id.bookshelf, "", null);
-		mFields.add(R.id.description, CatalogueDBAdapter.KEY_DESCRIPTION, null);
+		//mFields.add(R.id.bookshelf, CatalogueDBAdapter.KEY_BOOKSHELF, null);
+		mFields.add(R.id.description, CatalogueDBAdapter.KEY_DESCRIPTION, null)
+			.setShowHtml(true);
 		mFields.add(R.id.genre, CatalogueDBAdapter.KEY_GENRE, null);
 		
 		mFields.add(R.id.row_img, "", "thumbnail", null);
 		mFields.getField(R.id.row_img).getView().setOnCreateContextMenuListener(mCreateBookThumbContextMenuListener);
 		
 		mFields.add(R.id.format_button, "", CatalogueDBAdapter.KEY_FORMAT, null);
-		mFields.add(R.id.bookshelf_text, "bookshelf_text", null).doNoFetch = true; // Output-only field
+		mFields.add(R.id.bookshelf, "bookshelf_text", null).doNoFetch = true; // Output-only field
 	}
 	
 	/**
@@ -781,7 +782,7 @@ public abstract class BookDetailsAbstract extends Activity {
 	 */
 	private void setDisplayMetrics(){
 		mMetrics = new android.util.DisplayMetrics();
-		getWindowManager().getDefaultDisplay().getMetrics(mMetrics);
+		getActivity().getWindowManager().getDefaultDisplay().getMetrics(mMetrics);
 	}
 	
 	/**
@@ -792,32 +793,19 @@ public abstract class BookDetailsAbstract extends Activity {
 	 * Data defined by its _id in db. 
 	 * @param rowId database row id of the selected book.
 	 */
-	protected void populateFieldsFromDb(Long rowId) {
+	protected void populateFieldsFromBook(BookData book) {
 		// From the database (edit)
-		BooksCursor book = mDbHelper.fetchBookById(rowId);
 		try {
-			if (book != null) {
-				book.moveToFirst();
-			}
 
-			populateBookDetailsFields(rowId, book);
-			setBookThumbnail(rowId, mThumbEditSize, mThumbEditSize);
+			populateBookDetailsFields(book);
+			setBookThumbnail(book.getRowId(), mThumbEditSize, mThumbEditSize);
 			
-			String title = mFields.getField(R.id.title).getValue().toString();
-			setActivityTitle(title);
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logger.logError(e);
 		} 
-		finally {
-			if (book != null)
-				book.close();
-		}
 		
-		populateBookshelvesField(mFields, rowId);
+		populateBookshelvesField(mFields, book);
 		
-		// Get author and series lists
-		mAuthorList = mDbHelper.getBookAuthorList(rowId);
-		mSeriesList = mDbHelper.getBookSeriesList(rowId);
 	}
 	
 	/**
@@ -826,13 +814,9 @@ public abstract class BookDetailsAbstract extends Activity {
 	 * @param rowId database row _id of the book
 	 * @param bookCursor cursor with information of the book
 	 */
-	protected void populateBookDetailsFields(Long rowId, BooksCursor bookCursor){
-		// Set any field that has a 'column' non blank.
-		mFields.setFromCursor(bookCursor);
-		
+	protected void populateBookDetailsFields(BookData book){		
 		//Set anthology field
-		int columnIndex = bookCursor.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY);
-		Integer anthNo = bookCursor.getInt(columnIndex);
+		Integer anthNo = book.getInt(BookData.KEY_ANTHOLOGY);
 		mFields.getField(R.id.anthology).setValue(anthNo.toString()); // Set checked if anthNo != 0
 	}
 	
@@ -841,7 +825,7 @@ public abstract class BookDetailsAbstract extends Activity {
 	 */
 	protected void setBookThumbnail(Long rowId, int maxWidth, int maxHeight){
 		// Sets book thumbnail
-		ImageView iv = (ImageView) findViewById(R.id.row_img);
+		ImageView iv = (ImageView) getView().findViewById(R.id.row_img);
 		Utils.fetchFileIntoImageView(getCoverFile(rowId), iv, maxWidth, maxHeight, true);
 	}
 	
@@ -851,7 +835,7 @@ public abstract class BookDetailsAbstract extends Activity {
 	 */
 	private void showZoomedThumb(Long rowId) {
 		// Create dialog and set layout
-		final Dialog dialog = new Dialog(this);
+		final Dialog dialog = new Dialog(getActivity());
 		dialog.setContentView(R.layout.zoom_thumb_dialog);
 		
 		// Check if we have a file and/or it is valid
@@ -870,7 +854,7 @@ public abstract class BookDetailsAbstract extends Activity {
 				dialog.setTitle(getResources().getString(R.string.cover_corrupt));
 			} else {
 				dialog.setTitle(getResources().getString(R.string.cover_detail));
-				ImageView cover = new ImageView(this);
+				ImageView cover = new ImageView(getActivity());
 				Utils.fetchFileIntoImageView(thumbFile, cover, mThumbZoomSize, mThumbZoomSize, true);
 				cover.setAdjustViewBounds(true);
 				cover.setOnClickListener(new OnClickListener() {
@@ -894,54 +878,25 @@ public abstract class BookDetailsAbstract extends Activity {
 	 * @param rowId Database row _id of the book
 	 * @return true if populated, false otherwise
 	 */
-	protected boolean populateBookshelvesField(Fields fields, Long rowId){
-		Cursor bookshelves = null;
+	protected boolean populateBookshelvesField(Fields fields, BookData book){
 		boolean result = false;
 		try {
 			// Display the selected bookshelves
-			Field bookshelfTextFe = fields.getField(R.id.bookshelf_text);
-			bookshelves = mDbHelper.fetchAllBookshelvesByBook(rowId);
-			String bookshelves_text = "";
-			String bookshelves_list = "";
-			while (bookshelves.moveToNext()) {
-				String name = bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF));
-				String encoded_name = Utils.encodeListItem(name, BOOKSHELF_SEPERATOR);
-				if (bookshelves_text.equals("")) {
-					bookshelves_text = name;
-					bookshelves_list = encoded_name;
-				} else {
-					bookshelves_text += "<br/>" + name;
-					bookshelves_list += BOOKSHELF_SEPERATOR + encoded_name;
-				}
-			}
-			bookshelfTextFe.setValue(bookshelves_text);
-			bookshelfTextFe.setTag(bookshelves_list);
-			if (bookshelves.getCount() > 0) {
+			Field bookshelfTextFe = fields.getField(R.id.bookshelf);
+			String text = book.getBookshelfText();
+			bookshelfTextFe.setValue(book.getBookshelfText());
+			if (!text.equals("")) {
 				result = true; // One or more bookshelves have been set
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (bookshelves != null) {
-				bookshelves.close();
-			}
+			Logger.logError(e);
 		}
 		return result;
 	}
 	
-	/**
-	 * Sets title of the parent activity in the next format:<br>
-	 * <i>"Application name + : + title"</i>
-	 * @param title
-	 */
-	protected void setActivityTitle(String title) {
-		String activityTitle = getResources().getString(R.string.app_name) + ": " + title;
-		getParent().setTitle(activityTitle);
-	}
-	
 	protected void setCoverImage() {
-		ImageView iv = (ImageView) findViewById(R.id.row_img);
-		Utils.fetchFileIntoImageView(getCoverFile(mRowId), iv, mThumbEditSize, mThumbEditSize, true );
+		ImageView iv = (ImageView) getView().findViewById(R.id.row_img);
+		Utils.fetchFileIntoImageView(getCoverFile(mEditManager.getBookData().getRowId()), iv, mThumbEditSize, mThumbEditSize, true );
 		// Make sure the cached thumbnails (if present) are deleted
 		invalidateCachedThumbnail();
 	}

@@ -22,26 +22,26 @@ package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
 
-import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueListActivity;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
 /*
  * A book catalogue application that integrates with Google Books.
  */
-public class Bookshelf extends ListActivity {
+public class Bookshelf extends BookCatalogueListActivity {
 	private static final int ACTIVITY_CREATE=0;
 	private static final int ACTIVITY_EDIT=1;
 	private CatalogueDBAdapter mDbHelper;
@@ -129,20 +129,22 @@ public class Bookshelf extends ListActivity {
 	}
 	
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
+	public boolean onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		menu.add(0, INSERT_ID, 0, R.string.menu_insert_bs);
+		menu.add(0, INSERT_ID, 0, R.string.menu_insert_bs)
+			.setIcon(R.drawable.ic_action_bookshelf_add)
+			.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		return true;
 	}
 	
 	@Override
-	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+	public boolean onOptionsItemSelected(MenuItem item) {
 		switch(item.getItemId()) {
 		case INSERT_ID:
 			createBookshelf();
 			return true;
 		}
-		return super.onMenuItemSelected(featureId, item);
+		return super.onOptionsItemSelected(item);
 	}
 	
     @Override
@@ -152,7 +154,7 @@ public class Bookshelf extends ListActivity {
 	}
 
     @Override
-	public boolean onContextItemSelected(MenuItem item) {
+	public boolean onContextItemSelected(android.view.MenuItem item) {
 		switch(item.getItemId()) {
     	case DELETE_ID:
 			AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();

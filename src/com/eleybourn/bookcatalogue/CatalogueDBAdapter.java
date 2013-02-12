@@ -47,6 +47,7 @@ import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOK_
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_SERIES;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -69,7 +70,6 @@ import android.database.sqlite.SQLiteDoneException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQuery;
 import android.graphics.Bitmap;
-import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.widget.ImageView;
 
@@ -99,6 +99,8 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * 
  */
 public class CatalogueDBAdapter {
+	/** DEBUG ONLY. Set to true to enable logging of instances of this class. */
+	public static boolean DEBUG_INSTANCES = false;
 	
 	/** Debug counter */
 	private static Integer mInstanceCount = 0;
@@ -134,6 +136,7 @@ public class CatalogueDBAdapter {
 	public static final String KEY_PAGES = "pages";
 	public static final String KEY_ROWID = "_id";
 	public static final String KEY_AUTHOR_DETAILS = "author_details";
+	public static final String KEY_ANTHOLOGY_TITLE_ARRAY = "anthology_title_array";
 	public static final String KEY_AUTHOR_ARRAY = "author_array";
 	public static final String KEY_FAMILY_NAME = "family_name";
 	public static final String KEY_GIVEN_NAMES = "given_names";
@@ -146,11 +149,12 @@ public class CatalogueDBAdapter {
 	public static final String KEY_LOANED_TO = "loaned_to";
 	public static final String KEY_LIST_PRICE = "list_price";
 	public static final String KEY_POSITION = "position";
-	public static final String KEY_ANTHOLOGY = "anthology";
+	public static final String KEY_ANTHOLOGY_MASK = "anthology";
 	public static final String KEY_LOCATION = "location";
 	public static final String KEY_READ_START = "read_start";
 	public static final String KEY_READ_END = "read_end";
 	public static final String KEY_FORMAT = "format";
+	public static final String KEY_LANGUAGE = "language";
 	public static final String OLD_KEY_AUDIOBOOK = "audiobook";
 	public static final String KEY_SIGNED = "signed";
 	public static final String KEY_DESCRIPTION = "description";
@@ -192,11 +196,9 @@ public class CatalogueDBAdapter {
 	public static final String DB_TB_LOAN = "loan";
 	public static final String DB_TB_SERIES = "series";
 	public static String message = "";
-	public static String do_action = "";
-	public static String DO_UPDATE_FIELDS = "do_update_fields";
 	
 	public static final int ANTHOLOGY_NO = 0;
-	public static final int ANTHOLOGY_SAME_AUTHOR = 1;
+	public static final int ANTHOLOGY_IS_ANTHOLOGY = 1;
 	public static final int ANTHOLOGY_MULTIPLE_AUTHORS = 2;
 	
 	public static final String META_EMPTY_SERIES = "<Empty Series>";
@@ -237,7 +239,7 @@ public class CatalogueDBAdapter {
 			/* KEY_SERIES_NUM + " text, " + */
 			KEY_NOTES + " text, " +
 			KEY_LIST_PRICE + " text, " +
-			KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO + ", " + 
+			KEY_ANTHOLOGY_MASK + " int not null default " + ANTHOLOGY_NO + ", " + 
 			KEY_LOCATION + " text, " +
 			KEY_READ_START + " date, " +
 			KEY_READ_END + " date, " +
@@ -322,7 +324,7 @@ public class CatalogueDBAdapter {
 			/* KEY_SERIES_NUM + " text, " + */
 			KEY_NOTES + " text, " +
 			KEY_LIST_PRICE + " text, " +
-			KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO + ", " + 
+			KEY_ANTHOLOGY_MASK + " int not null default " + ANTHOLOGY_NO + ", " + 
 			KEY_LOCATION + " text, " +
 			KEY_READ_START + " date, " +
 			KEY_READ_END + " date, " +
@@ -348,7 +350,7 @@ public class CatalogueDBAdapter {
 			/* KEY_SERIES_NUM + " text, " + */
 			KEY_NOTES + " text, " +
 			KEY_LIST_PRICE + " text, " +
-			KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO + ", " + 
+			KEY_ANTHOLOGY_MASK + " int not null default " + ANTHOLOGY_NO + ", " + 
 			KEY_LOCATION + " text, " +
 			KEY_READ_START + " date, " +
 			KEY_READ_END + " date, " +
@@ -374,7 +376,7 @@ public class CatalogueDBAdapter {
 		KEY_SERIES_NUM + " text, " +
 		KEY_NOTES + " text, " +
 		KEY_LIST_PRICE + " text, " +
-		KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO + ", " + 
+		KEY_ANTHOLOGY_MASK + " int not null default " + ANTHOLOGY_NO + ", " + 
 		KEY_LOCATION + " text, " +
 		KEY_READ_START + " date, " +
 		KEY_READ_END + " date, " +
@@ -529,7 +531,7 @@ public class CatalogueDBAdapter {
 			alias + "." + KEY_PAGES + " as " + KEY_PAGES + ", " +
 			alias + "." + KEY_NOTES + " as " + KEY_NOTES + ", " +
 			alias + "." + KEY_LIST_PRICE + " as " + KEY_LIST_PRICE + ", " +
-			alias + "." + KEY_ANTHOLOGY + " as " + KEY_ANTHOLOGY + ", " +
+			alias + "." + KEY_ANTHOLOGY_MASK + " as " + KEY_ANTHOLOGY_MASK + ", " +
 			alias + "." + KEY_LOCATION + " as " + KEY_LOCATION + ", " +
 			alias + "." + KEY_READ_START + " as " + KEY_READ_START + ", " +
 			alias + "." + KEY_READ_END + " as " + KEY_READ_END + ", " +
@@ -867,7 +869,7 @@ public class CatalogueDBAdapter {
 					throw new RuntimeException("Failed to upgrade database", e);
 				}
 				try {
-					db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " ADD " + KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO);
+					db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " ADD " + KEY_ANTHOLOGY_MASK + " int not null default " + ANTHOLOGY_NO);
 				} catch (Exception e) {
 					Logger.logError(e);
 					throw new RuntimeException("Failed to upgrade database", e);
@@ -985,7 +987,7 @@ public class CatalogueDBAdapter {
 					db.execSQL("INSERT INTO " + DB_TB_BOOK_BOOKSHELF_WEAK + " (" + KEY_BOOK + ", " + KEY_BOOKSHELF + ") SELECT " + KEY_ROWID + ", " + KEY_BOOKSHELF + " FROM " + DB_TB_BOOKS + "");
 					db.execSQL("CREATE TABLE tmp1 AS SELECT _id, " + KEY_AUTHOR_OLD + ", " + KEY_TITLE + ", " + KEY_ISBN + ", " + KEY_PUBLISHER + ", " + 
 						KEY_DATE_PUBLISHED + ", " + KEY_RATING + ", " + KEY_READ + ", " + KEY_SERIES_OLD + ", " + KEY_PAGES + ", " + KEY_SERIES_NUM + ", " + KEY_NOTES + ", " + 
-						KEY_LIST_PRICE + ", " + KEY_ANTHOLOGY + ", " + KEY_LOCATION + ", " + KEY_READ_START + ", " + KEY_READ_END + ", " + OLD_KEY_AUDIOBOOK + ", " + 
+						KEY_LIST_PRICE + ", " + KEY_ANTHOLOGY_MASK + ", " + KEY_LOCATION + ", " + KEY_READ_START + ", " + KEY_READ_END + ", " + OLD_KEY_AUDIOBOOK + ", " + 
 						KEY_SIGNED + " FROM " + DB_TB_BOOKS);
 					db.execSQL("CREATE TABLE tmp2 AS SELECT _id, " + KEY_BOOK + ", " + KEY_LOANED_TO + " FROM " + DB_TB_LOAN );
 					db.execSQL("CREATE TABLE tmp3 AS SELECT _id, " + KEY_BOOK + ", " + KEY_AUTHOR_OLD + ", " + KEY_TITLE + ", " + KEY_POSITION + " FROM " + DB_TB_ANTHOLOGY);
@@ -1050,7 +1052,7 @@ public class CatalogueDBAdapter {
 				
 				db.execSQL("CREATE TABLE tmp1 AS SELECT _id, " + KEY_AUTHOR_OLD + ", " + KEY_TITLE + ", " + KEY_ISBN + ", " + KEY_PUBLISHER + ", " + 
 						KEY_DATE_PUBLISHED + ", " + KEY_RATING + ", " + KEY_READ + ", " + KEY_SERIES_OLD + ", " + KEY_PAGES + ", " + KEY_SERIES_NUM + ", " + KEY_NOTES + ", " + 
-						KEY_LIST_PRICE + ", " + KEY_ANTHOLOGY + ", " + KEY_LOCATION + ", " + KEY_READ_START + ", " + KEY_READ_END + ", " +
+						KEY_LIST_PRICE + ", " + KEY_ANTHOLOGY_MASK + ", " + KEY_LOCATION + ", " + KEY_READ_START + ", " + KEY_READ_END + ", " +
 						"CASE WHEN " + OLD_KEY_AUDIOBOOK + "='t' THEN 'Audiobook' ELSE 'Paperback' END AS " + OLD_KEY_AUDIOBOOK + ", " + 
 						KEY_SIGNED + " FROM " + DB_TB_BOOKS);
 				db.execSQL("CREATE TABLE tmp2 AS SELECT _id, " + KEY_BOOK + ", " + KEY_LOANED_TO + " FROM " + DB_TB_LOAN );
@@ -1077,7 +1079,7 @@ public class CatalogueDBAdapter {
 					KEY_SERIES_NUM + " text, " +
 					KEY_NOTES + " text, " +
 					KEY_LIST_PRICE + " text, " +
-					KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO + ", " + 
+					KEY_ANTHOLOGY_MASK + " int not null default " + ANTHOLOGY_NO + ", " + 
 					KEY_LOCATION + " text, " +
 					KEY_READ_START + " date, " +
 					KEY_READ_END + " date, " +
@@ -1115,7 +1117,8 @@ public class CatalogueDBAdapter {
 			}
 			if (curVersion == 47) {
 				curVersion++;
-				do_action = DO_UPDATE_FIELDS;
+				// This used to be chaecks in BookCatalogueClassic, which is no longer called on startup...
+				//do_action = DO_UPDATE_FIELDS;
 				message += "New in v3.1\n\n";
 				message += "* The audiobook checkbox has been replaced with a format selector (inc. paperback, hardcover, companion etc)\n\n";
 				message += "* When adding books the current bookshelf will be selected as the default bookshelf\n\n";
@@ -1221,7 +1224,7 @@ public class CatalogueDBAdapter {
 						String tmpFields = KEY_ROWID + ", " /* + KEY_AUTHOR + ", " */ + KEY_TITLE + ", " + KEY_ISBN 
 						+ ", " + KEY_PUBLISHER + ", " + KEY_DATE_PUBLISHED + ", " + KEY_RATING + ", " + KEY_READ 
 						+ /* ", " + KEY_SERIES + */ ", " + KEY_PAGES /* + ", " + KEY_SERIES_NUM */ + ", " + KEY_NOTES 
-						+ ", " + KEY_LIST_PRICE + ", " + KEY_ANTHOLOGY + ", " + KEY_LOCATION + ", " + KEY_READ_START 
+						+ ", " + KEY_LIST_PRICE + ", " + KEY_ANTHOLOGY_MASK + ", " + KEY_LOCATION + ", " + KEY_READ_START 
 						+ ", " + KEY_READ_END + ", " + KEY_FORMAT + ", " + KEY_SIGNED + ", " + KEY_DESCRIPTION
 						+ ", " + KEY_GENRE;
 						db.execSQL("CREATE TABLE tmpBooks AS SELECT " + tmpFields + " FROM " + DB_TB_BOOKS);
@@ -1285,7 +1288,7 @@ public class CatalogueDBAdapter {
 							String tmpFields = KEY_ROWID + ", " /* + KEY_AUTHOR + ", " */ + KEY_TITLE + ", " + KEY_ISBN 
 							+ ", " + KEY_PUBLISHER + ", " + KEY_DATE_PUBLISHED + ", " + KEY_RATING + ", " + KEY_READ 
 							+ /* ", " + KEY_SERIES + */ ", " + KEY_PAGES /* + ", " + KEY_SERIES_NUM */ + ", " + KEY_NOTES 
-							+ ", " + KEY_LIST_PRICE + ", " + KEY_ANTHOLOGY + ", " + KEY_LOCATION + ", " + KEY_READ_START 
+							+ ", " + KEY_LIST_PRICE + ", " + KEY_ANTHOLOGY_MASK + ", " + KEY_LOCATION + ", " + KEY_READ_START 
 							+ ", " + KEY_READ_END + ", " + KEY_FORMAT + ", " + KEY_SIGNED + ", " + KEY_DESCRIPTION
 							+ ", " + KEY_GENRE;
 							db.execSQL("CREATE TABLE tmpBooks AS SELECT " + tmpFields + " FROM " + DB_TB_BOOKS);
@@ -1389,7 +1392,7 @@ public class CatalogueDBAdapter {
 						String tmpFields = KEY_ROWID + ", " /* + KEY_AUTHOR + ", " */ + KEY_TITLE + ", " + KEY_ISBN 
 						+ ", " + KEY_PUBLISHER + ", " + KEY_DATE_PUBLISHED + ", " + KEY_RATING + ", " + KEY_READ 
 						+ /* ", " + KEY_SERIES + */ ", " + KEY_PAGES /* + ", " + KEY_SERIES_NUM */ + ", " + KEY_NOTES 
-						+ ", " + KEY_LIST_PRICE + ", " + KEY_ANTHOLOGY + ", " + KEY_LOCATION + ", " + KEY_READ_START 
+						+ ", " + KEY_LIST_PRICE + ", " + KEY_ANTHOLOGY_MASK + ", " + KEY_LOCATION + ", " + KEY_READ_START 
 						+ ", " + KEY_READ_END + ", " + KEY_FORMAT + ", " + KEY_SIGNED + ", " + KEY_DESCRIPTION
 						+ ", " + KEY_GENRE;
 						db.execSQL("CREATE TABLE tmpBooks AS SELECT " + tmpFields + " FROM " + DB_TB_BOOKS);
@@ -1639,6 +1642,54 @@ public class CatalogueDBAdapter {
 		sdb.execSQL(sql);
 	}
 
+	private static class InstanceRef extends WeakReference<CatalogueDBAdapter> {
+		private Exception mCreationException;
+		public InstanceRef(CatalogueDBAdapter r) {
+			super(r);
+			mCreationException = new RuntimeException();
+		}
+		public Exception getCreationException() {
+			return mCreationException;
+		}		
+	}
+	private static ArrayList< InstanceRef > mInstances = new ArrayList< InstanceRef >();
+	private static void addInstance(CatalogueDBAdapter db) {
+		if (DEBUG_INSTANCES) {
+			mInstances.add(new InstanceRef(db));		
+		}
+	}
+	private static void removeInstance(CatalogueDBAdapter db) {
+		ArrayList< InstanceRef > toDelete = new ArrayList< InstanceRef >();
+		for( InstanceRef ref: mInstances) {
+			CatalogueDBAdapter refDb = ref.get();
+			if (refDb == null) {
+				System.out.println("<-- **** Missing ref (not closed?) **** vvvvvvv");
+				ref.getCreationException().printStackTrace();
+				System.out.println("--> **** Missing ref (not closed?) **** ^^^^^^^");
+			} else {
+				if (refDb == db) {
+					toDelete.add(ref);
+				}
+			}
+		}
+		for( WeakReference<CatalogueDBAdapter> ref: toDelete) {
+			mInstances.remove(ref);
+		}
+	}
+	public static void dumpInstances() {
+		for( InstanceRef ref: mInstances) {
+			CatalogueDBAdapter db = ref.get();
+			if (db == null) {
+				System.out.println("<-- **** Missing ref (not closed?) **** vvvvvvv");
+				ref.getCreationException().printStackTrace();
+				System.out.println("--> **** Missing ref (not closed?) **** ^^^^^^^");
+			} else {
+				ref.getCreationException().printStackTrace();
+			}
+		}
+	}
+	
+	
 	/**
 	 * Constructor - takes the context to allow the database to be
 	 * opened/created
@@ -1649,6 +1700,9 @@ public class CatalogueDBAdapter {
 		synchronized(mInstanceCount) {
 			mInstanceCount++;
 			System.out.println("CatDBA instances: " + mInstanceCount);
+			if (DEBUG_INSTANCES) {			
+				addInstance(this);
+			}
 		}
 		if (mDbHelper == null)
 			mDbHelper = new DatabaseHelper(ctx);
@@ -1703,6 +1757,9 @@ public class CatalogueDBAdapter {
 			synchronized(mInstanceCount) {
 				mInstanceCount--;
 				System.out.println("CatDBA instances: " + mInstanceCount);
+				if (DEBUG_INSTANCES) {
+					removeInstance(this);
+				}
 			}
 		}
 	}
@@ -2684,6 +2741,8 @@ public class CatalogueDBAdapter {
 		String sql = "SELECT an." + KEY_ROWID + " as " + KEY_ROWID 
 				+ ", an." + KEY_TITLE + " as " + KEY_TITLE 
 				+ ", an." + KEY_POSITION + " as " + KEY_POSITION 
+				+ ", au." + KEY_FAMILY_NAME + " as " + KEY_FAMILY_NAME
+				+ ", au." + KEY_GIVEN_NAMES + " as " + KEY_GIVEN_NAMES
 				+ ", au." + KEY_FAMILY_NAME + " || ', ' || au." + KEY_GIVEN_NAMES + " as " + KEY_AUTHOR_NAME 
 				+ ", an." + KEY_BOOK + " as " + KEY_BOOK
 				+ ", an." + KEY_AUTHOR_ID + " as " + KEY_AUTHOR_ID
@@ -3319,17 +3378,34 @@ public class CatalogueDBAdapter {
 	 */
 	public long createAnthologyTitle(long book, String author, String title, boolean returnDupId) {
 		if (title.length() > 0) {
-			ContentValues initialValues = new ContentValues();
 			String[] names = processAuthorName(author);
 			long authorId = Long.parseLong(getAuthorIdOrCreate(names));
-			long result;
+			return createAnthologyTitle(book, authorId, title, returnDupId);
+		} else {
+			return -1;
+		}
+	}
+
+	/**
+	 * Create an anthology title for a book.
+	 * 
+	 * @param book			id of book
+	 * @param authorId		id of author
+	 * @param title			title of anthology title
+	 * @param returnDupId	If title already exists then if true, will return existing ID, if false, will thrown an error
+	 * 
+	 * @return				ID of anthology title record
+	 */
+	public long createAnthologyTitle(long book, long authorId, String title, boolean returnDupId) {
+		if (title.length() > 0) {
+			ContentValues initialValues = new ContentValues();
 			int position = fetchAnthologyPositionByBook(book) + 1;
 
 			initialValues.put(KEY_BOOK, book);
 			initialValues.put(KEY_AUTHOR_ID, authorId);
 			initialValues.put(KEY_TITLE, title);
 			initialValues.put(KEY_POSITION, position);
-			result = getAnthologyTitleId(book, authorId, title);
+			long result = getAnthologyTitleId(book, authorId, title);
 			if (result < 0) {
 				result = mDb.insert(DB_TB_ANTHOLOGY, null, initialValues);
 			} else {
@@ -3403,7 +3479,7 @@ public class CatalogueDBAdapter {
 	 *
 	 * @return rowId or -1 if failed
 	 */
-	public long createBook(Bundle values) {
+	public long createBook(BookData values) {
 		return createBook(0, values);
 	}
 	
@@ -3418,7 +3494,7 @@ public class CatalogueDBAdapter {
 	 * @return rowId or -1 if failed
 	 */
 	//public long createBook(long id, String author, String title, String isbn, String publisher, String date_published, float rating, String bookshelf, Boolean read, String series, int pages, String series_num, String notes, String list_price, int anthology, String location, String read_start, String read_end, String format, boolean signed, String description, String genre) {
-	public long createBook(long id, Bundle values) {
+	public long createBook(long id, BookData values) {
 
 		try {
 			// Make sure we have the target table details
@@ -3434,7 +3510,7 @@ public class CatalogueDBAdapter {
 				values.putString(KEY_DATE_ADDED, Utils.toSqlDateTime(new Date()));
 
 			// Make sure we have an author
-			ArrayList<Author> authors = Utils.getAuthorsFromBundle(values);
+			ArrayList<Author> authors = values.getAuthorList();
 			if (authors == null || authors.size() == 0)
 				throw new IllegalArgumentException();
 			ContentValues initialValues = filterValues(values, mBooksInfo);
@@ -3448,14 +3524,18 @@ public class CatalogueDBAdapter {
 
 			long rowId = mDb.insert(DB_TB_BOOKS, null, initialValues);
 
-			String bookshelf = values.getString("bookshelf_list");
-			if (bookshelf != null) {
+			String bookshelf = values.getBookshelfList();
+			if (bookshelf != null && !bookshelf.trim().equals("")) {
 				createBookshelfBooks(rowId, Utils.decodeList(bookshelf, BookEditFields.BOOKSHELF_SEPERATOR));
 			}
 
 			createBookAuthors(rowId, authors);
-			ArrayList<Series> series = Utils.getSeriesFromBundle(values);
+
+			ArrayList<Series> series = values.getSeriesList();
 			createBookSeries(rowId, series);
+
+			ArrayList<AnthologyTitle> anthologyTitles = values.getAnthologyTitles();
+			createBookAnthologyTitles(rowId, anthologyTitles);
 
 			try {
 				insertFts(rowId);
@@ -3466,7 +3546,7 @@ public class CatalogueDBAdapter {
 			return rowId;
 		} catch (Exception e) {
 			Logger.logError(e);
-			throw new RuntimeException("Error creating book from " + Utils.bundleToString(values) + ": " + e.getMessage(), e);
+			throw new RuntimeException("Error creating book from " + values.getDataAsString() + ": " + e.getMessage(), e);
 		}
 	}
 	
@@ -3539,9 +3619,9 @@ public class CatalogueDBAdapter {
 	 * @param friend A string containing the friend you are loaning to
 	 * @return the ID of the loan
 	 */
-	public long createLoan(Bundle values) {
+	public long createLoan(BookData values) {
 		ContentValues initialValues = new ContentValues();
-		initialValues.put(KEY_BOOK, Utils.getAsLong(values,KEY_ROWID));
+		initialValues.put(KEY_BOOK, values.getRowId());
 		initialValues.put(KEY_LOANED_TO, values.getString(KEY_LOANED_TO));
 		long result = mDb.insert(DB_TB_LOAN, null, initialValues);
 		//Special cleanup step - Delete all loans without books
@@ -3742,6 +3822,32 @@ public class CatalogueDBAdapter {
 	}
 
 	
+	public ArrayList<AnthologyTitle> getBookAnthologyTitleList(long id) {
+		ArrayList<AnthologyTitle> list = new ArrayList<AnthologyTitle>();
+		Cursor cursor = null;
+		try {
+			cursor = this.fetchAnthologyTitlesByBook(id);
+			int count = cursor.getCount();
+
+			if (count == 0)
+				return list;
+
+			final int familyNameCol = cursor.getColumnIndex(CatalogueDBAdapter.KEY_FAMILY_NAME);
+			final int givenNameCol = cursor.getColumnIndex(CatalogueDBAdapter.KEY_GIVEN_NAMES);
+			final int authorIdCol = cursor.getColumnIndex(CatalogueDBAdapter.KEY_AUTHOR_ID);
+			final int titleCol = cursor.getColumnIndex(CatalogueDBAdapter.KEY_TITLE);
+
+			while (cursor.moveToNext()) {
+				Author a = new Author(cursor.getLong(authorIdCol), cursor.getString(familyNameCol), cursor.getString(givenNameCol));
+				list.add(new AnthologyTitle(a, cursor.getString(titleCol)));
+			}			
+		} finally {
+			if (cursor != null && !cursor.isClosed())
+				cursor.close();
+		}
+		return list;
+	}
+
 	public ArrayList<Author> getBookAuthorList(long id) {
 		ArrayList<Author> authorList = new ArrayList<Author>();
 		Cursor authors = null;
@@ -3819,7 +3925,7 @@ public class CatalogueDBAdapter {
 	 * 
 	 * @return New, filtered, collection
 	 */
-	ContentValues filterValues(Bundle source, TableInfo dest) {
+	ContentValues filterValues(BookData source, TableInfo dest) {
 		ContentValues args = new ContentValues();
 
 		Set<String> keys = source.keySet();
@@ -3883,7 +3989,7 @@ public class CatalogueDBAdapter {
 	 * 
 	 * @param values	Collection of field values.
 	 */
-	private void preprocessOutput(boolean isNew, Bundle values) {
+	private void preprocessOutput(boolean isNew, BookData values) {
 		String authorId;
 
 		// Handle AUTHOR
@@ -3930,7 +4036,7 @@ public class CatalogueDBAdapter {
 		// Remove blank/null fields that have default values defined in the database or which should
 		// never be blank.
 		for (String name : new String[] {
-				DatabaseDefinitions.DOM_BOOK_UUID.name, KEY_ANTHOLOGY,
+				DatabaseDefinitions.DOM_BOOK_UUID.name, KEY_ANTHOLOGY_MASK,
 				KEY_RATING, KEY_READ, KEY_SIGNED, KEY_DATE_ADDED,
 				DatabaseDefinitions.DOM_LAST_GOODREADS_SYNC_DATE.name,
 				DatabaseDefinitions.DOM_LAST_UPDATE_DATE.name }) {
@@ -3954,7 +4060,7 @@ public class CatalogueDBAdapter {
 	 * 
 	 * @return true if the note was successfully updated, false otherwise
 	 */
-	public boolean updateBook(long rowId, Bundle values, boolean doPurge) {
+	public boolean updateBook(long rowId, BookData values, boolean doPurge) {
 		boolean success = true;
 
 		try {
@@ -3975,20 +4081,23 @@ public class CatalogueDBAdapter {
 				args.put(DOM_LAST_UPDATE_DATE.name, Utils.toSqlDateTime(Calendar.getInstance().getTime()));
 			success = mDb.update(DB_TB_BOOKS, args, KEY_ROWID + "=" + rowId, null) > 0;
 
-			if (values.containsKey("bookshelf_list")) {
-				String bookshelf = values.getString("bookshelf_list");
-				if (bookshelf != null) {
-					createBookshelfBooks(rowId, Utils.decodeList(bookshelf, BookEditFields.BOOKSHELF_SEPERATOR));
-				}			
+			String bookshelf = values.getBookshelfList();
+			if (bookshelf != null && !bookshelf.trim().equals("")) {
+				createBookshelfBooks(rowId, Utils.decodeList(bookshelf, BookEditFields.BOOKSHELF_SEPERATOR));
 			}
 
 			if (values.containsKey(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)) {
-				ArrayList<Author> authors = Utils.getAuthorsFromBundle(values);
+				ArrayList<Author> authors = values.getAuthorList();
 				createBookAuthors(rowId, authors);			
 			}
 			if (values.containsKey(CatalogueDBAdapter.KEY_SERIES_ARRAY)) {
-				ArrayList<Series> series = Utils.getSeriesFromBundle(values);
+				ArrayList<Series> series = values.getSeriesList();
 				createBookSeries(rowId, series);			
+			}
+
+			if (values.containsKey(CatalogueDBAdapter.KEY_ANTHOLOGY_TITLE_ARRAY)) {
+				ArrayList<AnthologyTitle> anthologyTitles = values.getAnthologyTitles();
+				createBookAnthologyTitles(rowId, anthologyTitles);				
 			}
 
 			// Only really skip the purge if a batch update of multiple books is being done.
@@ -4007,7 +4116,20 @@ public class CatalogueDBAdapter {
 			return success;
 		} catch (Exception e) {
 			Logger.logError(e);
-			throw new RuntimeException("Error updating book from " + Utils.bundleToString(values) + ": " + e.getMessage(), e);
+			throw new RuntimeException("Error updating book from " + values.getDataAsString() + ": " + e.getMessage(), e);
+		}
+	}
+
+//	private static final String NEXT_STMT_NAME = "next";
+	private void createBookAnthologyTitles(long bookId, ArrayList<AnthologyTitle> list) {
+		this.deleteAnthologyTitles(bookId);
+//		SynchronizedStatement stmt = mStatements.get(NEXT_STMT_NAME);
+		for(int i = 0; i < list.size(); i++) {
+			AnthologyTitle at = list.get(i);
+			Author a = at.getAuthor();
+			String authorIdStr = getAuthorIdOrCreate(new String[] {a.familyName, a.givenNames});
+			long authorId = Long.parseLong(authorIdStr);
+			this.createAnthologyTitle(bookId, authorId, at.getTitle(), true);
 		}
 	}
 
@@ -5253,13 +5375,12 @@ public class CatalogueDBAdapter {
 	private SynchronizedStatement mUpdateBooklistStyleStmt = null;
 	public void updateBooklistStyle(BooklistStyle s) {
 		if (mUpdateBooklistStyleStmt == null) {
-			final String sql = TBL_BOOK_LIST_STYLES.getUpdate(DOM_STYLE) 
-						+ " Where " +  DOM_ID + " = ?";
+			final String sql = TBL_BOOK_LIST_STYLES.getInsertOrReplaceValues(DOM_ID, DOM_STYLE);
 			mUpdateBooklistStyleStmt = mStatements.add("mUpdateBooklistStyleStmt", sql);
 		}
 		byte[] blob = SerializationUtils.serializeObject(s);
-		mUpdateBooklistStyleStmt.bindBlob(1, blob);
-		mUpdateBooklistStyleStmt.bindLong(2, s.getRowId());
+		mUpdateBooklistStyleStmt.bindLong(1, s.getRowId());
+		mUpdateBooklistStyleStmt.bindBlob(2, blob);
 		mUpdateBooklistStyleStmt.execute();
 	}
 
@@ -5660,6 +5781,22 @@ public class CatalogueDBAdapter {
 	 */
 	public boolean isNewInstall() {
 		return mDbHelper.isNewInstall();
+	}
+	
+	public Cursor getUuidList() {
+		String sql = "select " + DatabaseDefinitions.DOM_BOOK_UUID + " as " + DatabaseDefinitions.DOM_BOOK_UUID + " From " + DatabaseDefinitions.TBL_BOOKS.ref();
+		return mDb.rawQuery(sql);
+	}
+	
+	public long getBookCount() {
+		String sql = "select Count(*) From " + DatabaseDefinitions.TBL_BOOKS.ref();
+		Cursor c = mDb.rawQuery(sql);
+		try {
+			c.moveToFirst();
+			return c.getLong(0);
+		} finally {
+			c.close();
+		}
 	}
 }
 

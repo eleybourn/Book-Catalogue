@@ -68,7 +68,7 @@ public class OtherPreferences extends PreferencesBase {
 		 * is opened in read-only mode (editing through menu), else in edit mode.
 		 */
 	.add (new BooleanProperty(BookCataloguePreferences.PREF_OPEN_BOOK_READ_ONLY)
-		.setDefaultValue(false)
+		.setDefaultValue(true)
 		.setPreferenceKey(BookCataloguePreferences.PREF_OPEN_BOOK_READ_ONLY)
 		.setGlobal(true)
 		.setNameResourceId(R.string.prefs_global_opening_book_mode)

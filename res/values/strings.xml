@@ -680,10 +680,15 @@
 			</p>
 		]]></string>
 
+<!-- Heading for scanner-related preferences -->
 <string name="scanning">Scanning</string>
+<!-- Preference name, displayed in a preference activity -->
 <string name="preferred_scanner">Preferred Scanner</string>
+<!-- Preference VALUE, displayed in a preference activity -->
 <string name="zxing_compatible_scanner">Zxing Compatible Scanner</string>
+<!-- Preference VALUE, displayed in a preference activity -->
 <string name="pic2shop_scanner">Pic2Shop Scanner</string>
+<!-- Preference name, displayed in a preference activity -->
 <string name="beep_if_scanned_isbn_valid">Beep if scanned ISBN is valid</string>
 
 <string name="new_in_424"><![CDATA[
@@ -697,11 +702,13 @@
 		</p>
 		]]></string>
 
+<!-- Hint text displayed when user enters the book listw -->
 <string name="hint_view_only_book_details">
 When you click on an item in this list, you can now choose to go to non-editable book details view. 
 See "Other Preferences" for the relevant setting.
 </string>
 
+<!-- Hint text displayed when user enters the 'read-only' book view -->
 <string name="hint_view_only_help">
 This is the non-editable book details screen; you can fling/swipe left or right to navigate to other books, 
 and you can edit the book via the options menu using the menu button or overflow menu icon.
@@ -718,23 +725,34 @@ and you can edit the book via the options menu using the menu button or overflow
     	from your SD card to another location.
     	\n\nSee our FAQ (a web link is under \'Help\') for detailed instructions.</string>
 
+<!-- Button text on the goodreads activity; only displayed after user has registered -->
 <string name="forget_credentials">Forget Credentials</string>
+
+<!-- Extra text displayed on the goodreads activity when a user HAS registered -->
 <string name="goodreads_auth_blurb_part4">It looks like you have already authorized this app. If you would like to
     delete the credentials from this phone, then you can do so by pressing the button below. But it is also
     important to de-authorize the application at the goodreads website as well.
     \n\nForgetting the credentials here will remove the goodreads option from the main application menu.</string>
 
+<!-- Progress dialog message displayed when doing a long network operation to a web site -->
 <string name="connecting_to_web_site">Connecting to web site&#8230;</string>
 
+<!-- Admin option to import -->
 <string name="backup_to_archive">Backup to Archive</string>
+<!-- Admin option to import -->
 <string name="import_from_archive">Import from Archive</string>
+
 <!--  Hint displayed when aCatalogue Backup is done -->
 <string name="archive_complete_details">A %3$s file called %2$s was created in the \"%1$s\" directory on your 
     SD card.\n\nYou should manually copy it elsewhere to protect the data in case your device is damaged, lost, or stolen.</string>
 
+<!-- Displayed in progress dialog when exporting covers -->
 <string name="covers_progress">%1$s covers processed (%2$s missing)</string>
+<!-- Heading in Admin activity -->
 <string name="advanced_options">Advanced Options</string>
+<!-- Showed in progress dialog when an import starts -->
 <string name="backing_up_ellipsis">Backing up&#8230;</string>
+<!-- Showed in progress dialog when an import starts -->
 <string name="importing_ellipsis">Importing&#8230;</string>
 
 <!--  Content description for the 'up' icon in the folder browser -->
@@ -746,7 +764,9 @@ and you can edit the book via the options menu using the menu button or overflow
 <!--  For saving and opening exports or backups -->
 <string name="open">Open</string>
 
+<!-- Admin option to export books -->
 <string name="export_to_csv">Export to CSV File</string>
+<!-- Admin option to import books -->
 <string name="import_from_csv">Import from CSV File</string>
 
 <!-- Displayed when a file/open dialog results in selecting a non-exitant file -->
@@ -772,6 +792,7 @@ and you can edit the book via the options menu using the menu button or overflow
 		</p>
 		]]></string>
 
+<!-- Displayed in Admin menu advanced options (top make a copy of the internal database on the sdcard -->
 <string name="copy_database">Copy Database (for tech support)</string>
 
 </resources>

@@ -102,17 +102,14 @@ public class BookEditNotes extends BookEditFragmentAbstract implements OnPartial
 			mFields.add(R.id.location, CatalogueDBAdapter.KEY_LOCATION, null);
 			mFields.setAdapter(R.id.location, location_adapter);
 
-			f = mFields.add(R.id.read_start_button, "",  CatalogueDBAdapter.KEY_READ_START, null);
+			// ENHANCE: Add a partial date validator. Or not.
+			f = mFields.add(R.id.read_start, CatalogueDBAdapter.KEY_READ_START, null, dateFormatter);
 			f.getView().setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
 					BookEditNotes.this.showReadStartDialog();
 				}
 			});
-			// ENHANCE: Add a partial date validator. Or not.
-			//mFields.add(R.id.read_start, CatalogueDBAdapter.KEY_READ_START, blankOrDateValidator, dateFormatter);
-			mFields.add(R.id.read_start, CatalogueDBAdapter.KEY_READ_START, null, dateFormatter);
 
-			//f = mFields.add(R.id.read_end_button, "",  CatalogueDBAdapter.KEY_READ_END, null);
 			f = mFields.add(R.id.read_end, CatalogueDBAdapter.KEY_READ_END, null, dateFormatter);
 			f.getView().setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {

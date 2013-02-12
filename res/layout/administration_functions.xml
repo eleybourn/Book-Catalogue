@@ -169,7 +169,7 @@
             android:id="@+id/backup_label"
             style="@style/prefs_item"
             android:drawableLeft="@drawable/ic_menu_archive"
-            android:text="@string/backup_database" />
+            android:text="@string/copy_database" />
     </LinearLayout>
 
 </ScrollView>

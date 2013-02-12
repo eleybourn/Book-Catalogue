@@ -762,6 +762,7 @@ and you can edit the book via the options menu using the menu button or overflow
 		* Archiving (Backup & Import) of entire catalogue, including books, covers, preferences and styles\n\n
 		* Updated interface with Action Bar support for usability and to work better on devices without menu buttons\n\n
 		* Support for pic2shop scanner (better for fixed focus, low light and in front-facing cameras)\n\n
+		* goodreads now appears in main menu if you authorize it\n\n
 		* Check internet connection earlier when trying to scan books\n\n
 		* More German translation updates (Robert Wetzlmayr)\n\n
 		* More French translation updates (Imkal & Djiko)\n\n
@@ -770,5 +771,7 @@ and you can edit the book via the options menu using the menu button or overflow
 		* Bug fixes\n\n
 		</p>
 		]]></string>
+
+<string name="copy_database">Copy Database (for tech support)</string>
 
 </resources>

@@ -82,18 +82,12 @@ public class SimpleTaskQueue {
 		/**
 		 * Method called in queue thread to perform the background task.
 		 */
-		void run(SimpleTaskContext taskContext);
+		void run(SimpleTaskContext taskContext) throws Exception;
 		/**
 		 * Method called in UI thread after the background task has finished.
+		 * @param e TODO
 		 */
-		void onFinish();
-		/**
-		 * Method called by queue manager to determine if 'finished()' needs to be called.
-		 * This is an optimization to avoid queueing unnecessary Runnables.
-		 * 
-		 * @return	boolean indicating 'finished()' should be called in UI thread.
-		 */
-		boolean requiresOnFinish();
+		void onFinish(Exception e);
 	}
 
 	/**
@@ -153,17 +147,47 @@ public class SimpleTaskQueue {
 	 * 
 	 * @author Philip Warner
 	 */
-	private static class SimpleTaskWrapper {
+	private static class SimpleTaskWrapper implements SimpleTaskContext {
 		private static Long mCounter = 0L;
 		public SimpleTask task;
 		public Exception exception;
-		public boolean finishRequested = false;
+		public boolean finishRequested = true;
 		public long id;
+		public SimpleTaskQueueThread activeThread = null;
 		SimpleTaskWrapper(SimpleTask task) {
 			this.task = task;
 			synchronized(mCounter) {
 				this.id = ++mCounter;
 			}
+		}
+		/**
+		 * Accessor when behaving as a context
+		 */
+		@Override
+		public CatalogueDBAdapter getDb() {
+			if (activeThread == null)
+				throw new RuntimeException("SimpleTaskWrapper can only be used a context during the run() stage");
+			return activeThread.getDb();
+		}
+		@Override
+		public CoversDbHelper getCoversDb() {
+			if (activeThread == null)
+				throw new RuntimeException("SimpleTaskWrapper can only be used a context during the run() stage");
+			return activeThread.getCoversDb();
+		}
+		@Override
+		public Utils getUtils() {
+			if (activeThread == null)
+				throw new RuntimeException("SimpleTaskWrapper can only be used a context during the run() stage");
+			return activeThread.getUtils();
+		}
+		@Override
+		public void setRequiresFinish(boolean requiresFinish) {
+			this.finishRequested = requiresFinish;
+		}
+		@Override
+		public boolean getRequiresFinish() {
+			return finishRequested;
 		}
 	}
 
@@ -282,12 +306,19 @@ public class SimpleTaskQueue {
 	}
 	
 	/**
+	 * Flag indicating runnable is queued but not run; avoids multiple unnecessary runnables
+	 */
+	private boolean mDoProcessResultsIsQueued = false;
+	/**
 	 * Method to ensure results queue is processed.
 	 */
 	private Runnable mDoProcessResults = new Runnable() {
 		@Override
 		public void run() {
-			processResults();
+			synchronized(mDoProcessResults) {
+				mDoProcessResultsIsQueued = false;
+			}
+			processResults();				
 		}
 	};
 
@@ -307,18 +338,30 @@ public class SimpleTaskQueue {
 			}
 		}
 
+		// Use the thread object to get some context stuff (mainly DBs)
+		taskWrapper.activeThread = thread;
 		try {
-			task.run(thread);
+			task.run(taskWrapper);
 		} catch (Exception e) {
 			taskWrapper.exception = e;
 			Logger.logError(e, "Error running task");
+		} finally {
+			// Dereference
+			taskWrapper.activeThread = null;			
 		}
+
+		// Feature removed because onFinish() now gets any exception caught from run()
+		// Now the run() method can be used to change if onFinish() is called via the TaskContext
+		//
+		// 90% of implementations had to implement onFinish() and always returned true.
+		//
 		// See if we need to call finished(). Default to true.
-		try {
-			taskWrapper.finishRequested = task.requiresOnFinish();
-		} catch (Exception e) {
-			taskWrapper.finishRequested = true;
-		}
+		//try {
+		//	taskWrapper.finishRequested = task.requiresOnFinish();
+		//} catch (Exception e) {
+		//	taskWrapper.finishRequested = true;
+		//}
+
 		synchronized(this) {
 
 			// Queue the call to finished() if necessary.
@@ -328,7 +371,12 @@ public class SimpleTaskQueue {
 				} catch (InterruptedException e) {
 				}
 				// Queue Runnable in the UI thread.
-				mHandler.post(mDoProcessResults);			
+				synchronized(mDoProcessResults) {
+					if (!mDoProcessResultsIsQueued) {
+						mDoProcessResultsIsQueued = true;
+						mHandler.post(mDoProcessResults);						
+					}
+				}
 			} else {
 				// If no other methods are going to be called, then decrement
 				// managed task count. We do not care about this task any more.
@@ -360,7 +408,7 @@ public class SimpleTaskQueue {
 				// Call the task handler; log and ignore errors.
 				if (req.finishRequested) {
 					try {
-						task.onFinish();
+						task.onFinish(req.exception);
 					} catch (Exception e) {
 						Logger.logError(e, "Error processing request result");
 					}
@@ -383,7 +431,12 @@ public class SimpleTaskQueue {
 		public CatalogueDBAdapter getDb();
 		/** 'Covers' database helper */
 		public CoversDbHelper getCoversDb();
+		/** Utils object */
 		public Utils getUtils();
+		/** Accessor */
+		public void setRequiresFinish(boolean requiresFinish);
+		/** Accessor */
+		public boolean getRequiresFinish();
 	}
 
 	/**
@@ -392,7 +445,7 @@ public class SimpleTaskQueue {
 	 * 
 	 * @author Philip Warner
 	 */
-	private class SimpleTaskQueueThread extends Thread implements SimpleTaskContext {
+	private class SimpleTaskQueueThread extends Thread {
 		/** DB Connection, if task requests one. Survives while thread is alive */
 		CatalogueDBAdapter mDb = null;
 		/** Covers DB Connection, if task requests one. Survives while thread is alive */
@@ -444,7 +497,6 @@ public class SimpleTaskQueue {
 			}
 		}
 
-		@Override
 		public CatalogueDBAdapter getDb() {
 			if (mDb == null) {
 				mDb = new CatalogueDBAdapter(BookCatalogueApp.context);
@@ -453,14 +505,12 @@ public class SimpleTaskQueue {
 			return mDb;
 		}
 
-		@Override
 		public Utils getUtils() {
 			if (mUtils == null)
 				mUtils = new Utils();
 			return mUtils;
 		}
 
-		@Override
 		public CoversDbHelper getCoversDb() {
 			if (mCoversDb == null)
 				mCoversDb = new CoversDbHelper();

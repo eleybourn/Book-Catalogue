@@ -21,11 +21,11 @@
 package com.eleybourn.bookcatalogue.goodreads;
 
 import net.philipwarner.taskqueue.QueueManager;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
 import com.eleybourn.bookcatalogue.BcQueueManager;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 
 /**
  * Trivial Activity to handle the callback URI; while using a broadcast receiver would be nicer, 
@@ -36,7 +36,7 @@ import com.eleybourn.bookcatalogue.BcQueueManager;
  * 
  * @author Philip Warner
  */
-public class GoodreadsAuthorizationActivity extends Activity {
+public class GoodreadsAuthorizationActivity extends BookCatalogueActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

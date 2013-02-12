@@ -29,7 +29,6 @@ import java.util.Iterator;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.DialogInterface;
@@ -45,8 +44,6 @@ import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AbsListView;
@@ -64,6 +61,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.eleybourn.bookcatalogue.BooksMultitypeListHandler.BooklistChangeListener;
 import com.eleybourn.bookcatalogue.booklist.BooklistBuilder;
 import com.eleybourn.bookcatalogue.booklist.BooklistBuilder.BookRowInfo;
@@ -73,7 +72,11 @@ import com.eleybourn.bookcatalogue.booklist.BooklistPseudoCursor;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
 import com.eleybourn.bookcatalogue.booklist.BooklistStylePropertiesActivity;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyles;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueListActivity;
 import com.eleybourn.bookcatalogue.debug.Tracker;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsUtils;
 import com.eleybourn.bookcatalogue.utils.HintManager;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue;
@@ -88,7 +91,7 @@ import com.eleybourn.bookcatalogue.utils.ViewTagger;
  * 
  * @author Philip Warner
  */
-public class BooksOnBookshelf extends ListActivity implements BooklistChangeListener {
+public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistChangeListener {
 	/** Counter for com.eleybourn.bookcatalogue.debug purposes */
 	private static Integer mInstanceCount = 0;
 
@@ -224,6 +227,13 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 	}
 
 	/**
+	 * Support routine now that this activity is no longer a ListActivity
+	 */
+	private ListView getListView() {
+		return (ListView)findViewById(android.R.id.list);
+	}
+
+	/**
 	 * Handle a list item being clicked.
 	 * 
 	 * @param arg0		Parent adapter
@@ -276,7 +286,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 	 * Handle selections from context menu
 	 */
 	@Override
-	public boolean onContextItemSelected(MenuItem item) {
+	public boolean onContextItemSelected(android.view.MenuItem item) {
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 		mList.moveToPosition(info.position);
 		if (mListHandler.onContextItemSelected(mList.getRowView(), this, mDb, item))
@@ -420,7 +430,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		}
 
 		@Override
-		public void onFinish() {
+		public void onFinish(Exception e) {
 			// If activity dead, just do a local cleanup and exit.
 			if (mIsDead) {
 				mTempList.close();
@@ -438,11 +448,6 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 			mTempList = null;
 		}
 
-		@Override
-		public boolean requiresOnFinish() {
-			return true;
-		}
-		
 	}
 	
 	/**
@@ -493,7 +498,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 				root.setBackgroundColor(backgroundColor);
 				header.setBackgroundColor(backgroundColor);
 			} else {
-				Drawable d = Utils.makeTiledBackground(this, false);
+				Drawable d = Utils.makeTiledBackground(false);
 				root.setBackgroundDrawable(d);
 				header.setBackgroundDrawable(d);
 //				root.setBackgroundDrawable(Utils.cleanupTiledBackground(getResources().getDrawable(R.drawable.bc_background_gradient)));
@@ -503,7 +508,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 			Utils.setCacheColorHintSafely(lv, 0x00000000);
 			// ICS does not cope well with transparent ListView backgrounds with a 0 cache hint, but it does
 			// seem to cope with a background image on the ListView itself.
-			Drawable d = Utils.makeTiledBackground(this, false);
+			Drawable d = Utils.makeTiledBackground(false);
 			if (Build.VERSION.SDK_INT >= 11) {
 				// Honeycomb
 				lv.setBackgroundDrawable(d);
@@ -697,9 +702,9 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		);
 
 		if (mCurrentStyle == null)
-			this.setTitle(R.string.app_name);
+			this.getSupportActionBar().setSubtitle("");
 		else
-			this.setTitle(getString(R.string.app_name) + ": " + mCurrentStyle.getDisplayName());
+			this.getSupportActionBar().setSubtitle(mCurrentStyle.getDisplayName());
 			
 		// Close old list
 		if (oldList != null) {
@@ -976,23 +981,35 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 	private static final int MNU_EXPAND = MenuHandler.FIRST+2; 
 	private static final int MNU_COLLAPSE = MenuHandler.FIRST+3; 
 	private static final int MNU_EDIT_STYLE = MenuHandler.FIRST+4; 
+	private static final int MNU_GOODREADS = MenuHandler.FIRST+5; 
+	
 	/**
 	 * Run each time the menu button is pressed. This will setup the options menu
 	 */
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
+		MenuItem i;
 		mMenuHandler = new MenuHandler();
 		mMenuHandler.init(menu);
 
 		mMenuHandler.addCreateBookItems(menu);
 
-		mMenuHandler.addItem(menu, MNU_SORT, R.string.sort_and_style_ellipsis, android.R.drawable.ic_menu_sort_alphabetically);
+		i = mMenuHandler.addItem(menu, MNU_SORT, R.string.sort_and_style_ellipsis, android.R.drawable.ic_menu_sort_alphabetically);
+		i.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+			;
 		//mMenuHandler.addItem(menu, MNU_EDIT_STYLE, R.string.edit_style, android.R.drawable.ic_menu_manage);
 
 		mMenuHandler.addItem(menu, MNU_EXPAND, R.string.menu_sort_by_author_expanded, R.drawable.ic_menu_expand);
-		mMenuHandler.addItem(menu, MNU_COLLAPSE, R.string.menu_sort_by_author_collapsed, R.drawable.ic_menu_collapse);
 
-		mMenuHandler.addSearchItem(menu);
+		mMenuHandler.addItem(menu, MNU_COLLAPSE, R.string.menu_sort_by_author_collapsed, R.drawable.ic_menu_collapse);
+		
+		mMenuHandler.addSearchItem(menu)
+					.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+		final boolean showGr = GoodreadsManager.hasCredentials();
+		if (showGr) {
+			mMenuHandler.addItem(menu, MNU_GOODREADS, R.string.goodreads, R.drawable.ic_menu_gr_logo);
+		}
 
 		mMenuHandler.addCreateHelpAndAdminItems(menu);
 		
@@ -1042,6 +1059,11 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 					mTopRow = mList.getBuilder().getPosition(oldAbsPos);
 					displayList(mList.getBuilder().getList(), null);												
 				}
+				break;
+			}
+			case MNU_GOODREADS:
+			{
+				GoodreadsUtils.showGoodreadsOptions(this);
 				break;
 			}
 			/*

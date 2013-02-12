@@ -16,14 +16,17 @@
 
 package com.eleybourn.bookcatalogue.cropper;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
+import android.view.View;
 import android.widget.ImageView;
 
 abstract class CropImageViewTouchBase extends ImageView {
@@ -253,6 +256,21 @@ abstract class CropImageViewTouchBase extends ImageView {
 
 	private void init() {
 		setScaleType(ImageView.ScaleType.MATRIX);
+		forceSoftwareRenderer();
+	}
+
+	/**
+	 * We get 'unsupported feature' crshes if the option to always use GL is turned on.
+	 * See:
+	 *     http://developer.android.com/guide/topics/graphics/hardware-accel.html
+	 *     http://stackoverflow.com/questions/13676059/android-unsupportedoperationexception-at-canvas-clippath
+	 * so for API level > 11, we turn it off manually.
+	 */
+	@SuppressLint("NewApi")
+	private void forceSoftwareRenderer() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			this.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+		}		
 	}
 
 	protected float getValue(Matrix matrix, int whichValue) {

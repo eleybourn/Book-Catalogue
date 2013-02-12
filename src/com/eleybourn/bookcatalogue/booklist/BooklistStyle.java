@@ -264,7 +264,7 @@ public class BooklistStyle implements Iterable<BooklistGroup>, Serializable {
 	}
 
 	/**
-	 * Accessor. Returns a standarised form of the style name.
+	 * Accessor. Returns a standarised form of the style name. This name is unique.
 	 *
 	 * @return
 	 */

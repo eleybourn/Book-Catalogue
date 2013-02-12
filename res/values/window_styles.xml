@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Invisible" >
+    <style name="Invisible">
 	    <item  name="android:windowBackground">@android:color/transparent</item>
 	    <item name="android:background">@android:color/transparent</item>
 	    <item name="android:windowIsFloating">true</item>

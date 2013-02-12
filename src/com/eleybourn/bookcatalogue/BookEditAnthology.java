@@ -1,5 +1,5 @@
 /*
- * @copyright 2010 Evan Leybourn
+ * @copyright 2013 Evan Leybourn
  * @license GNU General Public License
  * 
  * This file is part of Book Catalogue.
@@ -31,34 +31,34 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.SAXException;
 
 import android.app.AlertDialog;
-import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter.AnthologyTitleExistsException;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
+import com.eleybourn.bookcatalogue.widgets.SimpleListAdapter;
 
-public class BookEditAnthology extends ListActivity {
+public class BookEditAnthology extends BookEditFragmentAbstract {
 	
 	private EditText mTitleText;
 	private AutoCompleteTextView mAuthorText;
@@ -66,75 +66,26 @@ public class BookEditAnthology extends ListActivity {
 	private String bookTitle;
 	private Button mAdd;
 	private CheckBox mSame;
-	private Long mRowId;
-	private Long mEditId = null;
-	private int currentPosition = 0;
-	private int maxPosition = 0;
-	private CatalogueDBAdapter mDbHelper;
+	private Integer mEditPosition = null;
 	int anthology_num = CatalogueDBAdapter.ANTHOLOGY_NO;
+	private ArrayList<AnthologyTitle> mList;
 	
 	private static final int DELETE_ID = Menu.FIRST;
 	private static final int POPULATE = Menu.FIRST + 1;
 	
-	/* Side-step a bug in HONEYCOMB. It seems that startManagingCursor() in honeycomb causes
-	 * child-list cursors for ExpanadableList objects to be closed prematurely. So we seem to have
-	 * to roll our own...see http://osdir.com/ml/Android-Developers/2011-03/msg02605.html.
-	 */
-	private ArrayList<Cursor> mManagedCursors = new ArrayList<Cursor>();
-	@Override    
-	public void startManagingCursor(Cursor c)
-	{     
-		synchronized(mManagedCursors) {
-			if (!mManagedCursors.contains(c))
-				mManagedCursors.add(c);     
-		}    
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		return inflater.inflate(R.layout.list_anthology, container, false);
 	}
 
-	@Override    
-	public void stopManagingCursor(Cursor c)
-	{
-		synchronized(mManagedCursors) {
-			try {
-				mManagedCursors.remove(c);				
-			} catch (Exception e) {
-				// Don;t really care if it's called more than once.
-			}
-		}
-	}
-
-	private void destroyManagedCursors() 
-	{
-		synchronized(mManagedCursors) {
-			for (Cursor c : mManagedCursors) {
-				try {
-					c.close();
-				} catch (Exception e) {
-					// Don;t really care if it's called more than once or fails.
-				}
-			}     
-			mManagedCursors.clear();
-		}
-	}
-
-	protected void getRowId() {
-		/* Get any information from the extras bundle */
-		Bundle extras = getIntent().getExtras();
-		mRowId = extras != null ? extras.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
-	}
-	
 	/**
 	 * Display the edit fields page
 	 */
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		mDbHelper = new CatalogueDBAdapter(this);
-		mDbHelper.open();
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
 		
-		mRowId = savedInstanceState != null ? savedInstanceState.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
-		if (mRowId == null) {
-			getRowId();
-		}
 		loadPage();
 	}
 	
@@ -145,26 +96,15 @@ public class BookEditAnthology extends ListActivity {
 	 * 3. Populate the "Title List" - @see fillAnthology();
 	 */
 	public void loadPage() {
-		setContentView(R.layout.list_anthology);
 		
-		Cursor book = mDbHelper.fetchBookById(mRowId);
-		try {
-			if (book != null) {
-				book.moveToFirst();
-			}
+		BookData book = mEditManager.getBookData();
+		bookAuthor = book.getString(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);
+		bookTitle = book.getString(CatalogueDBAdapter.KEY_TITLE);
+		// Setup the same author field
+		anthology_num = book.getInt(CatalogueDBAdapter.KEY_ANTHOLOGY_MASK);			
 
-			bookAuthor = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED));
-			bookTitle = book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE));
-			// Setup the same author field
-			anthology_num = book.getInt(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY));
-			
-		} finally {
-			if (book != null)
-				book.close();			
-		}
-
-		mSame = (CheckBox) findViewById(R.id.same_author);
-		if (anthology_num == CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS) {
+		mSame = (CheckBox) getView().findViewById(R.id.same_author);
+		if ((anthology_num & CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS) != 0) {
 			mSame.setChecked(false);
 		} else {
 			mSame.setChecked(true);
@@ -172,41 +112,47 @@ public class BookEditAnthology extends ListActivity {
 		
 		mSame.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
-				saveState();
+				saveState(mEditManager.getBookData());
 				loadPage();
 			}
 		});
 		
-		ArrayAdapter<String> author_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, mDbHelper.getAllAuthors());
-		mAuthorText = (AutoCompleteTextView) findViewById(R.id.add_author);
+		ArrayAdapter<String> author_adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, mDbHelper.getAllAuthors());
+		mAuthorText = (AutoCompleteTextView) getView().findViewById(R.id.add_author);
 		mAuthorText.setAdapter(author_adapter);
 		if (mSame.isChecked()) {
 			mAuthorText.setVisibility(View.GONE);
+		} else {
+			mAuthorText.setVisibility(View.VISIBLE);			
 		}
-		mTitleText = (EditText) findViewById(R.id.add_title);
-		
-		mAdd = (Button) findViewById(R.id.row_add);
+		mTitleText = (EditText) getView().findViewById(R.id.add_title);
+
+		mAdd = (Button) getView().findViewById(R.id.row_add);
 		mAdd.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
 				try {
 					String title = mTitleText.getText().toString();
-					String author = mAuthorText.getText().toString(); 
-					if (mEditId == null) {
-						if (mSame.isChecked()) {
-							author = bookAuthor; 
-						}
-						mDbHelper.createAnthologyTitle(mRowId, author, title, false);
+					String author = mAuthorText.getText().toString();
+					if (mSame.isChecked()) {
+						author = bookAuthor; 
+					}
+					AnthologyTitleListAdapter adapter = ((AnthologyTitleListAdapter)BookEditAnthology.this.getListView().getAdapter());
+					if (mEditPosition == null) {
+						AnthologyTitle anthology = new AnthologyTitle(new Author(author), title);
+						adapter.add(anthology);
 					} else {
-						mDbHelper.updateAnthologyTitle(mEditId, mRowId, author, title);
-						mEditId = null;
+						AnthologyTitle anthology = adapter.getItem(mEditPosition);
+						anthology.setAuthor(new Author(author));
+						anthology.setTitle(title);
+						mEditPosition = null;
 						mAdd.setText(R.string.anthology_add);
 					}
 					mTitleText.setText("");
 					mAuthorText.setText("");
-					fillAnthology(currentPosition);
-					currentPosition = maxPosition;
+					//fillAnthology(currentPosition);
+					mEditManager.setDirty(true);
 				} catch(AnthologyTitleExistsException e) {
-					Toast.makeText(BookEditAnthology.this, R.string.the_title_already_exists, Toast.LENGTH_LONG).show();
+					Toast.makeText(getActivity(), R.string.the_title_already_exists, Toast.LENGTH_LONG).show();
 				}
 			}
 		});
@@ -226,32 +172,32 @@ public class BookEditAnthology extends ListActivity {
 	 * Populate the bookEditAnthology view
 	 */
 	public void fillAnthology() {
-		int layout = R.layout.row_anthology;
-		
+
 		// Get all of the rows from the database and create the item list
-		Cursor BooksCursor = mDbHelper.fetchAnthologyTitlesByBook(mRowId);
-		maxPosition = BooksCursor.getCount();
-		currentPosition = maxPosition;
-		startManagingCursor(BooksCursor);
-		String[] from = null;
-		int[] to = null;
-		// Create an array to specify the fields we want to display in the list
-		from = new String[]{CatalogueDBAdapter.KEY_ROWID, CatalogueDBAdapter.KEY_POSITION, CatalogueDBAdapter.KEY_AUTHOR_NAME, CatalogueDBAdapter.KEY_TITLE};
-		// and an array of the fields we want to bind those fields to (in this case just text1)
-		to = new int[]{R.id.row_row_id, R.id.row_position, R.id.row_author, R.id.row_title};
+		mList = mEditManager.getBookData().getAnthologyTitles(); // mDbHelper.getBookAnthologyTitleList(mEditManager.getBookData().getRowId());
 		// Now create a simple cursor adapter and set it to display
-		SimpleCursorAdapter books = new AnthologyTitleListAdapter(this, layout, BooksCursor, from, to);
-		setListAdapter(books);
+		AnthologyTitleListAdapter books = new AnthologyTitleListAdapter(getActivity(), R.layout.row_anthology, mList);
+		final ListView list = getListView();
+		list.setAdapter(books);
+		registerForContextMenu(list);
+		list.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				mEditPosition = position;
+				AnthologyTitle anthology = mList.get(position);
+				mTitleText.setText(anthology.getTitle());
+				mAuthorText.setText(anthology.getAuthor().getDisplayName());
+				mAdd.setText(R.string.anthology_save);
+			}});
 		
-		registerForContextMenu(getListView());
 	}
 	
-	/**
-	 * The adapter for the Titles List
-	 * 
-	 * @author evan
-	 */
-	public class AnthologyTitleListAdapter extends SimpleCursorAdapter {
+	private ListView getListView() {
+		return (ListView) getView().findViewById(android.R.id.list);
+	}
+
+	public class AnthologyTitleListAdapter extends SimpleListAdapter<AnthologyTitle> {
 		boolean series = false;
 		
 		/**
@@ -264,45 +210,30 @@ public class BookEditAnthology extends ListActivity {
 		 * @param from
 		 * @param to
 		 */
-		public AnthologyTitleListAdapter(Context context, int layout, Cursor cursor, String[] from, int[] to) {
-			super(context, layout, cursor, from, to);
+		public AnthologyTitleListAdapter(Context context, int rowViewId, ArrayList<AnthologyTitle> items) {
+			super(context, rowViewId, items);
 		}
-		
-		/**
-		 * Override the setTextView function. This helps us set the appropriate opening and
-		 * closing brackets for author names.
-		 */
+
 		@Override
-		public void setViewText(TextView v, String text) {
-			if (v.getId() == R.id.row_author) {
-				if (mSame.isChecked()) {
-					v.setVisibility(View.GONE);
-				} else {
-					text = " (" + text + ")";
-				}
-			} else if (v.getId() == R.id.row_position) {
-				text = text + ". ";
-			} else if (v.getId() == R.id.row_row_id) {
-				final long this_text = Long.parseLong(text); 
-				ImageView up = (ImageView) ((ViewGroup) v.getParent()).findViewById(R.id.row_up);
-				up.setOnClickListener(new View.OnClickListener() {
-					public void onClick(View view) {
-						int position = mDbHelper.updateAnthologyTitlePosition(this_text, true);
-						fillAnthology(position-2);
-					}
-				});
-				ImageView down = (ImageView) ((ViewGroup) v.getParent()).findViewById(R.id.row_down);
-				down.setOnClickListener(new View.OnClickListener() {
-					public void onClick(View view) {
-						int position = mDbHelper.updateAnthologyTitlePosition(this_text, false);
-						fillAnthology(position);
-					}
-				});
-				text = "";
-			}
-			v.setText(text);
+		protected void onSetupView(AnthologyTitle anthology, int position, View target) {
+			TextView author = (TextView)target.findViewById(R.id.row_author);
+			author.setText(anthology.getAuthor().getDisplayName());
+			TextView title = (TextView)target.findViewById(R.id.row_title);
+			title.setText(anthology.getTitle());
 		}
 		
+		@Override
+		protected void onRowClick(AnthologyTitle anthology, int position, View v) {
+			mEditPosition = position;
+			mTitleText.setText(anthology.getTitle());
+			mAuthorText.setText(anthology.getAuthor().getDisplayName());
+			mAdd.setText(R.string.anthology_save);
+		};
+		
+		@Override
+		protected void onListChanged() {
+			mEditManager.setDirty(true);
+		};
 	}
 	
 	/**
@@ -344,7 +275,7 @@ public class BookEditAnthology extends ListActivity {
 			try {
 				parser.parse(Utils.getInputStream(url), handler);
 			} catch (RuntimeException e) {
-				Toast.makeText(this, R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
+				Toast.makeText(getActivity(), R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
 				Logger.logError(e);
 				return;
 			}
@@ -365,24 +296,24 @@ public class BookEditAnthology extends ListActivity {
 					}
 				} catch (RuntimeException e) {
 					Logger.logError(e);
-					Toast.makeText(this, R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
+					Toast.makeText(getActivity(), R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
 				}
 			}
 			if (success == false) {
-				Toast.makeText(this, R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
+				Toast.makeText(getActivity(), R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
 				return;
 			}
 		} catch (MalformedURLException e) {
-			Toast.makeText(this, R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
+			Toast.makeText(getActivity(), R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
 			Logger.logError(e);
 		} catch (ParserConfigurationException e) {
-			Toast.makeText(this, R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
+			Toast.makeText(getActivity(), R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
 			Logger.logError(e);
 		} catch (SAXException e) {
-			Toast.makeText(this, R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
+			Toast.makeText(getActivity(), R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
 			Logger.logError(e);
 		} catch (Exception e) {
-			Toast.makeText(this, R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
+			Toast.makeText(getActivity(), R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
 			Logger.logError(e);
 		}
 		fillAnthology();
@@ -395,10 +326,10 @@ public class BookEditAnthology extends ListActivity {
 			anthology_title += "* " + titles.get(j) + "\n";
 		}
 		
-		AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(anthology_title).create();
+		AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setMessage(anthology_title).create();
 		alertDialog.setTitle(R.string.anthology_confirm);
 		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-		alertDialog.setButton(this.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+		alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, this.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				for (int j=0; j < titles.size(); j++) {
 					String anthology_title = titles.get(j);
@@ -413,13 +344,15 @@ public class BookEditAnthology extends ListActivity {
 					// Trim extraneous punctionaction and whitespace from the titles and authors
 					anthology_author = anthology_author.trim().replace("\n", " ").replaceAll("[\\,\\.\\'\\:\\;\\`\\~\\@\\#\\$\\%\\^\\&\\*\\(\\)\\-\\=\\_\\+]*$", "").trim();
 					anthology_title = anthology_title.trim().replace("\n", " ").replaceAll("[\\,\\.\\'\\:\\;\\`\\~\\@\\#\\$\\%\\^\\&\\*\\(\\)\\-\\=\\_\\+]*$", "").trim();
-					mDbHelper.createAnthologyTitle(mRowId, anthology_author, anthology_title, true);
+					AnthologyTitle anthology = new AnthologyTitle(new Author(anthology_author), anthology_title);
+					mList.add(anthology);
 				}
-				fillAnthology();
+				AnthologyTitleListAdapter adapter = ((AnthologyTitleListAdapter)BookEditAnthology.this.getListView().getAdapter());
+				adapter.notifyDataSetChanged();
 				return;
 			}
 		}); 
-		alertDialog.setButton2(this.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+		alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, this.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				//do nothing
 				return;
@@ -429,39 +362,15 @@ public class BookEditAnthology extends ListActivity {
 
 	}
 	
-	@Override
-	protected void onListItemClick(ListView l, View v, int position, long id) {
-		super.onListItemClick(l, v, position, id);
-
-		Cursor anthology = mDbHelper.fetchAnthologyTitleById(id);
-		String title;
-		String author;
-		try {
-			anthology.moveToFirst();
-			title = anthology.getString(anthology.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE)); 
-			author = anthology.getString(anthology.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR_NAME));
-			anthology.close();			
-		} finally {
-			if (anthology != null)
-				anthology.close();
-		}
-
-		currentPosition = position;
-		mEditId = id;
-		mTitleText.setText(title);
-		mAuthorText.setText(author);
-		mAdd.setText(R.string.anthology_save);
-	}
-	
 	/**
 	 * Run each time the menu button is pressed. This will setup the options menu
 	 */
 	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
+	public void onPrepareOptionsMenu(Menu menu) {
 		menu.clear();
 		MenuItem populate = menu.add(0, POPULATE, 0, R.string.populate_anthology_titles);
 		populate.setIcon(android.R.drawable.ic_menu_add);
-		return super.onPrepareOptionsMenu(menu);
+		super.onPrepareOptionsMenu(menu);
 	}
 	
 	/**
@@ -469,12 +378,12 @@ public class BookEditAnthology extends ListActivity {
 	 * call the appropriate functions (or other activities) 
 	 */
 	@Override
-	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+	public boolean onOptionsItemSelected(MenuItem item) {
 		switch(item.getItemId()) {
 		case POPULATE:
 			searchWikipedia();
 		}
-		return super.onMenuItemSelected(featureId, item);
+		return super.onOptionsItemSelected(item);
 	}
 	
 	@Override
@@ -484,65 +393,43 @@ public class BookEditAnthology extends ListActivity {
 	}
 	
 	@Override
-	public boolean onContextItemSelected(MenuItem item) {
+	public boolean onContextItemSelected(android.view.MenuItem item) {
 		switch(item.getItemId()) {
 			case DELETE_ID:
 				AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-				mDbHelper.deleteAnthologyTitle(info.id);
-				fillAnthology();
+				AnthologyTitleListAdapter adapter = ((AnthologyTitleListAdapter)BookEditAnthology.this.getListView().getAdapter());
+				adapter.remove(adapter.getItem((int)info.id));
+				mEditManager.setDirty(true);
 				return true;
 		}
 		return super.onContextItemSelected(item);
 	}
-	
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		if (mRowId != null) {
-			outState.putLong(CatalogueDBAdapter.KEY_ROWID, mRowId);
-		} else {
-			//there is nothing todo
-		}
-	}
 
-	@Override
-	protected void onPause() {
-		super.onPause();
-	}
-	
-	/*
-	@Override
-	protected void onResume() {
-		super.onResume();
-		fillAnthology();
-	}
-	*/
-
-	private void saveState() {
-		Integer anthology = CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS;
+	private void saveState(BookData book) {
 		if (mSame.isChecked()) {
-			anthology = CatalogueDBAdapter.ANTHOLOGY_SAME_AUTHOR;
-		}
-		Bundle values = new Bundle();
-		values.putLong(CatalogueDBAdapter.KEY_ROWID, mRowId);
-		values.putInt(CatalogueDBAdapter.KEY_ANTHOLOGY, anthology);
-
-		if (mRowId == null || mRowId == 0) {
-			//This should never happen
-			//long id = mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num);
-			Toast.makeText(this, R.string.unknown_error, Toast.LENGTH_LONG).show();
-			finish();
+			anthology_num = CatalogueDBAdapter.ANTHOLOGY_IS_ANTHOLOGY;
 		} else {
-			mDbHelper.updateBook(mRowId, values, true);
+			anthology_num = CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS ^ CatalogueDBAdapter.ANTHOLOGY_IS_ANTHOLOGY;
 		}
-		return;
+		book.setAnthologyTitles(mList);
+		book.putInt(CatalogueDBAdapter.KEY_ANTHOLOGY_MASK, anthology_num);
 	}
 	
-	@Override
-	protected void onDestroy() {
-		destroyManagedCursors();
-		super.onDestroy();
-		mDbHelper.close();
+	@Override 
+	public void onPause() {
+		super.onPause();
+		saveState(mEditManager.getBookData());
 	}
 
+	@Override
+	protected void onLoadBookDetails(BookData book, boolean setAllDone) {
+		if (!setAllDone)
+			mFields.setAll(book);
+	}
+
+	@Override
+	protected void onSaveBookDetails(BookData book) {
+		super.onSaveBookDetails(book);
+		saveState(book);		
+	}
 }

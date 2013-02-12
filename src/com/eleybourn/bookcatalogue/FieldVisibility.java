@@ -20,7 +20,6 @@
 
 package com.eleybourn.bookcatalogue;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -29,6 +28,7 @@ import android.view.View.OnClickListener;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 
+import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
@@ -39,7 +39,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * 
  * @author Evan Leybourn
  */
-public class FieldVisibility extends Activity {
+public class FieldVisibility extends BookCatalogueActivity {
 	public final static String prefix = "field_visibility_";
 	
 	/**
@@ -76,7 +76,7 @@ public class FieldVisibility extends Activity {
 				CatalogueDBAdapter.KEY_ISBN, CatalogueDBAdapter.KEY_SERIES_NAME, CatalogueDBAdapter.KEY_SERIES_NUM, 
 				CatalogueDBAdapter.KEY_PUBLISHER, CatalogueDBAdapter.KEY_DATE_PUBLISHED, CatalogueDBAdapter.KEY_BOOKSHELF, 
 				CatalogueDBAdapter.KEY_PAGES, CatalogueDBAdapter.KEY_LIST_PRICE, CatalogueDBAdapter.KEY_READ, 
-				CatalogueDBAdapter.KEY_RATING, CatalogueDBAdapter.KEY_NOTES, CatalogueDBAdapter.KEY_ANTHOLOGY, 
+				CatalogueDBAdapter.KEY_RATING, CatalogueDBAdapter.KEY_NOTES, CatalogueDBAdapter.KEY_ANTHOLOGY_MASK, 
 				CatalogueDBAdapter.KEY_LOCATION, CatalogueDBAdapter.KEY_READ_START, CatalogueDBAdapter.KEY_READ_END, 
 				CatalogueDBAdapter.KEY_FORMAT, CatalogueDBAdapter.KEY_SIGNED, CatalogueDBAdapter.KEY_DESCRIPTION, 
 				CatalogueDBAdapter.KEY_GENRE};

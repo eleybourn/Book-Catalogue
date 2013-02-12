@@ -22,7 +22,6 @@ package com.eleybourn.bookcatalogue.goodreads;
 
 import java.util.ArrayList;
 
-import android.app.ListActivity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -36,6 +35,7 @@ import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueListActivity;
 import com.eleybourn.bookcatalogue.goodreads.api.SearchBooksApiHandler;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue;
@@ -47,7 +47,7 @@ import com.eleybourn.bookcatalogue.utils.ViewTagger;
  * 
  * @author Philip Warner
  */
-public class GoodreadsSearchResults extends ListActivity {
+public class GoodreadsSearchResults extends BookCatalogueListActivity {
 	//private static Integer mIdCounter = 0;
 	//private int mId = 0;
 

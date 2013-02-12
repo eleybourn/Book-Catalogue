@@ -1,8 +1,9 @@
 package com.eleybourn.bookcatalogue;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+
+import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 
 /**
  * This is a placeholder class to deal with the suprising number of old shortcuts that 
@@ -17,7 +18,7 @@ import android.os.Bundle;
  * 
  * @author Philip Warner
  */
-public class BookCatalogue extends Activity {
+public class BookCatalogue extends BookCatalogueActivity {
 
 	public void onCreate(Bundle savedInstanceState) {
 		Intent i = new Intent(this, StartupActivity.class);

@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.Iterator;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -44,6 +45,11 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.actionbarsherlock.app.SherlockFragment;
+import com.eleybourn.bookcatalogue.datamanager.DataManager;
+import com.eleybourn.bookcatalogue.datamanager.ValidatorException;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * This is the class that manages data and views for an activity; access to the data that
@@ -113,7 +119,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	public static final long serialVersionUID = 1L;
 
 	// The activity and preferences related to this object.
-	private WeakReference<Activity> mActivity = null;
+	private FieldsContext mContext = null;
 	SharedPreferences mPrefs = null;
 
 	public interface AfterFieldChangeListener {
@@ -122,6 +128,50 @@ public class Fields extends ArrayList<Fields.Field> {
 	
 	private AfterFieldChangeListener mAfterFieldChangeListener = null;
 	
+	private interface FieldsContext {
+		Context getContext();
+		View findViewById(int id);
+	}
+	private class ActivityContext implements FieldsContext {
+		private final WeakReference<Activity> mActivity;
+		public ActivityContext(Activity a) {
+			mActivity = new WeakReference<Activity>(a);
+		}
+		@Override
+		public Context getContext() {
+			return mActivity.get();
+		}
+		@Override
+		public View findViewById(int id) {
+			return mActivity.get().findViewById(id);
+		}
+	}
+	private class FragmentContext implements FieldsContext {
+		private final WeakReference<SherlockFragment> mFragment;
+		public FragmentContext(SherlockFragment f) {
+			mFragment = new WeakReference<SherlockFragment>(f);
+		}
+		@Override
+		public Context getContext() {
+			return mFragment.get().getActivity();
+		}
+
+		@Override
+		public View findViewById(int id) {
+			if (mFragment.get() == null) {
+				System.out.println("Fragment is NULL");
+				return null;
+			}
+			View v = mFragment.get().getView();
+			if (v == null) {
+				System.out.println("View is NULL");
+				return null;
+			}
+
+			return v.findViewById(id);
+		}
+		
+	}
 	/**
 	 * Constructor
 	 * 
@@ -130,8 +180,20 @@ public class Fields extends ArrayList<Fields.Field> {
 	 */
 	Fields(android.app.Activity a) {
 		super();
-		mActivity = new WeakReference<Activity>(a);
+		mContext = new ActivityContext(a);
 		mPrefs = a.getSharedPreferences("bookCatalogue", android.content.Context.MODE_PRIVATE);
+	}
+
+	/**
+	 * Constructor
+	 * 
+	 * @param a 	The parent fragment which contains all Views this object
+	 * 				will manage.
+	 */
+	Fields(SherlockFragment f) {
+		super();
+		mContext = new FragmentContext(f);
+		mPrefs = f.getActivity().getSharedPreferences("bookCatalogue", android.content.Context.MODE_PRIVATE);
 	}
 
 	/**
@@ -155,7 +217,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	 * 
 	 * @throws ParseException		If parse failed.
 	 */
-	static private Date parseDate(String s) throws ParseException {
+	static Date parseDate(String s) throws ParseException {
 		Date d;
 		try {
 			// Parse as SQL/ANSI date
@@ -170,41 +232,6 @@ public class Fields extends ArrayList<Fields.Field> {
 
 		}
 		return d;
-	}
-
-	/**
-	 * Utility function to convert string to boolean
-	 * 
-	 * @param s		String to convert
-	 * 
-	 * @return		Boolean value
-	 */
-	static private boolean stringToBoolean(String s) {
-		boolean v;
-		if (s.equals("1"))
-			v = true;
-		else if (s.equals("0"))
-			v = false;
-		else {
-			s = s.trim().toLowerCase();
-			if (s.equals("t"))
-				v = true;
-			else if (s.equals("f") || s.equals(""))
-				v = false;
-			else if (s.equals("true"))
-				v = true;
-			else if (s.equals("false"))
-				v = false;
-			else {
-				try {
-					Integer i = Integer.parseInt(s);
-					return i != 0;
-				} catch (Exception e) {
-					throw new RuntimeException("Not a valid boolean value");						
-				}
-			}
-		}
-		return v;
 	}
 
 	// The last validator exception caught by this object
@@ -229,6 +256,22 @@ public class Fields extends ArrayList<Fields.Field> {
 		void set(Field field, Cursor c);
 
 		/**
+		 * Passed a Field and a Cursor get the column from the cursor and set the view value.
+		 * 
+		 * @param field		Field which defines the View details
+		 * @param b			Bundle with data to load.
+		 */
+		void set(Field field, Bundle b);
+
+		/**
+		 * Passed a Field and a DataManager get the column from the data manager and set the view value.
+		 * 
+		 * @param field		Field which defines the View details
+		 * @param b			Bundle with data to load.
+		 */
+		void set(Field field, DataManager data);
+
+		/**
 		 * Passed a Field and a String, use the string to set the view value.
 		 * 
 		 * @param field		Field which defines the View details
@@ -244,6 +287,15 @@ public class Fields extends ArrayList<Fields.Field> {
 		 * @param values	Collection to save value.
 		 */
 		void get(Field field, Bundle values);
+
+		/**
+		 * Get the the value from the view associated with Field and store a native version
+		 * in the passed DataManager.
+		 * 
+		 * @param field		Field associated with the View object
+		 * @param values	Collection to save value.
+		 */
+		void get(Field field, DataManager values);
 
 		/**
 		 * Get the the value from the view associated with Field and return it as am Object.
@@ -266,10 +318,20 @@ public class Fields extends ArrayList<Fields.Field> {
 		public void set(Field field, Cursor c) {
 			set(field, c.getString(c.getColumnIndex(field.column)));
 		}
+		public void set(Field field, Bundle b) {
+			set(field, b.getString(field.column));
+		}
+		public void set(Field field, DataManager data) {
+			set(field, data.getString(field.column));
+		}
 		public void set(Field field, String s) {
 			mLocalValue = field.format(s);
 		}
 		public void get(Field field, Bundle values) {
+			values.putString(field.column, field.extract(mLocalValue));
+		}
+		@Override
+		public void get(Field field, DataManager values) {
 			values.putString(field.column, field.extract(mLocalValue));
 		}
 		public Object get(Field field) {
@@ -295,6 +357,12 @@ public class Fields extends ArrayList<Fields.Field> {
 		public void set(Field field, Cursor c) {
 			set(field, c.getString(c.getColumnIndex(field.column)));
 		}
+		public void set(Field field, Bundle b) {
+			set(field, b.getString(field.column));
+		}
+		public void set(Field field, DataManager data) {
+			set(field, data.getString(field.column));
+		}
 		public void set(Field field, String s) {
 			mRawValue = s;
 			TextView v = (TextView) field.getView();
@@ -311,10 +379,22 @@ public class Fields extends ArrayList<Fields.Field> {
 			//values.putString(field.column, field.extract(v.getText().toString()));
 			values.putString(field.column, mRawValue);
 		}
+		@Override
+		public void get(Field field, DataManager values) {
+			values.putString(field.column, mRawValue);
+		}
 		public Object get(Field field) {
 			return mRawValue;
 			//return field.extract(((TextView) field.getView()).getText().toString());
 		}
+
+		/**
+		 * Set the TextViewAccessor to support HTML.
+		 */
+		public void setShowHtml(boolean showHtml) {
+			mFormatHtml = showHtml;
+		}
+	
 	}
 
 	/**
@@ -329,6 +409,12 @@ public class Fields extends ArrayList<Fields.Field> {
 
 		public void set(Field field, Cursor c) {
 			set(field, c.getString(c.getColumnIndex(field.column)));
+		}
+		public void set(Field field, Bundle b) {
+			set(field, b.getString(field.column));
+		}
+		public void set(Field field, DataManager data) {
+			set(field, data.getString(field.column));
 		}
 		public void set(Field field, String s) {
 			synchronized(this) {
@@ -353,6 +439,21 @@ public class Fields extends ArrayList<Fields.Field> {
 			TextView v = (TextView) field.getView();
 			values.putString(field.column, field.extract(v.getText().toString()));
 		}
+		@Override
+		public void get(Field field, DataManager values) {
+			try {
+				TextView v = (TextView) field.getView();
+				if (v == null) {
+					throw new RuntimeException("No view for field " + field.column);					
+				}
+				if (v.getText() == null) {
+					throw new RuntimeException("Text is NULL for field " + field.column);					
+				}
+				values.putString(field.column, field.extract(v.getText().toString()));				
+			} catch (Exception e) {
+				throw new RuntimeException("Unable to save data", e);
+			}
+		}
 		public Object get(Field field) {
 			return field.extract(((TextView) field.getView()).getText().toString());
 		}
@@ -368,18 +469,34 @@ public class Fields extends ArrayList<Fields.Field> {
 		public void set(Field field, Cursor c) {
 			set(field, c.getString(c.getColumnIndex(field.column)));
 		}
+		public void set(Field field, Bundle b) {
+			set(field, b.getString(field.column));
+		}
+		public void set(Field field, DataManager data) {
+			set(field, data.getString(field.column));
+		}
 		public void set(Field field, String s) {
 			CheckBox v = (CheckBox) field.getView();
-			try {
-				s = field.format(s);
-				Integer i = Integer.parseInt(s);
-				v.setChecked(i!=0);
-			} catch (Exception e) {
-				s = s.toLowerCase();
-				v.setChecked(s.equals("t") || s.equals("true"));
+			if (s != null) {
+				try {
+					s = field.format(s);
+					v.setChecked(Utils.stringToBoolean(s));
+				} catch (Exception e) {
+					v.setChecked(false);
+				}
+			} else {
+				v.setChecked(false);
 			}
 		}
 		public void get(Field field, Bundle values) {
+			CheckBox v = (CheckBox) field.getView();
+			if (field.formatter != null)
+				values.putString(field.column, field.extract(v.isChecked() ? "1" : "0"));
+			else
+				values.putBoolean(field.column, v.isChecked());
+		}
+		@Override
+		public void get(Field field, DataManager values) {
 			CheckBox v = (CheckBox) field.getView();
 			if (field.formatter != null)
 				values.putString(field.column, field.extract(v.isChecked() ? "1" : "0"));
@@ -408,6 +525,12 @@ public class Fields extends ArrayList<Fields.Field> {
 			else
 				v.setRating(c.getFloat(c.getColumnIndex(field.column)));
 		}
+		public void set(Field field, Bundle b) {
+			set(field, b.getString(field.column));
+		}
+		public void set(Field field, DataManager data) {
+			set(field, data.getString(field.column));
+		}
 		public void set(Field field, String s) {
 			RatingBar v = (RatingBar) field.getView();
 			Float f = 0.0f;
@@ -425,6 +548,14 @@ public class Fields extends ArrayList<Fields.Field> {
 			else
 				values.putFloat(field.column, v.getRating());
 		}
+		public void get(Field field, DataManager values) {
+			RatingBar v = (RatingBar) field.getView();
+			if (field.formatter != null)
+				values.putString(field.column, field.extract("" + v.getRating()));
+			else
+				values.putFloat(field.column, v.getRating());			
+		}
+
 		public Object get(Field field) {
 			RatingBar v = (RatingBar) field.getView();
 			return v.getRating();
@@ -441,6 +572,12 @@ public class Fields extends ArrayList<Fields.Field> {
 	static public class SpinnerAccessor implements FieldDataAccessor {
 		public void set(Field field, Cursor c) {
 			set(field, c.getString(c.getColumnIndex(field.column)));
+		}
+		public void set(Field field, Bundle b) {
+			set(field, b.getString(field.column));
+		}
+		public void set(Field field, DataManager data) {
+			set(field, data.getString(field.column));
 		}
 		public void set(Field field, String s) {
 			s = field.format(s);
@@ -467,6 +604,20 @@ public class Fields extends ArrayList<Fields.Field> {
 					value = "";							
 			}
 			values.putString(field.column, value);
+		}
+		public void get(Field field, DataManager values) {
+			String value;
+			Spinner v = (Spinner) field.getView();
+			if (v == null)
+				value = "";
+			else {
+				Object selItem = v.getSelectedItem();
+				if (selItem != null)
+					value = selItem.toString();
+				else
+					value = "";							
+			}
+			values.putString(field.column, value);			
 		}
 		public Object get(Field field) {
 			String value;
@@ -524,417 +675,6 @@ public class Fields extends ArrayList<Fields.Field> {
 		void validate(Fields fields, Bundle values);
 	}
 	
-	/**
-	 * Exception class for all validation errors. String ID and args are stored
-	 * for later retrieval.
-	 * 
-	 * @author Philip Warner
-	 *
-	 */
-	static public class ValidatorException extends RuntimeException {
-		// Java likes this
-		public static final long serialVersionUID = 1L;
-		// String ID of resource string
-		private int mStringId;
-		// Args to pass to format function
-		private Object[] mArgs;
-		// Constructor
-		ValidatorException(int stringId, Object[] args) {
-			mStringId = stringId;
-			mArgs = args;
-		}
-		String getFormattedMessage(android.content.res.Resources res) {
-			String s = res.getString(mStringId);
-			return String.format(s, mArgs);
-		}
-	}
-
-	/**
-	 * Validator to apply a default String value to empty fields.
-	 * 
-	 * @author Philip Warner
-	 *
-	 */
-	static abstract public class DefaultFieldValidator implements FieldValidator {
-		protected String mDefault;
-		/**
-		 * Allow for no default value.
-		 */
-		DefaultFieldValidator() {
-			this("");
-		}
-		/**
-		 * Constructor with default value
-		 * @param defaultValue Default to apply
-		 */
-		DefaultFieldValidator(String defaultValue) {
-			mDefault = defaultValue;
-		}
-
-		public void validate(Fields fields, Field field, Bundle values, boolean crossValidating) {
-			if (field.visible == false) {
-				// No validation required for invisible fields
-				return;
-			}
-			if (crossValidating)
-				return;
-
-			try {
-				if (field.getValue().toString().trim().equals("")) {
-					field.setValue(mDefault);
-				}
-				if (values != null && !field.column.equals("")) {
-					field.getValue(values);
-				}
-				return;
-			} catch (Exception e) {
-				throw new ValidatorException(R.string.vldt_unable_to_get_value, new Object[]{field.column});
-			}
-		}
-	}
-
-	/**
-	 * Validator to apply a default value and validate as integer.
-	 * 
-	 * @author Philip Warner
-	 *
-	 */
-	static public class IntegerValidator extends DefaultFieldValidator {
-		IntegerValidator() {
-			super();
-		}
-		IntegerValidator(String defaultValue) {
-			super(defaultValue);
-		}
-		public void validate(Fields fields, Field field, Bundle values, boolean crossValidating) {
-			if (field.visible == false) {
-				// No validation required for invisible fields
-				return;
-			}
-			if (crossValidating)
-				return;
-
-			// Will throw on failure...
-			super.validate(fields, field, null, crossValidating);
-
-			Object o = null;
-			try {
-				o = field.getValue();
-				Integer v;
-				if (o instanceof Integer) {
-					v = (Integer)o;
-				} else {
-					v = Integer.parseInt(o.toString());
-				}
-				
-				if (values != null && !field.column.equals("")) {
-					values.putInt(field.column, v);
-				}
-				return;
-			} catch (Exception e) {
-				throw new ValidatorException(R.string.vldt_integer_expected, new Object[]{field.column});
-			}
-		}
-	}
-
-	/**
-	 * Validator to apply a default value and validate as Float
-	 * 
-	 * @author Philip Warner
-	 *
-	 */
-	static public class FloatValidator extends DefaultFieldValidator {
-		FloatValidator() {
-			super();
-		}
-		FloatValidator(String defaultValue) {
-			super(defaultValue);
-		}
-		public void validate(Fields fields, Field field, Bundle values, boolean crossValidating) {
-			if (field.visible == false) {
-				// No validation required for invisible fields
-				return;
-			}
-			if (crossValidating)
-				return;
-			// Will throw on failure...
-			super.validate(fields, field, null, crossValidating);
-			try {
-				Float v;
-				Object o = field.getValue();
-				if (o instanceof Float) {
-					v = (Float)o;
-				} else if (o instanceof Double) {
-					v = ((Double)o).floatValue();
-				} else if (o instanceof Integer) {
-					v = ((Integer)o).floatValue();
-				} else {
-					v = Float.parseFloat(o.toString());					
-				}
-				if (values != null && !field.column.equals("")) {
-					values.putFloat(field.column, v);
-				}
-				return;
-			} catch (Exception e) {
-				throw new ValidatorException(R.string.vldt_real_expected, new Object[]{field.column});
-			}
-		}
-	}
-
-	/**
-	 * Validator to apply a default value and validate as a Date
-	 * 
-	 * @author Philip Warner
-	 *
-	 */
-	static public class DateValidator extends DefaultFieldValidator {
-
-		DateValidator() {
-			super();
-		}
-		DateValidator(String defaultValue) {
-			super(defaultValue);
-		}
-		public void validate(Fields fields, Field field, Bundle values, boolean crossValidating) {
-			if (field.visible == false) {
-				// No validation required for invisible fields
-				return;
-			}
-			if (crossValidating)
-				return;
-			try {
-				java.util.Date d = parseDate(field.getValue().toString());				
-				if (values != null && !field.column.equals("")) {
-					// Save it in SQL/ANSI format
-					String v = mDateSqlSdf.format(d);
-					values.putString(field.column, v);
-				}
-			} catch (Exception e) {
-				throw new ValidatorException(R.string.vldt_date_expected, new Object[]{field.column});					
-			}
-			return;
-		}
-	}
-
-	/**
-	 * Validator to apply a default value and validate as Boolean
-	 * 
-	 * @author Philip Warner
-	 *
-	 */
-	static public class BooleanValidator extends DefaultFieldValidator {
-		BooleanValidator() {
-			super();
-		}
-		BooleanValidator(String defaultValue) {
-			super(defaultValue);
-		}
-		public void validate(Fields fields, Field field, Bundle values, boolean crossValidating) {
-			if (field.visible == false) {
-				// No validation required for invisible fields
-				return;
-			}
-			if (crossValidating)
-				return;
-
-			super.validate(fields, field, null, crossValidating);
-
-			try {
-				Object o = field.getValue();
-				Boolean v;
-				if (o instanceof Boolean) {
-					v = (Boolean)o;
-				} else if (o instanceof Integer) {
-					v = (((Integer)o) != 0);
-				} else {
-					String s = o.toString();
-					v = stringToBoolean(s);
-				}
-				if (values != null && !field.column.equals("")) {
-					values.putBoolean(field.column, v);
-				}
-				return;
-			} catch (Exception e) {
-				throw new ValidatorException(R.string.vldt_boolean_expected, new Object[]{field.column});
-			}
-		}
-	}
-
-	/**
-	 * Validator to require a non-blank field
-	 * 
-	 * @author Philip Warner
-	 *
-	 */
-	static public class NonBlankValidator implements FieldValidator {
-
-		public void validate(Fields fields, Field field, Bundle values, boolean crossValidating) {
-			if (field.visible == false) {
-				// No validation required for invisible fields
-				return;
-			}
-			if (crossValidating)
-				return;
-			try {
-				String v = field.getValue().toString().trim();
-				if (v.length() > 0) {
-					if (values != null && !field.column.equals("")) {
-						values.putString(field.column, v);
-					}
-					return;
-				} else {
-					throw new ValidatorException(R.string.vldt_nonblank_required, new Object[]{field.column});
-				}
-			} catch (Exception e) {
-				throw new ValidatorException(R.string.vldt_nonblank_required, new Object[]{field.column});
-			}
-		}
-	}
-
-	/**
-	 * Validator that requires a blank field
-	 * 
-	 * @author Philip Warner
-	 *
-	 */
-	static public class BlankValidator implements FieldValidator {
-		public void validate(Fields fields, Field field, Bundle values, boolean crossValidating) {
-			if (field.visible == false) {
-				// No validation required for invisible fields
-				return;
-			}
-			if (crossValidating)
-				return;
-			try {
-				String s = field.getValue().toString().trim();
-				if (!s.equals("")) {
-					s = s.trim();
-					if (!s.equals("")) {
-						throw new ValidatorException(R.string.vldt_blank_required, new Object[]{field.column});
-					}
-					field.setValue(s);
-				}
-				if (values != null && !field.column.equals("")) {
-					values.putString(field.column, s);
-				}
-				return;
-			} catch (Exception e) {
-				throw new ValidatorException(R.string.vldt_blank_required, new Object[]{field.column});
-			}
-		}
-	}
-
-	/**
-	 * Base class for validators that operate on a list of other validators.
-	 * 
-	 * @author Philip Warner
-	 */
-	static abstract public class MetaValidator extends ArrayList<FieldValidator> implements FieldValidator {
-		// Java likes this
-		public static final long serialVersionUID = 1L;
-
-		/**
-		 * Constructor taking one 'sub' Validator.
-		 * 
-		 * @param v1	Validator to check
-		 */
-		MetaValidator(FieldValidator v1) {
-			this.add(v1);
-		}
-
-		/**
-		 * Constructor taking two 'sub' Validator.
-		 * 
-		 * @param v1	Validator to check
-		 * @param v2	Validator to check
-		 */
-		MetaValidator(FieldValidator v1, FieldValidator v2) {
-			this.add(v1);
-			this.add(v2);
-		}
-
-		/**
-		 * Constructor taking three 'sub' Validator.
-		 * 
-		 * @param v1	Validator to check
-		 * @param v2	Validator to check
-		 * @param v3	Validator to check
-		 */
-		MetaValidator(FieldValidator v1, FieldValidator v2,  FieldValidator v3) {
-			this.add(v1);
-			this.add(v2);
-			this.add(v3);
-		}
-	}
-
-	/**
-	 * 'Meta' Validator to evaluate a list of validators; any one being true is OK.
-	 * 
-	 * @author Philip Warner
-	 *
-	 */
-	static public class OrValidator extends MetaValidator implements FieldValidator {
-
-		// Java likes this
-		public static final long serialVersionUID = 1L;
-
-		// Constructors
-		OrValidator(FieldValidator v1) { super(v1); }
-		OrValidator(FieldValidator v1, FieldValidator v2) { super(v1, v2); }
-		OrValidator(FieldValidator v1, FieldValidator v2, FieldValidator v3) { super(v1, v2, v3); }
-
-		public void validate(Fields fields, Field field, Bundle values, boolean crossValidating) {
-			Iterator<FieldValidator> i = this.iterator();
-			ValidatorException lastException = null;
-			while (i.hasNext()) {
-				FieldValidator v = i.next();
-				try {
-					v.validate(fields, field, values, crossValidating);
-					return;
-				} catch (ValidatorException e) {
-					// Do nothing...try next validator, but keep it for later
-					lastException = e;
-				} catch (Exception e) {
-					// Do nothing...try next validator
-				}
-			}
-			if (lastException != null)
-				throw lastException;
-			else
-				throw new ValidatorException(R.string.vldt_failed, new Object[]{field.column});
-		}
-	}
-
-	/**
-	 * 'Meta' Validator to evaluate a list of validators; ALL validators must be true.
-	 * 
-	 * @author Philip Warner
-	 *
-	 */
-	static public class AndValidator extends MetaValidator implements FieldValidator {
-		// Java likes this
-		public static final long serialVersionUID = 1L;
-
-		// Constructors
-		AndValidator(FieldValidator v1) { super(v1); }
-		AndValidator(FieldValidator v1, FieldValidator v2) { super(v1, v2); }
-		AndValidator(FieldValidator v1, FieldValidator v2, FieldValidator v3) { super(v1, v2, v3); }
-
-		public void validate(Fields fields, Field field, Bundle values, boolean crossValidating) {
-			Iterator<FieldValidator> i = this.iterator();
-			Bundle cv = null;
-			while (i.hasNext()) {
-				FieldValidator v = i.next();
-				// Only set the Bundle for the last in the list
-				if (!i.hasNext()) {
-					cv = values;
-				}
-				v.validate(fields, field, cv, crossValidating);
-			}
-			return;
-		}
-	}
-
 	/**
 	 * Interface definition for Field formatters.
 	 *
@@ -1053,12 +793,12 @@ public class Fields extends ArrayList<Fields.Field> {
 			/*
 			 * Load the layout from the passed Activity based on the ID and set visibility and accessor.
 			 */
-			android.app.Activity a = fields.getActivity();
-			if (a == null)
+			FieldsContext c = fields.getContext();
+			if (c == null)
 				return;
 
 			// Lookup the view
-			final View view = a.findViewById(id);
+			final View view = c.findViewById(id);
 
 			// Set the appropriate accessor
 			if (view == null) {
@@ -1088,9 +828,9 @@ public class Fields extends ArrayList<Fields.Field> {
 				} else if (view instanceof Button) {
 					mAccessor = new TextViewAccessor(false);
 				} else if (view instanceof TextView) {
-					mAccessor = new TextViewAccessor(true);
+					mAccessor = new TextViewAccessor(false);
 				} else if (view instanceof ImageView) {
-					mAccessor = new TextViewAccessor(true);
+					mAccessor = new TextViewAccessor(false);
 				} else if (view instanceof RatingBar) {
 					mAccessor = new RatingBarAccessor();
 					addTouchSignalsDirty(view);
@@ -1105,13 +845,24 @@ public class Fields extends ArrayList<Fields.Field> {
 		}
 
 		/**
+		 * If a text field, set the TextViewAccessor to support HTML.
+		 * Call this before loading the field.
+		 */
+		public Field setShowHtml(boolean showHtml) {
+			if (mAccessor instanceof TextViewAccessor) {
+				((TextViewAccessor)mAccessor).setShowHtml(showHtml);
+			}
+			return this;
+		}
+
+		/**
 		 * Reset one fields visibility based on user preferences
 		 */
-		private void resetVisibility(Activity a) {
-			if (a == null)
+		private void resetVisibility(FieldsContext c) {
+			if (c == null)
 				return;
 			// Lookup the view
-			final View view = a.findViewById(id);
+			final View view = c.findViewById(id);
 			if (view != null) {
 				visible = BookCatalogueApp.getAppPreferences().getBoolean(FieldVisibility.prefix + group, true);
 				if (visible) {
@@ -1149,12 +900,16 @@ public class Fields extends ArrayList<Fields.Field> {
 		 */
 		View getView() {
 			Fields fs = mFields.get();
-			if (fs == null)
+			if (fs == null) {
+				System.out.println("Fields is NULL");
 				return null;
-			Activity a = fs.getActivity();
-			if (a == null)
+			}
+			FieldsContext c = fs.getContext();
+			if (c == null) {
+				System.out.println("Context is NULL");
 				return null;
-			return a.findViewById(this.id);
+			}
+			return c.findViewById(this.id);
 		}
 
 		/**
@@ -1187,6 +942,14 @@ public class Fields extends ArrayList<Fields.Field> {
 		 */
 		public void getValue(Bundle values) {
 			mAccessor.get(this, values);
+		}
+
+		/**
+		 * Get the current value of this field and put into the Bundle collection.
+		 * @return	Current value in native form.
+		 */
+		public void getValue(DataManager data) {
+			mAccessor.get(this, data);
 		}
 
 		/**
@@ -1231,12 +994,44 @@ public class Fields extends ArrayList<Fields.Field> {
 		 * 
 		 * @param c
 		 */
-		public void setFromCursor(Cursor c) {
+		public void set(Cursor c) {
 			if (column.length() > 0 && !doNoFetch) {
 				try {
 					mAccessor.set(this, c);					
 				} catch (android.database.CursorIndexOutOfBoundsException e) {
 					throw new RuntimeException("Column '" + this.column + "' not found in cursor",e);
+				}
+			}
+		}
+
+		/**
+		 * Set the value of this field from the passed Bundle. Useful for getting access to 
+		 * raw data values from a saved data bundle.
+		 * 
+		 * @param c
+		 */
+		public void set(Bundle b) {
+			if (column.length() > 0 && !doNoFetch) {
+				try {
+					mAccessor.set(this, b);					
+				} catch (android.database.CursorIndexOutOfBoundsException e) {
+					throw new RuntimeException("Column '" + this.column + "' not found in cursor",e);
+				}
+			}
+		}
+
+		/**
+		 * Set the value of this field from the passed Bundle. Useful for getting access to 
+		 * raw data values from a saved data bundle.
+		 * 
+		 * @param c
+		 */
+		public void set(DataManager data) {
+			if (column.length() > 0 && !doNoFetch) {
+				try {
+					mAccessor.set(this, data);					
+				} catch (android.database.CursorIndexOutOfBoundsException e) {
+					throw new RuntimeException("Column '" + this.column + "' not found in data",e);
 				}
 			}
 		}
@@ -1251,8 +1046,8 @@ public class Fields extends ArrayList<Fields.Field> {
 	 * 
 	 * @return Activity for this collection.
 	 */
-	public android.app.Activity getActivity() {
-		return mActivity.get();
+	private FieldsContext getContext() {
+		return mContext;
 	}
 
 	/**
@@ -1352,7 +1147,9 @@ public class Fields extends ArrayList<Fields.Field> {
 	 */
 	public void setAdapter(int fieldId, ArrayAdapter<String> adapter) {
 		Field f = getField(fieldId);
-		((AutoCompleteTextView)f.getView()).setAdapter(adapter);
+		TextView tv = (TextView)f.getView();
+		if (tv instanceof AutoCompleteTextView)
+			((AutoCompleteTextView)tv).setAdapter(adapter);
 	}
 
 	/**
@@ -1363,7 +1160,13 @@ public class Fields extends ArrayList<Fields.Field> {
 	 */
 	void setListener(int id, View.OnClickListener listener) {
 		Field f = getField(id);
-		f.getView().setOnClickListener(listener);
+		View v = f.getView();
+		if (v != null) {
+			f.getView().setOnClickListener(listener);
+		} else {
+			v = f.getView();
+			throw new RuntimeException("Unable to find view for field id " + id);
+		}
 	}
 
 	/**
@@ -1371,12 +1174,64 @@ public class Fields extends ArrayList<Fields.Field> {
 	 * 
 	 * @param c Cursor to load Field objects from.
 	 */
-	public void setFromCursor(Cursor c) {
+	public void setAll(Cursor c) {
 		Iterator<Field> fi = this.iterator();
 		while(fi.hasNext()) {
 			Field fe = fi.next();
-			fe.setFromCursor(c);
+			fe.set(c);
 		}			
+	}
+
+	/**
+	 * Load all fields from the passed cursor
+	 * 
+	 * @param c Cursor to load Field objects from.
+	 */
+	public void setAll(Bundle b) {
+		Iterator<Field> fi = this.iterator();
+		while(fi.hasNext()) {
+			Field fe = fi.next();
+			fe.set(b);
+		}			
+	}
+
+	/**
+	 * Load all fields from the passed datamanager
+	 * 
+	 * @param c Cursor to load Field objects from.
+	 */
+	public void setAll(DataManager data) {
+		Iterator<Field> fi = this.iterator();
+		while(fi.hasNext()) {
+			Field fe = fi.next();
+			fe.set(data);
+		}			
+	}
+
+	/**
+	 * Save all fields to the passed DataManager (ie. 'get' them *into* the DataManager).
+	 * 
+	 * @param c Cursor to load Field objects from.
+	 */
+	public void getAll(DataManager data) {
+		Iterator<Field> fi = this.iterator();
+		while(fi.hasNext()) {
+			Field fe = fi.next();
+			if (fe.column != null && !fe.column.equals("")) {
+				fe.getValue(data);
+			}
+		}			
+	}
+
+	public void getAll(Bundle b) {
+		Iterator<Field> fi = this.iterator();
+
+		while(fi.hasNext()) {
+			Field fe = fi.next();
+			if (fe.column != null && !fe.column.equals("")) {
+				fe.getValue(b);
+			}
+		}
 	}
 
 	/**
@@ -1415,17 +1270,17 @@ public class Fields extends ArrayList<Fields.Field> {
 	 * Reset all field visibility based on user preferences
 	 */
 	public void resetVisibility() {
-		Activity a = this.getActivity();
+		FieldsContext c = this.getContext();
 		Iterator<Field> fi = this.iterator();		
 		while(fi.hasNext()) {
 			Field fe = fi.next();
-			fe.resetVisibility(a);
+			fe.resetVisibility(c);
 		}
 	}
 
 	/**
 	 * Loop through and apply validators, generating a Bundle collection as a by-product.
-	 * The Bundle collection is then used in cross-validation as a seond pass, and finally
+	 * The Bundle collection is then used in cross-validation as a second pass, and finally
 	 * passed to each defined cross-validator.
 	 * 
 	 * @param values The Bundle collection to fill

@@ -42,6 +42,7 @@ import android.os.Bundle;
 import com.eleybourn.bookcatalogue.Author;
 import com.eleybourn.bookcatalogue.BcQueueManager;
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
+import com.eleybourn.bookcatalogue.BookData;
 import com.eleybourn.bookcatalogue.BookEditFields;
 import com.eleybourn.bookcatalogue.BooksCursor;
 import com.eleybourn.bookcatalogue.BooksRowView;
@@ -334,7 +335,7 @@ public class ImportAllTask extends GenericTask {
 
 		// We build a new book bundle each time since it will build on the existing
 		// data for the given book, not just replace it.
-		Bundle book = buildBundle(db, rv, review);
+		BookData book = buildBundle(db, rv, review);
 		db.updateBook(rv.getId(), book, false);			
 		//db.setGoodreadsSyncDate(rv.getId());
 	}
@@ -346,7 +347,7 @@ public class ImportAllTask extends GenericTask {
 	 * @param review
 	 */
 	private void createBook(CatalogueDBAdapter db, Bundle review) {
-		Bundle book = buildBundle(db, null, review);
+		BookData book = buildBundle(db, null, review);
 		long id = db.createBook(book);
 		if (book.getBoolean(CatalogueDBAdapter.KEY_THUMBNAIL)) {
 			String uuid = db.getBookUuid(id);
@@ -366,8 +367,8 @@ public class ImportAllTask extends GenericTask {
 	 * @param review
 	 * @return
 	 */
-	private Bundle buildBundle(CatalogueDBAdapter db, BooksRowView rv, Bundle review) {
-		Bundle book = new Bundle();
+	private BookData buildBundle(CatalogueDBAdapter db, BooksRowView rv, Bundle review) {
+		BookData book = new BookData();
 
 		addStringIfNonBlank(review, ListReviewsFieldNames.DB_TITLE, book, ListReviewsFieldNames.DB_TITLE);
 		addStringIfNonBlank(review, ListReviewsFieldNames.DB_DESCRIPTION, book, ListReviewsFieldNames.DB_DESCRIPTION);
@@ -445,8 +446,8 @@ public class ImportAllTask extends GenericTask {
         	if (thumbnail != null) {
     			String filename = Utils.saveThumbnailFromUrl(thumbnail, "_GR");
     			if (filename.length() > 0)
-    				Utils.appendOrAdd(book, "__thumbnail", filename);
-    			Utils.cleanupThumbnails(book);        		
+    				book.appendOrAdd( "__thumbnail", filename);
+    			book.cleanupThumbnails();        		
         	}
         }
 
@@ -486,7 +487,7 @@ public class ImportAllTask extends GenericTask {
         		}
         	}
         	if (shelfNames != null && shelfNames.length() > 0)
-        		book.putString("bookshelf_list", shelfNames);
+        		book.setBookshelfList(shelfNames);
         }
         
         // We need to set BOTH of these fields, otherwise the add/update method will set the
@@ -510,7 +511,7 @@ public class ImportAllTask extends GenericTask {
 	 * 
 	 * @Return reformatted sql date, or null if not able to parse
 	 */
-	private String addDateIfValid(Bundle source, String sourceField, Bundle dest, String destField) {
+	private String addDateIfValid(Bundle source, String sourceField, BookData dest, String destField) {
 		if (!source.containsKey(sourceField))
 			return null;
 
@@ -534,7 +535,7 @@ public class ImportAllTask extends GenericTask {
 	 * @param dest
 	 * @param destField
 	 */
-	private String addStringIfNonBlank(Bundle source, String sourceField, Bundle dest, String destField) {
+	private String addStringIfNonBlank(Bundle source, String sourceField, BookData dest, String destField) {
 		if (source.containsKey(sourceField)) {
 			String val = source.getString(sourceField);
 			if (val != null && !val.equals("")) {
@@ -555,7 +556,7 @@ public class ImportAllTask extends GenericTask {
 	 * @param dest
 	 * @param destField
 	 */
-	private void addLongIfPresent(Bundle source, String sourceField, Bundle dest, String destField) {
+	private void addLongIfPresent(Bundle source, String sourceField, BookData dest, String destField) {
 		if (source.containsKey(sourceField)) {
 			long val = source.getLong(sourceField);
 			dest.putLong(destField, val);
@@ -569,7 +570,7 @@ public class ImportAllTask extends GenericTask {
 	 * @param dest
 	 * @param destField
 	 */
-	private Double addDoubleIfPresent(Bundle source, String sourceField, Bundle dest, String destField) {
+	private Double addDoubleIfPresent(Bundle source, String sourceField, BookData dest, String destField) {
 		if (source.containsKey(sourceField)) {
 			double val = source.getDouble(sourceField);
 			dest.putDouble(destField, val);

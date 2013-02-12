@@ -14,14 +14,6 @@
         android:background="@drawable/bc_vertical_gradient"
         android:orientation="vertical" >
 
-        <TextView
-            android:id="@+id/bookshelf_label"
-            android:layout_width="wrap_content"
-            android:layout_height="32dp"
-            android:paddingRight="@dimen/padding_border"
-            android:text="@string/bookshelf_label"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-
         <Spinner
             android:id="@+id/bookshelf_name"
             android:layout_width="wrap_content"
@@ -47,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_below="@+id/bookshelf_label"
+            android:layout_below="@id/bookshelf_name"
             android:paddingLeft="@dimen/padding_border"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 

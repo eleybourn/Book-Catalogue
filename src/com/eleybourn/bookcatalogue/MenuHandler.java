@@ -22,10 +22,10 @@ package com.eleybourn.bookcatalogue;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.SubMenu;
 
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.SubMenu;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
@@ -63,11 +63,13 @@ public class MenuHandler {
 	 */
 	public void addCreateBookItems(Menu menu) {
 		SubMenu addMenu = menu.addSubMenu(0, MNU_ADD_BOOK, mSort++, BookCatalogueApp.getResourceString(R.string.menu_insert) + "...");
-		addMenu.setIcon(android.R.drawable.ic_menu_add);
+		//addMenu.setIcon(android.R.drawable.ic_menu_add);
+		addMenu.setIcon(R.drawable.ic_action_book_add);
+		addMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 		{
 			if (Utils.USE_BARCODE) {
 				MenuItem insertBC = addMenu.add(0, MNU_ITM_ADD_BOOK_BARCODE, mSort++, R.string.scan_barcode_isbn);
-				insertBC.setIcon(R.drawable.ic_menu_insert_barcode);			
+				insertBC.setIcon(R.drawable.ic_menu_insert_barcode);	
 			}
 			MenuItem insertISBN = addMenu.add(0, MNU_ITM_ADD_BOOK_ISBN, mSort++, R.string.enter_isbn);
 			insertISBN.setIcon(android.R.drawable.ic_menu_zoom);
@@ -134,9 +136,10 @@ public class MenuHandler {
 	 * 
 	 * @param menu	root menu
 	 */
-	public void addSearchItem(Menu menu) {
+	public MenuItem addSearchItem(Menu menu) {
 		MenuItem search = menu.add(0, MNU_ITM_SEARCH, mSort++, R.string.menu_search);
 		search.setIcon(android.R.drawable.ic_menu_search);
+		return search;
 	}
 
 	/**

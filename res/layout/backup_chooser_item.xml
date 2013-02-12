@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/row"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/row_detail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_gravity="center_vertical"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:src="@drawable/ic_archive" />
+
+        <TextView
+            android:id="@+id/name"
+            style="@style/fileDetailsTextStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="@dimen/padding_border"
+            android:layout_toRightOf="@+id/icon"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:text="fred.txt"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/details"
+            style="@style/fileDetailsMinorDetailStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/name"
+            android:layout_marginTop="@dimen/padding_border"
+            android:layout_toRightOf="@+id/icon"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:paddingLeft="@dimen/padding_book_details_info"
+            android:text="1023 books"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/date"
+            style="@style/fileDetailsMinorDetailStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/details"
+            android:layout_marginTop="@dimen/padding_border"
+            android:layout_toRightOf="@+id/icon"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:paddingLeft="@dimen/padding_book_details_info"
+            android:text="1 Jan, 2011 17:54:32"
+            tools:ignore="HardcodedText" />
+    </RelativeLayout>
+
+</RelativeLayout>

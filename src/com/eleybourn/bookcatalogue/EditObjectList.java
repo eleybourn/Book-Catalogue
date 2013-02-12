@@ -23,7 +23,6 @@ package com.eleybourn.bookcatalogue;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -37,6 +36,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.eleybourn.bookcatalogue.compat.BookCatalogueListActivity;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 import com.eleybourn.bookcatalogue.utils.ViewTagger;
@@ -85,7 +85,7 @@ import com.eleybourn.bookcatalogue.widgets.TouchListView;
  *
  * @param <T>
  */
-abstract public class EditObjectList<T extends Serializable> extends ListActivity {
+abstract public class EditObjectList<T extends Serializable> extends BookCatalogueListActivity {
 
 	// List
 	protected ArrayList<T> mList = null;

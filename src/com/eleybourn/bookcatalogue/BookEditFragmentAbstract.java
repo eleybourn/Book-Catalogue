@@ -114,10 +114,9 @@ public abstract class BookEditFragmentAbstract extends BookCatalogueFragment imp
 		// TODO: Consider allowing Tweets (or other sharing methods) to work on un-added books.
 		MenuItem tweet = menu.add(0, SHARE_ID, 0, R.string.menu_share_this);
 		tweet.setIcon(R.drawable.ic_menu_twitter);
-		tweet.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		// Very rarely used, and easy to miss-click.
+		//tweet.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
-		boolean thumbVisible = BookCatalogueApp.getAppPreferences().getBoolean(FieldVisibility.prefix + "thumbnail", true);
-		
 		if(this instanceof BookDetailsReadOnly){
 			menu.add(0, EDIT_OPTIONS_ID, 0, R.string.edit_book)
 				.setIcon(android.R.drawable.ic_menu_edit)

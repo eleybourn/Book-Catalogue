@@ -669,6 +669,92 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
 <string name="scanning">Scanne</string>
 <string name="preferred_scanner">Bevorzugter Scanner</string>
 <string name="zxing_compatible_scanner">Zxing-kompatibler Scanner</string>
-<string name="pic2shop_scanner">Pic2Shop-Scanner</string>
+<string name="pic2shop_scanner">pic2shop-Scanner</string>
 <string name="beep_if_scanned_isbn_valid">Tonsignal bei gültig gescannter ISBN</string>
+
+<string name="new_in_424"><![CDATA[
+<p><b>Neu in 4.2.4</b>\n\n
+    * Eine schreibgeschützte Ansicht der Buchdetails mit \'Wischgesten\'-Unterstützung! (Siehe \"Weitere Einstellungen\") (Nick Silin)\n\n
+    * Unterstützung des pic2shop-Scanners (besser geeignet für feste Brennweiten, bei schlechten Lichtverhältnissen und für Front-Kameras)\n\n
+    * Prüfe Internetverbindung frühzeitig beim Scannen von Büchern\n\n
+    * Weitere Updates der deutschen Übersetzung (Robert Wetzlmayr)\n\n
+    * Weitere Updates der französischen Übersetzung (Djiko)\n\n
+    * Fehlerbehebungen\n\n
+    </p>
+    ]]></string>
+
+<string name="hint_view_only_book_details">
+    Nach einem Klick auf einen Eintrag in dieser Liste können Sie zu einer schreibgeschützten Ansicht der Buchdetails wechseln.
+    Siehe "Weitere Einstellungen" für die relevante Einstellung.
+</string>
+
+<string name="hint_view_only_help">
+    Das ist die schreibgeschützte Ansicht der Buchdetails; Sie können nach links oder rechts wischen, um zu anderen Büchern zu wechseln,
+    und ein Buch über das Menü "Einstellungen" mit Hilfe des Menü-Buttons oder des Menü-Symbols bearbeiten.
+</string>
+
+<!-- This is the heading of the 'Details' tab when editing a book. It needs to be short. "Book Details" is too long. -->
+<string name="details">Details</string>
+<!-- This is the heading of the 'Loan' tab when editing a book. It needs to be short. "Loan Book" is too long. -->
+<string name="loan">Leihen</string>
+
+<!--  Hint displayed when an export or database backup is done -->
+<string name="hint_not_a_full_backup">Bitte beachten Sie: Das ist kein vollständige Sicherung. Sie enthält keine Buchcover.
+    \n\nFür eine vollständige Sicherung müssen Sie den Inhalt des Verzeichnisses \'bookCatalogue\' von Ihrer SD-Karte an einen anderen Ort kopieren.
+    \n\nEine detaillierte Anleitung dazu finden Sie in unseren FAQ. Sie finden einen Link dorthin unter \'Hilfe\').</string>
+
+<string name="forget_credentials">Zugangsdaten löschen</string>
+<string name="goodreads_auth_blurb_part4">Sie haben diese App anscheinend bereits autorisiert.
+    Wenn Sie die Zugangsdaten von diesem Gerät löschen möchten, klicken Sie bitte den untenstehenden Knopf. Vergessen Sie nicht, diese App auch auf der Goodreads-Website zu de-autorisieren.
+    \n\nDas Löschen der Zugangsdaten entfernt die Goodreads-Option aus dem  Hauptmenü.</string>
+
+<string name="connecting_to_web_site">Verbinde mit der Website&#8230;</string>
+
+<string name="backup_to_archive">Sichern ins Archiv</string>
+<string name="import_from_archive">Import vom Archiv</string>
+<!--  Hint displayed when aCatalogue Backup is done -->
+<string name="archive_complete_details">Eine %3$s-Datei namens %2$s wurde im Verzeichnis \"%1$s\" auf Ihrer SD-Karte erzeugt.
+    \n\nSie sollten diese Datei händisch an einen sicheren Ort kopieren, um Ihre Daten vor Beschädigung, Verlust oder Diebstahl zu schützen.</string>
+
+<string name="covers_progress">%1$s Cover bearbeitet (%2$s offen)</string>
+<string name="advanced_options">Erweiterte Optionen</string>
+<string name="backing_up_ellipsis">Sichere&#8230;</string>
+<string name="importing_ellipsis">Importiere&#8230;</string>
+
+<!--  Content description for the 'up' icon in the folder browser -->
+<string name="up_folder">Nach oben</string>
+
+<!-- Displayed when a user tries to browse higher than the root directory, or if the parent is unable to be read -->
+<string name="no_parent_directory_found">Kein übergeordnetes Verzeichnis gefunden</string>
+
+<!--  For saving and opening exports or backups -->
+<string name="open">Öffnen</string>
+
+<string name="export_to_csv">Sichern in eine CSV-Datei</string>
+<string name="import_from_csv">Import aus einer CSV-Datei</string>
+
+<!-- Displayed when a file/open dialog results in selecting a non-exitant file -->
+<string name="please_select_an_existing_file">Bitte wählen Sie eine bestehende Datei</string>
+
+<!-- Displayed when a file/save dialog results in selecting a directory file -->
+<string name="please_select_a_non_directory">Bitte wählen Sie eine Datei, kein Verzeichnis</string>
+
+<!-- This is pretty close to the expected feature list! It is a merge of 424 and 430... -->
+<string name="new_in_500"><![CDATA[
+<p><b>Neu in 5.0.0</b>\n\n
+    * Eine schreibgeschützte Ansicht der Buchdetails mit \'Wischgesten\'-Unterstützung! (Siehe \"Weitere Einstellungen\") (Nick Silin)\n\n
+    * Archiv des gesamten Katalogs inklusive Büchern, Buchcover, Einstellungen und Stilen (Sicherung und Import)\n\n
+    * Aktualisiertes Benutzerinterface mit Unterstützung für den Action Bar mit verbesserter Benutzerfreundlichkeit und besserer Eignung für Geräte ohne Menübuttons\n\n
+    * Unterstützung des pic2shop-Scanners (besser geeignet für feste Brennweiten, bei schlechten Lichtverhältnissen und für Front-Kameras)\n\n
+    * Goodreads wird nach Autorisierung im Hauptmenü angezeigt\n\n
+    * Prüfe Internetverbindung frühzeitig beim Scannen von Büchern\n\n
+    * Weitere Updates der deutschen Übersetzung (Robert Wetzlmayr)\n\n
+    * Weitere Updates der französischen Übersetzung (Imkal und Djiko)\n\n
+    * Weitere Updates der russischen Übersetzung (Nick Silin)\n\n
+    * Interne Änderungen als Vorleistung für ein verbessertes Benutzerinterface auf Tablets\n\n
+    * Fehlerbehebungen\n\n
+    </p>
+    ]]></string>
+
+<string name="copy_database">Datenbank kopieren (für technischen Support)</string>
 </resources>

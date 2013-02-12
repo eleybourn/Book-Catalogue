@@ -78,6 +78,127 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	/** Flag, defaults to true, that can be set by tasks and is passed to listeners */
 	private boolean mSuccess = true;
 	
+	/** List of messages to be sent to the underlying activity, but not yet sent */
+	private ArrayList<TaskMessage> mTaskMessages = new ArrayList<TaskMessage>();
+
+	/** Each message has a single method to deliver it and will only be called
+	 * when the underlying Activity is actually present.
+	 */
+	private static interface TaskMessage {
+		public void deliver(Activity a);
+	}
+
+	/** Listener for OnTaskFinished messages */
+	public interface OnTaskFinishedListener {
+		public void onTaskFinished(SimpleTaskQueueProgressFragment fragment, int taskId, boolean success, boolean cancelled, FragmentTask task);
+	}
+
+	/** Listener for OnAllTasksFinished messages */
+	public interface OnAllTasksFinishedListener {
+		public void onAllTasksFinished(SimpleTaskQueueProgressFragment fragment, int taskId, boolean success, boolean cancelled);
+	}
+
+	/**
+	 * TaskFinished message.
+	 * 
+	 * We only deliver onFinish() to the FragmentTask when the activity is present.
+	 */
+	private class TaskFinishedMessage implements TaskMessage {
+		FragmentTask mTask;
+		Exception mException;
+
+		public TaskFinishedMessage(FragmentTask task, Exception e) {
+			mTask = task;
+		}
+		
+		@Override
+		public void deliver(Activity a) {
+			try {
+				mTask.onFinish(SimpleTaskQueueProgressFragment.this, mException);				
+			} catch (Exception e) {
+				Logger.logError(e);
+			}
+			try {
+				if (a instanceof OnTaskFinishedListener) {
+					((OnTaskFinishedListener)a).onTaskFinished(SimpleTaskQueueProgressFragment.this, mTaskId, mSuccess, mWasCancelled, mTask);
+				}
+			} catch (Exception e) {
+				Logger.logError(e);
+			}
+
+		}
+		
+	}
+	
+	/**
+	 * AllTasksFinished message.
+	 */
+	private class AllTasksFinishedMessage implements TaskMessage {
+		
+		public AllTasksFinishedMessage() {
+		}
+		
+		@Override
+		public void deliver(Activity a) {
+			if (a instanceof OnAllTasksFinishedListener) {
+				((OnAllTasksFinishedListener)a).onAllTasksFinished(SimpleTaskQueueProgressFragment.this, mTaskId, mSuccess, mWasCancelled);
+			}
+			dismiss();
+		}
+		
+	}
+
+	/**
+	 * Queue a TaskMessage and then try to process the queue.
+	 */
+	private void queueMessage(TaskMessage m) {
+
+		synchronized(mTaskMessages) {
+			mTaskMessages.add(m);
+		}
+		deliverMessages();
+	}
+
+	/**
+	 * Queue a TaskFinished message
+	 */
+	private void queueTaskFinished(FragmentTask t, Exception e) {
+		queueMessage(new TaskFinishedMessage(t, e));
+	}
+	
+	/**
+	 * Queue an AllTasksFinished message
+	 */
+	private void queueAllTasksFinished() {
+		queueMessage(new AllTasksFinishedMessage());
+	}
+
+	/**
+	 * If we have an Activity, deliver the current queue.
+	 */
+	private void deliverMessages() {
+		Activity a = getActivity();
+		if (a != null) {
+			ArrayList<TaskMessage> toDeliver = new ArrayList<TaskMessage>();
+			int count = 0;
+			do {
+				synchronized(mTaskMessages) {
+					toDeliver.addAll(mTaskMessages);
+					mTaskMessages.clear();
+				}
+				count = toDeliver.size();
+				for(TaskMessage m: toDeliver) {
+					try {
+						m.deliver(a);						
+					} catch (Exception e) {
+						Logger.logError(e);
+					}
+				}				
+				toDeliver.clear();
+			} while (count > 0);			
+		}
+	}
+
 	/**
 	 * Convenience routine to show a dialog fragment and start the task
 	 * 
@@ -106,15 +227,6 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 		/** Called in UI thread after task complete 
 		 * @param exception TODO*/
 		public void onFinish(SimpleTaskQueueProgressFragment fragment, Exception exception);
-	}
-
-	/**
-	 * Listener for users of this fragment to know when it completes.
-	 * 
-	 * @author pjw
-	 */
-	public interface OnTasksCompleteListener {
-		public void onTasksComplete(SimpleTaskQueueProgressFragment fragment, int taskId, boolean success, boolean cancelled);
 	}
 	
 	/**
@@ -167,7 +279,7 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 
 		@Override
 		public void onFinish(Exception e) {
-			mInnerTask.onFinish(SimpleTaskQueueProgressFragment.this, e);
+			SimpleTaskQueueProgressFragment.this.queueTaskFinished(mInnerTask, e);
 		}
 
 	}
@@ -265,6 +377,20 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 		mTaskId = getArguments().getInt("taskId");
 	}
 
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+
+		// Deliver any outstanding messages
+		deliverMessages();
+		
+		// If no tasks left, exit
+		if (!mQueue.hasActiveTasks()) {
+			System.out.println("STQPF: Tasks finished while activity absent, closing");
+			dismiss();
+		}
+	}
+
 	/**
 	 * Create the underlying dialog
 	 */
@@ -323,10 +449,7 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 		public void onTaskFinish(SimpleTask task, Exception e) {
 			// If there are no more tasks, close this dialog
 			if (!mQueue.hasActiveTasks()) {
-				dismiss();
-				if (getActivity() instanceof OnTasksCompleteListener) {
-					((OnTasksCompleteListener)getActivity()).onTasksComplete(SimpleTaskQueueProgressFragment.this, mTaskId, mSuccess, mWasCancelled);
-				}
+				queueAllTasksFinished();
 			}
 		}
 	};

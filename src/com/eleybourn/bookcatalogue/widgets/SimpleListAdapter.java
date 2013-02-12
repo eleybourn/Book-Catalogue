@@ -148,13 +148,28 @@ public abstract class SimpleListAdapter<T> extends ArrayAdapter<T> {
 		}			
 	};
 
+	/**
+	 * Interface to allow underlying objects to determine their vewi ID.
+	 */
+	public interface ViewProvider {
+		public int getViewId();
+	}
+
 	@Override
     public View getView(int position, View convertView, ViewGroup parent) {
-    	// Get the view; if not defined, load it.
+        // Get the object, if not null, do some processing
+        final T o = this.getItem(position);
+
+        // Get the view; if not defined, load it.
         View v = convertView;
         if (v == null) {
             LayoutInflater vi = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = vi.inflate(mRowViewId, null);
+            // If possible, ask the object for the view ID
+        	if (o != null && o instanceof ViewProvider) {
+                v = vi.inflate(((ViewProvider)o).getViewId(), null);
+        	} else {
+                v = vi.inflate(mRowViewId, null);
+        	}
         }
         
         // Save this views position
@@ -173,8 +188,7 @@ public abstract class SimpleListAdapter<T> extends ArrayAdapter<T> {
         	}
         }
 
-        // Get the object, if not null, do some processing
-        T o = this.getItem(position);
+        // If the object is not null, do some processing
         if (o != null) {
         	// Try to set position value
         	if (mHasPosition || !mCheckedFields) {

@@ -46,10 +46,12 @@ import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueFragment;
 import com.eleybourn.bookcatalogue.filechooser.FileChooserFragment.FileDetails;
+import com.eleybourn.bookcatalogue.filechooser.FileLister.FileListerListener;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueueProgressFragment;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTaskContext;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueueProgressFragment.FragmentTask;
 import com.eleybourn.bookcatalogue.widgets.SimpleListAdapter;
+import com.eleybourn.bookcatalogue.widgets.SimpleListAdapter.ViewProvider;
 
 /**
  * Fragment to display a simple directory/file browser.
@@ -58,17 +60,48 @@ import com.eleybourn.bookcatalogue.widgets.SimpleListAdapter;
  *
  * @param <T>		Class for file details, used in showing list.
  */
-public abstract class FileChooserFragment<T extends FileDetails> extends BookCatalogueFragment {
+public class FileChooserFragment extends BookCatalogueFragment implements FileListerListener {
 	private File mRootPath;
 	protected static final String ARG_ROOT_PATH = "rootPath";
 	protected static final String ARG_FILE_NAME = "fileName";
 	protected static final String ARG_LIST = "list";
-	protected ArrayList<T> mList;
+	protected ArrayList<FileDetails> mList;
+
+	/**
+	 * Interface that the containing Activity must implement. Called when user changes path.
+	 *
+	 * @author pjw
+	 */
+	public interface PathChangedListener {
+		public void onPathChanged(File root);
+	}
+
+	/** Create a new chooser fragment */
+	public static FileChooserFragment newInstance(File root, String fileName) {
+		String path;
+		// Turn the passed File into a directory
+		if (root.isDirectory()) {
+			path = root.getAbsolutePath();
+		} else {
+			path = root.getParent();
+		}
+		
+		// Build the fragment and save the details
+		FileChooserFragment frag = new FileChooserFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_ROOT_PATH, path);
+        args.putString(ARG_FILE_NAME, fileName);
+        frag.setArguments(args);
+
+        return frag;
+	}
 
 	/** Interface for details of files in current directory */
-	public interface FileDetails {
-		/** Get the uderlying File object */
+	public interface FileDetails extends ViewProvider, Parcelable {
+		/** Get the underlying File object */
 		File getFile();
+		/** Called to fill in the defails of this object in the View provided by the ViewProvider implementation */
+		public void onSetupView(Context context, int position, View target);
 	}
 
 	/**
@@ -78,19 +111,19 @@ public abstract class FileChooserFragment<T extends FileDetails> extends BookCat
 	public void onAttach(Activity a) {
 		super.onAttach(a);
 
-		//checkInstance(a, DirectoryBrowserListener.class);
+		checkInstance(a, PathChangedListener.class);
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.directory_browser, container, false);
+		return inflater.inflate(R.layout.file_chooser, container, false);
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
-		// Hanle the 'up' item; go to the next directory up
+		// Handle the 'up' item; go to the next directory up
 		final View root = getView();
 		((ImageView) root.findViewById(R.id.up)).setOnClickListener(new OnClickListener() {
 			@Override
@@ -99,29 +132,27 @@ public abstract class FileChooserFragment<T extends FileDetails> extends BookCat
 			}
 		});
 
-		// If it's new, just buld from scratch, otherwise, get the saved directory and rebuild the list
+		// If it's new, just build from scratch, otherwise, get the saved directory and list
 		if (savedInstanceState == null) {
 			mRootPath = new File(getArguments().getString(ARG_ROOT_PATH));
 			String fileName = getArguments().getString(ARG_FILE_NAME);
 			EditText et = (EditText) getView().findViewById(R.id.file_name);
 			et.setText(fileName);
-			backgroundRebuild(mRootPath);
+			((TextView) getView().findViewById(R.id.path)).setText(mRootPath.getAbsolutePath());
+			tellActivityPathChanged();
 		} else {
 			mRootPath = new File(savedInstanceState.getString(ARG_ROOT_PATH));
-			// List is not Parcelable, so we just rebuild it every time. It's less efficient, but much easier
-			//initList(mRootPath, (ArrayList<T>) savedInstanceState.getSerializable(ARG_LIST));
-			backgroundRebuild(mRootPath);
+			ArrayList<FileDetails> list = savedInstanceState.getParcelableArrayList(ARG_LIST);
+			this.onGotFileList(mRootPath, list);
 		}
 	}
 
-	/** Given a list of File objects return a (sub) list of FileDetails objects to display */
-	protected abstract ArrayList<T> onRebuild(File[] files);
-	/** FileFilter to apply to directory lists */
-	protected abstract FileFilter getFileFilter();
-	/** Get the layout to use for each row */
-	protected abstract int getItemLayout();
-	/** Setup a row for one FileDetails object */
-	protected abstract void onSetupView(T fileDetails, int position, View target);
+	/**
+	 * Convenience method to tell our activity the path has changed.
+	 */
+	private void tellActivityPathChanged() {	
+		((PathChangedListener)getActivity()).onPathChanged(mRootPath);
+	}
 
 	/**
 	 * Handle the 'Up' action
@@ -132,100 +163,27 @@ public abstract class FileChooserFragment<T extends FileDetails> extends BookCat
 			Toast.makeText(getActivity(), R.string.no_parent_directory_found, Toast.LENGTH_LONG).show();
 			return;
 		}
-		backgroundRebuild(new File(parent));
+		mRootPath = new File(parent);
+		
+		tellActivityPathChanged();
 	}
 
+	/**
+	 * Save our root path and list
+	 */
 	@Override
 	public void onSaveInstanceState(Bundle state) {
 		super.onSaveInstanceState(state);
 		state.putString(ARG_ROOT_PATH, mRootPath.getAbsolutePath());
-		// List is not Parcelable, so we just rebuild it every time. It's less efficient, but much easier
-		//state.putSerializable(ARG_LIST, mList);
+		state.putParcelableArrayList(ARG_LIST, mList);
 	}
-
-	/**
-	 * Compare two FileDetails objects for sorting
-	 * 
-	 * @author pjw
-	 */
-	private static class FileDetailsComparator implements Comparator<FileDetails> {
-		/**
-		 * Perform case-insensitive sorting using defaut locale.
-		 */
-		@SuppressLint("DefaultLocale")
-		public int compare(FileDetails f1, FileDetails f2) {
-			return f1.getFile().getName().toUpperCase().compareTo(f2.getFile().getName().toUpperCase());
-		}
-	}
-
-	private FileDetailsComparator mComparator = new FileDetailsComparator();
-
-	/**
-	 * Rebuild the file list in background; gather whatever data is necessary to ensure fast 
-	 * building of views in the UI thread.
-	 * 
-	 * @param root
-	 */
-	private void backgroundRebuild(final File root) {
-		if (root == null || !root.isDirectory())
-			return;
-
-		// Set the 'root' path text
-		((TextView) getView().findViewById(R.id.path)).setText(root.getAbsolutePath());
-
-		// Create the background task
-		FragmentTask task = new FragmentTask() {
-			ArrayList<T> dirs;
-
-			@Override
-			public void run(SimpleTaskQueueProgressFragment fragment, SimpleTaskContext taskContext) {
-				// Get a file list
-				File[] files = root.listFiles(getFileFilter());
-				// Filter/fill-in using the subclass
-				dirs = onRebuild(files);
-				// Sort it
-				Collections.sort(dirs, mComparator);
-			}
-
-			@Override
-			public void onFinish(SimpleTaskQueueProgressFragment fragment, Exception exception) {
-				// Display it in UI thread.
-				initList(root, dirs);
-			}
-
-		};
-
-		// Star the task
-		SimpleTaskQueueProgressFragment.runTaskWithProgress(getActivity(), 0, task, true, 0);
-
-	}
-
-	/**
-	 * Display the list
-	 * 
-	 * @param root		Root directory
-	 * @param dirs		List of FileDetials
-	 */
-	private void initList(File root, ArrayList<T> dirs) {
-		mRootPath = root;
-		((TextView) getView().findViewById(R.id.path)).setText(mRootPath.getAbsolutePath());
-
-		// Setup and display the list
-		mList = dirs;
-		DirectoryAdapter adapter = new DirectoryAdapter(getActivity(), getItemLayout(), mList);
-		ListView lv = ((ListView) getView().findViewById(android.R.id.list));
-		lv.setAdapter(adapter);
-	}
-
-	/** Icon to use for Folders */
-	protected Drawable mFolderIcon = BookCatalogueApp.context.getResources().getDrawable(R.drawable.ic_closed_folder);
 
 	/**
 	 * List Adapter for FileDetails objects
 	 * 
 	 * @author pjw
 	 */
-	public class DirectoryAdapter extends SimpleListAdapter<T> {
+	public class DirectoryAdapter extends SimpleListAdapter<FileDetails> {
 		boolean series = false;
 
 		/**
@@ -238,20 +196,21 @@ public abstract class FileChooserFragment<T extends FileDetails> extends BookCat
 		 * @param from
 		 * @param to
 		 */
-		public DirectoryAdapter(Context context, int rowViewId, ArrayList<T> items) {
+		public DirectoryAdapter(Context context, int rowViewId, ArrayList<FileDetails> items) {
 			super(context, rowViewId, items);
 		}
 
 		@Override
-		protected void onSetupView(T fileDetails, int position, View target) {
-			FileChooserFragment.this.onSetupView(fileDetails, position, target);
+		protected void onSetupView(FileDetails fileDetails, int position, View target) {
+			fileDetails.onSetupView(getActivity(), position, target);
 		}
 
 		@Override
-		protected void onRowClick(T fileDetails, int position, View v) {
+		protected void onRowClick(FileDetails fileDetails, int position, View v) {
 			if (fileDetails != null) {
 				if (fileDetails.getFile().isDirectory()) {
-					backgroundRebuild(fileDetails.getFile());
+					mRootPath = fileDetails.getFile();
+					tellActivityPathChanged();
 				} else {
 					EditText et = (EditText) FileChooserFragment.this.getView().findViewById(R.id.file_name);
 					et.setText(fileDetails.getFile().getName());
@@ -273,6 +232,25 @@ public abstract class FileChooserFragment<T extends FileDetails> extends BookCat
 	public File getSelectedFile() {
 		EditText et = (EditText) getView().findViewById(R.id.file_name);
 		return new File(mRootPath.getAbsolutePath() + "/" + et.getText().toString());
+	}
+
+	/**
+	 * Display the list
+	 * 
+	 * @param root		Root directory
+	 * @param dirs		List of FileDetials
+	 */
+	@Override
+	public void onGotFileList(File root, ArrayList<FileDetails> list) {
+		mRootPath = root;
+		((TextView) getView().findViewById(R.id.path)).setText(mRootPath.getAbsolutePath());
+
+		// Setup and display the list
+		mList = list;
+		// We pass 0 as view ID since each item can provide the view id
+		DirectoryAdapter adapter = new DirectoryAdapter(getActivity(), 0, mList);
+		ListView lv = ((ListView) getView().findViewById(android.R.id.list));
+		lv.setAdapter(adapter);
 	}
 
 }

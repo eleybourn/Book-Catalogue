@@ -107,9 +107,11 @@ public class DatabaseDefinitions {
 	public static final DomainDefinition DOM_GIVEN_NAMES = new DomainDefinition(KEY_GIVEN_NAMES, "text", "", "");
 	public static final DomainDefinition DOM_GOODREADS_BOOK_ID = new DomainDefinition("goodreads_book_id", "int", "", "");
 	public static final DomainDefinition DOM_ISBN = new DomainDefinition(KEY_ISBN, "text", "",  "");
+	public static final DomainDefinition DOM_INSTANCE_UPDATE_DATE = new DomainDefinition("instance_update_date", "date", "default current_timestamp", "not null");
 	public static final DomainDefinition DOM_KIND = new DomainDefinition("kind", "integer", "",  "not null");
 	public static final DomainDefinition DOM_LAST_UPDATE_DATE = new DomainDefinition("last_update_date", "date", "default current_timestamp", "not null");
 	public static final DomainDefinition DOM_LAST_GOODREADS_SYNC_DATE = new DomainDefinition("last_goodreads_sync_date", "date", "default '0000-00-00'", "");
+	public static final DomainDefinition DOM_LANGUAGE = new DomainDefinition("language", "text", "default ''", "");
 	public static final DomainDefinition DOM_LOANED_TO = new DomainDefinition("loaned_to", "text", "",  "not null");
 	public static final DomainDefinition DOM_LOANED_TO_SORT = new DomainDefinition("loaned_to_sort", "int", "",  "not null");
 	public static final DomainDefinition DOM_LOCATION = new DomainDefinition(KEY_LOCATION, "text", "default ''", "");

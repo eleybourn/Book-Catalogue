@@ -553,12 +553,12 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 			throw new RuntimeException("Unexpected empty list");
 		}
 
-		final boolean showHeaderInfo = (mCurrentStyle == null ? true : mCurrentStyle.getShowHeaderInfo());
+		final int showHeaderFlags = (mCurrentStyle == null ? BooklistStyle.SUMMARY_SHOW_ALL : mCurrentStyle.getShowHeaderInfo());
 
 		initBackground();
 
 		TextView bookCounts = (TextView)findViewById(R.id.bookshelf_count);
-		if (showHeaderInfo) {
+		if ( (showHeaderFlags & BooklistStyle.SUMMARY_SHOW_COUNT) != 0) {
 			if (mUniqueBooks != mTotalBooks) 
 				bookCounts.setText("(" + this.getString(R.string.displaying_n_books_in_m_entries, mUniqueBooks, mTotalBooks) + ")");
 			else
@@ -668,21 +668,21 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 		final boolean hasLevel1 = (mList.numLevels() > 1);
 		final boolean hasLevel2 = (mList.numLevels() > 2);
 
-		if (hasLevel2 && showHeaderInfo) {
+		if ( hasLevel2 && (showHeaderFlags & BooklistStyle.SUMMARY_SHOW_LEVEL_2) != 0 ) {
 			lvHolder.level2Text.setVisibility(View.VISIBLE);
 			lvHolder.level2Text.setText("");
 		} else {
 			lvHolder.level2Text.setVisibility(View.GONE);
 		}
-		if (hasLevel1 && showHeaderInfo) {
+		if (hasLevel1 && (showHeaderFlags & BooklistStyle.SUMMARY_SHOW_LEVEL_1) != 0) {
 			lvHolder.level1Text.setVisibility(View.VISIBLE);
 			lvHolder.level1Text.setText("");
 		} else
 			lvHolder.level1Text.setVisibility(View.GONE);
 
 		// Update the header details
-		if (count > 0 && showHeaderInfo)
-			updateListHeader(lvHolder, mTopRow, hasLevel1, hasLevel2);
+		if (count > 0 && (showHeaderFlags & (BooklistStyle.SUMMARY_SHOW_LEVEL_1 ^ BooklistStyle.SUMMARY_SHOW_LEVEL_2)) != 0)
+			updateListHeader(lvHolder, mTopRow, hasLevel1, hasLevel2, showHeaderFlags);
 
 		// Define a scroller to update header detail when top row changes
 		lv.setOnScrollListener(new OnScrollListener() {
@@ -690,9 +690,9 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 				// TODO: Investigate why BooklistPseudoCursor causes a scroll even when it is closed!
 				// Need to check isDead because BooklistPseudoCursor misbehaves when activity terminates and closes cursor
-				if (mLastTop != firstVisibleItem && !mIsDead && showHeaderInfo) {
+				if (mLastTop != firstVisibleItem && !mIsDead && (showHeaderFlags != 0) ) {
 					ListViewHolder holder = (ListViewHolder)ViewTagger.getTag(view, R.id.TAG_HOLDER);
-					updateListHeader(holder, firstVisibleItem, hasLevel1, hasLevel2);
+					updateListHeader(holder, firstVisibleItem, hasLevel1, hasLevel2, showHeaderFlags);
 				}
 			}
 
@@ -724,16 +724,16 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 	 * @param hasLevel1		flag indicating level 1 is present
 	 * @param hasLevel2		flag indicating level 2 is present
 	 */
-	private void updateListHeader(ListViewHolder holder, int topItem, boolean hasLevel1, boolean hasLevel2) {
+	private void updateListHeader(ListViewHolder holder, int topItem, boolean hasLevel1, boolean hasLevel2, int flags) {
 		if (topItem < 0)
 			topItem = 0;
 
 		mLastTop = topItem;
-		if (hasLevel1) {
+		if (hasLevel1 && ( flags & BooklistStyle.SUMMARY_SHOW_LEVEL_1) != 0) {
 			if ( mList.moveToPosition(topItem) ) {
 				holder.level1Text.setText(mList.getRowView().getLevel1Data());
 				String s = null;
-				if (hasLevel2) {
+				if (hasLevel2 && ( flags & BooklistStyle.SUMMARY_SHOW_LEVEL_2) != 0 ) {
 					s = mList.getRowView().getLevel2Data();
 					holder.level2Text.setText(s);
 				}				

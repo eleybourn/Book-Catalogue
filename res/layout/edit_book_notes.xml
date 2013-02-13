@@ -68,35 +68,25 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
-                <ImageView
-                    android:id="@+id/read_start_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/ic_menu_edit"
-                    android:text="@string/read_start" />
-
                 <TextView
                     android:id="@+id/read_start_heading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:layout_toLeftOf="@+id/read_start_button"
                     android:text="@string/read_start"
                     android:textAppearance="?android:attr/textAppearanceSmall" />
 
-                <TextView
+                <Button
                     android:id="@+id/read_start"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentRight="true"
                     android:layout_below="@+id/read_start_heading"
-                    android:layout_toLeftOf="@+id/read_start_button"
-                    android:text="@string/notset"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
-            </RelativeLayout>
+                    style="@style/dataEntryButtonStyle" />
+                
+			</RelativeLayout>
 
             <View
                 android:layout_width="fill_parent"

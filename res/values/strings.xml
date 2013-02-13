@@ -795,4 +795,9 @@ and you can edit the book via the options menu using the menu button or overflow
 <!-- Displayed in Admin menu advanced options (top make a copy of the internal database on the sdcard -->
 <string name="copy_database">Copy Database (for tech support)</string>
 
+<!-- Items in list of options for the 'Summary Details' preference. Detrmines what is show in book list header -->
+<string name="show_book_count">Show number of books</string>
+<string name="show_first_level_and_book_count">Show first level heading and number of books</string>
+<string name="show_all_summary_details">Show all summary details</string>
+
 </resources>

@@ -114,7 +114,12 @@ public class BackupFileDetails implements FileDetails {
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeSerializable(mFile);
-		dest.writeBundle(mInfo.getBundle());	
+		if (mInfo != null) {
+			dest.writeByte((byte) 1);
+			dest.writeBundle(mInfo.getBundle());
+		} else {
+			dest.writeByte((byte) 0);			
+		}
 	}
 
 	/**
@@ -124,7 +129,12 @@ public class BackupFileDetails implements FileDetails {
 	 */
 	private BackupFileDetails(Parcel in) {
 		mFile = (File) in.readSerializable();
-		mInfo = new BackupInfo(in.readBundle());
+		byte infoFlag = in.readByte();
+		if (infoFlag != (byte)0) {
+			mInfo = new BackupInfo(in.readBundle());
+		} else {
+			mInfo = null;
+		}
 	}
 
 	/**

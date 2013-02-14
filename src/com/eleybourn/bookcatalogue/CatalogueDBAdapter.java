@@ -3429,11 +3429,11 @@ public class CatalogueDBAdapter {
 	 * 
 	 * @return				ID of anthology title record
 	 */
-	public long createAnthologyTitle(long book, String author, String title, boolean returnDupId) {
+	public long createAnthologyTitle(long book, String author, String title, boolean returnDupId, boolean dirtyBookIfNecessary) {
 		if (title.length() > 0) {
 			String[] names = processAuthorName(author);
 			long authorId = Long.parseLong(getAuthorIdOrCreate(names));
-			return createAnthologyTitle(book, authorId, title, returnDupId);
+			return createAnthologyTitle(book, authorId, title, returnDupId, dirtyBookIfNecessary);
 		} else {
 			return -1;
 		}
@@ -3449,9 +3449,10 @@ public class CatalogueDBAdapter {
 	 * 
 	 * @return				ID of anthology title record
 	 */
-	public long createAnthologyTitle(long book, long authorId, String title, boolean returnDupId) {
+	public long createAnthologyTitle(long book, long authorId, String title, boolean returnDupId, boolean dirtyBookIfNecessary) {
 		if (title.length() > 0) {
-			setBookDirty(book);
+			if (dirtyBookIfNecessary)
+				setBookDirty(book);
 
 			ContentValues initialValues = new ContentValues();
 			int position = fetchAnthologyPositionByBook(book) + 1;
@@ -3584,16 +3585,16 @@ public class CatalogueDBAdapter {
 
 			String bookshelf = values.getBookshelfList();
 			if (bookshelf != null && !bookshelf.trim().equals("")) {
-				createBookshelfBooks(rowId, Utils.decodeList(bookshelf, BookEditFields.BOOKSHELF_SEPERATOR));
+				createBookshelfBooks(rowId, Utils.decodeList(bookshelf, BookEditFields.BOOKSHELF_SEPERATOR), false);
 			}
 
-			createBookAuthors(rowId, authors);
+			createBookAuthors(rowId, authors, false);
 
 			ArrayList<Series> series = values.getSeriesList();
-			createBookSeries(rowId, series);
+			createBookSeries(rowId, series, false);
 
 			ArrayList<AnthologyTitle> anthologyTitles = values.getAnthologyTitles();
-			createBookAnthologyTitles(rowId, anthologyTitles);
+			createBookAnthologyTitles(rowId, anthologyTitles, false);
 
 			try {
 				insertFts(rowId);
@@ -3629,14 +3630,14 @@ public class CatalogueDBAdapter {
 	/**
 	 * Create each book/bookshelf combo in the weak entity
 	 * 
-	 * @param mRowId The book id
+	 * @param bookId The book id
 	 * @param bookshelf A separated string of bookshelf names
 	 */
-	public void createBookshelfBooks(long mRowId, ArrayList<String> bookshelves) {
+	public void createBookshelfBooks(long bookId, ArrayList<String> bookshelves, boolean dirtyBookIfNecessary) {
 		if (mDeleteBookshelfBooksStmt == null) {
 			mDeleteBookshelfBooksStmt = mStatements.add("mDeleteBookshelfBooksStmt", "Delete from " + DB_TB_BOOK_BOOKSHELF_WEAK + " Where " + KEY_BOOK + " = ?");
 		}
-		mDeleteBookshelfBooksStmt.bindLong(1, mRowId);
+		mDeleteBookshelfBooksStmt.bindLong(1, bookId);
 		mDeleteBookshelfBooksStmt.execute();
 
 		if (mInsertBookshelfBooksStmt == null) {
@@ -3662,15 +3663,16 @@ public class CatalogueDBAdapter {
 				bookshelfId = 1;
 
 			try {
-				mInsertBookshelfBooksStmt.bindLong(1, mRowId);
+				mInsertBookshelfBooksStmt.bindLong(1, bookId);
 				mInsertBookshelfBooksStmt.bindLong(2, bookshelfId);
 				mInsertBookshelfBooksStmt.execute();
 			} catch (Exception e) {
 				Logger.logError(e, "Error assigning a book to a bookshelf.");
 			}
 		}
-		
-		setBookDirty(mRowId);
+
+		if (dirtyBookIfNecessary)
+			setBookDirty(bookId);
 	}
 	
 	/**
@@ -3680,7 +3682,7 @@ public class CatalogueDBAdapter {
 	 * @param friend A string containing the friend you are loaning to
 	 * @return the ID of the loan
 	 */
-	public long createLoan(BookData values) {
+	public long createLoan(BookData values, boolean dirtyBookIfNecessary) {
 		ContentValues initialValues = new ContentValues();
 		initialValues.put(KEY_BOOK, values.getRowId());
 		initialValues.put(KEY_LOANED_TO, values.getString(KEY_LOANED_TO));
@@ -3688,7 +3690,8 @@ public class CatalogueDBAdapter {
 		//Special cleanup step - Delete all loans without books
 		this.deleteLoanInvalids();
 		
-		setBookDirty(values.getRowId());
+		if (dirtyBookIfNecessary)
+			setBookDirty(values.getRowId());
 
 		return result;
 	}
@@ -3704,7 +3707,7 @@ public class CatalogueDBAdapter {
 	 * @param title The title of the anthology story
 	 * @return true/false on success
 	 */
-	public boolean updateAnthologyTitle(long rowId, long book, String author, String title) {
+	public boolean updateAnthologyTitle(long rowId, long book, String author, String title, boolean dirtyBookIfNecessary) {
 		ContentValues args = new ContentValues();
 		String[] names = processAuthorName(author);
 		long authorId = Long.parseLong(getAuthorIdOrCreate(names));
@@ -3719,7 +3722,8 @@ public class CatalogueDBAdapter {
 		boolean success = mDb.update(DB_TB_ANTHOLOGY, args, KEY_ROWID + "=" + rowId, null) > 0;
 		purgeAuthors();
 		
-		setBookDirty(book);
+		if (dirtyBookIfNecessary)
+			setBookDirty(book);
 
 		return success;
 	}
@@ -3731,7 +3735,7 @@ public class CatalogueDBAdapter {
 	 * @param up true if going up, false if going down
 	 * @return true/false on success
 	 */
-	public int updateAnthologyTitlePosition(long rowId, boolean up) {
+	public int updateAnthologyTitlePosition(long rowId, boolean up, boolean dirtyBookIfNecessary) {
 		Cursor title = fetchAnthologyTitleById(rowId);
 		title.moveToFirst();
 		int book = title.getInt(title.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_BOOK)); 
@@ -3763,7 +3767,8 @@ public class CatalogueDBAdapter {
 		" WHERE " + KEY_BOOK + "='" + book + "' AND " + KEY_ROWID + "=" + rowId+ " ";
 		mDb.execSQL(sql);
 
-		setBookDirty(book);
+		if (dirtyBookIfNecessary)
+			setBookDirty(book);
 
 		return position;
 	}
@@ -4155,21 +4160,21 @@ public class CatalogueDBAdapter {
 
 			String bookshelf = values.getBookshelfList();
 			if (bookshelf != null && !bookshelf.trim().equals("")) {
-				createBookshelfBooks(rowId, Utils.decodeList(bookshelf, BookEditFields.BOOKSHELF_SEPERATOR));
+				createBookshelfBooks(rowId, Utils.decodeList(bookshelf, BookEditFields.BOOKSHELF_SEPERATOR), false);
 			}
 
 			if (values.containsKey(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)) {
 				ArrayList<Author> authors = values.getAuthorList();
-				createBookAuthors(rowId, authors);			
+				createBookAuthors(rowId, authors, false);			
 			}
 			if (values.containsKey(CatalogueDBAdapter.KEY_SERIES_ARRAY)) {
 				ArrayList<Series> series = values.getSeriesList();
-				createBookSeries(rowId, series);			
+				createBookSeries(rowId, series, false);			
 			}
 
 			if (values.containsKey(CatalogueDBAdapter.KEY_ANTHOLOGY_TITLE_ARRAY)) {
 				ArrayList<AnthologyTitle> anthologyTitles = values.getAnthologyTitles();
-				createBookAnthologyTitles(rowId, anthologyTitles);				
+				createBookAnthologyTitles(rowId, anthologyTitles, false);				
 			}
 
 			// Only really skip the purge if a batch update of multiple books is being done.
@@ -4193,17 +4198,18 @@ public class CatalogueDBAdapter {
 	}
 
 //	private static final String NEXT_STMT_NAME = "next";
-	private void createBookAnthologyTitles(long bookId, ArrayList<AnthologyTitle> list) {
-		setBookDirty(bookId);
+	private void createBookAnthologyTitles(long bookId, ArrayList<AnthologyTitle> list, boolean dirtyBookIfNecessary) {
+		if (dirtyBookIfNecessary)
+			setBookDirty(bookId);
 
-		this.deleteAnthologyTitles(bookId);
+		this.deleteAnthologyTitles(bookId, false);
 //		SynchronizedStatement stmt = mStatements.get(NEXT_STMT_NAME);
 		for(int i = 0; i < list.size(); i++) {
 			AnthologyTitle at = list.get(i);
 			Author a = at.getAuthor();
 			String authorIdStr = getAuthorIdOrCreate(new String[] {a.familyName, a.givenNames});
 			long authorId = Long.parseLong(authorIdStr);
-			this.createAnthologyTitle(bookId, authorId, at.getTitle(), true);
+			this.createAnthologyTitle(bookId, authorId, at.getTitle(), true, false);
 		}
 	}
 
@@ -4218,8 +4224,9 @@ public class CatalogueDBAdapter {
 	 * @param bookId		ID of book
 	 * @param bookData		Book fields
 	 */
-	private void createBookAuthors(long bookId, ArrayList<Author> authors) {
-		setBookDirty(bookId);
+	private void createBookAuthors(long bookId, ArrayList<Author> authors, boolean dirtyBookIfNecessary) {
+		if (dirtyBookIfNecessary)
+			setBookDirty(bookId);
 
 		// If we have AUTHOR_DETAILS, same them.
 		if (authors != null) {
@@ -4277,8 +4284,9 @@ public class CatalogueDBAdapter {
 	//
 	private SynchronizedStatement mDeleteBookSeriesStmt = null;
 	private SynchronizedStatement mAddBookSeriesStmt = null;
-	private void createBookSeries(long bookId, ArrayList<Series> series) {
-		setBookDirty(bookId);
+	private void createBookSeries(long bookId, ArrayList<Series> series, boolean dirtyBookIfNecessary) {
+		if (dirtyBookIfNecessary)
+			setBookDirty(bookId);
 		// If we have SERIES_DETAILS, same them.
 		if (series != null) {
 			if (mDeleteBookSeriesStmt == null) {
@@ -4556,12 +4564,13 @@ public class CatalogueDBAdapter {
 	 * @param bookRowId id of the book
 	 * @return true if deleted, false otherwise
 	 */
-	public boolean deleteAnthologyTitles(long bookRowId) {
+	public boolean deleteAnthologyTitles(long bookRowId, boolean dirtyBookIfNecessary) {
 		boolean success;
 		// Delete the anthology entries for the book
 		success = mDb.delete(DB_TB_ANTHOLOGY, KEY_BOOK + "=" + bookRowId, null) > 0;
 		// Mark book dirty
-		setBookDirty(bookRowId);
+		if (dirtyBookIfNecessary)
+			setBookDirty(bookRowId);
 		// Cleanup the author list, if necessary (we may have deleted the only work by an author)
 		purgeAuthors();
 		return success;
@@ -4573,7 +4582,7 @@ public class CatalogueDBAdapter {
 	 * @param anthRowId id of the anthology to delete
 	 * @return true if deleted, false otherwise
 	 */
-	public boolean deleteAnthologyTitle(long anthRowId) {
+	public boolean deleteAnthologyTitle(long anthRowId, boolean dirtyBookIfNecessary) {
 		// Find the soon to be deleted title position#
 		Cursor anthology = fetchAnthologyTitleById(anthRowId);
 		anthology.moveToFirst();
@@ -4591,7 +4600,8 @@ public class CatalogueDBAdapter {
 			" WHERE " + KEY_POSITION + ">" + position + " AND " + KEY_BOOK + "=" + book + "";
 		mDb.execSQL(sql);
 		
-		setBookDirty(book);
+		if (dirtyBookIfNecessary)
+			setBookDirty(book);
 		
 		return success;
 	}
@@ -4776,9 +4786,10 @@ public class CatalogueDBAdapter {
 	 * 
 	 * @return 			true if deleted, false otherwise
 	 */
-	public boolean deleteLoan(long bookId) {
+	public boolean deleteLoan(long bookId, boolean dirtyBookIfNecessary) {
 		boolean success;
-		setBookDirty(bookId);
+		if (dirtyBookIfNecessary)
+			setBookDirty(bookId);
 		success = mDb.delete(DB_TB_LOAN, KEY_BOOK+ "=" + bookId, null) > 0;
 		//Special cleanup step - Delete all loans without books
 		this.deleteLoanInvalids();

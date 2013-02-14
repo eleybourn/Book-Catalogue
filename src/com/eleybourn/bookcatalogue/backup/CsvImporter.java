@@ -20,12 +20,9 @@
 package com.eleybourn.bookcatalogue.backup;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import android.os.Bundle;
@@ -37,7 +34,6 @@ import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.Series;
 import com.eleybourn.bookcatalogue.ImportThread.ImportException;
-import com.eleybourn.bookcatalogue.backup.Exporter.ExportListener;
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer.SyncLock;
 import com.eleybourn.bookcatalogue.utils.Logger;
@@ -49,8 +45,6 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * @author pjw
  */
 public class CsvImporter {
-	private String mLastError;
-
 	private static String UTF8 = "utf8";
 	private static int BUFFER_SIZE = 32768;
 
@@ -286,47 +280,48 @@ public class CsvImporter {
 							coverFinder.copyOrRenameCoverFile(uuidVal, idFromFile, idLong);
 						}
 					}
-				} catch (Exception e) {
-					Logger.logError(e, "Import at row " + row);
-				}
-
-				if (values.containsKey(CatalogueDBAdapter.KEY_LOANED_TO) && !values.get(CatalogueDBAdapter.KEY_LOANED_TO).equals("")) {
-					int id = Integer.parseInt(values.getString(CatalogueDBAdapter.KEY_ROWID));
-					db.deleteLoan(id);
-					db.createLoan(values);
-				}
-
-				if (values.containsKey(CatalogueDBAdapter.KEY_ANTHOLOGY_MASK)) {
-					int anthology;
-					try {
-						anthology = Integer.parseInt(values.getString(CatalogueDBAdapter.KEY_ANTHOLOGY_MASK));
-					} catch (Exception e) {
-						anthology = 0;
-					}
-					if (anthology == CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS || anthology == CatalogueDBAdapter.ANTHOLOGY_IS_ANTHOLOGY) {
+					
+					if (values.containsKey(CatalogueDBAdapter.KEY_LOANED_TO) && !values.get(CatalogueDBAdapter.KEY_LOANED_TO).equals("")) {
 						int id = Integer.parseInt(values.getString(CatalogueDBAdapter.KEY_ROWID));
-						// We have anthology details, delete the current details.
-						db.deleteAnthologyTitles(id);
-						int oldi = 0;
-						String anthology_titles = values.getString("anthology_titles");
+						db.deleteLoan(id, false);
+						db.createLoan(values, false);
+					}
+
+					if (values.containsKey(CatalogueDBAdapter.KEY_ANTHOLOGY_MASK)) {
+						int anthology;
 						try {
-							int i = anthology_titles.indexOf("|", oldi);
-							while (i > -1) {
-								String extracted_title = anthology_titles.substring(oldi, i).trim();
-								
-								int j = extracted_title.indexOf("*");
-								if (j > -1) {
-									String anth_title = extracted_title.substring(0, j).trim();
-									String anth_author = extracted_title.substring((j+1)).trim();
-									db.createAnthologyTitle(id, anth_author, anth_title, true);
+							anthology = Integer.parseInt(values.getString(CatalogueDBAdapter.KEY_ANTHOLOGY_MASK));
+						} catch (Exception e) {
+							anthology = 0;
+						}
+						if (anthology == CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS || anthology == CatalogueDBAdapter.ANTHOLOGY_IS_ANTHOLOGY) {
+							int id = Integer.parseInt(values.getString(CatalogueDBAdapter.KEY_ROWID));
+							// We have anthology details, delete the current details.
+							db.deleteAnthologyTitles(id, false);
+							int oldi = 0;
+							String anthology_titles = values.getString("anthology_titles");
+							try {
+								int i = anthology_titles.indexOf("|", oldi);
+								while (i > -1) {
+									String extracted_title = anthology_titles.substring(oldi, i).trim();
+									
+									int j = extracted_title.indexOf("*");
+									if (j > -1) {
+										String anth_title = extracted_title.substring(0, j).trim();
+										String anth_author = extracted_title.substring((j+1)).trim();
+										db.createAnthologyTitle(id, anth_author, anth_title, true, false);
+									}
+									oldi = i + 1;
+									i = anthology_titles.indexOf("|", oldi);
 								}
-								oldi = i + 1;
-								i = anthology_titles.indexOf("|", oldi);
+							} catch (NullPointerException e) {
+								//do nothing. There are no anthology titles
 							}
-						} catch (NullPointerException e) {
-							//do nothing. There are no anthology titles
 						}
 					}
+
+				} catch (Exception e) {
+					Logger.logError(e, "Import at row " + row);
 				}
 
 				long now = System.currentTimeMillis();

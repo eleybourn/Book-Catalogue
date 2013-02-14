@@ -20,15 +20,9 @@
 package com.eleybourn.bookcatalogue.backup;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.widget.Toast;
-
-import com.eleybourn.bookcatalogue.AdministrationFunctions;
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.R;

@@ -20,15 +20,9 @@
 package com.eleybourn.bookcatalogue.backup;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.widget.Toast;
-
-import com.eleybourn.bookcatalogue.AdministrationFunctions;
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.R;
@@ -136,10 +130,21 @@ public class BackupManager {
 					}
 				} catch (Exception e) {
 					Logger.logError(e);
+					if (tempFile.exists())
+						try {
+							tempFile.delete();
+						} catch (Exception e2) {
+							// Ignore
+						}
 					throw new RuntimeException("Error during backup", e);
 				} finally {
-					if (wrt != null)
-						wrt.close();
+					if (wrt != null) {
+						try {
+							wrt.close();
+						} catch (Exception e2) {
+							// Ignore
+						}
+					}
 				}
 			}
 

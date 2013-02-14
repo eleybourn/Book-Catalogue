@@ -62,7 +62,7 @@ import com.eleybourn.bookcatalogue.properties.StringProperty;
  */
 public class BooklistStyle implements Iterable<BooklistGroup>, Serializable {
 	private static final long serialVersionUID = 6615877148246388549L;
-	private static final long realSerialVersion = 3;
+	private static final long realSerialVersion = 4;
 
 	/** Extra book data to show at lowest level */
 	public static final int EXTRAS_BOOKSHELVES = 1;
@@ -141,7 +141,7 @@ public class BooklistStyle implements Iterable<BooklistGroup>, Serializable {
 	/** Show list using smaller text */
 	private transient BooleanListProperty mCondensed; 
 	/** Show list header info */
-	private transient BooleanListProperty mShowHeaderInfo; 
+	private transient IntegerListProperty mShowHeaderInfo; 
 			
 	/**
 	 * Flag indicating this style was in the 'preferred' set when it was added to its Styles collection 
@@ -188,12 +188,21 @@ public class BooklistStyle implements Iterable<BooklistGroup>, Serializable {
 		mCondensedListItems.add(true, R.string.smaller);
 	}
 
+	public static final Integer SUMMARY_HIDE = 0;
+	public static final Integer SUMMARY_SHOW_COUNT = 1;
+	public static final Integer SUMMARY_SHOW_LEVEL_1 = 2;
+	public static final Integer SUMMARY_SHOW_LEVEL_2 = 4;
+	public static final Integer SUMMARY_SHOW_LEVEL_1_AND_COUNT = SUMMARY_SHOW_COUNT ^ SUMMARY_SHOW_LEVEL_1;
+	public static final Integer SUMMARY_SHOW_ALL = 0xff;
+	
 	/** Support for 'Show List Header Info' property */
-	private static ItemEntries<Boolean> mShowHeaderInfoListItems = new ItemEntries<Boolean>();
+	private static ItemEntries<Integer> mShowHeaderInfoListItems = new ItemEntries<Integer>();
 	static {
 		mShowHeaderInfoListItems.add(null, R.string.use_default_setting);
-		mShowHeaderInfoListItems.add(false, R.string.hide_summary_details);
-		mShowHeaderInfoListItems.add(true, R.string.show_summary_details);
+		mShowHeaderInfoListItems.add(SUMMARY_HIDE, R.string.hide_summary_details);
+		mShowHeaderInfoListItems.add(SUMMARY_SHOW_COUNT, R.string.show_book_count);
+		mShowHeaderInfoListItems.add(SUMMARY_SHOW_LEVEL_1_AND_COUNT, R.string.show_first_level_and_book_count);
+		mShowHeaderInfoListItems.add(SUMMARY_SHOW_ALL, R.string.show_all_summary_details);
 	}
 
 	/**
@@ -350,8 +359,8 @@ public class BooklistStyle implements Iterable<BooklistGroup>, Serializable {
 
 		mCondensed = new BooleanListProperty(mCondensedListItems, PREF_CONDENSED_TEXT, PropertyGroup.GRP_GENERAL, R.string.size_of_booklist_items,
 				null, PREF_CONDENSED_TEXT, false);
-		mShowHeaderInfo = new BooleanListProperty(mShowHeaderInfoListItems, PREF_SHOW_HEADER_INFO, PropertyGroup.GRP_GENERAL, R.string.summary_details_in_header,
-				null, PREF_SHOW_HEADER_INFO, true);
+		mShowHeaderInfo = new IntegerListProperty(mShowHeaderInfoListItems, PREF_SHOW_HEADER_INFO, PropertyGroup.GRP_GENERAL, R.string.summary_details_in_header,
+				null, PREF_SHOW_HEADER_INFO, SUMMARY_SHOW_ALL);
 	}
 
 	/**
@@ -544,8 +553,19 @@ public class BooklistStyle implements Iterable<BooklistGroup>, Serializable {
 		else
 			mNameProperty.set(mName);
 		// Added mShowHeaderInfo with version 3
-		if (version > 2)
-			mShowHeaderInfo.set((Boolean)in.readObject());
+		if (version > 2) {
+			// Changed it from Boolean to Integer in version 4
+			if (version == 3) {
+				Boolean isSet = (Boolean)in.readObject();
+				if (isSet == null) {
+					mShowHeaderInfo.set( (Integer)null );
+				} else {
+					mShowHeaderInfo.set( isSet ? SUMMARY_SHOW_ALL : SUMMARY_HIDE);
+				}
+			} else {
+				mShowHeaderInfo.set((Integer)in.readObject());
+			}			
+		}
 	}
 	
 	/**
@@ -581,7 +601,7 @@ public class BooklistStyle implements Iterable<BooklistGroup>, Serializable {
 	 * 
 	 * @return
 	 */
-	public boolean getShowHeaderInfo() {
+	public int getShowHeaderInfo() {
 		return mShowHeaderInfo.getResolvedValue();
 	}
 

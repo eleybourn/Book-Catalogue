@@ -22,27 +22,18 @@ package com.eleybourn.bookcatalogue.backup;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Date;
-import java.util.Map;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.os.Build;
-import android.os.Bundle;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.backup.Exporter.ExportListener;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyles;
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
-import com.eleybourn.bookcatalogue.utils.StorageUtils;
-import com.eleybourn.bookcatalogue.utils.Utils;
+import com.eleybourn.bookcatalogue.utils.Logger;
 
 /**
  * Basic implementation of format-agnostic BackupWriter methods using 
@@ -66,21 +57,29 @@ public abstract class BackupWriterAbstract implements BackupWriter {
 	 */
 	@Override
 	public void backup(BackupWriterListener listener) throws IOException {
-		listener.setMax((int) (mDbHelper.getBookCount() * 2 + 1));
+		
+		try {
+			listener.setMax((int) (mDbHelper.getBookCount() * 2 + 1));
 
-		// Process each component of the Archive, unless we are cancelled, as in Nikita
-		if (!listener.isCancelled())
-			writeInfo(listener);
-		if (!listener.isCancelled())
-			writeBooks(listener);
-		if (!listener.isCancelled())
-			writeCovers(listener);
-		if (!listener.isCancelled())
-			writePreferences(listener);
-		if (!listener.isCancelled())
-			writeStyles(listener);
+			// Process each component of the Archive, unless we are cancelled, as in Nikita
+			if (!listener.isCancelled())
+				writeInfo(listener);
+			if (!listener.isCancelled())
+				writeBooks(listener);
+			if (!listener.isCancelled())
+				writeCovers(listener);
+			if (!listener.isCancelled())
+				writePreferences(listener);
+			if (!listener.isCancelled())
+				writeStyles(listener);			
+		} finally {
+			try {
+				close();							
+			} catch (Exception e) {
+				Logger.logError(e, "Failed to close archive");
+			}
+		}
 
-		close();
 		System.out.println("Closed writer");
 	}
 

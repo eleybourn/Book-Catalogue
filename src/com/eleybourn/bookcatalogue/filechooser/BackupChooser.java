@@ -20,32 +20,18 @@
 package com.eleybourn.bookcatalogue.filechooser;
 
 import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
-import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.regex.Pattern;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.backup.BackupInfo;
 import com.eleybourn.bookcatalogue.backup.BackupManager;
-import com.eleybourn.bookcatalogue.backup.BackupReader;
-import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
-import com.eleybourn.bookcatalogue.filechooser.FileChooserFragment.FileDetails;
-import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTask;
+import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment;
+import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment.OnMessageDialogResultListener;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueueProgressFragment;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueueProgressFragment.FragmentTask;
-import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.StorageUtils;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
@@ -54,12 +40,15 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * 
  * @author pjw
  */
-public class BackupChooser extends FileChooser {
+public class BackupChooser extends FileChooser implements OnMessageDialogResultListener {
 	/** The backup file that will be created (if saving) */
 	private File mBackupFile = null;
 	/** Used when saving state */
 	private final static String STATE_BACKUP_FILE = "BackupFileSpec";
 	
+	private static final int TASK_ID_SAVE = 1;
+	private static final int TASK_ID_OPEN = 2;
+
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
@@ -124,7 +113,7 @@ public class BackupChooser extends FileChooser {
 	 */
 	@Override
 	public void onOpen(File file) {
-		BackupManager.restoreCatalogue(this, file, 1);		
+		BackupManager.restoreCatalogue(this, file, TASK_ID_OPEN);		
 	}
 
 	/**
@@ -132,41 +121,71 @@ public class BackupChooser extends FileChooser {
 	 */
 	@Override
 	public void onSave(File file) {
-		mBackupFile = BackupManager.backupCatalogue(this, file, 1);
+		mBackupFile = BackupManager.backupCatalogue(this, file, TASK_ID_SAVE);
 	}
 
 	@Override
 	public void onTaskFinished(SimpleTaskQueueProgressFragment fragment, int taskId, boolean success, boolean cancelled, FragmentTask task) {
 		// Is it a task we care about?
-		if (taskId == 1) {
-			if (!success || cancelled) {
+		if (taskId == TASK_ID_SAVE) {
+			if (!success) {
+				String msg = getString(R.string.backup_failed)
+						+ " " + getString(R.string.please_check_sd_writable)
+						+ "\n\n" + getString(R.string.if_the_problem_persists);
+
+				MessageDialogFragment frag = MessageDialogFragment.newInstance(0, R.string.backup_to_archive, msg, R.string.ok, 0, 0);
+				frag.show(getSupportFragmentManager(), null);
 				// Just return; user may want to try again
 				return;
 			}
-			// If it was a backup, show a helpful message
-			if (mBackupFile != null && mBackupFile.exists()) {
-				String msg = getString(R.string.archive_complete_details, mBackupFile.getParent(), mBackupFile.getName(), Utils.formatFileSize(mBackupFile.length()));
-				AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(msg).create();
-				alertDialog.setTitle(R.string.backup_to_archive);
-				alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-				alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.ok), new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
-						finish();
-						return;
-					}
-				}); 
-				alertDialog.show();				
-			} else {
-				// Was not a bckup, but it's done, so exit
-				finish();				
+			if (cancelled) {
+				// Just return; user may want to try again
+				return;
 			}
+			// Show a helpful message
+			String msg = getString(R.string.archive_complete_details, mBackupFile.getParent(), mBackupFile.getName(), Utils.formatFileSize(mBackupFile.length()));
+			MessageDialogFragment frag = MessageDialogFragment.newInstance(TASK_ID_SAVE, R.string.backup_to_archive, msg, R.string.ok, 0, 0);
+			frag.show(getSupportFragmentManager(), null);
+
+		} else if (taskId == TASK_ID_OPEN) {
+			if (!success) {
+				String msg = getString(R.string.import_failed)
+						+ " " + getString(R.string.please_check_sd_readable)
+						+ "\n\n" + getString(R.string.if_the_problem_persists);
+
+				MessageDialogFragment frag = MessageDialogFragment.newInstance(0, R.string.import_from_archive, msg, R.string.ok, 0, 0);
+				frag.show(getSupportFragmentManager(), null);
+				// Just return; user may want to try again
+				return;
+			}
+			if (cancelled) {
+				// Just return; user may want to try again
+				return;
+			}
+
+			MessageDialogFragment frag = MessageDialogFragment.newInstance(TASK_ID_OPEN, R.string.import_from_archive, R.string.import_complete, R.string.ok, 0, 0);
+			frag.show(getSupportFragmentManager(), null);
+
 		}
 	}
 
 	@Override
 	public void onAllTasksFinished(SimpleTaskQueueProgressFragment fragment, int taskId, boolean success, boolean cancelled) {
 		// Nothing to do here; we really only care when backup tasks finish, and there's only ever one task
+	}
+
+	@Override
+	public void onMessageDialogResult(int dialogId, MessageDialogFragment dialog, int button) {
+		switch(dialogId) {
+		case 0:
+			// Do nothing.
+			// Our dialogs with ID 0 are only 'FYI' type; 
+			break;
+		case TASK_ID_OPEN:
+		case TASK_ID_SAVE:
+			finish();
+			break;
+		}
 	}
 
 }

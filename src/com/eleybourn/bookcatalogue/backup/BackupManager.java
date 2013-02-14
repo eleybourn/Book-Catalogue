@@ -130,10 +130,21 @@ public class BackupManager {
 					}
 				} catch (Exception e) {
 					Logger.logError(e);
+					if (tempFile.exists())
+						try {
+							tempFile.delete();
+						} catch (Exception e2) {
+							// Ignore
+						}
 					throw new RuntimeException("Error during backup", e);
 				} finally {
-					if (wrt != null)
-						wrt.close();
+					if (wrt != null) {
+						try {
+							wrt.close();
+						} catch (Exception e2) {
+							// Ignore
+						}
+					}
 				}
 			}
 

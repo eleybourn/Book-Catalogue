@@ -801,8 +801,11 @@ and you can edit the book via the options menu using the menu button or overflow
 <string name="show_all_summary_details">Show all summary details</string>
 
 <!-- Displayed when an archive operation fails -->
-<string name="backup_failed">Backup failed.</string>
+<string name="import_failed">Import failed.</string>
 <!-- Displayed when any write operation to the sd card fails -->
-<string name="please_check_sd_ok">Please check that the SD Card is writable, and has sufficient space.</string>
+<string name="please_check_sd_writable">Please check that the SD Card is writable, and has sufficient space.</string>
+<!-- Displayed when any write operation to the sd card fails -->
+<string name="please_check_sd_readable">Please check that the SD Card is accessible.</string>
+
 
 </resources>

@@ -46,6 +46,9 @@ public class BackupChooser extends FileChooser implements OnMessageDialogResultL
 	/** Used when saving state */
 	private final static String STATE_BACKUP_FILE = "BackupFileSpec";
 	
+	private static final int TASK_ID_SAVE = 1;
+	private static final int TASK_ID_OPEN = 2;
+
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
@@ -110,7 +113,7 @@ public class BackupChooser extends FileChooser implements OnMessageDialogResultL
 	 */
 	@Override
 	public void onOpen(File file) {
-		BackupManager.restoreCatalogue(this, file, 1);		
+		BackupManager.restoreCatalogue(this, file, TASK_ID_OPEN);		
 	}
 
 	/**
@@ -118,16 +121,16 @@ public class BackupChooser extends FileChooser implements OnMessageDialogResultL
 	 */
 	@Override
 	public void onSave(File file) {
-		mBackupFile = BackupManager.backupCatalogue(this, file, 1);
+		mBackupFile = BackupManager.backupCatalogue(this, file, TASK_ID_SAVE);
 	}
 
 	@Override
 	public void onTaskFinished(SimpleTaskQueueProgressFragment fragment, int taskId, boolean success, boolean cancelled, FragmentTask task) {
 		// Is it a task we care about?
-		if (taskId == 1) {
+		if (taskId == TASK_ID_SAVE) {
 			if (!success) {
 				String msg = getString(R.string.backup_failed)
-						+ " " + getString(R.string.please_check_sd_ok)
+						+ " " + getString(R.string.please_check_sd_writable)
 						+ "\n\n" + getString(R.string.if_the_problem_persists);
 
 				MessageDialogFragment frag = MessageDialogFragment.newInstance(0, R.string.backup_to_archive, msg, R.string.ok, 0, 0);
@@ -139,15 +142,30 @@ public class BackupChooser extends FileChooser implements OnMessageDialogResultL
 				// Just return; user may want to try again
 				return;
 			}
-			// If it was a backup, show a helpful message
-			if (mBackupFile != null && mBackupFile.exists()) {
-				String msg = getString(R.string.archive_complete_details, mBackupFile.getParent(), mBackupFile.getName(), Utils.formatFileSize(mBackupFile.length()));
-				MessageDialogFragment frag = MessageDialogFragment.newInstance(1, R.string.backup_to_archive, msg, R.string.ok, 0, 0);
+			// Show a helpful message
+			String msg = getString(R.string.archive_complete_details, mBackupFile.getParent(), mBackupFile.getName(), Utils.formatFileSize(mBackupFile.length()));
+			MessageDialogFragment frag = MessageDialogFragment.newInstance(TASK_ID_SAVE, R.string.backup_to_archive, msg, R.string.ok, 0, 0);
+			frag.show(getSupportFragmentManager(), null);
+
+		} else if (taskId == TASK_ID_OPEN) {
+			if (!success) {
+				String msg = getString(R.string.import_failed)
+						+ " " + getString(R.string.please_check_sd_readable)
+						+ "\n\n" + getString(R.string.if_the_problem_persists);
+
+				MessageDialogFragment frag = MessageDialogFragment.newInstance(0, R.string.import_from_archive, msg, R.string.ok, 0, 0);
 				frag.show(getSupportFragmentManager(), null);
-			} else {
-				// Was not a backup, but it's done, so exit
-				finish();				
+				// Just return; user may want to try again
+				return;
 			}
+			if (cancelled) {
+				// Just return; user may want to try again
+				return;
+			}
+
+			MessageDialogFragment frag = MessageDialogFragment.newInstance(TASK_ID_OPEN, R.string.import_from_archive, R.string.import_complete, R.string.ok, 0, 0);
+			frag.show(getSupportFragmentManager(), null);
+
 		}
 	}
 
@@ -163,7 +181,8 @@ public class BackupChooser extends FileChooser implements OnMessageDialogResultL
 			// Do nothing.
 			// Our dialogs with ID 0 are only 'FYI' type; 
 			break;
-		case 1:
+		case TASK_ID_OPEN:
+		case TASK_ID_SAVE:
 			finish();
 			break;
 		}

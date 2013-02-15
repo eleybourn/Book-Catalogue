@@ -54,6 +54,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -556,7 +557,7 @@ public class CatalogueDBAdapter {
 //						+ " LEFT OUTER JOIN " + DB_TB_SERIES + " s ON (s." + KEY_ROWID + "=w." + KEY_SERIES_ID + ") ";
 
 	//TODO: Update database version RELEASE: Update database version
-	public static final int DATABASE_VERSION = 79;
+	public static final int DATABASE_VERSION = 80;
 
 	private TableInfo mBooksInfo = null;
 
@@ -1568,6 +1569,11 @@ public class CatalogueDBAdapter {
 				message += "* French translation updates (Djiko)\n";
 				message += "* Better handling of the 'back' key when editing books (filipeximenes)\n";
 				message += "* Various bug fixes\n";
+			}
+			if (curVersion == 79) {
+				curVersion++;
+				// We want a rebuild in all lower case.
+				StartupActivity.scheduleFtsRebuild();
 			}
 			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			// vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
@@ -5509,8 +5515,10 @@ public class CatalogueDBAdapter {
 
 			// Set the parameters and call
 			bindStringOrNull(stmt, 1, authorText.toString());
-			bindStringOrNull(stmt, 2, book.getTitle() + "; " + titleText.toString() + seriesText.toString());
-			bindStringOrNull(stmt, 3, book.getDescription());
+			// Titles should only contain title, not SERIES
+			bindStringOrNull(stmt, 2, book.getTitle() + "; " + titleText.toString());
+			// We could add a 'series' column, or just add it as part of the desciption
+			bindStringOrNull(stmt, 3, book.getDescription() + seriesText.toString());
 			bindStringOrNull(stmt, 4, book.getNotes());
 			bindStringOrNull(stmt, 5, book.getPublisher());
 			bindStringOrNull(stmt, 6, book.getGenre());
@@ -5691,6 +5699,8 @@ public class CatalogueDBAdapter {
 	 * Utility function to bind a string or NULL value to a parameter since binding a NULL
 	 * in bindString produces an error.
 	 * 
+	 * NOTE: We specifically want to use the default locale for this.
+	 * 
 	 * @param stmt
 	 * @param position
 	 * @param s
@@ -5699,7 +5709,11 @@ public class CatalogueDBAdapter {
 		if (s == null) {
 			stmt.bindNull(position);
 		} else {
-			stmt.bindString(position, s);
+			//
+			// Because FTS does not understand locales in all android up to 4.2,
+			// we do case folding here using the default locale.
+			//
+			stmt.bindString(position, s.toLowerCase(Locale.getDefault()));
 		}
 	}
 

@@ -5812,5 +5812,17 @@ public class CatalogueDBAdapter {
 			c.close();
 		}
 	}
+	
+	/**
+	 * DEBUG ONLY; used when tracking a bug in android 2.1, but kept because
+	 * there are still non-fatal anomalies.
+	 */
+	public static int printReferenceCount(String msg) {
+		if (mDb != null) {
+			return SynchronizedDb.printRefCount(msg, mDb.getUnderlyingDatabase());
+		} else {
+			return 0;
+		}
+	}
 }
 

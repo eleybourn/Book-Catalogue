@@ -123,7 +123,13 @@ public class MainMenu extends BookCatalogueActivity {
 			grItem.setVisibility(View.GONE);
 		}
 
-		Utils.initBackground(R.drawable.bc_background_gradient, this, true);		
+		Utils.initBackground(R.drawable.bc_background_gradient, this, true);	
+
+		/**
+		 * RELEASE: DEBUG ONLY; used when tracking a bug in android 2.1, but kept because
+		 * there are still non-fatal anomalies.
+		 */
+		// CatalogueDBAdapter.printReferenceCount("MainMenu resumed");
 	}
 
 	/**

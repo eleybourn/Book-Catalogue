@@ -40,11 +40,10 @@
                 <Button
                     android:id="@+id/author"
                     style="@style/dataEntryButtonStyle"
-                    android:layout_below="@+id/heading"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentRight="true"
+                    android:layout_below="@+id/heading"
                     android:nextFocusDown="@+id/title" />
-
             </RelativeLayout>
 
             <RelativeLayout
@@ -66,6 +65,7 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/row_isbn"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
@@ -87,6 +87,7 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/row_series"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
@@ -99,14 +100,14 @@
                 <Button
                     android:id="@+id/series"
                     style="@style/dataEntryButtonStyle"
-                    android:layout_below="@+id/heading"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentRight="true"
-                    android:nextFocusDown="@+id/title" />
-
+                    android:layout_below="@+id/heading"
+                    android:nextFocusDown="@+id/publisher" />
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/row_publisher"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
@@ -126,6 +127,7 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/row_date_published"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
@@ -164,6 +166,7 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/row_pages"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
@@ -182,6 +185,7 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/row_list_price"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
@@ -200,6 +204,7 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/row_format"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
@@ -211,26 +216,27 @@
 
                 <ImageView
                     android:id="@+id/format_button"
-		            android:layout_height="48dp"
-		            android:layout_width="48dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignBottom="@+id/format"
                     android:layout_alignParentRight="true"
                     android:focusable="true"
                     android:paddingLeft="@dimen/padding_border"
-                    android:layout_alignBottom="@+id/format"
                     android:src="@drawable/expander_ic_maximized" />
 
                 <AutoCompleteTextView
                     android:id="@+id/format"
                     style="@style/editorFieldTextStyle"
                     android:layout_below="@+id/heading"
+                    android:layout_centerVertical="true"
                     android:layout_toLeftOf="@id/format_button"
                     android:completionThreshold="2"
                     android:nextFocusDown="@+id/genre"
-                    android:layout_centerVertical="true"
                     android:singleLine="true" />
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/row_genre"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
@@ -245,7 +251,7 @@
                     style="@style/editorFieldTextStyle"
                     android:layout_below="@+id/heading"
                     android:completionThreshold="2"
-                    android:nextFocusDown="@+id/description" />
+                    android:nextFocusDown="@+id/anthology" />
             </RelativeLayout>
 
             <CheckBox

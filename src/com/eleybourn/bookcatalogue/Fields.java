@@ -480,7 +480,7 @@ public class Fields extends ArrayList<Fields.Field> {
 			if (s != null) {
 				try {
 					s = field.format(s);
-					v.setChecked(Utils.stringToBoolean(s));
+					v.setChecked(Utils.stringToBoolean(s, true));
 				} catch (Exception e) {
 					v.setChecked(false);
 				}
@@ -842,6 +842,11 @@ public class Fields extends ArrayList<Fields.Field> {
 					view.setVisibility(View.GONE);
 				}
 			}
+		}
+
+		public Field setFormatter(FieldFormatter formatter) {
+			this.formatter = formatter;
+			return this;
 		}
 
 		/**

@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.eleybourn.bookcatalogue.Fields.Field;
+import com.eleybourn.bookcatalogue.Fields.FieldFormatter;
 import com.eleybourn.bookcatalogue.booklist.FlattenedBooklist;
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.utils.HintManager;
@@ -51,6 +52,9 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 		if (savedInstanceState == null) {
 			HintManager.displayHint(getActivity(), R.string.hint_view_only_help, null);
 		}
+
+		// Just format a binary value as yes/no/blank
+		mFields.getField(R.id.signed).formatter = new BinaryYesNoEmptyFormatter();
 	}
 	
 	/**
@@ -87,9 +91,12 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 			showSignedStatus(book);
 			formatFormatSection(book);
 			formatPublishingSection(book);
-			
-			// Restore defaut visibilty and hide unused/unwanted fields
-			showHideFields();
+
+			// Restore default visibility and hide unused/unwanted and empty fields
+			showHideFields(true);
+
+			// Hide the fields that we never use...
+			getView().findViewById(R.id.anthology).setVisibility(View.GONE);
 
 		} catch (Exception e) {
 			Logger.logError(e);
@@ -289,92 +296,6 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 	}
 	
 	/**
-	 * Hides unused fields if they have not any useful data. Checks all text fields
-	 * except of author, series and loaned. 
-	 */
-	private void showHideFields() {
-		// Restore the default based on user preferences.
-		mFields.resetVisibility();
-	
-		// Check publishing information
-		showHideFieldIfEmpty(R.id.publishing_details, R.id.lbl_publishing);
-
-//		if (showHideFieldIfEmpty(R.id.publisher) == View.GONE && showHideFieldIfEmpty(R.id.date_published) == View.GONE) {
-//			getView().findViewById(R.id.lbl_publishing).setVisibility(View.GONE);
-//		}
-
-		boolean hasImage = getView().findViewById(R.id.row_img).getVisibility() != View.GONE;
-		if (!hasImage) {
-			getView().findViewById(R.id.image_wrapper).setVisibility(View.GONE);						
-		}
-
-		// Check format information
-		boolean hasPages = (showHideFieldIfEmpty(R.id.pages) == View.VISIBLE);
-		if (!hasPages) {
-			getView().findViewById(R.id.pages).setVisibility(View.GONE);			
-		}
-		showHideFieldIfEmpty(R.id.format);
-
-		// Check genre
-		showHideFieldIfEmpty(R.id.genre, R.id.lbl_genre);
-
-		// Check ISBN
-		showHideFieldIfEmpty(R.id.isbn, R.id.row_isbn);
-
-		// Check list price
-		showHideFieldIfEmpty(R.id.list_price, R.id.row_list_price);
-
-		// Check description
-		showHideFieldIfEmpty(R.id.description, R.id.descriptionLabel, R.id.description_divider);
-
-		// **** MY COMMENTS SECTION ****
-		// Check notes
-		showHideFieldIfEmpty(R.id.notes, R.id.lbl_notes);
-
-		// Check date start reading
-		showHideFieldIfEmpty(R.id.read_start, R.id.row_read_start);
-
-		// Check date end reading
-		showHideFieldIfEmpty(R.id.read_end, R.id.row_read_end);
-
-		// Check location
-		showHideFieldIfEmpty(R.id.location, R.id.row_location);
-
-		// Hide the fields that we never use...
-		getView().findViewById(R.id.anthology).setVisibility(View.GONE);
-	}
-	
-	/**
-	 * Show or Hide text field if it has not any useful data.
-	 * Don't show a field if it is already hidden (assumed by user preference)
-	 *
-	 * @param resId layout resource id of the field
-	 * @param relatedFields list of fields whose visibility will also be set based on the first field
-	 *
-	 * @return The resulting visibility setting value (VISIBLE or GONE)
-	 */
-	private int showHideFieldIfEmpty(int resId, int...relatedFields) {
-		// Get the base view
-		final View v = getView().findViewById(resId);
-		if (v.getVisibility() != View.GONE) {
-			// Determine if we should hide it
-			String value = (String) mFields.getField(resId).getValue();
-			boolean isExist = value != null && !value.equals("");
-			int visibility = isExist ? View.VISIBLE : View.GONE;
-			v.setVisibility(visibility);
-			// Set the related views
-			for(int i: relatedFields) {
-				View rv = getView().findViewById(i);
-				if (rv != null)
-					rv.setVisibility(visibility);
-			}
-			return visibility;
-		} else {
-			return View.GONE;
-		}
-	}
-	
-	/**
 	 * Updates all fields of book from database.
 	 */
 	private void updateFields(BookData book){
@@ -405,4 +326,37 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 		}
 		super.onResume();
 	}
+	
+	/**
+	 * Formatter for date fields. On failure just return the raw string.
+	 * 
+	 * @author Philip Warner
+	 *
+	 */
+	static private class BinaryYesNoEmptyFormatter implements FieldFormatter {
+
+		/**
+		 * Display as a human-friendly date
+		 */
+		public String format(Field f, String source) {
+			try {
+				boolean val = Utils.stringToBoolean(source, false);
+				return BookCatalogueApp.getResourceString( val ? R.string.yes : R.string.no);				
+			} catch (Exception e) {
+				return source;
+			}
+		}
+
+		/**
+		 * Extract as an SQL date.
+		 */
+		public String extract(Field f, String source) {
+			try {
+				return Utils.stringToBoolean(source, false) ? "1" : "0";				
+			} catch (Exception e) {
+				return source;
+			}
+		}
+	}
+
 }

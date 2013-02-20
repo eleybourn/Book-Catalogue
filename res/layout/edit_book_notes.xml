@@ -64,6 +64,7 @@
                 android:background="@drawable/grey_list_divider" />
 
             <RelativeLayout
+                android:id="@+id/row_read_start"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
@@ -94,6 +95,7 @@
                 android:background="@drawable/grey_list_divider" />
             
             <RelativeLayout
+                android:id="@+id/row_read_end"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >

@@ -293,6 +293,9 @@ public class BookEditFields extends BookDetailsAbstract
 		populateAuthorListField();
 		populateSeriesListField();
 
+		// Restore default visibility and hide unused/unwanted and empty fields
+		showHideFields(false);
+
 		System.out.println("BEF popF: " + (System.currentTimeMillis() - t0));
 	}
 	

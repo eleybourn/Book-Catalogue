@@ -20,6 +20,7 @@
 
 package com.eleybourn.bookcatalogue.database;
 
+import java.lang.reflect.Field;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.concurrent.locks.Condition;
@@ -27,6 +28,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteClosable;
 import android.database.sqlite.SQLiteCursor;
 import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
@@ -679,6 +681,45 @@ public class DbSync {
 		 */
 		public Synchronizer getSynchronizer() {
 			return mSync;
+		}
+
+		/**
+		 * Utility routine, purely for debugging ref count issues (mainly Android 2.1)
+		 * 
+		 * @param msg	Message to display (relating to context)
+		 * @param db	Database object
+		 * 
+		 * @return		Number of current references
+		 */
+		public static int printRefCount(String msg, SQLiteDatabase db) {
+			System.gc();
+			Field f;
+			try {
+				f = SQLiteClosable.class.getDeclaredField("mReferenceCount");
+				f.setAccessible(true);
+				int refs = (Integer) f.get(db); //IllegalAccessException
+				if (msg != null) {
+					System.out.println("DBRefs (" + msg + "): " + refs);
+					//if (refs < 100) {
+					//	System.out.println("DBRefs (" + msg + "): " + refs + " <-- TOO LOW (< 100)!");					
+					//} else if (refs < 1001) {
+					//	System.out.println("DBRefs (" + msg + "): " + refs + " <-- TOO LOW (< 1000)!");					
+					//} else {
+					//	System.out.println("DBRefs (" + msg + "): " + refs);
+					//}					
+				}
+				return refs;
+			} catch (NoSuchFieldException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return 0;			
 		}
 	}
 	

@@ -23,8 +23,6 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * @author n.silin
  */
 public class BookDetailsReadOnly extends BookDetailsAbstract {
-	private FlattenedBooklist mList = null;
-	//private GestureDetector mGestureDetector;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -55,20 +53,6 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 		}
 	}
 	
-	@Override
-	/**
-	 * Close the list object (frees statments) and if we are finishing, delete the temp table
-	 */
-	public void onPause() {
-		if (mList != null) {
-			mList.close();
-			if (this.isRemoving()) {
-				mList.deleteData();
-			}
-		}
-		super.onPause();
-	}
-
 	/**
 	 * This is a straight passthrough
 	 */

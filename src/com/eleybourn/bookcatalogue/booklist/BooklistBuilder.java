@@ -102,6 +102,7 @@ import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_SERIE
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Locale;
 import java.util.Map.Entry;
 
 import android.database.Cursor;
@@ -575,6 +576,15 @@ public class BooklistBuilder {
 		try {
 			long t0 = System.currentTimeMillis();
 	
+			// Cleanup searchText
+			//
+			// Because FTS does not understand locales in all android up to 4.2,
+			// we do case folding here using the default locale.
+			//
+			if (searchText != null) {
+				searchText = searchText.toLowerCase(Locale.getDefault());
+			}
+			
 			// Rebuild the main table definition
 			mListTable = TBL_BOOK_LIST_DEFN.clone();
 			mListTable.setName(mListTable.getName() + "_" + getId());

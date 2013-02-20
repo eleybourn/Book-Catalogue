@@ -127,9 +127,9 @@
         </activity>
         <activity
             android:name=".goodreads.GoodreadsRegister"
-            android:launchMode="singleInstance" android:label="@string/goodreads" android:theme="@style/Theme.Sherlock">
+            android:launchMode="standard" android:label="@string/goodreads" android:theme="@style/Theme.Sherlock">
         </activity>
-        <activity android:name=".goodreads.GoodreadsAuthorizationActivity" android:theme="@style/Theme.Sherlock">
+        <activity android:name=".goodreads.GoodreadsAuthorizationActivity" android:theme="@style/Theme.Sherlock" android:launchMode="singleInstance" >
 
             <!-- RELEASE: Work out which of these filters we dont need! -->
             <intent-filter>

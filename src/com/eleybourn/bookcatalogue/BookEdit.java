@@ -375,6 +375,24 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 	}
 
 	@Override
+	/**
+	 * Close the list object (frees statements) and if we are finishing, delete the temp table.
+	 * 
+	 * This is an ESSENTIAL step; for some reason, in Android 2.1 if these statements are not
+	 * cleaned up, then the underlying SQLiteDatabase gets double-dereferenced, resulting in
+	 * the database being closed by the deeply dodgy auto-close code in Android.
+	 */
+	public void onPause() {
+		if (mList != null) {
+			mList.close();
+			if (this.isFinishing()) {
+				mList.deleteData();
+			}
+		}
+		super.onPause();
+	}
+
+	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		Tracker.enterOnSaveInstanceState(this);
 		super.onSaveInstanceState(outState);

@@ -46,6 +46,11 @@ import com.eleybourn.bookcatalogue.database.CoversDbHelper;
  * 3 classes: SimpleTaskQueueBase, SimpleTaskQueueFIFO and SimpleTaskQueueLIFO. For now, this is
  * not needed.
  * 
+ * TODO: Consider adding an 'AbortListener' interface so tasks can be told when queue is aborted
+ * TODO: Consider adding an 'aborted' flag to onFinish() and always calling onFinish() when queue is killed
+ * 
+ * NOTE: Tasks can call context.isTerminating() if necessary
+ * 
  * @author Philip Warner
  */
 public class SimpleTaskQueue {
@@ -143,18 +148,29 @@ public class SimpleTaskQueue {
 	}
 
 	/**
+	 * Accessor
+	 * 
+	 * @return	Flag indicating queue is terminating (finish() was called)
+	 */
+	public boolean isTerminating() {
+		return mTerminate;
+	}
+
+	/**
 	 * Class to wrap a simpleTask with more info needed by the queue.
 	 * 
 	 * @author Philip Warner
 	 */
 	private static class SimpleTaskWrapper implements SimpleTaskContext {
 		private static Long mCounter = 0L;
+		private final SimpleTaskQueue mOwner;
 		public SimpleTask task;
 		public Exception exception;
 		public boolean finishRequested = true;
 		public long id;
 		public SimpleTaskQueueThread activeThread = null;
-		SimpleTaskWrapper(SimpleTask task) {
+		SimpleTaskWrapper(SimpleTaskQueue owner, SimpleTask task) {
+			mOwner = owner;
 			this.task = task;
 			synchronized(mCounter) {
 				this.id = ++mCounter;
@@ -188,6 +204,10 @@ public class SimpleTaskQueue {
 		@Override
 		public boolean getRequiresFinish() {
 			return finishRequested;
+		}
+		@Override
+		public boolean isTerminating() {
+			return mOwner.isTerminating();
 		}
 	}
 
@@ -244,7 +264,7 @@ public class SimpleTaskQueue {
 	 * @param task		Task to run.
 	 */
 	public long enqueue(SimpleTask task) {
-		SimpleTaskWrapper wrapper = new SimpleTaskWrapper(task);
+		SimpleTaskWrapper wrapper = new SimpleTaskWrapper(this, task);
 
 		try {
 			synchronized(this) {
@@ -437,6 +457,8 @@ public class SimpleTaskQueue {
 		public void setRequiresFinish(boolean requiresFinish);
 		/** Accessor */
 		public boolean getRequiresFinish();
+		/** Accessor */
+		public boolean isTerminating();
 	}
 
 	/**

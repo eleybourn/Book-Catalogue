@@ -435,6 +435,15 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 			System.out.println("Total: " + (t6-t0));
 			// Save a flag to say list was loaded at least once successfully
 			mListHasBeenLoaded = true;
+			
+			if (taskContext.isTerminating()) {
+				// onFinish() will not be called, and we can discard our work...
+				if (mTempList != null && mTempList != mList) {
+					if (mTempList.getBuilder() != mList.getBuilder())
+						mTempList.getBuilder().close();					
+					mTempList.close();
+				}
+			}
 		}
 
 		@Override

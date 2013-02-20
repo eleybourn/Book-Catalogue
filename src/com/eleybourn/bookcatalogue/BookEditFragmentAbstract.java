@@ -323,7 +323,7 @@ public abstract class BookEditFragmentAbstract extends BookCatalogueFragment imp
 
 		// **** MY COMMENTS SECTION ****
 		// Check notes
-		showHideField(hideIfEmpty, R.id.notes, R.id.lbl_notes);
+		showHideField(hideIfEmpty, R.id.notes, R.id.lbl_notes, R.id.row_notes);
 
 		// Check date start reading
 		showHideField(hideIfEmpty, R.id.read_start, R.id.row_read_start);
@@ -332,7 +332,7 @@ public abstract class BookEditFragmentAbstract extends BookCatalogueFragment imp
 		showHideField(hideIfEmpty, R.id.read_end, R.id.row_read_end);
 
 		// Check location
-		showHideField(hideIfEmpty, R.id.location, R.id.row_location);
+		showHideField(hideIfEmpty, R.id.location, R.id.row_location, R.id.row_location);
 
 		// Check signed flag
 		showHideField(hideIfEmpty, R.id.signed, R.id.row_signed);

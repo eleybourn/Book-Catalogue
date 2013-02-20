@@ -34,11 +34,21 @@
 			android:layout_toLeftOf="@+id/bookshelf_down"        -->
 
         <TextView
-            android:id="@+id/bookshelf_count"
+            android:id="@+id/search_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@id/bookshelf_name"
+            android:paddingLeft="@dimen/padding_border"
+            android:visibility="gone"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/bookshelf_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/search_text"
             android:paddingLeft="@dimen/padding_border"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 

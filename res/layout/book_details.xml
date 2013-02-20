@@ -304,6 +304,7 @@
                     android:id="@+id/signed"
                     style="@style/bookDetailsTextStyle"
                     android:text="@string/no" />
+
             </LinearLayout>
 
             <!-- Start and end of reading -->

@@ -56,7 +56,7 @@ public class BooleanValidator extends DefaultFieldValidator {
 				v = (((Integer)o) != 0);
 			} else {
 				String s = o.toString();
-				v = Utils.stringToBoolean(s);
+				v = Utils.stringToBoolean(s, true);
 			}
 			data.putBoolean(datum, v);
 			return;

@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.eleybourn.bookcatalogue.Fields.Field;
+import com.eleybourn.bookcatalogue.Fields.FieldFormatter;
 import com.eleybourn.bookcatalogue.booklist.FlattenedBooklist;
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.utils.HintManager;
@@ -51,6 +52,9 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 		if (savedInstanceState == null) {
 			HintManager.displayHint(getActivity(), R.string.hint_view_only_help, null);
 		}
+
+		// Just format a binary value as yes/no/blank
+		mFields.getField(R.id.signed).formatter = new BinaryYesNoEmptyFormatter();
 	}
 	
 	/**
@@ -322,4 +326,37 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 		}
 		super.onResume();
 	}
+	
+	/**
+	 * Formatter for date fields. On failure just return the raw string.
+	 * 
+	 * @author Philip Warner
+	 *
+	 */
+	static private class BinaryYesNoEmptyFormatter implements FieldFormatter {
+
+		/**
+		 * Display as a human-friendly date
+		 */
+		public String format(Field f, String source) {
+			try {
+				boolean val = Utils.stringToBoolean(source, false);
+				return BookCatalogueApp.getResourceString( val ? R.string.yes : R.string.no);				
+			} catch (Exception e) {
+				return source;
+			}
+		}
+
+		/**
+		 * Extract as an SQL date.
+		 */
+		public String extract(Field f, String source) {
+			try {
+				return Utils.stringToBoolean(source, false) ? "1" : "0";				
+			} catch (Exception e) {
+				return source;
+			}
+		}
+	}
+
 }

@@ -198,7 +198,15 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 			if (mSearchText == null || mSearchText.equals(".")) {
 				mSearchText = "";
 			}
-	
+
+			TextView searchTextView = (TextView) findViewById(R.id.search_text);
+			if (mSearchText.equals("")) {
+				searchTextView.setVisibility(View.GONE);
+			} else {
+				searchTextView.setVisibility(View.VISIBLE);
+				searchTextView.setText(getString(R.string.search) + ": " + mSearchText);
+			}
+
 			// We want context menus to be available
 			registerForContextMenu(getListView());
 	

@@ -40,6 +40,7 @@ import android.database.sqlite.SQLiteStatement;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer.LockTypes;
 import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer.SyncLock;
+import com.eleybourn.bookcatalogue.utils.Logger;
 
 /**
  * Classes used to help synchronize database access across threads.
@@ -735,9 +736,14 @@ public class DbSync {
 		final SQLiteStatement mStatement;
 		/** Indicates this is a 'read-only' statement */
 		final boolean mIsReadOnly;
+		/** Indicates close() has been called */
+		private boolean mIsClosed = false;
+		/** Copy of SQL used for debugging */
+		private final String mSql;
 
 		private SynchronizedStatement (final SynchronizedDb db, final String sql) {
 			mSync = db.getSynchronizer();
+			mSql = sql;
 			if (sql.trim().toLowerCase().startsWith("select"))
 				mIsReadOnly = true;
 			else
@@ -785,6 +791,7 @@ public class DbSync {
 		 * Wrapper for underlying method on SQLiteStatement.
 		 */
 		public void close() {
+			mIsClosed = true;
 			mStatement.close();
 		}
 
@@ -836,6 +843,17 @@ public class DbSync {
 				return mStatement.executeInsert();				
 			} finally {
 				l.unlock();
+			}
+		}
+		
+		public void finalize() {
+			if (!mIsClosed)
+				Logger.logError(new RuntimeException("Finalizing non-closed statement")); // + mSql));
+			// Try to close the underlying statement.
+			try {
+				mStatement.close();
+			} catch (Exception e) {
+				// Ignore; may have been finalized
 			}
 		}
 	}

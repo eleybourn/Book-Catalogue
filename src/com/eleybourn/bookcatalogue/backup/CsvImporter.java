@@ -267,7 +267,6 @@ public class CsvImporter {
 								if (hasNumericId && db.checkBookExists(idLong))
 									idLong = 0L;
 							}
-
 						} else {
 							exists = db.checkBookExists(idLong);							
 						}
@@ -285,6 +284,8 @@ public class CsvImporter {
 						if (coverFinder != null) {
 							coverFinder.copyOrRenameCoverFile(uuidVal, idFromFile, idLong);
 						}
+						// Save the real ID to the collection (will/may be used later)
+						values.putString(CatalogueDBAdapter.KEY_ROWID, idLong.toString());
 					}
 				} catch (Exception e) {
 					Logger.logError(e, "Import at row " + row);

@@ -1957,13 +1957,18 @@ public class Utils {
 	 * Utility function to convert string to boolean
 	 * 
 	 * @param s		String to convert
+	 * @param emptyIsFalse TODO
 	 * 
 	 * @return		Boolean value
 	 */
-	public static boolean stringToBoolean(String s) {
+	public static boolean stringToBoolean(String s, boolean emptyIsFalse) {
 		boolean v;
-		if (s == null)
-			v = false;
+		if (s == null || s.equals(""))
+			if (emptyIsFalse) {
+				v = false;
+			} else {
+				throw new RuntimeException("Not a valid boolean value");						
+			}
 		else if (s.equals("1"))
 			v = true;
 		else if (s.equals("0"))
@@ -1972,11 +1977,19 @@ public class Utils {
 			s = s.trim().toLowerCase();
 			if (s.equals("t"))
 				v = true;
-			else if (s.equals("f") || s.equals(""))
+			else if (s.equals("f"))
 				v = false;
 			else if (s.equals("true"))
 				v = true;
 			else if (s.equals("false"))
+				v = false;
+			else if (s.equals("y"))
+				v = true;
+			else if (s.equals("n"))
+				v = false;
+			else if (s.equals("yes"))
+				v = true;
+			else if (s.equals("no"))
 				v = false;
 			else {
 				try {
@@ -2000,7 +2013,7 @@ public class Utils {
 		try {
 			return (Boolean)o;
 		} catch (ClassCastException e) {
-			return stringToBoolean(o.toString());
+			return stringToBoolean(o.toString(), true);
 		}
 	}
 }

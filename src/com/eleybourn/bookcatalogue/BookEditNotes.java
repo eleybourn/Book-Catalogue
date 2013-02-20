@@ -233,6 +233,8 @@ public class BookEditNotes extends BookEditFragmentAbstract implements OnPartial
 		if (!setAllDone)
 			mFields.setAll(book);
 		// No special handling required; the setAll() done by the caller is enough
+		// Restore default visibility and hide unused/unwanted and empty fields
+		showHideFields(false);
 	}
 
 }

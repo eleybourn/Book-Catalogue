@@ -135,7 +135,7 @@ public class BookshelfDialogFragment extends BookCatalogueDialogFragment {
     	}
 
     	// Setp the dialog
-		getDialog().setTitle(R.string.bookshelf_title);
+		getDialog().setTitle(R.string.select_bookshelves);
 
 		// Build a list of shelves
 		CatalogueDBAdapter db = new CatalogueDBAdapter(getActivity());

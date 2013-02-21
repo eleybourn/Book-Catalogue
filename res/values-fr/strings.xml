@@ -6,7 +6,7 @@
 	<string name="title">Titre</string>
 	<string name="publisher">Éditeur</string>
 	<string name="date_published">Date de publication</string>
-	<string name="rating">Note</string>
+	<string name="rating">Appreciation</string>
 	<string name="bookshelf">Bibliothèque</string>
 	<string name="read">Avez vous lu ce livre ?</string>
 	<string name="series">Série</string>
@@ -132,8 +132,8 @@
 	<string name="searching_amazon_books">Recherche en cours sur Amazon</string>
 	<string name="searching_google_books">Recherche en cours sur Google Books</string>
 	<string name="searching_library_thing">Recherche en cours sur LibraryThing</string>
-	<string name="bookshelf_title">Sélectionnez des bibliothèques pour ce livre</string>
-	<string name="bookshelves">Sélectionnez des bibliothèques</string>
+	<string name="bookshelf_title">Sélectionnez des bibliothèques</string>
+	<string name="bookshelves">Bibliothèques</string>
 	<string name="format">Format</string>
 	<string name="format1">Livre de poche</string>
 	<string name="format2">Couverture cartonnée</string>

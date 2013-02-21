@@ -55,7 +55,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:text="@string/notes"
+                    android:text="@string/edit_book_notes"
                     android:textAppearance="?android:attr/textAppearanceSmall" />
 
                 <EditText

@@ -757,4 +757,16 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
     ]]></string>
 
 <string name="copy_database">Datenbank kopieren (für technischen Support)</string>
+
+<!-- Items in list of options for the 'Summary Details' preference. Detrmines what is show in book list header -->
+<string name="show_book_count">Anzahl der Bücher anzeigen</string>
+<string name="show_first_level_and_book_count">Titel und Anzahl der Bücher anzeigen</string>
+<string name="show_all_summary_details">Alle Details der Zusammenfassung anzeigen</string>
+
+<!-- Displayed when an archive operation fails -->
+<string name="import_failed">Import gescheitert.</string>
+<!-- Displayed when any write operation to the sd card fails -->
+<string name="please_check_sd_writable">Bitte überprüfen Sie, ob die SD-Karte beschreibbar ist und genügend freien Platz aufweist.</string>
+<!-- Displayed when any write operation to the sd card fails -->
+<string name="please_check_sd_readable">Bitte überprüfen Sie, ob auf die SD-Karte zugegriffen werden kann.</string>
 </resources>

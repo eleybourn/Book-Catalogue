@@ -1,658 +1,772 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="menu_insert">Ajouter un livre</string>
-	<string name="menu_delete">Supprimer un livre</string>
-	<string name="author">Auteur</string>
-	<string name="title">Titre</string>
-	<string name="publisher">Éditeur</string>
-	<string name="date_published">Date de publication</string>
-	<string name="rating">Note</string>
-	<string name="bookshelf">Bibliothèque</string>
-	<string name="read">Avez vous lu ce livre ?</string>
-	<string name="series">Série</string>
-	<string name="pages">Pages</string>
-	<string name="confirm_add">Ajouter le livre ?</string>
-	<string name="confirm_update">Mettre à jour</string>
-	<string name="nobooks">Il n\'y a pas de livre dans cette biblothèque. Merci d\'en ajouter par le menu en bas de cet écran.</string>
-	<string name="menu_sort_by_author_expanded">Tout étendre</string>
-	<string name="menu_sort_by">Trier par</string>
-	<string name="menu_sort_by_author_collapsed">Tout réduire</string>
-	<string name="sort_title">Book Catalogue : par titre</string>
-	<string name="edit_title">Book Catalogue : Éditer le livre</string>
-	<string name="menu_insert_isbn">Ajouter par ISBN</string>
-	<string name="menu_insert_barcode">Ajouter par code barre</string>
-	<string name="search">Recherche</string>
-	<string name="cancel">Annuler</string>
-	<string name="confirm_save">Sauvegarder le livre</string>
-	<string name="nobookshelves">Vous n\'avez pas encore créé de bibliothèque. Merci d\'en ajouter une par le menu en bas de cet écran.</string>
-	<string name="menu_insert_bs">Créer une bibliothèque</string>
-	<string name="confirm_add_bs">Ajouter une bibliothèque</string>
-	<string name="menu_bookshelf">Gérer les bibliothèques</string>
-	<string name="confirm_save_bs">Sauvegarder la bibliothèque</string>
-	<string name="menu_delete_bs">Supprimer la bibliothèque</string>
-	<string name="delete_1st_bs">Impossible de supprimer la première bibliothèque</string>
-	<string name="bookshelf_label">Bibliothèque : </string>
-	<string name="all_books">Tous les livres</string>
-	<string name="isbn_found">ISBN scanné. Recherche en cours.</string>
-	<string name="title_isbn_search">Book Catalogue : recherche ISBN</string>
-	<string name="title_manage_bs">Book Catalogue : gérer les biblothèques</string>
-	<string name="title_edit_bs">Book Catalogue : éditer la bibliothèque</string>
-	<string name="book_exists">Le livre que vous tentez d\'ajouter existe déjà.</string>
-	<string name="search_label">Rechercher des livres</string>
-	<string name="search_hint">Rechercher un auteur ou un titre</string>
-	<string name="book_not_found">Le livre n\'a pas été trouvé. Il est parfois possible de trouver le code barre à l\'intérieur de la première page de couverture. Sinon merci d\'entrer les détails manuellement.</string>
-	<string name="unable_to_connect_google">Connection à Google Books impossible</string>
-	<string name="export_data">Exporter les livres</string>
-	<string name="export_complete">Export vers la carte SD terminé.</string>
-	<string name="import_data">Importer les livres</string>
-	<string name="import_alert">Attention ! L\'import de données peut provoquer la mise à jour de livres avec de nouvelles informations si les identifiants importés sont les mêmes que des identifiants existants. Cela est généralement correct si vous n\'avez modifié qu\'un champ dans un fichier exporté. Si vous avez intégralement créé un livre, assurez vous que le champ identifiant est vide.</string>
-	<string name="export_failed">ERREUR : l\'export vers la carte SD a échoué. </string>
-	<string name="import_failed">ERREUR: l\'import depuis la carte SD a échoué. Le fichier se trouve-t-il au bon endroit ?</string>
-	<string name="search_title">Book Catalogue : Résultats de recherche</string>
-	<string name="results_found">Des résultats ont été trouvés.</string>
-	<string name="administration_label">Administration</string>
-	<string name="administration_title">Book Catalogue : Administration</string>
-	<string name="menu_administration">Admin</string>
-	<string name="install_scan">Pour scanner vos livres en utilisant le code barre ISBN, vous pouvez installer le scanner de codes barre zxing. Appuyez sur OK pour installer, ou sur Annuler pour passer cette étape.</string>
-	<string name="install_scan_title">Installer le scanner de code barre</string>
-	<string name="version_number">Numéro de version:</string>
-	<string name="donate">Si vous souhaitez supporter le développement de cette application, les donations sont possibles par Amazon Wishlist ou par le bouton Paypal ci-dessous. Je suis en Australie, ce qui rend impossible la publication d\'une version payante :-) .</string>
-	<string name="unable_to_connect_amazon">Connexion à Amazon impossible</string>
-	<string name="upgrade_title">Depuis votre dernière mise à jour</string>
-	<string name="edit_book">Éditer le livre</string>
-	<string name="edit_book_notes">Votre commentaire</string>
-	<string name="edit_book_friends">Prêter le livre</string>
-	<string name="unknown_error">Une erreur inconnue s\'est produite</string>
-	<string name="notes">Notes</string>
-	<string name="loaned_to">Ce livre a été prêté à :</string>
-	<string name="nobody">Personne</string>
-	<string name="loan_to">Prêter le livre à :</string>
-	<string name="returned">Rendu</string>
-	<string name="name">Nom</string>
-	<string name="webpage_label">Site web:</string>
-	<string name="sourcecode_label">Code source:</string>
-	<string name="donate_label">Don</string>
-	<string name="about_label">À propos de cette application</string>
-	<string name="administration_functions_label">Fonctions</string>
-	<string name="sortby_popup_title">Trier par</string>
-	<string name="sortby_author">Trier par auteurs</string>
-	<string name="sortby_title">Trier par titres</string>
-	<string name="sortby_series">Trier par séries</string>
-	<string name="sortby_loan">Trier par prêts</string>
-	<string name="sortby_unread">Trier par statut de lecture</string>
-	<string name="sortby_genre">Trier par genre</string>
-	<string name="list_price">Liste de prix</string>
-	<string name="date_started_reading">Date de début de lecture</string>
-	<string name="date_finished_reading">Date de fin de lecture</string>
-	<string name="update_fields">Mettre les champs à jour automatiquement</string>
-	<string name="select_fields_to_update">Sélectionner les champs à mettre à jour</string>
-	<string name="select_fields_to_update_help">Les champs sélectionnés vont être mis à jour à partir d\'Internet. Les champs non sélectionnés ne seront pas modifiés.</string>
-	<string name="overwrite_thumbnail">Les champs sélectionnés vont être mis à jour tels que montré; en option, les vignettes peuvent être téléchargées pour TOUS les livres.\n\nVoulez vous remplacer toutes les vignettes existantes ? Attention, cela peut prendre du temps.</string>
-	<string name="yes">Oui</string>
-	<string name="no">Non</string>
-	<string name="ok">OK</string>
-	<string name="download_thumbs">Les vignettes sont en cours de téléchargement en arrière plan.</string>
-	<string name="search_fail">La recherche du livre a échoué. Merci de vérifier vos réglages réseau.</string>
-	<string name="search_exception">Recherche en échec pendant %1$s: %2$s</string>
-	<string name="hello">Book Catalogue !</string>
-	<string name="menu_delete_thumb">Supprimer la vignette</string>
-	<string name="help">Aide</string>
-	<string name="filler_help_text">Une aide en ligne complète sera bientôt disponible. </string>
-	<string name="menu_manage_fields">Gérer la visibilité des champs</string>
-	<string name="manage_fields_help">Les champs sélectionnés sont visibles dans les écrans d\'ajout et d\'édition des livres. Les champs non sélectionnés sont cachés.</string>
-	<string name="edit_book_anthology">Titres de l\'anthologie</string>
-	<string name="amazon_wishlist">Idées cadeaux Amazon</string>
-	<string name="same_author">Toutes les histoires de cette anthologie sont écrites par le même auteur.</string>
-	<string name="menu_delete_anthology">Supprimer ce titre de l\'anthologie</string>
-	<string name="is_anthology">Ce livre est-il une anthologie ?</string>
-	<string name="populate_anthology_titles">Renseigner les titres automatiquement (EXPÉRIMENTAL)</string>
-	<string name="automatic_population_failed">La recherche automatique des titres a échoué.</string>
-	<string name="anthology">Anthologie</string>
-	<string name="anthology_confirm">Merci de confirmer que les titres de cette anthologie sont corrects.</string>
-	<string name="anthology_save">Sauvegarder</string>
-	<string name="anthology_add">Ajouter</string>
-	<string name="menu_add_thumb_photo">À partir de l\'appareil photo&#8230;</string>
-	<string name="thumbnail">Vignette de couverture</string>
-	<string name="menu_rotate_thumb">Faire tourner la vignette&#8230;</string>
-	<string name="menu_rotate_thumb_cw">Faire tourner dans le sens des aiguilles d\'une montre</string>
-	<string name="menu_rotate_thumb_ccw">Faire tourner dans le sens contraire des aiguilles d\'une montre</string>
-	<string name="menu_rotate_thumb_180">Faire tourner à 180°</string>
-	<string name="menu_zoom_thumb">Zoomer sur la vignette</string>
-	<string name="help_title_nutshell">En résumé</string>
-	<string name="signed">Ce livre est il dédicacé ?</string>
-	<string name="read_start">Date de début de lecture</string>
-	<string name="read_end">Date de fin de lecture</string>
-	<string name="location">Emplacement du livre</string>
-	<string name="duplicate_title">Livre en double</string>
-	<string name="duplicate_book_title">Livre en double</string>
-	<string name="duplicate_book_message">Le livre que vous tentez d\'ajouter existe déjà dans la base de donnnées. Êtes vous certain de vouloir en ajouter une nouvelle copie ?</string>
-	<string name="menu_add_thumb_gallery">À partir de Gallery&#8230;</string>
-	<string name="backup_request">Voulez vous sauvegarder votre base de données sur la carte SD ?</string>
-	<string name="backup_title">Sauvegarder ?</string>
-	<string name="searching_amazon_books">Recherche en cours sur Amazon</string>
-	<string name="searching_google_books">Recherche en cours sur Google Books</string>
-	<string name="searching_library_thing">Recherche en cours sur LibraryThing</string>
-	<string name="bookshelf_title">Sélectionnez des bibliothèques pour ce livre</string>
-	<string name="bookshelves">Sélectionnez des bibliothèques</string>
-	<string name="format">Format</string>
-	<string name="format1">Livre de poche</string>
-	<string name="format2">Couverture cartonnée</string>
-	<string name="format3">eBook</string>
-	<string name="format4">Livre audio</string>
-	<string name="format5">Guide</string>
-	<string name="description">Description</string>
-	<string name="genre">Genre</string>
-	<string name="auto_update">Voulez vous désormais mettre à jour automatiquement les champs suivants :\n* Genre \n* Description \n* Thumbnails\n\n Si vous choisissez d\'annuler, vous pourrez toujours y accéder depuis la page d\'Administration</string>
-	<string name="notset">Non défini</string>
-	<string name="menu_search">Rechercher des livres</string>
-	<string name="menu_insert_name">Ajouter par nom</string>
-	<string name="isbn_name_search_help">L\'ajout de livres par ISBN est plus précis que par auteur ou titre, et généralement préférable. Rappelez vous qu\'il est parfois possible de trouver le bon code barre à l\'intérieur de la couverture. \n\n</string>
-	<string name="help_click_here">Merci de cliquer ici pour accéder à l\'aide en ligne.</string>
-	<string name="backup_database">Sauvegarder la base de données</string>
-	<string name="vldt_unable_to_get_value">Impossible d\'obtenir la valeur de \'%s\'</string>
-	<string name="vldt_integer_expected">Valeur entière attendue pour \'%s\'</string>
-	<string name="vldt_real_expected">Valeur décimale attendue pour \'%s\'</string>
-	<string name="vldt_date_expected">Date attendue pour  \'%s\'</string>
-	<string name="vldt_boolean_expected">Valeur booléenne (0,1,t,f,true,false) attendue pour \'%s\'</string>
-	<string name="vldt_nonblank_required">Valeur non vide attendue pour \'%s\'</string>
-	<string name="vldt_blank_required">Le champ \'%s\' doit être vide</string>
-	<string name="vldt_failed">La validation a échouée pour \'%s\'</string>
-	<string name="vldt_series_num_must_be_blank">Les numéros de séries doivent être vides (%1$s trouvé) ou le nom de la série doit être précisé.</string>
-	<string name="vldt_read_start_after_end">La date de début de lecture est après la date de fin</string>
-	<string name="backup_success">Sauvegarde réussie</string>
-	<string name="backup_failed">Sauvegarde échouée</string>
-	<string name="file_must_contain_column">Le fichier doit contenir une colonne nommée %s</string>
-	<string name="file_must_contain_any_column">Le fichier doit contenir au moins une des colonnes suivantes : %s</string>
-	<string name="column_is_blank">La colonne %1$s est vide à la ligne %2$s</string>
-	<string name="columns_are_blank">Les colonnes %1$s sont toutes vides à la ligne %2$d</string>
-	<string name="save">Sauvegarder</string>
-	<string name="add">Ajouter</string>
-	<string name="noauthors">Il n\'y a pas d\'auteur pour ce livre. Merci d\'en ajouter un en utilisant la zone de texte et le bouton en haut de cet écran.</string>
-	<string name="noseries">Il n\'y a pas de série pour ce livre. Vous pouvez en ajouter une en utilisant la zone de texte et le bouton en haut de cet écran.</string>
-	<string name="cover_not_set">Couverture non définie</string>
-	<string name="cover_corrupt">Couverture corrompue</string>
-	<string name="cover_detail">Détails de la couverture</string>
-	<string name="select_picture">Choisissez une image</string>
-	<string name="set_authors">Définir les auteurs&#8230;</string>
-	<string name="and_others">et. al.</string>
-	<string name="set_series">Définir la série&#8230;</string>
-	<string name="author_already_in_list">L\'auteur est déjà dans la liste</string>
-	<string name="author_is_blank">Le champ Auteur est vide</string>
-	<string name="series_already_in_list">La série est déjà dans la liste</string>
-	<string name="series_is_blank">Le champ Série est vide</string>
-	<string name="export_failed_sdcard">Export en échec - Impossible d\'écrire sur la carte SD</string>
-	<string name="thumbnail_failed_sdcard">Téléchargement de vignette en échec - Impossible d\'écrire sur la carte SD</string>
-	<string name="skip_title">Passer - %s</string>
-	<string name="num_books_searched">%s livres recherchés</string>
-	<string name="cancelled_info">Annulé - %s</string>
-	<string name="edit_book_series">Éditer les séries</string>
-	<string name="family_name">Nom de famille</string>
-	<string name="given_names">Prénoms</string>
-	<string name="edit_author_details">Éditer les détails de l\'auteur</string>
-	<string name="immediate_global_changes">NOTE: Toutes les modifications sont prises en compte immédiatement et globalement.</string>
-	<string name="menu_replace_thumb">Remplacer la vignette&#8230;</string>
-	<string name="menu_thumb_alt_editions">À partir d\'autres éditions&#8230;</string>
-	<string name="author_required">Au moins un auteur doit être spécifié</string>
-	<string name="title_required">un titre non vide doit être spécifié</string>
-	<string name="menu_delete_series">Supprimer une série&#8230;</string>
-	<string name="menu_edit_author">Éditer l\'auteur&#8230;</string>
-	<string name="menu_edit_series">Éditer les séries&#8230;</string>
-	<string name="delete_series">Supprimer la série</string>
-	<string name="really_delete_series">Supprimer la série \'%s\'?\n\nLes livres eux-mêmes ne seront pas supprimés.\n\nEnvisagez d\'éditer la série et d\'en changer le nom pour conserver cette information.</string>
-	<string name="edit_series">Éditer les détails de la série</string>
-	<string name="edit_author">Éditer les détails de l\'auteur</string>
-	<string name="select_cover">Choisissez une couverture</string>
-	<string name="no_isbn_no_editions">Impossible d\'obtenir les éditions d\'un livre sans ISBN</string>
-	<string name="unsaved_edits">Des modifications n\'ont pas été sauvegardées. Voulez vous vraiment continuer ?</string>
-	<string name="unsaved_edits_title">Modifications non sauvegardées</string>
-	<string name="changed_author_how_apply">Vous avez changé le nom de l\'auteur, de\n  \'%1$s\' à \n  \'%2$s\'\nComment souhaitez vous appliquer ce changement ?\nNote : Votre choix \'%3$s\' sera pris en compte instantanément.</string>
-	<string name="this_book">Ce livre</string>
-	<string name="scope_of_change">Périmètre du changement</string>
-	<string name="changed_series_how_apply">Vous avez modifié la série de:\n  \'%1$s\' à \n  \'%2$s\'\nComment souhaitez vous appliquer ce changement ?\nNote : Votre choix \'All Books\' sera pris en compte immédiatement.</string>
-	<string name="unable_to_find_book">Impossible de trouver le livre demandé</string>
-	<string name="list_and">et</string>
-	<string name="really_delete_book">Cela effacera totalement le livre intitulé \'%1$s\' par %2$s. Êtes vous sûr de vouloir poursuivre ?</string>
-	<string name="editions_require_isbn">Retrouvre les autres éditions nécessite un ISBN</string>
-	<string name="no_editions">Aucune édition disponible</string>
-	<string name="finding_editions">Éditions en cours de recherche&#8230;</string>
-	<string name="click_on_thumb">Cliquez sur une vignette pour afficher une image plus grande</string>
-	<string name="loading">Chargement&#8230;</string>
-	<string name="image_not_found">Image non trouvée</string>
-	<item name="fieldCheckbox" type="id"></item>
-	<string name="select_min_1_field">Choisissez au moins un champ à mettre à jour</string>
-	<string name="usage_copy_if_blank">Copier si vide</string>
-	<string name="usage_add_extra">Ajouter des données supplémentaires</string>
-	<string name="usage_overwrite">Remplacer les données existantes</string>
-	<string name="cancelling">Annulation en cours</string>
-	<string name="starting_search">Démarrage en cours</string>
-	<string name="lt_info">Le fonctionnement de cette application est amélioré par l\'utilisation de LibraryThing comme source d\'information sur les séries ou comme alternative pour les couvertures. Pour bénéficier de ces fonctionnalités, vous devez vous enregistrer auprès de LibraryThing (gratuit) et demander une clé développeur LibraryThing (gratuit).</string>
-	<string name="lt_register_text">S\'enregistrer auprès de LibraryThing</string>
-	<string name="lt_devkey_text">Demander une clé développeur LibraryThing</string>
-	<string name="lt_label">LibraryThing</string>
-	<string name="lt_gotkey">Une fois votre clé développeur obtenue (ou si vous en avez déjà une), entrez la simplement ci-dessous et elle sera utilisée pour obtenir des données supplémentaires.</string>
-	<string name="developer_key">Clé développeur</string>
-	<string name="require_library_thing_info">Cette fonctionnalité nécessite une clé développeur LibraryThing. Voulez vous obtenir plus d\'informations à propos de LibraryThing ?</string>
-	<string name="uses_library_thing_info">Cette fonctionnalité est améliorée par l\'utilisation d\'une clé développeur LibraryThing. Voulez vous obtenir plus d\'informations à propos de LibraryThing, ou désactiver ce message ?\n\nDes informations sur LibraryThing peuvent être obtenues dans l\'onglet LibraryThing des écrans d\'Administration.</string>
-	<string name="reg_library_thing_title">Enregistrement LibraryThing</string>
-	<string name="more_info">Plus d\'informations.</string>
-	<string name="disable_dialogue">Désactiver ce message</string>
-	<string name="lt_reset_messages_info">De temps en temps, cette application peut afficher des messages optionnels concernant LibraryThing. Pressez le bouton ci-dessous pour réactiver les messages désactivés.</string>
-	<string name="reset">Réactiver</string>
-	<string name="send_info_text">Cliquez sur le bouton ci-dessous pour obtenir des informations à propos des plantages récents ou d\'autres erreurs, et pour les envoyer à l\'un des développeurs. Cela créera une copie complète de votre base de données ainsi que des fichiers journaux. Si vous ne souhaitez pas envoyer certains de ces fichiers, supprimez les des pièces jointes du courriel avant l\'envoi. </string>
-	<string name="send_info">Envoyer les informations</string>
-	<string name="cleanup_files_text">Les fichiers supprimables occupent actuellement %s sur la carte SD. Les fichiers journaux et d\'autres données sont sauvegardées sur la carte SD à chaque mise à jour, lorsque vous sauvegardez la base de données ou lorsque l\'application plante. Cliquez sur le bouton ci-dessous pour purger ces fichiers de votre carte SD. Si vous avez fait l\'expérience de plantages ou d\'autres erreurs, envisagez d\'abord d\'utiliser le bouton \'Envoyer l\'Information\'</string>
-	<string name="cleanup_files">Nettoyer les fichiers</string>
-	<string name="no_debug_info">Aucune information de débogage disponible</string>
-	<string name="megabytes">%.2fMB</string>
-	<string name="kilobytes">%.2fkB</string>
-	<string name="bytes">%.0f bytes</string>
 
-	<string name="sortby_author_given">Trier par auteur (Prénom)</string>
-	<string name="select_bookshelves">Choisir des bibliothèques</string>
-	<string name="debug_subject">Collecte des informations de débogage en cours</string>
-	<string name="debug_body">Merci de prendre le temps de décrire brièvement le problèmeque vous rencontrez.</string>
-	<string name="menu_duplicate">Livre en double</string>
-	<string name="cannot_edit_system">Vous ne pouvez pas modifier les valeurs du système</string>
-	<string name="sortby_author_one">Trier par auteur (Premier auteur uniquement)</string>
-	<string name="no_connection">Pas de connexion Internet disponible.</string>
-	<string name="sortby_published">Trier par date de publication</string>
-	<string name="menu_share_this">Partager</string>
-	<string name="email_export">Souhaitez vous envoyer cet export par courriel ?</string>
-	<string name="test_goodreads">Tester Goodreads</string>
-	<string name="task_errors">Erreurs de tâches</string>
-	<string name="retry">Ré-essayer</string>
-	<string name="retry_task">Ré-essayer</string>
-	<string name="edit_bookElipsis">Éditer le livre&#8230;</string>
-	<string name="visit_goodreads">Visiter GoodReads&#8230;</string>
-	<string name="delete_event">Supprimer l\'événement</string>
-	<string name="delete_task">Supprimer la tâche</string>
-	<string name="my_books">Mes livres</string>
-	<string name="my_books_classic">Mes livres (Classique)</string>
-	<string name="loan_return_book">Prêter, retourner ou éditer le livre</string>
-	<string name="admin_and_prefs">Administration et préférences</string>
-	<string name="edit_book_send_to_gr">Envoyer à Goodreads</string>
-	<string name="goodreads_auth_blurb_part1">Goodreads est un site qui s\'est donné pour mission «d\'aider les gens à trouver et à partager les livres qu\'ils aiment». 
-	    										Ils disposent d\'une large base de données de livres et de critiques, et si vous êtes un utilisateur enregistré sur Goodreads, 
-	    										BookCatalogue peut y exporter ou en importer vos livres, vos bibliothèques et critiques. 
-	    										BookCatalogue est une application indépendante et ne nécessite pas Goodreads, 
-	    										mais si vous êtes interessé vous pouvez vous enregistrer ici :</string>
-	<string name="goodreads_auth_blurb_part2">Une fois enregistré ou si vous êtes déjà utilisateur de Goodreads, vous pouvez autoriser BookCatalogue 
-	    										à accéder à vos données Goodreads en pressant le bouton ci-dessous. Vous serez redirigé vers une page 
-	    										sur laquelle vous devrez vous connecter à goodreads et autoriser cette application. Nous n\'aurons jamais 
-	    										connaissance de votre mot de passe, et vous pourrez désactiver cet accès sur le site Goodreads. 
-	    										Il est possible que vous arriviez sur une page blanche. Cliquez simplement sur le bouton Retour pour revenir ici !</string>
-	<string name="location_of_book">Emplacement du livre</string>
-	<string name="incorrect_key">Votre clé de développeur LibraryThing est incorrecte ou nous n\'avons pas pu nous connecter au réseau pour la vérifier.</string>
-	<string name="correct_key">Votre clé de développeur LibraryThing est valable.</string>
-	<string name="menu_crop_thumb">Recadrer la vignette</string>	
-	<string name="goodreads_auth_blurb_part3">Mais rappelez vous&#8230; il n\'est pas nécessaire de faire tout cela : BookCatalogue fonctionne très bien sans ça !</string>
-	<string name="authorize_access">Autoriser l\'accès</string>
-	<string name="authorize_access_already_auth">Il semble que vous avez déjà autorisé cette application. Toutes les fonctionnalités Goodreads devraient être déjà disponibles.</string>
-	<string name="goodreads_access_error">Problème réseau lors de l\'accès à Goodreads : vérifiez que le site Goodreads est disponible et si le problème persiste, prenez contact avec le support.</string>
-	<string name="other_preferences">Autres préférences</string>
-	<string name="user_interface">Interface utilisateur</string>
-	<string name="start_in_my_books">Commencer dans \'Mes livres\'</string>
-	<string name="include_classic_catalogue_view">Inclure la vue catalogue classique</string>
-	<string name="background_tasks">Tâches en arrière plan</string>
-	<string name="cleanup_old_tasks">Nettoyer les anciennes tâches</string>
-	<string name="cleanup_old_events">Nettoyer les anciens événements</string>
-	<string name="show_more">Montrer plus</string>
-	<string name="text_and_or_isbn">Texte et/ou ISBN</string>
-	<string name="search_criteria">Critères de recherche</string>
-	<string name="add_manually">Ajouter manuellement</string>
-	<string name="scan_barcode">Scanner le code barre/ISBN</string>
-	<string name="enter_barcode">Entrer le code barre/ISBN</string>
-	<string name="search_internet">Chercher sur Internet</string>
-	<string name="show_results">Montrer les résultats</string>
-	<string name="rebuild_fts">Re-construire FTS (alpha uniquement !)</string>
-	<string name="search_in">Chercher dans</string>
-	<string name="send_books_to_goodreads">Envoyer les livres à Goodreads</string>
-	<string name="legacy_task">Tâches anciennes</string>
-	<string name="occurred_at">S\'est produit à %1$s</string>
-	<string name="unknown_uc">Inconnu</string>
-	<string name="this_book_deleted_uc">Ce livre a été supprimé</string>
-	<string name="by">par %1$s</string>
-	<string name="no_matching_book_found">Aucun livre correspondant n\'a été trouvé</string>
-	<string name="no_isbn_stored_for_book">Aucun ISBN enregistré pour ce livre</string>
-	<string name="select_an_action">Choisissez une action</string>
-	<string name="get_image_from">Obtenir une image de %1$s</string>
-	<string name="goodreads_auth_check">Autorisation Goodreads en cours</string>
-	<string name="goodreads_auth_failed">Échec de l\'autorisation Goodreads</string>
-	<string name="goodreads_auth_successful">Autorisation Goodreads accordée</string>
-	<string name="authorized">Autorisé</string>
-	<string name="not_authorized">Non Autorisé</string>
-	<string name="goodreads_auth_error">Autorisation Goodreads en erreur.</string>
-	<string name="if_the_problem_persists">Si le problème persiste, contactez le support via l\'aide du menu principal.</string>
-	<string name="book_no_longer_exists">Le livre demandé n\'existe plus</string>
-	<string name="please_enter_search_criteria">Merci d\'entrer vos critères de recherche</string>
-	<string name="error_while_searching">Erreur lors de la recherche.</string>
-	<string name="x_of_y">%1$s de %2$s</string>
-	<string name="send_all_to_goodreads_result">%1$s livres traités : %2$s envoyés avec succès, %3$s sans ISBN et %4$s avec ISBN mais non trouvés sur Goodreads</string>
-	<string name="send_book_to_goodreads">Envoyer le livre %1$s à Goodreads</string>
-	<string name="erase_cover_cache">Effacer le cache des couvertures</string>
-	<string name="crash_toast_text">BookCatalogue a planté. Merci de nous aider en reportant ce crash.</string>
-	<string name="crash_notif_ticker_text">BookCatalogue a planté.</string>
-	<string name="crash_notif_title">Plantage de BookCatalogue</string>	
-	<string name="crash_notif_text">Merci de cliquer ici pour obtenir des détails</string>
-	<string name="crash_dialog_title">Plantage de BookCatalogue</string>
-	<string name="crash_dialog_text">BookCatalogue a planté. Décrivez ci-dessous tout ce qui vous semble opportun et pressez "OK" pour nous envoyer un courriel à propos de ce plantage. Vous pourrez lire votre courriel avant son envoi.</string>
-	<string name="crash_dialog_comment_prompt">Votre commentaire (ou laisser vide) :</string>
-	<string name="crash_dialog_ok_toast">Merci !</string>
-	<string name="browse_books">Consulter tous les livres</string>
-	<string name="no_series">(aucune série)</string>
-	<string name="booklist_read">Lu</string>
-	<string name="booklist_unread">Non lu</string>
-	<string name="no_genre">(Pas de genre)</string>
-	<string name="no_title">(Pas de titre)</string>
-	<string name="no_publisher">(Pas d\' éditeur)</string>
-	<string name="no_author">(Pas d\'auteur)</string>
-	<string name="no_date">(Pas de date)</string>
-	<string name="book_lists">Liste des livres</string>
-	<string name="show_all_authors">Montrer le livre sous chaque auteur</string>
-	<string name="show_all_series">Montrer les livres dans chaque série</string>
-	<string name="show_thumbnails">Montrer les miniatures</string>
-	<string name="prefer_large_thumbnails">Preférer les grandes miniatures</string>
-	<string name="display_first_then_last_names">Montrer d\'abord les noms donnés</string>
-	<string name="sort_author_series">Auteur puis série</string>
-	<string name="sort_first_author_series">Auteur puis série (premier auteur seulement)</string>
-	<string name="sort_series">Séries</string>
-	<string name="sort_title_first_letter">Première lettre du titre</string>
-	<string name="sort_genre">Nom de genre</string>
-	<string name="sort_loaned">Prêté</string>
-	<string name="sort_read_and_unread">Lu et non lu</string>
-	<string name="sort_publication_date">Date de publication</string>
-	<string name="sort_added_date">Ajouté le</string>
-	<string name="sort_author_year">Auteur et année</string>
-	<string name="empty_with_brackets">(vide)</string>
-	<string name="navigator">Navigateur</string>
-	<string name="booklist_preferences">Préférences de la liste de livres</string>
-	<string name="extra_book_details">Détails supplémentaires</string>
-	<string name="general">Général</string>
-	<string name="shelves">Rayons</string>
-	<string name="management">Gestion</string>
-	<string name="credentials">Certificats</string>
-	<string name="data_import_export">Import/Export de données</string>
-	<string name="unrecognized_task">Tâche non reconnue</string>
-	<string name="rebuilding_search_index">Construction de l\'index de recherche en cours&#8230;</string>
-	<string name="optimizing_databases">Optimisation de bases de données en cours&#8230;</string>
-	<string name="starting_up">Démarrage&#8230;</string>
-	<string name="book_catalogue_startup">Démarrage de BookCatalogue</string>
-	<string name="book_list_state">État de la liste de livres</string>
-	<string name="always_start_booklists_expanded">Toujours démarrer avec une liste de livre étendue</string>
-	<string name="always_start_booklists_collapsed">Toujours démarrer avec une liste de livre réduite</string>
-	<string name="remember_booklists_state">Conserver l\'état de la liste de livres</string>
-	<string name="searching_goodreads">Recherche en cours sur Goodreads</string>
-	<string name="edit_book_list_styles">Éditer les styles de liste de livres</string>
-	<string name="show_more_ellipsis">Montrer plus&#8230;</string>
-	<string name="show_fewer_ellipsis">Montrer moins&#8230;</string>
-	<string name="customize_ellipsis">Personnaliser&#8230;</string>
-	<string name="hint">Astuce</string>
-	<string name="reset_hints">Réinitialiser les astuces</string>
-	<string name="do_not_show_again">Ne plus montrer</string>
-	<string name="other_settings_ellipsis">Autres réglages&#8230;</string>
-	<string name="preferred_styles">Styles favoris</string>
-	<string name="edit_style_colon_name">Éditer le style : %1$s</string>
-	<string name="add_style">Ajouter le style</string>
-	<string name="clone_style_colon_name">Cloner le style: %1$s</string>
-	<string name="non_blank_arg_required">Une valeur non vide doit être indiquée pour \'%1$s\'</string>
-	<string name="hint_booklist_styles_editor">Vous pouvez utiliser cet écran pour personnaliser la liste de styles affichés dans le menu par défaut des styles. 
-	    										\n\nUn point vert indique que le style sera visible dans la liste, un point rouge qu\'il ne le sera pas.
-	    										Cliquer sur un point vert le transformera en croix et vice-versa.
-	    										\n\nSi aucun style n\'est coché, tous les styles seront visibles.
-	    										\n\nIl est aussi possible de ré-ordonner les articles en faisant glisser l\'icône à l\'extrême droite de chaque ligne.
-	    										\n\nCliquer n\'importe où ailleurs sur une ligne vous permettra de modifier les détails d\'un style particulier (ou de le cloner, s\'il s\'agit d\'un style par défaut).</string>
-	<string name="hint_booklist_style_groups">Vous pouvez utiliser cet écran pour modifier la hiérarchie des en-têtes d\'une liste de livres particulière.
-	    										\n\nUn point vert indique que le style sera visible dans la liste, un point rouge qu\'il ne le sera pas.
-	    										Cliquer sur un point vert le transformera en croix et vice-versa.
-	    										\n\nIl est aussi possible de ré-ordonner la hiérarchie en faisant glisser l\'icône à l\'extrême droite de chaque ligne.
-	    										</string>
-	<string name="hint_booklist_style_properties">Vous pouvez utiliser cet écran pour définir les caractéristiques d\'un style particulier.
-	    										\n\nVous pouvez changer le nom, modifier les regroupements pour changer la  to change la hiérarchie, et ajuster un grand nombre 
-	    										d\'autres paramètres pour construire un style que vous aimerez.
-	    										\n\nIl est aussi possible d\'utiliser les \'Filtres de livres\' pour modifier la sélection de livresaffichée dans la liste, 
-	    										par exemple pour trouver les livres que vous n\'avez pas encore lus.
-	    										</string>
-	<string name="hint_booklist_global_properties">Vous pouvez utiliser cet écran pour définir les caractéristiques par défaut de tous les styles de listes de livres.
-	    										\n\nLa plupart de propriétés peuvent être modifiées par les styles individuels, mais les valeurs par défaut sont définies ici. 
-	    										\n\nVous pouvez modifier l\'arrière plan, changer l\'aspect des listes au démarrage, et ajuster un ensemble d\'autres 
-	    										paramètres qui seront appliquées à tous les styles chaque fois que cela sera possible. 
-	    										\n\nVous pouvez également éditer ici le menu des styles et les styles eux-mêmes. 
-	    										</string>
-	<string name="select_read_only">Sélectionner les livres lus uniquement</string>
-	<string name="select_unread_only">Sélectionner les livres non lus uniquement</string>
-	<string name="extra_filters">Filtres de livres</string>
-	<string name="new_style">Nouveau style</string>
-	<string name="select_based_on_read_status">Sélectionner en utilisant le statut \'Lu\'</string>
-	<string name="books_with_multiple_authors">Livres d\'auteurs multiples</string>
-	<string name="books_in_multiple_series">Livres appartenant à des séries multiples</string>
-	<string name="use_default_setting">Utiliser les réglages par défaut</string>
-	<string name="show_book_under_each_thing">Sous chaque %1$s</string>
-	<string name="format_of_author_names">Format des noms d\'auteur</string>
-	<string name="given_name_first_eg">Prénom en premier, par exemple \'Bill Smith\'</string>
-	<string name="family_name_first_eg">Nom de famille en premier, par exemple \'Smith, Bill\'</string>
-	<string name="thumbnails">Miniatures</string>
-	<string name="size_of_booklist_items">Taille des éléments de liste de livres</string>
-	<string name="normal">Normal</string>	
-	<string name="smaller">Plus petit</string>
-	<string name="select_style">Sélectionner un style</string>
-	<string name="booklist_background_style">Style d\'arrière plan de la liste de livres</string>
-	<string name="textured_backgroud">Image d\'arrière plan</string>
-	<string name="plain_background_b_reduces_flicker_b">Arrière plan uni (réduit le clignottement)</string>
-	<string name="thing_must_not_be_blank">%1$s ne doit pas être vide</string>
-	<string name="edit">Éditer</string>
-	<string name="groupings">Groupes</string>
-	<string name="will_be_shown">Sera montré</string>
-	<string name="will_not_be_shown">Ne sera pas montré</string>
-	<string name="preferences">Préférences</string>
-	<string name="unexpected_error">Une erreur inattendue s\'est produite. Merci d\'envoyer les détails au support par l\'option \'Aide\' du menu principal.</string>
-	<string name="delete_style">Supprimer le style</string>
-	<string name="edit_style">Éditer le style</string>
-	<string name="clone_style">Cloner le style</string>
-	<string name="dash_or_dash">- Ou -</string>
-	<string name="paypal_donation">Donation PayPal</string>
-	<string name="compact">Compact</string>
-	<string name="user_defined">Défini par l\'utilisateur</string>
-	<string name="builtin">Par défaut</string>
-	<string name="sort_unread">Non lu (Auteur/Séries)</string>
-	<string name="import_all_from_goodreads">Tout importer depuis Goodreads</string>
-	<string name="requested_task_is_already_queued">La tâche demandée est déjà en cours d\'attente</string>
-	<string name="export_task_is_already_queued">Un export est déjà en cours et doit être terminé avant que cette tâche ne démarre.</string>
-	<string name="import_task_is_already_queued">Un import est déjà en cours et doit être terminé avant que cette tâche ne démarre.</string>
-	<string name="goodreads_action_cannot_blah_blah">Cette action ne peut être menée tant que cette application n\'est pas autorisée par Goodreads. Merci de ré-essayer après autorisation. \n\nVoulez vous l\'autoriser maintenent ?</string>
-	<string name="tell_me_more">En savoir plus</string>
-	<string name="completed">Terminé</string>
-	<string name="failed">Échoué</string>
-	<string name="queued">En file d\'attente</string>	
-	<string name="unknown">Inconnu</string>
-	<string name="send_all">Tout envoyer</string>
-	<string name="send_updated">Envoi mis à jour</string>
-	<string name="sync_with_goodreads">Synchroniser avec goodreads</string>
-	<string name="cover_options_cc_ellipsis">Options de couverture&#8230;</string>
-	<string name="show_events_ellipsis">Montrer les événement&#8230;</string>
-	<string name="send_books_to_goodreads_blurb">Vous êtes sur le point d\'envoyer votre bibliothèque à Goodreads.
-	    										\n\nVous pouvez envoyer tous vos livres ou uniquement ceux que vous avez mis à jour  
-	    										depuis qu\'ils ont été copiés depuis ou vers Goodreads (y compris 
-	    										ceux qui n\'ont pas encore été envoyés) ou vous pouvez annuler cette mise à jour.
-	    										\n\nSi vous n\'avez encore jamais envoyé aucun livre, il n\'y a alors 
-	    										aucune différence entre les deux options.</string>
-	<string name="hint_authors_book_may_appear_more_than_once">S\'il est affiché pour chacun de ses auteurs, un livre peut apparaître plusieurs fois dans la liste. 
-	    													Dans ce cas, supprimer l\'un de ces livres supprimera toutes ses copies de la liste.</string>
-	<string name="hint_series_book_may_appear_more_than_once">S\'il est affiché pour chacune de ses séries, un livre peut apparaître plusieurs fois dans la liste. 
-	    													Dans ce cas, supprimer l\'un de ces livres supprimera toutes ses copies de la liste.</string>	    															
-	<string name="hint_background_tasks">Vous pouvez voir ici les tâches en cours d\'exécution ainsi que les tâches préalablement exécutées qui se sont terminées avec des erreurs, ou d\'autres événements notables. 
-	    								En cliquant sur une tâche, vous pourrez voir les événements associés ainsi que supprimer la tâche.</string>
-	<string name="hint_background_task_events">Vous pouvez voir ici les événements associés à une tâche d\'arrière plan. 
-	    								Cliquer sur un événement vous permettra de réaliser un ensemble d\'actions appropriées pour cet événement.</string>
-	<string name="hints_have_been_reset">Les astuces ont été réinitialisées.</string>				
-	<string name="task_has_been_queued_in_background">La tâche a été placée en file d\'attente.</string>
-	<string name="hint_startup_screen">"Voici l'écran de démarrage par défaut de BookCatalogue. Si vous le souhaitez, vous pouvez démarrer directement dans 'Mes livres'; l'écran de démarrage préféré peut être modifié dans les préférences."</string>
-	<string name="upgrading_ellipsis">Mise à niveau&#8230;</string>
-	<string name="explain_goodreads_no_isbn">Les livres sélectionnés n\'ont pas d\'ISBN ; il est impossible de les synchroniser avec Goodreads. 
-	    									La solution la plus simple est de:
-	    									\n\n(1) supprimer le livre de BookCatalogue
-	    									\n\n(2) ajouter manuellement le livre à Goodreads par leur interface web
-	    									\n\n(3) Synchroniser avec goodreads
-	    									\n\nLe livre sera re-créé dans BookCatalogue et les deux livres seront alors liés.</string>   									    
-	<string name="explain_goodreads_no_match">L\'ISBN du livre choisi n\'a pas pu être trouvé sur goodreads. Il existe de multiples causes à ça : 
-	    									soit les données du livre sont erronées (Vérifiez l\'ISBN), soit le livre n\'est pas sur Goodreads. 
-	    									\n\nSi vous modifiez les données sur BookCatalogue, pressez simplement sur le bouton \'Ré-essayer\' et assurez vous 
-	    									que la tâche associée est exécutée avec succès. 
-	    									\n\nSi les données semblent correctes et que le livre n\'est toujours pas trouvé, il est alors nécessaire d\'ajouter manuellement un livre portant cet ISBN à Goodreads 
-											sur leur site Web. Une fois que c\est fait, vous pouvez essayer de renvoyer le livre.</string>    									    
-	<string name="read_amp_unread">Lu &amp; Non lu</string>				
-	<string name="loaned">Prêté</string>
-	<string name="publication_year">Année de publication</string>
-	<string name="publication_month">Mois de publication</string>
-	<string name="publication_day">Jour de publication</string>
-	<string name="added_year">Année d\'ajout</string>
-	<string name="added_month">Mois d\'ajout</string>
-	<string name="added_day">Jour d\'ajout</string>
-	<string name="book">Livre</string>
-	<string name="in">Dans</string>		
-	<string name="size">Taille</string>
-	<string name="updated">Mis à jour</string>
-	<string name="no_export_files_found">Aucun fichier export n\'a été trouvé</string>
-	<string name="more_than_one_export_file_blah">Plusieurs fichiers export ont été trouvés ; Merci d\'en choisir un dans la liste ci-dessous</string>
-	<string name="problem_starting_import_arg">Un problème a été rencontré lors de l\'export : %1$s</string>
-	<string name="hint_booklist_style_menu">Ce menu vous permet de sélectionner le style de la liste. 
-	    								\n\nVous pouvez également personnaliser ce menu, ainsi que créer vos propres styles de liste, en cliquant sur  \'Personnaliser\' à la fin de la liste.</string>
-	<string name="menu_edit_format">Éditer le format&#8230;</string>		
-	<string name="edit_format_name">Éditer le nom du format</string>
-	<string name="name_can_not_be_blank">Le nom ne peut pas être vide</string>
-	<string name="export_starting_ellipsis">Démarrage de l\'export&#8230;</string>
-	<string name="resizing_cover_thumbnails">Redimensionner les miniatures des couvertures</string>
-	<string name="resize_each_time">Redimensionner à chaque fois que nécessaire (moins d\'espace nécessaire, défilement des listes plus lent)</string>
-	<string name="cache_resized_thumbnails_for_later_use">Mettre les miniatures en cache (plus d\'espace nécessaire, défilement des listes plus rapide)</string>
-	<string name="generating_cover_thumbnails">Création des miniatures en cours</string>
-	<string name="use_background_thread">Utiliser un thread (défilement des listes plus rapide, affichage décalé des images)</string>
-	<string name="generate_immediately">Générer immédiatement (défilement des listes plus lent, affichage immédiat des images)</string>
-	<string name="sort_and_style_ellipsis">Tri &amp; Style&#8230;</string>
-	<string name="disable_background_image">Désactiver l\'image d\'arrière plan</string>
-	<string name="displaying_n_books_in_m_entries">Affichage de %1$s livres, parmi %2$s entrées</string>
-	<string name="displaying_n_books">Affichage de %1$s livres</string>
-	<string name="available">Disponible</string>
-	<string name="summary_details_in_header">Détails du résumé dans l\'en-tête</string>
-	<string name="hide_summary_details">Cacher les détails du résumé</string>
-	<string name="show_summary_details">Montrer les détails du résumé</string>
-	<string name="x_is_not_a_valid_isbn">%1$s n\'est pas un ISBN valable</string>
-	<string name="beep_if_scanned_isbn_invalid">Beeper si l\'ISBN scanné est invalide</string>
-	<string name="no_image_found">Aucune image trouvée</string>
-	<string name="could_not_copy_image">Impossible de copier l\'image</string>
-	<string name="this_option_is_not_available_until_the_book_is_saved">Cette option n\'est pas valable avant la sauvegarde du livre</string>
-	<string name="scan_barcode_isbn">Scanner le code barre / ISBN</string>
-	<string name="enter_isbn">Entrer l\'ISBN</string>
-	<string name="allow_asin">Autoriser l\'ASIN</string>
-	<string name="x_is_not_a_valid_isbn_or_asin">%1$s n\'est pas un ISBN / ASIN valable</string>
-	<string name="confirm_exit">Confirmer la sortie</string>
-	<string name="you_may_have_unsaved_changes">Des modifications pourraient ne pas avoir été sauvegardées. Êtes vous sûr de vouloir quitter sans sauvegarder ?</string>
-	<!-- Added 17/10/2012 -->
-	<string name="read_year">Année de lecture</string>
-	<string name="read_month">Mois de lecture</string>
-	<string name="read_day">Jour de lecture</string>
-	<string name="sort_read_date">Date de lecture</string>
-	<string name="details_have_changed">Modification en cours</string>
-	<string name="you_have_unsaved_changes">Des modifications ne sont pas sauvées, si vous quittez maintenant elles seront perdues.</string>
-	<string name="exit">Quitter</string>
-	<string name="continue_editing">Continuer l\'édition</string>
-	<string name="the_title_already_exists">Le titre existe déjà</string>
-	<string name="year">Année</string>
-	<string name="month">Mois</string>
-	<string name="day">Jour</string>
-	<string name="edit_lc_ellipsis">modifier&#8230;</string>
-	<string name="getting_books_ellipsis">Chargement&#8230;</string>
-	<string name="n_events_found">%1$s évènements trouvés</string>
-	<string name="last_error_e">Dernière erreur: %1$s</string>
-	<string name="invalid_isbn_x_specified_in_search">ISBN incorrect dans la recherche \'%1$s\'</string>
-	<string name="if_day_is_specified_month_and_year_must_be">Si le jour est précisé, le mois et l\'année doivent l\'être aussi.</string>
-	<string name="if_month_is_specified_year_must_be">Si le mois est précisé, l\'année doit l\'être aussi.</string>
-	<string name="main_menu">Menu principal</string>
-	<string name="use_external_image_cropper">Recadrage d\'image avec un outil externe (Expérimental)</string>
-	<string name="auto_rotate_camera_images">Rotation automatique des photos</string>
-	<string name="hint_autorotate_camera_images">Si vous devez systematiquement tourner vos photos dans le même sens, envisagez d\'autoriser la rotation automatique en changeant vos paramètres.</string>
-	<string name="default_crop_frame_is_whole_image">Le cadre par défaut de l\'image à recadrer sera l\'image complète</string>
-	<string name="cancelled">Annulé</string>
-	<string name="import_complete">Import terminé</string>
-	<string name="amazon_books">Amazon</string>
-	<string name="google_books">Google Books</string>
-	<string name="library_thing">LibraryThing</string>
+    <!-- Begin: No translation required Section -->
 
-	<string name="searching_elipsis">Recherche en cours&#8230;</string>
-	
-	<string name="adding_book_elipsis">Ajout du livre&#8230;</string>
-	
-	<string name="new_in_42"><![CDATA[
-			<p><b>Nouveautés de la 4.2</b>\n\n
-	            * Dates supportées jusqu\'en l\'an 0 ainsi que les dates partielles\n\n
-	            * Les descriptions en HTML s\'affichent correctement lors du click sur \"Modifier\"\n\n
-	            * Paramètre de sélection de l\'image entière lors du recadrage\n\n
-	            * Paramètre de rotation automatique des photos\n\n
-	            * Paramètre pour l\'utilisation d\'un outil de recadrage externe (Expérimental)\n\n
-	            * Nouvelles options dans le menu "Plus" \n\n
-	            * Mise à jour de la version française (Imkal)\n\n
-	            * Mise à jour de la version allemande (Robert Wetzlmayr)\n\n
-	            * Mise à jour de la version russe (Nick Silin)\n\n
-	            * Mise à jour des boutons OK & Annuler pour se conformer aux nouveaux standards Android\n\n
-	            * Clavier complet disponible pour l\'introduction d\'ASINs\n\n
-	            * Sauvegarde des 5 derniers fichiers d\'export\n\n
-	            * Meilleure détection des changements lors de l\'édition d\'un livre\n\n
-	            * Support d\'un choix plus large d\'explorateurs de la Galerie et de fichiers\n\n
-	            * Meilleure gestion des dates lors de l\'import/export/sync\n\n
-	            * Correction de la gestion des doubles dans les titres d\'une anthologie\n\n
-	            * Correction d\'un certain nombre de bugs\n\n
-	            Tous nos remerciements à nos dévoués Beta Testeurs et nos traducteurs.\n\n
-	            Tous les bugs et erreurs sont à imputer à Grunthos. Et envoyez-nous vos rapports de bugs.
-            </p>
-			]]>
-	</string>
-	<string name="bad_scanner">Votre scanner de code barre ne semble pas être compatible avec Book Catalogue. Nous vous recommandons d\'installer le scanner de code barre de Zxing et, s\'il est déjà installé, de désinstaller puis de le réinstaller.</string>
-	<string name="new_in_421"><![CDATA[
-	    <p><b>Nouveautés de la version 4.2.1</b>\n\n
-			* Correction de crash lors de l\'utilisation Tout étendre\n\n
-			</p>
-		]]></string>
-	<string name="new_in_422"><![CDATA[
-    	<p><b>Nouveautés de la version 4.2.2</b>\n\n
-    		* Correction : mosaïque de l\'image de fond pour certaines versions d\'Android\n\n
-			* Meilleure prise en charge des scanners de code barre incompatibles\n\n
-			* Plus important niveau de détails envoyés lors d\'un crash ou d\'une demande d\'aide\n\n
-			* Nettoyage des mises en page (Nick Silin)\n\n
-			* Correction de bugs\n\n
-			</p>
-		]]></string>
-	<string name="new_in_423"><![CDATA[
-    <p><b>Nouveautés de la version 4.2.3</b>\n\n
-			* Meilleure prise en charge des ISBN invalides lors de l\'envoi à goodreads\n\n
-			* Autres corrections de bugs mineurs\n\n
-			</p>
-		]]></string>
-			
-	<!-- Not translated yet  -->
-		
-	<!-- Not translated beyond this point : missing context -->
-	
-	<string name="show_book_under_primary_thing">Under primary %1$s only</string>	
-	<string name="retry_x_of_y_next_at_z">Retry %1$s of %2$s next at %3$s</string>
+    <string name="app_name">Book Catalogue</string>
+    <string name="system_app_name">Book Catalogue</string>
+    <string name="contact1">eleybourn@gmail.com</string>
+    <string name="contact2">philip.warner@rhyme.com.au</string>
+    <string name="goodreads">Goodreads</string>
+    <string name="goodreads_label">Goodreads</string>
+    <string name="goodreads_url">http://www.goodreads.com</string>
+    <string name="contact_label">Contact:</string>
+    <string name="webpage">https://wiki.github.com/eleybourn/Book-Catalogue/</string>
+    <string name="sourcecode">https://github.com/eleybourn/Book-Catalogue</string>
+    <string name="helppage">https://github.com/eleybourn/Book-Catalogue/wiki/Help</string>
+    <string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
+    <string name="loaned_to_2">\u2192</string>
+    <string name="isbn">ISBN</string>
+    <string name="series_num">#</string>
 
-	<!-- Lint reference only : No translation needed beyond this point -->
-	
-	<string name="app_name">Book Catalogue</string>
-	<string name="system_app_name">Book Catalogue</string>
-	<string name="contact1">eleybourn@gmail.com</string>
-	<string name="contact2">philip.warner@rhyme.com.au</string>
-	<string name="goodreads">goodreads</string>
-	<string name="goodreads_label">Goodreads</string>
-	<string name="goodreads_url">http://www.goodreads.com</string>
-	<string name="contact_label">Contact:</string>
-	<string name="webpage">https://wiki.github.com/eleybourn/Book-Catalogue/</string>
-	<string name="sourcecode">https://github.com/eleybourn/Book-Catalogue</string>
-	<string name="helppage">https://github.com/eleybourn/Book-Catalogue/wiki/Help</string>
-	<string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
-	<string name="loaned_to_2">\u2192</string>
-	<string name="isbn">ISBN</string>
-	<string name="series_num">#</string>
-	<item name="TAG_POSITION" type="id"></item>
-	<item type="id" name="TAG_ORIGINAL_VALUE"></item>
-	<string name="optionsElipsis">Options&#8230;</string>	
-	<string name="_empty_"></string>
-	
+    <item name="TAG_POSITION" type="id"></item>
+    <item name="TAG_ORIGINAL_VALUE" type="id"></item>
+
+    <string name="optionsElipsis">Options&#8230;</string>
+    <string name="_empty_"></string>
+
+    <!-- End: No translation required Section -->
+
+
+    <!-- Begin : What's New Section -->
+
+    <string name="new_in_42">
+<![CDATA[
+	<p><b>Nouveautés de la 4.2</b>\n\n
+		* Dates supportées jusqu\'en l\'an 0 ainsi que les dates partielles\n\n
+		* Les descriptions en HTML s\'affichent correctement lors du click sur \"Modifier\"\n\n
+		* Paramètre de sélection de l\'image entière lors du recadrage\n\n
+		* Paramètre de rotation automatique des photos\n\n
+		* Paramètre pour l\'utilisation d\'un outil de recadrage externe (Expérimental)\n\n
+		* Nouvelles options dans le menu "Plus" \n\n
+		* Mise à jour de la version française (Imkal)\n\n
+		* Mise à jour de la version allemande (Robert Wetzlmayr)\n\n
+		* Mise à jour de la version russe (Nick Silin)\n\n
+		* Mise à jour des boutons OK & Annuler pour se conformer aux nouveaux standards Android\n\n
+		* Clavier complet disponible pour l\'introduction d\'ASINs\n\n
+		* Sauvegarde des 5 derniers fichiers d\'export\n\n
+		* Meilleure détection des changements lors de l\'édition d\'un livre\n\n
+		* Support d\'un choix plus large d\'explorateurs de la Galerie et de fichiers\n\n
+		* Meilleure gestion des dates lors de l\'import/export/sync\n\n
+		* Correction de la gestion des doubles dans les titres d\'une anthologie\n\n
+		* Correction d\'un certain nombre de bugs\n\n
+		Tous nos remerciements à nos dévoués Beta Testeurs et nos traducteurs.\n\n
+		Tous les bugs et erreurs sont à imputer à Grunthos. Et envoyez-nous vos rapports de bugs.
+			</p>
+		]]>
+    </string>
+    <string name="new_in_421">
+<![CDATA[
+	<p><b>Nouveautés de la version 4.2.1</b>\n\n
+		* Correction de crash lors de l\'utilisation Tout étendre\n\n
+			</p>
+		]]>
+    </string>
+    <string name="new_in_422">
+<![CDATA[
+	<p><b>Nouveautés de la version 4.2.2</b>\n\n
+		* Correction : mosaïque de l\'image de fond pour certaines versions d\'Android\n\n
+		* Meilleure prise en charge des scanners de code barre incompatibles\n\n
+		* Plus important niveau de détails envoyés lors d\'un crash ou d\'une demande d\'aide\n\n
+		* Nettoyage des mises en page (Nick Silin)\n\n
+		* Correction de bugs\n\n
+			</p>
+		]]>
+    </string>
+    <string name="new_in_423">
+<![CDATA[
+	<p><b>Nouveautés de la version 4.2.3</b>\n\n
+		* Meilleure prise en charge des ISBN invalides lors de l\'envoi à goodreads\n\n
+		* Autres corrections de bugs mineurs\n\n
+			</p>
+		]]>
+    </string>
+
+    <!-- This is pretty close to the expected feature list! It is a merge of 424 and 430... -->
+
+    <string name="new_in_500">
+<![CDATA[
+	<p><b>Nouveau dans la version 5.0.0</b>\n\n
+		* Ajout vue en lecture seulement des détails d\'un livre, avec support du défilement par \'balayage\'! (Voir \"Autres Préférences\") (Nick Silin)\n\n
+		* Archivage et restauration du catalogue complet incluant les couvertures, les paramètres et les styles\n\n
+		* Interface améliorée avec une barre d\'action pour une utilisation plus facile sans bouton de menu\n\n
+		* Support du scanner pic2shop (Meilleur pour les focus fixe, en faible lumière et les caméras frontal)\n\n
+		* Goodreads présent dans le menu prinicpal si la connections est validée\n\n
+		* Validation au plus tôt de la connection internet lors d\'un scan.\n\n
+		* Mise à jour de la version allemande (Robert Wetzlmayr)\n\n
+		* Mise à jour de la version françaises (Imkal & Djiko)\n\n
+		* Mise à jour de la version russe (Nick Silin)\n\n
+		* Adaptation interne en prévision de la version pour les tablettes\n\n
+		* Correction de bogue\n\n
+			</p>
+		]]>
+    </string>
+
+    <!-- End : What's New Section -->
+
+
+    <!-- Begin : String Section -->
+
+    <string name="bad_scanner">Votre scanner de code barre ne semble pas être compatible avec Book Catalogue. Nous vous recommandons d\'installer le scanner de code barre de Zxing et, s\'il est déjà installé, de désinstaller puis de le réinstaller.</string>
+    <string name="show_book_under_primary_thing">Sous %1$s principal(e) seulement</string>
+    <string name="retry_x_of_y_next_at_z">Essai %1$s de %2$s Suivant à %3$s</string>
+    <string name="menu_insert">Ajouter un livre</string>
+    <string name="menu_delete">Supprimer un livre</string>
+    <string name="author">Auteur</string>
+    <string name="title">Titre</string>
+    <string name="publisher">Éditeur</string>
+    <string name="date_published">Date de publication</string>
+    <string name="rating">Appreciation</string>
+    <string name="bookshelf">Bibliothèque</string>
+    <string name="read">Avez-vous lu ce livre ?</string>
+    <string name="series">Série</string>
+    <string name="pages">Pages</string>
+    <string name="confirm_add">Ajouter le livre ?</string>
+    <string name="confirm_update">Mettre à jour</string>
+    <string name="nobooks">Il n\'y a pas de livre dans cette biblothèque. Merci d\'en ajouter par le menu en bas de cet écran.</string>
+    <string name="menu_sort_by_author_expanded">Tout étendre</string>
+    <string name="menu_sort_by">Trier par</string>
+    <string name="menu_sort_by_author_collapsed">Tout réduire</string>
+    <string name="sort_title">Book Catalogue : par titre</string>
+    <string name="edit_title">Book Catalogue : Modifier le livre</string>
+    <string name="menu_insert_isbn">Ajouter par ISBN</string>
+    <string name="menu_insert_barcode">Ajouter par code barre</string>
+    <string name="search">Recherche</string>
+    <string name="cancel">Annuler</string>
+    <string name="confirm_save">Sauvegarder le livre</string>
+    <string name="nobookshelves">Vous n\'avez pas encore créé de bibliothèque. Merci d\'en ajouter une par le menu en bas de cet écran.</string>
+    <string name="menu_insert_bs">Créer une bibliothèque</string>
+    <string name="confirm_add_bs">Ajouter une bibliothèque</string>
+    <string name="menu_bookshelf">Gérer les bibliothèques</string>
+    <string name="confirm_save_bs">Sauvegarder la bibliothèque</string>
+    <string name="menu_delete_bs">Supprimer la bibliothèque</string>
+    <string name="delete_1st_bs">Impossible de supprimer la première bibliothèque</string>
+    <string name="bookshelf_label">Bibliothèque : </string>
+    <string name="all_books">Tous les livres</string>
+    <string name="isbn_found">ISBN scanné. Recherche en cours.</string>
+    <string name="title_isbn_search">Book Catalogue : recherche ISBN</string>
+    <string name="title_manage_bs">Book Catalogue : gérer les biblothèques</string>
+    <string name="title_edit_bs">Book Catalogue : Modifier la bibliothèque</string>
+    <string name="book_exists">Le livre que vous tentez d\'ajouter existe déjà.</string>
+    <string name="search_label">Rechercher des livres</string>
+    <string name="search_hint">Rechercher un auteur ou un titre</string>
+    <string name="book_not_found">Le livre n\'a pas été trouvé. Il est parfois possible de trouver le code barre à l\'intérieur de la première page de couverture. Sinon merci d\'entrer les détails manuellement.</string>
+    <string name="unable_to_connect_google">Connection à Google Books impossible</string>
+    <string name="export_data">Exporter les livres</string>
+    <string name="export_complete">Export vers la carte SD terminé.</string>
+    <string name="import_data">Importer les livres</string>
+    <string name="import_alert">Attention ! L\'import de données peut provoquer la mise à jour de livres avec de nouvelles informations si les identifiants importés sont les mêmes que des identifiants existants. Cela est généralement correct si vous n\'avez modifié qu\'un champ dans un fichier exporté. Si vous avez intégralement créé un livre, assurez vous que le champ identifiant est vide.</string>
+    <string name="export_failed">ERREUR : l\'export vers la carte SD a échoué. </string>
+    <string name="import_failed">ERREUR: l\'import depuis la carte SD a échoué. Le fichier se trouve-t-il au bon endroit ?</string>
+    <string name="search_title">Book Catalogue : Résultats de recherche</string>
+    <string name="results_found">Des résultats ont été trouvés.</string>
+    <string name="administration_label">Administration</string>
+    <string name="administration_title">Book Catalogue : Administration</string>
+    <string name="menu_administration">Admin</string>
+    <string name="install_scan">Pour scanner vos livres en utilisant le code barre ISBN, vous pouvez installer le scanner de codes barre zxing. Appuyez sur OK pour installer, ou sur Annuler pour passer cette étape.</string>
+    <string name="install_scan_title">Installer le scanner de code barre</string>
+    <string name="version_number">Numéro de version:</string>
+    <string name="donate">Si vous souhaitez supporter le développement de cette application, les donations sont possibles par Amazon Wishlist ou par le bouton Paypal ci-dessous. Je suis en Australie, ce qui rend impossible la publication d\'une version payante :-) .</string>
+    <string name="unable_to_connect_amazon">Connexion à Amazon impossible</string>
+    <string name="upgrade_title">Depuis votre dernière mise à jour</string>
+    <string name="edit_book">Modifier le livre</string>
+    <string name="edit_book_notes">Votre commentaire</string>
+    <string name="edit_book_friends">Prêter le livre</string>
+    <string name="unknown_error">Une erreur inconnue s\'est produite</string>
+    <string name="notes">Notes</string>
+    <string name="loaned_to">Ce livre a été prêté à :</string>
+    <string name="nobody">Personne</string>
+    <string name="loan_to">Prêter le livre à :</string>
+    <string name="returned">Rendu</string>
+    <string name="name">Nom</string>
+    <string name="webpage_label">Site web:</string>
+    <string name="sourcecode_label">Code source:</string>
+    <string name="donate_label">Don</string>
+    <string name="about_label">À propos de cette application</string>
+    <string name="administration_functions_label">Fonctions</string>
+    <string name="sortby_popup_title">Trier par</string>
+    <string name="sortby_author">Trier par auteurs</string>
+    <string name="sortby_title">Trier par titres</string>
+    <string name="sortby_series">Trier par séries</string>
+    <string name="sortby_loan">Trier par prêts</string>
+    <string name="sortby_unread">Trier par statut de lecture</string>
+    <string name="sortby_genre">Trier par genre</string>
+    <string name="list_price">Liste de prix</string>
+    <string name="date_started_reading">Date de début de lecture</string>
+    <string name="date_finished_reading">Date de fin de lecture</string>
+    <string name="update_fields">Mettre les champs à jour automatiquement</string>
+    <string name="select_fields_to_update">Sélectionner les champs à mettre à jour</string>
+    <string name="select_fields_to_update_help">Les champs sélectionnés vont être mis à jour à partir d\'Internet. Les champs non sélectionnés ne seront pas modifiés.</string>
+    <string name="overwrite_thumbnail">Les champs sélectionnés vont être mis à jour tels que montré; en option, les vignettes peuvent être téléchargées pour TOUS les livres.\n\nVoulez-vous remplacer toutes les vignettes existantes ? Attention, cela peut prendre du temps.</string>
+    <string name="yes">Oui</string>
+    <string name="no">Non</string>
+    <string name="ok">OK</string>
+    <string name="download_thumbs">Les vignettes sont en cours de téléchargement en arrière plan.</string>
+    <string name="search_fail">La recherche du livre a échoué. Merci de vérifier vos réglages réseau.</string>
+    <string name="search_exception">Recherche en échec pendant %1$s: %2$s</string>
+    <string name="hello">Book Catalogue !</string>
+    <string name="menu_delete_thumb">Supprimer la vignette</string>
+    <string name="help">Aide</string>
+    <string name="filler_help_text">Une aide en ligne complète sera bientôt disponible. </string>
+    <string name="menu_manage_fields">Gérer la visibilité des champs</string>
+    <string name="manage_fields_help">Les champs sélectionnés sont visibles dans les écrans d\'ajout et d\'édition des livres. Les champs non sélectionnés sont cachés.</string>
+    <string name="edit_book_anthology">Titres de l\'anthologie</string>
+    <string name="amazon_wishlist">Idées cadeaux Amazon</string>
+    <string name="same_author">Toutes les histoires de cette anthologie sont écrites par le même auteur.</string>
+    <string name="menu_delete_anthology">Supprimer ce titre de l\'anthologie</string>
+    <string name="is_anthology">Ce livre est-il une anthologie ?</string>
+    <string name="populate_anthology_titles">Renseigner les titres automatiquement (EXPÉRIMENTAL)</string>
+    <string name="automatic_population_failed">La recherche automatique des titres a échoué.</string>
+    <string name="anthology">Anthologie</string>
+    <string name="anthology_confirm">Merci de confirmer que les titres de cette anthologie sont corrects.</string>
+    <string name="anthology_save">Sauvegarder</string>
+    <string name="anthology_add">Ajouter</string>
+    <string name="menu_add_thumb_photo">À partir de l\'appareil photo&#8230;</string>
+    <string name="thumbnail">Vignette de couverture</string>
+    <string name="menu_rotate_thumb">Faire tourner la vignette&#8230;</string>
+    <string name="menu_rotate_thumb_cw">Faire tourner dans le sens des aiguilles d\'une montre</string>
+    <string name="menu_rotate_thumb_ccw">Faire tourner dans le sens contraire des aiguilles d\'une montre</string>
+    <string name="menu_rotate_thumb_180">Faire tourner à 180°</string>
+    <string name="menu_zoom_thumb">Zoomer sur la vignette</string>
+    <string name="help_title_nutshell">En résumé</string>
+    <string name="signed">Ce livre est il dédicacé ?</string>
+    <string name="read_start">Date de début de lecture</string>
+    <string name="read_end">Date de fin de lecture</string>
+    <string name="location">Emplacement du livre</string>
+    <string name="duplicate_title">Livre en double</string>
+    <string name="duplicate_book_title">Livre en double</string>
+    <string name="duplicate_book_message">Le livre que vous tentez d\'ajouter existe déjà dans la base de donnnées. Êtes vous certain de vouloir en ajouter une nouvelle copie ?</string>
+    <string name="menu_add_thumb_gallery">À partir de Gallery&#8230;</string>
+    <string name="backup_request">Voulez-vous sauvegarder votre base de données sur la carte SD ?</string>
+    <string name="backup_title">Sauvegarder ?</string>
+    <string name="searching_amazon_books">Recherche en cours sur Amazon</string>
+    <string name="searching_google_books">Recherche en cours sur Google Books</string>
+    <string name="searching_library_thing">Recherche en cours sur LibraryThing</string>
+    <string name="bookshelf_title">Sélectionnez des bibliothèques pour ce livre</string>
+    <string name="bookshelves">Bibliothèques</string>
+    <string name="format">Format</string>
+    <string name="format1">Livre de poche</string>
+    <string name="format2">Couverture cartonnée</string>
+    <string name="format3">eBook</string>
+    <string name="format4">Livre audio</string>
+    <string name="format5">Guide</string>
+    <string name="description">Description</string>
+    <string name="genre">Genre</string>
+    <string name="auto_update">Voulez-vous désormais mettre à jour automatiquement les champs suivants :\n* Genre \n* Description \n* Thumbnails\n\n Si vous choisissez d\'annuler, vous pourrez toujours y accéder depuis la page d\'Administration</string>
+    <string name="notset">Non défini</string>
+    <string name="menu_search">Rechercher des livres</string>
+    <string name="menu_insert_name">Ajouter par nom</string>
+    <string name="isbn_name_search_help">L\'ajout de livres par ISBN est plus précis que par auteur ou titre, et généralement préférable. Rappelez-vous qu\'il est parfois possible de trouver le bon code barre à l\'intérieur de la couverture. \n\n</string>
+    <string name="help_click_here">Merci de cliquer ici pour accéder à l\'aide en ligne.</string>
+    <string name="backup_database">Sauvegarder la base de données</string>
+    <string name="vldt_unable_to_get_value">Impossible d\'obtenir la valeur de \'%s\'</string>
+    <string name="vldt_integer_expected">Valeur entière attendue pour \'%s\'</string>
+    <string name="vldt_real_expected">Valeur décimale attendue pour \'%s\'</string>
+    <string name="vldt_date_expected">Date attendue pour  \'%s\'</string>
+    <string name="vldt_boolean_expected">Valeur booléenne (0,1,t,f,true,false) attendue pour \'%s\'</string>
+    <string name="vldt_nonblank_required">Valeur non vide attendue pour \'%s\'</string>
+    <string name="vldt_blank_required">Le champ \'%s\' doit être vide</string>
+    <string name="vldt_failed">La validation a échouée pour \'%s\'</string>
+    <string name="vldt_series_num_must_be_blank">Les numéros de séries doivent être vides (%1$s trouvé) ou le nom de la série doit être précisé.</string>
+    <string name="vldt_read_start_after_end">La date de début de lecture est après la date de fin</string>
+    <string name="backup_success">Sauvegarde réussie</string>
+    <string name="backup_failed">Sauvegarde échouée</string>
+    <string name="file_must_contain_column">Le fichier doit contenir une colonne nommée %s</string>
+    <string name="file_must_contain_any_column">Le fichier doit contenir au moins une des colonnes suivantes : %s</string>
+    <string name="column_is_blank">La colonne %1$s est vide à la ligne %2$s</string>
+    <string name="columns_are_blank">Les colonnes %1$s sont toutes vides à la ligne %2$d</string>
+    <string name="save">Sauvegarder</string>
+    <string name="add">Ajouter</string>
+    <string name="noauthors">Il n\'y a pas d\'auteur pour ce livre. Merci d\'en ajouter un en utilisant la zone de texte et le bouton en haut de cet écran.</string>
+    <string name="noseries">Il n\'y a pas de série pour ce livre. Vous pouvez en ajouter une en utilisant la zone de texte et le bouton en haut de cet écran.</string>
+    <string name="cover_not_set">Couverture non définie</string>
+    <string name="cover_corrupt">Couverture corrompue</string>
+    <string name="cover_detail">Détails de la couverture</string>
+    <string name="select_picture">Choisissez une image</string>
+    <string name="set_authors">Définir les auteurs&#8230;</string>
+    <string name="and_others">et. al.</string>
+    <string name="set_series">Définir la série&#8230;</string>
+    <string name="author_already_in_list">L\'auteur est déjà dans la liste</string>
+    <string name="author_is_blank">Le champ Auteur est vide</string>
+    <string name="series_already_in_list">La série est déjà dans la liste</string>
+    <string name="series_is_blank">Le champ Série est vide</string>
+    <string name="export_failed_sdcard">Export en échec - Impossible d\'écrire sur la carte SD</string>
+    <string name="thumbnail_failed_sdcard">Téléchargement de vignette en échec - Impossible d\'écrire sur la carte SD</string>
+    <string name="skip_title">Passer - %s</string>
+    <string name="num_books_searched">%s livres recherchés</string>
+    <string name="cancelled_info">Annulé - %s</string>
+    <string name="edit_book_series">Modifier les séries</string>
+    <string name="family_name">Nom de famille</string>
+    <string name="given_names">Prénoms</string>
+    <string name="edit_author_details">Modifier les détails de l\'auteur</string>
+    <string name="immediate_global_changes">NOTE: Toutes les modifications sont prises en compte immédiatement et globalement.</string>
+    <string name="menu_replace_thumb">Remplacer la vignette&#8230;</string>
+    <string name="menu_thumb_alt_editions">À partir d\'autres éditions&#8230;</string>
+    <string name="author_required">Au moins un auteur doit être spécifié</string>
+    <string name="title_required">un titre non vide doit être spécifié</string>
+    <string name="menu_delete_series">Supprimer une série&#8230;</string>
+    <string name="menu_edit_author">Modifier l\'auteur&#8230;</string>
+    <string name="menu_edit_series">Modifier les séries&#8230;</string>
+    <string name="delete_series">Supprimer la série</string>
+    <string name="really_delete_series">Supprimer la série \'%s\'?\n\nLes livres eux-mêmes ne seront pas supprimés.\n\nEnvisagez de modifier la série et d\'en changer le nom pour conserver cette information.</string>
+    <string name="edit_series">Modifier les détails de la série</string>
+    <string name="edit_author">Modifier les détails de l\'auteur</string>
+    <string name="select_cover">Choisissez une couverture</string>
+    <string name="no_isbn_no_editions">Impossible d\'obtenir les éditions d\'un livre sans ISBN</string>
+    <string name="unsaved_edits">Des modifications n\'ont pas été sauvegardées. Voulez-vous vraiment continuer ?</string>
+    <string name="unsaved_edits_title">Modifications non sauvegardées</string>
+    <string name="changed_author_how_apply">Vous avez changé le nom de l\'auteur, de\n  \'%1$s\' à \n  \'%2$s\'\nComment souhaitez vous appliquer ce changement ?\nNote : Votre choix \'%3$s\' sera pris en compte instantanément.</string>
+    <string name="this_book">Ce livre</string>
+    <string name="scope_of_change">Périmètre du changement</string>
+    <string name="changed_series_how_apply">Vous avez modifié la série de:\n  \'%1$s\' à \n  \'%2$s\'\nComment souhaitez vous appliquer ce changement ?\nNote : Votre choix \'All Books\' sera pris en compte immédiatement.</string>
+    <string name="unable_to_find_book">Impossible de trouver le livre demandé</string>
+    <string name="list_and">et</string>
+    <string name="really_delete_book">Cela effacera totalement le livre intitulé \'%1$s\' par %2$s. Êtes vous sûr de vouloir poursuivre ?</string>
+    <string name="editions_require_isbn">Retrouvre les autres éditions nécessite un ISBN</string>
+    <string name="no_editions">Aucune édition disponible</string>
+    <string name="finding_editions">Éditions en cours de recherche&#8230;</string>
+    <string name="click_on_thumb">Cliquez sur une vignette pour afficher une image plus grande</string>
+    <string name="loading">Chargement&#8230;</string>
+    <string name="image_not_found">Image non trouvée</string>
+
+    <item name="fieldCheckbox" type="id"></item>
+
+    <string name="select_min_1_field">Choisissez au moins un champ à mettre à jour</string>
+    <string name="usage_copy_if_blank">Copier si vide</string>
+    <string name="usage_add_extra">Ajouter des données supplémentaires</string>
+    <string name="usage_overwrite">Remplacer les données existantes</string>
+    <string name="cancelling">Annulation en cours</string>
+    <string name="starting_search">Démarrage en cours</string>
+    <string name="lt_info">Le fonctionnement de cette application est amélioré par l\'utilisation de LibraryThing comme source d\'information sur les séries ou comme alternative pour les couvertures. Pour bénéficier de ces fonctionnalités, vous devez vous enregistrer auprès de LibraryThing (gratuit) et demander une clé développeur LibraryThing (gratuit).</string>
+    <string name="lt_register_text">S\'enregistrer auprès de LibraryThing</string>
+    <string name="lt_devkey_text">Demander une clé développeur LibraryThing</string>
+    <string name="lt_label">LibraryThing</string>
+    <string name="lt_gotkey">Une fois votre clé développeur obtenue (ou si vous en avez déjà une), entrez la simplement ci-dessous et elle sera utilisée pour obtenir des données supplémentaires.</string>
+    <string name="developer_key">Clé développeur</string>
+    <string name="require_library_thing_info">Cette fonctionnalité nécessite une clé développeur LibraryThing. Voulez-vous obtenir plus d\'informations à propos de LibraryThing ?</string>
+    <string name="uses_library_thing_info">Cette fonctionnalité est améliorée par l\'utilisation d\'une clé développeur LibraryThing. Voulez-vous obtenir plus d\'informations à propos de LibraryThing, ou désactiver ce message ?\n\nDes informations sur LibraryThing peuvent être obtenues dans l\'onglet LibraryThing des écrans d\'Administration.</string>
+    <string name="reg_library_thing_title">Enregistrement LibraryThing</string>
+    <string name="more_info">Plus d\'informations.</string>
+    <string name="disable_dialogue">Désactiver ce message</string>
+    <string name="lt_reset_messages_info">De temps en temps, cette application peut afficher des messages optionnels concernant LibraryThing. Pressez le bouton ci-dessous pour réactiver les messages désactivés.</string>
+    <string name="reset">Réactiver</string>
+    <string name="send_info_text">Cliquez sur le bouton ci-dessous pour obtenir des informations à propos des plantages récents ou d\'autres erreurs, et pour les envoyer à l\'un des développeurs. Cela créera une copie complète de votre base de données ainsi que des fichiers journaux. Si vous ne souhaitez pas envoyer certains de ces fichiers, supprimez les des pièces jointes du courriel avant l\'envoi. </string>
+    <string name="send_info">Envoyer les informations</string>
+    <string name="cleanup_files_text">Les fichiers supprimables occupent actuellement %s sur la carte SD. Les fichiers journaux et d\'autres données sont sauvegardées sur la carte SD à chaque mise à jour, lorsque vous sauvegardez la base de données ou lorsque l\'application plante. Cliquez sur le bouton ci-dessous pour purger ces fichiers de votre carte SD. Si vous avez fait l\'expérience de plantages ou d\'autres erreurs, envisagez d\'abord d\'utiliser le bouton \'Envoyer l\'Information\'</string>
+    <string name="cleanup_files">Nettoyer les fichiers</string>
+    <string name="no_debug_info">Aucune information de débogage disponible</string>
+    <string name="megabytes">%.2fMB</string>
+    <string name="kilobytes">%.2fkB</string>
+    <string name="bytes">%.0f bytes</string>
+    <string name="sortby_author_given">Trier par auteur (Prénom)</string>
+    <string name="select_bookshelves">Choisir des bibliothèques</string>
+    <string name="debug_subject">Collecte des informations de débogage en cours</string>
+    <string name="debug_body">Merci de prendre le temps de décrire brièvement le problèmeque vous rencontrez.</string>
+    <string name="menu_duplicate">Livre en double</string>
+    <string name="cannot_edit_system">Vous ne pouvez pas modifier les valeurs du système</string>
+    <string name="sortby_author_one">Trier par auteur (Premier auteur uniquement)</string>
+    <string name="no_connection">Pas de connexion Internet disponible.</string>
+    <string name="sortby_published">Trier par date de publication</string>
+    <string name="menu_share_this">Partager</string>
+    <string name="email_export">Souhaitez-vous envoyer cet export par courriel ?</string>
+    <string name="test_goodreads">Tester Goodreads</string>
+    <string name="task_errors">Erreurs de tâches</string>
+    <string name="retry">Ré-essayer</string>
+    <string name="retry_task">Ré-essayer</string>
+    <string name="edit_bookElipsis">Modifier le livre&#8230;</string>
+    <string name="visit_goodreads">Visiter GoodReads&#8230;</string>
+    <string name="delete_event">Supprimer l\'événement</string>
+    <string name="delete_task">Supprimer la tâche</string>
+    <string name="my_books">Mes livres</string>
+    <string name="my_books_classic">Mes livres (Classique)</string>
+    <string name="loan_return_book">Prêter, retourner ou Modifier le livre</string>
+    <string name="admin_and_prefs">Administration et préférences</string>
+    <string name="edit_book_send_to_gr">Envoyer à Goodreads</string>
+    <string name="goodreads_auth_blurb_part1">Goodreads est un site qui s\'est donné pour mission «d\'aider les gens à trouver et à partager les livres qu\'ils aiment». 
+		Ils disposent d\'une large base de données de livres et de critiques, et si vous êtes un utilisateur enregistré sur Goodreads, 
+		BookCatalogue peut y exporter ou en importer vos livres, vos bibliothèques et critiques. 
+		BookCatalogue est une application indépendante et ne nécessite pas Goodreads, 
+		mais si vous êtes interessé vous pouvez vous enregistrer ici :</string>
+    <string name="goodreads_auth_blurb_part2">Une fois enregistré ou si vous êtes déjà utilisateur de Goodreads, vous pouvez autoriser BookCatalogue 
+		à accéder à vos données Goodreads en pressant le bouton ci-dessous. Vous serez redirigé vers une page 
+		sur laquelle vous devrez vous connecter à goodreads et autoriser cette application. Nous n\'aurons jamais 
+		connaissance de votre mot de passe, et vous pourrez désactiver cet accès sur le site Goodreads. 
+		Il est possible que vous arriviez sur une page blanche. Cliquez simplement sur le bouton Retour pour revenir ici !</string>
+    <string name="location_of_book">Emplacement du livre</string>
+    <string name="incorrect_key">Votre clé de développeur LibraryThing est incorrecte ou nous n\'avons pas pu nous connecter au réseau pour la vérifier.</string>
+    <string name="correct_key">Votre clé de développeur LibraryThing est valable.</string>
+    <string name="menu_crop_thumb">Recadrer la vignette</string>
+    <string name="goodreads_auth_blurb_part3">Mais rappelez-vous&#8230; il n\'est pas nécessaire de faire tout cela : BookCatalogue fonctionne très bien sans ça !</string>
+    <string name="authorize_access">Autoriser l\'accès</string>
+    <string name="authorize_access_already_auth">Il semble que vous avez déjà autorisé cette application. Toutes les fonctionnalités Goodreads devraient être déjà disponibles.</string>
+    <string name="goodreads_access_error">Problème réseau lors de l\'accès à Goodreads : vérifiez que le site Goodreads est disponible et si le problème persiste, prenez contact avec le support.</string>
+    <string name="other_preferences">Autres préférences</string>
+    <string name="user_interface">Interface utilisateur</string>
+    <string name="start_in_my_books">Commencer dans \'Mes livres\'</string>
+    <string name="include_classic_catalogue_view">Inclure la vue catalogue classique</string>
+    <string name="background_tasks">Tâches en arrière plan</string>
+    <string name="cleanup_old_tasks">Nettoyer les anciennes tâches</string>
+    <string name="cleanup_old_events">Nettoyer les anciens événements</string>
+    <string name="show_more">Montrer plus</string>
+    <string name="text_and_or_isbn">Texte et/ou ISBN</string>
+    <string name="search_criteria">Critères de recherche</string>
+    <string name="add_manually">Ajouter manuellement</string>
+    <string name="scan_barcode">Scanner le code barre/ISBN</string>
+    <string name="enter_barcode">Entrer le code barre/ISBN</string>
+    <string name="search_internet">Chercher sur Internet</string>
+    <string name="show_results">Montrer les résultats</string>
+    <string name="rebuild_fts">Re-construire FTS (alpha uniquement !)</string>
+    <string name="search_in">Chercher dans</string>
+    <string name="send_books_to_goodreads">Envoyer les livres à Goodreads</string>
+    <string name="legacy_task">Tâches anciennes</string>
+    <string name="occurred_at">S\'est produit à %1$s</string>
+    <string name="unknown_uc">Inconnu</string>
+    <string name="this_book_deleted_uc">Ce livre a été supprimé</string>
+    <string name="by">par %1$s</string>
+    <string name="no_matching_book_found">Aucun livre correspondant n\'a été trouvé</string>
+    <string name="no_isbn_stored_for_book">Aucun ISBN enregistré pour ce livre</string>
+    <string name="select_an_action">Choisissez une action</string>
+    <string name="get_image_from">Obtenir une image de %1$s</string>
+    <string name="goodreads_auth_check">Autorisation Goodreads en cours</string>
+    <string name="goodreads_auth_failed">Échec de l\'autorisation Goodreads</string>
+    <string name="goodreads_auth_successful">Autorisation Goodreads accordée</string>
+    <string name="authorized">Autorisé</string>
+    <string name="not_authorized">Non Autorisé</string>
+    <string name="goodreads_auth_error">Autorisation Goodreads en erreur.</string>
+    <string name="if_the_problem_persists">Si le problème persiste, contactez le support via l\'aide du menu principal.</string>
+    <string name="book_no_longer_exists">Le livre demandé n\'existe plus</string>
+    <string name="please_enter_search_criteria">Merci d\'entrer vos critères de recherche</string>
+    <string name="error_while_searching">Erreur lors de la recherche.</string>
+    <string name="x_of_y">%1$s de %2$s</string>
+    <string name="send_all_to_goodreads_result">%1$s livres traités : %2$s envoyés avec succès, %3$s sans ISBN et %4$s avec ISBN mais non trouvés sur Goodreads</string>
+    <string name="send_book_to_goodreads">Envoyer le livre %1$s à Goodreads</string>
+    <string name="erase_cover_cache">Effacer le cache des couvertures</string>
+    <string name="crash_toast_text">BookCatalogue a planté. Merci de nous aider en reportant ce crash.</string>
+    <string name="crash_notif_ticker_text">BookCatalogue a planté.</string>
+    <string name="crash_notif_title">Plantage de BookCatalogue</string>
+    <string name="crash_notif_text">Merci de cliquer ici pour obtenir des détails</string>
+    <string name="crash_dialog_title">Plantage de BookCatalogue</string>
+    <string name="crash_dialog_text">BookCatalogue a planté. Décrivez ci-dessous tout ce qui vous semble opportun et pressez "OK" pour nous envoyer un courriel à propos de ce plantage. Vous pourrez lire votre courriel avant son envoi.</string>
+    <string name="crash_dialog_comment_prompt">Votre commentaire (ou laisser vide) :</string>
+    <string name="crash_dialog_ok_toast">Merci !</string>
+    <string name="browse_books">Consulter tous les livres</string>
+    <string name="no_series">(aucune série)</string>
+    <string name="booklist_read">Lu</string>
+    <string name="booklist_unread">Non lu</string>
+    <string name="no_genre">(Pas de genre)</string>
+    <string name="no_title">(Pas de titre)</string>
+    <string name="no_publisher">(Pas d\' éditeur)</string>
+    <string name="no_author">(Pas d\'auteur)</string>
+    <string name="no_date">(Pas de date)</string>
+    <string name="book_lists">Liste des livres</string>
+    <string name="show_all_authors">Montrer le livre sous chaque auteur</string>
+    <string name="show_all_series">Montrer les livres dans chaque série</string>
+    <string name="show_thumbnails">Montrer les miniatures</string>
+    <string name="prefer_large_thumbnails">Preférer les grandes miniatures</string>
+    <string name="display_first_then_last_names">Montrer d\'abord les noms donnés</string>
+    <string name="sort_author_series">Auteur puis série</string>
+    <string name="sort_first_author_series">Auteur puis série (premier auteur seulement)</string>
+    <string name="sort_series">Séries</string>
+    <string name="sort_title_first_letter">Première lettre du titre</string>
+    <string name="sort_genre">Nom de genre</string>
+    <string name="sort_loaned">Prêté</string>
+    <string name="sort_read_and_unread">Lu et non lu</string>
+    <string name="sort_publication_date">Date de publication</string>
+    <string name="sort_added_date">Ajouté le</string>
+    <string name="sort_author_year">Auteur et année</string>
+    <string name="empty_with_brackets">(vide)</string>
+    <string name="navigator">Navigateur</string>
+    <string name="booklist_preferences">Préférences de la liste de livres</string>
+    <string name="extra_book_details">Détails supplémentaires</string>
+    <string name="general">Général</string>
+    <string name="shelves">Rayons</string>
+    <string name="management">Gestion</string>
+    <string name="credentials">Certificats</string>
+    <string name="data_import_export">Import/Export de données</string>
+    <string name="unrecognized_task">Tâche non reconnue</string>
+    <string name="rebuilding_search_index">Construction de l\'index de recherche en cours&#8230;</string>
+    <string name="optimizing_databases">Optimisation de bases de données en cours&#8230;</string>
+    <string name="starting_up">Démarrage&#8230;</string>
+    <string name="book_catalogue_startup">Démarrage de BookCatalogue</string>
+    <string name="book_list_state">État de la liste de livres</string>
+    <string name="always_start_booklists_expanded">Toujours démarrer avec une liste de livre étendue</string>
+    <string name="always_start_booklists_collapsed">Toujours démarrer avec une liste de livre réduite</string>
+    <string name="remember_booklists_state">Conserver l\'état de la liste de livres</string>
+    <string name="searching_goodreads">Recherche en cours sur Goodreads</string>
+    <string name="edit_book_list_styles">Modifier les styles de liste de livres</string>
+    <string name="show_more_ellipsis">Montrer plus&#8230;</string>
+    <string name="show_fewer_ellipsis">Montrer moins&#8230;</string>
+    <string name="customize_ellipsis">Personnaliser&#8230;</string>
+    <string name="hint">Astuce</string>
+    <string name="reset_hints">Réinitialiser les astuces</string>
+    <string name="do_not_show_again">Ne plus montrer</string>
+    <string name="other_settings_ellipsis">Autres réglages&#8230;</string>
+    <string name="preferred_styles">Styles favoris</string>
+    <string name="edit_style_colon_name">Modifier le style : %1$s</string>
+    <string name="add_style">Ajouter le style</string>
+    <string name="clone_style_colon_name">Cloner le style: %1$s</string>
+    <string name="non_blank_arg_required">Une valeur non vide doit être indiquée pour \'%1$s\'</string>
+    <string name="hint_booklist_styles_editor">Vous pouvez utiliser cet écran pour personnaliser la liste de styles affichés dans le menu par défaut des styles. 
+		\n\nUn point vert indique que le style sera visible dans la liste, un point rouge qu\'il ne le sera pas.
+		Cliquer sur un point vert le transformera en croix et vice-versa.
+		\n\nSi aucun style n\'est coché, tous les styles seront visibles.
+		\n\nIl est aussi possible de ré-ordonner les articles en faisant glisser l\'icône à l\'extrême droite de chaque ligne.
+		\n\nCliquer n\'importe où ailleurs sur une ligne vous permettra de modifier les détails d\'un style particulier (ou de le cloner, s\'il s\'agit d\'un style par défaut).</string>
+    <string name="hint_booklist_style_groups">Vous pouvez utiliser cet écran pour modifier la hiérarchie des en-têtes d\'une liste de livres particulière.
+		\n\nUn point vert indique que le style sera visible dans la liste, un point rouge qu\'il ne le sera pas.
+		Cliquer sur un point vert le transformera en croix et vice-versa.
+		\n\nIl est aussi possible de ré-ordonner la hiérarchie en faisant glisser l\'icône à l\'extrême droite de chaque ligne.</string>
+    <string name="hint_booklist_style_properties">Vous pouvez utiliser cet écran pour définir les caractéristiques d\'un style particulier.
+		\n\nVous pouvez changer le nom, modifier les regroupements pour changer la  to change la hiérarchie, et ajuster un grand nombre 
+		d\'autres paramètres pour construire un style que vous aimerez.
+		\n\nIl est aussi possible d\'utiliser les \'Filtres de livres\' pour modifier la sélection de livresaffichée dans la liste, 
+		par exemple pour trouver les livres que vous n\'avez pas encore lus.</string>
+    <string name="hint_booklist_global_properties">Vous pouvez utiliser cet écran pour définir les caractéristiques par défaut de tous les styles de listes de livres.
+		\n\nLa plupart de propriétés peuvent être modifiées par les styles individuels, mais les valeurs par défaut sont définies ici. 
+		\n\nVous pouvez modifier l\'arrière plan, changer l\'aspect des listes au démarrage, et ajuster un ensemble d\'autres 
+		paramètres qui seront appliquées à tous les styles chaque fois que cela sera possible. 
+		\n\nVous pouvez également modifier ici le menu des styles et les styles eux-mêmes. </string>
+    <string name="select_read_only">Sélectionner les livres lus uniquement</string>
+    <string name="select_unread_only">Sélectionner les livres non lus uniquement</string>
+    <string name="extra_filters">Filtres de livres</string>
+    <string name="new_style">Nouveau style</string>
+    <string name="select_based_on_read_status">Sélectionner en utilisant le statut \'Lu\'</string>
+    <string name="books_with_multiple_authors">Livres d\'auteurs multiples</string>
+    <string name="books_in_multiple_series">Livres appartenant à des séries multiples</string>
+    <string name="use_default_setting">Utiliser les réglages par défaut</string>
+    <string name="show_book_under_each_thing">Sous chaque %1$s</string>
+    <string name="format_of_author_names">Format des noms d\'auteur</string>
+    <string name="given_name_first_eg">Prénom en premier, par exemple \'Bill Smith\'</string>
+    <string name="family_name_first_eg">Nom de famille en premier, par exemple \'Smith, Bill\'</string>
+    <string name="thumbnails">Miniatures</string>
+    <string name="size_of_booklist_items">Taille des éléments de liste de livres</string>
+    <string name="normal">Normal</string>
+    <string name="smaller">Plus petit</string>
+    <string name="select_style">Sélectionner un style</string>
+    <string name="booklist_background_style">Style d\'arrière plan de la liste de livres</string>
+    <string name="textured_backgroud">Image d\'arrière plan</string>
+    <string name="plain_background_b_reduces_flicker_b">Arrière plan uni (réduit le clignottement)</string>
+    <string name="thing_must_not_be_blank">%1$s ne doit pas être vide</string>
+    <string name="edit">Modifier</string>
+    <string name="groupings">Groupes</string>
+    <string name="will_be_shown">Sera montré</string>
+    <string name="will_not_be_shown">Ne sera pas montré</string>
+    <string name="preferences">Préférences</string>
+    <string name="unexpected_error">Une erreur inattendue s\'est produite. Merci d\'envoyer les détails au support par l\'option \'Aide\' du menu principal.</string>
+    <string name="delete_style">Supprimer le style</string>
+    <string name="edit_style">Modifier le style</string>
+    <string name="clone_style">Cloner le style</string>
+    <string name="dash_or_dash">- Ou -</string>
+    <string name="paypal_donation">Donation PayPal</string>
+    <string name="compact">Compact</string>
+    <string name="user_defined">Défini par l\'utilisateur</string>
+    <string name="builtin">Par défaut</string>
+    <string name="sort_unread">Non lu (Auteur/Séries)</string>
+    <string name="import_all_from_goodreads">Tout importer depuis Goodreads</string>
+    <string name="requested_task_is_already_queued">La tâche demandée est déjà en cours d\'attente</string>
+    <string name="export_task_is_already_queued">Un export est déjà en cours et doit être terminé avant que cette tâche ne démarre.</string>
+    <string name="import_task_is_already_queued">Un import est déjà en cours et doit être terminé avant que cette tâche ne démarre.</string>
+    <string name="goodreads_action_cannot_blah_blah">Cette action ne peut être menée tant que cette application n\'est pas autorisée par Goodreads. Merci de ré-essayer après autorisation. \n\nVoulez-vous l\'autoriser maintenent ?</string>
+    <string name="tell_me_more">En savoir plus</string>
+    <string name="completed">Terminé</string>
+    <string name="failed">Échoué</string>
+    <string name="queued">En file d\'attente</string>
+    <string name="unknown">Inconnu</string>
+    <string name="send_all">Tout envoyer</string>
+    <string name="send_updated">Envoi mis à jour</string>
+    <string name="sync_with_goodreads">Synchroniser avec goodreads</string>
+    <string name="cover_options_cc_ellipsis">Options de couverture&#8230;</string>
+    <string name="show_events_ellipsis">Montrer les événement&#8230;</string>
+    <string name="send_books_to_goodreads_blurb">Vous êtes sur le point d\'envoyer votre bibliothèque à Goodreads.
+		\n\nVous pouvez envoyer tous vos livres ou uniquement ceux que vous avez mis à jour  
+		depuis qu\'ils ont été copiés depuis ou vers Goodreads (y compris 
+		ceux qui n\'ont pas encore été envoyés) ou vous pouvez annuler cette mise à jour.
+		\n\nSi vous n\'avez encore jamais envoyé aucun livre, il n\'y a alors 
+		aucune différence entre les deux options.</string>
+    <string name="hint_authors_book_may_appear_more_than_once">S\'il est affiché pour chacun de ses auteurs, un livre peut apparaître plusieurs fois dans la liste. 
+		Dans ce cas, supprimer l\'un de ces livres supprimera toutes ses copies de la liste.</string>
+    <string name="hint_series_book_may_appear_more_than_once">S\'il est affiché pour chacune de ses séries, un livre peut apparaître plusieurs fois dans la liste. 
+		Dans ce cas, supprimer l\'un de ces livres supprimera toutes ses copies de la liste.</string>
+    <string name="hint_background_tasks">Vous pouvez voir ici les tâches en cours d\'exécution ainsi que les tâches préalablement exécutées qui se sont terminées avec des erreurs, ou d\'autres événements notables. 
+		En cliquant sur une tâche, vous pourrez voir les événements associés ainsi que supprimer la tâche.</string>
+    <string name="hint_background_task_events">Vous pouvez voir ici les événements associés à une tâche d\'arrière plan. 
+		Cliquer sur un événement vous permettra de réaliser un ensemble d\'actions appropriées pour cet événement.</string>
+    <string name="hints_have_been_reset">Les astuces ont été réinitialisées.</string>
+    <string name="task_has_been_queued_in_background">La tâche a été placée en file d\'attente.</string>
+    <string name="hint_startup_screen">"Voici l'écran de démarrage par défaut de BookCatalogue. Si vous le souhaitez, vous pouvez démarrer directement dans 'Mes livres'; l'écran de démarrage préféré peut être modifié dans les préférences."</string>
+    <string name="upgrading_ellipsis">Mise à niveau&#8230;</string>
+    <string name="explain_goodreads_no_isbn">Les livres sélectionnés n\'ont pas d\'ISBN ; il est impossible de les synchroniser avec Goodreads. 
+		La solution la plus simple est de:
+		\n\n(1) supprimer le livre de BookCatalogue
+		\n\n(2) ajouter manuellement le livre à Goodreads par leur interface web
+		\n\n(3) Synchroniser avec goodreads
+		\n\nLe livre sera re-créé dans BookCatalogue et les deux livres seront alors liés.</string>
+    <string name="explain_goodreads_no_match">L\'ISBN du livre choisi n\'a pas pu être trouvé sur goodreads. Il existe de multiples causes à ça : 
+		soit les données du livre sont erronées (Vérifiez l\'ISBN), soit le livre n\'est pas sur Goodreads. 
+		\n\nSi vous modifiez les données sur BookCatalogue, pressez simplement sur le bouton \'Ré-essayer\' et assurez vous 
+		que la tâche associée est exécutée avec succès. 
+		\n\nSi les données semblent correctes et que le livre n\'est toujours pas trouvé, il est alors nécessaire d\'ajouter manuellement un livre portant cet ISBN à Goodreads 
+		sur leur site Web. Une fois que c\est fait, vous pouvez essayer de renvoyer le livre.</string>
+    <string name="read_amp_unread">Lu &amp; Non lu</string>
+    <string name="loaned">Prêté</string>
+    <string name="publication_year">Année de publication</string>
+    <string name="publication_month">Mois de publication</string>
+    <string name="publication_day">Jour de publication</string>
+    <string name="added_year">Année d\'ajout</string>
+    <string name="added_month">Mois d\'ajout</string>
+    <string name="added_day">Jour d\'ajout</string>
+    <string name="book">Livre</string>
+    <string name="in">Dans</string>
+    <string name="size">Taille</string>
+    <string name="updated">Mis à jour</string>
+    <string name="no_export_files_found">Aucun fichier export n\'a été trouvé</string>
+    <string name="more_than_one_export_file_blah">Plusieurs fichiers export ont été trouvés ; Merci d\'en choisir un dans la liste ci-dessous</string>
+    <string name="problem_starting_import_arg">Un problème a été rencontré lors de l\'export : %1$s</string>
+    <string name="hint_booklist_style_menu">Ce menu vous permet de sélectionner le style de la liste. 
+	 	\n\nVous pouvez également personnaliser ce menu, ainsi que créer vos propres styles de liste, en cliquant sur  \'Personnaliser\' à la fin de la liste.</string>
+    <string name="menu_edit_format">Modifier le format&#8230;</string>
+    <string name="edit_format_name">Renommer le format</string>
+    <string name="name_can_not_be_blank">Le nom ne peut pas être vide</string>
+    <string name="export_starting_ellipsis">Démarrage de l\'export&#8230;</string>
+    <string name="resizing_cover_thumbnails">Redimensionner les miniatures des couvertures</string>
+    <string name="resize_each_time">Redimensionner à chaque fois que nécessaire (moins d\'espace nécessaire, défilement des listes plus lent)</string>
+    <string name="cache_resized_thumbnails_for_later_use">Mettre les miniatures en cache (plus d\'espace nécessaire, défilement des listes plus rapide)</string>
+    <string name="generating_cover_thumbnails">Création des miniatures en cours</string>
+    <string name="use_background_thread">Utiliser un thread (défilement des listes plus rapide, affichage décalé des images)</string>
+    <string name="generate_immediately">Générer immédiatement (défilement des listes plus lent, affichage immédiat des images)</string>
+    <string name="sort_and_style_ellipsis">Tri &amp; Style&#8230;</string>
+    <string name="disable_background_image">Désactiver l\'image d\'arrière plan</string>
+    <string name="displaying_n_books_in_m_entries">Affichage de %1$s livres, parmi %2$s entrées</string>
+    <string name="displaying_n_books">Affichage de %1$s livres</string>
+    <string name="available">Disponible</string>
+    <string name="summary_details_in_header">Détails du résumé dans l\'en-tête</string>
+    <string name="hide_summary_details">Cacher les détails du résumé</string>
+    <string name="show_summary_details">Montrer les détails du résumé</string>
+    <string name="x_is_not_a_valid_isbn">%1$s n\'est pas un ISBN valable</string>
+    <string name="beep_if_scanned_isbn_invalid">Beeper si l\'ISBN scanné est invalide</string>
+    <string name="no_image_found">Aucune image trouvée</string>
+    <string name="could_not_copy_image">Impossible de copier l\'image</string>
+    <string name="this_option_is_not_available_until_the_book_is_saved">Cette option n\'est pas valable avant la sauvegarde du livre</string>
+    <string name="scan_barcode_isbn">Scanner le code barre / ISBN</string>
+    <string name="enter_isbn">Entrer l\'ISBN</string>
+    <string name="allow_asin">Autoriser l\'ASIN</string>
+    <string name="x_is_not_a_valid_isbn_or_asin">%1$s n\'est pas un ISBN / ASIN valable</string>
+    <string name="confirm_exit">Confirmer la sortie</string>
+    <string name="you_may_have_unsaved_changes">Des modifications pourraient ne pas avoir été sauvegardées. Êtes vous sûr de vouloir quitter sans sauvegarder ?</string>
+    <!-- Added 17/10/2012 -->
+    <string name="read_year">Année de lecture</string>
+    <string name="read_month">Mois de lecture</string>
+    <string name="read_day">Jour de lecture</string>
+    <string name="sort_read_date">Date de lecture</string>
+    <string name="details_have_changed">Modification en cours</string>
+    <string name="you_have_unsaved_changes">Des modifications ne sont pas sauvées, si vous quittez maintenant elles seront perdues.</string>
+    <string name="exit">Quitter</string>
+    <string name="continue_editing">Continuer l\'édition</string>
+    <string name="the_title_already_exists">Le titre existe déjà</string>
+    <string name="year">Année</string>
+    <string name="month">Mois</string>
+    <string name="day">Jour</string>
+    <string name="edit_lc_ellipsis">modifier&#8230;</string>
+    <string name="getting_books_ellipsis">Chargement&#8230;</string>
+    <string name="n_events_found">%1$s évènements trouvés</string>
+    <string name="last_error_e">Dernière erreur: %1$s</string>
+    <string name="invalid_isbn_x_specified_in_search">ISBN incorrect dans la recherche \'%1$s\'</string>
+    <string name="if_day_is_specified_month_and_year_must_be">Si le jour est précisé, le mois et l\'année doivent l\'être aussi.</string>
+    <string name="if_month_is_specified_year_must_be">Si le mois est précisé, l\'année doit l\'être aussi.</string>
+    <string name="main_menu">Menu principal</string>
+    <string name="use_external_image_cropper">Recadrage d\'image avec un outil externe (Expérimental)</string>
+    <string name="auto_rotate_camera_images">Rotation automatique des photos</string>
+    <string name="hint_autorotate_camera_images">Si vous devez systematiquement tourner vos photos dans le même sens, envisagez d\'autoriser la rotation automatique en changeant vos paramètres.</string>
+    <string name="default_crop_frame_is_whole_image">Le cadre par défaut de l\'image à recadrer sera l\'image complète</string>
+    <string name="cancelled">Annulé</string>
+    <string name="import_complete">Import terminé</string>
+    <string name="amazon_books">Amazon</string>
+    <string name="google_books">Google Books</string>
+    <string name="library_thing">LibraryThing</string>
+    <string name="searching_elipsis">Recherche en cours&#8230;</string>
+    <string name="adding_book_elipsis">Ajout du livre&#8230;</string>
+
+    <!-- Heading for scanner-related preferences -->
+    <string name="scanning">Scan en cours</string>
+    <!-- Preference name, displayed in a preference activity -->
+    <string name="preferred_scanner">Scanner préféré</string>
+    <!-- Preference VALUE, displayed in a preference activity -->
+    <string name="zxing_compatible_scanner">Scanner compatible Zxing</string>
+    <!-- Preference VALUE, displayed in a preference activity -->
+    <string name="pic2shop_scanner"> Scanner Pic2Shop</string>
+    <!-- Preference name, displayed in a preference activity -->
+    <string name="beep_if_scanned_isbn_valid">Beeper si le scan est valide</string>
+    <!-- Hint text displayed when user enters the book listw -->
+    <string name="hint_view_only_book_details">Quand vous cliquez sur un élément de cette liste, vous pouvez choisir de d\'abord l\'ouvrir en mode lecture.
+		Voir le menu \"Autres Préférences\" pour adapter ce paramètre.</string>
+    <!-- Hint text displayed when user enters the 'read-only' book view -->
+    <string name="hint_view_only_help">Ceci est l\'écran de consultation d\'un livre (lecture seulement); vous pouvez glisser vers la gauche ou la droite pour 
+        passer d\'un livre à l\'autre, et vous pouvez modifier le livre via le menu Options ou en cliquant sur l\'icône da la barre de navigation.	</string>
+    <!-- This is the heading of the 'Details' tab when editing a book. It needs to be short. "Book Details" is too long. -->
+    <string name="details">Détails</string>
+    <!-- This is the heading of the 'Loan' tab when editing a book. It needs to be short. "Loan Book" is too long. -->
+    <string name="loan">Prêt</string>
+    <!-- Hint displayed when an export or database backup is done -->
+    <string name="hint_not_a_full_backup">Merci de noter qu\'il ne s\'agit pas d\'un backup complet, les couvertures en sont absentes.
+		\n\nPour un backup complet, vous devez copier le répertoire \'bookCatalogue\'  
+		de votre carte SD vers un autre media.
+		\n\nVoir notre FAQ (un lien internet est disponible dans \'Help\')pour des intructions détaillées.</string>
+    <!-- Button text on the Goodreads activity; only displayed after user has registered -->
+    <string name="forget_credentials">Suppr. les données de connection</string>
+    <!-- Extra text displayed on the Goodreads activity when a user HAS registered -->
+    <string name="Goodreads_auth_blurb_part4">Cette application est déjà autorisée auprès de Goodreads. Si vous souhaitez effacer
+		vos données de connection, vos pouvez cliquer sur le bouton ci-dessous. Mais, il est aussi
+		important  d\'enlever cette autoristation sur le site de Goodreads également.
+		\n\nForgetting the credentials here will remove the Goodreads option from the main application menu.</string>
+    <!-- Progress dialog message displayed when doing a long network operation to a web site -->
+    <string name="connecting_to_web_site">Connection au site &#8230;</string>
+    <!-- Admin option to import -->
+    <string name="backup_to_archive">Archivage de la base de  données</string>
+    <!-- Admin option to import -->
+    <string name="import_from_archive">Restauration de la base de données</string>
+    <!-- Hint displayed when aCatalogue Backup is done -->
+    <string name="archive_complete_details">Le fichier %3$s appelé %2$s a été créé dans le répertoire \"%1$s\" 
+		sur votre carte carte SD.\n\nVous devriez le copier sur un autre support pour éviter leur perte en cas de perte, vol ou destruction de votre equipement</string>
+    <!-- Displayed in progress dialog when exporting covers -->
+    <string name="covers_progress">Couverture de %1$s exportée (%2$s manquante)</string>
+
+    <!-- Heading in Admin activity -->
+    <string name="advanced_options">Options avancées</string>
+    <!-- Showed in progress dialog when an import starts -->
+    <string name="backing_up_ellipsis">Sauvegarde de &#8230;</string>
+    <!-- Showed in progress dialog when an import starts -->
+    <string name="importing_ellipsis">Importation de &#8230;</string>
+    <!-- Content description for the 'up' icon in the folder browser -->
+    <string name="up_folder">Parent</string>
+    <!-- Displayed when a user tries to browse higher than the root directory, or if the parent is unable to be read -->
+    <string name="no_parent_directory_found">Pas de répertoire parent disponible</string>
+    <!-- For saving and opening exports or backups -->
+    <string name="open">Ouvrir</string>
+    <!-- Admin option to export books -->
+    <string name="export_to_csv">Export vers un fichier CSV</string>
+    <!-- Admin option to import books -->
+    <string name="import_from_csv">Import depuis un fichier CSV</string>
+    <!-- Displayed when a file/open dialog results in selecting a non-exitant file -->
+    <string name="please_select_an_existing_file">Merci de choisir un fichier existant</string>
+    <!-- Displayed when a file/save dialog results in selecting a directory file -->
+    <string name="please_select_a_non_directory">Merci de choisir un fichier et pas un  répertoire</string>
+    <!-- Displayed in Admin menu advanced options (top make a copy of the internal database on the sdcard -->
+    <string name="copy_database">Copie de la base de données (Support Tech.)</string>
+    <!-- Items in list of options for the 'Summary Details' preference. Determines what is show in book list header -->
+    <string name="show_book_count">Montrer le nombre de livres</string>
+    <string name="show_first_level_and_book_count">Montrer l\'entête de 1er niveau et le nombre de livres</string>
+    <string name="show_all_summary_details">Montrer tous les détails</string>
+    <!-- Displayed when an archive operation fails -->
+    <string name="import_failed">Restauration échouée</string>
+    <!-- Displayed when any write operation to the sd card fails -->
+    <string name="please_check_sd_writable">Merci de vérifier que votre carte SD est en mode \'ecriture\' et dispose d\'un espace suffisant</string>
+    <!-- Displayed when any write operation to the sd card fails -->
+    <string name="please_check_sd_readable">Merci de vérifier que votre carte SD est bien accessible.</string>
+    <!-- End : String Section -->
+
+    <!-- Begin: Added/Updated in [Next Version] -->
+
+
+    <!-- End: Added/Updated in [Next Version] -->
+
 </resources>

@@ -42,17 +42,14 @@ Features include;
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
 new in 5.0.0
-* Backup to single file
-* Add greater granularity to book list header info preference
-* Better ASIN search support
-
-new in 4.2.4 (unreleased)
-* A non-editable view of book details, with 'fling\ support! (See "Other Preferences") (Nick Silin)
+* A non-editable view of book details, with 'fling' support! (See "Other Preferences") (Nick Silin)
 * Archiving (Backup & Import) of entire catalogue, including books, covers, preferences and styles
 * Updated interface with Action Bar support for usability and to work better on devices without menu buttons
 * Support for pic2shop scanner (better for fixed focus, low light and in front-facing cameras)
 * goodreads now appears in main menu if you authorize it
 * Check internet connection earlier when trying to scan books
+* Add greater granularity to book list header info preference
+* Better ASIN search support
 * More French translation updates (Imkal & Djiko)
 * More German translation updates (Robert Wetzlmayr)
 * More Russian translation updates (Nick Silin)

@@ -3,8 +3,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.eleybourn.bookcatalogue"
     android:installLocation="auto"
-    android:versionCode="142"
-    android:versionName="5.0.0" >
+    android:versionCode="143"
+    android:versionName="5.0.1" >
 
     <uses-sdk
         android:minSdkVersion="7"
@@ -21,8 +21,8 @@
 
     <application
         android:name=".BookCatalogueApp"
-        android:icon="@drawable/ic_launcher3"
-        android:label="@string/app_name" android:logo="@drawable/ic_logo">
+        android:icon="@drawable/ic_launcher4"
+        android:label="@string/app_name" android:logo="@drawable/ic_launcher4">
         android:theme="@style/Theme.Sherlock"
         <provider
             android:name=".SearchSuggestionProvider"

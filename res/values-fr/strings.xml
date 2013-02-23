@@ -764,6 +764,18 @@
     <string name="please_check_sd_readable">Merci de vérifier que votre carte SD est bien accessible.</string>
     <!-- End : String Section -->
 
+    <!-- Begin: Added/Updated in 5.0.2 -->
+
+    <string name="new_in_502">
+		<![CDATA[
+			<p><b>Nouveau dans la version 5.0.2</b>\n\n
+				* Correction de bogue\n\n
+			</p>
+		]]>
+    </string>
+
+    <!-- End: Added/Updated in 5.0.2 -->
+
     <!-- Begin: Added/Updated in [Next Version] -->
 
 

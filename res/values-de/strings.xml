@@ -769,4 +769,20 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
 <string name="please_check_sd_writable">Bitte überprüfen Sie, ob die SD-Karte beschreibbar ist und genügend freien Platz aufweist.</string>
 <!-- Displayed when any write operation to the sd card fails -->
 <string name="please_check_sd_readable">Bitte überprüfen Sie, ob auf die SD-Karte zugegriffen werden kann.</string>
+
+
+    <!-- Begin: Added/Updated in 5.0.2 -->
+
+    <string name="new_in_502">
+		<![CDATA[
+			<p><b>Neu in 5.0.2</b>\n\n
+			    * Fehlerbehebungen\n\n
+				</p>
+				]]>
+    </string>
+
+    <!-- End: Added/Updated in 5.0.2 -->
+
+
 </resources>
+

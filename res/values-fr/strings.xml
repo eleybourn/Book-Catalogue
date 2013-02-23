@@ -698,7 +698,7 @@
     <!-- Preference VALUE, displayed in a preference activity -->
     <string name="pic2shop_scanner"> Scanner Pic2Shop</string>
     <!-- Preference name, displayed in a preference activity -->
-    <string name="beep_if_scanned_isbn_valid">Beeper si l'ISBN scanné est valide</string>
+    <string name="beep_if_scanned_isbn_valid">Beeper si l\'ISBN scanné est valide</string>
     <!-- Hint text displayed when user enters the book listw -->
     <string name="hint_view_only_book_details">Quand vous cliquez sur un élément de cette liste, vous pouvez choisir de d\'abord l\'ouvrir en mode lecture.
 		Voir le menu \"Autres Préférences\" pour adapter ce paramètre.</string>

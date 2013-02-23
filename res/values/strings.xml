@@ -813,9 +813,19 @@ and you can edit the book via the options menu using the menu button or overflow
     <!-- Displayed when any write operation to the sd card fails -->
     <string name="please_check_sd_readable">Please check that the SD Card is accessible.</string>
 
+    <!-- Begin: Added/Updated in 5.0.2 -->
+
+    <string name="new_in_502">
+		<![CDATA[
+			<p><b>New in 5.0.2</b>\n\n
+				* Bug fixes\n\n
+			</p>
+		]]>
+    </string>
+
+    <!-- End: Added/Updated in 5.0.2 -->
+    
     <!-- Begin: Added/Updated in [Next Version] -->
-
-
     <!-- End: Added/Updated in [Next Version] -->
 
 </resources>

@@ -779,13 +779,19 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 			}
 			case ROW_KIND_SERIES:
 			{
-				addMenuItem(menu, R.id.MENU_DELETE_SERIES, R.string.menu_delete_series, android.R.drawable.ic_menu_delete);
-				addMenuItem(menu, R.id.MENU_EDIT_SERIES, R.string.menu_edit_series, android.R.drawable.ic_menu_edit);
+				long id = rowView.getSeriesId();
+				if (id != 0) {
+					addMenuItem(menu, R.id.MENU_DELETE_SERIES, R.string.menu_delete_series, android.R.drawable.ic_menu_delete);
+					addMenuItem(menu, R.id.MENU_EDIT_SERIES, R.string.menu_edit_series, android.R.drawable.ic_menu_edit);					
+				}
 				break;
 			}
 			case ROW_KIND_FORMAT:
 			{
-				addMenuItem(menu, R.id.MENU_EDIT_FORMAT, R.string.menu_edit_format, android.R.drawable.ic_menu_edit);
+				String format = rowView.getFormat();
+				if (format != null && !format.equals("")) {
+					addMenuItem(menu, R.id.MENU_EDIT_FORMAT, R.string.menu_edit_format, android.R.drawable.ic_menu_edit);
+				}
 				break;
 			}
 			}

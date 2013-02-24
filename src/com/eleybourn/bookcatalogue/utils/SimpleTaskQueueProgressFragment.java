@@ -585,7 +585,13 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setDialogNumberFormat(ProgressDialog d) {
 		if (Build.VERSION.SDK_INT >= 11) {
-			d.setProgressNumberFormat(mNumberFormat);
+			try {
+				d.setProgressNumberFormat(mNumberFormat);				
+			} catch (Exception e) {
+				// Ignore and log; Android 3.2 seems not to like NULL format despite docs, 
+				// and this is a non-critical feature
+				Logger.logError(e);
+			}
 		}		
 	}
 

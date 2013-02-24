@@ -310,7 +310,7 @@ public class BookEditFields extends BookDetailsAbstract
 		String encoded_shelf = Utils.encodeListItem(currShelf, BOOKSHELF_SEPERATOR);
 		Field fe = mFields.getField(R.id.bookshelf);
 		fe.setValue(currShelf);
-		fe.setTag(encoded_shelf);		
+		mEditManager.getBookData().setBookshelfList(encoded_shelf);		
 	}
 
 	private void setupUi() {

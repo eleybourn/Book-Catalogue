@@ -49,7 +49,7 @@
 		* Support d\'un choix plus large d\'explorateurs de la Galerie et de fichiers\n\n
 		* Meilleure gestion des dates lors de l\'import/export/sync\n\n
 		* Correction de la gestion des doubles dans les titres d\'une anthologie\n\n
-		* Correction d\'un certain nombre de bugs\n\n
+		* Correction d\'un certain nombre de bogues\n\n
 		Tous nos remerciements à nos dévoués Beta Testeurs et nos traducteurs.\n\n
 		Tous les bugs et erreurs sont à imputer à Grunthos. Et envoyez-nous vos rapports de bugs.
 			</p>
@@ -69,15 +69,15 @@
 		* Meilleure prise en charge des scanners de code barre incompatibles\n\n
 		* Plus important niveau de détails envoyés lors d\'un crash ou d\'une demande d\'aide\n\n
 		* Nettoyage des mises en page (Nick Silin)\n\n
-		* Correction de bugs\n\n
+		* Correction de bogues\n\n
 			</p>
 		]]>
     </string>
     <string name="new_in_423">
 <![CDATA[
 	<p><b>Nouveautés de la version 4.2.3</b>\n\n
-		* Meilleure prise en charge des ISBN invalides lors de l\'envoi à goodreads\n\n
-		* Autres corrections de bugs mineurs\n\n
+		* Meilleure prise en charge des ISBN invalides lors de l\'envoi à Goodreads\n\n
+		* Autres corrections de bogues mineurs\n\n
 			</p>
 		]]>
     </string>
@@ -87,17 +87,17 @@
     <string name="new_in_500">
 <![CDATA[
 	<p><b>Nouveau dans la version 5.0.0</b>\n\n
-		* Ajout vue en lecture seulement des détails d\'un livre, avec support du défilement par \'balayage\'! (Voir \"Autres Préférences\") (Nick Silin)\n\n
+		* Ajout d'une vue en mode lecture avec les détails du livre et support du défilement par \'balayage\'! (Voir \"Autres Préférences\") (Nick Silin)\n\n
 		* Archivage et restauration du catalogue complet incluant les couvertures, les paramètres et les styles\n\n
 		* Interface améliorée avec une barre d\'action pour une utilisation plus facile sans bouton de menu\n\n
 		* Support du scanner pic2shop (Meilleur pour les focus fixe, en faible lumière et les caméras frontal)\n\n
-		* Goodreads présent dans le menu prinicpal si la connections est validée\n\n
+		* Goodreads présent dans le menu prinicpal si la connection est validée\n\n
 		* Validation au plus tôt de la connection internet lors d\'un scan.\n\n
 		* Mise à jour de la version allemande (Robert Wetzlmayr)\n\n
-		* Mise à jour de la version françaises (Imkal & Djiko)\n\n
+		* Mise à jour de la version française (Imkal & Djiko)\n\n
 		* Mise à jour de la version russe (Nick Silin)\n\n
 		* Adaptation interne en prévision de la version pour les tablettes\n\n
-		* Correction de bogue\n\n
+		* Correction de bogues\n\n
 			</p>
 		]]>
     </string>
@@ -155,7 +155,7 @@
     <string name="export_data">Exporter les livres</string>
     <string name="export_complete">Export vers la carte SD terminé.</string>
     <string name="import_data">Importer les livres</string>
-    <string name="import_alert">Attention ! L\'import de données peut provoquer la mise à jour de livres avec de nouvelles informations si les identifiants importés sont les mêmes que des identifiants existants. Cela est généralement correct si vous n\'avez modifié qu\'un champ dans un fichier exporté. Si vous avez intégralement créé un livre, assurez vous que le champ identifiant est vide.</string>
+    <string name="import_alert">Attention ! L\'import de données peut provoquer la mise à jour de livres avec de nouvelles informations si les identifiants importés sont identiques à ceux existants. Cela est généralement correct si vous n\'avez modifié qu\'un champ dans un fichier exporté. Si vous avez intégralement créé un livre, assurez vous que le champ identifiant est vide.</string>
     <string name="export_failed">ERREUR : l\'export vers la carte SD a échoué. </string>
     <string name="import_failed">ERREUR: l\'import depuis la carte SD a échoué. Le fichier se trouve-t-il au bon endroit ?</string>
     <string name="search_title">Book Catalogue : Résultats de recherche</string>
@@ -266,7 +266,7 @@
     <string name="vldt_boolean_expected">Valeur booléenne (0,1,t,f,true,false) attendue pour \'%s\'</string>
     <string name="vldt_nonblank_required">Valeur non vide attendue pour \'%s\'</string>
     <string name="vldt_blank_required">Le champ \'%s\' doit être vide</string>
-    <string name="vldt_failed">La validation a échouée pour \'%s\'</string>
+    <string name="vldt_failed">La validation a échoué pour \'%s\'</string>
     <string name="vldt_series_num_must_be_blank">Les numéros de séries doivent être vides (%1$s trouvé) ou le nom de la série doit être précisé.</string>
     <string name="vldt_read_start_after_end">La date de début de lecture est après la date de fin</string>
     <string name="backup_success">Sauvegarde réussie</string>
@@ -389,7 +389,7 @@
 		mais si vous êtes interessé vous pouvez vous enregistrer ici :</string>
     <string name="goodreads_auth_blurb_part2">Une fois enregistré ou si vous êtes déjà utilisateur de Goodreads, vous pouvez autoriser BookCatalogue 
 		à accéder à vos données Goodreads en pressant le bouton ci-dessous. Vous serez redirigé vers une page 
-		sur laquelle vous devrez vous connecter à goodreads et autoriser cette application. Nous n\'aurons jamais 
+		sur laquelle vous devrez vous connecter à Goodreads et autoriser cette application. Nous n\'aurons jamais 
 		connaissance de votre mot de passe, et vous pourrez désactiver cet accès sur le site Goodreads. 
 		Il est possible que vous arriviez sur une page blanche. Cliquez simplement sur le bouton Retour pour revenir ici !</string>
     <string name="location_of_book">Emplacement du livre</string>
@@ -468,7 +468,7 @@
     <string name="sort_first_author_series">Auteur puis série (premier auteur seulement)</string>
     <string name="sort_series">Séries</string>
     <string name="sort_title_first_letter">Première lettre du titre</string>
-    <string name="sort_genre">Nom de genre</string>
+    <string name="sort_genre">Genre</string>
     <string name="sort_loaned">Prêté</string>
     <string name="sort_read_and_unread">Lu et non lu</string>
     <string name="sort_publication_date">Date de publication</string>
@@ -664,7 +664,7 @@
     <string name="details_have_changed">Modification en cours</string>
     <string name="you_have_unsaved_changes">Des modifications ne sont pas sauvées, si vous quittez maintenant elles seront perdues.</string>
     <string name="exit">Quitter</string>
-    <string name="continue_editing">Continuer l\'édition</string>
+    <string name="continue_editing">Continuer la modification</string>
     <string name="the_title_already_exists">Le titre existe déjà</string>
     <string name="year">Année</string>
     <string name="month">Mois</string>
@@ -729,8 +729,8 @@
     <!-- Admin option to import -->
     <string name="import_from_archive">Restauration des données</string>
     <!-- Hint displayed when aCatalogue Backup is done -->
-    <string name="archive_complete_details">Le fichier %3$s appelé %2$s a été créé dans le répertoire \"%1$s\" 
-		sur votre carte carte SD.\n\nVous devriez le copier sur un autre support pour éviter leur perte en cas de perte, vol ou destruction de votre equipement</string>
+    <string name="archive_complete_details">Le fichier %2$s (%3$s) a été créé dans le répertoire \"%1$s\" 
+		de votre carte carte SD.\n\nVous devriez le copier sur un autre média comme sauvegarde en cas de perte, vol ou destruction de votre équipement</string>
     <!-- Displayed in progress dialog when exporting covers -->
     <string name="covers_progress">Couverture de %1$s exportée (%2$s manquante)</string>
 
@@ -781,7 +781,7 @@
     <string name="new_in_502">
 		<![CDATA[
 			<p><b>Nouveau dans la version 5.0.2</b>\n\n
-				* Correction de bogue\n\n
+				* Correction de bogues\n\n
 			</p>
 		]]>
     </string>
@@ -793,8 +793,8 @@
     <string name="new_in_503">
 		<![CDATA[
 			<p><b>Nouveau dans la version 5.0.3</b>\n\n
-				* Correction de bogue\n\n
-				* Mise à jour de la version françaises (Imkal)\n\n
+				* Correction de bogues\n\n
+				* Mise à jour de la version française (Imkal)\n\n
 			</p>
 		]]>
     </string>

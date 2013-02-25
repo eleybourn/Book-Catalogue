@@ -774,4 +774,18 @@
 
     <!-- End: Added/Updated in 5.0.2 -->
     
+    <!-- Begin: Added/Updated in 5.0.3 -->
+
+    <string name="new_in_503">
+		<![CDATA[
+			<p><b>Новое в версии 5.0.3</b>\n\n
+				* Исправление багов\n\n
+				* Доработан перевод на французский (Imkal)\n\n
+			</p>
+		]]>
+    </string>
+
+    <!-- End: Added/Updated in 5.0.2 -->
+
+
 </resources>

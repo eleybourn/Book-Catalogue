@@ -788,6 +788,21 @@
 
     <!-- End: Added/Updated in 5.0.2 -->
 
+    <!-- Begin: Added/Updated in 5.0.3 -->
+
+    <string name="new_in_503">
+		<![CDATA[
+			<p><b>Nouveau dans la version 5.0.3</b>\n\n
+				* Correction de bogue\n\n
+				* Mise à jour de la version françaises (Imkal)\n\n
+			</p>
+		]]>
+    </string>
+
+    <!-- End: Added/Updated in 5.0.3 -->
+    
+
+
     <!-- Begin: Added/Updated in [Next Version] -->
 
 

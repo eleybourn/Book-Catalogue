@@ -425,7 +425,8 @@ public class Fields extends ArrayList<Fields.Field> {
 			try {
 				TextView v = (TextView) field.getView();
 				String newVal = field.format(s);
-				String oldVal = v.getText().toString();
+				// Despite assurances otherwise, getText() apparently returns null sometimes
+				String oldVal = v.getText() == null ? null : v.getText().toString();
 				if (newVal == null && oldVal == null)
 					return;
 				if (newVal != null && oldVal != null && newVal.equals(oldVal))

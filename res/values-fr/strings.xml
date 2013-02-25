@@ -87,7 +87,7 @@
     <string name="new_in_500">
 <![CDATA[
 	<p><b>Nouveau dans la version 5.0.0</b>\n\n
-		* Ajout d'une vue en mode lecture avec les détails du livre et support du défilement par \'balayage\'! (Voir \"Autres Préférences\") (Nick Silin)\n\n
+		* Ajout d\'une vue en mode lecture avec les détails du livre et support du défilement par \'balayage\'! (Voir \"Autres Préférences\") (Nick Silin)\n\n
 		* Archivage et restauration du catalogue complet incluant les couvertures, les paramètres et les styles\n\n
 		* Interface améliorée avec une barre d\'action pour une utilisation plus facile sans bouton de menu\n\n
 		* Support du scanner pic2shop (Meilleur pour les focus fixe, en faible lumière et les caméras frontal)\n\n

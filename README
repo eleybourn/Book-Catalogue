@@ -41,6 +41,13 @@ Features include;
   case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+new in 5.0.3
+* Bug fix: 'duplicate' series no longer incorrectly causing errors
+* Bug fix: Prevent editing series and formats in list if empty
+* Bug fix: Ensure default bookshelf is really set when adding books
+* Bug fix: Handle broken android versions that do not accept null number format for progress dialogs
+* French Translation update (Imkal)
+
 new in 5.0.1/2
 * Bug fix: Author text in 'Search Internet' now correct colour
 * Bug fix: goodreads sync no longer causes crash if not registered

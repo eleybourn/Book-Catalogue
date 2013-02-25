@@ -413,14 +413,23 @@ public class CatalogueDBAdapter {
 		KEY_SERIES_NAME + " text not null " +
 		")";
 	
+	private static final String DATABASE_CREATE_BOOK_SERIES_54 = 
+			"create table " + DB_TB_BOOK_SERIES + "(" + 
+			KEY_BOOK + " integer REFERENCES " + DB_TB_BOOKS + " ON DELETE CASCADE ON UPDATE CASCADE, " +
+			KEY_SERIES_ID + " integer REFERENCES " + DB_TB_SERIES + " ON DELETE SET NULL ON UPDATE CASCADE, " +
+			KEY_SERIES_NUM + " integer, " + 
+			KEY_SERIES_POSITION + " integer," + 
+			"PRIMARY KEY(" + KEY_BOOK + ", "  + KEY_SERIES_POSITION + ")" +
+			")";
+
 	private static final String DATABASE_CREATE_BOOK_SERIES = 
-		"create table " + DB_TB_BOOK_SERIES + "(" + 
-		KEY_BOOK + " integer REFERENCES " + DB_TB_BOOKS + " ON DELETE CASCADE ON UPDATE CASCADE, " +
-		KEY_SERIES_ID + " integer REFERENCES " + DB_TB_SERIES + " ON DELETE SET NULL ON UPDATE CASCADE, " +
-		KEY_SERIES_NUM + " integer, " + 
-		KEY_SERIES_POSITION + " integer," + 
-		"PRIMARY KEY(" + KEY_BOOK + ", "  + KEY_SERIES_POSITION + ")" +
-		")";
+			"create table " + DB_TB_BOOK_SERIES + "(" + 
+			KEY_BOOK + " integer REFERENCES " + DB_TB_BOOKS + " ON DELETE CASCADE ON UPDATE CASCADE, " +
+			KEY_SERIES_ID + " integer REFERENCES " + DB_TB_SERIES + " ON DELETE SET NULL ON UPDATE CASCADE, " +
+			KEY_SERIES_NUM + " text, " + 
+			KEY_SERIES_POSITION + " integer," + 
+			"PRIMARY KEY(" + KEY_BOOK + ", "  + KEY_SERIES_POSITION + ")" +
+			")";
 	
 	private static final String DATABASE_CREATE_BOOK_AUTHOR = 
 		"create table " + DB_TB_BOOK_AUTHOR + "(" + 
@@ -557,7 +566,7 @@ public class CatalogueDBAdapter {
 //						+ " LEFT OUTER JOIN " + DB_TB_SERIES + " s ON (s." + KEY_ROWID + "=w." + KEY_SERIES_ID + ") ";
 
 	//TODO: Update database version RELEASE: Update database version
-	public static final int DATABASE_VERSION = 80;
+	public static final int DATABASE_VERSION = 81;
 
 	private TableInfo mBooksInfo = null;
 
@@ -1208,7 +1217,7 @@ public class CatalogueDBAdapter {
 									+ " )"
 									);
 						
-						db.execSQL(DATABASE_CREATE_BOOK_SERIES);
+						db.execSQL(DATABASE_CREATE_BOOK_SERIES_54);
 						db.execSQL(DATABASE_CREATE_BOOK_AUTHOR);
 						
 						//createIndices(db); // All createIndices prior to the latest have been removed
@@ -1274,7 +1283,7 @@ public class CatalogueDBAdapter {
 										+ " )"
 										);
 							
-							db.execSQL(DATABASE_CREATE_BOOK_SERIES);
+							db.execSQL(DATABASE_CREATE_BOOK_SERIES_54);
 							db.execSQL(DATABASE_CREATE_BOOK_AUTHOR);
 							
 							db.execSQL("INSERT INTO " + DB_TB_BOOK_SERIES + " (" + KEY_BOOK + ", " + KEY_SERIES_ID + ", " + KEY_SERIES_NUM + ", " + KEY_SERIES_POSITION + ") "
@@ -1373,7 +1382,7 @@ public class CatalogueDBAdapter {
 				results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_BOOK_SERIES + "'", new String[]{});
 				if (results57.getCount() == 0) {
 					//table does not exist
-					db.execSQL(DATABASE_CREATE_BOOK_SERIES);
+					db.execSQL(DATABASE_CREATE_BOOK_SERIES_54);
 					db.execSQL("INSERT INTO " + DB_TB_BOOK_SERIES + " (" + KEY_BOOK + ", " + KEY_SERIES_ID + ", " + KEY_SERIES_NUM + ", " + KEY_SERIES_POSITION + ") "
 							+ "SELECT DISTINCT b." + KEY_ROWID + ", s." + KEY_ROWID + ", b." + KEY_SERIES_NUM + ", 1"
 							+ " FROM " + DB_TB_BOOKS + " b "
@@ -1574,6 +1583,15 @@ public class CatalogueDBAdapter {
 				curVersion++;
 				// We want a rebuild in all lower case.
 				StartupActivity.scheduleFtsRebuild();
+			}
+			if (curVersion == 80) {
+				curVersion++;
+				// Adjust the Book-series table to have a text 'series-num'.
+				final String tempName = "books_series_tmp";
+				db.execSQL("ALTER TABLE " + DB_TB_BOOK_SERIES + " RENAME TO " + tempName);
+				db.execSQL(DATABASE_CREATE_BOOK_SERIES);
+				copyTableSafely(sdb, tempName, DB_TB_BOOK_SERIES);
+				db.execSQL("DROP TABLE " + tempName);
 			}
 			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			// vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv

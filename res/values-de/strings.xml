@@ -783,6 +783,19 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
 
     <!-- End: Added/Updated in 5.0.2 -->
 
+    <!-- Begin: Added/Updated in 5.0.3 -->
+
+    <string name="new_in_503">
+		<![CDATA[
+			<p><b>Neu in 5.0.3</b>\n\n
+			    * Fehlerbehebungen\n\n
+			    * Weitere Updates der französischen Übersetzung (Imkal)\n\n
+			</p>
+		]]>
+    </string>
+
+    <!-- End: Added/Updated in 5.0.3 -->
+    
 
 </resources>
 

@@ -87,7 +87,7 @@
     <string name="new_in_500">
 <![CDATA[
 	<p><b>Nouveau dans la version 5.0.0</b>\n\n
-		* Ajout d'une vue en mode lecture avec les détails du livre et support du défilement par \'balayage\'! (Voir \"Autres Préférences\") (Nick Silin)\n\n
+		* Ajout d\'une vue en mode lecture avec les détails du livre et support du défilement par \'balayage\'! (Voir \"Autres Préférences\") (Nick Silin)\n\n
 		* Archivage et restauration du catalogue complet incluant les couvertures, les paramètres et les styles\n\n
 		* Interface améliorée avec une barre d\'action pour une utilisation plus facile sans bouton de menu\n\n
 		* Support du scanner pic2shop (Meilleur pour les focus fixe, en faible lumière et les caméras frontal)\n\n
@@ -718,7 +718,7 @@
     <!-- Button text on the Goodreads activity; only displayed after user has registered -->
     <string name="forget_credentials">Suppr. les données de connection</string>
     <!-- Extra text displayed on the Goodreads activity when a user HAS registered -->
-    <string name="Goodreads_auth_blurb_part4">Cette application est déjà autorisée auprès de Goodreads. Si vous souhaitez effacer
+    <string name="goodreads_auth_blurb_part4">Cette application est déjà autorisée auprès de Goodreads. Si vous souhaitez effacer
 		vos données de connection, vos pouvez cliquer sur le bouton ci-dessous. Mais, il est aussi
 		important  d\'enlever cette autoristation sur le site de Goodreads également.
 		\n\nForgetting the credentials here will remove the Goodreads option from the main application menu.</string>

@@ -49,7 +49,7 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	/** Handler so we can detect UI thread */
 	private Handler mHandler = new Handler();
 	/** List of messages queued; only used if activity not present when showToast() is called */
-	private ArrayList<Integer> mMessages = null;
+	private ArrayList<String> mMessages = null;
 	/** Flag indicating dialog was cancelled */
 	private boolean mWasCancelled = false;
 	
@@ -109,6 +109,7 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 
 		public TaskFinishedMessage(FragmentTask task, Exception e) {
 			mTask = task;
+			mException = e;
 		}
 		
 		@Override
@@ -297,17 +298,26 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	 * @param id
 	 */
 	public void showToast(final int id) {
+		if (id != 0)
+			showToast(getString(id));
+	}
+
+	/**
+	 * Utility routine to display a Toast message or queue it as appropriate.
+	 * @param id
+	 */
+	public void showToast(final String message) {
 		// Can only display in main thread.
 		if (Looper.getMainLooper().getThread() == Thread.currentThread() ) {
 			synchronized(this) {
 				if (this.getActivity() != null) {
-					Toast.makeText(this.getActivity(), id, Toast.LENGTH_LONG).show();
+					Toast.makeText(this.getActivity(), message, Toast.LENGTH_LONG).show();
 				} else {
 					// Assume the toast message was sent before the fragment was displayed; this
 					// list will be read in onAttach
 					if (mMessages == null)
-						mMessages = new ArrayList<Integer>();
-					mMessages.add(id);
+						mMessages = new ArrayList<String>();
+					mMessages.add(message);
 				}				
 			}
 		} else {
@@ -315,7 +325,7 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 			mHandler.post(new Runnable() {
 				@Override
 				public void run() {
-					showToast(id);
+					showToast(message);
 				}
 			});
 		}
@@ -358,8 +368,8 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 
 		synchronized(this) {
 			if (mMessages != null) {
-				for(Integer message: mMessages) {
-					if ((int)message > 0)
+				for(String message: mMessages) {
+					if (message != null && !message.equals(""))
 						Toast.makeText(a, message, Toast.LENGTH_LONG).show();
 				}
 				mMessages.clear();

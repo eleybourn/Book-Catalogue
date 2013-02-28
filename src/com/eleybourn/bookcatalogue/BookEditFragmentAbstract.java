@@ -309,6 +309,9 @@ public abstract class BookEditFragmentAbstract extends BookCatalogueFragment imp
 		// Check genre
 		showHideField(hideIfEmpty, R.id.genre, R.id.lbl_genre, R.id.row_genre);
 
+		// Check language
+		showHideField(hideIfEmpty, R.id.language, R.id.lbl_language, R.id.row_language);
+
 		// Check ISBN
 		showHideField(hideIfEmpty, R.id.isbn, R.id.row_isbn);
 

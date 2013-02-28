@@ -702,6 +702,7 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 		mFields.add(R.id.description, CatalogueDBAdapter.KEY_DESCRIPTION, null)
 			.setShowHtml(true);
 		mFields.add(R.id.genre, CatalogueDBAdapter.KEY_GENRE, null);
+		mFields.add(R.id.language, CatalogueDBAdapter.KEY_LANGUAGE, null);
 		
 		mFields.add(R.id.row_img, "", "thumbnail", null);
 		mFields.getField(R.id.row_img).getView().setOnCreateContextMenuListener(mCreateBookThumbContextMenuListener);

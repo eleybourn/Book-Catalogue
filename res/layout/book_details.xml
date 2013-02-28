@@ -225,6 +225,19 @@
             android:text="Science Fiction"
             tools:ignore="HardcodedText" />
 
+        <!-- Genre -->
+
+        <TextView
+            android:id="@+id/lbl_language"
+            style="@style/bookDetailsTitlesStyle"
+            android:text="@string/language" />
+
+        <TextView
+            android:id="@+id/language"
+            style="@style/bookDetailsTextStyle"
+            android:text="Quenya"
+            tools:ignore="HardcodedText" />
+
         <TableLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" >

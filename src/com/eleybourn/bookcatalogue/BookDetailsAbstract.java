@@ -33,6 +33,7 @@ import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.CoverBrowser.OnImageSelectedListener;
 import com.eleybourn.bookcatalogue.Fields.Field;
+import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 import com.eleybourn.bookcatalogue.cropper.CropCropImage;
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.utils.HintManager;
@@ -702,8 +703,8 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 		mFields.add(R.id.description, CatalogueDBAdapter.KEY_DESCRIPTION, null)
 			.setShowHtml(true);
 		mFields.add(R.id.genre, CatalogueDBAdapter.KEY_GENRE, null);
-		mFields.add(R.id.language, CatalogueDBAdapter.KEY_LANGUAGE, null);
-		
+		mFields.add(R.id.language, DatabaseDefinitions.DOM_LANGUAGE.name, null);
+
 		mFields.add(R.id.row_img, "", "thumbnail", null);
 		mFields.getField(R.id.row_img).getView().setOnCreateContextMenuListener(mCreateBookThumbContextMenuListener);
 		

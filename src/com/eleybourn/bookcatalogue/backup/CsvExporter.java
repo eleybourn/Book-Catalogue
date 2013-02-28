@@ -87,7 +87,7 @@ public class CsvExporter implements Exporter {
 			'"' + "anthology_titles" + "\"," +						//24 
 			'"' + CatalogueDBAdapter.KEY_DESCRIPTION+ "\"," + 		//25
 			'"' + CatalogueDBAdapter.KEY_GENRE+ "\"," + 			//26
-			'"' + CatalogueDBAdapter.KEY_LANGUAGE+ "\"," + 			//+1
+			'"' + DatabaseDefinitions.DOM_LANGUAGE+ "\"," + 			//+1
 			'"' + CatalogueDBAdapter.KEY_DATE_ADDED+ "\"," + 		//27
 			'"' + DatabaseDefinitions.DOM_GOODREADS_BOOK_ID + "\"," + 		//28
 			'"' + DatabaseDefinitions.DOM_LAST_GOODREADS_SYNC_DATE + "\"," + 		//29

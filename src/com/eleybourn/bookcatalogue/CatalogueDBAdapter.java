@@ -28,6 +28,7 @@ import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_GENRE
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_GOODREADS_BOOK_ID;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ID;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ISBN;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LANGUAGE;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LAST_GOODREADS_SYNC_DATE;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LAST_UPDATE_DATE;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LOCATION;
@@ -155,7 +156,6 @@ public class CatalogueDBAdapter {
 	public static final String KEY_READ_START = "read_start";
 	public static final String KEY_READ_END = "read_end";
 	public static final String KEY_FORMAT = "format";
-	public static final String KEY_LANGUAGE = "language";
 	public static final String OLD_KEY_AUDIOBOOK = "audiobook";
 	public static final String KEY_SIGNED = "signed";
 	public static final String KEY_DESCRIPTION = "description";
@@ -279,7 +279,7 @@ public class CatalogueDBAdapter {
 			KEY_SIGNED + " boolean not null default 0, " +
 			KEY_DESCRIPTION + " text, " +
 			KEY_GENRE + " text, " +
-			KEY_LANGUAGE + " text, " + // Added in version 82
+			DOM_LANGUAGE.getDefinition(true) + ", " + // Added in version 82
 			KEY_DATE_ADDED + " datetime default current_timestamp, " +
 			DOM_GOODREADS_BOOK_ID.getDefinition(true) + ", " +
 			DOM_LAST_GOODREADS_SYNC_DATE.getDefinition(true) + ", " +
@@ -581,7 +581,7 @@ public class CatalogueDBAdapter {
 			alias + "." + KEY_SIGNED + " as " + KEY_SIGNED + ", " + 
 			alias + "." + KEY_DESCRIPTION + " as " + KEY_DESCRIPTION + ", " + 
 			alias + "." + KEY_GENRE  + " as " + KEY_GENRE + ", " +
-			alias + "." + KEY_LANGUAGE  + " as " + KEY_LANGUAGE + ", " +
+			alias + "." + DOM_LANGUAGE  + " as " + DOM_LANGUAGE + ", " +
 			alias + "." + KEY_DATE_ADDED  + " as " + KEY_DATE_ADDED + ", " +
 			alias + "." + DOM_GOODREADS_BOOK_ID  + " as " + DOM_GOODREADS_BOOK_ID + ", " +
 			alias + "." + DOM_LAST_GOODREADS_SYNC_DATE  + " as " + DOM_LAST_GOODREADS_SYNC_DATE + ", " +
@@ -2717,9 +2717,9 @@ public class CatalogueDBAdapter {
 		String baseSql = fetchAllBooksInnerSql(null, bookshelf, "", "", "", "", "");
 
 		String sql = "SELECT DISTINCT "
-				+ " Case When (b." + KEY_LANGUAGE + " = '' or b." + KEY_LANGUAGE + " is NULL) Then ''"
-				+ " Else b." + KEY_LANGUAGE + " End as " + KEY_ROWID + baseSql +
-		" ORDER BY Upper(b." + KEY_LANGUAGE + ") " + COLLATION;
+				+ " Case When (b." + DOM_LANGUAGE + " = '' or b." + DOM_LANGUAGE + " is NULL) Then ''"
+				+ " Else b." + DOM_LANGUAGE + " End as " + KEY_ROWID + baseSql +
+		" ORDER BY Upper(b." + DOM_LANGUAGE + ") " + COLLATION;
 		return mDb.rawQuery(sql, new String[]{});
 	}
 	

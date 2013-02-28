@@ -126,6 +126,7 @@ public class UpdateFromInternet extends ActivityWithTasks {
 		addIfVisible(CatalogueDBAdapter.KEY_FORMAT, null, R.string.format, Usages.COPY_IF_BLANK, false);
 		addIfVisible(CatalogueDBAdapter.KEY_DESCRIPTION, null, R.string.description, Usages.COPY_IF_BLANK, false);
 		addIfVisible(CatalogueDBAdapter.KEY_GENRE, null, R.string.genre, Usages.COPY_IF_BLANK, false);
+		addIfVisible(CatalogueDBAdapter.KEY_LANGUAGE, null, R.string.language, Usages.COPY_IF_BLANK, false);
 
 		// Display the list of fields
 		LinearLayout parent = (LinearLayout) findViewById(R.id.manage_fields_scrollview);

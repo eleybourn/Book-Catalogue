@@ -3,8 +3,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.eleybourn.bookcatalogue"
     android:installLocation="auto"
-    android:versionCode="146"
-    android:versionName="5.0.3" >
+    android:versionCode="147"
+    android:versionName="5.0.4" >
 
     <uses-sdk
         android:minSdkVersion="7"

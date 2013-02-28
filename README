@@ -41,6 +41,12 @@ Features include;
   case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+new in 5.0.4
+* New field: Language
+* Translation updates (Imkal)
+* Code cleanups
+* Scanner info sent in 'Help'->'Send Info'
+
 new in 5.0.3
 * Bug fix: 'duplicate' series no longer incorrectly causing errors
 * Bug fix: Prevent editing series and formats in list if empty

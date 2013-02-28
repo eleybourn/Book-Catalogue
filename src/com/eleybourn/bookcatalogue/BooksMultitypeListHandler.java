@@ -20,23 +20,14 @@
 
 package com.eleybourn.bookcatalogue;
 
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_AUTHOR;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_BOOK;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_FORMAT;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_GENRE;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_LOANED;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_LOCATION;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_MAX;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_PUBLISHER;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_READ_AND_UNREAD;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_SERIES;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_TITLE_LETTER;
+import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.*;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ADDED_DAY;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ADDED_MONTH;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ADDED_YEAR;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_AUTHOR_FORMATTED;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_FORMAT;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_GENRE;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LANGUAGE;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LOANED_TO;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LOCATION;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_PUBLICATION_MONTH;
@@ -135,6 +126,8 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 			return new GenericStringHolder(rowView, DOM_TITLE_LETTER, R.string.no_title);
 		case ROW_KIND_GENRE:
 			return new GenericStringHolder(rowView, DOM_GENRE, R.string.no_genre);
+		case ROW_KIND_LANGUAGE:
+			return new GenericStringHolder(rowView, DOM_LANGUAGE, R.string.empty_with_brackets);
 		case ROW_KIND_AUTHOR:
 			return new GenericStringHolder(rowView, DOM_AUTHOR_FORMATTED, R.string.no_author);
 		case ROW_KIND_FORMAT:

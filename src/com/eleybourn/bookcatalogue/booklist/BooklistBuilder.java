@@ -23,24 +23,7 @@ import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.EMPTY_STRING_ARRAY;
 import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_DATE_PUBLISHED;
 import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_LOANED_TO;
 import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.encodeString;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_AUTHOR;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_BOOK;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_DAY_ADDED;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_DAY_READ;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_FORMAT;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_GENRE;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_LOANED;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_LOCATION;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_MONTH_ADDED;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_MONTH_PUBLISHED;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_MONTH_READ;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_PUBLISHER;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_READ_AND_UNREAD;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_SERIES;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_TITLE_LETTER;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_YEAR_ADDED;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_YEAR_PUBLISHED;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_YEAR_READ;
+import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.*;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ABSOLUTE_POSITION;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ADDED_DATE;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ADDED_DAY;
@@ -61,6 +44,7 @@ import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_GENRE
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_GIVEN_NAMES;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ID;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_KIND;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LANGUAGE;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LEVEL;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LOANED_TO;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LOANED_TO_SORT;
@@ -672,6 +656,15 @@ public class BooklistBuilder {
 					g.displayDomain = DOM_GENRE;
 					summary.addDomain(DOM_GENRE, TBL_BOOKS.dot(DOM_GENRE), SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED);
 					g.setKeyComponents("g", DOM_GENRE);
+					break;
+	
+				case ROW_KIND_LANGUAGE:
+					// The domain used to display the data on the screen (not always the underlying domain)
+					g.displayDomain = DOM_LANGUAGE;
+					// Define how the new field is retrieved and sorted/grouped
+					summary.addDomain(DOM_LANGUAGE, TBL_BOOKS.dot(DOM_LANGUAGE), SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED);
+					// Unique name for this field and the source data field
+					g.setKeyComponents("lang", DOM_LANGUAGE);
 					break;
 	
 				case ROW_KIND_LOCATION:

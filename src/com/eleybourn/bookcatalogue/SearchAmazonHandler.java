@@ -340,7 +340,8 @@ public class SearchAmazonHandler extends DefaultHandler {
 				} else if (mInListPrice && localName.equalsIgnoreCase(CURRENCY_CODE)){
 					mCurrencyCode = mBuilder.toString();
 				} else {
-					System.out.println(localName + "->'" + mBuilder.toString() + "'");
+					// Debug Only; see what we are missing.
+					//System.out.println(localName + "->'" + mBuilder.toString() + "'");
 				}
 			}
 			mBuilder.setLength(0);			

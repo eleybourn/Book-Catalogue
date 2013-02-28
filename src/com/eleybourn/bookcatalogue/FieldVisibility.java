@@ -79,14 +79,14 @@ public class FieldVisibility extends BookCatalogueActivity {
 				CatalogueDBAdapter.KEY_RATING, CatalogueDBAdapter.KEY_NOTES, CatalogueDBAdapter.KEY_ANTHOLOGY_MASK, 
 				CatalogueDBAdapter.KEY_LOCATION, CatalogueDBAdapter.KEY_READ_START, CatalogueDBAdapter.KEY_READ_END, 
 				CatalogueDBAdapter.KEY_FORMAT, CatalogueDBAdapter.KEY_SIGNED, CatalogueDBAdapter.KEY_DESCRIPTION, 
-				CatalogueDBAdapter.KEY_GENRE};
+				CatalogueDBAdapter.KEY_GENRE, CatalogueDBAdapter.KEY_LANGUAGE};
 		int[] fieldRs = {R.string.author, R.string.title, R.string.thumbnail, R.string.isbn, R.string.series, R.string.series_num, 
 				R.string.publisher, R.string.date_published, R.string.bookshelf, R.string.pages, R.string.list_price,
 				R.string.read, R.string.rating, R.string.notes, R.string.anthology, R.string.location_of_book, 
 				R.string.read_start, R.string.read_end, R.string.format, R.string.signed, R.string.description, 
-				R.string.genre};
+				R.string.genre, R.string.language};
 		boolean[] compulsory = {true, true, false, false, false, false, false, false, 
-				true, false, false, false, false, false, false, false, false, false, false, false, false, false};
+				true, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
 		
 		SharedPreferences mPrefs = getSharedPreferences("bookCatalogue", MODE_PRIVATE);
 		//SharedPreferences.Editor ed = mPrefs.edit();

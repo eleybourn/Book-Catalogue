@@ -26,6 +26,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import android.os.Bundle;
 
+import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
@@ -334,7 +335,7 @@ public class SearchAmazonHandler extends DefaultHandler {
 				} else if (localName.equalsIgnoreCase(BINDING)){
 					addIfNotPresent(CatalogueDBAdapter.KEY_FORMAT);
 				} else if (mInLanguage && localName.equalsIgnoreCase(NAME)){
-					addIfNotPresent(CatalogueDBAdapter.KEY_LANGUAGE);
+					addIfNotPresent(DatabaseDefinitions.DOM_LANGUAGE.name);
 				} else if (mInListPrice && localName.equalsIgnoreCase(AMOUNT)){
 					mCurrencyAmount = mBuilder.toString();
 				} else if (mInListPrice && localName.equalsIgnoreCase(CURRENCY_CODE)){

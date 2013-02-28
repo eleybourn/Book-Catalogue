@@ -929,6 +929,34 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 		return mGenres;
 	}
 
+	/** List of languages in database so far */
+	private ArrayList<String> mLanguages;
+	/**
+	 * Load a language list; reloading this list every time a tab changes is slow.
+	 * So we cache it.
+	 * 
+	 * @return List of languages
+	 */
+	@Override
+	public ArrayList<String> getLanguages() {
+		if (mLanguages == null) {
+			mLanguages = new ArrayList<String>();
+			Cursor cur = mDbHelper.fetchAllLanguages("");
+			final int col = cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROWID);
+			try {
+				while (cur.moveToNext()) {
+					String s = cur.getString(col);
+					if (s != null && !s.equals("")) {
+						mLanguages.add(cur.getString(col));						
+					}
+				}
+			} finally {
+				cur.close();
+			}
+		}
+		return mLanguages;
+	}
+
 	private ArrayList<String> mFormats;
 
 	/**

@@ -1628,13 +1628,7 @@ public class CatalogueDBAdapter {
 			}
 			if (curVersion == 81) {
 				curVersion++;
-				// Rename and recreate the books table.
-				final String tempName = "books_tmp";
-				db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " RENAME TO " + tempName);
-				db.execSQL(DATABASE_CREATE_BOOKS);
-				// This handles re-ordered fields etc.
-				copyTableSafely(sdb, tempName, DB_TB_BOOKS);
-				db.execSQL("DROP TABLE " + tempName);
+				recreateAndReloadTable(sdb, DB_TB_BOOKS, DATABASE_CREATE_BOOKS);
 			}
 			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			// vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
@@ -1689,24 +1683,43 @@ public class CatalogueDBAdapter {
 	 * @param sdb
 	 * @param from
 	 * @param to
+	 * @param toRemove	List of fields to be removed from the source table (ignored in copy)
 	 */
-	private static void copyTableSafely(SynchronizedDb sdb, String from, String to) {
+	private static void copyTableSafely(SynchronizedDb sdb, String from, String to, String...toRemove) {
 		// Get the source info
 		TableInfo src = new TableInfo(sdb, from);
 		// Build the column list
 		StringBuilder cols = new StringBuilder();
 		boolean first = true;
 		for(ColumnInfo ci: src) {
-			if (first) {
-				first = false;
-			} else {
-				cols.append(", ");
+			boolean isNeeded = true;
+			for(String s: toRemove) {
+				if (s.equalsIgnoreCase(ci.name)) {
+					isNeeded = false;
+					break;
+				}
 			}
-			cols.append(ci.name);
+			if (isNeeded) {
+				if (first) {
+					first = false;
+				} else {
+					cols.append(", ");
+				}
+				cols.append(ci.name);
+			}
 		}
 		String colList = cols.toString();
 		String sql = "Insert into " + to + "(" + colList + ") select " + colList + " from " + from;
 		sdb.execSQL(sql);
+	}
+
+	private static void recreateAndReloadTable(SynchronizedDb db, String tableName, String createStatement, String...toRemove) {
+		final String tempName = "recreate_tmp";
+		db.execSQL("ALTER TABLE " + tableName + " RENAME TO " + tempName);
+		db.execSQL(createStatement);
+		// This handles re-ordered fields etc.
+		copyTableSafely(db, tempName, tableName, toRemove);
+		db.execSQL("DROP TABLE " + tempName);
 	}
 
 	private static class InstanceRef extends WeakReference<CatalogueDBAdapter> {

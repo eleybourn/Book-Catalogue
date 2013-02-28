@@ -842,6 +842,15 @@ and you can edit the book via the options menu using the menu button or overflow
     
     <!-- Short Heading for 'Language' field in book details -->
     <string name="language">Language</string>
+    <string name="new_in_504">
+		<![CDATA[
+			<p><b>New in 5.0.4</b>\n\n
+				* New field: Language\n\n
+				* French translation updates (Imkal)\n\n
+				* Bug fixes\n\n
+			</p>
+		]]>
+    </string>
     
     <!-- End: Added/Updated in 5.0.4 -->
 

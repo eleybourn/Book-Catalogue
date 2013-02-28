@@ -224,8 +224,8 @@ public class CatalogueDBAdapter {
 		"INSERT INTO " + DB_TB_BOOKSHELF + 
 		" (" + KEY_BOOKSHELF + ") VALUES ('Default')";
 
-	// NOTE: **NEVER** change this. Rename it, and create a new one. Unless you know what you are doing.
-	private static final String DATABASE_CREATE_BOOKS =
+	// Renamed to the LAST version in which it was used
+	private static final String DATABASE_CREATE_BOOKS_81 =
 			"create table " + DB_TB_BOOKS + 
 			" (_id integer primary key autoincrement, " +
 			/* KEY_AUTHOR + " integer not null REFERENCES " + DB_TB_AUTHORS + ", " + */
@@ -255,6 +255,38 @@ public class CatalogueDBAdapter {
 			DOM_LAST_UPDATE_DATE.getDefinition(true) +
 			")";
 
+	// NOTE: **NEVER** change this. Rename it, and create a new one. Unless you know what you are doing.
+	private static final String DATABASE_CREATE_BOOKS =
+			"create table " + DB_TB_BOOKS + 
+			" (_id integer primary key autoincrement, " +
+			/* KEY_AUTHOR + " integer not null REFERENCES " + DB_TB_AUTHORS + ", " + */
+			KEY_TITLE + " text not null, " +
+			KEY_ISBN + " text, " +
+			KEY_PUBLISHER + " text, " +
+			KEY_DATE_PUBLISHED + " date, " +
+			KEY_RATING + " float not null default 0, " +
+			KEY_READ + " boolean not null default 0, " +
+			/* KEY_SERIES + " text, " + */
+			KEY_PAGES + " int, " +
+			/* KEY_SERIES_NUM + " text, " + */
+			KEY_NOTES + " text, " +
+			KEY_LIST_PRICE + " text, " +
+			KEY_ANTHOLOGY_MASK + " int not null default " + ANTHOLOGY_NO + ", " + 
+			KEY_LOCATION + " text, " +
+			KEY_READ_START + " date, " +
+			KEY_READ_END + " date, " +
+			KEY_FORMAT + " text, " +
+			KEY_SIGNED + " boolean not null default 0, " +
+			KEY_DESCRIPTION + " text, " +
+			KEY_GENRE + " text, " +
+			KEY_LANGUAGE + " text, " + // Added in version 82
+			KEY_DATE_ADDED + " datetime default current_timestamp, " +
+			DOM_GOODREADS_BOOK_ID.getDefinition(true) + ", " +
+			DOM_LAST_GOODREADS_SYNC_DATE.getDefinition(true) + ", " +
+			DOM_BOOK_UUID.getDefinition(true) + ", " +
+			DOM_LAST_UPDATE_DATE.getDefinition(true) +
+			")";
+	
 	//private static final String DATABASE_CREATE_BOOKS_70 =
 	//		"create table " + DB_TB_BOOKS + 
 	//		" (_id integer primary key autoincrement, " +
@@ -549,6 +581,7 @@ public class CatalogueDBAdapter {
 			alias + "." + KEY_SIGNED + " as " + KEY_SIGNED + ", " + 
 			alias + "." + KEY_DESCRIPTION + " as " + KEY_DESCRIPTION + ", " + 
 			alias + "." + KEY_GENRE  + " as " + KEY_GENRE + ", " +
+			alias + "." + KEY_LANGUAGE  + " as " + KEY_LANGUAGE + ", " +
 			alias + "." + KEY_DATE_ADDED  + " as " + KEY_DATE_ADDED + ", " +
 			alias + "." + DOM_GOODREADS_BOOK_ID  + " as " + DOM_GOODREADS_BOOK_ID + ", " +
 			alias + "." + DOM_LAST_GOODREADS_SYNC_DATE  + " as " + DOM_LAST_GOODREADS_SYNC_DATE + ", " +
@@ -566,7 +599,7 @@ public class CatalogueDBAdapter {
 //						+ " LEFT OUTER JOIN " + DB_TB_SERIES + " s ON (s." + KEY_ROWID + "=w." + KEY_SERIES_ID + ") ";
 
 	//TODO: Update database version RELEASE: Update database version
-	public static final int DATABASE_VERSION = 81;
+	public static final int DATABASE_VERSION = 82;
 
 	private TableInfo mBooksInfo = null;
 
@@ -614,7 +647,7 @@ public class CatalogueDBAdapter {
 			mDbWasCreated = true;
 			db.execSQL(DATABASE_CREATE_AUTHORS);
 			db.execSQL(DATABASE_CREATE_BOOKSHELF);
-			db.execSQL(DATABASE_CREATE_BOOKS);
+			db.execSQL(DATABASE_CREATE_BOOKS); // RELEASE: Make sure this is always DATABASE_CREATE_BOOKS after a rename of the original
 			db.execSQL(DATABASE_CREATE_BOOKSHELF_DATA);
 			db.execSQL(DATABASE_CREATE_LOAN);
 			db.execSQL(DATABASE_CREATE_ANTHOLOGY);
@@ -1498,7 +1531,7 @@ public class CatalogueDBAdapter {
 			if (curVersion == 69 || curVersion == 70) {
 				curVersion = 71;
 				db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " RENAME TO books_tmp");
-				db.execSQL(DATABASE_CREATE_BOOKS);
+				db.execSQL(DATABASE_CREATE_BOOKS_81);
 				copyTableSafely(sdb, "books_tmp", DB_TB_BOOKS);
 				db.execSQL("DROP TABLE books_tmp");
 			}
@@ -1591,6 +1624,16 @@ public class CatalogueDBAdapter {
 				db.execSQL("ALTER TABLE " + DB_TB_BOOK_SERIES + " RENAME TO " + tempName);
 				db.execSQL(DATABASE_CREATE_BOOK_SERIES);
 				copyTableSafely(sdb, tempName, DB_TB_BOOK_SERIES);
+				db.execSQL("DROP TABLE " + tempName);
+			}
+			if (curVersion == 81) {
+				curVersion++;
+				// Rename and recreate the books table.
+				final String tempName = "books_tmp";
+				db.execSQL("ALTER TABLE " + DB_TB_BOOKS + " RENAME TO " + tempName);
+				db.execSQL(DATABASE_CREATE_BOOKS);
+				// This handles re-ordered fields etc.
+				copyTableSafely(sdb, tempName, DB_TB_BOOKS);
 				db.execSQL("DROP TABLE " + tempName);
 			}
 			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -3525,6 +3568,7 @@ public class CatalogueDBAdapter {
 			if (mBooksInfo == null)
 				mBooksInfo = new TableInfo(mDb, DB_TB_BOOKS);
 
+			// Cleanup fields (author, series, title and remove blank fields for which we have defaults)
 			preprocessOutput(id == 0, values);
 
 			/* We may want to provide default values for these fields:
@@ -4092,6 +4136,7 @@ public class CatalogueDBAdapter {
 			if (mBooksInfo == null)
 				mBooksInfo = new TableInfo(mDb, DB_TB_BOOKS);
 
+			// Cleanup fields (author, series, title and remove blank fields for which we have defaults)
 			preprocessOutput(rowId == 0, values);
 
 			ContentValues args = filterValues(values, mBooksInfo);

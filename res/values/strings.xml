@@ -838,6 +838,14 @@ and you can edit the book via the options menu using the menu button or overflow
 
     <!-- End: Added/Updated in 5.0.3 -->
     
+    <!-- Begin: Added/Updated in 5.0.4 -->
+    
+    <!-- Short Heading for 'Language' field in book details -->
+    <string name="language">Language</string>
+    
+    <!-- End: Added/Updated in 5.0.4 -->
+
+
     <!-- Begin: Added/Updated in [Next Version] -->
     <!-- End: Added/Updated in [Next Version] -->
 

@@ -212,6 +212,16 @@ public class BooksRowView {
 		return mCursor.getString(mGenreCol);
 	}
 
+	private int mLanguageCol = -2;
+	public final String getLanguage() {
+		if (mLanguageCol < 0) {
+			mLanguageCol = mCursor.getColumnIndex(CatalogueDBAdapter.KEY_LANGUAGE);
+			if (mLanguageCol < 0)
+				throw new RuntimeException("LANGUAGE column not in result set");
+		}
+		return mCursor.getString(mLanguageCol);
+	}
+
 	private int mLocationCol = -2;
 	public final String getLocation() {
 		if (mLocationCol < 0) {

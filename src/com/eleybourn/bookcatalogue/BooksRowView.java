@@ -215,7 +215,7 @@ public class BooksRowView {
 	private int mLanguageCol = -2;
 	public final String getLanguage() {
 		if (mLanguageCol < 0) {
-			mLanguageCol = mCursor.getColumnIndex(CatalogueDBAdapter.KEY_LANGUAGE);
+			mLanguageCol = mCursor.getColumnIndex(DatabaseDefinitions.DOM_LANGUAGE.name);
 			if (mLanguageCol < 0)
 				throw new RuntimeException("LANGUAGE column not in result set");
 		}

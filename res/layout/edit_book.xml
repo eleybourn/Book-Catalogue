@@ -251,6 +251,7 @@
                     style="@style/editorFieldTextStyle"
                     android:layout_below="@+id/heading"
                     android:completionThreshold="2"
+                    android:inputType="textCapWords"
                     android:nextFocusDown="@+id/language" />
             </RelativeLayout>
 
@@ -270,7 +271,9 @@
                     style="@style/editorFieldTextStyle"
                     android:layout_below="@+id/heading"
                     android:completionThreshold="2"
-                    android:nextFocusDown="@+id/anthology" />
+                    android:inputType="textCapWords"
+                    android:nextFocusDown="@+id/anthology"
+                    android:singleLine="true" />
             </RelativeLayout>
 
             <CheckBox

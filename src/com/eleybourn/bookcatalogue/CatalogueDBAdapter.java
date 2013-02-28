@@ -2694,6 +2694,23 @@ public class CatalogueDBAdapter {
 	}
 	
 	/**
+	 * This will return a list of all languages within the given bookshelf
+	 * 
+	 * @param bookshelf The bookshelf to search within. Can be the string "All Books"
+	 * @return Cursor over all languages
+	 */
+	public Cursor fetchAllLanguages(String bookshelf) {
+		// Null 'order' to suppress ordering
+		String baseSql = fetchAllBooksInnerSql(null, bookshelf, "", "", "", "", "");
+
+		String sql = "SELECT DISTINCT "
+				+ " Case When (b." + KEY_LANGUAGE + " = '' or b." + KEY_LANGUAGE + " is NULL) Then ''"
+				+ " Else b." + KEY_LANGUAGE + " End as " + KEY_ROWID + baseSql +
+		" ORDER BY Upper(b." + KEY_LANGUAGE + ") " + COLLATION;
+		return mDb.rawQuery(sql, new String[]{});
+	}
+	
+	/**
 	 * This will return a list of all loans
 	 * 
 	 * @return Cursor over all series

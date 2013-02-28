@@ -65,6 +65,7 @@ public abstract class BookEditFragmentAbstract extends BookCatalogueFragment imp
 		public void setRowId(Long id);
 		public ArrayList<String> getFormats();
 		public ArrayList<String> getGenres();
+		public ArrayList<String> getLanguages();
 		public ArrayList<String> getPublishers();
 	}
 

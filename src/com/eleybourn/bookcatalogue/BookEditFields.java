@@ -141,6 +141,8 @@ public class BookEditFields extends BookDetailsAbstract
 			mFields.setAdapter(R.id.publisher, publisher_adapter);
 			ArrayAdapter<String> genre_adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_dropdown_item_1line, mEditManager.getGenres());
 			mFields.setAdapter(R.id.genre, genre_adapter);
+			ArrayAdapter<String> language_adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_dropdown_item_1line, mEditManager.getLanguages());
+			mFields.setAdapter(R.id.language, language_adapter);
 			
 			mFields.setListener(R.id.date_published, new View.OnClickListener() {
 				public void onClick(View view) {

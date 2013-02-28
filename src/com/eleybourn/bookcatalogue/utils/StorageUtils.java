@@ -296,7 +296,16 @@ public class StorageUtils {
 	            final Intent mainIntent = new Intent(scanner, null);
 	            final List<ResolveInfo> resolved = context.getPackageManager().queryIntentActivities( mainIntent, 0); 
 	            for(ResolveInfo r: resolved) {
-	                message += "    " + r.activityInfo.packageName + " (priority " + r.priority + ", default=" + r.isDefault + ")\n";
+	            	message += "    ";
+	            	// Could be activity or service...
+	            	if (r.activityInfo != null) {
+	            		message += "    " + r.activityInfo.packageName;
+	            	} else if (r.serviceInfo != null) {
+	            		message += "    " + r.serviceInfo.packageName;
+	            	} else {
+	            		message += "    UNKNOWN";
+	            	}
+	                message += " (priority " + r.priority + ", preference " + r.preferredOrder + ", match " + r.match + ", default=" + r.isDefault + ")\n";
 	            }
 	        }			
 		} catch (Exception e) {

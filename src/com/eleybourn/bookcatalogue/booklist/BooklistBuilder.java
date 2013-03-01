@@ -1040,7 +1040,7 @@ public class BooklistBuilder {
 			long t1b = System.currentTimeMillis();
 			try {
 				// Build the lowest level summary using our initial insert statement
-				mBaseBuildStmt = mStatements.add("mBaseBuildStmt", sql);
+				mBaseBuildStmt = mStatements.add("mBaseBuildStmt", sql); // + " order by " + sortColNameList);
 				//System.out.println("Base Build:\n" + sql);
 				mBaseBuildStmt.execute();
 	

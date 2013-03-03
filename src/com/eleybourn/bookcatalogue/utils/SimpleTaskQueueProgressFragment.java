@@ -33,6 +33,7 @@ import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
 
+import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueDialogFragment;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTask;
@@ -298,8 +299,12 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	 * @param id
 	 */
 	public void showToast(final int id) {
-		if (id != 0)
-			showToast(getString(id));
+		if (id != 0) {
+			// We don't use getString() because we have no guarantee this 
+			// object is associated with an activity when this is called, and
+			// for whatever reason the implementation requires it.
+			showToast(BookCatalogueApp.getResourceString(id));
+		}
 	}
 
 	/**

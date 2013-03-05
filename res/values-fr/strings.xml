@@ -815,7 +815,13 @@
     </string>
     <!-- End Added/Updated in 5.0.4 -->   
      
-  <!-- Begin: Added/Updated in Next version -->
+    <!-- Begin: Added/Updated in 5.1.0 -->
+    <!--  New preference to override the default method used to generate bookslists as defined by API level -->
+    <string name="booklist_generation">Option de Generation de la liste de livre/string>
+    <!-- Option listed under "booklist_generation" referring to a very conservative way of generating bookslists -->
+    <string name="compatibility_mode">Mode Compatibilité</string>
+    
+    <!-- Begin: Added/Updated in Next version -->
      
      
      

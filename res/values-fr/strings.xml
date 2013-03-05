@@ -801,11 +801,24 @@
 
     <!-- End: Added/Updated in 5.0.3 -->
     
-
-
-    <!-- Begin: Added/Updated in [Next Version] -->
-
-
-    <!-- End: Added/Updated in [Next Version] -->
+    <!-- Begin: Added/Updated in 5.0.4 -->
+    <!-- Short Heading for 'Language' field in book details -->
+    <string name="language">Langage</string>
+    <string name="new_in_504">
+		<![CDATA[
+			<p><b>Nouveau dans la version 5.0.4</b>\n\n
+				* Nouveau champ: Langage\n\n
+				* Correction de bogues\n\n
+				* Mise à jour de la version française (Imkal)\n\n
+			</p>
+		]]>
+    </string>
+    <!-- End Added/Updated in 5.0.4 -->   
+     
+  <!-- Begin: Added/Updated in Next version -->
+     
+     
+     
+  <!-- End: Added/Updated in [Next Version] -->
 
 </resources>

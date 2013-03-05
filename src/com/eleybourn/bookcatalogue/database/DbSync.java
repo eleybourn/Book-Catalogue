@@ -872,17 +872,22 @@ public class DbSync {
 			mSync = sync;
 		}
 
+		private int mCount = -1;
 		/**
 		 * Wrapper that uses a lock before calling underlying method.
 		 */
 		@Override
 		public int getCount() {
-			SyncLock l = mSync.getSharedLock();
-			try {
-				return super.getCount();
-			} finally {
-				l.unlock();
+			// Cache the count (it's what SQLiteCursor does), and we avoid locking 
+			if (mCount == -1) {
+				SyncLock l = mSync.getSharedLock();
+				try {
+					mCount = super.getCount();
+				} finally {
+					l.unlock();
+				}				
 			}
+			return mCount;
 		}
 
 		/**

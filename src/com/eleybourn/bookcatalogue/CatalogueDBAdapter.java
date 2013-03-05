@@ -1804,6 +1804,8 @@ public class CatalogueDBAdapter {
 			mDb = new SynchronizedDb(mDbHelper, mSynchronizer);
 			// Turn on foreign key support so that CASCADE works.
 			mDb.execSQL("PRAGMA foreign_keys = ON");
+			// Turn on recursive triggers; not strictly necessary
+			mDb.execSQL("PRAGMA recursive_triggers = ON");
 		}
 		//mDb.execSQL("PRAGMA temp_store = FILE");
 		mStatements = new SqlStatementManager(mDb);

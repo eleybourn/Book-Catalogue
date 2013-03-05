@@ -20,8 +20,10 @@
 
 package com.eleybourn.bookcatalogue;
 
+import android.os.Build;
 import android.os.Bundle;
 
+import com.eleybourn.bookcatalogue.properties.BooleanListProperty;
 import com.eleybourn.bookcatalogue.properties.BooleanProperty;
 import com.eleybourn.bookcatalogue.properties.IntegerListProperty;
 import com.eleybourn.bookcatalogue.properties.ListProperty.ItemEntries;
@@ -46,6 +48,12 @@ public class OtherPreferences extends PreferencesBase {
 			.add(90, R.string.menu_rotate_thumb_cw)
 			.add(-90, R.string.menu_rotate_thumb_ccw)
 			.add(180, R.string.menu_rotate_thumb_180);
+
+	/** Booklist Compatibility mode property values */
+	private static ItemEntries<Boolean> mListGenerationOptionsListItems = new ItemEntries<Boolean>()
+			.add(null, R.string.use_default_setting)
+			.add(false, R.string.use_default_setting)
+			.add(true, R.string.compatibility_mode);
 
 	/** Preferred Scanner property values */
 	private static ItemEntries<Integer> mScannerListItems = new ItemEntries<Integer>()
@@ -135,7 +143,25 @@ public class OtherPreferences extends PreferencesBase {
 		.setGlobal(true)
 		.setNameResourceId(R.string.use_external_image_cropper)
 		.setGroup(PropertyGroup.GRP_THUMBNAILS))		
-		;
+
+	// Book list compatibility mode setting
+	.add (new BooleanListProperty(mListGenerationOptionsListItems, BookCataloguePreferences.PREF_BOOKLIST_GENERATION_MODE)
+		.setDefaultValue(Build.VERSION.SDK_INT < 8)
+		.setPreferenceKey(BookCataloguePreferences.PREF_BOOKLIST_GENERATION_MODE)
+		.setGlobal(true)
+		.setNameResourceId(R.string.booklist_generation)
+		.setGroup(PropertyGroup.GRP_ADVANCED_OPTIONS))		
+	;
+
+	/**
+	 * Get the value of Book list compatibility mode setting
+	 * 
+	 * @return
+	 */
+	public static boolean isBooklistCompatibleMode() {
+		BooleanListProperty prop = (BooleanListProperty) mProperties.get(BookCataloguePreferences.PREF_BOOKLIST_GENERATION_MODE);
+		return prop.getResolvedValue();
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

@@ -41,6 +41,11 @@ Features include;
   case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+new in 5.0.5
+* Style 'Added date' is now in descending order for Android 2.2+
+* Prformance improvements for Android 2.2+
+* Bug fixes
+
 new in 5.0.4
 * New field: Language
 * Translation updates (Imkal)

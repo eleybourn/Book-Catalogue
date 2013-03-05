@@ -285,24 +285,38 @@ public class StorageUtils {
 
         message += "Signed-By: " + Utils.signedBy(context) + "\n";
 
-		message += "\nHistory:\n" + Tracker.getEventsInfo();
+		message += "\nHistory:\n" + Tracker.getEventsInfo() + "\n";
 
 		// Scanners installed
 		try {
 	        message += "Pref. Scanner: " + BookCatalogueApp.getAppPreferences().getInt( ScannerManager.PREF_PREFERRED_SCANNER, -1) + "\n";
 	        String[] scanners = new String[] { ZxingScanner.ACTION, Scan.ACTION, Scan.Pro.ACTION};
 	        for(String scanner:  scanners) {
-	            message += "Scanner [" + scanner + "]:\n";            	
+	            message += "Scanner [" + scanner + "]:\n";
 	            final Intent mainIntent = new Intent(scanner, null);
 	            final List<ResolveInfo> resolved = context.getPackageManager().queryIntentActivities( mainIntent, 0); 
-	            for(ResolveInfo r: resolved) {
-	                message += "    " + r.activityInfo.packageName + " (priority " + r.priority + ", default=" + r.isDefault + ")\n";
+	            if (resolved.size() > 0) {
+		            for(ResolveInfo r: resolved) {
+		            	message += "    ";
+		            	// Could be activity or service...
+		            	if (r.activityInfo != null) {
+		            		message += r.activityInfo.packageName;
+		            	} else if (r.serviceInfo != null) {
+		            		message += r.serviceInfo.packageName;
+		            	} else {
+		            		message += "UNKNOWN";
+		            	}
+		                message += " (priority " + r.priority + ", preference " + r.preferredOrder + ", match " + r.match + ", default=" + r.isDefault + ")\n";
+		            }
+	            } else {
+            		message += "    No packages found\n";
 	            }
 	        }			
 		} catch (Exception e) {
 			// Don't lose the other debug info if scanner data dies for some reason
 	        message += "Scanner failure: " + e.getMessage() + "\n";
 		}
+		message += "\n";
 
         message += "Details:\n\n" + context.getString(R.string.debug_body).toUpperCase() + "\n\n";
 

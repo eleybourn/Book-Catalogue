@@ -858,7 +858,14 @@ and you can edit the book via the options menu using the menu button or overflow
     <!--  New preference to override the default method used to generate bookslists as defined by API level -->
     <string name="booklist_generation">Book List Generation Option</string>
     <!-- Option listed under "booklist_generation" referring to a very conservative way of generating bookslists -->
-    <string name="compatibility_mode">Compatibility Mode</string>
+    <string name="force_compatibility_mode">Force Compatibility Mode</string>
+    <!-- Option listed under "booklist_generation" referring to a conservative way of generating bookslists -->
+    <string name="force_enhanced_compatibility_mode">Force Enhanced Compatibility Mode</string>
+    <!-- Option listed under "booklist_generation" referring to a conservative way of generating bookslists -->
+    <string name="force_fully_featured">Force Fully Featured</string>
+    <!-- Default Option listed under "booklist_generation" referring to a conservative way of generating bookslists -->
+    <string name="automatically_use_recommended_option">Automatically use recommended option</string>
+    
     <!-- End: Added/Updated in 5.1.0 -->
 
     <!-- Begin: Added/Updated in [Next Version] -->

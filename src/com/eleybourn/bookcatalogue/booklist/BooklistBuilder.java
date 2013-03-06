@@ -296,6 +296,7 @@ public class BooklistBuilder {
 	 * We use this for experimenting with alternate means of construction.
 	 */
 	private static class SqlComponents {
+		public String destinationColumns;
 		public String select;
 		public String insert;
 		public String insertSelect;
@@ -462,7 +463,8 @@ public class BooklistBuilder {
 
 			// Setup the SQL phrases.
 			cmp.rootkeyExpression = keyExpression;
-			cmp.insert = "Insert into " + mListTable + " (\n	" + columns.toString() + ",\n	" + DOM_ROOT_KEY + ")";
+			cmp.destinationColumns = columns.toString() + ",\n	" + DOM_ROOT_KEY;
+			cmp.insert = "Insert into " + mListTable + " (\n	" + cmp.destinationColumns + ")";
 			cmp.select = "Select\n	" + expressions.toString() + ",\n	" + keyExpression;
 			cmp.insertSelect = cmp.insert + "\n " + cmp.select + "\n From\n";
 			cmp.insertValues = cmp.insert + "\n    Values (" + values.toString() + ", ?)";
@@ -632,7 +634,38 @@ public class BooklistBuilder {
 	
 			// We can not use triggers to fill in headings in API < 8 since SQLite 3.5.9 is broken
 			// Allow for the user preferences to override in case another build is borken.
-			final boolean useTriggers = Build.VERSION.SDK_INT >= 8 && !OtherPreferences.isBooklistCompatibleMode();
+			final int listMode = OtherPreferences.getBooklistCompatibleMode();
+			boolean useTriggers;
+			boolean flatTriggers = false;
+			// Based on the users choice, decide how the list will be generated.
+			switch(listMode) {
+
+				case OtherPreferences.BOOKLIST_GENERATE_OLD_STYLE:
+					useTriggers = false;
+					break;
+				case OtherPreferences.BOOKLIST_GENERATE_AUTOMATIC:
+					if (Build.VERSION.SDK_INT < 8) {
+						useTriggers = false;
+					} else {
+						useTriggers = true;
+					}
+					break;
+				case OtherPreferences.BOOKLIST_GENERATE_FLAT_TRIGGER:
+					useTriggers = true;
+					flatTriggers = true;
+					break;
+					
+				case OtherPreferences.BOOKLIST_GENERATE_NESTED_TRIGGER:
+					useTriggers = true;
+					flatTriggers = false;
+					break;
+					
+				default:
+					useTriggers = true;
+					break;
+			}
+			// Build a sort mask based on if triggers are used; we can not
+			// reverse sort if they are not used.
 			final int sortDescendingMask = ( useTriggers ? SummaryBuilder.FLAG_SORT_DESCENDING : 0);
 
 			long t0a = System.currentTimeMillis();
@@ -1148,8 +1181,8 @@ public class BooklistBuilder {
 				if (useTriggers) {
 					// If we are using triggers, then we insert them in order and rely on the 
 					// triggers to build the summary rows in the correct place.
-					makeTriggers(summary);
-					mBaseBuildStmt = mStatements.add("mBaseBuildStmt", sqlCmp.insertSelect + sqlCmp.join + sqlCmp.where + " order by " + sortColNameList);
+					String tgt = makeTriggers(summary, flatTriggers);
+					mBaseBuildStmt = mStatements.add("mBaseBuildStmt", "Insert Into " + tgt + "(" + sqlCmp.destinationColumns + ") " + sqlCmp.select + "\n From\n" + sqlCmp.join + sqlCmp.where + " order by " + sortColNameList);
 					//System.out.println("Base Build:\n" + sql);
 					mBaseBuildStmt.execute();
 					t2 = System.currentTimeMillis();
@@ -1378,20 +1411,49 @@ public class BooklistBuilder {
 	 * Build a collection of triggers on the list table designed to fill in the summary/header records
 	 * as the data records are added in sorted order.
 	 * 
-	 * This approach is both a performance improvement and a means to allow DESCENDING sort orders.
+	 * This approach means to allow DESCENDING sort orders.
 	 * 
 	 * @param summary
 	 */
-	private void makeTriggers(SummaryBuilder summary) {
+	private String makeTriggers(SummaryBuilder summary, boolean flatTriggers) {
+		if (flatTriggers) {
+			// Flat triggers are compatible with Android 1.6+ but slower
+			return makeSingleTrigger(summary);
+		} else {
+			// Nexted triggers are compatible with Android 2.2+ and fast
+			// (or at least relatively fast when there are a 'reasonable'
+			// number of headings to be inserted).
+			makeNestedTriggers(summary);
+			return mListTable.getName();
+		}
+	}
+
+	/**
+	 * Build a collection of triggers on the list table designed to fill in the summary/header records
+	 * as the data records are added in sorted order.
+	 * 
+	 * This approach is allows DESCENDING sort orders but is slightly slower than the old-style
+	 * manually generated lists.
+	 * 
+	 * @param summary
+	 */
+	private String makeSingleTrigger(SummaryBuilder summary) {
+		// Name of a table to store the snapshot of the most recent/current row headings
+		final String currTblName =  mListTable + "_curr";
+		final String viewTblName =  mListTable + "_view";
+
 		/*
 		 * Create a trigger to forward all row detais to real table
 		 */
-		/*
+
+		// Name of the trigger to create.
+		final String tgForwardName = mListTable + "_TG_AAA";
+		// Build an INSERT statement to insert the entire row in the real table
 		String fullInsert = "Insert into " + mListTable + "(";
 		{
 			String fullValues = "Values (";
 			boolean firstCol = true;
-			for (DomainDefinition d: mListTable.domains) {
+			for (DomainDefinition d: mListTable.getDomains()) {
 				if (!d.equals(DOM_ID)) {
 					if (firstCol)
 						firstCol = false;
@@ -1404,22 +1466,102 @@ public class BooklistBuilder {
 				}
 			}
 			fullInsert += ") " + fullValues + ");";			
-
-			String tgForwardName = "header_Z_F";
-			mDb.execSQL("Drop Trigger if exists " + tgForwardName);
-			String tgForwardSql = "Create Trigger " + tgForwardName + " instead of  insert on " + TBL_BOOK_LIST_DEFN + " for each row \n" +
-					"	Begin\n" +
-					"		" + fullInsert + "\n" +
-					"	End";
-			SQLiteStatement stmt = mStatements.add("TG " + tgForwardName, tgForwardSql);
-			mLevelBuildStmts.add(stmt);
-			stmt.execute();			
 		}
-		*/
 
-		// Now make some BEFORE INSERT triggers to build hierarchy; no trigger on root level (index = 0).
-		//String[] tgLines = new String[mLevels.size()];
+		// We just create one big trigger
+		String trigger = "Create Trigger " + tgForwardName + " instead of  insert on " + viewTblName + " for each row \n" +
+						"	Begin\n";
 
+		// List of cols we sort by
+		String sortedCols = "";
+		// SQL statement to update the 'current' table
+		String currInsertSql = "";
+		// List of domain names for sorting
+		HashSet<String> sortedDomainNames = new HashSet<String>();
+		// Build the 'current' header table definition and the sort column list 
+		for(SortedDomainInfo i: summary.getSortedColumns()) {
+			if (!sortedDomainNames.contains(i.domain.name)) {
+				sortedDomainNames.add(i.domain.name);
+				if (!sortedCols.equals("")) {
+					sortedCols += ", ";
+					currInsertSql += ", ";
+				}
+				sortedCols += i.domain.name;
+				currInsertSql += "new." + i.domain.name;				
+			}
+		}
+
+		//
+		// Create a temp table to store the most recent header details from the last row.
+		// We use this in determining what needs to be inserted as header records for 
+		// any given row.
+		//
+		// This is just a simple technique to provide persistent context to the trigger.
+		//
+		mDb.execSQL("Create Temp Table " + currTblName + " (" + sortedCols + ")");
+		mDb.execSQL("Create Temp View " + viewTblName + " as select * from " + mListTable);
+
+		//mDb.execSQL("Create Unique Index " + mListTable + "_IX_TG1 on " + mListTable + "(" + DOM_LEVEL + ", " + sortedCols + ", " + DOM_BOOK + ")");
+
+		// For each grouping, starting with the lowest, build a trigger to update the next level up as necessary
+		for (int i = 0; i < mStyle.size(); i++) {
+			// Get the group
+			final BooklistGroup l = mStyle.getGroupAt(i);
+			// Get the level number for this group
+			final int levelId = i + 1;
+			// Create an INSERT statement for the next level up
+			String insertSql = "Insert into " + mListTable + "( " + DOM_LEVEL + "," + DOM_KIND + ", " + DOM_ROOT_KEY + "\n";
+
+			// Create the VALUES statement for the next level up
+			String valuesSql = " Select " + levelId + ", " + l.kind + ", " + "new." + DOM_ROOT_KEY + "\n";
+			// Create the conditional to detect if next level up is already defined (by checking the 'current' record/table)
+			String conditionSql = "";// "l." + DOM_LEVEL + " = " + levelId + "\n";
+			// Update the statement components
+			for(DomainDefinition d  : l.groupDomains) {
+				insertSql += ", " + d;
+				valuesSql += ", new." + d;
+				// Only update the 'condition' part if it is part of the SORT list
+				if (sortedDomainNames.contains(d.name)) {
+					if (!conditionSql.equals(""))
+						conditionSql += "	and ";
+					conditionSql += "Coalesce(l." + d + ", '') = Coalesce(new." + d + ",'') " + CatalogueDBAdapter.COLLATION + "\n";					
+				}
+			}
+			//insertSql += ")\n	Select " + valuesSql + " Where not exists(Select 1 From " + mListTable + " l where " + conditionSql + ")";
+			//tgLines[i] = insertSql;
+
+			insertSql += ")\n" + valuesSql + " where not Exists(Select 1 From " + currTblName + " l where " + conditionSql + ")\n";
+			trigger += "		" + insertSql + ";\n";
+		}
+
+		// Finalize the main trigger; insert the full row and update the 'current' header
+		trigger += 	"		" + fullInsert + "\n" +
+			"		Delete from " + currTblName + ";\n" +
+			"		Insert into " + currTblName + " values (" + currInsertSql + ");\n" +
+			"	End";
+		
+		{
+			mDb.execSQL("Drop Trigger if exists " + tgForwardName);
+			SynchronizedStatement stmt = mStatements.add(tgForwardName, trigger);
+			mLevelBuildStmts.add(stmt);
+			stmt.execute();
+		}
+		
+		return viewTblName;
+	}
+	
+	/**
+	 * Build a collection of triggers on the list table designed to fill in the summary/header records
+	 * as the data records are added in sorted order.
+	 * 
+	 * This approach is both a performance improvement and a means to allow DESCENDING sort orders.
+	 * 
+	 * It is the preferred option in Android 2.2+, but there is a chance that some vendor implemented
+	 * a broken or old SQLite version.
+	 * 
+	 * @param summary
+	 */
+	private void makeNestedTriggers(SummaryBuilder summary) {
 		// Name of a table to store the snapshot of the most recent/current row headings
 		final String currTblName =  mListTable + "_curr";
 		// List of cols we sort by
@@ -1450,8 +1592,6 @@ public class BooklistBuilder {
 		//
 		mDb.execSQL("Create Temp Table " + currTblName + " (" + sortedCols + ")");
 
-		//mDb.execSQL("Create Unique Index " + mListTable + "_IX_TG1 on " + mListTable + "(" + DOM_LEVEL + ", " + sortedCols + ", " + DOM_BOOK + ")");
-
 		// For each grouping, starting with the lowest, build a trigger to update the next level up as necessary
 		for (int i = mStyle.size()-1; i >= 0; i--) {
 			// Get the group
@@ -1461,10 +1601,7 @@ public class BooklistBuilder {
 			// Create an INSERT statement for the next level up
 			String insertSql = "Insert into " + mListTable + "( " + DOM_LEVEL + "," + DOM_KIND + ", " + DOM_ROOT_KEY + "\n";
 
-			// EXPERIMENTAL: If inserting with forwarding table: String insertSql = "Insert into " + TBL_BOOK_LIST_DEFN + "( " + DOM_LEVEL + "," + DOM_KIND + ", " + DOM_ROOT_KEY + "\n";
-			// EXPERIMENTAL: If inserting in one trigger using multiple 'exists': String valuesSql = levelId + ", " + l.kind + ", " + "new." + DOM_ROOT_KEY + "\n";
-
-			// Create the VALUES statement for the next levekl up
+			// Create the VALUES statement for the next level up
 			String valuesSql = "Values (" + levelId + ", " + l.kind + ", " + "new." + DOM_ROOT_KEY + "\n";
 			// Create the conditional to detect if next level up is already defined (by checking the 'current' record/table)
 			String conditionSql = "";// "l." + DOM_LEVEL + " = " + levelId + "\n";
@@ -1476,17 +1613,14 @@ public class BooklistBuilder {
 				if (sortedDomainNames.contains(d.name)) {
 					if (!conditionSql.equals(""))
 						conditionSql += "	and ";
-					conditionSql += "l." + d + " = new." + d + CatalogueDBAdapter.COLLATION + "\n";					
+					conditionSql += "Coalesce(l." + d + ",'') = Coalesce(new." + d + ",'') " + CatalogueDBAdapter.COLLATION + "\n";					
 				}
 			}
-			//insertSql += ")\n	Select " + valuesSql + " Where not exists(Select 1 From " + mListTable + " l where " + conditionSql + ")";
-			//tgLines[i] = insertSql;
 
 			insertSql += ")\n" + valuesSql + ")";
 			String tgName = "header_A_tgL" + i;
 			// Drop trigger if necessary
 			mDb.execSQL("Drop Trigger if exists " + tgName);
-			// EXPERIMENTAL: If using forwarding table: String tgSql = "Create Trigger " + tgName + " instead of  insert on " + TBL_BOOK_LIST_DEFN + " for each row when new.level = " + (levelId+1) +
 
 			// Create the trigger
 			String tgSql = "Create Temp Trigger " + tgName + " before insert on " + mListTable + " for each row when new.level = " + (levelId+1) +
@@ -1513,7 +1647,7 @@ public class BooklistBuilder {
 		mLevelBuildStmts.add(stmt);
 		stmt.execute();
 	}
-	
+
 	private SynchronizedStatement mSaveListNodeSettingsStmt = null;
 	/**
 	 * Save the currently expanded top level nodes, and the top level group kind, to the database

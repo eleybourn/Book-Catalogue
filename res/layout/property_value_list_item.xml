@@ -3,7 +3,8 @@
     android:layout_height="fill_parent"
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
-    android:paddingTop="2dp" >
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp" >
 
     <RadioButton
         android:id="@+id/selector"

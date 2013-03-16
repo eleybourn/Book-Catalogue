@@ -49,11 +49,18 @@ public class OtherPreferences extends PreferencesBase {
 			.add(-90, R.string.menu_rotate_thumb_ccw)
 			.add(180, R.string.menu_rotate_thumb_180);
 
+	public static final int BOOKLIST_GENERATE_OLD_STYLE = 1;
+	public static final int BOOKLIST_GENERATE_FLAT_TRIGGER = 2;
+	public static final int BOOKLIST_GENERATE_NESTED_TRIGGER = 3;
+	public static final int BOOKLIST_GENERATE_AUTOMATIC = 4;
 	/** Booklist Compatibility mode property values */
-	private static ItemEntries<Boolean> mListGenerationOptionsListItems = new ItemEntries<Boolean>()
+	private static ItemEntries<Integer> mListGenerationOptionsListItems = new ItemEntries<Integer>()
 			.add(null, R.string.use_default_setting)
-			.add(false, R.string.use_default_setting)
-			.add(true, R.string.compatibility_mode);
+			.add(BOOKLIST_GENERATE_OLD_STYLE, R.string.force_compatibility_mode)
+			.add(BOOKLIST_GENERATE_FLAT_TRIGGER, R.string.force_enhanced_compatibility_mode)
+			.add(BOOKLIST_GENERATE_NESTED_TRIGGER, R.string.force_fully_featured)
+			.add(BOOKLIST_GENERATE_AUTOMATIC, R.string.automatically_use_recommended_option)
+			;
 
 	/** Preferred Scanner property values */
 	private static ItemEntries<Integer> mScannerListItems = new ItemEntries<Integer>()
@@ -145,8 +152,8 @@ public class OtherPreferences extends PreferencesBase {
 		.setGroup(PropertyGroup.GRP_THUMBNAILS))		
 
 	// Book list compatibility mode setting
-	.add (new BooleanListProperty(mListGenerationOptionsListItems, BookCataloguePreferences.PREF_BOOKLIST_GENERATION_MODE)
-		.setDefaultValue(Build.VERSION.SDK_INT < 8)
+	.add (new IntegerListProperty(mListGenerationOptionsListItems, BookCataloguePreferences.PREF_BOOKLIST_GENERATION_MODE)
+		.setDefaultValue(BOOKLIST_GENERATE_AUTOMATIC)
 		.setPreferenceKey(BookCataloguePreferences.PREF_BOOKLIST_GENERATION_MODE)
 		.setGlobal(true)
 		.setNameResourceId(R.string.booklist_generation)
@@ -158,8 +165,8 @@ public class OtherPreferences extends PreferencesBase {
 	 * 
 	 * @return
 	 */
-	public static boolean isBooklistCompatibleMode() {
-		BooleanListProperty prop = (BooleanListProperty) mProperties.get(BookCataloguePreferences.PREF_BOOKLIST_GENERATION_MODE);
+	public static int getBooklistCompatibleMode() {
+		IntegerListProperty prop = (IntegerListProperty) mProperties.get(BookCataloguePreferences.PREF_BOOKLIST_GENERATION_MODE);
 		return prop.getResolvedValue();
 	}
 

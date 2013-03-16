@@ -866,6 +866,16 @@ and you can edit the book via the options menu using the menu button or overflow
     <!-- Default Option listed under "booklist_generation" referring to a conservative way of generating bookslists -->
     <string name="automatically_use_recommended_option">Automatically use recommended option</string>
     
+    <string name="new_in_505">
+		<![CDATA[
+			<p><b>New in 5.0.5</b>\n\n
+				* "Added Date" List now sorted in reverse order \n\n
+				* French translation updates (Imkal)\n\n
+				* Bug fixes\n\n
+			</p>
+		]]>
+    </string>
+    
     <!-- End: Added/Updated in 5.0.5 -->
 
     <!-- Begin: Added/Updated in [Next Version] -->

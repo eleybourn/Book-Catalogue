@@ -300,7 +300,7 @@ public abstract class BookEditFragmentAbstract extends BookCatalogueFragment imp
 //		}
 
 		// Check format information
-		showHideField(true, R.id.pages, R.id.row_pages);
+		showHideField(hideIfEmpty, R.id.pages, R.id.row_pages);
 		//boolean hasPages = (showHideField(true, R.id.pages) == View.VISIBLE);
 		//if (!hasPages) {
 		//	getView().findViewById(R.id.pages).setVisibility(View.GONE);			

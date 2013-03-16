@@ -854,7 +854,7 @@ and you can edit the book via the options menu using the menu button or overflow
     
     <!-- End: Added/Updated in 5.0.4 -->
 
-    <!-- Begin: Added/Updated in 5.1.0 -->
+    <!-- Begin: Added/Updated in 5.0.5 -->
     <!--  New preference to override the default method used to generate bookslists as defined by API level -->
     <string name="booklist_generation">Book List Generation Option</string>
     <!-- Option listed under "booklist_generation" referring to a very conservative way of generating bookslists -->
@@ -866,7 +866,7 @@ and you can edit the book via the options menu using the menu button or overflow
     <!-- Default Option listed under "booklist_generation" referring to a conservative way of generating bookslists -->
     <string name="automatically_use_recommended_option">Automatically use recommended option</string>
     
-    <!-- End: Added/Updated in 5.1.0 -->
+    <!-- End: Added/Updated in 5.0.5 -->
 
     <!-- Begin: Added/Updated in [Next Version] -->
     <!-- End: Added/Updated in [Next Version] -->

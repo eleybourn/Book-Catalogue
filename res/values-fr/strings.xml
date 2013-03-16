@@ -822,8 +822,24 @@
     
     <!-- Option listed under "booklist_generation" referring to a very conservative way of generating bookslists -->
     <!-- NOTE The English version was changed to "Force Compatibility Mode" -->
-    <string name="force_compatibility_mode">Mode Compatibilité</string>
+    <string name="force_compatibility_mode">Mode Compatibilité actif</string>
     
+    <!-- Option listed under "booklist_generation" referring to a conservative way of generating bookslists -->
+    <string name="force_enhanced_compatibility_mode">Mode Compatibilité avancé actif</string>
+    <!-- Option listed under "booklist_generation" referring to a conservative way of generating bookslists -->
+    <string name="force_fully_featured">Mode \'Toutes options\' actives</string>
+    <!-- Default Option listed under "booklist_generation" referring to a conservative way of generating bookslists -->
+    <string name="automatically_use_recommended_option">Utilisation automatique des recommandations</string>
+    
+    <string name="new_in_505">
+		<![CDATA[
+			<p><b>New in 5.0.5</b>\n\n
+				* Tri décroissant sur la date d\'ajout \n\n
+				* Mise à jour de la version française(Imkal)\n\n
+				* Correction de bogues\n\n
+			</p>
+		]]>
+    </string>
     <!-- End Added/Updated in 5.0.5 -->
     
 </resources>

@@ -480,6 +480,7 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 	 * @param isFullRebuild		Indicates whole table structure needs rebuild, vs. just do a reselect of underlying data
 	 */
 	private void setupList(boolean isFullRebuild) {
+		isFullRebuild = true;
 		mTaskQueue.enqueue(new GetListTask(isFullRebuild));
 		if (mListDialog == null) {
 			mListDialog = ProgressDialog.show(this, "", getString(R.string.getting_books_ellipsis), true, true, new OnCancelListener() {

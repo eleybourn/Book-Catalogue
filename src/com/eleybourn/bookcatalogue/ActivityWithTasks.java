@@ -20,7 +20,6 @@
 
 package com.eleybourn.bookcatalogue;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -32,11 +31,14 @@ import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.TaskManager.TaskManagerController;
 import com.eleybourn.bookcatalogue.TaskManager.TaskManagerListener;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.debug.Tracker.States;
 import com.eleybourn.bookcatalogue.utils.Logger;
 
 /**
+ * TODO: Remove this!!!! Fragments makes ActivityWithTasks mostly redundant.
+ * 
  * Class to used as a base class for any Activity that wants to run one or more threads that
  * use a ProgressDialog.
  * 
@@ -49,7 +51,7 @@ import com.eleybourn.bookcatalogue.utils.Logger;
  *    
  * @author Philip Warner
  */
-abstract public class ActivityWithTasks extends Activity {
+abstract public class ActivityWithTasks extends BookCatalogueActivity {
 	/** ID of associated TaskManager */
 	protected long mTaskManagerId = 0;
 	/** Associated TaskManager */

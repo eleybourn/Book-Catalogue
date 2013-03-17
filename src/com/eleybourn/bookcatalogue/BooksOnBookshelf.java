@@ -29,7 +29,6 @@ import java.util.Iterator;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.DialogInterface;
@@ -45,8 +44,6 @@ import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AbsListView;
@@ -64,6 +61,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.eleybourn.bookcatalogue.BooksMultitypeListHandler.BooklistChangeListener;
 import com.eleybourn.bookcatalogue.booklist.BooklistBuilder;
 import com.eleybourn.bookcatalogue.booklist.BooklistBuilder.BookRowInfo;
@@ -73,7 +72,11 @@ import com.eleybourn.bookcatalogue.booklist.BooklistPseudoCursor;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
 import com.eleybourn.bookcatalogue.booklist.BooklistStylePropertiesActivity;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyles;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueListActivity;
 import com.eleybourn.bookcatalogue.debug.Tracker;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsUtils;
 import com.eleybourn.bookcatalogue.utils.HintManager;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue;
@@ -88,7 +91,7 @@ import com.eleybourn.bookcatalogue.utils.ViewTagger;
  * 
  * @author Philip Warner
  */
-public class BooksOnBookshelf extends ListActivity implements BooklistChangeListener {
+public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistChangeListener {
 	/** Counter for com.eleybourn.bookcatalogue.debug purposes */
 	private static Integer mInstanceCount = 0;
 
@@ -195,7 +198,15 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 			if (mSearchText == null || mSearchText.equals(".")) {
 				mSearchText = "";
 			}
-	
+
+			TextView searchTextView = (TextView) findViewById(R.id.search_text);
+			if (mSearchText.equals("")) {
+				searchTextView.setVisibility(View.GONE);
+			} else {
+				searchTextView.setVisibility(View.VISIBLE);
+				searchTextView.setText(getString(R.string.search) + ": " + mSearchText);
+			}
+
 			// We want context menus to be available
 			registerForContextMenu(getListView());
 	
@@ -215,9 +226,19 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 			// This will cause the list to be generated.
 			initBookshelfSpinner();
 			setupList(true);
+
+			if (savedInstanceState == null)
+				HintManager.displayHint(this, R.string.hint_view_only_book_details, null);
 		} finally {
 			Tracker.exitOnCreate(this);
 		}
+	}
+
+	/**
+	 * Support routine now that this activity is no longer a ListActivity
+	 */
+	private ListView getListView() {
+		return (ListView)findViewById(android.R.id.list);
 	}
 
 	/**
@@ -233,7 +254,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		mList.moveToPosition(position);
 		// If it's a book, edit it.
 		if (mList.getRowView().getKind() == RowKinds.ROW_KIND_BOOK) {
-			BookEdit.openBook(this, mList.getRowView().getBookId());
+			BookEdit.openBook(this, mList.getRowView().getBookId(), mList.getBuilder(), position);
 //			boolean isReadOnly = BookCatalogueApp.getAppPreferences()
 //					.getBoolean(BookCataloguePreferences.PREF_OPEN_BOOK_READ_ONLY, false);
 //			if (isReadOnly){
@@ -273,7 +294,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 	 * Handle selections from context menu
 	 */
 	@Override
-	public boolean onContextItemSelected(MenuItem item) {
+	public boolean onContextItemSelected(android.view.MenuItem item) {
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 		mList.moveToPosition(info.position);
 		if (mListHandler.onContextItemSelected(mList.getRowView(), this, mDb, item))
@@ -338,86 +359,102 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 
 		@Override
 		public void run(SimpleTaskContext taskContext) {
-			long t0 = System.currentTimeMillis();
-			// Build the underlying data
-			BooklistBuilder b = buildBooklist(mIsFullRebuild);
-			long t1 = System.currentTimeMillis();
-			// Try to sync the previously selected book ID
-			if (mMarkBookId != 0) {
-				// get all positions of the book
-				mTargetRows = b.getBookAbsolutePositions(mMarkBookId);
+			try {
+				long t0 = System.currentTimeMillis();
+				// Build the underlying data
+				BooklistBuilder b = buildBooklist(mIsFullRebuild);
+				long t1 = System.currentTimeMillis();
+				// Try to sync the previously selected book ID
+				if (mMarkBookId != 0) {
+					// get all positions of the book
+					mTargetRows = b.getBookAbsolutePositions(mMarkBookId);
 
-				if (mTargetRows != null && mTargetRows.size() > 0) {
-					// First, get the ones that are currently visible...
-					ArrayList<BookRowInfo> visRows = new ArrayList<BookRowInfo>();
-					for(BookRowInfo i: mTargetRows) {
-						if (i.visible) {
-							visRows.add(i);
-						}
-					}
-					// If we have any visible rows, only consider them for the new position
-					if (visRows.size() > 0)
-						mTargetRows = visRows;
-					else {
-						// Make them ALL visible
+					if (mTargetRows != null && mTargetRows.size() > 0) {
+						// First, get the ones that are currently visible...
+						ArrayList<BookRowInfo> visRows = new ArrayList<BookRowInfo>();
 						for(BookRowInfo i: mTargetRows) {
-							if (!i.visible) {
-								b.ensureAbsolutePositionVisible(i.absolutePosition);
+							if (i.visible) {
+								visRows.add(i);
 							}
 						}
-						// Recalculate all positions
-						for(BookRowInfo i: mTargetRows) {
-							i.listPosition = b.getPosition(i.absolutePosition);
+						// If we have any visible rows, only consider them for the new position
+						if (visRows.size() > 0)
+							mTargetRows = visRows;
+						else {
+							// Make them ALL visible
+							for(BookRowInfo i: mTargetRows) {
+								if (!i.visible) {
+									b.ensureAbsolutePositionVisible(i.absolutePosition);
+								}
+							}
+							// Recalculate all positions
+							for(BookRowInfo i: mTargetRows) {
+								i.listPosition = b.getPosition(i.absolutePosition);
+							}
 						}
+
+//						// Find the nearest row to the recorded 'top' row.
+//						int targetRow = bookRows[0];
+//						int minDist = Math.abs(mTopRow - b.getPosition(targetRow));
+//						for(int i=1; i < bookRows.length; i++) {
+//							int pos = b.getPosition(bookRows[i]);
+//							int dist = Math.abs(mTopRow - pos);
+//							if (dist < minDist)
+//								targetRow = bookRows[i];
+//						}
+//						// Make sure the target row is visible/expanded.
+//						b.ensureAbsolutePositionVisible(targetRow);
+//						// Now find the position it will occupy in the view
+//						mTargetPos = b.getPosition(targetRow);
 					}
+				} else
+					mTargetRows = null;
+				long t2 = System.currentTimeMillis();
 
-//					// Find the nearest row to the recorded 'top' row.
-//					int targetRow = bookRows[0];
-//					int minDist = Math.abs(mTopRow - b.getPosition(targetRow));
-//					for(int i=1; i < bookRows.length; i++) {
-//						int pos = b.getPosition(bookRows[i]);
-//						int dist = Math.abs(mTopRow - pos);
-//						if (dist < minDist)
-//							targetRow = bookRows[i];
-//					}
-//					// Make sure the target row is visible/expanded.
-//					b.ensureAbsolutePositionVisible(targetRow);
-//					// Now find the position it will occupy in the view
-//					mTargetPos = b.getPosition(targetRow);
+				// Now we have expanded groups as needed, get the list cursor
+				mTempList = b.getList();
+
+				// Clear it so it wont be reused.
+				mMarkBookId = 0;
+				
+				// get a count() from the cursor in background task because the setAdapter() call
+				// will do a count() and potentially block the UI thread while it pages through the
+				// entire cursor. If we do it here, subsequent calls will be fast.
+				long t3 = System.currentTimeMillis();
+				int count = mTempList.getCount();
+				long t4 = System.currentTimeMillis();
+				mUniqueBooks = mTempList.getUniqueBookCount();
+				long t5 = System.currentTimeMillis();
+				mTotalBooks = mTempList.getBookCount();
+				long t6 = System.currentTimeMillis();
+
+				System.out.println("Build: " + (t1-t0));
+				System.out.println("Position: " + (t2-t1));
+				System.out.println("Select: " + (t3-t2));
+				System.out.println("Count(" + count + "): " + (t4-t3) + "/" + (t5-t4) + "/" + (t6-t5));
+				System.out.println("====== " );
+				System.out.println("Total: " + (t6-t0));
+				// Save a flag to say list was loaded at least once successfully
+				mListHasBeenLoaded = true;
+
+			} finally {
+				if (taskContext.isTerminating()) {
+					// onFinish() will not be called, and we can discard our
+					// work...
+					if (mTempList != null && mTempList != mList) {
+						if (mList == null || mTempList.getBuilder() != mList.getBuilder())
+							try { mTempList.getBuilder().close(); } catch (Exception e)  { /* Ignore */ };
+
+						try { mTempList.close(); } catch (Exception e)  { /* Ignore */ };
+
+					}
 				}
-			} else
-				mTargetRows = null;
-			long t2 = System.currentTimeMillis();
-
-			// Now we have expanded groups as needed, get the list cursor
-			mTempList = b.getList();
-
-			// Clear it so it wont be reused.
-			mMarkBookId = 0;
+			}
 			
-			// get a count() from the cursor in background task because the setAdapter() call
-			// will do a count() and potentially block the UI thread while it pages through the
-			// entire cursor. If we do it here, subsequent calls will be fast.
-			long t3 = System.currentTimeMillis();
-			int count = mTempList.getCount();
-			long t4 = System.currentTimeMillis();
-			mUniqueBooks = mTempList.getUniqueBookCount();
-			long t5 = System.currentTimeMillis();
-			mTotalBooks = mTempList.getBookCount();
-			long t6 = System.currentTimeMillis();
-
-			System.out.println("Build: " + (t1-t0));
-			System.out.println("Position: " + (t2-t1));
-			System.out.println("Select: " + (t3-t2));
-			System.out.println("Count(" + count + "): " + (t4-t3) + "/" + (t5-t4) + "/" + (t6-t5));
-			System.out.println("====== " );
-			System.out.println("Total: " + (t6-t0));
-			// Save a flag to say list was loaded at least once successfully
-			mListHasBeenLoaded = true;
 		}
 
 		@Override
-		public void onFinish() {
+		public void onFinish(Exception e) {
 			// If activity dead, just do a local cleanup and exit.
 			if (mIsDead) {
 				mTempList.close();
@@ -435,11 +472,6 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 			mTempList = null;
 		}
 
-		@Override
-		public boolean requiresOnFinish() {
-			return true;
-		}
-		
 	}
 	
 	/**
@@ -448,6 +480,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 	 * @param isFullRebuild		Indicates whole table structure needs rebuild, vs. just do a reselect of underlying data
 	 */
 	private void setupList(boolean isFullRebuild) {
+		isFullRebuild = true;
 		mTaskQueue.enqueue(new GetListTask(isFullRebuild));
 		if (mListDialog == null) {
 			mListDialog = ProgressDialog.show(this, "", getString(R.string.getting_books_ellipsis), true, true, new OnCancelListener() {
@@ -490,7 +523,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 				root.setBackgroundColor(backgroundColor);
 				header.setBackgroundColor(backgroundColor);
 			} else {
-				Drawable d = Utils.makeTiledBackground(this, false);
+				Drawable d = Utils.makeTiledBackground(false);
 				root.setBackgroundDrawable(d);
 				header.setBackgroundDrawable(d);
 //				root.setBackgroundDrawable(Utils.cleanupTiledBackground(getResources().getDrawable(R.drawable.bc_background_gradient)));
@@ -500,7 +533,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 			Utils.setCacheColorHintSafely(lv, 0x00000000);
 			// ICS does not cope well with transparent ListView backgrounds with a 0 cache hint, but it does
 			// seem to cope with a background image on the ListView itself.
-			Drawable d = Utils.makeTiledBackground(this, false);
+			Drawable d = Utils.makeTiledBackground(false);
 			if (Build.VERSION.SDK_INT >= 11) {
 				// Honeycomb
 				lv.setBackgroundDrawable(d);
@@ -545,12 +578,12 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 			throw new RuntimeException("Unexpected empty list");
 		}
 
-		final boolean showHeaderInfo = (mCurrentStyle == null ? true : mCurrentStyle.getShowHeaderInfo());
+		final int showHeaderFlags = (mCurrentStyle == null ? BooklistStyle.SUMMARY_SHOW_ALL : mCurrentStyle.getShowHeaderInfo());
 
 		initBackground();
 
 		TextView bookCounts = (TextView)findViewById(R.id.bookshelf_count);
-		if (showHeaderInfo) {
+		if ( (showHeaderFlags & BooklistStyle.SUMMARY_SHOW_COUNT) != 0) {
 			if (mUniqueBooks != mTotalBooks) 
 				bookCounts.setText("(" + this.getString(R.string.displaying_n_books_in_m_entries, mUniqueBooks, mTotalBooks) + ")");
 			else
@@ -660,21 +693,21 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		final boolean hasLevel1 = (mList.numLevels() > 1);
 		final boolean hasLevel2 = (mList.numLevels() > 2);
 
-		if (hasLevel2 && showHeaderInfo) {
+		if ( hasLevel2 && (showHeaderFlags & BooklistStyle.SUMMARY_SHOW_LEVEL_2) != 0 ) {
 			lvHolder.level2Text.setVisibility(View.VISIBLE);
 			lvHolder.level2Text.setText("");
 		} else {
 			lvHolder.level2Text.setVisibility(View.GONE);
 		}
-		if (hasLevel1 && showHeaderInfo) {
+		if (hasLevel1 && (showHeaderFlags & BooklistStyle.SUMMARY_SHOW_LEVEL_1) != 0) {
 			lvHolder.level1Text.setVisibility(View.VISIBLE);
 			lvHolder.level1Text.setText("");
 		} else
 			lvHolder.level1Text.setVisibility(View.GONE);
 
 		// Update the header details
-		if (count > 0 && showHeaderInfo)
-			updateListHeader(lvHolder, mTopRow, hasLevel1, hasLevel2);
+		if (count > 0 && (showHeaderFlags & (BooklistStyle.SUMMARY_SHOW_LEVEL_1 ^ BooklistStyle.SUMMARY_SHOW_LEVEL_2)) != 0)
+			updateListHeader(lvHolder, mTopRow, hasLevel1, hasLevel2, showHeaderFlags);
 
 		// Define a scroller to update header detail when top row changes
 		lv.setOnScrollListener(new OnScrollListener() {
@@ -682,9 +715,9 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 				// TODO: Investigate why BooklistPseudoCursor causes a scroll even when it is closed!
 				// Need to check isDead because BooklistPseudoCursor misbehaves when activity terminates and closes cursor
-				if (mLastTop != firstVisibleItem && !mIsDead && showHeaderInfo) {
+				if (mLastTop != firstVisibleItem && !mIsDead && (showHeaderFlags != 0) ) {
 					ListViewHolder holder = (ListViewHolder)ViewTagger.getTag(view, R.id.TAG_HOLDER);
-					updateListHeader(holder, firstVisibleItem, hasLevel1, hasLevel2);
+					updateListHeader(holder, firstVisibleItem, hasLevel1, hasLevel2, showHeaderFlags);
 				}
 			}
 
@@ -694,9 +727,9 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 		);
 
 		if (mCurrentStyle == null)
-			this.setTitle(R.string.app_name);
+			this.getSupportActionBar().setSubtitle("");
 		else
-			this.setTitle(getString(R.string.app_name) + ": " + mCurrentStyle.getDisplayName());
+			this.getSupportActionBar().setSubtitle(mCurrentStyle.getDisplayName());
 			
 		// Close old list
 		if (oldList != null) {
@@ -716,16 +749,16 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 	 * @param hasLevel1		flag indicating level 1 is present
 	 * @param hasLevel2		flag indicating level 2 is present
 	 */
-	private void updateListHeader(ListViewHolder holder, int topItem, boolean hasLevel1, boolean hasLevel2) {
+	private void updateListHeader(ListViewHolder holder, int topItem, boolean hasLevel1, boolean hasLevel2, int flags) {
 		if (topItem < 0)
 			topItem = 0;
 
 		mLastTop = topItem;
-		if (hasLevel1) {
+		if (hasLevel1 && ( flags & BooklistStyle.SUMMARY_SHOW_LEVEL_1) != 0) {
 			if ( mList.moveToPosition(topItem) ) {
 				holder.level1Text.setText(mList.getRowView().getLevel1Data());
 				String s = null;
-				if (hasLevel2) {
+				if (hasLevel2 && ( flags & BooklistStyle.SUMMARY_SHOW_LEVEL_2) != 0 ) {
 					s = mList.getRowView().getLevel2Data();
 					holder.level2Text.setText(s);
 				}				
@@ -973,23 +1006,35 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 	private static final int MNU_EXPAND = MenuHandler.FIRST+2; 
 	private static final int MNU_COLLAPSE = MenuHandler.FIRST+3; 
 	private static final int MNU_EDIT_STYLE = MenuHandler.FIRST+4; 
+	private static final int MNU_GOODREADS = MenuHandler.FIRST+5; 
+	
 	/**
 	 * Run each time the menu button is pressed. This will setup the options menu
 	 */
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
+		MenuItem i;
 		mMenuHandler = new MenuHandler();
 		mMenuHandler.init(menu);
 
 		mMenuHandler.addCreateBookItems(menu);
 
-		mMenuHandler.addItem(menu, MNU_SORT, R.string.sort_and_style_ellipsis, android.R.drawable.ic_menu_sort_alphabetically);
+		i = mMenuHandler.addItem(menu, MNU_SORT, R.string.sort_and_style_ellipsis, android.R.drawable.ic_menu_sort_alphabetically);
+		i.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+			;
 		//mMenuHandler.addItem(menu, MNU_EDIT_STYLE, R.string.edit_style, android.R.drawable.ic_menu_manage);
 
 		mMenuHandler.addItem(menu, MNU_EXPAND, R.string.menu_sort_by_author_expanded, R.drawable.ic_menu_expand);
-		mMenuHandler.addItem(menu, MNU_COLLAPSE, R.string.menu_sort_by_author_collapsed, R.drawable.ic_menu_collapse);
 
-		mMenuHandler.addSearchItem(menu);
+		mMenuHandler.addItem(menu, MNU_COLLAPSE, R.string.menu_sort_by_author_collapsed, R.drawable.ic_menu_collapse);
+		
+		mMenuHandler.addSearchItem(menu)
+					.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+		final boolean showGr = GoodreadsManager.hasCredentials();
+		if (showGr) {
+			mMenuHandler.addItem(menu, MNU_GOODREADS, R.string.goodreads, R.drawable.ic_menu_gr_logo);
+		}
 
 		mMenuHandler.addCreateHelpAndAdminItems(menu);
 		
@@ -1039,6 +1084,11 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 					mTopRow = mList.getBuilder().getPosition(oldAbsPos);
 					displayList(mList.getBuilder().getList(), null);												
 				}
+				break;
+			}
+			case MNU_GOODREADS:
+			{
+				GoodreadsUtils.showGoodreadsOptions(this);
 				break;
 			}
 			/*
@@ -1098,6 +1148,7 @@ public class BooksOnBookshelf extends ListActivity implements BooklistChangeList
 			break;
 		case UniqueId.ACTIVITY_CREATE_BOOK_ISBN:
 		case UniqueId.ACTIVITY_CREATE_BOOK_MANUALLY:
+		case UniqueId.ACTIVITY_VIEW_BOOK:
 		case UniqueId.ACTIVITY_EDIT_BOOK:
 			try {
 				if (intent != null && intent.hasExtra(CatalogueDBAdapter.KEY_ROWID)) {

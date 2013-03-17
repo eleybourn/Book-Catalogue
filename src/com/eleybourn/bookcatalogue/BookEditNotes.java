@@ -24,64 +24,27 @@ package com.eleybourn.bookcatalogue;
 import java.util.ArrayList;
 import java.util.Date;
 
-import android.app.Activity;
-import android.app.Dialog;
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.Toast;
 
-import com.eleybourn.bookcatalogue.BookEdit.OnRestoreTabInstanceStateListener;
 import com.eleybourn.bookcatalogue.Fields.AfterFieldChangeListener;
 import com.eleybourn.bookcatalogue.Fields.Field;
 import com.eleybourn.bookcatalogue.Fields.FieldFormatter;
-import com.eleybourn.bookcatalogue.Fields.FieldValidator;
+import com.eleybourn.bookcatalogue.datamanager.ValidatorException;
 import com.eleybourn.bookcatalogue.debug.Tracker;
-import com.eleybourn.bookcatalogue.dialogs.PartialDatePicker;
-import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
+import com.eleybourn.bookcatalogue.dialogs.PartialDatePickerFragment;
+import com.eleybourn.bookcatalogue.dialogs.PartialDatePickerFragment.OnPartialDatePickerListener;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
-
 
 /*
  * A book catalogue application that integrates with Google Books.
  */
-public class BookEditNotes extends Activity implements OnRestoreTabInstanceStateListener {
-
-	private Fields mFields;
-	private boolean mIsDirtyFlg = false;
-
-	private Button mConfirmButton;
-	private Button mCancelButton;
-	private Long mRowId;
-	private CatalogueDBAdapter mDbHelper;
-
-	private static final int READ_START_DIALOG_ID = 1;
-	private static final int READ_END_DIALOG_ID = 2;
-	protected void getRowId() {
-		/* Get any information from the extras bundle */
-		Bundle extras = getIntent().getExtras();
-		mRowId = extras != null ? extras.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
-	}
-
-	/**
-	 * Validate the current data in all fields that have validators. Display any errors.
-	 *
-	 * @param values The values to use
-	 *
-	 * @return Boolean success or failure.
-	 */
-	private boolean validate(Bundle values) {
-		if (!mFields.validate(values)) {
-			Toast.makeText(getParent(), mFields.getValidationExceptionMessage(getResources()), Toast.LENGTH_LONG).show();
-			return false;
-		}
-		return true;
-	}
+public class BookEditNotes extends BookEditFragmentAbstract implements OnPartialDatePickerListener {
 
 	/**
 	 * Returns a unique list of all locations in the database
@@ -109,56 +72,52 @@ public class BookEditNotes extends Activity implements OnRestoreTabInstanceState
 	}
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		final View root = inflater.inflate(R.layout.edit_book_notes, container, false);
+
+		return root;
+	}
+
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
 		Tracker.enterOnCreate(this);
 		try {
-			super.onCreate(savedInstanceState);
-			mDbHelper = new CatalogueDBAdapter(this);
-			mDbHelper.open();
-
-			setContentView(R.layout.edit_book_notes);
+			super.onActivityCreated(savedInstanceState);
 
 			if (savedInstanceState != null) {
-				setDirty(savedInstanceState.getBoolean("Dirty"));
+				mEditManager.setDirty(savedInstanceState.getBoolean("Dirty"));
 			}
 
-			mFields = new Fields(this);
 			Field f;
 
-			// Generic validators; if field-specific defaults are needed, create a new one.
-			FieldValidator booleanValidator = new Fields.BooleanValidator();
 			//FieldValidator blankOrDateValidator = new Fields.OrValidator(new Fields.BlankValidator(), new Fields.DateValidator());
 			FieldFormatter dateFormatter = new Fields.DateFieldFormatter();
 
-			mFields.add(R.id.rating, CatalogueDBAdapter.KEY_RATING, new Fields.FloatValidator());
+			mFields.add(R.id.rating, CatalogueDBAdapter.KEY_RATING, null);
 			mFields.add(R.id.rating_label, "",  CatalogueDBAdapter.KEY_RATING, null);
-			mFields.add(R.id.read, CatalogueDBAdapter.KEY_READ, booleanValidator);
+			mFields.add(R.id.read, CatalogueDBAdapter.KEY_READ, null);
 			mFields.add(R.id.notes, CatalogueDBAdapter.KEY_NOTES, null);
 
-			ArrayAdapter<String> location_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getLocations());
+			ArrayAdapter<String> location_adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, getLocations());
 			mFields.add(R.id.location, CatalogueDBAdapter.KEY_LOCATION, null);
 			mFields.setAdapter(R.id.location, location_adapter);
 
-			f = mFields.add(R.id.read_start_button, "",  CatalogueDBAdapter.KEY_READ_START, null);
-			f.getView().setOnClickListener(new View.OnClickListener() {
-				public void onClick(View view) {
-					showDialog(READ_START_DIALOG_ID);
-				}
-			});
 			// ENHANCE: Add a partial date validator. Or not.
-			//mFields.add(R.id.read_start, CatalogueDBAdapter.KEY_READ_START, blankOrDateValidator, dateFormatter);
-			mFields.add(R.id.read_start, CatalogueDBAdapter.KEY_READ_START, null, dateFormatter);
-
-			f = mFields.add(R.id.read_end_button, "",  CatalogueDBAdapter.KEY_READ_END, null);
+			f = mFields.add(R.id.read_start, CatalogueDBAdapter.KEY_READ_START, null, dateFormatter);
 			f.getView().setOnClickListener(new View.OnClickListener() {
 				public void onClick(View view) {
-					showDialog(READ_END_DIALOG_ID);
+					BookEditNotes.this.showReadStartDialog();
 				}
 			});
-			//f = mFields.add(R.id.read_end, CatalogueDBAdapter.KEY_READ_END, blankOrDateValidator, dateFormatter);
-			f = mFields.add(R.id.read_end, CatalogueDBAdapter.KEY_READ_END, null, dateFormatter);
 
-			mFields.add(R.id.signed, CatalogueDBAdapter.KEY_SIGNED,  booleanValidator);
+			f = mFields.add(R.id.read_end, CatalogueDBAdapter.KEY_READ_END, null, dateFormatter);
+			f.getView().setOnClickListener(new View.OnClickListener() {
+				public void onClick(View view) {
+					BookEditNotes.this.showReadEndDialog();
+				}
+			});
+
+			mFields.add(R.id.signed, CatalogueDBAdapter.KEY_SIGNED,  null);
 
 			mFields.addCrossValidator(new Fields.FieldCrossValidator() {
 				public void validate(Fields fields, Bundle values) {
@@ -169,67 +128,12 @@ public class BookEditNotes extends Activity implements OnRestoreTabInstanceState
 					if (end == null || end.equals(""))
 						return;
 					if (start.compareToIgnoreCase(end) > 0)
-						throw new Fields.ValidatorException(R.string.vldt_read_start_after_end,new Object[]{});
+						throw new ValidatorException(R.string.vldt_read_start_after_end,new Object[]{});
 				}
 			});
 
-			mConfirmButton = (Button) findViewById(R.id.confirm);
-			mCancelButton = (Button) findViewById(R.id.cancel);
-
-			mRowId = savedInstanceState != null ? savedInstanceState.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
-			if (mRowId == null) {
-				getRowId();
-			}
-
-			if (savedInstanceState == null) {
-				populateFields();
-			} else {
-				restoreField(savedInstanceState, CatalogueDBAdapter.KEY_READ_START, R.id.read_start);
-				restoreField(savedInstanceState, CatalogueDBAdapter.KEY_READ_END, R.id.read_end);
-			}
-
-			if (mRowId != null && mRowId > 0)
-				mConfirmButton.setText(R.string.confirm_save);
-
-			mConfirmButton.setOnClickListener(new View.OnClickListener() {
-				public void onClick(View view) {
-					Bundle values = new Bundle();
-					if (!validate(values)) {
-						//return;
-						// Ignore...nothing here is that important...but warn the users.
-					}
-
-					saveState(values);
-					Intent i = new Intent();
-					i.putExtra(CatalogueDBAdapter.KEY_ROWID, mRowId);
-					if (getParent() == null) {
-						setResult(RESULT_OK, i);
-					} else {
-						getParent().setResult(RESULT_OK, i);
-					}
-					finish();
-				}
-			});
-
-			mCancelButton.setOnClickListener(new View.OnClickListener() {
-				public void onClick(View view) {
-					Intent i = new Intent();
-					i.putExtra(CatalogueDBAdapter.KEY_ROWID, mRowId);
-					if (getParent() == null) {
-						setResult(RESULT_OK, i);
-					} else {
-						getParent().setResult(RESULT_OK, i);
-					}
-					if (isDirty()) {
-						StandardDialogs.showConfirmUnsavedEditsDialog(BookEditNotes.this);
-					} else {
-						finish();
-					}
-				}
-			});
-			
 			try {
-				Utils.fixFocusSettings(findViewById(android.R.id.content));				
+				Utils.fixFocusSettings(getView());				
 			} catch (Exception e) {
 				// Log, but ignore. This is a non-critical feature that prevents crashes when the
 				// 'next' key is pressed and some views have been hidden.
@@ -239,11 +143,11 @@ public class BookEditNotes extends Activity implements OnRestoreTabInstanceState
 			mFields.setAfterFieldChangeListener(new AfterFieldChangeListener(){
 				@Override
 				public void afterFieldChange(Field field, String newValue) {
-					setDirty(true);
+					mEditManager.setDirty(true);
 				}});
 
 			// Setup the background
-			Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
+			//Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 			
 		} catch (Exception e) {
 			Logger.logError(e);
@@ -251,234 +155,86 @@ public class BookEditNotes extends Activity implements OnRestoreTabInstanceState
 		Tracker.exitOnCreate(this);
 	}
 
+	private void showReadStartDialog() {
+		PartialDatePickerFragment frag = PartialDatePickerFragment.newInstance();
+		
+		frag.setTitle(R.string.read_start);
+		frag.setDialogId(R.id.read_start); // Set to the destination field ID
+		try {
+			String dateString;
+			Object o = mFields.getField(R.id.read_start).getValue();
+			if (o == null || o.toString().equals("")) {
+				dateString = Utils.toSqlDateTime(new Date());
+			} else {
+				dateString = o.toString();
+			}
+			Utils.prepareDateDialogFragment(frag, dateString);
+		} catch (Exception e) {
+			// use the default date
+		}
+
+		frag.show(getFragmentManager(), null);
+	}
+
+	private void showReadEndDialog() {
+		PartialDatePickerFragment frag = PartialDatePickerFragment.newInstance();
+		
+		frag.setTitle(R.string.read_end);
+		frag.setDialogId(R.id.read_end); // Set to the destination field ID
+
+		try {
+			String dateString;
+			Object o = mFields.getField(R.id.read_end).getValue();
+			if (o == null || o.toString().equals("")) {
+				dateString = Utils.toSqlDateTime(new Date());
+			} else {
+				dateString = o.toString();
+			}
+			Utils.prepareDateDialogFragment(frag, dateString);
+		} catch (Exception e) {
+			// use the default date
+		}
+		frag.show(getFragmentManager(), null);
+	}
+
 	/**
-	 * Restore a single field from a saved state
-	 *
-	 * @param savedInstanceState 	the saved state
-	 * @param key					key in state for value to restore
-	 * @param fieldId				field to set
+	 *  The callback received when the user "sets" the date in the dialog.
+	 *  
+	 *  Build a full or partial date in SQL format
 	 */
-	private void restoreField(Bundle savedInstanceState, String key, int fieldId) {
-		final Field fe = mFields.getField(fieldId);
-		fe.setValue(savedInstanceState.getString(key));
+	@Override
+	public void onPartialDatePickerSet(int dialogId, PartialDatePickerFragment dialog, Integer year, Integer month, Integer day) {
+		String value = Utils.buildPartialDate(year, month, day);
+		mFields.getField(dialogId).setValue(value);
+		dialog.dismiss();
+	}
+
+	/**
+	 *  The callback received when the user "cancels" the date in the dialog.
+	 *  
+	 *  Dismiss it.
+	 */
+	@Override
+	public void onPartialDatePickerCancel(int dialogId, PartialDatePickerFragment dialog) {
+		dialog.dismiss();
 	}
 
 	@Override
-	protected Dialog onCreateDialog(int id) {
-		switch (id) {
-		case READ_START_DIALOG_ID:
-			try {
-				return Utils.buildDateDialog(this, R.string.read_start, mReadStartSetListener);
-			} catch (Exception e) {
-				// use the default date
-			}
-			break;
-		case READ_END_DIALOG_ID:
-			try {
-				return Utils.buildDateDialog(this, R.string.read_end, mReadEndSetListener);
-			} catch (Exception e) {
-				// use the default date
-			}
-			break;
-		}
-		return null;
-	}
-
-	@Override
-	protected void onPrepareDialog(int id, Dialog dialog) {
-		switch (id) {
-		case READ_START_DIALOG_ID:
-			try {
-				String dateString;
-				Object o = mFields.getField(R.id.read_start).getValue();
-				if (o == null || o.toString().equals("")) {
-					dateString = Utils.toSqlDateTime(new Date());
-				} else {
-					dateString = o.toString();
-				}
-				Utils.prepareDateDialog((PartialDatePicker)dialog, dateString, mReadStartSetListener);
-			} catch (Exception e) {
-				// use the default date
-			}
-			break;
-		case READ_END_DIALOG_ID:
-			try {
-				String dateString;
-				Object o = mFields.getField(R.id.read_end).getValue();
-				if (o == null || o.toString().equals("")) {
-					dateString = Utils.toSqlDateTime(new Date());
-				} else {
-					dateString = o.toString();
-				}
-				Utils.prepareDateDialog((PartialDatePicker)dialog, dateString, mReadEndSetListener);
-			} catch (Exception e) {
-				// use the default date
-			}
-			break;
-		}
-	}
-
-	/**
-	 * the callback received when the user "sets" the read-start date in the dialog
-	 */
-	private PartialDatePicker.OnDateSetListener mReadStartSetListener = new PartialDatePicker.OnDateSetListener() {
-		@Override
-		public void onDateSet(PartialDatePicker dialog, Integer year, Integer month, Integer day) {
-			String value = Utils.buildPartialDate(year, month, day);
-			mFields.getField(R.id.read_start).setValue(value);
-			dismissDialog(READ_START_DIALOG_ID);
-		}
-
-		@Override
-		public void onCancel(PartialDatePicker dialog) {
-			dismissDialog(READ_START_DIALOG_ID);
-		}
-	};
-
-	/**
-	 * the callback received when the user "sets" the read-end date in the dialog
-	 */
-	private PartialDatePicker.OnDateSetListener mReadEndSetListener = new PartialDatePicker.OnDateSetListener() {
-		@Override
-		public void onDateSet(PartialDatePicker dialog, Integer year, Integer month, Integer day) {
-			String value = Utils.buildPartialDate(year, month, day);
-			mFields.getField(R.id.read_end).setValue(value);
-			dismissDialog(READ_END_DIALOG_ID);
-		}
-
-		@Override
-		public void onCancel(PartialDatePicker dialog) {
-			dismissDialog(READ_END_DIALOG_ID);
-		}
-	};
-
-	private void populateFields() {
-		if (mRowId == null) {
-			getRowId();
-		}
-
-		if (mRowId != null && mRowId > 0) {
-			// From the database (edit)
-			Cursor book = mDbHelper.fetchBookById(mRowId);
-			try {
-				if (book != null) {
-					book.moveToFirst();
-				}
-				getParent().setTitle(this.getResources().getString(R.string.app_name) + ": " +
-							book.getString(book.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE)));
-
-				mFields.setFromCursor(book);
-
-			} finally {
-				// Tidy up
-				if (book != null)
-					book.close();
-			}
-		} else {
-			// Manual Add
-			//This should never happen
-			Toast.makeText(this, R.string.unknown_error, Toast.LENGTH_LONG).show();
-			finish();
-		}
-	}
-	
-	/**
-	 * If 'back' is pressed, and the user has made changes, ask them if they really want to lose the changes.
-	 * 
-	 * We don't use onBackPressed because it does not work with API level 4.
-	 */
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK && isDirty()) {
-			StandardDialogs.showConfirmUnsavedEditsDialog(this);
-			return true;
-		} else {
-			return super.onKeyDown(keyCode, event);
-		}
-	}
-
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		Tracker.enterOnSaveInstanceState(this);
-		super.onSaveInstanceState(outState);
-		outState.putLong(CatalogueDBAdapter.KEY_ROWID, mRowId);
-
-		// DONT FORGET TO UPDATE onCreate to read these values back.
-		outState.putBoolean("Dirty", isDirty());
-		// Need to save local data that is not stored in EDITABLE views 
-		// ...including special text stored in TextViews and the like (TextViews are not restored automatically)
-		putStringSafely(outState, CatalogueDBAdapter.KEY_READ_START, mFields.getField(R.id.read_start).getValue());
-		putStringSafely(outState, CatalogueDBAdapter.KEY_READ_END, mFields.getField(R.id.read_end).getValue());
-		Tracker.exitOnSaveInstanceState(this);
-	}
-
-	/**
-	 * If the object is null, then don't output. Otherwise, output the result of 'toString()'
-	 * 
-	 * @param outState		Bundle to store value in
-	 * @param key			Key in bundle
-	 * @param value			value to store
-	 */
-	private void putStringSafely(Bundle outState, String key, Object value) {
-		if (value != null)
-			outState.putString(key, value.toString());
-	}
-
-	/**
-	 * Mark the data as dirty (or not)
-	 */
-	public void setDirty(boolean dirty) {
-		mIsDirtyFlg = dirty;
-	}
-
-	/**
-	 * Get the current status of the data in this activity
-	 */
-	public boolean isDirty() {
-		return mIsDirtyFlg;
-	}
-
-	@Override
-	protected void onPause() {
+	public void onPause() {
 		Tracker.enterOnPause(this);
+		BookData book = mEditManager.getBookData();
+		mFields.getAll(book);
 		super.onPause();
 		Tracker.exitOnPause(this);
 	}
 
 	@Override
-	protected void onResume() {
-		Tracker.enterOnResume(this);
-		super.onResume();
-		Tracker.exitOnResume(this);
-	}
-
-	private void saveState(Bundle values) {
-
-		if (mRowId == null || mRowId == 0) {
-			//This should never happen
-			//long id = mDbHelper.createBook(author, title, isbn, publisher, date_published, rating, bookshelf, read, series, pages, series_num);
-			Toast.makeText(this, R.string.unknown_error, Toast.LENGTH_LONG).show();
-			finish();
-		} else {
-			mDbHelper.updateBook(mRowId, values, true);
-		}
-		return;
-	}
-
-	@Override
-	protected void onDestroy() {
-		Tracker.enterOnDestroy(this);
-		super.onDestroy();
-		mDbHelper.close();
-		Tracker.exitOnDestroy(this);
-	}
-
-	@Override
-	/**
-	 * Make sure we are marked as 'dirty' based on saved state after a restore.
-	 */
-	public void restoreTabInstanceState(Bundle savedInstanceState) {
-		setDirty(savedInstanceState.getBoolean("Dirty"));
+	protected void onLoadBookDetails(BookData book, boolean setAllDone) {
+		if (!setAllDone)
+			mFields.setAll(book);
+		// No special handling required; the setAll() done by the caller is enough
+		// Restore default visibility and hide unused/unwanted and empty fields
+		showHideFields(false);
 	}
 
 }

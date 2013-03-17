@@ -31,7 +31,7 @@ import static org.acra.ReportField.USER_COMMENT;
 import static org.acra.ReportField.USER_CRASH_DATE;
 
 import org.acra.ACRA;
-import org.acra.CrashReportData;
+import org.acra.collector.CrashReportData;
 import org.acra.ErrorReporter;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
@@ -60,7 +60,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  */
 @ReportsCrashes(formKey = "", // will not be used
 	mailTo = "philip.warner@rhyme.com.au,eleybourn@gmail.com",
-	mode = ReportingInteractionMode.NOTIFICATION,
+	mode = ReportingInteractionMode.DIALOG,
 	customReportContent = { USER_COMMENT, USER_APP_START_DATE, USER_CRASH_DATE, APP_VERSION_NAME, APP_VERSION_CODE, ANDROID_VERSION, PHONE_MODEL, CUSTOM_DATA, STACK_TRACE },
 	//optional, displayed as soon as the crash occurs, before collecting data which can take a few seconds
 	resToastText = R.string.crash_toast_text, 
@@ -150,7 +150,29 @@ public class BookCatalogueApp extends Application {
 			//
 			CatalogueDBAdapter dbh = new CatalogueDBAdapter(this);
 			dbh.open();
-			dbh.getDb().getUnderlyingDatabase().acquireReference();
+			SQLiteDatabase db = dbh.getDb().getUnderlyingDatabase();
+			db.acquireReference();
+			if (Build.VERSION.SDK_INT < 8) {
+				//
+				// RELEASE: REMOVE THIS CODE When MinSDK becomes 8!
+				//
+				// Android 2.1 has a very nasty bug that can cause un-closed SQLiteStatements to dereference the
+				// database when they have not referenced it.. SQLiteStatements can fail to be released in a timely
+				// fashion when the screen is rotated, which will then result in an attempt to acess a closed closable.
+				// ... so for Android 2.1...we take 1000 references and hope the user won't rotate the screen 1000
+				// times while background tasks are running.
+				//
+				// We have made the best efforts to avoid this bug, this is just insurance.
+				//
+				// The key instance where this happens is if the GetListTask in BooksOnBookshelf is aborted due to 
+				// a screen rotation; the onFinish() method is never called, so the statements are not deleted.
+				//
+				// We have added finalize() code to SynchronizedStatement so that IF it is called first (not 
+				// guaranteed by Java spec) it will close the SQLiteStatement and try to avoid this issue.
+				//
+				for(int i = 0; i < 1000; i++)
+					db.acquireReference();
+			}
 			dbh.close();
 		}
 	}
@@ -169,7 +191,7 @@ public class BookCatalogueApp extends Application {
 			mCollationCaseSensitive = CollationCaseSensitive.isCaseSensitive(db);
 		return mCollationCaseSensitive;
 	}
-	
+
 //	/**
 //	 * Currently the QueueManager is implemented as a service. This is not clearly necessary
 //	 * but has the huge advantage of making a 'context' object available in the Service

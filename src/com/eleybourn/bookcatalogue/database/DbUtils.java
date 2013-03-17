@@ -27,6 +27,7 @@ import java.util.Hashtable;
 import java.util.Map.Entry;
 
 import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedDb;
+import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedStatement;
 
 /**
  * Utilities and classes to make defining databases a little easier and provide synchronization across threads.
@@ -750,6 +751,33 @@ public class DbUtils {
 		}
 
 		/**
+		 * Get a base 'INSERT or REPLACE' statement for this table using the passed list of domains. Returns partial
+		 * SQL of the form: 'INSERT or REPLACE INTO [table-name] ( [domain-1] ) Values (?, ..., ?)'.
+		 * 
+		 * @param domains		List of domains to use
+		 * 
+		 * @return	SQL fragment
+		 */
+		public String getInsertOrReplaceValues(DomainDefinition...domains) {
+			StringBuilder s = new StringBuilder("Insert or Replace Into ");
+			StringBuilder sPlaceholders = new StringBuilder("?");
+			s.append(mName);
+			s.append(" ( ");
+			s.append(domains[0]);
+
+			for(int i = 1; i < domains.length; i++) {
+				s.append(", ");
+				s.append(domains[i].toString());
+				
+				sPlaceholders.append(", ?");
+			}
+			s.append(")\n	values (");
+			s.append(sPlaceholders.toString());
+			s.append(")\n");
+			return s.toString();
+		}
+
+		/**
 		 * Setter. Set flag indicating table is a TEMPORARY table.
 		 * 
 		 * @param flag		Flag
@@ -882,6 +910,23 @@ public class DbUtils {
 			}
 			return this;
 		}
+
+		final static String mExistsSql = "Select (SELECT count(*) FROM sqlite_master WHERE type='table' AND name=?) + "
+										+ "(SELECT count(*) FROM sqlite_temp_master WHERE type='table' AND name=?)";
+		/**
+		 * Check if the table exists within the passed DB
+		 */
+		public boolean exists(SynchronizedDb db) {
+			SynchronizedStatement stmt = db.compileStatement(mExistsSql);
+			try {
+				stmt.bindString(1, getName());
+				stmt.bindString(2, getName());
+				return (stmt.simpleQueryForLong() > 0);				
+			} finally {
+				stmt.close();
+			}
+		}
+
 	}
 
 	/**

@@ -14,19 +14,10 @@
         android:background="@drawable/bc_vertical_gradient"
         android:orientation="vertical" >
 
-        <TextView
-            android:id="@+id/bookshelf_label"
-            android:layout_width="wrap_content"
-            android:layout_height="32dp"
-            android:paddingRight="@dimen/padding_border"
-            android:text="@string/bookshelf_label"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-
         <Spinner
             android:id="@+id/bookshelf_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/bookshelf_label"
             android:background="#00000000"
             android:paddingBottom="2dp" />
 
@@ -43,11 +34,21 @@
 			android:layout_toLeftOf="@+id/bookshelf_down"        -->
 
         <TextView
+            android:id="@+id/search_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/bookshelf_name"
+            android:paddingLeft="@dimen/padding_border"
+            android:visibility="gone"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
             android:id="@+id/bookshelf_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_below="@+id/bookshelf_label"
+            android:layout_below="@+id/search_text"
             android:paddingLeft="@dimen/padding_border"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 

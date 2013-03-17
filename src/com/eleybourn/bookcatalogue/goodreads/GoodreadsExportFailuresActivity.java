@@ -38,6 +38,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
+import com.eleybourn.bookcatalogue.BindableItemListActivity;
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.R;
@@ -54,7 +55,7 @@ import com.eleybourn.bookcatalogue.utils.ViewTagger;
  * 
  * @author Philip Warner
  */
-public class GoodreadsExportFailuresActivity extends  net.philipwarner.taskqueue.BindableItemListActivity 
+public class GoodreadsExportFailuresActivity extends BindableItemListActivity 
 {
 	/** Key to store optional task ID hen activity is started */
 	public static final String KEY_TASK_ID = "GoodreadsExportFailuresActivity.TaskId";

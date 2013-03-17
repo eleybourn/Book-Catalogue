@@ -35,6 +35,7 @@ import android.os.Handler;
 import android.text.Html;
 
 import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.OnTaskFinishListener;
@@ -103,6 +104,8 @@ public class StartupActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		System.out.println("Startup isTaskRoot() = " + isTaskRoot());
 
 		mHasBeenCalled = true;
 		mUiThread = Thread.currentThread();
@@ -257,6 +260,9 @@ public class StartupActivity extends Activity {
 		Intent i = new Intent(this, BooksOnBookshelf.class);
 		if (mWasReallyStartup)
 			i.putExtra("startup", true);
+		// XXX: This is nasty, now we use fragments, StartupActivity shoud be a FragmenActivity and load the right fragment
+		// then we could do away with the whole isRoot/willBeRoot thing
+		i.putExtra("willBeTaskRoot", isTaskRoot());
 		startActivity(i);
 	}
 	
@@ -267,6 +273,7 @@ public class StartupActivity extends Activity {
 		Intent i = new Intent(this, MainMenu.class);
 		if (mWasReallyStartup)
 			i.putExtra("startup", true);
+		i.putExtra("willBeTaskRoot", isTaskRoot());
 		startActivity(i);
 	}
 
@@ -327,9 +334,10 @@ public class StartupActivity extends Activity {
 		}
 
 		if (mExportRequired) {
-			Intent i = new Intent(this, AdministrationFunctions.class);
-			i.putExtra(AdministrationFunctions.DOAUTO, "export");
-			startActivity(i);			
+			AdministrationFunctions.backupCatalogue(this);
+//			Intent i = new Intent(this, AdministrationFunctions.class);
+//			i.putExtra(AdministrationFunctions.DOAUTO, "export");
+//			startActivity(i);			
 		}
 
 		// We are done
@@ -384,10 +392,7 @@ public class StartupActivity extends Activity {
 		}
 
 		@Override
-		public void onFinish() {}
-
-		@Override
-		public boolean requiresOnFinish() { return false; }
+		public void onFinish(Exception e) {}
 
 	}
 
@@ -414,10 +419,8 @@ public class StartupActivity extends Activity {
 		}
 
 		@Override
-		public void onFinish() {}
+		public void onFinish(Exception e) {}
 
-		@Override
-		public boolean requiresOnFinish() { return false; }
 	}
 	
 	public static boolean hasBeenCalled() {

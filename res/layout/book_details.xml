@@ -17,12 +17,26 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:baselineAligned="false"
+	        android:paddingBottom="8dp"
             android:orientation="horizontal" >
 
             <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2" >
+
+                <!-- Read -->
+
+                <ImageView
+                    android:id="@+id/read"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_gravity="top|right"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/btn_check_buttonless_on"
+                    android:visibility="visible" />
 
                 <!-- Title -->
 
@@ -33,6 +47,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_alignWithParentIfMissing="true"
+                    android:layout_toLeftOf="@+id/read"
                     android:text="Anna Karenina"
                     android:textStyle="italic"
                     tools:ignore="HardcodedText" />
@@ -41,30 +56,38 @@
 
                 <TextView
                     android:id="@+id/author"
-                    style="@style/bookDetailsHeaderStyle"
+                    style="@style/bookDetailsTextStyle"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/title"
                     android:layout_marginTop="@dimen/padding_border"
+                    android:paddingBottom="8dp"
                     android:text="Lev Tolstoy"
                     tools:ignore="HardcodedText" />
 
-                <RatingBar
-                    android:id="@+id/rating"
-                    style="?android:attr/ratingBarStyleIndicator"
+                <LinearLayout
+                    android:id="@+id/rating_wrapper"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/author"
-                    android:layout_marginLeft="@dimen/padding_book_details_info"
-                    android:numStars="5"
-                    android:paddingBottom="8dp" />
+                    android:layout_below="@+id/author" >
+
+                    <RatingBar
+                        android:id="@+id/rating"
+                        style="?android:attr/ratingBarStyleIndicator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/padding_book_details_info"
+                        android:numStars="5"
+                        android:paddingBottom="8dp" />
+                </LinearLayout>
 
                 <!-- ISBN -->
+
                 <LinearLayout
                     android:id="@+id/row_isbn"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/rating"
+                    android:layout_below="@+id/rating_wrapper"
                     android:orientation="horizontal" >
 
                     <TextView
@@ -83,7 +106,7 @@
                         android:text="97834579862"
                         tools:ignore="HardcodedText" />
                 </LinearLayout>
-                
+
                 <!-- Pages & Format -->
 
                 <LinearLayout
@@ -110,10 +133,10 @@
                         android:text="(Hardcover)"
                         tools:ignore="HardcodedText" />
                 </LinearLayout>
-
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/image_wrapper"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|center_horizontal"
@@ -130,17 +153,6 @@
                     android:padding="@dimen/padding_border"
                     android:scaleType="centerInside"
                     android:src="@drawable/ic_launcher2" />
-
-                <ImageView
-                    android:id="@+id/read"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignRight="@+id/row_img"
-                    android:layout_alignTop="@+id/row_img"
-                    android:layout_gravity="top|right"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/btn_check_buttonless_off"
-                    android:visibility="gone" />
             </RelativeLayout>
         </LinearLayout>
 
@@ -149,8 +161,7 @@
             android:layout_width="fill_parent"
             android:layout_height="1dp"
             android:background="@drawable/main_menu_header_divider"
-            android:paddingBottom="2dp"
-            android:paddingTop="2dp" />
+            />
 
         <!-- Series -->
 
@@ -179,20 +190,13 @@
             android:orientation="horizontal" >
 
             <TextView
-                android:id="@+id/publisher"
+                android:id="@+id/publishing_details"
                 style="@style/bookDetailsTextStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Publisher name"
+                android:text="Publisher name, Jan 25, 2012"
                 tools:ignore="HardcodedText" />
 
-            <TextView
-                android:id="@+id/date_published"
-                style="@style/bookDetailsTextStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Jan 25, 2012"
-                tools:ignore="HardcodedText" />
         </LinearLayout>
 
         <!-- Shelves -->
@@ -203,7 +207,7 @@
             android:text="@string/bookshelves" />
 
         <TextView
-            android:id="@+id/bookshelf_text"
+            android:id="@+id/bookshelf"
             style="@style/bookDetailsTextStyle"
             android:text="The best books, Wanted"
             tools:ignore="HardcodedText" />
@@ -219,6 +223,19 @@
             android:id="@+id/genre"
             style="@style/bookDetailsTextStyle"
             android:text="Science Fiction"
+            tools:ignore="HardcodedText" />
+
+        <!-- Genre -->
+
+        <TextView
+            android:id="@+id/lbl_language"
+            style="@style/bookDetailsTitlesStyle"
+            android:text="@string/language" />
+
+        <TextView
+            android:id="@+id/language"
+            style="@style/bookDetailsTextStyle"
+            android:text="Quenya"
             tools:ignore="HardcodedText" />
 
         <TableLayout
@@ -257,7 +274,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="@string/edit_book_notes"
+            android:text="@string/notes"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <View
@@ -272,7 +289,7 @@
         <TextView
             android:id="@+id/lbl_notes"
             style="@style/bookDetailsTitlesStyle"
-            android:text="@string/notes" />
+            android:text="@string/edit_book_notes" />
 
         <TextView
             android:id="@+id/notes"
@@ -287,6 +304,7 @@
             <!-- Has this book been signed -->
 
             <LinearLayout
+                android:id="@+id/row_signed"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content" >
 
@@ -299,6 +317,7 @@
                     android:id="@+id/signed"
                     style="@style/bookDetailsTextStyle"
                     android:text="@string/no" />
+
             </LinearLayout>
 
             <!-- Start and end of reading -->
@@ -381,8 +400,9 @@
             android:paddingBottom="2dp"
             android:paddingTop="2dp" />
 
-        <TextView
+        <com.eleybourn.bookcatalogue.widgets.SafeSpannedTextView
             android:id="@+id/description"
+            android:textIsSelectable="true"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="I hereby nominate Lizard the humongous football player and Sylphide the mysterious ballerina as two of my favorite characters of 2012. Rarely have such elite and outsize personalities felt so true on the page--a joy to be with, worth rooting for."

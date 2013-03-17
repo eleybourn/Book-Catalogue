@@ -18,10 +18,11 @@ package com.eleybourn.bookcatalogue.cropper;
 
 import java.util.ArrayList;
 
-import android.app.Activity;
 import android.os.Bundle;
 
-public abstract class CropMonitoredActivity extends Activity {
+import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
+
+public abstract class CropMonitoredActivity extends BookCatalogueActivity {
 
 	private final ArrayList<LifeCycleListener> mListeners = new ArrayList<LifeCycleListener>();
 

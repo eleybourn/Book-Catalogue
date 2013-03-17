@@ -21,13 +21,18 @@
 package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 
+import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
+import com.eleybourn.bookcatalogue.goodreads.GoodreadsUtils;
 import com.eleybourn.bookcatalogue.utils.AlertDialogUtils;
 import com.eleybourn.bookcatalogue.utils.AlertDialogUtils.AlertDialogItem;
 import com.eleybourn.bookcatalogue.utils.HintManager;
@@ -47,7 +52,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * @author Philip Warner
  * 
  */
-public class MainMenu extends Activity {
+public class MainMenu extends BookCatalogueActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -90,7 +95,9 @@ public class MainMenu extends Activity {
 		setOnClickListener(R.id.about_label, mAboutHandler);
 		setOnClickListener(R.id.help_label, mHelpHandler);
 		setOnClickListener(R.id.donate_label, mDonateHandler);
-
+		// Goodreads will be shown/hidden in onResume()
+		setOnClickListener(R.id.goodreads_label, mGoodreadsHandler);
+		
 		if (savedInstanceState == null)
 			HintManager.displayHint(this, R.string.hint_startup_screen, null);
 
@@ -103,7 +110,26 @@ public class MainMenu extends Activity {
 	@Override 
 	public void onResume() {
 		super.onResume();
-		Utils.initBackground(R.drawable.bc_background_gradient, this, true);		
+
+		if (CatalogueDBAdapter.DEBUG_INSTANCES)
+			CatalogueDBAdapter.dumpInstances();
+
+		final boolean showGr = GoodreadsManager.hasCredentials();
+
+		View grItem = findViewById(R.id.goodreads_label);
+		if (showGr) {
+			grItem.setVisibility(View.VISIBLE);
+		} else {
+			grItem.setVisibility(View.GONE);
+		}
+
+		Utils.initBackground(R.drawable.bc_background_gradient, this, true);	
+
+		/**
+		 * RELEASE: DEBUG ONLY; used when tracking a bug in android 2.1, but kept because
+		 * there are still non-fatal anomalies.
+		 */
+		// CatalogueDBAdapter.printReferenceCount("MainMenu resumed");
 	}
 
 	/**
@@ -159,6 +185,15 @@ public class MainMenu extends Activity {
 		@Override public void onClick(View v) {
 			Intent i = new Intent(MainMenu.this, BooksOnBookshelf.class);
 			startActivity(i);
+		}
+	};
+
+	/**
+	 * Goodreads Menu Handler
+	 */
+	private OnClickListener mGoodreadsHandler = new OnClickListener() {
+		@Override public void onClick(View v) {
+			GoodreadsUtils.showGoodreadsOptions(MainMenu.this);
 		}
 	};
 

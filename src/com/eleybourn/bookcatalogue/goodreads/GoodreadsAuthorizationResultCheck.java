@@ -27,6 +27,7 @@ import android.content.Intent;
 import com.eleybourn.bookcatalogue.BcQueueManager;
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.StartupActivity;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NotAuthorizedException;
 
 /**
@@ -49,7 +50,8 @@ public class GoodreadsAuthorizationResultCheck extends GenericTask {
 	@Override
 	public boolean run(QueueManager manager, Context c) {
 		GoodreadsManager grMgr = new GoodreadsManager();
-		Intent i = new Intent(c, GoodreadsRegister.class);
+		// Bring the app to the front using the launcher intent
+		Intent i = new Intent(c, StartupActivity.class);
 		i.setAction("android.intent.action.MAIN");
 		i.addCategory(Intent.CATEGORY_LAUNCHER);
 	    try {

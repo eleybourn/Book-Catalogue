@@ -152,7 +152,6 @@ public class BooksRowView {
 		return mCursor.getString(mReadEndCol);
 	}
 
-
 	private int mReadCol = -2;
 	public final int getRead() {
 		if (mReadCol < 0) {
@@ -162,6 +161,25 @@ public class BooksRowView {
 		}
 		return mCursor.getInt(mReadCol);
 //		return Integer.parseInt(mCurrentRow[mReadCol]);
+	}
+
+	private int mSignedCol = -2;
+	public final int getSigned() {
+		if (mSignedCol < 0) {
+			mSignedCol = mCursor.getColumnIndex(CatalogueDBAdapter.KEY_SIGNED);
+			if (mSignedCol < 0)
+				throw new RuntimeException("SIGNED column not in result set");
+		}
+		return mCursor.getInt(mSignedCol);
+//		return Integer.parseInt(mCurrentRow[mReadCol]);
+	}
+
+	public final boolean isRead() {
+		return getRead() != 0;
+	}
+
+	public final boolean isSigned() {
+		return getSigned() != 0;
 	}
 
 	private int mPublisherCol = -2;
@@ -192,6 +210,16 @@ public class BooksRowView {
 				throw new RuntimeException("GENRE column not in result set");
 		}
 		return mCursor.getString(mGenreCol);
+	}
+
+	private int mLanguageCol = -2;
+	public final String getLanguage() {
+		if (mLanguageCol < 0) {
+			mLanguageCol = mCursor.getColumnIndex(DatabaseDefinitions.DOM_LANGUAGE.name);
+			if (mLanguageCol < 0)
+				throw new RuntimeException("LANGUAGE column not in result set");
+		}
+		return mCursor.getString(mLanguageCol);
 	}
 
 	private int mLocationCol = -2;

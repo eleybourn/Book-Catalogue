@@ -20,15 +20,15 @@
 
 package com.eleybourn.bookcatalogue;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.utils.Logger;
 
-public class BookshelfEdit extends Activity {
+public class BookshelfEdit extends BookCatalogueActivity {
 
 	private EditText mBookshelfText;
 	private Button mConfirmButton;

@@ -26,6 +26,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import android.os.Bundle;
 
+import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
@@ -175,6 +176,10 @@ public class SearchAmazonHandler extends DefaultHandler {
 	/* How many results found */
 	public int count = 0;
 	/* A flag to identify if we are in the correct node */
+	private boolean mInLanguage = false;
+	private boolean mInListPrice = false;
+	private String mCurrencyCode = "";
+	private String mCurrencyAmount = "";
 	private boolean entry = false;
 	private boolean image = false;
 	private boolean done = false;
@@ -186,6 +191,7 @@ public class SearchAmazonHandler extends DefaultHandler {
 	public static String AUTHOR = "Author";
 	public static String TITLE = "Title";
 	public static String ISBN = "EAN";
+	public static String EISBN = "EISBN";
 	public static String ISBNOLD = "ISBN";
 	public static String DATE_PUBLISHED = "PublicationDate";
 	public static String PUBLISHER = "Publisher";
@@ -195,6 +201,12 @@ public class SearchAmazonHandler extends DefaultHandler {
 	public static String MEDIUMIMAGE = "MediumImage";
 	public static String LARGEIMAGE = "LargeImage";
 	public static String DESCRIPTION = "Content";
+	public static String BINDING = "Binding";
+	public static String LANGUAGE = "Language";
+	public static String NAME = "Name";
+	public static String LIST_PRICE = "ListPrice";
+	public static String CURRENCY_CODE = "CurrencyCode";
+	public static String AMOUNT = "Amount";
 
 	SearchAmazonHandler(Bundle bookData, boolean fetchThumbnail) {
 		mBookData = bookData;
@@ -222,6 +234,17 @@ public class SearchAmazonHandler extends DefaultHandler {
 	private void addIfNotPresent(String key) {
 		if (!mBookData.containsKey(key) || mBookData.getString(key).length() == 0) {
 			mBookData.putString(key, mBuilder.toString());
+		}		
+	}
+
+	/**
+	 * Add the passed characters to the book collection if not already present.
+	 * 
+	 * @param key	Key for data to add
+	 */
+	private void addIfNotPresent(String key, String value) {
+		if (!mBookData.containsKey(key) || mBookData.getString(key).length() == 0) {
+			mBookData.putString(key, value);
 		}		
 	}
 
@@ -270,12 +293,26 @@ public class SearchAmazonHandler extends DefaultHandler {
 			} else if (localName.equalsIgnoreCase(ENTRY)){
 				done = true;
 				entry = false;
+			} else if (localName.equalsIgnoreCase(LANGUAGE)){
+				mInLanguage = false;
+			} else if (localName.equalsIgnoreCase(LIST_PRICE)){
+				if (mCurrencyCode.equalsIgnoreCase("usd") && !mCurrencyAmount.equals("")) {
+					try {
+						Float price = Float.parseFloat(mCurrencyAmount) / 100;
+						addIfNotPresent(CatalogueDBAdapter.KEY_LIST_PRICE, String.format("%.2f", price));
+					} catch(Exception e) {
+						// Ignore
+					}
+				}
+				mCurrencyCode = "";
+				mCurrencyAmount = "";
+				mInListPrice = false;
 			} else if (entry == true) {
 				if (localName.equalsIgnoreCase(AUTHOR)){
 					Utils.appendOrAdd(mBookData, CatalogueDBAdapter.KEY_AUTHOR_DETAILS, mBuilder.toString());
 				} else if (localName.equalsIgnoreCase(TITLE)){
 					addIfNotPresent(CatalogueDBAdapter.KEY_TITLE);
-				} else if (localName.equalsIgnoreCase(ISBN)){
+				} else if (localName.equalsIgnoreCase(ISBN) || localName.equalsIgnoreCase(EISBN)){
 					String tmp = mBuilder.toString();
 					if (!mBookData.containsKey(CatalogueDBAdapter.KEY_ISBN) 
 							|| mBookData.getString(CatalogueDBAdapter.KEY_ISBN).length() < tmp.length()) {
@@ -295,6 +332,17 @@ public class SearchAmazonHandler extends DefaultHandler {
 					addIfNotPresentOrEqual(CatalogueDBAdapter.KEY_PAGES, "0");
 				} else if (localName.equalsIgnoreCase(DESCRIPTION)){
 					addIfNotPresent(CatalogueDBAdapter.KEY_DESCRIPTION);
+				} else if (localName.equalsIgnoreCase(BINDING)){
+					addIfNotPresent(CatalogueDBAdapter.KEY_FORMAT);
+				} else if (mInLanguage && localName.equalsIgnoreCase(NAME)){
+					addIfNotPresent(DatabaseDefinitions.DOM_LANGUAGE.name);
+				} else if (mInListPrice && localName.equalsIgnoreCase(AMOUNT)){
+					mCurrencyAmount = mBuilder.toString();
+				} else if (mInListPrice && localName.equalsIgnoreCase(CURRENCY_CODE)){
+					mCurrencyCode = mBuilder.toString();
+				} else {
+					// Debug Only; see what we are missing.
+					//System.out.println(localName + "->'" + mBuilder.toString() + "'");
 				}
 			}
 			mBuilder.setLength(0);			
@@ -341,7 +389,12 @@ public class SearchAmazonHandler extends DefaultHandler {
 				image = true;
 				mThumbnailSize = 3;
 			}
+		} else if (localName.equalsIgnoreCase(LANGUAGE)){
+			mInLanguage = true;
+		} else if (localName.equalsIgnoreCase(LIST_PRICE)){
+			mInListPrice = true;
 		}
+
 	}
 }
  

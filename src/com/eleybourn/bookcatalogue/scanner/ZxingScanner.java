@@ -1,10 +1,10 @@
 package com.eleybourn.bookcatalogue.scanner;
 
-import com.eleybourn.bookcatalogue.BookCatalogueApp;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+
+import com.eleybourn.bookcatalogue.BookCatalogueApp;
 
 /**
  * This object will start a Zxing compatible scanner and extract the data
@@ -15,7 +15,7 @@ import android.content.Intent;
  * @author pjw
  */
 public class ZxingScanner implements Scanner {
-	private static final String ACTION = "com.google.zxing.client.android.SCAN";
+	public static final String ACTION = "com.google.zxing.client.android.SCAN";
 
 	/**
 	 * Check if we have a valid intent available.

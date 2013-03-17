@@ -1,5 +1,5 @@
 /*
- * @copyright 2011 Philip Warner
+ * @copyright 2013 Philip Warner
  * @license GNU General Public License
  * 
  * This file is part of Book Catalogue.
@@ -32,6 +32,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -45,6 +46,7 @@ import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.LibraryThingManager;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.Series;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsRegister;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
@@ -55,7 +57,7 @@ public class StandardDialogs {
 	/**
 	 * Show a dialog asking if unsaved edits should be ignored. Finish if so.
 	 */
-	public static void showConfirmUnsavedEditsDialog(final Activity a){
+	public static void showConfirmUnsavedEditsDialog(final Activity a, final Runnable r){
 		AlertDialog.Builder dialog = new Builder(a);
 
 		dialog.setTitle(R.string.details_have_changed);
@@ -65,7 +67,11 @@ public class StandardDialogs {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.dismiss();
-				a.finish();
+				if (r != null) {
+					r.run();
+				} else {
+					a.finish();					
+				}
 			}
 		});
 
@@ -226,7 +232,7 @@ public class StandardDialogs {
 	 * Display a dialog warning the user that goodreads authentication is required; gives them
 	 * the options: 'request now', 'more info' or 'cancel'.
 	 */
-	public static int goodreadsAuthAlert(final Context context) {
+	public static int goodreadsAuthAlert(final FragmentActivity context) {
 		// Get the title		
 		final AlertDialog alertDialog = new AlertDialog.Builder(context).setTitle(R.string.authorize_access).setMessage(R.string.goodreads_action_cannot_blah_blah).create();
 
@@ -234,7 +240,7 @@ public class StandardDialogs {
 		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				alertDialog.dismiss();
-				GoodreadsRegister.requestAuthorization(context);
+				GoodreadsRegister.requestAuthorizationInBackground(context);
 			}
 		});
 		

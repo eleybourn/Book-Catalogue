@@ -21,6 +21,8 @@
 package com.eleybourn.bookcatalogue.properties;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
+import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.properties.ListProperty.ItemEntries;
 import com.eleybourn.bookcatalogue.properties.Property.BooleanValue;
 
 /**
@@ -46,6 +48,9 @@ public class BooleanListProperty extends ListProperty<Boolean> implements Boolea
 	}
 	public BooleanListProperty(ItemEntries<Boolean> list, String uniqueId, PropertyGroup group, int nameResourceId) {
 		super(list, uniqueId, group, nameResourceId, null, null, false);
+	}
+	public BooleanListProperty(ItemEntries<Boolean> list, String uniqueId) {
+		super(list, uniqueId, PropertyGroup.GRP_GENERAL, R.string.unknown, null, null, null);
 	}
 
 	@Override

@@ -70,6 +70,7 @@ public class DatabaseDefinitions {
 	private static final String ALIAS_BOOKS = "b";
 	private static final String ALIAS_BOOK_LIST = "bl";
 	private static final String ALIAS_BOOK_LIST_ROW_POSITION = "blrp";
+	private static final String ALIAS_BOOK_LIST_ROW_POSITION_FLATTENED = "blrpf";
 	private static final String ALIAS_AUTHORS = "a";
 	private static final String ALIAS_ANTHOLOGY = "an";
 	private static final String ALIAS_BOOK_AUTHOR = "ba";
@@ -107,6 +108,7 @@ public class DatabaseDefinitions {
 	public static final DomainDefinition DOM_GOODREADS_BOOK_ID = new DomainDefinition("goodreads_book_id", "int", "", "");
 	public static final DomainDefinition DOM_ISBN = new DomainDefinition(KEY_ISBN, "text", "",  "");
 	public static final DomainDefinition DOM_KIND = new DomainDefinition("kind", "integer", "",  "not null");
+	public static final DomainDefinition DOM_LANGUAGE = new DomainDefinition("language", "text", "", "");
 	public static final DomainDefinition DOM_LAST_UPDATE_DATE = new DomainDefinition("last_update_date", "date", "default current_timestamp", "not null");
 	public static final DomainDefinition DOM_LAST_GOODREADS_SYNC_DATE = new DomainDefinition("last_goodreads_sync_date", "date", "default '0000-00-00'", "");
 	public static final DomainDefinition DOM_LOANED_TO = new DomainDefinition("loaned_to", "text", "",  "not null");
@@ -224,6 +226,13 @@ public class DatabaseDefinitions {
 		.setType(TableTypes.Temporary)
 		.addReference(TBL_BOOK_LIST_DEFN, DOM_REAL_ROW_ID)
 		.setAlias(ALIAS_BOOK_LIST_ROW_POSITION)
+	;
+
+	/** Definition of ROW_NAVIGATOR_FLATTENED temp table */
+	public static final TableDefinition TBL_ROW_NAVIGATOR_FLATTENED_DEFN = new TableDefinition(TBL_BOOK_LIST_NAME + "_row_pos_flattened", 
+			DOM_ID, DOM_BOOK)
+		.setType(TableTypes.Temporary)
+		.setAlias(ALIAS_BOOK_LIST_ROW_POSITION_FLATTENED)
 	;
 
 	/** Definition of BOOK_LIST_NODE_SETTINGS temp table. This IS definitive */

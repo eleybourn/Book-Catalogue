@@ -67,6 +67,8 @@ public class SearchManager implements TaskManagerListener {
 	TaskManager mTaskManager;
 	// Accumulated book data
 	private Bundle mBookData = null;
+	// Flag indicating searches will be non-concurrent title/author found via ASIN
+	private boolean mSearchingAsin = false;
 	// Flag indicating searches will be non-concurrent until an ISBN is found
 	private boolean mWaitingForIsbn = false;
 	// Flag indicating a task was cancelled.
@@ -272,6 +274,7 @@ public class SearchManager implements TaskManagerListener {
 		// these in series.
 
 		boolean tasksStarted = false;
+		mSearchingAsin = false;
 		try {
 			if (mIsbn != null && mIsbn.length() > 0) {
 				if (IsbnUtils.isValid(mIsbn)) {
@@ -280,9 +283,11 @@ public class SearchManager implements TaskManagerListener {
 					tasksStarted = this.startSearches(mSearchFlags);
 				} else {
 					// Assume it's an ASIN, and just search Amazon
+					mSearchingAsin = true;
 					mWaitingForIsbn = false;
-					mSearchFlags = SEARCH_AMAZON;
-					tasksStarted = this.startSearches(mSearchFlags);
+					//mSearchFlags = SEARCH_AMAZON;
+					tasksStarted = startOneSearch(SEARCH_AMAZON);
+					//tasksStarted = this.startSearches(mSearchFlags);
 				}
 			} else {
 				// Run one at a time, startNext() defined the order.
@@ -395,46 +400,80 @@ public class SearchManager implements TaskManagerListener {
 
 		// If there are thumbnails present, pick the biggest, delete others and rename.
 		Utils.cleanupThumbnails(mBookData);
-		
-		// If book is not found, just return to dialog.
+
+		// Try to use/construct authors
 		String authors = null;
-		String title = null;
 		try {
 			authors = mBookData.getString(CatalogueDBAdapter.KEY_AUTHOR_DETAILS);
 		} catch (Exception e) {}
+
+		if (authors == null || authors.equals("")) {
+			authors = mAuthor;
+		}
+
+		if (authors != null && !authors.equals("")) {
+			// Decode the collected author names and convert to an ArrayList
+			ArrayList<Author> aa = Utils.getAuthorUtils().decodeList(authors, '|', false);
+			mBookData.putSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, aa);			
+		}
+
+		// Try to use/construct title
+		String title = null;
 		try {
 			title = mBookData.getString(CatalogueDBAdapter.KEY_TITLE);
 		} catch (Exception e) {}
-		if (authors == null || authors.length() == 0 || title == null || title.length() == 0) {
-			
-			mTaskManager.doToast(BookCatalogueApp.getResourceString(R.string.book_not_found));
-			mBookData.putString(CatalogueDBAdapter.KEY_ISBN, mIsbn);
-			mBookData.putString(CatalogueDBAdapter.KEY_TITLE, mTitle);
-			ArrayList<Author> aa = Utils.getAuthorUtils().decodeList(mAuthor, '|', false);
-			mBookData.putSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, aa);
-			//add series to stop crashing
-			ArrayList<Series> sa = Utils.getSeriesUtils().decodeList("", '|', false);
-			mBookData.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, sa);
 
-		} else {
-			Utils.doProperCase(mBookData, CatalogueDBAdapter.KEY_TITLE);
-			Utils.doProperCase(mBookData, CatalogueDBAdapter.KEY_PUBLISHER);
-			Utils.doProperCase(mBookData, CatalogueDBAdapter.KEY_DATE_PUBLISHED);
-			Utils.doProperCase(mBookData, CatalogueDBAdapter.KEY_SERIES_NAME);
-			
-			// Decode the collected author names and convert to an ArrayList
-			ArrayList<Author> aa = Utils.getAuthorUtils().decodeList(authors, '|', false);
-			mBookData.putSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, aa);
-			
+		if (title == null || title.equals(""))
+			title = mTitle;
+
+		if (title != null && !title.equals("")) {
+			mBookData.putString(CatalogueDBAdapter.KEY_TITLE, title);
+			Utils.doProperCase(mBookData, CatalogueDBAdapter.KEY_TITLE);			
+		}
+
+		// Try to use/construct isbn
+		String isbn = null;
+		try {
+			isbn = mBookData.getString(CatalogueDBAdapter.KEY_ISBN);
+		} catch (Exception e) {}
+
+		if (isbn == null || isbn.equals(""))
+			isbn = mIsbn;
+
+		if (isbn != null && !isbn.equals("")) {
+			mBookData.putString(CatalogueDBAdapter.KEY_ISBN, isbn);
+		}
+		
+		// Try to use/construct series
+		String series = null;
+		try {
+			series = mBookData.getString(CatalogueDBAdapter.KEY_SERIES_DETAILS);
+		} catch (Exception e) {}
+
+		if (series != null && !series.equals("")) {
 			// Decode the collected series names and convert to an ArrayList
 			try {
-				String series = mBookData.getString(CatalogueDBAdapter.KEY_SERIES_DETAILS);
 				ArrayList<Series> sa = Utils.getSeriesUtils().decodeList(series, '|', false);
 				mBookData.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, sa);
 			} catch (Exception e) {
 				Logger.logError(e);
 			}
+		} else {
+			//add series to stop crashing
+			mBookData.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, new ArrayList<Series>());
 		}
+		
+
+		// Cleanup other fields
+		Utils.doProperCase(mBookData, CatalogueDBAdapter.KEY_PUBLISHER);
+		Utils.doProperCase(mBookData, CatalogueDBAdapter.KEY_DATE_PUBLISHED);
+		Utils.doProperCase(mBookData, CatalogueDBAdapter.KEY_SERIES_NAME);
+		
+		// If book is not found or missing required data, warn the user
+		if (authors == null || authors.length() == 0 || title == null || title.length() == 0) {			
+			mTaskManager.doToast(BookCatalogueApp.getResourceString(R.string.book_not_found));
+		}
+		// Pass the data back
 		sendSearchFinished();
 	}
 
@@ -519,6 +558,24 @@ public class SearchManager implements TaskManagerListener {
 		if (mCancelledFlg) {
 			mWaitingForIsbn = false;
 		} else {
+			if (mSearchingAsin) {
+				// If we searched AMAZON for an Asin, then see what we found
+				mSearchingAsin = false;
+				// Clear the 'isbn'
+				mIsbn = "";
+				if (Utils.isNonBlankString(bookData, CatalogueDBAdapter.KEY_ISBN)) {
+					// We got an ISBN, so pretend we were searching for an ISBN
+					mWaitingForIsbn = true;
+				} else {
+					// See if we got author/title
+					mAuthor = bookData.getString(CatalogueDBAdapter.KEY_AUTHOR_NAME);
+					mTitle = bookData.getString(CatalogueDBAdapter.KEY_TITLE);
+					if (mAuthor != null && !mAuthor.equals("") && mTitle != null && !mTitle.equals("")) {
+						// We got them, so pretend we are searching by author/title now, and waiting for an ASIN...
+						mWaitingForIsbn = true;
+					}
+				}
+			}
 			if (mWaitingForIsbn) {
 				if (Utils.isNonBlankString(bookData, CatalogueDBAdapter.KEY_ISBN)) {
 					mWaitingForIsbn = false;

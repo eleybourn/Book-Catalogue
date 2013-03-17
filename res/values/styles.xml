@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Style for item in preferences lists -->
     <style name="prefs_item">
@@ -28,14 +28,14 @@
         <item name="android:paddingTop">20dp</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
     </style>
-    
+
     <!-- Style for key of isbn search keybouard -->
     <style name="isbn_search_key">
         <item name="android:layout_width">@dimen/isbn_key_size</item>
         <item name="android:layout_height">@dimen/isbn_key_size</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
     </style>
-	
+
     <!-- Style for detail titles in read-only book details -->
     <style name="bookDetailsTitlesStyle">
         <item name="android:layout_width">fill_parent</item>
@@ -43,25 +43,55 @@
         <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
         <item name="android:textStyle">bold</item>
     </style>
-    
+
     <!-- Style for text details in read-only book details -->
     <style name="bookDetailsTextStyle">
+        <item name="android:textIsSelectable">true</item>
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingLeft">@dimen/padding_book_details_info</item>
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
     </style>
-  
+    <style name="fileDetailsTextStyle" parent="bookDetailsTextStyle">
+        <!--  selectable makes clicking not work well -->
+        <item name="android:textIsSelectable">false</item>
+    </style>
+    
     <!-- Style for text header data (typically title/author) in read-only book details -->
     <style name="bookDetailsHeaderStyle">
+        <item name="android:textIsSelectable">true</item>
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
     </style>
-    <!-- Style for text header data (typically title/author) in read-only book details -->
+
+    <!-- Style for smaller text header data (typically isbn/pages) in read-only book details -->
     <style name="bookDetailsMinorDetailStyle">
+        <item name="android:textIsSelectable">true</item>
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
     </style>
+
+    <style name="fileDetailsMinorDetailStyle" parent="bookDetailsMinorDetailStyle">
+        <!--  selectable makes clicking not work well -->
+        <item name="android:textIsSelectable">false</item>
+    </style>
+    
+    <style name="editorFieldHeaderStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+        <item name="android:layout_alignParentTop">true</item>
+        <item name="android:layout_alignParentLeft">true</item>
+    </style>
+
+    <style name="editorFieldTextStyleBase">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:layout_alignParentLeft">true</item>
+        <item name="android:hint">@string/notset</item>
+    </style>
+
 </resources>

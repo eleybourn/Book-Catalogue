@@ -1,5 +1,5 @@
 /*
- * @copyright 2012 Philip Warner
+ * @copyright 2013 Philip Warner
  * @license GNU General Public License
  * 
  * This file is part of Book Catalogue.
@@ -45,6 +45,9 @@ import com.eleybourn.bookcatalogue.R;
 /**
  * Dialog class to allow for selection of partial dates from 0AD to 9999AD.
  * 
+ * The constructors and interface are now protected because this really should 
+ * only be called as part of the fragment version.
+ * 
  * @author pjw
  */
 public class PartialDatePicker extends AlertDialog {
@@ -58,6 +61,9 @@ public class PartialDatePicker extends AlertDialog {
 	/** Currently displayed day; null if empty/invalid */
 	private Integer mDay;
 
+	/** Listener to be called when date is set or dialog cancelled */
+	private OnDateSetListener mListener;
+
 	/** Local ref to month spinner */
 	private Spinner mMonthSpinner;
 	/** Local ref to day spinner */
@@ -67,15 +73,12 @@ public class PartialDatePicker extends AlertDialog {
 	/** Local ref to year text view */
 	private EditText mYearView;
 	
-	/** Listener to be called when date is set or dialog cancelled */
-	private OnDateSetListener mListener;
-
 	/**
 	 * Listener to receive notifications when dialog is closed by any means.
 	 * 
 	 * @author pjw
 	 */
-	public static interface OnDateSetListener {
+	protected static interface OnDateSetListener {
 		public void onDateSet(PartialDatePicker dialog, Integer year, Integer month, Integer day);
 		public void onCancel(PartialDatePicker dialog);
 	}
@@ -86,8 +89,8 @@ public class PartialDatePicker extends AlertDialog {
 	 * @param context		Calling context
 	 * @param listener		Listener for dialog events
 	 */
-	public PartialDatePicker(Context context, OnDateSetListener listener) {
-		this(context, listener, null, null, null);
+	protected PartialDatePicker(Context context) {
+		this(context, null, null, null);
 	}
 
 	/**
@@ -99,11 +102,10 @@ public class PartialDatePicker extends AlertDialog {
 	 * @param month			Starting month
 	 * @param day			Starting day
 	 */
-	public PartialDatePicker(Context context, OnDateSetListener listener, Integer year, Integer month, Integer day) {
+	protected PartialDatePicker(Context context, Integer year, Integer month, Integer day) {
 		super(context);
 
 		mContext = context;
-		mListener= listener;
 
 		mYear = year;
 		mMonth = month;
@@ -277,7 +279,8 @@ public class PartialDatePicker extends AlertDialog {
 				} else if (mMonth != null && mMonth > 0 && mYear == null) {
 					Toast.makeText(mContext, R.string.if_month_is_specified_year_must_be, Toast.LENGTH_LONG).show();					
 				} else {
-					mListener.onDateSet(PartialDatePicker.this, mYear, mMonth, mDay);					
+					if (mListener != null)
+						mListener.onDateSet(PartialDatePicker.this, mYear, mMonth, mDay);					
 				}
 			}}
 		);
@@ -286,7 +289,8 @@ public class PartialDatePicker extends AlertDialog {
 		((Button)root.findViewById(R.id.cancel)).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				mListener.onCancel(PartialDatePicker.this);				
+				if (mListener != null)
+					mListener.onCancel(PartialDatePicker.this);				
 			}}
 		);
 
@@ -295,7 +299,8 @@ public class PartialDatePicker extends AlertDialog {
 
 			@Override
 			public void onCancel(DialogInterface arg0) {
-				mListener.onCancel(PartialDatePicker.this);				
+				if (mListener != null)
+					mListener.onCancel(PartialDatePicker.this);				
 			}});
 
 		// We are all set up!
@@ -342,6 +347,19 @@ public class PartialDatePicker extends AlertDialog {
 			mDaySpinner.setSelection(day);			
 		}
 
+	}
+	
+	/** Accessor */
+	public Integer getYear() {
+		return mYear;
+	}
+	/** Accessor */
+	public Integer getMonth() {
+		return mMonth;
+	}
+	/** Accessor */
+	public Integer getDay() {
+		return mDay;
 	}
 
 	/**
@@ -496,4 +514,8 @@ public class PartialDatePicker extends AlertDialog {
             }
         }
     }
+	public void setOnDateSetListener(OnDateSetListener listener) {
+		mListener = listener;
+	}
+
 }

@@ -22,7 +22,6 @@ package com.eleybourn.bookcatalogue;
 
 import java.io.File;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -34,8 +33,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueueProgressFragment;
 import com.eleybourn.bookcatalogue.utils.Utils;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTaskContext;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueueProgressFragment.FragmentTask;
 
 /**
  * 
@@ -45,7 +48,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * 
  * @author Philip Warner
  */
-public class AdministrationLibraryThing extends Activity {
+public class AdministrationLibraryThing extends BookCatalogueActivity {
 
 	/**
 	 * Called when the activity is first created. 
@@ -111,18 +114,38 @@ public class AdministrationLibraryThing extends Activity {
 				ed.commit();
 				
 				if (devkey.length() > 0) {
-					//TEST Library Thing
-					Bundle tmp = new Bundle(); 
-					LibraryThingManager ltm = new LibraryThingManager(AdministrationLibraryThing.this);
-					String filename = ltm.getCoverImage("0451451783", tmp, LibraryThingManager.ImageSizes.SMALL);
-					File filetmp = new File(filename);
-					long length = filetmp.length();
-					if (length < 100) {
-						Toast.makeText(AdministrationLibraryThing.this, R.string.incorrect_key, Toast.LENGTH_LONG).show();
-					} else {
-						Toast.makeText(AdministrationLibraryThing.this, R.string.correct_key, Toast.LENGTH_LONG).show();
-					}
-					filetmp.delete();
+					FragmentTask task = new FragmentTask() {
+						/**
+						 * Validate the key by getting a known cover
+						 */
+						@Override
+						public void run(SimpleTaskQueueProgressFragment fragment, SimpleTaskContext taskContext) {
+							//TEST Library Thing
+							Bundle tmp = new Bundle(); 
+							LibraryThingManager ltm = new LibraryThingManager(AdministrationLibraryThing.this);
+							String filename = ltm.getCoverImage("0451451783", tmp, LibraryThingManager.ImageSizes.SMALL);
+							File filetmp = new File(filename);
+							filetmp.deleteOnExit();
+							long length = filetmp.length();
+							if (length < 100) {
+								// Queue a toast message
+								fragment.showToast(R.string.incorrect_key);
+							} else {
+								// Queue a toast message
+								fragment.showToast(R.string.correct_key);
+							}
+							filetmp.delete();
+						}
+
+						@Override
+						public void onFinish(SimpleTaskQueueProgressFragment fragment, Exception exception) {
+						}
+
+					};
+
+					// Get the fragment to display task progress
+					SimpleTaskQueueProgressFragment.runTaskWithProgress(AdministrationLibraryThing.this, R.string.connecting_to_web_site, task, true, 0);
+
 				}
 				return;
 			}

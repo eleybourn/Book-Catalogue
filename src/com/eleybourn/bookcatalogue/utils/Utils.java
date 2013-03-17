@@ -58,7 +58,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -80,6 +79,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import com.actionbarsherlock.app.SherlockFragment;
 import com.eleybourn.bookcatalogue.Author;
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
@@ -89,7 +89,7 @@ import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.Series;
 import com.eleybourn.bookcatalogue.ThumbnailCacheWriterTask;
 import com.eleybourn.bookcatalogue.database.CoversDbHelper;
-import com.eleybourn.bookcatalogue.dialogs.PartialDatePicker;
+import com.eleybourn.bookcatalogue.dialogs.PartialDatePickerFragment;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
 
 public class Utils {
@@ -110,6 +110,8 @@ public class Utils {
 	private static SimpleDateFormat mDateSqlSdf = new SimpleDateFormat("yyyy-MM-dd");
 	static { mDateSqlSdf.setTimeZone(tzUtc); }
 	static DateFormat mDateDispSdf = DateFormat.getDateInstance(java.text.DateFormat.MEDIUM);
+	private static SimpleDateFormat mLocalDateSqlSdf = new SimpleDateFormat("yyyy-MM-dd");
+	static { mLocalDateSqlSdf.setTimeZone(Calendar.getInstance().getTimeZone()); }
 
 	private static final ArrayList<SimpleDateFormat> mParseDateFormats = new ArrayList<SimpleDateFormat>();
 	static {
@@ -166,6 +168,9 @@ public class Utils {
 			mParseDateFormats.add(new SimpleDateFormat(format, Locale.ENGLISH));
 	}
 	
+	public static String toLocalSqlDateOnly(Date d) {
+		return mLocalDateSqlSdf.format(d);
+	}
 	public static String toSqlDateOnly(Date d) {
 		return mDateSqlSdf.format(d);
 	}
@@ -972,7 +977,7 @@ public class Utils {
 	 * 
 	 * @param list
 	 */
-	public static void pruneSeriesList(ArrayList<Series> list) {
+	public static boolean pruneSeriesList(ArrayList<Series> list) {
 		ArrayList<Series> toDelete = new ArrayList<Series>();
 		Hashtable<String, Series> index = new Hashtable<String, Series> ();
 
@@ -1009,7 +1014,9 @@ public class Utils {
 		}
 		
 		for (Series s: toDelete) 
-			list.remove(s);
+			list.remove(s);			
+
+		return (toDelete.size() > 0);
 
 	}
 	/**
@@ -1470,15 +1477,21 @@ public class Utils {
 	 * Set the passed Activity background based on user preferences
 	 */
 	public static void initBackground(int bgResource, Activity a, boolean bright) {
-		initBackground(bgResource, a, R.id.root, bright);
+		initBackground(bgResource, a.findViewById(R.id.root), bright);
+	}
+	public static void initBackground(int bgResource, SherlockFragment f, boolean bright) {
+		initBackground(bgResource, f.getView().findViewById(R.id.root), bright);
 	}
 	/**
 	 * Set the passed Activity background based on user preferences
 	 */
 	public static void initBackground(int bgResource, Activity a, int rootId, boolean bright) {
+		initBackground(bgResource, a.findViewById(rootId), bright);
+	}
+	
+	public static void initBackground(int bgResource, View root, boolean bright) {
 		try {
-			View root = a.findViewById(rootId);
-			final int backgroundColor = a.getResources().getColor(R.color.background_grey);
+			final int backgroundColor = BookCatalogueApp.context.getResources().getColor(R.color.background_grey);
 
 			if (BookCatalogueApp.isBackgroundImageDisabled()) {
 				root.setBackgroundColor(backgroundColor);
@@ -1491,7 +1504,7 @@ public class Utils {
 					setCacheColorHintSafely(lv, 0x00000000);				
 				}
 				//Drawable d = cleanupTiledBackground(a.getResources().getDrawable(bgResource));
-				Drawable d = makeTiledBackground(a, bright);
+				Drawable d = makeTiledBackground(bright);
 
 				root.setBackgroundDrawable(d);
 			}
@@ -1518,12 +1531,12 @@ public class Utils {
 	 * 
 	 * @return			Background Drawable
 	 */
-	public static Drawable makeTiledBackground(Activity a, boolean bright) {
+	public static Drawable makeTiledBackground(boolean bright) {
 		// Storage for the layers
 		Drawable[] drawables = new Drawable[2];
 		// Get the BG image, put in tiled drawable
-		Bitmap b = BitmapFactory.decodeResource(a.getResources(), R.drawable.books_bg);
-		BitmapDrawable bmD = new BitmapDrawable(a.getResources(), b);
+		Bitmap b = BitmapFactory.decodeResource(BookCatalogueApp.context.getResources(), R.drawable.books_bg);
+		BitmapDrawable bmD = new BitmapDrawable(BookCatalogueApp.context.getResources(), b);
 		bmD.setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);
 		// Add to layers
 		drawables[0] = bmD;
@@ -1814,7 +1827,7 @@ public class Utils {
 	 * @param current		Current value (may be null)
 	 * @param listener		Listener to be called on dialg completion.
 	 */
-	public static void prepareDateDialog(PartialDatePicker dialog, Object current, PartialDatePicker.OnDateSetListener listener) {
+	public static void prepareDateDialogFragment(PartialDatePickerFragment dialog, Object current) {
 		String dateString = current == null ? "" : current.toString();
 		// get the current date
 		Integer yyyy = null;
@@ -1832,19 +1845,20 @@ public class Utils {
 		dialog.setDate(yyyy, mm, dd);
 	}
 
-	/**
-	 * Build a new BigDateDialog and return it.
-	 * 
-	 * @param context
-	 * @param titleId
-	 * @param listener
-	 * @return
-	 */
-	public static Dialog buildDateDialog(Context context, int titleId, PartialDatePicker.OnDateSetListener listener) {
-		PartialDatePicker dialog = new PartialDatePicker(context, listener);
-		dialog.setTitle(titleId);
-		return dialog;
-	}
+//	/**
+//	 * Build a new BigDateDialog and return it.
+//	 * 
+//	 * @param context
+//	 * @param titleId
+//	 * @param listener
+//	 * @return
+//	 */
+//	public static PartialDatePicker buildDateDialog(Context context, int titleId, PartialDatePicker.OnDateSetListener listener) {
+//		PartialDatePicker dialog = new PartialDatePicker(context);
+//		dialog.setTitle(titleId);
+//		dialog.setOnDateSetListener(listener);
+//		return dialog;
+//	}
 
 	/**
 	 * Utility routine to get an author list from the intent extras
@@ -1937,6 +1951,70 @@ public class Utils {
 		    }			
 		}
 		return mSignedBy;
+	}
+
+	/**
+	 * Utility function to convert string to boolean
+	 * 
+	 * @param s		String to convert
+	 * @param emptyIsFalse TODO
+	 * 
+	 * @return		Boolean value
+	 */
+	public static boolean stringToBoolean(String s, boolean emptyIsFalse) {
+		boolean v;
+		if (s == null || s.equals(""))
+			if (emptyIsFalse) {
+				v = false;
+			} else {
+				throw new RuntimeException("Not a valid boolean value");						
+			}
+		else if (s.equals("1"))
+			v = true;
+		else if (s.equals("0"))
+			v = false;
+		else {
+			s = s.trim().toLowerCase();
+			if (s.equals("t"))
+				v = true;
+			else if (s.equals("f"))
+				v = false;
+			else if (s.equals("true"))
+				v = true;
+			else if (s.equals("false"))
+				v = false;
+			else if (s.equals("y"))
+				v = true;
+			else if (s.equals("n"))
+				v = false;
+			else if (s.equals("yes"))
+				v = true;
+			else if (s.equals("no"))
+				v = false;
+			else {
+				try {
+					Integer i = Integer.parseInt(s);
+					return i != 0;
+				} catch (Exception e) {
+					throw new RuntimeException("Not a valid boolean value");						
+				}
+			}
+		}
+		return v;
+	}
+
+	public static boolean objectToBoolean(Object o) {
+		if (o instanceof Boolean) {
+			return (Boolean)o;
+		}
+		if (o instanceof Integer || o instanceof Long) {
+			return (Long)o != 0;
+		}
+		try {
+			return (Boolean)o;
+		} catch (ClassCastException e) {
+			return stringToBoolean(o.toString(), true);
+		}
 	}
 }
 

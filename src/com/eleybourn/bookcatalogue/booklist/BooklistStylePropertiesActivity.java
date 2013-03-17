@@ -20,7 +20,6 @@
 
 package com.eleybourn.bookcatalogue.booklist;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -34,6 +33,7 @@ import android.widget.Toast;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.UniqueId;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.properties.Properties;
 import com.eleybourn.bookcatalogue.properties.Property.ValidationException;
 import com.eleybourn.bookcatalogue.properties.PropertyGroup;
@@ -48,7 +48,7 @@ import com.eleybourn.bookcatalogue.utils.ViewTagger;
  * 
  * @author Philip Warner
  */
-public class BooklistStylePropertiesActivity extends Activity {
+public class BooklistStylePropertiesActivity extends BookCatalogueActivity {
 	/** Parameter used to pass data to this activity */
 	public static final String KEY_STYLE = "BooklistStyleProperties.Style";
 	/** Parameter used to pass data to this activity */

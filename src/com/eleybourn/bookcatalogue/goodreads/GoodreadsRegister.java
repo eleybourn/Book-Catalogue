@@ -20,22 +20,25 @@
 
 package com.eleybourn.bookcatalogue.goodreads;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
 import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueueProgressFragment;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueueProgressFragment.FragmentTask;
 import com.eleybourn.bookcatalogue.utils.Utils;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTaskContext;
 
 /**
  * Activity to allow the user to authorize the application to access their goodreads account and
@@ -44,7 +47,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * @author Philip Warner
  *
  */
-public class GoodreadsRegister extends Activity {
+public class GoodreadsRegister extends BookCatalogueActivity {
 
 	/**
 	 * Called when the activity is first created. 
@@ -90,25 +93,64 @@ public class GoodreadsRegister extends Activity {
 		devkeyLink.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				doRequestAuthorization();
+				requestAuthorizationInBackground(GoodreadsRegister.this);
 				return;
 			}
 		});
 
+		/* Forget credentials */
+		boolean hasCred = GoodreadsManager.hasCredentials();
+		View blurb = findViewById(R.id.forget_blurb);
+		Button blurb_button = (Button)findViewById(R.id.forget);
+		if (hasCred) {
+			blurb.setVisibility(View.VISIBLE);
+			blurb_button.setVisibility(View.VISIBLE);
+			blurb_button.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					GoodreadsManager.forgetCredentials();
+				}});
+		} else {
+			blurb.setVisibility(View.GONE);
+			blurb_button.setVisibility(View.GONE);
+		}
 	}
 
 	/**
-	 * Called by button click to call static method.
+	 * Called by button click to start a non-UI-thread task to do the work.
 	 */
-	private void doRequestAuthorization() {
-		requestAuthorization(this);
+	public static void requestAuthorizationInBackground(final FragmentActivity activity) {
+		FragmentTask task = new FragmentTask() {
+			private int mMessage = 0;
+
+			/**
+			 * Call the static method to start the web page; this can take a few seconds
+			 */
+			@Override
+			public void run(SimpleTaskQueueProgressFragment fragment, SimpleTaskContext taskContext) {
+				mMessage = requestAuthorizationImmediate(activity);
+			}
+
+			/**
+			 * Display any error message
+			 */
+			@Override
+			public void onFinish(SimpleTaskQueueProgressFragment fragment, Exception exception) {
+				if (mMessage != 0)
+					fragment.showToast(mMessage);
+			}
+
+		};
+
+		// Get the fragment to display task progress
+		SimpleTaskQueueProgressFragment.runTaskWithProgress(activity, R.string.connecting_to_web_site, task, true, 0);
 	}
 
 	/**
 	 * Static method to request authorization from goodreads.
 	 */
-	public static void requestAuthorization(Context context) {
-		// ENHANCE: put up a progress dialog...its only one web request, but it can take a few seconds
+	private static int requestAuthorizationImmediate(Context context) {
 		GoodreadsManager grMgr = new GoodreadsManager();
 		// This next step can take several seconds....
 		if (!grMgr.hasValidCredentials()) {
@@ -116,10 +158,11 @@ public class GoodreadsRegister extends Activity {
 				grMgr.requestAuthorization(context);
 			} catch (NetworkException e) {
 				Logger.logError(e, "Error while requesting Goodreads authorization");
-				Toast.makeText(context, R.string.goodreads_access_error, Toast.LENGTH_LONG).show();
+				return R.string.goodreads_access_error;
 			}
 		} else {
-			Toast.makeText(context, R.string.authorize_access_already_auth, Toast.LENGTH_LONG).show();
+			return R.string.authorize_access_already_auth;
 		}		
+		return 0;
 	}
 }

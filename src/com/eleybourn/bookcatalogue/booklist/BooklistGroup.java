@@ -26,6 +26,7 @@ import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KI
 import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_DAY_READ;
 import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_FORMAT;
 import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_GENRE;
+import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_LANGUAGE;
 import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_LOANED;
 import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_LOCATION;
 import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_MONTH_ADDED;
@@ -93,8 +94,9 @@ public class BooklistGroup implements Serializable {
 		public static final int ROW_KIND_MONTH_READ = 15;		// Supported
 		public static final int ROW_KIND_DAY_READ = 16;			// Supported
 		public static final int ROW_KIND_LOCATION = 17;			// Supported
+		public static final int ROW_KIND_LANGUAGE = 18;			// Supported
 		// NEWKIND: Add new kinds here
-		public static final int ROW_KIND_MAX = 17; 				// **** NOTE **** ALWAYS update after adding a row kind...				
+		public static final int ROW_KIND_MAX = 18; 				// **** NOTE **** ALWAYS update after adding a row kind...				
 	}
 	
 	private static final Hashtable<Integer, String> mRowKindNames = new Hashtable<Integer, String>();
@@ -116,6 +118,7 @@ public class BooklistGroup implements Serializable {
 		mRowKindNames.put(ROW_KIND_MONTH_READ, BookCatalogueApp.getResourceString(R.string.read_month));
 		mRowKindNames.put(ROW_KIND_DAY_READ, BookCatalogueApp.getResourceString(R.string.read_day));
 		mRowKindNames.put(ROW_KIND_LOCATION, BookCatalogueApp.getResourceString(R.string.location));
+		mRowKindNames.put(ROW_KIND_LANGUAGE, BookCatalogueApp.getResourceString(R.string.language));
 		// NEWKIND: Add new kinds here
 		mRowKindNames.put(ROW_KIND_BOOK, BookCatalogueApp.getResourceString(R.string.book));		
 	}

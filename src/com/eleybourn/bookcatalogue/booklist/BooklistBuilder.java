@@ -1027,7 +1027,7 @@ public class BooklistBuilder {
 	
 			// If we got any conditions, add them to the initial insert statement
 			if (!where.equals("")) {
-				sqlCmp.where += " where " + where.toString();
+				sqlCmp.where = " where " + where.toString();
 			} else {
 				sqlCmp.where = "";
 			}

@@ -43,7 +43,8 @@ Features include;
 
 new in 5.0.5
 * Style 'Added date' is now in descending order for Android 2.2+
-* Prformance improvements for Android 2.2+
+* Performance improvements for Android 2.2+
+* pass all book details to editor even if some required details not found
 * Bug fixes
 
 new in 5.0.4

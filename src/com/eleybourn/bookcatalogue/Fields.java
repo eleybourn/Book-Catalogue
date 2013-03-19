@@ -49,6 +49,7 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.eleybourn.bookcatalogue.datamanager.DataManager;
 import com.eleybourn.bookcatalogue.datamanager.ValidatorException;
+import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
@@ -129,7 +130,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	private AfterFieldChangeListener mAfterFieldChangeListener = null;
 	
 	private interface FieldsContext {
-		Context getContext();
+		Object dbgGetOwnerContext();
 		View findViewById(int id);
 	}
 	private class ActivityContext implements FieldsContext {
@@ -138,7 +139,7 @@ public class Fields extends ArrayList<Fields.Field> {
 			mActivity = new WeakReference<Activity>(a);
 		}
 		@Override
-		public Context getContext() {
+		public Object dbgGetOwnerContext() {
 			return mActivity.get();
 		}
 		@Override
@@ -152,8 +153,8 @@ public class Fields extends ArrayList<Fields.Field> {
 			mFragment = new WeakReference<SherlockFragment>(f);
 		}
 		@Override
-		public Context getContext() {
-			return mFragment.get().getActivity();
+		public Object dbgGetOwnerContext() {
+			return mFragment.get();
 		}
 
 		@Override
@@ -424,6 +425,36 @@ public class Fields extends ArrayList<Fields.Field> {
 			}
 			try {
 				TextView v = (TextView) field.getView();
+				// Every field MST have an associated View object, but sometimes it is not found.
+				// When not found, the app crashes. 
+				// The following code is to help diagnose these cases, not avoid them.
+				//
+				// NOTE: This does NOT fix the problem, only gathers debug info
+				//
+				if (v == null) {
+					String msg = "NULL View: col="  + field.column + ", id=" + field.id + ", group=" + field.group;
+					Fields fs = field.getFields();
+					if (fs == null) {
+						msg += ". Fields is NULL.";
+					} else {
+						msg += ". Fields is valid.";
+						FieldsContext ctx = fs.getContext();
+						if (ctx == null) {
+							msg += ". Context is NULL.";							
+						} else {
+							msg += ". Context is " + ctx.getClass().getSimpleName() + ".";
+							Object o = ctx.dbgGetOwnerContext();
+							if (o == null) {
+								msg += ". Owner is NULL.";
+							} else {
+								msg += ". Owner is " + o.getClass().getSimpleName() + " (" + o.toString() + ")";
+							}
+						}
+					}
+					Tracker.handleEvent(this, msg, Tracker.States.Running);
+					throw new RuntimeException("Unable to get associated View object");
+				}
+
 				String newVal = field.format(s);
 				// Despite assurances otherwise, getText() apparently returns null sometimes
 				String oldVal = v.getText() == null ? null : v.getText().toString();
@@ -899,6 +930,19 @@ public class Fields extends ArrayList<Fields.Field> {
 			    }
 			});			
 		}
+		
+		/**
+		 * Accessor; added for debugging only. Try not to use!
+		 * @return
+		 */
+		protected Fields getFields() {
+			if (mFields == null) {
+				return null;
+			} else {
+				return mFields.get();				
+			}
+		}
+
 		/**
 		 * Get the view associated with this Field, if available.
 		 * @param id	View ID.

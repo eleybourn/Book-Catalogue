@@ -795,7 +795,59 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
     </string>
 
     <!-- End: Added/Updated in 5.0.3 -->
-    
+
+    <!-- Begin: Added/Updated in 5.0.4 -->
+
+    <!-- Short Heading for 'Language' field in book details -->
+    <string name="language">Sprache</string>
+    <string name="new_in_504">
+        <![CDATA[
+			<p><b>Neu in 5.0.4</b>\n\n
+				* Neues Feld: Sprache\n\n
+			    * Updates der französischen Übersetzung (Imkal)\n\n
+			    * Fehlerbehebungen\n\n
+			</p>
+		]]>
+    </string>
+
+    <!-- End: Added/Updated in 5.0.4 -->
+
+    <!-- Begin: Added/Updated in 5.0.5 -->
+    <!--  New preference to override the default method used to generate bookslists as defined by API level -->
+    <string name="booklist_generation">Erzeugung der Bücherliste</string>
+    <!-- Option listed under "booklist_generation" referring to a very conservative way of generating bookslists -->
+    <string name="force_compatibility_mode">Benutze Kompatibilitätsmodus</string>
+    <!-- Option listed under "booklist_generation" referring to a conservative way of generating bookslists -->
+    <string name="force_enhanced_compatibility_mode">Benutze verbesserten Kompatibilitätsmodus</string>
+    <!-- Option listed under "booklist_generation" referring to a conservative way of generating bookslists -->
+    <string name="force_fully_featured">Benutze vollwertigen Modus</string>
+    <!-- Default Option listed under "booklist_generation" referring to a conservative way of generating bookslists -->
+    <string name="automatically_use_recommended_option">Verwende den am besten geeigneten Modus</string>
+
+    <string name="new_in_505">
+        <![CDATA[
+			<p><b>Neu in 5.0.5</b>\n\n
+				* Liste des Erfassungsdatums wird nun in absteigender Reihenfolge sortiert\n\n
+			    * Updates der französischen Übersetzung (Imkal)\n\n
+			    * Fehlerbehebungen\n\n
+			</p>
+		]]>
+    </string>
+
+    <!-- End: Added/Updated in 5.0.5 -->
+
+    <!-- Begin: Added/Updated in 5.0.8 -->
+    <string name="new_in_508">
+		<![CDATA[
+			<p><b>Neu in 5.0.8</b>\n\n
+			    * Weitere Updates der deutschen Übersetzung (Robert Wetzlmayr)\n\n
+			</p>
+		]]>
+    </string>
+    <!-- End: Added/Updated in 5.0.8 -->
+
+    <!-- Begin: Added/Updated in [Next Version] -->
+    <!-- End: Added/Updated in [Next Version] -->
 
 </resources>
 

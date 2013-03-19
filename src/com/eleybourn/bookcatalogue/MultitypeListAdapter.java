@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 
+import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.widgets.FastScroller.SectionIndexerV2;
 
 /**
@@ -66,8 +67,21 @@ public class MultitypeListAdapter extends CursorAdapter implements SectionIndexe
 	@Override 
 	public int getItemViewType(final int position) {
 		final Cursor cursor = this.getCursor();
-		cursor.moveToPosition(position);
-		return mHandler.getItemViewType(cursor);
+		//
+		// At least on Android 2.3.4 we see attempts to get item types for cached items beyond the
+		// end of empty cursors. This implies a cleanup ordering issue, but has not been confirmed.
+		// This code attempts to gather more details of how this error occurs.
+		//
+		// NOTE: It DOES NOT fix the error; just gathers more debug info
+		//
+		if (cursor.isClosed()) {
+			throw new RuntimeException("Attempt to get type of item on closed cursor (" + cursor.toString() + ")");
+		} else if (position >= cursor.getCount()) {
+			throw new RuntimeException("Attempt to get type of item beyond end of cursor (" + cursor.toString() + ")");
+		} else {
+			cursor.moveToPosition(position);
+			return mHandler.getItemViewType(cursor);			
+		}
 	}
 	@Override
 	public int getViewTypeCount() {

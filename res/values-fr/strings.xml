@@ -833,7 +833,7 @@
     
     <string name="new_in_505">
 		<![CDATA[
-			<p><b>New in 5.0.5</b>\n\n
+			<p><b>Nouveau dans la version 5.0.5</b>\n\n
 				* Tri décroissant sur la date d\'ajout \n\n
 				* Mise à jour de la version française(Imkal)\n\n
 				* Correction de bogues\n\n
@@ -842,4 +842,14 @@
     </string>
     <!-- End Added/Updated in 5.0.5 -->
     
+    <!-- Begin: Added/Updated in 5.0.8 -->
+    <string name="new_in_508">
+		<![CDATA[
+			<p><b>Nouveau dans la version 5.0.8</b>\n\n
+				* Mise à jour de la version française (Imkal)\n\n
+			</p>
+		]]>
+    </string>
+    <!-- End: Added/Updated in 5.0.8 -->
+
 </resources>

@@ -836,6 +836,16 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
 
     <!-- End: Added/Updated in 5.0.5 -->
 
+    <!-- Begin: Added/Updated in 5.0.8 -->
+    <string name="new_in_508">
+		<![CDATA[
+			<p><b>Neu in 5.0.8</b>\n\n
+			    * Weitere Updates der deutschen Übersetzung (Robert Wetzlmayr)\n\n
+			</p>
+		]]>
+    </string>
+    <!-- End: Added/Updated in 5.0.8 -->
+
     <!-- Begin: Added/Updated in [Next Version] -->
     <!-- End: Added/Updated in [Next Version] -->
 

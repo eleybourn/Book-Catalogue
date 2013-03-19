@@ -25,6 +25,7 @@ import java.util.Map.Entry;
 
 import android.database.AbstractCursor;
 
+import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
@@ -100,6 +101,8 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 		mMruList = new int[MRU_LIST_SIZE];
 		for(int i = 0; i < MRU_LIST_SIZE; i++)
 			mMruList[i] = -1;
+		
+		Tracker.handleEvent(this, "Created " + this.toString(), Tracker.States.Running);
 	}
 
 	/**
@@ -381,7 +384,9 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 	 */
 	@Override
 	public void close() {
+		Tracker.handleEvent(this, "Close " + this.toString(), Tracker.States.Enter);
 		super.close();
+
 
 		clearCursors();
 
@@ -389,5 +394,7 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 			mUtils.close();
 			mUtils = null;
 		}
+
+		Tracker.handleEvent(this, "Close " + this.toString(), Tracker.States.Exit);
 	}
 }

@@ -425,11 +425,20 @@ public class Fields extends ArrayList<Fields.Field> {
 			}
 			try {
 				TextView v = (TextView) field.getView();
-				// Every field MST have an associated View object, but sometimes it is not found.
-				// When not found, the app crashes. 
+				//
+				// Every field MUST have an associated View object, but sometimes it is not found.
+				// When not found, the app crashes.
+				//
 				// The following code is to help diagnose these cases, not avoid them.
 				//
-				// NOTE: This does NOT fix the problem, only gathers debug info
+				// NOTE: 	This does NOT entirly fix the problem, it gathers debug info. but
+				//			we have implemented one work-around
+				//
+				// Work-around #1:
+				//
+				// It seems that sometimes the afterTextChanged() event fires after the text field
+				// is removed from the screen. In this case, there is no need to synchronize the values 
+				// since the view is gone.
 				//
 				if (v == null) {
 					String msg = "NULL View: col="  + field.column + ", id=" + field.id + ", group=" + field.group;
@@ -452,17 +461,20 @@ public class Fields extends ArrayList<Fields.Field> {
 						}
 					}
 					Tracker.handleEvent(this, msg, Tracker.States.Running);
-					throw new RuntimeException("Unable to get associated View object");
+					//throw new RuntimeException("Unable to get associated View object");
 				}
 
-				String newVal = field.format(s);
-				// Despite assurances otherwise, getText() apparently returns null sometimes
-				String oldVal = v.getText() == null ? null : v.getText().toString();
-				if (newVal == null && oldVal == null)
-					return;
-				if (newVal != null && oldVal != null && newVal.equals(oldVal))
-					return;
-				v.setText(newVal);
+				// If the view is still present, make sure it is accurate.
+				if (v != null) {
+					String newVal = field.format(s);
+					// Despite assurances otherwise, getText() apparently returns null sometimes
+					String oldVal = v.getText() == null ? null : v.getText().toString();
+					if (newVal == null && oldVal == null)
+						return;
+					if (newVal != null && oldVal != null && newVal.equals(oldVal))
+						return;
+					v.setText(newVal);					
+				}
 			} finally {
 				mIsSetting = false;				
 			}

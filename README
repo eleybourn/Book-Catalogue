@@ -41,16 +41,43 @@ Features include;
   case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
-new in 5.0.0
-* Backup to single file
-* Better ASIN search support
+new in 5.0.5
+* Style 'Added date' is now in descending order for Android 2.2+
+* Performance improvements for Android 2.2+
+* pass all book details to editor even if some required details not found
+* Bug fixes
 
-new in 4.2.4 (unreleased)
-* A read-only view of books details, with 'fling' support! (Nick Silin)
+new in 5.0.4
+* New field: Language
+* Translation updates (Imkal)
+* Code cleanups
+* Scanner info sent in 'Help'->'Send Info'
+
+new in 5.0.3
+* Bug fix: 'duplicate' series no longer incorrectly causing errors
+* Bug fix: Prevent editing series and formats in list if empty
+* Bug fix: Ensure default bookshelf is really set when adding books
+* Bug fix: Handle broken android versions that do not accept null number format for progress dialogs
+* French Translation update (Imkal)
+
+new in 5.0.1/2
+* Bug fix: Author text in 'Search Internet' now correct colour
+* Bug fix: goodreads sync no longer causes crash if not registered
+* Updated icons to match marketplace images
+
+new in 5.0.0
+* A non-editable view of book details, with 'fling' support! (See "Other Preferences") (Nick Silin)
+* Archiving (Backup & Import) of entire catalogue, including books, covers, preferences and styles
+* Updated interface with Action Bar support for usability and to work better on devices without menu buttons
 * Support for pic2shop scanner (better for fixed focus, low light and in front-facing cameras)
+* goodreads now appears in main menu if you authorize it
 * Check internet connection earlier when trying to scan books
+* Add greater granularity to book list header info preference
+* Better ASIN search support
+* More French translation updates (Imkal & Djiko)
 * More German translation updates (Robert Wetzlmayr)
-* More French translation updates (Djiko)
+* More Russian translation updates (Nick Silin)
+* Internal changes in anticipation of an improved tablet interface
 * Bug fixes
 
 new in 4.2.3

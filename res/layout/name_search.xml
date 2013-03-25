@@ -20,7 +20,7 @@
             android:inputType="textCapWords"
             android:padding="10dp"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="#000000" />
+            />
 
         <EditText
             android:id="@+id/title"

@@ -27,6 +27,17 @@ https://raw.github.com/eleybourn/Book-Catalogue/master/README
 
 Recent History:
 
+New in 5.0.0
+
+* A non-editable view of book details, with 'fling' support! (Nick Silin)
+* Archiving of entire catalogue, including books, covers, preferences and styles
+* Updated and improved interface, including Action Bar suppor (should work better on devices without menu buttons)
+* Support for pic2shop scanner
+* More French translation updates (Imkal & Djiko)
+* More German translation updates (Robert Wetzlmayr)
+* More Russian translation updates (Nick Silin)
+* Bug fixes
+
 New in 4.2.3
 
 * Improve handling of invalid ISBNs when sending to goodreads

@@ -38,7 +38,7 @@ public class SafeSpannedTextView extends TextView {
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		try {
 			super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-		} catch (ArrayIndexOutOfBoundsException e) {
+		} catch (IndexOutOfBoundsException e) {
 			setText(getText().toString());
 			super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 		}

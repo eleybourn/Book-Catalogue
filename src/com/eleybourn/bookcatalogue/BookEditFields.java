@@ -95,11 +95,11 @@ public class BookEditFields extends BookDetailsAbstract
 	}
 
 	public void onActivityCreated(Bundle savedInstanceState) {
+		Tracker.enterOnActivityCreated(this);
 		double t0 = System.currentTimeMillis();
 		double t1 = 0;
 		double t2 = 0;
 
-		Tracker.enterOnCreateView(this);		
 		try {
 			t1 = System.currentTimeMillis();
 			super.onActivityCreated(savedInstanceState);
@@ -141,6 +141,8 @@ public class BookEditFields extends BookDetailsAbstract
 			mFields.setAdapter(R.id.publisher, publisher_adapter);
 			ArrayAdapter<String> genre_adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_dropdown_item_1line, mEditManager.getGenres());
 			mFields.setAdapter(R.id.genre, genre_adapter);
+			ArrayAdapter<String> language_adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_dropdown_item_1line, mEditManager.getLanguages());
+			mFields.setAdapter(R.id.language, language_adapter);
 			
 			mFields.setListener(R.id.date_published, new View.OnClickListener() {
 				public void onClick(View view) {
@@ -221,8 +223,9 @@ public class BookEditFields extends BookDetailsAbstract
 			Logger.logError(e);
 		} catch (SQLException e) {
 			Logger.logError(e);
+		} finally {
+			Tracker.exitOnActivityCreated(this);			
 		}
-		Tracker.exitOnCreate(this);
 		
 		double tn = System.currentTimeMillis();
 		System.out.println("BEF oAC(super): " + (t2 - t1));
@@ -293,6 +296,9 @@ public class BookEditFields extends BookDetailsAbstract
 		populateAuthorListField();
 		populateSeriesListField();
 
+		// Restore default visibility and hide unused/unwanted and empty fields
+		showHideFields(false);
+
 		System.out.println("BEF popF: " + (System.currentTimeMillis() - t0));
 	}
 	
@@ -307,7 +313,7 @@ public class BookEditFields extends BookDetailsAbstract
 		String encoded_shelf = Utils.encodeListItem(currShelf, BOOKSHELF_SEPERATOR);
 		Field fe = mFields.getField(R.id.bookshelf);
 		fe.setValue(currShelf);
-		fe.setTag(encoded_shelf);		
+		mEditManager.getBookData().setBookshelfList(encoded_shelf);		
 	}
 
 	private void setupUi() {
@@ -375,7 +381,7 @@ public class BookEditFields extends BookDetailsAbstract
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-		Tracker.handleEvent(this, "onActivityResult(" + requestCode + "," + resultCode + ")", Tracker.States.Enter);			
+		Tracker.enterOnActivityResult(this, requestCode, resultCode);			
 		try {
 			super.onActivityResult(requestCode, resultCode, intent);
 			switch(requestCode) {
@@ -401,7 +407,7 @@ public class BookEditFields extends BookDetailsAbstract
 				}
 			}
 		} finally {
-			Tracker.handleEvent(this, "onActivityResult", Tracker.States.Exit);			
+			Tracker.exitOnActivityResult(this, requestCode, resultCode);			
 		}
 	}
 	

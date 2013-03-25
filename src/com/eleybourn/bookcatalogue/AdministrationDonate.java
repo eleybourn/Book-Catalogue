@@ -93,7 +93,7 @@ public class AdministrationDonate extends BookCatalogueActivity {
 		amazon.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent loadweb = new Intent(Intent.ACTION_VIEW, Uri.parse("http://amzn.com/w/23LH4CAJ7776O"));
+				Intent loadweb = new Intent(Intent.ACTION_VIEW, Uri.parse("http://amzn.com/w/2A2E48ONH64HMO"));
 				startActivity(loadweb); 
 				return;
 			}

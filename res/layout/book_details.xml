@@ -225,6 +225,19 @@
             android:text="Science Fiction"
             tools:ignore="HardcodedText" />
 
+        <!-- Genre -->
+
+        <TextView
+            android:id="@+id/lbl_language"
+            style="@style/bookDetailsTitlesStyle"
+            android:text="@string/language" />
+
+        <TextView
+            android:id="@+id/language"
+            style="@style/bookDetailsTextStyle"
+            android:text="Quenya"
+            tools:ignore="HardcodedText" />
+
         <TableLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" >
@@ -261,7 +274,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="@string/edit_book_notes"
+            android:text="@string/notes"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <View
@@ -276,7 +289,7 @@
         <TextView
             android:id="@+id/lbl_notes"
             style="@style/bookDetailsTitlesStyle"
-            android:text="@string/notes" />
+            android:text="@string/edit_book_notes" />
 
         <TextView
             android:id="@+id/notes"
@@ -291,6 +304,7 @@
             <!-- Has this book been signed -->
 
             <LinearLayout
+                android:id="@+id/row_signed"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content" >
 
@@ -303,6 +317,7 @@
                     android:id="@+id/signed"
                     style="@style/bookDetailsTextStyle"
                     android:text="@string/no" />
+
             </LinearLayout>
 
             <!-- Start and end of reading -->

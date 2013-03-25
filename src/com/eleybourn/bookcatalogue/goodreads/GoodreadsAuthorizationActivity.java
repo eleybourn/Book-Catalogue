@@ -25,6 +25,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.eleybourn.bookcatalogue.BcQueueManager;
+import com.eleybourn.bookcatalogue.StartupActivity;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 
 /**
@@ -55,6 +56,14 @@ public class GoodreadsAuthorizationActivity extends BookCatalogueActivity {
 		    GoodreadsAuthorizationResultCheck task = new GoodreadsAuthorizationResultCheck();
 		    QueueManager.getQueueManager().enqueueTask(task, BcQueueManager.QUEUE_SMALL_JOBS, 0);
 		}
+
+		// Bring the main app task back to the top
+		Intent bcTop = new Intent(this, StartupActivity.class);
+		bcTop.setAction("android.intent.action.MAIN");
+		bcTop.addCategory(Intent.CATEGORY_LAUNCHER);
+
+		startActivity(bcTop);
+
 		this.finish();
 	} 
 

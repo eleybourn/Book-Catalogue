@@ -375,6 +375,24 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 	}
 
 	@Override
+	/**
+	 * Close the list object (frees statements) and if we are finishing, delete the temp table.
+	 * 
+	 * This is an ESSENTIAL step; for some reason, in Android 2.1 if these statements are not
+	 * cleaned up, then the underlying SQLiteDatabase gets double-dereferenced, resulting in
+	 * the database being closed by the deeply dodgy auto-close code in Android.
+	 */
+	public void onPause() {
+		if (mList != null) {
+			mList.close();
+			if (this.isFinishing()) {
+				mList.deleteData();
+			}
+		}
+		super.onPause();
+	}
+
+	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		Tracker.enterOnSaveInstanceState(this);
 		super.onSaveInstanceState(outState);
@@ -909,6 +927,34 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 			}
 		}
 		return mGenres;
+	}
+
+	/** List of languages in database so far */
+	private ArrayList<String> mLanguages;
+	/**
+	 * Load a language list; reloading this list every time a tab changes is slow.
+	 * So we cache it.
+	 * 
+	 * @return List of languages
+	 */
+	@Override
+	public ArrayList<String> getLanguages() {
+		if (mLanguages == null) {
+			mLanguages = new ArrayList<String>();
+			Cursor cur = mDbHelper.fetchAllLanguages("");
+			final int col = cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROWID);
+			try {
+				while (cur.moveToNext()) {
+					String s = cur.getString(col);
+					if (s != null && !s.equals("")) {
+						mLanguages.add(cur.getString(col));						
+					}
+				}
+			} finally {
+				cur.close();
+			}
+		}
+		return mLanguages;
 	}
 
 	private ArrayList<String> mFormats;

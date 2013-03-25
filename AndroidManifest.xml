@@ -3,8 +3,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.eleybourn.bookcatalogue"
     android:installLocation="auto"
-    android:versionCode="137"
-    android:versionName="5.0.0 Beta 1" >
+    android:versionCode="152"
+    android:versionName="5.0.8" >
 
     <uses-sdk
         android:minSdkVersion="7"
@@ -21,8 +21,8 @@
 
     <application
         android:name=".BookCatalogueApp"
-        android:icon="@drawable/ic_launcher3"
-        android:label="@string/app_name" android:logo="@drawable/ic_logo">
+        android:icon="@drawable/ic_launcher4"
+        android:label="@string/app_name" android:logo="@drawable/ic_launcher4">
         android:theme="@style/Theme.Sherlock"
         <provider
             android:name=".SearchSuggestionProvider"
@@ -127,9 +127,9 @@
         </activity>
         <activity
             android:name=".goodreads.GoodreadsRegister"
-            android:launchMode="singleInstance" android:label="@string/goodreads" android:theme="@style/Theme.Sherlock">
+            android:launchMode="standard" android:label="@string/goodreads" android:theme="@style/Theme.Sherlock">
         </activity>
-        <activity android:name=".goodreads.GoodreadsAuthorizationActivity" android:theme="@style/Theme.Sherlock">
+        <activity android:name=".goodreads.GoodreadsAuthorizationActivity" android:theme="@style/Theme.Sherlock" android:launchMode="singleInstance" >
 
             <!-- RELEASE: Work out which of these filters we dont need! -->
             <intent-filter>

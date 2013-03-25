@@ -12,6 +12,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,15 +20,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.widget.Toast;
 
+import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.debug.Tracker;
+import com.eleybourn.bookcatalogue.scanner.ScannerManager;
+import com.eleybourn.bookcatalogue.scanner.ZxingScanner;
+import com.eleybourn.bookcatalogue.scanner.pic2shop.Scan;
 
 /**
  * Class to wrap common storage related funcions.
@@ -279,7 +285,38 @@ public class StorageUtils {
 
         message += "Signed-By: " + Utils.signedBy(context) + "\n";
 
-		message += "\nHistory:\n" + Tracker.getEventsInfo();
+		message += "\nHistory:\n" + Tracker.getEventsInfo() + "\n";
+
+		// Scanners installed
+		try {
+	        message += "Pref. Scanner: " + BookCatalogueApp.getAppPreferences().getInt( ScannerManager.PREF_PREFERRED_SCANNER, -1) + "\n";
+	        String[] scanners = new String[] { ZxingScanner.ACTION, Scan.ACTION, Scan.Pro.ACTION};
+	        for(String scanner:  scanners) {
+	            message += "Scanner [" + scanner + "]:\n";
+	            final Intent mainIntent = new Intent(scanner, null);
+	            final List<ResolveInfo> resolved = context.getPackageManager().queryIntentActivities( mainIntent, 0); 
+	            if (resolved.size() > 0) {
+		            for(ResolveInfo r: resolved) {
+		            	message += "    ";
+		            	// Could be activity or service...
+		            	if (r.activityInfo != null) {
+		            		message += r.activityInfo.packageName;
+		            	} else if (r.serviceInfo != null) {
+		            		message += r.serviceInfo.packageName;
+		            	} else {
+		            		message += "UNKNOWN";
+		            	}
+		                message += " (priority " + r.priority + ", preference " + r.preferredOrder + ", match " + r.match + ", default=" + r.isDefault + ")\n";
+		            }
+	            } else {
+            		message += "    No packages found\n";
+	            }
+	        }			
+		} catch (Exception e) {
+			// Don't lose the other debug info if scanner data dies for some reason
+	        message += "Scanner failure: " + e.getMessage() + "\n";
+		}
+		message += "\n";
 
         message += "Details:\n\n" + context.getString(R.string.debug_body).toUpperCase() + "\n\n";
 

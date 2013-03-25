@@ -757,4 +757,97 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
     ]]></string>
 
 <string name="copy_database">Datenbank kopieren (für technischen Support)</string>
+
+<!-- Items in list of options for the 'Summary Details' preference. Detrmines what is show in book list header -->
+<string name="show_book_count">Anzahl der Bücher anzeigen</string>
+<string name="show_first_level_and_book_count">Titel und Anzahl der Bücher anzeigen</string>
+<string name="show_all_summary_details">Alle Details der Zusammenfassung anzeigen</string>
+
+<!-- Displayed when an archive operation fails -->
+<string name="import_failed">Import gescheitert.</string>
+<!-- Displayed when any write operation to the sd card fails -->
+<string name="please_check_sd_writable">Bitte überprüfen Sie, ob die SD-Karte beschreibbar ist und genügend freien Platz aufweist.</string>
+<!-- Displayed when any write operation to the sd card fails -->
+<string name="please_check_sd_readable">Bitte überprüfen Sie, ob auf die SD-Karte zugegriffen werden kann.</string>
+
+
+    <!-- Begin: Added/Updated in 5.0.2 -->
+
+    <string name="new_in_502">
+		<![CDATA[
+			<p><b>Neu in 5.0.2</b>\n\n
+			    * Fehlerbehebungen\n\n
+				</p>
+				]]>
+    </string>
+
+    <!-- End: Added/Updated in 5.0.2 -->
+
+    <!-- Begin: Added/Updated in 5.0.3 -->
+
+    <string name="new_in_503">
+		<![CDATA[
+			<p><b>Neu in 5.0.3</b>\n\n
+			    * Fehlerbehebungen\n\n
+			    * Weitere Updates der französischen Übersetzung (Imkal)\n\n
+			</p>
+		]]>
+    </string>
+
+    <!-- End: Added/Updated in 5.0.3 -->
+
+    <!-- Begin: Added/Updated in 5.0.4 -->
+
+    <!-- Short Heading for 'Language' field in book details -->
+    <string name="language">Sprache</string>
+    <string name="new_in_504">
+        <![CDATA[
+			<p><b>Neu in 5.0.4</b>\n\n
+				* Neues Feld: Sprache\n\n
+			    * Updates der französischen Übersetzung (Imkal)\n\n
+			    * Fehlerbehebungen\n\n
+			</p>
+		]]>
+    </string>
+
+    <!-- End: Added/Updated in 5.0.4 -->
+
+    <!-- Begin: Added/Updated in 5.0.5 -->
+    <!--  New preference to override the default method used to generate bookslists as defined by API level -->
+    <string name="booklist_generation">Erzeugung der Bücherliste</string>
+    <!-- Option listed under "booklist_generation" referring to a very conservative way of generating bookslists -->
+    <string name="force_compatibility_mode">Benutze Kompatibilitätsmodus</string>
+    <!-- Option listed under "booklist_generation" referring to a conservative way of generating bookslists -->
+    <string name="force_enhanced_compatibility_mode">Benutze verbesserten Kompatibilitätsmodus</string>
+    <!-- Option listed under "booklist_generation" referring to a conservative way of generating bookslists -->
+    <string name="force_fully_featured">Benutze vollwertigen Modus</string>
+    <!-- Default Option listed under "booklist_generation" referring to a conservative way of generating bookslists -->
+    <string name="automatically_use_recommended_option">Verwende den am besten geeigneten Modus</string>
+
+    <string name="new_in_505">
+        <![CDATA[
+			<p><b>Neu in 5.0.5</b>\n\n
+				* Liste des Erfassungsdatums wird nun in absteigender Reihenfolge sortiert\n\n
+			    * Updates der französischen Übersetzung (Imkal)\n\n
+			    * Fehlerbehebungen\n\n
+			</p>
+		]]>
+    </string>
+
+    <!-- End: Added/Updated in 5.0.5 -->
+
+    <!-- Begin: Added/Updated in 5.0.8 -->
+    <string name="new_in_508">
+		<![CDATA[
+			<p><b>Neu in 5.0.8</b>\n\n
+			    * Weitere Updates der deutschen Übersetzung (Robert Wetzlmayr)\n\n
+			</p>
+		]]>
+    </string>
+    <!-- End: Added/Updated in 5.0.8 -->
+
+    <!-- Begin: Added/Updated in [Next Version] -->
+    <!-- End: Added/Updated in [Next Version] -->
+
 </resources>
+

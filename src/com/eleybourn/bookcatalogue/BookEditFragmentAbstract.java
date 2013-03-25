@@ -23,6 +23,8 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -63,6 +65,7 @@ public abstract class BookEditFragmentAbstract extends BookCatalogueFragment imp
 		public void setRowId(Long id);
 		public ArrayList<String> getFormats();
 		public ArrayList<String> getGenres();
+		public ArrayList<String> getLanguages();
 		public ArrayList<String> getPublishers();
 	}
 
@@ -231,5 +234,112 @@ public abstract class BookEditFragmentAbstract extends BookCatalogueFragment imp
 		final boolean wasDirty = mEditManager.isDirty();
 		onLoadBookDetails(mEditManager.getBookData(), false);
 		mEditManager.setDirty(wasDirty);
+	}
+	
+	/**
+	 * Show or Hide text field if it has not any useful data.
+	 * Don't show a field if it is already hidden (assumed by user preference)
+	 * @param hideIfEmpty TODO
+	 * @param resId layout resource id of the field
+	 * @param relatedFields list of fields whose visibility will also be set based on the first field
+	 *
+	 * @return The resulting visibility setting value (VISIBLE or GONE)
+	 */
+	protected int showHideField(boolean hideIfEmpty, int resId, int...relatedFields) {
+		// Get the base view
+		final View v = getView().findViewById(resId);
+		int visibility;
+		if (v == null) {
+			visibility = View.GONE;
+		} else {
+			visibility = v.getVisibility();
+			if (hideIfEmpty) {
+				if (v.getVisibility() != View.GONE) {
+					// Determine if we should hide it
+					if (v instanceof ImageView) {
+						visibility = v.getVisibility();
+					} else {
+						final String value = mFields.getField(resId).getValue().toString();
+						final boolean isExist = value != null && !value.equals("");
+						visibility = isExist ? View.VISIBLE : View.GONE;
+						v.setVisibility(visibility);										
+					}
+				}				
+			}
+			// Set the related views
+			for(int i: relatedFields) {
+				View rv = getView().findViewById(i);
+				if (rv != null)
+					rv.setVisibility(visibility);
+			}
+		}
+		return visibility;
+	}	
+
+	/**
+	 * Hides unused fields if they have not any useful data. Checks all text fields
+	 * except of author, series and loaned. 
+	 */
+	protected void showHideFields(boolean hideIfEmpty) {
+		mFields.resetVisibility();
+	
+		// Check publishing information; in reality only one of these fields will exist
+		showHideField(hideIfEmpty, R.id.publishing_details, R.id.lbl_publishing, R.id.row_publisher);
+		showHideField(hideIfEmpty, R.id.publisher, R.id.lbl_publishing, R.id.row_publisher);
+
+		showHideField(hideIfEmpty, R.id.date_published, R.id.row_date_published);
+
+		//		if (showHideFieldIfEmpty(R.id.publisher) == View.GONE && showHideFieldIfEmpty(R.id.date_published) == View.GONE) {
+//			getView().findViewById(R.id.lbl_publishing).setVisibility(View.GONE);
+//		}
+
+		showHideField(hideIfEmpty, R.id.row_img, R.id.image_wrapper);
+//		boolean hasImage = getView().findViewById(R.id.row_img).getVisibility() != View.GONE;
+//		if (!hasImage) {
+//			getView().findViewById(R.id.image_wrapper).setVisibility(View.GONE);						
+//		}
+
+		// Check format information
+		showHideField(hideIfEmpty, R.id.pages, R.id.row_pages);
+		//boolean hasPages = (showHideField(true, R.id.pages) == View.VISIBLE);
+		//if (!hasPages) {
+		//	getView().findViewById(R.id.pages).setVisibility(View.GONE);			
+		//}
+		showHideField(hideIfEmpty, R.id.format, R.id.row_format);
+
+		// Check genre
+		showHideField(hideIfEmpty, R.id.genre, R.id.lbl_genre, R.id.row_genre);
+
+		// Check language
+		showHideField(hideIfEmpty, R.id.language, R.id.lbl_language, R.id.row_language);
+
+		// Check ISBN
+		showHideField(hideIfEmpty, R.id.isbn, R.id.row_isbn);
+
+		// Check ISBN
+		showHideField(hideIfEmpty, R.id.series, R.id.row_series, R.id.lbl_series);
+
+		// Check list price
+		showHideField(hideIfEmpty, R.id.list_price, R.id.row_list_price);
+
+		// Check description
+		showHideField(hideIfEmpty, R.id.description, R.id.descriptionLabel, R.id.description_divider);
+
+		// **** MY COMMENTS SECTION ****
+		// Check notes
+		showHideField(hideIfEmpty, R.id.notes, R.id.lbl_notes, R.id.row_notes);
+
+		// Check date start reading
+		showHideField(hideIfEmpty, R.id.read_start, R.id.row_read_start);
+
+		// Check date end reading
+		showHideField(hideIfEmpty, R.id.read_end, R.id.row_read_end);
+
+		// Check location
+		showHideField(hideIfEmpty, R.id.location, R.id.row_location, R.id.row_location);
+
+		// Check signed flag
+		showHideField(hideIfEmpty, R.id.signed, R.id.row_signed);
+
 	}
 }

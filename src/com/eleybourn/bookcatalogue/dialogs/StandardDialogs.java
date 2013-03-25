@@ -32,6 +32,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -231,7 +232,7 @@ public class StandardDialogs {
 	 * Display a dialog warning the user that goodreads authentication is required; gives them
 	 * the options: 'request now', 'more info' or 'cancel'.
 	 */
-	public static int goodreadsAuthAlert(final BookCatalogueActivity context) {
+	public static int goodreadsAuthAlert(final FragmentActivity context) {
 		// Get the title		
 		final AlertDialog alertDialog = new AlertDialog.Builder(context).setTitle(R.string.authorize_access).setMessage(R.string.goodreads_action_cannot_blah_blah).create();
 

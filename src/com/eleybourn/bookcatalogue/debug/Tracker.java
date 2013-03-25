@@ -53,17 +53,31 @@ public class Tracker {
 	private static Event[] mEventBuffer = new Event[K_MAX_EVENTS];
 	private static int mNextEventBufferPos = 0;
 
+	public static void enterOnActivityCreated(Object a) {
+		handleEvent(a,"OnActivityCreated (" + a.toString() + ")", States.Enter);				
+	}
+	public static void exitOnActivityCreated(Object a) {
+		handleEvent(a,"OnActivityCreated (" + a.toString() + ")", States.Exit);				
+	}
+
+	public static void enterOnActivityResult(Object a, int requestCode, int resultCode) {
+		handleEvent(a,"OnActivityResult[" + requestCode + "," + resultCode + "] (" + a.toString() + ")", States.Enter);				
+	}
+	public static void exitOnActivityResult(Object a, int requestCode, int resultCode) {
+		handleEvent(a,"OnActivityResult[" + requestCode + "," + resultCode + "] (" + a.toString() + ")", States.Exit);				
+	}
+
 	public static void enterOnCreate(Object a) {
-		handleEvent(a,"OnCreate", States.Enter);
+		handleEvent(a,"OnCreate (" + a.toString() + ")", States.Enter);
 	}
 	public static void exitOnCreate(Object a) {
-		handleEvent(a,"OnCreate", States.Exit);		
+		handleEvent(a,"OnCreate (" + a.toString() + ")", States.Exit);		
 	}
 	public static void enterOnCreateView(Object a) {
-		handleEvent(a,"OnCreateView", States.Enter);
+		handleEvent(a,"OnCreateView (" + a.toString() + ")", States.Enter);
 	}
 	public static void exitOnCreateView(Object a) {
-		handleEvent(a,"OnCreateView", States.Exit);
+		handleEvent(a,"OnCreateView (" + a.toString() + ")", States.Exit);
 	}
 	public static void enterOnDestroy(Object a) {
 		handleEvent(a,"OnDestroy", States.Enter);
@@ -72,16 +86,16 @@ public class Tracker {
 		handleEvent(a,"OnDestroy", States.Exit);		
 	}
 	public static void enterOnPause(Object a) {
-		handleEvent(a,"OnPause", States.Enter);		
+		handleEvent(a,"OnPause (" + a.toString() + ")", States.Enter);		
 	}
 	public static void exitOnPause(Object a) {
-		handleEvent(a,"OnPause", States.Exit);				
+		handleEvent(a,"OnPause (" + a.toString() + ")", States.Exit);				
 	}
 	public static void enterOnResume(Object a) {
-		handleEvent(a,"OnResume", States.Enter);				
+		handleEvent(a,"OnResume (" + a.toString() + ")", States.Enter);				
 	}
 	public static void exitOnResume(Object a) {
-		handleEvent(a,"OnResume", States.Exit);						
+		handleEvent(a,"OnResume (" + a.toString() + ")", States.Exit);						
 	}
 	public static void enterOnSaveInstanceState(Object a) {
 		handleEvent(a,"OnSaveInstanceState", States.Enter);		

@@ -23,24 +23,7 @@ import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.EMPTY_STRING_ARRAY;
 import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_DATE_PUBLISHED;
 import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_LOANED_TO;
 import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.encodeString;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_AUTHOR;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_BOOK;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_DAY_ADDED;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_DAY_READ;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_FORMAT;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_GENRE;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_LOANED;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_LOCATION;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_MONTH_ADDED;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_MONTH_PUBLISHED;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_MONTH_READ;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_PUBLISHER;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_READ_AND_UNREAD;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_SERIES;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_TITLE_LETTER;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_YEAR_ADDED;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_YEAR_PUBLISHED;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_YEAR_READ;
+import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.*;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ABSOLUTE_POSITION;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ADDED_DATE;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ADDED_DAY;
@@ -61,6 +44,7 @@ import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_GENRE
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_GIVEN_NAMES;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ID;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_KIND;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LANGUAGE;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LEVEL;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LOANED_TO;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LOANED_TO_SORT;
@@ -101,7 +85,9 @@ import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_ROW_N
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_SERIES;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Locale;
 import java.util.Map.Entry;
 
 import android.database.Cursor;
@@ -110,9 +96,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteDoneException;
 import android.database.sqlite.SQLiteQuery;
+import android.os.Build;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
+import com.eleybourn.bookcatalogue.OtherPreferences;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.booklist.BooklistGroup.BooklistAuthorGroup;
 import com.eleybourn.bookcatalogue.booklist.BooklistGroup.BooklistSeriesGroup;
@@ -304,6 +292,21 @@ public class BooklistBuilder {
 	}
 
 	/**
+	 * Structure used to store components of the SQL required to build the list.
+	 * We use this for experimenting with alternate means of construction.
+	 */
+	private static class SqlComponents {
+		public String destinationColumns;
+		public String select;
+		public String insert;
+		public String insertSelect;
+		public String insertValues;
+		public String rootkeyExpression;
+		public String join;
+		public String where;
+	}
+
+	/**
 	 * Utility class to accumulate date for the build() method.
 	 * 
 	 * @author Philip Warner
@@ -413,21 +416,28 @@ public class BooklistBuilder {
 		}
 
 		/**
-		 * Using the collected domain info, create the flat list table and build the 'INSERT...SELECT...From'
-		 * portion of the SQL that does the initial table load.
+		 * Using the collected domain info, create the various SQL phrases used to build the resulting
+		 * flat list table and build the 'INSERT...SELECT...From'  portion of the SQL that does the 
+		 * initial table load.
 		 * 
 		 * @param rootKey	The key for the root level group. Stored in each row and used to determine the
 		 * expand/collapse results.
 		 * 
-		 * @return 'INSERT...SELECT...FROM' SQL. Caller must fill in SQL after 'FROM'.
+		 * @return SqlComponents structure
+		 * 
 		 */
-		public String buildBaseInsert(CompoundKey rootKey) {
+		public SqlComponents buildSqlComponents(CompoundKey rootKey) {
+			SqlComponents cmp = new SqlComponents();
+
 			// Rebuild the data table
 			recreateTable();
 			// List of column names for the INSERT... part
 			StringBuilder columns = new StringBuilder();
 			// List of expressions for the SELECT... part.
 			StringBuilder expressions = new StringBuilder();
+			// List of ?'s for the VALUES... part.
+			StringBuilder values = new StringBuilder();
+
 			// Build the lists. mDomains and mExpressions were built in synch with each other.
 			for(int i = 0 ; i < mDomains.size(); i++) {
 				DomainDefinition d = mDomains.get(i);
@@ -435,8 +445,10 @@ public class BooklistBuilder {
 				if (i > 0) {
 					columns.append(",\n	");
 					expressions.append(",\n	");
+					values.append(", ");
 				}
 				columns.append(d.name);
+				values.append("?");
 				expressions.append(e);
 				// This is not strictly necessary, but makes SQL more readable and debugging easier.
 				expressions.append(" as ");
@@ -448,12 +460,16 @@ public class BooklistBuilder {
 			for (DomainDefinition d: rootKey.domains) {
 				keyExpression += "/'||Coalesce(" + mExpressionMap.get(d) + ",'')";
 			}
-			// Return the resulting SQL
-			return "Insert into " + mListTable + " (\n	" + columns.toString() + ",\n	" + DOM_ROOT_KEY + 
-				// If using forward tables: return "Insert into " + TBL_BOOK_LIST_DEFN + " (\n	" + columns.toString() + ",\n	" + DOM_ROOT_KEY + 
-					//")\n Select * From (Select\n	" + expressions.toString() + ",\n	" + keyExpression + 
-					")\n Select\n	" + expressions.toString() + ",\n	" + keyExpression + 
-					"\n From\n";
+
+			// Setup the SQL phrases.
+			cmp.rootkeyExpression = keyExpression;
+			cmp.destinationColumns = columns.toString() + ",\n	" + DOM_ROOT_KEY;
+			cmp.insert = "Insert into " + mListTable + " (\n	" + cmp.destinationColumns + ")";
+			cmp.select = "Select\n	" + expressions.toString() + ",\n	" + keyExpression;
+			cmp.insertSelect = cmp.insert + "\n " + cmp.select + "\n From\n";
+			cmp.insertValues = cmp.insert + "\n    Values (" + values.toString() + ", ?)";
+
+			return cmp;
 		}
 	}
 
@@ -575,6 +591,15 @@ public class BooklistBuilder {
 		try {
 			long t0 = System.currentTimeMillis();
 	
+			// Cleanup searchText
+			//
+			// Because FTS does not understand locales in all android up to 4.2,
+			// we do case folding here using the default locale.
+			//
+			if (searchText != null) {
+				searchText = searchText.toLowerCase(Locale.getDefault());
+			}
+			
 			// Rebuild the main table definition
 			mListTable = TBL_BOOK_LIST_DEFN.clone();
 			mListTable.setName(mListTable.getName() + "_" + getId());
@@ -607,6 +632,42 @@ public class BooklistBuilder {
 			// Will be set to TRUE if a LOANED group exists in style
 			boolean hasGroupLOANED = false;
 	
+			// We can not use triggers to fill in headings in API < 8 since SQLite 3.5.9 is broken
+			// Allow for the user preferences to override in case another build is borken.
+			final int listMode = OtherPreferences.getBooklistCompatibleMode();
+			boolean useTriggers;
+			boolean flatTriggers = false;
+			// Based on the users choice, decide how the list will be generated.
+			switch(listMode) {
+
+				case OtherPreferences.BOOKLIST_GENERATE_OLD_STYLE:
+					useTriggers = false;
+					break;
+				case OtherPreferences.BOOKLIST_GENERATE_AUTOMATIC:
+					if (Build.VERSION.SDK_INT < 8) {
+						useTriggers = false;
+					} else {
+						useTriggers = true;
+					}
+					break;
+				case OtherPreferences.BOOKLIST_GENERATE_FLAT_TRIGGER:
+					useTriggers = true;
+					flatTriggers = true;
+					break;
+					
+				case OtherPreferences.BOOKLIST_GENERATE_NESTED_TRIGGER:
+					useTriggers = true;
+					flatTriggers = false;
+					break;
+					
+				default:
+					useTriggers = true;
+					break;
+			}
+			// Build a sort mask based on if triggers are used; we can not
+			// reverse sort if they are not used.
+			final int sortDescendingMask = ( useTriggers ? SummaryBuilder.FLAG_SORT_DESCENDING : 0);
+
 			long t0a = System.currentTimeMillis();
 	
 			// Process each group in the style
@@ -662,6 +723,15 @@ public class BooklistBuilder {
 					g.displayDomain = DOM_GENRE;
 					summary.addDomain(DOM_GENRE, TBL_BOOKS.dot(DOM_GENRE), SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED);
 					g.setKeyComponents("g", DOM_GENRE);
+					break;
+	
+				case ROW_KIND_LANGUAGE:
+					// The domain used to display the data on the screen (not always the underlying domain)
+					g.displayDomain = DOM_LANGUAGE;
+					// Define how the new field is retrieved and sorted/grouped
+					summary.addDomain(DOM_LANGUAGE, TBL_BOOKS.dot(DOM_LANGUAGE), SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED);
+					// Unique name for this field and the source data field
+					g.setKeyComponents("lang", DOM_LANGUAGE);
 					break;
 	
 				case ROW_KIND_LOCATION:
@@ -733,7 +803,7 @@ public class BooklistBuilder {
 					String yearAddedExpr = yearGlob(TBL_BOOKS.dot(DOM_ADDED_DATE));
 					// TODO: Handle 'DESCENDING'. Requires the navigator construction to use max/min for non-grouped domains that appear in sublevels based on desc/asc.
 					// We don't use DESCENDING sort yet because the 'header' ends up below the detail rows in the flattened table.
-					summary.addDomain(DOM_ADDED_YEAR, yearAddedExpr, SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED) ; // | SummaryBuilder.FLAG_SORT_DESCENDING);
+					summary.addDomain(DOM_ADDED_YEAR, yearAddedExpr, SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED | sortDescendingMask );
 					g.setKeyComponents("yra", DOM_ADDED_YEAR);
 					break;
 	
@@ -742,7 +812,7 @@ public class BooklistBuilder {
 					// Use our standard glob expression
 					String monthAddedExpr = monthGlob(TBL_BOOKS.dot(DOM_ADDED_DATE));
 					// We don't use DESCENDING sort yet because the 'header' ends up below the detail rows in the flattened table.
-					summary.addDomain(DOM_ADDED_MONTH, monthAddedExpr, SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED ); // | SummaryBuilder.FLAG_SORT_DESCENDING);
+					summary.addDomain(DOM_ADDED_MONTH, monthAddedExpr, SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED | sortDescendingMask );
 					g.setKeyComponents("mna", DOM_ADDED_MONTH);
 					break;
 	
@@ -751,7 +821,7 @@ public class BooklistBuilder {
 					// Use our standard glob expression
 					String dayAddedExpr = dayGlob(TBL_BOOKS.dot(DOM_ADDED_DATE));
 					// We don't use DESCENDING sort yet because the 'header' ends up below the detail rows in the flattened table.
-					summary.addDomain(DOM_ADDED_DAY, dayAddedExpr, SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED ); // | SummaryBuilder.FLAG_SORT_DESCENDING);
+					summary.addDomain(DOM_ADDED_DAY, dayAddedExpr, SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED | sortDescendingMask );
 					g.setKeyComponents("dya", DOM_ADDED_DAY);
 					break;
 	
@@ -829,8 +899,8 @@ public class BooklistBuilder {
 			// 
 			// Aside: The sql used prior to using DbUtils is included as comments below the doce that replaced it.
 			//
-			String sql = summary.buildBaseInsert(mStyle.getGroupAt(0).getCompoundKey());
-	
+			SqlComponents sqlCmp = summary.buildSqlComponents(mStyle.getGroupAt(0).getCompoundKey());
+
 			long t0d = System.currentTimeMillis();
 	
 			//
@@ -894,7 +964,7 @@ public class BooklistBuilder {
 				*/
 	
 			// Append the resulting join tables to our initial insert statement
-			sql += join.toString();
+			sqlCmp.join = join.toString();
 	
 			//
 			// Now build the 'where' clause.
@@ -956,8 +1026,11 @@ public class BooklistBuilder {
 			}
 	
 			// If we got any conditions, add them to the initial insert statement
-			if (!where.equals(""))
-				sql += " where " + where.toString();
+			if (!where.equals("")) {
+				sqlCmp.where = " where " + where.toString();
+			} else {
+				sqlCmp.where = "";
+			}
 	
 			long t1 = System.currentTimeMillis();
 			// Check if the collation we use is case sensitive; bug introduced in ICS was to make UNICODE not CI.
@@ -1036,67 +1109,139 @@ public class BooklistBuilder {
 			SyncLock txLock = mDb.beginTransaction(true);
 			long t1b = System.currentTimeMillis();
 			try {
-				// Build the lowest level summary using our initial insert statement
-				mBaseBuildStmt = mStatements.add("mBaseBuildStmt", sql);
-				//System.out.println("Base Build:\n" + sql);
-				mBaseBuildStmt.execute();
-	
-				long t1c = System.currentTimeMillis();
-				//mDb.execSQL(ix3cSql);
-				long t1d = System.currentTimeMillis();
-				//mDb.execSQL("analyze " + mListTable);			
-				long t2 = System.currentTimeMillis();
-	
-				// Now build each summary level query based on the prior level.
-				// We build and run from the bottom up.
+				//
+				// This is experimental code that replaced the INSERT...SELECT with a cursor
+				// and an INSERT statement. It was literally 10x slower, largely due to the
+				// Android implementation of SQLiteStatement and the way it handles parameter
+				// binding. Kept for future experiments
+				//
+				////
+				//// Code to manually insert each row
+				////
+				//double TM0 = System.currentTimeMillis();
+				//String selStmt = sqlCmp.select + " from " + sqlCmp.join + " " + sqlCmp.where + " Order by " + sortIndexColumnList;
+				//final Cursor selCsr = mDb.rawQuery(selStmt);
+				//final SynchronizedStatement insStmt = mDb.compileStatement(sqlCmp.insertValues);
+				////final String baseIns = sqlCmp.insert + " Values (";
+				////SQLiteStatement insStmt = insSyncStmt.getUnderlyingStatement();
+				//
+				//final int cnt = selCsr.getColumnCount();
+				////StringBuilder insBuilder = new StringBuilder();
+				//while(selCsr.moveToNext()) {
+				//	//insBuilder.append(baseIns);
+				//	for(int i = 0; i < cnt; i++) {
+				//		//if (i > 0) {
+				//		//	insBuilder.append(", ");
+				//		//}
+				//		// THIS IS SLOWER than using Strings!!!!
+				//		//switch(selCsr.getType(i)) {
+				//		//case android.database.Cursor.FIELD_TYPE_NULL:
+				//		//	insStmt.bindNull(i+1);							
+				//		//	break;
+				//		//case android.database.Cursor.FIELD_TYPE_FLOAT:
+				//		//	insStmt.bindDouble(i+1, selCsr.getDouble(i));
+				//		//	break;
+				//		//case android.database.Cursor.FIELD_TYPE_INTEGER:
+				//		//	insStmt.bindLong(i+1, selCsr.getLong(i));
+				//		//	break;
+				//		//case android.database.Cursor.FIELD_TYPE_STRING:
+				//		//	insStmt.bindString(i+1, selCsr.getString(i));
+				//		//	break;
+				//		//case android.database.Cursor.FIELD_TYPE_BLOB:
+				//		//	insStmt.bindNull(i+1);							
+				//		//	break;
+				//		//}
+				//		final String v = selCsr.getString(i);
+				//		if (v == null) {
+				//			//insBuilder.append("NULL");
+				//			insStmt.bindNull(i+1);
+				//		} else {
+				//			//insBuilder.append("'");
+				//			//insBuilder.append(CatalogueDBAdapter.encodeString(v));
+				//			//insBuilder.append("'");
+				//			insStmt.bindString(i+1, v);
+				//		}
+				//	}
+				//	//insBuilder.append(")");
+				//	//mDb.execSQL(insBuilder.toString());
+				//	//insBuilder.setLength(0);
+				//	insStmt.execute();
+				//}
+				//selCsr.close();
+				//double TM1 = System.currentTimeMillis();
+				//System.out.println("Time to MANUALLY INSERT: " + (TM1-TM0));
+
 				mLevelBuildStmts = new ArrayList<SynchronizedStatement>();
-	
+
+				// Build the lowest level summary using our initial insert statement
+				long t2;
 				long t2a[] = new long[mStyle.size()];
-				int pos=0;
-				// Loop from innermost group to outermost, building summary at each level
-				for (int i = mStyle.size()-1; i >= 0; i--) {
-					final BooklistGroup g = mStyle.getGroupAt(i);
-					final int levelId = i + 1;
-					// cols is the list of column names for the 'Insert' and 'Select' parts
-					String cols = "";
-					// collatedCols is used for the group-by
-					String collatedCols = "";
-					
-					// Build the column lists for this group
-					for(DomainDefinition d  : g.groupDomains) {
-						if (!collatedCols.equals(""))
-							collatedCols += ",";
-						cols += ",\n	" + d.name;
-						collatedCols += "\n	" + d.name + CatalogueDBAdapter.COLLATION;
+				long t3;
+
+				if (useTriggers) {
+					// If we are using triggers, then we insert them in order and rely on the 
+					// triggers to build the summary rows in the correct place.
+					String tgt = makeTriggers(summary, flatTriggers);
+					mBaseBuildStmt = mStatements.add("mBaseBuildStmt", "Insert Into " + tgt + "(" + sqlCmp.destinationColumns + ") " + sqlCmp.select + "\n From\n" + sqlCmp.join + sqlCmp.where + " order by " + sortColNameList);
+					//System.out.println("Base Build:\n" + sql);
+					mBaseBuildStmt.execute();
+					t2 = System.currentTimeMillis();
+					t3=t2;
+				} else {
+					// Without triggers we just get the base rows and add summary later
+					mBaseBuildStmt = mStatements.add("mBaseBuildStmt", sqlCmp.insertSelect + sqlCmp.join + sqlCmp.where);
+					//System.out.println("Base Build:\n" + sql);
+					mBaseBuildStmt.execute();
+					t2 = System.currentTimeMillis();
+
+					// Now build each summary level query based on the prior level.
+					// We build and run from the bottom up.
+
+					int pos=0;
+					// Loop from innermost group to outermost, building summary at each level
+					for (int i = mStyle.size()-1; i >= 0; i--) {
+						final BooklistGroup g = mStyle.getGroupAt(i);
+						final int levelId = i + 1;
+						// cols is the list of column names for the 'Insert' and 'Select' parts
+						String cols = "";
+						// collatedCols is used for the group-by
+						String collatedCols = "";
+						
+						// Build the column lists for this group
+						for(DomainDefinition d  : g.groupDomains) {
+							if (!collatedCols.equals(""))
+								collatedCols += ",";
+							cols += ",\n	" + d.name;
+							collatedCols += "\n	" + d.name + CatalogueDBAdapter.COLLATION;
+						}
+						// Construct the summarization statement for this group
+						String sql = "Insert Into " + mListTable + "(\n	" + DOM_LEVEL + ",\n	" + DOM_KIND + 
+								cols + "," + DOM_ROOT_KEY +
+								")" +
+								"\n select " + levelId + " as " + DOM_LEVEL + ",\n	" + g.kind + " as " + DOM_KIND +
+								cols + "," + DOM_ROOT_KEY +
+								"\n from " + mListTable + "\n " + " where level = " + (levelId+1) +
+								"\n Group by " + collatedCols + "," + DOM_ROOT_KEY + CatalogueDBAdapter.COLLATION;
+								//"\n Group by " + DOM_LEVEL + ", " + DOM_KIND + collatedCols;
+
+						// Save, compile and run this statement
+						SynchronizedStatement stmt = mStatements.add("L" + i, sql);
+						mLevelBuildStmts.add(stmt);
+						stmt.execute();
+						t2a[pos++] = System.currentTimeMillis();
 					}
-					// Construct the summarization statement for this group
-					sql = "Insert Into " + mListTable + "(\n	" + DOM_LEVEL + ",\n	" + DOM_KIND + 
-							cols + "," + DOM_ROOT_KEY +
-							")" +
-							"\n select " + levelId + " as " + DOM_LEVEL + ",\n	" + g.kind + " as " + DOM_KIND +
-							cols + "," + DOM_ROOT_KEY +
-							"\n from " + mListTable + "\n " + " where level = " + (levelId+1) +
-							"\n Group by " + collatedCols + "," + DOM_ROOT_KEY + CatalogueDBAdapter.COLLATION;
-							//"\n Group by " + DOM_LEVEL + ", " + DOM_KIND + collatedCols;
-	
-					// Save, compile and run this statement
-					SynchronizedStatement stmt = mStatements.add("L" + i, sql);
-					mLevelBuildStmts.add(stmt);
-					stmt.execute();
-					t2a[pos++] = System.currentTimeMillis();
-				}
-	
-				// Build an index
-				SynchronizedStatement stmt;
-				long t3 = System.currentTimeMillis();
-				// Build an index if it will help sorting
-				// - *If* collation is case-sensitive, don't bother with index, since everything is wrapped in lower().
-				// ENHANCE: ICS UNICODE: Consider adding a duplicate _lc (lower case) column to the SUMMARY table. Ugh.
-				if (!collationIsCs) {
-					stmt = mStatements.add("ix1", ix1Sql);
-					mLevelBuildStmts.add(stmt);
-					stmt.execute();				
-				}
+				
+					// Build an index
+					t3 = System.currentTimeMillis();
+					// Build an index if it will help sorting
+					// - *If* collation is case-sensitive, don't bother with index, since everything is wrapped in lower().
+					// ENHANCE: ICS UNICODE: Consider adding a duplicate _lc (lower case) column to the SUMMARY table. Ugh.
+					if (!collationIsCs) {
+						SynchronizedStatement stmt = mStatements.add("ix1", ix1Sql);
+						mLevelBuildStmts.add(stmt);
+						stmt.execute();				
+					}
+				}	
 				
 				// Analyze the table
 				long t3a = System.currentTimeMillis();
@@ -1108,9 +1253,16 @@ public class BooklistBuilder {
 				// is especially useful in expan/collapse operations.
 				mNavTable.drop(mDb);
 				mNavTable.create(mDb, true);
-	
+
+				String sortExpression;
+				if (useTriggers) {
+					sortExpression = mListTable.dot(DOM_ID);
+				} else {
+					sortExpression = sortColNameList;
+				}
+
 				// TODO: Rebuild with state preserved is SLOWEST option. Need a better way to preserve state.
-				sql = mNavTable.getInsert(DOM_REAL_ROW_ID, DOM_LEVEL, DOM_ROOT_KEY, DOM_VISIBLE, DOM_EXPANDED) + 
+				String insSql = mNavTable.getInsert(DOM_REAL_ROW_ID, DOM_LEVEL, DOM_ROOT_KEY, DOM_VISIBLE, DOM_EXPANDED) + 
 						" Select " + mListTable.dot(DOM_ID) + "," + mListTable.dot(DOM_LEVEL) + "," + mListTable.dot(DOM_ROOT_KEY) +
 						" ,\n	Case When " + DOM_LEVEL + " = 1 Then 1 \n" +
 						"	When " + TBL_BOOK_LIST_NODE_SETTINGS.dot(DOM_ROOT_KEY) + " is null Then 0\n	Else 1 end,\n "+ 
@@ -1118,35 +1270,35 @@ public class BooklistBuilder {
 						" From " + mListTable.ref() + "\n	left outer join " + TBL_BOOK_LIST_NODE_SETTINGS.ref() + 
 						"\n		On " + TBL_BOOK_LIST_NODE_SETTINGS.dot(DOM_ROOT_KEY) + " = " + mListTable.dot(DOM_ROOT_KEY) +
 						"\n			And " + TBL_BOOK_LIST_NODE_SETTINGS.dot(DOM_KIND) + " = " + mStyle.getGroupAt(0).kind +
-						"\n	Order by " + sortColNameList;
+						"\n	Order by " + sortExpression;
 				// Always save the state-preserving navigator for rebuilds
-				stmt = mStatements.add("InsNav", sql);
-				mLevelBuildStmts.add(stmt);
+				SynchronizedStatement navStmt = mStatements.add("InsNav", insSql);
+				mLevelBuildStmts.add(navStmt);
 	
 				// On first-time builds, get the pref-based list
 				if (preferredState == BooklistPreferencesActivity.BOOKLISTS_ALWAYS_COLLAPSED) {
-					sql = mNavTable.getInsert(DOM_REAL_ROW_ID, DOM_LEVEL, DOM_ROOT_KEY, DOM_VISIBLE, DOM_EXPANDED) + 
+					String sql = mNavTable.getInsert(DOM_REAL_ROW_ID, DOM_LEVEL, DOM_ROOT_KEY, DOM_VISIBLE, DOM_EXPANDED) + 
 							" Select " + mListTable.dot(DOM_ID) + "," + mListTable.dot(DOM_LEVEL) + "," + mListTable.dot(DOM_ROOT_KEY) +
 							" ,\n	Case When " + DOM_LEVEL + " = 1 Then 1 Else 0 End, 0\n" +
 							" From " + mListTable.ref() +
-							"\n	Order by " + sortColNameList;				
+							"\n	Order by " + sortExpression;				
 					mDb.execSQL(sql);
 				} else if (preferredState == BooklistPreferencesActivity.BOOKLISTS_ALWAYS_EXPANDED) {
-					sql = mNavTable.getInsert(DOM_REAL_ROW_ID, DOM_LEVEL, DOM_ROOT_KEY, DOM_VISIBLE, DOM_EXPANDED) + 
+					String sql = mNavTable.getInsert(DOM_REAL_ROW_ID, DOM_LEVEL, DOM_ROOT_KEY, DOM_VISIBLE, DOM_EXPANDED) + 
 							" Select " + mListTable.dot(DOM_ID) + "," + mListTable.dot(DOM_LEVEL) + "," + mListTable.dot(DOM_ROOT_KEY) +
 							" , 1, 1 \n" +
 							" From " + mListTable.ref() +
-							"\n	Order by " + sortColNameList;
+							"\n	Order by " + sortExpression;
 					mDb.execSQL(sql);
 				} else {
 					// Use already-defined SQL
-					stmt.execute();
+					navStmt.execute();
 				}
 	
 				long t4 = System.currentTimeMillis();
 				// Create index on nav table
 				{
-					sql = "Create Index " + mNavTable + "_IX1" + " On " + mNavTable + "(" + DOM_LEVEL + "," + DOM_EXPANDED + "," + DOM_ROOT_KEY + ")";
+					String sql = "Create Index " + mNavTable + "_IX1" + " On " + mNavTable + "(" + DOM_LEVEL + "," + DOM_EXPANDED + "," + DOM_ROOT_KEY + ")";
 					SynchronizedStatement ixStmt = mStatements.add("navIx1", sql);
 					mLevelBuildStmts.add(ixStmt);
 					ixStmt.execute();				
@@ -1155,7 +1307,7 @@ public class BooklistBuilder {
 				long t4a = System.currentTimeMillis();
 				{
 					// Essential for main query! If not present, will make getCount() take ages because main query is a cross with no index.
-					sql = "Create Unique Index " + mNavTable + "_IX2" + " On " + mNavTable + "(" + DOM_REAL_ROW_ID + ")";
+					String sql = "Create Unique Index " + mNavTable + "_IX2" + " On " + mNavTable + "(" + DOM_REAL_ROW_ID + ")";
 					SynchronizedStatement ixStmt = mStatements.add("navIx2", sql);
 					mLevelBuildStmts.add(ixStmt);
 					ixStmt.execute();
@@ -1183,9 +1335,7 @@ public class BooklistBuilder {
 				System.out.println("T1: " + (t1-t0));
 				System.out.println("T1a: " + (t1a-t1));
 				System.out.println("T1b: " + (t1b-t1a));
-				System.out.println("T1c: " + (t1c-t1b));
-				System.out.println("T1d: " + (t1d-t1c));
-				System.out.println("T2: " + (t2-t1d));
+				System.out.println("T1c: " + (t2-t1b));
 				System.out.println("T2a[0]: " + (t2a[0]-t2));
 				for(int i = 1; i < mStyle.size(); i++) {
 					System.out.println("T2a[" + i + "]: " + (t2a[i]-t2a[i-1]));				
@@ -1255,6 +1405,247 @@ public class BooklistBuilder {
 			if (l != null)
 				mDb.endTransaction(l);
 		}
+	}
+
+	/**
+	 * Build a collection of triggers on the list table designed to fill in the summary/header records
+	 * as the data records are added in sorted order.
+	 * 
+	 * This approach means to allow DESCENDING sort orders.
+	 * 
+	 * @param summary
+	 */
+	private String makeTriggers(SummaryBuilder summary, boolean flatTriggers) {
+		if (flatTriggers) {
+			// Flat triggers are compatible with Android 1.6+ but slower
+			return makeSingleTrigger(summary);
+		} else {
+			// Nexted triggers are compatible with Android 2.2+ and fast
+			// (or at least relatively fast when there are a 'reasonable'
+			// number of headings to be inserted).
+			makeNestedTriggers(summary);
+			return mListTable.getName();
+		}
+	}
+
+	/**
+	 * Build a collection of triggers on the list table designed to fill in the summary/header records
+	 * as the data records are added in sorted order.
+	 * 
+	 * This approach is allows DESCENDING sort orders but is slightly slower than the old-style
+	 * manually generated lists.
+	 * 
+	 * @param summary
+	 */
+	private String makeSingleTrigger(SummaryBuilder summary) {
+		// Name of a table to store the snapshot of the most recent/current row headings
+		final String currTblName =  mListTable + "_curr";
+		final String viewTblName =  mListTable + "_view";
+
+		/*
+		 * Create a trigger to forward all row detais to real table
+		 */
+
+		// Name of the trigger to create.
+		final String tgForwardName = mListTable + "_TG_AAA";
+		// Build an INSERT statement to insert the entire row in the real table
+		String fullInsert = "Insert into " + mListTable + "(";
+		{
+			String fullValues = "Values (";
+			boolean firstCol = true;
+			for (DomainDefinition d: mListTable.getDomains()) {
+				if (!d.equals(DOM_ID)) {
+					if (firstCol)
+						firstCol = false;
+					else {
+						fullInsert+=", ";
+						fullValues += ", ";
+					}
+					fullInsert += d; 
+					fullValues += "new." + d; 
+				}
+			}
+			fullInsert += ") " + fullValues + ");";			
+		}
+
+		// We just create one big trigger
+		String trigger = "Create Trigger " + tgForwardName + " instead of  insert on " + viewTblName + " for each row \n" +
+						"	Begin\n";
+
+		// List of cols we sort by
+		String sortedCols = "";
+		// SQL statement to update the 'current' table
+		String currInsertSql = "";
+		// List of domain names for sorting
+		HashSet<String> sortedDomainNames = new HashSet<String>();
+		// Build the 'current' header table definition and the sort column list 
+		for(SortedDomainInfo i: summary.getSortedColumns()) {
+			if (!sortedDomainNames.contains(i.domain.name)) {
+				sortedDomainNames.add(i.domain.name);
+				if (!sortedCols.equals("")) {
+					sortedCols += ", ";
+					currInsertSql += ", ";
+				}
+				sortedCols += i.domain.name;
+				currInsertSql += "new." + i.domain.name;				
+			}
+		}
+
+		//
+		// Create a temp table to store the most recent header details from the last row.
+		// We use this in determining what needs to be inserted as header records for 
+		// any given row.
+		//
+		// This is just a simple technique to provide persistent context to the trigger.
+		//
+		mDb.execSQL("Create Temp Table " + currTblName + " (" + sortedCols + ")");
+		mDb.execSQL("Create Temp View " + viewTblName + " as select * from " + mListTable);
+
+		//mDb.execSQL("Create Unique Index " + mListTable + "_IX_TG1 on " + mListTable + "(" + DOM_LEVEL + ", " + sortedCols + ", " + DOM_BOOK + ")");
+
+		// For each grouping, starting with the lowest, build a trigger to update the next level up as necessary
+		for (int i = 0; i < mStyle.size(); i++) {
+			// Get the group
+			final BooklistGroup l = mStyle.getGroupAt(i);
+			// Get the level number for this group
+			final int levelId = i + 1;
+			// Create an INSERT statement for the next level up
+			String insertSql = "Insert into " + mListTable + "( " + DOM_LEVEL + "," + DOM_KIND + ", " + DOM_ROOT_KEY + "\n";
+
+			// Create the VALUES statement for the next level up
+			String valuesSql = " Select " + levelId + ", " + l.kind + ", " + "new." + DOM_ROOT_KEY + "\n";
+			// Create the conditional to detect if next level up is already defined (by checking the 'current' record/table)
+			String conditionSql = "";// "l." + DOM_LEVEL + " = " + levelId + "\n";
+			// Update the statement components
+			for(DomainDefinition d  : l.groupDomains) {
+				insertSql += ", " + d;
+				valuesSql += ", new." + d;
+				// Only update the 'condition' part if it is part of the SORT list
+				if (sortedDomainNames.contains(d.name)) {
+					if (!conditionSql.equals(""))
+						conditionSql += "	and ";
+					conditionSql += "Coalesce(l." + d + ", '') = Coalesce(new." + d + ",'') " + CatalogueDBAdapter.COLLATION + "\n";					
+				}
+			}
+			//insertSql += ")\n	Select " + valuesSql + " Where not exists(Select 1 From " + mListTable + " l where " + conditionSql + ")";
+			//tgLines[i] = insertSql;
+
+			insertSql += ")\n" + valuesSql + " where not Exists(Select 1 From " + currTblName + " l where " + conditionSql + ")\n";
+			trigger += "		" + insertSql + ";\n";
+		}
+
+		// Finalize the main trigger; insert the full row and update the 'current' header
+		trigger += 	"		" + fullInsert + "\n" +
+			"		Delete from " + currTblName + ";\n" +
+			"		Insert into " + currTblName + " values (" + currInsertSql + ");\n" +
+			"	End";
+		
+		{
+			mDb.execSQL("Drop Trigger if exists " + tgForwardName);
+			SynchronizedStatement stmt = mStatements.add(tgForwardName, trigger);
+			mLevelBuildStmts.add(stmt);
+			stmt.execute();
+		}
+		
+		return viewTblName;
+	}
+	
+	/**
+	 * Build a collection of triggers on the list table designed to fill in the summary/header records
+	 * as the data records are added in sorted order.
+	 * 
+	 * This approach is both a performance improvement and a means to allow DESCENDING sort orders.
+	 * 
+	 * It is the preferred option in Android 2.2+, but there is a chance that some vendor implemented
+	 * a broken or old SQLite version.
+	 * 
+	 * @param summary
+	 */
+	private void makeNestedTriggers(SummaryBuilder summary) {
+		// Name of a table to store the snapshot of the most recent/current row headings
+		final String currTblName =  mListTable + "_curr";
+		// List of cols we sort by
+		String sortedCols = "";
+		// SQL statement to update the 'current' table
+		String currInsertSql = "";
+		// List of domain names for sorting
+		HashSet<String> sortedDomainNames = new HashSet<String>();
+		// Build the 'current' header table definition and the sort column list 
+		for(SortedDomainInfo i: summary.getSortedColumns()) {
+			if (!sortedDomainNames.contains(i.domain.name)) {
+				sortedDomainNames.add(i.domain.name);
+				if (!sortedCols.equals("")) {
+					sortedCols += ", ";
+					currInsertSql += ", ";
+				}
+				sortedCols += i.domain.name;
+				currInsertSql += "new." + i.domain.name;				
+			}
+		}
+
+		//
+		// Create a temp table to store the most recent header details from the last row.
+		// We use this in determining what needs to be inserted as header records for 
+		// any given row.
+		//
+		// This is just a simple technique to provide persistent context to the trigger.
+		//
+		mDb.execSQL("Create Temp Table " + currTblName + " (" + sortedCols + ")");
+
+		// For each grouping, starting with the lowest, build a trigger to update the next level up as necessary
+		for (int i = mStyle.size()-1; i >= 0; i--) {
+			// Get the group
+			final BooklistGroup l = mStyle.getGroupAt(i);
+			// Get the level number for this group
+			final int levelId = i + 1;
+			// Create an INSERT statement for the next level up
+			String insertSql = "Insert into " + mListTable + "( " + DOM_LEVEL + "," + DOM_KIND + ", " + DOM_ROOT_KEY + "\n";
+
+			// Create the VALUES statement for the next level up
+			String valuesSql = "Values (" + levelId + ", " + l.kind + ", " + "new." + DOM_ROOT_KEY + "\n";
+			// Create the conditional to detect if next level up is already defined (by checking the 'current' record/table)
+			String conditionSql = "";// "l." + DOM_LEVEL + " = " + levelId + "\n";
+			// Update the statement components
+			for(DomainDefinition d  : l.groupDomains) {
+				insertSql += ", " + d;
+				valuesSql += ", new." + d;
+				// Only update the 'condition' part if it is part of the SORT list
+				if (sortedDomainNames.contains(d.name)) {
+					if (!conditionSql.equals(""))
+						conditionSql += "	and ";
+					conditionSql += "Coalesce(l." + d + ",'') = Coalesce(new." + d + ",'') " + CatalogueDBAdapter.COLLATION + "\n";					
+				}
+			}
+
+			insertSql += ")\n" + valuesSql + ")";
+			String tgName = "header_A_tgL" + i;
+			// Drop trigger if necessary
+			mDb.execSQL("Drop Trigger if exists " + tgName);
+
+			// Create the trigger
+			String tgSql = "Create Temp Trigger " + tgName + " before insert on " + mListTable + " for each row when new.level = " + (levelId+1) +
+					" and not exists(Select 1 From " + currTblName + " l where " + conditionSql + ")\n" +
+					"	Begin\n" +
+					"		" + insertSql + ";\n" +
+					"	End";
+			SynchronizedStatement stmt = mStatements.add("TG " + tgName, tgSql);
+			mLevelBuildStmts.add(stmt);
+			stmt.execute();
+		}
+		
+		// Create a trigger to maintaint the 'current' value -- just delete and insert
+		String currTgName = mListTable + "_TG_ZZZ";
+		mDb.execSQL("Drop Trigger if exists " + currTgName);
+		String tgSql = "Create Temp Trigger " + currTgName + " after insert on " + mListTable + " for each row when new.level = " + mStyle.size() +
+				//" and not exists(Select 1 From " + currTblName + " l where " + conditionSql + ")\n" +
+				"	Begin\n" +
+				"		Delete from " + currTblName + ";\n" +
+				"		Insert into " + currTblName + " values (" + currInsertSql + ");\n" +
+				"	End";
+
+		SynchronizedStatement stmt = mStatements.add(currTgName, tgSql);
+		mLevelBuildStmts.add(stmt);
+		stmt.execute();
 	}
 
 	private SynchronizedStatement mSaveListNodeSettingsStmt = null;

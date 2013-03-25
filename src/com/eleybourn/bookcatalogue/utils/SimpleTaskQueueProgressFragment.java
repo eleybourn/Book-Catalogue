@@ -33,6 +33,7 @@ import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
 
+import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueDialogFragment;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTask;
@@ -49,7 +50,7 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	/** Handler so we can detect UI thread */
 	private Handler mHandler = new Handler();
 	/** List of messages queued; only used if activity not present when showToast() is called */
-	private ArrayList<Integer> mMessages = null;
+	private ArrayList<String> mMessages = null;
 	/** Flag indicating dialog was cancelled */
 	private boolean mWasCancelled = false;
 	
@@ -109,6 +110,7 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 
 		public TaskFinishedMessage(FragmentTask task, Exception e) {
 			mTask = task;
+			mException = e;
 		}
 		
 		@Override
@@ -297,17 +299,30 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	 * @param id
 	 */
 	public void showToast(final int id) {
+		if (id != 0) {
+			// We don't use getString() because we have no guarantee this 
+			// object is associated with an activity when this is called, and
+			// for whatever reason the implementation requires it.
+			showToast(BookCatalogueApp.getResourceString(id));
+		}
+	}
+
+	/**
+	 * Utility routine to display a Toast message or queue it as appropriate.
+	 * @param id
+	 */
+	public void showToast(final String message) {
 		// Can only display in main thread.
 		if (Looper.getMainLooper().getThread() == Thread.currentThread() ) {
 			synchronized(this) {
 				if (this.getActivity() != null) {
-					Toast.makeText(this.getActivity(), id, Toast.LENGTH_LONG).show();
+					Toast.makeText(this.getActivity(), message, Toast.LENGTH_LONG).show();
 				} else {
 					// Assume the toast message was sent before the fragment was displayed; this
 					// list will be read in onAttach
 					if (mMessages == null)
-						mMessages = new ArrayList<Integer>();
-					mMessages.add(id);
+						mMessages = new ArrayList<String>();
+					mMessages.add(message);
 				}				
 			}
 		} else {
@@ -315,7 +330,7 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 			mHandler.post(new Runnable() {
 				@Override
 				public void run() {
-					showToast(id);
+					showToast(message);
 				}
 			});
 		}
@@ -358,8 +373,8 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 
 		synchronized(this) {
 			if (mMessages != null) {
-				for(Integer message: mMessages) {
-					if ((int)message > 0)
+				for(String message: mMessages) {
+					if (message != null && !message.equals(""))
 						Toast.makeText(a, message, Toast.LENGTH_LONG).show();
 				}
 				mMessages.clear();
@@ -585,7 +600,13 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setDialogNumberFormat(ProgressDialog d) {
 		if (Build.VERSION.SDK_INT >= 11) {
-			d.setProgressNumberFormat(mNumberFormat);
+			try {
+				d.setProgressNumberFormat(mNumberFormat);				
+			} catch (Exception e) {
+				// Ignore and log; Android 3.2 seems not to like NULL format despite docs, 
+				// and this is a non-critical feature
+				Logger.logError(e);
+			}
 		}		
 	}
 

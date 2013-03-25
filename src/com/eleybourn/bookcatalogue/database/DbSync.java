@@ -20,6 +20,7 @@
 
 package com.eleybourn.bookcatalogue.database;
 
+import java.lang.reflect.Field;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.concurrent.locks.Condition;
@@ -27,6 +28,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteClosable;
 import android.database.sqlite.SQLiteCursor;
 import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
@@ -38,6 +40,7 @@ import android.database.sqlite.SQLiteStatement;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer.LockTypes;
 import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer.SyncLock;
+import com.eleybourn.bookcatalogue.utils.Logger;
 
 /**
  * Classes used to help synchronize database access across threads.
@@ -680,6 +683,45 @@ public class DbSync {
 		public Synchronizer getSynchronizer() {
 			return mSync;
 		}
+
+		/**
+		 * Utility routine, purely for debugging ref count issues (mainly Android 2.1)
+		 * 
+		 * @param msg	Message to display (relating to context)
+		 * @param db	Database object
+		 * 
+		 * @return		Number of current references
+		 */
+		public static int printRefCount(String msg, SQLiteDatabase db) {
+			System.gc();
+			Field f;
+			try {
+				f = SQLiteClosable.class.getDeclaredField("mReferenceCount");
+				f.setAccessible(true);
+				int refs = (Integer) f.get(db); //IllegalAccessException
+				if (msg != null) {
+					System.out.println("DBRefs (" + msg + "): " + refs);
+					//if (refs < 100) {
+					//	System.out.println("DBRefs (" + msg + "): " + refs + " <-- TOO LOW (< 100)!");					
+					//} else if (refs < 1001) {
+					//	System.out.println("DBRefs (" + msg + "): " + refs + " <-- TOO LOW (< 1000)!");					
+					//} else {
+					//	System.out.println("DBRefs (" + msg + "): " + refs);
+					//}					
+				}
+				return refs;
+			} catch (NoSuchFieldException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return 0;			
+		}
 	}
 	
 	/**
@@ -694,9 +736,14 @@ public class DbSync {
 		final SQLiteStatement mStatement;
 		/** Indicates this is a 'read-only' statement */
 		final boolean mIsReadOnly;
+		/** Indicates close() has been called */
+		private boolean mIsClosed = false;
+		/** Copy of SQL used for debugging */
+		private final String mSql;
 
 		private SynchronizedStatement (final SynchronizedDb db, final String sql) {
 			mSync = db.getSynchronizer();
+			mSql = sql;
 			if (sql.trim().toLowerCase().startsWith("select"))
 				mIsReadOnly = true;
 			else
@@ -744,6 +791,7 @@ public class DbSync {
 		 * Wrapper for underlying method on SQLiteStatement.
 		 */
 		public void close() {
+			mIsClosed = true;
 			mStatement.close();
 		}
 
@@ -797,6 +845,17 @@ public class DbSync {
 				l.unlock();
 			}
 		}
+		
+		public void finalize() {
+			if (!mIsClosed)
+				Logger.logError(new RuntimeException("Finalizing non-closed statement")); // + mSql));
+			// Try to close the underlying statement.
+			try {
+				mStatement.close();
+			} catch (Exception e) {
+				// Ignore; may have been finalized
+			}
+		}
 	}
 	
 	/**
@@ -813,17 +872,22 @@ public class DbSync {
 			mSync = sync;
 		}
 
+		private int mCount = -1;
 		/**
 		 * Wrapper that uses a lock before calling underlying method.
 		 */
 		@Override
 		public int getCount() {
-			SyncLock l = mSync.getSharedLock();
-			try {
-				return super.getCount();
-			} finally {
-				l.unlock();
+			// Cache the count (it's what SQLiteCursor does), and we avoid locking 
+			if (mCount == -1) {
+				SyncLock l = mSync.getSharedLock();
+				try {
+					mCount = super.getCount();
+				} finally {
+					l.unlock();
+				}				
 			}
+			return mCount;
 		}
 
 		/**

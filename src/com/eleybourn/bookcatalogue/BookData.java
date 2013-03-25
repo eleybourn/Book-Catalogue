@@ -89,6 +89,19 @@ public class BookData extends DataManager {
 		initValidators();
 	}
 
+	/**
+	 * Erase everything in this instance and reset the special handlers
+ 	 * 
+	 * @return	self, for chaining
+	 */
+	@Override
+	public DataManager clear() {
+		super.clear();
+		// Create special validators
+		initValidators();
+		return this;
+	}
+	
 	/** Accessor */
 	public void setBookshelfList(String encodedList) {
 		putString(KEY_BOOKSHELF_LIST, encodedList);
@@ -402,7 +415,7 @@ public class BookData extends DataManager {
 	}
 
 	/**
-	 * Cleanuip thumbnails from underlying data
+	 * Cleanup thumbnails from underlying data
 	 */
 	public void cleanupThumbnails() {
 		Utils.cleanupThumbnails(mBundle);

@@ -198,7 +198,15 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 			if (mSearchText == null || mSearchText.equals(".")) {
 				mSearchText = "";
 			}
-	
+
+			TextView searchTextView = (TextView) findViewById(R.id.search_text);
+			if (mSearchText.equals("")) {
+				searchTextView.setVisibility(View.GONE);
+			} else {
+				searchTextView.setVisibility(View.VISIBLE);
+				searchTextView.setText(getString(R.string.search) + ": " + mSearchText);
+			}
+
 			// We want context menus to be available
 			registerForContextMenu(getListView());
 	
@@ -351,82 +359,98 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 
 		@Override
 		public void run(SimpleTaskContext taskContext) {
-			long t0 = System.currentTimeMillis();
-			// Build the underlying data
-			BooklistBuilder b = buildBooklist(mIsFullRebuild);
-			long t1 = System.currentTimeMillis();
-			// Try to sync the previously selected book ID
-			if (mMarkBookId != 0) {
-				// get all positions of the book
-				mTargetRows = b.getBookAbsolutePositions(mMarkBookId);
+			try {
+				long t0 = System.currentTimeMillis();
+				// Build the underlying data
+				BooklistBuilder b = buildBooklist(mIsFullRebuild);
+				long t1 = System.currentTimeMillis();
+				// Try to sync the previously selected book ID
+				if (mMarkBookId != 0) {
+					// get all positions of the book
+					mTargetRows = b.getBookAbsolutePositions(mMarkBookId);
 
-				if (mTargetRows != null && mTargetRows.size() > 0) {
-					// First, get the ones that are currently visible...
-					ArrayList<BookRowInfo> visRows = new ArrayList<BookRowInfo>();
-					for(BookRowInfo i: mTargetRows) {
-						if (i.visible) {
-							visRows.add(i);
-						}
-					}
-					// If we have any visible rows, only consider them for the new position
-					if (visRows.size() > 0)
-						mTargetRows = visRows;
-					else {
-						// Make them ALL visible
+					if (mTargetRows != null && mTargetRows.size() > 0) {
+						// First, get the ones that are currently visible...
+						ArrayList<BookRowInfo> visRows = new ArrayList<BookRowInfo>();
 						for(BookRowInfo i: mTargetRows) {
-							if (!i.visible) {
-								b.ensureAbsolutePositionVisible(i.absolutePosition);
+							if (i.visible) {
+								visRows.add(i);
 							}
 						}
-						// Recalculate all positions
-						for(BookRowInfo i: mTargetRows) {
-							i.listPosition = b.getPosition(i.absolutePosition);
+						// If we have any visible rows, only consider them for the new position
+						if (visRows.size() > 0)
+							mTargetRows = visRows;
+						else {
+							// Make them ALL visible
+							for(BookRowInfo i: mTargetRows) {
+								if (!i.visible) {
+									b.ensureAbsolutePositionVisible(i.absolutePosition);
+								}
+							}
+							// Recalculate all positions
+							for(BookRowInfo i: mTargetRows) {
+								i.listPosition = b.getPosition(i.absolutePosition);
+							}
 						}
+
+//						// Find the nearest row to the recorded 'top' row.
+//						int targetRow = bookRows[0];
+//						int minDist = Math.abs(mTopRow - b.getPosition(targetRow));
+//						for(int i=1; i < bookRows.length; i++) {
+//							int pos = b.getPosition(bookRows[i]);
+//							int dist = Math.abs(mTopRow - pos);
+//							if (dist < minDist)
+//								targetRow = bookRows[i];
+//						}
+//						// Make sure the target row is visible/expanded.
+//						b.ensureAbsolutePositionVisible(targetRow);
+//						// Now find the position it will occupy in the view
+//						mTargetPos = b.getPosition(targetRow);
 					}
+				} else
+					mTargetRows = null;
+				long t2 = System.currentTimeMillis();
 
-//					// Find the nearest row to the recorded 'top' row.
-//					int targetRow = bookRows[0];
-//					int minDist = Math.abs(mTopRow - b.getPosition(targetRow));
-//					for(int i=1; i < bookRows.length; i++) {
-//						int pos = b.getPosition(bookRows[i]);
-//						int dist = Math.abs(mTopRow - pos);
-//						if (dist < minDist)
-//							targetRow = bookRows[i];
-//					}
-//					// Make sure the target row is visible/expanded.
-//					b.ensureAbsolutePositionVisible(targetRow);
-//					// Now find the position it will occupy in the view
-//					mTargetPos = b.getPosition(targetRow);
+				// Now we have expanded groups as needed, get the list cursor
+				mTempList = b.getList();
+
+				// Clear it so it wont be reused.
+				mMarkBookId = 0;
+				
+				// get a count() from the cursor in background task because the setAdapter() call
+				// will do a count() and potentially block the UI thread while it pages through the
+				// entire cursor. If we do it here, subsequent calls will be fast.
+				long t3 = System.currentTimeMillis();
+				int count = mTempList.getCount();
+				long t4 = System.currentTimeMillis();
+				mUniqueBooks = mTempList.getUniqueBookCount();
+				long t5 = System.currentTimeMillis();
+				mTotalBooks = mTempList.getBookCount();
+				long t6 = System.currentTimeMillis();
+
+				System.out.println("Build: " + (t1-t0));
+				System.out.println("Position: " + (t2-t1));
+				System.out.println("Select: " + (t3-t2));
+				System.out.println("Count(" + count + "): " + (t4-t3) + "/" + (t5-t4) + "/" + (t6-t5));
+				System.out.println("====== " );
+				System.out.println("Total: " + (t6-t0));
+				// Save a flag to say list was loaded at least once successfully
+				mListHasBeenLoaded = true;
+
+			} finally {
+				if (taskContext.isTerminating()) {
+					// onFinish() will not be called, and we can discard our
+					// work...
+					if (mTempList != null && mTempList != mList) {
+						if (mList == null || mTempList.getBuilder() != mList.getBuilder())
+							try { mTempList.getBuilder().close(); } catch (Exception e)  { /* Ignore */ };
+
+						try { mTempList.close(); } catch (Exception e)  { /* Ignore */ };
+
+					}
 				}
-			} else
-				mTargetRows = null;
-			long t2 = System.currentTimeMillis();
-
-			// Now we have expanded groups as needed, get the list cursor
-			mTempList = b.getList();
-
-			// Clear it so it wont be reused.
-			mMarkBookId = 0;
+			}
 			
-			// get a count() from the cursor in background task because the setAdapter() call
-			// will do a count() and potentially block the UI thread while it pages through the
-			// entire cursor. If we do it here, subsequent calls will be fast.
-			long t3 = System.currentTimeMillis();
-			int count = mTempList.getCount();
-			long t4 = System.currentTimeMillis();
-			mUniqueBooks = mTempList.getUniqueBookCount();
-			long t5 = System.currentTimeMillis();
-			mTotalBooks = mTempList.getBookCount();
-			long t6 = System.currentTimeMillis();
-
-			System.out.println("Build: " + (t1-t0));
-			System.out.println("Position: " + (t2-t1));
-			System.out.println("Select: " + (t3-t2));
-			System.out.println("Count(" + count + "): " + (t4-t3) + "/" + (t5-t4) + "/" + (t6-t5));
-			System.out.println("====== " );
-			System.out.println("Total: " + (t6-t0));
-			// Save a flag to say list was loaded at least once successfully
-			mListHasBeenLoaded = true;
 		}
 
 		@Override
@@ -456,6 +480,7 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 	 * @param isFullRebuild		Indicates whole table structure needs rebuild, vs. just do a reselect of underlying data
 	 */
 	private void setupList(boolean isFullRebuild) {
+		isFullRebuild = true;
 		mTaskQueue.enqueue(new GetListTask(isFullRebuild));
 		if (mListDialog == null) {
 			mListDialog = ProgressDialog.show(this, "", getString(R.string.getting_books_ellipsis), true, true, new OnCancelListener() {

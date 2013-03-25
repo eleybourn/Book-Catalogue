@@ -162,10 +162,26 @@ public class GoodreadsUtils {
 				if (msg == 0) {
 					QueueManager.getQueueManager().enqueueTask(new SendAllBooksTask(updatesOnly), BcQueueManager.QUEUE_MAIN, 0);
 					msg = R.string.task_has_been_queued_in_background;
+				}
+				setState(msg);
+			}
+
+			@Override
+			public void onFinish(final SimpleTaskQueueProgressFragment fragment, Exception exception) {
+				final int msg = getState();
+				if (msg == -1) {
+					fragment.post(new Runnable() {
+
+						@Override
+						public void run() {
+							StandardDialogs.goodreadsAuthAlert(fragment.getActivity());
+						}
+					});
+					return;
 				} else {
 					fragment.showToast(msg);
 				}
-				fragment.showToast(msg);
+
 			}
 		};
 		SimpleTaskQueueProgressFragment.runTaskWithProgress(context, R.string.connecting_to_web_site, task, true, 0);
@@ -187,13 +203,10 @@ public class GoodreadsUtils {
 			public void run(SimpleTaskQueueProgressFragment fragment, SimpleTaskContext taskContext) {
 				int msg = GoodreadsUtils.checkCanSendToGoodreads();
 				setState(msg);
-				if (msg != 0) {
-					fragment.showToast(msg);
-				}
 			}
 
 			@Override
-			public void onFinish(SimpleTaskQueueProgressFragment fragment, Exception exception) {
+			public void onFinish(final SimpleTaskQueueProgressFragment fragment, Exception exception) {
 				if (getState() == 0) {
 					final FragmentActivity context = fragment.getActivity();
 					if (context != null) {
@@ -223,6 +236,17 @@ public class GoodreadsUtils {
 		
 						alertDialog.show();						
 					}
+				} else if (getState() == -1) {
+					fragment.post(new Runnable() {
+
+						@Override
+						public void run() {
+							StandardDialogs.goodreadsAuthAlert(fragment.getActivity());
+						}
+					});
+					return;
+				} else {
+					fragment.showToast(getState());
 				}
 			}
 		};

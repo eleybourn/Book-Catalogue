@@ -50,6 +50,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.eleybourn.bookcatalogue.datamanager.DataManager;
 import com.eleybourn.bookcatalogue.datamanager.ValidatorException;
 import com.eleybourn.bookcatalogue.debug.Tracker;
+import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
@@ -108,6 +109,8 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * The add() method of Fields returns a new Field object which exposes the 'view' member; this
  * can be used to perform view-specific tasks like setting onClick() handlers.
  *
+ * TODO: Rationalize the use of this collection with the DataManager.
+ * 
  * @author Philip Warner
  *
  */
@@ -367,12 +370,40 @@ public class Fields extends ArrayList<Fields.Field> {
 		public void set(Field field, String s) {
 			mRawValue = s;
 			TextView v = (TextView) field.getView();
-			if (mFormatHtml && s != null) {
-				v.setText(Html.fromHtml(field.format(s)));
-				v.setFocusable(false);
-				v.setTextColor(BookCatalogueApp.context.getResources().getColor(android.R.color.primary_text_dark_nodisable));
+			// Allow for the (apparent) possibility that the view may have been removed due to a tab change or similar.
+			// See Issue 505.
+			if (v == null) { 
+				// Log the error. Not much more we can do.
+				String msg = "NULL View: col="  + field.column + ", id=" + field.id + ", group=" + field.group;
+				Fields fs = field.getFields();
+				if (fs == null) {
+					msg += ". Fields is NULL.";
+				} else {
+					msg += ". Fields is valid.";
+					FieldsContext ctx = fs.getContext();
+					if (ctx == null) {
+						msg += ". Context is NULL.";							
+					} else {
+						msg += ". Context is " + ctx.getClass().getSimpleName() + ".";
+						Object o = ctx.dbgGetOwnerContext();
+						if (o == null) {
+							msg += ". Owner is NULL.";
+						} else {
+							msg += ". Owner is " + o.getClass().getSimpleName() + " (" + o.toString() + ")";
+						}
+					}
+				}
+				Tracker.handleEvent(this, msg, Tracker.States.Running);
+				// This should NEVER happen, but it does. So we need more info about why & when.
+				throw new RuntimeException("Unable to get associated View object");
 			} else {
-				v.setText(field.format(s));
+				if (mFormatHtml && s != null) {
+					v.setText(Html.fromHtml(field.format(s)));
+					v.setFocusable(false);
+					v.setTextColor(BookCatalogueApp.context.getResources().getColor(android.R.color.primary_text_dark_nodisable));
+				} else {
+					v.setText(field.format(s));
+				}				
 			}
 		}
 		public void get(Field field, Bundle values) {
@@ -461,7 +492,7 @@ public class Fields extends ArrayList<Fields.Field> {
 						}
 					}
 					Tracker.handleEvent(this, msg, Tracker.States.Running);
-					//throw new RuntimeException("Unable to get associated View object");
+					Logger.logError(new RuntimeException("Unable to get associated View object"));
 				}
 
 				// If the view is still present, make sure it is accurate.

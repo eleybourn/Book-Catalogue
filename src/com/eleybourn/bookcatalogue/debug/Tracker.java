@@ -53,6 +53,20 @@ public class Tracker {
 	private static Event[] mEventBuffer = new Event[K_MAX_EVENTS];
 	private static int mNextEventBufferPos = 0;
 
+	public static void enterOnActivityCreated(Object a) {
+		handleEvent(a,"OnActivityCreated (" + a.toString() + ")", States.Enter);				
+	}
+	public static void exitOnActivityCreated(Object a) {
+		handleEvent(a,"OnActivityCreated (" + a.toString() + ")", States.Exit);				
+	}
+
+	public static void enterOnActivityResult(Object a, int requestCode, int resultCode) {
+		handleEvent(a,"OnActivityResult[" + requestCode + "," + resultCode + "] (" + a.toString() + ")", States.Enter);				
+	}
+	public static void exitOnActivityResult(Object a, int requestCode, int resultCode) {
+		handleEvent(a,"OnActivityResult[" + requestCode + "," + resultCode + "] (" + a.toString() + ")", States.Exit);				
+	}
+
 	public static void enterOnCreate(Object a) {
 		handleEvent(a,"OnCreate (" + a.toString() + ")", States.Enter);
 	}

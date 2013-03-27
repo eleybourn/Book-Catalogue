@@ -5383,6 +5383,26 @@ public class CatalogueDBAdapter {
     	}
     }
     
+    private SynchronizedStatement mGetBookUpdateDateQuery = null;
+    /**
+     * Utility routine to return the book title based on the id. 
+     */
+    public String getBookUpdateDate(long bookId) {
+    	if (mGetBookUpdateDateQuery == null) {
+        	String sql = "Select " + DOM_LAST_UPDATE_DATE + " From " + DB_TB_BOOKS + " Where " + KEY_ROWID + "=?";
+        	mGetBookUpdateDateQuery = mStatements.add("mGetBookUpdateDateQuery", sql);
+    	}
+    	// Be cautious; other threads may call this and set parameters.
+    	synchronized(mGetBookUpdateDateQuery) {
+    		mGetBookUpdateDateQuery.bindLong(1, bookId);
+    		//try {
+            	return mGetBookUpdateDateQuery.simpleQueryForString();    			
+    		//} catch (SQLiteDoneException e) {
+    		//	return null;
+    		//}
+    	}
+    }
+    
     private SynchronizedStatement mGetBookTitleQuery = null;
     /**
      * Utility routine to return the book title based on the id. 

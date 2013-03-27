@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Date;
 
 import android.os.Bundle;
 
@@ -48,7 +49,7 @@ public class CsvImporter {
 	private static String UTF8 = "utf8";
 	private static int BUFFER_SIZE = 32768;
 
-	public boolean importBooks(InputStream exportStream, Importer.CoverFinder coverFinder, Importer.OnImporterListener listener) throws IOException {
+	public boolean importBooks(InputStream exportStream, Importer.CoverFinder coverFinder, Importer.OnImporterListener listener, int importFlags) throws IOException {
 		ArrayList<String> importedString = new ArrayList<String>();
 
 		BufferedReader in = new BufferedReader(new InputStreamReader(exportStream, UTF8),BUFFER_SIZE);
@@ -57,10 +58,10 @@ public class CsvImporter {
 			importedString.add(line);
 		}
 
-		return importBooks(importedString, coverFinder, listener);
+		return importBooks(importedString, coverFinder, listener, importFlags);
 	}
 
-	public boolean importBooks(ArrayList<String> export, Importer.CoverFinder coverFinder, Importer.OnImporterListener listener) {
+	private boolean importBooks(ArrayList<String> export, Importer.CoverFinder coverFinder, Importer.OnImporterListener listener, int importFlags) {
 
 		if (export == null || export.size() == 0)
 			return true;
@@ -101,6 +102,17 @@ public class CsvImporter {
 								CatalogueDBAdapter.KEY_AUTHOR_NAME,
 								CatalogueDBAdapter.KEY_AUTHOR_DETAILS);
 
+		boolean updateOnlyIfNewer;
+		if ( (importFlags & Importer.IMPORT_NEW_OR_UPDATED) != 0) {
+			if (!values.containsKey(DatabaseDefinitions.DOM_LAST_UPDATE_DATE.name)) {
+				throw new RuntimeException("Imported data does not contain " + DatabaseDefinitions.DOM_LAST_UPDATE_DATE);
+			}
+			updateOnlyIfNewer = true;
+		} else {
+			updateOnlyIfNewer = false;
+		}
+
+		
 		CatalogueDBAdapter db;
 		db = new CatalogueDBAdapter(BookCatalogueApp.context);
 		db.open();
@@ -235,7 +247,9 @@ public class CsvImporter {
 				}
 
 				try {
+					boolean doUpdate;
 					if (!hasUuid && !hasNumericId) {
+						doUpdate = true;
 						// Always import empty IDs...even if they are duplicates.
 						Long id = db.createBook(values, CatalogueDBAdapter.BOOK_UPDATE_USE_UPDATE_DATE_IF_PRESENT);
 						values.putString(CatalogueDBAdapter.KEY_ROWID, id.toString());
@@ -266,14 +280,51 @@ public class CsvImporter {
 						}
 
 						if (exists) {
-							db.updateBook(idLong, values, CatalogueDBAdapter.BOOK_UPDATE_SKIP_PURGE_REFERENCES|CatalogueDBAdapter.BOOK_UPDATE_USE_UPDATE_DATE_IF_PRESENT);			
+							if (!updateOnlyIfNewer) {
+								doUpdate = true;
+							} else {
+								Date bookDate;
+								Date importDate;
+								String bookDateStr = db.getBookUpdateDate(idLong);
+								if (bookDateStr == null || bookDateStr.equals("")) {
+									bookDate = null; // Local record has never been updated
+								} else {
+									try {
+										bookDate = Utils.parseDate(bookDateStr);
+									} catch (Exception e) {
+										bookDate = null; // Treat as if never updated
+									}
+								}
+								String importDateStr = values.getString(DatabaseDefinitions.DOM_LAST_UPDATE_DATE.name);
+								if (importDateStr == null || importDateStr.equals("")) {
+									importDate = null; // Imported record has never been updated
+								} else {
+									try {
+										importDate = Utils.parseDate(importDateStr);
+									} catch (Exception e) {
+										importDate = null; // Treat as if never updated
+									}
+								}
+								if (importDate == null) {
+									doUpdate = false;
+								} else if (bookDate == null) {
+									doUpdate = true;
+								} else {
+									doUpdate = importDate.compareTo(bookDate) > 0;
+								}
+							}
+							if (doUpdate) {
+								db.updateBook(idLong, values, CatalogueDBAdapter.BOOK_UPDATE_SKIP_PURGE_REFERENCES|CatalogueDBAdapter.BOOK_UPDATE_USE_UPDATE_DATE_IF_PRESENT);								
+							}
 							//mImportUpdated++;
 						} else {
+							doUpdate = true;
 							newId = db.createBook(idLong, values, CatalogueDBAdapter.BOOK_UPDATE_USE_UPDATE_DATE_IF_PRESENT);
 							//mImportCreated++;
 							values.putString(CatalogueDBAdapter.KEY_ROWID, newId.toString());							
 							idLong = newId;
 						}
+
 						// When importing a file that has an ID or UUID, try to import a cover.
 						if (coverFinder != null) {
 							coverFinder.copyOrRenameCoverFile(uuidVal, idFromFile, idLong);
@@ -282,43 +333,45 @@ public class CsvImporter {
 						values.putString(CatalogueDBAdapter.KEY_ROWID, idLong.toString());
 					}
 					
-					if (values.containsKey(CatalogueDBAdapter.KEY_LOANED_TO) && !values.get(CatalogueDBAdapter.KEY_LOANED_TO).equals("")) {
-						int id = Integer.parseInt(values.getString(CatalogueDBAdapter.KEY_ROWID));
-						db.deleteLoan(id, false);
-						db.createLoan(values, false);
-					}
-
-					if (values.containsKey(CatalogueDBAdapter.KEY_ANTHOLOGY_MASK)) {
-						int anthology;
-						try {
-							anthology = Integer.parseInt(values.getString(CatalogueDBAdapter.KEY_ANTHOLOGY_MASK));
-						} catch (Exception e) {
-							anthology = 0;
-						}
-						if (anthology == CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS || anthology == CatalogueDBAdapter.ANTHOLOGY_IS_ANTHOLOGY) {
+					if (doUpdate) {
+						if (values.containsKey(CatalogueDBAdapter.KEY_LOANED_TO) && !values.get(CatalogueDBAdapter.KEY_LOANED_TO).equals("")) {
 							int id = Integer.parseInt(values.getString(CatalogueDBAdapter.KEY_ROWID));
-							// We have anthology details, delete the current details.
-							db.deleteAnthologyTitles(id, false);
-							int oldi = 0;
-							String anthology_titles = values.getString("anthology_titles");
-							try {
-								int i = anthology_titles.indexOf("|", oldi);
-								while (i > -1) {
-									String extracted_title = anthology_titles.substring(oldi, i).trim();
-									
-									int j = extracted_title.indexOf("*");
-									if (j > -1) {
-										String anth_title = extracted_title.substring(0, j).trim();
-										String anth_author = extracted_title.substring((j+1)).trim();
-										db.createAnthologyTitle(id, anth_author, anth_title, true, false);
-									}
-									oldi = i + 1;
-									i = anthology_titles.indexOf("|", oldi);
-								}
-							} catch (NullPointerException e) {
-								//do nothing. There are no anthology titles
-							}
+							db.deleteLoan(id, false);
+							db.createLoan(values, false);
 						}
+
+						if (values.containsKey(CatalogueDBAdapter.KEY_ANTHOLOGY_MASK)) {
+							int anthology;
+							try {
+								anthology = Integer.parseInt(values.getString(CatalogueDBAdapter.KEY_ANTHOLOGY_MASK));
+							} catch (Exception e) {
+								anthology = 0;
+							}
+							if (anthology == CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS || anthology == CatalogueDBAdapter.ANTHOLOGY_IS_ANTHOLOGY) {
+								int id = Integer.parseInt(values.getString(CatalogueDBAdapter.KEY_ROWID));
+								// We have anthology details, delete the current details.
+								db.deleteAnthologyTitles(id, false);
+								int oldi = 0;
+								String anthology_titles = values.getString("anthology_titles");
+								try {
+									int i = anthology_titles.indexOf("|", oldi);
+									while (i > -1) {
+										String extracted_title = anthology_titles.substring(oldi, i).trim();
+										
+										int j = extracted_title.indexOf("*");
+										if (j > -1) {
+											String anth_title = extracted_title.substring(0, j).trim();
+											String anth_author = extracted_title.substring((j+1)).trim();
+											db.createAnthologyTitle(id, anth_author, anth_title, true, false);
+										}
+										oldi = i + 1;
+										i = anthology_titles.indexOf("|", oldi);
+									}
+								} catch (NullPointerException e) {
+									//do nothing. There are no anthology titles
+								}
+							}
+						}						
 					}
 
 				} catch (Exception e) {

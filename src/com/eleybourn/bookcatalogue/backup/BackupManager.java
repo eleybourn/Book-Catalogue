@@ -174,7 +174,7 @@ public class BackupManager {
 	 * 
 	 * We use a FragmentTask so that long actions do not occur in the UI thread.
 	 */
-	public static void restoreCatalogue(final BookCatalogueActivity context, final File inputFile, int taskId) {
+	public static void restoreCatalogue(final BookCatalogueActivity context, final File inputFile, int taskId, final int importFlags) {
 
 		FragmentTask task = new FragmentTaskAbstract() {
 			@Override
@@ -197,7 +197,7 @@ public class BackupManager {
 						@Override
 						public boolean isCancelled() {
 							return fragment.isCancelled();
-						}});
+						}}, importFlags);
 				} catch (Exception e) {
 					Logger.logError(e);
 					throw new RuntimeException("Error during restore", e);

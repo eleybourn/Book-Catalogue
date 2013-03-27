@@ -28,6 +28,7 @@ import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.backup.BackupManager;
+import com.eleybourn.bookcatalogue.backup.Importer;
 import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment;
 import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment.OnMessageDialogResultListener;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueueProgressFragment;
@@ -113,7 +114,7 @@ public class BackupChooser extends FileChooser implements OnMessageDialogResultL
 	 */
 	@Override
 	public void onOpen(File file) {
-		BackupManager.restoreCatalogue(this, file, TASK_ID_OPEN);		
+		BackupManager.restoreCatalogue(this, file, TASK_ID_OPEN, Importer.IMPORT_NEW_OR_UPDATED); // RELEASE: UI for flags!	
 	}
 
 	/**

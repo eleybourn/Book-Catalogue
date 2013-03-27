@@ -129,7 +129,7 @@ public class ImportThread extends ManagedTask {
 		FileInputStream in = null;
 		try {
 			in = new FileInputStream(mFileSpec);
-			importer.importBooks(in, mCoverFinder, mImportListener);
+			importer.importBooks(in, mCoverFinder, mImportListener, Importer.IMPORT_ALL);
 			if (isCancelled()) {
 				doToast(getString(R.string.cancelled));
 			} else {

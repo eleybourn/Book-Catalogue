@@ -3573,13 +3573,14 @@ public class CatalogueDBAdapter {
 	 * successfully created return the new rowId for that book, otherwise return
 	 * a -1 to indicate failure.
 	 * 
-	 * @param id The ID of the book to insert (this will overwrite the normal autoIncrement)
-	 * @param values A ContentValues collection with the columns to be updated. May contain extrat data.
+	 * @param id 		The ID of the book to insert (this will overwrite the normal autoIncrement)
+	 * @param values 	A ContentValues collection with the columns to be updated. May contain extrat data.
+	 * @param flags  	See BOOK_UPDATE_* flag definitions
 	 *
 	 * @return rowId or -1 if failed
 	 */
-	public long createBook(BookData values) {
-		return createBook(0, values);
+	public long createBook(BookData values, int flags) {
+		return createBook(0, values, flags);
 	}
 	
 	/**
@@ -3587,13 +3588,14 @@ public class CatalogueDBAdapter {
 	 * successfully created return the new rowId for that book, otherwise return
 	 * a -1 to indicate failure.
 	 * 
-	 * @param id The ID of the book to insert (this will overwrite the normal autoIncrement)
-	 * @param values A ContentValues collection with the columns to be updated. May contain extrat data.
+	 * @param id 		The ID of the book to insert (this will overwrite the normal autoIncrement)
+	 * @param values 	A ContentValues collection with the columns to be updated. May contain extrat data.
+	 * @param flags  	See BOOK_UPDATE_* flag definitions
 	 *
 	 * @return rowId or -1 if failed
 	 */
 	//public long createBook(long id, String author, String title, String isbn, String publisher, String date_published, float rating, String bookshelf, Boolean read, String series, int pages, String series_num, String notes, String list_price, int anthology, String location, String read_start, String read_end, String format, boolean signed, String description, String genre) {
-	public long createBook(long id, BookData values) {
+	public long createBook(long id, BookData values, int flags) {
 
 		try {
 			// Make sure we have the target table details
@@ -4150,17 +4152,22 @@ public class CatalogueDBAdapter {
 		}
 	}
 
+	/** Flag indicating the UPDATE_DATE field from the bundle should be truested. If this flag is not set, the UPDATE_DATE will be set based on the current time */
+	public static final int BOOK_UPDATE_USE_UPDATE_DATE_IF_PRESENT = 1;
+	/** Flag indicating to skip doing the 'purge' step; mainly used in batch operations. */
+	public static final int BOOK_UPDATE_SKIP_PURGE_REFERENCES = 2;
+
 	/**
 	 * Update the book using the details provided. The book to be updated is
 	 * specified using the rowId, and it is altered to use values passed in
 	 * 
 	 * @param rowId The id of the book in the database
 	 * @param values A ContentValues collection with the columns to be updated. May contain extrat data.
-	 * @param noPurge Skip doing the 'purge' step; mainy used in batch operations.
+	 * @param flags  See BOOK_UPDATE_* flag definitions
 	 * 
 	 * @return true if the note was successfully updated, false otherwise
 	 */
-	public boolean updateBook(long rowId, BookData values, boolean doPurge) {
+	public boolean updateBook(long rowId, BookData values, int flags) {
 		boolean success = true;
 
 		try {
@@ -4178,7 +4185,7 @@ public class CatalogueDBAdapter {
 				args.remove(DOM_BOOK_UUID.name);
 
 			// We may be just updating series, or author lists but we still update the last_update_date.
-			if (!args.containsKey(DOM_LAST_UPDATE_DATE.name))
+			if ((flags & BOOK_UPDATE_USE_UPDATE_DATE_IF_PRESENT) == 0 || !args.containsKey(DOM_LAST_UPDATE_DATE.name))
 				args.put(DOM_LAST_UPDATE_DATE.name, Utils.toSqlDateTime(Calendar.getInstance().getTime()));
 			success = mDb.update(DB_TB_BOOKS, args, KEY_ROWID + "=" + rowId, null) > 0;
 
@@ -4202,7 +4209,7 @@ public class CatalogueDBAdapter {
 			}
 
 			// Only really skip the purge if a batch update of multiple books is being done.
-			if (doPurge) {
+			if ( (flags & BOOK_UPDATE_SKIP_PURGE_REFERENCES) == 0) {
 				// Delete any unused authors
 				purgeAuthors();
 				// Delete any unused series

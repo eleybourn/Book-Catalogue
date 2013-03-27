@@ -20,9 +20,12 @@
 
 package com.eleybourn.bookcatalogue;
 
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LAST_UPDATE_DATE;
+
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -352,8 +355,9 @@ public class UpdateThumbnailsThread extends ManagedTask {
 		}
 
 		// Update
-		if (newData.size() > 0)
-			mDbHelper.updateBook(bookId, new BookData(newData), true);
+		if (newData.size() > 0) {
+			mDbHelper.updateBook(bookId, new BookData(newData), 0);
+		}
 		
 	}
 

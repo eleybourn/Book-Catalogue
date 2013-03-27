@@ -243,7 +243,7 @@ public class CsvImporter {
 				try {
 					if (!hasUuid && !hasNumericId) {
 						// Always import empty IDs...even if they are duplicates.
-						Long id = db.createBook(values);
+						Long id = db.createBook(values, CatalogueDBAdapter.BOOK_UPDATE_USE_UPDATE_DATE_IF_PRESENT);
 						values.putString(CatalogueDBAdapter.KEY_ROWID, id.toString());
 						// Would be nice to import a cover, but with no ID/UUID thats not possible
 						//mImportCreated++;
@@ -272,10 +272,10 @@ public class CsvImporter {
 						}
 
 						if (exists) {
-							db.updateBook(idLong, values, false);								
+							db.updateBook(idLong, values, CatalogueDBAdapter.BOOK_UPDATE_SKIP_PURGE_REFERENCES|CatalogueDBAdapter.BOOK_UPDATE_USE_UPDATE_DATE_IF_PRESENT);			
 							//mImportUpdated++;
 						} else {
-							newId = db.createBook(idLong, values);
+							newId = db.createBook(idLong, values, CatalogueDBAdapter.BOOK_UPDATE_USE_UPDATE_DATE_IF_PRESENT);
 							//mImportCreated++;
 							values.putString(CatalogueDBAdapter.KEY_ROWID, newId.toString());							
 							idLong = newId;

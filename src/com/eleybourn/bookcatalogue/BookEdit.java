@@ -20,9 +20,12 @@
 
 package com.eleybourn.bookcatalogue;
 
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LAST_UPDATE_DATE;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -789,7 +792,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 	 */
 	private void updateOrCreate() {
 		if (mRowId == 0) {
-			long id = mDbHelper.createBook(mBookData);
+			long id = mDbHelper.createBook(mBookData, 0);
 
 			if (id > 0) {
 				setRowId(id);
@@ -798,7 +801,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 				thumb.renameTo(real);
 			}
 		} else {
-			mDbHelper.updateBook(mRowId, mBookData, true);
+			mDbHelper.updateBook(mRowId, mBookData, 0);
 		}
 
 		/*

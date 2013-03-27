@@ -29,7 +29,6 @@ import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_DOCID
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_GENRE;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_GOODREADS_BOOK_ID;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ID;
-import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_INSTANCE_UPDATE_DATE;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ISBN;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LANGUAGE;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LAST_GOODREADS_SYNC_DATE;
@@ -230,38 +229,6 @@ public class CatalogueDBAdapter {
 		" (" + KEY_BOOKSHELF + ") VALUES ('Default')";
 
 	// Renamed to the LAST version in which it was used
-	private static final String DATABASE_CREATE_BOOKS_82 =
-			"create table " + DB_TB_BOOKS + 
-			" (_id integer primary key autoincrement, " +
-			/* KEY_AUTHOR + " integer not null REFERENCES " + DB_TB_AUTHORS + ", " + */
-			KEY_TITLE + " text not null, " +
-			KEY_ISBN + " text, " +
-			KEY_PUBLISHER + " text, " +
-			KEY_DATE_PUBLISHED + " date, " +
-			KEY_RATING + " float not null default 0, " +
-			KEY_READ + " boolean not null default 0, " +
-			/* KEY_SERIES + " text, " + */
-			KEY_PAGES + " int, " +
-			/* KEY_SERIES_NUM + " text, " + */
-			KEY_NOTES + " text, " +
-			KEY_LIST_PRICE + " text, " +
-			KEY_ANTHOLOGY_MASK + " int not null default " + ANTHOLOGY_NO + ", " + 
-			KEY_LOCATION + " text, " +
-			KEY_READ_START + " date, " +
-			KEY_READ_END + " date, " +
-			KEY_FORMAT + " text, " +
-			KEY_SIGNED + " boolean not null default 0, " +
-			KEY_DESCRIPTION + " text, " +
-			KEY_GENRE + " text, " +
-			DOM_LANGUAGE.getDefinition(true) + ", " + // Added in version 82
-			KEY_DATE_ADDED + " datetime default current_timestamp, " +
-			DOM_GOODREADS_BOOK_ID.getDefinition(true) + ", " +
-			DOM_LAST_GOODREADS_SYNC_DATE.getDefinition(true) + ", " +
-			DOM_BOOK_UUID.getDefinition(true) + ", " +
-			DOM_LAST_UPDATE_DATE.getDefinition(true) +
-			")";
-
-	// Renamed to the LAST version in which it was used
 	private static final String DATABASE_CREATE_BOOKS_81 =
 			"create table " + DB_TB_BOOKS + 
 			" (_id integer primary key autoincrement, " +
@@ -321,42 +288,9 @@ public class CatalogueDBAdapter {
 			DOM_GOODREADS_BOOK_ID.getDefinition(true) + ", " +
 			DOM_LAST_GOODREADS_SYNC_DATE.getDefinition(true) + ", " +
 			DOM_BOOK_UUID.getDefinition(true) + ", " +
-			DOM_LAST_UPDATE_DATE.getDefinition(true) + ", " +
-			DOM_INSTANCE_UPDATE_DATE.getDefinition(true) +
-			// NOTE: **NEVER** change this. Rename it, and create a new one. Unless you know what you are doing.
-			")";
-
-	// NOTE: **NEVER** change this. Rename it, and create a new one. Unless you know what you are doing.
-	private static final String DATABASE_CREATE_BOOKS_71 =
-			"create table " + DB_TB_BOOKS + 
-			" (_id integer primary key autoincrement, " +
-			/* KEY_AUTHOR + " integer not null REFERENCES " + DB_TB_AUTHORS + ", " + */
-			KEY_TITLE + " text not null, " +
-			KEY_ISBN + " text, " +
-			KEY_PUBLISHER + " text, " +
-			KEY_DATE_PUBLISHED + " date, " +
-			KEY_RATING + " float not null default 0, " +
-			KEY_READ + " boolean not null default 0, " +
-			/* KEY_SERIES + " text, " + */
-			KEY_PAGES + " int, " +
-			/* KEY_SERIES_NUM + " text, " + */
-			KEY_NOTES + " text, " +
-			KEY_LIST_PRICE + " text, " +
-			KEY_ANTHOLOGY_MASK + " int not null default " + ANTHOLOGY_NO + ", " + 
-			KEY_LOCATION + " text, " +
-			KEY_READ_START + " date, " +
-			KEY_READ_END + " date, " +
-			KEY_FORMAT + " text, " +
-			KEY_SIGNED + " boolean not null default 0, " +
-			KEY_DESCRIPTION + " text, " +
-			KEY_GENRE + " text, " +
-			KEY_DATE_ADDED + " datetime default current_timestamp, " +
-			DOM_GOODREADS_BOOK_ID.getDefinition(true) + ", " +
-			DOM_LAST_GOODREADS_SYNC_DATE.getDefinition(true) + ", " +
-			DOM_BOOK_UUID.getDefinition(true) + ", " +
 			DOM_LAST_UPDATE_DATE.getDefinition(true) +
-			// NOTE: **NEVER** change this. Rename it, and create a new one. Unless you know what you are doing.
 			")";
+	// ^^^^ NOTE: **NEVER** change this. Rename it, and create a new one. Unless you know what you are doing.
 	
 	//private static final String DATABASE_CREATE_BOOKS_70 =
 	//		"create table " + DB_TB_BOOKS + 
@@ -670,7 +604,7 @@ public class CatalogueDBAdapter {
 //						+ " LEFT OUTER JOIN " + DB_TB_SERIES + " s ON (s." + KEY_ROWID + "=w." + KEY_SERIES_ID + ") ";
 
 	//TODO: Update database version RELEASE: Update database version
-	public static final int DATABASE_VERSION = 83;
+	public static final int DATABASE_VERSION = 82;
 
 	private TableInfo mBooksInfo = null;
 
@@ -1699,10 +1633,6 @@ public class CatalogueDBAdapter {
 				db.execSQL("DROP TABLE " + tempName);
 			}
 			if (curVersion == 81) {
-				curVersion++;
-				recreateAndReloadTable(sdb, DB_TB_BOOKS, DATABASE_CREATE_BOOKS_82);
-			}
-			if (curVersion == 82) {
 				curVersion++;
 				recreateAndReloadTable(sdb, DB_TB_BOOKS, DATABASE_CREATE_BOOKS);
 			}
@@ -3704,7 +3634,7 @@ public class CatalogueDBAdapter {
 				initialValues.put(DOM_LAST_UPDATE_DATE.name, Utils.toSqlDateTime(new Date()));
 
 			// ALWAYS set the INSTANCE_UPDATE_DATE; this is used for backups
-			initialValues.put(DOM_INSTANCE_UPDATE_DATE.name, Utils.toSqlDateTime(Calendar.getInstance().getTime()));
+			//initialValues.put(DOM_INSTANCE_UPDATE_DATE.name, Utils.toSqlDateTime(Calendar.getInstance().getTime()));
 
 			long rowId = mDb.insert(DB_TB_BOOKS, null, initialValues);
 
@@ -4286,7 +4216,7 @@ public class CatalogueDBAdapter {
 			if ((flags & BOOK_UPDATE_USE_UPDATE_DATE_IF_PRESENT) == 0 || !args.containsKey(DOM_LAST_UPDATE_DATE.name))
 				args.put(DOM_LAST_UPDATE_DATE.name, Utils.toSqlDateTime(Calendar.getInstance().getTime()));
 			// ALWAYS set the INSTANCE_UPDATE_DATE; this is used for backups
-			args.put(DOM_INSTANCE_UPDATE_DATE.name, Utils.toSqlDateTime(Calendar.getInstance().getTime()));
+			//args.put(DOM_INSTANCE_UPDATE_DATE.name, Utils.toSqlDateTime(Calendar.getInstance().getTime()));
 			success = mDb.update(DB_TB_BOOKS, args, KEY_ROWID + "=" + rowId, null) > 0;
 
 			String bookshelf = values.getBookshelfList();
@@ -4505,7 +4435,7 @@ public class CatalogueDBAdapter {
 	 */
 	private void setBookDirty(long bookId) {
 		// Mark specific book as dirty
-		String sql = "Update " + TBL_BOOKS + " set " + DOM_INSTANCE_UPDATE_DATE + " = current_timestamp where "
+		String sql = "Update " + TBL_BOOKS + " set " + DOM_LAST_UPDATE_DATE + " = current_timestamp where "
 				+ TBL_BOOKS + "." + DOM_ID + " = " + bookId;
 		mDb.execSQL(sql);
 	}
@@ -4517,13 +4447,13 @@ public class CatalogueDBAdapter {
 	 */
 	private void setBooksDirtyByAuthor(long authorId) {
 		// Mark all related books based on anthology author as dirty
-		String sql = "Update " + TBL_BOOKS  + " set " +  DOM_INSTANCE_UPDATE_DATE + " = current_timestamp where "
+		String sql = "Update " + TBL_BOOKS  + " set " +  DOM_LAST_UPDATE_DATE + " = current_timestamp where "
 				+ " Exists(Select * From " + TBL_ANTHOLOGY.ref() + " Where " + TBL_ANTHOLOGY.dot(DOM_AUTHOR_ID) + " = " + authorId
 				+ " and " + TBL_ANTHOLOGY.dot(DOM_BOOK) + " = " + TBL_BOOKS + "." + DOM_ID + ")";
 		mDb.execSQL(sql);
 
 		// Mark all related books based on series as dirty
-		sql = "Update " + TBL_BOOKS + " set " + DOM_INSTANCE_UPDATE_DATE + " = current_timestamp where "
+		sql = "Update " + TBL_BOOKS + " set " + DOM_LAST_UPDATE_DATE + " = current_timestamp where "
 				+ " Exists(Select * From " + TBL_BOOK_AUTHOR.ref() + " Where " + TBL_BOOK_AUTHOR.dot(DOM_AUTHOR_ID) + " = " + authorId
 				+ " and " + TBL_BOOK_AUTHOR.dot(DOM_BOOK) + " = " + TBL_BOOKS + "." + DOM_ID + ")";
 		mDb.execSQL(sql);
@@ -4531,7 +4461,7 @@ public class CatalogueDBAdapter {
 	
 	private void setBooksDirtyBySeries(long seriesId) {
 		// Mark all related books based on series as dirty
-		String sql = "Update " + TBL_BOOKS + " set " + DOM_INSTANCE_UPDATE_DATE + " = current_timestamp where "
+		String sql = "Update " + TBL_BOOKS + " set " + DOM_LAST_UPDATE_DATE + " = current_timestamp where "
 				+ " Exists(Select * From " + TBL_BOOK_SERIES.ref() + " Where " + TBL_BOOK_SERIES.dot(DOM_SERIES_ID) + " = " + seriesId
 				+ " and " + TBL_BOOK_SERIES.dot(DOM_BOOK) + " = " + TBL_BOOKS + "." + DOM_ID + ")";
 		mDb.execSQL(sql);		
@@ -4539,7 +4469,7 @@ public class CatalogueDBAdapter {
 
 	private void setBooksDirtyByBookshelf(long bookshelfId) {
 		// Mark all related books as dirty
-		String sql = "Update " + TBL_BOOKS + " set " + DOM_INSTANCE_UPDATE_DATE + " = current_timestamp where "
+		String sql = "Update " + TBL_BOOKS + " set " + DOM_LAST_UPDATE_DATE + " = current_timestamp where "
 				+ " Exists(Select * From " + TBL_BOOK_BOOKSHELF.ref() + " Where " + TBL_BOOK_BOOKSHELF.dot(DOM_BOOKSHELF_ID) + " = " + bookshelfId
 				+ " and " + TBL_BOOK_BOOKSHELF.dot(DOM_BOOK) + " = " + TBL_BOOKS + "." + DOM_ID + ")";
 		mDb.execSQL(sql);		
@@ -4895,18 +4825,18 @@ public class CatalogueDBAdapter {
 	/** 
 	 * Delete the bookshelf with the given rowId
 	 * 
-	 * @param rowId id of note to delete
+	 * @param rowId id of bookshelf to delete
 	 * @return true if deleted, false otherwise
 	 */
-	public boolean deleteBookshelf(long rowId) {
+	public boolean deleteBookshelf(long bookshelfId) {
 
-		setBooksDirtyByBookshelf(rowId);
+		setBooksDirtyByBookshelf(bookshelfId);
 
 		boolean deleteSuccess;
 		//String sql = "UPDATE " + DB_TB_BOOKS + " SET " + KEY_BOOKSHELF + "=1 WHERE " + KEY_BOOKSHELF + "='" + rowId + "'";
 		//mDb.execSQL(sql);
-		deleteSuccess = mDb.delete(DB_TB_BOOK_BOOKSHELF_WEAK, KEY_BOOKSHELF + "=" + rowId, null) > 0;
-		deleteSuccess = mDb.delete(DB_TB_BOOKSHELF, KEY_ROWID + "=" + rowId, null) > 0;
+		deleteSuccess = mDb.delete(DB_TB_BOOK_BOOKSHELF_WEAK, KEY_BOOKSHELF + "=" + bookshelfId, null) > 0;
+		deleteSuccess = mDb.delete(DB_TB_BOOKSHELF, KEY_ROWID + "=" + bookshelfId, null) > 0;
 		return deleteSuccess;
 	}
 	
@@ -5423,7 +5353,7 @@ public class CatalogueDBAdapter {
 
 			// Update books but prevent duplicate index errors
 			sql = "Update " + DB_TB_BOOKS + " Set " + KEY_FORMAT + " = '" + encodeString(newFormat) 
-					+ "', " + DOM_INSTANCE_UPDATE_DATE + " = current_timetamp "
+					+ "', " + DOM_LAST_UPDATE_DATE + " = current_timetamp "
 					+ " Where " + KEY_FORMAT + " = '" + encodeString(oldFormat) + "'";
 			mDb.execSQL(sql);	
 			

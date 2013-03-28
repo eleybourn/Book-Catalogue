@@ -22,6 +22,7 @@ package com.eleybourn.bookcatalogue.backup;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
 
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -34,6 +35,7 @@ import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyles;
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Basic implementation of format-agnostic BackupWriter methods using 
@@ -56,7 +58,7 @@ public abstract class BackupWriterAbstract implements BackupWriter {
 	 * Do a full backup, sending progress to the listener
 	 */
 	@Override
-	public void backup(BackupWriterListener listener) throws IOException {
+	public void backup(BackupWriterListener listener, final int backupFlags) throws IOException {
 		
 		try {
 			listener.setMax((int) (mDbHelper.getBookCount() * 2 + 1));
@@ -65,9 +67,9 @@ public abstract class BackupWriterAbstract implements BackupWriter {
 			if (!listener.isCancelled())
 				writeInfo(listener);
 			if (!listener.isCancelled())
-				writeBooks(listener);
+				writeBooks(listener, backupFlags);
 			if (!listener.isCancelled())
-				writeCovers(listener);
+				writeCovers(listener, backupFlags);
 			if (!listener.isCancelled())
 				writePreferences(listener);
 			if (!listener.isCancelled())
@@ -111,7 +113,7 @@ public abstract class BackupWriterAbstract implements BackupWriter {
 	 * 
 	 * @throws IOException
 	 */
-	private void writeBooks(final BackupWriterListener listener) throws IOException {
+	private void writeBooks(final BackupWriterListener listener, final int backupFlags) throws IOException {
 		// This is an estimate only; we actually don't know how many covers
 		// there are in the backup.
 		listener.setMax((int) (mDbHelper.getBookCount() * 2 + 1));
@@ -142,7 +144,7 @@ public abstract class BackupWriterAbstract implements BackupWriter {
 		try {
 			CsvExporter exporter = new CsvExporter();
 			output = new FileOutputStream(temp);
-			exporter.export(output, exportListener);
+			exporter.export(output, exportListener, backupFlags);
 			output.close();
 			System.out.println("Writing Books");
 			putBooks(temp);
@@ -161,12 +163,29 @@ public abstract class BackupWriterAbstract implements BackupWriter {
 	 * 
 	 * @throws IOException
 	 */
-	private void writeCovers(final BackupWriterListener listener) throws IOException {
-		System.out.println("Writing Images");
+	private void writeCovers(final BackupWriterListener listener, final int backupFlags) throws IOException {
+		Date sinceDate = null;
+		long sinceTime = 0;
+		if ( (backupFlags & Exporter.EXPORT_NEW_OR_UPDATED) != 0) {
+			String lastBackup = BookCatalogueApp.getAppPreferences().getString(BookCataloguePreferences.PREF_LAST_BACKUP_DATE, null);
+			if (lastBackup != null && !lastBackup.equals("")) {
+				try {
+					sinceDate = Utils.parseDate(lastBackup);
+					sinceTime = sinceDate.getTime();
+				} catch (Exception e) {
+					// Just ignore; backup everything
+					Logger.logError(e);
+				}
+			}
+		}
 
+		System.out.println("Writing Images");
+		
 		int ok = 0;
 		int missing = 0;
-		String fmt = BookCatalogueApp.getResourceString(R.string.covers_progress);
+		int skipped = 0;
+		String fmt_noskip = BookCatalogueApp.getResourceString(R.string.covers_progress);
+		String fmt_skip = BookCatalogueApp.getResourceString(R.string.covers_progress_incr);
 
 		Cursor c = mDbHelper.getUuidList();
 		try {
@@ -174,19 +193,28 @@ public abstract class BackupWriterAbstract implements BackupWriter {
 			while(c.moveToNext() && !listener.isCancelled()) {
 				File cover = CatalogueDBAdapter.fetchThumbnailByUuid(c.getString(uuidCol));
 				if (cover.exists()) {
-					putCoverFile(cover);
-					ok++;
+					if (sinceDate == null || sinceTime < cover.lastModified()) {
+						putCoverFile(cover);
+						ok++;
+					} else {
+						skipped++;
+					}
 				} else {
 					missing++;
 				}
-				String message = String.format(fmt, ok, missing);
+				String message;
+				if (skipped == 0) {
+					message = String.format(fmt_noskip, ok, missing);
+				} else {
+					message = String.format(fmt_skip, ok, missing, skipped);
+				}
 				listener.step(message, 1);
 			}			
 		} finally {
 			if (c != null && !c.isClosed())
 				c.close();			
 		}
-		System.out.println("Wrote " + ok + " Images, skipped " + missing + " missing");
+		System.out.println("Wrote " + ok + " Images, "+ missing + " missing, and " + skipped + " skipped");
 	}
 
 	/**

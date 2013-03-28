@@ -58,7 +58,7 @@ public interface BackupWriter {
 	 * @param listener
 	 * @throws IOException
 	 */
-	void backup(BackupWriterListener listener) throws IOException;
+	void backup(BackupWriterListener listener, final int backupFlags) throws IOException;
 	/** Get the containing archive */
 	BackupContainer getContainer();
 	/** Write an info block to the archive */

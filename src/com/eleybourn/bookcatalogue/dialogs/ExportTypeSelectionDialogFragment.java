@@ -1,7 +1,6 @@
 package com.eleybourn.bookcatalogue.dialogs;
 
 import java.io.File;
-import java.io.IOException;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -9,28 +8,22 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.backup.BackupInfo;
-import com.eleybourn.bookcatalogue.backup.BackupManager;
-import com.eleybourn.bookcatalogue.backup.BackupReader;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueDialogFragment;
 import com.eleybourn.bookcatalogue.utils.Logger;
 
-public class ImportTypeSelectionDialogFragment extends BookCatalogueDialogFragment {
+public class ExportTypeSelectionDialogFragment extends BookCatalogueDialogFragment {
 	private int mDialogId;
 	private File mFile;
-	private boolean mArchiveHasValidDates;
 
 	/**
 	 * Listener interface to receive notifications when dialog is closed by any means.
 	 * 
 	 * @author pjw
 	 */
-	public static interface OnImportTypeSelectionDialogResultListener {
-		public void onImportTypeSelectionDialogResult(int dialogId, ImportTypeSelectionDialogFragment dialog, int rowId, File file);
+	public static interface OnExportTypeSelectionDialogResultListener {
+		public void onExportTypeSelectionDialogResult(int dialogId, ExportTypeSelectionDialogFragment dialog, int rowId, File file);
 	}
 
 	/**
@@ -41,8 +34,8 @@ public class ImportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
 	 *
 	 * @return			Created fragment
 	 */
-	public static ImportTypeSelectionDialogFragment newInstance(int dialogId, File file) {
-		ImportTypeSelectionDialogFragment frag = new ImportTypeSelectionDialogFragment();
+	public static ExportTypeSelectionDialogFragment newInstance(int dialogId, File file) {
+		ExportTypeSelectionDialogFragment frag = new ExportTypeSelectionDialogFragment();
         Bundle args = new Bundle();
         args.putInt("dialogId", dialogId);
         args.putString("fileSpec", file.getAbsolutePath());
@@ -57,8 +50,8 @@ public class ImportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
 	public void onAttach(Activity a) {
 		super.onAttach(a);
 
-		if (! (a instanceof OnImportTypeSelectionDialogResultListener))
-			throw new RuntimeException("Activity " + a.getClass().getSimpleName() + " must implement OnImportTypeSelectionDialogResultListener");
+		if (! (a instanceof OnExportTypeSelectionDialogResultListener))
+			throw new RuntimeException("Activity " + a.getClass().getSimpleName() + " must implement OnExportTypeSelectionDialogResultListener");
 		
 	}
 
@@ -88,42 +81,22 @@ public class ImportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
     	mDialogId = getArguments().getInt("dialogId");
     	mFile = new File(getArguments().getString("fileSpec"));
 
-		try {
-			BackupReader reader = BackupManager.readBackup(mFile);
-			BackupInfo info = reader.getInfo();
-			reader.close();
-			mArchiveHasValidDates = info.getAppVersionCode() >= 152;
-		} catch (IOException e) {
-			Logger.logError(e);
-			mArchiveHasValidDates = false;
-		}
-
-        View v = getActivity().getLayoutInflater().inflate(R.layout.import_type_selection, null);
-		AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setView(v).setTitle(R.string.import_from_archive).create();
+        View v = getActivity().getLayoutInflater().inflate(R.layout.export_type_selection, null);
+		AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setView(v).setTitle(R.string.backup_to_archive).create();
 		alertDialog.setIcon(R.drawable.ic_menu_help);
 		alertDialog.setCanceledOnTouchOutside(false);
 
 		setOnClickListener(v, R.id.all_books_row);
-		if (mArchiveHasValidDates) {
-			setOnClickListener(v, R.id.new_and_changed_books_row);
-		} else {
-			TextView blurb = (TextView)v.findViewById(R.id.new_and_changed_books_blurb);
-			blurb.setText(R.string.old_archive_blurb);
-		}
+		setOnClickListener(v, R.id.new_and_changed_books_row);
 
         return alertDialog;
     }
     
     private void handleClick(View v) {
-    	if (!mArchiveHasValidDates && v.getId() == R.id.new_and_changed_books_row) {
-    		Toast.makeText(getActivity(), R.string.old_archive_blurb, Toast.LENGTH_LONG).show();
-    		return;
-    	}
-
     	try {
-    		OnImportTypeSelectionDialogResultListener a = (OnImportTypeSelectionDialogResultListener)getActivity();
+    		OnExportTypeSelectionDialogResultListener a = (OnExportTypeSelectionDialogResultListener)getActivity();
     		if (a != null)
-	        	a.onImportTypeSelectionDialogResult(mDialogId, this, v.getId(), mFile);
+	        	a.onExportTypeSelectionDialogResult(mDialogId, this, v.getId(), mFile);
     	} catch (Exception e) {
     		Logger.logError(e);
     	}

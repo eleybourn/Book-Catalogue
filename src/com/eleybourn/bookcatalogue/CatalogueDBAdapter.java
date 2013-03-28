@@ -19,9 +19,11 @@
  */
 package com.eleybourn.bookcatalogue;
 
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_AUTHOR_ID;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_AUTHOR_NAME;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_BOOK;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_BOOK_UUID;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_BOOKSHELF_ID;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_DESCRIPTION;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_DOCID;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_GENRE;
@@ -34,6 +36,7 @@ import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LAST_
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LOCATION;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_NOTES;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_PUBLISHER;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_SERIES_ID;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_SERIES_NAME;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_SERIES_NUM;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_STYLE;
@@ -45,6 +48,7 @@ import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOKS
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOK_AUTHOR;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOK_LIST_STYLES;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOK_SERIES;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOK_BOOKSHELF;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_SERIES;
 
 import java.io.File;
@@ -286,6 +290,7 @@ public class CatalogueDBAdapter {
 			DOM_BOOK_UUID.getDefinition(true) + ", " +
 			DOM_LAST_UPDATE_DATE.getDefinition(true) +
 			")";
+	// ^^^^ NOTE: **NEVER** change this. Rename it, and create a new one. Unless you know what you are doing.
 	
 	//private static final String DATABASE_CREATE_BOOKS_70 =
 	//		"create table " + DB_TB_BOOKS + 
@@ -1612,6 +1617,7 @@ public class CatalogueDBAdapter {
 				message += "* Better handling of the 'back' key when editing books (filipeximenes)\n";
 				message += "* Various bug fixes\n";
 			}
+
 			if (curVersion == 79) {
 				curVersion++;
 				// We want a rebuild in all lower case.
@@ -3475,11 +3481,11 @@ public class CatalogueDBAdapter {
 	 * 
 	 * @return				ID of anthology title record
 	 */
-	public long createAnthologyTitle(long book, String author, String title, boolean returnDupId) {
+	public long createAnthologyTitle(long book, String author, String title, boolean returnDupId, boolean dirtyBookIfNecessary) {
 		if (title.length() > 0) {
 			String[] names = processAuthorName(author);
 			long authorId = Long.parseLong(getAuthorIdOrCreate(names));
-			return createAnthologyTitle(book, authorId, title, returnDupId);
+			return createAnthologyTitle(book, authorId, title, returnDupId, dirtyBookIfNecessary);
 		} else {
 			return -1;
 		}
@@ -3495,8 +3501,11 @@ public class CatalogueDBAdapter {
 	 * 
 	 * @return				ID of anthology title record
 	 */
-	public long createAnthologyTitle(long book, long authorId, String title, boolean returnDupId) {
+	public long createAnthologyTitle(long book, long authorId, String title, boolean returnDupId, boolean dirtyBookIfNecessary) {
 		if (title.length() > 0) {
+			if (dirtyBookIfNecessary)
+				setBookDirty(book);
+
 			ContentValues initialValues = new ContentValues();
 			int position = fetchAnthologyPositionByBook(book) + 1;
 
@@ -3573,13 +3582,14 @@ public class CatalogueDBAdapter {
 	 * successfully created return the new rowId for that book, otherwise return
 	 * a -1 to indicate failure.
 	 * 
-	 * @param id The ID of the book to insert (this will overwrite the normal autoIncrement)
-	 * @param values A ContentValues collection with the columns to be updated. May contain extrat data.
+	 * @param id 		The ID of the book to insert (this will overwrite the normal autoIncrement)
+	 * @param values 	A ContentValues collection with the columns to be updated. May contain extrat data.
+	 * @param flags  	See BOOK_UPDATE_* flag definitions
 	 *
 	 * @return rowId or -1 if failed
 	 */
-	public long createBook(BookData values) {
-		return createBook(0, values);
+	public long createBook(BookData values, int flags) {
+		return createBook(0, values, flags);
 	}
 	
 	/**
@@ -3587,13 +3597,14 @@ public class CatalogueDBAdapter {
 	 * successfully created return the new rowId for that book, otherwise return
 	 * a -1 to indicate failure.
 	 * 
-	 * @param id The ID of the book to insert (this will overwrite the normal autoIncrement)
-	 * @param values A ContentValues collection with the columns to be updated. May contain extrat data.
+	 * @param id 		The ID of the book to insert (this will overwrite the normal autoIncrement)
+	 * @param values 	A ContentValues collection with the columns to be updated. May contain extrat data.
+	 * @param flags  	See BOOK_UPDATE_* flag definitions
 	 *
 	 * @return rowId or -1 if failed
 	 */
 	//public long createBook(long id, String author, String title, String isbn, String publisher, String date_published, float rating, String bookshelf, Boolean read, String series, int pages, String series_num, String notes, String list_price, int anthology, String location, String read_start, String read_end, String format, boolean signed, String description, String genre) {
-	public long createBook(long id, BookData values) {
+	public long createBook(long id, BookData values, int flags) {
 
 		try {
 			// Make sure we have the target table details
@@ -3622,20 +3633,23 @@ public class CatalogueDBAdapter {
 			if (!initialValues.containsKey(DOM_LAST_UPDATE_DATE.name))
 				initialValues.put(DOM_LAST_UPDATE_DATE.name, Utils.toSqlDateTime(new Date()));
 
+			// ALWAYS set the INSTANCE_UPDATE_DATE; this is used for backups
+			//initialValues.put(DOM_INSTANCE_UPDATE_DATE.name, Utils.toSqlDateTime(Calendar.getInstance().getTime()));
+
 			long rowId = mDb.insert(DB_TB_BOOKS, null, initialValues);
 
 			String bookshelf = values.getBookshelfList();
 			if (bookshelf != null && !bookshelf.trim().equals("")) {
-				createBookshelfBooks(rowId, Utils.decodeList(bookshelf, BookEditFields.BOOKSHELF_SEPERATOR));
+				createBookshelfBooks(rowId, Utils.decodeList(bookshelf, BookEditFields.BOOKSHELF_SEPERATOR), false);
 			}
 
-			createBookAuthors(rowId, authors);
+			createBookAuthors(rowId, authors, false);
 
 			ArrayList<Series> series = values.getSeriesList();
-			createBookSeries(rowId, series);
+			createBookSeries(rowId, series, false);
 
 			ArrayList<AnthologyTitle> anthologyTitles = values.getAnthologyTitles();
-			createBookAnthologyTitles(rowId, anthologyTitles);
+			createBookAnthologyTitles(rowId, anthologyTitles, false);
 
 			try {
 				insertFts(rowId);
@@ -3657,6 +3671,7 @@ public class CatalogueDBAdapter {
 	 * @return
 	 */
 	public long createBookshelf(String bookshelf) {
+		// TODO: Decide if we need to backup EMPTY bookshelves...
 		ContentValues initialValues = new ContentValues();
 		initialValues.put(KEY_BOOKSHELF, bookshelf);
 		long result = mDb.insert(DB_TB_BOOKSHELF, null, initialValues);
@@ -3670,14 +3685,14 @@ public class CatalogueDBAdapter {
 	/**
 	 * Create each book/bookshelf combo in the weak entity
 	 * 
-	 * @param mRowId The book id
+	 * @param bookId The book id
 	 * @param bookshelf A separated string of bookshelf names
 	 */
-	public void createBookshelfBooks(long mRowId, ArrayList<String> bookshelves) {
+	public void createBookshelfBooks(long bookId, ArrayList<String> bookshelves, boolean dirtyBookIfNecessary) {
 		if (mDeleteBookshelfBooksStmt == null) {
 			mDeleteBookshelfBooksStmt = mStatements.add("mDeleteBookshelfBooksStmt", "Delete from " + DB_TB_BOOK_BOOKSHELF_WEAK + " Where " + KEY_BOOK + " = ?");
 		}
-		mDeleteBookshelfBooksStmt.bindLong(1, mRowId);
+		mDeleteBookshelfBooksStmt.bindLong(1, bookId);
 		mDeleteBookshelfBooksStmt.execute();
 
 		if (mInsertBookshelfBooksStmt == null) {
@@ -3703,13 +3718,16 @@ public class CatalogueDBAdapter {
 				bookshelfId = 1;
 
 			try {
-				mInsertBookshelfBooksStmt.bindLong(1, mRowId);
+				mInsertBookshelfBooksStmt.bindLong(1, bookId);
 				mInsertBookshelfBooksStmt.bindLong(2, bookshelfId);
 				mInsertBookshelfBooksStmt.execute();
 			} catch (Exception e) {
 				Logger.logError(e, "Error assigning a book to a bookshelf.");
 			}
 		}
+
+		if (dirtyBookIfNecessary)
+			setBookDirty(bookId);
 	}
 	
 	/**
@@ -3719,13 +3737,17 @@ public class CatalogueDBAdapter {
 	 * @param friend A string containing the friend you are loaning to
 	 * @return the ID of the loan
 	 */
-	public long createLoan(BookData values) {
+	public long createLoan(BookData values, boolean dirtyBookIfNecessary) {
 		ContentValues initialValues = new ContentValues();
 		initialValues.put(KEY_BOOK, values.getRowId());
 		initialValues.put(KEY_LOANED_TO, values.getString(KEY_LOANED_TO));
 		long result = mDb.insert(DB_TB_LOAN, null, initialValues);
 		//Special cleanup step - Delete all loans without books
 		this.deleteLoanInvalids();
+
+		if (dirtyBookIfNecessary)
+			setBookDirty(values.getRowId());
+
 		return result;
 	}
 	
@@ -3740,7 +3762,7 @@ public class CatalogueDBAdapter {
 	 * @param title The title of the anthology story
 	 * @return true/false on success
 	 */
-	public boolean updateAnthologyTitle(long rowId, long book, String author, String title) {
+	public boolean updateAnthologyTitle(long rowId, long book, String author, String title, boolean dirtyBookIfNecessary) {
 		ContentValues args = new ContentValues();
 		String[] names = processAuthorName(author);
 		long authorId = Long.parseLong(getAuthorIdOrCreate(names));
@@ -3754,6 +3776,10 @@ public class CatalogueDBAdapter {
 		args.put(KEY_TITLE, title);
 		boolean success = mDb.update(DB_TB_ANTHOLOGY, args, KEY_ROWID + "=" + rowId, null) > 0;
 		purgeAuthors();
+
+		if (dirtyBookIfNecessary)
+			setBookDirty(book);
+
 		return success;
 	}
 	
@@ -3764,7 +3790,7 @@ public class CatalogueDBAdapter {
 	 * @param up true if going up, false if going down
 	 * @return true/false on success
 	 */
-	public int updateAnthologyTitlePosition(long rowId, boolean up) {
+	public int updateAnthologyTitlePosition(long rowId, boolean up, boolean dirtyBookIfNecessary) {
 		Cursor title = fetchAnthologyTitleById(rowId);
 		title.moveToFirst();
 		int book = title.getInt(title.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_BOOK)); 
@@ -3795,6 +3821,10 @@ public class CatalogueDBAdapter {
 		sql = "UPDATE " + DB_TB_ANTHOLOGY + " SET " + KEY_POSITION + "=" + KEY_POSITION + dir + " " +
 		" WHERE " + KEY_BOOK + "='" + book + "' AND " + KEY_ROWID + "=" + rowId+ " ";
 		mDb.execSQL(sql);
+
+		if (dirtyBookIfNecessary)
+			setBookDirty(book);
+
 		return position;
 	}
 
@@ -4150,17 +4180,22 @@ public class CatalogueDBAdapter {
 		}
 	}
 
+	/** Flag indicating the UPDATE_DATE field from the bundle should be truested. If this flag is not set, the UPDATE_DATE will be set based on the current time */
+	public static final int BOOK_UPDATE_USE_UPDATE_DATE_IF_PRESENT = 1;
+	/** Flag indicating to skip doing the 'purge' step; mainly used in batch operations. */
+	public static final int BOOK_UPDATE_SKIP_PURGE_REFERENCES = 2;
+
 	/**
 	 * Update the book using the details provided. The book to be updated is
 	 * specified using the rowId, and it is altered to use values passed in
 	 * 
 	 * @param rowId The id of the book in the database
 	 * @param values A ContentValues collection with the columns to be updated. May contain extrat data.
-	 * @param noPurge Skip doing the 'purge' step; mainy used in batch operations.
+	 * @param flags  See BOOK_UPDATE_* flag definitions
 	 * 
 	 * @return true if the note was successfully updated, false otherwise
 	 */
-	public boolean updateBook(long rowId, BookData values, boolean doPurge) {
+	public boolean updateBook(long rowId, BookData values, int flags) {
 		boolean success = true;
 
 		try {
@@ -4178,31 +4213,33 @@ public class CatalogueDBAdapter {
 				args.remove(DOM_BOOK_UUID.name);
 
 			// We may be just updating series, or author lists but we still update the last_update_date.
-			if (!args.containsKey(DOM_LAST_UPDATE_DATE.name))
+			if ((flags & BOOK_UPDATE_USE_UPDATE_DATE_IF_PRESENT) == 0 || !args.containsKey(DOM_LAST_UPDATE_DATE.name))
 				args.put(DOM_LAST_UPDATE_DATE.name, Utils.toSqlDateTime(Calendar.getInstance().getTime()));
+			// ALWAYS set the INSTANCE_UPDATE_DATE; this is used for backups
+			//args.put(DOM_INSTANCE_UPDATE_DATE.name, Utils.toSqlDateTime(Calendar.getInstance().getTime()));
 			success = mDb.update(DB_TB_BOOKS, args, KEY_ROWID + "=" + rowId, null) > 0;
 
 			String bookshelf = values.getBookshelfList();
 			if (bookshelf != null && !bookshelf.trim().equals("")) {
-				createBookshelfBooks(rowId, Utils.decodeList(bookshelf, BookEditFields.BOOKSHELF_SEPERATOR));
+				createBookshelfBooks(rowId, Utils.decodeList(bookshelf, BookEditFields.BOOKSHELF_SEPERATOR), false);
 			}
 
 			if (values.containsKey(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)) {
 				ArrayList<Author> authors = values.getAuthorList();
-				createBookAuthors(rowId, authors);			
+				createBookAuthors(rowId, authors, false);			
 			}
 			if (values.containsKey(CatalogueDBAdapter.KEY_SERIES_ARRAY)) {
 				ArrayList<Series> series = values.getSeriesList();
-				createBookSeries(rowId, series);			
+				createBookSeries(rowId, series, false);			
 			}
 
 			if (values.containsKey(CatalogueDBAdapter.KEY_ANTHOLOGY_TITLE_ARRAY)) {
 				ArrayList<AnthologyTitle> anthologyTitles = values.getAnthologyTitles();
-				createBookAnthologyTitles(rowId, anthologyTitles);				
+				createBookAnthologyTitles(rowId, anthologyTitles, false);				
 			}
 
 			// Only really skip the purge if a batch update of multiple books is being done.
-			if (doPurge) {
+			if ( (flags & BOOK_UPDATE_SKIP_PURGE_REFERENCES) == 0) {
 				// Delete any unused authors
 				purgeAuthors();
 				// Delete any unused series
@@ -4222,15 +4259,18 @@ public class CatalogueDBAdapter {
 	}
 
 //	private static final String NEXT_STMT_NAME = "next";
-	private void createBookAnthologyTitles(long bookId, ArrayList<AnthologyTitle> list) {
-		this.deleteAnthologyTitles(bookId);
+	private void createBookAnthologyTitles(long bookId, ArrayList<AnthologyTitle> list, boolean dirtyBookIfNecessary) {
+		if (dirtyBookIfNecessary)
+			setBookDirty(bookId);
+
+		this.deleteAnthologyTitles(bookId, false);
 //		SynchronizedStatement stmt = mStatements.get(NEXT_STMT_NAME);
 		for(int i = 0; i < list.size(); i++) {
 			AnthologyTitle at = list.get(i);
 			Author a = at.getAuthor();
 			String authorIdStr = getAuthorIdOrCreate(new String[] {a.familyName, a.givenNames});
 			long authorId = Long.parseLong(authorIdStr);
-			this.createAnthologyTitle(bookId, authorId, at.getTitle(), true);
+			this.createAnthologyTitle(bookId, authorId, at.getTitle(), true, false);
 		}
 	}
 
@@ -4245,7 +4285,10 @@ public class CatalogueDBAdapter {
 	 * @param bookId		ID of book
 	 * @param bookData		Book fields
 	 */
-	private void createBookAuthors(long bookId, ArrayList<Author> authors) {
+	private void createBookAuthors(long bookId, ArrayList<Author> authors, boolean dirtyBookIfNecessary) {
+		if (dirtyBookIfNecessary)
+			setBookDirty(bookId);
+
 		// If we have AUTHOR_DETAILS, same them.
 		if (authors != null) {
 			if (mDeleteBookAuthorsStmt == null) {
@@ -4302,7 +4345,9 @@ public class CatalogueDBAdapter {
 	//
 	private SynchronizedStatement mDeleteBookSeriesStmt = null;
 	private SynchronizedStatement mAddBookSeriesStmt = null;
-	private void createBookSeries(long bookId, ArrayList<Series> series) {
+	private void createBookSeries(long bookId, ArrayList<Series> series, boolean dirtyBookIfNecessary) {
+		if (dirtyBookIfNecessary)
+			setBookDirty(bookId);
 		// If we have SERIES_DETAILS, same them.
 		if (series != null) {
 			if (mDeleteBookSeriesStmt == null) {
@@ -4366,41 +4411,86 @@ public class CatalogueDBAdapter {
 	/**
 	 * Update the bookshelf name
 	 * 
-	 * @param rowId id of bookshelf to update
+	 * @param bookshelfId id of bookshelf to update
 	 * @param bookshelf value to set bookshelf name to
 	 * @return true if the note was successfully updated, false otherwise
 	 */
-	public boolean updateBookshelf(long rowId, String bookshelf) {
+	public boolean updateBookshelf(long bookshelfId, String bookshelf) {
 		boolean success;
 		ContentValues args = new ContentValues();
 		args.put(KEY_BOOKSHELF, bookshelf);
-		success = mDb.update(DB_TB_BOOKSHELF, args, KEY_ROWID + "=" + rowId, null) > 0;
+		success = mDb.update(DB_TB_BOOKSHELF, args, KEY_ROWID + "=" + bookshelfId, null) > 0;
 		purgeAuthors();
+
+		// Mark all related book as dirty
+		setBooksDirtyByBookshelf(bookshelfId);
+
 		return success;
+	}
+
+	/**
+	 * Utility routine to set a book as in need of backup if any ancillary data has changed.
+	 * 
+	 * @param bookId
+	 */
+	private void setBookDirty(long bookId) {
+		// Mark specific book as dirty
+		String sql = "Update " + TBL_BOOKS + " set " + DOM_LAST_UPDATE_DATE + " = current_timestamp where "
+				+ TBL_BOOKS + "." + DOM_ID + " = " + bookId;
+		mDb.execSQL(sql);
+	}
+	
+	/**
+	 * Utility routine to set all books referencing a given author as dirty.
+	 * 
+	 * @param authorId
+	 */
+	private void setBooksDirtyByAuthor(long authorId) {
+		// Mark all related books based on anthology author as dirty
+		String sql = "Update " + TBL_BOOKS  + " set " +  DOM_LAST_UPDATE_DATE + " = current_timestamp where "
+				+ " Exists(Select * From " + TBL_ANTHOLOGY.ref() + " Where " + TBL_ANTHOLOGY.dot(DOM_AUTHOR_ID) + " = " + authorId
+				+ " and " + TBL_ANTHOLOGY.dot(DOM_BOOK) + " = " + TBL_BOOKS + "." + DOM_ID + ")";
+		mDb.execSQL(sql);
+
+		// Mark all related books based on series as dirty
+		sql = "Update " + TBL_BOOKS + " set " + DOM_LAST_UPDATE_DATE + " = current_timestamp where "
+				+ " Exists(Select * From " + TBL_BOOK_AUTHOR.ref() + " Where " + TBL_BOOK_AUTHOR.dot(DOM_AUTHOR_ID) + " = " + authorId
+				+ " and " + TBL_BOOK_AUTHOR.dot(DOM_BOOK) + " = " + TBL_BOOKS + "." + DOM_ID + ")";
+		mDb.execSQL(sql);
+	}
+	
+	private void setBooksDirtyBySeries(long seriesId) {
+		// Mark all related books based on series as dirty
+		String sql = "Update " + TBL_BOOKS + " set " + DOM_LAST_UPDATE_DATE + " = current_timestamp where "
+				+ " Exists(Select * From " + TBL_BOOK_SERIES.ref() + " Where " + TBL_BOOK_SERIES.dot(DOM_SERIES_ID) + " = " + seriesId
+				+ " and " + TBL_BOOK_SERIES.dot(DOM_BOOK) + " = " + TBL_BOOKS + "." + DOM_ID + ")";
+		mDb.execSQL(sql);		
+	}
+
+	private void setBooksDirtyByBookshelf(long bookshelfId) {
+		// Mark all related books as dirty
+		String sql = "Update " + TBL_BOOKS + " set " + DOM_LAST_UPDATE_DATE + " = current_timestamp where "
+				+ " Exists(Select * From " + TBL_BOOK_BOOKSHELF.ref() + " Where " + TBL_BOOK_BOOKSHELF.dot(DOM_BOOKSHELF_ID) + " = " + bookshelfId
+				+ " and " + TBL_BOOK_BOOKSHELF.dot(DOM_BOOK) + " = " + TBL_BOOKS + "." + DOM_ID + ")";
+		mDb.execSQL(sql);		
 	}
 
 	/**
 	 * Update the author names or create a new one or update the passed object ID
 	 * 
 	 * @param a		Author in question
-
 	 */
 	public void syncAuthor(Author a) {
 		long id = lookupAuthorId(a);
+
 		// If we have a match, just update the object
 		if (id != 0) {
 			a.id = id;
 			return;
 		}
 
-		if (a.id != 0) {
-			ContentValues v = new ContentValues();
-			v.put(KEY_FAMILY_NAME, a.familyName);
-			v.put(KEY_GIVEN_NAMES, a.givenNames);
-			mDb.update(DB_TB_AUTHORS, v, KEY_ROWID + " = " + a.id, null);
-		} else {
-			a.id = createAuthor(a.familyName, a.givenNames);
-		}
+		addOrUpdateAuthor(a);
+
 		return;
 	}
 
@@ -4415,16 +4505,34 @@ public class CatalogueDBAdapter {
 			a.id = lookupAuthorId(a);
 		}
 
-		if (a.id != 0) {
-			ContentValues v = new ContentValues();
-			v.put(KEY_FAMILY_NAME, a.familyName);
-			v.put(KEY_GIVEN_NAMES, a.givenNames);
-			mDb.update(DB_TB_AUTHORS, v, KEY_ROWID + " = " + a.id, null);
-		} else {
-			a.id = createAuthor(a.familyName, a.givenNames);
-		}
+		addOrUpdateAuthor(a);
+
 		return;
 	}
+
+	/**
+	 * Add or update the passed author, depending whether a.id == 0.
+	 *
+	 * @param a
+	 */
+	private void addOrUpdateAuthor(Author a) {
+		if (a.id != 0) {
+			// Get the old author
+			Author oldA = this.getAuthorById(a.id);
+			// Update if changed (case SENSITIVE)
+			if (!a.familyName.equals(oldA.familyName) || a.givenNames.equals(oldA.givenNames)) {
+				ContentValues v = new ContentValues();
+				v.put(KEY_FAMILY_NAME, a.familyName);
+				v.put(KEY_GIVEN_NAMES, a.givenNames);
+				mDb.update(DB_TB_AUTHORS, v, KEY_ROWID + " = " + a.id, null);
+				// Mark any book referencing this author as dirty.
+				setBooksDirtyByAuthor(a.id);
+			}
+		} else {
+			a.id = createAuthor(a.familyName, a.givenNames);
+		}		
+	}
+
 
 	/**
 	 * Refresh the passed author from the database, if present. Used to ensure that
@@ -4467,13 +4575,8 @@ public class CatalogueDBAdapter {
 			return;
 		}
 
-		if (s.id != 0) {
-			ContentValues v = new ContentValues();
-			v.put(KEY_SERIES_NAME, s.name);
-			mDb.update(DB_TB_SERIES, v, KEY_ROWID + " = " + s.id, null);
-		} else {
-			s.id = createSeries(s.name);
-		}
+		addOrUpdateSeries(s);
+
 		return;
 	}
 
@@ -4488,14 +4591,32 @@ public class CatalogueDBAdapter {
 			s.id = lookupSeriesId(s);
 		}
 
+		addOrUpdateSeries(s);
+
+		return;
+	}
+
+	/**
+	 * Add or update the passed series, depending whether s.id == 0.
+	 *
+	 * @param a
+	 */
+	private void addOrUpdateSeries(Series s) {
 		if (s.id != 0) {
-			ContentValues v = new ContentValues();
-			v.put(KEY_SERIES_NAME, s.name);
-			mDb.update(DB_TB_SERIES, v, KEY_ROWID + " = " + s.id, null);
+			// Get the old author
+			Series oldS = this.getSeriesById(s.id);
+			// Update if changed (case SENSITIVE)
+			if (!s.name.equals(oldS.name)) {
+				ContentValues v = new ContentValues();
+				v.put(KEY_SERIES_NAME, s.name);
+				mDb.update(DB_TB_SERIES, v, KEY_ROWID + " = " + s.id, null);
+
+				// Mark all books referencing this series as dirty
+				this.setBooksDirtyBySeries(s.id);
+			}
 		} else {
 			s.id = createSeries(s.name);
-		}
-		return;
+		}		
 	}
 
 	/**
@@ -4504,10 +4625,13 @@ public class CatalogueDBAdapter {
 	 * @param bookRowId id of the book
 	 * @return true if deleted, false otherwise
 	 */
-	public boolean deleteAnthologyTitles(long bookRowId) {
+	public boolean deleteAnthologyTitles(long bookRowId, boolean dirtyBookIfNecessary) {
 		boolean success;
 		// Delete the anthology entries for the book
 		success = mDb.delete(DB_TB_ANTHOLOGY, KEY_BOOK + "=" + bookRowId, null) > 0;
+		// Mark book dirty
+		if (dirtyBookIfNecessary)
+			setBookDirty(bookRowId);
 		// Cleanup the author list, if necessary (we may have deleted the only work by an author)
 		purgeAuthors();
 		return success;
@@ -4519,7 +4643,7 @@ public class CatalogueDBAdapter {
 	 * @param anthRowId id of the anthology to delete
 	 * @return true if deleted, false otherwise
 	 */
-	public boolean deleteAnthologyTitle(long anthRowId) {
+	public boolean deleteAnthologyTitle(long anthRowId, boolean dirtyBookIfNecessary) {
 		// Find the soon to be deleted title position#
 		Cursor anthology = fetchAnthologyTitleById(anthRowId);
 		anthology.moveToFirst();
@@ -4536,6 +4660,10 @@ public class CatalogueDBAdapter {
 			" SET " + KEY_POSITION + "=" + KEY_POSITION + "-1" +
 			" WHERE " + KEY_POSITION + ">" + position + " AND " + KEY_BOOK + "=" + book + "";
 		mDb.execSQL(sql);
+
+		if (dirtyBookIfNecessary)
+			setBookDirty(book);
+
 		return success;
 	}
 
@@ -4636,7 +4764,10 @@ public class CatalogueDBAdapter {
 			Logger.logError(e);
 			return false;
 		}
-		
+
+		// Mark all related books dirty
+		setBooksDirtyBySeries(series.id);
+
 		// Delete DB_TB_BOOK_SERIES for this series
 		boolean success1 = mDb.delete(DB_TB_BOOK_SERIES, KEY_SERIES_ID + " = " + series.id, null) > 0;
 		
@@ -4694,28 +4825,33 @@ public class CatalogueDBAdapter {
 	/** 
 	 * Delete the bookshelf with the given rowId
 	 * 
-	 * @param rowId id of note to delete
+	 * @param rowId id of bookshelf to delete
 	 * @return true if deleted, false otherwise
 	 */
-	public boolean deleteBookshelf(long rowId) {
+	public boolean deleteBookshelf(long bookshelfId) {
+
+		setBooksDirtyByBookshelf(bookshelfId);
+
 		boolean deleteSuccess;
 		//String sql = "UPDATE " + DB_TB_BOOKS + " SET " + KEY_BOOKSHELF + "=1 WHERE " + KEY_BOOKSHELF + "='" + rowId + "'";
 		//mDb.execSQL(sql);
-		deleteSuccess = mDb.delete(DB_TB_BOOK_BOOKSHELF_WEAK, KEY_BOOKSHELF + "=" + rowId, null) > 0;
-		deleteSuccess = mDb.delete(DB_TB_BOOKSHELF, KEY_ROWID + "=" + rowId, null) > 0;
+		deleteSuccess = mDb.delete(DB_TB_BOOK_BOOKSHELF_WEAK, KEY_BOOKSHELF + "=" + bookshelfId, null) > 0;
+		deleteSuccess = mDb.delete(DB_TB_BOOKSHELF, KEY_ROWID + "=" + bookshelfId, null) > 0;
 		return deleteSuccess;
 	}
 	
 	/** 
 	 * Delete the loan with the given rowId
 	 * 
-	 * @param rowId 	id of book whose loan is to be deleted
+	 * @param bookId 	id of book whose loan is to be deleted
 	 * 
 	 * @return 			true if deleted, false otherwise
 	 */
-	public boolean deleteLoan(long rowId) {
+	public boolean deleteLoan(long bookId, boolean dirtyBookIfNecessary) {
 		boolean success;
-		success = mDb.delete(DB_TB_LOAN, KEY_BOOK+ "=" + rowId, null) > 0;
+		if (dirtyBookIfNecessary)
+			setBookDirty(bookId);
+		success = mDb.delete(DB_TB_LOAN, KEY_BOOK+ "=" + bookId, null) > 0;
 		//Special cleanup step - Delete all loans without books
 		this.deleteLoanInvalids();
 		return success;
@@ -4984,6 +5120,8 @@ public class CatalogueDBAdapter {
 
 		SyncLock l = mDb.beginTransaction(true);
 		try {
+			setBooksDirtyByAuthor(oldAuthor.id);
+
 			// First handle anthologies; they have a single author and are easy
 			String sql = "Update " + DB_TB_ANTHOLOGY + " set " + KEY_AUTHOR_ID + " = " + newAuthor.id
 						+ " Where " + KEY_AUTHOR_ID + " = " + oldAuthor.id;
@@ -5021,10 +5159,10 @@ public class CatalogueDBAdapter {
 
 		SyncLock l = mDb.beginTransaction(true);
 		try {
-			String sql;
+			setBooksDirtyBySeries(oldSeries.id);
 
 			// Update books but prevent duplicate index errors
-			sql = "Update " + DB_TB_BOOK_SERIES + " Set " + KEY_SERIES_ID + " = " + newSeries.id 
+			String sql = "Update " + DB_TB_BOOK_SERIES + " Set " + KEY_SERIES_ID + " = " + newSeries.id 
 					+ " Where " + KEY_SERIES_ID + " = " + oldSeries.id
 					+ " and Not Exists(Select NULL From " + DB_TB_BOOK_SERIES + " bs Where "
 					+ "                 bs." + KEY_BOOK + " = " + DB_TB_BOOK_SERIES + "." + KEY_BOOK
@@ -5214,7 +5352,8 @@ public class CatalogueDBAdapter {
 			String sql;
 
 			// Update books but prevent duplicate index errors
-			sql = "Update " + DB_TB_BOOKS + " Set " + KEY_FORMAT + " = '" + encodeString(newFormat) + "'"
+			sql = "Update " + DB_TB_BOOKS + " Set " + KEY_FORMAT + " = '" + encodeString(newFormat) 
+					+ "', " + DOM_LAST_UPDATE_DATE + " = current_timetamp "
 					+ " Where " + KEY_FORMAT + " = '" + encodeString(oldFormat) + "'";
 			mDb.execSQL(sql);	
 			
@@ -5238,6 +5377,26 @@ public class CatalogueDBAdapter {
     		mGetBookUuidQuery.bindLong(1, id);
     		//try {
             	return mGetBookUuidQuery.simpleQueryForString();    			
+    		//} catch (SQLiteDoneException e) {
+    		//	return null;
+    		//}
+    	}
+    }
+    
+    private SynchronizedStatement mGetBookUpdateDateQuery = null;
+    /**
+     * Utility routine to return the book title based on the id. 
+     */
+    public String getBookUpdateDate(long bookId) {
+    	if (mGetBookUpdateDateQuery == null) {
+        	String sql = "Select " + DOM_LAST_UPDATE_DATE + " From " + DB_TB_BOOKS + " Where " + KEY_ROWID + "=?";
+        	mGetBookUpdateDateQuery = mStatements.add("mGetBookUpdateDateQuery", sql);
+    	}
+    	// Be cautious; other threads may call this and set parameters.
+    	synchronized(mGetBookUpdateDateQuery) {
+    		mGetBookUpdateDateQuery.bindLong(1, bookId);
+    		//try {
+            	return mGetBookUpdateDateQuery.simpleQueryForString();    			
     		//} catch (SQLiteDoneException e) {
     		//	return null;
     		//}

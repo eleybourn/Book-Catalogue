@@ -95,11 +95,11 @@ public class BookEditFields extends BookDetailsAbstract
 	}
 
 	public void onActivityCreated(Bundle savedInstanceState) {
+		Tracker.enterOnActivityCreated(this);
 		double t0 = System.currentTimeMillis();
 		double t1 = 0;
 		double t2 = 0;
 
-		Tracker.enterOnCreateView(this);		
 		try {
 			t1 = System.currentTimeMillis();
 			super.onActivityCreated(savedInstanceState);
@@ -223,8 +223,9 @@ public class BookEditFields extends BookDetailsAbstract
 			Logger.logError(e);
 		} catch (SQLException e) {
 			Logger.logError(e);
+		} finally {
+			Tracker.exitOnActivityCreated(this);			
 		}
-		Tracker.exitOnCreate(this);
 		
 		double tn = System.currentTimeMillis();
 		System.out.println("BEF oAC(super): " + (t2 - t1));
@@ -380,7 +381,7 @@ public class BookEditFields extends BookDetailsAbstract
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-		Tracker.handleEvent(this, "onActivityResult(" + requestCode + "," + resultCode + ")", Tracker.States.Enter);			
+		Tracker.enterOnActivityResult(this, requestCode, resultCode);			
 		try {
 			super.onActivityResult(requestCode, resultCode, intent);
 			switch(requestCode) {
@@ -406,7 +407,7 @@ public class BookEditFields extends BookDetailsAbstract
 				}
 			}
 		} finally {
-			Tracker.handleEvent(this, "onActivityResult", Tracker.States.Exit);			
+			Tracker.exitOnActivityResult(this, requestCode, resultCode);			
 		}
 	}
 	

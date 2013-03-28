@@ -887,8 +887,23 @@ and you can edit the book via the options menu using the menu button or overflow
 		]]>
     </string>
     <!-- End: Added/Updated in 5.0.8 -->
-    
+
+	<!--  Note to Translators: don't bother translating strings until they get a version number. They are very much 'draft' versions -->
     <!-- Begin: Added/Updated in [Next Version] -->
+    
+    <!--  Explanatory text for 'import' dialogue -->
+    <string name="import_books_blurb">The books in this archive will be imported. Click on one of two options to start the import, or press \'back\' to cancel:</string>
+    <!-- Description of the 'import all books' option -->
+    <string name="all_books_blurb">All books in the archive will be imported, updating existing books and adding new ones.</string>
+    <!-- Menu text for the 'import new & changed' option -->
+    <string name="new_and_changed_books">New and updated books</string>
+    <!-- Description of the 'import new & changed' option -->
+    <string name="new_and_changed_books_blurb">Only import books that are new, or which have been updated more recently in the archive. This is useful when synchronizing two devices.</string>
+    <!-- Descriptive text associated with import options not available with older archives -->
+    <string name="old_archive_blurb">This option is not supported for older archive versions.</string>
+    <!-- Part of the progress message displayed when importing books -->
+    <string name="n_created_m_updated">%1$s created, %2$s updated</string>
+    
     <!-- End: Added/Updated in [Next Version] -->
 
 </resources>

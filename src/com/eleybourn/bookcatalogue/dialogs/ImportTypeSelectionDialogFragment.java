@@ -58,7 +58,7 @@ public class ImportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
 		super.onAttach(a);
 
 		if (! (a instanceof OnImportTypeSelectionDialogResultListener))
-			throw new RuntimeException("Activity " + a.getClass().getSimpleName() + " must implement OnDialogResultListener");
+			throw new RuntimeException("Activity " + a.getClass().getSimpleName() + " must implement OnImportTypeSelectionDialogResultListener");
 		
 	}
 

@@ -66,6 +66,9 @@ public class CsvImporter {
 		if (export == null || export.size() == 0)
 			return true;
 
+		Integer nCreated = 0;
+		Integer nUpdated = 0;
+
 		listener.setMax(export.size() - 1);
 
 		// Container for values.
@@ -315,11 +318,13 @@ public class CsvImporter {
 							}
 							if (doUpdate) {
 								db.updateBook(idLong, values, CatalogueDBAdapter.BOOK_UPDATE_SKIP_PURGE_REFERENCES|CatalogueDBAdapter.BOOK_UPDATE_USE_UPDATE_DATE_IF_PRESENT);								
+								nUpdated++;
 							}
 							//mImportUpdated++;
 						} else {
 							doUpdate = true;
 							newId = db.createBook(idLong, values, CatalogueDBAdapter.BOOK_UPDATE_USE_UPDATE_DATE_IF_PRESENT);
+							nCreated++;
 							//mImportCreated++;
 							values.putString(CatalogueDBAdapter.KEY_ROWID, newId.toString());							
 							idLong = newId;
@@ -380,7 +385,7 @@ public class CsvImporter {
 
 				long now = System.currentTimeMillis();
 				if ( (now - lastUpdate) > 200 && !listener.isCancelled()) {
-					listener.onProgress(title, row);
+					listener.onProgress(title + "\n(" + BookCatalogueApp.getResourceString(R.string.n_created_m_updated, nCreated, nUpdated) + ")", row);
 					lastUpdate = now;
 				}
 

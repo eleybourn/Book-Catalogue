@@ -47,6 +47,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 
+import com.eleybourn.bookcatalogue.backup.Exporter;
 import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
 import com.eleybourn.bookcatalogue.utils.Utils;
 

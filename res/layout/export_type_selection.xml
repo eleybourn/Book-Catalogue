@@ -13,11 +13,11 @@
         android:padding="@dimen/padding_border" >
 
         <TextView
-            android:id="@+id/import_books_blurb"
+            android:id="@+id/export_books_blurb"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="15dp"
-            android:text="@string/import_books_blurb"
+            android:text="@string/export_books_blurb"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <RelativeLayout
@@ -56,7 +56,7 @@
                 android:layout_alignLeft="@id/all_books"
                 android:layout_alignRight="@id/all_books"
                 android:layout_below="@+id/all_books"
-                android:text="@string/all_books_blurb"
+                android:text="@string/export_all_books_blurb"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
         </RelativeLayout>
 
@@ -96,7 +96,7 @@
                 android:layout_alignLeft="@+id/new_and_changed_books"
                 android:layout_alignRight="@+id/new_and_changed_books"
                 android:layout_below="@+id/new_and_changed_books"
-                android:text="@string/new_and_changed_books_blurb"
+                android:text="@string/export_new_and_changed_books_blurb"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
         </RelativeLayout>
     </LinearLayout>

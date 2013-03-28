@@ -31,6 +31,10 @@ import java.io.OutputStream;
  * @author pjw
  */
 public interface Exporter {
+	/** Flag value to indicate ALL books should be exported */
+	public static final int EXPORT_ALL = 1;
+	/** Flag value to indicate new books and books with more recent update_date fields should be exported */
+	public static final int EXPORT_NEW_OR_UPDATED = 2;
 
 	/**
 	 * Listener interface to get progress messages.
@@ -53,6 +57,6 @@ public interface Exporter {
 	 * 
 	 * @throws IOException
 	 */
-	public boolean export(OutputStream outputStream, Exporter.ExportListener listener) throws IOException;
+	public boolean export(OutputStream outputStream, Exporter.ExportListener listener, final int backupFlags) throws IOException;
 
 }

@@ -2151,12 +2151,20 @@ public class CatalogueDBAdapter {
 	 * 
 	 * @return BooksCursor over all books, authors, etc
 	 */
-	public BooksCursor exportBooks() {
+	public BooksCursor exportBooks(Date sinceDate) {
+		String sinceClause;
+		if (sinceDate == null) {
+			sinceClause = ""; 
+		} else {
+			sinceClause = " Where b." + DOM_LAST_UPDATE_DATE + " > '" + Utils.toSqlDateTime(sinceDate) + "' ";
+		}
+
 		String sql = "SELECT DISTINCT " +
 				getBookFields("b",KEY_ROWID) + ", " +
 				"l." + KEY_LOANED_TO + " as " + KEY_LOANED_TO + " " +  
 			" FROM " + DB_TB_BOOKS + " b" +
 				" LEFT OUTER JOIN " + DB_TB_LOAN +" l ON (l." + KEY_BOOK + "=b." + KEY_ROWID + ") " +
+			sinceClause + 
 			" ORDER BY b._id";
 		return fetchBooks(sql, EMPTY_STRING_ARRAY);
 	}

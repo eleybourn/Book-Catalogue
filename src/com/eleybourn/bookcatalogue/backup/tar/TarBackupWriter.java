@@ -83,6 +83,7 @@ public class TarBackupWriter extends BackupWriterAbstract {
 	@Override
 	public void putBooks(File books) throws IOException {
 		TarArchiveEntry entry = new TarArchiveEntry(new File(TarBackupContainer.BOOKS_FILE));
+		entry.setModTime(books.lastModified());
 		entry.setSize(books.length());
 		mOutput.putArchiveEntry(entry);
 		FileInputStream in = new FileInputStream(books);
@@ -95,6 +96,7 @@ public class TarBackupWriter extends BackupWriterAbstract {
 	@Override
 	public void putCoverFile(File source) throws IOException {
 		TarArchiveEntry entry = new TarArchiveEntry(source.getName());
+		entry.setModTime(source.lastModified());
 		entry.setSize(source.length());
 		mOutput.putArchiveEntry(entry);
 		FileInputStream in = new FileInputStream(source);

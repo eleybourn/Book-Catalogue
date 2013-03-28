@@ -54,7 +54,7 @@ public interface BackupReader {
 	 * 
 	 * @throws IOException
 	 */
-	void restore(BackupReaderListener listener) throws IOException;
+	void restore(BackupReaderListener listener, int importFlags) throws IOException;
 	
 	/**
 	 * Read the next ReaderEntity from the backup.

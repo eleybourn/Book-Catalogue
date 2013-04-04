@@ -762,8 +762,6 @@
     <string name="please_check_sd_writable">Пожалуйста, проверьте что на SD карте достаточно места и возможна запись.</string>
     <string name="please_check_sd_readable">Пожалуйста, проверьте что SD карта доступна.</string>
     
-    <!-- Begin: Added/Updated in 5.0.2 -->
-
     <string name="new_in_502">
 		<![CDATA[
 			<p><b>Новое в версии 5.0.2</b>\n\n
@@ -771,11 +769,6 @@
 			</p>
 		]]>
     </string>
-
-    <!-- End: Added/Updated in 5.0.2 -->
-    
-    <!-- Begin: Added/Updated in 5.0.3 -->
-
     <string name="new_in_503">
 		<![CDATA[
 			<p><b>Новое в версии 5.0.3</b>\n\n
@@ -784,8 +777,50 @@
 			</p>
 		]]>
     </string>
-
-    <!-- End: Added/Updated in 5.0.2 -->
-
-
+	
+    <string name="language">Язык</string>
+    <string name="new_in_504">
+		<![CDATA[
+			<p><b>Новое в версии 5.0.4</b>\n\n
+				* Новое поле: Язык\n\n
+				* Доработан перевод на французский (Imkal)\n\n
+				* Исправление багов\n\n
+			</p>
+		]]>
+    </string>
+    
+    <string name="booklist_generation">Составление списка книг</string>
+    <string name="force_compatibility_mode">Режим совместимости</string>
+    <string name="force_enhanced_compatibility_mode">Повышенный режим совместимости</string>
+    <string name="force_fully_featured">Полная функциональность</string>
+    <string name="automatically_use_recommended_option">Автоматически использовать рекомендованный вариант</string>
+    
+    <string name="new_in_505">
+		<![CDATA[
+			<p><b>Новое в версии 5.0.5</b>\n\n
+				* "Added Date" List now sorted in reverse order \n\n
+				* Обновлен перевод на французский (Imkal)\n\n
+				* Исправление багов\n\n
+			</p>
+		]]>
+    </string>
+    <string name="new_in_508">
+		<![CDATA[
+			<p><b>Новое в версии 5.0.8</b>\n\n
+				* Обновлен перевод на немецкий (Robert Wetzlmayr)\n\n
+			</p>
+		]]>
+    </string>
+    
+    <string name="import_books_blurb">Книги этого архива будут импортированы. Выберите один из вариантов, чтобы начать импорт, или \'НАЗАД\' для отмены:</string>
+    <string name="all_books_blurb">Все книги архива будут импортированы, обновив существующие и добавив новые.</string>
+    <string name="new_and_changed_books">Новые и обновленные книги</string>
+    <string name="new_and_changed_books_blurb">Импортировать только новые книги или только те, что обновлены более поздно. Это удобно, когда синхронизируются несклоько устройств.</string>
+    <string name="old_archive_blurb">Эта опция не поддерживается для архивов более ранних версий.</string>
+    <string name="n_created_m_updated">%1$s создано, %2$s обновлено</string>
+    <string name="export_books_blurb">Книги этого архива будут экспортированы. Выберите один из вариантов, чтобы начать экспорт, или \'НАЗАД\' для отмены:</string>
+    <string name="export_all_books_blurb">Все книги каталога будут экспортированы в архив.</string>
+    <string name="export_new_and_changed_books_blurb">Экспортировать только новые книги, либо те, что были обновлены после последнего полного бэкапа. Это удобно, когда синхронизируются несклоько устройств.</string>
+    <string name="n_exported">%1$s экспортировано</string>
+    <string name="covers_progress_incr">%1$s обложек обработано (%2$s не хватает, %3$s пропущено)</string>
 </resources>

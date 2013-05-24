@@ -349,13 +349,12 @@ public class StorageUtils {
 					uris.add(u);
 				}
 			}
-			// Send it, if there are any files to send.
-			if (uris.size() == 0) {
-				Toast.makeText(context, R.string.no_debug_info, Toast.LENGTH_LONG).show();
-			} else {
-				emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-				context.startActivity(Intent.createChooser(emailIntent, "Send mail..."));        	
-			}
+	
+			// We used to only send it if there are any files to send, but later versions added 
+			// useful debugging info. So now we always send.
+			emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+			context.startActivity(Intent.createChooser(emailIntent, "Send mail..."));        	
+
 		} catch (NullPointerException e) {
 			Logger.logError(e);
 			Toast.makeText(context, R.string.export_failed_sdcard, Toast.LENGTH_LONG).show();

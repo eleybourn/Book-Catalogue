@@ -48,16 +48,16 @@
     <string name="series_num">#</string>
     <string name="unable_to_connect_google">Kan geen verbinding maken met Google Books</string>
     <string name="export_data">Boeken exporteren</string>
-    <string name="export_complete">Export (naar SDCard) van gegevens compleet. </string>
+    <string name="export_complete">Export (naar SD kaart) van gegevens compleet. </string>
     <string name="import_data">Boeken Importeren</string>
     <string name="import_alert">Waarschuwing. Het importeren van gegevens kan bestaande boekgegevens onbedoeld bijwerken met nieuwe informatie als de uuid kolom niet aanwezig is en de id in het import-bestand dezelfde is als de bestaande id. Dit is meestal geen bezwaar als u een veld in een exportbestand heeft veranderd. Als u een nieuwe boek item heeft gemaakt, of iemand anders zijn boeken importeert, zorg dan dat het uuid veld aanwezig is of dat het id veld leeg is.</string>
-    <string name="export_failed">FOUT: Export (naar SDCard) van gegevens mislukt. </string>
-    <string name="import_failed">FOUT: Import van gegevens (van SDCard) mislukt. Staat het bestand op de juiste plaats?</string>
+    <string name="export_failed">FOUT: Export (naar SD kaart) van gegevens mislukt. </string>
+    <string name="import_failed">FOUT: Import van gegevens (van SD kaart) mislukt. Staat het bestand op de juiste plaats?</string>
     <string name="search_title">Book Catalogue: Zoekresultaten</string>
     <string name="results_found">Gevonden resultaten</string>
     <string name="administration_label">Administratieve Functies</string>
     <string name="administration_title">Book Catalogue: Administratie</string>
-    <string name="menu_administration">Admin</string>
+    <string name="menu_administration">Beheer</string>
     <string name="install_scan">Om uw boeken via de ISBN streepjescode te kunnen scannen moet u één van de Zxing, pic2shop of Google Googles streepjescode scanner applicaties installeren.</string>
     <string name="install_scan_title">Streepjescode Scanner Installeren</string>
     <string name="version_number">Versienummer:</string>
@@ -138,7 +138,7 @@
     <string name="duplicate_book_title">Dupliceer Boek</string>
     <string name="duplicate_book_message">Het boek dat u wilt toevoegen is al aanwezig in de database, weet u zeker dat u nog een exemplaar wilt toevoegen?</string>
     <string name="menu_add_thumb_gallery">Van Galerij&#8230;</string>
-    <string name="backup_request">Wilt u  een back-up van uw database op uw SDCard maken?</string>
+    <string name="backup_request">Wilt u  een back-up van uw database op uw SD kaart maken?</string>
     <string name="backup_title">Back-up maken?</string>
     <string name="searching_amazon_books">Zoek bij Amazon</string>
     <string name="searching_google_books">Zoeken bij Google Books</string>
@@ -196,8 +196,8 @@
     <string name="author_is_blank">Auteur veld is leeg</string>
     <string name="series_already_in_list">Serie staat al in de lijst</string>
     <string name="series_is_blank">Serie veld is leeg</string>
-    <string name="export_failed_sdcard">Export mislukt - kon niet naar de SDcard wegschrijven</string>
-    <string name="thumbnail_failed_sdcard">Miniatuurafbeelding download mislukt - kon niet naar de SDcard wegschrijven</string>
+    <string name="export_failed_sdcard">Export mislukt - kon niet naar de SD kaart wegschrijven</string>
+    <string name="thumbnail_failed_sdcard">Miniatuurafbeelding download mislukt - kon niet naar de SD kaart wegschrijven</string>
     <string name="skip_title">Overslaan van - %s</string>
     <string name="num_books_searched">%s Boeken gezocht</string>
     <string name="cancelled_info">Geannuleerd - %s</string>
@@ -223,7 +223,7 @@
     <string name="unsaved_edits_title">Niet opgeslagen veranderingen</string>
     <string name="changed_author_how_apply">U heeft de auteursnaam veranderd van:\n  \'%1$s\' naar \n  \'%2$s\'\nHoe wilt u deze verandering toepassen?\nNB: De keuze \'%3$s\' wordt onmiddelijk toegepast.</string>
     <string name="this_book">Dit boek</string>
-    <string name="scope_of_change">Omvang van verandering</string>
+    <string name="scope_of_change">Omvang van de verandering</string>
     <string name="changed_series_how_apply">U heeft de serie veranderd van:\n  \'%1$s\' naar \n  \'%2$s\'\nHoe wilt u deze verandering doorvoeren?\nNB: De keuze \'Alle Boeken\' wordt onmiddelijk toegepast.</string>
     <string name="unable_to_find_book">Kan gespecificeerd boek niet vinden</string>
     <string name="list_and">en</string>
@@ -236,57 +236,57 @@
     <string name="image_not_found">Afbeelding niet gevonden</string>
 
     <item name="fieldCheckbox" type="id"></item>
-<!-- hier gebleven gvmelle -->
-    <string name="select_min_1_field">Select at least one field to update</string>
-    <string name="usage_copy_if_blank">Copy if blank</string>
-    <string name="usage_add_extra">Appends extra data</string>
-    <string name="usage_overwrite">Overwrites existing data</string>
-    <string name="cancelling">Cancelling</string>
-    <string name="starting_search">Starting Search</string>
-    <string name="lt_info">This application is enhanced by using LibraryThing as a source of information about book series, as well as a source of alternate covers. To use these features you need to register with LibraryThing (free) and request a LibraryThing developer key (also free).</string>
-    <string name="lt_register_text">Register with LibraryThing</string>
-    <string name="lt_devkey_text">Request LibraryThing developer key</string>
+
+    <string name="select_min_1_field">Selecteer tenminste één veld om te updaten</string>
+    <string name="usage_copy_if_blank">kopieer indien leeg</string>
+    <string name="usage_add_extra">Voegt extra gegevens toe</string>
+    <string name="usage_overwrite">Overschrijft bestaande gegevens</string>
+    <string name="cancelling">Aan 't Annuleren</string>
+    <string name="starting_search">Opstarten zoeken</string>
+    <string name="lt_info">Deze applicatie wordt verbeterd door het gebruik van LibraryThing als informatiebron voor boeken en alternatieve omslagafbeeldingen. Om deze functies te kunnen gebruiken moet u zich bij LibraryThing (gratis) registreren en om een ontwikkelaarssleutel vragen (ook gratis).</string>
+    <string name="lt_register_text">Registeren bij LibraryThing</string>
+    <string name="lt_devkey_text">Aanvragen LibraryThing ontwikkelaarssleutel</string>
     <string name="lt_label">LibraryThing</string>
-    <string name="lt_gotkey">Once you have the developer key (or if you already have one), just enter it below and it will be used to get extra data.</string>
-    <string name="developer_key">Developer Key</string>
-    <string name="require_library_thing_info">This feature requires a LibraryThing Developer Key. Do you want to see more information about LibraryThing?</string>
-    <string name="uses_library_thing_info">This feature benefits from having a LibraryThing Developer Key. Do you want to see more information about LibraryThing, or disable this message?\n\nLibraryThing information can be found in the LibraryThing tab of the Administration pages.</string>
-    <string name="reg_library_thing_title">LibraryThing Registration</string>
-    <string name="more_info">More Info.</string>
-    <string name="disable_dialogue">Disable Message</string>
-    <string name="lt_reset_messages_info">From time to time this application can display optional messages regarding LibraryThing. Press the button below to reset any of these messages that have been disabled.</string>
-    <string name="reset">Reset</string>
-    <string name="send_info_text">Click on the button below to gather information about any recent crashes or other errors and send it to one of our developers. This will create a backup copy of your entire database as well as any log files. If you do not wish to send any of these files, delete it from the mail attachments before sending.</string>
-    <string name="send_info">Send Information</string>
-    <string name="cleanup_files_text">Purgeable files currently use %s on the SD card. Log files and other data are saved on the SD card at each upgrade, when you backup the database, or when the application crashes. Click the button below to purge these files from your SD card. If you have been experiencing crashing or other errors, please consider using the \'Send Information\' button first.</string>
-    <string name="cleanup_files">Cleanup Files</string>
-    <string name="no_debug_info">No debug information available</string>
+    <string name="lt_gotkey">Zodra u de sleutel heeft (of als u die al heeft) kunt u die hieronder in het tekstveld invullen en zo gebruik maken van de extra gegevensbron.</string>
+    <string name="developer_key">Ontwikkelaarssleutel</string>
+    <string name="require_library_thing_info">Deze functie vereist een LibraryThing ontwikkelaarssleutel. Wilt u meer informatie over LibraryThing?</string>
+    <string name="uses_library_thing_info">Deze functie profiteert van een LibraryThing ontwikkelaarssleutel. Wilt u meer informatie over LibraryThing, of dit bericht uitschakelen?\n\nLibraryThing informatie kan worden gevonden onder het LibraryThing tabblad van de Administratie pagina's.</string>
+    <string name="reg_library_thing_title">LibraryThing Registratie</string>
+    <string name="more_info">Meer Info.</string>
+    <string name="disable_dialogue">Bericht uitschakelen</string>
+    <string name="lt_reset_messages_info">Van tijd tot tijd kan deze toepassing optionele berichten weergeven over LibraryThing. Druk op de knop hieronder om alle berichten die zijn uitgeschakeld te herstellen.</string>
+    <string name="reset">Herstellen</string>
+    <string name="send_info_text">Klik op de knop hieronder om informatie te verzamelen over recente crashes of andere fouten en zend deze naar een van onze ontwikkelaars. Dit maakt een back-up van uw hele database en van alle log-bestanden. Als u deze bestanden niet wilt opsturen, kunt u ze van de bijlagen lijst in het e-mailbericht verwijderen voordat u dit verstuurt.</string>
+    <string name="send_info">Zend informatie</string>
+    <string name="cleanup_files_text">Permanent te verwijderen bestanden nemen %s van uw SD kaart in beslag. Log-bestanden en andere gegevens worden opgeslagen op uw SD kaart bij iedere upgrade, na elke back-up van de database of wanneer de toepassing crasht. Klik op de knop hieronder om deze bestanden permanent te verwijderen van uw SD kaart. Als u veel crashes ondervindt of ander fouten, overweeg dan de  \'Zend Informatie\' knop eerst te gebruiken.</string>
+    <string name="cleanup_files">Bestanden opschonen</string>
+    <string name="no_debug_info">Geen Foutopsporingsgegevens beschikbaar</string>
     <string name="megabytes">%.2fMB</string>
     <string name="kilobytes">%.2fkB</string>
     <string name="bytes">%.0f bytes</string>
     <string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
-    <string name="sortby_author_given">Sort by Author (Given Name)</string>
-    <string name="debug_subject">Gathered debugging information</string>
-    <string name="debug_body">Please take the time to briefly describe the problem you are experiencing.</string>
-    <string name="menu_duplicate">Duplicate Book</string>
-    <string name="cannot_edit_system">You cannot edit the system values</string>
-    <string name="incorrect_key">Your LibraryThing Developer Key was incorrect, or we could not connect to the network to verify.</string>
-    <string name="correct_key">Your LibraryThing Developer Key is valid.</string>
-    <string name="sortby_author_one">Sort by Author (First author only)</string>
-    <string name="no_connection">No Internet connection is available.</string>
-    <string name="sortby_published">Sort by Date Published</string>
-    <string name="menu_share_this">Share</string>
-    <string name="email_export">Would you like to send this export as an email somewhere?</string>
-    <string name="menu_crop_thumb">Crop Thumbnail</string>
+    <string name="sortby_author_given">Sorteren op auteur (Voornaam)</string>
+    <string name="debug_subject">Verzamelde Foutopsporingsgegevens</string>
+    <string name="debug_body">Beschrijf in het kort de problemen die u heeft ondervonden.</string>
+    <string name="menu_duplicate">Dupliceer boek</string>
+    <string name="cannot_edit_system">U kunt de systeemwaarden niet bewerken</string>
+    <string name="incorrect_key">Uw LibraryThing ontwikkelaarssleutel was niet juist, of er kon geen verbinding worden gemaakt met het netwerk ter verificatie.</string>
+    <string name="correct_key">Uw LibraryThing ontwikkelaarssleutel is geldig.</string>
+    <string name="sortby_author_one">Sorteren op auteur (Alleen eerste auteur)</string>
+    <string name="no_connection">Geen Internet verbinding beschikbaar.</string>
+    <string name="sortby_published">Sorteren op publicatiedatum</string>
+    <string name="menu_share_this">Delen</string>
+    <string name="email_export">Wilt u dit exportbestand als e-mail ergens heen sturen?</string>
+    <string name="menu_crop_thumb">Miniatuurafbeelding bijsnijden</string>
     <string name="test_goodreads">Test Goodreads</string>
-    <string name="task_errors">Task Errors</string>
-    <string name="retry">Retry</string>
-    <string name="optionsElipsis">Options&#8230;</string>
-    <string name="edit_bookElipsis">Edit Book&#8230;</string>
-    <string name="retry_task">Retry</string>
-    <string name="visit_goodreads">Visit GoodReads&#8230;</string>
-    <string name="delete_event">Delete Event</string>
-    <string name="delete_task">Delete Task</string>
+    <string name="task_errors">Taak fouten</string>
+    <string name="retry">Opnieuw proberen</string>
+    <string name="optionsElipsis">Opties&#8230;</string>
+    <string name="edit_bookElipsis">Bewerken Boek&#8230;</string>
+    <string name="retry_task">Opnieuw proberen</string>
+    <string name="visit_goodreads">Bezoek GoodReads&#8230;</string>
+    <string name="delete_event">Verwijder gebeurtenis</string>
+    <string name="delete_task">Verwijder taak</string>
 
     <item name="TAG_EVENT" type="id"></item>
     <item name="TAG_HOLDER" type="id"></item>
@@ -296,7 +296,7 @@
     <item name="TAG_TASK_HOLDER" type="id"></item>
     <item name="TAG_PROPERTY" type="id"></item>
     <item name="TAG_DIALOG_ITEM" type="id"></item>
-
+<!-- hier gebleven gvmelle -->
     <string name="my_books">My Books</string>
     <string name="my_books_classic">My Books (Classic)</string>
     <string name="loan_return_book">Loan, Return or Edit Book</string>

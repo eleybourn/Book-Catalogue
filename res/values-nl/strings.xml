@@ -98,15 +98,15 @@
     <string name="update_fields">Automatisch Velden bijwerken</string>
     <string name="select_fields_to_update">Selecteer bij te werken velden</string>
     <string name="select_fields_to_update_help">De geselecteerde velden zulllen worden bijgewerkt vanaf het internet. Niet geselecteerde velden blijven onveranderd.</string>
-    <string name="overwrite_thumbnail">Dit zal de geselecteerde velden zoals getoond bijwerken, maar miniatuurafbeeldingen kunnen desgewenst voor Alle boeken worden gedownload.\n\nWilt u alle miniatuurafbeeldingen overschrijven? Waarschuwing: dit kan een lange tijd in beslag nemen. </string>
+    <string name="overwrite_thumbnail">Dit zal de geselecteerde velden zoals getoond bijwerken, maar miniaturen kunnen desgewenst voor Alle boeken worden gedownload.\n\nWilt u alle miniaturen overschrijven? Waarschuwing: dit kan een lange tijd in beslag nemen. </string>
     <string name="yes">Ja</string>
     <string name="no">Nee</string>
     <string name="ok">OK</string>
-    <string name="download_thumbs">Miniatuurafbeeldingen worden op de achtergrond gedownload</string>
+    <string name="download_thumbs">Miniaturen worden op de achtergrond gedownload</string>
     <string name="search_fail">Het zoeken naar het boek is mislukt. Controleer uw netwerk instellingen.</string>
     <string name="search_exception">Search failed while %1$s: %2$s</string>
     <string name="hello">Book Catalogue!</string>
-    <string name="menu_delete_thumb">Verwijder Miniatuurafbeelding</string>
+    <string name="menu_delete_thumb">Verwijder miniatuur</string>
     <string name="help">Help</string>
     <string name="filler_help_text">De volledige online helpbestand voor de applicatie komt speodig. </string>
     <string name="menu_manage_fields">Beheer van zichtbaarheid Velden</string>
@@ -123,12 +123,12 @@
     <string name="anthology_save">Opslaan</string>
     <string name="anthology_add">Toevoegen</string>
     <string name="menu_add_thumb_photo">Van Camera&#8230;</string>
-    <string name="thumbnail">Omslag miniatuurafbeelding</string>
-    <string name="menu_rotate_thumb">Omdraaien Miniatuurafbeelding&#8230;</string>
+    <string name="thumbnail">Omslag miniatuur</string>
+    <string name="menu_rotate_thumb">Omdraaien Miniatuur&#8230;</string>
     <string name="menu_rotate_thumb_cw">Naar Rechts draaien</string>
     <string name="menu_rotate_thumb_ccw">Naar links draaien</string>
     <string name="menu_rotate_thumb_180">180 graden draaien</string>
-    <string name="menu_zoom_thumb">Miniatuurafbeelding vergroten</string>
+    <string name="menu_zoom_thumb">Miniatuur vergroten</string>
     <string name="help_title_nutshell">In een notedop</string>
     <string name="signed">Is dit boek gesigneerd?</string>
     <string name="read_start">Begindatum lezen</string>
@@ -154,8 +154,8 @@
     <!-- NOTE: Adding a new format will involve changing code that references this list -->
     <string name="description">Beschrijving</string>
     <string name="genre">Genre</string>
-    <string name="auto_update">Wilt u de volgende velden nu automatisch bijwerken? \n* Genre \n* Beschrijving \n* Miniatuurafbeeldingen\n\n Als u annuleren kiest, kunt u dit altijd weer doen via de Administratie pagina</string>
-    <string name="notset">Niet Ingesteld</string>
+    <string name="auto_update">Wilt u de volgende velden nu automatisch bijwerken? \n* Genre \n* Beschrijving \n* Miniaturen\n\n Als u annuleren kiest, kunt u dit altijd weer doen via de Administratie pagina</string>
+    <string name="notset">Niet Ingevuld</string>
     <string name="menu_search">Zoek boeken</string>
     <string name="menu_insert_name">toevoegen via Naam</string>
     <string name="isbn_name_search_help">toevoegen van boeken via ISBN is veel preciezer dan toevoegen via auteur en titel en verdient meestal de voorkeur. De juiste streepjescode kunt u meestal vinden aan de binnenkant van de boekomslag. \n\n</string>
@@ -197,7 +197,7 @@
     <string name="series_already_in_list">Serie staat al in de lijst</string>
     <string name="series_is_blank">Serie veld is leeg</string>
     <string name="export_failed_sdcard">Export mislukt - kon niet naar de SD kaart wegschrijven</string>
-    <string name="thumbnail_failed_sdcard">Miniatuurafbeelding download mislukt - kon niet naar de SD kaart wegschrijven</string>
+    <string name="thumbnail_failed_sdcard">Miniatuur download mislukt - kon niet naar de SD kaart wegschrijven</string>
     <string name="skip_title">Overslaan van - %s</string>
     <string name="num_books_searched">%s Boeken gezocht</string>
     <string name="cancelled_info">Geannuleerd - %s</string>
@@ -206,7 +206,7 @@
     <string name="given_names">Voornamen</string>
     <string name="edit_author_details">Bewerken auteur details</string>
     <string name="immediate_global_changes">NB: Alle opgeslagen veranderingen worden direct en overal toegepast</string>
-    <string name="menu_replace_thumb">Vervangen miniatuurafbeelding&#8230;</string>
+    <string name="menu_replace_thumb">Vervangen miniatuur&#8230;</string>
     <string name="menu_thumb_alt_editions">Van andere uitgaven&#8230;</string>
     <string name="author_required">Er moet tenminste één auteur worden vermeld</string>
     <string name="title_required">Het titelveld mag niet leeg zijn</string>
@@ -231,7 +231,7 @@
     <string name="editions_require_isbn">Andere uitgaven ophalen vereist een ISBN</string>
     <string name="no_editions">Geen uitgave gegevens beschikbaar</string>
     <string name="finding_editions">Zoeken naar Uitgaven&#8230;</string>
-    <string name="click_on_thumb">Klik op een miniatuurafbeelding voor vergroting</string>
+    <string name="click_on_thumb">Klik op een miniatuur voor vergroting</string>
     <string name="loading">Bezig met laden&#8230;</string>
     <string name="image_not_found">Afbeelding niet gevonden</string>
 
@@ -277,7 +277,7 @@
     <string name="sortby_published">Sorteren op publicatiedatum</string>
     <string name="menu_share_this">Delen</string>
     <string name="email_export">Wilt u dit exportbestand als e-mail ergens heen sturen?</string>
-    <string name="menu_crop_thumb">Miniatuurafbeelding bijsnijden</string>
+    <string name="menu_crop_thumb">Miniatuur bijsnijden</string>
     <string name="test_goodreads">Test Goodreads</string>
     <string name="task_errors">Taak fouten</string>
     <string name="retry">Opnieuw proberen</string>
@@ -296,109 +296,107 @@
     <item name="TAG_TASK_HOLDER" type="id"></item>
     <item name="TAG_PROPERTY" type="id"></item>
     <item name="TAG_DIALOG_ITEM" type="id"></item>
-<!-- hier gebleven gvmelle -->
-    <string name="my_books">My Books</string>
-    <string name="my_books_classic">My Books (Classic)</string>
-    <string name="loan_return_book">Loan, Return or Edit Book</string>
-    <string name="admin_and_prefs">Administration and Preferences</string>
-    <string name="edit_book_send_to_gr">Send to goodreads</string>
-    <string name="goodreads">goodreads</string>
+    <string name="my_books">Mijn Boeken</string>
+    <string name="my_books_classic">Mijn klassieke Boeken</string>
+    <string name="loan_return_book">boeken bewerken, uitlenen of terugbrengen</string>
+    <string name="admin_and_prefs">Administratie en voorkeuren</string>
+    <string name="edit_book_send_to_gr">Zend naar Goodreads</string>
+    <string name="goodreads">Goodreads</string>
     <string name="goodreads_label">Goodreads</string>
-    <string name="goodreads_auth_blurb_part1">goodreads is a web site whose stated mission is "to help people find and share books they love". 
-    										They have an extensive database of books and reviews, and if you are a registered goodreads user, 
-    										BookCatalogue can export your books, shelves and reviews to goodreads and import your books, 
-    										shelves and reviews from goodreads. BookCatalogue is a stand-alone application and does not 
-    										require goodreads, but if you are interested you can register at:</string>
-    <string name="goodreads_auth_blurb_part2">Once you are registered, or if you are already a goodreads user, you can authorize BookCatalogue 
-    										to access your goodreads data by pressing the button below. It will take you to a web page 
-    										where you will need to login to goodreads and authorize this application. We will never see 
-    										your password, and you can disable access via the goodreads website. Due to the vagueries of 
-    										the web, you may end up on a blank web page. Just click the back button to return here!</string>
-    <string name="goodreads_auth_blurb_part3">But remember&#8230;there is no need to do any of this: BookCatalogue works just fine without it!</string>
+    <string name="goodreads_auth_blurb_part1">goodreads is een website met de missie: "mensen helpen boeken te vinden en te delen met anderen". 
+    										  Ze hebben een uitgebreide database met boeken en boekbesprekingen. Als geregistreerde gebruiker 
+    										  kan BookCatalogue uw boeken, boekenplanken en boekbesprekingen exporteren en importeren naar en van goodreads. 
+    										  BookCatalogue is een op zichzelf staande applicatie en heeft goodreads niet nodig, maar als u toch geïnteresseerd 
+    										  bent kunt u zich registreren op:</string>
+    <string name="goodreads_auth_blurb_part2">Eenmaal geregistreerd, of als u al gebruiker bent, kunt u BookCatalogue toestemming verlenen de goodreads gegevens 
+    										  te benaderen door op de knop hier beneden te drukken. 
+    										  Het brengt u naar een web pagina waar u op goodreads moet inloggen en deze applicatie moet autoriseren. 
+    										  Wij zullen nooit in staat zijn uw wachtwoord te zien en u kunt ten alle tijden de toegang uitschakelen via de goodreads website. 
+    										  Dankzij de grilligheid van het Internet kunt u blijven zitten met een lege pagina. Klik dan op de Terug-toets om hier terug te keren!</string>
+    <string name="goodreads_auth_blurb_part3">Maar onthoud goed&#8230; er is geen noodzaak om dit te doen: BookCatalogue werkt prima zonder goodreads!</string>
     <string name="goodreads_url">http://www.goodreads.com</string>
-    <string name="authorize_access">Authorize Access</string>
-    <string name="authorize_access_already_auth">It looks like you have already authorized this application. All goodreads functions should be available already</string>
-    <string name="goodreads_access_error">There was a network problem while accessing goodreads. Please check if the goodreads web site it up, and if the problem persists please contact support</string>
-    <string name="other_preferences">Other Preferences</string>
-    <string name="user_interface">User Interface</string>
-    <string name="start_in_my_books">Start in \'My Books\'</string>
-    <string name="include_classic_catalogue_view">Include Classic catalogue view</string>
-    <string name="background_tasks">Background Tasks</string>
-    <string name="cleanup_old_tasks">Cleanup Old Tasks</string>
-    <string name="cleanup_old_events">Cleanup Old Events</string>
-    <string name="show_more">Show More</string>
-    <string name="text_and_or_isbn">Text and/or ISBN</string>
-    <string name="search_criteria">Search Criteria</string>
-    <string name="add_manually">Add Manually</string>
-    <string name="scan_barcode">Scan Barcode/ISBN</string>
-    <string name="enter_barcode">Enter Barcode/ISBN</string>
-    <string name="search_internet">Search Internet</string>
-    <string name="show_results">Show Results</string>
-    <string name="rebuild_fts">Rebuild FTS (alpha only!)</string>
-    <string name="search_in">Search In</string>
-    <string name="send_books_to_goodreads">Send books to goodreads</string>
-    <string name="legacy_task">Legacy Task</string>
-    <string name="occurred_at">occurred at %1$s</string>
-    <string name="unknown_uc">UNKNOWN</string>
-    <string name="this_book_deleted_uc">THIS BOOK HAS BEEN DELETED</string>
-    <string name="by">by %1$s</string>
-    <string name="no_matching_book_found">No matching book found</string>
-    <string name="no_isbn_stored_for_book">No ISBN stored for book</string>
-    <string name="select_an_action">Select an action</string>
-    <string name="get_image_from">Get an image from %1$s</string>
-    <string name="goodreads_auth_check">Goodreads authorization check</string>
-    <string name="goodreads_auth_failed">Goodreads authorization failed</string>
-    <string name="goodreads_auth_successful">Goodreads authorization successful</string>
-    <string name="authorized">Authorized</string>
-    <string name="not_authorized">Not Authorized</string>
-    <string name="goodreads_auth_error">Goodreads authorization resulted in an error.</string>
-    <string name="if_the_problem_persists">If the problem persists, contact support via Help on the main menu.</string>
-    <string name="book_no_longer_exists">The specified book no longer exists</string>
-    <string name="please_enter_search_criteria">Please enter search criteria</string>
-    <string name="error_while_searching">Error while searching.</string>
-    <string name="send_all_to_goodreads_result">%1$s books processed: %2$s sent successfully, %3$s with no ISBN and %4$s with ISBN but not found in goodreads</string>
-    <string name="x_of_y">%1$s of %2$s</string>
-    <string name="send_book_to_goodreads">Send book %1$s to goodreads</string>
+    <string name="authorize_access">Toegang autoriseren</string>
+    <string name="authorize_access_already_auth">Het lijkt erop dat u deze applicatie al toegang heeft verleend. Alle goodreads functies moet reeds beschikbaar zijn</string>
+    <string name="goodreads_access_error">Er was een netwerkprobleem terwijl u probeerde toegang te krijgen tot goodreads. controleer of de website van goodreads in de lucht is en als het probleem aanhoudt maak dan contact met ondersteuning</string>
+    <string name="other_preferences">Meer voorkeuren</string>
+    <string name="user_interface">Gebruikersinterface</string>
+    <string name="start_in_my_books">Opstarten in \'Mijn Boeken\'</string>
+    <string name="include_classic_catalogue_view">Inlcusief de Klassieke boeken catalogus</string>
+    <string name="background_tasks">Achtergrondtaken</string>
+    <string name="cleanup_old_tasks">Opschonen oude taken</string>
+    <string name="cleanup_old_events">Opschonen oude gebeurtenissen</string>
+    <string name="show_more">Toon meer</string>
+    <string name="text_and_or_isbn">Tekst en/of ISBN</string>
+    <string name="search_criteria">Zoekcriteria</string>
+    <string name="add_manually">Handmatig toevoegen</string>
+    <string name="scan_barcode">Scannen streepjescode/ISBN</string>
+    <string name="enter_barcode">Invullen streepjescode/ISBN</string>
+    <string name="search_internet">Internet doorzoeken</string>
+    <string name="show_results">Toon resultaten</string>
+    <string name="rebuild_fts">FTS opnieuw opbouwen (alleen alpha!)</string>
+    <string name="search_in">Zoeken in</string>
+    <string name="send_books_to_goodreads">Zend boeken naar goodreads</string>
+    <string name="legacy_task">Verlopen taken</string>
+    <string name="occurred_at">opgetreden op %1$s</string>
+    <string name="unknown_uc">ONBEKEND</string>
+    <string name="this_book_deleted_uc">DIT BOEK IS VERWIJDERD</string>
+    <string name="by">door %1$s</string>
+    <string name="no_matching_book_found">Geen overeenkomstig boek gevonden</string>
+    <string name="no_isbn_stored_for_book">Geen ISBN opgeslagen voor boek</string>
+    <string name="select_an_action">Selecteer een actie</string>
+    <string name="get_image_from">Verkrijg een afbeelding van %1$s</string>
+    <string name="goodreads_auth_check">Goodreads autorisatie controle</string>
+    <string name="goodreads_auth_failed">Goodreads autorisatie mislukt</string>
+    <string name="goodreads_auth_successful">Goodreads autorisatie gelukt</string>
+    <string name="authorized">Geautoriseerd</string>
+    <string name="not_authorized">Niet geautoriseerd</string>
+    <string name="goodreads_auth_error">Goodreads autorisatie leidde tot een fout.</string>
+    <string name="if_the_problem_persists">Als het probleem aanhoud, maak fdan contact met ondersteuning via Help in het hoofdmenu.</string>
+    <string name="book_no_longer_exists">Het gespecificeerde boek bestaat niet meer</string>
+    <string name="please_enter_search_criteria">Vul de zoekcriteria in</string>
+    <string name="error_while_searching">Fout tijdens het zoeken.</string>
+    <string name="send_all_to_goodreads_result">%1$s boeken verwerkt: %2$s met succes verzonden, %3$s zonder ISBN en %4$s met ISBN maar niet gevonden in goodreads</string>
+    <string name="x_of_y">%1$s van %2$s</string>
+    <string name="send_book_to_goodreads">Zend boek %1$s naar goodreads</string>
 
     <item name="NOTIFICATION" type="id"></item>
     <item name="TAG_GOODREADS_WORK" type="id"></item>
     <item name="TAG_GET_THUMBNAIL_TASK" type="id"></item>
-
-    <string name="erase_cover_cache">Erase cover cache</string>
-    <string name="crash_toast_text">BookCatalogue has crashed unexpectedly. Please help us to make the application better by reporting this crash.</string>
-    <string name="crash_notif_ticker_text">BookCatalogue has crashed</string>
-    <string name="crash_notif_title">BookCatalogue Crash</string>
-    <string name="crash_notif_text">Please click here for details</string>
-    <string name="crash_dialog_title">BookCatalogue Crash</string>
-    <string name="crash_dialog_text">It looks like BookCatalogue has crashed. If possible describe anything you think may be relevant below and press "OK" to send us an email about the crash. You will see the email before it is sent.</string>
-    <string name="crash_dialog_comment_prompt">Your comments (or just leave blank):</string>
-    <string name="crash_dialog_ok_toast">Thank you!</string>
-    <string name="browse_books">Browse all books</string>
-    <string name="no_series">(no series)</string>
-    <string name="booklist_read">Read</string>
-    <string name="booklist_unread">Unread</string>
-    <string name="no_genre">(no genre)</string>
-    <string name="no_title">(no title)</string>
-    <string name="no_publisher">(no publisher)</string>
-    <string name="no_author">(no author)</string>
-    <string name="no_date">(no date)</string>
-    <string name="book_lists">Book Lists</string>
-    <string name="show_all_authors">Show book under each author</string>
-    <string name="show_all_series">Show book in each series</string>
-    <string name="show_thumbnails">Show Thumbnails</string>
-    <string name="prefer_large_thumbnails">Prefer large thumbnails</string>
-    <string name="display_first_then_last_names">Display given names first</string>
-    <string name="sort_author_series">Author then Series</string>
-    <string name="sort_first_author_series">Author then Series (First author only)</string>
+    <string name="erase_cover_cache">Wis boekomslag cache</string>
+    <string name="crash_toast_text">BookCatalogue is onverwacht gecrasht. Help ons aub de toepassing beter te maken door deze crash te melden.</string>
+    <string name="crash_notif_ticker_text">BookCatalogue is gecrasht</string>
+    <string name="crash_notif_title">BookCatalogue crash</string>
+    <string name="crash_notif_text">Klik hier voor details</string>
+    <string name="crash_dialog_title">BookCatalogue crash</string>
+    <string name="crash_dialog_text">Het lijkt er op dat BookCatalogue is gecrasht. Beschrijf indien mogelijk wat de oorzaak kan zijn hieronder en druk op "OK" om ons een e-mail te sturen over deze crash. U kunt het bericht inzien voordat het wordt verzonden.</string>
+    <string name="crash_dialog_comment_prompt">Uw commentaar (of laat dit leeg):</string>
+    <string name="crash_dialog_ok_toast">Dank u!</string>
+    <string name="browse_books">Browse alle boeken</string>
+    <string name="no_series">(geen series)</string>
+    <string name="booklist_read">Gelezen</string>
+    <string name="booklist_unread">Ongelezen</string>
+    <string name="no_genre">(geen genre)</string>
+    <string name="no_title">(geen titel)</string>
+    <string name="no_publisher">(geen uitgever)</string>
+    <string name="no_author">(geen auteur)</string>
+    <string name="no_date">(geen datum)</string>
+    <string name="book_lists">Boekenlijsten</string>
+    <string name="show_all_authors">Toon boek onder elke auteur</string>
+    <string name="show_all_series">Toen boek in elke serie</string>
+    <string name="show_thumbnails">Toon Miniaturen</string>
+    <string name="prefer_large_thumbnails">Prefereer grote miniaturen</string>
+    <string name="display_first_then_last_names">Toon voornamen eerst</string>
+    <string name="sort_author_series">Auteur dan Serie</string>
+    <string name="sort_first_author_series">Auteur dan Serie (Alleen eerste auteur)</string>
     <string name="sort_series">Series</string>
-    <string name="sort_title_first_letter">Title first letter</string>
-    <string name="sort_genre">Genre name</string>
-    <string name="sort_loaned">Loaned</string>
-    <string name="sort_read_and_unread">Read and Unread</string>
-    <string name="sort_publication_date">Publication date</string>
-    <string name="sort_added_date">Added date</string>
-    <string name="sort_author_year">Author and Year</string>
-    <string name="empty_with_brackets">(empty)</string>
+    <string name="sort_title_first_letter">Titel eerste letter</string>
+    <string name="sort_genre">Genrenaam</string>
+    <string name="sort_loaned">Uitgeleend</string>
+    <string name="sort_read_and_unread">Gelezen en ongelezen</string>
+    <string name="sort_publication_date">Publicatiedatum</string>
+    <string name="sort_added_date">Datum toegevoegd</string>
+    <string name="sort_author_year">Auteur en jaar</string>
+    <string name="empty_with_brackets">(leeg)</string>
     <string name="navigator">Navigator</string>
 
     <item name="MENU_DELETE_BOOK" type="id"/>
@@ -414,228 +412,225 @@
     <item name="MENU_EDIT_STYLE" type="id"/>
     <item name="MENU_CLONE_STYLE" type="id"/>
 
-    <string name="booklist_preferences">Book List Preferences</string>
-    <string name="extra_book_details">Extra Book Details</string>
-    <string name="general">General</string>
-    <string name="bookshelves">Bookshelves</string>
-    <string name="shelves">Shelves</string>
-    <string name="location">Location</string>
-    <string name="management">Management</string>
-    <string name="credentials">Credentials</string>
-    <string name="data_import_export">Data Import/Export</string>
-    <string name="unrecognized_task">Unrecognized Task</string>
-    <string name="rebuilding_search_index">Rebuilding Search Index&#8230;</string>
-    <string name="optimizing_databases">Optimizing databases&#8230;</string>
-    <string name="starting_up">Starting up&#8230;</string>
-    <string name="book_catalogue_startup">BookCatalogue Startup</string>
-    <string name="book_list_state">Book list state</string>
-    <string name="always_start_booklists_expanded">Always start book lists expanded</string>
-    <string name="always_start_booklists_collapsed">Always start book lists collapsed</string>
-    <string name="remember_booklists_state">Preserve book list state</string>
-    <string name="searching_goodreads">Searching goodreads</string>
-    <string name="edit_book_list_styles">Edit book list styles</string>
-    <string name="show_more_ellipsis">Show more&#8230;</string>
-    <string name="show_fewer_ellipsis">Show fewer&#8230;</string>
-    <string name="customize_ellipsis">Customize&#8230;</string>
-    <string name="hint">Hint</string>
-    <string name="reset_hints">Reset hints</string>
-    <string name="do_not_show_again">Do not show again</string>
-    <string name="other_settings_ellipsis">Other settings&#8230;</string>
-    <string name="hint_booklist_styles_editor">You can use this screen to customize the list of styles that will be displayed in your default styles menu. 
-    										\n\nA green tick indicates the style will be shown in the list, and a red cross indicates it will not be shown.
-    										Clicking on a green tick will turn it into a cross, and vice-versa.
-    										\n\nIf no styles are ticked, then all styles will be shown.
-    										\n\nIt is also possible to re-order the items by dragging the icon at the extreme right of each row.
-    										\n\nClicking anywhere else in a row will allow you to edit the details of a specific style (or clone it, if 
-    										it is a built-in style).
+    <string name="booklist_preferences">Boekenlijst Voorkeuren</string>
+    <string name="extra_book_details">Extra boekdetails</string>
+    <string name="general">Algemeen</string>
+    <string name="bookshelves">Boekenplanken</string>
+    <string name="shelves">Planken</string>
+    <string name="location">Locatie</string>
+    <string name="management">Beheer</string>
+    <string name="credentials">Inloggegevens</string>
+    <string name="data_import_export">Datums Import/Export</string>
+    <string name="unrecognized_task">Onherkenbare taak</string>
+    <string name="rebuilding_search_index">Zoekindex opnieuw opbouwen&#8230;</string>
+    <string name="optimizing_databases">Databases optimaliseren&#8230;</string>
+    <string name="starting_up">Opstarten&#8230;</string>
+    <string name="book_catalogue_startup">BookCatalogue Opstart</string>
+    <string name="book_list_state">Boekenlijst status</string>
+    <string name="always_start_booklists_expanded">Altijd boekenlijsten uitgeklapt starten</string>
+    <string name="always_start_booklists_collapsed">Altijd boekenlijsten ingeklapt starten</string>
+    <string name="remember_booklists_state">Behoud boekenlijst status</string>
+    <string name="searching_goodreads">Goodreads doorzoeken</string>
+    <string name="edit_book_list_styles">Bewerk boekenlijst stijlen</string>
+    <string name="show_more_ellipsis">Toon meer&#8230;</string>
+    <string name="show_fewer_ellipsis">Toon minder&#8230;</string>
+    <string name="customize_ellipsis">Aanpassen&#8230;</string>
+    <string name="hint">Aanwijzing</string>
+    <string name="reset_hints">Herstel aanwijzingen</string>
+    <string name="do_not_show_again">Laat niet meer zien</string>
+    <string name="other_settings_ellipsis">Andere instellingen&#8230;</string>
+    <string name="hint_booklist_styles_editor">U kunt dit scherm gebruiken om de lijst met stijlen aan te passen die in uw standaard stijlen menu wordt getoond. 
+    										\n\nEen goren vinkje betekent dat een stijl getoont wordt in de lijst en een rood kruisje dat die niet wordt getoond.
+    										Klikken op een groen vinkje zal het in een rood kruisje veranderen en vice-versa.
+    										\n\nAls geen stijlen zijn aangevinkt zullen alle stijlen worden getoond.
+    										\n\nHet is ook mogelijk de items te herschikken door ze met het pictogram uiterst rechts van de rij op en neer te verslepen.
+    										\n\nOveral elders in de rij klikken geeft de mogelijkheid de details van een bepaalde stijl te bewerken (of deze te klonen als het een ingebouwde stijl is).
 </string>
-    <string name="hint_booklist_style_groups">You can use this screen to modify the hiearchy of headings for a specific book list style.
-    										\n\nA green tick indicates the heading will be shown in the list, and a red cross indicates it will not be shown.
-    										Clicking on a green tick will turn it into a cross, and vice-versa.
-    										\n\nYou can re-order the hierarchy by dragging the icon at the extreme right of each row up or down.
+    <string name="hint_booklist_style_groups">U kunt dit scherm gebruiken om de hiearchie van de kopteksten voor een bepaalde boekenlijststijl te bewerken.
+    										\n\nEen groen vinkje geeft aan dat de koptekst in de lijst te zien is en een rood kruisje dat deze niet te zien is.
+    										Klikken op een groen vinkje zal het in een rood kruisje veranderen en vice-versa.
+    										\n\nU kunt de hierarchie herschikken door ze met het pictogram uiterst rechts van de rij op en neer verslepen.
 </string>
-    <string name="hint_booklist_style_properties">You can use this screen to set the characteristics of a specific book list style.
-    										\n\nYou can change the name, edit the groupings to change the hierarchy, and adjust a variety of
-    										other settings to build a style that you find useful.
-    										\n\nIt is also possible to use \'Book Filters\' to modify the selection of books that will be displayed in
-    										the list. eg. to only retrieve books you have not read yet.
+    <string name="hint_booklist_style_properties">U kunt dit scherm gebruiken om de eigenschappen van een bepaalde boekenlijststijl te bewerken.
+    										\n\nU kunt de naam veranderen, de groepering bewerken om de hierarchie te veranderen en een nog veel meer aanpassingen 
+    										doen aan de instellingen om een stijl te bouwen naar uw eigen inzichten.
+    										\n\nHet is ook mogelijk \'Boekfilters\' te gebruiken om de selectie van weer te geven boeken in de lijst aan te passen,
+    										bijvoorbeeld alleen die boeken die u nog niet heeft gelezen.
 </string>
-    <string name="hint_booklist_global_properties">You can use this screen to set the default characteristics of all book list styles.
-    										\n\nMost properties can be overridden by individual styles, but the default values are
-    										defined here.
-    										\n\nYou can change the background, change how lists are displayed at startup, and adjust a variety of
-    										other settings that will be applied to all your styles when possible.
-    										\n\nYou can also edit the styles menu, and the styles themselves from here.
+    <string name="hint_booklist_global_properties">U kunt dit scherm gebruiken om de standaard eigenschappen van alle boekenlijststijlen in te stellen.
+    										\n\nDe meeste eigenschappen kunnen worden overschreven door individuele stijlen, maar de standaardwaarden worden
+    										hier gedefinieerd.
+    										\n\nU kunt hier de achtergrond veranderen, hoe de lijsten worden weer te geven bij het opstarten en een aantal andere instellingen
+    										veranderen die, waar mogelijk, toegepast worden op alle stijlen.
+    										\n\nU kunt ook het stijl-menu aanpassen en van hieruit de stijlen zelf.
 </string>
-    <string name="preferred_styles">Preferred styles</string>
-    <string name="edit_style_colon_name">Edit style: %1$s</string>
-    <string name="add_style">Add style</string>
-    <string name="clone_style_colon_name">Clone style: %1$s</string>
-    <string name="non_blank_arg_required">A non-blank value for \'%1$s\' must be specified</string>
-    <string name="select_read_only">Select read books only</string>
-    <string name="select_unread_only">Select unread books only</string>
-    <string name="extra_filters">Book filters</string>
-    <string name="new_style">New style</string>
-    <string name="select_based_on_read_status">Select based on \'Read\' status</string>
-    <string name="books_with_multiple_authors">Books with multiple authors</string>
-    <string name="books_in_multiple_series">Books in multiple series</string>
-    <string name="use_default_setting">Use default setting</string>
-    <string name="show_book_under_each_thing">Under each %1$s</string>
-    <string name="show_book_under_primary_thing">Under primary %1$s only</string>
-    <string name="format_of_author_names">Format of author names</string>
-    <string name="given_name_first_eg">Given name first eg. \'Bill Smith\'</string>
-    <string name="family_name_first_eg">Family name first eg. \'Smith, Bill\'</string>
-    <string name="thumbnails">Thumbnails</string>
-    <string name="size_of_booklist_items">Size of book list items</string>
-    <string name="normal">Normal</string>
-    <string name="smaller">Smaller</string>
-    <string name="select_style">Select Style</string>
-    <string name="booklist_background_style">Book list background style</string>
-    <string name="textured_backgroud">Textured background image</string>
-    <string name="plain_background_b_reduces_flicker_b">Plain background (reduces flicker)</string>
-    <string name="thing_must_not_be_blank">%1$s must not be blank</string>
-    <string name="edit">Edit</string>
-    <string name="groupings">Groupings</string>
-    <string name="will_be_shown">Will be shown</string>
-    <string name="will_not_be_shown">Will not be shown</string>
-    <string name="preferences">Preferences</string>
-    <string name="unexpected_error">An unexpected error has occurred, please send the details to support using the \'Help\' option from the main menu</string>
-    <string name="delete_style">Delete style</string>
-    <string name="edit_style">Edit style</string>
-    <string name="clone_style">Clone style</string>
-    <string name="dash_or_dash">- Or -</string>
-    <string name="paypal_donation">PayPal Donation</string>
+    <string name="preferred_styles">Voorkeursstijlen</string>
+    <string name="edit_style_colon_name">Bewerk stijl: %1$s</string>
+    <string name="add_style">Stijl toevoegen</string>
+    <string name="clone_style_colon_name">Klonen van Stijl: %1$s</string>
+    <string name="non_blank_arg_required">Een niet-lege waarde voor \'%1$s\' moet worden gespecificeerd</string>
+    <string name="select_read_only">Selecteer alleen gelezen boeken</string>
+    <string name="select_unread_only">Selecteer alleen ongelezen boeken</string>
+    <string name="extra_filters">Boekfilters</string>
+    <string name="new_style">Nieuwe stijl</string>
+    <string name="select_based_on_read_status">Selecteer gebaseerd op \'Gelezen\' status</string>
+    <string name="books_with_multiple_authors">Boeken met meerdere auteurs</string>
+    <string name="books_in_multiple_series">Boeken in meerdere series</string>
+    <string name="use_default_setting">Gebruik de standaard waarden</string>
+    <string name="show_book_under_each_thing">Onder elke %1$s</string>
+    <string name="show_book_under_primary_thing">Alleen onder primaire %1$s</string>
+    <string name="format_of_author_names">Formaat van auteurnamen</string>
+    <string name="given_name_first_eg">Voornaam eerst bijv. \'Gerard Reve\'</string>
+    <string name="family_name_first_eg">Achternaam eerst bijv. \'Reve, Gerard\'</string>
+    <string name="thumbnails">Miniaturen</string>
+    <string name="size_of_booklist_items">Grootte van boekenlijst items</string>
+    <string name="normal">Normaal</string>
+    <string name="smaller">Kleiner</string>
+    <string name="select_style">Selecteer stijl</string>
+    <string name="booklist_background_style">Boekenlijst achtergrondstijl</string>
+    <string name="textured_backgroud">Achtergrondafbeelding met textuur</string>
+    <string name="plain_background_b_reduces_flicker_b">Effen achtergrond (minder flikkering)</string>
+    <string name="thing_must_not_be_blank">%1$s mag niet leeg zijn</string>
+    <string name="edit">Bewerken</string>
+    <string name="groupings">Groeperingen</string>
+    <string name="will_be_shown">Wordt getoond</string>
+    <string name="will_not_be_shown">Wordt niet getoond</string>
+    <string name="preferences">Voorkeuren</string>
+    <string name="unexpected_error">Er is een onverwachte fout opgetreden. Zend ons aub de details via de \'Help\' optie in het hoofdmenu</string>
+    <string name="delete_style">Stijl verwijderen</string>
+    <string name="edit_style">Stijl bewerken</string>
+    <string name="clone_style">Stijl klonen</string>
+    <string name="dash_or_dash">- Of -</string>
+    <string name="paypal_donation">PayPal Donatie</string>
     <string name="compact">Compact</string>
-    <string name="user_defined">User-defined</string>
-    <string name="builtin">Builtin</string>
-    <string name="sort_unread">Unread (Author/Series)</string>
-    <string name="import_all_from_goodreads">Import all from goodreads</string>
-    <string name="requested_task_is_already_queued">Requested task is already queued</string>
-    <string name="export_task_is_already_queued">An export task is already queued and must compete before this task can run</string>
-    <string name="import_task_is_already_queued">An import task is already queued and must compete before this task can run</string>
-    <string name="goodreads_action_cannot_blah_blah">This action can not be completed until this application is authorized via the goodreads web site. Once you have authorized this application, please retry. \n\nDo you want to authorize it now?</string>
-    <string name="tell_me_more">Tell me more</string>
-    <string name="retry_x_of_y_next_at_z">Retry %1$s of %2$s next at %3$s</string>
-    <string name="completed">Completed</string>
-    <string name="failed">Failed</string>
-    <string name="queued">Queued</string>
-    <string name="unknown">Unknown</string>
-    <string name="send_books_to_goodreads_blurb">This will send your library to goodreads.
-    										\n\nYou can choose to send all of your books, or only the books you have updated 
-    										since they were last copied to or from goodreads (including all books that have 
-    										not been sent yet) or you can cancel the update.
-    										\n\nIf you have never sent any books then there is no
-    										difference between the first two options.</string>
-    <string name="send_all">Send all</string>
-    <string name="send_updated">Send updated</string>
-    <string name="sync_with_goodreads">Synchronize with goodreads</string>
-    <string name="cover_options_cc_ellipsis">Cover Options&#8230;</string>
-    <string name="show_events_ellipsis">Show events&#8230;</string>
-    <string name="hint_authors_book_may_appear_more_than_once">If shown for every author, a single book may appear more than once in a list. In such a case deleting one of those books will delete all instances from the list.</string>
-    <string name="hint_series_book_may_appear_more_than_once">If shown in every series, a single book may appear more than once in a list. In such a case deleting one of those books will delete all instances from the list.</string>
-    <string name="hint_background_tasks">From here you can see the currently running tasks as well as previous tasks that have completed with errors or other notable events. 
-    								Clicking on a task will allow you to see the events associated with that task as well as delete the task (and related events).</string>
-    <string name="hint_background_task_events">From here you can see the events associated with a background task. 
-    								Clicking on a event will allow you to perform a variety of actions appropriate for that event.</string>
-    <string name="hints_have_been_reset">Hints have been reset</string>
-    <string name="task_has_been_queued_in_background">Task has been queued in background</string>
-    <string name="hint_startup_screen">This is the standard BookCatalogue startup screen. If you prefer, you can startup directly in \'My Books\'; the preferred startup screen can be changed in preferences.</string>
+    <string name="user_defined">Gebruiker-gedefinieerd</string>
+    <string name="builtin">Ingebouwd</string>
+    <string name="sort_unread">Ongelezen (Auteur/Serie)</string>
+    <string name="import_all_from_goodreads">Importeer alles uit goodreads</string>
+    <string name="requested_task_is_already_queued">aangevraagde taak staat al in de wachtrij</string>
+    <string name="export_task_is_already_queued">Een exporttaak staat al in de wachtrij en moet eerst beëindigd worden voordat deze taak uitgevoerd kan worden</string>
+    <string name="import_task_is_already_queued">Een importtaak staat al in de wachtrij en moet eerst beëindigd worden voordat deze taak uitgevoerd kan worden</string>
+    <string name="goodreads_action_cannot_blah_blah">Deze actie kan niet worden voltooid voordat deze applicatie door goodreads is geautoriseerd. Probeer het nog eens als de autorisatie is geslaagd.
+                                                     \n\nWilt u de autorisatie nu doen?</string>
+    <string name="tell_me_more">Vertel me meer</string>
+    <string name="retry_x_of_y_next_at_z">Probeer %1$s van %2$s opnieuw op %3$s</string>
+    <string name="completed">Gereed</string>
+    <string name="failed">Mislukt</string>
+    <string name="queued">In de wachtrij</string>
+    <string name="unknown">Onbekend</string>
+    <string name="send_books_to_goodreads_blurb">Dit zendt uw bibliotheek naar goodreads.
+    										\n\nU kunt er voor kiezen alle boeken te sturen of allen de boeken die u heeft bijgewerkt 
+    										sinds deze werden gekopieerd van of naar goodreads (inclusief alle boeken die nog niet  
+    										werden verzonden) of u kunt de update annuleren.
+    										\n\nAls u nog nooit boeken heeft verzonden is er geen verschil tussen de eerste twee opties.</string>
+    <string name="send_all">Zend alles</string>
+    <string name="send_updated">Zend bijgewerkte</string>
+    <string name="sync_with_goodreads">Synchroniseer met goodreads</string>
+    <string name="cover_options_cc_ellipsis">Boekomslag opties&#8230;</string>
+    <string name="show_events_ellipsis">Toon gebeurtenissen&#8230;</string>
+    <string name="hint_authors_book_may_appear_more_than_once">Als boeken worden getoond met alle auteurs, kunnen ze meermalen voorkomen in de lijst. Het verwijderen van één van die boeken heeft tot gevolg dat alle exemplaren worden verwijderd uit de lijst.</string>
+    <string name="hint_series_book_may_appear_more_than_once">Als boeken worden getoond met in alle series, kunnen ze meermalen voorkomen in de lijst. Het verwijderen van één van die boeken heeft tot gevolg dat alle exemplaren worden verwijderd uit de lijst.</string>
+    <string name="hint_background_tasks">Vanaf deze plaats kunt u de lopende taken zien en eveneens vorige taken die met fouten of ander vermeldigswaardige gebeurtenissen zijn beëindigd. 
+    								     Klikken op een taak laat u de bijbehorende gebeurtenissen zien en ook de taak laten verwijderen (samen met de gerelateerde gebeurtenissen).</string>
+    <string name="hint_background_task_events">Vanaf hier kunt u de gebeurtenissen zien die zijn geassocieerd met op de achtergrond lopende taken. 
+    								    Klikken op een gebeurtenis laat u een aantal acties uitvoeren die samenhangen met die gebeurtenis.</string>
+    <string name="hints_have_been_reset">Aanwijzingen zijn hersteld</string>
+    <string name="task_has_been_queued_in_background">Taak is op de achtergrond in de wachtrij gezet</string>
+    <string name="hint_startup_screen">Dit is het standaard BookCatalogue opstartscherm. Als u dat wilt kunt u direct in \'Mijn Boeken\' opstarten. Het opstartupscherm kan veranderd worden bij de voorkeuren.</string>
     <string name="upgrading_ellipsis">Upgrading&#8230;</string>
-    <string name="explain_goodreads_no_isbn">The selected book does not have an ISBN; it is not possible to automatically synchronize it with goodreads. 
-    									The simplest solution is to:
-    									\n\n(1) delete the book from BookCatalogue
-    									\n\n(2) add the book in goodreads manually via their web interface
-    									\n\n(3) Synchronize with goodreads
-    									\n\nThis will result in the book being recreated in BookCatalogue and the two will remain linked from that point onwards.</string>
-    <string name="explain_goodreads_no_match">The ISBN of the selected book could not be found on goodreads. There are two possible causes for this: 
-    									either the data for the book is wrong (you should check the ISBN), or the book is not in goodreads. 
-    									\n\nIf you make any changes to the data in BookCatalogue, just press the \'Retry\' button and check to see if the 
-    									resulting background task succeeds. 
-    									\n\nIf the data looks correct and the book is still not found, then a book with that ISBN needs to be added to goodreads manually
-										via their web site. Once that is done, you can retry sending the book.</string>
-    <string name="read_amp_unread">Read &amp; Unread</string>
-    <string name="loaned">Loaned</string>
-    <string name="publication_year">Publication Year</string>
-    <string name="publication_month">Publication Month</string>
-    <string name="publication_day">Publication Day</string>
-    <string name="added_year">Added Year</string>
-    <string name="added_month">Added Month</string>
-    <string name="added_day">Added Day</string>
-    <string name="book">Book</string>
+    <string name="explain_goodreads_no_isbn">Het geselecteerde boek heeft geen ISBN en kan niet automatisch worden gesynchroniseerd met goodreads. 
+    									De simpelste oplossing is om:
+    									\n\n(1) het boek te verwijderen uit BookCatalogue
+    									\n\n(2) het boek handmatig toe te voegen aan goodreads via hun website
+    									\n\n(3) synchroniseren met goodreads
+    									\n\nDit zal als resultaat hebben dat het boek opnieuw wordt aangemaakt in BookCatalogue en dat de twee van af dat moment gekoppeld blijven.</string>
+    <string name="explain_goodreads_no_match">Het ISBN van het geselecteerde boek kon niet worden gevonden in goodreads. Er zijn twee mogelijke oorzaken hiervoor: 
+    									Of de boekgegevens zijn onjuist (controleer het ISBN), óf het boek staat niet in goodreads. 
+    									\n\nAls u de boekgegevens in BookCatalogue gaat veranderen drukt u daarna op de \'Probeer opnieuw\' knop en controleert of de op de achtergrond opgestarte taak met succes is beëindigd. 
+    									\n\nAls de boekgegevnes correct lijken en het boek nog steeds niet kan worden gevonden dan moet een boek met dat ISBN handmatig worden toegevoegd aangoodreads via hun  website. Nadat dat is gedaan kunt u proberen het boek opnieuw te zenden.</string>
+    <string name="read_amp_unread">Gelezen &amp; Ongelezen</string>
+    <string name="loaned">Uitgeleend</string>
+    <string name="publication_year">Jaar</string>
+    <string name="publication_month">Maand</string>
+    <string name="publication_day">Dag</string>
+    <string name="added_year">Jaar</string>
+    <string name="added_month">Maand</string>
+    <string name="added_day">Dag</string>
+    <string name="book">Boek</string>
     <string name="in">In</string>
-    <string name="size">Size</string>
-    <string name="updated">Updated</string>
-    <string name="no_export_files_found">No export files found</string>
-    <string name="more_than_one_export_file_blah">More than one export file was found; please select an export file to import from the list below</string>
-    <string name="problem_starting_import_arg">There was a problem starting the import: %1$s</string>
-    <string name="hint_booklist_style_menu">This menu allows you to select the style of the list. 
-    								\n\nYou can also customize this menu, as well as create your own list styles, by clicking \'Customize\' at the end of the list.</string>
-    <string name="menu_edit_format">Edit Format&#8230;</string>
-    <string name="edit_format_name">Edit Format Name</string>
-    <string name="name_can_not_be_blank">Name can not be blank</string>
-    <string name="export_starting_ellipsis">Export starting&#8230;</string>
-    <string name="resizing_cover_thumbnails">Resizing cover thumbnails</string>
-    <string name="resize_each_time">Resize each time they are needed (uses less storage, scrolling will be slower)</string>
-    <string name="cache_resized_thumbnails_for_later_use">Cache resized thumbnails (uses more storage, lists will scroll faster)</string>
-    <string name="generating_cover_thumbnails">Generating cover thumbnails</string>
-    <string name="use_background_thread">Use background thread (lists scroll faster, images may be delayed)</string>
-    <string name="generate_immediately">Generate immediately (lists scroll slower, images will be displayed immediately)</string>
-    <string name="sort_and_style_ellipsis">Sort &amp; Style&#8230;</string>
-    <string name="disable_background_image">Disable background image</string>
-    <string name="displaying_n_books_in_m_entries">displaying %1$s books, in %2$s entries</string>
-    <string name="displaying_n_books">displaying %1$s books</string>
-    <string name="available">Available</string>
+    <string name="size">Grootte</string>
+    <string name="updated">Bijgewerkt</string>
+    <string name="no_export_files_found">Geen exportbestanden gevonden</string>
+    <string name="more_than_one_export_file_blah">Meer dan een exportbestand gevonden. Selecteer aub een exportbestand om te importeren uit de lijst hieronder</string>
+    <string name="problem_starting_import_arg">Het is een probleem bij het starten van de import van: %1$s</string>
+    <string name="hint_booklist_style_menu">Dit menu laat u de lijststijl selecteren. 
+    								\n\nU kunt het menu ook aanpassen of u eigen lijststijl maken door te klikken op \'Aanpassen\' onderaan de lijst.</string>
+    <string name="menu_edit_format">Formaat bewerken&#8230;</string>
+    <string name="edit_format_name">Formaatnaam bewerken</string>
+    <string name="name_can_not_be_blank">Naamveld mag niet leeg zijn</string>
+    <string name="export_starting_ellipsis">Starten van Export&#8230;</string>
+    <string name="resizing_cover_thumbnails">Herschalen boekomslag miniaturen</string>
+    <string name="resize_each_time">Herschaal elke keer als ze nodig zijn (gebruikt minder opslagruimte, scrollen zal langzamer gaan)</string>
+    <string name="cache_resized_thumbnails_for_later_use">Cache herschaalde miniaturen (gebruikt meer opslagruimte, scrollen van de lijst gaat sneller)</string>
+    <string name="generating_cover_thumbnails">Aanmaken boekomslag minatuurafbeeldingen</string>
+    <string name="use_background_thread">Gebruik achtergrond deelproces (lijsten scrollen sneller, tonen afbeeldingen misschien vertraagd)</string>
+    <string name="generate_immediately">Genereer onmiddelijk (lijsten scrollen langzamer, afbeeldingen worden onmiddelijk getoond)</string>
+    <string name="sort_and_style_ellipsis">Sorteren &amp; Stijlen&#8230;</string>
+    <string name="disable_background_image">Achtergrondafbeelding uitschakelen</string>
+    <string name="displaying_n_books_in_m_entries">tonen van %1$s boeken, in %2$s invoeren</string>
+    <string name="displaying_n_books">tonen van %1$s boeken</string>
+    <string name="available">Beschikbaar</string>
     <string name="loaned_to_2">\u2192</string>
-    <string name="summary_details_in_header">Summary details in header</string>
-    <string name="hide_summary_details">Hide summary details</string>
-    <string name="show_summary_details">Show summary details</string>
-    <string name="x_is_not_a_valid_isbn">%1$s is not a valid ISBN</string>
-    <string name="beep_if_scanned_isbn_invalid">Beep if scanned ISBN is invalid</string>
-    <string name="no_image_found">No image found</string>
-    <string name="could_not_copy_image">Could not copy image</string>
-    <string name="this_option_is_not_available_until_the_book_is_saved">This option is not available until the book is saved</string>
-    <string name="scan_barcode_isbn">Scan Barcode/ISBN</string>
-    <string name="enter_isbn">Enter ISBN</string>
-    <string name="allow_asin">Allow ASIN</string>
-    <string name="x_is_not_a_valid_isbn_or_asin">%1$s is not a valid ISBN or ASIN</string>
-    <string name="confirm_exit">Confirm Exit</string>
-    <string name="you_may_have_unsaved_changes">You may have unsaved changes. Are you sure you want to exit without saving?</string>
-    <string name="read_year">Read Year</string>
-    <string name="read_month">Read Month</string>
-    <string name="read_day">Read Day</string>
-    <string name="sort_read_date">Date Read</string>
-    <string name="details_have_changed">Details Have Changed</string>
-    <string name="you_have_unsaved_changes">You have unsaved changes, if you exit now they will be lost.</string>
-    <string name="exit">Exit</string>
-    <string name="continue_editing">Continue Editing</string>
-    <string name="the_title_already_exists">The title already exists</string>
-    <string name="year">Year</string>
-    <string name="month">Month</string>
-    <string name="day">Day</string>
-    <string name="edit_lc_ellipsis">edit&#8230;</string>
-    <string name="getting_books_ellipsis">Getting books&#8230;</string>
-    <string name="n_events_found">%1$s Events found</string>
-    <string name="last_error_e">Last Error: %1$s</string>
-    <string name="invalid_isbn_x_specified_in_search">Invalid ISBN \'%1$s\' specified in search</string>
-    <string name="if_day_is_specified_month_and_year_must_be">If day is specified, then both month and year must also be specified.</string>
-    <string name="if_month_is_specified_year_must_be">If month is specified, then year must also be specified.</string>
-    <string name="main_menu">Main Menu</string>
-    <string name="use_external_image_cropper">Use external image cropper (experimental)</string>
-    <string name="auto_rotate_camera_images">Automatically rotate images captured by camera</string>
-    <string name="hint_autorotate_camera_images">If you find yourself always rotating camera images in the same direction, try changing the application settings to specify a rotation to apply automatically.</string>
-    <string name="default_crop_frame_is_whole_image">Default crop frame is whole image</string>
-    <string name="cancelled">Cancelled</string>
-    <string name="import_complete">Import Complete</string>
+    <string name="summary_details_in_header">Samenvattingdetails in koptekst</string>
+    <string name="hide_summary_details">Verberg samenvattingdetails</string>
+    <string name="show_summary_details">Toon samenvattingdetails</string>
+    <string name="x_is_not_a_valid_isbn">%1$s is geen geldige ISBN</string>
+    <string name="beep_if_scanned_isbn_invalid">Beep als het gescande ISBN ongeldig is</string>
+    <string name="no_image_found">Geen afbeelding gevonden</string>
+    <string name="could_not_copy_image">Kon afbeelding niet kopiëren</string>
+    <string name="this_option_is_not_available_until_the_book_is_saved">Deze optie is niet aanwezig voordat het boek is opgeslagen</string>
+    <string name="scan_barcode_isbn">Scan streepjescode/ISBN</string>
+    <string name="enter_isbn">Invullen ISBN</string>
+    <string name="allow_asin">Toestaan ASIN</string>
+    <string name="x_is_not_a_valid_isbn_or_asin">%1$s is geen geldig ISBN of ASIN</string>
+    <string name="confirm_exit">Bevesting Afsluiten</string>
+    <string name="you_may_have_unsaved_changes">U heeft misschien niet opgeslagen veranderingen. Weet u zeker dat u wilt afsluiten zonder op te slaan?</string>
+    <string name="read_year">Jaar</string>
+    <string name="read_month">Maand</string>
+    <string name="read_day">Dag</string>
+    <string name="sort_read_date">Datum gelezen</string>
+    <string name="details_have_changed">De details zijn veranderd</string>
+    <string name="you_have_unsaved_changes">U heeft niet opgeslagen veranderingen. Als u nu afsluit gaan die verloren.</string>
+    <string name="exit">Afsluiten</string>
+    <string name="continue_editing">Doorgaan met bewerken</string>
+    <string name="the_title_already_exists">De titel bestaat al</string>
+    <string name="year">Jaar</string>
+    <string name="month">Maand</string>
+    <string name="day">Dag</string>
+    <string name="edit_lc_ellipsis">bewerken&#8230;</string>
+    <string name="getting_books_ellipsis">Verkrijgen van boeken&#8230;</string>
+    <string name="n_events_found">%1$s Gebeurtenissen gevonden</string>
+    <string name="last_error_e">Laatste fout: %1$s</string>
+    <string name="invalid_isbn_x_specified_in_search">Ongeldig ISBN \'%1$s\' gespecificeerd in zoekveld</string>
+    <string name="if_day_is_specified_month_and_year_must_be">Als de dag is gespecificeerd dan moet ook de maand en het jaar ingevuld worden.</string>
+    <string name="if_month_is_specified_year_must_be">Als de maand is gespecificeerd moet ook het jaar worden ingevuld.</string>
+    <string name="main_menu">Hoofdmenu</string>
+    <string name="use_external_image_cropper">Gebruik een externe app voor bijsnijden afbeelding (experimenteel)</string>
+    <string name="auto_rotate_camera_images">Afbeelding genomen met camera automatisch draaien</string>
+    <string name="hint_autorotate_camera_images">Als u altijd uw, met de camera genomen, afbeeldingen dezelfde kant opdraait kunt u proberen de applicatie instellingen te veranderen zodat dit automatisch gebeurt.</string>
+    <string name="default_crop_frame_is_whole_image">Standaard bijsnijkader is hele afbeelding</string>
+    <string name="cancelled">Geannuleerd</string>
+    <string name="import_complete">Import Compleet</string>
     <string name="amazon_books">Amazon</string>
     <string name="google_books">Google Books</string>
     <string name="library_thing">LibraryThing</string>
-    <string name="searching_elipsis">Searching&#8230;</string>
-    <string name="adding_book_elipsis">Adding book&#8230;</string>
-    <string name="prefs_global_opening_book_mode">Open book in read-only mode</string>
-    <string name="book_details_readonly_publishing">Publishing</string>
-    <string name="book_details_readonly_by">by</string>
-    <string name="book_details_readonly_loaned_to">On Loan to %1$s</string>
-    <string name="book_details_readonly_pages">%1$s pages</string>
+    <string name="searching_elipsis">Aan 't zoeken&#8230;</string>
+    <string name="adding_book_elipsis">Boeken aan 't toevoegen&#8230;</string>
+    <string name="prefs_global_opening_book_mode">Open boek in alleen-lezen modus</string>
+    <string name="book_details_readonly_publishing">Publiceren</string>
+    <string name="book_details_readonly_by">door</string>
+    <string name="book_details_readonly_loaned_to">Uitgeleend aan %1$s</string>
+    <string name="book_details_readonly_pages">%1$s pagina's</string>
     <string name="brackets">(%1$s)</string>
     <string name="new_in_42">
 <![CDATA[
@@ -670,7 +665,7 @@
 			</p>
 		]]>
     </string>
-    <string name="bad_scanner">It looks like your existing barcode scanner app is not compatible with Book Catalogue. We recommend installing the Zxing barcode scanner application, and if it is already installed, we recommend uninstalling it and reinstalling it.</string>
+    <string name="bad_scanner">Het lijkt er op dat de door u gebruikt streepjescode scanner app niet compatibel is met Book Catalogue. Wij kunnen de Zxing streepjescode scanner application aanbevelen. als deze al is geïnstalleerd raden we aan deze te deïnstalleren en daarna weer opnieuw te installeren.</string>
     <string name="new_in_422">
 <![CDATA[
     <p><b>New in 4.2.2</b>\n\n
@@ -692,15 +687,15 @@
     </string>
 
     <!-- Heading for scanner-related preferences -->
-    <string name="scanning">Scanning</string>
+    <string name="scanning">Scannen</string>
     <!-- Preference name, displayed in a preference activity -->
-    <string name="preferred_scanner">Preferred Scanner</string>
+    <string name="preferred_scanner">Voorkeur Scanner</string>
     <!-- Preference VALUE, displayed in a preference activity -->
-    <string name="zxing_compatible_scanner">Zxing Compatible Scanner</string>
+    <string name="zxing_compatible_scanner">Zxing Compatibel Scanner</string>
     <!-- Preference VALUE, displayed in a preference activity -->
     <string name="pic2shop_scanner">Pic2Shop Scanner</string>
     <!-- Preference name, displayed in a preference activity -->
-    <string name="beep_if_scanned_isbn_valid">Beep if scanned ISBN is valid</string>
+    <string name="beep_if_scanned_isbn_valid">Beep als gescande ISBN geldig is</string>
     <string name="new_in_424">
 <![CDATA[
 	<p><b>New in 4.2.4</b>\n\n
@@ -715,75 +710,71 @@
     </string>
 
     <!-- Hint text displayed when user enters the book listw -->
-    <string name="hint_view_only_book_details">When you click on an item in this list, you can now choose to go to non-editable book details view. 
-See "Other Preferences" for the relevant setting.
+    <string name="hint_view_only_book_details">Wanneer u op een item in deze lijst klikt, kunt u nu kiezen naar een alleen-lezen detailoverzicht te gaan. 
+Zie "Meer voorkeuren" voor de relevante instelling.
 </string>
 
     <!-- Hint text displayed when user enters the 'read-only' book view -->
-    <string name="hint_view_only_help">This is the non-editable book details screen; you can fling/swipe left or right to navigate to other books, 
-and you can edit the book via the options menu using the menu button or overflow menu icon.
+    <string name="hint_view_only_help">Dit is het alleen-lezen detailoverzicht. U kunt This is the non-editable book details screen. U kunt naar link en rechts vegen om naar andere boeken te gaan en u kunt het boek bewerken via het opties menu door gebruik te maken van de menuknop of overvloeiend menu-pictogram.
 </string>
 
     <!-- This is the heading of the 'Details' tab when editing a book. It needs to be short. "Book Details" is too long. -->
     <string name="details">Details</string>
     <!-- This is the heading of the 'Loan' tab when editing a book. It needs to be short. "Loan Book" is too long. -->
-    <string name="loan">Loan</string>
+    <string name="loan">Uitleen</string>
 
     <!-- Hint displayed when an export or database backup is done -->
-    <string name="hint_not_a_full_backup">Please note that this is not a full backup. It does not contain cover images.
-    	\n\nFor a complete backup you need to copy the contents of the \'bookCatalogue\' directory 
-    	from your SD card to another location.
-    	\n\nSee our FAQ (a web link is under \'Help\') for detailed instructions.</string>
+    <string name="hint_not_a_full_backup">NB! dit is geen volledige back-up. Het bevat geen afbeeldingen.
+    	\n\nVoor een complete back-up moet u de inhoud van de \'bookCatalogue\' map op uw SD kaart naar een andere locatie kopiëren.
+    	\n\nZie onze FAQ (een weblink staat onder \'Help\') voor gedetailleerde instructies.</string>
 
     <!-- Button text on the goodreads activity; only displayed after user has registered -->
-    <string name="forget_credentials">Forget Credentials</string>
+    <string name="forget_credentials">Vergeet inloggegevens</string>
 
     <!-- Extra text displayed on the goodreads activity when a user HAS registered -->
-    <string name="goodreads_auth_blurb_part4">It looks like you have already authorized this app. If you would like to
-    delete the credentials from this phone, then you can do so by pressing the button below. But it is also
-    important to de-authorize the application at the goodreads website as well.
-    \n\nForgetting the credentials here will remove the goodreads option from the main application menu.</string>
+    <string name="goodreads_auth_blurb_part4">Het lijkt er op dat u deze app al heeft geautoriseerd. als u de inloggegevens op dit apparaat wilt wissen kunt u dat doen door op de knop hieronder te drukken. Maar het is ook belangrijk de autorisatie van de applicatie op de website van goodreads te verwijderen.
+    \n\nWissen van de inloggegevens hier zal de goodread optie uit het hoofdmenu verwijderen.</string>
 
     <!-- Progress dialog message displayed when doing a long network operation to a web site -->
-    <string name="connecting_to_web_site">Connecting to web site&#8230;</string>
+    <string name="connecting_to_web_site">Verbinding maken met website&#8230;</string>
 
     <!-- Admin option to import -->
-    <string name="backup_to_archive">Backup to Archive</string>
+    <string name="backup_to_archive">Back-up naar archief</string>
     <!-- Admin option to import -->
-    <string name="import_from_archive">Import from Archive</string>
+    <string name="import_from_archive">Importeren vanuit archief</string>
 
     <!-- Hint displayed when aCatalogue Backup is done -->
-    <string name="archive_complete_details">A %3$s file called %2$s was created in the \"%1$s\" directory on your 
-    SD card.\n\nYou should manually copy it elsewhere to protect the data in case your device is damaged, lost, or stolen.</string>
+    <string name="archive_complete_details">Een %3$s bestand met de naam %2$s is aangemaakt in de \"%1$s\" map op uw 
+    SD kaart.\n\nU wordt aangeraden dit bestand naar een ander plek te kopiëren om de gegevens veilig te stellen in geval uw apparaat wordt gestolen, beschadigd of kwijt raakt.</string>
 
     <!-- Displayed in progress dialog when exporting covers -->
-    <string name="covers_progress">%1$s covers processed (%2$s missing)</string>
+    <string name="covers_progress">%1$s boekomslagafbeeldingen verwerkt (%2$s missend)</string>
     <!-- Heading in Admin activity -->
-    <string name="advanced_options">Advanced Options</string>
+    <string name="advanced_options">Geavanceerde opties</string>
     <!-- Showed in progress dialog when an import starts -->
-    <string name="backing_up_ellipsis">Backing up&#8230;</string>
+    <string name="backing_up_ellipsis">Aan 't Back-uppen&#8230;</string>
     <!-- Showed in progress dialog when an import starts -->
-    <string name="importing_ellipsis">Importing&#8230;</string>
+    <string name="importing_ellipsis">Aan 't Importeren&#8230;</string>
 
     <!-- Content description for the 'up' icon in the folder browser -->
-    <string name="up_folder">Up</string>
+    <string name="up_folder">Omhoog</string>
 
     <!-- Displayed when a user tries to browse higher than the root directory, or if the parent is unable to be read -->
-    <string name="no_parent_directory_found">No parent directory found</string>
+    <string name="no_parent_directory_found">Geen bovenliggende map gevonden</string>
 
     <!-- For saving and opening exports or backups -->
     <string name="open">Open</string>
 
     <!-- Admin option to export books -->
-    <string name="export_to_csv">Export to CSV File</string>
+    <string name="export_to_csv">Exporteer naar CSV-bestand</string>
     <!-- Admin option to import books -->
-    <string name="import_from_csv">Import from CSV File</string>
+    <string name="import_from_csv">Importeer vanuit CSV-bestand</string>
 
     <!-- Displayed when a file/open dialog results in selecting a non-exitant file -->
-    <string name="please_select_an_existing_file">Please select an existing file</string>
+    <string name="please_select_an_existing_file">Selecteer aub een bestaand bestand</string>
 
     <!-- Displayed when a file/save dialog results in selecting a directory file -->
-    <string name="please_select_a_non_directory">Please select a file that is not a directory</string>
+    <string name="please_select_a_non_directory">Selecteer aub een bestand en geen map</string>
 
     <!-- This is pretty close to the expected feature list! It is a merge of 424 and 430... -->
     <string name="new_in_500">
@@ -805,19 +796,19 @@ and you can edit the book via the options menu using the menu button or overflow
     </string>
 
     <!-- Displayed in Admin menu advanced options (top make a copy of the internal database on the sdcard -->
-    <string name="copy_database">Copy Database (for tech support)</string>
+    <string name="copy_database">Kopieer Database (voor tech support)</string>
 
     <!-- Items in list of options for the 'Summary Details' preference. Detrmines what is show in book list header -->
-    <string name="show_book_count">Show number of books</string>
-    <string name="show_first_level_and_book_count">Show first level heading and number of books</string>
-    <string name="show_all_summary_details">Show all summary details</string>
+    <string name="show_book_count">Toon aantal boeken</string>
+    <string name="show_first_level_and_book_count">Toon eerste niveau koptekst en aantal boeken</string>
+    <string name="show_all_summary_details">Toon alle samenvattingsdetails</string>
 
     <!-- Displayed when an archive operation fails -->
-    <string name="import_failed">Import failed.</string>
+    <string name="import_failed">Import mislukt.</string>
     <!-- Displayed when any write operation to the sd card fails -->
-    <string name="please_check_sd_writable">Please check that the SD Card is writable, and has sufficient space.</string>
+    <string name="please_check_sd_writable">Controleer aub of de SD Kaart beschrijfbaar is en voldoende vrije ruimte heeft.</string>
     <!-- Displayed when any write operation to the sd card fails -->
-    <string name="please_check_sd_readable">Please check that the SD Card is accessible.</string>
+    <string name="please_check_sd_readable">Controleer aub of de SD Kaart toegankelijk is.</string>
 
     <!-- Begin: Added/Updated in 5.0.2 -->
 
@@ -847,7 +838,7 @@ and you can edit the book via the options menu using the menu button or overflow
     <!-- Begin: Added/Updated in 5.0.4 -->
     
     <!-- Short Heading for 'Language' field in book details -->
-    <string name="language">Language</string>
+    <string name="language">Taal</string>
     <string name="new_in_504">
 		<![CDATA[
 			<p><b>New in 5.0.4</b>\n\n
@@ -862,15 +853,15 @@ and you can edit the book via the options menu using the menu button or overflow
 
     <!-- Begin: Added/Updated in 5.0.5 -->
     <!--  New preference to override the default method used to generate bookslists as defined by API level -->
-    <string name="booklist_generation">Book List Generation Option</string>
+    <string name="booklist_generation">Optie voor genereren boekenlijst</string>
     <!-- Option listed under "booklist_generation" referring to a very conservative way of generating bookslists -->
-    <string name="force_compatibility_mode">Force Compatibility Mode</string>
+    <string name="force_compatibility_mode">Forceer compatibele modus</string>
     <!-- Option listed under "booklist_generation" referring to a conservative way of generating bookslists -->
-    <string name="force_enhanced_compatibility_mode">Force Enhanced Compatibility Mode</string>
+    <string name="force_enhanced_compatibility_mode">Forceer uitgebreide compatibiliteitsmodus</string>
     <!-- Option listed under "booklist_generation" referring to a conservative way of generating bookslists -->
-    <string name="force_fully_featured">Force Fully Featured</string>
+    <string name="force_fully_featured">Forceer volledige functionaliteit</string>
     <!-- Default Option listed under "booklist_generation" referring to a conservative way of generating bookslists -->
-    <string name="automatically_use_recommended_option">Automatically use recommended option</string>
+    <string name="automatically_use_recommended_option">Gebruik automatisch de aanbevolen optie</string>
     
     <string name="new_in_505">
 		<![CDATA[

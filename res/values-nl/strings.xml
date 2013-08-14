@@ -89,7 +89,7 @@
     <string name="sortby_author">Sorteer op Auteur</string>
     <string name="sortby_title">Sorteer op Titel</string>
     <string name="sortby_series">Sorteer op Serie</string>
-    <string name="sortby_loan">Sorteer op Uigeleend</string>
+    <string name="sortby_loan">Sorteer op Uitgeleend</string>
     <string name="sortby_unread">Sorteer op Ongelezen</string>
     <string name="sortby_genre">Sorteer op genre</string>
     <string name="list_price">Prijs</string>
@@ -97,7 +97,7 @@
     <string name="date_finished_reading">Einddatum lezen</string>
     <string name="update_fields">Automatisch Velden bijwerken</string>
     <string name="select_fields_to_update">Selecteer bij te werken velden</string>
-    <string name="select_fields_to_update_help">De geselecteerde velden zulllen worden bijgewerkt vanaf het internet. Niet geselecteerde velden blijven onveranderd.</string>
+    <string name="select_fields_to_update_help">De geselecteerde velden zullen worden bijgewerkt vanaf het internet. Niet geselecteerde velden blijven onveranderd.</string>
     <string name="overwrite_thumbnail">Dit zal de geselecteerde velden zoals getoond bijwerken, maar miniaturen kunnen desgewenst voor Alle boeken worden gedownload.\n\nWilt u alle miniaturen overschrijven? Waarschuwing: dit kan een lange tijd in beslag nemen. </string>
     <string name="yes">Ja</string>
     <string name="no">Nee</string>
@@ -108,7 +108,7 @@
     <string name="hello">Book Catalogue!</string>
     <string name="menu_delete_thumb">Verwijder miniatuur</string>
     <string name="help">Help</string>
-    <string name="filler_help_text">De volledige online helpbestand voor de applicatie komt speodig. </string>
+    <string name="filler_help_text">De volledige online helpbestand voor de applicatie komt spoedig. </string>
     <string name="menu_manage_fields">Beheer van zichtbaarheid Velden</string>
     <string name="manage_fields_help">Geselecteerde velden zijn zichtbaar in de toevoegen/bewerken boekschermen. Ongeselecteerde velden zijn verborgen.</string>
     <string name="edit_book_anthology">Bloemlezing titels</string>
@@ -170,13 +170,13 @@
     <string name="vldt_blank_required">Waardeveld moet leeg zijn voor \'%s\'</string>
     <string name="vldt_failed">Validatie mislukt voor \'%s\'</string>
     <string name="vldt_series_num_must_be_blank">Serienummerveld moet leeg zijn (%1$s gevonden) of de serienaam moet zijn gespecificeerd</string>
-    <string name="vldt_read_start_after_end">De bindatum voor lezen moet vóór de einddatum liggen</string>
+    <string name="vldt_read_start_after_end">De begindatum voor lezen moet vóór de einddatum liggen</string>
     <string name="backup_success">Back-up gelukt</string>
     <string name="backup_failed">Back-up mislukt</string>
     <string name="file_must_contain_column">Bestandsnaam moet een kolomnaam %s bevatten</string>
     <string name="file_must_contain_any_column">Bestandsnaam moet een kolom met de volgende namen bevatten: %s</string>
     <string name="column_is_blank">Kolom %1$s is leeg op rij %2$s</string>
-    <string name="columns_are_blank">Kolummen %1$s zijn allemaal leeg op rij %2$d</string>
+    <string name="columns_are_blank">Kolommen %1$s zijn allemaal leeg op rij %2$d</string>
     <string name="save">Opslaan</string>
     <string name="add">Toevoegen</string>
     <string name="noauthors">Er zijn geen auteurs voor dit boek. Voeg er een toe met het tekstveld en de knop bovenin dit scherm.</string>
@@ -321,7 +321,7 @@
     <string name="other_preferences">Meer voorkeuren</string>
     <string name="user_interface">Gebruikersinterface</string>
     <string name="start_in_my_books">Opstarten in \'Mijn Boeken\'</string>
-    <string name="include_classic_catalogue_view">Inlcusief de Klassieke boeken catalogus</string>
+    <string name="include_classic_catalogue_view">Inclusief de Klassieke boeken catalogus</string>
     <string name="background_tasks">Achtergrondtaken</string>
     <string name="cleanup_old_tasks">Opschonen oude taken</string>
     <string name="cleanup_old_events">Opschonen oude gebeurtenissen</string>
@@ -351,7 +351,7 @@
     <string name="authorized">Geautoriseerd</string>
     <string name="not_authorized">Niet geautoriseerd</string>
     <string name="goodreads_auth_error">Goodreads autorisatie leidde tot een fout.</string>
-    <string name="if_the_problem_persists">Als het probleem aanhoud, maak fdan contact met ondersteuning via Help in het hoofdmenu.</string>
+    <string name="if_the_problem_persists">Als het probleem aanhoud, maak dan contact met ondersteuning via Help in het hoofdmenu.</string>
     <string name="book_no_longer_exists">Het gespecificeerde boek bestaat niet meer</string>
     <string name="please_enter_search_criteria">Vul de zoekcriteria in</string>
     <string name="error_while_searching">Fout tijdens het zoeken.</string>
@@ -440,13 +440,13 @@
     <string name="do_not_show_again">Laat niet meer zien</string>
     <string name="other_settings_ellipsis">Andere instellingen&#8230;</string>
     <string name="hint_booklist_styles_editor">U kunt dit scherm gebruiken om de lijst met stijlen aan te passen die in uw standaard stijlen menu wordt getoond. 
-    										\n\nEen goren vinkje betekent dat een stijl getoont wordt in de lijst en een rood kruisje dat die niet wordt getoond.
+    										\n\nEen goren vinkje betekent dat een stijl getoond wordt in de lijst en een rood kruisje dat die niet wordt getoond.
     										Klikken op een groen vinkje zal het in een rood kruisje veranderen en vice-versa.
     										\n\nAls geen stijlen zijn aangevinkt zullen alle stijlen worden getoond.
     										\n\nHet is ook mogelijk de items te herschikken door ze met het pictogram uiterst rechts van de rij op en neer te verslepen.
     										\n\nOveral elders in de rij klikken geeft de mogelijkheid de details van een bepaalde stijl te bewerken (of deze te klonen als het een ingebouwde stijl is).
 </string>
-    <string name="hint_booklist_style_groups">U kunt dit scherm gebruiken om de hiearchie van de kopteksten voor een bepaalde boekenlijststijl te bewerken.
+    <string name="hint_booklist_style_groups">U kunt dit scherm gebruiken om de hierarchie van de kopteksten voor een bepaalde boekenlijststijl te bewerken.
     										\n\nEen groen vinkje geeft aan dat de koptekst in de lijst te zien is en een rood kruisje dat deze niet te zien is.
     										Klikken op een groen vinkje zal het in een rood kruisje veranderen en vice-versa.
     										\n\nU kunt de hierarchie herschikken door ze met het pictogram uiterst rechts van de rij op en neer verslepen.
@@ -479,7 +479,7 @@
     <string name="use_default_setting">Gebruik de standaard waarden</string>
     <string name="show_book_under_each_thing">Onder elke %1$s</string>
     <string name="show_book_under_primary_thing">Alleen onder primaire %1$s</string>
-    <string name="format_of_author_names">Formaat van auteurnamen</string>
+    <string name="format_of_author_names">Formaat van auteursnamen</string>
     <string name="given_name_first_eg">Voornaam eerst bijv. \'Gerard Reve\'</string>
     <string name="family_name_first_eg">Achternaam eerst bijv. \'Reve, Gerard\'</string>
     <string name="thumbnails">Miniaturen</string>
@@ -530,13 +530,13 @@
     <string name="show_events_ellipsis">Toon gebeurtenissen&#8230;</string>
     <string name="hint_authors_book_may_appear_more_than_once">Als boeken worden getoond met alle auteurs, kunnen ze meermalen voorkomen in de lijst. Het verwijderen van één van die boeken heeft tot gevolg dat alle exemplaren worden verwijderd uit de lijst.</string>
     <string name="hint_series_book_may_appear_more_than_once">Als boeken worden getoond met in alle series, kunnen ze meermalen voorkomen in de lijst. Het verwijderen van één van die boeken heeft tot gevolg dat alle exemplaren worden verwijderd uit de lijst.</string>
-    <string name="hint_background_tasks">Vanaf deze plaats kunt u de lopende taken zien en eveneens vorige taken die met fouten of ander vermeldigswaardige gebeurtenissen zijn beëindigd. 
+    <string name="hint_background_tasks">Vanaf deze plaats kunt u de lopende taken zien en eveneens vorige taken die met fouten of ander vermeldingswaardige gebeurtenissen zijn beëindigd. 
     								     Klikken op een taak laat u de bijbehorende gebeurtenissen zien en ook de taak laten verwijderen (samen met de gerelateerde gebeurtenissen).</string>
     <string name="hint_background_task_events">Vanaf hier kunt u de gebeurtenissen zien die zijn geassocieerd met op de achtergrond lopende taken. 
     								    Klikken op een gebeurtenis laat u een aantal acties uitvoeren die samenhangen met die gebeurtenis.</string>
     <string name="hints_have_been_reset">Aanwijzingen zijn hersteld</string>
     <string name="task_has_been_queued_in_background">Taak is op de achtergrond in de wachtrij gezet</string>
-    <string name="hint_startup_screen">Dit is het standaard BookCatalogue opstartscherm. Als u dat wilt kunt u direct in \'Mijn Boeken\' opstarten. Het opstartupscherm kan veranderd worden bij de voorkeuren.</string>
+    <string name="hint_startup_screen">Dit is het standaard BookCatalogue opstartscherm. Als u dat wilt kunt u direct in \'Mijn Boeken\' opstarten. Het opstartscherm kan veranderd worden bij de voorkeuren.</string>
     <string name="upgrading_ellipsis">Upgrading&#8230;</string>
     <string name="explain_goodreads_no_isbn">Het geselecteerde boek heeft geen ISBN en kan niet automatisch worden gesynchroniseerd met goodreads. 
     									De simpelste oplossing is om:
@@ -547,7 +547,7 @@
     <string name="explain_goodreads_no_match">Het ISBN van het geselecteerde boek kon niet worden gevonden in goodreads. Er zijn twee mogelijke oorzaken hiervoor: 
     									Of de boekgegevens zijn onjuist (controleer het ISBN), óf het boek staat niet in goodreads. 
     									\n\nAls u de boekgegevens in BookCatalogue gaat veranderen drukt u daarna op de \'Probeer opnieuw\' knop en controleert of de op de achtergrond opgestarte taak met succes is beëindigd. 
-    									\n\nAls de boekgegevnes correct lijken en het boek nog steeds niet kan worden gevonden dan moet een boek met dat ISBN handmatig worden toegevoegd aangoodreads via hun  website. Nadat dat is gedaan kunt u proberen het boek opnieuw te zenden.</string>
+    									\n\nAls de boekgegevens correct lijken en het boek nog steeds niet kan worden gevonden dan moet een boek met dat ISBN handmatig worden toegevoegd aan goodreads via hun  website. Nadat dat is gedaan kunt u proberen het boek opnieuw te zenden.</string>
     <string name="read_amp_unread">Gelezen &amp; Ongelezen</string>
     <string name="loaned">Uitgeleend</string>
     <string name="publication_year">Jaar</string>
@@ -566,13 +566,13 @@
     <string name="hint_booklist_style_menu">Dit menu laat u de lijststijl selecteren. 
     								\n\nU kunt het menu ook aanpassen of u eigen lijststijl maken door te klikken op \'Aanpassen\' onderaan de lijst.</string>
     <string name="menu_edit_format">Formaat bewerken&#8230;</string>
-    <string name="edit_format_name">Formaatnaam bewerken</string>
+    <string name="edit_format_name">Formaat naam bewerken</string>
     <string name="name_can_not_be_blank">Naamveld mag niet leeg zijn</string>
     <string name="export_starting_ellipsis">Starten van Export&#8230;</string>
     <string name="resizing_cover_thumbnails">Herschalen boekomslag miniaturen</string>
     <string name="resize_each_time">Herschaal elke keer als ze nodig zijn (gebruikt minder opslagruimte, scrollen zal langzamer gaan)</string>
     <string name="cache_resized_thumbnails_for_later_use">Cache herschaalde miniaturen (gebruikt meer opslagruimte, scrollen van de lijst gaat sneller)</string>
-    <string name="generating_cover_thumbnails">Aanmaken boekomslag minatuurafbeeldingen</string>
+    <string name="generating_cover_thumbnails">Aanmaken boekomslag miniaturen</string>
     <string name="use_background_thread">Gebruik achtergrond deelproces (lijsten scrollen sneller, tonen afbeeldingen misschien vertraagd)</string>
     <string name="generate_immediately">Genereer onmiddelijk (lijsten scrollen langzamer, afbeeldingen worden onmiddelijk getoond)</string>
     <string name="sort_and_style_ellipsis">Sorteren &amp; Stijlen&#8230;</string>
@@ -581,9 +581,9 @@
     <string name="displaying_n_books">tonen van %1$s boeken</string>
     <string name="available">Beschikbaar</string>
     <string name="loaned_to_2">\u2192</string>
-    <string name="summary_details_in_header">Samenvattingdetails in koptekst</string>
-    <string name="hide_summary_details">Verberg samenvattingdetails</string>
-    <string name="show_summary_details">Toon samenvattingdetails</string>
+    <string name="summary_details_in_header">Samenvattingsdetails in koptekst</string>
+    <string name="hide_summary_details">Verberg samenvattingsdetails</string>
+    <string name="show_summary_details">Toon samenvattingsdetails</string>
     <string name="x_is_not_a_valid_isbn">%1$s is geen geldige ISBN</string>
     <string name="beep_if_scanned_isbn_invalid">Beep als het gescande ISBN ongeldig is</string>
     <string name="no_image_found">Geen afbeelding gevonden</string>
@@ -593,7 +593,7 @@
     <string name="enter_isbn">Invullen ISBN</string>
     <string name="allow_asin">Toestaan ASIN</string>
     <string name="x_is_not_a_valid_isbn_or_asin">%1$s is geen geldig ISBN of ASIN</string>
-    <string name="confirm_exit">Bevesting Afsluiten</string>
+    <string name="confirm_exit">Bevestiging Afsluiten</string>
     <string name="you_may_have_unsaved_changes">U heeft misschien niet opgeslagen veranderingen. Weet u zeker dat u wilt afsluiten zonder op te slaan?</string>
     <string name="read_year">Jaar</string>
     <string name="read_month">Maand</string>

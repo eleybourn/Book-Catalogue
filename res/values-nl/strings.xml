@@ -129,7 +129,7 @@
     <string name="menu_rotate_thumb_ccw">Naar links draaien</string>
     <string name="menu_rotate_thumb_180">180 graden draaien</string>
     <string name="menu_zoom_thumb">Miniatuur vergroten</string>
-    <string name="help_title_nutshell">In een notendop</string>
+    <string name="help_title_nutshell">In een notedop</string>
     <string name="signed">Is dit boek gesigneerd?</string>
     <string name="read_start">Begindatum lezen</string>
     <string name="read_end">Einddatum lezen</string>
@@ -779,24 +779,24 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     <!-- This is pretty close to the expected feature list! It is a merge of 424 and 430... -->
     <string name="new_in_500">
 <![CDATA[
-	<p><b>New in 5.0.0</b>\n\n
-		* A non-editable view of book details, with \'fling\' support! (See \"Other Preferences\") (Nick Silin)\n\n
-		* Archiving (Backup & Import) of entire catalogue, including books, covers, preferences and styles\n\n
-		* Updated interface with Action Bar support for usability and to work better on devices without menu buttons\n\n
-		* Support for pic2shop scanner (better for fixed focus, low light and in front-facing cameras)\n\n
-		* goodreads now appears in main menu if you authorize it\n\n
-		* Check internet connection earlier when trying to scan books\n\n
-		* More German translation updates (Robert Wetzlmayr)\n\n
-		* More French translation updates (Imkal & Djiko)\n\n
-		* More Russian translation updates (Nick Silin)\n\n
-		* Internal changes in anticipation of an improved tablet interface\n\n
-		* Bug fixes\n\n
+	<p><b>Nieuw in 5.0.0</b>\n\n
+		* Een niet-bewerkbaar overzicht van de boekdetails met \'fling\' ondersteuning! (Zie \"Ander Voorkeuren\") (Nick Silin)\n\n
+		* Archivering (Back-up & Importeren) van de gehele catalogus, inclusief boeken, omslagen, voorkeuren en stijlen\n\n
+		* Geüpdate interface met Actiebalk ondersteuning voor gebruiksgemak en om beter te werken op apparaten zonder menu-knoppen\n\n
+		* Ondersteuning voor de pic2shop scanner (beter voor camera's met vaste focus, omstandighedfen met weinig licht en voor webcams)\n\n
+		* Goodreads staat nu in het hoofdmenu indien u daarvor toestemming geeft\n\n
+		* Eerdere controle van internetverbinding als er geprobeerd wordt boeken te scannen\n\n
+		* Duits vertalingsupdates (Robert Wetzlmayr)\n\n
+		* Franse vertalingsupdates (Imkal & Djiko)\n\n
+		* Russische vertalingsupdates (Nick Silin)\n\n
+		* Interne veranderingen anticiperend op verbeterde tablet interface\n\n
+		* Fouten correcties\n\n
 		</p>
 		]]>
     </string>
 
     <!-- Displayed in Admin menu advanced options (top make a copy of the internal database on the sdcard -->
-    <string name="copy_database">Kopieer Database (voor tech support)</string>
+    <string name="copy_database">Kopieer Database (voor technische ondersteuning)</string>
 
     <!-- Items in list of options for the 'Summary Details' preference. Detrmines what is show in book list header -->
     <string name="show_book_count">Toon aantal boeken</string>
@@ -814,8 +814,8 @@ Zie "Meer voorkeuren" voor de relevante instelling.
 
     <string name="new_in_502">
 		<![CDATA[
-			<p><b>New in 5.0.2</b>\n\n
-				* Bug fixes\n\n
+			<p><b>Nieuw in 5.0.2</b>\n\n
+				* Fouten correcties\n\n
 			</p>
 		]]>
     </string>
@@ -826,9 +826,9 @@ Zie "Meer voorkeuren" voor de relevante instelling.
 
     <string name="new_in_503">
 		<![CDATA[
-			<p><b>New in 5.0.3</b>\n\n
-				* Bug fixes\n\n
-				* French translation updates (Imkal)\n\n
+			<p><b>Nieuw in 5.0.3</b>\n\n
+				* Fouten correcties\n\n
+				* Franse vertalingsupdates (Imkal)\n\n
 			</p>
 		]]>
     </string>
@@ -841,10 +841,10 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     <string name="language">Taal</string>
     <string name="new_in_504">
 		<![CDATA[
-			<p><b>New in 5.0.4</b>\n\n
-				* New field: Language\n\n
-				* French translation updates (Imkal)\n\n
-				* Bug fixes\n\n
+			<p><b>Nieuw in 5.0.4</b>\n\n
+				* Nieuw veld: Taal\n\n
+				* Franse vertalingsupdates (Imkal)\n\n
+				* Fouten correcties\n\n
 			</p>
 		]]>
     </string>
@@ -865,10 +865,10 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     
     <string name="new_in_505">
 		<![CDATA[
-			<p><b>New in 5.0.5</b>\n\n
-				* "Added Date" List now sorted in reverse order \n\n
-				* French translation updates (Imkal)\n\n
-				* Bug fixes\n\n
+			<p><b>Nieuw in 5.0.5</b>\n\n
+				* "Datum toegevoegd" Lijst nu gesorteerd in tegengestelde volgorde\n\n
+				* Franse vertalingsupdates (Imkal)\n\n
+				* Fouten correcties\n\n
 			</p>
 		]]>
     </string>
@@ -878,8 +878,8 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     <!-- Begin: Added/Updated in 5.0.8 -->
     <string name="new_in_508">
 		<![CDATA[
-			<p><b>New in 5.0.8</b>\n\n
-				* German translation updates (Robert Wetzlmayr)\n\n
+			<p><b>Nieuw in 5.0.8</b>\n\n
+				* Duitse vertalingsupdates (Robert Wetzlmayr)\n\n
 			</p>
 		]]>
     </string>

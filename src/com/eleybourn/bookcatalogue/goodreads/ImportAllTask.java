@@ -192,7 +192,7 @@ public class ImportAllTask extends GenericTask {
 					if (mUpdatesAfter.compareTo(review.getString(ListReviewsFieldNames.UPDATED)) > 0)
 						return true;
 				}
-					
+
 				// Processing may involve a SLOW thumbnail download...don't run in TX!
 				processReview(db, review);
 				//SyncLock tx = db.startTransaction(true);
@@ -263,7 +263,7 @@ public class ImportAllTask extends GenericTask {
 	}
 
 	/** 
-	 * Passed a goodreads shelf name, return the best macthing localk bookshelf name, or the
+	 * Passed a goodreads shelf name, return the best matching local bookshelf name, or the
 	 * original if no match found.
 	 * 
 	 * @param db			Database adapter

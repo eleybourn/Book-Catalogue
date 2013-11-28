@@ -19,6 +19,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.ContextMenu;
@@ -177,8 +178,9 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 					Uri selectedImageUri = intent.getData();
 
 					if (selectedImageUri != null) {
-						// Use the original BC code for anything that has a 'content' scheme.
-						if (selectedImageUri.getScheme().equalsIgnoreCase("content")) {
+						// Use the original BC code for anything that has a 'content' scheme and if pre-KitKat
+						// TODO: When KitKat is at 80% penetration(!!!), remove this side of the 'if' statement.
+						if (Build.VERSION.SDK_INT < 19 && selectedImageUri.getScheme().equalsIgnoreCase("content")) {
 							String[] projection = { MediaStore.Images.Media.DATA };
 							Cursor cursor = this.getActivity().getContentResolver().query(selectedImageUri, projection, null, null, null);
 							try {

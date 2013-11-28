@@ -721,7 +721,7 @@
     <string name="goodreads_auth_blurb_part4">Cette application est déjà autorisée auprès de Goodreads. Si vous souhaitez effacer
 		vos données de connection, vos pouvez cliquer sur le bouton ci-dessous. Mais, il est aussi
 		important  d\'enlever cette autoristation sur le site de Goodreads également.
-		\n\nSupprimer les données de connection enlevera l'option Goodreads du menu principal.</string>
+		\n\nSupprimer les données de connection enlevera l\'option Goodreads du menu principal.</string>
     <!-- Progress dialog message displayed when doing a long network operation to a web site -->
     <string name="connecting_to_web_site">Connection au site &#8230;</string>
     <!-- Admin option to import -->

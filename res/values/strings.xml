@@ -752,7 +752,7 @@ and you can edit the book via the options menu using the menu button or overflow
 
     <!-- Displayed in progress dialog when exporting covers -->
     <string name="covers_progress">%1$s covers processed (%2$s missing)</string>
-    <!-- Heading in Admin activity -->
+    <!-- Heading in Admin activity and in 'Export' dialogue -->
     <string name="advanced_options">Advanced Options</string>
     <!-- Showed in progress dialog when an import starts -->
     <string name="backing_up_ellipsis">Backing up&#8230;</string>
@@ -917,6 +917,21 @@ and you can edit the book via the options menu using the menu button or overflow
     <!-- Displayed in progress dialog when exporting covers in incremental mode -->
     <string name="covers_progress_incr">%1$s covers processed (%2$s missing, %3$s skipped)</string>
     
+    <string name="export_all_blurb">All books, covers, settings and custom styles will be exported to the archive.</string>
+    <string name="export_advanced_blurb">Select what will be exported to the archive.</string>
+    <string name="export_advanced_heading">Select what will be exported:</string>
+    
+    <string name="book_details">Book details</string>
+    <string name="book_details_blurb">The details of the books themselves</string>
+    <string name="cover_images">Cover images</string>
+    <string name="cover_images_blurb">Cover images for all selected books. Will make the export much larger.</string>
+    <string name="preferences_blurb">Preferences and user-defined list styles</string>
+    
+    <string name="export_advanced_date_blurb">Optionally specify a date to use in selecting books and/or covers to export:</string>
+    
+    <string name="all_books_added_or_updated_since">All books added or updated since:</string>
+    <string name="all_books_added_or_updated_since_last_full_backup">All books added or updated since last full backup</string>
+
     <!-- End: Added/Updated in [Next Version] -->
 
 </resources>

@@ -889,6 +889,18 @@ and you can edit the book via the options menu using the menu button or overflow
     <!-- End: Added/Updated in 5.0.8 -->
 
 	<!--  Note to Translators: don't bother translating strings until they get a version number. They are very much 'draft' versions -->
+    
+    <!-- Begin: Added/Updated in 5.0.9 -->
+    <string name="new_in_509">
+		<![CDATA[
+			<p><b>New in 5.0.9</b>\n\n
+				* Bug fix for Android 4.4 (KitKat)\n\n
+				* Dutch translation (Gideon van Melle)\n\n
+				* Other minor bug fixes
+			</p>
+		]]>
+    </string>
+    <!-- End: Added/Updated in 5.0.8 -->
 
     <!-- Begin: Added/Updated in [Next Version] -->
     

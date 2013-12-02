@@ -715,7 +715,7 @@ Zie "Meer voorkeuren" voor de relevante instelling.
 </string>
 
     <!-- Hint text displayed when user enters the 'read-only' book view -->
-    <string name="hint_view_only_help">Dit is het alleen-lezen detailoverzicht. U kunt This is the non-editable book details screen. U kunt naar link en rechts vegen om naar andere boeken te gaan en u kunt het boek bewerken via het opties menu door gebruik te maken van de menuknop of overvloeiend menu-pictogram.
+    <string name="hint_view_only_help">Dit is het alleen-lezen detailoverzicht. U kunt naar link en rechts vegen om naar andere boeken te gaan en u kunt het boek bewerken via het opties menu door gebruik te maken van de menuknop of overvloeiend menu-pictogram.
 </string>
 
     <!-- This is the heading of the 'Details' tab when editing a book. It needs to be short. "Book Details" is too long. -->

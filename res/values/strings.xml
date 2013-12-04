@@ -752,7 +752,7 @@ and you can edit the book via the options menu using the menu button or overflow
 
     <!-- Displayed in progress dialog when exporting covers -->
     <string name="covers_progress">%1$s covers processed (%2$s missing)</string>
-    <!-- Heading in Admin activity -->
+    <!-- Heading in Admin activity and in 'Export' dialogue -->
     <string name="advanced_options">Advanced Options</string>
     <!-- Showed in progress dialog when an import starts -->
     <string name="backing_up_ellipsis">Backing up&#8230;</string>
@@ -878,7 +878,85 @@ and you can edit the book via the options menu using the menu button or overflow
     
     <!-- End: Added/Updated in 5.0.5 -->
 
+    <!-- Begin: Added/Updated in 5.0.8 -->
+    <string name="new_in_508">
+		<![CDATA[
+			<p><b>New in 5.0.8</b>\n\n
+				* German translation updates (Robert Wetzlmayr)\n\n
+			</p>
+		]]>
+    </string>
+    <!-- End: Added/Updated in 5.0.8 -->
+
+	<!--  Note to Translators: don't bother translating strings until they get a version number. They are very much 'draft' versions -->
+    
+    <!-- Begin: Added/Updated in 5.0.9 -->
+    <string name="new_in_509">
+		<![CDATA[
+			<p><b>New in 5.0.9</b>\n\n
+				* Bug fix for Android 4.4 (KitKat)\n\n
+				* Dutch translation (Gideon van Melle)\n\n
+				* Other minor bug fixes
+			</p>
+		]]>
+    </string>
+
+	<string name="hint_evan_book">
+	    		<![CDATA[
+				<p>Did you know the original author of Book Catalogue (Evan Leybourn) has just published 
+				a book on Agile Business Management?</p>
+				<p>If you are interested in his other work, more information can be found at:\n\n
+				<a href="http://theagiledirector.com/book">http://theagiledirector.com/book</a>
+				</p>
+			]]>
+    </string>
+
+    <!-- End: Added/Updated in 5.0.9 -->
+
     <!-- Begin: Added/Updated in [Next Version] -->
+    
+    <!--  Explanatory text for 'import' dialogue -->
+    <string name="import_books_blurb">The books in this archive will be imported. Click on one of two options to start the import, or press \'back\' to cancel:</string>
+    <!-- Description of the 'import all books' option -->
+    <string name="all_books_blurb">All books in the archive will be imported, updating existing books and adding new ones.</string>
+    <!-- Menu text for the 'import/export new & changed' option -->
+    <string name="new_and_changed_books">New and updated books</string>
+    <!-- Description of the 'import new & changed' option -->
+    <string name="new_and_changed_books_blurb">Only import books that are new, or which have been updated more recently in the archive. This is useful when synchronizing two devices.</string>
+    <!-- Descriptive text associated with import options not available with older archives -->
+    <string name="old_archive_blurb">This option is not supported for older archive versions.</string>
+    <!-- Part of the progress message displayed when importing books -->
+    <string name="n_created_m_updated">%1$s created, %2$s updated</string>
+
+    <!--  Explanatory text for 'export' dialogue -->
+    <string name="export_books_blurb">The books in your catalogue will be exported. Click on one of two options to start the export, or press \'back\' to cancel:</string>
+    <!-- Description of the 'import all books' option -->
+    <string name="export_all_books_blurb">All books in the catalogue will be exported to the archive.</string>
+    <!-- Description of the 'export new & changed' option -->
+    <string name="export_new_and_changed_books_blurb">Only export books that are new, or which have been updated since the last full backup. This is useful when synchronizing two devices.</string>
+    <!-- Part of the progress message displayed when exporting books -->
+    <string name="n_exported">%1$s exported</string>
+
+    <!-- Displayed in progress dialog when exporting covers in incremental mode -->
+    <string name="covers_progress_incr">%1$s covers processed (%2$s missing, %3$s skipped)</string>
+    
+    <string name="export_all_blurb">All books, covers, settings and custom styles will be exported to the archive.</string>
+    <string name="export_advanced_blurb">Select what will be exported to the archive.</string>
+    <string name="export_advanced_heading">Select what will be exported:</string>
+    
+    <string name="book_details">Book details</string>
+    <string name="book_details_blurb">The details of the books themselves</string>
+    <string name="cover_images">Cover images</string>
+    <string name="cover_images_blurb">Cover images for all selected books. Will make the export much larger.</string>
+    <string name="preferences_blurb">Preferences and user-defined list styles</string>
+    
+    <string name="export_advanced_date_blurb">Optionally specify a date to use in selecting books and/or covers to export:</string>
+    
+    <string name="all_books_added_or_updated_since">All books added or updated since:</string>
+    <string name="all_books_added_or_updated_since_last_full_backup">All books added or updated since last full backup</string>
+
     <!-- End: Added/Updated in [Next Version] -->
+
+    
 
 </resources>

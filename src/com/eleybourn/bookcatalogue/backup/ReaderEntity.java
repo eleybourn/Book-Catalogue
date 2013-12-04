@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 
+import java.util.Date;
 import com.eleybourn.bookcatalogue.database.SerializationUtils.DeserializationException;
 
 import android.content.SharedPreferences;
@@ -54,4 +55,6 @@ public interface ReaderEntity {
 	public void getPreferences(SharedPreferences prefs) throws IOException;
 	/** Read the data as a Serializable object */
 	public Serializable getSerializable() throws IOException, DeserializationException;
+	/** Modified date from archive entry */
+	public Date getDateModified();
 }

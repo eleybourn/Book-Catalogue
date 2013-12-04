@@ -24,10 +24,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.Date;
 
 import android.database.Cursor;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
+import com.eleybourn.bookcatalogue.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.BookEditFields;
 import com.eleybourn.bookcatalogue.BooksCursor;
 import com.eleybourn.bookcatalogue.BooksRowView;
@@ -53,12 +55,31 @@ public class CsvExporter implements Exporter {
 		return mLastError;
 	}
 
-	public boolean export(OutputStream outputStream, Exporter.ExportListener listener) throws IOException {
+	public boolean export(OutputStream outputStream, Exporter.ExportListener listener, final int backupFlags) throws IOException {
+		/** RELEASE: Handle flags! */
 		int num = 0;
 		if (!StorageUtils.sdCardWritable()) {
 			mLastError = "Export Failed - Could not write to SDCard";
 			return false;			
 		}
+
+		// Get the 'since' date, if any
+		Date sinceDate = null;
+		long sinceTime = 0;
+		if ( (backupFlags & Exporter.EXPORT_NEW_OR_UPDATED) != 0) {
+			String lastBackup = BookCatalogueApp.getAppPreferences().getString(BookCataloguePreferences.PREF_LAST_BACKUP_DATE, null);
+			if (lastBackup != null && !lastBackup.equals("")) {
+				try {
+					sinceDate = Utils.parseDate(lastBackup);
+					sinceTime = sinceDate.getTime();
+				} catch (Exception e) {
+					// Just ignore; backup everything
+					Logger.logError(e);
+				}
+			}
+		}
+
+		// Display startup message
 		listener.onProgress(BookCatalogueApp.getResourceString(R.string.export_starting_ellipsis), 0);
 		boolean displayingStartupMessage = true;
 
@@ -103,7 +124,7 @@ public class CsvExporter implements Exporter {
 		db = new CatalogueDBAdapter(BookCatalogueApp.context);
 		db.open();		
 
-		BooksCursor books = db.exportBooks();
+		BooksCursor books = db.exportBooks(sinceDate);
 		BooksRowView rv = books.getRowView();
 
 		try {

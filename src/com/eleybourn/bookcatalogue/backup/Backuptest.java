@@ -78,7 +78,7 @@ public class Backuptest {
 			@Override
 			public boolean isCancelled() {
 				return mIsCancelled;
-			}});
+			}}, 0);
 		System.out.println("Finished " + file.getAbsolutePath() + ", size = " + file.length());
 	}
 
@@ -113,7 +113,7 @@ public class Backuptest {
 			@Override
 			public boolean isCancelled() {
 				return mIsCancelled;
-			}});
+			}}, Importer.IMPORT_ALL);
 
 		System.out.println("Finished " + file.getAbsolutePath() + ", size = " + file.length());
 	}

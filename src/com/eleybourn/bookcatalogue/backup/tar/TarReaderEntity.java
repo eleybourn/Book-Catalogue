@@ -21,6 +21,7 @@ package com.eleybourn.bookcatalogue.backup.tar;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 
@@ -71,5 +72,13 @@ public class TarReaderEntity extends ReaderEntityAbstract {
 	@Override
 	public String getName() {
 		return mEntry.getName();
+	}
+	
+	/**
+	 * Accessor
+	 */
+	@Override
+	public Date getDateModified() {
+		return mEntry.getLastModifiedDate();
 	}
 }

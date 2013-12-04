@@ -98,8 +98,10 @@ public class MainMenu extends BookCatalogueActivity {
 		// Goodreads will be shown/hidden in onResume()
 		setOnClickListener(R.id.goodreads_label, mGoodreadsHandler);
 		
-		if (savedInstanceState == null)
+		if (savedInstanceState == null) {
+			HintManager.displayHint(this, R.string.hint_evan_book, null);
 			HintManager.displayHint(this, R.string.hint_startup_screen, null);
+		}
 
 		Utils.initBackground(R.drawable.bc_background_gradient, this, true);
 	}

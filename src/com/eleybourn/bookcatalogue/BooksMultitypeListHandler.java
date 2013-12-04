@@ -852,6 +852,7 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 
 		case R.id.MENU_SEND_BOOK_TO_GR:
 			// Get a GoodreadsManager and make sure we are authorized.
+			// TODO: This does network traffic on main thread and will ALWAYS die in Android 4.2+. Should mimic code in GoodreadsUtils.sendBooksToGoodreads(...)
 			GoodreadsManager grMgr = new GoodreadsManager();
 			if (!grMgr.hasValidCredentials()) {
 				try {

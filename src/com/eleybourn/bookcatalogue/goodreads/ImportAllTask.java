@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 
@@ -192,7 +193,7 @@ public class ImportAllTask extends GenericTask {
 					if (mUpdatesAfter.compareTo(review.getString(ListReviewsFieldNames.UPDATED)) > 0)
 						return true;
 				}
-					
+
 				// Processing may involve a SLOW thumbnail download...don't run in TX!
 				processReview(db, review);
 				//SyncLock tx = db.startTransaction(true);
@@ -263,7 +264,7 @@ public class ImportAllTask extends GenericTask {
 	}
 
 	/** 
-	 * Passed a goodreads shelf name, return the best macthing localk bookshelf name, or the
+	 * Passed a goodreads shelf name, return the best matching local bookshelf name, or the
 	 * original if no match found.
 	 * 
 	 * @param db			Database adapter
@@ -332,11 +333,11 @@ public class ImportAllTask extends GenericTask {
 			if (lastUpdate != null && lastUpdate.compareTo(lastGrSync) < 0)
 				return;
 		}
-
 		// We build a new book bundle each time since it will build on the existing
 		// data for the given book, not just replace it.
 		BookData book = buildBundle(db, rv, review);
-		db.updateBook(rv.getId(), book, false);			
+
+		db.updateBook(rv.getId(), book, CatalogueDBAdapter.BOOK_UPDATE_SKIP_PURGE_REFERENCES|CatalogueDBAdapter.BOOK_UPDATE_USE_UPDATE_DATE_IF_PRESENT);			
 		//db.setGoodreadsSyncDate(rv.getId());
 	}
 
@@ -348,7 +349,7 @@ public class ImportAllTask extends GenericTask {
 	 */
 	private void createBook(CatalogueDBAdapter db, Bundle review) {
 		BookData book = buildBundle(db, null, review);
-		long id = db.createBook(book);
+		long id = db.createBook(book, CatalogueDBAdapter.BOOK_UPDATE_USE_UPDATE_DATE_IF_PRESENT);
 		if (book.getBoolean(CatalogueDBAdapter.KEY_THUMBNAIL)) {
 			String uuid = db.getBookUuid(id);
 			File thumb = CatalogueDBAdapter.getTempThumbnail();

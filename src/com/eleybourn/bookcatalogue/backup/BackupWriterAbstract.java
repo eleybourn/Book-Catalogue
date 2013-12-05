@@ -58,7 +58,7 @@ public abstract class BackupWriterAbstract implements BackupWriter {
 	 * Do a full backup, sending progress to the listener
 	 */
 	@Override
-	public void backup(BackupWriterListener listener, final int backupFlags) throws IOException {
+	public void backup(BackupWriterListener listener, final int backupFlags, Date since) throws IOException {
 		
 		try {
 			listener.setMax((int) (mDbHelper.getBookCount() * 2 + 1));
@@ -66,13 +66,13 @@ public abstract class BackupWriterAbstract implements BackupWriter {
 			// Process each component of the Archive, unless we are cancelled, as in Nikita
 			if (!listener.isCancelled())
 				writeInfo(listener);
-			if (!listener.isCancelled())
-				writeBooks(listener, backupFlags);
-			if (!listener.isCancelled())
-				writeCovers(listener, backupFlags);
-			if (!listener.isCancelled())
+			if (!listener.isCancelled() && (backupFlags & Exporter.EXPORT_DETAILS) != 0)
+				writeBooks(listener, backupFlags, since);
+			if (!listener.isCancelled() && (backupFlags & Exporter.EXPORT_COVERS) != 0)
+				writeCovers(listener, backupFlags, since);
+			if (!listener.isCancelled() && (backupFlags & Exporter.EXPORT_PREFERENCES) != 0)
 				writePreferences(listener);
-			if (!listener.isCancelled())
+			if (!listener.isCancelled() && (backupFlags & Exporter.EXPORT_STYLES) != 0)
 				writeStyles(listener);			
 		} finally {
 			try {
@@ -113,7 +113,7 @@ public abstract class BackupWriterAbstract implements BackupWriter {
 	 * 
 	 * @throws IOException
 	 */
-	private void writeBooks(final BackupWriterListener listener, final int backupFlags) throws IOException {
+	private void writeBooks(final BackupWriterListener listener, final int backupFlags, final Date since) throws IOException {
 		// This is an estimate only; we actually don't know how many covers
 		// there are in the backup.
 		listener.setMax((int) (mDbHelper.getBookCount() * 2 + 1));
@@ -144,7 +144,7 @@ public abstract class BackupWriterAbstract implements BackupWriter {
 		try {
 			CsvExporter exporter = new CsvExporter();
 			output = new FileOutputStream(temp);
-			exporter.export(output, exportListener, backupFlags);
+			exporter.export(output, exportListener, backupFlags, since);
 			output.close();
 			System.out.println("Writing Books");
 			putBooks(temp);
@@ -163,19 +163,14 @@ public abstract class BackupWriterAbstract implements BackupWriter {
 	 * 
 	 * @throws IOException
 	 */
-	private void writeCovers(final BackupWriterListener listener, final int backupFlags) throws IOException {
-		Date sinceDate = null;
+	private void writeCovers(final BackupWriterListener listener, final int backupFlags, final Date since) throws IOException {
 		long sinceTime = 0;
-		if ( (backupFlags & Exporter.EXPORT_NEW_OR_UPDATED) != 0) {
-			String lastBackup = BookCatalogueApp.getAppPreferences().getString(BookCataloguePreferences.PREF_LAST_BACKUP_DATE, null);
-			if (lastBackup != null && !lastBackup.equals("")) {
-				try {
-					sinceDate = Utils.parseDate(lastBackup);
-					sinceTime = sinceDate.getTime();
-				} catch (Exception e) {
-					// Just ignore; backup everything
-					Logger.logError(e);
-				}
+		if ( since != null && (backupFlags & Exporter.EXPORT_SINCE) != 0) {
+			try {
+				sinceTime = since.getTime();
+			} catch (Exception e) {
+				// Just ignore; backup everything
+				Logger.logError(e);
 			}
 		}
 
@@ -193,7 +188,7 @@ public abstract class BackupWriterAbstract implements BackupWriter {
 			while(c.moveToNext() && !listener.isCancelled()) {
 				File cover = CatalogueDBAdapter.fetchThumbnailByUuid(c.getString(uuidCol));
 				if (cover.exists()) {
-					if (sinceDate == null || sinceTime < cover.lastModified()) {
+					if (since == null || sinceTime < cover.lastModified()) {
 						putCoverFile(cover);
 						ok++;
 					} else {

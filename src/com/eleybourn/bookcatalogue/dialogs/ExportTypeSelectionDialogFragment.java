@@ -87,7 +87,7 @@ public class ExportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
 		alertDialog.setCanceledOnTouchOutside(false);
 
 		setOnClickListener(v, R.id.all_books_row);
-		setOnClickListener(v, R.id.new_and_changed_books_row);
+		setOnClickListener(v, R.id.advanced_row);
 
         return alertDialog;
     }

@@ -78,7 +78,7 @@ public class Backuptest {
 			@Override
 			public boolean isCancelled() {
 				return mIsCancelled;
-			}}, 0);
+			}}, Exporter.EXPORT_ALL, null);
 		System.out.println("Finished " + file.getAbsolutePath() + ", size = " + file.length());
 	}
 

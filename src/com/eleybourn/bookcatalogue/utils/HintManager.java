@@ -28,6 +28,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.SharedPreferences.Editor;
+import android.text.Html;
+import android.text.util.Linkify;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -71,6 +73,7 @@ public class HintManager {
 		.add("hint_autorotate_camera_images", R.string.hint_autorotate_camera_images)
 		.add("hint_view_only_book_details", R.string.hint_view_only_book_details)
 		.add("hint_view_only_help", R.string.hint_view_only_help)
+		.add("hint_evan_book", R.string.hint_evan_book)
 		;
 
 	public static interface HintOwner {
@@ -105,7 +108,9 @@ public class HintManager {
 		final Button ok = (Button)dialog.findViewById(R.id.confirm);
 
 		// Setup the views
-		msg.setText(stringId);
+		msg.setText(Html.fromHtml(BookCatalogueApp.context.getResources().getString(stringId))); //stringId);
+		Linkify.addLinks(msg, Linkify.ALL);
+	
 		dialog.setTitle(R.string.hint);
 
 		// Handle the 'OK' click

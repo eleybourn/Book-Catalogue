@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Hashtable;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -62,10 +63,12 @@ import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.BookNot
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NotAuthorizedException;
 import com.eleybourn.bookcatalogue.goodreads.api.AuthUserApiHandler;
+import com.eleybourn.bookcatalogue.goodreads.api.BookshelfListApiHandler;
 import com.eleybourn.bookcatalogue.goodreads.api.IsbnToId;
 import com.eleybourn.bookcatalogue.goodreads.api.ReviewUpdateHandler;
 import com.eleybourn.bookcatalogue.goodreads.api.SearchBooksApiHandler;
 import com.eleybourn.bookcatalogue.goodreads.api.ShelfAddBookHandler;
+import com.eleybourn.bookcatalogue.goodreads.api.BookshelfListApiHandler.BookshelfListFieldNames;
 import com.eleybourn.bookcatalogue.goodreads.api.ShowBookApiHandler.ShowBookFieldNames;
 import com.eleybourn.bookcatalogue.goodreads.api.ShowBookByIdApiHandler;
 import com.eleybourn.bookcatalogue.goodreads.api.ShowBookByIsbnApiHandler;
@@ -544,6 +547,60 @@ public class GoodreadsManager {
 		return m_isbnToId.isbnToId(isbn);
 	}
 
+	private GoodreadsBookshelves mBookshelfList = null;
+	private class GoodreadsBookshelf {
+		private Bundle mBundle;
+		public GoodreadsBookshelf(Bundle b) {
+			mBundle = b;
+		}
+		public String getName() {
+			return mBundle.getString(BookshelfListFieldNames.NAME);
+		}
+		public boolean isExclusive() {
+			return mBundle.getBoolean(BookshelfListFieldNames.EXCLUSIVE);
+		}
+	}
+
+	private class GoodreadsBookshelves {
+		private Hashtable<String, GoodreadsBookshelf> mBookshelfList = null;
+		public boolean isExclusive(String name) {
+			if (mBookshelfList.containsKey(name)) {
+				return mBookshelfList.get(name).isExclusive();
+			} else {
+				return false;
+			}
+		}
+		public GoodreadsBookshelves(Hashtable<String, GoodreadsBookshelf> list) {
+			mBookshelfList = list;
+		}
+	}
+
+	private GoodreadsBookshelves getShelves() throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException, NetworkException, IOException {
+		if (mBookshelfList == null) {
+			Hashtable<String, GoodreadsBookshelf> list = new Hashtable<String, GoodreadsBookshelf>();
+			BookshelfListApiHandler h = new BookshelfListApiHandler(this);
+			int page = 1;
+			while(true) {
+				Bundle result = h.run(page);
+				ArrayList<Bundle> shelves = result.getParcelableArrayList(BookshelfListFieldNames.SHELVES);
+				if (shelves.size() == 0)
+					break;
+
+				for(Bundle b: shelves) {
+					GoodreadsBookshelf shelf = new GoodreadsBookshelf(b);
+					list.put(shelf.getName(), shelf);
+				}
+
+				if (result.getLong(BookshelfListFieldNames.END) >= result.getLong(BookshelfListFieldNames.TOTAL))
+					break;
+
+				page++;
+			}
+			mBookshelfList = new GoodreadsBookshelves(list);
+		}
+		return mBookshelfList;
+	}
+
 	/** Local API object */
 	ShelfAddBookHandler m_addBookHandler = null;
 	/**
@@ -585,13 +642,17 @@ public class GoodreadsManager {
 	 * @throws OAuthExpectationFailedException 
 	 * @throws OAuthMessageSignerException 
 	 * @throws NetworkException 
+	 * @throws BookNotFoundException 
 	 */
-	public ExportDisposition sendOneBook(CatalogueDBAdapter dbHelper, BooksRowView books) throws InterruptedException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, IOException, NetworkException {
+	public ExportDisposition sendOneBook(CatalogueDBAdapter dbHelper, BooksRowView books) throws InterruptedException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, IOException, NetworkException, BookNotFoundException {
 		long bookId = books.getId();
 		long grId;
 		long reviewId = 0;
 		Bundle grBookInfo = null;
 		boolean isNew;
+
+		// Get the list of shelves from goodreads. This is cached per instance of GoodreadsManager.
+		GoodreadsBookshelves grShelfList = getShelves();
 
 		// Get the book ISBN
 		String isbn = books.getIsbn();
@@ -644,7 +705,8 @@ public class GoodreadsManager {
 			ArrayList<String> shelves = new ArrayList<String>();
 			ArrayList<String> canonicalShelves = new ArrayList<String>();
 
-			// Build the list of shelves that we have for the book
+			// Build the list of shelves that we have in the local database for the book
+			int exclusiveCount = 0;
 			Cursor shelfCsr = dbHelper.getAllBookBookshelvesForGoodreadsCursor(bookId);
 			try {
 				int	shelfCol = shelfCsr.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_BOOKSHELF);
@@ -654,24 +716,31 @@ public class GoodreadsManager {
 					final String canonicalShelfName = canonicalizeBookshelfName(shelfName);
 					shelves.add(shelfName);
 					canonicalShelves.add(canonicalShelfName);
+					// Count how many of these shelves are exclusive in goodreads.
+					if (grShelfList.isExclusive(canonicalShelfName)) {
+						exclusiveCount++;
+					}
 				}
 			} finally {
 				shelfCsr.close();
 			}
 
-			// Add pseudo-shelf to match goodreads because review.update does not seem to update them properly
-			String pseudoShelf;
-			if (books.getRead() == 0) {
-				pseudoShelf = "To Read";
-			} else {				
-				pseudoShelf = "Read";
-			}
-			if (!shelves.contains(pseudoShelf)) {
-				shelves.add(pseudoShelf);
-				canonicalShelves.add(canonicalizeBookshelfName(pseudoShelf));
+			// If no exclusive shelves are specified, then add pseudo-shelf to match goodreads because 
+			// review.update does not seem to update them properly
+			if (exclusiveCount == 0) {
+				String pseudoShelf;
+				if (books.getRead() == 0) {
+					pseudoShelf = "To Read";
+				} else {				
+					pseudoShelf = "Read";
+				}
+				if (!shelves.contains(pseudoShelf)) {
+					shelves.add(pseudoShelf);
+					canonicalShelves.add(canonicalizeBookshelfName(pseudoShelf));
+				}				
 			}
 
-			// Get the shelf names the book is currently on in goodreads
+			// Get the names of the shelves the book is currently on AT GODREADS
 			ArrayList<String> grShelves;
 			if (!isNew && grBookInfo.containsKey(ShowBookFieldNames.SHELVES)) {
 				grShelves = grBookInfo.getStringArrayList(ShowBookFieldNames.SHELVES);
@@ -684,7 +753,7 @@ public class GoodreadsManager {
 				if (!canonicalShelves.contains(grShelf)) {
 					try {
 						// Goodreads does not seem to like removing books from the special shelves.
-						if (! ( grShelf.equals("read") || grShelf.equals("to-read") || grShelf.equals("currently-reading") ) )
+						if (! ( grShelfList.isExclusive(grShelf) ) )
 							this.removeBookFromShelf(grShelf, grId);
 					} catch (BookNotFoundException e) {
 						// Ignore for now; probably means book not on shelf anyway
@@ -696,13 +765,17 @@ public class GoodreadsManager {
 
 			// Add shelves to goodreads if they are not currently there
 			for(String shelf: shelves) {
+				// Get the name the shelf will have at goodreads
 				final String canonicalShelfName = canonicalizeBookshelfName(shelf);
-				if (grShelves == null || !grShelves.contains(canonicalShelfName) )
+				// Can only sent canonical shelf names if the book is on 0 or 1 of them.
+				boolean okToSend = (exclusiveCount < 2 || !grShelfList.isExclusive(canonicalShelfName));
+				if (okToSend && (grShelves == null || !grShelves.contains(canonicalShelfName)) ) {
 					try {
 						reviewId = this.addBookToShelf(shelf, grId);								
 					} catch (Exception e) {
 						return ExportDisposition.error;
-					}					
+					}	
+				}
 			}
 
 			/* We should be safe always updating here because:

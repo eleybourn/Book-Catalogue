@@ -173,7 +173,7 @@
     <string name="backup_success">Резервное копирование успешно</string>
     <string name="backup_failed">Резервное копирование не удалось</string>
     <string name="file_must_contain_column">В файле должен быть столбец с названием %s</string>
-    <string name="file_must_contain_any_column">FФайл должен содержать столбец с одним из следующих имён: %s</string>
+    <string name="file_must_contain_any_column">Файл должен содержать столбец с одним из следующих имён: %s</string>
     <string name="column_is_blank">Столбец %1$s в строке %2$s пуст</string>
     <string name="columns_are_blank">В строке %2$d столбцы %1$s пусты</string>
     <string name="save">Сохранить</string>

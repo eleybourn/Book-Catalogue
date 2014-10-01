@@ -850,19 +850,20 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
     <string name="new_in_509">
         <![CDATA[
 			<p><b>Neu in 5.0.9</b>\n\n
-				* Fehlerbehebung für Android 4.4 (KitKat)\n\n
+				* Fehlerbehebungen für Android 4.4 (KitKat)\n\n
 				* Holländische Übersetzung (Gideon van Melle)\n\n
-				* Weitere Fehlerbehebungen
+				* Weitere kleinere Fehlerbehebungen
 			</p>
 		]]>
     </string>
 
     <string name="hint_evan_book">
         <![CDATA[
-				<p>Did you know the original author of Book Catalogue (Evan Leybourn) has just published
-				a book on Agile Business Management?</p>
-				<p>If you are interested in his other work, more information can be found at:\n\n
-				<a href="http://theagiledirector.com/book">http://theagiledirector.com/book</a>
+				<p>Wussten Sie, dass der Autor von Book Catalogue (Evan Leybourn) gerade ein Buch über
+				Agile Business Management veröffentlicht hat?</p>
+				<p>Wenn Sie Interese an seinen anderen Arbeiten haben, können Sie weitere Informationen auf:\n\n
+				<a href="http://theagiledirector.com/book">http://theagiledirector.com/book</a>\n\n
+				finden.
 				</p>
 			]]>
     </string>

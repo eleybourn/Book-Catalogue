@@ -61,7 +61,7 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/new_and_changed_books_row"
+            android:id="@+id/advanced_row"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"

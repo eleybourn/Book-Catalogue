@@ -180,7 +180,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:text="..." />
+                android:text="&#8230;" />
             
             <EditText
                 android:id="@+id/editText1"

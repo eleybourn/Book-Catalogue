@@ -38,6 +38,7 @@ import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment;
 import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment.OnMessageDialogResultListener;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueueProgressFragment;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueueProgressFragment.FragmentTask;
+import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.StorageUtils;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
@@ -219,10 +220,25 @@ public class BackupChooser extends FileChooser implements OnMessageDialogResultL
 			// Do nothing
 			break;
 		case R.id.all_books_row:
-			mBackupFile = BackupManager.backupCatalogue(this, file, TASK_ID_SAVE, Exporter.EXPORT_ALL);
+			mBackupFile = BackupManager.backupCatalogue(this, file, TASK_ID_SAVE, Exporter.EXPORT_ALL, null);
 			break;
-		case R.id.new_and_changed_books_row:
-			mBackupFile = BackupManager.backupCatalogue(this, file, TASK_ID_SAVE, Exporter.EXPORT_NEW_OR_UPDATED);
+		case R.id.advanced_row:
+			{
+				Date sinceDate;
+				String lastBackup = BookCatalogueApp.getAppPreferences().getString(BookCataloguePreferences.PREF_LAST_BACKUP_DATE, null);
+				if (lastBackup != null && !lastBackup.equals("")) {
+					try {
+						sinceDate = Utils.parseDate(lastBackup);
+					} catch (Exception e) {
+						// Just ignore; backup everything
+						Logger.logError(e);
+						sinceDate = null;
+					}
+				} else {
+					sinceDate = null;
+				}
+				mBackupFile = BackupManager.backupCatalogue(this, file, TASK_ID_SAVE, Exporter.EXPORT_ALL_SINCE, sinceDate);
+			}
 			break;
 		}
 	}

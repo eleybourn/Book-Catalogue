@@ -21,6 +21,7 @@ package com.eleybourn.bookcatalogue.backup;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 
 import com.eleybourn.bookcatalogue.backup.BackupWriter.BackupWriterListener;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
@@ -58,7 +59,7 @@ public interface BackupWriter {
 	 * @param listener
 	 * @throws IOException
 	 */
-	void backup(BackupWriterListener listener, final int backupFlags) throws IOException;
+	void backup(BackupWriterListener listener, final int backupFlags, final Date since) throws IOException;
 	/** Get the containing archive */
 	BackupContainer getContainer();
 	/** Write an info block to the archive */

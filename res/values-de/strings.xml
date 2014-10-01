@@ -846,6 +846,29 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
     </string>
     <!-- End: Added/Updated in 5.0.8 -->
 
+    <!-- Begin: Added/Updated in 5.0.9 -->
+    <string name="new_in_509">
+        <![CDATA[
+			<p><b>Neu in 5.0.9</b>\n\n
+				* Fehlerbehebung für Android 4.4 (KitKat)\n\n
+				* Holländische Übersetzung (Gideon van Melle)\n\n
+				* Weitere Fehlerbehebungen
+			</p>
+		]]>
+    </string>
+
+    <string name="hint_evan_book">
+        <![CDATA[
+				<p>Did you know the original author of Book Catalogue (Evan Leybourn) has just published
+				a book on Agile Business Management?</p>
+				<p>If you are interested in his other work, more information can be found at:\n\n
+				<a href="http://theagiledirector.com/book">http://theagiledirector.com/book</a>
+				</p>
+			]]>
+    </string>
+
+    <!-- End: Added/Updated in 5.0.9 -->
+
     <!-- Begin: Added/Updated in [Next Version] -->
     <!-- End: Added/Updated in [Next Version] -->
 

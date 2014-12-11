@@ -61,11 +61,31 @@ public abstract class BackupWriterAbstract implements BackupWriter {
 	public void backup(BackupWriterListener listener, final int backupFlags, Date since) throws IOException {
 		
 		try {
-			listener.setMax((int) (mDbHelper.getBookCount() * 2 + 1));
+			// Estimate the total steps
+			int estTotal = 1;
+			// First, see how many books in total
+			final int maxBooks = (int) mDbHelper.getBookCount();
+
+			int coverCount;
+			if ((backupFlags & Exporter.EXPORT_COVERS) != 0)
+				coverCount = writeCovers(listener, backupFlags, since, true);
+			else
+				coverCount= 0;
+
+			// If we are doing books, add them
+			if ( (backupFlags & Exporter.EXPORT_DETAILS) != 0)
+				estTotal += maxBooks;
+
+			// If we are doing covers, add them
+			if (!listener.isCancelled() && (backupFlags & Exporter.EXPORT_COVERS) != 0)
+				estTotal += coverCount;
+
+			listener.setMax(estTotal);
 
 			// Generate the book list first, so we know how many there are.
-			File temp = generateBooks(listener, backupFlags, since);
-			int coverCount = writeCovers(listener, backupFlags, since, true);
+			File temp = generateBooks(listener, backupFlags, since, coverCount);
+
+			listener.setMax(coverCount + listener.getTotalBooks() + 1);
 
 			// Process each component of the Archive, unless we are cancelled, as in Nikita
 			if (!listener.isCancelled())
@@ -117,7 +137,7 @@ public abstract class BackupWriterAbstract implements BackupWriter {
 	 * 
 	 * @throws IOException
 	 */
-	private File generateBooks(final BackupWriterListener listener, final int backupFlags, final Date since) throws IOException {
+	private File generateBooks(final BackupWriterListener listener, final int backupFlags, final Date since, final int numCovers) throws IOException {
 		// This is an estimate only; we actually don't know how many covers
 		// there are in the backup.
 		listener.setMax((int) (mDbHelper.getBookCount() * 2 + 1));
@@ -139,7 +159,7 @@ public abstract class BackupWriterAbstract implements BackupWriter {
 				// Save the book count for later
 				listener.setTotalBooks(max);
 				// Update the progress bar to a more reasonable value
-				listener.setMax((int) (mDbHelper.getBookCount() + max + 1));
+				listener.setMax((int) (numCovers + max + 1));
 			}
 		};
 

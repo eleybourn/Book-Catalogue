@@ -16,7 +16,7 @@
             android:id="@+id/export_advanced_blurb"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="15dp"
+            android:paddingBottom="6dp"
             android:text="@string/export_advanced_blurb"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="12dp" >
+            android:paddingBottom="6dp" >
 
             <CheckBox
                 android:id="@+id/books_check"
@@ -64,7 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="12dp" >
+            android:paddingBottom="6dp" >
 
             <CheckBox
                 android:id="@+id/covers_check"
@@ -103,8 +103,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="12dp" >
+            android:paddingBottom="6dp" >
 
+            <!-- Disabled to reduce complexity. Enable one day... -->
             <CheckBox
                 android:id="@+id/preferences_check"
                 android:layout_width="wrap_content"
@@ -113,6 +114,7 @@
                 android:layout_alignParentTop="true"
                 android:checked="true"
                 android:text=""
+                android:enabled="false"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
@@ -141,7 +143,7 @@
             android:id="@+id/export_advanced_date_blurb"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="15dp"
+            android:paddingBottom="6dp"
             android:text="@string/export_advanced_date_blurb"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -151,28 +153,33 @@
             android:layout_height="wrap_content" >
 
             <RadioButton
-                android:id="@+id/radio0"
+                android:id="@+id/radioAll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:checked="true"
                 android:text="@string/all_books" />
 
             <RadioButton
-                android:id="@+id/radio1"
+                android:id="@+id/radioSinceLast"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/all_books_added_or_updated_since_last_full_backup" />
 
+            <!-- Disabled to reduce complexity of UI and app; may enable one day. Deemed to be too rarely of use. -->
             <RadioButton
-                android:id="@+id/radio2"
+                android:id="@+id/radioSinceDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/all_books_added_or_updated_since" />
+                android:text="@string/all_books_added_or_updated_since"
+                android:visibility="gone" />
+
         </RadioGroup>
 
+        <!-- Disabled to reduce complexity of UI and app; may enable one day. Deemed to be too rarely of use. -->
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:visibility="gone" >
 
             <Button
                 android:id="@+id/date_button"
@@ -183,7 +190,7 @@
                 android:text="&#8230;" />
             
             <EditText
-                android:id="@+id/editText1"
+                android:id="@+id/txtDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
@@ -195,9 +202,9 @@
         </RelativeLayout>
 
         <LinearLayout
-            android:paddingTop="18dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:paddingTop="12dp" >
 
             <Button
                 android:id="@+id/cancel"

@@ -971,7 +971,8 @@ and you can edit the book via the options menu using the menu button or overflow
 
     <!-- Used for concatenating two strings, eg. "3 books, 2 covers" (probably only important on RTL langauges)-->
     <string name="a_comma_b">%1$s, %2$s</string>
-
+    <string name="searching_directory_ellipsis">Searching directory&#8230;</string>
+    
     <!-- End: Added/Updated in [Next Version] -->
 
     

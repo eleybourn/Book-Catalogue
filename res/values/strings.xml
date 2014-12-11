@@ -447,22 +447,26 @@
     										\n\nIf no styles are ticked, then all styles will be shown.
     										\n\nIt is also possible to re-order the items by dragging the icon at the extreme right of each row.
     										\n\nClicking anywhere else in a row will allow you to edit the details of a specific style (or clone it, if 
-    										it is a built-in style).</string>
+    										it is a built-in style).
+</string>
     <string name="hint_booklist_style_groups">You can use this screen to modify the hiearchy of headings for a specific book list style.
     										\n\nA green tick indicates the heading will be shown in the list, and a red cross indicates it will not be shown.
     										Clicking on a green tick will turn it into a cross, and vice-versa.
-    										\n\nYou can re-order the hierarchy by dragging the icon at the extreme right of each row up or down.</string>
+    										\n\nYou can re-order the hierarchy by dragging the icon at the extreme right of each row up or down.
+</string>
     <string name="hint_booklist_style_properties">You can use this screen to set the characteristics of a specific book list style.
     										\n\nYou can change the name, edit the groupings to change the hierarchy, and adjust a variety of
     										other settings to build a style that you find useful.
     										\n\nIt is also possible to use \'Book Filters\' to modify the selection of books that will be displayed in
-    										the list. eg. to only retrieve books you have not read yet.</string>
+    										the list. eg. to only retrieve books you have not read yet.
+</string>
     <string name="hint_booklist_global_properties">You can use this screen to set the default characteristics of all book list styles.
     										\n\nMost properties can be overridden by individual styles, but the default values are
     										defined here.
     										\n\nYou can change the background, change how lists are displayed at startup, and adjust a variety of
     										other settings that will be applied to all your styles when possible.
-    										\n\nYou can also edit the styles menu, and the styles themselves from here.</string>
+    										\n\nYou can also edit the styles menu, and the styles themselves from here.
+</string>
     <string name="preferred_styles">Preferred styles</string>
     <string name="edit_style_colon_name">Edit style: %1$s</string>
     <string name="add_style">Add style</string>
@@ -712,11 +716,13 @@
 
     <!-- Hint text displayed when user enters the book listw -->
     <string name="hint_view_only_book_details">When you click on an item in this list, you can now choose to go to non-editable book details view. 
-See "Other Preferences" for the relevant setting.</string>
+See "Other Preferences" for the relevant setting.
+</string>
 
     <!-- Hint text displayed when user enters the 'read-only' book view -->
     <string name="hint_view_only_help">This is the non-editable book details screen; you can fling/swipe left or right to navigate to other books, 
-and you can edit the book via the options menu using the menu button or overflow menu icon.</string>
+and you can edit the book via the options menu using the menu button or overflow menu icon.
+</string>
 
     <!-- This is the heading of the 'Details' tab when editing a book. It needs to be short. "Book Details" is too long. -->
     <string name="details">Details</string>
@@ -993,6 +999,7 @@ and you can edit the book via the options menu using the menu button or overflow
 			<p><b>New in 5.1.0</b>\n\n
 				* Italian translation (Eugenio Davolio)\n\n
 				* Spanish tramslation (to be determined!)\n\n
+				* Turkish translations (bitigchi)
 				* Ability to archive only new/updated books and to exclude covers (or books)\n\n
 				* Other minor bug fixes\n\n
 			</p>

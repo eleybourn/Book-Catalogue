@@ -52,7 +52,7 @@
     <string name="import_data">Import Books</string>
     <string name="import_alert">Warning. Importing data may update existing book records with new information if the uuid column is not present and the id in the import file is the same as an existing id. This is usually fine if you changed a field in an exported file. If you created a new book record, or are importing someone elses books, ensure the uuid field is present or the id field is blank.</string>
     <string name="export_failed">ERROR: Export (to SDCard) of data failed. </string>
-    <string name="import_failed">ERROR: Import of data (from SDCard) failed. Is the file in the correct place?</string>
+    <string name="import_failed_is_location_correct">ERROR: Import of data (from SDCard) failed. Is the file in the correct place?</string>
     <string name="search_title">Book Catalogue: Search Results</string>
     <string name="results_found">Results Found</string>
     <string name="administration_label">Administration Functions</string>
@@ -752,7 +752,7 @@ and you can edit the book via the options menu using the menu button or overflow
 
     <!-- Displayed in progress dialog when exporting covers -->
     <string name="covers_progress">%1$s covers processed (%2$s missing)</string>
-    <!-- Heading in Admin activity -->
+    <!-- Heading in Admin activity and in 'Export' dialogue -->
     <string name="advanced_options">Advanced Options</string>
     <!-- Showed in progress dialog when an import starts -->
     <string name="backing_up_ellipsis">Backing up&#8230;</string>
@@ -889,6 +889,29 @@ and you can edit the book via the options menu using the menu button or overflow
     <!-- End: Added/Updated in 5.0.8 -->
 
 	<!--  Note to Translators: don't bother translating strings until they get a version number. They are very much 'draft' versions -->
+    
+    <!-- Begin: Added/Updated in 5.0.9 -->
+    <string name="new_in_509">
+		<![CDATA[
+			<p><b>New in 5.0.9</b>\n\n
+				* Bug fix for Android 4.4 (KitKat)\n\n
+				* Dutch translation (Gideon van Melle)\n\n
+				* Other minor bug fixes
+			</p>
+		]]>
+    </string>
+
+	<string name="hint_evan_book">
+	    		<![CDATA[
+				<p>Did you know the original author of Book Catalogue (Evan Leybourn) has just published 
+				a book on Agile Business Management?</p>
+				<p>If you are interested in his other work, more information can be found at:\n\n
+				<a href="http://theagiledirector.com/book">http://theagiledirector.com/book</a>
+				</p>
+			]]>
+    </string>
+
+    <!-- End: Added/Updated in 5.0.9 -->
 
     <!-- Begin: Added/Updated in [Next Version] -->
     
@@ -917,6 +940,66 @@ and you can edit the book via the options menu using the menu button or overflow
     <!-- Displayed in progress dialog when exporting covers in incremental mode -->
     <string name="covers_progress_incr">%1$s covers processed (%2$s missing, %3$s skipped)</string>
     
+    <!-- Explanatory note for 'export all' option -->
+    <string name="export_all_blurb">All books, covers, settings and custom styles will be exported to the archive.</string>
+    <!-- Explanatory note for 'advanced export' option -->
+    <string name="export_advanced_blurb">Select what will be exported to the archive.</string>
+    <!-- Introduction for 'advanced export' option -->
+    <string name="export_advanced_heading">Select what will be exported:</string>
+    
+    <!-- Text for button -->
+    <string name="book_details">Book details</string>
+    <!-- Brief descriptionn -->
+    <string name="book_details_blurb">The details of the books themselves</string>
+    <!-- Text for button -->
+    <string name="cover_images">Cover images</string>
+    <!-- Brief descriptionn -->
+    <string name="cover_images_blurb">Cover images for all selected books. Will make the export much larger.</string>
+    <!-- Brief descriptionn -->
+    <string name="preferences_blurb">Preferences and user-defined list styles</string>
+    
+    <!-- Explanatory note for export date (not yet implemented) -->
+    <string name="export_advanced_date_blurb">Optionally specify a date to use in selecting books and/or covers to export:</string>
+    
+    <!-- Explanatory note for export date (not yet implemented) -->
+    <string name="all_books_added_or_updated_since">All books added or updated since:</string>
+    <!-- Explanatory note for export data since last backup -->
+    <string name="all_books_added_or_updated_since_last_full_backup">All books added or updated since last full backup</string>
+
+    <!-- Short text for 'n books' -->
+    <plurals
+        name="n_books">
+        <item quantity="zero">no books</item>
+        <item quantity="one">1 book</item>
+        <item quantity="other">%1$s books</item>
+    </plurals>
+
+    <!-- Short text for 'n covers' -->
+    <plurals
+        name="n_covers">
+        <item quantity="zero">no covers</item>
+        <item quantity="one">1 cover</item>
+        <item quantity="other">%1$s covers</item>
+    </plurals>
+
+    <!-- Used for concatenating two strings, eg. "3 books, 2 covers" (probably only important on RTL langauges)-->
+    <string name="a_comma_b">%1$s, %2$s</string>
+    
+    <!-- Short progress message -->
+    <string name="searching_directory_ellipsis">Searching directory&#8230;</string>
+
+    <string name="new_in_510">
+		<![CDATA[
+			<p><b>New in 5.1.0</b>\n\n
+				* Italian translation (Eugenio Davolio)\n\n
+				* Ability to archive only new/updated books and to exclude covers (or books)\n\n
+				* Other minor bug fixes\n\n
+			</p>
+		]]>
+    </string>
+    
     <!-- End: Added/Updated in [Next Version] -->
+
+    
 
 </resources>

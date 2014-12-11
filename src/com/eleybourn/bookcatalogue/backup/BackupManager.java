@@ -84,12 +84,12 @@ public class BackupManager {
 	 * 
 	 * We use a FragmentTask so that long actions do not occur in the UI thread.
 	 */
-	public static File backupCatalogue(final BookCatalogueActivity context, final File requestedFile, int taskId, final int backupFlags) {
-		final int flags = backupFlags & (Exporter.EXPORT_ALL | Exporter.EXPORT_NEW_OR_UPDATED);
+	public static File backupCatalogue(final BookCatalogueActivity context, final File requestedFile, int taskId, final int backupFlags, final Date since) {
+		final int flags = backupFlags & Exporter.EXPORT_MASK;
 		if (flags == 0)
 			throw new RuntimeException("Backup flags must be specified");
-		if (flags == (Exporter.EXPORT_ALL | Exporter.EXPORT_NEW_OR_UPDATED) )
-			throw new RuntimeException("Illegal backup flag combination: ALL and NEW_OR_UPADTED");
+		//if (flags == (Exporter.EXPORT_ALL | Exporter.EXPORT_NEW_OR_UPDATED) )
+		//	throw new RuntimeException("Illegal backup flag combination: ALL and NEW_OR_UPADTED");
 		
 		final File resultingFile = cleanupFile(requestedFile);
 		final File tempFile = new File(resultingFile.getAbsolutePath() + ".tmp");
@@ -108,6 +108,8 @@ public class BackupManager {
 					wrt = bkp.newWriter();
 
 					wrt.backup(new BackupWriterListener() {
+						private int mTotalBooks = 0;
+
 						@Override
 						public void setMax(int max) {
 							fragment.setMax(max);
@@ -121,7 +123,17 @@ public class BackupManager {
 						@Override
 						public boolean isCancelled() {
 							return fragment.isCancelled();
-						}}, backupFlags);
+						}
+
+						@Override
+						public void setTotalBooks(int books) {
+							mTotalBooks = books;
+						}
+
+						@Override
+						public int getTotalBooks() {
+							return mTotalBooks;
+						}}, backupFlags, since);
 
 					if (fragment.isCancelled()) {
 						System.out.println("Cancelled " + resultingFile.getAbsolutePath());
@@ -164,7 +176,7 @@ public class BackupManager {
 				fragment.setSuccess(mBackupOk);
 				if (mBackupOk) {
 					BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
-					if ( (backupFlags & Exporter.EXPORT_ALL) == 1) {
+					if ( (backupFlags == Exporter.EXPORT_ALL)) {
 						prefs.setString(BookCataloguePreferences.PREF_LAST_BACKUP_DATE, mBackupDate);
 					}
 					prefs.setString(BookCataloguePreferences.PREF_LAST_BACKUP_FILE, resultingFile.getAbsolutePath());

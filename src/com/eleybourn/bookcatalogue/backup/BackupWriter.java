@@ -21,6 +21,7 @@ package com.eleybourn.bookcatalogue.backup;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 
 import com.eleybourn.bookcatalogue.backup.BackupWriter.BackupWriterListener;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
@@ -36,7 +37,8 @@ import android.os.Bundle;
 public interface BackupWriter {
 	
 	/**
-	 * Interface for processes doing a restore operation; allows for progress indications
+	 * Interface for processes doing a backup operation; allows for progress indications
+	 * and saves some useful context
 	 * 
 	 * @author pjw
 	 */
@@ -47,6 +49,10 @@ public interface BackupWriter {
 		void step(String message, int delta);
 		/** Check if operation is cancelled */
 		boolean isCancelled();
+		/** Save the total books exported */
+		void setTotalBooks(int books);
+		/** Retrieve the total books */
+		int getTotalBooks();
 	}
 
 	/**
@@ -58,7 +64,7 @@ public interface BackupWriter {
 	 * @param listener
 	 * @throws IOException
 	 */
-	void backup(BackupWriterListener listener, final int backupFlags) throws IOException;
+	void backup(BackupWriterListener listener, final int backupFlags, final Date since) throws IOException;
 	/** Get the containing archive */
 	BackupContainer getContainer();
 	/** Write an info block to the archive */

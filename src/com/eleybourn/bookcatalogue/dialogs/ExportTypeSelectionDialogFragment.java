@@ -1,6 +1,7 @@
 package com.eleybourn.bookcatalogue.dialogs;
 
 import java.io.File;
+import java.util.Date;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.backup.Exporter;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueDialogFragment;
 import com.eleybourn.bookcatalogue.utils.Logger;
 
@@ -23,7 +25,13 @@ public class ExportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
 	 * @author pjw
 	 */
 	public static interface OnExportTypeSelectionDialogResultListener {
-		public void onExportTypeSelectionDialogResult(int dialogId, ExportTypeSelectionDialogFragment dialog, int rowId, File file);
+		public void onExportTypeSelectionDialogResult(int dialogId, BookCatalogueDialogFragment dialog, ExportSettings settings);
+	}
+
+	public static class ExportSettings {
+		public File 	file;
+		public int		options;
+		public Date		dateFrom;
 	}
 
 	/**
@@ -87,16 +95,25 @@ public class ExportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
 		alertDialog.setCanceledOnTouchOutside(false);
 
 		setOnClickListener(v, R.id.all_books_row);
-		setOnClickListener(v, R.id.new_and_changed_books_row);
+		setOnClickListener(v, R.id.advanced_row);
 
         return alertDialog;
     }
     
     private void handleClick(View v) {
     	try {
-    		OnExportTypeSelectionDialogResultListener a = (OnExportTypeSelectionDialogResultListener)getActivity();
-    		if (a != null)
-	        	a.onExportTypeSelectionDialogResult(mDialogId, this, v.getId(), mFile);
+    		if (v.getId() == R.id.advanced_row) {
+    			ExportAdvancedDialogFragment frag = ExportAdvancedDialogFragment.newInstance(1, mFile);
+    			frag.show(getActivity().getSupportFragmentManager(), null);
+    		} else {
+        		OnExportTypeSelectionDialogResultListener a = (OnExportTypeSelectionDialogResultListener)getActivity();
+        		if (a != null) {
+        			ExportSettings settings = new ExportSettings();
+        			settings.file = mFile;
+        			settings.options = Exporter.EXPORT_ALL;
+    	        	a.onExportTypeSelectionDialogResult(mDialogId, this, settings);
+        		}
+    		}
     	} catch (Exception e) {
     		Logger.logError(e);
     	}

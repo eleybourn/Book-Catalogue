@@ -14,7 +14,7 @@
     <string name="bookshelf">Boekenplank</string>
     <string name="read">Heeft u dit boek gelezen?</string>
     <string name="series">Serie</string>
-    <string name="pages">Pagina's</string>
+    <string name="pages">Pagina\'s</string>
     <string name="confirm_add">Boek toevoegen</string>
     <string name="confirm_update">Bijwerken</string>
     <string name="nobooks">Er staan geen boeken op deze boekenplank. Voeg er een paar toe via het menu onderaan dit scherm.</string>
@@ -52,7 +52,7 @@
     <string name="import_data">Boeken Importeren</string>
     <string name="import_alert">Waarschuwing. Het importeren van gegevens kan bestaande boekgegevens onbedoeld bijwerken met nieuwe informatie als de UUID-kolom niet aanwezig is en de id in het import-bestand dezelfde is als het bestaande id. Dit is meestal geen bezwaar als u een veld in een exportbestand heeft veranderd. Als u een nieuwe boek item heeft gemaakt, of iemand anders zijn boeken importeert, zorg dan dat het UUID veld aanwezig is of dat het id veld leeg is.</string>
     <string name="export_failed">FOUT: Export (naar SD kaart) van gegevens mislukt. </string>
-    <string name="import_failed">FOUT: Import van gegevens (van SD kaart) mislukt. Staat het bestand op de juiste plaats?</string>
+    <string name="import_failed_is_location_correct">FOUT: Import van gegevens (van SD kaart) mislukt. Staat het bestand op de juiste plaats?</string>
     <string name="search_title">Book Catalogue: Zoekresultaten</string>
     <string name="results_found">Gevonden resultaten</string>
     <string name="administration_label">Administratieve Functies</string>
@@ -241,7 +241,7 @@
     <string name="usage_copy_if_blank">kopieer indien leeg</string>
     <string name="usage_add_extra">Voegt extra gegevens toe</string>
     <string name="usage_overwrite">Overschrijft bestaande gegevens</string>
-    <string name="cancelling">Aan 't Annuleren</string>
+    <string name="cancelling">Aan \'t Annuleren</string>
     <string name="starting_search">Opstarten zoeken</string>
     <string name="lt_info">Deze applicatie wordt verbeterd door het gebruik van LibraryThing als informatiebron voor boeken en alternatieve omslagafbeeldingen. Om deze functies te kunnen gebruiken moet u zich bij LibraryThing (gratis) registreren en om een ontwikkelaarssleutel vragen (ook gratis).</string>
     <string name="lt_register_text">Registeren bij LibraryThing</string>
@@ -250,7 +250,7 @@
     <string name="lt_gotkey">Zodra u de sleutel heeft (of als u die al heeft) kunt u die hieronder in het tekstveld invullen om zo gebruik te maken van de extra gegevensbron.</string>
     <string name="developer_key">Ontwikkelaarssleutel</string>
     <string name="require_library_thing_info">Deze functie vereist een LibraryThing ontwikkelaarssleutel. Wilt u meer informatie over LibraryThing?</string>
-    <string name="uses_library_thing_info">Deze functie profiteert van een LibraryThing ontwikkelaarssleutel. Wilt u meer informatie over LibraryThing, of dit bericht uitschakelen?\n\nLibraryThing informatie kan worden gevonden onder het LibraryThing tabblad van de Administratie pagina's.</string>
+    <string name="uses_library_thing_info">Deze functie profiteert van een LibraryThing ontwikkelaarssleutel. Wilt u meer informatie over LibraryThing, of dit bericht uitschakelen?\n\nLibraryThing informatie kan worden gevonden onder het LibraryThing tabblad van de Administratie pagina\'s.</string>
     <string name="reg_library_thing_title">LibraryThing Registratie</string>
     <string name="more_info">Meer Info.</string>
     <string name="disable_dialogue">Bericht uitschakelen</string>
@@ -624,13 +624,13 @@
     <string name="amazon_books">Amazon</string>
     <string name="google_books">Google Books</string>
     <string name="library_thing">LibraryThing</string>
-    <string name="searching_elipsis">Aan 't zoeken&#8230;</string>
-    <string name="adding_book_elipsis">Boeken aan 't toevoegen&#8230;</string>
+    <string name="searching_elipsis">Aan \'t zoeken&#8230;</string>
+    <string name="adding_book_elipsis">Boeken aan \'t toevoegen&#8230;</string>
     <string name="prefs_global_opening_book_mode">Open boek in alleen-lezen modus</string>
     <string name="book_details_readonly_publishing">Publiceren</string>
     <string name="book_details_readonly_by">door</string>
     <string name="book_details_readonly_loaned_to">Uitgeleend aan %1$s</string>
-    <string name="book_details_readonly_pages">%1$s pagina's</string>
+    <string name="book_details_readonly_pages">%1$s pagina\'s</string>
     <string name="brackets">(%1$s)</string>
     <string name="new_in_42">
 <![CDATA[
@@ -680,7 +680,7 @@
     <string name="new_in_423">
 <![CDATA[
     <p><b>New in 4.2.3</b>\n\n
-			* Verbeterde afhandeling van ongeldige ISBN's bij verzenden naar goodreads\n\n
+			* Verbeterde afhandeling van ongeldige ISBN\'s bij verzenden naar goodreads\n\n
 			* Andere kleine fouten hersteld\n\n
 			</p>
 		]]>
@@ -700,7 +700,7 @@
 <![CDATA[
 	<p><b>New in 4.2.4</b>\n\n
 		* Een niet-bewerkbare weergave van boekdetails met \'fling\' ondersteuning! (Zie \"Andere voorkeuren\") (Nick Silin)\n\n
-		* Ondersteuning voor pic2shop scanner (beter voor vaste focus, minder licht en voor webcam camera's)\n\n
+		* Ondersteuning voor pic2shop scanner (beter voor vaste focus, minder licht en voor webcam camera\'s)\n\n
 		* Eerdere controle van internetverbinding bij het scnnen van boeken\n\n
 		* Meer Duitse vertalingsupdates (Robert Wetzlmayr)\n\n
 		* Meer Franse vertalingsupdates (Djiko)\n\n
@@ -752,9 +752,9 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     <!-- Heading in Admin activity -->
     <string name="advanced_options">Geavanceerde opties</string>
     <!-- Showed in progress dialog when an import starts -->
-    <string name="backing_up_ellipsis">Aan 't Back-uppen&#8230;</string>
+    <string name="backing_up_ellipsis">Aan \'t Back-uppen&#8230;</string>
     <!-- Showed in progress dialog when an import starts -->
-    <string name="importing_ellipsis">Aan 't Importeren&#8230;</string>
+    <string name="importing_ellipsis">Aan \'t Importeren&#8230;</string>
 
     <!-- Content description for the 'up' icon in the folder browser -->
     <string name="up_folder">Omhoog</string>
@@ -783,7 +783,7 @@ Zie "Meer voorkeuren" voor de relevante instelling.
 		* Een niet-bewerkbaar overzicht van de boekdetails met \'fling\' ondersteuning! (Zie \"Ander Voorkeuren\") (Nick Silin)\n\n
 		* Archivering (Back-up & Importeren) van de gehele catalogus, inclusief boeken, omslagen, voorkeuren en stijlen\n\n
 		* Geüpdate interface met Actiebalk ondersteuning voor gebruiksgemak en om beter te werken op apparaten zonder menu-knoppen\n\n
-		* Ondersteuning voor de pic2shop scanner (beter voor camera's met vaste focus, omstandigheden met weinig licht en voor webcam camera's)\n\n
+		* Ondersteuning voor de pic2shop scanner (beter voor camera\'s met vaste focus, omstandigheden met weinig licht en voor webcam camera\'s)\n\n
 		* Goodreads staat nu in het hoofdmenu indien u daarvor toestemming geeft\n\n
 		* Eerdere controle van internetverbinding als er geprobeerd wordt boeken te scannen\n\n
 		* Duits vertalingsupdates (Robert Wetzlmayr)\n\n

@@ -20,7 +20,6 @@
 package com.eleybourn.bookcatalogue.backup;
 
 import java.io.BufferedWriter;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -29,7 +28,6 @@ import java.util.Date;
 import android.database.Cursor;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
-import com.eleybourn.bookcatalogue.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.BookEditFields;
 import com.eleybourn.bookcatalogue.BooksCursor;
 import com.eleybourn.bookcatalogue.BooksRowView;
@@ -55,7 +53,10 @@ public class CsvExporter implements Exporter {
 		return mLastError;
 	}
 
-	public boolean export(OutputStream outputStream, Exporter.ExportListener listener, final int backupFlags) throws IOException {
+	public boolean export(OutputStream outputStream, Exporter.ExportListener listener, final int backupFlags, Date since) throws IOException {
+		final String UNKNOWN = BookCatalogueApp.getResourceString(R.string.unknown);
+		final String AUTHOR = BookCatalogueApp.getResourceString(R.string.author);
+
 		/** RELEASE: Handle flags! */
 		int num = 0;
 		if (!StorageUtils.sdCardWritable()) {
@@ -63,20 +64,14 @@ public class CsvExporter implements Exporter {
 			return false;			
 		}
 
-		// Get the 'since' date, if any
-		Date sinceDate = null;
-		long sinceTime = 0;
-		if ( (backupFlags & Exporter.EXPORT_NEW_OR_UPDATED) != 0) {
-			String lastBackup = BookCatalogueApp.getAppPreferences().getString(BookCataloguePreferences.PREF_LAST_BACKUP_DATE, null);
-			if (lastBackup != null && !lastBackup.equals("")) {
-				try {
-					sinceDate = Utils.parseDate(lastBackup);
-					sinceTime = sinceDate.getTime();
-				} catch (Exception e) {
-					// Just ignore; backup everything
-					Logger.logError(e);
-				}
+		// Fix the 'since' date, if required
+		if ( (backupFlags & Exporter.EXPORT_SINCE) != 0) {
+			if (since == null) {
+				mLastError = "Export Failed - 'since' is null";
+				return false;			
 			}
+		} else {
+			since = null;
 		}
 
 		// Display startup message
@@ -124,7 +119,7 @@ public class CsvExporter implements Exporter {
 		db = new CatalogueDBAdapter(BookCatalogueApp.context);
 		db.open();		
 
-		BooksCursor books = db.exportBooks(sinceDate);
+		BooksCursor books = db.exportBooks(since);
 		BooksRowView rv = books.getRowView();
 
 		try {
@@ -190,6 +185,12 @@ public class CsvExporter implements Exporter {
 							}
 						}
 						String title = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE));
+						// Sanity check: ensure title is non-blank. This has not happened yet, but we 
+						// know if does for author, so completeness suggests making sure all 'required'
+						// fields are non-blank.
+						if (title == null || title.trim().equals(""))
+							title = UNKNOWN;
+
 						//Display the selected bookshelves
 						Cursor bookshelves = db.fetchAllBookshelvesByBook(id);
 						String bookshelves_id_text = "";
@@ -201,6 +202,10 @@ public class CsvExporter implements Exporter {
 						bookshelves.close();
 
 						String authorDetails = Utils.getAuthorUtils().encodeList( db.getBookAuthorList(id), '|' );
+						// Sanity check: ensure author is non-blank. This HAPPENS. Probably due to constraint failures.
+						if (authorDetails == null || authorDetails.trim().equals(""))
+							authorDetails = AUTHOR + ", " + UNKNOWN;
+
 						String seriesDetails = Utils.getSeriesUtils().encodeList( db.getBookSeriesList(id), '|' );
 
 						row.setLength(0);

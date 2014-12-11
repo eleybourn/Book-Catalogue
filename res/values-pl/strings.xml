@@ -51,7 +51,7 @@
 <string name="import_data">Importuj książki</string>
 <string name="import_alert">Uwaga! Zaimportowane dane mogą nadpisać istniejące, jeśli pokryje się identyfikator (pole _id). Jest to zwykle oczekiwane zachowanie, gdy edytowałeś wyeksportowany wcześniej plik. Jeśli dodajesz nową książkę, pozostaw pole _id puste.</string>
 <string name="export_failed">Błąd!: Eksport na kartę SD nie powiódł się. </string>
-<string name="import_failed">Błąd!: Import z karty SD nie powiódł się. Upewnij się, czy plik export.csv jest w prawidłowym miejscu.</string>
+<string name="import_failed_is_location_correct">Błąd!: Import z karty SD nie powiódł się. Upewnij się, czy plik export.csv jest w prawidłowym miejscu.</string>
 <string name="search_title">Katalog książek: Wynik wyszukiwania</string>
 <string name="results_found">Znaleziono</string>
 <string name="administration_label">Funkcje administracyjne</string>

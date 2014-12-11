@@ -51,7 +51,7 @@
 <string name="import_data">Importa libri</string>
 <string name="import_alert">Attenzione. L\'importazione dei dati potrebbe aggiornare i record esistenti con nuove informazioni se l\'id presente nel file di importazione è lo stesso di un id già esistente. Di solito va a buon fine se hai modificato il campo nel file di esportazione. Se hai creato un record nuovo libro, assicurati che il campo id sia vuoto.</string>
 <string name="export_failed">ERRORE: Esportazione (nella SDCard) dei dati non riuscita. </string>
-<string name="import_failed">ERRORE: Importazione dei dati (dalla SDCard) non riuscita. Il file è nel posto corretto?</string>
+<string name="import_failed_is_location_correct">ERRORE: Importazione dei dati (dalla SDCard) non riuscita. Il file è nel posto corretto?</string>
 <string name="search_title">Book Catalogue: Cerca risultati</string>
 <string name="results_found">Risultati trovati</string>
 <string name="administration_label">Funzioni amministratore</string>

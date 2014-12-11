@@ -61,6 +61,7 @@ public class Backuptest {
 			private String mMessage = "";
 			private boolean mIsCancelled = false;
 			private int mPosition = 0;
+			private int mTotalBooks;
 
 			@Override
 			public void setMax(int max) {
@@ -78,6 +79,16 @@ public class Backuptest {
 			@Override
 			public boolean isCancelled() {
 				return mIsCancelled;
+			}
+
+			@Override
+			public void setTotalBooks(int books) {
+				mTotalBooks = books;
+			}
+
+			@Override
+			public int getTotalBooks() {
+				return mTotalBooks;
 			}}, Exporter.EXPORT_ALL, null);
 		System.out.println("Finished " + file.getAbsolutePath() + ", size = " + file.length());
 	}

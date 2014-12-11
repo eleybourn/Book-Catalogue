@@ -51,7 +51,7 @@
 <string name="import_data">Bücher importieren</string>
 <string name="import_alert">Warnung. Der Import von Daten kann Informationen von bestehenden Büchern überschreiben, wenn die ID der Importdatei mit der bestehenden ID übereinstimmt. Normalerweise ist es kein Problem wenn ein Feld in der exportierten Datei geändert wurde. Bitte stellen Sie bei einem neuen Buch sicher, dass das ID-Feld leer ist.</string>
 <string name="export_failed">FEHLER: Der Export auf die SD-Karte ist fehlgeschlagen.</string>
-<string name="import_failed">FEHLER: Der Import von Daten von der SD-Karte ist fehlgeschlagen. Ist die Datei bereits vorhanden?</string>
+<string name="import_failed_is_location_correct">FEHLER: Der Import von Daten von der SD-Karte ist fehlgeschlagen. Ist die Datei bereits vorhanden?</string>
 <string name="search_title">Book Catalogue: Suchergebnisse</string>
 <string name="results_found">Bücher gefunden</string>
 <string name="administration_label">Verwaltungsfunktionen</string>

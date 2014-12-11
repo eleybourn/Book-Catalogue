@@ -63,6 +63,7 @@ public class ExportThread extends ManagedTask {
 		public void setMax(int max) {
 			mManager.setMax(ExportThread.this, max);
 		}
+
 	};
 
 	@Override

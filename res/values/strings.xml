@@ -940,21 +940,33 @@ and you can edit the book via the options menu using the menu button or overflow
     <!-- Displayed in progress dialog when exporting covers in incremental mode -->
     <string name="covers_progress_incr">%1$s covers processed (%2$s missing, %3$s skipped)</string>
     
+    <!-- Explanatory note for 'export all' option -->
     <string name="export_all_blurb">All books, covers, settings and custom styles will be exported to the archive.</string>
+    <!-- Explanatory note for 'advanced export' option -->
     <string name="export_advanced_blurb">Select what will be exported to the archive.</string>
+    <!-- Introduction for 'advanced export' option -->
     <string name="export_advanced_heading">Select what will be exported:</string>
     
+    <!-- Text for button -->
     <string name="book_details">Book details</string>
+    <!-- Brief descriptionn -->
     <string name="book_details_blurb">The details of the books themselves</string>
+    <!-- Text for button -->
     <string name="cover_images">Cover images</string>
+    <!-- Brief descriptionn -->
     <string name="cover_images_blurb">Cover images for all selected books. Will make the export much larger.</string>
+    <!-- Brief descriptionn -->
     <string name="preferences_blurb">Preferences and user-defined list styles</string>
     
+    <!-- Explanatory note for export date (not yet implemented) -->
     <string name="export_advanced_date_blurb">Optionally specify a date to use in selecting books and/or covers to export:</string>
     
+    <!-- Explanatory note for export date (not yet implemented) -->
     <string name="all_books_added_or_updated_since">All books added or updated since:</string>
+    <!-- Explanatory note for export data since last backup -->
     <string name="all_books_added_or_updated_since_last_full_backup">All books added or updated since last full backup</string>
 
+    <!-- Short text for 'n books' -->
     <plurals
         name="n_books">
         <item quantity="zero">no books</item>
@@ -962,6 +974,7 @@ and you can edit the book via the options menu using the menu button or overflow
         <item quantity="other">%1$s books</item>
     </plurals>
 
+    <!-- Short text for 'n covers' -->
     <plurals
         name="n_covers">
         <item quantity="zero">no covers</item>
@@ -971,13 +984,16 @@ and you can edit the book via the options menu using the menu button or overflow
 
     <!-- Used for concatenating two strings, eg. "3 books, 2 covers" (probably only important on RTL langauges)-->
     <string name="a_comma_b">%1$s, %2$s</string>
+    
+    <!-- Short progress message -->
     <string name="searching_directory_ellipsis">Searching directory&#8230;</string>
 
     <string name="new_in_510">
 		<![CDATA[
 			<p><b>New in 5.1.0</b>\n\n
-				* Ability to archive only new/updated books and to exclude covers\n\n
-				* Other minor bug fixes
+				* Italian translation (Eugenio Davolio)\n\n
+				* Ability to archive only new/updated books and to exclude covers (or books)\n\n
+				* Other minor bug fixes\n\n
 			</p>
 		]]>
     </string>

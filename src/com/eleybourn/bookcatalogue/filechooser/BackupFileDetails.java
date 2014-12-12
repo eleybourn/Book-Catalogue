@@ -5,12 +5,14 @@ import java.text.DateFormat;
 import java.util.Date;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.backup.BackupInfo;
 import com.eleybourn.bookcatalogue.filechooser.FileChooserFragment.FileDetails;
@@ -87,7 +89,16 @@ public class BackupFileDetails implements FileDetails {
 			date.setVisibility(View.VISIBLE);
 			if (mInfo != null) {
 				details.setVisibility(View.VISIBLE);
-				details.setText(mInfo.getBookCount() + " books");	
+				Resources res = BookCatalogueApp.context.getResources();
+				String books = res.getQuantityString(R.plurals.n_books, mInfo.getBookCount(), mInfo.getBookCount());
+				String s;
+				if (mInfo.hasCoverCount()) {
+					String covers = res.getQuantityString(R.plurals.n_covers, mInfo.getCoverCount(), mInfo.getCoverCount());
+					s = res.getString(R.string.a_comma_b, books, covers);
+				} else {
+					s = books;
+				}
+				details.setText(s);	
 				date.setText(Utils.formatFileSize(mFile.length()) + ",  " + DateFormat.getDateTimeInstance().format(mInfo.getCreateDate()));
 			} else {
 				date.setText(Utils.formatFileSize(mFile.length()) + ",  " + DateFormat.getDateTimeInstance().format(new Date(mFile.lastModified())));

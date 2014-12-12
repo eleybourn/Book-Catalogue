@@ -37,7 +37,8 @@ import android.os.Bundle;
 public interface BackupWriter {
 	
 	/**
-	 * Interface for processes doing a restore operation; allows for progress indications
+	 * Interface for processes doing a backup operation; allows for progress indications
+	 * and saves some useful context
 	 * 
 	 * @author pjw
 	 */
@@ -48,6 +49,10 @@ public interface BackupWriter {
 		void step(String message, int delta);
 		/** Check if operation is cancelled */
 		boolean isCancelled();
+		/** Save the total books exported */
+		void setTotalBooks(int books);
+		/** Retrieve the total books */
+		int getTotalBooks();
 	}
 
 	/**

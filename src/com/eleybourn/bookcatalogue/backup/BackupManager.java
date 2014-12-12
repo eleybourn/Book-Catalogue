@@ -108,6 +108,8 @@ public class BackupManager {
 					wrt = bkp.newWriter();
 
 					wrt.backup(new BackupWriterListener() {
+						private int mTotalBooks = 0;
+
 						@Override
 						public void setMax(int max) {
 							fragment.setMax(max);
@@ -121,6 +123,16 @@ public class BackupManager {
 						@Override
 						public boolean isCancelled() {
 							return fragment.isCancelled();
+						}
+
+						@Override
+						public void setTotalBooks(int books) {
+							mTotalBooks = books;
+						}
+
+						@Override
+						public int getTotalBooks() {
+							return mTotalBooks;
 						}}, backupFlags, since);
 
 					if (fragment.isCancelled()) {
@@ -164,7 +176,7 @@ public class BackupManager {
 				fragment.setSuccess(mBackupOk);
 				if (mBackupOk) {
 					BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
-					if ( (backupFlags & Exporter.EXPORT_ALL) == 1) {
+					if ( (backupFlags == Exporter.EXPORT_ALL)) {
 						prefs.setString(BookCataloguePreferences.PREF_LAST_BACKUP_DATE, mBackupDate);
 					}
 					prefs.setString(BookCataloguePreferences.PREF_LAST_BACKUP_FILE, resultingFile.getAbsolutePath());

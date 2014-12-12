@@ -157,7 +157,7 @@
     <string name="import_data">Importer les livres</string>
     <string name="import_alert">Attention ! L\'import de données peut provoquer la mise à jour de livres avec de nouvelles informations si les identifiants importés sont identiques à ceux existants. Cela est généralement correct si vous n\'avez modifié qu\'un champ dans un fichier exporté. Si vous avez intégralement créé un livre, assurez vous que le champ identifiant est vide.</string>
     <string name="export_failed">ERREUR : l\'export vers la carte SD a échoué. </string>
-    <string name="import_failed">ERREUR: l\'import depuis la carte SD a échoué. Le fichier se trouve-t-il au bon endroit ?</string>
+    <string name="import_failed_is_location_correct">ERREUR: l\'import depuis la carte SD a échoué. Le fichier se trouve-t-il au bon endroit ?</string>
     <string name="search_title">Book Catalogue : Résultats de recherche</string>
     <string name="results_found">Des résultats ont été trouvés.</string>
     <string name="administration_label">Administration</string>

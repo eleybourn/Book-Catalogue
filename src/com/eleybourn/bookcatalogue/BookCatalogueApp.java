@@ -49,6 +49,7 @@ import android.os.Build;
 
 import com.eleybourn.bookcatalogue.backup.Exporter;
 import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
+import com.eleybourn.bookcatalogue.utils.Terminator;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
@@ -116,6 +117,7 @@ public class BookCatalogueApp extends Application {
 	 */
 	@Override
 	public void onCreate() {
+		Terminator.init();
 		// The following line triggers the initialization of ACRA
         ACRA.init(this);
         BcReportSender bcSender = new BcReportSender(this);

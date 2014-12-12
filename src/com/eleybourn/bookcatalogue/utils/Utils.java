@@ -20,6 +20,7 @@
 
 package com.eleybourn.bookcatalogue.utils;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,6 +32,7 @@ import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.net.UnknownHostException;
 import java.security.MessageDigest;
 import java.text.DateFormat;
@@ -54,6 +56,9 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -91,6 +96,8 @@ import com.eleybourn.bookcatalogue.ThumbnailCacheWriterTask;
 import com.eleybourn.bookcatalogue.database.CoversDbHelper;
 import com.eleybourn.bookcatalogue.dialogs.PartialDatePickerFragment;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
+import com.eleybourn.bookcatalogue.utils.Terminator;
+
 
 public class Utils {
 	// External DB for cover thumbnails
@@ -655,6 +662,34 @@ public class Utils {
 		return f.toByteArray();
 	}
 
+	private static class ConnectionInfo {
+		URLConnection conn = null;
+		StatefulBufferedInputStream is = null;
+	}
+	
+	public static class StatefulBufferedInputStream extends BufferedInputStream {
+		private boolean mIsClosed = false;
+
+		public StatefulBufferedInputStream(InputStream in) {
+			super(in);
+		}
+		public StatefulBufferedInputStream(InputStream in, int i) {
+			super(in, i);
+		}
+
+		@Override
+		public void close() throws IOException {
+			try {
+				super.close();				
+			} finally {
+				mIsClosed = true;				
+			}
+		}
+		
+		public boolean isClosed() {
+			return mIsClosed;
+		}
+	}
 	/**
 	 * Utility routine to get the data from a URL. Makes sure timeout is set to avoid application
 	 * stalling.
@@ -670,9 +705,73 @@ public class Utils {
 			int retries = 3;
 			while (true) {
 				try {
-					java.net.URLConnection conn = url.openConnection();
-					conn.setConnectTimeout(30000);
-					return conn.getInputStream();
+					/*
+					 * This is quite nasty; there seems to be a bug with URL.openConnection
+					 *
+					 * It CAN be reduced by doing the following:
+					 * 
+					 *     ((HttpURLConnection)conn).setRequestMethod("GET");
+					 *     
+					 * but I worry about future-proofing and the assumption that URL.openConnection
+					 * will always return a HttpURLConnection. OFC, it probably will...until it doesn't.
+					 * 
+					 * Using HttpClient and HttpGet explicitly seems to bypass the casting
+					 * problem but still does not allow the timeouts to work, or only works intermittently.
+					 * 
+					 * Finally, there is another problem with faild timeouts:
+					 * 
+					 *     http://thushw.blogspot.hu/2010/10/java-urlconnection-provides-no-fail.html
+					 * 
+					 * So...we are forced to use a background thread to kill it.
+					 */
+					
+					// If at some stage in the future the casting code breaks...use the Apache one.
+					//final HttpClient client = new DefaultHttpClient();
+					//final HttpParams httpParameters = client.getParams();
+					//
+					//HttpConnectionParams.setConnectionTimeout(httpParameters, 30 * 1000);
+					//HttpConnectionParams.setSoTimeout        (httpParameters, 30 * 1000);
+					//
+					//final HttpGet conn = new HttpGet(url.toString());
+					//
+					//HttpResponse response = client.execute(conn);
+					//InputStream is = response.getEntity().getContent();
+					//return new BufferedInputStream(is);
+
+					final ConnectionInfo connInfo = new ConnectionInfo();
+
+					connInfo.conn = url.openConnection();
+					connInfo.conn.setUseCaches(false);
+					connInfo.conn.setDoInput(true);
+					connInfo.conn.setDoOutput(false);
+
+					if (connInfo.conn instanceof HttpURLConnection)
+						((HttpURLConnection)connInfo.conn).setRequestMethod("GET");
+
+					connInfo.conn.setConnectTimeout(30000);
+					connInfo.conn.setReadTimeout(30000);
+
+					Terminator.enqueue(new Runnable() {
+						@Override
+						public void run() {
+							if (connInfo.is != null) {
+								if (!connInfo.is.isClosed()) {
+									try {
+										connInfo.is.close();
+										((HttpURLConnection)connInfo.conn).disconnect();
+									} catch (IOException e) {
+										Logger.logError(e);
+									}									
+								}
+							} else {
+								((HttpURLConnection)connInfo.conn).disconnect();								
+							}
+
+						}}, 30000);
+					connInfo.is = new StatefulBufferedInputStream(connInfo.conn.getInputStream());
+
+					return connInfo.is;
+
 				} catch (java.net.UnknownHostException e) {
 					Logger.logError(e);
 					retries--;

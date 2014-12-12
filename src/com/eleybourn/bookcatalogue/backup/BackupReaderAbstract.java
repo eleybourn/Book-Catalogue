@@ -63,7 +63,14 @@ public abstract class BackupReaderAbstract implements BackupReader {
 
 		// This is an estimate only; we actually don't know how many covers
 		// there are in the backup.
-		listener.setMax((int) (getInfo().getBookCount() * 2 + 1));
+		BackupInfo info = getInfo();
+		int maxSteps = (int) (info.getBookCount());
+		if (info.hasCoverCount())
+			maxSteps += info.getCoverCount();
+		else 
+			maxSteps *= 2;
+		maxSteps++;
+		listener.setMax(maxSteps);
 
 		// Get first entity (this will be the entity AFTER the INFO entities)
 		ReaderEntity entity = nextEntity();

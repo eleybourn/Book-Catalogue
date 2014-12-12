@@ -9,6 +9,7 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
 
+import android.net.ParseException;
 import android.os.Bundle;
 
 import com.eleybourn.bookcatalogue.utils.Logger;
@@ -25,9 +26,9 @@ public class GoogleBooksManager {
 
 		String path = "http://books.google.com/books/feeds/volumes";
 		if (mIsbn.equals("")) {
-			path += "?q=" + "intitle:"+title+"+inauthor:"+author+"";
+			path += "?q=" + "intitle%3A"+title+"%2Binauthor%3A"+author+"";
 		} else {
-			path += "?q=ISBN:" + mIsbn;
+			path += "?q=ISBN%3C" + mIsbn + "%3E";
 		}
 		URL url;
 
@@ -54,6 +55,8 @@ public class GoogleBooksManager {
 		} catch (MalformedURLException e) {
 			Logger.logError(e);
 		} catch (ParserConfigurationException e) {
+			Logger.logError(e);
+		} catch (ParseException e) {
 			Logger.logError(e);
 		} catch (SAXException e) {
 			Logger.logError(e);

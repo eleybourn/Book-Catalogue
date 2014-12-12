@@ -136,7 +136,7 @@ public class ImportThread extends ManagedTask {
 				doToast(getString(R.string.import_complete));
 			}
 		} catch (IOException e) {
-			doToast(BookCatalogueApp.getResourceString(R.string.import_failed));
+			doToast(BookCatalogueApp.getResourceString(R.string.import_failed_is_location_correct));
 			Logger.logError(e);
 		} finally {
 			if (in != null && in.getChannel().isOpen())

@@ -988,7 +988,7 @@ and you can edit the book via the options menu using the menu button or overflow
         <item quantity="other">%1$s covers</item>
     </plurals>
 
-    <!-- Used for concatenating two strings, eg. "3 books, 2 covers" (probably only important on RTL langauges)-->
+    <!-- Used for concatenating two strings, eg. "3 books, 2 covers" (probably only important on RTL languages)-->
     <string name="a_comma_b">%1$s, %2$s</string>
     
     <!-- Short progress message -->

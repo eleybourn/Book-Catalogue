@@ -36,32 +36,31 @@
     <string name="delete_1st_bs">Birinci betiklik silinemiyor</string>
     <string name="bookshelf_label">Betiklik: </string>
     <string name="all_books">Tüm betikler</string>
-    <string name="all_books">Tüm betikler</string>
     <string name="title_isbn_search">Betik kataloğu: ISBN arama</string>
     <string name="title_manage_bs">Betik kataloğu: Betiklikleri yönet</string>
     <string name="title_edit_bs">Betik kataloğu: Betikliği düzenle</string>
-    <string name="book_exists">Eklemeye çalıştığınız betik zaten var...</string>
+    <string name="book_exists">Eklemeye çalıştığınız betik zaten var&#8230;</string>
     <string name="search_label">Betik ara</string>
     <string name="search_hint">Yazar veya betik adı ara</string>
     <string name="book_not_found">Taranan betik bulunamadı. Bazen doğru barkodu betik kapağının içinde bulabilirsiniz. Bulamaz iseniz bilgileri el ile giriniz.</string>
     <string name="series_num">#</string>
-    <string name="unable_to_connect_google">Google Betikler'e (Kitaplar) bağlanılamıyor</string>
+    <string name="unable_to_connect_google">Google Betikler\'e (Kitaplar) bağlanılamıyor</string>
     <string name="export_data">Betikleri dışa aktar</string>
     <string name="export_complete">Verilerin SD karta aktarımı bitti.</string>
     <string name="import_data">Betikleri içe aktar</string>
-    <string name="import_alert">Uyarı: Bilgileri içe aktarırken eğer içe aktardığınız dosyaların ID numarası var olan bir betiğin ID'si ile aynı ise, varolan betik verilerinin üstüne yazılmasına neden olabilir. Eğer dışa aktarılmış bir dosyada bir giriyi değiştirdiyseniz bu sorun değildir; ancak yeni bir betik girisi oluşturuyorsanız ID bölümünün boş olduğundan emin olun.</string>
+    <string name="import_alert">Uyarı: Bilgileri içe aktarırken eğer içe aktardığınız dosyaların ID numarası var olan bir betiğin ID\'si ile aynı ise, varolan betik verilerinin üstüne yazılmasına neden olabilir. Eğer dışa aktarılmış bir dosyada bir giriyi değiştirdiyseniz bu sorun değildir; ancak yeni bir betik girisi oluşturuyorsanız ID bölümünün boş olduğundan emin olun.</string>
     <string name="export_failed">Hata: SD karta veri aktarımı başarısız oldu.</string>
-    <string name="import_failed">Hata: SD karttan içe aktarma başarısız oldu. Dosyalar yerli yerinde mi acaba?</string>
+    <string name="import_failed_is_location_correct">Hata: SD karttan içe aktarma başarısız oldu. Dosyalar yerli yerinde mi acaba?</string>
     <string name="search_title">Betik kataloğu: Arama sonuçları</string>
     <string name="results_found">Sonuç bulundu</string>
     <string name="administration_label">Yönetim işlevleri</string>
     <string name="administration_title">Betik kataloğu: Yönetim</string>
     <string name="menu_administration">Yönetici</string>
-    <string name="install_scan">ISBN barkodu ile betik taramak için Zxing barkod tarayıcısı uygulamasını yüklemelisiniz. Yüklemek için Tamam'a, atlamak için Vazgeç'e basın.</string>
+    <string name="install_scan">ISBN barkodu ile betik taramak için Zxing barkod tarayıcısı uygulamasını yüklemelisiniz. Yüklemek için Tamam\'a, atlamak için Vazgeç\'e basın.</string>
     <string name="install_scan_title">Barkod Tarayıcıyı yükleyin</string>
     <string name="version_number">Sürüm numarası</string>
-    <string name="donate">Eğer uygulamanın geliştirilmesini desteklemek isterseniz aşağıdaki Amazon Wishlist veya Paypal düğmelerini kullanarak bağışta bulunabilirsiniz. Kişi Avustralya'da olunca &quot;ücretli&quot; bir sürüm yayınlayamıyor haliyle. :-) </string>
-    <string name="unable_to_connect_amazon">Amazon'a bağlanılamıyor</string>
+    <string name="donate">Eğer uygulamanın geliştirilmesini desteklemek isterseniz aşağıdaki Amazon Wishlist veya Paypal düğmelerini kullanarak bağışta bulunabilirsiniz. Kişi Avustralya\'da olunca &quot;ücretli&quot; bir sürüm yayınlayamıyor haliyle. :-) </string>
+    <string name="unable_to_connect_amazon">Amazon\'a bağlanılamıyor</string>
     <string name="upgrade_title">Son güncellemenizden beri</string>
     <string name="edit_book">Betik düzenle</string>
     <string name="edit_book_notes">Yorumlarınız</string>
@@ -95,7 +94,7 @@
     <string name="date_finished_reading">Okumanın bittiği günay</string>
     <string name="update_fields">Alanları kendiliğinden doldur</string>
     <string name="select_fields_to_update">Güncellenecek alanları seçin</string>		
-    <string name="select_fields_to_update_help">Seçilen alanlar Genelağ'dan güncellenecektir. Seçilmeyen alanlar değiştirilmeden kalacaktır.</string>
+    <string name="select_fields_to_update_help">Seçilen alanlar Genelağ\'dan güncellenecektir. Seçilmeyen alanlar değiştirilmeden kalacaktır.</string>
     <string name="overwrite_thumbnail">Bu işlem seçili alanları gösterildiği biçimde güncelleyecektir, ancak ufak resimler seçime bağlı olarak tüm betikler için de indirilebilir.\n\nVar olan tüm ufak resimlerin üzerine yazmak istiyor musunuz? Bu işlem uzun sürebilir. </string>
     <string name="yes">Evet</string>
     <string name="no">Hayır</string>
@@ -131,7 +130,6 @@
     <string name="signed">Bu betik imzalı mı?</string>
     <string name="read_start">Okumaya başlanan günay</string>
     <string name="read_end">Okumanın bittiği günay</string>
-    <string name="location">Betiğin bulunduğu yer</string>
     <string name="duplicate_title">Betiği çoğalt</string>
     <string name="duplicate_book_title">Betiği çoğalt</string>
     <string name="duplicate_book_message">Eklemeye çalıştığınız betik veritabanında zaten var, başka bir eşlem eklemek istediğinizden emin misiniz?</string>
@@ -142,7 +140,6 @@
     <string name="searching_google_books">Google Betikler (Kitaplar) aranıyor</string>
     <string name="searching_library_thing">LibraryThing aranıyor</string>
     <string name="bookshelf_title">Bu betiği betikliklerde ara</string>
-    <string name="bookshelves">Betiklik seç</string>
     <string name="format">Biçim</string>
     <string name="format1">Karton kapaklı</string>
     <string name="format2">Sert kapaklı</string>
@@ -152,7 +149,7 @@
     <!-- NOTE: Adding a new format will involve changing code that references this list -->
     <string name="description">Özet</string>
     <string name="genre">Tür</string>
-    <string name="auto_update">Aşağıdaki alanları şimdi kendiliğinden güncellemek ister misiniz: \n* Tür \n* Tanım \n* Ufak resimler\n\n Vazgeç'i seçerseniz bunu her zaman Yönetim betinden yeniden çalıştırabilirsiniz.</string>
+    <string name="auto_update">Aşağıdaki alanları şimdi kendiliğinden güncellemek ister misiniz: \n* Tür \n* Tanım \n* Ufak resimler\n\n Vazgeç\'i seçerseniz bunu her zaman Yönetim betinden yeniden çalıştırabilirsiniz.</string>
     <string name="notset">Ayarlı değil</string>
     <string name="menu_search">Betik ara</string>
     <string name="menu_insert_name">Ad ile ekle</string>
@@ -216,7 +213,7 @@
     <string name="edit_series">Seri ayrıntılarını düzenle</string>
     <string name="edit_author">Yazar ayrıntılarını düzenle</string>
     <string name="select_cover">Kapak seç</string>
-    <string name="no_isbn_no_editions">ISBN'si olmayan bir betiğin diğer sürümlerine ulaşılamaz</string>
+    <string name="no_isbn_no_editions">ISBN\'si olmayan bir betiğin diğer sürümlerine ulaşılamaz</string>
     <string name="unsaved_edits">Saklanmamış değişiklikleriniz var. Sürdürmek istediğinizden emin misiniz?</string>
     <string name="unsaved_edits_title">Saklanmamış değişiklikler</string>
     <string name="changed_author_how_apply">Yazarı şundan:\n  \'%1$s\' şuna:\n  \'%2$s\' değiştirdiniz.\nDeğişiklikleri nasıl uygulamak istersiniz?\nNot: \'%3$s\' seçimi anında uygulanacaktır.</string>
@@ -240,9 +237,9 @@
     <string name="usage_copy_if_blank">Boş ise eşlemle</string>
     <string name="usage_add_extra">Ek veriyi iliştirir</string>
     <string name="usage_overwrite">Bulunan verinin üstüne yazar</string>
-    <string name="cancelling">İptal ediliyor...</string>
-    <string name="starting_search">Arama başlatılıyor...</string>
-    <string name="lt_info">>Bu uygulama betik serileri hakkında bilgi almak ve ek kapakları indirmek üzere LibraryThing'den yararlanır. Bu özellikleri kullanmak için LibraryThing ile kayıt olmanız (ücretsiz) ve LibraryThing geliştirici anahtarı almanız gerekmektedir (yine ücretsiz).</string>
+    <string name="cancelling">İptal ediliyor&#8230;</string>
+    <string name="starting_search">Arama başlatılıyor&#8230;</string>
+    <string name="lt_info">>Bu uygulama betik serileri hakkında bilgi almak ve ek kapakları indirmek üzere LibraryThing\'den yararlanır. Bu özellikleri kullanmak için LibraryThing ile kayıt olmanız (ücretsiz) ve LibraryThing geliştirici anahtarı almanız gerekmektedir (yine ücretsiz).</string>
     <string name="lt_register_text">LibraryThing ile kayıt ol</string>
     <string name="lt_devkey_text">LibraryThing geliştirici anahtarı iste</string>
     <string name="lt_label">LibraryThing</string>
@@ -253,7 +250,7 @@
     <string name="reg_library_thing_title">LibraryThing Kayıt</string>
     <string name="more_info">Ek bilgi</string>
     <string name="disable_dialogue">İletiyi kapat</string>
-    <string name="lt_reset_messages_info">Bazen bu uygulama LibraryThing'den isteğe bağlı iletiler gösterebilir. Devre dışı kalmış olabilecek bu iletileri sıfırlamak için aşağıdaki düğmeye dokunun.</string>
+    <string name="lt_reset_messages_info">Bazen bu uygulama LibraryThing\'den isteğe bağlı iletiler gösterebilir. Devre dışı kalmış olabilecek bu iletileri sıfırlamak için aşağıdaki düğmeye dokunun.</string>
     <string name="reset">Sıfırla</string>
     <string name="send_info_text">Son zamanda oluşan çökmelerle ilgili bilgi toplamak ve bunu geliştiricilerimizden birine göndermek için aşağıdaki butonu dokunun. Bu veritabanınızın ve oluşturulan günlük dosyalarının bir yedeğini oluşturacaktır. Eğer bu dosyaları bize göndermek istemezseniz göndermeden önce lütfen e-posta ilişiklerinden kaldırın.</string>
     <string name="send_info">Bilgi gönder</string>
@@ -277,13 +274,13 @@
     <string name="menu_share_this">Paylaş</string>
     <string name="email_export">Dışarı aktarılan veriyi e-posta ile göndermemizi ister misiniz?</string>
     <string name="menu_crop_thumb">Ufak resmi kırp</string>
-    <string name="test_goodreads">Goodreads'i test et</string>
+    <string name="test_goodreads">Goodreads\'i test et</string>
     <string name="task_errors">Görev hataları</string>
     <string name="retry">Yeniden dene</string>
     <string name="optionsElipsis">Seçenekler&#8230;</string>
     <string name="edit_bookElipsis">Betiği düzenle&#8230;</string>
     <string name="retry_task">Yinele</string>
-    <string name="visit_goodreads">GoodReads'i ziyaret et&#8230;</string>
+    <string name="visit_goodreads">GoodReads\'i ziyaret et&#8230;</string>
     <string name="delete_event">Olayı sil</string>
     <string name="delete_task">Görevi sil</string>
 
@@ -300,19 +297,22 @@
     <string name="my_books_classic">Betiklerim (Klasik)</string>
     <string name="loan_return_book">Ödünç ver, geri al veya betiği düzenle</string>
     <string name="admin_and_prefs">Yönetim ve Seçenekler</string>
-    <string name="edit_book_send_to_gr">Goodreads'e gönder</string>
+    <string name="edit_book_send_to_gr">Goodreads\'e gönder</string>
     <string name="goodreads">goodreads</string>
     <string name="goodreads_label">Goodreads</string>
-    <string name="goodreads_auth_blurb_part1">Goodreads, tor betinde belirtildiği üzere ereği "kişilerin sevdiği betikleri bulmasına ve paylaşmasına yardımcı olmak" olan bir servistir.
- 										Çok geniş bir betik ve yorum veritabanına iye olan Goodreads'te kayıtlı bir  											    		    kullanıcı iseniz BookCatalogue Goodreads'ten betiklerinizi, raflarınızı ve yorumlarınızı			 									alabilir veya Goodreads'e gönderebilir. BookCatalogue kendi başına bir uygulama olup    											    Goodreads'i gerektirmemektedir, ancak ilgilendiyseniz buradan kayıt olabilirsiniz:</string>
+    <string name="goodreads_auth_blurb_part1">Goodreads, tor betinde belirtildiği üzere ereği \"kişilerin sevdiği betikleri bulmasına ve paylaşmasına yardımcı olmak\" olan bir servistir.
+ 										Çok geniş bir betik ve yorum veritabanına iye olan Goodreads\'te kayıtlı bir  											    		    
+ 										kullanıcı iseniz BookCatalogue Goodreads\'ten betiklerinizi, raflarınızı ve yorumlarınızı
+ 										alabilir veya Goodreads\'e gönderebilir. BookCatalogue kendi başına bir uygulama olup
+ 										Goodreads\'i gerektirmemektedir, ancak ilgilendiyseniz buradan kayıt olabilirsiniz:</string>
     <string name="goodreads_auth_blurb_part2">Kayıt olduktan sonra veya kayıtlı bir kullanıcı iseniz Goodreads verilerinize ulaşmak için aşağıdaki düğmeye basın. 
-										Sizi Goodreads'e giriş yapabileceğiniz bir tor betine yönlendirecektir. Açarsözünüzü (şifrenizi) biz 										    kesinlikle görmeyeceğiz ve dilediğiniz zaman erişimi Goodreads tor betinden iptal edebilirsiniz. 
+										Sizi Goodreads\'e giriş yapabileceğiniz bir tor betine yönlendirecektir. Açarsözünüzü (şifrenizi) biz 										    kesinlikle görmeyeceğiz ve dilediğiniz zaman erişimi Goodreads tor betinden iptal edebilirsiniz. 
 										Bazen boş bir bete düşerseniz geri düğmesine basıp buraya dönebilirsiniz!</string>
     <string name="goodreads_auth_blurb_part3">Ancak unutmayın&#8230; bunu yapmanız zorunlu değil, BookCatalogue tek başına da gayet de çalışır!</string>
     <string name="goodreads_url">http://www.goodreads.com</string>
     <string name="authorize_access">Erişime izin ver</string>
     <string name="authorize_access_already_auth">Bu uygulamayı zaten önceden yetkilendirmişsiniz. Tüm Goodreads işlevleri halihazırda kullanılabilir olmalı</string>
-    <string name="goodreads_access_error">Goodreads'e erişmeye çalışırken bir ağ sorunu oluştu. Lütfen Goodreads tor betinin çalışıyor olduğundan emin olun, sorun sürerse lütfen destek bölümü ile iletişime geçin.</string>
+    <string name="goodreads_access_error">Goodreads\'e erişmeye çalışırken bir ağ sorunu oluştu. Lütfen Goodreads tor betinin çalışıyor olduğundan emin olun, sorun sürerse lütfen destek bölümü ile iletişime geçin.</string>
     <string name="other_preferences">Diğer seçenekler</string>
     <string name="user_interface">Kullanıcı arayüzü</string>
     <string name="start_in_my_books">\'Betiklerim\' içinde aç</string>
@@ -326,11 +326,11 @@
     <string name="add_manually">El ile ekle</string>
     <string name="scan_barcode">Barkod/ISBN tara</string>
     <string name="enter_barcode">Barcode/ISBN gir</string>
-    <string name="search_internet">Genelağ'da ara</string>
+    <string name="search_internet">Genelağ\'da ara</string>
     <string name="show_results">Sonuçları göster</string>
-    <string name="rebuild_fts">FTS'yi yeniden yapıla (aşırı deneysel)</string>
+    <string name="rebuild_fts">FTS\'yi yeniden yapıla (aşırı deneysel)</string>
     <string name="search_in">Burada ara:</string>
-    <string name="send_books_to_goodreads">Betikleri GoodReads'e gönder</string>
+    <string name="send_books_to_goodreads">Betikleri GoodReads\'e gönder</string>
     <string name="legacy_task">Eski görev</string>
     <string name="occurred_at">%1$s içinde oluştu</string>
     <string name="unknown_uc">BİLİNMEYEN</string>
@@ -350,9 +350,9 @@
     <string name="book_no_longer_exists">Belirtilen betik artık yok</string>
     <string name="please_enter_search_criteria">Lütfen arama kriteri girin</string>
     <string name="error_while_searching">Arama sırasında hata</string>
-    <string name="send_all_to_goodreads_result">%1$s betik işlendi: %2$s tanesi başarıyla gönderildi, %3$s tanesinin ISBN'si yok ve %4$s tanesinin ISBN'si Goodreads'te bulunamadı</string>
+    <string name="send_all_to_goodreads_result">%1$s betik işlendi: %2$s tanesi başarıyla gönderildi, %3$s tanesinin ISBN\'si yok ve %4$s tanesinin ISBN\'si Goodreads\'te bulunamadı</string>
     <string name="x_of_y">%1$s (Toplam %2$s)</string>
-    <string name="send_book_to_goodreads">Bu betiği Goodreads'e gönder: %1$s</string>
+    <string name="send_book_to_goodreads">Bu betiği Goodreads\'e gönder: %1$s</string>
 
     <item name="NOTIFICATION" type="id"></item>
     <item name="TAG_GOODREADS_WORK" type="id"></item>
@@ -408,7 +408,7 @@
     <item name="MENU_EDIT_STYLE" type="id"/>
     <item name="MENU_CLONE_STYLE" type="id"/>
 
-    <string name="booklist_preferences">Betik dizelgesi yeğlenenleri/string>
+    <string name="booklist_preferences">Betik dizelgesi yeğlenenleri</string>
     <string name="extra_book_details">Ek betik ayarları</string>
     <string name="general">Genel</string>
     <string name="bookshelves">Betiklikler</string>
@@ -426,7 +426,7 @@
     <string name="always_start_booklists_expanded">Betik dizelgelerini genişletilmiş olarak başlat</string>
     <string name="always_start_booklists_collapsed">Betik dizelgelerini içe kapalı olarak başlat</string>
     <string name="remember_booklists_state">Betik dizelgesi durumunu koru</string>
-    <string name="searching_goodreads">Goodreads'te aranıyor</string>
+    <string name="searching_goodreads">Goodreads\'te aranıyor</string>
     <string name="edit_book_list_styles">Betik dizelgesi biçemlerini düzenle</string>
     <string name="show_more_ellipsis">Daha fazla göster&#8230;</string>
     <string name="show_fewer_ellipsis">Daha az göster&#8230;</string>
@@ -496,7 +496,7 @@
     <string name="user_defined">Kullanıcı tanımlı</string>
     <string name="builtin">Yerleşik</string>
     <string name="sort_unread">Okunmayan (Yazar/Seri)</string>
-    <string name="import_all_from_goodreads">Tümünü Goodreads'den içe aktar</string>
+    <string name="import_all_from_goodreads">Tümünü Goodreads\'den içe aktar</string>
     <string name="requested_task_is_already_queued">İstenen görev kuyrukta bekliyorRequested task is already queued</string>
     <string name="export_task_is_already_queued">Bir dışa aktarma görevi kuyrukta bekliyor ve bu görev başlayabilmesi için önce bitirilmesi gerek</string>
     <string name="import_task_is_already_queued">Bir içe aktarma görevi kuyrukta bekliyor ve bu görev başlayabilmesi için önce bitirilmesi gerek</string>
@@ -507,7 +507,7 @@
     <string name="failed">Başarısız</string>
     <string name="queued">Kuyrukta</string>
     <string name="unknown">Bilinmeyen</string>
-    <string name="send_books_to_goodreads_blurb">Bu işlem betikliğinizi Goodreads'e gönderecektir.
+    <string name="send_books_to_goodreads_blurb">Bu işlem betikliğinizi Goodreads\'e gönderecektir.
     										\n\nİster tüm betiklerinizi gönderebilir veya son göndermenizden bu yana güncellenen, alınan 
     										veya gönderilen betikleri seçebilir (henüz gönderilmeyen 
     										betikler de dahil olmak üzere) veya güncellemeyi iptal edebilirsiniz.
@@ -530,15 +530,15 @@
     <string name="upgrading_ellipsis">Yükseltiliyor&#8230;</string>
     <string name="explain_goodreads_no_isbn">Seçili betiğin bir ISBN numarası yok, dolayısıyla Goodreads ile özdevinimli olarak eşitlenmesi olanaklı değil. 
     									En yalın çözüm olarak:
-    									\n\n(1) Betiği Goodreads'ten silin,
-    									\n\n(2) Betiği Goodreads'e el ile tor betinden ekleyin,
+    									\n\n(1) Betiği Goodreads\'ten silin,
+    									\n\n(2) Betiği Goodreads\'e el ile tor betinden ekleyin,
     									\n\n(3) Goodreads ile eşitleme yapın.
-    									\n\nBu betiğin BookCatalogue'de yeniden oluşturulmasını sağlar ve her iki giri birbiri ile sürekli eşitlenmiş kalacaktır.</string>
-    <string name="explain_goodreads_no_match">Seçili betiğin ISBN'si Goodreads'te bulunamadı. Bunun olası iki nedeni vardır: 
-    									Ya betik için girdiğiniz veri hatalı (ISBN'yi kontrol edin) veya betik Goodreads'te bulunmuyor. 
-    									\n\nEğer BookCatalogue'de herhangi bir veriyi değiştirirseniz, yalnızca \'Yeniden dene\' düğmesine basın 
+    									\n\nBu betiğin BookCatalogue\'de yeniden oluşturulmasını sağlar ve her iki giri birbiri ile sürekli eşitlenmiş kalacaktır.</string>
+    <string name="explain_goodreads_no_match">Seçili betiğin ISBN\'si Goodreads\'te bulunamadı. Bunun olası iki nedeni vardır: 
+    									Ya betik için girdiğiniz veri hatalı (ISBN\'yi kontrol edin) veya betik Goodreads\'te bulunmuyor. 
+    									\n\nEğer BookCatalogue\'de herhangi bir veriyi değiştirirseniz, yalnızca \'Yeniden dene\' düğmesine basın 
     									ve oluşan ardalan görevinin başarıyla tamamlanıp tamamlanmadığına bakın. 
-    									\n\nEğer veri doğru olup, ancak betik hala bulunamıyorsa bu betiğin ISBN'si ile birlikte Goodreads'e el ile
+    									\n\nEğer veri doğru olup, ancak betik hala bulunamıyorsa bu betiğin ISBN\'si ile birlikte Goodreads\'e el ile
 									tor betinden eklenmesi gerekmektedir. Bu yapıldıktan sonra betiği yeniden göndermeyi deneyebilirsiniz.</string>
     <string name="read_amp_unread">Okunan &amp; Okunmayan</string>
     <string name="loaned">Ödünç verilen</string>
@@ -583,7 +583,7 @@
     <string name="this_option_is_not_available_until_the_book_is_saved">Bu özellik betik saklanana kadar kullanılamaz</string>
     <string name="scan_barcode_isbn">Barkod/ISBN tara</string>
     <string name="enter_isbn">ISBN gir</string>
-    <string name="allow_asin">ASIN'e izin ver</string>
+    <string name="allow_asin">ASIN\'e izin ver</string>
     <string name="x_is_not_a_valid_isbn_or_asin">%1$s geçerli bir ISBN veya ASIN değil</string>
     <string name="confirm_exit">Çıkışı onayla</string>
     <string name="you_may_have_unsaved_changes">Saklanmamış değişiklikleriniz olabilir. Değişiklikleri saklamadan çıkmak istediğinizden emin misiniz?</string>

@@ -37,7 +37,10 @@ import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_SERIE
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_TITLE;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_TITLE_LETTER;
 import android.database.Cursor;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 
+import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds;
 import com.eleybourn.bookcatalogue.utils.Utils;
@@ -81,14 +84,10 @@ public class BooklistRowView {
 
 		final int extras = mBuilder.getStyle().getExtras();
 
-		// Cache preferences
-		if ( (extras & BooklistStyle.EXTRAS_THUMBNAIL_LARGE) != 0) {
-			mMaxThumbnailWidth = 120;
-			mMaxThumbnailHeight = 120;
-		} else {
-			mMaxThumbnailWidth = 60;
-			mMaxThumbnailHeight = 60;
-		}		
+		// Get thumbnail size
+		int maxSize = computeThumbnailSize(extras);
+		mMaxThumbnailWidth = maxSize;
+		mMaxThumbnailHeight = maxSize;
 	}
 
 	/**
@@ -110,14 +109,31 @@ public class BooklistRowView {
 
 		final int extras = mBuilder.getStyle().getExtras();
 
-		// Cache preferences
+		// Get thumbnail size
+		int maxSize = computeThumbnailSize(extras);
+		mMaxThumbnailWidth = maxSize;
+		mMaxThumbnailHeight = maxSize;
+	}
+
+	/**
+	 * Return the thumbnail size in DP.
+	 * 
+	 * @param extras	Flags for style
+	 * 
+	 * @return	Requested thumbnail size
+	 */
+	private int computeThumbnailSize(int extras) {
+		int maxSize;
+
 		if ( (extras & BooklistStyle.EXTRAS_THUMBNAIL_LARGE) != 0) {
-			mMaxThumbnailWidth = 120;
-			mMaxThumbnailHeight = 120;
+			maxSize = 90;
 		} else {
-			mMaxThumbnailWidth = 60;
-			mMaxThumbnailHeight = 60;
-		}		
+			maxSize = 60;
+		}
+
+		DisplayMetrics metrics = BookCatalogueApp.context.getResources().getDisplayMetrics();
+		maxSize = (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, maxSize, metrics));		
+		return maxSize;
 	}
 
 	/**

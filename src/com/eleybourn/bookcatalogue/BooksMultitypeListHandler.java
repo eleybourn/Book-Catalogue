@@ -291,7 +291,8 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 
 				//cover.setMaxHeight( (int)(rowView.getMaxThumbnailHeight()*scale) );
 				//cover.setMaxWidth((int)(rowView.getMaxThumbnailWidth()*scale));
-				LayoutParams clp = new LayoutParams(LayoutParams.WRAP_CONTENT, (int)(rowView.getMaxThumbnailHeight()*scale) ); 
+				LayoutParams clp = new LayoutParams(LayoutParams.WRAP_CONTENT, (int)(rowView.getMaxThumbnailHeight() * scale) );
+				clp.setMargins(0,1,0,1);
 				cover.setLayoutParams(clp);
 				cover.setScaleType(ScaleType.CENTER);
 			} else

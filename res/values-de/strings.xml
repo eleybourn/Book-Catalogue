@@ -51,7 +51,7 @@
 <string name="import_data">Bücher importieren</string>
 <string name="import_alert">Warnung. Der Import von Daten kann Informationen von bestehenden Büchern überschreiben, wenn die ID der Importdatei mit der bestehenden ID übereinstimmt. Normalerweise ist es kein Problem wenn ein Feld in der exportierten Datei geändert wurde. Bitte stellen Sie bei einem neuen Buch sicher, dass das ID-Feld leer ist.</string>
 <string name="export_failed">FEHLER: Der Export auf die SD-Karte ist fehlgeschlagen.</string>
-<string name="import_failed">FEHLER: Der Import von Daten von der SD-Karte ist fehlgeschlagen. Ist die Datei bereits vorhanden?</string>
+<string name="import_failed_is_location_correct">FEHLER: Der Import von Daten von der SD-Karte ist fehlgeschlagen. Ist die Datei bereits vorhanden?</string>
 <string name="search_title">Book Catalogue: Suchergebnisse</string>
 <string name="results_found">Bücher gefunden</string>
 <string name="administration_label">Verwaltungsfunktionen</string>
@@ -846,8 +846,118 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
     </string>
     <!-- End: Added/Updated in 5.0.8 -->
 
-    <!-- Begin: Added/Updated in [Next Version] -->
-    <!-- End: Added/Updated in [Next Version] -->
+    <!-- Begin: Added/Updated in 5.0.9 -->
+    <string name="new_in_509">
+        <![CDATA[
+			<p><b>Neu in 5.0.9</b>\n\n
+				* Fehlerbehebungen für Android 4.4 (KitKat)\n\n
+				* Holländische Übersetzung (Gideon van Melle)\n\n
+				* Weitere kleinere Fehlerbehebungen
+			</p>
+		]]>
+    </string>
+
+    <string name="hint_evan_book">
+        <![CDATA[
+				<p>Wussten Sie, dass der Autor von Book Catalogue (Evan Leybourn) gerade ein Buch über
+				Agile Business Management veröffentlicht hat?</p>
+				<p>Wenn Sie Interese an seinen anderen Arbeiten haben, können Sie weitere Informationen auf:\n\n
+				<a href="http://theagiledirector.com/book">http://theagiledirector.com/book</a>\n\n
+				finden.
+				</p>
+			]]>
+    </string>
+
+    <!-- End: Added/Updated in 5.0.9 -->
+
+    <!-- Begin: Added/Updated in 5.1.0 -->
+
+    <!--  Explanatory text for 'import' dialogue -->
+    <string name="import_books_blurb">Die Bücher aus diesem Archiv werden importiert. Tippen Sie auf eine der beiden Optionen, um den Import zu starten, oder auf \'Zurück\', um abzubrechen:</string>
+    <!-- Description of the 'import all books' option -->
+    <string name="all_books_blurb">Alle Bücher aus diesem Archiv werden importiert. Vorhandene Bücher werden aktualisiert und neue Bücher hinzugefügt.</string>
+    <!-- Menu text for the 'import/export new & changed' option -->
+    <string name="new_and_changed_books">Neue und aktualisierte Bücher</string>
+    <!-- Description of the 'import new & changed' option -->
+    <string name="new_and_changed_books_blurb">Nur neue oder aktuellere Bücher im Archiv. Das ist nützlich, um zwei Geräte zu synchronisieren.</string>
+    <!-- Descriptive text associated with import options not available with older archives -->
+    <string name="old_archive_blurb">Diese Option wird für ältere Archivversionen nicht unterstützt.</string>
+    <!-- Part of the progress message displayed when importing books -->
+    <string name="n_created_m_updated">%1$s erzeugt, %2$s aktualisiert</string>
+
+    <!--  Explanatory text for 'export' dialogue -->
+    <string name="export_books_blurb">Die Bücher aus Ihrem Katalog werden exportiert. Tippen Sie auf eine der beiden Optionen, um den Export zu starten, oder auf \'Zurück\', um abzubrechen:</string>
+    <!-- Description of the 'import all books' option -->
+    <string name="export_all_books_blurb">Alle Bücher aus dem Katalog werden in das Archiv exportiert.</string>
+    <!-- Description of the 'export new & changed' option -->
+    <string name="export_new_and_changed_books_blurb">Nur neue oder seit dem letzten Export aktualisierte Bücher exportieren. Das ist nützlich, um zwei Geräte zu synchronisieren.</string>
+    <!-- Part of the progress message displayed when exporting books -->
+    <string name="n_exported">%1$s exportiert</string>
+
+    <!-- Displayed in progress dialog when exporting covers in incremental mode -->
+    <string name="covers_progress_incr">%1$s Cover bearbeitet (%2$s fehlen, %3$s übersprungen)</string>
+
+    <!-- Explanatory note for 'export all' option -->
+    <string name="export_all_blurb">Alle Bücher, Cover, Einstellungen und benutzerdefinierten Stile werden in das Archiv exportiert.</string>
+    <!-- Explanatory note for 'advanced export' option -->
+    <string name="export_advanced_blurb">Wählen Sie, was in das Archiv exportiert wird.</string>
+    <!-- Introduction for 'advanced export' option -->
+    <string name="export_advanced_heading">Wählen Sie, was exportiert wird:</string>
+
+    <!-- Text for button -->
+    <string name="book_details">Buchdetails</string>
+    <!-- Brief descriptionn -->
+    <string name="book_details_blurb">Die Details der Bücher</string>
+    <!-- Text for button -->
+    <string name="cover_images">Cover-Bilder</string>
+    <!-- Brief descriptionn -->
+    <string name="cover_images_blurb">Cover-Bilder für alle ausgewählten Bücher. Der Export wird dadurch viel grösser.</string>
+    <!-- Brief descriptionn -->
+    <string name="preferences_blurb">Einstellungen und benutzerdefinierte Stile</string>
+
+    <!-- Explanatory note for export date (not yet implemented) -->
+    <string name="export_advanced_date_blurb">Geben Sie wahlweise ein Datum an, um Bücher und Cover auszuwählen:</string>
+
+    <!-- Explanatory note for export date (not yet implemented) -->
+    <string name="all_books_added_or_updated_since">Alle neuen und aktualisierten Bücher seit:</string>
+    <!-- Explanatory note for export data since last backup -->
+    <string name="all_books_added_or_updated_since_last_full_backup">Alle neuen und aktualisierten Bücher seit der letzten vollständigen Sicherung</string>
+
+    <!-- Short text for 'n books' -->
+    <plurals
+            name="n_books">
+        <item quantity="zero">Kein Buch</item>
+        <item quantity="one">Ein Buch</item>
+        <item quantity="other">%1$s Bücher</item>
+    </plurals>
+
+    <!-- Short text for 'n covers' -->
+    <plurals
+            name="n_covers">
+        <item quantity="zero">Kein Cover</item>
+        <item quantity="one">Ein Cover</item>
+        <item quantity="other">%1$s Cover</item>
+    </plurals>
+
+    <!-- Used for concatenating two strings, eg. "3 books, 2 covers" (probably only important on RTL languages)-->
+    <string name="a_comma_b">%1$s, %2$s</string>
+
+    <!-- Short progress message -->
+    <string name="searching_directory_ellipsis">Durchsuche Verzeichnis&#8230;</string>
+
+    <string name="new_in_510">
+        <![CDATA[
+			<p><b>Neu in 5.1.0</b>\n\n
+				* Italienische Übersetzung (Eugenio Davolio)\n\n
+				* Spanische Übersetzung (N.N.)\n\n
+				* Türkische Übersetzung (bitigchi)\n\n
+				* Möglichkeit, nur neue und geänderte Bücher zu exportieren und Cover oder Bücher auszuschliessen\n\n
+				* Weitere kleinere Fehlerbehebungen\n\n
+			</p>
+		]]>
+    </string>
+
+    <!-- End: Added/Updated in 5.1.0 -->
 
 </resources>
 

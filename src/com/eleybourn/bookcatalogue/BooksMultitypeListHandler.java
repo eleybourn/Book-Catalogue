@@ -291,7 +291,8 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 
 				//cover.setMaxHeight( (int)(rowView.getMaxThumbnailHeight()*scale) );
 				//cover.setMaxWidth((int)(rowView.getMaxThumbnailWidth()*scale));
-				LayoutParams clp = new LayoutParams(LayoutParams.WRAP_CONTENT, (int)(rowView.getMaxThumbnailHeight()*scale) ); 
+				LayoutParams clp = new LayoutParams(LayoutParams.WRAP_CONTENT, (int)(rowView.getMaxThumbnailHeight() * scale) );
+				clp.setMargins(0,1,0,1);
 				cover.setLayoutParams(clp);
 				cover.setScaleType(ScaleType.CENTER);
 			} else
@@ -852,6 +853,7 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 
 		case R.id.MENU_SEND_BOOK_TO_GR:
 			// Get a GoodreadsManager and make sure we are authorized.
+			// TODO: This does network traffic on main thread and will ALWAYS die in Android 4.2+. Should mimic code in GoodreadsUtils.sendBooksToGoodreads(...)
 			GoodreadsManager grMgr = new GoodreadsManager();
 			if (!grMgr.hasValidCredentials()) {
 				try {

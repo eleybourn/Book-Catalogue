@@ -51,7 +51,7 @@
 <string name="import_data">Importovat knihy</string>
 <string name="import_alert">Pozor: Importovaná data mohou upravit existující záznamy knih - k takové situaci dojde v případě, že není vyplněno uuid, a id v importovaném souboru je totožné s již existujícím id. Doporučujeme proto zkontrolovat - a případně upravit - toto pole v exportovaném souboru. Pokud byl vytvořen nový záznam, nebo jsou importovány další knihy, tak se ujistěte, že je vyplněno uuid, nebo že pole id je prázdné.</string>
 <string name="export_failed">ERROR: Export (na SD kartu) selhal. </string>
-<string name="import_failed">ERROR: Import dat (z SD karty) selhal. Je soubor na správném místě?</string>
+<string name="import_failed_is_location_correct">ERROR: Import dat (z SD karty) selhal. Je soubor na správném místě?</string>
 <string name="search_title">Book Catalogue: Výsledky vyhledávání</string>
 <string name="results_found">Nalezené výsledky</string>
 <string name="administration_label">Administrační funkce</string>

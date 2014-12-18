@@ -16,8 +16,9 @@
             android:id="@+id/hint"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textIsSelectable="true" />
+	
         <CheckBox
             android:id="@+id/hide_hint_checkbox"
             android:layout_width="wrap_content"

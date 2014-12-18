@@ -63,6 +63,7 @@ public class ExportThread extends ManagedTask {
 		public void setMax(int max) {
 			mManager.setMax(ExportThread.this, max);
 		}
+
 	};
 
 	@Override
@@ -74,7 +75,7 @@ public class ExportThread extends ManagedTask {
 		try {
 			FileOutputStream out = new FileOutputStream(mTempFileName);
 			CsvExporter exporter = new CsvExporter();
-			exporter.export(out, mOnExportListener);
+			exporter.export(out, mOnExportListener, Exporter.EXPORT_ALL, null);
 			if (out != null && out.getChannel().isOpen()) {
 				out.close();
 			}

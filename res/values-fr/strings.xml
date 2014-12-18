@@ -157,7 +157,7 @@
     <string name="import_data">Importer les livres</string>
     <string name="import_alert">Attention ! L\'import de données peut provoquer la mise à jour de livres avec de nouvelles informations si les identifiants importés sont identiques à ceux existants. Cela est généralement correct si vous n\'avez modifié qu\'un champ dans un fichier exporté. Si vous avez intégralement créé un livre, assurez vous que le champ identifiant est vide.</string>
     <string name="export_failed">ERREUR : l\'export vers la carte SD a échoué. </string>
-    <string name="import_failed">ERREUR: l\'import depuis la carte SD a échoué. Le fichier se trouve-t-il au bon endroit ?</string>
+    <string name="import_failed_is_location_correct">ERREUR: l\'import depuis la carte SD a échoué. Le fichier se trouve-t-il au bon endroit ?</string>
     <string name="search_title">Book Catalogue : Résultats de recherche</string>
     <string name="results_found">Des résultats ont été trouvés.</string>
     <string name="administration_label">Administration</string>
@@ -194,8 +194,8 @@
     <string name="list_price">Liste de prix</string>
     <string name="date_started_reading">Date de début de lecture</string>
     <string name="date_finished_reading">Date de fin de lecture</string>
-    <string name="update_fields">Mettre les champs à jour automatiquement</string>
-    <string name="select_fields_to_update">Sélectionner les champs à mettre à jour</string>
+    <string name="update_fields">Mise à jour automatique des champs</string>
+    <string name="select_fields_to_update">Sélection des champs à mettre à jour</string>
     <string name="select_fields_to_update_help">Les champs sélectionnés vont être mis à jour à partir d\'Internet. Les champs non sélectionnés ne seront pas modifiés.</string>
     <string name="overwrite_thumbnail">Les champs sélectionnés vont être mis à jour tels que montré; en option, les vignettes peuvent être téléchargées pour TOUS les livres.\n\nVoulez-vous remplacer toutes les vignettes existantes ? Attention, cela peut prendre du temps.</string>
     <string name="yes">Oui</string>
@@ -284,7 +284,7 @@
     <string name="cover_detail">Détails de la couverture</string>
     <string name="select_picture">Choisissez une image</string>
     <string name="set_authors">Définir les auteurs&#8230;</string>
-    <string name="and_others">et. al.</string>
+    <string name="and_others">et cie.</string>
     <string name="set_series">Définir la série&#8230;</string>
     <string name="author_already_in_list">L\'auteur est déjà dans la liste</string>
     <string name="author_is_blank">Le champ Auteur est vide</string>
@@ -721,7 +721,7 @@
     <string name="goodreads_auth_blurb_part4">Cette application est déjà autorisée auprès de Goodreads. Si vous souhaitez effacer
 		vos données de connection, vos pouvez cliquer sur le bouton ci-dessous. Mais, il est aussi
 		important  d\'enlever cette autoristation sur le site de Goodreads également.
-		\n\nForgetting the credentials here will remove the Goodreads option from the main application menu.</string>
+		\n\nSupprimer les données de connection enlevera l\'option Goodreads du menu principal.</string>
     <!-- Progress dialog message displayed when doing a long network operation to a web site -->
     <string name="connecting_to_web_site">Connection au site &#8230;</string>
     <!-- Admin option to import -->
@@ -768,7 +768,7 @@
     <string name="please_check_sd_readable">Merci de vérifier que votre carte SD est bien accessible.</string>
     
     <!-- Missed as they had no comment -->
-    <string name="prefs_global_opening_book_mode">Ouverture en mode lecture seulement</string>
+    <string name="prefs_global_opening_book_mode">Affichage en mode visualisation</string>
     <string name="book_details_readonly_publishing">Edition</string>
     <string name="book_details_readonly_by">par</string>
     <string name="book_details_readonly_loaned_to">En prêt chez %1$s</string>
@@ -818,18 +818,18 @@
     <!-- Begin: Added/Updated in 5.0.5 -->
     
     <!--  New preference to override the default method used to generate bookslists as defined by API level -->
-    <string name="booklist_generation">Option de Generation de la liste de livre</string>
+    <string name="booklist_generation">Option de géneration de la liste de livre</string>
     
     <!-- Option listed under "booklist_generation" referring to a very conservative way of generating bookslists -->
     <!-- NOTE The English version was changed to "Force Compatibility Mode" -->
-    <string name="force_compatibility_mode">Mode Compatibilité actif</string>
+    <string name="force_compatibility_mode">Mode Compatibilité</string>
     
     <!-- Option listed under "booklist_generation" referring to a conservative way of generating bookslists -->
-    <string name="force_enhanced_compatibility_mode">Mode Compatibilité avancé actif</string>
+    <string name="force_enhanced_compatibility_mode">Mode Compatibilité avancé</string>
     <!-- Option listed under "booklist_generation" referring to a conservative way of generating bookslists -->
-    <string name="force_fully_featured">Mode \'Toutes options\' actives</string>
+    <string name="force_fully_featured">Mode \'Toutes options\'</string>
     <!-- Default Option listed under "booklist_generation" referring to a conservative way of generating bookslists -->
-    <string name="automatically_use_recommended_option">Utilisation automatique des recommandations</string>
+    <string name="automatically_use_recommended_option">Recommandations automatiques</string>
     
     <string name="new_in_505">
 		<![CDATA[
@@ -846,7 +846,7 @@
     <string name="new_in_508">
 		<![CDATA[
 			<p><b>Nouveau dans la version 5.0.8</b>\n\n
-				* Mise à jour de la version française (Imkal)\n\n
+				* Mise à jour de la version allemande(Robert Wetzlmayr)\n\n
 			</p>
 		]]>
     </string>

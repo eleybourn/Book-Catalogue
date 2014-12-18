@@ -129,14 +129,14 @@ public class ImportThread extends ManagedTask {
 		FileInputStream in = null;
 		try {
 			in = new FileInputStream(mFileSpec);
-			importer.importBooks(in, mCoverFinder, mImportListener);
+			importer.importBooks(in, mCoverFinder, mImportListener, Importer.IMPORT_ALL);
 			if (isCancelled()) {
 				doToast(getString(R.string.cancelled));
 			} else {
 				doToast(getString(R.string.import_complete));
 			}
 		} catch (IOException e) {
-			doToast(BookCatalogueApp.getResourceString(R.string.import_failed));
+			doToast(BookCatalogueApp.getResourceString(R.string.import_failed_is_location_correct));
 			Logger.logError(e);
 		} finally {
 			if (in != null && in.getChannel().isOpen())

@@ -398,7 +398,15 @@ public class Datum {
 			if (s.equals(""))
 				return 0;
 			else
-				return Long.parseLong(s);
+				try {
+					return Long.parseLong(s);					
+				}catch (NumberFormatException e1) {
+					if ( Utils.objectToBoolean(o) ) {
+						return 1;
+					} else {
+						return 0;
+					}
+				}
 		}	
 	}
 	

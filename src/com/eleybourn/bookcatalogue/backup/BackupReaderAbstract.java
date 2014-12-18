@@ -22,6 +22,7 @@ package com.eleybourn.bookcatalogue.backup;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 
 import android.content.SharedPreferences;
 
@@ -56,13 +57,20 @@ public abstract class BackupReaderAbstract implements BackupReader {
 	 * Do a full restore, sending progress to the listener
 	 */
 	@Override
-	public void restore(BackupReaderListener listener) throws IOException {
+	public void restore(BackupReaderListener listener, int importFlags) throws IOException {
 		// Just a stat for progress
 		int coverCount = 0;
 
 		// This is an estimate only; we actually don't know how many covers
 		// there are in the backup.
-		listener.setMax((int) (getInfo().getBookCount() * 2 + 1));
+		BackupInfo info = getInfo();
+		int maxSteps = (int) (info.getBookCount());
+		if (info.hasCoverCount())
+			maxSteps += info.getCoverCount();
+		else 
+			maxSteps *= 2;
+		maxSteps++;
+		listener.setMax(maxSteps);
 
 		// Get first entity (this will be the entity AFTER the INFO entities)
 		ReaderEntity entity = nextEntity();
@@ -70,11 +78,11 @@ public abstract class BackupReaderAbstract implements BackupReader {
 		while (entity != null && !listener.isCancelled()) {
 			switch (entity.getType()) {
 			case Books:
-				restoreBooks(listener, entity);
+				restoreBooks(listener, entity, importFlags);
 				break;
 			case Cover:
 				coverCount++;
-				restoreCover(listener, entity);
+				restoreCover(listener, entity, importFlags);
 				break;
 			case Database:
 				break;
@@ -103,7 +111,7 @@ public abstract class BackupReaderAbstract implements BackupReader {
 	 * @param entity
 	 * @throws IOException
 	 */
-	private void restoreBooks(final BackupReaderListener listener, ReaderEntity entity) throws IOException {
+	private void restoreBooks(final BackupReaderListener listener, ReaderEntity entity, int importFlags) throws IOException {
 		// Make a listener for the 'export' function that just passes on the progress to out listener
 		Importer.OnImporterListener importListener = new Importer.OnImporterListener() {
 			private int mLastPos = 0;
@@ -129,7 +137,7 @@ public abstract class BackupReaderAbstract implements BackupReader {
 		// Now do the import
 		InputStream in = entity.getStream();
 		CsvImporter importer = new CsvImporter();
-		importer.importBooks(in, null, importListener);
+		importer.importBooks(in, null, importListener, importFlags);
 	}
 
 	/**
@@ -140,9 +148,19 @@ public abstract class BackupReaderAbstract implements BackupReader {
 
 	 * @throws IOException
 	 */
-	private void restoreCover(BackupReaderListener listener, ReaderEntity cover) throws IOException {
-		cover.saveToDirectory(mSharedStorage);
+	private void restoreCover(BackupReaderListener listener, ReaderEntity cover, int flags) throws IOException {
 		listener.step("Processing Covers...", 1);
+		if ( (flags & Importer.IMPORT_NEW_OR_UPDATED) != 0) {
+			File curr = new File(mSharedStorage + "/" + cover.getName());
+			if (curr.exists()) {
+				Date currFileDate = new Date(curr.lastModified());
+				Date covDate = cover.getDateModified();
+				if (currFileDate.compareTo(covDate) >= 0) {
+					return;
+				}
+			}
+		}
+		cover.saveToDirectory(mSharedStorage);
 	}
 
 	/**

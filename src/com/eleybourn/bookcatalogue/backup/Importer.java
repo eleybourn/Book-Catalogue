@@ -26,6 +26,11 @@ import com.eleybourn.bookcatalogue.backup.Importer.CoverFinder;
 
 public interface Importer {
 
+	/** Flag value to indicate ALL books should be imported */
+	public static final int IMPORT_ALL = 1;
+	/** Flag value to indicate new books and books with more recent update_date fields should be imported */
+	public static final int IMPORT_NEW_OR_UPDATED = 2;
+
 	/**
 	 * Listener interface to get progress messages.
 	 * 
@@ -58,5 +63,5 @@ public interface Importer {
 	 * 
 	 * @throws IOException
 	 */
-	public boolean importBooks(InputStream importStream, Importer.CoverFinder coverFinder, Importer.OnImporterListener listener) throws IOException;
+	public boolean importBooks(InputStream importStream, Importer.CoverFinder coverFinder, Importer.OnImporterListener listener, int importFlags) throws IOException;
 }

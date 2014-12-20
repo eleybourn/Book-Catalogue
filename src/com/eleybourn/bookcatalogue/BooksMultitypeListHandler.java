@@ -39,9 +39,16 @@ import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_READ_
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_READ_YEAR;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_SERIES_NAME;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_TITLE_LETTER;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+
 import net.philipwarner.taskqueue.QueueManager;
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -62,6 +69,8 @@ import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
 import com.eleybourn.bookcatalogue.booklist.BooklistSupportProvider;
 import com.eleybourn.bookcatalogue.database.DbUtils.DomainDefinition;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
+import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogItem;
+import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogMenuItem;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
 import com.eleybourn.bookcatalogue.goodreads.SendOneBookTask;
@@ -739,11 +748,10 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 	 * @param stringId	string ID of string to display
 	 * @param iconId	icon of menu item
 	 */
-	private void addMenuItem(ContextMenu menu, int id, int stringId, int iconId) {
+	private void addMenuItem(ArrayList<SimpleDialogItem> items, int id, int stringId, int iconId) {
+		SimpleDialogMenuItem i = new SimpleDialogMenuItem(BookCatalogueApp.getResourceString(stringId), id, iconId); 
 		// Add the menu
-		MenuItem item = menu.add(0, id, 0, stringId);
-		// Set the icon
-		item.setIcon(iconId);
+		items.add(i);
 	}
 
 	/**
@@ -754,31 +762,25 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 	 * @param v				View that was clicked
 	 * @param menuInfo		menuInfo object from Adapter (not really needed since we have holders and cursor)
 	 */
-	public void onCreateContextMenu(BooklistRowView rowView, ContextMenu menu, View v, AdapterView.AdapterContextMenuInfo menuInfo) {
+	public void buildContextMenu(BooklistRowView rowView, ArrayList<SimpleDialogItem> menu) {
 		try {
+			boolean hasSeries = rowView.hasSeriesId() ? rowView.getSeriesId() > 0 : false;
+			boolean hasAuthor = rowView.hasAuthorId() ? rowView.getAuthorId() > 0 : (rowView.getKind() == RowKinds.ROW_KIND_BOOK) ? true : false;
+
 			switch(rowView.getKind()) {
 			case ROW_KIND_BOOK:
 			{
-				long series = rowView.getSeriesId();
 				addMenuItem(menu, R.id.MENU_DELETE_BOOK, R.string.menu_delete, android.R.drawable.ic_menu_delete);
 				addMenuItem(menu, R.id.MENU_EDIT_BOOK, R.string.edit_book, android.R.drawable.ic_menu_edit);
-				addMenuItem(menu, R.id.MENU_EDIT_BOOK_NOTES, R.string.edit_book_notes, R.drawable.ic_menu_compose);
-				addMenuItem(menu, R.id.MENU_EDIT_BOOK_FRIENDS, R.string.edit_book_friends, R.drawable.ic_menu_cc);
-				addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR, R.string.amazon_books_by_author, R.drawable.ic_menu_cc);
-				if (series != 0) {
-					addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR_IN_SERIES, R.string.amazon_books_by_author_in_series, R.drawable.ic_menu_cc);
-					addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_IN_SERIES, R.string.amazon_books_in_series, R.drawable.ic_menu_cc);
-				}
-				addMenuItem(menu, R.id.MENU_SEND_BOOK_TO_GR, R.string.edit_book_send_to_gr, R.drawable.ic_menu_cc);
+				addMenuItem(menu, R.id.MENU_EDIT_BOOK_NOTES, R.string.edit_book_notes, R.drawable.ic_menu_compose_holo_dark);
+				addMenuItem(menu, R.id.MENU_EDIT_BOOK_FRIENDS, R.string.edit_book_friends, R.drawable.ic_menu_cc_holo_dark);
+				addMenuItem(menu, R.id.MENU_SEND_BOOK_TO_GR, R.string.edit_book_send_to_gr, R.drawable.ic_menu_goodreads_holo_dark);
 				break;
 			}
 			case ROW_KIND_AUTHOR:
 			{
 				addMenuItem(menu, R.id.MENU_EDIT_AUTHOR, R.string.menu_edit_author, android.R.drawable.ic_menu_edit);
-				addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR, R.string.amazon_books_by_author, R.drawable.ic_menu_cc);
-				long series = rowView.getSeriesId();
-				if (series != 0)
-					addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR_IN_SERIES, R.string.amazon_books_by_author_in_series, R.drawable.ic_menu_cc);
+				addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR, R.string.amazon_books_by_author, R.drawable.ic_menu_cc_holo_dark);
 				break;
 			}
 			case ROW_KIND_SERIES:
@@ -787,10 +789,6 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 				if (id != 0) {
 					addMenuItem(menu, R.id.MENU_DELETE_SERIES, R.string.menu_delete_series, android.R.drawable.ic_menu_delete);
 					addMenuItem(menu, R.id.MENU_EDIT_SERIES, R.string.menu_edit_series, android.R.drawable.ic_menu_edit);
-					long author = rowView.getAuthorId();
-					if (author != 0)
-						addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR_IN_SERIES, R.string.amazon_books_by_author_in_series, R.drawable.ic_menu_cc);
-					addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_IN_SERIES, R.string.amazon_books_in_series, R.drawable.ic_menu_cc);
 				}
 				break;
 			}
@@ -803,16 +801,137 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 				break;
 			}
 			}
+			if (hasAuthor)
+				addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR, R.string.amazon_books_by_author, R.drawable.ic_amazon_holo_dark);
+			if (hasSeries) {
+				if (hasAuthor)
+					addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR_IN_SERIES, R.string.amazon_books_by_author_in_series, R.drawable.ic_amazon_holo_dark);
+				addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_IN_SERIES, R.string.amazon_books_in_series, R.drawable.ic_amazon_holo_dark);
+			}
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
 	}
+	
+//	/**
+//	 * Utility routine to add 'standard' menu options based on row type.
+//	 * 
+//	 * @param rowView		Row view pointing to current row for this context menu
+//	 * @param menu			Base menu item
+//	 * @param v				View that was clicked
+//	 * @param menuInfo		menuInfo object from Adapter (not really needed since we have holders and cursor)
+//	 */
+//	public void onCreateContextMenu(BooklistRowView rowView, ContextMenu menu) {
+//		try {
+//			switch(rowView.getKind()) {
+//			case ROW_KIND_BOOK:
+//			{
+//				long series = rowView.getSeriesId();
+//				addMenuItem(menu, R.id.MENU_DELETE_BOOK, R.string.menu_delete, android.R.drawable.ic_menu_delete);
+//				addMenuItem(menu, R.id.MENU_EDIT_BOOK, R.string.edit_book, android.R.drawable.ic_menu_edit);
+//				addMenuItem(menu, R.id.MENU_EDIT_BOOK_NOTES, R.string.edit_book_notes, R.drawable.ic_menu_compose);
+//				addMenuItem(menu, R.id.MENU_EDIT_BOOK_FRIENDS, R.string.edit_book_friends, R.drawable.ic_menu_cc);
+//				addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR, R.string.amazon_books_by_author, R.drawable.ic_menu_cc);
+//				if (series != 0) {
+//					addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR_IN_SERIES, R.string.amazon_books_by_author_in_series, R.drawable.ic_menu_cc);
+//					addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_IN_SERIES, R.string.amazon_books_in_series, R.drawable.ic_menu_cc);
+//				}
+//				addMenuItem(menu, R.id.MENU_SEND_BOOK_TO_GR, R.string.edit_book_send_to_gr, R.drawable.ic_menu_cc);
+//				break;
+//			}
+//			case ROW_KIND_AUTHOR:
+//			{
+//				addMenuItem(menu, R.id.MENU_EDIT_AUTHOR, R.string.menu_edit_author, android.R.drawable.ic_menu_edit);
+//				addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR, R.string.amazon_books_by_author, R.drawable.ic_menu_cc);
+//				long series = rowView.getSeriesId();
+//				if (series != 0)
+//					addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR_IN_SERIES, R.string.amazon_books_by_author_in_series, R.drawable.ic_menu_cc);
+//				break;
+//			}
+//			case ROW_KIND_SERIES:
+//			{
+//				long id = rowView.getSeriesId();
+//				if (id != 0) {
+//					addMenuItem(menu, R.id.MENU_DELETE_SERIES, R.string.menu_delete_series, android.R.drawable.ic_menu_delete);
+//					addMenuItem(menu, R.id.MENU_EDIT_SERIES, R.string.menu_edit_series, android.R.drawable.ic_menu_edit);
+//					long author = rowView.getAuthorId();
+//					if (author != 0)
+//						addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR_IN_SERIES, R.string.amazon_books_by_author_in_series, R.drawable.ic_menu_cc);
+//					addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_IN_SERIES, R.string.amazon_books_in_series, R.drawable.ic_menu_cc);
+//				}
+//				break;
+//			}
+//			case ROW_KIND_FORMAT:
+//			{
+//				String format = rowView.getFormat();
+//				if (format != null && !format.equals("")) {
+//					addMenuItem(menu, R.id.MENU_EDIT_FORMAT, R.string.menu_edit_format, android.R.drawable.ic_menu_edit);
+//				}
+//				break;
+//			}
+//			}
+//		} catch (Exception e) {
+//			Logger.logError(e);
+//		}
+//	}
 
 	public interface BooklistChangeListener {
 		public static final int FLAG_AUTHOR = 1;
 		public static final int FLAG_SERIES = 2;
 		public static final int FLAG_FORMAT = 4;
 		void onBooklistChange(int flags);
+	}
+
+	private void openAmazon(Activity context, String author, String series) {
+		String baseUrl = "http://www.amazon.com/gp/search?index=books&tag=philipwarneri-20&tracking_id=philipwarneri-20";
+		// http://www.amazon.com/gp/search?index=books&field-author=steven+a.+mckay&field-keywords=the+forest+lord
+		if (author != null && !author.trim().equals("")) {
+			author.replaceAll("\\.,+"," ");
+			author.replaceAll(" *","+");
+			try {
+				baseUrl += "&field-author=" + URLEncoder.encode(author, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				Logger.logError(e, "Unable to add author to URL");
+				return;
+			}
+		}
+		if (series != null && !series.trim().equals("")) {
+			series.replaceAll("\\.,+"," ");
+			series.replaceAll(" *","+");
+			try {
+				baseUrl += "&field-keywords=" + URLEncoder.encode(series, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				Logger.logError(e, "Unable to add series to URL");
+				return;
+			}
+		}
+		Intent loadweb = new Intent(Intent.ACTION_VIEW, Uri.parse(baseUrl));
+		context.startActivity(loadweb); 
+		return;
+	}
+
+	private String getAuthorFromRow(CatalogueDBAdapter db, BooklistRowView rowView) {
+		String author = null;
+		if (rowView.hasAuthorId() && rowView.getAuthorId() > 0) {
+			author = db.getAuthorById(rowView.getAuthorId()).getDisplayName();
+		} else if (rowView.getKind() == RowKinds.ROW_KIND_BOOK) {
+			ArrayList<Author> authors = db.getBookAuthorList(rowView.getBookId());
+			if (authors != null && authors.size() > 0)
+				author = authors.get(0).getDisplayName();
+		}		
+		return author;
+	}
+
+	private String getSeriesFromRow(CatalogueDBAdapter db, BooklistRowView rowView) {
+		String series = null;
+		if (rowView.hasSeriesId() && rowView.getSeriesId() > 0) {
+			series = db.getSeriesById(rowView.getSeriesId()).getDisplayName();
+		} else if (rowView.getKind() == RowKinds.ROW_KIND_BOOK) {
+			ArrayList<Series> seriess = db.getBookSeriesList(rowView.getBookId());
+			if (seriess != null && seriess.size() > 0)
+				series = seriess.get(0).getDisplayName();
+		}		
+		return series;
 	}
 
 	/**
@@ -828,9 +947,8 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 	 * 
 	 * @return			True, if handled.
 	 */
-	public boolean onContextItemSelected(BooklistRowView rowView, final Activity context, final CatalogueDBAdapter dba, final MenuItem item) {
-		//AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-		switch(item.getItemId()) {
+	public boolean onContextItemSelected(CatalogueDBAdapter db, BooklistRowView rowView, final Activity context, final CatalogueDBAdapter dba, final int itemId) {
+		switch(itemId) {
 
 		case R.id.MENU_DELETE_BOOK:
 			// Show the standard dialog
@@ -865,10 +983,24 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 			BookEdit.editBook(context, rowView.getBookId(), BookEdit.TAB_EDIT_FRIENDS);
 			return true;
 
-		case R.id.MENU_AMAZON_BOOKS_BY_AUTHOR:
-		case R.id.MENU_AMAZON_BOOKS_IN_SERIES:
-		case R.id.MENU_AMAZON_BOOKS_BY_AUTHOR_IN_SERIES:
+		case R.id.MENU_AMAZON_BOOKS_BY_AUTHOR: {
+			String author = getAuthorFromRow(db, rowView);
+			openAmazon(context, author, null);
 			return true;
+		}
+		
+		case R.id.MENU_AMAZON_BOOKS_IN_SERIES: {
+			String series = getSeriesFromRow(db, rowView);
+			openAmazon(context, null, series);
+			return true;
+		}
+		
+		case R.id.MENU_AMAZON_BOOKS_BY_AUTHOR_IN_SERIES: {
+			String author = getAuthorFromRow(db, rowView);
+			String series = getSeriesFromRow(db, rowView);
+			openAmazon(context, author, series);
+			return true;			
+		}
 
 		case R.id.MENU_SEND_BOOK_TO_GR:
 			// Get a GoodreadsManager and make sure we are authorized.

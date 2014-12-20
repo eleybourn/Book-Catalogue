@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="DialogDividerTheme" >
+        <item name="android:background">@android:color/holo_blue_light</item>
+    </style>
+
     <style name="BcTheme" parent="@style/Theme.Sherlock">
         <!-- Any customizations for your app running on devices with Theme.Holo here -->
     </style>

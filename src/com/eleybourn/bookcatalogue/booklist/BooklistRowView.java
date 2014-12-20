@@ -316,6 +316,14 @@ public class BooklistRowView {
 		}
 		return mCursor.getLong(mSeriesIdCol);
 	}
+
+	public boolean hasSeriesId() {
+		if (mSeriesIdCol >= 0)
+			return true;
+		mSeriesIdCol = mCursor.getColumnIndex(DOM_SERIES_ID.name);
+		return (mSeriesIdCol >= 0);
+	}
+
 	/**
 	 * Convenience function to retrieve column value.
 	 */
@@ -328,6 +336,14 @@ public class BooklistRowView {
 		}
 		return mCursor.getLong(mAuthorIdCol);
 	}
+
+	public boolean hasAuthorId() {
+		if (mAuthorIdCol >= 0)
+			return true;
+		mAuthorIdCol = mCursor.getColumnIndex(DOM_AUTHOR_ID.name);
+		return (mAuthorIdCol >= 0);
+	}
+
 	/**
 	 * Convenience function to retrieve column value.
 	 */

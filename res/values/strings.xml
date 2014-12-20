@@ -181,10 +181,6 @@
     <string name="add">Add</string>
     <string name="noauthors">There are no authors for this Book. Please add some using the text area and button at the top of this screen.</string>
     <string name="noseries">There are no series for this Book. You can add some using the text area and button at the top of this screen.</string>
-
-    <item name="TAG_POSITION" type="id"></item>
-    <item name="TAG_ORIGINAL_VALUE" type="id"></item>
-
     <string name="cover_not_set">Cover is not set</string>
     <string name="cover_corrupt">Cover is corrupt</string>
     <string name="cover_detail">Cover Detail</string>
@@ -234,8 +230,6 @@
     <string name="click_on_thumb">Click on a thumbnail to display a larger image</string>
     <string name="loading">Loading&#8230;</string>
     <string name="image_not_found">Image Not Found</string>
-
-    <item name="fieldCheckbox" type="id"></item>
 
     <string name="select_min_1_field">Select at least one field to update</string>
     <string name="usage_copy_if_blank">Copy if blank</string>
@@ -287,15 +281,6 @@
     <string name="visit_goodreads">Visit GoodReads&#8230;</string>
     <string name="delete_event">Delete Event</string>
     <string name="delete_task">Delete Task</string>
-
-    <item name="TAG_EVENT" type="id"></item>
-    <item name="TAG_HOLDER" type="id"></item>
-    <item name="TAG_TASK" type="id"></item>
-    <item name="TAG_TASK_ID" type="id"></item>
-    <item name="TAG_BOOK_EVENT_HOLDER" type="id"></item>
-    <item name="TAG_TASK_HOLDER" type="id"></item>
-    <item name="TAG_PROPERTY" type="id"></item>
-    <item name="TAG_DIALOG_ITEM" type="id"></item>
 
     <string name="my_books">My Books</string>
     <string name="my_books_classic">My Books (Classic)</string>
@@ -360,10 +345,6 @@
     <string name="x_of_y">%1$s of %2$s</string>
     <string name="send_book_to_goodreads">Send book %1$s to goodreads</string>
 
-    <item name="NOTIFICATION" type="id"></item>
-    <item name="TAG_GOODREADS_WORK" type="id"></item>
-    <item name="TAG_GET_THUMBNAIL_TASK" type="id"></item>
-
     <string name="erase_cover_cache">Erase cover cache</string>
     <string name="crash_toast_text">BookCatalogue has crashed unexpectedly. Please help us to make the application better by reporting this crash.</string>
     <string name="crash_notif_ticker_text">BookCatalogue has crashed</string>
@@ -400,19 +381,6 @@
     <string name="sort_author_year">Author and Year</string>
     <string name="empty_with_brackets">(empty)</string>
     <string name="navigator">Navigator</string>
-
-    <item name="MENU_DELETE_BOOK" type="id"/>
-    <item name="MENU_EDIT_BOOK" type="id"/>
-    <item name="MENU_EDIT_BOOK_NOTES" type="id"/>
-    <item name="MENU_EDIT_BOOK_FRIENDS" type="id"/>
-    <item name="MENU_SEND_BOOK_TO_GR" type="id"/>
-    <item name="MENU_EDIT_AUTHOR" type="id"/>
-    <item name="MENU_EDIT_FORMAT" type="id"/>
-    <item name="MENU_DELETE_SERIES" type="id"/>
-    <item name="MENU_EDIT_SERIES" type="id"/>
-    <item name="MENU_DELETE_STYLE" type="id"/>
-    <item name="MENU_EDIT_STYLE" type="id"/>
-    <item name="MENU_CLONE_STYLE" type="id"/>
 
     <string name="booklist_preferences">Book List Preferences</string>
     <string name="extra_book_details">Extra Book Details</string>
@@ -919,7 +887,7 @@ and you can edit the book via the options menu using the menu button or overflow
 
     <!-- End: Added/Updated in 5.0.9 -->
 
-    <!-- Begin: Added/Updated in [Next Version] -->
+    <!-- Begin: Added/Updated in 5.1.0 -->
     
     <!--  Explanatory text for 'import' dialogue -->
     <string name="import_books_blurb">The books in this archive will be imported. Click on one of two options to start the import, or press \'back\' to cancel:</string>
@@ -999,14 +967,27 @@ and you can edit the book via the options menu using the menu button or overflow
 			<p><b>New in 5.1.0</b>\n\n
 				* Italian translation (Eugenio Davolio)\n\n
 				* Spanish tramslation (José M. Galdo)\n\n
-				* Turkish translations (bitigchi)\n\n
+				* Turkish translations (Emir Sarý)\n\n
 				* Ability to archive only new/updated books and to exclude covers (or books)\n\n
 				* Better thumbnail size in lists for high density screens\n\n
+				* Added options to see books by author/series at Amazon\n\n
 				* Other minor bug fixes\n\n
 			</p>
 		]]>
     </string>
     
+    <!-- Menu item -->
+    <string name="amazon_books_in_series">Books in this series</string>
+    <!-- Menu item -->
+    <string name="amazon_books_by_author">Books by this author</string>
+    <!-- Menu item -->
+    <string name="amazon_books_by_author_in_series">Books by author/series</string>
+    
+    <!-- TRANLATORS NOTE: I HAVE UPDATED THE new_in_510, above! Sorry. -->
+    
+    <!-- End: Added/Updated in 5.1.0 -->
+
+    <!-- Begin: Added/Updated in [Next Version] -->
     <!-- End: Added/Updated in [Next Version] -->
 
     

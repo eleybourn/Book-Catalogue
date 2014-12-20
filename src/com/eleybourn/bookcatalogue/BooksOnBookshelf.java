@@ -213,7 +213,6 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 			}
 
 			// We want context menus to be available
-			registerForContextMenu(getListView());
 			getListView().setOnItemLongClickListener(new OnItemLongClickListener() {
 				@Override
 				public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {

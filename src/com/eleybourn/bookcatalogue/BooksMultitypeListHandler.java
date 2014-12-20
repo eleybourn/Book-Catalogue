@@ -882,34 +882,6 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 		void onBooklistChange(int flags);
 	}
 
-	private void openAmazon(Activity context, String author, String series) {
-		String baseUrl = "http://www.amazon.com/gp/search?index=books&tag=philipwarneri-20&tracking_id=philipwarneri-20";
-		// http://www.amazon.com/gp/search?index=books&field-author=steven+a.+mckay&field-keywords=the+forest+lord
-		if (author != null && !author.trim().equals("")) {
-			author.replaceAll("\\.,+"," ");
-			author.replaceAll(" *","+");
-			try {
-				baseUrl += "&field-author=" + URLEncoder.encode(author, "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				Logger.logError(e, "Unable to add author to URL");
-				return;
-			}
-		}
-		if (series != null && !series.trim().equals("")) {
-			series.replaceAll("\\.,+"," ");
-			series.replaceAll(" *","+");
-			try {
-				baseUrl += "&field-keywords=" + URLEncoder.encode(series, "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				Logger.logError(e, "Unable to add series to URL");
-				return;
-			}
-		}
-		Intent loadweb = new Intent(Intent.ACTION_VIEW, Uri.parse(baseUrl));
-		context.startActivity(loadweb); 
-		return;
-	}
-
 	private String getAuthorFromRow(CatalogueDBAdapter db, BooklistRowView rowView) {
 		String author = null;
 		if (rowView.hasAuthorId() && rowView.getAuthorId() > 0) {
@@ -985,20 +957,20 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 
 		case R.id.MENU_AMAZON_BOOKS_BY_AUTHOR: {
 			String author = getAuthorFromRow(db, rowView);
-			openAmazon(context, author, null);
+			Utils.openAmazonSearchPage(context, author, null);
 			return true;
 		}
 		
 		case R.id.MENU_AMAZON_BOOKS_IN_SERIES: {
 			String series = getSeriesFromRow(db, rowView);
-			openAmazon(context, null, series);
+			Utils.openAmazonSearchPage(context, null, series);
 			return true;
 		}
 		
 		case R.id.MENU_AMAZON_BOOKS_BY_AUTHOR_IN_SERIES: {
 			String author = getAuthorFromRow(db, rowView);
 			String series = getSeriesFromRow(db, rowView);
-			openAmazon(context, author, series);
+			Utils.openAmazonSearchPage(context, author, series);
 			return true;			
 		}
 

@@ -983,6 +983,9 @@ and you can edit the book via the options menu using the menu button or overflow
     <!-- Menu item -->
     <string name="amazon_books_by_author_in_series">Books by author/series</string>
     
+    <!-- Hint text displayed when user enters the book listw -->
+    <string name="hint_book_list">Clicking on a book will show you book details, long-clicking on an item in the list give you further options.</string>
+
     <!-- TRANLATORS NOTE: I HAVE UPDATED THE new_in_510, above! Sorry. -->
     
     <!-- End: Added/Updated in 5.1.0 -->

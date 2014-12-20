@@ -759,16 +759,26 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 			switch(rowView.getKind()) {
 			case ROW_KIND_BOOK:
 			{
+				long series = rowView.getSeriesId();
 				addMenuItem(menu, R.id.MENU_DELETE_BOOK, R.string.menu_delete, android.R.drawable.ic_menu_delete);
 				addMenuItem(menu, R.id.MENU_EDIT_BOOK, R.string.edit_book, android.R.drawable.ic_menu_edit);
 				addMenuItem(menu, R.id.MENU_EDIT_BOOK_NOTES, R.string.edit_book_notes, R.drawable.ic_menu_compose);
 				addMenuItem(menu, R.id.MENU_EDIT_BOOK_FRIENDS, R.string.edit_book_friends, R.drawable.ic_menu_cc);
+				addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR, R.string.amazon_books_by_author, R.drawable.ic_menu_cc);
+				if (series != 0) {
+					addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR_IN_SERIES, R.string.amazon_books_by_author_in_series, R.drawable.ic_menu_cc);
+					addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_IN_SERIES, R.string.amazon_books_in_series, R.drawable.ic_menu_cc);
+				}
 				addMenuItem(menu, R.id.MENU_SEND_BOOK_TO_GR, R.string.edit_book_send_to_gr, R.drawable.ic_menu_cc);
 				break;
 			}
 			case ROW_KIND_AUTHOR:
 			{
 				addMenuItem(menu, R.id.MENU_EDIT_AUTHOR, R.string.menu_edit_author, android.R.drawable.ic_menu_edit);
+				addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR, R.string.amazon_books_by_author, R.drawable.ic_menu_cc);
+				long series = rowView.getSeriesId();
+				if (series != 0)
+					addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR_IN_SERIES, R.string.amazon_books_by_author_in_series, R.drawable.ic_menu_cc);
 				break;
 			}
 			case ROW_KIND_SERIES:
@@ -776,7 +786,11 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 				long id = rowView.getSeriesId();
 				if (id != 0) {
 					addMenuItem(menu, R.id.MENU_DELETE_SERIES, R.string.menu_delete_series, android.R.drawable.ic_menu_delete);
-					addMenuItem(menu, R.id.MENU_EDIT_SERIES, R.string.menu_edit_series, android.R.drawable.ic_menu_edit);					
+					addMenuItem(menu, R.id.MENU_EDIT_SERIES, R.string.menu_edit_series, android.R.drawable.ic_menu_edit);
+					long author = rowView.getAuthorId();
+					if (author != 0)
+						addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR_IN_SERIES, R.string.amazon_books_by_author_in_series, R.drawable.ic_menu_cc);
+					addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_IN_SERIES, R.string.amazon_books_in_series, R.drawable.ic_menu_cc);
 				}
 				break;
 			}
@@ -849,6 +863,11 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 		case R.id.MENU_EDIT_BOOK_FRIENDS:
 			// Start the activity in the correct tab
 			BookEdit.editBook(context, rowView.getBookId(), BookEdit.TAB_EDIT_FRIENDS);
+			return true;
+
+		case R.id.MENU_AMAZON_BOOKS_BY_AUTHOR:
+		case R.id.MENU_AMAZON_BOOKS_IN_SERIES:
+		case R.id.MENU_AMAZON_BOOKS_BY_AUTHOR_IN_SERIES:
 			return true;
 
 		case R.id.MENU_SEND_BOOK_TO_GR:

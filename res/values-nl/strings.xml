@@ -1010,7 +1010,7 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     <!-- TRANLATORS NOTE: I HAVE UPDATED THE new_in_510, above! Sorry. -->
     
     <!-- End: Added/Updated in 5.1.0 -->
-
+    <string name="zxing_scanner">Zxing Scanner</string>
     <!-- Begin: Added/Updated in [Next Version] -->
     <!-- End: Added/Updated in [Next Version] -->
 

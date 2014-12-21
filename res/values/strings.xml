@@ -960,13 +960,13 @@ and you can edit the book via the options menu using the menu button or overflow
     <string name="a_comma_b">%1$s, %2$s</string>
     
     <!-- Short progress message -->
-    <string name="searching_directory_ellipsis">Searching directory&#8230;</string>
+    <string name="searching_directory_ellipsis">Searching catalogue&#8230;</string>
 
     <string name="new_in_510">
 		<![CDATA[
 			<p><b>New in 5.1.0</b>\n\n
 				* Italian translation (Eugenio Davolio)\n\n
-				* Spanish tramslation (José M. Galdo)\n\n
+				* Spanish translation (José M. Galdo)\n\n
 				* Turkish translations (Emir Sarı)\n\n
 				* Ability to archive only new/updated books and to exclude covers (or books)\n\n
 				* Better thumbnail size in lists for high density screens\n\n

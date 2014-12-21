@@ -960,7 +960,7 @@ and you can edit the book via the options menu using the menu button or overflow
     <string name="a_comma_b">%1$s, %2$s</string>
     
     <!-- Short progress message -->
-    <string name="searching_directory_ellipsis">Searching catalogue&#8230;</string>
+    <string name="searching_directory_ellipsis">Searching directory&#8230;</string>
 
     <string name="new_in_510">
 		<![CDATA[

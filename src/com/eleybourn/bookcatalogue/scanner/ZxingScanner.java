@@ -16,13 +16,26 @@ import com.eleybourn.bookcatalogue.BookCatalogueApp;
  */
 public class ZxingScanner implements Scanner {
 	public static final String ACTION = "com.google.zxing.client.android.SCAN";
+	private static final String PACKAGE = "com.google.zxing.client.android";
+	
+	/** Set to true of the Zxing package is required */
+	private final boolean mMustBeZxing;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param mustBeZxingPackage	Set to true if the Zxing scanner app MUST be used
+	 */
+	public ZxingScanner(boolean mustBeZxingPackage) {
+		mMustBeZxing = mustBeZxingPackage;
+	}
+	
 	/**
 	 * Check if we have a valid intent available.
 	 * @return true if present
 	 */
-	public static boolean isIntentAvailable() {
-		return isIntentAvailable(BookCatalogueApp.context, ACTION);
+	public static boolean isIntentAvailable(boolean mustBeZxing) {
+		return isIntentAvailable(BookCatalogueApp.context, ACTION, mustBeZxing ? PACKAGE : null);
 	}
 
 	/**
@@ -31,6 +44,9 @@ public class ZxingScanner implements Scanner {
 	@Override
 	public void startActivityForResult(Activity a, int requestCode) {
 		Intent i = new Intent(ACTION);
+		if (mMustBeZxing) {
+			i.setPackage(PACKAGE);
+		}
 		a.startActivityForResult(i, requestCode);
 	}
 
@@ -39,8 +55,11 @@ public class ZxingScanner implements Scanner {
 	 * 
 	 * @return true if present
 	 */
-	private static boolean isIntentAvailable(Context ctx, String action) {
+	private static boolean isIntentAvailable(Context ctx, String action, String packageName) {
 		Intent test = new Intent(ACTION);
+		if (packageName != null && !packageName.equals("")) {
+			test.setPackage(packageName);
+		}
 		return ctx.getPackageManager().resolveActivity(test, 0) != null;
 	}
 

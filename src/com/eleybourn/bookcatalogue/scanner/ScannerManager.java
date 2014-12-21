@@ -17,6 +17,7 @@ public class ScannerManager {
 	/** Unique IDs to associate with each supported scanner intent */
 	public static final int SCANNER_ZXING_COMPATIBLE = 1;
 	public static final int SCANNER_PIC2SHOP = 2;
+	public static final int SCANNER_ZXING = 3;
 
 	/** 
 	 * Support for creating scanner objects on the fly without know which ones are available.
@@ -41,12 +42,23 @@ public class ScannerManager {
 		myScannerFactories.put(SCANNER_ZXING_COMPATIBLE, new ScannerFactory() {
 			@Override
 			public Scanner newInstance() {
-				return new ZxingScanner();
+				return new ZxingScanner(false);
 			}
 
 			@Override
 			public boolean isIntentAvaiable() {
-				return ZxingScanner.isIntentAvailable();
+				return ZxingScanner.isIntentAvailable(false);
+			}});
+
+		myScannerFactories.put(SCANNER_ZXING, new ScannerFactory() {
+			@Override
+			public Scanner newInstance() {
+				return new ZxingScanner(true);
+			}
+
+			@Override
+			public boolean isIntentAvaiable() {
+				return ZxingScanner.isIntentAvailable(true);
 			}});
 
 		myScannerFactories.put(SCANNER_PIC2SHOP, new ScannerFactory() {
@@ -82,7 +94,7 @@ public class ScannerManager {
 				return sf.newInstance();
 			}
 		}
-		return new ZxingScanner();
+		return new ZxingScanner(false);
 	}
 
 }

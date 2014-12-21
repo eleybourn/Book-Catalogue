@@ -890,7 +890,7 @@ and you can edit the book via the options menu using the menu button or overflow
     <!-- Begin: Added/Updated in 5.1.0 -->
     
     <!--  Explanatory text for 'import' dialogue -->
-    <string name="import_books_blurb">The books in this archive will be imported. Click on one of two options to start the import, or press \'back\' to cancel:</string>
+    <string name="import_books_blurb">The books in this archive will be imported. Select on one of two options to start the import, or press \'back\' to cancel:</string>
     <!-- Description of the 'import all books' option -->
     <string name="all_books_blurb">All books in the archive will be imported, updating existing books and adding new ones.</string>
     <!-- Menu text for the 'import/export new & changed' option -->
@@ -903,7 +903,7 @@ and you can edit the book via the options menu using the menu button or overflow
     <string name="n_created_m_updated">%1$s created, %2$s updated</string>
 
     <!--  Explanatory text for 'export' dialogue -->
-    <string name="export_books_blurb">The books in your catalogue will be exported. Click on one of two options to start the export, or press \'back\' to cancel:</string>
+    <string name="export_books_blurb">The books in your catalogue will be exported. Select on one of two options to start the export, or press \'back\' to cancel:</string>
     <!-- Description of the 'import all books' option -->
     <string name="export_all_books_blurb">All books in the catalogue will be exported to the archive.</string>
     <!-- Description of the 'export new & changed' option -->
@@ -984,7 +984,7 @@ and you can edit the book via the options menu using the menu button or overflow
     <string name="amazon_books_by_author_in_series">Books by author/series</string>
     
     <!-- Hint text displayed when user enters the book listw -->
-    <string name="hint_book_list">Clicking on a book will show you book details, long-clicking on an item in the list give you further options.</string>
+    <string name="hint_book_list">Tapping on a book will show you book details, a long-press on an item in the list give you further options.</string>
 
     <!-- TRANLATORS NOTE: I HAVE UPDATED THE new_in_510, above! Sorry. -->
 

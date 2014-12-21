@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
-    android:paddingBottom="10dp"
-    android:paddingTop="10dp" >
+    android:layout_height="fill_parent" >
+
+<!-- 	android:minHeight="?android:attr/listPreferredItemHeight" -->
 
     <RadioButton
         android:id="@+id/selector"
@@ -23,10 +21,16 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@id/selector"
+        android:gravity="center_vertical"
+        android:paddingBottom="8dip"
+        android:paddingLeft="15dip"
+        android:paddingRight="15dip"
+        android:paddingTop="8dip"
         android:singleLine="false"
         android:text=""
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/background_grey" />
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+<!--         android:textAppearance="?android:attr/textAppearanceLarge" -->
 
     <View
         android:layout_width="fill_parent"

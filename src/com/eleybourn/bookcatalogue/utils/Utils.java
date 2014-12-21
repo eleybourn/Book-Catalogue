@@ -27,12 +27,14 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.security.MessageDigest;
 import java.text.DateFormat;
@@ -64,6 +66,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -78,6 +81,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -2114,6 +2118,37 @@ public class Utils {
 		} catch (ClassCastException e) {
 			return stringToBoolean(o.toString(), true);
 		}
+	}
+
+	public static void openAmazonSearchPage(Activity context, String author, String series) {
+		String baseUrl = "http://www.amazon.com/gp/search?index=books&tag=philipwarneri-20&tracking_id=philipwarneri-20";
+		String extra = "";
+		// http://www.amazon.com/gp/search?index=books&field-author=steven+a.+mckay&field-keywords=the+forest+lord
+		if (author != null && !author.trim().equals("")) {
+			author.replaceAll("\\.,+"," ");
+			author.replaceAll(" *","+");
+			try {
+				extra += "&field-author=" + URLEncoder.encode(author, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				Logger.logError(e, "Unable to add author to URL");
+				return;
+			}
+		}
+		if (series != null && !series.trim().equals("")) {
+			series.replaceAll("\\.,+"," ");
+			series.replaceAll(" *","+");
+			try {
+				extra += "&field-keywords=" + URLEncoder.encode(series, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				Logger.logError(e, "Unable to add series to URL");
+				return;
+			}
+		}
+		if (extra != null && !extra.trim().equals("")) {
+			Intent loadweb = new Intent(Intent.ACTION_VIEW, Uri.parse(baseUrl + extra));
+			context.startActivity(loadweb); 			
+		}
+		return;
 	}
 }
 

@@ -50,6 +50,7 @@ import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -75,6 +76,10 @@ import com.eleybourn.bookcatalogue.booklist.BooklistStyles;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueListActivity;
 import com.eleybourn.bookcatalogue.debug.Tracker;
+import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
+import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogItem;
+import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogMenuItem;
+import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogOnClickListener;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsUtils;
 import com.eleybourn.bookcatalogue.utils.HintManager;
@@ -208,7 +213,22 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 			}
 
 			// We want context menus to be available
-			registerForContextMenu(getListView());
+			getListView().setOnItemLongClickListener(new OnItemLongClickListener() {
+				@Override
+				public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+					mList.moveToPosition(position);
+					ArrayList<SimpleDialogItem> menu = new ArrayList<SimpleDialogItem>();
+					mListHandler.buildContextMenu(mList.getRowView(), menu);
+					StandardDialogs.selectItemDialog(getLayoutInflater(), null, menu, null, new SimpleDialogOnClickListener() {
+						@Override
+						public void onClick(SimpleDialogItem item) {
+							mList.moveToPosition(position);
+							int id = ((SimpleDialogMenuItem)item).getItemId();
+							mListHandler.onContextItemSelected(mDb, mList.getRowView(), BooksOnBookshelf.this, mDb, id);
+						}});
+					return true;
+				}
+			});
 	
 			// use the custom fast scroller (the ListView in the XML is our custome version).
 			getListView().setFastScrollEnabled(true);
@@ -227,8 +247,10 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 			initBookshelfSpinner();
 			setupList(true);
 
-			if (savedInstanceState == null)
+			if (savedInstanceState == null) {
 				HintManager.displayHint(this, R.string.hint_view_only_book_details, null);
+				HintManager.displayHint(this, R.string.hint_book_list, null);
+			}
 		} finally {
 			Tracker.exitOnCreate(this);
 		}
@@ -273,22 +295,22 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 		}
 	}
 
-	/**
-	 * Build the context menu.
-	 */
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-		super.onCreateContextMenu(menu, v, menuInfo);
-		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-
-		try {
-			// Just move the cursor and call the handler to do the work.
-			mList.moveToPosition(info.position);
-			mListHandler.onCreateContextMenu(mList.getRowView(), menu, v, info);
-		} catch (NullPointerException e) {
-			Logger.logError(e);
-		}
-	}
+//	/**
+//	 * Build the context menu.
+//	 */
+//	@Override
+//	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+//		super.onCreateContextMenu(menu, v, menuInfo);
+//		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+//
+//		try {
+//			// Just move the cursor and call the handler to do the work.
+//			mList.moveToPosition(info.position);
+//			mListHandler.onCreateContextMenu(mList.getRowView(), menu);
+//		} catch (NullPointerException e) {
+//			Logger.logError(e);
+//		}
+//	}
 	
 	/**
 	 * Handle selections from context menu
@@ -297,7 +319,7 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 	public boolean onContextItemSelected(android.view.MenuItem item) {
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 		mList.moveToPosition(info.position);
-		if (mListHandler.onContextItemSelected(mList.getRowView(), this, mDb, item))
+		if (mListHandler.onContextItemSelected(mDb, mList.getRowView(), this, mDb, item.getItemId()))
 			return true;
 		else
 			return super.onContextItemSelected(item);

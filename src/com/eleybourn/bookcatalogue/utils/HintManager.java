@@ -74,6 +74,7 @@ public class HintManager {
 		.add("hint_view_only_book_details", R.string.hint_view_only_book_details)
 		.add("hint_view_only_help", R.string.hint_view_only_help)
 		.add("hint_evan_book", R.string.hint_evan_book)
+		.add("hint_book_list", R.string.hint_book_list)
 		;
 
 	public static interface HintOwner {

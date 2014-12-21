@@ -689,7 +689,7 @@
     <!-- Preference name, displayed in a preference activity -->
     <string name="preferred_scanner">Voorkeur Scanner</string>
     <!-- Preference VALUE, displayed in a preference activity -->
-    <string name="zxing_compatible_scanner">Zxing Compatibel Scanner</string>
+    <string name="zxing_compatible_scanner">Zxing Compatibele Scanner</string>
     <!-- Preference VALUE, displayed in a preference activity -->
     <string name="pic2shop_scanner">Pic2Shop Scanner</string>
     <!-- Preference name, displayed in a preference activity -->
@@ -1010,7 +1010,7 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     <!-- TRANLATORS NOTE: I HAVE UPDATED THE new_in_510, above! Sorry. -->
     
     <!-- End: Added/Updated in 5.1.0 -->
-
+    <string name="zxing_scanner">Zxing Scanner</string>
     <!-- Begin: Added/Updated in [Next Version] -->
     <!-- End: Added/Updated in [Next Version] -->
 

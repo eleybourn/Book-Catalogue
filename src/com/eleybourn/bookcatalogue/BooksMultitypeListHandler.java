@@ -281,10 +281,11 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 			seriesNum = (TextView) v.findViewById(R.id.series_num);
 			seriesNumLong = (TextView) v.findViewById(R.id.series_num_long);				
 
+			final int iconSize = (int)(title.getTextSize() * scale);
 			read = (ImageView) v.findViewById(R.id.read);
-			LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT, (int)(30*scale) ); 
-			read.setMaxHeight((int) (30 * scale) );
-			read.setMaxWidth((int) (30 * scale));
+			LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT, iconSize ); 
+			read.setMaxHeight(iconSize);
+			read.setMaxWidth(iconSize);
 			read.setLayoutParams(lp);
 			read.setScaleType(ScaleType.CENTER);
 

@@ -28,7 +28,6 @@ import java.io.OutputStream;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
-import com.eleybourn.bookcatalogue.backup.Importer.CoverFinder;
 import com.eleybourn.bookcatalogue.utils.StorageUtils;
 
 /**

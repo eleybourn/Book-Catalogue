@@ -20,10 +20,8 @@
 
 package com.eleybourn.bookcatalogue;
 
-import android.os.Build;
 import android.os.Bundle;
 
-import com.eleybourn.bookcatalogue.properties.BooleanListProperty;
 import com.eleybourn.bookcatalogue.properties.BooleanProperty;
 import com.eleybourn.bookcatalogue.properties.IntegerListProperty;
 import com.eleybourn.bookcatalogue.properties.ListProperty.ItemEntries;

@@ -27,7 +27,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 
-import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.widgets.FastScroller.SectionIndexerV2;
 
 /**

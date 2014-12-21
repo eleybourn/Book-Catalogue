@@ -23,12 +23,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-
 import java.util.Date;
-import com.eleybourn.bookcatalogue.database.SerializationUtils.DeserializationException;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+
+import com.eleybourn.bookcatalogue.database.SerializationUtils.DeserializationException;
 
 /**
  * Interface provided by every entity read from a backup file.

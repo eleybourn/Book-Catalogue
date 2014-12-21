@@ -21,9 +21,7 @@ package com.eleybourn.bookcatalogue.filechooser;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Comparator;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

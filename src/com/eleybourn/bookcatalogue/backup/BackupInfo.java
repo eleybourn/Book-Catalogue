@@ -28,7 +28,6 @@ import android.os.Build;
 import android.os.Bundle;
 
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
-import com.eleybourn.bookcatalogue.backup.tar.TarBackupContainer;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**

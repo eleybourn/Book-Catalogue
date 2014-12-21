@@ -22,7 +22,6 @@ package com.eleybourn.bookcatalogue.properties;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.properties.ListProperty.ItemEntries;
 import com.eleybourn.bookcatalogue.properties.Property.BooleanValue;
 
 /**

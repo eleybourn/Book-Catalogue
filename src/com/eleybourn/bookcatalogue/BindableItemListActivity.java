@@ -22,8 +22,6 @@ package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
 
-import com.eleybourn.bookcatalogue.compat.BookCatalogueListActivity;
-
 import net.philipwarner.taskqueue.BindableItemCursorAdapter;
 import net.philipwarner.taskqueue.BindableItemCursorAdapter.BindableItemBinder;
 import net.philipwarner.taskqueue.BindableItemSQLiteCursor;
@@ -33,9 +31,11 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.ListView;
+
+import com.eleybourn.bookcatalogue.compat.BookCatalogueListActivity;
 
 /**
  * NOTE!!!!!

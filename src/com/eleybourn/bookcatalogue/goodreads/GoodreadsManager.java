@@ -64,11 +64,11 @@ import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.Network
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NotAuthorizedException;
 import com.eleybourn.bookcatalogue.goodreads.api.AuthUserApiHandler;
 import com.eleybourn.bookcatalogue.goodreads.api.BookshelfListApiHandler;
+import com.eleybourn.bookcatalogue.goodreads.api.BookshelfListApiHandler.BookshelfListFieldNames;
 import com.eleybourn.bookcatalogue.goodreads.api.IsbnToId;
 import com.eleybourn.bookcatalogue.goodreads.api.ReviewUpdateHandler;
 import com.eleybourn.bookcatalogue.goodreads.api.SearchBooksApiHandler;
 import com.eleybourn.bookcatalogue.goodreads.api.ShelfAddBookHandler;
-import com.eleybourn.bookcatalogue.goodreads.api.BookshelfListApiHandler.BookshelfListFieldNames;
 import com.eleybourn.bookcatalogue.goodreads.api.ShowBookApiHandler.ShowBookFieldNames;
 import com.eleybourn.bookcatalogue.goodreads.api.ShowBookByIdApiHandler;
 import com.eleybourn.bookcatalogue.goodreads.api.ShowBookByIsbnApiHandler;

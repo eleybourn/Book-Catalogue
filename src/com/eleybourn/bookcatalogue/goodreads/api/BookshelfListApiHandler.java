@@ -21,8 +21,6 @@
 package com.eleybourn.bookcatalogue.goodreads.api;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
@@ -33,15 +31,10 @@ import org.apache.http.client.methods.HttpGet;
 
 import android.os.Bundle;
 
-import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.BookNotFoundException;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NotAuthorizedException;
-import com.eleybourn.bookcatalogue.goodreads.api.SimpleXmlFilter.BuilderContext;
-import com.eleybourn.bookcatalogue.goodreads.api.SimpleXmlFilter.XmlListener;
-import com.eleybourn.bookcatalogue.goodreads.api.XmlFilter.ElementContext;
-import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Class to implement the reviews.list api call. It queries based on the passed parameters and returns

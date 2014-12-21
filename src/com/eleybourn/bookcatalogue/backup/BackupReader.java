@@ -21,8 +21,6 @@ package com.eleybourn.bookcatalogue.backup;
 
 import java.io.IOException;
 
-import com.eleybourn.bookcatalogue.backup.BackupWriter.BackupWriterListener;
-
 /**
  * Public interface for any backup archive reader.
  * 

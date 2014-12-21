@@ -23,11 +23,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
-import com.eleybourn.bookcatalogue.backup.BackupWriter.BackupWriterListener;
-import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
-
 import android.content.SharedPreferences;
-import android.os.Bundle;
+
+import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
 
 /**
  * Public interface for any backup archive reader.

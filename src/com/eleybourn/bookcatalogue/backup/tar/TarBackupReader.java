@@ -25,12 +25,10 @@ import java.io.IOException;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 
-import android.os.Bundle;
-
 import com.eleybourn.bookcatalogue.backup.BackupContainer;
 import com.eleybourn.bookcatalogue.backup.BackupInfo;
-import com.eleybourn.bookcatalogue.backup.ReaderEntity;
 import com.eleybourn.bookcatalogue.backup.BackupReaderAbstract;
+import com.eleybourn.bookcatalogue.backup.ReaderEntity;
 import com.eleybourn.bookcatalogue.backup.ReaderEntity.BackupEntityType;
 
 /**

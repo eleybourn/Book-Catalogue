@@ -911,7 +911,69 @@
 
     <!-- Displayed in progress dialog when exporting covers in incremental mode -->
     <string name="covers_progress_incr">%1$s kapak işlendi (%2$s bulunamadı, %3$s atlandı)</string>
-    
-    <!-- End: Added/Updated in [Next Version] -->
-
+    <!-- Explanatory note for 'export all' option -->
+    <string name="export_all_blurb">Tüm betikler, kapaklar, ayarlar ve kişiselleştirilmiş biçemler arşive aktarılacaktır.</string>
+    <!-- Explanatory note for 'advanced export' option -->
+    <string name="export_advanced_blurb">Arşive nelerin aktarılacağını seçin.</string>
+    <!-- Introduction for 'advanced export' option -->
+    <string name="export_advanced_heading">Nelerin dışa aktarılacağını seçin:</string>
+    <!-- Text for button -->
+    <string name="book_details">Betik ayrıntıları</string>
+    <!-- Brief descriptionn -->
+    <string name="book_details_blurb">Betiklerin ayrıntıları gösterir</string>
+    <!-- Text for button -->
+    <string name="cover_images">Kapak görselleri</string>
+    <!-- Brief descriptionn -->
+    <string name="cover_images_blurb">Seçilen betikler için kapak resimlerini gösterir. Dışarı aktarım boyutunu arttıracaktır.</string>
+    <!-- Brief descriptionn -->
+    <string name="preferences_blurb">Yeğlenenler ve kullanıcı tanımlı dizelge biçemleri</string>
+    <!-- Explanatory note for export date (not yet implemented) -->
+    <string name="export_advanced_date_blurb">Seçeneğe bağlı olarak, dışarı aktarılacak betiklerde ve/veya kapak görsellerinde kullanılacak bir günay seçin:</string>
+    <!-- Explanatory note for export date (not yet implemented) -->
+    <string name="all_books_added_or_updated_since">Şu günaydan bu yana eklenen veya güncellenen betikler:</string>
+    <!-- Explanatory note for export data since last backup -->
+    <string name="all_books_added_or_updated_since_last_full_backup">Son tüm yedeklemeden bu yana eklenen veya güncellenen betikler</string>
+   <!-- Short text for 'n books' -->
+   <plurals
+   name="n_books">
+   <item quantity="zero">betik yok</item>
+   <item quantity="one">1 betik</item>
+   <item quantity="other">%1$s betik</item>
+   </plurals>
+   <!-- Short text for 'n covers' -->
+   <plurals
+   name="n_covers">
+   <item quantity="zero">kapak yok</item>
+   <item quantity="one">1 kapak</item>
+   <item quantity="other">%1$s kapak</item>
+   </plurals>
+   <!-- Used for concatenating two strings, eg. "3 books, 2 covers" (probably only important on RTL languages)-->
+   <string name="a_comma_b">%1$s, %2$s</string>
+   <!-- Short progress message -->
+   <string name="searching_directory_ellipsis">Dizin aranıyor&#8230;</string>
+   <string name="new_in_510">
+   <![CDATA[
+   <p><b>5.1.0 sürümündeki yenilikler</b>\n\n
+   * İtalyanca çeviri (Eugenio Davolio)\n\n
+   * İspanyolca çeviri (José M. Galdo)\n\n
+   * Türkçe çeviri (Emir Sarý)\n\n
+   * Yalnıca yeni eklenen/güncellenen betikleri arşivleme ve kapak görsellerini (veya betikleri) içerme seçeneği\n\n
+   * Yüksek belirginlikli ekranlar için daha iyi ufak resim boyutu\n\n
+   * Betikleri Amazon'daki yazarlara/dizilere göre gösterme desteği\n\n
+   * Diğer ufak hata düzeltmeleri\n\n
+   </p>
+   ]]>
+   </string>
+   <!-- Menu item -->
+   <string name="amazon_books_in_series">Bu dizideki betikler</string>
+   <!-- Menu item -->
+   <string name="amazon_books_by_author">Bu yazarın betikleri</string>
+   <!-- Menu item -->
+   <string name="amazon_books_by_author_in_series">Yazara/diziye göre betikler</string>
+   <!-- Hint text displayed when user enters the book listw -->
+   <string name="hint_book_list">Bir betiğin üzerine tıklamak betik ayrıntılarını gösterir, uzun basılı tutmak daha fazla seçeneğin olduğu bir dizelge verir.</string>
+   <!-- TRANLATORS NOTE: I HAVE UPDATED THE new_in_510, above! Sorry. -->
+   <!-- End: Added/Updated in 5.1.0 -->
+   <!-- Begin: Added/Updated in [Next Version] -->
+   <!-- End: Added/Updated in [Next Version] -->
 </resources>

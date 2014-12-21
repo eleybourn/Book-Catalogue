@@ -46,6 +46,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
                     android:layout_alignWithParentIfMissing="true"
                     android:layout_toLeftOf="@+id/read"
                     android:text="Anna Karenina"

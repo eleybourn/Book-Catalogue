@@ -942,7 +942,7 @@
    </plurals>
    <!-- Short text for 'n covers' -->
    <plurals
-   name="n_covers">
+  name="n_covers">
    <item quantity="zero">kapak yok</item>
    <item quantity="one">1 kapak</item>
    <item quantity="other">%1$s kapak</item>
@@ -959,7 +959,7 @@
    * Türkçe çeviri (Emir Sarý)\n\n
    * Yalnıca yeni eklenen/güncellenen betikleri arşivleme ve kapak görsellerini (veya betikleri) içerme seçeneği\n\n
    * Yüksek belirginlikli ekranlar için daha iyi ufak resim boyutu\n\n
-   * Betikleri Amazon'daki yazarlara/dizilere göre gösterme desteği\n\n
+   * Betikleri Amazon\'daki yazarlara/dizilere göre gösterme desteği\n\n
    * Diğer ufak hata düzeltmeleri\n\n
    </p>
    ]]>

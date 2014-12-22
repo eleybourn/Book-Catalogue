@@ -990,7 +990,13 @@ and you can edit the book via the options menu using the menu button or overflow
 
     <!-- Preference VALUE, displayed in a preference activity -->
     <string name="zxing_scanner">Zxing Scanner</string>
+
+    <!-- Heading in 'about' dialog -->
+    <string name="special_thanks_label">Special Thanks</string>
     
+    <!-- Credits in the 'about' dialog -->
+    <string name="translators_blurb">BookCatalogue is the product of the efforts of many people, and would not have such wide use without the generous help of our volunteer translators: Eugenio Davolio, José M. Galdo, Imkal, Gideon van Melle, Emir Sarı, Nick Silin, and Robert Wetzlmayr (if we have forgotten someone, please tell us).</string>
+
     <!-- End: Added/Updated in 5.1.0 -->
 
     <!-- Begin: Added/Updated in [Next Version] -->

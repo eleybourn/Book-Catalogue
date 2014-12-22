@@ -867,7 +867,7 @@
 	    		<![CDATA[
 				<p>Saviez-vous que le créateur de Book Catalogue (Evan Leybourn) vient juste de publier 
 				un livre su "Agile Business Management"?</p>
-				<p>Si vous êtes intéressé par ses autres travaux, vous trouverez plus d'informations sur:\n\n
+				<p>Si vous êtes intéressé par ses autres travaux, vous trouverez plus d\'informations sur:\n\n
 				<a href="http://theagiledirector.com/book">http://theagiledirector.com/book</a>
 				</p>
 			]]>
@@ -878,7 +878,7 @@
     <!-- Begin: Added/Updated in 5.1.0 -->
     
     <!--  Explanatory text for 'import' dialogue -->
-    <string name="import_books_blurb">Les livres de cette sauvegarde vont être importés. Choisissez une des 2 options au début de l'import, ou cliquez sur \'Retour\' pour annuler:</string>
+    <string name="import_books_blurb">Les livres de cette sauvegarde vont être importés. Choisissez une des 2 options au début de l\'import, ou cliquez sur \'Retour\' pour annuler:</string>
     <!-- Description of the 'import all books' option -->
     <string name="all_books_blurb">Tous les livres de la sauvegardes seront importés en meetant à ceux ceux existant et en ajoutant les nouveaux.</string>
     <!-- Menu text for the 'import/export new & changed' option -->
@@ -886,7 +886,7 @@
     <!-- Description of the 'import new & changed' option -->
     <string name="new_and_changed_books_blurb">Seul les livres récemment ajoutés ou mis à jour dans la sauvegarde seront mis à jour. Cette option est utile lors de la synchronisation de 2 appareils.</string>
     <!-- Descriptive text associated with import options not available with older archives -->
-    <string name="old_archive_blurb">Cette option n'est pas supportée par les anciennes sauvegardes.</string>
+    <string name="old_archive_blurb">Cette option n\'est pas supportée par les anciennes sauvegardes.</string>
     <!-- Part of the progress message displayed when importing books -->
     <string name="n_created_m_updated">%1$s ajoutés, %2$s mis à jour</string>
 
@@ -921,7 +921,7 @@
     <string name="preferences_blurb">Paramètres et préférences (Style de liste personnel)</string>
     
     <!-- Explanatory note for export date (not yet implemented) -->
-    <string name="export_advanced_date_blurb">Definissez la date à prendre en compte pour l'archivage des livres (optionnel):</string>
+    <string name="export_advanced_date_blurb">Definissez la date à prendre en compte pour l\'archivage des livres (optionnel):</string>
     
     <!-- Explanatory note for export date (not yet implemented) -->
     <string name="all_books_added_or_updated_since">Tous les livres ajoutés ou mis à jour depuis le:</string>
@@ -932,7 +932,7 @@
     <plurals
         name="n_books">
         <item quantity="zero">Aucun livre</item>
-        <item quantity="one">1 livre</item>
+        <item quantity="one">%1$s livre</item>
         <item quantity="other">%1$s livres</item>
     </plurals>
 
@@ -940,7 +940,7 @@
     <plurals
         name="n_covers">
         <item quantity="zero">Aucune couverture</item>
-        <item quantity="one">1 couverture</item>
+        <item quantity="one">%1$s couverture</item>
         <item quantity="other">%1$s couvertures</item>
     </plurals>
 
@@ -956,9 +956,9 @@
 				* Traduction en italien (Eugenio Davolio)\n\n
 				* Traduction en espagnol (José M. Galdo)\n\n
 				* Traduction en turque (Emir Sarı)\n\n
-				* Possibilité de sauvegarder les livres ajoutés ou mis ç jour récemment et d'exclure les couvertures (ou les livres)\n\n
+				* Possibilité de sauvegarder les livres ajoutés ou mis ç jour récemment et d\'exclure les couvertures (ou les livres)\n\n
 				* Amélioration de la taille des miniatures pour les écrans haute définition\n\n
-				* Ajout d'une option pour voir les livres par Auteur/series sur Amazon\n\n
+				* Ajout d\'une option pour voir les livres par Auteur/series sur Amazon\n\n
 				* Correction de bogues mineures\n\n
 			</p>
 		]]>
@@ -972,7 +972,7 @@
     <string name="amazon_books_by_author_in_series">Livres par auteur/serie</string>
     
     <!-- Hint text displayed when user enters the book listw -->
-    <string name="hint_book_list">Cliquez sur un livre vous montrera les détails du livre, un appui long sur un livre dans la liste vous donnera d'autres options.</string>
+    <string name="hint_book_list">Cliquez sur un livre vous montrera les détails du livre, un appui long sur un livre dans la liste vous donnera d\'autres options.</string>
 
     <!-- Preference VALUE, displayed in a preference activity -->
     <string name="zxing_scanner">Zxing Scanner</string>

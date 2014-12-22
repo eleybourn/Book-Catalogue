@@ -956,7 +956,7 @@
    <p><b>5.1.0 sürümündeki yenilikler</b>\n\n
    * İtalyanca çeviri (Eugenio Davolio)\n\n
    * İspanyolca çeviri (José M. Galdo)\n\n
-   * Türkçe çeviri (Emir Sarý)\n\n
+   * Türkçe çeviri (Emir Sarı)\n\n
    * Yalnıca yeni eklenen/güncellenen betikleri arşivleme ve kapak görsellerini (veya betikleri) içerme seçeneği\n\n
    * Yüksek belirginlikli ekranlar için daha iyi ufak resim boyutu\n\n
    * Betikleri Amazon\'daki yazarlara/dizilere göre gösterme desteği\n\n
@@ -971,8 +971,15 @@
    <!-- Menu item -->
    <string name="amazon_books_by_author_in_series">Yazara/diziye göre betikler</string>
    <!-- Hint text displayed when user enters the book listw -->
-   <string name="hint_book_list">Bir betiğin üzerine tıklamak betik ayrıntılarını gösterir, uzun basılı tutmak daha fazla seçeneğin olduğu bir dizelge verir.</string>
+   <string name="hint_book_list">Bir betiğin üzerine dokunmak betik ayrıntılarını gösterir, uzun basılı tutmak daha fazla seçeneğin olduğu bir dizelge verir.</string>
    <!-- TRANLATORS NOTE: I HAVE UPDATED THE new_in_510, above! Sorry. -->
+
+   <!-- Preference VALUE, displayed in a preference activity -->
+   <string name="zxing_scanner">Zxing Tarayıcı</string>
+   <!-- Heading in 'about' dialog -->
+   <string name="special_thanks_label">Teşekkürlerimizle</string>
+   <!-- Credits in the 'about' dialog -->
+   <string name="translators_blurb">Betik Kataloğu birçok kişinin emeğinin ürünü olan bir yazılım. Burada gönüllü çevirmenlerimizin katkılarını belirtmeden olmaz; onların çabaları olmadan bu kadar fazla kişiye ulaşamazdık. Bu güzel insanlar: Eugenio Davolio, José M. Galdo, Imkal, Gideon van Melle, Emir Sarı, Nick Silin ve Robert Wetzlmayr (eğer unuttuğumuz birisi var ise lütfen belirtin).</string>
    <!-- End: Added/Updated in 5.1.0 -->
    <!-- Begin: Added/Updated in [Next Version] -->
    <!-- End: Added/Updated in [Next Version] -->

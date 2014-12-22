@@ -1020,7 +1020,7 @@ public class BooklistBuilder {
 			if(!searchText.equals("")) {
 				if (!where.equals(""))
 					where += " and ";
-				where += "(" + TBL_BOOKS.dot(DOM_ID) + " in (select docid from " + TBL_BOOKS_FTS + " where " + TBL_BOOKS_FTS + " match '" + encodeString(searchText) + "'))";
+				where += "(" + TBL_BOOKS.dot(DOM_ID) + " in (select docid from " + TBL_BOOKS_FTS + " where " + TBL_BOOKS_FTS + " match '" + encodeString(CatalogueDBAdapter.cleanupFtsCriterion(searchText)) + "'))";
 			}
 	
 			// Add support for book filter: READ

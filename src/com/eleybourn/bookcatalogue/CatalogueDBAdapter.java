@@ -5987,8 +5987,55 @@ public class CatalogueDBAdapter {
 	 * @param s		Search criteria to clean
 	 * @return		Clean string
 	 */
-	private String cleanupFtsCriterion(String s) {
-		return s.replace("'", " ").replace("\"", " ").trim();
+	public static String cleanupFtsCriterion(String s) {
+		return removePunctuation(s.trim()); // s.replace("'", " ").replace("\"", " ").trim());
+	}
+
+	/**
+	 * Remove punctuation from the search string to TRY to match the tokenizer. The only punctuation we
+	 * allow is a hypen preceded by a space. Everything else is translated to a space.
+	 * 
+	 * @param search	Input search string
+	 *
+	 * @return			Cleaned up string
+	 */
+	private static String removePunctuation(String search) {
+		if (search.length() <= 1)
+			return search;
+
+		// Output bufgfer
+		final StringBuilder out = new StringBuilder();
+		// Array (convenience)
+		final char[] chars = search.toCharArray();
+		// Cached length
+		final int len = chars.length;
+		// Initial position
+		int pos = 0;
+		// Dummy 'previous' character
+		char prev = ' ';
+		// Loop over array
+		while(pos < len) {
+			final char curr = chars[pos];
+			// If current is letter, digit, or whitespace...use it.
+			if (Character.isLetterOrDigit(curr) || Character.isWhitespace(curr)) {
+				out.append(curr);
+			} else if(curr == '-') {
+				// Handle the possible negation
+				if (Character.isWhitespace(prev)) {
+					// Only allow negations if preceded by white space
+					out.append(curr);
+				} else {
+					// Treat as punctuation; ignore
+					out.append(' ');
+				}
+			} else {
+				// Punctuation; ignore
+				out.append(' ');				
+			}
+			prev = curr;
+			pos++;
+		}
+		return out.toString();
 	}
 
 	/**

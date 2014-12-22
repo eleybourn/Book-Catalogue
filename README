@@ -41,6 +41,15 @@ Features include;
   case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+new in 5.1.0
+* Italian translation (Eugenio Davolio)
+* Spanish translation (José M. Galdo)
+* Turkish translations (Emir Sari)
+* Ability to archive only new/updated books and to exclude covers (or books)
+* Better thumbnail size in lists for high density screens
+* Added options to see books by author/series at Amazon
+* Many bug fixes
+
 new in 5.0.5
 * Style 'Added date' is now in descending order for Android 2.2+
 * Performance improvements for Android 2.2+

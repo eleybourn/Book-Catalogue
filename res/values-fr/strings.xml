@@ -948,7 +948,7 @@
     <string name="a_comma_b">%1$s, %2$s</string>
     
     <!-- Short progress message -->
-    <string name="searching_directory_ellipsis">Recherche dans le catalogue&#8230;</string>
+    <string name="searching_directory_ellipsis">Recherche dans le répertoire &#8230;</string>
 
     <string name="new_in_510">
 		<![CDATA[
@@ -976,6 +976,10 @@
 
     <!-- Preference VALUE, displayed in a preference activity -->
     <string name="zxing_scanner">Zxing Scanner</string>
-    
+     <!-- Heading in 'about' dialog -->
+    <string name="special_thanks_label">Remerciements particuliers </string>
+    <!-- Credits in the 'about' dialog -->
+    <string name="translators_blurb">BookCatalogue est le résultat de l'effort de beaucoup de personnes, et n'aurait pas une diffusion et une utilisation aussi large sans l'aide de nos généreux traducteurs: Eugenio Davolio, José M. Galdo, Imkal, Gideon van Melle, Emir Sarı, Nick Silin et Robert Wetzlmayr (Si j'ai oublié quelqu'un, faites-le nous savoir).</string>
+
     <!-- End: Added/Updated in 5.1.0 -->
 </resources>

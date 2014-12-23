@@ -84,6 +84,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.eleybourn.bookcatalogue.Author;
@@ -94,6 +95,7 @@ import com.eleybourn.bookcatalogue.LibraryThingManager;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.Series;
 import com.eleybourn.bookcatalogue.ThumbnailCacheWriterTask;
+import com.eleybourn.bookcatalogue.amazon.AmazonUtils;
 import com.eleybourn.bookcatalogue.database.CoversDbHelper;
 import com.eleybourn.bookcatalogue.dialogs.PartialDatePickerFragment;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
@@ -2117,32 +2119,20 @@ public class Utils {
 	}
 
 	public static void openAmazonSearchPage(Activity context, String author, String series) {
-		String baseUrl = "http://www.amazon.com/gp/search?index=books&tag=philipwarneri-20&tracking_id=philipwarneri-20";
-		String extra = "";
-		// http://www.amazon.com/gp/search?index=books&field-author=steven+a.+mckay&field-keywords=the+forest+lord
-		if (author != null && !author.trim().equals("")) {
-			author.replaceAll("\\.,+"," ");
-			author.replaceAll(" *","+");
-			try {
-				extra += "&field-author=" + URLEncoder.encode(author, "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				Logger.logError(e, "Unable to add author to URL");
-				return;
-			}
-		}
-		if (series != null && !series.trim().equals("")) {
-			series.replaceAll("\\.,+"," ");
-			series.replaceAll(" *","+");
-			try {
-				extra += "&field-keywords=" + URLEncoder.encode(series, "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				Logger.logError(e, "Unable to add series to URL");
-				return;
-			}
-		}
-		if (extra != null && !extra.trim().equals("")) {
-			Intent loadweb = new Intent(Intent.ACTION_VIEW, Uri.parse(baseUrl + extra));
-			context.startActivity(loadweb); 			
+		
+		try {
+			AmazonUtils.openLink(context, author, series);
+		} catch(Exception ae) {
+			// An Amazon error should not crash the app
+			Logger.logError(ae, "Unable to call the Amazon API");
+			Toast.makeText(context, R.string.unexpected_error, Toast.LENGTH_LONG).show();
+			// This code works, but Amazon have a nasty tendency to cancel Associate IDs...
+			//String baseUrl = "http://www.amazon.com/gp/search?index=books&tag=philipwarneri-20&tracking_id=philipwarner-20";
+			//String extra = AmazonUtils.buildSearchArgs(author, series);
+			//if (extra != null && !extra.trim().equals("")) {
+			//	Intent loadweb = new Intent(Intent.ACTION_VIEW, Uri.parse(baseUrl + extra));
+			//	context.startActivity(loadweb); 			
+			//}			
 		}
 		return;
 	}

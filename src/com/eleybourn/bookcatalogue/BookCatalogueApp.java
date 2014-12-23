@@ -47,7 +47,10 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 
+import com.amazon.device.associates.AssociatesAPI;
+import com.eleybourn.bookcatalogue.amazon.AmazonAppKey;
 import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
+import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Terminator;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
@@ -176,6 +179,14 @@ public class BookCatalogueApp extends Application {
 					db.acquireReference();
 			}
 			dbh.close();
+			
+			try {
+				// Init Amazon API
+				AssociatesAPI.initialize(new AssociatesAPI.Config(AmazonAppKey.KEY, this));				
+			} catch (Exception e) {
+				// An Amazon error should not crash the app
+				Logger.logError(e, "Unable to initialize Amazon API");
+			}
 		}
 	}
 

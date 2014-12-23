@@ -4,14 +4,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
 import android.webkit.WebView;
 
 import com.amazon.device.associates.AssociatesAPI;
 import com.amazon.device.associates.LinkService;
 import com.amazon.device.associates.NotInitializedException;
-import com.amazon.device.associates.OpenRetailPageRequest;
 import com.amazon.device.associates.OpenSearchPageRequest;
 import com.eleybourn.bookcatalogue.utils.Logger;
 

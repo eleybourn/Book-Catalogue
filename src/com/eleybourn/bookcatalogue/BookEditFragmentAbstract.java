@@ -220,7 +220,7 @@ public abstract class BookEditFragmentAbstract extends BookCatalogueFragment imp
 	private String getSeriesFromBook() {
 		ArrayList<Series> list = mEditManager.getBookData().getSeriesList();
 		if (list.size() > 0)
-			return list.get(0).getDisplayName();
+			return list.get(0).name;
 		else
 			return null;
 	}

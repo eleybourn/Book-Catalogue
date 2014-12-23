@@ -179,14 +179,6 @@ public class BookCatalogueApp extends Application {
 					db.acquireReference();
 			}
 			dbh.close();
-			
-			try {
-				// Init Amazon API
-				AssociatesAPI.initialize(new AssociatesAPI.Config(AmazonAppKey.KEY, this));				
-			} catch (Exception e) {
-				// An Amazon error should not crash the app
-				Logger.logError(e, "Unable to initialize Amazon API");
-			}
 		}
 	}
 

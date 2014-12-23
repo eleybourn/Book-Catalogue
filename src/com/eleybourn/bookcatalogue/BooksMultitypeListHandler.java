@@ -902,11 +902,11 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 	private String getSeriesFromRow(CatalogueDBAdapter db, BooklistRowView rowView) {
 		String series = null;
 		if (rowView.hasSeriesId() && rowView.getSeriesId() > 0) {
-			series = db.getSeriesById(rowView.getSeriesId()).getDisplayName();
+			series = db.getSeriesById(rowView.getSeriesId()).name;
 		} else if (rowView.getKind() == RowKinds.ROW_KIND_BOOK) {
 			ArrayList<Series> seriess = db.getBookSeriesList(rowView.getBookId());
 			if (seriess != null && seriess.size() > 0)
-				series = seriess.get(0).getDisplayName();
+				series = seriess.get(0).name;
 		}		
 		return series;
 	}

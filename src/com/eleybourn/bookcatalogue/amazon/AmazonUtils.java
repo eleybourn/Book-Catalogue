@@ -27,6 +27,14 @@ public class AmazonUtils {
 	public static String AMAZON_TAG = "bookcatalogue-20";
 
 	public static void openLink(Activity context, String author, String series) {
+		try {
+			// Init Amazon API
+			AssociatesAPI.initialize(new AssociatesAPI.Config(AmazonAppKey.KEY, context));				
+		} catch (Exception e) {
+			// An Amazon error should not crash the app
+			Logger.logError(e, "Unable to initialize Amazon API");
+		}
+
 		WebView wv = new WebView(context);
 
 		if (author == null)

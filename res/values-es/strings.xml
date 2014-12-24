@@ -9,10 +9,10 @@
 	<string name="title">Título</string>
 	<string name="isbn">ISBN</string>
 	<string name="publisher">Editorial</string>
-	<string name="date_published">Fecha publicación</string>
+	<string name="date_published">Fecha de publicación</string>
 	<string name="rating">Calificación</string>
 	<string name="bookshelf">Biblioteca</string>
-	<string name="read">¿Has leído este libro?</string>
+	<string name="read">Leído</string>
 	<string name="series">Serie</string>
 	<string name="pages">Páginas</string>
 	<string name="confirm_add">Añadir libro</string>
@@ -34,7 +34,7 @@
 	<string name="menu_bookshelf">Gestionar bibliotecas</string>
 	<string name="confirm_save_bs">Guardar biblioteca</string>
 	<string name="menu_delete_bs">Eliminar biblioteca</string>
-	<string name="delete_1st_bs">La primera biblioteca no se puede eliminar</string>
+	<string name="delete_1st_bs">La biblioteca predefinida no se puede eliminar</string>
 	<string name="bookshelf_label">Biblioteca: </string>
 	<string name="all_books">Todos los libros</string>
 	<string name="isbn_found">ISBN escaneado. Buscando en Internet.</string>
@@ -61,7 +61,7 @@
 	<string name="install_scan">Para poder escanear códigos de barras de ISBN debe instalar una aplicación de escaneo (Zxing o pic2shop). Seleccione una para instalarla, o Cancelar para salir.</string>
 	<string name="install_scan_title">Instalar Escáner de código de barras</string>
 	<string name="version_number">Versión</string>
-	<string name="donate">Si desea contribuir al desarrollo de esta aplicación puede realizar su aportación económica utilizando Amazon Wishlist o el botón de Paypal que figura más abajo. Al estar en Australia no puedo publicar una versión &quot;de pago&quot;. :-)</string>
+	<string name="donate">Si desea contribuir al desarrollo de esta aplicación puede realizar su aportación económica utilizando Amazon Wishlist o el botón de Paypal que figura más abajo. En Australia no se puede publicar una versión &quot;de pago&quot;. :-)</string>
 	<string name="unable_to_connect_amazon">No se ha podido conectar con Amazon</string>
 	<string name="upgrade_title">Desde la última actualización</string>
 	<string name="edit_book">Editar libro</string>
@@ -109,8 +109,8 @@
 	<string name="menu_delete_thumb">Eliminar portada</string>
 	<string name="help">Ayuda</string>
 	<string name="filler_help_text">La ayuda completa online para la aplicación estará disponible pronto.</string>
-	<string name="menu_manage_fields">Gestionar visibilidad de campos</string>
-	<string name="manage_fields_help">Los campos marcados serán visibles en las pantallas de Añadir y Editar libros. Los no marcados estarán ocultos.</string>
+	<string name="menu_manage_fields">Visibilidad de campos</string>
+	<string name="manage_fields_help">Los campos marcados serán visibles en las pantallas de Añadir y Editar libros. Los no marcados no se mostrarán.</string>
 	<string name="edit_book_anthology">Antologías</string>
 	<string name="amazon_wishlist">Amazon Wishlist</string>
 	<string name="same_author">Todos los libros de esta antología son del mismo autor</string>
@@ -130,10 +130,10 @@
 	<string name="menu_rotate_thumb_180">180 grados</string>
 	<string name="menu_zoom_thumb">Ampliar imagen</string>
 	<string name="help_title_nutshell">En pocas palabras</string>
-	<string name="signed">¿Está firmado este libro?</string>
+	<string name="signed">Firmado</string>
 	<string name="read_start">Fecha de inicio de lectura</string>
 	<string name="read_end">Fecha de fin de lectura</string>
-	<string name="location">Ubicación del libro</string>
+	<string name="location_of_book">Ubicación del libro</string>
 	<string name="duplicate_title">Libro duplicado</string>
 	<string name="duplicate_book_title">Libro duplicado</string>
 	<string name="duplicate_book_message">El libro que intenta añadir ya está en la base de datos. ¿Desea añadir otra copia?</string>
@@ -292,15 +292,15 @@
     <string name="goodreads_label">Goodreads</string>
     <string name="goodreads_auth_blurb_part1">goodreads es un sitio web cuya misión es "ayudar a la gente a encontrar y compartir los libros que les gustan". 
     										Disponen de una amplia base de datos de libros y comentarios, y si eres un usuario registrado de goodreads, 
-    										BookCatalogue puede exportar tus libros, estantes y comentarios a goodreads e importar tus libros, 
-    										estantes y comentarios de goodreads. BookCatalogue es una aplicación independiente, y no
+    										BookCatalogue puede exportar sus libros, bibliotecas y comentarios a goodreads e importar sus libros, 
+    										bibliotecas y comentarios de goodreads. BookCatalogue es una aplicación independiente, y no
     										necesita goodreads, pero si esta usted interesado se puede registrar en:</string>
     <string name="goodreads_auth_blurb_part2">Una vez se haya registrado, o si ya es usuario de goodreads, puede autorizar el acceso de BookCatalogue 
     										a sus datos de goodreads pulsando sobre el botón siguiente. Le llevará a una página web
     										en la que tendrá que acceder a goodreads para autorizar esta aplicación. Nosotros nunca veremos
     										su contraseña, y podrá desactivar el acceso desde el sitio web de goodreads. Debido a la imprevisibilidad
     										de la web, puede terminar en una página en blanco. En ese caso, pulse el botón Atrás de su navegador para volver aquí.</string>
-    <string name="goodreads_auth_blurb_part3">Pero recuerde&#8230;que no es necesario hacer nada de esto: BookCatalogue funciona perfectamente sin ello!</string>
+    <string name="goodreads_auth_blurb_part3">Pero recuerde&#8230;que no es necesario hacer nada de esto: BookCatalogue funciona perfectamente sin ello.</string>
     <string name="goodreads_url">http://www.goodreads.com</string>
     <string name="authorize_access">Autorizar acceso</string>
     <string name="authorize_access_already_auth">Parece que usted ya había autorizado esta aplicación. Todas las funciones de goodreads deberían estar ya disponibles</string>
@@ -383,7 +383,7 @@
     <string name="empty_with_brackets">(vacío)</string>
     <string name="navigator">Navegador</string>
 
-    <string name="booklist_preferences">Preferencias para la lista de libros</string>
+    <string name="booklist_preferences">Preferencias para listas de libros</string>
     <string name="extra_book_details">Detalles adicionales</string>
     <string name="general">General</string>
     <string name="bookshelves">Biblioteca</string>
@@ -426,13 +426,13 @@
     <string name="hint_booklist_style_properties">Puede utilizar esta opción para configurar las características de un determinado estilo de listado.
     										\n\nPuede cambiar el nombre, editar los grupos para cambiar la jerarquía y modificar otros parámetros para
     										configurar un estilo que le resulte útil.
-    										\n\nTambién se pueden utilizar \'Book Filters\' para modificar la selección de libros que se mostrarán en
+    										\n\nTambién se pueden utilizar \'Filtrar libros\' para modificar la selección de libros que se mostrarán en
     										el listado, por ejemplo, para mostrar únicamente libros no leídos.
 </string>
     <string name="hint_booklist_global_properties">Puede utilizar esta opción para configurar las características por defecto de todos los estilos de listados de libros.
     										\n\nLa mayoría de las propiedades se pueden modificar para cada estilo individual, pero los valores por defecto se
     										definen aquí.
-    										\n\nPuede cambiar el fondo, la forma en que los listados se muestran al arrancar, y modificar otros parámetros
+    										\n\nPuede cambiar el fondo, la forma en que los listados se muestran de inicio, y modificar otros parámetros
     										que se aplicarán a todos sus estilos cuando sea posible.
     										\n\nTambién puede editar desde aquí el menú de estilos, y los propios estilos.
 </string>
@@ -445,12 +445,12 @@
     <string name="select_unread_only">Seleccionar sólo libros no leídos</string>
     <string name="extra_filters">Filtros adicionales</string>
     <string name="new_style">Nuevo estilo</string>
-    <string name="select_based_on_read_status">Seleccionar en función del estado \'Read\'</string>
+    <string name="select_based_on_read_status">Seleccionar en función del estado \'Leído\'</string>
     <string name="books_with_multiple_authors">Libros con varios autores</string>
     <string name="books_in_multiple_series">Libros en varias series</string>
     <string name="use_default_setting">Utilizar configuración por defecto</string>
     <string name="show_book_under_each_thing">Bajo cada %1$s</string>
-    <string name="show_book_under_primary_thing">Sólo bajo %1$s primarios</string>
+    <string name="show_book_under_primary_thing">Sólo bajo primer %1$s</string>
     <string name="format_of_author_names">Formato para nombres de autor</string>
     <string name="given_name_first_eg">Nombre primero, por ejemplo \'Antonio García\'</string>
     <string name="family_name_first_eg">Apellido primero, por ejemplo \'García, Antonio\'</string>
@@ -476,7 +476,7 @@
     <string name="paypal_donation">Donación PayPal</string>
     <string name="compact">Compacto</string>
     <string name="user_defined">Definido por el usuario</string>
-    <string name="builtin">Incluido</string>
+    <string name="builtin">Predefinido</string>
     <string name="sort_unread">No leídos (Autor/Serie)</string>
     <string name="import_all_from_goodreads">Importar todo de goodreads</string>
     <string name="requested_task_is_already_queued">La tarea solicitada ya está en la cola</string>
@@ -538,15 +538,15 @@
     <string name="more_than_one_export_file_blah">Se ha encontrado más de un archivo exportado; por favor, seleccione el archivo que desea importar de la lista siguiente</string>
     <string name="problem_starting_import_arg">Ha habido un problema con la importación: %1$s</string>
     <string name="hint_booklist_style_menu">Esta opción le permite seleccionar el estilo de los listados. 
-    								\n\nTambién puede modificar este menú, así como crear sus propios estilos de listado, seleccionando \'Customize\' al final de la lista.</string>
+    								\n\nTambién puede modificar este menú, así como crear sus propios estilos de listado, seleccionando \'Configurar\' al final de la lista.</string>
     <string name="menu_edit_format">Editar Formato&#8230;</string>
     <string name="edit_format_name">Editar Nombre del Formato</string>
     <string name="name_can_not_be_blank">El nombre no puede ser blanco</string>
     <string name="export_starting_ellipsis">Empezando exportación&#8230;</string>
-    <string name="resizing_cover_thumbnails">Redimensionando miniaturas de portadas</string>
+    <string name="resizing_cover_thumbnails">Redimensionado de miniaturas</string>
     <string name="resize_each_time">Redimensionar cada vez que se necesitan (se utiliza menos almacenamiento, el desplazamiento será más lento)</string>
     <string name="cache_resized_thumbnails_for_later_use">Miniaturas redimensionadas en caché (usa más almacenamiento, desplazamiento más rápido)</string>
-    <string name="generating_cover_thumbnails">Generando miniaturas de portadas</string>
+    <string name="generating_cover_thumbnails">Generación de miniaturas</string>
     <string name="use_background_thread">Usar hilo de fondo (desplazamiento más rápido, las imágenes pueden retrasarse)</string>
     <string name="generate_immediately">Generar inmediatamente (desplazamiento más lento, las imágenes se muestran inmediatamente)</string>
     <string name="sort_and_style_ellipsis">Estilo de &amp; ordenación&#8230;</string>
@@ -717,9 +717,9 @@ y puede editar el libro utilizando el menú de opciones.
     <string name="connecting_to_web_site">Conectando con el sitio web&#8230;</string>
 
     <!-- Admin option to import -->
-    <string name="backup_to_archive">Backup a Fichero</string>
+    <string name="backup_to_archive">Backup a fichero</string>
     <!-- Admin option to import -->
-    <string name="import_from_archive">Importar de Fichero</string>
+    <string name="import_from_archive">Importar de fichero</string>
 
     <!-- Hint displayed when aCatalogue Backup is done -->
     <string name="archive_complete_details">Se ha creado un fichero de %3$s llamado %2$s en el directorio \"%1$s\" de su tarjeta SD.
@@ -996,7 +996,7 @@ y puede editar el libro utilizando el menú de opciones.
     <string name="special_thanks_label">Agradecimientos</string>
     
     <!-- Credits in the 'about' dialog -->
-    <string name="translators_blurb">BookCatalogue es fruto del esfuerzo de mucha gente, y no tendría un uso tan extendido sin la generosa aportación de nuestros traductores (voluntarios): Eugenio Davolio, José M. Galdo, Imkal, Gideon van Melle, Emir Sarı, Nick Silin y Robert Wetzlmayr (si nos hemos olvidado de alguien, por favor, díganoslo).</string>
+    <string name="translators_blurb">BookCatalogue es fruto del esfuerzo de muchas personas, y no tendría un uso tan extendido sin la generosa aportación de nuestros traductores (voluntarios): Eugenio Davolio, José M. Galdo, Imkal, Gideon van Melle, Emir Sarı, Nick Silin y Robert Wetzlmayr (si nos hemos olvidado de alguien, por favor, díganoslo).</string>
 
     <!-- End: Added/Updated in 5.1.0 -->
 

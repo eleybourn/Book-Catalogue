@@ -5982,24 +5982,17 @@ public class CatalogueDBAdapter {
 	/**
 	 * Cleanup a search string to remove all quotes etc.
 	 * 
-	 * TODO: Consider adding a '*' to the end of all words. Or make it an option.
+	 * Remove punctuation from the search string to TRY to match the tokenizer. The only punctuation we
+	 * allow is a hypen preceded by a space. Everything else is translated to a space.
+	 * 
+	 * TODO: Consider making '*' to the end of all words a preference item.
 	 * 
 	 * @param s		Search criteria to clean
 	 * @return		Clean string
 	 */
-	public static String cleanupFtsCriterion(String s) {
-		return removePunctuation(s.trim()); // s.replace("'", " ").replace("\"", " ").trim());
-	}
+	public static String cleanupFtsCriterion(String search) {
+		//return s.replace("'", " ").replace("\"", " ").trim();
 
-	/**
-	 * Remove punctuation from the search string to TRY to match the tokenizer. The only punctuation we
-	 * allow is a hypen preceded by a space. Everything else is translated to a space.
-	 * 
-	 * @param search	Input search string
-	 *
-	 * @return			Cleaned up string
-	 */
-	private static String removePunctuation(String search) {
 		if (search.length() <= 1)
 			return search;
 
@@ -6013,27 +6006,37 @@ public class CatalogueDBAdapter {
 		int pos = 0;
 		// Dummy 'previous' character
 		char prev = ' ';
+
 		// Loop over array
 		while(pos < len) {
-			final char curr = chars[pos];
-			// If current is letter, digit, or whitespace...use it.
-			if (Character.isLetterOrDigit(curr) || Character.isWhitespace(curr)) {
+			char curr = chars[pos];
+			// If current is letter or ...use it.
+			if (Character.isLetterOrDigit(curr)) {
 				out.append(curr);
-			} else if(curr == '-') {
-				// Handle the possible negation
-				if (Character.isWhitespace(prev)) {
-					// Only allow negations if preceded by white space
-					out.append(curr);
-				} else {
-					// Treat as punctuation; ignore
+			} else if (curr == '-' && Character.isWhitespace(prev)) {
+				// Allow negation if preceded by space
+				out.append(curr);
+			} else {
+				// Eveything else is whitespace
+				curr = ' ';
+				if (!Character.isWhitespace(prev)) {
+					// If prev character was non-ws, and not negation, make wildcard
+					if (prev != '-') {
+						// Make every token a wildcard
+						// TODO: Make this a preference
+						out.append('*');
+					}
+					// Append a whitespace only when last char was not a whitespace
 					out.append(' ');
 				}
-			} else {
-				// Punctuation; ignore
-				out.append(' ');				
 			}
 			prev = curr;
 			pos++;
+		}
+		if (!Character.isWhitespace(prev) && (prev != '-')) {
+			// Make every token a wildcard
+			// TODO: Make this a preference
+			out.append('*');			
 		}
 		return out.toString();
 	}

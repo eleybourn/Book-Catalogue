@@ -37,10 +37,8 @@ public class AmazonUtils {
 
 		WebView wv = new WebView(context);
 
-		if (author == null)
-			author = "";
-		if (series == null)
-			series = "";
+		author = cleanupSearchString(author);
+		series = cleanupSearchString(series);
 
 		try {
 			LinkService linkService = AssociatesAPI.getLinkService();
@@ -94,4 +92,23 @@ public class AmazonUtils {
 		
 	}
 	
+	private static String cleanupSearchString(String search) {
+		if (search == null)
+			return "";
+
+		StringBuilder out = new StringBuilder(search.length());
+		char prev = ' ';
+		for(char curr: search.toCharArray()) {
+			if (Character.isLetterOrDigit(curr) ) {
+				out.append(curr);
+			} else {
+				curr = ' ';
+				if (!Character.isWhitespace(prev)) {
+					out.append(curr);
+				}
+			}
+			prev = curr;
+		}
+		return out.toString();
+	}
 }

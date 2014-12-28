@@ -110,18 +110,19 @@ public class SearchGoogleBooksEntryHandler extends DefaultHandler {
 	private Bundle mValues;
 	private static boolean mFetchThumbnail;
 
-	public static String ID = "id";
-	public static String TOTALRESULTS = "totalResults";
-	public static String ENTRY = "entry";
-	public static String AUTHOR = "creator";
-	public static String TITLE = "title";
-	public static String ISBN = "identifier";
-	public static String DATE_PUBLISHED = "date";
-	public static String PUBLISHER = "publisher";
-	public static String PAGES = "format";
-	public static String THUMBNAIL = "link";
-	public static String GENRE = "subject";
-	public static String DESCRIPTION = "description";
+	public static final String ID = "id";
+	public static final String TOTALRESULTS = "totalResults";
+	public static final String ENTRY = "entry";
+	public static final String AUTHOR = "creator";
+	public static final String TITLE = "title";
+	public static final String ISBN = "identifier";
+	public static final String DATE_PUBLISHED = "date";
+	public static final String PUBLISHER = "publisher";
+	public static final String PAGES = "format";
+	public static final String THUMBNAIL = "link";
+	public static final String GENRE = "subject";
+	public static final String DESCRIPTION = "description";
+	public static final String THUMBNAIL_KEY = "__thumbnail";
 
 	SearchGoogleBooksEntryHandler(Bundle values, boolean fetchThumbnail) {
 		mValues = values;
@@ -188,7 +189,7 @@ public class SearchGoogleBooksEntryHandler extends DefaultHandler {
 				String thumbnail = attributes.getValue("", "href");
 				String filename = Utils.saveThumbnailFromUrl(thumbnail, "_GB");
 				if (filename.length() > 0)
-					Utils.appendOrAdd(mValues, "__thumbnail", filename);
+					Utils.appendOrAdd(mValues, THUMBNAIL_KEY, filename);
 			}
 		}
 	}

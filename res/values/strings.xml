@@ -1000,6 +1000,10 @@ and you can edit the book via the options menu using the menu button or overflow
     <!-- End: Added/Updated in 5.1.0 -->
 
     <!-- Begin: Added/Updated in [Next Version] -->
+    
+    <!-- Name of the 'Default' bookshelf, created when app first installed. Needs to be short. -->
+    <string name="default_bookshelf_name">Default</string>
+
     <!-- End: Added/Updated in [Next Version] -->
 
     

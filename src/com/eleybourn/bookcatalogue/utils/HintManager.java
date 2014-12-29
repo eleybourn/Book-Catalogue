@@ -29,6 +29,11 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.SharedPreferences.Editor;
 import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.URLSpan;
 import android.text.util.Linkify;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -75,6 +80,7 @@ public class HintManager {
 		.add("hint_view_only_help", R.string.hint_view_only_help)
 		.add("hint_evan_book", R.string.hint_evan_book)
 		.add("hint_book_list", R.string.hint_book_list)
+		.add("hint_amazon_links_blurb", R.string.hint_amazon_links_blurb)
 		;
 
 	public static interface HintOwner {
@@ -85,15 +91,52 @@ public class HintManager {
 	public static void resetHints() {
 		Enumeration<Hint> hints = mHints.getHints();
 		while(hints.hasMoreElements()) {
-			hints.nextElement().setVisible(true);
+			Hint h = hints.nextElement();
+			h.setVisibility(true);
+			h.setHasBeenDisplayed(false);
 		}
 	}
 
+	public static boolean shouldBeShown(int hintStringId) {
+		final Hint h = mHints.getHint(hintStringId);
+		return h.shouldBeShown();
+	}
+	
+	/**
+	 * Linkify partial HTML. Linkify methods remove all spans before building links, this
+	 * method preserves them.
+	 * 
+	 * See: http://stackoverflow.com/questions/14538113/using-linkify-addlinks-combine-with-html-fromhtml
+	 * 
+	 * @param html			Partial HTML
+	 * @param linkifyMask	Linkify mask to use in Linkify.addLinks
+	 * 
+	 * @return				Spannable with all links
+	 */
+	public static Spannable linkifyHtml(String html, int linkifyMask) {
+		// Get the spannable HTML
+	    Spanned text = Html.fromHtml(html);
+	    // Save the span details for later restoration
+	    URLSpan[] currentSpans = text.getSpans(0, text.length(), URLSpan.class);
+
+	    // Build an empty spannable then add the links
+	    SpannableString buffer = new SpannableString(text);
+	    Linkify.addLinks(buffer, linkifyMask);
+
+	    // Add back the HTML spannables
+	    for (URLSpan span : currentSpans) {
+	        int end = text.getSpanEnd(span);
+	        int start = text.getSpanStart(span);
+	        buffer.setSpan(span, start, end, 0);
+	    }
+	    return buffer;
+	}
+
 	/** Display the passed hint, if the user has not disabled it */
-	public static boolean displayHint(Context context, int stringId, final Runnable postRun) {
+	public static boolean displayHint(Context context, int stringId, final Runnable postRun, Object... args) {
 		// Get the hint and return if it has been disabled.
 		final Hint h = mHints.getHint(stringId);
-		if (!h.isVisible()) {
+		if (!h.shouldBeShown()) {
 			if (postRun != null)
 				postRun.run();
 			return false;			
@@ -109,9 +152,14 @@ public class HintManager {
 		final Button ok = (Button)dialog.findViewById(R.id.confirm);
 
 		// Setup the views
-		msg.setText(Html.fromHtml(BookCatalogueApp.context.getResources().getString(stringId))); //stringId);
-		Linkify.addLinks(msg, Linkify.ALL);
-	
+		String hintText = BookCatalogueApp.context.getResources().getString(stringId, args);
+		msg.setText(linkifyHtml(hintText, Linkify.ALL));
+		// Automatically start a browser (or whatever)
+		msg.setMovementMethod(LinkMovementMethod.getInstance());
+
+		//msg.setText(Html.fromHtml(hintText)); //stringId);
+		//Linkify.addLinks(msg, Linkify.ALL);
+
 		dialog.setTitle(R.string.hint);
 
 		// Handle the 'OK' click
@@ -121,7 +169,7 @@ public class HintManager {
 				dialog.dismiss();
 				// Disable hint if checkbox checked
 				if (cb.isChecked()) {
-					h.setVisible(false);
+					h.setVisibility(false);
 				}
 			}
 		});
@@ -134,7 +182,9 @@ public class HintManager {
 			}
 		});
 
-		dialog.show();		
+		dialog.show();
+		h.setHasBeenDisplayed(true);
+
 		return true;
 	}
 	
@@ -198,6 +248,9 @@ public class HintManager {
 		/** String to display for this hint */
 		//public final int stringId;
 
+		/** Indicates that this hint was displayed already in this instance of the app */
+		public boolean mHasBeenDisplayed = false;
+
 		/**
 		 * Constructor
 		 * 
@@ -223,21 +276,32 @@ public class HintManager {
 		 * 
 		 * @param visible	Flag indicating future visibility
 		 */
-		public void setVisible(boolean visible) {
+		public void setVisibility(boolean visible) {
 			BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
 			Editor ed = prefs.edit();
 			String name = getFullPrefName();
 			ed.putBoolean(name, visible);
 			ed.commit();
 		}
+
 		/**
 		 * Check if this hint should be shown
 		 * 
 		 * @return
 		 */
-		public boolean isVisible() {
+		public boolean shouldBeShown() {
+			if (hasBeenDisplayed())
+				return false;
 			BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
 			return prefs.getBoolean(getFullPrefName(), true);
+		}
+
+		public boolean hasBeenDisplayed() {
+			return mHasBeenDisplayed;
+		}
+		
+		public void setHasBeenDisplayed(boolean hasBeenDisplayed) {
+			mHasBeenDisplayed = hasBeenDisplayed;
 		}
 	}
 }

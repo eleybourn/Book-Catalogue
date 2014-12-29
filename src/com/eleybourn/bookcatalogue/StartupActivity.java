@@ -61,7 +61,14 @@ public class StartupActivity extends Activity {
 	private static String PREF_AUTHOR_SERIES_FIXUP_REQUIRED = TAG + ".FAuthorSeriesFixupRequired";
 	
 	private static final String STATE_OPENED = "state_opened";
+	/** Number of times the app has been started */
+	private static final String PREF_START_COUNT = "Startup.StartCount";
+
+	/** Number of app startups between offers to backup */
 	private static final int BACKUP_PROMPT_WAIT = 5;
+	
+	/** Number of app startups between displaying the Amazon hint */
+	private static final int AMAZON_PROMPT_WAIT = 7;
 
 	/** Indicates the upgrade message has been shown */
 	private static boolean mUpgradeMessageShown = false;
@@ -79,6 +86,9 @@ public class StartupActivity extends Activity {
 	
 	/** Flag indicating an export is required after startup */
 	private boolean mExportRequired = false;
+
+	/** Flag indicating Amazon hint could be shown */
+	private static boolean mShowAmazonHint = false;
 
 	/** Database connection */
 	//CatalogueDBAdapter mDb = null;
@@ -279,6 +289,7 @@ public class StartupActivity extends Activity {
 	public void stage3Startup() {
 		BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
 		int opened = prefs.getInt(STATE_OPENED, BACKUP_PROMPT_WAIT);
+		int startCount = prefs.getInt(PREF_START_COUNT, 0) + 1;
 
 		Editor ed = prefs.edit();
 		if (opened == 0) {
@@ -286,9 +297,13 @@ public class StartupActivity extends Activity {
 		} else {
 			ed.putInt(STATE_OPENED, opened - 1);
 		}
-		ed.commit();			
+		ed.putInt(PREF_START_COUNT, startCount);
+		ed.commit();
 
-		
+		if ( ( startCount % AMAZON_PROMPT_WAIT) == 0) {
+			mShowAmazonHint = true;
+		}
+
 		mExportRequired = false;
 
 		if (opened == 0) {
@@ -425,4 +440,9 @@ public class StartupActivity extends Activity {
 	public static boolean hasBeenCalled() {
 		return mHasBeenCalled;
 	}
+	
+	public static boolean getShowAmazonHint() {
+		return true; //mShowAmazonHint;
+	}
+
 }

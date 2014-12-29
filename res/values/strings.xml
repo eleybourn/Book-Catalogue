@@ -999,10 +999,11 @@ and you can edit the book via the options menu using the menu button or overflow
 
     <!-- End: Added/Updated in 5.1.0 -->
 
-    <!-- Begin: Added/Updated in [Next Version] -->
-    
+    <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->
+
     <!-- Name of the 'Default' bookshelf, created when app first installed. Needs to be short. -->
     <string name="default_bookshelf_name">Default</string>
+    <string name="hint_amazon_links_blurb">If you like the app, you can support us by buying things from Amazon after following the &lt;i&gt;\"%1$s\"&lt;/i&gt;, &lt;i&gt;\"%2$s\"&lt;/i&gt; or &lt;i&gt;\"%3$s\"&lt;/i&gt; menu items when browsing your books.&lt;p&gt;You can also use the &lt;a href=""https://github.com/eleybourn/Book-Catalogue/wiki/Frequently-Asked-Questions-%%28FAQ%%29""&gt;links on our FAQ&lt;/a&gt; to navigate directly to Amazon or PayPal.</string>
 
     <!-- End: Added/Updated in [Next Version] -->
 

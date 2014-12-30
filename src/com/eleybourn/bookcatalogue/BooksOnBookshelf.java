@@ -251,7 +251,8 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 					HintManager.displayHint(this, R.string.hint_amazon_links_blurb, null, 
 							getString(R.string.amazon_books_by_author),
 							getString(R.string.amazon_books_in_series),
-							getString(R.string.amazon_books_by_author_in_series));						
+							getString(R.string.amazon_books_by_author_in_series),
+							getString(R.string.app_name));
 				}
 			}
 		} finally {

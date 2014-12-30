@@ -1,0 +1,195 @@
+@@ -52,7 +52,7 @@
+    <string name="import_data">Import Books</string>
+    <string name="import_alert">Warning. Importing data may update existing book records with new information if the uuid column is not present and the id in the import file is the same as an existing id. This is usually fine if you changed a field in an exported file. If you created a new book record, or are importing someone elses books, ensure the uuid field is present or the id field is blank.</string>
+    <string name="export_failed">ERROR: Export (to SDCard) of data failed. </string>
+    <string name="import_failed">ERROR: Import of data (from SDCard) failed. Is the file in the correct place?</string>
+    <string name="import_failed_is_location_correct">ERROR: Import of data (from SDCard) failed. Is the file in the correct place?</string>
+    <string name="search_title">Book Catalogue: Search Results</string>
+    <string name="results_found">Results Found</string>
+    <string name="administration_label">Administration Functions</string>
+@@ -447,22 +447,26 @@
+    										\n\nIf no styles are ticked, then all styles will be shown.
+    										\n\nIt is also possible to re-order the items by dragging the icon at the extreme right of each row.
+    										\n\nClicking anywhere else in a row will allow you to edit the details of a specific style (or clone it, if 
+    										it is a built-in style).
+</string>
+    										it is a built-in style).
+</string>
+    <string name="hint_booklist_style_groups">You can use this screen to modify the hiearchy of headings for a specific book list style.
+    										\n\nA green tick indicates the heading will be shown in the list, and a red cross indicates it will not be shown.
+    										Clicking on a green tick will turn it into a cross, and vice-versa.
+    										\n\nYou can re-order the hierarchy by dragging the icon at the extreme right of each row up or down.
+</string>
+    										\n\nYou can re-order the hierarchy by dragging the icon at the extreme right of each row up or down.
+</string>
+    <string name="hint_booklist_style_properties">You can use this screen to set the characteristics of a specific book list style.
+    										\n\nYou can change the name, edit the groupings to change the hierarchy, and adjust a variety of
+    										other settings to build a style that you find useful.
+    										\n\nIt is also possible to use \'Book Filters\' to modify the selection of books that will be displayed in
+    										the list. eg. to only retrieve books you have not read yet.
+</string>
+    										the list. eg. to only retrieve books you have not read yet.
+</string>
+    <string name="hint_booklist_global_properties">You can use this screen to set the default characteristics of all book list styles.
+    										\n\nMost properties can be overridden by individual styles, but the default values are
+    										defined here.
+    										\n\nYou can change the background, change how lists are displayed at startup, and adjust a variety of
+    										other settings that will be applied to all your styles when possible.
+    										\n\nYou can also edit the styles menu, and the styles themselves from here.
+</string>
+    										\n\nYou can also edit the styles menu, and the styles themselves from here.
+</string>
+    <string name="preferred_styles">Preferred styles</string>
+    <string name="edit_style_colon_name">Edit style: %1$s</string>
+    <string name="add_style">Add style</string>
+@@ -712,11 +716,13 @@
+
+    <!-- Hint text displayed when user enters the book listw -->
+    <string name="hint_view_only_book_details">When you click on an item in this list, you can now choose to go to non-editable book details view. 
+See "Other Preferences" for the relevant setting.
+</string>
+See "Other Preferences" for the relevant setting.
+</string>
+
+    <!-- Hint text displayed when user enters the 'read-only' book view -->
+    <string name="hint_view_only_help">This is the non-editable book details screen; you can fling/swipe left or right to navigate to other books, 
+and you can edit the book via the options menu using the menu button or overflow menu icon.
+</string>
+and you can edit the book via the options menu using the menu button or overflow menu icon.
+</string>
+
+    <!-- This is the heading of the 'Details' tab when editing a book. It needs to be short. "Book Details" is too long. -->
+    <string name="details">Details</string>
+@@ -752,7 +758,7 @@ and you can edit the book via the options menu using the menu button or overflow
+
+    <!-- Displayed in progress dialog when exporting covers -->
+    <string name="covers_progress">%1$s covers processed (%2$s missing)</string>
+    <!-- Heading in Admin activity -->
+    <!-- Heading in Admin activity and in 'Export' dialogue -->
+    <string name="advanced_options">Advanced Options</string>
+    <!-- Showed in progress dialog when an import starts -->
+    <string name="backing_up_ellipsis">Backing up&#8230;</string>
+@@ -887,8 +893,122 @@ and you can edit the book via the options menu using the menu button or overflow
+		]]>
+    </string>
+    <!-- End: Added/Updated in 5.0.8 -->
+
+	<!--  Note to Translators: don't bother translating strings until they get a version number. They are very much 'draft' versions -->
+    
+    <!-- Begin: Added/Updated in 5.0.9 -->
+    <string name="new_in_509">
+		<![CDATA[
+			<p><b>New in 5.0.9</b>\n\n
+				* Bug fix for Android 4.4 (KitKat)\n\n
+				* Dutch translation (Gideon van Melle)\n\n
+				* Other minor bug fixes
+			</p>
+		]]>
+    </string>
+
+	<string name="hint_evan_book">
+	    		<![CDATA[
+				<p>Did you know the original author of Book Catalogue (Evan Leybourn) has just published 
+				a book on Agile Business Management?</p>
+				<p>If you are interested in his other work, more information can be found at:\n\n
+				<a href="http://theagiledirector.com/book">http://theagiledirector.com/book</a>
+				</p>
+			]]>
+    </string>
+
+    <!-- End: Added/Updated in 5.0.9 -->
+
+    <!-- Begin: Added/Updated in [Next Version] -->
+    
+    <!--  Explanatory text for 'import' dialogue -->
+    <string name="import_books_blurb">The books in this archive will be imported. Click on one of two options to start the import, or press \'back\' to cancel:</string>
+    <!-- Description of the 'import all books' option -->
+    <string name="all_books_blurb">All books in the archive will be imported, updating existing books and adding new ones.</string>
+    <!-- Menu text for the 'import/export new & changed' option -->
+    <string name="new_and_changed_books">New and updated books</string>
+    <!-- Description of the 'import new & changed' option -->
+    <string name="new_and_changed_books_blurb">Only import books that are new, or which have been updated more recently in the archive. This is useful when synchronizing two devices.</string>
+    <!-- Descriptive text associated with import options not available with older archives -->
+    <string name="old_archive_blurb">This option is not supported for older archive versions.</string>
+    <!-- Part of the progress message displayed when importing books -->
+    <string name="n_created_m_updated">%1$s created, %2$s updated</string>
+
+    <!--  Explanatory text for 'export' dialogue -->
+    <string name="export_books_blurb">The books in your catalogue will be exported. Click on one of two options to start the export, or press \'back\' to cancel:</string>
+    <!-- Description of the 'import all books' option -->
+    <string name="export_all_books_blurb">All books in the catalogue will be exported to the archive.</string>
+    <!-- Description of the 'export new & changed' option -->
+    <string name="export_new_and_changed_books_blurb">Only export books that are new, or which have been updated since the last full backup. This is useful when synchronizing two devices.</string>
+    <!-- Part of the progress message displayed when exporting books -->
+    <string name="n_exported">%1$s exported</string>
+
+    <!-- Displayed in progress dialog when exporting covers in incremental mode -->
+    <string name="covers_progress_incr">%1$s covers processed (%2$s missing, %3$s skipped)</string>
+    
+    <!-- Explanatory note for 'export all' option -->
+    <string name="export_all_blurb">All books, covers, settings and custom styles will be exported to the archive.</string>
+    <!-- Explanatory note for 'advanced export' option -->
+    <string name="export_advanced_blurb">Select what will be exported to the archive.</string>
+    <!-- Introduction for 'advanced export' option -->
+    <string name="export_advanced_heading">Select what will be exported:</string>
+    
+    <!-- Text for button -->
+    <string name="book_details">Book details</string>
+    <!-- Brief descriptionn -->
+    <string name="book_details_blurb">The details of the books themselves</string>
+    <!-- Text for button -->
+    <string name="cover_images">Cover images</string>
+    <!-- Brief descriptionn -->
+    <string name="cover_images_blurb">Cover images for all selected books. Will make the export much larger.</string>
+    <!-- Brief descriptionn -->
+    <string name="preferences_blurb">Preferences and user-defined list styles</string>
+    
+    <!-- Explanatory note for export date (not yet implemented) -->
+    <string name="export_advanced_date_blurb">Optionally specify a date to use in selecting books and/or covers to export:</string>
+    
+    <!-- Explanatory note for export date (not yet implemented) -->
+    <string name="all_books_added_or_updated_since">All books added or updated since:</string>
+    <!-- Explanatory note for export data since last backup -->
+    <string name="all_books_added_or_updated_since_last_full_backup">All books added or updated since last full backup</string>
+
+    <!-- Short text for 'n books' -->
+    <plurals
+        name="n_books">
+        <item quantity="zero">no books</item>
+        <item quantity="one">1 book</item>
+        <item quantity="other">%1$s books</item>
+    </plurals>
+
+    <!-- Short text for 'n covers' -->
+    <plurals
+        name="n_covers">
+        <item quantity="zero">no covers</item>
+        <item quantity="one">1 cover</item>
+        <item quantity="other">%1$s covers</item>
+    </plurals>
+
+    <!-- Used for concatenating two strings, eg. "3 books, 2 covers" (probably only important on RTL languages)-->
+    <string name="a_comma_b">%1$s, %2$s</string>
+    
+    <!-- Short progress message -->
+    <string name="searching_directory_ellipsis">Searching directory&#8230;</string>
+
+    <string name="new_in_510">
+		<![CDATA[
+			<p><b>New in 5.1.0</b>\n\n
+				* Italian translation (Eugenio Davolio)\n\n
+				* Spanish tramslation (José M. Galdo)\n\n
+				* Turkish translations (bitigchi)\n\n
+				* Ability to archive only new/updated books and to exclude covers (or books)\n\n
+				* Better thumbnail size in lists for high density screens\n\n
+				* Other minor bug fixes\n\n
+			</p>
+		]]>
+    </string>
+    
+    <!-- End: Added/Updated in [Next Version] -->
+
+</resources> 
+    
+
+</resources>

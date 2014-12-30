@@ -36,12 +36,14 @@ import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_SERIE
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_SERIES_NUM;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_TITLE;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_TITLE_LETTER;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
+import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
@@ -215,9 +217,9 @@ public class BooklistRowView {
 			if (mLevel1Col < 0)
 				throw new RuntimeException("Column " + name + " not present in cursor");
 		}
-		return mCursor.getString(mLevel1Col);			
+		return formatRowGroup(0, mCursor.getString(mLevel1Col));
 	}
-	
+
 	/**
 	 * Get the text associated with the second-highest level group for the current item.
 	 */
@@ -232,11 +234,22 @@ public class BooklistRowView {
 			if (mLevel2Col < 0)
 				throw new RuntimeException("Column " + name + " not present in cursor");
 		}
-		String s = mCursor.getString(mLevel2Col);
+		return formatRowGroup(1, mCursor.getString(mLevel2Col));
+	}
 
-		switch(mBuilder.getStyle().getGroupAt(1).kind) {
+	/**
+	 * Perform any special formatting for a row group.
+	 * 
+	 * @param level		Level of the row group
+	 * @param s			Source value
+	 * @return			Formatted string
+	 */
+	private String formatRowGroup(int level, String s) {
+		switch(mBuilder.getStyle().getGroupAt(level).kind) {
 		case RowKinds.ROW_KIND_MONTH_ADDED:
 		case RowKinds.ROW_KIND_MONTH_PUBLISHED:
+		case RowKinds.ROW_KIND_MONTH_READ:
+		case RowKinds.ROW_KIND_UPDATE_MONTH:
 			try {
 				int i = Integer.parseInt(s);
 				// If valid, get the name
@@ -247,10 +260,23 @@ public class BooklistRowView {
 			} catch (Exception e) {
 			}
 			break;
+
+		case RowKinds.ROW_KIND_RATING:
+			try {
+				int i = Integer.parseInt(s);
+				// If valid, get the name
+				if (i >= 0 && i <= 5) {
+					Resources r = BookCatalogueApp.context.getResources();
+					s = r.getQuantityString(R.plurals.n_stars, i, i);
+				}				
+			} catch (Exception e) {
+			}
+			break;
+			
 		default:
 			break;
 		}
-		return s;				
+		return s;
 	}
 
 	/**

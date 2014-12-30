@@ -1006,10 +1006,38 @@ and you can edit the book via the options menu using the menu button or overflow
     <!-- A hint describing the benefit of folowing the Amazon links -->
     <string name="hint_amazon_links_blurb">&lt;p&gt;If you buy things from Amazon after selecting the &lt;i&gt;\"%1$s\"&lt;/i&gt;, &lt;i&gt;\"%2$s\"&lt;/i&gt; or &lt;i&gt;\"%3$s\"&lt;/i&gt; menu items, a proportion of the purchase price will be sent to the developers of %4$s.&lt;/p&gt;&lt;p&gt;You can also use the &lt;a href=""https://github.com/eleybourn/Book-Catalogue/wiki/Frequently-Asked-Questions-%%28FAQ%%29""&gt;links on our FAQ&lt;/a&gt; to navigate directly to Amazon or PayPal.&lt;/p&gt;</string>
 
+    <!-- Name of the new style grouping (needs to be short). -->
+    <string name="update_date">Update date</string>
+    <!-- Name of the new style grouping (needs to be short). -->
+    <string name="update_year">Update Year</string>
+        <!-- Name of the new style grouping (needs to be short). -->
+    <string name="update_month">Update Month</string>
+        <!-- Name of the new style grouping (needs to be short). -->
+    <string name="update_day">Update Day</string>
+
+    <!-- Short text for 'n stars' -->
+    <plurals
+        name="n_stars">
+        <item quantity="zero">%1$s stars</item>
+        <item quantity="one">%1$s star</item>
+        <item quantity="other">%1$s stars</item>
+    </plurals>
+
+    <string name="new_in_511">
+		<![CDATA[
+			<p><b>New in 5.1.1</b>\n\n
+				* Bug fixes\n\n
+				* New style: Group by last update date\n\n
+				* New style: Group by rating\n\n
+				* New style: Group by bookshelf name\n\n
+			</p>
+		]]>
+    </string>
+
     <!-- End: Added/Updated in 5.1.1 -->
 
     <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->
-    <!-- End: Added/Updated in [Next Version] -->
     
+    <!-- End: Added/Updated in [Next Version] -->
 
 </resources>

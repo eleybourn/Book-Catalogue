@@ -20,22 +20,12 @@
 
 package com.eleybourn.bookcatalogue;
 
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_AUTHOR;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_BOOK;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_FORMAT;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_GENRE;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_LANGUAGE;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_LOANED;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_LOCATION;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_MAX;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_PUBLISHER;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_READ_AND_UNREAD;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_SERIES;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_TITLE_LETTER;
+import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.*;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ADDED_DAY;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ADDED_MONTH;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ADDED_YEAR;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_AUTHOR_FORMATTED;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_BOOKSHELF_NAME;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_FORMAT;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_GENRE;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LANGUAGE;
@@ -44,17 +34,22 @@ import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LOCAT
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_PUBLICATION_MONTH;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_PUBLICATION_YEAR;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_PUBLISHER;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_RATING;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_READ_DAY;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_READ_MONTH;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_READ_STATUS;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_READ_YEAR;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_SERIES_NAME;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_TITLE_LETTER;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_UPDATE_DAY;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_UPDATE_MONTH;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_UPDATE_YEAR;
 
 import java.util.ArrayList;
 
 import net.philipwarner.taskqueue.QueueManager;
 import android.app.Activity;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -165,13 +160,27 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 		case RowKinds.ROW_KIND_YEAR_READ:
 			return new GenericStringHolder(rowView, DOM_READ_YEAR, R.string.empty_with_brackets);
 		case RowKinds.ROW_KIND_MONTH_READ:
-			return new GenericStringHolder(rowView, DOM_READ_MONTH, R.string.empty_with_brackets);
+			return new MonthHolder(rowView, DOM_READ_MONTH.name);
 		case RowKinds.ROW_KIND_DAY_READ:
 			return new GenericStringHolder(rowView, DOM_READ_DAY, R.string.empty_with_brackets);
 
 		case ROW_KIND_LOCATION:
 			return new GenericStringHolder(rowView, DOM_LOCATION, R.string.empty_with_brackets);
 
+		case RowKinds.ROW_KIND_UPDATE_YEAR:
+			return new GenericStringHolder(rowView, DOM_UPDATE_YEAR, R.string.empty_with_brackets);
+		case RowKinds.ROW_KIND_UPDATE_MONTH:
+			return new MonthHolder(rowView, DOM_UPDATE_MONTH.name);
+		case RowKinds.ROW_KIND_UPDATE_DAY:
+			return new GenericStringHolder(rowView, DOM_UPDATE_DAY, R.string.empty_with_brackets);
+
+		case ROW_KIND_BOOKSHELF:
+			return new GenericStringHolder(rowView, DOM_BOOKSHELF_NAME, R.string.empty_with_brackets);
+
+		case ROW_KIND_RATING:
+			return new RatingHolder(rowView, DOM_RATING.name);
+
+			
 		default:
 			throw new RuntimeException("Invalid row kind " + k);
 		}
@@ -662,6 +671,53 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 				if (i > 0 && i <= 12) {
 					// Create static formatter if necessary
 					s = Utils.getMonthName(i);
+				}
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			}
+			// Display whatever text we have
+			setText(text, s, R.string.unknown_uc, level);
+		}
+		@Override
+		public View newView(BooklistRowView rowView, LayoutInflater inflater, ViewGroup parent, final int level) {
+			return inflater.inflate(getDefaultLayoutId(level), parent, false);
+		}
+	}
+
+	/**
+	 * Holder for a row that displays a 'month'. This code turns a month number into a 
+	 * locale-based month name.
+	 * 
+	 * @author Philip Warner
+	 */
+	public static class RatingHolder extends BooklistHolder {
+		/** TextView for month name */
+		TextView text;
+		/** Source column name */
+		private final String mSource;
+		/** Source column number */
+		private int mSourceCol;
+		
+		public RatingHolder(BooklistRowView rowView, String source) {
+			mSource = source;
+			mSourceCol = rowView.getColumnIndex(mSource);
+		}
+
+		@Override
+		public void map(BooklistRowView rowView, View v) {
+			rowInfo = v.findViewById(R.id.row_info);
+			text = (TextView) v.findViewById(R.id.name);
+		}
+		@Override
+		public void set(BooklistRowView rowView, View v, final int level) {
+			// Get the month and try to format it.
+			String s = rowView.getString(mSourceCol);
+			try {
+				int i = (int)Float.parseFloat(s);
+				// If valid, get the name
+				if (i >= 0 && i <= 5) {
+					Resources r = BookCatalogueApp.context.getResources();
+					s = r.getQuantityString(R.plurals.n_stars, i, i);
 				}
 			} catch (Exception e) {
 				System.out.println(e.getMessage());

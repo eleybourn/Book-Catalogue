@@ -442,7 +442,7 @@ public class StartupActivity extends Activity {
 	}
 	
 	public static boolean getShowAmazonHint() {
-		return true; //mShowAmazonHint;
+		return mShowAmazonHint;
 	}
 
 }

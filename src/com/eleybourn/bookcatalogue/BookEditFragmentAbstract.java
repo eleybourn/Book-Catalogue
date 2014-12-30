@@ -36,6 +36,7 @@ import com.eleybourn.bookcatalogue.datamanager.DataEditor;
 import com.eleybourn.bookcatalogue.datamanager.DataManager;
 import com.eleybourn.bookcatalogue.utils.BookUtils;
 import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Based class for all fragments that appear in the BookEdit activity
@@ -126,32 +127,52 @@ public abstract class BookEditFragmentAbstract extends BookCatalogueFragment imp
 				.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 				;
 		}
+
+		boolean hasAuthor = mEditManager.getBookData().getAuthorList().size() > 0;
+		if (hasAuthor) {
+			MenuItem item = menu.add(0, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR, 0, R.string.amazon_books_by_author);
+			item.setIcon(R.drawable.ic_amazon_holo_dark);
+		}
+		
+		if (mEditManager.getBookData().getSeriesList().size() > 0) {
+			if (hasAuthor) {
+				MenuItem item = menu.add(0, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR_IN_SERIES, 0, R.string.amazon_books_by_author_in_series);
+				item.setIcon(R.drawable.ic_amazon_holo_dark);
+			}
+			{
+				MenuItem item = menu.add(0, R.id.MENU_AMAZON_BOOKS_IN_SERIES, 0, R.string.amazon_books_in_series);
+				item.setIcon(R.drawable.ic_amazon_holo_dark);
+			}			
+		}
 	}
 
 	/**
-	 * This will be called when a menu item is selected. A large switch statement to
-	 * call the appropriate functions (or other activities) 
+	 * This will be called when a menu item is selected. A large switch
+	 * statement to call the appropriate functions (or other activities)
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		final Long currRow = mEditManager.getBookData().getRowId();
 
 		try {
-			switch(item.getItemId()) {
+			switch (item.getItemId()) {
 			case THUMBNAIL_OPTIONS_ID:
 				if (this instanceof BookEditFields) {
-					((BookEditFields)this).showCoverContextMenu();
+					((BookEditFields) this).showCoverContextMenu();
+					return true;
 				}
 				break;
 			case SHARE_ID:
 				BookUtils.shareBook(getActivity(), mDbHelper, currRow);
 				return true;
 			case DELETE_ID:
-				BookUtils.deleteBook(getActivity(), mDbHelper, currRow, new Runnable() {
-					@Override
-					public void run() {
-						getActivity().finish();
-					}});
+				BookUtils.deleteBook(getActivity(), mDbHelper, currRow,
+						new Runnable() {
+							@Override
+							public void run() {
+								getActivity().finish();
+							}
+						});
 				return true;
 			case DUPLICATE_ID:
 				BookUtils.duplicateBook(getActivity(), mDbHelper, currRow);
@@ -159,13 +180,51 @@ public abstract class BookEditFragmentAbstract extends BookCatalogueFragment imp
 			case EDIT_OPTIONS_ID:
 				BookEdit.editBook(getActivity(), currRow, BookEdit.TAB_EDIT);
 				return true;
+
+			case R.id.MENU_AMAZON_BOOKS_BY_AUTHOR:
+			{
+				String author = getAuthorFromBook();
+				Utils.openAmazonSearchPage(getActivity(), author, null);
+				return true;
 			}
+			case R.id.MENU_AMAZON_BOOKS_IN_SERIES:
+			{
+				String series = getSeriesFromBook();
+				Utils.openAmazonSearchPage(getActivity(), null, series);
+				return true;
+			}
+			
+			case R.id.MENU_AMAZON_BOOKS_BY_AUTHOR_IN_SERIES:
+			{
+				String author = getAuthorFromBook();
+				String series = getSeriesFromBook();
+				Utils.openAmazonSearchPage(getActivity(), author, series);
+				return true;
+			}
+			}
+
 		} catch (NullPointerException e) {
 			Logger.logError(e);
 		}
-		return true;
+		return false;
 	}
-	
+
+	private String getAuthorFromBook() {
+		ArrayList<Author> authors = mEditManager.getBookData().getAuthorList();
+		if (authors.size() > 0)
+			return authors.get(0).getDisplayName();
+		else
+			return null;
+	}
+
+	private String getSeriesFromBook() {
+		ArrayList<Series> list = mEditManager.getBookData().getSeriesList();
+		if (list.size() > 0)
+			return list.get(0).name;
+		else
+			return null;
+	}
+
 	@Override
 	public void onPause() {
 		super.onPause();

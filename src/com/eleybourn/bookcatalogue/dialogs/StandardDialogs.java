@@ -46,7 +46,6 @@ import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.LibraryThingManager;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.Series;
-import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsRegister;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
@@ -451,4 +450,30 @@ public class StandardDialogs {
 			return mObject.toString();
 		}
 	}
+	
+	public static class SimpleDialogMenuItem extends SimpleDialogObjectItem {
+		final int mItemId;
+		final int mDrawableId;
+
+		public SimpleDialogMenuItem(Object object, int itemId, int icon) {
+			super(object);
+			mItemId = itemId;
+			mDrawableId = icon;
+		}
+
+		public int getItemId() {
+			return mItemId;
+		}
+
+		@Override
+		public View getView(LayoutInflater inflater) {
+			View v = super.getView(inflater);
+			TextView name = (TextView) v.findViewById(R.id.name);
+			name.setCompoundDrawablesWithIntrinsicBounds(mDrawableId, 0, 0, 0);
+			getSelector(v).setVisibility(View.GONE);
+			return v;
+		}
+	}
+
+	
 }

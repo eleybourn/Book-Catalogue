@@ -93,8 +93,9 @@
         android:layout_weight="0"
         android:contentDescription="@string/_empty_"
         android:gravity="right"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
+        android:paddingLeft="8dp"
+        android:paddingTop="4dp"
+        android:paddingRight="4dp"
         android:src="@drawable/btn_check_buttonless_off"
         android:visibility="gone" />
 

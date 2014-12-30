@@ -28,6 +28,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.res.TypedArray;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -217,7 +218,7 @@ public class CoverBrowser {
 			File file = new File(fileSpec);
 			if (file.length() < 50) {
 				fileSpec = mFileManager.download(isbn, ImageSizes.LARGE);
-			}
+			}				
 		}
 		@Override
 		public void onFinish(Exception e) {
@@ -226,7 +227,7 @@ public class CoverBrowser {
 			file.deleteOnExit();
 			//CoverImageAdapter cia = (CoverImageAdapter) gallery.getAdapter();
 			//cia.notifyDataSetChanged();
-			Utils.fetchFileIntoImageView(file, v, mPreviewSize, mPreviewSize, true );
+			Utils.fetchFileIntoImageView(file, v, mPreviewSize, mPreviewSize, true );				
 		}
 	}
 
@@ -414,7 +415,38 @@ public class CoverBrowser {
 		private Bundle mFiles = new Bundle();
     	LibraryThingManager mLibraryThing = new LibraryThingManager(mContext);
 
-		/**
+    	private boolean isGood(File f) {
+    		boolean ok = true;
+   
+	    	if (!f.exists() || f.length() == 0) {
+	    		ok = false;
+	    	} else {
+	    		try {
+		    		// Just read the image files to get file size
+		    		BitmapFactory.Options opt = new BitmapFactory.Options();
+		    		opt.inJustDecodeBounds = true;
+		    	    BitmapFactory.decodeFile( f.getAbsolutePath(), opt );
+		    	    // If too small, it's no good
+		    	    if ( opt.outHeight < 8 || opt.outWidth < 8 ) {
+		    	    	ok = false;
+		    	    }
+	    		} catch (Exception e) {
+	    			// Failed to decode; probably not an image
+	    			ok = false;
+	    			Logger.logError(e, "Unable to decode thumbnail");
+	    		}
+	    	}
+			try {
+				if (!ok && f.exists()) {
+					f.delete();
+				}
+			} catch(Exception e) {
+    			Logger.logError(e, "Unable to delete bad thumbnail");				
+			}
+			return ok;
+    	}
+
+    	/**
 		 * Download a file if not present and keep a record of it.
 		 * 
 		 * @param isbn	ISBN of file
@@ -435,14 +467,7 @@ public class CoverBrowser {
 		    		filespec = mFiles.getString(key);			    	
 			    }
 		    	File f = new File(filespec);
-		    	boolean isBad = false;
-		    	if (!f.exists()) {
-		    		isBad = true;
-		    	} else if (f.length() == 0) {
-		    		f.delete();
-		    		isBad = true;
-		    	}
-		    	if (isBad) {
+		    	if (!isGood(f)) {
 		    		mFiles.remove(key);
 		    		isPresent = false;		    		
 		    	}
@@ -450,8 +475,23 @@ public class CoverBrowser {
 
 		    if (!isPresent) {
 		    	filespec = mLibraryThing.getCoverImage(isbn, null, size);
-		    	synchronized(mFiles) {
-				    mFiles.putString(key, filespec);		    		
+		    	File f = new File(filespec);
+		    	if (isGood(f)) {
+			    	synchronized(mFiles) {
+					    mFiles.putString(key, filespec);		    		
+			    	}
+		    	} else {
+		    		// Try google
+		    		f = GoogleBooksManager.getThumbnailFromIsbn(isbn);
+			    	if (f != null && isGood(f)) {
+			    		filespec = f.getAbsolutePath();
+				    	synchronized(mFiles) {
+						    mFiles.putString(key, filespec);		    		
+				    	}
+			    	} else {
+			    		filespec = "";
+					    mFiles.putString(key, filespec);		    		
+			    	}
 		    	}
 		    } else {
 		    	synchronized(mFiles) {

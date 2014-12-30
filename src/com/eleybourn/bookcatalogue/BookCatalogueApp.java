@@ -31,10 +31,10 @@ import static org.acra.ReportField.USER_COMMENT;
 import static org.acra.ReportField.USER_CRASH_DATE;
 
 import org.acra.ACRA;
-import org.acra.collector.CrashReportData;
 import org.acra.ErrorReporter;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
+import org.acra.collector.CrashReportData;
 import org.acra.sender.ReportSenderException;
 
 import android.app.Activity;
@@ -47,8 +47,10 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 
-import com.eleybourn.bookcatalogue.backup.Exporter;
+import com.amazon.device.associates.AssociatesAPI;
+import com.eleybourn.bookcatalogue.amazon.AmazonAppKey;
 import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
+import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Terminator;
 import com.eleybourn.bookcatalogue.utils.Utils;
 

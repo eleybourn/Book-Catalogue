@@ -35,6 +35,7 @@ import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_ISBN;
 import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_LOCATION;
 import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_NOTES;
 import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_PUBLISHER;
+import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_RATING;
 import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_READ;
 import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_READ_END;
 import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_SERIES_ID;
@@ -121,6 +122,7 @@ public class DatabaseDefinitions {
 	public static final DomainDefinition DOM_PUBLICATION_YEAR = new DomainDefinition("publication_year", "int", "", "");
 	public static final DomainDefinition DOM_PUBLICATION_MONTH = new DomainDefinition("publication_month", "int", "", "");
 	public static final DomainDefinition DOM_PUBLISHER = new DomainDefinition(KEY_PUBLISHER, "text", "", "");
+	public static final DomainDefinition DOM_RATING = new DomainDefinition(KEY_RATING, "float", "default 0", "not null");
 	public static final DomainDefinition DOM_READ = new DomainDefinition(KEY_READ, "integer", "", "");
 	public static final DomainDefinition DOM_READ_STATUS = new DomainDefinition("read_status", "text", "", "not null");
 	public static final DomainDefinition DOM_READ_END = new DomainDefinition(KEY_READ_END, "date", "", "");
@@ -137,6 +139,9 @@ public class DatabaseDefinitions {
 	public static final DomainDefinition DOM_STYLE = new DomainDefinition("style", "blob", "",  "not null");
 	public static final DomainDefinition DOM_TITLE = new DomainDefinition(KEY_TITLE, "text", "", "");
 	public static final DomainDefinition DOM_TITLE_LETTER = new DomainDefinition("title_letter", "text", "", "");
+	public static final DomainDefinition DOM_UPDATE_DAY = new DomainDefinition("read_day", "int", "", "");
+	public static final DomainDefinition DOM_UPDATE_MONTH = new DomainDefinition("read_month", "int", "", "");
+	public static final DomainDefinition DOM_UPDATE_YEAR = new DomainDefinition("read_year", "int", "", "");
 	public static final DomainDefinition DOM_VISIBLE = new DomainDefinition("visible", "int", "default 0", "");
 
 	/** FTS Table */

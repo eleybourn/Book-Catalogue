@@ -1,27 +1,14 @@
 package com.eleybourn.bookcatalogue;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.util.ArrayList;
-
-import android.os.Bundle;
 
 import com.eleybourn.bookcatalogue.backup.CsvImporter;
 import com.eleybourn.bookcatalogue.backup.Importer;
-import com.eleybourn.bookcatalogue.backup.Importer.OnImporterListener;
 import com.eleybourn.bookcatalogue.backup.LocalCoverFinder;
-import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
-import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer.SyncLock;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.StorageUtils;
-import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Class to handle import in a separate thread.

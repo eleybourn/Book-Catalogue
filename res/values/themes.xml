@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="DialogTitleTheme">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="DialogDividerTheme">
+        <item name="android:layout_height">1dip</item>         <item name="android:background">#c0c0c0</item>
+        <!--
+            <item name="android:scaleType">fitXY</item>
+            <item name="android:gravity">fill_horizontal</item>
+            <item name="android:src">@android:drawable/dialog_divider_horizontal_light</item>
+        -->
+    </style>
+
     <style name="BcTheme" parent="@style/Theme.Sherlock">
         <!-- Any customizations for your app running on pre-3.0 devices here -->
     </style>
+
     <style name="dataEntryButtonStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -11,11 +25,11 @@
         <item name="android:hint">@string/notset</item>
         <item name="android:background">@drawable/gradient_button_light</item>
         <item name="android:gravity">left|center_vertical</item>
-        <item name="android:textColor">#000000</item>    
-        </style>
-    
+        <item name="android:textColor">#000000</item>
+    </style>
+
     <style name="editorFieldTextStyle" parent="@style/editorFieldTextStyleBase">
-        <item name="android:textColor">@android:color/primary_text_light</item>    
+        <item name="android:textColor">@android:color/primary_text_light</item>
     </style>
 
 </resources>

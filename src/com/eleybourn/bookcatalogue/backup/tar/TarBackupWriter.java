@@ -28,22 +28,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
-import java.io.Serializable;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 
 import android.content.SharedPreferences;
-import android.os.Bundle;
 
 import com.eleybourn.bookcatalogue.backup.BackupContainer;
 import com.eleybourn.bookcatalogue.backup.BackupInfo;
-import com.eleybourn.bookcatalogue.backup.BackupWriter;
-import com.eleybourn.bookcatalogue.backup.BackupWriterAbstract;
 import com.eleybourn.bookcatalogue.backup.BackupUtils;
+import com.eleybourn.bookcatalogue.backup.BackupWriterAbstract;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
 import com.eleybourn.bookcatalogue.database.SerializationUtils;
-import com.eleybourn.bookcatalogue.utils.Base64;
 
 /**
  * Implementation of TAR-specific writer functions

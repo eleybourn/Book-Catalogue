@@ -55,7 +55,7 @@
     <string name="results_found">Sonuç bulundu</string>
     <string name="administration_label">Yönetim işlevleri</string>
     <string name="administration_title">Betik kataloğu: Yönetim</string>
-    <string name="menu_administration">Yönetici</string>
+    <string name="menu_administration">Ayarlar</string>
     <string name="install_scan">ISBN barkodu ile betik taramak için Zxing barkod tarayıcısı uygulamasını yüklemelisiniz. Yüklemek için Tamam\'a, atlamak için Vazgeç\'e basın.</string>
     <string name="install_scan_title">Barkod Tarayıcıyı yükleyin</string>
     <string name="version_number">Sürüm numarası</string>
@@ -416,7 +416,7 @@
     <string name="location">Konum</string>
     <string name="management">Yönetim</string>
     <string name="credentials">Kimlik</string>
-    <string name="data_import_export">Veri içe/dışa aktarmaData Import/Export</string>
+    <string name="data_import_export">Veri içe/dışa aktarma</string>
     <string name="unrecognized_task">Tanımlanamayan görev</string>
     <string name="rebuilding_search_index">Arama dizini yeniden oluşturuluyor&#8230;</string>
     <string name="optimizing_databases">Veritabanları eniyileniyor&#8230;</string>
@@ -440,20 +440,24 @@
     										Yeşil onay simgesine dokunmak onu kırmızı artıya dönüştürür, tersi de onay simgesi için geçerlidir.
     										\n\nEğer onay simgeli bir biçem yoksa tüm biçemler gösterilir.
     										\n\nIt is also possible to re-order the items by dragging the icon at the extreme right of each row.
-    										\n\nBir satırda herhangi bir yere dokunmak o biçemin ayrıntılarını düzenleme olanağı tanır (veya çoğaltır, eğer yerleşik bir biçemse).</string>
+    										\n\nBir satırda herhangi bir yere dokunmak o biçemin ayrıntılarını düzenleme olanağı tanır (veya çoğaltır, eğer yerleşik bir biçemse).
+</string>
     <string name="hint_booklist_style_groups">Bu ekranı özel bir betik dizelgesi biçemi hiyerarşisini düzenlemek için kullanabilirsiniz.
     										\n\nYeşil onay simgesi başlığın listede görüntüleneceğini, kırmızı artı ise görüntülenmeyeceğini belirtir.
     										Yeşil onay simgesine dokunmak onu kırmızı artıya dönüştürür, tersi de onay simgesi için geçerlidir.
-    										\n\nHiyerarşiyi sağ uçtaki simgeyi yukarı-aşağı taşıyarak değiştirebilirsiniz.</string>
+    										\n\nHiyerarşiyi sağ uçtaki simgeyi yukarı-aşağı taşıyarak değiştirebilirsiniz.
+</string>
     <string name="hint_booklist_style_properties">Bu ekranı seçilen betik dizgesi biçeminin özelliklerini değiştirmek üzere kullanabilirsiniz.
     										\n\nBuradan adını değiştirelibilr, hiyerarşiyi değiştirmek için öbeklendirmeyi düzenleyebilir ve										    kullanışlı bir biçem yaratmak için diğer ayarları yapabilirsiniz.
-    										\n\n\'Betik süzgeçleri\' ayarlarını kullanarak betik dizgelerinde görüntülenecek seçimleri          										    ayarlayabilirsiniz, örneğin yalnızca okumadığınız betikleri vb. seçebilirsiniz.</string>
+    										\n\n\'Betik süzgeçleri\' ayarlarını kullanarak betik dizgelerinde görüntülenecek seçimleri          										    ayarlayabilirsiniz, örneğin yalnızca okumadığınız betikleri vb. seçebilirsiniz.
+</string>
     <string name="hint_booklist_global_properties">Bu ekranı tüm betik dizgesi biçeminin özelliklerini değiştirmek üzere kullanabilirsiniz.
     										\n\nÇoğu özellikler kişisel biçemlerle değiştirilebilir, ancak öntanımlı değerler burada
     										tanımlanmışlardır.
     										\n\nArdalanı değiştirebilir, dizelgelerin başlangıçta nasıl görüntüleneceğini seçebilir
     										ve diğer tüm biçemlerinize uygulanacak çoğu ayarı buradan yapabilirsiniz.
-    										\n\nAynı zamanda biçemler seçkesini ve biçemlerin kendisini dedüzenleyebilirsiniz.</string>
+    										\n\nAynı zamanda biçemler seçkesini ve biçemlerin kendisini dedüzenleyebilirsiniz.
+</string>
     <string name="preferred_styles">Yeğlenen biçemler</string>
     <string name="edit_style_colon_name">Biçemi düzenle: %1$s</string>
     <string name="add_style">Biçem ekle</string>
@@ -497,7 +501,7 @@
     <string name="builtin">Yerleşik</string>
     <string name="sort_unread">Okunmayan (Yazar/Seri)</string>
     <string name="import_all_from_goodreads">Tümünü Goodreads\'den içe aktar</string>
-    <string name="requested_task_is_already_queued">İstenen görev kuyrukta bekliyorRequested task is already queued</string>
+    <string name="requested_task_is_already_queued">İstenen görev kuyrukta bekliyor</string>
     <string name="export_task_is_already_queued">Bir dışa aktarma görevi kuyrukta bekliyor ve bu görev başlayabilmesi için önce bitirilmesi gerek</string>
     <string name="import_task_is_already_queued">Bir içe aktarma görevi kuyrukta bekliyor ve bu görev başlayabilmesi için önce bitirilmesi gerek</string>
     <string name="goodreads_action_cannot_blah_blah">Bu uygulama Goodreads tor betinde yetkilendirilmeden verilen bu görev tamamlanamaz. Uygulamayı yetkilendirdikten sonra yeniden deneyiniz. \n\nŞimdi yetkilendirmek istiyor musunuz?</string>
@@ -556,7 +560,7 @@
     <string name="more_than_one_export_file_blah">Birden fazla dışa aktarma dosyası bulundu; lütfen içe aktarmak üzere aşağıdaki dışa aktarma dosyalarından birini seçin</string>
     <string name="problem_starting_import_arg">İçe aktarmaya başlarken bir hata oluştu: %1$s</string>
     <string name="hint_booklist_style_menu">Bu seçke size dizelge biçemini seçmenize olanak tanır. 
-    								\n\nEk olarak dizelgenen sonundaki \'Kişiselleştir\' düğmesini kullanarak bu seçkeyi kişiselleştirebilir ve hatta kendi dizelge biçemlerinizi oluşturabilirsiniz.</string>
+    								\n\nEk olarak dizelgenin sonundaki \'Kişiselleştir\' düğmesini kullanarak bu seçkeyi kişiselleştirebilir ve hatta kendi dizelge biçemlerinizi oluşturabilirsiniz.</string>
     <string name="menu_edit_format">Biçimi düzenle&#8230;</string>
     <string name="edit_format_name">Biçim adını düzenle</string>
     <string name="name_can_not_be_blank">Ad kısmı boş olamaz</string>
@@ -703,10 +707,12 @@
 
     <!-- Hint text displayed when user enters the book listw -->
     <string name="hint_view_only_book_details">Bu dizelgedeki herhangi bir öğeye dokunduğunuzda artık salt okunur betik ayrıntıları ekranına gidebilirsiniz. 
-İlgili ayar için "Diğer yeğlenenler" bölümüne bakın.</string>
+İlgili ayar için "Diğer yeğlenenler" bölümüne bakın.
+</string>
 
     <!-- Hint text displayed when user enters the 'read-only' book view -->
-    <string name="hint_view_only_help">Bu ekran salt okunur betik ayrıntıları ekranıdır; sağa/sola kaydırarak diğer betiklere geçebilir, seçke düğmesi veya taşan seçke simgesini kullanıp seçenekler bölümünden betiği düzenleyebilirsiniz.</string>
+    <string name="hint_view_only_help">Bu ekran salt okunur betik ayrıntıları ekranıdır; sağa/sola kaydırarak diğer betiklere geçebilir, seçke düğmesi veya taşan seçke simgesini kullanıp seçenekler bölümünden betiği düzenleyebilirsiniz.
+</string>
 
     <!-- This is the heading of the 'Details' tab when editing a book. It needs to be short. "Book Details" is too long. -->
     <string name="details">Ayrıntılar</string>
@@ -905,7 +911,76 @@
 
     <!-- Displayed in progress dialog when exporting covers in incremental mode -->
     <string name="covers_progress_incr">%1$s kapak işlendi (%2$s bulunamadı, %3$s atlandı)</string>
-    
-    <!-- End: Added/Updated in [Next Version] -->
+    <!-- Explanatory note for 'export all' option -->
+    <string name="export_all_blurb">Tüm betikler, kapaklar, ayarlar ve kişiselleştirilmiş biçemler arşive aktarılacaktır.</string>
+    <!-- Explanatory note for 'advanced export' option -->
+    <string name="export_advanced_blurb">Arşive nelerin aktarılacağını seçin.</string>
+    <!-- Introduction for 'advanced export' option -->
+    <string name="export_advanced_heading">Nelerin dışa aktarılacağını seçin:</string>
+    <!-- Text for button -->
+    <string name="book_details">Betik ayrıntıları</string>
+    <!-- Brief descriptionn -->
+    <string name="book_details_blurb">Betiklerin ayrıntıları gösterir</string>
+    <!-- Text for button -->
+    <string name="cover_images">Kapak görselleri</string>
+    <!-- Brief descriptionn -->
+    <string name="cover_images_blurb">Seçilen betikler için kapak resimlerini gösterir. Dışarı aktarım boyutunu arttıracaktır.</string>
+    <!-- Brief descriptionn -->
+    <string name="preferences_blurb">Yeğlenenler ve kullanıcı tanımlı dizelge biçemleri</string>
+    <!-- Explanatory note for export date (not yet implemented) -->
+    <string name="export_advanced_date_blurb">Seçeneğe bağlı olarak, dışarı aktarılacak betiklerde ve/veya kapak görsellerinde kullanılacak bir günay seçin:</string>
+    <!-- Explanatory note for export date (not yet implemented) -->
+    <string name="all_books_added_or_updated_since">Şu günaydan bu yana eklenen veya güncellenen betikler:</string>
+    <!-- Explanatory note for export data since last backup -->
+    <string name="all_books_added_or_updated_since_last_full_backup">Son tüm yedeklemeden bu yana eklenen veya güncellenen betikler</string>
+   <!-- Short text for 'n books' -->
+   <plurals
+   name="n_books">
+   <item quantity="zero">betik yok</item>
+   <item quantity="one">1 betik</item>
+   <item quantity="other">%1$s betik</item>
+   </plurals>
+   <!-- Short text for 'n covers' -->
+   <plurals
+  name="n_covers">
+   <item quantity="zero">kapak yok</item>
+   <item quantity="one">1 kapak</item>
+   <item quantity="other">%1$s kapak</item>
+   </plurals>
+   <!-- Used for concatenating two strings, eg. "3 books, 2 covers" (probably only important on RTL languages)-->
+   <string name="a_comma_b">%1$s, %2$s</string>
+   <!-- Short progress message -->
+   <string name="searching_directory_ellipsis">Dizin aranıyor&#8230;</string>
+   <string name="new_in_510">
+   <![CDATA[
+   <p><b>5.1.0 sürümündeki yenilikler</b>\n\n
+   * İtalyanca çeviri (Eugenio Davolio)\n\n
+   * İspanyolca çeviri (José M. Galdo)\n\n
+   * Türkçe çeviri (Emir Sarı)\n\n
+   * Yalnıca yeni eklenen/güncellenen betikleri arşivleme ve kapak görsellerini (veya betikleri) içerme seçeneği\n\n
+   * Yüksek belirginlikli ekranlar için daha iyi ufak resim boyutu\n\n
+   * Betikleri Amazon\'daki yazarlara/dizilere göre gösterme desteği\n\n
+   * Diğer ufak hata düzeltmeleri\n\n
+   </p>
+   ]]>
+   </string>
+   <!-- Menu item -->
+   <string name="amazon_books_in_series">Bu dizideki betikler</string>
+   <!-- Menu item -->
+   <string name="amazon_books_by_author">Bu yazarın betikleri</string>
+   <!-- Menu item -->
+   <string name="amazon_books_by_author_in_series">Yazara/diziye göre betikler</string>
+   <!-- Hint text displayed when user enters the book listw -->
+   <string name="hint_book_list">Bir betiğin üzerine dokunmak betik ayrıntılarını gösterir, uzun basılı tutmak daha fazla seçeneğin olduğu bir dizelge verir.</string>
+   <!-- TRANLATORS NOTE: I HAVE UPDATED THE new_in_510, above! Sorry. -->
 
+   <!-- Preference VALUE, displayed in a preference activity -->
+   <string name="zxing_scanner">Zxing Tarayıcı</string>
+   <!-- Heading in 'about' dialog -->
+   <string name="special_thanks_label">Teşekkürlerimizle</string>
+   <!-- Credits in the 'about' dialog -->
+   <string name="translators_blurb">Betik Kataloğu birçok kişinin emeğinin ürünü olan bir yazılım. Burada gönüllü çevirmenlerimizin katkılarını belirtmeden olmaz; onların çabaları olmadan bu kadar fazla kişiye ulaşamazdık. Bu güzel insanlar: Eugenio Davolio, José M. Galdo, Imkal, Gideon van Melle, Emir Sarı, Nick Silin ve Robert Wetzlmayr (eğer unuttuğumuz birisi var ise lütfen belirtin).</string>
+   <!-- End: Added/Updated in 5.1.0 -->
+   <!-- Begin: Added/Updated in [Next Version] -->
+   <!-- End: Added/Updated in [Next Version] -->
 </resources>

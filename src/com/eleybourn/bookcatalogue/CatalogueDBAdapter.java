@@ -22,8 +22,8 @@ package com.eleybourn.bookcatalogue;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_AUTHOR_ID;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_AUTHOR_NAME;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_BOOK;
-import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_BOOK_UUID;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_BOOKSHELF_ID;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_BOOK_UUID;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_DESCRIPTION;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_DOCID;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_GENRE;
@@ -46,9 +46,9 @@ import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_AUTHO
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOKS;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOKS_FTS;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOK_AUTHOR;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOK_BOOKSHELF;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOK_LIST_STYLES;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOK_SERIES;
-import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOK_BOOKSHELF;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_SERIES;
 
 import java.io.File;
@@ -5361,7 +5361,7 @@ public class CatalogueDBAdapter {
 
 			// Update books but prevent duplicate index errors
 			sql = "Update " + DB_TB_BOOKS + " Set " + KEY_FORMAT + " = '" + encodeString(newFormat) 
-					+ "', " + DOM_LAST_UPDATE_DATE + " = current_timetamp "
+					+ "', " + DOM_LAST_UPDATE_DATE + " = current_timestamp "
 					+ " Where " + KEY_FORMAT + " = '" + encodeString(oldFormat) + "'";
 			mDb.execSQL(sql);	
 			
@@ -5982,13 +5982,63 @@ public class CatalogueDBAdapter {
 	/**
 	 * Cleanup a search string to remove all quotes etc.
 	 * 
-	 * TODO: Consider adding a '*' to the end of all words. Or make it an option.
+	 * Remove punctuation from the search string to TRY to match the tokenizer. The only punctuation we
+	 * allow is a hypen preceded by a space. Everything else is translated to a space.
+	 * 
+	 * TODO: Consider making '*' to the end of all words a preference item.
 	 * 
 	 * @param s		Search criteria to clean
 	 * @return		Clean string
 	 */
-	private String cleanupFtsCriterion(String s) {
-		return s.replace("'", " ").replace("\"", " ").trim();
+	public static String cleanupFtsCriterion(String search) {
+		//return s.replace("'", " ").replace("\"", " ").trim();
+
+		if (search.length() <= 1)
+			return search;
+
+		// Output bufgfer
+		final StringBuilder out = new StringBuilder();
+		// Array (convenience)
+		final char[] chars = search.toCharArray();
+		// Cached length
+		final int len = chars.length;
+		// Initial position
+		int pos = 0;
+		// Dummy 'previous' character
+		char prev = ' ';
+
+		// Loop over array
+		while(pos < len) {
+			char curr = chars[pos];
+			// If current is letter or ...use it.
+			if (Character.isLetterOrDigit(curr)) {
+				out.append(curr);
+			} else if (curr == '-' && Character.isWhitespace(prev)) {
+				// Allow negation if preceded by space
+				out.append(curr);
+			} else {
+				// Eveything else is whitespace
+				curr = ' ';
+				if (!Character.isWhitespace(prev)) {
+					// If prev character was non-ws, and not negation, make wildcard
+					if (prev != '-') {
+						// Make every token a wildcard
+						// TODO: Make this a preference
+						out.append('*');
+					}
+					// Append a whitespace only when last char was not a whitespace
+					out.append(' ');
+				}
+			}
+			prev = curr;
+			pos++;
+		}
+		if (!Character.isWhitespace(prev) && (prev != '-')) {
+			// Make every token a wildcard
+			// TODO: Make this a preference
+			out.append('*');			
+		}
+		return out.toString();
 	}
 
 	/**

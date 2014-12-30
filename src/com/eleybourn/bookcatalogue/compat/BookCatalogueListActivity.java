@@ -5,7 +5,6 @@ import android.os.Bundle;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockListActivity;
 import com.actionbarsherlock.view.MenuItem;
-import com.eleybourn.bookcatalogue.BookCatalogueApp;
 
 /**
  * Class introduced to reduce the future pain when we remove sherlock (once we no longer 

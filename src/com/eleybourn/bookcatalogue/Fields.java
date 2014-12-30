@@ -27,7 +27,6 @@ import java.util.Date;
 import java.util.Iterator;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;

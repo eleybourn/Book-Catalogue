@@ -20,10 +20,8 @@
 
 package com.eleybourn.bookcatalogue;
 
-import android.os.Build;
 import android.os.Bundle;
 
-import com.eleybourn.bookcatalogue.properties.BooleanListProperty;
 import com.eleybourn.bookcatalogue.properties.BooleanProperty;
 import com.eleybourn.bookcatalogue.properties.IntegerListProperty;
 import com.eleybourn.bookcatalogue.properties.ListProperty.ItemEntries;
@@ -66,6 +64,7 @@ public class OtherPreferences extends PreferencesBase {
 	private static ItemEntries<Integer> mScannerListItems = new ItemEntries<Integer>()
 			.add(null, R.string.use_default_setting)
 			.add(ScannerManager.SCANNER_ZXING_COMPATIBLE, R.string.zxing_compatible_scanner)
+			.add(ScannerManager.SCANNER_ZXING, R.string.zxing_scanner)
 			.add(ScannerManager.SCANNER_PIC2SHOP, R.string.pic2shop_scanner);
 	
 	private static final Properties mProperties = new Properties()

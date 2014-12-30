@@ -725,7 +725,7 @@
     <!-- Progress dialog message displayed when doing a long network operation to a web site -->
     <string name="connecting_to_web_site">Connection au site &#8230;</string>
     <!-- Admin option to import -->
-    <string name="backup_to_archive">Archivage des données</string>
+    <string name="backup_to_archive">Sauvegarde des données</string>
     <!-- Admin option to import -->
     <string name="import_from_archive">Restauration des données</string>
     <!-- Hint displayed when aCatalogue Backup is done -->
@@ -818,7 +818,7 @@
     <!-- Begin: Added/Updated in 5.0.5 -->
     
     <!--  New preference to override the default method used to generate bookslists as defined by API level -->
-    <string name="booklist_generation">Option de géneration de la liste de livre</string>
+    <string name="booklist_generation">Option de génération de la liste de livre</string>
     
     <!-- Option listed under "booklist_generation" referring to a very conservative way of generating bookslists -->
     <!-- NOTE The English version was changed to "Force Compatibility Mode" -->
@@ -852,4 +852,134 @@
     </string>
     <!-- End: Added/Updated in 5.0.8 -->
 
+ <!-- Begin: Added/Updated in 5.0.9 -->
+    <string name="new_in_509">
+		<![CDATA[
+			<p><b>Nouveau dans la version 5.0.9</b>\n\n
+				* Correction de bogues pour Android 4.4 (KitKat)\n\n
+				* Traduction en néérlandais (Gideon van Melle)\n\n
+				* Corrections de bogues mineures
+			</p>
+		]]>
+    </string>
+
+	<string name="hint_evan_book">
+	    		<![CDATA[
+				<p>Saviez-vous que le créateur de Book Catalogue (Evan Leybourn) vient juste de publier 
+				un livre su "Agile Business Management"?</p>
+				<p>Si vous êtes intéressé par ses autres travaux, vous trouverez plus d\'informations sur:\n\n
+				<a href="http://theagiledirector.com/book">http://theagiledirector.com/book</a>
+				</p>
+			]]>
+    </string>
+
+    <!-- End: Added/Updated in 5.0.9 -->
+
+    <!-- Begin: Added/Updated in 5.1.0 -->
+    
+    <!--  Explanatory text for 'import' dialogue -->
+    <string name="import_books_blurb">Les livres de cette sauvegarde vont être importés. Choisissez une des 2 options au début de l\'import, ou cliquez sur \'Retour\' pour annuler:</string>
+    <!-- Description of the 'import all books' option -->
+    <string name="all_books_blurb">Tous les livres de la sauvegardes seront importés en meetant à ceux ceux existant et en ajoutant les nouveaux.</string>
+    <!-- Menu text for the 'import/export new & changed' option -->
+    <string name="new_and_changed_books">Livres nouveaux et mis à jour</string>
+    <!-- Description of the 'import new & changed' option -->
+    <string name="new_and_changed_books_blurb">Seul les livres récemment ajoutés ou mis à jour dans la sauvegarde seront mis à jour. Cette option est utile lors de la synchronisation de 2 appareils.</string>
+    <!-- Descriptive text associated with import options not available with older archives -->
+    <string name="old_archive_blurb">Cette option n\'est pas supportée par les anciennes sauvegardes.</string>
+    <!-- Part of the progress message displayed when importing books -->
+    <string name="n_created_m_updated">%1$s ajoutés, %2$s mis à jour</string>
+
+    <!--  Explanatory text for 'export' dialogue -->
+    <string name="export_books_blurb">Les livres de votre catalogue seront exporté. Choisissez une des 2 options pour exporter vos livres ou cliquez sur \'Retour\' pour annuler:</string>
+    <!-- Description of the 'import all books' option -->
+    <string name="export_all_books_blurb">Tous les livres de votre catalogue seront enregistrés dans la sauvegarde.</string>
+    <!-- Description of the 'export new & changed' option -->
+    <string name="export_new_and_changed_books_blurb">Seul les livres ajoutés ou mis à jour depuis la dernière sauvegarde complète seront enregistrés dans la sauvegarde.</string>
+    <!-- Part of the progress message displayed when exporting books -->
+    <string name="n_exported">%1$s enregistré</string>
+
+    <!-- Displayed in progress dialog when exporting covers in incremental mode -->
+    <string name="covers_progress_incr">%1$s couvertures enregistrées (%2$s manquantes, %3$s ignorées)</string>
+    
+    <!-- Explanatory note for 'export all' option -->
+    <string name="export_all_blurb">Tous les livres, couvertures, préférence et styles de liste personnel du catalogue seront enregistrés dans la sauvegarde.</string>
+    <!-- Explanatory note for 'advanced export' option -->
+    <string name="export_advanced_blurb">Selection de ce qui doit être enregistré dans la sauvegarde.</string>
+    <!-- Introduction for 'advanced export' option -->
+    <string name="export_advanced_heading">Choissisez:</string>
+    
+    <!-- Text for button -->
+    <string name="book_details">Details des livres</string>
+    <!-- Brief descriptionn -->
+    <string name="book_details_blurb">Le livre et tous ses détails</string>
+    <!-- Text for button -->
+    <string name="cover_images">Images de couverture</string>
+    <!-- Brief descriptionn -->
+    <string name="cover_images_blurb">Couvertures de tous les livres sauvegardés. La taille de la sauvegarde sera plus importante.</string>
+    <!-- Brief descriptionn -->
+    <string name="preferences_blurb">Paramètres et préférences (Style de liste personnel)</string>
+    
+    <!-- Explanatory note for export date (not yet implemented) -->
+    <string name="export_advanced_date_blurb">Definissez la date à prendre en compte pour l\'archivage des livres (optionnel):</string>
+    
+    <!-- Explanatory note for export date (not yet implemented) -->
+    <string name="all_books_added_or_updated_since">Tous les livres ajoutés ou mis à jour depuis le:</string>
+    <!-- Explanatory note for export data since last backup -->
+    <string name="all_books_added_or_updated_since_last_full_backup">Tous les livres ajoutés ou mis à jour depuis la dernière sauvegarde complète</string>
+
+    <!-- Short text for 'n books' -->
+    <plurals
+        name="n_books">
+        <item quantity="zero">Aucun livre</item>
+        <item quantity="one">%1$s livre</item>
+        <item quantity="other">%1$s livres</item>
+    </plurals>
+
+    <!-- Short text for 'n covers' -->
+    <plurals
+        name="n_covers">
+        <item quantity="zero">Aucune couverture</item>
+        <item quantity="one">%1$s couverture</item>
+        <item quantity="other">%1$s couvertures</item>
+    </plurals>
+
+    <!-- Used for concatenating two strings, eg. "3 books, 2 covers" (probably only important on RTL languages)-->
+    <string name="a_comma_b">%1$s, %2$s</string>
+    
+    <!-- Short progress message -->
+    <string name="searching_directory_ellipsis">Recherche dans le répertoire &#8230;</string>
+
+    <string name="new_in_510">
+		<![CDATA[
+			<p><b>New in 5.1.0</b>\n\n
+				* Traduction en italien (Eugenio Davolio)\n\n
+				* Traduction en espagnol (José M. Galdo)\n\n
+				* Traduction en turque (Emir Sarı)\n\n
+				* Possibilité de sauvegarder les livres ajoutés ou mis ç jour récemment et d\'exclure les couvertures (ou les livres)\n\n
+				* Amélioration de la taille des miniatures pour les écrans haute définition\n\n
+				* Ajout d\'une option pour voir les livres par Auteur/series sur Amazon\n\n
+				* Correction de bogues mineures\n\n
+			</p>
+		]]>
+    </string>
+    
+    <!-- Menu item -->
+    <string name="amazon_books_in_series">Livres dans cette série</string>
+    <!-- Menu item -->
+    <string name="amazon_books_by_author">Livres de cet auteur</string>
+    <!-- Menu item -->
+    <string name="amazon_books_by_author_in_series">Livres par auteur/serie</string>
+    
+    <!-- Hint text displayed when user enters the book listw -->
+    <string name="hint_book_list">Cliquez sur un livre vous montrera les détails du livre, un appui long sur un livre dans la liste vous donnera d\'autres options.</string>
+
+    <!-- Preference VALUE, displayed in a preference activity -->
+    <string name="zxing_scanner">Zxing Scanner</string>
+     <!-- Heading in 'about' dialog -->
+    <string name="special_thanks_label">Remerciements particuliers </string>
+    <!-- Credits in the 'about' dialog -->
+    <string name="translators_blurb">BookCatalogue est le résultat de l\'effort de beaucoup de personnes, et n\'aurait pas une diffusion et une utilisation aussi large sans l\'aide de nos généreux traducteurs: Eugenio Davolio, José M. Galdo, Imkal, Gideon van Melle, Emir Sarı, Nick Silin et Robert Wetzlmayr (Si j\'ai oublié quelqu\'un, faites-le nous savoir).</string>
+
+    <!-- End: Added/Updated in 5.1.0 -->
 </resources>

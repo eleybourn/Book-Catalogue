@@ -56,9 +56,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -83,6 +80,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.eleybourn.bookcatalogue.Author;
@@ -93,10 +91,10 @@ import com.eleybourn.bookcatalogue.LibraryThingManager;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.Series;
 import com.eleybourn.bookcatalogue.ThumbnailCacheWriterTask;
+import com.eleybourn.bookcatalogue.amazon.AmazonUtils;
 import com.eleybourn.bookcatalogue.database.CoversDbHelper;
 import com.eleybourn.bookcatalogue.dialogs.PartialDatePickerFragment;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
-import com.eleybourn.bookcatalogue.utils.Terminator;
 
 
 public class Utils {
@@ -2114,6 +2112,25 @@ public class Utils {
 		} catch (ClassCastException e) {
 			return stringToBoolean(o.toString(), true);
 		}
+	}
+
+	public static void openAmazonSearchPage(Activity context, String author, String series) {
+		
+		try {
+			AmazonUtils.openLink(context, author, series);
+		} catch(Exception ae) {
+			// An Amazon error should not crash the app
+			Logger.logError(ae, "Unable to call the Amazon API");
+			Toast.makeText(context, R.string.unexpected_error, Toast.LENGTH_LONG).show();
+			// This code works, but Amazon have a nasty tendency to cancel Associate IDs...
+			//String baseUrl = "http://www.amazon.com/gp/search?index=books&tag=philipwarneri-20&tracking_id=philipwarner-20";
+			//String extra = AmazonUtils.buildSearchArgs(author, series);
+			//if (extra != null && !extra.trim().equals("")) {
+			//	Intent loadweb = new Intent(Intent.ACTION_VIEW, Uri.parse(baseUrl + extra));
+			//	context.startActivity(loadweb); 			
+			//}			
+		}
+		return;
 	}
 }
 

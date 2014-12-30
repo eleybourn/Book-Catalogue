@@ -22,8 +22,6 @@ package com.eleybourn.bookcatalogue.backup;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.eleybourn.bookcatalogue.backup.Importer.CoverFinder;
-
 public interface Importer {
 
 	/** Flag value to indicate ALL books should be imported */

@@ -1,5 +1,6 @@
 package com.eleybourn.bookcatalogue;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -18,6 +19,24 @@ import com.eleybourn.bookcatalogue.utils.Utils;
 // ENHANCE: Get editions via: http://books.google.com/books/feeds/volumes?q=editions:ISBN0380014300
 
 public class GoogleBooksManager {
+
+	static public File getThumbnailFromIsbn(String isbn) {
+		Bundle b = new Bundle();
+		try {
+			searchGoogle(isbn, "", "", b, true);
+			if (b.containsKey(SearchGoogleBooksEntryHandler.THUMBNAIL_KEY)) {
+				File f = new File(b.getString(SearchGoogleBooksEntryHandler.THUMBNAIL_KEY));
+				File newName = new File(f.getAbsolutePath() + "_" + isbn);
+				f.renameTo(newName);
+				return newName;
+			} else {
+				return null;
+			}
+		} catch (Exception e) {
+			Logger.logError(e, "Error getting thumbnail from Google");
+			return null;
+		}
+	}
 
 	static public void searchGoogle(String mIsbn, String author, String title, Bundle bookData, boolean fetchThumbnail) {
 		//replace spaces with %20

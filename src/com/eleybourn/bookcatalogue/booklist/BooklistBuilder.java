@@ -34,6 +34,7 @@ import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_AUTHO
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_AUTHOR_POSITION;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_AUTHOR_SORT;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_BOOK;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_BOOKSHELF_ID;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_BOOKSHELF_NAME;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_BOOK_COUNT;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_BOOK_UUID;
@@ -45,6 +46,7 @@ import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_GIVEN
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ID;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_KIND;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LANGUAGE;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LAST_UPDATE_DATE;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LEVEL;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LOANED_TO;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LOANED_TO_SORT;
@@ -54,6 +56,7 @@ import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_PRIMA
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_PUBLICATION_MONTH;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_PUBLICATION_YEAR;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_PUBLISHER;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_RATING;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_READ;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_READ_DAY;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_READ_END;
@@ -69,6 +72,9 @@ import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_SERIE
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_SERIES_POSITION;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_TITLE;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_TITLE_LETTER;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_UPDATE_DAY;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_UPDATE_YEAR;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_UPDATE_MONTH;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_VISIBLE;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_AUTHORS;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOKS;
@@ -631,6 +637,8 @@ public class BooklistBuilder {
 			BooklistAuthorGroup authorGroup = null;
 			// Will be set to TRUE if a LOANED group exists in style
 			boolean hasGroupLOANED = false;
+			// Will be set to TRUE if a BOOKSHELF group exists in style
+			boolean hasGroupBOOKSHELF = false;
 	
 			// We can not use triggers to fill in headings in API < 8 since SQLite 3.5.9 is broken
 			// Allow for the user preferences to override in case another build is borken.
@@ -740,10 +748,23 @@ public class BooklistBuilder {
 					g.setKeyComponents("loc", DOM_LOCATION);
 					break;
 	
+				case ROW_KIND_BOOKSHELF:
+					g.displayDomain = DOM_BOOKSHELF_NAME;
+					summary.addDomain(DOM_BOOKSHELF_NAME, "Coalesce(" + TBL_BOOKSHELF.dot(DOM_BOOKSHELF_NAME) + ", '')", SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED);
+					g.setKeyComponents("shelf", DOM_BOOKSHELF_NAME);
+					hasGroupBOOKSHELF = true;
+					break;
+	
 				case ROW_KIND_PUBLISHER:
 					g.displayDomain = DOM_PUBLISHER;
 					summary.addDomain(DOM_PUBLISHER, TBL_BOOKS.dot(DOM_PUBLISHER), SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED);
 					g.setKeyComponents("p", DOM_PUBLISHER);
+					break;
+	
+				case ROW_KIND_RATING:
+					g.displayDomain = DOM_RATING;
+					summary.addDomain(DOM_RATING, "Cast(" + TBL_BOOKS.dot(DOM_RATING) + " as Integer)", SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED | sortDescendingMask);
+					g.setKeyComponents("rat", DOM_RATING);
 					break;
 	
 				case ROW_KIND_FORMAT:
@@ -824,7 +845,37 @@ public class BooklistBuilder {
 					summary.addDomain(DOM_ADDED_DAY, dayAddedExpr, SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED | sortDescendingMask );
 					g.setKeyComponents("dya", DOM_ADDED_DAY);
 					break;
+
+					
+				case ROW_KIND_UPDATE_YEAR:
+					g.displayDomain = DOM_UPDATE_YEAR;
+					// Use our standard glob expression
+					String yearUpdatedExpr = yearGlob(TBL_BOOKS.dot(DOM_LAST_UPDATE_DATE));
+					// TODO: Handle 'DESCENDING'. Requires the navigator construction to use max/min for non-grouped domains that appear in sublevels based on desc/asc.
+					// We don't use DESCENDING sort yet because the 'header' ends up below the detail rows in the flattened table.
+					summary.addDomain(DOM_UPDATE_YEAR, yearUpdatedExpr, SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED | sortDescendingMask );
+					g.setKeyComponents("yru", DOM_UPDATE_YEAR);
+					break;
 	
+				case ROW_KIND_UPDATE_MONTH:
+					g.displayDomain = DOM_UPDATE_MONTH;
+					// Use our standard glob expression
+					String monthUpdatedExpr = monthGlob(TBL_BOOKS.dot(DOM_LAST_UPDATE_DATE));
+					// We don't use DESCENDING sort yet because the 'header' ends up below the detail rows in the flattened table.
+					summary.addDomain(DOM_UPDATE_MONTH, monthUpdatedExpr, SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED | sortDescendingMask );
+					g.setKeyComponents("mnu", DOM_UPDATE_MONTH);
+					break;
+	
+				case ROW_KIND_UPDATE_DAY:
+					g.displayDomain = DOM_UPDATE_DAY;
+					// Use our standard glob expression
+					String dayUpdatedExpr = dayGlob(TBL_BOOKS.dot(DOM_LAST_UPDATE_DATE));
+					// We don't use DESCENDING sort yet because the 'header' ends up below the detail rows in the flattened table.
+					summary.addDomain(DOM_UPDATE_DAY, dayUpdatedExpr, SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED | sortDescendingMask );
+					g.setKeyComponents("dyu", DOM_UPDATE_DAY);
+					break;
+	
+					
 				case ROW_KIND_YEAR_READ:
 					g.displayDomain = DOM_READ_YEAR;
 					// TODO: Handle 'DESCENDING'. Requires the navigator construction to use max/min for non-grouped domains that appear in sublevels based on desc/asc.
@@ -909,7 +960,7 @@ public class BooklistBuilder {
 			JoinContext join;
 	
 			// If there is a bookshelf specified, start the join there. Otherwise, start with the BOOKS table.
-			if (!bookshelf.equals("")) {
+			if (hasGroupBOOKSHELF || !bookshelf.equals("")) {
 				join = new JoinContext(TBL_BOOKSHELF)
 					.start()
 					.join(TBL_BOOK_BOOKSHELF)
@@ -975,7 +1026,15 @@ public class BooklistBuilder {
 			if (!bookshelf.equals("")) {
 				if (!where.equals(""))
 					where += " and ";
-				where += "(" + TBL_BOOKSHELF.dot(DOM_BOOKSHELF_NAME) + " = '" + CatalogueDBAdapter.encodeString(bookshelf) + "')";
+				if (hasGroupBOOKSHELF) {
+					where += "Exists(Select NULL From "  + TBL_BOOK_BOOKSHELF + " z1 join " + TBL_BOOKSHELF 
+							+ " z2 on (z2." + DOM_ID + " = z1." + DOM_BOOKSHELF_ID + ")"
+							+ " where z2." + DOM_BOOKSHELF_NAME + " = '" + CatalogueDBAdapter.encodeString(bookshelf) + "'"
+							+ " and z1." + DOM_BOOK + " = " + TBL_BOOKS.dot(DOM_ID)
+							+ ")";
+				} else {
+					where += "(" + TBL_BOOKSHELF.dot(DOM_BOOKSHELF_NAME) + " = '" + CatalogueDBAdapter.encodeString(bookshelf) + "')";
+				}
 			}
 			if (!authorWhere.equals("")) {
 				if (!where.equals(""))
@@ -1002,7 +1061,7 @@ public class BooklistBuilder {
 			if(!searchText.equals("")) {
 				if (!where.equals(""))
 					where += " and ";
-				where += "(" + TBL_BOOKS.dot(DOM_ID) + " in (select docid from " + TBL_BOOKS_FTS + " where " + TBL_BOOKS_FTS + " match '" + encodeString(searchText) + "'))";
+				where += "(" + TBL_BOOKS.dot(DOM_ID) + " in (select docid from " + TBL_BOOKS_FTS + " where " + TBL_BOOKS_FTS + " match '" + encodeString(CatalogueDBAdapter.cleanupFtsCriterion(searchText)) + "'))";
 			}
 	
 			// Add support for book filter: READ

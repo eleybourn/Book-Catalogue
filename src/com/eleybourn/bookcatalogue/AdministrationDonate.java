@@ -76,7 +76,7 @@ public class AdministrationDonate extends BookCatalogueActivity {
 		OnClickListener payPalClick = new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					Intent loadweb = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WHD6PFWXXTPX8&lc=AU&item_name=BookCatalogue&item_number=BCPP&currency_code=AUD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted"));
+					Intent loadweb = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WHD6PFWXXTPX8&lc=AU&item_name=BookCatalogue&item_number=BCPP&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted"));
 					startActivity(loadweb); 
 					return;
 				}
@@ -93,7 +93,7 @@ public class AdministrationDonate extends BookCatalogueActivity {
 		amazon.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent loadweb = new Intent(Intent.ACTION_VIEW, Uri.parse("http://amzn.com/w/2A2E48ONH64HMO"));
+				Intent loadweb = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.amazon.com/gp/registry/wishlist/2A2E48ONH64HM?tag=bookcatalogue-20"));
 				startActivity(loadweb); 
 				return;
 			}

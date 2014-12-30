@@ -5361,7 +5361,7 @@ public class CatalogueDBAdapter {
 
 			// Update books but prevent duplicate index errors
 			sql = "Update " + DB_TB_BOOKS + " Set " + KEY_FORMAT + " = '" + encodeString(newFormat) 
-					+ "', " + DOM_LAST_UPDATE_DATE + " = current_timetamp "
+					+ "', " + DOM_LAST_UPDATE_DATE + " = current_timestamp "
 					+ " Where " + KEY_FORMAT + " = '" + encodeString(oldFormat) + "'";
 			mDb.execSQL(sql);	
 			

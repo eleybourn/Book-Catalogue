@@ -12,7 +12,7 @@
 	<string name="date_published">Fecha de publicación</string>
 	<string name="rating">Calificación</string>
 	<string name="bookshelf">Biblioteca</string>
-	<string name="read">Leído</string>
+	<string name="read">¿Has leído este libro?</string>
 	<string name="series">Serie</string>
 	<string name="pages">Páginas</string>
 	<string name="confirm_add">Añadir libro</string>
@@ -130,7 +130,7 @@
 	<string name="menu_rotate_thumb_180">180 grados</string>
 	<string name="menu_zoom_thumb">Ampliar imagen</string>
 	<string name="help_title_nutshell">En pocas palabras</string>
-	<string name="signed">Firmado</string>
+	<string name="signed">¿Está firmado este libro?</string>
 	<string name="read_start">Fecha de inicio de lectura</string>
 	<string name="read_end">Fecha de fin de lectura</string>
 	<string name="location_of_book">Ubicación del libro</string>

@@ -216,13 +216,15 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 					mList.moveToPosition(position);
 					ArrayList<SimpleDialogItem> menu = new ArrayList<SimpleDialogItem>();
 					mListHandler.buildContextMenu(mList.getRowView(), menu);
-					StandardDialogs.selectItemDialog(getLayoutInflater(), null, menu, null, new SimpleDialogOnClickListener() {
-						@Override
-						public void onClick(SimpleDialogItem item) {
-							mList.moveToPosition(position);
-							int id = ((SimpleDialogMenuItem)item).getItemId();
-							mListHandler.onContextItemSelected(mDb, mList.getRowView(), BooksOnBookshelf.this, mDb, id);
-						}});
+					if (menu.size() > 0) {
+						StandardDialogs.selectItemDialog(getLayoutInflater(), null, menu, null, new SimpleDialogOnClickListener() {
+							@Override
+							public void onClick(SimpleDialogItem item) {
+								mList.moveToPosition(position);
+								int id = ((SimpleDialogMenuItem)item).getItemId();
+								mListHandler.onContextItemSelected(mDb, mList.getRowView(), BooksOnBookshelf.this, mDb, id);
+							}});
+					}
 					return true;
 				}
 			});

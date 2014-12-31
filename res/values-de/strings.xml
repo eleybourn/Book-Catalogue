@@ -952,12 +952,76 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
 				* Spanische Übersetzung (José M. Galdo)\n\n
 				* Türkische Übersetzung (Emir Sarı)\n\n
 				* Möglichkeit, nur neue und geänderte Bücher zu exportieren und Cover oder Bücher auszuschliessen\n\n
+                * Bessere Größe der Cover-Bilder in Listen für hochauflösenden Bildschirme\n\n
+				* Möglichkeit, Bücher bei Amazon nach Serie oder Autor zu sehen\n\n
 				* Weitere kleinere Fehlerbehebungen\n\n
 			</p>
 		]]>
-    </string>
+        </string>
 
-    <!-- End: Added/Updated in 5.1.0 -->
+        <!-- Menu item -->
+        <string name="amazon_books_in_series">Bücher in dieser Serie</string>
+        <!-- Menu item -->
+        <string name="amazon_books_by_author">Bücher von diesem Autor</string>
+        <!-- Menu item -->
+        <string name="amazon_books_by_author_in_series">Bücher nach Autor/Serie</string>
+
+        <!-- Hint text displayed when user enters the book listw -->
+        <string name="hint_book_list">Tippen Sie auf ein Buch, um dessen Details zu sehen. Ein langer Druck auf einen Listeneintrag zeigt weitere Optionen.</string>
+
+        <!-- TRANLATORS NOTE: I HAVE UPDATED THE new_in_510, above! Sorry. -->
+
+        <!-- Preference VALUE, displayed in a preference activity -->
+        <string name="zxing_scanner">Zxing Scanner</string>
+
+        <!-- Heading in 'about' dialog -->
+        <string name="special_thanks_label">Danksagung</string>
+
+        <!-- Credits in the 'about' dialog -->
+        <string name="translators_blurb">BookCatalogue ist das Ergebnis der Arbeit vieler Personen und würde nicht so weit verbreitet sein ohne die großzügige Arbeit unserer freiwilligen Übersetzer: Eugenio Davolio, José M. Galdo, Imkal, Gideon van Melle, Emir Sarı, Nick Silin und Robert Wetzlmayr (falls wir jemanden vergessen ahben, geben Sie uns bitte Bescheid).</string>
+
+        <!-- End: Added/Updated in 5.1.0 -->
+
+        <!-- Begin: Added/Updated in 5.1.1 -->
+
+        <!-- Name of the 'Default' bookshelf, created when app first installed. Needs to be short. -->
+        <string name="default_bookshelf_name">Standard</string>
+        <!-- A hint describing the benefit of following the Amazon links -->
+        <string name="hint_amazon_links_blurb">&lt;p&gt;Wenn Sie Produkte von Amazon kaufen, nachdem Sie die Menüpunkte &lt;i&gt;\"%1$s\"&lt;/i&gt;, &lt;i&gt;\"%2$s\"&lt;/i&gt; oder &lt;i&gt;\"%3$s\"&lt;/i&gt; gewählt haben, wird ein Anteil des Kaufpreises an die Entwickler von %4$s weitergeleitet.&lt;/p&gt;&lt;p&gt;Sie können auch die &lt;a href=""https://github.com/eleybourn/Book-Catalogue/wiki/Frequently-Asked-Questions-%%28FAQ%%29""&gt;Links in unserer Hilfe&lt;/a&gt; verwenden, um direkt zu Amazon oder PayPal zu gelangen.&lt;/p&gt;</string>
+
+        <!-- Name of the new style grouping (needs to be short). -->
+        <string name="update_date">Änderungsdatum</string>
+        <!-- Name of the new style grouping (needs to be short). -->
+        <string name="update_year">Änderungsjahr</string>
+        <!-- Name of the new style grouping (needs to be short). -->
+        <string name="update_month">Anderungsmonat</string>
+        <!-- Name of the new style grouping (needs to be short). -->
+        <string name="update_day">Änderungstag</string>
+
+        <!-- Short text for 'n stars' -->
+        <plurals
+                name="n_stars">
+                <item quantity="zero">%1$s Sterne</item>
+                <item quantity="one">%1$s Stern</item>
+                <item quantity="other">%1$s Sterne</item>
+        </plurals>
+
+        <string name="new_in_511">
+                <![CDATA[
+			<p><b>New in 5.1.1</b>\n\n
+				* Fehlerbehebungen\n\n
+				* Neuer Stil: Gruppierung nach letzten Aktualisierungsdatum\n\n
+				* Neuer Stil: Gruppierung nach Bewertung\n\n
+				* Neuer Stil: Gruppierung nach Bücherregal\n\n
+			</p>
+		]]>
+        </string>
+
+        <!-- End: Added/Updated in 5.1.1 -->
+
+        <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->
+
+        <!-- End: Added/Updated in [Next Version] -->
 
 </resources>
 

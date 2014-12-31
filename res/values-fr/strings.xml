@@ -986,7 +986,7 @@
 <!-- Name of the 'Default' bookshelf, created when app first installed. Needs to be short. -->
 <string name="default_bookshelf_name">Votre bibliothèque</string>
 <!-- A hint describing the benefit of folowing the Amazon links -->
-<string name="hint_amazon_links_blurb">&lt;p&gt;Si vous achetez des livres chez amazon en sélectionnant le menu &lt;i&gt;\"%1$s\"&lt;/i&gt;, &lt;i&gt;\"%2$s\"&lt;/i&gt; or &lt;i&gt;\"%3$s\"&lt;/i&gt; , une partie du prix d'achat sera reversée aux développeurs  %4$s.&lt;/p&gt;&lt;p&gt;Vous pouvez aussi utilisez le lien &lt;a href=""https://github.com/eleybourn/Book-Catalogue/wiki/Frequently-Asked-Questions-%%28FAQ%%29""&gt; (en anglais) sur notre FAQ&lt;/a&gt; pour vous rendre sur amazon ou Paypal.&lt;/p&gt;</string>
+<string name="hint_amazon_links_blurb">&lt;p&gt;Si vous achetez des livres chez amazon en sélectionnant le menu &lt;i&gt;\"%1$s\"&lt;/i&gt;, &lt;i&gt;\"%2$s\"&lt;/i&gt; or &lt;i&gt;\"%3$s\"&lt;/i&gt; , une partie du prix d\'achat sera reversée aux développeurs  %4$s.&lt;/p&gt;&lt;p&gt;Vous pouvez aussi utilisez le lien &lt;a href=""https://github.com/eleybourn/Book-Catalogue/wiki/Frequently-Asked-Questions-%%28FAQ%%29""&gt; (en anglais) sur notre FAQ&lt;/a&gt; pour vous rendre sur amazon ou Paypal.&lt;/p&gt;</string>
 <!-- Name of the new style grouping (needs to be short). -->
 <string name="update_date">Date de mise à jour</string>
 <!-- Name of the new style grouping (needs to be short). -->
@@ -999,7 +999,7 @@
 <plurals
 name="n_stars">
 <item quantity="zero">Aucune étoile</item>
-<item quantity="one">%1$ étoile</item>
+<item quantity="one">%1$s étoile</item>
 <item quantity="other">%1$s étoiles</item>
 </plurals>
 <string name="new_in_511">

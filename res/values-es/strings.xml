@@ -999,5 +999,44 @@ y puede editar el libro utilizando el menú de opciones.
     <string name="translators_blurb">BookCatalogue es fruto del esfuerzo de muchas personas, y no tendría un uso tan extendido sin la generosa aportación de nuestros traductores (voluntarios): Eugenio Davolio, José M. Galdo, Imkal, Gideon van Melle, Emir Sarı, Nick Silin y Robert Wetzlmayr (si nos hemos olvidado de alguien, por favor, díganoslo).</string>
 
     <!-- End: Added/Updated in 5.1.0 -->
+    <!-- Begin: Added/Updated in 5.1.1 -->
 
+    <!-- Name of the 'Default' bookshelf, created when app first installed. Needs to be short. -->
+    <string name="default_bookshelf_name">Predefinido</string>
+    <!-- A hint describing the benefit of folowing the Amazon links -->
+    <string name="hint_amazon_links_blurb">&lt;p&gt;Si compra productos en Amazon después de haber seleccionado las opciones &lt;i&gt;\"%1$s\"&lt;/i&gt;, &lt;i&gt;\"%2$s\"&lt;/i&gt; o &lt;i&gt;\"%3$s\"&lt;/i&gt;, un porcentaje del precio de compra será enviado a los desarrolladores de %4$s.&lt;/p&gt;&lt;p&gt;También puede utilizar el enlace &lt;a href=""https://github.com/eleybourn/Book-Catalogue/wiki/Frequently-Asked-Questions-%%28FAQ%%29""&gt;en nuestras FAQ&lt;/a&gt; para acceder directamente a Amazon o PayPal.&lt;/p&gt;</string>
+
+    <!-- Name of the new style grouping (needs to be short). -->
+    <string name="update_date">Actualizar fecha</string>
+    <!-- Name of the new style grouping (needs to be short). -->
+    <string name="update_year">Actualizar año</string>
+        <!-- Name of the new style grouping (needs to be short). -->
+    <string name="update_month">Actualizar mes</string>
+        <!-- Name of the new style grouping (needs to be short). -->
+    <string name="update_day">Actualizar día</string>
+
+    <!-- Short text for 'n stars' -->
+    <plurals
+        name="n_stars">
+        <item quantity="zero">%1$s estrellas</item>
+        <item quantity="one">%1$s estrella</item>
+        <item quantity="other">%1$s estrellas</item>
+    </plurals>
+
+    <string name="new_in_511">
+		<![CDATA[
+			<p><b>Novedades en la versión 5.1.1</b>\n\n
+				* Corrección de errores\n\n
+				* Nuevo estilo: Agrupar por fecha de última actualización\n\n
+				* Nuevo estilo: Agrupar por calificación\n\n
+				* Nuevo estilo: Agrupar por nombre de la biblioteca\n\n
+			</p>
+		]]>
+    </string>
+
+    <!-- End: Added/Updated in 5.1.1 -->
+
+    <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->
+    
+    <!-- End: Added/Updated in [Next Version] -->
 </resources>

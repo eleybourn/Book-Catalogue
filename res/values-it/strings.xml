@@ -887,6 +887,156 @@
     </string>
     <!-- End: Added/Updated in 5.0.8 -->
     
+    <!-- Begin: Added/Updated in 5.0.9 -->
+    <string name="new_in_509">
+		<![CDATA[
+			<p><b>Novità nella versione 5.0.9</b>\n\n
+				* Correzione di errori in Android 4.4 (KitKat)\n\n
+				* Traduzione olandese (Gideon van Melle)\n\n
+				* Correzione di altri errori minori
+			</p>
+		]]>
+    </string>
+
+	<string name="hint_evan_book">
+	    		<![CDATA[
+				<p>Sapevi che il primo autore di Book Catalogue (Evan Leybourn) ha appena pubblicato 
+				un libro sulla Agilità nella Gestione d\'Impresa?</p>
+				<p>Se sei interessato, puoi trovare ulteriori informazione presso:\n\n
+				<a href="http://theagiledirector.com/book">http://theagiledirector.com/book</a>
+				</p>
+			]]>
+    </string>
+
+    <!-- End: Added/Updated in 5.0.9 -->
+
+    <!-- Begin: Added/Updated in 5.1.0 -->
+    
+    <!--  Explanatory text for 'import' dialogue -->
+    <string name="import_books_blurb">I libri di questo archivio saranno importati. Seleziona uno delle due opzioni per avviare l\'importazione, o premi \'back\' per annullare:</string>
+    <!-- Description of the 'import all books' option -->
+    <string name="all_books_blurb">Tutti i libri nell\'archivio saranno importati, aggiornando i libri già presenti e aggiungendo quelli nuovi.</string>
+    <!-- Menu text for the 'import/export new & changed' option -->
+    <string name="new_and_changed_books">Libri nuovi ed aggiornati</string>
+    <!-- Description of the 'import new & changed' option -->
+    <string name="new_and_changed_books_blurb">Importa solo i libri nuovi, o che sono stati aggiornati più di recente nell\'archivio. Utile per sincronizzare due apparecchi.</string>
+    <!-- Descriptive text associated with import options not available with older archives -->
+    <string name="old_archive_blurb">Questa opzione non è supportata per le versioni più vecchie dell\'archivio.</string>
+    <!-- Part of the progress message displayed when importing books -->
+    <string name="n_created_m_updated">%1$s creati, %2$s aggiornati</string>
+
+    <!--  Explanatory text for 'export' dialogue -->
+    <string name="export_books_blurb">I libri del tuo catalogo saranno esportati. Seleziona uno delle due opzioni per avviare l\'esportazione, o premi \'back\' per annullare:</string>
+    <!-- Description of the 'import all books' option -->
+    <string name="export_all_books_blurb">Tutti i libri nel catalogo saranno esportati nell\'archivio.</string>
+    <!-- Description of the 'export new & changed' option -->
+    <string name="export_new_and_changed_books_blurb">Esporta solo i libri nuovi, o che sono stati aggiornati dopo l\'ultimo backup completo. Utile per sincronizzare due apparecchi.</string>
+    <!-- Part of the progress message displayed when exporting books -->
+    <string name="n_exported">%1$s esportati</string>
+
+    <!-- Displayed in progress dialog when exporting covers in incremental mode -->
+    <string name="covers_progress_incr">%1$s copertine elaborate (%2$s mancanti, %3$s saltate)</string>
+    
+    <!-- Explanatory note for 'export all' option -->
+    <string name="export_all_blurb">Tutti i libri, copertine, impostazioni e stili personalizzati saranno esportati nell\'archivio.</string>
+    <!-- Explanatory note for 'advanced export' option -->
+    <string name="export_advanced_blurb">Seleziona cosa esportare nell\'archivio.</string>
+    <!-- Introduction for 'advanced export' option -->
+    <string name="export_advanced_heading">Seleziona cosa esportare:</string>
+    
+    <!-- Text for button -->
+    <string name="book_details">Dettagli dei libri</string>
+    <!-- Brief descriptionn -->
+    <string name="book_details_blurb">Le informazioni dettagliate stesse</string>
+    <!-- Text for button -->
+    <string name="cover_images">Immagini delle copertine</string>
+    <!-- Brief descriptionn -->
+    <string name="cover_images_blurb">Copertine di tutti i libri selezionati. Ciò renderà l\'esportazione molto più pesante.</string>
+    <!-- Brief descriptionn -->
+    <string name="preferences_blurb">Preferenze e stili di elencazione personalizzati</string>
+    
+    <!-- Explanatory note for export date (not yet implemented) -->
+    <string name="export_advanced_date_blurb">In via opzionale, specifica una data da usare per selezionare libri e/o copertine da esportare:</string>
+    
+    <!-- Explanatory note for export date (not yet implemented) -->
+    <string name="all_books_added_or_updated_since">Tutti i libri aggiunti o aggiornati dopo il giorno:</string>
+    <!-- Explanatory note for export data since last backup -->
+    <string name="all_books_added_or_updated_since_last_full_backup">Tutti i libri aggiunti o aggiornati dall\'ultimo backup completo</string>
+
+    <!-- Short text for 'n books' -->
+    <plurals
+        name="n_books">
+        <item quantity="zero">nessun libro</item>
+        <item quantity="one">1 libro</item>
+        <item quantity="other">%1$s libri</item>
+    </plurals>
+
+    <!-- Short text for 'n covers' -->
+    <plurals
+        name="n_covers">
+        <item quantity="zero">nessuna copertina</item>
+        <item quantity="one">1 copertina</item>
+        <item quantity="other">%1$s copertine</item>
+    </plurals>
+
+    <!-- Used for concatenating two strings, eg. "3 books, 2 covers" (probably only important on RTL languages)-->
+    <string name="a_comma_b">%1$s, %2$s</string>
+    
+    <!-- Short progress message -->
+    <string name="searching_directory_ellipsis">Ricerca nella cartella&#8230;</string>
+
+    <string name="new_in_510">
+		<![CDATA[
+			<p><b>Novità nella versione 5.1.0</b>\n\n
+				* Traduzione in italiano (Eugenio Davolio)\n\n
+				* Traduzione in spagnolo (José M. Galdo)\n\n
+				* Traduzione in turco (bitigchi)\n\n
+				* Possibilità di archiviare solo i libri nuovi/aggiornati e di escludere copertine (o libri)\n\n
+				* Dimensione delle miniature negli elenchi migliorata per gli schermi ad alta densità\n\n
+				* Correzione di altri errori minori\n\n
+			</p>
+		]]>
+    </string>
+    
+    <!-- End: Added/Updated in 5.1.0 -->
+
+    <!-- Begin: Added/Updated in 5.1.1 -->
+
+    <!-- Name of the 'Default' bookshelf, created when app first installed. Needs to be short. -->
+    <string name="default_bookshelf_name">Default</string>
+    <!-- A hint describing the benefit of folowing the Amazon links -->
+    <string name="hint_amazon_links_blurb">&lt;p&gt;Se acquisti da Amazon dopo aver selezionato le voci &lt;i&gt;\"%1$s\"&lt;/i&gt;, &lt;i&gt;\"%2$s\"&lt;/i&gt; oppure &lt;i&gt;\"%3$s\"&lt;/i&gt;, una parte del prezzo d\'acquisto sarà inviata agli sviluppatori di %4$s.&lt;/p&gt;&lt;p&gt;In alternativa, puoi usare i &lt;a href=""https://github.com/eleybourn/Book-Catalogue/wiki/Frequently-Asked-Questions-%%28FAQ%%29""&gt;link alle nostre FAQ&lt;/a&gt; per andare direttamente su Amazon o PayPal.&lt;/p&gt;</string>
+
+    <!-- Name of the new style grouping (needs to be short). -->
+    <string name="update_date">Data aggiornamento</string>
+    <!-- Name of the new style grouping (needs to be short). -->
+    <string name="update_year">Anno</string>
+        <!-- Name of the new style grouping (needs to be short). -->
+    <string name="update_month">Mese</string>
+        <!-- Name of the new style grouping (needs to be short). -->
+    <string name="update_day">Giorno</string>
+
+    <!-- Short text for 'n stars' -->
+    <plurals
+        name="n_stars">
+        <item quantity="zero">%1$s stelle</item>
+        <item quantity="one">%1$s stella</item>
+        <item quantity="other">%1$s stelle</item>
+    </plurals>
+
+    <string name="new_in_511">
+		<![CDATA[
+			<p><b>Novità nella versione 5.1.1</b>\n\n
+				* Correzione di errori\n\n
+				* Nuovo stile: Elenca per data ultimo aggiornamento\n\n
+				* Nuovo stile: Elenca per indice di gradimento\n\n
+				* Nuovo stile: Elenca per nome della libreria\n\n
+			</p>
+		]]>
+    </string>
+
+    <!-- End: Added/Updated in 5.1.1 -->
+
     <!-- Begin: Added/Updated in [Next Version] -->
     <!-- End: Added/Updated in [Next Version] -->
 

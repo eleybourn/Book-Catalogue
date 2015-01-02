@@ -102,36 +102,6 @@ public class HintManager {
 		return h.shouldBeShown();
 	}
 	
-	/**
-	 * Linkify partial HTML. Linkify methods remove all spans before building links, this
-	 * method preserves them.
-	 * 
-	 * See: http://stackoverflow.com/questions/14538113/using-linkify-addlinks-combine-with-html-fromhtml
-	 * 
-	 * @param html			Partial HTML
-	 * @param linkifyMask	Linkify mask to use in Linkify.addLinks
-	 * 
-	 * @return				Spannable with all links
-	 */
-	public static Spannable linkifyHtml(String html, int linkifyMask) {
-		// Get the spannable HTML
-	    Spanned text = Html.fromHtml(html);
-	    // Save the span details for later restoration
-	    URLSpan[] currentSpans = text.getSpans(0, text.length(), URLSpan.class);
-
-	    // Build an empty spannable then add the links
-	    SpannableString buffer = new SpannableString(text);
-	    Linkify.addLinks(buffer, linkifyMask);
-
-	    // Add back the HTML spannables
-	    for (URLSpan span : currentSpans) {
-	        int end = text.getSpanEnd(span);
-	        int start = text.getSpanStart(span);
-	        buffer.setSpan(span, start, end, 0);
-	    }
-	    return buffer;
-	}
-
 	/** Display the passed hint, if the user has not disabled it */
 	public static boolean displayHint(Context context, int stringId, final Runnable postRun, Object... args) {
 		// Get the hint and return if it has been disabled.
@@ -153,7 +123,7 @@ public class HintManager {
 
 		// Setup the views
 		String hintText = BookCatalogueApp.context.getResources().getString(stringId, args);
-		msg.setText(linkifyHtml(hintText, Linkify.ALL));
+		msg.setText(Utils.linkifyHtml(hintText, Linkify.ALL));
 		// Automatically start a browser (or whatever)
 		msg.setMovementMethod(LinkMovementMethod.getInstance());
 

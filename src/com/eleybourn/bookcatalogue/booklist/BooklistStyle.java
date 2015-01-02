@@ -648,5 +648,13 @@ public class BooklistStyle implements Iterable<BooklistGroup>, Serializable {
 		BooklistStyle newStyle = SerializationUtils.cloneObject(this);				
 		return newStyle;
 	}
+
+	/**
+	 * Accessor to allow setting of Extras value directly.
+	 * @param show
+	 */
+	public void setShowAuthor(boolean show) {
+		mXtraShowAuthor.set(show);
+	}
 }
 

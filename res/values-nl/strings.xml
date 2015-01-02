@@ -1009,7 +1009,6 @@ Zie "Meer voorkeuren" voor de relevante instelling.
 
     <!-- TRANLATORS NOTE: I HAVE UPDATED THE new_in_510, above! Sorry. -->
     
-    <!-- End: Added/Updated in 5.1.0 -->
     <string name="zxing_scanner">Zxing Scanner</string>
     
     <!-- Heading in 'about' dialog -->
@@ -1017,7 +1016,47 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     
     <!-- Credits in the 'about' dialog -->
     <string name="translators_blurb">BookCatalogue is het resultaat van de inspanning van vele personen en zou niet zo\'n grote verspreiding kennen zonder de genereuse hulp van vrijwillige vertalers: Eugenio Davolio, José M. Galdo, Imkal, Gideon van Melle, Emir Sarı, Nick Silin, and Robert Wetzlmayr (als we iemand zijn vergeten, laat het ons aub weten).</string>
-    <!-- Begin: Added/Updated in [Next Version] -->
-    <!-- End: Added/Updated in [Next Version] -->
+    
+    <!-- End: Added/Updated in 5.1.0 -->
+    
+    <!-- Begin: Added/Updated in 5.1.1 -->
 
-</resources>
+    <!-- Name of the 'Default' bookshelf, created when app first installed. Needs to be short. -->
+    <string name="default_bookshelf_name">Standaard</string>
+    <!-- A hint describing the benefit of folowing the Amazon links -->
+    <string name="hint_amazon_links_blurb">&lt;p&gt;Indien u boeken koopt bij Amazon na het selecteren van de &lt;i&gt;\"%1$s\"&lt;/i&gt;, &lt;i&gt;\"%2$s\"&lt;/i&gt; of &lt;i&gt;\"%3$s\"&lt;/i&gt; menu items, zal een deel van de aankoopprijs gezonden worden naar de ontwikkelaars van  %4$s.&lt;/p&gt;&lt;p&gt;U kunt ook de &lt;a href=\"https://github.com/eleybourn/Book-Catalogue/wiki/Frequently-Asked-Questions-%%28FAQ%%29\"&gt;links op de FAQ pagina&lt;/a&gt; gebruiken om direct naar Amazon of Paypal te gaan.&lt;/p&gt;</string>
+    <!-- Name of the new style grouping (needs to be short). -->
+    <string name="update_date">Datum update</string>
+    <!-- Name of the new style grouping (needs to be short). -->
+    <string name="update_year">Jaar update</string>
+    <!-- Name of the new style grouping (needs to be short). -->
+    <string name="update_month">Maand update</string>
+    <!-- Name of the new style grouping (needs to be short). -->
+    <string name="update_day">Dag update</string>
+
+    <!-- Short text for 'n stars' -->
+    <plurals
+        name="n_stars">
+        <item quantity="zero">%1$s sterren</item>
+        <item quantity="one">%1$s ster</item>
+        <item quantity="other">%1$s sterren</item>
+    </plurals>
+
+    <string name="new_in_511">
+		<![CDATA[
+			<p><b>New in 5.1.1</b>\n\n
+				* Foutcorrecties\n\n
+				* Nieuwe stijl: Groeperen op datum laatste update\n\n
+				* Nieuwe stijl: Groeperen op  waardering\n\n
+				* Nieuwe stijl: Groeperen op naam van boekenplank\n\n
+			</p>
+		]]>
+    </string>
+
+    <!-- End: Added/Updated in 5.1.1 -->
+
+    <!-- Begin: Added/Updated in [Next Version] -->
+
+    <!-- End: Added/Updated in [Next Version] -->
+    
+    </resources>

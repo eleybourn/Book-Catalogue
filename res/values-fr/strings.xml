@@ -982,4 +982,36 @@
     <string name="translators_blurb">BookCatalogue est le résultat de l\'effort de beaucoup de personnes, et n\'aurait pas une diffusion et une utilisation aussi large sans l\'aide de nos généreux traducteurs: Eugenio Davolio, José M. Galdo, Imkal, Gideon van Melle, Emir Sarı, Nick Silin et Robert Wetzlmayr (Si j\'ai oublié quelqu\'un, faites-le nous savoir).</string>
 
     <!-- End: Added/Updated in 5.1.0 -->
+     <!-- Begin: Added/Updated in 5.1.1 -->
+<!-- Name of the 'Default' bookshelf, created when app first installed. Needs to be short. -->
+<string name="default_bookshelf_name">Votre bibliothèque</string>
+<!-- A hint describing the benefit of folowing the Amazon links -->
+<string name="hint_amazon_links_blurb">&lt;p&gt;Si vous achetez des livres chez amazon en sélectionnant le menu &lt;i&gt;\"%1$s\"&lt;/i&gt;, &lt;i&gt;\"%2$s\"&lt;/i&gt; or &lt;i&gt;\"%3$s\"&lt;/i&gt; , une partie du prix d\'achat sera reversée aux développeurs  %4$s.&lt;/p&gt;&lt;p&gt;Vous pouvez aussi utilisez le lien &lt;a href=""https://github.com/eleybourn/Book-Catalogue/wiki/Frequently-Asked-Questions-%%28FAQ%%29""&gt; (en anglais) sur notre FAQ&lt;/a&gt; pour vous rendre sur amazon ou Paypal.&lt;/p&gt;</string>
+<!-- Name of the new style grouping (needs to be short). -->
+<string name="update_date">Date de mise à jour</string>
+<!-- Name of the new style grouping (needs to be short). -->
+<string name="update_year">Année de mise à jour</string>
+<!-- Name of the new style grouping (needs to be short). -->
+<string name="update_month">Mois de mise à Jour</string>
+<!-- Name of the new style grouping (needs to be short). -->
+<string name="update_day">Jour de mise à jour</string>
+<!-- Short text for 'n stars' -->
+<plurals
+name="n_stars">
+<item quantity="zero">Aucune étoile</item>
+<item quantity="one">%1$s étoile</item>
+<item quantity="other">%1$s étoiles</item>
+</plurals>
+<string name="new_in_511">
+<![CDATA[
+<p><b>Nouveau dans la version 5.1.1</b>\n\n
+* Corrections de bogue\n\n
+* Nouveau style: Groupage par date de mise à jour date\n\n
+* Nouveau style: Groupage par évaluation\n\n
+* Nouveau style: Groupage par bibliothèque\n\n
+</p>
+]]>
+</string>
+<!-- End: Added/Updated in 5.1.1 -->
+
 </resources>

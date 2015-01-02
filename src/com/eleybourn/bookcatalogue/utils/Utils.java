@@ -76,6 +76,12 @@ import android.graphics.drawable.LayerDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.URLSpan;
+import android.text.util.Linkify;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -2132,5 +2138,36 @@ public class Utils {
 		}
 		return;
 	}
+	
+	/**
+	 * Linkify partial HTML. Linkify methods remove all spans before building links, this
+	 * method preserves them.
+	 * 
+	 * See: http://stackoverflow.com/questions/14538113/using-linkify-addlinks-combine-with-html-fromhtml
+	 * 
+	 * @param html			Partial HTML
+	 * @param linkifyMask	Linkify mask to use in Linkify.addLinks
+	 * 
+	 * @return				Spannable with all links
+	 */
+	public static Spannable linkifyHtml(String html, int linkifyMask) {
+		// Get the spannable HTML
+	    Spanned text = Html.fromHtml(html);
+	    // Save the span details for later restoration
+	    URLSpan[] currentSpans = text.getSpans(0, text.length(), URLSpan.class);
+
+	    // Build an empty spannable then add the links
+	    SpannableString buffer = new SpannableString(text);
+	    Linkify.addLinks(buffer, linkifyMask);
+
+	    // Add back the HTML spannables
+	    for (URLSpan span : currentSpans) {
+	        int end = text.getSpanEnd(span);
+	        int start = text.getSpanStart(span);
+	        buffer.setSpan(span, start, end, 0);
+	    }
+	    return buffer;
+	}
+
 }
 

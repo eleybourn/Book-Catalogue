@@ -517,7 +517,19 @@ public class BooklistBuilder {
 		for(SynchronizedStatement s : mLevelBuildStmts)
 			s.execute();
 	}
-	
+
+	private String mUNKNOWNText = null;
+	/**
+	 * Accessor for resource string used in queries.
+	 * @return
+	 */
+	private String getUNKNOWNText() {
+		if (mUNKNOWNText == null) {
+			mUNKNOWNText = BookCatalogueApp.getResourceString(R.string.unknown_uc);
+		}
+		return mUNKNOWNText;
+	}
+
 	/**
 	 * Utility function to retrun a glob expression to get the 'year' from a text date field in a standard way.
 	 * 
@@ -530,7 +542,7 @@ public class BooklistBuilder {
 	private String yearGlob(final String fieldSpec) {
 		return "case when " + fieldSpec + " glob '[0123456789][01234567890][01234567890][01234567890]*'\n" +
 				"	Then substr(" + fieldSpec + ", 1, 4) \n" +
-				" else 'UNKNOWN' end";
+				" else '" + getUNKNOWNText() + "' end";
 	}
 
 	/**
@@ -549,7 +561,7 @@ public class BooklistBuilder {
 								" when " + fieldSpec + 
 								" glob '[0123456789][01234567890][01234567890][01234567890]-[0123456789]*'\n" +
 								"	Then substr(" + fieldSpec + ", 6, 1) \n" +
-								" else 'UNKNOWN' end";
+								" else '" + getUNKNOWNText() + "' end";
 	}
 
 	/**

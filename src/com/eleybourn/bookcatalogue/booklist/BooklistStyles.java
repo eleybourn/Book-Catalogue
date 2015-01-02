@@ -232,8 +232,7 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 		style.addGroup(ROW_KIND_UPDATE_YEAR);
 		style.addGroup(ROW_KIND_UPDATE_MONTH);
 		style.addGroup(ROW_KIND_UPDATE_DAY);
-		style.addGroup(ROW_KIND_AUTHOR);
-
+		style.setShowAuthor(true);
 		// NEWKIND: Add new kinds to this list so the user sees them (Optional)
 
 	}

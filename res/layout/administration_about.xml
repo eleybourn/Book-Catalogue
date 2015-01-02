@@ -120,6 +120,22 @@
                 android:paddingLeft="15dp"
                 android:text="@string/translators_blurb"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/padding_border"
+                android:text="@string/amazon"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/amazon_links_info"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/padding_border"
+                android:paddingLeft="15dp"
+                android:text="@string/hint_amazon_links_blurb"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
         </LinearLayout>
     </ScrollView>
 

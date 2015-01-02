@@ -812,6 +812,26 @@
 		]]>
     </string>
     
+    <string name="new_in_509">
+		<![CDATA[
+			<p><b>Новое в версии 5.0.9</b>\n\n
+				* Исправление ошибки на Android 4.4 (KitKat)\n\n
+				* Голландский перевод (Gideon van Melle)\n\n
+				* Исправление багов
+			</p>
+		]]>
+    </string>
+    
+    <string name="hint_evan_book">
+	    		<![CDATA[
+				<p>Знаете ли вы, что первый автор приложения Book Catalogue (Evan Leybourn) опубликовал 
+				книгу Agile Business Management?</p>
+				<p>Если вы заинтересованы в других его работах, можете найти больше информации здесь:\n\n
+				<a href="http://theagiledirector.com/book">http://theagiledirector.com/book</a>
+				</p>
+			]]>
+    </string>
+    
     <string name="import_books_blurb">Книги этого архива будут импортированы. Выберите один из вариантов, чтобы начать импорт, или \'НАЗАД\' для отмены:</string>
     <string name="all_books_blurb">Все книги архива будут импортированы, обновив существующие и добавив новые.</string>
     <string name="new_and_changed_books">Новые и обновленные книги</string>
@@ -827,5 +847,93 @@
     <!-- This was deleted in a previous version due to duplicate name; it has since been renamed. In the short term, I just display the simplet message -->
     <!-- The original message was: "ERROR: Import of data (from SDCard) failed. Is the file in the correct place?" -->
     <string name="import_failed_is_location_correct">Импорт не удался.</string>
+    
+    <string name="export_all_blurb">Все книги, обложки, настройки и пользовательские стили будут экспортированы в архив.</string>
+    <string name="export_advanced_blurb">Выберите, что будет экспортировано в архив.</string>
+    <string name="export_advanced_heading">Выберите для экспорта:</string>
+    
+    <string name="book_details">Детальное инфо</string>
+    <string name="book_details_blurb">Подробная информация о самой книге</string>
+    <string name="cover_images">Обложки</string>
+    <string name="cover_images_blurb">Обложки для всех выбранных книг. Это сделает экспорт значительно больше.</string>
+    <string name="preferences_blurb">Настройки и пользовательские стили</string>
+    
+    <string name="export_advanced_date_blurb">Опционально укажите дату при выборе книг и/или обложек для экспорта:</string>
+    
+    <string name="all_books_added_or_updated_since">Все добавленные или обновленные книги с:</string>
+    <string name="all_books_added_or_updated_since_last_full_backup">Все добавленные или обновленные книги с последнего бэкапа</string>
+
+    <plurals
+        name="n_books">
+        <item quantity="zero">Нет книг</item>
+        <item quantity="one">%1$s книга</item>
+        <item quantity="few">%1$s книги</item>
+        <item quantity="many">%1$s книг</item>
+        <item quantity="other">%1$s книг</item>
+    </plurals>
+
+    <plurals
+        name="n_covers">
+        <item quantity="zero">Нет обложек</item>
+        <item quantity="one">%1$s обложка</item>
+        <item quantity="few">%1$s обложки</item>
+        <item quantity="many">%1$s обложек</item>
+        <item quantity="other">%1$s обложек</item>
+    </plurals>
+
+    <string name="searching_directory_ellipsis">Просмотр папки&#8230;</string>
+    
+    <string name="new_in_510">
+		<![CDATA[
+			<p><b>Новое в версии 5.1.0</b>\n\n
+				* Перевод на итальянский (Eugenio Davolio)\n\n
+				* Перевод на испанский (José M. Galdo)\n\n
+				* Перевод на турецкий (Emir Sarı)\n\n
+				* Возможность архивировать только новые/обновленные книги и исключать обложки (или книги)\n\n
+				* Исправлен размер миниатюр в списках для экранов с высоким разрешением\n\n
+				* Добавлены опции для просмотра книг по автору/серии на Amazon\n\n
+				* Исправление багов\n\n
+			</p>
+		]]>
+    </string>
+    
+    <string name="amazon_books_in_series">Книги в этой серии</string>
+    <string name="amazon_books_by_author">Книги этого автора</string>
+    <string name="amazon_books_by_author_in_series">Книги по автору/серии</string>
+    
+    <string name="hint_book_list">Клик по книге покажет детальную информацию, долгое нажатие на элемент списка покажет остальные действия.</string>
+
+    <string name="special_thanks_label">Особые благодарности</string>
+    
+    <string name="translators_blurb">BookCatalogue это продукт усилий многих людей, и он мог бы и не иметь такого широкого распространения без помощи добровольных переводчиков: Eugenio Davolio, José M. Galdo, Imkal, Gideon van Melle, Emir Sarı, Nick Silin, and Robert Wetzlmayr (если кто-то забыт, пожалуйста, напомните).</string>
+
+    <string name="default_bookshelf_name">По умолчанию</string>
+    <string name="hint_amazon_links_blurb">&lt;p&gt;Если вы покупаете вещи на Amazon после выбора &lt;i&gt;\"%1$s\"&lt;/i&gt;, &lt;i&gt;\"%2$s\"&lt;/i&gt; or &lt;i&gt;\"%3$s\"&lt;/i&gt; элементов меню, часть стоимости заказa будет отослана разработчикам %4$s.&lt;/p&gt;&lt;p&gt; Вы также можете использовать &lt;a href=""https://github.com/eleybourn/Book-Catalogue/wiki/Frequently-Asked-Questions-%%28FAQ%%29""&gt; ссылки нашего FAQ&lt;/a&gt;, чтобы перейти прямо на Amazon или PayPal.&lt;/p&gt;</string>
+
+    <string name="update_date">Дата обновления</string>
+    <string name="update_year">Год обновления</string>
+    <string name="update_month">Месяц обновления</string>
+    <string name="update_day">День обновленияy</string>
+
+    <plurals
+        name="n_stars">
+        <item quantity="zero">%1$s звезд</item>
+        <item quantity="one">%1$s звезда</item>
+        <item quantity="two">%1$s звезды</item>
+        <item quantity="few">%1$s звезд</item>
+        <item quantity="many">%1$s звезд</item>
+        <item quantity="other">%1$s звезд</item>
+    </plurals>
+
+    <string name="new_in_511">
+		<![CDATA[
+			<p><b>Новое в версии 5.1.1</b>\n\n
+				* Исправление ошибок\n\n
+				* Новый стиль: Группировка по дате последнего обновления\n\n
+				* Новый стиль: Группировка по рейтингу\n\n
+				* Новый стиль: Группировка по имени полки\n\n
+			</p>
+		]]>
+    </string>
     
 </resources>

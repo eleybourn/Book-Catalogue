@@ -31,6 +31,9 @@ import android.widget.ImageView;
 
 abstract class CropImageViewTouchBase extends ImageView {
 
+	/** Maximum upscaling for a viewed image */
+	private static final float SCALE_LIMIT_MAX = Float.MAX_VALUE;
+	
 	@SuppressWarnings("unused")
 	private static final String TAG = "CropImageViewTouchBase";
 
@@ -297,10 +300,12 @@ abstract class CropImageViewTouchBase extends ImageView {
 		// int rotation = bitmap.getRotation();
 		matrix.reset();
 
-		// We limit up-scaling to 2x otherwise the result may look bad if it's
-		// a small icon.
-		float widthScale = Math.min(viewWidth / w, 2.0f);
-		float heightScale = Math.min(viewHeight / h, 2.0f);
+		// Originallt We limited up-scaling to 2x otherwise the result may 
+		// look bad if it's a small icon.
+		// However, we need to crop small thumbnails on huge phones...so
+		// there is little choice. We now have no effective limit.
+		float widthScale = Math.min(viewWidth / w, SCALE_LIMIT_MAX);
+		float heightScale = Math.min(viewHeight / h, SCALE_LIMIT_MAX);
 		float scale = Math.min(widthScale, heightScale);
 
 		matrix.postConcat(bitmap.getRotateMatrix());

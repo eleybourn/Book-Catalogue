@@ -112,7 +112,7 @@
     <string name="amazon_wishlist">Amazon Wishlist</string>
     <string name="same_author">Bu seçkideki tüm anlatılar aynı yazar tarafından yazılmıştır</string>
     <string name="menu_delete_anthology">Seçkiden eser sil</string>
-    <string name="is_anthology">Bu betik bir seçkide var mı?</string>
+    <string name="is_anthology">Bu kitap bir seçkide var mı?</string>
     <string name="populate_anthology_titles">Kitap adlarını kendiliğinden doldur (DENEYSEL ÖZELLİK)</string>
     <string name="automatic_population_failed">Kitap adlarının kendiliğinden doldurulması başarısız oldu</string>
     <string name="anthology">Seçmeler</string>
@@ -301,7 +301,7 @@
     <string name="goodreads">goodreads</string>
     <string name="goodreads_label">Goodreads</string>
     <string name="goodreads_auth_blurb_part1">Goodreads, tor betinde belirtildiği üzere ereği \"kişilerin sevdiği betikleri bulmasına ve paylaşmasına yardımcı olmak\" olan bir servistir.
- 										Çok geniş bir betik ve yorum veritabanına iye olan Goodreads\'te kayıtlı bir  											    		    
+ 										Çok geniş bir kitap ve yorum veritabanına iye olan Goodreads\'te kayıtlı bir  											    		    
  										kullanıcı iseniz BookCatalogue Goodreads\'ten betiklerinizi, raflarınızı ve yorumlarınızı
  										alabilir veya Goodreads\'e gönderebilir. BookCatalogue kendi başına bir uygulama olup
  										Goodreads\'i gerektirmemektedir, ancak ilgilendiyseniz buradan kayıt olabilirsiniz:</string>
@@ -336,8 +336,8 @@
     <string name="unknown_uc">BİLİNMEYEN</string>
     <string name="this_book_deleted_uc">BU BETİK SİLİNDİ</string>
     <string name="by">%1$s ile</string>
-    <string name="no_matching_book_found">Eşleşen betik bulunamadı</string>
-    <string name="no_isbn_stored_for_book">Bu betik için bir ISBN depolanmamış</string>
+    <string name="no_matching_book_found">Eşleşen kitap bulunamadı</string>
+    <string name="no_isbn_stored_for_book">Bu kitap için bir ISBN depolanmamış</string>
     <string name="select_an_action">Bir eylem seçin</string>
     <string name="get_image_from">Buradan bir görsel al: %1$s</string>
     <string name="goodreads_auth_check">Goodreads yetkilendirme denetimi</string>
@@ -347,10 +347,10 @@
     <string name="not_authorized">Yetkilendirilmemiş</string>
     <string name="goodreads_auth_error">Goodreads yetkilendirmesi bir hataya neden oldu</string>
     <string name="if_the_problem_persists">Eğer sorun sürerse lütfen ana seçkedeki Yardım bölümünden destek ile iletişime geçin.</string>
-    <string name="book_no_longer_exists">Belirtilen betik artık yok</string>
+    <string name="book_no_longer_exists">Belirtilen kitap artık yok</string>
     <string name="please_enter_search_criteria">Lütfen arama kriteri girin</string>
     <string name="error_while_searching">Arama sırasında hata</string>
-    <string name="send_all_to_goodreads_result">%1$s betik işlendi: %2$s tanesi başarıyla gönderildi, %3$s tanesinin ISBN\'si yok ve %4$s tanesinin ISBN\'si Goodreads\'te bulunamadı</string>
+    <string name="send_all_to_goodreads_result">%1$s kitap işlendi: %2$s tanesi başarıyla gönderildi, %3$s tanesinin ISBN\'si yok ve %4$s tanesinin ISBN\'si Goodreads\'te bulunamadı</string>
     <string name="x_of_y">%1$s (Toplam %2$s)</string>
     <string name="send_book_to_goodreads">Bu betiği Goodreads\'e gönder: %1$s</string>
 
@@ -376,7 +376,7 @@
     <string name="no_publisher">(yayımcı yok)</string>
     <string name="no_author">(yazar yok)</string>
     <string name="no_date">(günay yok)</string>
-    <string name="book_lists">Betik dizelgeleri</string>
+    <string name="book_lists">Kitap dizelgeleri</string>
     <string name="show_all_authors">Betikleri yazarların altında göster</string>
     <string name="show_all_series">Betikleri tüm serilerde göster</string>
     <string name="show_thumbnails">Ufak resimleri göster</string>
@@ -408,8 +408,8 @@
     <item name="MENU_EDIT_STYLE" type="id"/>
     <item name="MENU_CLONE_STYLE" type="id"/>
 
-    <string name="booklist_preferences">Betik dizelgesi yeğlenenleri</string>
-    <string name="extra_book_details">Ek betik ayarları</string>
+    <string name="booklist_preferences">Kitap dizelgesi yeğlenenleri</string>
+    <string name="extra_book_details">Ek kitap ayarları</string>
     <string name="general">Genel</string>
     <string name="bookshelves">Betiklikler</string>
     <string name="shelves">Raflar</string>
@@ -422,12 +422,12 @@
     <string name="optimizing_databases">Veritabanları eniyileniyor&#8230;</string>
     <string name="starting_up">Başlatılıyor&#8230;</string>
     <string name="book_catalogue_startup">BookCatalogue başlangıç</string>
-    <string name="book_list_state">Betik dizelgesi durumu</string>
-    <string name="always_start_booklists_expanded">Betik dizelgelerini genişletilmiş olarak başlat</string>
-    <string name="always_start_booklists_collapsed">Betik dizelgelerini içe kapalı olarak başlat</string>
-    <string name="remember_booklists_state">Betik dizelgesi durumunu koru</string>
+    <string name="book_list_state">Kitap dizelgesi durumu</string>
+    <string name="always_start_booklists_expanded">Kitap dizelgelerini genişletilmiş olarak başlat</string>
+    <string name="always_start_booklists_collapsed">Kitap dizelgelerini içe kapalı olarak başlat</string>
+    <string name="remember_booklists_state">Kitap dizelgesi durumunu koru</string>
     <string name="searching_goodreads">Goodreads\'te aranıyor</string>
-    <string name="edit_book_list_styles">Betik dizelgesi biçemlerini düzenle</string>
+    <string name="edit_book_list_styles">Kitap dizelgesi biçemlerini düzenle</string>
     <string name="show_more_ellipsis">Daha fazla göster&#8230;</string>
     <string name="show_fewer_ellipsis">Daha az göster&#8230;</string>
     <string name="customize_ellipsis">Kişiselleştir&#8230;</string>
@@ -442,16 +442,16 @@
     										\n\nIt is also possible to re-order the items by dragging the icon at the extreme right of each row.
     										\n\nBir satırda herhangi bir yere dokunmak o biçemin ayrıntılarını düzenleme olanağı tanır (veya çoğaltır, eğer yerleşik bir biçemse).
 </string>
-    <string name="hint_booklist_style_groups">Bu ekranı özel bir betik dizelgesi biçemi hiyerarşisini düzenlemek için kullanabilirsiniz.
+    <string name="hint_booklist_style_groups">Bu ekranı özel bir kitap dizelgesi biçemi hiyerarşisini düzenlemek için kullanabilirsiniz.
     										\n\nYeşil onay simgesi başlığın listede görüntüleneceğini, kırmızı artı ise görüntülenmeyeceğini belirtir.
     										Yeşil onay simgesine dokunmak onu kırmızı artıya dönüştürür, tersi de onay simgesi için geçerlidir.
     										\n\nHiyerarşiyi sağ uçtaki simgeyi yukarı-aşağı taşıyarak değiştirebilirsiniz.
 </string>
-    <string name="hint_booklist_style_properties">Bu ekranı seçilen betik dizgesi biçeminin özelliklerini değiştirmek üzere kullanabilirsiniz.
+    <string name="hint_booklist_style_properties">Bu ekranı seçilen kitap dizgesi biçeminin özelliklerini değiştirmek üzere kullanabilirsiniz.
     										\n\nBuradan adını değiştirelibilr, hiyerarşiyi değiştirmek için öbeklendirmeyi düzenleyebilir ve										    kullanışlı bir biçem yaratmak için diğer ayarları yapabilirsiniz.
-    										\n\n\'Betik süzgeçleri\' ayarlarını kullanarak betik dizgelerinde görüntülenecek seçimleri          										    ayarlayabilirsiniz, örneğin yalnızca okumadığınız betikleri vb. seçebilirsiniz.
+    										\n\n\'Kitap süzgeçleri\' ayarlarını kullanarak kitap dizgelerinde görüntülenecek seçimleri          										    ayarlayabilirsiniz, örneğin yalnızca okumadığınız betikleri vb. seçebilirsiniz.
 </string>
-    <string name="hint_booklist_global_properties">Bu ekranı tüm betik dizgesi biçeminin özelliklerini değiştirmek üzere kullanabilirsiniz.
+    <string name="hint_booklist_global_properties">Bu ekranı tüm kitap dizgesi biçeminin özelliklerini değiştirmek üzere kullanabilirsiniz.
     										\n\nÇoğu özellikler kişisel biçemlerle değiştirilebilir, ancak öntanımlı değerler burada
     										tanımlanmışlardır.
     										\n\nArdalanı değiştirebilir, dizelgelerin başlangıçta nasıl görüntüleneceğini seçebilir
@@ -465,7 +465,7 @@
     <string name="non_blank_arg_required">\'%1$s\' için boş olmayan bir değer belirtilmelidir</string>
     <string name="select_read_only">Yalnızca okunan betikleri seç</string>
     <string name="select_unread_only">Yalnızca okunmayan betikleri seç</string>
-    <string name="extra_filters">Betik süzgeçleri</string>
+    <string name="extra_filters">Kitap süzgeçleri</string>
     <string name="new_style">Yeni biçem</string>
     <string name="select_based_on_read_status">\'Okunma\' durumuna göre seç</string>
     <string name="books_with_multiple_authors">Birden fazla yazarlı betikler</string>
@@ -477,11 +477,11 @@
     <string name="given_name_first_eg">Ad başta, örneğin \'Özgür Çapulcu\'</string>
     <string name="family_name_first_eg">Soyad başta, örneğin \'Çapulcu, Özgür\'</string>
     <string name="thumbnails">Ufak resimler</string>
-    <string name="size_of_booklist_items">Betik dizelgesi öğeleri boyutu</string>
+    <string name="size_of_booklist_items">Kitap dizelgesi öğeleri boyutu</string>
     <string name="normal">Olağan</string>
     <string name="smaller">Daha ufak</string>
     <string name="select_style">Biçem seç</string>
-    <string name="booklist_background_style">Betik dizelgesi ardalan biçemi</string>
+    <string name="booklist_background_style">Kitap dizelgesi ardalan biçemi</string>
     <string name="textured_backgroud">Dokulu ardalan resmi</string>
     <string name="plain_background_b_reduces_flicker_b">Düz ardalan (titremeyi azaltır)</string>
     <string name="thing_must_not_be_blank">%1$s boş olamaz</string>
@@ -515,15 +515,15 @@
     										\n\nİster tüm betiklerinizi gönderebilir veya son göndermenizden bu yana güncellenen, alınan 
     										veya gönderilen betikleri seçebilir (henüz gönderilmeyen 
     										betikler de dahil olmak üzere) veya güncellemeyi iptal edebilirsiniz.
-    										\n\nEğer daha önce hiç betik göndermediyseniz ilk iki seçenek
+    										\n\nEğer daha önce hiç kitap göndermediyseniz ilk iki seçenek
     										arasında hiçbir ayrım bulunmamaktadır.</string>
     <string name="send_all">Tümünü gönder</string>
     <string name="send_updated">Güncellenenleri gönder</string>
     <string name="sync_with_goodreads">Goodreads ile eşitle</string>
     <string name="cover_options_cc_ellipsis">Kapak seçenekleri&#8230;</string>
     <string name="show_events_ellipsis">Olayları göster&#8230;</string>
-    <string name="hint_authors_book_may_appear_more_than_once">Eğer her yazar için gösteriliyorsa, tek bir betik bir dizelgede birden fazla görünebilir. Böyle bir durumda bu betiklerden birini silmek dizelgeden tüm girileri silecektir.</string>
-    <string name="hint_series_book_may_appear_more_than_once">Eğer her bir seride gösteriliyorsa, tek bir betik bir dizelgede birden fazla görünebilir. Böyle bir durumda bu betiklerden birini silmek dizelgeden tüm girileri silecektir.</string>
+    <string name="hint_authors_book_may_appear_more_than_once">Eğer her yazar için gösteriliyorsa, tek bir kitap bir dizelgede birden fazla görünebilir. Böyle bir durumda bu betiklerden birini silmek dizelgeden tüm girileri silecektir.</string>
+    <string name="hint_series_book_may_appear_more_than_once">Eğer her bir seride gösteriliyorsa, tek bir kitap bir dizelgede birden fazla görünebilir. Böyle bir durumda bu betiklerden birini silmek dizelgeden tüm girileri silecektir.</string>
     <string name="hint_background_tasks">Buradan şu anda çalışan olayları, önceki hata ile biten diğer olayları ve diğer dikkate değer olayları görebilirsiniz. 
     								Bir göreve tıklamak o görevle ilişkili tüm olayları görmenizi ve/veya görevi silebilmenizi (ve ilişkili diğer olayları) sağlar.</string>
     <string name="hint_background_task_events">Buradan bir ardalan görevi ile ilişkili tüm olayları görebilirsiniz. 
@@ -539,10 +539,10 @@
     									\n\n(3) Goodreads ile eşitleme yapın.
     									\n\nBu betiğin BookCatalogue\'de yeniden oluşturulmasını sağlar ve her iki giri birbiri ile sürekli eşitlenmiş kalacaktır.</string>
     <string name="explain_goodreads_no_match">Seçili betiğin ISBN\'si Goodreads\'te bulunamadı. Bunun olası iki nedeni vardır: 
-    									Ya betik için girdiğiniz veri hatalı (ISBN\'yi kontrol edin) veya betik Goodreads\'te bulunmuyor. 
+    									Ya kitap için girdiğiniz veri hatalı (ISBN\'yi kontrol edin) veya kitap Goodreads\'te bulunmuyor. 
     									\n\nEğer BookCatalogue\'de herhangi bir veriyi değiştirirseniz, yalnızca \'Yeniden dene\' düğmesine basın 
     									ve oluşan ardalan görevinin başarıyla tamamlanıp tamamlanmadığına bakın. 
-    									\n\nEğer veri doğru olup, ancak betik hala bulunamıyorsa bu betiğin ISBN\'si ile birlikte Goodreads\'e el ile
+    									\n\nEğer veri doğru olup, ancak kitap hala bulunamıyorsa bu betiğin ISBN\'si ile birlikte Goodreads\'e el ile
 									tor betinden eklenmesi gerekmektedir. Bu yapıldıktan sonra betiği yeniden göndermeyi deneyebilirsiniz.</string>
     <string name="read_amp_unread">Okunan &amp; Okunmayan</string>
     <string name="loaned">Ödünç verilen</string>
@@ -552,7 +552,7 @@
     <string name="added_year">Eklenen yıl</string>
     <string name="added_month">Eklenen ay</string>
     <string name="added_day">Eklenen gün</string>
-    <string name="book">Betik</string>
+    <string name="book">Kitap</string>
     <string name="in">İçinde</string>
     <string name="size">Boyut</string>
     <string name="updated">Güncellenmiş</string>
@@ -573,8 +573,8 @@
     <string name="generate_immediately">Anında oluştur (dizelgeler daha yavaş kayar, resimler anında görüntülenir)</string>
     <string name="sort_and_style_ellipsis">Sıralama &amp; biçemi&#8230;</string>
     <string name="disable_background_image">Ardalan resmini kapat</string>
-    <string name="displaying_n_books_in_m_entries">%2$s giride %1$s betik görüntüleniyor</string>
-    <string name="displaying_n_books">%1$s betik görüntüleniyor</string>
+    <string name="displaying_n_books_in_m_entries">%2$s giride %1$s kitap görüntüleniyor</string>
+    <string name="displaying_n_books">%1$s kitap görüntüleniyor</string>
     <string name="available">Uygun</string>
     <string name="loaned_to_2">\u2192</string>
     <string name="summary_details_in_header">Başlık özet ayrıntıları</string>
@@ -584,7 +584,7 @@
     <string name="beep_if_scanned_isbn_invalid">Taranan ISBN geçerli değil ise biple</string>
     <string name="no_image_found">Resim bulunamadı</string>
     <string name="could_not_copy_image">Resim eşlemlenemedi</string>
-    <string name="this_option_is_not_available_until_the_book_is_saved">Bu özellik betik saklanana kadar kullanılamaz</string>
+    <string name="this_option_is_not_available_until_the_book_is_saved">Bu özellik kitap saklanana kadar kullanılamaz</string>
     <string name="scan_barcode_isbn">Barkod/ISBN tara</string>
     <string name="enter_isbn">ISBN gir</string>
     <string name="allow_asin">ASIN\'e izin ver</string>
@@ -599,7 +599,7 @@
     <string name="you_have_unsaved_changes">Saklanmamış değişiklikler var, şimdi çıkarsanız hepsi silinecektir.</string>
     <string name="exit">Çıkış</string>
     <string name="continue_editing">Düzenlemeyi sürdür</string>
-    <string name="the_title_already_exists">Bu betik adı zaten var</string>
+    <string name="the_title_already_exists">Bu kitap adı zaten var</string>
     <string name="year">Yıl</string>
     <string name="month">Ay</string>
     <string name="day">Gün</string>
@@ -621,7 +621,7 @@
     <string name="google_books">Google Betikler (Kitaplar)</string>
     <string name="library_thing">LibraryThing</string>
     <string name="searching_elipsis">Aranıyor&#8230;</string>
-    <string name="adding_book_elipsis">Betik ekle&#8230;</string>
+    <string name="adding_book_elipsis">Kitap ekle&#8230;</string>
     <string name="prefs_global_opening_book_mode">Betiği salt okunur aç</string>
     <string name="book_details_readonly_publishing">Yayımlanıyor</string>
     <string name="book_details_readonly_by">ile</string>
@@ -706,12 +706,12 @@
     </string>
 
     <!-- Hint text displayed when user enters the book listw -->
-    <string name="hint_view_only_book_details">Bu dizelgedeki herhangi bir öğeye dokunduğunuzda artık salt okunur betik ayrıntıları ekranına gidebilirsiniz. 
+    <string name="hint_view_only_book_details">Bu dizelgedeki herhangi bir öğeye dokunduğunuzda artık salt okunur kitap ayrıntıları ekranına gidebilirsiniz. 
 İlgili ayar için "Diğer yeğlenenler" bölümüne bakın.
 </string>
 
     <!-- Hint text displayed when user enters the 'read-only' book view -->
-    <string name="hint_view_only_help">Bu ekran salt okunur betik ayrıntıları ekranıdır; sağa/sola kaydırarak diğer betiklere geçebilir, seçke düğmesi veya taşan seçke simgesini kullanıp seçenekler bölümünden betiği düzenleyebilirsiniz.
+    <string name="hint_view_only_help">Bu ekran salt okunur kitap ayrıntıları ekranıdır; sağa/sola kaydırarak diğer betiklere geçebilir, seçke düğmesi veya taşan seçke simgesini kullanıp seçenekler bölümünden betiği düzenleyebilirsiniz.
 </string>
 
     <!-- This is the heading of the 'Details' tab when editing a book. It needs to be short. "Book Details" is too long. -->
@@ -797,8 +797,8 @@
     <string name="copy_database">Veritabanını eşlemle (teknik destek için)</string>
 
     <!-- Items in list of options for the 'Summary Details' preference. Detrmines what is show in book list header -->
-    <string name="show_book_count">Betik sayısını göster</string>
-    <string name="show_first_level_and_book_count">Birinci başlığı ve betik sayısını göster</string>
+    <string name="show_book_count">Kitap sayısını göster</string>
+    <string name="show_first_level_and_book_count">Birinci başlığı ve kitap sayısını göster</string>
     <string name="show_all_summary_details">Tüm özet ayrıntılarını göster</string>
 
     <!-- Displayed when an archive operation fails -->
@@ -851,7 +851,7 @@
 
     <!-- Begin: Added/Updated in 5.0.5 -->
     <!--  New preference to override the default method used to generate bookslists as defined by API level -->
-    <string name="booklist_generation">Betik dizelgesi oluşturma seçeneği</string>
+    <string name="booklist_generation">Kitap dizelgesi oluşturma seçeneği</string>
     <!-- Option listed under "booklist_generation" referring to a very conservative way of generating bookslists -->
     <string name="force_compatibility_mode">Uyumluluk kipini zorla</string>
     <!-- Option listed under "booklist_generation" referring to a conservative way of generating bookslists -->
@@ -918,7 +918,7 @@
     <!-- Introduction for 'advanced export' option -->
     <string name="export_advanced_heading">Nelerin dışa aktarılacağını seçin:</string>
     <!-- Text for button -->
-    <string name="book_details">Betik ayrıntıları</string>
+    <string name="book_details">Kitap ayrıntıları</string>
     <!-- Brief descriptionn -->
     <string name="book_details_blurb">Betiklerin ayrıntıları gösterir</string>
     <!-- Text for button -->
@@ -936,9 +936,9 @@
    <!-- Short text for 'n books' -->
    <plurals
    name="n_books">
-   <item quantity="zero">betik yok</item>
-   <item quantity="one">1 betik</item>
-   <item quantity="other">%1$s betik</item>
+   <item quantity="zero">kitap yok</item>
+   <item quantity="one">1 kitap</item>
+   <item quantity="other">%1$s kitap</item>
    </plurals>
    <!-- Short text for 'n covers' -->
    <plurals
@@ -971,7 +971,7 @@
    <!-- Menu item -->
    <string name="amazon_books_by_author_in_series">Yazara/diziye göre betikler</string>
    <!-- Hint text displayed when user enters the book listw -->
-   <string name="hint_book_list">Bir betiğin üzerine dokunmak betik ayrıntılarını gösterir, uzun basılı tutmak daha fazla seçeneğin olduğu bir dizelge verir.</string>
+   <string name="hint_book_list">Bir betiğin üzerine dokunmak kitap ayrıntılarını gösterir, uzun basılı tutmak daha fazla seçeneğin olduğu bir dizelge verir.</string>
    <!-- TRANLATORS NOTE: I HAVE UPDATED THE new_in_510, above! Sorry. -->
 
    <!-- Preference VALUE, displayed in a preference activity -->
@@ -979,8 +979,42 @@
    <!-- Heading in 'about' dialog -->
    <string name="special_thanks_label">Teşekkürlerimizle</string>
    <!-- Credits in the 'about' dialog -->
-   <string name="translators_blurb">Betik Kataloğu birçok kişinin emeğinin ürünü olan bir yazılım. Burada gönüllü çevirmenlerimizin katkılarını belirtmeden olmaz; onların çabaları olmadan bu kadar fazla kişiye ulaşamazdık. Bu güzel insanlar: Eugenio Davolio, José M. Galdo, Imkal, Gideon van Melle, Emir Sarı, Nick Silin ve Robert Wetzlmayr (eğer unuttuğumuz birisi var ise lütfen belirtin).</string>
+   <string name="translators_blurb">Kitap Kataloğu birçok kişinin emeğinin ürünü olan bir yazılım. Burada gönüllü çevirmenlerimizin katkılarını belirtmeden olmaz; onların çabaları olmadan bu kadar fazla kişiye ulaşamazdık. Bu güzel insanlar: Eugenio Davolio, José M. Galdo, Imkal, Gideon van Melle, Emir Sarı, Nick Silin ve Robert Wetzlmayr (eğer unuttuğumuz birisi var ise lütfen belirtin).</string>
    <!-- End: Added/Updated in 5.1.0 -->
    <!-- Begin: Added/Updated in [Next Version] -->
+   <!-- Begin: Added/Updated in 5.1.1 -->
+   <!-- Name of the 'Default' bookshelf, created when app first installed. Needs to be short. -->
+   <string name="default_bookshelf_name">Varsayılan</string>
+   <!-- A hint describing the benefit of following the Amazon links -->
+   <string name="hint_amazon_links_blurb">&lt;p&gt;&lt;i&gt;\"%1$s\"&lt;/i&gt;, &lt;i&gt;\"%2$s\"&lt;/i&gt; veya &lt;i&gt;\"%3$s\"&lt;/i&gt; seçtikten sonra Amazon'dan alışveriş yaparsanız, yaptığınız alışveriş tutarının bir bölümü %4$s geliştiricilerine gönderilecektir.&lt;/p&gt;&lt;p&gt;Ayrıca Sıkça Sorulan Sorular bölümündeki &lt;a href=\"https://github.com/eleybourn/Book-Catalogue/wiki/Frequently-Asked-Questions-%%28FAQ%%29\"&gt;bağlantısını kullanarak da&lt;/a&gt; Amazon veya PayPal'e erişebilirsiniz.&lt;/p&gt;</string>
+   <!-- Name of the new style grouping (needs to be short). -->
+   <string name="update_date">Gün ve ayı güncelle</string>
+   <!-- Name of the new style grouping (needs to be short). -->
+   <string name="update_year">Yılı güncelle</string>
+   <!-- Name of the new style grouping (needs to be short). -->
+   <string name="update_month">Ayı güncelle</string>
+   <!-- Name of the new style grouping (needs to be short). -->
+   <string name="update_day">Günü güncelle</string>
+   <!-- Short text for 'n stars' -->
+   <plurals
+   name="n_stars">
+   <item quantity="zero">%1$s yıldız</item>
+   <item quantity="one">%1$s yıldız</item>
+   <item quantity="other">%1$s yıldız</item> 
+   </plurals>
+   <string name="new_in_511">
+   <![CDATA[
+   <p><b>5.1.1 sürümündeki yenilikler</b>\n\n
+   * Hata düzeltmeleri\n\n
+   * Yeni biçem: Son güncelleme günayına göre öbekle\n\n
+   * Yeni biçem: Beğeniye göre öbekle\n\n
+   * Yeni biçem: Betiklik adına göre öbekle\n\n
+   </p>
+   ]]>
+   </string>
+   <!-- End: Added/Updated in 5.1.1 -->
+   <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->
+   <string name="amazon">Amazon</string>
+   <!-- End: Added/Updated in [Next Version] -->
    <!-- End: Added/Updated in [Next Version] -->
 </resources>

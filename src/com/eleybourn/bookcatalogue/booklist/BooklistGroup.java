@@ -27,7 +27,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map.Entry;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
@@ -85,34 +85,87 @@ public class BooklistGroup implements Serializable {
 		// NEWKIND: Add new kinds here
 		public static final int ROW_KIND_MAX = 23; 				// **** NOTE **** ALWAYS update after adding a row kind...				
 	}
-	
-	private static final Hashtable<Integer, String> mRowKindNames = new Hashtable<Integer, String>();
+
+	private static final UniqueMap<Integer, String> mRowKindNames = new UniqueMap<Integer, String>();
 	static {
-		mRowKindNames.put(ROW_KIND_AUTHOR, BookCatalogueApp.getResourceString(R.string.author));
-		mRowKindNames.put(ROW_KIND_SERIES, BookCatalogueApp.getResourceString(R.string.series));
-		mRowKindNames.put(ROW_KIND_GENRE, BookCatalogueApp.getResourceString(R.string.genre));
-		mRowKindNames.put(ROW_KIND_PUBLISHER, BookCatalogueApp.getResourceString(R.string.publisher));
-		mRowKindNames.put(ROW_KIND_READ_AND_UNREAD, BookCatalogueApp.getResourceString(R.string.read_amp_unread));
-		mRowKindNames.put(ROW_KIND_LOANED, BookCatalogueApp.getResourceString(R.string.loaned));
-		mRowKindNames.put(ROW_KIND_YEAR_PUBLISHED, BookCatalogueApp.getResourceString(R.string.publication_year));
-		mRowKindNames.put(ROW_KIND_MONTH_PUBLISHED, BookCatalogueApp.getResourceString(R.string.publication_month));
-		mRowKindNames.put(ROW_KIND_TITLE_LETTER, BookCatalogueApp.getResourceString(R.string.sort_title_first_letter));
-		mRowKindNames.put(ROW_KIND_YEAR_ADDED, BookCatalogueApp.getResourceString(R.string.added_year));
-		mRowKindNames.put(ROW_KIND_MONTH_ADDED, BookCatalogueApp.getResourceString(R.string.added_month));
-		mRowKindNames.put(ROW_KIND_DAY_ADDED, BookCatalogueApp.getResourceString(R.string.added_day));
-		mRowKindNames.put(ROW_KIND_FORMAT, BookCatalogueApp.getResourceString(R.string.format));
-		mRowKindNames.put(ROW_KIND_YEAR_READ, BookCatalogueApp.getResourceString(R.string.read_year));
-		mRowKindNames.put(ROW_KIND_MONTH_READ, BookCatalogueApp.getResourceString(R.string.read_month));
-		mRowKindNames.put(ROW_KIND_DAY_READ, BookCatalogueApp.getResourceString(R.string.read_day));
-		mRowKindNames.put(ROW_KIND_LOCATION, BookCatalogueApp.getResourceString(R.string.location));
-		mRowKindNames.put(ROW_KIND_LANGUAGE, BookCatalogueApp.getResourceString(R.string.language));
-		mRowKindNames.put(ROW_KIND_UPDATE_DAY, BookCatalogueApp.getResourceString(R.string.update_day));
-		mRowKindNames.put(ROW_KIND_UPDATE_MONTH, BookCatalogueApp.getResourceString(R.string.update_month));
-		mRowKindNames.put(ROW_KIND_UPDATE_YEAR, BookCatalogueApp.getResourceString(R.string.update_year));
-		mRowKindNames.put(ROW_KIND_LANGUAGE, BookCatalogueApp.getResourceString(R.string.language));
-		mRowKindNames.put(ROW_KIND_LANGUAGE, BookCatalogueApp.getResourceString(R.string.language));
+		mRowKindNames.add(ROW_KIND_AUTHOR, BookCatalogueApp.getResourceString(R.string.author));
+		mRowKindNames.add(ROW_KIND_SERIES, BookCatalogueApp.getResourceString(R.string.series));
+		mRowKindNames.add(ROW_KIND_GENRE, BookCatalogueApp.getResourceString(R.string.genre));
+		mRowKindNames.add(ROW_KIND_PUBLISHER, BookCatalogueApp.getResourceString(R.string.publisher));
+		mRowKindNames.add(ROW_KIND_READ_AND_UNREAD, BookCatalogueApp.getResourceString(R.string.read_amp_unread));
+		mRowKindNames.add(ROW_KIND_LOANED, BookCatalogueApp.getResourceString(R.string.loaned));
+		mRowKindNames.add(ROW_KIND_YEAR_PUBLISHED, BookCatalogueApp.getResourceString(R.string.publication_year));
+		mRowKindNames.add(ROW_KIND_MONTH_PUBLISHED, BookCatalogueApp.getResourceString(R.string.publication_month));
+		mRowKindNames.add(ROW_KIND_TITLE_LETTER, BookCatalogueApp.getResourceString(R.string.sort_title_first_letter));
+		mRowKindNames.add(ROW_KIND_YEAR_ADDED, BookCatalogueApp.getResourceString(R.string.added_year));
+		mRowKindNames.add(ROW_KIND_MONTH_ADDED, BookCatalogueApp.getResourceString(R.string.added_month));
+		mRowKindNames.add(ROW_KIND_DAY_ADDED, BookCatalogueApp.getResourceString(R.string.added_day));
+		mRowKindNames.add(ROW_KIND_FORMAT, BookCatalogueApp.getResourceString(R.string.format));
+		mRowKindNames.add(ROW_KIND_YEAR_READ, BookCatalogueApp.getResourceString(R.string.read_year));
+		mRowKindNames.add(ROW_KIND_MONTH_READ, BookCatalogueApp.getResourceString(R.string.read_month));
+		mRowKindNames.add(ROW_KIND_DAY_READ, BookCatalogueApp.getResourceString(R.string.read_day));
+		mRowKindNames.add(ROW_KIND_LOCATION, BookCatalogueApp.getResourceString(R.string.location));
+		mRowKindNames.add(ROW_KIND_LANGUAGE, BookCatalogueApp.getResourceString(R.string.language));
+		mRowKindNames.add(ROW_KIND_UPDATE_DAY, BookCatalogueApp.getResourceString(R.string.update_day));
+		mRowKindNames.add(ROW_KIND_UPDATE_MONTH, BookCatalogueApp.getResourceString(R.string.update_month));
+		mRowKindNames.add(ROW_KIND_UPDATE_YEAR, BookCatalogueApp.getResourceString(R.string.update_year));
+		mRowKindNames.add(ROW_KIND_RATING, BookCatalogueApp.getResourceString(R.string.rating));
+		mRowKindNames.add(ROW_KIND_BOOKSHELF, BookCatalogueApp.getResourceString(R.string.bookshelf));
 		// NEWKIND: Add new kinds here
-		mRowKindNames.put(ROW_KIND_BOOK, BookCatalogueApp.getResourceString(R.string.book));		
+		mRowKindNames.add(ROW_KIND_BOOK, BookCatalogueApp.getResourceString(R.string.book));
+		
+		// Sanity check
+		for(int i = 0; i <= ROW_KIND_MAX; i++) {
+			if (!mRowKindNames.containsKey(i))
+				throw new RuntimeException("Missing row kind name for row kind " + i);
+		}
+	}
+
+	/**
+	 * Subclass of HashMap with an add(...) method that ensures values are unique.
+	 * 
+	 * @author pjw
+	 *
+	 * @param <K>	Type of Key values
+	 * @param <V>	Type of data values
+	 */
+	private static class UniqueMap<K, V> extends HashMap<K, V> {
+		private static final long serialVersionUID = 1L;
+
+		/**
+		 * Add a value, throwing an exception if key already stored
+		 * 
+		 * @param key		Key for new value
+		 * @param value		Data for new value
+		 */
+		public V add(K key, V value) {
+			if (super.put(key, value) != null)
+				throw new RuntimeException("Map already contains key value" + key);
+			return null;
+		}
+
+		@Override
+		/**
+		 * Just calls add(...)
+		 * 
+		 * @param key		Key for new value
+		 * @param value		Data for new value
+		 */
+		public V put(K key, V value) {
+			return add(key, value);
+		}
+
+		///**
+		// * Same semantics as old 'put' method; just replace the value (or add).
+		// * 
+		// * @param key		Key for new value
+		// * @param value		Data for new value
+		// *
+		// * @return			Old value, or null
+		// */
+		//public V replace(K key, V value) {
+		//	return super.put(key, value);
+		//}
 	}
 
 	/**

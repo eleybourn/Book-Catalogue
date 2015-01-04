@@ -28,6 +28,8 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
@@ -124,6 +126,18 @@ public class AdministrationAbout extends BookCatalogueActivity {
 				return;
 			}
 		});
+		
+		{
+			TextView tv = (TextView) findViewById(R.id.amazon_links_info);
+			// Setup the linked HTML
+			String text = getString(R.string.hint_amazon_links_blurb, 
+					getString(R.string.amazon_books_by_author),
+					getString(R.string.amazon_books_in_series),
+					getString(R.string.amazon_books_by_author_in_series),
+					getString(R.string.app_name));
+			tv.setText(Utils.linkifyHtml(text, Linkify.ALL));			
+			tv.setMovementMethod(LinkMovementMethod.getInstance());
+		}
 	}
 
 	private void sendContactEmail(int stringId) {

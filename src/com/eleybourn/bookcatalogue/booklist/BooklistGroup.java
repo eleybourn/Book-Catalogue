@@ -139,7 +139,7 @@ public class BooklistGroup implements Serializable {
 		 * @param value		Data for new value
 		 */
 		public V add(K key, V value) {
-			if (this.put(key, value) != null)
+			if (super.put(key, value) != null)
 				throw new RuntimeException("Map already contains key value" + key);
 			return null;
 		}
@@ -164,7 +164,7 @@ public class BooklistGroup implements Serializable {
 		// * @return			Old value, or null
 		// */
 		//public V replace(K key, V value) {
-		//	return put(key, value);
+		//	return super.put(key, value);
 		//}
 	}
 

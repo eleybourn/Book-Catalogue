@@ -1007,13 +1007,13 @@ y puede editar el libro utilizando el menú de opciones.
     <string name="hint_amazon_links_blurb">&lt;p&gt;Si compra productos en Amazon después de haber seleccionado las opciones &lt;i&gt;\"%1$s\"&lt;/i&gt;, &lt;i&gt;\"%2$s\"&lt;/i&gt; o &lt;i&gt;\"%3$s\"&lt;/i&gt;, un porcentaje del precio de compra será enviado a los desarrolladores de %4$s.&lt;/p&gt;&lt;p&gt;También puede utilizar el enlace &lt;a href=""https://github.com/eleybourn/Book-Catalogue/wiki/Frequently-Asked-Questions-%%28FAQ%%29""&gt;en nuestras FAQ&lt;/a&gt; para acceder directamente a Amazon o PayPal.&lt;/p&gt;</string>
 
     <!-- Name of the new style grouping (needs to be short). -->
-    <string name="update_date">Actualizar fecha</string>
+    <string name="update_date">Fecha de actualización</string>
     <!-- Name of the new style grouping (needs to be short). -->
-    <string name="update_year">Actualizar año</string>
+    <string name="update_year">Año de actualización</string>
         <!-- Name of the new style grouping (needs to be short). -->
-    <string name="update_month">Actualizar mes</string>
+    <string name="update_month">Mes de actualización</string>
         <!-- Name of the new style grouping (needs to be short). -->
-    <string name="update_day">Actualizar día</string>
+    <string name="update_day">Día de actualización</string>
 
     <!-- Short text for 'n stars' -->
     <plurals

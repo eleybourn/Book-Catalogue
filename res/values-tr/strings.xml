@@ -982,5 +982,39 @@
    <string name="translators_blurb">Betik Kataloğu birçok kişinin emeğinin ürünü olan bir yazılım. Burada gönüllü çevirmenlerimizin katkılarını belirtmeden olmaz; onların çabaları olmadan bu kadar fazla kişiye ulaşamazdık. Bu güzel insanlar: Eugenio Davolio, José M. Galdo, Imkal, Gideon van Melle, Emir Sarı, Nick Silin ve Robert Wetzlmayr (eğer unuttuğumuz birisi var ise lütfen belirtin).</string>
    <!-- End: Added/Updated in 5.1.0 -->
    <!-- Begin: Added/Updated in [Next Version] -->
+   <!-- Begin: Added/Updated in 5.1.1 -->
+   <!-- Name of the 'Default' bookshelf, created when app first installed. Needs to be short. -->
+   <string name="default_bookshelf_name">Varsayılan</string>
+   <!-- A hint describing the benefit of following the Amazon links -->
+   <string name="hint_amazon_links_blurb">&lt;p&gt;&lt;i&gt;\"%1$s\"&lt;/i&gt;, &lt;i&gt;\"%2$s\"&lt;/i&gt; veya &lt;i&gt;\"%3$s\"&lt;/i&gt; seçtikten sonra Amazon'dan alışveriş yaparsanız, yaptığınız alışveriş tutarının bir bölümü %4$s geliştiricilerine gönderilecektir.&lt;/p&gt;&lt;p&gt;Ayrıca Sıkça Sorulan Sorular bölümündeki &lt;a href=\"https://github.com/eleybourn/Book-Catalogue/wiki/Frequently-Asked-Questions-%%28FAQ%%29\"&gt;bağlantısını kullanarak da&lt;/a&gt; Amazon veya PayPal'e erişebilirsiniz.&lt;/p&gt;</string>
+   <!-- Name of the new style grouping (needs to be short). -->
+   <string name="update_date">Gün ve ayı güncelle</string>
+   <!-- Name of the new style grouping (needs to be short). -->
+   <string name="update_year">Yılı güncelle</string>
+   <!-- Name of the new style grouping (needs to be short). -->
+   <string name="update_month">Ayı güncelle</string>
+   <!-- Name of the new style grouping (needs to be short). -->
+   <string name="update_day">Günü güncelle</string>
+   <!-- Short text for 'n stars' -->
+   <plurals
+   name="n_stars">
+   <item quantity="zero">%1$s yıldız</item>
+   <item quantity="one">%1$s yıldız</item>
+   <item quantity="other">%1$s yıldız</item> 
+   </plurals>
+   <string name="new_in_511">
+   <![CDATA[
+   <p><b>5.1.1 sürümündeki yenilikler</b>\n\n
+   * Hata düzeltmeleri\n\n
+   * Yeni biçem: Son güncelleme günayına göre öbekle\n\n
+   * Yeni biçem: Beğeniye göre öbekle\n\n
+   * Yeni biçem: Betiklik adına göre öbekle\n\n
+   </p>
+   ]]>
+   </string>
+   <!-- End: Added/Updated in 5.1.1 -->
+   <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->
+   <string name="amazon">Amazon</string>
+   <!-- End: Added/Updated in [Next Version] -->
    <!-- End: Added/Updated in [Next Version] -->
 </resources>

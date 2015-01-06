@@ -324,8 +324,9 @@ public class CoversDbHelper {
 	 */
 	public int eraseCachedBookCover(String uuid) {
 		SynchronizedDb db = this.getDb();
-
-		String sql = DOM_FILENAME + " glob '" + uuid + ".*'";
+		// We use encodeString here because it's possible a user screws up the data and imports
+		// bad UUIDs...this has happened.
+		String sql = DOM_FILENAME + " glob '" + CatalogueDBAdapter.encodeString(uuid) + ".*'";
 		return db.delete(TBL_IMAGE.getName(), sql, CatalogueDBAdapter.EMPTY_STRING_ARRAY);
 	}
 	

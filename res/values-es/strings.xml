@@ -52,7 +52,7 @@
 	<string name="import_data">Importar libros</string>
 	<string name="import_alert">¡Atención! La importación de datos puede actualizar los datos de libros existentes con nueva información si el ID del fichero de importación existe ya en la base de datos. Esto puede ser aceptable si se modifica un campo de un fichero exportado. Si crea un registro para un nuevo libro, compruebe que el campo ID está en blanco.</string>
 	<string name="export_failed">ERROR: La exportación (a la tarjeta SD) ha fallado. </string>
-	<string name="import_failed">ERROR: La importación (desde la tarjeta SD) ha fallado. ¿Está el fichero en el lugar correcto?</string>
+	<string name="import_failed_is_location_correct">ERROR: La importación (desde la tarjeta SD) ha fallado. ¿Está el fichero en el lugar correcto?</string>
 	<string name="search_title">Book Catalogue: Buscar resultados</string>
 	<string name="results_found">Resultados encontrados</string>
 	<string name="administration_label">Administración</string>

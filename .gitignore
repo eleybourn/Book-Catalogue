@@ -1,0 +1,16 @@
+# Eclipse specific
+
+/.settings
+/bin
+/gen
+/.classpath
+/.project
+/project.properties
+
+# Android Studio specific
+
+/.gradle
+/.idea
+/*.iml
+/build
+/local.properties

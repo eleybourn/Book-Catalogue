@@ -7,7 +7,7 @@ To build in Eclipse (bare bones version)
 - reference ABS as a library project in BC
 - clean and rebuild
 
-Building in Android Studio:
+Building in Android Studio (ver. 1.0.2+):
 1. Open Android Studio
 2. Select "Open an existing Android Studio project"
 3. Point to `build.gradle` file in 'Book-Catalogue' folder 

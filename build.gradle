@@ -1,0 +1,74 @@
+apply plugin: 'com.android.application'
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.0.0'
+    }
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+}
+
+dependencies {
+    compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
+    compile 'com.android.support:support-v4:21.0.3'
+    compile files('libs/acra-4.4.0.jar')
+    compile files('libs/amazon-mobile-associates-1.0.64.0.jar')
+    compile files('libs/commons-codec-1.4.jar')
+    compile files('libs/commons-compress-1.4.1.jar')
+    compile files('libs/httpclient-4.1.2.jar')
+    compile files('libs/httpcore-4.1.2.jar')
+    compile files('libs/httpmime-4.1.2.jar')
+    compile files('libs/signpost-commonshttp4-1.2.1.2.jar')
+    compile files('libs/signpost-core-1.2.1.2.jar')
+    compile files('libs/taskqueue-1.1.0.jar')
+}
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion '20.0.0'
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFile getDefaultProguardFile('proguard-android.txt')
+            proguardFile 'proguard-project.txt'
+        }
+        release {
+            minifyEnabled false
+            proguardFile getDefaultProguardFile('proguard-android.txt')
+            proguardFile 'proguard-project.txt'
+        }
+    }
+
+    // !!! Commented to use values from the manifest
+//    defaultConfig {
+//        minSdkVersion 7
+//        targetSdkVersion 16
+//        versionCode 169
+//    }
+
+    packagingOptions {
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/LICENSE.txt'
+    }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            resources.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            renderscript.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+}

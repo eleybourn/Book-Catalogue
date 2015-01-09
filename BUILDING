@@ -6,3 +6,13 @@ To build in Eclipse (bare bones version)
 - set both project targets to Android 4.2
 - reference ABS as a library project in BC
 - clean and rebuild
+
+Building in Android Studio:
+1. Open Android Studio
+2. Select "Open an existing Android Studio project"
+3. Point to `build.gradle` file in 'Book-Catalogue' folder 
+4. Click OK
+5. In next dialog select "Use default Gradle wrapper"
+6. Click OK
+7. Click menu "Tools - Android - Sync Project with Gradle files"
+8. Done

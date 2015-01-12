@@ -19,6 +19,8 @@
  */
 package com.eleybourn.bookcatalogue.utils;
 
+import java.util.Arrays;
+
 public class IsbnUtils {
 
 	private static class IsbnInfo {
@@ -104,6 +106,59 @@ public class IsbnUtils {
 			}
 			return true;
 		}
+		
+		public String getIsbn10() {
+			StringBuilder sb = new StringBuilder();
+			int[] vals;
+			if (size == 10) {
+				vals = digits;
+			} else {
+				int p = 0;
+				vals = new int[10];
+				for(int i = 3; i < 12; i++) {
+					vals[p++] = digits[i];
+				}
+				vals[9] = 0;
+				vals[9] = (11 - getIsbn10Check(vals)) % 11;
+			}
+			for(int i = 0; i < 10; i++) {
+				final int d = vals[i];
+				if (d == 10) {
+					sb.append('X');					
+				} else {
+					sb.append(d);					
+				}
+			}
+			return sb.toString();
+		}
+
+		public String getIsbn13() {
+			StringBuilder sb = new StringBuilder();
+			int[] vals;
+			if (size == 13) {
+				vals = digits;
+			} else {
+				vals = new int[13];
+				vals[0] = 9;
+				vals[1] = 7;
+				vals[2] = 8;
+				int p = 3;
+				for(int i = 0; i < 9; i++) {
+					vals[p++] = digits[i];					
+				}
+				vals[12] = 0;
+				vals[12] = (10 - getIsbn13Check(vals)) % 10;
+			}
+
+			for(int d: vals) {
+				if (d == 10) {
+					sb.append('X');					
+				} else {
+					sb.append(d);					
+				}
+			}
+			return sb.toString();
+		}
 	}
 	/**
 	 * Validate an ISBN
@@ -127,14 +182,43 @@ public class IsbnUtils {
 	 * @param digits
 	 * @return
 	 */
-	private static boolean isValidIsbn10(int[] digits) {
+	private static int getIsbn10Check(int[] digits) {
 		int mult = 10;
 		int check = 0;
 		for(int i = 0; i < 10; i++) {
 			check += digits[i] * mult;
 			mult--;
 		}
-		return ((check % 11) == 0);
+		return (check % 11);
+	}
+
+	/**
+	 * Validate an ISBN10.
+	 * See http://en.wikipedia.org/wiki/International_Standard_Book_Number
+	 * 
+	 * @param digits
+	 * @return
+	 */
+	private static boolean isValidIsbn10(int[] digits) {
+		return (getIsbn10Check(digits) == 0);
+	}
+
+	/**
+	 * Validate an ISBN10.
+	 * See http://en.wikipedia.org/wiki/International_Standard_Book_Number
+	 * 
+	 * @param digits
+	 * @return
+	 */
+	private static int getIsbn13Check(int[] digits) {
+		int check = 0;
+	    for (int i = 0; i <= 12; i += 2) {
+	        check += digits[i];
+	    }
+	    for (int i = 1; i < 12; i += 2) {
+	        check += digits[i] * 3;
+	    }
+	    return (check % 10);
 	}
 
 	/**
@@ -149,14 +233,7 @@ public class IsbnUtils {
 		if (digits[0] != 9 || digits[1] != 7 || (digits[2] != 8 && digits[2] != 9))
 			return false;
 
-		int check = 0;
-	    for (int i = 0; i <= 12; i += 2) {
-	        check += digits[i];
-	    }
-	    for (int i = 1; i < 12; i += 2) {
-	        check += digits[i] * 3;
-	    }
-	    return (check % 10) == 0;
+	    return (getIsbn13Check(digits) == 0);
 	}
 
 	public static boolean matches(String isbn1, String isbn2) {
@@ -178,4 +255,15 @@ public class IsbnUtils {
 		return info1.equals(info2);
 	}
 
+	public static String isbn2isbn(String isbn) {
+		IsbnInfo info = new IsbnInfo(isbn);
+		if (!info.isValid)
+			throw new RuntimeException("Unable to convert invalid ISBN");
+
+		if (isbn.length() == 10) {
+			return info.getIsbn13();
+		} else {
+			return info.getIsbn10();
+		}
+	}
 }

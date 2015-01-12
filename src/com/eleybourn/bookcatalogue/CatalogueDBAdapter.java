@@ -88,6 +88,7 @@ import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer.SyncLock;
 import com.eleybourn.bookcatalogue.database.DbUtils.TableDefinition;
 import com.eleybourn.bookcatalogue.database.SerializationUtils;
 import com.eleybourn.bookcatalogue.database.SqlStatementManager;
+import com.eleybourn.bookcatalogue.utils.IsbnUtils;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.StorageUtils;
 import com.eleybourn.bookcatalogue.utils.TrackedCursor;
@@ -3060,18 +3061,29 @@ public class CatalogueDBAdapter {
 		}
 	}
 
-	private SynchronizedStatement mGetIdFromIsbnStmt = null;
+	private SynchronizedStatement mGetIdFromIsbn1Stmt = null;
+	private SynchronizedStatement mGetIdFromIsbn2Stmt = null;
 	/**
 	 * 
 	 * @param isbn The isbn to search by
 	 * @return boolean indicating ISBN already in DB
 	 */
-	public long getIdFromIsbn(String isbn) {
-		if (mGetIdFromIsbnStmt == null) {
-			mGetIdFromIsbnStmt = mStatements.add("mGetIdFromIsbnStmt", "Select Coalesce(max(" + KEY_ROWID + "), -1) From " + DB_TB_BOOKS + " Where Upper(" + KEY_ISBN + ") = Upper(?)");
+	public long getIdFromIsbn(String isbn, boolean checkAltIsbn) {
+		SynchronizedStatement stmt;
+		if (checkAltIsbn && IsbnUtils.isValid(isbn)) {
+			if (mGetIdFromIsbn2Stmt == null) {
+				mGetIdFromIsbn2Stmt = mStatements.add("mGetIdFromIsbn2Stmt", "Select Coalesce(max(" + KEY_ROWID + "), -1) From " + DB_TB_BOOKS + " Where Upper(" + KEY_ISBN + ") in (Upper(?), Upper(?))");
+			}
+			stmt = mGetIdFromIsbn2Stmt;
+			stmt.bindString(2, IsbnUtils.isbn2isbn(isbn));
+		} else {
+			if (mGetIdFromIsbn1Stmt == null) {
+				mGetIdFromIsbn1Stmt = mStatements.add("mGetIdFromIsbn1Stmt", "Select Coalesce(max(" + KEY_ROWID + "), -1) From " + DB_TB_BOOKS + " Where Upper(" + KEY_ISBN + ") = Upper(?)");
+			}
+			stmt = mGetIdFromIsbn1Stmt;
 		}
-		mGetIdFromIsbnStmt.bindString(1, isbn);
-		return mGetIdFromIsbnStmt.simpleQueryForLong();
+		stmt.bindString(1, isbn);
+		return stmt.simpleQueryForLong();
 	}
 	
 	/**
@@ -3079,8 +3091,8 @@ public class CatalogueDBAdapter {
 	 * @param isbn The isbn to search by
 	 * @return boolean indicating ISBN already in DB
 	 */
-	public boolean checkIsbnExists(String isbn) {
-		return getIdFromIsbn(isbn) > 0;
+	public boolean checkIsbnExists(String isbn, boolean checkAltIsbn) {
+		return getIdFromIsbn(isbn, checkAltIsbn) > 0;
 	}
 	
 	/**

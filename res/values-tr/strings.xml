@@ -239,8 +239,8 @@
     <string name="usage_overwrite">Bulunan verinin üstüne yazar</string>
     <string name="cancelling">İptal ediliyor&#8230;</string>
     <string name="starting_search">Arama başlatılıyor&#8230;</string>
-    <string name="lt_info">>Bu uygulama kitap serileri hakkında bilgi almak ve ek kapakları indirmek üzere LibraryThing\'den yararlanır. Bu özellikleri kullanmak için LibraryThing'e kayıt olmanız (ücretsiz) ve LibraryThing geliştirici anahtarı almanız gerekmektedir (yine ücretsiz).</string>
-    <string name="lt_register_text">LibraryThing'e kayıt ol</string>
+    <string name="lt_info">>Bu uygulama kitap serileri hakkında bilgi almak ve ek kapakları indirmek üzere LibraryThing\'den yararlanır. Bu özellikleri kullanmak için LibraryThing\'e kayıt olmanız (ücretsiz) ve LibraryThing geliştirici anahtarı almanız gerekmektedir (yine ücretsiz).</string>
+    <string name="lt_register_text">LibraryThing\'e kayıt ol</string>
     <string name="lt_devkey_text">LibraryThing geliştirici anahtarı iste</string>
     <string name="lt_label">LibraryThing</string>
     <string name="lt_gotkey">Geliştirici anahtarını aldığınızda (veya sizde halihazırda varsa) yalnızca aşağıdaki alana girin, sonrasında bu anahtar ek verileri almak için kullanılacaktır.</string>

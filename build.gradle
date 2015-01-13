@@ -1,0 +1,52 @@
+apply plugin: 'com.android.application'
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.0.0'
+    }
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+}
+
+dependencies {
+    compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
+    compile 'com.android.support:support-v4:21.0.3'
+    // Compile all libraries from 'libs' folder
+    compile fileTree(dir: 'libs', include: '*.jar' )
+}
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion '20.0.0'
+
+    // !!! Commented to use values from the manifest
+//    defaultConfig {
+//        minSdkVersion 7
+//        targetSdkVersion 16
+//        versionCode 169
+//    }
+
+    packagingOptions {
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/LICENSE.txt'
+    }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            resources.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            renderscript.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
+        }
+    }
+}

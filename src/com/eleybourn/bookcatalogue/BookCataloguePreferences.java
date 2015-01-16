@@ -32,6 +32,8 @@ public class BookCataloguePreferences {
 	public static final String PREF_LAST_BACKUP_DATE = "Backup.LastDate";
 	/** Last full backup file path */
 	public static final String PREF_LAST_BACKUP_FILE = "Backup.LastFile";
+	/** Preferred interface locale */
+	public static final String PREF_APP_LOCALE = "App.Locale";
 
 	/** Get startup activity preference */
 	public boolean getStartInMyBook() {
@@ -105,7 +107,13 @@ public class BookCataloguePreferences {
 		return m_prefs.edit();
 	}
 
+    /** Static preferenced object so that we can respond to events relating to changes */
+    private static SharedPreferences mPrefs = null;
+    /** Get (or create) the static shared preferences */
 	public static SharedPreferences getSharedPreferences() {
-		return BookCatalogueApp.context.getSharedPreferences("bookCatalogue", BookCatalogueApp.MODE_PRIVATE);
+        if (mPrefs == null) {
+            mPrefs = BookCatalogueApp.context.getSharedPreferences("bookCatalogue", BookCatalogueApp.MODE_PRIVATE);
+        }
+		return mPrefs;
 	}
 }

@@ -1052,6 +1052,13 @@ and you can edit the book via the options menu using the menu button or overflow
     
     <!-- End: Added/Updated in 5.1.2 -->
 
+    <!-- Begin: Added/Updated in 5.1.3 -->
+    
+    <!-- Preference name (failrly short) for preferred langauge -->
+    <string name="preferred_interface_language">Preferred Interface Language</string>
+    <!-- Preference value for a specific language. First arg is name in it's own language, second arg is name in current locale -->
+    <string name="preferred_language_x">%1$s (%2$s)</string>
+
     <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->    
     <!-- End: Added/Updated in [Next Version] -->
 

@@ -20,9 +20,6 @@
 
 package com.eleybourn.bookcatalogue.properties;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import android.app.AlertDialog;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
@@ -36,6 +33,9 @@ import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.utils.HintManager;
 import com.eleybourn.bookcatalogue.utils.ViewTagger;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Implement a generic list-of-values property.
@@ -124,25 +124,38 @@ public abstract class ListProperty<T extends Object> extends ValuePropertyWithGl
 		/** Actual value */
 		T value;
 		/** Test description of the meaning of that value */
-		String text;
+		int textId;
+        Object[] textArgs;
 
 		/** Constructor. Instantiates string. */
-		public ItemEntry(T value, int resourceId) {
+		public ItemEntry(T value, int resourceId, Object... args) {
 			this.value = value;
-			this.text = BookCatalogueApp.getResourceString(resourceId);
+			this.textId = resourceId; //BookCatalogueApp.getResourceString(resourceId);
+            this.textArgs = args;
 		}
-		/** Constructor */
-		public ItemEntry(T value, String text) {
-			this.value = value;
-			this.text = text;
-		}
+//		/** Constructor */
+//		public ItemEntry(T value, String text) {
+//			this.value = value;
+//			this.text = text;
+//		}
 
-		/** Accessor */
-		public String getString() {
-			return text;
-		}
+        /** Accessor */
+        public String getString() {
+            return BookCatalogueApp.getResourceString(textId, textArgs);
+        }
 
-		@Override
+        /** Accessor */
+        public T getValue() {
+            return value;
+        }
+
+        /** Accessor */
+        public void setString(int value, Object... args) {
+            textId = value;
+            textArgs = args;
+        }
+
+        @Override
 		public String toString() {
 			return getString();
 		}
@@ -165,21 +178,21 @@ public abstract class ListProperty<T extends Object> extends ValuePropertyWithGl
 		 * @param stringId	String ID of description
 		 * @return
 		 */
-		public ItemEntries<T> add(T value, int stringId) {
-			mList.add(new ItemEntry<T>(value, stringId));
+		public ItemEntries<T> add(T value, int stringId, Object... args) {
+			mList.add(new ItemEntry<T>(value, stringId, args));
 			return this;
 		}
-		/**
-		 * Utility to make adding items easier.
-		 * 
-		 * @param value		Underlying value
-		 * @param stringId	Description
-		 * @return
-		 */
-		public ItemEntries<T> add(T value, String string) {
-			mList.add(new ItemEntry<T>(value, string));
-			return this;
-		}
+//		/**
+//		 * Utility to make adding items easier.
+//		 *
+//		 * @param value		Underlying value
+//		 * @param stringId	Description
+//		 * @return
+//		 */
+//		public ItemEntries<T> add(T value, int string) {
+//			mList.add(new ItemEntry<T>(value, string));
+//			return this;
+//		}
 		/** Iterator access */
 		@Override
 		public Iterator<ItemEntry<T>> iterator() {

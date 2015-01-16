@@ -20,16 +20,6 @@
 
 package com.eleybourn.bookcatalogue.booklist;
 
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.*;
-
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map.Entry;
-
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.R;
@@ -40,6 +30,15 @@ import com.eleybourn.bookcatalogue.properties.ListProperty.ItemEntries;
 import com.eleybourn.bookcatalogue.properties.Properties;
 import com.eleybourn.bookcatalogue.properties.PropertyGroup;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
+
+import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.*;
 /**
  * Class representing a single level in the booklist hierarchy.
  * 
@@ -237,8 +236,8 @@ public class BooklistGroup implements Serializable {
 		static {
 			String kind = BookCatalogueApp.getResourceString(R.string.series);
 			mAllSeriesItems.add(null, R.string.use_default_setting);
-			mAllSeriesItems.add(false, BookCatalogueApp.getResourceString(R.string.show_book_under_primary_thing, kind));
-			mAllSeriesItems.add(true, BookCatalogueApp.getResourceString(R.string.show_book_under_each_thing, kind));
+			mAllSeriesItems.add(false, R.string.show_book_under_primary_thing, kind);
+			mAllSeriesItems.add(true, R.string.show_book_under_each_thing, kind);
 		}
 
 		private void initProperties() {
@@ -307,8 +306,8 @@ public class BooklistGroup implements Serializable {
 		static {
 			String kind = BookCatalogueApp.getResourceString(R.string.author);
 			mAllAuthorsItems.add(null, R.string.use_default_setting);
-			mAllAuthorsItems.add(false, BookCatalogueApp.getResourceString(R.string.show_book_under_primary_thing, kind));
-			mAllAuthorsItems.add(true, BookCatalogueApp.getResourceString(R.string.show_book_under_each_thing, kind));
+			mAllAuthorsItems.add(false, R.string.show_book_under_primary_thing, kind);
+			mAllAuthorsItems.add(true, R.string.show_book_under_each_thing, kind);
 		}
 
 		/**

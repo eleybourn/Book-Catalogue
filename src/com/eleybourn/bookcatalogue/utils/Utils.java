@@ -126,7 +126,7 @@ public class Utils {
 
 	private static final ArrayList<SimpleDateFormat> mParseDateFormats = new ArrayList<SimpleDateFormat>();
 	static {
-		final boolean isEnglish = (Locale.getDefault().getLanguage() == Locale.ENGLISH.getLanguage());
+		final boolean isEnglish = (Locale.getDefault().getLanguage().equals(Locale.ENGLISH.getLanguage()));
 		addParseDateFormat(!isEnglish, "dd-MMM-yyyy HH:mm:ss");
 		addParseDateFormat(!isEnglish, "dd-MMM-yyyy HH:mm");
 		addParseDateFormat(!isEnglish, "dd-MMM-yyyy");
@@ -1575,16 +1575,18 @@ public class Utils {
 		}
 		return String.format(sizeFmt,space);		
 	}
-	
+
 	/**
 	 * Set the passed Activity background based on user preferences
 	 */
 	public static void initBackground(int bgResource, Activity a, boolean bright) {
 		initBackground(bgResource, a.findViewById(R.id.root), bright);
 	}
-	public static void initBackground(int bgResource, SherlockFragment f, boolean bright) {
+
+    public static void initBackground(int bgResource, SherlockFragment f, boolean bright) {
 		initBackground(bgResource, f.getView().findViewById(R.id.root), bright);
 	}
+
 	/**
 	 * Set the passed Activity background based on user preferences
 	 */
@@ -1613,6 +1615,8 @@ public class Utils {
 			}
 			root.invalidate();
 		} catch (Exception e) {
+            // Usually the errors result from memory problems; do a gc just in case.
+            System.gc();
 			// This is a purely cosmetic function; just log the error
 			Logger.logError(e, "Error setting background");
 		}

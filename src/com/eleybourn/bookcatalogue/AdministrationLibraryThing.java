@@ -56,6 +56,7 @@ public class AdministrationLibraryThing extends BookCatalogueActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		try {
 			super.onCreate(savedInstanceState);
+			setTitle(R.string.library_thing);
 			setContentView(R.layout.administration_librarything);
 			setupAdmin();
 			Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);

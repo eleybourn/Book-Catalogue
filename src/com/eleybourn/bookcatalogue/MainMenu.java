@@ -71,6 +71,7 @@ public class MainMenu extends BookCatalogueActivity {
 
 		// If we get here, we're meant to be in this activity.
 		setContentView(R.layout.main_menu);
+		setTitle(R.string.app_name);
 
 		// Display/hide the 'classic' my books item
 		int classicVis;

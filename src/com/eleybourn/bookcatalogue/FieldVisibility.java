@@ -50,6 +50,7 @@ public class FieldVisibility extends BookCatalogueActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		try {
 			super.onCreate(savedInstanceState);
+			setTitle(R.string.menu_manage_fields);
 			setContentView(R.layout.field_visibility);
 			setupFields();
 			Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);

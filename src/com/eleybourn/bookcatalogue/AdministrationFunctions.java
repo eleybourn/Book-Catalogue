@@ -72,6 +72,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	public void onCreate(Bundle savedInstanceState) {
 		try {
 			super.onCreate(savedInstanceState);
+			setTitle(R.string.administration_label);
 			mDbHelper = new CatalogueDBAdapter(this);
 			mDbHelper.open();
 			setContentView(R.layout.administration_functions);

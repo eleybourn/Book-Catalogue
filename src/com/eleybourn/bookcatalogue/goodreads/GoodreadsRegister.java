@@ -56,6 +56,7 @@ public class GoodreadsRegister extends BookCatalogueActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		try {
 			super.onCreate(savedInstanceState);
+			setTitle(R.string.goodreads);
 			setContentView(R.layout.goodreads_register);
 			setupViews();
 			Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		

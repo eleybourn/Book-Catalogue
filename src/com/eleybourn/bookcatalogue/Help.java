@@ -53,6 +53,7 @@ public class Help extends BookCatalogueActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		try {
+			setTitle(R.string.app_name);
 			// Needed for sending com.eleybourn.bookcatalogue.debug info...
 			mDbHelper = new CatalogueDBAdapter(this);
 			mDbHelper.open();

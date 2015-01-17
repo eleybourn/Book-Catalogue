@@ -51,8 +51,8 @@ public class OtherPreferences extends PreferencesBase {
 			.add(-90, R.string.menu_rotate_thumb_ccw)
 			.add(180, R.string.menu_rotate_thumb_180);
 
-    /** List of supported locales */
-    private static ItemEntries<String> mInterfaceLanguageListItems = getLanguageListItems();
+	/** List of supported locales */
+	private static ItemEntries<String> mInterfaceLanguageListItems = getLanguageListItems();
 
     /** Booklist Compatibility mode property values */
 	public static final int BOOKLIST_GENERATE_OLD_STYLE = 1;
@@ -188,19 +188,19 @@ public class OtherPreferences extends PreferencesBase {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        // Make sure the names are correct
-        updateLanguageListItems();
+		// Make sure the names are correct
+		updateLanguageListItems();
 
 		setTitle(R.string.other_preferences);
 		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 	}
 
-    @Override
-    public void onPause() {
-        // Don't bother listening since we check for locale changes in onResume of super class
-        BookCatalogueApp.unregisterOnLocaleChangedListener(mLocaleListener);
-        super.onPause();
-    }
+	@Override
+	public void onPause() {
+		// Don't bother listening since we check for locale changes in onResume of super class
+		BookCatalogueApp.unregisterOnLocaleChangedListener(mLocaleListener);
+		super.onPause();
+	}
 
 	/**
 	 * Fix background
@@ -208,9 +208,9 @@ public class OtherPreferences extends PreferencesBase {
 	@Override 
 	public void onResume() {
 		super.onResume();
-        // Listen for locale changes (this activity CAN change it)
-        BookCatalogueApp.registerOnLocaleChangedListener(mLocaleListener);
-        Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
+		// Listen for locale changes (this activity CAN change it)
+		BookCatalogueApp.registerOnLocaleChangedListener(mLocaleListener);
+		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 	}
 
 	/**
@@ -227,62 +227,41 @@ public class OtherPreferences extends PreferencesBase {
 		return R.layout.other_preferences;
 	}
 
-    /**
-     * Format the list of languages
-     *
-     * @return  List of preference items
-     */
+	/**
+	 * Format the list of languages
+	 *
+	 * @return  List of preference items
+	 */
 	private static ItemEntries<String> getLanguageListItems() {
-        ItemEntries<String> items = new ItemEntries<String>();
+		ItemEntries<String> items = new ItemEntries<String>();
 		for(String loc: BookCatalogueApp.getSupportedLocales()) {
-            String val = loc;
-            Locale l = localeFromName(loc);
-            items.add(val, R.string.preferred_language_x, l.getDisplayLanguage(l), l.getDisplayLanguage());
+			String val = loc;
+			Locale l = BookCatalogueApp.localeFromName(loc);
+			items.add(val, R.string.preferred_language_x, l.getDisplayLanguage(l), l.getDisplayLanguage());
 		}
-        return items;
+		return items;
 	}
 
-    /**
-     * Listener for Locale changes; update list and maybe reload
-     */
-    private BookCatalogueApp.OnLocaleChangedListener mLocaleListener = new BookCatalogueApp.OnLocaleChangedListener() {
-        @Override
-        public void onLocaleChanged() {
-            updateLanguageListItems();
-            reloadIfLocaleChanged();
-        }
-    };
+	/**
+	 * Listener for Locale changes; update list and maybe reload
+	 */
+	private BookCatalogueApp.OnLocaleChangedListener mLocaleListener = new BookCatalogueApp.OnLocaleChangedListener() {
+		@Override
+		public void onLocaleChanged() {
+			updateLanguageListItems();
+			reloadIfLocaleChanged();
+		}
+	};
 
-    /**
-     * There seems to be something fishy in creating locales from full names (like en_AU),
-     * so we split it and process it manually.
-     *
-     * @param name  Locale name (eg. 'en_AU')
-     *
-     * @return  Locale corresponding to passed name
-     */
-    private static Locale localeFromName(String name) {
-        String[] parts = name.split("_");
-        Locale l;
-        if (parts.length == 1) {
-            l = new Locale(parts[0]);
-        } else if (parts.length == 2) {
-            l = new Locale(parts[0], parts[1]);
-        } else {
-            l = new Locale(parts[0], parts[1], parts[2]);
-        }
-        return l;
-    }
-
-    /**
-     * Utility routine to adjust the stringsed used in displaying a language list.
-     */
-    private void updateLanguageListItems() {
-        for(ListProperty.ItemEntry<String> item: mInterfaceLanguageListItems) {
-            String loc = item.getValue();
-            Locale l = localeFromName(loc);
-            String name = l.getDisplayLanguage(l) + " (" + l.getDisplayLanguage() + ")";
-            item.setString(R.string.preferred_language_x, l.getDisplayLanguage(l), l.getDisplayLanguage());
-        }
-    }
+	/**
+	 * Utility routine to adjust the stringsed used in displaying a language list.
+	 */
+	private void updateLanguageListItems() {
+		for(ListProperty.ItemEntry<String> item: mInterfaceLanguageListItems) {
+			String loc = item.getValue();
+			Locale l = BookCatalogueApp.localeFromName(loc);
+			String name = l.getDisplayLanguage(l) + " (" + l.getDisplayLanguage() + ")";
+			item.setString(R.string.preferred_language_x, l.getDisplayLanguage(l), l.getDisplayLanguage());
+		}
+	}
 }

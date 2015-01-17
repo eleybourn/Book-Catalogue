@@ -53,6 +53,7 @@ import java.util.Locale;
 import static org.acra.ReportField.ANDROID_VERSION;
 import static org.acra.ReportField.APP_VERSION_CODE;
 import static org.acra.ReportField.APP_VERSION_NAME;
+import static org.acra.ReportField.BUILD;
 import static org.acra.ReportField.CUSTOM_DATA;
 import static org.acra.ReportField.PHONE_MODEL;
 import static org.acra.ReportField.STACK_TRACE;
@@ -98,10 +99,10 @@ public class BookCatalogueApp extends Application {
 
 	private static BcQueueManager mQueueManager = null;
 
-    /** The locale used at startup; so that we can revert to system locale if we want to */
-    private static Locale mInitialLocale = null;
-    /** User-specified default locale */
-    private static Locale mPreferredLocale = null;
+	/** The locale used at startup; so that we can revert to system locale if we want to */
+	private static Locale mInitialLocale = null;
+	/** User-specified default locale */
+	private static Locale mPreferredLocale = null;
 
 	/**
 	 * Constructor.
@@ -111,7 +112,33 @@ public class BookCatalogueApp extends Application {
 
 	}
 
-	public class BcReportSender extends org.acra.sender.EmailIntentSender {
+	/**
+	 * There seems to be something fishy in creating locales from full names (like en_AU),
+	 * so we split it and process it manually.
+	 *
+	 * @param name  Locale name (eg. 'en_AU')
+	 *
+	 * @return  Locale corresponding to passed name
+	 */
+	public static Locale localeFromName(String name) {
+		String[] parts;
+		if (name.contains("_")) {
+			parts = name.split("_");
+		} else {
+			parts = name.split("-");
+		}
+		Locale l;
+		if (parts.length == 1) {
+			l = new Locale(parts[0]);
+		} else if (parts.length ==   2) {
+			l = new Locale(parts[0], parts[1]);
+		} else {
+			l = new Locale(parts[0], parts[1], parts[2]);
+		}
+		return l;
+	}
+
+    public class BcReportSender extends org.acra.sender.EmailIntentSender {
 
 		public BcReportSender(Context ctx) {
 			super(ctx);
@@ -141,7 +168,7 @@ public class BookCatalogueApp extends Application {
 			//prefLocale = "ru";
 			// If we have a preference, set it
 			if (prefLocale != null && !prefLocale.equals("")) {
-		        mPreferredLocale = new Locale(prefLocale);
+		        mPreferredLocale = localeFromName(prefLocale);
 		        applyPreferredLocaleIfNecessary(getBaseContext().getResources());
 			}
 		} catch (Exception e) {
@@ -208,99 +235,99 @@ public class BookCatalogueApp extends Application {
 			dbh.close();
 		}
 
-        // Watch the preferences and handle changes as necessary
-        //BookCataloguePreferences ap = getPreferences();
-        SharedPreferences p = BookCataloguePreferences.getSharedPreferences();
-        p.registerOnSharedPreferenceChangeListener(mPrefsListener);
+		// Watch the preferences and handle changes as necessary
+		//BookCataloguePreferences ap = getPreferences();
+		SharedPreferences p = BookCataloguePreferences.getSharedPreferences();
+		p.registerOnSharedPreferenceChangeListener(mPrefsListener);
 	}
 
-    /**
-     * Shared Preferences Listener
-     *
-     * Currently it just handles Locale changes and propagates it to any listeners.
-     */
-    private SharedPreferences.OnSharedPreferenceChangeListener mPrefsListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-        @Override
-        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-            if (key.equals(BookCataloguePreferences.PREF_APP_LOCALE)) {
-                String prefLocale = getAppPreferences().getString(BookCataloguePreferences.PREF_APP_LOCALE, null);
-                //prefLocale = "ru";
-                // If we have a preference, set it
-                if (prefLocale != null && !prefLocale.equals("")) {
-                    mPreferredLocale = new Locale(prefLocale);
-                    applyPreferredLocaleIfNecessary(getBaseContext().getResources());
-                    notifyLocaleChanged();
-                }
-            }
-        }
-    };
+	/**
+	 * Shared Preferences Listener
+	 *
+	 * Currently it just handles Locale changes and propagates it to any listeners.
+	 */
+	private SharedPreferences.OnSharedPreferenceChangeListener mPrefsListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+		@Override
+		public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+			if (key.equals(BookCataloguePreferences.PREF_APP_LOCALE)) {
+				String prefLocale = getAppPreferences().getString(BookCataloguePreferences.PREF_APP_LOCALE, null);
+				//prefLocale = "ru";
+				// If we have a preference, set it
+				if (prefLocale != null && !prefLocale.equals("")) {
+					mPreferredLocale = localeFromName(prefLocale);
+					applyPreferredLocaleIfNecessary(getBaseContext().getResources());
+					notifyLocaleChanged();
+				}
+			}
+		}
+	};
 
-    /**
-     * Send a message to all registered OnLocaleChangedListeners, and cleanup any dead references.
-     */
-    private void notifyLocaleChanged() {
-        ArrayList<WeakReference<OnLocaleChangedListener>> toRemove = new ArrayList<WeakReference<OnLocaleChangedListener>>();
+	/**
+	 * Send a message to all registered OnLocaleChangedListeners, and cleanup any dead references.
+	 */
+	private void notifyLocaleChanged() {
+		ArrayList<WeakReference<OnLocaleChangedListener>> toRemove = new ArrayList<WeakReference<OnLocaleChangedListener>>();
 
-        for (WeakReference<OnLocaleChangedListener> ref : mOnLocaleChangedListeners) {
-            OnLocaleChangedListener l = ref.get();
-            if (l == null)
-                toRemove.add(ref);
-            else
-                try { l.onLocaleChanged(); } catch (Exception e) { /* Ignore */ }
-        }
-        for(WeakReference<OnLocaleChangedListener> ref: toRemove) {
-            mOnLocaleChangedListeners.remove(ref);
-        }
-    }
+		for (WeakReference<OnLocaleChangedListener> ref : mOnLocaleChangedListeners) {
+			OnLocaleChangedListener l = ref.get();
+			if (l == null)
+				toRemove.add(ref);
+			else
+				try { l.onLocaleChanged(); } catch (Exception e) { /* Ignore */ }
+		}
+		for(WeakReference<OnLocaleChangedListener> ref: toRemove) {
+			mOnLocaleChangedListeners.remove(ref);
+		}
+	}
 
-    /**
-     * Add a new OnLocaleChangedListener, and cleanup any dead references.
-     */
-    public static void registerOnLocaleChangedListener(OnLocaleChangedListener listener) {
-        ArrayList<WeakReference<OnLocaleChangedListener>> toRemove = new ArrayList<WeakReference<OnLocaleChangedListener>>();
+	/**
+	 * Add a new OnLocaleChangedListener, and cleanup any dead references.
+	 */
+	public static void registerOnLocaleChangedListener(OnLocaleChangedListener listener) {
+		ArrayList<WeakReference<OnLocaleChangedListener>> toRemove = new ArrayList<WeakReference<OnLocaleChangedListener>>();
 
-        boolean alreadyAdded = false;
+		boolean alreadyAdded = false;
 
-        for(WeakReference<OnLocaleChangedListener> ref: mOnLocaleChangedListeners) {
-            OnLocaleChangedListener l = ref.get();
-            if (l == null)
-                toRemove.add(ref);
-            else if (l == listener)
-                alreadyAdded = true;
-        }
-        if (!alreadyAdded)
-            mOnLocaleChangedListeners.add(new WeakReference<OnLocaleChangedListener>(listener));
+		for(WeakReference<OnLocaleChangedListener> ref: mOnLocaleChangedListeners) {
+			OnLocaleChangedListener l = ref.get();
+			if (l == null)
+				toRemove.add(ref);
+			else if (l == listener)
+				alreadyAdded = true;
+		}
+		if (!alreadyAdded)
+			mOnLocaleChangedListeners.add(new WeakReference<OnLocaleChangedListener>(listener));
 
-        for(WeakReference<OnLocaleChangedListener> ref: toRemove) {
-            mOnLocaleChangedListeners.remove(ref);
-        }
-    }
+		for(WeakReference<OnLocaleChangedListener> ref: toRemove) {
+			mOnLocaleChangedListeners.remove(ref);
+		}
+	}
 
-    /**
-     * Remove the passed OnLocaleChangedListener, and cleanup any dead references.
-     */
-    public static void unregisterOnLocaleChangedListener(OnLocaleChangedListener listener) {
-        ArrayList<WeakReference<OnLocaleChangedListener>> toRemove = new ArrayList<WeakReference<OnLocaleChangedListener>>();
+	/**
+	 * Remove the passed OnLocaleChangedListener, and cleanup any dead references.
+	 */
+	public static void unregisterOnLocaleChangedListener(OnLocaleChangedListener listener) {
+		ArrayList<WeakReference<OnLocaleChangedListener>> toRemove = new ArrayList<WeakReference<OnLocaleChangedListener>>();
 
-        for(WeakReference<OnLocaleChangedListener> ref: mOnLocaleChangedListeners) {
-            OnLocaleChangedListener l = ref.get();
-            if ( (l == null) || (l == listener) )
-                toRemove.add(ref);
-        }
-        for(WeakReference<OnLocaleChangedListener> ref: toRemove) {
-            mOnLocaleChangedListeners.remove(ref);
-        }
-    }
+		for(WeakReference<OnLocaleChangedListener> ref: mOnLocaleChangedListeners) {
+			OnLocaleChangedListener l = ref.get();
+			if ( (l == null) || (l == listener) )
+				toRemove.add(ref);
+		}
+		for(WeakReference<OnLocaleChangedListener> ref: toRemove) {
+			mOnLocaleChangedListeners.remove(ref);
+		}
+	}
 
-    /** Set of OnLocaleChangedListeners */
-    private static HashSet<WeakReference<OnLocaleChangedListener>> mOnLocaleChangedListeners = new HashSet<WeakReference<OnLocaleChangedListener>>();
+	/** Set of OnLocaleChangedListeners */
+	private static HashSet<WeakReference<OnLocaleChangedListener>> mOnLocaleChangedListeners = new HashSet<WeakReference<OnLocaleChangedListener>>();
 
-    /**
-     * Interface definition
-     */
-    public static interface OnLocaleChangedListener {
-        public void onLocaleChanged();
-    }
+	/**
+	 * Interface definition
+	 */
+	public static interface OnLocaleChangedListener {
+		public void onLocaleChanged();
+	}
 
 	/**
 	 * Check if sqlite collation is case sensitive; cache the result.

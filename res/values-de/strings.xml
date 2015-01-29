@@ -1019,9 +1019,36 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
 
         <!-- End: Added/Updated in 5.1.1 -->
 
-        <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->
+    <!-- Begin: Added/Updated in 5.1.2 -->
 
-        <!-- End: Added/Updated in [Next Version] -->
+    <!-- A heading in the 'about' dialog -->
+    <string name="amazon">Amazon</string>
+
+    <!-- The following strings are not in this release, but will be in a future release -->
+    <!--  Menu Item - will be in the next release -->
+    <string name="buy_at_amazon">Dieses Buch kaufen</string>
+
+    <!-- Heading for the "new_in_xxx" message to make future updates less work for translators...I hope -->
+    <!-- The plan is to use specific feature strings so that we can also update the store listing and add/remove reatures easily -->
+    <string name="new_in_zzz">Neu in %1$s</string>
+    <!-- Part of the "new in x.x.x" message -->
+    <string name="new_in_xxx_bug_fixes">Fehlerbehebungen</string>
+
+    <!-- End: Added/Updated in 5.1.2 -->
+
+    <!-- Begin: Added/Updated in 5.1.3 -->
+
+    <!-- Preference name (fairly short) for preferred language -->
+    <string name="preferred_interface_language">Bevorzugte Sprache der Benutzeroberfläche</string>
+    <!-- Preference value for a specific language. First arg is name in it's own language, second arg is name in current locale -->
+    <string name="preferred_language_x">%1$s (%2$s)</string>
+
+    <!-- WILL PROBABLY BE MORE! -->
+
+    <!-- End: Added/Updated in 5.1.3 -->
+
+    <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->
+    <!-- End: Added/Updated in [Next Version] -->
 
 </resources>
 

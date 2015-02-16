@@ -348,7 +348,8 @@ public class BooklistBuilder {
 		 * the group domains may contain more than just the key
 		 */
 		private ArrayList<SortedDomainInfo> mSortedColumns = new ArrayList<SortedDomainInfo>();
-		
+		private HashSet<DomainDefinition> mSortedColumnsSet = new HashSet<DomainDefinition>();
+
 		/**
 		 * Add a domain and source expression to the summary.
 		 * 
@@ -377,8 +378,9 @@ public class BooklistBuilder {
 			if ((flags & FLAG_GROUPED) != 0)
 				mGroups.add(domain);
 
-			if ((flags & FLAG_SORTED) != 0) {				
-				mSortedColumns.add(new SortedDomainInfo(domain, (flags & FLAG_SORT_DESCENDING) != 0) );	
+			if ((flags & FLAG_SORTED) != 0 && !mSortedColumnsSet.contains(domain)) {
+				mSortedColumns.add(new SortedDomainInfo(domain, (flags & FLAG_SORT_DESCENDING) != 0) );
+				mSortedColumnsSet.add(domain);
 			}
 
 			// Not currently used
@@ -876,6 +878,7 @@ public class BooklistBuilder {
 					// We don't use DESCENDING sort yet because the 'header' ends up below the detail rows in the flattened table.
 					summary.addDomain(DOM_UPDATE_YEAR, yearUpdatedExpr, SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED | sortDescendingMask );
 					g.setKeyComponents("yru", DOM_UPDATE_YEAR);
+					summary.addDomain(DOM_LAST_UPDATE_DATE, null, SummaryBuilder.FLAG_SORTED | sortDescendingMask );
 					break;
 	
 				case ROW_KIND_UPDATE_MONTH:
@@ -885,6 +888,7 @@ public class BooklistBuilder {
 					// We don't use DESCENDING sort yet because the 'header' ends up below the detail rows in the flattened table.
 					summary.addDomain(DOM_UPDATE_MONTH, monthUpdatedExpr, SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED | sortDescendingMask );
 					g.setKeyComponents("mnu", DOM_UPDATE_MONTH);
+					summary.addDomain(DOM_LAST_UPDATE_DATE, null, SummaryBuilder.FLAG_SORTED | sortDescendingMask );
 					break;
 	
 				case ROW_KIND_UPDATE_DAY:
@@ -894,6 +898,7 @@ public class BooklistBuilder {
 					// We don't use DESCENDING sort yet because the 'header' ends up below the detail rows in the flattened table.
 					summary.addDomain(DOM_UPDATE_DAY, dayUpdatedExpr, SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED | sortDescendingMask );
 					g.setKeyComponents("dyu", DOM_UPDATE_DAY);
+					summary.addDomain(DOM_LAST_UPDATE_DATE, null, SummaryBuilder.FLAG_SORTED | sortDescendingMask );
 					break;
 	
 					

@@ -507,7 +507,7 @@
     								Πατώντας σε ένα συμβάν μπορείτε να εκτελέσετε δίαφορες ενέργειες κατάλληλες γι\'αυτό.</string>
     <string name="hints_have_been_reset">Οι Συμβουλές έχουν επαναφερθεί</string>
     <string name="task_has_been_queued_in_background">Η εργασία έχει μπει σε σειρά στο παρασκήνιο</string>
-    <string name="hint_startup_screen">Αυτή είναι η κανονική αρχική οθόνη του BookCatalogue. Αν θέλετε, μπορείτε να ξεκινήσετε κατευθείαν στο \'Τα βιβλία μου\' - η αρχική οθόνη μπορεί να αλλαχθεί στις Προτιμήσεις.</string>
+    <string name="hint_startup_screen">Αυτή είναι η αρχική οθόνη του BookCatalogue. Αν θέλετε, μπορείτε να ξεκινήσετε κατευθείαν στην οθόνη \'Τα βιβλία μου\'. Η αρχική οθόνη μπορεί να αλλαχθεί στις Προτιμήσεις.</string>
     <string name="upgrading_ellipsis">Γίνεται αναβάθμηση&#8230;</string>
     <string name="explain_goodreads_no_isbn">Το επιλεγμένο βιβλίο δεν έχει κωδικό ISBN - δε γίνεται να συγχρονιστεί αυτόματα με το goodreads.
     									Η πιο εύκολη λύση είναι:
@@ -877,9 +877,9 @@
 
 	<string name="hint_evan_book">
 	    		<![CDATA[
-				<p>Did you know the original author of Book Catalogue (Evan Leybourn) has just published
-				a book on Agile Business Management?</p>
-				<p>If you are interested in his other work, more information can be found at:\n\n
+				<p>Το ξέρατε ότι ο δημιουργός του αυθεντικού Book Catalogue (Evan Leybourn) μόλις δημοσίευσε
+				ένα βιβλίο σχετικά με Agile Business Management?</p>
+				<p>Εαν ενδιαφέρεστε για τις δουλειές του, μπορέιτε να βρείτε πληροφορίες στη διεύθυνση:\n\n
 				<a href="http://theagiledirector.com/book">http://theagiledirector.com/book</a>
 				</p>
 			]]>

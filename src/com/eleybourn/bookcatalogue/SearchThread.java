@@ -86,7 +86,15 @@ abstract public class SearchThread extends ManagedTask {
 					}
 					sl.add(new Series(details.name, details.position));
 					mBookData.putString(CatalogueDBAdapter.KEY_SERIES_DETAILS, Utils.getSeriesUtils().encodeList(sl, '|'));
-					mBookData.putString(CatalogueDBAdapter.KEY_TITLE, thisTitle.substring(0, details.startChar-1));
+
+					String title = "";
+					if(details.startChar > 0) {
+						title += thisTitle.substring(0, details.startChar - 1);
+					}
+					if(details.endChar != thisTitle.length() - 1) {
+						title += thisTitle.substring(details.endChar);
+					}
+					mBookData.putString(CatalogueDBAdapter.KEY_TITLE, title.trim());
 				}
 			}
 		} catch (Exception e) {

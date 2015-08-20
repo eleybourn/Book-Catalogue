@@ -57,7 +57,7 @@
     <string name="administration_label">Funzioni amministratore</string>
     <string name="administration_title">Book Catalogue: Amministratore</string>
     <string name="menu_administration">Amministratore</string>
-    <string name="install_scan">Per scansionare i libri mediante codice a barre ISBN, devi installare una app per la scansione come Barcode Scanner, Pic2shop o Google Googles.</string>
+    <string name="install_scan">Per scansionare i libri mediante codice a barre ISBN, devi installare una app per la scansione come Barcode Scanner, Pic2shop o Google Goggles.</string>
     <string name="install_scan_title">Installa app per la scansione</string>
     <string name="version_number">Numero versione:</string>
     <string name="donate">Se vuoi supportare lo sviluppatore di questa applicazione, effettua una donazione utilizzando My Amazon Wishlist o il pulsante di Paypal qui sotto. Essendo in Australia non posso pubblicare una versione a &quot;pagamento&quot;. :-)</string>

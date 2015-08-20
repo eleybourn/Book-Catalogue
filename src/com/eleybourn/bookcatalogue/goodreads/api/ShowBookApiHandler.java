@@ -208,14 +208,7 @@ public abstract class ShowBookApiHandler extends ApiHandler {
 					mSeries = new ArrayList<Series>();
 				mSeries.add(new Series(details.name, details.position));
 				// Tempting to replace title with ORIG_TITLE, but that does bad things to translations (it used the original language)
-				String title = "";
-				if(details.startChar > 0) {
-					title += thisTitle.substring(0, details.startChar - 1);
-				}
-				if(details.endChar != thisTitle.length() - 1) {
-					title += thisTitle.substring(details.endChar);
-				}
-				mBook.putString(CatalogueDBAdapter.KEY_TITLE, title.trim());
+				mBook.putString(CatalogueDBAdapter.KEY_TITLE, details.title);
 				//if (mBook.containsKey(ORIG_TITLE)) {
 				//	mBook.putString(CatalogueDBAdapter.KEY_TITLE, mBook.getString(ORIG_TITLE));
 				//} else {

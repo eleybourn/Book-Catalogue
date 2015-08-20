@@ -142,9 +142,8 @@ public class Series implements Serializable, Utils.ItemWithIdFixup {
 	 */
 	public static class SeriesDetails {
 		public String name;
+		public String title;
 		public String position = null;
-		public int startChar;
-		public int endChar;
 	}
 
 	/** Pattern used to recognize series numbers embedded in names */
@@ -161,16 +160,16 @@ public class Series implements Serializable, Utils.ItemWithIdFixup {
 	public static SeriesDetails findSeries(String title) {
 		SeriesDetails details = null;
 
-		//Format = bookName (serieName #number)
 		boolean needPosition = false;
+
+		//Format = bookName (serieName #number)
 		int last = title.lastIndexOf("(");
 		if (last >= 1) { // We want a title that does not START with a bracket!
 			int close = title.lastIndexOf(")");
 			if (close > -1 && last < close) {
 				details = new SeriesDetails();
 				details.name = title.substring((last + 1), close);
-				details.startChar = last;
-				details.endChar = close;
+				details.title = title.substring(0, last - 1);
 			}
 		}
 
@@ -180,8 +179,7 @@ public class Series implements Serializable, Utils.ItemWithIdFixup {
 			if (last >= 1) {
 				details = new SeriesDetails();
 				details.name = title.substring(0, last);
-				details.startChar = 0;
-				details.endChar = last + 1;
+				details.title = title.substring(last + 1);
 				needPosition = true;
 			}
 		}
@@ -201,6 +199,8 @@ public class Series implements Serializable, Utils.ItemWithIdFixup {
 			if(needPosition && details.position == null) {
 				return null;
 			}
+
+			details.title = details.title.trim();
 		}
 		return details;
 	}

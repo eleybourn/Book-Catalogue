@@ -465,15 +465,7 @@ public class ImportAllTask extends GenericTask {
 					allSeries = db.getBookSeriesList(rv.getId());
 
 				allSeries.add(new Series(details.name, details.position));
-
-				String title = "";
-				if(details.startChar > 0) {
-					title += thisTitle.substring(0, details.startChar - 1);
-				}
-				if(details.endChar != thisTitle.length() - 1) {
-					title += thisTitle.substring(details.endChar);
-				}
-				book.putString(CatalogueDBAdapter.KEY_TITLE, title.trim());
+				book.putString(CatalogueDBAdapter.KEY_TITLE, details.title);
 
 				Utils.pruneSeriesList(allSeries);
 		        book.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, allSeries);

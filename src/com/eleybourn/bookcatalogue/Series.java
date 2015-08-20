@@ -31,7 +31,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Class to hold book-related series data. Used in lists and import/export.
- *
+ * 
  * @author Philip Warner
  */
 public class Series implements Serializable, Utils.ItemWithIdFixup {

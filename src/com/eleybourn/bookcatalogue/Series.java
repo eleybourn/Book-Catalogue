@@ -26,7 +26,6 @@ import java.util.regex.Pattern;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 import com.eleybourn.bookcatalogue.utils.Utils;
 
@@ -84,36 +83,36 @@ public class Series implements Serializable, Utils.ItemWithIdFixup {
 		return getDisplayName();
 	}
 
-	/**
-	 * Replace local details from another series
-	 *
-	 * @param source	Author to copy
-	 */
-	void copyFrom(Series source) {
+    /**
+     * Replace local details from another series
+     * 
+     * @param source	Author to copy
+     */
+    void copyFrom(Series source) {
 		name = source.name;
 		num = source.num;
-		id = source.id;
-	}
+		id = source.id;    	
+    }
 
-	/**
+    /**
 	 * Support for creation via Parcelable
 	 */
-	public static final Parcelable.Creator<Series> CREATOR
-			= new Parcelable.Creator<Series>() {
-		public Series createFromParcel(Parcel in) {
-			return new Series(in);
-		}
+    public static final Parcelable.Creator<Series> CREATOR
+            = new Parcelable.Creator<Series>() {
+        public Series createFromParcel(Parcel in) {
+            return new Series(in);
+        }
 
-		public Series[] newArray(int size) {
-			return new Series[size];
-		}
-	};
-
-	private Series(Parcel in) {
-		name = in.readString();
-		num = in.readString();
-		id = in.readLong();
-	}
+        public Series[] newArray(int size) {
+            return new Series[size];
+        }
+    };
+    
+    private Series(Parcel in) {
+    	name = in.readString();
+    	num = in.readString();
+    	id = in.readLong();
+    }
 
 	@Override
 	public long fixupId(CatalogueDBAdapter db) {
@@ -138,7 +137,7 @@ public class Series implements Serializable, Utils.ItemWithIdFixup {
 
 	/**
 	 * Data class giving resulting series info after parsing a series name
-	 *
+	 * 
 	 * @author Philip Warner
 	 */
 	public static class SeriesDetails {
@@ -155,7 +154,7 @@ public class Series implements Serializable, Utils.ItemWithIdFixup {
 
 	/**
 	 * Try to extract a series from a book title.
-	 *
+	 * 
 	 * @param 	title	Book title to parse
 	 * @return
 	 */
@@ -212,7 +211,7 @@ public class Series implements Serializable, Utils.ItemWithIdFixup {
 
 	/**
 	 * Try to cleanup a series position number by removing superfluous text.
-	 *
+	 * 
 	 * @param 	position	Position name to cleanup
 	 * @return
 	 */

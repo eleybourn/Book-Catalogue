@@ -57,7 +57,7 @@
     <string name="administration_label">Функции администрирования</string>
     <string name="administration_title">Книжный каталог: администрирование</string>
     <string name="menu_administration">Настройки</string>
-    <string name="install_scan">Чтобы определить ваши книги по ISBN штрих-коду, вы должны установить приложение Google Googles или zxing.</string>
+    <string name="install_scan">Чтобы определить ваши книги по ISBN штрих-коду, вы должны установить приложение Google Goggles или zxing.</string>
     <string name="install_scan_title">Установить сканер штрих-кодов</string>
     <string name="version_number">Номер версии:</string>
     <string name="donate">Если Вы хотите поддержать разработку этого приложения, пожалуйста сделайте пожертвование или через Amazon Wishlist или через PayPal кнопкой внизу. Я не могу опубликовать &quot;платную&quot; версию приложения в Австралии. :-) </string>

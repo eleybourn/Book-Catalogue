@@ -17,7 +17,7 @@
             android:layout_weight="1"
             android:completionThreshold="2"
             android:hint="@string/author"
-            android:inputType="textCapWords"
+            style="@style/personalNameTextEntry"
             android:padding="10dp"
             android:textAppearance="?android:attr/textAppearanceLarge"
             />
@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="@string/title"
-            android:inputType="textCapWords"
+            style="@style/bookOrSeriesTitleTextEntry"
             android:padding="10dp"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 

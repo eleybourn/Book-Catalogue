@@ -29,7 +29,8 @@
             android:layout_weight="2"
             android:completionThreshold="2"
             android:hint="@string/family_name"
-            android:inputType="textCapWords" />
+            style="@style/personalNameTextEntry"
+            />
 
         <TextView
             android:layout_width="fill_parent"
@@ -44,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="@string/given_names"
-            android:inputType="textCapWords"
+            style="@style/personalNameTextEntry"
             android:singleLine="true" />
     </LinearLayout>
 

@@ -110,7 +110,7 @@
                 android:layout_height="0dip"
                 android:layout_weight="1"
                 android:hint="@string/text_and_or_isbn"
-                android:inputType="textCapWords|textMultiLine"
+                style="@style/bookOrSeriesTitleTextEntry"
                 android:singleLine="false"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 

@@ -58,7 +58,6 @@
     <string name="administration_label">Administration Functions</string>
     <string name="administration_title">Book Catalogue: Administration</string>
     <string name="menu_administration">Admin</string>
-    <string name="install_scan">To scan your books via the ISBN barcode, you must install one of the Zxing, pic2shop or Google Googles barcode scanner applications.</string>
     <string name="install_scan_title">Install Barcode Scanner</string>
     <string name="version_number">Version Number:</string>
     <string name="donate">If you would like to support the development of this application, please donate using a my Amazon Wishlist or the paypal button below. Being in Australia means I cannot publish a &quot;paid&quot; version. :-) </string>
@@ -1059,6 +1058,11 @@ and you can edit the book via the options menu using the menu button or overflow
     <!-- Preference value for a specific language. First arg is name in it's own language, second arg is name in current locale -->
     <string name="preferred_language_x">%1$s (%2$s)</string>
 
+    <!-- This is an UPDATED string copied from earlier in the file; "Google Googles" (sic) was removed from the list of scanners -->
+    <string name="install_scan">To scan your books via the ISBN barcode, you must install one of the Zxing or pic2shop barcode scanner applications.</string>
+
+    <string name="system_locale">System Locale</string>
+    
     <!-- WILL PROBABLY BE MORE! -->
 
     <!-- End: Added/Updated in 5.1.3 -->

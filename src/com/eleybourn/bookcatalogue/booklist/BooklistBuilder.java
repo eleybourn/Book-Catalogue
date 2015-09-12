@@ -348,7 +348,8 @@ public class BooklistBuilder {
 		 * the group domains may contain more than just the key
 		 */
 		private ArrayList<SortedDomainInfo> mSortedColumns = new ArrayList<SortedDomainInfo>();
-		
+		private HashSet<DomainDefinition> mSortedColumnsSet = new HashSet<DomainDefinition>();
+
 		/**
 		 * Add a domain and source expression to the summary.
 		 * 
@@ -377,8 +378,9 @@ public class BooklistBuilder {
 			if ((flags & FLAG_GROUPED) != 0)
 				mGroups.add(domain);
 
-			if ((flags & FLAG_SORTED) != 0) {				
-				mSortedColumns.add(new SortedDomainInfo(domain, (flags & FLAG_SORT_DESCENDING) != 0) );	
+			if ((flags & FLAG_SORTED) != 0 && !mSortedColumnsSet.contains(domain)) {
+				mSortedColumns.add(new SortedDomainInfo(domain, (flags & FLAG_SORT_DESCENDING) != 0) );
+				mSortedColumnsSet.add(domain);
 			}
 
 			// Not currently used
@@ -530,6 +532,15 @@ public class BooklistBuilder {
 		return mUNKNOWNText;
 	}
 
+	private String localDateExpression(String fieldSpec) {
+		// IF the field has a time part, then convert to local time. This deals with legacy 'date-only' dates.
+		// The logic being that IF they had a time part then it would be UTC. Without a time part, we assume the
+		// zone is local (or irrelevant).
+		return "case when " + fieldSpec + " glob '*-*-* *' "
+				+ " then datetime(" + fieldSpec + ", 'localtime')"
+				+ " else " + fieldSpec + " end";
+	}
+	
 	/**
 	 * Utility function to retrun a glob expression to get the 'year' from a text date field in a standard way.
 	 * 
@@ -541,8 +552,10 @@ public class BooklistBuilder {
 	 * @return expression
 	 */
 	private String yearGlob(String fieldSpec, boolean toLocal) {
-		if (toLocal) 
-			fieldSpec = "datetime(" + fieldSpec + ", 'localtime')";
+		if (toLocal) {
+			fieldSpec = localDateExpression(fieldSpec);
+		}
+
 		return "case when " + fieldSpec + " glob '[0123456789][01234567890][01234567890][01234567890]*'\n" +
 				"	Then substr(" + fieldSpec + ", 1, 4) \n" +
 				" else '" + getUNKNOWNText() + "' end";
@@ -559,8 +572,9 @@ public class BooklistBuilder {
 	 * @return expression
 	 */
 	private String monthGlob(String fieldSpec, boolean toLocal) {
-		if (toLocal) 
-			fieldSpec = "datetime(" + fieldSpec + ", 'localtime')";
+		if (toLocal) {
+			fieldSpec = localDateExpression(fieldSpec);
+		}
 		return "case when " + fieldSpec + 
 								" glob '[0123456789][01234567890][01234567890][01234567890]-[0123456789][01234567890]*'\n" +
 								"	Then substr(" + fieldSpec + ", 6, 2) \n" +
@@ -581,9 +595,11 @@ public class BooklistBuilder {
 	 * @return expression
 	 */
 	private String dayGlob(String fieldSpec, boolean toLocal) {
-		if (toLocal) 
-			fieldSpec = "datetime(" + fieldSpec + ", 'localtime')";
-		// Just look for 4 leading numbers followed by 2 or 1 digit. We don't care about anything else.
+		if (toLocal) {
+			fieldSpec = localDateExpression(fieldSpec);
+		}
+
+		// Just look for 4 leading numbers followed by 2 or 1 digit then another 2 or 1 digit. We don't care about anything else.
 		return "case " +
 								" when " + fieldSpec + 
 								" glob '[0123456789][0123456789][0123456789][0123456789]-[0123456789][0123456789]-[0123456789][0123456789]*'\n" +
@@ -876,6 +892,7 @@ public class BooklistBuilder {
 					// We don't use DESCENDING sort yet because the 'header' ends up below the detail rows in the flattened table.
 					summary.addDomain(DOM_UPDATE_YEAR, yearUpdatedExpr, SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED | sortDescendingMask );
 					g.setKeyComponents("yru", DOM_UPDATE_YEAR);
+					summary.addDomain(DOM_LAST_UPDATE_DATE, null, SummaryBuilder.FLAG_SORTED | sortDescendingMask );
 					break;
 	
 				case ROW_KIND_UPDATE_MONTH:
@@ -885,6 +902,7 @@ public class BooklistBuilder {
 					// We don't use DESCENDING sort yet because the 'header' ends up below the detail rows in the flattened table.
 					summary.addDomain(DOM_UPDATE_MONTH, monthUpdatedExpr, SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED | sortDescendingMask );
 					g.setKeyComponents("mnu", DOM_UPDATE_MONTH);
+					summary.addDomain(DOM_LAST_UPDATE_DATE, null, SummaryBuilder.FLAG_SORTED | sortDescendingMask );
 					break;
 	
 				case ROW_KIND_UPDATE_DAY:
@@ -894,6 +912,7 @@ public class BooklistBuilder {
 					// We don't use DESCENDING sort yet because the 'header' ends up below the detail rows in the flattened table.
 					summary.addDomain(DOM_UPDATE_DAY, dayUpdatedExpr, SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED | sortDescendingMask );
 					g.setKeyComponents("dyu", DOM_UPDATE_DAY);
+					summary.addDomain(DOM_LAST_UPDATE_DATE, null, SummaryBuilder.FLAG_SORTED | sortDescendingMask );
 					break;
 	
 					

@@ -234,9 +234,13 @@ public class OtherPreferences extends PreferencesBase {
 	 */
 	private static ItemEntries<String> getLanguageListItems() {
 		ItemEntries<String> items = new ItemEntries<String>();
+
+		Locale l = BookCatalogueApp.getSystemLocal();
+		items.add("", R.string.preferred_language_x, BookCatalogueApp.getResourceString(R.string.system_locale), l.getDisplayLanguage());
+
 		for(String loc: BookCatalogueApp.getSupportedLocales()) {
 			String val = loc;
-			Locale l = BookCatalogueApp.localeFromName(loc);
+			l = BookCatalogueApp.localeFromName(loc);
 			items.add(val, R.string.preferred_language_x, l.getDisplayLanguage(l), l.getDisplayLanguage());
 		}
 		return items;
@@ -254,14 +258,22 @@ public class OtherPreferences extends PreferencesBase {
 	};
 
 	/**
-	 * Utility routine to adjust the stringsed used in displaying a language list.
+	 * Utility routine to adjust the strings used in displaying a language list.
 	 */
 	private void updateLanguageListItems() {
 		for(ListProperty.ItemEntry<String> item: mInterfaceLanguageListItems) {
 			String loc = item.getValue();
-			Locale l = BookCatalogueApp.localeFromName(loc);
-			String name = l.getDisplayLanguage(l) + " (" + l.getDisplayLanguage() + ")";
-			item.setString(R.string.preferred_language_x, l.getDisplayLanguage(l), l.getDisplayLanguage());
+			String name;
+			String lang;
+			if (loc.equals("")) {
+				name = getString(R.string.system_locale);
+				lang = BookCatalogueApp.getSystemLocal().getDisplayLanguage();
+			} else {
+				Locale l = BookCatalogueApp.localeFromName(loc);
+				name = l.getDisplayLanguage(l);
+				lang = l.getDisplayLanguage();
+			}
+			item.setString(R.string.preferred_language_x, name, lang);
 		}
 	}
 }

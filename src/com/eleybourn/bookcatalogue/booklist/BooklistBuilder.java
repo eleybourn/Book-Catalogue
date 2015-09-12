@@ -532,6 +532,15 @@ public class BooklistBuilder {
 		return mUNKNOWNText;
 	}
 
+	private String localDateExpression(String fieldSpec) {
+		// IF the field has a time part, then convert to local time. This deals with legacy 'date-only' dates.
+		// The logic being that IF they had a time part then it would be UTC. Without a time part, we assume the
+		// zone is local (or irrelevant).
+		return "case when " + fieldSpec + " glob '*-*-* *' "
+				+ " then datetime(" + fieldSpec + ", 'localtime')"
+				+ " else " + fieldSpec + " end";
+	}
+	
 	/**
 	 * Utility function to retrun a glob expression to get the 'year' from a text date field in a standard way.
 	 * 
@@ -543,8 +552,10 @@ public class BooklistBuilder {
 	 * @return expression
 	 */
 	private String yearGlob(String fieldSpec, boolean toLocal) {
-		if (toLocal) 
-			fieldSpec = "datetime(" + fieldSpec + ", 'localtime')";
+		if (toLocal) {
+			fieldSpec = localDateExpression(fieldSpec);
+		}
+
 		return "case when " + fieldSpec + " glob '[0123456789][01234567890][01234567890][01234567890]*'\n" +
 				"	Then substr(" + fieldSpec + ", 1, 4) \n" +
 				" else '" + getUNKNOWNText() + "' end";
@@ -561,8 +572,9 @@ public class BooklistBuilder {
 	 * @return expression
 	 */
 	private String monthGlob(String fieldSpec, boolean toLocal) {
-		if (toLocal) 
-			fieldSpec = "datetime(" + fieldSpec + ", 'localtime')";
+		if (toLocal) {
+			fieldSpec = localDateExpression(fieldSpec);
+		}
 		return "case when " + fieldSpec + 
 								" glob '[0123456789][01234567890][01234567890][01234567890]-[0123456789][01234567890]*'\n" +
 								"	Then substr(" + fieldSpec + ", 6, 2) \n" +
@@ -583,9 +595,11 @@ public class BooklistBuilder {
 	 * @return expression
 	 */
 	private String dayGlob(String fieldSpec, boolean toLocal) {
-		if (toLocal) 
-			fieldSpec = "datetime(" + fieldSpec + ", 'localtime')";
-		// Just look for 4 leading numbers followed by 2 or 1 digit. We don't care about anything else.
+		if (toLocal) {
+			fieldSpec = localDateExpression(fieldSpec);
+		}
+
+		// Just look for 4 leading numbers followed by 2 or 1 digit then another 2 or 1 digit. We don't care about anything else.
 		return "case " +
 								" when " + fieldSpec + 
 								" glob '[0123456789][0123456789][0123456789][0123456789]-[0123456789][0123456789]-[0123456789][0123456789]*'\n" +

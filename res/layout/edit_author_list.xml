@@ -28,7 +28,7 @@
             android:layout_weight="1"
             android:completionThreshold="2"
             android:hint="@string/author"
-            android:inputType="textCapWords"
+            style="@style/personalNameTextEntry"
             android:nextFocusDown="@+id/title"
             android:paddingLeft="@dimen/padding_border" />
 

@@ -1061,6 +1061,8 @@ and you can edit the book via the options menu using the menu button or overflow
     <!-- This is an UPDATED string copied from earlier in the file; "Google Googles" (sic) was removed from the list of scanners -->
     <string name="install_scan">To scan your books via the ISBN barcode, you must install one of the Zxing or pic2shop barcode scanner applications.</string>
 
+    <string name="system_locale">System Locale</string>
+    
     <!-- WILL PROBABLY BE MORE! -->
 
     <!-- End: Added/Updated in 5.1.3 -->

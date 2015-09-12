@@ -589,6 +589,7 @@ public class BookCatalogueApp extends Application {
     		mSupportedLocales.add("nl_NL");
     		mSupportedLocales.add("ru_RU");
     		mSupportedLocales.add("tr_TR");
+			mSupportedLocales.add("el_GR");
     	}
     	return mSupportedLocales;
     }

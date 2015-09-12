@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/background_grey"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/padding_border" >
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/title"
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:id="@+id/top_buttons"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:gravity="top"
+        android:orientation="horizontal" >
+
+        <AutoCompleteTextView
+            android:id="@+id/series"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:completionThreshold="2"
+            android:hint="@string/series"
+            android:inputType="textCapSentences"
+            android:paddingLeft="5sp" />
+
+        <EditText
+            android:id="@+id/series_num"
+            android:layout_width="150sp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:hint="@string/series_num"
+            android:inputType="numberDecimal"
+            android:singleLine="true" />
+
+        <Button
+            android:id="@+id/add"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:text="@string/add" />
+    </LinearLayout>
+
+    <com.eleybourn.bookcatalogue.widgets.TouchListView
+        xmlns:tlv="http://schemas.android.com/apk/res/com.eleybourn.bookcatalogue"
+        android:id="@+id/android:list"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/bottom_buttons"
+        android:layout_below="@+id/top_buttons"
+        android:textSize="16sp"
+        tlv:grabber="@+id/grabber"
+        tlv:normal_height="64dip"
+        tlv:remove_mode="none" />
+
+    <TextView
+        android:id="@+id/android:empty"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/bottom_buttons"
+        android:layout_below="@+id/top_buttons"
+        android:text="@string/noseries"
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:id="@+id/bottom_buttons"
+        android:layout_width="fill_parent"
+        android:layout_height="60sp"
+        android:layout_alignParentBottom="true"
+        android:gravity="bottom"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/cancel" />
+
+        <Button
+            android:id="@+id/confirm"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/save" />
+    </LinearLayout>
+
+</RelativeLayout>

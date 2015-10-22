@@ -167,9 +167,9 @@ public class CsvExporter implements Exporter {
 							//do nothing
 						}
 
-						String anthology = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY_MASK));
+						int anthology = books.getInt(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ANTHOLOGY_MASK));
 						String anthology_titles = "";
-						if (anthology.equals(CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS + "") || anthology.equals(CatalogueDBAdapter.ANTHOLOGY_IS_ANTHOLOGY + "")) {
+						if (anthology != 0) {
 							Cursor titles = db.fetchAnthologyTitlesByBook(id);
 							try {
 								if (titles.moveToFirst()) {
@@ -321,7 +321,7 @@ public class CsvExporter implements Exporter {
 	}
 	
 	/**
-	 * @see formatCell(String cell)
+	 * @see #formatCell(String)
 	 * @param cell The cell the format
 	 * @return The formatted cell
 	 */

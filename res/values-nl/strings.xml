@@ -1090,7 +1090,7 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     <string name="new_in_520">
 		<![CDATA[
 			<p><b>Nieuw in 5.2.0</b>\n\n
-			    * Gebruiksvriendelijke taalkeuze in voorkeursinstellingen\n\n
+			    * Door de gebruiker te kiezen taal in de voorkeursinstellingen\n\n
 			    * Griekse vertaling (Dimitris Klisiaris)\n\n
                 * Taal afhankelijke hoofdletterkeuze (de, fr)\n\n
                 * Verbeteringen in zoeken\n\n

@@ -41,6 +41,13 @@ Features include;
   case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+new in 5.2.0
+* Greek translation (Dimitris Klisiaris)
+* Locale-specific capitalization (de, fr)
+* User-selectable locale
+* Improvements to search
+* Bug fixes to date display
+
 new in 5.1.0
 * Italian translation (Eugenio Davolio)
 * Spanish translation (José M. Galdo)

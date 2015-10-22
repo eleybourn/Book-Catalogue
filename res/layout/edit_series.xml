@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:completionThreshold="2"
         android:hint="@string/series"
-        android:inputType="textCapWords"
+        style="@style/bookOrSeriesTitleTextEntry"
         android:paddingLeft="@dimen/padding_border" />
 
     <LinearLayout

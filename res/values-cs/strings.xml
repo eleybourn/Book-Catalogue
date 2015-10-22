@@ -57,7 +57,7 @@
 <string name="administration_label">Administrační funkce</string>
 <string name="administration_title">Book Catalogue: Administrace</string>
 <string name="menu_administration">Admin</string>
-<string name="install_scan">Aby bylo možné přečíst čárový kód je nutné, aby ve Vašem telefonu byla nainstalována aplikace Google Googles nebo zxing barcode scanner.</string>
+<string name="install_scan">Aby bylo možné přečíst čárový kód je nutné, aby ve Vašem telefonu byla nainstalována aplikace Google Goggles nebo zxing barcode scanner.</string>
 <string name="install_scan_title">Instalovat čtečku čárových kódů</string>
 <string name="version_number">Číslo verze:</string>
 <string name="donate">Pokud chcete podpořit vývoj této aplikace, učiňte tak prosím prostřednictvím mého Amazon Wishlistu nebo přes paypal tlačítko níže. Vzhledem k tomu, že jsem z Austrálie, tak nemohu nabízet &quot;placenou&quot; verzi. :-) </string>

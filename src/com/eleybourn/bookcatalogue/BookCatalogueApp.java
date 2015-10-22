@@ -109,7 +109,7 @@ public class BookCatalogueApp extends Application {
 	 */
 	public BookCatalogueApp() {
 		super();
-
+		mInitialLocale = Locale.getDefault();
 	}
 
 	/**
@@ -255,9 +255,11 @@ public class BookCatalogueApp extends Application {
 				// If we have a preference, set it
 				if (prefLocale != null && !prefLocale.equals("")) {
 					mPreferredLocale = localeFromName(prefLocale);
-					applyPreferredLocaleIfNecessary(getBaseContext().getResources());
-					notifyLocaleChanged();
+				} else {
+					mPreferredLocale = getSystemLocal();
 				}
+				applyPreferredLocaleIfNecessary(getBaseContext().getResources());
+				notifyLocaleChanged();
 			}
 		}
 	};
@@ -589,7 +591,12 @@ public class BookCatalogueApp extends Application {
     		mSupportedLocales.add("nl_NL");
     		mSupportedLocales.add("ru_RU");
     		mSupportedLocales.add("tr_TR");
+			mSupportedLocales.add("el_GR");
     	}
     	return mSupportedLocales;
+    }
+    
+    public static Locale getSystemLocal() {
+    	return mInitialLocale;
     }
 }

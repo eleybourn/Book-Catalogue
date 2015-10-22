@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:focusableInTouchMode="true"
+    tools:ignore="DuplicateIds"
     android:orientation="vertical" >
 
     <ScrollView
@@ -58,9 +60,8 @@
 
                 <EditText
                     android:id="@+id/title"
-                    style="@style/editorFieldTextStyle"
                     android:layout_below="@+id/heading"
-                    android:inputType="textCapWords"
+                    style="@style/bookOrSeriesTitleTextEntry"
                     android:nextFocusDown="@+id/isbn" />
             </RelativeLayout>
 
@@ -119,10 +120,9 @@
 
                 <AutoCompleteTextView
                     android:id="@+id/publisher"
-                    style="@style/editorFieldTextStyle"
                     android:layout_below="@+id/heading"
                     android:completionThreshold="2"
-                    android:inputType="textCapWords"
+            		style="@style/personalNameTextEntry"
                     android:nextFocusDown="@+id/date_published" />
             </RelativeLayout>
 
@@ -268,10 +268,9 @@
 
                 <AutoCompleteTextView
                     android:id="@+id/language"
-                    style="@style/editorFieldTextStyle"
                     android:layout_below="@+id/heading"
                     android:completionThreshold="2"
-                    android:inputType="textCapWords"
+            		style="@style/languageTextEntry"
                     android:nextFocusDown="@+id/anthology"
                     android:singleLine="true" />
             </RelativeLayout>

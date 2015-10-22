@@ -294,7 +294,7 @@ public class StorageUtils {
 	        for(String scanner:  scanners) {
 	            message += "Scanner [" + scanner + "]:\n";
 	            final Intent mainIntent = new Intent(scanner, null);
-	            final List<ResolveInfo> resolved = context.getPackageManager().queryIntentActivities( mainIntent, 0); 
+	            final List<ResolveInfo> resolved = context.getPackageManager().queryIntentActivities( mainIntent, 0);
 	            if (resolved.size() > 0) {
 		            for(ResolveInfo r: resolved) {
 		            	message += "    ";

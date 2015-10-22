@@ -993,9 +993,6 @@ and you can edit the book via the options menu using the menu button or overflow
     <!-- Heading in 'about' dialog -->
     <string name="special_thanks_label">Special Thanks</string>
     
-    <!-- Credits in the 'about' dialog -->
-    <string name="translators_blurb">BookCatalogue is the product of the efforts of many people, and would not have such wide use without the generous help of our volunteer translators: Eugenio Davolio, José M. Galdo, Imkal, Gideon van Melle, Emir Sarı, Nick Silin, and Robert Wetzlmayr (if we have forgotten someone, please tell us).</string>
-
     <!-- End: Added/Updated in 5.1.0 -->
 
     <!-- Begin: Added/Updated in 5.1.1 -->
@@ -1051,7 +1048,7 @@ and you can edit the book via the options menu using the menu button or overflow
     
     <!-- End: Added/Updated in 5.1.2 -->
 
-    <!-- Begin: Added/Updated in 5.1.3 -->
+    <!-- Begin: Added/Updated in 5.2.0 -->
     
     <!-- Preference name (fairly short) for preferred language -->
     <string name="preferred_interface_language">Preferred Interface Language</string>
@@ -1062,12 +1059,26 @@ and you can edit the book via the options menu using the menu button or overflow
     <string name="install_scan">To scan your books via the ISBN barcode, you must install one of the Zxing or pic2shop barcode scanner applications.</string>
 
     <string name="system_locale">System Locale</string>
-    
-    <!-- WILL PROBABLY BE MORE! -->
 
-    <!-- End: Added/Updated in 5.1.3 -->
+    <!-- Credits in the 'about' dialog -->
+    <string name="translators_blurb">BookCatalogue is the product of the efforts of many people, and would not have such wide use without the generous help of our volunteer translators: Eugenio Davolio, José M. Galdo, Imkal, Dimitris Klisiari, Gideon van Melle, Emir Sarı, Nick Silin, and Robert Wetzlmayr (if we have forgotten someone, please tell us).</string>
+
+    <string name="new_in_520">
+		<![CDATA[
+			<p><b>New in 5.2.0</b>\n\n
+			    * User-delectable locale in Preferences\n\n
+			    * Greek translation (Dimitris Klisiaris)\n\n
+                * Locale-specific capitalization (de, fr)\n\n
+                * Improvements to search\n\n
+				* Bug fixes\n\n
+			</p>
+		]]>
+    </string>
+
+    <!-- End: Added/Updated in 5.2.0 -->
 
     <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->    
+
     <!-- End: Added/Updated in [Next Version] -->
 
 </resources>

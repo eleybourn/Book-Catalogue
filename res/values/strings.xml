@@ -1066,7 +1066,7 @@ and you can edit the book via the options menu using the menu button or overflow
     <string name="new_in_520">
 		<![CDATA[
 			<p><b>New in 5.2.0</b>\n\n
-			    * User-delectable locale in Preferences\n\n
+			    * User-selectable locale in Preferences\n\n
 			    * Greek translation (Dimitris Klisiaris)\n\n
                 * Locale-specific capitalization (de, fr)\n\n
                 * Improvements to search\n\n

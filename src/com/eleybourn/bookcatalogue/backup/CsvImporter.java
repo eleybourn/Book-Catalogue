@@ -356,7 +356,7 @@ public class CsvImporter {
 							} catch (Exception e) {
 								anthology = 0;
 							}
-							if (anthology == CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS || anthology == CatalogueDBAdapter.ANTHOLOGY_IS_ANTHOLOGY) {
+							if (anthology != 0) {
 								int id = Integer.parseInt(values.getString(CatalogueDBAdapter.KEY_ROWID));
 								// We have anthology details, delete the current details.
 								db.deleteAnthologyTitles(id, false);

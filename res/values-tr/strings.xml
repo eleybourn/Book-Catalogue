@@ -78,7 +78,8 @@
     <string name="webpage">https://wiki.github.com/eleybourn/Book-Catalogue/</string>
     <string name="sourcecode">https://github.com/eleybourn/Book-Catalogue</string>
     <string name="helppage">https://github.com/eleybourn/Book-Catalogue/wiki/Help</string>
-    <string name="contact">eleybourn@gmail.com</string>
+    <string name="contact1">eleybourn@gmail.com</string>
+    <string name="contact2">philip.warner@rhyme.com.au</string>
     <string name="donate_label">Bağış yap</string>
     <string name="about_label">Uygulama hakkında</string>
     <string name="administration_functions_label">İşlevler</string>

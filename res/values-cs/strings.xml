@@ -279,7 +279,6 @@
 <string name="edit_bookElipsis">Upravit knihu&#8230;</string>
 <string name="retry_task">Opakovat</string>
 <string name="visit_goodreads">Navštívit GoodReads&#8230;</string>
-<string name="delete_entry">Smazat</string>
 <item name="TAG_EVENT" type="id"></item>
 <item name="TAG_HOLDER" type="id"></item>
 <item name="TAG_TASK" type="id"></item>

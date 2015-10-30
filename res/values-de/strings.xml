@@ -57,7 +57,6 @@
 <string name="administration_label">Verwaltungsfunktionen</string>
 <string name="administration_title">Book Catalogue: Verwaltung</string>
 <string name="menu_administration">Verwaltung</string>
-<string name="install_scan">Um die Bücher über den ISBN-Barcode zu scannen, muss die App zxing barcode scanner installiert werden. Drücken Sie OK zum Installieren oder Abbrechen um die Installation zu überspringen.</string>
 <string name="install_scan_title">Installiere Barcode Scanner</string>
 <string name="version_number">Versionsnummer:</string>
 <string name="donate">Wenn Sie die Entwicklung dieser App unterstützen möchten, können Sie über meine Amazon-Wunschliste oder den PayPal-Knopf spenden. Weil ich in Australien bin, kann ich keine "Kaufversion" der App anbieten. :-) </string>

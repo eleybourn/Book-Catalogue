@@ -57,7 +57,6 @@
 <string name="administration_label">Verwaltungsfunktionen</string>
 <string name="administration_title">Book Catalogue: Verwaltung</string>
 <string name="menu_administration">Verwaltung</string>
-<string name="install_scan">Um die Bücher über den ISBN-Barcode zu scannen, muss die App zxing barcode scanner installiert werden. Drücken Sie OK zum Installieren oder Abbrechen um die Installation zu überspringen.</string>
 <string name="install_scan_title">Installiere Barcode Scanner</string>
 <string name="version_number">Versionsnummer:</string>
 <string name="donate">Wenn Sie die Entwicklung dieser App unterstützen möchten, können Sie über meine Amazon-Wunschliste oder den PayPal-Knopf spenden. Weil ich in Australien bin, kann ich keine "Kaufversion" der App anbieten. :-) </string>
@@ -1047,9 +1046,6 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
     <string name="install_scan">Um Bücher über den ISBN-Code scannen zu können, musst du entweder Zxing oder pic2shop als Barcodescanner-App installieren.</string>
 
     <string name="system_locale">System Locale</string>
-
-    <!-- Credits in the 'about' dialog -->
-    <string name="translators_blurb">BookCatalogue ist das Ergebnis der Arbeit vieler Menschen und wäre nicht so verbreitet ohne die großzügige Hilfe unserer freiwilligen Übersetzer: Eugenio Davolio, José M. Galdo, Imkal, Dimitris Klisiari, Gideon van Melle, Emir Sarı, Nick Silin, and Robert Wetzlmayr (gib uns Bescheid, falls wir jemanden vergessen haben).</string>
 
     <string name="new_in_520">
         <![CDATA[

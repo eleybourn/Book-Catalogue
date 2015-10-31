@@ -7,7 +7,7 @@
     <string name="menu_delete">Delete Book</string>
     <string name="author">Author</string>
     <string name="title">Title</string>
-    <string name="isbn">ISBN</string>
+    <string name="isbn" translatable="false">ISBN</string>
     <string name="publisher">Publisher</string>
     <string name="date_published">Date Published</string>
     <string name="rating">Rating</string>
@@ -239,7 +239,7 @@
     <string name="lt_info">This application is enhanced by using LibraryThing as a source of information about book series, as well as a source of alternate covers. To use these features you need to register with LibraryThing (free) and request a LibraryThing developer key (also free).</string>
     <string name="lt_register_text">Register with LibraryThing</string>
     <string name="lt_devkey_text">Request LibraryThing developer key</string>
-    <string name="lt_label">LibraryThing</string>
+    <string name="lt_label" translatable="false">LibraryThing</string>
     <string name="lt_gotkey">Once you have the developer key (or if you already have one), just enter it below and it will be used to get extra data.</string>
     <string name="developer_key">Developer Key</string>
     <string name="require_library_thing_info">This feature requires a LibraryThing Developer Key. Do you want to see more information about LibraryThing?</string>
@@ -552,7 +552,7 @@
     <string name="displaying_n_books_in_m_entries">displaying %1$s books, in %2$s entries</string>
     <string name="displaying_n_books">displaying %1$s books</string>
     <string name="available">Available</string>
-    <string name="loaned_to_2">\u2192</string>
+    <string name="loaned_to_2" translatable="false">\u2192</string>
     <string name="summary_details_in_header">Summary details in header</string>
     <string name="hide_summary_details">Hide summary details</string>
     <string name="show_summary_details">Show summary details</string>
@@ -1053,7 +1053,7 @@ and you can edit the book via the options menu using the menu button or overflow
     <!-- Preference name (fairly short) for preferred language -->
     <string name="preferred_interface_language">Preferred Interface Language</string>
     <!-- Preference value for a specific language. First arg is name in it's own language, second arg is name in current locale -->
-    <string name="preferred_language_x">%1$s (%2$s)</string>
+    <string name="preferred_language_x" translatable="false">%1$s (%2$s)</string>
 
     <!-- This is an UPDATED string copied from earlier in the file; "Google Googles" (sic) was removed from the list of scanners -->
     <string name="install_scan">To scan your books via the ISBN barcode, you must install one of the Zxing or pic2shop barcode scanner applications.</string>

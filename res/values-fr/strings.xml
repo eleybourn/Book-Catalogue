@@ -163,7 +163,6 @@
     <string name="administration_label">Administration</string>
     <string name="administration_title">Book Catalogue : Administration</string>
     <string name="menu_administration">Admin</string>
-    <string name="install_scan">Pour scanner vos livres en utilisant le code barre ISBN, vous pouvez installer le scanner de codes barre zxing. Appuyez sur OK pour installer, ou sur Annuler pour passer cette étape.</string>
     <string name="install_scan_title">Installer le scanner de code barre</string>
     <string name="version_number">Numéro de version:</string>
     <string name="donate">Si vous souhaitez supporter le développement de cette application, les donations sont possibles par Amazon Wishlist ou par le bouton Paypal ci-dessous. Je suis en Australie, ce qui rend impossible la publication d\'une version payante :-) .</string>
@@ -979,53 +978,52 @@
      <!-- Heading in 'about' dialog -->
     <string name="special_thanks_label">Remerciements particuliers </string>
     <!-- Credits in the 'about' dialog -->
-    <string name="translators_blurb">BookCatalogue est le résultat de l\'effort de beaucoup de personnes, et n\'aurait pas une diffusion et une utilisation aussi large sans l\'aide de nos généreux traducteurs: Eugenio Davolio, José M. Galdo, Imkal, Gideon van Melle, Emir Sarı, Nick Silin et Robert Wetzlmayr (Si j\'ai oublié quelqu\'un, faites-le nous savoir).</string>
 
     <!-- End: Added/Updated in 5.1.0 -->
      <!-- Begin: Added/Updated in 5.1.1 -->
-<!-- Name of the 'Default' bookshelf, created when app first installed. Needs to be short. -->
-<string name="default_bookshelf_name">Votre bibliothèque</string>
-<!-- A hint describing the benefit of folowing the Amazon links -->
-<string name="hint_amazon_links_blurb">&lt;p&gt;Si vous achetez des livres chez amazon en sélectionnant le menu &lt;i&gt;\"%1$s\"&lt;/i&gt;, &lt;i&gt;\"%2$s\"&lt;/i&gt; or &lt;i&gt;\"%3$s\"&lt;/i&gt; , une partie du prix d\'achat sera reversée aux développeurs  %4$s.&lt;/p&gt;&lt;p&gt;Vous pouvez aussi utilisez le lien sur &lt;a href=""https://github.com/eleybourn/Book-Catalogue/wiki/Frequently-Asked-Questions-%%28FAQ%%29""&gt;notre FAQ&lt;/a&gt;(en anglais) pour vous rendre sur amazon ou Paypal.&lt;/p&gt;</string>
-<!-- Name of the new style grouping (needs to be short). -->
-<string name="update_date">Date de mise à jour</string>
-<!-- Name of the new style grouping (needs to be short). -->
-<string name="update_year">Année de mise à jour</string>
-<!-- Name of the new style grouping (needs to be short). -->
-<string name="update_month">Mois de mise à Jour</string>
-<!-- Name of the new style grouping (needs to be short). -->
-<string name="update_day">Jour de mise à jour</string>
-<!-- Short text for 'n stars' -->
-<plurals
-name="n_stars">
-<item quantity="zero">Aucune étoile</item>
-<item quantity="one">%1$s étoile</item>
-<item quantity="other">%1$s étoiles</item>
-</plurals>
-<string name="new_in_511">
-<![CDATA[
-<p><b>Nouveau dans la version 5.1.1</b>\n\n
-* Corrections de bogue\n\n
-* Nouveau style: Groupage par date de mise à jour date\n\n
-* Nouveau style: Groupage par évaluation\n\n
-* Nouveau style: Groupage par bibliothèque\n\n
-</p>
-]]>
-</string>
-<!-- End: Added/Updated in 5.1.1 -->
+    <!-- Name of the 'Default' bookshelf, created when app first installed. Needs to be short. -->
+    <string name="default_bookshelf_name">Votre bibliothèque</string>
+    <!-- A hint describing the benefit of folowing the Amazon links -->
+    <string name="hint_amazon_links_blurb">&lt;p&gt;Si vous achetez des livres chez amazon en sélectionnant le menu &lt;i&gt;\"%1$s\"&lt;/i&gt;, &lt;i&gt;\"%2$s\"&lt;/i&gt; or &lt;i&gt;\"%3$s\"&lt;/i&gt; , une partie du prix d\'achat sera reversée aux développeurs  %4$s.&lt;/p&gt;&lt;p&gt;Vous pouvez aussi utilisez le lien sur &lt;a href=""https://github.com/eleybourn/Book-Catalogue/wiki/Frequently-Asked-Questions-%%28FAQ%%29""&gt;notre FAQ&lt;/a&gt;(en anglais) pour vous rendre sur amazon ou Paypal.&lt;/p&gt;</string>
+    <!-- Name of the new style grouping (needs to be short). -->
+    <string name="update_date">Date de mise à jour</string>
+    <!-- Name of the new style grouping (needs to be short). -->
+    <string name="update_year">Année de mise à jour</string>
+    <!-- Name of the new style grouping (needs to be short). -->
+    <string name="update_month">Mois de mise à Jour</string>
+    <!-- Name of the new style grouping (needs to be short). -->
+    <string name="update_day">Jour de mise à jour</string>
+    <!-- Short text for 'n stars' -->
+    <plurals
+    name="n_stars">
+    <item quantity="zero">Aucune étoile</item>
+    <item quantity="one">%1$s étoile</item>
+    <item quantity="other">%1$s étoiles</item>
+    </plurals>
+    <string name="new_in_511">
+    <![CDATA[
+    <p><b>Nouveau dans la version 5.1.1</b>\n\n
+    * Corrections de bogue\n\n
+    * Nouveau style: Groupage par date de mise à jour date\n\n
+    * Nouveau style: Groupage par évaluation\n\n
+    * Nouveau style: Groupage par bibliothèque\n\n
+    </p>
+    ]]>
+    </string>
+    <!-- End: Added/Updated in 5.1.1 -->
 
- <!-- Begin: Added/Updated in 5.1.2 -->
-<!-- A heading in the 'about' dialog -->
-<string name="amazon">Amazon</string>
-<!-- The following strings are not in this release, but will be in a future release -->
-<!-- Menu Item - will be in the next release -->
-<string name="buy_at_amazon">Acheter ce livre</string>
-<!-- Heading for the "new_in_xxx" message to make future updates less work for translators...I hope -->
-<!-- The plan is to use specific feature strings so that we can also update the store listing and add/remove reatures easily -->
-<string name="new_in_zzz">Nouveau dans la version %1$s</string>
-<!-- Part of the "new in x.x.x" message -->
-<string name="new_in_xxx_bug_fixes">Corrections de bogues</string>
-<!-- End: Added/Updated in 5.1.2 -->
+     <!-- Begin: Added/Updated in 5.1.2 -->
+    <!-- A heading in the 'about' dialog -->
+    <string name="amazon">Amazon</string>
+    <!-- The following strings are not in this release, but will be in a future release -->
+    <!-- Menu Item - will be in the next release -->
+    <string name="buy_at_amazon">Acheter ce livre</string>
+    <!-- Heading for the "new_in_xxx" message to make future updates less work for translators...I hope -->
+    <!-- The plan is to use specific feature strings so that we can also update the store listing and add/remove reatures easily -->
+    <string name="new_in_zzz">Nouveau dans la version %1$s</string>
+    <!-- Part of the "new in x.x.x" message -->
+    <string name="new_in_xxx_bug_fixes">Corrections de bogues</string>
+    <!-- End: Added/Updated in 5.1.2 -->
 
     <!-- Begin: Added/Updated in 5.2.0 -->
     

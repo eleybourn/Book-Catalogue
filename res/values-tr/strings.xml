@@ -42,7 +42,7 @@
     <string name="book_exists">Eklemeye çalıştığınız kitap zaten var.</string>
     <string name="search_label">Kitap ara</string>
     <string name="search_hint">Yazar veya kitap adı ara</string>
-    <string name="book_not_found">Aranan kitap bulunamadı. Bazen doğru barkodu kitap kapağının içinde bulabilirsiniz. Bulamaz iseniz bilgileri el ile giriniz.</string>
+    <string name="book_not_found">Aranan kitap bulunamadı. Bazen doğru barkodu kitap kapağının içinde bulabilirsiniz. Bulamazsanız, bilgileri elle giriniz.</string>
     <string name="series_num">#</string>
     <string name="unable_to_connect_google">Google Kitaplar\'a bağlanılamıyor</string>
     <string name="export_data">Kitapları dışa aktar</string>
@@ -294,29 +294,29 @@
     <item name="TAG_PROPERTY" type="id"></item>
     <item name="TAG_DIALOG_ITEM" type="id"></item>
 
-    <string name="my_books">Betiklerim</string>
-    <string name="my_books_classic">Betiklerim (Klasik)</string>
-    <string name="loan_return_book">Ödünç ver, geri al veya betiği düzenle</string>
+    <string name="my_books">Kitaplarım</string>
+    <string name="my_books_classic">Kitaplarım (Klasik)</string>
+    <string name="loan_return_book">Ödünç ver, geri al veya kitabı düzenle</string>
     <string name="admin_and_prefs">Yönetim ve Seçenekler</string>
     <string name="edit_book_send_to_gr">Goodreads\'e gönder</string>
     <string name="goodreads">goodreads</string>
     <string name="goodreads_label">Goodreads</string>
-    <string name="goodreads_auth_blurb_part1">Goodreads, tor betinde belirtildiği üzere ereği \"kişilerin sevdiği betikleri bulmasına ve paylaşmasına yardımcı olmak\" olan bir servistir.
+    <string name="goodreads_auth_blurb_part1">Goodreads, ağ sayfasında belirtildiği üzere ereği \"kişilerin sevdiği kitapları bulmasına ve paylaşmasına yardımcı olmak\" olan bir servistir.
  										Çok geniş bir kitap ve yorum veritabanına iye olan Goodreads\'te kayıtlı bir  											    		    
- 										kullanıcı iseniz BookCatalogue Goodreads\'ten betiklerinizi, raflarınızı ve yorumlarınızı
+ 										kullanıcı iseniz BookCatalogue Goodreads\'ten kitaplarınızı, raflarınızı ve yorumlarınızı
  										alabilir veya Goodreads\'e gönderebilir. BookCatalogue kendi başına bir uygulama olup
  										Goodreads\'i gerektirmemektedir, ancak ilgilendiyseniz buradan kayıt olabilirsiniz:</string>
     <string name="goodreads_auth_blurb_part2">Kayıt olduktan sonra veya kayıtlı bir kullanıcı iseniz Goodreads verilerinize ulaşmak için aşağıdaki düğmeye basın. 
-										Sizi Goodreads\'e giriş yapabileceğiniz bir tor betine yönlendirecektir. Açarsözünüzü (şifrenizi) biz 										    kesinlikle görmeyeceğiz ve dilediğiniz zaman erişimi Goodreads tor betinden iptal edebilirsiniz. 
+										Sizi Goodreads\'e giriş yapabileceğiniz bir ağ sayfasına yönlendirecektir. Açarsözünüzü (şifrenizi) biz 										    kesinlikle görmeyeceğiz ve dilediğiniz zaman erişimi Goodreads ağ sayfasından iptal edebilirsiniz. 
 										Bazen boş bir bete düşerseniz geri düğmesine basıp buraya dönebilirsiniz!</string>
     <string name="goodreads_auth_blurb_part3">Ancak unutmayın&#8230; bunu yapmanız zorunlu değil, BookCatalogue tek başına da gayet de çalışır!</string>
     <string name="goodreads_url">http://www.goodreads.com</string>
     <string name="authorize_access">Erişime izin ver</string>
     <string name="authorize_access_already_auth">Bu uygulamayı zaten önceden yetkilendirmişsiniz. Tüm Goodreads işlevleri halihazırda kullanılabilir olmalı</string>
-    <string name="goodreads_access_error">Goodreads\'e erişmeye çalışırken bir ağ sorunu oluştu. Lütfen Goodreads tor betinin çalışıyor olduğundan emin olun, sorun sürerse lütfen destek bölümü ile iletişime geçin.</string>
+    <string name="goodreads_access_error">Goodreads\'e erişmeye çalışırken bir ağ sorunu oluştu. Lütfen Goodreads ağ sayfasının çalışıyor olduğundan emin olun, sorun sürerse lütfen destek bölümü ile iletişime geçin.</string>
     <string name="other_preferences">Diğer seçenekler</string>
     <string name="user_interface">Kullanıcı arayüzü</string>
-    <string name="start_in_my_books">\'Betiklerim\' içinde aç</string>
+    <string name="start_in_my_books">\'Kitaplarım\' içinde aç</string>
     <string name="include_classic_catalogue_view">Klasik katalog görünümünü içer</string>
     <string name="background_tasks">Ardalan görevleri</string>
     <string name="cleanup_old_tasks">Eski görevleri temizle</string>
@@ -331,7 +331,7 @@
     <string name="show_results">Sonuçları göster</string>
     <string name="rebuild_fts">FTS\'yi yeniden yapıla (aşırı deneysel)</string>
     <string name="search_in">Burada ara:</string>
-    <string name="send_books_to_goodreads">Betikleri GoodReads\'e gönder</string>
+    <string name="send_books_to_goodreads">Kitapları GoodReads\'e gönder</string>
     <string name="legacy_task">Eski görev</string>
     <string name="occurred_at">%1$s içinde oluştu</string>
     <string name="unknown_uc">BİLİNMEYEN</string>
@@ -353,7 +353,7 @@
     <string name="error_while_searching">Arama sırasında hata</string>
     <string name="send_all_to_goodreads_result">%1$s kitap işlendi: %2$s tanesi başarıyla gönderildi, %3$s tanesinin ISBN\'si yok ve %4$s tanesinin ISBN\'si Goodreads\'te bulunamadı</string>
     <string name="x_of_y">%1$s (Toplam %2$s)</string>
-    <string name="send_book_to_goodreads">Bu betiği Goodreads\'e gönder: %1$s</string>
+    <string name="send_book_to_goodreads">Bu kitabı Goodreads\'e gönder: %1$s</string>
 
     <item name="NOTIFICATION" type="id"></item>
     <item name="TAG_GOODREADS_WORK" type="id"></item>
@@ -368,7 +368,7 @@
     <string name="crash_dialog_text">Sanırız BookCatalogue çöktü. Eğer bu çökme ile ilgili olabileceğini düşündüğünüz bir şeyler varsa lütfen "Tamam"a basarak bu çökme hakkında bir e-posta gönderin. Göndermeden önce e-postayı göreceksiniz.</string>
     <string name="crash_dialog_comment_prompt">Yorumlarınız (isteğe bağlı):</string>
     <string name="crash_dialog_ok_toast">Sağ olun!</string>
-    <string name="browse_books">Tüm betiklere bak</string>
+    <string name="browse_books">Tüm kitaplara bak</string>
     <string name="no_series">(seri yok)</string>
     <string name="booklist_read">Okunmuş</string>
     <string name="booklist_unread">Okunmamış</string>
@@ -378,8 +378,8 @@
     <string name="no_author">(yazar yok)</string>
     <string name="no_date">(günay yok)</string>
     <string name="book_lists">Kitap dizelgeleri</string>
-    <string name="show_all_authors">Betikleri yazarların altında göster</string>
-    <string name="show_all_series">Betikleri tüm serilerde göster</string>
+    <string name="show_all_authors">Kitapları yazarların altında göster</string>
+    <string name="show_all_series">Kitapları tüm serilerde göster</string>
     <string name="show_thumbnails">Ufak resimleri göster</string>
     <string name="prefer_large_thumbnails">Büyük resimleri yeğle</string>
     <string name="display_first_then_last_names">Öncelikle adları görüntüle</string>
@@ -412,7 +412,7 @@
     <string name="booklist_preferences">Kitap dizelgesi yeğlenenleri</string>
     <string name="extra_book_details">Ek kitap ayarları</string>
     <string name="general">Genel</string>
-    <string name="bookshelves">Betiklikler</string>
+    <string name="bookshelves">Kitap rafları</string>
     <string name="shelves">Raflar</string>
     <string name="location">Konum</string>
     <string name="management">Yönetim</string>
@@ -450,7 +450,7 @@
 </string>
     <string name="hint_booklist_style_properties">Bu ekranı seçilen kitap dizgesi biçeminin özelliklerini değiştirmek üzere kullanabilirsiniz.
     										\n\nBuradan adını değiştirelibilr, hiyerarşiyi değiştirmek için öbeklendirmeyi düzenleyebilir ve										    kullanışlı bir biçem yaratmak için diğer ayarları yapabilirsiniz.
-    										\n\n\'Kitap süzgeçleri\' ayarlarını kullanarak kitap dizgelerinde görüntülenecek seçimleri          										    ayarlayabilirsiniz, örneğin yalnızca okumadığınız betikleri vb. seçebilirsiniz.
+    										\n\n\'Kitap süzgeçleri\' ayarlarını kullanarak kitap dizgelerinde görüntülenecek seçimleri          										    ayarlayabilirsiniz, örneğin yalnızca okumadığınız kitapları vb. seçebilirsiniz.
 </string>
     <string name="hint_booklist_global_properties">Bu ekranı tüm kitap dizgesi biçeminin özelliklerini değiştirmek üzere kullanabilirsiniz.
     										\n\nÇoğu özellikler kişisel biçemlerle değiştirilebilir, ancak öntanımlı değerler burada
@@ -464,13 +464,13 @@
     <string name="add_style">Biçem ekle</string>
     <string name="clone_style_colon_name">Biçemi çoğalt: %1$s</string>
     <string name="non_blank_arg_required">\'%1$s\' için boş olmayan bir değer belirtilmelidir</string>
-    <string name="select_read_only">Yalnızca okunan betikleri seç</string>
-    <string name="select_unread_only">Yalnızca okunmayan betikleri seç</string>
+    <string name="select_read_only">Yalnızca okunan kitapları seç</string>
+    <string name="select_unread_only">Yalnızca okunmayan kitapları seç</string>
     <string name="extra_filters">Kitap süzgeçleri</string>
     <string name="new_style">Yeni biçem</string>
     <string name="select_based_on_read_status">\'Okunma\' durumuna göre seç</string>
-    <string name="books_with_multiple_authors">Birden fazla yazarlı betikler</string>
-    <string name="books_in_multiple_series">Birden fazla seride bulunan betikler</string>
+    <string name="books_with_multiple_authors">Birden fazla yazarlı kitaplar</string>
+    <string name="books_in_multiple_series">Birden fazla seride bulunan kitaplar</string>
     <string name="use_default_setting">Öntanımlı ayarları kullan</string>
     <string name="show_book_under_each_thing">Her %1$s altında</string>
     <string name="show_book_under_primary_thing">Yalnızca birincil %1$s altında</string>
@@ -505,17 +505,17 @@
     <string name="requested_task_is_already_queued">İstenen görev kuyrukta bekliyor</string>
     <string name="export_task_is_already_queued">Bir dışa aktarma görevi kuyrukta bekliyor ve bu görev başlayabilmesi için önce bitirilmesi gerek</string>
     <string name="import_task_is_already_queued">Bir içe aktarma görevi kuyrukta bekliyor ve bu görev başlayabilmesi için önce bitirilmesi gerek</string>
-    <string name="goodreads_action_cannot_blah_blah">Bu uygulama Goodreads tor betinde yetkilendirilmeden verilen bu görev tamamlanamaz. Uygulamayı yetkilendirdikten sonra yeniden deneyiniz. \n\nŞimdi yetkilendirmek istiyor musunuz?</string>
+    <string name="goodreads_action_cannot_blah_blah">Bu uygulama Goodreads ağ sayfasında yetkilendirilmeden verilen bu görev tamamlanamaz. Uygulamayı yetkilendirdikten sonra yeniden deneyiniz. \n\nŞimdi yetkilendirmek istiyor musunuz?</string>
     <string name="tell_me_more">Bilgi ver</string>
     <string name="retry_x_of_y_next_at_z">Yeniden dene: %1$s (Toplam %2$s), sonraki: %3$s</string>
     <string name="completed">Tamamlandı</string>
     <string name="failed">Başarısız</string>
     <string name="queued">Kuyrukta</string>
     <string name="unknown">Bilinmeyen</string>
-    <string name="send_books_to_goodreads_blurb">Bu işlem betikliğinizi Goodreads\'e gönderecektir.
-    										\n\nİster tüm betiklerinizi gönderebilir veya son göndermenizden bu yana güncellenen, alınan 
-    										veya gönderilen betikleri seçebilir (henüz gönderilmeyen 
-    										betikler de dahil olmak üzere) veya güncellemeyi iptal edebilirsiniz.
+    <string name="send_books_to_goodreads_blurb">Bu işlem kitaplığınızı Goodreads\'e gönderecektir.
+    										\n\nİster tüm kitaplarınızı gönderebilir veya son göndermenizden bu yana güncellenen, alınan 
+    										veya gönderilen kitapları seçebilir (henüz gönderilmeyen 
+    										kitaplar da dahil olmak üzere) veya güncellemeyi iptal edebilirsiniz.
     										\n\nEğer daha önce hiç kitap göndermediyseniz ilk iki seçenek
     										arasında hiçbir ayrım bulunmamaktadır.</string>
     <string name="send_all">Tümünü gönder</string>
@@ -523,28 +523,28 @@
     <string name="sync_with_goodreads">Goodreads ile eşitle</string>
     <string name="cover_options_cc_ellipsis">Kapak seçenekleri&#8230;</string>
     <string name="show_events_ellipsis">Olayları göster&#8230;</string>
-    <string name="hint_authors_book_may_appear_more_than_once">Eğer her yazar için gösteriliyorsa, tek bir kitap bir dizelgede birden fazla görünebilir. Böyle bir durumda bu betiklerden birini silmek dizelgeden tüm girileri silecektir.</string>
-    <string name="hint_series_book_may_appear_more_than_once">Eğer her bir seride gösteriliyorsa, tek bir kitap bir dizelgede birden fazla görünebilir. Böyle bir durumda bu betiklerden birini silmek dizelgeden tüm girileri silecektir.</string>
+    <string name="hint_authors_book_may_appear_more_than_once">Eğer her yazar için gösteriliyorsa, tek bir kitap bir dizelgede birden fazla görünebilir. Böyle bir durumda bu kitaplardan birini silmek dizelgeden tüm girileri silecektir.</string>
+    <string name="hint_series_book_may_appear_more_than_once">Eğer her bir seride gösteriliyorsa, tek bir kitap bir dizelgede birden fazla görünebilir. Böyle bir durumda bu kitaplardan birini silmek dizelgeden tüm girileri silecektir.</string>
     <string name="hint_background_tasks">Buradan şu anda çalışan olayları, önceki hata ile biten diğer olayları ve diğer dikkate değer olayları görebilirsiniz. 
     								Bir göreve tıklamak o görevle ilişkili tüm olayları görmenizi ve/veya görevi silebilmenizi (ve ilişkili diğer olayları) sağlar.</string>
     <string name="hint_background_task_events">Buradan bir ardalan görevi ile ilişkili tüm olayları görebilirsiniz. 
     								Bir olaya tıklamak o olayla ilintili yapılabilecek eylemleri görüntülemenizi sağlar.</string>
     <string name="hints_have_been_reset">İpuçları sıfırlandı</string>
     <string name="task_has_been_queued_in_background">Görev ardalanda kuyruğa yerleştirildi</string>
-    <string name="hint_startup_screen">Bu ölçünlü BookCatalogue başlangıç ekranıdır. Eğer isterseniz doğrudan \'Betiklerim\'; ekranından başlayabilirsiniz. Başlangıç ekranı yeğlenenlerden değiştirilebilir.</string>
+    <string name="hint_startup_screen">Bu ölçünlü BookCatalogue başlangıç ekranıdır. Eğer isterseniz doğrudan \'Kitaplarım\'; ekranından başlayabilirsiniz. Başlangıç ekranı yeğlenenlerden değiştirilebilir.</string>
     <string name="upgrading_ellipsis">Yükseltiliyor&#8230;</string>
-    <string name="explain_goodreads_no_isbn">Seçili betiğin bir ISBN numarası yok, dolayısıyla Goodreads ile özdevinimli olarak eşitlenmesi olanaklı değil. 
+    <string name="explain_goodreads_no_isbn">Seçili kitabın bir ISBN numarası yok, dolayısıyla Goodreads ile özdevinimli olarak eşitlenmesi olanaklı değil. 
     									En yalın çözüm olarak:
-    									\n\n(1) Betiği Goodreads\'ten silin,
-    									\n\n(2) Betiği Goodreads\'e el ile tor betinden ekleyin,
+    									\n\n(1) Kitabı Goodreads\'ten silin,
+    									\n\n(2) Kitabı Goodreads\'e el ile ağ sayfasından ekleyin,
     									\n\n(3) Goodreads ile eşitleme yapın.
-    									\n\nBu betiğin BookCatalogue\'de yeniden oluşturulmasını sağlar ve her iki giri birbiri ile sürekli eşitlenmiş kalacaktır.</string>
-    <string name="explain_goodreads_no_match">Seçili betiğin ISBN\'si Goodreads\'te bulunamadı. Bunun olası iki nedeni vardır: 
+    									\n\nBu kitabın BookCatalogue\'de yeniden oluşturulmasını sağlar ve her iki giri birbiri ile sürekli eşitlenmiş kalacaktır.</string>
+    <string name="explain_goodreads_no_match">Seçili kitabın ISBN\'si Goodreads\'te bulunamadı. Bunun olası iki nedeni vardır: 
     									Ya kitap için girdiğiniz veri hatalı (ISBN\'yi kontrol edin) veya kitap Goodreads\'te bulunmuyor. 
     									\n\nEğer BookCatalogue\'de herhangi bir veriyi değiştirirseniz, yalnızca \'Yeniden dene\' düğmesine basın 
     									ve oluşan ardalan görevinin başarıyla tamamlanıp tamamlanmadığına bakın. 
-    									\n\nEğer veri doğru olup, ancak kitap hala bulunamıyorsa bu betiğin ISBN\'si ile birlikte Goodreads\'e el ile
-									tor betinden eklenmesi gerekmektedir. Bu yapıldıktan sonra betiği yeniden göndermeyi deneyebilirsiniz.</string>
+    									\n\nEğer veri doğru olup, ancak kitap hala bulunamıyorsa bu kitabın ISBN\'si ile birlikte Goodreads\'e el ile
+									ağ sayfasından eklenmesi gerekmektedir. Bu yapıldıktan sonra kitabı yeniden göndermeyi deneyebilirsiniz.</string>
     <string name="read_amp_unread">Okunan &amp; Okunmayan</string>
     <string name="loaned">Ödünç verilen</string>
     <string name="publication_year">Yayım yılı</string>
@@ -605,7 +605,7 @@
     <string name="month">Ay</string>
     <string name="day">Gün</string>
     <string name="edit_lc_ellipsis">düzenle&#8230;</string>
-    <string name="getting_books_ellipsis">Betikler alınıyor&#8230;</string>
+    <string name="getting_books_ellipsis">Kitaplar alınıyor&#8230;</string>
     <string name="n_events_found">%1$s olay bulundu</string>
     <string name="last_error_e">Son hata: %1$s</string>
     <string name="invalid_isbn_x_specified_in_search">Aramara belirtilen ISBN \'%1$s\' geçersiz</string>
@@ -619,11 +619,11 @@
     <string name="cancelled">İptal edildi</string>
     <string name="import_complete">İçe aktarma başarılı</string>
     <string name="amazon_books">Amazon</string>
-    <string name="google_books">Google Betikler (Kitaplar)</string>
+    <string name="google_books">Google Kitaplar</string>
     <string name="library_thing">LibraryThing</string>
     <string name="searching_elipsis">Aranıyor&#8230;</string>
     <string name="adding_book_elipsis">Kitap ekle&#8230;</string>
-    <string name="prefs_global_opening_book_mode">Betiği salt okunur aç</string>
+    <string name="prefs_global_opening_book_mode">Kitabı salt okunur aç</string>
     <string name="book_details_readonly_publishing">Yayımlanıyor</string>
     <string name="book_details_readonly_by">ile</string>
     <string name="book_details_readonly_loaned_to">%1$s kişisine ödünç verilmiş</string>
@@ -712,7 +712,7 @@
 </string>
 
     <!-- Hint text displayed when user enters the 'read-only' book view -->
-    <string name="hint_view_only_help">Bu ekran salt okunur kitap ayrıntıları ekranıdır; sağa/sola kaydırarak diğer betiklere geçebilir, seçke düğmesi veya taşan seçke simgesini kullanıp seçenekler bölümünden betiği düzenleyebilirsiniz.
+    <string name="hint_view_only_help">Bu ekran salt okunur kitap ayrıntıları ekranıdır; sağa/sola kaydırarak diğer kitaplara geçebilir, seçke düğmesi veya taşan seçke simgesini kullanıp seçenekler bölümünden kitabı düzenleyebilirsiniz.
 </string>
 
     <!-- This is the heading of the 'Details' tab when editing a book. It needs to be short. "Book Details" is too long. -->
@@ -736,7 +736,7 @@
     \n\nForgetting the credentials here will remove the goodreads option from the main application menu.</string>
 
     <!-- Progress dialog message displayed when doing a long network operation to a web site -->
-    <string name="connecting_to_web_site">Tor betine bağlanılıyor&#8230;</string>
+    <string name="connecting_to_web_site">Ağ sayfasına bağlanılıyor&#8230;</string>
 
     <!-- Admin option to import -->
     <string name="backup_to_archive">Arşive yedekle</string>
@@ -889,31 +889,31 @@
     <!-- Begin: Added/Updated in [Next Version] -->
     
     <!--  Explanatory text for 'import' dialogue -->
-    <string name="import_books_blurb">Arşivdeki betikler içe aktarılacaktır. Aktarmaya başlamak için iki seçenekten birini seçin, iptal etmek için ise \'geri\' düğmesine basın:</string>
+    <string name="import_books_blurb">Arşivdeki kitaplar içe aktarılacaktır. Aktarmaya başlamak için iki seçenekten birini seçin, iptal etmek için ise \'geri\' düğmesine basın:</string>
     <!-- Description of the 'import all books' option -->
-    <string name="all_books_blurb">Arşivdeki tüm betikler içe aktarılacak; var olan betikler güncellenip yeni olanlar eklenecektir.</string>
+    <string name="all_books_blurb">Arşivdeki tüm kitaplar içe aktarılacak; var olan kitaplar güncellenip yeni olanlar eklenecektir.</string>
     <!-- Menu text for the 'import/export new & changed' option -->
-    <string name="new_and_changed_books">Yeni ve güncellenmiş betikler</string>
+    <string name="new_and_changed_books">Yeni ve güncellenmiş kitaplar</string>
     <!-- Description of the 'import new & changed' option -->
-    <string name="new_and_changed_books_blurb">Yalnızca yeni olan veya son zamanlarda arşivde güncellenmiş betikleri içe aktar. Bu seçenek özellikle örneğin iki aygıtı eşlerken yararlıdır.</string>
+    <string name="new_and_changed_books_blurb">Yalnızca yeni olan veya son zamanlarda arşivde güncellenmiş kitapları içe aktar. Bu seçenek özellikle örneğin iki aygıtı eşlerken yararlıdır.</string>
     <!-- Descriptive text associated with import options not available with older archives -->
     <string name="old_archive_blurb">Bu seçenek eski arşiv sürümleri için geçerli değildir.</string>
     <!-- Part of the progress message displayed when importing books -->
     <string name="n_created_m_updated">%1$s oluşturuldu, %2$s güncellendi</string>
 
     <!--  Explanatory text for 'export' dialogue -->
-    <string name="export_books_blurb">Kataloğunuzdaki betikler dışa aktarılacaktır. Aktarmaya başlamak için iki seçenekten birini seçin, iptal etmek için ise için \'geri\' düğmesine basın:</string>
+    <string name="export_books_blurb">Kataloğunuzdaki kitaplar dışa aktarılacaktır. Aktarmaya başlamak için iki seçenekten birini seçin, iptal etmek için ise için \'geri\' düğmesine basın:</string>
     <!-- Description of the 'import all books' option -->
-    <string name="export_all_books_blurb">Katalogdaki tüm betikler arşive aktarılacaktır.</string>
+    <string name="export_all_books_blurb">Katalogdaki tüm kitaplar arşive aktarılacaktır.</string>
     <!-- Description of the 'export new & changed' option -->
-    <string name="export_new_and_changed_books_blurb">Yalnızca yeni olan veya bir önceki yedeklemeden beri değiştirilmiş betikleri dışa aktar. Bu seçenek özellikle örneğin iki aygıtı eşlerken yararlıdır.</string>
+    <string name="export_new_and_changed_books_blurb">Yalnızca yeni olan veya bir önceki yedeklemeden beri değiştirilmiş kitapları dışa aktar. Bu seçenek özellikle örneğin iki aygıtı eşlerken yararlıdır.</string>
     <!-- Part of the progress message displayed when exporting books -->
     <string name="n_exported">%1$s dışa aktarıldı</string>
 
     <!-- Displayed in progress dialog when exporting covers in incremental mode -->
     <string name="covers_progress_incr">%1$s kapak işlendi (%2$s bulunamadı, %3$s atlandı)</string>
     <!-- Explanatory note for 'export all' option -->
-    <string name="export_all_blurb">Tüm betikler, kapaklar, ayarlar ve kişiselleştirilmiş biçemler arşive aktarılacaktır.</string>
+    <string name="export_all_blurb">Tüm kitaplar, kapaklar, ayarlar ve kişiselleştirilmiş biçemler arşive aktarılacaktır.</string>
     <!-- Explanatory note for 'advanced export' option -->
     <string name="export_advanced_blurb">Arşive nelerin aktarılacağını seçin.</string>
     <!-- Introduction for 'advanced export' option -->
@@ -921,19 +921,19 @@
     <!-- Text for button -->
     <string name="book_details">Kitap ayrıntıları</string>
     <!-- Brief descriptionn -->
-    <string name="book_details_blurb">Betiklerin ayrıntıları gösterir</string>
+    <string name="book_details_blurb">Kitapların ayrıntılarını gösterir</string>
     <!-- Text for button -->
     <string name="cover_images">Kapak görselleri</string>
     <!-- Brief descriptionn -->
-    <string name="cover_images_blurb">Seçilen betikler için kapak resimlerini gösterir. Dışarı aktarım boyutunu arttıracaktır.</string>
+    <string name="cover_images_blurb">Seçilen kitaplar için kapak resimlerini gösterir. Dışarı aktarım boyutunu arttıracaktır.</string>
     <!-- Brief descriptionn -->
     <string name="preferences_blurb">Yeğlenenler ve kullanıcı tanımlı dizelge biçemleri</string>
     <!-- Explanatory note for export date (not yet implemented) -->
-    <string name="export_advanced_date_blurb">Seçeneğe bağlı olarak, dışarı aktarılacak betiklerde ve/veya kapak görsellerinde kullanılacak bir günay seçin:</string>
+    <string name="export_advanced_date_blurb">Seçeneğe bağlı olarak, dışarı aktarılacak kitaplarda ve/veya kapak görsellerinde kullanılacak bir günay seçin:</string>
     <!-- Explanatory note for export date (not yet implemented) -->
-    <string name="all_books_added_or_updated_since">Şu günaydan bu yana eklenen veya güncellenen betikler:</string>
+    <string name="all_books_added_or_updated_since">Şu günaydan bu yana eklenen veya güncellenen kitaplar:</string>
     <!-- Explanatory note for export data since last backup -->
-    <string name="all_books_added_or_updated_since_last_full_backup">Son tüm yedeklemeden bu yana eklenen veya güncellenen betikler</string>
+    <string name="all_books_added_or_updated_since_last_full_backup">Son tüm yedeklemeden bu yana eklenen veya güncellenen kitaplar</string>
    <!-- Short text for 'n books' -->
    <plurals
    name="n_books">
@@ -958,21 +958,21 @@
    * İtalyanca çeviri (Eugenio Davolio)\n\n
    * İspanyolca çeviri (José M. Galdo)\n\n
    * Türkçe çeviri (Emir Sarı)\n\n
-   * Yalnıca yeni eklenen/güncellenen betikleri arşivleme ve kapak görsellerini (veya betikleri) içerme seçeneği\n\n
+   * Yalnıca yeni eklenen/güncellenen kitapları arşivleme ve kapak görsellerini (veya kitapları) içerme seçeneği\n\n
    * Yüksek belirginlikli ekranlar için daha iyi ufak resim boyutu\n\n
-   * Betikleri Amazon\'daki yazarlara/dizilere göre gösterme desteği\n\n
+   * Kitapları Amazon\'daki yazarlara/dizilere göre gösterme desteği\n\n
    * Diğer ufak hata düzeltmeleri\n\n
    </p>
    ]]>
    </string>
    <!-- Menu item -->
-   <string name="amazon_books_in_series">Bu dizideki betikler</string>
+   <string name="amazon_books_in_series">Bu dizideki kitaplar</string>
    <!-- Menu item -->
-   <string name="amazon_books_by_author">Bu yazarın betikleri</string>
+   <string name="amazon_books_by_author">Bu yazarın kitapları</string>
    <!-- Menu item -->
-   <string name="amazon_books_by_author_in_series">Yazara/diziye göre betikler</string>
+   <string name="amazon_books_by_author_in_series">Yazara/diziye göre kitaplar</string>
    <!-- Hint text displayed when user enters the book listw -->
-   <string name="hint_book_list">Bir betiğin üzerine dokunmak kitap ayrıntılarını gösterir, uzun basılı tutmak daha fazla seçeneğin olduğu bir dizelge verir.</string>
+   <string name="hint_book_list">Bir kitabın üzerine dokunmak kitap ayrıntılarını gösterir, uzun basılı tutmak daha fazla seçeneğin olduğu bir dizelge verir.</string>
    <!-- TRANLATORS NOTE: I HAVE UPDATED THE new_in_510, above! Sorry. -->
 
    <!-- Preference VALUE, displayed in a preference activity -->
@@ -1008,7 +1008,7 @@
    * Hata düzeltmeleri\n\n
    * Yeni biçem: Son güncelleme günayına göre öbekle\n\n
    * Yeni biçem: Beğeniye göre öbekle\n\n
-   * Yeni biçem: Betiklik adına göre öbekle\n\n
+   * Yeni biçem: Kitap rafı adına göre öbekle\n\n
    </p>
    ]]>
    </string>

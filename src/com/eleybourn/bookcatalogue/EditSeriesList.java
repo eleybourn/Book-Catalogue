@@ -61,7 +61,7 @@ public class EditSeriesList extends EditObjectList<Series> {
 					st.setText(object.getSortName());
 				}
 			}
-			EditText et = (EditText) target.findViewById(R.id.row_series_num);
+			TextView et = (TextView) target.findViewById(R.id.row_series_num);
 			if (et != null)
 				et.setText(object.num);
 		}

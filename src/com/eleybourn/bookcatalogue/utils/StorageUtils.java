@@ -12,6 +12,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -174,6 +175,8 @@ public class StorageUtils {
 	 * @return
 	 */
 	public static ArrayList<File> findExportFiles() {
+		StringBuilder info = new StringBuilder();
+
 		ArrayList<File> files = new ArrayList<File>();
 		Pattern mountPointPat = Pattern.compile("^\\s*[^\\s]+\\s+([^\\s]+)");
 		BufferedReader in = null;
@@ -187,36 +190,93 @@ public class StorageUtils {
 			}
 		};
 
+		ArrayList<File> dirs = new ArrayList<File>();
+
+		info.append("Getting mounted file systems\n");
 		// Scan all mounted file systems
 		try {
 			in = new BufferedReader(new InputStreamReader(new FileInputStream("/proc/mounts")),1024);
 			String line = "";
 			while ((line = in.readLine()) != null) {
+				info.append("   checking " + line + "\n");
 				Matcher m = mountPointPat.matcher(line);
 				// Get the mount point
 				if (m.find()) {
 					// See if it has a bookCatalogue directory
 					File dir = new File(m.group(1).toString() + "/bookCatalogue");
-					if (dir.exists()) {
-						// Scan for csv files
-						File[] csvFiles = dir.listFiles(csvFilter);
-						if (csvFiles != null) {
-							for(File f: csvFiles) {
-								System.out.println("Found: " + f.getAbsolutePath());
-								files.add(f);								
-							}
-						}
-					}
+					info.append("       matched " + dir.getAbsolutePath() + "\n");
+					dirs.add(dir);
+				} else {
+					info.append("       NO match\n");
 				}
 			}
 		} catch (IOException e) {
-			return files;
+			Logger.logError(e, "Failed to open/scan/read /proc/mounts");
 		} finally {
 			if (in != null)
 				try {
 					in.close();					
 				} catch (Exception e) {};
 		}
+
+		// Sometimes (Android 6?) the /proc/mount search seems to fail, so we revert to environment vars
+		info.append("Found " + dirs.size() + " directories\n");
+		try {
+			String loc1 = System.getenv("EXTERNAL_STORAGE");
+			if (loc1 != null) {
+				File dir = new File(loc1 + "/bookCatalogue");
+				dirs.add(dir);
+				info.append("Loc1 added " + dir.getAbsolutePath() + "\n");
+			} else {
+				info.append("Loc1 ignored: " + loc1 + "\n");
+			}
+
+			String loc2 = System.getenv("SECONDARY_STORAGE");
+			if (loc2 != null && !loc2.equals(loc1)) {
+				File dir = new File(loc2 + "/bookCatalogue");
+				dirs.add(dir);
+				info.append("Loc2 added " + dir.getAbsolutePath() + "\n");
+			} else {
+				info.append("Loc2 ignored: " + loc2 + "\n");
+			}
+		} catch (Exception e) {
+			Logger.logError(e, "Failed to get external storage from environment variables");
+		}
+
+		HashSet<String> paths = new HashSet<String>();
+
+		info.append("Looking for files in directories\n");
+		for(File dir: dirs) {
+			try {
+				if (dir.exists()) {
+					// Scan for csv files
+					File[] csvFiles = dir.listFiles(csvFilter);
+					if (csvFiles != null) {
+						info.append("    found " + csvFiles.length + " in " + dir.getAbsolutePath() + "\n");
+						for (File f : csvFiles) {
+							System.out.println("Found: " + f.getAbsolutePath());
+							final String cp = f.getCanonicalPath();
+							if (paths.contains(cp)) {
+								info.append("        already present as " + cp + "\n");								
+							} else {
+								files.add(f);
+								paths.add(cp);
+								info.append("        added as " + cp + "\n");																
+							}
+						}
+					} else {
+						info.append("    null returned by listFiles() in " + dir.getAbsolutePath() + "\n");
+					}
+				} else {
+					info.append("    " + dir.getAbsolutePath() + " does not exist\n");
+				}
+			} catch (Exception e) {
+				Logger.logError(e, "Failed to read directory " + dir.getAbsolutePath());
+			}
+		}
+
+		Logger.logError(new RuntimeException("INFO"), info.toString());
+
 		// Sort descending based on modified date
 		Collections.sort(files, new FileDateComparator(-1));
 		return files;

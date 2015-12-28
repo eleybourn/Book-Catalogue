@@ -20,36 +20,6 @@
 
 package com.eleybourn.bookcatalogue.goodreads;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Hashtable;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
-import oauth.signpost.OAuthProvider;
-import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
-import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
-import oauth.signpost.exception.OAuthCommunicationException;
-import oauth.signpost.exception.OAuthExpectationFailedException;
-import oauth.signpost.exception.OAuthMessageSignerException;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -58,6 +28,7 @@ import android.os.Bundle;
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.BooksRowView;
+import com.eleybourn.bookcatalogue.BuildConfig;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.BookNotFoundException;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
@@ -76,6 +47,36 @@ import com.eleybourn.bookcatalogue.utils.IsbnUtils;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Hashtable;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import oauth.signpost.OAuthProvider;
+import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
+import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
+import oauth.signpost.exception.OAuthCommunicationException;
+import oauth.signpost.exception.OAuthExpectationFailedException;
+import oauth.signpost.exception.OAuthMessageSignerException;
+
 /**
  * Class to wrap all GoodReads API calls and manage an API connection.
  * 
@@ -89,7 +90,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
 public class GoodreadsManager {
 
 	/** Enum to handle possible results of sending a book to goodreads */
-	public static enum ExportDisposition { error, sent, noIsbn, notFound, networkError };
+	public enum ExportDisposition { error, sent, noIsbn, notFound, networkError }
 	
 	private static final String LAST_SYNC_DATE = "GoodreadsManager.LastSyncDate";
 
@@ -100,20 +101,20 @@ public class GoodreadsManager {
 		public static class GeneralException extends Exception {
 			private static final long serialVersionUID = 5762518476144652354L;
 			Throwable m_inner;
-			public GeneralException(Throwable inner) { m_inner = inner; };
+			public GeneralException(Throwable inner) { m_inner = inner; }
 		}
 		public static class NotAuthorizedException extends GeneralException {
 			private static final long serialVersionUID = 5589234170614368111L;
 			public NotAuthorizedException(Throwable inner) { super(inner); }
-		};
+		}
 		public static class BookNotFoundException extends GeneralException {
 			private static final long serialVersionUID = 872113355903361212L;
 			public BookNotFoundException(Throwable inner) { super(inner); }
-		};
+		}
 		public static class NetworkException extends GeneralException {
 			private static final long serialVersionUID = -4233137984910957925L;
 			public NetworkException(Throwable inner) { super(inner); }
-		};		
+		}
 	}
 
 	// Set to true when the credentials have been successfully verified.
@@ -127,8 +128,8 @@ public class GoodreadsManager {
 	// Stores the last time an API request was made to avoid breaking API rules.
 	private static Long m_LastRequestTime = 0L;
 
-	private final static String DEV_KEY = GoodreadsApiKeys.GOODREADS_DEV_KEY;
-	private final static String DEV_SECRET = GoodreadsApiKeys.GOODREADS_DEV_SECRET;
+	private final static String DEV_KEY = BuildConfig.GOODREADS_DEV_KEY;
+	private final static String DEV_SECRET = BuildConfig.GOODREADS_DEV_SECRET;
 
 	// OAuth helpers
 	CommonsHttpOAuthConsumer m_consumer;
@@ -136,7 +137,7 @@ public class GoodreadsManager {
 
 	/**
 	 * Standard constructor; call common code.
-	 * 
+	 *
 	 * @author Philip Warner
 	 */
 	public GoodreadsManager() {
@@ -145,7 +146,7 @@ public class GoodreadsManager {
 
 	/**
 	 * Common constructor code.
-	 * 
+	 *
 	 * @author Philip Warner
 	 */
 	private void sharedInit() {
@@ -194,7 +195,7 @@ public class GoodreadsManager {
 	}
 	/**
 	 * Return the public developer key, used for GET queries.
-	 * 
+	 *
 	 * @author Philip Warner
 	 */
 	public String getDeveloperKey() {
@@ -204,7 +205,7 @@ public class GoodreadsManager {
 	/**
 	 * Check if the current credentials (either cached or in prefs) are valid. If they
 	 * have been previously checked and were valid, just use that result.
-	 * 
+	 *
 	 * @author Philip Warner
 	 */
 	public boolean hasValidCredentials() {
@@ -346,8 +347,7 @@ public class GoodreadsManager {
 		HttpConnectionParams.setSocketBufferSize(params, 8192);
 		HttpConnectionParams.setLinger(params, 0);
 		HttpConnectionParams.setTcpNoDelay(params, false);
-		HttpClient httpClient = new DefaultHttpClient(params);		
-		return httpClient;
+		return new DefaultHttpClient(params);
 	}
 
 	/**
@@ -471,19 +471,19 @@ public class GoodreadsManager {
 			parseOk = true;
 		} catch (MalformedURLException e) {
 			String s = "unknown";
-			try { s = e.getMessage(); } catch (Exception e2) {};
+			try { s = e.getMessage(); } catch (Exception e2) {}
 			Logger.logError(e, s);
 		} catch (ParserConfigurationException e) {
 			String s = "unknown";
-			try { s = e.getMessage(); } catch (Exception e2) {};
+			try { s = e.getMessage(); } catch (Exception e2) {}
 			Logger.logError(e, s);
 		} catch (SAXException e) {
 			String s = e.getMessage(); // "unknown";
-			try { s = e.getMessage(); } catch (Exception e2) {};
+			try { s = e.getMessage(); } catch (Exception e2) {}
 			Logger.logError(e, s);
 		} catch (java.io.IOException e) {
 			String s = "unknown";
-			try { s = e.getMessage(); } catch (Exception e2) {};
+			try { s = e.getMessage(); } catch (Exception e2) {}
 			Logger.logError(e, s);
 		}		
 		return parseOk;
@@ -854,8 +854,6 @@ public class GoodreadsManager {
 	/**
 	 * Wrapper to search for a book.
 	 * 
-	 * @param query		String to search for
-	 * 
 	 * @return	Array of GoodreadsWork objects
 	 * 
 	 * @throws ClientProtocolException
@@ -880,8 +878,6 @@ public class GoodreadsManager {
 
 	/**
 	 * Wrapper to search for a book.
-	 * 
-	 * @param query		String to search for
 	 * 
 	 * @return	Array of GoodreadsWork objects
 	 * 

@@ -49,4 +49,59 @@ android {
             assets.srcDirs = ['assets']
         }
     }
+
+    buildTypes {
+        def EMPTY = "\"\""
+        def KEY_AMAZON_APP_KEY = "AMAZON_APP_KEY"
+        def KEY_GOODREADS_DEV_KEY = "GOODREADS_DEV_KEY"
+        def KEY_GOODREADS_DEV_SECRET = "GOODREADS_DEV_SECRET"
+        def TYPE_STRING = "String"
+
+        release {
+            String[] apiProperties = getApiDevData();
+            buildConfigField TYPE_STRING, KEY_AMAZON_APP_KEY, "\"" + apiProperties[0] + "\""
+            buildConfigField TYPE_STRING, KEY_GOODREADS_DEV_KEY, "\"" + apiProperties[1] + "\""
+            buildConfigField TYPE_STRING, KEY_GOODREADS_DEV_SECRET, "\"" + apiProperties[2] + "\""
+        }
+
+        debug {
+            buildConfigField TYPE_STRING, KEY_AMAZON_APP_KEY, EMPTY
+            buildConfigField TYPE_STRING, KEY_GOODREADS_DEV_KEY, EMPTY
+            buildConfigField TYPE_STRING, KEY_GOODREADS_DEV_SECRET, EMPTY
+        }
+    }
+}
+
+/**
+ * Retrieve Goodreads developer data from 'api.properties' file
+ * @return array with developer data, where:<br/>
+ * [0] - Amazon developer key,<br/>
+ * [1] - Goodreads developer key,<br/>
+ * [2] - Goodreads developer secret
+ */
+String[] getApiDevData() {
+    def file = project.rootProject.file('api.properties')
+    if (!file.exists()) {
+        final String message = "Fail to get API dev properties!" +
+                "\nYou must place file 'api.properties' in your root folder with next properties:\n" +
+                "'amazon.app.key' - Amazon developer key;\n" +
+                "'goodreads.dev.key' - Goodreads developer key;\n" +
+                "'goodreads.dev.secret' - Goodreads developer secret."
+        throw new IllegalStateException(message)
+    }
+
+    Properties properties = new Properties()
+    properties.load(file.newDataInputStream())
+
+    String[] result = new String[3];
+    result[0] = properties.getProperty('amazon.app.key');
+    result[1] = properties.getProperty('goodreads.dev.key');
+    result[2] = properties.getProperty('goodreads.dev.secret');
+    for (String property: result) {
+        if (property == null) {
+            throw new IllegalStateException("Cannot read one of needed properties from 'api.properties'!\n" +
+                    "Make sure that all of them exist and set");
+        }
+    }
+    return result;
 }

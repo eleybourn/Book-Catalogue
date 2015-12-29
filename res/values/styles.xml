@@ -94,4 +94,17 @@
         <item name="android:hint">@string/notset</item>
     </style>
 
+    <style name="localeBasedTextEntry" parent="@style/editorFieldTextStyle">
+        <item name="android:inputType">textCapWords</item>
+    </style>
+
+    <style name="personalNameTextEntry" parent="@style/localeBasedTextEntry">
+    </style>
+    
+    <style name="bookOrSeriesTitleTextEntry" parent="@style/localeBasedTextEntry">
+    </style>
+
+    <style name="languageTextEntry" parent="@style/localeBasedTextEntry">
+    </style>
+
 </resources>

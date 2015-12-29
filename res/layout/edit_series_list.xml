@@ -28,7 +28,7 @@
             android:layout_weight="2"
             android:completionThreshold="2"
             android:hint="@string/series"
-            android:inputType="textCapWords"
+            style="@style/bookOrSeriesTitleTextEntry"
             android:paddingLeft="5sp" />
 
         <EditText

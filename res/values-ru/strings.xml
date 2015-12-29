@@ -57,7 +57,7 @@
     <string name="administration_label">Функции администрирования</string>
     <string name="administration_title">Книжный каталог: администрирование</string>
     <string name="menu_administration">Настройки</string>
-    <string name="install_scan">Чтобы определить ваши книги по ISBN штрих-коду, вы должны установить приложение Google Googles или zxing.</string>
+    <string name="install_scan">Чтобы определить ваши книги по ISBN штрих-коду, вы должны установить приложение Google Goggles или zxing.</string>
     <string name="install_scan_title">Установить сканер штрих-кодов</string>
     <string name="version_number">Номер версии:</string>
     <string name="donate">Если Вы хотите поддержать разработку этого приложения, пожалуйста сделайте пожертвование или через Amazon Wishlist или через PayPal кнопкой внизу. Я не могу опубликовать &quot;платную&quot; версию приложения в Австралии. :-) </string>
@@ -639,7 +639,7 @@
     <string name="adding_book_elipsis">Добавление книги&#8230;</string>
     <string name="prefs_global_opening_book_mode">Просмотр книги в режиме чтения</string>
     <string name="book_details_readonly_publishing">Публикация</string>
-    <string name="book_details_readonly_by">by</string>
+    <string name="book_details_readonly_by">от</string>
     <string name="book_details_readonly_loaned_to">Дана вдолг: %1$s</string>
     <string name="book_details_readonly_pages">Страниц: %1$s</string>
     <string name="brackets">(%1$s)</string>
@@ -935,5 +935,24 @@
 			</p>
 		]]>
     </string>
-    
+    <string name="beep_if_scanned_isbn_valid">Подать звуковой сигнал, если сканируемый ISBN правильный</string>
+    <string name="buy_at_amazon">Купить эту книгу</string>
+    <string name="new_in_xxx_bug_fixes">Исправление ошибок</string>
+    <string name="new_in_zzz">Новое в %1$s</string>
+    <string name="pic2shop_scanner">Pic2Shop сканер</string>
+    <string name="preferred_interface_language">Предпочтительный язык</string>
+    <string name="preferred_scanner">Предпочтительный сканер</string>
+    <string name="scanning">Сканирование</string>
+    <string name="system_locale">Локаль системы</string>
+    <string name="zxing_compatible_scanner">Zxing совместимый сканер</string>
+    <string name="zxing_scanner">Zxing сканер</string>
+    <string name="new_in_520"><![CDATA[
+			<p><b>Новое в 5.2.0</b>\n\n
+			    * Настраиваемый  в настройках язык приложения\n\n
+			    * Перевод на греческий (Dimitris Klisiaris)\n\n
+       * Усовершенствованный поиск\n\n
+				   * Исправление ошибок\n\n
+			</p>
+		]]></string>
+
 </resources>

@@ -502,7 +502,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 						SoundManager.beepHigh();
 					}
 					// See if ISBN exists in catalogue
-					final long existingId = mDbHelper.getIdFromIsbn(isbn);
+					final long existingId = mDbHelper.getIdFromIsbn(isbn, true);
 					if (existingId > 0) {
 						// Verify - this can be a dangerous operation
 						AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(R.string.duplicate_book_message).create();

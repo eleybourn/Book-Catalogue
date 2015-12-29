@@ -20,15 +20,23 @@
 
 package com.eleybourn.bookcatalogue;
 
-import static org.acra.ReportField.ANDROID_VERSION;
-import static org.acra.ReportField.APP_VERSION_CODE;
-import static org.acra.ReportField.APP_VERSION_NAME;
-import static org.acra.ReportField.CUSTOM_DATA;
-import static org.acra.ReportField.PHONE_MODEL;
-import static org.acra.ReportField.STACK_TRACE;
-import static org.acra.ReportField.USER_APP_START_DATE;
-import static org.acra.ReportField.USER_COMMENT;
-import static org.acra.ReportField.USER_CRASH_DATE;
+import android.app.Activity;
+import android.app.Application;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
+
+import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Terminator;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 import org.acra.ACRA;
 import org.acra.ErrorReporter;
@@ -37,22 +45,21 @@ import org.acra.annotation.ReportsCrashes;
 import org.acra.collector.CrashReportData;
 import org.acra.sender.ReportSenderException;
 
-import android.app.Activity;
-import android.app.Application;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Locale;
 
-import com.amazon.device.associates.AssociatesAPI;
-import com.eleybourn.bookcatalogue.amazon.AmazonAppKey;
-import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
-import com.eleybourn.bookcatalogue.utils.Logger;
-import com.eleybourn.bookcatalogue.utils.Terminator;
-import com.eleybourn.bookcatalogue.utils.Utils;
+import static org.acra.ReportField.ANDROID_VERSION;
+import static org.acra.ReportField.APP_VERSION_CODE;
+import static org.acra.ReportField.APP_VERSION_NAME;
+import static org.acra.ReportField.BUILD;
+import static org.acra.ReportField.CUSTOM_DATA;
+import static org.acra.ReportField.PHONE_MODEL;
+import static org.acra.ReportField.STACK_TRACE;
+import static org.acra.ReportField.USER_APP_START_DATE;
+import static org.acra.ReportField.USER_COMMENT;
+import static org.acra.ReportField.USER_CRASH_DATE;
 
 /**
  * BookCatalogue Application implementation. Useful for making globals available
@@ -92,16 +99,46 @@ public class BookCatalogueApp extends Application {
 
 	private static BcQueueManager mQueueManager = null;
 
+	/** The locale used at startup; so that we can revert to system locale if we want to */
+	private static Locale mInitialLocale = null;
+	/** User-specified default locale */
+	private static Locale mPreferredLocale = null;
 
 	/**
 	 * Constructor.
 	 */
 	public BookCatalogueApp() {
 		super();
-
+		mInitialLocale = Locale.getDefault();
 	}
 
-	public class BcReportSender extends org.acra.sender.EmailIntentSender {
+	/**
+	 * There seems to be something fishy in creating locales from full names (like en_AU),
+	 * so we split it and process it manually.
+	 *
+	 * @param name  Locale name (eg. 'en_AU')
+	 *
+	 * @return  Locale corresponding to passed name
+	 */
+	public static Locale localeFromName(String name) {
+		String[] parts;
+		if (name.contains("_")) {
+			parts = name.split("_");
+		} else {
+			parts = name.split("-");
+		}
+		Locale l;
+		if (parts.length == 1) {
+			l = new Locale(parts[0]);
+		} else if (parts.length ==   2) {
+			l = new Locale(parts[0], parts[1]);
+		} else {
+			l = new Locale(parts[0], parts[1], parts[2]);
+		}
+		return l;
+	}
+
+    public class BcReportSender extends org.acra.sender.EmailIntentSender {
 
 		public BcReportSender(Context ctx) {
 			super(ctx);
@@ -119,6 +156,26 @@ public class BookCatalogueApp extends Application {
 	 */
 	@Override
 	public void onCreate() {
+    	// Don't rely on the the context until now...
+		BookCatalogueApp.context = this.getApplicationContext();
+
+        // Get the preferred locale as soon as possible
+		try {
+			// Save the original locale
+			mInitialLocale = Locale.getDefault();
+			// See if user has set a preference
+			String prefLocale = getAppPreferences().getString(BookCataloguePreferences.PREF_APP_LOCALE, null);
+			//prefLocale = "ru";
+			// If we have a preference, set it
+			if (prefLocale != null && !prefLocale.equals("")) {
+		        mPreferredLocale = localeFromName(prefLocale);
+		        applyPreferredLocaleIfNecessary(getBaseContext().getResources());
+			}
+		} catch (Exception e) {
+			// Not much we can do...we want locale set early, but not fatal if it fails.
+			Logger.logError(e);
+		}
+
 		Terminator.init();
 		// The following line triggers the initialization of ACRA
         ACRA.init(this);
@@ -130,9 +187,6 @@ public class BookCatalogueApp extends Application {
 
         // Create the notifier
     	mNotifier = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-
-    	// Don't rely on the the context until now...
-		BookCatalogueApp.context = this.getApplicationContext();
 
 		// Start the queue manager
 		if (mQueueManager == null)
@@ -180,6 +234,101 @@ public class BookCatalogueApp extends Application {
 			}
 			dbh.close();
 		}
+
+		// Watch the preferences and handle changes as necessary
+		//BookCataloguePreferences ap = getPreferences();
+		SharedPreferences p = BookCataloguePreferences.getSharedPreferences();
+		p.registerOnSharedPreferenceChangeListener(mPrefsListener);
+	}
+
+	/**
+	 * Shared Preferences Listener
+	 *
+	 * Currently it just handles Locale changes and propagates it to any listeners.
+	 */
+	private SharedPreferences.OnSharedPreferenceChangeListener mPrefsListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+		@Override
+		public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+			if (key.equals(BookCataloguePreferences.PREF_APP_LOCALE)) {
+				String prefLocale = getAppPreferences().getString(BookCataloguePreferences.PREF_APP_LOCALE, null);
+				//prefLocale = "ru";
+				// If we have a preference, set it
+				if (prefLocale != null && !prefLocale.equals("")) {
+					mPreferredLocale = localeFromName(prefLocale);
+				} else {
+					mPreferredLocale = getSystemLocal();
+				}
+				applyPreferredLocaleIfNecessary(getBaseContext().getResources());
+				notifyLocaleChanged();
+			}
+		}
+	};
+
+	/**
+	 * Send a message to all registered OnLocaleChangedListeners, and cleanup any dead references.
+	 */
+	private void notifyLocaleChanged() {
+		ArrayList<WeakReference<OnLocaleChangedListener>> toRemove = new ArrayList<WeakReference<OnLocaleChangedListener>>();
+
+		for (WeakReference<OnLocaleChangedListener> ref : mOnLocaleChangedListeners) {
+			OnLocaleChangedListener l = ref.get();
+			if (l == null)
+				toRemove.add(ref);
+			else
+				try { l.onLocaleChanged(); } catch (Exception e) { /* Ignore */ }
+		}
+		for(WeakReference<OnLocaleChangedListener> ref: toRemove) {
+			mOnLocaleChangedListeners.remove(ref);
+		}
+	}
+
+	/**
+	 * Add a new OnLocaleChangedListener, and cleanup any dead references.
+	 */
+	public static void registerOnLocaleChangedListener(OnLocaleChangedListener listener) {
+		ArrayList<WeakReference<OnLocaleChangedListener>> toRemove = new ArrayList<WeakReference<OnLocaleChangedListener>>();
+
+		boolean alreadyAdded = false;
+
+		for(WeakReference<OnLocaleChangedListener> ref: mOnLocaleChangedListeners) {
+			OnLocaleChangedListener l = ref.get();
+			if (l == null)
+				toRemove.add(ref);
+			else if (l == listener)
+				alreadyAdded = true;
+		}
+		if (!alreadyAdded)
+			mOnLocaleChangedListeners.add(new WeakReference<OnLocaleChangedListener>(listener));
+
+		for(WeakReference<OnLocaleChangedListener> ref: toRemove) {
+			mOnLocaleChangedListeners.remove(ref);
+		}
+	}
+
+	/**
+	 * Remove the passed OnLocaleChangedListener, and cleanup any dead references.
+	 */
+	public static void unregisterOnLocaleChangedListener(OnLocaleChangedListener listener) {
+		ArrayList<WeakReference<OnLocaleChangedListener>> toRemove = new ArrayList<WeakReference<OnLocaleChangedListener>>();
+
+		for(WeakReference<OnLocaleChangedListener> ref: mOnLocaleChangedListeners) {
+			OnLocaleChangedListener l = ref.get();
+			if ( (l == null) || (l == listener) )
+				toRemove.add(ref);
+		}
+		for(WeakReference<OnLocaleChangedListener> ref: toRemove) {
+			mOnLocaleChangedListeners.remove(ref);
+		}
+	}
+
+	/** Set of OnLocaleChangedListeners */
+	private static HashSet<WeakReference<OnLocaleChangedListener>> mOnLocaleChangedListeners = new HashSet<WeakReference<OnLocaleChangedListener>>();
+
+	/**
+	 * Interface definition
+	 */
+	public static interface OnLocaleChangedListener {
+		public void onLocaleChanged();
 	}
 
 	/**
@@ -378,4 +527,76 @@ public class BookCatalogueApp extends Application {
         mNotifier.notify(id, notification);
     }
 
+    /**
+     * Get the current preferred locale, or null
+     *
+     * @return  locale, or null
+     */
+    public static Locale getPreferredLocale() {
+        return mPreferredLocale;
+    }
+
+    /**
+     * Set the current preferred locale in the passed resources.
+     *
+     * @param res   Resources to use
+     * @return  true if it was actually changed
+     */
+    public static boolean applyPreferredLocaleIfNecessary(Resources res) {
+        if (mPreferredLocale == null)
+            return false;
+
+        if (res.getConfiguration().locale.equals(mPreferredLocale))
+            return false;
+        Locale.setDefault(mPreferredLocale);
+        Configuration config = new Configuration();
+        config.locale = mPreferredLocale;
+        res.updateConfiguration(config, res.getDisplayMetrics());
+
+        return true;
+    }
+
+    /**
+     * Monitor configuration changes (like rotation) to make sure we reset the
+     * locale.
+     *
+     * @param newConfig
+     */
+    @Override
+    public void onConfigurationChanged(Configuration newConfig)
+    {
+        super.onConfigurationChanged(newConfig);
+        if (mPreferredLocale != null)
+        {
+        	applyPreferredLocaleIfNecessary(getBaseContext().getResources());
+        }
+    }
+
+    /** List of supported locales */
+    private static ArrayList<String> mSupportedLocales = null;
+
+    /**
+     * Get the list of supported locale names
+     *
+     * @return  ArrayList of locale names
+     */
+    public static ArrayList<String> getSupportedLocales() {
+    	if (mSupportedLocales == null) {
+    		mSupportedLocales = new ArrayList<String>();
+    		mSupportedLocales.add("de_DE");
+    		mSupportedLocales.add("en_AU");
+    		mSupportedLocales.add("es_ES");
+    		mSupportedLocales.add("fr_FR");
+    		mSupportedLocales.add("it_IT");
+    		mSupportedLocales.add("nl_NL");
+    		mSupportedLocales.add("ru_RU");
+    		mSupportedLocales.add("tr_TR");
+			mSupportedLocales.add("el_GR");
+    	}
+    	return mSupportedLocales;
+    }
+    
+    public static Locale getSystemLocal() {
+    	return mInitialLocale;
+    }
 }

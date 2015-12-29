@@ -131,17 +131,17 @@ public abstract class BookEditFragmentAbstract extends BookCatalogueFragment imp
 		boolean hasAuthor = mEditManager.getBookData().getAuthorList().size() > 0;
 		if (hasAuthor) {
 			MenuItem item = menu.add(0, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR, 0, R.string.amazon_books_by_author);
-			item.setIcon(R.drawable.ic_amazon_holo_dark);
+			item.setIcon(R.drawable.ic_www_search_2_holo_dark);
 		}
 		
 		if (mEditManager.getBookData().getSeriesList().size() > 0) {
 			if (hasAuthor) {
 				MenuItem item = menu.add(0, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR_IN_SERIES, 0, R.string.amazon_books_by_author_in_series);
-				item.setIcon(R.drawable.ic_amazon_holo_dark);
+				item.setIcon(R.drawable.ic_www_search_2_holo_dark);
 			}
 			{
 				MenuItem item = menu.add(0, R.id.MENU_AMAZON_BOOKS_IN_SERIES, 0, R.string.amazon_books_in_series);
-				item.setIcon(R.drawable.ic_amazon_holo_dark);
+				item.setIcon(R.drawable.ic_www_search_2_holo_dark);
 			}			
 		}
 	}

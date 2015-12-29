@@ -54,7 +54,7 @@ public abstract class Property {
 	protected transient PropertyGroup mGroup;
 	/** Resource ID for name of this property */
 	protected transient int mNameResourceId;
-	private transient String mName = null;
+	//private transient String mName = null;
 	/** Property weight (for sorting). Most will remain set at 0. */
 	private int mWeight = 0;
 	/** Hint associated with this property. Subclasses need t ouse, where appropriate */
@@ -86,9 +86,9 @@ public abstract class Property {
 	 * @return
 	 */
 	public String getName() {
-		if (mName == null)
-			mName = BookCatalogueApp.getResourceString(mNameResourceId);
-		return mName;
+//		if (mName == null)
+//			mName = BookCatalogueApp.getResourceString(mNameResourceId);
+		return BookCatalogueApp.getResourceString(mNameResourceId);
 	}
 
 	/**

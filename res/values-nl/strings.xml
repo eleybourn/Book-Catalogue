@@ -1055,8 +1055,49 @@ Zie "Meer voorkeuren" voor de relevante instelling.
 
     <!-- End: Added/Updated in 5.1.1 -->
 
-    <!-- Begin: Added/Updated in [Next Version] -->
+    <!-- Begin: Added/Updated in 5.1.2 -->
 
+    <!-- A heading in the 'about' dialog -->
+    <string name="amazon">Amazon</string>
+    
+    <!-- The following strings are not in this release, but will be in a future release -->
+    <!--  Menu Item - will be in the next release -->
+    <string name="buy_at_amazon">Koop dit boek</string>
+
+    <!-- Heading for the "new_in_xxx" message to make future updates less work for translators...I hope -->
+    <!-- The plan is to use specific feature strings so that we can also update the store listing and add/remove reatures easily -->
+    <string name="new_in_zzz">Nieuw in %1$s</string>
+    <!-- Part of the "new in x.x.x" message -->
+    <string name="new_in_xxx_bug_fixes">Bug fixes</string>
+    
+    <!-- End: Added/Updated in 5.1.2 -->
+
+    <!-- Begin: Added/Updated in 5.2.0 -->
+    
+    <!-- Preference name (fairly short) for preferred language -->
+    <string name="preferred_interface_language">Voorkeurstaal voor Interface</string>
+    <!-- Preference value for a specific language. First arg is name in it's own language, second arg is name in current locale -->
+    <string name="preferred_language_x">%1$s (%2$s)</string>
+
+    <string name="system_locale">Systeem taal</string>
+
+    <string name="new_in_520">
+		<![CDATA[
+			<p><b>Nieuw in 5.2.0</b>\n\n
+			    * Door de gebruiker te kiezen taal in de voorkeursinstellingen\n\n
+			    * Griekse vertaling (Dimitris Klisiaris)\n\n
+                * Taal afhankelijke hoofdletterkeuze (de, fr)\n\n
+                * Verbeteringen in zoeken\n\n
+				* Bug fixes\n\n
+			</p>
+		]]>
+    </string>
+
+    <!-- End: Added/Updated in 5.2.0 -->
+
+    <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->    
+
+    
     <!-- End: Added/Updated in [Next Version] -->
     
     </resources>

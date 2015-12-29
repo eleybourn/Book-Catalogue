@@ -156,7 +156,8 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 		Tracker.enterOnCreate(this);
 		try {
 			super.onCreate(savedInstanceState);
-	
+			setTitle(R.string.my_books);
+
 			if (savedInstanceState == null)
 				// Get preferred booklist state to use from preferences; default to always expanded (MUCH faster than 'preserve' with lots of books)
 				mRebuildState = BooklistPreferencesActivity.getRebuildState();

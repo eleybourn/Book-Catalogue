@@ -39,7 +39,7 @@
             android:layout_weight="2"
             android:completionThreshold="2"
             android:hint="@string/series"
-            android:inputType="textCapWords"
+            style="@style/personalNameTextEntry"
             android:paddingLeft="@dimen/padding_border" />
         <!--
 			Removed:

@@ -457,7 +457,8 @@ public class PartialDatePicker extends AlertDialog {
 		
 		// If we have a valid total number of days, then update the list
 		if (totalDays != null) {
-			if (mDayAdapter.getCount() < totalDays) {
+			// Don't forget we have a '--' in the adapter
+			if (mDayAdapter.getCount() <= totalDays) {
 				for(int i = mDayAdapter.getCount(); i <= totalDays; i++) {
 					mDayAdapter.add(i + "");
 				}

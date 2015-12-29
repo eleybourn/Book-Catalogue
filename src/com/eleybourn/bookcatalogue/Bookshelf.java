@@ -92,6 +92,7 @@ public class Bookshelf extends BookCatalogueListActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setTitle(R.string.title_manage_bs);
 		setContentView(R.layout.list_bookshelves);
 		mDbHelper = new CatalogueDBAdapter(this);
 		mDbHelper.open();

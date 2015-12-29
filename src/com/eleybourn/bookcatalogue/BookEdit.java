@@ -743,7 +743,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 			String isbn = mBookData.getString(CatalogueDBAdapter.KEY_ISBN);
 			/* Check if the book currently exists */
 			if (!isbn.equals("")) {
-				if (mDbHelper.checkIsbnExists(isbn)) {
+				if (mDbHelper.checkIsbnExists(isbn, true)) {
 					/*
 					 * If it exists, show a dialog and use it to perform the
 					 * next action, according to the users choice.

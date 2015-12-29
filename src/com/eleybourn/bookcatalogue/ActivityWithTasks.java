@@ -150,8 +150,11 @@ abstract public class ActivityWithTasks extends BookCatalogueActivity {
 		if (mTaskManagerId != 0) {
 			TaskManager.getMessageSwitch().removeListener(mTaskManagerId, mTaskListener);
 			// If it's finishing, the remove all tasks and cleanup
-			if (isFinishing())
-				getTaskManager().close();
+			if (isFinishing()) {
+                TaskManager tm = getTaskManager();
+                if (tm != null)
+                    tm.close();
+            }
 		}
 		if (mProgressDialog != null) {
 			mProgressDialog.dismiss();
@@ -163,11 +166,14 @@ abstract public class ActivityWithTasks extends BookCatalogueActivity {
 	protected void onResume() {
 		super.onResume();
 
-		// Restore mTaskManager if present 
-		getTaskManager();
+        // If we are finishing, we don't care about active tasks.
+        if (!this.isFinishing()) {
+            // Restore mTaskManager if present
+            getTaskManager();
 
-		// Listen
-		TaskManager.getMessageSwitch().addListener(mTaskManagerId, mTaskListener, true);
+            // Listen
+            TaskManager.getMessageSwitch().addListener(mTaskManagerId, mTaskListener, true);
+        }
 	}
 
 	/**
@@ -242,10 +248,6 @@ abstract public class ActivityWithTasks extends BookCatalogueActivity {
 
 	/**
 	 * Setup the ProgressDialog according to our needs
-	 * 
-	 * @param d		Dialog
-	 * @param show	Flag indicating if show() should be called.
-	 * 
 	 */
 	private void updateProgress() {
 		boolean wantDet = wantDeterminateProgress();

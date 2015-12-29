@@ -4,6 +4,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.webkit.WebView;
 
 import com.amazon.device.associates.AssociatesAPI;
@@ -24,41 +27,44 @@ import com.eleybourn.bookcatalogue.utils.Logger;
  */
 public class AmazonUtils {
 
-	public static String AMAZON_TAG = "bookcatalogue-20";
+	public static final String AMAZON_LINK_EXTRAS = "&tag=bookcatalogue-20&linkCode=da5";
+	public static final String AMAZON_BOOKS_BASE = "http://www.amazon.com/gp/search?index=books";
 
-	public static void openLink(Activity context, String author, String series) {
-		try {
-			// Init Amazon API
-			AssociatesAPI.initialize(new AssociatesAPI.Config(AmazonAppKey.KEY, context));				
-		} catch (Exception e) {
-			// An Amazon error should not crash the app
-			Logger.logError(e, "Unable to initialize Amazon API");
+	public static void openLink(Activity context, String author, String series) throws Exception {
+		// Build the URL and args
+		String url = AMAZON_BOOKS_BASE;
+		
+		author = cleanupSearchString(author);
+		series = cleanupSearchString(series);
+
+		String extra = AmazonUtils.buildSearchArgs(author, series);
+
+		if (extra != null && !extra.trim().equals("")) {
+			url += extra;
 		}
 
 		WebView wv = new WebView(context);
 
-		author = cleanupSearchString(author);
-		series = cleanupSearchString(series);
+		LinkService linkService;
 
+		// Try to setup the API calls; if not possible, just open directly and return
 		try {
-			LinkService linkService = AssociatesAPI.getLinkService();
+			// Init Amazon API
+			AssociatesAPI.initialize(new AssociatesAPI.Config(AmazonAppKey.KEY, context));				
+			linkService = AssociatesAPI.getLinkService();
 			try {
-				String baseUrl = "http://www.amazon.com/gp/search?index=books";
-				String extra = AmazonUtils.buildSearchArgs(author, series);
-				if (extra != null && !extra.trim().equals("")) {
-					linkService.overrideLinkInvocation(wv, baseUrl + extra);
-//					Intent loadweb = new Intent(Intent.ACTION_VIEW, Uri.parse(baseUrl + extra));
-//					context.startActivity(loadweb); 			
-				}
-			} catch(Exception ew) {
+				linkService.overrideLinkInvocation(wv, url);
+			} catch(Exception e2) {
 				OpenSearchPageRequest request = new OpenSearchPageRequest("books", author + " " + series);
-				linkService.openRetailPage(request);
+				linkService.openRetailPage(request);				
 			}
-		} catch (NotInitializedException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			Logger.logError(e, "Unable to use Amazon API");
+			Intent loadweb = new Intent(Intent.ACTION_VIEW, Uri.parse(url + AMAZON_LINK_EXTRAS));
+			context.startActivity(loadweb);					
 		}
 	}
-	
+
 	public static String buildSearchArgs(String author, String series) {
 		// This code works, but Amazon have a nasty tendency to cancel Associate IDs...
 		//String baseUrl = "http://www.amazon.com/gp/search?index=books&tag=philipwarneri-20&tracking_id=philipwarner-20";

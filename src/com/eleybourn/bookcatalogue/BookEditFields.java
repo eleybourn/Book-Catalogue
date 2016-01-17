@@ -306,14 +306,18 @@ public class BookEditFields extends BookDetailsAbstract
  	 * Use the currently selected bookshelf as default
 	 */
 	private void initDefaultShelf() {
-		String currShelf = BookCatalogueApp.getAppPreferences().getString(BooksOnBookshelf.PREF_BOOKSHELF, "");
-		if (currShelf.equals("")) {
-			currShelf = mDbHelper.getBookshelfName(1);
+		final BookData book = mEditManager.getBookData();
+		final String list = book.getBookshelfList();
+		if (list == null || list.equals("")) {
+			String currShelf = BookCatalogueApp.getAppPreferences().getString(BooksOnBookshelf.PREF_BOOKSHELF, "");
+			if (currShelf.equals("")) {
+				currShelf = mDbHelper.getBookshelfName(1);
+			}
+			String encoded_shelf = Utils.encodeListItem(currShelf, BOOKSHELF_SEPERATOR);
+			Field fe = mFields.getField(R.id.bookshelf);
+			fe.setValue(currShelf);
+			book.setBookshelfList(encoded_shelf);					
 		}
-		String encoded_shelf = Utils.encodeListItem(currShelf, BOOKSHELF_SEPERATOR);
-		Field fe = mFields.getField(R.id.bookshelf);
-		fe.setValue(currShelf);
-		mEditManager.getBookData().setBookshelfList(encoded_shelf);		
 	}
 
 	private void setupUi() {

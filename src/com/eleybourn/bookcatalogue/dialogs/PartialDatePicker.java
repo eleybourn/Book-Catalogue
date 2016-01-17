@@ -485,9 +485,18 @@ public class PartialDatePicker extends AlertDialog {
 	 * @param root	Root view
 	 */
     private void reorderPickers(View root) {
-        char[] order = DateFormat.getDateFormatOrder(mContext);
-        
-        /* Default order is month, date, year so if that's the order then
+        char[] order;
+        try {
+        	// This actually throws exception in some versions of Android, specifically when
+        	// the locale-specific date format has the day name (EEE) in it. So we exit and
+        	// just use our default order in these cases.
+        	// See Issue 712.
+        	order = DateFormat.getDateFormatOrder(mContext);
+        } catch(Exception e) {
+        	return;
+        }
+         
+        /* Default order is {year, month, date} so if that's the order then
          * do nothing.
          */
         if ((order[0] == DateFormat.YEAR) && (order[1] == DateFormat.MONTH)) {

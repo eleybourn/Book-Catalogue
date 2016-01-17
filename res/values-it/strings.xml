@@ -534,7 +534,7 @@
     <string name="task_has_been_queued_in_background">Attività messa in coda in sottofondo</string>
     <string name="hint_startup_screen">Questa è la schermata iniziale standard di BookCatalogue. Se preferisci, puoi iniziare direttamente in \'I Miei Libri\'; è possibile impostare la schermata iniziale nelle Preferenze.</string>
     <string name="upgrading_ellipsis">Sto aggiornando&#8230;</string>
-    <string name="explain_goodreads_no_isbn">TIl libro selezionato non possiede un codice ISBN; non è possibile sincronizzarlo automaticamente con Goodreads. 
+    <string name="explain_goodreads_no_isbn">Il libro selezionato non possiede un codice ISBN; non è possibile sincronizzarlo automaticamente con Goodreads. 
     									La soluzione più semplice è:
     									\n\n(1) eliminare il libro da BookCatalogue
     									\n\n(2) aggiungere manualmente il libro in Goodreads tramite il loro sito web
@@ -1036,6 +1036,52 @@
     </string>
 
     <!-- End: Added/Updated in 5.1.1 -->
+
+    <!-- Begin: Added/Updated in 5.1.2 -->
+
+    <!-- A heading in the 'about' dialog -->
+    <string name="amazon">Amazon</string>
+    
+    <!-- The following strings are not in this release, but will be in a future release -->
+    <!--  Menu Item - will be in the next release -->
+    <string name="buy_at_amazon">Acquista questo libro</string>
+
+    <!-- Heading for the "new_in_xxx" message to make future updates less work for translators...I hope -->
+    <!-- The plan is to use specific feature strings so that we can also update the store listing and add/remove reatures easily -->
+    <string name="new_in_zzz">Novità nella versione %1$s</string>
+    <!-- Part of the "new in x.x.x" message -->
+    <string name="new_in_xxx_bug_fixes">Correzione errori</string>
+    
+    <!-- End: Added/Updated in 5.1.2 -->
+
+    <!-- Begin: Added/Updated in 5.2.0 -->
+    
+    <!-- Preference name (fairly short) for preferred language -->
+    <string name="preferred_interface_language">Lingua preferita</string>
+    <!-- Preference value for a specific language. First arg is name in it's own language, second arg is name in current locale -->
+    <string name="preferred_language_x" translatable="false">%1$s (%2$s)</string>
+
+    <!-- This is an UPDATED string copied from earlier in the file; "Google Googles" (sic) was removed from the list of scanners -->
+    <string name="install_scan">Per scansionare i libri mediante codice a barre ISBN, devi installare una app per la scansione come Barcode Scanner o Pic2shop.</string>
+
+    <string name="system_locale">Impostazioni locali di sistema</string>
+
+    <!-- Credits in the 'about' dialog -->
+    <string name="translators_blurb">BookCatalogue è il prodotto degli sforzi di molte persone, e non sarebbe così largamente utilizzato senza il generoso aiuto dei nostri traduttori volontari: Eugenio Davolio, José M. Galdo, Imkal, Dimitris Klisiari, Gideon van Melle, Emir Sarı, Nick Silin, e Robert Wetzlmayr (se abbiamo dimenticato qualcuno, grazie per comunicarcelo).</string>
+
+    <string name="new_in_520">
+		<![CDATA[
+			<p><b>Novità nella versione 5.2.0</b>\n\n
+			    * Impostazioni locali modificabili nelle Preferenze\n\n
+			    * Traduzione in greco (Dimitris Klisiaris)\n\n
+                * Uso specifico delle lettere maiuscole in alcune lingue (de, fr)\n\n
+                * Funzione di ricerca migliorata\n\n
+				* Correzione errori\n\n
+			</p>
+		]]>
+    </string>
+
+    <!-- End: Added/Updated in 5.2.0 -->
 
     <!-- Begin: Added/Updated in [Next Version] -->
     <!-- End: Added/Updated in [Next Version] -->

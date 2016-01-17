@@ -13,6 +13,7 @@
 /.idea
 /*.iml
 /build
+/api.properties
 /local.properties
 /javadoc.xml
 /doc/

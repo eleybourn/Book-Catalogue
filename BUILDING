@@ -16,3 +16,7 @@ Building in Android Studio (ver. 1.0.2+):
 6. Click OK
 7. Click menu "Tools - Android - Sync Project with Gradle files"
 8. Done
+
+Building release builds:
+Do not forget to change stub values in `api.properties` to correct ones,
+when build release builds (this file is not needed for `debug` builds)

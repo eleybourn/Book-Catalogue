@@ -1,19 +1,18 @@
 package com.eleybourn.bookcatalogue.amazon;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.webkit.WebView;
 
 import com.amazon.device.associates.AssociatesAPI;
 import com.amazon.device.associates.LinkService;
-import com.amazon.device.associates.NotInitializedException;
 import com.amazon.device.associates.OpenSearchPageRequest;
+import com.eleybourn.bookcatalogue.BuildConfig;
 import com.eleybourn.bookcatalogue.utils.Logger;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 /**
  * Wrappers for Amazon API
@@ -50,7 +49,7 @@ public class AmazonUtils {
 		// Try to setup the API calls; if not possible, just open directly and return
 		try {
 			// Init Amazon API
-			AssociatesAPI.initialize(new AssociatesAPI.Config(AmazonAppKey.KEY, context));				
+			AssociatesAPI.initialize(new AssociatesAPI.Config(BuildConfig.AMAZON_APP_KEY, context));
 			linkService = AssociatesAPI.getLinkService();
 			try {
 				linkService.overrideLinkInvocation(wv, url);

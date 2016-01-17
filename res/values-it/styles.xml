@@ -6,7 +6,7 @@
     </style>
     
     <style name="bookOrSeriesTitleTextEntry" parent="@style/localeBasedTextEntry">
-        <item name="android:inputType">text</item>
+        <item name="android:inputType">textCapSentences</item>
     </style>
 
     <style name="languageTextEntry" parent="@style/localeBasedTextEntry">

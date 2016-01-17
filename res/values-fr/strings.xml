@@ -251,7 +251,7 @@
     <string name="format5">Guide</string>
     <string name="description">Description</string>
     <string name="genre">Genre</string>
-    <string name="auto_update">Voulez-vous désormais mettre à jour automatiquement les champs suivants :\n* genre ; \n* description ; \n* miniatures ?\n\n Si vous choisissez d\'annuler, vous pourrez toujours y accéder depuis l'écran d\'administration</string>
+    <string name="auto_update">Voulez-vous désormais mettre à jour automatiquement les champs suivants :\n* genre ; \n* description ; \n* miniatures ?\n\n Si vous choisissez d\'annuler, vous pourrez toujours y accéder depuis l\'écran d\'administration</string>
     <string name="notset">Non défini</string>
     <string name="menu_search">Rechercher des livres</string>
     <string name="menu_insert_name">Ajouter par nom</string>
@@ -595,7 +595,7 @@
 		Cliquer sur un événement vous permettra de réaliser un ensemble d\'actions appropriées pour cet événement.</string>
     <string name="hints_have_been_reset">Les astuces ont été réinitialisées.</string>
     <string name="task_has_been_queued_in_background">La tâche a été placée en file d\'attente.</string>
-    <string name="hint_startup_screen">« Voici l'écran de démarrage par défaut de Book Catalogue. Si vous le souhaitez, vous pouvez démarrer directement dans « mes livres » ; l'écran de démarrage préféré peut être modifié dans les préférences. »</string>
+    <string name="hint_startup_screen">« Voici l\'écran de démarrage par défaut de Book Catalogue. Si vous le souhaitez, vous pouvez démarrer directement dans « mes livres » ; l\'écran de démarrage préféré peut être modifié dans les préférences. »</string>
     <string name="upgrading_ellipsis">Mise à niveau&#8230;</string>
     <string name="explain_goodreads_no_isbn">Les livres sélectionnés n\'ont pas d\'ISBN ; il est impossible de les synchroniser avec Goodreads. 
 		La solution la plus simple est de:

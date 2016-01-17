@@ -977,7 +977,7 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
         <string name="special_thanks_label">Danksagung</string>
 
         <!-- Credits in the 'about' dialog -->
-        <string name="translators_blurb">BookCatalogue ist das Ergebnis der Arbeit vieler Personen und würde nicht so weit verbreitet sein ohne die großzügige Arbeit unserer freiwilligen Übersetzer: Eugenio Davolio, José M. Galdo, Imkal, Gideon van Melle, Emir Sarı, Nick Silin und Robert Wetzlmayr (falls wir jemanden vergessen ahben, geben Sie uns bitte Bescheid).</string>
+        <string name="translators_blurb">BookCatalogue ist das Ergebnis der Arbeit vieler Personen und würde nicht so weit verbreitet sein ohne die großzügige Arbeit unserer freiwilligen Übersetzer: Eugenio Davolio, José M. Galdo, Imkal, Gideon van Melle, Emir Sarı, Nick Silin und Robert Wetzlmayr (falls wir jemanden vergessen haben, geben Sie uns bitte Bescheid).</string>
 
         <!-- End: Added/Updated in 5.1.0 -->
 

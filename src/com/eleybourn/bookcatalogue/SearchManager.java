@@ -428,7 +428,6 @@ public class SearchManager implements TaskManagerListener {
 
 		if (title != null && !title.equals("")) {
 			mBookData.putString(CatalogueDBAdapter.KEY_TITLE, title);
-			Utils.doProperCase(mBookData, CatalogueDBAdapter.KEY_TITLE);			
 		}
 
 		// Try to use/construct isbn
@@ -462,12 +461,18 @@ public class SearchManager implements TaskManagerListener {
 			//add series to stop crashing
 			mBookData.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, new ArrayList<Series>());
 		}
-		
 
+		//
+		// TODO: this needs to be locale-specific. Currently we probably get good-enough data without 
+		// forcing a cleanup.
+		//
+		// Removed 20-Jan-2016 PJW; see Issue 717.
+		//
 		// Cleanup other fields
-		Utils.doProperCase(mBookData, CatalogueDBAdapter.KEY_PUBLISHER);
-		Utils.doProperCase(mBookData, CatalogueDBAdapter.KEY_DATE_PUBLISHED);
-		Utils.doProperCase(mBookData, CatalogueDBAdapter.KEY_SERIES_NAME);
+		//Utils.doProperCase(mBookData, CatalogueDBAdapter.KEY_TITLE);			
+		//Utils.doProperCase(mBookData, CatalogueDBAdapter.KEY_PUBLISHER);
+		//Utils.doProperCase(mBookData, CatalogueDBAdapter.KEY_DATE_PUBLISHED);
+		//Utils.doProperCase(mBookData, CatalogueDBAdapter.KEY_SERIES_NAME);
 		
 		// If book is not found or missing required data, warn the user
 		if (authors == null || authors.length() == 0 || title == null || title.length() == 0) {			

@@ -544,25 +544,30 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 		if (getResources() == null)
 			throw new RuntimeException("Sanity Check Fail: getResources() returned null; isFinishing() = " + isFinishing());
 
-		if (BooklistPreferencesActivity.isBackgroundFlat() || BookCatalogueApp.isBackgroundImageDisabled()) {
+		Drawable d = null;
+		try {
+			if (!BookCatalogueApp.isBackgroundImageDisabled()) {
+				d = Utils.makeTiledBackground(false);
+			}
+		} catch (Exception e) {
+			// Ignore...if just a coat of paint
+		}
+
+		if (BooklistPreferencesActivity.isBackgroundFlat() || d == null) {
 			final int backgroundColor = getResources().getColor(R.color.background_grey);
 			lv.setBackgroundColor(backgroundColor);
 			Utils.setCacheColorHintSafely(lv, backgroundColor);
-			if (BookCatalogueApp.isBackgroundImageDisabled()) {
+			if (d == null) {
 				root.setBackgroundColor(backgroundColor);
 				header.setBackgroundColor(backgroundColor);
 			} else {
-				Drawable d = Utils.makeTiledBackground(false);
 				root.setBackgroundDrawable(d);
 				header.setBackgroundDrawable(d);
-//				root.setBackgroundDrawable(Utils.cleanupTiledBackground(getResources().getDrawable(R.drawable.bc_background_gradient)));
-//				header.setBackgroundDrawable(Utils.cleanupTiledBackground(getResources().getDrawable(R.drawable.bc_vertical_gradient)));
 			}
 		} else {
 			Utils.setCacheColorHintSafely(lv, 0x00000000);
 			// ICS does not cope well with transparent ListView backgrounds with a 0 cache hint, but it does
 			// seem to cope with a background image on the ListView itself.
-			Drawable d = Utils.makeTiledBackground(false);
 			if (Build.VERSION.SDK_INT >= 11) {
 				// Honeycomb
 				lv.setBackgroundDrawable(d);

@@ -1,5 +1,6 @@
 package com.eleybourn.bookcatalogue;
 
+import com.eleybourn.bookcatalogue.searchorder.SearchOrders;
 import com.eleybourn.bookcatalogue.utils.Logger;
 
 
@@ -42,7 +43,7 @@ public class SearchLibraryThingThread extends SearchThread {
 	 */
 	@Override
 	public int getSearchId() {
-		return SearchManager.SEARCH_LIBRARY_THING;
+		return SearchOrders.SEARCH_LIBRARY_THING;
 	}
 
 }

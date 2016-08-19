@@ -1054,4 +1054,17 @@
 
     <!-- End: Added/Updated in 5.2.0 -->
 
+    <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->   
+    
+    <!-- Preference for preferred search order -->
+    <string name="librarything">Library Thing</string>
+    <string name="preferred_search_order">Ordre de recherche</string>
+    <string name="hint_search_order_editor">Vous pouvez utiliser cette écran pour paramétrer l\'ordre de recherche des livres et pour activer ou désactiver des recherches.</string>
+    <string name="search_order_cant_disable_all">Vous ne pouvez pas désactiver toutes les recherches.</string>
+    <string name="search_possibility_incomplete_message">Avec cette configuration, vous ne pourrez plus faire de recherche par :</string>
+    <string name="asin">ASIN</string>
+    <string name="title_author">Titre/Auteur</string>
+
+    <!-- End: Added/Updated in [Next Version] -->
+
 </resources>

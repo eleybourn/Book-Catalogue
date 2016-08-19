@@ -33,6 +33,7 @@ import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsage;
 import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsages;
 import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsages.Usages;
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
+import com.eleybourn.bookcatalogue.searchorder.SearchOrders;
 import com.eleybourn.bookcatalogue.utils.StorageUtils;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
@@ -205,7 +206,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
 				// Start searching if we need it, then wait...
 				if (wantSearch) {
 					// TODO: Allow user-selection of search sources
-					mSearchManager.search(author, title, isbn, tmpThumbWanted, SearchManager.SEARCH_ALL);
+					mSearchManager.search(author, title, isbn, tmpThumbWanted, SearchOrders.SEARCH_ALL);
 					// Wait for the search to complete; when the search has completed it uses class-level state
 					// data when processing the results. It will signal this lock when it no longer needs any class
 					// level state data (eg. mOrigData).

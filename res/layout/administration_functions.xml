@@ -49,6 +49,14 @@
             android:drawableLeft="@drawable/ic_menu_manage"
             android:text="@string/edit_book_list_styles" />
 
+        <!-- SEARCH ORDER PREFS -->
+
+        <TextView
+            android:id="@+id/searchorder_prefs_label"
+            style="@style/prefs_item"
+            android:drawableLeft="@drawable/ic_menu_manage"
+            android:text="@string/preferred_search_order" />
+
         <!-- OTHER PREFS -->
 
         <TextView

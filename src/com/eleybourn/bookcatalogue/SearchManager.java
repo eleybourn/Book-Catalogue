@@ -28,6 +28,7 @@ import android.os.Bundle;
 
 import com.eleybourn.bookcatalogue.TaskManager.TaskManagerListener;
 import com.eleybourn.bookcatalogue.messaging.MessageSwitch;
+import com.eleybourn.bookcatalogue.searchorder.SearchOrders;
 import com.eleybourn.bookcatalogue.utils.IsbnUtils;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
@@ -43,22 +44,6 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * @author Philip Warner
  */
 public class SearchManager implements TaskManagerListener {
-	
-	/** Flag indicating a search source to use */
-	public static final int SEARCH_GOOGLE = 1;
-	/** Flag indicating a search source to use */
-	public static final int SEARCH_AMAZON = 2;
-	/** Flag indicating a search source to use */
-	public static final int SEARCH_LIBRARY_THING = 4;
-	/** Flag indicating a search source to use */
-	public static final int SEARCH_GOODREADS = 8;
-	/** Mask including all search sources */
-	public static final int SEARCH_ALL = SEARCH_GOOGLE | SEARCH_AMAZON | SEARCH_LIBRARY_THING | SEARCH_GOODREADS;
-	
-	// ENHANCE: Allow user to change the default search data priority
-	public static final int[] mDefaultSearchOrder = new int[] {SEARCH_AMAZON, SEARCH_GOODREADS, SEARCH_GOOGLE, SEARCH_LIBRARY_THING};
-	// ENHANCE: Allow user to change the default search data priority
-	public static final int[] mDefaultReliabilityOrder = new int[] {SEARCH_GOODREADS, SEARCH_AMAZON, SEARCH_GOOGLE, SEARCH_LIBRARY_THING};
 
 	/** Flags applicable to *current* search */
 	int mSearchFlags;
@@ -225,7 +210,7 @@ public class SearchManager implements TaskManagerListener {
 	 * @param isbn		ISBN to search for
 	 */
 	public void search(String author, String title, String isbn, boolean fetchThumbnail, int searchFlags) {
-		if ( (searchFlags & SEARCH_ALL) == 0)
+		if ( (searchFlags & SearchOrders.SEARCH_ALL) == 0)
 			throw new RuntimeException("Must specify at least one source to use");
 
 		if (mRunningTasks.size() > 0) {
@@ -235,7 +220,7 @@ public class SearchManager implements TaskManagerListener {
 		// Save the flags
 		mSearchFlags = searchFlags;
 		if (!Utils.USE_LT) {
-			mSearchFlags &= ~SEARCH_LIBRARY_THING;
+			mSearchFlags &= ~SearchOrders.SEARCH_LIBRARY_THING;
 		}
 
 		// Save the input and initialize
@@ -280,19 +265,17 @@ public class SearchManager implements TaskManagerListener {
 				if (IsbnUtils.isValid(mIsbn)) {
 					// We have an ISBN, just do the search
 					mWaitingForIsbn = false;
-					tasksStarted = this.startSearches(mSearchFlags);
+					tasksStarted = this.startSearches(mSearchFlags, SearchOrders.SEARCH_BY_ISBN);
 				} else {
 					// Assume it's an ASIN, and just search Amazon
 					mSearchingAsin = true;
 					mWaitingForIsbn = false;
-					//mSearchFlags = SEARCH_AMAZON;
-					tasksStarted = startOneSearch(SEARCH_AMAZON);
-					//tasksStarted = this.startSearches(mSearchFlags);
+					tasksStarted = this.startSearches(mSearchFlags, SearchOrders.SEARCH_BY_ASIN);
 				}
 			} else {
 				// Run one at a time, startNext() defined the order.
 				mWaitingForIsbn = true;
-				tasksStarted = startNext();
+				tasksStarted = startNext(SearchOrders.SEARCH_BY_TITLE_AUTHOR);
 			}			
 		} finally {
 			if (!tasksStarted) {
@@ -320,7 +303,7 @@ public class SearchManager implements TaskManagerListener {
 	 * Copy data from passed Bundle to current accumulated data. Does some careful
 	 * processing of the data.
 	 * 
-	 * @param bookData	Source
+	 * @param searchId	Source
 	 */
 	private void accumulateData(int searchId) {
 		// See if we got data from this source
@@ -369,7 +352,7 @@ public class SearchManager implements TaskManagerListener {
 		if (mHasIsbn) {
 			// If ISBN was passed, ignore entries with the wrong ISBN, and put entries with no ISBN at the end
 			ArrayList<Integer> uncertain = new ArrayList<Integer>();
-			for(int i: mDefaultReliabilityOrder) {
+			for(int i: SearchOrders.getPreferredSearchOrder(SearchOrders.SEARCH_BY_ISBN)) {
 				if (mSearchResults.containsKey(i)) {
 					Bundle bookData = mSearchResults.get(i);
 					if (bookData.containsKey(CatalogueDBAdapter.KEY_ISBN)) {
@@ -389,7 +372,7 @@ public class SearchManager implements TaskManagerListener {
 			mBookData.putString(CatalogueDBAdapter.KEY_ISBN, mIsbn);
 		} else {
 			// If ISBN was not passed, then just used the default order
-			for(int i: mDefaultReliabilityOrder)
+			for(int i: SearchOrders.getPreferredSearchOrder(null))
 				results.add(i);
 		}
 
@@ -494,10 +477,12 @@ public class SearchManager implements TaskManagerListener {
 	 * When running in single-stream mode, start the next thread that has no data.
 	 * While Google is reputedly most likely to succeed, it also produces garbage a lot. 
 	 * So we search Amazon, Goodreads, Google and LT last as it REQUIRES an ISBN.
+	 *
+	 * @param searchPossibilities
 	 */
-	private boolean startNext() {
+	private boolean startNext(Integer searchPossibilities) {
 		// Loop though in 'search-priority' order
-		for (int source: mDefaultSearchOrder) {
+		for (int source: SearchOrders.getPreferredSearchOrder(searchPossibilities)) {
 			// If this search includes the source, check it
 			if ( (mSearchFlags & source) != 0) {
 				// If the source has not been search, search it
@@ -513,11 +498,12 @@ public class SearchManager implements TaskManagerListener {
 	 * Start all searches listed in passed parameter that have not been run yet.
 	 * 
 	 * @param sources
+	 * @param searchPossibilities
 	 */
-	private boolean startSearches(int sources) {
+	private boolean startSearches(int sources, int searchPossibilities) {
 		// Scan searches in priority order
 		boolean started = false;
-		for(int source: mDefaultSearchOrder) {
+		for(int source: SearchOrders.getPreferredSearchOrder(searchPossibilities)) {
 			// If requested search contains this source...
 			if ((sources & source) != 0)
 				// If we have not run this search...
@@ -533,17 +519,17 @@ public class SearchManager implements TaskManagerListener {
 	/**
 	 * Start specific search listed in passed parameter.
 	 * 
-	 * @param sources
+	 * @param source
 	 */
 	private boolean startOneSearch(int source) {
 		switch(source) {
-		case SEARCH_GOOGLE:
+		case SearchOrders.SEARCH_GOOGLE:
 			return startGoogle();
-		case SEARCH_AMAZON:
+		case SearchOrders.SEARCH_AMAZON:
 			return startAmazon();
-		case SEARCH_LIBRARY_THING:
+		case SearchOrders.SEARCH_LIBRARY_THING:
 			return startLibraryThing();
-		case SEARCH_GOODREADS:
+		case SearchOrders.SEARCH_GOODREADS:
 			return startGoodreads();
 		default:
 			throw new RuntimeException("Unexpected search source: " + source);				
@@ -586,10 +572,10 @@ public class SearchManager implements TaskManagerListener {
 					mWaitingForIsbn = false;
 					// Start the other two...even if they have run before
 					mIsbn = bookData.getString(CatalogueDBAdapter.KEY_ISBN);
-					startSearches(mSearchFlags);
+					startSearches(mSearchFlags, SearchOrders.SEARCH_BY_ISBN);
 				} else {
 					// Start next one that has not run. 
-					startNext();
+					startNext(null);
 				}
 			}				
 		}

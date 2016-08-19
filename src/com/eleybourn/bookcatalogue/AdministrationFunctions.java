@@ -36,6 +36,7 @@ import android.view.View.OnClickListener;
 import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.booklist.BooklistStyles;
+import com.eleybourn.bookcatalogue.searchorder.SearchOrders;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogFileItem;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogItem;
@@ -262,7 +263,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 				return;
 			}
 		});
-		
+
 		// Edit Book list styles
 		{
 			View v = findViewById(R.id.edit_styles_label);
@@ -272,6 +273,19 @@ public class AdministrationFunctions extends ActivityWithTasks {
 				@Override
 				public void onClick(View v) {
 					BooklistStyles.startEditActivity(AdministrationFunctions.this);
+				}
+			});
+		}
+
+		// Edit search order
+		{
+			View v = findViewById(R.id.searchorder_prefs_label);
+			// Make line flash when clicked.
+			v.setBackgroundResource(android.R.drawable.list_selector_background);
+			v.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					SearchOrders.startEditActivity(AdministrationFunctions.this);
 				}
 			});
 		}

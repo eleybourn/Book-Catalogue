@@ -45,6 +45,7 @@ import android.widget.Toast;
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.scanner.Scanner;
 import com.eleybourn.bookcatalogue.scanner.ScannerManager;
+import com.eleybourn.bookcatalogue.searchorder.SearchOrders;
 import com.eleybourn.bookcatalogue.utils.AsinUtils;
 import com.eleybourn.bookcatalogue.utils.IsbnUtils;
 import com.eleybourn.bookcatalogue.utils.Logger;
@@ -567,7 +568,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 				Tracker.handleEvent(this, "Searching" + mSearchManagerId, Tracker.States.Running);
 
 				this.getTaskManager().doProgress(getString(R.string.searching_elipsis));
-				sm.search(mAuthor, mTitle, mIsbn, true, SearchManager.SEARCH_ALL);
+				sm.search(mAuthor, mTitle, mIsbn, true, SearchOrders.SEARCH_ALL);
 				// reset the details so we don't restart the search unnecessarily
 				mAuthor = "";
 				mTitle = "";

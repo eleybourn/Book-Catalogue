@@ -1,5 +1,6 @@
 package com.eleybourn.bookcatalogue;
 
+import com.eleybourn.bookcatalogue.searchorder.SearchOrders;
 import com.eleybourn.bookcatalogue.utils.Logger;
 
 public class SearchAmazonThread extends SearchThread {
@@ -33,7 +34,7 @@ public class SearchAmazonThread extends SearchThread {
 	 */
 	@Override
 	public int getSearchId() {
-		return SearchManager.SEARCH_AMAZON;
+		return SearchOrders.SEARCH_AMAZON;
 	}
 
 }

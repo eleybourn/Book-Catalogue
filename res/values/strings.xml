@@ -1077,7 +1077,16 @@ and you can edit the book via the options menu using the menu button or overflow
 
     <!-- End: Added/Updated in 5.2.0 -->
 
-    <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->    
+    <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->   
+    
+    <!-- Preference for preferred search order -->
+    <string name="librarything">Library Thing</string>
+    <string name="preferred_search_order">Preferred search order</string>
+    <string name="hint_search_order_editor">You can use this screen to customize the search order that will be used for the research and to enable or disable research.</string>
+    <string name="search_order_cant_disable_all">You can\'t disable all research.</string>
+    <string name="search_possibility_incomplete_message">With this configuration, you will not able to search by:</string>
+    <string name="asin">ASIN</string>
+    <string name="title_author">Title/Author</string>
 
     <!-- End: Added/Updated in [Next Version] -->
 

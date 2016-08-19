@@ -25,4 +25,6 @@ public class UniqueId {
 	public static final int DIALOG_PROGRESS_INDETERMINATE = 20;
 	
 	public static final int ACTIVITY_DUPLICATE_BOOK = 21;
+
+	public static final int ACTIVITY_SEARCH_ORDER = 22;
 }

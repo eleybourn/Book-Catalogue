@@ -104,6 +104,8 @@
         </activity>
         <activity android:name=".booklist.BooklistStylesActivity" android:theme="@style/Theme.Sherlock">
         </activity>
+        <activity android:name=".searchorder.SearchOrdersActivity" android:theme="@style/Theme.Sherlock">
+        </activity>
         <activity
             android:name=".Bookshelf"
             android:label="@string/menu_bookshelf"

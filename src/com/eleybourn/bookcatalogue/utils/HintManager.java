@@ -81,6 +81,7 @@ public class HintManager {
 		.add("hint_evan_book", R.string.hint_evan_book)
 		.add("hint_book_list", R.string.hint_book_list)
 		.add("hint_amazon_links_blurb", R.string.hint_amazon_links_blurb)
+		.add("SEARCH_ORDER_EDITOR", R.string.hint_search_order_editor)
 		;
 
 	public static interface HintOwner {

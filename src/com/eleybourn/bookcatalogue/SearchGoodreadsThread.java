@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.BookNotFoundException;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsWork;
+import com.eleybourn.bookcatalogue.searchorder.SearchOrders;
 import com.eleybourn.bookcatalogue.utils.Logger;
 
 /**
@@ -80,7 +81,7 @@ public class SearchGoodreadsThread extends SearchThread {
 	 */
 	@Override
 	public int getSearchId() {
-		return SearchManager.SEARCH_GOODREADS;
+		return SearchOrders.SEARCH_GOODREADS;
 	}
 
 }

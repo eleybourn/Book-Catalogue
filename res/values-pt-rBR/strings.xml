@@ -3,13 +3,13 @@
 
     <string name="app_name">Book Catalogue</string>
     <string name="system_app_name">Book Catalogue</string>
-    <string name="menu_insert">Add Book</string>
-    <string name="menu_delete">Delete Book</string>
-    <string name="author">Author</string>
-    <string name="title">Title</string>
+    <string name="menu_insert">Adicionar Livro</string>
+    <string name="menu_delete">Apagar Livro</string>
+    <string name="author">Autor</string>
+    <string name="title">Título</string>
     <string name="isbn">ISBN</string>
-    <string name="publisher">Publisher</string>
-    <string name="date_published">Date Published</string>
+    <string name="publisher">Editora</string>
+    <string name="date_published">Data da Publicação</string>
     <string name="rating">Rating</string>
     <string name="bookshelf">Bookshelf</string>
     <string name="read">Have you read this book?</string>

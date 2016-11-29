@@ -6,7 +6,6 @@
 <string name="menu_delete">Buch löschen</string>
 <string name="author">Autor</string>
 <string name="title">Titel</string>
-<string name="isbn">ISBN</string>
 <string name="publisher">Verlag</string>
 <string name="date_published">Datum der Veröffentlichung</string>
 <string name="rating">Bewertung</string>
@@ -239,7 +238,6 @@
 <string name="lt_info">Diese App nutzt LibraryThing als Quelle für Buchinformationen und alternative Cover. Um diese Funktionalitäten nutzen zu können, müssen Sie sich bei LibraryThing registrieren (kostenlos) und einen Entwicklerschlüssel anfordern (ebenfalls kostenlos).</string>
 <string name="lt_register_text">Registrieren Sie sich bei LibraryThing</string>
 <string name="lt_devkey_text">LibraryThing-Entwicklerschlüssel anfordern</string>
-<string name="lt_label">LibraryThing</string>
 <string name="lt_gotkey">Nachdem Sie einen Entwicklerschlüssel erhalten haben (oder bereits einen besitzen), geben Sie diesen unten ein.</string>
 <string name="developer_key">Entwicklerschlüssel</string>
 <string name="require_library_thing_info">Diese Funktionalität setzt einen LibraryThing Entwicklerschlüssel voraus. Möchten Sie mehr Informationen über LibraryThing erhalten?</string>
@@ -566,7 +564,6 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
 <string name="displaying_n_books_in_m_entries">%1$s Bücher in %2$s Einträgen werden angezeigt</string>
 <string name="displaying_n_books">%1$s Bücher werden angezeigt</string>
 <string name="available">Verfügbar</string>
-<string name="loaned_to_2">\u2192</string>
 <string name="summary_details_in_header">Zusammenfassung in der Kopfzeile</string>
 <string name="hide_summary_details">Zusammenfassung verbergen</string>
 <string name="show_summary_details">Zusammenfassung anzeigen</string>

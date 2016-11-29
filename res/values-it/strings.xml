@@ -6,7 +6,6 @@
     <string name="menu_delete">Cancella libro</string>
     <string name="author">Autore</string>
     <string name="title">Titolo</string>
-    <string name="isbn">ISBN</string>
     <string name="publisher">Editore</string>
     <string name="date_published">Data di pubblicazione</string>
     <string name="rating">Valutazione</string>
@@ -240,7 +239,6 @@
     <string name="lt_info">Questa applicazione utilizza LibraryThing come fonte ulteriore di informazioni sulle serie dei libri e per reperire copertine alternative. Per utilizzare LibraryThing è necessario essere registrati (è gratuita) e richiedere la chiave sviluppatore LibraryThing (anch\'essa gratuita).</string>
     <string name="lt_register_text">Registrati su LibraryThing</string>
     <string name="lt_devkey_text">Richiedi la chiave sviluppatore LibraryThing</string>
-    <string name="lt_label">LibraryThing</string>
     <string name="lt_gotkey">Una volta ottenuta la chiave sviluppatore (o se ne hai già una), inseriscila qui sotto e verrà utilizzata per ottenere dati aggiuntivi.</string>
     <string name="developer_key">Chiave sviluppatore</string>
     <string name="require_library_thing_info">Questa funzione richiede la chiave sviluppatore LibraryThing. Vuoi maggiori informazioni su LibraryThing?</string>
@@ -577,7 +575,6 @@
     <string name="displaying_n_books_in_m_entries">visualizzati %1$s libri, in %2$s voci</string>
     <string name="displaying_n_books">visualizzati %1$s libri</string>
     <string name="available">Disponibile</string>
-    <string name="loaned_to_2">\u2192</string>
     <string name="summary_details_in_header">Riassunto dettagli nel titolo</string>
     <string name="hide_summary_details">Nascondi riassunto dettagli</string>
     <string name="show_summary_details">Mostra riassunto dettagli</string>

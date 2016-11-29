@@ -6,7 +6,6 @@
 <string name="menu_delete">Smazat knihu</string>
 <string name="author">Autor</string>
 <string name="title">Titul</string>
-<string name="isbn">ISBN</string>
 <string name="publisher">Vydavatel</string>
 <string name="date_published">Datum vydání</string>
 <string name="rating">Hodnocení</string>
@@ -240,7 +239,6 @@
 <string name="lt_info">Tato aplikace může využít LibraryThing jako další zdroj informací o knihách. K využití této funkce je nutná Vaše registrace na LibraryThing (zdarma) a rovněž získání vývojářského klíče od LibraryThing (také zdarma).</string>
 <string name="lt_register_text">Registrovat na LibraryThing</string>
 <string name="lt_devkey_text">Získat vývojářský klíč LibraryThing</string>
-<string name="lt_label">LibraryThing</string>
 <string name="lt_gotkey">Až získáte svůj vývojářský klíč (nebo pokud jej již máte), jednoduše jej vložte níže, aby mohl být použit pro získání extra informací.</string>
 <string name="developer_key">Vývojářský klíč</string>
 <string name="require_library_thing_info">Tato funkce vyžaduje vývojářský klíč LibraryThing. Chtece se dozvědět více informací o LibraryThing?</string>

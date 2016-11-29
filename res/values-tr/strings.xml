@@ -6,7 +6,6 @@
     <string name="menu_delete">Kitap sil</string>
     <string name="author">Yazar</string>
     <string name="title">Kitap adı</string>
-    <string name="isbn">ISBN</string>
     <string name="publisher">Yayınevi</string>
     <string name="date_published">Yayımlandığı Tarih</string>
     <string name="rating">Değerlendirme</string>
@@ -243,7 +242,6 @@
     <string name="lt_info">>Bu uygulama kitap serileri hakkında bilgi almak ve ek kapakları indirmek üzere LibraryThing\'den yararlanır. Bu özellikleri kullanmak için LibraryThing\'e kayıt olmanız (ücretsiz) ve LibraryThing geliştirici anahtarı almanız gerekmektedir (yine ücretsiz).</string>
     <string name="lt_register_text">LibraryThing\'e kayıt ol</string>
     <string name="lt_devkey_text">LibraryThing geliştirici anahtarı iste</string>
-    <string name="lt_label">LibraryThing</string>
     <string name="lt_gotkey">Geliştirici anahtarını aldığınızda (veya sizde halihazırda varsa) yalnızca aşağıdaki alana girin, sonrasında bu anahtar ek verileri almak için kullanılacaktır.</string>
     <string name="developer_key">Geliştirici anahtarı</string>
     <string name="require_library_thing_info">Bu özellik bir LibraryThing geliştirici anahtarı gerektirmektedir. LibraryThing hakkında daha fazla bilgi almak ister misiniz?</string>
@@ -577,7 +575,6 @@
     <string name="displaying_n_books_in_m_entries">%2$s giride %1$s kitap görüntüleniyor</string>
     <string name="displaying_n_books">%1$s kitap görüntüleniyor</string>
     <string name="available">Uygun</string>
-    <string name="loaned_to_2">\u2192</string>
     <string name="summary_details_in_header">Başlık özet ayrıntıları</string>
     <string name="hide_summary_details">Özet ayrıntılarını gizle</string>
     <string name="show_summary_details">Özet ayrıntılarını göster</string>

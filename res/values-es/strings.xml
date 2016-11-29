@@ -7,7 +7,6 @@
 	<string name="menu_delete">Eliminar libro</string>
 	<string name="author">Autor</string>
 	<string name="title">Título</string>
-	<string name="isbn">ISBN</string>
 	<string name="publisher">Editorial</string>
 	<string name="date_published">Fecha de publicación</string>
 	<string name="rating">Calificación</string>
@@ -241,7 +240,6 @@
 	<string name="lt_info">Está aplicación utiliza LibraryThing como fuente de información sobre series de libros, así como para portadas alternativas. Para poder utilizar estas opciones necesita estar registrado en LibraryThing (gratis) y solicitar una clave de desarrollador de LibraryThing (también gratuita).</string>
 	<string name="lt_register_text">Registro en LibraryThing</string>
 	<string name="lt_devkey_text">Solicitar clave de desarrollador de LibraryThing</string>
-	<string name="lt_label">LibraryThing</string>
 	<string name="lt_gotkey">Una vez obtenga la clave de desarrollador (o si ya tiene una), introdúzcala a continuación. Se utilizará para obtener datos adicionales.</string>
 	<string name="developer_key">Clave de desarrollador (Developer Key)</string>
 	<string name="require_library_thing_info">Esta opción requiere clave de desarrollador de LibraryThing. ¿Desea ver más información relacionada con LibraryThing?</string>
@@ -554,7 +552,6 @@
     <string name="displaying_n_books_in_m_entries">Se muestran %1$s libros, en %2$s entradas</string>
     <string name="displaying_n_books">Se muestran %1$s libros</string>
     <string name="available">Disponible</string>
-    <string name="loaned_to_2">\u2192</string>
     <string name="summary_details_in_header">Resumen en la cabecera</string>
     <string name="hide_summary_details">Ocultar resumen</string>
     <string name="show_summary_details">Mostrar resumen</string>

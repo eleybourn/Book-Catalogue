@@ -136,10 +136,11 @@
                 </LinearLayout>
             </RelativeLayout>
 
+            <!-- layout_height for image_wrapper used to be wrap_content but caused the image to disappear??? wtf? -->
             <RelativeLayout
                 android:id="@+id/image_wrapper"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="top|center_horizontal"
                 android:layout_weight="1" >
 

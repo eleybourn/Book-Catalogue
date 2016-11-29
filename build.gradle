@@ -5,7 +5,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.0.0'
+        classpath 'com.android.tools.build:gradle:2.2.2'
     }
 }
 
@@ -17,7 +17,7 @@ allprojects {
 
 dependencies {
     compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
-    compile 'com.android.support:support-v4:21.0.3'
+    compile 'com.android.support:support-v4:21.0.0+'
     // Compile all libraries from 'libs' folder
     compile fileTree(dir: 'libs', include: '*.jar' )
 }
@@ -25,6 +25,10 @@ dependencies {
 android {
     compileSdkVersion 21
     buildToolsVersion '21.1.2'
+
+    lintOptions {
+        disable 'MissingTranslation'
+    }
 
     // !!! Commented to use values from the manifest
 //    defaultConfig {
@@ -50,7 +54,4 @@ android {
         }
     }
 
-    lintOptions {
-        disable 'MissingTranslation'
-    }
 }

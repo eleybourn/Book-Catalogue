@@ -6,7 +6,6 @@
 <string name="menu_delete">Usuń książkę</string>
 <string name="author">Autor</string>
 <string name="title">Tytuł</string>
-<string name="isbn">ISBN</string>
 <string name="publisher">Wydawca</string>
 <string name="date_published">Data wydania</string>
 <string name="rating">Ocena</string>
@@ -241,7 +240,6 @@ Jeśli przerwiesz, możesz ponownie wywołać tę funkcję w opcjach administrac
 <string name="lt_info">Ten program wykorzystuje serwis LibraryThing jako żródło informacji o książkach, ich seriach, okładkach. W tym celu powinienieś zarejestrować się (darmowo) w LibraryThing i uzyskać klucz deweloperski LibraryThing (również darmowo).</string>
 <string name="lt_register_text">Zarejestruj się w LibraryThing</string>
 <string name="lt_devkey_text">Pobierz klucz deweloperski LibraryThing</string>
-<string name="lt_label">LibraryThing</string>
 <string name="lt_gotkey">Jeśli już masz klucz deweloperski, wprowadź go poniżej, co pozwoli na pobieranie danych uzupełniających.</string>
 <string name="developer_key">Klucz deweloperski</string>
 <string name="require_library_thing_info">Ta fukncja wymaga klucza deweloperskiego LibraryThing. Czy chesz dowiedzieć się więcej o LibraryThing?</string>

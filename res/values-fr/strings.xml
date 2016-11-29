@@ -15,8 +15,6 @@
     <string name="sourcecode">https://github.com/eleybourn/Book-Catalogue</string>
     <string name="helppage">https://github.com/eleybourn/Book-Catalogue/wiki/Help</string>
     <string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
-    <string name="loaned_to_2">\u2192</string>
-    <string name="isbn">ISBN</string>
     <string name="series_num">No</string>
 
     <item name="TAG_POSITION" type="id"></item>
@@ -339,7 +337,6 @@
     <string name="lt_info">Le fonctionnement de cette application est amélioré par l\'utilisation de LibraryThing comme source d\'information sur les séries ou comme alternative pour les couvertures. Pour bénéficier de ces fonctionnalités, vous devez vous enregistrer auprès de LibraryThing (gratuit) et demander une clé développeur LibraryThing (gratuit).</string>
     <string name="lt_register_text">S\'enregistrer auprès de LibraryThing</string>
     <string name="lt_devkey_text">Demander une clé développeur LibraryThing</string>
-    <string name="lt_label">LibraryThing</string>
     <string name="lt_gotkey">Une fois votre clé développeur obtenue (ou si vous en avez déjà une), entrez la simplement ci-dessous et elle sera utilisée pour obtenir des données supplémentaires.</string>
     <string name="developer_key">Clé développeur</string>
     <string name="require_library_thing_info">Cette fonctionnalité nécessite une clé développeur LibraryThing. Voulez-vous obtenir plus d\'informations à propos de LibraryThing ?</string>

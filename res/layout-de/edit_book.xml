@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:focusableInTouchMode="true"
+    tools:ignore="DuplicateIds"
     android:orientation="vertical" >
 
     <ScrollView
@@ -27,42 +29,38 @@
                 android:gravity="center"
                 android:padding="@dimen/padding_border" />
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+                android:orientation="vertical" >
 
                 <TextView
-                    android:id="@+id/heading"
                     style="@style/editorFieldHeaderStyle"
                     android:text="@string/author" />
 
                 <Button
                     android:id="@+id/author"
                     style="@style/dataEntryButtonStyle"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_below="@+id/heading"
+                    android:layout_width="match_parent"
                     android:nextFocusDown="@+id/title" />
-            </RelativeLayout>
+            </LinearLayout>
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+                android:orientation="vertical" >
 
                 <TextView
-                    android:id="@+id/heading"
                     style="@style/editorFieldHeaderStyle"
                     android:text="@string/title" />
 
                 <EditText
                     android:id="@+id/title"
                     style="@style/editorFieldTextStyle"
-                    android:layout_below="@+id/heading"
+                    android:layout_width="match_parent"
                     android:inputType="textCapSentences"
                     android:nextFocusDown="@+id/isbn" />
-            </RelativeLayout>
+            </LinearLayout>
 
             <RelativeLayout
                 android:id="@+id/row_isbn"
@@ -71,7 +69,7 @@
                 android:orientation="horizontal" >
 
                 <TextView
-                    android:id="@+id/heading"
+                    android:id="@+id/isbnHeading"
                     style="@style/editorFieldHeaderStyle"
                     android:layout_alignParentTop="false"
                     android:layout_centerVertical="true"
@@ -81,50 +79,46 @@
                     android:id="@+id/isbn"
                     style="@style/editorFieldTextStyle"
                     android:layout_alignParentLeft="false"
-                    android:layout_toRightOf="@+id/heading"
+                    android:layout_toRightOf="@+id/isbnHeading"
                     android:inputType="text"
                     android:nextFocusDown="@+id/series" />
             </RelativeLayout>
 
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/row_series"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+                android:orientation="vertical" >
 
                 <TextView
-                    android:id="@+id/heading"
                     style="@style/editorFieldHeaderStyle"
                     android:text="@string/series" />
 
                 <Button
                     android:id="@+id/series"
                     style="@style/dataEntryButtonStyle"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_below="@+id/heading"
+                    android:layout_width="match_parent"
                     android:nextFocusDown="@+id/publisher" />
-            </RelativeLayout>
+            </LinearLayout>
 
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/row_publisher"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+                android:orientation="vertical" >
 
                 <TextView
-                    android:id="@+id/heading"
                     style="@style/editorFieldHeaderStyle"
                     android:text="@string/publisher" />
 
                 <AutoCompleteTextView
                     android:id="@+id/publisher"
                     style="@style/editorFieldTextStyle"
-                    android:layout_below="@+id/heading"
+                    android:layout_width="match_parent"
                     android:completionThreshold="2"
                     android:inputType="textCapSentences"
                     android:nextFocusDown="@+id/date_published" />
-            </RelativeLayout>
+            </LinearLayout>
 
             <RelativeLayout
                 android:id="@+id/row_date_published"
@@ -146,24 +140,21 @@
                     android:nextFocusDown="@+id/bookshelf" />
             </RelativeLayout>
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+                android:orientation="vertical" >
 
                 <TextView
-                    android:id="@+id/heading"
                     style="@style/editorFieldHeaderStyle"
                     android:text="@string/bookshelves" />
 
                 <Button
                     android:id="@+id/bookshelf"
                     style="@style/dataEntryButtonStyle"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_below="@+id/heading"
+                    android:layout_width="match_parent"
                     android:nextFocusDown="@+id/pages" />
-            </RelativeLayout>
+            </LinearLayout>
 
             <RelativeLayout
                 android:id="@+id/row_pages"

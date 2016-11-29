@@ -7,7 +7,6 @@
     <string name="menu_delete">Удалить книгу</string>
     <string name="author">Автор</string>
     <string name="title">Название</string>
-    <string name="isbn">ISBN</string>
     <string name="publisher">Издатель</string>
     <string name="date_published">Дата издания</string>
     <string name="rating">Оценка</string>
@@ -245,7 +244,6 @@
     <string name="lt_info">Это приложение может использовать LibraryThing (бесплатно) в качестве источника информации как для серий так и об альтернативных обложках. Чтобы использовать эту возможность, Вам нужно зарегистрироваться на LibraryThing и запросить ключ разработчика. Всё бесплатно.</string>
     <string name="lt_register_text">Зарегистрироваться в LibraryThing</string>
     <string name="lt_devkey_text">Запросить ключ разработчика LibraryThing</string>
-    <string name="lt_label">LibraryThing</string>
     <string name="lt_gotkey">Как только вы получите ключ разработчика (или если он у Вас уже есть), просто введите его в поле ниже. Он будет использован для получения дополнительной информации о книге.</string>
     <string name="developer_key">Ключ разработчика</string>
     <string name="require_library_thing_info">Для этой возможности необходим ключ разработчика LibraryThing. Вы хотите узнать больше о LibraryThing?</string>
@@ -591,7 +589,6 @@
     <string name="displaying_n_books_in_m_entries">отображается %1$s книг, в %2$s элементах</string>
     <string name="displaying_n_books">Книг на полке: %1$s</string>
     <string name="available">Доступно</string>
-    <string name="loaned_to_2">\u2192</string>
     <string name="summary_details_in_header">Суммарная информация в заголовке</string>
     <string name="hide_summary_details">Спрятать суммарную информацию</string>
     <string name="show_summary_details">Показать суммарную информацию</string>

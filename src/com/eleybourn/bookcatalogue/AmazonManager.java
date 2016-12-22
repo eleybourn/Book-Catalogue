@@ -41,7 +41,7 @@ public class AmazonManager {
 		//	// Just use raw title...
 		//} 
 		
-		String path = "http://theagiledirector.com/getRest_v3.php";
+		String path = "http://bc.theagiledirector.com/getRest_v3.php";
 		if (mIsbn.equals("")) {
 			path += "?author=" + mAuthor + "&title=" + mTitle;
 		} else {

@@ -127,7 +127,7 @@ public class FieldVisibility extends BookCatalogueActivity {
 			
 			//Create the checkBox label (or textView)
 			//TextView tv = new TextView(this);
-			cb.setTextAppearance(this, android.R.attr.textAppearanceLarge);
+			cb.setTextAppearance(this, android.R.style.TextAppearance_Large);
 			cb.setText(fieldRs[i]);
 			//cb.setPadding(0, 5, 0, 0);
 			if (compulsory[i] == true) {

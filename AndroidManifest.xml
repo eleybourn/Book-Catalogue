@@ -4,7 +4,7 @@
     package="com.eleybourn.bookcatalogue"
     android:installLocation="auto"
     android:versionCode="177"
-    android:versionName="5.2.0" >
+    android:versionName="5.2.1" >
 
     <uses-sdk
         android:minSdkVersion="7"

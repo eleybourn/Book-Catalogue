@@ -39,6 +39,12 @@ import android.widget.AdapterView;
  */
 public class BcQueueManager extends QueueManager {
 
+	public BcQueueManager() {
+		super(BookCatalogueApp.context);
+		initializeQueue(QUEUE_MAIN);
+		initializeQueue(QUEUE_SMALL_JOBS);
+	}
+
 	/**
 	 * Create the queue we need, if they do not already exist.
 	 * 

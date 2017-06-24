@@ -185,7 +185,7 @@ public class UpdateFromInternet extends ActivityWithTasks {
 
 			//Create the checkBox label (or textView)
 			//TextView tv = new TextView(this);
-			cb.setTextAppearance(this, android.R.attr.textAppearanceLarge);
+			cb.setTextAppearance(this, android.R.style.TextAppearance_Large);
 			String text = getResources().getString(usage.stringId);
 			String extra;
 			switch(usage.usage) {

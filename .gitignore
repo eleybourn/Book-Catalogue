@@ -1,5 +1,6 @@
 # Eclipse specific
 
+/wrapper
 /.settings
 /bin
 /gen

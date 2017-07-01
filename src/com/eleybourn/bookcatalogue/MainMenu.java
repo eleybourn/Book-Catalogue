@@ -97,7 +97,7 @@ public class MainMenu extends BookCatalogueActivity {
 		setOnClickListener(R.id.goodreads_label, mGoodreadsHandler);
 		
 		if (savedInstanceState == null) {
-			HintManager.displayHint(this, R.string.hint_evan_book, null);
+			HintManager.displayHint(this, R.string.hint_tempus_locum, null);
 			HintManager.displayHint(this, R.string.hint_startup_screen, null);
 		}
 

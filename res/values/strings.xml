@@ -874,12 +874,12 @@ and you can edit the book via the options menu using the menu button or overflow
 		]]>
     </string>
 
-	<string name="hint_evan_book">
+    <string name="hint_evan_book">
 	    		<![CDATA[
 				<p>Did you know the original author of Book Catalogue (Evan Leybourn) has just published 
 				a book on Agile Business Management?</p>
 				<p>If you are interested in his other work, more information can be found at:\n\n
-				<a href="http://theagiledirector.com/book">http://theagiledirector.com/book</a>
+				<a href="http://theagiledirector.com/book">http://theagiledirector.com/book</a>\n\n
 				</p>
 			]]>
     </string>
@@ -1077,7 +1077,23 @@ and you can edit the book via the options menu using the menu button or overflow
 
     <!-- End: Added/Updated in 5.2.0 -->
 
-    <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->    
+    <!-- Begin: Added/Updated in 5.2.1 -->
+    <string name="hint_tempus_locum">
+	    		<![CDATA[
+	    		<p><b>The lead developer of Book Catalogue has developed a new app!</b></p>
+				<p>Keep track of locations, images, recordings and notes; and if you are into
+				science, then manage samples and labels.</p>
+				<p>Please check it out in the Play Store:</p>
+				<p><a href="market://details?id=info.philipwarner.fieldassistant">Tempus Locum</a></p>
+				<p>or you can see the web site here:</p>
+				<p><a href="http://www.tempuslocum.com/">http://www.tempuslocum.com/</a>
+				</p>
+			]]>
+    </string>
+    <!-- End: Added/Updated in 5.2.1 -->
+
+    <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->
+
 
     <!-- End: Added/Updated in [Next Version] -->
 

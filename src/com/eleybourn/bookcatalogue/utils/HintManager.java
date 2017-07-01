@@ -78,7 +78,7 @@ public class HintManager {
 		.add("hint_autorotate_camera_images", R.string.hint_autorotate_camera_images)
 		.add("hint_view_only_book_details", R.string.hint_view_only_book_details)
 		.add("hint_view_only_help", R.string.hint_view_only_help)
-		.add("hint_evan_book", R.string.hint_evan_book)
+		.add("hint_tempus_locum", R.string.hint_tempus_locum)
 		.add("hint_book_list", R.string.hint_book_list)
 		.add("hint_amazon_links_blurb", R.string.hint_amazon_links_blurb)
 		;

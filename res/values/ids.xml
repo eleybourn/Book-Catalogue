@@ -28,6 +28,8 @@
     <item name="MENU_DELETE_STYLE" type="id"/>
     <item name="MENU_EDIT_STYLE" type="id"/>
     <item name="MENU_CLONE_STYLE" type="id"/>
+    <item name="MENU_MARK_AS_READ" type="id"/>
+    <item name="MENU_MARK_AS_UNREAD" type="id"/>
 
     <item name="MENU_AMAZON_BOOKS_IN_SERIES" type="id"/>
     <item name="MENU_AMAZON_BOOKS_BY_AUTHOR" type="id"/>

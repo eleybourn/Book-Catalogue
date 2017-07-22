@@ -17,3 +17,7 @@
 /local.properties
 /javadoc.xml
 /doc/
+
+# OSx specific
+
+*.DS_Store

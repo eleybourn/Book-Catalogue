@@ -381,11 +381,6 @@ public class ImportAllTask extends GenericTask {
 		addDateIfValid(review, ListReviewsFieldNames.DB_READ_START, book, ListReviewsFieldNames.DB_READ_START);
 		String readEnd = addDateIfValid(review, ListReviewsFieldNames.DB_READ_END, book, ListReviewsFieldNames.DB_READ_END);
 
-		// If it has a rating or a 'read_end' date, assume it's read. If these are missing then
-		// DO NOT overwrite existing data since it *may* be read even without these fields.
-		if ( (rating != null && rating > 0) || (readEnd != null && readEnd.length() > 0) ) {
-			book.putBoolean(CatalogueDBAdapter.KEY_READ, true);
-		}
 
 		addStringIfNonBlank(review, ListReviewsFieldNames.DB_TITLE, book, ListReviewsFieldNames.DB_TITLE);
 		addLongIfPresent(review, ListReviewsFieldNames.GR_BOOK_ID, book, DOM_GOODREADS_BOOK_ID.name);
@@ -411,7 +406,7 @@ public class ImportAllTask extends GenericTask {
         String pubDate = GoodreadsManager.buildDate(review, ListReviewsFieldNames.PUB_YEAR, ListReviewsFieldNames.PUB_MONTH, ListReviewsFieldNames.PUB_DAY, null);
         if (pubDate != null && !pubDate.equals(""))
         	book.putString(CatalogueDBAdapter.KEY_DATE_PUBLISHED, pubDate);
-        
+
         ArrayList<Bundle> grAuthors = review.getParcelableArrayList(ListReviewsFieldNames.AUTHORS);
         ArrayList<Author> authors;
 
@@ -439,7 +434,7 @@ public class ImportAllTask extends GenericTask {
         	if (review.containsKey(ListReviewsFieldNames.LARGE_IMAGE) && !review.getString(ListReviewsFieldNames.LARGE_IMAGE).toLowerCase().contains("nocover")) {
         		thumbnail = review.getString(ListReviewsFieldNames.LARGE_IMAGE);
         	} else if (review.containsKey(ListReviewsFieldNames.SMALL_IMAGE) && !review.getString(ListReviewsFieldNames.SMALL_IMAGE).toLowerCase().contains("nocover")) {
-        		thumbnail = review.getString(ListReviewsFieldNames.SMALL_IMAGE);        		
+        		thumbnail = review.getString(ListReviewsFieldNames.SMALL_IMAGE);
         	} else {
         		thumbnail = null;
         	}
@@ -447,7 +442,7 @@ public class ImportAllTask extends GenericTask {
     			String filename = Utils.saveThumbnailFromUrl(thumbnail, "_GR");
     			if (filename.length() > 0)
     				book.appendOrAdd( "__thumbnail", filename);
-    			book.cleanupThumbnails();        		
+    			book.cleanupThumbnails();
         	}
         }
 
@@ -473,6 +468,7 @@ public class ImportAllTask extends GenericTask {
         }
 
         // Process any bookshelves
+		boolean inReadShelf=false;
         if (review.containsKey(ListReviewsFieldNames.SHELVES)) {
         	ArrayList<Bundle> shelves = review.getParcelableArrayList(ListReviewsFieldNames.SHELVES);
         	String shelfNames = null;
@@ -484,12 +480,25 @@ public class ImportAllTask extends GenericTask {
 		        		shelfNames = shelf;
         			else
         				shelfNames += BookEditFields.BOOKSHELF_SEPERATOR + shelf;
+
+					if(shelf.equals(R.string.goddreads_read_shelf_name)) {
+						inReadShelf=true;
+					}
         		}
         	}
-        	if (shelfNames != null && shelfNames.length() > 0)
-        		book.setBookshelfList(shelfNames);
-        }
-        
+			if (shelfNames != null && shelfNames.length() > 0)
+				book.setBookshelfList(shelfNames);
+		}
+
+
+		// If it has a rating or a 'read_end' date or it is in the shelf 'read' of GR,
+		// assume it's read
+		// If these are missing then DO NOT overwrite existing data since it *may* be
+		// read even without these fields.
+		if ( (rating != null && rating > 0) || (readEnd != null && readEnd.length() > 0) || inReadShelf) {
+			book.putBoolean(CatalogueDBAdapter.KEY_READ, true);
+		}
+
         // We need to set BOTH of these fields, otherwise the add/update method will set the
         // last_update_date for us, and that will most likely be set ahead of the GR update date
         Date now = new Date();

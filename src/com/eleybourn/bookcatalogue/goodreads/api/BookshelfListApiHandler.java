@@ -36,6 +36,8 @@ import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.BookNot
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NotAuthorizedException;
 
+import static com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.GOODREADS_API_ROOT;
+
 /**
  * Class to implement the reviews.list api call. It queries based on the passed parameters and returns
  * a single Bundle containing all results. The Bundle itself will contain other bundles: typically an 
@@ -99,7 +101,7 @@ public class BookshelfListApiHandler extends ApiHandler {
 
 		// Sort by update_dte (descending) so sync is faster. Specify 'shelf=all' because it seems goodreads returns 
 		// the shelf that is selected in 'My Books' on the web interface by default.
-		final String urlBase = "http://www.goodreads.com/shelf/list.xml?key=%1$s&page=%2$s&user_id=%3$s";
+		final String urlBase = GOODREADS_API_ROOT + "/shelf/list.xml?key=%1$s&page=%2$s&user_id=%3$s";
 		final String url = String.format(urlBase, mManager.getDeveloperKey(), page, mManager.getUserid());
 		HttpGet get = new HttpGet(url);
 

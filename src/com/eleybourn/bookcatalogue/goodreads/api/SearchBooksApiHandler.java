@@ -42,6 +42,8 @@ import com.eleybourn.bookcatalogue.goodreads.GoodreadsWork;
 import com.eleybourn.bookcatalogue.goodreads.api.XmlFilter.ElementContext;
 import com.eleybourn.bookcatalogue.goodreads.api.XmlFilter.XmlHandler;
 
+import static com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.GOODREADS_API_ROOT;
+
 /**
  * Class to query and response to search.books api call.
  * 
@@ -76,7 +78,7 @@ public class SearchBooksApiHandler extends ApiHandler {
 		query = query.trim();
 
 		// Setup API call
-		HttpPost post = new HttpPost("http://www.goodreads.com/search/index.xml");
+		HttpPost post = new HttpPost(GOODREADS_API_ROOT + "/search/index.xml");
         List<NameValuePair> parameters = new ArrayList<NameValuePair>();
         parameters.add(new BasicNameValuePair("q", query));
         parameters.add(new BasicNameValuePair("key", mManager.getDeveloperKey()));

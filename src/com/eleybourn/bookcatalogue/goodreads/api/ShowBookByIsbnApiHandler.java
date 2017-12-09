@@ -39,6 +39,8 @@ import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.Network
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NotAuthorizedException;
 import com.eleybourn.bookcatalogue.utils.IsbnUtils;
 
+import static com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.GOODREADS_API_ROOT;
+
 /**
  * Class to call the search.books api (using an ISBN).
  * 
@@ -74,7 +76,7 @@ public class ShowBookByIsbnApiHandler extends ShowBookApiHandler {
 			throw new RuntimeException(BookCatalogueApp.getResourceString(R.string.invalid_isbn_x_specified_in_search, isbn));
 
 		// Setup API call //
-		final String urlBase = "http://www.goodreads.com/book/isbn?format=xml&isbn=%1$s&key=%2$s"; //format=xml&
+		final String urlBase = GOODREADS_API_ROOT + "/book/isbn?format=xml&isbn=%1$s&key=%2$s"; //format=xml&
 		final String url = String.format(urlBase, isbn.trim(), mManager.getDeveloperKey());
 		HttpGet get = new HttpGet(url);
 

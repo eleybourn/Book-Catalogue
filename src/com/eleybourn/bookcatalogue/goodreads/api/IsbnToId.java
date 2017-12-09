@@ -33,6 +33,8 @@ import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.BookNot
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NotAuthorizedException;
 
+import static com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.GOODREADS_API_ROOT;
+
 /**
  * API call to get a goodreads ID from an ISBN.
  * 
@@ -58,7 +60,7 @@ public class IsbnToId extends ApiHandler {
 			throws OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, IOException,
 					NotAuthorizedException, BookNotFoundException, NetworkException 
 	{
-		HttpGet get = new HttpGet("http://www.goodreads.com/book/isbn_to_id/" + isbn + "?key=" + mManager.getDeveloperKey());
+		HttpGet get = new HttpGet(GOODREADS_API_ROOT + "/book/isbn_to_id/" + isbn + "?key=" + mManager.getDeveloperKey());
 		String s = mManager.executeRaw(get);        
         return Long.parseLong(s);
 	}

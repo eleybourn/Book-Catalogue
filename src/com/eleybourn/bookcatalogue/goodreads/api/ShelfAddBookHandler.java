@@ -42,6 +42,8 @@ import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NotAuth
 import com.eleybourn.bookcatalogue.goodreads.api.XmlFilter.ElementContext;
 import com.eleybourn.bookcatalogue.goodreads.api.XmlFilter.XmlHandler;
 
+import static com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.GOODREADS_API_ROOT;
+
 /**
  * Class to add a book to a shelf. In this case, we do not care about the data returned.
  * 
@@ -105,7 +107,7 @@ public class ShelfAddBookHandler extends ApiHandler {
 	{
 		mReviewId = 0;
 
-		HttpPost post = new HttpPost("http://www.goodreads.com/shelf/add_to_shelf.xml");
+		HttpPost post = new HttpPost(GOODREADS_API_ROOT + "/shelf/add_to_shelf.xml");
 
         List<NameValuePair> parameters = new ArrayList<NameValuePair>();
         if (isRemove)

@@ -88,6 +88,9 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  */
 public class GoodreadsManager {
 
+	/** Root URL for API calls */
+	public static final String GOODREADS_API_ROOT = "https://www.goodreads.com";
+
 	/** Enum to handle possible results of sending a book to goodreads */
 	public static enum ExportDisposition { error, sent, noIsbn, notFound, networkError };
 	
@@ -152,9 +155,9 @@ public class GoodreadsManager {
 
 		m_consumer = new CommonsHttpOAuthConsumer(DEV_KEY, DEV_SECRET);
 		m_provider = new CommonsHttpOAuthProvider(
-				"http://www.goodreads.com/oauth/request_token",
-				"http://www.goodreads.com/oauth/access_token",
-				"http://www.goodreads.com/oauth/authorize");
+				GOODREADS_API_ROOT + "/oauth/request_token",
+				GOODREADS_API_ROOT + "/oauth/access_token",
+				GOODREADS_API_ROOT + "/oauth/authorize");
 
 		if (hasCredentials())
 			m_consumer.setTokenWithSecret(m_accessToken, m_accessSecret);

@@ -39,6 +39,8 @@ import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.BookNot
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NotAuthorizedException;
 
+import static com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.GOODREADS_API_ROOT;
+
 /**
  * TODO: ReviewUpdateHandler WORK IN PROGRESS
  * 
@@ -54,7 +56,7 @@ public class ReviewUpdateHandler extends ApiHandler {
 			throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, IOException, 
 					NotAuthorizedException, BookNotFoundException, NetworkException
 	{
-		HttpPost post = new HttpPost("http://www.goodreads.com/review/" + reviewId + ".xml");
+		HttpPost post = new HttpPost(GOODREADS_API_ROOT + "/review/" + reviewId + ".xml");
 
 		//StringBuilder shelvesString = null;
 		//if (shelves != null && shelves.size() > 0) {

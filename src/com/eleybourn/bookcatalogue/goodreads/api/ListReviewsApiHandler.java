@@ -20,6 +20,7 @@
 
 package com.eleybourn.bookcatalogue.goodreads.api;
 
+import static com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.GOODREADS_API_ROOT;
 import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.ADDED;
 import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.AUTHORS;
 import static com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames.DB_AUTHOR_ID;
@@ -160,7 +161,7 @@ public class ListReviewsApiHandler extends ApiHandler {
 
 		// Sort by update_dte (descending) so sync is faster. Specify 'shelf=all' because it seems goodreads returns 
 		// the shelf that is selected in 'My Books' on the web interface by default.
-		final String urlBase = "http://www.goodreads.com/review/list/%4$s.xml?key=%1$s&v=2&page=%2$s&per_page=%3$s&sort=date_updated&order=d&shelf=all";
+		final String urlBase = GOODREADS_API_ROOT + "/review/list/%4$s.xml?key=%1$s&v=2&page=%2$s&per_page=%3$s&sort=date_updated&order=d&shelf=all";
 		final String url = String.format(urlBase, mManager.getDeveloperKey(), page, perPage, mManager.getUserid());
 		HttpGet get = new HttpGet(url);
 

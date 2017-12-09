@@ -41,6 +41,8 @@ import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.BookNot
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NotAuthorizedException;
 
+import static com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.GOODREADS_API_ROOT;
+
 /**
  * TODO: OwnedBookCreateHandler WORK IN PROGRESS
  * 
@@ -165,7 +167,7 @@ public class OwnedBookCreateHandler extends ApiHandler {
 			throw new InvalidIsbnException();
 		}
 
-		HttpPost post = new HttpPost("http://www.goodreads.com/owned_books.xml");
+		HttpPost post = new HttpPost(GOODREADS_API_ROOT + "/owned_books.xml");
 
         List<NameValuePair> parameters = new ArrayList<NameValuePair>();
         parameters.add(new BasicNameValuePair("owned_book[book_id]", Long.toString(id)));

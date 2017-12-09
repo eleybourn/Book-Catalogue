@@ -26,6 +26,8 @@ import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
 import com.eleybourn.bookcatalogue.goodreads.api.XmlFilter.ElementContext;
 import com.eleybourn.bookcatalogue.goodreads.api.XmlFilter.XmlHandler;
 
+import static com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.GOODREADS_API_ROOT;
+
 /**
  * API handler for the authUser call. Just gets the current user details.
  * 
@@ -50,7 +52,7 @@ public class AuthUserApiHandler extends ApiHandler {
 	 */
 	public long getAuthUser() {
 		// Setup API call
-		HttpPost post = new HttpPost("http://www.goodreads.com/api/auth_user");
+		HttpPost post = new HttpPost(GOODREADS_API_ROOT + "/api/auth_user");
 
 		mUserId = 0;
 		try {

@@ -645,11 +645,11 @@ public class Utils {
 			c.setDoInput(true);
 			c.setUseCaches(false);
 			c.connect();
+			in = c.getInputStream();
 			if ( c.getResponseCode() >= 300) {
 				Logger.logError(new RuntimeException("URL lookup failed: " + c.getResponseCode() + " "  + c.getResponseMessage() + ", URL: " + u.toString()));
 				return null;
 			}
-			in = c.getInputStream();
 		} catch (IOException e) {
 			Logger.logError(e);
 			return null;
@@ -755,8 +755,13 @@ public class Utils {
 					connInfo.conn.setDoInput(true);
 					connInfo.conn.setDoOutput(false);
 
-					if (connInfo.conn instanceof HttpURLConnection)
-						((HttpURLConnection)connInfo.conn).setRequestMethod("GET");
+					HttpURLConnection c;
+					if (connInfo.conn instanceof HttpURLConnection) {
+						c = (HttpURLConnection) connInfo.conn;
+						c.setRequestMethod("GET");
+					} else {
+						c = null;
+					}
 
 					connInfo.conn.setConnectTimeout(30000);
 					connInfo.conn.setReadTimeout(30000);
@@ -779,6 +784,11 @@ public class Utils {
 
 						}}, 30000);
 					connInfo.is = new StatefulBufferedInputStream(connInfo.conn.getInputStream());
+
+					if ( c != null && c.getResponseCode() >= 300) {
+						Logger.logError(new RuntimeException("URL lookup failed: " + c.getResponseCode() + " "  + c.getResponseMessage() + ", URL: " + u.toString()));
+						return null;
+					}
 
 					return connInfo.is;
 

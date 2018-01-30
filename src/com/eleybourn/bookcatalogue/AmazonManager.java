@@ -1,5 +1,13 @@
 package com.eleybourn.bookcatalogue;
 
+import android.net.ParseException;
+import android.os.Bundle;
+
+import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
+
+import org.xml.sax.SAXException;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -7,14 +15,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.xml.sax.SAXException;
-
-import android.net.ParseException;
-import android.os.Bundle;
-
-import com.eleybourn.bookcatalogue.utils.Logger;
-import com.eleybourn.bookcatalogue.utils.Utils;
-
+@SuppressWarnings("WeakerAccess")
 public class AmazonManager {
 	/**
 	 * 
@@ -22,7 +23,6 @@ public class AmazonManager {
 	 * due to amazon not support mobile devices
 	 * 
 	 * @param mIsbn The ISBN to search for
-	 * @return The book array
 	 */
 	static public void searchAmazon(String mIsbn, String mAuthor, String mTitle, Bundle bookData, boolean fetchThumbnail) {
 
@@ -59,10 +59,9 @@ public class AmazonManager {
 			// We can't Toast anything here, so let exceptions fall through.
 			parser.parse(Utils.getInputStream(url), handler);
 		} catch (MalformedURLException | ParserConfigurationException | ParseException | SAXException e) {
-			Logger.logError(e);
+			Logger.logError(e, "Error parsing XML");
 		} catch (Exception e) {
-			Logger.logError(e);
+			Logger.logError(e, "Error retrieving or parsing XML");
 		}
-		return;
 	}
 }

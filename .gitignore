@@ -9,7 +9,6 @@
 /project.properties
 
 # Android Studio specific
-
 /.gradle
 /.idea
 /*.iml

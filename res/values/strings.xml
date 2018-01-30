@@ -1092,8 +1092,17 @@ and you can edit the book via the options menu using the menu button or overflow
     </string>
     <!-- End: Added/Updated in 5.2.1 -->
 
-    <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->
+    <!-- Begin: Added/Updated in 5.2.2 -->
+    <string name="new_in_522">
+		<![CDATA[
+			<p><b>New in 5.2.2</b>\n\n
+				* Bug fixes\n\n
+			</p>
+		]]>
+    </string>
+    <!-- End: Added/Updated in 5.2.2 -->
 
+    <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->
 
     <!-- End: Added/Updated in [Next Version] -->
 

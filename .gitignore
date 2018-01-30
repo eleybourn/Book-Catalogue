@@ -17,3 +17,7 @@
 /local.properties
 /javadoc.xml
 /doc/
+/gradlew
+/gradlew.bat
+/gradle
+

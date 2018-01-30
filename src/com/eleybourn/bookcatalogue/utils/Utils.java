@@ -570,7 +570,7 @@ public class Utils {
 			// Copy from input to temp file
 			byte[] buffer = new byte[65536];
 			int len1 = 0;
-			while ( (len1 = in.read(buffer)) > 0 ) {
+			while ( (len1 = in.read(buffer)) >= 0 ) {
 				f.write(buffer,0, len1);
 			}
 			f.close();
@@ -640,9 +640,15 @@ public class Utils {
 		try {
 			c = (HttpURLConnection) u.openConnection();
 			c.setConnectTimeout(30000);
+			c.setReadTimeout(30000);
 			c.setRequestMethod("GET");
-			c.setDoOutput(true);
+			c.setDoInput(true);
+			c.setUseCaches(false);
 			c.connect();
+			if ( c.getResponseCode() >= 300) {
+				Logger.logError(new RuntimeException("URL lookup failed: " + c.getResponseCode() + " "  + c.getResponseMessage() + ", URL: " + u.toString()));
+				return null;
+			}
 			in = c.getInputStream();
 		} catch (IOException e) {
 			Logger.logError(e);
@@ -652,9 +658,9 @@ public class Utils {
 		// Save the output to a byte output stream
 		ByteArrayOutputStream f = new ByteArrayOutputStream();
 		try {
-			byte[] buffer = new byte[1024];
-			int len1 = 0;
-			while ( (len1 = in.read(buffer)) > 0 ) {
+			byte[] buffer = new byte[65536];
+			int len1;
+			while ( (len1 = in.read(buffer)) >= 0 ) {
 				f.write(buffer,0, len1);
 			}
 			f.close();

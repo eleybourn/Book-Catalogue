@@ -41,7 +41,7 @@ public class AmazonManager {
 		//	// Just use raw title...
 		//} 
 		
-		String path = "http://bc.theagiledirector.com/getRest_v3.php";
+		String path = "https://bc.theagiledirector.com/getRest_v3.php";
 		if (mIsbn.equals("")) {
 			path += "?author=" + mAuthor + "&title=" + mTitle;
 		} else {
@@ -58,13 +58,7 @@ public class AmazonManager {
 			parser = factory.newSAXParser();
 			// We can't Toast anything here, so let exceptions fall through.
 			parser.parse(Utils.getInputStream(url), handler);
-		} catch (MalformedURLException e) {
-			Logger.logError(e);
-		} catch (ParserConfigurationException e) {
-			Logger.logError(e);
-		} catch (ParseException e) {
-			Logger.logError(e);
-		} catch (SAXException e) {
+		} catch (MalformedURLException | ParserConfigurationException | ParseException | SAXException e) {
 			Logger.logError(e);
 		} catch (Exception e) {
 			Logger.logError(e);

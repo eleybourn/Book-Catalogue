@@ -30,10 +30,15 @@ dependencies {
 
 android {
     compileSdkVersion 21
-    buildToolsVersion '25.0.0'
+    buildToolsVersion '25.0.2'
     lintOptions {
         disable 'MissingTranslation'
     }
+
+    dexOptions{
+        javaMaxHeapSize "2g"
+    }
+
     // !!! Commented to use values from the manifest
 //    defaultConfig {
 //        minSdkVersion 7

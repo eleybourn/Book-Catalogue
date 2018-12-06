@@ -786,7 +786,7 @@ public class Utils {
 					connInfo.is = new StatefulBufferedInputStream(connInfo.conn.getInputStream());
 
 					if ( c != null && c.getResponseCode() >= 300) {
-						Logger.logError(new RuntimeException("URL lookup failed: " + c.getResponseCode() + " "  + c.getResponseMessage() + ", URL: " + u.toString()));
+						Logger.logError(new RuntimeException("URL lookup failed: " + c.getResponseCode() + " "  + c.getResponseMessage() + ", URL: " + url.toString()));
 						return null;
 					}
 

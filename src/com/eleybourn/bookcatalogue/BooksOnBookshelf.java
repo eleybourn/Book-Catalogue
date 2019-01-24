@@ -250,13 +250,13 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 			if (savedInstanceState == null) {
 				HintManager.displayHint(this, R.string.hint_view_only_book_details, null);
 				HintManager.displayHint(this, R.string.hint_book_list, null);
-				if (StartupActivity.getShowAmazonHint() && HintManager.shouldBeShown(R.string.hint_amazon_links_blurb) ) {
-					HintManager.displayHint(this, R.string.hint_amazon_links_blurb, null, 
-							getString(R.string.amazon_books_by_author),
-							getString(R.string.amazon_books_in_series),
-							getString(R.string.amazon_books_by_author_in_series),
-							getString(R.string.app_name));
-				}
+				//if (StartupActivity.getShowAmazonHint() && HintManager.shouldBeShown(R.string.hint_amazon_links_blurb) ) {
+				//	HintManager.displayHint(this, R.string.hint_amazon_links_blurb, null,
+				//			getString(R.string.amazon_books_by_author),
+				//			getString(R.string.amazon_books_in_series),
+				//			getString(R.string.amazon_books_by_author_in_series),
+				//			getString(R.string.app_name));
+				//}
 			}
 		} finally {
 			Tracker.exitOnCreate(this);

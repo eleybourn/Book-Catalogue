@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 if(project.hasProperty("BookCatalogue.signing")
         && new File(project.property("BookCatalogue.signing")).exists()) {
-    apply from: project.property("MyProject.signing");
+    apply from: project.property("BookCatalogue.signing")
 }
 
 buildscript {

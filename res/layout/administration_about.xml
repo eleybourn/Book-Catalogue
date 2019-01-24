@@ -121,21 +121,32 @@
                 android:text="@string/translators_blurb"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/padding_border"
-                android:text="@string/amazon"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+            <!--
+                Removed because Amazon deregistered the app since self-promotion is not allowed, despite their T&A
+                making no such reference. More likely it was retribution from Amazon staff for a bad review placed on
+                a support case; it happened within 48 hours of the poor review.
 
-            <TextView
-                android:id="@+id/amazon_links_info"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/padding_border"
-                android:paddingLeft="15dp"
-                android:text="@string/hint_amazon_links_blurb"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                The removal of such rights is un-contestable and it the rules are very unclear. We are not the only
+                supplier to have suffered such a fate with no recourse, not discussion and no clarity.
+
+                We can however go through the hoops of re-registering. 1 minute of their time, 4 hours of our time.
+            -->
+            <!--<TextView-->
+                <!--android:layout_width="fill_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:paddingLeft="@dimen/padding_border"-->
+                <!--android:text="@string/amazon"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/amazon_links_info"-->
+                <!--android:layout_width="fill_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:paddingBottom="@dimen/padding_border"-->
+                <!--android:paddingLeft="15dp"-->
+                <!--android:text="@string/hint_amazon_links_blurb"-->
+                <!--android:textAppearance="?android:attr/textAppearanceSmall" />-->
+
         </LinearLayout>
     </ScrollView>
 

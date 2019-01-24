@@ -127,18 +127,26 @@ public class AdministrationAbout extends BookCatalogueActivity {
 				return;
 			}
 		});
-		
-		{
-			TextView tv = (TextView) findViewById(R.id.amazon_links_info);
-			// Setup the linked HTML
-			String text = getString(R.string.hint_amazon_links_blurb, 
-					getString(R.string.amazon_books_by_author),
-					getString(R.string.amazon_books_in_series),
-					getString(R.string.amazon_books_by_author_in_series),
-					getString(R.string.app_name));
-			tv.setText(Utils.linkifyHtml(text, Linkify.ALL));			
-			tv.setMovementMethod(LinkMovementMethod.getInstance());
-		}
+
+		// Removed because Amazon deregistered the app since self-promotion is not allowed, despite their T&A
+		// making no such reference. More likely it was retribution from Amazon staff for a bad review placed on
+		// a support case; it happened within 48 hours of the poor review.
+		//
+		// 		The removal of such rights is un-contestable and it the rules are very unclear. We are not the only
+		// supplier to have suffered such a fate with no recourse, not discussion and no clarity.
+		//
+		// We can however go through the hoops of re-registering. 1 minute of their time, 4 hours of our time.
+		//{
+		//	TextView tv = (TextView) findViewById(R.id.amazon_links_info);
+		//	// Setup the linked HTML
+		//	String text = getString(R.string.hint_amazon_links_blurb,
+		//			getString(R.string.amazon_books_by_author),
+		//			getString(R.string.amazon_books_in_series),
+		//			getString(R.string.amazon_books_by_author_in_series),
+		//			getString(R.string.app_name));
+		//	tv.setText(Utils.linkifyHtml(text, Linkify.ALL));
+		//	tv.setMovementMethod(LinkMovementMethod.getInstance());
+		//}
 	}
 
 	private void sendContactEmail(int stringId) {

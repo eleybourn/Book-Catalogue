@@ -1000,7 +1000,7 @@ and you can edit the book via the options menu using the menu button or overflow
     <!-- Name of the 'Default' bookshelf, created when app first installed. Needs to be short. -->
     <string name="default_bookshelf_name">Default</string>
     <!-- A hint describing the benefit of following the Amazon links -->
-    <string name="hint_amazon_links_blurb">&lt;p&gt;If you buy things from Amazon after selecting the &lt;i&gt;\"%1$s\"&lt;/i&gt;, &lt;i&gt;\"%2$s\"&lt;/i&gt; or &lt;i&gt;\"%3$s\"&lt;/i&gt; menu items, a proportion of the purchase price will be sent to the developers of %4$s.&lt;/p&gt;&lt;p&gt;You can also use the &lt;a href=\"https://github.com/eleybourn/Book-Catalogue/wiki/Frequently-Asked-Questions-%%28FAQ%%29\"&gt;links on our FAQ&lt;/a&gt; to navigate directly to Amazon or PayPal.&lt;/p&gt;</string>
+    <!--<string name="hint_amazon_links_blurb">&lt;p&gt;If you buy things from Amazon after selecting the &lt;i&gt;\"%1$s\"&lt;/i&gt;, &lt;i&gt;\"%2$s\"&lt;/i&gt; or &lt;i&gt;\"%3$s\"&lt;/i&gt; menu items, a proportion of the purchase price will be sent to the developers of %4$s.&lt;/p&gt;&lt;p&gt;You can also use the &lt;a href=\"https://github.com/eleybourn/Book-Catalogue/wiki/Frequently-Asked-Questions-%%28FAQ%%29\"&gt;links on our FAQ&lt;/a&gt; to navigate directly to Amazon or PayPal.&lt;/p&gt;</string>-->
 
     <!-- Name of the new style grouping (needs to be short). -->
     <string name="update_date">Update date</string>
@@ -1102,8 +1102,25 @@ and you can edit the book via the options menu using the menu button or overflow
     </string>
     <!-- End: Added/Updated in 5.2.2 -->
 
-    <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->
+    <!-- Begin: Added/Updated in 5.2.3 DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->
 
+    <!-- Menu Item -->
+    <string name="home">Home</string>
+    <!-- Displayed when a user tries to browse to app home directory, or if the home dir is unable to be read. Should never happen. -->
+    <string name="no_home_directory_found">No home directory found</string>
+    <string name="new_in_523">
+		<![CDATA[
+			<p><b>New in 5.2.3</b>\n\n
+				* Add a \'Home\' button to the Backup/Import dialogues\n\n
+				* Build compatible with Android 9\n\n
+				* Bug fixes\n\n
+			</p>
+		]]>
+    </string>
+    <!-- End: Added/Updated in 5.2.3 -->
+
+
+    <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->
     <!-- End: Added/Updated in [Next Version] -->
 
 </resources>

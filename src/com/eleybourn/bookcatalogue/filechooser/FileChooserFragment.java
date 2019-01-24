@@ -36,9 +36,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.eleybourn.bookcatalogue.BookCatalogue;
+import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueFragment;
 import com.eleybourn.bookcatalogue.filechooser.FileLister.FileListerListener;
+import com.eleybourn.bookcatalogue.utils.StorageUtils;
 import com.eleybourn.bookcatalogue.widgets.SimpleListAdapter;
 import com.eleybourn.bookcatalogue.widgets.SimpleListAdapter.ViewProvider;
 
@@ -106,7 +112,30 @@ public class FileChooserFragment extends BookCatalogueFragment implements FileLi
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		setHasOptionsMenu(true);
 		return inflater.inflate(R.layout.file_chooser, container, false);
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		MenuItem home = menu.add(0, R.id.MENU_CHOOSER_HOME, 0, R.string.home);
+		home.setIcon(R.drawable.ic_home_dark);
+		home.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+		super.onCreateOptionsMenu(menu, inflater);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch(item.getItemId()) {
+
+			case R.id.MENU_CHOOSER_HOME:
+
+				handleHome();
+				return true;
+
+			default:
+				return super.onOptionsItemSelected(item);
+		}
 	}
 
 	@Override
@@ -144,6 +173,21 @@ public class FileChooserFragment extends BookCatalogueFragment implements FileLi
 		((PathChangedListener)getActivity()).onPathChanged(mRootPath);
 	}
 
+	private void handleHome() {
+		String homeDir = StorageUtils.getSharedStoragePath();
+		if (homeDir.isEmpty()) {
+			Toast.makeText(getActivity(), R.string.no_home_directory_found, Toast.LENGTH_LONG).show();
+			return;
+		}
+		File tmp = new File(homeDir);
+		if (!tmp.exists()) {
+			Toast.makeText(getActivity(), R.string.no_home_directory_found, Toast.LENGTH_LONG).show();
+			return;
+		}
+		mRootPath = tmp;
+		tellActivityPathChanged();
+	}
+
 	/**
 	 * Handle the 'Up' action
 	 */
@@ -153,8 +197,19 @@ public class FileChooserFragment extends BookCatalogueFragment implements FileLi
 			Toast.makeText(getActivity(), R.string.no_parent_directory_found, Toast.LENGTH_LONG).show();
 			return;
 		}
-		mRootPath = new File(parent);
-		
+		// Be a little paranoid and don't go to a parent we can't get back from
+		File tmp = new File(parent);
+		Boolean ok = tmp.exists();
+		if (ok) {
+			String[] list = tmp.list();
+			ok = list != null && list.length > 0;
+		}
+		if (!ok) {
+			Toast.makeText(getActivity(), R.string.no_parent_directory_found, Toast.LENGTH_LONG).show();
+			return;
+		}
+
+		mRootPath = tmp;
 		tellActivityPathChanged();
 	}
 

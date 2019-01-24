@@ -16,7 +16,7 @@
     <item name="TAG_GOODREADS_WORK" type="id"></item>
     <item name="TAG_GET_THUMBNAIL_TASK" type="id"></item>
 
-        <item name="MENU_DELETE_BOOK" type="id"/>
+    <item name="MENU_DELETE_BOOK" type="id"/>
     <item name="MENU_EDIT_BOOK" type="id"/>
     <item name="MENU_EDIT_BOOK_NOTES" type="id"/>
     <item name="MENU_EDIT_BOOK_FRIENDS" type="id"/>
@@ -32,5 +32,7 @@
     <item name="MENU_AMAZON_BOOKS_IN_SERIES" type="id"/>
     <item name="MENU_AMAZON_BOOKS_BY_AUTHOR" type="id"/>
     <item name="MENU_AMAZON_BOOKS_BY_AUTHOR_IN_SERIES" type="id"/>
-    
+
+    <item name="MENU_CHOOSER_HOME" type="id"/>
+
 </resources>

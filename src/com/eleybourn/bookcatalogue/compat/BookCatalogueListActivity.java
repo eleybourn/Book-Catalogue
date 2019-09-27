@@ -1,5 +1,6 @@
 package com.eleybourn.bookcatalogue.compat;
 
+import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -24,7 +25,7 @@ import com.eleybourn.bookcatalogue.R;
  *
  * @author pjw
  */
-public class BookCatalogueListActivity extends AppCompatActivity { //} SherlockListActivity {
+public abstract class BookCatalogueListActivity extends AppCompatActivity { //} SherlockListActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +69,47 @@ public class BookCatalogueListActivity extends AppCompatActivity { //} SherlockL
 	}
 
 	public void setListAdapter(ListAdapter adapter) {
-		getListView().setAdapter(adapter);
+		ListView lv = unwatchList();
+		if (lv != null) {
+			lv.setAdapter(adapter);
+			adapter.registerDataSetObserver(myListWatcher);
+		}
 	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		unwatchList();
+	}
+
+	private ListView unwatchList() {
+		ListView lv = getListView();
+		if (lv != null) {
+			ListAdapter old = lv.getAdapter();
+			if (old != null) {
+				old.unregisterDataSetObserver(myListWatcher);
+			}
+		}
+		return lv;
+	}
+
+	private DataSetObserver myListWatcher = new DataSetObserver() {
+		@Override
+		public void onChanged() {
+			super.onChanged();
+			View v = findViewById(R.id.empty);
+			if (v != null) {
+				ListView lv = getListView();
+				if (lv != null) {
+					ListAdapter a = lv.getAdapter();
+					if (a.getCount() == 0) {
+						v.setVisibility(View.VISIBLE);
+					} else {
+						v.setVisibility(View.GONE);
+					}
+				}
+			}
+		}
+	};
 
 }

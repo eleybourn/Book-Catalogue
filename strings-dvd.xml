@@ -177,8 +177,6 @@
 <string name="add">Add</string>
 <string name="noauthors">There are no directors for this DVD. Please add some using the text area and button at the top of this screen.</string>
 <string name="noseries">There are no series for this Book. You can add some using the text area and button at the top of this screen.</string>
-<item name="TAG_POSITION" type="id"></item>
-<item type="id" name="TAG_ORIGINAL_VALUE"></item>
 <string name="cover_not_set">Cover is not set</string>
 <string name="cover_corrupt">Cover is corrupt</string>
 <string name="cover_detail">Cover Detail</string>

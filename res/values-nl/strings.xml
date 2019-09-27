@@ -181,8 +181,6 @@
     <string name="add">Toevoegen</string>
     <string name="noauthors">Er zijn geen auteurs voor dit boek. Voeg er een toe met het tekstveld en de knop bovenin dit scherm.</string>
     <string name="noseries">Er zijn geen series voor dit boek. U kunt er een toevoegen met het tekstveld en de knop bovenin dit scherm.</string>
-    <item name="TAG_POSITION" type="id"></item>
-    <item name="TAG_ORIGINAL_VALUE" type="id"></item>
     <string name="cover_not_set">Omslagafbeelding niet ingesteld</string>
     <string name="cover_corrupt">Omslagafbeelding is niet geldig</string>
     <string name="cover_detail">Omslagafbeelding detail</string>
@@ -286,14 +284,6 @@
     <string name="delete_event">Verwijder gebeurtenis</string>
     <string name="delete_task">Verwijder taak</string>
 
-    <item name="TAG_EVENT" type="id"></item>
-    <item name="TAG_HOLDER" type="id"></item>
-    <item name="TAG_TASK" type="id"></item>
-    <item name="TAG_TASK_ID" type="id"></item>
-    <item name="TAG_BOOK_EVENT_HOLDER" type="id"></item>
-    <item name="TAG_TASK_HOLDER" type="id"></item>
-    <item name="TAG_PROPERTY" type="id"></item>
-    <item name="TAG_DIALOG_ITEM" type="id"></item>
     <string name="my_books">Mijn Boeken</string>
     <string name="my_books_classic">Mijn klassieke Boeken</string>
     <string name="loan_return_book">boeken bewerken, uitlenen of terugbrengen</string>
@@ -356,10 +346,6 @@
     <string name="send_all_to_goodreads_result">%1$s boeken verwerkt: %2$s met succes verzonden, %3$s zonder ISBN en %4$s met ISBN maar niet gevonden in goodreads</string>
     <string name="x_of_y">%1$s van %2$s</string>
     <string name="send_book_to_goodreads">Zend boek %1$s naar goodreads</string>
-
-    <item name="NOTIFICATION" type="id"></item>
-    <item name="TAG_GOODREADS_WORK" type="id"></item>
-    <item name="TAG_GET_THUMBNAIL_TASK" type="id"></item>
     <string name="erase_cover_cache">Wis boekomslag cache</string>
     <string name="crash_toast_text">BookCatalogue is onverwacht gecrasht. Help ons aub de toepassing beter te maken door deze crash te melden.</string>
     <string name="crash_notif_ticker_text">BookCatalogue is gecrasht</string>
@@ -396,20 +382,6 @@
     <string name="sort_author_year">Auteur en jaar</string>
     <string name="empty_with_brackets">(leeg)</string>
     <string name="navigator">Navigator</string>
-
-    <item name="MENU_DELETE_BOOK" type="id"/>
-    <item name="MENU_EDIT_BOOK" type="id"/>
-    <item name="MENU_EDIT_BOOK_NOTES" type="id"/>
-    <item name="MENU_EDIT_BOOK_FRIENDS" type="id"/>
-    <item name="MENU_SEND_BOOK_TO_GR" type="id"/>
-    <item name="MENU_EDIT_AUTHOR" type="id"/>
-    <item name="MENU_EDIT_FORMAT" type="id"/>
-    <item name="MENU_DELETE_SERIES" type="id"/>
-    <item name="MENU_EDIT_SERIES" type="id"/>
-    <item name="MENU_DELETE_STYLE" type="id"/>
-    <item name="MENU_EDIT_STYLE" type="id"/>
-    <item name="MENU_CLONE_STYLE" type="id"/>
-
     <string name="booklist_preferences">Boekenlijst Voorkeuren</string>
     <string name="extra_book_details">Extra boekdetails</string>
     <string name="general">Algemeen</string>

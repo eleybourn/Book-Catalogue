@@ -22,6 +22,7 @@ package com.eleybourn.bookcatalogue;
 
 import java.io.File;
 
+import android.Manifest.permission;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -48,6 +49,11 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * @author Philip Warner
  */
 public class AdministrationLibraryThing extends BookCatalogueActivity {
+
+	@Override
+	protected RequiredPermission[] getRequiredPermissions() {
+		return mInternetPermissions;
+	}
 
 	/**
 	 * Called when the activity is first created. 

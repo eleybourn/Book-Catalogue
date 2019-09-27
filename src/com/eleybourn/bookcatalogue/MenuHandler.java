@@ -22,10 +22,10 @@ package com.eleybourn.bookcatalogue;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.SubMenu;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.SubMenu;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
@@ -124,10 +124,11 @@ public class MenuHandler {
 			MenuItem admin = menu.add(0, MNU_ITM_ABOUT, mSort++, aboutTitle);
 			admin.setIcon(R.drawable.ic_menu_info_details);
 		}
+		if (BuildConfig.IS_DONATE_ALLOWED)
 		{
-			String aboutTitle = BookCatalogueApp.getResourceString(R.string.donate_label);
-			MenuItem admin = menu.add(0, MNU_ITM_DONATE, mSort++, aboutTitle);
-			admin.setIcon(R.drawable.ic_menu_donate);
+			String title = BookCatalogueApp.getResourceString(R.string.donate_label);
+			MenuItem donate = menu.add(0, MNU_ITM_DONATE, mSort++, title);
+			donate.setIcon(R.drawable.ic_menu_donate);
 		}
 	}
 	
@@ -146,12 +147,11 @@ public class MenuHandler {
 	 * Handle the default menu items
 	 * 
 	 * @param a				Calling activity
-	 * @param featureId		
 	 * @param item			The item selected
 	 * 
 	 * @return		True, if handled
 	 */
-	public boolean onMenuItemSelected(Activity a, int featureId, MenuItem item) {
+	public boolean onMenuItemSelected(Activity a, MenuItem item) {
 		switch(item.getItemId()) {
 		case MNU_ITM_ADD_BOOK_MANUAL:
 			createBook(a);
@@ -245,9 +245,11 @@ public class MenuHandler {
 	 * Load the Donate Activity
 	 */
 	private void donatePage(Activity a) {
-		Intent i = new Intent(BookCatalogueApp.context, AdministrationDonate.class);
-		i.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
-		a.startActivityForResult(i, UniqueId.ACTIVITY_DONATE);
+		if (BuildConfig.IS_DONATE_ALLOWED) {
+			Intent i = new Intent(BookCatalogueApp.context, AdministrationDonate.class);
+			i.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+			a.startActivityForResult(i, UniqueId.ACTIVITY_DONATE);
+		}
 	}
 	
 	/**

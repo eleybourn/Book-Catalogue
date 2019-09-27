@@ -77,7 +77,7 @@
         android:background="@drawable/main_menu_header_divider" />
     
     <com.eleybourn.bookcatalogue.widgets.FastScrollListView
-        android:id="@+id/android:list"
+        android:id="@+id/list"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/footer_divider"

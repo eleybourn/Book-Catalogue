@@ -35,4 +35,18 @@
 
     <item name="MENU_CHOOSER_HOME" type="id"/>
 
+    <item name="ACTIVITY_CREATE_BOOK_MANUALLY" type="id"/>
+    <item name="ACTIVITY_CREATE_BOOK_ISBN" type="id"/>
+    <item name="ACTIVITY_CREATE_BOOK_SCAN" type="id"/>
+    <item name="ACTIVITY_EDIT_BOOK" type="id"/>
+    <item name="ACTIVITY_ADMIN" type="id"/>
+    <item name="ACTIVITY_HELP" type="id"/>
+    <item name="ACTIVITY_PREFERENCES" type="id"/>
+    <item name="ACTIVITY_BOOKLIST_STYLE" type="id"/>
+    <item name="ACTIVITY_BOOKLIST_STYLE_PROPERTIES" type="id"/>
+    <item name="ACTIVITY_BOOKLIST_STYLE_GROUPS" type="id"/>
+    <item name="ACTIVITY_BOOKLIST_STYLES" type="id"/>
+    <item name="ACTIVITY_GOODREADS_EXPORT_FAILURES" type="id"/>
+    <item name="ACTIVITY_ADMIN_FINISH" type="id"/>
+
 </resources>

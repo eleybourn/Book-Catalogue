@@ -1,6 +1,6 @@
 package com.eleybourn.bookcatalogue.compat;
 
-import com.actionbarsherlock.app.SherlockFragment;
+import android.support.v4.app.Fragment;
 
 /**
  * Class introduced to reduce the future pain when we remove sherlock (once we no longer 
@@ -8,7 +8,7 @@ import com.actionbarsherlock.app.SherlockFragment;
  * 
  * @author pjw
  */
-public class BookCatalogueFragment extends SherlockFragment {
+public class BookCatalogueFragment extends Fragment {
 
 	/**
 	 * Utility routine to make sure this fragment's activity is a member of the passed class, and report

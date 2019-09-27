@@ -42,6 +42,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AbsListView;
@@ -60,8 +62,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import com.eleybourn.bookcatalogue.BooksMultitypeListHandler.BooklistChangeListener;
 import com.eleybourn.bookcatalogue.booklist.BooklistBuilder;
 import com.eleybourn.bookcatalogue.booklist.BooklistBuilder.BookRowInfo;
@@ -150,7 +150,12 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 	private int mTotalBooks = 0;
 	/** Total number of unique books in current list */
 	private int mUniqueBooks = 0;
-	
+
+	@Override
+	protected RequiredPermission[] getRequiredPermissions() {
+		return new RequiredPermission[0];
+	}
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		Tracker.enterOnCreate(this);
@@ -267,7 +272,7 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 	 * Support routine now that this activity is no longer a ListActivity
 	 */
 	private ListView getListView() {
-		return (ListView)findViewById(android.R.id.list);
+		return (ListView)findViewById(R.id.list);
 	}
 
 	/**
@@ -605,7 +610,7 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 	 * Display the passed cursor in the ListView, and change the position to targetRow.
 	 * 
 	 * @param newList		New cursor to use
-	 * @param targetPos		
+	 * @param targetRows
 	 */
 	private void displayList(BooklistPseudoCursor newList, final ArrayList<BookRowInfo> targetRows) {	
 		if (newList == null) {
@@ -1074,13 +1079,14 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 		
 		return super.onPrepareOptionsMenu(menu);
 	}
+
 	/**
 	 * This will be called when a menu item is selected. A large switch statement to
 	 * call the appropriate functions (or other activities) 
 	 */
 	@Override
-	public boolean onMenuItemSelected(int featureId, MenuItem item) {
-		if (mMenuHandler != null && !mMenuHandler.onMenuItemSelected(this, featureId, item)) {
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (mMenuHandler != null && !mMenuHandler.onMenuItemSelected(this, item)) {
 			switch(item.getItemId()) {
 
 			case MNU_SORT:
@@ -1149,7 +1155,7 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 			}			
 		}
 		
-		return super.onMenuItemSelected(featureId, item);
+		return super.onOptionsItemSelected(item);
 	}
 
 	/**
@@ -1355,7 +1361,8 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 	/**
 	 * Add a text box to the sort options dialogue.
 	 * 
-	 * @param sortDialog
+	 * @param parent
+	 * @param inf
 	 * @param stringId
 	 * @param listener
 	 */

@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--android:Theme.Light-->
+    <style name="AppBaseTheme" parent="Theme.AppCompat">
+    </style>
+    <style name="AppTheme" parent="AppBaseTheme">
+    </style>
 
     <!-- Style for item in preferences lists -->
     <style name="prefs_item">

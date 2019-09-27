@@ -22,6 +22,7 @@ package com.eleybourn.bookcatalogue;
 
 import java.util.LinkedHashMap;
 
+import android.Manifest.permission;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -63,6 +64,11 @@ public class UpdateFromInternet extends ActivityWithTasks {
 
 	}
 	private FieldUsages mFieldUsages = new FieldUsages();
+
+	@Override
+	protected RequiredPermission[] getRequiredPermissions() {
+		return mInternetPermissions;
+	}
 
 	/**
 	 * Called when the activity is first created. 

@@ -180,9 +180,6 @@
     <string name="noauthors">Не указаны авторы книги. Пожалуйста, добавьте автора(ов), используя текстовую область и кнопку в верхней части этого экрана.</string>
     <string name="noseries">Не указана серия книги. Вы можете добавить серию используя текстовую область в верхней части этого экрана.</string>
 
-    <item name="TAG_POSITION" type="id"></item>
-    <item name="TAG_ORIGINAL_VALUE" type="id"></item>
-
     <string name="cover_not_set">Обложка не установлена</string>
     <string name="cover_corrupt">Обложка испорчена</string>
     <string name="cover_detail">Детальная информация об обложке</string>
@@ -284,16 +281,6 @@
     <string name="visit_goodreads">Посетить GoodReads&#8230;</string>
     <string name="delete_event">Удалить событие</string>
     <string name="delete_task">Удалить задачу</string>
-
-    <item name="TAG_EVENT" type="id"></item>
-    <item name="TAG_HOLDER" type="id"></item>
-    <item name="TAG_TASK" type="id"></item>
-    <item name="TAG_TASK_ID" type="id"></item>
-    <item name="TAG_BOOK_EVENT_HOLDER" type="id"></item>
-    <item name="TAG_TASK_HOLDER" type="id"></item>
-    <item name="TAG_PROPERTY" type="id"></item>
-    <item name="TAG_DIALOG_ITEM" type="id"></item>
-
     <string name="my_books">Мои книги</string>
     <string name="my_books_classic">Мои книги (Classic)</string>
     <string name="loan_return_book">Одолжить, Вернуть или Редактировать книгу</string>
@@ -378,19 +365,6 @@
     <string name="no_publisher">(без издателя)</string>
     <string name="no_author">(без автора)</string>
     <string name="no_date">(без даты)</string>
-
-    <item name="ACTIVITY_CREATE_BOOK_MANUALLY" type="id"/>
-    <item name="ACTIVITY_CREATE_BOOK_ISBN" type="id"/>
-    <item name="ACTIVITY_CREATE_BOOK_SCAN" type="id"/>
-    <item name="ACTIVITY_EDIT_BOOK" type="id"/>
-    <item name="ACTIVITY_ADMIN" type="id"/>
-    <item name="ACTIVITY_HELP" type="id"/>
-    <item name="ACTIVITY_PREFERENCES" type="id"/>
-    <item name="ACTIVITY_BOOKLIST_STYLE" type="id"/>
-    <item name="ACTIVITY_BOOKLIST_STYLE_PROPERTIES" type="id"/>
-    <item name="ACTIVITY_BOOKLIST_STYLE_GROUPS" type="id"/>
-    <item name="ACTIVITY_BOOKLIST_STYLES" type="id"/>
-    <item name="ACTIVITY_GOODREADS_EXPORT_FAILURES" type="id"/>
 
     <string name="book_lists">Списки книг</string>
     <string name="show_all_authors">Показывать по авторам</string>
@@ -575,7 +549,6 @@
     <string name="edit_format_name">Редактировать имя формата</string>
     <string name="name_can_not_be_blank">Имя не может быть пустым</string>
 
-    <item name="ACTIVITY_ADMIN_FINISH" type="id"/>
 
     <string name="export_starting_ellipsis">Начало экспорта&#8230;</string>
     <string name="resizing_cover_thumbnails">Изменение размера миниатюр обложек</string>

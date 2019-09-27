@@ -55,7 +55,6 @@ public abstract class BindableItemListActivity extends BookCatalogueListActivity
 	 * Constructor; this will be called by the subclass to set the resource IDs.
 	 * 
 	 * @param baseViewId	Resource id of base view
-	 * @param rowViewId		Resource id of row view
 	 */
 	public BindableItemListActivity(int baseViewId) {
 		mBaseViewId = baseViewId;
@@ -96,7 +95,7 @@ public abstract class BindableItemListActivity extends BookCatalogueListActivity
 
 			setListAdapter(m_listAdapter);
 
-			ListView lv = (ListView) this.findViewById(android.R.id.list);
+			ListView lv = (ListView) this.findViewById(R.id.list);
 
 			lv.setOnItemClickListener( new OnItemClickListener() {
 				@Override

@@ -124,6 +124,11 @@ public class BooklistPreferencesActivity extends PreferencesBase {
 		mBackgroundThumbnailsProperty.setGlobal(true);
 	}
 
+	@Override
+	protected RequiredPermission[] getRequiredPermissions() {
+		return new RequiredPermission[0];
+	}
+
 	/**
 	 * Build the activity UI
 	 */

@@ -178,8 +178,6 @@
 <string name="add">Přidat</string>
 <string name="noauthors">Tato kniha nemá autora. Prosím přidejte jej prostřednictví pole v horní části obrazovky.</string>
 <string name="noseries">Pro tuto knihu není zadána žádná série. Pro její zadání můžete použít pole v horní části obrazovky.</string>
-<item name="TAG_POSITION" type="id"></item>
-<item type="id" name="TAG_ORIGINAL_VALUE"></item>
 <string name="cover_not_set">Obálka není zadána</string>
 <string name="cover_corrupt">Obálka je poškozena</string>
 <string name="cover_detail">Detail obálky</string>
@@ -277,13 +275,6 @@
 <string name="edit_bookElipsis">Upravit knihu&#8230;</string>
 <string name="retry_task">Opakovat</string>
 <string name="visit_goodreads">Navštívit GoodReads&#8230;</string>
-<item name="TAG_EVENT" type="id"></item>
-<item name="TAG_HOLDER" type="id"></item>
-<item name="TAG_TASK" type="id"></item>
-<item name="TAG_TASK_ID" type="id"></item>
-<item name="TAG_BOOK_EVENT_HOLDER" type="id"></item>
-<item name="TAG_TASK_HOLDER" type="id"></item>
-<item name="TAG_PROPERTY" type="id"></item>
 <string name="my_books">Moje knihy</string>
 <string name="my_books_classic">Moje knihy (klasik)</string>
 <string name="loan_return_book">Půjčit, vrátit nebo upravit knihu</string>
@@ -346,9 +337,6 @@
 <string name="send_all_to_goodreads_result">%1$s knih zpracováno: %2$s úspěšně odesláno, %3$s bez ISBN a %4$s s ISBN, které nebyly v Goodreads nalezeny.</string>
 <string name="x_of_y">%1$s z %2$s</string>
 <string name="send_book_to_goodreads">Poslat knihu %1$s do Goodreads</string>
-<item name="NOTIFICATION" type="id"></item>
-<item name="TAG_GOODREADS_WORK" type="id"></item>
-<item name="TAG_GET_THUMBNAIL_TASK" type="id"></item>
 <string name="erase_cover_cache">Vymazat vyrovnávací paměť pro obálky</string>
 <string name="crash_toast_text">Došlo k neočekávanému pádu aplikace BookCatalogue. Prosím pomozte nám zlepšit aplikaci a informujte nás o tomto problému.</string>
 <string name="crash_notif_ticker_text">BookCatalogue spadl</string>
@@ -385,17 +373,7 @@
 <string name="sort_author_year">Autor a rok</string>
 <string name="empty_with_brackets">(prázdné)</string>
 <string name="navigator">Navigátor</string>
-<item name="MENU_DELETE_BOOK" type="id"/>
-<item name="MENU_EDIT_BOOK" type="id"/>
-<item name="MENU_EDIT_BOOK_NOTES" type="id"/>
-<item name="MENU_EDIT_BOOK_FRIENDS" type="id"/>
-<item name="MENU_SEND_BOOK_TO_GR" type="id"/>
-<item name="MENU_EDIT_AUTHOR" type="id"/>
-<item name="MENU_DELETE_SERIES" type="id"/>
-<item name="MENU_EDIT_SERIES" type="id"/>
-<item name="MENU_DELETE_STYLE" type="id"/>
-<item name="MENU_EDIT_STYLE" type="id"/>
-<item name="MENU_CLONE_STYLE" type="id"/>
+
 <string name="booklist_preferences">Možnosti seznamu knih</string>
 <string name="extra_book_details">Podrobnosti o knize</string>
 <string name="general">Obecné</string>

@@ -27,6 +27,9 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -36,11 +39,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
-import com.eleybourn.bookcatalogue.BookCatalogue;
-import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueFragment;
 import com.eleybourn.bookcatalogue.filechooser.FileLister.FileListerListener;
@@ -53,7 +51,6 @@ import com.eleybourn.bookcatalogue.widgets.SimpleListAdapter.ViewProvider;
  * 
  * @author pjw
  *
- * @param <T>		Class for file details, used in showing list.
  */
 public class FileChooserFragment extends BookCatalogueFragment implements FileListerListener {
 	private File mRootPath;
@@ -236,10 +233,8 @@ public class FileChooserFragment extends BookCatalogueFragment implements FileLi
 		 * Pass the parameters directly to the overridden function
 		 * 
 		 * @param context
-		 * @param layout
-		 * @param cursor
-		 * @param from
-		 * @param to
+		 * @param rowViewId
+		 * @param items
 		 */
 		public DirectoryAdapter(Context context, int rowViewId, ArrayList<FileDetails> items) {
 			super(context, rowViewId, items);
@@ -283,7 +278,7 @@ public class FileChooserFragment extends BookCatalogueFragment implements FileLi
 	 * Display the list
 	 * 
 	 * @param root		Root directory
-	 * @param dirs		List of FileDetials
+	 * @param list		List of FileDetials
 	 */
 	@Override
 	public void onGotFileList(File root, ArrayList<FileDetails> list) {
@@ -294,7 +289,7 @@ public class FileChooserFragment extends BookCatalogueFragment implements FileLi
 		mList = list;
 		// We pass 0 as view ID since each item can provide the view id
 		DirectoryAdapter adapter = new DirectoryAdapter(getActivity(), 0, mList);
-		ListView lv = ((ListView) getView().findViewById(android.R.id.list));
+		ListView lv = ((ListView) getView().findViewById(R.id.list));
 		lv.setAdapter(adapter);
 	}
 

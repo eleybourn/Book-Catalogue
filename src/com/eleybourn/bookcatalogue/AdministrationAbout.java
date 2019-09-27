@@ -48,6 +48,11 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  */
 public class AdministrationAbout extends BookCatalogueActivity {
 
+	@Override
+	protected RequiredPermission[] getRequiredPermissions() {
+		return new RequiredPermission[0];
+	}
+
 	/**
 	 * Called when the activity is first created. 
 	 */

@@ -91,7 +91,8 @@
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:text="@+string/search"
-		    />	    
+		    />	    
+
         -->
 
         <View
@@ -125,7 +126,7 @@
 
     <ListView
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/android:list"
+        android:id="@+id/list"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/footer"

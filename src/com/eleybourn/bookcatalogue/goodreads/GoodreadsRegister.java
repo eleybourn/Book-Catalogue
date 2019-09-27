@@ -20,6 +20,7 @@
 
 package com.eleybourn.bookcatalogue.goodreads;
 
+import android.Manifest.permission;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -48,6 +49,11 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  *
  */
 public class GoodreadsRegister extends BookCatalogueActivity {
+
+	@Override
+	protected RequiredPermission[] getRequiredPermissions() {
+		return mInternetPermissions;
+	}
 
 	/**
 	 * Called when the activity is first created. 

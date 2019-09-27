@@ -6,10 +6,6 @@
     android:versionCode="180"
     android:versionName="5.2.3-Beta1" >
 
-    <uses-sdk
-        android:minSdkVersion="21"
-        android:targetSdkVersion="21" />
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -19,11 +15,9 @@
     <application
         android:name=".BookCatalogueApp"
         android:icon="@drawable/ic_launcher4"
-        android:label="@string/app_name" android:logo="@drawable/ic_launcher4">
-        android:theme="@style/Theme.Sherlock"
-
-
-
+        android:label="@string/app_name"
+        android:logo="@drawable/ic_launcher4"
+        android:theme="@style/AppTheme">
 
         <provider
             android:name=".SearchSuggestionProvider"
@@ -35,7 +29,7 @@
 
         <activity
             android:name=".BookCatalogueClassic"
-            android:label="@string/app_name" android:theme="@style/Theme.Sherlock">
+            android:label="@string/app_name" android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
 
@@ -50,7 +44,7 @@
         <!-- .BookCatalogue is now just a forwarder to .StartupActivity. -->
         <activity
             android:name=".BookCatalogue"
-            android:label="@string/app_name" android:theme="@style/Theme.Sherlock">
+            android:label="@string/app_name" android:theme="@style/AppTheme">
         </activity>
         <!--
             The StartupActivity activity is just a forwarder to the users chosen first screen; does not 
@@ -85,35 +79,35 @@
         -->
         <activity
             android:name=".MainMenu"
-            android:theme="@style/Theme.Sherlock" android:label="@string/app_name">
+            android:theme="@style/AppTheme" android:label="@string/app_name">
         </activity>
         <!-- android:launchMode="singleInstance" -->
-        <activity android:name=".BookEdit" android:theme="@style/Theme.Sherlock">
+        <activity android:name=".BookEdit" android:theme="@style/AppTheme">
         </activity>
         <activity
             android:name=".BookISBNSearch"
-            android:label="@string/title_isbn_search" android:theme="@style/Theme.Sherlock">
+            android:label="@string/title_isbn_search" android:theme="@style/AppTheme">
         </activity>
-        <activity android:name=".booklist.BooklistPreferencesActivity" android:theme="@style/Theme.Sherlock">
+        <activity android:name=".booklist.BooklistPreferencesActivity" android:theme="@style/AppTheme">
         </activity>
-        <activity android:name=".booklist.BooklistStyleGroupsActivity" android:theme="@style/Theme.Sherlock">
+        <activity android:name=".booklist.BooklistStyleGroupsActivity" android:theme="@style/AppTheme">
         </activity>
         <activity
             android:name=".booklist.BooklistStylePropertiesActivity"
-            android:windowSoftInputMode="stateHidden" android:theme="@style/Theme.Sherlock">
+            android:windowSoftInputMode="stateHidden" android:theme="@style/AppTheme">
         </activity>
-        <activity android:name=".booklist.BooklistStylesActivity" android:theme="@style/Theme.Sherlock">
+        <activity android:name=".booklist.BooklistStylesActivity" android:theme="@style/AppTheme">
         </activity>
         <activity
             android:name=".Bookshelf"
             android:label="@string/menu_bookshelf"
-            android:theme="@style/Theme.Sherlock" >
+            android:theme="@style/AppTheme" >
         </activity>
         <activity
             android:name=".BookshelfEdit"
-            android:label="@string/title_edit_bs" android:theme="@style/Theme.Sherlock">
+            android:label="@string/title_edit_bs" android:theme="@style/AppTheme">
         </activity>
-        <activity android:name=".BooksOnBookshelf"         android:theme="@style/Theme.Sherlock"
+        <activity android:name=".BooksOnBookshelf"         android:theme="@style/AppTheme"
             android:label="@string/my_books">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -125,17 +119,17 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
-        <activity android:name=".AdministrationAbout" android:theme="@style/Theme.Sherlock">
+        <activity android:name=".AdministrationAbout" android:theme="@style/AppTheme">
         </activity>
-        <activity android:name=".AdministrationDonate" android:theme="@style/Theme.Sherlock">
+        <activity android:name=".AdministrationDonate" android:theme="@style/AppTheme">
         </activity>
-        <activity android:name=".AdministrationFunctions" android:theme="@style/Theme.Sherlock">
+        <activity android:name=".AdministrationFunctions" android:theme="@style/AppTheme">
         </activity>
         <activity
             android:name=".goodreads.GoodreadsRegister"
-            android:launchMode="standard" android:label="@string/goodreads" android:theme="@style/Theme.Sherlock">
+            android:launchMode="standard" android:label="@string/goodreads" android:theme="@style/AppTheme">
         </activity>
-        <activity android:name=".goodreads.GoodreadsAuthorizationActivity" android:theme="@style/Theme.Sherlock" android:launchMode="singleInstance" >
+        <activity android:name=".goodreads.GoodreadsAuthorizationActivity" android:theme="@style/AppTheme" android:launchMode="singleInstance" >
 
             <!-- RELEASE: Work out which of these filters we dont need! -->
             <intent-filter>
@@ -199,6 +193,33 @@
                 </data>
             </intent-filter>
             <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" >
+                </category>
+                <category android:name="android.intent.category.BROWSABLE" >
+                </category>
+            </intent-filter>
+            <intent-filter>
+                <category android:name="android.intent.category.BROWSABLE" >
+                </category>
+                <category android:name="android.intent.category.DEFAULT" >
+                </category>
+            </intent-filter>
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" >
+                </category>
+                <category android:name="android.intent.category.DEFAULT" >
+                </category>
+                <category android:name="android.intent.category.BROWSABLE" >
+                </category>
+            </intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW" >
                 </action>
 
@@ -206,70 +227,39 @@
                 </category>
                 <category android:name="android.intent.category.BROWSABLE" >
                 </category>
-                <category android:name="android.intent.category.LAUNCHER" >
-                </category>
-            </intent-filter>
-            <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER" >
-                </category>
-                <category android:name="android.intent.category.BROWSABLE" >
-                </category>
-            </intent-filter>
-            <intent-filter>
-                <category android:name="android.intent.category.BROWSABLE" >
-                </category>
-                <category android:name="android.intent.category.DEFAULT" >
-                </category>
-            </intent-filter>
-            <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER" >
-                </category>
-                <category android:name="android.intent.category.DEFAULT" >
-                </category>
-                <category android:name="android.intent.category.BROWSABLE" >
-                </category>
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" >
-                </action>
-
-                <category android:name="android.intent.category.DEFAULT" >
-                </category>
-                <category android:name="android.intent.category.BROWSABLE" >
-                </category>
             </intent-filter>
         </activity>
-        <activity android:name=".AdministrationLibraryThing" android:label="@string/library_thing" android:theme="@style/Theme.Sherlock">
+        <activity android:name=".AdministrationLibraryThing" android:label="@string/library_thing" android:theme="@style/AppTheme">
         </activity>
-        <activity android:name=".goodreads.GoodreadsSearchCriteria" android:theme="@style/Theme.Sherlock">
+        <activity android:name=".goodreads.GoodreadsSearchCriteria" android:theme="@style/AppTheme">
         </activity>
-        <activity android:name=".goodreads.GoodreadsSearchResults" android:theme="@style/Theme.Sherlock">
+        <activity android:name=".goodreads.GoodreadsSearchResults" android:theme="@style/AppTheme">
         </activity>
-        <activity android:name=".goodreads.GoodreadsExportFailuresActivity" android:theme="@style/Theme.Sherlock">
+        <activity android:name=".goodreads.GoodreadsExportFailuresActivity" android:theme="@style/AppTheme">
         </activity>
         <activity android:name=".SearchCatalogue" >
         </activity>
-        <activity android:name=".TaskListActivity" android:theme="@style/Theme.Sherlock">
+        <activity android:name=".TaskListActivity" android:theme="@style/AppTheme">
         </activity>
-        <activity android:name=".Help" android:theme="@style/Theme.Sherlock">
+        <activity android:name=".Help" android:theme="@style/AppTheme">
         </activity>
-        <activity android:name=".FieldVisibility" android:label="@string/menu_manage_fields" android:theme="@style/Theme.Sherlock">
+        <activity android:name=".FieldVisibility" android:label="@string/menu_manage_fields" android:theme="@style/AppTheme">
         </activity>
-        <activity android:name=".OtherPreferences" android:theme="@style/Theme.Sherlock">
+        <activity android:name=".OtherPreferences" android:theme="@style/AppTheme">
         </activity>
         <activity android:name=".BookEditAnthology" >
         </activity>
-        <activity android:name=".EditAuthorList" android:theme="@style/Theme.Sherlock">
+        <activity android:name=".EditAuthorList" android:theme="@style/AppTheme">
         </activity>
-        <activity android:name=".EditSeriesList" android:theme="@style/Theme.Sherlock">
+        <activity android:name=".EditSeriesList" android:theme="@style/AppTheme">
         </activity>
-        <activity android:name=".UpdateFromInternet" android:label="@string/update_fields" android:theme="@style/Theme.Sherlock">
+        <activity android:name=".UpdateFromInternet" android:label="@string/update_fields" android:theme="@style/AppTheme">
         </activity>
-        <activity android:name=".cropper.CropCropImage" android:theme="@style/Theme.Sherlock">
+        <activity android:name=".cropper.CropCropImage" android:theme="@style/AppTheme">
         </activity>
-        <activity android:name=".cropper.CropMonitoredActivityActivity" android:theme="@style/Theme.Sherlock">
+        <activity android:name=".cropper.CropMonitoredActivity" android:theme="@style/AppTheme">
         </activity>
-        <activity android:name="com.eleybourn.bookcatalogue.filechooser.BackupChooser" android:theme="@style/Theme.Sherlock">
+        <activity android:name="com.eleybourn.bookcatalogue.filechooser.BackupChooser" android:theme="@style/AppTheme">
         </activity>
         </application>
 

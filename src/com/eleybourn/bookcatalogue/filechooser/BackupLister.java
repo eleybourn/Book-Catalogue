@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
+import com.eleybourn.bookcatalogue.backup.BackupInfo;
 import com.eleybourn.bookcatalogue.backup.BackupManager;
 import com.eleybourn.bookcatalogue.backup.BackupReader;
 import com.eleybourn.bookcatalogue.filechooser.FileChooserFragment.FileDetails;
@@ -65,7 +66,7 @@ public class BackupLister extends FileLister {
 					} catch (IOException e) {
 						Logger.logError(e);
 						if (reader != null)
-							try { reader.close(); } catch (IOException e1) { }
+							try { reader.close(); } catch (Exception e1) { }
 					}
 				}
 			}

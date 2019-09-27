@@ -38,11 +38,12 @@
 			android:fillViewport="true" 
 			android:layout_below="@id/header"
 			android:layout_above="@id/footer"
-			>
+			>
+
     -->
 
     <ListView
-        android:id="@+id/android:list"
+        android:id="@+id/list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_above="@id/footer"

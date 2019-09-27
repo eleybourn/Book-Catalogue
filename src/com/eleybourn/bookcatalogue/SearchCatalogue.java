@@ -60,6 +60,11 @@ public class SearchCatalogue extends BookCatalogueActivity {
 	Handler m_handler = new Handler();
 
 	@Override
+	protected RequiredPermission[] getRequiredPermissions() {
+		return new RequiredPermission[0];
+	}
+
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 

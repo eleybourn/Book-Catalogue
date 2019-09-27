@@ -46,6 +46,11 @@ public class Help extends BookCatalogueActivity {
 	public Resources res;
 	private CatalogueDBAdapter mDbHelper;
 
+	@Override
+	protected RequiredPermission[] getRequiredPermissions() {
+		return new RequiredPermission[0];
+	}
+
 	/**
 	 * Called when the activity is first created. 
 	 */

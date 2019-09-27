@@ -76,6 +76,7 @@ import android.graphics.drawable.LayerDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -88,7 +89,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockFragment;
 import com.eleybourn.bookcatalogue.Author;
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
@@ -229,8 +229,8 @@ public class Utils {
 				d = sdf.parse(s);
 				return d;
 			} catch (Exception e) {
-				// Ignore 
-			}			
+				// Ignore
+			}
 		}
 		// All SDFs failed, try locale-specific...
 		try {
@@ -240,7 +240,7 @@ public class Utils {
 			return d;
 		} catch (Exception e) {
 			// Ignore 
-		}			
+		}
 		return null;
 	}
 
@@ -309,7 +309,7 @@ public class Utils {
 	 * 
 	 * This is used to build text lists separated by 'delim'.
 	 * 
-	 * @param s		String to convert
+	 * @param sa	String array to convert
 	 * @return		Converted string
 	 */
 	static String encodeList(ArrayList<String> sa, char delim) {
@@ -346,7 +346,7 @@ public class Utils {
 		 * 
 		 * This is used to build text lists separated by 'delim'.
 		 * 
-		 * @param s		String to convert
+		 * @param sa	String array to convert
 		 * @return		Converted string
 		 */
 		public String encodeList(ArrayList<T> sa, char delim) {
@@ -1301,7 +1301,7 @@ public class Utils {
 	 * @param maxWidth			Max width of resulting image
 	 * @param maxHeight			Max height of resulting image
 	 * @param exact				Whether to fit dimensions exactly
-	 * @param bookId			ID of book to retrieve.
+	 * @param hash				ID of book to retrieve.
 	 * @param checkCache		Indicates if cache should be checked for this cover
 	 * @param allowBackground	Indicates if request can be put in background task.
 	 * 
@@ -1387,7 +1387,7 @@ public class Utils {
 		
 		// Note that inSampleSize seems to ALWAYS be forced to a power of 2, no matter what we
 		// specify, so we just work with powers of 2.
-		int idealSampleSize = (int)android.util.FloatMath.ceil(1/ratio); // This is the sample size we want to use
+		int idealSampleSize = (int)Math.ceil(1/ratio); // This is the sample size we want to use
 		// Get the nearest *bigger* power of 2.
 		int samplePow2 = (int)Math.pow(2, Math.ceil(Math.log(idealSampleSize)/Math.log(2)));
 		
@@ -1600,7 +1600,7 @@ public class Utils {
 		initBackground(bgResource, a.findViewById(R.id.root), bright);
 	}
 
-    public static void initBackground(int bgResource, SherlockFragment f, boolean bright) {
+    public static void initBackground(int bgResource, Fragment f, boolean bright) {
 		initBackground(bgResource, f.getView().findViewById(R.id.root), bright);
 	}
 
@@ -1650,7 +1650,6 @@ public class Utils {
 	 * 
 	 * The main problem with this approach is that the style is defined in code rather than XML.
 	 *
-	 * @param a			Activity context
 	 * @param bright	Flag indicating if background should be 'bright'
 	 * 
 	 * @return			Background Drawable
@@ -1949,7 +1948,6 @@ public class Utils {
 	 * 
 	 * @param dialog		Dialog to set
 	 * @param current		Current value (may be null)
-	 * @param listener		Listener to be called on dialg completion.
 	 */
 	public static void prepareDateDialogFragment(PartialDatePickerFragment dialog, Object current) {
 		String dateString = current == null ? "" : current.toString();
@@ -1987,7 +1985,7 @@ public class Utils {
 	/**
 	 * Utility routine to get an author list from the intent extras
 	 * 
-	 * @param i		Intent with author list
+	 * @param b		Bundle to read
 	 * @return		List of authors
 	 */
 	@SuppressWarnings("unchecked")
@@ -1998,7 +1996,7 @@ public class Utils {
 	/**
 	 * Utility routine to get a series list from the intent extras
 	 * 
-	 * @param i		Intent with series list
+	 * @param b		Bundle with series list
 	 * @return		List of series
 	 */
 	@SuppressWarnings("unchecked")

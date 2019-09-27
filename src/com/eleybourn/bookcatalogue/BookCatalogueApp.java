@@ -23,6 +23,7 @@ package com.eleybourn.bookcatalogue;
 import android.app.Activity;
 import android.app.Application;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -32,6 +33,8 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
+import android.os.Build.VERSION;
+import android.support.v4.app.NotificationCompat.Builder;
 
 import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
 import com.eleybourn.bookcatalogue.utils.Logger;
@@ -501,6 +504,9 @@ public class BookCatalogueApp extends Application {
 		a.startActivity(i);
 	}
 
+	private static String NOTIFICATION_CHANNEL_NAME = "Basic Notifications";
+	private static NotificationChannel mNoticiationChannel = null;
+
 	/**
      * Show a notification while this app is running.
 	 * 
@@ -511,17 +517,31 @@ public class BookCatalogueApp extends Application {
         // In this sample, we'll use the same text for the ticker and the expanded notification
         CharSequence text = message; //getText(R.string.local_service_started);
 
-        // Set the icon, scrolling text and timestamp
-        Notification notification = new Notification(R.drawable.ic_stat_logo, text, System.currentTimeMillis());
+		Builder nb = new Builder(context)
+				.setSmallIcon(R.drawable.ic_stat_logo)
+				//.setSubText(Utils.toDurationDHMS(mLastRecordMillis))
+				.setContentText(message)
+				.setContentTitle(title)
+				//.setContentTitle(getString(R.string.tracking_active))
+				;
+		if (VERSION.SDK_INT >= 26) {
+			if (mNoticiationChannel == null) {
+				mNoticiationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_NAME, "Basic", NotificationManager.IMPORTANCE_LOW);
+			}
+			nb.setChannelId(NOTIFICATION_CHANNEL_NAME);
+		}
+
+		// Set the icon, scrolling text and timestamp
+        Notification notification = nb.build(); //new Notification(R.drawable.ic_stat_logo, text, System.currentTimeMillis());
         // Auto-cancel the notification
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
         // The PendingIntent to launch our activity if the user selects this notification
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, i, 0);
 
-        // Set the info for the views that show in the notification panel.
-        notification.setLatestEventInfo(context, title, //getText(R.string.local_service_label),
-                       text, contentIntent);
+		//// Set the info for the views that show in the notification panel.
+		//notification.setLatestEventInfo(context, title, //getText(R.string.local_service_label),
+		//			   text, contentIntent);
 
         // Send the notification.
         mNotifier.notify(id, notification);

@@ -91,6 +91,11 @@ public class CropCropImage extends CropMonitoredActivity {
 	private String mImagePath;
 
 	@Override
+	protected RequiredPermission[] getRequiredPermissions() {
+		return new RequiredPermission[0];
+	}
+
+	@Override
 	public void onCreate(Bundle icicle) {
 		// Do this first to avoid 'must be first errors'
 		requestWindowFeature(Window.FEATURE_NO_TITLE);

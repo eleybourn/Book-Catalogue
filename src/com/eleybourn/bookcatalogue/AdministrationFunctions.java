@@ -65,6 +65,11 @@ public class AdministrationFunctions extends ActivityWithTasks {
 
 	public static final String DOAUTO = "do_auto";
 
+	@Override
+	protected RequiredPermission[] getRequiredPermissions() {
+		return new RequiredPermission[0];
+	}
+
 	/**
 	 * Called when the activity is first created. 
 	 */

@@ -186,6 +186,11 @@ public class OtherPreferences extends PreferencesBase {
 	}
 
 	@Override
+	protected RequiredPermission[] getRequiredPermissions() {
+		return new RequiredPermission[0];
+	}
+
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// Make sure the names are correct

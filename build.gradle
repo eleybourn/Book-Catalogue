@@ -7,30 +7,35 @@ if(project.hasProperty("BookCatalogue.signing")
 
 buildscript {
     repositories {
+        google()
         jcenter()
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:3.4.1'
     }
 }
 
 allprojects {
     repositories {
+        google()
+        jcenter()
         mavenCentral()
     }
 }
 
 dependencies {
-    compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
-    compile 'com.android.support:support-v4:21.0.0+'
+    implementation 'com.android.support:support-v4:28.0.0'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+//    implementation "com.android.support:support-core-utils:28.0.3"
+//    implementation "com.android.support:android.support.v7.app.ActionBar:28.0.0"
     // Compile all libraries from 'libs' folder
-    compile fileTree(include: '*.jar', dir: 'libs')
+    implementation fileTree(include: '*.jar', dir: 'libs')
 }
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion '25.0.2'
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
     lintOptions {
         disable 'MissingTranslation'
     }
@@ -58,6 +63,28 @@ android {
             renderscript.srcDirs = ['src']
             res.srcDirs = ['res']
             assets.srcDirs = ['assets']
+        }
+    }
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 26
+    }
+
+    flavorDimensions "distributor"
+    productFlavors {
+        distPlay {
+            // Assigns this product flavor to the "distributor" flavor dimension.
+            // This property is optional if you are using only one dimension.
+            dimension "distributor"
+//            applicationIdSuffix ".demo"
+            versionNameSuffix "-distplay"
+            buildConfigField 'boolean', 'IS_DONATE_ALLOWED', 'false'
+        }
+        distOther {
+            dimension "distributor"
+//            applicationIdSuffix ".full"
+            versionNameSuffix "-distoth"
+            buildConfigField 'boolean', 'IS_DONATE_ALLOWED', 'true'
         }
     }
 }

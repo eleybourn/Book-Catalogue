@@ -35,7 +35,12 @@ public class BookshelfEdit extends BookCatalogueActivity {
 	private Button mCancelButton;
 	private Long mRowId;
 	private CatalogueDBAdapter mDbHelper;
-	
+
+	@Override
+	protected RequiredPermission[] getRequiredPermissions() {
+		return new RequiredPermission[0];
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		try {

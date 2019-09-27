@@ -21,10 +21,13 @@
 package com.eleybourn.bookcatalogue.goodreads;
 
 import net.philipwarner.taskqueue.QueueManager;
+
+import android.Manifest.permission;
 import android.content.Intent;
 import android.os.Bundle;
 
 import com.eleybourn.bookcatalogue.BcQueueManager;
+import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.StartupActivity;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 
@@ -38,6 +41,12 @@ import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
  * @author Philip Warner
  */
 public class GoodreadsAuthorizationActivity extends BookCatalogueActivity {
+
+	@Override
+	protected RequiredPermission[] getRequiredPermissions() {
+		return mInternetPermissions;
+	}
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

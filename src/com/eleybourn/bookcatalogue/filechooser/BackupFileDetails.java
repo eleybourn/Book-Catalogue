@@ -16,6 +16,7 @@ import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.backup.BackupInfo;
 import com.eleybourn.bookcatalogue.filechooser.FileChooserFragment.FileDetails;
+import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
@@ -77,7 +78,7 @@ public class BackupFileDetails implements FileDetails {
 		TextView date = (TextView)target.findViewById(R.id.date);
 		ImageView image = (ImageView)target.findViewById(R.id.icon);
 		TextView details = (TextView)target.findViewById(R.id.details);
-		
+
 		// For directories, hide the extra data
 		if (mFile.isDirectory()) {
 			date.setVisibility(View.GONE);
@@ -98,7 +99,7 @@ public class BackupFileDetails implements FileDetails {
 				} else {
 					s = books;
 				}
-				details.setText(s);	
+				details.setText(s);
 				date.setText(Utils.formatFileSize(mFile.length()) + ",  " + DateFormat.getDateTimeInstance().format(mInfo.getCreateDate()));
 			} else {
 				date.setText(Utils.formatFileSize(mFile.length()) + ",  " + DateFormat.getDateTimeInstance().format(new Date(mFile.lastModified())));

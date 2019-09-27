@@ -19,6 +19,7 @@
  */
 package com.eleybourn.bookcatalogue.dialogs;
 
+import java.text.DateFormatSymbols;
 import java.util.Calendar;
 
 import android.app.AlertDialog;
@@ -87,7 +88,6 @@ public class PartialDatePicker extends AlertDialog {
 	 * Constructor
 	 * 
 	 * @param context		Calling context
-	 * @param listener		Listener for dialog events
 	 */
 	protected PartialDatePicker(Context context) {
 		this(context, null, null, null);
@@ -97,7 +97,6 @@ public class PartialDatePicker extends AlertDialog {
 	 * Constructor
 	 * 
 	 * @param context		Calling context
-	 * @param listener		Listener for dialog events
 	 * @param year			Starting year
 	 * @param month			Starting month
 	 * @param day			Starting day
@@ -479,6 +478,10 @@ public class PartialDatePicker extends AlertDialog {
 		}
 	}
 
+	private static final char DATE_FORMAT_YEAR = 'y';
+	private static final char DATE_FORMAT_MONTH = 'M';
+	private static final char DATE_FORMAT_DAY = 'd';
+
 	/**
 	 * Reorder the views in the dialog to suit the curret locale.
 	 * 
@@ -495,11 +498,11 @@ public class PartialDatePicker extends AlertDialog {
         } catch(Exception e) {
         	return;
         }
-         
+
         /* Default order is {year, month, date} so if that's the order then
          * do nothing.
          */
-        if ((order[0] == DateFormat.YEAR) && (order[1] == DateFormat.MONTH)) {
+        if ((order[0] == DATE_FORMAT_DAY) && (order[1] == DATE_FORMAT_MONTH)) {
             return;
         }
         
@@ -515,9 +518,9 @@ public class PartialDatePicker extends AlertDialog {
         parent.removeAllViews();
         // Re-add in the correct order.
         for (char c : order) {
-            if (c == DateFormat.DATE) {
+            if (c == DATE_FORMAT_DAY) {
                 parent.addView(d);
-            } else if (c == DateFormat.MONTH) {
+            } else if (c == DATE_FORMAT_MONTH) {
                 parent.addView(m);
             } else {
                 parent.addView (y);

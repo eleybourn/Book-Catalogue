@@ -37,6 +37,8 @@ import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -51,8 +53,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter.AnthologyTitleExistsException;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
@@ -194,7 +194,7 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
 	}
 	
 	private ListView getListView() {
-		return (ListView) getView().findViewById(android.R.id.list);
+		return (ListView) getView().findViewById(R.id.list);
 	}
 
 	public class AnthologyTitleListAdapter extends SimpleListAdapter<AnthologyTitle> {
@@ -205,10 +205,8 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
 		 * Pass the parameters directly to the overridden function
 		 * 
 		 * @param context
-		 * @param layout
-		 * @param cursor
-		 * @param from
-		 * @param to
+		 * @param rowViewId
+		 * @param items
 		 */
 		public AnthologyTitleListAdapter(Context context, int rowViewId, ArrayList<AnthologyTitle> items) {
 			super(context, rowViewId, items);

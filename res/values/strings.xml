@@ -1121,6 +1121,30 @@ and you can edit the book via the options menu using the menu button or overflow
 
 
     <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->
+
+    <!-- Dialog title -->
+    <string name="perm_required">Permission Required</string>
+    <!-- Explanatory text -->
+    <string name="perm_intro">In order to continue, Book Catalogue needs access to the following privileges:\n\n</string>
+
+    <!-- Explanatory text -->
+    <string name="perm_read_ext">This is required to import images captured by the camera,
+                                to restore backups and exports, to read cover thumbnails
+                                and to read information for debugging and recovery.</string>
+
+    <!-- Explanatory text -->
+    <string name="perm_write_ext">This is required to save images captured by the camera,
+                                to restore backups and exports, to create cover thumbnails
+                                and to save information for debugging and recovery.</string>
+
+    <!-- Explanatory text -->
+    <string name="perm_internet">This is required to find details of books and grant access
+                                to services such as goodreads and LibraryThing.</string>
+
+    <!-- Explanatory text -->
+    <string name="perm_network_state">This is required to check if network is available when internet access is
+                                required (eg. when a search is requested).</string>
+
     <!-- End: Added/Updated in [Next Version] -->
 
 </resources>

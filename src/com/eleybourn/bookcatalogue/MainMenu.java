@@ -52,6 +52,11 @@ import com.eleybourn.bookcatalogue.utils.Utils;
 public class MainMenu extends BookCatalogueActivity {
 
 	@Override
+	protected RequiredPermission[] getRequiredPermissions() {
+		return new RequiredPermission[0];
+	}
+
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
@@ -92,7 +97,11 @@ public class MainMenu extends BookCatalogueActivity {
 		setOnClickListener(R.id.administration_label, mAdminHandler);
 		setOnClickListener(R.id.about_label, mAboutHandler);
 		setOnClickListener(R.id.help_label, mHelpHandler);
-		setOnClickListener(R.id.donate_label, mDonateHandler);
+		if (BuildConfig.IS_DONATE_ALLOWED) {
+			setOnClickListener(R.id.donate_label, mDonateHandler);
+		} else {
+			findViewById(R.id.donate_label).setVisibility(View.GONE);
+		}
 		// Goodreads will be shown/hidden in onResume()
 		setOnClickListener(R.id.goodreads_label, mGoodreadsHandler);
 		

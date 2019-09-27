@@ -56,16 +56,17 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_above="@id/add_author"
+        android:orientation="horizontal"
         android:layout_below="@id/same_author" >
 
         <ListView
-            android:id="@+id/android:list"
+            android:id="@+id/list"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/android:empty"
+            android:id="@+id/empty"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:textSize="16sp" />

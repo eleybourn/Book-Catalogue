@@ -33,16 +33,16 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBar.Tab;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.ActionBar.Tab;
-import com.actionbarsherlock.view.MenuItem;
 import com.eleybourn.bookcatalogue.booklist.BooklistBuilder;
 import com.eleybourn.bookcatalogue.booklist.FlattenedBooklist;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
@@ -108,6 +108,11 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 
 	private Button mConfirmButton;
 	private Button mCancelButton;
+
+	@Override
+	protected RequiredPermission[] getRequiredPermissions() {
+		return new RequiredPermission[0];
+	}
 
 	public void onCreate(Bundle savedInstanceState) {
 		Tracker.enterOnCreate(this);
@@ -492,15 +497,12 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 
 	/**
 	 * Initialize a TabSpec according to defined parameters and add it to the
-	 * TabHost.
-	 * 
-	 * @param tabHost
-	 *            parent TabHost
-	 * @param intentClass
-	 *            class for specifying intent. It`s the Activity class contained
-	 *            in this tab.
-	 * @param tabTag
-	 *            required tag of tab
+	 * Action Bare.
+	 *
+	 * @param actionBar
+	 *            parent Action Bar
+	 * @param listener
+
 	 * @param titleResId
 	 *            resource id of a title of the tab
 	 * @param iconResId
@@ -508,6 +510,9 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 	 * @param extras
 	 *            extras for putting in the intent. If extras is null they will
 	 *            not be added.
+	 *
+	 * @param <T>
+	 * @return
 	 */
 	private <T extends BookCatalogueFragment> Tab initTab(ActionBar actionBar, TabListener<T> listener, int titleResId, int iconResId,
 			Bundle extras) {
@@ -679,9 +684,6 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 	/**
 	 * Validate the current data in all fields that have validators. Display any
 	 * errors.
-	 * 
-	 * @param values
-	 *            The values to use
 	 * 
 	 * @return Boolean success or failure.
 	 */
@@ -863,8 +865,6 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 	/**
 	 * Sets title of the parent activity in the next format:<br>
 	 * <i>"title"</i>
-	 * 
-	 * @param title
 	 */
 	private void setActivityTitle() {
 		ActionBar bar = this.getSupportActionBar();

@@ -6,16 +6,14 @@
     </style>
 
     <style name="DialogDividerTheme">
-        <item name="android:layout_height">1dip</item>         <item name="android:background">#c0c0c0</item>
+        <item name="android:layout_height">1dip</item>
+         <item name="android:background">#c0c0c0</item>
         <!--
             <item name="android:scaleType">fitXY</item>
             <item name="android:gravity">fill_horizontal</item>
-            <item name="android:src">@android:drawable/dialog_divider_horizontal_light</item>
-        -->
-    </style>
+            <item name="android:src">@android:drawable/dialog_divider_horizontal_light</item>
 
-    <style name="BcTheme" parent="@style/Theme.Sherlock">
-        <!-- Any customizations for your app running on pre-3.0 devices here -->
+        -->
     </style>
 
     <style name="dataEntryButtonStyle">

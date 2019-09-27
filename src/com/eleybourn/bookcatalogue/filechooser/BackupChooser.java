@@ -59,6 +59,11 @@ public class BackupChooser extends FileChooser implements OnMessageDialogResultL
 	private static final int TASK_ID_OPEN = 2;
 	private static final int DIALOG_OPEN_IMPORT_TYPE = 1;
 
+	@Override
+	protected RequiredPermission[] getRequiredPermissions() {
+		return new RequiredPermission[0];
+	}
+
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 

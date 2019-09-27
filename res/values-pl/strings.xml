@@ -179,8 +179,6 @@ Jeśli przerwiesz, możesz ponownie wywołać tę funkcję w opcjach administrac
 <string name="add">Dodaj</string>
 <string name="noauthors">Brak autora(ów) tej ksiażki. Dodaj autora używając pola tekstowego na górze.</string>
 <string name="noseries">Brak serii dla tej ksiażki. Dodaj serię używając pola tekstowego na górze.</string>
-<item name="TAG_POSITION" type="id"></item>
-<item type="id" name="TAG_ORIGINAL_VALUE"></item>
 <string name="cover_not_set">Okładka nie jest ustawiona</string>
 <string name="cover_corrupt">Okładka jest uszkodzona</string>
 <string name="cover_detail">Szczegóły okładki</string>

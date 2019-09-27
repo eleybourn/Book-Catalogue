@@ -20,7 +20,13 @@ import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
  */
 public class BookCatalogue extends BookCatalogueActivity {
 
+	@Override
+	protected RequiredPermission[] getRequiredPermissions() {
+		return new RequiredPermission[0];
+	}
+
 	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		Intent i = new Intent(this, StartupActivity.class);
 		startActivity(i);
 		finish();

@@ -18,7 +18,6 @@
             android:id="@+id/bookshelf_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/bookshelf_label"
             android:background="@android:color/transparent"
             android:paddingBottom="2dp" />
 
@@ -32,7 +31,8 @@
 
         <!--
 			android:layout_toRightOf="@+id/bookshelf_name"
-			android:layout_toLeftOf="@+id/bookshelf_down"        -->
+			android:layout_toLeftOf="@+id/bookshelf_down"
+        -->
 
         <TextView
             android:id="@+id/search_text"
@@ -94,14 +94,14 @@
         android:layout_below="@id/header_divider" >
 
         <com.eleybourn.bookcatalogue.widgets.FastScrollListView
-            android:id="@+id/android:list"
+            android:id="@+id/list"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:cacheColorHint="#00000000"
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/android:empty"
+            android:id="@+id/empty"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/nobooks"

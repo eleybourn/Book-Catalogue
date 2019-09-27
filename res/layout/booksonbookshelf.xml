@@ -31,7 +31,8 @@
 
         <!--
 			android:layout_toRightOf="@+id/bookshelf_name"
-			android:layout_toLeftOf="@+id/bookshelf_down"        -->
+			android:layout_toLeftOf="@+id/bookshelf_down"
+        -->
 
         <TextView
             android:id="@+id/search_text"
@@ -89,10 +90,11 @@
         <!-- android:cacheColorHint="#00000000" - but only if using a nice BG -->
         <!--
               Name space added below in response to 
-					http://stackoverflow.com/questions/1691569        -->
+					http://stackoverflow.com/questions/1691569
+        -->
 
         <com.eleybourn.bookcatalogue.widgets.FastScrollListView
-            android:id="@+id/android:list"
+            android:id="@+id/list"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:background="#FF202020"
@@ -100,7 +102,7 @@
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/android:empty"
+            android:id="@+id/empty"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/nobooks"

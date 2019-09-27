@@ -20,6 +20,7 @@
 
 package com.eleybourn.bookcatalogue.goodreads;
 
+import android.Manifest.permission;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -48,6 +49,11 @@ public class GoodreadsSearchCriteria extends BookCatalogueActivity {
 
 	private CatalogueDBAdapter mDbHelper;
 	private long mBookId = 0;
+
+	@Override
+	protected RequiredPermission[] getRequiredPermissions() {
+		return mInternetPermissions;
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

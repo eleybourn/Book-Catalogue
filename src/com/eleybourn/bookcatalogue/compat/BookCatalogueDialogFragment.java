@@ -1,6 +1,6 @@
 package com.eleybourn.bookcatalogue.compat;
 
-import com.actionbarsherlock.app.SherlockDialogFragment;
+import android.support.v4.app.DialogFragment;
 
 /**
  * Class introduced to reduce the future pain when we remove sherlock (once we no longer 
@@ -8,6 +8,6 @@ import com.actionbarsherlock.app.SherlockDialogFragment;
  * 
  * @author pjw
  */
-public class BookCatalogueDialogFragment extends SherlockDialogFragment {
+public class BookCatalogueDialogFragment extends DialogFragment {
 
 }

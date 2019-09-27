@@ -65,6 +65,11 @@ public class BooklistStylePropertiesActivity extends BookCatalogueActivity {
 	private Properties mProperties;
 
 	@Override
+	protected RequiredPermission[] getRequiredPermissions() {
+		return new RequiredPermission[0];
+	}
+
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 

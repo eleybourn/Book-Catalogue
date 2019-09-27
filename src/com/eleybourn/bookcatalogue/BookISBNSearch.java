@@ -24,6 +24,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import android.Manifest.permission;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
@@ -107,6 +108,11 @@ public class BookISBNSearch extends ActivityWithTasks {
 
 	// A list of author names we have already searched for in this session
 	ArrayList<String> mAuthorNames = new ArrayList<String>();
+
+	@Override
+	protected RequiredPermission[] getRequiredPermissions() {
+		return mInternetPermissions;
+	}
 
 	/**
 	 * Called when the activity is first created. This function will search the interwebs for

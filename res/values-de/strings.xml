@@ -177,8 +177,6 @@
 <string name="add">Hinzufügen</string>
 <string name="noauthors">Es wurde kein Autor für dieses Buch eingetragen. Bitte fügen Sie einen Autor über das Textfeld und den Knopf oben auf diesem Bildschirm hinzu.</string>
 <string name="noseries">Es besteht keine Serie für dieses Buch. Sie können eine Serie über das Textfeld und den Knopf oben auf dieser Seite hinzufügen.</string>
-<item name="TAG_POSITION" type="id"></item>
-<item type="id" name="TAG_ORIGINAL_VALUE"></item>
 <string name="cover_not_set">Das Cover wurde nicht gesetzt</string>
 <string name="cover_corrupt">Das Cover ist unbrauchbar</string>
 <string name="cover_detail">Coverdetails</string>
@@ -278,14 +276,7 @@
 <string name="visit_goodreads">GoodReads besuchen…</string>
 <string name="delete_event">Ereignis löschen</string>
 <string name="delete_task">Aufgabe löschen</string>
-<item name="TAG_EVENT" type="id"></item>
-<item name="TAG_HOLDER" type="id"></item>
-<item name="TAG_TASK" type="id"></item>
-<item name="TAG_TASK_ID" type="id"></item>
-<item name="TAG_BOOK_EVENT_HOLDER" type="id"></item>
-<item name="TAG_TASK_HOLDER" type="id"></item>
-<item name="TAG_PROPERTY" type="id"></item>
-<item name="TAG_DIALOG_ITEM" type="id"></item>
+
 <string name="my_books">Meine Bücher</string>
 <string name="my_books_classic">Meine Bücher (Klassisch)</string>
 <string name="loan_return_book">Buch verleihen, zurückgeben oder bearbeiten</string>
@@ -349,9 +340,7 @@ anschließend auf eine leeren Seite landen. Klicken Sie einfach auf den "Zurück
 <string name="send_all_to_goodreads_result">%1$s Bücher verarbeitet: %2$s erfolgreich übertragen, %3$s ohne ISBN und %4$s mit einer in Goodreads nicht auffindbaren ISBN</string>
 <string name="x_of_y">%1$s von %2$s</string>
 <string name="send_book_to_goodreads">Buch %1$s an Goodreads senden</string>
-<item name="NOTIFICATION" type="id"></item>
-<item name="TAG_GOODREADS_WORK" type="id"></item>
-<item name="TAG_GET_THUMBNAIL_TASK" type="id"></item>
+
 <string name="erase_cover_cache">Zwischenspeicher für Cover-Bilder löschen</string>
 <string name="crash_toast_text">BookCatalogue ist abgestürzt. Bitte helfen Sie uns bei der Verbesserung der App, indem Sie diesen Absturz melden.</string>
 <string name="crash_notif_ticker_text">BookCatalogue ist abgestürzt</string>
@@ -388,18 +377,6 @@ anschließend auf eine leeren Seite landen. Klicken Sie einfach auf den "Zurück
 <string name="sort_author_year">Autor und Jahr</string>
 <string name="empty_with_brackets">(leer)</string>
 <string name="navigator">Navigator</string>
-<item name="MENU_DELETE_BOOK" type="id" />
-<item name="MENU_EDIT_BOOK" type="id" />
-<item name="MENU_EDIT_BOOK_NOTES" type="id" />
-<item name="MENU_EDIT_BOOK_FRIENDS" type="id" />
-<item name="MENU_SEND_BOOK_TO_GR" type="id" />
-<item name="MENU_EDIT_AUTHOR" type="id" />
-<item name="MENU_EDIT_FORMAT" type="id" />
-<item name="MENU_DELETE_SERIES" type="id" />
-<item name="MENU_EDIT_SERIES" type="id" />
-<item name="MENU_DELETE_STYLE" type="id" />
-<item name="MENU_EDIT_STYLE" type="id" />
-<item name="MENU_CLONE_STYLE" type="id" />
 <string name="booklist_preferences">Einstellungen der Bücherliste</string>
 <string name="extra_book_details">Zusätzliche Buchdetails</string>
 <string name="general">Allgemein</string>

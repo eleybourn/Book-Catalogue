@@ -67,7 +67,7 @@ android {
     }
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 26
+        targetSdkVersion 28
     }
 
     flavorDimensions "distributor"

@@ -229,6 +229,11 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 								mList.moveToPosition(position);
 								int id = ((SimpleDialogMenuItem)item).getItemId();
 								mListHandler.onContextItemSelected(mDb, mList.getRowView(), BooksOnBookshelf.this, mDb, id);
+
+								// If data changed, we need to update display
+								if(id==R.id.MENU_MARK_AS_UNREAD || id==R.id.MENU_MARK_AS_READ) {
+									setupList(true);
+								}
 							}});
 					}
 					return true;

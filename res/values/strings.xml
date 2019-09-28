@@ -1077,6 +1077,7 @@ and you can edit the book via the options menu using the menu button or overflow
 
     <!-- End: Added/Updated in 5.2.0 -->
 
+<<<<<<< HEAD
     <!-- Begin: Added/Updated in 5.2.1 -->
     <string name="hint_tempus_locum">
 	    		<![CDATA[
@@ -1117,10 +1118,6 @@ and you can edit the book via the options menu using the menu button or overflow
 			</p>
 		]]>
     </string>
-    <!-- End: Added/Updated in 5.2.3 -->
-
-
-    <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->
 
     <!-- Dialog title -->
     <string name="perm_required">Permission Required</string>
@@ -1144,6 +1141,15 @@ and you can edit the book via the options menu using the menu button or overflow
     <!-- Explanatory text -->
     <string name="perm_network_state">This is required to check if network is available when internet access is
                                 required (eg. when a search is requested).</string>
+
+    <!-- Menu items -->
+    <string name="menu_mark_as_read">Mark as read</string>
+    <string name="menu_mark_as_unread">Mark as unread</string>
+
+    <!-- End: Added/Updated in 5.2.3 -->
+
+
+    <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->
 
     <!-- End: Added/Updated in [Next Version] -->
 

@@ -827,6 +827,7 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 		try {
 			boolean hasSeries = rowView.hasSeriesId() ? rowView.getSeriesId() > 0 : false;
 			boolean hasAuthor = rowView.hasAuthorId() ? rowView.getAuthorId() > 0 : (rowView.getKind() == RowKinds.ROW_KIND_BOOK) ? true : false;
+			boolean isRead    = rowView.isRead();
 
 			switch(rowView.getKind()) {
 			case ROW_KIND_BOOK:
@@ -835,6 +836,11 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 				addMenuItem(menu, R.id.MENU_EDIT_BOOK, R.string.edit_book, android.R.drawable.ic_menu_edit);
 				addMenuItem(menu, R.id.MENU_EDIT_BOOK_NOTES, R.string.edit_book_notes, R.drawable.ic_menu_compose_holo_dark);
 				addMenuItem(menu, R.id.MENU_EDIT_BOOK_FRIENDS, R.string.edit_book_friends, R.drawable.ic_menu_cc_holo_dark);
+				if(!isRead) {
+					addMenuItem(menu, R.id.MENU_MARK_AS_READ, R.string.menu_mark_as_read, R.drawable.btn_check_clipped);
+				} else {
+					addMenuItem(menu, R.id.MENU_MARK_AS_UNREAD, R.string.menu_mark_as_unread, R.drawable.btn_uncheck_clipped);
+				}
 				addMenuItem(menu, R.id.MENU_SEND_BOOK_TO_GR, R.string.edit_book_send_to_gr, R.drawable.ic_menu_goodreads_holo_dark);
 				break;
 			}
@@ -1116,6 +1122,36 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 					}
 				}});
 			d.edit(format);
+			break;
+		}
+		case R.id.MENU_MARK_AS_READ:
+		{
+			// Force the book status to : read.
+
+			// Get book data from its ID
+			long bookId = rowView.getBookId();
+			BookData mBookData = new BookData(bookId);
+
+			// Force READ to true
+			mBookData.putInt(CatalogueDBAdapter.KEY_READ,1);
+
+			// Update the book into the DB
+			dba.updateBook(bookId, mBookData, 0);
+			break;
+		}
+		case R.id.MENU_MARK_AS_UNREAD:
+		{
+			// Force the book status to : unread.
+
+			// Get book data from its ID
+			long bookId = rowView.getBookId();
+			BookData mBookData = new BookData(bookId);
+
+			// Force READ to true
+			mBookData.putInt(CatalogueDBAdapter.KEY_READ,0);
+
+			// Update the book into the DB
+			dba.updateBook(bookId, mBookData, 0);
 			break;
 		}
 		}

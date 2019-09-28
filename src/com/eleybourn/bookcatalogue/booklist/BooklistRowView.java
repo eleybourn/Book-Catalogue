@@ -504,4 +504,18 @@ public class BooklistRowView {
 		}
 		return mCursor.getLong(mReadCol) == 1;
 	}
+
+
+	/**
+	 * Function used for long clic local menu in order to propose, or not, the possibility to mark as read.
+	 * @return true if and only if this book has the read status.
+	 */
+	public boolean isRead() {
+		//
+		int index =mCursor.getColumnIndex(CatalogueDBAdapter.KEY_READ);
+		if (index>=0) {
+			return 0!=mCursor.getInt(index);
+		}
+		return false;
+	}
 }

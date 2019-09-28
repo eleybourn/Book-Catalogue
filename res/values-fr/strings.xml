@@ -1048,4 +1048,9 @@
 
     <!-- End: Added/Updated in 5.2.0 -->
 
+    <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->
+    <string name="menu_mark_as_read">Marqué comme lu</string>
+    <string name="menu_mark_as_unread">Maqué comme non lu</string>
+    <!-- End: Added/Updated in [Next Version] -->
+
 </resources>

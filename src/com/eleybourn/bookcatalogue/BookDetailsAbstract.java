@@ -22,6 +22,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuItem;
@@ -478,7 +479,10 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 		try {
 			Intent intent = new Intent("com.android.camera.action.CROP");
 //			 this will open any image file
-			intent.setDataAndType(Uri.fromFile(new File(thumbFile.getAbsolutePath())), "image/*");
+			Uri uriImage = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".fileprovider",
+											   new File(thumbFile.getAbsolutePath()));
+			intent.setDataAndType(uriImage, "image/*");
+//			intent.setDataAndType(Uri.fromFile(new File(thumbFile.getAbsolutePath())), "image/*");
 			intent.putExtra("crop", "true");
 			// This defines the aspect ratio
 //			intent.putExtra("aspectX", 1);
@@ -496,8 +500,12 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 			File cropped = this.getCroppedImageFileName();
 			if (cropped.exists())
 				cropped.delete();
-			intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(cropped.getAbsolutePath())));
-	
+
+			Uri uriCropped = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".fileprovider",
+											   new File(cropped.getAbsolutePath()));
+//			intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(cropped.getAbsolutePath())));
+			intent.putExtra(MediaStore.EXTRA_OUTPUT, uriCropped);
+
 			List<ResolveInfo> list = getActivity().getPackageManager().queryIntentActivities( intent, 0 );
 		    int size = list.size();
 		    if (size == 0) {

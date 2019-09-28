@@ -31,6 +31,7 @@ import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.FileProvider;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
@@ -532,7 +533,9 @@ public class AdministrationFunctions extends ActivityWithTasks {
 				// Find all files of interest to send
 				try {
 					File fileIn = new File(StorageUtils.getSharedStoragePath() + "/" + "export.csv");
-					Uri u = Uri.fromFile(fileIn);
+					Uri u = FileProvider.getUriForFile(AdministrationFunctions.this, BuildConfig.APPLICATION_ID + ".fileprovider",
+													   fileIn);
+					//Uri u = Uri.fromFile(fileIn);
 					uris.add(u);
 					// Send it, if there are any files to send.
 					emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);

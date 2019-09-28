@@ -26,9 +26,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.support.v4.content.FileProvider;
 import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
+import com.eleybourn.bookcatalogue.BuildConfig;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.debug.Tracker;
@@ -405,7 +407,9 @@ public class StorageUtils {
 			{
 				File fileIn = new File(StorageUtils.EXTERNAL_FILE_PATH + "/" + file);
 				if (fileIn.exists() && fileIn.length() > 0) {
-					Uri u = Uri.fromFile(fileIn);
+					//Uri u = Uri.fromFile(fileIn);
+					Uri u = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".fileprovider",
+													   fileIn);
 					uris.add(u);
 				}
 			}

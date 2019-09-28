@@ -67,10 +67,10 @@ public class BooklistStylesActivity extends EditObjectList<BooklistStyle> {
 			mDb = new CatalogueDBAdapter(this);
 			mDb.open();
 
+			super.onCreate(savedInstanceState);
+
 			// We want context menus to be available
 			registerForContextMenu(getListView());
-
-			super.onCreate(savedInstanceState);
 
 			this.setTitle(R.string.preferred_styles);
 			//mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, mDbHelper.fetchAllSeriesArray());

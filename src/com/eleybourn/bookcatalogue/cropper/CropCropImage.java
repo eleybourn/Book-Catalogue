@@ -42,11 +42,13 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.StatFs;
+import android.support.v4.content.FileProvider;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.eleybourn.bookcatalogue.BuildConfig;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.utils.Logger;
 
@@ -165,7 +167,10 @@ public class CropCropImage extends CropMonitoredActivity {
 	}
 
 	private Uri getImageUri(String path) {
-		return Uri.fromFile(new File(path));
+		return FileProvider.getUriForFile(this,
+										   BuildConfig.APPLICATION_ID + ".fileprovider",
+										  new File(path));
+		//return Uri.fromFile(new File(path));
 	}
 
 	private Bitmap getBitmap(String path) {

@@ -10,7 +10,7 @@
     <string name="title">Título</string>
     <string name="isbn">ISBN</string>
     <string name="publisher">Editora</string>
-    <string name="date_published">Data da edição</string>
+    <string name="date_published">Data da publicação</string>
     <string name="rating">Avaliação</string>
     <string name="bookshelf">Estante</string>
     <string name="read">Você leu este livro?</string>

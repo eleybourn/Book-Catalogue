@@ -87,4 +87,8 @@ android {
             buildConfigField 'boolean', 'IS_DONATE_ALLOWED', 'true'
         }
     }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
 }

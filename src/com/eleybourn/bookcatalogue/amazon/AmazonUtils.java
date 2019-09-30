@@ -28,7 +28,7 @@ import com.eleybourn.bookcatalogue.utils.Logger;
 public class AmazonUtils {
 
 	public static final String AMAZON_LINK_EXTRAS = "&tag=bookcatalogue-20&linkCode=da5";
-	public static final String AMAZON_BOOKS_BASE = "http://www.amazon.com/gp/search?index=books";
+	public static final String AMAZON_BOOKS_BASE = "https://www.amazon.com/gp/search?index=books";
 
 	public static void openLink(Activity context, String author, String series) throws Exception {
 		// Build the URL and args

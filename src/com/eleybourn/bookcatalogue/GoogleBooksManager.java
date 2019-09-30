@@ -43,7 +43,7 @@ public class GoogleBooksManager {
 		author = author.replace(" ", "%20");
 		title = title.replace(" ", "%20");
 
-		String path = "http://books.google.com/books/feeds/volumes";
+		String path = "https://books.google.com/books/feeds/volumes";
 		if (mIsbn.equals("")) {
 			path += "?q=" + "intitle%3A"+title+"%2Binauthor%3A"+author+"";
 		} else {

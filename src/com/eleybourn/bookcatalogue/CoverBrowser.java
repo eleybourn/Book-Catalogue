@@ -156,8 +156,7 @@ public class CoverBrowser {
 		/**
 		 * Constructor
 		 * 
-		 * @param position	Position on requested cover.
-		 * @param v			View to update
+		 * @param isbn	Book whose covers are to be displayed.
 		 */
 		GetEditionsTask(String isbn){
 			this.isbn = isbn;
@@ -169,15 +168,18 @@ public class CoverBrowser {
 			// ENHANCE: the list of editions should be expanded to somehow include Amazon and Google. As well
 			// as the alternate user-contributed images from LibraryThing. The latter are often the best 
 			// source but at present could only be obtained by HTML scraping.
+			//System.out.println("EDN Getting Editions");
 			try {
 				mEditions = LibraryThingManager.searchEditions(isbn);			
 			} catch (Exception e) {
+				Logger.logError(e);
 				mEditions = null;
 			}
+			//System.out.println("EDN Got Editions");
 		}
 		@Override
 		public void onFinish(Exception e) {
-			if (mEditions.size() == 0) {
+			if (mEditions == null || mEditions.size() == 0) {
 				Toast.makeText(mContext, R.string.no_editions, Toast.LENGTH_LONG).show();
 				shutdown();
 				return;
@@ -215,10 +217,12 @@ public class CoverBrowser {
 		public void run(SimpleTaskContext taskContext) {
 			// Start the download
 			fileSpec = mFileManager.download(isbn, ImageSizes.SMALL);
-			File file = new File(fileSpec);
-			if (file.length() < 50) {
-				fileSpec = mFileManager.download(isbn, ImageSizes.LARGE);
-			}				
+			// Don't bother retrying; it will likely fail on the larger sizes too and just slows the list down.
+			// TODO: Add a progress icon for each image and maybe a counter to let user know we are trying, then do more
+			//File file = new File(fileSpec);
+			//if (file.length() < 50) {
+			//	fileSpec = mFileManager.download(isbn, ImageSizes.LARGE);
+			//}
 		}
 		@Override
 		public void onFinish(Exception e) {
@@ -227,7 +231,11 @@ public class CoverBrowser {
 			file.deleteOnExit();
 			//CoverImageAdapter cia = (CoverImageAdapter) gallery.getAdapter();
 			//cia.notifyDataSetChanged();
-			Utils.fetchFileIntoImageView(file, v, mPreviewSize, mPreviewSize, true );				
+			if (file.exists()) {
+				Utils.fetchFileIntoImageView(file, v, mPreviewSize, mPreviewSize, true);
+			} else {
+				v.setImageResource(android.R.drawable.ic_delete);
+			}
 		}
 	}
 
@@ -474,25 +482,37 @@ public class CoverBrowser {
 		    }
 
 		    if (!isPresent) {
-		    	filespec = mLibraryThing.getCoverImage(isbn, null, size);
-		    	File f = new File(filespec);
-		    	if (isGood(f)) {
-			    	synchronized(mFiles) {
-					    mFiles.putString(key, filespec);		    		
-			    	}
-		    	} else {
-		    		// Try google
-		    		f = GoogleBooksManager.getThumbnailFromIsbn(isbn);
-			    	if (f != null && isGood(f)) {
-			    		filespec = f.getAbsolutePath();
-				    	synchronized(mFiles) {
-						    mFiles.putString(key, filespec);		    		
-				    	}
-			    	} else {
-			    		filespec = "";
-					    mFiles.putString(key, filespec);		    		
-			    	}
-		    	}
+				// Try google first because LT only have member-uploaded images and often fails
+				//System.out.println("EDN Downloading file for " + isbn + " from Google");
+				File f = GoogleBooksManager.getThumbnailFromIsbn(isbn);
+				if (f != null && isGood(f)) {
+					//System.out.println("EDN Downloading file for " + isbn + " from Google - GOOD");
+					filespec = f.getAbsolutePath();
+					synchronized(mFiles) {
+						mFiles.putString(key, filespec);
+					}
+				} else {
+					//System.out.println("EDN Downloading file for " + isbn + " from Google - BAD");
+					filespec = "";
+					mFiles.putString(key, filespec);
+					//
+					// Don't bother with LT; it has such a limited set of covers it almost always fails and REALLY
+					// slows tings down. (Code kept in case they lift their game).
+					//
+					//System.out.println("EDN Downloading file for " + isbn + " from LT");
+					//filespec = mLibraryThing.getCoverImage(isbn, null, size);
+					//f = new File(filespec);
+					//if (isGood(f)) {
+					//	System.out.println("EDN Downloaded file for " + isbn + " from LT - GOOD");
+					//	synchronized(mFiles) {
+					//		mFiles.putString(key, filespec);
+					//	}
+					//} else {
+					//	System.out.println("EDN Downloaded file for " + isbn + " from LT - BAD");
+					//	filespec = "";
+					//	mFiles.putString(key, filespec);
+					//}
+				}
 		    } else {
 		    	synchronized(mFiles) {
 			    	filespec = mFiles.getString(key);		    		
@@ -598,8 +618,12 @@ public class CoverBrowser {
 				mImageFetcher.enqueue(task);
 				i.setImageResource(android.R.drawable.ic_menu_help);
 			} else {
-				// Present, so use it.
-				Utils.fetchFileIntoImageView(f, i, mPreviewSize, mPreviewSize, true );
+				if (f.exists()) {
+					// Present, so use it.
+					Utils.fetchFileIntoImageView(f, i, mPreviewSize, mPreviewSize, true );
+				} else {
+					i.setImageResource(android.R.drawable.ic_delete);
+				}
 			}
 			
 			return i;

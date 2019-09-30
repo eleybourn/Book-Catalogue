@@ -299,7 +299,7 @@
     										your password, and you can disable access via the goodreads website. Due to the vagueries of 
     										the web, you may end up on a blank web page. Just click the back button to return here!</string>
     <string name="goodreads_auth_blurb_part3">But remember&#8230;there is no need to do any of this: BookCatalogue works just fine without it!</string>
-    <string name="goodreads_url">http://www.goodreads.com</string>
+    <string name="goodreads_url">https://www.goodreads.com</string>
     <string name="authorize_access">Authorize Access</string>
     <string name="authorize_access_already_auth">It looks like you have already authorized this application. All goodreads functions should be available already</string>
     <string name="goodreads_access_error">There was a network problem while accessing goodreads. Please check if the goodreads web site it up, and if the problem persists please contact support</string>

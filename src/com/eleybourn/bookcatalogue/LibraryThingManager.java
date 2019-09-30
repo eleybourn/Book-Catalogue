@@ -78,11 +78,11 @@ public class LibraryThingManager {
 	public static String PLACES = "placesmentioned";
 	public static String CHARACTERS = "characternames";
 
-	public static String COVER_URL_LARGE = "http://covers.librarything.com/devkey/%1$s/large/isbn/%2$s";
-	public static String COVER_URL_MEDIUM = "http://covers.librarything.com/devkey/%1$s/medium/isbn/%2$s";
-	public static String COVER_URL_SMALL = "http://covers.librarything.com/devkey/%1$s/small/isbn/%2$s";
-	public static String DETAIL_URL = "http://www.librarything.com/services/rest/1.1/?method=librarything.ck.getwork&apikey=%1$s&isbn=%2$s";
-	public static String EDITIONS_URL = "http://www.librarything.com/api/thingISBN/%s";
+	public static String COVER_URL_LARGE = "https://covers.librarything.com/devkey/%1$s/large/isbn/%2$s";
+	public static String COVER_URL_MEDIUM = "https://covers.librarything.com/devkey/%1$s/medium/isbn/%2$s";
+	public static String COVER_URL_SMALL = "https://covers.librarything.com/devkey/%1$s/small/isbn/%2$s";
+	public static String DETAIL_URL = "https://www.librarything.com/services/rest/1.1/?method=librarything.ck.getwork&apikey=%1$s&isbn=%2$s";
+	public static String EDITIONS_URL = "https://www.librarything.com/api/thingISBN/%s";
 
 	// Field types we are interested in.
 	private enum FieldTypes{ NONE, AUTHOR, TITLE, SERIES, PLACES, CHARACTERS, OTHER };

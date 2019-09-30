@@ -284,7 +284,7 @@ public class GoodreadsManager {
 
 		// Make a valid URL for the parser (some come back without a schema)
 		if (!authUrl.startsWith("http://") && !authUrl.startsWith("https://"))
-			authUrl = "http://" + authUrl;
+			authUrl = "https://" + authUrl;
 
 		// Save the token; this object may well be destroyed before the web page has returned.
 		BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();

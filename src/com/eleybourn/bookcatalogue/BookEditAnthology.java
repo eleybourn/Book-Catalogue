@@ -248,7 +248,7 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
 	}
 	
 	public void searchWikipedia() {
-		String basepath = "http://en.wikipedia.org";
+		String basepath = "https://en.wikipedia.org";
 		String pathAuthor = bookAuthor.replace(" ", "+");
 		pathAuthor = pathAuthor.replace(",", "");
 		// Strip everything past the , from the title

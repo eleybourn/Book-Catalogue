@@ -6,8 +6,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
@@ -38,17 +36,13 @@ public abstract class BookCatalogueListActivity extends AppCompatActivity { //} 
 
         final ListView lv = getListView();
         if (lv != null) {
-        	lv.setOnItemClickListener(new OnItemClickListener() {
-				@Override
-				public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-					onListItemClick(lv, view, i, l);
-				}
-			});
+        	lv.setOnItemClickListener((adapterView, view, i, l) -> onListItemClick(lv, view, i, l));
 		}
     }
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		//noinspection SwitchStatementWithTooFewBranches
 		switch (item.getItemId()) {
 
         case android.R.id.home:
@@ -73,6 +67,7 @@ public abstract class BookCatalogueListActivity extends AppCompatActivity { //} 
 		if (lv != null) {
 			lv.setAdapter(adapter);
 			adapter.registerDataSetObserver(myListWatcher);
+			updateEmptyViewState();
 		}
 	}
 
@@ -93,22 +88,26 @@ public abstract class BookCatalogueListActivity extends AppCompatActivity { //} 
 		return lv;
 	}
 
+	private void updateEmptyViewState() {
+		View v = findViewById(R.id.empty);
+		if (v != null) {
+			ListView lv = getListView();
+			if (lv != null) {
+				ListAdapter a = lv.getAdapter();
+				if (a.getCount() == 0) {
+					v.setVisibility(View.VISIBLE);
+				} else {
+					v.setVisibility(View.GONE);
+				}
+			}
+		}
+	}
+
 	private DataSetObserver myListWatcher = new DataSetObserver() {
 		@Override
 		public void onChanged() {
 			super.onChanged();
-			View v = findViewById(R.id.empty);
-			if (v != null) {
-				ListView lv = getListView();
-				if (lv != null) {
-					ListAdapter a = lv.getAdapter();
-					if (a.getCount() == 0) {
-						v.setVisibility(View.VISIBLE);
-					} else {
-						v.setVisibility(View.GONE);
-					}
-				}
-			}
+			updateEmptyViewState();
 		}
 	};
 

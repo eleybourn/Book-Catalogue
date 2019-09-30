@@ -30,11 +30,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.eleybourn.bookcatalogue.BookData;
 import com.eleybourn.bookcatalogue.BookEdit;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.UniqueId;
+import com.eleybourn.bookcatalogue.database.DbUtils.DomainDefinition;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
+
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_BOOK_UUID;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_LANGUAGE;
 
 /**
  * Class to implement common Book functions
@@ -52,37 +57,26 @@ public class BookUtils {
 			Toast.makeText(activity, R.string.this_option_is_not_available_until_the_book_is_saved, Toast.LENGTH_LONG).show();
 		}
 		Intent i = new Intent(activity, BookEdit.class);
-		Bundle book = new Bundle();
-		Cursor thisBook = db.fetchBookById(rowId);
-		try {
-			thisBook.moveToFirst();
-			book.putString(CatalogueDBAdapter.KEY_TITLE, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_TITLE)));
-			book.putString(CatalogueDBAdapter.KEY_ISBN, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_ISBN)));
-			book.putString(CatalogueDBAdapter.KEY_PUBLISHER, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_PUBLISHER)));
-			book.putString(CatalogueDBAdapter.KEY_DATE_PUBLISHED, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_DATE_PUBLISHED)));
-			book.putString(CatalogueDBAdapter.KEY_RATING, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_RATING)));
-			book.putString(CatalogueDBAdapter.KEY_READ, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_READ)));
-			book.putString(CatalogueDBAdapter.KEY_PAGES, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_PAGES)));
-			book.putString(CatalogueDBAdapter.KEY_NOTES, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_NOTES)));
-			book.putString(CatalogueDBAdapter.KEY_LIST_PRICE, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_LIST_PRICE)));
-			book.putString(CatalogueDBAdapter.KEY_ANTHOLOGY_MASK, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_ANTHOLOGY_MASK)));
-			book.putString(CatalogueDBAdapter.KEY_LOCATION, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_LOCATION)));
-			book.putString(CatalogueDBAdapter.KEY_READ_START, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_READ_START)));
-			book.putString(CatalogueDBAdapter.KEY_READ_END, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_READ_END)));
-			book.putString(CatalogueDBAdapter.KEY_FORMAT, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_FORMAT)));
-			book.putString(CatalogueDBAdapter.KEY_SIGNED, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_SIGNED)));
-			book.putString(CatalogueDBAdapter.KEY_DESCRIPTION, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_DESCRIPTION)));
-			book.putString(CatalogueDBAdapter.KEY_GENRE, thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_GENRE)));
-			
-			book.putSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, db.getBookAuthorList(rowId));
-			book.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, db.getBookSeriesList(rowId));
-			
-			i.putExtra("bookData", book);
-			activity.startActivityForResult(i, UniqueId.ACTIVITY_CREATE_BOOK_MANUALLY);
-		} catch (CursorIndexOutOfBoundsException e) {
-			Toast.makeText(activity, R.string.unknown_error, Toast.LENGTH_LONG).show();
-			Logger.logError(e);
+		BookData thisBook = new BookData(rowId);
+
+		File currThumb = CatalogueDBAdapter.fetchThumbnailByUuid(thisBook.getString(DOM_BOOK_UUID.name));
+		File tmpThumb = CatalogueDBAdapter.getTempThumbnail();
+		if (currThumb.exists()) {
+			try {
+				Utils.copyFile(currThumb, tmpThumb);
+			} catch (Exception e) {
+				Logger.logError(e);
+				throw new RuntimeException(e);
+			}
 		}
+
+		// Get the raw data and remove the key info
+		Bundle book = thisBook.getRawData();
+		book.remove(CatalogueDBAdapter.KEY_BOOK);
+		book.remove(DOM_BOOK_UUID.name);
+
+		i.putExtra("bookData", book);
+		activity.startActivityForResult(i, UniqueId.ACTIVITY_CREATE_BOOK_MANUALLY);
 	}
 	
 	/**

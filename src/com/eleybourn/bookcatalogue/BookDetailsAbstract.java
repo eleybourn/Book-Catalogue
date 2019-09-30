@@ -197,7 +197,7 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 									File thumb = new File(selectedImagePath);
 									File real = getCoverFile(mEditManager.getBookData().getRowId());
 									try {
-										copyFile(thumb, real);
+										Utils.copyFile(thumb, real);
 									} catch (IOException e) {
 										Logger.logError(e, "copyImage failed in add from gallery");
 										String s = getResources().getString(R.string.could_not_copy_image) + ". " + getResources().getString(R.string.if_the_problem_persists);
@@ -420,30 +420,6 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 					Logger.logError(e, "Unable to clean up temp file");
 				}
 			}			
-		}
-	}
-	
-	private void copyFile(File src, File dst) throws IOException {
-		FileInputStream fis = new FileInputStream(src);
-		FileOutputStream fos = new FileOutputStream(dst);
-		FileChannel inChannel = fis.getChannel();
-		FileChannel outChannel = fos.getChannel();
-		
-		try {
-			inChannel.transferTo(0, inChannel.size(), outChannel);
-		}  finally {
-			if (inChannel != null){
-				inChannel.close();
-			}
-			if (outChannel != null){
-				outChannel.close();
-			}
-			if(fis != null){
-				fis.close();
-			}
-			if(fos != null){
-				fos.close();
-			}
 		}
 	}
 	

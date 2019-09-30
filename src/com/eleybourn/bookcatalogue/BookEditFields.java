@@ -270,13 +270,14 @@ public class BookEditFields extends BookDetailsAbstract
 					if (extras.containsKey("book")) {
 						throw new RuntimeException("[book] array passed in Intent");
 					} else {
-						Bundle values = (Bundle)extras.getParcelable("bookData");
-						Iterator<Fields.Field> i = mFields.iterator();
-						while(i.hasNext()) {
-							Fields.Field f = i.next();
+						Bundle values = extras.getParcelable("bookData");
+						if (values == null)
+							throw new RuntimeException("[bookData] data not present");
+						for (Field f : mFields) {
 							if (!f.column.equals("") && values.containsKey(f.column)) {
 								try {
-									f.setValue(values.getString(f.column));								
+									// Need to use get().toString() to avoid bundle failing to return a string value for a numeric
+									f.setValue(values.get(f.column).toString());
 								} catch (Exception e) {
 									String msg = "Populate field " + f.column + " failed: " + e.getMessage();
 									Logger.logError(e, msg);

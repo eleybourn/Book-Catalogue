@@ -23,6 +23,7 @@ package com.eleybourn.bookcatalogue.utils;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -34,6 +35,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
+import java.nio.channels.FileChannel;
 import java.security.MessageDigest;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -2187,6 +2189,27 @@ public class Utils {
 	    }
 	    return buffer;
 	}
+
+	public static void copyFile(File src, File dst) throws IOException {
+		FileInputStream fis = new FileInputStream(src);
+		FileOutputStream fos = new FileOutputStream(dst);
+		FileChannel inChannel = fis.getChannel();
+		FileChannel outChannel = fos.getChannel();
+
+		try {
+			inChannel.transferTo(0, inChannel.size(), outChannel);
+		}  finally {
+			if (inChannel != null){
+				inChannel.close();
+			}
+			if (outChannel != null){
+				outChannel.close();
+			}
+			fis.close();
+			fos.close();
+		}
+	}
+
 
 }
 

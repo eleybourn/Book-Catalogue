@@ -31,6 +31,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
@@ -227,7 +228,11 @@ public class BookshelfDialogFragment extends BookCatalogueDialogFragment {
     					}
     				});
     				cbRoot.addView(cb, cbRoot.getChildCount()-1);
-    			} 
+					LayoutParams lp = cb.getLayoutParams();
+					lp.height = LayoutParams.WRAP_CONTENT;
+					lp.width = LayoutParams.WRAP_CONTENT;
+					cb.setLayoutParams(lp);
+    			}
     			while (bookshelves_for_book.moveToNext()); 
     		} 
 

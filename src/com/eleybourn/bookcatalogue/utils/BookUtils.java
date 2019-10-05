@@ -28,10 +28,13 @@ import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.FileProvider;
 import android.widget.Toast;
 
+import com.eleybourn.bookcatalogue.AdministrationFunctions;
 import com.eleybourn.bookcatalogue.BookData;
 import com.eleybourn.bookcatalogue.BookEdit;
+import com.eleybourn.bookcatalogue.BuildConfig;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.UniqueId;
@@ -123,7 +126,7 @@ public class BookUtils {
 		File image = CatalogueDBAdapter.fetchThumbnailByUuid(dbHelper.getBookUuid(rowId));
 
 		if (series.length() > 0) {
-			series = " (" + series.replace("#", "%23") + ")";
+			series = " (" + series + ")";
 		}
 		//remove trailing 0's
 		if (rating > 0) {
@@ -147,8 +150,11 @@ public class BookUtils {
 		Intent share = new Intent(Intent.ACTION_SEND); 
 		//TODO Externalize hardcoded text below to allow translating and simple editing
 		String text = "I'm reading " + title + " by " + author + series + " " + ratingString;
-		share.putExtra(Intent.EXTRA_TEXT, text); 
-		share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + image.getPath()));
+		share.putExtra(Intent.EXTRA_TEXT, text);
+		share.putExtra(Intent.EXTRA_TITLE, title);
+		share.putExtra(Intent.EXTRA_SUBJECT, title);
+		Uri u = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".fileprovider",image);
+		share.putExtra(Intent.EXTRA_STREAM, u);
         share.setType("text/plain");
         
         context.startActivity(Intent.createChooser(share, "Share"));

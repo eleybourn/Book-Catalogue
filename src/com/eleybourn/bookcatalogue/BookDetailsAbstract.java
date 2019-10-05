@@ -12,6 +12,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
@@ -451,11 +452,15 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 	}
 
 	private void cropCoverImageExternal(File thumbFile) {
-		Tracker.handleEvent(this, "cropCoverImageExternal", Tracker.States.Enter);			
+		Tracker.handleEvent(this, "cropCoverImageExternal", Tracker.States.Enter);
 		try {
+			Context context = getContext();
+			if (context == null)
+				return;
+
 			Intent intent = new Intent("com.android.camera.action.CROP");
 //			 this will open any image file
-			Uri uriImage = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".fileprovider",
+			Uri uriImage = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".fileprovider",
 											   new File(thumbFile.getAbsolutePath()));
 			intent.setDataAndType(uriImage, "image/*");
 //			intent.setDataAndType(Uri.fromFile(new File(thumbFile.getAbsolutePath())), "image/*");
@@ -479,15 +484,22 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 
 			Uri uriCropped = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".fileprovider",
 											   new File(cropped.getAbsolutePath()));
-//			intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(cropped.getAbsolutePath())));
 			intent.putExtra(MediaStore.EXTRA_OUTPUT, uriCropped);
+			// These flags seem insufficient on Android 9 at least; need to grant each possible package access.
+			intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
 			List<ResolveInfo> list = getActivity().getPackageManager().queryIntentActivities( intent, 0 );
 		    int size = list.size();
 		    if (size == 0) {
 		        Toast.makeText(getActivity(), "Can not find image crop app", Toast.LENGTH_SHORT).show();
 		    } else {
-				startActivityForResult(intent, CODE_CROP_RESULT_EXTERNAL);		    	
+		    	// Grant each possible package for the intent access.
+				for (ResolveInfo resolveInfo : list) {
+					String packageName = resolveInfo.activityInfo.packageName;
+					context.grantUriPermission(packageName, uriCropped, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+				}
+
+				startActivityForResult(intent, CODE_CROP_RESULT_EXTERNAL);
 		    }
 		} finally {
 			Tracker.handleEvent(this, "cropCoverImageExternal", Tracker.States.Exit);			

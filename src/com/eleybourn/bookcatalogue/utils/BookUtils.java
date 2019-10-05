@@ -153,7 +153,7 @@ public class BookUtils {
 		share.putExtra(Intent.EXTRA_TEXT, text);
 		share.putExtra(Intent.EXTRA_TITLE, title);
 		share.putExtra(Intent.EXTRA_SUBJECT, title);
-		Uri u = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".fileprovider",image);
+		Uri u = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".fileprovider", image);
 		share.putExtra(Intent.EXTRA_STREAM, u);
         share.setType("text/plain");
         

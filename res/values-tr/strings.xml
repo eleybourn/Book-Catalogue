@@ -151,7 +151,7 @@
     <string name="genre">Tür</string>
     <string name="auto_update">Aşağıdaki alanları şimdi kendiliğinden güncellemek ister misiniz: \n* Tür \n* Tanım \n* Ufak resimler\n\n Vazgeç\'i seçerseniz bunu her zaman Yönetim bölümünden yeniden çalıştırabilirsiniz.</string>
     <string name="notset">Ayarlı değil</string>
-    <string name="menu_search">Kiatp ara</string>
+    <string name="menu_search">Kitap ara</string>
     <string name="menu_insert_name">Ad ile ekle</string>
     <string name="isbn_name_search_help">Kitapları ISBN ile eklemek kitap adı veya yazar adı ile eklemekten çok daha doğru sonuç verir ve genelde yeğlenir. Unutmayın ki doğru barkodu ön kapağın iç kısmında da bulabilirsiniz\n\n</string>
     <string name="help_click_here">Çevrimiçi yardım sayfalarına erişmek için lütfen dokunun</string>

@@ -925,4 +925,6 @@
 			</p>
 		]]></string>
 
+    <string name="searching_book_catalogue">Поиск в book-catalogue.com</string>
+
 </resources>

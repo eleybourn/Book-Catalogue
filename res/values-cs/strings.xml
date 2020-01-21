@@ -526,5 +526,8 @@
     								\n\nProstřednictvím tlačítka \'Přizpůsobit\' (na konci seznamu) máte možnost si toto menu přizpůsobit, nebo si vytvořit vlastní styl.</string>
 <string name="menu_edit_format">Upravit formát&#8230;</string>
 <string name="edit_format_name">Upravit jméno formátu</string>
-<string name="name_can_not_be_blank">Jméno nesmí být prázdné</string>    								
+<string name="name_can_not_be_blank">Jméno nesmí být prázdné</string>
+
+<string name="searching_book_catalogue">Vyhledávám na book-catalogue.com</string>
+
 </resources>

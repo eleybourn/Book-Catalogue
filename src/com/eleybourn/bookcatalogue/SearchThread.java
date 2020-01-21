@@ -34,15 +34,43 @@ abstract public class SearchThread extends ManagedTask {
 	protected String mIsbn;
 	protected static boolean mFetchThumbnail;
 
+	public enum DataSource {
+		Amazon(0),
+		Google(SearchManager.SEARCH_GOOGLE),
+		OpenLibrary(0),
+		LibraryThing(SearchManager.SEARCH_LIBRARY_THING),
+		Goodreads(SearchManager.SEARCH_GOODREADS),
+		BCDB(SearchManager.SEARCH_BC),
+		Other(0),
+		;
+		private int mValue;
+
+		private DataSource(int value) {
+			mValue = value;
+		}
+
+		public int getValue() {
+			return mValue;
+		}
+	}
+
+	public static class BookSearchResults {
+		public DataSource source;
+		public Bundle data;
+		public BookSearchResults(DataSource source, Bundle data) {
+			this.source = source;
+			this.data = data;
+		}
+	}
+
 	// Accumulated book info.
-	protected Bundle mBookData = new Bundle();
+	protected ArrayList<BookSearchResults> mResults = new ArrayList<>();
 
 	/**
 	 * Constructor. Will search according to passed parameters. If an ISBN
 	 * is provided that will be used to the exclusion of all others.
 	 * 
-	 * @param ctx			Context
-	 * @param taskHandler	TaskHandler implementation
+	 * @param manager		TaskManager
 	 * @param author		Author to search for
 	 * @param title			Title to search for
 	 * @param isbn			ISBN to search for.
@@ -73,25 +101,28 @@ abstract public class SearchThread extends ManagedTask {
 	 * next lookup will overwrite with a possibly new title.
 	 */
 	protected void checkForSeriesName() {
-		try {
-			if (mBookData.containsKey(CatalogueDBAdapter.KEY_TITLE)) {
-				String thisTitle = mBookData.getString(CatalogueDBAdapter.KEY_TITLE);
-				SeriesDetails details = Series.findSeries(thisTitle);
-				if (details != null && details.name.length() > 0) {
-					ArrayList<Series> sl;
-					if (mBookData.containsKey(CatalogueDBAdapter.KEY_SERIES_DETAILS)) {
-						sl = Utils.getSeriesUtils().decodeList(mBookData.getString(CatalogueDBAdapter.KEY_SERIES_DETAILS), '|', false);
-					} else {
-						sl = new ArrayList<Series>();
+		for(BookSearchResults result: mResults) {
+			Bundle bookData = result.data;
+			try {
+				if (bookData.containsKey(CatalogueDBAdapter.KEY_TITLE)) {
+					String thisTitle = bookData.getString(CatalogueDBAdapter.KEY_TITLE);
+					SeriesDetails details = Series.findSeries(thisTitle);
+					if (details != null && details.name.length() > 0) {
+						ArrayList<Series> sl;
+						if (bookData.containsKey(CatalogueDBAdapter.KEY_SERIES_DETAILS)) {
+							sl = Utils.getSeriesUtils().decodeList(bookData.getString(CatalogueDBAdapter.KEY_SERIES_DETAILS), '|', false);
+						} else {
+							sl = new ArrayList<Series>();
+						}
+						sl.add(new Series(details.name, details.position));
+						bookData.putString(CatalogueDBAdapter.KEY_SERIES_DETAILS, Utils.getSeriesUtils().encodeList(sl, '|'));
+						bookData.putString(CatalogueDBAdapter.KEY_TITLE, thisTitle.substring(0, details.startChar-1));
 					}
-					sl.add(new Series(details.name, details.position));
-					mBookData.putString(CatalogueDBAdapter.KEY_SERIES_DETAILS, Utils.getSeriesUtils().encodeList(sl, '|'));
-					mBookData.putString(CatalogueDBAdapter.KEY_TITLE, thisTitle.substring(0, details.startChar-1));
 				}
+			} catch (Exception e) {
+				Logger.logError(e);
 			}
-		} catch (Exception e) {
-			Logger.logError(e);
-		};		
+		}
 	}
 	
 	protected void showException(int id, Exception e) {
@@ -104,7 +135,7 @@ abstract public class SearchThread extends ManagedTask {
 	/**
 	 * Accessor, so when thread has finished, data can be retrieved.
 	 */
-	public Bundle getBookData() {
-		return mBookData;
+	public ArrayList<BookSearchResults> getBookData() {
+		return mResults;
 	}
 }

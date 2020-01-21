@@ -264,4 +264,6 @@ Jeśli przerwiesz, możesz ponownie wywołać tę funkcję w opcjach administrac
 <string name="incorrect_key">Weryfikacja klucza deweloperskiego LibraryThing się nie powiodła - jest niepoprawny lub nie masz połączenia z siecią</string>
 <string name="correct_key">Twój klucz deweloperski LibraryThing jest poprawny.</string>
 <string name="sortby_author_one">Sortuj wg autora (pierwszego)</string>
+
+<string name="searching_book_catalogue">Przeszukiwanie book-catalogue.com</string>
 </resources>

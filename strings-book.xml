@@ -259,4 +259,6 @@
 <string name="debug_subject">Gathered debugging information</string>
 <string name="debug_body">Please take the time to briefly describe the problem you are experiencing.</string>
 <string name="menu_duplicate">Duplicate Book</string>
+
+<string name="searching_book_catalogue">Searching book-catalogue.com</string>
 </resources>

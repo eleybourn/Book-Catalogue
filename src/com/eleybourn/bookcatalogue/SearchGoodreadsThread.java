@@ -20,6 +20,8 @@
 
 package com.eleybourn.bookcatalogue;
 
+import android.os.Bundle;
+
 import java.util.ArrayList;
 
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
@@ -38,7 +40,6 @@ public class SearchGoodreadsThread extends SearchThread {
 	 * Constructor.
 	 * 
 	 * @param manager
-	 * @param taskHandler
 	 * @param author
 	 * @param title
 	 * @param isbn
@@ -57,15 +58,19 @@ public class SearchGoodreadsThread extends SearchThread {
 		this.doProgress(getString(R.string.searching_goodreads), 0);
 
 		GoodreadsManager grMgr = new GoodreadsManager();
+		Bundle bookData = null;
 		try {
 			if (mIsbn != null && mIsbn.trim().length() > 0) {
-				mBookData = grMgr.getBookByIsbn(mIsbn);
+				bookData = grMgr.getBookByIsbn(mIsbn);
 			} else {
 				ArrayList<GoodreadsWork> list = grMgr.search(mAuthor + " " + mTitle);
 				if (list != null && list.size() > 0) {
 					GoodreadsWork w = list.get(0);
-					mBookData = grMgr.getBookById(w.bookId);
+					bookData = grMgr.getBookById(w.bookId);
 				}
+			}
+			if (bookData != null) {
+				mResults.add(new BookSearchResults(DataSource.Goodreads, bookData));
 			}
 		} catch (BookNotFoundException bnf) {
 			// Ignore; not a problem here

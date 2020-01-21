@@ -1,5 +1,7 @@
 package com.eleybourn.bookcatalogue;
 
+import android.os.Bundle;
+
 import com.eleybourn.bookcatalogue.utils.Logger;
 
 
@@ -25,7 +27,9 @@ public class SearchLibraryThingThread extends SearchThread {
 				LibraryThingManager ltm = new LibraryThingManager(BookCatalogueApp.context);
 				if (ltm.isAvailable()) {
 					try {
-						ltm.searchByIsbn(isbn, mFetchThumbnail, mBookData);
+						BookSearchResults result = new BookSearchResults(DataSource.LibraryThing, new Bundle());
+						mResults.add(result);
+						ltm.searchByIsbn(isbn, mFetchThumbnail, result.data);
 						// Look for series name and clear KEY_TITLE
 						checkForSeriesName();
 					} catch (Exception e) {

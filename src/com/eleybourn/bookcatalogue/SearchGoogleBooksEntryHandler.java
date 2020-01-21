@@ -26,6 +26,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import android.os.Bundle;
 
+import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
 /* 
@@ -120,6 +121,7 @@ public class SearchGoogleBooksEntryHandler extends DefaultHandler {
 	public static final String PUBLISHER = "publisher";
 	public static final String PAGES = "format";
 	public static final String THUMBNAIL = "link";
+	public static final String LANGUAGE = "language";
 	public static final String GENRE = "subject";
 	public static final String DESCRIPTION = "description";
 	public static final String THUMBNAIL_KEY = "__thumbnail";
@@ -158,6 +160,8 @@ public class SearchGoogleBooksEntryHandler extends DefaultHandler {
 			Utils.appendOrAdd(mValues, CatalogueDBAdapter.KEY_AUTHOR_DETAILS, builder.toString());
 		} else if (localName.equalsIgnoreCase(PUBLISHER)){
 			addIfNotPresent(CatalogueDBAdapter.KEY_PUBLISHER);
+		} else if (localName.equalsIgnoreCase(LANGUAGE)){
+			addIfNotPresent(DatabaseDefinitions.DOM_LANGUAGE.name);
 		} else if (localName.equalsIgnoreCase(DATE_PUBLISHED)){
 			addIfNotPresent(CatalogueDBAdapter.KEY_DATE_PUBLISHED);
 		} else if (localName.equalsIgnoreCase(PAGES)){
@@ -166,6 +170,11 @@ public class SearchGoogleBooksEntryHandler extends DefaultHandler {
 			if (index > -1) {
 				tmp = tmp.substring(0, index).trim(); 
 				mValues.putString(CatalogueDBAdapter.KEY_PAGES, tmp);
+			} else {
+				index = tmp.indexOf("Dimensions");
+				if (index < 0) {
+					mValues.putString(CatalogueDBAdapter.KEY_FORMAT, tmp);
+				}
 			}
 		} else if (localName.equalsIgnoreCase(GENRE)){
 			mValues.putString(CatalogueDBAdapter.KEY_GENRE, builder.toString());

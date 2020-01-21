@@ -1079,6 +1079,7 @@
     <!-- End: Added/Updated in 5.2.0 -->
 
     <!-- Begin: Added/Updated in [Next Version] -->
+    <string name="searching_book_catalogue">Ricerca in book-catalogue.com</string>
     <!-- End: Added/Updated in [Next Version] -->
 
 </resources>

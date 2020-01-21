@@ -20,11 +20,6 @@
 
 package com.eleybourn.bookcatalogue;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashSet;
-
-import android.Manifest.permission;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
@@ -44,6 +39,8 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.debug.Tracker;
+import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment;
+import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment.OnMessageDialogResultListener;
 import com.eleybourn.bookcatalogue.scanner.Scanner;
 import com.eleybourn.bookcatalogue.scanner.ScannerManager;
 import com.eleybourn.bookcatalogue.utils.AsinUtils;
@@ -52,13 +49,18 @@ import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.SoundManager;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashSet;
+
 /**
  * This class is called by the BookCatalogue activity and will search the interwebs for
  * book details based on either a typed in or scanned ISBN.
  *
  * It currently only searches Google Books, but Amazon will be coming soon.
  */
-public class BookISBNSearch extends ActivityWithTasks {
+public class BookISBNSearch extends ActivityWithTasks
+{
 	//private static final int CREATE_BOOK = 0;
 	public static final String BY = "by";
 
@@ -107,7 +109,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 	long mSearchManagerId = 0;
 
 	// A list of author names we have already searched for in this session
-	ArrayList<String> mAuthorNames = new ArrayList<String>();
+	ArrayList<String> mAuthorNames = new ArrayList<>();
 
 	@Override
 	protected RequiredPermission[] getRequiredPermissions() {
@@ -133,7 +135,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 
 			//do we have a network connection?
 			boolean network_available = Utils.isNetworkAvailable(this);
-			if (network_available == false) {
+			if (!network_available) {
 				Toast.makeText(this, R.string.no_connection, Toast.LENGTH_LONG).show();
 				finish();
 				return;
@@ -600,6 +602,13 @@ public class BookISBNSearch extends ActivityWithTasks {
 	};
 
 	private boolean onSearchFinished(Bundle bookData, boolean cancelled) {
+		//// Debugging search results
+		//String msg = bookData.getString("___DEBUG___");
+		//if (msg != null && !msg.equals("")) {
+		//	MessageDialogFragment frag = MessageDialogFragment.newInstance(-1, R.string.search, msg, R.string.ok, 0, 0);
+		//	frag.show(getSupportFragmentManager(), null);
+		//}
+
 		Tracker.handleEvent(this, "onSearchFinished" + mSearchManagerId, Tracker.States.Running);
 		try {
 			//System.out.println(mId + " onSearchFinished");
@@ -814,4 +823,12 @@ public class BookISBNSearch extends ActivityWithTasks {
 		if (mSearchManagerId != 0)
 			inState.putLong("SearchManagerId", mSearchManagerId);
 	}
+
+	//// Debug search results
+	//@Override
+	//public void onMessageDialogResult(
+	//		int dialogId, MessageDialogFragment dialog, int button)
+	//{
+	//
+	//}
 }

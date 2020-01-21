@@ -1013,5 +1013,6 @@
    <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->
    <string name="amazon">Amazon</string>
    <!-- End: Added/Updated in [Next Version] -->
+   <string name="searching_book_catalogue">book-catalogue.com aranıyor</string>
    <!-- End: Added/Updated in [Next Version] -->
 </resources>

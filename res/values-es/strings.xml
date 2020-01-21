@@ -1034,6 +1034,6 @@ y puede editar el libro utilizando el menú de opciones.
     <!-- End: Added/Updated in 5.1.1 -->
 
     <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->
-    
+	<string name="searching_book_catalogue">Buscando en book-catalogue.com</string>
     <!-- End: Added/Updated in [Next Version] -->
 </resources>

@@ -1053,4 +1053,6 @@
     <string name="menu_mark_as_unread">Maqué comme non lu</string>
     <!-- End: Added/Updated in [Next Version] -->
 
+    <string name="searching_book_catalogue">Recherche en cours sur book-catalogue.com</string>
+
 </resources>

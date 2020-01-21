@@ -1148,6 +1148,20 @@ and you can edit the book via the options menu using the menu button or overflow
     <!-- End: Added/Updated in 5.2.3 -->
 
 
+    <!-- Begin: Added/Updated in 5.3.0 -->
+    <string name="new_in_530">
+		<![CDATA[
+			<p><b>New in 5.3.0</b>\n\n
+				* Uses new Book-Catalogue web services for searching\n\n
+				* Bug fixes\n\n
+			</p>
+		]]>
+    </string>
+
+    <!-- Progress message -->
+    <string name="searching_book_catalogue">Searching book-catalogue.com</string>
+    <!-- End: Added/Updated in 5.3.0 -->
+
     <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->
 
     <!-- End: Added/Updated in [Next Version] -->

@@ -1064,7 +1064,8 @@ and you can edit the book via the options menu using the menu button or overflow
 
     <!-- End: Added/Updated in 5.1.3 -->
 
-    <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->    
+    <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->
+    <string name="searching_book_catalogue">Pesquisando book-catalogue.com</string>
     <!-- End: Added/Updated in [Next Version] -->
 
 </resources>

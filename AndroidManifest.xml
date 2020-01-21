@@ -3,8 +3,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.eleybourn.bookcatalogue"
     android:installLocation="auto"
-    android:versionCode="186"
-    android:versionName="5.2.4" >
+    android:versionCode="187"
+    android:versionName="5.3.0" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
+import com.eleybourn.bookcatalogue.SearchThread.BookSearchResults;
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
@@ -194,15 +195,16 @@ public class BcService {
 	 * Convert the standard API book data to a Bundle suitable for use in search results.
 	 *
 	 * @param result			The JSON data for the book
-	 * @param bookData			A bundle to fill in
+	 * @param bookResults		{@link BookSearchResults} to contain data
 	 * @param fetchThumbnail	True if thumbnail should be fetched.
 	 *
 	 * @throws JSONException	From JSON library
 	 */
 	@SuppressWarnings("WeakerAccess")
-	public static void jsonResultToBookData(JSONObject result, Bundle bookData, boolean fetchThumbnail)
+	public static void jsonResultToBookData(JSONObject result, BookSearchResults bookResults, boolean fetchThumbnail)
 			throws JSONException
 	{
+		Bundle bookData = bookResults.data;
 		Iterator<String> keysIter = result.keys();
 		while (keysIter.hasNext()) {
 			String key = keysIter.next();
@@ -251,7 +253,8 @@ public class BcService {
 				}
 				case COVER_URL: {
 					if (fetchThumbnail) {
-						fetchThumbnail = !getCoverImage(bookData, value);
+						String sfx = "_BC_" + bookResults.source;
+						fetchThumbnail = !getCoverImage(bookData, value, sfx);
 					}
 					break;
 				}
@@ -317,13 +320,13 @@ public class BcService {
 	 * @param bookData Bundle to store info
 	 * @param url      Image URL
 	 */
-	private static boolean getCoverImage(Bundle bookData, String url) {
+	private static boolean getCoverImage(Bundle bookData, String url, String sfx) {
 		//String url = getCoverImageUrl(isbn, size);
 		// Make sure we follow LibraryThing ToS (no more than 1 request/second).
 		waitUntilRequestAllowed();
 
 		// Save it with an _BC suffix
-		String filename = Utils.saveThumbnailFromUrl(url, "_BC");
+		String filename = Utils.saveThumbnailFromUrl(url, sfx);
 		if (filename.length() > 0 && bookData != null) {
 			Utils.appendOrAdd(bookData, "__thumbnail", filename);
 			return true;

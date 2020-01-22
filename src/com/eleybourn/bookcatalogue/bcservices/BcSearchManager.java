@@ -202,13 +202,13 @@ public class BcSearchManager {
 						if (!skip) {
 							BookSearchResults srchRes = new BookSearchResults(src, new Bundle());
 							resultList.add(srchRes);
-							Bundle bookData = srchRes.data;
-							if (BuildConfig.DEBUG) {
-								bookData.putString("_DBGSRC_", "BC");
-							}
+							//Bundle bookData = srchRes.data;
+							//if (BuildConfig.DEBUG) {
+							//	bookData.putString("_DBGSRC_", "BC");
+							//}
 
 							JSONObject result = resultWrapper.getJSONObject(DATA);
-							BcService.jsonResultToBookData(result, bookData, fetchThumbnail);
+							BcService.jsonResultToBookData(result, srchRes, fetchThumbnail);
 						}
 					}
 				}

@@ -861,7 +861,16 @@ public class Utils {
 	    		}
     		}
 
-    		// Delete all but the best one. Note there *may* be no best one,
+			// Defensive:
+			// We rename the best file first in case there are multiple files with same name.
+
+			// Get the best file (if present) and rename it.
+			if (bestFile >= 0) {
+				File file = new File(files.get(bestFile));
+				file.renameTo(CatalogueDBAdapter.getTempThumbnail());
+			}
+
+			// Delete all but the best one. Note there *may* be no best one,
     		// so all would be deleted. We do this first in case the list 
     		// contains a file with the same name as the target of our
     		// rename.
@@ -871,11 +880,6 @@ public class Utils {
 		    		file.delete();
     			}
     		}
-    		// Get the best file (if present) and rename it.
-			if (bestFile >= 0) {
-	    		File file = new File(files.get(bestFile));
-	    		file.renameTo(CatalogueDBAdapter.getTempThumbnail());
-			}
     		// Finally, cleanup the data
     		result.remove("__thumbnail");
     		result.putBoolean(CatalogueDBAdapter.KEY_THUMBNAIL, true);

@@ -58,10 +58,6 @@ public class BcSearchManager {
 	 */
 	public static void searchBcService(String isbn, String author, String title, ArrayList<BookSearchResults> results, boolean fetchThumbnail) {
 
-		// URI encode details
-		author = Uri.encode(author);
-		title = Uri.encode(title);
-
 		BcSearchManager handler = new BcSearchManager();
 
 		// Prefer ISBN search
@@ -136,6 +132,17 @@ public class BcSearchManager {
 			String title,
 			boolean fetchThumbnail,
 			ArrayList<BookSearchResults> results) {
+
+		// URI encode details
+		author = Uri.encode(author.trim());
+		title = Uri.encode(title.trim());
+
+		if (author.length() == 0) {
+			author = Uri.encode(" ");
+		}
+		if (title.length() == 0) {
+			title = Uri.encode(" ");
+		}
 
 		// Base path for an ISBN search
 		String path = String.format(SEARCH_AUTHOR_TITLE_URL, author, title);

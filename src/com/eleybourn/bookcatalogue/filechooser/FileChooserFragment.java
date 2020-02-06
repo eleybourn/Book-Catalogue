@@ -285,8 +285,13 @@ public class FileChooserFragment extends BookCatalogueFragment implements FileLi
 		mRootPath = root;
 		((TextView) getView().findViewById(R.id.path)).setText(mRootPath.getAbsolutePath());
 
+		// Can't really see how this happens, but it does...for one user.
+		if (list == null) {
+			list = new ArrayList<>();
+		}
 		// Setup and display the list
 		mList = list;
+
 		// We pass 0 as view ID since each item can provide the view id
 		DirectoryAdapter adapter = new DirectoryAdapter(getActivity(), 0, mList);
 		ListView lv = ((ListView) getView().findViewById(R.id.list));

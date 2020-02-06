@@ -1,8 +1,17 @@
 apply plugin: 'com.android.application'
 
-if(project.hasProperty("BookCatalogue.signing")
-        && new File(project.property("BookCatalogue.signing")).exists()) {
-    apply from: project.property("BookCatalogue.signing")
+// For custom app signing config, set BookCatalogue.signing in local.properties to the
+// path f a gradle file with the Android signing config. eg.
+//
+//    BookCatalogue.signing=O\:/Documents/BookCatalogue Dev/KeyStore/bcSigningConfig.gradle
+//
+def SigningProperty = "BookCatalogue.signing"
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def BcSigning = properties.getProperty(SigningProperty)
+
+if(BcSigning != null && (new File(BcSigning)).exists()) {
+    apply from: BcSigning
 }
 
 buildscript {
@@ -34,6 +43,23 @@ dependencies {
 }
 
 android {
+//    signingConfigs {
+//        Default {
+//            storeFile file('O:\\Documents\\BookCatalogue Dev\\KeyStore\\bc_key_evan')
+//            storePassword 'foobar'
+//            keyAlias = 'bookcatalogue'
+//            keyPassword 'foobar'
+//        }
+//    }
+//
+//    buildTypes {
+//        release {
+//            signingConfig signingConfigs.Default
+//        }
+//        debug {
+//            signingConfig signingConfigs.Default
+//        }
+//    }
     compileSdkVersion 28
     buildToolsVersion '28.0.3'
     lintOptions {

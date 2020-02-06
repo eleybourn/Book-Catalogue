@@ -30,7 +30,9 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
@@ -97,7 +99,10 @@ public class Bookshelf extends BookCatalogueListActivity {
 		mDbHelper = new CatalogueDBAdapter(this);
 		mDbHelper.open();
 		fillBookshelves();
-		registerForContextMenu(getListView());
+		ListView lv = getListView();
+		registerForContextMenu(lv);
+		lv.setOnItemClickListener((parent, v, position, id) -> onListItemClick(lv, v, position, id));
+
 		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 	}
 	

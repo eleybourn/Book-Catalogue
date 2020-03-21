@@ -84,8 +84,8 @@ public class SearchGoodreadsThread extends SearchThread {
 	 * Get the global ID for the goodreads search manager
 	 */
 	@Override
-	public int getSearchId() {
-		return SearchManager.SEARCH_GOODREADS;
+	public DataSource getSearchId() {
+		return DataSource.Goodreads;
 	}
 
 }

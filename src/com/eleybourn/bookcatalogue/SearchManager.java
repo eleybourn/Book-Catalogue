@@ -33,6 +33,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Hashtable;
 
 /**
@@ -90,6 +91,8 @@ public class SearchManager implements TaskManagerListener {
 	// Whether of not to fetch thumbnails
 	private boolean mFetchThumbnail;
 
+	/** Searches that have been executed */
+	private HashSet<DataSource> mSearchesCompleted = new HashSet<>();
 	/** Output from search threads */
 	private Hashtable<DataSource,Bundle> mSearchResults = new Hashtable<>();
 
@@ -250,6 +253,7 @@ public class SearchManager implements TaskManagerListener {
 		// Save the input and initialize
 		mBookData = new Bundle();
 		mSearchResults = new Hashtable<>();
+		mSearchesCompleted = new HashSet<>();
 
 		mWaitingForIsbn = false;
 		mCancelledFlg = false;
@@ -511,7 +515,7 @@ public class SearchManager implements TaskManagerListener {
 			// If this search includes the source, check it
 			if ( (mSearchFlags & source.getValue()) != 0) {
 				// If the source has not been search, search it
-				if (!mSearchResults.containsKey(source)) {
+				if (!mSearchesCompleted.contains(source)) {
 					return startOneSearch(source.getValue());
 				}
 			}
@@ -531,7 +535,7 @@ public class SearchManager implements TaskManagerListener {
 			// If requested search contains this source...
 			if ((sources & source.getValue()) != 0)
 				// If we have not run this search...
-				if (!mSearchResults.containsKey(source)) {
+				if (!mSearchesCompleted.contains(source)) {
 					// Run it now
 					if (startOneSearch(source.getValue()))
 						started = true;
@@ -570,6 +574,8 @@ public class SearchManager implements TaskManagerListener {
 		if (mCancelledFlg) {
 			mWaitingForIsbn = false;
 		}
+
+		mSearchesCompleted.add(st.getSearchId());
 
 		boolean startNext = false;
 		boolean startAll = false;
@@ -659,6 +665,14 @@ public class SearchManager implements TaskManagerListener {
 				}
 			}
 		}
+
+		if (resultList.size() == 0) {
+			if (mWaitingForIsbn) {
+					// Start next one that has not run.
+					startNext = true;
+			}
+		}
+
 		if (startAll) {
 			startSearches(mSearchFlags);
 		} else if (startNext) {

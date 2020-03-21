@@ -51,8 +51,8 @@ public class SearchGoogleThread extends SearchThread {
 	 * Return the global ID for this searcher
 	 */
 	@Override
-	public int getSearchId() {
-		return SearchManager.SEARCH_GOOGLE;
+	public DataSource getSearchId() {
+		return DataSource.Google;
 	}
 
 }

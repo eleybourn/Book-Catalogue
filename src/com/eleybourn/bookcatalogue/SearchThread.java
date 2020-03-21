@@ -88,7 +88,7 @@ abstract public class SearchThread extends ManagedTask {
 		//getMessageSwitch().addListener(getSenderId(), taskHandler, false);
 	}
 
-	public abstract int getSearchId();
+	public abstract DataSource getSearchId();
 
 	@Override
 	protected void onThreadFinish() {

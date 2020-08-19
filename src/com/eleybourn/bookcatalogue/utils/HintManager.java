@@ -123,7 +123,7 @@ public class HintManager {
 
 		// Setup the views
 		String hintText = BookCatalogueApp.context.getResources().getString(stringId, args);
-		msg.setText(Utils.linkifyHtml(hintText, Linkify.ALL));
+		msg.setText(Utils.linkifyHtml(hintText, Linkify.WEB_URLS));
 		// Automatically start a browser (or whatever)
 		msg.setMovementMethod(LinkMovementMethod.getInstance());
 

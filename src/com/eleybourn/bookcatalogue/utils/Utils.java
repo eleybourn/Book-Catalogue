@@ -2183,14 +2183,26 @@ public class Utils {
 
 	    // Build an empty spannable then add the links
 	    SpannableString buffer = new SpannableString(text);
-	    Linkify.addLinks(buffer, linkifyMask);
+		//
+	    // If chrome is disabled, or out of date, or otherwise broken, Linkify.addLinks may produce
+		// nasty errors. It's not critical, so we ignore and just return the buffer.
+		//
+		// NOTE: this crash only occurs if linkifying ADDRESSES (perhaps via ALL) on Android version
+		// {@link android.os.Build.VERSION_CODES#O_MR1} or earlier. See:
+		//    https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/text/util/Linkify.java
+		//
+	    try {
+			Linkify.addLinks(buffer, linkifyMask);
 
-	    // Add back the HTML spannables
-	    for (URLSpan span : currentSpans) {
-	        int end = text.getSpanEnd(span);
-	        int start = text.getSpanStart(span);
-	        buffer.setSpan(span, start, end, 0);
-	    }
+			// Add back the HTML spannables
+			for (URLSpan span : currentSpans) {
+				int end = text.getSpanEnd(span);
+				int start = text.getSpanStart(span);
+				buffer.setSpan(span, start, end, 0);
+			}
+		} catch (Exception e) {
+	    	Logger.logError(e, "Linkify failure, non-critical");
+		}
 	    return buffer;
 	}
 

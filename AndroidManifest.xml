@@ -4,7 +4,7 @@
     package="com.eleybourn.bookcatalogue"
     android:installLocation="auto"
     android:versionCode="191"
-    android:versionName="5.3.0-4" >
+    android:versionName="5.3.0-5" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />

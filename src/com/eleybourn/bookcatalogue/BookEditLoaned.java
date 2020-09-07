@@ -177,7 +177,7 @@ public class BookEditLoaned extends BookEditFragmentAbstract {
 	/**
 	 * Delete the user and book combination as a loan from the database
 	 */
-	private void removeLoan() {
+	private static void removeLoan() {
 		mDbHelper.deleteLoan(mEditManager.getBookData().getRowId(), true);
 		return;
 	}

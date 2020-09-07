@@ -221,7 +221,7 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 				public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
 					mList.moveToPosition(position);
 					ArrayList<SimpleDialogItem> menu = new ArrayList<SimpleDialogItem>();
-					mListHandler.buildContextMenu(mDb, mList.getRowView(), menu);
+					mListHandler.buildContextMenu(mList.getRowView(), menu);
 					if (menu.size() > 0) {
 						StandardDialogs.selectItemDialog(getLayoutInflater(), null, menu, null, new SimpleDialogOnClickListener() {
 							@Override

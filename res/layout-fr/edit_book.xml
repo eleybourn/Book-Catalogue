@@ -45,7 +45,10 @@
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentRight="true"
                     android:layout_below="@+id/heading"
-                    android:nextFocusDown="@+id/title" />
+                    android:focusableInTouchMode="true"
+                    android:nextFocusDown="@+id/title" >
+                    <requestFocus/>
+                </Button>
             </RelativeLayout>
 
             <RelativeLayout

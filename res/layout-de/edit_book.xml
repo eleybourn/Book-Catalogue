@@ -42,10 +42,7 @@
                     android:id="@+id/author"
                     style="@style/dataEntryButtonStyle"
                     android:layout_width="match_parent"
-                    android:focusableInTouchMode="true"
-                    android:nextFocusDown="@+id/title" >
-                    <requestFocus/>
-                </Button>
+                    android:nextFocusDown="@+id/title" />
             </LinearLayout>
 
             <LinearLayout

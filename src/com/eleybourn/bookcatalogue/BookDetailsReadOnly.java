@@ -225,7 +225,7 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 
 		if (hasDate) {
 			try {
-				Date d = Utils.parseDate(date, true);
+				Date d = Utils.parseDate(date);
 				date = Utils.toPrettyDate(d);
 			} catch (Exception e) {
 				// Ignore; just use what we have

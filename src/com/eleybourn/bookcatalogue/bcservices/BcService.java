@@ -47,7 +47,6 @@ public class BcService {
 	private static final String SERIES_NAME = "series_name";
 	private static final String SERIES_NUM = "series_num";
 	private static final String SERIES_POSITION = "series_position";
-	private static final String LIST_PRICE = "list_price";
 	/** Sync object */
 	private static final Object mApiSync = new Object();
 	/** Last time API was called; limit to 1 per second */
@@ -274,9 +273,6 @@ public class BcService {
 					}
 				}
 				case THUMBNAILS:
-					break;
-				case LIST_PRICE:
-					addIfNotPresent(bookData, CatalogueDBAdapter.KEY_LIST_PRICE, value);
 					break;
 				default:
 					Logger.logError(new RuntimeException(

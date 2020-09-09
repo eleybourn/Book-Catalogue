@@ -123,6 +123,7 @@ public class Utils {
 	private static SimpleDateFormat mDateSqlSdf = new SimpleDateFormat("yyyy-MM-dd");
 	static { mDateSqlSdf.setTimeZone(tzUtc); }
 	static DateFormat mDateDispSdf = DateFormat.getDateInstance(java.text.DateFormat.MEDIUM);
+	static { mDateDispSdf.setTimeZone(tzUtc); }
 	private static SimpleDateFormat mLocalDateSqlSdf = new SimpleDateFormat("yyyy-MM-dd");
 	static { mLocalDateSqlSdf.setTimeZone(Calendar.getInstance().getTimeZone()); }
 
@@ -191,7 +192,6 @@ public class Utils {
 		return mDateFullHMSSqlSdf.format(d);
 	}
 	public static String toPrettyDate(Date d) {
-		mDateDispSdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 		return mDateDispSdf.format(d);
 	}
 	public static String toPrettyDateTime(Date d) {
@@ -248,9 +248,12 @@ public class Utils {
 			try {
 				sdf.setLenient(lenient);
 				if(forceUtc) {
-					sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+					SimpleDateFormat sdfClone = (SimpleDateFormat) sdf.clone();
+					sdfClone.setTimeZone(tzUtc);
+					d = sdfClone.parse(s);
+				} else {
+					d = sdf.parse(s);
 				}
-				d = sdf.parse(s);
 				return d;
 			} catch (Exception e) {
 				// Ignore
@@ -260,7 +263,13 @@ public class Utils {
 		try {
 			java.text.DateFormat df = java.text.DateFormat.getDateInstance(java.text.DateFormat.SHORT);
 			df.setLenient(lenient);
-			d = df.parse(s);
+			if(forceUtc) {
+				DateFormat dfClone = (SimpleDateFormat) df.clone();
+				dfClone.setTimeZone(tzUtc);
+				d = dfClone.parse(s);
+			} else {
+				d = df.parse(s);
+			}
 			return d;
 		} catch (Exception e) {
 			// Ignore 

@@ -386,6 +386,44 @@ public class AdministrationFunctions extends ActivityWithTasks {
 				}
 			});
 		}
+
+		// TODO - remove once back up is fully implemented
+		//Method to call back up to web functions for testing
+		View backupWeb = findViewById(R.id.backup_web_label);
+		// Make line flash when clicked.
+		backupWeb.setBackgroundResource(android.R.drawable.list_selector_background);
+		backupWeb.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				backupToWeb();
+				return;
+			}
+		});
+
+		// TODO - remove once back up is fully implemented
+		//Method to call back up to web functions for testing
+		View pullDownWeb = findViewById(R.id.restore_from_web_label);
+		// Make line flash when clicked.
+		pullDownWeb.setBackgroundResource(android.R.drawable.list_selector_background);
+		pullDownWeb.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				restoreFromWeb();
+				return;
+			}
+		});
+	}
+
+	// TODO - remove once back up is fully implemented
+	private void backupToWeb() {
+		BackupToWebThread thread = new BackupToWebThread(getTaskManager());
+		thread.start();
+	}
+
+	// TODO - remove once back up is fully implemented
+	private void restoreFromWeb() {
+		RestoreFromWebThread thread = new RestoreFromWebThread(getTaskManager());
+		thread.start();
 	}
 
 	///**

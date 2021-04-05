@@ -67,7 +67,7 @@ public class Author implements Serializable, Utils.ItemWithIdFixup {
 	 * @param family	Family name
 	 * @param given		Given names
 	 */
-	Author(long id, String family, String given) {
+	public Author(long id, String family, String given) {
 		this.id = id;
 		familyName = family.trim();
 		givenNames = given.trim();

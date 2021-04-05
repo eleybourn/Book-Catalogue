@@ -280,6 +280,7 @@
     <string name="visit_goodreads">Visit GoodReads&#8230;</string>
     <string name="delete_event">Delete Event</string>
     <string name="delete_task">Delete Task</string>
+    <string name="books_failed_backup">Unable to backup %1$s books to web</string>
 
     <string name="my_books">My Books</string>
     <string name="my_books_classic">My Books (Classic)</string>

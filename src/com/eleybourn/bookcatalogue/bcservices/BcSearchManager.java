@@ -23,10 +23,8 @@ package com.eleybourn.bookcatalogue.bcservices;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.eleybourn.bookcatalogue.BuildConfig;
 import com.eleybourn.bookcatalogue.SearchThread.BookSearchResults;
 import com.eleybourn.bookcatalogue.SearchThread.DataSource;
-import com.eleybourn.bookcatalogue.bcservices.BcService.Methods;
 import com.eleybourn.bookcatalogue.utils.Logger;
 
 import org.json.JSONArray;
@@ -34,7 +32,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Handle all aspects of searching (and ultimately synchronizing with) the Book Catalogue web services for searching.
@@ -166,7 +163,7 @@ public class BcSearchManager {
 			// Make sure we limit requests (no more than 1 request/second/client).
 			BcService.waitUntilRequestAllowed();
 			// Get the JSON result
-			apiResult = BcService.makeServiceCall(url, Methods.Get, new HashMap<>());
+			apiResult = BcService.makeServiceCall(url, Methods.Get, new ArrayList<>()).get(0);
 		} catch (Exception e) {
 			Logger.logError(e, "Service call failed");
 			return;

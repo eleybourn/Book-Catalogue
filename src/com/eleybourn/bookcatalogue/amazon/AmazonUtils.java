@@ -50,7 +50,7 @@ public class AmazonUtils {
 		// Try to setup the API calls; if not possible, just open directly and return
 		try {
 			// Init Amazon API
-			AssociatesAPI.initialize(new AssociatesAPI.Config(AmazonAppKey.KEY, context));				
+			AssociatesAPI.initialize(new AssociatesAPI.Config(AmazonAppKey.KEY, context));
 			linkService = AssociatesAPI.getLinkService();
 			try {
 				linkService.overrideLinkInvocation(wv, url);

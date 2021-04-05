@@ -254,6 +254,8 @@ public class MainMenu extends BookCatalogueActivity {
 	private OnClickListener mMyBooksHandler = new OnClickListener() {
 		@Override public void onClick(View v) { doMyBooks(); }
 	};
+
+
 	/**
 	 * Method to start the book catalogue activity. Can be called from onCreate as well
 	 * as from a menu item.

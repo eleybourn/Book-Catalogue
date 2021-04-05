@@ -2059,7 +2059,28 @@ public class CatalogueDBAdapter {
 		return value;
 		
 	}
-	
+
+	/**
+	 * A helper function to get a single long value (from the first row) from a cursor
+	 *
+	 * @param results The Cursor the extract from
+	 * @param index The index, or column, to extract from
+	 * @return
+	 */
+	private long getLongValue(Cursor results, int index) {
+		long value = 0L;
+		try {
+			if (results != null) {
+				results.moveToFirst();
+				value = results.getLong(index);
+			}
+		} catch (CursorIndexOutOfBoundsException e) {
+			value = 0L;
+		}
+		return value;
+
+	}
+
 	/**
 	 * A helper function to get a single string value (from the first row) from a cursor
 	 * 
@@ -3207,6 +3228,21 @@ public class CatalogueDBAdapter {
 		String user = getStringValue(results, 1);
 		results.close();
 		return user;
+	}
+
+	/**
+	 * This will return the loan id for a given book, if any
+	 *
+	 * @param mRowId The book id to search for
+	 * @return Loan id.
+	 */
+	public long fetchLoanIdByBook(Long mRowId) {
+		String sql = "";
+		sql = KEY_BOOK + "=" + mRowId + "";
+		Cursor results = mDb.query(DB_TB_LOAN, new String[] {"rowid AS rowID", KEY_BOOK, KEY_LOANED_TO}, sql, null, null, null, null);
+		long loanId = getLongValue(results, 0);
+		results.close();
+		return loanId;
 	}
 	
 	/**

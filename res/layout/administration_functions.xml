@@ -113,6 +113,20 @@
             android:drawableLeft="@drawable/ic_menu_archive"
             android:text="@string/send_books_to_goodreads" />
 
+        <!-- Temporary heading for testing backup -->
+        <TextView
+            android:id="@+id/backup_web_label"
+            style="@style/prefs_item"
+            android:drawableLeft="@drawable/ic_menu_save"
+            android:text="Backup to web" />
+
+        <!-- Temporary heading for testing restore from web -->
+        <TextView
+            android:id="@+id/restore_from_web_label"
+            style="@style/prefs_item"
+            android:drawableLeft="@drawable/ic_menu_save"
+            android:text="Restore from web" />
+
         <!-- CREDENTIALS HEADING -->
 
         <com.eleybourn.bookcatalogue.widgets.CapitalizedTextView

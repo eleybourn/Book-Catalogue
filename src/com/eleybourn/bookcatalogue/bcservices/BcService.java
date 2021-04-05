@@ -14,15 +14,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -47,6 +50,7 @@ public class BcService {
 	private static final String SERIES_NAME = "series_name";
 	private static final String SERIES_NUM = "series_num";
 	private static final String SERIES_POSITION = "series_position";
+	private static final String CRLF = "\r\n";
 	/** Sync object */
 	private static final Object mApiSync = new Object();
 	/** Last time API was called; limit to 1 per second */
@@ -57,14 +61,13 @@ public class BcService {
 	 *
 	 * @param url		Service URL
 	 * @param method	Method
-	 * @param params	HashMap of Params
+	 * @param params	List of params
 	 * @return			JSON result
 	 */
 	@SuppressWarnings("WeakerAccess")
-	public static JSONObject makeServiceCall(
+	public static List<JSONObject> makeServiceCall(
 			String url, Methods method,
-			Map<String, String> params)
-	{
+			List<ParamsPair> params) {
 		// Open the URL and return a stream
 		InputStream is;
 		try {
@@ -73,7 +76,6 @@ public class BcService {
 			Logger.logError(e, "Failed to open URL: " + url);
 			return null;
 		}
-
 		// Read the entire stream
 		String response = null;
 		try {
@@ -90,19 +92,35 @@ public class BcService {
 		} catch (Exception e) {
 			Logger.logError(e, "Exception while reading response");
 		}
-
 		// Convert result string to JSON
-		JSONObject json;
-		try {
-			json = new JSONObject(response);
+		List<JSONObject> jsonList = new ArrayList<>();
+		// Check if it is a JSONArray
+		if(response.charAt(0) == '[') {
+			try {
+				JSONArray jsonArray = new JSONArray(response);
+				for(int i = 0; i < jsonArray.length(); i++) {
+					JSONObject json = jsonArray.getJSONObject(i);
+					jsonList.add(json);
+				}
+			} catch (JSONException e) {
+				Logger.logError(e);
+				throw new RuntimeException("Unable to parse API result", e);
+			}
+		} else {
+			try {
+				JSONObject json = new JSONObject(response);
+				jsonList.add(json);
+			} catch (JSONException e) {
+				Logger.logError(e);
+				throw new RuntimeException("Unable to parse API result", e);
+			}
+
+				//}
 			//if (!json.get(API_STATUS).equals(API_OK)) {
 			//	throw new RuntimeException("API call failed: " + json.get(API_REASON));
 			//}
-		} catch (JSONException e) {
-			Logger.logError(e);
-			throw new RuntimeException("Unable to parse API result", e);
 		}
-		return json;
+		return jsonList;
 	}
 
 	/**
@@ -138,57 +156,114 @@ public class BcService {
 		}
 	}
 
-	public enum Methods {
-		Get,
-		Post
-	}
-
 	private static final String UTF8 = "UTF-8";
 	private static final int API_TIMEOUT = 30000;
 
 	private static InputStream openUrl(
 			String urlString, Methods method,
-			Map<String, String> params) throws IOException
+			List<ParamsPair> params) throws IOException
 	{
-		StringBuilder args = new StringBuilder();
-		if (params != null) {
-			for (Map.Entry<String, String> nv : params.entrySet()) {
-				if (args.length() > 0)
-					args.append('&');
-				args.append(URLEncoder.encode(nv.getKey(), UTF8));
-				args.append('=');
-				args.append(URLEncoder.encode(nv.getValue(), UTF8));
-			}
-		}
-
-		URL url;
-		if (method == Methods.Get) {
-			urlString += "?" + args.toString();
-		}
-		url = new URL(urlString);
-
+		URL url = new URL(urlString);
 		HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
 		// Tell the URLConnection to use a SocketFactory from our SSLContext
-		urlConnection.setRequestMethod(method == Methods.Post ? "POST" : "GET");
+		//urlConnection.setRequestMethod(method == Methods.Post ? "POST" : "GET");
+		String requestMethod;
+		switch(method) {
+			case Post:
+				requestMethod = "POST";
+				break;
+			case Delete:
+				requestMethod = "DELETE";
+				break;
+			default:
+				requestMethod = "GET";
+				break;
+		}
+		urlConnection.setRequestMethod(requestMethod);
 		urlConnection.setRequestProperty("Accept-Language", UTF8);
-		// Set a tmeout
+		// Set a timeout
 		urlConnection.setConnectTimeout(API_TIMEOUT);
-
-		//urlConnection.setRequestProperty("Authorization", "Basic " + getApiToken());
+		urlConnection.setRequestProperty("Authorization", "Bearer " + BcBooksApi.getApiToken());
 
 		if (method == Methods.Post) {
+			urlConnection.setUseCaches(false);
 			urlConnection.setDoOutput(true);
+			urlConnection.setDoInput(true);
 			urlConnection.setReadTimeout(API_TIMEOUT);
-			OutputStreamWriter outputStreamWriter = new OutputStreamWriter(urlConnection.getOutputStream());
-			outputStreamWriter.write(args.toString());
-			outputStreamWriter.flush();
+			// Set body type to form-data, and format body accordingly
+			String boundary = "***" + System.currentTimeMillis() + "***";
+			urlConnection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+			OutputStream outputStream = urlConnection.getOutputStream();
+			OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, "utf-8");
+			if (params != null) {
+				Iterator<ParamsPair> it = params.iterator();
+				while(it.hasNext()) {
+					ParamsPair pair = it.next();
+					String key = pair.getKey();
+					outputStreamWriter.append("--" + boundary + CRLF);
+					if (key.equals("thumbnail")) {
+						addFilePart(key, pair.getValue(), outputStream, outputStreamWriter);
+					} else {
+						addFormField(key, pair.getValue(), outputStreamWriter);
+					}
+				}
+			}
+			outputStreamWriter.append("--" + boundary + "--").append(CRLF);
+			outputStreamWriter.close();
 		}
-
 		int responseCode = urlConnection.getResponseCode();
 		if (responseCode >= 300) {
 			throw new RuntimeException("Unexpected response from the server: " + responseCode);
 		}
 		return urlConnection.getInputStream();
+	}
+
+	/**
+	 * Inspired by https://stackoverflow.com/questions/34276466/simple-httpurlconnection-post-file-multipart-form-data-from-android-to-google-bl
+	 * Adds a form field to the request
+	 *
+	 * @param name  field name
+	 * @param value field value
+	 */
+	public static void addFormField(String name, String value, OutputStreamWriter writer) throws IOException {
+		writer.append("Content-Disposition: form-data; name=\"" + name + "\"" + CRLF);
+		writer.append(CRLF);
+		writer.append(value);
+		writer.append(CRLF);
+		writer.flush();
+	}
+
+	/**
+	 * Adds a upload file section to the request
+	 *
+	 * @param fieldName  name attribute in <input type="file" name="..." />
+	 * @param filePath a path to a File to be uploaded
+	 * @throws IOException
+	 */
+	public static void addFilePart(String fieldName, String filePath, OutputStream outputStream, OutputStreamWriter writer)
+			throws IOException {
+		File thumbnail = new File(filePath);
+		writer.append(
+				"Content-Disposition: form-data; name=\"" + fieldName
+						+ "\"; filename=\"" + thumbnail.getName() + "\"")
+				.append(CRLF);
+		writer.append(
+				"Content-Type: image/jpeg")
+				.append(CRLF);
+		writer.append("Content-Transfer-Encoding: binary").append(CRLF);
+		writer.append(CRLF);
+		writer.flush();
+
+		FileInputStream inputStream = new FileInputStream(thumbnail);
+		byte[] buffer = new byte[4096];
+		int bytesRead = -1;
+		while ((bytesRead = inputStream.read(buffer)) != -1) {
+			outputStream.write(buffer, 0, bytesRead);
+		}
+		outputStream.flush();
+		inputStream.close();
+		writer.append(CRLF);
+		writer.flush();
 	}
 
 	/**
@@ -209,6 +284,9 @@ public class BcService {
 		while (keysIter.hasNext()) {
 			String key = keysIter.next();
 			String value = result.getString(key);
+			if(value == null) {
+				continue;
+			}
 			switch (key) {
 				case ISBN:
 					addIfNotPresent(bookData, CatalogueDBAdapter.KEY_ISBN, value);

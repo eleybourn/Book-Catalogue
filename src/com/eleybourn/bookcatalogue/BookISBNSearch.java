@@ -24,6 +24,7 @@ import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
@@ -107,6 +108,9 @@ public class BookISBNSearch extends ActivityWithTasks
 
 	// Object managing current search.
 	long mSearchManagerId = 0;
+
+	// UI Checker to help data loss patch
+	private int UICheck;
 
 	// A list of author names we have already searched for in this session
 	ArrayList<String> mAuthorNames = new ArrayList<>();
@@ -200,6 +204,7 @@ public class BookISBNSearch extends ActivityWithTasks
 				mIsbnText.setText(mIsbn);
 				go(mIsbn, "", "");
 			} else if (by.equals("isbn")) {
+				UICheck = 1;
 				// System.out.println(mId + " OnCreate BY ISBN");
 				setContentView(R.layout.isbn_search);
 				mIsbnText = (EditText) findViewById(R.id.isbn);
@@ -279,6 +284,7 @@ public class BookISBNSearch extends ActivityWithTasks
 					}
 				});
 			} else if (by.equals("name")) {
+				UICheck = 2;
 				// System.out.println(mId + " OnCreate BY NAME");
 				setContentView(R.layout.name_search);
 				this.setTitle(R.string.search_hint);
@@ -619,6 +625,7 @@ public class BookISBNSearch extends ActivityWithTasks
 				getTaskManager().doProgress(getString(R.string.adding_book_elipsis));
 				createBook(bookData);
 				// Clear the data entry fields ready for the next one
+				isSubmit = true;
 				clearFields();
 			}
 			return true;
@@ -630,10 +637,34 @@ public class BookISBNSearch extends ActivityWithTasks
 		}
 	}
 
+	private SharedPreferences spGen;
+
+	private boolean isSubmit;
+
 	@Override
 	protected void onPause() {
 		Tracker.enterOnPause(this);
 		super.onPause();
+		SharedPreferences.Editor spGenEditor = spGen.edit();
+		if(UICheck == 1) {
+			CheckBox allowAsinCb = findViewById(R.id.asinCheckbox);
+			if (isSubmit) {
+				spGenEditor.putString("editISBN", "");
+				spGenEditor.putBoolean("isASINChecked", false);
+			} else {
+				spGenEditor.putString("editISBN", mIsbnText.getText().toString());
+				spGenEditor.putBoolean("isASINChecked", allowAsinCb.isChecked());
+			}
+		}else if(UICheck == 2){
+			if (isSubmit) {
+				spGenEditor.putString("editTitle", "");
+				spGenEditor.putString("editAuthor", "");
+			} else {
+				spGenEditor.putString("editTitle", mTitleText.getText().toString());
+				spGenEditor.putString("editAuthor", mAuthorText.getText().toString());
+			}
+		}
+		spGenEditor.commit();
 		if (mSearchManagerId != 0)
 			SearchManager.getMessageSwitch().removeListener(mSearchManagerId, mSearchHandler);
 		Tracker.exitOnPause(this);
@@ -643,6 +674,16 @@ public class BookISBNSearch extends ActivityWithTasks
 	protected void onResume() {
 		Tracker.enterOnResume(this);
 		super.onResume();
+		spGen = getSharedPreferences("BookISBNSearch", MODE_PRIVATE);
+		if(UICheck == 1) {
+			CheckBox allowAsinCb = findViewById(R.id.asinCheckbox);
+			allowAsinCb.setChecked(spGen.getBoolean("isASINChecked", false));
+			mIsbnText.setText(spGen.getString("editISBN", ""));
+		}else if(UICheck == 2){
+			mTitleText.setText(spGen.getString("editTitle", ""));
+			mAuthorText.setText(spGen.getString("editAuthor", ""));
+		}
+		isSubmit = false;
 		if (mSearchManagerId != 0)
 			SearchManager.getMessageSwitch().addListener(mSearchManagerId, mSearchHandler, true);
 		Tracker.exitOnResume(this);

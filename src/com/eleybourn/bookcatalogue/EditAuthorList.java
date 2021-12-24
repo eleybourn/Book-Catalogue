@@ -24,8 +24,10 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -107,6 +109,7 @@ public class EditAuthorList extends EditObjectList<Author> {
 				return;							
 			}
 
+			isSubmit = true;
 			mList.add(a);
 			mAdapter.notifyDataSetChanged();
 			t.setText("");
@@ -245,4 +248,30 @@ public class EditAuthorList extends EditObjectList<Author> {
 			return true;
 		}
 	};
+
+	private SharedPreferences spGen;
+
+	private boolean isSubmit;
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		final AutoCompleteTextView editAuthorTV = ((AutoCompleteTextView)EditAuthorList.this.findViewById(R.id.author));
+		SharedPreferences.Editor spGenEditor = spGen.edit();
+		if (isSubmit) {
+			spGenEditor.putString("editAuthor", "");
+		} else {
+			spGenEditor.putString("editAuthor", editAuthorTV.getText().toString());
+		}
+		spGenEditor.commit();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		spGen = getSharedPreferences("EditAuthorList", MODE_PRIVATE);
+		final AutoCompleteTextView editAuthorTV = ((AutoCompleteTextView)EditAuthorList.this.findViewById(R.id.author));
+		editAuthorTV.setText(spGen.getString("editAuthor", ""));
+		isSubmit = false;
+	}
 }

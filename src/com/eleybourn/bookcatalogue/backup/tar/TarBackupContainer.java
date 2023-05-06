@@ -19,49 +19,56 @@
  */
 package com.eleybourn.bookcatalogue.backup.tar;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.regex.Pattern;
-
+import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.backup.BackupContainer;
 import com.eleybourn.bookcatalogue.backup.BackupReader;
 import com.eleybourn.bookcatalogue.backup.BackupWriter;
 import com.eleybourn.bookcatalogue.utils.Logger;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.regex.Pattern;
+
+import androidx.documentfile.provider.DocumentFile;
+
 /**
  * Class to handle TAR archive storage.
- * 
+ * <p>
  * TAR files have some limitations: no application-defined metadata can be stored with the files, the
  * index is at the start, so it helps to know the entity size before it is written, and they usually
  * do not support random access.
- * 
+ * <p>
  * So we:
- * 
+ * <p>
  * - use "file names" to encode special meaning (eg. "books*.csv" is always an export file).
  * - use intermediate temp files so we can out sizes
  * 
  * @author pjw
  */
 public class TarBackupContainer implements BackupContainer {
-	/** Used in the storage and identifcation of data store in TAR file */
+	/** Used in the storage and identification of data store in TAR file */
 	public static final String BOOKS_FILE = "books.csv";
-	/** Used in the storage and identifcation of data store in TAR file */
+	/** Used in the storage and identification of data store in TAR file */
 	public static final Pattern BOOKS_PATTERN = Pattern.compile("^books_.*\\.csv$", Pattern.CASE_INSENSITIVE);
-	/** Used in the storage and identifcation of data store in TAR file */
+	/** Used in the storage and identification of data store in TAR file */
 	public static final String DB_FILE = "snapshot.db";
-	/** Used in the storage and identifcation of data store in TAR file */
+	/** Used in the storage and identification of data store in TAR file */
 	public static final String INFO_FILE = "INFO.xml";
-	/** Used in the storage and identifcation of data store in TAR file */
+	/** Used in the storage and identification of data store in TAR file */
 	public static final Pattern INFO_PATTERN = Pattern.compile("^INFO_.*\\.xml$", Pattern.CASE_INSENSITIVE);
-	/** Used in the storage and identifcation of data store in TAR file */
+	/** Used in the storage and identification of data store in TAR file */
 	public static final String STYLE_PREFIX = "style.blob.";
-	/** Used in the storage and identifcation of data store in TAR file */
+	/** Used in the storage and identification of data store in TAR file */
 	public static final Pattern STYLE_PATTERN = Pattern.compile("^" + STYLE_PREFIX + "[0-9]*$", Pattern.CASE_INSENSITIVE);
-	/** Used in the storage and identifcation of data store in TAR file */
+	/** Used in the storage and identification of data store in TAR file */
 	public static final String PREFERENCES = "preferences";
 
 	/** Backup file spec */
-	public File mFile;
+	private final DocumentFile mDocFile;
+
 	/** UNICODE stream type for read/write text files */
 	public static String UTF8 = "utf8";
 	/** Buffer size for buffered streams */
@@ -70,19 +77,37 @@ public class TarBackupContainer implements BackupContainer {
 	/**
 	 * Constructor
 	 * 
-	 * @param file
+	 * @param file		File to use
 	 */
 	public TarBackupContainer(File file) {
-		mFile = file;
+		this(DocumentFile.fromFile(file));
 	}
 
 	/**
-	 * Accessor
-	 * 
-	 * @return
+	 * Constructor
+	 *
+	 * @param file		DocumentFile to use
 	 */
-	public File getFile() {
-		return mFile;
+	public TarBackupContainer(DocumentFile file) {
+		mDocFile = file;
+	}
+
+	/**
+	 * Get the input stream for the associated file.
+	 * @return InputStream for file
+	 * @throws FileNotFoundException	If file not found
+	 */
+	public InputStream getInputStream() throws FileNotFoundException {
+		return BookCatalogueApp.context.getContentResolver().openInputStream(mDocFile.getUri());
+	}
+
+	/**
+	 * Get the output stream for the associated file.
+	 * @return OutputStream for file
+	 * @throws FileNotFoundException	If file not found
+	 */
+	public OutputStream getOutputStream() throws FileNotFoundException {
+		return BookCatalogueApp.context.getContentResolver().openOutputStream(mDocFile.getUri());
 	}
 
 	@Override

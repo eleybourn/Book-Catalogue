@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
     <!--android:Theme.Light-->
-    <style name="AppBaseTheme" parent="Theme.AppCompat">
-    </style>
-    <style name="AppTheme" parent="AppBaseTheme">
-    </style>
+    <style name="AppBaseTheme" parent="Theme.AppCompat"></style>
+
+    <style name="AppTheme" parent="AppBaseTheme"></style>
 
     <!-- Style for item in preferences lists -->
     <style name="prefs_item">
@@ -57,11 +56,12 @@
         <item name="android:paddingLeft">@dimen/padding_book_details_info</item>
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
     </style>
+
     <style name="fileDetailsTextStyle" parent="bookDetailsTextStyle">
         <!--  selectable makes clicking not work well -->
         <item name="android:textIsSelectable">false</item>
     </style>
-    
+
     <!-- Style for text header data (typically title/author) in read-only book details -->
     <style name="bookDetailsHeaderStyle">
         <item name="android:textIsSelectable">true</item>
@@ -82,7 +82,7 @@
         <!--  selectable makes clicking not work well -->
         <item name="android:textIsSelectable">false</item>
     </style>
-    
+
     <style name="editorFieldHeaderStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -103,13 +103,19 @@
         <item name="android:inputType">textCapWords</item>
     </style>
 
-    <style name="personalNameTextEntry" parent="@style/localeBasedTextEntry">
-    </style>
-    
-    <style name="bookOrSeriesTitleTextEntry" parent="@style/localeBasedTextEntry">
+    <style name="personalNameTextEntry" parent="@style/localeBasedTextEntry"></style>
+
+    <style name="bookOrSeriesTitleTextEntry" parent="@style/localeBasedTextEntry"></style>
+
+    <style name="languageTextEntry" parent="@style/localeBasedTextEntry"></style>
+
+    <style name="Widget.AppTheme.ActionBar.Fullscreen" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/black_overlay</item>
     </style>
 
-    <style name="languageTextEntry" parent="@style/localeBasedTextEntry">
+    <style name="Widget.AppTheme.ButtonBar.Fullscreen" parent="">
+        <item name="android:background">@color/black_overlay</item>
+        <item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
     </style>
 
 </resources>

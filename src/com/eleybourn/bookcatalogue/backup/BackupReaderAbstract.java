@@ -42,7 +42,7 @@ import com.eleybourn.bookcatalogue.utils.StorageUtils;
  */
 public abstract class BackupReaderAbstract implements BackupReader {
 	private CatalogueDBAdapter mDbHelper;
-	private final File mSharedStorage = StorageUtils.getSharedStorage();
+	private final File mCoversDir = StorageUtils.getBCCovers();
 
 	/**
 	 * Constructor
@@ -136,20 +136,20 @@ public abstract class BackupReaderAbstract implements BackupReader {
 		// Now do the import
 		InputStream in = entity.getStream();
 		CsvImporter importer = new CsvImporter();
-		importer.importBooks(in, null, importListener, importFlags);
+		importer.importBooks(in, importListener, importFlags);
 	}
 
 	/**
 	 * Restore a cover file.
 	 * 
-	 * @param listener
-	 * @param cover
-
+	 * @param listener	Listener
+	 * @param cover		Entity containing the cover image
+	 * @param flags		Import flags
 	 * @throws IOException
 	 */
 	private void restoreCover(BackupReaderListener listener, ReaderEntity cover, int flags) throws IOException {
 		listener.step("Processing Covers...", 1);
-		final File curr = new File(mSharedStorage + "/" + cover.getName());
+		final File curr = new File(mCoversDir + "/" + cover.getName());
 		final Date covDate = cover.getDateModified();
 		if ( (flags & Importer.IMPORT_NEW_OR_UPDATED) != 0) {			
 			if (curr.exists()) {
@@ -159,7 +159,7 @@ public abstract class BackupReaderAbstract implements BackupReader {
 				}
 			}
 		}
-		cover.saveToDirectory(mSharedStorage);
+		cover.saveToDirectory(mCoversDir);
 		curr.setLastModified(covDate.getTime());
 	}
 

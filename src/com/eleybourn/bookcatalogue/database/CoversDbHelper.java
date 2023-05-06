@@ -67,7 +67,7 @@ public class CoversDbHelper {
 	private SqlStatementManager mStatements = new SqlStatementManager();
 
 	/** DB location */
-	private static final String COVERS_DATABASE_NAME = StorageUtils.getSharedStoragePath() + "/covers.db";
+	private static final String COVERS_DATABASE_NAME = StorageUtils.getBCData() + "/covers.db";
 	/** DB Version */
 	private static final int COVERS_DATABASE_VERSION = 1;
 

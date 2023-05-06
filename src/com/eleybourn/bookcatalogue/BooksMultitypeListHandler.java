@@ -841,7 +841,7 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 				} else {
 					addMenuItem(menu, R.id.MENU_MARK_AS_UNREAD, R.string.menu_mark_as_unread, R.drawable.btn_uncheck_clipped);
 				}
-				addMenuItem(menu, R.id.MENU_SEND_BOOK_TO_GR, R.string.edit_book_send_to_gr, R.drawable.ic_menu_goodreads_holo_dark);
+				//addMenuItem(menu, R.id.MENU_SEND_BOOK_TO_GR, R.string.edit_book_send_to_gr, R.drawable.ic_menu_goodreads_holo_dark);
 				break;
 			}
 			case ROW_KIND_AUTHOR:

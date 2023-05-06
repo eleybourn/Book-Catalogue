@@ -21,7 +21,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.1'
+        classpath 'com.android.tools.build:gradle:7.4.2'
     }
 }
 
@@ -34,15 +34,18 @@ allprojects {
 }
 
 dependencies {
-    implementation 'com.android.support:support-v4:28.0.0'
-    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
 //    implementation "com.android.support:support-core-utils:28.0.3"
 //    implementation "com.android.support:android.support.v7.app.ActionBar:28.0.0"
     // Compile all libraries from 'libs' folder
     implementation fileTree(include: '*.jar', dir: 'libs')
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'com.google.android.gms:play-services-vision:20.1.3'
 }
 
 android {
+        namespace 'com.eleybourn.bookcatalogue'
 //    signingConfigs {
 //        Default {
 //            storeFile file('O:\\Documents\\BookCatalogue Dev\\KeyStore\\bc_key_evan')
@@ -60,14 +63,15 @@ android {
 //            signingConfig signingConfigs.Default
 //        }
 //    }
-    compileSdkVersion 28
-    buildToolsVersion '28.0.3'
-    lintOptions {
-        disable 'MissingTranslation'
-    }
+    compileSdkVersion 33
 
     dexOptions{
         javaMaxHeapSize "2g"
+    }
+    packagingOptions {
+        resources {
+            excludes += ['META-INF/NOTICE.txt', 'META-INF/LICENSE.txt']
+        }
     }
 
     // !!! Commented to use values from the manifest
@@ -76,10 +80,6 @@ android {
 //        targetSdkVersion 16
 //        versionCode 169
 //    }
-    packagingOptions {
-        exclude 'META-INF/NOTICE.txt'
-        exclude 'META-INF/LICENSE.txt'
-    }
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -93,7 +93,7 @@ android {
     }
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 33
     }
 
     flavorDimensions "distributor"
@@ -116,5 +116,13 @@ android {
     compileOptions {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
+    }
+    lint {
+        disable 'MissingTranslation'
+    }
+    buildFeatures {
+        renderScript true
+        aidl true
+        viewBinding false
     }
 }

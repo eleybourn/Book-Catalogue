@@ -1,61 +1,77 @@
 package com.eleybourn.bookcatalogue.dialogs;
 
-import java.io.File;
-import java.util.Date;
-
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 
+import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.backup.Exporter;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueDialogFragment;
 import com.eleybourn.bookcatalogue.utils.Logger;
 
+import java.io.File;
+import java.util.Date;
+
+import androidx.annotation.NonNull;
+import androidx.documentfile.provider.DocumentFile;
+
 public class ExportTypeSelectionDialogFragment extends BookCatalogueDialogFragment {
 	private int mDialogId;
-	private File mFile;
+	private DocumentFile mDocFile;
 
 	/**
 	 * Listener interface to receive notifications when dialog is closed by any means.
 	 * 
 	 * @author pjw
 	 */
-	public static interface OnExportTypeSelectionDialogResultListener {
-		public void onExportTypeSelectionDialogResult(int dialogId, BookCatalogueDialogFragment dialog, ExportSettings settings);
+	public interface OnExportTypeSelectionDialogResultListener {
+		void onExportTypeSelectionDialogResult(int dialogId, BookCatalogueDialogFragment dialog, ExportSettings settings);
 	}
+//	public interface ExportTypeSelectionDialogResultListenerProvider {
+//		OnExportTypeSelectionDialogResultListener getExportTypeSelectionDialogResultListener();
+//	}
 
 	public static class ExportSettings {
-		public File 	file;
-		public int		options;
-		public Date		dateFrom;
+		public DocumentFile 	file;
+		public int				options;
+		public Date				dateFrom;
 	}
 
 	/**
 	 * Constructor
 	 * 
 	 * @param dialogId	ID passed by caller. Can be 0, will be passed back in event
-	 * @param titleId	Title to display
+	 * @param file	file to use for output
 	 *
 	 * @return			Created fragment
 	 */
 	public static ExportTypeSelectionDialogFragment newInstance(int dialogId, File file) {
 		ExportTypeSelectionDialogFragment frag = new ExportTypeSelectionDialogFragment();
-        Bundle args = new Bundle();
-        args.putInt("dialogId", dialogId);
-        args.putString("fileSpec", file.getAbsolutePath());
-        frag.setArguments(args);
-        return frag;
-    }
+		Bundle args = new Bundle();
+		args.putInt("dialogId", dialogId);
+		args.putString("fileSpec", file.getAbsolutePath());
+		frag.setArguments(args);
+		return frag;
+	}
+	public static ExportTypeSelectionDialogFragment newInstance(int dialogId, DocumentFile file) {
+		ExportTypeSelectionDialogFragment frag = new ExportTypeSelectionDialogFragment();
+		Bundle args = new Bundle();
+		args.putInt("dialogId", dialogId);
+		args.putString("fileUri", file.getUri().toString());
+		frag.setArguments(args);
+		return frag;
+	}
 
 	/**
 	 * Ensure activity supports event
 	 */
 	@Override
-	public void onAttach(Activity a) {
+	public void onAttach(@NonNull Context a) {
 		super.onAttach(a);
 
 		if (! (a instanceof OnExportTypeSelectionDialogResultListener))
@@ -63,17 +79,13 @@ public class ExportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
 		
 	}
 
-	private OnClickListener mRowClickListener = new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			handleClick(v);
-		}};
+	private final OnClickListener mRowClickListener = this::handleClick;
 
 	/**
 	 * Utility routine to set the OnClickListener for a given view item.
 	 * 
-	 * @param id		Sub-View ID
-	 * @param l			Listener
+	 * @param root		Root view to search
+	 * @param id		Id of view to watch
 	 */
 	private void setOnClickListener(View root, int id) {
 		View v = root.findViewById(id);
@@ -84,12 +96,15 @@ public class ExportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
 	/**
 	 * Create the underlying dialog
 	 */
-    @Override
+    @NonNull
+	@Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-    	mDialogId = getArguments().getInt("dialogId");
-    	mFile = new File(getArguments().getString("fileSpec"));
+		Bundle args = requireArguments();
+    	mDialogId = args.getInt("dialogId");
+		Uri uri = Uri.parse(args.getString("fileUri"));
+		mDocFile = DocumentFile.fromSingleUri(BookCatalogueApp.context, uri);
 
-        View v = getActivity().getLayoutInflater().inflate(R.layout.export_type_selection, null);
+        View v = requireActivity().getLayoutInflater().inflate(R.layout.export_type_selection, null);
 		AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setView(v).setTitle(R.string.backup_to_archive).create();
 		alertDialog.setIcon(R.drawable.ic_menu_help);
 		alertDialog.setCanceledOnTouchOutside(false);
@@ -99,17 +114,17 @@ public class ExportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
 
         return alertDialog;
     }
-    
+
     private void handleClick(View v) {
     	try {
     		if (v.getId() == R.id.advanced_row) {
-    			ExportAdvancedDialogFragment frag = ExportAdvancedDialogFragment.newInstance(1, mFile);
-    			frag.show(getActivity().getSupportFragmentManager(), null);
+    			ExportAdvancedDialogFragment frag = ExportAdvancedDialogFragment.newInstance(1, mDocFile);
+    			frag.show(requireActivity().getSupportFragmentManager(), null);
     		} else {
         		OnExportTypeSelectionDialogResultListener a = (OnExportTypeSelectionDialogResultListener)getActivity();
         		if (a != null) {
         			ExportSettings settings = new ExportSettings();
-        			settings.file = mFile;
+        			settings.file = mDocFile;
         			settings.options = Exporter.EXPORT_ALL;
     	        	a.onExportTypeSelectionDialogResult(mDialogId, this, settings);
         		}

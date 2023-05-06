@@ -20,34 +20,33 @@
 
 package com.eleybourn.bookcatalogue;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.content.FileProvider;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.booklist.BooklistStyles;
-import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
-import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogFileItem;
-import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogItem;
-import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogOnClickListener;
-import com.eleybourn.bookcatalogue.filechooser.BackupChooser;
-import com.eleybourn.bookcatalogue.goodreads.GoodreadsRegister;
-import com.eleybourn.bookcatalogue.goodreads.GoodreadsUtils;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueDialogFragment;
+import com.eleybourn.bookcatalogue.dialogs.ExportTypeSelectionDialogFragment.ExportSettings;
+import com.eleybourn.bookcatalogue.dialogs.ExportTypeSelectionDialogFragment.OnExportTypeSelectionDialogResultListener;
+import com.eleybourn.bookcatalogue.dialogs.ImportTypeSelectionDialogFragment;
+import com.eleybourn.bookcatalogue.dialogs.ImportTypeSelectionDialogFragment.OnImportTypeSelectionDialogResultListener;
+import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment;
+import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment.OnMessageDialogResultListener;
 import com.eleybourn.bookcatalogue.utils.HintManager;
 import com.eleybourn.bookcatalogue.utils.Logger;
-import com.eleybourn.bookcatalogue.utils.StorageUtils;
 import com.eleybourn.bookcatalogue.utils.Utils;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts.CreateDocument;
+import androidx.activity.result.contract.ActivityResultContracts.OpenDocument;
+import androidx.documentfile.provider.DocumentFile;
 
 /**
  * 
@@ -57,9 +56,11 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * 
  * @author Evan Leybourn
  */
-public class AdministrationFunctions extends ActivityWithTasks {
-	private static final int ACTIVITY_BOOKSHELF=1;
-	private static final int ACTIVITY_FIELD_VISIBILITY=2;
+public class AdministrationFunctions extends ActivityWithTasks
+		implements OnMessageDialogResultListener,
+				   OnImportTypeSelectionDialogResultListener,
+				   OnExportTypeSelectionDialogResultListener
+{
 	private CatalogueDBAdapter mDbHelper;
 	private boolean finish_after = false;
 	private boolean mExportOnStartup = false;
@@ -76,6 +77,9 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		registerOldFilesTreeCopyLauncher();
+		registerBackupExportPickerLauncher(ID.DIALOG_OPEN_IMPORT_TYPE);
+		registerBackupImportPickerLauncher();
 		try {
 			super.onCreate(savedInstanceState);
 			setTitle(R.string.administration_label);
@@ -85,7 +89,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			Bundle extras = getIntent().getExtras();
 			if (extras != null && extras.containsKey(DOAUTO)) {
 				try {
-					if (extras.getString(DOAUTO).equals("export")) {
+					if (extras.getString(DOAUTO,"").equals("export")) {
 						finish_after = true;
 						mExportOnStartup = true;
 					} else {
@@ -115,171 +119,109 @@ public class AdministrationFunctions extends ActivityWithTasks {
 		View bookshelf = findViewById(R.id.bookshelf_label);
 		// Make line flash when clicked.
 		bookshelf.setBackgroundResource(android.R.drawable.list_selector_background);
-		bookshelf.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				manageBookselves();
-				return;
-			}
-		});
+		bookshelf.setOnClickListener(v -> manageBookselves());
 		
 		/* Manage Fields Link */
 		View fields = findViewById(R.id.fields_label);
 		// Make line flash when clicked.
 		fields.setBackgroundResource(android.R.drawable.list_selector_background);
-		fields.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				manageFields();
-				return;
-			}
-		});
+		fields.setOnClickListener(v -> manageFields());
 		
 		/* Export Link */
 		View export = findViewById(R.id.export_label);
 		// Make line flash when clicked.
 		export.setBackgroundResource(android.R.drawable.list_selector_background);
-		export.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				exportData();
-				return;
-			}
-		});
+		export.setOnClickListener(v -> launchCsvExportPicker());
 		
 		/* Import Link */
 		View imports = findViewById(R.id.import_label);
 		// Make line flash when clicked.
 		imports.setBackgroundResource(android.R.drawable.list_selector_background);
-		imports.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// Verify - this can be a dangerous operation
-				AlertDialog alertDialog = new AlertDialog.Builder(AdministrationFunctions.this).setMessage(R.string.import_alert).create();
-				alertDialog.setTitle(R.string.import_data);
-				alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-				alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, AdministrationFunctions.this.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						importData();
-						//Toast.makeText(pthis, importUpdated + " Existing, " + importCreated + " Created", Toast.LENGTH_LONG).show();
-						return;
-					}
-				}); 
-				alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, AdministrationFunctions.this.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						//do nothing
-						return;
-					}
-				}); 
-				alertDialog.show();
-				return;
-			}
-		});
+		imports.setOnClickListener(
+				v -> {
+					// Verify - this can be a dangerous operation
+					AlertDialog alertDialog = new AlertDialog.Builder(AdministrationFunctions.this).setMessage(R.string.import_alert).create();
+					alertDialog.setTitle(R.string.import_data);
+					alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
+					alertDialog.setButton(
+							AlertDialog.BUTTON_POSITIVE,
+							AdministrationFunctions.this.getResources().getString(R.string.ok),
+							(dialog, which) -> {
+								launchCsvImportPicker();
+								//Toast.makeText(pthis, importUpdated + " Existing, " + importCreated + " Created", Toast.LENGTH_LONG).show();
+							});
+					alertDialog.setButton(
+							AlertDialog.BUTTON_NEGATIVE,
+							AdministrationFunctions.this.getResources().getString(R.string.cancel),
+							(dialog, which) -> {
+								//do nothing
+							});
+					alertDialog.show();
+				});
 
-		/* Goodreads SYNC Link */
-		{
-			View v = findViewById(R.id.sync_with_goodreads_label);
-			// Make line flash when clicked.
-			v.setBackgroundResource(android.R.drawable.list_selector_background);
-			v.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					GoodreadsUtils.importAllFromGoodreads(AdministrationFunctions.this, true);
-					return;
-				}
-			});
-		}
-
-		/* Goodreads IMPORT Link */
-		{
-			View v = findViewById(R.id.import_all_from_goodreads_label);
-			// Make line flash when clicked.
-			v.setBackgroundResource(android.R.drawable.list_selector_background);
-			v.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					GoodreadsUtils.importAllFromGoodreads(AdministrationFunctions.this, false);
-					return;
-				}
-			});
-		}
-
-		/* Goodreads EXPORT Link */
-		{
-			View v = findViewById(R.id.send_books_to_goodreads_label);
-			// Make line flash when clicked.
-			v.setBackgroundResource(android.R.drawable.list_selector_background);
-			v.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					GoodreadsUtils.sendBooksToGoodreads(AdministrationFunctions.this);
-					return;
-				}
-			});
-		}
-
-		/* LibraryThing auth Link */
-		View ltAuth = findViewById(R.id.librarything_auth);
-		// Make line flash when clicked.
-		ltAuth.setBackgroundResource(android.R.drawable.list_selector_background);
-		ltAuth.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent i = new Intent(AdministrationFunctions.this, AdministrationLibraryThing.class);
-				startActivity(i);
-				return;
-			}
-		});
-
-		/* Goodreads auth Link */
-		View grAuth = findViewById(R.id.goodreads_auth);
-		// Make line flash when clicked.
-		grAuth.setBackgroundResource(android.R.drawable.list_selector_background);
-		grAuth.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent i = new Intent(AdministrationFunctions.this, GoodreadsRegister.class);
-				startActivity(i);
-				return;
-			}
-		});
+		///* Goodreads SYNC Link */
+		//{
+		//	View v = findViewById(R.id.sync_with_goodreads_label);
+		//	// Make line flash when clicked.
+		//	v.setBackgroundResource(android.R.drawable.list_selector_background);
+		//	v.setOnClickListener(v1 -> GoodreadsUtils.importAllFromGoodreads(AdministrationFunctions.this, true));
+		//}
+		//
+		///* Goodreads IMPORT Link */
+		//{
+		//	View v = findViewById(R.id.import_all_from_goodreads_label);
+		//	// Make line flash when clicked.
+		//	v.setBackgroundResource(android.R.drawable.list_selector_background);
+		//	v.setOnClickListener(v12 -> GoodreadsUtils.importAllFromGoodreads(AdministrationFunctions.this, false));
+		//}
+		//
+		///* Goodreads EXPORT Link */
+		//{
+		//	View v = findViewById(R.id.send_books_to_goodreads_label);
+		//	// Make line flash when clicked.
+		//	v.setBackgroundResource(android.R.drawable.list_selector_background);
+		//	v.setOnClickListener(v13-> GoodreadsUtils.sendBooksToGoodreads(AdministrationFunctions.this));
+		//}
+		//
+		///* LibraryThing auth Link */
+		//View ltAuth = findViewById(R.id.librarything_auth);
+		//// Make line flash when clicked.
+		//ltAuth.setBackgroundResource(android.R.drawable.list_selector_background);
+		//ltAuth.setOnClickListener(v -> {
+		//	Intent i = new Intent(AdministrationFunctions.this, AdministrationLibraryThing.class);
+		//	startActivity(i);
+		//});
+		//
+		///* Goodreads auth Link */
+		//View grAuth = findViewById(R.id.goodreads_auth);
+		//// Make line flash when clicked.
+		//grAuth.setBackgroundResource(android.R.drawable.list_selector_background);
+		//grAuth.setOnClickListener(v -> {
+		//	Intent i = new Intent(AdministrationFunctions.this, GoodreadsRegister.class);
+		//	startActivity(i);
+		//});
 
 		/* Other Prefs Link */
 		View otherPrefs = findViewById(R.id.other_prefs_label);
 		// Make line flash when clicked.
 		otherPrefs.setBackgroundResource(android.R.drawable.list_selector_background);
-		otherPrefs.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent i = new Intent(AdministrationFunctions.this, OtherPreferences.class);
-				startActivity(i);
-				return;
-			}
+		otherPrefs.setOnClickListener(v -> {
+			Intent i = new Intent(AdministrationFunctions.this, OtherPreferences.class);
+			startActivity(i);
 		});
 
 		/* Book List Preferences Link */
 		View blPrefs = findViewById(R.id.booklist_preferences_label);
 		// Make line flash when clicked.
 		blPrefs.setBackgroundResource(android.R.drawable.list_selector_background);
-		blPrefs.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				BookCatalogueApp.startPreferencesActivity(AdministrationFunctions.this);
-				return;
-			}
-		});
+		blPrefs.setOnClickListener(v -> BookCatalogueApp.startPreferencesActivity(AdministrationFunctions.this));
 		
 		// Edit Book list styles
 		{
-			View v = findViewById(R.id.edit_styles_label);
+			View lbl = findViewById(R.id.edit_styles_label);
 			// Make line flash when clicked.
-			v.setBackgroundResource(android.R.drawable.list_selector_background);
-			v.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					BooklistStyles.startEditActivity(AdministrationFunctions.this);
-				}
-			});
+			lbl.setBackgroundResource(android.R.drawable.list_selector_background);
+			lbl.setOnClickListener(v -> BooklistStyles.startEditActivity(AdministrationFunctions.this));
 		}
 		
 		{
@@ -287,13 +229,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			View thumb = findViewById(R.id.thumb_label);
 			// Make line flash when clicked.
 			thumb.setBackgroundResource(android.R.drawable.list_selector_background);
-			thumb.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					updateThumbnails();
-					return;
-				}
-			});
+			thumb.setOnClickListener(v -> updateThumbnails());
 		}
 
 		{
@@ -302,89 +238,67 @@ public class AdministrationFunctions extends ActivityWithTasks {
 			View backup = findViewById(R.id.backup_label);
 			// Make line flash when clicked.
 			backup.setBackgroundResource(android.R.drawable.list_selector_background);
-			backup.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					mDbHelper.backupDbFile();
-					Toast.makeText(AdministrationFunctions.this, R.string.backup_success, Toast.LENGTH_LONG).show();
-					return;
-				}
+			backup.setOnClickListener(v -> {
+				mDbHelper.backupDbFile();
+				Toast.makeText(AdministrationFunctions.this, R.string.backup_success, Toast.LENGTH_LONG).show();
 			});
 
 		}
 
 		{
-			/* Tasks setup Link */
-			View v = findViewById(R.id.background_tasks_label);
+			/* Import old files */
+			View imp = findViewById(R.id.import_old_files_label);
 			// Make line flash when clicked.
-			v.setBackgroundResource(android.R.drawable.list_selector_background);
-			v.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					showBackgroundTasks();
-					return;
-				}
-			});
+			imp.setBackgroundResource(android.R.drawable.list_selector_background);
+			imp.setOnClickListener(v -> startImportOldFiles());
 		}
+
+		//{
+		//	/* Tasks setup Link */
+		//	View tasks = findViewById(R.id.background_tasks_label);
+		//	// Make line flash when clicked.
+		//	tasks.setBackgroundResource(android.R.drawable.list_selector_background);
+		//	tasks.setOnClickListener(v -> showBackgroundTasks());
+		//}
 
 		{
 			/* Reset Hints Link */
 			View hints = findViewById(R.id.reset_hints_label);
 			// Make line flash when clicked.
 			hints.setBackgroundResource(android.R.drawable.list_selector_background);
-			hints.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					HintManager.resetHints();
-					Toast.makeText(AdministrationFunctions.this, R.string.hints_have_been_reset, Toast.LENGTH_LONG).show();
-					return;
-				}
+			hints.setOnClickListener(v -> {
+				HintManager.resetHints();
+				Toast.makeText(AdministrationFunctions.this, R.string.hints_have_been_reset, Toast.LENGTH_LONG).show();
 			});
 		}
 
 		// Erase cover cache
 		{
-			View v = findViewById(R.id.erase_cover_cache_label);
+			View erase = findViewById(R.id.erase_cover_cache_label);
 			// Make line flash when clicked.
-			v.setBackgroundResource(android.R.drawable.list_selector_background);
-			v.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Utils utils = new Utils();
-					try {
-						utils.eraseCoverCache();
-					} finally {
-						utils.close();
-					}
-					return;
+			erase.setBackgroundResource(android.R.drawable.list_selector_background);
+			erase.setOnClickListener(v -> {
+				Utils utils = new Utils();
+				try {
+					utils.eraseCoverCache();
+				} finally {
+					utils.close();
 				}
 			});
 		}
 		{
 			/* Backup Catalogue Link */
-			View v = findViewById(R.id.backup_catalogue_label);
+			View backup = findViewById(R.id.backup_catalogue_label);
 			// Make line flash when clicked.
-			v.setBackgroundResource(android.R.drawable.list_selector_background);
-			v.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					backupCatalogue(AdministrationFunctions.this);
-					return;
-				}
-			});
+			backup.setBackgroundResource(android.R.drawable.list_selector_background);
+			backup.setOnClickListener(v -> launchBackupExport());
 		}
 		{
 			/* Restore Catalogue Link */
-			View v = findViewById(R.id.restore_catalogue_label);
+			View restore = findViewById(R.id.restore_catalogue_label);
 			// Make line flash when clicked.
-			v.setBackgroundResource(android.R.drawable.list_selector_background);
-			v.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					restoreCatalogue();
-					return;
-				}
-			});
+			restore.setBackgroundResource(android.R.drawable.list_selector_background);
+			restore.setOnClickListener(v -> launchBackupImport());
 		}
 	}
 
@@ -401,7 +315,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	 */
 	private void manageBookselves() {
 		Intent i = new Intent(this, Bookshelf.class);
-		startActivityForResult(i, ACTIVITY_BOOKSHELF);
+		startActivity(i);
 	}
 	
 	/**
@@ -409,59 +323,25 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	 */
 	private void manageFields() {
 		Intent i = new Intent(this, FieldVisibility.class);
-		startActivityForResult(i, ACTIVITY_FIELD_VISIBILITY);
+		startActivity(i);
 	}
 	
 
 	/**
 	 * Export all data to a CSV file
-	 * 
-	 * return void
 	 */
-	public void exportData() {
-		ExportThread thread = new ExportThread(getTaskManager());
+	private void exportData(DocumentFile file) {
+		ExportThread thread = new ExportThread(getTaskManager(), file);
 		thread.start();
 	}
 
 	/**
-	 * Import all data from somewhere on shared storage; ask user to disambiguate if necessary
-	 * 
-	 * return void
-	 */
-	private void importData() {
-		// Find all possible files (CSV in bookCatalogue directory)
-		ArrayList<File> files = StorageUtils.findExportFiles();
-		// If none, exit with message
-		if (files == null || files.size() == 0) {
-			Toast.makeText(this, R.string.no_export_files_found, Toast.LENGTH_LONG).show();
-			return;
-		} else {
-			if (files.size() == 1) {
-				// If only 1, just use it
-				importData(files.get(0).getAbsolutePath());
-			} else {
-				// If more than one, ask user which file
-				// ENHANCE: Consider asking about importing cover images.
-				StandardDialogs.selectFileDialog(getLayoutInflater(), getString(R.string.more_than_one_export_file_blah), files, new SimpleDialogOnClickListener() {
-					@Override
-					public void onClick(SimpleDialogItem item) {
-						SimpleDialogFileItem fileItem = (SimpleDialogFileItem) item;
-						importData(fileItem.getFile().getAbsolutePath());
-					}});
-			}				
-		}
-	}
-
-	/**
 	 * Import all data from the passed CSV file spec
-	 * 
-	 * return void
-	 * @throws IOException 
 	 */
-	private void importData(String filespec) {
+	private void importData(DocumentFile f) {
 		ImportThread thread;
 		try {
-			thread = new ImportThread(getTaskManager(), filespec);
+			thread = new ImportThread(getTaskManager(), f);
 		} catch (IOException e) {
 			Logger.logError(e);
 			Toast.makeText(this, getString(R.string.problem_starting_import_arg, e.getMessage()), Toast.LENGTH_LONG).show();
@@ -469,18 +349,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 		}
 		thread.start();
 	}
-	
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-		super.onActivityResult(requestCode, resultCode, intent);
-		switch(requestCode) {
-		case ACTIVITY_BOOKSHELF:
-		case ACTIVITY_FIELD_VISIBILITY:
-			//do nothing (yet)
-			break;
-		}
-	}
-	
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
@@ -494,8 +363,8 @@ public class AdministrationFunctions extends ActivityWithTasks {
 	public void onResume() {
 		super.onResume();
 		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
-		if (mExportOnStartup)
-			exportData();
+		//if (mExportOnStartup)
+		//	exportData();
 	}
 
 	/**
@@ -509,58 +378,54 @@ public class AdministrationFunctions extends ActivityWithTasks {
 		}
 	}
 
-	public void onExportFinished(ExportThread task) {
+	public void onExportFinished(final ExportThread task) {
 		if (task.isCancelled()) {
 			if (finish_after)
 				finish();
 			return;
 		}
-
 		AlertDialog alertDialog = new AlertDialog.Builder(AdministrationFunctions.this).create();
 		alertDialog.setTitle(R.string.email_export);
 		alertDialog.setIcon(android.R.drawable.ic_menu_send);
-		alertDialog.setButton2(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				// setup the mail message
-				final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND_MULTIPLE);
-				emailIntent.setType("plain/text");
-				//emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, context.getString(R.string.debug_email).split(";"));
-				String subject = "[" + getString(R.string.app_name) + "] " + getString(R.string.export_to_csv);
-				emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
-				//emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, context.getString(R.string.debug_body));
-				//has to be an ArrayList
-				ArrayList<Uri> uris = new ArrayList<Uri>();
-				// Find all files of interest to send
-				try {
-					File fileIn = new File(StorageUtils.getSharedStoragePath() + "/" + "export.csv");
-					Uri u = FileProvider.getUriForFile(AdministrationFunctions.this, BuildConfig.APPLICATION_ID + ".fileprovider",
-													   fileIn);
-					//Uri u = Uri.fromFile(fileIn);
-					uris.add(u);
-					// Send it, if there are any files to send.
-					emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-					startActivity(Intent.createChooser(emailIntent, "Send mail..."));        	
-				} catch (NullPointerException e) {
-					Logger.logError(e);
-					Toast.makeText(AdministrationFunctions.this, R.string.export_failed_sdcard, Toast.LENGTH_LONG).show();
-				}
+		alertDialog.setButton(
+				DialogInterface.BUTTON_NEGATIVE,
+				getResources().getString(R.string.ok),
+				(dialog, which) -> {
+					// setup the mail message
+					final Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+					emailIntent.setType("plain/text");
+					//emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, context.getString(R.string.debug_email).split(";"));
+					String subject = "[" + getString(R.string.app_name) + "] " + getString(R.string.export_to_csv);
+					emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+					//emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, context.getString(R.string.debug_body));
+					//has to be an ArrayList
+					ArrayList<Uri> uris = new ArrayList<>();
+					// Find all files of interest to send
+					try {
+						uris.add(task.getFile().getUri());
+						// Send it, if there are any files to send.
+						emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+						startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+					} catch (NullPointerException e) {
+						Logger.logError(e);
+						Toast.makeText(AdministrationFunctions.this, R.string.export_failed_sdcard, Toast.LENGTH_LONG).show();
+					}
 
-				dialog.dismiss();
-			}
-		}); 
-		alertDialog.setButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				//do nothing
-				dialog.dismiss();
-			}
-		}); 
+					dialog.dismiss();
+				});
+		alertDialog.setButton(
+				DialogInterface.BUTTON_POSITIVE,
+				getResources().getString(R.string.cancel),
+				(dialog, which) -> {
+					//do nothing
+					dialog.dismiss();
+				});
 
-		alertDialog.setOnDismissListener(new OnDismissListener() {
-			@Override
-			public void onDismiss(DialogInterface dialog) {
-				if (finish_after)
-					finish();
-			}});
+		alertDialog.setOnDismissListener(
+				dialog -> {
+					if (finish_after)
+						finish();
+				});
 
 		if (!isFinishing()) {
 			try {
@@ -578,7 +443,7 @@ public class AdministrationFunctions extends ActivityWithTasks {
 
 	/**
 	 * Update all (non-existent) thumbnails
-	 * 
+	 * <p>
 	 * There is a current limitation that restricts the search to only books
 	 * with an ISBN
 	 */
@@ -587,29 +452,79 @@ public class AdministrationFunctions extends ActivityWithTasks {
 		startActivity(i);
 	}
 
+	///**
+	// * Start the activity that shows the basic details of background tasks.
+	// */
+	//private void showBackgroundTasks() {
+	//	Intent i = new Intent(this, TaskListActivity.class);
+	//	startActivity(i);
+	//}
+
+	private final ActivityResultLauncher<String> mCsvExportPickerLauncher = registerForActivityResult(
+			new CreateDocument("*/*"),
+			result -> {
+				if (result != null) {
+					DocumentFile f = DocumentFile.fromSingleUri(AdministrationFunctions.this, result);
+					if (f != null) {
+						mBackupFile = f;
+						exportData(f);
+					}
+				}
+			}
+	);
+
+	ActivityResultLauncher<String[]> mCsvImportPickerLauncher = registerForActivityResult(
+			new OpenDocument(),
+			result -> {
+				if (result != null) {
+					DocumentFile f = DocumentFile.fromSingleUri(AdministrationFunctions.this, result);
+					if (f != null) {
+						mBackupFile = f;
+						importData(f);
+					}
+				}
+			}
+	);
+
 	/**
-	 * Start the activity that shows the basic details of background tasks.
+	 * Call the input picker.
 	 */
-	private void showBackgroundTasks() {
-		Intent i = new Intent(this, TaskListActivity.class);
-		startActivity(i);
+	private void launchCsvImportPicker() {
+		mCsvImportPickerLauncher.launch(new String[] {"*/*"});
 	}
 
 	/**
-	 * Start the archiving activity
+	 * Call the output picker.
 	 */
-	public static void backupCatalogue(Activity a) {
-		Intent i = new Intent(a, BackupChooser.class);
-		i.putExtra(BackupChooser.EXTRA_MODE, BackupChooser.EXTRA_MODE_SAVE_AS);
-		a.startActivity(i);
+	private void launchCsvExportPicker() {
+		mCsvExportPickerLauncher.launch("Export.csv");
 	}
-	
+
+	@Override
+	public void onImportTypeSelectionDialogResult(int dialogId, ImportTypeSelectionDialogFragment dialog, int rowId, DocumentFile file) {
+		mBackupImportManager.onImportTypeSelectionDialogResult(dialogId, dialog, rowId, file);
+	}
+
 	/**
-	 * Start the restore activity
+	 * Pass on the event to the relevant handler.
+	 * @param dialogId	As passed to us
+	 * @param dialog	As passed to us
+	 * @param settings	As passed to us
 	 */
-	private void restoreCatalogue() {
-		Intent i = new Intent(this, BackupChooser.class);
-		i.putExtra(BackupChooser.EXTRA_MODE, BackupChooser.EXTRA_MODE_OPEN);
-		startActivity(i);
+	@Override
+	public void onExportTypeSelectionDialogResult(int dialogId, BookCatalogueDialogFragment dialog, ExportSettings settings) {
+		mBackupExportManager.onExportTypeSelectionDialogResult(dialogId, dialog, settings);
+	}
+
+	/**
+	 * Pass on the event to the relevant handler.
+	 * @param dialogId	As passed to us
+	 * @param dialog	As passed to us
+	 * @param button	As passed to us
+	 */
+	@Override
+	public void onMessageDialogResult(int dialogId, MessageDialogFragment dialog, int button) {
+		// Do nothing. We just need this so we can display message dialogs.
+		super.onMessageDialogResult(dialogId, dialog, button);
 	}
 }

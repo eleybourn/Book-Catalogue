@@ -57,11 +57,11 @@
                 android:drawableLeft="@drawable/ic_menu_preferences"
                 android:text="@string/admin_and_prefs" />
 
-            <TextView
-                android:id="@+id/goodreads_label"
-                style="@style/main_menu_item"
-                android:drawableLeft="@drawable/ic_menu_gr_logo"
-                android:text="@string/goodreads" />
+<!--            <TextView-->
+<!--                android:id="@+id/goodreads_label"-->
+<!--                style="@style/main_menu_item"-->
+<!--                android:drawableLeft="@drawable/ic_menu_gr_logo"-->
+<!--                android:text="@string/goodreads" />-->
 
             <TextView
                 android:id="@+id/about_label"

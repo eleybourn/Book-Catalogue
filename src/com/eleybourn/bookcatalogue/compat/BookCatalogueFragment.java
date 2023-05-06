@@ -1,6 +1,6 @@
 package com.eleybourn.bookcatalogue.compat;
 
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 /**
  * Class introduced to reduce the future pain when we remove sherlock (once we no longer 

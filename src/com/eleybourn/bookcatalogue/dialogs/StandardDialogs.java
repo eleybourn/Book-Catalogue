@@ -32,7 +32,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -84,7 +84,7 @@ public class StandardDialogs {
 		dialog.create().show();
 	}
 
-	public static void needLibraryThingAlert(final Context context, final boolean ltRequired, final String prefSuffix) {
+	public static void needLibraryThingAlertDEAD(final Context context, final boolean ltRequired, final String prefSuffix) {
 		boolean showAlert;
 		int msgId;
 		final String prefName = LibraryThingManager.LT_HIDE_ALERT_PREF_NAME + "_" + prefSuffix;
@@ -101,7 +101,7 @@ public class StandardDialogs {
 			return;
 
 		final AlertDialog dlg = new AlertDialog.Builder(context).setMessage(msgId).create();
-		
+
 		dlg.setTitle(R.string.reg_library_thing_title);
 		dlg.setIcon(android.R.drawable.ic_menu_info_details);
 
@@ -122,14 +122,14 @@ public class StandardDialogs {
 					ed.commit();
 					dlg.dismiss();
 				}
-			});			
+			});
 		}
 
 		dlg.setButton(DialogInterface.BUTTON_NEGATIVE, context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				dlg.dismiss();
 			}
-		}); 
+		});
 
 		dlg.show();
 	}

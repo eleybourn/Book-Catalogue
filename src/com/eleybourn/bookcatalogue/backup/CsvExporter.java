@@ -59,8 +59,8 @@ public class CsvExporter implements Exporter {
 
 		/** RELEASE: Handle flags! */
 		int num = 0;
-		if (!StorageUtils.sdCardWritable()) {
-			mLastError = "Export Failed - Could not write to SDCard";
+		if (!StorageUtils.isSharedWritable()) {
+			mLastError = BookCatalogueApp.getResourceString(R.string.export_failed_sdcard);
 			return false;			
 		}
 

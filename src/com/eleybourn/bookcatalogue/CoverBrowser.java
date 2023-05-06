@@ -170,7 +170,8 @@ public class CoverBrowser {
 			// source but at present could only be obtained by HTML scraping.
 			//System.out.println("EDN Getting Editions");
 			try {
-				mEditions = LibraryThingManager.searchEditions(isbn);			
+				// TODO - Find a new editions source
+				mEditions = LibraryThingManager.searchEditions(isbn);
 			} catch (Exception e) {
 				Logger.logError(e);
 				mEditions = null;
@@ -306,11 +307,11 @@ public class CoverBrowser {
 	/**
 	 * Show the user a selection of other covers and allow selection of a replacement.
 	 */
-	public void showEditionCovers() {
+	public void showEditionCoversDEAD() {
 
 		mLibraryThing = new LibraryThingManager(mContext);
 		if (!mLibraryThing.isAvailable()) {
-			StandardDialogs.needLibraryThingAlert(mContext, true, "cover_browser");
+			StandardDialogs.needLibraryThingAlertDEAD(mContext, true, "cover_browser");
 			return;
 		}
 

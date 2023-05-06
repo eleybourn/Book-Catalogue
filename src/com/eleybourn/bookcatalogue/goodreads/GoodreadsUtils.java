@@ -3,7 +3,6 @@ package com.eleybourn.bookcatalogue.goodreads;
 import net.philipwarner.taskqueue.QueueManager;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,6 +15,8 @@ import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTaskContext;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueueProgressFragment;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueueProgressFragment.FragmentTask;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueueProgressFragment.FragmentTaskAbstract;
+
+import androidx.fragment.app.FragmentActivity;
 
 public class GoodreadsUtils {
 	/**
@@ -112,7 +113,7 @@ public class GoodreadsUtils {
 				}
 			}
 		};
-		SimpleTaskQueueProgressFragment.runTaskWithProgress(context, R.string.connecting_to_web_site, task, true, 0);
+		SimpleTaskQueueProgressFragment.runTaskWithProgress(context.getSupportFragmentManager(), R.string.connecting_to_web_site, task, true, 0);
 	}
 
 	/**
@@ -184,7 +185,7 @@ public class GoodreadsUtils {
 
 			}
 		};
-		SimpleTaskQueueProgressFragment.runTaskWithProgress(context, R.string.connecting_to_web_site, task, true, 0);
+		SimpleTaskQueueProgressFragment.runTaskWithProgress(context.getSupportFragmentManager(), R.string.connecting_to_web_site, task, true, 0);
 	}
 	
 	/**
@@ -251,7 +252,7 @@ public class GoodreadsUtils {
 			}
 		};
 		// Run the task
-		SimpleTaskQueueProgressFragment.runTaskWithProgress(ctx, R.string.connecting_to_web_site, task, true, 0);
+		SimpleTaskQueueProgressFragment.runTaskWithProgress(ctx.getSupportFragmentManager(), R.string.connecting_to_web_site, task, true, 0);
 
 	}
 

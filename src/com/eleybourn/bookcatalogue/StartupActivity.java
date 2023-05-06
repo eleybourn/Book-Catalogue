@@ -20,9 +20,6 @@
 
 package com.eleybourn.bookcatalogue;
 
-import java.lang.ref.WeakReference;
-
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -35,6 +32,12 @@ import android.os.Handler;
 import android.text.Html;
 
 import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueDialogFragment;
+import com.eleybourn.bookcatalogue.dialogs.ExportTypeSelectionDialogFragment.ExportSettings;
+import com.eleybourn.bookcatalogue.dialogs.ExportTypeSelectionDialogFragment.OnExportTypeSelectionDialogResultListener;
+import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment;
+import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment.OnMessageDialogResultListener;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.OnTaskFinishListener;
@@ -43,18 +46,24 @@ import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTaskContext;
 import com.eleybourn.bookcatalogue.utils.UpgradeMessageManager;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
+import java.lang.ref.WeakReference;
+
 /**
  * Single Activity to be the 'Main' activity for the app. I does app-startup stuff which is initially
  * to start the 'real' main activity.
- * 
+ * <p>
  * Note that calling the desired main activity first resulted in MainMenu's 'singleInstance' property
  * NOT being honoured. So we call MainMenu anyway, but set a flag in the Intent to indicate this is
  * a startup. This approach mostly works, but results in an apparent misordering of the activity 
  * stack, which we can live with for now.
- * 
+ * </p>
  * @author Philip Warner
  */
-public class StartupActivity extends Activity {
+public class StartupActivity
+		extends BookCatalogueActivity
+		implements OnMessageDialogResultListener,
+				   OnExportTypeSelectionDialogResultListener
+{
 	private static String TAG = "StartupActivity";
 	/** Flag to indicate FTS rebuild is required at startup */
 	private static String PREF_FTS_REBUILD_REQUIRED = TAG + ".FtsRebuildRequired";
@@ -90,6 +99,16 @@ public class StartupActivity extends Activity {
 	/** Flag indicating Amazon hint could be shown */
 	private static boolean mShowAmazonHint = false;
 
+	private static boolean mNeedMoveFiles = false;
+
+	public static boolean isFileMoveRequired() {
+		return mNeedMoveFiles;
+	}
+
+	public static void setFileMoveRequired(boolean required) {
+		mNeedMoveFiles = required;
+	}
+
 	/** Database connection */
 	//CatalogueDBAdapter mDb = null;
 
@@ -111,8 +130,15 @@ public class StartupActivity extends Activity {
 	public static WeakReference<StartupActivity> mStartupActivity = null;
 
 	@Override
+	protected RequiredPermission[] getRequiredPermissions() {
+		return new RequiredPermission[0];
+	}
+
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		registerBackupExportPickerLauncher(ID.DIALOG_OPEN_IMPORT_TYPE);
 		super.onCreate(savedInstanceState);
+		setTitle("");
 
 		System.out.println("Startup isTaskRoot() = " + isTaskRoot());
 
@@ -137,10 +163,14 @@ public class StartupActivity extends Activity {
 
 			SimpleTaskQueue q = getQueue();
 
+			// Update file structures for old versions
+			final int lastVersion = UpgradeMessageManager.getLastUpgradeVersion();
+			if (lastVersion < 200 && lastVersion > 0) {
+				mNeedMoveFiles = true;
+			}
 			// Always enqueue it; it will get a DB and check if required...
 			q.enqueue(new RebuildFtsTask());
-			q.enqueue(new AnalyzeDbTask());				
-
+			q.enqueue(new AnalyzeDbTask());
 			// Remove old logs
 			Logger.clearLog();
 			// Clear the flag
@@ -153,6 +183,10 @@ public class StartupActivity extends Activity {
 		// tasks will cause stage 2 to start.
 		if (mTaskQueue == null)
 			stage2Startup();
+//		getSupportFragmentManager().beginTransaction()
+//					   .replace(R.id., list)
+//					   .addToBackStack(null)
+//					   .commit();
 	}
 
 	/**
@@ -170,7 +204,7 @@ public class StartupActivity extends Activity {
 	/**
 	 * Update the progress dialog, if it has not been dismissed.
 	 * 
-	 * @param message
+	 * @param stringId
 	 */
 	public void updateProgress(final int stringId) {
 		updateProgress(getString(stringId));
@@ -303,29 +337,29 @@ public class StartupActivity extends Activity {
 		if ( ( startCount % AMAZON_PROMPT_WAIT) == 0) {
 			mShowAmazonHint = true;
 		}
-
 		mExportRequired = false;
 
 		if (opened == 0) {
 
 			AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(R.string.backup_request).create();
+			alertDialog.setCanceledOnTouchOutside(false);
 			alertDialog.setTitle(R.string.backup_title);
 			alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-			alertDialog.setButton("Cancel", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					dialog.dismiss();
-				}
-			}); 
-			alertDialog.setButton2("OK", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					mExportRequired = true;
-					dialog.dismiss();
-				}
-			}); 
+			alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.cancel),
+								  (dialog, which) -> dialog.dismiss());
+			alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.ok),
+								  (dialog, which) -> {
+									  mExportRequired = true;
+									  dialog.dismiss();
+								  });
 			alertDialog.setOnDismissListener(new OnDismissListener() {
 				@Override
 				public void onDismiss(DialogInterface dialog) {
-					stage4Startup();
+					if (mExportRequired) {
+						launchBackupExport();
+					} else {
+						stage4Startup();
+					}
 				}});
 			alertDialog.show();
 		} else {
@@ -347,13 +381,6 @@ public class StartupActivity extends Activity {
 			doMainMenu();
 		}
 
-		if (mExportRequired) {
-			AdministrationFunctions.backupCatalogue(this);
-//			Intent i = new Intent(this, AdministrationFunctions.class);
-//			i.putExtra(AdministrationFunctions.DOAUTO, "export");
-//			startActivity(i);			
-		}
-
 		// We are done
 		finish();		
 	}
@@ -366,9 +393,10 @@ public class StartupActivity extends Activity {
 	 */
 	public void upgradePopup(String message) {
 		AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(Html.fromHtml(message)).create();
+		alertDialog.setCanceledOnTouchOutside(false);
 		alertDialog.setTitle(R.string.upgrade_title);
 		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-		alertDialog.setButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+		alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.ok), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				UpgradeMessageManager.setMessageAcknowledged();
 				stage3Startup();
@@ -384,7 +412,7 @@ public class StartupActivity extends Activity {
 		if (mTaskQueue != null)
 			mTaskQueue.finish();
 	}
-	
+
 	/**
 	 * Task to rebuild FTS in background. Can take several seconds, so not done in onUpgrade().
 	 * 
@@ -423,9 +451,9 @@ public class StartupActivity extends Activity {
 			if (BooklistPreferencesActivity.isThumbnailCacheEnabled()) {
 				// Analyze the covers DB
 				Utils utils = taskContext.getUtils();
-				utils.analyzeCovers();								
+				utils.analyzeCovers();
 			}
-			
+
 			if (prefs.getBoolean(PREF_AUTHOR_SERIES_FIXUP_REQUIRED, false)) {
 				db.fixupAuthorsAndSeries();
 				prefs.setBoolean(PREF_AUTHOR_SERIES_FIXUP_REQUIRED, false);
@@ -436,7 +464,7 @@ public class StartupActivity extends Activity {
 		public void onFinish(Exception e) {}
 
 	}
-	
+
 	public static boolean hasBeenCalled() {
 		return mHasBeenCalled;
 	}
@@ -445,4 +473,30 @@ public class StartupActivity extends Activity {
 		return mShowAmazonHint;
 	}
 
+	/**
+	 * Pass on the event to the relevant handler.
+	 * @param dialogId	As passed to us
+	 * @param dialog	As passed to us
+	 * @param settings	As passed to us
+	 */
+	@Override
+	public void onExportTypeSelectionDialogResult(int dialogId, BookCatalogueDialogFragment dialog, ExportSettings settings) {
+		mBackupExportManager.onExportTypeSelectionDialogResult(dialogId, dialog, settings);
+	}
+
+	/**
+	 * Pass on the event to the relevant handler.
+	 * @param dialogId	As passed to us
+	 * @param dialog	As passed to us
+	 * @param button	As passed to us
+	 */
+	@Override
+	public void onMessageDialogResult(int dialogId, MessageDialogFragment dialog, int button) {
+		// Do nothing. We just need this so we can display message dialogs.
+		if (dialogId == ID.MSG_ID_BACKUP_EXPORT_COMPLETE) {
+			stage4Startup();
+		} else {
+			super.onMessageDialogResult(dialogId, dialog, button);
+		}
+	}
 }

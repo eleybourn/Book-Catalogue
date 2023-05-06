@@ -33,41 +33,44 @@ import com.eleybourn.bookcatalogue.database.CoversDbHelper;
 /**
  * Class to perform time consuming but light-weight tasks in a worker thread. Users of this
  * class should implement their tasks as self-contained objects that implement SimpleTask.
- * 
+ * <p>
  * The tasks run from (currently) a LIFO queue in a single thread; the run() method is called
  * in the alternate thread and the finished() method is called in the UI thread.
- * 
+ * </p><p>
  * The execution queue is (currently) a stack so that the most recent queued is loaded. This is
  * good for loading (eg) gallery images to make sure that the most recently viewed is loaded.
- * 
+ * </p><p>
  * The results queue is executed in FIFO order.
- * 
+ * </p><p>
  * In the future, both queues could be done independently and this object could be broken into
  * 3 classes: SimpleTaskQueueBase, SimpleTaskQueueFIFO and SimpleTaskQueueLIFO. For now, this is
  * not needed.
- * 
+ * </p><p>
  * TODO: Consider adding an 'AbortListener' interface so tasks can be told when queue is aborted
  * TODO: Consider adding an 'aborted' flag to onFinish() and always calling onFinish() when queue is killed
- * 
+ * </p><p>
  * NOTE: Tasks can call context.isTerminating() if necessary
- * 
+ * </p>
  * @author Philip Warner
  */
+@SuppressWarnings("unused")
 public class SimpleTaskQueue {
+	public static class QueueTerminatedException extends RuntimeException { }
+
 	// Execution queue
-	private BlockingStack<SimpleTaskWrapper> mQueue = new BlockingStack<SimpleTaskWrapper>();
+	private final BlockingStack<SimpleTaskWrapper> mQueue = new BlockingStack<>();
 	// Results queue
-	private LinkedBlockingQueue<SimpleTaskWrapper> mResultQueue = new LinkedBlockingQueue<SimpleTaskWrapper>();
+	private final LinkedBlockingQueue<SimpleTaskWrapper> mResultQueue = new LinkedBlockingQueue<>();
 	// Flag indicating this object should terminate.
 	private boolean mTerminate = false;
 	// Handler for sending tasks to the UI thread.
-	private Handler mHandler = new Handler();
+	private final Handler mHandler = new Handler();
 	// Name for this queue
 	private final String mName;
 	// Threads associate with this queue
-	private ArrayList<SimpleTaskQueueThread> mThreads = new ArrayList<SimpleTaskQueueThread>();
+	private final ArrayList<SimpleTaskQueueThread> mThreads = new ArrayList<>();
 	/** Max number of threads to create */
-	private int mMaxTasks;
+	private final int mMaxTasks;
 	/** Number of currently queued, executing (or starting/finishing) tasks */
 	private int mManagedTaskCount = 0;
 
@@ -76,10 +79,10 @@ public class SimpleTaskQueue {
 	
 	/**
 	 * SimpleTask interface.
-	 * 
+	 * <p>
 	 * run() is called in worker thread
 	 * finished() is called in UI thread.
-	 * 
+	 * </p>
 	 * @author Philip Warner
 	 *
 	 */
@@ -116,15 +119,13 @@ public class SimpleTaskQueue {
 	/**
 	 * Accessor.
 	 * 
-	 * @param listener
+	 * @param listener		Listener for task starting events
 	 */
 	public void setTaskStartListener(OnTaskStartListener listener) {
 		mTaskStartListener = listener;
 	}
 	/**
 	 * Accessor.
-	 * 
-	 * @param listener
 	 */
 	public OnTaskStartListener getTaskStartListener() {
 		return mTaskStartListener;
@@ -133,15 +134,13 @@ public class SimpleTaskQueue {
 	/**
 	 * Accessor.
 	 * 
-	 * @param listener
+	 * @param listener	Listener for Task Finish events
 	 */
 	public void setTaskFinishListener(OnTaskFinishListener listener) {
 		mTaskFinishListener = listener;
 	}
 	/**
 	 * Accessor.
-	 * 
-	 * @param listener
 	 */
 	public OnTaskFinishListener getTaskFinishListener() {
 		return mTaskFinishListener;
@@ -162,7 +161,8 @@ public class SimpleTaskQueue {
 	 * @author Philip Warner
 	 */
 	private static class SimpleTaskWrapper implements SimpleTaskContext {
-		private static Long mCounter = 0L;
+		private static final Object mCounterSync = new Object();
+		private static long mCounter = 0L;
 		private final SimpleTaskQueue mOwner;
 		public SimpleTask task;
 		public Exception exception;
@@ -172,7 +172,7 @@ public class SimpleTaskQueue {
 		SimpleTaskWrapper(SimpleTaskQueue owner, SimpleTask task) {
 			mOwner = owner;
 			this.task = task;
-			synchronized(mCounter) {
+			synchronized(mCounterSync) {
 				this.id = ++mCounter;
 			}
 		}
@@ -239,10 +239,38 @@ public class SimpleTaskQueue {
 	 * Terminate processing.
 	 */
 	public void finish() {
+		int cnt;
 		synchronized(this) {
 			mTerminate = true;
+
+			// Get all un-executed tasks
+			Stack<SimpleTaskWrapper> allTasks = mQueue.getElements();
+			cnt = allTasks.size();
+
+			// Erase the queue
+			mQueue.clear();
+
+			// Set the exception
+			for(SimpleTaskWrapper w: allTasks) {
+				w.exception = new QueueTerminatedException();
+			}
+
+			// TODO: There is a problem with ordering here. If the queued tasks are added before the running tasks, then the app may become confused.
+			// Add them all to the completed queue
+			mResultQueue.addAll(allTasks);
+
+			// Kill running threads.
 			for(Thread t : mThreads) {
-				try { t.interrupt(); } catch (Exception e) {};
+				try { t.interrupt(); } catch (Exception ignored) {}
+			}
+		}
+		// If we moved anything, then post the task to process them
+		if (cnt > 0) {
+			synchronized(mDoProcessResults) {
+				if (!mDoProcessResultsIsQueued) {
+					mDoProcessResultsIsQueued = true;
+					mHandler.post(mDoProcessResults);
+				}
 			}
 		}
 	}
@@ -250,7 +278,7 @@ public class SimpleTaskQueue {
 	/**
 	 * Check to see if any tasks are active -- either queued, or with ending results.
 	 * 
-	 * @return
+	 * @return 	True if there are still tasks to be processed
 	 */
 	public boolean hasActiveTasks() {
 		synchronized(this) {
@@ -332,7 +360,7 @@ public class SimpleTaskQueue {
 	/**
 	 * Method to ensure results queue is processed.
 	 */
-	private Runnable mDoProcessResults = new Runnable() {
+	private final Runnable mDoProcessResults = new Runnable() {
 		@Override
 		public void run() {
 			synchronized(mDoProcessResults) {
@@ -345,7 +373,8 @@ public class SimpleTaskQueue {
 	/**
 	 * Run the task then queue the results.
 	 * 
-	 * @param task
+	 * @param thread		Thread on which task will run
+	 * @param taskWrapper	Wrapper of task to run
 	 */
 	private void handleRequest(final SimpleTaskQueueThread thread, final SimpleTaskWrapper taskWrapper) {
 		final SimpleTask task = taskWrapper.task;
@@ -386,9 +415,14 @@ public class SimpleTaskQueue {
 
 			// Queue the call to finished() if necessary.
 			if (taskWrapper.finishRequested || mTaskFinishListener != null) {
-				try {
-					mResultQueue.put(taskWrapper);	
-				} catch (InterruptedException e) {
+				while(true) {
+					try {
+						mResultQueue.put(taskWrapper);
+						break;
+					} catch (InterruptedException e) {
+						try { //noinspection BusyWait
+							Thread.sleep(50); } catch (InterruptedException ignored) {}
+					}
 				}
 				// Queue Runnable in the UI thread.
 				synchronized(mDoProcessResults) {
@@ -410,7 +444,7 @@ public class SimpleTaskQueue {
 	 */
 	private void processResults() {
 		try {
-			while (!mTerminate) {
+			while (true) { //!mTerminate) {
 				// Get next; if none, exit.
 				SimpleTaskWrapper req = mResultQueue.poll();
 				if (req == null)
@@ -447,18 +481,18 @@ public class SimpleTaskQueue {
 		}
 	}
 
-	public static interface SimpleTaskContext {
-		public CatalogueDBAdapter getDb();
+	public interface SimpleTaskContext {
+		CatalogueDBAdapter getDb();
 		/** 'Covers' database helper */
-		public CoversDbHelper getCoversDb();
+		CoversDbHelper getCoversDb();
 		/** Utils object */
-		public Utils getUtils();
+		Utils getUtils();
 		/** Accessor */
-		public void setRequiresFinish(boolean requiresFinish);
+		void setRequiresFinish(boolean requiresFinish);
 		/** Accessor */
-		public boolean getRequiresFinish();
+		boolean getRequiresFinish();
 		/** Accessor */
-		public boolean isTerminating();
+		boolean isTerminating();
 	}
 
 	/**
@@ -507,15 +541,15 @@ public class SimpleTaskQueue {
 				try {
 					if (mDb != null)
 						mDb.close();					
-				} catch (Exception e) {}
+				} catch (Exception ignored) {}
 				try {
 					if (mCoversDb != null)
 						mCoversDb.close();					
-				} catch (Exception e) {}
+				} catch (Exception ignored) {}
 				try {
 					if (mUtils != null)
 						mUtils.close();					
-				} catch (Exception e) {}
+				} catch (Exception ignored) {}
 			}
 		}
 

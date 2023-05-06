@@ -95,43 +95,43 @@
             android:drawableLeft="@drawable/ic_menu_gallery"
             android:text="@string/update_fields" />
 
-        <TextView
-            android:id="@+id/sync_with_goodreads_label"
-            style="@style/prefs_item"
-            android:drawableLeft="@drawable/ic_menu_refresh"
-            android:text="@string/sync_with_goodreads" />
+        <!--<TextView-->
+        <!--    android:id="@+id/sync_with_goodreads_label"-->
+        <!--    style="@style/prefs_item"-->
+        <!--    android:drawableLeft="@drawable/ic_menu_refresh"-->
+        <!--    android:text="@string/sync_with_goodreads" />-->
 
-        <TextView
-            android:id="@+id/import_all_from_goodreads_label"
-            style="@style/prefs_item"
-            android:drawableLeft="@drawable/ic_menu_upload"
-            android:text="@string/import_all_from_goodreads" />
+        <!--<TextView-->
+        <!--    android:id="@+id/import_all_from_goodreads_label"-->
+        <!--    style="@style/prefs_item"-->
+        <!--    android:drawableLeft="@drawable/ic_menu_upload"-->
+        <!--    android:text="@string/import_all_from_goodreads" />-->
 
-        <TextView
-            android:id="@+id/send_books_to_goodreads_label"
-            style="@style/prefs_item"
-            android:drawableLeft="@drawable/ic_menu_archive"
-            android:text="@string/send_books_to_goodreads" />
+        <!--<TextView-->
+        <!--    android:id="@+id/send_books_to_goodreads_label"-->
+        <!--    style="@style/prefs_item"-->
+        <!--    android:drawableLeft="@drawable/ic_menu_archive"-->
+        <!--    android:text="@string/send_books_to_goodreads" />-->
 
-        <!-- CREDENTIALS HEADING -->
+        <!--&lt;!&ndash; CREDENTIALS HEADING &ndash;&gt;-->
 
-        <com.eleybourn.bookcatalogue.widgets.CapitalizedTextView
-            style="@style/prefs_header"
-            android:text="@string/credentials" />
+        <!--<com.eleybourn.bookcatalogue.widgets.CapitalizedTextView-->
+        <!--    style="@style/prefs_header"-->
+        <!--    android:text="@string/credentials" />-->
 
-        <!-- GOODREADS CREDENTIALS -->
+        <!--&lt;!&ndash; GOODREADS CREDENTIALS &ndash;&gt;-->
 
-        <TextView
-            android:id="@+id/goodreads_auth"
-            style="@style/prefs_item"
-            android:drawableLeft="@drawable/ic_menu_gr_logo"
-            android:text="@string/goodreads" />
+        <!--<TextView-->
+        <!--    android:id="@+id/goodreads_auth"-->
+        <!--    style="@style/prefs_item"-->
+        <!--    android:drawableLeft="@drawable/ic_menu_gr_logo"-->
+        <!--    android:text="@string/goodreads" />-->
 
-        <TextView
-            android:id="@+id/librarything_auth"
-            style="@style/prefs_item"
-            android:drawableLeft="@drawable/ic_menu_gallery"
-            android:text="@string/library_thing" />
+        <!--<TextView-->
+        <!--    android:id="@+id/librarything_auth"-->
+        <!--    style="@style/prefs_item"-->
+        <!--    android:drawableLeft="@drawable/ic_menu_gallery"-->
+        <!--    android:text="@string/library_thing" />-->
 
         <!-- ADVANCED OPTIONS Header -->
 
@@ -141,11 +141,11 @@
 
         <!-- BACKGROUND TASKS -->
 
-        <TextView
-            android:id="@+id/background_tasks_label"
-            style="@style/prefs_item"
-            android:drawableLeft="@drawable/ic_menu_recent_history"
-            android:text="@string/background_tasks" />
+        <!--<TextView-->
+        <!--    android:id="@+id/background_tasks_label"-->
+        <!--    style="@style/prefs_item"-->
+        <!--    android:drawableLeft="@drawable/ic_menu_recent_history"-->
+        <!--    android:text="@string/background_tasks" />-->
 
         <!-- RESET HINTS -->
 
@@ -170,6 +170,12 @@
             style="@style/prefs_item"
             android:drawableLeft="@drawable/ic_menu_archive"
             android:text="@string/copy_database" />
+
+        <TextView
+            android:id="@+id/import_old_files_label"
+            style="@style/prefs_item"
+            android:drawableLeft="@drawable/ic_menu_upload"
+            android:text="@string/import_old_files" />
     </LinearLayout>
 
 </ScrollView>

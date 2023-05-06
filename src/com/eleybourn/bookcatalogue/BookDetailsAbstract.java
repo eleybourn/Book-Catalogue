@@ -1,15 +1,15 @@
 package com.eleybourn.bookcatalogue;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
+import android.Manifest.permission;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -23,7 +23,12 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.content.FileProvider;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions;
+import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
+
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuItem;
@@ -37,6 +42,7 @@ import android.widget.Toast;
 import com.eleybourn.bookcatalogue.CoverBrowser.OnImageSelectedListener;
 import com.eleybourn.bookcatalogue.Fields.Field;
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.cropper.CropCropImage;
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.utils.HintManager;
@@ -105,7 +111,19 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 				mCoverBrowser.dismiss();
 			mCoverBrowser = null;
 		}};
-	
+
+	ActivityResultLauncher<String[]> mCameraPermissionsLauncher = registerForActivityResult(
+			new RequestMultiplePermissions(),
+			result -> {
+				for(Entry<String, Boolean> e: result.entrySet()) {
+					if (!e.getValue()) {
+						return;
+					}
+				}
+				requestPhoto();
+			}
+	);
+
 	/**
 	 * Listener for creating context menu for book thumbnail.
 	 */
@@ -124,8 +142,9 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 			add_photo.setIcon(android.R.drawable.ic_menu_camera);
 			MenuItem add_gallery = replaceSubmenu.add(0, CODE_ADD_GALLERY, 2, R.string.menu_add_thumb_gallery);
 			add_gallery.setIcon(android.R.drawable.ic_menu_gallery);
-			MenuItem alt_covers = replaceSubmenu.add(0, CONTEXT_ID_SHOW_ALT_COVERS, 3, R.string.menu_thumb_alt_editions);
-			alt_covers.setIcon(android.R.drawable.ic_menu_zoom);
+			// TODO EDITIONS
+			//MenuItem alt_covers = replaceSubmenu.add(0, CONTEXT_ID_SHOW_ALT_COVERS, 3, R.string.menu_thumb_alt_editions);
+			//alt_covers.setIcon(android.R.drawable.ic_menu_zoom);
 
 			// Implementing submenu for rotate
 			android.view.SubMenu submenu = menu.addSubMenu(0, CONTEXT_ID_SUBMENU_ROTATE_THUMB, 3, R.string.menu_rotate_thumb);
@@ -368,20 +387,11 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 				Utils.fetchFileIntoImageView(thumbFile, iv, mThumbEditSize, mThumbEditSize, true);
 				return true;
 			case CODE_ADD_PHOTO:
-				// Increment the temp counter and cleanup the temp directory
-				mTempImageCounter++;
-				cleanupTempImages();
-				Intent pintent = null;
-				// Get a photo
-				pintent = new Intent("android.media.action.IMAGE_CAPTURE");
-//				We don't do this because we have no reliable way to rotate a large image
-//				without producing memory exhaustion; Android does not include a file-based
-//				image rotation.
-//				File f = this.getCameraImageFile();
-//				if (f.exists())
-//					f.delete();
-//				pintent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
-				startActivityForResult(pintent, CODE_ADD_PHOTO);
+				BookCatalogueActivity a = (BookCatalogueActivity) getActivity();
+				if (!BookCatalogueActivity.checkPermissions(a, false, mCameraPermissionsLauncher, BookCatalogueActivity.mScannerPermissions)) {
+					return true;
+				}
+				requestPhoto();
 				return true;
 			case CODE_ADD_GALLERY:
 				Intent gintent = new Intent();
@@ -392,22 +402,40 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 			case CONTEXT_ID_CROP_THUMB:
 				cropCoverImage(thumbFile);
 				return true;
-			case CONTEXT_ID_SHOW_ALT_COVERS:
-				String isbn = mFields.getField(R.id.isbn).getValue().toString();
-				if (isbn == null || isbn.trim().length() == 0) {
-					Toast.makeText(getActivity(), getResources().getString(R.string.editions_require_isbn), Toast.LENGTH_LONG).show();
-				} else {
-					mCoverBrowser = new CoverBrowser(getActivity(), mMetrics, isbn, mOnImageSelectedListener);
-					mCoverBrowser.showEditionCovers();				
-				}
-				return true;
+			// TODO EDITIONS
+			//case CONTEXT_ID_SHOW_ALT_COVERS:
+			//	String isbn = mFields.getField(R.id.isbn).getValue().toString();
+			//	if (isbn == null || isbn.trim().length() == 0) {
+			//		Toast.makeText(getActivity(), getResources().getString(R.string.editions_require_isbn), Toast.LENGTH_LONG).show();
+			//	} else {
+			//		mCoverBrowser = new CoverBrowser(getActivity(), mMetrics, isbn, mOnImageSelectedListener);
+			//		mCoverBrowser.showEditionCovers();
+			//	}
+			//	return true;
 			}
 			return super.onContextItemSelected(item);
 		} finally {
 			Tracker.handleEvent(this, "Context Menu Item " + item.getItemId(), Tracker.States.Exit);			
 		}
 	}
-	
+
+	private void requestPhoto() {
+		// Increment the temp counter and cleanup the temp directory
+		mTempImageCounter++;
+		cleanupTempImages();
+		Intent pintent = null;
+		// Get a photo
+		pintent = new Intent("android.media.action.IMAGE_CAPTURE");
+//				We don't do this because we have no reliable way to rotate a large image
+//				without producing memory exhaustion; Android does not include a file-based
+//				image rotation.
+//				File f = this.getCameraImageFile();
+//				if (f.exists())
+//					f.delete();
+//				pintent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+		startActivityForResult(pintent, CODE_ADD_PHOTO);
+	}
+
 	/**
 	 * Delete everything in the temp file directory
 	 */
@@ -550,8 +578,8 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 	/**
 	 * Get a temp directory for image manipulation (create if necessary)
 	 */
-	private File getTempImageDir() {
-		File f = new File(StorageUtils.getSharedStoragePath() + "/tmp_images/");
+	private File  getTempImageDir() {
+		File f = new File(StorageUtils.getBCCache() + "/tmp_images/");
 		if (!f.exists())
 			f.mkdirs();
 		return f;

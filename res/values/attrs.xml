@@ -3,4 +3,8 @@
     <declare-styleable name="CoverGallery">
         <attr name="android:galleryItemBackground" />
     </declare-styleable>
+    <declare-styleable name="FullscreenAttrs">
+        <attr name="fullscreenBackgroundColor" format="color" />
+        <attr name="fullscreenTextColor" format="color" />
+    </declare-styleable>
 </resources>

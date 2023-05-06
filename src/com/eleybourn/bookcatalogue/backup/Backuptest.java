@@ -35,7 +35,7 @@ import com.eleybourn.bookcatalogue.utils.StorageUtils;
  */
 public class Backuptest {
 	public static void testBackupTar() {
-		File f = new File(StorageUtils.getSharedStoragePath() + "/backup.tar");
+		File f = new File(StorageUtils.getBCBackups(), "backup.tar");
 		try {
 			performBackupTar(f);
 		} catch (IOException e) {
@@ -43,7 +43,7 @@ public class Backuptest {
 		}
 	}
 	public static void testRestoreTar() {
-		File f = new File(StorageUtils.getSharedStoragePath() + "/backup.tar");
+		File f = new File(StorageUtils.getBCBackups(), "backup.tar");
 		try {
 			performRestoreTar(f);
 		} catch (IOException e) {

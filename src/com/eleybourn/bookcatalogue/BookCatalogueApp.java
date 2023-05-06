@@ -29,12 +29,11 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
 import android.os.Build.VERSION;
-import android.support.v4.app.NotificationCompat.Builder;
 
 import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
 import com.eleybourn.bookcatalogue.utils.Logger;
@@ -53,10 +52,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Locale;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat.Builder;
+import androidx.core.content.ContextCompat;
+
 import static org.acra.ReportField.ANDROID_VERSION;
 import static org.acra.ReportField.APP_VERSION_CODE;
 import static org.acra.ReportField.APP_VERSION_NAME;
-import static org.acra.ReportField.BUILD;
 import static org.acra.ReportField.CUSTOM_DATA;
 import static org.acra.ReportField.PHONE_MODEL;
 import static org.acra.ReportField.STACK_TRACE;
@@ -141,7 +143,7 @@ public class BookCatalogueApp extends Application {
 		return l;
 	}
 
-    public class BcReportSender extends org.acra.sender.EmailIntentSender {
+    public static class BcReportSender extends org.acra.sender.EmailIntentSender {
 
 		public BcReportSender(Context ctx) {
 			super(ctx);
@@ -196,74 +198,72 @@ public class BookCatalogueApp extends Application {
 			mQueueManager = new BcQueueManager(this.getApplicationContext());
 
 		super.onCreate();
-		
-		if (Build.VERSION.SDK_INT < 16) {
-			//
-			// Avoid possible bug in SQLite which resuts in database being closed without an explicit call. 
-			// Based on the grepcode Android sources, it looks like this bug was fixed an/or addressed in
-			// 4.1.1, but not in 4.0.4.
-			//
-			// See:
-			//
-			//		https://code.google.com/p/android/issues/detail?id=4282
-			//	    http://darutk-oboegaki.blogspot.com.au/2011/03/sqlitedatabase-is-closed-automatically.html
-			//
-			// a pdf of the second link is in 'support' folder. 
-			//
-			CatalogueDBAdapter dbh = new CatalogueDBAdapter(this);
-			dbh.open();
-			SQLiteDatabase db = dbh.getDb().getUnderlyingDatabase();
-			db.acquireReference();
-			if (Build.VERSION.SDK_INT < 8) {
-				//
-				// RELEASE: REMOVE THIS CODE When MinSDK becomes 8!
-				//
-				// Android 2.1 has a very nasty bug that can cause un-closed SQLiteStatements to dereference the
-				// database when they have not referenced it.. SQLiteStatements can fail to be released in a timely
-				// fashion when the screen is rotated, which will then result in an attempt to acess a closed closable.
-				// ... so for Android 2.1...we take 1000 references and hope the user won't rotate the screen 1000
-				// times while background tasks are running.
-				//
-				// We have made the best efforts to avoid this bug, this is just insurance.
-				//
-				// The key instance where this happens is if the GetListTask in BooksOnBookshelf is aborted due to 
-				// a screen rotation; the onFinish() method is never called, so the statements are not deleted.
-				//
-				// We have added finalize() code to SynchronizedStatement so that IF it is called first (not 
-				// guaranteed by Java spec) it will close the SQLiteStatement and try to avoid this issue.
-				//
-				for(int i = 0; i < 1000; i++)
-					db.acquireReference();
-			}
-			dbh.close();
-		}
+
+		//if (Build.VERSION.SDK_INT < 16) {
+		//	//
+		//	// Avoid possible bug in SQLite which resuts in database being closed without an explicit call.
+		//	// Based on the grepcode Android sources, it looks like this bug was fixed an/or addressed in
+		//	// 4.1.1, but not in 4.0.4.
+		//	//
+		//	// See:
+		//	//
+		//	//		https://code.google.com/p/android/issues/detail?id=4282
+		//	//	    http://darutk-oboegaki.blogspot.com.au/2011/03/sqlitedatabase-is-closed-automatically.html
+		//	//
+		//	// a pdf of the second link is in 'support' folder.
+		//	//
+		//	CatalogueDBAdapter dbh = new CatalogueDBAdapter(this);
+		//	dbh.open();
+		//	SQLiteDatabase db = dbh.getDb().getUnderlyingDatabase();
+		//	db.acquireReference();
+		//	if (Build.VERSION.SDK_INT < 8) {
+		//		//
+		//		// RELEASE: REMOVE THIS CODE When MinSDK becomes 8!
+		//		//
+		//		// Android 2.1 has a very nasty bug that can cause un-closed SQLiteStatements to dereference the
+		//		// database when they have not referenced it.. SQLiteStatements can fail to be released in a timely
+		//		// fashion when the screen is rotated, which will then result in an attempt to access a closed closable.
+		//		// ... so for Android 2.1...we take 1000 references and hope the user won't rotate the screen 1000
+		//		// times while background tasks are running.
+		//		//
+		//		// We have made the best efforts to avoid this bug, this is just insurance.
+		//		//
+		//		// The key instance where this happens is if the GetListTask in BooksOnBookshelf is aborted due to
+		//		// a screen rotation; the onFinish() method is never called, so the statements are not deleted.
+		//		//
+		//		// We have added finalize() code to SynchronizedStatement so that IF it is called first (not
+		//		// guaranteed by Java spec) it will close the SQLiteStatement and try to avoid this issue.
+		//		//
+		//		for(int i = 0; i < 1000; i++)
+		//			db.acquireReference();
+		//	}
+		//	dbh.close();
+		//}
 
 		// Watch the preferences and handle changes as necessary
 		//BookCataloguePreferences ap = getPreferences();
 		SharedPreferences p = BookCataloguePreferences.getSharedPreferences();
+
 		p.registerOnSharedPreferenceChangeListener(mPrefsListener);
 	}
 
 	/**
 	 * Shared Preferences Listener
-	 *
+	 * <p>
 	 * Currently it just handles Locale changes and propagates it to any listeners.
 	 */
-	private SharedPreferences.OnSharedPreferenceChangeListener mPrefsListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-		@Override
-		public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-			if (key.equals(BookCataloguePreferences.PREF_APP_LOCALE)) {
-				String prefLocale = getAppPreferences().getString(BookCataloguePreferences.PREF_APP_LOCALE, null);
-				//prefLocale = "ru";
-				// If we have a preference, set it
-				if (prefLocale != null && !prefLocale.equals("")) {
-					mPreferredLocale = localeFromName(prefLocale);
-				} else {
-					mPreferredLocale = getSystemLocal();
-				}
-				applyPreferredLocaleIfNecessary(getBaseContext().getResources());
-				notifyLocaleChanged();
+	private final SharedPreferences.OnSharedPreferenceChangeListener mPrefsListener = (sharedPreferences, key) -> {
+		if (key != null && key.equals(BookCataloguePreferences.PREF_APP_LOCALE)) {
+			String prefLocale = getAppPreferences().getString(BookCataloguePreferences.PREF_APP_LOCALE, null);
+			//prefLocale = "ru";
+			// If we have a preference, set it
+			if (prefLocale != null && !prefLocale.equals("")) {
+				mPreferredLocale = localeFromName(prefLocale);
+			} else {
+				mPreferredLocale = getSystemLocal();
 			}
+			applyPreferredLocaleIfNecessary(getBaseContext().getResources());
+			notifyLocaleChanged();
 		}
 	};
 
@@ -271,7 +271,7 @@ public class BookCatalogueApp extends Application {
 	 * Send a message to all registered OnLocaleChangedListeners, and cleanup any dead references.
 	 */
 	private void notifyLocaleChanged() {
-		ArrayList<WeakReference<OnLocaleChangedListener>> toRemove = new ArrayList<WeakReference<OnLocaleChangedListener>>();
+		ArrayList<WeakReference<OnLocaleChangedListener>> toRemove = new ArrayList<>();
 
 		for (WeakReference<OnLocaleChangedListener> ref : mOnLocaleChangedListeners) {
 			OnLocaleChangedListener l = ref.get();
@@ -289,7 +289,7 @@ public class BookCatalogueApp extends Application {
 	 * Add a new OnLocaleChangedListener, and cleanup any dead references.
 	 */
 	public static void registerOnLocaleChangedListener(OnLocaleChangedListener listener) {
-		ArrayList<WeakReference<OnLocaleChangedListener>> toRemove = new ArrayList<WeakReference<OnLocaleChangedListener>>();
+		ArrayList<WeakReference<OnLocaleChangedListener>> toRemove = new ArrayList<>();
 
 		boolean alreadyAdded = false;
 
@@ -301,7 +301,7 @@ public class BookCatalogueApp extends Application {
 				alreadyAdded = true;
 		}
 		if (!alreadyAdded)
-			mOnLocaleChangedListeners.add(new WeakReference<OnLocaleChangedListener>(listener));
+			mOnLocaleChangedListeners.add(new WeakReference<>(listener));
 
 		for(WeakReference<OnLocaleChangedListener> ref: toRemove) {
 			mOnLocaleChangedListeners.remove(ref);
@@ -312,7 +312,7 @@ public class BookCatalogueApp extends Application {
 	 * Remove the passed OnLocaleChangedListener, and cleanup any dead references.
 	 */
 	public static void unregisterOnLocaleChangedListener(OnLocaleChangedListener listener) {
-		ArrayList<WeakReference<OnLocaleChangedListener>> toRemove = new ArrayList<WeakReference<OnLocaleChangedListener>>();
+		ArrayList<WeakReference<OnLocaleChangedListener>> toRemove = new ArrayList<>();
 
 		for(WeakReference<OnLocaleChangedListener> ref: mOnLocaleChangedListeners) {
 			OnLocaleChangedListener l = ref.get();
@@ -325,13 +325,13 @@ public class BookCatalogueApp extends Application {
 	}
 
 	/** Set of OnLocaleChangedListeners */
-	private static HashSet<WeakReference<OnLocaleChangedListener>> mOnLocaleChangedListeners = new HashSet<WeakReference<OnLocaleChangedListener>>();
+	private static final HashSet<WeakReference<OnLocaleChangedListener>> mOnLocaleChangedListeners = new HashSet<>();
 
 	/**
 	 * Interface definition
 	 */
-	public static interface OnLocaleChangedListener {
-		public void onLocaleChanged();
+	public interface OnLocaleChangedListener {
+		void onLocaleChanged();
 	}
 
 	/**
@@ -392,7 +392,7 @@ public class BookCatalogueApp extends Application {
 	 * 
 	 * @return			Localized resource string
 	 */
-	public final static String getResourceString(int resId) {
+	public static String getResourceString(int resId) {
 		return context.getString(resId);
 	}
 
@@ -403,7 +403,7 @@ public class BookCatalogueApp extends Application {
 	 * 
 	 * @return			Localized resource string
 	 */
-	public final static String getResourceString(int resId, Object...objects) {
+	public static String getResourceString(int resId, Object...objects) {
 		return context.getString(resId, objects);
 	}
 
@@ -414,6 +414,10 @@ public class BookCatalogueApp extends Application {
 	 */
 	public static BookCataloguePreferences getAppPreferences() {
 		return new BookCataloguePreferences();
+	}
+
+	public static boolean hasPermission(String permission) {
+		return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED;
 	}
 
 	public static boolean isBackgroundImageDisabled() {
@@ -504,18 +508,21 @@ public class BookCatalogueApp extends Application {
 		a.startActivity(i);
 	}
 
-	private static String NOTIFICATION_CHANNEL_NAME = "Basic Notifications";
+	private static final String NOTIFICATION_CHANNEL_NAME = "Basic Notifications";
 	private static NotificationChannel mNoticiationChannel = null;
 
 	/**
      * Show a notification while this app is running.
-	 * 
-	 * @param title
-	 * @param message
+	 * <p>
+	 * TODO: NOTE THAT THIS APP NO LONGER USES NOTIFICATIONS SINCE GOODREADS/LT are GONE. IF WE DO, THEN WE NEED TO REQUEST PERMS.
+	 *  ALSO NOTE: BG tasks should be done with WorkManager in future, and it will handle notifications.
+	 * <p>
+	 * @param id		ID of the notification
+	 * @param title		Title of message
+	 * @param message	Message
 	 */
     public static void showNotification(int id, String title, String message, Intent i) {
         // In this sample, we'll use the same text for the ticker and the expanded notification
-        CharSequence text = message; //getText(R.string.local_service_started);
 
 		Builder nb = new Builder(context)
 				.setSmallIcon(R.drawable.ic_stat_logo)
@@ -537,7 +544,7 @@ public class BookCatalogueApp extends Application {
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
         // The PendingIntent to launch our activity if the user selects this notification
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, i, 0);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, i, PendingIntent.FLAG_IMMUTABLE);
 
 		//// Set the info for the views that show in the notification panel.
 		//notification.setLatestEventInfo(context, title, //getText(R.string.local_service_label),
@@ -580,10 +587,10 @@ public class BookCatalogueApp extends Application {
      * Monitor configuration changes (like rotation) to make sure we reset the
      * locale.
      *
-     * @param newConfig
+     * @param newConfig		The new configuration
      */
     @Override
-    public void onConfigurationChanged(Configuration newConfig)
+    public void onConfigurationChanged(@NonNull Configuration newConfig)
     {
         super.onConfigurationChanged(newConfig);
         if (mPreferredLocale != null)
@@ -602,7 +609,7 @@ public class BookCatalogueApp extends Application {
      */
     public static ArrayList<String> getSupportedLocales() {
     	if (mSupportedLocales == null) {
-    		mSupportedLocales = new ArrayList<String>();
+    		mSupportedLocales = new ArrayList<>();
     		mSupportedLocales.add("de_DE");
     		mSupportedLocales.add("en_AU");
     		mSupportedLocales.add("es_ES");

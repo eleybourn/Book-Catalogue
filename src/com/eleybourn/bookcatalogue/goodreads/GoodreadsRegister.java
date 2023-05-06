@@ -20,13 +20,11 @@
 
 package com.eleybourn.bookcatalogue.goodreads;
 
-import android.Manifest.permission;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -40,6 +38,9 @@ import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTaskContext;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueueProgressFragment;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueueProgressFragment.FragmentTask;
 import com.eleybourn.bookcatalogue.utils.Utils;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
 
 /**
  * Activity to allow the user to authorize the application to access their goodreads account and
@@ -151,7 +152,7 @@ public class GoodreadsRegister extends BookCatalogueActivity {
 		};
 
 		// Get the fragment to display task progress
-		SimpleTaskQueueProgressFragment.runTaskWithProgress(activity, R.string.connecting_to_web_site, task, true, 0);
+		SimpleTaskQueueProgressFragment.runTaskWithProgress(activity.getSupportFragmentManager(), R.string.connecting_to_web_site, task, true, 0);
 	}
 
 	/**

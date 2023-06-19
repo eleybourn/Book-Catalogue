@@ -1153,7 +1153,8 @@ and you can edit the book via the options menu using the menu button or overflow
     <string name="moving_files">Moving files&#8230;</string>
     <string name="invalid_backup_file">The file is not a valid backup</string>
     <string name="old_files_message">
-        Google has required that this and all future versions of Book Catalogue must store their files in more standard directories.
+        PLEASE READ THIS MESSAGE CAREFULLY
+        \n\nGoogle has required that this and all future versions of Book Catalogue must store their files in more standard directories.
         \n\nThey also no longer allow us to access the old directories.
         \n\nWe have detected an upgrade from an old version of the app and need to be granted access to it in order to move the files.
         \n\nClick \'%1$s\' to continue and then grant access in the following dialog.

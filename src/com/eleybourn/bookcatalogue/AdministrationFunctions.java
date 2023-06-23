@@ -239,8 +239,11 @@ public class AdministrationFunctions extends ActivityWithTasks
 			// Make line flash when clicked.
 			backup.setBackgroundResource(android.R.drawable.list_selector_background);
 			backup.setOnClickListener(v -> {
-				mDbHelper.backupDbFile();
-				Toast.makeText(AdministrationFunctions.this, R.string.backup_success, Toast.LENGTH_LONG).show();
+				if (mDbHelper.backupDbFile() != null) {
+					Toast.makeText(AdministrationFunctions.this, R.string.backup_success, Toast.LENGTH_LONG).show();
+				} else {
+					Toast.makeText(AdministrationFunctions.this, R.string.unexpected_error, Toast.LENGTH_LONG).show();
+				}
 			});
 
 		}

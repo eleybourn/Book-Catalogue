@@ -1863,8 +1863,8 @@ public class CatalogueDBAdapter {
 	 * Backup database file using default file name
 	 * @throws Exception 
 	 */
-	public void backupDbFile() {
-		backupDbFile("DbExport.db");
+	public File backupDbFile() {
+		return backupDbFile("DbExport.db");
 	}
 	
 	/**

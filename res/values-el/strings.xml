@@ -995,7 +995,7 @@
     <string name="special_thanks_label">Ειδικές Ευχαριστίες</string>
 
     <!-- Credits in the 'about' dialog -->
-    <string name="translators_blurb">Το BookCatalogue είναι προιόν προσπάθειας πολλών ανθρώπων και δεν θα είχε τέτοια ευρεία αποδοχή χωρίς την γενναιόδωρη βοήθεια των εθελοντών μεταφραστών: Eugenio Davolio, José M. Galdo, Imkal, Gideon van Melle, Emir Sarı, Nick Silin, Robert Wetzlmayr and Dimitris Klisiaris (εαν ξεχνάμε κάποιον, παρακαλούμε ενημερώστε μας).</string>
+    <string name="translators_blurb">Το BookCatalogue είναι προιόν προσπάθειας πολλών ανθρώπων και δεν θα είχε τέτοια ευρεία αποδοχή χωρίς \nτην γενναιόδωρη βοήθεια των εθελοντών μεταφραστών: Eugenio Davolio, José M. Galdo, Christian Grün, Imkal, \nDimitris Klisiaris, Gideon van Melle, \nEmir Sarı, Nick Silin and Robert Wetzlmayr (εαν ξεχνάμε κάποιον, παρακαλούμε ενημερώστε μας).</string>
 
     <!-- End: Added/Updated in 5.1.0 -->
 

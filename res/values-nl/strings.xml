@@ -987,7 +987,7 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     <string name="special_thanks_label">Speciale dankbetuiging</string>
     
     <!-- Credits in the 'about' dialog -->
-    <string name="translators_blurb">BookCatalogue is het resultaat van de inspanning van vele personen en zou niet zo\'n grote verspreiding kennen zonder de genereuse hulp van vrijwillige vertalers: Eugenio Davolio, José M. Galdo, Imkal, Gideon van Melle, Emir Sarı, Nick Silin, and Robert Wetzlmayr (als we iemand zijn vergeten, laat het ons aub weten).</string>
+    <string name="translators_blurb">BookCatalogue is het resultaat van de inspanning van vele personen en zou niet zo\'n grote verspreiding \nkennen zonder de genereuse hulp van vrijwillige vertalers: Eugenio Davolio, José M. Galdo, Christian Grün, Imkal, Dimitris Klisiaris,\nGideon van Melle, Emir Sarı, Nick Silin and Robert Wetzlmayr (als we iemand zijn vergeten, laat het ons aub weten).</string>
     
     <!-- End: Added/Updated in 5.1.0 -->
     

@@ -168,14 +168,15 @@ public class BookCatalogueApp extends Application {
 		try {
 			// Save the original locale
 			mInitialLocale = Locale.getDefault();
+			// Needs to be done later??
 			// See if user has set a preference
-			String prefLocale = getAppPreferences().getString(BookCataloguePreferences.PREF_APP_LOCALE, null);
-			//prefLocale = "ru";
-			// If we have a preference, set it
-			if (prefLocale != null && !prefLocale.equals("")) {
-		        mPreferredLocale = localeFromName(prefLocale);
-		        applyPreferredLocaleIfNecessary(getBaseContext().getResources());
-			}
+			//String prefLocale = getAppPreferences().getString(BookCataloguePreferences.PREF_APP_LOCALE, null);
+			////prefLocale = "ru";
+			//// If we have a preference, set it
+			//if (prefLocale != null && !prefLocale.equals("")) {
+			//	mPreferredLocale = localeFromName(prefLocale);
+			//	applyPreferredLocaleIfNecessary(getBaseContext().getResources());
+			//}
 		} catch (Exception e) {
 			// Not much we can do...we want locale set early, but not fatal if it fails.
 			Logger.logError(e);
@@ -198,6 +199,8 @@ public class BookCatalogueApp extends Application {
 			mQueueManager = new BcQueueManager(this.getApplicationContext());
 
 		super.onCreate();
+
+		applyLocaleSettings();
 
 		//if (Build.VERSION.SDK_INT < 16) {
 		//	//
@@ -254,18 +257,23 @@ public class BookCatalogueApp extends Application {
 	 */
 	private final SharedPreferences.OnSharedPreferenceChangeListener mPrefsListener = (sharedPreferences, key) -> {
 		if (key != null && key.equals(BookCataloguePreferences.PREF_APP_LOCALE)) {
-			String prefLocale = getAppPreferences().getString(BookCataloguePreferences.PREF_APP_LOCALE, null);
-			//prefLocale = "ru";
-			// If we have a preference, set it
-			if (prefLocale != null && !prefLocale.equals("")) {
-				mPreferredLocale = localeFromName(prefLocale);
-			} else {
-				mPreferredLocale = getSystemLocal();
-			}
-			applyPreferredLocaleIfNecessary(getBaseContext().getResources());
-			notifyLocaleChanged();
+			applyLocaleSettings();
 		}
 	};
+
+	private void applyLocaleSettings() {
+		String prefLocale = getAppPreferences().getString(BookCataloguePreferences.PREF_APP_LOCALE, null);
+		//prefLocale = "ru";
+		// If we have a preference, set it
+		if (prefLocale != null && !prefLocale.equals("")) {
+			mPreferredLocale = localeFromName(prefLocale);
+		} else {
+			mPreferredLocale = getSystemLocal();
+		}
+		setLocale(getBaseContext());
+		//applyPreferredLocaleIfNecessary(getBaseContext().getResources());
+		notifyLocaleChanged();
+	}
 
 	/**
 	 * Send a message to all registered OnLocaleChangedListeners, and cleanup any dead references.
@@ -563,25 +571,49 @@ public class BookCatalogueApp extends Application {
         return mPreferredLocale;
     }
 
-    /**
-     * Set the current preferred locale in the passed resources.
-     *
-     * @param res   Resources to use
-     * @return  true if it was actually changed
-     */
-    public static boolean applyPreferredLocaleIfNecessary(Resources res) {
-        if (mPreferredLocale == null)
-            return false;
+	///**
+	// * Set the current preferred locale in the passed resources.
+	// *
+	// * @param res   Resources to use
+	// * @return  true if it was actually changed
+	// */
+	//public static boolean applyPreferredLocaleIfNecessary(Resources res) {
+	//	if (mPreferredLocale == null)
+	//		return false;
+	//
+	//	if (res.getConfiguration().locale.equals(mPreferredLocale))
+	//		return false;
+	//	Locale.setDefault(mPreferredLocale);
+	//	Configuration config = new Configuration();
+	//	config.locale = mPreferredLocale;
+	//	res.updateConfiguration(config, res.getDisplayMetrics());
+	//
+	//	return true;
+	//}
 
-        if (res.getConfiguration().locale.equals(mPreferredLocale))
-            return false;
-        Locale.setDefault(mPreferredLocale);
-        Configuration config = new Configuration();
-        config.locale = mPreferredLocale;
-        res.updateConfiguration(config, res.getDisplayMetrics());
+	public static Context setLocale(Context context) {
+		if (mPreferredLocale == null) {
+			mPreferredLocale = mInitialLocale;
+		}
 
-        return true;
-    }
+		Locale.setDefault(mPreferredLocale);
+		Resources resources = context.getResources();
+		Configuration configuration = resources.getConfiguration();
+
+		if (VERSION.SDK_INT >= 24) {
+			configuration.setLocale(mPreferredLocale);
+			configuration.setLayoutDirection(mPreferredLocale);
+
+			return context.createConfigurationContext(configuration);
+
+		} else {
+			configuration.locale = mPreferredLocale;
+			configuration.setLayoutDirection(mPreferredLocale);
+			resources.updateConfiguration(configuration, resources.getDisplayMetrics());
+
+			return context;
+		}
+	}
 
     /**
      * Monitor configuration changes (like rotation) to make sure we reset the
@@ -593,9 +625,10 @@ public class BookCatalogueApp extends Application {
     public void onConfigurationChanged(@NonNull Configuration newConfig)
     {
         super.onConfigurationChanged(newConfig);
-        if (mPreferredLocale != null)
+        if (mPreferredLocale != null || mPreferredLocale != mInitialLocale)
         {
-        	applyPreferredLocaleIfNecessary(getBaseContext().getResources());
+			setLocale(getBaseContext());
+        	//applyPreferredLocaleIfNecessary(getBaseContext().getResources());
         }
     }
 

@@ -240,7 +240,7 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
         Locale curr = BookCatalogueApp.getPreferredLocale();
         if ((curr != null && !curr.equals(old)) || (curr == null && old != null)) {
             mLastLocale = curr;
-            BookCatalogueApp.applyPreferredLocaleIfNecessary(this.getResources());
+            BookCatalogueApp.setLocale(this);
             Intent intent = getIntent();
             System.out.println("Restarting " + this.getClass().getSimpleName());
             finish();
@@ -439,5 +439,10 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
 	}
 	protected void launchBackupImport() {
 		mBackupImportManager.start();
+	}
+
+	@Override
+	protected void attachBaseContext(Context newBase) {
+		super.attachBaseContext(BookCatalogueApp.setLocale(newBase));
 	}
 }

@@ -71,8 +71,13 @@
             android:configChanges="orientation|keyboardHidden"
             android:exported="true"
             android:theme="@style/AppInvisible">
-<!--            android:noHistory="true"-->
-<!--            android:theme="@style/Invisible">-->
+            <!--
+            This used to have noHistory BUT the new backup method has to start a full activity (the google chooser)
+            which means than the startup activity is deleted. So now we have a real activity with history. This is also
+            needed so that the activity life-cycle can be monitored (to handle file picker results).
+            -->
+            <!--            android:noHistory="true"-->
+            <!--            android:theme="@style/Invisible">-->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

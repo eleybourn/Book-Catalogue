@@ -65,10 +65,10 @@ public class ExportThread extends ManagedTask {
 
 	@Override
 	protected void onRun() {
-		if (!StorageUtils.isSharedWritable()) {
-			mManager.doToast(getString(R.string.export_failed_sdcard));
-			return;			
-		}
+		// We used to check for writability of shared storage here but since as of v6
+		// we have a file selected via standard calls, writability of shared storage is
+		// moot: The file could be local or cloud-backed, for example. The only useful
+		// test here is whether we can open it for writing.
 		try {
 			OutputStream out = BookCatalogueApp.context.getContentResolver().openOutputStream(mFile.getUri());
 			CsvExporter exporter = new CsvExporter();

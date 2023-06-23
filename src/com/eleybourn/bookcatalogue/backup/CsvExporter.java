@@ -59,10 +59,9 @@ public class CsvExporter implements Exporter {
 
 		/** RELEASE: Handle flags! */
 		int num = 0;
-		if (!StorageUtils.isSharedWritable()) {
-			mLastError = BookCatalogueApp.getResourceString(R.string.export_failed_sdcard);
-			return false;			
-		}
+
+		// We used to check for writability of shared storage here but since as of v6
+		// we have an open stream, writability of shared storage is moot.
 
 		// Fix the 'since' date, if required
 		if ( (backupFlags & Exporter.EXPORT_SINCE) != 0) {

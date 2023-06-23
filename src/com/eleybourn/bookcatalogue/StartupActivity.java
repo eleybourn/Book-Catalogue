@@ -352,6 +352,8 @@ public class StartupActivity
 									  mExportRequired = true;
 									  dialog.dismiss();
 								  });
+			alertDialog.setCanceledOnTouchOutside(false);
+			alertDialog.setCancelable(false);
 			alertDialog.setOnDismissListener(new OnDismissListener() {
 				@Override
 				public void onDismiss(DialogInterface dialog) {

@@ -120,7 +120,7 @@ public class StorageUtils {
 	}
 
 
-	public static final File getBCShared() {
+	private static File getBCShared() {
 		File dir = new File(StorageUtils.BC_SHARED_PATH);
 		dir.mkdirs();
 		return dir;
@@ -148,22 +148,22 @@ public class StorageUtils {
 		return dir.getAbsolutePath();
 	}
 
-	/**
-	 * Accessor
-	 *
-	 * @return
-	 */
-	public static final String getBCSharedPath() {
-		File dir = getBCShared();
-		dir.mkdirs();
-		return dir.getAbsolutePath();
-	}
+	///**
+	// * Accessor
+	// *
+	// * @return
+	// */
+	//private static String getBCSharedPath() {
+	//	File dir = getBCShared();
+	//	dir.mkdirs();
+	//	return dir.getAbsolutePath();
+	//}
 
 	/**
 	 * Backup database file
 	 * @throws Exception 
 	 */
-	public static void backupDbFile(SQLiteDatabase db, String suffix) {
+	public static File backupDbFile(SQLiteDatabase db, String suffix) {
 		try {
 			final String fileName = EXPORT_FILE_BASE_NAME + suffix;
 			java.io.InputStream dbOrig = new java.io.FileInputStream(db.getPath());
@@ -188,9 +188,10 @@ public class StorageUtils {
 			dbCopy.flush();
 			dbCopy.close();
 			dbOrig.close();
-			
+			return existing;
 		} catch (Exception e) {
 			Logger.logError(e);
+			return null;
 		}
 	}
 
@@ -327,24 +328,31 @@ public class StorageUtils {
 	//}
 
 	/**
-	 * Check if the sdcard is writable
+	 * Check if the shared storage dir is writable
 	 * 
 	 * @return	success or failure
 	 */
 	static public boolean isSharedWritable() {
-		/* Test write to the SDCard */
+		/* Test write to the BC shared dir */
 		try {
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-					getBCShared() + "/.nomedia"), UTF8), BUFFER_SIZE);
-			out.write("");
-			out.close();
-			return true;
-		} catch (IOException e) {
+			return getBCShared().canWrite();
+			////noinspection IOStreamConstructor -- can not use suggestion since API is 26 and we have min 21.
+			//BufferedWriter out = new BufferedWriter(new OutputStreamWriter(
+			//		new FileOutputStream(getBCShared() + "/.nomedia"), UTF8), BUFFER_SIZE);
+			//out.write("");
+			//out.close();
+			//return true;
+		} catch (Exception e) {
 			return false;
 		}		
 	}
 
-	private static String[] mPurgeableFilePrefixes = new String[]{StorageUtils.EXPORT_FILE_BASE_NAME + "DbUpgrade", StorageUtils.EXPORT_FILE_BASE_NAME + "DbExport", "error.log", "tmp"};
+	private static String[] mPurgeableFilePrefixes = new String[]{
+			StorageUtils.EXPORT_FILE_BASE_NAME + "DbUpgrade",
+			StorageUtils.EXPORT_FILE_BASE_NAME + StorageUtils.EXPORT_FILE_BASE_NAME + "DbUpgrade", // Bug in prior version meant duplicated base name!
+			StorageUtils.EXPORT_FILE_BASE_NAME + "DbExport",
+			StorageUtils.EXPORT_FILE_BASE_NAME + StorageUtils.EXPORT_FILE_BASE_NAME + "DbExport", // Bug in prior version meant duplicated base name!
+			"error.log", "tmp"};
 	private static String[] mDebugFilePrefixes = new String[]{StorageUtils.EXPORT_FILE_BASE_NAME + "DbUpgrade", StorageUtils.EXPORT_FILE_BASE_NAME + "DbExport", "error.log", "export.csv"};
 
 	/**
@@ -357,10 +365,10 @@ public class StorageUtils {
 	 */
 	public static void sendDebugInfo(Context context, CatalogueDBAdapter dbHelper) {
 		// Create a temp DB copy.
-		String tmpName = StorageUtils.EXPORT_FILE_BASE_NAME + "DbExport-tmp.db";
-		dbHelper.backupDbFile(tmpName);
-		File dbFile = new File(StorageUtils.getBCCache() + "/" + tmpName);
-		dbFile.deleteOnExit();
+		File dbFile = dbHelper.backupDbFile("DbExport-tmp.db");
+		if (dbFile != null) {
+			dbFile.deleteOnExit();
+		}
 		// setup the mail message
 		final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND_MULTIPLE);
 		emailIntent.setType("plain/text");

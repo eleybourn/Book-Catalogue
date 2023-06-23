@@ -1872,11 +1872,12 @@ public class CatalogueDBAdapter {
 	 *
 	 * @throws Exception 
 	 */
-	public void backupDbFile(String suffix) {
+	public File backupDbFile(String suffix) {
 		try {
-			StorageUtils.backupDbFile(mDb.getUnderlyingDatabase(), suffix);
+			return StorageUtils.backupDbFile(mDb.getUnderlyingDatabase(), suffix);
 		} catch (Exception e) {
 			Logger.logError(e);
+			return null;
 		}
 	}
 	

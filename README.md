@@ -1,32 +1,30 @@
-#
+
 # BOOK CATALOGUE
-#
-# @copyright 2010 Evan Leybourn
-# @license GNU General Public License
-# 
-# This file is part of Book Catalogue.
-#
-# Book Catalogue is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# Book Catalogue is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
-#
+> @copyright 2010 Evan Leybourn
+> @license GNU General Public License
+ 
+This file is part of Book Catalogue.
+
+Book Catalogue is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Book Catalogue is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
 
 This is an open source Android application. Please feel free to fork, bug fix 
 and commit back. 
 
-This is a simple book catalogue application, to store a list of your books. 
+*_Note:_* This is a simple book catalogue application, to store a list of your books. 
 Books can be added either manually, by ISBN, or by barcode. 
 
-Features include;
+Features include:
 * The obvious; you can add, edit, and display a list of books
 * Books can be sorted by Author or Title. 
 * Books can be automatically added by typing in the ISBN or scanning the 

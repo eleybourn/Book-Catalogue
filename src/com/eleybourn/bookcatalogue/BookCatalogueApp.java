@@ -562,7 +562,12 @@ public class BookCatalogueApp extends Application {
         mNotifier.notify(id, notification);
     }
 
-    /**
+	@Override
+	protected void attachBaseContext(Context base) {
+		super.attachBaseContext(setLocale(base));
+	}
+
+	/**
      * Get the current preferred locale, or null
      *
      * @return  locale, or null

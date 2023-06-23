@@ -352,17 +352,14 @@ public class StartupActivity
 									  mExportRequired = true;
 									  dialog.dismiss();
 								  });
-			alertDialog.setCanceledOnTouchOutside(false);
-			alertDialog.setCancelable(false);
-			alertDialog.setOnDismissListener(new OnDismissListener() {
-				@Override
-				public void onDismiss(DialogInterface dialog) {
-					if (mExportRequired) {
-						launchBackupExport();
-					} else {
-						stage4Startup();
-					}
-				}});
+			alertDialog.setOnCancelListener(DialogInterface::dismiss);
+			alertDialog.setOnDismissListener(dialog -> {
+				if (mExportRequired) {
+					launchBackupExport();
+				} else {
+					stage4Startup();
+				}
+			});
 			alertDialog.show();
 		} else {
 			stage4Startup();
@@ -398,11 +395,13 @@ public class StartupActivity
 		alertDialog.setCanceledOnTouchOutside(false);
 		alertDialog.setTitle(R.string.upgrade_title);
 		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-		alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.ok), new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				UpgradeMessageManager.setMessageAcknowledged();
-				stage3Startup();
-			}
+		alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.ok), (dialog, which) -> {
+			alertDialog.dismiss();
+		});
+		alertDialog.setOnCancelListener(dialog -> alertDialog.dismiss());
+		alertDialog.setOnDismissListener(dialog -> {
+			UpgradeMessageManager.setMessageAcknowledged();
+			stage3Startup();
 		});
 		alertDialog.show();
 		mUpgradeMessageShown = true;

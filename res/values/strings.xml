@@ -1139,6 +1139,8 @@ and you can edit the book via the options menu using the menu button or overflow
     <!-- End: Added/Updated in 5.3.0 -->
 
 
+    <!-- Begin: Added/Updated in 6.0.0 -->
+
     <!-- Seems no longer used. Ignore. -->
     <string name="thumbnail_failed_sdcard">Thumbnail Download Failed - Could not write to SDCard</string>
     <!-- Hint displayed when an export or database backup is done -->
@@ -1147,8 +1149,6 @@ and you can edit the book via the options menu using the menu button or overflow
     	from your SD card to another location.
     	\n\nSee our FAQ (a web link is under \'Help\') for detailed instructions.</string>
 
-
-    <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->
     <string name="import_old_files">Import old files</string>
     <string name="moving_files">Moving files&#8230;</string>
     <string name="invalid_backup_file">The file is not a valid backup</string>
@@ -1222,7 +1222,9 @@ and you can edit the book via the options menu using the menu button or overflow
     <string name="export_failed_sdcard">Export failed - could not write to the shared storage</string>
     <string name="cleanup_files_text">Purgeable files currently use %s of storage. Log files and other data are saved at each upgrade, when you backup the database, or when the application crashes. Click the button below to purge these files from your storage. If you have been experiencing crashing or other errors, please consider using the \'Send Information\' button first.</string>
 
+    <!-- End: Added/Updated in 6.0.0 -->
 
+    <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->
     <!-- End: Added/Updated in [Next Version] -->
 
 </resources>

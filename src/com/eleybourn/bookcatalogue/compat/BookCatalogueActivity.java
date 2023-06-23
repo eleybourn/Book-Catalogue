@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.PermissionInfo;
 import android.net.Uri;
+import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.MenuItem;
@@ -93,12 +94,15 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
 
 	protected static RequiredPermission[] mMinimumPermissions;
 	static {
-		// Since targetSDK is 33, we no longer request read/write:
-		//      mMinimumPermissions = new RequiredPermission[] {
-		//		    new RequiredPermission(permission.READ_EXTERNAL_STORAGE, R.string.perm_read_ext),
-		//		    new RequiredPermission(permission.WRITE_EXTERNAL_STORAGE, R.string.perm_write_ext),
-		//      };
-		mMinimumPermissions = new RequiredPermission[0];
+		// We don't actually need read/write for most purposes now.
+		if (VERSION.SDK_INT <= 29) {
+			mMinimumPermissions = new RequiredPermission[]{
+					new RequiredPermission(permission.READ_EXTERNAL_STORAGE, R.string.perm_read_ext),
+					new RequiredPermission(permission.WRITE_EXTERNAL_STORAGE, R.string.perm_write_ext),
+			};
+		} else {
+			mMinimumPermissions = new RequiredPermission[0];
+		}
 	}
 
 	public static RequiredPermission[] mScannerPermissions = new RequiredPermission[] {

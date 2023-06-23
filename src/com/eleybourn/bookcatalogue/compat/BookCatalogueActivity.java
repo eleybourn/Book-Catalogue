@@ -14,6 +14,7 @@ import android.view.MenuItem;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.StartupActivity;
 import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment;
 import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment.OnMessageDialogResultListener;
 import com.eleybourn.bookcatalogue.utils.Logger;
@@ -58,7 +59,12 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+		// If we are NOT the startup activity AND we need to move old files, then register launcher.
+		if (!(this instanceof StartupActivity) && StartupActivity.isFileMoveRequired()) {
+			registerOldFilesTreeCopyLauncher();
+		}
+
+		super.onCreate(savedInstanceState);
 
         ActionBar bar = getSupportActionBar();
 		if (bar != null) {
@@ -282,11 +288,43 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
 					}
 				});
 	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		if (!(this instanceof StartupActivity) && StartupActivity.isFileMoveRequired()) {
+			// To avoid re-display on recreate of activity
+			StartupActivity.setFileMoveRequired(false);
+			// No point trying to list files; they may not be accessible and if this is an upgrade, they DO exist
+			//ArrayList<File> list = StorageUtils.getExistingOldPaths();
+			String msg = this.getString(
+					R.string.old_files_message,
+					getString(R.string.ok),
+					getString(R.string.cancel),
+					getString(R.string.admin_and_prefs),
+					getString(R.string.import_old_files));
+			MessageDialogFragment frag = MessageDialogFragment.newInstance(
+					ACTIVITY_IMPORT_OLD_FILES,
+					R.string.import_old_files,
+					msg,
+					R.string.ok,
+					R.string.cancel,
+					0);
+			frag.show(getSupportFragmentManager(), null);
+		}
+	}
+
 	private static final String ARG_TREE_URI = "TREE";
+	private static final int ACTIVITY_IMPORT_OLD_FILES = -666;
 	private static final int ACTIVITY_REALLY_IMPORT_OLD_FILES = -667;
 	@Override
 	public void onMessageDialogResult(int dialogId, MessageDialogFragment dialog, int button) {
-		if (dialogId == ACTIVITY_REALLY_IMPORT_OLD_FILES) {
+		if (dialogId == ACTIVITY_IMPORT_OLD_FILES) {
+			if (button == Dialog.BUTTON_POSITIVE) {
+				startImportOldFiles();
+			}
+			dialog.dismiss();
+		} else if (dialogId == ACTIVITY_REALLY_IMPORT_OLD_FILES) {
 			if (button == Dialog.BUTTON_POSITIVE) {
 				Uri uri = Uri.parse(dialog.requireArguments().getString(ARG_TREE_URI));
 				DocumentFile f = DocumentFile.fromTreeUri(BookCatalogueActivity.this, uri);

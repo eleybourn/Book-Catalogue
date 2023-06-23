@@ -52,8 +52,6 @@ import java.util.ArrayList;
  */
 public class MainMenu extends BookCatalogueActivity implements OnMessageDialogResultListener {
 
-	private static final int ACTIVITY_IMPORT_OLD_FILES = -666;
-
 	@Override
 	protected RequiredPermission[] getRequiredPermissions() {
 		return new RequiredPermission[0];
@@ -66,8 +64,6 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// Register any common launchers defined in parents.
-		registerOldFilesTreeCopyLauncher();
-
 		super.onCreate(savedInstanceState);
 
 		// Get the preferences and extras.
@@ -114,28 +110,6 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
 		}
 
 		Utils.initBackground(R.drawable.bc_background_gradient, this, true);
-
-		if (StartupActivity.isFileMoveRequired()) {
-			// To avoid re-display on recreate of activity
-			StartupActivity.setFileMoveRequired(false);
-			// No point trying to list files; they may not be accessible and if this is an upgrade, they DO exist
-			//ArrayList<File> list = StorageUtils.getExistingOldPaths();
-			String msg = this.getString(
-					R.string.old_files_message,
-					getString(R.string.ok),
-					getString(R.string.cancel),
-					getString(R.string.admin_and_prefs),
-					getString(R.string.import_old_files));
-			MessageDialogFragment frag = MessageDialogFragment.newInstance(
-					ACTIVITY_IMPORT_OLD_FILES,
-					R.string.import_old_files,
-					msg,
-					R.string.ok,
-					R.string.cancel,
-					0);
-			frag.show(getSupportFragmentManager(), null);
-		}
-
 	}
 
 	/**
@@ -305,16 +279,4 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
 //	ActivityResultLauncher<Uri> mOldFilesTreeLauncher = registerForActivityResult(
 //			new OpenDocumentTree(),
 //			result -> oldFilesTreeCopyResultHandler(result, getSupportFragmentManager()));
-
-	@Override
-	public void onMessageDialogResult(int dialogId, MessageDialogFragment dialog, int button) {
-		if (dialogId == ACTIVITY_IMPORT_OLD_FILES) {
-			if (button == Dialog.BUTTON_POSITIVE) {
-				startImportOldFiles();
-			}
-			dialog.dismiss();
-		} else {
-			super.onMessageDialogResult(dialogId, dialog, button);
-		}
-	}
 }

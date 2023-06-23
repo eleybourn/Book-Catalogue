@@ -3,8 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.eleybourn.bookcatalogue"
     android:installLocation="auto"
-    android:versionCode="202"
-    android:versionName="6.0.2">
+    android:versionCode="204"
+    android:versionName="6.0.4">
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />

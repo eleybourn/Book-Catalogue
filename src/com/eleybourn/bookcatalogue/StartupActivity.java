@@ -23,8 +23,6 @@ package com.eleybourn.bookcatalogue;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
-import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
@@ -40,7 +38,6 @@ import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment;
 import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment.OnMessageDialogResultListener;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue;
-import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.OnTaskFinishListener;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTask;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTaskContext;
 import com.eleybourn.bookcatalogue.utils.UpgradeMessageManager;
@@ -64,10 +61,10 @@ public class StartupActivity
 		implements OnMessageDialogResultListener,
 				   OnExportTypeSelectionDialogResultListener
 {
-	private static String TAG = "StartupActivity";
+	private static final String TAG = "StartupActivity";
 	/** Flag to indicate FTS rebuild is required at startup */
-	private static String PREF_FTS_REBUILD_REQUIRED = TAG + ".FtsRebuildRequired";
-	private static String PREF_AUTHOR_SERIES_FIXUP_REQUIRED = TAG + ".FAuthorSeriesFixupRequired";
+	private static final String PREF_FTS_REBUILD_REQUIRED = TAG + ".FtsRebuildRequired";
+	private static final String PREF_AUTHOR_SERIES_FIXUP_REQUIRED = TAG + ".FAuthorSeriesFixupRequired";
 	
 	private static final String STATE_OPENED = "state_opened";
 	/** Number of times the app has been started */
@@ -109,11 +106,8 @@ public class StartupActivity
 		mNeedMoveFiles = required;
 	}
 
-	/** Database connection */
-	//CatalogueDBAdapter mDb = null;
-
 	/** Handler to post runnables to UI thread */
-	private Handler mHandler = new Handler();
+	private final Handler mHandler = new Handler();
 	/**UI thread */
 	private Thread mUiThread;
 
@@ -146,18 +140,17 @@ public class StartupActivity
 		mUiThread = Thread.currentThread();
 
 		// Create a progress dialog; we may not use it...but we need it to be created in the UI thread.
-		mProgress = ProgressDialog.show(this, getString(R.string.book_catalogue_startup), getString(R.string.starting_up), true, true, new OnCancelListener() {
-			@Override
-			public void onCancel(DialogInterface dialog) {
-				// Cancelling the list cancels the activity.
-				StartupActivity.this.finish();
-			}});			
+		mProgress = ProgressDialog.show(this, getString(R.string.book_catalogue_startup), getString(R.string.starting_up), true, true,
+										dialog -> {
+											// Cancelling the list cancels the activity.
+											StartupActivity.this.finish();
+										});
 
 		mWasReallyStartup = mIsReallyStartup;
 
 		// If it's a real application startup...cleanup old stuff
 		if (mWasReallyStartup) {
-			mStartupActivity = new WeakReference<StartupActivity>(this);
+			mStartupActivity = new WeakReference<>(this);
 
 			updateProgress("Starting");
 
@@ -204,7 +197,7 @@ public class StartupActivity
 	/**
 	 * Update the progress dialog, if it has not been dismissed.
 	 * 
-	 * @param stringId
+	 * @param stringId		Message to display
 	 */
 	public void updateProgress(final int stringId) {
 		updateProgress(getString(stringId));
@@ -212,7 +205,7 @@ public class StartupActivity
 	/**
 	 * Update the progress dialog, if it has not been dismissed.
 	 * 
-	 * @param message
+	 * @param message Message to display
 	 */
 	public void updateProgress(final String message) {
 		// If mProgress is null, it has been dismissed. Don't update.
@@ -236,11 +229,7 @@ public class StartupActivity
 			}
 		} else {
 			// If we are NOT in the UI thread, queue it to the UI thread.
-			mHandler.post(new Runnable() {
-				@Override
-				public void run() {
-					updateProgress(message);
-				}});
+			mHandler.post(() -> updateProgress(message));
 		}
 	}
 
@@ -261,17 +250,13 @@ public class StartupActivity
 	/**
 	 * Get (or create) the task queue.
 	 * 
-	 * @return
+	 * @return Return (possibly creating) the task queue
 	 */
 	private SimpleTaskQueue getQueue() {
 		if (mTaskQueue == null) {
 			mTaskQueue = new SimpleTaskQueue("startup-tasks", 1);	
 			// Listen for task completions
-			mTaskQueue.setTaskFinishListener(new OnTaskFinishListener() {
-				@Override
-				public void onTaskFinish(SimpleTask task, Exception e) {
-					taskCompleted(task);
-				}});
+			mTaskQueue.setTaskFinishListener((task, e) -> taskCompleted(task));
 		}
 		return mTaskQueue;
 	}
@@ -395,9 +380,7 @@ public class StartupActivity
 		alertDialog.setCanceledOnTouchOutside(false);
 		alertDialog.setTitle(R.string.upgrade_title);
 		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-		alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.ok), (dialog, which) -> {
-			alertDialog.dismiss();
-		});
+		alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.ok), (dialog, which) -> alertDialog.dismiss());
 		alertDialog.setOnCancelListener(dialog -> alertDialog.dismiss());
 		alertDialog.setOnDismissListener(dialog -> {
 			UpgradeMessageManager.setMessageAcknowledged();

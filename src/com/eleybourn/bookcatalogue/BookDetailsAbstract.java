@@ -809,7 +809,7 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 	 */
 	private void showZoomedThumb(Long rowId) {
 		// Create dialog and set layout
-		final Dialog dialog = new Dialog(getActivity());
+		final Dialog dialog = new Dialog(getActivity(), R.style.FullScreenDialogTheme);
 		dialog.setContentView(R.layout.zoom_thumb_dialog);
 		
 		// Check if we have a file and/or it is valid
@@ -839,6 +839,8 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 				});
 				
 				LayoutParams lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+				int pad = getResources().getDimensionPixelOffset(R.dimen.cover_zoom_padding);
+				cover.setPadding(pad, pad, pad, pad);
 				dialog.addContentView(cover, lp);
 			}
 		}

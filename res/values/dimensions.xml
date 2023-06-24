@@ -8,4 +8,6 @@
     
 	<!-- Size of key of ISBN search keyboard -->
     <dimen name="isbn_key_size">75dp</dimen>
+    <!-- Padding on zoomed cover image -->
+    <dimen name="cover_zoom_padding">8dp</dimen>
 </resources>

@@ -1075,10 +1075,10 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 		mMenuHandler.addSearchItem(menu)
 					.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
-		final boolean showGr = GoodreadsManager.hasCredentials();
-		if (showGr) {
-			mMenuHandler.addItem(menu, MNU_GOODREADS, R.string.goodreads, R.drawable.ic_menu_gr_logo);
-		}
+		//final boolean showGr = GoodreadsManager.hasCredentials();
+		//if (showGr) {
+		//	mMenuHandler.addItem(menu, MNU_GOODREADS, R.string.goodreads, R.drawable.ic_menu_gr_logo);
+		//}
 
 		mMenuHandler.addCreateHelpAndAdminItems(menu);
 		

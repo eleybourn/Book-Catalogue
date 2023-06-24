@@ -241,7 +241,7 @@ public class OtherPreferences extends PreferencesBase {
 	private static ItemEntries<String> getLanguageListItems() {
 		ItemEntries<String> items = new ItemEntries<>();
 
-		Locale l = BookCatalogueApp.getSystemLocal();
+		Locale l = BookCatalogueApp.getSystemLocale();
 		items.add("", R.string.preferred_language_x, BookCatalogueApp.getResourceString(R.string.system_locale), l.getDisplayLanguage());
 
 		for(String loc: BookCatalogueApp.getSupportedLocales()) {
@@ -269,7 +269,7 @@ public class OtherPreferences extends PreferencesBase {
 			String lang;
 			if (loc.equals("")) {
 				name = getString(R.string.system_locale);
-				lang = BookCatalogueApp.getSystemLocal().getDisplayLanguage();
+				lang = BookCatalogueApp.getSystemLocale().getDisplayLanguage();
 			} else {
 				Locale l = BookCatalogueApp.localeFromName(loc);
 				name = l.getDisplayLanguage(l);

@@ -20,6 +20,7 @@
 
 package com.eleybourn.bookcatalogue;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
 import android.app.Notification;
@@ -36,7 +37,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Build.VERSION;
 
 import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
-import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Terminator;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
@@ -105,17 +105,10 @@ public class BookCatalogueApp extends Application {
 	private static BcQueueManager mQueueManager = null;
 
 	/** The locale used at startup; so that we can revert to system locale if we want to */
-	private static Locale mInitialLocale = null;
+	private static final Locale mInitialLocale = Locale.getDefault();
+	@SuppressLint("ConstantLocale")
 	/** User-specified default locale */
 	private static Locale mPreferredLocale = null;
-
-	/**
-	 * Constructor.
-	 */
-	public BookCatalogueApp() {
-		super();
-		mInitialLocale = Locale.getDefault();
-	}
 
 	/**
 	 * There seems to be something fishy in creating locales from full names (like en_AU),
@@ -161,26 +154,8 @@ public class BookCatalogueApp extends Application {
 	 */
 	@Override
 	public void onCreate() {
-    	// Don't rely on the the context until now...
-		BookCatalogueApp.context = this.getApplicationContext();
 
-        // Get the preferred locale as soon as possible
-		try {
-			// Save the original locale
-			mInitialLocale = Locale.getDefault();
-			// Needs to be done later??
-			// See if user has set a preference
-			//String prefLocale = getAppPreferences().getString(BookCataloguePreferences.PREF_APP_LOCALE, null);
-			////prefLocale = "ru";
-			//// If we have a preference, set it
-			//if (prefLocale != null && !prefLocale.equals("")) {
-			//	mPreferredLocale = localeFromName(prefLocale);
-			//	applyPreferredLocaleIfNecessary(getBaseContext().getResources());
-			//}
-		} catch (Exception e) {
-			// Not much we can do...we want locale set early, but not fatal if it fails.
-			Logger.logError(e);
-		}
+		context = setLocale(getApplicationContext());
 
 		Terminator.init();
 		// The following line triggers the initialization of ACRA
@@ -262,15 +237,7 @@ public class BookCatalogueApp extends Application {
 	};
 
 	private void applyLocaleSettings() {
-		String prefLocale = getAppPreferences().getString(BookCataloguePreferences.PREF_APP_LOCALE, null);
-		//prefLocale = "ru";
-		// If we have a preference, set it
-		if (prefLocale != null && !prefLocale.equals("")) {
-			mPreferredLocale = localeFromName(prefLocale);
-		} else {
-			mPreferredLocale = getSystemLocal();
-		}
-		setLocale(getBaseContext());
+		context = setLocale(getBaseContext());
 		//applyPreferredLocaleIfNecessary(getBaseContext().getResources());
 		notifyLocaleChanged();
 	}
@@ -564,7 +531,11 @@ public class BookCatalogueApp extends Application {
 
 	@Override
 	protected void attachBaseContext(Context base) {
-		super.attachBaseContext(setLocale(base));
+		// We need a context in order to get prefs
+		context = base;
+		// Find out preferred locale and set it
+		context = setLocale(base);
+		super.attachBaseContext(context);
 	}
 
 	/**
@@ -597,8 +568,12 @@ public class BookCatalogueApp extends Application {
 	//}
 
 	public static Context setLocale(Context context) {
-		if (mPreferredLocale == null) {
-			mPreferredLocale = mInitialLocale;
+		String prefLocaleName = getAppPreferences().getString(BookCataloguePreferences.PREF_APP_LOCALE, null);
+		// If we have a preference, set it
+		if (prefLocaleName != null && !prefLocaleName.equals("")) {
+			mPreferredLocale = localeFromName(prefLocaleName);
+		} else {
+			mPreferredLocale = getSystemLocale();
 		}
 
 		Locale.setDefault(mPreferredLocale);
@@ -630,11 +605,7 @@ public class BookCatalogueApp extends Application {
     public void onConfigurationChanged(@NonNull Configuration newConfig)
     {
         super.onConfigurationChanged(newConfig);
-        if (mPreferredLocale != null || mPreferredLocale != mInitialLocale)
-        {
-			setLocale(getBaseContext());
-        	//applyPreferredLocaleIfNecessary(getBaseContext().getResources());
-        }
+		context = setLocale(getBaseContext());
     }
 
     /** List of supported locales */
@@ -661,7 +632,7 @@ public class BookCatalogueApp extends Application {
     	return mSupportedLocales;
     }
     
-    public static Locale getSystemLocal() {
+    public static Locale getSystemLocale() {
     	return mInitialLocale;
     }
 }

@@ -721,6 +721,7 @@
     <string name="import_from_archive">Εισαγωγή από Αρχείο</string>
 
     <!-- Hint displayed when aCatalogue Backup is done -->
+    <string name="a_and_b">%1$s και %2$s</string>
     <string name="archive_complete_details">;Ένα αρχείο %3$s με το όνομα %2$s δημιουργήθηκε στον κατάλογο \"%1$s\" στην
     κάρτα SD.\n\nΜπορείτε το αντιγράψετε κάπου αλλού για να προστατέψετε τα δεδομένα σε περίπτωση που η συσκευή σας πάθει ζημιά, χαθεί, ή κλαπεί.</string>
 
@@ -995,7 +996,7 @@
     <string name="special_thanks_label">Ειδικές Ευχαριστίες</string>
 
     <!-- Credits in the 'about' dialog -->
-    <string name="translators_blurb">Το BookCatalogue είναι προιόν προσπάθειας πολλών ανθρώπων και δεν θα είχε τέτοια ευρεία αποδοχή χωρίς \nτην γενναιόδωρη βοήθεια των εθελοντών μεταφραστών: Eugenio Davolio, José M. Galdo, Christian Grün, Imkal, \nDimitris Klisiaris, Gideon van Melle, \nEmir Sarı, Nick Silin and Robert Wetzlmayr (εαν ξεχνάμε κάποιον, παρακαλούμε ενημερώστε μας).</string>
+    <string name="translators_blurb">Το BookCatalogue είναι προιόν προσπάθειας πολλών ανθρώπων και δεν θα είχε τέτοια ευρεία αποδοχή χωρίς \nτην γενναιόδωρη βοήθεια των εθελοντών μεταφραστών: %1$s (εαν ξεχνάμε κάποιον, παρακαλούμε ενημερώστε μας).</string>
 
     <!-- End: Added/Updated in 5.1.0 -->
 

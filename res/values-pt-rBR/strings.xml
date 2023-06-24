@@ -722,7 +722,8 @@ and you can edit the book via the options menu using the menu button or overflow
     <string name="import_from_archive">Import from Archive</string>
 
     <!-- Hint displayed when aCatalogue Backup is done -->
-    <string name="archive_complete_details">A %3$s file called %2$s was created in the \"%1$s\" directory on your 
+    <string name="a_and_b">%1$s e %2$s</string>
+    <string name="archive_complete_details">A %3$s file called %2$s was created in the \"%1$s\" directory on your
     SD card.\n\nYou should manually copy it elsewhere to protect the data in case your device is damaged, lost, or stolen.</string>
 
     <!-- Displayed in progress dialog when exporting covers -->
@@ -996,7 +997,7 @@ and you can edit the book via the options menu using the menu button or overflow
     <string name="special_thanks_label">Special Thanks</string>
     
     <!-- Credits in the 'about' dialog -->
-    <string name="translators_blurb">BookCatalogue is the product of the efforts of many people, and would not have such wide use without the generous help of our volunteer translators: Eugenio Davolio, José M. Galdo, Imkal, Gideon van Melle, Emir Sarı, Nick Silin, and Robert Wetzlmayr (if we have forgotten someone, please tell us).</string>
+    <string name="translators_blurb">BookCatalogue is the product of the efforts of many people, and would not have such wide use without the generous \nhelp of our volunteer translators: %1$s (if we have forgotten someone, please tell us).</string>
 
     <!-- End: Added/Updated in 5.1.0 -->
 

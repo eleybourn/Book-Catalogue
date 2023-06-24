@@ -1037,11 +1037,7 @@ and you can edit the book via the options menu using the menu button or overflow
     <string name="system_locale">System Locale</string>
 
     <!-- Credits in the 'about' dialog -->
-    <string name="translators_blurb">BookCatalogue is the product of the efforts of many people, and would not have such wide use
-        without the generous help of our volunteer translators: Eugenio Davolio, José M. Galdo, Christian Grün, Imkal, Dimitris Klisiari,
-        Gideon van Melle, Emir Sarı, Nick Silin and Robert Wetzlmayr
-        (if we have forgotten someone, please tell us).
-    </string>
+    <string name="translators_blurb">BookCatalogue is the product of the efforts of many people, and would not have such wide use\nwithout the generous help of our volunteer translators: %1$s (if we have forgotten someone, please tell us).\n</string>
 
     <string name="new_in_520">
 		<![CDATA[

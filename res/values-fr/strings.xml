@@ -722,6 +722,7 @@
     <!-- Admin option to import -->
     <string name="import_from_archive">Restauration des données</string>
     <!-- Hint displayed when aCatalogue Backup is done -->
+    <string name="a_and_b">%1$s et %2$s</string>
     <string name="archive_complete_details">Le fichier %2$s (%3$s) a été créé dans le répertoire « %1$s »
 		de votre carte carte SD.\n\nVous devriez le copier sur un autre média comme sauvegarde en cas de perte, vol ou destruction de votre équipement</string>
     <!-- Displayed in progress dialog when exporting covers -->
@@ -1032,7 +1033,7 @@
     <string name="system_locale">Paramètres de langue du système</string>
 
     <!-- Credits in the 'about' dialog -->
-    <string name="translators_blurb">Book Catalogue est le résultat de l\'effort de beaucoup de personnes, et n\'aurait pas une diffusion et une utilisation \naussi large sans l\'aide de nos généreux traducteurs: Eugenio Davolio, José M. Galdo, Christian Grün, Imkal, Dimitris Klisiari, \nGideon van Melle, Emir Sarı, Nick Silin, and Robert Wetzlmayr (if we have forgotten someone, please tell us).</string>
+    <string name="translators_blurb">Book Catalogue est le résultat de l\'effort de beaucoup de personnes, et n\'aurait pas une diffusion et une utilisation \naussi large sans l\'aide de nos généreux traducteurs: %1$s (if we have forgotten someone, please tell us).</string>
 
     <string name="new_in_520">
 		<![CDATA[

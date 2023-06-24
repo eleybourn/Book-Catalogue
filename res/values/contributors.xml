@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="contributors_list">
+        <item>Eugenio Davolio</item>
+        <item>José M. Galdo</item>
+        <item>Christian Grün</item>
+        <item>Imkal</item>
+        <item>Dimitris Klisiari</item>
+        <item>Gideon van Melle</item>
+        <item>Emir Sarı</item>
+        <item>Nick Silin</item>
+        <item>Daniel Vachon</item>
+        <item>Robert Wetzlmayr</item>
+    </string-array>
+</resources>

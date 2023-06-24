@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.eleybourn.bookcatalogue"
     android:installLocation="auto"
-    android:versionCode="205"
-    android:versionName="6.0.5">
+    android:versionCode="206"
+    android:versionName="6.0.6">
 
     <uses-feature
         android:name="android.hardware.camera"

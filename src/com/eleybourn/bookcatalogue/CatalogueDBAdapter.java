@@ -6122,7 +6122,7 @@ public class CatalogueDBAdapter {
 		String sql = "select " + DatabaseDefinitions.DOM_BOOK_UUID + " as " + DatabaseDefinitions.DOM_BOOK_UUID + " From " + DatabaseDefinitions.TBL_BOOKS.ref();
 		return mDb.rawQuery(sql);
 	}
-	
+
 	public long getBookCount() {
 		String sql = "select Count(*) From " + DatabaseDefinitions.TBL_BOOKS.ref();
 		Cursor c = mDb.rawQuery(sql);
@@ -6133,7 +6133,15 @@ public class CatalogueDBAdapter {
 			c.close();
 		}
 	}
-	
+
+	public long[] getFirstAndLastBookRowId() {
+		String sql = "select Min(" + DOM_ID + "), Max(" + DOM_ID + ") From " + DatabaseDefinitions.TBL_BOOKS.ref();
+		try (Cursor c = mDb.rawQuery(sql)) {
+			c.moveToFirst();
+			return new long[]{c.getLong(0), c.getLong(1)};
+		}
+	}
+
 	/**
 	 * DEBUG ONLY; used when tracking a bug in android 2.1, but kept because
 	 * there are still non-fatal anomalies.

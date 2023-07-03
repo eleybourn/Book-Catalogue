@@ -25,6 +25,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
+import android.database.sqlite.SQLiteDoneException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
@@ -36,6 +37,7 @@ import com.eleybourn.bookcatalogue.dialogs.ExportTypeSelectionDialogFragment.Exp
 import com.eleybourn.bookcatalogue.dialogs.ExportTypeSelectionDialogFragment.OnExportTypeSelectionDialogResultListener;
 import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment;
 import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment.OnMessageDialogResultListener;
+import com.eleybourn.bookcatalogue.utils.HintManager;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTask;
@@ -43,6 +45,7 @@ import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTaskContext;
 import com.eleybourn.bookcatalogue.utils.UpgradeMessageManager;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 
 /**
@@ -156,11 +159,29 @@ public class StartupActivity
 
 			SimpleTaskQueue q = getQueue();
 
-			// Update file structures for old versions
+			// Get last version installed (may be zero for none).
 			final int lastVersion = UpgradeMessageManager.getLastUpgradeVersion();
-			if (lastVersion < 200 && lastVersion > 0) {
+
+			// Determine if the last install was an upgrade or new version
+			final boolean wasUpgrade = lastVersion > 0;
+
+			// Update file structures for old versions
+			if (lastVersion < 200 && wasUpgrade) {
 				mNeedMoveFiles = true;
 			}
+
+			// Are we currently warning the user about missing files? If so, we should re-check: They may have fixed it.
+			boolean currentlyWarning = HintManager.shouldBeShown(R.string.hint_missing_covers);
+			// Do recheck OR if we've upgraded from a prior version
+			if (currentlyWarning || (lastVersion <= 206 && wasUpgrade) ) {
+				BookCataloguePreferences ap = BookCatalogueApp.getAppPreferences();
+				// If we're currently warning the user OR we have not yet checked, make a check.
+				if (currentlyWarning || !ap.hasCheckedForMissingCovers()) {
+					// Check 10 random books for covers; if < 90% present, there may be a problem.
+					q.enqueue(new CheckCoversTask());
+				}
+			}
+
 			// Always enqueue it; it will get a DB and check if required...
 			q.enqueue(new RebuildFtsTask());
 			q.enqueue(new AnalyzeDbTask());
@@ -447,6 +468,58 @@ public class StartupActivity
 		@Override
 		public void onFinish(Exception e) {}
 
+	}
+
+	public class CheckCoversTask implements SimpleTask {
+		BookCataloguePreferences mPrefs = BookCatalogueApp.getAppPreferences();
+		boolean mNeedsWarning = false;
+
+		@Override
+		public void run(SimpleTaskContext taskContext) {
+			CatalogueDBAdapter db = taskContext.getDb();
+
+			updateProgress(getString(R.string.loading));
+
+			// Get the first and last ID's we randomly select a few books and look for covers.
+			final long[] ids = db.getFirstAndLastBookRowId();
+			final long range = ids[1] - ids[0];
+			int cnt = 0;
+			int found = 0;
+			// Loop and look for random covers; it's possible that if a lot of books have been deleted then
+			// the random ID might rarely find a real book, so we look 1000 times (until we have actually got
+			// 20 real books).
+			for(int i = 0; (i < 1000 && cnt < 20); i++) {
+				// Random ID and get UUID
+				long id = (long) (Math.random() * range + ids[0]);
+				try {
+					String uuid = db.getBookUuid(id);
+					// If there is a book with a valid UUID, then check
+					if (uuid != null && !("".equals(uuid))) {
+						cnt++;
+						File f = CatalogueDBAdapter.fetchThumbnailByUuid(uuid);
+						if (f.exists()) {
+							found++;
+						}
+					}
+				} catch (SQLiteDoneException ignore) {
+					// Ignore missing book
+				}
+			}
+			// If we found < 90%, warn the user.
+			if (cnt > 10 && found < (cnt * 0.9)) {
+				mNeedsWarning = true;
+			}
+		}
+
+		@Override
+		public void onFinish(Exception e) {
+			if (e == null){
+				// Remember we have done the check once.
+				mPrefs.setCheckedForMissingCovers(true);
+				// Display the warning if necessary
+				HintManager.setShouldBeShown(R.string.hint_missing_covers, mNeedsWarning);
+			}
+		}
 	}
 
 	public static boolean hasBeenCalled() {

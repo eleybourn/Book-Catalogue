@@ -39,6 +39,9 @@ Features include:
   case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+new in 6.0.7
+* Check for missing covers on startup if upgraded from older version and startup message possibly missed or ignored.
+
 new in 6.0
 * Builtin scanner! We now use native machine Android library to read barcodes. Old scanners
 are still available in case there are issues, but will be removed in a future release.

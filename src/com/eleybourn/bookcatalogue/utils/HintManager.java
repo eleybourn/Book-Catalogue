@@ -80,6 +80,7 @@ public class HintManager {
 		.add("hint_view_only_help", R.string.hint_view_only_help)
 		.add("hint_tempus_locum", R.string.hint_tempus_locum)
 		.add("hint_book_list", R.string.hint_book_list)
+		.add("hint_missing_covers", R.string.hint_missing_covers, false)
 		//.add("hint_amazon_links_blurb", R.string.hint_amazon_links_blurb)
 		;
 
@@ -101,7 +102,12 @@ public class HintManager {
 		final Hint h = mHints.getHint(hintStringId);
 		return h.shouldBeShown();
 	}
-	
+
+	public static void setShouldBeShown(int hintStringId, boolean show) {
+		final Hint h = mHints.getHint(hintStringId);
+		h.setVisibility(show);
+	}
+
 	/** Display the passed hint, if the user has not disabled it */
 	public static boolean displayHint(Context context, int stringId, final Runnable postRun, Object... args) {
 		// Get the hint and return if it has been disabled.
@@ -177,11 +183,15 @@ public class HintManager {
 		 * 
 		 * @return				Hints, for chaining
 		 */
-		public Hints add(String key, int stringId) {
-			Hint h = new Hint(key, stringId);
+		public Hints add(String key, int stringId, boolean defaultVisibility) {
+			Hint h = new Hint(key, stringId, defaultVisibility);
 			mHintsById.put(stringId, h);
 			mHintsByKey.put(key.trim().toLowerCase(), h);
 			return this;
+		}
+
+		public Hints add(String key, int stringId) {
+			return add(key, stringId, true);
 		}
 
 		/**
@@ -221,17 +231,30 @@ public class HintManager {
 		/** Indicates that this hint was displayed already in this instance of the app */
 		public boolean mHasBeenDisplayed = false;
 
+		private final boolean mDefaultVisibility;
+
 		/**
 		 * Constructor
-		 * 
+		 *
 		 * @param key			Preferences key suffix specific to this hint
 		 * @param stringId		String to display for this hint
 		 */
 		private Hint(String key, int stringId) {
+			this(key, stringId, true);
+		}
+
+		/**
+		 * Constructor
+		 *
+		 * @param key			Preferences key suffix specific to this hint
+		 * @param stringId		String to display for this hint
+		 */
+		private Hint(String key, int stringId, boolean defaultVisibility) {
 			this.key = key;
+			mDefaultVisibility = defaultVisibility;
 			//this.stringId = stringId;
 		}
-		
+
 		/**
 		 * Get the preference name for this hint
 		 *
@@ -263,7 +286,7 @@ public class HintManager {
 			if (hasBeenDisplayed())
 				return false;
 			BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
-			return prefs.getBoolean(getFullPrefName(), true);
+			return prefs.getBoolean(getFullPrefName(), mDefaultVisibility);
 		}
 
 		public boolean hasBeenDisplayed() {

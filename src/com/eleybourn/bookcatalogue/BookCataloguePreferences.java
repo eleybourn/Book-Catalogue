@@ -34,6 +34,8 @@ public class BookCataloguePreferences {
 	public static final String PREF_LAST_BACKUP_FILE = "Backup.LastFile";
 	/** Preferred interface locale */
 	public static final String PREF_APP_LOCALE = "App.Locale";
+	/** Preferred interface locale */
+	private static final String PREF_CHECKED_MISSING_COVERS = "App.CheckedMissingCovers";
 
 	/** Get startup activity preference */
 	public boolean getStartInMyBook() {
@@ -110,5 +112,13 @@ public class BookCataloguePreferences {
             mPrefs = BookCatalogueApp.context.getSharedPreferences("bookCatalogue", BookCatalogueApp.MODE_PRIVATE);
         }
 		return mPrefs;
+	}
+
+	public boolean hasCheckedForMissingCovers() {
+		return getBoolean(PREF_CHECKED_MISSING_COVERS, false);
+	}
+
+	public void setCheckedForMissingCovers(boolean checked) {
+		setBoolean(PREF_CHECKED_MISSING_COVERS, checked);
 	}
 }

@@ -48,11 +48,8 @@
     <string name="series_num">#</string>
     <string name="unable_to_connect_google">Unable to Connect to Google Books</string>
     <string name="export_data">Export Books</string>
-    <string name="export_complete">Export (to SDCard) of data complete. </string>
     <string name="import_data">Import Books</string>
     <string name="import_alert">Warning. Importing data may update existing book records with new information if the uuid column is not present and the id in the import file is the same as an existing id. This is usually fine if you changed a field in an exported file. If you created a new book record, or are importing someone elses books, ensure the uuid field is present or the id field is blank.</string>
-    <string name="export_failed">ERROR: Export (to SDCard) of data failed. </string>
-    <string name="import_failed_is_location_correct">ERROR: Import of data (from SDCard) failed. Is the file in the correct place?</string>
     <string name="search_title">Book Catalogue: Search Results</string>
     <string name="results_found">Results Found</string>
     <string name="administration_label">Administration Functions</string>
@@ -66,7 +63,6 @@
     <string name="edit_book">Edit Book</string>
     <string name="edit_book_notes">My Comments</string>
     <string name="edit_book_friends">Loan Book</string>
-    <string name="edit_book_friends_return">Return book</string>
     <string name="unknown_error">An unknown error occurred</string>
     <string name="notes">Notes</string>
     <string name="loaned_to">This book has been loaned to:</string>
@@ -138,7 +134,6 @@
     <string name="duplicate_book_title">Duplicate Book</string>
     <string name="duplicate_book_message">The book you are trying to add already exists in the database, are you sure you want to add another copy?</string>
     <string name="menu_add_thumb_gallery">From Gallery&#8230;</string>
-    <string name="backup_request">Would you like to backup your database to your sdcard</string>
     <string name="backup_title">Backup?</string>
     <string name="searching_amazon_books">Searching Amazon</string>
     <string name="searching_google_books">Searching Google Books</string>
@@ -192,8 +187,6 @@
     <string name="author_is_blank">Author field is blank</string>
     <string name="series_already_in_list">Series is already in the list</string>
     <string name="series_is_blank">Series field is blank</string>
-    <string name="export_failed_sdcard">Export failed - could not write to SD card</string>
-    <string name="thumbnail_failed_sdcard">Thumbnail Download Failed - Could not write to SDCard</string>
     <string name="skip_title">Skip - %s</string>
     <string name="num_books_searched">%s Books Searched</string>
     <string name="cancelled_info">Cancelled - %s</string>
@@ -252,7 +245,6 @@
     <string name="reset">Reset</string>
     <string name="send_info_text">Click on the button below to gather information about any recent crashes or other errors and send it to one of our developers. This will create a backup copy of your entire database as well as any log files. If you do not wish to send any of these files, delete it from the mail attachments before sending.</string>
     <string name="send_info">Send Information</string>
-    <string name="cleanup_files_text">Purgeable files currently use %s on the SD card. Log files and other data are saved on the SD card at each upgrade, when you backup the database, or when the application crashes. Click the button below to purge these files from your SD card. If you have been experiencing crashing or other errors, please consider using the \'Send Information\' button first.</string>
     <string name="cleanup_files">Cleanup Files</string>
     <string name="no_debug_info">No debug information available</string>
     <string name="megabytes">%.2fMB</string>
@@ -697,12 +689,6 @@ and you can edit the book via the options menu using the menu button or overflow
     <!-- This is the heading of the 'Loan' tab when editing a book. It needs to be short. "Loan Book" is too long. -->
     <string name="loan">Loan</string>
 
-    <!-- Hint displayed when an export or database backup is done -->
-    <string name="hint_not_a_full_backup">Please note that this is not a full backup. It does not contain cover images.
-    	\n\nFor a complete backup you need to copy the contents of the \'bookCatalogue\' directory 
-    	from your SD card to another location.
-    	\n\nSee our FAQ (a web link is under \'Help\') for detailed instructions.</string>
-
     <!-- Button text on the goodreads activity; only displayed after user has registered -->
     <string name="forget_credentials">Forget Credentials</string>
 
@@ -719,10 +705,6 @@ and you can edit the book via the options menu using the menu button or overflow
     <string name="backup_to_archive">Backup to Archive</string>
     <!-- Admin option to import -->
     <string name="import_from_archive">Import from Archive</string>
-
-    <!-- Hint displayed when aCatalogue Backup is done -->
-    <string name="archive_complete_details">A %3$s file called %2$s was created in the \"%1$s\" directory on your 
-    SD card.\n\nYou should manually copy it elsewhere to protect the data in case your device is damaged, lost, or stolen.</string>
 
     <!-- Displayed in progress dialog when exporting covers -->
     <string name="covers_progress">%1$s covers processed (%2$s missing)</string>
@@ -782,10 +764,6 @@ and you can edit the book via the options menu using the menu button or overflow
 
     <!-- Displayed when an archive operation fails -->
     <string name="import_failed">Import failed.</string>
-    <!-- Displayed when any write operation to the sd card fails -->
-    <string name="please_check_sd_writable">Please check that the SD Card is writable, and has sufficient space.</string>
-    <!-- Displayed when any write operation to the sd card fails -->
-    <string name="please_check_sd_readable">Please check that the SD Card is accessible.</string>
 
     <!-- Begin: Added/Updated in 5.0.2 -->
 
@@ -798,7 +776,7 @@ and you can edit the book via the options menu using the menu button or overflow
     </string>
 
     <!-- End: Added/Updated in 5.0.2 -->
-    
+
     <!-- Begin: Added/Updated in 5.0.3 -->
 
     <string name="new_in_503">
@@ -811,9 +789,9 @@ and you can edit the book via the options menu using the menu button or overflow
     </string>
 
     <!-- End: Added/Updated in 5.0.3 -->
-    
+
     <!-- Begin: Added/Updated in 5.0.4 -->
-    
+
     <!-- Short Heading for 'Language' field in book details -->
     <string name="language">Language</string>
     <string name="new_in_504">
@@ -825,7 +803,7 @@ and you can edit the book via the options menu using the menu button or overflow
 			</p>
 		]]>
     </string>
-    
+
     <!-- End: Added/Updated in 5.0.4 -->
 
     <!-- Begin: Added/Updated in 5.0.5 -->
@@ -839,7 +817,7 @@ and you can edit the book via the options menu using the menu button or overflow
     <string name="force_fully_featured">Force Fully Featured</string>
     <!-- Default Option listed under "booklist_generation" referring to a conservative way of generating bookslists -->
     <string name="automatically_use_recommended_option">Automatically use recommended option</string>
-    
+
     <string name="new_in_505">
 		<![CDATA[
 			<p><b>New in 5.0.5</b>\n\n
@@ -849,7 +827,7 @@ and you can edit the book via the options menu using the menu button or overflow
 			</p>
 		]]>
     </string>
-    
+
     <!-- End: Added/Updated in 5.0.5 -->
 
     <!-- Begin: Added/Updated in 5.0.8 -->
@@ -862,8 +840,8 @@ and you can edit the book via the options menu using the menu button or overflow
     </string>
     <!-- End: Added/Updated in 5.0.8 -->
 
-	<!--  Note to Translators: don't bother translating strings until they get a version number. They are very much 'draft' versions -->
-    
+    <!--  Note to Translators: don't bother translating strings until they get a version number. They are very much 'draft' versions -->
+
     <!-- Begin: Added/Updated in 5.0.9 -->
     <string name="new_in_509">
 		<![CDATA[
@@ -888,7 +866,7 @@ and you can edit the book via the options menu using the menu button or overflow
     <!-- End: Added/Updated in 5.0.9 -->
 
     <!-- Begin: Added/Updated in 5.1.0 -->
-    
+
     <!--  Explanatory text for 'import' dialogue -->
     <string name="import_books_blurb">The books in this archive will be imported. Select on one of two options to start the import, or press \'back\' to cancel:</string>
     <!-- Description of the 'import all books' option -->
@@ -913,14 +891,14 @@ and you can edit the book via the options menu using the menu button or overflow
 
     <!-- Displayed in progress dialog when exporting covers in incremental mode -->
     <string name="covers_progress_incr">%1$s covers processed (%2$s missing, %3$s skipped)</string>
-    
+
     <!-- Explanatory note for 'export all' option -->
     <string name="export_all_blurb">All books, covers, settings and custom styles will be exported to the archive.</string>
     <!-- Explanatory note for 'advanced export' option -->
     <string name="export_advanced_blurb">Select what will be exported to the archive.</string>
     <!-- Introduction for 'advanced export' option -->
     <string name="export_advanced_heading">Select what will be exported:</string>
-    
+
     <!-- Text for button -->
     <string name="book_details">Book details</string>
     <!-- Brief descriptionn -->
@@ -931,26 +909,24 @@ and you can edit the book via the options menu using the menu button or overflow
     <string name="cover_images_blurb">Cover images for all selected books. Will make the export much larger.</string>
     <!-- Brief descriptionn -->
     <string name="preferences_blurb">Preferences and user-defined list styles</string>
-    
+
     <!-- Explanatory note for export date (not yet implemented) -->
     <string name="export_advanced_date_blurb">Optionally specify a date to use in selecting books and/or covers to export:</string>
-    
+
     <!-- Explanatory note for export date (not yet implemented) -->
     <string name="all_books_added_or_updated_since">All books added or updated since:</string>
     <!-- Explanatory note for export data since last backup -->
     <string name="all_books_added_or_updated_since_last_full_backup">All books added or updated since last full backup</string>
 
     <!-- Short text for 'n books' -->
-    <plurals
-        name="n_books">
+    <plurals name="n_books">
         <item quantity="zero">no books</item>
         <item quantity="one">1 book</item>
         <item quantity="other">%1$s books</item>
     </plurals>
 
     <!-- Short text for 'n covers' -->
-    <plurals
-        name="n_covers">
+    <plurals name="n_covers">
         <item quantity="zero">no covers</item>
         <item quantity="one">1 cover</item>
         <item quantity="other">%1$s covers</item>
@@ -958,7 +934,7 @@ and you can edit the book via the options menu using the menu button or overflow
 
     <!-- Used for concatenating two strings, eg. "3 books, 2 covers" (probably only important on RTL languages)-->
     <string name="a_comma_b">%1$s, %2$s</string>
-    
+
     <!-- Short progress message -->
     <string name="searching_directory_ellipsis">Searching directory&#8230;</string>
 
@@ -975,14 +951,14 @@ and you can edit the book via the options menu using the menu button or overflow
 			</p>
 		]]>
     </string>
-    
+
     <!-- Menu item -->
     <string name="amazon_books_in_series">Books in this series</string>
     <!-- Menu item -->
     <string name="amazon_books_by_author">Books by this author</string>
     <!-- Menu item -->
     <string name="amazon_books_by_author_in_series">Books by author/series</string>
-    
+
     <!-- Hint text displayed when user enters the book listw -->
     <string name="hint_book_list">Tapping on a book will show you book details, a long-press on an item in the list give you further options.</string>
 
@@ -993,7 +969,7 @@ and you can edit the book via the options menu using the menu button or overflow
 
     <!-- Heading in 'about' dialog -->
     <string name="special_thanks_label">Special Thanks</string>
-    
+
     <!-- End: Added/Updated in 5.1.0 -->
 
     <!-- Begin: Added/Updated in 5.1.1 -->
@@ -1007,14 +983,13 @@ and you can edit the book via the options menu using the menu button or overflow
     <string name="update_date">Update date</string>
     <!-- Name of the new style grouping (needs to be short). -->
     <string name="update_year">Update Year</string>
-        <!-- Name of the new style grouping (needs to be short). -->
+    <!-- Name of the new style grouping (needs to be short). -->
     <string name="update_month">Update Month</string>
-        <!-- Name of the new style grouping (needs to be short). -->
+    <!-- Name of the new style grouping (needs to be short). -->
     <string name="update_day">Update Day</string>
 
     <!-- Short text for 'n stars' -->
-    <plurals
-        name="n_stars">
+    <plurals name="n_stars">
         <item quantity="zero">%1$s stars</item>
         <item quantity="one">%1$s star</item>
         <item quantity="other">%1$s stars</item>
@@ -1036,7 +1011,7 @@ and you can edit the book via the options menu using the menu button or overflow
 
     <!-- A heading in the 'about' dialog -->
     <string name="amazon">Amazon</string>
-    
+
     <!-- The following strings are not in this release, but will be in a future release -->
     <!--  Menu Item - will be in the next release -->
     <string name="buy_at_amazon">Buy this book</string>
@@ -1046,11 +1021,11 @@ and you can edit the book via the options menu using the menu button or overflow
     <string name="new_in_zzz">New in %1$s</string>
     <!-- Part of the "new in x.x.x" message -->
     <string name="new_in_xxx_bug_fixes">Bug fixes</string>
-    
+
     <!-- End: Added/Updated in 5.1.2 -->
 
     <!-- Begin: Added/Updated in 5.2.0 -->
-    
+
     <!-- Preference name (fairly short) for preferred language -->
     <string name="preferred_interface_language">Preferred Interface Language</string>
     <!-- Preference value for a specific language. First arg is name in it's own language, second arg is name in current locale -->
@@ -1062,7 +1037,7 @@ and you can edit the book via the options menu using the menu button or overflow
     <string name="system_locale">System Locale</string>
 
     <!-- Credits in the 'about' dialog -->
-    <string name="translators_blurb">BookCatalogue is the product of the efforts of many people, and would not have such wide use without the generous help of our volunteer translators: Eugenio Davolio, José M. Galdo, Imkal, Dimitris Klisiari, Gideon van Melle, Emir Sarı, Nick Silin, and Robert Wetzlmayr (if we have forgotten someone, please tell us).</string>
+    <string name="translators_blurb">BookCatalogue is the product of the efforts of many people, and would not have such wide use\nwithout the generous help of our volunteer translators: %1$s (if we have forgotten someone, please tell us).\n</string>
 
     <string name="new_in_520">
 		<![CDATA[
@@ -1162,6 +1137,104 @@ and you can edit the book via the options menu using the menu button or overflow
     <!-- Progress message -->
     <string name="searching_book_catalogue">Searching book-catalogue.com</string>
     <!-- End: Added/Updated in 5.3.0 -->
+
+
+    <!-- Begin: Added/Updated in 6.0.0 -->
+
+    <!-- Seems no longer used. Ignore. -->
+    <string name="thumbnail_failed_sdcard">Thumbnail Download Failed - Could not write to SDCard</string>
+    <!-- Hint displayed when an export or database backup is done -->
+    <string name="hint_not_a_full_backup">Please note that this is not a full backup. It does not contain cover images.
+    	\n\nFor a complete backup you need to copy the contents of the \'bookCatalogue\' directory
+    	from your SD card to another location.
+    	\n\nSee our FAQ (a web link is under \'Help\') for detailed instructions.</string>
+
+    <string name="import_old_files">Import old files</string>
+    <string name="moving_files">Moving files&#8230;</string>
+    <string name="invalid_backup_file">The file is not a valid backup</string>
+    <string name="old_files_message">
+        PLEASE READ THIS MESSAGE CAREFULLY
+        \n\nGoogle has required that this and all future versions of Book Catalogue must store their files in more standard directories.
+        \n\nThey also no longer allow us to access the old directories.
+        \n\nWe have detected an upgrade from an old version of the app and need to be granted access to it in order to move the files.
+        \n\nClick \'%1$s\' to continue and then grant access in the following dialog.
+        If you select \'%2$s\' then you can always restart this process via \'%3$s\'->\'%4$s\'.
+    </string>
+    <string name="selected_archive_info">The selected archive is %1$s in size and was created on %2$s.</string>
+    <string name="selected_dir_wrong_name">The selected directory is not called \'%1$s\' and does not seem to contain a directory of that name. Are you sure that this is the correct location?</string>
+    <string name="selected_archive_contains">It contains %1$s.</string>
+    <string name="a_and_b">%1$s and %2$s</string>
+
+    <!-- The following is an updated string - the word 'selected' has replaced the first parameter. -->
+    <!-- Hint displayed when aCatalogue Backup is done -->
+    <string name="archive_complete_details">A %3$s file called %2$s was created in the selected directory.
+        \n\nYou should manually copy it elsewhere to protect the data in case your device is damaged, lost,
+        or stolen.</string>
+
+    <!-- this is used in the 'archive_complete_details' string (elsewhere in this file)
+    to replace the directory name, so that now it says "in the selected directory" -->
+    <string name="selected_thing">selected</string>
+    <string name="title_activity_scanner">ScannerActivity</string>
+    <string name="builtin_scanner">Builtin Scanner</string>
+
+    <string name="copying_files">Copying files&#8230;</string>
+
+    <!-- Explanatory text -->
+    <string name="perm_camera">This is required to photograph new book covers and to scan barcodes.</string>
+
+    <string name="old_file_import_complete">Import of old files complete.</string>
+    <string name="old_file_import_cancelled">Import of old files cancelled.</string>
+    <string name="old_file_import_stats">%1$d of %2$d files were processed. %3$s\n\nThe old files have been left in place and can be moved
+        or deleted once you have verified that the app is running correctly.
+    </string>
+    <string name="old_file_import_status_of_those">Of those files, %s.</string>
+    <string name="old_file_import_status_duplicates">%1$d were not copied because they were duplicates</string>
+    <string name="old_file_import_status_not_book">%1$d were not copied because they were cover image files
+        for non-existent books</string>
+
+    <string name="new_in_600">
+		<![CDATA[
+			<p><b>New in 6.0.0</b>\n\n<ul>
+			    <li> Builtin scanner! We now use native machine Android library to read barcodes. Old scanners
+			      are still available in case there are issues, but will be removed in a future release.
+			    <li> Complete reorganization of files. Google does not like us writing files to the location we were
+			      using. Covers now go in private app folders and we use the \'standard\' interface for
+			      importing or exporting to backups and CSV files.
+				<li> goodreads support is no more. They disabled their API a while ago and it has not come back.
+				<li> LibraryThing support is no more. They disabled their API a while ago and it has not come back.
+				<li> Many bug fixes
+				</ul>
+			</p>
+		]]>
+    </string>
+
+    <!-- SEVERAL UPDATED MESSAGES: changed 'sd card' tp storage. -->
+
+    <!-- Displayed when any write operation to the sd card fails -->
+    <string name="please_check_sd_writable">Please check that the storage is writable, and has sufficient space.</string>
+    <!-- Displayed when any write operation to the sd card fails -->
+    <string name="please_check_sd_readable">Please check that the storage is accessible.</string>
+
+    <string name="export_complete">Export of data complete. </string>
+    <string name="export_failed">ERROR: Export of data failed. </string>
+    <string name="import_failed_is_location_correct">ERROR: Import of data failed. Please contact support.</string>
+    <string name="backup_request">Would you like to backup your database?</string>
+    <string name="export_failed_sdcard">Export failed - could not write to the shared storage</string>
+    <string name="cleanup_files_text">Purgeable files currently use %s of storage. Log files and other data are saved at each upgrade, when you backup the database, or when the application crashes. Click the button below to purge these files from your storage. If you have been experiencing crashing or other errors, please consider using the \'Send Information\' button first.</string>
+
+    <!-- End: Added/Updated in 6.0.0 -->
+
+    <!-- Begin: Added/Updated in 6.0.7 -->
+
+    <string name="hint_missing_covers">
+        	    		<![CDATA[
+        <p><b>PLEASE READ THIS MESSAGE CAREFULLY</b></p>
+        <p>Based on a random sampling we have detected that you may be missing some covers after a recent upgrade.</p>
+        <p>This probably happened as a result of an upgrade message not being displayed, or being ignored.</p>
+        <p>You can import old missing covers via:</p><p>\'%1$s\'\u2192\'%2$s\'.</p>
+        			]]>
+    </string>
+    <!-- End: Added/Updated in 6.0.7 -->
 
     <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->
 

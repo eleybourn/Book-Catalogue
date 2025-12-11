@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name">Kitap Kataloğu</string>
+    <string name="system_app_name">Book Catalogue</string>
     <string name="menu_insert">Kitap ekle</string>
     <string name="menu_delete">Kitap sil</string>
     <string name="author">Yazar</string>
@@ -741,6 +742,7 @@
     <string name="import_from_archive">Arşivden içe aktar</string>
 
     <!-- Hint displayed when aCatalogue Backup is done -->
+    <string name="a_and_b">%1$s ve %2$s</string>
     <string name="archive_complete_details">%2$s adında bir %3$s dosyası SD kartınızın \"%1$s\" dizininde oluşturuldu.\n\nBu dosyayı el ile başka bir yere yedeklemeniz aygıtınızın hasar görmesi, kaybolması veya çalınması durumunda verilerinizin korunması için tavsiye edilir.</string>
 
     <!-- Displayed in progress dialog when exporting covers -->
@@ -977,7 +979,7 @@
    <!-- Heading in 'about' dialog -->
    <string name="special_thanks_label">Teşekkürlerimizle</string>
    <!-- Credits in the 'about' dialog -->
-   <string name="translators_blurb">Kitap Kataloğu birçok kişinin emeğinin ürünü olan bir yazılım. Burada gönüllü çevirmenlerimizin katkılarını belirtmeden olmaz; onların çabaları olmadan bu kadar fazla kişiye ulaşamazdık. Bu güzel insanlar: Eugenio Davolio, José M. Galdo, Imkal, Gideon van Melle, Emir Sarı, Nick Silin ve Robert Wetzlmayr (eğer unuttuğumuz birisi var ise lütfen belirtin).</string>
+   <string name="translators_blurb">Kitap Kataloğu birçok kişinin emeğinin ürünü olan bir yazılım. Burada gönüllü çevirmenlerimizin katkılarını \nbelirtmeden olmaz; onların çabaları olmadan bu kadar fazla kişiye ulaşamazdık. \nBu güzel insanlar: %1$s (eğer unuttuğumuz birisi var ise lütfen belirtin).</string>
    <!-- End: Added/Updated in 5.1.0 -->
    <!-- Begin: Added/Updated in [Next Version] -->
    <!-- Begin: Added/Updated in 5.1.1 -->

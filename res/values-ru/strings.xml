@@ -711,6 +711,7 @@
     <string name="connecting_to_web_site">Соединение с сайтом&#8230;</string>
     <string name="backup_to_archive">Бэкап в архив</string>
     <string name="import_from_archive">Импорт из архива</string>
+    <string name="a_and_b">%1$s и %2$s</string>
     <string name="archive_complete_details">Файл %3$s с именем %2$s был создан в папке \"%1$s\" на вашей SD карте.
     \n\nВам следует вручную скопировать его, чтобы защитить данные в случае утери или повреждения телефона.</string>
     <string name="covers_progress">%1$s обложек обработано (%2$s пропущено)</string>
@@ -875,7 +876,7 @@
 
     <string name="special_thanks_label">Особые благодарности</string>
     
-    <string name="translators_blurb">BookCatalogue это продукт усилий многих людей, и он мог бы и не иметь такого широкого распространения без помощи добровольных переводчиков: Eugenio Davolio, José M. Galdo, Imkal, Gideon van Melle, Emir Sarı, Nick Silin, and Robert Wetzlmayr (если кто-то забыт, пожалуйста, напомните).</string>
+    <string name="translators_blurb">BookCatalogue это продукт усилий многих людей, и он мог бы и не иметь такого широкого распространения \nбез помощи добровольных переводчиков: %1$s (если кто-то забыт, пожалуйста, напомните).</string>
 
     <string name="default_bookshelf_name">По умолчанию</string>
     <!--<string name="hint_amazon_links_blurb">&lt;p&gt;Если вы покупаете вещи на Amazon после выбора &lt;i&gt;\"%1$s\"&lt;/i&gt;, &lt;i&gt;\"%2$s\"&lt;/i&gt; or &lt;i&gt;\"%3$s\"&lt;/i&gt; элементов меню, часть стоимости заказa будет отослана разработчикам %4$s.&lt;/p&gt;&lt;p&gt; Вы также можете использовать &lt;a href=""https://github.com/eleybourn/Book-Catalogue/wiki/Frequently-Asked-Questions-%%28FAQ%%29""&gt; ссылки нашего FAQ&lt;/a&gt;, чтобы перейти прямо на Amazon или PayPal.&lt;/p&gt;</string>-->

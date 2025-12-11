@@ -78,7 +78,7 @@ import android.graphics.drawable.LayerDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -587,8 +587,8 @@ public class Utils {
 		boolean isOk = false;
 
 		try {
-			// Get a temp file to avoid overwriting output unless copy works
-			temp = File.createTempFile("temp_", null, StorageUtils.getSharedStorage());
+			// Get a temp file to avoid overwriting output unless copy works; put in same dir so rename works.
+			temp = File.createTempFile("temp_", null, out.getParentFile());
 			FileOutputStream f = new FileOutputStream(temp);
 
 			// Copy from input to temp file
@@ -1460,10 +1460,10 @@ public class Utils {
 	}
 
 	public static void showLtAlertIfNecessary(Context context, boolean always, String suffix) {
-		if (USE_LT) {
+		if (false && USE_LT) {
 			LibraryThingManager ltm = new LibraryThingManager(context);
 			if (!ltm.isAvailable())
-				StandardDialogs.needLibraryThingAlert(context, always, suffix);		
+				StandardDialogs.needLibraryThingAlertDEAD(context, always, suffix);
 		}
 	}
 

@@ -1,13 +1,14 @@
 package com.eleybourn.bookcatalogue;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import com.eleybourn.bookcatalogue.backup.CsvExporter;
 import com.eleybourn.bookcatalogue.backup.Exporter;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.StorageUtils;
+
+import java.io.IOException;
+import java.io.OutputStream;
+
+import androidx.documentfile.provider.DocumentFile;
 
 /**
  * Class to handle export in a separate thread.
@@ -17,17 +18,21 @@ import com.eleybourn.bookcatalogue.utils.StorageUtils;
 public class ExportThread extends ManagedTask {
 	// Changed the paths to non-static variable because if this code is called 
 	// while a phone sync is in progress, they will not be set correctly
-	private String mFilePath = StorageUtils.getSharedStorage().getAbsolutePath();
-	private String mExportFileName = mFilePath + "/export.csv";
-	private String mTempFileName = mFilePath + "/export.tmp";
-	private static String UTF8 = "utf8";
-	private static int BUFFER_SIZE = 8192;
+	private static final String UTF8 = "utf8";
+	private static final int BUFFER_SIZE = 8192;
+
+	private static DocumentFile mFile;
 	private CatalogueDBAdapter mDbHelper;
 
-	public ExportThread(TaskManager ctx) {
+	public ExportThread(TaskManager ctx, DocumentFile file) {
 		super(ctx);
 		mDbHelper = new CatalogueDBAdapter(BookCatalogueApp.context);
 		mDbHelper.open();
+		mFile = file;
+	}
+
+	public DocumentFile getFile() {
+		return mFile;
 	}
 
 	@Override
@@ -60,18 +65,20 @@ public class ExportThread extends ManagedTask {
 
 	@Override
 	protected void onRun() {
-		if (!StorageUtils.sdCardWritable()) {
-			mManager.doToast("Export Failed - Could not write to SDCard");
-			return;			
-		}
+		// We used to check for writability of shared storage here but since as of v6
+		// we have a file selected via standard calls, writability of shared storage is
+		// moot: The file could be local or cloud-backed, for example. The only useful
+		// test here is whether we can open it for writing.
 		try {
-			FileOutputStream out = new FileOutputStream(mTempFileName);
+			OutputStream out = BookCatalogueApp.context.getContentResolver().openOutputStream(mFile.getUri());
 			CsvExporter exporter = new CsvExporter();
 			exporter.export(out, mOnExportListener, Exporter.EXPORT_ALL, null);
-			if (out != null && out.getChannel().isOpen()) {
-				out.close();
+			if (out != null) {
+				try {
+					out.close();
+				} catch (IOException ignore) {
+				}
 			}
-			renameFiles();
 		} catch (IOException e) {
 			Logger.logError(e);
 			mManager.doToast(getString(R.string.export_failed_sdcard));
@@ -265,32 +272,32 @@ public class ExportThread extends ManagedTask {
 //		}
 	}
 	
-	/**
-	 * Backup the current file
-	 */
-	private void renameFiles() {
-		File temp = new File(mTempFileName);
-		File export = new File(mExportFileName);
-		if (isCancelled()) {
-			if (temp.exists())
-				temp.delete();
-		} else {
-			String fmt = mFilePath + "/export.%s.csv";
-			File fLast = new File(String.format(fmt, 5));
-			if (fLast.exists())
-				fLast.delete();
-			for(int i = 4; i > 0; i--) {
-				File fCurr = new File(String.format(fmt, i));
-				if (fCurr.exists())
-					fCurr.renameTo(fLast);
-				fLast = fCurr;
-			}
-			if (export.exists())
-				export.renameTo(fLast);
-			if (temp.exists())
-				temp.renameTo(export);
-		}
-	}
+	///**
+	// * Backup the current file
+	// */
+	//private void renameFiles() {
+	//	File temp = new File(mTempFileName);
+	//	File export = new File(mExportFileName);
+	//	if (isCancelled()) {
+	//		if (temp.exists())
+	//			temp.delete();
+	//	} else {
+	//		String fmt = mFilePath + "/export.%s.csv";
+	//		File fLast = new File(String.format(fmt, 5));
+	//		if (fLast.exists())
+	//			fLast.delete();
+	//		for(int i = 4; i > 0; i--) {
+	//			File fCurr = new File(String.format(fmt, i));
+	//			if (fCurr.exists())
+	//				fCurr.renameTo(fLast);
+	//			fLast = fCurr;
+	//		}
+	//		if (export.exists())
+	//			export.renameTo(fLast);
+	//		if (temp.exists())
+	//			temp.renameTo(export);
+	//	}
+	//}
 	
 	/**
 	 * Double quote all "'s and remove all newlines
@@ -337,13 +344,12 @@ public class ExportThread extends ManagedTask {
 	}
 	
 	/**
-	 * @see formatCell(String cell)
 	 * @param cell The cell the format
 	 * @return The formatted cell
 	 */
 	private String formatCell(long cell) {
-		String newcell = cell + "";
-		return formatCell(newcell);
+		String newCell = cell + "";
+		return formatCell(newCell);
 	}
 
 	/**

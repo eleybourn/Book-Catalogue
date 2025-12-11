@@ -641,6 +641,8 @@ public class BooklistBuilder {
 			//
 			if (searchText != null) {
 				searchText = searchText.toLowerCase(Locale.getDefault());
+			} else {
+				searchText = "";
 			}
 			
 			// Rebuild the main table definition
@@ -679,36 +681,35 @@ public class BooklistBuilder {
 	
 			// We can not use triggers to fill in headings in API < 8 since SQLite 3.5.9 is broken
 			// Allow for the user preferences to override in case another build is borken.
-			final int listMode = OtherPreferences.getBooklistCompatibleMode();
-			boolean useTriggers;
+			boolean useTriggers = true;
 			boolean flatTriggers = false;
-			// Based on the users choice, decide how the list will be generated.
-			switch(listMode) {
-
-				case OtherPreferences.BOOKLIST_GENERATE_OLD_STYLE:
-					useTriggers = false;
-					break;
-				case OtherPreferences.BOOKLIST_GENERATE_AUTOMATIC:
-					if (Build.VERSION.SDK_INT < 8) {
-						useTriggers = false;
-					} else {
-						useTriggers = true;
-					}
-					break;
-				case OtherPreferences.BOOKLIST_GENERATE_FLAT_TRIGGER:
-					useTriggers = true;
-					flatTriggers = true;
-					break;
-					
-				case OtherPreferences.BOOKLIST_GENERATE_NESTED_TRIGGER:
-					useTriggers = true;
-					flatTriggers = false;
-					break;
-					
-				default:
-					useTriggers = true;
-					break;
-			}
+			//// Based on the users choice, decide how the list will be generated.
+			//switch(listMode) {
+			//
+			//	case OtherPreferences.BOOKLIST_GENERATE_OLD_STYLE:
+			//		useTriggers = false;
+			//		break;
+			//	case OtherPreferences.BOOKLIST_GENERATE_AUTOMATIC:
+			//		if (Build.VERSION.SDK_INT < 8) {
+			//			useTriggers = false;
+			//		} else {
+			//			useTriggers = true;
+			//		}
+			//		break;
+			//	case OtherPreferences.BOOKLIST_GENERATE_FLAT_TRIGGER:
+			//		useTriggers = true;
+			//		flatTriggers = true;
+			//		break;
+			//
+			//	case OtherPreferences.BOOKLIST_GENERATE_NESTED_TRIGGER:
+			//		useTriggers = true;
+			//		flatTriggers = false;
+			//		break;
+			//
+			//	default:
+			//		useTriggers = true;
+			//		break;
+			//}
 			// Build a sort mask based on if triggers are used; we can not
 			// reverse sort if they are not used.
 			final int sortDescendingMask = ( useTriggers ? SummaryBuilder.FLAG_SORT_DESCENDING : 0);
@@ -1064,8 +1065,6 @@ public class BooklistBuilder {
 			String where = "";
 	
 			if (!bookshelf.equals("")) {
-				if (!where.equals(""))
-					where += " and ";
 				if (hasGroupBOOKSHELF) {
 					where += "Exists(Select NULL From "  + TBL_BOOK_BOOKSHELF + " z1 join " + TBL_BOOKSHELF 
 							+ " z2 on (z2." + DOM_ID + " = z1." + DOM_BOOKSHELF_ID + ")"
@@ -1098,7 +1097,7 @@ public class BooklistBuilder {
 					where += " and ";
 				where += "(" + TBL_SERIES.dot(DOM_SERIES_NAME) + " = '" + encodeString(seriesName) + "')";
 			}
-			if(!searchText.equals("")) {
+			if(!"".equals(searchText)) {
 				if (!where.equals(""))
 					where += " and ";
 				where += "(" + TBL_BOOKS.dot(DOM_ID) + " in (select docid from " + TBL_BOOKS_FTS + " where " + TBL_BOOKS_FTS + " match '" + encodeString(CatalogueDBAdapter.cleanupFtsCriterion(searchText)) + "'))";
@@ -1126,7 +1125,7 @@ public class BooklistBuilder {
 	
 			// If we got any conditions, add them to the initial insert statement
 			if (!where.equals("")) {
-				sqlCmp.where = " where " + where.toString();
+				sqlCmp.where = " where " + where;
 			} else {
 				sqlCmp.where = "";
 			}
@@ -1149,7 +1148,7 @@ public class BooklistBuilder {
 				final StringBuilder indexCols = new StringBuilder();
 				for (SortedDomainInfo sdi: sort) {
 					indexCols.append(sdi.domain.name);
-					if (sdi.domain.type.toLowerCase().equals("text")) {
+					if (sdi.domain.type.equalsIgnoreCase("text")) {
 						indexCols.append(CatalogueDBAdapter.COLLATION);
 	
 						// *If* collations is case-sensitive, handle it.
@@ -1178,7 +1177,7 @@ public class BooklistBuilder {
 			// Process the group-by columns suitable for a group-by statement or index
 			{
 				final ArrayList<DomainDefinition> group = summary.cloneGroups();
-				final StringBuilder groupCols = new StringBuilder();;
+				final StringBuilder groupCols = new StringBuilder();
 				for (DomainDefinition d: group) {
 					groupCols.append(d.name);
 					groupCols.append(CatalogueDBAdapter.COLLATION);
@@ -1270,7 +1269,7 @@ public class BooklistBuilder {
 				//double TM1 = System.currentTimeMillis();
 				//System.out.println("Time to MANUALLY INSERT: " + (TM1-TM0));
 
-				mLevelBuildStmts = new ArrayList<SynchronizedStatement>();
+				mLevelBuildStmts = new ArrayList<>();
 
 				// Build the lowest level summary using our initial insert statement
 				long t2;
@@ -1278,7 +1277,7 @@ public class BooklistBuilder {
 				long t3;
 
 				if (useTriggers) {
-					// If we are using triggers, then we insert them in order and rely on the 
+					// If we are using triggers, then we insert them in order and rely on the
 					// triggers to build the summary rows in the correct place.
 					String tgt = makeTriggers(summary, flatTriggers);
 					mBaseBuildStmt = mStatements.add("mBaseBuildStmt", "Insert Into " + tgt + "(" + sqlCmp.destinationColumns + ") " + sqlCmp.select + "\n From\n" + sqlCmp.join + sqlCmp.where + " order by " + sortColNameList);
@@ -1305,7 +1304,6 @@ public class BooklistBuilder {
 						String cols = "";
 						// collatedCols is used for the group-by
 						String collatedCols = "";
-						
 						// Build the column lists for this group
 						for(DomainDefinition d  : g.groupDomains) {
 							if (!collatedCols.equals(""))
@@ -1314,7 +1312,7 @@ public class BooklistBuilder {
 							collatedCols += "\n	" + d.name + CatalogueDBAdapter.COLLATION;
 						}
 						// Construct the summarization statement for this group
-						String sql = "Insert Into " + mListTable + "(\n	" + DOM_LEVEL + ",\n	" + DOM_KIND + 
+						String sql = "Insert Into " + mListTable + "(\n	" + DOM_LEVEL + ",\n	" + DOM_KIND +
 								cols + "," + DOM_ROOT_KEY +
 								")" +
 								"\n select " + levelId + " as " + DOM_LEVEL + ",\n	" + g.kind + " as " + DOM_KIND +
@@ -1509,7 +1507,7 @@ public class BooklistBuilder {
 	/**
 	 * Build a collection of triggers on the list table designed to fill in the summary/header records
 	 * as the data records are added in sorted order.
-	 * 
+	 * <p>
 	 * This approach means to allow DESCENDING sort orders.
 	 * 
 	 * @param summary
@@ -1519,7 +1517,7 @@ public class BooklistBuilder {
 			// Flat triggers are compatible with Android 1.6+ but slower
 			return makeSingleTrigger(summary);
 		} else {
-			// Nexted triggers are compatible with Android 2.2+ and fast
+			// Nested triggers are compatible with Android 2.2+ and fast
 			// (or at least relatively fast when there are a 'reasonable'
 			// number of headings to be inserted).
 			makeNestedTriggers(summary);
@@ -1530,7 +1528,7 @@ public class BooklistBuilder {
 	/**
 	 * Build a collection of triggers on the list table designed to fill in the summary/header records
 	 * as the data records are added in sorted order.
-	 * 
+	 * <p>
 	 * This approach is allows DESCENDING sort orders but is slightly slower than the old-style
 	 * manually generated lists.
 	 * 
@@ -1557,7 +1555,7 @@ public class BooklistBuilder {
 					if (firstCol)
 						firstCol = false;
 					else {
-						fullInsert+=", ";
+						fullInsert +=", ";
 						fullValues += ", ";
 					}
 					fullInsert += d; 
@@ -1576,7 +1574,7 @@ public class BooklistBuilder {
 		// SQL statement to update the 'current' table
 		String currInsertSql = "";
 		// List of domain names for sorting
-		HashSet<String> sortedDomainNames = new HashSet<String>();
+		HashSet<String> sortedDomainNames = new HashSet<>();
 		// Build the 'current' header table definition and the sort column list 
 		for(SortedDomainInfo i: summary.getSortedColumns()) {
 			if (!sortedDomainNames.contains(i.domain.name)) {
@@ -1652,9 +1650,9 @@ public class BooklistBuilder {
 	/**
 	 * Build a collection of triggers on the list table designed to fill in the summary/header records
 	 * as the data records are added in sorted order.
-	 * 
+	 * <p>
 	 * This approach is both a performance improvement and a means to allow DESCENDING sort orders.
-	 * 
+	 * <p>
 	 * It is the preferred option in Android 2.2+, but there is a chance that some vendor implemented
 	 * a broken or old SQLite version.
 	 * 
@@ -1668,7 +1666,7 @@ public class BooklistBuilder {
 		// SQL statement to update the 'current' table
 		String currInsertSql = "";
 		// List of domain names for sorting
-		HashSet<String> sortedDomainNames = new HashSet<String>();
+		HashSet<String> sortedDomainNames = new HashSet<>();
 		// Build the 'current' header table definition and the sort column list 
 		for(SortedDomainInfo i: summary.getSortedColumns()) {
 			if (!sortedDomainNames.contains(i.domain.name)) {

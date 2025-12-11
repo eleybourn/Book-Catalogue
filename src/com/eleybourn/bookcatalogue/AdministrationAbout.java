@@ -28,8 +28,6 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.method.LinkMovementMethod;
-import android.text.util.Linkify;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
@@ -62,13 +60,38 @@ public class AdministrationAbout extends BookCatalogueActivity {
 			super.onCreate(savedInstanceState);
  			setTitle(R.string.app_name);
 			setContentView(R.layout.administration_about);
+
+			setupContributors();
 			setupAdmin();
+
 			Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
 	}
 
+	/**
+	 * We build the list of contributors separately from the credits text so that we are not updating
+	 * all translations whenever a new translator contributes.
+	 */
+	private void setupContributors() {
+		// The view
+		final TextView thanks = findViewById(R.id.thanks);
+		// Load the list stored in contributors.xml and join all but the last name with commas.
+		final String[] contributorsList = getResources().getStringArray(R.array.contributors_list);
+		final StringBuilder contributorsStr = new StringBuilder("");
+		final int lastName = contributorsList.length-1;
+		for(int i = 0; i < lastName; i++) {
+			if (i > 0) {
+				contributorsStr.append(", ");
+			}
+			contributorsStr.append(contributorsList[i]);
+		}
+		// Add the last name so we have "a, b, c and e", then construct and set the full blurb.
+		final String fullList = getString(R.string.a_and_b, contributorsStr.toString(), contributorsList[lastName]);
+		final String thanksStr = getString(R.string.translators_blurb, fullList);
+		thanks.setText(thanksStr);
+	}
 	/**
 	 * Fix background
 	 */

@@ -46,7 +46,8 @@
 <string name="series_num">tom#</string>
 <string name="unable_to_connect_google">Nie mogę połączyć się z Google Books</string>
 <string name="export_data">Eksportuj książki</string>
-<string name="export_complete">Eksport na kartę SD zakończony. </string>
+    <string name="a_and_b">%1$s i %2$s</string>
+    <string name="export_complete">Eksport na kartę SD zakończony. </string>
 <string name="import_data">Importuj książki</string>
 <string name="import_alert">Uwaga! Zaimportowane dane mogą nadpisać istniejące, jeśli pokryje się identyfikator (pole _id). Jest to zwykle oczekiwane zachowanie, gdy edytowałeś wyeksportowany wcześniej plik. Jeśli dodajesz nową książkę, pozostaw pole _id puste.</string>
 <string name="export_failed">Błąd!: Eksport na kartę SD nie powiódł się. </string>

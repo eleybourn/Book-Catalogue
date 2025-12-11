@@ -314,8 +314,15 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 
 				//cover.setMaxHeight( (int)(rowView.getMaxThumbnailHeight()*scale) );
 				//cover.setMaxWidth((int)(rowView.getMaxThumbnailWidth()*scale));
-				LayoutParams clp = new LayoutParams(LayoutParams.WRAP_CONTENT, (int)(rowView.getMaxThumbnailHeight() * scale) );
+				//LayoutParams clp = new LayoutParams(LayoutParams.WRAP_CONTENT, (int)(rowView.getMaxThumbnailHeight() * scale) );
+				//clp.setMargins(0,1,0,1);
+
+				// Set max sizes and wrap so that the image will scale correctly inside the box
+				cover.setMaxHeight((int)(rowView.getMaxThumbnailHeight() * scale));
+				cover.setMaxWidth((int)(rowView.getMaxThumbnailWidth() * scale));
+				LayoutParams clp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT );
 				clp.setMargins(0,1,0,1);
+				cover.setAdjustViewBounds(true);
 				cover.setLayoutParams(clp);
 				cover.setScaleType(ScaleType.CENTER);
 			} else
@@ -847,7 +854,7 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 				} else {
 					addMenuItem(menu, R.id.MENU_MARK_AS_UNREAD, R.string.menu_mark_as_unread, R.drawable.btn_uncheck_clipped);
 				}
-				addMenuItem(menu, R.id.MENU_SEND_BOOK_TO_GR, R.string.edit_book_send_to_gr, R.drawable.ic_menu_goodreads_holo_dark);
+				//addMenuItem(menu, R.id.MENU_SEND_BOOK_TO_GR, R.string.edit_book_send_to_gr, R.drawable.ic_menu_goodreads_holo_dark);
 				break;
 			}
 			case ROW_KIND_AUTHOR:

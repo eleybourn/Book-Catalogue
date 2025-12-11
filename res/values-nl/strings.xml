@@ -714,8 +714,9 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     <string name="import_from_archive">Importeren vanuit archief</string>
 
     <!-- Hint displayed when aCatalogue Backup is done -->
-    <string name="archive_complete_details">Een %3$s bestand met de naam %2$s is aangemaakt in de \"%1$s\" map op uw 
-    SD kaart.\n\nU wordt aangeraden dit bestand naar een ander plek te kopiëren om de gegevens veilig te stellen in geval uw apparaat wordt gestolen, beschadigd of kwijt raakt.</string>
+    <string name="a_and_b">%1$s and %2$s</string>
+    <string name="archive_complete_details">Een %3$s bestand met de naam %2$s is aangemaakt in de \"%1$s\" map op uw
+        SD kaart.  U wordt aangeraden dit bestand naar een ander plek te kopiëren om de gegevens veilig te stellen in geval uw apparaat wordt gestolen, beschadigd of kwijt raakt.</string>
 
     <!-- Displayed in progress dialog when exporting covers -->
     <string name="covers_progress">%1$s boekomslagen verwerkt (%2$s missend)</string>
@@ -987,7 +988,7 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     <string name="special_thanks_label">Speciale dankbetuiging</string>
     
     <!-- Credits in the 'about' dialog -->
-    <string name="translators_blurb">BookCatalogue is het resultaat van de inspanning van vele personen en zou niet zo\'n grote verspreiding kennen zonder de genereuse hulp van vrijwillige vertalers: Eugenio Davolio, José M. Galdo, Imkal, Gideon van Melle, Emir Sarı, Nick Silin, and Robert Wetzlmayr (als we iemand zijn vergeten, laat het ons aub weten).</string>
+    <string name="translators_blurb">BookCatalogue is het resultaat van de inspanning van vele personen en zou niet zo\'n grote verspreiding \nkennen zonder de genereuse hulp van vrijwillige vertalers: %1$s (als we iemand zijn vergeten, laat het ons aub weten).</string>
     
     <!-- End: Added/Updated in 5.1.0 -->
     

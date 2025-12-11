@@ -65,6 +65,7 @@ public class UpgradeMessageManager {
 	.add(179, R.string.new_in_522)
 	.add(180, R.string.new_in_523)
 	.add(187, R.string.new_in_530)
+	.add(193, R.string.new_in_600)
 	;
 
 	
@@ -106,6 +107,9 @@ public class UpgradeMessageManager {
 	/** The message generated for this instance; will be set first time it is generated */
 	private static String mMessage = null;
 
+	public static int getLastUpgradeVersion() {
+		return BookCatalogueApp.getAppPreferences().getInt(PREF_LAST_MESSAGE, 0);
+	}
 	/**
 	 * Get the upgrade message for the running app instance; caches the result for later use.
 	 * 
@@ -121,9 +125,7 @@ public class UpgradeMessageManager {
 
 		// See if we have a saved version id. If not, it's either a new install, or 
 		// an older install.
-		BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
-
-		long lastVersion = prefs.getInt(PREF_LAST_MESSAGE, 0);
+		long lastVersion = getLastUpgradeVersion();
 		if (lastVersion == 0) {
 			// It's either a new install, or an install using old database-based message system
 

@@ -11,7 +11,7 @@ import android.content.SharedPreferences.Editor;
  */
 public class BookCataloguePreferences {
 	/** Underlying SharedPreferences */
-	private SharedPreferences m_prefs = getSharedPreferences();
+	private final SharedPreferences m_prefs = getSharedPreferences();
 
 	/** Name to use for global preferences; non-global should be moved to appropriate Activity code */
 	public static final String PREF_START_IN_MY_BOOKS = "start_in_my_books";
@@ -24,8 +24,8 @@ public class BookCataloguePreferences {
 	public static final String PREF_USE_EXTERNAL_IMAGE_CROPPER = "App.UseExternalImageCropper";
 	public static final String PREF_AUTOROTATE_CAMERA_IMAGES = "App.AutorotateCameraImages";
 	public static final String PREF_CROP_FRAME_WHOLE_IMAGE = "App.CropFrameWholeImage";
-	/** Force list construction to compatible mode (compatible with Android 1.6) */
-	public static final String PREF_BOOKLIST_GENERATION_MODE = "App.BooklistGenerationMode";
+	///** Force list construction to compatible mode (compatible with Android 1.6) */
+	//public static final String PREF_BOOKLIST_GENERATION_MODE = "App.BooklistGenerationMode";
 	/** Is book info opened in read-only mode. Default is false (opened in edit mode) */
 	public static final String PREF_OPEN_BOOK_READ_ONLY = "App.OpenBookReadOnly";
 	/** Last full backup date */
@@ -34,15 +34,12 @@ public class BookCataloguePreferences {
 	public static final String PREF_LAST_BACKUP_FILE = "Backup.LastFile";
 	/** Preferred interface locale */
 	public static final String PREF_APP_LOCALE = "App.Locale";
+	/** Preferred interface locale */
+	private static final String PREF_CHECKED_MISSING_COVERS = "App.CheckedMissingCovers";
 
 	/** Get startup activity preference */
 	public boolean getStartInMyBook() {
 		return getBoolean(PREF_START_IN_MY_BOOKS,false);
-	}
-	/** Set startup activity preference */
-	public BookCataloguePreferences setStartInMyBook(boolean value) {
-		setBoolean(PREF_START_IN_MY_BOOKS,value);
-		return this;
 	}
 
 	/** Get a named boolean preference */
@@ -111,9 +108,17 @@ public class BookCataloguePreferences {
     private static SharedPreferences mPrefs = null;
     /** Get (or create) the static shared preferences */
 	public static SharedPreferences getSharedPreferences() {
-        if (mPrefs == null) {
+		if (mPrefs == null) {
             mPrefs = BookCatalogueApp.context.getSharedPreferences("bookCatalogue", BookCatalogueApp.MODE_PRIVATE);
         }
 		return mPrefs;
+	}
+
+	public boolean hasCheckedForMissingCovers() {
+		return getBoolean(PREF_CHECKED_MISSING_COVERS, false);
+	}
+
+	public void setCheckedForMissingCovers(boolean checked) {
+		setBoolean(PREF_CHECKED_MISSING_COVERS, checked);
 	}
 }

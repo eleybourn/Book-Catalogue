@@ -40,14 +40,14 @@ public class LocalCoverFinder implements Importer.CoverFinder {
 	private final String mSrc;
 	private final String mDst;
 	private final boolean mIsForeign;
-	private final String mSharedStoragePath;
+	private final String mCoversPath;
 	private CatalogueDBAdapter mDbHelper;
 
 	public LocalCoverFinder(String srcPath, String dstPath) {
 		mSrc = srcPath;
 		mDst = dstPath;
 		mIsForeign = !mSrc.equals(mDst);
-		mSharedStoragePath = StorageUtils.getSharedStorage().getAbsolutePath();
+		mCoversPath = StorageUtils.getBCCovers().getAbsolutePath();
 
 		mDbHelper = new CatalogueDBAdapter(BookCatalogueApp.context);
 		mDbHelper.open();
@@ -107,9 +107,9 @@ public class LocalCoverFinder implements Importer.CoverFinder {
 		
 		// Get the new path based on the input file type.
 		if (orig.getAbsolutePath().toLowerCase().endsWith(".png")) 
-			newFile = new File(mSharedStoragePath + "/" + newUuid + ".png");
+			newFile = new File(mCoversPath + "/" + newUuid + ".png");
 		else
-			newFile = new File(mSharedStoragePath + "/" + newUuid + ".jpg");
+			newFile = new File(mCoversPath + "/" + newUuid + ".jpg");
 
 		return newFile;
 	}

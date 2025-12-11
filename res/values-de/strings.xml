@@ -46,11 +46,11 @@
 <string name="series_num">#</string>
 <string name="unable_to_connect_google">Keine Verbindung zu Google Books</string>
 <string name="export_data">Bücher exportieren</string>
-<string name="export_complete">Der Export auf die SD-Karte ist abgeschlossen.</string>
+<!--<string name="export_complete">Der Export auf die SD-Karte ist abgeschlossen.</string>-->
 <string name="import_data">Bücher importieren</string>
 <string name="import_alert">Warnung. Der Import von Daten kann Informationen von bestehenden Büchern überschreiben, wenn die ID der Importdatei mit der bestehenden ID übereinstimmt. Normalerweise ist es kein Problem wenn ein Feld in der exportierten Datei geändert wurde. Bitte stellen Sie bei einem neuen Buch sicher, dass das ID-Feld leer ist.</string>
-<string name="export_failed">FEHLER: Der Export auf die SD-Karte ist fehlgeschlagen.</string>
-<string name="import_failed_is_location_correct">FEHLER: Der Import von Daten von der SD-Karte ist fehlgeschlagen. Ist die Datei bereits vorhanden?</string>
+<!--<string name="export_failed">FEHLER: Der Export auf die SD-Karte ist fehlgeschlagen.</string>-->
+<!--<string name="import_failed_is_location_correct">FEHLER: Der Import von Daten von der SD-Karte ist fehlgeschlagen. Ist die Datei bereits vorhanden?</string>-->
 <string name="search_title">Book Catalogue: Suchergebnisse</string>
 <string name="results_found">Bücher gefunden</string>
 <string name="administration_label">Verwaltungsfunktionen</string>
@@ -134,7 +134,7 @@
 <string name="duplicate_book_title">Doppeltes Buch</string>
 <string name="duplicate_book_message">Das hinzuzufügende Buch besteht bereits in der Datenbank. Sind Sie sicher, dass Sie noch eine Kopie hinzufügen möchten?</string>
 <string name="menu_add_thumb_gallery">Aus der Fotogalerie…</string>
-<string name="backup_request">Möchten Sie ihre Datenbank auf SD-Karte sichern?</string>
+<!--<string name="backup_request">Möchten Sie ihre Datenbank auf SD-Karte sichern?</string>-->
 <string name="backup_title">Sicherungskopie?</string>
 <string name="searching_amazon_books">Suche bei Amazon</string>
 <string name="searching_google_books">Suche bei Google Books</string>
@@ -188,7 +188,7 @@
 <string name="author_is_blank">Das Feld des Autors ist leer</string>
 <string name="series_already_in_list">Die Serie befindet sich bereits in der Liste</string>
 <string name="series_is_blank">Das Feld Serie ist leer</string>
-<string name="export_failed_sdcard">Der Export ist fehlgeschlagen - Auf die SD-Karte konnte nicht geschrieben werden</string>
+<!--<string name="export_failed_sdcard">Der Export ist fehlgeschlagen - Auf die SD-Karte konnte nicht geschrieben werden</string>-->
 <string name="thumbnail_failed_sdcard">Der Download des Cover-Bilds ist fehlgeschlagen - Auf die SD-Karte konnte nicht geschrieben werden</string>
 <string name="skip_title">Überspringe - %s</string>
 <string name="num_books_searched">%s Bücher gesucht</string>
@@ -226,7 +226,7 @@
 <string name="click_on_thumb">Klicke auf ein Cover-Bild, um ein größeres Bild angezeigt zu bekommen</string>
 <string name="loading">Lade…</string>
 <string name="image_not_found">Bild nicht gefunden</string>
-<item name="fieldCheckbox" type="id"></item>
+<item name="fieldCheckbox" type="id"/>
 <string name="select_min_1_field">Es muss mindestens ein Feld für die Aktualisierung ausgewählt werden</string>
 <string name="usage_copy_if_blank">Kopieren wenn leer</string>
 <string name="usage_add_extra">hängt zusätzliche Daten an</string>
@@ -247,7 +247,7 @@
 <string name="reset">Zurücksetzen</string>
 <string name="send_info_text">Klicken Sie auf den Button unten, um Informationen über die letzten Abstürze der App zu sammeln und an einen der Entwickler zu schicken. Dieser Vorgang erstellt eine Sicherheitskopie Ihrer gesamten Datenbank und der Log-Dateien. Wenn Sie eine dieser Dateien nicht verschicken wollen, löschen Sie diese vor dem Senden aus dem Anhang.</string>
 <string name="send_info">Sende Informationen</string>
-<string name="cleanup_files_text">Die Dateien belegen %s Speicherplatz auf der SD-Karte. Log-Dateien und andere Daten werden bei jeder App-Aktualisierung, Sicherungskopie oder wenn die App abstürzt auf der SD-Karte gespeichert. Klicken Sie den Knopf unten, um diese Dateien von der SD-Karte zu entfernen. Wenn Sie Abstürze oder andere Fehler erhalten, ziehen Sie bitte in Betracht, den \'Sende Informationen\' Knopf zuerst zu benutzen.</string>
+<!--<string name="cleanup_files_text">Die Dateien belegen %s Speicherplatz auf der SD-Karte. Log-Dateien und andere Daten werden bei jeder App-Aktualisierung, Sicherungskopie oder wenn die App abstürzt auf der SD-Karte gespeichert. Klicken Sie den Knopf unten, um diese Dateien von der SD-Karte zu entfernen. Wenn Sie Abstürze oder andere Fehler erhalten, ziehen Sie bitte in Betracht, den \'Sende Informationen\' Knopf zuerst zu benutzen.</string>-->
 <string name="cleanup_files">Dateien bereinigen</string>
 <string name="no_debug_info">Keine Debug-Informationen vorhanden</string>
 <string name="megabytes">%.2f MB</string>
@@ -686,7 +686,8 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
 <string name="backup_to_archive">Sichern ins Archiv</string>
 <string name="import_from_archive">Import vom Archiv</string>
 <!--  Hint displayed when aCatalogue Backup is done -->
-<string name="archive_complete_details">Eine %3$s-Datei namens %2$s wurde im Verzeichnis \"%1$s\" auf Ihrer SD-Karte erzeugt.
+    <string name="a_and_b">%1$s und %2$s</string>
+    <string name="archive_complete_details">Eine %3$s-Datei namens %2$s wurde im Verzeichnis \"%1$s\" auf Ihrer SD-Karte erzeugt.
     \n\nSie sollten diese Datei händisch an einen sicheren Ort kopieren, um Ihre Daten vor Beschädigung, Verlust oder Diebstahl zu schützen.</string>
 
 <string name="covers_progress">%1$s Cover bearbeitet (%2$s offen)</string>
@@ -738,10 +739,10 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
 
 <!-- Displayed when an archive operation fails -->
 <string name="import_failed">Import gescheitert.</string>
-<!-- Displayed when any write operation to the sd card fails -->
-<string name="please_check_sd_writable">Bitte überprüfen Sie, ob die SD-Karte beschreibbar ist und genügend freien Platz aufweist.</string>
-<!-- Displayed when any write operation to the sd card fails -->
-<string name="please_check_sd_readable">Bitte überprüfen Sie, ob auf die SD-Karte zugegriffen werden kann.</string>
+<!--&lt;!&ndash; Displayed when any write operation to the sd card fails &ndash;&gt;-->
+<!--<string name="please_check_sd_writable">Bitte überprüfen Sie, ob die SD-Karte beschreibbar ist und genügend freien Platz aufweist.</string>-->
+<!--&lt;!&ndash; Displayed when any write operation to the sd card fails &ndash;&gt;-->
+<!--<string name="please_check_sd_readable">Bitte überprüfen Sie, ob auf die SD-Karte zugegriffen werden kann.</string>-->
 
 
     <!-- Begin: Added/Updated in 5.0.2 -->
@@ -834,7 +835,7 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
         <![CDATA[
 				<p>Wussten Sie, dass der Autor von Book Catalogue (Evan Leybourn) gerade ein Buch über
 				Agile Business Management veröffentlicht hat?</p>
-				<p>Wenn Sie Interese an seinen anderen Arbeiten haben, können Sie weitere Informationen auf:\n\n
+				<p>Wenn Sie Interesse an seinen anderen Arbeiten haben, können Sie weitere Informationen auf:\n\n
 				<a href="http://theagiledirector.com/book">http://theagiledirector.com/book</a>\n\n
 				finden.
 				</p>
@@ -951,7 +952,7 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
         <string name="special_thanks_label">Danksagung</string>
 
         <!-- Credits in the 'about' dialog -->
-        <string name="translators_blurb">BookCatalogue ist das Ergebnis der Arbeit vieler Personen und würde nicht so weit verbreitet sein ohne die großzügige Arbeit unserer freiwilligen Übersetzer: Eugenio Davolio, José M. Galdo, Imkal, Gideon van Melle, Emir Sarı, Nick Silin und Robert Wetzlmayr (falls wir jemanden vergessen haben, geben Sie uns bitte Bescheid).</string>
+        <string name="translators_blurb">BookCatalogue ist das Ergebnis der Arbeit vieler Personen und würde nicht so weit verbreitet sein \nohne die großzügige Arbeit unserer freiwilligen Übersetzer: %1$s (falls wir jemanden vergessen haben, geben Sie uns bitte Bescheid).</string>
 
         <!-- End: Added/Updated in 5.1.0 -->
 
@@ -1035,10 +1036,89 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
 
     <!-- End: Added/Updated in 5.2.0 -->
 
-    <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->
+    <!-- Progress message -->
     <string name="searching_book_catalogue">Suche bei book-catalogue.com</string>
 
-    <!-- End: Added/Updated in [Next Version] -->
+        <!-- Begin: Added/Updated in 5.2.3 -->
+
+        <!-- Menu Item -->
+        <string name="home">Start</string>
+        <!-- Displayed when a user tries to browse to app home directory, or if the home dir is unable to be read. Should never happen. -->
+        <string name="no_home_directory_found">Kein Startverzeichnis gefunden</string>
+        <!-- Dialog title -->
+        <string name="perm_required">Berechtigung benötigt</string>
+        <!-- Explanatory text -->
+        <string name="perm_intro">Um fortzufahren, benötigt Book Catalogue folgende Berechtigungen:\n\n</string>
+
+        <!-- Explanatory text -->
+        <string name="perm_read_ext">Die Berechtigung wird benötigt, um Kamerabilder zu importieren,
+      Backups &amp; Exporte wiederherzustellen, Covers einzulesen und
+      Debug- und Wiederherstellungsinfos abzurufen.</string>
+
+        <!-- Explanatory text -->
+        <string name="perm_write_ext">Die Berechtigung wird benötigt, um Kamerabilder zu speichern,
+      Backups &amp; Exporte wiederherzustellen, Covers einzulesen und
+      Debug- und Wiederherstellungsinfos abzurufen.</string>
+
+        <!-- Explanatory text -->
+        <string name="perm_internet">Die Berechtigung wird benötigt, um Bücher im Internet abzurufen und
+      Services wie Goodreads and LibraryThing zu nutzen.</string>
+
+        <!-- Explanatory text -->
+        <string name="perm_network_state">Die Berechtigung wird benötigt, um zu prüfen, ob das Netzwerk für
+      den Internetzugriff verfügbar ist (z.B. für Suchanfragen).</string>
+
+        <!-- Menu items -->
+        <string name="menu_mark_as_read">Als gelesen markieren</string>
+        <string name="menu_mark_as_unread">Als ungelesen markieren</string>
+
+        <!-- End: Added/Updated in 5.2.3 -->
+
+        <!-- Begin: Added/Updated in 5.3.0 -->
+
+        <!-- Progress message -->
+<!--        <string name="searching_book_catalogue">Durchsuche book-catalogue.com</string>-->
+        <!-- End: Added/Updated in 5.3.0 -->
+
+
+        <!-- Begin: Added/Updated in 6.0.0 -->
+
+
+        <string name="new_in_600">
+    <![CDATA[
+      <p><b>Neu in 6.0.0</b>\n\n<ul>
+          <li> Eingebauter Scanner! Wir verwenden nun die native Android-Bibliothek für Barcodes. Die alten Scanner
+            sind weiterhin verfügbar, falls Probleme auftreten, und werden in einem zukünftigen Release entfernt.
+          <li> Komplette Reorganisation von Dateien. Google hindert uns daran, Dateien in die bisher genutzten
+            Verzeichnisse zu schreiben. Die Covers landen nun in privaten App-Verzeichnissen, und wir
+            verwenden die Standard-Dateikomponenten für Backups und CSV-Dateien.
+        <li> Der Goodreads-Support entfällt (die API ist nicht mehr verfügbar).
+        <li> Der LibraryThing-Support entfällt ebenfalls (die API ist nicht mehr verfügbar).
+        <li> Zahlreiche  Bug Fixes.
+        </ul>
+      </p>
+    ]]>
+    </string>
+
+        <!-- SEVERAL UPDATED MESSAGES: changed 'sd card' tp storage. -->
+
+        <!-- Displayed when any write operation to the sd card fails -->
+        <string name="please_check_sd_writable">Ihr Datenspeicher ist nicht beschreibbar oder hat zu wenig Platz.</string>
+        <!-- Displayed when any write operation to the sd card fails -->
+        <string name="please_check_sd_readable">Ihr Datenspeicher ist nicht verfügbar.</string>
+
+        <string name="export_complete">Der Export ist abgeschlossen.</string>
+        <string name="export_failed">FEHLER: Der Export ist fehlgeschlagen.</string>
+        <string name="import_failed_is_location_correct">FEHLER: Der Import ist fehlgeschlagen. Bitte kontaktieren Sie den Support.</string>
+        <string name="backup_request">Möchten Sie Ihre Datenbank sichern?</string>
+        <string name="export_failed_sdcard">Der Export ist fehlgeschlagen. Auf den Datenspeicher kann nicht geschrieben werden</string>
+        <string name="cleanup_files_text">Die temporären Dateien belegen %s Speicherplatz. Logs und andere Daten werden bei jeder App-Aktualisierung, Sicherungskopie und bei Abstürzen gespeichert. Drücken Sie den Button, um diese Dateien zu löschen. Bei Abstürzen oder anderen Fehlern drücken Sie vorher gerne auf \'Sende Informationen\'.</string>
+
+        <!-- End: Added/Updated in 6.0.0 -->
+
+        <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->
+
+        <!-- End: Added/Updated in [Next Version] -->
 
 </resources>
 

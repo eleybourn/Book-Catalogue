@@ -83,7 +83,8 @@ public class MessageDialogFragment extends BookCatalogueDialogFragment {
 		AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setMessage(msg).create();
 		alertDialog.setTitle(title);
 		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-		
+		alertDialog.setCanceledOnTouchOutside(false);
+
 		alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(btnPos), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				handleButton(AlertDialog.BUTTON_POSITIVE);

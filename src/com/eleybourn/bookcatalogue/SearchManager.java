@@ -57,15 +57,15 @@ public class SearchManager implements TaskManagerListener {
 	/** Flag indicating a search source to use */
 	public static final int SEARCH_GOODREADS = 8;
 	/** Mask including all search sources */
-	public static final int SEARCH_ALL = SEARCH_GOOGLE | SEARCH_BC | SEARCH_LIBRARY_THING | SEARCH_GOODREADS;
+	public static final int SEARCH_ALL = SEARCH_GOOGLE | SEARCH_BC; // | SEARCH_LIBRARY_THING | SEARCH_GOODREADS;
 	
 	// ENHANCE: Allow user to change the default search data priority
 	// NOTE: BCDB search will return AMAZON, GOOGLE, BCDB and OPENLIBRARY
 	private static final DataSource[] mDefaultSearchOrder = new DataSource[]
-			{DataSource.BCDB, DataSource.Goodreads, DataSource.Google, DataSource.LibraryThing};
+			{ DataSource.BCDB, DataSource.Google };
 	// ENHANCE: Allow user to change the default search data priority
 	private static final DataSource[] mDefaultReliabilityOrder = new DataSource[]
-			{DataSource.Goodreads, DataSource.Amazon, DataSource.Google, DataSource.BCDB, DataSource.OpenLibrary, DataSource.LibraryThing, DataSource.Other};
+			{DataSource.Amazon, DataSource.Google, DataSource.BCDB, DataSource.OpenLibrary, DataSource.Other};
 
 	/** Flags applicable to *current* search */
 	private int mSearchFlags;

@@ -742,7 +742,8 @@
     <string name="import_from_archive">Importa da Backup</string>
 
     <!-- Hint displayed when aCatalogue Backup is done -->
-    <string name="archive_complete_details">Un %3$s file chiamato %2$s è stato creato nella cartella \"%1$s\" della tua 
+    <string name="a_and_b">%1$s e %2$s</string>
+    <string name="archive_complete_details">Un %3$s file chiamato %2$s è stato creato nella cartella \"%1$s\" della tua
     SD card.\n\nTi raccomandiamo di tenerne copia da qualche altra parte a protezione dei dati in caso il tuo apparecchio venga danneggiato, perso o rubato.</string>
 
     <!-- Displayed in progress dialog when exporting covers -->
@@ -1062,7 +1063,7 @@
     <string name="system_locale">Impostazioni locali di sistema</string>
 
     <!-- Credits in the 'about' dialog -->
-    <string name="translators_blurb">BookCatalogue è il prodotto degli sforzi di molte persone, e non sarebbe così largamente utilizzato senza il generoso aiuto dei nostri traduttori volontari: Eugenio Davolio, José M. Galdo, Imkal, Dimitris Klisiari, Gideon van Melle, Emir Sarı, Nick Silin, e Robert Wetzlmayr (se abbiamo dimenticato qualcuno, grazie per comunicarcelo).</string>
+    <string name="translators_blurb">BookCatalogue è il prodotto degli sforzi di molte persone, e non sarebbe così largamente utilizzato senza il generoso \naiuto dei nostri traduttori volontari: %1$s (se abbiamo dimenticato qualcuno, grazie per comunicarcelo).</string>
 
     <string name="new_in_520">
 		<![CDATA[

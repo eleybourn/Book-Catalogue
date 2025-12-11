@@ -21,6 +21,7 @@ package com.eleybourn.bookcatalogue.backup.tar;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
@@ -57,13 +58,13 @@ public class TarBackupReader extends BackupReaderAbstract {
 		mContainer = container;
 
 		// Open the file and create the archive stream
-		FileInputStream in = new FileInputStream(container.getFile());
+		InputStream in = container.getInputStream();
 		mInput = new TarArchiveInputStream(in);
 
 		// Process the INFO entry. Should be first.
 		ReaderEntity info = nextEntity();
-		if (info.getType() != BackupEntityType.Info)
-			throw new RuntimeException("Not a valid backup");
+		if (info == null || info.getType() != BackupEntityType.Info)
+			throw new IOException("Not a valid backup");
 
 		// Save the INFO
 		mInfo = new BackupInfo(info.getBundle());

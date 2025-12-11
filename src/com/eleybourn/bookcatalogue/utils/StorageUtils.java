@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -26,7 +28,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.support.v4.content.FileProvider;
+
+import androidx.core.content.FileProvider;
+import androidx.documentfile.provider.DocumentFile;
+
 import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
@@ -47,11 +52,14 @@ public class StorageUtils {
 	private static String UTF8 = "utf8";
 	private static int BUFFER_SIZE = 8192;
 
-	private static final String LOCATION = "bookCatalogue";
+	private static final String EXPORT_FILE_BASE_NAME = "bookCatalogue";
 	private static final String DATABASE_NAME = "book_catalogue";
 
-	private static final String EXTERNAL_FILE_PATH = Environment.getExternalStorageDirectory() + "/" + LOCATION;
-	private static final String ERRORLOG_FILE = EXTERNAL_FILE_PATH + "/error.log";
+	private static final String OLD_FILE_PATH = Environment.getExternalStorageDirectory() + "/bookCatalogue";
+	private static final String BC_SHARED_PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/Book Catalogue/";
+	private static final String BC_BACKUPS_PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/Book Catalogue/Backups/";
+	//private static final String BC_COVERS_PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/Book Catalogue/Covers";
+	private static final String ERRORLOG_FILE = BC_SHARED_PATH + "/error.log";
 
 	/**
 	 * Accessor
@@ -73,35 +81,93 @@ public class StorageUtils {
 
 	/**
 	 * Accessor
-	 * 
+	 *
 	 * @return
 	 */
-	public static final File getSharedStorage() {
-		File dir = new File(StorageUtils.EXTERNAL_FILE_PATH);
-		dir.mkdir();
+	public static final File getBCBackups() {
+		File dir = new File(StorageUtils.BC_BACKUPS_PATH);
+		dir.mkdirs();
 		return dir;
 	}
 
 	/**
 	 * Accessor
-	 * 
+	 *
 	 * @return
 	 */
-	public static final String getSharedStoragePath() {
-		File dir = new File(StorageUtils.EXTERNAL_FILE_PATH);
-		dir.mkdir();
+	public static final File getBCCache() {
+		return BookCatalogueApp.context.getExternalCacheDir();
+	}
+
+	/**
+	 * Accessor
+	 *
+	 * @return
+	 */
+	public static File getBCCovers() {
+		File dir = new File(BookCatalogueApp.context.getExternalFilesDir(null), "covers");
+		dir.mkdirs();
+		return dir;
+	}
+
+	/**
+	 * Accessor
+	 *
+	 * @return
+	 */
+	public static File getBCData() {
+		return BookCatalogueApp.context.getFilesDir();
+	}
+
+
+	private static File getBCShared() {
+		File dir = new File(StorageUtils.BC_SHARED_PATH);
+		dir.mkdirs();
+		return dir;
+	}
+
+	/**
+	 * Accessor
+	 *
+	 * @return
+	 */
+	public static final String getBcBackupsPath() {
+		File dir = getBCBackups();
+		dir.mkdirs();
 		return dir.getAbsolutePath();
 	}
+
+	/**
+	 * Accessor
+	 *
+	 * @return
+	 */
+	public static final String getBCCoversPath() {
+		File dir = getBCCovers();
+		dir.mkdirs();
+		return dir.getAbsolutePath();
+	}
+
+	///**
+	// * Accessor
+	// *
+	// * @return
+	// */
+	//private static String getBCSharedPath() {
+	//	File dir = getBCShared();
+	//	dir.mkdirs();
+	//	return dir.getAbsolutePath();
+	//}
 
 	/**
 	 * Backup database file
 	 * @throws Exception 
 	 */
-	public static void backupDbFile(SQLiteDatabase db, String suffix) {
+	public static File backupDbFile(SQLiteDatabase db, String suffix) {
 		try {
-			final String fileName = LOCATION + suffix;
+			final String fileName = EXPORT_FILE_BASE_NAME + suffix;
 			java.io.InputStream dbOrig = new java.io.FileInputStream(db.getPath());
-			File dir = getSharedStorage();
+			File dir = getBCBackups();
 			// Path to the external backup
 			String fullFilename = dir.getPath() + "/" + fileName;
 			//check if it exists
@@ -122,22 +188,11 @@ public class StorageUtils {
 			dbCopy.flush();
 			dbCopy.close();
 			dbOrig.close();
-			
+			return existing;
 		} catch (Exception e) {
 			Logger.logError(e);
+			return null;
 		}
-	}
-
-	/**
-	 * Make sure the external shared directory exists
-	 */
-	public static void initSharedDirectory() {
-		new File(StorageUtils.EXTERNAL_FILE_PATH + "/").mkdirs();
-		try {
-			new File(StorageUtils.EXTERNAL_FILE_PATH + "/.nomedia").createNewFile();
-		} catch (IOException e) {
-			Logger.logError(e);
-		}		
 	}
 
 	/**
@@ -170,139 +225,135 @@ public class StorageUtils {
 		}		
 	}
 
-	/**
-	 * Scan all mount points for '/bookCatalogue' directory and collect a list
-	 * of all CSV files.
-	 * 
-	 * @return
-	 */
-	public static ArrayList<File> findExportFiles() {
-		//StringBuilder info = new StringBuilder();
-
-		ArrayList<File> files = new ArrayList<File>();
-		Pattern mountPointPat = Pattern.compile("^\\s*[^\\s]+\\s+([^\\s]+)");
-		BufferedReader in = null;
-		// Make a filter for files ending in .csv
-		FilenameFilter csvFilter = new FilenameFilter() {
-			@Override
-			public boolean accept(File dir, String filename) {
-				final String fl = filename.toLowerCase();
-				return (fl.endsWith(".csv"));
-				//ENHANCE: Allow for other files? Backups? || fl.endsWith(".csv.bak"));
-			}
-		}; 
-
-		ArrayList<File> dirs = new ArrayList<File>();
-
-		//info.append("Getting mounted file systems\n");
-		// Scan all mounted file systems
-		try {
-			in = new BufferedReader(new InputStreamReader(new FileInputStream("/proc/mounts")),1024);
-			String line = "";
-			while ((line = in.readLine()) != null) {
-				//info.append("   checking " + line + "\n");
-				Matcher m = mountPointPat.matcher(line);
-				// Get the mount point
-				if (m.find()) {
-					// See if it has a bookCatalogue directory
-					File dir = new File(m.group(1).toString() + "/bookCatalogue");
-					//info.append("       matched " + dir.getAbsolutePath() + "\n");
-					dirs.add(dir);
-				} else {
-					//info.append("       NO match\n");
-				}
-			}
-		} catch (IOException e) {
-			Logger.logError(e, "Failed to open/scan/read /proc/mounts");
-		} finally {
-			if (in != null)
-				try {
-					in.close();					
-				} catch (Exception e) {};
-		}
-
-		// Sometimes (Android 6?) the /proc/mount search seems to fail, so we revert to environment vars
-		//info.append("Found " + dirs.size() + " directories\n");
-		try {
-			String loc1 = System.getenv("EXTERNAL_STORAGE");
-			if (loc1 != null) {
-				File dir = new File(loc1 + "/bookCatalogue");
-				dirs.add(dir);
-				//info.append("Loc1 added " + dir.getAbsolutePath() + "\n");
-			} else {
-				//info.append("Loc1 ignored: " + loc1 + "\n");
-			}
-
-			String loc2 = System.getenv("SECONDARY_STORAGE");
-			if (loc2 != null && !loc2.equals(loc1)) {
-				File dir = new File(loc2 + "/bookCatalogue");
-				dirs.add(dir);
-				//info.append("Loc2 added " + dir.getAbsolutePath() + "\n");
-			} else {
-				//info.append("Loc2 ignored: " + loc2 + "\n");
-			}
-		} catch (Exception e) {
-			Logger.logError(e, "Failed to get external storage from environment variables");
-		}
-
-		HashSet<String> paths = new HashSet<String>();
-
-		//info.append("Looking for files in directories\n");
-		for(File dir: dirs) {
-			try {
-				if (dir.exists()) {
-					// Scan for csv files
-					File[] csvFiles = dir.listFiles(csvFilter);
-					if (csvFiles != null) {
-						//info.append("    found " + csvFiles.length + " in " + dir.getAbsolutePath() + "\n");
-						for (File f : csvFiles) {
-							System.out.println("Found: " + f.getAbsolutePath());
-							final String cp = f.getCanonicalPath();
-							if (paths.contains(cp)) {
-								//info.append("        already present as " + cp + "\n");								
-							} else {
-								files.add(f);
-								paths.add(cp);
-								//info.append("        added as " + cp + "\n");																
-							}
-						}
-					} else {
-						//info.append("    null returned by listFiles() in " + dir.getAbsolutePath() + "\n");
-					}
-				} else {
-					//info.append("    " + dir.getAbsolutePath() + " does not exist\n");
-				}
-			} catch (Exception e) {
-				Logger.logError(e, "Failed to read directory " + dir.getAbsolutePath());
-			}
-		}
-
-		//Logger.logError(new RuntimeException("INFO"), info.toString());
-
-		// Sort descending based on modified date
-		Collections.sort(files, new FileDateComparator(-1));
-		return files;
-	}
+	///**
+	// * Scan all mount points for '/bookCatalogue' directory and collect a list
+	// * of all CSV files.
+	// *
+	// * @return
+	// */
+	//public static ArrayList<File> findExportFiles() {
+	//	//StringBuilder info = new StringBuilder();
+	//
+	//	ArrayList<File> files = new ArrayList<File>();
+	//	Pattern mountPointPat = Pattern.compile("^\\s*[^\\s]+\\s+([^\\s]+)");
+	//	BufferedReader in = null;
+	//	// Make a filter for files ending in .csv
+	//	FilenameFilter csvFilter = new FilenameFilter() {
+	//		@Override
+	//		public boolean accept(File dir, String filename) {
+	//			final String fl = filename.toLowerCase();
+	//			return (fl.endsWith(".csv"));
+	//			//ENHANCE: Allow for other files? Backups? || fl.endsWith(".csv.bak"));
+	//		}
+	//	};
+	//
+	//	ArrayList<File> dirs = new ArrayList<File>();
+	//
+	//	//info.append("Getting mounted file systems\n");
+	//	// Scan all mounted file systems
+	//	try {
+	//		in = new BufferedReader(new InputStreamReader(new FileInputStream("/proc/mounts")),1024);
+	//		String line = "";
+	//		while ((line = in.readLine()) != null) {
+	//			//info.append("   checking " + line + "\n");
+	//			Matcher m = mountPointPat.matcher(line);
+	//			// Get the mount point
+	//			if (m.find()) {
+	//				// See if it has a bookCatalogue directory
+	//				File dir = new File(m.group(1).toString() + "/bookCatalogue");
+	//				//info.append("       matched " + dir.getAbsolutePath() + "\n");
+	//				dirs.add(dir);
+	//			} else {
+	//				//info.append("       NO match\n");
+	//			}
+	//		}
+	//	} catch (IOException e) {
+	//		Logger.logError(e, "Failed to open/scan/read /proc/mounts");
+	//	} finally {
+	//		if (in != null)
+	//			try {
+	//				in.close();
+	//			} catch (Exception e) {};
+	//	}
+	//
+	//	// Sometimes (Android 6?) the /proc/mount search seems to fail, so we revert to environment vars
+	//	//info.append("Found " + dirs.size() + " directories\n");
+	//	try {
+	//		for(File f: new File[] {getBCBackups(), getBCShared()}) {
+	//			if (f != null && f.exists()) {
+	//				dirs.add(f);
+	//			}
+	//		}
+	//	} catch (Exception e) {
+	//		Logger.logError(e, "Failed to get external storage from environment variables");
+	//	}
+	//
+	//	HashSet<String> paths = new HashSet<String>();
+	//
+	//	//info.append("Looking for files in directories\n");
+	//	for(File dir: dirs) {
+	//		try {
+	//			if (dir.exists()) {
+	//				// Scan for csv files
+	//				File[] csvFiles = dir.listFiles(csvFilter);
+	//				if (csvFiles != null) {
+	//					//info.append("    found " + csvFiles.length + " in " + dir.getAbsolutePath() + "\n");
+	//					for (File f : csvFiles) {
+	//						System.out.println("Found: " + f.getAbsolutePath());
+	//						final String cp = f.getCanonicalPath();
+	//						if (paths.contains(cp)) {
+	//							//info.append("        already present as " + cp + "\n");
+	//						} else {
+	//							files.add(f);
+	//							paths.add(cp);
+	//							//info.append("        added as " + cp + "\n");
+	//						}
+	//					}
+	//				} else {
+	//					//info.append("    null returned by listFiles() in " + dir.getAbsolutePath() + "\n");
+	//				}
+	//			} else {
+	//				//info.append("    " + dir.getAbsolutePath() + " does not exist\n");
+	//			}
+	//		} catch (Exception e) {
+	//			Logger.logError(e, "Failed to read directory " + dir.getAbsolutePath());
+	//		}
+	//	}
+	//
+	//	//Logger.logError(new RuntimeException("INFO"), info.toString());
+	//
+	//	// Sort descending based on modified date
+	//	Collections.sort(files, new FileDateComparator(-1));
+	//	return files;
+	//}
 
 	/**
-	 * Check if the sdcard is writable
+	 * Check if the shared storage dir is writable
 	 * 
 	 * @return	success or failure
 	 */
-	static public boolean sdCardWritable() {
-		/* Test write to the SDCard */
+	static public boolean isSharedWritable() {
+		/* Test write to the BC shared dir */
 		try {
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(EXTERNAL_FILE_PATH + "/.nomedia"), UTF8), BUFFER_SIZE);
-			out.write("");
-			out.close();
-			return true;
-		} catch (IOException e) {
+			return getBCShared().canWrite();
+			////noinspection IOStreamConstructor -- can not use suggestion since API is 26 and we have min 21.
+			//BufferedWriter out = new BufferedWriter(new OutputStreamWriter(
+			//		new FileOutputStream(getBCShared() + "/.nomedia"), UTF8), BUFFER_SIZE);
+			//out.write("");
+			//out.close();
+			//return true;
+		} catch (Exception e) {
 			return false;
 		}		
 	}
 
-	private static String[] mPurgeableFilePrefixes = new String[]{StorageUtils.LOCATION + "DbUpgrade", StorageUtils.LOCATION + "DbExport", "error.log", "tmp"};
-	private static String[] mDebugFilePrefixes = new String[]{StorageUtils.LOCATION + "DbUpgrade", StorageUtils.LOCATION + "DbExport", "error.log", "export.csv"};
+	private static String[] mPurgeableFilePrefixes = new String[]{
+			StorageUtils.EXPORT_FILE_BASE_NAME + "DbUpgrade",
+			StorageUtils.EXPORT_FILE_BASE_NAME + StorageUtils.EXPORT_FILE_BASE_NAME + "DbUpgrade", // Bug in prior version meant duplicated base name!
+			StorageUtils.EXPORT_FILE_BASE_NAME + "DbExport",
+			StorageUtils.EXPORT_FILE_BASE_NAME + StorageUtils.EXPORT_FILE_BASE_NAME + "DbExport", // Bug in prior version meant duplicated base name!
+			"error.log", "tmp"};
+	private static String[] mDebugFilePrefixes = new String[]{StorageUtils.EXPORT_FILE_BASE_NAME + "DbUpgrade", StorageUtils.EXPORT_FILE_BASE_NAME + "DbExport", "error.log", "export.csv"};
 
 	/**
 	 * Collect and send com.eleybourn.bookcatalogue.debug info to a support email address. 
@@ -314,10 +365,10 @@ public class StorageUtils {
 	 */
 	public static void sendDebugInfo(Context context, CatalogueDBAdapter dbHelper) {
 		// Create a temp DB copy.
-		String tmpName = StorageUtils.LOCATION + "DbExport-tmp.db";
-		dbHelper.backupDbFile(tmpName);
-		File dbFile = new File(StorageUtils.EXTERNAL_FILE_PATH + "/" + tmpName);
-		dbFile.deleteOnExit();
+		File dbFile = dbHelper.backupDbFile("DbExport-tmp.db");
+		if (dbFile != null) {
+			dbFile.deleteOnExit();
+		}
 		// setup the mail message
 		final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND_MULTIPLE);
 		emailIntent.setType("plain/text");
@@ -386,42 +437,42 @@ public class StorageUtils {
 		//has to be an ArrayList
 		ArrayList<Uri> uris = new ArrayList<Uri>();
 		//convert from paths to Android friendly Parcelable Uri's
-		ArrayList<String> files = new ArrayList<String>();
+		ArrayList<File> files = new ArrayList<>();
 		
 		// Find all files of interest to send
-		File dir = new File(StorageUtils.EXTERNAL_FILE_PATH);
-		try {
-			for (String name : dir.list()) {
-				boolean send = false;
-				for(String prefix : mDebugFilePrefixes)
-					if (name.startsWith(prefix)) {
-						send = true;
-						break;
-					}
-				if (send)
-					files.add(name);
-			}
-			
-			// Build the attachment list
-			for (String file : files)
-			{
-				File fileIn = new File(StorageUtils.EXTERNAL_FILE_PATH + "/" + file);
-				if (fileIn.exists() && fileIn.length() > 0) {
-					//Uri u = Uri.fromFile(fileIn);
-					Uri u = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".fileprovider",
-													   fileIn);
-					uris.add(u);
+		for(File dir: new File[] {getBCShared(), getBCBackups()}) {
+			try {
+				for (String name : dir.list()) {
+					boolean send = false;
+					for(String prefix : mDebugFilePrefixes)
+						if (name.startsWith(prefix)) {
+							send = true;
+							break;
+						}
+					if (send)
+						files.add(new File(dir, name));
 				}
-			}
-	
-			// We used to only send it if there are any files to send, but later versions added 
-			// useful debugging info. So now we always send.
-			emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-			context.startActivity(Intent.createChooser(emailIntent, "Send mail..."));        	
 
-		} catch (NullPointerException e) {
-			Logger.logError(e);
-			Toast.makeText(context, R.string.export_failed_sdcard, Toast.LENGTH_LONG).show();
+				// Build the attachment list
+				for (File fileIn : files)
+				{
+					if (fileIn.exists() && fileIn.length() > 0) {
+						//Uri u = Uri.fromFile(fileIn);
+						Uri u = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".fileprovider",
+														   fileIn);
+						uris.add(u);
+					}
+				}
+
+				// We used to only send it if there are any files to send, but later versions added
+				// useful debugging info. So now we always send.
+				emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+				context.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+
+			} catch (NullPointerException e) {
+				Logger.logError(e);
+				Toast.makeText(context, R.string.export_failed_sdcard, Toast.LENGTH_LONG).show();
+			}
 		}
 	}
 
@@ -429,22 +480,23 @@ public class StorageUtils {
 	 * Cleanup any purgeable files.
 	 */
 	public static void cleanupFiles() {
-		if (StorageUtils.sdCardWritable()) {
-	        File dir = new File(StorageUtils.EXTERNAL_FILE_PATH);
-	        for (String name : dir.list()) {
-	        	boolean purge = false;
-	        	for(String prefix : mPurgeableFilePrefixes)
-	        		if (name.startsWith(prefix)) {
-	        			purge = true;
-	        			break;
-	        		}
-	        	if (purge)
-		        	try {
-		        		File file = new File(StorageUtils.EXTERNAL_FILE_PATH + "/" + name);
-			        	file.delete();
-		        	} catch (Exception e) {        		
-		        	}
-	        }
+		if (StorageUtils.isSharedWritable()) {
+			for(File dir: new File[] {getBCShared(), getBCBackups()}) {
+				for (String name : dir.list()) {
+					boolean purge = false;
+					for (String prefix : mPurgeableFilePrefixes)
+						if (name.startsWith(prefix)) {
+							purge = true;
+							break;
+						}
+					if (purge)
+						try {
+							File file = new File(dir, name);
+							file.delete();
+						} catch (Exception e) {
+						}
+				}
+			}
 		}
 	}
 
@@ -453,26 +505,129 @@ public class StorageUtils {
 	 * @return	size, in bytes
 	 */
 	public static long cleanupFilesTotalSize() {
-		if (!StorageUtils.sdCardWritable())
+		if (!StorageUtils.isSharedWritable())
 			return 0;
 
 		long totalSize = 0;
-
-		File dir = new File(StorageUtils.EXTERNAL_FILE_PATH);
-        for (String name : dir.list()) {
-        	boolean purge = false;
-        	for(String prefix : mPurgeableFilePrefixes)
-        		if (name.startsWith(prefix)) {
-        			purge = true;
-        			break;
-        		}
-        	if (purge)
-	        	try {
-	        		File file = new File(StorageUtils.EXTERNAL_FILE_PATH + "/" + name);
-	        		totalSize += file.length();
-	        	} catch (Exception e) {        		
-	        	}
-        }
+		for(File dir: new File[] {getBCShared(), getBCBackups()}) {
+			for (String name : dir.list()) {
+				boolean purge = false;
+				for (String prefix : mPurgeableFilePrefixes)
+					if (name.startsWith(prefix)) {
+						purge = true;
+						break;
+					}
+				if (purge)
+					try {
+						File file = new File(dir, name);
+						totalSize += file.length();
+					} catch (Exception e) {
+					}
+			}
+		}
         return totalSize;
+	}
+
+	public static class FileCopyStatus {
+		public int total = 0;
+		public int processed = 0;
+		public int not_in_db = 0;
+		public int duplicates = 0;
+	}
+	/**
+	 * Old BC stored files in the 'shared storage' root in a directory called "bookCatalogue". As
+	 * of Android Q theses are more conformant with the Android standard. Specifically:
+	 *
+	 * - Covers go into the 'Media/Book Catalogue" folder
+	 * - Exports and backups go to the "Documents/Book Catalogue" folder
+	 * - The 'covers' DB goes into the standard database location.
+	 *
+	 * This procedure ensures files from an old instance are moved to the correct locations.
+	 */
+	public static FileCopyStatus moveOldFilesToQLocations(DocumentFile old, SimpleTaskQueueProgressFragment fragment) {
+		FileCopyStatus result = new FileCopyStatus();
+		fragment.onProgress("Listing files...", 0);
+		DocumentFile[] files = old.listFiles();
+
+		result.total = files.length;
+		fragment.setMax(files.length);
+
+		fragment.onProgress("Copying files...", 0);
+		ContentResolver resolver = BookCatalogueApp.context.getContentResolver();
+		File backupDir = getBCBackups();
+		File cacheDir = getBCCache();
+		File coverDir = getBCCovers();
+		File sharedDir = getBCShared();
+		File toDir;
+		String copyingMsg = BookCatalogueApp.getResourceString(R.string.copying_files);
+		CatalogueDBAdapter db = new CatalogueDBAdapter(BookCatalogueApp.context);
+		db.open();
+		for(DocumentFile file: files) {
+			if (fragment.isCancelled()) {
+				break;
+			}
+			result.processed++;
+			fragment.onProgress(copyingMsg, result.processed);
+
+			String name = file.getName().toLowerCase();
+			boolean image_not_in_db = false; // Only set to true for image files.
+			if (name.startsWith("tmp")) {
+				toDir = cacheDir;
+			} else if (name.endsWith(".png") || name.endsWith(".jpg") ) {
+				toDir = coverDir;
+				// Check if related file exists in database.
+				String uuid = name.substring(0, name.length()-4);
+				long book = db.getBookIdFromUuid(uuid);
+				if (book == 0) {
+					image_not_in_db = true;
+				}
+			} else if (name.endsWith(".bcbk") || name.endsWith(".csv") || name.endsWith(".db")) {
+				toDir = backupDir;
+			} else {
+				toDir = sharedDir;
+			}
+			if (!image_not_in_db) {
+				File dst = new File(toDir, file.getName());
+				try {
+					if (!dst.exists()) {
+						InputStream in = resolver.openInputStream(file.getUri());
+						if (in != null) {
+							Utils.saveInputToFile(in, dst);
+							in.close();
+							// TODO: Decide if this is a good idea! --
+							// file.delete();
+						}
+					} else {
+						result.duplicates++;
+					}
+				} catch (Exception e) {
+					Logger.logError(e, "Failed to copy old file");
+				}
+			} else {
+				result.not_in_db++;
+			}
+		}
+		return result;
+	}
+
+//	public static Uri getOldFilePathUri() {
+//		File old = new File(OLD_FILE_PATH);
+//		return Uri.fromFile(old);
+//	}
+
+	public static ArrayList<File> getExistingOldPaths() {
+		ArrayList<File> list = new ArrayList<>();
+		for(File dir: new File[]
+				{
+					Environment.getExternalStoragePublicDirectory(""),
+					Environment.getExternalStorageDirectory(),
+					Environment.getRootDirectory(),
+				}) {
+			File old = new File(dir,"bookCatalogue");
+			if (old.exists()) {
+				list.add(old);
+			}
+		}
+		return list;
 	}
 }

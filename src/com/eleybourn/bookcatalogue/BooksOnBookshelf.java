@@ -260,6 +260,9 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 			if (savedInstanceState == null) {
 				HintManager.displayHint(this, R.string.hint_view_only_book_details, null);
 				HintManager.displayHint(this, R.string.hint_book_list, null);
+				// This hint is only displayed for users with missing covers who might have upgraded from an earlier version and missed the update message
+				// that explains how to update covers...
+				HintManager.displayHint(this, R.string.hint_missing_covers, null, getString(R.string.admin_and_prefs), getString(R.string.import_old_files));
 				//if (StartupActivity.getShowAmazonHint() && HintManager.shouldBeShown(R.string.hint_amazon_links_blurb) ) {
 				//	HintManager.displayHint(this, R.string.hint_amazon_links_blurb, null,
 				//			getString(R.string.amazon_books_by_author),
@@ -1075,10 +1078,10 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 		mMenuHandler.addSearchItem(menu)
 					.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
-		final boolean showGr = GoodreadsManager.hasCredentials();
-		if (showGr) {
-			mMenuHandler.addItem(menu, MNU_GOODREADS, R.string.goodreads, R.drawable.ic_menu_gr_logo);
-		}
+		//final boolean showGr = GoodreadsManager.hasCredentials();
+		//if (showGr) {
+		//	mMenuHandler.addItem(menu, MNU_GOODREADS, R.string.goodreads, R.drawable.ic_menu_gr_logo);
+		//}
 
 		mMenuHandler.addCreateHelpAndAdminItems(menu);
 		

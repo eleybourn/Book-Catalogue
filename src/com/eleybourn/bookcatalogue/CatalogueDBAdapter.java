@@ -670,8 +670,6 @@ public class CatalogueDBAdapter {
 			DatabaseDefinitions.TBL_BOOK_LIST_STYLES.createAll(sdb, true);
 
 			createTriggers(sdb);
-
-			StorageUtils.initSharedDirectory();
 		}
 
 
@@ -994,7 +992,7 @@ public class CatalogueDBAdapter {
 			if (curVersion == 39) {
 				curVersion++;
 				try {
-					new File(StorageUtils.getSharedStoragePath() + "/.nomedia").createNewFile();
+					new File(StorageUtils.getBCCoversPath() + "/.nomedia").createNewFile();
 				} catch (Exception e) {
 					// Don't care about this exception
 					Logger.logError(e);
@@ -1804,8 +1802,6 @@ public class CatalogueDBAdapter {
 	 * @throws SQLException if the database could be neither opened or created
 	 */
 	public CatalogueDBAdapter open() throws SQLException {
-		/* Create the bookCatalogue directory if it does not exist */
-		StorageUtils.getSharedStorage();
 		if (mDb == null) {
 			// Get the DB wrapper
 			mDb = new SynchronizedDb(mDbHelper, mSynchronizer);
@@ -1867,8 +1863,8 @@ public class CatalogueDBAdapter {
 	 * Backup database file using default file name
 	 * @throws Exception 
 	 */
-	public void backupDbFile() {
-		backupDbFile("DbExport.db");
+	public File backupDbFile() {
+		return backupDbFile("DbExport.db");
 	}
 	
 	/**
@@ -1876,11 +1872,12 @@ public class CatalogueDBAdapter {
 	 *
 	 * @throws Exception 
 	 */
-	public void backupDbFile(String suffix) {
+	public File backupDbFile(String suffix) {
 		try {
-			StorageUtils.backupDbFile(mDb.getUnderlyingDatabase(), suffix);
+			return StorageUtils.backupDbFile(mDb.getUnderlyingDatabase(), suffix);
 		} catch (Exception e) {
 			Logger.logError(e);
+			return null;
 		}
 	}
 	
@@ -1895,7 +1892,7 @@ public class CatalogueDBAdapter {
 	 * Get the 'standard' temp file name for new books, including a suffix
 	 */
 	public static final File getTempThumbnail(String suffix) {
-		return new File(StorageUtils.getSharedStoragePath() + "/tmp" + suffix + ".jpg");
+		return new File(StorageUtils.getBCCache(), "/tmp" + suffix + ".jpg");
 	}
 
 	/**
@@ -1933,7 +1930,7 @@ public class CatalogueDBAdapter {
 		if (prefix == null || prefix.equals("")) {
 			return getTempThumbnail(suffix);
 		} else {
-			final String base = StorageUtils.getSharedStorage() + "/" + prefix + suffix;
+			final String base = StorageUtils.getBCCoversPath() + "/" + prefix + suffix;
 			file = new File(base + ".jpg");
 			if (!file.exists()) {
 				File png = new File(base + ".png");
@@ -6125,7 +6122,7 @@ public class CatalogueDBAdapter {
 		String sql = "select " + DatabaseDefinitions.DOM_BOOK_UUID + " as " + DatabaseDefinitions.DOM_BOOK_UUID + " From " + DatabaseDefinitions.TBL_BOOKS.ref();
 		return mDb.rawQuery(sql);
 	}
-	
+
 	public long getBookCount() {
 		String sql = "select Count(*) From " + DatabaseDefinitions.TBL_BOOKS.ref();
 		Cursor c = mDb.rawQuery(sql);
@@ -6136,7 +6133,15 @@ public class CatalogueDBAdapter {
 			c.close();
 		}
 	}
-	
+
+	public long[] getFirstAndLastBookRowId() {
+		String sql = "select Min(" + DOM_ID + "), Max(" + DOM_ID + ") From " + DatabaseDefinitions.TBL_BOOKS.ref();
+		try (Cursor c = mDb.rawQuery(sql)) {
+			c.moveToFirst();
+			return new long[]{c.getLong(0), c.getLong(1)};
+		}
+	}
+
 	/**
 	 * DEBUG ONLY; used when tracking a bug in android 2.1, but kept because
 	 * there are still non-fatal anomalies.

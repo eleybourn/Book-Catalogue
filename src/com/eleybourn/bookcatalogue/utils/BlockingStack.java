@@ -37,7 +37,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class BlockingStack<T> {
 	// Underlying stack object
-	private Stack<T> mStack;
+	private final Stack<T> mStack;
 	// Lock help by pop and by push when an item was added to an empty stack.
 	private final ReentrantLock mPopLock = new ReentrantLock();
 	// Signal for available items
@@ -65,7 +65,16 @@ public class BlockingStack<T> {
 			return mStack.remove(o);
 		}
 	}
-	
+
+	/**
+	 * Remove the passed element, if present.
+	 */
+	public void clear() {
+		synchronized(mStack) {
+			mStack.clear();
+		}
+	}
+
 	/**
 	 * Return a copy of all elements for safe examination. Obviously this
 	 * collection will not reflect reality for very long, but is safe to

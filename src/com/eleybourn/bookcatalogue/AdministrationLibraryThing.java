@@ -150,7 +150,7 @@ public class AdministrationLibraryThing extends BookCatalogueActivity {
 					};
 
 					// Get the fragment to display task progress
-					SimpleTaskQueueProgressFragment.runTaskWithProgress(AdministrationLibraryThing.this, R.string.connecting_to_web_site, task, true, 0);
+					SimpleTaskQueueProgressFragment.runTaskWithProgress(AdministrationLibraryThing.this.getSupportFragmentManager(), R.string.connecting_to_web_site, task, true, 0);
 
 				}
 				return;

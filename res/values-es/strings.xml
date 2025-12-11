@@ -719,6 +719,7 @@ y puede editar el libro utilizando el menú de opciones.
     <string name="import_from_archive">Importar de fichero</string>
 
     <!-- Hint displayed when aCatalogue Backup is done -->
+    <string name="a_and_b">%1$s y %2$s</string>
     <string name="archive_complete_details">Se ha creado un fichero de %3$s llamado %2$s en el directorio \"%1$s\" de su tarjeta SD.
     \n\nDebe copiarlo a otro lugar para proteger los datos en caso de que su dispositivo resulte dañado, se pierda o sea robado.</string>
 
@@ -993,7 +994,7 @@ y puede editar el libro utilizando el menú de opciones.
     <string name="special_thanks_label">Agradecimientos</string>
     
     <!-- Credits in the 'about' dialog -->
-    <string name="translators_blurb">BookCatalogue es fruto del esfuerzo de muchas personas, y no tendría un uso tan extendido sin la generosa aportación de nuestros traductores (voluntarios): Eugenio Davolio, José M. Galdo, Imkal, Gideon van Melle, Emir Sarı, Nick Silin y Robert Wetzlmayr (si nos hemos olvidado de alguien, por favor, díganoslo).</string>
+    <string name="translators_blurb">BookCatalogue es fruto del esfuerzo de muchas personas, y no tendría un uso tan extendido sin la generosa \naportación de nuestros traductores (voluntarios): %1$s (si nos hemos olvidado de alguien, por favor, díganoslo).</string>
 
     <!-- End: Added/Updated in 5.1.0 -->
     <!-- Begin: Added/Updated in 5.1.1 -->

@@ -5,6 +5,7 @@ import java.io.File;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,9 +21,11 @@ import com.eleybourn.bookcatalogue.dialogs.ExportTypeSelectionDialogFragment.OnE
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
+import androidx.documentfile.provider.DocumentFile;
+
 public class ExportAdvancedDialogFragment extends BookCatalogueDialogFragment {
 	private int mDialogId;
-	private File mFile;
+	private DocumentFile mFile;
 
 //	/**
 //	 * Listener interface to receive notifications when dialog is closed by any means.
@@ -41,11 +44,11 @@ public class ExportAdvancedDialogFragment extends BookCatalogueDialogFragment {
 	 *
 	 * @return			Created fragment
 	 */
-	public static ExportAdvancedDialogFragment newInstance(int dialogId, File file) {
+	public static ExportAdvancedDialogFragment newInstance(int dialogId, DocumentFile file) {
 		ExportAdvancedDialogFragment frag = new ExportAdvancedDialogFragment();
         Bundle args = new Bundle();
         args.putInt("dialogId", dialogId);
-        args.putString("fileSpec", file.getAbsolutePath());
+        args.putString("fileSpec", file.getUri().toString());
         frag.setArguments(args);
         return frag;
     }
@@ -103,7 +106,8 @@ public class ExportAdvancedDialogFragment extends BookCatalogueDialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
     	mDialogId = getArguments().getInt("dialogId");
-    	mFile = new File(getArguments().getString("fileSpec"));
+		Uri uri = Uri.parse(getArguments().getString("fileSpec"));
+    	mFile = DocumentFile.fromSingleUri(getContext(), uri);
 
         View v = getActivity().getLayoutInflater().inflate(R.layout.export_advanced_options, null);
 		AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setView(v).setTitle(R.string.advanced_options).create();

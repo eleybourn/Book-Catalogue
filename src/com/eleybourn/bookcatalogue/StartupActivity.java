@@ -20,45 +20,54 @@
 
 package com.eleybourn.bookcatalogue;
 
-import java.lang.ref.WeakReference;
-
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
-import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
+import android.database.sqlite.SQLiteDoneException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
 
 import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueDialogFragment;
+import com.eleybourn.bookcatalogue.dialogs.ExportTypeSelectionDialogFragment.ExportSettings;
+import com.eleybourn.bookcatalogue.dialogs.ExportTypeSelectionDialogFragment.OnExportTypeSelectionDialogResultListener;
+import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment;
+import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment.OnMessageDialogResultListener;
+import com.eleybourn.bookcatalogue.utils.HintManager;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue;
-import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.OnTaskFinishListener;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTask;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTaskContext;
 import com.eleybourn.bookcatalogue.utils.UpgradeMessageManager;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
+import java.io.File;
+import java.lang.ref.WeakReference;
+
 /**
  * Single Activity to be the 'Main' activity for the app. I does app-startup stuff which is initially
  * to start the 'real' main activity.
- * 
+ * <p>
  * Note that calling the desired main activity first resulted in MainMenu's 'singleInstance' property
  * NOT being honoured. So we call MainMenu anyway, but set a flag in the Intent to indicate this is
  * a startup. This approach mostly works, but results in an apparent misordering of the activity 
  * stack, which we can live with for now.
- * 
+ * </p>
  * @author Philip Warner
  */
-public class StartupActivity extends Activity {
-	private static String TAG = "StartupActivity";
+public class StartupActivity
+		extends BookCatalogueActivity
+		implements OnMessageDialogResultListener,
+				   OnExportTypeSelectionDialogResultListener
+{
+	private static final String TAG = "StartupActivity";
 	/** Flag to indicate FTS rebuild is required at startup */
-	private static String PREF_FTS_REBUILD_REQUIRED = TAG + ".FtsRebuildRequired";
-	private static String PREF_AUTHOR_SERIES_FIXUP_REQUIRED = TAG + ".FAuthorSeriesFixupRequired";
+	private static final String PREF_FTS_REBUILD_REQUIRED = TAG + ".FtsRebuildRequired";
+	private static final String PREF_AUTHOR_SERIES_FIXUP_REQUIRED = TAG + ".FAuthorSeriesFixupRequired";
 	
 	private static final String STATE_OPENED = "state_opened";
 	/** Number of times the app has been started */
@@ -90,11 +99,18 @@ public class StartupActivity extends Activity {
 	/** Flag indicating Amazon hint could be shown */
 	private static boolean mShowAmazonHint = false;
 
-	/** Database connection */
-	//CatalogueDBAdapter mDb = null;
+	private static boolean mNeedMoveFiles = false;
+
+	public static boolean isFileMoveRequired() {
+		return mNeedMoveFiles;
+	}
+
+	public static void setFileMoveRequired(boolean required) {
+		mNeedMoveFiles = required;
+	}
 
 	/** Handler to post runnables to UI thread */
-	private Handler mHandler = new Handler();
+	private final Handler mHandler = new Handler();
 	/**UI thread */
 	private Thread mUiThread;
 
@@ -111,8 +127,15 @@ public class StartupActivity extends Activity {
 	public static WeakReference<StartupActivity> mStartupActivity = null;
 
 	@Override
+	protected RequiredPermission[] getRequiredPermissions() {
+		return new RequiredPermission[0];
+	}
+
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		registerBackupExportPickerLauncher(ID.DIALOG_OPEN_IMPORT_TYPE);
 		super.onCreate(savedInstanceState);
+		setTitle("");
 
 		System.out.println("Startup isTaskRoot() = " + isTaskRoot());
 
@@ -120,27 +143,48 @@ public class StartupActivity extends Activity {
 		mUiThread = Thread.currentThread();
 
 		// Create a progress dialog; we may not use it...but we need it to be created in the UI thread.
-		mProgress = ProgressDialog.show(this, getString(R.string.book_catalogue_startup), getString(R.string.starting_up), true, true, new OnCancelListener() {
-			@Override
-			public void onCancel(DialogInterface dialog) {
-				// Cancelling the list cancels the activity.
-				StartupActivity.this.finish();
-			}});			
+		mProgress = ProgressDialog.show(this, getString(R.string.book_catalogue_startup), getString(R.string.starting_up), true, true,
+										dialog -> {
+											// Cancelling the list cancels the activity.
+											StartupActivity.this.finish();
+										});
 
 		mWasReallyStartup = mIsReallyStartup;
 
 		// If it's a real application startup...cleanup old stuff
 		if (mWasReallyStartup) {
-			mStartupActivity = new WeakReference<StartupActivity>(this);
+			mStartupActivity = new WeakReference<>(this);
 
 			updateProgress("Starting");
 
 			SimpleTaskQueue q = getQueue();
 
+			// Get last version installed (may be zero for none).
+			final int lastVersion = UpgradeMessageManager.getLastUpgradeVersion();
+
+			// Determine if the last install was an upgrade or new version
+			final boolean wasUpgrade = lastVersion > 0;
+
+			// Update file structures for old versions
+			if (lastVersion < 200 && wasUpgrade) {
+				mNeedMoveFiles = true;
+			}
+
+			// Are we currently warning the user about missing files? If so, we should re-check: They may have fixed it.
+			boolean currentlyWarning = HintManager.shouldBeShown(R.string.hint_missing_covers);
+			// Do recheck OR if we've upgraded from a prior version
+			if (currentlyWarning || (lastVersion <= 206 && wasUpgrade) ) {
+				BookCataloguePreferences ap = BookCatalogueApp.getAppPreferences();
+				// If we're currently warning the user OR we have not yet checked, make a check.
+				if (currentlyWarning || !ap.hasCheckedForMissingCovers()) {
+					// Check 10 random books for covers; if < 90% present, there may be a problem.
+					q.enqueue(new CheckCoversTask());
+				}
+			}
+
 			// Always enqueue it; it will get a DB and check if required...
 			q.enqueue(new RebuildFtsTask());
-			q.enqueue(new AnalyzeDbTask());				
-
+			q.enqueue(new AnalyzeDbTask());
 			// Remove old logs
 			Logger.clearLog();
 			// Clear the flag
@@ -153,6 +197,10 @@ public class StartupActivity extends Activity {
 		// tasks will cause stage 2 to start.
 		if (mTaskQueue == null)
 			stage2Startup();
+//		getSupportFragmentManager().beginTransaction()
+//					   .replace(R.id., list)
+//					   .addToBackStack(null)
+//					   .commit();
 	}
 
 	/**
@@ -170,7 +218,7 @@ public class StartupActivity extends Activity {
 	/**
 	 * Update the progress dialog, if it has not been dismissed.
 	 * 
-	 * @param message
+	 * @param stringId		Message to display
 	 */
 	public void updateProgress(final int stringId) {
 		updateProgress(getString(stringId));
@@ -178,7 +226,7 @@ public class StartupActivity extends Activity {
 	/**
 	 * Update the progress dialog, if it has not been dismissed.
 	 * 
-	 * @param message
+	 * @param message Message to display
 	 */
 	public void updateProgress(final String message) {
 		// If mProgress is null, it has been dismissed. Don't update.
@@ -202,11 +250,7 @@ public class StartupActivity extends Activity {
 			}
 		} else {
 			// If we are NOT in the UI thread, queue it to the UI thread.
-			mHandler.post(new Runnable() {
-				@Override
-				public void run() {
-					updateProgress(message);
-				}});
+			mHandler.post(() -> updateProgress(message));
 		}
 	}
 
@@ -227,17 +271,13 @@ public class StartupActivity extends Activity {
 	/**
 	 * Get (or create) the task queue.
 	 * 
-	 * @return
+	 * @return Return (possibly creating) the task queue
 	 */
 	private SimpleTaskQueue getQueue() {
 		if (mTaskQueue == null) {
 			mTaskQueue = new SimpleTaskQueue("startup-tasks", 1);	
 			// Listen for task completions
-			mTaskQueue.setTaskFinishListener(new OnTaskFinishListener() {
-				@Override
-				public void onTaskFinish(SimpleTask task, Exception e) {
-					taskCompleted(task);
-				}});
+			mTaskQueue.setTaskFinishListener((task, e) -> taskCompleted(task));
 		}
 		return mTaskQueue;
 	}
@@ -303,30 +343,29 @@ public class StartupActivity extends Activity {
 		if ( ( startCount % AMAZON_PROMPT_WAIT) == 0) {
 			mShowAmazonHint = true;
 		}
-
 		mExportRequired = false;
 
 		if (opened == 0) {
 
 			AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(R.string.backup_request).create();
+			alertDialog.setCanceledOnTouchOutside(false);
 			alertDialog.setTitle(R.string.backup_title);
 			alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-			alertDialog.setButton("Cancel", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					dialog.dismiss();
-				}
-			}); 
-			alertDialog.setButton2("OK", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					mExportRequired = true;
-					dialog.dismiss();
-				}
-			}); 
-			alertDialog.setOnDismissListener(new OnDismissListener() {
-				@Override
-				public void onDismiss(DialogInterface dialog) {
+			alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.cancel),
+								  (dialog, which) -> dialog.dismiss());
+			alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.ok),
+								  (dialog, which) -> {
+									  mExportRequired = true;
+									  dialog.dismiss();
+								  });
+			alertDialog.setOnCancelListener(DialogInterface::dismiss);
+			alertDialog.setOnDismissListener(dialog -> {
+				if (mExportRequired) {
+					launchBackupExport();
+				} else {
 					stage4Startup();
-				}});
+				}
+			});
 			alertDialog.show();
 		} else {
 			stage4Startup();
@@ -347,13 +386,6 @@ public class StartupActivity extends Activity {
 			doMainMenu();
 		}
 
-		if (mExportRequired) {
-			AdministrationFunctions.backupCatalogue(this);
-//			Intent i = new Intent(this, AdministrationFunctions.class);
-//			i.putExtra(AdministrationFunctions.DOAUTO, "export");
-//			startActivity(i);			
-		}
-
 		// We are done
 		finish();		
 	}
@@ -366,13 +398,14 @@ public class StartupActivity extends Activity {
 	 */
 	public void upgradePopup(String message) {
 		AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(Html.fromHtml(message)).create();
+		alertDialog.setCanceledOnTouchOutside(false);
 		alertDialog.setTitle(R.string.upgrade_title);
 		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-		alertDialog.setButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				UpgradeMessageManager.setMessageAcknowledged();
-				stage3Startup();
-			}
+		alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.ok), (dialog, which) -> alertDialog.dismiss());
+		alertDialog.setOnCancelListener(dialog -> alertDialog.dismiss());
+		alertDialog.setOnDismissListener(dialog -> {
+			UpgradeMessageManager.setMessageAcknowledged();
+			stage3Startup();
 		});
 		alertDialog.show();
 		mUpgradeMessageShown = true;
@@ -384,7 +417,7 @@ public class StartupActivity extends Activity {
 		if (mTaskQueue != null)
 			mTaskQueue.finish();
 	}
-	
+
 	/**
 	 * Task to rebuild FTS in background. Can take several seconds, so not done in onUpgrade().
 	 * 
@@ -423,9 +456,9 @@ public class StartupActivity extends Activity {
 			if (BooklistPreferencesActivity.isThumbnailCacheEnabled()) {
 				// Analyze the covers DB
 				Utils utils = taskContext.getUtils();
-				utils.analyzeCovers();								
+				utils.analyzeCovers();
 			}
-			
+
 			if (prefs.getBoolean(PREF_AUTHOR_SERIES_FIXUP_REQUIRED, false)) {
 				db.fixupAuthorsAndSeries();
 				prefs.setBoolean(PREF_AUTHOR_SERIES_FIXUP_REQUIRED, false);
@@ -436,7 +469,59 @@ public class StartupActivity extends Activity {
 		public void onFinish(Exception e) {}
 
 	}
-	
+
+	public class CheckCoversTask implements SimpleTask {
+		BookCataloguePreferences mPrefs = BookCatalogueApp.getAppPreferences();
+		boolean mNeedsWarning = false;
+
+		@Override
+		public void run(SimpleTaskContext taskContext) {
+			CatalogueDBAdapter db = taskContext.getDb();
+
+			updateProgress(getString(R.string.loading));
+
+			// Get the first and last ID's we randomly select a few books and look for covers.
+			final long[] ids = db.getFirstAndLastBookRowId();
+			final long range = ids[1] - ids[0];
+			int cnt = 0;
+			int found = 0;
+			// Loop and look for random covers; it's possible that if a lot of books have been deleted then
+			// the random ID might rarely find a real book, so we look 1000 times (until we have actually got
+			// 20 real books).
+			for(int i = 0; (i < 1000 && cnt < 20); i++) {
+				// Random ID and get UUID
+				long id = (long) (Math.random() * range + ids[0]);
+				try {
+					String uuid = db.getBookUuid(id);
+					// If there is a book with a valid UUID, then check
+					if (uuid != null && !("".equals(uuid))) {
+						cnt++;
+						File f = CatalogueDBAdapter.fetchThumbnailByUuid(uuid);
+						if (f.exists()) {
+							found++;
+						}
+					}
+				} catch (SQLiteDoneException ignore) {
+					// Ignore missing book
+				}
+			}
+			// If we found < 90%, warn the user.
+			if (cnt > 10 && found < (cnt * 0.9)) {
+				mNeedsWarning = true;
+			}
+		}
+
+		@Override
+		public void onFinish(Exception e) {
+			if (e == null){
+				// Remember we have done the check once.
+				mPrefs.setCheckedForMissingCovers(true);
+				// Display the warning if necessary
+				HintManager.setShouldBeShown(R.string.hint_missing_covers, mNeedsWarning);
+			}
+		}
+	}
+
 	public static boolean hasBeenCalled() {
 		return mHasBeenCalled;
 	}
@@ -445,4 +530,30 @@ public class StartupActivity extends Activity {
 		return mShowAmazonHint;
 	}
 
+	/**
+	 * Pass on the event to the relevant handler.
+	 * @param dialogId	As passed to us
+	 * @param dialog	As passed to us
+	 * @param settings	As passed to us
+	 */
+	@Override
+	public void onExportTypeSelectionDialogResult(int dialogId, BookCatalogueDialogFragment dialog, ExportSettings settings) {
+		mBackupExportManager.onExportTypeSelectionDialogResult(dialogId, dialog, settings);
+	}
+
+	/**
+	 * Pass on the event to the relevant handler.
+	 * @param dialogId	As passed to us
+	 * @param dialog	As passed to us
+	 * @param button	As passed to us
+	 */
+	@Override
+	public void onMessageDialogResult(int dialogId, MessageDialogFragment dialog, int button) {
+		// Do nothing. We just need this so we can display message dialogs.
+		if (dialogId == ID.MSG_ID_BACKUP_EXPORT_COMPLETE) {
+			stage4Startup();
+		} else {
+			super.onMessageDialogResult(dialogId, dialog, button);
+		}
+	}
 }

@@ -191,7 +191,8 @@ public class Utils {
 		return mDateFullHMSSqlSdf.format(d);
 	}
 	public static String toPrettyDate(Date d) {
-		return mDateDispSdf.format(d);		
+		mDateDispSdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+		return mDateDispSdf.format(d);
 	}
 	public static String toPrettyDateTime(Date d) {
 		return DateFormat.getDateTimeInstance().format(d);		
@@ -206,12 +207,30 @@ public class Utils {
 	public static Date parseDate(String s) {
 		Date d;
 		// First try to parse using strict rules
-		d = parseDate(s, false);
+		d = parseDate(s, false, false);
 		// If we got a date, exit
 		if (d != null)
 			return d;
 		// OK, be lenient
-		return parseDate(s, true);
+		return parseDate(s, true, false);
+	}
+
+	/**
+	 * Attempt to parse a publication date string based on a range of possible formats.
+	 *
+	 * @param s			String to parse
+	 * @param forceUtc 	True if forcing UTC format
+	 * @return			Resulting date if parsed, otherwise null
+	 */
+	public static Date parseDate(String s, boolean forceUtc) {
+		Date d;
+		// First try to parse using strict rules
+		d = parseDate(s, false, forceUtc);
+		// If we got a date, exit
+		if (d != null)
+			return d;
+		// OK, be lenient
+		return parseDate(s, true, forceUtc);
 	}
 
 	/**
@@ -220,14 +239,17 @@ public class Utils {
 	 * 
 	 * @param s				String to parse
 	 * @param lenient		True if parsing should be lenient
-	 * 
+	 * @param forceUtc 		True if forcing UTC format
 	 * @return				Resulting date if parsed, otherwise null
 	 */
-	private static Date parseDate(String s, boolean lenient) {
+	private static Date parseDate(String s, boolean lenient, boolean forceUtc) {
 		Date d;
 		for ( SimpleDateFormat sdf : mParseDateFormats ) {
 			try {
 				sdf.setLenient(lenient);
+				if(forceUtc) {
+					sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+				}
 				d = sdf.parse(s);
 				return d;
 			} catch (Exception e) {

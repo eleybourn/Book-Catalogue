@@ -824,17 +824,18 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 
 	/**
 	 * Utility routine to add 'standard' menu options based on row type.
-	 * 
-	 * @param rowView		Row view pointing to current row for this context menu
-	 * @param menu			Base menu item
-	 * @param v				View that was clicked
+	 *  @param v				View that was clicked
 	 * @param menuInfo		menuInfo object from Adapter (not really needed since we have holders and cursor)
-	 */
-	public void buildContextMenu(BooklistRowView rowView, ArrayList<SimpleDialogItem> menu) {
+     * @param mDb
+     * @param rowView        Row view pointing to current row for this context menu
+     * @param menu            Base menu item
+     */
+	public void buildContextMenu(CatalogueDBAdapter mDb, BooklistRowView rowView, ArrayList<SimpleDialogItem> menu) {
 		try {
 			boolean hasSeries = rowView.hasSeriesId() ? rowView.getSeriesId() > 0 : false;
 			boolean hasAuthor = rowView.hasAuthorId() ? rowView.getAuthorId() > 0 : (rowView.getKind() == RowKinds.ROW_KIND_BOOK) ? true : false;
 			boolean isRead    = rowView.isRead();
+			boolean onLoan    = mDb.fetchLoanByBook(rowView.getBookId()) != null ? true : false;
 
 			switch(rowView.getKind()) {
 			case ROW_KIND_BOOK:
@@ -842,7 +843,12 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 				addMenuItem(menu, R.id.MENU_DELETE_BOOK, R.string.menu_delete, android.R.drawable.ic_menu_delete);
 				addMenuItem(menu, R.id.MENU_EDIT_BOOK, R.string.edit_book, android.R.drawable.ic_menu_edit);
 				addMenuItem(menu, R.id.MENU_EDIT_BOOK_NOTES, R.string.edit_book_notes, R.drawable.ic_menu_compose_holo_dark);
-				addMenuItem(menu, R.id.MENU_EDIT_BOOK_FRIENDS, R.string.edit_book_friends, R.drawable.ic_menu_cc_holo_dark);
+				//Shows different menu item depending on loan status of book but both situations still go to the same view.
+				if(!onLoan) {
+					addMenuItem(menu, R.id.MENU_EDIT_BOOK_FRIENDS, R.string.edit_book_friends, R.drawable.ic_menu_cc_holo_dark);
+				} else {
+					addMenuItem(menu, R.id.MENU_EDIT_BOOK_FRIENDS, R.string.edit_book_friends_return, R.drawable.ic_menu_cc_holo_dark);
+				}
 				if(!isRead) {
 					addMenuItem(menu, R.id.MENU_MARK_AS_READ, R.string.menu_mark_as_read, R.drawable.btn_check_clipped);
 				} else {

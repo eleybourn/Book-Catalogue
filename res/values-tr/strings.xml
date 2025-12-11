@@ -20,10 +20,6 @@
     <string name="menu_sort_by_author_expanded">Hepsini göster</string>
     <string name="menu_sort_by">Sırala</string>
     <string name="menu_sort_by_author_collapsed">Hepsini gizle</string>
-    <string name="sort_title">Kitap kataloğu: Ada göre</string>
-    <string name="edit_title">Kitap kataloğu: Kitap düzenle</string>
-    <string name="menu_insert_isbn">ISBN ile ekle</string>
-    <string name="menu_insert_barcode">Barkod ile ekle</string>
     <string name="search">Ara</string>
     <string name="cancel">Vazgeç</string>
     <string name="confirm_save">Kitabı kaydet</string>    
@@ -39,33 +35,25 @@
     <string name="title_isbn_search">Kitap kataloğu: ISBN arama</string>
     <string name="title_manage_bs">Kitap kataloğu: Kitaplıkları yönet</string>
     <string name="title_edit_bs">Kitap kataloğu: Kitaplığı düzenle</string>
-    <string name="book_exists">Eklemeye çalıştığınız kitap zaten var.</string>
     <string name="search_label">Kitap ara</string>
     <string name="search_hint">Yazar veya kitap adı ara</string>
     <string name="book_not_found">Aranan kitap bulunamadı. Bazen doğru barkodu kitap kapağının içinde bulabilirsiniz. Bulamazsanız, bilgileri elle giriniz.</string>
     <string name="series_num">#</string>
-    <string name="unable_to_connect_google">Google Kitaplar\'a bağlanılamıyor</string>
-    <string name="export_data">Kitapları dışa aktar</string>
-    <string name="export_complete">Verilerin SD karta aktarımı bitti.</string>
     <string name="import_data">Kitapları içe aktar</string>
     <string name="import_alert">Uyarı: Bilgileri içe aktarırken eğer içe aktardığınız dosyaların ID numarası var olan bir kitabın ID\'si ile aynı ise, varolan kitap verilerinin üstüne yazılmasına neden olabilir. Eğer dışa aktarılmış bir dosyada bir giriyi değiştirdiyseniz bu sorun değildir; ancak yeni bir kitap girişi oluşturuyorsanız ID bölümünün boş olduğundan emin olun.</string>
-    <string name="export_failed">Hata: SD karta veri aktarımı başarısız oldu.</string>
     <string name="import_failed_is_location_correct">Hata: SD karttan içe aktarma başarısız oldu. Dosyalar yerli yerinde mi acaba?</string>
     <string name="search_title">Kitap kataloğu: Arama sonuçları</string>
     <string name="results_found">Sonuç bulundu</string>
     <string name="administration_label">Yönetim işlevleri</string>
-    <string name="administration_title">Kitap kataloğu: Yönetim</string>
     <string name="menu_administration">Ayarlar</string>
     <string name="install_scan">ISBN barkodu ile kitap taramak için Zxing barkod tarayıcısı uygulamasını yüklemelisiniz. Yüklemek için Tamam\'a, atlamak için Vazgeç\'e basın.</string>
     <string name="install_scan_title">Barkod Tarayıcıyı yükleyin</string>
     <string name="version_number">Sürüm numarası</string>
     <string name="donate">Eğer uygulamanın geliştirilmesini desteklemek isterseniz aşağıdaki Amazon Wishlist veya Paypal düğmelerini kullanarak bağışta bulunabilirsiniz. Kişi Avustralya\'da olunca &quot;ücretli&quot; bir sürüm yayınlayamıyor haliyle. :-) </string>
-    <string name="unable_to_connect_amazon">Amazon\'a bağlanılamıyor</string>
     <string name="upgrade_title">Son güncellemenizden beri</string>
     <string name="edit_book">Kitap düzenle</string>
     <string name="edit_book_notes">Yorumlarınız</string>
     <string name="edit_book_friends">Kitabı ödünç ver</string>
-    <string name="unknown_error">Bilinmeyen bir hata oluştu</string>
     <string name="notes">Notlar</string>
     <string name="loaned_to">Kitabın ödünç verildiği kişi:</string>
     <string name="nobody">Hiç kimse</string>
@@ -82,8 +70,6 @@
     <string name="contact2">philip.warner@rhyme.com.au</string>
     <string name="donate_label">Bağış yap</string>
     <string name="about_label">Uygulama hakkında</string>
-    <string name="administration_functions_label">İşlevler</string>
-    <string name="sortby_popup_title">Sırala</string>
     <string name="sortby_author">Yazara göre sırala</string>
     <string name="sortby_title">Ada göre sırala</string>
     <string name="sortby_series">Diziye göre sırala</string>
@@ -91,8 +77,6 @@
     <string name="sortby_unread">Okunmamışlara göre sırala</string>
     <string name="sortby_genre">Türe göre sırala</string>
     <string name="list_price">Fiyatı</string>
-    <string name="date_started_reading">Okumaya başlanan tarih</string>
-    <string name="date_finished_reading">Okumanın bittiği tarih</string>
     <string name="update_fields">Alanları kendiliğinden doldur</string>
     <string name="select_fields_to_update">Güncellenecek alanları seçin</string>		
     <string name="select_fields_to_update_help">Seçilen alanlar İnternet\'ten güncellenecektir. Seçilmeyen alanlar değiştirilmeden kalacaktır.</string>
@@ -100,13 +84,10 @@
     <string name="yes">Evet</string>
     <string name="no">Hayır</string>
     <string name="ok">Tamam</string>
-    <string name="download_thumbs">Küçük resimler arka planda indiriliyor</string>
     <string name="search_fail">Kitap araması başarısız oldu. Ağ ayarlarınızı denetleyiniz.</string>
     <string name="search_exception">%1$s sırasında arama başarısız oldu: %2$s</string>
-    <string name="hello">Kitap kataloğu!</string>
     <string name="menu_delete_thumb">Küçük resmi sil</string>
     <string name="help">Yardım</string>
-    <string name="filler_help_text">Tümüyle çevrimiçi yardım yakında geliyor.</string>
     <string name="menu_manage_fields">Alan görünürlüğünü yönet</string>
     <string name="manage_fields_help">Seçili alanlar kitap ekle/düzenle ekranlarında görünecektir. Seçilmeyen alanlar gizli kalacaktır.</string>
     <string name="edit_book_anthology">Seçmeler</string>
@@ -126,21 +107,16 @@
     <string name="menu_rotate_thumb_cw">Saat yönünde döndür</string>
     <string name="menu_rotate_thumb_ccw">Saat yönünün tersine döndür</string>
     <string name="menu_rotate_thumb_180">180 derece döndür</string>
-    <string name="menu_zoom_thumb">Resmi yakınlaştır</string>
-    <string name="help_title_nutshell">Özet olarak</string>
     <string name="signed">Bu kitap imzalı mı?</string>
     <string name="read_start">Okumaya başlanan tarih</string>
     <string name="read_end">Okumanın bittiği tarih</string>
-    <string name="duplicate_title">Kitabı kopyala</string>
     <string name="duplicate_book_title">Kitabı kopyala</string>
     <string name="duplicate_book_message">Eklemeye çalıştığınız kitap veritabanında zaten var, tekrar eklemek istediğinizden emin misiniz?</string>
     <string name="menu_add_thumb_gallery">Galeriden&#8230;</string>
     <string name="backup_request">Veritabanınızı SD karta yedeklemek ister misiniz?</string>
     <string name="backup_title">Yedekle</string>
-    <string name="searching_amazon_books">Amazon aranıyor</string>
     <string name="searching_google_books">Google Kitaplar aranıyor</string>
     <string name="searching_library_thing">LibraryThing aranıyor</string>
-    <string name="bookshelf_title">Bu kitabı kitaplıklarda ara</string>
     <string name="format">Biçim</string>
     <string name="format1">Ciltsiz</string>
     <string name="format2">Ciltli</string>
@@ -150,13 +126,10 @@
     <!-- NOTE: Adding a new format will involve changing code that references this list -->
     <string name="description">Özet</string>
     <string name="genre">Tür</string>
-    <string name="auto_update">Aşağıdaki alanları şimdi kendiliğinden güncellemek ister misiniz: \n* Tür \n* Tanım \n* Ufak resimler\n\n Vazgeç\'i seçerseniz bunu her zaman Yönetim bölümünden yeniden çalıştırabilirsiniz.</string>
     <string name="notset">Ayarlı değil</string>
     <string name="menu_search">Kitap ara</string>
-    <string name="menu_insert_name">Ad ile ekle</string>
     <string name="isbn_name_search_help">Kitapları ISBN ile eklemek kitap adı veya yazar adı ile eklemekten çok daha doğru sonuç verir ve genelde yeğlenir. Unutmayın ki doğru barkodu ön kapağın iç kısmında da bulabilirsiniz\n\n</string>
     <string name="help_click_here">Çevrimiçi yardım sayfalarına erişmek için lütfen dokunun</string>
-    <string name="backup_database">Veritabanını yedekle</string>
     <string name="vldt_unable_to_get_value">\'%s\' için değer alınamıyor</string>
     <string name="vldt_integer_expected">\'%s\' için bir tamsayı değeri gerekli</string>
     <string name="vldt_real_expected">\'%s\' için bir gerçek sayı gerekli</string>
@@ -165,7 +138,6 @@
     <string name="vldt_nonblank_required">\'%s\' için boş olmayan bir değer gerekli</string>
     <string name="vldt_blank_required">\'%s\' için boş değer gerekli</string>
     <string name="vldt_failed">\'%s\' için doğrulama başarısız</string>
-    <string name="vldt_series_num_must_be_blank">Seri numarası boş olmalı (%1$s bulundu) veya seri numarası belirtilmeli</string>
     <string name="vldt_read_start_after_end">Okunmaya başlama süresi bitiş süresinden sonra</string>
     <string name="backup_success">Yedekleme başarılı!</string>
     <string name="backup_failed">Yedekleme başarısız!</string>
@@ -179,7 +151,6 @@
     <string name="noseries">Bu kitap için hiçbir seri eklenmemiş.  Ekranın üst kısmındaki metin alanı ve düğmeyi kullanarak seri ekleyin.</string>
 
     <item name="TAG_POSITION" type="id"></item>
-    <item name="TAG_ORIGINAL_VALUE" type="id"></item>
 
     <string name="cover_not_set">Kapak yok</string>
     <string name="cover_corrupt">Kapak hasarlı</string>
@@ -193,7 +164,6 @@
     <string name="series_already_in_list">Seri zaten ekli</string>
     <string name="series_is_blank">Seri alanı boş</string>
     <string name="export_failed_sdcard">Dışa aktarma başarısız - SD karta yazılamadı</string>
-    <string name="thumbnail_failed_sdcard">Ufak resim indirmesi başarısız - SD karta yazılamadı</string>
     <string name="skip_title">Atla - %s</string>
     <string name="num_books_searched">%s kitap arandı</string>
     <string name="cancelled_info">İptal edildi - %s</string>
@@ -203,7 +173,6 @@
     <string name="edit_author_details">Yazar ayrıntılarını düzenle</string>
     <string name="immediate_global_changes">Not: Tüm kaydedilmiş değişiklikler anında ve genel olarak uygulanır</string>
     <string name="menu_replace_thumb">Küçük resmi değiştir&#8230;</string>
-    <string name="menu_thumb_alt_editions">Diğer sürümlerden&#8230;</string>
     <string name="author_required">En azından bir yazar belirtilmeli</string>
     <string name="title_required">Boş olmayan bir kitap adı kesinlikle belirtilmeli</string>
     <string name="menu_delete_series">Serileri sil&#8230;</string>
@@ -212,7 +181,6 @@
     <string name="delete_series">Serileri sil</string>
     <string name="really_delete_series">\'%s\' serisi gerçekten silinsin mi?\n\nKitabın kendisi silinmeyecektir.\n\nSeriyi düzenleyip seri adını başka bir serininkiyle değiştirip bu veriyi korumayı düşünün.</string>
     <string name="edit_series">Seri ayrıntılarını düzenle</string>
-    <string name="edit_author">Yazar ayrıntılarını düzenle</string>
     <string name="select_cover">Kapak seç</string>
     <string name="no_isbn_no_editions">ISBN\'si olmayan bir kitabın diğer sürümlerine ulaşılamaz</string>
     <string name="unsaved_edits">Kaydedilmemiş değişiklikleriniz var. Sürdürmek istediğinizden emin misiniz?</string>
@@ -224,7 +192,6 @@
     <string name="unable_to_find_book">Belirtilen kitap bulunamıyor</string>
     <string name="list_and">and</string>
     <string name="really_delete_book">Bu işlem bu kitabı tümüyle silecektir: \'%1$s\' - %2$s. Sürdürmek istediğinizden emin misiniz?</string>
-    <string name="editions_require_isbn">Diğer sürümlere ulaşmak bir ISBN gerektirir</string>
     <string name="no_editions">Başka sürüm bulunamadı</string>
     <string name="finding_editions">Sürümler bulunuyor&#8230;</string>
     <string name="click_on_thumb">Daha büyük görüntülemek için küçük resme dokunun</string>
@@ -256,7 +223,6 @@
     <string name="send_info">Bilgi gönder</string>
     <string name="cleanup_files_text">Temizlenebilir dosyalar şu anda SD kartta %s kullanmaktadır. Her güncellemenizde, her veritabanı yedeklemenizde veya her uygulamanın çökmesinde günlük dosyaları ve diğer veriler SD kartta saklanır. Bu bilgileri temizlemek için aşağıdaki düğmeye dokunun. Eğer çökmeler veya başka sorunlar yaşıyorsanız öncelikle \'Bilgi gönder\' düğmesini kullanmayı deneyin.</string>
     <string name="cleanup_files">Dosyaları temizle</string>
-    <string name="no_debug_info">Hata ayıklama bilgisi mevcut değil</string>
     <string name="megabytes">%.2f MS</string>
     <string name="kilobytes">%.2f kilobit</string>
     <string name="bytes">%.0f bit</string>
@@ -274,20 +240,15 @@
     <string name="menu_share_this">Paylaş</string>
     <string name="email_export">Dışarı aktarılan veriyi e-posta ile göndermemizi ister misiniz?</string>
     <string name="menu_crop_thumb">Küçük resmi kırp</string>
-    <string name="test_goodreads">Goodreads\'i test et</string>
     <string name="task_errors">Görev hataları</string>
     <string name="retry">Yeniden dene</string>
-    <string name="optionsElipsis">Seçenekler&#8230;</string>
-    <string name="edit_bookElipsis">Kitabı düzenle&#8230;</string>
     <string name="retry_task">Yinele</string>
-    <string name="visit_goodreads">GoodReads\'i ziyaret et&#8230;</string>
     <string name="delete_event">Olayı sil</string>
     <string name="delete_task">Görevi sil</string>
 
     <item name="TAG_EVENT" type="id"></item>
     <item name="TAG_HOLDER" type="id"></item>
     <item name="TAG_TASK" type="id"></item>
-    <item name="TAG_TASK_ID" type="id"></item>
     <item name="TAG_BOOK_EVENT_HOLDER" type="id"></item>
     <item name="TAG_TASK_HOLDER" type="id"></item>
     <item name="TAG_PROPERTY" type="id"></item>
@@ -299,7 +260,6 @@
     <string name="admin_and_prefs">Yönetim ve Seçenekler</string>
     <string name="edit_book_send_to_gr">Goodreads\'e gönder</string>
     <string name="goodreads">goodreads</string>
-    <string name="goodreads_label">Goodreads</string>
     <string name="goodreads_auth_blurb_part1">Goodreads, ağ sayfasında belirtildiği üzere ereği \"kişilerin sevdiği kitapları bulmasına ve paylaşmasına yardımcı olmak\" olan bir servistir.
  										Çok geniş bir kitap ve yorum veritabanına iye olan Goodreads\'te kayıtlı bir  											    		    
  										kullanıcı iseniz BookCatalogue Goodreads\'ten kitaplarınızı, raflarınızı ve yorumlarınızı
@@ -320,16 +280,12 @@
     <string name="background_tasks">Ardalan görevleri</string>
     <string name="cleanup_old_tasks">Eski görevleri temizle</string>
     <string name="cleanup_old_events">Eski olayları temizle</string>
-    <string name="show_more">Daha fazla göster</string>
     <string name="text_and_or_isbn">Metin ve/veya ISBN</string>
     <string name="search_criteria">Arama kriteri</string>
     <string name="add_manually">El ile ekle</string>
-    <string name="scan_barcode">Barkod/ISBN tara</string>
-    <string name="enter_barcode">Barcode/ISBN gir</string>
     <string name="search_internet">Genelağ\'da ara</string>
     <string name="show_results">Sonuçları göster</string>
     <string name="rebuild_fts">FTS\'yi yeniden yapıla (aşırı deneysel)</string>
-    <string name="search_in">Burada ara:</string>
     <string name="send_books_to_goodreads">Kitapları GoodReads\'e gönder</string>
     <string name="legacy_task">Eski görev</string>
     <string name="occurred_at">%1$s içinde oluştu</string>
@@ -339,7 +295,6 @@
     <string name="no_matching_book_found">Eşleşen kitap bulunamadı</string>
     <string name="no_isbn_stored_for_book">Bu kitap için bir ISBN depolanmamış</string>
     <string name="select_an_action">Bir eylem seçin</string>
-    <string name="get_image_from">Buradan bir görsel al: %1$s</string>
     <string name="goodreads_auth_check">Goodreads yetkilendirme denetimi</string>
     <string name="goodreads_auth_failed">Goodreads yetkilendirmesi başarısız</string>
     <string name="goodreads_auth_successful">Goodreads yetkilendirmesi başarılı</string>
@@ -367,7 +322,6 @@
     <string name="crash_dialog_text">Sanırız BookCatalogue çöktü. Eğer bu çökme ile ilgili olabileceğini düşündüğünüz bir şeyler varsa lütfen "Tamam"a basarak bu çökme hakkında bir e-posta gönderin. Göndermeden önce e-postayı göreceksiniz.</string>
     <string name="crash_dialog_comment_prompt">Yorumlarınız (isteğe bağlı):</string>
     <string name="crash_dialog_ok_toast">Sağ olun!</string>
-    <string name="browse_books">Tüm kitaplara bak</string>
     <string name="no_series">(seri yok)</string>
     <string name="booklist_read">Okunmuş</string>
     <string name="booklist_unread">Okunmamış</string>
@@ -376,14 +330,9 @@
     <string name="no_publisher">(yayımcı yok)</string>
     <string name="no_author">(yazar yok)</string>
     <string name="no_date">(günay yok)</string>
-    <string name="book_lists">Kitap dizelgeleri</string>
-    <string name="show_all_authors">Kitapları yazarların altında göster</string>
-    <string name="show_all_series">Kitapları tüm serilerde göster</string>
     <string name="show_thumbnails">Ufak resimleri göster</string>
     <string name="prefer_large_thumbnails">Büyük resimleri yeğle</string>
-    <string name="display_first_then_last_names">Öncelikle adları görüntüle</string>
     <string name="sort_author_series">Önce yazar sonra seri</string>
-    <string name="sort_first_author_series">Önce yazar sonra seri (Yalnızca ilk yazar)</string>
     <string name="sort_series">Seriler</string>
     <string name="sort_title_first_letter">İlk harf başlık</string>
     <string name="sort_genre">Tür adı</string>
@@ -393,7 +342,6 @@
     <string name="sort_added_date">Eklenen günay</string>
     <string name="sort_author_year">Önce yazar sonra yıl</string>
     <string name="empty_with_brackets">(boş)</string>
-    <string name="navigator">Yerbulucu</string>
 
     <item name="MENU_DELETE_BOOK" type="id"/>
     <item name="MENU_EDIT_BOOK" type="id"/>
@@ -414,8 +362,6 @@
     <string name="bookshelves">Kitap rafları</string>
     <string name="shelves">Raflar</string>
     <string name="location">Konum</string>
-    <string name="management">Yönetim</string>
-    <string name="credentials">Kimlik</string>
     <string name="data_import_export">Veri içe/dışa aktarma</string>
     <string name="unrecognized_task">Tanımlanamayan görev</string>
     <string name="rebuilding_search_index">Arama dizini yeniden oluşturuluyor&#8230;</string>
@@ -434,8 +380,7 @@
     <string name="hint">İpucu</string>
     <string name="reset_hints">İpuçlarını sıfırla</string>
     <string name="do_not_show_again">Bir daha gösterme</string>
-    <string name="other_settings_ellipsis">Diğer ayarlar&#8230;</string>
-    <string name="hint_booklist_styles_editor">Bu ekranı öntanımlı biçemler seçkesinde görüntülenecek biçemler dizelgesini düzenlemek için kullanabilirsiniz. 
+    <string name="hint_booklist_styles_editor">Bu ekranı öntanımlı biçemler seçkesinde görüntülenecek biçemler dizelgesini düzenlemek için kullanabilirsiniz.
     										\n\nYeşil onay simgesi biçemin listede görüntüleneceğini, kırmızı artı ise görüntülenmeyeceğini belirtir.
     										Yeşil onay simgesine dokunmak onu kırmızı artıya dönüştürür, tersi de onay simgesi için geçerlidir.
     										\n\nEğer onay simgeli bir biçem yoksa tüm biçemler gösterilir.
@@ -462,7 +407,6 @@
     <string name="edit_style_colon_name">Biçemi düzenle: %1$s</string>
     <string name="add_style">Biçem ekle</string>
     <string name="clone_style_colon_name">Biçemi çoğalt: %1$s</string>
-    <string name="non_blank_arg_required">\'%1$s\' için boş olmayan bir değer belirtilmelidir</string>
     <string name="select_read_only">Yalnızca okunan kitapları seç</string>
     <string name="select_unread_only">Yalnızca okunmayan kitapları seç</string>
     <string name="extra_filters">Kitap süzgeçleri</string>
@@ -487,8 +431,6 @@
     <string name="thing_must_not_be_blank">%1$s boş olamaz</string>
     <string name="edit">Düzenle</string>
     <string name="groupings">Öbeklemeler</string>
-    <string name="will_be_shown">Gösterilecek</string>
-    <string name="will_not_be_shown">Gösterilmeyecek</string>
     <string name="preferences">Yeğlenenler</string>
     <string name="unexpected_error">Beklenmeyen bir hata oluştu, lütfen olayla ilgili ayrıntıları ana seçkedeki \'Yardım\' seçeneğinden bize gönderin</string>
     <string name="delete_style">Biçemi sil</string>
@@ -548,7 +490,6 @@
     <string name="loaned">Ödünç verilen</string>
     <string name="publication_year">Yayım yılı</string>
     <string name="publication_month">Yayım ayı</string>
-    <string name="publication_day">Yayım günü</string>
     <string name="added_year">Eklenen yıl</string>
     <string name="added_month">Eklenen ay</string>
     <string name="added_day">Eklenen gün</string>
@@ -556,8 +497,6 @@
     <string name="in">İçinde</string>
     <string name="size">Boyut</string>
     <string name="updated">Güncellenmiş</string>
-    <string name="no_export_files_found">Herhangi bir dışa aktarma dosyası bulunamadı</string>
-    <string name="more_than_one_export_file_blah">Birden fazla dışa aktarma dosyası bulundu; lütfen içe aktarmak üzere aşağıdaki dışa aktarma dosyalarından birini seçin</string>
     <string name="problem_starting_import_arg">İçe aktarmaya başlarken bir hata oluştu: %1$s</string>
     <string name="hint_booklist_style_menu">Bu seçke size dizelge biçemini seçmenize olanak tanır. 
     								\n\nEk olarak dizelgenin sonundaki \'Kişiselleştir\' düğmesini kullanarak bu seçkeyi kişiselleştirebilir ve hatta kendi dizelge biçemlerinizi oluşturabilirsiniz.</string>
@@ -578,7 +517,6 @@
     <string name="available">Uygun</string>
     <string name="summary_details_in_header">Başlık özet ayrıntıları</string>
     <string name="hide_summary_details">Özet ayrıntılarını gizle</string>
-    <string name="show_summary_details">Özet ayrıntılarını göster</string>
     <string name="x_is_not_a_valid_isbn">%1$s geçerli birISBN değil</string>
     <string name="beep_if_scanned_isbn_invalid">Taranan ISBN geçerli değil ise biple</string>
     <string name="no_image_found">Resim bulunamadı</string>
@@ -588,8 +526,6 @@
     <string name="enter_isbn">ISBN gir</string>
     <string name="allow_asin">ASIN\'e izin ver</string>
     <string name="x_is_not_a_valid_isbn_or_asin">%1$s geçerli bir ISBN veya ASIN değil</string>
-    <string name="confirm_exit">Çıkışı onayla</string>
-    <string name="you_may_have_unsaved_changes">Saklanmamış değişiklikleriniz olabilir. Değişiklikleri saklamadan çıkmak istediğinizden emin misiniz?</string>
     <string name="read_year">Okuma yılı</string>
     <string name="read_month">Okuma ayı</string>
     <string name="read_day">Okuma günü</string>
@@ -604,20 +540,16 @@
     <string name="day">Gün</string>
     <string name="edit_lc_ellipsis">düzenle&#8230;</string>
     <string name="getting_books_ellipsis">Kitaplar alınıyor&#8230;</string>
-    <string name="n_events_found">%1$s olay bulundu</string>
     <string name="last_error_e">Son hata: %1$s</string>
     <string name="invalid_isbn_x_specified_in_search">Aramara belirtilen ISBN \'%1$s\' geçersiz</string>
     <string name="if_day_is_specified_month_and_year_must_be">Eğer gün belirtmiş iseniz hem ay hem yıl bölümlerini de doldurmalısınız.</string>
     <string name="if_month_is_specified_year_must_be">Eğer bir ay belirtmiş iseniz yıl da belirtmelisiniz.</string>
-    <string name="main_menu">Ana seçke</string>
     <string name="use_external_image_cropper">Başka resim kırpıcı kullan (deneysel özellik)</string>
     <string name="auto_rotate_camera_images">Kamera resimlerini özdevinimli olarak döndür</string>
     <string name="hint_autorotate_camera_images">Eğer kendinizi sürekli kamera resimlerini aynı doğrultuda döndürüyor buluyorsanız uygulama ayarlarını sürekli bir yöne görselleri kendiliğinden döndürecek biçimde ayarlayabilirsiniz.</string>
     <string name="default_crop_frame_is_whole_image">Öntanımlı kırpma alanı bütün görseldir</string>
     <string name="cancelled">İptal edildi</string>
     <string name="import_complete">İçe aktarma başarılı</string>
-    <string name="amazon_books">Amazon</string>
-    <string name="google_books">Google Kitaplar</string>
     <string name="library_thing">LibraryThing</string>
     <string name="searching_elipsis">Aranıyor&#8230;</string>
     <string name="adding_book_elipsis">Kitap ekle&#8230;</string>
@@ -719,10 +651,6 @@
     <string name="loan">Ödünç ver</string>
 
     <!-- Hint displayed when an export or database backup is done -->
-    <string name="hint_not_a_full_backup">Please note that this is not a full backup. It does not contain cover images.
-    	\n\nFor a complete backup you need to copy the contents of the \'bookCatalogue\' directory 
-    	from your SD card to another location.
-    	\n\nSee our FAQ (a web link is under \'Help\') for detailed instructions.</string>
 
     <!-- Button text on the goodreads activity; only displayed after user has registered -->
     <string name="forget_credentials">Forget Credentials</string>
@@ -755,13 +683,10 @@
     <string name="importing_ellipsis">İçe aktarılıyor&#8230;</string>
 
     <!-- Content description for the 'up' icon in the folder browser -->
-    <string name="up_folder">Yukarı</string>
 
     <!-- Displayed when a user tries to browse higher than the root directory, or if the parent is unable to be read -->
-    <string name="no_parent_directory_found">Daha üst bir dizin bulunamadı</string>
 
     <!-- For saving and opening exports or backups -->
-    <string name="open">Aç</string>
 
     <!-- Admin option to export books -->
     <string name="export_to_csv">CSV dosyasına dışa aktar</string>
@@ -769,10 +694,8 @@
     <string name="import_from_csv">CSV dosyasından içe aktar</string>
 
     <!-- Displayed when a file/open dialog results in selecting a non-exitant file -->
-    <string name="please_select_an_existing_file">Var olan bir dosyayı seçin</string>
 
     <!-- Displayed when a file/save dialog results in selecting a directory file -->
-    <string name="please_select_a_non_directory">Bir dizin değil de bir dosya seçmeniz gerek</string>
 
     <!-- This is pretty close to the expected feature list! It is a merge of 424 and 430... -->
     <string name="new_in_500">
@@ -851,16 +774,11 @@
 
     <!-- Begin: Added/Updated in 5.0.5 -->
     <!--  New preference to override the default method used to generate bookslists as defined by API level -->
-    <string name="booklist_generation">Kitap dizelgesi oluşturma seçeneği</string>
     <!-- Option listed under "booklist_generation" referring to a very conservative way of generating bookslists -->
-    <string name="force_compatibility_mode">Uyumluluk kipini zorla</string>
     <!-- Option listed under "booklist_generation" referring to a conservative way of generating bookslists -->
-    <string name="force_enhanced_compatibility_mode">Geliştirilmiş uyumluluk kipini zorla</string>
     <!-- Option listed under "booklist_generation" referring to a conservative way of generating bookslists -->
-    <string name="force_fully_featured">Tam takım oluşturma seçeneğini zorla</string>
     <!-- Default Option listed under "booklist_generation" referring to a conservative way of generating bookslists -->
-    <string name="automatically_use_recommended_option">Özdevinimli olarak önerilen ayarları kullan</string>
-    
+
     <string name="new_in_505">
 		<![CDATA[
 			<p><b>5.0.5 sürümündeki yenilikler</b>\n\n
@@ -903,11 +821,8 @@
     <!--  Explanatory text for 'export' dialogue -->
     <string name="export_books_blurb">Kataloğunuzdaki kitaplar dışa aktarılacaktır. Aktarmaya başlamak için iki seçenekten birini seçin, iptal etmek için ise için \'geri\' düğmesine basın:</string>
     <!-- Description of the 'import all books' option -->
-    <string name="export_all_books_blurb">Katalogdaki tüm kitaplar arşive aktarılacaktır.</string>
     <!-- Description of the 'export new & changed' option -->
-    <string name="export_new_and_changed_books_blurb">Yalnızca yeni olan veya bir önceki yedeklemeden beri değiştirilmiş kitapları dışa aktar. Bu seçenek özellikle örneğin iki aygıtı eşlerken yararlıdır.</string>
     <!-- Part of the progress message displayed when exporting books -->
-    <string name="n_exported">%1$s dışa aktarıldı</string>
 
     <!-- Displayed in progress dialog when exporting covers in incremental mode -->
     <string name="covers_progress_incr">%1$s kapak işlendi (%2$s bulunamadı, %3$s atlandı)</string>
@@ -916,7 +831,6 @@
     <!-- Explanatory note for 'advanced export' option -->
     <string name="export_advanced_blurb">Arşive nelerin aktarılacağını seçin.</string>
     <!-- Introduction for 'advanced export' option -->
-    <string name="export_advanced_heading">Nelerin dışa aktarılacağını seçin:</string>
     <!-- Text for button -->
     <string name="book_details">Kitap ayrıntıları</string>
     <!-- Brief descriptionn -->
@@ -948,10 +862,8 @@
    <item quantity="other">%1$s kapak</item>
    </plurals>
    <!-- Used for concatenating two strings, eg. "3 books, 2 covers" (probably only important on RTL languages)-->
-   <string name="a_comma_b">%1$s, %2$s</string>
-   <!-- Short progress message -->
-   <string name="searching_directory_ellipsis">Dizin aranıyor&#8230;</string>
-   <string name="new_in_510">
+    <!-- Short progress message -->
+    <string name="new_in_510">
    <![CDATA[
    <p><b>5.1.0 sürümündeki yenilikler</b>\n\n
    * İtalyanca çeviri (Eugenio Davolio)\n\n
@@ -984,8 +896,7 @@
    <!-- Begin: Added/Updated in [Next Version] -->
    <!-- Begin: Added/Updated in 5.1.1 -->
    <!-- Name of the 'Default' bookshelf, created when app first installed. Needs to be short. -->
-   <string name="default_bookshelf_name">Varsayılan</string>
-   <!-- A hint describing the benefit of following the Amazon links -->
+    <!-- A hint describing the benefit of following the Amazon links -->
    <!--<string name="hint_amazon_links_blurb">&lt;p&gt;&lt;i&gt;\"%1$s\"&lt;/i&gt;, &lt;i&gt;\"%2$s\"&lt;/i&gt; veya &lt;i&gt;\"%3$s\"&lt;/i&gt; seçtikten sonra Amazon\'dan alışveriş yaparsanız, yaptığınız alışveriş tutarının bir bölümü %4$s geliştiricilerine gönderilecektir.&lt;/p&gt;&lt;p&gt;Ayrıca Sıkça Sorulan Sorular bölümündeki &lt;a href=\"https://github.com/eleybourn/Book-Catalogue/wiki/Frequently-Asked-Questions-%%28FAQ%%29\"&gt;bağlantısını kullanarak da&lt;/a&gt; Amazon veya PayPal\'e erişebilirsiniz.&lt;/p&gt;</string>-->
    <!-- Name of the new style grouping (needs to be short). -->
    <string name="update_date">Gün ve ayı güncelle</string>
@@ -1013,8 +924,7 @@
    </string>
    <!-- End: Added/Updated in 5.1.1 -->
    <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->
-   <string name="amazon">Amazon</string>
-   <!-- End: Added/Updated in [Next Version] -->
+    <!-- End: Added/Updated in [Next Version] -->
    <string name="searching_book_catalogue">book-catalogue.com aranıyor</string>
    <!-- End: Added/Updated in [Next Version] -->
 </resources>

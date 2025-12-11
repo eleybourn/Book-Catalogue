@@ -26,22 +26,18 @@ import java.util.Iterator;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import android.os.Handler;
+import android.os.Looper;
 
 import com.eleybourn.bookcatalogue.utils.Logger;
 /**
  * Switchboard class for disconnecting listener instances from task instances. Maintains
  * separate lists and each 'sender' queue maintains a last-message for re-transmission
  * when a listener instance (re)connects.
- * 
  * Usage:
- * 
  * A sender (typically a background task, thread or thread manager) registers itself and is assigned
  * a unique ID. The creator of the sender uses the ID as the key to later retrieval.
- * 
  * The listener must have access to the unique ID and use that to register themselves.
- * 
  * The listener should call addListener, removeListener, reply or getController as necessary.
- * 
  * ENHANCE: Allow fixed sender IDs to ensure uniqueness and/or allow multiple senders for specific IDs
  * 
  * @author pjw
@@ -60,7 +56,7 @@ public class MessageSwitch<T,U> {
 	private Hashtable<Long, MessageListeners> mListeners = new Hashtable<Long, MessageListeners>();
 
 	/** Handler object for posting to main thread and for testing if running on UI thread */
-	private static Handler mHandler = new Handler();
+	private static Handler mHandler = new Handler(Looper.getMainLooper());
 
 	/** Interface that must be implemented by any message that will be sent via send() */
 	public interface Message<T> {
@@ -69,7 +65,7 @@ public class MessageSwitch<T,U> {
 		 * 
 		 * @param listener		Listener to who message must be delivered
 		 * 
-		 * @return		true if message should not be delievered to any other listeners or stored for delievery as 'last message'
+		 * @return		true if message should not be delivered to any other listeners or stored for delivery as 'last message'
 		 * 				should only return true if the message has been handled and would break the app if delivered more than once.
 		 */
 		public boolean deliver(T listener);
@@ -150,19 +146,6 @@ public class MessageSwitch<T,U> {
 		// Process queue
 		startProcessingMessages();
 	}
-
-//	/**
-//	 * Send a 'reply'
-//	 * @param senderId
-//	 * @param reply
-//	 */
-//	public void reply(long senderId, Message<U> reply) {
-//		RoutingSlip m = new ReplyRoutingSlip(senderId, reply);
-//		synchronized(mMessageQueue) {
-//			mMessageQueue.add(m);
-//		}
-//		startProcessingMessages();
-//	}
 
 	/**
 	 * Get the controller object associated with a sender ID
@@ -272,10 +255,6 @@ public class MessageSwitch<T,U> {
 			return list.iterator();
 		}
 
-		//private final ReentrantLock mPopLock = new ReentrantLock();
-		//ReentrantLock getLock() {
-		//	return mPopLock;
-		//}
 	}
 
 	/**
@@ -356,24 +335,6 @@ public class MessageSwitch<T,U> {
 		}
 	}
 
-//	private class ReplyRoutingSlip implements RoutingSlip {
-//		Long destination;
-//		Message<U> message;
-//		public ReplyRoutingSlip(Long destination, Message<U> message) {
-//			this.destination = destination;
-//			this.message = message;
-//		}
-//		@Override
-//		public void deliver() {
-//			synchronized(mSenders) {
-//				MessageSender<U> sender = mSenders.get(this.destination);
-//				if (sender != null) {
-//					message.deliver(sender.getReplyHandler());
-//				}
-//			}
-//		}
-//	}
-
 	/**
 	 * Implementation of Message sender object
 	 * 
@@ -443,7 +404,7 @@ public class MessageSwitch<T,U> {
 	}
 
 	/**
-	 * Accessor. Sometimes senders (or receivers) need to check which thread they are on and possibly post runnables.
+	 * Accessor. Sometimes senders (or receivers) need to check which thread they are on and possibly post runnable.
 	 * 
 	 * @return the Handler object
 	 */

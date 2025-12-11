@@ -50,7 +50,6 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
-                android:id="@+id/all_books_blurb"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@id/all_books"

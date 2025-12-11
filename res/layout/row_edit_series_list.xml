@@ -10,12 +10,12 @@
          NOTE: The outer layout is used because this item appears in a TouchListView which uses the outer element padding, and
 				we want to set our own padding.
 				
-				With careful analysis, we could probably put padding on the right elements. But this is clearer and easier.
+				With careful analysis, we could probably put padding on the right elements. But this is clearer and easier.
+
     -->
 
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/row_real"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -54,7 +54,8 @@
 			android:layout_alignParentBottom="true"
 			android:layout_weight="1"
 			android:visibility="gone"
-			/>
+			/>
+
         -->
 
         <RelativeLayout

@@ -17,7 +17,6 @@
             android:paddingLeft="@dimen/padding_border" >
 
             <TextView
-                android:id="@+id/select_fields"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/padding_border"
@@ -25,7 +24,6 @@
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <TextView
-                android:id="@+id/select_fields_help_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/padding_border"

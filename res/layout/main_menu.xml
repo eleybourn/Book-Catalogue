@@ -7,7 +7,6 @@
     android:orientation="vertical" >
 
     <ScrollView
-        android:id="@+id/main_menu_view"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:paddingLeft="10dp"

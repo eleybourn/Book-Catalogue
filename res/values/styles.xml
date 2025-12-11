@@ -57,11 +57,6 @@
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
     </style>
 
-    <style name="fileDetailsTextStyle" parent="bookDetailsTextStyle">
-        <!--  selectable makes clicking not work well -->
-        <item name="android:textIsSelectable">false</item>
-    </style>
-
     <!-- Style for text header data (typically title/author) in read-only book details -->
     <style name="bookDetailsHeaderStyle">
         <item name="android:textIsSelectable">true</item>
@@ -76,11 +71,6 @@
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
-    </style>
-
-    <style name="fileDetailsMinorDetailStyle" parent="bookDetailsMinorDetailStyle">
-        <!--  selectable makes clicking not work well -->
-        <item name="android:textIsSelectable">false</item>
     </style>
 
     <style name="editorFieldHeaderStyle">
@@ -111,11 +101,6 @@
 
     <style name="Widget.AppTheme.ActionBar.Fullscreen" parent="Widget.AppCompat.ActionBar">
         <item name="android:background">@color/black_overlay</item>
-    </style>
-
-    <style name="Widget.AppTheme.ButtonBar.Fullscreen" parent="">
-        <item name="android:background">@color/black_overlay</item>
-        <item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
     </style>
 
 </resources>

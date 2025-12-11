@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="TAG_POSITION" type="id"></item>
-    <item name="TAG_ORIGINAL_VALUE" type="id"></item>
-        <item name="fieldCheckbox" type="id"></item>
+    <item name="fieldCheckbox" type="id"></item>
     <item name="TAG_EVENT" type="id"></item>
     <item name="TAG_HOLDER" type="id"></item>
     <item name="TAG_TASK" type="id"></item>
-    <item name="TAG_TASK_ID" type="id"></item>
     <item name="TAG_BOOK_EVENT_HOLDER" type="id"></item>
     <item name="TAG_TASK_HOLDER" type="id"></item>
     <item name="TAG_PROPERTY" type="id"></item>
@@ -34,21 +32,5 @@
     <item name="MENU_AMAZON_BOOKS_IN_SERIES" type="id"/>
     <item name="MENU_AMAZON_BOOKS_BY_AUTHOR" type="id"/>
     <item name="MENU_AMAZON_BOOKS_BY_AUTHOR_IN_SERIES" type="id"/>
-
-    <item name="MENU_CHOOSER_HOME" type="id"/>
-
-    <item name="ACTIVITY_CREATE_BOOK_MANUALLY" type="id"/>
-    <item name="ACTIVITY_CREATE_BOOK_ISBN" type="id"/>
-    <item name="ACTIVITY_CREATE_BOOK_SCAN" type="id"/>
-    <item name="ACTIVITY_EDIT_BOOK" type="id"/>
-    <item name="ACTIVITY_ADMIN" type="id"/>
-    <item name="ACTIVITY_HELP" type="id"/>
-    <item name="ACTIVITY_PREFERENCES" type="id"/>
-    <item name="ACTIVITY_BOOKLIST_STYLE" type="id"/>
-    <item name="ACTIVITY_BOOKLIST_STYLE_PROPERTIES" type="id"/>
-    <item name="ACTIVITY_BOOKLIST_STYLE_GROUPS" type="id"/>
-    <item name="ACTIVITY_BOOKLIST_STYLES" type="id"/>
-    <item name="ACTIVITY_GOODREADS_EXPORT_FAILURES" type="id"/>
-    <item name="ACTIVITY_ADMIN_FINISH" type="id"/>
 
 </resources>

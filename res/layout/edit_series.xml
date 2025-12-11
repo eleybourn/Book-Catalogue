@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/edit_series_list_wrapper"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="@color/background_grey"

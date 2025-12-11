@@ -159,7 +159,6 @@
         </LinearLayout>
 
         <View
-            android:id="@+id/header_div"
             android:layout_width="fill_parent"
             android:layout_height="1dp"
             android:background="@drawable/main_menu_header_divider"
@@ -272,7 +271,6 @@
         </TableLayout>
 
         <TextView
-            android:id="@+id/my_comments"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"

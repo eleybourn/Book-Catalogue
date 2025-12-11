@@ -117,7 +117,6 @@
             android:paddingBottom="2dp" />
 
         <TextView
-            android:id="@+id/works_found"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="#00000000"

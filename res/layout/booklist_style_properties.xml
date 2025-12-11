@@ -34,7 +34,8 @@
             android:text="@string/cancel" />
         <!--
     	    style="?android:attr/buttonStyleSmall"
-		    android:textAppearance="?android:attr/textAppearanceSmall" 
+		    android:textAppearance="?android:attr/textAppearanceSmall" 
+
         -->
 
         <Button
@@ -46,7 +47,8 @@
             android:text="@string/save" />
         <!--
     	    style="?android:attr/buttonStyleSmall"
-		    android:textAppearance="?android:attr/textAppearanceSmall" 
+		    android:textAppearance="?android:attr/textAppearanceSmall" 
+
         -->
 
     </LinearLayout>
@@ -55,7 +57,6 @@
 
     <ScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/scroll_view"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/bottom_buttons"
@@ -64,7 +65,8 @@
         <!--
              NOTE: This view (id=body) will be EMPTIED by the activity that uses this layout
 			 DON'T ADD ANYTHING TO IT
-			 It is OK to add stuff to the ScrollView, or anywhere else in this layout.
+			 It is OK to add stuff to the ScrollView, or anywhere else in this layout.
+
         -->
 
         <LinearLayout

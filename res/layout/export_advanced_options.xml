@@ -13,7 +13,6 @@
         android:padding="@dimen/padding_border" >
 
         <TextView
-            android:id="@+id/export_advanced_blurb"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="6dp"
@@ -49,7 +48,6 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
-                android:id="@+id/book_details_blurb"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@id/book_details"
@@ -88,7 +86,6 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
-                android:id="@+id/cover_images_blurb"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@+id/cover_images"
@@ -99,7 +96,6 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/preferences_row"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -129,7 +125,6 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
-                android:id="@+id/preferences_blurb"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@id/preferences"
@@ -140,7 +135,6 @@
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/export_advanced_date_blurb"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="6dp"
@@ -148,12 +142,10 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <RadioGroup
-            android:id="@+id/radioGroup1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 
             <RadioButton
-                android:id="@+id/radioAll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:checked="true"

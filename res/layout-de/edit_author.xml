@@ -2,9 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="@color/background_grey"
+    android:background="@color/theme_surface"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/padding_border" >
+    android:paddingLeft="@dimen/p_md" >
 
     <LinearLayout
         android:id="@+id/top_buttons"
@@ -13,7 +13,7 @@
         android:layout_alignParentTop="true"
         android:gravity="top"
         android:orientation="vertical"
-        android:paddingTop="@dimen/padding_border" >
+        android:paddingTop="@dimen/p_md" >
 
         <TextView
             android:layout_width="fill_parent"
@@ -54,8 +54,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/top_buttons"
         android:hint="@string/title"
-        android:paddingBottom="@dimen/padding_border"
-        android:paddingTop="@dimen/padding_border"
+        android:paddingBottom="@dimen/p_md"
+        android:paddingTop="@dimen/p_md"
         android:text="@string/immediate_global_changes"
         android:textSize="16sp" />
 

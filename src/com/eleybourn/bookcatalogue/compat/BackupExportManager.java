@@ -132,7 +132,7 @@ public class BackupExportManager
 		}
 		// Show a helpful message
 		MessageDialogFragment frag = MessageDialogFragment.newInstance(ID.MSG_ID_BACKUP_EXPORT_COMPLETE,
-																	   R.string.backup_to_archive,
+																	   R.string.label_backup_to_archive,
 																	   msg,
 																	   R.string.ok,
 																	   0,

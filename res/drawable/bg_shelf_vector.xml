@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="1024dp"
+    android:height="275dp"
+    android:viewportWidth="1024"
+    android:viewportHeight="275">
+
+    <!-- Shelf bar -->
+    <path
+        android:fillColor="#CDE7ED"
+        android:pathData="M0,260 H1024 V275 H0 Z" />
+
+    <!-- LEFT BOOK GROUP -->
+
+    <!-- Left book 1 -->
+    <path
+        android:fillColor="#CDE7ED"
+        android:pathData="M40,85
+                          a8,8 0 0 1 8,-8
+                          H102
+                          a8,8 0 0 1 8,8
+                          V260
+                          H40 Z" />
+
+    <!-- Left book 2 (taller) -->
+    <path
+        android:fillColor="#CDE7ED"
+        android:pathData="M120,55
+                        a8,8 0 0 1 8,-8
+                        H182
+                        a8,8 0 0 1 8,8
+                        V260
+                        H120 Z" />
+
+    <!-- Left book 3 (tallest) -->
+    <path
+        android:fillColor="#CDE7ED"
+        android:pathData="M200,35
+        a8,8 0 0 1 8,-8
+        H245
+        a8,8 0 0 1 8, 8
+        V260
+        H200 Z" />
+
+    <!-- Center-left book 4 -->
+    <path
+        android:fillColor="#CDE7ED"
+        android:pathData="M265,95
+        a8,8 0 0 1 8,-8
+        H342
+        a8,8 0 0 1 8, 8
+        V260
+        H265 Z" />
+
+
+    <!-- RIGHT BOOK GROUP -->
+
+    <!-- Right book 1 -->
+    <path
+        android:fillColor="#CDE7ED"
+        android:pathData="M774,95
+        a8,8 0 0 1 8,-8
+        H836
+        a8,8 0 0 1 8, 8
+        V260
+        H774 Z" />
+
+    <!-- Right book 2 -->
+    <path
+        android:fillColor="#CDE7ED"
+        android:pathData="M856,75
+        a8,8 0 0 1 8,-8
+          H900
+          a8,8 0 0 1 8,8
+        V260
+        H856 Z" />
+
+    <!-- Right book 3 -->
+    <path
+        android:fillColor="#CDE7ED"
+        android:pathData="M920,55
+        a8,8 0 0 1 8,-8
+        H950
+        a8,8 0 0 1 8,8
+        V260
+        H920 Z" />
+
+    <!-- Right book 4 -->
+    <path
+        android:fillColor="#CDE7ED"
+        android:pathData="M970,90
+        a8,8 0 0 1 8,-8
+        H1024
+        a8,8 0 0 1 8,8
+        V260
+        H970 Z" />
+
+
+    <!-- CENTER STACKED BOOKS -->
+
+    <!-- Bottom horizontal book -->
+    <path
+        android:fillColor="#CDE7ED"
+        android:pathData="M390,210
+        a8,8 0 0 1 8,-8
+        H650
+        a8,8 0 0 1 8,8
+        V260
+        H390 Z" />
+
+    <!-- Top horizontal book -->
+    <path
+        android:fillColor="#CDE7ED"
+        android:pathData="M420,170
+        a8,8 0 0 1 8,-8
+        H640
+        a8,8 0 0 1 8,8
+        V195
+        H420 Z" />
+
+
+    <!-- LEANING BOOK (center-right) -->
+    <path
+        android:fillColor="#CDE7ED"
+        android:pathData="
+            M775,65
+            Q775,60 740,63
+            Q685,260 685,260
+            Q775,270 720,260
+            Z" />
+
+</vector>

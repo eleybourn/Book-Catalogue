@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Book Catalogue</string>
     <string name="system_app_name">Book Catalogue</string>
-    <string name="menu_insert">Aggiungi libro</string>
+    <string name="label_insert">Aggiungi libro</string>
     <string name="menu_delete">Cancella libro</string>
     <string name="author">Autore</string>
     <string name="title">Titolo</string>
@@ -19,13 +19,13 @@
     <string name="menu_sort_by_author_expanded">Espandi tutto</string>
     <string name="menu_sort_by">Ordina per</string>
     <string name="menu_sort_by_author_collapsed">Comprimi tutto</string>
-    <string name="search">Cerca</string>
+    <string name="label_search">Cerca</string>
     <string name="cancel">Annulla</string>
     <string name="confirm_save">Salva libro</string>
-    <string name="nobookshelves">Non hai creato ancora nessuna libreria. Per crearne utilizza il menù nella parte inferiore dello schermo.</string>
+    <string name="info_no_bookshelves">Non hai creato ancora nessuna libreria. Per crearne utilizza il menù nella parte inferiore dello schermo.</string>
     <string name="menu_insert_bs">Crea libreria</string>
     <string name="confirm_add_bs">Aggiungi libreria</string>
-    <string name="menu_bookshelf">Gestisci librerie</string>
+    <string name="label_bookshelf">Gestisci librerie</string>
     <string name="confirm_save_bs">Salva libreria</string>
     <string name="menu_delete_bs">Cancella libreria</string>
     <string name="delete_1st_bs">Impossibile cancellare la prima libreria</string>
@@ -47,8 +47,8 @@
     <string name="administration_label">Funzioni amministratore</string>
     <string name="menu_administration">Amministratore</string>
     <string name="install_scan_title">Installa app per la scansione</string>
-    <string name="version_number">Numero versione:</string>
-    <string name="donate">Se vuoi supportare lo sviluppatore di questa applicazione, effettua una donazione utilizzando My Amazon Wishlist o il pulsante di Paypal qui sotto. Essendo in Australia non posso pubblicare una versione a &quot;pagamento&quot;. :-)</string>
+    <string name="label_version_number">Numero versione:</string>
+    <string name="para_donate">Se vuoi supportare lo sviluppatore di questa applicazione, effettua una donazione utilizzando My Amazon Wishlist o il pulsante di Paypal qui sotto. Essendo in Australia non posso pubblicare una versione a &quot;pagamento&quot;. :-)</string>
     <string name="upgrade_title">Dal tuo ultimo aggiornamento</string>
     <string name="edit_book">Modifica libri</string>
     <string name="edit_book_notes">I miei commenti</string>
@@ -59,16 +59,16 @@
     <string name="loan_to">Libro prestato a:</string>
     <string name="returned">Restituito</string>
     <string name="name">Nome</string>
-    <string name="webpage_label">Pagina web:</string>
-    <string name="sourcecode_label">Codice sorgente:</string>
-    <string name="contact_label">Contatti:</string>
-    <string name="webpage">https://wiki.github.com/eleybourn/Book-Catalogue/</string>
-    <string name="sourcecode">https://github.com/eleybourn/Book-Catalogue</string>
-    <string name="helppage">https://github.com/eleybourn/Book-Catalogue/wiki/Help</string>
+    <string name="label_webpage">Pagina web:</string>
+    <string name="label_sourcecode">Codice sorgente:</string>
+    <string name="label_contact">Contatti:</string>
+    <string name="url_webpage">https://wiki.github.com/eleybourn/Book-Catalogue/</string>
+    <string name="url_sourcecode">https://github.com/eleybourn/Book-Catalogue</string>
+    <string name="url_help">https://github.com/eleybourn/Book-Catalogue/wiki/Help</string>
     <string name="contact1">eleybourn@gmail.com</string>
     <string name="contact2">philip.warner@rhyme.com.au</string>
-    <string name="donate_label">Dona</string>
-    <string name="about_label">Riguardo questa app</string>
+    <string name="label_donate">Dona</string>
+    <string name="label_about">Riguardo questa app</string>
     <string name="sortby_author">Ordina per Autore</string>
     <string name="sortby_title">Ordina per Titolo</string>
     <string name="sortby_series">Ordina per Serie</string>
@@ -76,7 +76,7 @@
     <string name="sortby_unread">Ordina per non letto</string>
     <string name="sortby_genre">Ordina per genere</string>
     <string name="list_price">Prezzo di listino</string>
-    <string name="update_fields">Aggiorna i campi automaticamente</string>
+    <string name="label_update_fields">Aggiorna i campi automaticamente</string>
     <string name="select_fields_to_update">Seleziona i campi da aggiornare</string>
     <string name="select_fields_to_update_help">I campi selezionati verranno aggiornato da Internet. Gli altri rimarranno invariati.</string>
     <string name="overwrite_thumbnail">Verranno aggiornati i campi selezionati come indicato, ma opzionalmente è possibile aggiornare anche le miniature di TUTTI i libri.\n\nVuoi sovrascrivere tutte le miniature esistenti? Attenzione, potrebbero occorrere diversi minuti. </string>
@@ -86,11 +86,11 @@
     <string name="search_fail">Ricerca del libro fallita. Controlla le impostazioni di rete.</string>
     <string name="search_exception">Ricerca di %1$s: %2$s fallita</string>
     <string name="menu_delete_thumb">Cancella miniatura</string>
-    <string name="help">Aiuto</string>
-    <string name="menu_manage_fields">Gestisci visibilità campi</string>
+    <string name="label_help">Aiuto</string>
+    <string name="label_manage_fields">Gestisci visibilità campi</string>
     <string name="manage_fields_help">I campi selezionati sono visibili nella schermata aggiungi/modifica libro. Gli altri rimangono nascosti.</string>
     <string name="edit_book_anthology">Antologia titoli</string>
-    <string name="amazon_wishlist">Amazon Wishlist</string>
+    <string name="label_amazon_wishlist">Amazon Wishlist</string>
     <string name="same_author">Tutte le storie in questa antologia sono scritte dallo stesso autore</string>
     <string name="menu_delete_anthology">Cancella titolo dall\'antologia</string>
     <string name="is_anthology">Questo libro è una antologia?</string>
@@ -127,10 +127,10 @@
     <!-- NOTE: Adding a new format will involve changing code that references this list -->
     <string name="description">Descrizione</string>
     <string name="genre">Genere</string>
-    <string name="notset">Non impostato</string>
+    <string name="not_set">Non impostato</string>
     <string name="menu_search">Cerca libri</string>
     <string name="isbn_name_search_help">Aggiungere libri mediante codice ISBN è molto più preciso rispetto ad aggiungerli per autore e titolo ed è in genere consigliato. Nota che a volte il codice ISBN si trova all\'interno della copertina. \n\n</string>
-    <string name="help_click_here">Tocca qui per accedere all\'aiuto online</string>
+    <string name="para_help_click_here">Tocca qui per accedere all\'aiuto online</string>
     <string name="vldt_unable_to_get_value">Impossibile ottenere un valore per \'%s\'</string>
     <string name="vldt_integer_expected">È previsto un valore intero per \'%s\'</string>
     <string name="vldt_real_expected">È previsto un valore reale per \'%s\'</string>
@@ -215,10 +215,10 @@
     <string name="disable_dialogue">Disattiva messaggio</string>
     <string name="lt_reset_messages_info">Ogni tanto questa applicazione può visualizzare messaggi riguardanti LibraryThing. Premi il pulsante qui sotto per ripristinare i messaggi eventualmente disattivati.</string>
     <string name="reset">Ripristina</string>
-    <string name="send_info_text">Clicca sul pulsante qui sotto per raccogliere informazioni sui crash recenti o altri errori e inviarli allo sviluppatore. Verrà creata una copia di backup dell\'intero database e di tutti i file di log. Cancella i file che non vuoi allegare alla email prima di inviarla.</string>
-    <string name="send_info">Invia informazioni</string>
-    <string name="cleanup_files_text">File eliminabili attualmente occupano %s sulla scheda SD. Si tratta di file di log e altri dati salvati sulla scheda SD ad ogni aggiornamento, ad ogni backup del database o quando l\'applicazione va in crash. Clicca sul pulsante qui sotto per eliminare questi file dalla SD. Se sono avvenuti crash o altri errori, valuta se cliccare il pulsante \'Invia informazioni\' prima di eliminarli.</string>
-    <string name="cleanup_files">Cancella i file</string>
+    <string name="para_send_info">Clicca sul pulsante qui sotto per raccogliere informazioni sui crash recenti o altri errori e inviarli allo sviluppatore. Verrà creata una copia di backup dell\'intero database e di tutti i file di log. Cancella i file che non vuoi allegare alla email prima di inviarla.</string>
+    <string name="button_send_info">Invia informazioni</string>
+    <string name="para_cleanup_files">File eliminabili attualmente occupano %s sulla scheda SD. Si tratta di file di log e altri dati salvati sulla scheda SD ad ogni aggiornamento, ad ogni backup del database o quando l\'applicazione va in crash. Clicca sul pulsante qui sotto per eliminare questi file dalla SD. Se sono avvenuti crash o altri errori, valuta se cliccare il pulsante \'Invia informazioni\' prima di eliminarli.</string>
+    <string name="button_cleanup_files">Cancella i file</string>
     <string name="megabytes">%.2fMB</string>
     <string name="kilobytes">%.2fkB</string>
     <string name="bytes">%.0f bytes</string>
@@ -249,10 +249,10 @@
     <item name="TAG_PROPERTY" type="id"></item>
     <item name="TAG_DIALOG_ITEM" type="id"></item>
     
-    <string name="my_books">I miei libri</string>
+    <string name="label_library">I miei libri</string>
     <string name="my_books_classic">I miei libri (Classico)</string>
     <string name="loan_return_book">Presta, ritorna o modifica libro</string>
-    <string name="admin_and_prefs">Amministrazione e Preferenze</string>
+    <string name="label_settings">Amministrazione e Preferenze</string>
     <string name="edit_book_send_to_gr">Invia a GoodReads</string>
     <string name="goodreads">GoodReads</string>
     <string name="goodreads_auth_blurb_part1">GoodReads è un sito Internet la cui missione è \"aiutare le persone a trovare e condividere i libri che amano\".
@@ -270,7 +270,7 @@
     <string name="authorize_access">Autorizza accesso</string>
     <string name="authorize_access_already_auth">Questa applicazione sembra già autorizzata. Tutte le funzionalità di GoodReads dovrebbero già essere utilizzabili</string>
     <string name="goodreads_access_error">Problema di rete nell\'accedere a GoodReads. Verifica che il sito di GoodReads sia accessibile, e, se il problema persiste, contatta il supporto</string>
-    <string name="other_preferences">Altre Preferenze</string>
+    <string name="label_other_preferences">Altre Preferenze</string>
     <string name="user_interface">Interfaccia Utente</string>
     <string name="start_in_my_books">Inizia in \'I miei libri\'</string>
     <string name="include_classic_catalogue_view">Includi vista catalogo classica</string>
@@ -310,7 +310,7 @@
     <item name="TAG_GOODREADS_WORK" type="id"></item>
     <item name="TAG_GET_THUMBNAIL_TASK" type="id"></item>
 
-    <string name="erase_cover_cache">Cancella cache copertina</string>
+    <string name="label_erase_cover_cache">Cancella cache copertina</string>
     <string name="crash_toast_text">BookCatalogue si è bloccato in modo anomalo. Aiutaci a migliorare il programma informandoci del problema.</string>
     <string name="crash_notif_ticker_text">BookCatalogue si è bloccato</string>
     <string name="crash_notif_title">Blocco di BookCatalogue</string>
@@ -353,13 +353,13 @@
     <item name="MENU_EDIT_STYLE" type="id"/>
     <item name="MENU_CLONE_STYLE" type="id"/>
 
-    <string name="booklist_preferences">Preferenze Elenchi Libri</string>
+    <string name="label_booklist_preferences">Preferenze Elenchi Libri</string>
     <string name="extra_book_details">Dettagli libro aggiuntivi</string>
     <string name="general">Generale</string>
     <string name="bookshelves">Librerie</string>
     <string name="shelves">Scaffali</string>
     <string name="location">Locazione</string>
-    <string name="data_import_export">Importa/Esporta dati</string>
+    <string name="label_data_import_export">Importa/Esporta dati</string>
     <string name="unrecognized_task">Comando sconosciuto</string>
     <string name="rebuilding_search_index">Ricostruzione indice di ricerca&#8230;</string>
     <string name="optimizing_databases">Ottimizzazione archivi&#8230;</string>
@@ -370,12 +370,12 @@
     <string name="always_start_booklists_collapsed">Avvia con elenco libri compressa</string>
     <string name="remember_booklists_state">Ricorda lo stato elenco libri</string>
     <string name="searching_goodreads">Ricerca in Goodreads</string>
-    <string name="edit_book_list_styles">Modifica stili elenco libri</string>
+    <string name="label_edit_book_list_styles">Modifica stili elenco libri</string>
     <string name="show_more_ellipsis">Mostra di più&#8230;</string>
     <string name="show_fewer_ellipsis">Mostra meno&#8230;</string>
     <string name="customize_ellipsis">Personalizza&#8230;</string>
     <string name="hint">Suggerimento</string>
-    <string name="reset_hints">Ripristina suggerimenti</string>
+    <string name="label_reset_hints">Ripristina suggerimenti</string>
     <string name="do_not_show_again">Non mostrare più</string>
     <string name="hint_booklist_styles_editor">In questa schermata è possibile personalizzare l\'elenco degli stili mostrata nel menu degli stili standard.
     										\n\nUn segno di spunta verde indica che lo stile verrà mostrato nell\'elenco, mentre una croce rossa indica il contrario.
@@ -431,13 +431,13 @@
     <string name="thing_must_not_be_blank">%1$s deve contenere un valore</string>
     <string name="edit">Modifica</string>
     <string name="groupings">Raggruppamenti</string>
-    <string name="preferences">Preferenze</string>
+    <string name="label_preferences">Preferenze</string>
     <string name="unexpected_error">Si è verificato un errore inatteso, per favore invia i dettagli all\'Assistenza usando l\'opzione \'Aiuto\' nel menu principale</string>
     <string name="delete_style">Elimina stile</string>
     <string name="edit_style">Modifica stile</string>
     <string name="clone_style">Duplica stile</string>
-    <string name="dash_or_dash">- Oppure -</string>
-    <string name="paypal_donation">Donazione con PayPal</string>
+    <string name="label_dash_or_dash">- Oppure -</string>
+    <string name="label_paypal_donation">Donazione con PayPal</string>
     <string name="compact">Compatto</string>
     <string name="user_defined">Definito dall\'utente</string>
     <string name="builtin">Predefinito</string>
@@ -665,9 +665,9 @@
     <string name="connecting_to_web_site">Collegamento al sito web&#8230;</string>
 
     <!-- Admin option to import -->
-    <string name="backup_to_archive">Crea Backup</string>
+    <string name="label_backup_to_archive">Crea Backup</string>
     <!-- Admin option to import -->
-    <string name="import_from_archive">Importa da Backup</string>
+    <string name="label_import_from_archive">Importa da Backup</string>
 
     <!-- Hint displayed when aCatalogue Backup is done -->
     <string name="a_and_b">%1$s e %2$s</string>
@@ -677,7 +677,7 @@
     <!-- Displayed in progress dialog when exporting covers -->
     <string name="covers_progress">%1$s copertine processate (%2$s mancanti)</string>
     <!-- Heading in Admin activity -->
-    <string name="advanced_options">Opzioni Avanzate</string>
+    <string name="label_advanced_options">Opzioni Avanzate</string>
     <!-- Showed in progress dialog when an import starts -->
     <string name="backing_up_ellipsis">Creazione backup in corso&#8230;</string>
     <!-- Showed in progress dialog when an import starts -->
@@ -690,9 +690,9 @@
     <!-- For saving and opening exports or backups -->
 
     <!-- Admin option to export books -->
-    <string name="export_to_csv">Esporta come File CSV</string>
+    <string name="label_export_to_csv">Esporta come File CSV</string>
     <!-- Admin option to import books -->
-    <string name="import_from_csv">Importa da File CSV</string>
+    <string name="label_import_from_csv">Importa da File CSV</string>
 
     <!-- Displayed when a file/open dialog results in selecting a non-exitant file -->
 
@@ -718,7 +718,7 @@
     </string>
 
     <!-- Displayed in Admin menu advanced options (top make a copy of the internal database on the sdcard -->
-    <string name="copy_database">Copia Archivio (per supporto tecnico)</string>
+    <string name="label_copy_database">Copia Archivio (per supporto tecnico)</string>
 
     <!-- Items in list of options for the 'Summary Details' preference. Detrmines what is show in book list header -->
     <string name="show_book_count">Mostra numero di libri</string>
@@ -960,7 +960,7 @@
     <string name="system_locale">Impostazioni locali di sistema</string>
 
     <!-- Credits in the 'about' dialog -->
-    <string name="translators_blurb">BookCatalogue è il prodotto degli sforzi di molte persone, e non sarebbe così largamente utilizzato senza il generoso \naiuto dei nostri traduttori volontari: %1$s (se abbiamo dimenticato qualcuno, grazie per comunicarcelo).</string>
+    <string name="para_translators">BookCatalogue è il prodotto degli sforzi di molte persone, e non sarebbe così largamente utilizzato senza il generoso \naiuto dei nostri traduttori volontari: %1$s (se abbiamo dimenticato qualcuno, grazie per comunicarcelo).</string>
 
     <string name="new_in_520">
 		<![CDATA[

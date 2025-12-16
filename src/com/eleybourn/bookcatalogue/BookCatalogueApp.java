@@ -127,11 +127,11 @@ public class BookCatalogueApp extends Application {
 		}
 		Locale l;
 		if (parts.length == 1) {
-			l = new Locale(parts[0]);
+			l = Locale.of(parts[0]);
 		} else if (parts.length ==   2) {
-			l = new Locale(parts[0], parts[1]);
+			l = Locale.of(parts[0], parts[1]);
 		} else {
-			l = new Locale(parts[0], parts[1], parts[2]);
+			l = Locale.of(parts[0], parts[1], parts[2]);
 		}
 		return l;
 	}
@@ -148,6 +148,7 @@ public class BookCatalogueApp extends Application {
 			super.send(report);
 	    }
 	}
+
 	/**
 	 * Most real initialization should go here, since before this point, the App is still
 	 * 'Under Construction'.
@@ -176,47 +177,6 @@ public class BookCatalogueApp extends Application {
 		super.onCreate();
 
 		applyLocaleSettings();
-
-		//if (Build.VERSION.SDK_INT < 16) {
-		//	//
-		//	// Avoid possible bug in SQLite which resuts in database being closed without an explicit call.
-		//	// Based on the grepcode Android sources, it looks like this bug was fixed an/or addressed in
-		//	// 4.1.1, but not in 4.0.4.
-		//	//
-		//	// See:
-		//	//
-		//	//		https://code.google.com/p/android/issues/detail?id=4282
-		//	//	    http://darutk-oboegaki.blogspot.com.au/2011/03/sqlitedatabase-is-closed-automatically.html
-		//	//
-		//	// a pdf of the second link is in 'support' folder.
-		//	//
-		//	CatalogueDBAdapter dbh = new CatalogueDBAdapter(this);
-		//	dbh.open();
-		//	SQLiteDatabase db = dbh.getDb().getUnderlyingDatabase();
-		//	db.acquireReference();
-		//	if (Build.VERSION.SDK_INT < 8) {
-		//		//
-		//		// RELEASE: REMOVE THIS CODE When MinSDK becomes 8!
-		//		//
-		//		// Android 2.1 has a very nasty bug that can cause un-closed SQLiteStatements to dereference the
-		//		// database when they have not referenced it.. SQLiteStatements can fail to be released in a timely
-		//		// fashion when the screen is rotated, which will then result in an attempt to access a closed closable.
-		//		// ... so for Android 2.1...we take 1000 references and hope the user won't rotate the screen 1000
-		//		// times while background tasks are running.
-		//		//
-		//		// We have made the best efforts to avoid this bug, this is just insurance.
-		//		//
-		//		// The key instance where this happens is if the GetListTask in BooksOnBookshelf is aborted due to
-		//		// a screen rotation; the onFinish() method is never called, so the statements are not deleted.
-		//		//
-		//		// We have added finalize() code to SynchronizedStatement so that IF it is called first (not
-		//		// guaranteed by Java spec) it will close the SQLiteStatement and try to avoid this issue.
-		//		//
-		//		for(int i = 0; i < 1000; i++)
-		//			db.acquireReference();
-		//	}
-		//	dbh.close();
-		//}
 
 		// Watch the preferences and handle changes as necessary
 		//BookCataloguePreferences ap = getPreferences();
@@ -395,58 +355,6 @@ public class BookCatalogueApp extends Application {
 		return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED;
 	}
 
-	public static boolean isBackgroundImageDisabled() {
-		return getAppPreferences().getBoolean(BookCataloguePreferences.PREF_DISABLE_BACKGROUND_IMAGE, false);
-	}
-//	/**
-//	 * Code based on Google sample code to bind the service.
-//	 */
-//	private ServiceConnection mConnection = new ServiceConnection() {
-//	    public void onServiceConnected(ComponentName className, IBinder service) {
-//	        // This is called when the connection with the service has been
-//	        // established, giving us the service object we can use to
-//	        // interact with the service.  Because we have bound to a explicit
-//	        // service that we know is running in our own process, we can
-//	        // cast its IBinder to a concrete class and directly access it.
-//	        mBoundService = (BcQueueManager)((QueueManager.QueueManagerBinder)service).getService();
-//
-//	        // Tell the user about this for our demo.
-//	        //Toast.makeText(BookCatalogueApp.this, "Connected", Toast.LENGTH_SHORT).show();
-//	    }
-//
-//	    public void onServiceDisconnected(ComponentName className) {
-//	        // This is called when the connection with the service has been
-//	        // unexpectedly disconnected -- that is, its process crashed.
-//	        // Because it is running in our same process, we should never
-//	        // see this happen.
-//	        mBoundService = null;
-//	        //Toast.makeText(BookCatalogueApp.this, "Disconnected", Toast.LENGTH_SHORT).show();
-//	    }
-//	};
-//
-//	/** Indicates service has been bound. Really. */
-//	boolean mIsBound;
-//
-//	/**
-//	 * Establish a connection with the service.  We use an explicit
-//	 * class name because we want a specific service implementation that
-//	 * we know will be running in our own process (and thus won't be
-//	 * supporting component replacement by other applications).
-//	 */
-//	void doBindService() {
-//	    bindService(new Intent(BookCatalogueApp.this, BcQueueManager.class), mConnection, Context.BIND_AUTO_CREATE);
-//	    mIsBound = true;
-//	}
-//	/**
-//	 * Detach existiing service connection.
-//	 */
-//	void doUnbindService() {
-//	    if (mIsBound) {
-//	        unbindService(mConnection);
-//	        mIsBound = false;
-//	    }
-//	}
-
 	/**
 	 * Return the Intent that will be used by the notifications manager when a notification
 	 * is clicked; should bring the app to the foreground.
@@ -459,24 +367,6 @@ public class BookCatalogueApp extends Application {
 		i.putExtra("bringFg", true);
 		return i;
 	}
-
-
-//	/**
-//	 * Used by the Manifest-based startup activity to determine the desired first activity for the user.
-//	 * 
-//	 * @return	Intent for preference-based startup activity.
-//	 */
-//	public Intent getStartupIntent() {
-//		BookCataloguePreferences prefs = getAppPreferences();
-//
-//		Intent i;
-//		if (prefs.getStartInMyBook()) {
-//			i = new Intent(this, BookCatalogue.class);
-//		} else {
-//			i = new Intent(this, MainMenu.class);
-//		}
-//		return i;
-//	}
 
 	public static void startPreferencesActivity(Activity a) {
 		Intent i = new Intent(a, BooklistPreferencesActivity.class);

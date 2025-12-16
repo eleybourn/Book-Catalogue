@@ -38,8 +38,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -77,7 +75,6 @@ import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogItem;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogMenuItem;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogOnClickListener;
-import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsUtils;
 import com.eleybourn.bookcatalogue.utils.HintManager;
 import com.eleybourn.bookcatalogue.utils.Logger;
@@ -85,7 +82,6 @@ import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTask;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTaskContext;
 import com.eleybourn.bookcatalogue.utils.TrackedCursor;
-import com.eleybourn.bookcatalogue.utils.Utils;
 import com.eleybourn.bookcatalogue.utils.ViewTagger;
 
 /**
@@ -161,7 +157,7 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 		Tracker.enterOnCreate(this);
 		try {
 			super.onCreate(savedInstanceState);
-			setTitle(R.string.my_books);
+			setTitle(R.string.label_library);
 
 			if (savedInstanceState == null)
 				// Get preferred booklist state to use from preferences; default to always expanded (MUCH faster than 'preserve' with lots of books)
@@ -212,7 +208,7 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 				searchTextView.setVisibility(View.GONE);
 			} else {
 				searchTextView.setVisibility(View.VISIBLE);
-				searchTextView.setText(getString(R.string.search) + ": " + mSearchText);
+				searchTextView.setText(getString(R.string.label_search) + ": " + mSearchText);
 			}
 
 			// We want context menus to be available
@@ -258,11 +254,11 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 			setupList(true);
 
 			if (savedInstanceState == null) {
-				HintManager.displayHint(this, R.string.hint_view_only_book_details, null);
-				HintManager.displayHint(this, R.string.hint_book_list, null);
+				HintManager.displayHint(this, R.string.hint_view_only_book_details, null, null);
+				HintManager.displayHint(this, R.string.hint_book_list, null, null);
 				// This hint is only displayed for users with missing covers who might have upgraded from an earlier version and missed the update message
 				// that explains how to update covers...
-				HintManager.displayHint(this, R.string.hint_missing_covers, null, getString(R.string.admin_and_prefs), getString(R.string.import_old_files));
+				HintManager.displayHint(this, R.string.hint_missing_covers, null, null, getString(R.string.label_settings), getString(R.string.label_import_old_files));
 				//if (StartupActivity.getShowAmazonHint() && HintManager.shouldBeShown(R.string.hint_amazon_links_blurb) ) {
 				//	HintManager.displayHint(this, R.string.hint_amazon_links_blurb, null,
 				//			getString(R.string.amazon_books_by_author),
@@ -535,65 +531,6 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 				}});
 		}
 	}
-
-	/**
-	 * Set the listview background based on user preferences
-	 */
-	private void initBackground() {
-		ListView lv = getListView();
-		View root = findViewById(R.id.root);
-		View header = findViewById(R.id.header);
-
-		//
-		// Sanity checks as a result of user bug report that was caused by either:
-		// (a) root being null
-		// or
-		// (b) getResources() returning null
-		//
-		if (root == null)
-			throw new RuntimeException("Sanity Check Fail: Root view not found; isFinishing() = " + isFinishing());
-		if (header == null)
-			throw new RuntimeException("Sanity Check Fail: Header view not found; isFinishing() = " + isFinishing());
-		if (getResources() == null)
-			throw new RuntimeException("Sanity Check Fail: getResources() returned null; isFinishing() = " + isFinishing());
-
-		Drawable d = null;
-		try {
-			if (!BookCatalogueApp.isBackgroundImageDisabled()) {
-				d = Utils.makeTiledBackground(false);
-			}
-		} catch (Exception e) {
-			// Ignore...if just a coat of paint
-		}
-
-		if (BooklistPreferencesActivity.isBackgroundFlat() || d == null) {
-			final int backgroundColor = getResources().getColor(R.color.background_grey);
-			lv.setBackgroundColor(backgroundColor);
-			Utils.setCacheColorHintSafely(lv, backgroundColor);
-			if (d == null) {
-				root.setBackgroundColor(backgroundColor);
-				header.setBackgroundColor(backgroundColor);
-			} else {
-				root.setBackgroundDrawable(d);
-				header.setBackgroundDrawable(d);
-			}
-		} else {
-			Utils.setCacheColorHintSafely(lv, 0x00000000);
-			// ICS does not cope well with transparent ListView backgrounds with a 0 cache hint, but it does
-			// seem to cope with a background image on the ListView itself.
-			if (Build.VERSION.SDK_INT >= 11) {
-				// Honeycomb
-				lv.setBackgroundDrawable(d);
-//				lv.setBackgroundDrawable(Utils.cleanupTiledBackground(getResources().getDrawable(R.drawable.bc_background_gradient_dim)));
-			} else {
-				lv.setBackgroundColor(0x00000000);				
-			}
-			root.setBackgroundDrawable(d);
-//			root.setBackgroundDrawable(Utils.cleanupTiledBackground(getResources().getDrawable(R.drawable.bc_background_gradient_dim)));
-			header.setBackgroundColor(0x00000000);
-		}
-		root.invalidate();
-	}
 	
 	/**
 	 * Fix background
@@ -610,7 +547,6 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 		if (mIsDead) 
 			return;
 
-		initBackground();		
 		Tracker.exitOnResume(this);
 	}
 
@@ -626,8 +562,6 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 		}
 
 		final int showHeaderFlags = (mCurrentStyle == null ? BooklistStyle.SUMMARY_SHOW_ALL : mCurrentStyle.getShowHeaderInfo());
-
-		initBackground();
 
 		TextView bookCounts = (TextView)findViewById(R.id.bookshelf_count);
 		if ( (showHeaderFlags & BooklistStyle.SUMMARY_SHOW_COUNT) != 0) {
@@ -1098,7 +1032,7 @@ public class BooksOnBookshelf extends BookCatalogueActivity implements BooklistC
 			switch(item.getItemId()) {
 
 			case MNU_SORT:
-				HintManager.displayHint(this, R.string.hint_booklist_style_menu, new Runnable() {
+				HintManager.displayHint(this, R.string.hint_booklist_style_menu, null, new Runnable() {
 					@Override
 					public void run() {
 						doSortMenu(false);

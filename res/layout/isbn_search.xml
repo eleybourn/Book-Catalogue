@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/padding_border" >
+    android:padding="@dimen/p_md" >
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -132,7 +132,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginLeft="10dp"
                 android:layout_toRightOf="@+id/asinCheckbox"
-                android:text="@string/search" />
+                android:text="@string/label_search" />
         </RelativeLayout>
     </LinearLayout>
 

@@ -3,7 +3,7 @@
 
     <string name="app_name">Book Catalogue</string>
     <string name="system_app_name">Book Catalogue</string>
-    <string name="menu_insert">Προσθήκη Βιβλίου</string>
+    <string name="label_insert">Προσθήκη Βιβλίου</string>
     <string name="menu_delete">Διαγραφή Βιβλίου</string>
     <string name="author">Συγγραφέας</string>
     <string name="title">Τίτλος</string>
@@ -21,13 +21,13 @@
     <string name="menu_sort_by_author_expanded">Επέκταση Όλων</string>
     <string name="menu_sort_by">Ταξινόμηση κατα</string>
     <string name="menu_sort_by_author_collapsed">Απόκρυψη Όλων</string>
-    <string name="search">Αναζήτηση</string>
+    <string name="label_search">Αναζήτηση</string>
     <string name="cancel">Ακύρωση</string>
     <string name="confirm_save">Αποθήκευση</string>
-    <string name="nobookshelves">Δεν έχετε δημιουργήσει ακόμα ράφια. Παρακαλούμε προσθέστε μερικά με το μενού στο κάτω μέρος της οθόνης.</string>
+    <string name="info_no_bookshelves">Δεν έχετε δημιουργήσει ακόμα ράφια. Παρακαλούμε προσθέστε μερικά με το μενού στο κάτω μέρος της οθόνης.</string>
     <string name="menu_insert_bs">Δημιουργία Ραφιού</string>
     <string name="confirm_add_bs">Προσθήκη Ραφιού</string>
-    <string name="menu_bookshelf">Διαχείρηση Ραφιών</string>
+    <string name="label_bookshelf">Διαχείρηση Ραφιών</string>
     <string name="confirm_save_bs">Αποθήκευση Ραφιού</string>
     <string name="menu_delete_bs">Διαγραφή Ραφιού</string>
     <string name="delete_1st_bs">Δεν μπορεί να διαγραφεί το 1ο ράφι.</string>
@@ -50,8 +50,8 @@
     <string name="menu_administration">Διαχειριστής</string>
     <string name="install_scan">Για να σκανάρετε τα βιβλία σας μέσω ISBN barcode, θα πρέπει να εγκαταστήσετε κάποια απο τίς εφαρμογές Zxing, pic2shop or Google Googles για σάρωση barcode.</string>
     <string name="install_scan_title">Εγκατάσταση σαρωτή barcode</string>
-    <string name="version_number">Αριθμός έκδοσης:</string>
-    <string name="donate">Εαν θέλετε να στηρίξετε την αναπτυξη της εφαρμογής, παρακαλούμε δωρήστε μέ το my Amazon Wishlist ή το paypal κουμπί παρακάτω. Το να βρίσκεσαι στην Αυστραλία σημαίνει ότι δεν μπορεί να εκδοθεί &quot;πληρωμένη&quot; έκδοση. :-) </string>
+    <string name="label_version_number">Αριθμός έκδοσης:</string>
+    <string name="para_donate">Εαν θέλετε να στηρίξετε την αναπτυξη της εφαρμογής, παρακαλούμε δωρήστε μέ το my Amazon Wishlist ή το paypal κουμπί παρακάτω. Το να βρίσκεσαι στην Αυστραλία σημαίνει ότι δεν μπορεί να εκδοθεί &quot;πληρωμένη&quot; έκδοση. :-) </string>
     <string name="upgrade_title">Από την τελευταία σας αναβάθμιση.</string>
     <string name="edit_book">Επεξεργασία βιβλίου</string>
     <string name="edit_book_notes">Τα σχόλια μου</string>
@@ -62,16 +62,16 @@
     <string name="loan_to">Δανεισμός βιβλίου στον/στην:</string>
     <string name="returned">Έχει επιστραφεί</string>
     <string name="name">Όνομα</string>
-    <string name="webpage_label">Ιστοσελίδα:</string>
-    <string name="sourcecode_label">Πηγαίος Κώδικας:</string>
-    <string name="contact_label">Επαφές:</string>
-    <string name="webpage">https://wiki.github.com/eleybourn/Book-Catalogue/</string>
-    <string name="sourcecode">https://github.com/eleybourn/Book-Catalogue</string>
-    <string name="helppage">https://github.com/eleybourn/Book-Catalogue/wiki/Help</string>
+    <string name="label_webpage">Ιστοσελίδα:</string>
+    <string name="label_sourcecode">Πηγαίος Κώδικας:</string>
+    <string name="label_contact">Επαφές:</string>
+    <string name="url_webpage">https://wiki.github.com/eleybourn/Book-Catalogue/</string>
+    <string name="url_sourcecode">https://github.com/eleybourn/Book-Catalogue</string>
+    <string name="url_help">https://github.com/eleybourn/Book-Catalogue/wiki/Help</string>
     <string name="contact1">eleybourn@gmail.com</string>
     <string name="contact2">philip.warner@rhyme.com.au</string>
-    <string name="donate_label">Δωρεά</string>
-    <string name="about_label">Σχετικά με την εφαρμογή</string>
+    <string name="label_donate">Δωρεά</string>
+    <string name="label_about">Σχετικά με την εφαρμογή</string>
     <string name="sortby_author">Ταξινόμηση κατά Συγγραφέα</string>
     <string name="sortby_title">Ταξινόμηση κατά Τίτλο</string>
     <string name="sortby_series">Ταξινόμηση κατά Σειρά</string>
@@ -79,7 +79,7 @@
     <string name="sortby_unread">Ταξινόμηση κατά Αδιάβαστα</string>
     <string name="sortby_genre">Ταξινόμηση κατά Είδος</string>
     <string name="list_price">List Price</string>
-    <string name="update_fields">Αυτόματη ενημέρωση πεδίων</string>
+    <string name="label_update_fields">Αυτόματη ενημέρωση πεδίων</string>
     <string name="select_fields_to_update">Επιλεγξτε πεδία για ενημέρωση</string>
     <string name="select_fields_to_update_help">Τα επιλεγμένα πεδία θα ενημερωθούν από το διαδίκτυο. Τα μη επιλεγμένα θα μείνουν ως έχει.</string>
     <string name="overwrite_thumbnail">Τα επιλεγμένα πεδία θα ενημερωθούν όπως φαίνεται, αλλά οι Μικρογραφίες μπορούν να κατέβουν προαιρετικά για ΌΛΑ τα βιβλία.\n\nΘέλετε να αντικαταστήσετε όλες τις υπάρχουσες μικρογραφίες; Προσοχή, θα χρειαστεί πολύς χρόνος. </string>
@@ -89,11 +89,11 @@
     <string name="search_fail">Η αναζήτηση του βιβλίου απέτυχε. Παρακαλούμε ελέγξτε τις ρυθμίσεις δικτύου.</string>
     <string name="search_exception">Αναζήτηση απέτυχε όταν %1$s: %2$s</string>
     <string name="menu_delete_thumb">Διαγραφή μικρογραφίας</string>
-    <string name="help">Βοήθεια</string>
-    <string name="menu_manage_fields">Διαχείρηση ορατότητας πεδίου</string>
+    <string name="label_help">Βοήθεια</string>
+    <string name="label_manage_fields">Διαχείρηση ορατότητας πεδίου</string>
     <string name="manage_fields_help">Τα επιλεγμένα πεδία είναι ορατά στις οθόνες προσθήκης/επεξεργασίας βιβλίου. Τα μη επιλεγμένα πεδία είναι κρυφά.</string>
     <string name="edit_book_anthology">Τίτλοι Ανθολογιών</string>
-    <string name="amazon_wishlist">Amazon Wishlist</string>
+    <string name="label_amazon_wishlist">Amazon Wishlist</string>
     <string name="same_author">Όλες οι ιστορίες σε αυτήν την ανθολογία είναι γραμμένες από τον ίδιο συγγραφέα.</string>
     <string name="menu_delete_anthology">Διαγραφή τίτλου από Ανθολογία</string>
     <string name="is_anthology">Είναι αυτό το βιβλίο ανθολογία;</string>
@@ -130,10 +130,10 @@
     <!-- NOTE: Adding a new format will involve changing code that references this list -->
     <string name="description">Περιγραφή</string>
     <string name="genre">Είδος</string>
-    <string name="notset">Μη ορισμένο</string>
+    <string name="not_set">Μη ορισμένο</string>
     <string name="menu_search">Αναζήτηση βιβλίων</string>
     <string name="isbn_name_search_help">Η προσθήκη βιβλίων με ISBN είναι πολύ πιο ακριβής από την προσθήκη με συγγραφέα και τίτλο και γενικά είναι η προτεινομενη μέθοδος. Παρακαλούμε να θυμάστε ότι μερικές φορές το σωστό barcode βρίσκεται στην εσωτερική πλευρά του εξωφύλλου. \n\n</string>
-    <string name="help_click_here">Παρακαλούμε πατήστε εδώ για να μπέιτε στις online σελίδες βοήθειας</string>
+    <string name="para_help_click_here">Παρακαλούμε πατήστε εδώ για να μπέιτε στις online σελίδες βοήθειας</string>
     <string name="vldt_unable_to_get_value">Δεν βρέθηκε τιμή για \'%s\'</string>
     <string name="vldt_integer_expected">Αναμένεται ακέραια τιμή για \'%s\'</string>
     <string name="vldt_real_expected">Αναμένεται ένας πραγματικός αριθμός για \'%s\'</string>
@@ -217,10 +217,10 @@
     <string name="disable_dialogue">Απενεργοποίηση μηνυμάτων</string>
     <string name="lt_reset_messages_info">Ανά τακτά χρονικά διαστήματα αυτή η εφαρμογή θα εμφανίζει μηνύματα σχετικά με το LibraryThing. Πατήστε το παρακάτω κουμπί για να επαναφέρετε όποια από αυτά τα μυνήματα έχουν απενεργοποιηθεί.</string>
     <string name="reset">Επαναφορά</string>
-    <string name="send_info_text">Πατήστε στο παρακάτω κουμπί για να αποστείλετε αναφορά σφαλμάτων και προβλημάτων σε κάποιον προγραμματιστή μας. Θα δημιουργηθεί αντίγραφο ολόκληρης της βάσης δεδομένων σας καθώς και των αρχείων log. Εαν δεν θέλετε να στείλετε αυτά τα αρχεία διαγράψτε τα επισυναπτόμενα αρχεία του email πριν την αποστολή.</string>
-    <string name="send_info">Αποστολή πληροφοριών</string>
-    <string name="cleanup_files_text">Τα προσωρινά αρχεία χρησιμοποιούν %s στην κάρτα SD. Αρχεία καταγραφής και άλλων δεδομένων αποθηκεύονται στην κάρτα SD σε κάθε ενημέρωση, όταν γινονται αντίγραφα ασφαλείας της βάσης δεδομένων και όταν η εφαρμογή σταματάει να λειτουργεί. Πατήστε το παρακάτω κουμπί για να καθαρίσετε αυτά τα αρχεία από την κάρτα SD. Εαν αντιμετωπίζετε διακοπές λειτουργίας ή άλλα σφάλματα, παρακαλούμε σκεφτείτε να πατήσετε πρώτα το κουμπί \'Αποστολή πληροφοριών\'.</string>
-    <string name="cleanup_files">Εκκαθάριση αρχείων</string>
+    <string name="para_send_info">Πατήστε στο παρακάτω κουμπί για να αποστείλετε αναφορά σφαλμάτων και προβλημάτων σε κάποιον προγραμματιστή μας. Θα δημιουργηθεί αντίγραφο ολόκληρης της βάσης δεδομένων σας καθώς και των αρχείων log. Εαν δεν θέλετε να στείλετε αυτά τα αρχεία διαγράψτε τα επισυναπτόμενα αρχεία του email πριν την αποστολή.</string>
+    <string name="button_send_info">Αποστολή πληροφοριών</string>
+    <string name="para_cleanup_files">Τα προσωρινά αρχεία χρησιμοποιούν %s στην κάρτα SD. Αρχεία καταγραφής και άλλων δεδομένων αποθηκεύονται στην κάρτα SD σε κάθε ενημέρωση, όταν γινονται αντίγραφα ασφαλείας της βάσης δεδομένων και όταν η εφαρμογή σταματάει να λειτουργεί. Πατήστε το παρακάτω κουμπί για να καθαρίσετε αυτά τα αρχεία από την κάρτα SD. Εαν αντιμετωπίζετε διακοπές λειτουργίας ή άλλα σφάλματα, παρακαλούμε σκεφτείτε να πατήσετε πρώτα το κουμπί \'Αποστολή πληροφοριών\'.</string>
+    <string name="button_cleanup_files">Εκκαθάριση αρχείων</string>
     <string name="megabytes">%.2fMB</string>
     <string name="kilobytes">%.2fkB</string>
     <string name="bytes">%.0f bytes</string>
@@ -244,10 +244,10 @@
     <string name="delete_event">Διαγραφή Event</string>
     <string name="delete_task">Διαγραφή Εργασίας</string>
 
-    <string name="my_books">Τα βιβλία μου</string>
+    <string name="label_library">Τα βιβλία μου</string>
     <string name="my_books_classic">Τα βιβλία μου (Κλασική προβολή)</string>
     <string name="loan_return_book">Δανεισμός, Επιστροφή ή Επεξεργασία Βιβλίου</string>
-    <string name="admin_and_prefs">Διαχείριση και προτιμήσεις</string>
+    <string name="label_settings">Διαχείριση και προτιμήσεις</string>
     <string name="edit_book_send_to_gr">Αποστολή στο goodreads</string>
     <string name="goodreads">goodreads</string>
     <string name="goodreads_auth_blurb_part1">Το Goodreads είναι μια ιστοσελίδα με αποστολή «να βοηθήσει τους ανθρώπους να βρουν και να μοιραστούν τα βιβλία που αγαπούν».
@@ -265,7 +265,7 @@
     <string name="authorize_access">Έγκριση Πρόσβασης</string>
     <string name="authorize_access_already_auth">Φαίνεται σαν να έχει ήδη εγκριθεί αυτή η εφαρμογή. Όλες οι λειτουργίες από το goodreads θα πρέπει να είναι ήδη διαθέσιμες</string>
     <string name="goodreads_access_error">Υπήρξε πρόβλημα σύνδεσης κατά την πρόσβαση στο goodreads. Παρακαλούμε ελέγξτε εαν υπάρχει σύνδεση στο διαδίκτυα και η ιστοσελίδα goodreads λειτουργεί. Αν το πρόβλημα συνεχίζεται επικοινωνήστε με την υποστήριξη</string>
-    <string name="other_preferences">Άλλες Προτιμήσεις</string>
+    <string name="label_other_preferences">Άλλες Προτιμήσεις</string>
     <string name="user_interface">Περιβάλλον Χρήστη</string>
     <string name="start_in_my_books">Εκκίνηση σε \'Τα βιβλία μου\'</string>
     <string name="include_classic_catalogue_view">Συμπεριέλαβε την κλασική προβολή καταλόγου</string>
@@ -301,7 +301,7 @@
     <string name="x_of_y">%1$s από %2$s</string>
     <string name="send_book_to_goodreads">Αποστολή βιβλίου %1$s στο goodreads</string>
 
-    <string name="erase_cover_cache">Διαγραφή εξωφύλλων από προσωρινή μνήμη</string>
+    <string name="label_erase_cover_cache">Διαγραφή εξωφύλλων από προσωρινή μνήμη</string>
     <string name="crash_toast_text">Η λειτουργία του BookCatalogue διακόπηκε. Παρακαλούμε βοηθήστε μας να βελτιώσουμε την εφαρμογή στέλνοντας την αναφορά της διακοπής.</string>
     <string name="crash_notif_ticker_text">Το BookCatalogue σταμάτησε να λειτουργεί</string>
     <string name="crash_notif_title">Βλάβη του BookCatalogue</string>
@@ -331,13 +331,13 @@
     <string name="sort_author_year">Συγγραφέας και χρονιά</string>
     <string name="empty_with_brackets">(άδειο)</string>
 
-    <string name="booklist_preferences">Προτιμήσεις λίστας βιβλίων</string>
+    <string name="label_booklist_preferences">Προτιμήσεις λίστας βιβλίων</string>
     <string name="extra_book_details">Επιπλέον λεπτομέρειες βιβλίου</string>
     <string name="general">Γενικά</string>
     <string name="bookshelves">Ράφια Βιβλιοθήκης</string>
     <string name="shelves">Ράφια</string>
     <string name="location">Τοποθεσία</string>
-    <string name="data_import_export">Εισαγωγή/Εξαγωγή Δεδομένων</string>
+    <string name="label_data_import_export">Εισαγωγή/Εξαγωγή Δεδομένων</string>
     <string name="unrecognized_task">Μη αναγνωρίσιμη Εργασία</string>
     <string name="rebuilding_search_index">Ανακατασκευή Ευρετηρίου Αναζήτησης&#8230;</string>
     <string name="optimizing_databases">Βελτιστοποίηση βάσεων δεδομένων&#8230;</string>
@@ -348,12 +348,12 @@
     <string name="always_start_booklists_collapsed">Εκκίνηση πάντα με κλειστές λίστες βιβλίων</string>
     <string name="remember_booklists_state">Διατήρηση κατάστασης λίστας βιβλίων</string>
     <string name="searching_goodreads">Αναζήτηση στο goodreads</string>
-    <string name="edit_book_list_styles">Επεξεργασία στυλ λίστας βιβλίων</string>
+    <string name="label_edit_book_list_styles">Επεξεργασία στυλ λίστας βιβλίων</string>
     <string name="show_more_ellipsis">Εμφάνιση περισσότερων&#8230;</string>
     <string name="show_fewer_ellipsis">Εμφάνιση λιγότερων&#8230;</string>
     <string name="customize_ellipsis">Προσαρμογή&#8230;</string>
     <string name="hint">Συμβουλή</string>
-    <string name="reset_hints">Επαναφορά συμβουλών</string>
+    <string name="label_reset_hints">Επαναφορά συμβουλών</string>
     <string name="do_not_show_again">Μην εμφανιστείς ξανά</string>
     <string name="hint_booklist_styles_editor">Σε αυτή την οθόνη μπορείτε να προσαρμόσετε τη λίστα των στυλ που θα εμφανίζεται στο μενού με τα προεπιλεγμένα στυλ σας.
     										\n\nΤο πράσινο V δείχνει ότι το στυλ θα εμφανίζεται στη λίστα, ενώ το κόκκινο Χ δείχνει πως δεν θα εμφανίζεται.
@@ -409,13 +409,13 @@
     <string name="thing_must_not_be_blank">%1$s δεν πρέπει να είναι κενό</string>
     <string name="edit">Επεξεργασία</string>
     <string name="groupings">Ομαδοποιήσεις</string>
-    <string name="preferences">Επιλογές</string>
+    <string name="label_preferences">Επιλογές</string>
     <string name="unexpected_error">Ένα απροσδόκητο σφάλμα συνέβη, παρακαλούμε στείλτε τις λεπτομέρειες στην υποστήριξη με χρήση της επιλογής \'Βοήθεια\' από το κεντρικό μενού.</string>
     <string name="delete_style">Διαγραφή στυλ</string>
     <string name="edit_style">Επεξεργασία στυλ</string>
     <string name="clone_style">Αντιγραφή στυλ</string>
-    <string name="dash_or_dash">- Ή -</string>
-    <string name="paypal_donation">Δωρεά μέσω PayPal</string>
+    <string name="label_dash_or_dash">- Ή -</string>
+    <string name="label_paypal_donation">Δωρεά μέσω PayPal</string>
     <string name="compact">Συμπαγής</string>
     <string name="user_defined">Καθορισμενο-από-χρήστη</string>
     <string name="builtin">Ενσωματωμένο</string>
@@ -645,9 +645,9 @@
     <string name="connecting_to_web_site">Γίνεται σύνδεση με τη ιστοσελίδα&#8230;</string>
 
     <!-- Admin option to import -->
-    <string name="backup_to_archive">Αντίγραφο ασφαλείας στο Αρχείο</string>
+    <string name="label_backup_to_archive">Αντίγραφο ασφαλείας στο Αρχείο</string>
     <!-- Admin option to import -->
-    <string name="import_from_archive">Εισαγωγή από Αρχείο</string>
+    <string name="label_import_from_archive">Εισαγωγή από Αρχείο</string>
 
     <!-- Hint displayed when aCatalogue Backup is done -->
     <string name="a_and_b">%1$s και %2$s</string>
@@ -657,7 +657,7 @@
     <!-- Displayed in progress dialog when exporting covers -->
     <string name="covers_progress">%1$s εξώφυλλα επεξεργάστηκαν (%2$s λείπουν)</string>
     <!-- Heading in Admin activity and in 'Export' dialogue -->
-    <string name="advanced_options">Προχωρημένες Επιλογές</string>
+    <string name="label_advanced_options">Προχωρημένες Επιλογές</string>
     <!-- Showed in progress dialog when an import starts -->
     <string name="backing_up_ellipsis">Δημιουργείται Αντίγραφο Ασφαλείας&#8230;</string>
     <!-- Showed in progress dialog when an import starts -->
@@ -670,9 +670,9 @@
     <!-- For saving and opening exports or backups -->
 
     <!-- Admin option to export books -->
-    <string name="export_to_csv">Εξαγωγή σε αρχείο CSV</string>
+    <string name="label_export_to_csv">Εξαγωγή σε αρχείο CSV</string>
     <!-- Admin option to import books -->
-    <string name="import_from_csv">Εισαγωγή από αρχείο CSV</string>
+    <string name="label_import_from_csv">Εισαγωγή από αρχείο CSV</string>
 
     <!-- Displayed when a file/open dialog results in selecting a non-exitant file -->
 
@@ -698,7 +698,7 @@
     </string>
 
     <!-- Displayed in Admin menu advanced options (top make a copy of the internal database on the sdcard -->
-    <string name="copy_database">Αντιγραφή Βάσης Δεδομένων (για τεχνική υποστήριξη)</string>
+    <string name="label_copy_database">Αντιγραφή Βάσης Δεδομένων (για τεχνική υποστήριξη)</string>
 
     <!-- Items in list of options for the 'Summary Details' preference. Detrmines what is show in book list header -->
     <string name="show_book_count">Εμφάνιση αριθμού βιβλίων</string>
@@ -896,10 +896,10 @@
     <string name="zxing_scanner">Σαρωτής Zxing</string>
 
     <!-- Heading in 'about' dialog -->
-    <string name="special_thanks_label">Ειδικές Ευχαριστίες</string>
+    <string name="label_special_thanks">Ειδικές Ευχαριστίες</string>
 
     <!-- Credits in the 'about' dialog -->
-    <string name="translators_blurb">Το BookCatalogue είναι προιόν προσπάθειας πολλών ανθρώπων και δεν θα είχε τέτοια ευρεία αποδοχή χωρίς \nτην γενναιόδωρη βοήθεια των εθελοντών μεταφραστών: %1$s (εαν ξεχνάμε κάποιον, παρακαλούμε ενημερώστε μας).</string>
+    <string name="para_translators">Το BookCatalogue είναι προιόν προσπάθειας πολλών ανθρώπων και δεν θα είχε τέτοια ευρεία αποδοχή χωρίς \nτην γενναιόδωρη βοήθεια των εθελοντών μεταφραστών: %1$s (εαν ξεχνάμε κάποιον, παρακαλούμε ενημερώστε μας).</string>
 
     <!-- End: Added/Updated in 5.1.0 -->
 

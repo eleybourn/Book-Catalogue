@@ -15,8 +15,6 @@ public class BookCataloguePreferences {
 
 	/** Name to use for global preferences; non-global should be moved to appropriate Activity code */
 	public static final String PREF_START_IN_MY_BOOKS = "start_in_my_books";
-	public static final String PREF_INCLUDE_CLASSIC_MY_BOOKS = "App.includeClassicView";
-	public static final String PREF_DISABLE_BACKGROUND_IMAGE = "App.DisableBackgroundImage";
 	public static final String PREF_SHOW_ALL_AUTHORS = "APP.ShowAllAuthors";
 	public static final String PREF_SHOW_ALL_SERIES = "APP.ShowAllSeries";
 	public static final String PREF_DISPLAY_FIRST_THEN_LAST_NAMES = "APP.DisplayFirstThenLast";

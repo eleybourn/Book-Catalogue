@@ -1622,136 +1622,6 @@ public class Utils {
 	}
 
 	/**
-	 * Set the passed Activity background based on user preferences
-	 */
-	public static void initBackground(int bgResource, Activity a, boolean bright) {
-		initBackground(bgResource, a.findViewById(R.id.root), bright);
-	}
-
-    public static void initBackground(int bgResource, Fragment f, boolean bright) {
-		initBackground(bgResource, f.getView().findViewById(R.id.root), bright);
-	}
-
-	/**
-	 * Set the passed Activity background based on user preferences
-	 */
-	public static void initBackground(int bgResource, Activity a, int rootId, boolean bright) {
-		initBackground(bgResource, a.findViewById(rootId), bright);
-	}
-	
-	public static void initBackground(int bgResource, View root, boolean bright) {
-		try {
-			final int backgroundColor = BookCatalogueApp.context.getResources().getColor(R.color.background_grey);
-
-			if (BookCatalogueApp.isBackgroundImageDisabled()) {
-				root.setBackgroundColor(backgroundColor);
-				if (root instanceof ListView) {
-					setCacheColorHintSafely((ListView)root, backgroundColor);				
-				}
-			} else {
-				if (root instanceof ListView) {
-					ListView lv = ((ListView)root);
-					setCacheColorHintSafely(lv, 0x00000000);				
-				}
-				//Drawable d = cleanupTiledBackground(a.getResources().getDrawable(bgResource));
-				Drawable d = makeTiledBackground(bright);
-
-				root.setBackgroundDrawable(d);
-			}
-			root.invalidate();
-		} catch (Exception e) {
-            // Usually the errors result from memory problems; do a gc just in case.
-            System.gc();
-			// This is a purely cosmetic function; just log the error
-			Logger.logError(e, "Error setting background");
-		}
-	}
-	
-	/**
- 	 * Reuse of bitmaps in tiled backgrounds is a known cause of problems:
-     *		http://stackoverflow.com/questions/4077487/background-image-not-repeating-in-android-layout
-	 * So we avoid reusing them.
-	 * 
-	 * This seems to have become further messed up in 4.1 so now, we just created them manually. No references,
-	 * but the old cleanup method (see below for cleanupTiledBackground()) no longer works. Since it effectively
-	 * un-cached the background, we just create it here.
-	 * 
-	 * The main problem with this approach is that the style is defined in code rather than XML.
-	 *
-	 * @param bright	Flag indicating if background should be 'bright'
-	 * 
-	 * @return			Background Drawable
-	 */
-	public static Drawable makeTiledBackground(boolean bright) {
-		// Storage for the layers
-		Drawable[] drawables = new Drawable[2];
-		// Get the BG image, put in tiled drawable
-		Bitmap b = BitmapFactory.decodeResource(BookCatalogueApp.context.getResources(), R.drawable.books_bg);
-		BitmapDrawable bmD = new BitmapDrawable(BookCatalogueApp.context.getResources(), b);
-		bmD.setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);
-		// Add to layers
-		drawables[0] = bmD;
-
-		// Set up the gradient colours based on 'bright' setting
-		int[] colours = new int[3];
-		if (bright) {
-			colours[0] = Color.argb(224, 0, 0, 0);
-			colours[1] = Color.argb(208, 0, 0, 0);
-			colours[2] = Color.argb(48, 0, 0, 0);			
-		} else {
-			colours[0] = Color.argb(255, 0, 0, 0);
-			colours[1] = Color.argb(208, 0, 0, 0);
-			colours[2] = Color.argb(160, 0, 0, 0);
-		}
-
-		// Create a gradient and add to layers
-		GradientDrawable gd = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, colours);
-		drawables[1] = gd;
-
-		// Make the layers and we are done.
-		LayerDrawable ll = new LayerDrawable(drawables);
-		ll.setDither(true);
-		
-		return ll;
-	}
-
-	///**
-	// * Reuse of bitmaps in tiled backgrounds is a known cause of problems:
-	// *		http://stackoverflow.com/questions/4077487/background-image-not-repeating-in-android-layout
-	// * So we avoid reusing them
-	// *
-	// * @param d		Drawable background that may be a BitmapDrawable or a layered drawablewhose first 
-	// * 				layer is a tiled bitmap
-	// * 
-	// * @return		Modified Drawable
-	// */
-	//private static Drawable cleanupTiledBackground(Drawable d) {
-	//	if (d instanceof LayerDrawable) {
-	//		System.out.println("BG: BG is layered");
-	//		LayerDrawable ld = (LayerDrawable)d;
-	//		Drawable l = ld.getDrawable(0);
-	//		if (l instanceof BitmapDrawable) {
-	//			d.mutate();
-	//			l.mutate();
-	//			System.out.println("BG: Layer0 is BMP");
-	//			BitmapDrawable bmp = (BitmapDrawable) l;
-	//			bmp.mutate(); // make sure that we aren't sharing state anymore
-	//			//bmp.setTileModeXY(TileMode.CLAMP, TileMode.CLAMP);			
-	//			bmp.setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);
-	//		} else {
-	//			System.out.println("BG: Layer0 is " + l.getClass().getSimpleName() + " (ignored)");				
-	//		}
-	//	} else if (d instanceof BitmapDrawable) {
-	//		System.out.println("BG: Drawable is BMP");
-	//		BitmapDrawable bmp = (BitmapDrawable) d;
-	//		bmp.mutate(); // make sure that we aren't sharing state anymore
-	//		//bmp.setTileModeXY(TileMode.CLAMP, TileMode.CLAMP);			
-	//		bmp.setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);			
-	//	}
-	//	return d;
-	//}
-
-	/**
 	 * Call setCacheColorHint on a listview and trap IndexOutOfBoundsException. 
 	 * 
 	 * There is a bug in Android 2.2-2.3 (approx) that causes this call to throw 
@@ -2179,8 +2049,8 @@ public class Utils {
 			//String baseUrl = "http://www.amazon.com/gp/search?index=books&tag=philipwarneri-20&tracking_id=philipwarner-20";
 			//String extra = AmazonUtils.buildSearchArgs(author, series);
 			//if (extra != null && !extra.trim().equals("")) {
-			//	Intent loadweb = new Intent(Intent.ACTION_VIEW, Uri.parse(baseUrl + extra));
-			//	context.startActivity(loadweb); 			
+			//	Intent loadWeb = new Intent(Intent.ACTION_VIEW, Uri.parse(baseUrl + extra));
+			//	context.startActivity(loadWeb); 			
 			//}			
 		}
 		return;

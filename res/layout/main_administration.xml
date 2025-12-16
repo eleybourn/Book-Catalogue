@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/layout_body">
+    <!-- Root -->
+
+    <include layout="@layout/layout_header" />
+    <include layout="@layout/layout_background" />
+
+    <!-- CONTENT -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="?attr/actionBarSize"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:id="@+id/contentLayout"
+            style="@style/layout_main">
+
+            <!-- PREFERENCES Header -->
+            <TextView
+                style="@style/layout_heading"
+                android:text="@string/label_preferences" />
+
+            <!-- BOOKSHELVES -->
+            <TextView
+                android:id="@+id/bookshelfLabel"
+                style="@style/layout_menu_list"
+                app:drawableLeftCompat="@drawable/ic_menu_shelves"
+                android:text="@string/label_bookshelf" />
+
+            <!-- FIELDS -->
+
+            <TextView
+                android:id="@+id/fieldsLabel"
+                style="@style/layout_menu_list"
+                app:drawableLeftCompat="@drawable/ic_menu_fields"
+                android:text="@string/label_manage_fields" />
+
+            <!-- BOOK LIST PREFS -->
+
+            <TextView
+                android:id="@+id/booklistPreferencesLabel"
+                style="@style/layout_menu_list"
+                app:drawableLeftCompat="@drawable/ic_menu_manage"
+                android:text="@string/label_booklist_preferences" />
+
+            <!-- Edit Styles -->
+
+            <TextView
+                android:id="@+id/editStylesLabel"
+                style="@style/layout_menu_list"
+                app:drawableLeftCompat="@drawable/ic_menu_manage"
+                android:text="@string/label_edit_book_list_styles" />
+
+            <!-- OTHER PREFS -->
+
+            <TextView
+                android:id="@+id/otherPrefsLabel"
+                style="@style/layout_menu_list"
+                app:drawableLeftCompat="@drawable/ic_menu_manage"
+                android:text="@string/label_other_preferences" />
+
+            <!-- DATA IMPORT/EXPORT -->
+
+            <TextView
+                style="@style/layout_heading"
+                android:text="@string/label_data_import_export" />
+
+            <TextView
+                android:id="@+id/backupCatalogueLabel"
+                style="@style/layout_menu_list"
+                android:text="@string/label_backup_to_archive"
+                app:drawableLeftCompat="@drawable/ic_menu_save" />
+
+            <TextView
+                android:id="@+id/restoreCatalogueLabel"
+                style="@style/layout_menu_list"
+                app:drawableLeftCompat="@drawable/ic_menu_upload"
+                android:text="@string/label_import_from_archive" />
+
+            <TextView
+                android:id="@+id/exportLabel"
+                style="@style/layout_menu_list"
+                app:drawableLeftCompat="@drawable/ic_menu_save"
+                android:text="@string/label_export_to_csv" />
+
+            <TextView
+                android:id="@+id/importLabel"
+                style="@style/layout_menu_list"
+                app:drawableLeftCompat="@drawable/ic_menu_upload"
+                android:text="@string/label_import_from_csv" />
+
+            <!-- UPDATE FIELDS -->
+            <TextView
+                android:id="@+id/thumbLabel"
+                style="@style/layout_menu_list"
+                app:drawableLeftCompat="@drawable/ic_menu_gallery"
+                android:text="@string/label_update_fields" />
+
+            <!-- ADVANCED OPTIONS Header -->
+            <TextView
+                style="@style/layout_heading"
+                android:text="@string/label_advanced_options" />
+
+            <!-- RESET HINTS -->
+            <TextView
+                android:id="@+id/resetHintsLabel"
+                style="@style/layout_menu_list"
+                app:drawableLeftCompat="@drawable/ic_menu_fields"
+                android:text="@string/label_reset_hints" />
+
+            <!-- ERASE COVER CACHE -->
+            <TextView
+                android:id="@+id/eraseCoverCacheLabel"
+                style="@style/layout_menu_list"
+                app:drawableLeftCompat="@drawable/ic_menu_close_clear_cancel"
+                android:text="@string/label_erase_cover_cache" />
+
+            <!-- BACKUP DATABASE (DEBUG ONLY!) -->
+            <TextView
+                android:id="@+id/backupLabel"
+                style="@style/layout_menu_list"
+                app:drawableLeftCompat="@drawable/ic_menu_archive"
+                android:text="@string/label_copy_database" />
+
+            <TextView
+                android:id="@+id/importOldFilesLabel"
+                style="@style/layout_menu_list"
+                app:drawableLeftCompat="@drawable/ic_menu_upload"
+                android:text="@string/label_import_old_files" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

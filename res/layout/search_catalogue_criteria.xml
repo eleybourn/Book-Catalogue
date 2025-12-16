@@ -13,8 +13,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/padding_border"
-        android:paddingRight="@dimen/padding_border" >
+        android:paddingLeft="@dimen/p_md"
+        android:paddingRight="@dimen/p_md" >
 
         <LinearLayout
             android:id="@+id/original_details"
@@ -96,7 +96,7 @@
                 android:id="@+id/books_found"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/padding_border"
+                android:layout_marginTop="@dimen/p_md"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <View
@@ -112,8 +112,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/padding_border"
-        android:paddingRight="@dimen/padding_border" >
+        android:paddingLeft="@dimen/p_md"
+        android:paddingRight="@dimen/p_md" >
 
         <View
             android:layout_width="fill_parent"

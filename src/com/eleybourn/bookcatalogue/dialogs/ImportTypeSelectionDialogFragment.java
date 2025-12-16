@@ -107,7 +107,7 @@ public class ImportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
 		}
 
         View v = requireActivity().getLayoutInflater().inflate(R.layout.import_type_selection, null);
-		AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setIcon(R.drawable.ic_archive).setView(v).setTitle(R.string.import_from_archive).create();
+		AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setIcon(R.drawable.ic_archive).setView(v).setTitle(R.string.label_import_from_archive).create();
 		//alertDialog.setIcon(R.drawable.ic_menu_help);
 		alertDialog.setCanceledOnTouchOutside(false);
 

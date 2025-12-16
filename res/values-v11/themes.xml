@@ -9,7 +9,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
-        <item name="android:hint">@string/notset</item>
+        <item name="android:hint">@string/not_set</item>
         <item name="android:background">@drawable/gradient_button</item>
         <item name="android:gravity">left|center_vertical</item>
         <item name="android:textColor">#ffffffff</item>
@@ -20,7 +20,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
         <item name="android:layout_alignParentLeft">true</item>
-        <item name="android:hint">@string/notset</item>    
+        <item name="android:hint">@string/not_set</item>
     </style>
 
 </resources>

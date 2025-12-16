@@ -12,7 +12,7 @@
         android:layout_height="1dp"
         android:layout_alignParentTop="true"
         android:background="@drawable/main_menu_header_divider"
-        android:paddingBottom="@dimen/padding_border" />
+        android:paddingBottom="@dimen/p_md" />
 
     <LinearLayout
         android:id="@+id/footer"

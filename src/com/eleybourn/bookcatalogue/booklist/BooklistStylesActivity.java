@@ -77,9 +77,8 @@ public class BooklistStylesActivity extends EditObjectList<BooklistStyle> {
 			//((AutoCompleteTextView)this.findViewById(R.id.series)).setAdapter(mAdapter);
 
 			if (savedInstanceState == null)
-				HintManager.displayHint(this, R.string.hint_booklist_styles_editor, null);
+				HintManager.displayHint(this, R.string.hint_booklist_styles_editor, null, null);
 
-			Utils.initBackground(R.drawable.bc_background_gradient_dim, this, R.id.list_wrapper, false);
 
 		} catch (Exception e) {
 			Logger.logError(e);
@@ -92,7 +91,6 @@ public class BooklistStylesActivity extends EditObjectList<BooklistStyle> {
 	@Override 
 	public void onResume() {
 		super.onResume();
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, R.id.list_wrapper, false);		
 	}
 
 	/**

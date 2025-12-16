@@ -5,7 +5,7 @@
     android:layout_height="fill_parent"
     android:background="@drawable/bc_background_gradient_dim"
     android:fillViewport="true"
-    android:paddingLeft="@dimen/padding_border" >
+    android:paddingLeft="@dimen/p_md" >
 
     <!-- This is where the automatically generated properties will go -->
 
@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:gravity="top"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/padding_border" >
+        android:paddingLeft="@dimen/p_md" >
     </LinearLayout>
 
     <!--
@@ -25,7 +25,7 @@
 			android:layout_width="fill_parent" 
 			android:layout_height="wrap_content"
 			android:paddingLeft="0sp">
-			<com.eleybourn.bookcatalogue.widgets.CapitalizedTextView 
+			<TextView
 				android:layout_width="wrap_content" 
 				android:layout_height="wrap_content" 
 				android:text="@+string/management"

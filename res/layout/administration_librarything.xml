@@ -9,7 +9,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/padding_border" >
+        android:paddingLeft="@dimen/p_md" >
 
         <TextView
             android:layout_width="fill_parent"
@@ -26,7 +26,7 @@
             android:paddingTop="20dp"
             android:text="@string/lt_register_text"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/link_blue" />
+            android:textColor="@color/theme_tertiary" />
 
         <TextView
             android:id="@+id/devkey_url"
@@ -37,7 +37,7 @@
             android:paddingTop="10dp"
             android:text="@string/lt_devkey_text"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/link_blue" />
+            android:textColor="@color/theme_tertiary" />
 
         <TextView
             android:layout_width="fill_parent"

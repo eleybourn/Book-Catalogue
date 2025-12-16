@@ -36,7 +36,6 @@ import com.eleybourn.bookcatalogue.properties.PropertyGroup;
 import com.eleybourn.bookcatalogue.properties.ValuePropertyWithGlobalDefault;
 import com.eleybourn.bookcatalogue.utils.HintManager;
 import com.eleybourn.bookcatalogue.utils.Logger;
-import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Activity to manage the preferences associate with Book lists (and the BooksOnBookshelf activity).
@@ -49,7 +48,7 @@ public class BooklistPreferencesActivity extends PreferencesBase {
 	public static final String TAG = "BookList.Global.";
 
 	/** Show flat backgrounds in Book lists */
-	public static final String PREF_BACKGROUND_THUMBNAILS = TAG + "BackgroundThumbnails";
+	public static final String PREF_theme_surfaceContainerNAILS = TAG + "BackgroundThumbnails";
 	/** Show flat backgrounds in Book lists */
 	public static final String PREF_CACHE_THUMBNAILS = TAG + "CacheThumbnails";
 	/** Show flat backgrounds in Book lists */
@@ -113,9 +112,9 @@ public class BooklistPreferencesActivity extends PreferencesBase {
 	private static final ItemEntries<Boolean> mBackgroundThumbnailsListItems = new ItemEntries<>();
 	private static final BooleanListProperty mBackgroundThumbnailsProperty = new BooleanListProperty(
 				mBackgroundThumbnailsListItems, 
-				PREF_BACKGROUND_THUMBNAILS, 
+				PREF_theme_surfaceContainerNAILS, 
 				PropertyGroup.GRP_THUMBNAILS, 
-				R.string.generating_cover_thumbnails, null, PREF_BACKGROUND_THUMBNAILS, false);
+				R.string.generating_cover_thumbnails, null, PREF_theme_surfaceContainerNAILS, false);
 	static {
 		mBackgroundThumbnailsListItems.add(null, R.string.use_default_setting);
 		mBackgroundThumbnailsListItems.add(false, R.string.generate_immediately);
@@ -136,10 +135,10 @@ public class BooklistPreferencesActivity extends PreferencesBase {
 	public void onCreate(Bundle savedInstanceState) {
 		try {
 			super.onCreate(savedInstanceState);	
-			setTitle(R.string.booklist_preferences);
+			setTitle(R.string.label_booklist_preferences);
 			if (savedInstanceState == null)
-				HintManager.displayHint(this, R.string.hint_booklist_global_properties, null);
-			Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
+				HintManager.displayHint(this, R.string.hint_booklist_global_properties, null, null);
+
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
@@ -220,7 +219,6 @@ public class BooklistPreferencesActivity extends PreferencesBase {
 	@Override 
 	public void onResume() {
 		super.onResume();
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
 	}
 
 	/**

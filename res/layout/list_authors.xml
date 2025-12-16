@@ -2,14 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/background_grey"
+    android:background="@color/theme_surface"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/padding_border" >
+    android:paddingLeft="@dimen/p_md" >
 
     <!-- android:background="@drawable/bc_background_gradient_dark" -->
 
     <TextView
-        android:id="@+id/bookshelf_label"
+        android:id="@+id/bookshelfLabel"
         android:layout_width="wrap_content"
         android:layout_height="32dp"
         android:paddingRight="5dp"
@@ -20,7 +20,7 @@
         android:id="@+id/bookshelf_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/bookshelf_label"
+        android:layout_toRightOf="@id/bookshelfLabel"
         android:background="@android:color/transparent"
         android:paddingBottom="2dp" />
 
@@ -29,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="32dp"
         android:layout_toRightOf="@+id/bookshelf_name"
-        android:paddingLeft="@dimen/padding_border"
+        android:paddingLeft="@dimen/p_md"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <ImageView
@@ -37,14 +37,14 @@
         android:layout_width="wrap_content"
         android:layout_height="32dp"
         android:layout_toRightOf="@+id/bookshelf_num"
-        android:paddingLeft="@dimen/padding_border"
+        android:paddingLeft="@dimen/p_md"
         android:src="@drawable/ic_dialog_menu_generic" />
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="horizontal"
-        android:layout_below="@id/bookshelf_label" >
+        android:layout_below="@id/bookshelfLabel" >
 
         <com.eleybourn.bookcatalogue.widgets.FastScrollExpandableListView
             android:id="@+id/list"

@@ -3,7 +3,7 @@
 
     <string name="app_name">BookCatalogue</string>
     <string name="system_app_name">Book Catalogue</string>
-    <string name="menu_insert">Добавить книгу</string>
+    <string name="label_insert">Добавить книгу</string>
     <string name="menu_delete">Удалить книгу</string>
     <string name="author">Автор</string>
     <string name="title">Название</string>
@@ -20,13 +20,13 @@
     <string name="menu_sort_by_author_expanded">Развернуть всё</string>
     <string name="menu_sort_by">Отсортировать по</string>
     <string name="menu_sort_by_author_collapsed">Свернуть всё</string>
-    <string name="search">Поиск</string>
+    <string name="label_search">Поиск</string>
     <string name="cancel">Отмена</string>
     <string name="confirm_save">Сохранить книгу</string>
-    <string name="nobookshelves">Вы не создали ни одной полки. Пожалуйста, добавьте полку, используя меню в нижней части этого экрана.</string>
+    <string name="info_no_bookshelves">Вы не создали ни одной полки. Пожалуйста, добавьте полку, используя меню в нижней части этого экрана.</string>
     <string name="menu_insert_bs">Создать полку</string>
     <string name="confirm_add_bs">Добавить полку</string>
-    <string name="menu_bookshelf">Полки</string>
+    <string name="label_bookshelf">Полки</string>
     <string name="confirm_save_bs">Сохранить полку</string>
     <string name="menu_delete_bs">Удалить полку</string>
     <string name="delete_1st_bs">Невозможно удалить единственную книжную полку</string>
@@ -48,8 +48,8 @@
     <string name="menu_administration">Настройки</string>
     <string name="install_scan">Чтобы определить ваши книги по ISBN штрих-коду, вы должны установить приложение Google Goggles или zxing.</string>
     <string name="install_scan_title">Установить сканер штрих-кодов</string>
-    <string name="version_number">Номер версии:</string>
-    <string name="donate">Если Вы хотите поддержать разработку этого приложения, пожалуйста сделайте пожертвование или через Amazon Wishlist или через PayPal кнопкой внизу. Я не могу опубликовать &quot;платную&quot; версию приложения в Австралии. :-) </string>
+    <string name="label_version_number">Номер версии:</string>
+    <string name="para_donate">Если Вы хотите поддержать разработку этого приложения, пожалуйста сделайте пожертвование или через Amazon Wishlist или через PayPal кнопкой внизу. Я не могу опубликовать &quot;платную&quot; версию приложения в Австралии. :-) </string>
     <string name="upgrade_title">После Вашего последнего обновления</string>
     <string name="edit_book">Редактировать книгу</string>
     <string name="edit_book_notes">Комментарии</string>
@@ -60,16 +60,16 @@
     <string name="loan_to">Одолжить книгу:</string>
     <string name="returned">Возвращена</string>
     <string name="name">Имя</string>
-    <string name="webpage_label">Веб-адрес проекта:</string>
-    <string name="sourcecode_label">Исходный код:</string>
-    <string name="contact_label">Контакты разработчиков:</string>
-    <string name="webpage">https://wiki.github.com/eleybourn/Book-Catalogue/</string>
-    <string name="sourcecode">https://github.com/eleybourn/Book-Catalogue</string>
-    <string name="helppage">https://github.com/eleybourn/Book-Catalogue/wiki/Help</string>
+    <string name="label_webpage">Веб-адрес проекта:</string>
+    <string name="label_sourcecode">Исходный код:</string>
+    <string name="label_contact">Контакты разработчиков:</string>
+    <string name="url_webpage">https://wiki.github.com/eleybourn/Book-Catalogue/</string>
+    <string name="url_sourcecode">https://github.com/eleybourn/Book-Catalogue</string>
+    <string name="url_help">https://github.com/eleybourn/Book-Catalogue/wiki/Help</string>
     <string name="contact1">eleybourn@gmail.com</string>
     <string name="contact2">philip.warner@rhyme.com.au</string>
-    <string name="donate_label">Пожертвовать</string>
-    <string name="about_label">О приложении…</string>
+    <string name="label_donate">Пожертвовать</string>
+    <string name="label_about">О приложении…</string>
     <string name="sortby_author">Отсортировать по автору</string>
     <string name="sortby_title">Отсортировать по названию</string>
     <string name="sortby_series">Отсортировать по серии</string>
@@ -77,7 +77,7 @@
     <string name="sortby_unread">Отсортировать по непрочитанным</string>
     <string name="sortby_genre">Отсортировать по жанру</string>
     <string name="list_price">Список цен</string>
-    <string name="update_fields">Автоматическое обновление полей</string>
+    <string name="label_update_fields">Автоматическое обновление полей</string>
     <string name="select_fields_to_update">Выберите поля для обновления</string>
     <string name="select_fields_to_update_help">Выбранные поля будут обновлены через интернет. Остальные останутся неизменными.</string>
     <string name="overwrite_thumbnail">Выбранные поля будут обновлены как показано, но миниатюры при желании можно загрузить для ВСЕХ книг.\n\nВы хотите перезаписать все миниатюры? Предупреждение: это может занять много времени. </string>
@@ -87,11 +87,11 @@
     <string name="search_fail">Поиск книги не удался. Пожалуйста, проверьте настройки интернет-соединения.</string>
     <string name="search_exception">Поиск во время %1$s: %2$s не удался</string>
     <string name="menu_delete_thumb">Удалить миниатюру</string>
-    <string name="help">Помощь</string>
-    <string name="menu_manage_fields">Видимость полей</string>
+    <string name="label_help">Помощь</string>
+    <string name="label_manage_fields">Видимость полей</string>
     <string name="manage_fields_help">Выбранные поля видны на экранах добавления/редактирования книги. Невыбранные поля скрыты.</string>
     <string name="edit_book_anthology">Названия антологий</string>
-    <string name="amazon_wishlist">Amazon Wishlist</string>
+    <string name="label_amazon_wishlist">Amazon Wishlist</string>
     <string name="same_author">Все рассказы этой антологии написаны одним автором</string>
     <string name="menu_delete_anthology">Удалить название антологии</string>
     <string name="is_anthology">Эта книга - антология?</string>
@@ -128,10 +128,10 @@
     <!-- NOTE: Adding a new format will involve changing code that references this list -->
     <string name="description">Описание</string>
     <string name="genre">Жанр</string>
-    <string name="notset">Не установлено</string>
+    <string name="not_set">Не установлено</string>
     <string name="menu_search">Искать книги</string>
     <string name="isbn_name_search_help">Добавление книг по ISBN гораздо более точное, чем добавление по автору и названию и в большинстве случаев является предпочтительным. Имейте в виду, что иногда правильный штрих-код находится внутри книги. \n\n</string>
-    <string name="help_click_here">Пожалуйста, нажмите здесь, чтобы получить справочную информацию в интернете</string>
+    <string name="para_help_click_here">Пожалуйста, нажмите здесь, чтобы получить справочную информацию в интернете</string>
     <string name="vldt_unable_to_get_value">Невозможно получить значение для: \'%s\'</string>
     <string name="vldt_integer_expected">Введите целое значение: \'%s\'</string>
     <string name="vldt_real_expected">Введите действительное число: \'%s\'</string>
@@ -218,10 +218,10 @@
     <string name="disable_dialogue">Отключить сообщение</string>
     <string name="lt_reset_messages_info">Время от времени приложение может показывать опциональные сообщения о LibraryThing. Нажмите кнопку внизу, чтобы сбросить все отключенные сообщения.</string>
     <string name="reset">Сброс</string>
-    <string name="send_info_text">Нажмите кнопку внизу экрана для сбора информации о недавних аварийных выключения программы или об иных ошибках и отправьте эту информацию нашим разработчикам. Создастся копия вашей базы и лог файлов. Если вы не хотите отправлять какой-либо из этих файлов, удалите его из приложений письма до отправки.</string>
-    <string name="send_info">Отправить информацию</string>
-    <string name="cleanup_files_text">Файлы, подлежащие очистке сейчас занимают %s на SD-карте. Лог-файлы и другие данные сохраняются на SD-карте при каждом обновлении, когда происходит резервное копирование базы, или в случае аварийного завершения программы. Нажмите кнопку внизу экрана, чтобы очистить эти файлы с SD-карты. Если у вас аварийно завершается программа или происходят иные ошибки, пожалуйста, сначала воспользуйтесь кнопкой \'Отправить информацию\'.</string>
-    <string name="cleanup_files">Очистка файлов</string>
+    <string name="para_send_info">Нажмите кнопку внизу экрана для сбора информации о недавних аварийных выключения программы или об иных ошибках и отправьте эту информацию нашим разработчикам. Создастся копия вашей базы и лог файлов. Если вы не хотите отправлять какой-либо из этих файлов, удалите его из приложений письма до отправки.</string>
+    <string name="button_send_info">Отправить информацию</string>
+    <string name="para_cleanup_files">Файлы, подлежащие очистке сейчас занимают %s на SD-карте. Лог-файлы и другие данные сохраняются на SD-карте при каждом обновлении, когда происходит резервное копирование базы, или в случае аварийного завершения программы. Нажмите кнопку внизу экрана, чтобы очистить эти файлы с SD-карты. Если у вас аварийно завершается программа или происходят иные ошибки, пожалуйста, сначала воспользуйтесь кнопкой \'Отправить информацию\'.</string>
+    <string name="button_cleanup_files">Очистка файлов</string>
     <string name="megabytes">%.2fМб</string>
     <string name="kilobytes">%.2fкб</string>
     <string name="bytes">%.0f байт</string>
@@ -244,10 +244,10 @@
     <string name="retry_task">Повторить</string>
     <string name="delete_event">Удалить событие</string>
     <string name="delete_task">Удалить задачу</string>
-    <string name="my_books">Мои книги</string>
+    <string name="label_library">Мои книги</string>
     <string name="my_books_classic">Мои книги (Classic)</string>
     <string name="loan_return_book">Одолжить, Вернуть или Редактировать книгу</string>
-    <string name="admin_and_prefs">Администрирование и Настройки</string>
+    <string name="label_settings">Администрирование и Настройки</string>
     <string name="edit_book_send_to_gr">Послать на goodreads</string>
     <string name="goodreads">goodreads</string>
     <string name="goodreads_auth_blurb_part1">Goodreads это сайт, чья основная миссия это "помогать людям находить и делиться книгами, которые они любят".
@@ -264,7 +264,7 @@
     <string name="authorize_access">Авторизация</string>
     <string name="authorize_access_already_auth">Кажется, вы уже авторизованы. Все функции Goodreads уже должны быть доступны</string>
     <string name="goodreads_access_error">Возникли проблемы с соединением во время доступа к Goodreads. Пожалуйста, проверьте работает ли сайт Goodreads и если проблема останется сообщите в поддержку</string>
-    <string name="other_preferences">Другие настройки</string>
+    <string name="label_other_preferences">Другие настройки</string>
     <string name="user_interface">Пользовательский интерфейс</string>
     <string name="start_in_my_books">Начинать с \'Мои книги\'</string>
     <string name="include_classic_catalogue_view">Добавить классический вид каталога</string>
@@ -304,7 +304,7 @@
     <item name="TAG_GOODREADS_WORK" type="id"></item>
     <item name="TAG_GET_THUMBNAIL_TASK" type="id"></item>
 
-    <string name="erase_cover_cache">Очистить кэш обложек</string>
+    <string name="label_erase_cover_cache">Очистить кэш обложек</string>
     <string name="crash_toast_text">BookCatalogue завершилось с ошибкой. Пожалуйста, помогите нам сделать приложение лучше, отправив эту ошибку.</string>
     <string name="crash_notif_ticker_text">BookCatalogue завершилось с ошибкой</string>
     <string name="crash_notif_title">Ошибка BookCatalogue</string>
@@ -348,13 +348,13 @@
     <item name="MENU_EDIT_STYLE" type="id"/>
     <item name="MENU_CLONE_STYLE" type="id"/>
 
-    <string name="booklist_preferences">Список книг</string>
+    <string name="label_booklist_preferences">Список книг</string>
     <string name="extra_book_details">Дополнительная информация</string>
     <string name="general">Основные</string>
     <string name="bookshelves">Книжные полки</string>
     <string name="shelves">Полки</string>
     <string name="location">Местоположение</string>
-    <string name="data_import_export">Импорт/Экспорт данных</string>
+    <string name="label_data_import_export">Импорт/Экспорт данных</string>
     <string name="unrecognized_task">Неопознаная задача</string>
     <string name="rebuilding_search_index">Перестроение индексов поиска&#8230;</string>
     <string name="optimizing_databases">Оптимизация баз данных&#8230;</string>
@@ -365,12 +365,12 @@
     <string name="always_start_booklists_collapsed">Всегда открывать списоки свернутыми</string>
     <string name="remember_booklists_state">Запоминать состояние списков</string>
     <string name="searching_goodreads">Поиск Goodreads</string>
-    <string name="edit_book_list_styles">Редактировать стили списков книг</string>
+    <string name="label_edit_book_list_styles">Редактировать стили списков книг</string>
     <string name="show_more_ellipsis">Показать больше&#8230;</string>
     <string name="show_fewer_ellipsis">Показать меньше&#8230;</string>
     <string name="customize_ellipsis">Настроить&#8230;</string>
     <string name="hint">Подсказка</string>
-    <string name="reset_hints">Сбросить подсказки</string>
+    <string name="label_reset_hints">Сбросить подсказки</string>
     <string name="do_not_show_again">Больше не показывать</string>
     <string name="hint_booklist_styles_editor">        	Вы можете использовать это окно, чтобы настроить список стилей, которые будут отображаться в вашем меню стилей по умолчанию. \n\n
         	Зеленая галочка показывает, что стиль будет показан в списке, красная - нет.\n\n
@@ -415,13 +415,13 @@
     <string name="thing_must_not_be_blank">%1$s должен быть не пустым</string>
     <string name="edit">Редактировать</string>
     <string name="groupings">Группирование</string>
-    <string name="preferences">Настройки</string>
+    <string name="label_preferences">Настройки</string>
     <string name="unexpected_error">Случилась неожиданная ошибка, пожалуйста, отошлите детали в поддержку, используя меню \'Помощь\' из Главного меню</string>
     <string name="delete_style">Удалить стиль</string>
     <string name="edit_style">Редактировать стиль</string>
     <string name="clone_style">Клонировать стиль</string>
-    <string name="dash_or_dash">- Или -</string>
-    <string name="paypal_donation">Пожертвование через PayPal</string>
+    <string name="label_dash_or_dash">- Или -</string>
+    <string name="label_paypal_donation">Пожертвование через PayPal</string>
     <string name="compact">Компактный</string>
     <string name="user_defined">Определенный пользователем</string>
     <string name="builtin">Встроенный</string>
@@ -640,18 +640,18 @@
     credentials с этого телефона, то воспользуйтесь кнопкой ниже. В этом случае не забудьте деавторизировать приложение на сайте Goodreads.
     \n\nПосле сброса credentials пункт меню Goodreads пропадет из главного меню.</string>
     <string name="connecting_to_web_site">Соединение с сайтом&#8230;</string>
-    <string name="backup_to_archive">Бэкап в архив</string>
-    <string name="import_from_archive">Импорт из архива</string>
+    <string name="label_backup_to_archive">Бэкап в архив</string>
+    <string name="label_import_from_archive">Импорт из архива</string>
     <string name="a_and_b">%1$s и %2$s</string>
     <string name="archive_complete_details">Файл %3$s с именем %2$s был создан в папке \"%1$s\" на вашей SD карте.
     \n\nВам следует вручную скопировать его, чтобы защитить данные в случае утери или повреждения телефона.</string>
     <string name="covers_progress">%1$s обложек обработано (%2$s пропущено)</string>
-    <string name="advanced_options">Тонкие настройки</string>
+    <string name="label_advanced_options">Тонкие настройки</string>
     <string name="backing_up_ellipsis">Делаю бэкап&#8230;</string>
     <string name="importing_ellipsis">Импорт&#8230;</string>
-    <string name="export_to_csv">Экспортировать в CSV файл</string>
-    <string name="import_from_csv">Импортировать CSV файл</string>
-    <string name="copy_database">Скопировать базу данных (для техподдержки)</string>
+    <string name="label_export_to_csv">Экспортировать в CSV файл</string>
+    <string name="label_import_from_csv">Импортировать CSV файл</string>
+    <string name="label_copy_database">Скопировать базу данных (для техподдержки)</string>
     <string name="show_book_count">Показывать номера книг</string>
     <string name="show_first_level_and_book_count">Показывать первыми заголовок и номер книг</string>
     <string name="show_all_summary_details">Показать все детали</string>
@@ -778,9 +778,9 @@
     
     <string name="hint_book_list">Клик по книге покажет детальную информацию, долгое нажатие на элемент списка покажет остальные действия.</string>
 
-    <string name="special_thanks_label">Особые благодарности</string>
+    <string name="label_special_thanks">Особые благодарности</string>
     
-    <string name="translators_blurb">BookCatalogue это продукт усилий многих людей, и он мог бы и не иметь такого широкого распространения \nбез помощи добровольных переводчиков: %1$s (если кто-то забыт, пожалуйста, напомните).</string>
+    <string name="para_translators">BookCatalogue это продукт усилий многих людей, и он мог бы и не иметь такого широкого распространения \nбез помощи добровольных переводчиков: %1$s (если кто-то забыт, пожалуйста, напомните).</string>
 
     <!--<string name="hint_amazon_links_blurb">&lt;p&gt;Если вы покупаете вещи на Amazon после выбора &lt;i&gt;\"%1$s\"&lt;/i&gt;, &lt;i&gt;\"%2$s\"&lt;/i&gt; or &lt;i&gt;\"%3$s\"&lt;/i&gt; элементов меню, часть стоимости заказa будет отослана разработчикам %4$s.&lt;/p&gt;&lt;p&gt; Вы также можете использовать &lt;a href=""https://github.com/eleybourn/Book-Catalogue/wiki/Frequently-Asked-Questions-%%28FAQ%%29""&gt; ссылки нашего FAQ&lt;/a&gt;, чтобы перейти прямо на Amazon или PayPal.&lt;/p&gt;</string>-->
 

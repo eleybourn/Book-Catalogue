@@ -31,7 +31,6 @@ import android.widget.LinearLayout;
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.utils.Logger;
-import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * 
@@ -55,10 +54,9 @@ public class FieldVisibility extends BookCatalogueActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		try {
 			super.onCreate(savedInstanceState);
-			setTitle(R.string.menu_manage_fields);
+			setTitle(R.string.label_manage_fields);
 			setContentView(R.layout.field_visibility);
 			setupFields();
-			Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
@@ -70,7 +68,6 @@ public class FieldVisibility extends BookCatalogueActivity {
 	@Override 
 	public void onResume() {
 		super.onResume();
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
 	}
 
 	/**

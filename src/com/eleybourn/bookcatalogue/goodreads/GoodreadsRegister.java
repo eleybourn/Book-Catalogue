@@ -66,7 +66,6 @@ public class GoodreadsRegister extends BookCatalogueActivity {
 			setTitle(R.string.goodreads);
 			setContentView(R.layout.goodreads_register);
 			setupViews();
-			Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
@@ -78,7 +77,6 @@ public class GoodreadsRegister extends BookCatalogueActivity {
 	@Override 
 	public void onResume() {
 		super.onResume();
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
 	}
 
 	public void setupViews() {
@@ -90,8 +88,8 @@ public class GoodreadsRegister extends BookCatalogueActivity {
 			public void onClick(View v) {
 				String url = res.getString(R.string.goodreads_url);
 				Uri uri = Uri.parse(url);
-				Intent loadweb = new Intent(Intent.ACTION_VIEW, uri);
-				startActivity(loadweb); 
+				Intent loadWeb = new Intent(Intent.ACTION_VIEW, uri);
+				startActivity(loadWeb); 
 				return;
 			}
 		});

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/layout_body">
+    <!-- Root -->
+
+    <include layout="@layout/layout_header" />
+    <include layout="@layout/layout_background" />
+
+    <!-- CONTENT -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="?attr/actionBarSize"
+        android:fillViewport="true">
+
+        <LinearLayout
+            style="@style/layout_main">
+
+            <TextView
+                style="@style/layout_title"
+                android:text="@string/app_name" />
+
+            <TextView
+                style="@style/layout_heading"
+                android:text="@string/label_version_number" />
+
+            <TextView
+                android:id="@+id/version"
+                style="@style/layout_paragraph"
+                android:paddingHorizontal="@dimen/p_lg" />
+
+            <TextView
+                style="@style/layout_heading"
+                android:text="@string/label_webpage" />
+
+            <TextView
+                android:id="@+id/webpage"
+                style="@style/layout_url"
+                android:paddingHorizontal="@dimen/p_lg"
+                android:text="@string/url_webpage" />
+
+            <TextView
+                style="@style/layout_heading"
+                android:text="@string/label_sourcecode" />
+
+            <TextView
+                android:id="@+id/sourceCode"
+                style="@style/layout_url"
+                android:paddingHorizontal="@dimen/p_lg"
+                android:text="@string/url_sourcecode" />
+
+            <TextView
+                style="@style/layout_heading"
+                android:text="@string/label_contact" />
+
+            <TextView
+                android:id="@+id/contact1"
+                style="@style/layout_url"
+                android:paddingHorizontal="@dimen/p_lg"
+                android:paddingBottom="0dp"
+                android:text="@string/contact1" />
+
+            <TextView
+                android:id="@+id/contact2"
+                style="@style/layout_url"
+                android:paddingHorizontal="@dimen/p_lg"
+                android:text="@string/contact2" />
+
+            <TextView
+                style="@style/layout_heading"
+                android:text="@string/label_special_thanks" />
+
+            <TextView
+                android:id="@+id/thanks"
+                style="@style/layout_paragraph"
+                android:paddingHorizontal="@dimen/p_lg"
+                android:text="@string/para_translators"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                tools:ignore="VisualLintLongText" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

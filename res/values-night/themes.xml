@@ -1,7 +1,50 @@
 <resources>
-
-    <style name="ThemeOverlay.BookCataloguegh.FullscreenContainer" parent="">
-        <item name="fullscreenBackgroundColor">@color/light_blue_900</item>
-        <item name="fullscreenTextColor">@color/light_blue_A400</item>
+    <style name="AppTheme" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/theme_primary</item>
+        <item name="colorOnPrimary">@color/theme_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/theme_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/theme_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/theme_secondary</item>
+        <item name="colorOnSecondary">@color/theme_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/theme_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/theme_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/theme_tertiary</item>
+        <item name="colorOnTertiary">@color/theme_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/theme_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/theme_onTertiaryContainer</item>
+        <item name="colorError">@color/theme_error</item>
+        <item name="colorOnError">@color/theme_onError</item>
+        <item name="colorErrorContainer">@color/theme_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/theme_onErrorContainer</item>
+        <item name="android:colorBackground">@color/theme_background</item>
+        <item name="colorOnBackground">@color/theme_onBackground</item>
+        <item name="colorSurface">@color/theme_surface</item>
+        <item name="colorOnSurface">@color/theme_onSurface</item>
+        <item name="colorSurfaceVariant">@color/theme_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/theme_onSurfaceVariant</item>
+        <item name="colorOutline">@color/theme_outline</item>
+        <item name="colorOutlineVariant">@color/theme_outlineVariant</item>
+        <item name="colorSurfaceInverse">@color/theme_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/theme_inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/theme_inversePrimary</item>
+        <item name="colorPrimaryFixed">@color/theme_primaryFixed</item>
+        <item name="colorOnPrimaryFixed">@color/theme_onPrimaryFixed</item>
+        <item name="colorPrimaryFixedDim">@color/theme_primaryFixedDim</item>
+        <item name="colorOnPrimaryFixedVariant">@color/theme_onPrimaryFixedVariant</item>
+        <item name="colorSecondaryFixed">@color/theme_secondaryFixed</item>
+        <item name="colorOnSecondaryFixed">@color/theme_onSecondaryFixed</item>
+        <item name="colorSecondaryFixedDim">@color/theme_secondaryFixedDim</item>
+        <item name="colorOnSecondaryFixedVariant">@color/theme_onSecondaryFixedVariant</item>
+        <item name="colorTertiaryFixed">@color/theme_tertiaryFixed</item>
+        <item name="colorOnTertiaryFixed">@color/theme_onTertiaryFixed</item>
+        <item name="colorTertiaryFixedDim">@color/theme_tertiaryFixedDim</item>
+        <item name="colorOnTertiaryFixedVariant">@color/theme_onTertiaryFixedVariant</item>
+        <item name="colorSurfaceDim">@color/theme_surfaceDim</item>
+        <item name="colorSurfaceBright">@color/theme_surfaceBright</item>
+        <item name="colorSurfaceContainerLowest">@color/theme_surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/theme_surfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/theme_surfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/theme_surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/theme_surfaceContainerHighest</item>
     </style>
 </resources>

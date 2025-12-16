@@ -6,7 +6,7 @@
     android:background="#40000000"
     android:gravity="top"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/padding_border"
+    android:paddingLeft="@dimen/p_md"
     android:paddingRight="10dp" >
 
     <TextView
@@ -23,7 +23,7 @@
         android:layout_weight="1"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:paddingLeft="@dimen/padding_border"
+        android:paddingLeft="@dimen/p_md"
         android:textAppearance="?android:attr/textAppearanceMedium" 
         tools:ignore="TextFields" />
 

@@ -57,7 +57,6 @@ import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
 import com.eleybourn.bookcatalogue.dialogs.TextFieldEditorFragment;
 import com.eleybourn.bookcatalogue.dialogs.TextFieldEditorFragment.OnTextFieldEditorListener;
 import com.eleybourn.bookcatalogue.utils.Logger;
-import com.eleybourn.bookcatalogue.utils.Utils;
 //import android.app.LocalActivityManager;
 
 /**
@@ -238,9 +237,6 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 
 		// Must come after all book data and list retrieved.
 		setActivityTitle();
-
-		// Setup the background
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 
 		Tracker.exitOnCreate(this);
 
@@ -876,7 +872,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 			bar.setTitle(mBookData.getString(CatalogueDBAdapter.KEY_TITLE));
 			bar.setSubtitle(mBookData.getAuthorTextShort());
 		} else {
-			bar.setTitle(this.getResources().getString(R.string.menu_insert));
+			bar.setTitle(this.getResources().getString(R.string.label_insert));
 			bar.setSubtitle(null);
 		}
 	}

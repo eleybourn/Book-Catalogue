@@ -10,7 +10,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/padding_border" >
+        android:paddingLeft="@dimen/p_md" >
     </LinearLayout>
 
 </ScrollView>

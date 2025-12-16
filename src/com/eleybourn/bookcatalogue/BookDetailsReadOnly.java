@@ -49,7 +49,7 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 		mThumbEditSize = Math.min(mMetrics.widthPixels, mMetrics.heightPixels) / 3;
 		
 		if (savedInstanceState == null) {
-			HintManager.displayHint(getActivity(), R.string.hint_view_only_help, null);
+			HintManager.displayHint(getActivity(), R.string.hint_view_only_help, null, null);
 		}
 
 		// Just format a binary value as yes/no/blank

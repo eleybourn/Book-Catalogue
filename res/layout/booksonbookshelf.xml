@@ -5,7 +5,7 @@
     android:layout_height="fill_parent"
     android:background="@drawable/bc_background_gradient_dim"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/padding_border" >
+    android:paddingLeft="@dimen/p_md" >
 
     <RelativeLayout
         android:id="@+id/header"
@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="32dp"
             android:layout_alignParentRight="true"
-            android:paddingLeft="@dimen/padding_border"
+            android:paddingLeft="@dimen/p_md"
             android:src="@drawable/expander_ic_maximized" />
 
         <!--
@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@id/bookshelf_name"
-            android:paddingLeft="@dimen/padding_border"
+            android:paddingLeft="@dimen/p_md"
             android:visibility="gone"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/search_text"
-            android:paddingLeft="@dimen/padding_border"
+            android:paddingLeft="@dimen/p_md"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
@@ -58,7 +58,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/bookshelf_count"
-            android:paddingLeft="@dimen/padding_border"
+            android:paddingLeft="@dimen/p_md"
             android:singleLine="true"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
@@ -67,7 +67,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/level_1_text"
-            android:paddingLeft="@dimen/padding_border"
+            android:paddingLeft="@dimen/p_md"
             android:singleLine="true"
             android:textAppearance="?android:attr/textAppearanceSmall" />
     </RelativeLayout>

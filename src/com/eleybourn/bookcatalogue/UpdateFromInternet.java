@@ -22,7 +22,6 @@ package com.eleybourn.bookcatalogue;
 
 import java.util.LinkedHashMap;
 
-import android.Manifest.permission;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -235,7 +234,7 @@ public class UpdateFromInternet extends ActivityWithTasks {
 				if (thumbnail_check) {
 					// Verify - this can be a dangerous operation
 					AlertDialog alertDialog = new AlertDialog.Builder(UpdateFromInternet.this).setMessage(R.string.overwrite_thumbnail).create();
-					alertDialog.setTitle(R.string.update_fields);
+					alertDialog.setTitle(R.string.label_update_fields);
 					alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
 					alertDialog.setButton(UpdateFromInternet.this.getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {

@@ -1,57 +1,50 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <style name="DialogTitleTheme">
-        <item name="android:textStyle">bold</item>
+    <style name="AppTheme" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/theme_primary</item>
+        <item name="colorOnPrimary">@color/theme_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/theme_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/theme_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/theme_secondary</item>
+        <item name="colorOnSecondary">@color/theme_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/theme_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/theme_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/theme_tertiary</item>
+        <item name="colorOnTertiary">@color/theme_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/theme_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/theme_onTertiaryContainer</item>
+        <item name="colorError">@color/theme_error</item>
+        <item name="colorOnError">@color/theme_onError</item>
+        <item name="colorErrorContainer">@color/theme_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/theme_onErrorContainer</item>
+        <item name="android:colorBackground">@color/theme_background</item>
+        <item name="colorOnBackground">@color/theme_onBackground</item>
+        <item name="colorSurface">@color/theme_surface</item>
+        <item name="colorOnSurface">@color/theme_onSurface</item>
+        <item name="colorSurfaceVariant">@color/theme_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/theme_onSurfaceVariant</item>
+        <item name="colorOutline">@color/theme_outline</item>
+        <item name="colorOutlineVariant">@color/theme_outlineVariant</item>
+        <item name="colorSurfaceInverse">@color/theme_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/theme_inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/theme_inversePrimary</item>
+        <item name="colorPrimaryFixed">@color/theme_primaryFixed</item>
+        <item name="colorOnPrimaryFixed">@color/theme_onPrimaryFixed</item>
+        <item name="colorPrimaryFixedDim">@color/theme_primaryFixedDim</item>
+        <item name="colorOnPrimaryFixedVariant">@color/theme_onPrimaryFixedVariant</item>
+        <item name="colorSecondaryFixed">@color/theme_secondaryFixed</item>
+        <item name="colorOnSecondaryFixed">@color/theme_onSecondaryFixed</item>
+        <item name="colorSecondaryFixedDim">@color/theme_secondaryFixedDim</item>
+        <item name="colorOnSecondaryFixedVariant">@color/theme_onSecondaryFixedVariant</item>
+        <item name="colorTertiaryFixed">@color/theme_tertiaryFixed</item>
+        <item name="colorOnTertiaryFixed">@color/theme_onTertiaryFixed</item>
+        <item name="colorTertiaryFixedDim">@color/theme_tertiaryFixedDim</item>
+        <item name="colorOnTertiaryFixedVariant">@color/theme_onTertiaryFixedVariant</item>
+        <item name="colorSurfaceDim">@color/theme_surfaceDim</item>
+        <item name="colorSurfaceBright">@color/theme_surfaceBright</item>
+        <item name="colorSurfaceContainerLowest">@color/theme_surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/theme_surfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/theme_surfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/theme_surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/theme_surfaceContainerHighest</item>
     </style>
-
-    <style name="DialogDividerTheme">
-        <item name="android:layout_height">1dip</item>
-        <item name="android:background">#c0c0c0</item>
-        <!--
-            <item name="android:scaleType">fitXY</item>
-            <item name="android:gravity">fill_horizontal</item>
-            <item name="android:src">@android:drawable/dialog_divider_horizontal_light</item>
-
-        -->
-    </style>
-
-    <style name="dataEntryButtonStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
-        <item name="android:hint">@string/notset</item>
-        <item name="android:background">@drawable/gradient_button_light</item>
-        <item name="android:gravity">left|center_vertical</item>
-        <item name="android:textColor">#000000</item>
-    </style>
-
-    <style name="editorFieldTextStyle" parent="@style/editorFieldTextStyleBase">
-        <item name="android:textColor">@android:color/primary_text_light</item>
-    </style>
-
-    <style name="AppTheme.Fullscreen" parent="AppTheme">
-        <item name="android:actionBarStyle">@style/Widget.AppTheme.ActionBar.Fullscreen</item>
-        <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:windowBackground">@null</item>
-    </style>
-
-    <style name="ThemeOverlay.BookCataloguegh.FullscreenContainer" parent="">
-        <item name="fullscreenBackgroundColor">@color/light_blue_600</item>
-        <item name="fullscreenTextColor">@color/light_blue_A200</item>
-    </style>
-
-    <style name="FullScreenDialogTheme" parent="android:Theme.Dialog">
-
-        <item name="android:layout_width">fill_parent</item>
-        <item name="android:layout_height">fill_parent</item>
-
-        <!-- No backgrounds, titles or window float -->
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:padding">0dp</item>
-        <item name="android:layout_margin">0dp</item>
-    </style>
-
 </resources>

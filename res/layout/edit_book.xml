@@ -25,9 +25,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="1"
-                android:background="@color/background_thumb"
+                android:background="@color/theme_surfaceContainer"
                 android:gravity="center"
-                android:padding="@dimen/padding_border" />
+                android:padding="@dimen/p_md" />
 
             <RelativeLayout
                 android:layout_width="fill_parent"
@@ -224,7 +224,7 @@
                     android:layout_alignBottom="@+id/format"
                     android:layout_alignParentRight="true"
                     android:focusable="true"
-                    android:paddingLeft="@dimen/padding_border"
+                    android:paddingLeft="@dimen/p_md"
                     android:src="@drawable/expander_ic_maximized" />
 
                 <AutoCompleteTextView

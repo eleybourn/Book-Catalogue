@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- incompatible with APIL4 android:fadeScrollbars="false" -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
@@ -8,14 +7,25 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="@color/background_grey"
+        android:background="?attr/colorSurface"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/padding_border" >
+        android:padding="@dimen/p_lg" >
+
+        <TextView
+            android:id="@+id/welcome"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="?attr/colorPrimary"
+            android:textStyle="bold"
+            android:paddingBottom="@dimen/p_md"
+            android:textIsSelectable="true" />
 
         <TextView
             android:id="@+id/hint"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/welcome"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textIsSelectable="true" />
 	

@@ -32,8 +32,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="false"
             android:label="@string/title_activity_scanner"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Fullscreen"
+            android:theme="@style/AppTheme"
             tools:ignore="LockedOrientationActivity" />
 
         <uses-library
@@ -120,8 +119,8 @@
             android:name=".booklist.BooklistStylesActivity"
             android:theme="@style/AppTheme"></activity>
         <activity
-            android:name=".Bookshelf"
-            android:label="@string/menu_bookshelf"
+            android:name=".AdminBookshelf"
+            android:label="@string/label_bookshelf"
             android:theme="@style/AppTheme"></activity>
         <activity
             android:name=".BookshelfEdit"
@@ -130,7 +129,7 @@
         <activity
             android:name=".BooksOnBookshelf"
             android:exported="false"
-            android:label="@string/my_books"
+            android:label="@string/label_library"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -143,13 +142,13 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name=".AdministrationAbout"
+            android:name=".MainAbout"
             android:theme="@style/AppTheme"></activity>
         <activity
-            android:name=".AdministrationDonate"
+            android:name=".MainDonate"
             android:theme="@style/AppTheme"></activity>
         <activity
-            android:name=".AdministrationFunctions"
+            android:name=".MainAdministration"
             android:theme="@style/AppTheme"></activity>
         <activity
             android:name=".goodreads.GoodreadsRegister"
@@ -250,11 +249,11 @@
             android:name=".TaskListActivity"
             android:theme="@style/AppTheme"></activity>
         <activity
-            android:name=".Help"
+            android:name=".MainHelp"
             android:theme="@style/AppTheme"></activity>
         <activity
             android:name=".FieldVisibility"
-            android:label="@string/menu_manage_fields"
+            android:label="@string/label_manage_fields"
             android:theme="@style/AppTheme"></activity>
         <activity
             android:name=".OtherPreferences"
@@ -267,7 +266,7 @@
             android:theme="@style/AppTheme"></activity>
         <activity
             android:name=".UpdateFromInternet"
-            android:label="@string/update_fields"
+            android:label="@string/label_update_fields"
             android:theme="@style/AppTheme"></activity>
         <activity
             android:name=".cropper.CropCropImage"

@@ -5,7 +5,7 @@
     android:background="#40000000"
     android:gravity="top"
     android:orientation="horizontal"
-    android:paddingLeft="@dimen/padding_border"
+    android:paddingLeft="@dimen/p_md"
     android:paddingRight="10dp" >
 
     <ImageView
@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:focusable="true"
-        android:paddingLeft="@dimen/padding_border"
+        android:paddingLeft="@dimen/p_md"
         android:src="@drawable/expander_ic_maximized" />
 
     <TextView
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_toLeftOf="@id/image"
-        android:paddingTop="@dimen/padding_border"
+        android:paddingTop="@dimen/p_md"
         android:singleLine="false"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 

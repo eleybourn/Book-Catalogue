@@ -1,92 +1,164 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/root"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="@drawable/bc_background_gradient"
-    android:orientation="vertical" >
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/layout_body">
+    <!-- Root -->
 
-    <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:paddingLeft="10dp"
-        android:paddingTop="15dp" >
+    <include layout="@layout/layout_header" />
+    <include layout="@layout/layout_background" />
+
+    <!-- CONTENT -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="?attr/actionBarSize"
+        android:fillViewport="true">
 
         <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingLeft="@dimen/padding_border" >
+            android:id="@+id/contentLayout"
+            style="@style/layout_main">
 
-            <TextView
-                android:id="@+id/my_books_label"
-                style="@style/main_menu_item"
-                android:drawableLeft="@drawable/ic_menu_shelves"
-                android:text="@string/my_books" />
+            <!-- Add Book card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardAddBook"
+                style="@style/layout_card_md">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+                    <com.google.android.material.imageview.ShapeableImageView
+                        style="@style/layout_card_icon"
+                        android:src="@drawable/ic_menu_add"
+                        android:contentDescription="@string/label_insert" />
+                    <LinearLayout style="@style/layout_card_content">
+                        <TextView
+                            style="@style/layout_card_title"
+                            android:text="@string/label_insert" />
+                        <TextView
+                            style="@style/layout_card_subtitle"
+                            android:text="@string/label_insert_description" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-            <TextView
-                android:id="@+id/my_books_classic_label"
-                style="@style/main_menu_item"
-                android:drawableLeft="@drawable/ic_menu_bookshelves"
-                android:text="@string/my_books_classic" />
+            <!-- Library card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardLibrary"
+                style="@style/layout_card_md">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:baselineAligned="false">
+                    <com.google.android.material.imageview.ShapeableImageView
+                        style="@style/layout_card_icon"
+                        android:src="@drawable/ic_menu_library"
+                        android:contentDescription="@string/label_library"
+                        app:contentPadding="5dp" />
+                    <LinearLayout style="@style/layout_card_content">
+                        <TextView
+                            style="@style/layout_card_title"
+                            android:text="@string/label_library" />
+                        <TextView
+                            style="@style/layout_card_subtitle"
+                            android:text="@string/label_library_description" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-            <TextView
-                android:id="@+id/add_book_label"
-                style="@style/main_menu_item"
-                android:drawableLeft="@drawable/ic_menu_add_book"
-                android:text="@string/menu_insert" />
+            <!-- Search card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardSearch"
+                style="@style/layout_card_md">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+                    <com.google.android.material.imageview.ShapeableImageView
+                        style="@style/layout_card_icon"
+                        android:src="@drawable/ic_menu_search"
+                        android:contentDescription="@string/label_search" />
+                    <LinearLayout style="@style/layout_card_content">
+                        <TextView
+                            style="@style/layout_card_title"
+                            android:text="@string/label_search" />
+                        <TextView
+                            style="@style/layout_card_subtitle"
+                            android:text="@string/label_search_description" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-            <TextView
-                android:id="@+id/loan_label"
-                style="@style/main_menu_item"
-                android:drawableLeft="@android:drawable/ic_menu_send"
-                android:text="@string/loan_return_book"
-                android:visibility="gone" />
+            <!-- Settings + Help row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginVertical="8dp"
+                android:layout_marginHorizontal="30dp"
+                android:weightSum="2">
 
-            <TextView
-                android:id="@+id/search_label"
-                style="@style/main_menu_item"
-                android:drawableLeft="@android:drawable/ic_menu_search"
-                android:text="@string/search"
-                android:visibility="gone" />
+                <!-- Settings -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardSettings"
+                    style="@style/layout_card_sm">
+                    <TextView
+                        style="@style/layout_card_title"
+                        android:layout_gravity="center_horizontal"
+                        android:text="@string/label_settings"
+                        app:drawableTopCompat="@drawable/ic_menu_settings" />
+                </com.google.android.material.card.MaterialCardView>
 
-            <TextView
-                android:id="@+id/administration_label"
-                style="@style/main_menu_item"
-                android:drawableLeft="@drawable/ic_menu_preferences"
-                android:text="@string/admin_and_prefs" />
+                <!-- Help -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardHelp"
+                    style="@style/layout_card_sm">
+                    <TextView
+                        style="@style/layout_card_title"
+                        android:layout_gravity="center_horizontal"
+                        android:text="@string/label_help"
+                        app:drawableTopCompat="@drawable/ic_menu_help" />
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
 
-<!--            <TextView-->
-<!--                android:id="@+id/goodreads_label"-->
-<!--                style="@style/main_menu_item"-->
-<!--                android:drawableLeft="@drawable/ic_menu_gr_logo"-->
-<!--                android:text="@string/goodreads" />-->
+            <!-- About + Donate row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginVertical="8dp"
+                android:layout_marginHorizontal="30dp"
+                android:weightSum="2">
 
-            <TextView
-                android:id="@+id/about_label"
-                style="@style/main_menu_item"
-                android:drawableLeft="@drawable/ic_menu_info_details"
-                android:text="@string/about_label" />
+                <!-- About -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardAbout"
+                    style="@style/layout_card_sm">
+                    <TextView
+                        style="@style/layout_card_title"
+                        android:layout_gravity="center_horizontal"
+                        android:text="@string/label_about"
+                        app:drawableTopCompat="@drawable/ic_menu_info" />
+                </com.google.android.material.card.MaterialCardView>
 
-            <!-- Now in 'My Books' -->
-            <!-- <TextView -->
-            <!-- android:id="@+id/browse_label" -->
-            <!-- style="@style/main_menu_item" -->
-            <!-- android:drawableLeft="@android:drawable/ic_menu_compass" -->
-            <!-- android:text="@string/browse_books" /> -->
+                <!-- Donate -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardDonate"
+                    style="@style/layout_card_sm">
+                    <TextView
+                        style="@style/layout_card_title"
+                        android:layout_gravity="center_horizontal"
+                        android:text="@string/label_donate"
+                        app:drawableTopCompat="@drawable/ic_menu_donate" />
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/help_label"
-                style="@style/main_menu_item"
-                android:drawableLeft="@drawable/ic_menu_help"
-                android:text="@string/help" />
-            
-            <TextView
-                android:id="@+id/donate_label"
-                style="@style/main_menu_item"
-                android:drawableLeft="@drawable/ic_menu_donate"
-                android:text="@string/donate_label" />
         </LinearLayout>
-    </ScrollView>
-
-</LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

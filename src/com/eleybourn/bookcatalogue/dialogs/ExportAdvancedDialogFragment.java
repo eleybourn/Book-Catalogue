@@ -1,7 +1,5 @@
 package com.eleybourn.bookcatalogue.dialogs;
 
-import java.io.File;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -110,8 +108,8 @@ public class ExportAdvancedDialogFragment extends BookCatalogueDialogFragment {
     	mFile = DocumentFile.fromSingleUri(getContext(), uri);
 
         View v = getActivity().getLayoutInflater().inflate(R.layout.export_advanced_options, null);
-		AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setView(v).setTitle(R.string.advanced_options).create();
-		alertDialog.setIcon(R.drawable.ic_menu_help);
+		AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setView(v).setTitle(R.string.label_advanced_options).create();
+		alertDialog.setIcon(R.drawable.ic_menu_help_old);
 		alertDialog.setCanceledOnTouchOutside(false);
 
 		v.findViewById(R.id.cancel).setOnClickListener(new OnClickListener() {

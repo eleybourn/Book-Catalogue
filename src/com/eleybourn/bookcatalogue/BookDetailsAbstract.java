@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import android.Manifest.permission;
 import android.app.Activity;
@@ -319,8 +320,6 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 			}
 		});
 		
-		//Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
-		
 	}
 	
 	@Override
@@ -340,9 +339,6 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 	public void onResume() {
 		Tracker.enterOnResume(this);
 		super.onResume();
-		
-		// Fix background
-		//Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
 		Tracker.exitOnResume(this);
 	}
 	
@@ -370,7 +366,7 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 			case CONTEXT_ID_SUBMENU_ROTATE_THUMB:
 				// Just a submenu; skip, but display a hint if user is rotating a camera image
 				if (mGotCameraImage) {
-					HintManager.displayHint(getActivity(), R.string.hint_autorotate_camera_images, null);
+					HintManager.displayHint(getActivity(), R.string.hint_autorotate_camera_images, null, null);
 					mGotCameraImage = false;
 				}
 				return true;
@@ -809,7 +805,7 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 	 */
 	private void showZoomedThumb(Long rowId) {
 		// Create dialog and set layout
-		final Dialog dialog = new Dialog(getActivity(), R.style.FullScreenDialogTheme);
+		final Dialog dialog = new Dialog(Objects.requireNonNull(getActivity()), R.style.AppTheme);
 		dialog.setContentView(R.layout.zoom_thumb_dialog);
 		
 		// Check if we have a file and/or it is valid

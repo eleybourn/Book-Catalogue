@@ -98,7 +98,7 @@ public class BackupImportManager
 		}
 		MessageDialogFragment frag = MessageDialogFragment.newInstance(
 				ID.MSG_ID_BACKUP_IMPORT_COMPLETE,
-				R.string.import_from_archive,
+				R.string.label_import_from_archive,
 				msg,
 				R.string.ok, 0, 0);
 		frag.show(activity.getSupportFragmentManager(), null);

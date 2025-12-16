@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<!-- Common for all dimensions -->
-    <dimen name="padding_border">5dp</dimen>
-    
+    <dimen name="p_md">5dp</dimen>
+    <dimen name="p_lg">10dp</dimen>
+    <dimen name="p_xl">20dp</dimen>
+
     <dimen name="padding_book_details_info">10dp</dimen>
     <dimen name="padding_prefs_item">20dp</dimen>
     

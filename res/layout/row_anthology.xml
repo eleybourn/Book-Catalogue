@@ -21,7 +21,7 @@
         android:focusable="false"
         android:focusableInTouchMode="false"
         android:gravity="right"
-        android:paddingRight="@dimen/padding_border"
+        android:paddingRight="@dimen/p_md"
         android:src="@drawable/down" />
 
     <ImageView
@@ -34,7 +34,7 @@
         android:focusable="false"
         android:focusableInTouchMode="false"
         android:gravity="right"
-        android:paddingRight="@dimen/padding_border"
+        android:paddingRight="@dimen/p_md"
         android:src="@drawable/up" />
 
     <TextView
@@ -45,7 +45,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:gravity="left"
-        android:paddingRight="@dimen/padding_border" />
+        android:paddingRight="@dimen/p_md" />
 
     <TextView
         android:id="@+id/row_title"
@@ -56,7 +56,7 @@
         android:layout_toRightOf="@id/row_position"
         android:ellipsize="marquee"
         android:gravity="left"
-        android:paddingRight="@dimen/padding_border"
+        android:paddingRight="@dimen/p_md"
         android:singleLine="true" />
 
     <TextView
@@ -68,7 +68,7 @@
         android:layout_toRightOf="@id/row_position"
         android:ellipsize="marquee"
         android:gravity="left"
-        android:paddingRight="@dimen/padding_border"
+        android:paddingRight="@dimen/p_md"
         android:singleLine="true" />
 
 </RelativeLayout>

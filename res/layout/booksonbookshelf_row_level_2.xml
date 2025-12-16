@@ -12,7 +12,7 @@
         android:id="@+id/row_info"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/padding_border"
+        android:paddingLeft="@dimen/p_md"
         android:orientation="horizontal" >
 
         <ImageView

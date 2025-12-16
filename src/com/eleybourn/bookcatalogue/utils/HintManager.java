@@ -28,12 +28,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.SharedPreferences.Editor;
-import android.text.Html;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
-import android.text.style.URLSpan;
 import android.text.util.Linkify;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -49,7 +44,6 @@ import com.eleybourn.bookcatalogue.R;
  * Class to manage the display of 'hints' withing the application. Each hint dialog has 
  * a 'Do not show again' option, that results in an update to the preferences which 
  * are checked by this code.
- * 
  * To add a new hint, create a string resource and add it to mHints. Then, to display the
  * hint, simply call HintManager.displayHint(a, stringId).
  * 
@@ -84,8 +78,8 @@ public class HintManager {
 		//.add("hint_amazon_links_blurb", R.string.hint_amazon_links_blurb)
 		;
 
-	public static interface HintOwner {
-		public int getHint();
+	public interface HintOwner {
+		int getHint();
 	}
 	
 	/** Reset all hints to that they will be displayed again */
@@ -109,7 +103,7 @@ public class HintManager {
 	}
 
 	/** Display the passed hint, if the user has not disabled it */
-	public static boolean displayHint(Context context, int stringId, final Runnable postRun, Object... args) {
+	public static boolean displayHint(Context context, int stringId, Integer headingId, final Runnable postRun, Object... args) {
 		// Get the hint and return if it has been disabled.
 		final Hint h = mHints.getHint(stringId);
 		if (!h.shouldBeShown()) {
@@ -121,22 +115,20 @@ public class HintManager {
 		// Build the hint dialog
 		final Dialog dialog = new Dialog(context);
 		dialog.setContentView(R.layout.hint_dialogue);
-		
+
 		// Get the various Views
-		final TextView msg = (TextView)dialog.findViewById(R.id.hint);
+        final TextView header = (TextView)dialog.findViewById(R.id.welcome);
+        final TextView msg = (TextView)dialog.findViewById(R.id.hint);
 		final CheckBox cb = (CheckBox)dialog.findViewById(R.id.hide_hint_checkbox); // new CheckBox(context);
 		final Button ok = (Button)dialog.findViewById(R.id.confirm);
 
 		// Setup the views
+        String headingText = BookCatalogueApp.context.getResources().getString(headingId, args);
+        header.setText(headingText);
 		String hintText = BookCatalogueApp.context.getResources().getString(stringId, args);
 		msg.setText(Utils.linkifyHtml(hintText, Linkify.WEB_URLS));
 		// Automatically start a browser (or whatever)
 		msg.setMovementMethod(LinkMovementMethod.getInstance());
-
-		//msg.setText(Html.fromHtml(hintText)); //stringId);
-		//Linkify.addLinks(msg, Linkify.ALL);
-
-		dialog.setTitle(R.string.hint);
 
 		// Handle the 'OK' click
 		ok.setOnClickListener(new OnClickListener() {

@@ -30,7 +30,7 @@ import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment.OnMessageDialog
 import com.eleybourn.bookcatalogue.utils.AlertDialogUtils;
 import com.eleybourn.bookcatalogue.utils.AlertDialogUtils.AlertDialogItem;
 import com.eleybourn.bookcatalogue.utils.HintManager;
-import com.eleybourn.bookcatalogue.utils.Utils;
+import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.ArrayList;
 
@@ -60,45 +60,31 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
         // Register any common launchers defined in parents.
         super.onCreate(savedInstanceState);
 
-        // Get the preferences and extras.
-        BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
-
         // If we get here, we're meant to be in this activity.
         setContentView(R.layout.main_menu);
         setTitle(R.string.app_name);
-
-        // Display/hide the 'classic' my books item
-        int classicVis;
-        if (prefs.getBoolean(BookCataloguePreferences.PREF_INCLUDE_CLASSIC_MY_BOOKS, false))
-            classicVis = View.VISIBLE;
-        else
-            classicVis = View.GONE;
-
-        View v = findViewById(R.id.my_books_classic_label);
-        v.setVisibility(classicVis);
+        MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
+        setSupportActionBar(topAppBar);
+        topAppBar.setLogo(this.getResources().getIdentifier("ic_launcher4", "drawable", this.getPackageName()));
 
         // Setup handlers for items. It's just a menu after all.
-        setOnClickListener(R.id.my_books_label, mBrowseHandler);
-        //setOnClickListener(R.id.my_books_classic_label, mMyBooksHandler);
-        setOnClickListener(R.id.add_book_label, mAddBookHandler);
-        setOnClickListener(R.id.loan_label, mLoanBookHandler);
-        setOnClickListener(R.id.search_label, mSearchHandler);
-        setOnClickListener(R.id.administration_label, mAdminHandler);
-        setOnClickListener(R.id.about_label, mAboutHandler);
-        setOnClickListener(R.id.help_label, mHelpHandler);
+        setOnClickListener(R.id.cardLibrary, mBrowseHandler);
+        setOnClickListener(R.id.cardAddBook, mAddBookHandler);
+        setOnClickListener(R.id.cardSearch, mSearchHandler);
+        setOnClickListener(R.id.cardSettings, mAdminHandler);
+        setOnClickListener(R.id.cardHelp, mHelpHandler);
+        setOnClickListener(R.id.cardAbout, mAboutHandler);
         if (BuildConfig.IS_DONATE_ALLOWED) {
-            setOnClickListener(R.id.donate_label, mDonateHandler);
+            setOnClickListener(R.id.cardDonate, mDonateHandler);
         } else {
-            findViewById(R.id.donate_label).setVisibility(View.GONE);
+            findViewById(R.id.cardDonate).setVisibility(View.GONE);
         }
         // Goodreads will be shown/hidden in onResume()
         //setOnClickListener(R.id.goodreads_label, mGoodreadsHandler);
 
         if (savedInstanceState == null) {
-            HintManager.displayHint(this, R.string.hint_startup_screen, null);
+            HintManager.displayHint(this, R.string.hint_startup_screen, R.string.hint_startup_screen_heading, null);
         }
-
-        Utils.initBackground(R.drawable.bc_background_gradient, this, true);
     }
 
     /**
@@ -111,7 +97,6 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
         if (CatalogueDBAdapter.DEBUG_INSTANCES)
             CatalogueDBAdapter.dumpInstances();
 
-        Utils.initBackground(R.drawable.bc_background_gradient, this, true);
     }
 
     /**
@@ -125,14 +110,8 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
             items.add(new AlertDialogItem(getString(R.string.enter_isbn), mCreateBookIsbn));
             items.add(new AlertDialogItem(getString(R.string.search_internet), mCreateBookName));
             items.add(new AlertDialogItem(getString(R.string.add_manually), mCreateBookManually));
-            AlertDialogUtils.showContextDialogue(MainMenu.this, getString(R.string.menu_insert), items);
+            AlertDialogUtils.showContextDialogue(MainMenu.this, getString(R.string.label_insert), items);
         }
-    };
-
-    /**
-     * Loan Book Menu Handler
-     */
-    private final OnClickListener mLoanBookHandler = v -> {
     };
 
     /**
@@ -148,7 +127,7 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
      * Admin Menu Handler
      */
     private final OnClickListener mAdminHandler = v -> {
-        Intent i = new Intent(MainMenu.this, AdministrationFunctions.class);
+        Intent i = new Intent(MainMenu.this, MainAdministration.class);
         startActivity(i);
     };
 
@@ -164,7 +143,7 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
      * About Menu Handler
      */
     private final OnClickListener mAboutHandler = v -> {
-        Intent i = new Intent(MainMenu.this, AdministrationAbout.class);
+        Intent i = new Intent(MainMenu.this, MainAbout.class);
         startActivity(i);
     };
 
@@ -172,7 +151,7 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
      * Help Menu Handler
      */
     private final OnClickListener mHelpHandler = v -> {
-        Intent i = new Intent(MainMenu.this, Help.class);
+        Intent i = new Intent(MainMenu.this, MainHelp.class);
         startActivity(i);
     };
 
@@ -180,7 +159,7 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
      * Donate Menu Handler
      */
     private final OnClickListener mDonateHandler = v -> {
-        Intent i = new Intent(MainMenu.this, AdministrationDonate.class);
+        Intent i = new Intent(MainMenu.this, MainDonate.class);
         startActivity(i);
     };
 
@@ -192,8 +171,10 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
      */
     private void setOnClickListener(int id, OnClickListener l) {
         View v = this.findViewById(id);
-        v.setOnClickListener(l);
-        v.setBackgroundResource(android.R.drawable.list_selector_background);
+        if (v != null) {
+            v.setOnClickListener(l);
+            // v.setBackgroundResource(android.R.drawable.list_selector_background);
+        }
     }
 
     /**

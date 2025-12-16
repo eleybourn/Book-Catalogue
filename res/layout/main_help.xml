@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/layout_body">
+    <!-- Root -->
+
+    <include layout="@layout/layout_header" />
+    <include layout="@layout/layout_background" />
+
+    <!-- CONTENT -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="?attr/actionBarSize"
+        android:fillViewport="true">
+
+    <LinearLayout
+        style="@style/layout_main" >
+
+        <TextView
+            style="@style/layout_title"
+            android:text="@string/label_help" />
+
+        <TextView
+            android:id="@+id/helpInstructions"
+            style="@style/layout_paragraph"
+            android:paddingBottom="@dimen/p_md"
+            android:text="@string/para_help_click_here" />
+
+        <TextView
+            android:id="@+id/helpPage"
+            style="@style/layout_url"
+            android:paddingHorizontal="@dimen/p_lg"
+            android:text="@string/url_help" />
+
+        <TextView
+            style="@style/layout_paragraph"
+            android:text="@string/para_send_info"
+            tools:ignore="VisualLintLongText" />
+
+        <Button
+            android:id="@+id/sendInfo"
+            style="@style/layout_button"
+            android:text="@string/button_send_info" />
+
+        <TextView
+            android:id="@+id/cleanupText"
+            style="@style/layout_paragraph"
+            android:paddingTop="@dimen/p_xl"
+            android:text="@string/para_cleanup_files"
+            tools:ignore="VisualLintLongText" />
+
+        <Button
+            android:id="@+id/cleanupButton"
+            style="@style/layout_button"
+            android:text="@string/button_cleanup_files" />
+    </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

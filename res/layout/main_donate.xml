@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/layout_body">
+    <!-- Root -->
+
+    <include layout="@layout/layout_header" />
+    <include layout="@layout/layout_background" />
+
+    <!-- CONTENT -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="?attr/actionBarSize"
+        android:fillViewport="true">
+
+    <LinearLayout
+        style="@style/layout_main"
+        android:gravity="center" >
+
+        <TextView
+            style="@style/layout_paragraph"
+            android:text="@string/para_donate"
+            tools:ignore="VisualLintLongText" />
+
+        <TextView
+            android:id="@+id/amazonUrl"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="20dp"
+            android:text="@string/label_amazon_wishlist"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/theme_primary" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="20dp"
+            android:text="@string/label_dash_or_dash"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/donateUrl"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="20dp"
+            android:text="@string/label_paypal_donation"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/theme_primary" />
+
+        <ImageView
+            android:id="@+id/donateUrlImage"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/label_paypal_donation"
+            android:src="@drawable/paypal_donate" />
+    </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

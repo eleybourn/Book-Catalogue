@@ -32,7 +32,6 @@ import com.eleybourn.bookcatalogue.properties.PropertyGroup;
 import com.eleybourn.bookcatalogue.properties.StringListProperty;
 import com.eleybourn.bookcatalogue.scanner.ScannerManager;
 import com.eleybourn.bookcatalogue.utils.SoundManager;
-import com.eleybourn.bookcatalogue.utils.Utils;
 
 import java.util.Locale;
 
@@ -103,22 +102,6 @@ public class OtherPreferences extends PreferencesBase {
             .setGlobal(true)
             .setNameResourceId(R.string.default_crop_frame_is_whole_image)
             .setGroup(PropertyGroup.GRP_THUMBNAILS))
-
-	.add(new BooleanProperty(BookCataloguePreferences.PREF_INCLUDE_CLASSIC_MY_BOOKS)
-            .setDefaultValue(false)
-            .setPreferenceKey(BookCataloguePreferences.PREF_INCLUDE_CLASSIC_MY_BOOKS)
-            .setGlobal(true)
-            .setWeight(100)
-            .setNameResourceId(R.string.include_classic_catalogue_view)
-            .setGroup(PropertyGroup.GRP_USER_INTERFACE))
-
-	.add(new BooleanProperty(BookCataloguePreferences.PREF_DISABLE_BACKGROUND_IMAGE)
-		.setDefaultValue(false)
-		.setPreferenceKey(BookCataloguePreferences.PREF_DISABLE_BACKGROUND_IMAGE)
-		.setGlobal(true)
-		.setWeight(200)
-		.setNameResourceId(R.string.disable_background_image)
-		.setGroup(PropertyGroup.GRP_USER_INTERFACE) )
 
     .add(new StringListProperty(mInterfaceLanguageListItems, BookCataloguePreferences.PREF_APP_LOCALE, PropertyGroup.GRP_USER_INTERFACE, R.string.preferred_interface_language)
             .setDefaultValue(null)
@@ -197,8 +180,7 @@ public class OtherPreferences extends PreferencesBase {
 		// Make sure the names are correct
 		updateLanguageListItems();
 
-		setTitle(R.string.other_preferences);
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
+		setTitle(R.string.label_other_preferences);
 	}
 
 	@Override
@@ -216,7 +198,6 @@ public class OtherPreferences extends PreferencesBase {
 		super.onResume();
 		// Listen for locale changes (this activity CAN change it)
 		BookCatalogueApp.registerOnLocaleChangedListener(mLocaleListener);
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 	}
 
 	/**

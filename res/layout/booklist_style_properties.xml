@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bc_background_gradient_dim"
     android:orientation="vertical"
-    android:padding="@dimen/padding_border" >
+    android:padding="@dimen/p_md" >
 
     <LinearLayout
         android:id="@+id/top_buttons"
@@ -23,7 +23,7 @@
         android:layout_alignParentBottom="true"
         android:gravity="bottom"
         android:orientation="horizontal"
-        android:padding="@dimen/padding_border" >
+        android:padding="@dimen/p_md" >
 
         <Button
             android:id="@+id/cancel"

@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="@color/background_grey"
+    android:background="@color/theme_surface"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/padding_border" >
+    android:paddingLeft="@dimen/p_md" >
 
     <TextView
         android:id="@+id/title_label"
@@ -40,11 +40,12 @@
             android:completionThreshold="2"
             android:hint="@string/series"
             style="@style/personalNameTextEntry"
-            android:paddingLeft="@dimen/padding_border" />
+            android:paddingLeft="@dimen/p_md" />
         <!--
 			Removed:
 		 			android:inputType="numberDecimal"
-		 	based on user feedback (Issue 233)
+		 	based on user feedback (Issue 233)
+
         -->
 
         <EditText

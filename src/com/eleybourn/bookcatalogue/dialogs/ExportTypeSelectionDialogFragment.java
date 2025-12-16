@@ -105,8 +105,8 @@ public class ExportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
 		mDocFile = DocumentFile.fromSingleUri(BookCatalogueApp.context, uri);
 
         View v = requireActivity().getLayoutInflater().inflate(R.layout.export_type_selection, null);
-		AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setView(v).setTitle(R.string.backup_to_archive).create();
-		alertDialog.setIcon(R.drawable.ic_menu_help);
+		AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setView(v).setTitle(R.string.label_backup_to_archive).create();
+		alertDialog.setIcon(R.drawable.ic_menu_help_old);
 		alertDialog.setCanceledOnTouchOutside(false);
 
 		setOnClickListener(v, R.id.all_books_row);

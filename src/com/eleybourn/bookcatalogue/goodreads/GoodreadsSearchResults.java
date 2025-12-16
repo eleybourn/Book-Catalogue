@@ -87,7 +87,7 @@ public class GoodreadsSearchResults extends BookCatalogueListActivity {
 			finish();
 			return;
 		}
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
+
 	}
 
 	/**
@@ -96,7 +96,6 @@ public class GoodreadsSearchResults extends BookCatalogueListActivity {
 	@Override 
 	public void onResume() {
 		super.onResume();
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
 	}
 
 	/**

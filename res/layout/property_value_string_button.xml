@@ -5,7 +5,7 @@
     android:background="#40000000"
     android:gravity="top"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/padding_border"
+    android:paddingLeft="@dimen/p_md"
     android:paddingRight="10dp" >
 
     <Button
@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_toLeftOf="@id/edit_button"
-        android:paddingTop="@dimen/padding_border"
+        android:paddingTop="@dimen/p_md"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
@@ -35,7 +35,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@id/name"
         android:layout_toLeftOf="@id/edit_button"
-        android:paddingLeft="@dimen/padding_border"
+        android:paddingLeft="@dimen/p_md"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <View

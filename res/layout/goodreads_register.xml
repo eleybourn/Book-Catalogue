@@ -30,7 +30,7 @@
             android:paddingBottom="10dp"
             android:text="@string/goodreads_url"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/link_blue" />
+            android:textColor="@color/theme_tertiary" />
 
         <!-- BLURB 2 -->
 

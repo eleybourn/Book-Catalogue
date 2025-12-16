@@ -276,7 +276,7 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
 									String msg = BookCatalogueApp.context.getString(R.string.selected_dir_wrong_name, LEGACY_NAME);
 									MessageDialogFragment frag = MessageDialogFragment.newInstance(
 											ACTIVITY_REALLY_IMPORT_OLD_FILES,
-											R.string.import_old_files,
+											R.string.label_import_old_files,
 											msg,
 											R.string.ok,
 											R.string.cancel,
@@ -305,11 +305,11 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
 					R.string.old_files_message,
 					getString(R.string.ok),
 					getString(R.string.cancel),
-					getString(R.string.admin_and_prefs),
-					getString(R.string.import_old_files));
+					getString(R.string.label_settings),
+					getString(R.string.label_import_old_files));
 			MessageDialogFragment frag = MessageDialogFragment.newInstance(
 					ACTIVITY_IMPORT_OLD_FILES,
-					R.string.import_old_files,
+					R.string.label_import_old_files,
 					msg,
 					R.string.ok,
 					R.string.cancel,
@@ -407,7 +407,7 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
 						baseId = R.string.old_file_import_complete;
 					}
 					String msg = c.getString(baseId) + "\n\n" + c.getString(R.string.old_file_import_stats, mResult.processed, mResult.total, extra);
-					MessageDialogFragment frag = MessageDialogFragment.newInstance(0, R.string.import_old_files, msg, R.string.ok, 0, 0);
+					MessageDialogFragment frag = MessageDialogFragment.newInstance(0, R.string.label_import_old_files, msg, R.string.ok, 0, 0);
 					frag.show(fm, null);
 				}
 			};

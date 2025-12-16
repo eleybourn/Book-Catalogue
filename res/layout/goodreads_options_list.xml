@@ -13,19 +13,19 @@
 
         <TextView
             android:id="@+id/sync_with_goodreads_label"
-            style="@style/prefs_item"
+            style="@style/layout_menu_list"
             android:drawableLeft="@drawable/ic_menu_refresh"
             android:text="@string/sync_with_goodreads" />
 
         <TextView
             android:id="@+id/import_all_from_goodreads_label"
-            style="@style/prefs_item"
+            style="@style/layout_menu_list"
             android:drawableLeft="@drawable/ic_menu_upload"
             android:text="@string/import_all_from_goodreads" />
 
         <TextView
             android:id="@+id/send_books_to_goodreads_label"
-            style="@style/prefs_item"
+            style="@style/layout_menu_list"
             android:drawableLeft="@drawable/ic_menu_archive"
             android:text="@string/send_books_to_goodreads" />
     </LinearLayout>

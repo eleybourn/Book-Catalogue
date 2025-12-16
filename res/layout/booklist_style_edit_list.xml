@@ -3,7 +3,7 @@
     android:id="@+id/list_wrapper"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/background_grey"
+    android:background="@color/theme_surface"
     android:orientation="vertical" >
 
     <LinearLayout
@@ -19,7 +19,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:padding="@dimen/padding_border" >
+        android:padding="@dimen/p_md" >
 
         <Button
             android:id="@+id/cancel"
@@ -55,7 +55,7 @@
         android:layout_below="@+id/top_buttons"
         android:gravity="top"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/padding_border" >
+        android:paddingLeft="@dimen/p_md" >
 
         <com.eleybourn.bookcatalogue.widgets.TouchListView
             xmlns:tlv="http://schemas.android.com/apk/res/com.eleybourn.bookcatalogue"

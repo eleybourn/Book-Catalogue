@@ -15,7 +15,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:paddingBottom="@dimen/padding_border"
+            android:paddingBottom="@dimen/p_md"
             android:text="@string/nobody" />
 
         <View
@@ -28,7 +28,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:paddingTop="@dimen/padding_border"
+            android:paddingTop="@dimen/p_md"
             android:text="@string/loan_to" />
 
         <AutoCompleteTextView

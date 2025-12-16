@@ -103,7 +103,7 @@ public abstract class ListProperty<T extends Object> extends ValuePropertyWithGl
 	private void handleClick(final View base, final LayoutInflater inflater) {
 		final ItemEntries<T> items = getListItems();
 		if (this.hasHint()) {
-			HintManager.displayHint(base.getContext(), this.getHint(), new Runnable(){
+			HintManager.displayHint(base.getContext(), this.getHint(), null, new Runnable(){
 				@Override
 				public void run() {
 					displayList(base, inflater, items);

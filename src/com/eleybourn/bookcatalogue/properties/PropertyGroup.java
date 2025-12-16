@@ -64,7 +64,7 @@ public class PropertyGroup {
 	/** Global PropertyGroup definition */
 	public static final PropertyGroup GRP_SCANNER = mGroups.addGroup(GRP_SCANNER_ID, R.string.scanning, 70);
 	/** Global PropertyGroup definition */
-	public static final PropertyGroup GRP_ADVANCED_OPTIONS = mGroups.addGroup(GRP_ADVANCED_OPTIONS_ID, R.string.advanced_options, 80);
+	public static final PropertyGroup GRP_ADVANCED_OPTIONS = mGroups.addGroup(GRP_ADVANCED_OPTIONS_ID, R.string.label_advanced_options, 80);
 
 	/**
 	 * Collection class for all PropertyGroups

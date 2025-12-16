@@ -2,9 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="@color/background_grey"
+    android:background="@color/theme_surface"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/padding_border" >
+    android:paddingLeft="@dimen/p_md" >
 
     <AutoCompleteTextView
         android:id="@+id/name"
@@ -13,7 +13,7 @@
         android:completionThreshold="2"
         android:hint="@string/format"
         android:inputType="textCapSentences"
-        android:paddingLeft="@dimen/padding_border" />
+        android:paddingLeft="@dimen/p_md" />
 
     <LinearLayout
         android:id="@+id/bottom_buttons"

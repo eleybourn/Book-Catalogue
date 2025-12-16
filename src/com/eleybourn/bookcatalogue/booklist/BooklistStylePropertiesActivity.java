@@ -112,9 +112,7 @@ public class BooklistStylePropertiesActivity extends BookCatalogueActivity {
 
 		// Display hint if required
 		if (savedInstanceState == null)
-			HintManager.displayHint(this, R.string.hint_booklist_style_properties, null);
-
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
+			HintManager.displayHint(this, R.string.hint_booklist_style_properties, null, null);
 	}
 
 	/**
@@ -123,7 +121,6 @@ public class BooklistStylePropertiesActivity extends BookCatalogueActivity {
 	@Override 
 	public void onResume() {
 		super.onResume();
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
 	}
 
 	/**

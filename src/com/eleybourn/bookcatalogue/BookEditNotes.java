@@ -145,9 +145,6 @@ public class BookEditNotes extends BookEditFragmentAbstract implements OnPartial
 				public void afterFieldChange(Field field, String newValue) {
 					mEditManager.setDirty(true);
 				}});
-
-			// Setup the background
-			//Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 			
 		} catch (Exception e) {
 			Logger.logError(e);

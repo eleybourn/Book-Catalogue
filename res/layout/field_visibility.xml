@@ -11,12 +11,12 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/padding_border" >
+        android:paddingLeft="@dimen/p_md" >
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/padding_border"
+            android:paddingTop="@dimen/p_md"
             android:text="@string/manage_fields_help" />
     </LinearLayout>
 

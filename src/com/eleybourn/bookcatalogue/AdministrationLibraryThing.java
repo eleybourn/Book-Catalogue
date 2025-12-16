@@ -65,7 +65,6 @@ public class AdministrationLibraryThing extends BookCatalogueActivity {
 			setTitle(R.string.library_thing);
 			setContentView(R.layout.administration_librarything);
 			setupAdmin();
-			Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
@@ -77,7 +76,6 @@ public class AdministrationLibraryThing extends BookCatalogueActivity {
 	@Override 
 	public void onResume() {
 		super.onResume();
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
 	}
 
 	public void setupAdmin() {
@@ -86,8 +84,8 @@ public class AdministrationLibraryThing extends BookCatalogueActivity {
 		register.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent loadweb = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.librarything.com/"));
-				startActivity(loadweb); 
+				Intent loadWeb = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.librarything.com/"));
+				startActivity(loadWeb); 
 				return;
 			}
 		});
@@ -97,8 +95,8 @@ public class AdministrationLibraryThing extends BookCatalogueActivity {
 		devkeyLink.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent loadweb = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.librarything.com/services/keys.php"));
-				startActivity(loadweb); 
+				Intent loadWeb = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.librarything.com/services/keys.php"));
+				startActivity(loadWeb); 
 				return;
 			}
 		});

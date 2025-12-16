@@ -1,39 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-    <!--android:Theme.Light-->
-    <style name="AppBaseTheme" parent="Theme.AppCompat"></style>
 
-    <style name="AppTheme" parent="AppBaseTheme"></style>
+    <style name="layout_body">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@drawable/bg_main</item>
+    </style>
+    <style name="layout_main">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:padding">16dp</item>
+    </style>
+    <style name="layout_card_md">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginHorizontal">2dp</item>
+        <item name="android:layout_marginVertical">8dp</item>
+        <item name="cardBackgroundColor">?attr/colorSurfaceContainerLow</item>
+        <item name="cardElevation">2dp</item>
+        <item name="cardCornerRadius">16dp</item>
+        <item name="contentPadding">20dp</item>
+        <item name="strokeWidth">0dp</item>
+    </style>
+    <style name="layout_card_icon">
+        <item name="android:layout_width">56dp</item>
+        <item name="android:layout_height">56dp</item>
+        <item name="android:backgroundTintMode">src_in</item>
+        <item name="android:foregroundGravity">center</item>
+        <item name="android:scaleType">centerCrop</item>
+        <item name="android:background">?attr/colorSecondaryContainer</item>
+        <item name="shapeAppearanceOverlay">@style/shapeAppearanceOverlay_rounded_corners</item>
+    </style>
+    <style name="layout_card_content">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingHorizontal">16dp</item>
+    </style>
+    <style name="layout_card_title">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="layout_card_subtitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="layout_card_sm">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginHorizontal">4dp</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="cardBackgroundColor">?attr/colorSecondaryContainer</item>
+        <item name="cardElevation">2dp</item>
+        <item name="cardCornerRadius">16dp</item>
+        <item name="contentPadding">16dp</item>
+        <item name="strokeWidth">0dp</item>
+    </style>
+    <style name="layout_paragraph">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingBottom">20dp</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+    </style>
+    <style name="layout_url" parent="layout_paragraph">
+        <item name="android:textColor">@color/theme_primary</item>
+    </style>
+    <style name="layout_button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="layout_title">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingBottom">@dimen/p_lg</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+    </style>
+    <style name="layout_heading">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingTop">@dimen/p_md</item>
+        <item name="android:paddingHorizontal">@dimen/p_md</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
 
     <!-- Style for item in preferences lists -->
-    <style name="prefs_item">
+    <style name="layout_menu_list">
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:paddingLeft">@dimen/padding_prefs_item</item>
+        <item name="android:paddingHorizontal">@dimen/padding_prefs_item</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
     </style>
 
-    <!-- Style for headers in preferences lists -->
-    <style name="prefs_header">
-        <item name="android:layout_width">fill_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingTop">@dimen/padding_border</item>
-        <item name="android:paddingLeft">@dimen/padding_border</item>
-        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
-    </style>
-
-    <!-- Style for item in main menu -->
-    <style name="main_menu_item">
-        <item name="android:layout_width">fill_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:paddingLeft">@dimen/padding_border</item>
-        <item name="android:paddingTop">20dp</item>
-        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
-    </style>
-
-    <!-- Style for key of isbn search keybouard -->
+    <!-- Style for key of isbn search keyboard -->
     <style name="isbn_search_key">
         <item name="android:layout_width">@dimen/isbn_key_size</item>
         <item name="android:layout_height">@dimen/isbn_key_size</item>
@@ -86,7 +153,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
         <item name="android:layout_alignParentLeft">true</item>
-        <item name="android:hint">@string/notset</item>
+        <item name="android:hint">@string/not_set</item>
     </style>
 
     <style name="localeBasedTextEntry" parent="@style/editorFieldTextStyle">
@@ -100,7 +167,14 @@
     <style name="languageTextEntry" parent="@style/localeBasedTextEntry"></style>
 
     <style name="Widget.AppTheme.ActionBar.Fullscreen" parent="Widget.AppCompat.ActionBar">
-        <item name="android:background">@color/black_overlay</item>
+        <item name="android:background">?attr/colorSurfaceInverse</item>
     </style>
+
+    <style name="shapeAppearanceOverlay_rounded_corners" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+
+
 
 </resources>

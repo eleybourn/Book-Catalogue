@@ -60,8 +60,8 @@ public class AmazonUtils {
 			}
 		} catch (Exception e) {
 			Logger.logError(e, "Unable to use Amazon API");
-			Intent loadweb = new Intent(Intent.ACTION_VIEW, Uri.parse(url + AMAZON_LINK_EXTRAS));
-			context.startActivity(loadweb);					
+			Intent loadWeb = new Intent(Intent.ACTION_VIEW, Uri.parse(url + AMAZON_LINK_EXTRAS));
+			context.startActivity(loadWeb);					
 		}
 	}
 
@@ -92,8 +92,8 @@ public class AmazonUtils {
 		}
 		return extra;
 		//if (extra != null && !extra.trim().equals("")) {
-		//	Intent loadweb = new Intent(Intent.ACTION_VIEW, Uri.parse(baseUrl + extra));
-		//	context.startActivity(loadweb); 			
+		//	Intent loadWeb = new Intent(Intent.ACTION_VIEW, Uri.parse(baseUrl + extra));
+		//	context.startActivity(loadWeb); 			
 		//}			
 		
 	}

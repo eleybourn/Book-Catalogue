@@ -117,8 +117,7 @@ public class GoodreadsSearchCriteria extends BookCatalogueActivity {
 			public void onClick(View v) {
 				doSearch();
 			}});
-		
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
+
 	}
 
 	/**
@@ -127,7 +126,6 @@ public class GoodreadsSearchCriteria extends BookCatalogueActivity {
 	@Override 
 	public void onResume() {
 		super.onResume();
-		Utils.initBackground(R.drawable.bc_background_gradient_dim, this, false);		
 	}
 
 	/**

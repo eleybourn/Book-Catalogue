@@ -62,7 +62,7 @@ public class MenuHandler {
 	 * @param menu	Root menu
 	 */
 	public void addCreateBookItems(Menu menu) {
-		SubMenu addMenu = menu.addSubMenu(0, MNU_ADD_BOOK, mSort++, BookCatalogueApp.getResourceString(R.string.menu_insert) + "...");
+		SubMenu addMenu = menu.addSubMenu(0, MNU_ADD_BOOK, mSort++, BookCatalogueApp.getResourceString(R.string.label_insert) + "...");
 		//addMenu.setIcon(android.R.drawable.ic_menu_add);
 		addMenu.setIcon(R.drawable.ic_action_book_add);
 		addMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
@@ -105,12 +105,12 @@ public class MenuHandler {
 	 */
 	public void addCreateHelpAndAdminItems(Menu menu) {
 		{
-			String title = BookCatalogueApp.getResourceString(R.string.menu_bookshelf);
+			String title = BookCatalogueApp.getResourceString(R.string.label_bookshelf);
 			MenuItem item = menu.add(0, MNU_ITM_BOOKSHELVES, mSort++, title);
 			item.setIcon(R.drawable.ic_menu_bookshelves);
 		}
 		{
-			String helpTitle = BookCatalogueApp.getResourceString(R.string.help);
+			String helpTitle = BookCatalogueApp.getResourceString(R.string.label_help);
 			MenuItem help = menu.add(0, MNU_ITM_HELP, mSort++, helpTitle);
 			help.setIcon(android.R.drawable.ic_menu_help);
 		}
@@ -120,15 +120,15 @@ public class MenuHandler {
 			admin.setIcon(android.R.drawable.ic_menu_manage);
 		}
 		{
-			String aboutTitle = BookCatalogueApp.getResourceString(R.string.about_label);
+			String aboutTitle = BookCatalogueApp.getResourceString(R.string.label_about);
 			MenuItem admin = menu.add(0, MNU_ITM_ABOUT, mSort++, aboutTitle);
 			admin.setIcon(R.drawable.ic_menu_info_details);
 		}
 		if (BuildConfig.IS_DONATE_ALLOWED)
 		{
-			String title = BookCatalogueApp.getResourceString(R.string.donate_label);
+			String title = BookCatalogueApp.getResourceString(R.string.label_donate);
 			MenuItem donate = menu.add(0, MNU_ITM_DONATE, mSort++, title);
-			donate.setIcon(R.drawable.ic_menu_donate);
+			donate.setIcon(R.drawable.ic_menu_donate_old);
 		}
 	}
 	
@@ -218,7 +218,7 @@ public class MenuHandler {
 	 * Load the Admin Activity
 	 */
 	private void adminPage(Activity a) {
-		Intent i = new Intent(BookCatalogueApp.context, AdministrationFunctions.class);
+		Intent i = new Intent(BookCatalogueApp.context, MainAdministration.class);
 		i.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
 		a.startActivityForResult(i, UniqueId.ACTIVITY_ADMIN);
 	}
@@ -227,7 +227,7 @@ public class MenuHandler {
 	 * Load the Bookshelves Activity
 	 */
 	private void bookshelvesPage(Activity a) {
-		Intent i = new Intent(BookCatalogueApp.context, Bookshelf.class);
+		Intent i = new Intent(BookCatalogueApp.context, AdminBookshelf.class);
 		i.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
 		a.startActivityForResult(i, UniqueId.ACTIVITY_BOOKSHELF);
 	}
@@ -236,7 +236,7 @@ public class MenuHandler {
 	 * Load the About Activity
 	 */
 	private void aboutPage(Activity a) {
-		Intent i = new Intent(BookCatalogueApp.context, AdministrationAbout.class);
+		Intent i = new Intent(BookCatalogueApp.context, MainAbout.class);
 		i.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
 		a.startActivityForResult(i, UniqueId.ACTIVITY_ABOUT);
 	}
@@ -246,7 +246,7 @@ public class MenuHandler {
 	 */
 	private void donatePage(Activity a) {
 		if (BuildConfig.IS_DONATE_ALLOWED) {
-			Intent i = new Intent(BookCatalogueApp.context, AdministrationDonate.class);
+			Intent i = new Intent(BookCatalogueApp.context, MainDonate.class);
 			i.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
 			a.startActivityForResult(i, UniqueId.ACTIVITY_DONATE);
 		}
@@ -256,7 +256,7 @@ public class MenuHandler {
 	 * Load the Main Menu Activity
 	 */
 	private void helpPage(Activity a) {
-		Intent i = new Intent(BookCatalogueApp.context, Help.class);
+		Intent i = new Intent(BookCatalogueApp.context, MainHelp.class);
 		i.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
 		a.startActivityForResult(i, UniqueId.ACTIVITY_HELP);
 	}

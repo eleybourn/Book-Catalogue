@@ -118,7 +118,7 @@
 <string name="backup_title">Sicherungskopie?</string>
     <string name="searching_google_books">Suche bei Google Books</string>
 <string name="searching_library_thing">Suche bei LibraryThing</string>
-    <string name="select_bookshelves">Bücherregale wählen</string>
+    <string name="label_select_bookshelves">Bücherregale wählen</string>
 <string name="label_format">Ausgaben</string>
 <string name="format1">Taschenbuch</string>
 <string name="format2">Gebundene Ausgabe</string>

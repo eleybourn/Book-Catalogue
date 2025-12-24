@@ -76,7 +76,7 @@ public class BooksCursor extends TrackedCursor {
 	private int mIdCol = -2;
 	public final long getId() {
 		if (mIdCol < 0) {
-			mIdCol = getColumnIndex(CatalogueDBAdapter.KEY_ROWID);
+			mIdCol = getColumnIndex(CatalogueDBAdapter.KEY_ROW_ID);
 			if (mIdCol < 0)
 				throw new RuntimeException("ISBN column not in result set");
 		}

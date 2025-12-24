@@ -157,7 +157,7 @@ public class HintManager {
 		/** USed to lookup hint based on string ID */
 		private final Hashtable<Integer, Hint> mHintsById = new Hashtable<>();
 		/** Used to prevent two hints having the same preference name */
-		private Hashtable<String, Hint> mHintsByKey = new Hashtable<String, Hint>();
+		private final Hashtable<String, Hint> mHintsByKey = new Hashtable<>();
 
 		/**
 		 * Add a hint to the collection
@@ -168,7 +168,7 @@ public class HintManager {
 		 * @return				Hints, for chaining
 		 */
 		public Hints add(String key, int stringId, boolean defaultVisibility) {
-			Hint h = new Hint(key, stringId, defaultVisibility);
+			Hint h = new Hint(key, defaultVisibility);
 			mHintsById.put(stringId, h);
 			mHintsByKey.put(key.trim().toLowerCase(), h);
 			return this;
@@ -180,8 +180,6 @@ public class HintManager {
 
 		/**
 		 * Return the hint based on string ID
-		 * @param stringId
-		 * @return
 		 */
 		public Hint getHint(int stringId) {
 			Hint h = mHintsById.get(stringId);
@@ -192,8 +190,6 @@ public class HintManager {
 
 		/**
 		 * Get an enumeration of all hints.
-		 * 
-		 * @return
 		 */
 		public Enumeration<Hint> getHints() {
 			return mHintsById.elements();
@@ -207,36 +203,22 @@ public class HintManager {
 	 * @author Philip Warner
 	 */
 	private static class Hint {
-		/** Preferences key suffix specific to this hint */
+		// Preferences key suffix specific to this hint
 		public final String key;
-		/** String to display for this hint */
-		//public final int stringId;
 
-		/** Indicates that this hint was displayed already in this instance of the app */
+		// Indicates that this hint was displayed already in this instance of the app
 		public boolean mHasBeenDisplayed = false;
 
 		private final boolean mDefaultVisibility;
 
-		/**
+        /**
 		 * Constructor
 		 *
 		 * @param key			Preferences key suffix specific to this hint
-		 * @param stringId		String to display for this hint
 		 */
-		private Hint(String key, int stringId) {
-			this(key, stringId, true);
-		}
-
-		/**
-		 * Constructor
-		 *
-		 * @param key			Preferences key suffix specific to this hint
-		 * @param stringId		String to display for this hint
-		 */
-		private Hint(String key, int stringId, boolean defaultVisibility) {
+		private Hint(String key, boolean defaultVisibility) {
 			this.key = key;
 			mDefaultVisibility = defaultVisibility;
-			//this.stringId = stringId;
 		}
 
 		/**
@@ -263,8 +245,6 @@ public class HintManager {
 
 		/**
 		 * Check if this hint should be shown
-		 * 
-		 * @return
 		 */
 		public boolean shouldBeShown() {
 			if (hasBeenDisplayed())

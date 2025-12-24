@@ -21,9 +21,14 @@ package com.eleybourn.bookcatalogue.dialogs;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+
 import com.eleybourn.bookcatalogue.compat.BookCatalogueDialogFragment;
+
+import java.util.Objects;
 
 /**
  * Fragment wrapper for the PartialDatePicker dialog
@@ -66,20 +71,29 @@ public class TextFieldEditorFragment extends BookCatalogueDialogFragment {
 	 * Ensure activity supports event
 	 */
 	@Override
-	public void onAttach(Activity a) {
-		super.onAttach(a);
+    public void onAttach (@NonNull Context context) {
+        super.onAttach(context);
 
-		if (! (a instanceof OnTextFieldEditorListener))
-			throw new RuntimeException("Activity " + a.getClass().getSimpleName() + " must implement OnTextFieldEditorListener");
+        Activity a = null;
+        if (context instanceof Activity){
+            a=(Activity) context;
+        }
+
+		if (! (a instanceof OnTextFieldEditorListener)) {
+            assert a != null;
+            throw new RuntimeException("Activity " + a.getClass().getSimpleName() + " must implement OnTextFieldEditorListener");
+        }
 		
 	}
 
 	/**
 	 * Create the underlying dialog
 	 */
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-    	mDialogId = getArguments().getInt("dialogId");
+        assert getArguments() != null;
+        mDialogId = getArguments().getInt("dialogId");
         int title = getArguments().getInt("title");
         String text = getArguments().getString("text");
 
@@ -93,14 +107,14 @@ public class TextFieldEditorFragment extends BookCatalogueDialogFragment {
 	/**
 	 * Object to handle changes to a description field.
 	 */
-	private TextFieldEditor.OnEditListener mEditListener = new TextFieldEditor.OnEditListener(){
+	private final TextFieldEditor.OnEditListener mEditListener = new TextFieldEditor.OnEditListener(){
 		@Override
 		public void onSaved(TextFieldEditor dialog, String newText) {
-			((OnTextFieldEditorListener)getActivity()).onTextFieldEditorSave(mDialogId, TextFieldEditorFragment.this, newText);
+			((OnTextFieldEditorListener) Objects.requireNonNull(getActivity())).onTextFieldEditorSave(mDialogId, TextFieldEditorFragment.this, newText);
 		}
 		@Override
 		public void onCancel(TextFieldEditor dialog) {
-			((OnTextFieldEditorListener)getActivity()).onTextFieldEditorCancel(mDialogId, TextFieldEditorFragment.this);
+			((OnTextFieldEditorListener) Objects.requireNonNull(getActivity())).onTextFieldEditorCancel(mDialogId, TextFieldEditorFragment.this);
 		}
 	};
 }

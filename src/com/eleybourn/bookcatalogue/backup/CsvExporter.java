@@ -77,7 +77,7 @@ public class CsvExporter implements Exporter {
 		boolean displayingStartupMessage = true;
 
 		StringBuilder export = new StringBuilder(
-			'"' + CatalogueDBAdapter.KEY_ROWID + "\"," + 			//0
+			'"' + CatalogueDBAdapter.KEY_ROW_ID + "\"," + 			//0
 			'"' + CatalogueDBAdapter.KEY_AUTHOR_DETAILS + "\"," + 	//2
 			'"' + CatalogueDBAdapter.KEY_TITLE + "\"," + 			//4
 			'"' + CatalogueDBAdapter.KEY_ISBN + "\"," + 			//5
@@ -133,7 +133,7 @@ public class CsvExporter implements Exporter {
 				if (books.moveToFirst()) {
 					do { 
 						num++;
-						long id = books.getLong(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROWID));
+						long id = books.getLong(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROW_ID));
 						// Just get the string from the database and save it. It should be in standard SQL form already.
 						String dateString = "";
 						try {
@@ -194,7 +194,7 @@ public class CsvExporter implements Exporter {
 						String bookshelves_id_text = "";
 						String bookshelves_name_text = "";
 						while (bookshelves.moveToNext()) {
-							bookshelves_id_text += bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_ROWID)) + BookEditFields.BOOKSHELF_SEPARATOR;
+							bookshelves_id_text += bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_ROW_ID)) + BookEditFields.BOOKSHELF_SEPARATOR;
 							bookshelves_name_text += Utils.encodeListItem(bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)),BookEditFields.BOOKSHELF_SEPARATOR) + BookEditFields.BOOKSHELF_SEPARATOR;
 						}
 						bookshelves.close();

@@ -3,6 +3,7 @@ package com.eleybourn.bookcatalogue.dialogs;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -19,6 +20,7 @@ import com.eleybourn.bookcatalogue.dialogs.ExportTypeSelectionDialogFragment.OnE
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
+import androidx.annotation.NonNull;
 import androidx.documentfile.provider.DocumentFile;
 
 public class ExportAdvancedDialogFragment extends BookCatalogueDialogFragment {
@@ -38,7 +40,7 @@ public class ExportAdvancedDialogFragment extends BookCatalogueDialogFragment {
 	 * Constructor
 	 * 
 	 * @param dialogId	ID passed by caller. Can be 0, will be passed back in event
-	 * @param titleId	Title to display
+	 * @param file	File to display
 	 *
 	 * @return			Created fragment
 	 */
@@ -55,11 +57,18 @@ public class ExportAdvancedDialogFragment extends BookCatalogueDialogFragment {
 	 * Ensure activity supports event
 	 */
 	@Override
-	public void onAttach(Activity a) {
-		super.onAttach(a);
+    public void onAttach (@NonNull Context context) {
+        super.onAttach(context);
 
-		if (! (a instanceof OnExportTypeSelectionDialogResultListener))
-			throw new RuntimeException("Activity " + a.getClass().getSimpleName() + " must implement OnExportTypeSelectionDialogResultListener");
+        Activity a = null;
+        if (context instanceof Activity){
+            a=(Activity) context;
+        }
+
+		if (! (a instanceof OnExportTypeSelectionDialogResultListener)) {
+            assert a != null;
+            throw new RuntimeException("Activity " + a.getClass().getSimpleName() + " must implement OnExportTypeSelectionDialogResultListener");
+        }
 		
 	}
 

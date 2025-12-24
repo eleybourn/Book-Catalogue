@@ -101,7 +101,7 @@ public class CsvImporter {
 		// ENHANCE: Do a search if mandatory columns missing (eg. allow 'import' of a list of ISBNs).
 		// ENHANCE: Only make some columns mandatory if the ID is not in import, or not in DB (ie. if not an update)
 		// ENHANCE: Export/Import should use GUIDs for book IDs, and put GUIDs on Image file names.
-		requireColumnOr(values, CatalogueDBAdapter.KEY_ROWID, DatabaseDefinitions.DOM_BOOK_UUID.name);
+		requireColumnOr(values, CatalogueDBAdapter.KEY_ROW_ID, DatabaseDefinitions.DOM_BOOK_UUID.name);
 		requireColumnOr(values, CatalogueDBAdapter.KEY_FAMILY_NAME,
 								CatalogueDBAdapter.KEY_AUTHOR_FORMATTED,
 								CatalogueDBAdapter.KEY_AUTHOR_NAME,
@@ -153,7 +153,7 @@ public class CsvImporter {
 
 				boolean hasNumericId;
 				// Validate ID
-				String idStr = values.getString(CatalogueDBAdapter.KEY_ROWID.toLowerCase());
+				String idStr = values.getString(CatalogueDBAdapter.KEY_ROW_ID.toLowerCase());
 				long idLong;
 				if (idStr == null || idStr.equals("")) {
 					hasNumericId = false;
@@ -168,7 +168,7 @@ public class CsvImporter {
 					}
 				}
 				if (!hasNumericId) {
-					values.putString(CatalogueDBAdapter.KEY_ROWID, "0");					
+					values.putString(CatalogueDBAdapter.KEY_ROW_ID, "0");
 				}
 
 				// Get the UUID, and remove from collection if null/blank
@@ -259,7 +259,7 @@ public class CsvImporter {
 						doUpdate = true;
 						// Always import empty IDs...even if they are duplicates.
 						long id = db.createBook(values, CatalogueDBAdapter.BOOK_UPDATE_USE_UPDATE_DATE_IF_PRESENT);
-						values.putString(CatalogueDBAdapter.KEY_ROWID, Long.toString(id));
+						values.putString(CatalogueDBAdapter.KEY_ROW_ID, Long.toString(id));
 						// Would be nice to import a cover, but with no ID/UUID thats not possible
 						//mImportCreated++;
 					} else {
@@ -328,7 +328,7 @@ public class CsvImporter {
 							newId = db.createBook(idLong, values, CatalogueDBAdapter.BOOK_UPDATE_USE_UPDATE_DATE_IF_PRESENT);
 							nCreated++;
 							//mImportCreated++;
-							values.putString(CatalogueDBAdapter.KEY_ROWID, Long.toString(newId));
+							values.putString(CatalogueDBAdapter.KEY_ROW_ID, Long.toString(newId));
 							idLong = newId;
 						}
 
@@ -339,12 +339,12 @@ public class CsvImporter {
 						//	coverFinder.copyOrRenameCoverFile(uuidVal, idFromFile, idLong);
 						//}
 						// Save the real ID to the collection (will/may be used later)
-						values.putString(CatalogueDBAdapter.KEY_ROWID, Long.toString(idLong));
+						values.putString(CatalogueDBAdapter.KEY_ROW_ID, Long.toString(idLong));
 					}
 					
 					if (doUpdate) {
 						if (values.containsKey(CatalogueDBAdapter.KEY_LOANED_TO) && !values.get(CatalogueDBAdapter.KEY_LOANED_TO).equals("")) {
-							int id = Integer.parseInt(values.getString(CatalogueDBAdapter.KEY_ROWID));
+							int id = Integer.parseInt(values.getString(CatalogueDBAdapter.KEY_ROW_ID));
 							db.deleteLoan(id, false);
 							db.createLoan(values, false);
 						}
@@ -357,7 +357,7 @@ public class CsvImporter {
 								anthology = 0;
 							}
 							if (anthology != 0) {
-								int id = Integer.parseInt(values.getString(CatalogueDBAdapter.KEY_ROWID));
+								int id = Integer.parseInt(values.getString(CatalogueDBAdapter.KEY_ROW_ID));
 								// We have anthology details, delete the current details.
 								db.deleteAnthologyTitles(id, false);
 								int oldi = 0;

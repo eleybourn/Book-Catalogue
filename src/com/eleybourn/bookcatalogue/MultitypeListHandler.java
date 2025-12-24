@@ -40,7 +40,7 @@ public interface MultitypeListHandler {
 	 * @param <T>	Row context passed to each method. Typically a RowView. Could be a cursor
 	 * 				or any other object capable of representing the data in the current row.
 	 */
-	public static abstract class MultitypeHolder<T> {		
+	abstract class MultitypeHolder<T> {
 		/**
 		 * Setup a new holder for row type based on the passed rowContext. This holder will be
 		 * associated with a reusable view that will always be used for rows of the current
@@ -50,22 +50,12 @@ public interface MultitypeListHandler {
 
 		/**
 		 * Use the passed rowContext to fill in the actual details for the current row.
-		 * 
-		 * @param rowContext
-		 * @param v
-		 * @param level
 		 */
 		public abstract void set(T rowContext, View v, int level);
 
 		/**
-		 * Use  the passed rowContext to determine the kind of View that is required and return a new
+		 * Use the passed rowContext to determine the kind of View that is required and return a new
 		 * view.
-		 * 
-		 * @param rowContext
-		 * @param inflater
-		 * @param parent
-		 * @param level
-		 * @return
 		 */
 		public abstract View newView(T rowContext, LayoutInflater inflater, ViewGroup parent, int level);
 	}
@@ -78,14 +68,12 @@ public interface MultitypeListHandler {
 	 * 
 	 * @return		view type
 	 */
-	public int getItemViewType(Cursor cursor);
+    int getItemViewType(Cursor cursor);
 
 	/**
 	 * Get the total number of view types that can be returned.
-	 * 
-	 * @return
 	 */
-	public int getViewTypeCount();
+    int getViewTypeCount();
 	
 	/**
 	 * Create a new view and fill it in with details pointed to by the current cursor. The 
@@ -98,7 +86,7 @@ public interface MultitypeListHandler {
 	 * 	
 	 * @return				Filled-in view to use.
 	 */
-	public View getView(Cursor cursor, LayoutInflater inflater, View convertView, ViewGroup parent);
+    View getView(Cursor cursor, LayoutInflater inflater, View convertView, ViewGroup parent);
 	
 	/**
 	 * Get the text to display in FastScroller for row at current cursor position
@@ -107,5 +95,5 @@ public interface MultitypeListHandler {
 	 * 
 	 * @return		text to display
 	 */
-	public String[] getSectionText(Cursor cursor);
+    String[] getSectionText(Cursor cursor);
 }

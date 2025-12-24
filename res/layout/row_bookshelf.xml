@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/row"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="10dp" >
+    android:orientation="horizontal"
+    android:padding="10dp"
+    android:background="?android:attr/selectableItemBackground" >
 
     <TextView
         android:id="@+id/row_bookshelf"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        style="@style/layout_menu_list"
+        app:drawableLeftCompat="@drawable/ic_menu_archive"
+        app:drawableTint="?attr/colorPrimary"
+        android:text="@string/not_set" />
 
 </LinearLayout>

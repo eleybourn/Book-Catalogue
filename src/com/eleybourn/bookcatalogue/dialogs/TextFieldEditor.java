@@ -21,11 +21,9 @@ package com.eleybourn.bookcatalogue.dialogs;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 
 import com.eleybourn.bookcatalogue.R;
@@ -38,10 +36,8 @@ import com.eleybourn.bookcatalogue.R;
  * @author pjw
  */
 public class TextFieldEditor extends AlertDialog {
-	/** Current text */
-	private String mText;
-	/** View which displays the text */
-	private EditText mTextView;
+    /** View which displays the text */
+	private final EditText mTextView;
 	// Listener for dialog exit/save/cancel */
 	private OnEditListener mListener;
 
@@ -50,9 +46,9 @@ public class TextFieldEditor extends AlertDialog {
 	 * 
 	 * @author pjw
 	 */
-	protected static interface OnEditListener {
-		public void onSaved(TextFieldEditor dialog, String newText);
-		public void onCancel(TextFieldEditor dialog);
+	protected interface OnEditListener {
+		void onSaved(TextFieldEditor dialog, String newText);
+		void onCancel(TextFieldEditor dialog);
 	}
 
 	/**
@@ -64,6 +60,7 @@ public class TextFieldEditor extends AlertDialog {
 		super(context);
 
         // Make sure the buttons move if the keyboard appears
+        assert getWindow() != null;
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
 		// Get the layout
@@ -74,41 +71,29 @@ public class TextFieldEditor extends AlertDialog {
 		setView(root);
 
 		// get the next view
-		mTextView = (EditText)root.findViewById(R.id.field_text);
+		mTextView = root.findViewById(R.id.field_text);
 
 		// Handle OK
-		((Button)root.findViewById(R.id.button_ok)).setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				mListener.onSaved(TextFieldEditor.this, mTextView.getText().toString());
-			}}
-		);
+		root.findViewById(R.id.button_ok).setOnClickListener(v -> mListener.onSaved(TextFieldEditor.this, mTextView.getText().toString())
+        );
 
 		// Handle Cancel
-		((Button)root.findViewById(R.id.button_cancel)).setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				mListener.onCancel(TextFieldEditor.this);				
-			}}
-		);
+		root.findViewById(R.id.button_cancel).setOnClickListener(v -> mListener.onCancel(TextFieldEditor.this)
+        );
 
 		// Handle Cancel by any means
-		this.setOnCancelListener(new OnCancelListener() {
-			@Override
-			public void onCancel(DialogInterface arg0) {
-				mListener.onCancel(TextFieldEditor.this);				
-			}});
+		this.setOnCancelListener(arg0 -> mListener.onCancel(TextFieldEditor.this));
 	}
 
 	/** Set the listener */
-	public void setOnEditListener(OnEditListener listener) {
+    protected void setOnEditListener(OnEditListener listener) {
 		mListener= listener;		
 	}
 
 	/** Set the current text */
 	public void setText(String text) {
-		mText = text;
-		mTextView.setText(mText);
+        // Current text
+        mTextView.setText(text);
 	}
 
 }

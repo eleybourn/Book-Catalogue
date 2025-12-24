@@ -120,7 +120,7 @@
     <string name="backup_title">Δημιουργία αντιγράφου;</string>
     <string name="searching_google_books">Αναζήτηση στο Google Books</string>
     <string name="searching_library_thing">Αναζήτηση στο LibraryThing</string>
-    <string name="select_bookshelves">Επιλέξτε ράφια</string>
+    <string name="label_select_bookshelves">Επιλέξτε ράφια</string>
     <string name="label_format">Μορφή</string>
     <string name="format1">Μαλακό εξώφυλλο</string>
     <string name="format2">Σκληρό εξώφυλλο</string>

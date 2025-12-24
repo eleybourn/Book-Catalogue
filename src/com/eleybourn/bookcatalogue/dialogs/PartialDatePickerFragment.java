@@ -21,7 +21,10 @@ package com.eleybourn.bookcatalogue.dialogs;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 
 import com.eleybourn.bookcatalogue.compat.BookCatalogueDialogFragment;
 
@@ -66,8 +69,13 @@ public class PartialDatePickerFragment extends BookCatalogueDialogFragment {
 	 * Check the activity supports the interface
 	 */
 	@Override
-	public void onAttach(Activity a) {
-		super.onAttach(a);
+    public void onAttach (@NonNull Context context) {
+        super.onAttach(context);
+
+        Activity a = null;
+        if (context instanceof Activity){
+            a=(Activity) context;
+        }
 
 		if (! (a instanceof OnPartialDatePickerListener))
 			throw new RuntimeException("Activity " + a.getClass().getSimpleName() + " must implement OnPartialDatePickerListener");

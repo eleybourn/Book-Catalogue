@@ -31,9 +31,12 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
@@ -62,7 +65,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * <ul>
  * <li> handling of visibility via preferences
  * <li> handling of 'group' visibility via the 'group' property of a field.
- * <li> understanding of kinds of views (setting a checkbox value to 'true' will work as 
+ * <li> understanding of kinds of views (setting a checkbox value to 'true' will work as
  *      expected as will setting the value of a Spinner). As new view types are added, it
  *      will be necessary to add new FieldAccessor implementations.
  * <li> Custom data accessors and formatters to provide application-specific data rules.
@@ -109,37 +112,35 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * The add() method of Fields returns a new Field object which exposes the 'view' member; this
  * can be used to perform view-specific tasks like setting onClick() handlers.
  *
- * TODO: Rationalize the use of this collection with the DataManager.
- * 
  * @author Philip Warner
  *
  */
 public class Fields extends ArrayList<Fields.Field> {
 	// Used for date parsing
 	static java.text.SimpleDateFormat mDateSqlSdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
-	static java.text.DateFormat mDateDispSdf = java.text.DateFormat.getDateInstance(java.text.DateFormat.MEDIUM);
+	static java.text.DateFormat mDateDisplaySdf = java.text.DateFormat.getDateInstance(java.text.DateFormat.MEDIUM);
 
 	// Java likes this
-	public static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
 	// The activity and preferences related to this object.
-	private FieldsContext mContext = null;
-	SharedPreferences mPrefs = null;
+	private final FieldsContext mContext;
+	SharedPreferences mPrefs;
 
 	public interface AfterFieldChangeListener {
 		void afterFieldChange(Field field, String newValue);
 	}
-	
+
 	private AfterFieldChangeListener mAfterFieldChangeListener = null;
-	
+
 	private interface FieldsContext {
 		Object dbgGetOwnerContext();
 		View findViewById(int id);
 	}
-	private class ActivityContext implements FieldsContext {
+	private static class ActivityContext implements FieldsContext {
 		private final WeakReference<Activity> mActivity;
 		public ActivityContext(Activity a) {
-			mActivity = new WeakReference<Activity>(a);
+			mActivity = new WeakReference<>(a);
 		}
 		@Override
 		public Object dbgGetOwnerContext() {
@@ -150,10 +151,10 @@ public class Fields extends ArrayList<Fields.Field> {
 			return mActivity.get().findViewById(id);
 		}
 	}
-	private class FragmentContext implements FieldsContext {
+	private static class FragmentContext implements FieldsContext {
 		private final WeakReference<Fragment> mFragment;
 		public FragmentContext(Fragment f) {
-			mFragment = new WeakReference<Fragment>(f);
+			mFragment = new WeakReference<>(f);
 		}
 		@Override
 		public Object dbgGetOwnerContext() {
@@ -174,11 +175,11 @@ public class Fields extends ArrayList<Fields.Field> {
 
 			return v.findViewById(id);
 		}
-		
+
 	}
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param a 	The parent activity which contains all Views this object
 	 * 				will manage.
 	 */
@@ -190,35 +191,33 @@ public class Fields extends ArrayList<Fields.Field> {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param f 	The parent fragment which contains all Views this object
 	 * 				will manage.
 	 */
 	Fields(Fragment f) {
 		super();
 		mContext = new FragmentContext(f);
+        assert f.getActivity() != null;
 		mPrefs = f.getActivity().getSharedPreferences("bookCatalogue", android.content.Context.MODE_PRIVATE);
 	}
 
 	/**
-	 * Set the listener for field changes
-	 * 
-	 * @param listener
-	 * @return
-	 */
-	public AfterFieldChangeListener setAfterFieldChangeListener(AfterFieldChangeListener listener) {
-		AfterFieldChangeListener old = mAfterFieldChangeListener;
-		mAfterFieldChangeListener = listener;
-		return old;
-	}
+     * Set the listener for field changes.
+     *
+     * @param listener Listener to call when a field changes.
+     */
+	public void setAfterFieldChangeListener(AfterFieldChangeListener listener) {
+        mAfterFieldChangeListener = listener;
+    }
 
 	/**
 	 * Utility routine to parse a date. Parses YYYY-MM-DD and DD-MMM-YYYY format.
-	 * Could be generalized even further if desired by supporting more formats.  
-	 * 
+	 * Could be generalized even further if desired by supporting more formats.
+	 *
 	 * @param s		String to parse
 	 * @return		Parsed date
-	 * 
+	 *
 	 * @throws ParseException		If parse failed.
 	 */
 	static Date parseDate(String s) throws ParseException {
@@ -228,7 +227,7 @@ public class Fields extends ArrayList<Fields.Field> {
 			d = mDateSqlSdf.parse(s);
 		} catch (Exception e) {
 			try {
-				d = mDateDispSdf.parse(s);				
+				d = mDateDisplaySdf.parse(s);
 			} catch (Exception e1) {
 				java.text.DateFormat df = java.text.DateFormat.getDateInstance(java.text.DateFormat.SHORT);
 				d = df.parse(s);
@@ -239,21 +238,21 @@ public class Fields extends ArrayList<Fields.Field> {
 	}
 
 	// The last validator exception caught by this object
-	private ArrayList<ValidatorException> mValidationExceptions = new ArrayList<ValidatorException>();
+	private final ArrayList<ValidatorException> mValidationExceptions = new ArrayList<>();
 	// A list of cross-validators to apply if all fields pass simple validation.
-	private ArrayList<FieldCrossValidator> mCrossValidators = new ArrayList<FieldCrossValidator>();
+	private final ArrayList<FieldCrossValidator> mCrossValidators = new ArrayList<>();
 
 	/**
 	 * Interface for view-specific accessors. One of these will be implemented for each view type that
 	 * is supported.
-	 * 
+	 *
 	 * @author Philip Warner
 	 *
 	 */
 	public interface FieldDataAccessor {
 		/**
 		 * Passed a Field and a Cursor get the column from the cursor and set the view value.
-		 * 
+		 *
 		 * @param field		Field which defines the View details
 		 * @param c			Cursor with data to load.
 		 */
@@ -261,7 +260,7 @@ public class Fields extends ArrayList<Fields.Field> {
 
 		/**
 		 * Passed a Field and a Cursor get the column from the cursor and set the view value.
-		 * 
+		 *
 		 * @param field		Field which defines the View details
 		 * @param b			Bundle with data to load.
 		 */
@@ -269,15 +268,15 @@ public class Fields extends ArrayList<Fields.Field> {
 
 		/**
 		 * Passed a Field and a DataManager get the column from the data manager and set the view value.
-		 * 
+		 *
 		 * @param field		Field which defines the View details
-		 * @param b			Bundle with data to load.
+		 * @param data			Bundle with data to load.
 		 */
 		void set(Field field, DataManager data);
 
 		/**
 		 * Passed a Field and a String, use the string to set the view value.
-		 * 
+		 *
 		 * @param field		Field which defines the View details
 		 * @param s			Source string for value to set.
 		 */
@@ -286,7 +285,7 @@ public class Fields extends ArrayList<Fields.Field> {
 		/**
 		 * Get the the value from the view associated with Field and store a native version
 		 * in the passed values collection.
-		 * 
+		 *
 		 * @param field		Field associated with the View object
 		 * @param values	Collection to save value.
 		 */
@@ -295,7 +294,7 @@ public class Fields extends ArrayList<Fields.Field> {
 		/**
 		 * Get the the value from the view associated with Field and store a native version
 		 * in the passed DataManager.
-		 * 
+		 *
 		 * @param field		Field associated with the View object
 		 * @param values	Collection to save value.
 		 */
@@ -303,7 +302,7 @@ public class Fields extends ArrayList<Fields.Field> {
 
 		/**
 		 * Get the the value from the view associated with Field and return it as am Object.
-		 * 
+		 *
 		 * @param 	field	Field associated with the View object
 		 * @return 	The most natural value to associate with the View value.
 		 */
@@ -313,7 +312,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	/**
 	 * Implementation that stores and retrieves data from a string variable.
 	 * Only used when a Field fails to find a layout.
-	 * 
+	 *
 	 * @author Philip Warner
 	 *
 	 */
@@ -345,9 +344,9 @@ public class Fields extends ArrayList<Fields.Field> {
 
 	/**
 	 * Implementation that stores and retrieves data from a TextView.
-	 * This is treated differently to an EditText in that HTML is 
+	 * This is treated differently to an EditText in that HTML is
 	 * displayed properly.
-	 * 
+	 *
 	 * @author Philip Warner
 	 *
 	 */
@@ -372,44 +371,24 @@ public class Fields extends ArrayList<Fields.Field> {
 			TextView v = (TextView) field.getView();
 			// Allow for the (apparent) possibility that the view may have been removed due to a tab change or similar.
 			// See Issue 505.
-			if (v == null) { 
+			if (v == null) {
 				// Log the error. Not much more we can do.
-				String msg = "NULL View: col="  + field.column + ", id=" + field.id + ", group=" + field.group;
-				Fields fs = field.getFields();
-				if (fs == null) {
-					msg += ". Fields is NULL.";
-				} else {
-					msg += ". Fields is valid.";
-					FieldsContext ctx = fs.getContext();
-					if (ctx == null) {
-						msg += ". Context is NULL.";							
-					} else {
-						msg += ". Context is " + ctx.getClass().getSimpleName() + ".";
-						Object o = ctx.dbgGetOwnerContext();
-						if (o == null) {
-							msg += ". Owner is NULL.";
-						} else {
-							msg += ". Owner is " + o.getClass().getSimpleName() + " (" + o.toString() + ")";
-						}
-					}
-				}
-				Tracker.handleEvent(this, msg, Tracker.States.Running);
+                String msg = getString(field);
+                Tracker.handleEvent(this, msg, Tracker.States.Running);
 				// This should NEVER happen, but it does. So we need more info about why & when.
 				throw new RuntimeException("Unable to get associated View object");
 			} else {
 				if (mFormatHtml && s != null) {
-					v.setText(Html.fromHtml(field.format(s)));
+					v.setText(HtmlCompat.fromHtml(field.format(s), HtmlCompat.FROM_HTML_MODE_LEGACY));
 					v.setFocusable(false);
-					v.setTextColor(BookCatalogueApp.context.getResources().getColor(R.color.theme_onSurface));
+					v.setTextColor(ContextCompat.getColor(BookCatalogueApp.context, R.color.theme_onSurface));
 				} else {
 					v.setText(field.format(s));
-				}				
+				}
 			}
 		}
 		public void get(Field field, Bundle values) {
-			//TextView v = (TextView) field.getView();
-			//values.putString(field.column, field.extract(v.getText().toString()));
-			values.putString(field.column, mRawValue);
+            values.putString(field.column, mRawValue);
 		}
 		@Override
 		public void get(Field field, DataManager values) {
@@ -426,13 +405,37 @@ public class Fields extends ArrayList<Fields.Field> {
 		public void setShowHtml(boolean showHtml) {
 			mFormatHtml = showHtml;
 		}
-	
+
 	}
 
-	/**
+    @NonNull
+    private static String getString(Field field) {
+        String msg = "NULL View: col="  + field.column + ", id=" + field.id + ", group=" + field.group;
+        Fields fs = field.getFields();
+        if (fs == null) {
+            msg += ". Fields is NULL.";
+        } else {
+            msg += ". Fields is valid.";
+            FieldsContext ctx = fs.getContext();
+            if (ctx == null) {
+                msg += ". Context is NULL.";
+            } else {
+                msg += ". Context is " + ctx.getClass().getSimpleName() + ".";
+                Object o = ctx.dbgGetOwnerContext();
+                if (o == null) {
+                    msg += ". Owner is NULL.";
+                } else {
+                    msg += ". Owner is " + o.getClass().getSimpleName() + " (" + o + ")";
+                }
+            }
+        }
+        return msg;
+    }
+
+    /**
 	 * Implementation that stores and retrieves data from an EditText.
 	 * Just uses for defined formatter and setText() and getText().
-	 * 
+	 *
 	 * @author Philip Warner
 	 *
 	 */
@@ -452,7 +455,7 @@ public class Fields extends ArrayList<Fields.Field> {
 			synchronized(this) {
 				if (mIsSetting)
 					return; // Avoid recursion now we watch text
-				mIsSetting = true;				
+				mIsSetting = true;
 			}
 			try {
 				TextView v = (TextView) field.getView();
@@ -462,36 +465,18 @@ public class Fields extends ArrayList<Fields.Field> {
 				//
 				// The following code is to help diagnose these cases, not avoid them.
 				//
-				// NOTE: 	This does NOT entirly fix the problem, it gathers debug info. but
+				// NOTE: 	This does NOT entirely fix the problem, it gathers debug info. but
 				//			we have implemented one work-around
 				//
 				// Work-around #1:
 				//
 				// It seems that sometimes the afterTextChanged() event fires after the text field
-				// is removed from the screen. In this case, there is no need to synchronize the values 
+				// is removed from the screen. In this case, there is no need to synchronize the values
 				// since the view is gone.
 				//
 				if (v == null) {
-					String msg = "NULL View: col="  + field.column + ", id=" + field.id + ", group=" + field.group;
-					Fields fs = field.getFields();
-					if (fs == null) {
-						msg += ". Fields is NULL.";
-					} else {
-						msg += ". Fields is valid.";
-						FieldsContext ctx = fs.getContext();
-						if (ctx == null) {
-							msg += ". Context is NULL.";							
-						} else {
-							msg += ". Context is " + ctx.getClass().getSimpleName() + ".";
-							Object o = ctx.dbgGetOwnerContext();
-							if (o == null) {
-								msg += ". Owner is NULL.";
-							} else {
-								msg += ". Owner is " + o.getClass().getSimpleName() + " (" + o.toString() + ")";
-							}
-						}
-					}
-					Tracker.handleEvent(this, msg, Tracker.States.Running);
+                    String msg = getString(field);
+                    Tracker.handleEvent(this, msg, Tracker.States.Running);
 					Logger.logError(new RuntimeException("Unable to get associated View object"));
 				}
 
@@ -502,12 +487,12 @@ public class Fields extends ArrayList<Fields.Field> {
 					String oldVal = v.getText() == null ? null : v.getText().toString();
 					if (newVal == null && oldVal == null)
 						return;
-					if (newVal != null && oldVal != null && newVal.equals(oldVal))
+					if (newVal != null && newVal.equals(oldVal))
 						return;
-					v.setText(newVal);					
+					v.setText(newVal);
 				}
 			} finally {
-				mIsSetting = false;				
+				mIsSetting = false;
 			}
 		}
 		public void get(Field field, Bundle values) {
@@ -582,7 +567,7 @@ public class Fields extends ArrayList<Fields.Field> {
 			if (field.formatter != null)
 				return field.formatter.extract(field, (((CheckBox)field.getView()).isChecked() ? "1" : "0"));
 			else				
-				return (Integer)(((CheckBox)field.getView()).isChecked() ? 1 : 0);
+				return ((CheckBox)field.getView()).isChecked() ? 1 : 0;
 		}
 	}
 
@@ -608,11 +593,11 @@ public class Fields extends ArrayList<Fields.Field> {
 		}
 		public void set(Field field, String s) {
 			RatingBar v = (RatingBar) field.getView();
-			Float f = 0.0f;
+			float f = 0.0f;
 			try {
 				s = field.format(s);
 				f = Float.parseFloat(s);
-			} catch (Exception e) {
+			} catch (Exception ignored) {
 			}
 			v.setRating(f);
 		}
@@ -763,14 +748,14 @@ public class Fields extends ArrayList<Fields.Field> {
 		 * @param source	Input value
 		 * @return			The formatted value
 		 */
-		abstract String format(Field f, String source);
+        String format(Field f, String source);
 		/**
 		 * Extract a formatted string from the display version
 		 * 
 		 * @param source	The value to be back-translated
 		 * @return			The extracted value
 		 */
-		abstract String extract(Field f, String source);
+        String extract(Field f, String source);
 	}
 
 	/**
@@ -787,7 +772,7 @@ public class Fields extends ArrayList<Fields.Field> {
 		public String format(Field f, String source) {
 			try {
 				java.util.Date d = parseDate(source);
-				return mDateDispSdf.format(d);				
+				return mDateDisplaySdf.format(d);
 			} catch (Exception e) {
 				return source;
 			}
@@ -814,7 +799,7 @@ public class Fields extends ArrayList<Fields.Field> {
 	 *
 	 */
 	public class Field {
-		/** Owning collction */
+		/** Owning collection */
 		WeakReference<Fields> mFields;
 
 		/** Layout ID  */
@@ -824,7 +809,7 @@ public class Fields extends ArrayList<Fields.Field> {
 		/** Visibility group name. Used in conjunction with preferences to show/hide Views  */
 		public String group;
 		/** FieldFormatter to use (can be null) */
-		public FieldFormatter formatter = null;
+		public FieldFormatter formatter;
 		/** Validator to use (can be null) */
 		public FieldValidator validator;
 		/** Has the field been set to invisible **/
@@ -858,7 +843,7 @@ public class Fields extends ArrayList<Fields.Field> {
 		 * @param fieldFormatter		Formatter. Can be null.
 		 */
 		Field(Fields fields, int fieldId, String sourceColumn, String visibilityGroupName, FieldValidator fieldValidator, FieldFormatter fieldFormatter) {
-			mFields = new WeakReference<Fields>(fields);
+			mFields = new WeakReference<>(fields);
 			id = fieldId;
 			column = sourceColumn;
 			group = visibilityGroupName;
@@ -961,22 +946,18 @@ public class Fields extends ArrayList<Fields.Field> {
 		private void addTouchSignalsDirty(View view) {
 			// Touching this is considered a change
 			// We need to introduce a better way to handle this.
-			view.setOnTouchListener(new View.OnTouchListener(){
-			    @Override
-			    public boolean onTouch(View v, MotionEvent event) {
-			        if (MotionEvent.ACTION_UP == event.getAction()) {
-						if (mAfterFieldChangeListener != null) {
-							mAfterFieldChangeListener.afterFieldChange(Field.this, null);
-						}
-			        }
-			        return false;
-			    }
-			});			
+			view.setOnTouchListener((v, event) -> {
+                if (MotionEvent.ACTION_UP == event.getAction()) {
+                    if (mAfterFieldChangeListener != null) {
+                        mAfterFieldChangeListener.afterFieldChange(Field.this, null);
+                    }
+                }
+                return false;
+            });			
 		}
 		
 		/**
-		 * Accessor; added for debugging only. Try not to use!
-		 * @return
+		 * Accessor; added for debugging only. Try not to use!/
 		 */
 		protected Fields getFields() {
 			if (mFields == null) {
@@ -988,7 +969,6 @@ public class Fields extends ArrayList<Fields.Field> {
 
 		/**
 		 * Get the view associated with this Field, if available.
-		 * @param id	View ID.
 		 * @return		Resulting View, or null.
 		 */
 		View getView() {
@@ -1015,7 +995,6 @@ public class Fields extends ArrayList<Fields.Field> {
 
 		/**
 		 * Set the current value of the tag field.
-		 * @return	Current value of tag.
 		 */
 		public void setTag(Object tag) {
 			mTag = tag;
@@ -1031,7 +1010,6 @@ public class Fields extends ArrayList<Fields.Field> {
 
 		/**
 		 * Get the current value of this field and put into the Bundle collection.
-		 * @return	Current value in native form.
 		 */
 		public void getValue(Bundle values) {
 			mAccessor.get(this, values);
@@ -1039,8 +1017,7 @@ public class Fields extends ArrayList<Fields.Field> {
 
 		/**
 		 * Get the current value of this field and put into the Bundle collection.
-		 * @return	Current value in native form.
-		 */
+         */
 		public void getValue(DataManager data) {
 			mAccessor.get(this, data);
 		}
@@ -1071,9 +1048,6 @@ public class Fields extends ArrayList<Fields.Field> {
 
 		/**
 		 * Utility function to call the formatters extract() method if present, or just return the raw value.
-		 * 
-		 * @param s
-		 * @return
 		 */
 		public String extract(String s) {
 			if (formatter == null)
@@ -1084,11 +1058,9 @@ public class Fields extends ArrayList<Fields.Field> {
 		/**
 		 * Set the value of this field from the passed cursor. Useful for getting access to 
 		 * raw data values from the database.
-		 * 
-		 * @param c
 		 */
 		public void set(Cursor c) {
-			if (column.length() > 0 && !doNoFetch) {
+			if (!column.isEmpty() && !doNoFetch) {
 				try {
 					mAccessor.set(this, c);					
 				} catch (android.database.CursorIndexOutOfBoundsException e) {
@@ -1104,7 +1076,7 @@ public class Fields extends ArrayList<Fields.Field> {
 		 * @param b  Bundle to update
 		 */
 		public void set(Bundle b) {
-			if (column.length() > 0 && !doNoFetch) {
+			if (!column.isEmpty() && !doNoFetch) {
 				try {
 					mAccessor.set(this, b);					
 				} catch (android.database.CursorIndexOutOfBoundsException e) {
@@ -1120,7 +1092,7 @@ public class Fields extends ArrayList<Fields.Field> {
 		 * @param data 	DataManager to update
 		 */
 		public void set(DataManager data) {
-			if (column.length() > 0 && !doNoFetch) {
+			if (!column.isEmpty() && !doNoFetch) {
 				try {
 					mAccessor.set(this, data);					
 				} catch (android.database.CursorIndexOutOfBoundsException e) {
@@ -1129,10 +1101,7 @@ public class Fields extends ArrayList<Fields.Field> {
 			}
 		}
 
-		//public boolean isEdited(){
-		//	return mWasClicked;
-		//}
-	}
+    }
 	
 	/**
 	 * Accessor for related Activity
@@ -1154,9 +1123,6 @@ public class Fields extends ArrayList<Fields.Field> {
 
 	/**
 	 * Provides access to the underlying arrays get() method.
-	 * 
-	 * @param index
-	 * @return
 	 */
 	public Field getItem(int index) {
 		return super.get(index);
@@ -1223,12 +1189,10 @@ public class Fields extends ArrayList<Fields.Field> {
 	 * @return Associated Field.
 	 */
 	public Field getField(int id) {
-		Iterator<Field> iter = this.iterator();
-		while (iter.hasNext()) {
-			Field f = iter.next();
-			if (f.id == id)
-				return f;
-		}
+        for (Field f : this) {
+            if (f.id == id)
+                return f;
+        }
 		throw new IllegalArgumentException();
 	}
 
@@ -1251,14 +1215,14 @@ public class Fields extends ArrayList<Fields.Field> {
 	 * @param id		Layout ID
 	 * @param listener	onClick() listener.
 	 */
-	void setListener(int id, View.OnClickListener listener) {
+    @SuppressWarnings("SameParameterValue")
+    void setListener(int id, View.OnClickListener listener) {
 		Field f = getField(id);
 		View v = f.getView();
 		if (v != null) {
 			f.getView().setOnClickListener(listener);
 		} else {
-			v = f.getView();
-			throw new RuntimeException("Unable to find view for field id " + id);
+            throw new RuntimeException("Unable to find view for field id " + id);
 		}
 	}
 
@@ -1268,11 +1232,9 @@ public class Fields extends ArrayList<Fields.Field> {
 	 * @param c Cursor to load Field objects from.
 	 */
 	public void setAll(Cursor c) {
-		Iterator<Field> fi = this.iterator();
-		while(fi.hasNext()) {
-			Field fe = fi.next();
-			fe.set(c);
-		}			
+        for (Field fe : this) {
+            fe.set(c);
+        }			
 	}
 
 	/**
@@ -1281,11 +1243,9 @@ public class Fields extends ArrayList<Fields.Field> {
 	 * @param b Bundle to load Field objects from.
 	 */
 	public void setAll(Bundle b) {
-		Iterator<Field> fi = this.iterator();
-		while(fi.hasNext()) {
-			Field fe = fi.next();
-			fe.set(b);
-		}			
+        for (Field fe : this) {
+            fe.set(b);
+        }			
 	}
 
 	/**
@@ -1302,27 +1262,23 @@ public class Fields extends ArrayList<Fields.Field> {
 	/**
 	 * Save all fields to the passed DataManager (ie. 'get' them *into* the DataManager).
 	 * 
-	 * @param c Cursor to load Field objects from.
+	 * @param data Cursor to load Field objects from.
 	 */
 	public void getAll(DataManager data) {
-		Iterator<Field> fi = this.iterator();
-		while(fi.hasNext()) {
-			Field fe = fi.next();
-			if (fe.column != null && !fe.column.equals("")) {
-				fe.getValue(data);
-			}
-		}			
+        for (Field fe : this) {
+            if (fe.column != null && !fe.column.isEmpty()) {
+                fe.getValue(data);
+            }
+        }			
 	}
 
 	public void getAll(Bundle b) {
-		Iterator<Field> fi = this.iterator();
 
-		while(fi.hasNext()) {
-			Field fe = fi.next();
-			if (fe.column != null && !fe.column.equals("")) {
-				fe.getValue(b);
-			}
-		}
+        for (Field fe : this) {
+            if (fe.column != null && !fe.column.isEmpty()) {
+                fe.getValue(b);
+            }
+        }
 	}
 
 	/**
@@ -1346,15 +1302,16 @@ public class Fields extends ArrayList<Fields.Field> {
 					// Always save the value...even if invalid. Or at least try to.
 					if (!crossValidating)
 						try {
-							values.putString(fe.column, fe.getValue().toString());							
-						} catch (Exception e2) {};
-				}
+                            assert values != null;
+                            values.putString(fe.column, fe.getValue().toString());							
+						} catch (Exception ignored) {}
+                }
 			} else {
-				if (!fe.column.equals("") && values != null)
+				if (!fe.column.isEmpty() && values != null)
 					fe.getValue(values);						
 			}
 		}
-		return isOk;
+		return !isOk;
 	}
 
 	/**
@@ -1362,11 +1319,9 @@ public class Fields extends ArrayList<Fields.Field> {
 	 */
 	public void resetVisibility() {
 		FieldsContext c = this.getContext();
-		Iterator<Field> fi = this.iterator();		
-		while(fi.hasNext()) {
-			Field fe = fi.next();
-			fe.resetVisibility(c);
-		}
+        for (Field fe : this) {
+            fe.resetVisibility(c);
+        }
 	}
 
 	/**
@@ -1386,24 +1341,22 @@ public class Fields extends ArrayList<Fields.Field> {
 		mValidationExceptions.clear();
 
 		// First, just validate individual fields with the cross-val flag set false
-		if (!doValidate(values, false))
+		if (doValidate(values, false))
 			isOk = false;
 		
 		// Now re-run with cross-val set to true.
-		if (!doValidate(values, true))
+		if (doValidate(values, true))
 			isOk = false;
 
 		// Finally run the local cross-validation
-		Iterator<FieldCrossValidator> i = mCrossValidators.iterator();
-		while (i.hasNext()) {
-			FieldCrossValidator v = i.next();
-			try {
-				v.validate(this,values);
-			} catch(ValidatorException e) {
-				mValidationExceptions.add(e);
-				isOk = false;
-			}
-		}
+        for (FieldCrossValidator v : mCrossValidators) {
+            try {
+                v.validate(this, values);
+            } catch (ValidatorException e) {
+                mValidationExceptions.add(e);
+                isOk = false;
+            }
+        }
 		return isOk;
 	}
 
@@ -1413,19 +1366,19 @@ public class Fields extends ArrayList<Fields.Field> {
 	 * @return res The resource manager to use when looking up strings.
 	 */
 	public String getValidationExceptionMessage(android.content.res.Resources res) {
-		if (mValidationExceptions.size() == 0)
+		if (mValidationExceptions.isEmpty())
 			return "No error";
 		else {
-			String message = "";
+			StringBuilder message = new StringBuilder();
 			Iterator<ValidatorException> i = mValidationExceptions.iterator();
 			int cnt = 1;
 			if (i.hasNext())
-				message = "(" + cnt + ") " + i.next().getFormattedMessage(res);
+				message = new StringBuilder("(" + cnt + ") " + i.next().getFormattedMessage(res));
 			while (i.hasNext()) {
 				cnt ++;
-				message += " (" + cnt + ") " + i.next().getFormattedMessage(res) + "\n";
+				message.append(" (").append(cnt).append(") ").append(i.next().getFormattedMessage(res)).append("\n");
 			}
-			return message;
+			return message.toString();
 		}
 	}
 
@@ -1438,21 +1391,5 @@ public class Fields extends ArrayList<Fields.Field> {
 	public void addCrossValidator(FieldCrossValidator v) {
 		mCrossValidators.add(v);
 	}
-
-	///**
-	// * Check if any field has been modified
-	// * 
-	// * @return	true if a field has been edited (or clicked)
-	// */
-	//public boolean isEdited(){
-	//
-	//	for (Field field : this){
-	//		if (field.isEdited()){
-	//			return true;
-	//		}
-	//	}
-	//
-	//	return false;
-	//}
 }
 

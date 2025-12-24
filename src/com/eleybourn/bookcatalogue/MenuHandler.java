@@ -269,7 +269,7 @@ public class MenuHandler {
 	 */
 	public static void editBook(Activity a, long id, int tab) {
 		Intent i = new Intent(a, BookEdit.class);
-		i.putExtra(CatalogueDBAdapter.KEY_ROWID, id);
+		i.putExtra(CatalogueDBAdapter.KEY_ROW_ID, id);
 		i.putExtra(BookEdit.TAB, tab);
 		a.startActivityForResult(i, UniqueId.ACTIVITY_EDIT_BOOK);
 		return;

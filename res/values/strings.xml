@@ -26,7 +26,7 @@
     <string name="label_search_description">Find a book in your catalogue</string>
     <string name="button_cancel">Cancel</string>
     <string name="button_confirm_save">Save Book</string>
-    <string name="info_no_bookshelves">You have not created any bookshelves yet. Please add some using the menu at the bottom of this screen.</string>
+    <string name="info_no_bookshelves">You have not created any bookshelves yet. Please add some using the add icon at the top of this screen.</string>
     <string name="menu_insert_bs">Create Bookshelf</string>
     <string name="confirm_add_bs">Add Bookshelf</string>
     <string name="label_bookshelf">Manage Bookshelves</string>
@@ -120,7 +120,7 @@
     <string name="backup_title">Backup?</string>
     <string name="searching_google_books">Searching Google Books</string>
     <string name="searching_library_thing">Searching LibraryThing</string>
-    <string name="select_bookshelves">Select Bookshelves</string>
+    <string name="label_select_bookshelves">Select Bookshelves</string>
     <string name="label_format">Format</string>
     <string name="format1">Paperback</string>
     <string name="format2">Hard Cover</string>

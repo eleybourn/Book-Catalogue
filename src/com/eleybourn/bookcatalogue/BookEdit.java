@@ -21,16 +21,15 @@
 package com.eleybourn.bookcatalogue;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBar.Tab;
@@ -102,10 +101,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 	private BookData mBookData;
 	private boolean mIsReadOnly;
 
-	private Button mConfirmButton;
-	private Button mCancelButton;
-
-	@Override
+    @Override
 	protected RequiredPermission[] getRequiredPermissions() {
 		return new RequiredPermission[0];
 	}
@@ -119,9 +115,9 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 
 		// We need the row ID
 		{
-			Long rowId = savedInstanceState != null ? savedInstanceState.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
+			Long rowId = savedInstanceState != null ? savedInstanceState.getLong(CatalogueDBAdapter.KEY_ROW_ID) : null;
 			if (rowId == null) {
-				rowId = extras != null ? extras.getLong(CatalogueDBAdapter.KEY_ROWID) : null;
+				rowId = extras != null ? extras.getLong(CatalogueDBAdapter.KEY_ROW_ID) : null;
 			}
 			if (rowId == null) {
 				mRowId = 0;
@@ -141,16 +137,6 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 
 		// Get the book data from the bundle or the database
 		loadBookData(mRowId, savedInstanceState == null ? extras : savedInstanceState);
-
-		// get the passed parameters
-		int tabIndex;
-		if (savedInstanceState != null && savedInstanceState.containsKey(BookEdit.TAB)) {
-			tabIndex = savedInstanceState.getInt(BookEdit.TAB);
-		} else if (extras != null && extras.containsKey(BookEdit.TAB)) {
-			tabIndex = extras.getInt(BookEdit.TAB);
-		} else {
-			tabIndex = 0;
-		}
 
 		int anthology_num = 0;
 		if (mBookData.getRowId() > 0) {
@@ -219,31 +205,25 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 			actionBar.setSelectedNavigationItem(tabIndex);
              */
 
-		mConfirmButton = (Button) findViewById(R.id.button_confirm);
-		mCancelButton = (Button) findViewById(R.id.button_cancel);
+        Button mConfirmButton = findViewById(R.id.button_confirm);
+        Button mCancelButton = findViewById(R.id.button_cancel);
 
 		// The behaviour changes depending on if it is adding or saving
-		mCancelButton.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View view) {
-				// Cleanup because we may have made global changes
-				mDbHelper.purgeAuthors();
-				mDbHelper.purgeSeries();
-				// We're done.
-				setResult(Activity.RESULT_OK);
+		mCancelButton.setOnClickListener(view -> {
+            // Cleanup because we may have made global changes
+            mDbHelper.purgeAuthors();
+            mDbHelper.purgeSeries();
+            // We're done.
+            setResult(Activity.RESULT_OK);
 
-				if (isDirty()) {
-					StandardDialogs.showConfirmUnsavedEditsDialog(BookEdit.this, null);
-				} else {
-					finish();
-				}
-			}
-		});
+            if (isDirty()) {
+                StandardDialogs.showConfirmUnsavedEditsDialog(BookEdit.this, null);
+            } else {
+                finish();
+            }
+        });
 
-		mConfirmButton.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View view) {
-				saveState(new DoConfirmAction());
-			}
-		});
+		mConfirmButton.setOnClickListener(view -> saveState(new DoConfirmAction()));
 
 		if (mRowId > 0) {
 			mConfirmButton.setText(R.string.button_confirm_save);
@@ -262,14 +242,11 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
     
     /**
 	 * If we are passed a flattened book list, get it and validate it
-	 * 
-	 * @param extras
-	 * @param savedInstanceState
 	 */
 	private void initBooklist(Bundle extras, Bundle savedInstanceState) {
 		if (extras != null) {
 			String list = extras.getString("FlattenedBooklist");
-			if (list != null && !list.equals("")) {
+			if (list != null && !list.isEmpty()) {
 				mList = new FlattenedBooklist(mDbHelper.getDb(), list);
 				// Check to see it really exists. The underlying table
 				// disappeared once in testing
@@ -307,11 +284,11 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 		}
 	}
 
-	@Override
 	/**
 	 * We override the dispatcher because the ScrollView will consume
 	 * all events otherwise.
 	 */
+    @Override
 	public boolean dispatchTouchEvent(MotionEvent event) {
 		if (mGestureDetector != null && mGestureDetector.onTouchEvent(event))
 			return true;
@@ -327,7 +304,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 	GestureDetector.SimpleOnGestureListener mGestureListener = new GestureDetector.SimpleOnGestureListener() {
 
 		@Override
-		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+		public boolean onFling(MotionEvent e1, @NonNull MotionEvent e2, float velocityX, float velocityY) {
 			if (mList == null)
 				return false;
 
@@ -393,14 +370,13 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 		Tracker.exitOnDestroy(this);
 	}
 
-	@Override
 	/**
 	 * Close the list object (frees statements) and if we are finishing, delete the temp table.
-	 * 
 	 * This is an ESSENTIAL step; for some reason, in Android 2.1 if these statements are not
 	 * cleaned up, then the underlying SQLiteDatabase gets double-dereferenced, resulting in
 	 * the database being closed by the deeply dodgy auto-close code in Android.
 	 */
+    @Override
 	public void onPause() {
 		if (mList != null) {
 			mList.close();
@@ -412,13 +388,13 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 	}
 
 	@Override
-	protected void onSaveInstanceState(Bundle outState) {
+	protected void onSaveInstanceState(@NonNull Bundle outState) {
 		Tracker.enterOnSaveInstanceState(this);
 		super.onSaveInstanceState(outState);
 	
 		ActionBar actionBar = this.getSupportActionBar();
 
-		outState.putLong(CatalogueDBAdapter.KEY_ROWID, mRowId);
+		outState.putLong(CatalogueDBAdapter.KEY_ROW_ID, mRowId);
 		outState.putBundle("bookData", mBookData.getRawData());
 		if (mList != null) {
 			outState.putInt("FlattenedBooklistPosition", (int) mList.getPosition());
@@ -567,10 +543,9 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
     }
 
 
-    /********************************************************
-     * Standard STATIC Methods
-     * ******************************************************
-     */
+    ////////////////////////////////////////////////////////
+    // Standard STATIC Methods
+    ////////////////////////////////////////////////////////
 
 	/**
 	 * Open book for viewing in edit or read-only mode. The mode depends on
@@ -614,11 +589,10 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 	 */
 	public static void editBook(Activity a, long id, int tab) {
 		Intent i = new Intent(a, BookEdit.class);
-		i.putExtra(CatalogueDBAdapter.KEY_ROWID, id);
+		i.putExtra(CatalogueDBAdapter.KEY_ROW_ID, id);
 		i.putExtra(BookEdit.TAB, tab);
 		a.startActivityForResult(i, UniqueId.ACTIVITY_EDIT_BOOK);
-		return;
-	}
+    }
 
 	/**
 	 * Load the EditBook tab activity in read-only mode. The first tab is book
@@ -629,7 +603,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 	 * @param id
 	 *            The id of the book to view
 	 * @param listTable
-	 *            (Optional) name of the temp table comtaining a list of book
+	 *            (Optional) name of the temp table containing a list of book
 	 *            IDs.
 	 * @param position
 	 *            (Optional) position in underlying book list. Only used in
@@ -641,13 +615,12 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 		if (position != null) {
 			i.putExtra("FlattenedBooklistPosition", position);
 		}
-		i.putExtra(CatalogueDBAdapter.KEY_ROWID, id);
+		i.putExtra(CatalogueDBAdapter.KEY_ROW_ID, id);
 		i.putExtra(BookEdit.TAB, BookEdit.TAB_EDIT); // needed extra for
 														// creating BookEdit
 		i.putExtra(BookEdit.KEY_READ_ONLY, true);
 		a.startActivityForResult(i, UniqueId.ACTIVITY_VIEW_BOOK);
-		return;
-	}
+    }
 
 	/**
 	 * Mark the data as dirty (or not)
@@ -666,7 +639,6 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 	/**
 	 * If 'back' is pressed, and the user has made changes, ask them if they
 	 * really want to lose the changes.
-	 * 
 	 * We don't use onBackPressed because it does not work with API level 4.
 	 */
 	@Override
@@ -688,11 +660,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 	 */
 	private void doFinish() {
 		if (isDirty()) {
-			StandardDialogs.showConfirmUnsavedEditsDialog(this, new Runnable() {
-				@Override
-				public void run() {
-					finishAndSendIntent();
-				}});
+			StandardDialogs.showConfirmUnsavedEditsDialog(this, this::finishAndSendIntent);
 		} else {
 			finishAndSendIntent();
 		}
@@ -703,7 +671,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 	 */
 	private void finishAndSendIntent() {
 		Intent i = new Intent();
-		i.putExtra(CatalogueDBAdapter.KEY_ROWID, mBookData.getRowId());
+		i.putExtra(CatalogueDBAdapter.KEY_ROW_ID, mBookData.getRowId());
 		setResult(Activity.RESULT_OK, i);
 		finish();		
 	}
@@ -768,14 +736,12 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 	 * book. Minor modifications will be made to the strings: - Titles will be
 	 * rewords so 'a', 'the', 'an' will be moved to the end of the string (this
 	 * is only done for NEW books)
-	 * 
 	 * - Date published will be converted from a date to a string
-	 * 
+
 	 * Thumbnails will also be saved to the correct location
-	 * 
 	 * It will check if the book already exists (isbn search) if you are
 	 * creating a book; if so the user will be prompted to confirm.
-	 * 
+
 	 * In all cases, once the book is added/created, or not, the appropriate
 	 * method of the passed nextStep parameter will be executed. Passing
 	 * nextStep is necessary because this method may return after displaying a
@@ -783,8 +749,6 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 	 * 
 	 * @param nextStep
 	 *            The next step to be executed on success/failure.
-	 * 
-	 * @throws IOException
 	 */
 	private void saveState(final PostSaveAction nextStep) {
 		// Ignore validation failures; we still validate to get the current values.
@@ -804,7 +768,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 		if (mRowId == 0) {
 			String isbn = mBookData.getString(CatalogueDBAdapter.KEY_ISBN);
 			/* Check if the book currently exists */
-			if (!isbn.equals("")) {
+			if (!isbn.isEmpty()) {
 				if (mDbHelper.checkIsbnExists(isbn, true)) {
 					/*
 					 * If it exists, show a dialog and use it to perform the
@@ -814,19 +778,11 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 					alert.setMessage(getResources().getString(R.string.duplicate_book_message));
 					alert.setTitle(R.string.duplicate_book_title);
 					alert.setIcon(android.R.drawable.ic_menu_info_details);
-					alert.setButton2(this.getResources().getString(R.string.button_ok), new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
-							updateOrCreate();
-							nextStep.success();
-							return;
-						}
-					});
-					alert.setButton(this.getResources().getString(R.string.button_cancel), new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
-							nextStep.failure();
-							return;
-						}
-					});
+					alert.setButton2(this.getResources().getString(R.string.button_ok), (dialog, which) -> {
+                        updateOrCreate();
+                        nextStep.success();
+                    });
+					alert.setButton(this.getResources().getString(R.string.button_cancel), (dialog, which) -> nextStep.failure());
 					alert.show();
 					return;
 				}
@@ -836,8 +792,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 		// No special actions required...just do it.
 		updateOrCreate();
 		nextStep.success();
-		return;
-	}
+    }
 
 	private class SaveAlert extends AlertDialog {
 
@@ -849,7 +804,8 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 	/**
 	 * Save the collected book details
 	 */
-	private void updateOrCreate() {
+	@SuppressWarnings("ResultOfMethodCallIgnored")
+    private void updateOrCreate() {
 		if (mRowId == 0) {
 			long id = mDbHelper.createBook(mBookData, 0);
 
@@ -869,7 +825,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 		 */
 		try {
 			ArrayList<Author> authors = mBookData.getAuthorList();
-			if (authors.size() > 0) {
+			if (!authors.isEmpty()) {
 				added_author = authors.get(0).getSortName();
 			} else {
 				added_author = "";
@@ -877,26 +833,24 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
-		;
-		try {
+        try {
 			ArrayList<Series> series = mBookData.getSeriesList();
-			if (series.size() > 0)
+			if (!series.isEmpty())
 				added_series = series.get(0).name;
 			else
 				added_series = "";
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
-		;
 
-		added_title = mBookData.getString(CatalogueDBAdapter.KEY_TITLE);
+        added_title = mBookData.getString(CatalogueDBAdapter.KEY_TITLE);
 		added_genre = mBookData.getString(CatalogueDBAdapter.KEY_GENRE);
 	}
 
 	public interface PostSaveAction {
-		public void success();
+		void success();
 
-		public void failure();
+		void failure();
 	}
 
 	private class DoConfirmAction implements PostSaveAction {
@@ -906,7 +860,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 
 		public void success() {
 			Intent i = new Intent();
-			i.putExtra(CatalogueDBAdapter.KEY_ROWID, mBookData.getRowId());
+			i.putExtra(CatalogueDBAdapter.KEY_ROW_ID, mBookData.getRowId());
 			i.putExtra(ADDED_HAS_INFO, true);
 			i.putExtra(ADDED_GENRE, added_genre);
 			i.putExtra(ADDED_SERIES, added_series);
@@ -928,8 +882,9 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 	 */
 	private void setActivityTitle() {
 		ActionBar bar = this.getSupportActionBar();
+        assert bar != null;
 		if (mIsReadOnly && mList != null) {
-			bar.setTitle(mBookData.getString(CatalogueDBAdapter.KEY_TITLE));
+            bar.setTitle(mBookData.getString(CatalogueDBAdapter.KEY_TITLE));
 			bar.setSubtitle(mBookData.getAuthorTextShort() + " ("
 					+ String.format(getResources().getString(R.string.x_of_y), mList.getAbsolutePosition(), mList.getCount()) + ")");
 		} else if (mBookData.getRowId() > 0) {
@@ -951,16 +906,14 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 	 */
 	public ArrayList<String> getPublishers() {
 		if (mPublishers == null) {
-			mPublishers = new ArrayList<String>();
+			mPublishers = new ArrayList<>();
 			Cursor publisher_cur = mDbHelper.fetchAllPublishers();
-			final int col = publisher_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PUBLISHER);
-			try {
-				while (publisher_cur.moveToNext()) {
-					mPublishers.add(publisher_cur.getString(col));
-				}
-			} finally {
-				publisher_cur.close();
-			}
+            try (publisher_cur) {
+                final int col = publisher_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PUBLISHER);
+                while (publisher_cur.moveToNext()) {
+                    mPublishers.add(publisher_cur.getString(col));
+                }
+            }
 		}
 		return mPublishers;
 	}
@@ -975,16 +928,14 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 	 */
 	public ArrayList<String> getGenres() {
 		if (mGenres == null) {
-			mGenres = new ArrayList<String>();
+			mGenres = new ArrayList<>();
 			Cursor genre_cur = mDbHelper.fetchAllGenres("");
-			final int col = genre_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROWID);
-			try {
-				while (genre_cur.moveToNext()) {
-					mGenres.add(genre_cur.getString(col));
-				}
-			} finally {
-				genre_cur.close();
-			}
+            try (genre_cur) {
+                final int col = genre_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROW_ID);
+                while (genre_cur.moveToNext()) {
+                    mGenres.add(genre_cur.getString(col));
+                }
+            }
 		}
 		return mGenres;
 	}
@@ -1000,19 +951,17 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 	@Override
 	public ArrayList<String> getLanguages() {
 		if (mLanguages == null) {
-			mLanguages = new ArrayList<String>();
+			mLanguages = new ArrayList<>();
 			Cursor cur = mDbHelper.fetchAllLanguages("");
-			final int col = cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROWID);
-			try {
-				while (cur.moveToNext()) {
-					String s = cur.getString(col);
-					if (s != null && !s.equals("")) {
-						mLanguages.add(cur.getString(col));						
-					}
-				}
-			} finally {
-				cur.close();
-			}
+            try (cur) {
+                final int col = cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROW_ID);
+                while (cur.moveToNext()) {
+                    String s = cur.getString(col);
+                    if (s != null && !s.isEmpty()) {
+                        mLanguages.add(cur.getString(col));
+                    }
+                }
+            }
 		}
 		return mLanguages;
 	}
@@ -1121,24 +1070,5 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 			Logger.logError(new RuntimeException("Received onBookshelfCheckChanged result with no fragment to handle it"));
 		}
 	}
-
-	/**
-	 * menu handler; handle the 'home' key, otherwise, pass on the event
-	 */
-/*
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-
-        case android.R.id.home:
-        	doFinish();
-			return true;
-
-        default:
-            return super.onOptionsItemSelected(item);
-		}
-		
-	}
- */
 
 }

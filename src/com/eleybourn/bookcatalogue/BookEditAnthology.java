@@ -53,6 +53,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter.AnthologyTitleExistsException;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
@@ -83,9 +86,8 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
 	 * Display the edit fields page
 	 */
 	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 		loadPage();
 	}
 	

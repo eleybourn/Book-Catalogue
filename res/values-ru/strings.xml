@@ -118,7 +118,7 @@
     <string name="backup_title">Резервная копия?</string>
     <string name="searching_google_books">Поиск в Google Books</string>
     <string name="searching_library_thing">Поиск в LibraryThing</string>
-    <string name="select_bookshelves">Выбор полок</string>
+    <string name="label_select_bookshelves">Выбор полок</string>
     <string name="label_format">Формат</string>
     <string name="format1">Мягкий переплет</string>
     <string name="format2">Твёрдый переплёт</string>

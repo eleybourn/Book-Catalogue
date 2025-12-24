@@ -122,7 +122,7 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 		final int k = rowView.getKind();
 
 		switch(k) {
-		// NEWKIND: Add new kinds to this list
+		// ROW_NEW_KIND: Add new kinds to this list
 
 		case ROW_KIND_BOOK:
 			return new BookHolder();
@@ -516,8 +516,6 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
                         if ((mFlags & BooklistStyle.EXTRAS_AUTHOR) != 0) {
                             if (mAuthorCol < 0)
                                 mAuthorCol = c.getColumnIndex(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);
-                            //if (mLocationRes == null)
-                            //	mLocationRes = BookCatalogueApp.getResourceString(R.string.location);
 
                             mAuthor = c.getString(mAuthorCol);
                         }
@@ -542,17 +540,17 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 
                         if ((mFlags & BooklistStyle.EXTRAS_BOOKSHELVES) != 0) {
                             // Now build a list of all bookshelves the book is on.
-                            mShelves = "";
+                            StringBuilder shelves = new StringBuilder();
                             try (Cursor sc = dba.getAllBookBookshelvesForGoodreadsCursor(mBookId)) {
                                 if (sc.moveToFirst()) {
                                     do {
-                                        if (mShelves != null && !mShelves.isEmpty())
-                                            mShelves += ", ";
-                                        mShelves += sc.getString(0);
+                                        if (shelves.length() > 0)
+                                            shelves.append(", ");
+                                        shelves.append(sc.getString(0));
                                     } while (sc.moveToNext());
                                 }
                             }
-                            mShelves = BookCatalogueApp.getResourceString(R.string.shelves) + ": " + mShelves;
+                            mShelves = BookCatalogueApp.getResourceString(R.string.shelves) + ": " + shelves;
                         }
                     } else {
                         // No data, no need for UI thread call.
@@ -594,13 +592,13 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 	 * 
 	 * @author Philip Warner
 	 */
-	public class GenericStringHolder extends BooklistHolder {
+	public static class GenericStringHolder extends BooklistHolder {
 		/** Field to use */
 		TextView text;
 		/** String ID to use when data is blank */
-		private int mNoDataId;
+		private final int mNoDataId;
 		/** Index of related data column */
-		private int mColIndex = -1;
+		private final int mColIndex;
 
 		/**
 		 * Constructor
@@ -620,7 +618,7 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 		@Override
 		public void map(BooklistRowView rowView, View v) {
 			rowInfo = v.findViewById(R.id.row_info);
-			text = (TextView) v.findViewById(R.id.name);
+			text = v.findViewById(R.id.name);
 		}
 		@Override
 		public void set(BooklistRowView rowView, View v, final int level) {
@@ -642,20 +640,18 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 	public static class MonthHolder extends BooklistHolder {
 		/** TextView for month name */
 		TextView text;
-		/** Source column name */
-		private final String mSource;
-		/** Source column number */
-		private int mSourceCol;
+        /** Source column number */
+		private final int mSourceCol;
 		
 		public MonthHolder(BooklistRowView rowView, String source) {
-			mSource = source;
-			mSourceCol = rowView.getColumnIndex(mSource);
+            // Source column name
+            mSourceCol = rowView.getColumnIndex(source);
 		}
 
 		@Override
 		public void map(BooklistRowView rowView, View v) {
 			rowInfo = v.findViewById(R.id.row_info);
-			text = (TextView) v.findViewById(R.id.name);
+			text = v.findViewById(R.id.name);
 		}
 		@Override
 		public void set(BooklistRowView rowView, View v, final int level) {
@@ -689,20 +685,18 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 	public static class RatingHolder extends BooklistHolder {
 		/** TextView for month name */
 		TextView text;
-		/** Source column name */
-		private final String mSource;
-		/** Source column number */
-		private int mSourceCol;
+        /** Source column number */
+		private final int mSourceCol;
 		
 		public RatingHolder(BooklistRowView rowView, String source) {
-			mSource = source;
-			mSourceCol = rowView.getColumnIndex(mSource);
+            // Source column name
+            mSourceCol = rowView.getColumnIndex(source);
 		}
 
 		@Override
 		public void map(BooklistRowView rowView, View v) {
 			rowInfo = v.findViewById(R.id.row_info);
-			text = (TextView) v.findViewById(R.id.name);
+			text = v.findViewById(R.id.name);
 		}
 		@Override
 		public void set(BooklistRowView rowView, View v, final int level) {
@@ -727,7 +721,7 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 		}
 	}
 
-	private void scaleViewText(BooklistRowView rowView, View root) {
+	private void scaleViewText(View root) {
 		final float scale = 0.8f;
 
 		if (root instanceof TextView) {
@@ -735,30 +729,6 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 			float px = txt.getTextSize();
 			txt.setTextSize(TypedValue.COMPLEX_UNIT_PX, px*scale);
 		}
-		/*
-		 * No matter what I tried, this particular piece of code does not seem to work.
-		 * All image scaling is moved to the relevant holder constrctors until the 
-		 * reason this code fails is understood.
-		 * 
-		if (root instanceof ImageView) {
-			ImageView img = (ImageView) root;
-			if (img.getId() == R.id.read) {
-				img.setMaxHeight((int) (30*scale));
-				img.setMaxWidth((int) (30*scale) );
-				System.out.println("SCALE READ");
-				img.requestLayout();
-			} else if (img.getId() == R.id.cover) {
-				img.setMaxHeight((int) (rowView.getMaxThumbnailHeight()*scale));
-				img.setMaxWidth((int) (rowView.getMaxThumbnailWidth()*scale) );	
-				LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT, (int) (rowView.getMaxThumbnailHeight()*scale) ); 
-				img.setLayoutParams(lp);
-				img.requestLayout();
-				System.out.println("SCALE COVER");
-			} else {
-				System.out.println("UNKNOWN IMAGE");				
-			}
-		}
-		 */
 
 		root.setPadding((int)(scale * root.getPaddingLeft()), (int)(scale * root.getPaddingTop()), (int)(scale * root.getPaddingRight()), (int)(scale * root.getPaddingBottom()));
 
@@ -767,7 +737,7 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 			ViewGroup grp = (ViewGroup)root;
 			for(int i = 0; i < grp.getChildCount(); i++) {
 				View v = grp.getChildAt(i);
-				scaleViewText(rowView, v);
+				scaleViewText(v);
 			}
 		}		
 	}
@@ -782,16 +752,17 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 			convertView = holder.newView(rowView, inflater, parent, level);
 			// Scale the text if necessary
 			if (rowView.getStyle().isCondensed()) {
-				scaleViewText(rowView, convertView);
+				scaleViewText(convertView);
 			}
 			convertView.setPadding( (level-1)*5, 0,0,0);
 			holder.map(rowView, convertView);
 			ViewTagger.setTag(convertView, R.id.TAG_HOLDER, holder);
 			// Indent based on level; we assume rows of a given type only occur at the same level
 		} else 
-			holder = (BooklistHolder)ViewTagger.getTag(convertView, R.id.TAG_HOLDER);
+			holder = ViewTagger.getTag(convertView, R.id.TAG_HOLDER);
 
-		holder.absolutePosition = rowView.getAbsolutePosition();
+        assert holder != null;
+        holder.absolutePosition = rowView.getAbsolutePosition();
 		holder.set(rowView, convertView, level);
 
 		return convertView;
@@ -813,16 +784,16 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 
 	/**
 	 * Utility routine to add 'standard' menu options based on row type.
-     * @param mDb
+     * @param mDb           Database adapter
      * @param rowView        Row view pointing to current row for this context menu
      * @param menu            Base menu item
      */
 	public void buildContextMenu(CatalogueDBAdapter mDb, BooklistRowView rowView, ArrayList<SimpleDialogItem> menu) {
 		try {
-			boolean hasSeries = rowView.hasSeriesId() ? rowView.getSeriesId() > 0 : false;
-			boolean hasAuthor = rowView.hasAuthorId() ? rowView.getAuthorId() > 0 : (rowView.getKind() == RowKinds.ROW_KIND_BOOK) ? true : false;
+			boolean hasSeries = rowView.hasSeriesId() && rowView.getSeriesId() > 0;
+			boolean hasAuthor = rowView.hasAuthorId() ? rowView.getAuthorId() > 0 : rowView.getKind() == RowKinds.ROW_KIND_BOOK;
 			boolean isRead    = rowView.isRead();
-			boolean onLoan    = mDb.fetchLoanByBook(rowView.getBookId()) != null ? true : false;
+			boolean onLoan    = mDb.fetchLoanByBook(rowView.getBookId()) != null;
 
 			switch(rowView.getKind()) {
 			case ROW_KIND_BOOK:
@@ -862,15 +833,15 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 			case ROW_KIND_FORMAT:
 			{
 				String format = rowView.getFormat();
-				if (format != null && !format.equals("")) {
+				if (format != null && !format.isEmpty()) {
 					addMenuItem(menu, R.id.MENU_EDIT_FORMAT, R.string.menu_edit_format, android.R.drawable.ic_menu_edit);
 				}
 				break;
 			}
 			}
 			if (hasAuthor)
-				addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR, R.string.amazon_books_by_author, R.drawable.ic_www_search_2_holo_dark);;
-			if (hasSeries) {
+				addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR, R.string.amazon_books_by_author, R.drawable.ic_www_search_2_holo_dark);
+            if (hasSeries) {
 				if (hasAuthor)
 					addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR_IN_SERIES, R.string.amazon_books_by_author_in_series, R.drawable.ic_www_search_2_holo_dark);
 				addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_IN_SERIES, R.string.amazon_books_in_series, R.drawable.ic_www_search_2_holo_dark);
@@ -879,73 +850,11 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 			Logger.logError(e);
 		}
 	}
-	
-//	/**
-//	 * Utility routine to add 'standard' menu options based on row type.
-//	 * 
-//	 * @param rowView		Row view pointing to current row for this context menu
-//	 * @param menu			Base menu item
-//	 * @param v				View that was clicked
-//	 * @param menuInfo		menuInfo object from Adapter (not really needed since we have holders and cursor)
-//	 */
-//	public void onCreateContextMenu(BooklistRowView rowView, ContextMenu menu) {
-//		try {
-//			switch(rowView.getKind()) {
-//			case ROW_KIND_BOOK:
-//			{
-//				long series = rowView.getSeriesId();
-//				addMenuItem(menu, R.id.MENU_DELETE_BOOK, R.string.menu_delete, android.R.drawable.ic_menu_delete);
-//				addMenuItem(menu, R.id.MENU_EDIT_BOOK, R.string.edit_book, android.R.drawable.ic_menu_edit);
-//				addMenuItem(menu, R.id.MENU_EDIT_BOOK_NOTES, R.string.edit_book_notes, R.drawable.ic_menu_compose);
-//				addMenuItem(menu, R.id.MENU_EDIT_BOOK_FRIENDS, R.string.edit_book_friends, R.drawable.ic_menu_cc);
-//				addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR, R.string.amazon_books_by_author, R.drawable.ic_menu_cc);
-//				if (series != 0) {
-//					addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR_IN_SERIES, R.string.amazon_books_by_author_in_series, R.drawable.ic_menu_cc);
-//					addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_IN_SERIES, R.string.amazon_books_in_series, R.drawable.ic_menu_cc);
-//				}
-//				addMenuItem(menu, R.id.MENU_SEND_BOOK_TO_GR, R.string.edit_book_send_to_gr, R.drawable.ic_menu_cc);
-//				break;
-//			}
-//			case ROW_KIND_AUTHOR:
-//			{
-//				addMenuItem(menu, R.id.MENU_EDIT_AUTHOR, R.string.menu_edit_author, android.R.drawable.ic_menu_edit);
-//				addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR, R.string.amazon_books_by_author, R.drawable.ic_menu_cc);
-//				long series = rowView.getSeriesId();
-//				if (series != 0)
-//					addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR_IN_SERIES, R.string.amazon_books_by_author_in_series, R.drawable.ic_menu_cc);
-//				break;
-//			}
-//			case ROW_KIND_SERIES:
-//			{
-//				long id = rowView.getSeriesId();
-//				if (id != 0) {
-//					addMenuItem(menu, R.id.MENU_DELETE_SERIES, R.string.menu_delete_series, android.R.drawable.ic_menu_delete);
-//					addMenuItem(menu, R.id.MENU_EDIT_SERIES, R.string.menu_edit_series, android.R.drawable.ic_menu_edit);
-//					long author = rowView.getAuthorId();
-//					if (author != 0)
-//						addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR_IN_SERIES, R.string.amazon_books_by_author_in_series, R.drawable.ic_menu_cc);
-//					addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_IN_SERIES, R.string.amazon_books_in_series, R.drawable.ic_menu_cc);
-//				}
-//				break;
-//			}
-//			case ROW_KIND_FORMAT:
-//			{
-//				String format = rowView.getFormat();
-//				if (format != null && !format.equals("")) {
-//					addMenuItem(menu, R.id.MENU_EDIT_FORMAT, R.string.menu_edit_format, android.R.drawable.ic_menu_edit);
-//				}
-//				break;
-//			}
-//			}
-//		} catch (Exception e) {
-//			Logger.logError(e);
-//		}
-//	}
 
-	public interface BooklistChangeListener {
-		public static final int FLAG_AUTHOR = 1;
-		public static final int FLAG_SERIES = 2;
-		public static final int FLAG_FORMAT = 4;
+    public interface BooklistChangeListener {
+		int FLAG_AUTHOR = 1;
+		int FLAG_SERIES = 2;
+		int FLAG_FORMAT = 4;
 		void onBooklistChange(int flags);
 	}
 
@@ -955,7 +864,7 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 			author = db.getAuthorById(rowView.getAuthorId()).getDisplayName();
 		} else if (rowView.getKind() == RowKinds.ROW_KIND_BOOK) {
 			ArrayList<Author> authors = db.getBookAuthorList(rowView.getBookId());
-			if (authors != null && authors.size() > 0)
+			if (authors != null && !authors.isEmpty())
 				author = authors.get(0).getDisplayName();
 		}		
 		return author;
@@ -966,9 +875,9 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 		if (rowView.hasSeriesId() && rowView.getSeriesId() > 0) {
 			series = db.getSeriesById(rowView.getSeriesId()).name;
 		} else if (rowView.getKind() == RowKinds.ROW_KIND_BOOK) {
-			ArrayList<Series> seriess = db.getBookSeriesList(rowView.getBookId());
-			if (seriess != null && seriess.size() > 0)
-				series = seriess.get(0).name;
+			ArrayList<Series> series_all = db.getBookSeriesList(rowView.getBookId());
+			if (series_all != null && !series_all.isEmpty())
+				series = series_all.get(0).name;
 		}		
 		return series;
 	}
@@ -976,7 +885,6 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 	/**
 	 * Handle the 'standard' menu items. If the passed activity implements BooklistChangeListener then
 	 * inform it when changes have been made.
-	 * 
 	 * ENHANCE: Consider using LocalBroadcastManager instead (requires Android compatibility library)
 	 * 
 	 * @param rowView	Row view for affected cursor row
@@ -991,17 +899,15 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 
 		case R.id.MENU_DELETE_BOOK:
 			// Show the standard dialog
-			int res = StandardDialogs.deleteBookAlert(context, dba, rowView.getBookId(), new Runnable() {
-				@Override
-				public void run() {
-					dba.purgeAuthors();
-					dba.purgeSeries();
-					// Let the activity know
-					if (context instanceof BooklistChangeListener) {
-						final BooklistChangeListener l = (BooklistChangeListener) context;
-						l.onBooklistChange(BooklistChangeListener.FLAG_AUTHOR | BooklistChangeListener.FLAG_SERIES);
-					}
-				}});
+			int res = StandardDialogs.deleteBookAlert(context, dba, rowView.getBookId(), () -> {
+                dba.purgeAuthors();
+                dba.purgeSeries();
+                // Let the activity know
+                if (context instanceof BooklistChangeListener) {
+                    final BooklistChangeListener l = (BooklistChangeListener) context;
+                    l.onBooklistChange(BooklistChangeListener.FLAG_AUTHOR | BooklistChangeListener.FLAG_SERIES);
+                }
+            });
 			// Display an error, if any
 			if (res != 0) 
 				Toast.makeText(context, res, Toast.LENGTH_LONG).show();
@@ -1065,16 +971,14 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 					Toast.makeText(context, R.string.cannot_edit_system, Toast.LENGTH_LONG).show();
 				} else {
 					Series s = dba.getSeriesById(id);
-					EditSeriesDialog d = new EditSeriesDialog(context, dba, new Runnable() {
-						@Override
-						public void run() {
-							dba.purgeSeries();
-							// Let the Activity know
-							if (context instanceof BooklistChangeListener) {
-								final BooklistChangeListener l = (BooklistChangeListener) context;
-								l.onBooklistChange(BooklistChangeListener.FLAG_SERIES);
-							}
-						}});
+					EditSeriesDialog d = new EditSeriesDialog(context, dba, () -> {
+                        dba.purgeSeries();
+                        // Let the Activity know
+                        if (context instanceof BooklistChangeListener) {
+                            final BooklistChangeListener l = (BooklistChangeListener) context;
+                            l.onBooklistChange(BooklistChangeListener.FLAG_SERIES);
+                        }
+                    });
 					d.editSeries(s);
 				} 
 				break;
@@ -1082,45 +986,39 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 		case R.id.MENU_DELETE_SERIES:
 			{
 				long id = rowView.getSeriesId();
-				StandardDialogs.deleteSeriesAlert(context, dba, dba.getSeriesById(id), new Runnable() {
-					@Override
-					public void run() {
-						// Let the Activity know
-						if (context instanceof BooklistChangeListener) {
-							final BooklistChangeListener l = (BooklistChangeListener) context;
-							l.onBooklistChange(BooklistChangeListener.FLAG_SERIES);
-						}
-					}});
+				StandardDialogs.deleteSeriesAlert(context, dba, dba.getSeriesById(id), () -> {
+                    // Let the Activity know
+                    if (context instanceof BooklistChangeListener) {
+                        final BooklistChangeListener l = (BooklistChangeListener) context;
+                        l.onBooklistChange(BooklistChangeListener.FLAG_SERIES);
+                    }
+                });
 				break;			
 			}
 		case R.id.MENU_EDIT_AUTHOR:
 		{
 			long id = rowView.getAuthorId();
-			EditAuthorDialog d = new EditAuthorDialog(context, dba, new Runnable() {
-				@Override
-				public void run() {
-					dba.purgeAuthors();
-					// Let the Activity know
-					if (context instanceof BooklistChangeListener) {
-						final BooklistChangeListener l = (BooklistChangeListener) context;
-						l.onBooklistChange(BooklistChangeListener.FLAG_AUTHOR);
-					}
-				}});
+			EditAuthorDialog d = new EditAuthorDialog(context, dba, () -> {
+                dba.purgeAuthors();
+                // Let the Activity know
+                if (context instanceof BooklistChangeListener) {
+                    final BooklistChangeListener l = (BooklistChangeListener) context;
+                    l.onBooklistChange(BooklistChangeListener.FLAG_AUTHOR);
+                }
+            });
 			d.editAuthor(dba.getAuthorById(id));
 			break;
 		}
 		case R.id.MENU_EDIT_FORMAT:
 		{
 			String format = rowView.getFormat();
-			EditFormatDialog d = new EditFormatDialog(context, dba, new Runnable() {
-				@Override
-				public void run() {
-					// Let the Activity know
-					if (context instanceof BooklistChangeListener) {
-						final BooklistChangeListener l = (BooklistChangeListener) context;
-						l.onBooklistChange(BooklistChangeListener.FLAG_FORMAT);
-					}
-				}});
+			EditFormatDialog d = new EditFormatDialog(context, dba, () -> {
+                // Let the Activity know
+                if (context instanceof BooklistChangeListener) {
+                    final BooklistChangeListener l = (BooklistChangeListener) context;
+                    l.onBooklistChange(BooklistChangeListener.FLAG_FORMAT);
+                }
+            });
 			d.edit(format);
 			break;
 		}

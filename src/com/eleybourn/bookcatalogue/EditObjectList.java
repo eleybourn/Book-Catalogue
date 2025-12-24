@@ -240,7 +240,7 @@ abstract public class EditObjectList<T extends Serializable> extends BookCatalog
 	        // Look for title and title_label
 			Bundle extras = getIntent().getExtras();
 			if (extras != null) {
-				mRowId = extras.getLong(CatalogueDBAdapter.KEY_ROWID);
+				mRowId = extras.getLong(CatalogueDBAdapter.KEY_ROW_ID);
 				mBookTitleLabel = extras.getString("title_label");
 				mBookTitle = extras.getString("title");
 				setTextOrHideView(R.id.title_label, mBookTitleLabel);

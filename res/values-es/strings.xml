@@ -119,7 +119,7 @@
 	<string name="backup_title">¿Realizar copia?</string>
     <string name="searching_google_books">Buscando en Google Books</string>
 	<string name="searching_library_thing">Buscando en LibraryThing</string>
-    <string name="select_bookshelves">Seleccionar biblioteca</string>
+    <string name="label_select_bookshelves">Seleccionar biblioteca</string>
 	<string name="label_format">Formato</string>
 	<string name="format1">Bolsillo</string>
 	<string name="format2">Tapa dura</string>

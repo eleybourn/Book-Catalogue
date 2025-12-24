@@ -11,6 +11,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.eleybourn.bookcatalogue.Fields.Field;
 import com.eleybourn.bookcatalogue.Fields.FieldFormatter;
 import com.eleybourn.bookcatalogue.debug.Tracker;
@@ -32,9 +35,9 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 		return rootView;
 	}
 
-	@Override 
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
+	@Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
 		/* In superclass onCreate method we initialize fields, background,
 		 * display metrics and other. So see superclass onCreate method. */

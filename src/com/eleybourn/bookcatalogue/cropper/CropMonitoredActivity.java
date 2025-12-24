@@ -24,20 +24,16 @@ import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 
 public abstract class CropMonitoredActivity extends BookCatalogueActivity {
 
-	private final ArrayList<LifeCycleListener> mListeners = new ArrayList<LifeCycleListener>();
+	private final ArrayList<LifeCycleListener> mListeners = new ArrayList<>();
 
-	public static interface LifeCycleListener {
-		public void onActivityCreated(CropMonitoredActivity activity);
+	public interface LifeCycleListener {
+		void onActivityCreated(CropMonitoredActivity activity);
 
-		public void onActivityDestroyed(CropMonitoredActivity activity);
+		void onActivityDestroyed(CropMonitoredActivity activity);
 
-		public void onActivityPaused(CropMonitoredActivity activity);
+		void onActivityStarted(CropMonitoredActivity activity);
 
-		public void onActivityResumed(CropMonitoredActivity activity);
-
-		public void onActivityStarted(CropMonitoredActivity activity);
-
-		public void onActivityStopped(CropMonitoredActivity activity);
+		void onActivityStopped(CropMonitoredActivity activity);
 	}
 
 	public static class LifeCycleAdapter implements LifeCycleListener {
@@ -45,12 +41,6 @@ public abstract class CropMonitoredActivity extends BookCatalogueActivity {
 		}
 
 		public void onActivityDestroyed(CropMonitoredActivity activity) {
-		}
-
-		public void onActivityPaused(CropMonitoredActivity activity) {
-		}
-
-		public void onActivityResumed(CropMonitoredActivity activity) {
 		}
 
 		public void onActivityStarted(CropMonitoredActivity activity) {

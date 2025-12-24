@@ -24,7 +24,6 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,6 +45,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.TimeZone;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -69,17 +69,9 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.Signature;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.Shader.TileMode;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.LayerDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -90,6 +82,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import androidx.core.text.HtmlCompat;
 
 import com.eleybourn.bookcatalogue.Author;
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
@@ -116,17 +110,17 @@ public class Utils {
 	static TimeZone tzUtc = TimeZone.getTimeZone("UTC");
 
 	// Used for date parsing and display
-	private static SimpleDateFormat mDateFullHMSSqlSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private static final SimpleDateFormat mDateFullHMSSqlSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	static { mDateFullHMSSqlSdf.setTimeZone(tzUtc); }
-	private static SimpleDateFormat mDateFullHMSqlSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	private static final SimpleDateFormat mDateFullHMSqlSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	static { mDateFullHMSqlSdf.setTimeZone(tzUtc); }
-	private static SimpleDateFormat mDateSqlSdf = new SimpleDateFormat("yyyy-MM-dd");
+	private static final SimpleDateFormat mDateSqlSdf = new SimpleDateFormat("yyyy-MM-dd");
 	static { mDateSqlSdf.setTimeZone(tzUtc); }
-	static DateFormat mDateDispSdf = DateFormat.getDateInstance(java.text.DateFormat.MEDIUM);
-	private static SimpleDateFormat mLocalDateSqlSdf = new SimpleDateFormat("yyyy-MM-dd");
+	static DateFormat mDateDisplaySdf = DateFormat.getDateInstance(java.text.DateFormat.MEDIUM);
+	private static final SimpleDateFormat mLocalDateSqlSdf = new SimpleDateFormat("yyyy-MM-dd");
 	static { mLocalDateSqlSdf.setTimeZone(Calendar.getInstance().getTimeZone()); }
 
-	private static final ArrayList<SimpleDateFormat> mParseDateFormats = new ArrayList<SimpleDateFormat>();
+	private static final ArrayList<SimpleDateFormat> mParseDateFormats = new ArrayList<>();
 	static {
 		final boolean isEnglish = (Locale.getDefault().getLanguage().equals(Locale.ENGLISH.getLanguage()));
 		addParseDateFormat(!isEnglish, "dd-MMM-yyyy HH:mm:ss");
@@ -158,22 +152,9 @@ public class Utils {
 	public static final String APP_NAME = "Book Catalogue";
 	public static final boolean USE_LT = true;
 	public static final boolean USE_BARCODE = true;
-	//public static final String APP_NAME = "DVD Catalogue";
-	//public static final String LOCATION = "dvdCatalogue";
-	//public static final String DATABASE_NAME = "dvd_catalogue";
-	//public static final boolean USE_LT = false;
-	//public static final boolean USE_BARCODE = false;
-	//public static final String APP_NAME = "CD Catalogue";
-	//public static final String LOCATION = "cdCatalogue";
-	//public static final String DATABASE_NAME = "cd_catalogue";
-	//public static final boolean USE_LT = true;
-	//public static final boolean USE_BARCODE = false;
 
 	/**
 	 * Add a format to the parser list; if nedEnglish is set, also add the localized english version
-	 * 
-	 * @param needEnglish
-	 * @param format
 	 */
 	private static void addParseDateFormat(boolean needEnglish, String format) {
 		mParseDateFormats.add(new SimpleDateFormat(format));
@@ -191,8 +172,8 @@ public class Utils {
 		return mDateFullHMSSqlSdf.format(d);
 	}
 	public static String toPrettyDate(Date d) {
-		mDateDispSdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-		return mDateDispSdf.format(d);
+		mDateDisplaySdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+		return mDateDisplaySdf.format(d);
 	}
 	public static String toPrettyDateTime(Date d) {
 		return DateFormat.getDateTimeInstance().format(d);		
@@ -273,22 +254,14 @@ public class Utils {
 
 	static public ArrayUtils<Author> getAuthorUtils() {
 		if (mAuthorUtils == null) {
-			mAuthorUtils = new ArrayUtils<Author>(new Utils.Factory<Author>(){
-				@Override
-				public Author get(String source) {
-					return new Author(source);
-				}});			
+			mAuthorUtils = new ArrayUtils<>(Author::new);
 		}
 		return mAuthorUtils;
 	}
 
 	static public ArrayUtils<Series> getSeriesUtils() {
 		if (mSeriesUtils == null) {
-			mSeriesUtils = new ArrayUtils<Series>(new Utils.Factory<Series>(){
-				@Override
-				public Series get(String source) {
-					return new Series(source);
-				}});
+			mSeriesUtils = new ArrayUtils<>(Series::new);
 		}
 		return mSeriesUtils;
 	}
@@ -296,15 +269,14 @@ public class Utils {
 	/**
 	 * Encode a string by 'escaping' all instances of: '|', '\', \r, \n. The
 	 * escape char is '\'.
-	 * 
 	 * This is used to build text lists separated by the passed delimiter.
 	 * 
 	 * @param s			String to convert
-	 * @param delim		The list delimiter to encode (if found).
+	 * @param delimiter		The list delimiter to encode (if found).
 	 * 
 	 * @return		Converted string
 	 */
-	public static String encodeListItem(String s, char delim) {
+	public static String encodeListItem(String s, char delimiter) {
 		StringBuilder ns = new StringBuilder();
 		for (int i = 0; i < s.length(); i++){
 		    char c = s.charAt(i);        
@@ -319,7 +291,7 @@ public class Utils {
 		    	ns.append("\\n");
 		    	break;
 		    default:
-		    	if (c == delim)
+		    	if (c == delimiter)
 		    		ns.append("\\");
 		    	ns.append(c);
 		    }
@@ -328,22 +300,22 @@ public class Utils {
 	}
 
 	/**
-	 * Encode a list of strings by 'escaping' all instances of: delim, '\', \r, \n. The
+	 * Encode a list of strings by 'escaping' all instances of: delimiter, '\', \r, \n. The
 	 * escape char is '\'.
-	 * 
-	 * This is used to build text lists separated by 'delim'.
+	 * This is used to build text lists separated by 'delimiter'.
 	 * 
 	 * @param sa	String array to convert
 	 * @return		Converted string
 	 */
-	static String encodeList(ArrayList<String> sa, char delim) {
+	@SuppressWarnings("unused")
+    static String encodeList(ArrayList<String> sa, char delimiter) {
 		StringBuilder ns = new StringBuilder();
 		Iterator<String> si = sa.iterator();
 		if (si.hasNext()) {
-			ns.append(encodeListItem(si.next(), delim));
+			ns.append(encodeListItem(si.next(), delimiter));
 			while (si.hasNext()) {
-				ns.append(delim);
-				ns.append(encodeListItem(si.next(), delim));
+				ns.append(delimiter);
+				ns.append(encodeListItem(si.next(), delimiter));
 			}
 		}
 		return ns.toString();
@@ -365,26 +337,25 @@ public class Utils {
 			return mFactory.get(source);
 		}
 		/**
-		 * Encode a list of strings by 'escaping' all instances of: delim, '\', \r, \n. The
+		 * Encode a list of strings by 'escaping' all instances of: delimiter, '\', \r, \n. The
 		 * escape char is '\'.
-		 * 
-		 * This is used to build text lists separated by 'delim'.
+		 * This is used to build text lists separated by 'delimiter'.
 		 * 
 		 * @param sa	String array to convert
 		 * @return		Converted string
 		 */
-		public String encodeList(ArrayList<T> sa, char delim) {
+		public String encodeList(ArrayList<T> sa, char delimiter) {
 			Iterator<T> si = sa.iterator();
-			return encodeList(si, delim);
+			return encodeList(si, delimiter);
 		}
 
-		private String encodeList(Iterator<T> si, char delim) {
+		private String encodeList(Iterator<T> si, char delimiter) {
 			StringBuilder ns = new StringBuilder();
 			if (si.hasNext()) {
-				ns.append(encodeListItem(si.next().toString(), delim));
+				ns.append(encodeListItem(si.next().toString(), delimiter));
 				while (si.hasNext()) {
-					ns.append(delim);
-					ns.append(encodeListItem(si.next().toString(), delim));
+					ns.append(delimiter);
+					ns.append(encodeListItem(si.next().toString(), delimiter));
 				}
 			}
 			return ns.toString();
@@ -392,13 +363,10 @@ public class Utils {
 		
 		/**
 		 * Decode a text list separated by '|' and encoded by encodeListItem.
-		 * 
-		 * @param s		String representing the list
-		 * @return		Array of strings resulting from list
 		 */
-		public ArrayList<T> decodeList(String s, char delim, boolean allowBlank) {
+		public ArrayList<T> decodeList(String s, char delimiter, boolean allowBlank) {
 			StringBuilder ns = new StringBuilder();
-			ArrayList<T> list = new ArrayList<T>();
+			ArrayList<T> list = new ArrayList<>();
 			if (s == null)
 				return list;
 
@@ -407,10 +375,7 @@ public class Utils {
 			    char c = s.charAt(i);
 			    if (inEsc) {
 			    	switch(c) {
-				    case '\\':
-			    		ns.append(c);
-				    	break;		    	
-				    case 'r':
+                        case 'r':
 			    		ns.append('\r');
 				    	break;		    	
 				    case 't':
@@ -425,27 +390,23 @@ public class Utils {
 			    	}
 		    		inEsc = false;
 			    } else {
-				    switch (c) {
-				    case '\\':
-			    		inEsc = true;
-				    	break;
-				    default:
-				    	if (c == delim) {
-				    		String source = ns.toString();
-				    		if (allowBlank || source.length() > 0)
-						    	list.add(get(source));
-					    	ns.setLength(0);
-					    	break;
-				    	} else {
-					    	ns.append(c);
-					    	break;
-				    	}
-				    }
+                    if (c == '\\') {
+                        inEsc = true;
+                    } else {
+                        if (c == delimiter) {
+                            String source = ns.toString();
+                            if (allowBlank || !source.isEmpty())
+                                list.add(get(source));
+                            ns.setLength(0);
+                        } else {
+                            ns.append(c);
+                        }
+                    }
 			    }
 			}
 			// It's important to send back even an empty item.
     		String source = ns.toString();
-    		if (allowBlank || source.length() > 0)
+    		if (allowBlank || !source.isEmpty())
 		    	list.add(get(source));
 			return list;
 		}
@@ -453,22 +414,16 @@ public class Utils {
 
 	/**
 	 * Decode a text list separated by '|' and encoded by encodeListItem.
-	 * 
-	 * @param s		String representing the list
-	 * @return		Array of strings resulting from list
 	 */
-	public static ArrayList<String> decodeList(String s, char delim) {
+	public static ArrayList<String> decodeList(String s, char delimiter) {
 		StringBuilder ns = new StringBuilder();
-		ArrayList<String> list = new java.util.ArrayList<String>();
+		ArrayList<String> list = new java.util.ArrayList<>();
 		boolean inEsc = false;
 		for (int i = 0; i < s.length(); i++){
 		    char c = s.charAt(i);
 		    if (inEsc) {
 		    	switch(c) {
-			    case '\\':
-		    		ns.append(c);
-			    	break;		    	
-			    case 'r':
+                    case 'r':
 		    		ns.append('\r');
 			    	break;		    	
 			    case 't':
@@ -483,20 +438,16 @@ public class Utils {
 		    	}
 	    		inEsc = false;
 		    } else {
-			    switch (c) {
-			    case '\\':
-		    		inEsc = true;
-			    	break;
-			    default:
-			    	if (c == delim) {
-				    	list.add(ns.toString());
-				    	ns.setLength(0);
-				    	break;
-			    	} else {
-				    	ns.append(c);
-				    	break;
-			    	}
-			    }
+                if (c == '\\') {
+                    inEsc = true;
+                } else {
+                    if (c == delimiter) {
+                        list.add(ns.toString());
+                        ns.setLength(0);
+                    } else {
+                        ns.append(c);
+                    }
+                }
 		    }
 		}
 		// It's important to send back even an empty item.
@@ -512,7 +463,7 @@ public class Utils {
 	 */
 	static public void appendOrAdd(Bundle values, String key, String value) {
 		String s = Utils.encodeListItem(value, '|');
-		if (!values.containsKey(key) || values.getString(key).length() == 0) {
+		if (!values.containsKey(key) || Objects.requireNonNull(values.getString(key)).isEmpty()) {
 			values.putString(key, s);
 		} else {
 			String curr = values.getString(key);
@@ -521,7 +472,7 @@ public class Utils {
 	}
 
 	/**
-	 * Given a URL, get an image and save to a file, optionally appending a suffic to the file.
+	 * Given a URL, get an image and save to a file, optionally appending a suffix to the file.
 	 * 
 	 * @param urlText			Image file URL
 	 * @param filenameSuffix	Suffix to add
@@ -538,36 +489,25 @@ public class Utils {
 			return "";
 		}
 		// Turn the URL into an InputStream
-		InputStream in = null;
+		InputStream in;
 		try {
-            HttpGet httpRequest = null;
+            HttpGet httpRequest;
 
 			httpRequest = new HttpGet(u.toURI());
 
             HttpClient httpclient = new DefaultHttpClient();
-            HttpResponse response = (HttpResponse) httpclient.execute(httpRequest);
+            HttpResponse response = httpclient.execute(httpRequest);
 
             HttpEntity entity = response.getEntity();
             BufferedHttpEntity bufHttpEntity = new BufferedHttpEntity(entity);
             in = bufHttpEntity.getContent();
 
-            // The defaut URL fetcher does not cope well with pages that have not content
-            // header (including goodreads images!). So use the more advanced one.
-			//c = (HttpURLConnection) u.openConnection();
-			//c.setConnectTimeout(30000);
-			//c.setRequestMethod("GET");
-			//c.setDoOutput(true);
-			//c.connect();
-			//in = c.getInputStream();
-		} catch (IOException e) {
-			Logger.logError(e);
-			return "";
-		} catch (URISyntaxException e) {
+        } catch (IOException | URISyntaxException e) {
 			Logger.logError(e);
 			return "";
 		}
 
-		// Get the output file
+        // Get the output file
 		File file = CatalogueDBAdapter.getTempThumbnail(filenameSuffix);
 		// Save to file
 		saveInputToFile(in, file);
@@ -582,7 +522,8 @@ public class Utils {
 	 * @param out		File to save
 	 * @return			true if successful
 	 */
-	static public boolean saveInputToFile(InputStream in, File out) {
+	@SuppressWarnings("ResultOfMethodCallIgnored")
+    static public boolean saveInputToFile(InputStream in, File out) {
 		File temp = null;
 		boolean isOk = false;
 
@@ -593,7 +534,7 @@ public class Utils {
 
 			// Copy from input to temp file
 			byte[] buffer = new byte[65536];
-			int len1 = 0;
+			int len1;
 			while ( (len1 = in.read(buffer)) >= 0 ) {
 				f.write(buffer,0, len1);
 			}
@@ -601,15 +542,13 @@ public class Utils {
 			// All OK, so rename to real output file
 			temp.renameTo(out);
 			isOk = true;
-		} catch (FileNotFoundException e) {
-			Logger.logError(e);
 		} catch (IOException e) {
 			Logger.logError(e);
 		} finally {
 			// Delete temp file if it still exists
 			if (temp != null && temp.exists())
-				try { temp.delete(); } catch (Exception e) {};
-		}
+				try { temp.delete(); } catch (Exception ignored) {}
+        }
 		return isOk;
 	}
 
@@ -620,7 +559,8 @@ public class Utils {
 	 *
 	 * @return	Downloaded bitmap
 	 */
-	static public Bitmap getBitmapFromUrl(String urlText) {
+	@SuppressWarnings("unused")
+    static public Bitmap getBitmapFromUrl(String urlText) {
 		return getBitmapFromBytes( getBytesFromUrl(urlText) );
 	}
 
@@ -660,7 +600,7 @@ public class Utils {
 		}
 		// Request it from the network
 		HttpURLConnection c;
-		InputStream in = null;
+		InputStream in;
 		try {
 			c = (HttpURLConnection) u.openConnection();
 			c.setConnectTimeout(30000);
@@ -671,7 +611,7 @@ public class Utils {
 			c.connect();
 			in = c.getInputStream();
 			if ( c.getResponseCode() >= 300) {
-				Logger.logError(new RuntimeException("URL lookup failed: " + c.getResponseCode() + " "  + c.getResponseMessage() + ", URL: " + u.toString()));
+				Logger.logError(new RuntimeException("URL lookup failed: " + c.getResponseCode() + " "  + c.getResponseMessage() + ", URL: " + u));
 				return null;
 			}
 		} catch (IOException e) {
@@ -707,7 +647,8 @@ public class Utils {
 		public StatefulBufferedInputStream(InputStream in) {
 			super(in);
 		}
-		public StatefulBufferedInputStream(InputStream in, int i) {
+		@SuppressWarnings("unused")
+        public StatefulBufferedInputStream(InputStream in, int i) {
 			super(in, i);
 		}
 
@@ -729,8 +670,6 @@ public class Utils {
 	 * stalling.
 	 * 
 	 * @param url		URL to retrieve
-	 * @return
-	 * @throws UnknownHostException 
 	 */
 	static public InputStream getInputStream(URL url) throws UnknownHostException {
 		
@@ -739,39 +678,6 @@ public class Utils {
 			int retries = 3;
 			while (true) {
 				try {
-					/*
-					 * This is quite nasty; there seems to be a bug with URL.openConnection
-					 *
-					 * It CAN be reduced by doing the following:
-					 * 
-					 *     ((HttpURLConnection)conn).setRequestMethod("GET");
-					 *     
-					 * but I worry about future-proofing and the assumption that URL.openConnection
-					 * will always return a HttpURLConnection. OFC, it probably will...until it doesn't.
-					 * 
-					 * Using HttpClient and HttpGet explicitly seems to bypass the casting
-					 * problem but still does not allow the timeouts to work, or only works intermittently.
-					 * 
-					 * Finally, there is another problem with faild timeouts:
-					 * 
-					 *     http://thushw.blogspot.hu/2010/10/java-urlconnection-provides-no-fail.html
-					 * 
-					 * So...we are forced to use a background thread to kill it.
-					 */
-					
-					// If at some stage in the future the casting code breaks...use the Apache one.
-					//final HttpClient client = new DefaultHttpClient();
-					//final HttpParams httpParameters = client.getParams();
-					//
-					//HttpConnectionParams.setConnectionTimeout(httpParameters, 30 * 1000);
-					//HttpConnectionParams.setSoTimeout        (httpParameters, 30 * 1000);
-					//
-					//final HttpGet conn = new HttpGet(url.toString());
-					//
-					//HttpResponse response = client.execute(conn);
-					//InputStream is = response.getEntity().getContent();
-					//return new BufferedInputStream(is);
-
 					final ConnectionInfo connInfo = new ConnectionInfo();
 
 					connInfo.conn = url.openConnection();
@@ -790,27 +696,25 @@ public class Utils {
 					connInfo.conn.setConnectTimeout(30000);
 					connInfo.conn.setReadTimeout(30000);
 
-					Terminator.enqueue(new Runnable() {
-						@Override
-						public void run() {
-							if (connInfo.is != null) {
-								if (!connInfo.is.isClosed()) {
-									try {
-										connInfo.is.close();
-										((HttpURLConnection)connInfo.conn).disconnect();
-									} catch (IOException e) {
-										Logger.logError(e);
-									}									
-								}
-							} else {
-								((HttpURLConnection)connInfo.conn).disconnect();								
-							}
+					Terminator.enqueue(() -> {
+                        if (connInfo.is != null) {
+                            if (!connInfo.is.isClosed()) {
+                                try {
+                                    connInfo.is.close();
+                                    ((HttpURLConnection)connInfo.conn).disconnect();
+                                } catch (IOException e) {
+                                    Logger.logError(e);
+                                }
+                            }
+                        } else {
+                            ((HttpURLConnection)connInfo.conn).disconnect();
+                        }
 
-						}}, 30000);
+                    }, 30000);
 					connInfo.is = new StatefulBufferedInputStream(connInfo.conn.getInputStream());
 
 					if ( c != null && c.getResponseCode() >= 300) {
-						Logger.logError(new RuntimeException("URL lookup failed: " + c.getResponseCode() + " "  + c.getResponseMessage() + ", URL: " + url.toString()));
+						Logger.logError(new RuntimeException("URL lookup failed: " + c.getResponseCode() + " "  + c.getResponseMessage() + ", URL: " + url));
 						return null;
 					}
 
@@ -821,8 +725,8 @@ public class Utils {
 					retries--;
 					if (retries-- == 0)
 						throw e;
-					try { Thread.sleep(500); } catch(Exception junk) {};
-				} catch (Exception e) {
+					try { Thread.sleep(500); } catch(Exception ignored) {}
+                } catch (Exception e) {
 					Logger.logError(e);
 					throw new RuntimeException(e);
 				}			
@@ -837,14 +741,12 @@ public class Utils {
 		ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		if (connectivity != null) {
 			NetworkInfo[] info = connectivity.getAllNetworkInfo();
-			if (info != null) {
-				for (int i = 0; i < info.length; i++) {
-					if (info[i].getState() == NetworkInfo.State.CONNECTED) {
-						return true;
-					}
-				}
-			}
-		}
+            for (NetworkInfo networkInfo : info) {
+                if (networkInfo.getState() == NetworkInfo.State.CONNECTED) {
+                    return true;
+                }
+            }
+        }
 		return false;
 	}
 
@@ -854,13 +756,14 @@ public class Utils {
 	 * 
 	 * @param result	Book data
 	 */
-	static public void cleanupThumbnails(Bundle result) {
+	@SuppressWarnings("ResultOfMethodCallIgnored")
+    static public void cleanupThumbnails(Bundle result) {
     	if (result.containsKey("__thumbnail")) {
     		long best = -1;
     		int bestFile = -1;
 
     		// Parse the list
-    		ArrayList<String> files = Utils.decodeList(result.getString("__thumbnail"), '|');
+    		ArrayList<String> files = Utils.decodeList(Objects.requireNonNull(result.getString("__thumbnail")), '|');
 
     		// Just read the image files to get file size
     		BitmapFactory.Options opt = new BitmapFactory.Options();
@@ -874,7 +777,7 @@ public class Utils {
 		    	    BitmapFactory.decodeFile( filespec, opt );
 		    	    // If no size info, assume file bad and skip
 		    	    if ( opt.outHeight > 0 && opt.outWidth > 0 ) {
-		    	    	long size = opt.outHeight * opt.outWidth;
+		    	    	long size = (long) opt.outHeight * opt.outWidth;
 		    	    	if (size > best) {
 		    	    		best = size;
 		    	    		bestFile = i;
@@ -908,84 +811,6 @@ public class Utils {
     	}
 	}
 
-// Code removed in order to remove the temptation to USE it; proper-casing is very locale-specific.
-//	/**
-//	 * Convert text at specified key to proper case.
-//	 * 
-//	 * @param values
-//	 * @param key
-//	 */
-//	public static void doProperCase(Bundle values, String key) {
-//		if (!values.containsKey(key))
-//			return;
-//		values.putString(key, properCase(values.getString(key)));
-//	}
-//
-//	public static String properCase(String inputString) {
-//		StringBuilder ff = new StringBuilder(); 
-//		String outputString;
-//		int wordnum = 0;
-//
-//		try {
-//			for(String f: inputString.split(" ")) {
-//				if(ff.length() > 0) { 
-//					ff.append(" "); 
-//				} 
-//				wordnum++;
-//				String word = f.toLowerCase();
-//	
-//				if (word.substring(0,1).matches("[\"\\(\\./\\\\,]")) {
-//					wordnum = 1;
-//					ff.append(word.substring(0,1));
-//					word = word.substring(1,word.length());
-//				}
-//	
-//				/* Do not convert 1st char to uppercase in the following situations */
-//				if (wordnum > 1 && word.matches("a|to|at|the|in|and|is|von|de|le")) {
-//					ff.append(word);
-//					continue;
-//				} 
-//				try {
-//					if (word.substring(0,2).equals("mc")) {
-//						ff.append(word.substring(0,1).toUpperCase());
-//						ff.append(word.substring(1,2));
-//						ff.append(word.substring(2,3).toUpperCase());
-//						ff.append(word.substring(3,word.length()));
-//						continue;
-//					}
-//				} catch (StringIndexOutOfBoundsException e) {
-//					// do nothing and continue;
-//				}
-//	
-//				try {
-//					if (word.substring(0,3).equals("mac")) {
-//						ff.append(word.substring(0,1).toUpperCase());
-//						ff.append(word.substring(1,3));
-//						ff.append(word.substring(3,4).toUpperCase());
-//						ff.append(word.substring(4,word.length()));
-//						continue;
-//					}
-//				} catch (StringIndexOutOfBoundsException e) {
-//					// do nothing and continue;
-//				}
-//	
-//				try {
-//					ff.append(word.substring(0,1).toUpperCase());
-//					ff.append(word.substring(1,word.length()));
-//				} catch (StringIndexOutOfBoundsException e) {
-//					ff.append(word);
-//				}
-//			}
-//	
-//			/* output */ 
-//			outputString = ff.toString();
-//		} catch (StringIndexOutOfBoundsException e) {
-//			//empty string - do nothing
-//			outputString = inputString;
-//		}
-//		return outputString;
-//	}
-
 	/**
 	 * Check if passed bundle contains a non-blank string at key k.
 	 * 
@@ -997,7 +822,7 @@ public class Utils {
 		try {
 			if (b.containsKey(key)) {
 				String s = b.getString(key);
-				return (s != null && s.length() > 0);
+				return (s != null && !s.isEmpty());
 			} else {
 				return false;
 			}
@@ -1006,25 +831,25 @@ public class Utils {
 		}
 	}
 	/**
-	 * Join the passed array of strings, with 'delim' between them.
+	 * Join the passed array of strings, with 'delimiter' between them.
 	 * 
 	 * @param sa		Array of strings to join
-	 * @param delim		Delimiter to place between entries
+	 * @param delimiter		Delimiter to place between entries
 	 * 
 	 * @return			The joined strings
 	 */
-	public static String join(String[] sa, String delim) {
+	public static String join(String[] sa, String delimiter) {
 		// Simple case, return empty string
-		if (sa.length <= 0)
+		if (sa.length == 0)
 			return "";
 
 		// Initialize with first
 		StringBuilder buf = new StringBuilder(sa[0]);
 
 		if (sa.length > 1) {
-			// If more than one, loop appending delim then string.
+			// If more than one, loop appending delimiter then string.
 			for(int i = 1; i < sa.length; i++) {
-				buf.append(delim);
+				buf.append(delimiter);
 				buf.append(sa[i]);
 			}
 		}
@@ -1061,9 +886,11 @@ public class Utils {
 	 * 
 	 * @return		Result
 	 */
-	public static String getAsString(Bundle b, String key) {
+	@SuppressWarnings("unused")
+    public static String getAsString(Bundle b, String key) {
 		Object o = b.get(key);
-		return o.toString();
+        assert o != null;
+        return o.toString();
 	}
 
 	public interface ItemWithIdFixup {
@@ -1074,21 +901,20 @@ public class Utils {
 
 	/**
 	 * Passed a list of Objects, remove duplicates based on the toString result.
-	 * 
-	 * ENHANCE Add author_aliases table to allow further pruning (eg. Joe Haldeman == Jow W Haldeman).
+	 * ENHANCE Add author_aliases table to allow further pruning (eg. Joe Haldeman == Joe W Haldeman).
 	 * ENHANCE Add series_aliases table to allow further pruning (eg. 'Amber Series' <==> 'Amber').
 	 * 
 	 * @param db		Database connection to lookup IDs
 	 * @param list		List to clean up
 	 */
 	public static <T extends ItemWithIdFixup> boolean pruneList(CatalogueDBAdapter db, ArrayList<T> list) {
-		Hashtable<String,Boolean> names = new Hashtable<String,Boolean>();
-		Hashtable<Long,Boolean> ids = new Hashtable<Long,Boolean>();
+		Hashtable<String,Boolean> names = new Hashtable<>();
+		Hashtable<Long,Boolean> ids = new Hashtable<>();
 
 		// We have to go forwards through the list because 'first item' is important,
 		// but we also can't delete things as we traverse if we are going forward. So
 		// we build a list of items to delete.
-		ArrayList<Integer> toDelete = new ArrayList<Integer>();
+		ArrayList<Integer> toDelete = new ArrayList<>();
 
 		for(int i = 0; i < list.size(); i++) {
 			T item = list.get(i);
@@ -1110,27 +936,24 @@ public class Utils {
 		}
 		for(int i = toDelete.size() - 1; i >= 0; i--)
 			list.remove(toDelete.get(i).intValue());
-		return toDelete.size() > 0;
+		return !toDelete.isEmpty();
 	}
 
 	/**
 	 * Remove series from the list where the names are the same, but one entry has a null or empty position.
-	 * eg. the followig list should be processed as indicated:
-	 * 
+	 * eg. the following list should be processed as indicated:
 	 * fred(5)
 	 * fred <-- delete
 	 * bill <-- delete
 	 * bill <-- delete
 	 * bill(1)
-	 * 
-	 * @param list
 	 */
 	public static boolean pruneSeriesList(ArrayList<Series> list) {
-		ArrayList<Series> toDelete = new ArrayList<Series>();
-		Hashtable<String, Series> index = new Hashtable<String, Series> ();
+		ArrayList<Series> toDelete = new ArrayList<>();
+		Hashtable<String, Series> index = new Hashtable<>();
 
 		for(Series s: list) {
-			final boolean emptyNum = s.num == null || s.num.trim().equals("");
+			final boolean emptyNum = s.num == null || s.num.trim().isEmpty();
 			final String lcName = s.name.trim().toLowerCase();
 			final boolean inNames = index.containsKey(lcName);
 			if (!inNames) {
@@ -1144,17 +967,16 @@ public class Utils {
 				} else {
 					// See if the one in 'index' also has a num
 					Series orig = index.get(lcName);
-					if (orig.num == null || orig.num.trim().equals("")) {
+                    assert orig != null;
+                    if (orig.num == null || orig.num.trim().isEmpty()) {
 						// Replace with this one, and mark orig for delete
 						index.put(lcName, s);
 						toDelete.add(orig);
 					} else {
 						// Both have numbers. See if they are the same.
-						if (s.num.trim().toLowerCase().equals(orig.num.trim().toLowerCase())) {
+						if (s.num.trim().equalsIgnoreCase(orig.num.trim())) {
 							// Same exact series, delete this one
 							toDelete.add(s);
-						} else {
-							// Nothing to do: this is a different series position							
 						}
 					}
 				}
@@ -1164,25 +986,25 @@ public class Utils {
 		for (Series s: toDelete) 
 			list.remove(s);			
 
-		return (toDelete.size() > 0);
+		return (!toDelete.isEmpty());
 
 	}
 	/**
 	 * Convert a array of objects to a string.
-	 * 
-	 * @param <T>
+     * 
 	 * @param a		Array
 	 * @return		Resulting string
 	 */
-	public static <T> String ArrayToString(ArrayList<T> a) {
-		String details = "";
+	@SuppressWarnings("unused")
+    public static <T> String ArrayToString(ArrayList<T> a) {
+		StringBuilder details = new StringBuilder();
 
 		for (T i : a) {
 			if (details.length() > 0)
-				details += "|";
-			details += Utils.encodeListItem(i.toString(), '|');			
+				details.append("|");
+			details.append(Utils.encodeListItem(i.toString(), '|'));			
 		}
-		return details;
+		return details.toString();
 	}
 	
 	// TODO: Make sure all URL getters use this if possible.
@@ -1195,40 +1017,24 @@ public class Utils {
 			parser = factory.newSAXParser();
 			parser.parse(Utils.getInputStream(url), handler);
 			// Dont bother catching general exceptions, they will be caught by the caller.
-		} catch (MalformedURLException e) {
+		} catch (ParserConfigurationException | java.io.IOException e) {
 			String s = "unknown";
-			try { s = e.getMessage(); } catch (Exception e2) {};
-			Logger.logError(e, s);
-		} catch (ParserConfigurationException e) {
-			String s = "unknown";
-			try { s = e.getMessage(); } catch (Exception e2) {};
-			Logger.logError(e, s);
+			try { s = e.getMessage(); } catch (Exception ignored) {}
+            Logger.logError(e, s);
 		} catch (SAXException e) {
 			String s = e.getMessage(); // "unknown";
-			try { s = e.getMessage(); } catch (Exception e2) {};
-			Logger.logError(e, s);
-		} catch (java.io.IOException e) {
-			String s = "unknown";
-			try { s = e.getMessage(); } catch (Exception e2) {};
-			Logger.logError(e, s);
+			try { s = e.getMessage(); } catch (Exception ignored) {}
+            Logger.logError(e, s);
 		}
 	}
 
 	/**
 	 * Shrinks the image in the passed file to the specified dimensions, and places the image
 	 * in the passed view. The bitmap is returned.
-	 * 
-	 * @param file
-	 * @param destView
-	 * @param maxWidth
-	 * @param maxHeight
-	 * @param exact
-	 * 
-	 * @return
 	 */
 	public static Bitmap fetchFileIntoImageView(File file, ImageView destView, int maxWidth, int maxHeight, boolean exact) {
 
-		Bitmap bm = null;					// resultant Bitmap (which we will return) 
+		Bitmap bm;					// resultant Bitmap (which we will return) 
 
 		// Get the file, if it exists. Otherwise set 'help' icon and exit.
 		if (!file.exists()) {
@@ -1244,15 +1050,9 @@ public class Utils {
 
 	/**
 	 * Construct the cache ID for a given thumbnail spec.
-	 * 
 	 * NOTE: Any changes to the resulting name MUST be reflect in CoversDbHelper.eraseCachedBookCover()
-	 * 
-	 * @param hash
-	 * @param maxWidth
-	 * @param maxHeight
-	 * @return
 	 */
-	public static final String getCoverCacheId(final String hash, final int maxWidth, final int maxHeight) {
+	public static String getCoverCacheId(final String hash, final int maxWidth, final int maxHeight) {
 		// NOTE: Any changes to the resulting name MUST be reflect in CoversDbHelper.eraseCachedBookCover()
 		return hash + ".thumb." + maxWidth + "x" + maxHeight + ".jpg";
 	}
@@ -1292,14 +1092,13 @@ public class Utils {
 			try { bytes = coversDb.getFile(cacheId, expiry); } 
 				catch (Exception e) {
 					bytes = null;
-				};
-			if (bytes != null) {
+				}
+            if (bytes != null) {
 				try {
 					bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-				} catch (Exception e) {
-					bytes = null;
-				};
-			}
+				} catch (Exception ignored) {
+                }
+            }
 		}
 
 		if (bm != null) {
@@ -1321,7 +1120,7 @@ public class Utils {
 
 	/**
 	 * Called in the UI thread, will either use a cached cover OR start a background task to create and load it.
-	 * 
+	 * <p> 
 	 * If a cached image is used a background task is still started to check the file date vs the cache date. If the
 	 * cached image date is < the file, it is rebuilt.
 	 * 
@@ -1348,8 +1147,6 @@ public class Utils {
 			final String cacheId = getCoverCacheId(hash, maxWidth, maxHeight);
 			bm = fetchCachedImageIntoImageView(coverFile, destView, cacheId);
 			cacheWasChecked = true;
-		} else {
-			//System.out.println("Skipping cache check");
 		}
 
 		if (bm != null)
@@ -1377,19 +1174,11 @@ public class Utils {
 	}
 
 	/**
-	 * Shrinks the passed image file spec into the specificed dimensions, and returns the bitmap. If the view 
+	 * Shrinks the passed image file spec into the specified dimensions, and returns the bitmap. If the view 
 	 * is non-null, the image is also placed in the view.
-	 * 
-	 * @param destView
-	 * @param filename
-	 * @param maxWidth
-	 * @param maxHeight
-	 * @param exact
-	 * 
-	 * @return
 	 */
 	private static Bitmap shrinkFileIntoImageView(ImageView destView, String filename, int maxWidth, int maxHeight, boolean exact) {
-		Bitmap bm = null;
+		Bitmap bm;
 
 		// Read the file to get file size
 		BitmapFactory.Options opt = new BitmapFactory.Options();
@@ -1406,12 +1195,12 @@ public class Utils {
 		// Next time we don't just want the bounds, we want the file
 		opt.inJustDecodeBounds = false;
 		
-		// Work out how to scale the file to fit in required bbox
+		// Work out how to scale the file to fit in required bounding box
 		float widthRatio = (float)maxWidth / opt.outWidth; 
 		float heightRatio = (float)maxHeight / opt.outHeight;
 		
 		// Work out scale so that it fit exactly
-		float ratio = widthRatio < heightRatio ? widthRatio : heightRatio;
+		float ratio = Math.min(widthRatio, heightRatio);
 		
 		// Note that inSampleSize seems to ALWAYS be forced to a power of 2, no matter what we
 		// specify, so we just work with powers of 2.
@@ -1440,8 +1229,7 @@ public class Utils {
 				// Recycle if original was not returned
 				if (bm != tmpBm) {
 					tmpBm.recycle();
-					tmpBm = null;
-				}
+                }
 			} else {
 				// Use a scale that will make image *no larger than* the desired size
 				if (ratio < 1.0f)
@@ -1467,68 +1255,26 @@ public class Utils {
 		}
 	}
 
-	/**
-	 * Check if phone has a network connection
-	 * 
-	 * @return
-	 */
-	/*
-	public static boolean isOnline(Context ctx) {
-	    ConnectivityManager cm = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
-	    NetworkInfo netInfo = cm.getActiveNetworkInfo();
-	    if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-	        return true;
-	    }
-	    return false;
-	}
-	*/
-
-	/**
-	 * Check if phone can connect to a specific host.
-	 * Does not work....
-	 * 
-	 * ENHANCE: Find a way to make network host checks possible
-	 * 
-	 * @return
-	 */
-	/*
-	public static boolean hostIsAvailable(Context ctx, String host) {
-		if (!isOnline(ctx))
-			return false;
-		int addr;
-		try {
-			addr = lookupHost(host);			
-		} catch (Exception e) {
-			return false;
-		}
-	    ConnectivityManager cm = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
-	    try {
-		    return cm.requestRouteToHost(ConnectivityManager., addr);	    	
-		} catch (Exception e) {
-			return false;
-		}
-	}
-	*/
-
-	public static int lookupHost(String hostname) {
+	@SuppressWarnings("unused")
+    public static int lookupHost(String hostname) {
 	    InetAddress inetAddress;
 	    try {
 	        inetAddress = InetAddress.getByName(hostname);
 	    } catch (UnknownHostException e) {
 	        return -1;
 	    }
-	    byte[] addrBytes;
-	    int addr;
-	    addrBytes = inetAddress.getAddress();
-	    addr = ((addrBytes[3] & 0xff) << 24)
-	            | ((addrBytes[2] & 0xff) << 16)
-	            | ((addrBytes[1] & 0xff) << 8)
-	            |  (addrBytes[0] & 0xff);
-	    return addr;
+	    byte[] addressBytes;
+	    int address;
+	    addressBytes = inetAddress.getAddress();
+	    address = ((addressBytes[3] & 0xff) << 24)
+	            | ((addressBytes[2] & 0xff) << 16)
+	            | ((addressBytes[1] & 0xff) << 8)
+	            |  (addressBytes[0] & 0xff);
+	    return address;
 	}
 	
 	/**
-	 * Format the given string using the passed paraeters.
+	 * Format the given string using the passed parameters.
 	 */
 	public static String format(Context c, int id, Object...objects) {
 		String f = c.getString(id);
@@ -1578,15 +1324,14 @@ public class Utils {
 	}
 	
 	/**
-	 * Erase contents of covers cache
-	 */
-	public int eraseCachedBookCover(String uuid) {
+     * Erase contents of covers cache
+     */
+	public void eraseCachedBookCover(String uuid) {
 		CoversDbHelper db = getCoversDb();
-		if (db != null)
-			return db.eraseCachedBookCover(uuid);
-		else 
-			return 0;
-	}
+		if (db != null) {
+            db.eraseCachedBookCover(uuid);
+        }
+    }
 	
 	/** Calendar to construct dates from month numbers */
 	private static Calendar mCalendar = null;
@@ -1622,19 +1367,17 @@ public class Utils {
 	}
 
 	/**
-	 * Call setCacheColorHint on a listview and trap IndexOutOfBoundsException. 
-	 * 
-	 * There is a bug in Android 2.2-2.3 (approx) that causes this call to throw 
-	 * exceptions *sometimes* (circumstances unclear):
-	 * 
-	 *     http://code.google.com/p/android/issues/detail?id=9775
-	 * 
-	 * Ideally this code should use reflection to set it, or check android versions.
-	 * 
-	 * @param lv		ListView to set
-	 * @param hint		Colour hint
-	 */
-	public static void setCacheColorHintSafely(ListView lv, int hint) {
+     * Call setCacheColorHint on a listview and trap IndexOutOfBoundsException. 
+     * There is a bug in Android 2.2-2.3 (approx) that causes this call to throw 
+     * exceptions *sometimes* (circumstances unclear):
+     *     <a href="http://code.google.com/p/android/issues/detail?id=9775">...</a>
+     * Ideally this code should use reflection to set it, or check android versions.
+     *
+     * @param lv        ListView to set
+     * @param hint        Colour hint
+     */
+	@SuppressWarnings("unused")
+    public static void setCacheColorHintSafely(ListView lv, int hint) {
 		try {
 			lv.setCacheColorHint(hint);
 		} catch (IndexOutOfBoundsException e) {
@@ -1656,7 +1399,7 @@ public class Utils {
 			sb.append(k);
 			sb.append("->");
 			try {
-				sb.append(b.get(k).toString());
+				sb.append(Objects.requireNonNull(b.get(k)));
 			} catch (Exception e) {
 				sb.append("<<Unknown>>");
 			}
@@ -1673,8 +1416,6 @@ public class Utils {
 	/**
 	 * Ensure that next up/down/left/right View is visible for all sub-views of the 
 	 * passed view.
-	 * 
-	 * @param root
 	 */
 	public static void fixFocusSettings(View root) {
 		final INextView getDown = new INextView() {
@@ -1753,7 +1494,7 @@ public class Utils {
 	 * @return	Hashtable of descendants with ID != NO_ID
 	 */
 	private static Hashtable<Integer,View> getViews(View v) {
-		Hashtable<Integer,View> vh = new Hashtable<Integer,View>();
+		Hashtable<Integer,View> vh = new Hashtable<>();
 		getViews(v, vh);
 		return vh;
 	}
@@ -1782,36 +1523,9 @@ public class Utils {
 		
 	}
 	
-	/**
-	 * Debug utility to dump an entire view hierarchy to the output.
-	 * 
-	 * @param depth
-	 * @param v
-	 */
-	//public static void dumpViewTree(int depth, View v) {
-	//	for(int i = 0; i < depth*4; i++)
-	//		System.out.print(" ");
-	//	System.out.print(v.getClass().getName() + " (" + v.getId() + ")" + (v.getId() == R.id.descriptionLabelzzz? "DESC! ->" : " ->"));
-	//	if (v instanceof TextView) {
-	//		String s = ((TextView)v).getText().toString();
-	//		System.out.println(s.substring(0, Math.min(s.length(), 20)));
-	//	} else {
-	//		System.out.println();
-	//	}
-	//	if (v instanceof ViewGroup) {
-	//		ViewGroup g = (ViewGroup)v;
-	//		for(int i = 0; i < g.getChildCount(); i++) {
-	//			dumpViewTree(depth+1, g.getChildAt(i));
-	//		}
-	//	}
-	//}
 	
 	/**
 	 * Passed date components build a (partial) SQL format date string.
-	 * 
-	 * @param year
-	 * @param month
-	 * @param day
 	 * 
 	 * @return		Formatted date, eg. '2011-11-01' or '2011-11'
 	 */
@@ -1865,22 +1579,7 @@ public class Utils {
 		dialog.setDate(yyyy, mm, dd);
 	}
 
-//	/**
-//	 * Build a new BigDateDialog and return it.
-//	 * 
-//	 * @param context
-//	 * @param titleId
-//	 * @param listener
-//	 * @return
-//	 */
-//	public static PartialDatePicker buildDateDialog(Context context, int titleId, PartialDatePicker.OnDateSetListener listener) {
-//		PartialDatePicker dialog = new PartialDatePicker(context);
-//		dialog.setTitle(titleId);
-//		dialog.setOnDateSetListener(listener);
-//		return dialog;
-//	}
-
-	/**
+    /**
 	 * Utility routine to get an author list from the intent extras
 	 * 
 	 * @param b		Bundle to read
@@ -1906,7 +1605,7 @@ public class Utils {
 	/**
 	 * Utility routine to get the list from the passed bundle. Added to reduce lint warnings...
 	 * 
-	 * @param b		Bundle containig list
+	 * @param b		Bundle containing list
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> ArrayList<T> getListFromBundle(Bundle b, String key) {
@@ -1928,29 +1627,29 @@ public class Utils {
 		if (mSignedBy == null) {
 			try {
 		    	// Get app info
-		        PackageManager manager = context.getPackageManager(); 
+		        PackageManager manager = context.getPackageManager();
 		        PackageInfo appInfo = manager.getPackageInfo( context.getPackageName(), PackageManager.GET_SIGNATURES);
 		        // Each sig is a PK of the signer:
 		        //     https://groups.google.com/forum/?fromgroups=#!topic/android-developers/fPtdt6zDzns
-		        for(Signature sig: appInfo.signatures) {
+                assert appInfo.signatures != null;
+                for(Signature sig: appInfo.signatures) {
 			        if (sig != null) {
 	                    final MessageDigest sha1 = MessageDigest.getInstance("MD5");
 	                    final byte[] publicKey = sha1.digest(sig.toByteArray());
 	                    // Turn the hex bytes into a more traditional MD5 string representation.
-	                    final StringBuffer hexString = new StringBuffer();
+	                    final StringBuilder hexString = new StringBuilder();
 	                    boolean first = true;
-	                    for (int i = 0; i < publicKey.length; i++)
-	                    {
-	                        if (!first) {
-	                        	hexString.append(":");
-	                        } else {
-	                        	first = false;
-	                        }
-	                        String byteString = Integer.toHexString(0xFF & publicKey[i]);
-	                        if (byteString.length() == 1) 
-	                        	hexString.append("0");
-	                        hexString.append(byteString);
-	                    }
+                        for (byte b : publicKey) {
+                            if (!first) {
+                                hexString.append(":");
+                            } else {
+                                first = false;
+                            }
+                            String byteString = Integer.toHexString(0xFF & b);
+                            if (byteString.length() == 1)
+                                hexString.append("0");
+                            hexString.append(byteString);
+                        }
 	                    String fingerprint = hexString.toString();
 
 	                    // Append as needed (theoretically could have more than one sig */
@@ -1963,12 +1662,12 @@ public class Utils {
 
 		    } catch (NameNotFoundException e) {
 				// Default if package not found...kind of unlikely
-				mSignedBy = "NOPACKAGE";
+				mSignedBy = "NO_PACKAGE";
 
 		    } catch (Exception e) {
 				// Default if we die
 				mSignedBy = e.getMessage();
-		    }			
+		    }
 		}
 		return mSignedBy;
 	}
@@ -1983,7 +1682,7 @@ public class Utils {
 	 */
 	public static boolean stringToBoolean(String s, boolean emptyIsFalse) {
 		boolean v;
-		if (s == null || s.equals(""))
+		if (s == null || s.isEmpty())
 			if (emptyIsFalse) {
 				v = false;
 			} else {
@@ -1995,30 +1694,27 @@ public class Utils {
 			v = false;
 		else {
 			s = s.trim().toLowerCase();
-			if (s.equals("t"))
-				v = true;
-			else if (s.equals("f"))
-				v = false;
-			else if (s.equals("true"))
-				v = true;
-			else if (s.equals("false"))
-				v = false;
-			else if (s.equals("y"))
-				v = true;
-			else if (s.equals("n"))
-				v = false;
-			else if (s.equals("yes"))
-				v = true;
-			else if (s.equals("no"))
-				v = false;
-			else {
-				try {
-					Integer i = Integer.parseInt(s);
-					return i != 0;
-				} catch (Exception e) {
-					throw new RuntimeException("Not a valid boolean value");						
-				}
-			}
+            switch (s) {
+                case "t":
+                case "true":
+                case "y":
+                case "yes":
+                    v = true;
+                    break;
+                case "f":
+                case "false":
+                case "n":
+                case "no":
+                    v = false;
+                    break;
+                default:
+                    try {
+                        int i = Integer.parseInt(s);
+                        return i != 0;
+                    } catch (Exception e) {
+                        throw new RuntimeException("Not a valid boolean value");
+                    }
+            }
 		}
 		return v;
 	}
@@ -2028,7 +1724,7 @@ public class Utils {
 			return (Boolean)o;
 		}
 		if (o instanceof Integer || o instanceof Long) {
-			return (Long)o != 0;
+            return (Long)o != 0;
 		}
 		try {
 			return (Boolean)o;
@@ -2045,31 +1741,22 @@ public class Utils {
 			// An Amazon error should not crash the app
 			Logger.logError(ae, "Unable to call the Amazon API");
 			Toast.makeText(context, R.string.unexpected_error, Toast.LENGTH_LONG).show();
-			// This code works, but Amazon have a nasty tendency to cancel Associate IDs...
-			//String baseUrl = "http://www.amazon.com/gp/search?index=books&tag=philipwarneri-20&tracking_id=philipwarner-20";
-			//String extra = AmazonUtils.buildSearchArgs(author, series);
-			//if (extra != null && !extra.trim().equals("")) {
-			//	Intent loadWeb = new Intent(Intent.ACTION_VIEW, Uri.parse(baseUrl + extra));
-			//	context.startActivity(loadWeb); 			
-			//}			
 		}
-		return;
-	}
+    }
 	
 	/**
-	 * Linkify partial HTML. Linkify methods remove all spans before building links, this
-	 * method preserves them.
-	 * 
-	 * See: http://stackoverflow.com/questions/14538113/using-linkify-addlinks-combine-with-html-fromhtml
-	 * 
-	 * @param html			Partial HTML
-	 * @param linkifyMask	Linkify mask to use in Linkify.addLinks
-	 * 
-	 * @return				Spannable with all links
-	 */
+     * Linkify partial HTML. Linkify methods remove all spans before building links, this
+     * method preserves them.
+     * See: <a href="http://stackoverflow.com/questions/14538113/using-linkify-addlinks-combine-with-html-fromhtml">...</a>
+     *
+     * @param html            Partial HTML
+     * @param linkifyMask    Linkify mask to use in Linkify.addLinks
+     *
+     * @return                Spannable with all links
+     */
 	public static Spannable linkifyHtml(String html, int linkifyMask) {
 		// Get the spannable HTML
-	    Spanned text = Html.fromHtml(html);
+	    Spanned text = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY);
 	    // Save the span details for later restoration
 	    URLSpan[] currentSpans = text.getSpans(0, text.length(), URLSpan.class);
 
@@ -2086,7 +1773,7 @@ public class Utils {
 	    try {
 			Linkify.addLinks(buffer, linkifyMask);
 
-			// Add back the HTML spannables
+			// Add back the HTML spannable
 			for (URLSpan span : currentSpans) {
 				int end = text.getSpanEnd(span);
 				int start = text.getSpanStart(span);
@@ -2101,21 +1788,10 @@ public class Utils {
 	public static void copyFile(File src, File dst) throws IOException {
 		FileInputStream fis = new FileInputStream(src);
 		FileOutputStream fos = new FileOutputStream(dst);
-		FileChannel inChannel = fis.getChannel();
-		FileChannel outChannel = fos.getChannel();
 
-		try {
-			inChannel.transferTo(0, inChannel.size(), outChannel);
-		}  finally {
-			if (inChannel != null){
-				inChannel.close();
-			}
-			if (outChannel != null){
-				outChannel.close();
-			}
-			fis.close();
-			fos.close();
-		}
+        try (fis; fos; FileChannel inChannel = fis.getChannel(); FileChannel outChannel = fos.getChannel()) {
+            inChannel.transferTo(0, inChannel.size(), outChannel);
+        }
 	}
 
 

@@ -1074,8 +1074,8 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
 		switch(requestCode) {
 		case UniqueId.ACTIVITY_CREATE_BOOK_SCAN:
 			try {
-				if (intent != null && intent.hasExtra(CatalogueDBAdapter.KEY_ROWID)) {
-					long newId = intent.getLongExtra(CatalogueDBAdapter.KEY_ROWID, 0);
+				if (intent != null && intent.hasExtra(CatalogueDBAdapter.KEY_ROW_ID)) {
+					long newId = intent.getLongExtra(CatalogueDBAdapter.KEY_ROW_ID, 0);
 					if (newId != 0) {
 						mMarkBookId = newId;
 					}
@@ -1093,8 +1093,8 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
 		case UniqueId.ACTIVITY_VIEW_BOOK:
 		case UniqueId.ACTIVITY_EDIT_BOOK:
 			try {
-				if (intent != null && intent.hasExtra(CatalogueDBAdapter.KEY_ROWID)) {
-					long id = intent.getLongExtra(CatalogueDBAdapter.KEY_ROWID, 0);
+				if (intent != null && intent.hasExtra(CatalogueDBAdapter.KEY_ROW_ID)) {
+					long id = intent.getLongExtra(CatalogueDBAdapter.KEY_ROW_ID, 0);
 					if (id != 0) {
 						mMarkBookId = id;
 					}

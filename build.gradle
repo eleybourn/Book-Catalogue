@@ -40,6 +40,10 @@ dependencies {
     implementation fileTree(include: '*.jar', dir: 'libs')
     implementation libs.material
     implementation libs.play.services.vision
+    implementation libs.androidx.room.common.jvm
+    implementation libs.firebase.firestore
+    implementation libs.androidx.room.runtime
+    annotationProcessor libs.androidx.room.compiler
 }
 
 android {

@@ -33,7 +33,6 @@ import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsage;
 import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsages;
 import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsages.Usages;
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
-import com.eleybourn.bookcatalogue.utils.StorageUtils;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
@@ -98,7 +97,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
 		int counter = 0;
 
 		// ENHANCE: Allow caller to pass cursor (again) so that specific books can be updated (eg. just one book)
-		Cursor books = mDbHelper.fetchAllBooks("b." + CatalogueDBAdapter.KEY_ROWID, "", "", "", "", "", "");
+		Cursor books = mDbHelper.fetchAllBooks("b." + CatalogueDBAdapter.KEY_ROW_ID, "", "", "", "", "", "");
 		mManager.setMax(this, books.getCount());
 		try {
 			while (books.moveToNext() && !isCancelled()) {
@@ -112,7 +111,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
 					mOrigData.putString(books.getColumnName(i), books.getString(i));
 				}
 				// Get the book ID
-				mCurrId = Utils.getAsLong(mOrigData, CatalogueDBAdapter.KEY_ROWID);
+				mCurrId = Utils.getAsLong(mOrigData, CatalogueDBAdapter.KEY_ROW_ID);
 				// Get the book UUID
 				mCurrUuid = mOrigData.getString( DatabaseDefinitions.DOM_BOOK_UUID.name );
 				// Get the extra data about the book

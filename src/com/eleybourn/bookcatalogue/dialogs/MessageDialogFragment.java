@@ -3,8 +3,11 @@ package com.eleybourn.bookcatalogue.dialogs;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueDialogFragment;
@@ -60,8 +63,13 @@ public class MessageDialogFragment extends BookCatalogueDialogFragment {
 	 * Ensure activity supports event
 	 */
 	@Override
-	public void onAttach(Activity a) {
-		super.onAttach(a);
+    public void onAttach (@NonNull Context context) {
+        super.onAttach(context);
+
+        Activity a = null;
+        if (context instanceof Activity){
+            a=(Activity) context;
+        }
 
 		if (! (a instanceof OnMessageDialogResultListener))
 			throw new RuntimeException("Activity " + a.getClass().getSimpleName() + " must implement OnMessageDialogResultListener");

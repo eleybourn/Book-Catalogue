@@ -117,7 +117,7 @@
     <string name="backup_title">Backup?</string>
     <string name="searching_google_books">Ricerca in Google Books</string>
     <string name="searching_library_thing">Ricerca in LibraryThing</string>
-    <string name="select_bookshelves">Seleziona librerie</string>
+    <string name="label_select_bookshelves">Seleziona librerie</string>
     <string name="label_format">Formato</string>
     <string name="format1">Tascabile</string>
     <string name="format2">Copertina rigida</string>

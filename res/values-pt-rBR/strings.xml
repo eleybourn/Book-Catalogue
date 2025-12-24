@@ -121,7 +121,7 @@
     <string name="backup_title">Criar cópia de segurança?</string>
     <string name="searching_google_books">Pesquisando Google Livros</string>
     <string name="searching_library_thing">Pesquisando LibraryThing</string>
-    <string name="select_bookshelves">Selecionar estantes</string>
+    <string name="label_select_bookshelves">Selecionar estantes</string>
     <string name="label_format">Formato</string>
     <string name="format1">Livro de bolso</string>
     <string name="format2">Capa dura</string>

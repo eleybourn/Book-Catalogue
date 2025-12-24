@@ -31,6 +31,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.eleybourn.bookcatalogue.Fields.AfterFieldChangeListener;
 import com.eleybourn.bookcatalogue.Fields.Field;
 import com.eleybourn.bookcatalogue.Fields.FieldFormatter;
@@ -79,10 +82,10 @@ public class BookEditNotes extends BookEditFragmentAbstract implements OnPartial
 	}
 
 	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		Tracker.enterOnCreate(this);
 		try {
-			super.onActivityCreated(savedInstanceState);
+            super.onViewCreated(view, savedInstanceState);
 
 			if (savedInstanceState != null) {
 				mEditManager.setDirty(savedInstanceState.getBoolean("Dirty"));

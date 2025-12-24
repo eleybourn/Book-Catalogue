@@ -351,7 +351,7 @@ public class BookEvents {
 	 */
 	private static void editBook(Context ctx, long bookId) {
 		Intent i = new Intent(ctx, BookEdit.class);
-		i.putExtra(CatalogueDBAdapter.KEY_ROWID, bookId);
+		i.putExtra(CatalogueDBAdapter.KEY_ROW_ID, bookId);
 		i.putExtra(BookEdit.TAB, BookEdit.TAB_EDIT);
 		ctx.startActivity(i);	
 	}

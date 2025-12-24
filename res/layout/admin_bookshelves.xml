@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/layout_body">
     <!-- Root -->
 
@@ -8,18 +8,17 @@
     <include layout="@layout/layout_background" />
 
     <!-- CONTENT -->
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scrollView"
-        style="@style/layout_scroll">
-
         <LinearLayout
             android:id="@+id/root"
-            style="@style/layout_main">
+            style="@style/layout_main"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" >
 
-            <ListView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent" />
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:scrollbars="vertical"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
             <TextView
                 android:id="@+id/empty"
@@ -29,5 +28,4 @@
                 android:text="@string/info_no_bookshelves" />
 
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

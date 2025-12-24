@@ -317,7 +317,7 @@
     <string name="kilobytes">%.2f ko</string>
     <string name="bytes">%.0f octets</string>
     <string name="sortby_author_given">Trier par auteur (prénom)</string>
-    <string name="select_bookshelves">Choisir des bibliothèques</string>
+    <string name="label_select_bookshelves">Choisir des bibliothèques</string>
     <string name="debug_subject">Collecte des informations de débogage en cours</string>
     <string name="debug_body">Merci de prendre le temps de décrire brièvement le problème que vous rencontrez.</string>
     <string name="menu_duplicate">Livre en double</string>

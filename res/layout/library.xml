@@ -32,7 +32,7 @@
                 <ImageView
                     android:id="@+id/bookshelf_down"
                     style="@style/layout_button_dropdown"
-                    android:contentDescription="@string/select_bookshelves" />
+                    android:contentDescription="@string/label_select_bookshelves" />
 
                 <TextView
                     android:id="@+id/search_text"

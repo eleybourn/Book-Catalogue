@@ -310,7 +310,7 @@ public class BookData extends DataManager {
 		});
 
 		// Whenever the row ID is written, make sure mRowId is updated.
-		addAccessor(CatalogueDBAdapter.KEY_ROWID, new DataAccessor() {
+		addAccessor(CatalogueDBAdapter.KEY_ROW_ID, new DataAccessor() {
 			@Override
 			public Object get(DataManager data, Datum datum, Bundle rawData) {
 				return Datum.objectToLong(rawData.get(datum.getKey()));
@@ -400,7 +400,20 @@ public class BookData extends DataManager {
 		setAuthorList(list);
 	}
 
-	/**
+    /**
+     * Reload the series list from the database.
+     * Call this when the series list might have been changed by another activity (like the Series Editor).
+     */
+    public void refreshSeriesList(CatalogueDBAdapter db) {
+        ArrayList<Series> list = getSeriesList();
+        for(Series s : list) {
+            db.refreshSeries(s);
+        }
+        setSeriesList(list);
+    }
+
+
+    /**
 	 * Cleanup thumbnails from underlying data
 	 */
 	public void cleanupThumbnails() {

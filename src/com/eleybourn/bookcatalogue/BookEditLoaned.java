@@ -34,6 +34,9 @@ import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.utils.Logger;
 
@@ -89,10 +92,11 @@ public class BookEditLoaned extends BookEditFragmentAbstract {
 	 * @param savedInstanceState The saved bundle (from pausing). Can be null.
 	 */
 	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+
 		Tracker.enterOnCreate(this);
 		try {
-			super.onActivityCreated(savedInstanceState);
+            super.onViewCreated(view, savedInstanceState);
 			String user = mDbHelper.fetchLoanByBook(mEditManager.getBookData().getRowId());
 			if (user == null) {
 				loanTo();

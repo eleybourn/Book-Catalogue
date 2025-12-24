@@ -1,7 +1,7 @@
 /*
  * @copyright 2010 Evan Leybourn
  * @license GNU General Public License
- * 
+ *
  * This file is part of Book Catalogue.
  *
  * Book Catalogue is free software: you can redistribute it and/or modify
@@ -21,139 +21,150 @@
 package com.eleybourn.bookcatalogue;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
-import com.eleybourn.bookcatalogue.compat.BookCatalogueListActivity;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.eleybourn.bookcatalogue.data.Bookshelf;
+import com.eleybourn.bookcatalogue.data.BookshelfAdapter;
+import com.eleybourn.bookcatalogue.data.BookshelfViewModel;
 import com.google.android.material.appbar.MaterialToolbar;
 
 /*
  * A book catalogue application that integrates with Google Books.
  */
-public class AdminBookshelf extends BookCatalogueListActivity {
-	private static final int ACTIVITY_CREATE=0;
-	private static final int ACTIVITY_EDIT=1;
-	private CatalogueDBAdapter mDbHelper;
-	private static final int INSERT_ID = Menu.FIRST;
-	private static final int DELETE_ID = Menu.FIRST + 1;
+public class AdminBookshelf extends AppCompatActivity {
+    private static final int INSERT_ID = Menu.FIRST;
+    private static final int DELETE_ID = Menu.FIRST + 1;
 
-	/** Called when the activity is first created. */
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.admin_bookshelves);
+    private BookshelfViewModel mViewModel;
+    private BookshelfAdapter mAdapter;
+    private Bookshelf mSelectedBookshelfForContext; // To hold selection for delete
+
+    // Define Result Launchers
+    private ActivityResultLauncher<Intent> editBookshelfLauncher;
+    private ActivityResultLauncher<Intent> createBookshelfLauncher;
+
+    /** Called when the activity is first created. */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.admin_bookshelves);
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
         setSupportActionBar(topAppBar);
         topAppBar.setTitle(R.string.label_bookshelf);
         topAppBar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-		mDbHelper = new CatalogueDBAdapter(this);
-		mDbHelper.open();
-		fillBookshelves();
-		ListView lv = getListView();
-		registerForContextMenu(lv);
-		lv.setOnItemClickListener((parent, v, position, id) -> onListItemClick(lv, v, position, id));
-	}
-	
-	/**
-	 * Fix background
-	 */
-	@Override 
-	public void onResume() {
-		super.onResume();
-	}
+        // Initialize Launchers
+        setupResultLaunchers();
 
-	private void fillBookshelves() {
-		// base the layout and the query on the sort order
-		int layout = R.layout.row_bookshelf;
-		
-		// Get all of the rows from the database and create the item list
-		Cursor BookshelfCursor = mDbHelper.fetchAllBookshelves();
-		startManagingCursor(BookshelfCursor);
-		
-		// Create an array to specify the fields we want to display in the list
-		String[] from = new String[]{CatalogueDBAdapter.KEY_BOOKSHELF, CatalogueDBAdapter.KEY_ROWID};
-		
-		// and an array of the fields we want to bind those fields to (in this case just text1)
-		int[] to = new int[]{R.id.row_bookshelf};
-		
-		// Now create a simple cursor adapter and set it to display
-		SimpleCursorAdapter books = new SimpleCursorAdapter(this, layout, BookshelfCursor, from, to);
-		setListAdapter(books);
-	}
-	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		menu.add(0, INSERT_ID, 0, R.string.menu_insert_bs)
-			.setIcon(R.drawable.ic_menu_new)
-			.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		return true;
-	}
-	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
+        // Setup RecyclerView
+        RecyclerView recyclerView = findViewById(R.id.list); // Or specific ID in your XML
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        // Initialize Adapter with BOTH Click and LongClick listeners
+        mAdapter = new BookshelfAdapter(
+                // Short Click (Edit)
+                bookshelf -> {
+                    Intent i = new Intent(AdminBookshelf.this, AdminBookshelfEdit.class);
+                    i.putExtra(CatalogueDBAdapter.KEY_ROW_ID, bookshelf.id);
+                    editBookshelfLauncher.launch(i);
+                },
+                // Long Click (Prepare for Delete)
+                (bookshelf, view, menu) -> {
+                    mSelectedBookshelfForContext = bookshelf;
+                    menu.add(0, DELETE_ID, 0, R.string.menu_delete_bs);
+                }
+        );
+
+        recyclerView.setAdapter(mAdapter);
+
+        // Initialize ViewModel
+        mViewModel = new ViewModelProvider(this).get(BookshelfViewModel.class);
+
+        // Observe Data (Replaces fillBookshelves/CursorAdapter)
+        mViewModel.getAllBookshelves().observe(this, bookshelves -> {
+            // Update the cached copy of the words in the adapter.
+            mAdapter.submitList(bookshelves);
+
+            View emptyView = findViewById(R.id.empty);
+            if (emptyView != null) {
+                emptyView.setVisibility(bookshelves.isEmpty() ? View.VISIBLE : View.GONE);
+                recyclerView.setVisibility(bookshelves.isEmpty() ? View.GONE : View.VISIBLE);
+            }
+        });
+
+    }
+
+    private void setupResultLaunchers() {
+        // Launcher for Editing
+        editBookshelfLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    // ViewModel observes LiveData, so data updates automatically.
+                    // You can show a success message here if needed.
+                });
+
+        // Launcher for Creating
+        createBookshelfLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    // Data updates automatically via LiveData
+                });
+    }
+
+
+    /**
+     * Fix background
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        menu.add(0, INSERT_ID, 0, R.string.menu_insert_bs)
+                .setIcon(R.drawable.ic_menu_new)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == INSERT_ID) {
             createBookshelf();
             return true;
         }
-		return super.onOptionsItemSelected(item);
-	}
-	
-    @Override
-	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-		super.onCreateContextMenu(menu, v, menuInfo);
-        menu.add(0, DELETE_ID, 0, R.string.menu_delete_bs);
-	}
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
-	public boolean onContextItemSelected(android.view.MenuItem item) {
+    public boolean onContextItemSelected(android.view.MenuItem item) {
         if (item.getItemId() == DELETE_ID) {
-            AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-            assert info != null;
-            if (info.id == 1) {
-                Toast.makeText(this, R.string.delete_1st_bs, Toast.LENGTH_LONG).show();
-            } else {
-                mDbHelper.deleteBookshelf(info.id);
-                fillBookshelves();
+            if (mSelectedBookshelfForContext != null) {
+                if (mSelectedBookshelfForContext.id == 1) {
+                    Toast.makeText(this, R.string.delete_1st_bs, Toast.LENGTH_LONG).show();
+                } else {
+                    mViewModel.deleteBookshelf(mSelectedBookshelfForContext.id);
+                }
             }
             return true;
         }
-		return super.onContextItemSelected(item);
-	}
-	
+        return super.onContextItemSelected(item);
+    }
+
     private void createBookshelf() {
         Intent i = new Intent(this, AdminBookshelfEdit.class);
-        startActivityForResult(i, ACTIVITY_CREATE);
+        createBookshelfLauncher.launch(i);
     }
-    
-    @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        Intent i = new Intent(this, AdminBookshelfEdit.class);
-        i.putExtra(CatalogueDBAdapter.KEY_ROWID, id);
-        startActivityForResult(i, ACTIVITY_EDIT);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-        fillBookshelves();
-    }
-	
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		mDbHelper.close();
-	}
-
 }

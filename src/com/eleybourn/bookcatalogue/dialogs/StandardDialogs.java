@@ -32,6 +32,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,24 +64,16 @@ public class StandardDialogs {
 		dialog.setTitle(R.string.details_have_changed);
 		dialog.setMessage(R.string.you_have_unsaved_changes);
 		
-		dialog.setPositiveButton(R.string.exit, new AlertDialog.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-				if (r != null) {
-					r.run();
-				} else {
-					a.finish();					
-				}
-			}
-		});
+		dialog.setPositiveButton(R.string.exit, (dialog1, which) -> {
+            dialog1.dismiss();
+            if (r != null) {
+                r.run();
+            } else {
+                a.finish();
+            }
+        });
 
-		dialog.setNegativeButton(R.string.continue_editing, new AlertDialog.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-			}
-		});
+		dialog.setNegativeButton(R.string.continue_editing, (dialog2, which) -> dialog2.dismiss());
 		dialog.setCancelable(false);
 		dialog.create().show();
 	}
@@ -105,31 +99,23 @@ public class StandardDialogs {
 		dlg.setTitle(R.string.reg_library_thing_title);
 		dlg.setIcon(android.R.drawable.ic_menu_info_details);
 
-		dlg.setButton(DialogInterface.BUTTON_POSITIVE, context.getResources().getString(R.string.more_info), new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				Intent i = new Intent(context, AdministrationLibraryThing.class);
-				context.startActivity(i);
-				dlg.dismiss();
-			}
-		});
+		dlg.setButton(DialogInterface.BUTTON_POSITIVE, context.getResources().getString(R.string.more_info), (dialog, which) -> {
+            Intent i = new Intent(context, AdministrationLibraryThing.class);
+            context.startActivity(i);
+            dlg.dismiss();
+        });
 
 		if (!ltRequired) {
-			dlg.setButton(DialogInterface.BUTTON_NEUTRAL, context.getResources().getString(R.string.disable_dialogue), new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					SharedPreferences prefs = context.getSharedPreferences("bookCatalogue", android.content.Context.MODE_PRIVATE);
-					SharedPreferences.Editor ed = prefs.edit();
-					ed.putBoolean(prefName, true);
-					ed.commit();
-					dlg.dismiss();
-				}
-			});
+			dlg.setButton(DialogInterface.BUTTON_NEUTRAL, context.getResources().getString(R.string.disable_dialogue), (dialog, which) -> {
+                SharedPreferences prefs = context.getSharedPreferences("bookCatalogue", Context.MODE_PRIVATE);
+                SharedPreferences.Editor ed = prefs.edit();
+                ed.putBoolean(prefName, true);
+                ed.commit();
+                dlg.dismiss();
+            });
 		}
 
-		dlg.setButton(DialogInterface.BUTTON_NEGATIVE, context.getResources().getString(R.string.button_cancel), new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				dlg.dismiss();
-			}
-		});
+		dlg.setButton(DialogInterface.BUTTON_NEGATIVE, context.getResources().getString(R.string.button_cancel), (dialog, which) -> dlg.dismiss());
 
 		dlg.show();
 	}
@@ -143,27 +129,17 @@ public class StandardDialogs {
 		} catch (NullPointerException e) {
 			Logger.logError(e);
 		}
-		final AlertDialog alertDialog = new AlertDialog.Builder(context).setMessage(message).create();
-
-		alertDialog.setTitle(R.string.delete_series);
-		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-		//alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
-		alertDialog.setButton2(context.getResources().getString(R.string.button_ok), new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				dbHelper.deleteSeries(series);
-				alertDialog.dismiss();
-				onDeleted.run();
-			}
-		});
-
-		//alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
-		alertDialog.setButton(context.getResources().getString(R.string.button_cancel), new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				alertDialog.dismiss();
-			}
-		}); 
-
-		alertDialog.show();
+        // Modern Builder approach
+        new AlertDialog.Builder(context)
+            .setMessage(message)
+            .setTitle(R.string.delete_series)
+            .setIcon(android.R.drawable.ic_menu_info_details)
+            .setPositiveButton(R.string.button_ok, (dialog, which) -> {
+                dbHelper.deleteSeries(series);
+                onDeleted.run();
+            })
+            .setNegativeButton(R.string.button_cancel, (dialog, which) -> dialog.dismiss())
+            .show();
 	}
 
 	public static int deleteBookAlert(Context context, final CatalogueDBAdapter dbHelper, final long id, final Runnable onDeleted) {
@@ -171,122 +147,99 @@ public class StandardDialogs {
 		ArrayList<Author> authorList = dbHelper.getBookAuthorList(id);
 
 		String title;
-		Cursor cur = dbHelper.fetchBookById(id);
-		try {
-			if (cur == null || !cur.moveToFirst())
-				return R.string.unable_to_find_book;
+        try (Cursor cur = dbHelper.fetchBookById(id)) {
+            if (cur == null || !cur.moveToFirst())
+                return R.string.unable_to_find_book;
 
-			title = cur.getString(cur.getColumnIndex(CatalogueDBAdapter.KEY_TITLE));
-			if (title == null || title.length() == 0)
-				title = "<Unknown>";
-			
-		} finally {
-			if (cur != null)
-				cur.close();
-		}
+            title = cur.getString(cur.getColumnIndex(CatalogueDBAdapter.KEY_TITLE));
+            if (title == null || title.isEmpty())
+                title = "<Unknown>";
+
+        }
 
 		// Format the list of authors nicely
-		String authors;
-		if (authorList.size() == 0)
-			authors = "<Unknown>";
+		StringBuilder authors;
+		if (authorList.isEmpty())
+			authors = new StringBuilder("<Unknown>");
 		else {
-			authors = authorList.get(0).getDisplayName();
+			authors = new StringBuilder(authorList.get(0).getDisplayName());
 			for (int i = 1; i < authorList.size() - 1; i++) {
-				authors += ", " + authorList.get(i).getDisplayName();
+				authors.append(", ").append(authorList.get(i).getDisplayName());
 			}
 			if (authorList.size() > 1)
-				authors += " " + context.getResources().getString(R.string.list_and) + " " + authorList.get(authorList.size() -1).getDisplayName();
+				authors.append(" ").append(context.getResources().getString(R.string.list_and)).append(" ").append(authorList.get(authorList.size() - 1).getDisplayName());
 		}
 
 		// Get the title		
 		String format = context.getResources().getString(R.string.really_delete_book);
 		
 		String message = String.format(format, title, authors);
-		final AlertDialog alertDialog = new AlertDialog.Builder(context).setMessage(message).create();
-
-		alertDialog.setTitle(R.string.menu_delete);
-		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-		//alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
-		alertDialog.setButton2(context.getResources().getString(R.string.button_ok), new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				dbHelper.deleteBook(id);
-				alertDialog.dismiss();
-				onDeleted.run();
-			}
-		});
-
-		//alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
-		alertDialog.setButton(context.getResources().getString(R.string.button_cancel), new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				alertDialog.dismiss();
-			}
-		}); 
-
-		alertDialog.show();
+        // Modern Builder approach
+        new AlertDialog.Builder(context)
+                .setMessage(message)
+                .setTitle(R.string.menu_delete)
+                .setIcon(android.R.drawable.ic_menu_info_details)
+                .setPositiveButton(R.string.button_ok, (dialog, which) -> {
+                    dbHelper.deleteBook(id);
+                    onDeleted.run();
+                })
+                .setNegativeButton(R.string.button_cancel, (dialog, which) -> dialog.dismiss())
+                .show();
 		return 0;
-		
+
 	}
 
 	/**
-	 * Display a dialog warning the user that goodreads authentication is required; gives them
-	 * the options: 'request now', 'more info' or 'cancel'.
-	 */
-	public static int goodreadsAuthAlert(final FragmentActivity context) {
+     * Display a dialog warning the user that goodreads authentication is required; gives them
+     * the options: 'request now', 'more info' or 'cancel'.
+     */
+	public static void goodreadsAuthAlert(final FragmentActivity context) {
 		// Get the title		
 		final AlertDialog alertDialog = new AlertDialog.Builder(context).setTitle(R.string.authorize_access).setMessage(R.string.goodreads_action_cannot_blah_blah).create();
 
 		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getResources().getString(R.string.button_ok), new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				alertDialog.dismiss();
-				GoodreadsRegister.requestAuthorizationInBackground(context);
-			}
-		});
+		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getResources().getString(R.string.button_ok), (dialog, which) -> {
+            alertDialog.dismiss();
+            GoodreadsRegister.requestAuthorizationInBackground(context);
+        });
 		
-		alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, context.getResources().getString(R.string.tell_me_more), new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				alertDialog.dismiss();
-				Intent i = new Intent(context, GoodreadsRegister.class);
-				context.startActivity(i);				
-			}
-		});
+		alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, context.getResources().getString(R.string.tell_me_more), (dialog, which) -> {
+            alertDialog.dismiss();
+            Intent i = new Intent(context, GoodreadsRegister.class);
+            context.startActivity(i);
+        });
 
-		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, context.getResources().getString(R.string.button_cancel), new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				alertDialog.dismiss();
-			}
-		}); 
+		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, context.getResources().getString(R.string.button_cancel), (dialog, which) -> alertDialog.dismiss());
 
 		alertDialog.show();
-		return 0;
-		
-	}
+
+    }
 
 	/**
 	 * Interface for item that displays in a custom dialog list
 	 */
-	public static interface SimpleDialogItem {
+	public interface SimpleDialogItem {
 		View getView(LayoutInflater inflater);
 		RadioButton getSelector(View v);
 	}
 	/**
 	 * Interface to listen for item selection in a custom dialog list
 	 */
-	public static interface SimpleDialogOnClickListener {
+	public interface SimpleDialogOnClickListener {
 		void onClick(SimpleDialogItem item);
 	}
 
 	/**
-	 * Select a custom item from a list, and call halder when/if item is selected.
+	 * Select a custom item from a list, and call handler when/if item is selected.
 	 */
 	public static void selectItemDialog(LayoutInflater inflater, String message, ArrayList<SimpleDialogItem> items, SimpleDialogItem selectedItem, final SimpleDialogOnClickListener handler) {
 		// Get the view and the radio group
 		final View root = inflater.inflate(R.layout.select_list_dialog, null);
-		TextView msg = (TextView) root.findViewById(R.id.message);
+		TextView msg = root.findViewById(R.id.message);
 
 		// Build the base dialog
 		final AlertDialog.Builder builder = new AlertDialog.Builder(inflater.getContext()).setView(root);
-		if (message != null && !message.equals("")) {
+		if (message != null && !message.isEmpty()) {
 			msg.setText(message);
 		} else {
 			msg.setVisibility(View.GONE);
@@ -295,38 +248,25 @@ public class StandardDialogs {
 		final AlertDialog dialog = builder.create();
 
 		// Create the listener for each item
-		OnClickListener listener = new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				SimpleDialogItem item = (SimpleDialogItem)ViewTagger.getTag(v, R.id.TAG_DIALOG_ITEM);
-				// For a consistent UI, make sure the selector is checked as well. NOT mandatory from
-				// a functional point of view, just consistent
-				if (! (v instanceof RadioButton) ) {
-					RadioButton btn = item.getSelector(v);
-					if (btn != null) {
-						btn.setChecked(true);
-						btn.invalidate();
-					}
-				}
-				//
-				// It would be nice to have the other radio buttons reflect the new state before it
-				// disappears, but not really worth the effort. Esp. since the code below does not work...
-				// and the dialog disappears too fast to make this worthwhile.
-				//
-				//LinearLayout list = (LinearLayout)root.findViewById(R.id.list);
-				//for(int i = 0; i < list.getChildCount(); i++) {
-				//	View child = list.getChildAt(i);
-				//	SimpleDialogItem other = (SimpleDialogItem)ViewTagger.getTag(child, R.id.TAG_DIALOG_ITEM);
-				//	RadioButton btn = other.getSelector(child);
-				//	btn.setSelected(other == item);
-				//	btn.invalidate();
-				//}
-				dialog.dismiss();
-				handler.onClick(item);				
-			}};		
+		OnClickListener listener = v -> {
+            SimpleDialogItem item = ViewTagger.getTag(v, R.id.TAG_DIALOG_ITEM);
+            // For a consistent UI, make sure the selector is checked as well. NOT mandatory from
+            // a functional point of view, just consistent
+            if (! (v instanceof RadioButton) ) {
+                assert item != null;
+                RadioButton btn = item.getSelector(v);
+                if (btn != null) {
+                    btn.setChecked(true);
+                    btn.invalidate();
+                }
+            }
+
+            dialog.dismiss();
+            handler.onClick(item);
+        };
 
 		// Add the items to the dialog
-		LinearLayout list = (LinearLayout)root.findViewById(R.id.list);
+		LinearLayout list = root.findViewById(R.id.list);
 		for(SimpleDialogItem item: items) {
 			View v = item.getView(inflater);
 			v.setBackgroundResource(android.R.drawable.list_selector_background);
@@ -347,7 +287,7 @@ public class StandardDialogs {
 	 * Wrapper class to present a list of files for selection
 	 */
 	public static void selectFileDialog(LayoutInflater inflater, String title, ArrayList<File> files, final SimpleDialogOnClickListener handler) {
-		ArrayList<SimpleDialogItem> items = new ArrayList<SimpleDialogItem>();
+		ArrayList<SimpleDialogItem> items = new ArrayList<>();
 		for(File file: files) {
 			items.add(new SimpleDialogFileItem(file));
 		}
@@ -358,8 +298,8 @@ public class StandardDialogs {
 	 * Wrapper class to present a list of arbitrary objects for selection; it uses
 	 * the toString() method to display a simple list.
 	 */
-	public static <T extends Object> void selectStringDialog(LayoutInflater inflater, String title, ArrayList<T> objects, String current, final SimpleDialogOnClickListener handler) {
-		ArrayList<SimpleDialogItem> items = new ArrayList<SimpleDialogItem>();
+	public static <T> void selectStringDialog(LayoutInflater inflater, String title, ArrayList<T> objects, String current, final SimpleDialogOnClickListener handler) {
+		ArrayList<SimpleDialogItem> items = new ArrayList<>();
 		SimpleDialogItem selectedItem = null;
 		for(T o: objects) {
 			SimpleDialogObjectItem item = new SimpleDialogObjectItem(o);
@@ -395,16 +335,16 @@ public class StandardDialogs {
 			// Create the view
 			View v = inflater.inflate(R.layout.file_list_item, null);
 			// Set the file name
-			TextView name = (TextView) v.findViewById(R.id.name);
+			TextView name = v.findViewById(R.id.name);
 			name.setText(mFile.getName());
 			// Set the path
-			TextView location = (TextView) v.findViewById(R.id.path);
+			TextView location = v.findViewById(R.id.path);
 			location.setText(mFile.getParent());
 			// Set the size
-			TextView size = (TextView) v.findViewById(R.id.size);
+			TextView size = v.findViewById(R.id.size);
 			size.setText(Utils.formatFileSize(mFile.length()));
 			// Set the last modified date
-			TextView update = (TextView) v.findViewById(R.id.updated);
+			TextView update = v.findViewById(R.id.updated);
 			update.setText(Utils.toPrettyDateTime(new Date(mFile.lastModified())));
 			// Return it
 			return v;
@@ -432,20 +372,21 @@ public class StandardDialogs {
 			// Create the view
 			View v = inflater.inflate(R.layout.string_list_item, null);
 			// Set the name
-			TextView name = (TextView) v.findViewById(R.id.name);
+			TextView name = v.findViewById(R.id.name);
 			name.setText(mObject.toString());
 			// Return it
 			return v;
 		}
 		
 		public RadioButton getSelector(View v) {
-			return (RadioButton) v.findViewById(R.id.selector);
+			return v.findViewById(R.id.selector);
 		}
 
 		/**
 		 * Get the underlying object as a string
 		 */
-		@Override
+		@NonNull
+        @Override
 		public String toString() {
 			return mObject.toString();
 		}
@@ -468,7 +409,7 @@ public class StandardDialogs {
 		@Override
 		public View getView(LayoutInflater inflater) {
 			View v = super.getView(inflater);
-			TextView name = (TextView) v.findViewById(R.id.name);
+			TextView name = v.findViewById(R.id.name);
 			name.setCompoundDrawablesWithIntrinsicBounds(mDrawableId, 0, 0, 0);
 			getSelector(v).setVisibility(View.GONE);
 			return v;

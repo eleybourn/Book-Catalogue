@@ -11,24 +11,24 @@
         android:orientation="vertical" >
 
         <AutoCompleteTextView
-            android:id="@+id/author"
+            android:id="@+id/field_author"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:completionThreshold="2"
-            android:hint="@string/author"
-            style="@style/personalNameTextEntry"
+            android:hint="@string/label_author"
+            style="@style/locale_field_text_name"
             android:padding="10dp"
             android:textAppearance="?android:attr/textAppearanceLarge"
             />
 
         <EditText
-            android:id="@+id/title"
+            android:id="@+id/field_title"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="@string/title"
-            style="@style/bookOrSeriesTitleTextEntry"
+            android:hint="@string/label_title"
+            style="@style/locale_field_text_title"
             android:padding="10dp"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 

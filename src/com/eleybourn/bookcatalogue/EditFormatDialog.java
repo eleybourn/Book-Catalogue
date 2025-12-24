@@ -56,7 +56,7 @@ public class EditFormatDialog {
 		}
 		nameView.setAdapter(mAdapter);
 
-		Button saveButton = (Button) dialog.findViewById(R.id.confirm);
+		Button saveButton = (Button) dialog.findViewById(R.id.button_confirm);
 		saveButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -70,7 +70,7 @@ public class EditFormatDialog {
 				dialog.dismiss();
 			}
 		});
-		Button cancelButton = (Button) dialog.findViewById(R.id.cancel);
+		Button cancelButton = (Button) dialog.findViewById(R.id.button_cancel);
 		cancelButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {

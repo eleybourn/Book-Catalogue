@@ -88,7 +88,7 @@ import com.eleybourn.bookcatalogue.utils.ViewTagger;
 public class BooksMultitypeListHandler implements MultitypeListHandler {
 	
 	/** Queue for tasks getting extra row details as necessary */
-	private static SimpleTaskQueue mInfoQueue = new SimpleTaskQueue("extra-info", 1);
+	private static final SimpleTaskQueue mInfoQueue = new SimpleTaskQueue("extra-info", 1);
 
 	/**
 	 * Return the row type for the current cursor position.
@@ -117,8 +117,6 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 	 * Return a 'Holder' object for the row pointed to by rowView.
 	 * 
 	 * @param rowView	Points to the current row in the cursor.
-	 *
-	 * @return
 	 */
 	private BooklistHolder newHolder(BooklistRowView rowView) {
 		final int k = rowView.getKind();
@@ -188,13 +186,11 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 
 	/**
 	 * Return the *absolute* position of the passed view in the list of books.
-	 * 
-	 * @param v
-	 * @return
 	 */
 	public int getAbsolutePosition(View v) {
-		BooklistHolder h = (BooklistHolder)ViewTagger.getTag(v, R.id.TAG_HOLDER);
-		return h.absolutePosition;		
+		BooklistHolder h = ViewTagger.getTag(v, R.id.TAG_HOLDER);
+        assert h != null;
+        return h.absolutePosition;
 	}
 
 	/**
@@ -215,7 +211,7 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 		 * 
 		 * @return	Layout ID
 		 */
-		public static final int getDefaultLayoutId(final int level) {
+		public static int getDefaultLayoutId(final int level) {
 			int id;
 			switch(level) {
 			case 1:
@@ -239,7 +235,7 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 		 * @param level				Level of this item (we never hide level 1 items).
 		 */
 		public void setText(TextView view, String s, int emptyStringId, int level) {
-			if (s == null || s.equals("")) {
+			if (s == null || s.isEmpty()) {
 				if (level > 1 && rowInfo != null) {
 						rowInfo.setVisibility(View.GONE);
 						return;
@@ -251,9 +247,9 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 				view.setText(s);
 			}			
 		}
-	};
+	}
 
-	/**
+    /**
 	 * Holder for a BOOK row.
 	 * 
 	 * @author Philip Warner
@@ -289,13 +285,13 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 				scale = 0.8f;
 
 			// Find the various views we use.
-			title = (TextView) v.findViewById(R.id.title);
-			cover = (ImageView) v.findViewById(R.id.cover);
-			seriesNum = (TextView) v.findViewById(R.id.series_num);
-			seriesNumLong = (TextView) v.findViewById(R.id.series_num_long);				
+			title = v.findViewById(R.id.field_title);
+			cover = v.findViewById(R.id.cover);
+			seriesNum = v.findViewById(R.id.series_num);
+			seriesNumLong = v.findViewById(R.id.series_num_long);
 
 			final int iconSize = (int)(title.getTextSize() * scale);
-			read = (ImageView) v.findViewById(R.id.read);
+			read = v.findViewById(R.id.read);
 			LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT, iconSize ); 
 			read.setMaxHeight(iconSize);
 			read.setMaxWidth(iconSize);
@@ -328,33 +324,35 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 			} else
 				cover.setVisibility(View.GONE);
 
-			shelves = (TextView) v.findViewById(R.id.shelves);
+			shelves = v.findViewById(R.id.shelves);
 			if ( (extras & BooklistStyle.EXTRAS_BOOKSHELVES) != 0) {
 				shelves.setVisibility(View.VISIBLE);
 			} else {
 				shelves.setVisibility(View.GONE);
 			}
 
-			author = (TextView) v.findViewById(R.id.author);
+			author = v.findViewById(R.id.field_author);
 			if ( (extras & BooklistStyle.EXTRAS_AUTHOR) != 0 ) {
 				author.setVisibility(View.VISIBLE);
 			} else {
 				author.setVisibility(View.GONE);
 			}
 
-			location = (TextView) v.findViewById(R.id.location);
+			location = v.findViewById(R.id.location);
 			if ( (extras & BooklistStyle.EXTRAS_LOCATION) != 0) {
 				location.setVisibility(View.VISIBLE);
 			} else {
 				location.setVisibility(View.GONE);
 			}
 
-			publisher = (TextView) v.findViewById(R.id.publisher);
-			if ( (extras & BooklistStyle.EXTRAS_PUBLISHER) != 0 ) {
-				publisher.setVisibility(View.VISIBLE);
-			} else {
-				publisher.setVisibility(View.GONE);
-			}
+			publisher = v.findViewById(R.id.field_publisher);
+            if (publisher != null) {
+                if ((extras & BooklistStyle.EXTRAS_PUBLISHER) != 0) {
+                    publisher.setVisibility(View.VISIBLE);
+                } else {
+                    publisher.setVisibility(View.GONE);
+                }
+            }
 
 			// The default is to indent all views based on the level, but with book covers on
 			// the far left, it looks better if we 'outdent' one step.
@@ -376,7 +374,7 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 			if (rowView.hasSeries()) {
 				final String seriesNumber = rowView.getSeriesNumber();
 				final String seriesName = rowView.getSeriesName();
-				if (seriesName == null || seriesName.equals("")) {
+				if (seriesName == null || seriesName.isEmpty()) {
 					// Hide it.
 					seriesNum.setVisibility(View.GONE);
 					seriesNumLong.setVisibility(View.GONE);
@@ -478,7 +476,7 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 		/** Flag indicating we want finished() to be called */
 		private boolean mWantFinished = true;
 		/** Flags indicating which extras to get */
-		private int mFlags;
+		private final int mFlags;
 
 		/**
 		 * Constructor.
@@ -511,64 +509,58 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 				// Get a DB connection and find the book.
 				CatalogueDBAdapter dba = taskContext.getDb(); //new CatalogueDBAdapter(BookCatalogueApp.context);
 				//dba.open();
-				BooksCursor c = dba.fetchBookById(mBookId);
-				try {
-					// If we have a book, use it. Otherwise we are done.
-					if (c.moveToFirst()) {
+                try (BooksCursor c = dba.fetchBookById(mBookId)) {
+                    // If we have a book, use it. Otherwise we are done.
+                    if (c.moveToFirst()) {
 
-						if ( (mFlags & BooklistStyle.EXTRAS_AUTHOR) != 0) {
-							if (mAuthorCol < 0)
-								mAuthorCol = c.getColumnIndex(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);
-							//if (mLocationRes == null)
-							//	mLocationRes = BookCatalogueApp.getResourceString(R.string.location);
+                        if ((mFlags & BooklistStyle.EXTRAS_AUTHOR) != 0) {
+                            if (mAuthorCol < 0)
+                                mAuthorCol = c.getColumnIndex(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);
+                            //if (mLocationRes == null)
+                            //	mLocationRes = BookCatalogueApp.getResourceString(R.string.location);
 
-							mAuthor = c.getString(mAuthorCol);							
-						}
+                            mAuthor = c.getString(mAuthorCol);
+                        }
 
-						if ( (mFlags & BooklistStyle.EXTRAS_LOCATION) != 0) {
-							if (mLocationCol < 0)
-								mLocationCol = c.getColumnIndex(CatalogueDBAdapter.KEY_LOCATION);
-							if (mLocationRes == null)
-								mLocationRes = BookCatalogueApp.getResourceString(R.string.location);
+                        if ((mFlags & BooklistStyle.EXTRAS_LOCATION) != 0) {
+                            if (mLocationCol < 0)
+                                mLocationCol = c.getColumnIndex(CatalogueDBAdapter.KEY_LOCATION);
+                            if (mLocationRes == null)
+                                mLocationRes = BookCatalogueApp.getResourceString(R.string.location);
 
-							mLocation = mLocationRes + ": " + c.getString(mLocationCol);							
-						}
+                            mLocation = mLocationRes + ": " + c.getString(mLocationCol);
+                        }
 
-						if ( (mFlags & BooklistStyle.EXTRAS_PUBLISHER) != 0) {
-							if (mPublisherCol < 0)
-								mPublisherCol = c.getColumnIndex(CatalogueDBAdapter.KEY_PUBLISHER);
-							if (mPublisherRes == null)
-								mPublisherRes = BookCatalogueApp.getResourceString(R.string.publisher);
+                        if ((mFlags & BooklistStyle.EXTRAS_PUBLISHER) != 0) {
+                            if (mPublisherCol < 0)
+                                mPublisherCol = c.getColumnIndex(CatalogueDBAdapter.KEY_PUBLISHER);
+                            if (mPublisherRes == null)
+                                mPublisherRes = BookCatalogueApp.getResourceString(R.string.label_publisher);
 
-							mPublisher = mPublisherRes + ": " + c.getString(mPublisherCol);							
-						}
+                            mPublisher = mPublisherRes + ": " + c.getString(mPublisherCol);
+                        }
 
-						if ( (mFlags & BooklistStyle.EXTRAS_BOOKSHELVES) != 0) {
-							// Now build a list of all bookshelves the book is on.
-							mShelves = "";
-							Cursor sc = dba.getAllBookBookshelvesForGoodreadsCursor(mBookId);
-							try {
-								if (sc.moveToFirst()) {
-									do {
-										if (mShelves != null && !mShelves.equals(""))
-											mShelves += ", ";
-										mShelves += sc.getString(0);
-									} while (sc.moveToNext());						
-								}
-							} finally {
-								sc.close();
-							}
-							mShelves = BookCatalogueApp.getResourceString(R.string.shelves) + ": " + mShelves;							
-						}
-					} else {
-						// No data, no need for UI thread call.
-						mWantFinished = false;
-					}
-				} finally {
-					c.close();
-					//dba.close();
-				}
-			} finally {
+                        if ((mFlags & BooklistStyle.EXTRAS_BOOKSHELVES) != 0) {
+                            // Now build a list of all bookshelves the book is on.
+                            mShelves = "";
+                            try (Cursor sc = dba.getAllBookBookshelvesForGoodreadsCursor(mBookId)) {
+                                if (sc.moveToFirst()) {
+                                    do {
+                                        if (mShelves != null && !mShelves.isEmpty())
+                                            mShelves += ", ";
+                                        mShelves += sc.getString(0);
+                                    } while (sc.moveToNext());
+                                }
+                            }
+                            mShelves = BookCatalogueApp.getResourceString(R.string.shelves) + ": " + mShelves;
+                        }
+                    } else {
+                        // No data, no need for UI thread call.
+                        mWantFinished = false;
+                    }
+                }
+                //dba.close();
+            } finally {
 				taskContext.setRequiresFinish(mWantFinished);
 			}
 		}
@@ -577,24 +569,21 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 		 */
 		@Override
 		public void onFinish(Exception e) {
-			try {
-				synchronized(mHolder) {
-					if (mHolder.extrasTask != this) {
-						return;
-					}
+            synchronized(mHolder) {
+                if (mHolder.extrasTask != this) {
+                    return;
+                }
 
-					if ( (mFlags & BooklistStyle.EXTRAS_BOOKSHELVES) != 0)
-						mHolder.shelves.setText(mShelves);
-					if ( (mFlags & BooklistStyle.EXTRAS_AUTHOR) != 0)
-						mHolder.author.setText(mAuthor);
-					if ( (mFlags & BooklistStyle.EXTRAS_LOCATION) != 0)
-						mHolder.location.setText(mLocation);
-					if ( (mFlags & BooklistStyle.EXTRAS_PUBLISHER) != 0)
-						mHolder.publisher.setText(mPublisher);
-				}
-			} finally {
-			}
-		}
+                if ( (mFlags & BooklistStyle.EXTRAS_BOOKSHELVES) != 0)
+                    mHolder.shelves.setText(mShelves);
+                if ( (mFlags & BooklistStyle.EXTRAS_AUTHOR) != 0)
+                    mHolder.author.setText(mAuthor);
+                if ( (mFlags & BooklistStyle.EXTRAS_LOCATION) != 0)
+                    mHolder.location.setText(mLocation);
+                if ( (mFlags & BooklistStyle.EXTRAS_PUBLISHER) != 0)
+                    mHolder.publisher.setText(mPublisher);
+            }
+        }
 
 	}
 
@@ -811,7 +800,7 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 	/**
 	 * Utility routine to add an item to a ContextMenu object.
 	 * 
-	 * @param menu		Parent menu
+	 * @param items		Parent menu
 	 * @param id		unique item ID
 	 * @param stringId	string ID of string to display
 	 * @param iconId	icon of menu item
@@ -824,8 +813,6 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 
 	/**
 	 * Utility routine to add 'standard' menu options based on row type.
-	 *  @param v				View that was clicked
-	 * @param menuInfo		menuInfo object from Adapter (not really needed since we have holders and cursor)
      * @param mDb
      * @param rowView        Row view pointing to current row for this context menu
      * @param menu            Base menu item
@@ -995,7 +982,7 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 	 * @param rowView	Row view for affected cursor row
 	 * @param context	Calling Activity
 	 * @param dba		Database helper
-	 * @param item		Related MenuItem
+	 * @param itemId		Related MenuItem
 	 * 
 	 * @return			True, if handled.
 	 */

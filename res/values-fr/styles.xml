@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="personalNameTextEntry" parent="@style/localeBasedTextEntry">
+    <style name="locale_field_text_name" parent="@style/locale_field_text">
         <item name="android:inputType">textCapWords</item>
     </style>
     
-    <style name="bookOrSeriesTitleTextEntry" parent="@style/localeBasedTextEntry">
+    <style name="locale_field_text_title" parent="@style/locale_field_text">
         <item name="android:inputType">text</item>
     </style>
 
-    <style name="languageTextEntry" parent="@style/localeBasedTextEntry">
+    <style name="locale_field_text_language" parent="@style/locale_field_text">
         <item name="android:inputType">textCapWords</item>
     </style>
 

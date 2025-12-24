@@ -202,7 +202,7 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 			try {
 				mPrefs = getSharedPreferences("bookCatalogue", MODE_PRIVATE);
 				sort = mPrefs.getInt(STATE_SORT, sort);
-				bookshelf = mPrefs.getString(BooksOnBookshelf.PREF_BOOKSHELF, bookshelf);
+				bookshelf = mPrefs.getString(Library.PREF_BOOKSHELF, bookshelf);
 				loadCurrentGroup();
 			} catch (Exception e) {
 				Logger.logError(e);
@@ -287,7 +287,7 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 				bookshelf = new_bookshelf;
 				// save the current bookshelf into the preferences
 				SharedPreferences.Editor ed = mPrefs.edit();
-				ed.putString(BooksOnBookshelf.PREF_BOOKSHELF, bookshelf);
+				ed.putString(Library.PREF_BOOKSHELF, bookshelf);
 				ed.commit();
 				fillData();
 			}
@@ -1658,7 +1658,7 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 		try {
 			mPrefs = getSharedPreferences("bookCatalogue", MODE_PRIVATE);
 			sort = mPrefs.getInt(STATE_SORT, sort);
-			bookshelf = mPrefs.getString(BooksOnBookshelf.PREF_BOOKSHELF, bookshelf);
+			bookshelf = mPrefs.getString(Library.PREF_BOOKSHELF, bookshelf);
 			loadCurrentGroup();
 		} catch (Exception e) {
 			Logger.logError(e);
@@ -1674,7 +1674,7 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 		saveCurrentGroup();
 		SharedPreferences.Editor ed = mPrefs.edit();
 		ed.putInt(STATE_SORT, sort);
-		ed.putString(BooksOnBookshelf.PREF_BOOKSHELF, bookshelf);
+		ed.putString(Library.PREF_BOOKSHELF, bookshelf);
 		ed.commit();
 		saveCurrentGroup();
 		super.onPause();

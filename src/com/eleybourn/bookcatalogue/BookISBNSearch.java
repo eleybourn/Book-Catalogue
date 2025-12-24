@@ -39,8 +39,6 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.debug.Tracker;
-import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment;
-import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment.OnMessageDialogResultListener;
 import com.eleybourn.bookcatalogue.scanner.Scanner;
 import com.eleybourn.bookcatalogue.scanner.ScannerManager;
 import com.eleybourn.bookcatalogue.utils.AsinUtils;
@@ -196,13 +194,13 @@ public class BookISBNSearch extends ActivityWithTasks
 				//System.out.println(mId + " OnCreate got ISBN");
 				//ISBN has been passed by another component
 				setContentView(R.layout.isbn_search);
-				mIsbnText = (EditText) findViewById(R.id.isbn);
+				mIsbnText = (EditText) findViewById(R.id.field_isbn);
 				mIsbnText.setText(mIsbn);
 				go(mIsbn, "", "");
 			} else if (by.equals("isbn")) {
 				// System.out.println(mId + " OnCreate BY ISBN");
 				setContentView(R.layout.isbn_search);
-				mIsbnText = (EditText) findViewById(R.id.isbn);
+				mIsbnText = (EditText) findViewById(R.id.field_isbn);
 				mConfirmButton = (Button) findViewById(R.id.search);
 
 				// Not sure this is a great idea; we CAN diable keypad for this item completely.
@@ -285,7 +283,7 @@ public class BookISBNSearch extends ActivityWithTasks
 
 				this.initAuthorList();
 
-				mTitleText = (EditText) findViewById(R.id.title);
+				mTitleText = (EditText) findViewById(R.id.field_title);
 				mConfirmButton = (Button) findViewById(R.id.search);
 
 				mConfirmButton.setOnClickListener(new View.OnClickListener() {
@@ -324,7 +322,7 @@ public class BookISBNSearch extends ActivityWithTasks
 				// Use the scanner to get ISBNs
 				mMode = MODE_SCAN;
 				setContentView(R.layout.isbn_scan);
-				mIsbnText = (EditText) findViewById(R.id.isbn);
+				mIsbnText = (EditText) findViewById(R.id.field_isbn);
 
 				/**
 				 * Use the preferred barcode scanner to search for a isbn
@@ -516,7 +514,7 @@ public class BookISBNSearch extends ActivityWithTasks
 						AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(R.string.duplicate_book_message).create();
 						alertDialog.setTitle(R.string.duplicate_book_title);
 						alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-						alertDialog.setButton2(this.getResources().getString(R.string.add), new DialogInterface.OnClickListener() {
+						alertDialog.setButton2(this.getResources().getString(R.string.label_add), new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
 								doSearchBook();
 								return;
@@ -527,7 +525,7 @@ public class BookISBNSearch extends ActivityWithTasks
 								BookEdit.editBook(BookISBNSearch.this, existingId, BookEdit.TAB_EDIT);
 							}
 						});
-						alertDialog.setButton(this.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+						alertDialog.setButton(this.getResources().getString(R.string.button_cancel), new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
 								//do nothing
 								if (mMode == MODE_SCAN) {
@@ -745,7 +743,7 @@ public class BookISBNSearch extends ActivityWithTasks
 
 	private void initAuthorList() {
 		// Get the author field, if present
-		mAuthorText = (AutoCompleteTextView) findViewById(R.id.author);
+		mAuthorText = (AutoCompleteTextView) findViewById(R.id.field_author);
 		if (mAuthorText != null) {
 			// Get all known authors and build a hash of the names
 			final ArrayList<String> authors = mDbHelper.getAllAuthors();

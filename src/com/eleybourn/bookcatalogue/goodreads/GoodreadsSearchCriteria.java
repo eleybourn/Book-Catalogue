@@ -20,7 +20,6 @@
 
 package com.eleybourn.bookcatalogue.goodreads;
 
-import android.Manifest.permission;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -33,7 +32,6 @@ import com.eleybourn.bookcatalogue.BooksRowView;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
-import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Activity to handle searching goodreads for books that did not automatically convert. These
@@ -88,17 +86,17 @@ public class GoodreadsSearchCriteria extends BookCatalogueActivity {
 				}
 				{
 					String s = book.getPrimaryAuthorName();
-					setViewText(R.id.author, s);
+					setViewText(R.id.field_author, s);
 					criteria += s + " ";
 				}
 				{
 					String s = book.getTitle();
-					setViewText(R.id.title, s);
+					setViewText(R.id.field_title, s);
 					criteria += s + " ";
 				}
 				{
 					String s = book.getIsbn();
-					setViewText(R.id.isbn, s);
+					setViewText(R.id.field_isbn, s);
 					criteria += s + " ";
 				}
 			} finally {

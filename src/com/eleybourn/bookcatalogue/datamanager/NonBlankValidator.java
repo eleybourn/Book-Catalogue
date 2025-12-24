@@ -40,9 +40,7 @@ public class NonBlankValidator implements DataValidator {
 
 		try {
 			String v = data.getString(datum).trim();
-			if (v.length() > 0) {
-				return;
-			} else {
+			if (v.isEmpty()) {
 				throw new ValidatorException(R.string.vldt_nonblank_required, new Object[]{datum.getKey()});
 			}
 		} catch (Exception e) {

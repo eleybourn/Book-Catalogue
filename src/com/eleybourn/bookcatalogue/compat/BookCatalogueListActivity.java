@@ -14,10 +14,8 @@ import com.eleybourn.bookcatalogue.R;
 /**
  * Class introduced to reduce the future pain when we remove sherlock (once we no longer 
  * support Android 2.x), and potentially to make it easier to support two versions.
- * 
  * This activity inherits from SherlockListActivity; there is no matching class in the
  * compatibility library.
- * 
  * It is very tempting to take the code from 'ListActivity' and base this class off of
  * BookCatalogueActivity, but currently there is little value in doing go.
  *
@@ -103,7 +101,7 @@ public abstract class BookCatalogueListActivity extends AppCompatActivity { //} 
 		}
 	}
 
-	private DataSetObserver myListWatcher = new DataSetObserver() {
+	private final DataSetObserver myListWatcher = new DataSetObserver() {
 		@Override
 		public void onChanged() {
 			super.onChanged();

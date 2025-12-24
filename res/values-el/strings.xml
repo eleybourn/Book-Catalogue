@@ -5,25 +5,25 @@
     <string name="system_app_name">Book Catalogue</string>
     <string name="label_insert">Προσθήκη Βιβλίου</string>
     <string name="menu_delete">Διαγραφή Βιβλίου</string>
-    <string name="author">Συγγραφέας</string>
-    <string name="title">Τίτλος</string>
-    <string name="isbn">ISBN</string>
-    <string name="publisher">Εκδότης</string>
-    <string name="date_published">Ημερομηνία έκδοσης</string>
+    <string name="label_author">Συγγραφέας</string>
+    <string name="label_title">Τίτλος</string>
+    <string name="label_isbn">ISBN</string>
+    <string name="label_publisher">Εκδότης</string>
+    <string name="label_date_published">Ημερομηνία έκδοσης</string>
     <string name="rating">Βαθμολογία</string>
     <string name="bookshelf">Ράφι</string>
     <string name="read">Έχετε διαβάσει αυτό το βιβλίο;</string>
-    <string name="series">Σειρές</string>
-    <string name="pages">Σελίδες</string>
-    <string name="confirm_add">Προσθήκη Βιβλίου</string>
+    <string name="label_series">Σειρές</string>
+    <string name="label_pages">Σελίδες</string>
+    <string name="button_confirm_add">Προσθήκη Βιβλίου</string>
     <string name="confirm_update">Ενημέρωση</string>
-    <string name="nobooks">Δεν υπάρχουν βιβλία σε αυτό το ράφι. Παρακαλούμε προσθέστε μερικά με το μενού στο κάτω μέρος της οθόνης.</string>
+    <string name="para_no_books">Δεν υπάρχουν βιβλία σε αυτό το ράφι. Παρακαλούμε προσθέστε μερικά με το μενού στο κάτω μέρος της οθόνης.</string>
     <string name="menu_sort_by_author_expanded">Επέκταση Όλων</string>
     <string name="menu_sort_by">Ταξινόμηση κατα</string>
     <string name="menu_sort_by_author_collapsed">Απόκρυψη Όλων</string>
     <string name="label_search">Αναζήτηση</string>
-    <string name="cancel">Ακύρωση</string>
-    <string name="confirm_save">Αποθήκευση</string>
+    <string name="button_cancel">Ακύρωση</string>
+    <string name="button_confirm_save">Αποθήκευση</string>
     <string name="info_no_bookshelves">Δεν έχετε δημιουργήσει ακόμα ράφια. Παρακαλούμε προσθέστε μερικά με το μενού στο κάτω μέρος της οθόνης.</string>
     <string name="menu_insert_bs">Δημιουργία Ραφιού</string>
     <string name="confirm_add_bs">Προσθήκη Ραφιού</string>
@@ -40,7 +40,7 @@
     <string name="search_label">Αναζήτηση για βιβλία</string>
     <string name="search_hint">Αναζήτηση συγγραφέα ή τίτλου</string>
     <string name="book_not_found">Το βιβλίο που σαρώθηκε δεν βρέθηκε. Κάποιες φορές το σωστό barcode βρίσκεται στο εσωτερικό του εξωφύλλου. Αλλιώς εισάγετε τις λεπτομέρειες χειροκίνητα.</string>
-    <string name="series_num">#</string>
+    <string name="label_series_num">#</string>
     <string name="import_data">Εισαγωγή Βιβλιων</string>
     <string name="import_alert">Προσοχή. Η εισαγωγή δεδομένων μπορεί να ενημερώσει υπάρχοντα βιβλία με νέες πληροφορίες εαν η στήλη uuid δεν είναι παρούσα και το id στο αρχείο εισαγωγής είναι το ίδιο με κάποιο υπάρχον id. Αυτό είναι εντάξει εαν έχει αλλαχτεί κάποιο πεδίο σε ένα εξαγμένο αρχείο. Εαν δημιουργήσατε μια νεα βιβλιογραφική εγγραφή ή εαν εισάγετε τα βιβλία κάποιου άλλου, σιγουρευτείτε ότι το πεδίο uuid είναι παρόν ή το πεδίο id είναι κενό.</string>
     <string name="import_failed_is_location_correct">ΣΦΑΛΜΑ: Εισαγωγή δεδομένων (από SDCard) απέτυχε. Βρίσκεται το αρχείο στη σωστή τοποθεσία;</string>
@@ -56,7 +56,7 @@
     <string name="edit_book">Επεξεργασία βιβλίου</string>
     <string name="edit_book_notes">Τα σχόλια μου</string>
     <string name="edit_book_friends">Δανεισμός βιβλίου</string>
-    <string name="notes">Σημειώσεις</string>
+    <string name="label_notes">Σημειώσεις</string>
     <string name="loaned_to">Αυτο το βιβλία έχει δανειστεί στον/στην:</string>
     <string name="nobody">Κανείς</string>
     <string name="loan_to">Δανεισμός βιβλίου στον/στην:</string>
@@ -78,7 +78,7 @@
     <string name="sortby_loan">Ταξινόμηση κατά Δανεισμένα</string>
     <string name="sortby_unread">Ταξινόμηση κατά Αδιάβαστα</string>
     <string name="sortby_genre">Ταξινόμηση κατά Είδος</string>
-    <string name="list_price">List Price</string>
+    <string name="label_list_price">List Price</string>
     <string name="label_update_fields">Αυτόματη ενημέρωση πεδίων</string>
     <string name="select_fields_to_update">Επιλεγξτε πεδία για ενημέρωση</string>
     <string name="select_fields_to_update_help">Τα επιλεγμένα πεδία θα ενημερωθούν από το διαδίκτυο. Τα μη επιλεγμένα θα μείνουν ως έχει.</string>
@@ -92,11 +92,11 @@
     <string name="label_help">Βοήθεια</string>
     <string name="label_manage_fields">Διαχείρηση ορατότητας πεδίου</string>
     <string name="manage_fields_help">Τα επιλεγμένα πεδία είναι ορατά στις οθόνες προσθήκης/επεξεργασίας βιβλίου. Τα μη επιλεγμένα πεδία είναι κρυφά.</string>
-    <string name="edit_book_anthology">Τίτλοι Ανθολογιών</string>
+    <string name="label_anthology">Τίτλοι Ανθολογιών</string>
     <string name="label_amazon_wishlist">Amazon Wishlist</string>
     <string name="same_author">Όλες οι ιστορίες σε αυτήν την ανθολογία είναι γραμμένες από τον ίδιο συγγραφέα.</string>
     <string name="menu_delete_anthology">Διαγραφή τίτλου από Ανθολογία</string>
-    <string name="is_anthology">Είναι αυτό το βιβλίο ανθολογία;</string>
+    <string name="label_is_anthology">Είναι αυτό το βιβλίο ανθολογία;</string>
     <string name="populate_anthology_titles">Αυτόματη συμπλήρωση τίτλων (ΠΕΙΡΑΜΑΤΙΚΟ)</string>
     <string name="automatic_population_failed">Η αυτόματη συμπλήρωση τίτλων απέτυχε</string>
     <string name="anthology">Ανθολογία</string>
@@ -121,15 +121,15 @@
     <string name="searching_google_books">Αναζήτηση στο Google Books</string>
     <string name="searching_library_thing">Αναζήτηση στο LibraryThing</string>
     <string name="select_bookshelves">Επιλέξτε ράφια</string>
-    <string name="format">Μορφή</string>
+    <string name="label_format">Μορφή</string>
     <string name="format1">Μαλακό εξώφυλλο</string>
     <string name="format2">Σκληρό εξώφυλλο</string>
     <string name="format3">eBook</string>
     <string name="format4">Audiobook</string>
     <string name="format5">Οδηγός</string>
     <!-- NOTE: Adding a new format will involve changing code that references this list -->
-    <string name="description">Περιγραφή</string>
-    <string name="genre">Είδος</string>
+    <string name="label_description">Περιγραφή</string>
+    <string name="label_genre">Είδος</string>
     <string name="not_set">Μη ορισμένο</string>
     <string name="menu_search">Αναζήτηση βιβλίων</string>
     <string name="isbn_name_search_help">Η προσθήκη βιβλίων με ISBN είναι πολύ πιο ακριβής από την προσθήκη με συγγραφέα και τίτλο και γενικά είναι η προτεινομενη μέθοδος. Παρακαλούμε να θυμάστε ότι μερικές φορές το σωστό barcode βρίσκεται στην εσωτερική πλευρά του εξωφύλλου. \n\n</string>
@@ -149,15 +149,15 @@
     <string name="file_must_contain_any_column">Το αρχείο πρέπει να περιέχει στήλη με ένα από τα ακόλουθα όνοματα: %s</string>
     <string name="column_is_blank">Η στήλη %1$s είναι κενή στη σειρά %2$s</string>
     <string name="columns_are_blank">Οι στήλες %1$s είναι όλες κενές στη σειρά %2$d</string>
-    <string name="save">Αποθήκευση</string>
-    <string name="add">Προσθήκη</string>
-    <string name="noauthors">Δεν υπάρχουν συγγραφείς για αυτό το Βιβλίο. Μπορείτε να προσθέσετε εσείς χρησιμοποιώντας το πεδίο κειμένο και το κουμπί στη ανω πλευρά της οθόνης.Please add some using the text area and button at the top of this screen.</string>
-    <string name="noseries">>Δεν υπάρχουν σειρές για αυτό το Βιβλίο. Μπορείτε να προσθέσετε εσείς χρησιμοποιώντας το πεδίο κειμένο και το κουμπί στη ανω πλευρά της οθόνης.</string>
+    <string name="button_save">Αποθήκευση</string>
+    <string name="label_add">Προσθήκη</string>
+    <string name="para_no_authors">Δεν υπάρχουν συγγραφείς για αυτό το Βιβλίο. Μπορείτε να προσθέσετε εσείς χρησιμοποιώντας το πεδίο κειμένο και το κουμπί στη ανω πλευρά της οθόνης.Please add some using the text area and button at the top of this screen.</string>
+    <string name="para_no_series">>Δεν υπάρχουν σειρές για αυτό το Βιβλίο. Μπορείτε να προσθέσετε εσείς χρησιμοποιώντας το πεδίο κειμένο και το κουμπί στη ανω πλευρά της οθόνης.</string>
     <string name="cover_not_set">Το εξώφυλλο δεν έχει οριστεί</string>
     <string name="cover_corrupt">Το εξώφυλλο είναι κατεστραμμένο</string>
     <string name="cover_detail">Λεπτομέρειες εξωφύλλου</string>
     <string name="select_picture">Επιλογή εικόνας</string>
-    <string name="set_authors">Ορισμός συγγραφέων&#8230;</string>
+    <string name="label_set_authors">Ορισμός συγγραφέων&#8230;</string>
     <string name="and_others">κτλ.</string>
     <string name="set_series">Ορισμός σειρών&#8230;</string>
     <string name="author_already_in_list">Ο συγγραφέας βρίσκεται ήδη στη λίστα</string>
@@ -169,10 +169,10 @@
     <string name="num_books_searched">%s Βιβλία αναζητήθηκαν</string>
     <string name="cancelled_info">Ακυρώθηκαν - %s</string>
     <string name="edit_book_series">Επεξεργασία σειράς βιβλίων</string>
-    <string name="family_name">Επώνυμο</string>
-    <string name="given_names">Ονόματα</string>
+    <string name="label_family_name">Επώνυμο</string>
+    <string name="label_given_names">Ονόματα</string>
     <string name="edit_author_details">Επεξεργασία λεπτομερειών συγγραφέα</string>
-    <string name="immediate_global_changes">ΣΗΜΕΙΩΣΗ: Όλες οι αποθηκευμένες αλλαγές εφαρμόζονται στιγμιαία και παντού</string>
+    <string name="para_immediate_global_changes">ΣΗΜΕΙΩΣΗ: Όλες οι αποθηκευμένες αλλαγές εφαρμόζονται στιγμιαία και παντού</string>
     <string name="menu_replace_thumb">Αντικατάσταση Μικρογραφίας&#8230;</string>
     <string name="author_required">Τουλάχιστον ένας συγγραφέας πρέπει να έχει καθοριστεί</string>
     <string name="title_required">Ένας μη κενός τίτλος πρέπει να έχει καθοριστεί</string>
@@ -298,7 +298,7 @@
     <string name="please_enter_search_criteria">Παρακαλούμε εισάγετε τα κριτήρια αναζήτησης</string>
     <string name="error_while_searching">Σφάλμα κατά την αναζήτηση.</string>
     <string name="send_all_to_goodreads_result">%1$s βιβλία επεξεργάστηκαν: %2$s αποστάλθηκαν επιτυχώς, %3$s χωρίς ISBN και %4$s με ISBN αλλά δεν βρέθηκαν στο goodreads</string>
-    <string name="x_of_y">%1$s από %2$s</string>
+    <string name="x_of_y">%1$d από %2$d</string>
     <string name="send_book_to_goodreads">Αποστολή βιβλίου %1$s στο goodreads</string>
 
     <string name="label_erase_cover_cache">Διαγραφή εξωφύλλων από προσωρινή μνήμη</string>
@@ -334,7 +334,7 @@
     <string name="label_booklist_preferences">Προτιμήσεις λίστας βιβλίων</string>
     <string name="extra_book_details">Επιπλέον λεπτομέρειες βιβλίου</string>
     <string name="general">Γενικά</string>
-    <string name="bookshelves">Ράφια Βιβλιοθήκης</string>
+    <string name="label_bookshelves">Ράφια Βιβλιοθήκης</string>
     <string name="shelves">Ράφια</string>
     <string name="location">Τοποθεσία</string>
     <string name="label_data_import_export">Εισαγωγή/Εξαγωγή Δεδομένων</string>
@@ -626,9 +626,9 @@
     </string>
 
     <!-- This is the heading of the 'Details' tab when editing a book. It needs to be short. "Book Details" is too long. -->
-    <string name="details">Λεπτομ.</string>
+    <string name="label_details">Λεπτομ.</string>
     <!-- This is the heading of the 'Loan' tab when editing a book. It needs to be short. "Loan Book" is too long. -->
-    <string name="loan">Δανεισ.</string>
+    <string name="label_loan">Δανεισ.</string>
 
     <!-- Hint displayed when an export or database backup is done -->
 
@@ -740,7 +740,7 @@
     <!-- Begin: Added/Updated in 5.0.4 -->
 
     <!-- Short Heading for 'Language' field in book details -->
-    <string name="language">Γλώσσα</string>
+    <string name="label_language">Γλώσσα</string>
     <string name="new_in_504">
 		<![CDATA[
 			<p><b>New in 5.0.4</b>\n\n

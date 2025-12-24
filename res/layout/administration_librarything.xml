@@ -53,14 +53,14 @@
             android:singleLine="true" />
 
         <Button
-            android:id="@+id/confirm"
+            android:id="@+id/button_confirm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:gravity="center"
             android:paddingLeft="60dp"
             android:paddingRight="60dp"
-            android:text="@string/save" />
+            android:text="@string/button_save" />
 
         <TextView
             android:layout_width="fill_parent"

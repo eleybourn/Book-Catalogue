@@ -39,6 +39,7 @@ import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment.OnMessageDialog
 import com.eleybourn.bookcatalogue.utils.HintManager;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
+import com.google.android.material.appbar.MaterialToolbar;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -81,10 +82,13 @@ public class MainAdministration extends ActivityWithTasks
 		registerBackupImportPickerLauncher();
 		try {
 			super.onCreate(savedInstanceState);
-			setTitle(R.string.administration_label);
 			mDbHelper = new CatalogueDBAdapter(this);
 			mDbHelper.open();
 			setContentView(R.layout.main_administration);
+            MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
+            topAppBar.setTitle(R.string.administration_label);
+            topAppBar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+
 			Bundle extras = getIntent().getExtras();
 			if (extras != null && extras.containsKey(DO_AUTO)) {
 				try {
@@ -146,7 +150,7 @@ public class MainAdministration extends ActivityWithTasks
 							(dialog, which) -> launchCsvImportPicker());
 					alertDialog.setButton(
 							AlertDialog.BUTTON_NEGATIVE,
-							MainAdministration.this.getResources().getString(R.string.cancel),
+							MainAdministration.this.getResources().getString(R.string.button_cancel),
 							(dialog, which) -> {
 								//do nothing
 							});
@@ -351,7 +355,7 @@ public class MainAdministration extends ActivityWithTasks
 				});
 		alertDialog.setButton(
 				DialogInterface.BUTTON_POSITIVE,
-				getResources().getString(R.string.cancel),
+				getResources().getString(R.string.button_cancel),
 				(dialog, which) -> {
 					//do nothing
 					dialog.dismiss();

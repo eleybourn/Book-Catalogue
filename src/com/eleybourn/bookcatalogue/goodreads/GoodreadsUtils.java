@@ -229,7 +229,7 @@ public class GoodreadsUtils {
 							}
 						});
 		
-						alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+						alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, context.getResources().getString(R.string.button_cancel), new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
 								alertDialog.dismiss();
 							}

@@ -7,34 +7,34 @@
     android:paddingLeft="@dimen/p_md" >
 
     <AutoCompleteTextView
-        android:id="@+id/series"
+        android:id="@+id/field_series"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:completionThreshold="2"
-        android:hint="@string/series"
-        style="@style/bookOrSeriesTitleTextEntry"
+        android:hint="@string/label_series"
+        style="@style/locale_field_text_title"
         android:paddingLeft="@dimen/p_md" />
 
     <LinearLayout
         android:id="@+id/bottom_buttons"
         android:layout_width="fill_parent"
         android:layout_height="60sp"
-        android:layout_below="@+id/series"
+        android:layout_below="@+id/field_series"
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/cancel"
+            android:id="@+id/button_cancel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/cancel" />
+            android:text="@string/button_cancel" />
 
         <Button
-            android:id="@+id/confirm"
+            android:id="@+id/button_confirm"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/save" />
+            android:text="@string/button_save" />
     </LinearLayout>
 
 </RelativeLayout>

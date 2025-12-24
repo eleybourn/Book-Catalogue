@@ -28,11 +28,11 @@ package com.eleybourn.bookcatalogue.datamanager;
  */
 public class ValidatorException extends RuntimeException {
 	// Java likes this
-	public static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 	// String ID of resource string
-	private int mStringId;
+	private final int mStringId;
 	// Args to pass to format function
-	private Object[] mArgs;
+	private final Object[] mArgs;
 	// Constructor
 	public ValidatorException(int stringId, Object[] args) {
 		mStringId = stringId;

@@ -31,7 +31,7 @@
                     android:id="@+id/yearLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
                     android:text="@string/year"
                     android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -81,7 +81,7 @@
                     android:id="@+id/monthLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
                     android:text="@string/month"
                     android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -127,7 +127,7 @@
                     android:id="@+id/dayLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
                     android:text="@string/day"
                     android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -173,12 +173,12 @@
             android:paddingTop="10dp" >
 
             <Button
-                android:id="@+id/cancel"
+                android:id="@+id/button_cancel"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/cancel" />
+                android:text="@string/button_cancel" />
 
             <Button
                 android:id="@+id/ok"

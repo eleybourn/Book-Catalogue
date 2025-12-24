@@ -120,19 +120,19 @@ public class UpdateFromInternet extends ActivityWithTasks {
 	 * to each field checkbox
 	 */
 	public void setupFields() {
-		addIfVisible(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, CatalogueDBAdapter.KEY_AUTHOR_ID, R.string.author, Usages.ADD_EXTRA, true);
-		addIfVisible(CatalogueDBAdapter.KEY_TITLE, null, R.string.title, Usages.COPY_IF_BLANK, false);
-		addIfVisible(CatalogueDBAdapter.KEY_ISBN, null, R.string.isbn, Usages.COPY_IF_BLANK, false);
+		addIfVisible(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, CatalogueDBAdapter.KEY_AUTHOR_ID, R.string.label_author, Usages.ADD_EXTRA, true);
+		addIfVisible(CatalogueDBAdapter.KEY_TITLE, null, R.string.label_title, Usages.COPY_IF_BLANK, false);
+		addIfVisible(CatalogueDBAdapter.KEY_ISBN, null, R.string.label_isbn, Usages.COPY_IF_BLANK, false);
 		addIfVisible(CatalogueDBAdapter.KEY_THUMBNAIL, null, R.string.thumbnail, Usages.COPY_IF_BLANK, false);
-		addIfVisible(CatalogueDBAdapter.KEY_SERIES_ARRAY, CatalogueDBAdapter.KEY_SERIES_NAME, R.string.series, Usages.ADD_EXTRA, true);
-		addIfVisible(CatalogueDBAdapter.KEY_PUBLISHER, null, R.string.publisher, Usages.COPY_IF_BLANK, false);
-		addIfVisible(CatalogueDBAdapter.KEY_DATE_PUBLISHED, null, R.string.date_published, Usages.COPY_IF_BLANK, false);
-		addIfVisible(CatalogueDBAdapter.KEY_PAGES, null, R.string.pages, Usages.COPY_IF_BLANK, false);
-		addIfVisible(CatalogueDBAdapter.KEY_LIST_PRICE, null, R.string.list_price, Usages.COPY_IF_BLANK, false);
-		addIfVisible(CatalogueDBAdapter.KEY_FORMAT, null, R.string.format, Usages.COPY_IF_BLANK, false);
-		addIfVisible(CatalogueDBAdapter.KEY_DESCRIPTION, null, R.string.description, Usages.COPY_IF_BLANK, false);
-		addIfVisible(CatalogueDBAdapter.KEY_GENRE, null, R.string.genre, Usages.COPY_IF_BLANK, false);
-		addIfVisible(DatabaseDefinitions.DOM_LANGUAGE.name, null, R.string.language, Usages.COPY_IF_BLANK, false);
+		addIfVisible(CatalogueDBAdapter.KEY_SERIES_ARRAY, CatalogueDBAdapter.KEY_SERIES_NAME, R.string.label_series, Usages.ADD_EXTRA, true);
+		addIfVisible(CatalogueDBAdapter.KEY_PUBLISHER, null, R.string.label_publisher, Usages.COPY_IF_BLANK, false);
+		addIfVisible(CatalogueDBAdapter.KEY_DATE_PUBLISHED, null, R.string.label_date_published, Usages.COPY_IF_BLANK, false);
+		addIfVisible(CatalogueDBAdapter.KEY_PAGES, null, R.string.label_pages, Usages.COPY_IF_BLANK, false);
+		addIfVisible(CatalogueDBAdapter.KEY_LIST_PRICE, null, R.string.label_list_price, Usages.COPY_IF_BLANK, false);
+		addIfVisible(CatalogueDBAdapter.KEY_FORMAT, null, R.string.label_format, Usages.COPY_IF_BLANK, false);
+		addIfVisible(CatalogueDBAdapter.KEY_DESCRIPTION, null, R.string.label_description, Usages.COPY_IF_BLANK, false);
+		addIfVisible(CatalogueDBAdapter.KEY_GENRE, null, R.string.label_genre, Usages.COPY_IF_BLANK, false);
+		addIfVisible(DatabaseDefinitions.DOM_LANGUAGE.name, null, R.string.label_language, Usages.COPY_IF_BLANK, false);
 
 		// Display the list of fields
 		LinearLayout parent = (LinearLayout) findViewById(R.id.manage_fields_scrollview);
@@ -214,7 +214,7 @@ public class UpdateFromInternet extends ActivityWithTasks {
 			parent.addView(ll);			
 		}
 
-		Button confirmBtn = (Button) findViewById(R.id.confirm);
+		Button confirmBtn = (Button) findViewById(R.id.button_confirm);
 		confirmBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -243,7 +243,7 @@ public class UpdateFromInternet extends ActivityWithTasks {
 							return;
 						}
 					}); 
-					alertDialog.setButton2(UpdateFromInternet.this.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+					alertDialog.setButton2(UpdateFromInternet.this.getResources().getString(R.string.button_cancel), new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
 							//do nothing
 							return;
@@ -264,7 +264,7 @@ public class UpdateFromInternet extends ActivityWithTasks {
 			}
 		});
 
-		Button cancelBtn = (Button) findViewById(R.id.cancel);
+		Button cancelBtn = (Button) findViewById(R.id.button_cancel);
 		cancelBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {

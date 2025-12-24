@@ -5,24 +5,24 @@
     <string name="system_app_name">Book Catalogue</string>
     <string name="label_insert">Добавить книгу</string>
     <string name="menu_delete">Удалить книгу</string>
-    <string name="author">Автор</string>
-    <string name="title">Название</string>
-    <string name="publisher">Издатель</string>
-    <string name="date_published">Дата издания</string>
+    <string name="label_author">Автор</string>
+    <string name="label_title">Название</string>
+    <string name="label_publisher">Издатель</string>
+    <string name="label_date_published">Дата издания</string>
     <string name="rating">Оценка</string>
     <string name="bookshelf">Книжная полка</string>
     <string name="read">Вы прочитали эту книгу?</string>
-    <string name="series">Серия</string>
-    <string name="pages">Страницы</string>
-    <string name="confirm_add">Добавить книгу</string>
+    <string name="label_series">Серия</string>
+    <string name="label_pages">Страницы</string>
+    <string name="button_confirm_add">Добавить книгу</string>
     <string name="confirm_update">Обновить</string>
-    <string name="nobooks">На этой полке нет книг. Пожалуйста, добавьте книги, используя меню в нижней части этого экрана.</string>
+    <string name="para_no_books">На этой полке нет книг. Пожалуйста, добавьте книги, используя меню в нижней части этого экрана.</string>
     <string name="menu_sort_by_author_expanded">Развернуть всё</string>
     <string name="menu_sort_by">Отсортировать по</string>
     <string name="menu_sort_by_author_collapsed">Свернуть всё</string>
     <string name="label_search">Поиск</string>
-    <string name="cancel">Отмена</string>
-    <string name="confirm_save">Сохранить книгу</string>
+    <string name="button_cancel">Отмена</string>
+    <string name="button_confirm_save">Сохранить книгу</string>
     <string name="info_no_bookshelves">Вы не создали ни одной полки. Пожалуйста, добавьте полку, используя меню в нижней части этого экрана.</string>
     <string name="menu_insert_bs">Создать полку</string>
     <string name="confirm_add_bs">Добавить полку</string>
@@ -39,7 +39,7 @@
     <string name="search_label">Поиск книг</string>
     <string name="search_hint">Поиск автора или названия</string>
     <string name="book_not_found">Не найдена книга, соответствующая отсканированному штрих-коду. Возможно правильный штрих-код находится внутри книги. Иначе, пожалуйста, введите детализированную информацию о книге вручную.</string>
-    <string name="series_num">№</string>
+    <string name="label_series_num">№</string>
     <string name="import_data">Импортировать книги</string>
     <string name="import_alert">Предупреждение. Импорт данных может заменить существующие записи книг обновлённой информацией, в случае, если номер в файле совпадает с существующим номером. Обычно это то, что требуется, если вы обновляете поле в файле экспорта. Если вы добавляете запись новой книге, убедитесь, что поле id не заполнено.</string>
     <string name="search_title">Книжный каталог: результаты поиска</string>
@@ -54,7 +54,7 @@
     <string name="edit_book">Редактировать книгу</string>
     <string name="edit_book_notes">Комментарии</string>
     <string name="edit_book_friends">Одолжить книгу</string>
-    <string name="notes">Заметки</string>
+    <string name="label_notes">Заметки</string>
     <string name="loaned_to">Книга дана вдолг:</string>
     <string name="nobody">Никто</string>
     <string name="loan_to">Одолжить книгу:</string>
@@ -76,7 +76,7 @@
     <string name="sortby_loan">Отсортировать по одолженным</string>
     <string name="sortby_unread">Отсортировать по непрочитанным</string>
     <string name="sortby_genre">Отсортировать по жанру</string>
-    <string name="list_price">Список цен</string>
+    <string name="label_list_price">Список цен</string>
     <string name="label_update_fields">Автоматическое обновление полей</string>
     <string name="select_fields_to_update">Выберите поля для обновления</string>
     <string name="select_fields_to_update_help">Выбранные поля будут обновлены через интернет. Остальные останутся неизменными.</string>
@@ -90,11 +90,11 @@
     <string name="label_help">Помощь</string>
     <string name="label_manage_fields">Видимость полей</string>
     <string name="manage_fields_help">Выбранные поля видны на экранах добавления/редактирования книги. Невыбранные поля скрыты.</string>
-    <string name="edit_book_anthology">Названия антологий</string>
+    <string name="label_anthology">Названия антологий</string>
     <string name="label_amazon_wishlist">Amazon Wishlist</string>
     <string name="same_author">Все рассказы этой антологии написаны одним автором</string>
     <string name="menu_delete_anthology">Удалить название антологии</string>
-    <string name="is_anthology">Эта книга - антология?</string>
+    <string name="label_is_anthology">Эта книга - антология?</string>
     <string name="populate_anthology_titles">Автоматически заполнить названия (ЭКСПЕРИМЕНТАЛЬНО)</string>
     <string name="automatic_population_failed">Автоматическое заполнение названий не удалось</string>
     <string name="anthology">Антология</string>
@@ -119,15 +119,15 @@
     <string name="searching_google_books">Поиск в Google Books</string>
     <string name="searching_library_thing">Поиск в LibraryThing</string>
     <string name="select_bookshelves">Выбор полок</string>
-    <string name="format">Формат</string>
+    <string name="label_format">Формат</string>
     <string name="format1">Мягкий переплет</string>
     <string name="format2">Твёрдый переплёт</string>
     <string name="format3">Электронная книга</string>
     <string name="format4">Аудиокнига</string>
     <string name="format5">Руководство / Справочник</string>
     <!-- NOTE: Adding a new format will involve changing code that references this list -->
-    <string name="description">Описание</string>
-    <string name="genre">Жанр</string>
+    <string name="label_description">Описание</string>
+    <string name="label_genre">Жанр</string>
     <string name="not_set">Не установлено</string>
     <string name="menu_search">Искать книги</string>
     <string name="isbn_name_search_help">Добавление книг по ISBN гораздо более точное, чем добавление по автору и названию и в большинстве случаев является предпочтительным. Имейте в виду, что иногда правильный штрих-код находится внутри книги. \n\n</string>
@@ -147,16 +147,16 @@
     <string name="file_must_contain_any_column">Файл должен содержать столбец с одним из следующих имён: %s</string>
     <string name="column_is_blank">Столбец %1$s в строке %2$s пуст</string>
     <string name="columns_are_blank">В строке %2$d столбцы %1$s пусты</string>
-    <string name="save">Сохранить</string>
-    <string name="add">Добавить</string>
-    <string name="noauthors">Не указаны авторы книги. Пожалуйста, добавьте автора(ов), используя текстовую область и кнопку в верхней части этого экрана.</string>
-    <string name="noseries">Не указана серия книги. Вы можете добавить серию используя текстовую область в верхней части этого экрана.</string>
+    <string name="button_save">Сохранить</string>
+    <string name="label_add">Добавить</string>
+    <string name="para_no_authors">Не указаны авторы книги. Пожалуйста, добавьте автора(ов), используя текстовую область и кнопку в верхней части этого экрана.</string>
+    <string name="para_no_series">Не указана серия книги. Вы можете добавить серию используя текстовую область в верхней части этого экрана.</string>
 
     <string name="cover_not_set">Обложка не установлена</string>
     <string name="cover_corrupt">Обложка испорчена</string>
     <string name="cover_detail">Детальная информация об обложке</string>
     <string name="select_picture">Выбор картинки</string>
-    <string name="set_authors">Установка авторов&#8230;</string>
+    <string name="label_set_authors">Установка авторов&#8230;</string>
     <string name="and_others">и др.</string>
     <string name="set_series">Установка серии&#8230;</string>
     <string name="author_already_in_list">Автор уже есть в списке</string>
@@ -168,10 +168,10 @@
     <string name="num_books_searched">%s книг искалось</string>
     <string name="cancelled_info">Отменено - %s</string>
     <string name="edit_book_series">Редактировать серию книги</string>
-    <string name="family_name">Фамилия</string>
-    <string name="given_names">Имя</string>
+    <string name="label_family_name">Фамилия</string>
+    <string name="label_given_names">Имя</string>
     <string name="edit_author_details">Редактировать информацию об авторе</string>
-    <string name="immediate_global_changes">ЗАМЕЧАНИЕ: Все сохраняемые изменения применяются немедленно</string>
+    <string name="para_immediate_global_changes">ЗАМЕЧАНИЕ: Все сохраняемые изменения применяются немедленно</string>
     <string name="menu_replace_thumb">Заменить миниатюру&#8230;</string>
     <string name="author_required">Должен быть указан хотя бы один автор</string>
     <string name="title_required">Должно быть указано название</string>
@@ -297,7 +297,7 @@
     <string name="please_enter_search_criteria">Пожалуйста, введите параметры поиска</string>
     <string name="error_while_searching">Ошибка во время поиска</string>
     <string name="send_all_to_goodreads_result">%1$s книг обработано: %2$s отправлено успешно, %3$s без ISBN и %4$s с ISBN но не найдено в Goodreads</string>
-    <string name="x_of_y">%1$s из %2$s</string>
+    <string name="x_of_y">%1$d из %2$d</string>
     <string name="send_book_to_goodreads">Отправить книгу %1$s на Goodreads</string>
 
     <item name="NOTIFICATION" type="id"></item>
@@ -351,7 +351,7 @@
     <string name="label_booklist_preferences">Список книг</string>
     <string name="extra_book_details">Дополнительная информация</string>
     <string name="general">Основные</string>
-    <string name="bookshelves">Книжные полки</string>
+    <string name="label_bookshelves">Книжные полки</string>
     <string name="shelves">Полки</string>
     <string name="location">Местоположение</string>
     <string name="label_data_import_export">Импорт/Экспорт данных</string>
@@ -633,8 +633,8 @@
 	    Это окно с информацией о книге без возможности редактирования; вы можете потянуть экран вправо или влево,
 	    чтобы перейти на другие книги. Чтобы отредактировать книгу воспользутесь кнопкой меню
 	</string>
-	<string name="details">Детали</string>
-	<string name="loan">Долг</string>
+	<string name="label_details">Детали</string>
+	<string name="label_loan">Долг</string>
     <string name="forget_credentials">Убрать credentials</string>
     <string name="goodreads_auth_blurb_part4">Похоже, что Вы уже авторизовали приложение. Если Вы хотите удалить
     credentials с этого телефона, то воспользуйтесь кнопкой ниже. В этом случае не забудьте деавторизировать приложение на сайте Goodreads.
@@ -675,7 +675,7 @@
 		]]>
     </string>
 	
-    <string name="language">Язык</string>
+    <string name="label_language">Язык</string>
     <string name="new_in_504">
 		<![CDATA[
 			<p><b>Новое в версии 5.0.4</b>\n\n

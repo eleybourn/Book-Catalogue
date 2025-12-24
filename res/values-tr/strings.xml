@@ -5,24 +5,24 @@
     <string name="system_app_name">Book Catalogue</string>
     <string name="label_insert">Kitap ekle</string>
     <string name="menu_delete">Kitap sil</string>
-    <string name="author">Yazar</string>
-    <string name="title">Kitap adı</string>
-    <string name="publisher">Yayınevi</string>
-    <string name="date_published">Yayımlandığı Tarih</string>
+    <string name="label_author">Yazar</string>
+    <string name="label_title">Kitap adı</string>
+    <string name="label_publisher">Yayınevi</string>
+    <string name="label_date_published">Yayımlandığı Tarih</string>
     <string name="rating">Değerlendirme</string>
     <string name="bookshelf">Kitaplık</string>
     <string name="read">Bu kitabı okudunuz mu?</string>
-    <string name="series">Dizi</string>
-    <string name="pages">Sayfa</string>
-    <string name="confirm_add">Kitap ekle</string>
+    <string name="label_series">Dizi</string>
+    <string name="label_pages">Sayfa</string>
+    <string name="button_confirm_add">Kitap ekle</string>
     <string name="confirm_update">Güncelle</string>
-    <string name="nobooks">Bu kitaplıkta hiç kitap yok. Lütfen ekranın alt kısmındaki bölümü kullanarak kitap ekleyin.</string>
+    <string name="para_no_books">Bu kitaplıkta hiç kitap yok. Lütfen ekranın alt kısmındaki bölümü kullanarak kitap ekleyin.</string>
     <string name="menu_sort_by_author_expanded">Hepsini göster</string>
     <string name="menu_sort_by">Sırala</string>
     <string name="menu_sort_by_author_collapsed">Hepsini gizle</string>
     <string name="label_search">Ara</string>
-    <string name="cancel">Vazgeç</string>
-    <string name="confirm_save">Kitabı kaydet</string>    
+    <string name="button_cancel">Vazgeç</string>
+    <string name="button_confirm_save">Kitabı kaydet</string>
     <string name="info_no_bookshelves">Henüz hiçbir kitaplık oluşturmadınız. Ekranın alt kısmındaki bölümü kullanarak yeni kitaplık oluşturun.</string>
     <string name="menu_insert_bs">Kitaplık oluştur</string>
     <string name="confirm_add_bs">Kitaplık ekle</string>
@@ -38,7 +38,7 @@
     <string name="search_label">Kitap ara</string>
     <string name="search_hint">Yazar veya kitap adı ara</string>
     <string name="book_not_found">Aranan kitap bulunamadı. Bazen doğru barkodu kitap kapağının içinde bulabilirsiniz. Bulamazsanız, bilgileri elle giriniz.</string>
-    <string name="series_num">#</string>
+    <string name="label_series_num">#</string>
     <string name="import_data">Kitapları içe aktar</string>
     <string name="import_alert">Uyarı: Bilgileri içe aktarırken eğer içe aktardığınız dosyaların ID numarası var olan bir kitabın ID\'si ile aynı ise, varolan kitap verilerinin üstüne yazılmasına neden olabilir. Eğer dışa aktarılmış bir dosyada bir giriyi değiştirdiyseniz bu sorun değildir; ancak yeni bir kitap girişi oluşturuyorsanız ID bölümünün boş olduğundan emin olun.</string>
     <string name="import_failed_is_location_correct">Hata: SD karttan içe aktarma başarısız oldu. Dosyalar yerli yerinde mi acaba?</string>
@@ -54,7 +54,7 @@
     <string name="edit_book">Kitap düzenle</string>
     <string name="edit_book_notes">Yorumlarınız</string>
     <string name="edit_book_friends">Kitabı ödünç ver</string>
-    <string name="notes">Notlar</string>
+    <string name="label_notes">Notlar</string>
     <string name="loaned_to">Kitabın ödünç verildiği kişi:</string>
     <string name="nobody">Hiç kimse</string>
     <string name="loan_to">Şuna ödünç ver:</string>
@@ -76,7 +76,7 @@
     <string name="sortby_loan">Ödünç verilene göre sırala</string>
     <string name="sortby_unread">Okunmamışlara göre sırala</string>
     <string name="sortby_genre">Türe göre sırala</string>
-    <string name="list_price">Fiyatı</string>
+    <string name="label_list_price">Fiyatı</string>
     <string name="label_update_fields">Alanları kendiliğinden doldur</string>
     <string name="select_fields_to_update">Güncellenecek alanları seçin</string>		
     <string name="select_fields_to_update_help">Seçilen alanlar İnternet\'ten güncellenecektir. Seçilmeyen alanlar değiştirilmeden kalacaktır.</string>
@@ -90,11 +90,11 @@
     <string name="label_help">Yardım</string>
     <string name="label_manage_fields">Alan görünürlüğünü yönet</string>
     <string name="manage_fields_help">Seçili alanlar kitap ekle/düzenle ekranlarında görünecektir. Seçilmeyen alanlar gizli kalacaktır.</string>
-    <string name="edit_book_anthology">Seçmeler</string>
+    <string name="label_anthology">Seçmeler</string>
     <string name="label_amazon_wishlist">Amazon Wishlist</string>
     <string name="same_author">Bu seçkideki tüm anlatılar aynı yazar tarafından yazılmıştır</string>
     <string name="menu_delete_anthology">Seçkiden eser sil</string>
-    <string name="is_anthology">Bu kitap bir seçkide var mı?</string>
+    <string name="label_is_anthology">Bu kitap bir seçkide var mı?</string>
     <string name="populate_anthology_titles">Kitap adlarını kendiliğinden doldur (DENEYSEL ÖZELLİK)</string>
     <string name="automatic_population_failed">Kitap adlarının kendiliğinden doldurulması başarısız oldu</string>
     <string name="anthology">Seçmeler</string>
@@ -117,15 +117,15 @@
     <string name="backup_title">Yedekle</string>
     <string name="searching_google_books">Google Kitaplar aranıyor</string>
     <string name="searching_library_thing">LibraryThing aranıyor</string>
-    <string name="format">Biçim</string>
+    <string name="label_format">Biçim</string>
     <string name="format1">Ciltsiz</string>
     <string name="format2">Ciltli</string>
     <string name="format3">e-Kitap</string>
     <string name="format4">Sesli kitap</string>
     <string name="format5">Kılavuz/Yoldaş</string>
     <!-- NOTE: Adding a new format will involve changing code that references this list -->
-    <string name="description">Özet</string>
-    <string name="genre">Tür</string>
+    <string name="label_description">Özet</string>
+    <string name="label_genre">Tür</string>
     <string name="not_set">Ayarlı değil</string>
     <string name="menu_search">Kitap ara</string>
     <string name="isbn_name_search_help">Kitapları ISBN ile eklemek kitap adı veya yazar adı ile eklemekten çok daha doğru sonuç verir ve genelde yeğlenir. Unutmayın ki doğru barkodu ön kapağın iç kısmında da bulabilirsiniz\n\n</string>
@@ -145,10 +145,10 @@
     <string name="file_must_contain_any_column">Dosya, %s adlarından birini kullanan bir sütun içermeli</string>
     <string name="column_is_blank">Sütun %1$s %2$s numaralı satırda boş</string>
     <string name="columns_are_blank">%1$s sütunlarının hepsi %2$d satırında boş</string>
-    <string name="save">Kaydet</string>
-    <string name="add">Ekle</string>
-    <string name="noauthors">Bu kitap için hiçbir yazar eklenmemiş. Ekranın üst kısmındaki metin alanı ve düğmeyi kullanarak yazar ekleyin.</string>
-    <string name="noseries">Bu kitap için hiçbir seri eklenmemiş.  Ekranın üst kısmındaki metin alanı ve düğmeyi kullanarak seri ekleyin.</string>
+    <string name="button_save">Kaydet</string>
+    <string name="label_add">Ekle</string>
+    <string name="para_no_authors">Bu kitap için hiçbir yazar eklenmemiş. Ekranın üst kısmındaki metin alanı ve düğmeyi kullanarak yazar ekleyin.</string>
+    <string name="para_no_series">Bu kitap için hiçbir seri eklenmemiş.  Ekranın üst kısmındaki metin alanı ve düğmeyi kullanarak seri ekleyin.</string>
 
     <item name="TAG_POSITION" type="id"></item>
 
@@ -156,7 +156,7 @@
     <string name="cover_corrupt">Kapak hasarlı</string>
     <string name="cover_detail">Kapak ayrıntısı</string>
     <string name="select_picture">Resim seç</string>
-    <string name="set_authors">Yazar ekle&#8230;</string>
+    <string name="label_set_authors">Yazar ekle&#8230;</string>
     <string name="and_others">ve diğerleri</string>
     <string name="set_series">Seri ekle&#8230;</string>
     <string name="author_already_in_list">Yazar zaten ekli</string>
@@ -168,10 +168,10 @@
     <string name="num_books_searched">%s kitap arandı</string>
     <string name="cancelled_info">İptal edildi - %s</string>
     <string name="edit_book_series">Kitap serisi düzenle</string>
-    <string name="family_name">Soyadı</string>
-    <string name="given_names">Adı</string>
+    <string name="label_family_name">Soyadı</string>
+    <string name="label_given_names">Adı</string>
     <string name="edit_author_details">Yazar ayrıntılarını düzenle</string>
-    <string name="immediate_global_changes">Not: Tüm kaydedilmiş değişiklikler anında ve genel olarak uygulanır</string>
+    <string name="para_immediate_global_changes">Not: Tüm kaydedilmiş değişiklikler anında ve genel olarak uygulanır</string>
     <string name="menu_replace_thumb">Küçük resmi değiştir&#8230;</string>
     <string name="author_required">En azından bir yazar belirtilmeli</string>
     <string name="title_required">Boş olmayan bir kitap adı kesinlikle belirtilmeli</string>
@@ -306,7 +306,7 @@
     <string name="please_enter_search_criteria">Lütfen arama kriteri girin</string>
     <string name="error_while_searching">Arama sırasında hata</string>
     <string name="send_all_to_goodreads_result">%1$s kitap işlendi: %2$s tanesi başarıyla gönderildi, %3$s tanesinin ISBN\'si yok ve %4$s tanesinin ISBN\'si Goodreads\'te bulunamadı</string>
-    <string name="x_of_y">%1$s (Toplam %2$s)</string>
+    <string name="x_of_y">%1$d (Toplam %2$d)</string>
     <string name="send_book_to_goodreads">Bu kitabı Goodreads\'e gönder: %1$s</string>
 
     <item name="NOTIFICATION" type="id"></item>
@@ -359,7 +359,7 @@
     <string name="label_booklist_preferences">Kitap dizelgesi yeğlenenleri</string>
     <string name="extra_book_details">Ek kitap ayarları</string>
     <string name="general">Genel</string>
-    <string name="bookshelves">Kitap rafları</string>
+    <string name="label_bookshelves">Kitap rafları</string>
     <string name="shelves">Raflar</string>
     <string name="location">Konum</string>
     <string name="label_data_import_export">Veri içe/dışa aktarma</string>
@@ -646,9 +646,9 @@
 </string>
 
     <!-- This is the heading of the 'Details' tab when editing a book. It needs to be short. "Book Details" is too long. -->
-    <string name="details">Ayrıntılar</string>
+    <string name="label_details">Ayrıntılar</string>
     <!-- This is the heading of the 'Loan' tab when editing a book. It needs to be short. "Loan Book" is too long. -->
-    <string name="loan">Ödünç ver</string>
+    <string name="label_loan">Ödünç ver</string>
 
     <!-- Hint displayed when an export or database backup is done -->
 
@@ -759,7 +759,7 @@
     <!-- Begin: Added/Updated in 5.0.4 -->
     
     <!-- Short Heading for 'Language' field in book details -->
-    <string name="language">Dil</string>
+    <string name="label_language">Dil</string>
     <string name="new_in_504">
 		<![CDATA[
 			<p><b>5.0.4 sürümündeki yenilikler</b>\n\n

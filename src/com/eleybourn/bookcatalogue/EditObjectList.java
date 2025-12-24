@@ -22,6 +22,7 @@ package com.eleybourn.bookcatalogue;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import android.content.Context;
 import android.content.Intent;
@@ -36,45 +37,48 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.eleybourn.bookcatalogue.compat.BookCatalogueListActivity;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 import com.eleybourn.bookcatalogue.utils.ViewTagger;
 import com.eleybourn.bookcatalogue.widgets.TouchListView;
+import com.google.android.material.appbar.MaterialToolbar;
 
 /**
  * Base class for editing a list of objects. The inheritor must specify a view id
  * and a row view id to the constructor of this class. Each view can have the
  * following sub-view IDs present which will be automatically handled. Optional
  * IDs are noted:
- * 
+
  * Main View:
  * 	- cancel
  *  - confirm
  *  - add (OPTIONAL)
- *  
+
  * Row View (must have layout ID set to android:id="@+id/row"):
  *  - position (OPTIONAL)
  *  - up (OPTIONAL)
  *  - down (OPTIONAL)
  *  - delete (OPTIONAL)
- * 
+
  * The row view is tagged using TAG_POSITION, defined in strings.xml, to save the rows position for
  * use when moving the row up/down or deleting it.
- *
- * Abstract methods are defined for specific tasks (Add, Save, Load etc). While would 
+
+ * Abstract methods are defined for specific tasks (Add, Save, Load etc). While would
  * be tempting to add local implementations the java generic model seems to prevent this.
- * 
+
  * This Activity uses TouchListView from CommonsWare which is in turn based on Android code
- * for TouchIntercptor which was (reputedly) removed in Android 2.2. 
- * 
+ * for TouchInterceptor which was (reputedly) removed in Android 2.2.
+
  * For this code to work, the  main view must contain:
  * - a TouchListView with id = @+id/android:list
  * - the TouchListView must have the following attributes:
  * 		tlv:grabber="@+id/<SOME ID FOR AN IMAGE>" (eg. "@+id/grabber")
  *		tlv:remove_mode="none"
- *		tlv:normal_height="64dip" ---- or some simlar value
- * 
+ *		tlv:normal_height="64dip" ---- or some similar value
+
  * Each row view must have:
  * - an ID of @+id/row
  * - an ImageView with an ID of "@+id/<SOME ID FOR AN IMAGE>" (eg. "@+id/grabber")
@@ -99,11 +103,11 @@ abstract public class EditObjectList<T extends Serializable> extends BookCatalog
 	protected String mBookTitleLabel;
 
 	// The key to use in the Bundle to get the array
-	private String mKey;
+	private final String mKey;
 	// The resource ID for the base view
-	private int mBaseViewId;
+	private final int mBaseViewId;
 	// The resource ID for the row view
-	private int mRowViewId;
+	private final int mRowViewId;
 
 	// Row ID... mainly used (if list is from a book) to know if book is new.
 	protected Long mRowId = null;
@@ -112,8 +116,6 @@ abstract public class EditObjectList<T extends Serializable> extends BookCatalog
 	 * Called when user clicks the 'Add' button (if present).
 	 * 
 	 * @param v		The view that was clicked ('add' button).
-	 * 
-	 * @return		True if activity should exit, false to abort exit.
 	 */
 	abstract protected void onAdd(View v);
 
@@ -136,36 +138,34 @@ abstract public class EditObjectList<T extends Serializable> extends BookCatalog
 	/**
 	 * Called when user clicks the 'Save' button (if present). Primary task is
 	 * to return a boolean indicating it is OK to continue.
+     * Can be overridden to perform other checks.
 	 * 
-	 * Can be overridden to perform other checks.
-	 * 
-	 * @param i		A newly created Intent to store output if necessary.
+	 * @param intent		A newly created Intent to store output if necessary.
 	 * 
 	 * @return		True if activity should exit, false to abort exit.
 	 */
-	protected boolean onSave(Intent intent) { return true; };
- 
-	/**
+	protected boolean onSave(Intent intent) { return true; }
+
+    /**
 	 * Called when user presses 'Cancel' button if present. Primary task is
 	 * return a boolean indicating it is OK to continue.
-	 * 
 	 * Can be overridden to perform other checks.
 	 * 
 	 * @return		True if activity should exit, false to abort exit.
 	 */
-	protected boolean onCancel() { return true;};
+	protected boolean onCancel() { return true;}
 
-	/**
+    /**
 	 * Called when the list had been modified in some way.
 	 */
-	protected void onListChanged() { };
+	protected void onListChanged() { }
 
-	/**
+    /**
 	 * Called to get the list if it was not in the intent.
 	 */
-	protected ArrayList<T> getList() { return null; };
+	protected ArrayList<T> getList() { return null; }
 
-	/**
+    /**
 	 * Constructor
 	 * 
 	 * @param baseViewId	Resource id of base view
@@ -190,11 +190,7 @@ abstract public class EditObjectList<T extends Serializable> extends BookCatalog
         this.mAdapter = new ListAdapter(this, mRowViewId, mList);
         setListAdapter(this.mAdapter);
 
-        getListView().post(new Runnable() {
-			@Override
-			public void run() {
-				getListView().setSelectionFromTop(savedRow, savedTop);
-			}});
+        getListView().post(() -> getListView().setSelectionFromTop(savedRow, savedTop));
 	}
 
 	@Override
@@ -207,10 +203,14 @@ abstract public class EditObjectList<T extends Serializable> extends BookCatalog
 
 			// Set the view
 			setContentView(mBaseViewId);
+            MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
+            setSupportActionBar(topAppBar);
+            topAppBar.setTitle(R.string.app_name);
+            topAppBar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
 			// Add handlers for 'Save', 'Cancel' and 'Add'
-			setupListener(R.id.confirm, mSaveListener);
-			setupListener(R.id.cancel, mCancelListener);
+			setupListener(R.id.button_confirm, mSaveListener);
+			setupListener(R.id.button_cancel, mCancelListener);
 			setupListener(R.id.add, mAddListener);
 
 			// Ask the subclass to setup the list; we need this before 
@@ -244,7 +244,7 @@ abstract public class EditObjectList<T extends Serializable> extends BookCatalog
 				mBookTitleLabel = extras.getString("title_label");
 				mBookTitle = extras.getString("title");
 				setTextOrHideView(R.id.title_label, mBookTitleLabel);
-				setTextOrHideView(R.id.title, mBookTitle);
+				setTextOrHideView(R.id.field_title, mBookTitle);
 			}
 
 			
@@ -260,7 +260,7 @@ abstract public class EditObjectList<T extends Serializable> extends BookCatalog
 	/**
 	 * Handle drop events; also preserves current position.
 	 */
-	private TouchListView.DropListener mDropListener=new TouchListView.DropListener() {
+	private final TouchListView.DropListener mDropListener=new TouchListView.DropListener() {
 		@Override
 		public void drop(int from, final int to) {
             final ListView lv = getListView();
@@ -281,46 +281,39 @@ abstract public class EditObjectList<T extends Serializable> extends BookCatalog
 
             View firstView = lv.getChildAt(0);
             final int offset = firstView.getTop();
-            lv.post(new Runnable() {
-				@Override
-				public void run() {
-					System.out.println("Positioning to " + newFirst + "+{" + offset + "}");
-					lv.requestFocusFromTouch();
-					lv.setSelectionFromTop(newFirst, offset);
-					lv.post(new Runnable() {
-						@Override
-						public void run() {
-							for(int i = 0; ; i++) {
-								View c = lv.getChildAt(i);
-								if (c == null)
-									break;
-								if (lv.getPositionForView(c) == to) {
-									lv.setSelectionFromTop(to, c.getTop());
-									//c.requestFocusFromTouch();
-									break;
-								}
-							}
-						}});
-				}});
+            lv.post(() -> {
+                System.out.println("Positioning to " + newFirst + "+{" + offset + "}");
+                lv.requestFocusFromTouch();
+                lv.setSelectionFromTop(newFirst, offset);
+                lv.post(() -> {
+                    for(int i = 0; ; i++) {
+                        View c = lv.getChildAt(i);
+                        if (c == null)
+                            break;
+                        if (lv.getPositionForView(c) == to) {
+                            lv.setSelectionFromTop(to, c.getTop());
+                            //c.requestFocusFromTouch();
+                            break;
+                        }
+                    }
+                });
+            });
 
 		}
 	};
 
 	/**
-	 * Utility routine to setup a listener for the specified view id
-	 * 
-	 * @param id	Resource ID
-	 * @param l		Listener
-	 * 
-	 * @return		true if resource present, false if not
-	 */
-	private boolean setupListener(int id, OnClickListener l) {
+     * Utility routine to setup a listener for the specified view id
+     *
+     * @param id Resource ID
+     * @param l  Listener
+     */
+	private void setupListener(int id, OnClickListener l) {
 		View v = this.findViewById(id);
 		if (v == null)
-			return false;
+			return;
 		v.setOnClickListener(l);
-		return true;
-	}
+    }
 
 	/**
 	 * Utility routine to set a TextView to a string, or hide it on failure.
@@ -339,16 +332,15 @@ abstract public class EditObjectList<T extends Serializable> extends BookCatalog
 		if (v == null)
 			return;
 		try {
-			if (s != null && s.length() > 0) {
+			if (s != null && !s.isEmpty()) {
 				((TextView)v).setText(s);
 				return;			
 			}
 		} catch (Exception e) {
 			Logger.logError(e);
-		};		
-		// If we get here, something went wrong.
-		if (v != null)
-			v.setVisibility(View.GONE);		
+		}
+        // If we get here, something went wrong.
+        v.setVisibility(View.GONE);
 	}
 	
 	protected void setTextOrHideView(int id, String s) {
@@ -358,7 +350,7 @@ abstract public class EditObjectList<T extends Serializable> extends BookCatalog
 	/**
 	 * Handle 'Save'
 	 */
-	private OnClickListener mSaveListener = new OnClickListener() {
+	private final OnClickListener mSaveListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
 			Intent i = new Intent();
@@ -373,24 +365,18 @@ abstract public class EditObjectList<T extends Serializable> extends BookCatalog
 	/**
 	 * Handle 'Cancel'
 	 */
-	private OnClickListener mCancelListener = new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			if (onCancel())
-				finish();
-		}
-	};
+	private final OnClickListener mCancelListener = v -> {
+        if (onCancel())
+            finish();
+    };
 
 	/**
 	 * Handle 'Add'
 	 */
-	private OnClickListener mAddListener = new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			onAdd(v);
-			onListChanged();
-		}		
-	};
+	private final OnClickListener mAddListener = v -> {
+        onAdd(v);
+        onListChanged();
+    };
 
 	/**
 	 * Find the first ancestor that has the ID R.id.row. This 
@@ -418,7 +404,7 @@ abstract public class EditObjectList<T extends Serializable> extends BookCatalog
 	/**
 	 * Handle deletion of a row
 	 */
-	private OnClickListener mRowDeleteListener = new OnClickListener() {
+	private final OnClickListener mRowDeleteListener = new OnClickListener() {
 
 		@Override
 		public void onClick(View v) {
@@ -435,7 +421,7 @@ abstract public class EditObjectList<T extends Serializable> extends BookCatalog
 	/**
 	 * Handle moving a row UP
 	 */
-	private OnClickListener mRowUpListener = new OnClickListener() {
+	private final OnClickListener mRowUpListener = new OnClickListener() {
 
 		@Override
 		public void onClick(View v) {
@@ -454,7 +440,7 @@ abstract public class EditObjectList<T extends Serializable> extends BookCatalog
 	/**
 	 * Handle moving a row DOWN
 	 */
-	private OnClickListener mRowDownListener = new OnClickListener() {
+	private final OnClickListener mRowDownListener = new OnClickListener() {
 
 		@Override
 		public void onClick(View v) {
@@ -473,15 +459,10 @@ abstract public class EditObjectList<T extends Serializable> extends BookCatalog
 	/**
 	 * Handle moving a row DOWN
 	 */
-	private OnClickListener mRowClickListener = new OnClickListener() {
-
-		@Override
-		public void onClick(View v) {
-			int pos = getViewRow(v);
-			onRowClick(v, pos, mList.get(pos));
-		}
-		
-	};
+	private final OnClickListener mRowClickListener = v -> {
+        int pos = getViewRow(v);
+        onRowClick(v, pos, mList.get(pos));
+    };
 
 	/**
 	 * Adapter to manage the rows.
@@ -502,8 +483,9 @@ abstract public class EditObjectList<T extends Serializable> extends BookCatalog
                 super(context, textViewResourceId, items);
         }
 
+        @NonNull
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         	// Get the view; if not defined, load it.
             View v = convertView;
             if (v == null) {
@@ -512,7 +494,7 @@ abstract public class EditObjectList<T extends Serializable> extends BookCatalog
             }
             
             // Save this views position
-            ViewTagger.setTag(v, R.id.TAG_POSITION, Integer.valueOf(position));
+            ViewTagger.setTag(v, R.id.TAG_POSITION, position);
 
             {
             	// Giving the whole row ad onClickListener seems to interfere
@@ -529,16 +511,16 @@ abstract public class EditObjectList<T extends Serializable> extends BookCatalog
             if (o != null) {
             	// Try to set position value
             	if (mHasPosition || !mCheckedFields) {
-	                TextView pt = (TextView) v.findViewById(R.id.row_position);
+	                TextView pt = v.findViewById(R.id.row_position);
 	                if(pt != null){
 	                	mHasPosition = true;
-	                	pt.setText(Long.toString(position+1));
+                        pt.setText(String.format(Locale.getDefault(), "%d", position+1));
 	                }
             	}
 
             	// Try to set the UP handler
             	if (mHasUp || !mCheckedFields) {
-                    ImageView up = (ImageView) v.findViewById(R.id.row_up);
+                    ImageView up = v.findViewById(R.id.row_up);
                     if (up != null) {
                     	up.setOnClickListener(mRowUpListener);
                     	mHasUp = true;
@@ -547,7 +529,7 @@ abstract public class EditObjectList<T extends Serializable> extends BookCatalog
 
             	// Try to set the DOWN handler
             	if (mHasDown || !mCheckedFields) {
-                    ImageView dn = (ImageView) v.findViewById(R.id.row_down);
+                    ImageView dn = v.findViewById(R.id.row_down);
                     if (dn != null) {
                     	dn.setOnClickListener(mRowDownListener);
                     	mHasDown = true;
@@ -556,7 +538,7 @@ abstract public class EditObjectList<T extends Serializable> extends BookCatalog
 
             	// Try to set the DELETE handler
             	if (mHasDelete || !mCheckedFields) {
-                	ImageView del = (ImageView) v.findViewById(R.id.row_delete);
+                	ImageView del = v.findViewById(R.id.row_delete);
                     if (del != null) {
         	    		del.setImageResource(android.R.drawable.ic_delete);
                     	del.setOnClickListener(mRowDeleteListener);   
@@ -581,7 +563,7 @@ abstract public class EditObjectList<T extends Serializable> extends BookCatalog
 	 * Ensure that the list is saved.
 	 */
 	@Override
-	protected void onSaveInstanceState(Bundle outState) {    	
+	protected void onSaveInstanceState(@NonNull Bundle outState) {
     	super.onSaveInstanceState(outState);
     	// save list
     	outState.putSerializable(mKey, mList);
@@ -591,18 +573,18 @@ abstract public class EditObjectList<T extends Serializable> extends BookCatalog
 	 * This is totally bizarre. Without this piece of code, under Android 1.6, the
 	 * native onRestoreInstanceState() fails to restore custom classes, throwing
 	 * a ClassNotFoundException, when the activity is resumed.
-	 * 
+
 	 * To test this, remove this line, edit a custom style, and save it. App will
 	 * crash in AVD under Android 1.6.
-	 * 
 	 * It is not entirely clear how this happens but since the Bundle has a classLoader
+
 	 * it is fair to surmise that the code that creates the bundle determines the class
 	 * loader to use based (somehow) on the class being called, and if we don't implement
 	 * this method, then in Android 1.6, the class is a basic android class NOT and app 
 	 * class.
 	 */
 	@Override
-	public void onRestoreInstanceState(Bundle state) {
+	public void onRestoreInstanceState(@NonNull Bundle state) {
 		super.onRestoreInstanceState(state);
 	}
 

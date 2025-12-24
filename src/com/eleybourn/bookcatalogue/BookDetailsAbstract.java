@@ -8,9 +8,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Objects;
 
-import android.Manifest.permission;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -27,7 +25,6 @@ import android.provider.MediaStore;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions;
-import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 
 import android.view.ContextMenu;
@@ -53,15 +50,15 @@ import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Abstract class for creating activities containing book details. 
- * Here we define common method for all childs: database and background initializing,
+ * Here we define common method for all children: database and background initializing,
  * initializing fields and display metrics and other common tasks.
  * @author n.silin
  */
 public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 
-	public static final Character BOOKSHELF_SEPERATOR = ',';
+	public static final Character BOOKSHELF_SEPARATOR = ',';
 	
-	// Target size of a thumbnail in edit dialog and zoom dialog (bbox dim)
+	// Target size of a thumbnail in edit dialog and zoom dialog (bounding box dim)
 	protected static final int MAX_EDIT_THUMBNAIL_SIZE = 256;
 	protected static final int MAX_ZOOM_THUMBNAIL_SIZE=1024;
 	
@@ -71,8 +68,7 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 	private static final int CONTEXT_ID_CROP_THUMB = 6;
 	private static final int CODE_ADD_PHOTO = 21;
 	private static final int CODE_ADD_GALLERY = 22;
-	private static final int CONTEXT_ID_SHOW_ALT_COVERS = 23;
-	private static final int CONTEXT_ID_ROTATE_THUMB_CW = 31;
+    private static final int CONTEXT_ID_ROTATE_THUMB_CW = 31;
 	private static final int CONTEXT_ID_ROTATE_THUMB_CCW = 32;
 	private static final int CONTEXT_ID_ROTATE_THUMB_180 = 33;
 	private static final int CODE_CROP_RESULT_EXTERNAL = 42;
@@ -95,7 +91,7 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 	/**
 	 * Handler to process a cover selected from the CoverBrowser.
 	 */
-	private OnImageSelectedListener mOnImageSelectedListener = new OnImageSelectedListener() {
+	private final OnImageSelectedListener mOnImageSelectedListener = new OnImageSelectedListener() {
 		@Override
 		public void onImageSelected(String fileSpec) {
 			if (mCoverBrowser != null && fileSpec != null) {
@@ -422,13 +418,6 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 		Intent pintent = null;
 		// Get a photo
 		pintent = new Intent("android.media.action.IMAGE_CAPTURE");
-//				We don't do this because we have no reliable way to rotate a large image
-//				without producing memory exhaustion; Android does not include a file-based
-//				image rotation.
-//				File f = this.getCameraImageFile();
-//				if (f.exists())
-//					f.delete();
-//				pintent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
 		startActivityForResult(pintent, CODE_ADD_PHOTO);
 	}
 
@@ -499,7 +488,7 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 //			intent.putExtra("outputY", mThumbZoomSize*2);
 			intent.putExtra("scale", true);
 			intent.putExtra("noFaceDetection", true);
-			// True to return a Bitmap, false to directly save the cropped iamge
+			// True to return a Bitmap, false to directly save the cropped image
 			intent.putExtra("return-data", false);
 			// Save output image in uri
 			File cropped = this.getCroppedImageFileName();
@@ -532,7 +521,6 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 	
 	/**
 	 * Delete the provided thumbnail from the sdcard
-	 * @param id The id of the book (and thumbnail) to delete
 	 */
 	private void deleteThumbnail() {
 		try {
@@ -582,26 +570,26 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 	}
 	
 	/**
-	 * Populate Author field by data from {@link #mAuthorList}.
+	 * Populate Author field by data from #mAuthorList.
 	 * If there is no data shows "Set author" text defined in resources.
 	 * <p>
-	 * Be sure that you get {@link #mAuthorList}. See {@link #populateFieldsFromDb(Long)}
+	 * Be sure that you get #mAuthorList. See #populateFieldsFromDb(Long)
 	 * for example. 
 	 */
 	protected void populateAuthorListField() {
 
 		String newText = mEditManager.getBookData().getAuthorTextShort();
 		if (newText == null || newText.equals("")) {
-			newText = getResources().getString(R.string.set_authors);
+			newText = getResources().getString(R.string.label_set_authors);
 		}
-		mFields.getField(R.id.author).setValue(newText);	
+		mFields.getField(R.id.field_author).setValue(newText);
 	}
 	
 	/**
-	 * Populate Series field by data from {@link #mSeriesList}.
+	 * Populate Series field by data from #mSeriesList.
 	 * If there is no data shows "Set series..." text defined in resources.
 	 * <p>
-	 * Be sure that you get {@link #mSeriesList}. See {@link #populateFieldsFromDb(Long)}
+	 * Be sure that you get #mSeriesList. See #populateFieldsFromDb(Long)
 	 * for example. 
 	 */
 	protected void populateSeriesListField() {
@@ -625,12 +613,11 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 			if (list.size() > 1)
 				newText += " " + getResources().getString(R.string.and_others);
 		}
-		mFields.getField(R.id.series).setValue(newText);		
+		mFields.getField(R.id.field_series).setValue(newText);
 	}
 	
 	/**
 	 * Rotate the thumbnail a specified amount
-	 * @param id
 	 */
 	private void rotateThumbnail(long angle) {
 		boolean retry = true;
@@ -696,7 +683,7 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 		 * While we could do it in a formatter, it it not really a display-oriented function and
 		 * is handled in preprocessing in the database layer since it also needs to be applied
 		 * to imported record etc. */
-		mFields.add(R.id.title, CatalogueDBAdapter.KEY_TITLE, null);
+		mFields.add(R.id.field_title, CatalogueDBAdapter.KEY_TITLE, null);
 
 		/* Anthology needs special handling, and we use a formatter to do this. If the original
 		 * value was 0 or 1, then setting/clearing it here should just set the new value to 0 or 1.
@@ -705,33 +692,33 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 		 * So, despite if being a checkbox, we use an integerValidator and use a special formatter.
 		 * We also store it in the tag field so that it is automatically serialized with the
 		 * activity. */
-		mFields.add(R.id.anthology, BookData.KEY_ANTHOLOGY, null); 
+		mFields.add(R.id.field_anthology, BookData.KEY_ANTHOLOGY, null);
 
-		mFields.add(R.id.author, "", CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, null);
-		mFields.add(R.id.isbn, CatalogueDBAdapter.KEY_ISBN, null);
+		mFields.add(R.id.field_author, "", CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, null);
+		mFields.add(R.id.field_isbn, CatalogueDBAdapter.KEY_ISBN, null);
 
-		if (root.findViewById(R.id.publisher) != null)
-			mFields.add(R.id.publisher, CatalogueDBAdapter.KEY_PUBLISHER, null);
+		if (root.findViewById(R.id.field_publisher) != null)
+			mFields.add(R.id.field_publisher, CatalogueDBAdapter.KEY_PUBLISHER, null);
 
-		if (root.findViewById(R.id.date_published) != null)
-			mFields.add(R.id.date_published, CatalogueDBAdapter.KEY_DATE_PUBLISHED, CatalogueDBAdapter.KEY_DATE_PUBLISHED,
+		if (root.findViewById(R.id.button_date_published) != null)
+			mFields.add(R.id.button_date_published, CatalogueDBAdapter.KEY_DATE_PUBLISHED, CatalogueDBAdapter.KEY_DATE_PUBLISHED,
 					null, new Fields.DateFieldFormatter());
 
-		mFields.add(R.id.series, CatalogueDBAdapter.KEY_SERIES_NAME, CatalogueDBAdapter.KEY_SERIES_NAME, null);
-		mFields.add(R.id.list_price, "list_price", null);
-		mFields.add(R.id.pages, CatalogueDBAdapter.KEY_PAGES, null);
-		mFields.add(R.id.format, CatalogueDBAdapter.KEY_FORMAT, null);
+		mFields.add(R.id.field_series, CatalogueDBAdapter.KEY_SERIES_NAME, CatalogueDBAdapter.KEY_SERIES_NAME, null);
+		mFields.add(R.id.field_list_price, "list_price", null);
+		mFields.add(R.id.field_pages, CatalogueDBAdapter.KEY_PAGES, null);
+		mFields.add(R.id.field_format, CatalogueDBAdapter.KEY_FORMAT, null);
 		//mFields.add(R.id.bookshelf, CatalogueDBAdapter.KEY_BOOKSHELF, null);
-		mFields.add(R.id.description, CatalogueDBAdapter.KEY_DESCRIPTION, null)
+		mFields.add(R.id.field_description, CatalogueDBAdapter.KEY_DESCRIPTION, null)
 			.setShowHtml(true);
-		mFields.add(R.id.genre, CatalogueDBAdapter.KEY_GENRE, null);
-		mFields.add(R.id.language, DatabaseDefinitions.DOM_LANGUAGE.name, null);
+		mFields.add(R.id.field_genre, CatalogueDBAdapter.KEY_GENRE, null);
+		mFields.add(R.id.field_language, DatabaseDefinitions.DOM_LANGUAGE.name, null);
 
 		mFields.add(R.id.row_img, "", "thumbnail", null);
 		mFields.getField(R.id.row_img).getView().setOnCreateContextMenuListener(mCreateBookThumbContextMenuListener);
 		
 		mFields.add(R.id.format_button, "", CatalogueDBAdapter.KEY_FORMAT, null);
-		mFields.add(R.id.bookshelf, "bookshelf_text", null).doNoFetch = true; // Output-only field
+		mFields.add(R.id.field_bookshelf, "bookshelf_text", null).doNoFetch = true; // Output-only field
 		mFields.add(R.id.signed, CatalogueDBAdapter.KEY_SIGNED, null);
 	}
 	
@@ -759,9 +746,9 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 	 * Populate all fields (See {@link #mFields} ) except of authors and series fields with 
 	 * data from database. To set authors and series fields use {@link #populateAuthorListField()}
 	 * and {@link #populateSeriesListField()} methods.<br>
-	 * Also sets {@link #mAuthorList} and {@link #mSeriesList} values with data from database.
+	 * Also sets #mAuthorList and #mSeriesList values with data from database.
 	 * Data defined by its _id in db. 
-	 * @param rowId database row id of the selected book.
+	 * @param book the selected book.
 	 */
 	protected void populateFieldsFromBook(BookData book) {
 		// From the database (edit)
@@ -781,13 +768,12 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 	/**
 	 * Inflates all fields with data from cursor and populates UI fields with it.
 	 * Also set thumbnail of the book. 
-	 * @param rowId database row _id of the book
-	 * @param bookCursor cursor with information of the book
+	 * @param book database book record
 	 */
 	protected void populateBookDetailsFields(BookData book){		
 		//Set anthology field
-		Integer anthNo = book.getInt(BookData.KEY_ANTHOLOGY);
-		mFields.getField(R.id.anthology).setValue(anthNo.toString()); // Set checked if anthNo != 0
+        Integer anthologyNo = book.getInt(BookData.KEY_ANTHOLOGY);
+        mFields.getField(R.id.field_anthology).setValue(anthologyNo.toString()); // Set checked if anthNo != 0
 	}
 	
 	/**
@@ -805,7 +791,7 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 	 */
 	private void showZoomedThumb(Long rowId) {
 		// Create dialog and set layout
-		final Dialog dialog = new Dialog(Objects.requireNonNull(getActivity()), R.style.AppTheme);
+		final Dialog dialog = new Dialog(requireActivity(), R.style.AppTheme);
 		dialog.setContentView(R.layout.zoom_thumb_dialog);
 		
 		// Check if we have a file and/or it is valid
@@ -847,17 +833,17 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 	 * Gets all bookshelves for the book from database and populate corresponding 
 	 * filed with them.
 	 * @param fields Fields containing book information
-	 * @param rowId Database row _id of the book
+	 * @param book Database book record
 	 * @return true if populated, false otherwise
 	 */
 	protected boolean populateBookshelvesField(Fields fields, BookData book){
 		boolean result = false;
 		try {
 			// Display the selected bookshelves
-			Field bookshelfTextFe = fields.getField(R.id.bookshelf);
+			Field bookshelfTextFe = fields.getField(R.id.field_bookshelf);
 			String text = book.getBookshelfText();
 			bookshelfTextFe.setValue(book.getBookshelfText());
-			if (!text.equals("")) {
+			if (!text.isEmpty()) {
 				result = true; // One or more bookshelves have been set
 			}
 		} catch (Exception e) {

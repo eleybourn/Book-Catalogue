@@ -26,23 +26,23 @@
         android:padding="@dimen/p_md" >
 
         <Button
-            android:id="@+id/confirm"
+            android:id="@+id/button_confirm"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|left"
             android:layout_weight="1"
-            android:text="@string/save"
+            android:text="@string/button_save"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <Button
-            android:id="@+id/cancel"
+            android:id="@+id/button_cancel"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|right"
             android:layout_weight="1"
-            android:text="@string/cancel"
+            android:text="@string/button_cancel"
             android:textAppearance="?android:attr/textAppearanceSmall" />
     </LinearLayout>
 
@@ -69,7 +69,7 @@
             android:id="@+id/empty"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/noseries"
+            android:text="@string/para_no_series"
             android:textSize="16sp" />
     </LinearLayout>
 

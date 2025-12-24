@@ -37,7 +37,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
-import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Catalogue search based on the SQLite FTS engine. Due to the speed of FTS it updates the 
@@ -76,8 +75,8 @@ public class SearchCatalogue extends BookCatalogueActivity {
 		
 		View layout = this.findViewById(R.id.layout_root);
 		EditText criteria = (EditText) this.findViewById(R.id.criteria);
-		EditText author = (EditText) this.findViewById(R.id.author);
-		EditText title = (EditText) this.findViewById(R.id.title);
+		EditText author = (EditText) this.findViewById(R.id.field_author);
+		EditText title = (EditText) this.findViewById(R.id.field_title);
 		Button showResults = (Button) this.findViewById(R.id.search);
 		Button ftsRebuild = (Button) this.findViewById(R.id.rebuild);
 
@@ -178,8 +177,8 @@ public class SearchCatalogue extends BookCatalogueActivity {
 	 */
 	private void doSearch() {
 		// Get search criteria
-		String author = ((EditText) this.findViewById(R.id.author)).getText().toString();
-		String title = ((EditText) this.findViewById(R.id.title)).getText().toString();
+		String author = ((EditText) this.findViewById(R.id.field_author)).getText().toString();
+		String title = ((EditText) this.findViewById(R.id.field_title)).getText().toString();
 		String criteria = ((EditText) this.findViewById(R.id.criteria)).getText().toString();
 		String tmpMsg;
 

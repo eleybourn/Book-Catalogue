@@ -13,12 +13,12 @@
         tools:ignore="HardcodedText">
 
         <EditText
-            android:id="@+id/isbn"
+            android:id="@+id/field_isbn"
             android:layout_width="fill_parent"
             android:layout_height="0dip"
             android:layout_weight="1"
             android:digits="0123456789Xx"
-            android:hint="@string/isbn"
+            android:hint="@string/label_isbn"
             android:inputType="number"
             android:padding="10dp"
             android:textAppearance="?android:attr/textAppearanceLarge" />
@@ -108,14 +108,14 @@
                 android:id="@+id/asinCheckbox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:text="@string/allow_asin" />
 
             <Button
                 android:id="@+id/search"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_marginLeft="10dp"
                 android:layout_toRightOf="@+id/asinCheckbox"
                 android:text="@string/label_search" />

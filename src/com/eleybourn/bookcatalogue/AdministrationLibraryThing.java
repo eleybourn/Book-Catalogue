@@ -22,7 +22,6 @@ package com.eleybourn.bookcatalogue;
 
 import java.io.File;
 
-import android.Manifest.permission;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -38,7 +37,6 @@ import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTaskContext;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueueProgressFragment;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueueProgressFragment.FragmentTask;
-import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * 
@@ -106,7 +104,7 @@ public class AdministrationLibraryThing extends BookCatalogueActivity {
 		devkeyView.setText(prefs.getString(LibraryThingManager.LT_DEVKEY_PREF_NAME, ""));
 		
 		/* Save Button */
-		Button btn = (Button) findViewById(R.id.confirm);
+		Button btn = (Button) findViewById(R.id.button_confirm);
 		btn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {

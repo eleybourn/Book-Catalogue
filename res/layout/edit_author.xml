@@ -1,85 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/theme_surface"
-    android:orientation="vertical"
-    android:paddingLeft="@dimen/p_md" >
+    style="@style/layout_dialog" >
 
     <LinearLayout
         android:id="@+id/top_buttons"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:gravity="top"
-        android:orientation="vertical"
-        android:paddingTop="@dimen/p_md" >
+        style="@style/layout_main" >
 
         <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:text="@string/family_name"
-            android:textSize="12sp" />
+            style="@style/layout_heading"
+            android:text="@string/label_family_name" />
 
         <EditText
-            android:id="@+id/family_name"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:id="@+id/field_family_name"
+            style="@style/locale_field_text_name"
             android:completionThreshold="2"
-            android:hint="@string/family_name"
-            style="@style/personalNameTextEntry"
-            />
+            android:hint="@string/label_family_name" />
 
         <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:text="@string/given_names"
-            android:textSize="12sp" />
+            style="@style/layout_heading"
+            android:text="@string/label_given_names" />
 
         <EditText
-            android:id="@+id/given_names"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="@string/given_names"
-            style="@style/personalNameTextEntry"
+            android:id="@+id/field_given_names"
+            style="@style/locale_field_text_name"
+            android:hint="@string/label_given_names"
             android:singleLine="true" />
     </LinearLayout>
 
     <TextView
-        android:id="@+id/title"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:id="@+id/field_title"
+        style="@style/layout_paragraph"
         android:layout_below="@+id/top_buttons"
-        android:hint="@string/title"
-        android:paddingBottom="@dimen/p_md"
-        android:paddingTop="@dimen/p_md"
-        android:text="@string/immediate_global_changes"
-        android:textSize="16sp" />
+        android:paddingHorizontal="@dimen/p_xl"
+        android:text="@string/para_immediate_global_changes" />
 
     <LinearLayout
         android:id="@+id/bottom_buttons"
-        android:layout_width="fill_parent"
-        android:layout_height="60sp"
-        android:layout_below="@+id/title"
-        android:orientation="horizontal" >
-
+        style="@style/layout_action_row"
+        android:layout_below="@+id/field_title" >
         <Button
-            android:id="@+id/cancel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/cancel" />
-
+            android:id="@+id/button_cancel"
+            style="@style/layout_button_action"
+            android:text="@string/button_cancel" />
         <Button
-            android:id="@+id/confirm"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/save" />
+            android:id="@+id/button_confirm"
+            style="@style/layout_button_action"
+            android:text="@string/button_save" />
     </LinearLayout>
 
 </RelativeLayout>

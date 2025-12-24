@@ -83,7 +83,7 @@ public class TextFieldEditor extends AlertDialog {
 		);
 
 		// Handle Cancel
-		((Button)root.findViewById(R.id.cancel)).setOnClickListener(new View.OnClickListener() {
+		((Button)root.findViewById(R.id.button_cancel)).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				mListener.onCancel(TextFieldEditor.this);				

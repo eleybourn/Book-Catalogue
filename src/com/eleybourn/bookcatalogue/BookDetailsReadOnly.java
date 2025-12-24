@@ -95,7 +95,7 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 			showHideFields(true);
 
 			// Hide the fields that we never use...
-			getView().findViewById(R.id.anthology).setVisibility(View.GONE);
+			getView().findViewById(R.id.field_anthology).setVisibility(View.GONE);
 
 		} catch (Exception e) {
 			Logger.logError(e);
@@ -118,7 +118,7 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 		int authorsCount = authors.size();
 		if (authorsCount == 0) {
 			// Hide author field if it is not set
-			getView().findViewById(R.id.author).setVisibility(View.GONE);
+			getView().findViewById(R.id.field_author).setVisibility(View.GONE);
 		} else {
 			StringBuilder builder = new StringBuilder();
 			builder.append(getResources().getString(R.string.book_details_readonly_by));
@@ -129,7 +129,7 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 					builder.append(", ");
 				}
 			}
-			mFields.getField(R.id.author).setValue(builder.toString());
+			mFields.getField(R.id.field_author).setValue(builder.toString());
 		}
 	}
 
@@ -143,15 +143,15 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 		} catch (NullPointerException e) {
 			size = 0;
 		}
-		if (size == 0 || !mFields.getField(R.id.series).visible) {
+		if (size == 0 || !mFields.getField(R.id.field_series).visible) {
 			// Hide 'Series' label and data
 			getView().findViewById(R.id.lbl_series).setVisibility(View.GONE);
-			getView().findViewById(R.id.series).setVisibility(View.GONE);
+			getView().findViewById(R.id.field_series).setVisibility(View.GONE);
 			return;
 		} else {
 			// Show 'Series' label and data
 			getView().findViewById(R.id.lbl_series).setVisibility(View.VISIBLE);
-			getView().findViewById(R.id.series).setVisibility(View.VISIBLE);
+			getView().findViewById(R.id.field_series).setVisibility(View.VISIBLE);
 
 			String newText = null;
 			Utils.pruneSeriesList(series);
@@ -167,7 +167,7 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 				}
 				newText = builder.toString();
 			}
-			mFields.getField(R.id.series)			
+			mFields.getField(R.id.field_series)
 				.setShowHtml(true)
 				.setValue(newText);
 		}
@@ -188,7 +188,7 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 		mFields.add(R.id.location, CatalogueDBAdapter.KEY_LOCATION, null);
 		// Make sure the label is hidden when the ISBN is 
 		mFields.add(R.id.isbn_label, "", CatalogueDBAdapter.KEY_ISBN, null);
-		mFields.add(R.id.publishing_details, "", CatalogueDBAdapter.KEY_PUBLISHER, null);
+		mFields.add(R.id.field_publisher, "", CatalogueDBAdapter.KEY_PUBLISHER, null);
 	}
 	
 	/**
@@ -196,14 +196,14 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 	 * of 'pages' and 'format' fields.
 	 */
 	private void formatFormatSection(BookData book){
-		Field field = mFields.getField(R.id.pages);
+		Field field = mFields.getField(R.id.field_pages);
 		String value = book.getString(CatalogueDBAdapter.KEY_PAGES);
 		boolean isExist = value != null && !value.equals("");
 		if (isExist) { //If 'pages' field is set format it
 			field.setValue(getString(R.string.book_details_readonly_pages, value));
 		}
 		// Format 'format' field
-		field = mFields.getField(R.id.format);
+		field = mFields.getField(R.id.field_format);
 		value = book.getString(CatalogueDBAdapter.KEY_FORMAT);
 		if(isExist && value != null && !value.equals("")){
 			/* Surround 'format' field with braces if 'pages' field is set 
@@ -245,7 +245,7 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 				value = "";
 			}
 		}
-		mFields.getField(R.id.publishing_details).setValue(value);
+		mFields.getField(R.id.field_publisher).setValue(value);
 	}
 	
 	/**
@@ -305,8 +305,8 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 	}
 
 	@Override
-	protected void onLoadBookDetails(BookData book, boolean setAllDone) {
-		if (!setAllDone)
+	protected void onLoadBookDetails(BookData book) {
+		if (!false)
 			mFields.setAll(book);
 		updateFields(book);
 	}

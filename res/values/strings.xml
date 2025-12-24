@@ -6,26 +6,26 @@
     <string name="label_insert">Add Book</string>
     <string name="label_insert_description">Add manually or by barcode</string>
     <string name="menu_delete">Delete Book</string>
-    <string name="author">Author</string>
-    <string name="title">Title</string>
-    <string name="isbn">ISBN</string>
-    <string name="publisher">Publisher</string>
-    <string name="date_published">Date Published</string>
+    <string name="label_author">Author</string>
+    <string name="label_title">Title</string>
+    <string name="label_isbn">ISBN</string>
+    <string name="label_publisher">Publisher</string>
+    <string name="label_date_published">Date Published</string>
     <string name="rating">Rating</string>
     <string name="bookshelf">Bookshelf</string>
     <string name="read">Have you read this book?</string>
-    <string name="series">Series</string>
-    <string name="pages">Pages</string>
-    <string name="confirm_add">Add Book</string>
+    <string name="label_series">Series</string>
+    <string name="label_pages">Pages</string>
+    <string name="button_confirm_add">Add Book</string>
     <string name="confirm_update">Update</string>
-    <string name="nobooks">There are no books in this Bookshelf. Please add some using the menu at the bottom of this screen.</string>
+    <string name="para_no_books">There are no books in this Bookshelf. Please add some using the menu at the bottom of this screen.</string>
     <string name="menu_sort_by_author_expanded">Expand All</string>
     <string name="menu_sort_by">Sort By</string>
     <string name="menu_sort_by_author_collapsed">Collapse All</string>
     <string name="label_search">Search</string>
     <string name="label_search_description">Find a book in your catalogue</string>
-    <string name="cancel">Cancel</string>
-    <string name="confirm_save">Save Book</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="button_confirm_save">Save Book</string>
     <string name="info_no_bookshelves">You have not created any bookshelves yet. Please add some using the menu at the bottom of this screen.</string>
     <string name="menu_insert_bs">Create Bookshelf</string>
     <string name="confirm_add_bs">Add Bookshelf</string>
@@ -36,16 +36,15 @@
     <string name="bookshelf_label">Bookshelf: </string>
     <string name="all_books">All Books</string>
     <string name="isbn_found">ISBN Scanned. Searching Internet.</string>
-    <string name="title_isbn_search">Book Catalogue: ISBN Search</string>
-    <string name="title_manage_bs">Book Catalogue: Manage Bookshelves</string>
-    <string name="title_edit_bs">Book Catalogue: Edit Bookshelf</string>
+    <string name="title_isbn_search">ISBN Search</string>
+    <string name="title_edit_bs">Edit Bookshelf</string>
     <string name="search_label">Search for Books</string>
     <string name="search_hint">Search Author or Title</string>
     <string name="book_not_found">The scanned book was not found. You can sometimes find the correct barcode on the inside front cover. Otherwise please enter the details manually.</string>
-    <string name="series_num">#</string>
+    <string name="label_series_num">#</string>
     <string name="import_data">Import Books</string>
     <string name="import_alert">Warning. Importing data may update existing book records with new information if the uuid column is not present and the id in the import file is the same as an existing id. This is usually fine if you changed a field in an exported file. If you created a new book record, or are importing someone elses books, ensure the uuid field is present or the id field is blank.</string>
-    <string name="search_title">Book Catalogue: Search Results</string>
+    <string name="search_title">Search Results</string>
     <string name="results_found">Results Found</string>
     <string name="administration_label">Administration Functions</string>
     <string name="menu_administration">Admin</string>
@@ -57,7 +56,7 @@
     <string name="edit_book_notes">My Comments</string>
     <string name="edit_book_friends">Loan Book</string>
     <string name="edit_book_friends_return">Return Book</string>
-    <string name="notes">Notes</string>
+    <string name="label_notes">Notes</string>
     <string name="loaned_to">This book has been loaned to:</string>
     <string name="nobody">Nobody</string>
     <string name="loan_to">Loan book to:</string>
@@ -79,7 +78,7 @@
     <string name="sortby_loan">Sort by Loaned</string>
     <string name="sortby_unread">Sort by Unread</string>
     <string name="sortby_genre">Sort by Genre</string>
-    <string name="list_price">List Price</string>
+    <string name="label_list_price">List Price</string>
     <string name="label_update_fields">Automatically Update Fields</string>
     <string name="select_fields_to_update">Select Fields to Update</string>
     <string name="select_fields_to_update_help">Selected fields will be updated from the internet. Unselected fields will remain unchanged.</string>
@@ -93,11 +92,11 @@
     <string name="label_help">Help</string>
     <string name="label_manage_fields">Manage Field Visibility</string>
     <string name="manage_fields_help">Selected fields are visible in the add/edit book screens. Unselected fields are hidden.</string>
-    <string name="edit_book_anthology">Anthology Titles</string>
+    <string name="label_anthology">Anthology Titles</string>
     <string name="label_amazon_wishlist">Amazon Wishlist</string>
     <string name="same_author">All stories in this anthology are written by the same author</string>
     <string name="menu_delete_anthology">Delete Title from Anthology</string>
-    <string name="is_anthology">Is this book an Anthology?</string>
+    <string name="label_is_anthology">Is this book an Anthology?</string>
     <string name="populate_anthology_titles">Automatically Populate Titles (EXPERIMENTAL)</string>
     <string name="automatic_population_failed">Automatic Population of Titles Failed</string>
     <string name="anthology">Anthology</string>
@@ -121,15 +120,15 @@
     <string name="searching_google_books">Searching Google Books</string>
     <string name="searching_library_thing">Searching LibraryThing</string>
     <string name="select_bookshelves">Select Bookshelves</string>
-    <string name="format">Format</string>
+    <string name="label_format">Format</string>
     <string name="format1">Paperback</string>
     <string name="format2">Hard Cover</string>
     <string name="format3">eBook</string>
     <string name="format4">Audiobook</string>
     <string name="format5">Guide / Companion</string>
     <!-- NOTE: Adding a new format will involve changing code that references this list -->
-    <string name="description">Description</string>
-    <string name="genre">Genre</string>
+    <string name="label_description">Description</string>
+    <string name="label_genre">Genre</string>
     <string name="not_set">Not Set</string>
     <string name="menu_search">Search Books</string>
     <string name="isbn_name_search_help">Adding books by ISBN is much more accurate than adding by author and title and is generally preferred. Please remember you can sometimes find the correct barcode on the inside front cover. \n\n</string>
@@ -149,15 +148,15 @@
     <string name="file_must_contain_any_column">File must contain a column with one of the following names: %s</string>
     <string name="column_is_blank">Column %1$s is blank at row %2$s</string>
     <string name="columns_are_blank">Columns %1$s are all blank at row %2$d</string>
-    <string name="save">Save</string>
-    <string name="add">Add</string>
-    <string name="noauthors">There are no authors for this Book. Please add some using the text area and button at the top of this screen.</string>
-    <string name="noseries">There are no series for this Book. You can add some using the text area and button at the top of this screen.</string>
+    <string name="button_save">Save</string>
+    <string name="label_add">Add</string>
+    <string name="para_no_authors">There are no authors for this Book. Please add some using the text area and button at the top of this screen.</string>
+    <string name="para_no_series">There are no series for this Book. You can add some using the text area and button at the top of this screen.</string>
     <string name="cover_not_set">Cover is not set</string>
     <string name="cover_corrupt">Cover is corrupt</string>
     <string name="cover_detail">Cover Detail</string>
     <string name="select_picture">Select Picture</string>
-    <string name="set_authors">Set Authors&#8230;</string>
+    <string name="label_set_authors">Set Authors&#8230;</string>
     <string name="and_others">et. al.</string>
     <string name="set_series">Set Series&#8230;</string>
     <string name="author_already_in_list">Author is already in the list</string>
@@ -168,10 +167,10 @@
     <string name="num_books_searched">%s Books Searched</string>
     <string name="cancelled_info">Cancelled - %s</string>
     <string name="edit_book_series">Edit Book Series</string>
-    <string name="family_name">Family Name</string>
-    <string name="given_names">Given Names</string>
+    <string name="label_family_name">Family Name</string>
+    <string name="label_given_names">Given Names</string>
     <string name="edit_author_details">Edit Author Details</string>
-    <string name="immediate_global_changes">NOTE: All saved changes apply instantly and globally</string>
+    <string name="para_immediate_global_changes">NOTE: All saved changes apply instantly and globally</string>
     <string name="menu_replace_thumb">Replace Thumbnail&#8230;</string>
     <string name="author_required">At least one author must be specified</string>
     <string name="title_required">A non-blank title must be specified</string>
@@ -297,7 +296,7 @@
     <string name="please_enter_search_criteria">Please enter search criteria</string>
     <string name="error_while_searching">Error while searching.</string>
     <string name="send_all_to_goodreads_result">%1$s books processed: %2$s sent successfully, %3$s with no ISBN and %4$s with ISBN but not found in goodreads</string>
-    <string name="x_of_y">%1$s of %2$s</string>
+    <string name="x_of_y">%1$d of %2$d</string>
     <string name="send_book_to_goodreads">Send book %1$s to goodreads</string>
 
     <string name="label_erase_cover_cache">Erase cover cache</string>
@@ -333,7 +332,7 @@
     <string name="label_booklist_preferences">Book List Preferences</string>
     <string name="extra_book_details">Extra Book Details</string>
     <string name="general">General</string>
-    <string name="bookshelves">Bookshelves</string>
+    <string name="label_bookshelves">Bookshelves</string>
     <string name="shelves">Shelves</string>
     <string name="location">Location</string>
     <string name="label_data_import_export">Data Import/Export</string>
@@ -490,8 +489,8 @@
     <string name="generate_immediately">Generate immediately (lists scroll slower, images will be displayed immediately)</string>
     <string name="sort_and_style_ellipsis">Sort &amp; Style&#8230;</string>
     <string name="disable_background_image">Disable background image</string>
-    <string name="displaying_n_books_in_m_entries">displaying %1$s books, in %2$s entries</string>
-    <string name="displaying_n_books">displaying %1$s books</string>
+    <string name="displaying_n_books_in_m_entries">(displaying %1$s books, in %2$s entries)</string>
+    <string name="displaying_n_books">(displaying %1$s books)</string>
     <string name="available">Available</string>
     <string name="loaned_to_2">\u2192</string>
     <string name="summary_details_in_header">Summary details in header</string>
@@ -626,9 +625,9 @@ and you can edit the book via the options menu using the menu button or overflow
 </string>
 
     <!-- This is the heading of the 'Details' tab when editing a book. It needs to be short. "Book Details" is too long. -->
-    <string name="details">Details</string>
+    <string name="label_details">Details</string>
     <!-- This is the heading of the 'Loan' tab when editing a book. It needs to be short. "Loan Book" is too long. -->
-    <string name="loan">Loan</string>
+    <string name="label_loan">Loan</string>
 
     <!-- Button text on the goodreads activity; only displayed after user has registered -->
     <string name="forget_credentials">Forget Credentials</string>
@@ -729,7 +728,7 @@ and you can edit the book via the options menu using the menu button or overflow
     <!-- Begin: Added/Updated in 5.0.4 -->
 
     <!-- Short Heading for 'Language' field in book details -->
-    <string name="language">Language</string>
+    <string name="label_language">Language</string>
     <string name="new_in_504">
 		<![CDATA[
 			<p><b>New in 5.0.4</b>\n\n

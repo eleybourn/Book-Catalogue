@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/layout_body">
+    <!-- Root -->
+
+    <include layout="@layout/layout_header" />
+    <include layout="@layout/layout_background" />
+
+    <!-- CONTENT -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        style="@style/layout_scroll">
+
+        <LinearLayout
+            android:id="@+id/root"
+            style="@style/layout_main">
+
+            <EditText
+                android:id="@+id/field_bookshelf"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/bookshelf" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <LinearLayout
+        style="@style/layout_action_row" >
+        <Button
+            android:id="@+id/button_cancel"
+            style="@style/layout_button_action"
+            android:text="@string/button_cancel" />
+        <Button
+            android:id="@+id/button_confirm"
+            style="@style/layout_button_action"
+            android:text="@string/confirm_add_bs" />
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

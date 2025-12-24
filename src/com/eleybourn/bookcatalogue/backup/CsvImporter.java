@@ -213,7 +213,7 @@ public class CsvImporter {
 					// (it seems a 'book' record gets written without an 'author' record; should not happen)
 					// so we allow blank author_details and full in a regionalized version of "Author, Unknown"
 					if (authorDetails == null || authorDetails.length() == 0) {
-						authorDetails = BookCatalogueApp.getResourceString(R.string.author) + ", " + BookCatalogueApp.getResourceString(R.string.unknown);
+						authorDetails = BookCatalogueApp.getResourceString(R.string.label_author) + ", " + BookCatalogueApp.getResourceString(R.string.unknown);
 					}
 
 					// Now build the array for authors

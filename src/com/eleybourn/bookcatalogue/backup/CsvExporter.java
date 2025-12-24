@@ -35,7 +35,6 @@ import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 import com.eleybourn.bookcatalogue.utils.Logger;
-import com.eleybourn.bookcatalogue.utils.StorageUtils;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
@@ -55,7 +54,7 @@ public class CsvExporter implements Exporter {
 
 	public boolean export(OutputStream outputStream, Exporter.ExportListener listener, final int backupFlags, Date since) throws IOException {
 		final String UNKNOWN = BookCatalogueApp.getResourceString(R.string.unknown);
-		final String AUTHOR = BookCatalogueApp.getResourceString(R.string.author);
+		final String AUTHOR = BookCatalogueApp.getResourceString(R.string.label_author);
 
 		/** RELEASE: Handle flags! */
 		int num = 0;
@@ -195,8 +194,8 @@ public class CsvExporter implements Exporter {
 						String bookshelves_id_text = "";
 						String bookshelves_name_text = "";
 						while (bookshelves.moveToNext()) {
-							bookshelves_id_text += bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_ROWID)) + BookEditFields.BOOKSHELF_SEPERATOR;
-							bookshelves_name_text += Utils.encodeListItem(bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)),BookEditFields.BOOKSHELF_SEPERATOR) + BookEditFields.BOOKSHELF_SEPERATOR;
+							bookshelves_id_text += bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_ROWID)) + BookEditFields.BOOKSHELF_SEPARATOR;
+							bookshelves_name_text += Utils.encodeListItem(bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)),BookEditFields.BOOKSHELF_SEPARATOR) + BookEditFields.BOOKSHELF_SEPARATOR;
 						}
 						bookshelves.close();
 

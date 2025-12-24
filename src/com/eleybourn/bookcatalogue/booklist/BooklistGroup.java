@@ -87,10 +87,10 @@ public class BooklistGroup implements Serializable {
 
 	private static final UniqueMap<Integer, String> mRowKindNames = new UniqueMap<Integer, String>();
 	static {
-		mRowKindNames.add(ROW_KIND_AUTHOR, BookCatalogueApp.getResourceString(R.string.author));
-		mRowKindNames.add(ROW_KIND_SERIES, BookCatalogueApp.getResourceString(R.string.series));
-		mRowKindNames.add(ROW_KIND_GENRE, BookCatalogueApp.getResourceString(R.string.genre));
-		mRowKindNames.add(ROW_KIND_PUBLISHER, BookCatalogueApp.getResourceString(R.string.publisher));
+		mRowKindNames.add(ROW_KIND_AUTHOR, BookCatalogueApp.getResourceString(R.string.label_author));
+		mRowKindNames.add(ROW_KIND_SERIES, BookCatalogueApp.getResourceString(R.string.label_series));
+		mRowKindNames.add(ROW_KIND_GENRE, BookCatalogueApp.getResourceString(R.string.label_genre));
+		mRowKindNames.add(ROW_KIND_PUBLISHER, BookCatalogueApp.getResourceString(R.string.label_publisher));
 		mRowKindNames.add(ROW_KIND_READ_AND_UNREAD, BookCatalogueApp.getResourceString(R.string.read_amp_unread));
 		mRowKindNames.add(ROW_KIND_LOANED, BookCatalogueApp.getResourceString(R.string.loaned));
 		mRowKindNames.add(ROW_KIND_YEAR_PUBLISHED, BookCatalogueApp.getResourceString(R.string.publication_year));
@@ -99,12 +99,12 @@ public class BooklistGroup implements Serializable {
 		mRowKindNames.add(ROW_KIND_YEAR_ADDED, BookCatalogueApp.getResourceString(R.string.added_year));
 		mRowKindNames.add(ROW_KIND_MONTH_ADDED, BookCatalogueApp.getResourceString(R.string.added_month));
 		mRowKindNames.add(ROW_KIND_DAY_ADDED, BookCatalogueApp.getResourceString(R.string.added_day));
-		mRowKindNames.add(ROW_KIND_FORMAT, BookCatalogueApp.getResourceString(R.string.format));
+		mRowKindNames.add(ROW_KIND_FORMAT, BookCatalogueApp.getResourceString(R.string.label_format));
 		mRowKindNames.add(ROW_KIND_YEAR_READ, BookCatalogueApp.getResourceString(R.string.read_year));
 		mRowKindNames.add(ROW_KIND_MONTH_READ, BookCatalogueApp.getResourceString(R.string.read_month));
 		mRowKindNames.add(ROW_KIND_DAY_READ, BookCatalogueApp.getResourceString(R.string.read_day));
 		mRowKindNames.add(ROW_KIND_LOCATION, BookCatalogueApp.getResourceString(R.string.location));
-		mRowKindNames.add(ROW_KIND_LANGUAGE, BookCatalogueApp.getResourceString(R.string.language));
+		mRowKindNames.add(ROW_KIND_LANGUAGE, BookCatalogueApp.getResourceString(R.string.label_language));
 		mRowKindNames.add(ROW_KIND_UPDATE_DAY, BookCatalogueApp.getResourceString(R.string.update_day));
 		mRowKindNames.add(ROW_KIND_UPDATE_MONTH, BookCatalogueApp.getResourceString(R.string.update_month));
 		mRowKindNames.add(ROW_KIND_UPDATE_YEAR, BookCatalogueApp.getResourceString(R.string.update_year));
@@ -234,7 +234,7 @@ public class BooklistGroup implements Serializable {
 		/** mAllSeries Parameter values and descriptions */
 		private static ItemEntries<Boolean> mAllSeriesItems = new ItemEntries<Boolean>();
 		static {
-			String kind = BookCatalogueApp.getResourceString(R.string.series);
+			String kind = BookCatalogueApp.getResourceString(R.string.label_series);
 			mAllSeriesItems.add(null, R.string.use_default_setting);
 			mAllSeriesItems.add(false, R.string.show_book_under_primary_thing, kind);
 			mAllSeriesItems.add(true, R.string.show_book_under_each_thing, kind);
@@ -304,7 +304,7 @@ public class BooklistGroup implements Serializable {
 		public transient BooleanListProperty mAllAuthors;		
 		private static ItemEntries<Boolean> mAllAuthorsItems = new ItemEntries<Boolean>();
 		static {
-			String kind = BookCatalogueApp.getResourceString(R.string.author);
+			String kind = BookCatalogueApp.getResourceString(R.string.label_author);
 			mAllAuthorsItems.add(null, R.string.use_default_setting);
 			mAllAuthorsItems.add(false, R.string.show_book_under_primary_thing, kind);
 			mAllAuthorsItems.add(true, R.string.show_book_under_each_thing, kind);

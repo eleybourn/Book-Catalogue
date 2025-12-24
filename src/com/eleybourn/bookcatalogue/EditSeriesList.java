@@ -73,7 +73,7 @@ public class EditSeriesList extends EditObjectList<Series> {
 		try {
 			
 			mSeriesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, mDbHelper.fetchAllSeriesArray());
-			((AutoCompleteTextView)this.findViewById(R.id.series)).setAdapter(mSeriesAdapter);
+			((AutoCompleteTextView)this.findViewById(R.id.field_series)).setAdapter(mSeriesAdapter);
 			
 		} catch (Exception e) {
 			Logger.logError(e);
@@ -82,7 +82,7 @@ public class EditSeriesList extends EditObjectList<Series> {
 	
 	@Override
 	protected void onAdd(View v) {
-		AutoCompleteTextView t = ((AutoCompleteTextView)EditSeriesList.this.findViewById(R.id.series));
+		AutoCompleteTextView t = ((AutoCompleteTextView)EditSeriesList.this.findViewById(R.id.field_series));
 		String s = t.getText().toString().trim();
 		if (s.length() > 0) {
 			EditText et = ((EditText)EditSeriesList.this.findViewById(R.id.series_num));
@@ -124,7 +124,7 @@ public class EditSeriesList extends EditObjectList<Series> {
 		dialog.setContentView(R.layout.edit_book_series);
 		dialog.setTitle(R.string.edit_book_series);
 
-		AutoCompleteTextView seriesView = (AutoCompleteTextView) dialog.findViewById(R.id.series);
+		AutoCompleteTextView seriesView = (AutoCompleteTextView) dialog.findViewById(R.id.field_series);
 		seriesView.setText(series.name);
 		seriesView.setAdapter(mSeriesAdapter);
 
@@ -132,13 +132,13 @@ public class EditSeriesList extends EditObjectList<Series> {
 		numView.setText(series.num);
 
 		setTextOrHideView(dialog.findViewById(R.id.title_label), mBookTitleLabel);
-		setTextOrHideView(dialog.findViewById(R.id.title), mBookTitle);
+		setTextOrHideView(dialog.findViewById(R.id.field_title), mBookTitle);
 
-		Button saveButton = (Button) dialog.findViewById(R.id.confirm);
+		Button saveButton = (Button) dialog.findViewById(R.id.button_confirm);
 		saveButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				AutoCompleteTextView seriesView = (AutoCompleteTextView) dialog.findViewById(R.id.series);
+				AutoCompleteTextView seriesView = (AutoCompleteTextView) dialog.findViewById(R.id.field_series);
 				EditText numView = (EditText) dialog.findViewById(R.id.series_num);
 				String newName = seriesView.getText().toString().trim();
 				if (newName == null || newName.length() == 0) {
@@ -150,7 +150,7 @@ public class EditSeriesList extends EditObjectList<Series> {
 				dialog.dismiss();
 			}
 		});
-		Button cancelButton = (Button) dialog.findViewById(R.id.cancel);
+		Button cancelButton = (Button) dialog.findViewById(R.id.button_cancel);
 		cancelButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -234,7 +234,7 @@ public class EditSeriesList extends EditObjectList<Series> {
 	
 	@Override
 	protected boolean onSave(Intent intent) {
-		final AutoCompleteTextView t = ((AutoCompleteTextView)EditSeriesList.this.findViewById(R.id.series));
+		final AutoCompleteTextView t = ((AutoCompleteTextView)EditSeriesList.this.findViewById(R.id.field_series));
 		Resources res = this.getResources();
 		String s = t.getText().toString().trim();
 		if (s.length() > 0) {
@@ -245,7 +245,7 @@ public class EditSeriesList extends EditObjectList<Series> {
 			alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, res.getText(R.string.yes), new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
 					t.setText("");
-					findViewById(R.id.confirm).performClick();
+					findViewById(R.id.button_confirm).performClick();
 				}
 			}); 
 			

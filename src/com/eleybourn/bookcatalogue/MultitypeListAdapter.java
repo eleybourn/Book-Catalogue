@@ -31,8 +31,7 @@ import com.eleybourn.bookcatalogue.widgets.FastScroller.SectionIndexerV2;
 
 /**
  * Cursor adapter for flattened multi-typed ListViews. Simplifies the implementation of such lists.
- * 
- * Users of this class need to implement MultitypeListHandler to manage the creation and display of 
+ * Users of this class need to implement MultitypeListHandler to manage the creation and display of
  * each view.
  * 
  * @author Philip Warner
@@ -74,9 +73,9 @@ public class MultitypeListAdapter extends CursorAdapter implements SectionIndexe
 		// NOTE: It DOES NOT fix the error; just gathers more debug info
 		//
 		if (cursor.isClosed()) {
-			throw new RuntimeException("Attempt to get type of item on closed cursor (" + cursor.toString() + ")");
+			throw new RuntimeException("Attempt to get type of item on closed cursor (" + cursor + ")");
 		} else if (position >= cursor.getCount()) {
-			throw new RuntimeException("Attempt to get type of item beyond end of cursor (" + cursor.toString() + ")");
+			throw new RuntimeException("Attempt to get type of item beyond end of cursor (" + cursor + ")");
 		} else {
 			cursor.moveToPosition(position);
 			return mHandler.getItemViewType(cursor);			

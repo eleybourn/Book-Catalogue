@@ -23,7 +23,6 @@ import com.google.android.gms.vision.barcode.BarcodeDetector;
 import java.io.IOException;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 /**
@@ -103,33 +102,33 @@ public class ScannerActivity
 		});
 
 
-		barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
-			@Override
-			public void release() {
-			}
+		barcodeDetector.setProcessor(new Detector.Processor<>() {
+            @Override
+            public void release() {
+            }
 
-			@Override
-			public void receiveDetections(@NonNull Detector.Detections<Barcode> detections) {
+            @Override
+            public void receiveDetections(@NonNull Detector.Detections<Barcode> detections) {
 
-				final SparseArray<Barcode> barcodes = detections.getDetectedItems();
+                final SparseArray<Barcode> barcodes = detections.getDetectedItems();
 
-				if (barcodes.size() != 0) {
-					// Use the post method of the TextView
-					mCameraView.post(() -> {
-						int sz = barcodes.size();
-						for (int i = 0; i < sz; i++) {
-							Barcode bc = barcodes.get(barcodes.keyAt(i));
-							if (bc.isRecognized && IsbnUtils.isValid(bc.displayValue)) {
-								Intent intent = getIntent();
-								intent.putExtra(KEY_ISBN, bc.displayValue);
-								setResult(Activity.RESULT_OK, intent);
-								finish();
-							}
-						}
-					});
-				}
-			}
-		});
+                if (barcodes.size() != 0) {
+                    // Use the post method of the TextView
+                    mCameraView.post(() -> {
+                        int sz = barcodes.size();
+                        for (int i = 0; i < sz; i++) {
+                            Barcode bc = barcodes.get(barcodes.keyAt(i));
+                            if (bc.isRecognized && IsbnUtils.isValid(bc.displayValue)) {
+                                Intent intent = getIntent();
+                                intent.putExtra(KEY_ISBN, bc.displayValue);
+                                setResult(Activity.RESULT_OK, intent);
+                                finish();
+                            }
+                        }
+                    });
+                }
+            }
+        });
 	}
 
 	@Override

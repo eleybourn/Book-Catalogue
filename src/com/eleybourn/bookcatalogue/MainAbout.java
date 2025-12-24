@@ -28,14 +28,11 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.TextView;
 
 import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.google.android.material.appbar.MaterialToolbar;
-
-import java.util.Objects;
 
 /**
  * 
@@ -61,12 +58,8 @@ public class MainAbout extends BookCatalogueActivity {
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.main_about);
             MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
-            setSupportActionBar(topAppBar);
             topAppBar.setTitle(R.string.app_name);
-            topAppBar.setNavigationOnClickListener((View.OnClickListener) this); {
-                // Define your back action here
-                getOnBackPressedDispatcher().onBackPressed();
-            }
+            topAppBar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
             setupContributors();
 			setupAdmin();

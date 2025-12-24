@@ -52,9 +52,9 @@ public class PropertyGroup {
 	/** Global PropertyGroup definition */
 	public static final PropertyGroup GRP_EXTRA_BOOK_DETAILS = mGroups.addGroup(GRP_EXTRA_BOOK_DETAILS_ID, R.string.extra_book_details, 100);
 	/** Global PropertyGroup definition */
-	public static final PropertyGroup GRP_AUTHOR = mGroups.addGroup(GRP_AUTHOR_ID, R.string.author, 50);
+	public static final PropertyGroup GRP_AUTHOR = mGroups.addGroup(GRP_AUTHOR_ID, R.string.label_author, 50);
 	/** Global PropertyGroup definition */
-	public static final PropertyGroup GRP_SERIES = mGroups.addGroup(GRP_SERIES_ID, R.string.series, 50);
+	public static final PropertyGroup GRP_SERIES = mGroups.addGroup(GRP_SERIES_ID, R.string.label_series, 50);
 	/** Global PropertyGroup definition */
 	public static final PropertyGroup GRP_EXTRA_FILTERS = mGroups.addGroup(GRP_EXTRA_FILTERS_ID, R.string.extra_filters, 70);
 	/** Global PropertyGroup definition */

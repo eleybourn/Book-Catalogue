@@ -25,13 +25,9 @@ import java.util.Hashtable;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnDismissListener;
 import android.content.SharedPreferences.Editor;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -117,38 +113,34 @@ public class HintManager {
 		dialog.setContentView(R.layout.hint_dialogue);
 
 		// Get the various Views
-        final TextView header = (TextView)dialog.findViewById(R.id.welcome);
-        final TextView msg = (TextView)dialog.findViewById(R.id.hint);
-		final CheckBox cb = (CheckBox)dialog.findViewById(R.id.hide_hint_checkbox); // new CheckBox(context);
-		final Button ok = (Button)dialog.findViewById(R.id.confirm);
+        final TextView header = dialog.findViewById(R.id.welcome);
+        final TextView msg = dialog.findViewById(R.id.hint);
+		final CheckBox cb = dialog.findViewById(R.id.hide_hint_checkbox); // new CheckBox(context);
+		final Button ok = dialog.findViewById(R.id.button_confirm);
 
 		// Setup the views
-        String headingText = BookCatalogueApp.context.getResources().getString(headingId, args);
-        header.setText(headingText);
+        if (headingId != null) {
+            String headingText = BookCatalogueApp.context.getResources().getString(headingId, args);
+            header.setText(headingText);
+        }
 		String hintText = BookCatalogueApp.context.getResources().getString(stringId, args);
 		msg.setText(Utils.linkifyHtml(hintText, Linkify.WEB_URLS));
 		// Automatically start a browser (or whatever)
 		msg.setMovementMethod(LinkMovementMethod.getInstance());
 
 		// Handle the 'OK' click
-		ok.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				dialog.dismiss();
-				// Disable hint if checkbox checked
-				if (cb.isChecked()) {
-					h.setVisibility(false);
-				}
-			}
-		});
+		ok.setOnClickListener(v -> {
+            dialog.dismiss();
+            // Disable hint if checkbox checked
+            if (cb.isChecked()) {
+                h.setVisibility(false);
+            }
+        });
 
-		dialog.setOnDismissListener(new OnDismissListener() {
-			@Override
-			public void onDismiss(DialogInterface dialog) {
-				if (postRun != null)
-					postRun.run();
-			}
-		});
+		dialog.setOnDismissListener(dialog1 -> {
+            if (postRun != null)
+                postRun.run();
+        });
 
 		dialog.show();
 		h.setHasBeenDisplayed(true);
@@ -163,7 +155,7 @@ public class HintManager {
 	 */
 	private static class Hints {
 		/** USed to lookup hint based on string ID */
-		private Hashtable<Integer, Hint> mHintsById = new Hashtable<Integer, Hint>();
+		private final Hashtable<Integer, Hint> mHintsById = new Hashtable<>();
 		/** Used to prevent two hints having the same preference name */
 		private Hashtable<String, Hint> mHintsByKey = new Hashtable<String, Hint>();
 

@@ -342,13 +342,13 @@ public class BooklistStyle implements Iterable<BooklistGroup>, Serializable {
 										PREF_LARGE_THUMBNAILS, false);
 		mXtraLargeThumbnails.setWeight(-99);		
 
-		mXtraShowBookshelves = new BooleanProperty("XBookshelves", PropertyGroup.GRP_EXTRA_BOOK_DETAILS, R.string.bookshelves, 
+		mXtraShowBookshelves = new BooleanProperty("XBookshelves", PropertyGroup.GRP_EXTRA_BOOK_DETAILS, R.string.label_bookshelves,
 										PREF_SHOW_BOOKSHELVES, false);
 		mXtraShowLocation = new BooleanProperty("XLocation", PropertyGroup.GRP_EXTRA_BOOK_DETAILS, R.string.location, 
 										PREF_SHOW_LOCATION, false);
-		mXtraShowPublisher = new BooleanProperty("XPublisher", PropertyGroup.GRP_EXTRA_BOOK_DETAILS, R.string.publisher, 
+		mXtraShowPublisher = new BooleanProperty("XPublisher", PropertyGroup.GRP_EXTRA_BOOK_DETAILS, R.string.label_publisher,
 										PREF_SHOW_PUBLISHER, false);
-		mXtraShowAuthor = new BooleanProperty("XAuthor", PropertyGroup.GRP_EXTRA_BOOK_DETAILS, R.string.author,
+		mXtraShowAuthor = new BooleanProperty("XAuthor", PropertyGroup.GRP_EXTRA_BOOK_DETAILS, R.string.label_author,
 										PREF_SHOW_AUTHOR, false);
 		mXtraReadUnreadAll = new IntegerListProperty(mReadFilterListItems, "XReadUnreadAll", PropertyGroup.GRP_EXTRA_FILTERS, R.string.select_based_on_read_status, FILTER_READ_AND_UNREAD);
 

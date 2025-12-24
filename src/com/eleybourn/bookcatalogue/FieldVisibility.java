@@ -84,11 +84,11 @@ public class FieldVisibility extends BookCatalogueActivity {
 				CatalogueDBAdapter.KEY_LOCATION, CatalogueDBAdapter.KEY_READ_START, CatalogueDBAdapter.KEY_READ_END, 
 				CatalogueDBAdapter.KEY_FORMAT, CatalogueDBAdapter.KEY_SIGNED, CatalogueDBAdapter.KEY_DESCRIPTION, 
 				CatalogueDBAdapter.KEY_GENRE, DatabaseDefinitions.DOM_LANGUAGE.name};
-		int[] fieldRs = {R.string.author, R.string.title, R.string.thumbnail, R.string.isbn, R.string.series, R.string.series_num, 
-				R.string.publisher, R.string.date_published, R.string.bookshelf, R.string.pages, R.string.list_price,
-				R.string.read, R.string.rating, R.string.notes, R.string.anthology, R.string.location_of_book, 
-				R.string.read_start, R.string.read_end, R.string.format, R.string.signed, R.string.description, 
-				R.string.genre, R.string.language};
+		int[] fieldRs = {R.string.label_author, R.string.label_title, R.string.thumbnail, R.string.label_isbn, R.string.label_series, R.string.label_series_num,
+				R.string.label_publisher, R.string.label_date_published, R.string.bookshelf, R.string.label_pages, R.string.label_list_price,
+				R.string.read, R.string.rating, R.string.label_notes, R.string.anthology, R.string.location_of_book,
+				R.string.read_start, R.string.read_end, R.string.label_format, R.string.signed, R.string.label_description,
+				R.string.label_genre, R.string.label_language};
 		boolean[] compulsory = {true, true, false, false, false, false, false, false, 
 				true, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
 		

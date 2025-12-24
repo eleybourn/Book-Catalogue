@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/fullscreenBackgroundColor"
+    android:background="@color/theme_surface"
     android:theme="@style/AppTheme"
     tools:context=".scanner.ScannerActivity">
 
@@ -16,7 +16,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:keepScreenOn="true"
-        android:textColor="?attr/fullscreenTextColor"
+        android:textColor="@color/theme_onSurface"
         android:textSize="50sp"
         android:textStyle="bold" />
 

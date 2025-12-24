@@ -34,7 +34,7 @@
         tools:ignore="NestedWeights">
 
         <TextView
-            android:id="@+id/description"
+            android:id="@+id/field_description"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"

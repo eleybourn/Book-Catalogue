@@ -47,13 +47,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/cancel" />
+                android:text="@string/button_cancel" />
 
             <Button
                 android:id="@+id/save"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/save" />
+                android:text="@string/button_save" />
         </LinearLayout>
     </RelativeLayout>

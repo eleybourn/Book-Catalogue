@@ -30,15 +30,15 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/author"
+                    android:text="@string/label_author"
                     android:textAppearance="?android:attr/textAppearanceSmall" />
 
                 <TextView
-                    android:id="@+id/author"
+                    android:id="@+id/field_author"
                     android:layout_width="fill_parent"
                     android:layout_height="0dip"
                     android:layout_weight="1"
-                    android:hint="@string/author"
+                    android:hint="@string/label_author"
                     android:singleLine="false"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
             </LinearLayout>
@@ -51,15 +51,15 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/title"
+                    android:text="@string/label_title"
                     android:textAppearance="?android:attr/textAppearanceSmall" />
 
                 <TextView
-                    android:id="@+id/title"
+                    android:id="@+id/field_title"
                     android:layout_width="fill_parent"
                     android:layout_height="0dip"
                     android:layout_weight="1"
-                    android:hint="@string/title"
+                    android:hint="@string/label_title"
                     android:singleLine="false"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
             </LinearLayout>
@@ -72,15 +72,15 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/isbn"
+                    android:text="@string/label_isbn"
                     android:textAppearance="?android:attr/textAppearanceSmall" />
 
                 <TextView
-                    android:id="@+id/isbn"
+                    android:id="@+id/field_isbn"
                     android:layout_width="fill_parent"
                     android:layout_height="0dip"
                     android:layout_weight="1"
-                    android:hint="@string/isbn"
+                    android:hint="@string/label_isbn"
                     android:singleLine="false"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
             </LinearLayout>
@@ -110,7 +110,7 @@
                 android:layout_height="0dip"
                 android:layout_weight="1"
                 android:hint="@string/text_and_or_isbn"
-                style="@style/bookOrSeriesTitleTextEntry"
+                style="@style/locale_field_text_title"
                 android:singleLine="false"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 

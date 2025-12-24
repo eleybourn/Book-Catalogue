@@ -36,7 +36,6 @@ import android.widget.TextView;
 
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.utils.Logger;
-import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * This class is called by the BookEdit activity and displays the Loaned Tab
@@ -127,7 +126,7 @@ public class BookEditLoaned extends BookEditFragmentAbstract {
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
-		Button mConfirmButton = (Button) sv.findViewById(R.id.confirm);
+		Button mConfirmButton = (Button) sv.findViewById(R.id.button_confirm);
 		mConfirmButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
 				String friend = saveLoan();
@@ -149,7 +148,7 @@ public class BookEditLoaned extends BookEditFragmentAbstract {
 
 		TextView mWhoText = (TextView) sv.findViewById(R.id.who);
 		mWhoText.setText(user);
-		Button mConfirmButton = (Button) sv.findViewById(R.id.confirm);
+		Button mConfirmButton = (Button) sv.findViewById(R.id.button_confirm);
 		mConfirmButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
 				removeLoan();
@@ -181,8 +180,8 @@ public class BookEditLoaned extends BookEditFragmentAbstract {
 	}
 
 	@Override
-	protected void onLoadBookDetails(BookData book, boolean setAllDone) {
-		if (!setAllDone)
+	protected void onLoadBookDetails(BookData book) {
+		if (!false)
 			mFields.setAll(book);
 		// TODO Auto-generated method stub
 		

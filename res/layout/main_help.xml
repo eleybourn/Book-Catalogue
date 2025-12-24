@@ -11,10 +11,7 @@
     <!-- CONTENT -->
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingTop="?attr/actionBarSize"
-        android:fillViewport="true">
+        style="@style/layout_scroll">
 
     <LinearLayout
         style="@style/layout_main" >

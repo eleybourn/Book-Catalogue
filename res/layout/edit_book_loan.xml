@@ -38,13 +38,13 @@
             android:layout_weight="1"
             android:completionThreshold="2"
             android:hint="@string/name"
-            style="@style/personalNameTextEntry" />
+            style="@style/locale_field_text_name" />
 
         <Button
-            android:id="@+id/confirm"
+            android:id="@+id/button_confirm"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:text="@string/confirm_add"
+            android:text="@string/button_confirm_add"
             android:width="150sp" />
     </LinearLayout>
 

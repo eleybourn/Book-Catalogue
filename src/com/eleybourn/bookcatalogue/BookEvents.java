@@ -130,12 +130,12 @@ public class BookEvents {
 			holder.event = this;
 			holder.rowId = cursor.getId();
 
-			holder.author = (TextView)view.findViewById(com.eleybourn.bookcatalogue.R.id.author);
+			holder.author = (TextView)view.findViewById(com.eleybourn.bookcatalogue.R.id.field_author);
 			holder.checkbox = (CheckBox)view.findViewById(com.eleybourn.bookcatalogue.R.id.checked);
 			holder.date = (TextView)view.findViewById(com.eleybourn.bookcatalogue.R.id.date);
 			holder.error = (TextView)view.findViewById(com.eleybourn.bookcatalogue.R.id.error);
 			holder.retry = (Button)view.findViewById(com.eleybourn.bookcatalogue.R.id.retry);
-			holder.title = ((TextView)view.findViewById(com.eleybourn.bookcatalogue.R.id.title));
+			holder.title = ((TextView)view.findViewById(com.eleybourn.bookcatalogue.R.id.field_title));
 
 			ViewTagger.setTag(view, R.id.TAG_BOOK_EVENT_HOLDER, holder);
 			ViewTagger.setTag(holder.checkbox, R.id.TAG_BOOK_EVENT_HOLDER, holder);

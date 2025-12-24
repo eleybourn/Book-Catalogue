@@ -83,7 +83,7 @@ public abstract class GenericTask extends RunnableTask {
 		holder.task = this;
 		holder.rowId = cursor.getId();
 
-		holder.description = (TextView)view.findViewById(R.id.description);
+		holder.description = (TextView)view.findViewById(R.id.field_description);
 		holder.state = (TextView)view.findViewById(R.id.state);
 		holder.retry_info = (TextView)view.findViewById(R.id.retry_info);
 		holder.error = (TextView)view.findViewById(R.id.error);

@@ -38,7 +38,7 @@
             android:text="@string/do_not_show_again" />
 
         <Button
-            android:id="@+id/confirm"
+            android:id="@+id/button_confirm"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_below="@+id/hide_hint_checkbox"

@@ -347,7 +347,7 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
 				return;
 			}
 		}); 
-		alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, this.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+		alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, this.getResources().getString(R.string.button_cancel), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				//do nothing
 				return;
@@ -417,8 +417,8 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
 	}
 
 	@Override
-	protected void onLoadBookDetails(BookData book, boolean setAllDone) {
-		if (!setAllDone)
+	protected void onLoadBookDetails(BookData book) {
+		if (!false)
 			mFields.setAll(book);
 	}
 

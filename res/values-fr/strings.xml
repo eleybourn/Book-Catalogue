@@ -14,7 +14,7 @@
     <string name="url_sourcecode">https://github.com/eleybourn/Book-Catalogue</string>
     <string name="url_help">https://github.com/eleybourn/Book-Catalogue/wiki/Help</string>
     <string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
-    <string name="series_num">No</string>
+    <string name="label_series_num">No</string>
 
     <string name="_empty_"></string>
 
@@ -105,24 +105,24 @@
     <string name="retry_x_of_y_next_at_z">Essai %1$s de %2$s, suivant à %3$s</string>
     <string name="label_insert">Ajouter un livre</string>
     <string name="menu_delete">Supprimer un livre</string>
-    <string name="author">Auteur</string>
-    <string name="title">Titre</string>
-    <string name="publisher">Éditeur</string>
-    <string name="date_published">Date de publication</string>
+    <string name="label_author">Auteur</string>
+    <string name="label_title">Titre</string>
+    <string name="label_publisher">Éditeur</string>
+    <string name="label_date_published">Date de publication</string>
     <string name="rating">Appreciation</string>
     <string name="bookshelf">Bibliothèque</string>
     <string name="read">Avez-vous lu ce livre ?</string>
-    <string name="series">Série</string>
-    <string name="pages">Pages</string>
-    <string name="confirm_add">Ajouter le livre ?</string>
+    <string name="label_series">Série</string>
+    <string name="label_pages">Pages</string>
+    <string name="button_confirm_add">Ajouter le livre ?</string>
     <string name="confirm_update">Mettre à jour</string>
-    <string name="nobooks">Il n\'y a pas de livre dans cette biblothèque. Veuillez en ajouter par le menu en bas de cet écran.</string>
+    <string name="para_no_books">Il n\'y a pas de livre dans cette biblothèque. Veuillez en ajouter par le menu en bas de cet écran.</string>
     <string name="menu_sort_by_author_expanded">Tout étendre</string>
     <string name="menu_sort_by">Trier par</string>
     <string name="menu_sort_by_author_collapsed">Tout réduire</string>
     <string name="label_search">Recherche</string>
-    <string name="cancel">Annuler</string>
-    <string name="confirm_save">Sauvegarder le livre</string>
+    <string name="button_cancel">Annuler</string>
+    <string name="button_confirm_save">Sauvegarder le livre</string>
     <string name="info_no_bookshelves">Vous n\'avez pas encore créé de bibliothèque. Veuillez en ajouter une par le menu en bas de cet écran.</string>
     <string name="menu_insert_bs">Créer une bibliothèque</string>
     <string name="confirm_add_bs">Ajouter une bibliothèque</string>
@@ -153,7 +153,7 @@
     <string name="edit_book">Modifier le livre</string>
     <string name="edit_book_notes">Votre commentaire</string>
     <string name="edit_book_friends">Prêter le livre</string>
-    <string name="notes">Notes</string>
+    <string name="label_notes">Notes</string>
     <string name="loaned_to">Ce livre a été prêté à :</string>
     <string name="nobody">Personne</string>
     <string name="loan_to">Prêter le livre à :</string>
@@ -169,7 +169,7 @@
     <string name="sortby_loan">Trier par prêts</string>
     <string name="sortby_unread">Trier par statut de lecture</string>
     <string name="sortby_genre">Trier par genre</string>
-    <string name="list_price">Liste de prix</string>
+    <string name="label_list_price">Liste de prix</string>
     <string name="label_update_fields">Mise à jour automatique des champs</string>
     <string name="select_fields_to_update">Sélection des champs à mettre à jour</string>
     <string name="select_fields_to_update_help">Les champs sélectionnés vont être mis à jour à partir d\'Internet. Les champs non sélectionnés ne seront pas modifiés.</string>
@@ -183,11 +183,11 @@
     <string name="label_help">Aide</string>
     <string name="label_manage_fields">Gérer la visibilité des champs</string>
     <string name="manage_fields_help">Les champs sélectionnés sont visibles dans les écrans d\'ajout et d\'édition des livres. Les champs non sélectionnés sont cachés.</string>
-    <string name="edit_book_anthology">Titres de l\'anthologie</string>
+    <string name="label_anthology">Titres de l\'anthologie</string>
     <string name="label_amazon_wishlist">Idées cadeaux Amazon</string>
     <string name="same_author">Toutes les histoires de cette anthologie sont écrites par le même auteur.</string>
     <string name="menu_delete_anthology">Supprimer ce titre de l\'anthologie</string>
-    <string name="is_anthology">Ce livre est-il une anthologie ?</string>
+    <string name="label_is_anthology">Ce livre est-il une anthologie ?</string>
     <string name="populate_anthology_titles">Renseigner les titres automatiquement (expérimental)</string>
     <string name="automatic_population_failed">La recherche automatique des titres a échoué.</string>
     <string name="anthology">Anthologie</string>
@@ -211,15 +211,15 @@
     <string name="backup_title">Sauvegarder ?</string>
     <string name="searching_google_books">Recherche en cours sur Google Books</string>
     <string name="searching_library_thing">Recherche en cours sur LibraryThing</string>
-    <string name="bookshelves">Bibliothèques</string>
-    <string name="format">Format</string>
+    <string name="label_bookshelves">Bibliothèques</string>
+    <string name="label_format">Format</string>
     <string name="format1">Livre de poche</string>
     <string name="format2">Couverture cartonnée</string>
     <string name="format3">eBook</string>
     <string name="format4">Livre audio</string>
     <string name="format5">Guide</string>
-    <string name="description">Description</string>
-    <string name="genre">Genre</string>
+    <string name="label_description">Description</string>
+    <string name="label_genre">Genre</string>
     <string name="not_set">Non défini</string>
     <string name="menu_search">Rechercher des livres</string>
     <string name="isbn_name_search_help">L\'ajout de livres par ISBN est plus précis que par auteur ou titre, et généralement préférable. Rappelez-vous qu\'il est parfois possible de trouver le bon code barre à l\'intérieur de la couverture.\n\n</string>
@@ -239,15 +239,15 @@
     <string name="file_must_contain_any_column">Le fichier doit contenir au moins une des colonnes suivantes : %s</string>
     <string name="column_is_blank">La colonne %1$s est vide à la ligne %2$s</string>
     <string name="columns_are_blank">Les colonnes %1$s sont toutes vides à la ligne %2$d</string>
-    <string name="save">Sauvegarder</string>
-    <string name="add">Ajouter</string>
-    <string name="noauthors">Il n\'y a pas d\'auteur pour ce livre. Veuillez en ajouter un en utilisant la zone de texte et le bouton en haut de cet écran.</string>
-    <string name="noseries">Il n\'y a pas de série pour ce livre. Vous pouvez en ajouter une en utilisant la zone de texte et le bouton en haut de cet écran.</string>
+    <string name="button_save">Sauvegarder</string>
+    <string name="label_add">Ajouter</string>
+    <string name="para_no_authors">Il n\'y a pas d\'auteur pour ce livre. Veuillez en ajouter un en utilisant la zone de texte et le bouton en haut de cet écran.</string>
+    <string name="para_no_series">Il n\'y a pas de série pour ce livre. Vous pouvez en ajouter une en utilisant la zone de texte et le bouton en haut de cet écran.</string>
     <string name="cover_not_set">Couverture non définie</string>
     <string name="cover_corrupt">Couverture corrompue</string>
     <string name="cover_detail">Détails de la couverture</string>
     <string name="select_picture">Choisissez une image</string>
-    <string name="set_authors">Définir les auteurs&#8230;</string>
+    <string name="label_set_authors">Définir les auteurs&#8230;</string>
     <string name="and_others">et cie.</string>
     <string name="set_series">Définir la série&#8230;</string>
     <string name="author_already_in_list">L\'auteur est déjà dans la liste</string>
@@ -259,10 +259,10 @@
     <string name="num_books_searched">%s livres recherchés</string>
     <string name="cancelled_info">Annulé - %s</string>
     <string name="edit_book_series">Modifier les séries</string>
-    <string name="family_name">Nom de famille</string>
-    <string name="given_names">Prénoms</string>
+    <string name="label_family_name">Nom de famille</string>
+    <string name="label_given_names">Prénoms</string>
     <string name="edit_author_details">Modifier les détails de l\'auteur</string>
-    <string name="immediate_global_changes">Note : toutes les modifications sont prises en compte immédiatement et globalement.</string>
+    <string name="para_immediate_global_changes">Note : toutes les modifications sont prises en compte immédiatement et globalement.</string>
     <string name="menu_replace_thumb">Remplacer la vignette&#8230;</string>
     <string name="author_required">Au moins un auteur doit être spécifié</string>
     <string name="title_required">un titre non vide doit être spécifié</string>
@@ -387,7 +387,7 @@
     <string name="book_no_longer_exists">Le livre demandé n\'existe plus</string>
     <string name="please_enter_search_criteria">Merci d\'entrer vos critères de recherche</string>
     <string name="error_while_searching">Erreur lors de la recherche.</string>
-    <string name="x_of_y">%1$s de %2$s</string>
+    <string name="x_of_y">%1$d de %2$d</string>
     <string name="send_all_to_goodreads_result">%1$s livres traités : %2$s envoyés avec succès, %3$s sans ISBN et %4$s avec ISBN mais non trouvés sur Goodreads</string>
     <string name="send_book_to_goodreads">Envoyer le livre %1$s à Goodreads</string>
     <string name="label_erase_cover_cache">Effacer le cache des couvertures</string>
@@ -634,9 +634,9 @@
         passer d\'un livre à l\'autre, et vous pouvez modifier le livre via le menu « options » ou en cliquant sur l\'icône da la barre de navigation.
 	</string>
     <!-- This is the heading of the 'Details' tab when editing a book. It needs to be short. "Book Details" is too long. -->
-    <string name="details">Détails</string>
+    <string name="label_details">Détails</string>
     <!-- This is the heading of the 'Loan' tab when editing a book. It needs to be short. "Loan Book" is too long. -->
-    <string name="loan">Prêt</string>
+    <string name="label_loan">Prêt</string>
     <!-- Hint displayed when an export or database backup is done -->
     <!-- Button text on the Goodreads activity; only displayed after user has registered -->
     <string name="forget_credentials">Suppr. les données de connexion</string>
@@ -722,7 +722,7 @@
 
     <!-- Begin: Added/Updated in 5.0.4 -->
     <!-- Short Heading for 'Language' field in book details -->
-    <string name="language">Langue</string>
+    <string name="label_language">Langue</string>
     <string name="new_in_504">
 		<![CDATA[
 			<p><b>Nouveau dans la version 5.0.4</b>\n\n

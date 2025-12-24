@@ -19,66 +19,66 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:text="@string/family_name"
+            android:text="@string/label_family_name"
             android:textSize="12sp" />
 
         <EditText
-            android:id="@+id/family_name"
+            android:id="@+id/field_family_name"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:completionThreshold="2"
-            android:hint="@string/family_name"
+            android:hint="@string/label_family_name"
             android:inputType="textCapSentences" />
 
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:text="@string/given_names"
+            android:text="@string/label_given_names"
             android:textSize="12sp" />
 
         <EditText
-            android:id="@+id/given_names"
+            android:id="@+id/field_given_names"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="@string/given_names"
+            android:hint="@string/label_given_names"
             android:inputType="textCapSentences"
             android:singleLine="true" />
     </LinearLayout>
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/field_title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/top_buttons"
-        android:hint="@string/title"
+        android:hint="@string/label_title"
         android:paddingBottom="@dimen/p_md"
         android:paddingTop="@dimen/p_md"
-        android:text="@string/immediate_global_changes"
+        android:text="@string/para_immediate_global_changes"
         android:textSize="16sp" />
 
     <LinearLayout
         android:id="@+id/bottom_buttons"
         android:layout_width="fill_parent"
         android:layout_height="60sp"
-        android:layout_below="@+id/title"
+        android:layout_below="@+id/field_title"
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/cancel"
+            android:id="@+id/button_cancel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/cancel" />
+            android:text="@string/button_cancel" />
 
         <Button
-            android:id="@+id/confirm"
+            android:id="@+id/button_confirm"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/save" />
+            android:text="@string/button_save" />
     </LinearLayout>
 
 </RelativeLayout>

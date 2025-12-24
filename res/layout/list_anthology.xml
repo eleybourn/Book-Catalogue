@@ -11,7 +11,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:text="@string/edit_book_anthology"
+        android:text="@string/label_anthology"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <CheckBox
@@ -29,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:text="@string/anthology_add" />
 
     <EditText
@@ -37,19 +37,19 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_toLeftOf="@id/row_add"
-        android:hint="@string/title"
-        style="@style/bookOrSeriesTitleTextEntry" />
+        android:hint="@string/label_title"
+        style="@style/locale_field_text_title" />
 
     <AutoCompleteTextView
         android:id="@+id/add_author"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/add_title"
-        android:layout_alignParentLeft="true"
-        android:hint="@string/author"
-        style="@style/personalNameTextEntry"
+        android:layout_alignParentStart="true"
+        android:hint="@string/label_author"
+        style="@style/locale_field_text_name"
         android:paddingLeft="10dp" />
 
     <LinearLayout

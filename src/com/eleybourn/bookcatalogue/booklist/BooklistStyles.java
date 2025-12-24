@@ -187,7 +187,7 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 		style.addGroup(ROW_KIND_SERIES);
 
 		// Format
-		style = new BooklistStyle(R.string.format);
+		style = new BooklistStyle(R.string.label_format);
 		styles.add(style);
 		style.addGroup(ROW_KIND_FORMAT);
 
@@ -206,7 +206,7 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 		style.addGroup(ROW_KIND_SERIES);
 
 		// Location
-		style = new BooklistStyle(R.string.language);
+		style = new BooklistStyle(R.string.label_language);
 		styles.add(style);
 		style.addGroup(ROW_KIND_LANGUAGE);
 		style.addGroup(ROW_KIND_AUTHOR);

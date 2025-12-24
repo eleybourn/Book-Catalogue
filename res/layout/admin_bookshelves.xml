@@ -10,18 +10,11 @@
     <!-- CONTENT -->
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingTop="?attr/actionBarSize"
-        android:fillViewport="true">
+        style="@style/layout_scroll">
 
         <LinearLayout
             android:id="@+id/root"
             style="@style/layout_main">
-
-            <TextView
-                style="@style/layout_title"
-                android:text="@string/label_bookshelf" />
 
             <ListView
                 android:id="@+id/list"

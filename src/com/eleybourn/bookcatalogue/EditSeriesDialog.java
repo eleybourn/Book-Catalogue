@@ -48,7 +48,7 @@ public class EditSeriesDialog {
 		dialog.setContentView(R.layout.edit_series);
 		dialog.setTitle(R.string.edit_series);
 
-		AutoCompleteTextView seriesView = (AutoCompleteTextView) dialog.findViewById(R.id.series);
+		AutoCompleteTextView seriesView = (AutoCompleteTextView) dialog.findViewById(R.id.field_series);
 		try {
 			seriesView.setText(series.name);
 		} catch (NullPointerException e) {
@@ -56,11 +56,11 @@ public class EditSeriesDialog {
 		}
 		seriesView.setAdapter(mSeriesAdapter);
 
-		Button saveButton = (Button) dialog.findViewById(R.id.confirm);
+		Button saveButton = (Button) dialog.findViewById(R.id.button_confirm);
 		saveButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				AutoCompleteTextView seriesView = (AutoCompleteTextView) dialog.findViewById(R.id.series);
+				AutoCompleteTextView seriesView = (AutoCompleteTextView) dialog.findViewById(R.id.field_series);
 				String newName = seriesView.getText().toString().trim();
 				if (newName == null || newName.length() == 0) {
 					Toast.makeText(mContext, R.string.series_is_blank, Toast.LENGTH_LONG).show();
@@ -71,7 +71,7 @@ public class EditSeriesDialog {
 				dialog.dismiss();
 			}
 		});
-		Button cancelButton = (Button) dialog.findViewById(R.id.cancel);
+		Button cancelButton = (Button) dialog.findViewById(R.id.button_cancel);
 		cancelButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {

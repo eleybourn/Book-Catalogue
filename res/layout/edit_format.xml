@@ -11,8 +11,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:completionThreshold="2"
-        android:hint="@string/format"
-        style="@style/bookOrSeriesTitleTextEntry"
+        android:hint="@string/label_format"
+        style="@style/locale_field_text_title"
         android:paddingLeft="@dimen/p_md" />
 
     <LinearLayout
@@ -23,18 +23,18 @@
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/cancel"
+            android:id="@+id/button_cancel"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/cancel" />
+            android:text="@string/button_cancel" />
 
         <Button
-            android:id="@+id/confirm"
+            android:id="@+id/button_confirm"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/save" />
+            android:text="@string/button_save" />
     </LinearLayout>
 
 </RelativeLayout>

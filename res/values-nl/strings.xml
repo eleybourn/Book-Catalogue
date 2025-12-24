@@ -5,25 +5,25 @@
     <string name="system_app_name">Book Catalogue</string>
     <string name="label_insert">Boek Toevoegen</string>
     <string name="menu_delete">Boek verwijderen</string>
-    <string name="author">Auteur</string>
-    <string name="title">Titel</string>
-    <string name="isbn">ISBN</string>
-    <string name="publisher">Uitgever</string>
-    <string name="date_published">Datum uitgave</string>
+    <string name="label_author">Auteur</string>
+    <string name="label_title">Titel</string>
+    <string name="label_isbn">ISBN</string>
+    <string name="label_publisher">Uitgever</string>
+    <string name="label_date_published">Datum uitgave</string>
     <string name="rating">Waardering</string>
     <string name="bookshelf">Boekenplank</string>
     <string name="read">Heeft u dit boek gelezen?</string>
-    <string name="series">Serie</string>
-    <string name="pages">Pagina\'s</string>
-    <string name="confirm_add">Boek toevoegen</string>
+    <string name="label_series">Serie</string>
+    <string name="label_pages">Pagina\'s</string>
+    <string name="button_confirm_add">Boek toevoegen</string>
     <string name="confirm_update">Bijwerken</string>
-    <string name="nobooks">Er staan geen boeken op deze boekenplank. Voeg er een paar toe via het menu onderaan dit scherm.</string>
+    <string name="para_no_books">Er staan geen boeken op deze boekenplank. Voeg er een paar toe via het menu onderaan dit scherm.</string>
     <string name="menu_sort_by_author_expanded">Alles uitklappen</string>
     <string name="menu_sort_by">Sorteren op</string>
     <string name="menu_sort_by_author_collapsed">Alles inklappen</string>
     <string name="label_search">Zoeken</string>
-    <string name="cancel">Annuleren</string>
-    <string name="confirm_save">Boek opslaan</string>
+    <string name="button_cancel">Annuleren</string>
+    <string name="button_confirm_save">Boek opslaan</string>
     <string name="info_no_bookshelves">U heef nog geen boekenplank aangemaakt. Voeg er een toe via het menu onderaan dit scherm.</string>
     <string name="menu_insert_bs">Boekenplank maken</string>
     <string name="confirm_add_bs">Toevoegen Boekenplank</string>
@@ -40,7 +40,7 @@
     <string name="search_label">Zoeken naar boeken</string>
     <string name="search_hint">zoeken naar auteurs of titels</string>
     <string name="book_not_found">Het gescande boek is niet gevonden. U kunt de juiste streepjescode aan de achterkant van de omslag vinden. Vul anders de gegevens handmatig in.</string>
-    <string name="series_num">#</string>
+    <string name="label_series_num">#</string>
     <string name="import_data">Boeken Importeren</string>
     <string name="import_alert">Waarschuwing. Het importeren van gegevens kan bestaande boekgegevens onbedoeld bijwerken met nieuwe informatie als de UUID-kolom niet aanwezig is en de id in het import-bestand dezelfde is als het bestaande id. Dit is meestal geen bezwaar als u een veld in een exportbestand heeft veranderd. Als u een nieuwe boek item heeft gemaakt, of iemand anders zijn boeken importeert, zorg dan dat het UUID veld aanwezig is of dat het id veld leeg is.</string>
     <string name="import_failed_is_location_correct">FOUT: Import van gegevens (van SD kaart) mislukt. Staat het bestand op de juiste plaats?</string>
@@ -56,7 +56,7 @@
     <string name="edit_book">Boek bewerken</string>
     <string name="edit_book_notes">Mijn Commentaar</string>
     <string name="edit_book_friends">Boek uitlenen</string>
-    <string name="notes">Notities</string>
+    <string name="label_notes">Notities</string>
     <string name="loaned_to">Dit boek is uitgeleend aan:</string>
     <string name="nobody">Niemand</string>
     <string name="loan_to">Leen boek aan:</string>
@@ -78,7 +78,7 @@
     <string name="sortby_loan">Sorteer op Uitgeleend</string>
     <string name="sortby_unread">Sorteer op Ongelezen</string>
     <string name="sortby_genre">Sorteer op genre</string>
-    <string name="list_price">Prijs</string>
+    <string name="label_list_price">Prijs</string>
     <string name="label_update_fields">Automatisch Velden bijwerken</string>
     <string name="select_fields_to_update">Selecteer bij te werken velden</string>
     <string name="select_fields_to_update_help">De geselecteerde velden zullen worden bijgewerkt vanaf het internet. Niet geselecteerde velden blijven onveranderd.</string>
@@ -92,11 +92,11 @@
     <string name="label_help">Help</string>
     <string name="label_manage_fields">Zichtbaarheid velden beheren</string>
     <string name="manage_fields_help">Geselecteerde velden zijn zichtbaar in de toevoegen/bewerken boekschermen. Ongeselecteerde velden zijn verborgen.</string>
-    <string name="edit_book_anthology">Bloemlezing titels</string>
+    <string name="label_anthology">Bloemlezing titels</string>
     <string name="label_amazon_wishlist">Amazon Verlanglijst</string>
     <string name="same_author">Alle verhalen in deze bloemlezing zijn geschreven door dezelfde auteur</string>
     <string name="menu_delete_anthology">Verwijder titels uit bloemlezing</string>
-    <string name="is_anthology">Is dit boek een bloemlezing?</string>
+    <string name="label_is_anthology">Is dit boek een bloemlezing?</string>
     <string name="populate_anthology_titles">Automatisch titels invullen (EXPERIMENTEEL)</string>
     <string name="automatic_population_failed">Automatisch titels invullen mislukt</string>
     <string name="anthology">Bloemlezing</string>
@@ -121,15 +121,15 @@
     <string name="searching_google_books">Zoeken bij Google Books</string>
     <string name="searching_library_thing">Zoeken bij LibraryThing</string>
     <string name="select_bookshelves">Selecteer Boekenplanken</string>
-    <string name="format">Formaat</string>
+    <string name="label_format">Formaat</string>
     <string name="format1">Paperback</string>
     <string name="format2">Harde Kaft</string>
     <string name="format3">e-Book</string>
     <string name="format4">Gesproken boek</string>
     <string name="format5">Gids / Handboek</string>
     <!-- NOTE: Adding a new format will involve changing code that references this list -->
-    <string name="description">Beschrijving</string>
-    <string name="genre">Genre</string>
+    <string name="label_description">Beschrijving</string>
+    <string name="label_genre">Genre</string>
     <string name="not_set">Niet Ingevuld</string>
     <string name="menu_search">Zoek boeken</string>
     <string name="isbn_name_search_help">toevoegen van boeken via ISBN is veel preciezer dan toevoegen via auteur en titel en verdient meestal de voorkeur. De juiste streepjescode kunt u meestal vinden aan de achterkant van de boekomslag. \n\n</string>
@@ -149,15 +149,15 @@
     <string name="file_must_contain_any_column">Bestandsnaam moet een kolom met de volgende namen bevatten: %s</string>
     <string name="column_is_blank">Kolom %1$s is leeg op rij %2$s</string>
     <string name="columns_are_blank">Kolommen %1$s zijn allemaal leeg op rij %2$d</string>
-    <string name="save">Opslaan</string>
-    <string name="add">Toevoegen</string>
-    <string name="noauthors">Er zijn geen auteurs voor dit boek. Voeg er een toe met het tekstveld en de knop bovenin dit scherm.</string>
-    <string name="noseries">Er zijn geen series voor dit boek. U kunt er een toevoegen met het tekstveld en de knop bovenin dit scherm.</string>
+    <string name="button_save">Opslaan</string>
+    <string name="label_add">Toevoegen</string>
+    <string name="para_no_authors">Er zijn geen auteurs voor dit boek. Voeg er een toe met het tekstveld en de knop bovenin dit scherm.</string>
+    <string name="para_no_series">Er zijn geen series voor dit boek. U kunt er een toevoegen met het tekstveld en de knop bovenin dit scherm.</string>
     <string name="cover_not_set">Omslagafbeelding niet ingesteld</string>
     <string name="cover_corrupt">Omslagafbeelding is niet geldig</string>
     <string name="cover_detail">Omslagafbeelding detail</string>
     <string name="select_picture">Selecteer afbeelding</string>
-    <string name="set_authors">Invullen auteurs&#8230;</string>
+    <string name="label_set_authors">Invullen auteurs&#8230;</string>
     <string name="and_others">et. al.</string>
     <string name="set_series">Invullen Serie&#8230;</string>
     <string name="author_already_in_list">Auteur staat al in de lijst</string>
@@ -169,10 +169,10 @@
     <string name="num_books_searched">%s Boeken gezocht</string>
     <string name="cancelled_info">Geannuleerd - %s</string>
     <string name="edit_book_series">Bewerken van boekseries</string>
-    <string name="family_name">Achternaam</string>
-    <string name="given_names">Voornamen</string>
+    <string name="label_family_name">Achternaam</string>
+    <string name="label_given_names">Voornamen</string>
     <string name="edit_author_details">Bewerken auteurdetails</string>
-    <string name="immediate_global_changes">NB: Alle opgeslagen veranderingen worden direct en overal toegepast</string>
+    <string name="para_immediate_global_changes">NB: Alle opgeslagen veranderingen worden direct en overal toegepast</string>
     <string name="menu_replace_thumb">Vervangen miniatuur&#8230;</string>
     <string name="author_required">Er moet tenminste één auteur worden vermeld</string>
     <string name="title_required">Het titelveld mag niet leeg zijn</string>
@@ -300,7 +300,7 @@
     <string name="please_enter_search_criteria">Vul de zoekcriteria in</string>
     <string name="error_while_searching">Fout tijdens het zoeken.</string>
     <string name="send_all_to_goodreads_result">%1$s boeken verwerkt: %2$s met succes verzonden, %3$s zonder ISBN en %4$s met ISBN maar niet gevonden in goodreads</string>
-    <string name="x_of_y">%1$s van %2$s</string>
+    <string name="x_of_y">%1$d van %2$d</string>
     <string name="send_book_to_goodreads">Zend boek %1$s naar goodreads</string>
     <string name="label_erase_cover_cache">Wis boekomslag cache</string>
     <string name="crash_toast_text">BookCatalogue is onverwacht gecrasht. Help ons aub de toepassing beter te maken door deze crash te melden.</string>
@@ -334,7 +334,7 @@
     <string name="label_booklist_preferences">Boekenlijst Voorkeuren</string>
     <string name="extra_book_details">Extra boekdetails</string>
     <string name="general">Algemeen</string>
-    <string name="bookshelves">Boekenplanken</string>
+    <string name="label_bookshelves">Boekenplanken</string>
     <string name="shelves">Planken</string>
     <string name="location">Locatie</string>
     <string name="label_data_import_export">Gegevens Import/Export</string>
@@ -622,9 +622,9 @@ Zie "Meer voorkeuren" voor de relevante instelling.
 </string>
 
     <!-- This is the heading of the 'Details' tab when editing a book. It needs to be short. "Book Details" is too long. -->
-    <string name="details">Details</string>
+    <string name="label_details">Details</string>
     <!-- This is the heading of the 'Loan' tab when editing a book. It needs to be short. "Loan Book" is too long. -->
-    <string name="loan">Uitleen</string>
+    <string name="label_loan">Uitleen</string>
 
     <!-- Hint displayed when an export or database backup is done -->
 
@@ -734,7 +734,7 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     <!-- Begin: Added/Updated in 5.0.4 -->
     
     <!-- Short Heading for 'Language' field in book details -->
-    <string name="language">Taal</string>
+    <string name="label_language">Taal</string>
     <string name="new_in_504">
 		<![CDATA[
 			<p><b>Nieuw in 5.0.4</b>\n\n

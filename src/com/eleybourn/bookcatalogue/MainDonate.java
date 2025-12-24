@@ -28,6 +28,7 @@ import android.view.View.OnClickListener;
 
 import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.utils.Logger;
+import com.google.android.material.appbar.MaterialToolbar;
 
 /**
  * 
@@ -51,8 +52,11 @@ public class MainDonate extends BookCatalogueActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		try {
 			super.onCreate(savedInstanceState);
-			setTitle(R.string.app_name);
 			setContentView(R.layout.main_donate);
+            MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
+            topAppBar.setTitle(R.string.app_name);
+            topAppBar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+
 			setupAdmin();
 		} catch (Exception e) {
 			Logger.logError(e);

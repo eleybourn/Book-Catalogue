@@ -7,36 +7,36 @@
     android:paddingLeft="@dimen/p_md" >
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/field_title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/title"
+        android:hint="@string/label_title"
         android:textSize="16sp" />
 
     <LinearLayout
         android:id="@+id/top_buttons"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/title"
+        android:layout_below="@+id/field_title"
         android:gravity="top"
         android:orientation="horizontal" >
 
         <AutoCompleteTextView
-            android:id="@+id/author"
+            android:id="@+id/field_author"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:completionThreshold="2"
-            android:hint="@string/author"
+            android:hint="@string/label_author"
             android:inputType="textCapSentences"
-            android:nextFocusDown="@+id/title"
+            android:nextFocusDown="@+id/field_title"
             android:paddingLeft="@dimen/p_md" />
 
         <Button
             android:id="@+id/add"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:text="@string/add" />
+            android:text="@string/label_add" />
     </LinearLayout>
 
     <com.eleybourn.bookcatalogue.widgets.TouchListView
@@ -57,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/bottom_buttons"
         android:layout_below="@+id/top_buttons"
-        android:text="@string/noauthors"
+        android:text="@string/para_no_authors"
         android:textSize="16sp" />
 
     <LinearLayout
@@ -69,18 +69,18 @@
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/cancel"
+            android:id="@+id/button_cancel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/cancel" />
+            android:text="@string/button_cancel" />
 
         <Button
-            android:id="@+id/confirm"
+            android:id="@+id/button_confirm"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/save" />
+            android:text="@string/button_save" />
     </LinearLayout>
 
 </RelativeLayout>

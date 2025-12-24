@@ -3657,7 +3657,7 @@ public class CatalogueDBAdapter {
 
 			String bookshelf = values.getBookshelfList();
 			if (bookshelf != null && !bookshelf.trim().equals("")) {
-				createBookshelfBooks(rowId, Utils.decodeList(bookshelf, BookEditFields.BOOKSHELF_SEPERATOR), false);
+				createBookshelfBooks(rowId, Utils.decodeList(bookshelf, BookEditFields.BOOKSHELF_SEPARATOR), false);
 			}
 
 			createBookAuthors(rowId, authors, false);
@@ -4238,7 +4238,7 @@ public class CatalogueDBAdapter {
 
 			String bookshelf = values.getBookshelfList();
 			if (bookshelf != null && !bookshelf.trim().equals("")) {
-				createBookshelfBooks(rowId, Utils.decodeList(bookshelf, BookEditFields.BOOKSHELF_SEPERATOR), false);
+				createBookshelfBooks(rowId, Utils.decodeList(bookshelf, BookEditFields.BOOKSHELF_SEPARATOR), false);
 			}
 
 			if (values.containsKey(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)) {

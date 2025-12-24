@@ -17,28 +17,28 @@
         tools:ignore="HardcodedText"/>
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/field_title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/title_label"
-        android:hint="@string/title"
+        android:hint="@string/label_title"
         android:textSize="16sp" />
 
     <LinearLayout
         android:id="@+id/top_buttons"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/title"
+        android:layout_below="@+id/field_title"
         android:gravity="top"
         android:orientation="horizontal" >
 
         <AutoCompleteTextView
-            android:id="@+id/series"
+            android:id="@+id/field_series"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:completionThreshold="2"
-            android:hint="@string/series"
+            android:hint="@string/label_series"
             android:inputType="textCapSentences"
             android:paddingLeft="@dimen/p_md" />
         <!--
@@ -53,7 +53,7 @@
             android:layout_width="150sp"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:hint="@string/series_num"
+            android:hint="@string/label_series_num"
             android:singleLine="true" />
     </LinearLayout>
 
@@ -65,18 +65,18 @@
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/cancel"
+            android:id="@+id/button_cancel"
 	        android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/cancel" />
+            android:text="@string/button_cancel" />
 
         <Button
-            android:id="@+id/confirm"
+            android:id="@+id/button_confirm"
             android:layout_height="wrap_content"
 	        android:layout_width="0dp"
             android:layout_weight="1"
-            android:text="@string/save" />
+            android:text="@string/button_save" />
     </LinearLayout>
 
 </RelativeLayout>

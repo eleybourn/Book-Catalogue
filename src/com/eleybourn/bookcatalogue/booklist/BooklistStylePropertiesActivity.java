@@ -40,7 +40,6 @@ import com.eleybourn.bookcatalogue.properties.PropertyGroup;
 import com.eleybourn.bookcatalogue.properties.StringProperty;
 import com.eleybourn.bookcatalogue.utils.HintManager;
 import com.eleybourn.bookcatalogue.utils.Logger;
-import com.eleybourn.bookcatalogue.utils.Utils;
 import com.eleybourn.bookcatalogue.utils.ViewTagger;
 
 /**
@@ -76,13 +75,13 @@ public class BooklistStylePropertiesActivity extends BookCatalogueActivity {
 		// Set the view and handle the save/cancel buttons.
 		this.setContentView(R.layout.booklist_style_properties);
 
-		Button save = (Button) findViewById(R.id.confirm);
+		Button save = (Button) findViewById(R.id.button_confirm);
 		save.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				handleSave();
 			}});
-		Button cancel = (Button) findViewById(R.id.cancel);
+		Button cancel = (Button) findViewById(R.id.button_cancel);
 		cancel.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {

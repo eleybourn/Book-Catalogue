@@ -1,86 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="@color/theme_surface"
-    android:orientation="vertical"
-    android:paddingLeft="@dimen/p_md" >
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/layout_body">
+    <!-- Root -->
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/title"
-        android:textSize="16sp" />
+    <include layout="@layout/layout_header" />
+    <include layout="@layout/layout_background" />
+
+    <!-- CONTENT -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        style="@style/layout_scroll" >
+
+        <RelativeLayout
+            android:id="@+id/root"
+            style="@style/layout_main">
+
+            <TextView
+                android:id="@+id/field_title"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/label_title"
+                android:textSize="16sp" />
+
+            <LinearLayout
+                android:id="@+id/top_buttons"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top"
+                android:layout_below="@+id/field_title"
+                android:orientation="horizontal" >
+
+                <AutoCompleteTextView
+                    android:id="@+id/field_author"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:completionThreshold="2"
+                    android:hint="@string/label_author"
+                    style="@style/locale_field_text_name" />
+
+                <Button
+                    android:id="@+id/add"
+                    style="@style/layout_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:text="@string/label_add" />
+            </LinearLayout>
+
+            <com.eleybourn.bookcatalogue.widgets.TouchListView
+                xmlns:tlv="http://schemas.android.com/apk/res/com.eleybourn.bookcatalogue"
+                android:id="@+id/list"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/bottom_buttons"
+                android:layout_below="@+id/top_buttons"
+                android:textSize="16sp"
+                tlv:grabber="@+id/grabber"
+                tlv:normal_height="64dip"
+                tlv:remove_mode="none" />
+
+            <TextView
+                android:id="@+id/empty"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/bottom_buttons"
+                android:layout_below="@+id/top_buttons"
+                android:text="@string/para_no_authors"
+                android:textSize="16sp" />
+
+        </RelativeLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <LinearLayout
-        android:id="@+id/top_buttons"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/title"
-        android:gravity="top"
-        android:orientation="horizontal" >
-
-        <AutoCompleteTextView
-            android:id="@+id/author"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:completionThreshold="2"
-            android:hint="@string/author"
-            style="@style/personalNameTextEntry"
-            android:nextFocusDown="@+id/title"
-            android:paddingLeft="@dimen/p_md" />
-
+        android:id="@+id/buttons"
+        style="@style/layout_action_row" >
         <Button
-            android:id="@+id/add"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:text="@string/add" />
+            android:id="@+id/button_cancel"
+            style="@style/layout_button_action"
+            android:text="@string/button_cancel" />
+        <Button
+            android:id="@+id/button_confirm"
+            style="@style/layout_button_action"
+            android:text="@string/button_save" />
     </LinearLayout>
 
-    <com.eleybourn.bookcatalogue.widgets.TouchListView
-        xmlns:tlv="http://schemas.android.com/apk/res/com.eleybourn.bookcatalogue"
-        android:id="@+id/list"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/bottom_buttons"
-        android:layout_below="@+id/top_buttons"
-        android:textSize="16sp"
-        tlv:grabber="@+id/grabber"
-        tlv:normal_height="64dip"
-        tlv:remove_mode="none" />
-
-    <TextView
-        android:id="@+id/empty"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/bottom_buttons"
-        android:layout_below="@+id/top_buttons"
-        android:text="@string/noauthors"
-        android:textSize="16sp" />
-
-    <LinearLayout
-        android:id="@+id/bottom_buttons"
-        android:layout_width="fill_parent"
-        android:layout_height="60sp"
-        android:layout_alignParentBottom="true"
-        android:gravity="bottom"
-        android:orientation="horizontal" >
-
-        <Button
-            android:id="@+id/cancel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/cancel" />
-
-        <Button
-            android:id="@+id/confirm"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/save" />
-    </LinearLayout>
-
-</RelativeLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

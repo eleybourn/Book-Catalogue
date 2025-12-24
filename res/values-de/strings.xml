@@ -4,24 +4,24 @@
 <string name="system_app_name">Book Catalogue</string>
 <string name="label_insert">Buch hinzufügen</string>
 <string name="menu_delete">Buch löschen</string>
-<string name="author">Autor</string>
-<string name="title">Titel</string>
-<string name="publisher">Verlag</string>
-<string name="date_published">Datum der Veröffentlichung</string>
+<string name="label_author">Autor</string>
+<string name="label_title">Titel</string>
+<string name="label_publisher">Verlag</string>
+<string name="label_date_published">Datum der Veröffentlichung</string>
 <string name="rating">Bewertung</string>
 <string name="bookshelf">Bücherregal</string>
 <string name="read">Haben Sie dieses Buch gelesen?</string>
-<string name="series">Serie</string>
-<string name="pages">Seiten</string>
-<string name="confirm_add">Buch hinzufügen</string>
+<string name="label_series">Serie</string>
+<string name="label_pages">Seiten</string>
+<string name="button_confirm_add">Buch hinzufügen</string>
 <string name="confirm_update">Aktualisieren</string>
-<string name="nobooks">Es befinden sich keine Bücher im Bücherregal. Bitte fügen Sie Bücher über das Menü am unteren Bildschirmrand hinzu.</string>
+<string name="para_no_books">Es befinden sich keine Bücher im Bücherregal. Bitte fügen Sie Bücher über das Menü am unteren Bildschirmrand hinzu.</string>
 <string name="menu_sort_by_author_expanded">Alles ausklappen</string>
 <string name="menu_sort_by">Sortieren nach</string>
 <string name="menu_sort_by_author_collapsed">Alles einklappen</string>
     <string name="label_search">Suche</string>
-<string name="cancel">Abbrechen</string>
-<string name="confirm_save">Buch speichern</string>
+<string name="button_cancel">Abbrechen</string>
+<string name="button_confirm_save">Buch speichern</string>
 <string name="info_no_bookshelves">Es wurde noch kein Bücherregal erstellt. Bitte fügen Sie Bücherregale über das Menü am unteren Bildschirmrand hinzu.</string>
 <string name="menu_insert_bs">Bücherregal erstellen</string>
 <string name="confirm_add_bs">Bücherregal hinzufügen</string>
@@ -38,7 +38,7 @@
     <string name="search_label">Suche nach Büchern</string>
 <string name="search_hint">Suche nach Autor oder Titel</string>
 <string name="book_not_found">Das gescannte Buch wurde nicht gefunden. Manchmal befindet sich der korrekte Barcode auf der Rückseite des Covers. Geben Sie ansonsten die Daten manuell ein.</string>
-<string name="series_num">#</string>
+<string name="label_series_num">#</string>
     <!--<string name="export_complete">Der Export auf die SD-Karte ist abgeschlossen.</string>-->
 <string name="import_data">Bücher importieren</string>
 <string name="import_alert">Warnung. Der Import von Daten kann Informationen von bestehenden Büchern überschreiben, wenn die ID der Importdatei mit der bestehenden ID übereinstimmt. Normalerweise ist es kein Problem wenn ein Feld in der exportierten Datei geändert wurde. Bitte stellen Sie bei einem neuen Buch sicher, dass das ID-Feld leer ist.</string>
@@ -55,7 +55,7 @@
 <string name="edit_book">Buch bearbeiten</string>
 <string name="edit_book_notes">Kommentar</string>
 <string name="edit_book_friends">Buch verleihen</string>
-    <string name="notes">Notizen</string>
+    <string name="label_notes">Notizen</string>
 <string name="loaned_to">Dieses Buch wurde verliehen an:</string>
 <string name="nobody">Niemand</string>
 <string name="loan_to">Verleihe Buch an:</string>
@@ -77,7 +77,7 @@
 <string name="sortby_loan">Sortieren nach Verliehen</string>
 <string name="sortby_unread">Sortieren nach Ungelesen</string>
 <string name="sortby_genre">Sortieren nach Genre</string>
-<string name="list_price">Preis</string>
+<string name="label_list_price">Preis</string>
     <string name="label_update_fields">Automatische Aktualisierung der Felder</string>
 <string name="select_fields_to_update">Felder für Aktualisierung auswählen</string>
 <string name="select_fields_to_update_help">Die ausgewählten Felder werden aus dem Internet aktualisiert. Nicht ausgewählte Felder werden nicht geändert.</string>
@@ -91,11 +91,11 @@
 <string name="label_help">Hilfe</string>
     <string name="label_manage_fields">Feld Sichtbarkeit bearbeiten</string>
 <string name="manage_fields_help">Die ausgewählten Felder werden im Bildschirm Buch hinzufügen/bearbeiten angezeigt. Nicht ausgewählte Felder werden nicht angezeigt.</string>
-<string name="edit_book_anthology">Anthologie-Titel</string>
+<string name="label_anthology">Anthologie-Titel</string>
 <string name="label_amazon_wishlist">Amazon-Wunschliste</string>
 <string name="same_author">Alle Geschichten in dieser Anthologie wurden vom gleichen Autor geschrieben.</string>
 <string name="menu_delete_anthology">Titel von Anthologie löschen</string>
-<string name="is_anthology">Ist dieses Buch eine Anthologie?</string>
+<string name="label_is_anthology">Ist dieses Buch eine Anthologie?</string>
 <string name="populate_anthology_titles">Automatisches Ausfüllen der Anthologie-Titel (EXPERIMENTELL)</string>
 <string name="automatic_population_failed">Das automatische Ausfüllen der Anthologie-Titel ist fehlgeschlagen</string>
 <string name="anthology">Anthologie</string>
@@ -119,15 +119,15 @@
     <string name="searching_google_books">Suche bei Google Books</string>
 <string name="searching_library_thing">Suche bei LibraryThing</string>
     <string name="select_bookshelves">Bücherregale wählen</string>
-<string name="format">Ausgaben</string>
+<string name="label_format">Ausgaben</string>
 <string name="format1">Taschenbuch</string>
 <string name="format2">Gebundene Ausgabe</string>
 <string name="format3">E-Book</string>
 <string name="format4">Hörbuch</string>
 <string name="format5">Ratgeber / Kompendium</string>
 <!-- NOTE: Adding a new format will involve changing code that references this list -->
-<string name="description">Beschreibung</string>
-<string name="genre">Genre</string>
+<string name="label_description">Beschreibung</string>
+<string name="label_genre">Genre</string>
     <string name="not_set">Nicht gesetzt</string>
 <string name="menu_search">Suche Bücher</string>
     <string name="isbn_name_search_help">Das Hinzufügen der Bücher per ISBN ist genauer als das Hinzufügen per Autor und Titel und sollte im Allgemeinen bevorzugt werden. Bitte beachten Sie, dass der korrekte Barcode manchmal auf der Rückseite des Covers zu finden ist. \n\n</string>
@@ -147,15 +147,15 @@
 <string name="file_must_contain_any_column">Die Datei muss eine Spalte mit den folgenden Namen enthalten: %s</string>
 <string name="column_is_blank">Die Spalte %1$s ist in Zeile %2$s leer</string>
 <string name="columns_are_blank">Die Spalten %1$s sind in der Zeile %2$d leer</string>
-<string name="save">Speichern</string>
-<string name="add">Hinzufügen</string>
-<string name="noauthors">Es wurde kein Autor für dieses Buch eingetragen. Bitte fügen Sie einen Autor über das Textfeld und den Knopf oben auf diesem Bildschirm hinzu.</string>
-<string name="noseries">Es besteht keine Serie für dieses Buch. Sie können eine Serie über das Textfeld und den Knopf oben auf dieser Seite hinzufügen.</string>
+<string name="button_save">Speichern</string>
+<string name="label_add">Hinzufügen</string>
+<string name="para_no_authors">Es wurde kein Autor für dieses Buch eingetragen. Bitte fügen Sie einen Autor über das Textfeld und den Knopf oben auf diesem Bildschirm hinzu.</string>
+<string name="para_no_series">Es besteht keine Serie für dieses Buch. Sie können eine Serie über das Textfeld und den Knopf oben auf dieser Seite hinzufügen.</string>
 <string name="cover_not_set">Das Cover wurde nicht gesetzt</string>
 <string name="cover_corrupt">Das Cover ist unbrauchbar</string>
 <string name="cover_detail">Coverdetails</string>
 <string name="select_picture">Bild auswählen</string>
-<string name="set_authors">Autor angeben…</string>
+<string name="label_set_authors">Autor angeben…</string>
 <string name="and_others">et. al.</string>
 <string name="set_series">Serie angeben…</string>
 <string name="author_already_in_list">Der Autor befindet sich bereits in der Liste</string>
@@ -167,10 +167,10 @@
 <string name="num_books_searched">%s Bücher gesucht</string>
 <string name="cancelled_info">Abgebrochen - %s</string>
 <string name="edit_book_series">Buchserie bearbeiten</string>
-<string name="family_name">Familienname</string>
-<string name="given_names">Vornamen</string>
+<string name="label_family_name">Familienname</string>
+<string name="label_given_names">Vornamen</string>
 <string name="edit_author_details">Angaben über Autor bearbeiten</string>
-<string name="immediate_global_changes">HINWEIS: Alle gespeicherten Änderungen werden sofort übernommen</string>
+<string name="para_immediate_global_changes">HINWEIS: Alle gespeicherten Änderungen werden sofort übernommen</string>
 <string name="menu_replace_thumb">Cover-Bild ersetzen…</string>
     <string name="author_required">Es muss mindestens ein Autor angegeben werden</string>
 <string name="title_required">Es muss ein Titel angegeben werden</string>
@@ -297,7 +297,7 @@ anschließend auf eine leeren Seite landen. Klicken Sie einfach auf den "Zurück
 <string name="please_enter_search_criteria">Bitte geben Sie die Suchkriterien ein</string>
 <string name="error_while_searching">Fehler während der Suche.</string>
 <string name="send_all_to_goodreads_result">%1$s Bücher verarbeitet: %2$s erfolgreich übertragen, %3$s ohne ISBN und %4$s mit einer in Goodreads nicht auffindbaren ISBN</string>
-<string name="x_of_y">%1$s von %2$s</string>
+<string name="x_of_y">%1$d von %2$d</string>
 <string name="send_book_to_goodreads">Buch %1$s an Goodreads senden</string>
 
 <string name="label_erase_cover_cache">Zwischenspeicher für Cover-Bilder löschen</string>
@@ -332,7 +332,7 @@ anschließend auf eine leeren Seite landen. Klicken Sie einfach auf den "Zurück
     <string name="label_booklist_preferences">Einstellungen der Bücherliste</string>
 <string name="extra_book_details">Zusätzliche Buchdetails</string>
 <string name="general">Allgemein</string>
-<string name="bookshelves">Bücherregale</string>
+<string name="label_bookshelves">Bücherregale</string>
 <string name="shelves">Regale</string>
 <string name="location">Standort</string>
     <string name="label_data_import_export">Daten-Import/Export</string>
@@ -603,9 +603,9 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
 </string>
 
 <!-- This is the heading of the 'Details' tab when editing a book. It needs to be short. "Book Details" is too long. -->
-<string name="details">Details</string>
+<string name="label_details">Details</string>
 <!-- This is the heading of the 'Loan' tab when editing a book. It needs to be short. "Loan Book" is too long. -->
-<string name="loan">Leihen</string>
+<string name="label_loan">Leihen</string>
 
 <!--  Hint displayed when an export or database backup is done -->
 
@@ -701,7 +701,7 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
     <!-- Begin: Added/Updated in 5.0.4 -->
 
     <!-- Short Heading for 'Language' field in book details -->
-    <string name="language">Sprache</string>
+    <string name="label_language">Sprache</string>
     <string name="new_in_504">
         <![CDATA[
 			<p><b>Neu in 5.0.4</b>\n\n

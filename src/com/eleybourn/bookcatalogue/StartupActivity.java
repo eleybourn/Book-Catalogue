@@ -306,7 +306,7 @@ public class StartupActivity
 	 * Start the main book list
 	 */
 	private void doMyBooks() {
-		Intent i = new Intent(this, BooksOnBookshelf.class);
+		Intent i = new Intent(this, Library.class);
 		if (mWasReallyStartup)
 			i.putExtra("startup", true);
 		// XXX: This is nasty, now we use fragments, StartupActivity shoud be a FragmenActivity and load the right fragment
@@ -351,7 +351,7 @@ public class StartupActivity
 			alertDialog.setCanceledOnTouchOutside(false);
 			alertDialog.setTitle(R.string.backup_title);
 			alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-			alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.cancel),
+			alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.button_cancel),
 								  (dialog, which) -> dialog.dismiss());
 			alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.ok),
 								  (dialog, which) -> {

@@ -226,8 +226,8 @@ public class BookEditNotes extends BookEditFragmentAbstract implements OnPartial
 	}
 
 	@Override
-	protected void onLoadBookDetails(BookData book, boolean setAllDone) {
-		if (!setAllDone)
+	protected void onLoadBookDetails(BookData book) {
+		if (!false)
 			mFields.setAll(book);
 		// No special handling required; the setAll() done by the caller is enough
 		// Restore default visibility and hide unused/unwanted and empty fields

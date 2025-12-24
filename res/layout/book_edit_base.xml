@@ -1,40 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/root"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="@drawable/bc_background_gradient"
-    android:orientation="vertical" >
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/layout_body">
+    <!-- Root -->
+
+    <include layout="@layout/layout_header" />
+    <include layout="@layout/layout_background" />
+
+    <!-- CONTENT -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        style="@style/layout_scroll"
+        android:layout_marginBottom="68dp">
+
+        <LinearLayout
+            android:id="@+id/contentLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include layout="@layout/layout_header_tabs" />
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/view_pager"
+                style="@style/layout_main"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <LinearLayout
         android:id="@+id/buttons"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal" >
-
+        style="@style/layout_action_row" >
         <Button
-            android:id="@+id/cancel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/cancel" />
-
+            android:id="@+id/button_cancel"
+            style="@style/layout_button_action"
+            android:text="@string/button_cancel" />
         <Button
-            android:id="@+id/confirm"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/confirm_add" />
+            android:id="@+id/button_confirm"
+            style="@style/layout_button_action"
+            android:text="@string/button_confirm_add" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/fragment"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/buttons"
-        android:layout_alignParentTop="true"
-        android:orientation="vertical" >
-    </LinearLayout>
-
-</RelativeLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

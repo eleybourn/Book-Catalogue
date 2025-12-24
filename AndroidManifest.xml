@@ -60,8 +60,8 @@
 
         <activity
             android:name=".BookCatalogue"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustResize" />
         <!--
             The StartupActivity activity is just a forwarder to the users chosen first screen; does not 
 			rebuild on orientation changes so progress dialogs are easier 
@@ -100,7 +100,8 @@
             android:theme="@style/AppTheme"></activity> <!-- android:launchMode="singleInstance" -->
         <activity
             android:name=".BookEdit"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".BookISBNSearch"
             android:label="@string/title_isbn_search"
@@ -123,14 +124,15 @@
             android:label="@string/label_bookshelf"
             android:theme="@style/AppTheme"></activity>
         <activity
-            android:name=".BookshelfEdit"
+            android:name=".AdminBookshelfEdit"
             android:label="@string/title_edit_bs"
             android:theme="@style/AppTheme"></activity>
         <activity
-            android:name=".BooksOnBookshelf"
+            android:name=".Library"
             android:exported="false"
             android:label="@string/label_library"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
 
@@ -143,18 +145,18 @@
         </activity>
         <activity
             android:name=".MainAbout"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".MainDonate"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".MainAdministration"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".goodreads.GoodreadsRegister"
             android:label="@string/goodreads"
             android:launchMode="standard"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".goodreads.GoodreadsAuthorizationActivity"
             android:exported="true"
@@ -260,23 +262,25 @@
             android:theme="@style/AppTheme"></activity>
         <activity
             android:name=".EditAuthorList"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".EditSeriesList"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".UpdateFromInternet"
             android:label="@string/label_update_fields"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".cropper.CropCropImage"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".cropper.CropMonitoredActivity"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".filechooser.BackupChooser"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

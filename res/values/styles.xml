@@ -5,12 +5,37 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:background">@drawable/bg_main</item>
+        <item name="android:fitsSystemWindows">true</item>
+    </style>
+    <style name="layout_scroll">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginTop">?attr/actionBarSize</item>
+        <item name="android:fillViewport">true</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:requiresFadingEdge">vertical</item>
+        <item name="android:fadingEdgeLength">@dimen/p_xl</item>
     </style>
     <style name="layout_main">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:orientation">vertical</item>
         <item name="android:padding">16dp</item>
+    </style>
+    <style name="layout_action_row">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">bottom</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:paddingHorizontal">@dimen/p_lg</item>
+        <item name="android:paddingVertical">@dimen/p_lg</item>
+    </style>
+    <style name="layout_dialog">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@color/theme_surface</item>
+        <item name="android:paddingHorizontal">@dimen/p_md</item>
+        <item name="android:orientation">vertical</item>
     </style>
     <style name="layout_card_md">
         <item name="android:layout_width">match_parent</item>
@@ -76,6 +101,19 @@
     <style name="layout_button">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">48dp</item>
+    </style>
+    <style name="layout_button_large" parent="layout_button">
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:gravity">start|center_vertical</item>
+        <item name="android:layout_alignParentStart">true</item>
+        <item name="android:layout_alignParentEnd">true</item>
+    </style>
+    <style name="layout_button_action" parent="layout_button">
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginHorizontal">@dimen/p_md</item>
     </style>
     <style name="layout_title">
         <item name="android:layout_width">fill_parent</item>
@@ -84,7 +122,7 @@
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
     </style>
     <style name="layout_heading">
-        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingTop">@dimen/p_md</item>
         <item name="android:paddingHorizontal">@dimen/p_md</item>
@@ -139,32 +177,26 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
     </style>
-
-    <style name="editorFieldHeaderStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
-        <item name="android:layout_alignParentTop">true</item>
-        <item name="android:layout_alignParentLeft">true</item>
-    </style>
-
-    <style name="editorFieldTextStyleBase">
+    <style name="field_text">
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
-        <item name="android:layout_alignParentLeft">true</item>
+        <item name="android:layout_alignParentStart">true</item>
         <item name="android:hint">@string/not_set</item>
+        <item name="android:minHeight">48dp</item>
     </style>
-
-    <style name="localeBasedTextEntry" parent="@style/editorFieldTextStyle">
+    <style name="locale_field_text" parent="@style/field_text">
         <item name="android:inputType">textCapWords</item>
     </style>
-
-    <style name="personalNameTextEntry" parent="@style/localeBasedTextEntry"></style>
-
-    <style name="bookOrSeriesTitleTextEntry" parent="@style/localeBasedTextEntry"></style>
-
-    <style name="languageTextEntry" parent="@style/localeBasedTextEntry"></style>
+    <style name="locale_field_text_name" parent="@style/locale_field_text">
+        <item name="android:inputType">textCapWords</item>
+    </style>
+    <style name="locale_field_text_title" parent="@style/locale_field_text">
+        <item name="android:inputType">textCapWords</item>
+    </style>
+    <style name="locale_field_text_language" parent="@style/locale_field_text">
+        <item name="android:inputType">textCapWords</item>
+    </style>
 
     <style name="Widget.AppTheme.ActionBar.Fullscreen" parent="Widget.AppCompat.ActionBar">
         <item name="android:background">?attr/colorSurfaceInverse</item>
@@ -173,6 +205,10 @@
     <style name="shapeAppearanceOverlay_rounded_corners" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">12dp</item>
+    </style>
+
+    <style name="DialogDividerTheme" >
+        <item name="android:background">@android:color/holo_blue_light</item>
     </style>
 
 

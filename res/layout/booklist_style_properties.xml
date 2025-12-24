@@ -26,12 +26,12 @@
         android:padding="@dimen/p_md" >
 
         <Button
-            android:id="@+id/cancel"
+            android:id="@+id/button_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|left"
             android:layout_weight="10"
-            android:text="@string/cancel" />
+            android:text="@string/button_cancel" />
         <!--
     	    style="?android:attr/buttonStyleSmall"
 		    android:textAppearance="?android:attr/textAppearanceSmall" 
@@ -39,12 +39,12 @@
         -->
 
         <Button
-            android:id="@+id/confirm"
+            android:id="@+id/button_confirm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|right"
             android:layout_weight="10"
-            android:text="@string/save" />
+            android:text="@string/button_save" />
         <!--
     	    style="?android:attr/buttonStyleSmall"
 		    android:textAppearance="?android:attr/textAppearanceSmall" 

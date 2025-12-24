@@ -39,7 +39,6 @@ import com.eleybourn.bookcatalogue.compat.BookCatalogueListActivity;
 import com.eleybourn.bookcatalogue.goodreads.api.SearchBooksApiHandler;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue;
-import com.eleybourn.bookcatalogue.utils.Utils;
 import com.eleybourn.bookcatalogue.utils.ViewTagger;
 
 /**
@@ -178,8 +177,8 @@ public class GoodreadsSearchResults extends BookCatalogueListActivity {
 					// Get a new View and make the holder for it.
 					convertView = mInflater.inflate(R.layout.goodreads_work_item, parent, false);
 					holder = new ListHolder();
-					holder.author = (TextView)convertView.findViewById(R.id.author);
-					holder.title = (TextView)convertView.findViewById(R.id.title);
+					holder.author = (TextView)convertView.findViewById(R.id.field_author);
+					holder.title = (TextView)convertView.findViewById(R.id.field_title);
 					holder.cover = (ImageView)convertView.findViewById(R.id.cover);
 
 					// Save the holder

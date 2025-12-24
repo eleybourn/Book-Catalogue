@@ -20,9 +20,6 @@
 
 package com.eleybourn.bookcatalogue;
 
-import java.util.ArrayList;
-import java.util.Objects;
-
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -49,35 +46,15 @@ public class AdminBookshelf extends BookCatalogueListActivity {
 	private static final int INSERT_ID = Menu.FIRST;
 	private static final int DELETE_ID = Menu.FIRST + 1;
 
-	/* Side-step a bug in HONEYCOMB. It seems that startManagingCursor() in honeycomb causes
-	 * child-list cursors for ExpanadableList objects to be closed prematurely. So we seem to have
-	 * to roll our own...see http://osdir.com/ml/Android-Developers/2011-03/msg02605.html.
-	 */
-	private final ArrayList<Cursor> mManagedCursors = new ArrayList<>();
-
-	private void destroyManagedCursors()
-	{
-		synchronized(mManagedCursors) {
-			for (Cursor c : mManagedCursors) {
-				try {
-					c.close();
-				} catch (Exception e) {
-					// Don;t really care if it's called more than once or fails.
-				}
-			}
-			mManagedCursors.clear();
-		}
-	}
-
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setTitle(R.string.title_manage_bs);
 		setContentView(R.layout.admin_bookshelves);
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
         setSupportActionBar(topAppBar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        topAppBar.setTitle(R.string.label_bookshelf);
+        topAppBar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
 		mDbHelper = new CatalogueDBAdapter(this);
 		mDbHelper.open();
@@ -118,7 +95,7 @@ public class AdminBookshelf extends BookCatalogueListActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, INSERT_ID, 0, R.string.menu_insert_bs)
-			.setIcon(R.drawable.ic_action_bookshelf_add)
+			.setIcon(R.drawable.ic_menu_new)
 			.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		return true;
 	}
@@ -142,6 +119,7 @@ public class AdminBookshelf extends BookCatalogueListActivity {
 	public boolean onContextItemSelected(android.view.MenuItem item) {
         if (item.getItemId() == DELETE_ID) {
             AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+            assert info != null;
             if (info.id == 1) {
                 Toast.makeText(this, R.string.delete_1st_bs, Toast.LENGTH_LONG).show();
             } else {
@@ -154,14 +132,14 @@ public class AdminBookshelf extends BookCatalogueListActivity {
 	}
 	
     private void createBookshelf() {
-        Intent i = new Intent(this, BookshelfEdit.class);
+        Intent i = new Intent(this, AdminBookshelfEdit.class);
         startActivityForResult(i, ACTIVITY_CREATE);
     }
     
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        Intent i = new Intent(this, BookshelfEdit.class);
+        Intent i = new Intent(this, AdminBookshelfEdit.class);
         i.putExtra(CatalogueDBAdapter.KEY_ROWID, id);
         startActivityForResult(i, ACTIVITY_EDIT);
     }
@@ -174,7 +152,6 @@ public class AdminBookshelf extends BookCatalogueListActivity {
 	
 	@Override
 	protected void onDestroy() {
-		destroyManagedCursors();
 		super.onDestroy();
 		mDbHelper.close();
 	}

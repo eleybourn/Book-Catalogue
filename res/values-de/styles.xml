@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="localeBasedTextEntry" parent="@style/editorFieldTextStyle">
+    <style name="locale_field_text" parent="@style/field_text">
         <item name="android:inputType">textCapSentences</item>
     </style>
 

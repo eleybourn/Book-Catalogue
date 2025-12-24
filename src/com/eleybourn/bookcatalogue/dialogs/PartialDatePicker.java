@@ -19,7 +19,6 @@
  */
 package com.eleybourn.bookcatalogue.dialogs;
 
-import java.text.DateFormatSymbols;
 import java.util.Calendar;
 
 import android.app.AlertDialog;
@@ -285,7 +284,7 @@ public class PartialDatePicker extends AlertDialog {
 		);
 
 		// Handle Cancel
-		((Button)root.findViewById(R.id.cancel)).setOnClickListener(new View.OnClickListener() {
+		((Button)root.findViewById(R.id.button_cancel)).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if (mListener != null)

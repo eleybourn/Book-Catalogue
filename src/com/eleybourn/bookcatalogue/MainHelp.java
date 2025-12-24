@@ -32,6 +32,7 @@ import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.StorageUtils;
 import com.eleybourn.bookcatalogue.utils.Utils;
+import com.google.android.material.appbar.MaterialToolbar;
 
 /**
  * 
@@ -57,12 +58,15 @@ public class MainHelp extends BookCatalogueActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		try {
-			setTitle(R.string.app_name);
 			// Needed for sending com.eleybourn.bookcatalogue.debug info...
 			mDbHelper = new CatalogueDBAdapter(this);
 			mDbHelper.open();
 			
 			setContentView(R.layout.main_help);
+            MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
+            topAppBar.setTitle(R.string.app_name);
+            topAppBar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+
 			res = getResources();
 			
 			TextView webInstructions = findViewById(R.id.helpInstructions);

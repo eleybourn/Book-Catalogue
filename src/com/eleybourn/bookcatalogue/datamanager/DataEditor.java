@@ -26,7 +26,7 @@ package com.eleybourn.bookcatalogue.datamanager;
  */
 public interface DataEditor {
 	/** Save current data TO the passed DataManager */
-	public void saveAllEdits(DataManager data);
+    void saveAllEdits(DataManager data);
 	/** Load current data FROM passed DataManager */
-	public void reloadData(DataManager data);
+    void reloadData(DataManager data);
 }

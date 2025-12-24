@@ -65,7 +65,8 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
         setTitle(R.string.app_name);
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
         setSupportActionBar(topAppBar);
-        topAppBar.setLogo(this.getResources().getIdentifier("ic_launcher4", "drawable", this.getPackageName()));
+        topAppBar.setLogo(R.drawable.ic_launcher4);
+        topAppBar.setNavigationIcon(null);
 
         // Setup handlers for items. It's just a menu after all.
         setOnClickListener(R.id.cardLibrary, mBrowseHandler);
@@ -135,7 +136,7 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
      * Browse Handler
      */
     private final OnClickListener mBrowseHandler = v -> {
-        Intent i = new Intent(MainMenu.this, BooksOnBookshelf.class);
+        Intent i = new Intent(MainMenu.this, Library.class);
         startActivity(i);
     };
 
@@ -173,7 +174,6 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
         View v = this.findViewById(id);
         if (v != null) {
             v.setOnClickListener(l);
-            // v.setBackgroundResource(android.R.drawable.list_selector_background);
         }
     }
 

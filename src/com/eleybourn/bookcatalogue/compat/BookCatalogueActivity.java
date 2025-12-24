@@ -279,7 +279,7 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
 											R.string.label_import_old_files,
 											msg,
 											R.string.ok,
-											R.string.cancel,
+											R.string.button_cancel,
 											0);
 									frag.requireArguments().putString(ARG_TREE_URI, t.getUri().toString());
 									frag.show(BookCatalogueActivity.this.getSupportFragmentManager(),
@@ -304,7 +304,7 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
 			String msg = this.getString(
 					R.string.old_files_message,
 					getString(R.string.ok),
-					getString(R.string.cancel),
+					getString(R.string.button_cancel),
 					getString(R.string.label_settings),
 					getString(R.string.label_import_old_files));
 			MessageDialogFragment frag = MessageDialogFragment.newInstance(
@@ -312,7 +312,7 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
 					R.string.label_import_old_files,
 					msg,
 					R.string.ok,
-					R.string.cancel,
+					R.string.button_cancel,
 					0);
 			frag.show(getSupportFragmentManager(), null);
 		}

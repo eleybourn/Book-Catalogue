@@ -112,7 +112,7 @@ public class ExportAdvancedDialogFragment extends BookCatalogueDialogFragment {
 		alertDialog.setIcon(R.drawable.ic_menu_help_old);
 		alertDialog.setCanceledOnTouchOutside(false);
 
-		v.findViewById(R.id.cancel).setOnClickListener(new OnClickListener() {
+		v.findViewById(R.id.button_cancel).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				dismiss();

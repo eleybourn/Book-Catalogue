@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingLeft="@dimen/p_md" >
 
     <TextView
         android:id="@+id/anthology_title"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:text="@string/label_anthology"
@@ -16,7 +16,7 @@
 
     <CheckBox
         android:id="@+id/same_author"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/anthology_title"
         android:paddingBottom="10dp"
@@ -34,7 +34,7 @@
 
     <EditText
         android:id="@+id/add_title"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
@@ -44,7 +44,7 @@
 
     <AutoCompleteTextView
         android:id="@+id/add_author"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/add_title"
         android:layout_alignParentStart="true"
@@ -53,21 +53,21 @@
         android:paddingLeft="10dp" />
 
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_above="@id/add_author"
         android:orientation="horizontal"
         android:layout_below="@id/same_author" >
 
         <ListView
             android:id="@+id/list"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:textSize="16sp" />
 
         <TextView
             android:id="@+id/empty"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16sp" />
     </LinearLayout>

@@ -2,18 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:focusableInTouchMode="true"
     tools:ignore="DuplicateIds"
     android:orientation="vertical" >
 
     <ScrollView
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:focusableInTouchMode="true"
             android:orientation="vertical"
@@ -30,7 +30,7 @@
                 android:padding="@dimen/p_md" />
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" >
 
@@ -49,7 +49,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" >
 
@@ -67,7 +67,7 @@
 
             <RelativeLayout
                 android:id="@+id/row_isbn"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
@@ -89,7 +89,7 @@
 
             <LinearLayout
                 android:id="@+id/row_series"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" >
 
@@ -106,7 +106,7 @@
 
             <LinearLayout
                 android:id="@+id/row_publisher"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" >
 
@@ -125,7 +125,7 @@
 
             <RelativeLayout
                 android:id="@+id/row_date_published"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
@@ -144,7 +144,7 @@
             </RelativeLayout>
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" >
 
@@ -161,7 +161,7 @@
 
             <RelativeLayout
                 android:id="@+id/row_pages"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
@@ -180,7 +180,7 @@
 
             <RelativeLayout
                 android:id="@+id/row_list_price"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
@@ -199,7 +199,7 @@
 
             <RelativeLayout
                 android:id="@+id/row_format"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
@@ -226,7 +226,7 @@
 
             <RelativeLayout
                 android:id="@+id/row_genre"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
@@ -246,7 +246,7 @@
 
             <RelativeLayout
                 android:id="@+id/row_language"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
@@ -268,14 +268,14 @@
             <CheckBox
                 android:id="@+id/field_anthology"
                 android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:nextFocusDown="@+id/field_description"
                 android:text="@string/label_is_anthology" />
 
             <TextView
                 android:id="@+id/heading_description"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:paddingTop="12dp"
@@ -284,7 +284,7 @@
 
             <View
                 android:id="@+id/header_divider"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@drawable/layout_divider"
                 android:paddingBottom="2dp"
@@ -292,7 +292,7 @@
 
             <com.eleybourn.bookcatalogue.widgets.SafeSpannedTextView
                 android:id="@+id/field_description"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="@string/label_description"

@@ -1135,6 +1135,8 @@ and you can edit the book via the options menu using the menu button or overflow
         <p>You can import old missing covers via:</p><p>\'%1$s\'\u2192\'%2$s\'.</p>
         			]]>
     </string>
+    <string name="button_delete">Delete</string>
+    <string name="button_reorder">Reorder</string>
     <!-- End: Added/Updated in 6.0.7 -->
 
     <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->

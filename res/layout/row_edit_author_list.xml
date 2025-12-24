@@ -2,21 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/row"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal" >
-
-    <!--
-         NOTE: The outer layout is used because this item appears in a TouchListView which uses the outer element padding, and
-				we want to set our own padding.
-				
-				With careful analysis, we could probably put padding on the right elements. But this is clearer and easier.
-
-    -->
+    android:orientation="horizontal"
+    android:background="?android:attr/selectableItemBackground" >
 
     <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="10dp" 
@@ -30,10 +22,11 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:clickable="true"
+            android:contentDescription="@string/button_delete"
             android:focusable="false"
             android:focusableInTouchMode="false"
-            android:gravity="left"
-            android:paddingRight="@dimen/p_md" />
+            android:gravity="start"
+            android:paddingHorizontal="@dimen/p_md" />
 
         <ImageView
             android:id="@+id/grabber"
@@ -42,31 +35,17 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
-            android:src="@drawable/grabber" />
-        <!--
-		<TextView android:id="@+id/row_position" 
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:paddingRight="5sp"
-			android:gravity="left"
-			
-			android:layout_toRightOf="@id/row_delete"
-			android:layout_alignParentTop="true"
-			android:layout_alignParentBottom="true"
-			android:layout_weight="1"
-			android:visibility="gone"
-			/>
-
-        -->
+            android:contentDescription="@string/button_reorder"
+            android:src="@drawable/ic_move_grabber" />
 
         <RelativeLayout
             android:id="@+id/row_details"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@+id/grabber"
-            android:layout_toRightOf="@id/row_delete"
+            android:layout_toStartOf="@+id/grabber"
+            android:layout_toEndOf="@id/row_delete"
             android:orientation="vertical"
             android:padding="2dp" >
 
@@ -76,8 +55,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:ellipsize="marquee"
-                android:gravity="left"
-                android:paddingRight="@dimen/p_md"
+                android:gravity="start"
+                android:paddingHorizontal="@dimen/p_md"
                 android:singleLine="true"
                 android:textSize="16sp" />
 
@@ -88,8 +67,8 @@
                 android:layout_alignParentBottom="true"
                 android:layout_below="@+id/row_author"
                 android:ellipsize="marquee"
-                android:gravity="left"
-                android:paddingRight="@dimen/p_md"
+                android:gravity="start"
+                android:paddingHorizontal="@dimen/p_md"
                 android:singleLine="true"
                 android:textSize="12sp" />
         </RelativeLayout>

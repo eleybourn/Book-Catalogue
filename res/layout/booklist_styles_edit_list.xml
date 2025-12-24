@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/list_wrapper"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@drawable/bc_background_gradient_dim"
     android:orientation="vertical"
     android:paddingLeft="@dimen/p_md" >
 
     <LinearLayout
         android:id="@+id/top_buttons"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="top"
         android:orientation="horizontal" >
@@ -17,7 +17,7 @@
 
     <LinearLayout
         android:id="@+id/bottom_buttons"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:gravity="bottom"
@@ -27,7 +27,7 @@
         <Button
             android:id="@+id/button_confirm"
             android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
+            android:layout_height="match_parent"
             android:text="@string/button_save"
             android:visibility="gone"
             android:width="150sp" />
@@ -35,7 +35,7 @@
         <Button
             android:id="@+id/button_cancel"
             android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
+            android:layout_height="match_parent"
             android:text="@string/button_cancel"
             android:visibility="gone"
             android:width="150sp" />
@@ -43,8 +43,8 @@
 
     <LinearLayout
         android:id="@+id/body"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_above="@+id/bottom_buttons"
         android:layout_below="@+id/top_buttons"
         android:gravity="top"
@@ -53,8 +53,8 @@
         <com.eleybourn.bookcatalogue.widgets.TouchListView
             xmlns:tlv="http://schemas.android.com/apk/res/com.eleybourn.bookcatalogue"
             android:id="@+id/list"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:cacheColorHint="#00000000"
             android:fadingEdge="none"
             android:textSize="16sp"
@@ -64,7 +64,7 @@
 
         <TextView
             android:id="@+id/empty"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/para_no_series"
             android:textSize="16sp" />

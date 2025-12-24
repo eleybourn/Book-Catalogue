@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/theme_surface"
     android:orientation="vertical"
     android:paddingLeft="@dimen/p_md" >
 
     <TextView
         android:id="@+id/field_title"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/label_title"
         android:textSize="16sp" />
 
     <LinearLayout
         android:id="@+id/top_buttons"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/field_title"
         android:gravity="top"
@@ -23,7 +23,7 @@
 
         <AutoCompleteTextView
             android:id="@+id/field_series"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:completionThreshold="2"
@@ -34,7 +34,7 @@
         <EditText
             android:id="@+id/series_num"
             android:layout_width="150sp"
-            android:layout_height="fill_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:hint="@string/label_series_num"
             android:inputType="numberDecimal"
@@ -43,14 +43,14 @@
         <Button
             android:id="@+id/add"
             android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
+            android:layout_height="match_parent"
             android:text="@string/label_add" />
     </LinearLayout>
 
     <com.eleybourn.bookcatalogue.widgets.TouchListView
         xmlns:tlv="http://schemas.android.com/apk/res/com.eleybourn.bookcatalogue"
         android:id="@+id/list"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/bottom_buttons"
         android:layout_below="@+id/top_buttons"
@@ -61,7 +61,7 @@
 
     <TextView
         android:id="@+id/empty"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/bottom_buttons"
         android:layout_below="@+id/top_buttons"
@@ -70,7 +70,7 @@
 
     <LinearLayout
         android:id="@+id/bottom_buttons"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="60sp"
         android:layout_alignParentBottom="true"
         android:gravity="bottom"

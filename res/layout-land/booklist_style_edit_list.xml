@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/list_wrapper"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/theme_surface"
     android:orientation="vertical"
     android:paddingLeft="@dimen/p_md" >
 
     <LinearLayout
         android:id="@+id/top_buttons"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:gravity="top"
@@ -18,7 +18,7 @@
 
     <LinearLayout
         android:id="@+id/bottom_buttons"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:gravity="bottom"
@@ -48,8 +48,8 @@
 
     <LinearLayout
         android:id="@+id/body"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_above="@+id/bottom_buttons"
         android:layout_below="@+id/top_buttons"
         android:gravity="top"
@@ -58,8 +58,8 @@
         <com.eleybourn.bookcatalogue.widgets.TouchListView
             xmlns:tlv="http://schemas.android.com/apk/res/com.eleybourn.bookcatalogue"
             android:id="@+id/list"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:textSize="16sp"
             tlv:grabber="@+id/grabber"
             tlv:normal_height="32dp"
@@ -67,7 +67,7 @@
 
         <TextView
             android:id="@+id/empty"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/para_no_series"
             android:textSize="16sp" />

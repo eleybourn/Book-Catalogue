@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent" 
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     tools:ignore="HardcodedText" >
 
     <TextView
@@ -66,7 +66,7 @@
 
     <LinearLayout
         android:id="@+id/path_info"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
@@ -93,7 +93,7 @@
     </LinearLayout>
 
     <View
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/path_info"
         android:background="@drawable/property_divider" />

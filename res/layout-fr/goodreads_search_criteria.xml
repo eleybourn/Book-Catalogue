@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@drawable/bc_background_gradient"
     android:gravity="top"
     android:orientation="vertical" >
 
     <LinearLayout
         android:id="@+id/header"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:orientation="vertical"
@@ -18,12 +18,12 @@
 
         <LinearLayout
             android:id="@+id/original_details"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" >
 
@@ -35,7 +35,7 @@
 
                 <TextView
                     android:id="@+id/field_author"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="0dip"
                     android:layout_weight="1"
                     android:hint="@string/label_author"
@@ -44,7 +44,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" >
 
@@ -56,7 +56,7 @@
 
                 <TextView
                     android:id="@+id/field_title"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="0dip"
                     android:layout_weight="1"
                     android:hint="@string/label_title"
@@ -65,7 +65,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" >
 
@@ -77,7 +77,7 @@
 
                 <TextView
                     android:id="@+id/field_isbn"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="0dip"
                     android:layout_weight="1"
                     android:hint="@string/label_isbn"
@@ -86,14 +86,14 @@
             </LinearLayout>
 
             <View
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:background="@drawable/layout_divider"
                 android:paddingBottom="2dp" />
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingTop="@dimen/p_md" >
@@ -106,7 +106,7 @@
 
             <EditText
                 android:id="@+id/search_text"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="0dip"
                 android:layout_weight="1"
                 android:hint="@string/text_and_or_isbn"
@@ -126,7 +126,7 @@
         </LinearLayout>
 
         <View
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="@drawable/layout_divider"
             android:paddingBottom="2dp" />
@@ -134,7 +134,7 @@
 
     <LinearLayout
         android:id="@+id/footer"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="vertical"
@@ -142,13 +142,13 @@
         android:paddingRight="@dimen/p_md" >
 
         <View
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="@drawable/layout_divider"
             android:paddingBottom="2dp" />
 
         <TextView
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>

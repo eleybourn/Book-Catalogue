@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:baselineAligned="false"
     android:gravity="top"
@@ -35,7 +35,7 @@
 
         <TextView
             android:id="@+id/field_description"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:hint="Export all books to GoodReads"
@@ -44,7 +44,7 @@
 
         <TextView
             android:id="@+id/state"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:hint="Running (17 events recorded)"
@@ -77,7 +77,7 @@
 
         <TextView
             android:id="@+id/error"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:hint="Last error: foo bar, not sure what really happened"

@@ -14,7 +14,8 @@
             android:id="@+id/field_family_name"
             style="@style/locale_field_text_name"
             android:completionThreshold="2"
-            android:hint="@string/label_family_name" />
+            android:hint="@string/label_family_name"
+            android:importantForAutofill="no" />
 
         <TextView
             style="@style/layout_heading"
@@ -24,6 +25,7 @@
             android:id="@+id/field_given_names"
             style="@style/locale_field_text_name"
             android:hint="@string/label_given_names"
+            android:importantForAutofill="no"
             android:singleLine="true" />
     </LinearLayout>
 
@@ -37,6 +39,7 @@
     <LinearLayout
         android:id="@+id/bottom_buttons"
         style="@style/layout_action_row"
+        android:layout_alignParentBottom="false"
         android:layout_below="@+id/field_title" >
         <Button
             android:id="@+id/button_cancel"

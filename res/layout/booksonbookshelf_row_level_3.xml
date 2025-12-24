@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/row"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:paddingBottom="2dp"
@@ -10,7 +10,7 @@
 
     <LinearLayout
         android:id="@+id/row_info"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingBottom="2dp"
@@ -19,7 +19,7 @@
 
         <TextView
             android:id="@+id/name"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|center_horizontal"
             android:gravity="center_vertical|left"
@@ -28,7 +28,7 @@
             android:textStyle="bold" />
 
         <View
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="1sp"
             android:background="@drawable/fading_dark_list_divider"
             android:paddingBottom="2dp"

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/theme_surface"
     android:orientation="vertical"
@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:id="@+id/top_buttons"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:gravity="top"
@@ -16,7 +16,7 @@
         android:paddingTop="@dimen/p_md" >
 
         <TextView
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:text="@string/label_family_name"
@@ -24,7 +24,7 @@
 
         <EditText
             android:id="@+id/field_family_name"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:completionThreshold="2"
@@ -32,7 +32,7 @@
             android:inputType="textCapSentences" />
 
         <TextView
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:text="@string/label_given_names"
@@ -40,7 +40,7 @@
 
         <EditText
             android:id="@+id/field_given_names"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="@string/label_given_names"
@@ -50,7 +50,7 @@
 
     <TextView
         android:id="@+id/field_title"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/top_buttons"
         android:hint="@string/label_title"
@@ -61,7 +61,7 @@
 
     <LinearLayout
         android:id="@+id/bottom_buttons"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="60sp"
         android:layout_below="@+id/field_title"
         android:orientation="horizontal" >

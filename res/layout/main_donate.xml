@@ -24,7 +24,7 @@
 
         <TextView
             android:id="@+id/amazonUrl"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:paddingBottom="20dp"
@@ -33,7 +33,7 @@
             android:textColor="@color/theme_primary" />
 
         <TextView
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:paddingBottom="20dp"
@@ -42,7 +42,7 @@
 
         <TextView
             android:id="@+id/donateUrl"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:paddingBottom="20dp"
@@ -52,7 +52,7 @@
 
         <ImageView
             android:id="@+id/donateUrlImage"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:contentDescription="@string/label_paypal_donation"
             android:src="@drawable/paypal_donate" />

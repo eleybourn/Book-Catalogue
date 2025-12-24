@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/theme_surface"
     android:orientation="vertical"
@@ -8,7 +8,7 @@
 
     <AutoCompleteTextView
         android:id="@+id/field_series"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:completionThreshold="2"
         android:hint="@string/label_series"
@@ -17,7 +17,7 @@
 
     <LinearLayout
         android:id="@+id/bottom_buttons"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="60sp"
         android:layout_below="@+id/field_series"
         android:orientation="horizontal" >

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/theme_surface"
     android:orientation="vertical"
@@ -9,7 +9,7 @@
 
     <TextView
         android:id="@+id/title_label"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:hint="Label"
@@ -18,7 +18,7 @@
 
     <TextView
         android:id="@+id/field_title"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/title_label"
         android:hint="@string/label_title"
@@ -26,7 +26,7 @@
 
     <LinearLayout
         android:id="@+id/top_buttons"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/field_title"
         android:gravity="top"
@@ -34,7 +34,7 @@
 
         <AutoCompleteTextView
             android:id="@+id/field_series"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:completionThreshold="2"
@@ -51,7 +51,7 @@
         <EditText
             android:id="@+id/series_num"
             android:layout_width="150sp"
-            android:layout_height="fill_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:hint="@string/label_series_num"
             android:singleLine="true" />
@@ -59,7 +59,7 @@
 
     <LinearLayout
         android:id="@+id/bottom_buttons"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="60sp"
         android:layout_below="@+id/top_buttons"
         android:orientation="horizontal" >

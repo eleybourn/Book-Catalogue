@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentTop="true" >
 
     <RelativeLayout
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorSurface"
         android:orientation="vertical"
@@ -13,7 +13,7 @@
 
         <TextView
             android:id="@+id/welcome"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="?attr/colorPrimary"
@@ -23,7 +23,7 @@
 
         <TextView
             android:id="@+id/hint"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/welcome"
             android:textAppearance="?android:attr/textAppearanceMedium"
@@ -40,7 +40,7 @@
         <Button
             android:id="@+id/button_confirm"
             android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
+            android:layout_height="match_parent"
             android:layout_below="@+id/hide_hint_checkbox"
             android:layout_centerHorizontal="true"
             android:paddingLeft="60dp"

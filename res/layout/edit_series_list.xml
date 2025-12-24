@@ -18,14 +18,14 @@
 
             <TextView
                 android:id="@+id/field_title"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/label_title"
                 android:textSize="16sp" />
 
             <LinearLayout
                 android:id="@+id/top_buttons"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/field_title"
                 android:gravity="top"
@@ -33,7 +33,7 @@
 
                 <AutoCompleteTextView
                     android:id="@+id/field_series"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:completionThreshold="2"
@@ -43,7 +43,7 @@
                 <EditText
                     android:id="@+id/series_num"
                     android:layout_width="150sp"
-                    android:layout_height="fill_parent"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:hint="@string/label_series_num"
                     android:inputType="numberDecimal"
@@ -58,7 +58,7 @@
             <com.eleybourn.bookcatalogue.widgets.TouchListView
                 xmlns:tlv="http://schemas.android.com/apk/res/com.eleybourn.bookcatalogue"
                 android:id="@+id/list"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/bottom_buttons"
                 android:layout_below="@+id/top_buttons"
@@ -69,7 +69,7 @@
 
             <TextView
                 android:id="@+id/empty"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/bottom_buttons"
                 android:layout_below="@+id/top_buttons"

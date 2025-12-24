@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/row"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="80dp"
     android:baselineAligned="false"
     android:orientation="horizontal"
@@ -61,7 +61,7 @@
 
         <TextView
             android:id="@+id/row_author"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:lines="1"
@@ -69,7 +69,7 @@
 
         <TextView
             android:id="@+id/row_publisher"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:lines="1"

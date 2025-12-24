@@ -101,7 +101,7 @@
         <item name="strokeWidth">0dp</item>
     </style>
     <style name="layout_paragraph">
-        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingBottom">20dp</item>
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
@@ -136,7 +136,7 @@
         <item name="android:src">@drawable/expander_ic_minimized</item>
     </style>
     <style name="layout_title">
-        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingBottom">@dimen/p_lg</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
@@ -151,7 +151,7 @@
 
     <!-- Style for item in preferences lists -->
     <style name="layout_menu_list">
-        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:paddingHorizontal">@dimen/padding_prefs_item</item>
@@ -167,7 +167,7 @@
 
     <!-- Style for detail titles in read-only book details -->
     <style name="bookDetailsTitlesStyle">
-        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
         <item name="android:textStyle">bold</item>
@@ -176,7 +176,7 @@
     <!-- Style for text details in read-only book details -->
     <style name="bookDetailsTextStyle">
         <item name="android:textIsSelectable">true</item>
-        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingLeft">@dimen/padding_book_details_info</item>
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
@@ -185,7 +185,7 @@
     <!-- Style for text header data (typically title/author) in read-only book details -->
     <style name="bookDetailsHeaderStyle">
         <item name="android:textIsSelectable">true</item>
-        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
     </style>
@@ -193,12 +193,12 @@
     <!-- Style for smaller text header data (typically isbn/pages) in read-only book details -->
     <style name="bookDetailsMinorDetailStyle">
         <item name="android:textIsSelectable">true</item>
-        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
     </style>
     <style name="field_text">
-        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
         <item name="android:layout_alignParentStart">true</item>

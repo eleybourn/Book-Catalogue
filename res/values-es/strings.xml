@@ -84,7 +84,7 @@
 	<string name="overwrite_thumbnail">Los campos seleccionados se actualizarán tal y como se muestra, pero las imágenes de portadas se pueden descargar, si lo desea, para TODOS los libros.\n\n¿Desea sobreescribir todas las portadas existentes? ¡Atención!, esto puede requerir un tiempo considerable.</string>
 	<string name="yes">Sí</string>
 	<string name="no">No</string>
-	<string name="ok">Aceptar</string>
+	<string name="button_ok">Aceptar</string>
     <string name="search_fail">La búsqueda del libro ha fallado. Por favor, verifique la configuración de su conexión a internet.</string>
 	<string name="search_exception">La búsqueda ha fallado %1$s: %2$s</string>
     <string name="menu_delete_thumb">Eliminar portada</string>
@@ -103,7 +103,7 @@
 	<string name="anthology_save">Guardar</string>
 	<string name="anthology_add">Añadir</string>
 	<string name="menu_add_thumb_photo">Desde la cámara&#8230;</string>
-	<string name="thumbnail">Portada</string>
+	<string name="label_thumbnail">Portada</string>
 	<string name="menu_rotate_thumb">Girar imagen&#8230;</string>
 	<string name="menu_rotate_thumb_cw">Sentido horario</string>
 	<string name="menu_rotate_thumb_ccw">Sentido antihorario</string>
@@ -407,7 +407,7 @@
     <string name="textured_backgroud">Imagen de fondo texturizada</string>
     <string name="plain_background_b_reduces_flicker_b">Fondo liso (reduce el parpadeo)</string>
     <string name="thing_must_not_be_blank">%1$s no puede ser blanco</string>
-    <string name="edit">Editar</string>
+    <string name="label_edit">Editar</string>
     <string name="groupings">Grupos</string>
     <string name="label_preferences">Preferencias</string>
     <string name="unexpected_error">Se ha producido un error inesperado. Por favor, envíe los detalles a soporte utilizando la opción \'Help\' del menú principal</string>

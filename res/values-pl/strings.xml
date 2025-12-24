@@ -84,7 +84,7 @@
 <string name="overwrite_thumbnail">Wybrane pola zostaną zaktualizowane, natomiast okładki mogą by opcjonalnie pobrane dla wszystkich książek.\n\nCzy chcesz zastąpić wszystkie istniejące okładki? Uwaga - może to zająć sporo czasu&#8230;</string>
 <string name="yes">Tak</string>
 <string name="no">Nie</string>
-<string name="ok">OK</string>
+<string name="button_ok">OK</string>
     <string name="search_fail">Wyszukiwanie książki nie powiodło się. Sprawdź połączenie z siecią.</string>
 <string name="search_exception">Wyszukiwanie nie powiodło się: %1$s: %2$s</string>
     <string name="menu_delete_thumb">Usuń okładkę</string>
@@ -103,7 +103,7 @@
 <string name="anthology_save">Zapisz</string>
 <string name="anthology_add">Dodaj</string>
 <string name="menu_add_thumb_photo">Z aparatu...</string>
-<string name="thumbnail">Okładka</string>
+<string name="label_thumbnail">Okładka</string>
 <string name="menu_rotate_thumb">Obróć okładkę...</string>
 <string name="menu_rotate_thumb_cw">Obróć zgodnie ze wsk. zegara</string>
 <string name="menu_rotate_thumb_ccw">Obróć odwrotnie do wsk. zegara</string>

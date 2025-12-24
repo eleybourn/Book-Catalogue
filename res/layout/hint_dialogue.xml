@@ -45,7 +45,7 @@
             android:layout_centerHorizontal="true"
             android:paddingLeft="60dp"
             android:paddingRight="60dp"
-            android:text="@string/ok" />
+            android:text="@string/button_ok" />
     </RelativeLayout>
 
 </ScrollView>

@@ -83,7 +83,7 @@
     <string name="overwrite_thumbnail">Bu işlem seçili alanları gösterildiği biçimde güncelleyecektir, ancak küçük resimler seçime bağlı olarak tüm kitaplar için de indirilebilir.\n\nVar olan tüm küçük resimlerin üzerine yazmak istiyor musunuz? Bu işlem uzun sürebilir. </string>
     <string name="yes">Evet</string>
     <string name="no">Hayır</string>
-    <string name="ok">Tamam</string>
+    <string name="button_ok">Tamam</string>
     <string name="search_fail">Kitap araması başarısız oldu. Ağ ayarlarınızı denetleyiniz.</string>
     <string name="search_exception">%1$s sırasında arama başarısız oldu: %2$s</string>
     <string name="menu_delete_thumb">Küçük resmi sil</string>
@@ -102,7 +102,7 @@
     <string name="anthology_save">Kaydet</string>
     <string name="anthology_add">Ekle</string>
     <string name="menu_add_thumb_photo">Kameradan&#8230;</string>
-    <string name="thumbnail">Kapak resmi</string>
+    <string name="label_thumbnail">Kapak resmi</string>
     <string name="menu_rotate_thumb">Resmi döndür&#8230;</string>
     <string name="menu_rotate_thumb_cw">Saat yönünde döndür</string>
     <string name="menu_rotate_thumb_ccw">Saat yönünün tersine döndür</string>
@@ -429,7 +429,7 @@
     <string name="textured_backgroud">Dokulu ardalan resmi</string>
     <string name="plain_background_b_reduces_flicker_b">Düz ardalan (titremeyi azaltır)</string>
     <string name="thing_must_not_be_blank">%1$s boş olamaz</string>
-    <string name="edit">Düzenle</string>
+    <string name="label_edit">Düzenle</string>
     <string name="groupings">Öbeklemeler</string>
     <string name="label_preferences">Yeğlenenler</string>
     <string name="unexpected_error">Beklenmeyen bir hata oluştu, lütfen olayla ilgili ayrıntıları ana seçkedeki \'Yardım\' seçeneğinden bize gönderin</string>

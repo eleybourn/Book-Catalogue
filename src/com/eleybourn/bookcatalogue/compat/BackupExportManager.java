@@ -134,7 +134,7 @@ public class BackupExportManager
 		MessageDialogFragment frag = MessageDialogFragment.newInstance(ID.MSG_ID_BACKUP_EXPORT_COMPLETE,
 																	   R.string.label_backup_to_archive,
 																	   msg,
-																	   R.string.ok,
+																	   R.string.button_ok,
 																	   0,
 																	   0);
 		frag.show(activity.getSupportFragmentManager(), null);

@@ -16,7 +16,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:layout_centerVertical="true"
-        android:text="@string/edit"
+        android:text="@string/label_edit"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView

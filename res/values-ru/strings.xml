@@ -83,7 +83,7 @@
     <string name="overwrite_thumbnail">Выбранные поля будут обновлены как показано, но миниатюры при желании можно загрузить для ВСЕХ книг.\n\nВы хотите перезаписать все миниатюры? Предупреждение: это может занять много времени. </string>
     <string name="yes">Да</string>
     <string name="no">Нет</string>
-    <string name="ok">OK</string>
+    <string name="button_ok">OK</string>
     <string name="search_fail">Поиск книги не удался. Пожалуйста, проверьте настройки интернет-соединения.</string>
     <string name="search_exception">Поиск во время %1$s: %2$s не удался</string>
     <string name="menu_delete_thumb">Удалить миниатюру</string>
@@ -102,7 +102,7 @@
     <string name="anthology_save">Сохранить</string>
     <string name="anthology_add">Добавить</string>
     <string name="menu_add_thumb_photo">С камеры…</string>
-    <string name="thumbnail">Эскиз обложки</string>
+    <string name="label_thumbnail">Эскиз обложки</string>
     <string name="menu_rotate_thumb">Повернуть миниатюру&#8230;</string>
     <string name="menu_rotate_thumb_cw">Повернуть по часовой</string>
     <string name="menu_rotate_thumb_ccw">Повернуть против часовой</string>
@@ -413,7 +413,7 @@
     <string name="textured_backgroud">Картинка фона</string>
     <string name="plain_background_b_reduces_flicker_b">Ровный фон (уменьшает мерцание)</string>
     <string name="thing_must_not_be_blank">%1$s должен быть не пустым</string>
-    <string name="edit">Редактировать</string>
+    <string name="label_edit">Редактировать</string>
     <string name="groupings">Группирование</string>
     <string name="label_preferences">Настройки</string>
     <string name="unexpected_error">Случилась неожиданная ошибка, пожалуйста, отошлите детали в поддержку, используя меню \'Помощь\' из Главного меню</string>

@@ -176,7 +176,7 @@
     <string name="overwrite_thumbnail">Les champs sélectionnés vont être mis à jour tels que montré ; en option, les vignettes peuvent être téléchargées pour tous les livres.\n\nVoulez-vous remplacer toutes les vignettes existantes ? Attention, cela peut prendre du temps.</string>
     <string name="yes">Oui</string>
     <string name="no">Non</string>
-    <string name="ok">OK</string>
+    <string name="button_ok">OK</string>
     <string name="search_fail">La recherche du livre a échoué. Merci de vérifier vos réglages réseau.</string>
     <string name="search_exception">Recherche en échec pendant %1$s : %2$s</string>
     <string name="menu_delete_thumb">Supprimer la vignette</string>
@@ -195,7 +195,7 @@
     <string name="anthology_save">Sauvegarder</string>
     <string name="anthology_add">Ajouter</string>
     <string name="menu_add_thumb_photo">À partir de l\'appareil photo&#8230;</string>
-    <string name="thumbnail">Vignette de couverture</string>
+    <string name="label_thumbnail">Vignette de couverture</string>
     <string name="menu_rotate_thumb">Faire tourner la vignette&#8230;</string>
     <string name="menu_rotate_thumb_cw">Faire tourner dans le sens des aiguilles d\'une montre</string>
     <string name="menu_rotate_thumb_ccw">Faire tourner dans le sens contraire des aiguilles d\'une montre</string>
@@ -489,7 +489,7 @@
     <string name="textured_backgroud">Image d\'arrière plan</string>
     <string name="plain_background_b_reduces_flicker_b">Arrière plan uni (réduit le clignotement)</string>
     <string name="thing_must_not_be_blank">%1$s ne doit pas être vide</string>
-    <string name="edit">Modifier</string>
+    <string name="label_edit">Modifier</string>
     <string name="groupings">Groupes</string>
     <string name="label_preferences">Préférences</string>
     <string name="unexpected_error">Une erreur inattendue s\'est produite. Merci d\'envoyer les détails au support par l\'option « aide » du menu principal.</string>

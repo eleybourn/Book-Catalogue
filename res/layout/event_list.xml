@@ -24,7 +24,7 @@
             android:layout_width="fill_parent"
             android:layout_height="2dp"
             android:layout_below="@id/events_found"
-            android:background="@drawable/main_menu_header_divider"
+            android:background="@drawable/layout_divider"
             android:paddingBottom="2dp" />
     </RelativeLayout>
 

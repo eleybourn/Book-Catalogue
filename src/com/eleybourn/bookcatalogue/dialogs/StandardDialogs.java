@@ -148,7 +148,7 @@ public class StandardDialogs {
 		alertDialog.setTitle(R.string.delete_series);
 		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
 		//alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
-		alertDialog.setButton2(context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+		alertDialog.setButton2(context.getResources().getString(R.string.button_ok), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				dbHelper.deleteSeries(series);
 				alertDialog.dismiss();
@@ -207,7 +207,7 @@ public class StandardDialogs {
 		alertDialog.setTitle(R.string.menu_delete);
 		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
 		//alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
-		alertDialog.setButton2(context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+		alertDialog.setButton2(context.getResources().getString(R.string.button_ok), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				dbHelper.deleteBook(id);
 				alertDialog.dismiss();
@@ -236,7 +236,7 @@ public class StandardDialogs {
 		final AlertDialog alertDialog = new AlertDialog.Builder(context).setTitle(R.string.authorize_access).setMessage(R.string.goodreads_action_cannot_blah_blah).create();
 
 		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getResources().getString(R.string.button_ok), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				alertDialog.dismiss();
 				GoodreadsRegister.requestAuthorizationInBackground(context);

@@ -136,7 +136,7 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 			replaceSubmenu.setIcon(android.R.drawable.ic_menu_gallery);
 
 			MenuItem add_photo = replaceSubmenu.add(0, CODE_ADD_PHOTO, 1, R.string.menu_add_thumb_photo);
-			add_photo.setIcon(android.R.drawable.ic_menu_camera);
+			add_photo.setIcon(R.drawable.ic_menu_camera);
 			MenuItem add_gallery = replaceSubmenu.add(0, CODE_ADD_GALLERY, 2, R.string.menu_add_thumb_gallery);
 			add_gallery.setIcon(android.R.drawable.ic_menu_gallery);
 			// TODO EDITIONS
@@ -717,7 +717,7 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 		mFields.add(R.id.row_img, "", "thumbnail", null);
 		mFields.getField(R.id.row_img).getView().setOnCreateContextMenuListener(mCreateBookThumbContextMenuListener);
 		
-		mFields.add(R.id.format_button, "", CatalogueDBAdapter.KEY_FORMAT, null);
+		mFields.add(R.id.format_dropdown_button, "", CatalogueDBAdapter.KEY_FORMAT, null);
 		mFields.add(R.id.field_bookshelf, "bookshelf_text", null).doNoFetch = true; // Output-only field
 		mFields.add(R.id.signed, CatalogueDBAdapter.KEY_SIGNED, null);
 	}

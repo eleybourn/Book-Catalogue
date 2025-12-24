@@ -118,7 +118,7 @@ public class ExportAdvancedDialogFragment extends BookCatalogueDialogFragment {
 				dismiss();
 			}});
 
-		v.findViewById(R.id.ok).setOnClickListener(new OnClickListener() {
+		v.findViewById(R.id.button_ok).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				handleClick(v);

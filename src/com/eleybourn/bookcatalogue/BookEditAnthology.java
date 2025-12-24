@@ -324,7 +324,7 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
 		AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setMessage(anthology_title).create();
 		alertDialog.setTitle(R.string.anthology_confirm);
 		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-		alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, this.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+		alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, this.getResources().getString(R.string.button_ok), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				for (int j=0; j < titles.size(); j++) {
 					String anthology_title = titles.get(j);

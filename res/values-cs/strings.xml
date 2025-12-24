@@ -83,7 +83,7 @@
 <string name="overwrite_thumbnail">Toto aktualizuje pouze vybraná pole, ale náhledy budou staženy pro VŠECHNY knihy.\n\nChcete přepsat všechny existující náhledy? Pozor, může to chvíli trvat&#8230;</string>
 <string name="yes">Ano</string>
 <string name="no">Ne</string>
-<string name="ok">OK</string>
+<string name="button_ok">OK</string>
     <string name="search_fail">Vyhledávání knihy se nezdařilo. Zkontrolujte prosím své síťové připojení.</string>
 <string name="search_exception">Hledání selhalo %1$s: %2$s</string>
     <string name="menu_delete_thumb">Smazat náhled</string>
@@ -102,7 +102,7 @@
 <string name="anthology_save">Uložit</string>
 <string name="anthology_add">Přidat</string>
 <string name="menu_add_thumb_photo">Z fotoaparátu&#8230;</string>
-<string name="thumbnail">Náhled obálky</string>
+<string name="label_thumbnail">Náhled obálky</string>
 <string name="menu_rotate_thumb">Otočit náhled&#8230;</string>
 <string name="menu_rotate_thumb_cw">Otočit po směru hodinových ručiček</string>
 <string name="menu_rotate_thumb_ccw">Otočit proti směru hodinových ručiček</string>
@@ -396,7 +396,7 @@
 <string name="textured_backgroud">Obrázek na pozadí</string>
 <string name="plain_background_b_reduces_flicker_b">Jednobarevné pozadí (redukuje blikání)</string>
 <string name="thing_must_not_be_blank">%1$s nemůže být prázdné</string>
-<string name="edit">Upravit</string>
+<string name="label_edit">Upravit</string>
 <string name="groupings">Seskupení</string>
     <string name="label_preferences">Nastavení</string>
 <string name="unexpected_error">Došlo k neočekávané chybě, prosím zašlete nám detaily o této chybě prostřednictvím \'Nápovědy\' v hlavním menu.</string>

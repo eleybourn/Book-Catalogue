@@ -146,7 +146,7 @@ public class MainAdministration extends ActivityWithTasks
 					alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
 					alertDialog.setButton(
 							AlertDialog.BUTTON_POSITIVE,
-							MainAdministration.this.getResources().getString(R.string.ok),
+							MainAdministration.this.getResources().getString(R.string.button_ok),
 							(dialog, which) -> launchCsvImportPicker());
 					alertDialog.setButton(
 							AlertDialog.BUTTON_NEGATIVE,
@@ -329,7 +329,7 @@ public class MainAdministration extends ActivityWithTasks
 		alertDialog.setIcon(android.R.drawable.ic_menu_send);
 		alertDialog.setButton(
 				DialogInterface.BUTTON_NEGATIVE,
-				getResources().getString(R.string.ok),
+				getResources().getString(R.string.button_ok),
 				(dialog, which) -> {
 					// setup the mail message
 					final Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);

@@ -88,7 +88,7 @@
             <View
                 android:layout_width="fill_parent"
                 android:layout_height="2dp"
-                android:background="@drawable/main_menu_header_divider"
+                android:background="@drawable/layout_divider"
                 android:paddingBottom="2dp" />
         </LinearLayout>
 
@@ -102,7 +102,7 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="2dp"
-            android:background="@drawable/main_menu_header_divider"
+            android:background="@drawable/layout_divider"
             android:paddingBottom="2dp" />
     </LinearLayout>
 
@@ -118,7 +118,7 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="2dp"
-            android:background="@drawable/main_menu_header_divider"
+            android:background="@drawable/layout_divider"
             android:paddingBottom="2dp" />
 
         <Button

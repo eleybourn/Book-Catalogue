@@ -160,7 +160,7 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="1dp"
-            android:background="@drawable/main_menu_header_divider"
+            android:background="@drawable/layout_divider"
             />
 
         <!-- Series -->
@@ -279,7 +279,7 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="1dp"
-            android:background="@drawable/main_menu_header_divider"
+            android:background="@drawable/layout_divider"
             android:paddingBottom="2dp"
             android:paddingTop="2dp" />
 
@@ -384,7 +384,7 @@
         <!-- Description -->
 
         <TextView
-            android:id="@+id/heading_anthology"
+            android:id="@+id/heading_description"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
@@ -395,7 +395,7 @@
             android:id="@+id/description_divider"
             android:layout_width="fill_parent"
             android:layout_height="1dp"
-            android:background="@drawable/main_menu_header_divider"
+            android:background="@drawable/layout_divider"
             android:paddingBottom="2dp"
             android:paddingTop="2dp" />
 

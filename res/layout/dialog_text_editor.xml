@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/layout_dialog" >
+
+    <LinearLayout
+        android:id="@+id/dialog_body"
+        style="@style/layout_main" >
+
+        <EditText
+            android:id="@+id/field_text"
+            style="@style/field_text"
+            android:ems="10"
+            android:gravity="top"
+            android:inputType="textMultiLine"
+            android:labelFor="@string/label_description">
+            <requestFocus />
+        </EditText>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bottom_buttons"
+        style="@style/layout_action_row" >
+        <Button
+            android:id="@+id/button_cancel"
+            style="@style/layout_button_action"
+            android:text="@string/button_cancel" />
+        <Button
+            android:id="@+id/button_ok"
+            style="@style/layout_button_action"
+            android:text="@string/button_ok" />
+    </LinearLayout>
+
+</RelativeLayout>

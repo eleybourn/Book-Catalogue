@@ -31,12 +31,8 @@
 
                 <ImageView
                     android:id="@+id/bookshelf_down"
-                    android:layout_width="wrap_content"
-                    android:layout_height="32dp"
-                    android:layout_alignParentEnd="true"
-                    android:contentDescription="@string/select_bookshelves"
-                    android:paddingHorizontal="@dimen/p_md"
-                    android:src="@drawable/expander_ic_maximized" />
+                    style="@style/layout_button_dropdown"
+                    android:contentDescription="@string/select_bookshelves" />
 
                 <TextView
                     android:id="@+id/search_text"
@@ -83,7 +79,7 @@
                 android:id="@+id/header_divider"
                 android:layout_width="fill_parent"
                 android:layout_height="1dp"
-                android:background="@drawable/main_menu_header_divider"
+                android:background="@drawable/layout_divider"
                 android:paddingBottom="2dp"
                 android:paddingTop="2dp" />
 

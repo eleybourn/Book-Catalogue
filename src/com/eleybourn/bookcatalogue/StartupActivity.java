@@ -353,7 +353,7 @@ public class StartupActivity
 			alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
 			alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.button_cancel),
 								  (dialog, which) -> dialog.dismiss());
-			alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.ok),
+			alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.button_ok),
 								  (dialog, which) -> {
 									  mExportRequired = true;
 									  dialog.dismiss();
@@ -401,7 +401,7 @@ public class StartupActivity
 		alertDialog.setCanceledOnTouchOutside(false);
 		alertDialog.setTitle(R.string.upgrade_title);
 		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-		alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.ok), (dialog, which) -> alertDialog.dismiss());
+		alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.button_ok), (dialog, which) -> alertDialog.dismiss());
 		alertDialog.setOnCancelListener(dialog -> alertDialog.dismiss());
 		alertDialog.setOnDismissListener(dialog -> {
 			UpgradeMessageManager.setMessageAcknowledged();

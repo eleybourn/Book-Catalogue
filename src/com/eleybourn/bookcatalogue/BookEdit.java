@@ -477,7 +477,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
         boolean thumbVisible = BookCatalogueApp.getAppPreferences().getBoolean(FieldVisibility.prefix + "thumbnail", true);
         if (thumbVisible) {
             MenuItem thumbOptions = menu.add(0, R.id.MENU_THUMBNAIL_OPTIONS, 0, R.string.cover_options_cc_ellipsis);
-            thumbOptions.setIcon(android.R.drawable.ic_menu_camera);
+            thumbOptions.setIcon(R.drawable.ic_menu_camera);
             thumbOptions.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
 
@@ -496,7 +496,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 
                     case R.id.MENU_THUMBNAIL_OPTIONS:
                         if(!mIsReadOnly) {
-                            //((BookEditFields) this).showCoverContextMenu();
+                            showCoverContextMenu();
                             return true;
                         }
                         break;
@@ -556,6 +556,14 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
             return list.get(0).name;
         else
             return null;
+    }
+
+    /**
+     * Show the context menu for the cover thumbnail
+     */
+    public void showCoverContextMenu() {
+        View v = findViewById(R.id.row_img);
+        v.showContextMenu();
     }
 
 
@@ -806,7 +814,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 					alert.setMessage(getResources().getString(R.string.duplicate_book_message));
 					alert.setTitle(R.string.duplicate_book_title);
 					alert.setIcon(android.R.drawable.ic_menu_info_details);
-					alert.setButton2(this.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+					alert.setButton2(this.getResources().getString(R.string.button_ok), new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
 							updateOrCreate();
 							nextStep.success();

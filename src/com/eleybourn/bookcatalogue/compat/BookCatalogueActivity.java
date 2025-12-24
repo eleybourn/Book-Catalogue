@@ -168,7 +168,7 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
 			new AlertDialog.Builder(activity)
 					.setTitle(R.string.perm_required)
 					.setMessage(Html.fromHtml(BookCatalogueApp.getResourceString(R.string.perm_intro) + message))
-					.setPositiveButton(R.string.ok, (dialogInterface, i) -> {
+					.setPositiveButton(R.string.button_ok, (dialogInterface, i) -> {
 						if (l != null) {
 							l.launch(list);
 						} else {
@@ -278,7 +278,7 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
 											ACTIVITY_REALLY_IMPORT_OLD_FILES,
 											R.string.label_import_old_files,
 											msg,
-											R.string.ok,
+											R.string.button_ok,
 											R.string.button_cancel,
 											0);
 									frag.requireArguments().putString(ARG_TREE_URI, t.getUri().toString());
@@ -303,7 +303,7 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
 			//ArrayList<File> list = StorageUtils.getExistingOldPaths();
 			String msg = this.getString(
 					R.string.old_files_message,
-					getString(R.string.ok),
+					getString(R.string.button_ok),
 					getString(R.string.button_cancel),
 					getString(R.string.label_settings),
 					getString(R.string.label_import_old_files));
@@ -311,7 +311,7 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
 					ACTIVITY_IMPORT_OLD_FILES,
 					R.string.label_import_old_files,
 					msg,
-					R.string.ok,
+					R.string.button_ok,
 					R.string.button_cancel,
 					0);
 			frag.show(getSupportFragmentManager(), null);
@@ -407,7 +407,7 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
 						baseId = R.string.old_file_import_complete;
 					}
 					String msg = c.getString(baseId) + "\n\n" + c.getString(R.string.old_file_import_stats, mResult.processed, mResult.total, extra);
-					MessageDialogFragment frag = MessageDialogFragment.newInstance(0, R.string.label_import_old_files, msg, R.string.ok, 0, 0);
+					MessageDialogFragment frag = MessageDialogFragment.newInstance(0, R.string.label_import_old_files, msg, R.string.button_ok, 0, 0);
 					frag.show(fm, null);
 				}
 			};

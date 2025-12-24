@@ -5,18 +5,15 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 /**
- * This subclass of TextView is designed to get aaround a bug in Android 4.1 and 4.1.1, documented here:
- * 
- *     http://code.google.com/p/android/issues/detail?id=34872
+ * This subclass of TextView is designed to get around a bug in Android 4.1 and 4.1.1, documented here:
+ *     <a href="http://code.google.com/p/android/issues/detail?id=34872">...</a>
  * and here
- *     https://code.google.com/p/android/issues/detail?id=35412
- * 
+ *     <a href="https://code.google.com/p/android/issues/detail?id=35412">...</a>
  * It should have no effect *except* for very specific books in the above-mentioned versions of Android
- * 
  * NOTE:
  * It should only be needed for TextViews that are wrapped and have MetricAffecting spans (eg. URL, bold, emphasis).
  * Currently this is limited to the book description field.
- * 
+ *
  * @author pjw
  *
  */

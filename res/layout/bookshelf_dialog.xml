@@ -17,7 +17,7 @@
             android:layout_gravity="center_horizontal"
             android:paddingLeft="40dp"
             android:paddingRight="40dp"
-            android:text="@string/ok" >
+            android:text="@string/button_ok" >
         </Button>
     </LinearLayout>
 

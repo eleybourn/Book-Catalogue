@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="0"
         android:adjustViewBounds="true"
-        android:contentDescription="@string/thumbnail" />
+        android:contentDescription="@string/label_thumbnail" />
 
     <LinearLayout
         android:layout_width="wrap_content"

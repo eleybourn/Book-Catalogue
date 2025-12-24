@@ -100,7 +100,7 @@ public class BackupImportManager
 				ID.MSG_ID_BACKUP_IMPORT_COMPLETE,
 				R.string.label_import_from_archive,
 				msg,
-				R.string.ok, 0, 0);
+				R.string.button_ok, 0, 0);
 		frag.show(activity.getSupportFragmentManager(), null);
 	}
 }

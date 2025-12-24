@@ -85,7 +85,7 @@
     <string name="overwrite_thumbnail">Τα επιλεγμένα πεδία θα ενημερωθούν όπως φαίνεται, αλλά οι Μικρογραφίες μπορούν να κατέβουν προαιρετικά για ΌΛΑ τα βιβλία.\n\nΘέλετε να αντικαταστήσετε όλες τις υπάρχουσες μικρογραφίες; Προσοχή, θα χρειαστεί πολύς χρόνος. </string>
     <string name="yes">Ναι</string>
     <string name="no">Όχι</string>
-    <string name="ok">OK</string>
+    <string name="button_ok">OK</string>
     <string name="search_fail">Η αναζήτηση του βιβλίου απέτυχε. Παρακαλούμε ελέγξτε τις ρυθμίσεις δικτύου.</string>
     <string name="search_exception">Αναζήτηση απέτυχε όταν %1$s: %2$s</string>
     <string name="menu_delete_thumb">Διαγραφή μικρογραφίας</string>
@@ -104,7 +104,7 @@
     <string name="anthology_save">Αποθήκευση</string>
     <string name="anthology_add">Προσθήκη</string>
     <string name="menu_add_thumb_photo">Από κάμερα&#8230;</string>
-    <string name="thumbnail">Μικρογραφία Εξωφύλλου</string>
+    <string name="label_thumbnail">Μικρογραφία Εξωφύλλου</string>
     <string name="menu_rotate_thumb">Περιστροφή Μικρογραφίας&#8230;</string>
     <string name="menu_rotate_thumb_cw">Περιστροφή δεξιόστροφα</string>
     <string name="menu_rotate_thumb_ccw">Περιστροφή αριστερόστροφα</string>
@@ -407,7 +407,7 @@
     <string name="textured_backgroud">Εικόνα φόντου</string>
     <string name="plain_background_b_reduces_flicker_b">Απλό φόντο (μείωση τρεμοπαίγματος)</string>
     <string name="thing_must_not_be_blank">%1$s δεν πρέπει να είναι κενό</string>
-    <string name="edit">Επεξεργασία</string>
+    <string name="label_edit">Επεξεργασία</string>
     <string name="groupings">Ομαδοποιήσεις</string>
     <string name="label_preferences">Επιλογές</string>
     <string name="unexpected_error">Ένα απροσδόκητο σφάλμα συνέβη, παρακαλούμε στείλτε τις λεπτομέρειες στην υποστήριξη με χρήση της επιλογής \'Βοήθεια\' από το κεντρικό μενού.</string>

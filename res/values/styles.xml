@@ -25,13 +25,15 @@
     <style name="layout_action_row">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_gravity">bottom</item>
+        <item name="android:layout_gravity">bottom|start</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:gravity">bottom</item>
         <item name="android:orientation">horizontal</item>
         <item name="android:paddingHorizontal">@dimen/p_lg</item>
         <item name="android:paddingVertical">@dimen/p_lg</item>
     </style>
     <style name="layout_dialog">
-        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@color/theme_surface</item>
         <item name="android:paddingHorizontal">@dimen/p_md</item>
@@ -102,6 +104,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:minHeight">48dp</item>
+        <item name="android:focusable">true</item>
     </style>
     <style name="layout_button_large" parent="layout_button">
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
@@ -113,7 +116,15 @@
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_weight">1</item>
+        <item name="android:maxWidth">20dp</item>
         <item name="android:layout_marginHorizontal">@dimen/p_md</item>
+    </style>
+    <style name="layout_button_dropdown" parent="layout_button">
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:paddingHorizontal">@dimen/p_md</item>
+        <item name="android:src">@drawable/expander_ic_minimized</item>
     </style>
     <style name="layout_title">
         <item name="android:layout_width">fill_parent</item>
@@ -184,6 +195,8 @@
         <item name="android:layout_alignParentStart">true</item>
         <item name="android:hint">@string/not_set</item>
         <item name="android:minHeight">48dp</item>
+        <item name="android:importantForAutofill">no</item>
+        <item name="android:textColor">@color/theme_onSurface</item>
     </style>
     <style name="locale_field_text" parent="@style/field_text">
         <item name="android:inputType">textCapWords</item>

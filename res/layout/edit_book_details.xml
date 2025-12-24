@@ -5,17 +5,16 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:focusableInTouchMode="true"
-    tools:ignore="DuplicateIds"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    tools:ignore="DuplicateIds">
 
     <ImageView
         android:id="@+id/row_img"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_weight="1"
         android:background="@color/theme_surfaceContainer"
-        android:contentDescription="@string/thumbnail"
+        android:contentDescription="@string/label_thumbnail"
         android:gravity="center"
         android:padding="@dimen/p_md" />
 
@@ -23,7 +22,7 @@
         android:id="@+id/row_author"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/heading_author"
@@ -31,32 +30,32 @@
             android:text="@string/label_author" />
 
         <Button
-            android:id="@+id/button_author"
+            android:id="@+id/field_author"
             style="@style/layout_button_large"
-            android:text="@string/label_set_authors"
             android:layout_below="@+id/heading_author"
             android:focusableInTouchMode="true"
-            android:nextFocusDown="@+id/field_title" >
-            <requestFocus/>
+            android:nextFocusDown="@+id/field_title"
+            android:text="@string/label_set_authors">
+
+            <requestFocus />
         </Button>
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/heading_title"
             style="@style/layout_heading"
-            android:text="@string/label_title"
-            android:labelFor="@+id/field_title" />
+            android:labelFor="@+id/field_title"
+            android:text="@string/label_title" />
 
         <EditText
             android:id="@+id/field_title"
-            android:layout_below="@+id/heading_title"
             style="@style/locale_field_text_title"
-            android:importantForAutofill="no"
+            android:layout_below="@+id/heading_title"
             android:nextFocusDown="@+id/field_isbn" />
     </RelativeLayout>
 
@@ -64,62 +63,56 @@
         android:id="@+id/row_isbn"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/heading_isbn"
             style="@style/layout_heading"
-            android:text="@string/label_isbn"
-            android:labelFor="@+id/field_isbn"/>
+            android:labelFor="@+id/field_isbn"
+            android:text="@string/label_isbn" />
 
         <EditText
             android:id="@+id/field_isbn"
             style="@style/field_text"
-            android:layout_alignParentStart="false"
             android:layout_below="@+id/heading_isbn"
+            android:layout_alignParentStart="false"
             android:inputType="text"
-            android:importantForAutofill="no"
             android:nextFocusDown="@+id/field_series" />
     </RelativeLayout>
 
-<RelativeLayout
-    android:id="@+id/row_format"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    <RelativeLayout
+        android:id="@+id/row_format"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/heading_format"
-        style="@style/layout_heading"
-        android:text="@string/label_format"
-        android:labelFor="@+id/field_format" />
+        <TextView
+            android:id="@+id/heading_format"
+            style="@style/layout_heading"
+            android:labelFor="@+id/field_format"
+            android:text="@string/label_format" />
 
-    <ImageView
-        android:id="@+id/format_button"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_alignBottom="@+id/field_format"
-        android:layout_alignParentEnd="true"
-        android:contentDescription="@string/label_format"
-        android:focusable="true"
-        android:paddingHorizontal="@dimen/p_md"
-        android:src="@drawable/expander_ic_maximized" />
+        <ImageView
+            android:id="@+id/format_dropdown_button"
+            style="@style/layout_button_dropdown"
+            android:layout_alignBottom="@+id/field_format"
+            android:contentDescription="@string/label_format" />
 
-    <AutoCompleteTextView
-        android:id="@+id/field_format"
-        style="@style/field_text"
-        android:layout_below="@+id/heading_format"
-        android:layout_toStartOf="@id/format_button"
-        android:completionThreshold="2"
-        android:nextFocusDown="@+id/field_genre"
-        android:singleLine="true" />
-</RelativeLayout>
+        <AutoCompleteTextView
+            android:id="@+id/field_format"
+            style="@style/field_text"
+            android:layout_below="@+id/heading_format"
+            android:layout_toStartOf="@id/format_dropdown_button"
+            android:completionThreshold="2"
+            android:nextFocusDown="@+id/field_genre"
+            android:singleLine="true" />
+    </RelativeLayout>
 
-<RelativeLayout
+    <RelativeLayout
         android:id="@+id/row_series"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/heading_series"
@@ -129,28 +122,28 @@
         <Button
             android:id="@+id/field_series"
             style="@style/layout_button_large"
-            android:text="@string/set_series"
             android:layout_below="@+id/heading_series"
-            android:nextFocusDown="@+id/field_publisher" />
+            android:nextFocusDown="@+id/field_publisher"
+            android:text="@string/set_series" />
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/row_publisher"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/heading_publisher"
             style="@style/layout_heading"
-            android:text="@string/label_publisher"
-            android:labelFor="@+id/field_publisher" />
+            android:labelFor="@+id/field_publisher"
+            android:text="@string/label_publisher" />
 
         <AutoCompleteTextView
             android:id="@+id/field_publisher"
+            style="@style/locale_field_text_name"
             android:layout_below="@+id/heading_publisher"
             android:completionThreshold="2"
-            style="@style/locale_field_text_name"
             android:nextFocusDown="@+id/button_date_published" />
     </RelativeLayout>
 
@@ -158,26 +151,26 @@
         android:id="@+id/row_date_published"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/heading_date_published"
             style="@style/layout_heading"
-            android:text="@string/label_date_published"
-            android:labelFor="@+id/button_date_published" />
+            android:labelFor="@+id/button_date_published"
+            android:text="@string/label_date_published" />
 
         <Button
             android:id="@+id/button_date_published"
             style="@style/layout_button_large"
-            android:text="@string/not_set"
             android:layout_below="@+id/heading_date_published"
-            android:nextFocusDown="@+id/field_bookshelf" />
+            android:nextFocusDown="@+id/field_bookshelf"
+            android:text="@string/not_set" />
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/heading_bookshelves"
@@ -187,29 +180,28 @@
         <Button
             android:id="@+id/field_bookshelf"
             style="@style/layout_button_large"
-            android:text="@string/not_set"
             android:layout_below="@+id/heading_bookshelves"
-            android:nextFocusDown="@+id/field_pages" />
+            android:nextFocusDown="@+id/field_pages"
+            android:text="@string/not_set" />
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/row_pages"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/heading_pages"
             style="@style/layout_heading"
-            android:text="@string/label_pages"
-            android:labelFor="@+id/field_pages" />
+            android:labelFor="@+id/field_pages"
+            android:text="@string/label_pages" />
 
         <EditText
             android:id="@+id/field_pages"
             style="@style/field_text"
             android:layout_below="@+id/heading_pages"
             android:inputType="number"
-            android:importantForAutofill="no"
             android:nextFocusDown="@+id/field_list_price" />
     </RelativeLayout>
 
@@ -217,13 +209,13 @@
         android:id="@+id/row_list_price"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/heading_list_price"
             style="@style/layout_heading"
-            android:text="@string/label_list_price"
-            android:labelFor="@+id/field_list_price" />
+            android:labelFor="@+id/field_list_price"
+            android:text="@string/label_list_price" />
 
         <EditText
             android:id="@+id/field_list_price"
@@ -231,22 +223,21 @@
             android:layout_below="@+id/heading_list_price"
             android:layout_marginStart="2dp"
             android:layout_marginTop="-12dp"
-            android:importantForAutofill="no"
             android:inputType="numberDecimal"
             android:nextFocusDown="@+id/field_genre" />
     </RelativeLayout>
 
-<RelativeLayout
+    <RelativeLayout
         android:id="@+id/row_genre"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/heading_genre"
             style="@style/layout_heading"
-            android:text="@string/label_genre"
-            android:labelFor="@+id/field_genre" />
+            android:labelFor="@+id/field_genre"
+            android:text="@string/label_genre" />
 
         <AutoCompleteTextView
             android:id="@+id/field_genre"
@@ -261,19 +252,19 @@
         android:id="@+id/row_language"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/heading_language"
             style="@style/layout_heading"
-            android:text="@string/label_language"
-            android:labelFor="@+id/field_language" />
+            android:labelFor="@+id/field_language"
+            android:text="@string/label_language" />
 
         <AutoCompleteTextView
             android:id="@+id/field_language"
+            style="@style/locale_field_text_language"
             android:layout_below="@+id/heading_language"
             android:completionThreshold="2"
-            style="@style/locale_field_text_language"
             android:nextFocusDown="@+id/field_anthology"
             android:singleLine="true" />
     </RelativeLayout>
@@ -281,34 +272,29 @@
     <CheckBox
         android:id="@+id/field_anthology"
         android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         android:nextFocusDown="@+id/field_description"
         android:text="@string/label_is_anthology" />
 
-    <TextView
-        android:id="@+id/heading_anthology"
+
+    <RelativeLayout
+        android:id="@+id/row_description"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:paddingTop="12dp"
-        android:text="@string/label_description"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:orientation="horizontal">
 
-    <View
-        android:id="@+id/header_divider"
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@drawable/main_menu_header_divider"
-        android:paddingBottom="2dp"
-        android:paddingTop="2dp" />
+        <TextView
+            android:id="@+id/heading_description"
+            style="@style/layout_heading"
+            android:labelFor="@+id/field_description"
+            android:text="@string/label_description" />
 
-    <com.eleybourn.bookcatalogue.widgets.SafeSpannedTextView
-        android:id="@+id/field_description"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:hint="@string/label_description"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        <com.eleybourn.bookcatalogue.widgets.SafeSpannedTextView
+            android:id="@+id/field_description"
+            style="@style/field_text"
+            android:paddingHorizontal="4dp"
+            android:layout_below="@+id/heading_description"
+            android:hint="@string/not_set" />
+    </RelativeLayout>
 
 </LinearLayout>

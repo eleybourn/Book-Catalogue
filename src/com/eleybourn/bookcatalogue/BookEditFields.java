@@ -27,9 +27,6 @@ import android.content.Intent;
 import android.database.SQLException;
 import android.os.Bundle;
 import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,10 +53,10 @@ import com.eleybourn.bookcatalogue.dialogs.TextFieldEditorFragment;
 import com.eleybourn.bookcatalogue.dialogs.TextFieldEditorFragment.OnTextFieldEditorListener;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
+import com.eleybourn.bookcatalogue.widgets.SafeSpannedTextView;
 
 
-
-public class BookEditFields extends BookDetailsAbstract 
+public class BookEditFields extends BookDetailsAbstract
 	implements OnPartialDatePickerListener, OnTextFieldEditorListener, OnBookshelfCheckChangeListener {
 
 	/**
@@ -80,9 +77,6 @@ public class BookEditFields extends BookDetailsAbstract
 
 	public static final int ACTIVITY_EDIT_AUTHORS = 1000;
 	public static final int ACTIVITY_EDIT_SERIES = 1001;
-
-	private static final int DATE_DIALOG_ID = 1;
-	private static final int DESCRIPTION_DIALOG_ID = 3;
 	
 	/**
 	 * Display the edit fields page
@@ -108,7 +102,7 @@ public class BookEditFields extends BookDetailsAbstract
 			}
 
 			//Set click listener on Author field
-			View v = getView().findViewById(R.id.button_author); //Reusable view for setting listeners
+			View v = getView().findViewById(R.id.field_author); //Reusable view for setting listeners
 			v.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -153,7 +147,7 @@ public class BookEditFields extends BookDetailsAbstract
 			AutoCompleteTextView formatText = (AutoCompleteTextView) formatField.getView();
 			formatText.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, mEditManager.getFormats()));
 			// Get the drop-down button for the formats list and setup dialog
-			ImageView formatButton = (ImageView) getView().findViewById(R.id.format_button);
+			ImageView formatButton = (ImageView) getView().findViewById(R.id.format_dropdown_button);
 			formatButton.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -194,7 +188,7 @@ public class BookEditFields extends BookDetailsAbstract
 
 			try {
 				Utils.fixFocusSettings(getView());
-				getView().findViewById(R.id.button_author).requestFocus();
+				getView().findViewById(R.id.field_author).requestFocus();
 			} catch (Exception e) {
 				// Log, but ignore. This is a non-critical feature that prevents crashes when the
 				// 'next' key is pressed and some views have been hidden.
@@ -224,7 +218,7 @@ public class BookEditFields extends BookDetailsAbstract
 	private void showDescriptionDialog() {
 		Object o = mFields.getField(R.id.field_description).getValue();
 		String description = (o == null? null : o.toString());
-		TextFieldEditorFragment dlg = TextFieldEditorFragment.newInstance(R.id.field_description, R.string.label_description, description);
+		TextFieldEditorFragment dlg = TextFieldEditorFragment.newInstance(R.id.field_description, R.string.label_description_edit, description);
 		dlg.show(getFragmentManager(), null);
 	}
 
@@ -324,10 +318,21 @@ public class BookEditFields extends BookDetailsAbstract
 	 * Setup the 'description' header field to have a clickable link.
 	 */
 	private void buildDescription() {
+        final Field descriptionField = mFields.getField(R.id.field_description);
+        assert getView() != null;
+        SafeSpannedTextView descriptionButton = getView().findViewById(R.id.field_description);
+        descriptionButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BookEditFields.this.showDescriptionDialog();
+            }
+        });
+
+/*
 		double t0 = System.currentTimeMillis();
 		// get the view
-		final TextView tv = (TextView)getView().findViewById(R.id.heading_anthology);
-		// Build the prefic text ('Description ')
+		final TextView tv = (TextView)getView().findViewById(R.id.field_description);
+		// Build the prefix text ('Description ')
 		String baseText = getString(R.string.label_description) + " ";
 		// Create the span ('Description (edit...)').
 		SpannableString f = new SpannableString(baseText + "(" + getString(R.string.edit_lc_ellipsis) + ")");
@@ -349,6 +354,7 @@ public class BookEditFields extends BookDetailsAbstract
 		// Set the colout to prevent flicker on click
 		tv.setTextColor(this.getResources().getColor(android.R.color.primary_text_dark_nodisable));
 		System.out.println("BEF bDesc: " + (System.currentTimeMillis() - t0));
+ */
 	}
 
 	private void clearOldInternalSpans(TextView tv) {
@@ -412,14 +418,6 @@ public class BookEditFields extends BookDetailsAbstract
 			mEditManager.getBookData().setAuthorList(list);
 		}
 		super.populateAuthorListField();
-	}
-
-	/**
-	 * Show the context menu for the cover thumbnail
-	 */
-	public void showCoverContextMenu() {
-		View v = getView().findViewById(R.id.row_img);
-		v.showContextMenu();
 	}
 
 	@Override

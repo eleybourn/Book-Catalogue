@@ -86,7 +86,7 @@
     <string name="overwrite_thumbnail">Isto vai atualizar os campos como mostrados, mas miniaturas podem ser baixadas para todos os livros, opcionalmente.\n\nVocê quer atualizar todas as miniaturas? Cuidado, isso pode levar um bom tempo. </string>
     <string name="yes">Sim</string>
     <string name="no">Não</string>
-    <string name="ok">OK</string>
+    <string name="button_ok">OK</string>
     <string name="search_fail">Pesquisa por livros falhou. Por favor, verifique sua conexão com a Internet.</string>
     <string name="search_exception">Pesquisa falhou: %1$s: %2$s</string>
     <string name="menu_delete_thumb">Apagar miniatura</string>
@@ -105,7 +105,7 @@
     <string name="anthology_save">Salvar</string>
     <string name="anthology_add">Adicionar</string>
     <string name="menu_add_thumb_photo">Tirar foto&#8230;</string>
-    <string name="thumbnail">Miniatura da capa</string>
+    <string name="label_thumbnail">Miniatura da capa</string>
     <string name="menu_rotate_thumb">Girar miniatura&#8230;</string>
     <string name="menu_rotate_thumb_cw">Girar sentido horário</string>
     <string name="menu_rotate_thumb_ccw">Girar sentido anti-horário</string>
@@ -408,7 +408,7 @@
     <string name="textured_backgroud">Textured background image</string>
     <string name="plain_background_b_reduces_flicker_b">Plain background (reduces flicker)</string>
     <string name="thing_must_not_be_blank">%1$s must not be blank</string>
-    <string name="edit">Edit</string>
+    <string name="label_edit">Edit</string>
     <string name="groupings">Groupings</string>
     <string name="label_preferences">Preferences</string>
     <string name="unexpected_error">An unexpected error has occurred, please send the details to support using the \'Help\' option from the main menu</string>

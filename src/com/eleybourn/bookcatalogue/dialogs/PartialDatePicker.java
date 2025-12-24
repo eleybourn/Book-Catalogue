@@ -268,7 +268,7 @@ public class PartialDatePicker extends AlertDialog {
 		);
 
 		// Handle OK
-		((Button)root.findViewById(R.id.ok)).setOnClickListener(new View.OnClickListener() {
+		((Button)root.findViewById(R.id.button_ok)).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				// Ensure the date is 'hierarchically valid'; require year, if month is non-null, require month if day non-null

@@ -227,7 +227,7 @@ public abstract class BookEditFragmentAbstract extends Fragment implements DataE
 		showHideField(hideIfEmpty, R.id.field_list_price, R.id.row_list_price);
 
 		// Check description
-		showHideField(hideIfEmpty, R.id.field_description, R.id.heading_anthology, R.id.description_divider);
+		showHideField(hideIfEmpty, R.id.field_description, R.id.heading_description, R.id.description_divider);
 
 		// **** MY COMMENTS SECTION ****
 		// Check notes

@@ -123,7 +123,7 @@ public class UpdateFromInternet extends ActivityWithTasks {
 		addIfVisible(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, CatalogueDBAdapter.KEY_AUTHOR_ID, R.string.label_author, Usages.ADD_EXTRA, true);
 		addIfVisible(CatalogueDBAdapter.KEY_TITLE, null, R.string.label_title, Usages.COPY_IF_BLANK, false);
 		addIfVisible(CatalogueDBAdapter.KEY_ISBN, null, R.string.label_isbn, Usages.COPY_IF_BLANK, false);
-		addIfVisible(CatalogueDBAdapter.KEY_THUMBNAIL, null, R.string.thumbnail, Usages.COPY_IF_BLANK, false);
+		addIfVisible(CatalogueDBAdapter.KEY_THUMBNAIL, null, R.string.label_thumbnail, Usages.COPY_IF_BLANK, false);
 		addIfVisible(CatalogueDBAdapter.KEY_SERIES_ARRAY, CatalogueDBAdapter.KEY_SERIES_NAME, R.string.label_series, Usages.ADD_EXTRA, true);
 		addIfVisible(CatalogueDBAdapter.KEY_PUBLISHER, null, R.string.label_publisher, Usages.COPY_IF_BLANK, false);
 		addIfVisible(CatalogueDBAdapter.KEY_DATE_PUBLISHED, null, R.string.label_date_published, Usages.COPY_IF_BLANK, false);

@@ -32,8 +32,7 @@ import com.eleybourn.bookcatalogue.R;
 
 /**
  * Dialog to edit a specific text field.
- * 
- * The constructors and interface are now protected because this really should 
+ * The constructors and interface are now protected because this really should
  * only be called as part of the fragment version.
  * 
  * @author pjw
@@ -66,16 +65,16 @@ public class TextFieldEditor extends AlertDialog {
 
 		// Get the layout
 		LayoutInflater inf = this.getLayoutInflater();
-		View root = inf.inflate(R.layout.text_field_editor_dialog, null);
+		View root = inf.inflate(R.layout.dialog_text_editor, null);
 
 		// Setup the layout
 		setView(root);
 
 		// get the next view
-		mTextView = (EditText)root.findViewById(R.id.text);
+		mTextView = (EditText)root.findViewById(R.id.field_text);
 
 		// Handle OK
-		((Button)root.findViewById(R.id.ok)).setOnClickListener(new View.OnClickListener() {
+		((Button)root.findViewById(R.id.button_ok)).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				mListener.onSaved(TextFieldEditor.this, mTextView.getText().toString());
@@ -92,14 +91,13 @@ public class TextFieldEditor extends AlertDialog {
 
 		// Handle Cancel by any means
 		this.setOnCancelListener(new OnCancelListener() {
-
 			@Override
 			public void onCancel(DialogInterface arg0) {
 				mListener.onCancel(TextFieldEditor.this);				
-			}});	
-		
-		// Make sure the buttons move if the keyboard appears
-		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+			}});
+
+        // Make sure the buttons move if the keyboard appears
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 	}
 
 	/** Set the listener */

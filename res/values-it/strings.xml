@@ -82,7 +82,7 @@
     <string name="overwrite_thumbnail">Verranno aggiornati i campi selezionati come indicato, ma opzionalmente è possibile aggiornare anche le miniature di TUTTI i libri.\n\nVuoi sovrascrivere tutte le miniature esistenti? Attenzione, potrebbero occorrere diversi minuti. </string>
     <string name="yes">Sì</string>
     <string name="no">No</string>
-    <string name="ok">OK</string>
+    <string name="button_ok">OK</string>
     <string name="search_fail">Ricerca del libro fallita. Controlla le impostazioni di rete.</string>
     <string name="search_exception">Ricerca di %1$s: %2$s fallita</string>
     <string name="menu_delete_thumb">Cancella miniatura</string>
@@ -101,7 +101,7 @@
     <string name="anthology_save">Salva</string>
     <string name="anthology_add">Aggiungi</string>
     <string name="menu_add_thumb_photo">Dalla fotocamera&#8230;</string>
-    <string name="thumbnail">Miniatura copertina</string>
+    <string name="label_thumbnail">Miniatura copertina</string>
     <string name="menu_rotate_thumb">Rotazione miniatura&#8230;</string>
     <string name="menu_rotate_thumb_cw">Ruota in senso orario</string>
     <string name="menu_rotate_thumb_ccw">Ruota in senso antiorario</string>
@@ -429,7 +429,7 @@
     <string name="textured_backgroud">Immagine di sfondo</string>
     <string name="plain_background_b_reduces_flicker_b">Sfondo semplice (riduce lo sfarfallio)</string>
     <string name="thing_must_not_be_blank">%1$s deve contenere un valore</string>
-    <string name="edit">Modifica</string>
+    <string name="label_edit">Modifica</string>
     <string name="groupings">Raggruppamenti</string>
     <string name="label_preferences">Preferenze</string>
     <string name="unexpected_error">Si è verificato un errore inatteso, per favore invia i dettagli all\'Assistenza usando l\'opzione \'Aiuto\' nel menu principale</string>

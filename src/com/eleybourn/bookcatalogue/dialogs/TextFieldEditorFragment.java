@@ -38,9 +38,9 @@ public class TextFieldEditorFragment extends BookCatalogueDialogFragment {
 	 * 
 	 * @author pjw
 	 */
-	public static interface OnTextFieldEditorListener {
-		public void onTextFieldEditorSave(int dialogId, TextFieldEditorFragment dialog, String newText);
-		public void onTextFieldEditorCancel(int dialogId, TextFieldEditorFragment dialog);
+	public interface OnTextFieldEditorListener {
+		void onTextFieldEditorSave(int dialogId, TextFieldEditorFragment dialog, String newText);
+		void onTextFieldEditorCancel(int dialogId, TextFieldEditorFragment dialog);
 	}
 
 	/**

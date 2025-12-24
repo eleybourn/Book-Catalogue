@@ -63,6 +63,9 @@ public class TextFieldEditor extends AlertDialog {
 	protected TextFieldEditor(Context context) {
 		super(context);
 
+        // Make sure the buttons move if the keyboard appears
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
 		// Get the layout
 		LayoutInflater inf = this.getLayoutInflater();
 		View root = inf.inflate(R.layout.dialog_text_editor, null);
@@ -95,9 +98,6 @@ public class TextFieldEditor extends AlertDialog {
 			public void onCancel(DialogInterface arg0) {
 				mListener.onCancel(TextFieldEditor.this);				
 			}});
-
-        // Make sure the buttons move if the keyboard appears
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 	}
 
 	/** Set the listener */

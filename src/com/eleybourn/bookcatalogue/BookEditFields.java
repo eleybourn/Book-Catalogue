@@ -103,31 +103,25 @@ public class BookEditFields extends BookDetailsAbstract
 
 			//Set click listener on Author field
 			View v = getView().findViewById(R.id.field_author); //Reusable view for setting listeners
-			v.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Intent i = new Intent(getActivity(), EditAuthorList.class);
-					i.putExtra(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mEditManager.getBookData().getAuthorList());
-					i.putExtra(CatalogueDBAdapter.KEY_ROWID, mEditManager.getBookData().getRowId());
-					i.putExtra("title_label", CatalogueDBAdapter.KEY_TITLE);
-					i.putExtra("title", mFields.getField(R.id.field_title).getValue().toString());
-					startActivityForResult(i, ACTIVITY_EDIT_AUTHORS);
-				}
-			});
+			v.setOnClickListener(v1 -> {
+                Intent i = new Intent(getActivity(), EditAuthorList.class);
+                i.putExtra(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mEditManager.getBookData().getAuthorList());
+                i.putExtra(CatalogueDBAdapter.KEY_ROWID, mEditManager.getBookData().getRowId());
+                i.putExtra("title_label", CatalogueDBAdapter.KEY_TITLE);
+                i.putExtra("title", mFields.getField(R.id.field_title).getValue().toString());
+                startActivityForResult(i, ACTIVITY_EDIT_AUTHORS);
+            });
 			
 			//Set click listener on Series field
 			v = getView().findViewById(R.id.field_series);
-			v.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Intent i = new Intent(getActivity(), EditSeriesList.class);
-					i.putExtra(CatalogueDBAdapter.KEY_SERIES_ARRAY, mEditManager.getBookData().getSeriesList());
-					i.putExtra(CatalogueDBAdapter.KEY_ROWID, mEditManager.getBookData().getRowId());
-					i.putExtra("title_label", CatalogueDBAdapter.KEY_TITLE);
-					i.putExtra("title", mFields.getField(R.id.field_title).getValue().toString());
-					startActivityForResult(i, ACTIVITY_EDIT_SERIES);
-				}
-			});
+			v.setOnClickListener(v2 -> {
+                Intent i = new Intent(getActivity(), EditSeriesList.class);
+                i.putExtra(CatalogueDBAdapter.KEY_SERIES_ARRAY, mEditManager.getBookData().getSeriesList());
+                i.putExtra(CatalogueDBAdapter.KEY_ROWID, mEditManager.getBookData().getRowId());
+                i.putExtra("title_label", CatalogueDBAdapter.KEY_TITLE);
+                i.putExtra("title", mFields.getField(R.id.field_title).getValue().toString());
+                startActivityForResult(i, ACTIVITY_EDIT_SERIES);
+            });
 			
 			ArrayAdapter<String> publisher_adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_dropdown_item_1line, mEditManager.getPublishers());
 			mFields.setAdapter(R.id.field_publisher, publisher_adapter);

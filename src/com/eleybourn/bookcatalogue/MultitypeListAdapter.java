@@ -42,7 +42,7 @@ public class MultitypeListAdapter extends CursorAdapter implements SectionIndexe
 	MultitypeListHandler mHandler;
 
 	public MultitypeListAdapter(Context context, Cursor c, MultitypeListHandler handler) {
-		super(context, c);
+		super(context, c, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 		mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mHandler = handler;
 	}

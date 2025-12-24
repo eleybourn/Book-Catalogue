@@ -400,7 +400,7 @@ public class Fields extends ArrayList<Fields.Field> {
 				if (mFormatHtml && s != null) {
 					v.setText(Html.fromHtml(field.format(s)));
 					v.setFocusable(false);
-					v.setTextColor(BookCatalogueApp.context.getResources().getColor(android.R.color.primary_text_dark_nodisable));
+					v.setTextColor(BookCatalogueApp.context.getResources().getColor(R.color.theme_onSurface));
 				} else {
 					v.setText(field.format(s));
 				}				

@@ -8,28 +8,23 @@
     <include layout="@layout/layout_background" />
 
     <!-- CONTENT -->
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scrollView"
+    <LinearLayout
+        android:id="@+id/contentLayout"
         style="@style/layout_scroll"
-        android:layout_marginBottom="68dp">
+        android:layout_below="@+id/topAppBarContainer"
+        android:layout_marginBottom="68dp"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/contentLayout"
+        <include layout="@layout/layout_header_tabs" />
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/view_pager"
+            style="@style/layout_main"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
-            <include layout="@layout/layout_header_tabs" />
-
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/view_pager"
-                style="@style/layout_main"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/buttons"

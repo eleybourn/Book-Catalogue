@@ -1,21 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.tabs.TabLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/tab_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_below="@+id/topAppBarContainer"
-    android:orientation="vertical">
-
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/theme_primary"
-        android:contentDescription="@string/label_details"
-        app:tabMode="fixed"
-        app:tabGravity="fill"
-        app:tabTextColor="@color/theme_surfaceDim"
-        app:tabSelectedTextColor="@color/theme_onPrimary"
-        app:tabIndicatorColor="@color/theme_onPrimary"  />
-
-</LinearLayout>
+    android:layout_height="wrap_content"
+    android:background="@color/theme_primary"
+    android:contentDescription="@string/label_details"
+    app:tabGravity="fill"
+    app:tabIndicatorColor="@color/theme_onPrimary"
+    app:tabMode="fixed"
+    app:tabSelectedTextColor="@color/theme_onPrimary"
+    app:tabTextColor="@color/theme_surfaceDim" />

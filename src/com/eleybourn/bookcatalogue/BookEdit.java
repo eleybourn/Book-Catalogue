@@ -155,6 +155,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
         adapter.BLANK_BOOK = mRowId <= 0;
         adapter.ANTHOLOGY_TAB = anthology_num != 0;
         viewPager.setAdapter(adapter);
+        viewPager.setUserInputEnabled(false);
 
         new TabLayoutMediator(tabLayout, viewPager,
                 (tab, position) -> {
@@ -239,7 +240,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 		Tracker.exitOnCreate(this);
 
 	}
-    
+
     /**
 	 * If we are passed a flattened book list, get it and validate it
 	 */

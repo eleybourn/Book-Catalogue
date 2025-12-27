@@ -55,23 +55,23 @@ public class EditAuthorList extends EditObjectList<Author> {
 	@Override
 	protected void onSetupView(View target, Author object) {
 		if (object != null) {
-			TextView at = (TextView) target.findViewById(R.id.row_author);
+			TextView at = target.findViewById(R.id.row_author);
 			if (at != null) {
 				at.setText(object.getDisplayName());
 			}
-			at = (TextView) target.findViewById(R.id.row_author_sort);
+			at = target.findViewById(R.id.row_author_sort);
 			if (at != null) {
 				at.setText(object.getSortName());
 			}
 		}
-	};
-	
-	protected void onCreate(Bundle savedInstanceState) {
+	}
+
+    protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		try {
 			// Setup autocomplete for author name
-			ArrayAdapter<String> author_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, mDbHelper.getAllAuthors());
+			ArrayAdapter<String> author_adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, mDbHelper.getAllAuthors());
 			((AutoCompleteTextView)this.findViewById(R.id.field_author)).setAdapter(author_adapter);
 		} catch (Exception e) {
 			Logger.logError(e);
@@ -80,14 +80,12 @@ public class EditAuthorList extends EditObjectList<Author> {
 
 	/**
 	 * Do the work of the onClickListener for the 'Add' button.
-	 *
-	 * @param v
 	 */
 	protected void onAdd(View v) {
 		// Get the text
-		AutoCompleteTextView t = ((AutoCompleteTextView)EditAuthorList.this.findViewById(R.id.field_author));
+		AutoCompleteTextView t = EditAuthorList.this.findViewById(R.id.field_author);
 		String s = t.getText().toString().trim();
-		if (s.length() > 0) {
+		if (!s.isEmpty()) {
 			// Get an author and try to find in DB.
 			Author a = new Author(t.getText().toString());
 			a.id = mDbHelper.lookupAuthorId(a);
@@ -123,37 +121,27 @@ public class EditAuthorList extends EditObjectList<Author> {
 
 	private void editAuthor(final Author author) {
 		final Dialog dialog = new Dialog(this);
-		dialog.setContentView(R.layout.edit_author);
+		dialog.setContentView(R.layout.dialog_edit_author);
 		dialog.setTitle(R.string.edit_author_details);
-		EditText familyView = (EditText) dialog.findViewById(R.id.field_family_name);
-		EditText givenView = (EditText) dialog.findViewById(R.id.field_given_names);
+		EditText familyView = dialog.findViewById(R.id.field_family_name);
+		EditText givenView = dialog.findViewById(R.id.field_given_names);
 		familyView.setText(author.familyName);
 		givenView.setText(author.givenNames);
 
-		Button saveButton = (Button) dialog.findViewById(R.id.button_confirm);
-		saveButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				EditText familyView = (EditText) dialog.findViewById(R.id.field_family_name);
-				EditText givenView = (EditText) dialog.findViewById(R.id.field_given_names);
-				String newFamily = familyView.getText().toString().trim();
-				if (newFamily == null || newFamily.length() == 0) {
-					Toast.makeText(EditAuthorList.this, R.string.author_is_blank, Toast.LENGTH_LONG).show();
-					return;
-				}
-				String newGiven = givenView.getText().toString();
-				Author newAuthor = new Author(newFamily, newGiven);
-				dialog.dismiss();
-				confirmEditAuthor(author, newAuthor);
-			}
-		});
-		Button cancelButton = (Button) dialog.findViewById(R.id.button_cancel);
-		cancelButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				dialog.dismiss();
-			}
-		});
+		Button saveButton = dialog.findViewById(R.id.button_confirm);
+		saveButton.setOnClickListener(v -> {
+            String newFamily = familyView.getText().toString().trim();
+            if (newFamily.isEmpty()) {
+                Toast.makeText(EditAuthorList.this, R.string.author_is_blank, Toast.LENGTH_LONG).show();
+                return;
+            }
+            String newGiven = givenView.getText().toString();
+            Author newAuthor = new Author(newFamily, newGiven);
+            dialog.dismiss();
+            confirmEditAuthor(author, newAuthor);
+        });
+		Button cancelButton = dialog.findViewById(R.id.button_cancel);
+		cancelButton.setOnClickListener(v -> dialog.dismiss());
 		
 		dialog.show();
 	}
@@ -195,55 +183,47 @@ public class EditAuthorList extends EditObjectList<Author> {
 
 		alertDialog.setTitle(getResources().getString(R.string.scope_of_change));
 		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, thisBook, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				oldAuthor.copyFrom(newAuthor);
-				Utils.pruneList(mDbHelper, mList);
-				mAdapter.notifyDataSetChanged();
-				alertDialog.dismiss();
-			}
-		}); 
+		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, thisBook, (dialog, which) -> {
+            oldAuthor.copyFrom(newAuthor);
+            Utils.pruneList(mDbHelper, mList);
+            mAdapter.notifyDataSetChanged();
+            alertDialog.dismiss();
+        });
 
-		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, allBooks, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				mDbHelper.globalReplaceAuthor(oldAuthor, newAuthor);
-				oldAuthor.copyFrom(newAuthor);
-				Utils.pruneList(mDbHelper, mList);
-				mAdapter.notifyDataSetChanged();
-				alertDialog.dismiss();
-			}
-		}); 
+		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, allBooks, (dialog, which) -> {
+            mDbHelper.globalReplaceAuthor(oldAuthor, newAuthor);
+            oldAuthor.copyFrom(newAuthor);
+            Utils.pruneList(mDbHelper, mList);
+            mAdapter.notifyDataSetChanged();
+            alertDialog.dismiss();
+        });
 
 		alertDialog.show();
 	}
 	
 	@Override
 	protected boolean onSave(Intent intent) {
-		final AutoCompleteTextView t = ((AutoCompleteTextView)EditAuthorList.this.findViewById(R.id.field_author));
+		final AutoCompleteTextView t = EditAuthorList.this.findViewById(R.id.field_author);
 		Resources res = this.getResources();
 		String s = t.getText().toString().trim();
-		if (s.length() > 0) {
+		if (!s.isEmpty()) {
 			final AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(res.getText(R.string.unsaved_edits)).create();
 			
 			alertDialog.setTitle(res.getText(R.string.unsaved_edits_title));
 			alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-			alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, res.getText(R.string.yes), new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					t.setText("");
-					findViewById(R.id.button_confirm).performClick();
-				}
-			}); 
+			alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, res.getText(R.string.yes), (dialog, which) -> {
+                t.setText("");
+                findViewById(R.id.button_confirm).performClick();
+            });
 			
-			alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, res.getText(R.string.no), new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					//do nothing
-				}
-			}); 
+			alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, res.getText(R.string.no), (dialog, which) -> {
+                //do nothing
+            });
 			
 			alertDialog.show();
 			return false;
 		} else {
 			return true;
 		}
-	};
+	}
 }

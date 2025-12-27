@@ -221,7 +221,7 @@ public abstract class SimpleListAdapter<T> extends ArrayAdapter<T> {
         	if (mHasDelete || !mCheckedFields) {
             	ImageView del = (ImageView) v.findViewById(R.id.row_delete);
                 if (del != null) {
-    	    		del.setImageResource(android.R.drawable.ic_delete);
+    	    		del.setImageResource(R.drawable.ic_menu_delete);
                 	del.setOnClickListener(mRowDeleteListener);   
                 	mHasDelete = true;
                 }            		

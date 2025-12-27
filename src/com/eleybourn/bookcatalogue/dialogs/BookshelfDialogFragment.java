@@ -22,7 +22,6 @@ package com.eleybourn.bookcatalogue.dialogs;
 import static com.eleybourn.bookcatalogue.BookDetailsAbstract.BOOKSHELF_SEPARATOR;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 import android.app.Activity;
 import android.content.Context;
@@ -169,7 +168,8 @@ public class BookshelfDialogFragment extends BookCatalogueDialogFragment {
     			do { 
     				final CheckBox cb = new CheckBox(getActivity());
     				boolean checked = false;
-    				String db_bookshelf = bookshelves_for_book.getString(bookshelves_for_book.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF)).trim();
+                    int bookshelf = bookshelves_for_book.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF);
+    				String db_bookshelf = bookshelves_for_book.getString(bookshelf).trim();
     				String db_encoded_bookshelf = Utils.encodeListItem(db_bookshelf, BOOKSHELF_SEPARATOR);
     				if (shelves.contains(BOOKSHELF_SEPARATOR + db_encoded_bookshelf + BOOKSHELF_SEPARATOR)) {
     					checked = true;
@@ -217,7 +217,7 @@ public class BookshelfDialogFragment extends BookCatalogueDialogFragment {
                             mCurrList = newList.toString();
                             mCurrText = newText.toString();
                         }
-                        ((OnBookshelfCheckChangeListener) Objects.requireNonNull(getActivity())).onBookshelfCheckChanged(
+                        ((OnBookshelfCheckChangeListener) requireActivity()).onBookshelfCheckChanged(
                                 mDialogId,
                                 BookshelfDialogFragment.this,
                                 cb.isChecked(), name, mCurrText, mCurrList);

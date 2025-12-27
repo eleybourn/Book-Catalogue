@@ -122,11 +122,11 @@
     <string name="searching_library_thing">Αναζήτηση στο LibraryThing</string>
     <string name="label_select_bookshelves">Επιλέξτε ράφια</string>
     <string name="label_format">Μορφή</string>
-    <string name="format1">Μαλακό εξώφυλλο</string>
-    <string name="format2">Σκληρό εξώφυλλο</string>
-    <string name="format3">eBook</string>
-    <string name="format4">Audiobook</string>
-    <string name="format5">Οδηγός</string>
+    <string name="option_format1">Μαλακό εξώφυλλο</string>
+    <string name="option_format2">Σκληρό εξώφυλλο</string>
+    <string name="option_format3">eBook</string>
+    <string name="option_format4">Audiobook</string>
+    <string name="option_format5">Οδηγός</string>
     <!-- NOTE: Adding a new format will involve changing code that references this list -->
     <string name="label_description">Περιγραφή</string>
     <string name="label_genre">Είδος</string>
@@ -514,8 +514,8 @@
     <string name="exit">Έξοδος</string>
     <string name="continue_editing">Συνέχεια Επεξεργασίας</string>
     <string name="the_title_already_exists">Αυτός ο τίτλος υπάρχει ήδη</string>
-    <string name="year">Έτος</string>
-    <string name="month">Μήνας</string>
+    <string name="label_year">Έτος</string>
+    <string name="label_month">Μήνας</string>
     <string name="day">Ημέρα</string>
     <string name="edit_lc_ellipsis">επεξεργασία&#8230;</string>
     <string name="getting_books_ellipsis">Γίνεται λήψη βιβλίων&#8230;</string>

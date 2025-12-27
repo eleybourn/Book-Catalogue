@@ -213,11 +213,11 @@
     <string name="searching_library_thing">Recherche en cours sur LibraryThing</string>
     <string name="label_bookshelves">Bibliothèques</string>
     <string name="label_format">Format</string>
-    <string name="format1">Livre de poche</string>
-    <string name="format2">Couverture cartonnée</string>
-    <string name="format3">eBook</string>
-    <string name="format4">Livre audio</string>
-    <string name="format5">Guide</string>
+    <string name="option_format1">Livre de poche</string>
+    <string name="option_format2">Couverture cartonnée</string>
+    <string name="option_format3">eBook</string>
+    <string name="option_format4">Livre audio</string>
+    <string name="option_format5">Guide</string>
     <string name="label_description">Description</string>
     <string name="label_genre">Genre</string>
     <string name="not_set">Non défini</string>
@@ -597,8 +597,8 @@
     <string name="exit">Quitter</string>
     <string name="continue_editing">Continuer la modification</string>
     <string name="the_title_already_exists">Le titre existe déjà</string>
-    <string name="year">Année</string>
-    <string name="month">Mois</string>
+    <string name="label_year">Année</string>
+    <string name="label_month">Mois</string>
     <string name="day">Jour</string>
     <string name="edit_lc_ellipsis">modifier&#8230;</string>
     <string name="getting_books_ellipsis">Chargement&#8230;</string>

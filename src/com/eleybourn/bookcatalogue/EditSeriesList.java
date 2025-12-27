@@ -48,11 +48,11 @@ public class EditSeriesList extends EditObjectList<Series> {
 	@Override
 	protected void onSetupView(View target, Series object) {
 		if (object != null) {
-			TextView dt = (TextView) target.findViewById(R.id.row_series);
+			TextView dt = target.findViewById(R.id.row_series);
 			if (dt != null)
 				dt.setText(object.getDisplayName());
 			
-			TextView st = (TextView) target.findViewById(R.id.row_series_sort);
+			TextView st = target.findViewById(R.id.row_series_sort);
 			if (st != null) {
 				if (object.getDisplayName().equals(object.getSortName())) {
 					st.setVisibility(View.GONE);
@@ -61,7 +61,7 @@ public class EditSeriesList extends EditObjectList<Series> {
 					st.setText(object.getSortName());
 				}
 			}
-			TextView et = (TextView) target.findViewById(R.id.row_series_num);
+			TextView et = target.findViewById(R.id.row_series_num);
 			if (et != null)
 				et.setText(object.num);
 		}
@@ -72,7 +72,7 @@ public class EditSeriesList extends EditObjectList<Series> {
 		super.onCreate(savedInstanceState);
 		try {
 			
-			mSeriesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, mDbHelper.fetchAllSeriesArray());
+			mSeriesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, mDbHelper.fetchAllSeriesArray());
 			((AutoCompleteTextView)this.findViewById(R.id.field_series)).setAdapter(mSeriesAdapter);
 			
 		} catch (Exception e) {
@@ -82,14 +82,12 @@ public class EditSeriesList extends EditObjectList<Series> {
 	
 	@Override
 	protected void onAdd(View v) {
-		AutoCompleteTextView t = ((AutoCompleteTextView)EditSeriesList.this.findViewById(R.id.field_series));
+		AutoCompleteTextView t = EditSeriesList.this.findViewById(R.id.field_series);
 		String s = t.getText().toString().trim();
-		if (s.length() > 0) {
-			EditText et = ((EditText)EditSeriesList.this.findViewById(R.id.series_num));
+		if (!s.isEmpty()) {
+			EditText et = EditSeriesList.this.findViewById(R.id.series_num);
 			String n = et.getText().toString();
-			if (n == null)
-				n = "";
-			Series series = new Series(t.getText().toString(), n);
+            Series series = new Series(t.getText().toString(), n);
 			series.id = mDbHelper.lookupSeriesId(series);
 			boolean foundMatch = false;
 			try {
@@ -121,42 +119,32 @@ public class EditSeriesList extends EditObjectList<Series> {
 	
 	private void editSeries(final Series series) {
 		final Dialog dialog = new Dialog(this);
-		dialog.setContentView(R.layout.edit_book_series);
+		dialog.setContentView(R.layout.dialog_edit_series);
 		dialog.setTitle(R.string.edit_book_series);
 
-		AutoCompleteTextView seriesView = (AutoCompleteTextView) dialog.findViewById(R.id.field_series);
+		AutoCompleteTextView seriesView = dialog.findViewById(R.id.field_series);
 		seriesView.setText(series.name);
 		seriesView.setAdapter(mSeriesAdapter);
 
-		EditText numView = (EditText) dialog.findViewById(R.id.series_num);
+		EditText numView = dialog.findViewById(R.id.series_num);
 		numView.setText(series.num);
 
-		setTextOrHideView(dialog.findViewById(R.id.title_label), mBookTitleLabel);
+		//setTextOrHideView(dialog.findViewById(R.id.label_title), mBookTitleLabel);
 		setTextOrHideView(dialog.findViewById(R.id.field_title), mBookTitle);
 
-		Button saveButton = (Button) dialog.findViewById(R.id.button_confirm);
-		saveButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				AutoCompleteTextView seriesView = (AutoCompleteTextView) dialog.findViewById(R.id.field_series);
-				EditText numView = (EditText) dialog.findViewById(R.id.series_num);
-				String newName = seriesView.getText().toString().trim();
-				if (newName == null || newName.length() == 0) {
-					Toast.makeText(EditSeriesList.this, R.string.series_is_blank, Toast.LENGTH_LONG).show();
-					return;
-				}
-				Series newSeries = new Series(newName, numView.getText().toString());
-				confirmEditSeries(series, newSeries);
-				dialog.dismiss();
-			}
-		});
-		Button cancelButton = (Button) dialog.findViewById(R.id.button_cancel);
-		cancelButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				dialog.dismiss();
-			}
-		});
+		Button saveButton = dialog.findViewById(R.id.button_confirm);
+		saveButton.setOnClickListener(v -> {
+            String newName = seriesView.getText().toString().trim();
+            if (newName.isEmpty()) {
+                Toast.makeText(EditSeriesList.this, R.string.series_is_blank, Toast.LENGTH_LONG).show();
+                return;
+            }
+            Series newSeries = new Series(newName, numView.getText().toString());
+            confirmEditSeries(series, newSeries);
+            dialog.dismiss();
+        });
+		Button cancelButton = dialog.findViewById(R.id.button_cancel);
+		cancelButton.setOnClickListener(v -> dialog.dismiss());
 		
 		dialog.show();		
 	}
@@ -202,63 +190,55 @@ public class EditSeriesList extends EditObjectList<Series> {
 		String format = getResources().getString(R.string.changed_series_how_apply);
 		String allBooks = getResources().getString(R.string.all_books);
 		String thisBook = getResources().getString(R.string.this_book);
-		String message = String.format(format, oldSeries.name, newSeries.name, allBooks);
+		String message = String.format(format, oldSeries.name, newSeries.name);
 
 		final AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(message).create();
 
 		alertDialog.setTitle(getResources().getString(R.string.scope_of_change));
 		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, thisBook, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				oldSeries.copyFrom(newSeries);
-				Utils.pruneSeriesList(mList);
-				Utils.pruneList(mDbHelper, mList);
-				mAdapter.notifyDataSetChanged();
-				alertDialog.dismiss();
-			}
-		});
+		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, thisBook, (dialog, which) -> {
+            oldSeries.copyFrom(newSeries);
+            Utils.pruneSeriesList(mList);
+            Utils.pruneList(mDbHelper, mList);
+            mAdapter.notifyDataSetChanged();
+            alertDialog.dismiss();
+        });
 
-		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, allBooks, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				mDbHelper.globalReplaceSeries(oldSeries, newSeries);
-				oldSeries.copyFrom(newSeries);
-				Utils.pruneSeriesList(mList);
-				Utils.pruneList(mDbHelper, mList);
-				mAdapter.notifyDataSetChanged();
-				alertDialog.dismiss();
-			}
-		}); 
+		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, allBooks, (dialog, which) -> {
+            mDbHelper.globalReplaceSeries(oldSeries, newSeries);
+            oldSeries.copyFrom(newSeries);
+            Utils.pruneSeriesList(mList);
+            Utils.pruneList(mDbHelper, mList);
+            mAdapter.notifyDataSetChanged();
+            alertDialog.dismiss();
+        });
 
 		alertDialog.show();
 	}
 	
 	@Override
 	protected boolean onSave(Intent intent) {
-		final AutoCompleteTextView t = ((AutoCompleteTextView)EditSeriesList.this.findViewById(R.id.field_series));
+		final AutoCompleteTextView t = EditSeriesList.this.findViewById(R.id.field_series);
 		Resources res = this.getResources();
 		String s = t.getText().toString().trim();
-		if (s.length() > 0) {
+		if (!s.isEmpty()) {
 			final AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(res.getText(R.string.unsaved_edits)).create();
 			
 			alertDialog.setTitle(res.getText(R.string.unsaved_edits_title));
 			alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-			alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, res.getText(R.string.yes), new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					t.setText("");
-					findViewById(R.id.button_confirm).performClick();
-				}
-			}); 
+			alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, res.getText(R.string.yes), (dialog, which) -> {
+                t.setText("");
+                findViewById(R.id.button_confirm).performClick();
+            });
 			
-			alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, res.getText(R.string.no), new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					//do nothing
-				}
-			}); 
+			alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, res.getText(R.string.no), (dialog, which) -> {
+                //do nothing
+            });
 			
 			alertDialog.show();
 			return false;
 		} else {
 			return true;
 		}
-	};
+	}
 }

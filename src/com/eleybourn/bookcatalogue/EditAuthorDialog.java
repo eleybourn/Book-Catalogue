@@ -22,7 +22,6 @@ package com.eleybourn.bookcatalogue;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -40,37 +39,29 @@ public class EditAuthorDialog {
 
 	public void editAuthor(final Author author) {
 		final Dialog dialog = new Dialog(mContext);
-		dialog.setContentView(R.layout.edit_author);
+		dialog.setContentView(R.layout.dialog_edit_author);
 		dialog.setTitle(R.string.edit_author_details);
-		EditText familyView = (EditText) dialog.findViewById(R.id.field_family_name);
-		EditText givenView = (EditText) dialog.findViewById(R.id.field_given_names);
+		EditText familyView = dialog.findViewById(R.id.field_family_name);
+		EditText givenView = dialog.findViewById(R.id.field_given_names);
 		familyView.setText(author.familyName);
 		givenView.setText(author.givenNames);
 
-		Button saveButton = (Button) dialog.findViewById(R.id.button_confirm);
-		saveButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				EditText familyView = (EditText) dialog.findViewById(R.id.field_family_name);
-				EditText givenView = (EditText) dialog.findViewById(R.id.field_given_names);
-				String newFamily = familyView.getText().toString().trim();
-				if (newFamily == null || newFamily.length() == 0) {
-					Toast.makeText(mContext, R.string.author_is_blank, Toast.LENGTH_LONG).show();
-					return;
-				}
-				String newGiven = givenView.getText().toString();
-				Author newAuthor = new Author(newFamily, newGiven);
-				dialog.dismiss();
-				confirmEdit(author, newAuthor);
-			}
-		});
-		Button cancelButton = (Button) dialog.findViewById(R.id.button_cancel);
-		cancelButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				dialog.dismiss();
-			}
-		});
+		Button saveButton = dialog.findViewById(R.id.button_confirm);
+		saveButton.setOnClickListener(v -> {
+            EditText familyView1 = dialog.findViewById(R.id.field_family_name);
+            EditText givenView1 = dialog.findViewById(R.id.field_given_names);
+            String newFamily = familyView1.getText().toString().trim();
+            if (newFamily.isEmpty()) {
+                Toast.makeText(mContext, R.string.author_is_blank, Toast.LENGTH_LONG).show();
+                return;
+            }
+            String newGiven = givenView1.getText().toString();
+            Author newAuthor = new Author(newFamily, newGiven);
+            dialog.dismiss();
+            confirmEdit(author, newAuthor);
+        });
+		Button cancelButton = dialog.findViewById(R.id.button_cancel);
+		cancelButton.setOnClickListener(v -> dialog.dismiss());
 		
 		dialog.show();
 	}

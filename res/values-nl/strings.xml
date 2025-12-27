@@ -122,11 +122,11 @@
     <string name="searching_library_thing">Zoeken bij LibraryThing</string>
     <string name="label_select_bookshelves">Selecteer Boekenplanken</string>
     <string name="label_format">Formaat</string>
-    <string name="format1">Paperback</string>
-    <string name="format2">Harde Kaft</string>
-    <string name="format3">e-Book</string>
-    <string name="format4">Gesproken boek</string>
-    <string name="format5">Gids / Handboek</string>
+    <string name="option_format1">Paperback</string>
+    <string name="option_format2">Harde Kaft</string>
+    <string name="option_format3">e-Book</string>
+    <string name="option_format4">Gesproken boek</string>
+    <string name="option_format5">Gids / Handboek</string>
     <!-- NOTE: Adding a new format will involve changing code that references this list -->
     <string name="label_description">Beschrijving</string>
     <string name="label_genre">Genre</string>
@@ -511,8 +511,8 @@
     <string name="exit">Afsluiten</string>
     <string name="continue_editing">Doorgaan met bewerken</string>
     <string name="the_title_already_exists">De titel bestaat al</string>
-    <string name="year">Jaar</string>
-    <string name="month">Maand</string>
+    <string name="label_year">Jaar</string>
+    <string name="label_month">Maand</string>
     <string name="day">Dag</string>
     <string name="edit_lc_ellipsis">bewerken&#8230;</string>
     <string name="getting_books_ellipsis">Verkrijgen van boeken&#8230;</string>

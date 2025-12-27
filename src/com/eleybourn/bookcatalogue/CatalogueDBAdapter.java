@@ -3882,29 +3882,26 @@ public class CatalogueDBAdapter {
 		// Hash to *try* to avoid duplicates
 		HashSet<String> foundSoFar = new HashSet<String>();
 		ArrayList<String> list = new ArrayList<String>();
-		Cursor c = mDb.rawQuery("Select distinct " + KEY_FORMAT + " from " + DB_TB_BOOKS + " Order by lower(" + KEY_FORMAT + ") " + COLLATION);
-		try {
-			while (c.moveToNext()) {
-				String name = c.getString(0);
-				if (name != null)
-					try {
-						if (name.length() > 0 && !foundSoFar.contains(name.toLowerCase())) {
-							foundSoFar.add(name.toLowerCase());
-							list.add(name);
-						}
-					} catch (NullPointerException e) {
-						// do nothing
-					}
-			}
-		} finally {
-			c.close();
-		}
-		if (list.size() == 0) {
-			list.add(BookCatalogueApp.getResourceString(R.string.format1));
-			list.add(BookCatalogueApp.getResourceString(R.string.format2));
-			list.add(BookCatalogueApp.getResourceString(R.string.format3));
-			list.add(BookCatalogueApp.getResourceString(R.string.format4));
-			list.add(BookCatalogueApp.getResourceString(R.string.format5));
+        try (Cursor c = mDb.rawQuery("Select distinct " + KEY_FORMAT + " from " + DB_TB_BOOKS + " Order by lower(" + KEY_FORMAT + ") " + COLLATION)) {
+            while (c.moveToNext()) {
+                String name = c.getString(0);
+                if (name != null)
+                    try {
+                        if (!name.isEmpty() && !foundSoFar.contains(name.toLowerCase())) {
+                            foundSoFar.add(name.toLowerCase());
+                            list.add(name);
+                        }
+                    } catch (NullPointerException e) {
+                        // do nothing
+                    }
+            }
+        }
+		if (list.isEmpty() || list.size() == 1) {
+			list.add(BookCatalogueApp.getResourceString(R.string.option_format1));
+			list.add(BookCatalogueApp.getResourceString(R.string.option_format2));
+			list.add(BookCatalogueApp.getResourceString(R.string.option_format3));
+			list.add(BookCatalogueApp.getResourceString(R.string.option_format4));
+			list.add(BookCatalogueApp.getResourceString(R.string.option_format5));
 		}
 		return list;
 	}

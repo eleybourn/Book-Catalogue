@@ -1,7 +1,7 @@
 /*
  * @copyright 2011 Philip Warner
  * @license GNU General Public License
- * 
+ *
  * This file is part of Book Catalogue.
  *
  * Book Catalogue is free software: you can redistribute it and/or modify
@@ -51,228 +51,232 @@ import com.google.android.material.appbar.MaterialToolbar;
  * and a row view id to the constructor of this class. Each view can have the
  * following sub-view IDs present which will be automatically handled. Optional
  * IDs are noted:
-
+ * <p>
  * Main View:
- * 	- cancel
- *  - confirm
- *  - add (OPTIONAL)
-
+ * - cancel
+ * - confirm
+ * - add (OPTIONAL)
+ * <p>
  * Row View (must have layout ID set to android:id="@+id/row"):
- *  - position (OPTIONAL)
- *  - up (OPTIONAL)
- *  - down (OPTIONAL)
- *  - delete (OPTIONAL)
-
+ * - position (OPTIONAL)
+ * - up (OPTIONAL)
+ * - down (OPTIONAL)
+ * - delete (OPTIONAL)
+ * <p>
  * The row view is tagged using TAG_POSITION, defined in strings.xml, to save the rows position for
  * use when moving the row up/down or deleting it.
-
+ * <p>
  * Abstract methods are defined for specific tasks (Add, Save, Load etc). While would
  * be tempting to add local implementations the java generic model seems to prevent this.
-
+ * <p>
  * This Activity uses TouchListView from CommonsWare which is in turn based on Android code
  * for TouchInterceptor which was (reputedly) removed in Android 2.2.
-
+ * <p>
  * For this code to work, the  main view must contain:
  * - a TouchListView with id = @+id/android:list
  * - the TouchListView must have the following attributes:
- * 		tlv:grabber="@+id/<SOME ID FOR AN IMAGE>" (eg. "@+id/grabber")
- *		tlv:remove_mode="none"
- *		tlv:normal_height="64dip" ---- or some similar value
-
+ * tlv:grabber="@+id/<SOME ID FOR AN IMAGE>" (eg. "@+id/grabber")
+ * tlv:remove_mode="none"
+ * tlv:normal_height="64dip" ---- or some similar value
+ * <p>
  * Each row view must have:
  * - an ID of @+id/row
  * - an ImageView with an ID of "@+id/<SOME ID FOR AN IMAGE>" (eg. "@+id/grabber")
- * - (OPTIONAL) a subview with an ID of "@+id/row_details"; when clicked, this will result 
- *   in the onRowClick event.
- * 
- * @author Philip Warner
+ * - (OPTIONAL) a subview with an ID of "@+id/row_details"; when clicked, this will result
+ * in the onRowClick event.
  *
  * @param <T>
+ * @author Philip Warner
  */
 abstract public class EditObjectList<T extends Serializable> extends BookCatalogueListActivity {
 
-	// List
-	protected ArrayList<T> mList = null;
-	// Adapter used to manage list
-	protected ArrayAdapter<T> mAdapter;
+    // List
+    protected ArrayList<T> mList = null;
+    // Adapter used to manage list
+    protected ArrayAdapter<T> mAdapter;
 
-	// DB connection
-	protected CatalogueDBAdapter mDbHelper;
+    // DB connection
+    protected CatalogueDBAdapter mDbHelper;
 
-	protected String mBookTitle;
-	protected String mBookTitleLabel;
+    protected String mBookTitle;
+    protected String mBookTitleLabel;
 
-	// The key to use in the Bundle to get the array
-	private final String mKey;
-	// The resource ID for the base view
-	private final int mBaseViewId;
-	// The resource ID for the row view
-	private final int mRowViewId;
+    // The key to use in the Bundle to get the array
+    private final String mKey;
+    // The resource ID for the base view
+    private final int mBaseViewId;
+    // The resource ID for the row view
+    private final int mRowViewId;
 
-	// Row ID... mainly used (if list is from a book) to know if book is new.
-	protected Long mRowId = null;
+    // Row ID... mainly used (if list is from a book) to know if book is new.
+    protected Long mRowId = null;
 
-	/**
-	 * Called when user clicks the 'Add' button (if present).
-	 * 
-	 * @param v		The view that was clicked ('add' button).
-	 */
-	abstract protected void onAdd(View v);
+    /**
+     * Called when user clicks the 'Add' button (if present).
+     *
+     * @param v The view that was clicked ('add' button).
+     */
+    abstract protected void onAdd(View v);
 
-	/**
-	 * Call to set up the row view.
-	 * 
-	 * @param target	The target row view object
-	 * @param object	The object (or type T) from which to draw values.
-	 */
-	abstract protected void onSetupView(View target, T object);
+    /**
+     * Call to set up the row view.
+     *
+     * @param target The target row view object
+     * @param object The object (or type T) from which to draw values.
+     */
+    abstract protected void onSetupView(View target, T object);
 
-	/**
-	 * Called when an otherwise inactive part of the row is clicked.
-	 * 
-	 * @param target	The view clicked
-	 * @param object	The object associated with this row
-	 */
-	abstract protected void onRowClick(View target, int position, T object);
-	
-	/**
-	 * Called when user clicks the 'Save' button (if present). Primary task is
-	 * to return a boolean indicating it is OK to continue.
+    /**
+     * Called when an otherwise inactive part of the row is clicked.
+     *
+     * @param target The view clicked
+     * @param object The object associated with this row
+     */
+    abstract protected void onRowClick(View target, int position, T object);
+
+    /**
+     * Called when user clicks the 'Save' button (if present). Primary task is
+     * to return a boolean indicating it is OK to continue.
      * Can be overridden to perform other checks.
-	 * 
-	 * @param intent		A newly created Intent to store output if necessary.
-	 * 
-	 * @return		True if activity should exit, false to abort exit.
-	 */
-	protected boolean onSave(Intent intent) { return true; }
+     *
+     * @param intent A newly created Intent to store output if necessary.
+     * @return        True if activity should exit, false to abort exit.
+     */
+    protected boolean onSave(Intent intent) {
+        return true;
+    }
 
     /**
-	 * Called when user presses 'Cancel' button if present. Primary task is
-	 * return a boolean indicating it is OK to continue.
-	 * Can be overridden to perform other checks.
-	 * 
-	 * @return		True if activity should exit, false to abort exit.
-	 */
-	protected boolean onCancel() { return true;}
+     * Called when user presses 'Cancel' button if present. Primary task is
+     * return a boolean indicating it is OK to continue.
+     * Can be overridden to perform other checks.
+     *
+     * @return        True if activity should exit, false to abort exit.
+     */
+    protected boolean onCancel() {
+        return true;
+    }
 
     /**
-	 * Called when the list had been modified in some way.
-	 */
-	protected void onListChanged() { }
+     * Called when the list had been modified in some way.
+     */
+    protected void onListChanged() {
+    }
 
     /**
-	 * Called to get the list if it was not in the intent.
-	 */
-	protected ArrayList<T> getList() { return null; }
+     * Called to get the list if it was not in the intent.
+     */
+    protected ArrayList<T> getList() {
+        return null;
+    }
 
     /**
-	 * Constructor
-	 * 
-	 * @param baseViewId	Resource id of base view
-	 * @param rowViewId		Resource id of row view
-	 */
-	protected EditObjectList(String key, int baseViewId, int rowViewId) {
-		mKey = key;
-		mBaseViewId = baseViewId;
-		mRowViewId = rowViewId;
-	}
+     * Constructor
+     *
+     * @param baseViewId Resource id of base view
+     * @param rowViewId  Resource id of row view
+     */
+    protected EditObjectList(String key, int baseViewId, int rowViewId) {
+        mKey = key;
+        mBaseViewId = baseViewId;
+        mRowViewId = rowViewId;
+    }
 
-	/**
-	 * Update the current list
-	 */
-	protected void setList(ArrayList<T> newList) {
-		final int savedRow = getListView().getFirstVisiblePosition();
-		View v = getListView().getChildAt(0);
-		final int savedTop = v == null ? 0 : v.getTop();
+    /**
+     * Update the current list
+     */
+    protected void setList(ArrayList<T> newList) {
+        final int savedRow = getListView().getFirstVisiblePosition();
+        View v = getListView().getChildAt(0);
+        final int savedTop = v == null ? 0 : v.getTop();
 
-		mList = newList;
-		// Set up list handling
+        mList = newList;
+        // Set up list handling
         this.mAdapter = new ListAdapter(this, mRowViewId, mList);
         setListAdapter(this.mAdapter);
 
         getListView().post(() -> getListView().setSelectionFromTop(savedRow, savedTop));
-	}
+    }
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		try {
-			// Setup the DB
-			mDbHelper = new CatalogueDBAdapter(this);
-			mDbHelper.open();
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        try {
+            // Setup the DB
+            mDbHelper = new CatalogueDBAdapter(this);
+            mDbHelper.open();
 
-			// Set the view
-			setContentView(mBaseViewId);
+            // Set the view
+            setContentView(mBaseViewId);
             MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
             setSupportActionBar(topAppBar);
             topAppBar.setTitle(R.string.app_name);
             topAppBar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-			// Add handlers for 'Save', 'Cancel' and 'Add'
-			setupListener(R.id.button_confirm, mSaveListener);
-			setupListener(R.id.button_cancel, mCancelListener);
-			setupListener(R.id.add, mAddListener);
+            // Add handlers for 'Save', 'Cancel' and 'Add'
+            setupListener(R.id.button_confirm, mSaveListener);
+            setupListener(R.id.button_cancel, mCancelListener);
+            setupListener(R.id.add, mAddListener);
 
-			// Ask the subclass to setup the list; we need this before 
-			// building the adapter.
-			if (savedInstanceState != null && mKey != null && savedInstanceState.containsKey(mKey)) {
-				mList = Utils.getListFromBundle(savedInstanceState, mKey);//.getParcelableArrayList(mKey);
-			}
+            // Ask the subclass to setup the list; we need this before
+            // building the adapter.
+            if (savedInstanceState != null && mKey != null && savedInstanceState.containsKey(mKey)) {
+                mList = Utils.getListFromBundle(savedInstanceState, mKey);//.getParcelableArrayList(mKey);
+            }
 
-			if (mList == null) {
-				/* Get any information from the extras bundle */
-				Bundle extras = getIntent().getExtras();
-				if (extras != null && mKey != null) {
-					mList = Utils.getListFromBundle(extras, mKey); // .getParcelableArrayList(mKey);
-				}
-				if (mList == null)
-					mList = getList();
+            if (mList == null) {
+                /* Get any information from the extras bundle */
+                Bundle extras = getIntent().getExtras();
+                if (extras != null && mKey != null) {
+                    mList = Utils.getListFromBundle(extras, mKey); // .getParcelableArrayList(mKey);
+                }
+                if (mList == null)
+                    mList = getList();
 
-				if (mList == null) {
-					throw new RuntimeException("Unable to find list key '" + mKey + "' in passed data");
-				}
-			}		
+                if (mList == null) {
+                    throw new RuntimeException("Unable to find list key '" + mKey + "' in passed data");
+                }
+            }
 
-			// Set up list handling
-	        this.mAdapter = new ListAdapter(this, mRowViewId, mList);
-	        setListAdapter(this.mAdapter);
+            // Set up list handling
+            this.mAdapter = new ListAdapter(this, mRowViewId, mList);
+            setListAdapter(this.mAdapter);
 
-	        // Look for title and title_label
-			Bundle extras = getIntent().getExtras();
-			if (extras != null) {
-				mRowId = extras.getLong(CatalogueDBAdapter.KEY_ROW_ID);
-				mBookTitleLabel = extras.getString("title_label");
-				mBookTitle = extras.getString("title");
-				setTextOrHideView(R.id.title_label, mBookTitleLabel);
-				setTextOrHideView(R.id.field_title, mBookTitle);
-			}
+            // Look for field_title and label_title
+            Bundle extras = getIntent().getExtras();
+            if (extras != null) {
+                mRowId = extras.getLong(CatalogueDBAdapter.KEY_ROW_ID);
+                mBookTitleLabel = extras.getString("label_title");
+                mBookTitle = extras.getString("field_title");
+                //setTextOrHideView(R.id.label_title, mBookTitleLabel);
+                setTextOrHideView(R.id.field_title, mBookTitle);
+            }
 
-			
-			TouchListView tlv=(TouchListView)getListView();
-			tlv.setDropListener(mDropListener);
-			//tlv.setRemoveListener(onRemove);
 
-		} catch (Exception e) {
-			Logger.logError(e);
-		}
-	}
+            TouchListView tlv = (TouchListView) getListView();
+            tlv.setDropListener(mDropListener);
 
-	/**
-	 * Handle drop events; also preserves current position.
-	 */
-	private final TouchListView.DropListener mDropListener=new TouchListView.DropListener() {
-		@Override
-		public void drop(int from, final int to) {
+        } catch (Exception e) {
+            Logger.logError(e);
+        }
+    }
+
+    /**
+     * Handle drop events; also preserves current position.
+     */
+    private final TouchListView.DropListener mDropListener = new TouchListView.DropListener() {
+        @Override
+        public void drop(int from, final int to) {
             final ListView lv = getListView();
-			// Check if nothing to do; also avoids the nasty case where list size == 1
-			if (from == to)
-				return;
+            // Check if nothing to do; also avoids the nasty case where list size == 1
+            if (from == to)
+                return;
 
             final int firstPos = lv.getFirstVisiblePosition();
 
-			T item=mAdapter.getItem(from);				
-			mAdapter.remove(item);
-			mAdapter.insert(item, to);
+            T item = mAdapter.getItem(from);
+            mAdapter.remove(item);
+            mAdapter.insert(item, to);
             onListChanged();
 
             int first2 = lv.getFirstVisiblePosition();
@@ -286,7 +290,7 @@ abstract public class EditObjectList<T extends Serializable> extends BookCatalog
                 lv.requestFocusFromTouch();
                 lv.setSelectionFromTop(newFirst, offset);
                 lv.post(() -> {
-                    for(int i = 0; ; i++) {
+                    for (int i = 0; ; i++) {
                         View c = lv.getChildAt(i);
                         if (c == null)
                             break;
@@ -299,300 +303,299 @@ abstract public class EditObjectList<T extends Serializable> extends BookCatalog
                 });
             });
 
-		}
-	};
+        }
+    };
 
-	/**
+    /**
      * Utility routine to setup a listener for the specified view id
      *
      * @param id Resource ID
      * @param l  Listener
      */
-	private void setupListener(int id, OnClickListener l) {
-		View v = this.findViewById(id);
-		if (v == null)
-			return;
-		v.setOnClickListener(l);
+    private void setupListener(int id, OnClickListener l) {
+        View v = this.findViewById(id);
+        if (v == null)
+            return;
+        v.setOnClickListener(l);
     }
 
-	/**
-	 * Utility routine to set a TextView to a string, or hide it on failure.
-	 * 
-	 * @param id	View ID
-	 * @param s		String to set
-	 */
-	protected void setTextOrHideView(View v, int id, String s) {
-		if (v != null && v.getId() != id)
-			v = v.findViewById(id);
-		setTextOrHideView(v,s);
-	}
-	
-	protected void setTextOrHideView(View v, String s) {
-		// If view is not present, just exit
-		if (v == null)
-			return;
-		try {
-			if (s != null && !s.isEmpty()) {
-				((TextView)v).setText(s);
-				return;			
-			}
-		} catch (Exception e) {
-			Logger.logError(e);
-		}
+    /**
+     * Utility routine to set a TextView to a string, or hide it on failure.
+     *
+     * @param id View ID
+     * @param s  String to set
+     */
+    protected void setTextOrHideView(View v, int id, String s) {
+        if (v != null && v.getId() != id)
+            v = v.findViewById(id);
+        setTextOrHideView(v, s);
+    }
+
+    protected void setTextOrHideView(View v, String s) {
+        // If view is not present, just exit
+        if (v == null)
+            return;
+        try {
+            if (s != null && !s.isEmpty()) {
+                ((TextView) v).setText(s);
+                return;
+            }
+        } catch (Exception e) {
+            Logger.logError(e);
+        }
         // If we get here, something went wrong.
         v.setVisibility(View.GONE);
-	}
-	
-	protected void setTextOrHideView(int id, String s) {
-		setTextOrHideView(this.findViewById(id), id, s);
-	}
-	
-	/**
-	 * Handle 'Save'
-	 */
-	private final OnClickListener mSaveListener = new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			Intent i = new Intent();
-			i.putExtra(mKey, mList);
-			if (onSave(i)) {
-				setResult(RESULT_OK, i);
-				finish();
-			}
-		}
-	};
+    }
 
-	/**
-	 * Handle 'Cancel'
-	 */
-	private final OnClickListener mCancelListener = v -> {
+    protected void setTextOrHideView(int id, String s) {
+        setTextOrHideView(this.findViewById(id), id, s);
+    }
+
+    /**
+     * Handle 'Save'
+     */
+    private final OnClickListener mSaveListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent i = new Intent();
+            i.putExtra(mKey, mList);
+            if (onSave(i)) {
+                setResult(RESULT_OK, i);
+                finish();
+            }
+        }
+    };
+
+    /**
+     * Handle 'Cancel'
+     */
+    private final OnClickListener mCancelListener = v -> {
         if (onCancel())
             finish();
     };
 
-	/**
-	 * Handle 'Add'
-	 */
-	private final OnClickListener mAddListener = v -> {
+    /**
+     * Handle 'Add'
+     */
+    private final OnClickListener mAddListener = v -> {
         onAdd(v);
         onListChanged();
     };
 
-	/**
-	 * Find the first ancestor that has the ID R.id.row. This 
-	 * will be the complete row View. Use the TAG on that to get
-	 * the physical row number.
-	 * 
-	 * @param v		View to search from
-	 * 
-	 * @return		The row view.
-	 */
-	private Integer getViewRow(View v) {
-		View pv = v;
-		while(pv.getId() != R.id.row) {
-			ViewParent p = pv.getParent();
-			if (!(p instanceof View))
-				throw new RuntimeException("Could not find row view in view ancestors");
-			pv = (View) p;
-		}
-		Object o = ViewTagger.getTag(pv, R.id.TAG_POSITION);
-		if (o == null)
-			throw new RuntimeException("A view with the tag R.id.row was found, but it is not the view for the row");
-		return (Integer) o;
-	}
+    /**
+     * Find the first ancestor that has the ID R.id.row. This
+     * will be the complete row View. Use the TAG on that to get
+     * the physical row number.
+     *
+     * @param v View to search from
+     * @return        The row view.
+     */
+    private Integer getViewRow(View v) {
+        View pv = v;
+        while (pv.getId() != R.id.row) {
+            ViewParent p = pv.getParent();
+            if (!(p instanceof View))
+                throw new RuntimeException("Could not find row view in view ancestors");
+            pv = (View) p;
+        }
+        Object o = ViewTagger.getTag(pv, R.id.TAG_POSITION);
+        if (o == null)
+            throw new RuntimeException("A view with the tag R.id.row was found, but it is not the view for the row");
+        return (Integer) o;
+    }
 
-	/**
-	 * Handle deletion of a row
-	 */
-	private final OnClickListener mRowDeleteListener = new OnClickListener() {
+    /**
+     * Handle deletion of a row
+     */
+    private final OnClickListener mRowDeleteListener = new OnClickListener() {
 
-		@Override
-		public void onClick(View v) {
-			if (v == null)
-				return;
+        @Override
+        public void onClick(View v) {
+            if (v == null)
+                return;
 
-			int pos = getViewRow(v);
+            int pos = getViewRow(v);
             mList.remove(pos);
             mAdapter.notifyDataSetChanged();
             onListChanged();
-		}
-	};
+        }
+    };
 
-	/**
-	 * Handle moving a row UP
-	 */
-	private final OnClickListener mRowUpListener = new OnClickListener() {
+    /**
+     * Handle moving a row UP
+     */
+    private final OnClickListener mRowUpListener = new OnClickListener() {
 
-		@Override
-		public void onClick(View v) {
-			int pos = getViewRow(v);
+        @Override
+        public void onClick(View v) {
+            int pos = getViewRow(v);
             if (pos == 0)
-            	return;
-            T old = mList.get(pos-1);
-            mList.set(pos-1, mList.get(pos));
+                return;
+            T old = mList.get(pos - 1);
+            mList.set(pos - 1, mList.get(pos));
             mList.set(pos, old);
             mAdapter.notifyDataSetChanged();
             onListChanged();
-		}
-		
-	};
+        }
 
-	/**
-	 * Handle moving a row DOWN
-	 */
-	private final OnClickListener mRowDownListener = new OnClickListener() {
+    };
 
-		@Override
-		public void onClick(View v) {
-			int pos = getViewRow(v);
-            if (pos == (mList.size()-1) )
-            	return;
+    /**
+     * Handle moving a row DOWN
+     */
+    private final OnClickListener mRowDownListener = new OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            int pos = getViewRow(v);
+            if (pos == (mList.size() - 1))
+                return;
             T old = mList.get(pos);
-            mList.set(pos, mList.get(pos+1));
-            mList.set(pos+1, old);
+            mList.set(pos, mList.get(pos + 1));
+            mList.set(pos + 1, old);
             mAdapter.notifyDataSetChanged();
             onListChanged();
-		}
-		
-	};
+        }
 
-	/**
-	 * Handle moving a row DOWN
-	 */
-	private final OnClickListener mRowClickListener = v -> {
+    };
+
+    /**
+     * Handle moving a row DOWN
+     */
+    private final OnClickListener mRowClickListener = v -> {
         int pos = getViewRow(v);
         onRowClick(v, pos, mList.get(pos));
     };
 
-	/**
-	 * Adapter to manage the rows.
-	 * 
-	 * @author Philip Warner
-	 */
-	final class ListAdapter extends ArrayAdapter<T> {
+    /**
+     * Adapter to manage the rows.
+     *
+     * @author Philip Warner
+     */
+    final class ListAdapter extends ArrayAdapter<T> {
 
-		// Flag fields to (slightly) optimize lookups and prevent looking for 
-		// fields that are not there.
-		private boolean mCheckedFields = false;
-		private boolean mHasPosition = false;
-		private boolean mHasUp = false;
-		private boolean mHasDown = false;
-		private boolean mHasDelete = false;
+        // Flag fields to (slightly) optimize lookups and prevent looking for
+        // fields that are not there.
+        private boolean mCheckedFields = false;
+        private boolean mHasPosition = false;
+        private boolean mHasUp = false;
+        private boolean mHasDown = false;
+        private boolean mHasDelete = false;
 
         public ListAdapter(Context context, int textViewResourceId, ArrayList<T> items) {
-                super(context, textViewResourceId, items);
+            super(context, textViewResourceId, items);
         }
 
         @NonNull
         @Override
         public View getView(int position, View convertView, @NonNull ViewGroup parent) {
-        	// Get the view; if not defined, load it.
+            // Get the view; if not defined, load it.
             View v = convertView;
             if (v == null) {
-                LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 v = vi.inflate(mRowViewId, null);
             }
-            
+
             // Save this views position
             ViewTagger.setTag(v, R.id.TAG_POSITION, position);
 
             {
-            	// Giving the whole row ad onClickListener seems to interfere
-            	// with drag/drop.
-            	View details = v.findViewById(R.id.row_details);
-            	if (details != null) {
+                // Giving the whole row ad onClickListener seems to interfere
+                // with drag/drop.
+                View details = v.findViewById(R.id.row_details);
+                if (details != null) {
                     details.setOnClickListener(mRowClickListener);
                     details.setFocusable(false);
-            	}
+                }
             }
 
             // Get the object, if not null, do some processing
             T o = mList.get(position);
             if (o != null) {
-            	// Try to set position value
-            	if (mHasPosition || !mCheckedFields) {
-	                TextView pt = v.findViewById(R.id.row_position);
-	                if(pt != null){
-	                	mHasPosition = true;
-                        pt.setText(String.format(Locale.getDefault(), "%d", position+1));
-	                }
-            	}
+                // Try to set position value
+                if (mHasPosition || !mCheckedFields) {
+                    TextView pt = v.findViewById(R.id.row_position);
+                    if (pt != null) {
+                        mHasPosition = true;
+                        pt.setText(String.format(Locale.getDefault(), "%d", position + 1));
+                    }
+                }
 
-            	// Try to set the UP handler
-            	if (mHasUp || !mCheckedFields) {
+                // Try to set the UP handler
+                if (mHasUp || !mCheckedFields) {
                     ImageView up = v.findViewById(R.id.row_up);
                     if (up != null) {
-                    	up.setOnClickListener(mRowUpListener);
-                    	mHasUp = true;
+                        up.setOnClickListener(mRowUpListener);
+                        mHasUp = true;
                     }
-            	}
+                }
 
-            	// Try to set the DOWN handler
-            	if (mHasDown || !mCheckedFields) {
+                // Try to set the DOWN handler
+                if (mHasDown || !mCheckedFields) {
                     ImageView dn = v.findViewById(R.id.row_down);
                     if (dn != null) {
-                    	dn.setOnClickListener(mRowDownListener);
-                    	mHasDown = true;
+                        dn.setOnClickListener(mRowDownListener);
+                        mHasDown = true;
                     }
-            	}
+                }
 
-            	// Try to set the DELETE handler
-            	if (mHasDelete || !mCheckedFields) {
-                	ImageView del = v.findViewById(R.id.row_delete);
+                // Try to set the DELETE handler
+                if (mHasDelete || !mCheckedFields) {
+                    ImageView del = v.findViewById(R.id.row_delete);
                     if (del != null) {
-        	    		del.setImageResource(android.R.drawable.ic_delete);
-                    	del.setOnClickListener(mRowDeleteListener);   
-                    	mHasDelete = true;
-                    }            		
-            	}
+                        del.setImageResource(R.drawable.ic_menu_delete);
+                        del.setOnClickListener(mRowDeleteListener);
+                        mHasDelete = true;
+                    }
+                }
 
-            	// Ask the subclass to set other fields.
-            	try {
-                    onSetupView(v, o);            		
-            	} catch (Exception e) {
-            		Logger.logError(e);
-            	}
+                // Ask the subclass to set other fields.
+                try {
+                    onSetupView(v, o);
+                } catch (Exception e) {
+                    Logger.logError(e);
+                }
 
                 mCheckedFields = true;
             }
             return v;
         }
-	}
-
-	/**
-	 * Ensure that the list is saved.
-	 */
-	@Override
-	protected void onSaveInstanceState(@NonNull Bundle outState) {
-    	super.onSaveInstanceState(outState);
-    	// save list
-    	outState.putSerializable(mKey, mList);
     }
 
-	/**
-	 * This is totally bizarre. Without this piece of code, under Android 1.6, the
-	 * native onRestoreInstanceState() fails to restore custom classes, throwing
-	 * a ClassNotFoundException, when the activity is resumed.
+    /**
+     * Ensure that the list is saved.
+     */
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // save list
+        outState.putSerializable(mKey, mList);
+    }
 
-	 * To test this, remove this line, edit a custom style, and save it. App will
-	 * crash in AVD under Android 1.6.
-	 * It is not entirely clear how this happens but since the Bundle has a classLoader
+    /**
+     * This is totally bizarre. Without this piece of code, under Android 1.6, the
+     * native onRestoreInstanceState() fails to restore custom classes, throwing
+     * a ClassNotFoundException, when the activity is resumed.
+     * <p>
+     * To test this, remove this line, edit a custom style, and save it. App will
+     * crash in AVD under Android 1.6.
+     * It is not entirely clear how this happens but since the Bundle has a classLoader
+     * <p>
+     * it is fair to surmise that the code that creates the bundle determines the class
+     * loader to use based (somehow) on the class being called, and if we don't implement
+     * this method, then in Android 1.6, the class is a basic android class NOT and app
+     * class.
+     */
+    @Override
+    public void onRestoreInstanceState(@NonNull Bundle state) {
+        super.onRestoreInstanceState(state);
+    }
 
-	 * it is fair to surmise that the code that creates the bundle determines the class
-	 * loader to use based (somehow) on the class being called, and if we don't implement
-	 * this method, then in Android 1.6, the class is a basic android class NOT and app 
-	 * class.
-	 */
-	@Override
-	public void onRestoreInstanceState(@NonNull Bundle state) {
-		super.onRestoreInstanceState(state);
-	}
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		if (mDbHelper != null)
-			mDbHelper.close();
-	}
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mDbHelper != null)
+            mDbHelper.close();
+    }
 
 }

@@ -121,11 +121,11 @@
 <string name="searching_library_thing">Przeszukiwanie LibraryThing</string>
     <string name="label_bookshelves">Wybierz półki</string>
 <string name="label_format">Format</string>
-<string name="format1">Miękka okładka</string>
-<string name="format2">Twarda okładka</string>
-<string name="format3">eBook</string>
-<string name="format4">Audiobook</string>
-<string name="format5">Przewodnik</string>
+<string name="option_format1">Miękka okładka</string>
+<string name="option_format2">Twarda okładka</string>
+<string name="option_format3">eBook</string>
+<string name="option_format4">Audiobook</string>
+<string name="option_format5">Przewodnik</string>
 <string name="label_description">Opis</string>
 <string name="label_genre">Gatunek</string>
     <string name="not_set">Nie wybrany(a)</string>

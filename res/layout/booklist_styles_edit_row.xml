@@ -45,7 +45,7 @@
             android:layout_alignParentTop="true"
             android:layout_centerVertical="true"
             android:background="#C0303030"
-            android:src="@drawable/grabber" />
+            android:src="@drawable/ic_move_grabber" />
 
         <View
             android:id="@+id/top_divider"

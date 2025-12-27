@@ -8,7 +8,7 @@
     <include layout="@layout/layout_background" />
 
     <!-- CONTENT -->
-    <androidx.core.widget.NestedScrollView
+    <LinearLayout
         android:id="@+id/scrollView"
         style="@style/layout_scroll" >
 
@@ -33,42 +33,36 @@
 
                 <AutoCompleteTextView
                     android:id="@+id/field_author"
+                    style="@style/locale_field_text_name"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:completionThreshold="2"
-                    android:hint="@string/label_author"
-                    style="@style/locale_field_text_name" />
+                    android:hint="@string/label_author" />
 
                 <Button
                     android:id="@+id/add"
                     style="@style/layout_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
                     android:text="@string/label_add" />
             </LinearLayout>
 
             <com.eleybourn.bookcatalogue.widgets.TouchListView
                 xmlns:tlv="http://schemas.android.com/apk/res/com.eleybourn.bookcatalogue"
                 android:id="@+id/list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                style="@style/layout_list_view"
                 android:layout_below="@+id/top_buttons"
-                android:textSize="16sp"
                 tlv:grabber="@+id/grabber"
                 tlv:normal_height="64dip"
                 tlv:remove_mode="none" />
 
             <TextView
                 android:id="@+id/empty"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                style="@style/layout_paragraph"
                 android:layout_below="@+id/top_buttons"
-                android:text="@string/para_no_authors"
-                android:textSize="16sp" />
+                android:text="@string/para_no_authors" />
 
         </RelativeLayout>
-    </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/buttons"

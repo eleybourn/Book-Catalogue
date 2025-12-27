@@ -179,7 +179,7 @@ public class BooklistStyleGroupsActivity extends EditObjectList<GroupWrapper> {
 					if (h.wrapper.present) {
 						h.present.setImageResource(R.drawable.btn_check_clipped);
 					} else {
-			    		h.present.setImageResource(android.R.drawable.ic_delete);			
+			    		h.present.setImageResource(R.drawable.ic_menu_delete);
 					}
 				}});
 		}
@@ -191,7 +191,7 @@ public class BooklistStyleGroupsActivity extends EditObjectList<GroupWrapper> {
 		if (h.wrapper.present) {
 			h.present.setImageResource(R.drawable.btn_check_clipped);
 		} else {
-    		h.present.setImageResource(android.R.drawable.ic_delete);			
+    		h.present.setImageResource(R.drawable.ic_menu_delete);
 		}
 	}
 

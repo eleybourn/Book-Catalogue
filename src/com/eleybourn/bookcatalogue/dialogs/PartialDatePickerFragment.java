@@ -50,9 +50,9 @@ public class PartialDatePickerFragment extends BookCatalogueDialogFragment {
 	 * 
 	 * @author pjw
 	 */
-	public static interface OnPartialDatePickerListener {
-		public void onPartialDatePickerSet(int dialogId, PartialDatePickerFragment dialog, Integer year, Integer month, Integer day);
-		public void onPartialDatePickerCancel(int dialogId, PartialDatePickerFragment dialog);
+	public interface OnPartialDatePickerListener {
+		void onPartialDatePickerSet(int dialogId, PartialDatePickerFragment dialog, Integer year, Integer month, Integer day);
+		void onPartialDatePickerCancel(int dialogId, PartialDatePickerFragment dialog);
 	}
 
 	/**
@@ -61,8 +61,7 @@ public class PartialDatePickerFragment extends BookCatalogueDialogFragment {
 	 * @return		new instance
 	 */
 	public static PartialDatePickerFragment newInstance() {
-    	PartialDatePickerFragment frag = new PartialDatePickerFragment();
-        return frag;
+        return new PartialDatePickerFragment();
     }
 
 	/**
@@ -77,15 +76,18 @@ public class PartialDatePickerFragment extends BookCatalogueDialogFragment {
             a=(Activity) context;
         }
 
-		if (! (a instanceof OnPartialDatePickerListener))
-			throw new RuntimeException("Activity " + a.getClass().getSimpleName() + " must implement OnPartialDatePickerListener");
+		if (! (a instanceof OnPartialDatePickerListener)) {
+            assert a != null;
+            throw new RuntimeException("Activity " + a.getClass().getSimpleName() + " must implement OnPartialDatePickerListener");
+        }
 		
 	}
 
 	/**
 	 * Create the underlying dialog
 	 */
-	@Override
+	@NonNull
+    @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 		// Restore saved state info
         if (savedInstanceState != null) {
@@ -165,17 +167,16 @@ public class PartialDatePickerFragment extends BookCatalogueDialogFragment {
 	
 	/**
 	 *  The callback received when the user "sets" the date in the dialog.
-	 *  
 	 *  The event is passed on the the calling activity
 	 */
-	private PartialDatePicker.OnDateSetListener mDialogListener = new PartialDatePicker.OnDateSetListener() {
+	private final PartialDatePicker.OnDateSetListener mDialogListener = new PartialDatePicker.OnDateSetListener() {
 		public void onDateSet(PartialDatePicker dialog, Integer year, Integer month, Integer day) {
-			((OnPartialDatePickerListener)getActivity()).onPartialDatePickerSet(mDialogId, PartialDatePickerFragment.this, year, month, day);
+			((OnPartialDatePickerListener) requireActivity()).onPartialDatePickerSet(mDialogId, PartialDatePickerFragment.this, year, month, day);
 		}
 
 		@Override
 		public void onCancel(PartialDatePicker dialog) {
-			((OnPartialDatePickerListener)getActivity()).onPartialDatePickerCancel(mDialogId, PartialDatePickerFragment.this);
+			((OnPartialDatePickerListener) requireActivity()).onPartialDatePickerCancel(mDialogId, PartialDatePickerFragment.this);
 		}
 	};
 

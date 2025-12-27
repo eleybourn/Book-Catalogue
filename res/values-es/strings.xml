@@ -121,11 +121,11 @@
 	<string name="searching_library_thing">Buscando en LibraryThing</string>
     <string name="label_select_bookshelves">Seleccionar biblioteca</string>
 	<string name="label_format">Formato</string>
-	<string name="format1">Bolsillo</string>
-	<string name="format2">Tapa dura</string>
-	<string name="format3">eBook</string>
-	<string name="format4">Audiobook</string>
-	<string name="format5">Guía</string>
+	<string name="option_format1">Bolsillo</string>
+	<string name="option_format2">Tapa dura</string>
+	<string name="option_format3">eBook</string>
+	<string name="option_format4">Audiobook</string>
+	<string name="option_format5">Guía</string>
     <!-- NOTE: Adding a new format will involve changing code that references this list -->
 	<string name="label_description">Descripción</string>
 	<string name="label_genre">Género</string>
@@ -513,8 +513,8 @@
     <string name="exit">Salir</string>
     <string name="continue_editing">Continuar editando</string>
     <string name="the_title_already_exists">El título ya existe</string>
-    <string name="year">Año</string>
-    <string name="month">Mes</string>
+    <string name="label_year">Año</string>
+    <string name="label_month">Mes</string>
     <string name="day">Día</string>
     <string name="edit_lc_ellipsis">Editar&#8230;</string>
     <string name="getting_books_ellipsis">Obteniendo libros&#8230;</string>

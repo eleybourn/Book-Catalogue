@@ -235,7 +235,7 @@ public class CoverBrowser {
 			if (file.exists()) {
 				Utils.fetchFileIntoImageView(file, v, mPreviewSize, mPreviewSize, true);
 			} else {
-				v.setImageResource(android.R.drawable.ic_delete);
+				v.setImageResource(R.drawable.ic_menu_delete);
 			}
 		}
 	}
@@ -623,7 +623,7 @@ public class CoverBrowser {
 					// Present, so use it.
 					Utils.fetchFileIntoImageView(f, i, mPreviewSize, mPreviewSize, true );
 				} else {
-					i.setImageResource(android.R.drawable.ic_delete);
+					i.setImageResource(R.drawable.ic_menu_delete);
 				}
 			}
 			

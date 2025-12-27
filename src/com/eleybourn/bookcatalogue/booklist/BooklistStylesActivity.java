@@ -38,7 +38,6 @@ import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.UniqueId;
 import com.eleybourn.bookcatalogue.utils.HintManager;
 import com.eleybourn.bookcatalogue.utils.Logger;
-import com.eleybourn.bookcatalogue.utils.Utils;
 import com.eleybourn.bookcatalogue.utils.ViewTagger;
 
 /**
@@ -155,7 +154,7 @@ public class BooklistStylesActivity extends EditObjectList<BooklistStyle> {
 					if (newPref) {
 						h.preferred.setImageResource(R.drawable.btn_check_clipped);
 					} else {
-			    		h.preferred.setImageResource(android.R.drawable.ic_delete);			
+			    		h.preferred.setImageResource(R.drawable.ic_menu_delete);
 					}
 					onListChanged();
 				}});
@@ -174,7 +173,7 @@ public class BooklistStylesActivity extends EditObjectList<BooklistStyle> {
 		if (style.isPreferred()) {
 			h.preferred.setImageResource(R.drawable.btn_check_clipped);
 		} else {
-    		h.preferred.setImageResource(android.R.drawable.ic_delete);			
+    		h.preferred.setImageResource(R.drawable.ic_menu_delete);
 		}
 	}
 

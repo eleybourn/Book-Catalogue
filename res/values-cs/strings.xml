@@ -120,11 +120,11 @@
 <string name="searching_library_thing">Vyhledávám na LibraryThing</string>
     <string name="label_bookshelves">Zvolte knihovnu</string>
 <string name="label_format">Formát</string>
-<string name="format1">Brožovaná kniha</string>
-<string name="format2">Pevná vazba</string>
-<string name="format3">eKniha</string>
-<string name="format4">Audiokniha</string>
-<string name="format5">Průvodce / Společník</string>
+<string name="option_format1">Brožovaná kniha</string>
+<string name="option_format2">Pevná vazba</string>
+<string name="option_format3">eKniha</string>
+<string name="option_format4">Audiokniha</string>
+<string name="option_format5">Průvodce / Společník</string>
 <string name="label_description">Popis</string>
 <string name="label_genre">Žánr</string>
     <string name="not_set">Nenastaveno</string>

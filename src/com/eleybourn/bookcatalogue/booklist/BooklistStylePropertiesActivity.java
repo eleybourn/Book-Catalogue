@@ -1,7 +1,7 @@
 /*
  * @copyright 2012 Philip Warner
  * @license GNU General Public License
- * 
+ *
  * This file is part of Book Catalogue.
  *
  * Book Catalogue is free software: you can redistribute it and/or modify
@@ -29,9 +29,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.UniqueId;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.properties.Properties;
 import com.eleybourn.bookcatalogue.properties.Property.ValidationException;
@@ -44,208 +46,217 @@ import com.google.android.material.appbar.MaterialToolbar;
 
 /**
  * Edit the properties associated with a passed style
- * 
+ *
  * @author Philip Warner
  */
 public class BooklistStylePropertiesActivity extends BookCatalogueActivity {
-	/** Parameter used to pass data to this activity */
-	public static final String KEY_STYLE = "BooklistStyleProperties.Style";
-	/** Parameter used to pass data to this activity */
-	public static final String KEY_SAVE_TO_DATABASE = "BooklistStyleProperties.SaveToDb";
+    // Parameter used to pass data to this activity
+    public static final String KEY_STYLE = "BooklistStyleProperties.Style";
+    // Parameter used to pass data to this activity
+    public static final String KEY_SAVE_TO_DATABASE = "BooklistStyleProperties.SaveToDb";
 
-	/** Database connection, if used */
-	private CatalogueDBAdapter mDb = null;
+    /** Database connection, if used */
+    private CatalogueDBAdapter mDb = null;
 
-	/** Flag indicating style should be saved to the database on exit */
-	private boolean mSaveToDb = true;
-	/** Style we are editing */
-	private BooklistStyle mStyle;
-	/** Properties object constructed from current style */
-	private Properties mProperties;
+    /** Flag indicating style should be saved to the database on exit */
+    private boolean mSaveToDb = true;
+    /** Style we are editing */
+    private BooklistStyle mStyle;
+    /** Properties object constructed from current style */
+    private Properties mProperties;
 
-	@Override
-	protected RequiredPermission[] getRequiredPermissions() {
-		return new RequiredPermission[0];
-	}
+    /** Launcher for the Groups Activity */
+    private ActivityResultLauncher<Intent> mGroupsLauncher;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    @Override
+    protected RequiredPermission[] getRequiredPermissions() {
+        return new RequiredPermission[0];
+    }
 
-		// Set the view and handle the save/cancel buttons.
-		this.setContentView(R.layout.admin_edit_booklist_style);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Initialize the launcher
+        // This must be done in onCreate or field initialization, before the Activity starts
+        mGroupsLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    // Logic moved from onActivityResult
+                    Intent intent = result.getData();
+                    if (intent != null && intent.hasExtra(BooklistStyleGroupsActivity.KEY_STYLE)) {
+                        BooklistStyle editedStyle = null;
+                        try {
+                            editedStyle = (BooklistStyle) intent.getSerializableExtra(BooklistStyleGroupsActivity.KEY_STYLE);
+                        } catch (Exception e) {
+                            Logger.logError(e);
+                        }
+                        if (editedStyle != null) {
+                            mStyle.setGroups(editedStyle);
+                            displayProperties();
+                        }
+                    }
+                }
+        );
+
+        // Set the view and handle the save/cancel buttons.
+        this.setContentView(R.layout.admin_edit_booklist_style);
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
         setSupportActionBar(topAppBar);
         topAppBar.setTitle(R.string.label_bookshelf);
         topAppBar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-		Button save = findViewById(R.id.button_confirm);
-		save.setOnClickListener(v -> handleSave());
-		Button cancel = findViewById(R.id.button_cancel);
-		cancel.setOnClickListener(v -> finish());
+        Button save = findViewById(R.id.button_confirm);
+        save.setOnClickListener(v -> handleSave());
+        Button cancel = findViewById(R.id.button_cancel);
+        cancel.setOnClickListener(v -> finish());
 
-		// Get the intent and get the style and other details
-		Intent i = this.getIntent();
-		mStyle = (BooklistStyle) i.getSerializableExtra(KEY_STYLE);
+        // Get the intent and get the style and other details
+        Intent i = this.getIntent();
+        mStyle = (BooklistStyle) i.getSerializableExtra(KEY_STYLE);
 
-		if (i.hasExtra(KEY_SAVE_TO_DATABASE))
-			mSaveToDb = i.getBooleanExtra(KEY_SAVE_TO_DATABASE, true);
+        if (i.hasExtra(KEY_SAVE_TO_DATABASE))
+            mSaveToDb = i.getBooleanExtra(KEY_SAVE_TO_DATABASE, true);
 
-		// Display all the style properties
-		displayProperties();
+        // Display all the style properties
+        displayProperties();
 
-		// Make the title
-		String title;
-		if (mStyle.getDisplayName().isEmpty())
-			title = getString(R.string.new_style);
-		else if (mStyle.getRowId() == 0)
-			title = getString(R.string.clone_style_colon_name, mStyle.getDisplayName());
-		else
-			title = getString(R.string.edit_style_colon_name, mStyle.getDisplayName());
+        // Make the title
+        String title;
+        if (mStyle.getDisplayName().isEmpty())
+            title = getString(R.string.new_style);
+        else if (mStyle.getRowId() == 0)
+            title = getString(R.string.clone_style_colon_name, mStyle.getDisplayName());
+        else
+            title = getString(R.string.edit_style_colon_name, mStyle.getDisplayName());
 
-		this.setTitle(title);
+        this.setTitle(title);
 
-		// Display hint if required
-		if (savedInstanceState == null)
-			HintManager.displayHint(this, R.string.hint_booklist_style_properties, null, null);
-	}
+        // Display hint if required
+        if (savedInstanceState == null)
+            HintManager.displayHint(this, R.string.hint_booklist_style_properties, null, null);
+    }
 
-	/**
-	 * Fix background
-	 */
-	@Override 
-	public void onResume() {
-		super.onResume();
-	}
+    /**
+     * Fix background
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
 
-	/**
-	 * Setup the style properties views based on the current style
-	 */
-	private void displayProperties() {
-		ViewGroup vg = this.findViewById(R.id.layout_body);
-		vg.removeAllViews();
+    /**
+     * Setup the style properties views based on the current style
+     */
+    private void displayProperties() {
+        ViewGroup vg = this.findViewById(R.id.layout_body);
+        vg.removeAllViews();
 
-		mProperties = mStyle.getProperties();
-		mProperties.add(new GroupsProperty());
-		mProperties.buildView(this.getLayoutInflater(), vg);		
-	}
+        mProperties = mStyle.getProperties();
+        mProperties.add(new GroupsProperty());
+        mProperties.buildView(this.getLayoutInflater(), vg);
+    }
 
-	/**
-	 * Implementation of a 'Property' that has a button which will start the activity
-	 * for editing style groups.
-	 * 
-	 * @author Philip Warner
-	 */
-	private class GroupsProperty extends StringProperty {
+    /**
+     * Implementation of a 'Property' that has a button which will start the activity
+     * for editing style groups.
+     *
+     * @author Philip Warner
+     */
+    private class GroupsProperty extends StringProperty {
 
-		/**
-		 * Constructor
-		 */
-		public GroupsProperty() {
-			super("StyleGroups", PropertyGroup.GRP_GENERAL, R.string.groupings);
-		}
-
-		/**
-		 * Get the property 'value': just a list of the groups.
-		 */
-		@Override
-		public String get() {
-			return mStyle.getGroupListDisplayNames();
-		}
-		/**
-		 * Can not be 'set'. Will be edited vi the button->activity.
-		 */
-		@Override
-		public GroupsProperty set(String value) {
-			throw new RuntimeException("Attempt to set read-only property string");
-		}
-
-		/**
-		 * Setup the view
-		 */
-		@Override
-		public View getView(LayoutInflater inflater) {
-			View v = inflater.inflate(R.layout.property_value_string_button, null);
-			ViewTagger.setTag(v, R.id.TAG_PROPERTY, this);
-			final TextView name = v.findViewById(R.id.field_name);
-			final TextView value = v.findViewById(R.id.value);
-			final Button btn = v.findViewById(R.id.edit_button);
-			name.setText(getName());
-			value.setHint(getName());
-			value.setText(get());
-
-			btn.setOnClickListener(v1 -> startGroupsActivity());
-			return v;
-		}
-	}
-
-	/**
-	 * Start editing the groups.
-	 */
-	public void startGroupsActivity() {
-		Intent i = new Intent(this, BooklistStyleGroupsActivity.class);
-		i.putExtra(BooklistStyleGroupsActivity.KEY_STYLE, mStyle);
-		i.putExtra(BooklistStyleGroupsActivity.KEY_SAVE_TO_DATABASE, false);
-		startActivityForResult(i, UniqueId.ACTIVITY_BOOKLIST_STYLE_GROUPS);		
-	}
-
-	/**
-	 * Called when 'save' button is clicked.
-	 */
-	private void handleSave() {
-		boolean ok = true;
-		try {
-			mProperties.validate();
-		} catch (ValidationException e) {
-			ok = false;
-			Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-		}
-		if (ok) {
-			if (mSaveToDb)
-				mStyle.saveToDb(getDb());
-			Intent i = new Intent();
-			i.putExtra(KEY_STYLE, mStyle);
-			setResult(RESULT_OK, i);
-			finish();
-		}
-	}
-
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-		super.onActivityResult(requestCode, resultCode, intent);
-        if (requestCode == UniqueId.ACTIVITY_BOOKLIST_STYLE_GROUPS) {// When groups have been edited, copy them to this style.
-            if (intent != null && intent.hasExtra(BooklistStyleGroupsActivity.KEY_STYLE)) {
-                BooklistStyle editedStyle = null;
-                try {
-                    editedStyle = (BooklistStyle) intent.getSerializableExtra(BooklistStyleGroupsActivity.KEY_STYLE);
-                } catch (Exception e) {
-                    Logger.logError(e);
-                }
-                if (editedStyle != null) {
-                    mStyle.setGroups(editedStyle);
-                    displayProperties();
-                }
-            }
+        /**
+         * Constructor
+         */
+        public GroupsProperty() {
+            super("StyleGroups", PropertyGroup.GRP_GENERAL, R.string.groupings);
         }
-	}
 
-	/**
-	 * Get/create database as required.
-	 */
-	private CatalogueDBAdapter getDb() {
-		if (mDb == null)
-			mDb = new CatalogueDBAdapter(this);
-		mDb.open();
-		return mDb;
-	}
+        /**
+         * Get the property 'value': just a list of the groups.
+         */
+        @Override
+        public String get() {
+            return mStyle.getGroupListDisplayNames();
+        }
+        /**
+         * Can not be 'set'. Will be edited vi the button->activity.
+         */
+        @Override
+        public GroupsProperty set(String value) {
+            throw new RuntimeException("Attempt to set read-only property string");
+        }
 
-	/**
-	 * Cleanup.
-	 */
-	@Override 
-	protected void onDestroy() {
-		super.onDestroy();
-		if (mDb != null)
-			mDb.close();
-	}
+        /**
+         * Setup the view
+         */
+        @Override
+        public View getView(LayoutInflater inflater) {
+            View v = inflater.inflate(R.layout.property_value_string_button, null);
+            ViewTagger.setTag(v, R.id.TAG_PROPERTY, this);
+            final TextView name = v.findViewById(R.id.field_name);
+            final TextView value = v.findViewById(R.id.value);
+            final Button btn = v.findViewById(R.id.edit_button);
+            name.setText(getName());
+            value.setHint(getName());
+            value.setText(get());
+
+            btn.setOnClickListener(v1 -> startGroupsActivity());
+            return v;
+        }
+    }
+
+    /**
+     * Start editing the groups.
+     */
+    public void startGroupsActivity() {
+        Intent i = new Intent(this, BooklistStyleGroupsActivity.class);
+        i.putExtra(BooklistStyleGroupsActivity.KEY_STYLE, mStyle);
+        i.putExtra(BooklistStyleGroupsActivity.KEY_SAVE_TO_DATABASE, false);
+        // Updated to use the launcher
+        mGroupsLauncher.launch(i);
+    }
+
+    /**
+     * Called when 'save' button is clicked.
+     */
+    private void handleSave() {
+        boolean ok = true;
+        try {
+            mProperties.validate();
+        } catch (ValidationException e) {
+            ok = false;
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+        if (ok) {
+            if (mSaveToDb)
+                mStyle.saveToDb(getDb());
+            Intent i = new Intent();
+            i.putExtra(KEY_STYLE, mStyle);
+            setResult(RESULT_OK, i);
+            finish();
+        }
+    }
+
+    // onActivityResult removed as it is superseded by the launcher callback
+
+    /**
+     * Get/create database as required.
+     */
+    private CatalogueDBAdapter getDb() {
+        if (mDb == null)
+            mDb = new CatalogueDBAdapter(this);
+        mDb.open();
+        return mDb;
+    }
+
+    /**
+     * Cleanup.
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mDb != null)
+            mDb.close();
+    }
 }

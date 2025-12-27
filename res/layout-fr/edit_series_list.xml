@@ -1,94 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/theme_surface"
-    android:orientation="vertical"
-    android:paddingLeft="@dimen/p_md" >
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/layout_body">
+    <!-- Root -->
 
-    <TextView
-        android:id="@+id/field_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/label_title"
-        android:textSize="16sp" />
+    <include layout="@layout/layout_header" />
+    <include layout="@layout/layout_background" />
 
+    <!-- CONTENT -->
     <LinearLayout
-        android:id="@+id/top_buttons"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/field_title"
-        android:gravity="top"
-        android:orientation="horizontal" >
+        android:id="@+id/scrollView"
+        style="@style/layout_scroll">
 
-        <AutoCompleteTextView
-            android:id="@+id/field_series"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:completionThreshold="2"
-            android:hint="@string/label_series"
-            android:inputType="textCapSentences"
-            android:paddingLeft="5sp" />
+        <RelativeLayout
+            android:id="@+id/root"
+            style="@style/layout_main">
 
-        <EditText
-            android:id="@+id/series_num"
-            android:layout_width="150sp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:hint="@string/label_series_num"
-            android:inputType="numberDecimal"
-            android:singleLine="true" />
+            <TextView
+                android:id="@+id/field_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/label_title"
+                android:textSize="16sp" />
 
-        <Button
-            android:id="@+id/add"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/label_add" />
+            <LinearLayout
+                android:id="@+id/top_buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/field_title"
+                android:gravity="top"
+                android:orientation="horizontal" >
+
+                <AutoCompleteTextView
+                    android:id="@+id/field_series"
+                    style="@style/locale_field_text_title"
+                    android:layout_weight="2"
+                    android:completionThreshold="2"
+                    android:inputType="textCapSentences"
+                    android:hint="@string/label_series" />
+
+                <EditText
+                    android:id="@+id/series_num"
+                    style="@style/field_text"
+                    android:layout_width="150sp"
+                    android:layout_weight="1"
+                    android:hint="@string/label_series_num"
+                    android:inputType="numberDecimal"
+                    android:singleLine="true" />
+
+                <Button
+                    android:id="@+id/add"
+                    style="@style/layout_button"
+                    android:text="@string/label_add" />
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical"
+                android:layout_below="@+id/top_buttons" />
+
+            <TextView
+                android:id="@+id/empty"
+                style="@style/layout_paragraph"
+                android:layout_below="@+id/top_buttons"
+                android:text="@string/para_no_series" />
+
+        </RelativeLayout>
     </LinearLayout>
 
-    <com.eleybourn.bookcatalogue.widgets.TouchListView
-        xmlns:tlv="http://schemas.android.com/apk/res/com.eleybourn.bookcatalogue"
-        android:id="@+id/list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/bottom_buttons"
-        android:layout_below="@+id/top_buttons"
-        android:textSize="16sp"
-        tlv:grabber="@+id/grabber"
-        tlv:normal_height="64dip"
-        tlv:remove_mode="none" />
-
-    <TextView
-        android:id="@+id/empty"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/bottom_buttons"
-        android:layout_below="@+id/top_buttons"
-        android:text="@string/para_no_series"
-        android:textSize="16sp" />
-
     <LinearLayout
-        android:id="@+id/bottom_buttons"
-        android:layout_width="match_parent"
-        android:layout_height="60sp"
-        android:layout_alignParentBottom="true"
-        android:gravity="bottom"
-        android:orientation="horizontal" >
-
+        android:id="@+id/buttons"
+        style="@style/layout_action_row" >
         <Button
             android:id="@+id/button_cancel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            style="@style/layout_button_action"
             android:text="@string/button_cancel" />
-
         <Button
             android:id="@+id/button_confirm"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            style="@style/layout_button_action"
             android:text="@string/button_save" />
     </LinearLayout>
 
-</RelativeLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

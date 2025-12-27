@@ -14,11 +14,9 @@
         android:layout_marginBottom="?attr/actionBarSize"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/bottom_buttons"
-            android:layout_below="@+id/top_buttons">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:id="@+id/layout_body"

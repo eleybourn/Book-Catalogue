@@ -7,6 +7,7 @@
         <item name="android:background">@drawable/bg_main</item>
         <item name="android:fitsSystemWindows">true</item>
     </style>
+
     <style name="layout_scroll">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
@@ -16,15 +17,18 @@
         <item name="android:requiresFadingEdge">vertical</item>
         <item name="android:fadingEdgeLength">@dimen/p_xl</item>
     </style>
+
     <style name="layout_scroll_action_bar" parent="layout_scroll">
         <item name="android:layout_marginBottom">?attr/actionBarSize</item>
     </style>
+
     <style name="layout_main">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:orientation">vertical</item>
         <item name="android:padding">16dp</item>
     </style>
+
     <style name="layout_action_row">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -35,6 +39,7 @@
         <item name="android:paddingHorizontal">@dimen/p_lg</item>
         <item name="android:paddingVertical">@dimen/p_lg</item>
     </style>
+
     <style name="layout_dialog">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -43,6 +48,7 @@
         <item name="android:orientation">vertical</item>
         <item name="android:background">?android:attr/selectableItemBackground</item>
     </style>
+
     <style name="layout_dialog_title">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -52,6 +58,7 @@
         <item name="android:paddingBottom">@dimen/p_md</item>
         <item name="android:gravity">center</item>
     </style>
+
     <style name="layout_card_md">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -63,6 +70,7 @@
         <item name="contentPadding">20dp</item>
         <item name="strokeWidth">0dp</item>
     </style>
+
     <style name="layout_card_icon">
         <item name="android:layout_width">56dp</item>
         <item name="android:layout_height">56dp</item>
@@ -72,6 +80,7 @@
         <item name="android:background">?attr/colorSecondaryContainer</item>
         <item name="shapeAppearanceOverlay">@style/shapeAppearanceOverlay_rounded_corners</item>
     </style>
+
     <style name="layout_card_content">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">match_parent</item>
@@ -80,18 +89,21 @@
         <item name="android:gravity">center_vertical</item>
         <item name="android:paddingHorizontal">16dp</item>
     </style>
+
     <style name="layout_card_title">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
     </style>
+
     <style name="layout_card_subtitle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">4dp</item>
         <item name="android:textSize">14sp</item>
     </style>
+
     <style name="layout_card_sm">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
@@ -104,17 +116,20 @@
         <item name="contentPadding">16dp</item>
         <item name="strokeWidth">0dp</item>
     </style>
+
     <style name="layout_list_view">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">16sp</item>
     </style>
+
     <style name="layout_list_row">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:orientation">vertical</item>
         <item name="android:paddingHorizontal">@dimen/p_md</item>
     </style>
+
     <style name="layout_list_item">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -123,6 +138,7 @@
         <item name="android:orientation">vertical</item>
         <item name="android:padding">2dp</item>
     </style>
+
     <style name="layout_list_text">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -132,32 +148,38 @@
         <item name="android:paddingHorizontal">@dimen/p_md</item>
         <item name="android:singleLine">true</item>
     </style>
+
     <style name="layout_divider">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>
         <item name="android:background">@drawable/layout_divider</item>
     </style>
+
     <style name="layout_paragraph">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingBottom">20dp</item>
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
     </style>
+
     <style name="layout_url" parent="layout_paragraph">
         <item name="android:textColor">@color/theme_primary</item>
     </style>
+
     <style name="layout_button">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:minHeight">48dp</item>
         <item name="android:focusable">true</item>
     </style>
+
     <style name="layout_button_large" parent="layout_button">
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
         <item name="android:gravity">start|center_vertical</item>
         <item name="android:layout_alignParentStart">true</item>
         <item name="android:layout_alignParentEnd">true</item>
     </style>
+
     <style name="layout_button_action" parent="layout_button">
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
         <item name="android:layout_width">0dp</item>
@@ -165,6 +187,7 @@
         <item name="android:maxWidth">20dp</item>
         <item name="android:layout_marginHorizontal">@dimen/p_md</item>
     </style>
+
     <style name="layout_button_dropdown" parent="layout_button">
         <item name="android:layout_width">48dp</item>
         <item name="android:layout_height">48dp</item>
@@ -172,6 +195,7 @@
         <item name="android:paddingHorizontal">@dimen/p_md</item>
         <item name="android:src">@drawable/expander_ic_minimized</item>
     </style>
+
     <style name="layout_button_image" parent="layout_button">
         <item name="android:layout_width">36dp</item>
         <item name="android:layout_height">36dp</item>
@@ -184,6 +208,7 @@
         <item name="android:gravity">start</item>
         <item name="android:paddingHorizontal">@dimen/p_md</item>
     </style>
+
     <style name="layout_button_grabber" parent="layout_button">
         <item name="android:layout_width">36dp</item>
         <item name="android:layout_height">36dp</item>
@@ -192,12 +217,14 @@
         <item name="android:layout_alignParentTop">true</item>
         <item name="android:src">@drawable/ic_move_grabber</item>
     </style>
+
     <style name="layout_title">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingBottom">@dimen/p_lg</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
     </style>
+
     <style name="layout_heading">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -254,6 +281,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
     </style>
+
     <style name="field_text">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -264,15 +292,19 @@
         <item name="android:importantForAutofill">no</item>
         <item name="android:textColor">@color/theme_onSurface</item>
     </style>
+
     <style name="locale_field_text" parent="@style/field_text">
         <item name="android:inputType">textCapWords</item>
     </style>
+
     <style name="locale_field_text_name" parent="@style/locale_field_text">
         <item name="android:inputType">textCapWords</item>
     </style>
+
     <style name="locale_field_text_title" parent="@style/locale_field_text">
         <item name="android:inputType">textCapWords</item>
     </style>
+
     <style name="locale_field_text_language" parent="@style/locale_field_text">
         <item name="android:inputType">textCapWords</item>
     </style>
@@ -286,10 +318,9 @@
         <item name="cornerSize">12dp</item>
     </style>
 
-    <style name="DialogDividerTheme" >
+    <style name="DialogDividerTheme">
         <item name="android:background">@android:color/holo_blue_light</item>
     </style>
-
 
 
 </resources>

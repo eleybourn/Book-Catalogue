@@ -12,33 +12,23 @@
         android:id="@+id/scrollView"
         style="@style/layout_scroll">
 
-        <RelativeLayout
-            android:id="@+id/root"
-            style="@style/layout_main">
+        <LinearLayout
+            android:id="@+id/layout_body"
+            style="@style/layout_main"
+            android:gravity="top">
 
-            <LinearLayout
-                android:id="@+id/layout_body"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_above="@+id/bottom_buttons"
-                android:layout_below="@+id/top_buttons"
-                android:gravity="top"
-                android:orientation="vertical">
+                android:scrollbars="vertical" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/list"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scrollbars="vertical" />
+            <TextView
+                android:id="@+id/empty"
+                style="@style/layout_paragraph"
+                android:text="@string/para_no_series" />
 
-                <TextView
-                    android:id="@+id/empty"
-                    style="@style/layout_paragraph"
-                    android:layout_below="@+id/top_buttons"
-                    android:text="@string/para_no_series" />
-
-            </LinearLayout>
-        </RelativeLayout>
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout

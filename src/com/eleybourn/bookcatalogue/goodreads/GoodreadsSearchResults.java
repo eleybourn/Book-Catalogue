@@ -35,7 +35,7 @@ import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.compat.BookCatalogueListActivity;
+import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.goodreads.api.SearchBooksApiHandler;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue;
@@ -46,7 +46,7 @@ import com.eleybourn.bookcatalogue.utils.ViewTagger;
  * 
  * @author Philip Warner
  */
-public class GoodreadsSearchResults extends BookCatalogueListActivity {
+public class GoodreadsSearchResults extends BookCatalogueActivity {
 	//private static Integer mIdCounter = 0;
 	//private int mId = 0;
 
@@ -58,7 +58,12 @@ public class GoodreadsSearchResults extends BookCatalogueListActivity {
 	private String mCriteria;
 	private SimpleTaskQueue mTaskQueue = new SimpleTaskQueue("gr-covers");
 
-	@Override
+    @Override
+    protected RequiredPermission[] getRequiredPermissions() {
+        return new RequiredPermission[0];
+    }
+
+    @Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
@@ -125,7 +130,8 @@ public class GoodreadsSearchResults extends BookCatalogueListActivity {
 
 		mList = works;
 		mAdapter = new ResultsAdapter();
-		setListAdapter(mAdapter);
+        //TODO: This is broken in the current version. Need to fix if Goodreads is coming back.
+		//setListAdapter(mAdapter);
 	}
 
 	/**

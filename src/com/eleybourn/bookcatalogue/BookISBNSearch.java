@@ -32,8 +32,6 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -54,7 +52,6 @@ import java.util.HashSet;
 /**
  * This class is called by the BookCatalogue activity and will search the interwebs for
  * book details based on either a typed in or scanned ISBN.
- *
  * It currently only searches Google Books, but Amazon will be coming soon.
  */
 public class BookISBNSearch extends ActivityWithTasks
@@ -78,8 +75,7 @@ public class BookISBNSearch extends ActivityWithTasks
 	private AutoCompleteTextView mAuthorText;
 	private ArrayAdapter<String> mAuthorAdapter = null;
 
-	private Button mConfirmButton;
-	private CatalogueDBAdapter mDbHelper;
+    private CatalogueDBAdapter mDbHelper;
 
 	private String mAuthor;
 	private String mTitle;
@@ -146,14 +142,13 @@ public class BookISBNSearch extends ActivityWithTasks
 			mDbHelper = new CatalogueDBAdapter(this);
 			mDbHelper.open();
 
-			mIsbn = extras.getString("isbn");
+            assert extras != null;
+            mIsbn = extras.getString("isbn");
 			String by = extras.getString(BY);
 
 			if (savedInstanceState != null) {
-				if (savedInstanceState.containsKey("mScannerStarted"))
+				if (savedInstanceState.containsKey("mScannerStarted")) {
 					mScannerStarted = savedInstanceState.getBoolean("mScannerStarted");
-				else {
-					//System.out.println(mId + " OnCreate mScannerStarted NOT PRESENT");
 				}
 			}
 
@@ -172,16 +167,16 @@ public class BookISBNSearch extends ActivityWithTasks
 			//
 			// So...we save the extras in savedInstanceState, and look for it when missing
 			//
-			if (mIsbn == null && (by == null || by.equals("") ) ) {
+			if (mIsbn == null && (by == null || by.isEmpty()) ) {
 				Logger.logError(new RuntimeException("Empty args for BookISBNSearch"));
 				if (savedInstanceState != null) {
 					if (mIsbn == null && savedInstanceState.containsKey("isbn")) 
 						mIsbn = savedInstanceState.getString("isbn");
-					if ( (by == null || by.equals("") ) && savedInstanceState.containsKey(BY)) 
+					if (savedInstanceState.containsKey(BY))
 						by = savedInstanceState.getString(BY);
 				}
 				// If they are still null, we can't proceed.
-				if (mIsbn == null && (by == null || by.equals("") ) ) {
+				if (mIsbn == null && (by == null || by.isEmpty()) ) {
 					finish();
 					return;
 				}
@@ -190,18 +185,19 @@ public class BookISBNSearch extends ActivityWithTasks
 			// Default to MANUAL
 			mMode = MODE_MANUAL;
 
-			if (mIsbn != null) {
+            Button mConfirmButton;
+            if (mIsbn != null) {
 				//System.out.println(mId + " OnCreate got ISBN");
 				//ISBN has been passed by another component
 				setContentView(R.layout.isbn_search);
-				mIsbnText = (EditText) findViewById(R.id.field_isbn);
+				mIsbnText = findViewById(R.id.field_isbn);
 				mIsbnText.setText(mIsbn);
 				go(mIsbn, "", "");
 			} else if (by.equals("isbn")) {
 				// System.out.println(mId + " OnCreate BY ISBN");
 				setContentView(R.layout.isbn_search);
-				mIsbnText = (EditText) findViewById(R.id.field_isbn);
-				mConfirmButton = (Button) findViewById(R.id.search);
+				mIsbnText = findViewById(R.id.field_isbn);
+				mConfirmButton = findViewById(R.id.search);
 
 				// Not sure this is a great idea; we CAN diable keypad for this item completely.
 				//android.view.inputmethod.InputMethodManager imm
@@ -211,41 +207,39 @@ public class BookISBNSearch extends ActivityWithTasks
 
 				// For now, just make sure it's hidden on entry
 				getWindow().setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-				final CheckBox allowAsinCb = (CheckBox) BookISBNSearch.this.findViewById(R.id.asinCheckbox);
-				allowAsinCb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-					@Override
-					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-						if (isChecked) {
-							mIsbnText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS|InputType.TYPE_CLASS_TEXT);
-							getWindow().setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-						} else {
-							mIsbnText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS|InputType.TYPE_CLASS_TEXT);
-							getWindow().setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-						}
-					}});
+				final CheckBox allowAsinCb = BookISBNSearch.this.findViewById(R.id.asinCheckbox);
+				allowAsinCb.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    if (isChecked) {
+                        mIsbnText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS|InputType.TYPE_CLASS_TEXT);
+                        getWindow().setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+                    } else {
+                        mIsbnText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS|InputType.TYPE_CLASS_TEXT);
+                        getWindow().setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+                    }
+                });
 
 				// Set the number buttons
-				Button button1 = (Button) findViewById(R.id.isbn_1);
-				button1.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("1"); } });
-				Button button2 = (Button) findViewById(R.id.isbn_2);
-				button2.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("2"); } });
-				Button button3 = (Button) findViewById(R.id.isbn_3);
-				button3.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("3"); } });
-				Button button4 = (Button) findViewById(R.id.isbn_4);
-				button4.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("4"); } });
-				Button button5 = (Button) findViewById(R.id.isbn_5);
-				button5.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("5"); } });
-				Button button6 = (Button) findViewById(R.id.isbn_6);
-				button6.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("6"); } });
-				Button button7 = (Button) findViewById(R.id.isbn_7);
-				button7.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("7"); } });
-				Button button8 = (Button) findViewById(R.id.isbn_8);
-				button8.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("8"); } });
-				Button button9 = (Button) findViewById(R.id.isbn_9);
-				button9.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("9"); } });
-				Button buttonX = (Button) findViewById(R.id.isbn_X);
-				buttonX.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("X"); } });
-				Button button0 = (Button) findViewById(R.id.isbn_0);
+				Button button1 = findViewById(R.id.isbn_1);
+				button1.setOnClickListener(view -> handleIsbnKey("1"));
+				Button button2 = findViewById(R.id.isbn_2);
+				button2.setOnClickListener(view -> handleIsbnKey("2"));
+				Button button3 = findViewById(R.id.isbn_3);
+				button3.setOnClickListener(view -> handleIsbnKey("3"));
+				Button button4 = findViewById(R.id.isbn_4);
+				button4.setOnClickListener(view -> handleIsbnKey("4"));
+				Button button5 = findViewById(R.id.isbn_5);
+				button5.setOnClickListener(view -> handleIsbnKey("5"));
+				Button button6 = findViewById(R.id.isbn_6);
+				button6.setOnClickListener(view -> handleIsbnKey("6"));
+				Button button7 = findViewById(R.id.isbn_7);
+				button7.setOnClickListener(view -> handleIsbnKey("7"));
+				Button button8 = findViewById(R.id.isbn_8);
+				button8.setOnClickListener(view -> handleIsbnKey("8"));
+				Button button9 = findViewById(R.id.isbn_9);
+				button9.setOnClickListener(view -> handleIsbnKey("9"));
+				Button buttonX = findViewById(R.id.isbn_X);
+				buttonX.setOnClickListener(view -> handleIsbnKey("X"));
+				Button button0 = findViewById(R.id.isbn_0);
 				button0.setOnClickListener(new View.OnClickListener() { public void onClick(View view) { handleIsbnKey("0"); } });
 				ImageButton buttonDel = (ImageButton) findViewById(R.id.isbn_del);
 				buttonDel.setOnClickListener(new View.OnClickListener() {

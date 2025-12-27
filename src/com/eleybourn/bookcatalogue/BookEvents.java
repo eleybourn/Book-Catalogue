@@ -220,16 +220,6 @@ public class BookEvents {
 						// not a book event?
 					}
 				}}));
-				// TODO Reinstate goodreads search when goodreads work.editions API is available
-				//// SEARCH GOODREADS
-				//items.add(new ContextDialogItem(ctx.getString(R.string.visit_goodreads), new Runnable() {
-				//	@Override
-				//	public void run() {
-				//		BookEventHolder holder = (BookEventHolder)ViewTagger.getTag(v, R.id.TAG_BOOK_EVENT_HOLDER);
-				//		Intent i = new Intent(ctx, GoodreadsSearchCriteria.class);
-				//		i.putExtra(GoodreadsSearchCriteria.EXTRA_BOOK_ID, holder.event.getBookId());
-				//		ctx.startActivity(i);
-				//	}}));
 			// DELETE EVENT
 			items.add(new ContextDialogItem(ctx.getString(R.string.delete_event), new Runnable() {
 				@Override

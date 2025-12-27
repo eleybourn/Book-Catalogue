@@ -66,6 +66,11 @@ public class EditAuthorList extends EditObjectList<Author> {
 		}
 	}
 
+    @Override
+    protected RequiredPermission[] getRequiredPermissions() {
+        return new RequiredPermission[0];
+    }
+
     protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 

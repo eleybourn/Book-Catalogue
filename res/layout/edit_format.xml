@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/p_md" >
 
     <AutoCompleteTextView
-        android:id="@+id/name"
+        android:id="@+id/field_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:completionThreshold="2"
@@ -19,7 +19,7 @@
         android:id="@+id/bottom_buttons"
         android:layout_width="match_parent"
         android:layout_height="60sp"
-        android:layout_below="@+id/name"
+        android:layout_below="@+id/field_name"
         android:orientation="horizontal" >
 
         <Button

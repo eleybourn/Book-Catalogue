@@ -24,7 +24,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
@@ -41,6 +40,7 @@ import com.eleybourn.bookcatalogue.properties.StringProperty;
 import com.eleybourn.bookcatalogue.utils.HintManager;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.ViewTagger;
+import com.google.android.material.appbar.MaterialToolbar;
 
 /**
  * Edit the properties associated with a passed style
@@ -73,20 +73,16 @@ public class BooklistStylePropertiesActivity extends BookCatalogueActivity {
 		super.onCreate(savedInstanceState);
 
 		// Set the view and handle the save/cancel buttons.
-		this.setContentView(R.layout.booklist_style_properties);
+		this.setContentView(R.layout.admin_edit_booklist_style);
+        MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
+        setSupportActionBar(topAppBar);
+        topAppBar.setTitle(R.string.label_bookshelf);
+        topAppBar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-		Button save = (Button) findViewById(R.id.button_confirm);
-		save.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				handleSave();
-			}});
-		Button cancel = (Button) findViewById(R.id.button_cancel);
-		cancel.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				finish();
-			}});
+		Button save = findViewById(R.id.button_confirm);
+		save.setOnClickListener(v -> handleSave());
+		Button cancel = findViewById(R.id.button_cancel);
+		cancel.setOnClickListener(v -> finish());
 
 		// Get the intent and get the style and other details
 		Intent i = this.getIntent();
@@ -100,7 +96,7 @@ public class BooklistStylePropertiesActivity extends BookCatalogueActivity {
 
 		// Make the title
 		String title;
-		if (mStyle.getDisplayName().equals(""))
+		if (mStyle.getDisplayName().isEmpty())
 			title = getString(R.string.new_style);
 		else if (mStyle.getRowId() == 0)
 			title = getString(R.string.clone_style_colon_name, mStyle.getDisplayName());
@@ -126,7 +122,7 @@ public class BooklistStylePropertiesActivity extends BookCatalogueActivity {
 	 * Setup the style properties views based on the current style
 	 */
 	private void displayProperties() {
-		ViewGroup vg = (ViewGroup) this.findViewById(R.id.body);
+		ViewGroup vg = this.findViewById(R.id.layout_body);
 		vg.removeAllViews();
 
 		mProperties = mStyle.getProperties();
@@ -171,19 +167,14 @@ public class BooklistStylePropertiesActivity extends BookCatalogueActivity {
 		public View getView(LayoutInflater inflater) {
 			View v = inflater.inflate(R.layout.property_value_string_button, null);
 			ViewTagger.setTag(v, R.id.TAG_PROPERTY, this);
-			final TextView name = (TextView)v.findViewById(R.id.name);
-			final TextView value = (TextView)v.findViewById(R.id.value);
-			final Button btn = (Button)v.findViewById(R.id.edit_button);
+			final TextView name = v.findViewById(R.id.field_name);
+			final TextView value = v.findViewById(R.id.value);
+			final Button btn = v.findViewById(R.id.edit_button);
 			name.setText(getName());
 			value.setHint(getName());
 			value.setText(get());
 
-			btn.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					startGroupsActivity();
-				}
-			});
+			btn.setOnClickListener(v1 -> startGroupsActivity());
 			return v;
 		}
 	}
@@ -222,29 +213,24 @@ public class BooklistStylePropertiesActivity extends BookCatalogueActivity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
-		switch(requestCode) {
-		case UniqueId.ACTIVITY_BOOKLIST_STYLE_GROUPS:
-			// When groups have been edited, copy them to this style.
-			if (intent != null && intent.hasExtra(BooklistStyleGroupsActivity.KEY_STYLE)) {
-				BooklistStyle editedStyle = null;
-				try {
-					editedStyle = (BooklistStyle) intent.getSerializableExtra(BooklistStyleGroupsActivity.KEY_STYLE);
-				} catch (Exception e) {
-					Logger.logError(e);
-				}
-				if (editedStyle != null) {
-					mStyle.setGroups(editedStyle);
-					displayProperties();
-				}				
-			}
-			break;
-		}
+        if (requestCode == UniqueId.ACTIVITY_BOOKLIST_STYLE_GROUPS) {// When groups have been edited, copy them to this style.
+            if (intent != null && intent.hasExtra(BooklistStyleGroupsActivity.KEY_STYLE)) {
+                BooklistStyle editedStyle = null;
+                try {
+                    editedStyle = (BooklistStyle) intent.getSerializableExtra(BooklistStyleGroupsActivity.KEY_STYLE);
+                } catch (Exception e) {
+                    Logger.logError(e);
+                }
+                if (editedStyle != null) {
+                    mStyle.setGroups(editedStyle);
+                    displayProperties();
+                }
+            }
+        }
 	}
 
 	/**
 	 * Get/create database as required.
-	 * 
-	 * @return
 	 */
 	private CatalogueDBAdapter getDb() {
 		if (mDb == null)

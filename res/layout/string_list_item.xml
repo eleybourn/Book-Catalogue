@@ -16,7 +16,7 @@
         android:text="" />
 
     <TextView
-        android:id="@+id/name"
+        android:id="@+id/field_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -35,9 +35,7 @@
  -->
 
     <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/property_divider" />
+        style="@style/layout_divider"
+        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

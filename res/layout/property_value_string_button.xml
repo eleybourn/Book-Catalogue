@@ -1,47 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="#40000000"
+    style="@style/layout_list_row"
     android:gravity="top"
-    android:orientation="vertical"
-    android:paddingLeft="@dimen/p_md"
-    android:paddingRight="10dp" >
+    android:paddingHorizontal="@dimen/p_xl">
 
     <Button
         android:id="@+id/edit_button"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
+        style="@style/layout_button"
         android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:text="@string/label_edit"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
-        android:id="@+id/name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/field_name"
+        style="@style/layout_paragraph"
         android:layout_alignParentStart="true"
         android:layout_toLeftOf="@id/edit_button"
         android:paddingTop="@dimen/p_md"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:paddingBottom="0dp" />
 
     <TextView
         android:id="@+id/value"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/layout_paragraph"
+        android:layout_below="@id/field_name"
         android:layout_alignParentStart="true"
-        android:layout_below="@id/name"
         android:layout_toLeftOf="@id/edit_button"
         android:paddingLeft="@dimen/p_md"
+        android:paddingBottom="0dp"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/property_divider" />
+        style="@style/layout_divider"
+        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

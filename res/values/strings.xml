@@ -348,7 +348,7 @@
     <string name="always_start_booklists_collapsed">Always start book lists collapsed</string>
     <string name="remember_booklists_state">Preserve book list state</string>
     <string name="searching_goodreads">Searching goodreads</string>
-    <string name="label_edit_book_list_styles">Edit book list styles</string>
+    <string name="label_edit_book_list_styles">Edit Book List Styles</string>
     <string name="show_more_ellipsis">Show more&#8230;</string>
     <string name="show_fewer_ellipsis">Show fewer&#8230;</string>
     <string name="customize_ellipsis">Customize&#8230;</string>

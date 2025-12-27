@@ -78,7 +78,7 @@ public abstract class ListProperty<T extends Object> extends ValuePropertyWithGl
 		});
 
 		// Set the name
-		TextView text = (TextView) v.findViewById(R.id.name);
+		TextView text = (TextView) v.findViewById(R.id.field_name);
 		text.setText(getName());
 		
 		// Try to find the list item that corresponds to the current stored value.
@@ -279,7 +279,7 @@ public abstract class ListProperty<T extends Object> extends ValuePropertyWithGl
 					selected = true;
 				// Make the view for this item
 				View v = inflater.inflate(R.layout.property_value_list_item, null);
-				TextView name = (TextView) v.findViewById(R.id.name);
+				TextView name = (TextView) v.findViewById(R.id.field_name);
 				RadioButton sel = (RadioButton) v.findViewById(R.id.selector);
 				//Set the various values
 				sel.setChecked(selected);

@@ -16,6 +16,9 @@
         <item name="android:requiresFadingEdge">vertical</item>
         <item name="android:fadingEdgeLength">@dimen/p_xl</item>
     </style>
+    <style name="layout_scroll_action_bar" parent="layout_scroll">
+        <item name="android:layout_marginBottom">?attr/actionBarSize</item>
+    </style>
     <style name="layout_main">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -129,6 +132,11 @@
         <item name="android:paddingHorizontal">@dimen/p_md</item>
         <item name="android:singleLine">true</item>
     </style>
+    <style name="layout_divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@drawable/layout_divider</item>
+    </style>
     <style name="layout_paragraph">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -182,6 +190,7 @@
         <item name="android:layout_alignParentBottom">true</item>
         <item name="android:layout_alignParentEnd">true</item>
         <item name="android:layout_alignParentTop">true</item>
+        <item name="android:src">@drawable/ic_move_grabber</item>
     </style>
     <style name="layout_title">
         <item name="android:layout_width">match_parent</item>

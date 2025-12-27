@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/list_wrapper"
+    style="@style/layout_body">
+
+    <include layout="@layout/layout_header" />
+
+    <include layout="@layout/layout_background" />
+
+    <LinearLayout
+        android:id="@+id/scrollView"
+        style="@style/layout_scroll_action_bar">
+
+        <RelativeLayout
+            android:id="@+id/root"
+            style="@style/layout_main">
+
+            <LinearLayout
+                android:id="@+id/layout_body"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/bottom_buttons"
+                android:layout_below="@+id/top_buttons"
+                android:gravity="top"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/p_md">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scrollbars="vertical" />
+
+                <TextView
+                    android:id="@+id/empty"
+                    style="@style/layout_paragraph"
+                    android:layout_below="@+id/top_buttons"
+                    android:text="@string/para_no_series" />
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/buttons"
+        style="@style/layout_action_row">
+
+        <Button
+            android:id="@+id/button_cancel"
+            style="@style/layout_button_action"
+            android:text="@string/button_cancel" />
+
+        <Button
+            android:id="@+id/button_confirm"
+            style="@style/layout_button_action"
+            android:text="@string/button_save" />
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+

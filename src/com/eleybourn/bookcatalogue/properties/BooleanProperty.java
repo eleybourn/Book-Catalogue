@@ -77,7 +77,7 @@ public class BooleanProperty extends ValuePropertyWithGlobalDefault<Boolean> imp
 	
 		h.p = this;
 		h.cb = (CheckBox)v.findViewById(R.id.checkbox);
-		h.name = (TextView)v.findViewById(R.id.name);
+		h.name = (TextView)v.findViewById(R.id.field_name);
 		h.value = (TextView)v.findViewById(R.id.value);
 		
 		ViewTagger.setTag(v, R.id.TAG_PROPERTY, h);

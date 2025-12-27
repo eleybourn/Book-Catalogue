@@ -618,7 +618,7 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 		@Override
 		public void map(BooklistRowView rowView, View v) {
 			rowInfo = v.findViewById(R.id.row_info);
-			text = v.findViewById(R.id.name);
+			text = v.findViewById(R.id.field_name);
 		}
 		@Override
 		public void set(BooklistRowView rowView, View v, final int level) {
@@ -651,7 +651,7 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 		@Override
 		public void map(BooklistRowView rowView, View v) {
 			rowInfo = v.findViewById(R.id.row_info);
-			text = v.findViewById(R.id.name);
+			text = v.findViewById(R.id.field_name);
 		}
 		@Override
 		public void set(BooklistRowView rowView, View v, final int level) {
@@ -696,7 +696,7 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 		@Override
 		public void map(BooklistRowView rowView, View v) {
 			rowInfo = v.findViewById(R.id.row_info);
-			text = v.findViewById(R.id.name);
+			text = v.findViewById(R.id.field_name);
 		}
 		@Override
 		public void set(BooklistRowView rowView, View v, final int level) {

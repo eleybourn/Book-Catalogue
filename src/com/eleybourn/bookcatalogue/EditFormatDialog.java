@@ -48,7 +48,7 @@ public class EditFormatDialog {
 		dialog.setContentView(R.layout.edit_format);
 		dialog.setTitle(R.string.edit_format_name);
 
-		AutoCompleteTextView nameView = (AutoCompleteTextView) dialog.findViewById(R.id.name);
+		AutoCompleteTextView nameView = (AutoCompleteTextView) dialog.findViewById(R.id.field_name);
 		try {
 			nameView.setText(origFormat);
 		} catch (NullPointerException e) {
@@ -60,7 +60,7 @@ public class EditFormatDialog {
 		saveButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				AutoCompleteTextView nameView = (AutoCompleteTextView) dialog.findViewById(R.id.name);
+				AutoCompleteTextView nameView = (AutoCompleteTextView) dialog.findViewById(R.id.field_name);
 				String newName = nameView.getText().toString().trim();
 				if (newName == null || newName.length() == 0) {
 					Toast.makeText(mContext, R.string.name_can_not_be_blank, Toast.LENGTH_LONG).show();

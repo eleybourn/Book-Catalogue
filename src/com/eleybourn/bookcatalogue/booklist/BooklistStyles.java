@@ -31,6 +31,8 @@ import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
+
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
@@ -48,42 +50,35 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  */
 public class BooklistStyles implements Iterable<BooklistStyle> {
 	/** Internal storage for defined styles represented by this object */
-	private ArrayList<BooklistStyle> mList = new ArrayList<BooklistStyle>();
-	private HashSet<String> mPreferredStyleNames;
-	private ArrayList<String> mPreferredStyleList;
+	private final ArrayList<BooklistStyle> mList = new ArrayList<>();
+	private final HashSet<String> mPreferredStyleNames;
 
-	public static final String TAG = "BooklistStyles";
-	public static final String PREF_MENU_PREFIX = TAG + ".Menu";
+    public static final String TAG = "BooklistStyles";
 	public static final String PREF_MENU_ITEMS = TAG + ".Menu.Items";
-	public static final String PREF_USER_STYLE_PREFIX = TAG + ".Styles.";
-	public static final String PREF_USER_STYLE_COUNT = PREF_USER_STYLE_PREFIX + "Count";
-	public static final String PREF_USER_STYLE_LAST_ID = PREF_USER_STYLE_PREFIX + "LastId";
 
 	/**
 	 * Constructor
 	 */
 	public BooklistStyles() {
-		mPreferredStyleNames = new HashSet<String>();
-		mPreferredStyleList = new ArrayList<String>();
-		getPreferredStyleNames(mPreferredStyleNames, mPreferredStyleList);
+		mPreferredStyleNames = new HashSet<>();
+        getPreferredStyleNames(mPreferredStyleNames);
 	}
 
 	/**
-	 * Fill in the passed objects with the canonical names of the preferred styles
-	 * from user preferences.
-	 * 
-	 * @param hash		Hashtable of names
-	 * @param list
-	 */
-	private static void getPreferredStyleNames(HashSet<String> hash, ArrayList<String> list) {
+     * Fill in the passed objects with the canonical names of the preferred styles
+     * from user preferences.
+     *
+     * @param hash Hashtable of names
+     */
+	private static void getPreferredStyleNames(HashSet<String> hash) {
 
 		BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
 		String itemStr = prefs.getString(PREF_MENU_ITEMS, null);
-		if (itemStr != null && !itemStr.equals("")) {
-			list = Utils.decodeList(itemStr, '|');
+		if (itemStr != null && !itemStr.isEmpty()) {
+            ArrayList<String> list = Utils.decodeList(itemStr, '|');
 			for(int i = 0; i < list.size(); i++) {
 				String name = list.get(i);
-				if (name != null && !name.equals("") && !hash.contains(name))
+				if (name != null && !name.isEmpty())
 					hash.add(name);
 			}
 		}
@@ -93,12 +88,10 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 	/**
 	 * Static method to get all defined styles, including user-defined styles (the latter is 
 	 * not supported yet).
-	 * 
 	 * NOTE: Do NOT call this in static initialization of application. This method requires the 
 	 * 		 application context to be present.
-	 * 
-	 * @return		BooklistStyles object
-	 */
+	 *
+     */
 	//public static final int BUILTIN_AUTHOR_SERIES = 1;
 	private static void getBuiltinStyles(BooklistStyles styles) {
 		// First build the stock ones
@@ -233,69 +226,58 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 		style.addGroup(ROW_KIND_UPDATE_MONTH);
 		style.addGroup(ROW_KIND_UPDATE_DAY);
 		style.setShowAuthor(true);
-		// NEWKIND: Add new kinds to this list so the user sees them (Optional)
+		// NEW_KIND: Add new kinds to this list so the user sees them (Optional)
 
 	}
 
 	/**
 	 * Static method to get all user-defined styles from the passed database.
-	 * 
-	 * @return		BooklistStyles object
-	 */
+	 *
+     */
 	private static void getUserStyles(CatalogueDBAdapter db, BooklistStyles styles) {
 		BooklistStyle style;
-		Cursor c = db.getBooklistStyles();
-		try {
-			// Get the columns we want
-			int idCol = c.getColumnIndex(DatabaseDefinitions.DOM_ID.name);
-			int blobCol = c.getColumnIndex(DatabaseDefinitions.DOM_STYLE.name);
-			// Loop over all rows
-			while (c.moveToNext()) {
-				long id = c.getLong(idCol);
-				byte[] blob = c.getBlob(blobCol);
-				try {
-					style = SerializationUtils.deserializeObject(blob);
-				} catch (DeserializationException e) {
-					// Not much we can do; just delete it. Really should only happen in development.
-					db.deleteBooklistStyle(id);
-					style = null;
-				}
-				if (style != null) {
-					style.setRowId(id);
-					styles.add(style);
-				}
-			}
-		} finally {
-			if (c != null)
-				c.close();
-		}
+        try (Cursor c = db.getBooklistStyles()) {
+            // Get the columns we want
+            int idCol = c.getColumnIndex(DatabaseDefinitions.DOM_ID.name);
+            int blobCol = c.getColumnIndex(DatabaseDefinitions.DOM_STYLE.name);
+            // Loop over all rows
+            while (c.moveToNext()) {
+                long id = c.getLong(idCol);
+                byte[] blob = c.getBlob(blobCol);
+                try {
+                    style = SerializationUtils.deserializeObject(blob);
+                } catch (DeserializationException e) {
+                    // Not much we can do; just delete it. Really should only happen in development.
+                    db.deleteBooklistStyle(id);
+                    style = null;
+                }
+                if (style != null) {
+                    style.setRowId(id);
+                    styles.add(style);
+                }
+            }
+        }
 	}
 
 	/**
 	 * Internal implementation which is passed a collection of styles, and returns
 	 * the ordered set of preferred styles.
-	 * 
-	 * @param allStyles
-	 * 
-	 * @return
 	 */
 	private static BooklistStyles filterPreferredStyles(BooklistStyles allStyles) {
 		BooklistStyles styles = new BooklistStyles();
 
 		// Get the user preference
 		String itemStr = BookCatalogueApp.getAppPreferences().getString(PREF_MENU_ITEMS, null);
-		if (itemStr != null && !itemStr.equals("")) {
+		if (itemStr != null && !itemStr.isEmpty()) {
 			// Break it up and process in order
 			ArrayList<String> list = Utils.decodeList(itemStr, '|');
-			if (list != null) {
-				for(String n: list) {
-					// Add any exiting style that is preferred
-					BooklistStyle s = allStyles.findCanonical(n);
-					if (s != null)
-						styles.add(s);
-				}
-			}
-		}
+            for (String n : list) {
+                // Add any exiting style that is preferred
+                BooklistStyle s = allStyles.findCanonical(n);
+                if (s != null)
+                    styles.add(s);
+            }
+        }
 
 		// If none found, return all. Otherwise return the ones we found.
 		if (styles.size() > 0)
@@ -307,9 +289,6 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 
 	/**
 	 * Get the preferred styles using system and user-defined styles.
-	 * 
-	 * @param db
-	 * @return
 	 */
 	public static BooklistStyles getPreferredStyles(CatalogueDBAdapter db) {
 		BooklistStyles allStyles = new BooklistStyles();
@@ -324,9 +303,6 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 
 	/** 
 	 * Return all styles, with the preferred styles move to front of list.
-	 * 
-	 * @param db
-	 * @return
 	 */
 	public static BooklistStyles getAllStyles(CatalogueDBAdapter db) {
 		BooklistStyles allStyles = new BooklistStyles();
@@ -349,8 +325,6 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 
 	/**
 	 * Return the number of styles in this collection
-	 * 
-	 * @return
 	 */
 	public int size() {
 		return mList.size();
@@ -358,9 +332,6 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 
 	/**
 	 * Utility to check if this collection contains a specific style INSTANCE.
-	 * 
-	 * @param style
-	 * @return
 	 */
 	private boolean contains(BooklistStyle style) {
 		return mList.contains(style);
@@ -368,8 +339,6 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 
 	/**
 	 * Add a style to this list
-	 * 
-	 * @param style
 	 */
 	public void add(BooklistStyle style) {
 		style.setPreferred(mPreferredStyleNames.contains(style.getCanonicalName()));
@@ -378,8 +347,6 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 	
 	/**
 	 * Find a style based on the passed name.
-	 * 
-	 * @param name
 	 * 
 	 * @return		Named style, or null
 	 */
@@ -392,11 +359,7 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 	}
 	
 	/**
-	 * Return the i'th style in the list
-	 * 
-	 * @param i
-	 * 
-	 * @return
+	 * Return the nth style in the list
 	 */
 	public BooklistStyle get(int i) {
 		return mList.get(i);
@@ -404,38 +367,32 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 
 	/**
 	 * Return an iterator for the list of styles.
-	 * 
-	 * @return
 	 */
-	public Iterator<BooklistStyle> iterator() {
+	@NonNull
+    public Iterator<BooklistStyle> iterator() {
 		return mList.iterator();
 	}
 
 	/**
-	 * Save the preferred style menu list.
-	 * 
-	 * @return
-	 */
-	public static boolean SaveMenuOrder(ArrayList<BooklistStyle> list) {
-		String items = "";
+     * Save the preferred style menu list.
+     */
+	public static void SaveMenuOrder(ArrayList<BooklistStyle> list) {
+		StringBuilder items = new StringBuilder();
 		for(int i = 0; i < list.size(); i++) {
 			BooklistStyle s = list.get(i);
 			if (s.isPreferred()) {
-				if (!items.equals(""))
-					items += "|";
-				items += Utils.encodeListItem(s.getCanonicalName(), '|');				
+				if (items.length() > 0)
+					items.append("|");
+				items.append(Utils.encodeListItem(s.getCanonicalName(), '|'));
 			}
 		}
 		Editor e = BookCatalogueApp.getAppPreferences().edit();
-		e.putString(PREF_MENU_ITEMS, items);
+		e.putString(PREF_MENU_ITEMS, items.toString());
 		e.commit();
-		return true;
-	};
+    }
 
-	/**
+    /**
 	 * Start the activity to edit this style.
-	 *
-	 * @param a
 	 */
 	public static void startEditActivity(Activity a) {
 		Intent i = new Intent(a, BooklistStylesActivity.class);

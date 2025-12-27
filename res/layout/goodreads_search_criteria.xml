@@ -86,9 +86,8 @@
             </LinearLayout>
 
             <View
-                android:layout_width="match_parent"
+                style="@style/layout_divider"
                 android:layout_height="2dp"
-                android:background="@drawable/layout_divider"
                 android:paddingBottom="2dp" />
         </LinearLayout>
 
@@ -126,9 +125,8 @@
         </LinearLayout>
 
         <View
-            android:layout_width="match_parent"
+            style="@style/layout_divider"
             android:layout_height="2dp"
-            android:background="@drawable/layout_divider"
             android:paddingBottom="2dp" />
     </LinearLayout>
 
@@ -142,9 +140,8 @@
         android:paddingRight="@dimen/p_md" >
 
         <View
-            android:layout_width="match_parent"
+            style="@style/layout_divider"
             android:layout_height="2dp"
-            android:background="@drawable/layout_divider"
             android:paddingBottom="2dp" />
 
         <TextView

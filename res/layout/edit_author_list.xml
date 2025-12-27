@@ -46,14 +46,12 @@
                     android:text="@string/label_add" />
             </LinearLayout>
 
-            <com.eleybourn.bookcatalogue.widgets.TouchListView
-                xmlns:tlv="http://schemas.android.com/apk/res/com.eleybourn.bookcatalogue"
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list"
-                style="@style/layout_list_view"
-                android:layout_below="@+id/top_buttons"
-                tlv:grabber="@+id/grabber"
-                tlv:normal_height="64dip"
-                tlv:remove_mode="none" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical"
+                android:layout_below="@+id/top_buttons" />
 
             <TextView
                 android:id="@+id/empty"

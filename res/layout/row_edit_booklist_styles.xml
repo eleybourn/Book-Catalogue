@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/layout_list_row"
+    android:id="@+id/row" >
+
+    <RelativeLayout
+        style="@style/layout_main"
+        android:orientation="horizontal"
+        android:padding="0dp" >
+
+        <!-- Used to be the id=row_delete item. Now deletions are handled via context menu. -->
+        <ImageView
+            android:id="@+id/row_preferred"
+            style="@style/layout_button_image"
+            android:layout_centerVertical="true"
+            android:contentDescription="@string/not_set" />
+
+        <ImageView
+            android:id="@+id/grabber"
+            style="@style/layout_button_grabber"
+            android:layout_centerVertical="true"
+            android:contentDescription="@string/button_reorder" />
+
+        <View
+            android:id="@+id/top_divider"
+            style="@style/layout_divider"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true" />
+
+        <RelativeLayout
+            android:id="@+id/row_details"
+            style="@style/layout_list_item"
+            android:layout_below="@+id/top_divider"
+            android:layout_toStartOf="@+id/grabber"
+            android:layout_toEndOf="@id/row_preferred" >
+
+            <TextView
+                android:id="@+id/field_name"
+                style="@style/layout_list_text"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:singleLine="false"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/field_groups"
+                style="@style/layout_list_text"
+                android:layout_below="@+id/field_name"
+                android:singleLine="false"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <TextView
+                android:id="@+id/field_kind"
+                style="@style/layout_list_text"
+                android:layout_below="@+id/field_groups"
+                android:paddingHorizontal="@dimen/p_md"
+                android:singleLine="true"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+        </RelativeLayout>
+
+        <View
+            style="@style/layout_divider"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/row_details" />
+    </RelativeLayout>
+
+</LinearLayout>

@@ -335,7 +335,7 @@ public class StandardDialogs {
 			// Create the view
 			View v = inflater.inflate(R.layout.file_list_item, null);
 			// Set the file name
-			TextView name = v.findViewById(R.id.name);
+			TextView name = v.findViewById(R.id.field_name);
 			name.setText(mFile.getName());
 			// Set the path
 			TextView location = v.findViewById(R.id.path);
@@ -372,7 +372,7 @@ public class StandardDialogs {
 			// Create the view
 			View v = inflater.inflate(R.layout.string_list_item, null);
 			// Set the name
-			TextView name = v.findViewById(R.id.name);
+			TextView name = v.findViewById(R.id.field_name);
 			name.setText(mObject.toString());
 			// Return it
 			return v;
@@ -409,7 +409,7 @@ public class StandardDialogs {
 		@Override
 		public View getView(LayoutInflater inflater) {
 			View v = super.getView(inflater);
-			TextView name = v.findViewById(R.id.name);
+			TextView name = v.findViewById(R.id.field_name);
 			name.setCompoundDrawablesWithIntrinsicBounds(mDrawableId, 0, 0, 0);
 			getSelector(v).setVisibility(View.GONE);
 			return v;

@@ -10,11 +10,13 @@
         <ImageView
             android:id="@+id/row_delete"
             style="@style/layout_button_image"
+            android:layout_centerVertical="true"
             android:contentDescription="@string/button_delete" />
 
         <ImageView
             android:id="@+id/grabber"
             style="@style/layout_button_grabber"
+            android:layout_centerVertical="true"
             android:contentDescription="@string/button_reorder"
             android:src="@drawable/ic_move_grabber" />
 

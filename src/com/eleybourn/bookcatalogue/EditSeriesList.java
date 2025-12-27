@@ -67,7 +67,12 @@ public class EditSeriesList extends EditObjectList<Series> {
 		}
 	}
 
-	@Override
+    @Override
+    protected RequiredPermission[] getRequiredPermissions() {
+        return new RequiredPermission[0];
+    }
+
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		try {

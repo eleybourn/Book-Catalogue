@@ -1,35 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="#40000000"
+    style="@style/layout_list_row"
     android:gravity="top"
-    android:orientation="vertical"
-    android:paddingLeft="@dimen/p_md"
-    android:paddingRight="10dp" >
+    android:paddingHorizontal="@dimen/p_xl" >
 
     <TextView
-        android:id="@+id/name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/field_name"
+        style="@style/layout_paragraph"
         android:paddingTop="5sp"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:paddingBottom="0dp" />
 
     <EditText
         android:id="@+id/value"
-        android:layout_width="match_parent"
+        style="@style/field_text"
         android:layout_height="0dip"
         android:layout_weight="1"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:paddingLeft="@dimen/p_md"
-        android:textAppearance="?android:attr/textAppearanceMedium" 
-        tools:ignore="TextFields" />
+        android:paddingLeft="@dimen/p_md" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@drawable/property_divider" />
+    <View style="@style/layout_divider" />
 
 </LinearLayout>

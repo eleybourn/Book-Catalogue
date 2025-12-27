@@ -96,9 +96,8 @@
         -->
 
         <View
-            android:layout_width="match_parent"
+            style="@style/layout_divider"
             android:layout_height="2dp"
-            android:background="@drawable/layout_divider"
             android:paddingBottom="2dp" />
     </LinearLayout>
 
@@ -111,9 +110,8 @@
         android:orientation="vertical" >
 
         <View
-            android:layout_width="match_parent"
+            style="@style/layout_divider"
             android:layout_height="2dp"
-            android:background="@drawable/layout_divider"
             android:paddingBottom="2dp" />
 
         <TextView

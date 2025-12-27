@@ -21,10 +21,9 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <View
-            android:layout_width="match_parent"
+            style="@style/layout_divider"
             android:layout_height="2dp"
             android:layout_below="@id/events_found"
-            android:background="@drawable/layout_divider"
             android:paddingBottom="2dp" />
     </RelativeLayout>
 

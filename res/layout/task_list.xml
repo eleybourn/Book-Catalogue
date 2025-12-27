@@ -8,10 +8,8 @@
 
     <View
         android:id="@+id/header"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
+        style="@style/layout_divider"
         android:layout_alignParentTop="true"
-        android:background="@drawable/layout_divider"
         android:paddingBottom="@dimen/p_md" />
 
     <LinearLayout

@@ -69,7 +69,7 @@ public class StringProperty extends ValuePropertyWithGlobalDefault<String> imple
 		// Get base view and components. Tag them.
 		View v = inflater.inflate(R.layout.property_value_string, null);
 		ViewTagger.setTag(v, R.id.TAG_PROPERTY, this);
-		final TextView name = (TextView)v.findViewById(R.id.name);
+		final TextView name = (TextView)v.findViewById(R.id.field_name);
 		final EditText value = (EditText)v.findViewById(R.id.value);
 
 		// Set the current values

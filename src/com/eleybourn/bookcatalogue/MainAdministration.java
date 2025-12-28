@@ -41,7 +41,6 @@ import com.eleybourn.bookcatalogue.dialogs.ImportTypeSelectionDialogFragment;
 import com.eleybourn.bookcatalogue.dialogs.ImportTypeSelectionDialogFragment.OnImportTypeSelectionDialogResultListener;
 import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment;
 import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment.OnMessageDialogResultListener;
-import com.eleybourn.bookcatalogue.goodreads.GoodreadsUtils;
 import com.eleybourn.bookcatalogue.utils.HintManager;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
@@ -288,35 +287,6 @@ public class MainAdministration extends ActivityWithTasks
         }
 
 
-        /* Book List Preferences Link */
-        View test = findViewById(R.id.TEST);
-        // Make line flash when clicked.
-        test.setBackgroundResource(android.R.drawable.list_selector_background);
-        test.setOnClickListener(v -> GoodreadsUtils.showGoodreadsOptions(MainAdministration.this));
-
-        ///* Goodreads SYNC Link */
-        {
-        	View v = findViewById(R.id.sync_with_goodreads_label);
-        	// Make line flash when clicked.
-        	v.setBackgroundResource(android.R.drawable.list_selector_background);
-        	v.setOnClickListener(v1 -> GoodreadsUtils.importAllFromGoodreads(MainAdministration.this, true));
-        }
-        //
-        ///* Goodreads IMPORT Link */
-        {
-        	View v = findViewById(R.id.import_all_from_goodreads_label);
-        	// Make line flash when clicked.
-        	v.setBackgroundResource(android.R.drawable.list_selector_background);
-        	v.setOnClickListener(v12 -> GoodreadsUtils.importAllFromGoodreads(MainAdministration.this, false));
-        }
-        //
-        ///* Goodreads EXPORT Link */
-        {
-        	View v = findViewById(R.id.send_books_to_goodreads_label);
-        	// Make line flash when clicked.
-        	v.setBackgroundResource(android.R.drawable.list_selector_background);
-        	v.setOnClickListener(v13-> GoodreadsUtils.sendBooksToGoodreads(MainAdministration.this));
-        }
         //
         ///* LibraryThing auth Link */
         //View ltAuth = findViewById(R.id.librarything_auth);
@@ -327,14 +297,6 @@ public class MainAdministration extends ActivityWithTasks
         //	startActivity(i);
         //});
         //
-        ///* Goodreads auth Link */
-        //View grAuth = findViewById(R.id.goodreads_auth);
-        //// Make line flash when clicked.
-        //grAuth.setBackgroundResource(android.R.drawable.list_selector_background);
-        //grAuth.setOnClickListener(v -> {
-        //	Intent i = new Intent(MainAdministration.this, GoodreadsRegister.class);
-        //	startActivity(i);
-        //});
 
     }
 

@@ -34,7 +34,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -48,7 +48,6 @@ import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.LibraryThingManager;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.Series;
-import com.eleybourn.bookcatalogue.goodreads.GoodreadsRegister;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 import com.eleybourn.bookcatalogue.utils.ViewTagger;
@@ -188,32 +187,6 @@ public class StandardDialogs {
 		return 0;
 
 	}
-
-	/**
-     * Display a dialog warning the user that goodreads authentication is required; gives them
-     * the options: 'request now', 'more info' or 'cancel'.
-     */
-	public static void goodreadsAuthAlert(final FragmentActivity context) {
-		// Get the title		
-		final AlertDialog alertDialog = new AlertDialog.Builder(context).setTitle(R.string.authorize_access).setMessage(R.string.goodreads_action_cannot_blah_blah).create();
-
-		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
-		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getResources().getString(R.string.button_ok), (dialog, which) -> {
-            alertDialog.dismiss();
-            GoodreadsRegister.requestAuthorizationInBackground(context);
-        });
-		
-		alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, context.getResources().getString(R.string.tell_me_more), (dialog, which) -> {
-            alertDialog.dismiss();
-            Intent i = new Intent(context, GoodreadsRegister.class);
-            context.startActivity(i);
-        });
-
-		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, context.getResources().getString(R.string.button_cancel), (dialog, which) -> alertDialog.dismiss());
-
-		alertDialog.show();
-
-    }
 
 	/**
 	 * Interface for item that displays in a custom dialog list

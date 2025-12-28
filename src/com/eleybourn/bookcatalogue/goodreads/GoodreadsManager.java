@@ -35,7 +35,6 @@ import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NotAuth
 import com.eleybourn.bookcatalogue.goodreads.api.AuthUserApiHandler;
 import com.eleybourn.bookcatalogue.goodreads.api.BookshelfListApiHandler;
 import com.eleybourn.bookcatalogue.goodreads.api.BookshelfListApiHandler.BookshelfListFieldNames;
-import com.eleybourn.bookcatalogue.goodreads.api.IsbnToId;
 import com.eleybourn.bookcatalogue.goodreads.api.ReviewUpdateHandler;
 import com.eleybourn.bookcatalogue.goodreads.api.SearchBooksApiHandler;
 import com.eleybourn.bookcatalogue.goodreads.api.ShelfAddBookHandler;
@@ -114,7 +113,6 @@ public class GoodreadsManager {
     /**
      * Local API object
      */
-    private IsbnToId m_isbnToId = null;
     private GoodreadsBookshelves mBookshelfList = null;
     private ReviewUpdateHandler mReviewUpdater = null;
 
@@ -125,19 +123,6 @@ public class GoodreadsManager {
      */
     public GoodreadsManager() {
         sharedInit();
-    }
-
-    /**
-     * Clear the credentials from the preferences and local cache
-     */
-    public static void forgetCredentials() {
-        m_accessToken = "";
-        m_accessSecret = "";
-        m_hasValidCredentials = false;
-        // Get the stored token values from prefs, and setup the consumer if present
-        BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
-        prefs.setString("GoodReads.AccessToken.Token", "");
-        prefs.setString("GoodReads.AccessToken.Secret", "");
     }
 
     /**
@@ -558,27 +543,11 @@ public class GoodreadsManager {
         }
     }
 
-    public String getUsername() {
-        if (!m_hasValidCredentials)
-            throw new RuntimeException("GoodReads credentials need to be validated before accessing user data");
-
-        return m_username;
-    }
-
     public long getUserid() {
         if (!m_hasValidCredentials)
             throw new RuntimeException("GoodReads credentials need to be validated before accessing user data");
 
         return m_userid;
-    }
-
-    /**
-     * Wrapper to call ISBN->ID API
-     */
-    public long isbnToId(String isbn) throws OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException, NetworkException, IOException {
-        if (m_isbnToId == null)
-            m_isbnToId = new IsbnToId(this);
-        return m_isbnToId.isbnToId(isbn);
     }
 
     private GoodreadsBookshelves getShelves() throws OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException, NetworkException, IOException {

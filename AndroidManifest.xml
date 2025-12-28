@@ -151,11 +151,6 @@
             android:name=".MainAdministration"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".goodreads.GoodreadsRegister"
-            android:label="@string/goodreads"
-            android:launchMode="standard"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
             android:name=".goodreads.GoodreadsAuthorizationActivity"
             android:exported="true"
             android:launchMode="singleInstance"
@@ -234,12 +229,6 @@
         <activity
             android:name=".AdministrationLibraryThing"
             android:label="@string/library_thing"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".goodreads.GoodreadsSearchCriteria"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".goodreads.GoodreadsSearchResults"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".AdminBackgroundEvents"

@@ -75,7 +75,6 @@ import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogItem;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogMenuItem;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogOnClickListener;
-import com.eleybourn.bookcatalogue.goodreads.GoodreadsUtils;
 import com.eleybourn.bookcatalogue.utils.HintManager;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue;
@@ -1024,11 +1023,6 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
 					mTopRow = mList.getBuilder().getPosition(oldAbsPos);
 					displayList(mList.getBuilder().getList(), null);												
 				}
-				break;
-			}
-			case MNU_GOODREADS:
-			{
-				GoodreadsUtils.showGoodreadsOptions(this);
 				break;
 			}
 			/*

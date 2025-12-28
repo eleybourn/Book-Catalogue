@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/layout_body">
+    <!-- Root -->
+
+    <include layout="@layout/layout_header" />
+
+    <include layout="@layout/layout_background" />
+
+    <LinearLayout
+        android:id="@+id/scrollView"
+        style="@style/layout_scroll_action_bar">
+
+        <LinearLayout
+            android:id="@+id/root"
+            style="@style/layout_main"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/events_found"
+                style="@style/layout_paragraph" />
+
+            <ListView
+                android:id="@+id/list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:cacheColorHint="#00000000" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/buttons"
+        style="@style/layout_action_row">
+
+        <Button
+            android:id="@+id/cleanup"
+            style="@style/layout_button"
+            android:text="@string/cleanup_old_events" />
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

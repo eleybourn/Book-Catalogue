@@ -242,12 +242,12 @@
             android:name=".goodreads.GoodreadsSearchResults"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".goodreads.GoodreadsExportFailuresActivity"
+            android:name=".AdminBackgroundEvents"
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".SearchCatalogue"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".TaskListActivity"
+            android:name=".AdminBackgroundTasks"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".MainHelp"

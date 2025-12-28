@@ -1044,6 +1044,8 @@ and you can edit the book via the options menu using the menu button or overflow
     <!-- Hint displayed when an export or database backup is done -->
 
     <string name="label_import_old_files">Import old files</string>
+    <string name="label_background_events">Show Background Events</string>
+    <string name="label_background_tasks">Show Background Tasks</string>
     <string name="invalid_backup_file">The file is not a valid backup</string>
     <string name="old_files_message">
         PLEASE READ THIS MESSAGE CAREFULLY

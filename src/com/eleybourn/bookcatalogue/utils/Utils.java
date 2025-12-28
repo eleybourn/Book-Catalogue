@@ -89,14 +89,12 @@ import com.eleybourn.bookcatalogue.Author;
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.GetThumbnailTask;
-import com.eleybourn.bookcatalogue.LibraryThingManager;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.Series;
 import com.eleybourn.bookcatalogue.ThumbnailCacheWriterTask;
 import com.eleybourn.bookcatalogue.amazon.AmazonUtils;
 import com.eleybourn.bookcatalogue.database.CoversDbHelper;
 import com.eleybourn.bookcatalogue.dialogs.PartialDatePickerFragment;
-import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
 
 
 public class Utils {
@@ -1245,14 +1243,6 @@ public class Utils {
 			destView.setImageBitmap(bm);
 
 		return bm;		
-	}
-
-	public static void showLtAlertIfNecessary(Context context, boolean always, String suffix) {
-		if (false) {
-			LibraryThingManager ltm = new LibraryThingManager(context);
-			if (!ltm.isAvailable())
-				StandardDialogs.needLibraryThingAlertDEAD(context, always, suffix);
-		}
 	}
 
 	@SuppressWarnings("unused")

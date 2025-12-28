@@ -56,7 +56,7 @@ public class SearchManager implements TaskManagerListener {
 	/** Flag indicating a search source to use */
 	public static final int SEARCH_GOODREADS = 8;
 	/** Mask including all search sources */
-	public static final int SEARCH_ALL = SEARCH_GOOGLE | SEARCH_BC; // | SEARCH_LIBRARY_THING | SEARCH_GOODREADS;
+	public static final int SEARCH_ALL = SEARCH_GOOGLE | SEARCH_BC | SEARCH_GOODREADS; // | SEARCH_LIBRARY_THING ;
 	
 	// ENHANCE: Allow user to change the default search data priority
 	// NOTE: BCDB search will return AMAZON, GOOGLE, BCDB and OPEN_LIBRARY

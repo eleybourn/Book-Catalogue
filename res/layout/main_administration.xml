@@ -143,12 +143,6 @@
                 app:drawableLeftCompat="@drawable/ic_menu_settings"
                 android:text="@string/label_background_tasks"
                 android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/TEST"
-                style="@style/layout_menu_list"
-                app:drawableLeftCompat="@drawable/ic_menu_settings"
-                android:text="TEST" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

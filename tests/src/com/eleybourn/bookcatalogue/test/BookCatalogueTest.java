@@ -49,79 +49,11 @@ public class BookCatalogueTest extends ActivityInstrumentationTestCase2 {
 	}
 	
 	public void test000Reset() {
-		File sp = new File("/data/data/com.eleybourn.bookcatalogue/shared_prefs/bookCatalogue.xml");
-		sp.delete();
-		File db = new File("/data/data/com.eleybourn.bookcatalogue/databases/book_catalogue");
-		db.delete();
-	}
-	
-	public void test001LibraryThing() {
-		
-		//reset message for LT
-		t.clickOnMenuItem("Help & Admin");
-		t.assertCurrentActivity("Expected Administration activity", "Administration");
-		t.clickOnText("LibraryThing");
-		t.clickOnEditText(0); //Dev Key
-		t.goBack();
-		t.clearEditText(t.getEditText(0));
-		t.clickOnText("Save");
-		t.clickOnText("Reset");
-		t.goBack();
-		
-		//Disable the message
-		t.clickOnMenuItem("Add Book...");
-		t.clickOnText("Add by ISBN");
-		t.assertCurrentActivity("Expected BookISBNSearch activity", "BookISBNSearch");
-		t.clickOnText("Disable Message"); // This will fail if it does not exist
-		t.goBack();
-		
-		//Check it has been disabled
-		t.clickOnMenuItem("Add Book...");
-		t.clickOnText("Add by ISBN");
-		t.assertCurrentActivity("Expected BookISBNSearch activity", "BookISBNSearch");
-		assertFalse("Did not expect cancel button", t.searchButton("Cancel"));
-		t.goBack();
-		
-		//reset again
-		t.clickOnMenuItem("Help & Admin");
-		t.assertCurrentActivity("Expected Administration activity", "Administration");
-		t.clickOnText("LibraryThing");
-		t.clickOnEditText(0); //Dev Key
-		t.goBack();
-		t.clearEditText(t.getEditText(0));
-		t.clickOnText("Save");
-		t.clickOnText("Reset");
-		t.goBack();
-		
-		//Test Cancel Button
-		t.clickOnMenuItem("Add Book...");
-		t.clickOnText("Add by ISBN");
-		t.assertCurrentActivity("Expected BookISBNSearch activity", "BookISBNSearch");
-		t.clickOnText("Cancel"); // This will fail if it does not exist
-		t.goBack();
-		
-		//Test Adding Dev Key
-		t.clickOnMenuItem("Add Book...");
-		t.clickOnText("Add by ISBN");
-		t.assertCurrentActivity("Expected BookISBNSearch activity", "BookISBNSearch");
-		t.clickOnText("More Info"); // This will fail if it does not exist
-		t.assertCurrentActivity("Expected AdministrationLibraryThing activity", "AdministrationLibraryThing");
-		t.clickOnEditText(0); //Dev Key
-		t.goBack();
-		t.enterText(0, "118983f247fc3fe43dcafcd042655440");
-		t.sleep(1000);
-		t.clickOnText("Save");
-		t.clickOnText("Reset");
-		t.goBack();
-		t.goBack();
-		
-		//Check it has been disabled (the key has been added)
-		t.clickOnMenuItem("Add Book...");
-		t.clickOnText("Add by ISBN");
-		t.assertCurrentActivity("Expected BookISBNSearch activity", "BookISBNSearch");
-		assertFalse("Did not expect cancel button", t.searchButton("Cancel"));
-		t.goBack();
-	}
+        File sp = new File("/data/data/com.eleybourn.bookcatalogue/shared_prefs/bookCatalogue.xml");
+        sp.delete();
+        File db = new File("/data/data/com.eleybourn.bookcatalogue/databases/book_catalogue");
+        db.delete();
+    }
 	
 	public void test101AddByISBNNumbers() {
 		t.clickOnMenuItem("Add Book...");

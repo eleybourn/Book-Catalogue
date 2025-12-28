@@ -1154,7 +1154,7 @@ public class CatalogueDBAdapter {
 			}
 			if (curVersion == 47) {
 				curVersion++;
-				// This used to be checks in BookCatalogueClassic, which is no longer called on startup...
+				// This used to be checks in Book Catalogue Classic, which is no longer called on startup...
 				//do_action = DO_UPDATE_FIELDS;
 				message += "New in v3.1\n\n";
 				message += "* The audiobook checkbox has been replaced with a format selector (inc. paperback, hardcover, companion etc)\n\n";

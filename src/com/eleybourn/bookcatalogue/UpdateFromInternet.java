@@ -37,7 +37,6 @@ import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsages.Usages;
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.utils.Logger;
-import com.eleybourn.bookcatalogue.utils.Utils;
 import com.eleybourn.bookcatalogue.utils.ViewTagger;
 
 public class UpdateFromInternet extends ActivityWithTasks {
@@ -76,7 +75,6 @@ public class UpdateFromInternet extends ActivityWithTasks {
 	public void onCreate(Bundle savedInstanceState) {
 		try {
 			super.onCreate(savedInstanceState);
-			Utils.showLtAlertIfNecessary(this, false, "update_from_internet");
 
 			setContentView(R.layout.update_from_internet);
 			mPrefs = getSharedPreferences("bookCatalogue", android.content.Context.MODE_PRIVATE);

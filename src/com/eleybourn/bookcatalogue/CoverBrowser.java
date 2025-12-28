@@ -45,7 +45,6 @@ import android.widget.Toast;
 import android.widget.ViewSwitcher.ViewFactory;
 
 import com.eleybourn.bookcatalogue.LibraryThingManager.ImageSizes;
-import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTask;
@@ -72,8 +71,6 @@ public class CoverBrowser {
 	private final String mIsbn;
 	// Calling context
 	private final Context mContext;
-	// Libary Thing
-	private LibraryThingManager mLibraryThing;
 	// Calculated size for preview images
 	private final int mPreviewSize;
 	// List of all editions for the given ISBN
@@ -308,12 +305,6 @@ public class CoverBrowser {
 	 * Show the user a selection of other covers and allow selection of a replacement.
 	 */
 	public void showEditionCoversDEAD() {
-
-		mLibraryThing = new LibraryThingManager(mContext);
-		if (!mLibraryThing.isAvailable()) {
-			StandardDialogs.needLibraryThingAlertDEAD(mContext, true, "cover_browser");
-			return;
-		}
 
 		if (mIsbn == null || mIsbn.trim().length() == 0) {
 			Toast.makeText(mContext, R.string.no_isbn_no_editions, Toast.LENGTH_LONG).show();

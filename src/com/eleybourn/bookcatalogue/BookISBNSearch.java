@@ -139,9 +139,6 @@ public class BookISBNSearch extends ActivityWithTasks {
                 return;
             }
 
-
-            Utils.showLtAlertIfNecessary(this, false, "search");
-
             Bundle extras = getIntent().getExtras();
             mDbHelper = new CatalogueDBAdapter(this);
             mDbHelper.open();

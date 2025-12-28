@@ -286,18 +286,6 @@ public class MainAdministration extends ActivityWithTasks
             restore.setOnClickListener(v -> launchBackupImport());
         }
 
-
-        //
-        ///* LibraryThing auth Link */
-        //View ltAuth = findViewById(R.id.librarything_auth);
-        //// Make line flash when clicked.
-        //ltAuth.setBackgroundResource(android.R.drawable.list_selector_background);
-        //ltAuth.setOnClickListener(v -> {
-        //	Intent i = new Intent(MainAdministration.this, AdministrationLibraryThing.class);
-        //	startActivity(i);
-        //});
-        //
-
     }
 
     /**

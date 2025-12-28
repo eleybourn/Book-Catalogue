@@ -227,10 +227,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AdministrationLibraryThing"
-            android:label="@string/library_thing"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
             android:name=".AdminBackgroundEvents"
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".SearchCatalogue"

@@ -28,9 +28,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 
 import androidx.annotation.NonNull;
@@ -42,10 +39,8 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
-import com.eleybourn.bookcatalogue.AdministrationLibraryThing;
 import com.eleybourn.bookcatalogue.Author;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
-import com.eleybourn.bookcatalogue.LibraryThingManager;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.Series;
 import com.eleybourn.bookcatalogue.utils.Logger;
@@ -75,48 +70,6 @@ public class StandardDialogs {
 		dialog.setNegativeButton(R.string.continue_editing, (dialog2, which) -> dialog2.dismiss());
 		dialog.setCancelable(false);
 		dialog.create().show();
-	}
-
-	public static void needLibraryThingAlertDEAD(final Context context, final boolean ltRequired, final String prefSuffix) {
-		boolean showAlert;
-		int msgId;
-		final String prefName = LibraryThingManager.LT_HIDE_ALERT_PREF_NAME + "_" + prefSuffix;
-		if (!ltRequired) {
-			msgId = R.string.uses_library_thing_info;
-			SharedPreferences prefs = context.getSharedPreferences("bookCatalogue", android.content.Context.MODE_PRIVATE);
-			showAlert = !prefs.getBoolean(prefName, false);
-		} else {
-			msgId = R.string.require_library_thing_info;
-			showAlert = true;
-		}
-
-		if (!showAlert)
-			return;
-
-		final AlertDialog dlg = new AlertDialog.Builder(context).setMessage(msgId).create();
-
-		dlg.setTitle(R.string.reg_library_thing_title);
-		dlg.setIcon(android.R.drawable.ic_menu_info_details);
-
-		dlg.setButton(DialogInterface.BUTTON_POSITIVE, context.getResources().getString(R.string.more_info), (dialog, which) -> {
-            Intent i = new Intent(context, AdministrationLibraryThing.class);
-            context.startActivity(i);
-            dlg.dismiss();
-        });
-
-		if (!ltRequired) {
-			dlg.setButton(DialogInterface.BUTTON_NEUTRAL, context.getResources().getString(R.string.disable_dialogue), (dialog, which) -> {
-                SharedPreferences prefs = context.getSharedPreferences("bookCatalogue", Context.MODE_PRIVATE);
-                SharedPreferences.Editor ed = prefs.edit();
-                ed.putBoolean(prefName, true);
-                ed.commit();
-                dlg.dismiss();
-            });
-		}
-
-		dlg.setButton(DialogInterface.BUTTON_NEGATIVE, context.getResources().getString(R.string.button_cancel), (dialog, which) -> dlg.dismiss());
-
-		dlg.show();
 	}
 
 	public static void deleteSeriesAlert(Context context, final CatalogueDBAdapter dbHelper, final Series series, final Runnable onDeleted) {

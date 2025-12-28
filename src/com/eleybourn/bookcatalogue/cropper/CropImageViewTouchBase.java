@@ -91,7 +91,7 @@ abstract class CropImageViewTouchBase extends ImageView {
 	// ImageViewTouchBase will pass a Bitmap to the Recycler if it has finished
 	// its use of that Bitmap.
 	public interface Recycler {
-		public void recycle(Bitmap b);
+		void recycle(Bitmap b);
 	}
 
 	public void setRecycler(Recycler r) {

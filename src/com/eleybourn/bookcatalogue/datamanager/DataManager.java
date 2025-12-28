@@ -54,7 +54,7 @@ public class DataManager {
 	/** The last validator exception caught by this object */
 	private final ArrayList<ValidatorException> mValidationExceptions = new ArrayList<>();
 	/** A list of cross-validators to apply if all fields pass simple validation. */
-	private ArrayList<DataCrossValidator> mCrossValidators = new ArrayList<DataCrossValidator>();
+	private final ArrayList<DataCrossValidator> mCrossValidators = new ArrayList<DataCrossValidator>();
 
 	/**
 	 * Erase everything in this instance

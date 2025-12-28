@@ -272,6 +272,5 @@ public class MenuHandler {
 		i.putExtra(CatalogueDBAdapter.KEY_ROW_ID, id);
 		i.putExtra(BookEdit.TAB, tab);
 		a.startActivityForResult(i, UniqueId.ACTIVITY_EDIT_BOOK);
-		return;
-	}
+    }
 }

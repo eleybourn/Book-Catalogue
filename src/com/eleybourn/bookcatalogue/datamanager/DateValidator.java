@@ -54,6 +54,5 @@ public class DateValidator extends DefaultFieldValidator {
 		} catch (Exception e) {
 			throw new ValidatorException(R.string.vldt_date_expected, new Object[]{datum.getKey()});					
 		}
-		return;
-	}
+    }
 }

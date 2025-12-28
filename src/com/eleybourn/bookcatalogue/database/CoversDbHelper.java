@@ -64,7 +64,7 @@ public class CoversDbHelper {
 	private static final Synchronizer mSynchronizer = new Synchronizer();
 
 	/** List of statements we create so we can close them when object is closed. */
-	private SqlStatementManager mStatements = new SqlStatementManager();
+	private final SqlStatementManager mStatements = new SqlStatementManager();
 
 	/** DB location */
 	private static final String COVERS_DATABASE_NAME = StorageUtils.getBCData() + "/covers.db";
@@ -122,9 +122,9 @@ public class CoversDbHelper {
 			.addIndex("id", true, DOM_ID)
 			.addIndex("file", true, DOM_FILENAME)
 			.addIndex("file_date", true, DOM_FILENAME, DOM_DATE);
-	};
+	}
 
-	public static final TableDefinition TABLES[] = new TableDefinition[] {TBL_IMAGE};
+    public static final TableDefinition[] TABLES = new TableDefinition[] {TBL_IMAGE};
 
 	/**
 	 * Constructor. Fill in required fields. This is NOT based on SQLiteOpenHelper so does not need a context.

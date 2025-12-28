@@ -25,70 +25,70 @@ import android.net.Uri;
  * The interface of all images used in gallery.
  */
 public interface CropIImage {
-	static final int THUMBNAIL_TARGET_SIZE = 320;
-	static final int MINI_THUMB_TARGET_SIZE = 96;
-	static final int UNCONSTRAINED = -1;
+	int THUMBNAIL_TARGET_SIZE = 320;
+	int MINI_THUMB_TARGET_SIZE = 96;
+	int UNCONSTRAINED = -1;
 
 	/** Get the image list which contains this image. */
-	public abstract CropIImageList getContainer();
+    CropIImageList getContainer();
 
 	/** Get the bitmap for the full size image. */
-	public abstract Bitmap fullSizeBitmap(int minSideLength,
-			int maxNumberOfPixels);
+    Bitmap fullSizeBitmap(int minSideLength,
+                          int maxNumberOfPixels);
 
-	public abstract Bitmap fullSizeBitmap(int minSideLength,
-			int maxNumberOfPixels, boolean rotateAsNeeded);
+	Bitmap fullSizeBitmap(int minSideLength,
+                          int maxNumberOfPixels, boolean rotateAsNeeded);
 
-	public abstract Bitmap fullSizeBitmap(int minSideLength,
-			int maxNumberOfPixels, boolean rotateAsNeeded, boolean useNative);
+	Bitmap fullSizeBitmap(int minSideLength,
+                          int maxNumberOfPixels, boolean rotateAsNeeded, boolean useNative);
 
-	public abstract int getDegreesRotated();
+	int getDegreesRotated();
 
-	public static final boolean ROTATE_AS_NEEDED = true;
-	public static final boolean NO_ROTATE = false;
-	public static final boolean USE_NATIVE = true;
-	public static final boolean NO_NATIVE = false;
+	boolean ROTATE_AS_NEEDED = true;
+	boolean NO_ROTATE = false;
+	boolean USE_NATIVE = true;
+	boolean NO_NATIVE = false;
 
 	/** Get the input stream associated with a given full size image. */
-	public abstract InputStream fullSizeImageData();
+    InputStream fullSizeImageData();
 
-	public abstract long fullSizeImageId();
+	long fullSizeImageId();
 
-	public abstract Uri fullSizeImageUri();
+	Uri fullSizeImageUri();
 
 	/** Get the path of the (full size) image data. */
-	public abstract String getDataPath();
+    String getDataPath();
 
 	// Get/Set the title of the image
-	public abstract void setTitle(String name);
+    void setTitle(String name);
 
-	public abstract String getTitle();
+	String getTitle();
 
 	// Get metadata of the image
-	public abstract long getDateTaken();
+    long getDateTaken();
 
-	public abstract String getMimeType();
+	String getMimeType();
 
-	public abstract int getWidth();
+	int getWidth();
 
-	public abstract int getHeight();
+	int getHeight();
 
-	public abstract String getDisplayName();
+	String getDisplayName();
 
 	// Get property of the image
-	public abstract boolean isReadonly();
+    boolean isReadonly();
 
-	public abstract boolean isDrm();
+	boolean isDrm();
 
 	// Get the bitmap/uri of the medium thumbnail
-	public abstract Bitmap thumbBitmap(boolean rotateAsNeeded);
+    Bitmap thumbBitmap(boolean rotateAsNeeded);
 
-	public abstract Uri thumbUri();
+	Uri thumbUri();
 
 	// Get the bitmap of the mini thumbnail.
-	public abstract Bitmap miniThumbBitmap();
+    Bitmap miniThumbBitmap();
 
 	// Rotate the image
-	public abstract boolean rotateImageBy(int degrees);
+    boolean rotateImageBy(int degrees);
 
 }

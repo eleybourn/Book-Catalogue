@@ -26,6 +26,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -53,14 +54,14 @@ public class Logger {
 		
 		String error = "An Exception Occured @ " + now + "\n" + 
 			"In Phone " + Build.MODEL + " (" + Build.VERSION.SDK_INT + ") \n" + 
-			msg + "\n" + 
-			sw.toString();
+			msg + "\n" +
+                sw;
 		//Log.e("BookCatalogue", error);
 		
 		try {
 			// RELEASE Remove Log.e! Replace with ACRA?
 			Log.e("BC Logger", error);
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(StorageUtils.getErrorLog()), "utf8"), 8192);
+			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(StorageUtils.getErrorLog()), StandardCharsets.UTF_8), 8192);
 			out.write(error);
 			out.close();
 		} catch (Exception e1) {
@@ -82,7 +83,7 @@ public class Logger {
 			} catch (Exception e) {
 				// Ignore backup failure...
 			}
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(StorageUtils.getErrorLog()), "utf8"), 8192);
+			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(StorageUtils.getErrorLog()), StandardCharsets.UTF_8), 8192);
 			out.write("");
 			out.close();
 		} catch (Exception e1) {

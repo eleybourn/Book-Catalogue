@@ -108,7 +108,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
 public class SearchGoogleBooksEntryHandler extends DefaultHandler {
 	private StringBuilder builder;
 	
-	private Bundle mValues;
+	private final Bundle mValues;
 	private static boolean mFetchThumbnail;
 
 	public static final String ID = "id";

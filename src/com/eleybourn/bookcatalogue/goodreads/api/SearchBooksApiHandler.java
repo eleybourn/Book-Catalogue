@@ -74,7 +74,7 @@ public class SearchBooksApiHandler extends ApiHandler {
 	 * @return	the array of GoodreadsWork objects.
 	 * @throws NetworkException 
 	 */
-	public ArrayList<GoodreadsWork> search(String query) throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException, IOException, NetworkException {
+	public ArrayList<GoodreadsWork> search(String query) throws OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, NotAuthorizedException, BookNotFoundException, IOException, NetworkException {
 		query = query.trim();
 
 		// Setup API call
@@ -327,19 +327,19 @@ public class SearchBooksApiHandler extends ApiHandler {
 		XmlFilter.buildFilter(mRootFilter, "GoodreadsResponse", "search", "results", "work", "best_book", "small_image_url").setEndAction(mHandleSmallImageUrl);		
 	}
 
-	private XmlHandler mHandleResultsStart = new XmlHandler(){
+	private final XmlHandler mHandleResultsStart = new XmlHandler(){
 		@Override
 		public void process(ElementContext context) {
 			m_resultsStart = Long.parseLong(context.body);
 		}
 	};
-	private XmlHandler mHandleResultsEnd = new XmlHandler(){
+	private final XmlHandler mHandleResultsEnd = new XmlHandler(){
 		@Override
 		public void process(ElementContext context) {
 			m_resultsEnd = Long.parseLong(context.body);
 		}
 	};
-	private XmlHandler mHandleTotalResults = new XmlHandler(){
+	private final XmlHandler mHandleTotalResults = new XmlHandler(){
 		@Override
 		public void process(ElementContext context) {
 			m_totalResults = Long.parseLong(context.body);
@@ -349,7 +349,7 @@ public class SearchBooksApiHandler extends ApiHandler {
 	/**
 	 * At the START of a "work" tag, we create a new work.
 	 */
-	private XmlHandler mHandleWorkStart = new XmlHandler(){
+	private final XmlHandler mHandleWorkStart = new XmlHandler(){
 		@Override
 		public void process(ElementContext context) {
 			m_currWork = new GoodreadsWork();
@@ -358,7 +358,7 @@ public class SearchBooksApiHandler extends ApiHandler {
 	/**
 	 * At the END of a "work" tag, we add it to list and reset the pointer.
 	 */
-	private XmlHandler mHandleWorkEnd = new XmlHandler(){
+	private final XmlHandler mHandleWorkEnd = new XmlHandler(){
 		@Override
 		public void process(ElementContext context) {
 			//m_currWork.requestImage();
@@ -366,67 +366,67 @@ public class SearchBooksApiHandler extends ApiHandler {
 			m_currWork = null;
 		}
 	};
-	private XmlHandler mHandleWorkId = new XmlHandler(){
+	private final XmlHandler mHandleWorkId = new XmlHandler(){
 		@Override
 		public void process(ElementContext context) {
 			m_currWork.workId = Long.parseLong(context.body);
 		}
 	};
-	private XmlHandler mHandlePubDay = new XmlHandler(){
+	private final XmlHandler mHandlePubDay = new XmlHandler(){
 		@Override
 		public void process(ElementContext context) {
 			try {
 				m_currWork.pubDay = Long.parseLong(context.body);					
-			} catch (Exception e) {}; 
-		}
+			} catch (Exception e) {}
+        }
 	};
-	private XmlHandler mHandlePubMonth = new XmlHandler(){
+	private final XmlHandler mHandlePubMonth = new XmlHandler(){
 		@Override
 		public void process(ElementContext context) {
 			try {
 				m_currWork.pubMonth = Long.parseLong(context.body);
-			} catch (Exception e) {}; 
-		}
+			} catch (Exception e) {}
+        }
 	};
-	private XmlHandler mHandlePubYear = new XmlHandler(){
+	private final XmlHandler mHandlePubYear = new XmlHandler(){
 		@Override
 		public void process(ElementContext context) {
 			try {
 				m_currWork.pubYear = Long.parseLong(context.body);
-			} catch (Exception e) {}; 
-		}
+			} catch (Exception e) {}
+        }
 	};
-	private XmlHandler mHandleBookId = new XmlHandler(){
+	private final XmlHandler mHandleBookId = new XmlHandler(){
 		@Override
 		public void process(ElementContext context) {
 			m_currWork.bookId = Long.parseLong(context.body);
 		}
 	};
-	private XmlHandler mHandleBookTitle = new XmlHandler(){
+	private final XmlHandler mHandleBookTitle = new XmlHandler(){
 		@Override
 		public void process(ElementContext context) {
 			m_currWork.title = context.body;
 		}
 	};
-	private XmlHandler mHandleAuthorId = new XmlHandler(){
+	private final XmlHandler mHandleAuthorId = new XmlHandler(){
 		@Override
 		public void process(ElementContext context) {
 			m_currWork.authorId = Long.parseLong(context.body);
 		}
 	};
-	private XmlHandler mHandleAuthorName = new XmlHandler(){
+	private final XmlHandler mHandleAuthorName = new XmlHandler(){
 		@Override
 		public void process(ElementContext context) {
 			m_currWork.authorName = context.body;
 		}
 	};
-	private XmlHandler mHandleImageUrl = new XmlHandler(){
+	private final XmlHandler mHandleImageUrl = new XmlHandler(){
 		@Override
 		public void process(ElementContext context) {
 			m_currWork.imageUrl = context.body;
 		}
 	};
-	private XmlHandler mHandleSmallImageUrl = new XmlHandler(){
+	private final XmlHandler mHandleSmallImageUrl = new XmlHandler(){
 		@Override
 		public void process(ElementContext context) {
 			m_currWork.smallImageUrl = context.body;

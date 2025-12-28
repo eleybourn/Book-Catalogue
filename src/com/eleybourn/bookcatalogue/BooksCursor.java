@@ -42,7 +42,7 @@ import com.eleybourn.bookcatalogue.utils.TrackedCursor;
 public class BooksCursor extends TrackedCursor {
 
 	/** Hashmap of selected book IDs */
-	private Hashtable<Long,Boolean> m_selections = new Hashtable<Long,Boolean>();
+	private final Hashtable<Long,Boolean> m_selections = new Hashtable<Long,Boolean>();
 
 	/**
 	 * Constructor

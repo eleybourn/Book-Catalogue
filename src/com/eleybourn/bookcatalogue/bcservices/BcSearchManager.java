@@ -221,7 +221,7 @@ public class BcSearchManager {
 				}
 			}
 		} catch (JSONException e) {
-			Logger.logError(e, "Unexpected JSON Structure: " + apiResult.toString());
+			Logger.logError(e, "Unexpected JSON Structure: " + apiResult);
 		}
 	}
 

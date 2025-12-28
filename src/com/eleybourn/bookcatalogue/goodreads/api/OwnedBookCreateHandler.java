@@ -52,9 +52,9 @@ public class OwnedBookCreateHandler extends ApiHandler {
 
 	public static class InvalidIsbnException extends RuntimeException {
 		private static final long serialVersionUID = 2652418388349622089L;
-	};
+	}
 
-	//public enum ConditionCode {
+    //public enum ConditionCode {
 	//	BRAND_NEW, LIKE_NEW, VERY_GOOD, GOOD, ACCEPTABLE, POOR
 	//}
 

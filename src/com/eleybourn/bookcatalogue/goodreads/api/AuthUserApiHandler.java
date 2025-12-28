@@ -96,13 +96,13 @@ public class AuthUserApiHandler extends ApiHandler {
 	private long mUserId = 0;
 	private String mUsername = null;
 
-	private XmlHandler mHandleUserStart = new XmlHandler(){
+	private final XmlHandler mHandleUserStart = new XmlHandler(){
 		@Override
 		public void process(ElementContext context) {
 			mUserId = Long.parseLong(context.attributes.getValue("", "id"));
 		}
 	};
-	private XmlHandler mHandleUsernameEnd = new XmlHandler(){
+	private final XmlHandler mHandleUsernameEnd = new XmlHandler(){
 		@Override
 		public void process(ElementContext context) {
 			mUsername = context.body;

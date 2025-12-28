@@ -49,14 +49,14 @@ public class MessageSwitch<T,U> {
 	/** ID counter for unique sender IDs; set > 0 to allow for possible future static senders **/
 	private static Long mSenderIdCounter = 1024L;
 	/** List of message sources */
-	private Hashtable<Long,MessageSender<U>> mSenders = new Hashtable<Long,MessageSender<U>>();
+	private final Hashtable<Long,MessageSender<U>> mSenders = new Hashtable<Long,MessageSender<U>>();
 	/** List of all messages in the message queue, both messages and replies */
-	private LinkedBlockingQueue<RoutingSlip> mMessageQueue = new LinkedBlockingQueue<RoutingSlip>();
+	private final LinkedBlockingQueue<RoutingSlip> mMessageQueue = new LinkedBlockingQueue<RoutingSlip>();
 	/** List of message listener queues */
-	private Hashtable<Long, MessageListeners> mListeners = new Hashtable<Long, MessageListeners>();
+	private final Hashtable<Long, MessageListeners> mListeners = new Hashtable<Long, MessageListeners>();
 
 	/** Handler object for posting to main thread and for testing if running on UI thread */
-	private static Handler mHandler = new Handler(Looper.getMainLooper());
+	private static final Handler mHandler = new Handler(Looper.getMainLooper());
 
 	/** Interface that must be implemented by any message that will be sent via send() */
 	public interface Message<T> {
@@ -68,7 +68,7 @@ public class MessageSwitch<T,U> {
 		 * @return		true if message should not be delivered to any other listeners or stored for delivery as 'last message'
 		 * 				should only return true if the message has been handled and would break the app if delivered more than once.
 		 */
-		public boolean deliver(T listener);
+        boolean deliver(T listener);
 	}
 
 	/** Register a new sender and it's controller object; return the unique ID for this sender */
@@ -171,9 +171,9 @@ public class MessageSwitch<T,U> {
 	 * @param <U>	Arbitrary class that will be responsible for the message
 	 */
 	private interface MessageSender<U> {
-		public long getId();
-		public void close();
-		public U getController();
+		long getId();
+		void close();
+		U getController();
 	}
 
 	/**
@@ -185,7 +185,7 @@ public class MessageSwitch<T,U> {
 		/** Last message sent */
 		private MessageRoutingSlip mLastMessage = null;
 		/** Weak refs to all listeners */
-		private ArrayList<WeakReference<T>> mList = new ArrayList<WeakReference<T>>();
+		private final ArrayList<WeakReference<T>> mList = new ArrayList<WeakReference<T>>();
 
 		/** Accessor */
 		public void setLastMessage(MessageRoutingSlip m) {
@@ -275,7 +275,7 @@ public class MessageSwitch<T,U> {
 	 *
 	 */
 	private interface RoutingSlip {
-		public void deliver();
+		void deliver();
 	}
 
 	/**

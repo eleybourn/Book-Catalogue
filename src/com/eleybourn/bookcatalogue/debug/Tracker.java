@@ -50,7 +50,7 @@ public class Tracker {
 	}
 	
 	private final static int K_MAX_EVENTS = 100;
-	private static Event[] mEventBuffer = new Event[K_MAX_EVENTS];
+	private static final Event[] mEventBuffer = new Event[K_MAX_EVENTS];
 	private static int mNextEventBufferPos = 0;
 
 	public static void enterOnActivityCreated(Object a) {

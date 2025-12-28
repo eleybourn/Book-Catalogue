@@ -42,14 +42,14 @@ import com.eleybourn.bookcatalogue.utils.ViewTagger;
  * @author Philip Warner
  */
 public abstract class SimpleListAdapter<T> extends ArrayAdapter<T> {
-	private int mRowViewId;
+	private final int mRowViewId;
 	private boolean mCheckedFields = false;
 	private boolean mHasPosition = false;
 	private boolean mHasUp = false;
 	private boolean mHasDown = false;
 	private boolean mHasDelete = false;
 
-	private ArrayList<T> mItems;
+	private final ArrayList<T> mItems;
 	
 	public SimpleListAdapter(Context context, int rowViewId, ArrayList<T> items) {
             super(context, rowViewId, items);
@@ -57,13 +57,17 @@ public abstract class SimpleListAdapter<T> extends ArrayAdapter<T> {
             mItems = items;
     }
 
-	protected void onListChanged() {};
-	protected void onRowClick(T object, int position, View v) {};
-	protected void onRowDelete(T object, int position, View v) {};
-	protected void onRowDown(T object, int position, View v) {};
-	protected void onRowUp(T object, int position, View v) {};
+	protected void onListChanged() {}
 
-	/**
+    protected void onRowClick(T object, int position, View v) {}
+
+    protected void onRowDelete(T object, int position, View v) {}
+
+    protected void onRowDown(T object, int position, View v) {}
+
+    protected void onRowUp(T object, int position, View v) {}
+
+    /**
 	 * Call to set up the row view.
 	 * 
 	 * @param target	The target row view object
@@ -71,7 +75,7 @@ public abstract class SimpleListAdapter<T> extends ArrayAdapter<T> {
 	 */
 	abstract protected void onSetupView(T object, int position, View target);
 
-	private OnClickListener mRowClickListener = new OnClickListener() {
+	private final OnClickListener mRowClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
 			try {
@@ -84,7 +88,7 @@ public abstract class SimpleListAdapter<T> extends ArrayAdapter<T> {
 		}			
 	};
 
-	private OnClickListener mRowDeleteListener = new OnClickListener() {
+	private final OnClickListener mRowDeleteListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
 			if (v == null)
@@ -104,7 +108,7 @@ public abstract class SimpleListAdapter<T> extends ArrayAdapter<T> {
 		}			
 	};
 
-	private OnClickListener mRowDownListener = new OnClickListener() {
+	private final OnClickListener mRowDownListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
 			int pos = getViewRow(v);
@@ -125,7 +129,7 @@ public abstract class SimpleListAdapter<T> extends ArrayAdapter<T> {
 		}			
 	};
 
-	private OnClickListener mRowUpListener = new OnClickListener() {
+	private final OnClickListener mRowUpListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
 			int pos = getViewRow(v);
@@ -152,7 +156,7 @@ public abstract class SimpleListAdapter<T> extends ArrayAdapter<T> {
 	 * Interface to allow underlying objects to determine their vewi ID.
 	 */
 	public interface ViewProvider {
-		public int getViewId();
+		int getViewId();
 	}
 
 	@Override
@@ -192,7 +196,7 @@ public abstract class SimpleListAdapter<T> extends ArrayAdapter<T> {
         if (o != null) {
         	// Try to set position value
         	if (mHasPosition || !mCheckedFields) {
-                TextView pt = (TextView) v.findViewById(R.id.row_position);
+                TextView pt = v.findViewById(R.id.row_position);
                 if(pt != null){
                 	mHasPosition = true;
                 	pt.setText(Long.toString(position+1));
@@ -201,7 +205,7 @@ public abstract class SimpleListAdapter<T> extends ArrayAdapter<T> {
 
         	// Try to set the UP handler
         	if (mHasUp || !mCheckedFields) {
-                ImageView up = (ImageView) v.findViewById(R.id.row_up);
+                ImageView up = v.findViewById(R.id.row_up);
                 if (up != null) {
                 	up.setOnClickListener(mRowUpListener);
                 	mHasUp = true;
@@ -210,7 +214,7 @@ public abstract class SimpleListAdapter<T> extends ArrayAdapter<T> {
 
         	// Try to set the DOWN handler
         	if (mHasDown || !mCheckedFields) {
-                ImageView dn = (ImageView) v.findViewById(R.id.row_down);
+                ImageView dn = v.findViewById(R.id.row_down);
                 if (dn != null) {
                 	dn.setOnClickListener(mRowDownListener);
                 	mHasDown = true;
@@ -219,7 +223,7 @@ public abstract class SimpleListAdapter<T> extends ArrayAdapter<T> {
 
         	// Try to set the DELETE handler
         	if (mHasDelete || !mCheckedFields) {
-            	ImageView del = (ImageView) v.findViewById(R.id.row_delete);
+            	ImageView del = v.findViewById(R.id.row_delete);
                 if (del != null) {
     	    		del.setImageResource(R.drawable.ic_menu_delete);
                 	del.setOnClickListener(mRowDeleteListener);   

@@ -71,9 +71,8 @@ public class UpgradeMessageManager {
 	
 	//* Internal: prep for fragments by separating message delivery from activities
 	//* Internal: one database connection for all activities and threads
-	;
 
-	/**
+    /**
 	 * Class to store one version-specific message
 	 * 
 	 * @author pjw

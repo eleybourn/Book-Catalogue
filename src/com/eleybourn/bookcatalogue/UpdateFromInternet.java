@@ -54,15 +54,15 @@ public class UpdateFromInternet extends ActivityWithTasks {
 	static public class FieldUsages extends LinkedHashMap<String,FieldUsage>  {
 		private static final long serialVersionUID = 1L;
 
-		static public enum Usages { COPY_IF_BLANK, ADD_EXTRA, OVERWRITE };
+		public enum Usages { COPY_IF_BLANK, ADD_EXTRA, OVERWRITE }
 
-		public FieldUsage put(FieldUsage usage) {
+        public FieldUsage put(FieldUsage usage) {
 			this.put(usage.fieldName, usage);
 			return usage;
 		}
 
 	}
-	private FieldUsages mFieldUsages = new FieldUsages();
+	private final FieldUsages mFieldUsages = new FieldUsages();
 
 	@Override
 	protected RequiredPermission[] getRequiredPermissions() {
@@ -135,7 +135,7 @@ public class UpdateFromInternet extends ActivityWithTasks {
 		addIfVisible(DatabaseDefinitions.DOM_LANGUAGE.name, null, R.string.label_language, Usages.COPY_IF_BLANK, false);
 
 		// Display the list of fields
-		LinearLayout parent = (LinearLayout) findViewById(R.id.manage_fields_scrollview);
+		LinearLayout parent = findViewById(R.id.manage_fields_scrollview);
 		for(FieldUsage usage : mFieldUsages.values()) {
 			//Create the LinearLayout to hold each row
 			LinearLayout ll = new LinearLayout(this);
@@ -151,7 +151,7 @@ public class UpdateFromInternet extends ActivityWithTasks {
 				@Override
 				public void onClick(View v) {
 					CheckBox thiscb = (CheckBox) v;
-					if (thiscb.isChecked() == false && thiscb.getText().toString().contains(getResources().getString(R.string.usage_copy_if_blank))) {
+					if (!thiscb.isChecked() && thiscb.getText().toString().contains(getResources().getString(R.string.usage_copy_if_blank))) {
 						FieldUsage usage = (FieldUsage) ViewTagger.getTag(thiscb);
 						if (usage.canAppend) {
 							String extra = getResources().getString(R.string.usage_add_extra);
@@ -214,7 +214,7 @@ public class UpdateFromInternet extends ActivityWithTasks {
 			parent.addView(ll);			
 		}
 
-		Button confirmBtn = (Button) findViewById(R.id.button_confirm);
+		Button confirmBtn = findViewById(R.id.button_confirm);
 		confirmBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -240,31 +240,27 @@ public class UpdateFromInternet extends ActivityWithTasks {
 						public void onClick(DialogInterface dialog, int which) {
 							mFieldUsages.get(CatalogueDBAdapter.KEY_THUMBNAIL).usage = Usages.OVERWRITE;
 							startUpdate();
-							return;
-						}
+                        }
 					}); 
 					alertDialog.setButton2(UpdateFromInternet.this.getResources().getString(R.string.button_cancel), new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
 							//do nothing
-							return;
-						}
+                        }
 					});
 					alertDialog.setButton3(UpdateFromInternet.this.getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
 							mFieldUsages.get(CatalogueDBAdapter.KEY_THUMBNAIL).usage = Usages.COPY_IF_BLANK;
 							startUpdate();
-							return;
-						}
+                        }
 					}); 
 					alertDialog.show();					
 				} else {
 					startUpdate();					
 				}
-				return;
-			}
+            }
 		});
 
-		Button cancelBtn = (Button) findViewById(R.id.button_cancel);
+		Button cancelBtn = findViewById(R.id.button_cancel);
 		cancelBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -274,12 +270,12 @@ public class UpdateFromInternet extends ActivityWithTasks {
 	}
 
 	private int readUserSelections() {
-		LinearLayout parent = (LinearLayout) findViewById(R.id.manage_fields_scrollview);
+		LinearLayout parent = findViewById(R.id.manage_fields_scrollview);
 		int nChildren = parent.getChildCount();
 		int nSelected = 0;
 		for (int i = 0; i<nChildren; i++) {
 			View v = parent.getChildAt(i);
-			CheckBox cb = (CheckBox) v.findViewById(R.id.fieldCheckbox);
+			CheckBox cb = v.findViewById(R.id.fieldCheckbox);
 			if (cb != null) {
 				FieldUsage usage = (FieldUsage) ViewTagger.getTag(cb);
 				usage.selected = cb.isChecked();

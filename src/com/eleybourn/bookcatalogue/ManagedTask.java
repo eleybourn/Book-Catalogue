@@ -186,7 +186,7 @@ abstract public class ManagedTask extends Thread {
 	/**
 	 * Controller instance for this specific task
 	 */
-	private TaskController mController = new TaskController() {
+	private final TaskController mController = new TaskController() {
 		@Override
 		public void requestAbort() {
 			ManagedTask.this.cancelTask();
@@ -202,9 +202,9 @@ abstract public class ManagedTask extends Thread {
 	 *
 	 *  This object handles all underlying OnTaskEndedListener messages for every instance of this class.
 	 */
-	protected static class TaskSwitch extends MessageSwitch<TaskListener, TaskController> {};
+	protected static class TaskSwitch extends MessageSwitch<TaskListener, TaskController> {}
 
-	private static final TaskSwitch mMessageSwitch = new TaskSwitch();
+    private static final TaskSwitch mMessageSwitch = new TaskSwitch();
 	protected static final TaskSwitch getMessageSwitch() { return mMessageSwitch; }
 
 	private final long mMessageSenderId = mMessageSwitch.createSender(mController);

@@ -45,8 +45,8 @@ import com.eleybourn.bookcatalogue.utils.Utils;
 public class CsvExporter implements Exporter {
 	private String mLastError;
 
-	private static String UTF8 = "utf8";
-	private static int BUFFER_SIZE = 32768;
+	private static final String UTF8 = "utf8";
+	private static final int BUFFER_SIZE = 32768;
 
 	public String getLastError() {
 		return mLastError;
@@ -227,7 +227,7 @@ public class CsvExporter implements Exporter {
 						row.append("\"" + formatCell(dateReadEndString) + "\",");
 						row.append("\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_FORMAT))) + "\",");
 						row.append("\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_SIGNED))) + "\",");
-						row.append("\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOANED_TO))+"") + "\",");
+						row.append("\"" + formatCell(books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOANED_TO))) + "\",");
 						row.append("\"" + formatCell(anthology_titles) + "\",");
 						row.append("\"" + formatCell(rv.getDescription()) + "\",");
 						row.append("\"" + formatCell(rv.getGenre()) + "\",");
@@ -267,8 +267,8 @@ public class CsvExporter implements Exporter {
 					
 				}
 			if (books != null)
-				try { books.close(); } catch (Exception e) {};
-			if (db != null)
+				try { books.close(); } catch (Exception e) {}
+            if (db != null)
 				db.close();
 		}
 		return true;

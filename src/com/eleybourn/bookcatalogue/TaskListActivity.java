@@ -94,7 +94,7 @@ public class TaskListActivity extends BindableItemListActivity {
 	/**
 	 * Listener to handle Event add/change/delete.
 	 */
-	private OnTaskChangeListener m_OnTaskChangeListener = new  OnTaskChangeListener() {
+	private final OnTaskChangeListener m_OnTaskChangeListener = new  OnTaskChangeListener() {
 		@Override
 		public void onTaskChange(Task task, TaskActions action) {
 			TaskListActivity.this.refreshData();
@@ -114,7 +114,7 @@ public class TaskListActivity extends BindableItemListActivity {
 	 */
 	@Override
 	public void onListItemClick(AdapterView<?> parent, final View v, final int position, final long id) {
-		Task task = (Task) ViewTagger.getTag(v, R.id.TAG_TASK);
+		Task task = ViewTagger.getTag(v, R.id.TAG_TASK);
 		ArrayList<ContextDialogItem> items = new ArrayList<ContextDialogItem>();
 
 		items.add(new ContextDialogItem(getString(R.string.show_events_ellipsis), new Runnable(){
@@ -128,9 +128,9 @@ public class TaskListActivity extends BindableItemListActivity {
 		if (items.size() > 0) {
 			showContextDialogue(this.getString(R.string.select_an_action), items);
 		}
-	};
+	}
 
-	private void doShowTaskEvents(long taskId) {
+    private void doShowTaskEvents(long taskId) {
 		GoodreadsExportFailuresActivity.start(this, taskId);
 	}
 	

@@ -78,37 +78,35 @@ public class AdministrationLibraryThing extends BookCatalogueActivity {
 
 	public void setupAdmin() {
 		/* LT Reg Link */
-		TextView register = (TextView) findViewById(R.id.register_url);
+		TextView register = findViewById(R.id.register_url);
 		register.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Intent loadWeb = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.librarything.com/"));
-				startActivity(loadWeb); 
-				return;
-			}
+				startActivity(loadWeb);
+            }
 		});
 		
 		/* DevKey Link */
-		TextView devkeyLink = (TextView) findViewById(R.id.devkey_url);
+		TextView devkeyLink = findViewById(R.id.devkey_url);
 		devkeyLink.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Intent loadWeb = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.librarything.com/services/keys.php"));
-				startActivity(loadWeb); 
-				return;
-			}
+				startActivity(loadWeb);
+            }
 		});
 
-		EditText devkeyView = (EditText) findViewById(R.id.devkey);
+		EditText devkeyView = findViewById(R.id.devkey);
 		SharedPreferences prefs = getSharedPreferences("bookCatalogue", android.content.Context.MODE_PRIVATE);
 		devkeyView.setText(prefs.getString(LibraryThingManager.LT_DEVKEY_PREF_NAME, ""));
 		
 		/* Save Button */
-		Button btn = (Button) findViewById(R.id.button_confirm);
+		Button btn = findViewById(R.id.button_confirm);
 		btn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				EditText devkeyView = (EditText) findViewById(R.id.devkey);
+				EditText devkeyView = findViewById(R.id.devkey);
 				String devkey = devkeyView.getText().toString();
 				SharedPreferences prefs = getSharedPreferences("bookCatalogue", android.content.Context.MODE_PRIVATE);
 				SharedPreferences.Editor ed = prefs.edit();
@@ -149,12 +147,11 @@ public class AdministrationLibraryThing extends BookCatalogueActivity {
 					SimpleTaskQueueProgressFragment.runTaskWithProgress(AdministrationLibraryThing.this.getSupportFragmentManager(), R.string.connecting_to_web_site, task, true, 0);
 
 				}
-				return;
-			}
+            }
 		});
 
 		/* Reset Button */
-		Button resetBtn = (Button) findViewById(R.id.reset_messages);
+		Button resetBtn = findViewById(R.id.reset_messages);
 		resetBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -165,8 +162,7 @@ public class AdministrationLibraryThing extends BookCatalogueActivity {
 						ed.remove(key);
 				}
 				ed.commit();
-				return;
-			}
+            }
 		});
 		
 	}

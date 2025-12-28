@@ -53,7 +53,7 @@ public class ReviewUpdateHandler extends ApiHandler {
 	}
 
 	public void update(long reviewId, boolean isRead, String readAt, String review, int rating) 
-			throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, IOException, 
+			throws OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, IOException,
 					NotAuthorizedException, BookNotFoundException, NetworkException
 	{
 		HttpPost post = new HttpPost(GOODREADS_API_ROOT + "/review/" + reviewId + ".xml");

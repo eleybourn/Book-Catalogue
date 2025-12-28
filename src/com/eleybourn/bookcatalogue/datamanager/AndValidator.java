@@ -44,6 +44,5 @@ public class AndValidator extends MetaValidator implements DataValidator {
 			// Only set the Bundle for the last in the list
 			v.validate(data, datum, crossValidating);
 		}
-		return;
-	}
+    }
 }

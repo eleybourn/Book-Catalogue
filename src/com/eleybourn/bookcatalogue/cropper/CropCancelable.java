@@ -34,9 +34,9 @@ public interface CropCancelable<T> {
 	 * // do necessary work to cancel the task return true; } return false; }
 	 * </pre>
 	 */
-	public boolean requestCancel();
+    boolean requestCancel();
 
-	public void await() throws InterruptedException;
+	void await() throws InterruptedException;
 
 	/**
 	 * Gets the results of this <code>Cancelable</code> task.
@@ -44,5 +44,5 @@ public interface CropCancelable<T> {
 	 * @throws ExecutionException
 	 *             if exception is thrown during the execution of the task
 	 */
-	public T get() throws InterruptedException, ExecutionException;
+    T get() throws InterruptedException, ExecutionException;
 }

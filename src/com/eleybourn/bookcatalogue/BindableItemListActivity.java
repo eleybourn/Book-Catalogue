@@ -20,12 +20,6 @@
 
 package com.eleybourn.bookcatalogue;
 
-import java.util.ArrayList;
-
-import net.philipwarner.taskqueue.BindableItemCursorAdapter;
-import net.philipwarner.taskqueue.BindableItemCursorAdapter.BindableItemBinder;
-import net.philipwarner.taskqueue.BindableItemSQLiteCursor;
-import net.philipwarner.taskqueue.ContextDialogItem;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -36,6 +30,13 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 
 import com.eleybourn.bookcatalogue.compat.BookCatalogueListActivity;
+
+import net.philipwarner.taskqueue.BindableItemCursorAdapter;
+import net.philipwarner.taskqueue.BindableItemCursorAdapter.BindableItemBinder;
+import net.philipwarner.taskqueue.BindableItemSQLiteCursor;
+import net.philipwarner.taskqueue.ContextDialogItem;
+
+import java.util.ArrayList;
 
 /**
  * NOTE!!!!!
@@ -49,7 +50,7 @@ import com.eleybourn.bookcatalogue.compat.BookCatalogueListActivity;
  */
 public abstract class BindableItemListActivity extends BookCatalogueListActivity implements BindableItemBinder {
 	/** The resource ID for the base view */
-	private int mBaseViewId;
+	private final int mBaseViewId;
 
 	/**
 	 * Constructor; this will be called by the subclass to set the resource IDs.
@@ -95,7 +96,7 @@ public abstract class BindableItemListActivity extends BookCatalogueListActivity
 
 			setListAdapter(m_listAdapter);
 
-			ListView lv = (ListView) this.findViewById(R.id.list);
+			ListView lv = this.findViewById(R.id.list);
 
 			lv.setOnItemClickListener( new OnItemClickListener() {
 				@Override
@@ -121,10 +122,11 @@ public abstract class BindableItemListActivity extends BookCatalogueListActivity
 		m_listAdapter.notifyDataSetChanged();
 	}
 
-	public void onListItemClick(AdapterView<?> parent, View v, int position, long id) {};
-	public boolean onListItemLongClick(AdapterView<?> parent, View v, int position, long id) { return false; };
+	public void onListItemClick(AdapterView<?> parent, View v, int position, long id) {}
 
-	//public abstract void bindListItem(View view, Context context, TasksCursor cursor) ;
+    public boolean onListItemLongClick(AdapterView<?> parent, View v, int position, long id) { return false; }
+
+    //public abstract void bindListItem(View view, Context context, TasksCursor cursor) ;
 
 	/**
 	 * Utility routine to display an array of ContextDialogItems in an alert.

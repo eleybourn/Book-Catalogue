@@ -167,7 +167,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * 
  */
 public class SearchAmazonHandler extends DefaultHandler {
-	private Bundle mBookData;
+	private final Bundle mBookData;
 	private StringBuilder mBuilder;
 	private String mThumbnailUrl = "";
 	private int mThumbnailSize = -1;
@@ -286,7 +286,7 @@ public class SearchAmazonHandler extends DefaultHandler {
 			if (localName.equalsIgnoreCase(TOTALRESULTS)){
 				count = Integer.parseInt(mBuilder.toString());
 			} else if (localName.equalsIgnoreCase(THUMBNAIL)){
-				if (image == true) {
+				if (image) {
 					mThumbnailUrl = mBuilder.toString();
 					image = false;
 				}
@@ -307,7 +307,7 @@ public class SearchAmazonHandler extends DefaultHandler {
 				mCurrencyCode = "";
 				mCurrencyAmount = "";
 				mInListPrice = false;
-			} else if (entry == true) {
+			} else if (entry) {
 				if (localName.equalsIgnoreCase(AUTHOR)){
 					Utils.appendOrAdd(mBookData, CatalogueDBAdapter.KEY_AUTHOR_DETAILS, mBuilder.toString());
 				} else if (localName.equalsIgnoreCase(TITLE)){
@@ -372,7 +372,7 @@ public class SearchAmazonHandler extends DefaultHandler {
 	@Override
 	public void startElement(String uri, String localName, String name, Attributes attributes) throws SAXException {
 		super.startElement(uri, localName, name, attributes);
-		if (done == false && localName.equalsIgnoreCase(ENTRY)){
+		if (!done && localName.equalsIgnoreCase(ENTRY)){
 			entry = true;
 		} else if (localName.equalsIgnoreCase(SMALLIMAGE)) {
 			if (mThumbnailSize < 1) {

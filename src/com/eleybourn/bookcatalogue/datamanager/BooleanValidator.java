@@ -59,8 +59,7 @@ public class BooleanValidator extends DefaultFieldValidator {
 				v = Utils.stringToBoolean(s, true);
 			}
 			data.putBoolean(datum, v);
-			return;
-		} catch (Exception e) {
+        } catch (Exception e) {
 			throw new ValidatorException(R.string.vldt_boolean_expected, new Object[]{datum.getKey()});
 		}
 	}

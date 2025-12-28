@@ -117,7 +117,7 @@ public class BackupManager {
 
 		FragmentTask task = new FragmentTaskAbstract() {
 			private boolean mBackupOk = false;
-			private String mBackupDate = Utils.toSqlDateTime(new Date());
+			private final String mBackupDate = Utils.toSqlDateTime(new Date());
 
 			@Override
 			public void run(final SimpleTaskQueueProgressFragment fragment, SimpleTaskContext taskContext) throws IOException {

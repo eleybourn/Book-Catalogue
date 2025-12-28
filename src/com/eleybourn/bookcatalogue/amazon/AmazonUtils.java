@@ -2,6 +2,7 @@ package com.eleybourn.bookcatalogue.amazon;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 import android.app.Activity;
 import android.content.Context;
@@ -73,23 +74,13 @@ public class AmazonUtils {
 		if (author != null && !author.trim().equals("")) {
 			author.replaceAll("\\.,+"," ");
 			author.replaceAll(" *","+");
-			try {
-				extra += "&field-author=" + URLEncoder.encode(author, "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				Logger.logError(e, "Unable to add author to URL");
-				return null;
-			}
-		}
+            extra += "&field-author=" + URLEncoder.encode(author, StandardCharsets.UTF_8);
+        }
 		if (series != null && !series.trim().equals("")) {
 			series.replaceAll("\\.,+"," ");
 			series.replaceAll(" *","+");
-			try {
-				extra += "&field-keywords=" + URLEncoder.encode(series, "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				Logger.logError(e, "Unable to add series to URL");
-				return null;
-			}
-		}
+            extra += "&field-keywords=" + URLEncoder.encode(series, StandardCharsets.UTF_8);
+        }
 		return extra;
 		//if (extra != null && !extra.trim().equals("")) {
 		//	Intent loadWeb = new Intent(Intent.ACTION_VIEW, Uri.parse(baseUrl + extra));

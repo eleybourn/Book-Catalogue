@@ -43,7 +43,7 @@ import com.eleybourn.bookcatalogue.utils.Logger;
  * @author pjw
  */
 public abstract class BackupWriterAbstract implements BackupWriter {
-	private CatalogueDBAdapter mDbHelper;
+	private final CatalogueDBAdapter mDbHelper;
 
 	/**
 	 * Constructor
@@ -158,7 +158,7 @@ public abstract class BackupWriterAbstract implements BackupWriter {
 				// Save the book count for later
 				listener.setTotalBooks(max);
 				// Update the progress bar to a more reasonable value
-				listener.setMax((int) (numCovers + max + 1));
+				listener.setMax(numCovers + max + 1);
 			}
 		};
 

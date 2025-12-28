@@ -56,7 +56,7 @@ public abstract class PreferencesBase extends BookCatalogueActivity {
 			Properties globalProps = new Properties();
 			setupViews(prefs, globalProps);
 
-			ViewGroup styleProps = (ViewGroup) findViewById(R.id.dynamic_properties);
+			ViewGroup styleProps = findViewById(R.id.dynamic_properties);
 			globalProps.buildView(getLayoutInflater(), styleProps);
 
 		} catch (Exception e) {
@@ -76,7 +76,7 @@ public abstract class PreferencesBase extends BookCatalogueActivity {
 	protected void addBooleanPreference(final BookCataloguePreferences prefs, final int cbId, int viewId, final String key, final boolean defaultValue) {
 		// Setup the checkbox
 		{
-			CheckBox v = (CheckBox)this.findViewById(cbId);
+			CheckBox v = this.findViewById(cbId);
 			v.setChecked(prefs.getBoolean(key, defaultValue));
 			v.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 				@Override
@@ -92,7 +92,7 @@ public abstract class PreferencesBase extends BookCatalogueActivity {
 			v.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					CheckBox cb = (CheckBox)v.findViewById(cbId);
+					CheckBox cb = v.findViewById(cbId);
 					cb.setChecked(!prefs.getBoolean(key, defaultValue));
 				}});
 		}

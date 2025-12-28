@@ -82,8 +82,8 @@ public class SqlStatementManager {
 				try {
 					s.close();
 				} catch (Exception e)
-				{};
-			}
+				{}
+            }
 			mStatements.clear();
 		}
 	}

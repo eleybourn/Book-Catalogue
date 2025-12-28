@@ -146,9 +146,9 @@ public class BooklistBuilder {
 		String sourceExpression;
 		/** Indicates if domain is to be part of the list sort key */
 		boolean isSorted;	
-	};
+	}
 
-	/** Collection of statements created by this Builder */
+    /** Collection of statements created by this Builder */
 	private final SqlStatementManager mStatements;
 	/** Database to use */
 	private final SynchronizedDb mDb;
@@ -158,7 +158,7 @@ public class BooklistBuilder {
 	/** List of columns for the group-by clause, including COLLATE clauses. Set by build() method. */
 	//private String mGroupColumnList;
 	/** Collection of 'extra' domains requested by caller */
-	private Hashtable<String, ExtraDomainDetails> mExtraDomains = new Hashtable<String, ExtraDomainDetails>();
+	private final Hashtable<String, ExtraDomainDetails> mExtraDomains = new Hashtable<String, ExtraDomainDetails>();
 	/** Style to use in building the list */
 	private final BooklistStyle mStyle;
 	/** Local copy of the BOOK_LIST table definition, renamed to match this instance */
@@ -332,14 +332,14 @@ public class BooklistBuilder {
 		public static final int FLAG_SORT_DESCENDING = 8;
 
 		/** Domains required in output table */
-		private ArrayList<DomainDefinition> mDomains = new ArrayList<DomainDefinition>();
+		private final ArrayList<DomainDefinition> mDomains = new ArrayList<DomainDefinition>();
 		/** Source expressions for output domains */
-		private ArrayList<String> mExpressions = new ArrayList<String>();
+		private final ArrayList<String> mExpressions = new ArrayList<String>();
 		/** Mapping from Domain to source Expression */
-		private Hashtable<DomainDefinition, String> mExpressionMap = new Hashtable<DomainDefinition, String>();
+		private final Hashtable<DomainDefinition, String> mExpressionMap = new Hashtable<DomainDefinition, String>();
 
 		/** Domains that are GROUPED */
-		private ArrayList<DomainDefinition> mGroups = new ArrayList<DomainDefinition>();
+		private final ArrayList<DomainDefinition> mGroups = new ArrayList<DomainDefinition>();
 		// Not currently used.
 		///** Domains that form part of accumulated unique key */
 		//private ArrayList<DomainDefinition> mKeys = new ArrayList<DomainDefinition>();
@@ -347,8 +347,8 @@ public class BooklistBuilder {
 		 * Domains that form part of the sort key. These are typically a reduced set of the GROUP domains since 
 		 * the group domains may contain more than just the key
 		 */
-		private ArrayList<SortedDomainInfo> mSortedColumns = new ArrayList<SortedDomainInfo>();
-		private HashSet<DomainDefinition> mSortedColumnsSet = new HashSet<DomainDefinition>();
+		private final ArrayList<SortedDomainInfo> mSortedColumns = new ArrayList<SortedDomainInfo>();
+		private final HashSet<DomainDefinition> mSortedColumnsSet = new HashSet<DomainDefinition>();
 
 		/**
 		 * Add a domain and source expression to the summary.
@@ -471,11 +471,11 @@ public class BooklistBuilder {
 
 			// Setup the SQL phrases.
 			cmp.rootkeyExpression = keyExpression;
-			cmp.destinationColumns = columns.toString() + ",\n	" + DOM_ROOT_KEY;
+			cmp.destinationColumns = columns + ",\n	" + DOM_ROOT_KEY;
 			cmp.insert = "Insert into " + mListTable + " (\n	" + cmp.destinationColumns + ")";
-			cmp.select = "Select\n	" + expressions.toString() + ",\n	" + keyExpression;
+			cmp.select = "Select\n	" + expressions + ",\n	" + keyExpression;
 			cmp.insertSelect = cmp.insert + "\n " + cmp.select + "\n From\n";
-			cmp.insertValues = cmp.insert + "\n    Values (" + values.toString() + ", ?)";
+			cmp.insertValues = cmp.insert + "\n    Values (" + values + ", ?)";
 
 			return cmp;
 		}
@@ -1273,7 +1273,7 @@ public class BooklistBuilder {
 
 				// Build the lowest level summary using our initial insert statement
 				long t2;
-				long t2a[] = new long[mStyle.size()];
+				long[] t2a = new long[mStyle.size()];
 				long t3;
 
 				if (useTriggers) {
@@ -1464,10 +1464,8 @@ public class BooklistBuilder {
 				//sql = "select * from " + mTableName + " Order by " + mSortColumnList;
 	
 				//return (BooklistCursor) mDb.rawQueryWithFactory(mBooklistCursorFactory, sql, EMPTY_STRING_ARRAY, "");					
-	
-				return;
-	
-			} finally {
+
+            } finally {
 				mDb.endTransaction(txLock);
 				//mDb.execSQL("PRAGMA synchronous = FULL");
 	
@@ -2061,7 +2059,7 @@ public class BooklistBuilder {
 
 		// Get the root node, and expanded flag
 		mGetNodeRootStmt.bindLong(1, rowId);
-		String info[] = mGetNodeRootStmt.simpleQueryForString().split("/");
+		String[] info = mGetNodeRootStmt.simpleQueryForString().split("/");
 		long rootId = Long.parseLong(info[0]);
 		long isExp = Long.parseLong(info[1]);
 		// If root node is not the node we are checking, and root node is not expanded, expand it.
@@ -2143,7 +2141,7 @@ public class BooklistBuilder {
 
 		// Get the details of the passed row position.
 		mGetNodeLevelStmt.bindLong(1, rowId);
-		String info[] = mGetNodeLevelStmt.simpleQueryForString().split("/");
+		String[] info = mGetNodeLevelStmt.simpleQueryForString().split("/");
 		long level = Long.parseLong(info[0]);
 		int exp = ( Integer.parseInt(info[1]) == 1 ) ? 0 : 1;
 
@@ -2208,8 +2206,8 @@ public class BooklistBuilder {
 			if (isFinalize) {
 				System.out.println("Finalizing BooklistBuilder with active statements");				
 			}
-			try { mStatements.close(); } catch(Exception e) { Logger.logError(e); };
-		}
+			try { mStatements.close(); } catch(Exception e) { Logger.logError(e); }
+        }
 		if (mNavTable != null) {
 			if (isFinalize) {
 				System.out.println("Finalizing BooklistBuilder with nav table");				
@@ -2220,8 +2218,8 @@ public class BooklistBuilder {
 			} 
 			catch(Exception e) {
 				Logger.logError(e); 
-			};
-		}
+			}
+        }
 		if (mListTable != null) {
 			if (isFinalize) {
 				System.out.println("Finalizing BooklistBuilder with list table");				
@@ -2232,8 +2230,8 @@ public class BooklistBuilder {
 			} 
 			catch(Exception e) {
 				Logger.logError(e); 
-			};
-		}
+			}
+        }
 
 		if (!mReferenceDecremented) {
 			// Only de-reference once!
@@ -2252,7 +2250,7 @@ public class BooklistBuilder {
 		cleanup(false);
 	}
 
-	public void finalize() {
+	protected void finalize() {
 		cleanup(true);
 	}
 }

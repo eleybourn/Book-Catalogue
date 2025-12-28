@@ -18,15 +18,15 @@ public final class Scan {
 	// response Intent
 	public static final String BARCODE = "BARCODE";
 
-	public static interface Pro {
+	public interface Pro {
 
-		public static final String PACKAGE = "com.visionsmarts.pic2shoppro";
-		public static final String ACTION = PACKAGE + ".SCAN";
+		String PACKAGE = "com.visionsmarts.pic2shoppro";
+		String ACTION = PACKAGE + ".SCAN";
 
 		// request Intent
-		public static final String FORMATS = "formats";
+        String FORMATS = "formats";
 		// response Intent
-		public static final String FORMAT = "format";
+        String FORMAT = "format";
 	}
 
 	private Scan() {

@@ -40,7 +40,7 @@ public class Series implements Serializable, Utils.ItemWithIdFixup {
 	public String 	name;
 	public String	num;
 
-	private java.util.regex.Pattern mPattern = java.util.regex.Pattern.compile("^(.*)\\s*\\((.*)\\)\\s*$");
+	private final java.util.regex.Pattern mPattern = java.util.regex.Pattern.compile("^(.*)\\s*\\((.*)\\)\\s*$");
 
 	public Series(String name) {
 		java.util.regex.Matcher m = mPattern.matcher(name);

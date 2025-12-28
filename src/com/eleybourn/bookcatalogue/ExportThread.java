@@ -40,7 +40,7 @@ public class ExportThread extends ManagedTask {
 		cleanup();
 	}
 	
-	private Exporter.ExportListener mOnExportListener = new Exporter.ExportListener() {
+	private final Exporter.ExportListener mOnExportListener = new Exporter.ExportListener() {
 
 		@Override
 		public void onProgress(String message, int position) {

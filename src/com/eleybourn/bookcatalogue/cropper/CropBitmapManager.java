@@ -39,7 +39,7 @@ import android.graphics.BitmapFactory;
  */
 public class CropBitmapManager {
 	// private static final String TAG = "BitmapManager";
-	private static enum State {
+	private enum State {
 		CANCEL, ALLOW
 	}
 

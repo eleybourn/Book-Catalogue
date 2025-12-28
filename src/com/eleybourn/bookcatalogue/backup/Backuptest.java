@@ -59,7 +59,7 @@ public class Backuptest {
 		wrt.backup(new BackupWriterListener() {
 			private long mMax;
 			private String mMessage = "";
-			private boolean mIsCancelled = false;
+			private final boolean mIsCancelled = false;
 			private int mPosition = 0;
 			private int mTotalBooks;
 
@@ -105,7 +105,7 @@ public class Backuptest {
 		rdr.restore(new BackupReaderListener() {
 			private long mMax;
 			private String mMessage = "";
-			private boolean mIsCancelled = false;
+			private final boolean mIsCancelled = false;
 			private int mPosition = 0;
 
 			@Override

@@ -16,7 +16,7 @@ public class CropImageView extends CropImageViewTouchBase {
 	float mLastX, mLastY;
 	int mMotionEdge;
 
-	private Context mContext;
+	private final Context mContext;
 
 	@Override
 	protected void onLayout(boolean changed, int left, int top, int right,

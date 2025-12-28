@@ -105,12 +105,8 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
 		// Setup the same author field
 		anthology_num = book.getInt(CatalogueDBAdapter.KEY_ANTHOLOGY_MASK);			
 
-		mSame = (CheckBox) getView().findViewById(R.id.same_author);
-		if ((anthology_num & CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS) != 0) {
-			mSame.setChecked(false);
-		} else {
-			mSame.setChecked(true);
-		}
+		mSame = getView().findViewById(R.id.same_author);
+        mSame.setChecked((anthology_num & CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS) == 0);
 		
 		mSame.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
@@ -120,16 +116,16 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
 		});
 		
 		ArrayAdapter<String> author_adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, mDbHelper.getAllAuthors());
-		mAuthorText = (AutoCompleteTextView) getView().findViewById(R.id.add_author);
+		mAuthorText = getView().findViewById(R.id.add_author);
 		mAuthorText.setAdapter(author_adapter);
 		if (mSame.isChecked()) {
 			mAuthorText.setVisibility(View.GONE);
 		} else {
 			mAuthorText.setVisibility(View.VISIBLE);			
 		}
-		mTitleText = (EditText) getView().findViewById(R.id.add_title);
+		mTitleText = getView().findViewById(R.id.add_title);
 
-		mAdd = (Button) getView().findViewById(R.id.row_add);
+		mAdd = getView().findViewById(R.id.row_add);
 		mAdd.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
 				try {
@@ -193,7 +189,7 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
 	}
 	
 	private ListView getListView() {
-		return (ListView) getView().findViewById(R.id.list);
+		return getView().findViewById(R.id.list);
 	}
 
 	public class AnthologyTitleListAdapter extends SimpleListAdapter<AnthologyTitle> {
@@ -213,9 +209,9 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
 
 		@Override
 		protected void onSetupView(AnthologyTitle anthology, int position, View target) {
-			TextView author = (TextView)target.findViewById(R.id.row_author);
+			TextView author = target.findViewById(R.id.row_author);
 			author.setText(anthology.getAuthor().getDisplayName());
-			TextView title = (TextView)target.findViewById(R.id.row_title);
+			TextView title = target.findViewById(R.id.row_title);
 			title.setText(anthology.getTitle());
 		}
 		
@@ -225,13 +221,13 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
 			mTitleText.setText(anthology.getTitle());
 			mAuthorText.setText(anthology.getAuthor().getDisplayName());
 			mAdd.setText(R.string.anthology_save);
-		};
-		
-		@Override
+		}
+
+        @Override
 		protected void onListChanged() {
 			mEditManager.setDirty(true);
-		};
-	}
+		}
+    }
 	
 	/**
 	 * Scroll to the current group
@@ -243,8 +239,7 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
-		return;
-	}
+    }
 	
 	public void searchWikipedia() {
 		String basepath = "https://en.wikipedia.org";
@@ -257,7 +252,7 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
 			pathTitle = pathTitle.substring(0, comma);
 		}
 		pathTitle = pathTitle.replace(" ", "+");
-		String path = basepath + "/w/index.php?title=Special:Search&search=%22" + pathTitle + "%22+" + pathAuthor + "";
+		String path = basepath + "/w/index.php?title=Special:Search&search=%22" + pathTitle + "%22+" + pathAuthor;
 		boolean success = false;
 		URL url;
 		
@@ -278,7 +273,7 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
 			}
 			String[] links = handler.getLinks();
 			for (int i = 0; i < links.length; i++) {
-				if (links[i].equals("") || success == true) {
+				if (links[i].equals("") || success) {
 					break;
 				}
 				url = new URL(basepath + links[i]);
@@ -296,7 +291,7 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
 					Toast.makeText(getActivity(), R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
 				}
 			}
-			if (success == false) {
+			if (!success) {
 				Toast.makeText(getActivity(), R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
 				return;
 			}
@@ -314,8 +309,7 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
 			Logger.logError(e);
 		}
 		fillAnthology();
-		return;
-	}
+    }
 	
 	private void showAnthologyConfirm(final ArrayList<String> titles) {
 		String anthology_title = "";
@@ -346,14 +340,12 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
 				}
 				AnthologyTitleListAdapter adapter = ((AnthologyTitleListAdapter)BookEditAnthology.this.getListView().getAdapter());
 				adapter.notifyDataSetChanged();
-				return;
-			}
+            }
 		}); 
 		alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, this.getResources().getString(R.string.button_cancel), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				//do nothing
-				return;
-			}
+            }
 		}); 
 		alertDialog.show();
 
@@ -420,7 +412,7 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
 
 	@Override
 	protected void onLoadBookDetails(BookData book) {
-		if (!false)
+		if (true)
 			mFields.setAll(book);
 	}
 

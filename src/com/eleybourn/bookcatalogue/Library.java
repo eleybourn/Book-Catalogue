@@ -139,7 +139,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
 	/** Multi-type adapter to manage list connection to cursor */
 	private MultitypeListAdapter mAdapter;
 	/** Task queue to get book lists in background */
-	private SimpleTaskQueue mTaskQueue = new SimpleTaskQueue("BoB-List", 1);
+	private final SimpleTaskQueue mTaskQueue = new SimpleTaskQueue("BoB-List", 1);
 	/** Preferred booklist state in next rebuild */
 	private int mRebuildState;
 
@@ -207,7 +207,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
 				mSearchText = "";
 			}
 
-			TextView searchTextView = (TextView) findViewById(R.id.search_text);
+			TextView searchTextView = findViewById(R.id.search_text);
 			if (mSearchText.equals("")) {
 				searchTextView.setVisibility(View.GONE);
 			} else {
@@ -280,7 +280,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
 	 * Support routine now that this activity is no longer a ListActivity
 	 */
 	private ListView getListView() {
-		return (ListView)findViewById(R.id.list);
+		return findViewById(R.id.list);
 	}
 
 	/**
@@ -351,9 +351,9 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
 			mTopRow = lv.getFirstVisiblePosition();
 			View v = lv.getChildAt(0);
 			mTopRowTop = v == null ? 0 : v.getTop();			
-		} catch (Exception e) {};
+		} catch (Exception e) {}
 
-		// New style, so use user-pref for rebuild
+        // New style, so use user-pref for rebuild
 		mRebuildState = BooklistPreferencesActivity.getRebuildState();
 		// Do a rebuild
 		mCurrentStyle = style;
@@ -454,11 +454,11 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
 					// work...
 					if (mTempList != null && mTempList != mList) {
 						if (mList == null || mTempList.getBuilder() != mList.getBuilder())
-							try { mTempList.getBuilder().close(); } catch (Exception e)  { /* Ignore */ };
+							try { mTempList.getBuilder().close(); } catch (Exception e)  { /* Ignore */ }
 
-						try { mTempList.close(); } catch (Exception e)  { /* Ignore */ };
+                        try { mTempList.close(); } catch (Exception e)  { /* Ignore */ }
 
-					}
+                    }
 				}
 			}
 			
@@ -536,7 +536,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
 
 		final int showHeaderFlags = (mCurrentStyle == null ? BooklistStyle.SUMMARY_SHOW_ALL : mCurrentStyle.getShowHeaderInfo());
 
-		TextView bookCounts = (TextView)findViewById(R.id.bookshelf_count);
+		TextView bookCounts = findViewById(R.id.bookshelf_count);
 		if ( (showHeaderFlags & BooklistStyle.SUMMARY_SHOW_COUNT) != 0) {
 			if (mUniqueBooks != mTotalBooks) 
 				bookCounts.setText(this.getString(R.string.displaying_n_books_in_m_entries, String.valueOf(mUniqueBooks), String.valueOf(mTotalBooks)));
@@ -557,7 +557,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
 		mAdapter = new MultitypeListAdapter(this, mList, mListHandler);
 
 		// Get the ListView and set it up
-		final ListView lv = (ListView)getListView();
+		final ListView lv = getListView();
 		final ListViewHolder lvHolder = new ListViewHolder();
 		ViewTagger.setTag(lv, R.id.TAG_HOLDER, lvHolder);
 
@@ -577,7 +577,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
 			} else {
 				lv.setSelectionFromTop(mTopRow, mTopRowTop);
 			}			
-		} catch (Exception e) {}; // Don't really care
+		} catch (Exception e) {}// Don't really care
 
 		// If a target position array is set, then queue a runnable to set the position
 		// once we know how many items appear in a typical view and once we can tell 
@@ -670,7 +670,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
 				// TODO: Investigate why BooklistPseudoCursor causes a scroll even when it is closed!
 				// Need to check isDead because BooklistPseudoCursor misbehaves when activity terminates and closes cursor
 				if (mLastTop != firstVisibleItem && !mIsDead && (showHeaderFlags != 0) ) {
-					ListViewHolder holder = (ListViewHolder)ViewTagger.getTag(view, R.id.TAG_HOLDER);
+					ListViewHolder holder = ViewTagger.getTag(view, R.id.TAG_HOLDER);
 					updateListHeader(holder, firstVisibleItem, hasLevel1, hasLevel2, showHeaderFlags);
 				}
 			}
@@ -771,8 +771,8 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
 		TextView level1Text;
 		TextView level2Text;
 		public ListViewHolder() {
-			level1Text = (TextView)findViewById(R.id.level_1_text);
-			level2Text = (TextView)findViewById(R.id.level_2_text);
+			level1Text = findViewById(R.id.level_1_text);
+			level2Text = findViewById(R.id.level_2_text);
 		}
 	}
 
@@ -853,8 +853,8 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
 			mDb.close();
 		} catch (Exception e) {
 			Logger.logError(e);			
-		};
-		mListHandler = null;
+		}
+        mListHandler = null;
 		mAdapter = null;
 		mBookshelfSpinner = null;
 		mBookshelfAdapter = null;
@@ -875,7 +875,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
 	
 	private void initBookshelfSpinner() {
 		// Setup the Bookshelf Spinner 
-		mBookshelfSpinner = (Spinner) findViewById(R.id.bookshelf_name);
+		mBookshelfSpinner = findViewById(R.id.bookshelf_name);
 		mBookshelfAdapter = new ArrayAdapter<String>(this, R.layout.spinner_frontpage);
 		mBookshelfAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		mBookshelfSpinner.setAdapter(mBookshelfAdapter);
@@ -934,23 +934,21 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
 			}
 		});
 		
-		ImageView bookshelfDown = (ImageView) findViewById(R.id.bookshelf_down);
+		ImageView bookshelfDown = findViewById(R.id.bookshelf_down);
 		bookshelfDown.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				mBookshelfSpinner.performClick();
-				return;
-			}
+            }
 		});
 		
-		TextView bookshelfNum = (TextView) findViewById(R.id.bookshelf_num);
+		TextView bookshelfNum = findViewById(R.id.bookshelf_num);
 		if (bookshelfNum != null) {
 			bookshelfNum.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					mBookshelfSpinner.performClick();
-					return;
-				}
+                }
 			});
 		}
 	}
@@ -1192,8 +1190,8 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
 	private void doSortMenu(final boolean showAll) {
 		LayoutInflater inf = this.getLayoutInflater();
 		View root = inf.inflate(R.layout.booklist_style_menu, null);
-		RadioGroup group = (RadioGroup)root.findViewById(R.id.radio_buttons);
-		LinearLayout main = (LinearLayout)root.findViewById(R.id.menu);
+		RadioGroup group = root.findViewById(R.id.radio_buttons);
+		LinearLayout main = root.findViewById(R.id.menu);
 
 		final AlertDialog sortDialog = new AlertDialog.Builder(this).setView(root).create();
 		sortDialog.setTitle(R.string.select_style);
@@ -1243,11 +1241,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
 		RadioButton btn = (RadioButton)v;
 		btn.setText(style.getDisplayName());
 
-		if (mCurrentStyle.getCanonicalName().equalsIgnoreCase(style.getCanonicalName())) {
-			btn.setChecked(true);
-		} else {
-			btn.setChecked(false);
-		}
+        btn.setChecked(mCurrentStyle.getCanonicalName().equalsIgnoreCase(style.getCanonicalName()));
 		group.addView(btn);
 
 		btn.setOnClickListener( new OnClickListener() {
@@ -1255,8 +1249,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
 			public void onClick(View v) {
 				handleSelectedStyle(style.getCanonicalName());
 				sortDialog.dismiss();
-				return;
-			}
+            }
 		});
 	}
 

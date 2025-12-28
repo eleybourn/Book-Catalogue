@@ -83,13 +83,13 @@ public abstract class GenericTask extends RunnableTask {
 		holder.task = this;
 		holder.rowId = cursor.getId();
 
-		holder.description = (TextView)view.findViewById(R.id.field_description);
-		holder.state = (TextView)view.findViewById(R.id.state);
-		holder.retry_info = (TextView)view.findViewById(R.id.retry_info);
-		holder.error = (TextView)view.findViewById(R.id.error);
-		holder.job_info = (TextView)view.findViewById(R.id.job_info);
-		holder.checkbox = (CheckBox)view.findViewById(R.id.checked);
-		holder.retry = (Button)view.findViewById(R.id.retry);
+		holder.description = view.findViewById(R.id.field_description);
+		holder.state = view.findViewById(R.id.state);
+		holder.retry_info = view.findViewById(R.id.retry_info);
+		holder.error = view.findViewById(R.id.error);
+		holder.job_info = view.findViewById(R.id.job_info);
+		holder.checkbox = view.findViewById(R.id.checked);
+		holder.retry = view.findViewById(R.id.retry);
 
 		ViewTagger.setTag(view, R.id.TAG_TASK_HOLDER, holder);
 
@@ -103,7 +103,7 @@ public abstract class GenericTask extends RunnableTask {
 	 */
 	@Override
 	public boolean bindView(View view, Context context, BindableItemSQLiteCursor bindableCursor, Object appInfo) {
-		TaskHolder holder = (TaskHolder)ViewTagger.getTag(view, R.id.TAG_TASK_HOLDER);
+		TaskHolder holder = ViewTagger.getTag(view, R.id.TAG_TASK_HOLDER);
 		TasksCursor cursor = (TasksCursor)bindableCursor;
 
 		// Update task info binding

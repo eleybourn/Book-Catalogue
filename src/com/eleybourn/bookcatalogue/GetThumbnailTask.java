@@ -82,9 +82,9 @@ public class GetThumbnailTask implements SimpleTask {
 	/** Flag indicating image was found in the cache */
 	private boolean mWasInCache = false;
 	/** The width of the thumbnail retrieved (based on preferences) */
-	private int mWidth;
+	private final int mWidth;
 	/** The height of the thumbnail retrieved (based on preferences) */
-	private int mHeight;
+	private final int mHeight;
 	/** Indicated we want the queue manager to call the finished() method. */
 	private boolean  mWantFinished = true;
 	
@@ -101,7 +101,7 @@ public class GetThumbnailTask implements SimpleTask {
 	 * @param v
 	 */
 	public static void clearOldTaskFromView(final ImageView v) {
-		final GetThumbnailTask oldTask = (GetThumbnailTask)ViewTagger.getTag(v, R.id.TAG_GET_THUMBNAIL_TASK);
+		final GetThumbnailTask oldTask = ViewTagger.getTag(v, R.id.TAG_GET_THUMBNAIL_TASK);
 		if (oldTask != null) {
 			ViewTagger.setTag(v, R.id.TAG_GET_THUMBNAIL_TASK, null);
 			mQueue.remove(oldTask);
@@ -138,46 +138,43 @@ public class GetThumbnailTask implements SimpleTask {
 	 */
 	@Override
 	public void run(SimpleTaskContext taskContext) {
-		try {
-			/*
-			try {
-				Thread.sleep(10); // Let the UI have a chance to do something if we are racking up images!
-			} catch (InterruptedException e) {
-			}
-			*/
-			//
-			// fetchBookCoverIntoImageView is an expensive operation. Makre wure its still needed.
-			//
+		/*
+        try {
+            Thread.sleep(10); // Let the UI have a chance to do something if we are racking up images!
+        } catch (InterruptedException e) {
+        }
+        */
+        //
+        // fetchBookCoverIntoImageView is an expensive operation. Makre wure its still needed.
+        //
 
-			// Get the view we are targeting and make sure it is valid
-			ImageView v = mView.get();
-			if (v == null) {
-				mView.clear();
-				mWantFinished = false;
-				return;
-			}
+        // Get the view we are targeting and make sure it is valid
+        ImageView v = mView.get();
+        if (v == null) {
+            mView.clear();
+            mWantFinished = false;
+            return;
+        }
 
-			// Make sure the view is still associated with this task. We don't want to overwrite the wrong image
-			// in a recycled view.
-			if (!this.equals(ViewTagger.getTag(v, R.id.TAG_GET_THUMBNAIL_TASK))) {
-				mWantFinished = false;
-				return;
-			}
+        // Make sure the view is still associated with this task. We don't want to overwrite the wrong image
+        // in a recycled view.
+        if (!this.equals(ViewTagger.getTag(v, R.id.TAG_GET_THUMBNAIL_TASK))) {
+            mWantFinished = false;
+            return;
+        }
 
-			File originalFile = CatalogueDBAdapter.fetchThumbnailByUuid(mBookHash);
+        File originalFile = CatalogueDBAdapter.fetchThumbnailByUuid(mBookHash);
 
-			if (!mCacheWasChecked) {
-				final String cacheId = Utils.getCoverCacheId(mBookHash, mWidth, mHeight);
-				mBitmap = taskContext.getUtils().fetchCachedImageIntoImageView(originalFile, null, cacheId);
-				mWasInCache = (mBitmap != null);
-			}
+        if (!mCacheWasChecked) {
+            final String cacheId = Utils.getCoverCacheId(mBookHash, mWidth, mHeight);
+            mBitmap = taskContext.getUtils().fetchCachedImageIntoImageView(originalFile, null, cacheId);
+            mWasInCache = (mBitmap != null);
+        }
 
-			if (mBitmap == null)
-				mBitmap = taskContext.getUtils().fetchBookCoverIntoImageView(null, mWidth, mHeight, true, mBookHash, false, false);
-			//}			
-		} finally {
-		}
-		taskContext.setRequiresFinish(mWantFinished);
+        if (mBitmap == null)
+            mBitmap = taskContext.getUtils().fetchBookCoverIntoImageView(null, mWidth, mHeight, true, mBookHash, false, false);
+        //}
+        taskContext.setRequiresFinish(mWantFinished);
 	}
 
 	/**

@@ -176,17 +176,15 @@ public class DatabaseDefinitions {
 		.setAlias(ALIAS_BOOK_AUTHOR)
 		.addReference(TBL_BOOKS, DOM_BOOK)
 		.addReference(TBL_AUTHORS, DOM_AUTHOR_ID);
-		;
 
-	/** Partial representation of ANTHOLOGY table */
+    /** Partial representation of ANTHOLOGY table */
 	public static final TableDefinition TBL_ANTHOLOGY = new TableDefinition(CatalogueDBAdapter.DB_TB_ANTHOLOGY)
 		.addDomains(DOM_ID, DOM_BOOK, DOM_AUTHOR_ID, DOM_TITLE, DOM_POSITION)
 		.setAlias(ALIAS_ANTHOLOGY)
 		.addReference(TBL_BOOKS, DOM_BOOK)
 		.addReference(TBL_AUTHORS, DOM_AUTHOR_ID);
-		;
 
-	/** Partial representation of SERIES table */
+    /** Partial representation of SERIES table */
 	public static final TableDefinition TBL_SERIES = new TableDefinition(CatalogueDBAdapter.DB_TB_SERIES)
 		.addDomains(DOM_ID, DOM_SERIES_NAME)
 		.setAlias(ALIAS_SERIES)
@@ -246,9 +244,8 @@ public class DatabaseDefinitions {
 		.setAlias(ALIAS_BOOK_LIST_NODE_SETTINGS)
 		.addIndex("ROOT_KIND", true, DOM_ROOT_KEY, DOM_KIND)
 		.addIndex("KIND_ROOT", true, DOM_KIND, DOM_ROOT_KEY);
-		;
-		
-	/** Definition for the custom boooklist styles table */
+
+    /** Definition for the custom boooklist styles table */
 	public static final TableDefinition TBL_BOOK_LIST_STYLES = new TableDefinition("book_list_styles",
 			DOM_ID, DOM_STYLE)
 		.setAlias(ALIAS_BOOK_LIST_STYLES)

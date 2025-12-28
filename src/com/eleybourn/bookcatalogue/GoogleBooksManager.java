@@ -45,9 +45,9 @@ public class GoogleBooksManager {
 
 		String path = "https://books.google.com/books/feeds/volumes";
 		if (mIsbn.equals("")) {
-			path += "?q=" + "intitle%3A"+title+"%2Binauthor%3A"+author+"";
+			path += "?q=" + "intitle%3A"+title+"%2Binauthor%3A"+author;
 		} else {
-			path += "?q=isbn%3A" + mIsbn + "";
+			path += "?q=isbn%3A" + mIsbn;
 		}
 		URL url;
 
@@ -82,7 +82,6 @@ public class GoogleBooksManager {
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
-		return;
-	}
+    }
 	
 }

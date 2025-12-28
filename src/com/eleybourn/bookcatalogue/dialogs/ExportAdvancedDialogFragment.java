@@ -80,7 +80,7 @@ public class ExportAdvancedDialogFragment extends BookCatalogueDialogFragment {
 	 * @param relId		Related view id
 	 */
 	private void setRelatedView(View root, int cbId, int relId) {
-		final CheckBox cb = (CheckBox)root.findViewById(cbId);
+		final CheckBox cb = root.findViewById(cbId);
 		final View rel = root.findViewById(relId);
 		rel.setOnClickListener(new View.OnClickListener() {
 			@Override

@@ -197,20 +197,18 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
 		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 		if (requestCode == PERMISSIONS_RESULT) {
 			// If request is cancelled, the result arrays are empty.
-			if (grantResults.length > 0) {
-				for (int res : grantResults) {
-					if (res != PackageManager.PERMISSION_GRANTED) {
-						finish();
-					}
-				}
-				// permission was granted, yay! Do the
-				// contacts-related task you need to do.
-				//} else {
-				//	// permission denied, boo! Disable the
-				//	// functionality that depends on this permission.
-				//	this.finish();
-			}
-		}
+            for (int res : grantResults) {
+                if (res != PackageManager.PERMISSION_GRANTED) {
+                    finish();
+                }
+            }
+            // permission was granted, yay! Do the
+            // contacts-related task you need to do.
+            //} else {
+            //	// permission denied, boo! Disable the
+            //	// functionality that depends on this permission.
+            //	this.finish();
+        }
 	}
 
 	@Override

@@ -98,7 +98,7 @@ public class FieldVisibility extends BookCatalogueActivity {
 		//ed.commit();
 		
 		// Display the list of fields
-		LinearLayout parent = (LinearLayout) findViewById(R.id.manage_fields_scrollview);
+		LinearLayout parent = findViewById(R.id.manage_fields_scrollview);
 		for (int i = 0; i<fields.length; i++) {
 			final String prefs_name = prefix + fields[i];
 			//Create the LinearLayout to hold each row
@@ -113,14 +113,13 @@ public class FieldVisibility extends BookCatalogueActivity {
 					boolean field_visibility = mPrefs.getBoolean(prefs_name, true);
 					ed.putBoolean(prefs_name, !field_visibility);
 					ed.commit();
-					return;
-				}};
+                }};
 
 			//Create the checkbox
 			boolean field_visibility = mPrefs.getBoolean(prefs_name, true);
 			CheckBox cb = new CheckBox(this);
 			cb.setChecked(field_visibility);
-			if (compulsory[i] == true) {
+			if (compulsory[i]) {
 				cb.setEnabled(false);
 			} else {
 				cb.setOnClickListener(listener);
@@ -132,7 +131,7 @@ public class FieldVisibility extends BookCatalogueActivity {
 			cb.setTextAppearance(this, android.R.style.TextAppearance_Large);
 			cb.setText(fieldRs[i]);
 			//cb.setPadding(0, 5, 0, 0);
-			if (compulsory[i] == true) {
+			if (compulsory[i]) {
 				cb.setTextColor(Color.GRAY);
 			//} else {
 				//cb.setOnClickListener(listener);

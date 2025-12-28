@@ -49,7 +49,7 @@ import com.eleybourn.bookcatalogue.database.SerializationUtils;
  */
 public class TarBackupWriter extends BackupWriterAbstract {
 	private final TarBackupContainer mContainer;
-	private TarArchiveOutputStream mOutput;
+	private final TarArchiveOutputStream mOutput;
 	private int mStyleCounter = 0;
 
 	/**
@@ -156,15 +156,9 @@ public class TarBackupWriter extends BackupWriterAbstract {
 				mOutput.write(buffer, 0, cnt);
 			}			
 		} finally {
-			try {
-				in.close();
-			} finally {
-			}
-			try {
-				mOutput.closeArchiveEntry();		
-			} finally {
-			}
-		}
+            in.close();
+            mOutput.closeArchiveEntry();
+        }
 		
 	}
 

@@ -49,8 +49,8 @@ import com.eleybourn.bookcatalogue.scanner.pic2shop.Scan;
  * @author Philip Warner
  */
 public class StorageUtils {
-	private static String UTF8 = "utf8";
-	private static int BUFFER_SIZE = 8192;
+	private static final String UTF8 = "utf8";
+	private static final int BUFFER_SIZE = 8192;
 
 	private static final String EXPORT_FILE_BASE_NAME = "bookCatalogue";
 	private static final String DATABASE_NAME = "book_catalogue";
@@ -202,7 +202,7 @@ public class StorageUtils {
 	 */
 	public static class FileDateComparator implements Comparator<File> {
 		/** Ascending is >= 0, Descenting is < 0. */
-		private int mDirection;
+		private final int mDirection;
 		/**
 		 * Constructor
 		 */
@@ -347,13 +347,13 @@ public class StorageUtils {
 		}		
 	}
 
-	private static String[] mPurgeableFilePrefixes = new String[]{
+	private static final String[] mPurgeableFilePrefixes = new String[]{
 			StorageUtils.EXPORT_FILE_BASE_NAME + "DbUpgrade",
 			StorageUtils.EXPORT_FILE_BASE_NAME + StorageUtils.EXPORT_FILE_BASE_NAME + "DbUpgrade", // Bug in prior version meant duplicated base name!
 			StorageUtils.EXPORT_FILE_BASE_NAME + "DbExport",
 			StorageUtils.EXPORT_FILE_BASE_NAME + StorageUtils.EXPORT_FILE_BASE_NAME + "DbExport", // Bug in prior version meant duplicated base name!
 			"error.log", "tmp"};
-	private static String[] mDebugFilePrefixes = new String[]{StorageUtils.EXPORT_FILE_BASE_NAME + "DbUpgrade", StorageUtils.EXPORT_FILE_BASE_NAME + "DbExport", "error.log", "export.csv"};
+	private static final String[] mDebugFilePrefixes = new String[]{StorageUtils.EXPORT_FILE_BASE_NAME + "DbUpgrade", StorageUtils.EXPORT_FILE_BASE_NAME + "DbExport", "error.log", "export.csv"};
 
 	/**
 	 * Collect and send com.eleybourn.bookcatalogue.debug info to a support email address. 

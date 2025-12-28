@@ -63,7 +63,7 @@ public class BackupUtils {
 		/** Get the object for the specified key */
 		Object get(T key);
 		/** Process the passed tring to store int the collection */
-		public void putItem(Bundle bundle, String key, String type, String value) throws IOException;
+        void putItem(Bundle bundle, String key, String type, String value) throws IOException;
 	}
 
 	/**

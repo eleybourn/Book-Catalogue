@@ -232,7 +232,7 @@ public class BooklistGroup implements Serializable {
 		public transient BooleanListProperty mAllSeries;
 
 		/** mAllSeries Parameter values and descriptions */
-		private static ItemEntries<Boolean> mAllSeriesItems = new ItemEntries<Boolean>();
+		private static final ItemEntries<Boolean> mAllSeriesItems = new ItemEntries<Boolean>();
 		static {
 			String kind = BookCatalogueApp.getResourceString(R.string.label_series);
 			mAllSeriesItems.add(null, R.string.use_default_setting);
@@ -293,7 +293,7 @@ public class BooklistGroup implements Serializable {
 
 		/** Support for 'Show Given Name' property */
 		public transient BooleanListProperty mGivenName;
-		private static ItemEntries<Boolean> mGivenNameFirstItems = new ItemEntries<Boolean>();
+		private static final ItemEntries<Boolean> mGivenNameFirstItems = new ItemEntries<Boolean>();
 		static {
 			mGivenNameFirstItems.add(null, R.string.use_default_setting);
 			mGivenNameFirstItems.add(false, R.string.family_name_first_eg);
@@ -302,7 +302,7 @@ public class BooklistGroup implements Serializable {
 
 		/** Support for 'Show All Authors of Book' property */
 		public transient BooleanListProperty mAllAuthors;		
-		private static ItemEntries<Boolean> mAllAuthorsItems = new ItemEntries<Boolean>();
+		private static final ItemEntries<Boolean> mAllAuthorsItems = new ItemEntries<Boolean>();
 		static {
 			String kind = BookCatalogueApp.getResourceString(R.string.label_author);
 			mAllAuthorsItems.add(null, R.string.use_default_setting);

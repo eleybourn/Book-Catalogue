@@ -21,8 +21,8 @@ public class MessageDialogFragment extends BookCatalogueDialogFragment {
 	 * 
 	 * @author pjw
 	 */
-	public static interface OnMessageDialogResultListener {
-		public void onMessageDialogResult(int dialogId, MessageDialogFragment dialog, int button);
+	public interface OnMessageDialogResultListener {
+		void onMessageDialogResult(int dialogId, MessageDialogFragment dialog, int button);
 	}
 
 	/**

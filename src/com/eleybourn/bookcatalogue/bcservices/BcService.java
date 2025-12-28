@@ -156,15 +156,15 @@ public class BcService {
 			for (Map.Entry<String, String> nv : params.entrySet()) {
 				if (args.length() > 0)
 					args.append('&');
-				args.append(URLEncoder.encode(nv.getKey(), UTF8));
+				args.append(URLEncoder.encode(nv.getKey(), StandardCharsets.UTF_8));
 				args.append('=');
-				args.append(URLEncoder.encode(nv.getValue(), UTF8));
+				args.append(URLEncoder.encode(nv.getValue(), StandardCharsets.UTF_8));
 			}
 		}
 
 		URL url;
 		if (method == Methods.Get) {
-			urlString += "?" + args.toString();
+			urlString += "?" + args;
 		}
 		url = new URL(urlString);
 

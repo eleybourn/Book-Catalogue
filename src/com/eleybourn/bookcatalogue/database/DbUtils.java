@@ -22,6 +22,7 @@ package com.eleybourn.bookcatalogue.database;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map.Entry;
@@ -172,25 +173,25 @@ public class DbUtils {
 	 * @author Philip Warner
 	 */
 	public static class TableDefinition {
-		public enum TableTypes { Standard, Temporary, FTS3, FTS4 };
+		public enum TableTypes { Standard, Temporary, FTS3, FTS4 }
 
-		/** Table name */
+        /** Table name */
 		private String mName;
 		/** Table alias */
 		private String mAlias;
 		/** List of domains in this table */
 		private ArrayList<DomainDefinition> mDomains = new ArrayList<DomainDefinition>();
 		/** Used for checking if a domain has already been added */ 
-		private HashSet<DomainDefinition> mDomainCheck = new HashSet<DomainDefinition>();
+		private final HashSet<DomainDefinition> mDomainCheck = new HashSet<DomainDefinition>();
 		/** Used for checking if a domain NAME has already been added */
-		private Hashtable<String, DomainDefinition> mDomainNameCheck = new Hashtable<String, DomainDefinition>();
+		private final Hashtable<String, DomainDefinition> mDomainNameCheck = new Hashtable<String, DomainDefinition>();
 
 		/** List of domains forming primary key */
-		private ArrayList<DomainDefinition> mPrimaryKey = new ArrayList<DomainDefinition>();
+		private final ArrayList<DomainDefinition> mPrimaryKey = new ArrayList<DomainDefinition>();
 		/** List of parent tables (tables referred to by foreign keys on this table) */
-		private Hashtable<TableDefinition, FkReference> mParents = new Hashtable<TableDefinition, FkReference>();
+		private final Hashtable<TableDefinition, FkReference> mParents = new Hashtable<TableDefinition, FkReference>();
 		/** List of child tables (tables referring to by foreign keys to this table) */
-		private Hashtable<TableDefinition, FkReference> mChildren = new Hashtable<TableDefinition, FkReference>();
+		private final Hashtable<TableDefinition, FkReference> mChildren = new Hashtable<TableDefinition, FkReference>();
 		/** List of index definitions for this table */
 		Hashtable<String, IndexDefinition> mIndexes = new Hashtable<String, IndexDefinition>();
 		/** Flag indicating table is temporary */
@@ -292,8 +293,7 @@ public class DbUtils {
 			 */
 			FkReference(TableDefinition parent, TableDefinition child, DomainDefinition...domains) {
 				this.domains = new ArrayList<DomainDefinition>();
-				for(DomainDefinition d: domains)
-					this.domains.add(d);			
+                Collections.addAll(this.domains, domains);
 				this.parent = parent;				
 				this.child = child;
 			}
@@ -345,8 +345,7 @@ public class DbUtils {
 			this.mName = name;
 			this.mAlias = name;
 			this.mDomains = new ArrayList<DomainDefinition>();
-			for(DomainDefinition d: domains)
-				this.mDomains.add(d);
+            Collections.addAll(this.mDomains, domains);
 		}
 
 		/**
@@ -457,8 +456,7 @@ public class DbUtils {
 		 */
 		public TableDefinition setPrimaryKey(DomainDefinition...domains) {
 			mPrimaryKey.clear();
-			for(DomainDefinition d: domains)
-				mPrimaryKey.add(d);			
+            Collections.addAll(mPrimaryKey, domains);
 			return this;
 		}
 
@@ -772,7 +770,7 @@ public class DbUtils {
 				sPlaceholders.append(", ?");
 			}
 			s.append(")\n	values (");
-			s.append(sPlaceholders.toString());
+			s.append(sPlaceholders);
 			s.append(")\n");
 			return s.toString();
 		}
@@ -936,13 +934,13 @@ public class DbUtils {
 	 */
 	public static class IndexDefinition {
 		/** Full name of index */
-		private String mName;
+		private final String mName;
 		/** Table to which index applies */
-		private TableDefinition mTable;
+		private final TableDefinition mTable;
 		/** Domains in index */
-		private DomainDefinition[] mDomains;
+		private final DomainDefinition[] mDomains;
 		/** Flag indicating index is unique */
-		private boolean mIsUnique;
+		private final boolean mIsUnique;
 
 		/**
 		 * Constructor.

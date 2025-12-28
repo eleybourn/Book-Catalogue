@@ -61,7 +61,7 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	/** The underlying task queue */
 	private final SimpleTaskQueue mQueue;
 	/** Handler so we can detect UI thread */
-	private Handler mHandler = new Handler();
+	private final Handler mHandler = new Handler();
 	/** List of messages queued; only used if activity not present when showToast() is called */
 	private ArrayList<String> mMessages = null;
 	/** Flag indicating dialog was cancelled */
@@ -93,23 +93,23 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	private boolean mSuccess = true;
 	
 	/** List of messages to be sent to the underlying activity, but not yet sent */
-	private ArrayList<TaskMessage> mTaskMessages = new ArrayList<TaskMessage>();
+	private final ArrayList<TaskMessage> mTaskMessages = new ArrayList<TaskMessage>();
 
 	/** Each message has a single method to deliver it and will only be called
 	 * when the underlying Activity is actually present.
 	 */
-	private static interface TaskMessage {
-		public void deliver(Activity a);
+	private interface TaskMessage {
+		void deliver(Activity a);
 	}
 
 	/** Listener for OnTaskFinished messages */
 	public interface OnTaskFinishedListener {
-		public void onTaskFinished(SimpleTaskQueueProgressFragment fragment, int taskId, boolean success, boolean cancelled, FragmentTask task);
+		void onTaskFinished(SimpleTaskQueueProgressFragment fragment, int taskId, boolean success, boolean cancelled, FragmentTask task);
 	}
 
 	/** Listener for OnAllTasksFinished messages */
 	public interface OnAllTasksFinishedListener {
-		public void onAllTasksFinished(SimpleTaskQueueProgressFragment fragment, int taskId, boolean success, boolean cancelled);
+		void onAllTasksFinished(SimpleTaskQueueProgressFragment fragment, int taskId, boolean success, boolean cancelled);
 	}
 
 	/**
@@ -226,7 +226,7 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	{
 		SimpleTaskQueueProgressFragment frag = SimpleTaskQueueProgressFragment.newInstance(message, isIndeterminate, taskId);
 		frag.enqueue(task);
-		frag.show(fm, (String) null);
+		frag.show(fm, null);
 		return frag;
 	}
 
@@ -511,7 +511,7 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	/**
 	 * Dismiss dialog if all tasks finished
 	 */
-	private SimpleTaskQueue.OnTaskFinishListener mTaskFinishListener = new SimpleTaskQueue.OnTaskFinishListener() {
+	private final SimpleTaskQueue.OnTaskFinishListener mTaskFinishListener = new SimpleTaskQueue.OnTaskFinishListener() {
 
 		@Override
 		public void onTaskFinish(SimpleTask task, Exception e) {
@@ -545,7 +545,7 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	/**
 	 * Runnable object to refresh the dialog
 	 */
-	private Runnable mRefresher = new Runnable() {
+	private final Runnable mRefresher = new Runnable() {
 		@Override
 		public void run() {
 			synchronized(mRefresher) {

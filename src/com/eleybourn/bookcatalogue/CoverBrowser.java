@@ -63,15 +63,15 @@ import com.eleybourn.bookcatalogue.utils.ViewTagger;
  */
 public class CoverBrowser {
 	// used in setting images sizes
-	private android.util.DisplayMetrics mMetrics;
+	private final android.util.DisplayMetrics mMetrics;
 	// Task queue for images
 	private SimpleTaskQueue mImageFetcher = null;
 	// Handler when an image is finally selected.
-	private OnImageSelectedListener mOnImageSelectedListener;
+	private final OnImageSelectedListener mOnImageSelectedListener;
 	// ISBN of book to lookup
-	private String mIsbn;
+	private final String mIsbn;
 	// Calling context
-	private Context mContext;
+	private final Context mContext;
 	// Libary Thing
 	private LibraryThingManager mLibraryThing;
 	// Calculated size for preview images
@@ -248,11 +248,11 @@ public class CoverBrowser {
 	@SuppressWarnings("unused")
 	private class GetFullImageTask implements SimpleTask {
 		// Switcher to use
-		private ImageSwitcher 	switcher;
+		private final ImageSwitcher 	switcher;
 		// Position of edition
-		private int position;
+		private final int position;
 		// ISBN
-		private String isbn;
+		private final String isbn;
 		// Resulting file spec
 		private String fileSpec;
 
@@ -289,7 +289,7 @@ public class CoverBrowser {
 				return;
 			// Update the ImageSwitcher
 			File file = new File(fileSpec);
-			TextView msgVw = (TextView)mDialog.findViewById(R.id.switcherStatus);
+			TextView msgVw = mDialog.findViewById(R.id.switcherStatus);
 			if (file.exists() && file.length() > 100) {
 				Drawable d = new BitmapDrawable(Utils.fetchFileIntoImageView(file, null, mPreviewSize*4, mPreviewSize*4, true ));
 				switcher.setImageDrawable(d);
@@ -344,14 +344,14 @@ public class CoverBrowser {
 		mDialog.setTitle(R.string.select_cover);
 
 		// The switcher will be used to display larger versions; needed for onItemClick().
-		final ImageSwitcher switcher = (ImageSwitcher) mDialog.findViewById(R.id.switcher);
+		final ImageSwitcher switcher = mDialog.findViewById(R.id.switcher);
 
 		// Setup the Gallery.
-		final Gallery gallery = (Gallery) mDialog.findViewById(R.id.gallery);
+		final Gallery gallery = mDialog.findViewById(R.id.gallery);
 		gallery.setVisibility(View.VISIBLE);
 
 		// Show help message
-		TextView msgVw = (TextView)mDialog.findViewById(R.id.switcherStatus);
+		TextView msgVw = mDialog.findViewById(R.id.switcherStatus);
 		msgVw.setText(R.string.click_on_thumb);
 		msgVw.setVisibility(View.VISIBLE);
 
@@ -369,7 +369,7 @@ public class CoverBrowser {
 		gallery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 	        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 	    		// Show status message
-	    		TextView msgVw = (TextView)mDialog.findViewById(R.id.switcherStatus);
+	    		TextView msgVw = mDialog.findViewById(R.id.switcherStatus);
         		switcher.setVisibility(View.GONE);
 	    		msgVw.setText(R.string.loading);
         		msgVw.setVisibility(View.VISIBLE);
@@ -421,7 +421,7 @@ public class CoverBrowser {
 	 * @author Philip Warner
 	 */
 	private class FileManager {
-		private Bundle mFiles = new Bundle();
+		private final Bundle mFiles = new Bundle();
     	LibraryThingManager mLibraryThing = new LibraryThingManager(mContext);
 
     	private boolean isGood(File f) {
@@ -563,7 +563,7 @@ public class CoverBrowser {
 	 * @author Philip Warner
 	 */
 	public class CoverImageAdapter extends BaseAdapter {
-		private int mGalleryItemBackground;
+		private final int mGalleryItemBackground;
 		
 		/**
 		 * Constructor

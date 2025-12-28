@@ -33,25 +33,25 @@ import java.util.Date;
  */
 public interface Exporter {
 	/** Flag value to indicate new books and books with more recent update_date fields should be exported */
-	public static final int EXPORT_SINCE = 2;
-	public static final int EXPORT_PREFERENCES = 4;
-	public static final int EXPORT_STYLES = 8;
-	public static final int EXPORT_COVERS = 16;
-	public static final int EXPORT_DETAILS = 32;
+    int EXPORT_SINCE = 2;
+	int EXPORT_PREFERENCES = 4;
+	int EXPORT_STYLES = 8;
+	int EXPORT_COVERS = 16;
+	int EXPORT_DETAILS = 32;
 	/** Flag value to indicate ALL books should be exported */
-	public static final int EXPORT_ALL = EXPORT_PREFERENCES | EXPORT_STYLES | EXPORT_COVERS | EXPORT_DETAILS;
-	public static final int EXPORT_ALL_SINCE = EXPORT_PREFERENCES | EXPORT_STYLES | EXPORT_COVERS | EXPORT_DETAILS | EXPORT_SINCE;
-	public static final int EXPORT_MASK = EXPORT_ALL | EXPORT_SINCE;
+    int EXPORT_ALL = EXPORT_PREFERENCES | EXPORT_STYLES | EXPORT_COVERS | EXPORT_DETAILS;
+	int EXPORT_ALL_SINCE = EXPORT_PREFERENCES | EXPORT_STYLES | EXPORT_COVERS | EXPORT_DETAILS | EXPORT_SINCE;
+	int EXPORT_MASK = EXPORT_ALL | EXPORT_SINCE;
 
 	/**
 	 * Listener interface to get progress messages.
 	 * 
 	 * @author pjw
 	 */
-	public interface ExportListener {
-		public void setMax(int max);
-		public void onProgress(String message, int position);
-		public boolean isCancelled();
+    interface ExportListener {
+		void setMax(int max);
+		void onProgress(String message, int position);
+		boolean isCancelled();
 	}
 
 	/** 
@@ -64,6 +64,6 @@ public interface Exporter {
 	 * 
 	 * @throws IOException
 	 */
-	public boolean export(OutputStream outputStream, Exporter.ExportListener listener, final int backupFlags, Date since) throws IOException;
+    boolean export(OutputStream outputStream, Exporter.ExportListener listener, final int backupFlags, Date since) throws IOException;
 
 }

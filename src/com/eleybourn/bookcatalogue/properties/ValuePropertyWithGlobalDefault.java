@@ -186,10 +186,6 @@ public abstract class ValuePropertyWithGlobalDefault<T extends Object> extends P
 		// We have a default value, and no global prefs
 		if (value == null && mDefaultValue == null) {
 			return true;
-		} else if (value != null && mDefaultValue != null && value.equals(mDefaultValue)) {
-			return true;
-		} else {
-			return false;
-		}
+		} else return value != null && value.equals(mDefaultValue);
 	}
 }

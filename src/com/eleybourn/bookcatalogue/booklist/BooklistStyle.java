@@ -173,7 +173,7 @@ public class BooklistStyle implements Iterable<BooklistGroup>, Serializable {
 	// ENHANCE: Add filters based on 'loaned', 'anthology' and (maybe) duplicate books
 	
 	/** Support for 'READ' filter */
-	private static ItemEntries<Integer> mReadFilterListItems = new ItemEntries<Integer>();
+	private static final ItemEntries<Integer> mReadFilterListItems = new ItemEntries<Integer>();
 	static {
 		mReadFilterListItems.add(FILTER_UNREAD, R.string.select_unread_only);
 		mReadFilterListItems.add(FILTER_READ, R.string.select_read_only);
@@ -181,7 +181,7 @@ public class BooklistStyle implements Iterable<BooklistGroup>, Serializable {
 	}
 
 	/** Support for 'Condensed' property */
-	private static ItemEntries<Boolean> mCondensedListItems = new ItemEntries<Boolean>();
+	private static final ItemEntries<Boolean> mCondensedListItems = new ItemEntries<Boolean>();
 	static {
 		mCondensedListItems.add(null, R.string.use_default_setting);
 		mCondensedListItems.add(false, R.string.normal);
@@ -196,7 +196,7 @@ public class BooklistStyle implements Iterable<BooklistGroup>, Serializable {
 	public static final Integer SUMMARY_SHOW_ALL = 0xff;
 	
 	/** Support for 'Show List Header Info' property */
-	private static ItemEntries<Integer> mShowHeaderInfoListItems = new ItemEntries<Integer>();
+	private static final ItemEntries<Integer> mShowHeaderInfoListItems = new ItemEntries<Integer>();
 	static {
 		mShowHeaderInfoListItems.add(null, R.string.use_default_setting);
 		mShowHeaderInfoListItems.add(SUMMARY_HIDE, R.string.hide_summary_details);

@@ -40,13 +40,13 @@ public class SimpleXmlFilter {
 	private final DataStore mRootData = new DataStore();
 
 	public interface XmlListener {
-		public void onStart(SimpleXmlFilter.BuilderContext bc, ElementContext c);
-		public void onFinish(SimpleXmlFilter.BuilderContext bc, ElementContext c);
+		void onStart(SimpleXmlFilter.BuilderContext bc, ElementContext c);
+		void onFinish(SimpleXmlFilter.BuilderContext bc, ElementContext c);
 	}
 
-	public static interface DataStoreProvider {
-		public void addArrayItem(Bundle b);		
-		public Bundle getData();
+	public interface DataStoreProvider {
+		void addArrayItem(Bundle b);
+		Bundle getData();
 	}
 
 	public class DataStore implements DataStoreProvider {
@@ -72,7 +72,7 @@ public class SimpleXmlFilter {
 		public DataStoreProvider parent;
 
 		String collectField;
-		private XmlFilter mFilter;
+		private final XmlFilter mFilter;
 		ArrayList<AttrFilter> attrs = null;
 
 		XmlListener listener = null;
@@ -234,7 +234,7 @@ public class SimpleXmlFilter {
 		return this;
 	}
 
-	private static XmlHandler mHandleStart = new XmlHandler() {
+	private static final XmlHandler mHandleStart = new XmlHandler() {
 		@Override
 		public void process(ElementContext context) {
 			BuilderContext bc = (BuilderContext)context.userArg;
@@ -266,7 +266,7 @@ public class SimpleXmlFilter {
 
 		}
 	};
-	private static XmlHandler mHandleFinish = new XmlHandler() {
+	private static final XmlHandler mHandleFinish = new XmlHandler() {
 		@Override
 		public void process(ElementContext context) {
 			BuilderContext bc = (BuilderContext)context.userArg;
@@ -353,7 +353,7 @@ public class SimpleXmlFilter {
 		return this;
 	}
 
-	private static XmlHandler mTextHandler = new XmlHandler() {
+	private static final XmlHandler mTextHandler = new XmlHandler() {
 		@Override
 		public void process(ElementContext context) {
 			final BuilderContext c = (BuilderContext)context.userArg;
@@ -361,7 +361,7 @@ public class SimpleXmlFilter {
 		}
 	};
 
-	private static XmlHandler mLongHandler = new XmlHandler() {
+	private static final XmlHandler mLongHandler = new XmlHandler() {
 
 		@Override
 		public void process(ElementContext context) {
@@ -376,7 +376,7 @@ public class SimpleXmlFilter {
 		}
 	};
 	
-	private static XmlHandler mDoubleHandler = new XmlHandler() {
+	private static final XmlHandler mDoubleHandler = new XmlHandler() {
 
 		@Override
 		public void process(ElementContext context) {
@@ -391,7 +391,7 @@ public class SimpleXmlFilter {
 		}
 	};
 
-	private static XmlHandler mBooleanHandler = new XmlHandler() {
+	private static final XmlHandler mBooleanHandler = new XmlHandler() {
 
 		@Override
 		public void process(ElementContext context) {

@@ -47,21 +47,21 @@ import android.os.Parcelable;
  * The interface of all image collections used in gallery.
  */
 public interface CropIImageList extends Parcelable {
-	public HashMap<String, String> getBucketIds();
+	HashMap<String, String> getBucketIds();
 
-	public void deactivate();
+	void deactivate();
 
 	/**
 	 * Returns the count of image objects.
 	 * 
 	 * @return the number of images
 	 */
-	public int getCount();
+    int getCount();
 
 	/**
 	 * @return true if the count of image objects is zero.
 	 */
-	public boolean isEmpty();
+    boolean isEmpty();
 
 	/**
 	 * Returns the image at the ith position.
@@ -70,7 +70,7 @@ public interface CropIImageList extends Parcelable {
 	 *            the position
 	 * @return the image at the ith position
 	 */
-	public CropIImage getImageAt(int i);
+    CropIImage getImageAt(int i);
 
 	/**
 	 * Returns the image with a particular Uri.
@@ -78,14 +78,14 @@ public interface CropIImageList extends Parcelable {
 	 * @param uri
 	 * @return the image with a particular Uri. null if not found.
 	 */
-	public CropIImage getImageForUri(Uri uri);
+    CropIImage getImageForUri(Uri uri);
 
 	/**
 	 * 
 	 * @param image
 	 * @return true if the image was removed.
 	 */
-	public boolean removeImage(CropIImage image);
+    boolean removeImage(CropIImage image);
 
 	/**
 	 * Removes the image at the ith position.
@@ -93,9 +93,9 @@ public interface CropIImageList extends Parcelable {
 	 * @param i
 	 *            the position
 	 */
-	public boolean removeImageAt(int i);
+    boolean removeImageAt(int i);
 
-	public int getImageIndex(CropIImage image);
+	int getImageIndex(CropIImage image);
 
 	/**
 	 * Generate thumbnail for the image (if it has not been generated.)
@@ -103,15 +103,15 @@ public interface CropIImageList extends Parcelable {
 	 * @param index
 	 *            the position of the image
 	 */
-	public void checkThumbnail(int index) throws IOException;
+    void checkThumbnail(int index) throws IOException;
 
 	/**
 	 * Opens this list for operation.
 	 */
-	public void open(ContentResolver resolver);
+    void open(ContentResolver resolver);
 
 	/**
 	 * Closes this list to release resources, no further operation is allowed.
 	 */
-	public void close();
+    void close();
 }

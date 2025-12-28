@@ -121,7 +121,7 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 	 * child-list cursors for ExpanadableList objects to be closed prematurely. So we seem to have
 	 * to roll our own...see http://osdir.com/ml/Android-Developers/2011-03/msg02605.html.
 	 */
-	private ArrayList<Cursor> mManagedCursors = new ArrayList<Cursor>();
+	private final ArrayList<Cursor> mManagedCursors = new ArrayList<Cursor>();
 	@Override    
 	public void startManagingCursor(Cursor c)
 	{     
@@ -243,7 +243,7 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 	 */
 	private void bookshelf() {
 		// Setup the Bookshelf Spinner 
-		mBookshelfText = (Spinner) findViewById(R.id.bookshelf_name);
+		mBookshelfText = findViewById(R.id.bookshelf_name);
 		spinnerAdapter = new ArrayAdapter<String>(this, R.layout.spinner_frontpage);
 		spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		mBookshelfText.setAdapter(spinnerAdapter);
@@ -298,22 +298,20 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 			}
 		});
 		
-		ImageView mBookshelfDown = (ImageView) findViewById(R.id.bookshelf_down);
+		ImageView mBookshelfDown = findViewById(R.id.bookshelf_down);
 		mBookshelfDown.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				mBookshelfText.performClick();
-				return;
-			}
+            }
 		});
 		
-		TextView mBookshelfNum = (TextView) findViewById(R.id.bookshelf_num);
+		TextView mBookshelfNum = findViewById(R.id.bookshelf_num);
 		mBookshelfNum.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				mBookshelfText.performClick();
-				return;
-			}
+            }
 		});
 		
 	}
@@ -334,19 +332,24 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 		protected String[] mFrom = null;	// Source fields for top level resource
 		protected int[] mTo = null;			// Dest field resource IDs for top level
 		// Methods to 'get' list/view related items
-		public int getLayout() { return mLayout; };
-		public int getLayoutChild() { return mChildLayout; };
-		public Cursor getCursor() {
+		public int getLayout() { return mLayout; }
+
+        public int getLayoutChild() { return mChildLayout; }
+
+        public Cursor getCursor() {
 			if (mCursor == null) {
 				newGroupCursor();
 				BookCatalogueClassic.this.startManagingCursor(mCursor);
 			}
 			return mCursor;
-		};
-		abstract public Cursor newGroupCursor();
-		public String[] getFrom() { return mFrom; };
-		public int[] getTo() { return mTo; };
-		/**
+		}
+
+        abstract public Cursor newGroupCursor();
+		public String[] getFrom() { return mFrom; }
+
+        public int[] getTo() { return mTo; }
+
+        /**
 		 * Method to return the group cursor column that contains text that can be used 
 		 * to derive the section name used by the FastScroller overlay.
 		 * 
@@ -488,7 +491,7 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 			 */
 			private void initViewInfo(View v, TextViewInfo info, int id, String setting) {
 				info.show = mPrefs.getBoolean(setting, true);
-				info.view = (TextView) v.findViewById(id);
+				info.view = v.findViewById(id);
 				if (!info.show) {
 					if (info.view != null)
 						info.view.setVisibility(View.GONE);
@@ -503,7 +506,7 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 			 */
 			private void initViewInfo(View v, ImageViewInfo info, int id, String setting) {
 				info.show = mPrefs.getBoolean(setting, true);
-				info.view = (ImageView) v.findViewById(id);
+				info.view = v.findViewById(id);
 				if (!info.show) {
 					info.view.setVisibility(View.GONE);
 				} else {
@@ -539,7 +542,7 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 			 */
 			@Override 
 			protected void bindChildView(View view, Context context, Cursor origCursor, boolean isLastChild) {
-				BookHolder holder = (BookHolder) ViewTagger.getTag(view, R.id.TAG_HOLDER);
+				BookHolder holder = ViewTagger.getTag(view, R.id.TAG_HOLDER);
 				final BooksCursor snapshot = (BooksCursor) origCursor;
 				final BooksRowView rowView = snapshot.getRowView();
 
@@ -1017,7 +1020,7 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 		
 		gotoCurrentGroup();
 		/* Add number to bookshelf */
-		TextView mBookshelfNumView = (TextView) findViewById(R.id.bookshelf_num);
+		TextView mBookshelfNumView = findViewById(R.id.bookshelf_num);
 		try {
 			int numBooks = mDbHelper.countBooks(bookshelf);
 			mBookshelfNumView.setText("(" + numBooks + ")");
@@ -1042,155 +1045,110 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 		RadioButton radio_author = new RadioButton(this);
 		radio_author.setText(R.string.sortby_author);
 		group.addView(radio_author);
-		if (sort == SORT_AUTHOR) {
-			radio_author.setChecked(true);
-		} else {
-			radio_author.setChecked(false);
-		}
+        radio_author.setChecked(sort == SORT_AUTHOR);
 		radio_author.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				saveSortBy(SORT_AUTHOR);
 				sortDialog.dismiss();
-				return;
-			}
+            }
 		});
 		
 		RadioButton radio_author_one = new RadioButton(this);
 		radio_author_one.setText(R.string.sortby_author_one);
 		group.addView(radio_author_one);
-		if (sort == SORT_AUTHOR_ONE) {
-			radio_author_one.setChecked(true);
-		} else {
-			radio_author_one.setChecked(false);
-		}
+        radio_author_one.setChecked(sort == SORT_AUTHOR_ONE);
 		radio_author_one.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				saveSortBy(SORT_AUTHOR_ONE);
 				sortDialog.dismiss();
-				return;
-			}
+            }
 		});
 		
 		RadioButton radio_author_given = new RadioButton(this);
 		radio_author_given.setText(R.string.sortby_author_given);
 		group.addView(radio_author_given);
-		if (sort == SORT_AUTHOR_GIVEN) {
-			radio_author_given.setChecked(true);
-		} else {
-			radio_author_given.setChecked(false);
-		}
+        radio_author_given.setChecked(sort == SORT_AUTHOR_GIVEN);
 		radio_author_given.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				saveSortBy(SORT_AUTHOR_GIVEN);
 				sortDialog.dismiss();
-				return;
-			}
+            }
 		});
 		
 		RadioButton radio_title = new RadioButton(this);
 		radio_title.setText(R.string.sortby_title);
 		group.addView(radio_title);
-		if (sort == SORT_TITLE) {
-			radio_title.setChecked(true);
-		} else {
-			radio_title.setChecked(false);
-		}
+        radio_title.setChecked(sort == SORT_TITLE);
 		radio_title.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				saveSortBy(SORT_TITLE);
 				sortDialog.dismiss();
-				return;
-			}
+            }
 		});
 		
 		RadioButton radio_series = new RadioButton(this);
 		radio_series.setText(R.string.sortby_series);
 		group.addView(radio_series);
-		if (sort == SORT_SERIES) {
-			radio_series.setChecked(true);
-		} else {
-			radio_series.setChecked(false);
-		}
+        radio_series.setChecked(sort == SORT_SERIES);
 		radio_series.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				saveSortBy(SORT_SERIES);
 				sortDialog.dismiss();
-				return;
-			}
+            }
 		});
 		
 		RadioButton radio_genre = new RadioButton(this);
 		radio_genre.setText(R.string.sortby_genre);
 		group.addView(radio_genre);
-		if (sort == SORT_GENRE) {
-			radio_genre.setChecked(true);
-		} else {
-			radio_genre.setChecked(false);
-		}
+        radio_genre.setChecked(sort == SORT_GENRE);
 		radio_genre.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				saveSortBy(SORT_GENRE);
 				sortDialog.dismiss();
-				return;
-			}
+            }
 		});
 
 		
 		RadioButton radio_loan = new RadioButton(this);
 		radio_loan.setText(R.string.sortby_loan);
 		group.addView(radio_loan);
-		if (sort == SORT_LOAN) {
-			radio_loan.setChecked(true);
-		} else {
-			radio_loan.setChecked(false);
-		}
+        radio_loan.setChecked(sort == SORT_LOAN);
 		radio_loan.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				saveSortBy(SORT_LOAN);
 				sortDialog.dismiss();
-				return;
-			}
+            }
 		});
 		
 		RadioButton radio_unread = new RadioButton(this);
 		radio_unread.setText(R.string.sortby_unread);
 		group.addView(radio_unread);
-		if (sort == SORT_UNREAD) {
-			radio_unread.setChecked(true);
-		} else {
-			radio_unread.setChecked(false);
-		}
+        radio_unread.setChecked(sort == SORT_UNREAD);
 		radio_unread.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				saveSortBy(SORT_UNREAD);
 				sortDialog.dismiss();
-				return;
-			}
+            }
 		});
 		
 		RadioButton radio_published = new RadioButton(this);
 		radio_published.setText(R.string.sortby_published);
 		group.addView(radio_published);
-		if (sort == SORT_PUBLISHED) {
-			radio_published.setChecked(true);
-		} else {
-			radio_published.setChecked(false);
-		}
+        radio_published.setChecked(sort == SORT_PUBLISHED);
 		radio_published.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				saveSortBy(SORT_PUBLISHED);
 				sortDialog.dismiss();
-				return;
-			}
+            }
 		});
 	}
 	
@@ -1263,8 +1221,7 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
-		return;
-	}
+    }
 	
 	/*
 	 * Load Current group from preferences
@@ -1293,8 +1250,7 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
-		return;
-	}
+    }
 
 	/**
 	 * Expand and scroll to the current group
@@ -1341,8 +1297,7 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 				mLoadingGroups -= 1; 
 			}
 		}
-		return;
-	}
+    }
 		
 	/**
 	 * add / remove items from the current group arrayList
@@ -1364,7 +1319,7 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 			if (adj < 0) {
 				currentGroup.remove(index);	
 			} else {
-				if (force == true) {
+				if (force) {
 					currentGroup.remove(index);	
 					currentGroup.add(pos);
 					/* Add the latest position to the preferences */
@@ -1694,14 +1649,14 @@ public class BookCatalogueClassic extends ExpandableListActivity {
 		if (mTaskQueue != null) {
 			try {
 				mTaskQueue.finish();
-			} catch (Exception e) {};
-			mTaskQueue = null;				
+			} catch (Exception e) {}
+            mTaskQueue = null;
 		}
 		if (mUtils != null) {
 			try {
 				mUtils.close();
-			} catch (Exception e) {};
-			mUtils = null;				
+			} catch (Exception e) {}
+            mUtils = null;
 		}
 		super.onDestroy();
 	} 

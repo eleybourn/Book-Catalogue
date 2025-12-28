@@ -82,7 +82,7 @@ public class ShelfAddBookHandler extends ApiHandler {
 	 * Add the passed book to the passed shelf
 	 */
 	public long add(String shelfName, long grBookId) 
-			throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, IOException, 
+			throws OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, IOException,
 			NotAuthorizedException, BookNotFoundException, NetworkException
 	{
         return doCall(shelfName, grBookId, false);
@@ -92,7 +92,7 @@ public class ShelfAddBookHandler extends ApiHandler {
 	 * Remove the passed book from the passed shelf
 	 */	
 	public long remove(String shelfName, long grBookId) 
-			throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, IOException, 
+			throws OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, IOException,
 			NotAuthorizedException, BookNotFoundException, NetworkException
 	{
         return doCall(shelfName, grBookId, true);
@@ -102,7 +102,7 @@ public class ShelfAddBookHandler extends ApiHandler {
 	 * Do the main work; same API call for add & remove
 	 */
 	private long doCall(String shelfName, long grBookId, boolean isRemove) 
-			throws ClientProtocolException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, IOException, 
+			throws OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, IOException,
 			NotAuthorizedException, BookNotFoundException, NetworkException
 	{
 		mReviewId = 0;
@@ -141,7 +141,7 @@ public class ShelfAddBookHandler extends ApiHandler {
 		XmlFilter.buildFilter(mRootFilter, "shelf", "review-id").setEndAction(mHandleReviewId);
 	}
 
-	private XmlHandler mHandleReviewId = new XmlHandler() {
+	private final XmlHandler mHandleReviewId = new XmlHandler() {
 		@Override
 		public void process(ElementContext context) {
 			try {

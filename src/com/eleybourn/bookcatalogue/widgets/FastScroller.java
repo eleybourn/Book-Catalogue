@@ -92,7 +92,7 @@ import com.eleybourn.bookcatalogue.R;
 public class FastScroller {
    
     // Minimum number of pages to justify showing a fast scroll thumb
-    private static int MIN_PAGES = 4;
+    private static final int MIN_PAGES = 4;
     // Scroll thumb not showing
     private static final int STATE_NONE = 0;
     // ENHANCE: Not implemented yet - fade-in transition
@@ -114,7 +114,7 @@ public class FastScroller {
     private RectF mOverlayPos;
     private final int mOverlaySize;
 
-    private AbsListView mList;
+    private final AbsListView mList;
     private boolean mScrollCompleted;
     private int mVisibleItem;
     private TextPaint mPaint;
@@ -130,7 +130,7 @@ public class FastScroller {
     
     private int mState;
     
-    private Handler mHandler = new Handler();
+    private final Handler mHandler = new Handler();
     
     private BaseAdapter mListAdapter;
     private SectionIndexer mSectionIndexerV1;
@@ -157,11 +157,11 @@ public class FastScroller {
         try {
 	        final float scale = context.getResources().getDisplayMetrics().scaledDensity;
         	mLargeTextScaledSize = (int) (mLargeTextSpSize * scale);
-        	overlaySize = (int) (3 * mLargeTextScaledSize);
+        	overlaySize = 3 * mLargeTextScaledSize;
         } catch (Exception e) {
         	// Not a critical value; just try to get it close.
         	mLargeTextScaledSize = mLargeTextSpSize;
-        	overlaySize = (int) (3 * mLargeTextScaledSize);
+        	overlaySize = 3 * mLargeTextScaledSize;
         }
         mOverlaySize = overlaySize;
         init(context);
@@ -449,7 +449,7 @@ public class FastScroller {
 
 		int index = (int) (position * count);
 		if (mList instanceof ListView) { // This INCLUDES ExpandableListView
-			((ListView) mList).setSelectionFromTop(index + mListOffset, 0);
+			mList.setSelectionFromTop(index + mListOffset, 0);
 		} else {
 			mList.setSelection(index + mListOffset);
 		}
@@ -470,7 +470,7 @@ public class FastScroller {
 
 		if ( (mSectionTextV2 != null ) || (mSectionTextV1 != null && mSectionTextV1.length() > 0)) {
 			mDrawOverlay = true; //(mSectionText.length() != 1 || mSectionText.charAt(0) != ' ')
-							; //&& sectionIndex < sections.length;
+            //&& sectionIndex < sections.length;
 		} else {
 			mDrawOverlay = false;
 		}

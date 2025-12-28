@@ -25,19 +25,19 @@ import java.io.InputStream;
 public interface Importer {
 
 	/** Flag value to indicate ALL books should be imported */
-	public static final int IMPORT_ALL = 1;
+    int IMPORT_ALL = 1;
 	/** Flag value to indicate new books and books with more recent update_date fields should be imported */
-	public static final int IMPORT_NEW_OR_UPDATED = 2;
+    int IMPORT_NEW_OR_UPDATED = 2;
 
 	/**
 	 * Listener interface to get progress messages.
 	 * 
 	 * @author pjw
 	 */
-	public interface OnImporterListener {
-		public void onProgress(String message, int position);
-		public boolean isCancelled();
-		public void setMax(int max);
+    interface OnImporterListener {
+		void onProgress(String message, int position);
+		boolean isCancelled();
+		void setMax(int max);
 	}
 
 	/**
@@ -46,8 +46,8 @@ public interface Importer {
 	 * 
 	 * @author pjw
 	 */
-	public interface CoverFinder {
-		public void copyOrRenameCoverFile(String srcUuid, long srcId, long dstId) throws IOException;
+    interface CoverFinder {
+		void copyOrRenameCoverFile(String srcUuid, long srcId, long dstId) throws IOException;
 	}
 
 	/**
@@ -61,5 +61,5 @@ public interface Importer {
 	 * 
 	 * @throws IOException
 	 */
-	public boolean importBooks(InputStream importStream, Importer.CoverFinder coverFinder, Importer.OnImporterListener listener, int importFlags) throws IOException;
+    boolean importBooks(InputStream importStream, Importer.CoverFinder coverFinder, Importer.OnImporterListener listener, int importFlags) throws IOException;
 }

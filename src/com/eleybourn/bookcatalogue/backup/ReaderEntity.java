@@ -37,10 +37,10 @@ import com.eleybourn.bookcatalogue.database.SerializationUtils.DeserializationEx
  */
 public interface ReaderEntity {
 	/** Supported entity types */
-	public enum BackupEntityType { Cover, Books, Info, Database, Preferences, BooklistStyle }
+    enum BackupEntityType { Cover, Books, Info, Database, Preferences, BooklistStyle }
 
 	/** Get the original "file name" of the object */
-	public String getName();
+    String getName();
 	/** Get the type of this entity */
 	BackupEntityType getType();
 	/** get the stream to read the entity */
@@ -50,11 +50,11 @@ public interface ReaderEntity {
 	/** Save the data to a file, using the passed file name & path */
 	void saveToFile(File outFile) throws IOException;
 	/** Read the data into a bundle */
-	public Bundle getBundle() throws IOException;
+    Bundle getBundle() throws IOException;
 	/** Read the data into preferences */
-	public void getPreferences(SharedPreferences prefs) throws IOException;
+    void getPreferences(SharedPreferences prefs) throws IOException;
 	/** Read the data as a Serializable object */
-	public Serializable getSerializable() throws IOException, DeserializationException;
+    Serializable getSerializable() throws IOException, DeserializationException;
 	/** Modified date from archive entry */
-	public Date getDateModified();
+    Date getDateModified();
 }

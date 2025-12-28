@@ -289,7 +289,7 @@ public class FlattenedBooklist {
 	/**
 	 * Cleanup the statements
 	 */
-	public void finalize() {
+    protected void finalize() {
 		close();
 	}
 }

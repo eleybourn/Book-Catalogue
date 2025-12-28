@@ -45,8 +45,7 @@ public class BlankValidator implements DataValidator {
 				}
 				data.putString(datum, s);
 			}
-			return;
-		} catch (Exception e) {
+        } catch (Exception e) {
 			throw new ValidatorException(R.string.vldt_blank_required, new Object[]{datum.getKey()});
 		}
 	}

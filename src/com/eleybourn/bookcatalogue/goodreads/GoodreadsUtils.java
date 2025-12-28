@@ -178,8 +178,7 @@ public class GoodreadsUtils {
 							StandardDialogs.goodreadsAuthAlert(fragment.getActivity());
 						}
 					});
-					return;
-				} else {
+                } else {
 					fragment.showToast(msg);
 				}
 
@@ -245,8 +244,7 @@ public class GoodreadsUtils {
 							StandardDialogs.goodreadsAuthAlert(fragment.getActivity());
 						}
 					});
-					return;
-				} else {
+                } else {
 					fragment.showToast(getState());
 				}
 			}

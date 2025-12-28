@@ -102,10 +102,9 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 
 		} catch (Exception e) {
 			Logger.logError(e);
-		} finally {
 		}
 
-		// Populate bookshelves and hide the field if bookshelves are not set.
+        // Populate bookshelves and hide the field if bookshelves are not set.
 		if (!populateBookshelvesField(mFields, book)) {
 			getView().findViewById(R.id.lbl_bookshelves).setVisibility(View.GONE);
 			//getView().findViewById(R.id.bookshelf_text).setVisibility(View.GONE);
@@ -150,8 +149,7 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 			// Hide 'Series' label and data
 			getView().findViewById(R.id.lbl_series).setVisibility(View.GONE);
 			getView().findViewById(R.id.field_series).setVisibility(View.GONE);
-			return;
-		} else {
+        } else {
 			// Show 'Series' label and data
 			getView().findViewById(R.id.lbl_series).setVisibility(View.VISIBLE);
 			getView().findViewById(R.id.field_series).setVisibility(View.VISIBLE);
@@ -258,7 +256,7 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 	 */
 	private void showLoanedInfo(Long rowId) {
 		String personLoanedTo = mDbHelper.fetchLoanByBook(rowId);
-		TextView textView = (TextView) getView().findViewById(R.id.who);
+		TextView textView = getView().findViewById(R.id.who);
 		if (personLoanedTo != null) {
 			textView.setVisibility(View.VISIBLE);
 			String resultText = getString(R.string.book_details_readonly_loaned_to, personLoanedTo);
@@ -274,7 +272,7 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 	 */
 	private void showReadStatus(BookData book) {
 		if (FieldVisibility.isVisible(CatalogueDBAdapter.KEY_READ)) {
-			ImageView image = (ImageView) getView().findViewById(R.id.read);
+			ImageView image = getView().findViewById(R.id.read);
 			if (book.isRead()) {
 				image.setVisibility(View.VISIBLE);
 				image.setImageResource(R.drawable.btn_check_buttonless_on);
@@ -282,7 +280,7 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 				image.setVisibility(View.GONE);				
 			}
 		} else {
-			ImageView image = (ImageView) getView().findViewById(R.id.read);
+			ImageView image = getView().findViewById(R.id.read);
 			image.setVisibility(View.GONE);			
 		}
 	}
@@ -309,7 +307,7 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 
 	@Override
 	protected void onLoadBookDetails(BookData book) {
-		if (!false)
+		if (true)
 			mFields.setAll(book);
 		updateFields(book);
 	}

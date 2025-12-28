@@ -37,7 +37,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  */
 public class BackupInfo {
 	/** Bundle retrieved from the archive for this instance */
-	private Bundle mBundle;
+	private final Bundle mBundle;
 
 	/** Standard INFO item */
 	public static final String INFO_ARCHVERSION = "ArchVersion";

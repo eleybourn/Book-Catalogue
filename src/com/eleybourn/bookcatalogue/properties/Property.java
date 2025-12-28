@@ -115,7 +115,7 @@ public abstract class Property {
 	 * @author Philip Warner
 	 */
 	public interface BooleanValue {
-		public Boolean get();
+		Boolean get();
 	}
 	/**
 	 * Interface used to help setting one property based on another property value.
@@ -125,7 +125,7 @@ public abstract class Property {
 	 * @author Philip Warner
 	 */
 	public interface StringValue {
-		public String get();
+		String get();
 	}
 	/**
 	 * Interface used to help setting one property based on another property value.
@@ -135,7 +135,7 @@ public abstract class Property {
 	 * @author Philip Warner
 	 */
 	public interface IntegerValue {
-		public Integer get();
+		Integer get();
 	}
 
 	/** 

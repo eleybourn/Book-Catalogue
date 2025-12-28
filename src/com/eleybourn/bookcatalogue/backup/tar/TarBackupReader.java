@@ -41,11 +41,11 @@ public class TarBackupReader extends BackupReaderAbstract {
 	/** Parent container */
 	private final TarBackupContainer mContainer;
 	/** The data stream for the archive */
-	private TarArchiveInputStream mInput;
+	private final TarArchiveInputStream mInput;
 	/** Used to allow 'peeking' at the input stream */
 	private ReaderEntity mPushedEntity = null;
 	/** The INFO data read from the start of the archive */
-	private BackupInfo mInfo;
+	private final BackupInfo mInfo;
 
 	/**
 	 * Constructor

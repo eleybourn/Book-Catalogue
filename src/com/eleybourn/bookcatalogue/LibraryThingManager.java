@@ -85,12 +85,12 @@ public class LibraryThingManager {
 	public static String EDITIONS_URL = "https://www.librarything.com/api/thingISBN/%s";
 
 	// Field types we are interested in.
-	private enum FieldTypes{ NONE, AUTHOR, TITLE, SERIES, PLACES, CHARACTERS, OTHER };
+	private enum FieldTypes{ NONE, AUTHOR, TITLE, SERIES, PLACES, CHARACTERS, OTHER }
 
-	// Sizes of thumbnails
-	public enum ImageSizes { SMALL, MEDIUM, LARGE };
+    // Sizes of thumbnails
+	public enum ImageSizes { SMALL, MEDIUM, LARGE }
 
-	public LibraryThingManager(Context context) {
+    public LibraryThingManager(Context context) {
 		mAppContext = context.getApplicationContext();
 	}
 
@@ -447,27 +447,26 @@ public class LibraryThingManager {
 			// Dont bother catching general exceptions, they will be caught by the caller.
 		} catch (MalformedURLException e) {
 			String s = "unknown";
-			try { s = e.getMessage(); } catch (Exception e2) {};
-			Logger.logError(e, s);
+			try { s = e.getMessage(); } catch (Exception e2) {}
+            Logger.logError(e, s);
 		} catch (ParserConfigurationException e) {
 			String s = "unknown";
-			try { s = e.getMessage(); } catch (Exception e2) {};
-			Logger.logError(e, s);
+			try { s = e.getMessage(); } catch (Exception e2) {}
+            Logger.logError(e, s);
 		} catch (SAXException e) {
 			String s = e.getMessage(); // "unknown";
-			try { s = e.getMessage(); } catch (Exception e2) {};
-			Logger.logError(e, s);
+			try { s = e.getMessage(); } catch (Exception e2) {}
+            Logger.logError(e, s);
 		} catch (java.io.IOException e) {
 			String s = "unknown";
-			try { s = e.getMessage(); } catch (Exception e2) {};
-			Logger.logError(e, s);
+			try { s = e.getMessage(); } catch (Exception e2) {}
+            Logger.logError(e, s);
 		}
 
 		if (fetchThumbnail)
 			getCoverImage(isbn, bookData, ImageSizes.LARGE);
 
-		return;
-	}
+    }
 
 	/**
 	 * Parser Handler to collect the book data.
@@ -476,7 +475,7 @@ public class LibraryThingManager {
 	 */
 	private class SearchLibraryThingEntryHandler extends DefaultHandler  {
 		private Bundle mBookData = null;
-		private StringBuilder mBuilder = new StringBuilder();
+		private final StringBuilder mBuilder = new StringBuilder();
 		
 		private FieldTypes mFieldType = FieldTypes.OTHER;
 		
@@ -680,7 +679,7 @@ public class LibraryThingManager {
 	 * @author Philip Warner
 	 */
 	static private class SearchLibraryThingEditionHandler extends DefaultHandler  {
-		private StringBuilder mBuilder = new StringBuilder();
+		private final StringBuilder mBuilder = new StringBuilder();
 		private ArrayList<String> mEditions = new ArrayList<String>();
 
 		SearchLibraryThingEditionHandler(ArrayList<String> editions) {

@@ -35,7 +35,7 @@ import com.eleybourn.bookcatalogue.backup.ReaderEntityAbstract;
 public class TarReaderEntity extends ReaderEntityAbstract {
 	protected TarBackupReader mReader;
 	protected TarArchiveEntry mEntry;
-	private BackupEntityType mType;
+	private final BackupEntityType mType;
 
 	/**
 	 * Constructor

@@ -58,7 +58,7 @@ public class TaskManager {
 		TaskManager getManager();
 	}
 
-	private TaskManagerController mController = new TaskManagerController() {
+	private final TaskManagerController mController = new TaskManagerController() {
 		@Override
 		public void requestAbort() {
 			TaskManager.this.cancelAllTasks();
@@ -71,8 +71,8 @@ public class TaskManager {
 	};
 	
 	public static class OnTaskEndedMessage implements Message<TaskManagerListener> {
-		private TaskManager mManager;
-		private ManagedTask mTask;
+		private final TaskManager mManager;
+		private final ManagedTask mTask;
 
 		public OnTaskEndedMessage(TaskManager manager, ManagedTask task) {
 			mManager = manager;
@@ -84,11 +84,12 @@ public class TaskManager {
 			listener.onTaskEnded(mManager, mTask);
 			return false;
 		}
-	};
-	public static class OnProgressMessage implements Message<TaskManagerListener> {
-		private int mCount;
-		private int mMax;
-		private String mMessage;
+	}
+
+    public static class OnProgressMessage implements Message<TaskManagerListener> {
+		private final int mCount;
+		private final int mMax;
+		private final String mMessage;
 		
 		public OnProgressMessage(int count, int max, String message) {
 			mCount = count;
@@ -101,9 +102,10 @@ public class TaskManager {
 			listener.onProgress(mCount, mMax, mMessage);
 			return false;
 		}
-	};
-	public static class OnToastMessage implements Message<TaskManagerListener> {
-		private String mMessage;
+	}
+
+    public static class OnToastMessage implements Message<TaskManagerListener> {
+		private final String mMessage;
 		
 		public OnToastMessage(String message) {
 			mMessage = message;
@@ -114,17 +116,18 @@ public class TaskManager {
 			listener.onToast(mMessage);
 			return false;
 		}
-	};
-	public static class OnFinshedMessage implements Message<TaskManagerListener> {
+	}
+
+    public static class OnFinshedMessage implements Message<TaskManagerListener> {
 
 		@Override
 		public boolean deliver(TaskManagerListener listener) {
 			listener.onFinished();
 			return false;
 		}
-	};
+	}
 
-	/* ====================================================================================================
+    /* ====================================================================================================
 	 *  OnTaskManagerListener handling
 	 */
 
@@ -219,7 +222,7 @@ public class TaskManager {
 	/**
 	 * Listen for task messages, specifically, task termination
 	 */
-	private ManagedTask.TaskListener mTaskListener = new ManagedTask.TaskListener() {
+	private final ManagedTask.TaskListener mTaskListener = new ManagedTask.TaskListener() {
 		@Override
 		public void onTaskFinished(ManagedTask t) {
 			TaskManager.this.onTaskFinished(t);
@@ -321,8 +324,7 @@ public class TaskManager {
 			t.progressMessage = message;
 			t.progressCurrent = count;
 			updateProgressDialog();
-			return;
-		}
+        }
 	}
 
 	/**
@@ -421,8 +423,7 @@ public class TaskManager {
 		if (t != null) {
 			t.progressMax = max;
 			updateProgressDialog();
-			return;
-		}
+        }
 	}
 
 	/**
@@ -436,8 +437,7 @@ public class TaskManager {
 		if (t != null) {
 			t.progressCurrent = count;
 			updateProgressDialog();
-			return;
-		}
+        }
 	}
 
 	/**

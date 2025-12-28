@@ -524,13 +524,13 @@ public abstract class ShowBookApiHandler extends ApiHandler {
 	
 	}
 
-	private XmlHandler mHandleSeriesStart = new XmlHandler(){
+	private final XmlHandler mHandleSeriesStart = new XmlHandler(){
 		@Override
 		public void process(ElementContext context) {
 			//mCurrSeries = new Series();
 		}
 	};
-	private XmlHandler mHandleSeriesEnd = new XmlHandler(){
+	private final XmlHandler mHandleSeriesEnd = new XmlHandler(){
 		@Override
 		public void process(ElementContext context) {
 			if (mCurrSeriesName != null && mCurrSeriesName.length() > 0) {
@@ -547,7 +547,7 @@ public abstract class ShowBookApiHandler extends ApiHandler {
 		}
 	};
 
-	private XmlHandler mHandleSeriesPosition = new XmlHandler(){
+	private final XmlHandler mHandleSeriesPosition = new XmlHandler(){
 		@Override
 		public void process(ElementContext context) {
 			try {
@@ -557,13 +557,13 @@ public abstract class ShowBookApiHandler extends ApiHandler {
 			}
 		}
 	};
-	private XmlHandler mHandleSeriesName = new XmlHandler(){
+	private final XmlHandler mHandleSeriesName = new XmlHandler(){
 		@Override
 		public void process(ElementContext context) {
 			mCurrSeriesName = context.body.trim();
 		}
 	};
-	private XmlHandler mHandleSeriesId = new XmlHandler(){
+	private final XmlHandler mHandleSeriesId = new XmlHandler(){
 		@Override
 		public void process(ElementContext context) {
 			try {
@@ -575,13 +575,13 @@ public abstract class ShowBookApiHandler extends ApiHandler {
 	};
 
 	
-	private XmlHandler mHandleAuthorStart = new XmlHandler(){
+	private final XmlHandler mHandleAuthorStart = new XmlHandler(){
 		@Override
 		public void process(ElementContext context) {
 			//mCurrAuthor = new Author();
 		}
 	};
-	private XmlHandler mHandleAuthorEnd = new XmlHandler(){
+	private final XmlHandler mHandleAuthorEnd = new XmlHandler(){
 		@Override
 		public void process(ElementContext context) {
 			if (mCurrAuthorName != null && mCurrAuthorName.length() > 0) {
@@ -592,7 +592,7 @@ public abstract class ShowBookApiHandler extends ApiHandler {
 			}
 		}
 	};
-	private XmlHandler mHandleAuthorId = new XmlHandler(){
+	private final XmlHandler mHandleAuthorId = new XmlHandler(){
 		@Override
 		public void process(ElementContext context) {
 			try {
@@ -602,7 +602,7 @@ public abstract class ShowBookApiHandler extends ApiHandler {
 			}
 		}
 	};
-	private XmlHandler mHandleAuthorName = new XmlHandler(){
+	private final XmlHandler mHandleAuthorName = new XmlHandler(){
 		@Override
 		public void process(ElementContext context) {
 			mCurrAuthorName = context.body.trim();
@@ -613,7 +613,7 @@ public abstract class ShowBookApiHandler extends ApiHandler {
 	/**
 	 * Create a new shelves collection when the "shelves" tag is encountered.
 	 */
-	private XmlHandler mHandleShelvesStart = new XmlHandler(){
+	private final XmlHandler mHandleShelvesStart = new XmlHandler(){
 		@Override
 		public void process(ElementContext context) {
 			mShelves = new ArrayList<String>();
@@ -622,7 +622,7 @@ public abstract class ShowBookApiHandler extends ApiHandler {
 	/**
 	 * Add a shelf to the array
 	 */
-	private XmlHandler mHandleShelf = new XmlHandler(){
+	private final XmlHandler mHandleShelf = new XmlHandler(){
 		@Override
 		public void process(ElementContext context) {
 			String name = null;
@@ -636,7 +636,7 @@ public abstract class ShowBookApiHandler extends ApiHandler {
 	};
 
 	
-	private XmlHandler mHandleText = new XmlHandler() {
+	private final XmlHandler mHandleText = new XmlHandler() {
 
 		@Override
 		public void process(ElementContext context) {
@@ -645,7 +645,7 @@ public abstract class ShowBookApiHandler extends ApiHandler {
 		}
 	};
 
-	private XmlHandler mHandleLong = new XmlHandler() {
+	private final XmlHandler mHandleLong = new XmlHandler() {
 
 		@Override
 		public void process(ElementContext context) {
@@ -659,7 +659,7 @@ public abstract class ShowBookApiHandler extends ApiHandler {
 		}
 	};
 	
-	private XmlHandler mHandleFloat = new XmlHandler() {
+	private final XmlHandler mHandleFloat = new XmlHandler() {
 
 		@Override
 		public void process(ElementContext context) {
@@ -673,7 +673,7 @@ public abstract class ShowBookApiHandler extends ApiHandler {
 		}
 	};
 
-	private XmlHandler mHandleBoolean = new XmlHandler() {
+	private final XmlHandler mHandleBoolean = new XmlHandler() {
 
 		@Override
 		public void process(ElementContext context) {

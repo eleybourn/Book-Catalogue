@@ -49,11 +49,12 @@ public abstract class ListProperty<T extends Object> extends ValuePropertyWithGl
 	protected ItemEntries<T> mList = null;
 
 	/** Accessor */
-	public ItemEntries<T> getListItems() { return mList; };
-	/** Accessor */
-	public void setListItems(ItemEntries<T> list) { mList= list; };
+	public ItemEntries<T> getListItems() { return mList; }
 
-	public ListProperty(ItemEntries<T> list, String uniqueId, PropertyGroup group, int nameResourceId, T value, String defaultPref, T defaultValue) {
+    /** Accessor */
+	public void setListItems(ItemEntries<T> list) { mList= list; }
+
+    public ListProperty(ItemEntries<T> list, String uniqueId, PropertyGroup group, int nameResourceId, T value, String defaultPref, T defaultValue) {
 		super(uniqueId, group, nameResourceId, value, defaultPref, defaultValue);
 		mList = list;
 	}
@@ -78,7 +79,7 @@ public abstract class ListProperty<T extends Object> extends ValuePropertyWithGl
 		});
 
 		// Set the name
-		TextView text = (TextView) v.findViewById(R.id.field_name);
+		TextView text = v.findViewById(R.id.field_name);
 		text.setText(getName());
 		
 		// Try to find the list item that corresponds to the current stored value.
@@ -223,7 +224,7 @@ public abstract class ListProperty<T extends Object> extends ValuePropertyWithGl
 	 * @param item
 	 */
 	private void setValueInView(View baseView, ItemEntry<T> item) {
-		TextView text = (TextView) baseView.findViewById(R.id.value);
+		TextView text = baseView.findViewById(R.id.value);
 
 		if (item == null) {
 			text.setText("");		
@@ -249,7 +250,7 @@ public abstract class ListProperty<T extends Object> extends ValuePropertyWithGl
 
 		// Get the view and the radio group
 		View root = inflater.inflate(R.layout.property_value_list_list, null);
-		RadioGroup grp = (RadioGroup) root.findViewById(R.id.values);
+		RadioGroup grp = root.findViewById(R.id.values);
 
 		// Get the current value
 		T curr = get();
@@ -275,12 +276,12 @@ public abstract class ListProperty<T extends Object> extends ValuePropertyWithGl
 				boolean selected = false;
 				if (e.value == null && curr == null)
 					selected = true;
-				else if (e.value != null && curr != null && curr.equals(e.value))
+				else if (curr != null && curr.equals(e.value))
 					selected = true;
 				// Make the view for this item
 				View v = inflater.inflate(R.layout.property_value_list_item, null);
-				TextView name = (TextView) v.findViewById(R.id.field_name);
-				RadioButton sel = (RadioButton) v.findViewById(R.id.selector);
+				TextView name = v.findViewById(R.id.field_name);
+				RadioButton sel = v.findViewById(R.id.selector);
 				//Set the various values
 				sel.setChecked(selected);
 				name.setText(e.getString());

@@ -56,7 +56,7 @@ public class GoodreadsSearchResults extends BookCatalogueActivity {
 	private ArrayList<GoodreadsWork> mList = new ArrayList<GoodreadsWork>();
 	private ArrayAdapter<GoodreadsWork> mAdapter = null;
 	private String mCriteria;
-	private SimpleTaskQueue mTaskQueue = new SimpleTaskQueue("gr-covers");
+	private final SimpleTaskQueue mTaskQueue = new SimpleTaskQueue("gr-covers");
 
     @Override
     protected RequiredPermission[] getRequiredPermissions() {
@@ -89,8 +89,7 @@ public class GoodreadsSearchResults extends BookCatalogueActivity {
 		} else {
 			Toast.makeText(this, getString(R.string.please_enter_search_criteria), Toast.LENGTH_LONG).show();
 			finish();
-			return;
-		}
+        }
 
 	}
 
@@ -183,9 +182,9 @@ public class GoodreadsSearchResults extends BookCatalogueActivity {
 					// Get a new View and make the holder for it.
 					convertView = mInflater.inflate(R.layout.goodreads_work_item, parent, false);
 					holder = new ListHolder();
-					holder.author = (TextView)convertView.findViewById(R.id.field_author);
-					holder.title = (TextView)convertView.findViewById(R.id.field_title);
-					holder.cover = (ImageView)convertView.findViewById(R.id.cover);
+					holder.author = convertView.findViewById(R.id.field_author);
+					holder.title = convertView.findViewById(R.id.field_title);
+					holder.cover = convertView.findViewById(R.id.cover);
 
 					// Save the holder
 					ViewTagger.setTag(convertView, holder);

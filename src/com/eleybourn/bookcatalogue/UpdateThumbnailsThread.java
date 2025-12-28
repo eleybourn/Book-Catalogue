@@ -42,7 +42,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  */
 public class UpdateThumbnailsThread extends ManagedTask {
 	// The fields that the user requested to update
-	private FieldUsages mRequestedFields;
+	private final FieldUsages mRequestedFields;
 
 	// Lock help by pop and by push when an item was added to an empty stack.
 	private final ReentrantLock mSearchLock = new ReentrantLock();
@@ -67,7 +67,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
 	// DB connection
 	protected CatalogueDBAdapter mDbHelper;
 
-	private SearchManager.SearchListener mSearchListener = new SearchManager.SearchListener() {
+	private final SearchManager.SearchListener mSearchListener = new SearchManager.SearchListener() {
 
 		@Override
 		public boolean onSearchFinished(Bundle bookData, boolean cancelled) {

@@ -82,32 +82,30 @@ public class GoodreadsRegister extends BookCatalogueActivity {
 	public void setupViews() {
 		final Resources res = this.getResources();
 		/* GR Reg Link */
-		TextView register = (TextView) findViewById(R.id.goodreads_url);
+		TextView register = findViewById(R.id.goodreads_url);
 		register.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				String url = res.getString(R.string.goodreads_url);
 				Uri uri = Uri.parse(url);
 				Intent loadWeb = new Intent(Intent.ACTION_VIEW, uri);
-				startActivity(loadWeb); 
-				return;
-			}
+				startActivity(loadWeb);
+            }
 		});
 		
 		/* Auth button */
-		Button devkeyLink = (Button) findViewById(R.id.authorize);
+		Button devkeyLink = findViewById(R.id.authorize);
 		devkeyLink.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				requestAuthorizationInBackground(GoodreadsRegister.this);
-				return;
-			}
+            }
 		});
 
 		/* Forget credentials */
 		boolean hasCred = GoodreadsManager.hasCredentials();
 		View blurb = findViewById(R.id.forget_blurb);
-		Button blurb_button = (Button)findViewById(R.id.forget);
+		Button blurb_button = findViewById(R.id.forget);
 		if (hasCred) {
 			blurb.setVisibility(View.VISIBLE);
 			blurb_button.setVisibility(View.VISIBLE);

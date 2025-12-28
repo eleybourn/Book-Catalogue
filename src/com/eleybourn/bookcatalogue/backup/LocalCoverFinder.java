@@ -41,7 +41,7 @@ public class LocalCoverFinder implements Importer.CoverFinder {
 	private final String mDst;
 	private final boolean mIsForeign;
 	private final String mCoversPath;
-	private CatalogueDBAdapter mDbHelper;
+	private final CatalogueDBAdapter mDbHelper;
 
 	public LocalCoverFinder(String srcPath, String dstPath) {
 		mSrc = srcPath;
@@ -155,12 +155,12 @@ public class LocalCoverFinder implements Importer.CoverFinder {
 			try {
 				if (in != null)
 					in.close();
-			} catch (Exception e) {};
-			try {
+			} catch (Exception e) {}
+            try {
 				if (out != null)
 					out.close();
-			} catch (Exception e) {};
-		}
+			} catch (Exception e) {}
+        }
 	}
 
 	/**

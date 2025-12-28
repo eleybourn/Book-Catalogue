@@ -51,7 +51,7 @@ public class TrackedCursor extends SynchronizedCursor  {
 	/* =========== */
 
 	/** Used as a collection of known cursors */
-	private static HashSet<WeakReference<TrackedCursor>> mCursors = new HashSet<WeakReference<TrackedCursor>>();
+	private static final HashSet<WeakReference<TrackedCursor>> mCursors = new HashSet<WeakReference<TrackedCursor>>();
 	/** Global counter for unique cursor IDs */
 	private static Long mIdCounter = 0L;
 
@@ -133,7 +133,7 @@ public class TrackedCursor extends SynchronizedCursor  {
 	 * a cursor is deleted before being closed.
 	 */
 	@Override
-	public void finalize() {
+    protected void finalize() {
 		if (DEBUG_TRACKED_CURSOR) {
 			if (mWeakRef != null) {
 				// This is a cursor that is being deleted before it is closed.

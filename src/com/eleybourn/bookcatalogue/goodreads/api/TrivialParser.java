@@ -32,7 +32,7 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class TrivialParser extends DefaultHandler {
 
-	private StringBuilder m_Builder = new StringBuilder();
+	private final StringBuilder m_Builder = new StringBuilder();
 
 	public TrivialParser() {
 	}

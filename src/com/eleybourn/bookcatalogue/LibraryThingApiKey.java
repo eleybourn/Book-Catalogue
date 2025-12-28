@@ -8,5 +8,5 @@ package com.eleybourn.bookcatalogue;
  *
  */
 public class LibraryThingApiKey {
-	static String get() { return "118983f247fc3fe43dcafcd042655440"; };
+	static String get() { return "118983f247fc3fe43dcafcd042655440"; }
 }

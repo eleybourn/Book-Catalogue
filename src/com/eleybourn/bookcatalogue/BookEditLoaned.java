@@ -118,19 +118,19 @@ public class BookEditLoaned extends BookEditFragmentAbstract {
 	 * Display the loan to page. It is slightly different to the existing loan page
 	 */
 	private void loanTo() {
-		ScrollView sv = (ScrollView) getView().findViewById(R.id.root);
+		ScrollView sv = getView().findViewById(R.id.root);
 		sv.removeAllViews();
 		LayoutInflater inf = getActivity().getLayoutInflater();
 		inf.inflate(R.layout.edit_book_loan, sv);
 
-		AutoCompleteTextView mUserText = (AutoCompleteTextView) sv.findViewById(R.id.loan_to_who);
+		AutoCompleteTextView mUserText = sv.findViewById(R.id.loan_to_who);
 		try {
 			ArrayAdapter<String> series_adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, getFriends());
 			mUserText.setAdapter(series_adapter);
 		} catch (Exception e) {
 			Logger.logError(e);
 		}
-		Button mConfirmButton = (Button) sv.findViewById(R.id.button_confirm);
+		Button mConfirmButton = sv.findViewById(R.id.button_confirm);
 		mConfirmButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
 				String friend = saveLoan();
@@ -145,14 +145,14 @@ public class BookEditLoaned extends BookEditFragmentAbstract {
 	 * @param user The user the book was loaned to
 	 */
 	private void loaned(String user) {
-		ScrollView sv = (ScrollView)  getView().findViewById(R.id.root);
+		ScrollView sv = getView().findViewById(R.id.root);
 		sv.removeAllViews();
 		LayoutInflater inf = getActivity().getLayoutInflater();
 		inf.inflate(R.layout.edit_book_loaned, sv);
 
-		TextView mWhoText = (TextView) sv.findViewById(R.id.who);
+		TextView mWhoText = sv.findViewById(R.id.who);
 		mWhoText.setText(user);
-		Button mConfirmButton = (Button) sv.findViewById(R.id.button_confirm);
+		Button mConfirmButton = sv.findViewById(R.id.button_confirm);
 		mConfirmButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
 				removeLoan();
@@ -167,7 +167,7 @@ public class BookEditLoaned extends BookEditFragmentAbstract {
 	 * @return the user
 	 */
 	private String saveLoan() {
-		AutoCompleteTextView mUserText = (AutoCompleteTextView) getView().findViewById(R.id.loan_to_who);
+		AutoCompleteTextView mUserText = getView().findViewById(R.id.loan_to_who);
 		String friend = mUserText.getText().toString();
 		BookData values = mEditManager.getBookData();
 		values.putString(CatalogueDBAdapter.KEY_LOANED_TO, friend);
@@ -180,12 +180,11 @@ public class BookEditLoaned extends BookEditFragmentAbstract {
 	 */
 	private void removeLoan() {
 		mDbHelper.deleteLoan(mEditManager.getBookData().getRowId(), true);
-		return;
-	}
+    }
 
 	@Override
 	protected void onLoadBookDetails(BookData book) {
-		if (!false)
+		if (true)
 			mFields.setAll(book);
 		// TODO Auto-generated method stub
 		

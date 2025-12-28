@@ -29,9 +29,9 @@ import android.os.Bundle;
  */
 public interface DataAccessor {
 	/** Get the specified Datum from the passed DataManager and bundle */
-	public Object get(DataManager data, Datum datum, Bundle rawData);
+    Object get(DataManager data, Datum datum, Bundle rawData);
 	/** Set the specified Datum in the passed DataManager and bundle */
-	public void set(DataManager data, Datum datum, Bundle rawData, Object value);
+    void set(DataManager data, Datum datum, Bundle rawData, Object value);
 	/** Check if the specified Datum is present in the passed DataManager and bundle */
-	public boolean isPresent(DataManager data, Datum datum, Bundle rawData);
+    boolean isPresent(DataManager data, Datum datum, Bundle rawData);
 }

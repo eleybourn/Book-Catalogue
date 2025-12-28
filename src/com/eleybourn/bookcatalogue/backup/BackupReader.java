@@ -33,7 +33,7 @@ public interface BackupReader {
 	 * 
 	 * @author pjw
 	 */
-	public interface BackupReaderListener {
+    interface BackupReaderListener {
 		/** Set the end point for the progress */
 		void setMax(int max);
 		/** Advance progress by 'delta' */
@@ -63,14 +63,14 @@ public interface BackupReader {
 	 * 
 	 * @throws IOException
 	 */
-	public ReaderEntity nextEntity() throws IOException;
+    ReaderEntity nextEntity() throws IOException;
 	
 	/**
 	 * Close the reader
 	 * 
 	 * @throws IOException
 	 */
-	public void close() throws IOException;
+    void close() throws IOException;
 	
 	/**
 	 * Get the associated BackupContainer
@@ -83,7 +83,7 @@ public interface BackupReader {
 	 * Get the INFO object read from the backup
 	 * 
 	 * @return
-	 */	
-	public BackupInfo getInfo();
+	 */
+    BackupInfo getInfo();
 
 }

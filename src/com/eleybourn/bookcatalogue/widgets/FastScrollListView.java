@@ -57,7 +57,7 @@ public class FastScrollListView extends ListView {
 		mOnScrollListener = listener;
 	}
 
-	private OnScrollListener mOnScrollDispatcher = new OnScrollListener(){
+	private final OnScrollListener mOnScrollDispatcher = new OnScrollListener(){
 		@Override
 		public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 			if (mScroller != null)
@@ -70,8 +70,8 @@ public class FastScrollListView extends ListView {
 		public void onScrollStateChanged(AbsListView view, int scrollState) {
 			if (mOnScrollListener != null)
 				mOnScrollListener.onScrollStateChanged(view, scrollState);
-		};
-	};
+		}
+    };
 
 	{
 		super.setOnScrollListener(mOnScrollDispatcher);

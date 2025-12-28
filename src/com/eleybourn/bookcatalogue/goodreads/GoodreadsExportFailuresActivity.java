@@ -55,7 +55,7 @@ import com.eleybourn.bookcatalogue.utils.ViewTagger;
  * 
  * @author Philip Warner
  */
-public class GoodreadsExportFailuresActivity extends BindableItemListActivity 
+public class GoodreadsExportFailuresActivity extends BindableItemListActivity
 {
 	/** Key to store optional task ID hen activity is started */
 	public static final String KEY_TASK_ID = "GoodreadsExportFailuresActivity.TaskId";
@@ -114,7 +114,7 @@ public class GoodreadsExportFailuresActivity extends BindableItemListActivity
 	/**
 	 * Listener to handle Event add/change/delete.
 	 */
-	private OnEventChangeListener m_OnEventChangeListener = new  OnEventChangeListener() {
+	private final OnEventChangeListener m_OnEventChangeListener = new  OnEventChangeListener() {
 		@Override
 		public void onEventChange(Event event, EventActions action) {
 			GoodreadsExportFailuresActivity.this.refreshData();
@@ -124,7 +124,7 @@ public class GoodreadsExportFailuresActivity extends BindableItemListActivity
 	 * Update the header to reflect current cursor size.
 	 */
 	protected void updateHeader() {
-		TextView head = (TextView) this.findViewById(com.eleybourn.bookcatalogue.R.id.events_found);
+		TextView head = this.findViewById(R.id.events_found);
 		head.setText(m_cursor.getCount() + " Events found");		
 	}
 
@@ -143,7 +143,7 @@ public class GoodreadsExportFailuresActivity extends BindableItemListActivity
 	@Override
 	public void onListItemClick(final AdapterView<?> parent, final View v, final int position, final long id) {
 		// get the event object
-		final Event event = (Event) ViewTagger.getTag(v, R.id.TAG_EVENT);
+		final Event event = ViewTagger.getTag(v, R.id.TAG_EVENT);
 
 		// If it owns a hint, display it
 		if (event instanceof HintOwner) {
@@ -158,10 +158,10 @@ public class GoodreadsExportFailuresActivity extends BindableItemListActivity
 			// Just display context menu
 			doContextMenu(parent, v, position, id);
 		}
-	};
+	}
 
-	private void doContextMenu(final AdapterView<?> parent, final View v, final int position, final long id) {
-		final Event event = (Event) ViewTagger.getTag(v, R.id.TAG_EVENT);
+    private void doContextMenu(final AdapterView<?> parent, final View v, final int position, final long id) {
+		final Event event = ViewTagger.getTag(v, R.id.TAG_EVENT);
 		final ArrayList<ContextDialogItem> items = new ArrayList<ContextDialogItem>();
 
 		event.addContextMenuItems(this, parent, v, position, id, items, m_db);

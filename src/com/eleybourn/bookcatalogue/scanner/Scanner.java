@@ -10,7 +10,7 @@ import android.content.Intent;
  */
 public interface Scanner {
 	/** Request a scan */
-	public void startActivityForResult(Activity a, int requestCode);
+    void startActivityForResult(Activity a, int requestCode);
 	/** Get the barcode from the resulting intent */
-	public String getBarcode(Intent intent);
+    String getBarcode(Intent intent);
 }

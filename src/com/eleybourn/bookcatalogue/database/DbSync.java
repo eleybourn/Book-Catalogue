@@ -80,9 +80,9 @@ public class DbSync {
 		private final ExclusiveLock mExclusiveLock = new ExclusiveLock();
 
 		/** Enum of lock types supported */
-		public enum LockTypes { shared, exclusive };
+		public enum LockTypes { shared, exclusive }
 
-		/**
+        /**
 		 * Interface common to all lock types.
 		 * 
 		 * @author Philip Warner
@@ -210,38 +210,30 @@ public class DbSync {
 			//long t0 = System.currentTimeMillis();
 			// Synchronize with other code
 			mLock.lock();
-			try {
-				while (true) {
-					// Cleanup any old threads that are dead.
-					purgeOldLocks();
-					//System.out.println(t.getName() + " requesting EXCLUSIVE lock with " + mSharedOwners.size() + " shared locks (attempt #" + i + ")");
-					//System.out.println("Lock held by " + mLock.getHoldCount());
-					try {
-						// Simple case -- no locks held, just return and keep the lock
-						if (mSharedOwners.size() == 0)
-							return mExclusiveLock;
-						// Check for one lock, and it being this thread.
-						if (mSharedOwners.size() == 1 && mSharedOwners.containsValue(t)) {
-							// One locker, and it is us...so upgrade is OK.
-							return mExclusiveLock;
-						}
-						// Someone else has it. Wait.
-						//System.out.println("Thread " + t.getName() + " waiting for DB access");
-						mReleased.await();
-					} catch (Exception e) {
-						// Probably happens because thread was interrupted. Just die.
-						try { mLock.unlock(); } catch(Exception e2) {};
-						throw new RuntimeException("Unable to get exclusive lock", e);
-					}
-				}				
-			} finally {
-				//long t1 = System.currentTimeMillis();
-				//if (mLock.isHeldByCurrentThread())
-				//	System.out.println(t.getName() + " waited " + (t1 - t0) + "ms for EXCLUSIVE access");					
-				//else
-				//	System.out.println(t.getName() + " waited " + (t1 - t0) + "ms AND FAILED TO GET EXCLUSIVE access");				
-			}
-		}
+            while (true) {
+                // Cleanup any old threads that are dead.
+                purgeOldLocks();
+                //System.out.println(t.getName() + " requesting EXCLUSIVE lock with " + mSharedOwners.size() + " shared locks (attempt #" + i + ")");
+                //System.out.println("Lock held by " + mLock.getHoldCount());
+                try {
+                    // Simple case -- no locks held, just return and keep the lock
+                    if (mSharedOwners.size() == 0)
+                        return mExclusiveLock;
+                    // Check for one lock, and it being this thread.
+                    if (mSharedOwners.size() == 1 && mSharedOwners.containsValue(t)) {
+                        // One locker, and it is us...so upgrade is OK.
+                        return mExclusiveLock;
+                    }
+                    // Someone else has it. Wait.
+                    //System.out.println("Thread " + t.getName() + " waiting for DB access");
+                    mReleased.await();
+                } catch (Exception e) {
+                    // Probably happens because thread was interrupted. Just die.
+                    try { mLock.unlock(); } catch(Exception e2) {};
+                    throw new RuntimeException("Unable to get exclusive lock", e);
+                }
+            }
+        }
 		/**
 		 * Release the lock previously taken
 		 */
@@ -744,10 +736,7 @@ public class DbSync {
 		private SynchronizedStatement (final SynchronizedDb db, final String sql) {
 			mSync = db.getSynchronizer();
 			mSql = sql;
-			if (sql.trim().toLowerCase().startsWith("select"))
-				mIsReadOnly = true;
-			else
-				mIsReadOnly = false;
+            mIsReadOnly = sql.trim().toLowerCase().startsWith("select");
 			mStatement = db.getUnderlyingDatabase().compileStatement(sql);
 		}
 		
@@ -846,7 +835,7 @@ public class DbSync {
 			}
 		}
 		
-		public void finalize() {
+		protected void finalize() {
 			if (!mIsClosed)
 				Logger.logError(new RuntimeException("Finalizing non-closed statement")); // + mSql));
 			// Try to close the underlying statement.

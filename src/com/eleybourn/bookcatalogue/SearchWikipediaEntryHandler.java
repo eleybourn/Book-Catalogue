@@ -65,9 +65,9 @@ public class SearchWikipediaEntryHandler extends DefaultHandler {
 	public void endElement(String uri, String localName, String name) throws SAXException {
 		super.endElement(uri, localName, name);
 		// don't do anything if we are in the table of contents
-		if (intoc == false) {
+		if (!intoc) {
 			if (localName.equalsIgnoreCase(ENTRY)){
-				if (entry1 == true && entry2 == true) {
+				if (entry1 && entry2) {
 					String title = this_title + builder.toString();
 					title = title.replace("\"", "").trim();
 					if (title != null && title != "") {
@@ -77,15 +77,15 @@ public class SearchWikipediaEntryHandler extends DefaultHandler {
 					entry3 = false;
 				}
 			} else if (localName.equalsIgnoreCase(LINK1) || localName.equalsIgnoreCase(LINK2) || localName.equalsIgnoreCase(LINK3)){
-					if (entry1 == true && entry2 == true && entry3 == true) {
+					if (entry1 && entry2 && entry3) {
 						this_title += builder.toString();
 					}
 			} else if (localName.equalsIgnoreCase(LIST1) || localName.equalsIgnoreCase(LIST2)){
-				if (in_parent_ul == true && ready_to_close_parent_ul == false) {
+				if (in_parent_ul && !ready_to_close_parent_ul) {
 					// inner ul (if exists)
 					in_parent_ul = false;
 					entry3 = false;
-				} else if (entry1 == true && entry2 == true) {
+				} else if (entry1 && entry2) {
 					entry1 = false;
 					entry2 = false;
 					entry3 = false;
@@ -94,7 +94,7 @@ public class SearchWikipediaEntryHandler extends DefaultHandler {
 			} 
 		}
 		if (localName.equalsIgnoreCase(DIV)){
-			if (entry1 == true && div==entrydiv) {
+			if (entry1 && div==entrydiv) {
 				entry1 = false;
 				entry2 = false;
 				entry3 = false;
@@ -102,7 +102,7 @@ public class SearchWikipediaEntryHandler extends DefaultHandler {
 			div--;
 		}
 		if (localName.equalsIgnoreCase(TOC_TABLE)){
-			if (intoc == true) {
+			if (intoc) {
 				intoc = false;
 			}
 		}
@@ -137,24 +137,24 @@ public class SearchWikipediaEntryHandler extends DefaultHandler {
 				entry1 = true;
 			}
 		}
-		if (entry1 == true && localName.equalsIgnoreCase(TOC_TABLE)) {
+		if (entry1 && localName.equalsIgnoreCase(TOC_TABLE)) {
 			String idName = attributes.getValue("id");
 			if (idName != null && idName.equals("toc")) {
 				intoc = true;
 			}
 		}
-		if (intoc == false) {
+		if (!intoc) {
 			// This is a parent ul. Not the list ul
-			if (entry1 == true && entry2 == true && (localName.equalsIgnoreCase(LIST1) || localName.equalsIgnoreCase(LIST2))) {
+			if (entry1 && entry2 && (localName.equalsIgnoreCase(LIST1) || localName.equalsIgnoreCase(LIST2))) {
 				// inner ul (if exists)
 				in_parent_ul = true;
 				this_title = "";
 				ready_to_close_parent_ul = false;
-			} else if (entry1 == true && (localName.equalsIgnoreCase(LIST1) || localName.equalsIgnoreCase(LIST2))) {
+			} else if (entry1 && (localName.equalsIgnoreCase(LIST1) || localName.equalsIgnoreCase(LIST2))) {
 				entry2 = true;
 				ready_to_close_parent_ul = true;
 			}
-			if (entry1 == true && entry2 == true && localName.equalsIgnoreCase(ENTRY)) {
+			if (entry1 && entry2 && localName.equalsIgnoreCase(ENTRY)) {
 				entry3 = true;
 			}
 		}

@@ -41,7 +41,7 @@ import com.eleybourn.bookcatalogue.utils.StorageUtils;
  * @author pjw
  */
 public abstract class BackupReaderAbstract implements BackupReader {
-	private CatalogueDBAdapter mDbHelper;
+	private final CatalogueDBAdapter mDbHelper;
 	private final File mCoversDir = StorageUtils.getBCCovers();
 
 	/**
@@ -63,7 +63,7 @@ public abstract class BackupReaderAbstract implements BackupReader {
 		// This is an estimate only; we actually don't know how many covers
 		// there are in the backup.
 		BackupInfo info = getInfo();
-		int maxSteps = (int) (info.getBookCount());
+		int maxSteps = info.getBookCount();
 		if (info.hasCoverCount())
 			maxSteps += info.getCoverCount();
 		else 

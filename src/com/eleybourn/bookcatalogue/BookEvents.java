@@ -130,12 +130,12 @@ public class BookEvents {
 			holder.event = this;
 			holder.rowId = cursor.getId();
 
-			holder.author = (TextView)view.findViewById(com.eleybourn.bookcatalogue.R.id.field_author);
-			holder.checkbox = (CheckBox)view.findViewById(com.eleybourn.bookcatalogue.R.id.checked);
-			holder.date = (TextView)view.findViewById(com.eleybourn.bookcatalogue.R.id.date);
-			holder.error = (TextView)view.findViewById(com.eleybourn.bookcatalogue.R.id.error);
-			holder.retry = (Button)view.findViewById(com.eleybourn.bookcatalogue.R.id.retry);
-			holder.title = ((TextView)view.findViewById(com.eleybourn.bookcatalogue.R.id.field_title));
+			holder.author = view.findViewById(R.id.field_author);
+			holder.checkbox = view.findViewById(R.id.checked);
+			holder.date = view.findViewById(R.id.date);
+			holder.error = view.findViewById(R.id.error);
+			holder.retry = view.findViewById(R.id.retry);
+			holder.title = view.findViewById(R.id.field_title);
 
 			ViewTagger.setTag(view, R.id.TAG_BOOK_EVENT_HOLDER, holder);
 			ViewTagger.setTag(holder.checkbox, R.id.TAG_BOOK_EVENT_HOLDER, holder);
@@ -150,7 +150,7 @@ public class BookEvents {
 		@Override
 		public boolean bindView(View view, Context context, BindableItemSQLiteCursor bindableCursor, Object appInfo) {
 			final EventsCursor cursor = (EventsCursor)bindableCursor;
-			BookEventHolder holder = (BookEventHolder)ViewTagger.getTag(view, R.id.TAG_BOOK_EVENT_HOLDER);
+			BookEventHolder holder = ViewTagger.getTag(view, R.id.TAG_BOOK_EVENT_HOLDER);
 			CatalogueDBAdapter db = (CatalogueDBAdapter)appInfo;
 
 			// Update event info binding; the Views in the holder are unchanged, but when it is reused
@@ -195,7 +195,7 @@ public class BookEvents {
 			holder.checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 				@Override
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-					BookEventHolder holder = (BookEventHolder)ViewTagger.getTag(buttonView, R.id.TAG_BOOK_EVENT_HOLDER);
+					BookEventHolder holder = ViewTagger.getTag(buttonView, R.id.TAG_BOOK_EVENT_HOLDER);
 					cursor.setIsSelected(holder.rowId,isChecked);
 				}});
 
@@ -214,7 +214,7 @@ public class BookEvents {
 				@Override
 				public void run() {
 					try {
-						GrSendBookEvent event = (GrSendBookEvent) ViewTagger.getTag(v, R.id.TAG_EVENT);
+						GrSendBookEvent event = ViewTagger.getTag(v, R.id.TAG_EVENT);
 						editBook(ctx, event.getBookId());
 					} catch (Exception e) {
 						// not a book event?
@@ -228,9 +228,9 @@ public class BookEvents {
 				}}));
 		}
 
-	};
+	}
 
-	/**
+    /**
 	 * Subclass of BookEvent that is the base class for all Event objects resulting from 
 	 * sending books to goodreads.
 	 * 
@@ -267,7 +267,7 @@ public class BookEvents {
 			super.bindView(view, context, cursor, appInfo);
 
 			// get book details
-			final BookEventHolder holder = (BookEventHolder)ViewTagger.getTag(view, R.id.TAG_BOOK_EVENT_HOLDER);
+			final BookEventHolder holder = ViewTagger.getTag(view, R.id.TAG_BOOK_EVENT_HOLDER);
 			final CatalogueDBAdapter db = (CatalogueDBAdapter)appInfo;
 			final BooksCursor booksCursor = db.getBookForGoodreadsCursor(m_bookId);
 			final BooksRowView book = booksCursor.getRowView();
@@ -310,7 +310,7 @@ public class BookEvents {
 							@Override
 							public void run() {
 								try {
-									GrSendBookEvent event = (GrSendBookEvent) ViewTagger.getTag(v, R.id.TAG_EVENT);
+									GrSendBookEvent event = ViewTagger.getTag(v, R.id.TAG_EVENT);
 									event.retry();
 									QueueManager.getQueueManager().deleteEvent(id);
 								} catch (Exception e) {
@@ -323,15 +323,15 @@ public class BookEvents {
 				booksCursor.close();
 			}
 		}
-	};
+	}
 
-	/**
+    /**
 	 * Method to retry sending a book to goodreads.
 	 */
-	private static OnClickListener m_retryButtonListener = new OnClickListener() {
+	private static final OnClickListener m_retryButtonListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			BookEvent.BookEventHolder holder = (BookEvent.BookEventHolder)ViewTagger.getTag(v, R.id.TAG_BOOK_EVENT_HOLDER);
+			BookEvent.BookEventHolder holder = ViewTagger.getTag(v, R.id.TAG_BOOK_EVENT_HOLDER);
 			((GrSendBookEvent)holder.event).retry();
 		}
 	};
@@ -358,9 +358,9 @@ public class BookEvents {
 		public GrGeneralBookEvent(long bookId, Exception e, String message) {
 			super(bookId, message, e);
 		}
-	};
+	}
 
-	/**
+    /**
 	 * Exception indicating the book's ISBN could not be found at GoodReads
 	 * 
 	 * @author Philip Warner
@@ -378,9 +378,9 @@ public class BookEvents {
 			return R.string.explain_goodreads_no_match;
 		}		
 
-	};
+	}
 
-	/**
+    /**
 	 * Exception indicating the book's ISBN was blank
 	 * 
 	 * @author Philip Warner

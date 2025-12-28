@@ -159,9 +159,9 @@ public class BlockingStack<T> {
 				}
 				// Try getting an object
 				o = poll();
-			};
+			}
 
-		} finally {
+        } finally {
 			popLock.unlock();
 		}
 		return o;

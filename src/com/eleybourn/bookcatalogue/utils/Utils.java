@@ -1248,7 +1248,7 @@ public class Utils {
 	}
 
 	public static void showLtAlertIfNecessary(Context context, boolean always, String suffix) {
-		if (false && USE_LT) {
+		if (false) {
 			LibraryThingManager ltm = new LibraryThingManager(context);
 			if (!ltm.isAvailable())
 				StandardDialogs.needLibraryThingAlertDEAD(context, always, suffix);

@@ -102,7 +102,7 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 		for(int i = 0; i < MRU_LIST_SIZE; i++)
 			mMruList[i] = -1;
 		
-		Tracker.handleEvent(this, "Created " + this.toString(), Tracker.States.Running);
+		Tracker.handleEvent(this, "Created " + this, Tracker.States.Running);
 	}
 
 	/**
@@ -384,7 +384,7 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 	 */
 	@Override
 	public void close() {
-		Tracker.handleEvent(this, "Close " + this.toString(), Tracker.States.Enter);
+		Tracker.handleEvent(this, "Close " + this, Tracker.States.Enter);
 		super.close();
 
 
@@ -395,6 +395,6 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 			mUtils = null;
 		}
 
-		Tracker.handleEvent(this, "Close " + this.toString(), Tracker.States.Exit);
+		Tracker.handleEvent(this, "Close " + this, Tracker.States.Exit);
 	}
 }

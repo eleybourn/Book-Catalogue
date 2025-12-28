@@ -235,8 +235,7 @@ class CropHighlightView {
 	void handleMotion(int edge, float dx, float dy) {
 		Rect r = computeLayout();
 		if (edge == GROW_NONE) {
-			return;
-		} else if (edge == MOVE) {
+        } else if (edge == MOVE) {
 			// Convert to image space before sending to moveBy().
 			moveBy(dx * (mCropRect.width() / r.width()),
 					dy * (mCropRect.height() / r.height()));

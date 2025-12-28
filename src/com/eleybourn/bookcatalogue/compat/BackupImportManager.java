@@ -26,7 +26,7 @@ public class BackupImportManager
 {
 	ActivityResultLauncher<String[]> mBackupImportPickerLauncher;
 	private DocumentFile mBackupFile = null;
-	private ExportSettings mSettings = null;
+	private final ExportSettings mSettings = null;
 
 	public BackupImportManager(BookCatalogueActivity activity) {
 		register(activity);

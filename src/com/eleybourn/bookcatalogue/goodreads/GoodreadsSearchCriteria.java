@@ -157,7 +157,7 @@ public class GoodreadsSearchCriteria extends BookCatalogueActivity {
 	 * Set the OnClickListener for the passed view
 	 */
 	private void setClickListener(int id, OnClickListener listener) {
-		((View)this.findViewById(id)).setOnClickListener(listener);
+		this.findViewById(id).setOnClickListener(listener);
 	}
 
 

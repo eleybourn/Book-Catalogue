@@ -25,14 +25,10 @@ public class Pic2ShopScanner implements Scanner {
 	public static boolean isIntentAvailable() {
 		if (com.eleybourn.bookcatalogue.scanner.pic2shop.Utils.isFreeScannerAppInstalled(BookCatalogueApp.context)) {
 			return true;
-		} else if (com.eleybourn.bookcatalogue.scanner.pic2shop.Utils.isProScannerAppInstalled(BookCatalogueApp.context)) {
-			return true;
-		} else {
-			return false;
-		}
+		} else return com.eleybourn.bookcatalogue.scanner.pic2shop.Utils.isProScannerAppInstalled(BookCatalogueApp.context);
 	}
 
-	private Handler mHandler = new Handler();
+	private final Handler mHandler = new Handler();
 	/**
 	 * Start the activity with the passed request code.
 	 * 

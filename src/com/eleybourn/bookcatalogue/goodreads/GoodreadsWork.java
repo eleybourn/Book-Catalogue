@@ -67,7 +67,7 @@ public class GoodreadsWork {
 		if (v != null) {
 			synchronized(v) {
 				// Make sure our view is still associated with us
-				if (((GoodreadsWork)ViewTagger.getTag(v, R.id.TAG_GOODREADS_WORK)).equals(this)) {
+				if (ViewTagger.getTag(v, R.id.TAG_GOODREADS_WORK).equals(this)) {
 					v.setImageBitmap( Utils.getBitmapFromBytes(imageBytes) );
 					//System.out.println("Work(" + mId + ") set image on view " + v.toString() + " to " +  ((GetImageTask)task).getDescription());
 				}

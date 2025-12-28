@@ -59,7 +59,7 @@ public class CropCropImage extends CropMonitoredActivity {
 	// private static final String TAG = "CropImage";
 
 	// These are various options can be specified in the intent.
-	private Bitmap.CompressFormat mOutputFormat = Bitmap.CompressFormat.JPEG; // only
+	private final Bitmap.CompressFormat mOutputFormat = Bitmap.CompressFormat.JPEG; // only
 																				// used
 																				// with
 																				// mSaveUri
@@ -76,7 +76,7 @@ public class CropCropImage extends CropMonitoredActivity {
 	// Flag indicating if default crop rect is whole image
 	private boolean mCropWholeImage = false;
 
-	private boolean mDoFaceDetection = false;
+	private final boolean mDoFaceDetection = false;
 
 	boolean mWaitingToPick; // Whether we are wait the user to pick a face.
 	boolean mSaving; // Whether the "save" button is already clicked.
@@ -108,7 +108,7 @@ public class CropCropImage extends CropMonitoredActivity {
 
 		setContentView(R.layout.cropcropimage);
 
-		mImageView = (CropImageView) findViewById(R.id.image);
+		mImageView = findViewById(R.id.image);
 
 		showStorageToast(this);
 
@@ -405,7 +405,7 @@ public class CropCropImage extends CropMonitoredActivity {
 	Runnable mRunFaceDetection = new Runnable() {
 		float mScale = 1F;
 		Matrix mImageMatrix;
-		FaceDetector.Face[] mFaces = new FaceDetector.Face[3];
+		final FaceDetector.Face[] mFaces = new FaceDetector.Face[3];
 		int mNumFaces;
 
 		// For each face, we create a HightlightView for it.

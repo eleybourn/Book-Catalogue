@@ -33,7 +33,6 @@
     <string name="bookshelf_label">Kitaplık: </string>
     <string name="all_books">Tüm kitaplar</string>
     <string name="title_isbn_search">Kitap kataloğu: ISBN arama</string>
-    <string name="title_manage_bs">Kitap kataloğu: Kitaplıkları yönet</string>
     <string name="title_edit_bs">Kitap kataloğu: Kitaplığı düzenle</string>
     <string name="search_label">Kitap ara</string>
     <string name="search_hint">Yazar veya kitap adı ara</string>
@@ -46,7 +45,6 @@
     <string name="results_found">Sonuç bulundu</string>
     <string name="administration_label">Yönetim işlevleri</string>
     <string name="menu_administration">Ayarlar</string>
-    <string name="install_scan">ISBN barkodu ile kitap taramak için Zxing barkod tarayıcısı uygulamasını yüklemelisiniz. Yüklemek için Tamam\'a, atlamak için Vazgeç\'e basın.</string>
     <string name="install_scan_title">Barkod Tarayıcıyı yükleyin</string>
     <string name="label_version_number">Sürüm numarası</string>
     <string name="para_donate">Eğer uygulamanın geliştirilmesini desteklemek isterseniz aşağıdaki Amazon Wishlist veya Paypal düğmelerini kullanarak bağışta bulunabilirsiniz. Kişi Avustralya\'da olunca &quot;ücretli&quot; bir sürüm yayınlayamıyor haliyle. :-) </string>
@@ -152,10 +150,8 @@
 
     <item name="TAG_POSITION" type="id"></item>
 
-    <string name="cover_not_set">Kapak yok</string>
     <string name="cover_corrupt">Kapak hasarlı</string>
     <string name="cover_detail">Kapak ayrıntısı</string>
-    <string name="select_picture">Resim seç</string>
     <string name="label_set_authors">Yazar ekle&#8230;</string>
     <string name="and_others">ve diğerleri</string>
     <string name="set_series">Seri ekle&#8230;</string>
@@ -255,8 +251,6 @@
     <item name="TAG_DIALOG_ITEM" type="id"></item>
 
     <string name="label_library">Kitaplarım</string>
-    <string name="my_books_classic">Kitaplarım (Klasik)</string>
-    <string name="loan_return_book">Ödünç ver, geri al veya kitabı düzenle</string>
     <string name="label_settings">Yönetim ve Seçenekler</string>
     <string name="edit_book_send_to_gr">Goodreads\'e gönder</string>
     <string name="goodreads">goodreads</string>
@@ -276,7 +270,6 @@
     <string name="label_other_preferences">Diğer seçenekler</string>
     <string name="user_interface">Kullanıcı arayüzü</string>
     <string name="start_in_my_books">\'Kitaplarım\' içinde aç</string>
-    <string name="include_classic_catalogue_view">Klasik katalog görünümünü içer</string>
     <string name="background_tasks">Ardalan görevleri</string>
     <string name="cleanup_old_tasks">Eski görevleri temizle</string>
     <string name="cleanup_old_events">Eski olayları temizle</string>
@@ -377,7 +370,6 @@
     <string name="show_more_ellipsis">Daha fazla göster&#8230;</string>
     <string name="show_fewer_ellipsis">Daha az göster&#8230;</string>
     <string name="customize_ellipsis">Kişiselleştir&#8230;</string>
-    <string name="hint">İpucu</string>
     <string name="label_reset_hints">İpuçlarını sıfırla</string>
     <string name="do_not_show_again">Bir daha gösterme</string>
     <string name="hint_booklist_styles_editor">Bu ekranı öntanımlı biçemler seçkesinde görüntülenecek biçemler dizelgesini düzenlemek için kullanabilirsiniz.
@@ -511,7 +503,6 @@
     <string name="use_background_thread">Ardalanda iş oluştur (dizelgeler daha hızlı kayar, resimlerin görüntülenmesi gecikebilir)</string>
     <string name="generate_immediately">Anında oluştur (dizelgeler daha yavaş kayar, resimler anında görüntülenir)</string>
     <string name="sort_and_style_ellipsis">Sıralama &amp; biçemi&#8230;</string>
-    <string name="disable_background_image">Ardalan resmini kapat</string>
     <string name="displaying_n_books_in_m_entries">%2$s giride %1$s kitap görüntüleniyor</string>
     <string name="displaying_n_books">%1$s kitap görüntüleniyor</string>
     <string name="available">Uygun</string>
@@ -538,7 +529,6 @@
     <string name="label_year">Yıl</string>
     <string name="label_month">Ay</string>
     <string name="day">Gün</string>
-    <string name="edit_lc_ellipsis">düzenle&#8230;</string>
     <string name="getting_books_ellipsis">Kitaplar alınıyor&#8230;</string>
     <string name="last_error_e">Son hata: %1$s</string>
     <string name="invalid_isbn_x_specified_in_search">Aramara belirtilen ISBN \'%1$s\' geçersiz</string>

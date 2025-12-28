@@ -34,8 +34,7 @@
 	<string name="all_books">Todos los libros</string>
 	<string name="isbn_found">ISBN escaneado. Buscando en Internet.</string>
 	<string name="title_isbn_search">Book Catalogue: Buscar ISBN</string>
-	<string name="title_manage_bs">Book Catalogue: Gestionar bibliotecas</string>
-	<string name="title_edit_bs">Book Catalogue: Editar bibliotecas</string>
+    <string name="title_edit_bs">Book Catalogue: Editar bibliotecas</string>
     <string name="search_label">Buscar libro</string>
 	<string name="search_hint">Buscar autor o título</string>
 	<string name="book_not_found">El libro escaneado no ha sido encontrado. El código de barras correcto se encuentra a veces en el interior de la portada. También puede introducir los datos de forma manual.</string>
@@ -47,8 +46,7 @@
 	<string name="results_found">Resultados encontrados</string>
 	<string name="administration_label">Administración</string>
     <string name="menu_administration">Admin</string>
-	<string name="install_scan">Para poder escanear códigos de barras de ISBN debe instalar una aplicación de escaneo (Zxing o pic2shop). Seleccione una para instalarla, o Cancelar para salir.</string>
-	<string name="install_scan_title">Instalar Escáner de código de barras</string>
+    <string name="install_scan_title">Instalar Escáner de código de barras</string>
 	<string name="label_version_number">Versión</string>
 	<string name="para_donate">Si desea contribuir al desarrollo de esta aplicación puede realizar su aportación económica utilizando Amazon Wishlist o el botón de Paypal que figura más abajo. En Australia no se puede publicar una versión &quot;de pago&quot;. :-)</string>
     <string name="upgrade_title">Desde la última actualización</string>
@@ -153,11 +151,9 @@
 	<string name="para_no_authors">El libro no tiene autor. Añada alguno utilizando el campo de texto y el botón de la parte superior de esta pantalla.</string>
 	<string name="para_no_series">El libro no tiene serie. Puede especificar una utilizando el campo de texto y el botón de la parte superior de esta pantalla.</string>
 
-	<string name="cover_not_set">No hay imagen de portada</string>
-	<string name="cover_corrupt">La imagen de portada está dañada</string>
+    <string name="cover_corrupt">La imagen de portada está dañada</string>
 	<string name="cover_detail">Portada</string>
-	<string name="select_picture">Seleccionar imagen</string>
-	<string name="label_set_authors">Definir autores&#8230;</string>
+    <string name="label_set_authors">Definir autores&#8230;</string>
 	<string name="and_others">et. al.</string>
 	<string name="set_series">Definir serie&#8230;</string>
 	<string name="author_already_in_list">Ese autor ya está en la lista</string>
@@ -245,8 +241,6 @@
     <string name="delete_task">Eliminar Tarea</string>
 
     <string name="label_library">Mis Libros</string>
-    <string name="my_books_classic">Mis Libros (Clásico)</string>
-    <string name="loan_return_book">Prestar, Devolver o Editar Libro</string>
     <string name="label_settings">Administración y Preferencias</string>
     <string name="edit_book_send_to_gr">Enviar a goodreads</string>
     <string name="goodreads">goodreads</string>
@@ -268,7 +262,6 @@
     <string name="label_other_preferences">Otras preferencias</string>
     <string name="user_interface">Interfaz de usuario</string>
     <string name="start_in_my_books">Empezar en \'Mis libros\'</string>
-    <string name="include_classic_catalogue_view">Incluir vista clásica del Catálogo</string>
     <string name="background_tasks">Tareas en segundo plano</string>
     <string name="cleanup_old_tasks">Eliminar tareas antiguas</string>
     <string name="cleanup_old_events">Eliminar eventos antiguos</string>
@@ -352,7 +345,6 @@
     <string name="show_more_ellipsis">Mostrar más&#8230;</string>
     <string name="show_fewer_ellipsis">Mostrar menos&#8230;</string>
     <string name="customize_ellipsis">Configurar&#8230;</string>
-    <string name="hint">Sugerencia</string>
     <string name="label_reset_hints">Resetear sugerencias</string>
     <string name="do_not_show_again">No volver a mostrar</string>
     <string name="hint_booklist_styles_editor">Puede utilizar esta opción para configurar la lista de estilos que se mostrarán en su menú de estilos.
@@ -489,7 +481,6 @@
     <string name="use_background_thread">Usar hilo de fondo (desplazamiento más rápido, las imágenes pueden retrasarse)</string>
     <string name="generate_immediately">Generar inmediatamente (desplazamiento más lento, las imágenes se muestran inmediatamente)</string>
     <string name="sort_and_style_ellipsis">Estilo de &amp; ordenación&#8230;</string>
-    <string name="disable_background_image">Deshabilitar fondo</string>
     <string name="displaying_n_books_in_m_entries">Se muestran %1$s libros, en %2$s entradas</string>
     <string name="displaying_n_books">Se muestran %1$s libros</string>
     <string name="available">Disponible</string>
@@ -516,7 +507,6 @@
     <string name="label_year">Año</string>
     <string name="label_month">Mes</string>
     <string name="day">Día</string>
-    <string name="edit_lc_ellipsis">Editar&#8230;</string>
     <string name="getting_books_ellipsis">Obteniendo libros&#8230;</string>
     <string name="last_error_e">Último error: %1$s</string>
     <string name="invalid_isbn_x_specified_in_search">ISBN no válido \'%1$s\' en la búsqueda</string>

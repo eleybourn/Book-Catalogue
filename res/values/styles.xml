@@ -117,12 +117,6 @@
         <item name="strokeWidth">0dp</item>
     </style>
 
-    <style name="layout_list_view">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">16sp</item>
-    </style>
-
     <style name="layout_list_row">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -307,10 +301,6 @@
 
     <style name="locale_field_text_language" parent="@style/locale_field_text">
         <item name="android:inputType">textCapWords</item>
-    </style>
-
-    <style name="Widget.AppTheme.ActionBar.Fullscreen" parent="Widget.AppCompat.ActionBar">
-        <item name="android:background">?attr/colorSurfaceInverse</item>
     </style>
 
     <style name="shapeAppearanceOverlay_rounded_corners" parent="">

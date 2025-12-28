@@ -33,8 +33,7 @@
 <string name="all_books">Alle Bücher</string>
 <string name="isbn_found">ISBN gescannt. Suche im Internet.</string>
 <string name="title_isbn_search">Book Catalogue: ISBN-Suche</string>
-<string name="title_manage_bs">Book Catalogue: Bücherregale verwalten</string>
-<string name="title_edit_bs">Book Catalogue: Bücherregal bearbeiten</string>
+    <string name="title_edit_bs">Book Catalogue: Bücherregal bearbeiten</string>
     <string name="search_label">Suche nach Büchern</string>
 <string name="search_hint">Suche nach Autor oder Titel</string>
 <string name="book_not_found">Das gescannte Buch wurde nicht gefunden. Manchmal befindet sich der korrekte Barcode auf der Rückseite des Covers. Geben Sie ansonsten die Daten manuell ein.</string>
@@ -151,11 +150,9 @@
 <string name="label_add">Hinzufügen</string>
 <string name="para_no_authors">Es wurde kein Autor für dieses Buch eingetragen. Bitte fügen Sie einen Autor über das Textfeld und den Knopf oben auf diesem Bildschirm hinzu.</string>
 <string name="para_no_series">Es besteht keine Serie für dieses Buch. Sie können eine Serie über das Textfeld und den Knopf oben auf dieser Seite hinzufügen.</string>
-<string name="cover_not_set">Das Cover wurde nicht gesetzt</string>
-<string name="cover_corrupt">Das Cover ist unbrauchbar</string>
+    <string name="cover_corrupt">Das Cover ist unbrauchbar</string>
 <string name="cover_detail">Coverdetails</string>
-<string name="select_picture">Bild auswählen</string>
-<string name="label_set_authors">Autor angeben…</string>
+    <string name="label_set_authors">Autor angeben…</string>
 <string name="and_others">et. al.</string>
 <string name="set_series">Serie angeben…</string>
 <string name="author_already_in_list">Der Autor befindet sich bereits in der Liste</string>
@@ -243,9 +240,7 @@
 <string name="delete_task">Aufgabe löschen</string>
 
 <string name="label_library">Meine Bücher</string>
-<string name="my_books_classic">Meine Bücher (Klassisch)</string>
-<string name="loan_return_book">Buch verleihen, zurückgeben oder bearbeiten</string>
-<string name="label_settings">Verwaltung und Einstellungen</string>
+    <string name="label_settings">Verwaltung und Einstellungen</string>
 <string name="edit_book_send_to_gr">Zu Goodreads senden</string>
 <string name="goodreads">Goodreads</string>
     <string name="goodreads_auth_blurb_part1">Goodreads ist eine Website, deren ausgewiesener Zweck es ist, "Menschen zu helfen, um Bücher zu suchen und zu teilen, die sie gern haben".
@@ -267,8 +262,7 @@ anschließend auf eine leeren Seite landen. Klicken Sie einfach auf den "Zurück
 <string name="label_other_preferences">Weitere Einstellungen</string>
 <string name="user_interface">Benutzeroberfläche</string>
 <string name="start_in_my_books">Start in \'Meine Bücher\'</string>
-<string name="include_classic_catalogue_view">Klassische Katalogansicht einschließen</string>
-<string name="background_tasks">Aufgaben im Hintergrund</string>
+    <string name="background_tasks">Aufgaben im Hintergrund</string>
 <string name="cleanup_old_tasks">Alte Aufgaben bereinigen</string>
 <string name="cleanup_old_events">Alte Ereignisse bereinigen</string>
     <string name="text_and_or_isbn">Text und/oder ISBN</string>
@@ -350,8 +344,7 @@ anschließend auf eine leeren Seite landen. Klicken Sie einfach auf den "Zurück
 <string name="show_more_ellipsis">Mehr anzeigen…</string>
 <string name="show_fewer_ellipsis">Weniger anzeigen…</string>
 <string name="customize_ellipsis">Anpassen…</string>
-<string name="hint">Hinweis</string>
-<string name="label_reset_hints">Hinweise zurücksetzen</string>
+    <string name="label_reset_hints">Hinweise zurücksetzen</string>
 <string name="do_not_show_again">Nicht mehr anzeigen</string>
     <string name="hint_booklist_styles_editor">Sie können hier die Liste der Stile einstellen, die in Ihrem Menü für Standard-Stile angezeigt werden.
         \n\nEin grüner Haken zeigt an, dass ein Stil in der Liste angezeigt wird, und ein rotes Kreuz zeigt an, dass ein Stil nicht angezeigt wird. Beim Klick wird ein grüner Haken zu einem roten Kreuz und umgekehrt.
@@ -480,8 +473,7 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
 <string name="use_background_thread">Im Hintergrund laden (schnellerer Bildlauf, Bilder können verzögert sein)</string>
 <string name="generate_immediately">Sofort erzeugen (langsamerer Bildlauf, Bilder sofort angezeigt)</string>
 <string name="sort_and_style_ellipsis">Sortierung und Stil…</string>
-<string name="disable_background_image">Hintergrundbild ausschalten</string>
-<string name="displaying_n_books_in_m_entries">%1$s Bücher in %2$s Einträgen werden angezeigt</string>
+    <string name="displaying_n_books_in_m_entries">%1$s Bücher in %2$s Einträgen werden angezeigt</string>
 <string name="displaying_n_books">%1$s Bücher werden angezeigt</string>
 <string name="available">Verfügbar</string>
 <string name="summary_details_in_header">Zusammenfassung in der Kopfzeile</string>
@@ -507,8 +499,7 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
 <string name="label_year">Jahr</string>
 <string name="label_month">Monat</string>
 <string name="day">Tag</string>
-<string name="edit_lc_ellipsis">bearbeiten&#8230;</string>
-<string name="getting_books_ellipsis">Hole Bücher&#8230;</string>
+    <string name="getting_books_ellipsis">Hole Bücher&#8230;</string>
     <string name="last_error_e">Letzter Fehler: %1$s</string>
 <string name="invalid_isbn_x_specified_in_search">Ungültige ISBN \'%1$s\' gesucht</string>
 <string name="if_day_is_specified_month_and_year_must_be">Wenn der Tag angegeben wird, muss auch Monat und Jahr angegeben werden.</string>
@@ -919,7 +910,6 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
     <string name="preferred_language_x">%1$s (%2$s)</string>
 
     <!-- This is an UPDATED string copied from earlier in the file; "Google Googles" (sic) was removed from the list of scanners -->
-    <string name="install_scan">Um Bücher über den ISBN-Code scannen zu können, musst du entweder Zxing oder pic2shop als Barcodescanner-App installieren.</string>
 
     <string name="system_locale">System Locale</string>
 

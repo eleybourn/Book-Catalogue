@@ -33,8 +33,7 @@
 <string name="all_books">Všechny knihy</string>
 <string name="isbn_found">Zjištěn ISBN kód. Prohledávám Internet.</string>
 <string name="title_isbn_search">Book Catalogue: Hledat ISBN</string>
-<string name="title_manage_bs">Book Catalogue: Spravovat knihovny</string>
-<string name="title_edit_bs">Book Catalogue: Upravit knihovnu</string>
+    <string name="title_edit_bs">Book Catalogue: Upravit knihovnu</string>
     <string name="search_label">Hledat knihy</string>
 <string name="search_hint">Hledat autora nebo titul</string>
 <string name="book_not_found">Nepodařilo se nalézt hledanou knihu. Zkuste prosím zadat potřebné údaje manuálně.</string>
@@ -46,8 +45,7 @@
 <string name="results_found">Nalezené výsledky</string>
 <string name="administration_label">Administrační funkce</string>
     <string name="menu_administration">Admin</string>
-<string name="install_scan">Aby bylo možné přečíst čárový kód je nutné, aby ve Vašem telefonu byla nainstalována aplikace Google Goggles nebo zxing barcode scanner.</string>
-<string name="install_scan_title">Instalovat čtečku čárových kódů</string>
+    <string name="install_scan_title">Instalovat čtečku čárových kódů</string>
 <string name="label_version_number">Číslo verze:</string>
 <string name="para_donate">Pokud chcete podpořit vývoj této aplikace, učiňte tak prosím prostřednictvím mého Amazon Wishlistu nebo přes paypal tlačítko níže. Vzhledem k tomu, že jsem z Austrálie, tak nemohu nabízet &quot;placenou&quot; verzi. :-) </string>
     <string name="upgrade_title">Od Vaší poslední aktualizace</string>
@@ -150,11 +148,9 @@
 <string name="label_add">Přidat</string>
 <string name="para_no_authors">Tato kniha nemá autora. Prosím přidejte jej prostřednictví pole v horní části obrazovky.</string>
 <string name="para_no_series">Pro tuto knihu není zadána žádná série. Pro její zadání můžete použít pole v horní části obrazovky.</string>
-<string name="cover_not_set">Obálka není zadána</string>
-<string name="cover_corrupt">Obálka je poškozena</string>
+    <string name="cover_corrupt">Obálka je poškozena</string>
 <string name="cover_detail">Detail obálky</string>
-<string name="select_picture">Zvolit obrázek</string>
-<string name="label_set_authors">Zadat autory&#8230;</string>
+    <string name="label_set_authors">Zadat autory&#8230;</string>
 <string name="and_others">a další</string>
 <string name="set_series">Zadat série&#8230;</string>
 <string name="author_already_in_list">Autor je již v seznamu</string>
@@ -239,9 +235,7 @@
 <string name="retry">Opakovat</string>
     <string name="retry_task">Opakovat</string>
     <string name="label_library">Moje knihy</string>
-<string name="my_books_classic">Moje knihy (klasik)</string>
-<string name="loan_return_book">Půjčit, vrátit nebo upravit knihu</string>
-<string name="label_settings">Administrace a možnosti</string>
+    <string name="label_settings">Administrace a možnosti</string>
 <string name="edit_book_send_to_gr">Poslat do Goodreads</string>
 <string name="goodreads">Goodreads</string>
     <string name="goodreads_auth_blurb_part1">Goodreads je internetová síť, jejímž hlavním cílem je "pomoci lidem najít a sdílet knihy, které milují".
@@ -262,8 +256,7 @@
 <string name="label_other_preferences">Další možnosti</string>
 <string name="user_interface">Uživatelské rozhraní</string>
 <string name="start_in_my_books">Začínat v \'Moje knihy\'</string>
-<string name="include_classic_catalogue_view">Používat klasickou podobu katalogu</string>
-<string name="background_tasks">Úlohy na pozadí</string>
+    <string name="background_tasks">Úlohy na pozadí</string>
 <string name="cleanup_old_tasks">Smazat staré úlohy</string>
 <string name="cleanup_old_events">Smazat staré události</string>
     <string name="text_and_or_isbn">Vložit a/nebo ISBN</string>
@@ -343,8 +336,7 @@
 <string name="show_more_ellipsis">Zobrazit vše&#8230;</string>
 <string name="show_fewer_ellipsis">Zobrazit méně&#8230;</string>
 <string name="customize_ellipsis">Přizpůsobit&#8230;</string>
-<string name="hint">Rada</string>
-<string name="label_reset_hints">Obnovit rady</string>
+    <string name="label_reset_hints">Obnovit rady</string>
 <string name="do_not_show_again">Příště již nezobrazovat</string>
     <string name="hint_booklist_styles_editor">Na této obrazovce máte možnost upravit seznam stylů, které budou zobrazeny ve Vašem defaultním menu stylů.
     										\n\nZelená fajfka označuje ty styly, které budou v seznamu zobrazeny, červený křížek potom označuje ty, které budou skryty.

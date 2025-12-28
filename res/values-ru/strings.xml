@@ -34,7 +34,6 @@
     <string name="all_books">Все книги</string>
     <string name="isbn_found">ISBN отсканирован. Поиск в Интернете.</string>
     <string name="title_isbn_search">Книжный каталог: поиск по ISBN</string>
-    <string name="title_manage_bs">Книжный каталог: управление книжными полками</string>
     <string name="title_edit_bs">Книжный каталог: редактирование книжной полки</string>
     <string name="search_label">Поиск книг</string>
     <string name="search_hint">Поиск автора или названия</string>
@@ -46,7 +45,6 @@
     <string name="results_found">Найденные результаты</string>
     <string name="administration_label">Функции администрирования</string>
     <string name="menu_administration">Настройки</string>
-    <string name="install_scan">Чтобы определить ваши книги по ISBN штрих-коду, вы должны установить приложение Google Goggles или zxing.</string>
     <string name="install_scan_title">Установить сканер штрих-кодов</string>
     <string name="label_version_number">Номер версии:</string>
     <string name="para_donate">Если Вы хотите поддержать разработку этого приложения, пожалуйста сделайте пожертвование или через Amazon Wishlist или через PayPal кнопкой внизу. Я не могу опубликовать &quot;платную&quot; версию приложения в Австралии. :-) </string>
@@ -152,10 +150,8 @@
     <string name="para_no_authors">Не указаны авторы книги. Пожалуйста, добавьте автора(ов), используя текстовую область и кнопку в верхней части этого экрана.</string>
     <string name="para_no_series">Не указана серия книги. Вы можете добавить серию используя текстовую область в верхней части этого экрана.</string>
 
-    <string name="cover_not_set">Обложка не установлена</string>
     <string name="cover_corrupt">Обложка испорчена</string>
     <string name="cover_detail">Детальная информация об обложке</string>
-    <string name="select_picture">Выбор картинки</string>
     <string name="label_set_authors">Установка авторов&#8230;</string>
     <string name="and_others">и др.</string>
     <string name="set_series">Установка серии&#8230;</string>
@@ -245,8 +241,6 @@
     <string name="delete_event">Удалить событие</string>
     <string name="delete_task">Удалить задачу</string>
     <string name="label_library">Мои книги</string>
-    <string name="my_books_classic">Мои книги (Classic)</string>
-    <string name="loan_return_book">Одолжить, Вернуть или Редактировать книгу</string>
     <string name="label_settings">Администрирование и Настройки</string>
     <string name="edit_book_send_to_gr">Послать на goodreads</string>
     <string name="goodreads">goodreads</string>
@@ -267,7 +261,6 @@
     <string name="label_other_preferences">Другие настройки</string>
     <string name="user_interface">Пользовательский интерфейс</string>
     <string name="start_in_my_books">Начинать с \'Мои книги\'</string>
-    <string name="include_classic_catalogue_view">Добавить классический вид каталога</string>
     <string name="background_tasks">Фоновые задачи</string>
     <string name="cleanup_old_tasks">Очистить старые задачи</string>
     <string name="cleanup_old_events">Очистить старые события</string>
@@ -369,7 +362,6 @@
     <string name="show_more_ellipsis">Показать больше&#8230;</string>
     <string name="show_fewer_ellipsis">Показать меньше&#8230;</string>
     <string name="customize_ellipsis">Настроить&#8230;</string>
-    <string name="hint">Подсказка</string>
     <string name="label_reset_hints">Сбросить подсказки</string>
     <string name="do_not_show_again">Больше не показывать</string>
     <string name="hint_booklist_styles_editor">        	Вы можете использовать это окно, чтобы настроить список стилей, которые будут отображаться в вашем меню стилей по умолчанию. \n\n
@@ -499,7 +491,6 @@
     <string name="use_background_thread">Использовать фоновый поток (списки пролистываются быстрее, картинки показываются по мере их загрузки)</string>
     <string name="generate_immediately">Создавать немедленно (списки пролистываются медленнее, зато картинки показываются сразу)</string>
     <string name="sort_and_style_ellipsis">Сортировать &amp; Стиль&#8230;</string>
-    <string name="disable_background_image">Отключить фоновый рисунок</string>
     <string name="displaying_n_books_in_m_entries">отображается %1$s книг, в %2$s элементах</string>
     <string name="displaying_n_books">Книг на полке: %1$s</string>
     <string name="available">Доступно</string>
@@ -526,7 +517,6 @@
     <string name="label_year">Год</string>
     <string name="label_month">Месяц</string>
     <string name="day">День</string>
-    <string name="edit_lc_ellipsis">редактировать&#8230;</string>
     <string name="getting_books_ellipsis">Получение книг&#8230;</string>
     <string name="last_error_e">Последняя ошибка: %1$s</string>
     <string name="invalid_isbn_x_specified_in_search">В поиске указан неверный ISBN \'%1$s\'</string>

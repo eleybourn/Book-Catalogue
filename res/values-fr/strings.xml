@@ -134,7 +134,6 @@
     <string name="all_books">Tous les livres</string>
     <string name="isbn_found">ISBN scanné. Recherche en cours.</string>
     <string name="title_isbn_search">Book Catalogue : recherche par ISBN</string>
-    <string name="title_manage_bs">Book Catalogue : gérer les biblothèques</string>
     <string name="title_edit_bs">Book Catalogue : modifier la bibliothèque</string>
     <string name="search_label">Rechercher des livres</string>
     <string name="search_hint">Rechercher un auteur ou un titre</string>
@@ -243,10 +242,8 @@
     <string name="label_add">Ajouter</string>
     <string name="para_no_authors">Il n\'y a pas d\'auteur pour ce livre. Veuillez en ajouter un en utilisant la zone de texte et le bouton en haut de cet écran.</string>
     <string name="para_no_series">Il n\'y a pas de série pour ce livre. Vous pouvez en ajouter une en utilisant la zone de texte et le bouton en haut de cet écran.</string>
-    <string name="cover_not_set">Couverture non définie</string>
     <string name="cover_corrupt">Couverture corrompue</string>
     <string name="cover_detail">Détails de la couverture</string>
-    <string name="select_picture">Choisissez une image</string>
     <string name="label_set_authors">Définir les auteurs&#8230;</string>
     <string name="and_others">et cie.</string>
     <string name="set_series">Définir la série&#8230;</string>
@@ -333,8 +330,6 @@
     <string name="delete_event">Supprimer l\'événement</string>
     <string name="delete_task">Supprimer la tâche</string>
     <string name="label_library">Mes livres</string>
-    <string name="my_books_classic">Mes livres (classique)</string>
-    <string name="loan_return_book">Prêter, retourner ou modifier le livre</string>
     <string name="label_settings">Administration et préférences</string>
     <string name="edit_book_send_to_gr">Envoyer à Goodreads</string>
     <string name="goodreads_auth_blurb_part1">Goodreads est un site qui s\'est donné pour mission « d\'aider les gens à trouver et à partager les livres qu\'ils aiment ».
@@ -358,7 +353,6 @@
     <string name="label_other_preferences">Autres préférences</string>
     <string name="user_interface">Interface utilisateur</string>
     <string name="start_in_my_books">Commencer dans « mes livres »</string>
-    <string name="include_classic_catalogue_view">Inclure la vue catalogue classique</string>
     <string name="background_tasks">Tâches en arrière plan</string>
     <string name="cleanup_old_tasks">Nettoyer les anciennes tâches</string>
     <string name="cleanup_old_events">Nettoyer les anciens événements</string>
@@ -438,7 +432,6 @@
     <string name="show_more_ellipsis">Montrer plus&#8230;</string>
     <string name="show_fewer_ellipsis">Montrer moins&#8230;</string>
     <string name="customize_ellipsis">Personnaliser&#8230;</string>
-    <string name="hint">Astuce</string>
     <string name="label_reset_hints">Réinitialiser les astuces</string>
     <string name="do_not_show_again">Ne plus montrer</string>
     <string name="preferred_styles">Styles favoris</string>
@@ -572,7 +565,6 @@
     <string name="use_background_thread">Utiliser un thread (défilement des listes plus rapide, affichage décalé des images)</string>
     <string name="generate_immediately">Générer immédiatement (défilement des listes plus lent, affichage immédiat des images)</string>
     <string name="sort_and_style_ellipsis">Tri &amp; style&#8230;</string>
-    <string name="disable_background_image">Désactiver l\'image d\'arrière plan</string>
     <string name="displaying_n_books_in_m_entries">Affichage de %1$s livres, parmi %2$s entrées</string>
     <string name="displaying_n_books">Affichage de %1$s livres</string>
     <string name="available">Disponible</string>
@@ -600,7 +592,6 @@
     <string name="label_year">Année</string>
     <string name="label_month">Mois</string>
     <string name="day">Jour</string>
-    <string name="edit_lc_ellipsis">modifier&#8230;</string>
     <string name="getting_books_ellipsis">Chargement&#8230;</string>
     <string name="last_error_e">Dernière erreur : %1$s</string>
     <string name="invalid_isbn_x_specified_in_search">ISBN incorrect dans la recherche \'%1$s\'</string>
@@ -927,7 +918,6 @@
     <string name="preferred_language_x">%1$s (%2$s)</string>
 
     <!-- This is an UPDATED string copied from earlier in the file; "Google Googles" (sic) was removed from the list of scanners -->
-    <string name="install_scan">Pour scanner vos livres en utilisant le code barre ISBN, vous pouvez installer le lecteur de codes barre Zxing ou pic2shop.</string>
 
     <string name="system_locale">Paramètres de langue du système</string>
 

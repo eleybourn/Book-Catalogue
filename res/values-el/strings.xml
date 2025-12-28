@@ -35,7 +35,6 @@
     <string name="all_books">Όλα τα βιβλία.</string>
     <string name="isbn_found">ISBN σαρώθηκε. Αναζήτηση στο διαδίκτυο.</string>
     <string name="title_isbn_search">Book Catalogue: ISBN Αναζήτηση</string>
-    <string name="title_manage_bs">Book Catalogue: Διαχείρηση Ραφιών</string>
     <string name="title_edit_bs">Book Catalogue: Επεξεργασία ραφιού</string>
     <string name="search_label">Αναζήτηση για βιβλία</string>
     <string name="search_hint">Αναζήτηση συγγραφέα ή τίτλου</string>
@@ -48,7 +47,6 @@
     <string name="results_found">Αποτελέσματα βρέθηκαν</string>
     <string name="administration_label">Λειτουργίες διαχείρισης</string>
     <string name="menu_administration">Διαχειριστής</string>
-    <string name="install_scan">Για να σκανάρετε τα βιβλία σας μέσω ISBN barcode, θα πρέπει να εγκαταστήσετε κάποια απο τίς εφαρμογές Zxing, pic2shop or Google Googles για σάρωση barcode.</string>
     <string name="install_scan_title">Εγκατάσταση σαρωτή barcode</string>
     <string name="label_version_number">Αριθμός έκδοσης:</string>
     <string name="para_donate">Εαν θέλετε να στηρίξετε την αναπτυξη της εφαρμογής, παρακαλούμε δωρήστε μέ το my Amazon Wishlist ή το paypal κουμπί παρακάτω. Το να βρίσκεσαι στην Αυστραλία σημαίνει ότι δεν μπορεί να εκδοθεί &quot;πληρωμένη&quot; έκδοση. :-) </string>
@@ -153,10 +151,8 @@
     <string name="label_add">Προσθήκη</string>
     <string name="para_no_authors">Δεν υπάρχουν συγγραφείς για αυτό το Βιβλίο. Μπορείτε να προσθέσετε εσείς χρησιμοποιώντας το πεδίο κειμένο και το κουμπί στη ανω πλευρά της οθόνης.Please add some using the text area and button at the top of this screen.</string>
     <string name="para_no_series">>Δεν υπάρχουν σειρές για αυτό το Βιβλίο. Μπορείτε να προσθέσετε εσείς χρησιμοποιώντας το πεδίο κειμένο και το κουμπί στη ανω πλευρά της οθόνης.</string>
-    <string name="cover_not_set">Το εξώφυλλο δεν έχει οριστεί</string>
     <string name="cover_corrupt">Το εξώφυλλο είναι κατεστραμμένο</string>
     <string name="cover_detail">Λεπτομέρειες εξωφύλλου</string>
-    <string name="select_picture">Επιλογή εικόνας</string>
     <string name="label_set_authors">Ορισμός συγγραφέων&#8230;</string>
     <string name="and_others">κτλ.</string>
     <string name="set_series">Ορισμός σειρών&#8230;</string>
@@ -245,8 +241,6 @@
     <string name="delete_task">Διαγραφή Εργασίας</string>
 
     <string name="label_library">Τα βιβλία μου</string>
-    <string name="my_books_classic">Τα βιβλία μου (Κλασική προβολή)</string>
-    <string name="loan_return_book">Δανεισμός, Επιστροφή ή Επεξεργασία Βιβλίου</string>
     <string name="label_settings">Διαχείριση και προτιμήσεις</string>
     <string name="edit_book_send_to_gr">Αποστολή στο goodreads</string>
     <string name="goodreads">goodreads</string>
@@ -268,7 +262,6 @@
     <string name="label_other_preferences">Άλλες Προτιμήσεις</string>
     <string name="user_interface">Περιβάλλον Χρήστη</string>
     <string name="start_in_my_books">Εκκίνηση σε \'Τα βιβλία μου\'</string>
-    <string name="include_classic_catalogue_view">Συμπεριέλαβε την κλασική προβολή καταλόγου</string>
     <string name="background_tasks">Εργασίες Παρασκηνίου</string>
     <string name="cleanup_old_tasks">Εκκαθάριση παλιών εργασιών</string>
     <string name="cleanup_old_events">Εκκαθάριση παλιών events</string>
@@ -352,7 +345,6 @@
     <string name="show_more_ellipsis">Εμφάνιση περισσότερων&#8230;</string>
     <string name="show_fewer_ellipsis">Εμφάνιση λιγότερων&#8230;</string>
     <string name="customize_ellipsis">Προσαρμογή&#8230;</string>
-    <string name="hint">Συμβουλή</string>
     <string name="label_reset_hints">Επαναφορά συμβουλών</string>
     <string name="do_not_show_again">Μην εμφανιστείς ξανά</string>
     <string name="hint_booklist_styles_editor">Σε αυτή την οθόνη μπορείτε να προσαρμόσετε τη λίστα των στυλ που θα εμφανίζεται στο μενού με τα προεπιλεγμένα στυλ σας.
@@ -489,7 +481,6 @@
     <string name="use_background_thread">Χρήση νήματος παρασκηνίου (πιο γρήγορο scrolling στις λίστες, οι εικόνες ίσως καθυστερρούν να εμφανιστούν)</string>
     <string name="generate_immediately">Άμεση παραγωγή (πιο αργό scrolling στις λίστες, οι εικόνες εμφανίζονται αμέσως)</string>
     <string name="sort_and_style_ellipsis">Ταξινόμηση &amp; Στυλ&#8230;</string>
-    <string name="disable_background_image">Απενεργοποίηση εικόνων παρασκηνίου</string>
     <string name="displaying_n_books_in_m_entries">εμφανίζονται %1$s βιβλία, σε %2$s καταχωρήσεις</string>
     <string name="displaying_n_books">εμφανίζονται %1$s βιβλία</string>
     <string name="available">Διαθέσιμο</string>
@@ -517,7 +508,6 @@
     <string name="label_year">Έτος</string>
     <string name="label_month">Μήνας</string>
     <string name="day">Ημέρα</string>
-    <string name="edit_lc_ellipsis">επεξεργασία&#8230;</string>
     <string name="getting_books_ellipsis">Γίνεται λήψη βιβλίων&#8230;</string>
     <string name="last_error_e">Τελευταίο σφάλμα: %1$s</string>
     <string name="invalid_isbn_x_specified_in_search">Μη Έγκυρο ISBN \'%1$s\' προσδιορίστηκε στην αναζήτηση</string>

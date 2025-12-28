@@ -35,7 +35,6 @@
     <string name="all_books">Alle Boeken</string>
     <string name="isbn_found">ISBN gescand. Zoeken op Internet.</string>
     <string name="title_isbn_search">Book Catalogue: ISBN zoeken</string>
-    <string name="title_manage_bs">Book Catalogue: Boekenplank beheren</string>
     <string name="title_edit_bs">Book Catalogue: Boekenplank bewerken</string>
     <string name="search_label">Zoeken naar boeken</string>
     <string name="search_hint">zoeken naar auteurs of titels</string>
@@ -48,7 +47,6 @@
     <string name="results_found">Gevonden resultaten</string>
     <string name="administration_label">Administratieve Functies</string>
     <string name="menu_administration">Beheer</string>
-    <string name="install_scan">Om uw boeken via de ISBN streepjescode te kunnen scannen moet u de Zxing, pic2shop of Google Goggles streepjescode scanner app installeren.</string>
     <string name="install_scan_title">Streepjescode Scanner Installeren</string>
     <string name="label_version_number">Versienummer:</string>
     <string name="para_donate">Als u de ontwikkeling van deze applicatie wilt ondersteunen, kunt u een bijdrage doen via mijn Amazon Wishlist of de Paypal knop hieronder. Omdat ik in Australië ben kan ik geen betaalde &quot;betaalde&quot; versie publiceren. :-) </string>
@@ -153,10 +151,8 @@
     <string name="label_add">Toevoegen</string>
     <string name="para_no_authors">Er zijn geen auteurs voor dit boek. Voeg er een toe met het tekstveld en de knop bovenin dit scherm.</string>
     <string name="para_no_series">Er zijn geen series voor dit boek. U kunt er een toevoegen met het tekstveld en de knop bovenin dit scherm.</string>
-    <string name="cover_not_set">Omslagafbeelding niet ingesteld</string>
     <string name="cover_corrupt">Omslagafbeelding is niet geldig</string>
     <string name="cover_detail">Omslagafbeelding detail</string>
-    <string name="select_picture">Selecteer afbeelding</string>
     <string name="label_set_authors">Invullen auteurs&#8230;</string>
     <string name="and_others">et. al.</string>
     <string name="set_series">Invullen Serie&#8230;</string>
@@ -247,8 +243,6 @@
     <string name="delete_task">Verwijder taak</string>
 
     <string name="label_library">Mijn Boeken</string>
-    <string name="my_books_classic">Mijn klassieke Boeken</string>
-    <string name="loan_return_book">boeken bewerken, uitlenen of terugbrengen</string>
     <string name="label_settings">Administratie en voorkeuren</string>
     <string name="edit_book_send_to_gr">Zend naar Goodreads</string>
     <string name="goodreads">Goodreads</string>
@@ -270,7 +264,6 @@
     <string name="label_other_preferences">Meer voorkeuren</string>
     <string name="user_interface">Gebruikersinterface</string>
     <string name="start_in_my_books">Opstarten in \'Mijn Boeken\'</string>
-    <string name="include_classic_catalogue_view">Inclusief de klassieke boeken catalogus</string>
     <string name="background_tasks">Achtergrondtaken</string>
     <string name="cleanup_old_tasks">Opschonen oude taken</string>
     <string name="cleanup_old_events">Opschonen oude gebeurtenissen</string>
@@ -352,7 +345,6 @@
     <string name="show_more_ellipsis">Toon meer&#8230;</string>
     <string name="show_fewer_ellipsis">Toon minder&#8230;</string>
     <string name="customize_ellipsis">Aanpassen&#8230;</string>
-    <string name="hint">Aanwijzing</string>
     <string name="label_reset_hints">Herstel aanwijzingen</string>
     <string name="do_not_show_again">Laat niet meer zien</string>
     <string name="hint_booklist_styles_editor">U kunt dit scherm gebruiken om de lijst met stijlen aan te passen die in uw standaard stijlen menu wordt getoond.
@@ -486,7 +478,6 @@
     <string name="use_background_thread">Gebruik achtergrond deelproces (lijsten scrollen sneller, tonen afbeeldingen misschien vertraagd)</string>
     <string name="generate_immediately">Genereer onmiddelijk (lijsten scrollen langzamer, afbeeldingen worden onmiddelijk getoond)</string>
     <string name="sort_and_style_ellipsis">Sorteren &amp; Stijlen&#8230;</string>
-    <string name="disable_background_image">Achtergrondafbeelding uitschakelen</string>
     <string name="displaying_n_books_in_m_entries">tonen van %1$s boeken, in %2$s invoeren</string>
     <string name="displaying_n_books">tonen van %1$s boeken</string>
     <string name="available">Beschikbaar</string>
@@ -514,7 +505,6 @@
     <string name="label_year">Jaar</string>
     <string name="label_month">Maand</string>
     <string name="day">Dag</string>
-    <string name="edit_lc_ellipsis">bewerken&#8230;</string>
     <string name="getting_books_ellipsis">Verkrijgen van boeken&#8230;</string>
     <string name="last_error_e">Laatste fout: %1$s</string>
     <string name="invalid_isbn_x_specified_in_search">Ongeldig ISBN \'%1$s\' gespecificeerd in zoekveld</string>

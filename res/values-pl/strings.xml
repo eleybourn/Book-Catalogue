@@ -33,8 +33,7 @@
 <string name="all_books">Wszystkie książki</string>
 <string name="isbn_found">ISBN odczytany. Wyszukiwanie w Internecie.</string>
 <string name="title_isbn_search">Katalog książek: Szukj wg ISBN</string>
-<string name="title_manage_bs">Katalog książek: Zarządzaj półkami</string>
-<string name="title_edit_bs">Katalog książek: Edycja półek</string>
+    <string name="title_edit_bs">Katalog książek: Edycja półek</string>
     <string name="search_label">Szukaj książek</string>
 <string name="search_hint">Szukaj autora lub tytułu</string>
 <string name="book_not_found">Zeskanowana książka nie została odnaleziona. Spóbuj ponownie z kodem, który może znajdować się w środku okładki lub wprowadź dane ręcznie.</string>
@@ -47,8 +46,7 @@
 <string name="results_found">Znaleziono</string>
 <string name="administration_label">Funkcje administracyjne</string>
     <string name="menu_administration">Administracja</string>
-<string name="install_scan">Do skanowania kodów kreskowych ISBN musisz zainstalować program Zxing Barcode Scanner. Naciśnij OK by to zrobić, lub Anuluj by zrezygnować z instalacji.</string>
-<string name="install_scan_title">Zainstaluj Barcode Scanner</string>
+    <string name="install_scan_title">Zainstaluj Barcode Scanner</string>
 <string name="label_version_number">Wersja programu:</string>
 <string name="para_donate">Jeśli chciałbyś wesprzeć rozwój programu, zrób to poprzez mój Amazon Wishlist lub PayPal. Będąc obywatelem Australii nie mam póki co możliwości opublikowania &quot;płatnej&quot; wersji. :-) </string>
     <string name="upgrade_title">Od ostatniej aktualizacji</string>
@@ -151,11 +149,9 @@
 <string name="label_add">Dodaj</string>
 <string name="para_no_authors">Brak autora(ów) tej ksiażki. Dodaj autora używając pola tekstowego na górze.</string>
 <string name="para_no_series">Brak serii dla tej ksiażki. Dodaj serię używając pola tekstowego na górze.</string>
-<string name="cover_not_set">Okładka nie jest ustawiona</string>
-<string name="cover_corrupt">Okładka jest uszkodzona</string>
+    <string name="cover_corrupt">Okładka jest uszkodzona</string>
 <string name="cover_detail">Szczegóły okładki</string>
-<string name="select_picture">Wybierz zdjęcie</string>
-<string name="label_set_authors">Przypisz autorów...</string>
+    <string name="label_set_authors">Przypisz autorów...</string>
 <string name="and_others">i inni</string>
 <string name="set_series">Ustaw serię (tom)...</string>
 <string name="author_already_in_list">Autor jest już na liście</string>

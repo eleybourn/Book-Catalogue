@@ -33,7 +33,6 @@
     <string name="all_books">Tutti i libri</string>
     <string name="isbn_found">ISBN acquisito. Ricerca in Internet.</string>
     <string name="title_isbn_search">Book Catalogue: Cerca ISBN</string>
-    <string name="title_manage_bs">Book Catalogue: Gestisci librerie</string>
     <string name="title_edit_bs">Book Catalogue: Modifica libreria</string>
     <string name="search_label">Cerca per libro</string>
     <string name="search_hint">Cerca per autore o titolo</string>
@@ -151,10 +150,8 @@
     <string name="para_no_authors">Nessun autore inserito per questo libro. Aggiungine utilizzando l\'area di testo e il pulsante nella parte superiore dello schermo.</string>
     <string name="para_no_series">Nessuna serie inserita per questo libro. Puoi aggiungerne utilizzando l\'area di testo e il pulsante nella parte superiore dello schermo.</string>
     <item name="TAG_POSITION" type="id"></item>
-    <string name="cover_not_set">Copertina non impostata</string>
     <string name="cover_corrupt">Copertina danneggiata</string>
     <string name="cover_detail">Dettagli copertina</string>
-    <string name="select_picture">Seleziona immagine</string>
     <string name="label_set_authors">Imposta autori&#8230;</string>
     <string name="and_others">e altri</string>
     <string name="set_series">Imposta serie&#8230;</string>
@@ -250,8 +247,6 @@
     <item name="TAG_DIALOG_ITEM" type="id"></item>
     
     <string name="label_library">I miei libri</string>
-    <string name="my_books_classic">I miei libri (Classico)</string>
-    <string name="loan_return_book">Presta, ritorna o modifica libro</string>
     <string name="label_settings">Amministrazione e Preferenze</string>
     <string name="edit_book_send_to_gr">Invia a GoodReads</string>
     <string name="goodreads">GoodReads</string>
@@ -273,7 +268,6 @@
     <string name="label_other_preferences">Altre Preferenze</string>
     <string name="user_interface">Interfaccia Utente</string>
     <string name="start_in_my_books">Inizia in \'I miei libri\'</string>
-    <string name="include_classic_catalogue_view">Includi vista catalogo classica</string>
     <string name="background_tasks">Operazioni in background</string>
     <string name="cleanup_old_tasks">Cancella operazioni precedenti</string>
     <string name="cleanup_old_events">Cancella eventi trascorsi</string>
@@ -374,7 +368,6 @@
     <string name="show_more_ellipsis">Mostra di più&#8230;</string>
     <string name="show_fewer_ellipsis">Mostra meno&#8230;</string>
     <string name="customize_ellipsis">Personalizza&#8230;</string>
-    <string name="hint">Suggerimento</string>
     <string name="label_reset_hints">Ripristina suggerimenti</string>
     <string name="do_not_show_again">Non mostrare più</string>
     <string name="hint_booklist_styles_editor">In questa schermata è possibile personalizzare l\'elenco degli stili mostrata nel menu degli stili standard.
@@ -510,7 +503,6 @@
     <string name="use_background_thread">In sottofondo (scorrimento elenchi più veloce, immagini mostrate con ritardo)</string>
     <string name="generate_immediately">Immediata (scorrimento elenchi più lento, immagini mostrate immediatamente)</string>
     <string name="sort_and_style_ellipsis">Ordina &amp; Stile&#8230;</string>
-    <string name="disable_background_image">Disabilita immagine di sfondo</string>
     <string name="displaying_n_books_in_m_entries">visualizzati %1$s libri, in %2$s voci</string>
     <string name="displaying_n_books">visualizzati %1$s libri</string>
     <string name="available">Disponibile</string>
@@ -537,7 +529,6 @@
     <string name="label_year">Anno</string>
     <string name="label_month">Mese</string>
     <string name="day">Giorno</string>
-    <string name="edit_lc_ellipsis">modifica&#8230;</string>
     <string name="getting_books_ellipsis">Sto acquisendo i libri&#8230;</string>
     <string name="last_error_e">Ultimo Errore: %1$s</string>
     <string name="invalid_isbn_x_specified_in_search">Codice ISBN non valido \'%1$s\' specificato nella ricerca</string>
@@ -955,8 +946,7 @@
     <!-- Preference value for a specific language. First arg is name in it's own language, second arg is name in current locale -->
 
     <!-- This is an UPDATED string copied from earlier in the file; "Google Googles" (sic) was removed from the list of scanners -->
-    <string name="install_scan">Per scansionare i libri mediante codice a barre ISBN, devi installare una app per la scansione come Barcode Scanner o Pic2shop.</string>
-    
+
     <string name="system_locale">Impostazioni locali di sistema</string>
 
     <!-- Credits in the 'about' dialog -->

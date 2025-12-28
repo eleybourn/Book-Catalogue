@@ -37,7 +37,6 @@
     <string name="all_books">All Books</string>
     <string name="isbn_found">ISBN Scanned. Searching Internet.</string>
     <string name="title_isbn_search">ISBN Search</string>
-    <string name="title_manage_bs">Manage Bookshelf</string>
     <string name="title_edit_bs">Edit Bookshelf</string>
     <string name="search_label">Search for Books</string>
     <string name="search_hint">Search Author or Title</string>
@@ -154,10 +153,8 @@
     <string name="label_add">Add</string>
     <string name="para_no_authors">There are no authors for this Book. Please add some using the text area and button at the top of this screen.</string>
     <string name="para_no_series">There are no series for this Book. You can add some using the text area and button at the top of this screen.</string>
-    <string name="cover_not_set">Cover is not set</string>
     <string name="cover_corrupt">Cover is corrupt</string>
     <string name="cover_detail">Cover Detail</string>
-    <string name="select_picture">Select Picture</string>
     <string name="label_set_authors">Set Authors&#8230;</string>
     <string name="and_others">et. al.</string>
     <string name="set_series">Set Series&#8230;</string>
@@ -245,8 +242,6 @@
 
     <string name="label_library">My Library</string>
     <string name="label_library_description">View and manage your collection</string>
-    <string name="my_books_classic">My Books (Classic)</string>
-    <string name="loan_return_book">Loan, Return or Edit Book</string>
     <string name="label_settings">Settings</string>
     <string name="edit_book_send_to_gr">Send to goodreads</string>
     <string name="goodreads">goodreads</string>
@@ -268,7 +263,6 @@
     <string name="label_other_preferences">Other Preferences</string>
     <string name="user_interface">User Interface</string>
     <string name="start_in_my_books">Start in \'My Books\'</string>
-    <string name="include_classic_catalogue_view">Include Classic catalogue view</string>
     <string name="background_tasks">Background Tasks</string>
     <string name="cleanup_old_tasks">Cleanup Old Tasks</string>
     <string name="cleanup_old_events">Cleanup Old Events</string>
@@ -352,7 +346,6 @@
     <string name="show_more_ellipsis">Show more&#8230;</string>
     <string name="show_fewer_ellipsis">Show fewer&#8230;</string>
     <string name="customize_ellipsis">Customize&#8230;</string>
-    <string name="hint">Hint</string>
     <string name="label_reset_hints">Reset hints</string>
     <string name="do_not_show_again">Do not show again</string>
     <string name="hint_booklist_styles_editor">You can use this screen to customize the list of styles that will be displayed in your default styles menu.
@@ -490,7 +483,6 @@
     <string name="use_background_thread">Use background thread (lists scroll faster, images may be delayed)</string>
     <string name="generate_immediately">Generate immediately (lists scroll slower, images will be displayed immediately)</string>
     <string name="sort_and_style_ellipsis">Sort &amp; Style&#8230;</string>
-    <string name="disable_background_image">Disable background image</string>
     <string name="displaying_n_books_in_m_entries">(displaying %1$s books, in %2$s entries)</string>
     <string name="displaying_n_books">(displaying %1$s books)</string>
     <string name="available">Available</string>
@@ -518,7 +510,6 @@
     <string name="label_year">Year</string>
     <string name="label_month">Month</string>
     <string name="day">Day</string>
-    <string name="edit_lc_ellipsis">edit&#8230;</string>
     <string name="getting_books_ellipsis">Getting books&#8230;</string>
     <string name="last_error_e">Last Error: %1$s</string>
     <string name="invalid_isbn_x_specified_in_search">Invalid ISBN \'%1$s\' specified in search</string>
@@ -943,7 +934,6 @@ and you can edit the book via the options menu using the menu button or overflow
     <string name="preferred_language_x">%1$s (%2$s)</string>
 
     <!-- This is an UPDATED string copied from earlier in the file; "Google Googles" (sic) was removed from the list of scanners -->
-    <string name="install_scan">To scan your books via the ISBN barcode, you must install one of the Zxing or pic2shop barcode scanner applications.</string>
 
     <string name="system_locale">System Locale</string>
 

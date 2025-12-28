@@ -43,9 +43,9 @@ abstract public class SearchThread extends ManagedTask {
 		BCDB(SearchManager.SEARCH_BC),
 		Other(0),
 		;
-		private int mValue;
+		private final int mValue;
 
-		private DataSource(int value) {
+		DataSource(int value) {
 			mValue = value;
 		}
 
@@ -81,12 +81,7 @@ abstract public class SearchThread extends ManagedTask {
 		mTitle = title;
 		mIsbn = isbn;
 		mFetchThumbnail = fetchThumbnail;
-
-		//mBookData.putString(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, mAuthor);
-		//mBookData.putString(CatalogueDBAdapter.KEY_TITLE, mTitle);
-		//mBookData.putString(CatalogueDBAdapter.KEY_ISBN, mIsbn);
-		//getMessageSwitch().addListener(getSenderId(), taskHandler, false);
-	}
+    }
 
 	public abstract DataSource getSearchId();
 
@@ -106,13 +101,14 @@ abstract public class SearchThread extends ManagedTask {
 			try {
 				if (bookData.containsKey(CatalogueDBAdapter.KEY_TITLE)) {
 					String thisTitle = bookData.getString(CatalogueDBAdapter.KEY_TITLE);
-					SeriesDetails details = Series.findSeries(thisTitle);
-					if (details != null && details.name.length() > 0) {
+                    assert thisTitle != null;
+                    SeriesDetails details = Series.findSeries(thisTitle);
+					if (details != null && !details.name.isEmpty()) {
 						ArrayList<Series> sl;
 						if (bookData.containsKey(CatalogueDBAdapter.KEY_SERIES_DETAILS)) {
 							sl = Utils.getSeriesUtils().decodeList(bookData.getString(CatalogueDBAdapter.KEY_SERIES_DETAILS), '|', false);
 						} else {
-							sl = new ArrayList<Series>();
+							sl = new ArrayList<>();
 						}
 						sl.add(new Series(details.name, details.position));
 						bookData.putString(CatalogueDBAdapter.KEY_SERIES_DETAILS, Utils.getSeriesUtils().encodeList(sl, '|'));
@@ -127,8 +123,8 @@ abstract public class SearchThread extends ManagedTask {
 	
 	protected void showException(int id, Exception e) {
 		String s;
-		try {s = e.getMessage(); } catch (Exception e2) {s = "Unknown Exception";};
-		String msg = String.format(getString(R.string.search_exception), getString(id), s);
+		try {s = e.getMessage(); } catch (Exception e2) {s = "Unknown Exception";}
+        String msg = String.format(getString(R.string.search_exception), getString(id), s);
 		doToast(msg);		
 	}
 	

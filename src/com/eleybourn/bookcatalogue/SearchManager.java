@@ -38,7 +38,6 @@ import java.util.Hashtable;
 
 /**
  * Class to co-ordinate multiple SearchThread objects using an existing TaskManager.
- * 
  * It uses the task manager it is passed and listens to OnTaskEndedListener messages;
  * it maintain its own internal list of tasks and as tasks it knows about end, it
  * processes the data. Once all tasks are complete, it sends a message to its
@@ -60,18 +59,18 @@ public class SearchManager implements TaskManagerListener {
 	public static final int SEARCH_ALL = SEARCH_GOOGLE | SEARCH_BC; // | SEARCH_LIBRARY_THING | SEARCH_GOODREADS;
 	
 	// ENHANCE: Allow user to change the default search data priority
-	// NOTE: BCDB search will return AMAZON, GOOGLE, BCDB and OPENLIBRARY
+	// NOTE: BCDB search will return AMAZON, GOOGLE, BCDB and OPEN_LIBRARY
 	private static final DataSource[] mDefaultSearchOrder = new DataSource[]
 			{ DataSource.BCDB, DataSource.Google };
 	// ENHANCE: Allow user to change the default search data priority
 	private static final DataSource[] mDefaultReliabilityOrder = new DataSource[]
-			{DataSource.Amazon, DataSource.Google, DataSource.BCDB, DataSource.OpenLibrary, DataSource.Other};
+			{DataSource.Amazon, DataSource.Google, DataSource.BCDB, DataSource.OpenLibrary, DataSource.Goodreads, DataSource.Other};
 
 	/** Flags applicable to *current* search */
 	private int mSearchFlags;
 
-	// TaskManager for threads; may have other threads tham the ones this object creates.
-	private TaskManager mTaskManager;
+	// TaskManager for threads; may have other threads then the ones this object creates.
+	private final TaskManager mTaskManager;
 	// Accumulated book data
 	private Bundle mBookData = null;
 	// Flag indicating searches will be non-concurrent title/author found via ASIN
@@ -102,17 +101,7 @@ public class SearchManager implements TaskManagerListener {
 	// List of threads created by *this* object.
 	private final ArrayList<ManagedTask> mRunningTasks = new ArrayList<>();
 
-//	/**
-//	 * Task handler for thread management; caller MUST implement this to get
-//	 * search results.
-//	 * 
-//	 * @author Philip Warner
-//	 */
-//	public interface SearchResultHandler extends ManagedTask.TaskListener {
-//		void onSearchFinished(Bundle bookData, boolean cancelled);
-//	}
-
-	/**
+    /**
 	 * Constructor.
 	 * 
 	 * @param taskManager	TaskManager to use
@@ -142,10 +131,7 @@ public class SearchManager implements TaskManagerListener {
 		synchronized(mRunningTasks) {
 			mRunningTasks.remove(task);
 			size = mRunningTasks.size();
-			//for(ManagedTask t: mRunningTasks) {
-			//	System.out.println(t.getClass().getSimpleName() + "(" +  + t.getId() + ") still running");
-			//}
-		}
+        }
 		if (size == 0) {
 			// Stop listening FIRST...otherwise, if sendResults() calls a listener that starts
 			// a new task, we will stop listening for the new task.
@@ -240,7 +226,7 @@ public class SearchManager implements TaskManagerListener {
 		if ( (searchFlags & SEARCH_ALL) == 0)
 			throw new RuntimeException("Must specify at least one source to use");
 
-		if (mRunningTasks.size() > 0) {
+		if (!mRunningTasks.isEmpty()) {
 			throw new RuntimeException("Attempting to start new search while previous search running");			
 		}
 
@@ -261,22 +247,13 @@ public class SearchManager implements TaskManagerListener {
 		mAuthor = author;
 		mTitle = title;
 		mIsbn = isbn;
-		mHasIsbn = mIsbn != null && mIsbn.trim().length() > 0 && IsbnUtils.isValid(mIsbn);
+		mHasIsbn = mIsbn != null && !mIsbn.trim().isEmpty() && IsbnUtils.isValid(mIsbn);
 
 		mFetchThumbnail = fetchThumbnail;
 
-		// XXXX: Not entirely sure why this code was targetted at the UI thread.
+		// XXXX: Not entirely sure why this code was targeted at the UI thread.
 		doSearch();
-		//if (mTaskManager.runningInUiThread()) {
-		//	doSearch();
-		//} else {
-		//	mTaskManager.postToUiThread(new Runnable() {
-		//		@Override
-		//		public void run() {
-		//			doSearch();
-		//		}});
-		//}
-	}
+    }
 
 	private void doSearch() {
 		// List for task ends
@@ -289,7 +266,7 @@ public class SearchManager implements TaskManagerListener {
 		boolean tasksStarted = false;
 		mSearchingAsin = false;
 		try {
-			if (mIsbn != null && mIsbn.length() > 0) {
+			if (mIsbn != null && !mIsbn.isEmpty()) {
 				if (IsbnUtils.isValid(mIsbn)) {
 					// We have an ISBN, just do the search
 					mWaitingForIsbn = false;
@@ -348,7 +325,7 @@ public class SearchManager implements TaskManagerListener {
 		for (String k : bookData.keySet()) {
 			// If its not there, copy it.
 			String currValue = mBookData.getString(k);
-			if (currValue == null || currValue.trim().length() == 0) {
+			if (currValue == null || currValue.trim().isEmpty()) {
 				Object o = bookData.get(k);
 				if (o != null) {
 					mBookData.putString(k, o.toString());
@@ -382,15 +359,15 @@ public class SearchManager implements TaskManagerListener {
 		// This list will be the actual order of the result we apply, based on the
 		// actual results and the default order.
 		ArrayList<DataSource> results = new ArrayList<>();
-		
+
 		if (mHasIsbn) {
 			// If ISBN was passed, ignore entries with the wrong ISBN, and put entries with no ISBN at the end
 			ArrayList<DataSource> uncertain = new ArrayList<>();
 			for(DataSource i: mDefaultReliabilityOrder) {
-				Bundle bookData = mSearchResults.get(i);
+                Bundle bookData = mSearchResults.get(i);
 				if (bookData != null) {
 					String isbn = bookData.getString(CatalogueDBAdapter.KEY_ISBN);
-					if (isbn != null) {
+                    if (isbn != null) {
 						if (IsbnUtils.matches(mIsbn, isbn)) {
 							results.add(i);
 						}
@@ -424,11 +401,11 @@ public class SearchManager implements TaskManagerListener {
 			authors = mBookData.getString(CatalogueDBAdapter.KEY_AUTHOR_DETAILS);
 		} catch (Exception ignored) {}
 
-		if (authors == null || authors.equals("")) {
+		if (authors == null || authors.isEmpty()) {
 			authors = mAuthor;
 		}
 
-		if (authors != null && !authors.equals("")) {
+		if (authors != null && !authors.isEmpty()) {
 			// Decode the collected author names and convert to an ArrayList
 			ArrayList<Author> aa = Utils.getAuthorUtils().decodeList(authors, '|', false);
 			mBookData.putSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, aa);			
@@ -440,10 +417,10 @@ public class SearchManager implements TaskManagerListener {
 			title = mBookData.getString(CatalogueDBAdapter.KEY_TITLE);
 		} catch (Exception ignored) {}
 
-		if (title == null || title.equals(""))
+		if (title == null || title.isEmpty())
 			title = mTitle;
 
-		if (title != null && !title.equals("")) {
+		if (title != null && !title.isEmpty()) {
 			mBookData.putString(CatalogueDBAdapter.KEY_TITLE, title);
 		}
 
@@ -453,10 +430,10 @@ public class SearchManager implements TaskManagerListener {
 			isbn = mBookData.getString(CatalogueDBAdapter.KEY_ISBN);
 		} catch (Exception ignored) {}
 
-		if (isbn == null || isbn.equals(""))
+		if (isbn == null || isbn.isEmpty())
 			isbn = mIsbn;
 
-		if (isbn != null && !isbn.equals("")) {
+		if (isbn != null && !isbn.isEmpty()) {
 			mBookData.putString(CatalogueDBAdapter.KEY_ISBN, isbn);
 		}
 		
@@ -466,7 +443,7 @@ public class SearchManager implements TaskManagerListener {
 			series = mBookData.getString(CatalogueDBAdapter.KEY_SERIES_DETAILS);
 		} catch (Exception ignored) {}
 
-		if (series != null && !series.equals("")) {
+		if (series != null && !series.isEmpty()) {
 			// Decode the collected series names and convert to an ArrayList
 			try {
 				ArrayList<Series> sa = Utils.getSeriesUtils().decodeList(series, '|', false);
@@ -492,7 +469,7 @@ public class SearchManager implements TaskManagerListener {
 		//Utils.doProperCase(mBookData, CatalogueDBAdapter.KEY_SERIES_NAME);
 		
 		// If book is not found or missing required data, warn the user
-		if (authors == null || authors.length() == 0 || title == null || title.length() == 0) {			
+		if (authors == null || authors.isEmpty() || title == null || title.isEmpty()) {
 			mTaskManager.doToast(BookCatalogueApp.getResourceString(R.string.book_not_found));
 		}
 		// Pass the data back
@@ -511,7 +488,7 @@ public class SearchManager implements TaskManagerListener {
 	 */
 	private boolean startNext() {
 		// Loop though in 'search-priority' order
-		for (DataSource source: mDefaultSearchOrder) {
+        for (DataSource source: mDefaultSearchOrder) {
 			// If this search includes the source, check it
 			if ( (mSearchFlags & source.getValue()) != 0) {
 				// If the source has not been search, search it
@@ -520,7 +497,7 @@ public class SearchManager implements TaskManagerListener {
 				}
 			}
 		}
-		return false;
+        return false;
 	}
 
 	/**
@@ -541,7 +518,7 @@ public class SearchManager implements TaskManagerListener {
 						started = true;
 				}
 		}
-		return started;
+        return started;
 	}
 	
 	/**
@@ -550,18 +527,18 @@ public class SearchManager implements TaskManagerListener {
 	 * @param source	Source to search
 	 */
 	private boolean startOneSearch(int source) {
-		switch(source) {
-		case SEARCH_GOOGLE:
-			return startGoogle();
-		case SEARCH_BC:
-			return startAmazon();
-		case SEARCH_LIBRARY_THING:
-			return startLibraryThing();
-		case SEARCH_GOODREADS:
-			return startGoodreads();
-		default:
-			throw new RuntimeException("Unexpected search source: " + source);				
-		}
+        switch(source) {
+            case SEARCH_GOOGLE:
+                return startGoogle();
+            case SEARCH_BC:
+                return startAmazon();
+            case SEARCH_LIBRARY_THING:
+                return startLibraryThing();
+            case SEARCH_GOODREADS:
+                return startGoodreads();
+            default:
+                throw new RuntimeException("Unexpected search source: " + source);
+        }
 	}
 
 	/**
@@ -586,49 +563,7 @@ public class SearchManager implements TaskManagerListener {
 
 			synchronized (mSearchResults) {
 				//// Debug search results (compare matching keys)
-				//Bundle alt = mSearchResults.get(result.source);
-				//if (alt != null) {
-				//	StringBuilder sb = new StringBuilder();
-				//	boolean diff = false;
-				//	sb.append("SANITY\n\nFound matching result set for " + result.source +
-				//			", old has " + alt.keySet().size() + ", new has " + bookData.keySet().size() + " key");
-				//	sb.append("\n");
-				//	HashSet<String> keys = new HashSet<>(alt.keySet());
-				//	keys.addAll(bookData.keySet());
-				//	sb.append("(total of " + keys.size() + " keys)");
-				//	sb.append("\n");
-				//	for(String k: keys) {
-				//		Object oldVal = alt.get(k);
-				//		Object newVal = bookData.get(k);
-				//		if (oldVal == null) {
-				//			if (newVal != null) {
-				//				sb.append("    NEW has " + k + " => '" + newVal.toString() + "'");
-				//				sb.append("\n");
-				//				diff = true;
-				//			}
-				//		} else if (newVal == null) {
-				//			sb.append("    OLD has " + k + " => '" + oldVal.toString() + "'");
-				//			sb.append("\n");
-				//			diff = true;
-				//		} else {
-				//			if (!oldVal.toString().equalsIgnoreCase(newVal.toString())) {
-				//				sb.append("    DIFF value for " + k
-				//										   + "\n        OLD => '" + oldVal.toString() + "'"
-				//										   + "\n        NEW => '" + newVal.toString() + "'");
-				//				sb.append("\n");
-				//				diff = true;
-				//			}
-				//		}
-				//	}
-				//	if (!diff) {
-				//		sb.append("    no differences for " + result.source);
-				//		sb.append("\n");
-				//	}
-				//	String msg = sb.toString();
-				//	mDebugText = msg + "\nOlder:\n\n" + mDebugText;
-				//	System.out.println(msg);
-				//}
-				mSearchResults.put(result.source, bookData);
+                mSearchResults.put(result.source, bookData);
 			}
 
 			if (!mCancelledFlg) {
@@ -645,7 +580,7 @@ public class SearchManager implements TaskManagerListener {
 						// See if we got author/title
 						mAuthor = bookData.getString(CatalogueDBAdapter.KEY_AUTHOR_NAME);
 						mTitle = bookData.getString(CatalogueDBAdapter.KEY_TITLE);
-						if (mAuthor != null && !mAuthor.equals("") && mTitle != null && !mTitle.equals("")) {
+						if (mAuthor != null && !mAuthor.isEmpty() && mTitle != null && !mTitle.isEmpty()) {
 							// We got them, so pretend we are searching by author/title now, and waiting for an ASIN...
 							mWaitingForIsbn = true;
 						}
@@ -657,7 +592,7 @@ public class SearchManager implements TaskManagerListener {
 					mWaitingForIsbn = false;
 					// Start the other two...even if they have run before
 					mIsbn = bookData.getString(CatalogueDBAdapter.KEY_ISBN);
-					mHasIsbn = mIsbn != null && mIsbn.trim().length() > 0 && IsbnUtils.isValid(mIsbn);
+					mHasIsbn = mIsbn != null && !mIsbn.trim().isEmpty() && IsbnUtils.isValid(mIsbn);
 					startAll = true;
 				} else {
 					// Start next one that has not run.
@@ -666,7 +601,7 @@ public class SearchManager implements TaskManagerListener {
 			}
 		}
 
-		if (resultList.size() == 0) {
+		if (resultList.isEmpty()) {
 			if (mWaitingForIsbn) {
 					// Start next one that has not run.
 					startNext = true;
@@ -698,7 +633,7 @@ public class SearchManager implements TaskManagerListener {
 		SearchManager getSearchManager();
 	}
 	
-	private SearchController mController = new SearchController() {
+	private final SearchController mController = new SearchController() {
 		@Override
 		public void requestAbort() {
 			mTaskManager.cancelAllTasks();
@@ -711,7 +646,6 @@ public class SearchManager implements TaskManagerListener {
 
 	/**
 	 * 	STATIC Object for passing messages from background tasks to activities that may be recreated 
-	 *
 	 *  This object handles all underlying OnTaskEndedListener messages for every instance of this class.
 	 */
 	protected static class TaskSwitch extends MessageSwitch<SearchListener, SearchController> {}

@@ -37,13 +37,8 @@ import com.eleybourn.bookcatalogue.utils.Logger;
 public class SearchGoodreadsThread extends SearchThread {
 
 	/**
-	 * Constructor.
-	 * 
-	 * @param manager
-	 * @param author
-	 * @param title
-	 * @param isbn
-	 * @param fetchThumbnail
+	 * Constructor. Will search according to passed parameters. If an ISBN is
+	 * provided that will be used to the exclusion of all others.
 	 */
 	public SearchGoodreadsThread(TaskManager manager,
 			String author, String title, String isbn, boolean fetchThumbnail) {
@@ -60,11 +55,11 @@ public class SearchGoodreadsThread extends SearchThread {
 		GoodreadsManager grMgr = new GoodreadsManager();
 		Bundle bookData = null;
 		try {
-			if (mIsbn != null && mIsbn.trim().length() > 0) {
+			if (mIsbn != null && !mIsbn.trim().isEmpty()) {
 				bookData = grMgr.getBookByIsbn(mIsbn);
 			} else {
 				ArrayList<GoodreadsWork> list = grMgr.search(mAuthor + " " + mTitle);
-				if (list != null && list.size() > 0) {
+				if (list != null && !list.isEmpty()) {
 					GoodreadsWork w = list.get(0);
 					bookData = grMgr.getBookById(w.bookId);
 				}

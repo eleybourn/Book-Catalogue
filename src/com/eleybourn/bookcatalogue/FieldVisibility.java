@@ -86,8 +86,8 @@ public class FieldVisibility extends BookCatalogueActivity {
 				CatalogueDBAdapter.KEY_GENRE, DatabaseDefinitions.DOM_LANGUAGE.name};
 		int[] fieldRs = {R.string.label_author, R.string.label_title, R.string.label_thumbnail, R.string.label_isbn, R.string.label_series, R.string.label_series_num,
 				R.string.label_publisher, R.string.label_date_published, R.string.bookshelf, R.string.label_pages, R.string.label_list_price,
-				R.string.read, R.string.rating, R.string.label_notes, R.string.anthology, R.string.location_of_book,
-				R.string.read_start, R.string.read_end, R.string.label_format, R.string.signed, R.string.label_description,
+				R.string.label_read, R.string.label_rating, R.string.label_notes, R.string.anthology, R.string.label_location_of_book,
+				R.string.label_read_start, R.string.label_read_end, R.string.label_format, R.string.label_signed, R.string.label_description,
 				R.string.label_genre, R.string.label_language};
 		boolean[] compulsory = {true, true, false, false, false, false, false, false, 
 				true, false, false, false, false, false, false, false, false, false, false, false, false, false, false};

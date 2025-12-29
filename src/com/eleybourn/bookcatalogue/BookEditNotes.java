@@ -138,7 +138,7 @@ public class BookEditNotes extends BookEditFragmentAbstract implements OnPartial
 	private void showReadStartDialog() {
 		PartialDatePickerFragment frag = PartialDatePickerFragment.newInstance();
 		
-		frag.setTitle(R.string.read_start);
+		frag.setTitle(R.string.label_read_start);
 		frag.setDialogId(R.id.field_read_start); // Set to the destination field ID
 		try {
 			String dateString;
@@ -159,7 +159,7 @@ public class BookEditNotes extends BookEditFragmentAbstract implements OnPartial
 	private void showReadEndDialog() {
 		PartialDatePickerFragment frag = PartialDatePickerFragment.newInstance();
 		
-		frag.setTitle(R.string.read_end);
+		frag.setTitle(R.string.label_read_end);
 		frag.setDialogId(R.id.field_read_end); // Set to the destination field ID
 
 		try {

@@ -186,8 +186,8 @@ public abstract class BookEditFragmentAbstract extends Fragment implements DataE
         mFields.resetVisibility();
 
         // Check publishing information; in reality only one of these fields will exist
-        showHideField(hideIfEmpty, R.id.field_publisher, R.id.lbl_publishing, R.id.row_publisher);
-        showHideField(hideIfEmpty, R.id.field_publisher, R.id.lbl_publishing, R.id.row_publisher);
+        showHideField(hideIfEmpty, R.id.field_publisher, R.id.label_publishing, R.id.row_publisher);
+        showHideField(hideIfEmpty, R.id.field_publisher, R.id.label_publishing, R.id.row_publisher);
 
         showHideField(hideIfEmpty, R.id.button_date_published, R.id.row_date_published);
         showHideField(hideIfEmpty, R.id.row_img, R.id.image_wrapper);
@@ -197,16 +197,16 @@ public abstract class BookEditFragmentAbstract extends Fragment implements DataE
         showHideField(hideIfEmpty, R.id.field_format, R.id.row_format);
 
         // Check genre
-        showHideField(hideIfEmpty, R.id.field_genre, R.id.lbl_genre, R.id.row_genre);
+        showHideField(hideIfEmpty, R.id.field_genre, R.id.label_genre, R.id.row_genre);
 
         // Check language
-        showHideField(hideIfEmpty, R.id.field_language, R.id.lbl_language, R.id.row_language);
+        showHideField(hideIfEmpty, R.id.field_language, R.id.label_language, R.id.row_language);
 
         // Check ISBN
         showHideField(hideIfEmpty, R.id.field_isbn, R.id.row_isbn);
 
         // Check ISBN
-        showHideField(hideIfEmpty, R.id.field_series, R.id.row_series, R.id.lbl_series);
+        showHideField(hideIfEmpty, R.id.field_series, R.id.row_series, R.id.label_series);
 
         // Check list price
         showHideField(hideIfEmpty, R.id.field_list_price, R.id.row_list_price);
@@ -216,7 +216,7 @@ public abstract class BookEditFragmentAbstract extends Fragment implements DataE
 
         // **** MY COMMENTS SECTION ****
         // Check notes
-        showHideField(hideIfEmpty, R.id.field_notes, R.id.lbl_notes, R.id.row_notes);
+        showHideField(hideIfEmpty, R.id.field_notes, R.id.label_notes, R.id.row_notes);
 
         // Check date start reading
         showHideField(hideIfEmpty, R.id.field_read_start, R.id.row_read_start);

@@ -129,7 +129,7 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
         anthology_num = book.getInt(CatalogueDBAdapter.KEY_ANTHOLOGY_MASK);
 
         assert getView() != null;
-        mSame = getView().findViewById(R.id.same_author);
+        mSame = getView().findViewById(R.id.field_same_author);
         mSame.setChecked((anthology_num & CatalogueDBAdapter.ANTHOLOGY_MULTIPLE_AUTHORS) == 0);
 
         mSame.setOnClickListener(view -> {
@@ -138,14 +138,14 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
         });
 
         ArrayAdapter<String> author_adapter = new ArrayAdapter<>(requireActivity(), android.R.layout.simple_dropdown_item_1line, mDbHelper.getAllAuthors());
-        mAuthorText = getView().findViewById(R.id.add_author);
+        mAuthorText = getView().findViewById(R.id.field_add_author);
         mAuthorText.setAdapter(author_adapter);
         if (mSame.isChecked()) {
             mAuthorText.setVisibility(View.GONE);
         } else {
             mAuthorText.setVisibility(View.VISIBLE);
         }
-        mTitleText = getView().findViewById(R.id.add_title);
+        mTitleText = getView().findViewById(R.id.field_add_title);
 
         mAdd = getView().findViewById(R.id.row_add);
         mAdd.setOnClickListener(view -> {
@@ -165,7 +165,7 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
                     anthology.setAuthor(new Author(author));
                     anthology.setTitle(title);
                     mEditPosition = null;
-                    mAdd.setText(R.string.anthology_add);
+                    mAdd.setText(R.string.button_anthology_add);
                 }
                 mTitleText.setText("");
                 mAuthorText.setText("");

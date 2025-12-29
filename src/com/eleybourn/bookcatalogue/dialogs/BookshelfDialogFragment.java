@@ -19,7 +19,7 @@
  */
 package com.eleybourn.bookcatalogue.dialogs;
 
-import static com.eleybourn.bookcatalogue.BookDetailsAbstract.BOOKSHELF_SEPARATOR;
+import static com.eleybourn.bookcatalogue.BookAbstract.BOOKSHELF_SEPARATOR;
 
 import java.util.ArrayList;
 

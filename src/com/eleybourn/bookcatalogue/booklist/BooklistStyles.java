@@ -206,7 +206,7 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 		style.addGroup(ROW_KIND_SERIES);
 
 		// Rating
-		style = new BooklistStyle(R.string.rating);
+		style = new BooklistStyle(R.string.label_rating);
 		styles.add(style);
 		style.addGroup(ROW_KIND_RATING);
 		style.addGroup(ROW_KIND_AUTHOR);

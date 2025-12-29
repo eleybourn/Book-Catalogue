@@ -109,9 +109,9 @@
     <string name="label_title">Titre</string>
     <string name="label_publisher">Éditeur</string>
     <string name="label_date_published">Date de publication</string>
-    <string name="rating">Appreciation</string>
+    <string name="label_rating">Appreciation</string>
     <string name="bookshelf">Bibliothèque</string>
-    <string name="read">Avez-vous lu ce livre ?</string>
+    <string name="label_read">Avez-vous lu ce livre ?</string>
     <string name="label_series">Série</string>
     <string name="label_pages">Pages</string>
     <string name="button_confirm_add">Ajouter le livre ?</string>
@@ -150,7 +150,7 @@
     <string name="para_donate">Si vous souhaitez supporter le développement de cette application, les donations sont possibles par Amazon Wishlist ou par le bouton Paypal ci-dessous. Je suis en Australie, ce qui rend impossible la publication d\'une version payante. :-)</string>
     <string name="upgrade_title">Depuis votre dernière mise à jour</string>
     <string name="edit_book">Modifier le livre</string>
-    <string name="edit_book_notes">Votre commentaire</string>
+    <string name="label_comments">Votre commentaire</string>
     <string name="button_loan_book">Prêter le livre</string>
     <string name="label_notes">Notes</string>
     <string name="label_loaned_to">Ce livre a été prêté à :</string>
@@ -174,7 +174,7 @@
     <string name="select_fields_to_update_help">Les champs sélectionnés vont être mis à jour à partir d\'Internet. Les champs non sélectionnés ne seront pas modifiés.</string>
     <string name="overwrite_thumbnail">Les champs sélectionnés vont être mis à jour tels que montré ; en option, les vignettes peuvent être téléchargées pour tous les livres.\n\nVoulez-vous remplacer toutes les vignettes existantes ? Attention, cela peut prendre du temps.</string>
     <string name="yes">Oui</string>
-    <string name="no">Non</string>
+    <string name="option_no">Non</string>
     <string name="button_ok">OK</string>
     <string name="search_fail">La recherche du livre a échoué. Merci de vérifier vos réglages réseau.</string>
     <string name="search_exception">Recherche en échec pendant %1$s : %2$s</string>
@@ -184,7 +184,7 @@
     <string name="manage_fields_help">Les champs sélectionnés sont visibles dans les écrans d\'ajout et d\'édition des livres. Les champs non sélectionnés sont cachés.</string>
     <string name="label_anthology">Titres de l\'anthologie</string>
     <string name="label_amazon_wishlist">Idées cadeaux Amazon</string>
-    <string name="same_author">Toutes les histoires de cette anthologie sont écrites par le même auteur.</string>
+    <string name="label_same_author">Toutes les histoires de cette anthologie sont écrites par le même auteur.</string>
     <string name="menu_delete_anthology">Supprimer ce titre de l\'anthologie</string>
     <string name="label_is_anthology">Ce livre est-il une anthologie ?</string>
     <string name="populate_anthology_titles">Renseigner les titres automatiquement (expérimental)</string>
@@ -192,16 +192,16 @@
     <string name="anthology">Anthologie</string>
     <string name="anthology_confirm">Merci de confirmer que les titres de cette anthologie sont corrects.</string>
     <string name="anthology_save">Sauvegarder</string>
-    <string name="anthology_add">Ajouter</string>
+    <string name="button_anthology_add">Ajouter</string>
     <string name="menu_add_thumb_photo">À partir de l\'appareil photo&#8230;</string>
     <string name="label_thumbnail">Vignette de couverture</string>
     <string name="menu_rotate_thumb">Faire tourner la vignette&#8230;</string>
     <string name="menu_rotate_thumb_cw">Faire tourner dans le sens des aiguilles d\'une montre</string>
     <string name="menu_rotate_thumb_ccw">Faire tourner dans le sens contraire des aiguilles d\'une montre</string>
     <string name="menu_rotate_thumb_180">Faire tourner à 180°</string>
-    <string name="signed">Ce livre est il dédicacé ?</string>
-    <string name="read_start">Date de début de lecture</string>
-    <string name="read_end">Date de fin de lecture</string>
+    <string name="label_signed">Ce livre est il dédicacé ?</string>
+    <string name="label_read_start">Date de début de lecture</string>
+    <string name="label_read_end">Date de fin de lecture</string>
     <string name="location">Emplacement du livre</string>
     <string name="duplicate_book_title">Livre en double</string>
     <string name="duplicate_book_message">Le livre que vous tentez d\'ajouter existe déjà dans la base de donnnées. Êtes vous certain de vouloir en ajouter une nouvelle copie ?</string>
@@ -342,7 +342,7 @@
 		sur laquelle vous devrez vous connecter à Goodreads et autoriser cette application. Nous n\'aurons jamais
 		connaissance de votre mot de passe, et vous pourrez désactiver cet accès sur le site Goodreads.
 		Il est possible que vous arriviez sur une page blanche. Cliquez simplement sur le bouton « retour » pour revenir ici !</string>
-    <string name="location_of_book">Emplacement du livre</string>
+    <string name="label_location_of_book">Emplacement du livre</string>
     <string name="incorrect_key">Votre clé de développeur LibraryThing est incorrecte ou nous n\'avons pas pu nous connecter au réseau pour la vérifier.</string>
     <string name="correct_key">Votre clé de développeur LibraryThing est valable.</string>
     <string name="menu_crop_thumb">Recadrer la vignette</string>
@@ -679,7 +679,7 @@
 
     <!-- Missed as they had no comment -->
     <string name="prefs_global_opening_book_mode">Affichage en mode visualisation</string>
-    <string name="book_details_readonly_publishing">Édition</string>
+    <string name="label_publishing">Édition</string>
     <string name="book_details_readonly_by">par</string>
     <string name="book_details_readonly_loaned_to">En prêt chez %1$s</string>
 

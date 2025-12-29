@@ -54,7 +54,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
 import com.eleybourn.bookcatalogue.widgets.SafeSpannedTextView;
 
 
-public class BookEditFields extends BookDetailsAbstract
+public class BookEditFields extends BookAbstract
         implements OnPartialDatePickerListener, OnTextFieldEditorListener, OnBookshelfCheckChangeListener {
 
     // Launcher for Editing Authors

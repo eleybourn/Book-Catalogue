@@ -221,7 +221,7 @@ public class EditAuthorList extends EditObjectList<Author> {
                 findViewById(R.id.button_confirm).performClick();
             });
 			
-			alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, res.getText(R.string.no), (dialog, which) -> {
+			alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, res.getText(R.string.option_no), (dialog, which) -> {
                 //do nothing
             });
 			

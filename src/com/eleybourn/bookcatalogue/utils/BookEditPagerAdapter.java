@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.eleybourn.bookcatalogue.BookDetailsReadOnly;
+import com.eleybourn.bookcatalogue.BookDetails;
 import com.eleybourn.bookcatalogue.BookEditAnthology;
 import com.eleybourn.bookcatalogue.BookEditFields;
 import com.eleybourn.bookcatalogue.BookEditLoaned;
@@ -34,7 +34,7 @@ public class BookEditPagerAdapter extends FragmentStateAdapter {
                 return new BookEditAnthology();
             default:
                 if (READ_ONLY) {
-                    return new BookDetailsReadOnly();
+                    return new BookDetails();
                 } else {
                     return new BookEditFields();
                 }

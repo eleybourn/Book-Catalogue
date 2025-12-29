@@ -245,7 +245,7 @@ public class UpdateFromInternet extends ActivityWithTasks {
 							//do nothing
                         }
 					});
-					alertDialog.setButton3(UpdateFromInternet.this.getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
+					alertDialog.setButton3(UpdateFromInternet.this.getResources().getString(R.string.option_no), new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
 							mFieldUsages.get(CatalogueDBAdapter.KEY_THUMBNAIL).usage = Usages.COPY_IF_BLANK;
 							startUpdate();

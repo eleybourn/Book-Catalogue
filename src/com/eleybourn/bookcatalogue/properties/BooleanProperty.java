@@ -140,7 +140,7 @@ public class BooleanProperty extends ValuePropertyWithGlobalDefault<Boolean> imp
 			if (b)
 				h.value.setText(R.string.yes);
 			else
-				h.value.setText(R.string.no);
+				h.value.setText(R.string.option_no);
 			h.cb.setPressed(false);
 		} else {
 			// Null value; use defaults.

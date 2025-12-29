@@ -800,7 +800,7 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 			{
 				addMenuItem(menu, R.id.MENU_DELETE_BOOK, R.string.menu_delete, android.R.drawable.ic_menu_delete);
 				addMenuItem(menu, R.id.MENU_EDIT_BOOK, R.string.edit_book, android.R.drawable.ic_menu_edit);
-				addMenuItem(menu, R.id.MENU_EDIT_BOOK_NOTES, R.string.edit_book_notes, R.drawable.ic_menu_compose_holo_dark);
+				addMenuItem(menu, R.id.MENU_EDIT_BOOK_NOTES, R.string.label_comments, R.drawable.ic_menu_compose_holo_dark);
 				//Shows different menu item depending on loan status of book but both situations still go to the same view.
 				if(!onLoan) {
 					addMenuItem(menu, R.id.MENU_EDIT_BOOK_FRIENDS, R.string.button_loan_book, R.drawable.ic_menu_cc_holo_dark);

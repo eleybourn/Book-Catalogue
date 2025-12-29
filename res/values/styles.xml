@@ -232,7 +232,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:paddingHorizontal">@dimen/padding_prefs_item</item>
+        <item name="android:paddingHorizontal">@dimen/p_xl</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
     </style>
 
@@ -243,33 +243,35 @@
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
     </style>
 
-    <!-- Style for detail titles in read-only book details -->
-    <style name="bookDetailsTitlesStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <!-- Style for text details in read-only book details -->
-    <style name="bookDetailsTextStyle">
-        <item name="android:textIsSelectable">true</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingLeft">@dimen/padding_book_details_info</item>
-        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
-    </style>
-
     <!-- Style for text header data (typically title/author) in read-only book details -->
-    <style name="bookDetailsHeaderStyle">
+    <style name="book_header">
         <item name="android:textIsSelectable">true</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="android:textStyle">italic</item>
+    </style>
+
+    <!-- Style for detail titles in read-only book details -->
+    <style name="book_subheading">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <!-- Style for text details in read-only book details -->
+    <style name="book_text">
+        <item name="android:textIsSelectable">true</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">@dimen/p_lg</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
     </style>
 
     <!-- Style for smaller text header data (typically isbn/pages) in read-only book details -->
-    <style name="bookDetailsMinorDetailStyle">
+    <style name="book_text_small">
         <item name="android:textIsSelectable">true</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>

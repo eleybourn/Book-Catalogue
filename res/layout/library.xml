@@ -23,39 +23,36 @@
                 android:orientation="vertical" >
 
                 <Spinner
-                    android:id="@+id/bookshelf_name"
+                    android:id="@+id/field_library_bookshelf"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="#00000000"
                     android:paddingBottom="2dp" />
 
                 <ImageView
-                    android:id="@+id/bookshelf_down"
+                    android:id="@+id/button_bookshelf"
                     style="@style/layout_button_dropdown"
                     android:contentDescription="@string/label_select_bookshelves" />
 
                 <TextView
-                    android:id="@+id/search_text"
+                    android:id="@+id/search_result_summary"
+                    style="@style/layout_paragraph"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_below="@id/bookshelf_name"
                     android:visibility="gone"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:layout_below="@id/field_library_bookshelf" />
 
                 <TextView
-                    android:id="@+id/bookshelf_count"
+                    android:id="@+id/label_bookshelf_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
-                    android:layout_below="@+id/search_text"
+                    android:layout_below="@+id/search_result_summary"
                     android:textAppearance="?android:attr/textAppearanceSmall" />
 
                 <TextView
                     android:id="@+id/level_1_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/bookshelf_count"
+                    android:layout_below="@id/label_bookshelf_count"
                     android:singleLine="true"
                     android:textAppearance="?android:attr/textAppearanceSmall" />
 

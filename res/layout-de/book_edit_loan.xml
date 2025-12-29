@@ -1,50 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/label_loaned_to" />
+    <TextView
+        style="@style/layout_heading"
+        android:text="@string/label_loaned_to" />
 
-        <TextView
-            android:id="@+id/field_loaned_to"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingBottom="@dimen/p_md"
-            android:text="@string/option_nobody" />
+    <TextView
+        android:id="@+id/field_loaned_to"
+        style="@style/layout_paragraph"
+        android:text="@string/option_nobody" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_weight="1"
-            android:background="#CCCCCC" />
+    <TextView
+        style="@style/layout_heading"
+        android:text="@string/label_loan_to" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingTop="@dimen/p_md"
-            android:text="@string/label_loan_to" />
+    <AutoCompleteTextView
+        android:id="@+id/field_loan_to_who"
+        style="@style/locale_field_text_name"
+        android:inputType="textCapSentences"
+        android:completionThreshold="2"
+        android:hint="@string/option_name" />
 
-        <AutoCompleteTextView
-            android:id="@+id/field_loan_to_who"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:completionThreshold="2"
-            android:hint="@string/option_name"
-            android:inputType="textCapSentences" />
-
-        <Button
-            android:id="@+id/button_confirm"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/button_confirm_add"
-            android:width="150sp" />
-    </LinearLayout>
+    <Button
+        android:id="@+id/button_confirm"
+        style="@style/layout_button"
+        android:text="@string/button_loan_book" />
+</LinearLayout>
 

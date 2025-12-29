@@ -2,7 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/layout_dialog">
 
-    <LinearLayout style="@style/layout_main">
+    <LinearLayout
+        android:id="@+id/top_buttons"
+        style="@style/layout_main">
 
         <TextView
             android:id="@+id/field_title"
@@ -10,7 +12,6 @@
             android:hint="@string/label_title" />
 
         <LinearLayout
-            android:id="@+id/top_buttons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -21,7 +22,7 @@
                 android:layout_weight="2"
                 android:completionThreshold="2"
                 android:hint="@string/label_series"
-                android:paddingLeft="@dimen/p_md"
+                android:paddingHorizontal="@dimen/p_md"
                 android:inputType="textCapSentences" />
 
             <EditText
@@ -31,24 +32,28 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:hint="@string/label_series_num"
+                android:inputType="numberDecimal"
+                android:importantForAutofill="no"
                 android:singleLine="true" />
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/bottom_buttons"
-            style="@style/layout_action_row"
-            android:layout_below="@+id/field_title"
-            android:layout_alignParentBottom="false">
-
-            <Button
-                android:id="@+id/button_cancel"
-                style="@style/layout_button_action"
-                android:text="@string/button_cancel" />
-
-            <Button
-                android:id="@+id/button_confirm"
-                style="@style/layout_button_action"
-                android:text="@string/button_save" />
-        </LinearLayout>
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bottom_buttons"
+        style="@style/layout_action_row"
+        android:layout_alignParentBottom="false"
+        android:layout_below="@+id/top_buttons">
+
+        <Button
+            android:id="@+id/button_cancel"
+            style="@style/layout_button_action"
+            android:text="@string/button_cancel" />
+
+        <Button
+            android:id="@+id/button_confirm"
+            style="@style/layout_button_action"
+            android:text="@string/button_save" />
+    </LinearLayout>
+
 </RelativeLayout>

@@ -17,7 +17,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <Spinner
-        android:id="@+id/bookshelf_name"
+        android:id="@+id/field_library_bookshelf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/bookshelfLabel"
@@ -28,12 +28,12 @@
         android:id="@+id/bookshelf_num"
         android:layout_width="wrap_content"
         android:layout_height="32dp"
-        android:layout_toRightOf="@+id/bookshelf_name"
+        android:layout_toRightOf="@+id/field_library_bookshelf"
         android:paddingLeft="@dimen/p_md"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <ImageView
-        android:id="@+id/bookshelf_down"
+        android:id="@+id/button_bookshelf"
         android:layout_width="wrap_content"
         android:layout_height="32dp"
         android:layout_toRightOf="@+id/bookshelf_num"

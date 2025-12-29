@@ -104,7 +104,7 @@
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <EditText
-                android:id="@+id/search_text"
+                android:id="@+id/search_result_summary"
                 android:layout_width="match_parent"
                 android:layout_height="0dip"
                 android:layout_weight="1"

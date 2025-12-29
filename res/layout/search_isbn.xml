@@ -17,7 +17,7 @@
         <EditText
             android:id="@+id/field_isbn"
             style="@style/field_text"
-            android:digits="1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"
+            android:digits="1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
             android:hint="@string/label_isbn"
             android:importantForAutofill="no"
             android:inputType="text"

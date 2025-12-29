@@ -1,312 +1,312 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:focusableInTouchMode="true"
-    tools:ignore="DuplicateIds"
-    android:orientation="vertical" >
+    android:layout_height="match_parent">
 
-    <ScrollView
+    <LinearLayout
+        android:id="@+id/root"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <ImageView
+            android:id="@+id/row_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/theme_surfaceContainer"
+            android:contentDescription="@string/label_thumbnail"
+            android:gravity="center"
+            android:padding="@dimen/p_md" />
+
+        <RelativeLayout
+            android:id="@+id/row_author"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:focusableInTouchMode="true"
-            android:orientation="vertical"
-            android:padding="10dp" >
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/heading_author"
+                style="@style/layout_heading"
+                android:text="@string/label_author" />
+
+            <Button
+                android:id="@+id/field_author"
+                style="@style/layout_button_large"
+                android:layout_below="@+id/heading_author"
+                android:focusableInTouchMode="true"
+                android:nextFocusDown="@+id/field_title"
+                android:text="@string/label_set_authors">
+
+                <requestFocus />
+            </Button>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/heading_title"
+                style="@style/layout_heading"
+                android:labelFor="@+id/field_title"
+                android:text="@string/label_title" />
+
+            <EditText
+                android:id="@+id/field_title"
+                style="@style/locale_field_text_title"
+                android:inputType="textCapSentences"
+                android:layout_below="@+id/heading_title"
+                android:importantForAutofill="no"
+                android:nextFocusDown="@+id/field_isbn" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/row_isbn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/heading_isbn"
+                style="@style/layout_heading"
+                android:labelFor="@+id/field_isbn"
+                android:text="@string/label_isbn" />
+
+            <EditText
+                android:id="@+id/field_isbn"
+                style="@style/field_text"
+                android:layout_below="@+id/heading_isbn"
+                android:layout_alignParentStart="false"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:nextFocusDown="@+id/field_series" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/row_format"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/heading_format"
+                style="@style/layout_heading"
+                android:labelFor="@+id/field_format"
+                android:text="@string/label_format" />
 
             <ImageView
-                android:id="@+id/row_img"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight="1"
-                android:background="@color/theme_surfaceContainer"
-                android:gravity="center"
-                android:padding="@dimen/p_md" />
+                android:id="@+id/format_dropdown_button"
+                style="@style/layout_button_dropdown"
+                android:layout_alignBottom="@+id/field_format"
+                android:contentDescription="@string/label_format" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+            <AutoCompleteTextView
+                android:id="@+id/field_format"
+                style="@style/field_text"
+                android:inputType="textCapSentences"
+                android:layout_below="@+id/heading_format"
+                android:layout_toStartOf="@id/format_dropdown_button"
+                android:completionThreshold="2"
+                android:nextFocusDown="@+id/field_genre"
+                android:singleLine="true" />
+        </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/heading_title"
-                    style="@style/layout_heading"
-                    android:text="@string/label_author" />
+        <RelativeLayout
+            android:id="@+id/row_series"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/field_author"
-                    style="@style/layout_button_large"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_below="@+id/heading_title"
-                    android:focusableInTouchMode="true"
-                    android:nextFocusDown="@+id/field_title" >
-                    <requestFocus/>
-                </Button>
-            </RelativeLayout>
+            <TextView
+                android:id="@+id/heading_series"
+                style="@style/layout_heading"
+                android:text="@string/label_series" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+            <Button
+                android:id="@+id/field_series"
+                style="@style/layout_button_large"
+                android:layout_below="@+id/heading_series"
+                android:nextFocusDown="@+id/field_publisher"
+                android:text="@string/set_series" />
+        </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/heading_title"
-                    style="@style/layout_heading"
-                    android:text="@string/label_title" />
+        <RelativeLayout
+            android:id="@+id/row_publisher"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-                <EditText
-                    android:id="@+id/field_title"
-                    style="@style/field_text"
-                    android:layout_below="@+id/heading_title"
-                    android:inputType="textCapSentences"
-                    android:nextFocusDown="@+id/field_isbn" />
-            </RelativeLayout>
+            <TextView
+                android:id="@+id/heading_publisher"
+                style="@style/layout_heading"
+                android:labelFor="@+id/field_publisher"
+                android:text="@string/label_publisher" />
 
-            <RelativeLayout
-                android:id="@+id/row_isbn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+            <AutoCompleteTextView
+                android:id="@+id/field_publisher"
+                style="@style/locale_field_text_name"
+                android:inputType="textCapSentences"
+                android:layout_below="@+id/heading_publisher"
+                android:completionThreshold="2"
+                android:nextFocusDown="@+id/button_date_published" />
+        </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/heading_title"
-                    style="@style/layout_heading"
-                    android:layout_alignParentTop="false"
-                    android:layout_centerVertical="true"
-                    android:text="@string/label_isbn" />
+        <RelativeLayout
+            android:id="@+id/row_date_published"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-                <EditText
-                    android:id="@+id/field_isbn"
-                    style="@style/field_text"
-                    android:layout_alignParentStart="false"
-                    android:layout_toRightOf="@+id/heading_title"
-                    android:inputType="text"
-                    android:nextFocusDown="@+id/field_series" />
-            </RelativeLayout>
+            <TextView
+                android:id="@+id/heading_date_published"
+                style="@style/layout_heading"
+                android:labelFor="@+id/button_date_published"
+                android:text="@string/label_date_published" />
 
-            <RelativeLayout
-                android:id="@+id/row_series"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+            <Button
+                android:id="@+id/button_date_published"
+                style="@style/layout_button_large"
+                android:layout_below="@+id/heading_date_published"
+                android:nextFocusDown="@+id/field_bookshelf"
+                android:text="@string/not_set" />
+        </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/heading_title"
-                    style="@style/layout_heading"
-                    android:text="@string/label_series" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/field_series"
-                    style="@style/layout_button_large"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_below="@+id/heading_title"
-                    android:nextFocusDown="@+id/publisher" />
-            </RelativeLayout>
+            <TextView
+                android:id="@+id/heading_bookshelves"
+                style="@style/layout_heading"
+                android:text="@string/label_bookshelves" />
 
-            <RelativeLayout
-                android:id="@+id/row_publisher"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+            <Button
+                android:id="@+id/field_bookshelf"
+                style="@style/layout_button_large"
+                android:layout_below="@+id/heading_bookshelves"
+                android:nextFocusDown="@+id/field_pages"
+                android:text="@string/not_set" />
+        </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/heading_title"
-                    style="@style/layout_heading"
-                    android:text="@string/label_publisher" />
+        <RelativeLayout
+            android:id="@+id/row_pages"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-                <AutoCompleteTextView
-                    android:id="@+id/publisher"
-                    style="@style/field_text"
-                    android:layout_below="@+id/heading_title"
-                    android:completionThreshold="2"
-                    android:inputType="textCapSentences"
-                    android:nextFocusDown="@+id/date_published" />
-            </RelativeLayout>
+            <TextView
+                android:id="@+id/heading_pages"
+                style="@style/layout_heading"
+                android:labelFor="@+id/field_pages"
+                android:text="@string/label_pages" />
 
-            <RelativeLayout
-                android:id="@+id/row_date_published"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+            <EditText
+                android:id="@+id/field_pages"
+                style="@style/field_text"
+                android:layout_below="@+id/heading_pages"
+                android:importantForAutofill="no"
+                android:inputType="number"
+                android:nextFocusDown="@+id/field_list_price" />
+        </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/heading_date_published"
-                    style="@style/layout_heading"
-                    android:text="@string/label_date_published" />
+        <RelativeLayout
+            android:id="@+id/row_list_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/date_published"
-                    style="@style/layout_button_large"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_below="@+id/heading_date_published"
-                    android:nextFocusDown="@+id/field_bookshelf" />
-            </RelativeLayout>
+            <TextView
+                android:id="@+id/heading_list_price"
+                style="@style/layout_heading"
+                android:labelFor="@+id/field_list_price"
+                android:text="@string/label_list_price" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+            <EditText
+                android:id="@+id/field_list_price"
+                style="@style/field_text"
+                android:layout_below="@+id/heading_list_price"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="-12dp"
+                android:importantForAutofill="no"
+                android:inputType="numberDecimal"
+                android:nextFocusDown="@+id/field_genre" />
+        </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/heading_title"
-                    style="@style/layout_heading"
-                    android:text="@string/label_bookshelves" />
+        <RelativeLayout
+            android:id="@+id/row_genre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/field_bookshelf"
-                    style="@style/layout_button_large"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_below="@+id/heading_title"
-                    android:nextFocusDown="@+id/field_pages" />
-            </RelativeLayout>
+            <TextView
+                android:id="@+id/heading_genre"
+                style="@style/layout_heading"
+                android:labelFor="@+id/field_genre"
+                android:text="@string/label_genre" />
 
-            <RelativeLayout
-                android:id="@+id/row_pages"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+            <AutoCompleteTextView
+                android:id="@+id/field_genre"
+                style="@style/field_text"
+                android:layout_below="@+id/heading_genre"
+                android:completionThreshold="2"
+                android:inputType="textCapSentences"
+                android:nextFocusDown="@+id/field_language" />
+        </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/heading_pages"
-                    style="@style/layout_heading"
-                    android:text="@string/label_pages" />
+        <RelativeLayout
+            android:id="@+id/row_language"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-                <EditText
-                    android:id="@+id/field_pages"
-                    style="@style/field_text"
-                    android:layout_below="@+id/heading_pages"
-                    android:inputType="number"
-                    android:nextFocusDown="@+id/field_list_price" />
-            </RelativeLayout>
+            <TextView
+                android:id="@+id/heading_language"
+                style="@style/layout_heading"
+                android:labelFor="@+id/field_language"
+                android:text="@string/label_language" />
 
-            <RelativeLayout
-                android:id="@+id/row_list_price"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+            <AutoCompleteTextView
+                android:id="@+id/field_language"
+                style="@style/locale_field_text_language"
+                android:inputType="textCapSentences"
+                android:layout_below="@+id/heading_language"
+                android:completionThreshold="2"
+                android:nextFocusDown="@+id/field_anthology"
+                android:singleLine="true" />
+        </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/heading_list_price"
-                    style="@style/layout_heading"
-                    android:text="@string/label_list_price" />
+        <CheckBox
+            android:id="@+id/field_anthology"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:nextFocusDown="@+id/field_description"
+            android:text="@string/label_is_anthology" />
 
-                <EditText
-                    android:id="@+id/field_list_price"
-                    style="@style/field_text"
-                    android:layout_below="@+id/heading_list_price"
-                    android:inputType="numberDecimal"
-                    android:nextFocusDown="@+id/field_format" />
-            </RelativeLayout>
 
-            <RelativeLayout
-                android:id="@+id/row_format"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-
-                <TextView
-                    android:id="@+id/heading_title"
-                    style="@style/layout_heading"
-                    android:text="@string/label_format" />
-
-                <ImageView
-                    android:id="@+id/format_dropdown_button"
-                    style="@style/layout_button_dropdown"
-                    android:layout_alignBottom="@+id/field_format" />
-
-                <AutoCompleteTextView
-                    android:id="@+id/field_format"
-                    style="@style/field_text"
-                    android:layout_below="@+id/heading_title"
-                    android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@id/format_dropdown_button"
-                    android:completionThreshold="2"
-                    android:nextFocusDown="@+id/field_genre"
-                    android:singleLine="true" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/row_genre"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-
-                <TextView
-                    android:id="@+id/heading_title"
-                    style="@style/layout_heading"
-                    android:text="@string/label_genre" />
-
-                <AutoCompleteTextView
-                    android:id="@+id/field_genre"
-                    style="@style/field_text"
-                    android:layout_below="@+id/heading_title"
-                    android:completionThreshold="2"
-                    android:inputType="textCapSentences"
-                    android:nextFocusDown="@+id/field_language" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/row_language"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-
-                <TextView
-                    android:id="@+id/heading_title"
-                    style="@style/layout_heading"
-                    android:text="@string/label_language" />
-
-                <AutoCompleteTextView
-                    android:id="@+id/field_language"
-                    style="@style/field_text"
-                    android:layout_below="@+id/heading_title"
-                    android:completionThreshold="2"
-                    android:inputType="textCapSentences"
-                    android:nextFocusDown="@+id/field_anthology"
-                    android:singleLine="true" />
-            </RelativeLayout>
-
-            <CheckBox
-                android:id="@+id/field_anthology"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:nextFocusDown="@+id/field_description"
-                android:text="@string/label_is_anthology" />
+        <RelativeLayout
+            android:id="@+id/row_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/heading_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingTop="12dp"
-                android:text="@string/label_description"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-
-            <View
-                android:id="@+id/header_divider"
-                style="@style/layout_divider"
-                android:paddingBottom="2dp"
-                android:paddingTop="2dp" />
+                style="@style/layout_heading"
+                android:labelFor="@+id/field_description"
+                android:text="@string/label_description" />
 
             <com.eleybourn.bookcatalogue.widgets.SafeSpannedTextView
                 android:id="@+id/field_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="@string/label_description"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-        </LinearLayout>
-    </ScrollView>
+                style="@style/field_text"
+                android:layout_below="@+id/heading_description"
+                android:hint="@string/not_set"
+                android:paddingHorizontal="4dp" />
+        </RelativeLayout>
 
-</LinearLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

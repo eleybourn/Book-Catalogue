@@ -206,7 +206,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
 				mSearchText = "";
 			}
 
-			TextView searchTextView = findViewById(R.id.search_text);
+			TextView searchTextView = findViewById(R.id.search_result_summary);
 			if (mSearchText.equals("")) {
 				searchTextView.setVisibility(View.GONE);
 			} else {
@@ -535,7 +535,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
 
 		final int showHeaderFlags = (mCurrentStyle == null ? BooklistStyle.SUMMARY_SHOW_ALL : mCurrentStyle.getShowHeaderInfo());
 
-		TextView bookCounts = findViewById(R.id.bookshelf_count);
+		TextView bookCounts = findViewById(R.id.label_bookshelf_count);
 		if ( (showHeaderFlags & BooklistStyle.SUMMARY_SHOW_COUNT) != 0) {
 			if (mUniqueBooks != mTotalBooks) 
 				bookCounts.setText(this.getString(R.string.displaying_n_books_in_m_entries, String.valueOf(mUniqueBooks), String.valueOf(mTotalBooks)));
@@ -874,7 +874,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
 	
 	private void initBookshelfSpinner() {
 		// Setup the Bookshelf Spinner 
-		mBookshelfSpinner = findViewById(R.id.bookshelf_name);
+		mBookshelfSpinner = findViewById(R.id.field_library_bookshelf);
 		mBookshelfAdapter = new ArrayAdapter<String>(this, R.layout.spinner_frontpage);
 		mBookshelfAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		mBookshelfSpinner.setAdapter(mBookshelfAdapter);
@@ -933,7 +933,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
 			}
 		});
 		
-		ImageView bookshelfDown = findViewById(R.id.bookshelf_down);
+		ImageView bookshelfDown = findViewById(R.id.button_bookshelf);
 		bookshelfDown.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {

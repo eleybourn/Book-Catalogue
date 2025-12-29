@@ -105,7 +105,7 @@ public class BookEditFields extends BookDetailsAbstract
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.edit_book_details, container, false);
+        return inflater.inflate(R.layout.book_edit_details, container, false);
     }
 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -303,11 +303,7 @@ public class BookEditFields extends BookDetailsAbstract
     private void setupUi() {
         assert getView() != null;
         final CheckBox cb = getView().findViewById(R.id.field_anthology);
-
-        cb.setOnClickListener(view -> {
-            mEditManager.setShowAnthology(cb.isChecked());
-            //saveState(new DoAnthologyAction(cb.isChecked()));
-        });
+        cb.setOnClickListener(view -> mEditManager.setShowAnthology(cb.isChecked()));
     }
 
     /**

@@ -56,7 +56,7 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 		}
 
 		// Just format a binary value as yes/no/blank
-		mFields.getField(R.id.signed).formatter = new BinaryYesNoEmptyFormatter();
+		mFields.getField(R.id.field_signed).formatter = new BinaryYesNoEmptyFormatter();
 	}
 	
 	/**
@@ -181,12 +181,12 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 	 */
 	private void addFields() {
 		// From 'My comments' tab
-		mFields.add(R.id.rating, CatalogueDBAdapter.KEY_RATING, null);
-		mFields.add(R.id.notes, CatalogueDBAdapter.KEY_NOTES, null)
+		mFields.add(R.id.field_rating, CatalogueDBAdapter.KEY_RATING, null);
+		mFields.add(R.id.field_notes, CatalogueDBAdapter.KEY_NOTES, null)
 			.setShowHtml(true);
-		mFields.add(R.id.read_start, CatalogueDBAdapter.KEY_READ_START, null, new Fields.DateFieldFormatter());
-		mFields.add(R.id.read_end, CatalogueDBAdapter.KEY_READ_END, null, new Fields.DateFieldFormatter());
-		mFields.add(R.id.location, CatalogueDBAdapter.KEY_LOCATION, null);
+		mFields.add(R.id.field_read_start, CatalogueDBAdapter.KEY_READ_START, null, new Fields.DateFieldFormatter());
+		mFields.add(R.id.field_read_end, CatalogueDBAdapter.KEY_READ_END, null, new Fields.DateFieldFormatter());
+		mFields.add(R.id.field_location, CatalogueDBAdapter.KEY_LOCATION, null);
 		// Make sure the label is hidden when the ISBN is 
 		mFields.add(R.id.isbn_label, "", CatalogueDBAdapter.KEY_ISBN, null);
 		mFields.add(R.id.field_publisher, "", CatalogueDBAdapter.KEY_PUBLISHER, null);
@@ -256,7 +256,7 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 	 */
 	private void showLoanedInfo(Long rowId) {
 		String personLoanedTo = mDbHelper.fetchLoanByBook(rowId);
-		TextView textView = getView().findViewById(R.id.who);
+		TextView textView = getView().findViewById(R.id.field_loaned_to);
 		if (personLoanedTo != null) {
 			textView.setVisibility(View.VISIBLE);
 			String resultText = getString(R.string.book_details_readonly_loaned_to, personLoanedTo);
@@ -272,7 +272,7 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 	 */
 	private void showReadStatus(BookData book) {
 		if (FieldVisibility.isVisible(CatalogueDBAdapter.KEY_READ)) {
-			ImageView image = getView().findViewById(R.id.read);
+			ImageView image = getView().findViewById(R.id.field_read);
 			if (book.isRead()) {
 				image.setVisibility(View.VISIBLE);
 				image.setImageResource(R.drawable.btn_check_buttonless_on);
@@ -280,7 +280,7 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 				image.setVisibility(View.GONE);				
 			}
 		} else {
-			ImageView image = getView().findViewById(R.id.read);
+			ImageView image = getView().findViewById(R.id.field_read);
 			image.setVisibility(View.GONE);			
 		}
 	}
@@ -291,7 +291,7 @@ public class BookDetailsReadOnly extends BookDetailsAbstract {
 	 */
 	private void showSignedStatus(BookData book) {
 		if (book.isSigned()) {
-			((TextView) getView().findViewById(R.id.signed)).setText(getResources().getString(R.string.yes));
+			((TextView) getView().findViewById(R.id.field_signed)).setText(getResources().getString(R.string.yes));
 		}
 	}
 	

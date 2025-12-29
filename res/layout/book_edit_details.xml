@@ -59,6 +59,7 @@
                 android:id="@+id/field_title"
                 style="@style/locale_field_text_title"
                 android:layout_below="@+id/heading_title"
+                android:importantForAutofill="no"
                 android:nextFocusDown="@+id/field_isbn" />
         </RelativeLayout>
 
@@ -79,6 +80,7 @@
                 style="@style/field_text"
                 android:layout_below="@+id/heading_isbn"
                 android:layout_alignParentStart="false"
+                android:importantForAutofill="no"
                 android:inputType="text"
                 android:nextFocusDown="@+id/field_series" />
         </RelativeLayout>
@@ -204,6 +206,7 @@
                 android:id="@+id/field_pages"
                 style="@style/field_text"
                 android:layout_below="@+id/heading_pages"
+                android:importantForAutofill="no"
                 android:inputType="number"
                 android:nextFocusDown="@+id/field_list_price" />
         </RelativeLayout>
@@ -226,6 +229,7 @@
                 android:layout_below="@+id/heading_list_price"
                 android:layout_marginStart="2dp"
                 android:layout_marginTop="-12dp"
+                android:importantForAutofill="no"
                 android:inputType="numberDecimal"
                 android:nextFocusDown="@+id/field_genre" />
         </RelativeLayout>

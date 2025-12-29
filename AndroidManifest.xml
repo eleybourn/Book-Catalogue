@@ -16,6 +16,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!-- <uses-permission android:name="android.permission.READ_CONTACTS" /> -->
 
     <!-- We use android:requestLegacyExternalStorage="true" for Android 10/SDK29 (so WRITE_EXTERNAL_STORAGE works) -->
     <application

@@ -100,7 +100,7 @@ public class BooklistStylePropertiesActivity extends BookCatalogueActivity {
         );
 
         // Set the view and handle the save/cancel buttons.
-        this.setContentView(R.layout.admin_edit_booklist_style);
+        this.setContentView(R.layout.admin_style_edit);
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
         setSupportActionBar(topAppBar);
         topAppBar.setTitle(R.string.label_bookshelf);

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <TextView
+        style="@style/layout_heading"
+        android:text="@string/label_loaned_to" />
+
+    <TextView
+        android:id="@+id/field_loaned_to"
+        style="@style/layout_paragraph"
+        android:text="@string/option_nobody" />
+
+    <Button
+        android:id="@+id/button_confirm"
+        style="@style/layout_button"
+        android:width="150sp"
+        android:text="@string/button_returned" />
+</LinearLayout>
+

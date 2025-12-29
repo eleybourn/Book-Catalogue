@@ -1183,7 +1183,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
 	 */
 	private void doSortMenu(final boolean showAll) {
 		LayoutInflater inf = this.getLayoutInflater();
-		View root = inf.inflate(R.layout.booklist_style_menu, null);
+		View root = inf.inflate(R.layout.menu_style, null);
 		RadioGroup group = root.findViewById(R.id.radio_buttons);
 		LinearLayout main = root.findViewById(R.id.menu);
 
@@ -1231,7 +1231,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
 	 * @param style
 	 */
 	private void makeRadio (final AlertDialog sortDialog, final LayoutInflater inf, RadioGroup group, final BooklistStyle style) {
-		View v = inf.inflate(R.layout.booklist_style_menu_radio, null);
+		View v = inf.inflate(R.layout.menu_style_radio, null);
 		RadioButton btn = (RadioButton)v;
 		btn.setText(style.getDisplayName());
 
@@ -1256,7 +1256,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
 	 * @param listener
 	 */
 	private void makeText (final LinearLayout parent, final LayoutInflater inf, final int stringId, OnClickListener listener) {
-		TextView view = (TextView)inf.inflate(R.layout.booklist_style_menu_text, null);
+		TextView view = (TextView)inf.inflate(R.layout.menu_style_text, null);
 		Typeface tf = view.getTypeface();
 		view.setTypeface(tf, Typeface.ITALIC);
 		view.setText(stringId);

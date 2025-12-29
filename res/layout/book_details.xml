@@ -27,7 +27,7 @@
                 <!-- Read -->
 
                 <ImageView
-                    android:id="@+id/read"
+                    android:id="@+id/field_read"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
@@ -47,7 +47,7 @@
                     android:layout_alignWithParentIfMissing="true"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
-                    android:layout_toLeftOf="@+id/read"
+                    android:layout_toLeftOf="@+id/field_read"
                     android:text="Anna Karenina"
                     android:textStyle="italic"
                     tools:ignore="HardcodedText" />
@@ -72,7 +72,7 @@
                     android:layout_below="@+id/field_author">
 
                     <RatingBar
-                        android:id="@+id/rating"
+                        android:id="@+id/field_rating"
                         style="?android:attr/ratingBarStyleIndicator"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -285,7 +285,7 @@
             android:text="@string/edit_book_notes" />
 
         <TextView
-            android:id="@+id/notes"
+            android:id="@+id/field_notes"
             style="@style/bookDetailsTextStyle"
             android:text="The best book of all times"
             tools:ignore="HardcodedText" />
@@ -307,7 +307,7 @@
                     android:text="@string/signed" />
 
                 <TextView
-                    android:id="@+id/signed"
+                    android:id="@+id/field_signed"
                     style="@style/bookDetailsTextStyle"
                     android:text="@string/no" />
 
@@ -325,7 +325,7 @@
                     android:text="@string/read_start" />
 
                 <TextView
-                    android:id="@+id/read_start"
+                    android:id="@+id/field_read_start"
                     style="@style/bookDetailsTextStyle"
                     android:layout_weight="1"
                     android:text="Nov 10, 2011"
@@ -342,7 +342,7 @@
                     android:text="@string/read_end" />
 
                 <TextView
-                    android:id="@+id/read_end"
+                    android:id="@+id/field_read_end"
                     style="@style/bookDetailsTextStyle"
                     android:layout_weight="1"
                     android:text="Dec 15, 2011"
@@ -361,7 +361,7 @@
                     android:text="@string/location_of_book" />
 
                 <TextView
-                    android:id="@+id/location"
+                    android:id="@+id/field_location"
                     style="@style/bookDetailsTextStyle"
                     android:layout_weight="1"
                     android:text="Library"
@@ -370,7 +370,7 @@
         </TableLayout>
 
         <TextView
-            android:id="@+id/who"
+            android:id="@+id/field_loaned_to"
             style="@style/bookDetailsTextStyle"
             android:hint="@string/not_set"
             android:visibility="gone" />

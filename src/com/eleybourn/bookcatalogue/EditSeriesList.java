@@ -90,7 +90,7 @@ public class EditSeriesList extends EditObjectList<Series> {
 		AutoCompleteTextView t = EditSeriesList.this.findViewById(R.id.field_series);
 		String s = t.getText().toString().trim();
 		if (!s.isEmpty()) {
-			EditText et = EditSeriesList.this.findViewById(R.id.series_num);
+			EditText et = EditSeriesList.this.findViewById(R.id.field_series_num);
 			String n = et.getText().toString();
             Series series = new Series(t.getText().toString(), n);
 			series.id = mDbHelper.lookupSeriesId(series);
@@ -131,7 +131,7 @@ public class EditSeriesList extends EditObjectList<Series> {
 		seriesView.setText(series.name);
 		seriesView.setAdapter(mSeriesAdapter);
 
-		EditText numView = dialog.findViewById(R.id.series_num);
+		EditText numView = dialog.findViewById(R.id.field_series_num);
 		numView.setText(series.num);
 
 		//setTextOrHideView(dialog.findViewById(R.id.label_title), mBookTitleLabel);

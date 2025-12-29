@@ -31,22 +31,30 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
 
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.utils.Logger;
 
 /**
  * This class is called by the BookEdit activity and displays the Loaned Tab
- * 
  * Users can select a book and, from this activity, select a friend to "loan" the book to.
  * This will then be saved in the database for reference. 
  */
 public class BookEditLoaned extends BookEditFragmentAbstract {
+
+    // Define the permission launcher
+    private final androidx.activity.result.ActivityResultLauncher<String> mRequestPermissionLauncher =
+            registerForActivityResult(new androidx.activity.result.contract.ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    // Permission granted, refresh the view to load contacts
+                    loanTo();
+                }
+            });
 
 	/**
 	 * Return a list of friends from your contact list. 
@@ -54,35 +62,47 @@ public class BookEditLoaned extends BookEditFragmentAbstract {
 	 *  
 	 * @return an ArrayList of names
 	 */
-	protected ArrayList<String> getFriends() {
-		ArrayList<String> friend_list = new ArrayList<String>();
-		Uri baseUri = null;
-		String display_name = null;
-		try {
-			Class<?> c = Class.forName("android.provider.ContactsContract$Contacts");
-			baseUri = (Uri) c.getField("CONTENT_URI").get(baseUri);
-			display_name = (String) c.getField("DISPLAY_NAME").get(display_name);
-		} catch (Exception e) {
-			try {
-				Class<?> c = Class.forName("android.provider.Contacts$People");
-				baseUri = (Uri) c.getField("CONTENT_URI").get(baseUri);
-				display_name = (String) c.getField("DISPLAY_NAME").get(display_name);
-			} catch (Exception e2) {
-				Logger.logError(e);
-			}
-		}
-		Cursor contactsCursor = getActivity().getContentResolver().query(baseUri, null, null, null, null);
-		while (contactsCursor.moveToNext()) {
-			String name = contactsCursor.getString(contactsCursor.getColumnIndex(display_name));
-			friend_list.add(name);
-		}
-		return friend_list;
-	}
+    protected ArrayList<String> getFriends() {
+        ArrayList<String> friend_list = new ArrayList<>();
+        Uri baseUri = null;
+        String display_name = null;
+        try {
+            Class<?> c = Class.forName("android.provider.ContactsContract$Contacts");
+            baseUri = (Uri) c.getField("CONTENT_URI").get(baseUri);
+            display_name = (String) c.getField("DISPLAY_NAME").get(display_name);
+        } catch (Exception e) {
+            try {
+                Class<?> c = Class.forName("android.provider.Contacts$People");
+                baseUri = (Uri) c.getField("CONTENT_URI").get(baseUri);
+                display_name = (String) c.getField("DISPLAY_NAME").get(display_name);
+            } catch (Exception e2) {
+                Logger.logError(e);
+            }
+        }
+        assert baseUri != null;
+
+        // Use try-with-resources to automatically close the cursor
+        try (Cursor contactsCursor = requireActivity().getContentResolver().query(baseUri, null, null, null, null)) {
+            if (contactsCursor != null) {
+                // Calculate the index once, outside the loop for performance
+                int nameColumnIndex = contactsCursor.getColumnIndex(display_name);
+
+                while (contactsCursor.moveToNext()) {
+                    // Check if the column actually exists (index >= 0) before reading
+                    if (nameColumnIndex >= 0) {
+                        String name = contactsCursor.getString(nameColumnIndex);
+                        friend_list.add(name);
+                    }
+                }
+            }
+        }
+
+        return friend_list;
+    }
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		final View root = inflater.inflate(R.layout.edit_book_loan_base, container, false);
-		return root;
+        return inflater.inflate(R.layout.book_edit_loan_base, container, false);
 	}
 	
 	/**
@@ -109,7 +129,7 @@ public class BookEditLoaned extends BookEditFragmentAbstract {
 	}
 	
 	@Override
-	public void onSaveInstanceState(Bundle outState) {
+	public void onSaveInstanceState(@NonNull Bundle outState) {
 		super.onSaveInstanceState(outState);
 	}
 
@@ -118,26 +138,41 @@ public class BookEditLoaned extends BookEditFragmentAbstract {
 	 * Display the loan to page. It is slightly different to the existing loan page
 	 */
 	private void loanTo() {
-		ScrollView sv = getView().findViewById(R.id.root);
+        assert getView() != null;
+        NestedScrollView sv = getView().findViewById(R.id.scrollView);
 		sv.removeAllViews();
-		LayoutInflater inf = getActivity().getLayoutInflater();
-		inf.inflate(R.layout.edit_book_loan, sv);
+		LayoutInflater inf = requireActivity().getLayoutInflater();
+		inf.inflate(R.layout.book_edit_loan, sv);
 
-		AutoCompleteTextView mUserText = sv.findViewById(R.id.loan_to_who);
-		try {
-			ArrayAdapter<String> series_adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, getFriends());
-			mUserText.setAdapter(series_adapter);
-		} catch (Exception e) {
-			Logger.logError(e);
-		}
+        //askPermission(sv);
+
 		Button mConfirmButton = sv.findViewById(R.id.button_confirm);
-		mConfirmButton.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View view) {
-				String friend = saveLoan();
-				loaned(friend);
-			}
-		});
+		mConfirmButton.setOnClickListener(view -> {
+            String friend = saveLoan();
+            loaned(friend);
+        });
 	}
+
+    private void askPermission(NestedScrollView sv) {
+        AutoCompleteTextView mUserText = sv.findViewById(R.id.field_loan_to_who);
+        if (androidx.core.content.ContextCompat.checkSelfPermission(
+                requireContext(), android.Manifest.permission.READ_CONTACTS) ==
+                android.content.pm.PackageManager.PERMISSION_GRANTED) {
+
+            // We have permission, load the contacts safely
+            try {
+                ArrayAdapter<String> series_adapter = new ArrayAdapter<>(requireActivity(), android.R.layout.simple_dropdown_item_1line, getFriends());
+                mUserText.setAdapter(series_adapter);
+            } catch (Exception e) {
+                Logger.logError(e);
+            }
+
+        } else {
+            // We don't have permission, request it
+            // Note: You might want to show a rationale UI first if shouldShowRequestPermissionRationale returns true
+            mRequestPermissionLauncher.launch(android.Manifest.permission.READ_CONTACTS);
+        }
+    }
 	
 	/**
 	 * Display the existing loan page. It is slightly different to the loan to page
@@ -145,20 +180,19 @@ public class BookEditLoaned extends BookEditFragmentAbstract {
 	 * @param user The user the book was loaned to
 	 */
 	private void loaned(String user) {
-		ScrollView sv = getView().findViewById(R.id.root);
+        assert getView() != null;
+        NestedScrollView sv = getView().findViewById(R.id.scrollView);
 		sv.removeAllViews();
-		LayoutInflater inf = getActivity().getLayoutInflater();
-		inf.inflate(R.layout.edit_book_loaned, sv);
+		LayoutInflater inf = requireActivity().getLayoutInflater();
+		inf.inflate(R.layout.book_edit_loaned, sv);
 
-		TextView mWhoText = sv.findViewById(R.id.who);
+		TextView mWhoText = sv.findViewById(R.id.field_loaned_to);
 		mWhoText.setText(user);
 		Button mConfirmButton = sv.findViewById(R.id.button_confirm);
-		mConfirmButton.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View view) {
-				removeLoan();
-				loanTo();
-			}
-		});
+		mConfirmButton.setOnClickListener(view -> {
+            removeLoan();
+            loanTo();
+        });
 	}
 	
 	/**
@@ -167,7 +201,8 @@ public class BookEditLoaned extends BookEditFragmentAbstract {
 	 * @return the user
 	 */
 	private String saveLoan() {
-		AutoCompleteTextView mUserText = getView().findViewById(R.id.loan_to_who);
+        assert getView() != null;
+        AutoCompleteTextView mUserText = getView().findViewById(R.id.field_loan_to_who);
 		String friend = mUserText.getText().toString();
 		BookData values = mEditManager.getBookData();
 		values.putString(CatalogueDBAdapter.KEY_LOANED_TO, friend);
@@ -184,10 +219,7 @@ public class BookEditLoaned extends BookEditFragmentAbstract {
 
 	@Override
 	protected void onLoadBookDetails(BookData book) {
-		if (true)
-			mFields.setAll(book);
-		// TODO Auto-generated method stub
-		
+        mFields.setAll(book);
 	}
 	
 

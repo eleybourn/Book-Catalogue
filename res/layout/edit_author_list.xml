@@ -10,7 +10,7 @@
     <!-- CONTENT -->
     <LinearLayout
         android:id="@+id/scrollView"
-        style="@style/layout_scroll" >
+        style="@style/layout_scroll_action_bar" >
 
         <RelativeLayout
             android:id="@+id/root"

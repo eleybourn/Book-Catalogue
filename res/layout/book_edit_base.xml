@@ -10,9 +10,7 @@
     <!-- CONTENT -->
     <LinearLayout
         android:id="@+id/contentLayout"
-        style="@style/layout_scroll"
-        android:layout_below="@+id/topAppBarContainer"
-        android:layout_marginBottom="68dp"
+        style="@style/layout_scroll_action_bar"
         android:orientation="vertical">
 
         <include layout="@layout/layout_header_tabs" />

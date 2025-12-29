@@ -352,7 +352,7 @@ public class BooklistStyle implements Iterable<BooklistGroup>, Serializable {
 										PREF_SHOW_AUTHOR, false);
 		mXtraReadUnreadAll = new IntegerListProperty(mReadFilterListItems, "XReadUnreadAll", PropertyGroup.GRP_EXTRA_FILTERS, R.string.select_based_on_read_status, FILTER_READ_AND_UNREAD);
 
-		mNameProperty = new StringProperty("StyleName", PropertyGroup.GRP_GENERAL, R.string.name);
+		mNameProperty = new StringProperty("StyleName", PropertyGroup.GRP_GENERAL, R.string.option_name);
 		mNameProperty.setRequireNonBlank(true);
 		// Put it at top of its group
 		mNameProperty.setWeight(-100);

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
+
+        <CheckBox
+            android:id="@+id/field_read"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/read" />
+
+        <TextView
+            android:id="@+id/label_rating"
+            style="@style/layout_heading"
+            android:text="@string/rating" />
+
+        <RatingBar
+            android:id="@+id/field_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:numStars="5" />
+
+        <RelativeLayout
+            android:id="@+id/row_read_start"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/label_read_start"
+                style="@style/layout_heading"
+                android:text="@string/read_start" />
+
+            <Button
+                android:id="@+id/field_read_start"
+                style="@style/layout_button_large"
+                android:layout_below="@+id/label_read_start"
+                android:text="@string/not_set" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/row_read_end"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/label_read_end"
+                style="@style/layout_heading"
+                android:text="@string/read_end" />
+
+            <Button
+                android:id="@+id/field_read_end"
+                style="@style/layout_button_large"
+                android:layout_below="@+id/label_read_end"
+                android:text="@string/not_set" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/row_notes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/label_notes"
+                style="@style/layout_heading"
+                android:labelFor="@+id/field_notes"
+                android:text="@string/edit_book_notes" />
+
+            <EditText
+                android:id="@+id/field_notes"
+                style="@style/field_text"
+                android:layout_below="@+id/label_notes"
+                android:importantForAutofill="no"
+                android:inputType="textCapSentences|textMultiLine"
+                android:singleLine="false" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/row_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/label_location"
+                style="@style/layout_heading"
+                android:text="@string/location_of_book" />
+
+            <AutoCompleteTextView
+                android:id="@+id/field_location"
+                style="@style/field_text"
+                android:layout_below="@+id/label_location"
+                android:completionThreshold="2"
+                android:inputType="textCapSentences" />
+        </RelativeLayout>
+
+        <CheckBox
+            android:id="@+id/field_signed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/signed" />
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

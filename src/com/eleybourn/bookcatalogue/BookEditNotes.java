@@ -20,7 +20,6 @@
 
 package com.eleybourn.bookcatalogue;
 
-//import android.R;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -34,7 +33,6 @@ import android.widget.ArrayAdapter;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.eleybourn.bookcatalogue.Fields.AfterFieldChangeListener;
 import com.eleybourn.bookcatalogue.Fields.Field;
 import com.eleybourn.bookcatalogue.Fields.FieldFormatter;
 import com.eleybourn.bookcatalogue.datamanager.ValidatorException;
@@ -55,30 +53,26 @@ public class BookEditNotes extends BookEditFragmentAbstract implements OnPartial
 	 * @return The list
 	 */
 	protected ArrayList<String> getLocations() {
-		ArrayList<String> location_list = new ArrayList<String>();
-		Cursor location_cur = mDbHelper.fetchAllLocations();
-		try {
-			while (location_cur.moveToNext()) {
-				String location = location_cur.getString(location_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOCATION));
-				try {
-					if (location.length() > 2) {
-						location_list.add(location);
-					}
-				} catch (NullPointerException e) {
-					// do nothing
-				}
-			}
-		} finally {
-			location_cur.close();
-		}
+		ArrayList<String> location_list = new ArrayList<>();
+        try (Cursor location_cur = mDbHelper.fetchAllLocations()) {
+            while (location_cur.moveToNext()) {
+                String location = location_cur.getString(location_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOCATION));
+                try {
+                    if (location.length() > 2) {
+                        location_list.add(location);
+                    }
+                } catch (NullPointerException e) {
+                    // do nothing
+                }
+            }
+        }
 		return location_list;
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		final View root = inflater.inflate(R.layout.edit_book_notes, container, false);
 
-		return root;
+        return inflater.inflate(R.layout.book_edit_notes, container, false);
 	}
 
 	@Override
@@ -96,44 +90,34 @@ public class BookEditNotes extends BookEditFragmentAbstract implements OnPartial
 			//FieldValidator blankOrDateValidator = new Fields.OrValidator(new Fields.BlankValidator(), new Fields.DateValidator());
 			FieldFormatter dateFormatter = new Fields.DateFieldFormatter();
 
-			mFields.add(R.id.rating, CatalogueDBAdapter.KEY_RATING, null);
-			mFields.add(R.id.rating_label, "",  CatalogueDBAdapter.KEY_RATING, null);
-			mFields.add(R.id.read, CatalogueDBAdapter.KEY_READ, null);
-			mFields.add(R.id.notes, CatalogueDBAdapter.KEY_NOTES, null);
+			mFields.add(R.id.field_rating, CatalogueDBAdapter.KEY_RATING, null);
+			mFields.add(R.id.label_rating, "",  CatalogueDBAdapter.KEY_RATING, null);
+			mFields.add(R.id.field_read, CatalogueDBAdapter.KEY_READ, null);
+			mFields.add(R.id.field_notes, CatalogueDBAdapter.KEY_NOTES, null);
 
-			ArrayAdapter<String> location_adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, getLocations());
-			mFields.add(R.id.location, CatalogueDBAdapter.KEY_LOCATION, null);
-			mFields.setAdapter(R.id.location, location_adapter);
+			ArrayAdapter<String> location_adapter = new ArrayAdapter<>(requireActivity(), android.R.layout.simple_dropdown_item_1line, getLocations());
+			mFields.add(R.id.field_location, CatalogueDBAdapter.KEY_LOCATION, null);
+			mFields.setAdapter(R.id.field_location, location_adapter);
 
 			// ENHANCE: Add a partial date validator. Or not.
-			f = mFields.add(R.id.read_start, CatalogueDBAdapter.KEY_READ_START, null, dateFormatter);
-			f.getView().setOnClickListener(new View.OnClickListener() {
-				public void onClick(View view) {
-					BookEditNotes.this.showReadStartDialog();
-				}
-			});
+			f = mFields.add(R.id.field_read_start, CatalogueDBAdapter.KEY_READ_START, null, dateFormatter);
+			f.getView().setOnClickListener(view1 -> BookEditNotes.this.showReadStartDialog());
 
-			f = mFields.add(R.id.read_end, CatalogueDBAdapter.KEY_READ_END, null, dateFormatter);
-			f.getView().setOnClickListener(new View.OnClickListener() {
-				public void onClick(View view) {
-					BookEditNotes.this.showReadEndDialog();
-				}
-			});
+			f = mFields.add(R.id.field_read_end, CatalogueDBAdapter.KEY_READ_END, null, dateFormatter);
+			f.getView().setOnClickListener(view2 -> BookEditNotes.this.showReadEndDialog());
 
-			mFields.add(R.id.signed, CatalogueDBAdapter.KEY_SIGNED,  null);
+			mFields.add(R.id.field_signed, CatalogueDBAdapter.KEY_SIGNED,  null);
 
-			mFields.addCrossValidator(new Fields.FieldCrossValidator() {
-				public void validate(Fields fields, Bundle values) {
-					String start = values.getString(CatalogueDBAdapter.KEY_READ_START);
-					if (start == null || start.equals(""))
-						return;
-					String end = values.getString(CatalogueDBAdapter.KEY_READ_END);
-					if (end == null || end.equals(""))
-						return;
-					if (start.compareToIgnoreCase(end) > 0)
-						throw new ValidatorException(R.string.vldt_read_start_after_end,new Object[]{});
-				}
-			});
+			mFields.addCrossValidator((fields, values) -> {
+                String start = values.getString(CatalogueDBAdapter.KEY_READ_START);
+                if (start == null || start.isEmpty())
+                    return;
+                String end = values.getString(CatalogueDBAdapter.KEY_READ_END);
+                if (end == null || end.isEmpty())
+                    return;
+                if (start.compareToIgnoreCase(end) > 0)
+                    throw new ValidatorException(R.string.vldt_read_start_after_end,new Object[]{});
+            });
 
 			try {
 				Utils.fixFocusSettings(getView());				
@@ -143,11 +127,7 @@ public class BookEditNotes extends BookEditFragmentAbstract implements OnPartial
 				Logger.logError(e);
 			}
 
-			mFields.setAfterFieldChangeListener(new AfterFieldChangeListener(){
-				@Override
-				public void afterFieldChange(Field field, String newValue) {
-					mEditManager.setDirty(true);
-				}});
+			mFields.setAfterFieldChangeListener((field, newValue) -> mEditManager.setDirty(true));
 			
 		} catch (Exception e) {
 			Logger.logError(e);
@@ -159,11 +139,11 @@ public class BookEditNotes extends BookEditFragmentAbstract implements OnPartial
 		PartialDatePickerFragment frag = PartialDatePickerFragment.newInstance();
 		
 		frag.setTitle(R.string.read_start);
-		frag.setDialogId(R.id.read_start); // Set to the destination field ID
+		frag.setDialogId(R.id.field_read_start); // Set to the destination field ID
 		try {
 			String dateString;
-			Object o = mFields.getField(R.id.read_start).getValue();
-			if (o == null || o.toString().equals("")) {
+			Object o = mFields.getField(R.id.field_read_start).getValue();
+			if (o == null || o.toString().isEmpty()) {
 				dateString = Utils.toSqlDateTime(new Date());
 			} else {
 				dateString = o.toString();
@@ -173,19 +153,19 @@ public class BookEditNotes extends BookEditFragmentAbstract implements OnPartial
 			// use the default date
 		}
 
-		frag.show(getFragmentManager(), null);
+        frag.show(getParentFragmentManager(), null);
 	}
 
 	private void showReadEndDialog() {
 		PartialDatePickerFragment frag = PartialDatePickerFragment.newInstance();
 		
 		frag.setTitle(R.string.read_end);
-		frag.setDialogId(R.id.read_end); // Set to the destination field ID
+		frag.setDialogId(R.id.field_read_end); // Set to the destination field ID
 
 		try {
 			String dateString;
-			Object o = mFields.getField(R.id.read_end).getValue();
-			if (o == null || o.toString().equals("")) {
+			Object o = mFields.getField(R.id.field_read_end).getValue();
+			if (o == null || o.toString().isEmpty()) {
 				dateString = Utils.toSqlDateTime(new Date());
 			} else {
 				dateString = o.toString();
@@ -194,12 +174,11 @@ public class BookEditNotes extends BookEditFragmentAbstract implements OnPartial
 		} catch (Exception e) {
 			// use the default date
 		}
-		frag.show(getFragmentManager(), null);
+        frag.show(getParentFragmentManager(), null);
 	}
 
 	/**
 	 *  The callback received when the user "sets" the date in the dialog.
-	 *  
 	 *  Build a full or partial date in SQL format
 	 */
 	@Override
@@ -211,7 +190,6 @@ public class BookEditNotes extends BookEditFragmentAbstract implements OnPartial
 
 	/**
 	 *  The callback received when the user "cancels" the date in the dialog.
-	 *  
 	 *  Dismiss it.
 	 */
 	@Override
@@ -230,8 +208,7 @@ public class BookEditNotes extends BookEditFragmentAbstract implements OnPartial
 
 	@Override
 	protected void onLoadBookDetails(BookData book) {
-		if (true)
-			mFields.setAll(book);
+        mFields.setAll(book);
 		// No special handling required; the setAll() done by the caller is enough
 		// Restore default visibility and hide unused/unwanted and empty fields
 		showHideFields(false);

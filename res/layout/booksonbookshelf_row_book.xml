@@ -39,7 +39,7 @@
             android:orientation="horizontal" >
 
             <TextView
-                android:id="@+id/series_num"
+                android:id="@+id/field_series_num"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -70,7 +70,7 @@
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
-            android:id="@+id/location"
+            android:id="@+id/field_location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/p_md"
@@ -87,7 +87,7 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/read"
+        android:id="@+id/field_read"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="0"

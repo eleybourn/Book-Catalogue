@@ -687,7 +687,7 @@ public abstract class BookDetailsAbstract extends BookEditFragmentAbstract {
 
         mFields.add(R.id.format_dropdown_button, "", CatalogueDBAdapter.KEY_FORMAT, null);
         mFields.add(R.id.field_bookshelf, "bookshelf_text", null).doNoFetch = true; // Output-only field
-        mFields.add(R.id.signed, CatalogueDBAdapter.KEY_SIGNED, null);
+        mFields.add(R.id.field_signed, CatalogueDBAdapter.KEY_SIGNED, null);
     }
 
     /**

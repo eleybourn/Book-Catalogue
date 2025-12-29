@@ -60,7 +60,7 @@ public class BooklistStylesActivity extends EditObjectList<BooklistStyle> {
      * Constructor
      */
     public BooklistStylesActivity() {
-        super(null, R.layout.admin_booklist_styles_list, R.layout.row_edit_booklist_styles);
+        super(null, R.layout.admin_styles, R.layout.row_edit_booklist_styles);
     }
 
     @Override

@@ -22,6 +22,7 @@ package com.eleybourn.bookcatalogue;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -44,9 +45,11 @@ public class EditSeriesDialog {
 
 	public void editSeries(final Series series) {
 		final Dialog dialog = new Dialog(mContext);
-		dialog.setContentView(R.layout.edit_series);
+		dialog.setContentView(R.layout.dialog_edit_series);
 		dialog.setTitle(R.string.edit_series);
 
+        dialog.findViewById(R.id.field_title).setVisibility(View.GONE);
+        dialog.findViewById(R.id.field_series_num).setVisibility(View.GONE);
 		AutoCompleteTextView seriesView = dialog.findViewById(R.id.field_series);
 		try {
 			seriesView.setText(series.name);
@@ -57,8 +60,7 @@ public class EditSeriesDialog {
 
 		Button saveButton = dialog.findViewById(R.id.button_confirm);
 		saveButton.setOnClickListener(v -> {
-            AutoCompleteTextView seriesView1 = dialog.findViewById(R.id.field_series);
-            String newName = seriesView1.getText().toString().trim();
+            String newName = seriesView.getText().toString().trim();
             if (newName.isEmpty()) {
                 Toast.makeText(mContext, R.string.series_is_blank, Toast.LENGTH_LONG).show();
                 return;

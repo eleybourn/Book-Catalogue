@@ -25,7 +25,7 @@
                 android:inputType="textCapSentences" />
 
             <EditText
-                android:id="@+id/series_num"
+                android:id="@+id/field_series_num"
                 style="@style/field_text"
                 android:layout_width="150sp"
                 android:layout_height="match_parent"

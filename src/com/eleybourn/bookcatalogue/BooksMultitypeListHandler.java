@@ -287,11 +287,11 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 			// Find the various views we use.
 			title = v.findViewById(R.id.field_title);
 			cover = v.findViewById(R.id.cover);
-			seriesNum = v.findViewById(R.id.series_num);
+			seriesNum = v.findViewById(R.id.field_series_num);
 			seriesNumLong = v.findViewById(R.id.series_num_long);
 
 			final int iconSize = (int)(title.getTextSize() * scale);
-			read = v.findViewById(R.id.read);
+			read = v.findViewById(R.id.field_read);
 			LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT, iconSize ); 
 			read.setMaxHeight(iconSize);
 			read.setMaxWidth(iconSize);
@@ -338,7 +338,7 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 				author.setVisibility(View.GONE);
 			}
 
-			location = v.findViewById(R.id.location);
+			location = v.findViewById(R.id.field_location);
 			if ( (extras & BooklistStyle.EXTRAS_LOCATION) != 0) {
 				location.setVisibility(View.VISIBLE);
 			} else {
@@ -803,7 +803,7 @@ public class BooksMultitypeListHandler implements MultitypeListHandler {
 				addMenuItem(menu, R.id.MENU_EDIT_BOOK_NOTES, R.string.edit_book_notes, R.drawable.ic_menu_compose_holo_dark);
 				//Shows different menu item depending on loan status of book but both situations still go to the same view.
 				if(!onLoan) {
-					addMenuItem(menu, R.id.MENU_EDIT_BOOK_FRIENDS, R.string.edit_book_friends, R.drawable.ic_menu_cc_holo_dark);
+					addMenuItem(menu, R.id.MENU_EDIT_BOOK_FRIENDS, R.string.button_loan_book, R.drawable.ic_menu_cc_holo_dark);
 				} else {
 					addMenuItem(menu, R.id.MENU_EDIT_BOOK_FRIENDS, R.string.edit_book_friends_return, R.drawable.ic_menu_cc_holo_dark);
 				}

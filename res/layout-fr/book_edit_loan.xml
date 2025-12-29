@@ -8,15 +8,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/loaned_to" />
+            android:text="@string/label_loaned_to" />
 
         <TextView
-            android:id="@+id/who"
+            android:id="@+id/field_loaned_to"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:paddingBottom="@dimen/p_md"
-            android:text="@string/nobody" />
+            android:text="@string/option_nobody" />
 
         <View
             android:layout_width="match_parent"
@@ -29,15 +29,15 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:paddingTop="@dimen/p_md"
-            android:text="@string/loan_to" />
+            android:text="@string/label_loan_to" />
 
         <AutoCompleteTextView
-            android:id="@+id/loan_to_who"
+            android:id="@+id/field_loan_to_who"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:completionThreshold="2"
-            android:hint="@string/name"
+            android:hint="@string/option_name"
             android:inputType="textCapSentences" />
 
         <Button

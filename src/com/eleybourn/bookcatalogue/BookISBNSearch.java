@@ -42,6 +42,7 @@ import com.eleybourn.bookcatalogue.utils.IsbnUtils;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.SoundManager;
 import com.eleybourn.bookcatalogue.utils.Utils;
+import com.google.android.material.appbar.MaterialToolbar;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -190,19 +191,18 @@ public class BookISBNSearch extends ActivityWithTasks {
             if (mIsbn != null) {
                 //System.out.println(mId + " OnCreate got ISBN");
                 //ISBN has been passed by another component
-                setContentView(R.layout.isbn_search);
+                setContentView(R.layout.search_isbn);
                 mIsbnText = findViewById(R.id.field_isbn);
                 mIsbnText.setText(mIsbn);
                 go(mIsbn, "", "");
             } else if (by.equals("isbn")) {
-                // System.out.println(mId + " OnCreate BY ISBN");
-                setContentView(R.layout.isbn_search);
+                setContentView(R.layout.search_isbn);
                 mIsbnText = findViewById(R.id.field_isbn);
-                mConfirmButton = findViewById(R.id.search);
+                mConfirmButton = findViewById(R.id.label_search);
 
                 // For now, just make sure it's hidden on entry
                 getWindow().setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-                final CheckBox allowAsinCb = BookISBNSearch.this.findViewById(R.id.asinCheckbox);
+                final CheckBox allowAsinCb = BookISBNSearch.this.findViewById(R.id.field_allow_asin);
                 allowAsinCb.setOnCheckedChangeListener((buttonView, isChecked) -> {
                     if (isChecked) {
                         mIsbnText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_CLASS_TEXT);
@@ -214,29 +214,29 @@ public class BookISBNSearch extends ActivityWithTasks {
                 });
 
                 // Set the number buttons
-                Button button1 = findViewById(R.id.isbn_1);
+                Button button1 = findViewById(R.id.button_isbn_1);
                 button1.setOnClickListener(view -> handleIsbnKey("1"));
-                Button button2 = findViewById(R.id.isbn_2);
+                Button button2 = findViewById(R.id.button_isbn_2);
                 button2.setOnClickListener(view -> handleIsbnKey("2"));
-                Button button3 = findViewById(R.id.isbn_3);
+                Button button3 = findViewById(R.id.button_isbn_3);
                 button3.setOnClickListener(view -> handleIsbnKey("3"));
-                Button button4 = findViewById(R.id.isbn_4);
+                Button button4 = findViewById(R.id.button_isbn_4);
                 button4.setOnClickListener(view -> handleIsbnKey("4"));
-                Button button5 = findViewById(R.id.isbn_5);
+                Button button5 = findViewById(R.id.button_isbn_5);
                 button5.setOnClickListener(view -> handleIsbnKey("5"));
-                Button button6 = findViewById(R.id.isbn_6);
+                Button button6 = findViewById(R.id.button_isbn_6);
                 button6.setOnClickListener(view -> handleIsbnKey("6"));
-                Button button7 = findViewById(R.id.isbn_7);
+                Button button7 = findViewById(R.id.button_isbn_7);
                 button7.setOnClickListener(view -> handleIsbnKey("7"));
-                Button button8 = findViewById(R.id.isbn_8);
+                Button button8 = findViewById(R.id.button_isbn_8);
                 button8.setOnClickListener(view -> handleIsbnKey("8"));
-                Button button9 = findViewById(R.id.isbn_9);
+                Button button9 = findViewById(R.id.button_isbn_9);
                 button9.setOnClickListener(view -> handleIsbnKey("9"));
-                Button buttonX = findViewById(R.id.isbn_X);
+                Button buttonX = findViewById(R.id.button_isbn_X);
                 buttonX.setOnClickListener(view -> handleIsbnKey("X"));
-                Button button0 = findViewById(R.id.isbn_0);
+                Button button0 = findViewById(R.id.button_isbn_0);
                 button0.setOnClickListener(view -> handleIsbnKey("0"));
-                ImageButton buttonDel = findViewById(R.id.isbn_del);
+                ImageButton buttonDel = findViewById(R.id.button_isbn_del);
                 buttonDel.setOnClickListener(view -> {
                     try {
                         int start = mIsbnText.getSelectionStart();
@@ -263,13 +263,13 @@ public class BookISBNSearch extends ActivityWithTasks {
                 });
             } else if (by.equals("name")) {
                 // System.out.println(mId + " OnCreate BY NAME");
-                setContentView(R.layout.name_search);
+                setContentView(R.layout.search_name);
                 this.setTitle(R.string.search_hint);
 
                 this.initAuthorList();
 
                 mTitleText = findViewById(R.id.field_title);
-                mConfirmButton = findViewById(R.id.search);
+                mConfirmButton = findViewById(R.id.label_search);
 
                 mConfirmButton.setOnClickListener(view -> {
                     String mAuthor = mAuthorText.getText().toString();
@@ -304,7 +304,7 @@ public class BookISBNSearch extends ActivityWithTasks {
                 // System.out.println(mId + " OnCreate BY SCAN");
                 // Use the scanner to get ISBNs
                 mMode = MODE_SCAN;
-                setContentView(R.layout.isbn_scan);
+                setContentView(R.layout.search_isbn);
                 mIsbnText = findViewById(R.id.field_isbn);
 
                 // Use the preferred barcode scanner to search for a isbn
@@ -327,6 +327,11 @@ public class BookISBNSearch extends ActivityWithTasks {
                     alertDialog.show();
                 }
             }
+
+            MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
+            setSupportActionBar(topAppBar);
+            topAppBar.setTitle(R.string.label_insert);
+            topAppBar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
         } finally {
             Tracker.exitOnCreate(this);
         }
@@ -397,7 +402,7 @@ public class BookISBNSearch extends ActivityWithTasks {
             if (isbn != null && !isbn.isEmpty()) {
 
                 // If the layout has an 'Allow ASIN' checkbox, see if it is checked.
-                final CheckBox allowAsinCb = BookISBNSearch.this.findViewById(R.id.asinCheckbox);
+                final CheckBox allowAsinCb = BookISBNSearch.this.findViewById(R.id.field_allow_asin);
                 final boolean allowAsin = allowAsinCb != null && allowAsinCb.isChecked();
 
                 if (!IsbnUtils.isValid(isbn) && (!allowAsin || !AsinUtils.isValid(isbn))) {
@@ -552,31 +557,6 @@ public class BookISBNSearch extends ActivityWithTasks {
         if (mDbHelper != null)
             mDbHelper.close();
         Tracker.exitOnDestroy(this);
-    }
-
-    public String convertDate(String date) {
-        if (date.length() == 2) {
-            //assume yy
-            try {
-                if (Integer.parseInt(date) < 15) {
-                    date = "20" + date + "-01-01";
-                } else {
-                    date = "19" + date + "-01-01";
-                }
-            } catch (Exception e) {
-                date = "";
-            }
-        } else if (date.length() == 4) {
-            //assume yyyy
-            date = date + "-01-01";
-        } else if (date.length() == 6) {
-            //assume yyyymm
-            date = date.substring(0, 4) + "-" + date.substring(4, 6) + "-01";
-        } else if (date.length() == 7) {
-            //assume yyyy-mm
-            date = date + "-01";
-        }
-        return date;
     }
 
     /*

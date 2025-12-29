@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/layout_body">
+    <!-- Root -->
+
+    <include layout="@layout/layout_header" />
+
+    <include layout="@layout/layout_background" />
+
+    <LinearLayout
+        android:id="@+id/root"
+        style="@style/layout_main"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <EditText
+            android:id="@+id/field_isbn"
+            style="@style/field_text"
+            android:digits="1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"
+            android:hint="@string/label_isbn"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:padding="10dp"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/button_isbn_1"
+                style="@style/layout_button_isbn"
+                android:text="1"
+                tools:ignore="HardcodedText" />
+
+            <Button
+                android:id="@+id/button_isbn_2"
+                style="@style/layout_button_isbn"
+                android:text="2"
+                tools:ignore="HardcodedText" />
+
+            <Button
+                android:id="@+id/button_isbn_3"
+                style="@style/layout_button_isbn"
+                android:text="3"
+                tools:ignore="HardcodedText" />
+
+            <Button
+                android:id="@+id/button_isbn_4"
+                style="@style/layout_button_isbn"
+                android:text="4"
+                tools:ignore="HardcodedText" />
+
+            <Button
+                android:id="@+id/button_isbn_5"
+                style="@style/layout_button_isbn"
+                android:text="5"
+                tools:ignore="HardcodedText" />
+
+            <Button
+                android:id="@+id/button_isbn_6"
+                style="@style/layout_button_isbn"
+                android:text="6"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/button_isbn_7"
+                style="@style/layout_button_isbn"
+                android:text="7"
+                tools:ignore="HardcodedText" />
+
+            <Button
+                android:id="@+id/button_isbn_8"
+                style="@style/layout_button_isbn"
+                android:text="8"
+                tools:ignore="HardcodedText" />
+
+            <Button
+                android:id="@+id/button_isbn_9"
+                style="@style/layout_button_isbn"
+                android:text="9"
+                tools:ignore="HardcodedText" />
+
+            <Button
+                android:id="@+id/button_isbn_X"
+                style="@style/layout_button_isbn"
+                android:text="X"
+                tools:ignore="HardcodedText" />
+
+            <Button
+                android:id="@+id/button_isbn_0"
+                style="@style/layout_button_isbn"
+                android:text="0"
+                tools:ignore="HardcodedText" />
+
+            <ImageButton
+                android:id="@+id/button_isbn_del"
+                android:layout_width="@dimen/isbn_key_size"
+                android:layout_height="@dimen/isbn_key_size"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/button_delete"
+                android:src="@android:drawable/ic_input_delete"
+                android:scaleType="fitCenter"
+                android:padding="@dimen/p_md"
+                app:tint="@color/theme_primary" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal" >
+
+            <CheckBox
+                android:id="@+id/field_allow_asin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:text="@string/label_allow_asin" />
+
+            <Button
+                android:id="@+id/label_search"
+                style="@style/layout_button"
+                android:layout_alignParentEnd="true"
+                android:layout_marginHorizontal="10dp"
+                android:layout_toEndOf="@+id/field_allow_asin"
+                android:text="@string/label_search" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

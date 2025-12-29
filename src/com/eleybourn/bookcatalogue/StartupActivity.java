@@ -397,7 +397,7 @@ public class StartupActivity
 	 * @param message The message to display in the popup
 	 */
 	public void upgradePopup(String message) {
-		AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(Html.fromHtml(message)).create();
+		AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(Html.fromHtml(message, Html.FROM_HTML_MODE_LEGACY)).create();
 		alertDialog.setCanceledOnTouchOutside(false);
 		alertDialog.setTitle(R.string.upgrade_title);
 		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/layout_body">
+    <!-- Root -->
+
+    <include layout="@layout/layout_header" />
+
+    <include layout="@layout/layout_background" />
+
+    <LinearLayout
+        android:id="@+id/root"
+        style="@style/layout_main"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <AutoCompleteTextView
+            android:id="@+id/field_author"
+            style="@style/locale_field_text_name"
+            android:completionThreshold="2"
+            android:hint="@string/label_author"
+            android:padding="10dp"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <EditText
+            android:id="@+id/field_title"
+            style="@style/locale_field_text_title"
+            android:hint="@string/label_title"
+            android:importantForAutofill="no"
+            android:padding="10dp"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <Button
+            android:id="@+id/label_search"
+            style="@style/layout_button_large"
+            android:text="@string/label_search" />
+
+        <TextView
+            style="@style/layout_paragraph"
+            android:text="@string/para_isbn_name_search_help" />
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

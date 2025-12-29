@@ -77,7 +77,7 @@ public class SearchCatalogue extends BookCatalogueActivity {
 		EditText criteria = this.findViewById(R.id.criteria);
 		EditText author = this.findViewById(R.id.field_author);
 		EditText title = this.findViewById(R.id.field_title);
-		Button showResults = this.findViewById(R.id.search);
+		Button showResults = this.findViewById(R.id.label_search);
 		Button ftsRebuild = this.findViewById(R.id.rebuild);
 
 		// If the user touches anything, it's not idle

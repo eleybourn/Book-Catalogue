@@ -128,7 +128,7 @@
     <string name="label_genre">Жанр</string>
     <string name="not_set">Не установлено</string>
     <string name="menu_search">Искать книги</string>
-    <string name="isbn_name_search_help">Добавление книг по ISBN гораздо более точное, чем добавление по автору и названию и в большинстве случаев является предпочтительным. Имейте в виду, что иногда правильный штрих-код находится внутри книги. \n\n</string>
+    <string name="para_isbn_name_search_help">Добавление книг по ISBN гораздо более точное, чем добавление по автору и названию и в большинстве случаев является предпочтительным. Имейте в виду, что иногда правильный штрих-код находится внутри книги. \n\n</string>
     <string name="para_help_click_here">Пожалуйста, нажмите здесь, чтобы получить справочную информацию в интернете</string>
     <string name="vldt_unable_to_get_value">Невозможно получить значение для: \'%s\'</string>
     <string name="vldt_integer_expected">Введите целое значение: \'%s\'</string>
@@ -503,7 +503,7 @@
     <string name="this_option_is_not_available_until_the_book_is_saved">Эта опция не доступна, пока книга не будет сохранена</string>
     <string name="scan_barcode_isbn">Сканировать штрих-код/ISBN</string>
     <string name="enter_isbn">Ввести ISBN</string>
-    <string name="allow_asin">Позволить ASIN</string>
+    <string name="label_allow_asin">Позволить ASIN</string>
     <string name="x_is_not_a_valid_isbn_or_asin">%1$s неправильный ISBN или ASIN</string>
     <string name="read_year">Год прочтения</string>
     <string name="read_month">Месяц прочтения</string>

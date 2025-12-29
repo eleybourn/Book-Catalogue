@@ -128,7 +128,7 @@
 <string name="label_genre">Gatunek</string>
     <string name="not_set">Nie wybrany(a)</string>
 <string name="menu_search">Przeszukaj książki</string>
-    <string name="isbn_name_search_help">Dodawanie wg ISBN jest zalecane - bardziej dokładne niż wg autora i tytułu. W niektórych książkach kod kreskowy znajdziesz wewnątrz okładki. \n\n</string>
+    <string name="para_isbn_name_search_help">Dodawanie wg ISBN jest zalecane - bardziej dokładne niż wg autora i tytułu. W niektórych książkach kod kreskowy znajdziesz wewnątrz okładki. \n\n</string>
 <string name="para_help_click_here">Kliknij tu by wejść do pomocy online</string>
     <string name="vldt_unable_to_get_value">Nie mogę pobrać wartości dla \'%s\'</string>
 <string name="vldt_integer_expected">Oczekiwana wartość całkowita dla \'%s\'</string>

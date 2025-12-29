@@ -127,7 +127,7 @@
 <string name="label_genre">Žánr</string>
     <string name="not_set">Nenastaveno</string>
 <string name="menu_search">Hledat knihy</string>
-    <string name="isbn_name_search_help">Přidání knihy podle ISBN kódu je přesnější než její přidání podle názvu a autora - proto tento postup doporučujeme. Pamatujte, že správný kód můžete ve většině případů nalézt přímo na obalu knihy. \n\n</string>
+    <string name="para_isbn_name_search_help">Přidání knihy podle ISBN kódu je přesnější než její přidání podle názvu a autora - proto tento postup doporučujeme. Pamatujte, že správný kód můžete ve většině případů nalézt přímo na obalu knihy. \n\n</string>
 <string name="para_help_click_here">Klikněte zde pro přístup k online nápovědě</string>
     <string name="vldt_unable_to_get_value">Neznámá hodnota pro \'%s\'</string>
 <string name="vldt_integer_expected">Očekávána číselná hodnota pro \'%s\'</string>

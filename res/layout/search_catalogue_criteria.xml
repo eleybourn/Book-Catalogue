@@ -119,7 +119,7 @@
             android:paddingBottom="2dp" />
 
         <Button
-            android:id="@+id/search"
+            android:id="@+id/label_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

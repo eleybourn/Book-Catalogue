@@ -237,7 +237,7 @@
     </style>
 
     <!-- Style for key of isbn search keyboard -->
-    <style name="isbn_search_key">
+    <style name="layout_button_isbn" parent="layout_button">
         <item name="android:layout_width">@dimen/isbn_key_size</item>
         <item name="android:layout_height">@dimen/isbn_key_size</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>

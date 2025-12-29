@@ -132,7 +132,7 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
 		}
 
 		// If we have them all, exit
-		if (failed.size() == 0)
+		if (failed.isEmpty())
 			return true;
 
     	// Now build a message and the list to request
@@ -147,8 +147,7 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
 				PermissionInfo info = null;
 				try {
 					info = pm.getPermissionInfo(req.permission, 0);
-				} catch (NameNotFoundException e) {
-					e.printStackTrace();
+				} catch (NameNotFoundException ignored) {
 				}
 				String name = info == null ? req.permission : info.loadLabel(pm).toString();
 				message.append("<p>");
@@ -167,7 +166,7 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
 			// Show reasons, rinse and repeat.
 			new AlertDialog.Builder(activity)
 					.setTitle(R.string.perm_required)
-					.setMessage(Html.fromHtml(BookCatalogueApp.getResourceString(R.string.perm_intro) + message))
+					.setMessage(Html.fromHtml(BookCatalogueApp.getResourceString(R.string.perm_intro) + message, Html.FROM_HTML_MODE_LEGACY))
 					.setPositiveButton(R.string.button_ok, (dialogInterface, i) -> {
 						if (l != null) {
 							l.launch(list);
@@ -332,12 +331,6 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
 				DocumentFile f = DocumentFile.fromTreeUri(BookCatalogueActivity.this, uri);
 				handleOldFilesTreeCopyResult(f, getSupportFragmentManager());
 			} else {
-				// Don't bother with the parameter; it does not seem to work
-				//String s = dialog.requireArguments().getString(ARG_TREE_URI);
-				//Uri uri = null;
-				//if (s != null) {
-				//	//uri = Uri.parse(s);
-				//}
 				mOldFilesTreeLauncher.launch(null);
 			}
 			dialog.dismiss();
@@ -345,14 +338,6 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
 	}
 
 	protected void startImportOldFiles() {
-		//ArrayList<File> list = StorageUtils.getExistingOldPaths();
-		//File dir;
-		//if (list.size() > 0) {
-		//	dir = list.get(0);
-		//} else {
-		//	dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
-		//}
-		//Uri uri = Uri.fromFile(dir);
 		mOldFilesTreeLauncher.launch(null);
 	}
 
@@ -392,11 +377,8 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
 							extra = msg_not_book;
 						}
 					}
-					if (!extra.equals("")) {
+					if (!extra.isEmpty()) {
 						extra = c.getString(R.string.old_file_import_status_of_those, extra);
-					}
-					if (fragment.isCancelled()) {
-
 					}
 					int baseId;
 					if (fragment.isCancelled()) {

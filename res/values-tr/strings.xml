@@ -126,7 +126,7 @@
     <string name="label_genre">Tür</string>
     <string name="not_set">Ayarlı değil</string>
     <string name="menu_search">Kitap ara</string>
-    <string name="isbn_name_search_help">Kitapları ISBN ile eklemek kitap adı veya yazar adı ile eklemekten çok daha doğru sonuç verir ve genelde yeğlenir. Unutmayın ki doğru barkodu ön kapağın iç kısmında da bulabilirsiniz\n\n</string>
+    <string name="para_isbn_name_search_help">Kitapları ISBN ile eklemek kitap adı veya yazar adı ile eklemekten çok daha doğru sonuç verir ve genelde yeğlenir. Unutmayın ki doğru barkodu ön kapağın iç kısmında da bulabilirsiniz\n\n</string>
     <string name="para_help_click_here">Çevrimiçi yardım sayfalarına erişmek için lütfen dokunun</string>
     <string name="vldt_unable_to_get_value">\'%s\' için değer alınamıyor</string>
     <string name="vldt_integer_expected">\'%s\' için bir tamsayı değeri gerekli</string>
@@ -515,7 +515,7 @@
     <string name="this_option_is_not_available_until_the_book_is_saved">Bu özellik kitap saklanana kadar kullanılamaz</string>
     <string name="scan_barcode_isbn">Barkod/ISBN tara</string>
     <string name="enter_isbn">ISBN gir</string>
-    <string name="allow_asin">ASIN\'e izin ver</string>
+    <string name="label_allow_asin">ASIN\'e izin ver</string>
     <string name="x_is_not_a_valid_isbn_or_asin">%1$s geçerli bir ISBN veya ASIN değil</string>
     <string name="read_year">Okuma yılı</string>
     <string name="read_month">Okuma ayı</string>

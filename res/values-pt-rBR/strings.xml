@@ -131,7 +131,7 @@
     <string name="label_genre">Gênero</string>
     <string name="not_set">Not Set</string>
     <string name="menu_search">Search Books</string>
-    <string name="isbn_name_search_help">Adding books by ISBN is much more accurate than adding by author and title and is generally preferred. Please remember you can sometimes find the correct barcode on the inside front cover. \n\n</string>
+    <string name="para_isbn_name_search_help">Adding books by ISBN is much more accurate than adding by author and title and is generally preferred. Please remember you can sometimes find the correct barcode on the inside front cover. \n\n</string>
     <string name="para_help_click_here">Please click here to access the online help pages</string>
     <string name="vldt_unable_to_get_value">Unable to get value for \'%s\'</string>
     <string name="vldt_integer_expected">Expected an integer value for \'%s\'</string>
@@ -495,7 +495,7 @@
     <string name="this_option_is_not_available_until_the_book_is_saved">This option is not available until the book is saved</string>
     <string name="scan_barcode_isbn">Scan Barcode/ISBN</string>
     <string name="enter_isbn">Enter ISBN</string>
-    <string name="allow_asin">Allow ASIN</string>
+    <string name="label_allow_asin">Allow ASIN</string>
     <string name="x_is_not_a_valid_isbn_or_asin">%1$s is not a valid ISBN or ASIN</string>
     <string name="read_year">Read Year</string>
     <string name="read_month">Read Month</string>

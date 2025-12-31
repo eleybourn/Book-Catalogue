@@ -52,7 +52,7 @@ import com.eleybourn.bookcatalogue.database.DbUtils.TableDefinition.TableTypes;
 /**
  * Static definitions of database objects; this is an incomplete representation of the BookCatalogue database. It should
  * probably become the 'real' representation of the database when DbUtils is more mature. For now, it suffices to build
- * the complex queries used in BooklistBuilder.
+ * the complex queries used in LibraryBuilder.
  * 
  * @author Philip Warner
  */

@@ -30,7 +30,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * @author Philip Warner
  */
 public interface BooklistSupportProvider {
-	BooklistRowView getRowView();
+	LibraryRowView getRowView();
 	Utils getUtils();
-	BooklistBuilder getBuilder();
+	LibraryBuilder getBuilder();
 }

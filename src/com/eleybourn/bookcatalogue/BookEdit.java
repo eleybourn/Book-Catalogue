@@ -38,7 +38,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.eleybourn.bookcatalogue.booklist.BooklistBuilder;
+import com.eleybourn.bookcatalogue.booklist.LibraryBuilder;
 import com.eleybourn.bookcatalogue.booklist.FlattenedBooklist;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.datamanager.DataEditor;
@@ -147,7 +147,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
      * @param position (Optional) position in underlying book list. Only used in
      *                 read-only view.
      */
-    public static void openBook(Activity a, long id, BooklistBuilder builder, Integer position) {
+    public static void openBook(Activity a, long id, LibraryBuilder builder, Integer position) {
         boolean isReadOnly = BookCatalogueApp.getAppPreferences().getBoolean(BookCataloguePreferences.PREF_OPEN_BOOK_READ_ONLY, true);
         if (isReadOnly) {
             // Make a flattened copy of the list of books, if available

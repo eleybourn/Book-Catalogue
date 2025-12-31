@@ -29,17 +29,18 @@ import com.eleybourn.bookcatalogue.utils.TrackedCursor;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
- * Cursor object that makes the underlying BooklistBuilder available to users of the Cursor, as
+ * Cursor object that makes the underlying LibraryBuilder available to users of the Cursor, as
  * well as providing some information about the builder objects.
  * 
  * @author Philip Warner
  */
 public class BooklistCursor extends TrackedCursor implements BooklistSupportProvider {
-	/** Underlying BooklistBuilder object */
-	private final BooklistBuilder mBuilder;
+	/** Underlying LibraryBuilder object */
+	private final LibraryBuilder mBuilder;
 	/** Cached RowView for this cursor */
-	private BooklistRowView mRowView = null;
+	private LibraryRowView mRowView = null;
 	/** ID counter */
+    private static final Object sBooklistCursorIdLock = new Object();
 	private static Integer mBooklistCursorIdCounter = 0;
 	/** ID of this cursor */
 	private final long mId;
@@ -57,13 +58,13 @@ public class BooklistCursor extends TrackedCursor implements BooklistSupportProv
 	 * @param driver		Part of standard cursor constructor.
 	 * @param editTable		Part of standard cursor constructor.
 	 * @param query			Part of standard cursor constructor.
-	 * @param builder		BooklistBuilder used to make the query on which this cursor is based.
+	 * @param builder		LibraryBuilder used to make the query on which this cursor is based.
 	 * @param sync			Synchronizer object
 	 */
-	public BooklistCursor(SQLiteDatabase db, SQLiteCursorDriver driver, String editTable, SQLiteQuery query, BooklistBuilder builder, Synchronizer sync) {
+	public BooklistCursor(SQLiteDatabase db, SQLiteCursorDriver driver, String editTable, SQLiteQuery query, LibraryBuilder builder, Synchronizer sync) {
 		super(db, driver, editTable, query, sync);
 		// Allocate ID
-		synchronized(mBooklistCursorIdCounter) {
+		synchronized(sBooklistCursorIdLock) {
 			mId = ++mBooklistCursorIdCounter;
 		}
 		// Save builder.
@@ -81,8 +82,6 @@ public class BooklistCursor extends TrackedCursor implements BooklistSupportProv
 
 	/**
 	 * Get the ID for this cursor.
-	 * 
-	 * @return
 	 */
 	public long getId() {
 		return mId;
@@ -90,32 +89,19 @@ public class BooklistCursor extends TrackedCursor implements BooklistSupportProv
 
 	/**
 	 * Get the builder used to make this cursor.
-	 * 
-	 * @return
 	 */
-	public BooklistBuilder getBuilder() {
+	public LibraryBuilder getBuilder() {
 		return mBuilder;
 	}
 
 	/**
 	 * Get a RowView for this cursor. Constructs one if necessary.
-	 * 
-	 * @return
 	 */
-	public BooklistRowView getRowView() {
+	public LibraryRowView getRowView() {
 		if (mRowView == null)
-			mRowView = new BooklistRowView(this, mBuilder);
+			mRowView = new LibraryRowView(this, mBuilder);
 		return mRowView;
 	}
-
-	/**
-	 * Get the number of levels in the book list.
-	 * 
-	 * @return
-	 */
-	public int numLevels() {
-		return mBuilder.numLevels();
-	}	
 
 	@Override
 	public void close() {
@@ -123,11 +109,4 @@ public class BooklistCursor extends TrackedCursor implements BooklistSupportProv
 			mUtils.close();
 		super.close();
 	}
-	/*
-	 * no need for this yet; it may even die because table is deleted and recreated.
-	 */
-	//	public boolean requeryRebuild() {
-	//		mBuilder.rebuild();
-	//		return requery();
-	//	}
 }

@@ -54,9 +54,9 @@ import com.eleybourn.bookcatalogue.properties.StringProperty;
  * 
  * - add it to RowKinds. Update ROW_KIND_MAX.
  * - add new domain to DatabaseDefinitions (if necessary)
- * - modify BooklistBuilder.build() to add the necessary grouped/sorted domains
- * - modify BooksMultitypeListHandler; if it is just a string field, then use a GenericHolder. Otherwise add a new holder.
- *   Need to at least modify BooksMultitypeListHandler.newHolder().
+ * - modify LibraryBuilder.build() to add the necessary grouped/sorted domains
+ * - modify LibraryMultitypeHandler; if it is just a string field, then use a GenericHolder. Otherwise add a new holder.
+ *   Need to at least modify LibraryMultitypeHandler.newHolder().
  * 
  * @author Philip Warner
  */

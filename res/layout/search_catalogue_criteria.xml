@@ -3,7 +3,7 @@
     android:id="@+id/layout_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bc_background_gradient_dim"
+    android:background="@drawable/deleteme_bc_background_gradient_dim"
     android:gravity="top"
     android:orientation="vertical" >
 

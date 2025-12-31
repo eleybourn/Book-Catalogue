@@ -30,7 +30,6 @@ import android.widget.ListView;
 /**
  * Subclass of ListView that uses a local implementation of FastScroller to bypass
  * the deficiencies in the original Android version. See fastScroller.java for a discussion.
- * 
  * We need to subclass ListView because we need access to events that are only provided
  * by the subclass.
  * 
@@ -79,8 +78,6 @@ public class FastScrollListView extends ListView {
 
 	/**
 	 * Called to create and start a new FastScroller if none already exists.
-	 * 
-	 * @param scroller
 	 */
 	private void initScroller() {
 		if (mScroller != null)
@@ -103,10 +100,10 @@ public class FastScrollListView extends ListView {
 	 * Pass to scroller if defined, otherwise perform default actions.
 	 */
 	@Override
-	protected void  onSizeChanged(int w, int h, int oldw, int oldh) {
-		super.onSizeChanged(w, h, oldw, oldh);
+	protected void  onSizeChanged(int w, int h, int old_w, int old_h) {
+		super.onSizeChanged(w, h, old_w, old_h);
 		if (mScroller != null)
-			mScroller.onSizeChanged(w, h, oldw, oldh);
+			mScroller.onSizeChanged(w, h, old_w, old_h);
 	}
 	/**
 	 * Pass to scroller if defined, otherwise perform default actions.

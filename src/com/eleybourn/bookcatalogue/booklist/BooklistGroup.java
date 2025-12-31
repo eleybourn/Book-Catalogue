@@ -50,9 +50,8 @@ public class BooklistGroup implements Serializable {
 	/**
 	 * Static definitions of the kinds of rows that can be displayed and summarized.
 	 * Adding new row types needs to involve changes to:
-	 * 
-	 *	- BooklistBuilder (to build the correct SQL)
-	 *	- BooksMultitypeListHandler (to know what to do with the new type)
+	 *	- LibraryBuilder (to build the correct SQL)
+	 *	- LibraryMultitypeHandler (to know what to do with the new type)
 	 * 
 	 * @author Philip Warner
 	 */
@@ -81,11 +80,11 @@ public class BooklistGroup implements Serializable {
 		public static final int ROW_KIND_UPDATE_DAY = 21;		// Supported
 		public static final int ROW_KIND_RATING = 22;			// Supported
 		public static final int ROW_KIND_BOOKSHELF = 23;		// Supported
-		// NEWKIND: Add new kinds here
+		// NEW_KIND: Add new kinds here
 		public static final int ROW_KIND_MAX = 23; 				// **** NOTE **** ALWAYS update after adding a row kind...				
 	}
 
-	private static final UniqueMap<Integer, String> mRowKindNames = new UniqueMap<Integer, String>();
+	private static final UniqueMap<Integer, String> mRowKindNames = new UniqueMap<>();
 	static {
 		mRowKindNames.add(ROW_KIND_AUTHOR, BookCatalogueApp.getResourceString(R.string.label_author));
 		mRowKindNames.add(ROW_KIND_SERIES, BookCatalogueApp.getResourceString(R.string.label_series));
@@ -110,7 +109,7 @@ public class BooklistGroup implements Serializable {
 		mRowKindNames.add(ROW_KIND_UPDATE_YEAR, BookCatalogueApp.getResourceString(R.string.update_year));
 		mRowKindNames.add(ROW_KIND_RATING, BookCatalogueApp.getResourceString(R.string.label_rating));
 		mRowKindNames.add(ROW_KIND_BOOKSHELF, BookCatalogueApp.getResourceString(R.string.bookshelf));
-		// NEWKIND: Add new kinds here
+		// NEW_KIND: Add new kinds here
 		mRowKindNames.add(ROW_KIND_BOOK, BookCatalogueApp.getResourceString(R.string.book));
 		
 		// Sanity check
@@ -143,34 +142,21 @@ public class BooklistGroup implements Serializable {
 			return null;
 		}
 
-		@Override
 		/**
 		 * Just calls add(...)
 		 * 
 		 * @param key		Key for new value
 		 * @param value		Data for new value
 		 */
+        @Override
 		public V put(K key, V value) {
 			return add(key, value);
 		}
 
-		///**
-		// * Same semantics as old 'put' method; just replace the value (or add).
-		// * 
-		// * @param key		Key for new value
-		// * @param value		Data for new value
-		// *
-		// * @return			Old value, or null
-		// */
-		//public V replace(K key, V value) {
-		//	return super.put(key, value);
-		//}
 	}
 
 	/**
 	 * Return a list of all defined row kinds.
-	 *
-	 * @return
 	 */
 	public static int[] getRowKinds() {
 		int[] kinds = new int[mRowKindNames.size()];
@@ -183,11 +169,9 @@ public class BooklistGroup implements Serializable {
 
 	/**
 	 * Return a list of BooklistGroups, one for each defined row kind
-	 * 
-	 * @return
 	 */
 	public static ArrayList<BooklistGroup> getAllGroups() {
-		ArrayList<BooklistGroup> list = new ArrayList<BooklistGroup>();
+		ArrayList<BooklistGroup> list = new ArrayList<>();
 
 		for(Entry<Integer, String> e : mRowKindNames.entrySet()) {
 			final int kind = e.getKey();
@@ -201,8 +185,6 @@ public class BooklistGroup implements Serializable {
 	 * Create a new BooklistGroup of the specified kind, creating any more specific subclasses as necessary.
 	 * 
 	 * @param kind		Kind of group to create
-	 * 
-	 * @return
 	 */
 	public static BooklistGroup newGroup(int kind) {
 		BooklistGroup g;
@@ -232,7 +214,7 @@ public class BooklistGroup implements Serializable {
 		public transient BooleanListProperty mAllSeries;
 
 		/** mAllSeries Parameter values and descriptions */
-		private static final ItemEntries<Boolean> mAllSeriesItems = new ItemEntries<Boolean>();
+		private static final ItemEntries<Boolean> mAllSeriesItems = new ItemEntries<>();
 		static {
 			String kind = BookCatalogueApp.getResourceString(R.string.label_series);
 			mAllSeriesItems.add(null, R.string.use_default_setting);
@@ -293,7 +275,7 @@ public class BooklistGroup implements Serializable {
 
 		/** Support for 'Show Given Name' property */
 		public transient BooleanListProperty mGivenName;
-		private static final ItemEntries<Boolean> mGivenNameFirstItems = new ItemEntries<Boolean>();
+		private static final ItemEntries<Boolean> mGivenNameFirstItems = new ItemEntries<>();
 		static {
 			mGivenNameFirstItems.add(null, R.string.use_default_setting);
 			mGivenNameFirstItems.add(false, R.string.family_name_first_eg);
@@ -302,7 +284,7 @@ public class BooklistGroup implements Serializable {
 
 		/** Support for 'Show All Authors of Book' property */
 		public transient BooleanListProperty mAllAuthors;		
-		private static final ItemEntries<Boolean> mAllAuthorsItems = new ItemEntries<Boolean>();
+		private static final ItemEntries<Boolean> mAllAuthorsItems = new ItemEntries<>();
 		static {
 			String kind = BookCatalogueApp.getResourceString(R.string.label_author);
 			mAllAuthorsItems.add(null, R.string.use_default_setting);
@@ -351,8 +333,6 @@ public class BooklistGroup implements Serializable {
 
 		/**
 		 * Accessor
-		 * 
-		 * @return
 		 */
 		public boolean getAllAuthors() {
 			return mAllAuthors.getResolvedValue();
@@ -360,27 +340,23 @@ public class BooklistGroup implements Serializable {
 
 		/**
 		 * Accessor
-		 * 
-		 * @return
 		 */
-		public void setAllAuthors(Boolean allAuthors) {
+		@SuppressWarnings("unused")
+        public void setAllAuthors(Boolean allAuthors) {
 			mAllAuthors.set(allAuthors);
 		}
 
 		/**
 		 * Accessor
-		 * 
-		 * @return
 		 */
 		public boolean getGivenName() {
 			return mGivenName.getResolvedValue();
 		}
 		/**
 		 * Accessor
-		 * 
-		 * @return
 		 */
-		public void setGivenName(Boolean giveName) {
+		@SuppressWarnings("unused")
+        public void setGivenName(Boolean giveName) {
 			mGivenName.set(giveName);
 		}
 

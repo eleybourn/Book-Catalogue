@@ -63,10 +63,10 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * @author Philip Warner
  */
 public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupportProvider {
-	/** Underlying BooklistBuilder object */
-	private final BooklistBuilder mBuilder;
+	/** Underlying LibraryBuilder object */
+	private final LibraryBuilder mBuilder;
 	/** Cached RowView for this cursor */
-	private BooklistRowView mRowView = null;
+	private LibraryRowView mRowView = null;
 
 	/** Collection of current cursors */
 	private final Hashtable<Integer, BooklistCursor> mCursors;
@@ -93,9 +93,9 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 	/**
 	 * Constructor
 	 * 
-	 * @param builder		The BooklistBuilder that created the table to which this cursor refers
+	 * @param builder		The LibraryBuilder that created the table to which this cursor refers
 	 */
-	BooklistPseudoCursor(BooklistBuilder builder) {
+	BooklistPseudoCursor(LibraryBuilder builder) {
 		mBuilder = builder;
 		mCursors = new Hashtable<Integer, BooklistCursor>();
 		mMruList = new int[MRU_LIST_SIZE];
@@ -110,7 +110,7 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 	 * 
 	 * @return
 	 */
-	public BooklistBuilder getBuilder() {
+	public LibraryBuilder getBuilder() {
 		return mBuilder;
 	}
 
@@ -119,9 +119,9 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 	 * 
 	 * @return
 	 */
-	public BooklistRowView getRowView() {
+	public LibraryRowView getRowView() {
 		if (mRowView == null)
-			mRowView = new BooklistRowView(this, mBuilder);
+			mRowView = new LibraryRowView(this, mBuilder);
 		return mRowView;
 	}
 

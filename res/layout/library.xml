@@ -26,6 +26,7 @@
                     android:id="@+id/field_library_bookshelf"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
                     android:paddingBottom="2dp" />
 
                 <ImageView
@@ -49,7 +50,7 @@
                     android:textAppearance="?android:attr/textAppearanceSmall" />
 
                 <TextView
-                    android:id="@+id/level_1_text"
+                    android:id="@+id/label_level_1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/label_bookshelf_count"
@@ -57,10 +58,10 @@
                     android:textAppearance="?android:attr/textAppearanceSmall" />
 
                 <TextView
-                    android:id="@+id/level_2_text"
+                    android:id="@+id/label_level_2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/level_1_text"
+                    android:layout_below="@id/label_level_1"
                     android:singleLine="true"
                     android:textAppearance="?android:attr/textAppearanceSmall" />
             </RelativeLayout>
@@ -76,11 +77,21 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical" >
 
+                <ProgressBar
+                    android:id="@+id/loading_progress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="gone"
+                    style="?android:attr/progressBarStyleLarge" />
+
                 <com.eleybourn.bookcatalogue.widgets.FastScrollListView
                     android:id="@+id/list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:divider="@null"
                     android:textSize="16sp" />
+
 
                 <TextView
                     android:id="@+id/empty"

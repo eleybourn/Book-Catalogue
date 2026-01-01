@@ -13,7 +13,7 @@
         android:adjustViewBounds="true"
         android:contentDescription="@null"
         android:scaleType="fitCenter"
-        android:src="@drawable/bg_shelf_vector"
+        android:src="@drawable/layout_background_vector"
         tools:ignore="ImageContrastCheck" />
 
 </FrameLayout>

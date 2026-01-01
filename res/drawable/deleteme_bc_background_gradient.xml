@@ -11,7 +11,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
     <item>
 		<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
-		    android:src="@drawable/books_bg" 
+		    android:src="@drawable/deleteme_books_bg"
 		    >
 		    <!-- 
 		    Removed XML tiling because it does not work properly. Tiling will be set in code.

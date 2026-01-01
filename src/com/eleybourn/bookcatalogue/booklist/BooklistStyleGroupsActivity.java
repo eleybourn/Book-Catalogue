@@ -178,9 +178,9 @@ public class BooklistStyleGroupsActivity extends EditObjectList<GroupWrapper> {
                 assert h1 != null;
                 h1.wrapper.present = !h1.wrapper.present;
                 if (h1.wrapper.present) {
-                    h1.present.setImageResource(R.drawable.btn_check_clipped);
+                    h1.present.setImageResource(R.drawable.ic_menu_checkmark_checked);
                 } else {
-                    h1.present.setImageResource(R.drawable.btn_uncheck_clipped);
+                    h1.present.setImageResource(R.drawable.ic_menu_checkmark_unchecked);
                 }
             });
 		}
@@ -190,9 +190,9 @@ public class BooklistStyleGroupsActivity extends EditObjectList<GroupWrapper> {
 
 		// Set the correct image (tick/cross)
 		if (h.wrapper.present) {
-			h.present.setImageResource(R.drawable.btn_check_clipped);
+			h.present.setImageResource(R.drawable.ic_menu_checkmark_checked);
 		} else {
-    		h.present.setImageResource(R.drawable.btn_uncheck_clipped);
+    		h.present.setImageResource(R.drawable.ic_menu_checkmark_unchecked);
 		}
 	}
 

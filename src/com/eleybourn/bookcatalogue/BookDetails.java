@@ -266,7 +266,7 @@ public class BookDetails extends BookAbstract {
         if (FieldVisibility.isVisible(CatalogueDBAdapter.KEY_READ)) {
             if (book.isRead()) {
                 image.setVisibility(View.VISIBLE);
-                image.setImageResource(R.drawable.btn_check_buttonless_on);
+                image.setImageResource(R.drawable.ic_menu_checkmark_checked);
             } else {
                 image.setVisibility(View.GONE);
             }

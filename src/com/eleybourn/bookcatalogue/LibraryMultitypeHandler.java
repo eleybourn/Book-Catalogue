@@ -273,39 +273,39 @@ public class LibraryMultitypeHandler implements MultitypeListHandler {
             switch (rowView.getKind()) {
                 case RowKinds.ROW_KIND_BOOK: {
                     addMenuItem(menu, R.id.MENU_DELETE_BOOK, R.string.menu_delete, R.drawable.ic_menu_delete);
-                    addMenuItem(menu, R.id.MENU_EDIT_BOOK, R.string.edit_book, android.R.drawable.ic_menu_edit);
-                    addMenuItem(menu, R.id.MENU_EDIT_BOOK_NOTES, R.string.label_comments, R.drawable.ic_menu_compose_holo_dark);
+                    addMenuItem(menu, R.id.MENU_EDIT_BOOK, R.string.edit_book, R.drawable.ic_menu_edit);
+                    addMenuItem(menu, R.id.MENU_EDIT_BOOK_NOTES, R.string.label_comments, R.drawable.ic_menu_notes);
                     //Shows different menu item depending on loan status of book but both situations still go to the same view.
                     if (!onLoan) {
-                        addMenuItem(menu, R.id.MENU_EDIT_BOOK_FRIENDS, R.string.button_loan_book, R.drawable.ic_menu_cc_holo_dark);
+                        addMenuItem(menu, R.id.MENU_EDIT_BOOK_FRIENDS, R.string.button_loan_book, R.drawable.ic_menu_loan);
                     } else {
-                        addMenuItem(menu, R.id.MENU_EDIT_BOOK_FRIENDS, R.string.edit_book_friends_return, R.drawable.ic_menu_cc_holo_dark);
+                        addMenuItem(menu, R.id.MENU_EDIT_BOOK_FRIENDS, R.string.edit_book_friends_return, R.drawable.ic_menu_loan);
                     }
                     if (!isRead) {
-                        addMenuItem(menu, R.id.MENU_MARK_AS_READ, R.string.menu_mark_as_read, R.drawable.btn_check_clipped);
+                        addMenuItem(menu, R.id.MENU_MARK_AS_READ, R.string.menu_mark_as_read, R.drawable.ic_menu_checkmark_unchecked);
                     } else {
-                        addMenuItem(menu, R.id.MENU_MARK_AS_UNREAD, R.string.menu_mark_as_unread, R.drawable.btn_uncheck_clipped);
+                        addMenuItem(menu, R.id.MENU_MARK_AS_UNREAD, R.string.menu_mark_as_unread, R.drawable.ic_menu_checkmark_checked);
                     }
                     //addMenuItem(menu, R.id.MENU_SEND_BOOK_TO_GR, R.string.edit_book_send_to_gr, R.drawable.ic_menu_goodreads_holo_dark);
                     break;
                 }
                 case RowKinds.ROW_KIND_AUTHOR: {
-                    addMenuItem(menu, R.id.MENU_EDIT_AUTHOR, R.string.menu_edit_author, android.R.drawable.ic_menu_edit);
-                    addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR, R.string.amazon_books_by_author, R.drawable.ic_menu_cc_holo_dark);
+                    addMenuItem(menu, R.id.MENU_EDIT_AUTHOR, R.string.menu_edit_author, R.drawable.ic_menu_edit);
+                    addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR, R.string.amazon_books_by_author, R.drawable.ic_menu_author);
                     break;
                 }
                 case RowKinds.ROW_KIND_SERIES: {
                     long id = rowView.getSeriesId();
                     if (id != 0) {
-                        addMenuItem(menu, R.id.MENU_DELETE_SERIES, R.string.menu_delete_series, android.R.drawable.ic_menu_delete);
-                        addMenuItem(menu, R.id.MENU_EDIT_SERIES, R.string.menu_edit_series, android.R.drawable.ic_menu_edit);
+                        addMenuItem(menu, R.id.MENU_DELETE_SERIES, R.string.menu_delete_series, R.drawable.ic_menu_edit);
+                        addMenuItem(menu, R.id.MENU_EDIT_SERIES, R.string.menu_edit_series, R.drawable.ic_menu_edit);
                     }
                     break;
                 }
                 case RowKinds.ROW_KIND_FORMAT: {
                     String format = rowView.getFormat();
                     if (format != null && !format.isEmpty()) {
-                        addMenuItem(menu, R.id.MENU_EDIT_FORMAT, R.string.menu_edit_format, android.R.drawable.ic_menu_edit);
+                        addMenuItem(menu, R.id.MENU_EDIT_FORMAT, R.string.menu_edit_format, R.drawable.ic_menu_edit);
                     }
                     break;
                 }
@@ -720,7 +720,7 @@ public class LibraryMultitypeHandler implements MultitypeListHandler {
             // READ
             if (rowView.getRead()) {
                 read.setVisibility(View.VISIBLE);
-                read.setImageResource(R.drawable.btn_check_clipped);
+                read.setImageResource(R.drawable.ic_menu_checkmark_checked);
             } else {
                 read.setVisibility(View.GONE);
             }

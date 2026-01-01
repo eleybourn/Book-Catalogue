@@ -101,7 +101,7 @@
             android:gravity="end"
             android:paddingHorizontal="8dp"
             android:paddingTop="4dp"
-            android:src="@drawable/btn_check_buttonless_off"
+            android:src="@drawable/ic_menu_checkmark_unchecked"
             android:visibility="gone" />
 
     </LinearLayout>

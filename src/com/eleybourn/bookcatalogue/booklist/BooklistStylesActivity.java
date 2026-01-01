@@ -169,9 +169,9 @@ public class BooklistStylesActivity extends EditObjectList<BooklistStyle> {
                 boolean newPref = !h1.style.isPreferred();
                 h1.style.setPreferred(newPref);
                 if (newPref) {
-                    h1.preferred.setImageResource(R.drawable.btn_check_clipped);
+                    h1.preferred.setImageResource(R.drawable.ic_menu_checkmark_checked);
                 } else {
-                    h1.preferred.setImageResource(R.drawable.btn_uncheck_clipped);
+                    h1.preferred.setImageResource(R.drawable.ic_menu_checkmark_unchecked);
                 }
                 onListChanged();
             });
@@ -188,9 +188,9 @@ public class BooklistStylesActivity extends EditObjectList<BooklistStyle> {
             h.kind.setText(R.string.builtin);
 
         if (style.isPreferred()) {
-            h.preferred.setImageResource(R.drawable.btn_check_clipped);
+            h.preferred.setImageResource(R.drawable.ic_menu_checkmark_checked);
         } else {
-            h.preferred.setImageResource(R.drawable.btn_uncheck_clipped);
+            h.preferred.setImageResource(R.drawable.ic_menu_checkmark_unchecked);
         }
     }
 

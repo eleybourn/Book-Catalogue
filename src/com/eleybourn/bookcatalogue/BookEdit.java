@@ -479,7 +479,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 
         if (mRowId != 0) {
             MenuItem delete = menu.add(0, R.id.MENU_DELETE_BOOK, 0, R.string.menu_delete);
-            delete.setIcon(android.R.drawable.ic_menu_delete);
+            delete.setIcon(R.drawable.ic_menu_edit);
 
             MenuItem duplicate = menu.add(0, R.id.MENU_DUPLICATE_BOOK, 0, R.string.menu_duplicate);
             duplicate.setIcon(android.R.drawable.ic_menu_add);
@@ -487,13 +487,13 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 
         // TODO: Consider allowing Tweets (or other sharing methods) to work on un-added books.
         MenuItem tweet = menu.add(0, R.id.MENU_SHARE, 0, R.string.menu_share_this);
-        tweet.setIcon(R.drawable.ic_menu_twitter);
+        tweet.setIcon(R.drawable.ic_menu_share);
         // Very rarely used, and easy to miss-click.
         //tweet.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
         if (mIsReadOnly) {
             menu.add(0, R.id.MENU_EDIT_BOOK, 0, R.string.edit_book)
-                    .setIcon(android.R.drawable.ic_menu_edit)
+                    .setIcon(R.drawable.ic_menu_edit)
                     .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
 

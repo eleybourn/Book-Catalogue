@@ -89,7 +89,7 @@
             android:id="@+id/row_read_image_view"
             android:layout_width="30dp"
             android:layout_height="wrap_content"
-            android:src="@drawable/btn_check_buttonless_off"
+            android:src="@drawable/ic_menu_checkmark_unchecked"
             android:visibility="gone" />
 
     </LinearLayout>

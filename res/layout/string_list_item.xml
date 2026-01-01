@@ -23,12 +23,11 @@
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@id/selector"
         android:gravity="center_vertical"
-        android:paddingBottom="8dip"
-        android:paddingLeft="15dip"
-        android:paddingRight="15dip"
-        android:paddingTop="8dip"
+        android:paddingVertical="8dip"
+        android:paddingHorizontal="15dip"
         android:singleLine="false"
         android:text=""
+        android:drawablePadding="10dip"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
 <!--         android:textAppearance="?android:attr/textAppearanceLarge"

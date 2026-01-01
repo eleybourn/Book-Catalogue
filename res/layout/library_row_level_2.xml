@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/row"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -21,7 +22,8 @@
             android:layout_height="10dp"
             android:layout_gravity="center"
             android:importantForAccessibility="no"
-            android:src="@drawable/btn_circle_normal" />
+            android:src="@drawable/ic_separator"
+            app:tint="@color/theme_onPrimary" />
 
         <TextView
             android:id="@+id/field_name"
@@ -42,7 +44,8 @@
             android:layout_gravity="center"
             android:importantForAccessibility="no"
             android:paddingHorizontal="2dp"
-            android:src="@drawable/btn_circle_normal" />
+            android:src="@drawable/ic_separator"
+            app:tint="@color/theme_onPrimary" />
     </LinearLayout>
 
 </LinearLayout>

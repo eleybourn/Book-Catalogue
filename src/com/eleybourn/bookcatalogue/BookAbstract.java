@@ -249,7 +249,7 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
      */
     private final OnCreateContextMenuListener mCreateBookThumbContextMenuListener = (menu, v, menuInfo) -> {
         MenuItem delete = menu.add(0, CONTEXT_ID_DELETE, 0, R.string.menu_delete_thumb);
-        delete.setIcon(android.R.drawable.ic_menu_delete);
+        delete.setIcon(R.drawable.ic_menu_edit);
 
         // Creating submenu item for rotate
         android.view.SubMenu replaceSubmenu = menu.addSubMenu(0, CONTEXT_SUBMENU_REPLACE_THUMB, 2,

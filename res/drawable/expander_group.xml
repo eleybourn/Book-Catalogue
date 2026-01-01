@@ -2,7 +2,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android"> 
    <item 
        android:state_expanded="true" 
-       android:drawable="@drawable/expander_ic_maximized" /> 
+       android:drawable="@drawable/ic_button_up" />
    <item 
-       android:drawable="@drawable/expander_ic_minimized" /> 
+       android:drawable="@drawable/ic_button_down" />
 </selector> 

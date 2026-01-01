@@ -51,11 +51,11 @@ class CropHighlightView {
 	private void init() {
 		android.content.res.Resources resources = mContext.getResources();
 		mResizeDrawableWidth = resources
-				.getDrawable(R.drawable.crop_camera_crop_width);
+				.getDrawable(R.drawable.ic_button_crop_width);
 		mResizeDrawableHeight = resources
-				.getDrawable(R.drawable.crop_camera_crop_height);
+				.getDrawable(R.drawable.ic_button_crop_height);
 		mResizeDrawableDiagonal = resources
-				.getDrawable(R.drawable.crop_indicator_autocrop);
+				.getDrawable(R.drawable.ic_button_crop);
 	}
 
 	boolean mIsFocused;

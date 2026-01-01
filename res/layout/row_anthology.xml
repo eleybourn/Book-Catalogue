@@ -22,7 +22,7 @@
         android:focusableInTouchMode="false"
         android:gravity="right"
         android:paddingRight="@dimen/p_md"
-        android:src="@drawable/down" />
+        android:src="@drawable/ic_button_down" />
 
     <ImageView
         android:id="@+id/row_up"
@@ -35,7 +35,7 @@
         android:focusableInTouchMode="false"
         android:gravity="right"
         android:paddingRight="@dimen/p_md"
-        android:src="@drawable/up" />
+        android:src="@drawable/ic_button_up" />
 
     <TextView
         android:id="@+id/row_position"

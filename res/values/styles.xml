@@ -4,7 +4,7 @@
     <style name="layout_body">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
-        <item name="android:background">@drawable/bg_main</item>
+        <item name="android:background">@drawable/layout_background</item>
         <item name="android:fitsSystemWindows">true</item>
     </style>
 
@@ -187,7 +187,7 @@
         <item name="android:layout_height">48dp</item>
         <item name="android:layout_alignParentEnd">true</item>
         <item name="android:paddingHorizontal">@dimen/p_md</item>
-        <item name="android:src">@drawable/expander_ic_minimized</item>
+        <item name="android:src">@drawable/ic_button_dropdown</item>
     </style>
 
     <style name="layout_button_image" parent="layout_button">
@@ -209,7 +209,7 @@
         <item name="android:layout_alignParentBottom">true</item>
         <item name="android:layout_alignParentEnd">true</item>
         <item name="android:layout_alignParentTop">true</item>
-        <item name="android:src">@drawable/ic_move_grabber</item>
+        <item name="android:src">@drawable/ic_drag_handle</item>
     </style>
 
     <style name="layout_title">

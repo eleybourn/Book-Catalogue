@@ -23,10 +23,6 @@ package com.eleybourn.bookcatalogue;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -53,7 +49,6 @@ import java.util.HashSet;
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.NotificationCompat.Builder;
 import androidx.core.content.ContextCompat;
 
 import static org.acra.ReportField.ANDROID_VERSION;
@@ -83,9 +78,9 @@ import static org.acra.ReportField.USER_CRASH_DATE;
 	resNotifTickerText = R.string.crash_notif_ticker_text,
 	resNotifTitle = R.string.crash_notif_title,
 	resNotifText = R.string.crash_notif_text,
-	resNotifIcon = android.R.drawable.stat_notify_error, // optional. default is a warning sign
+	resNotifIcon = R.drawable.ic_alert_warning, // optional. default is a warning sign
 	resDialogText = R.string.crash_dialog_text,
-	resDialogIcon = android.R.drawable.ic_dialog_info, //optional. default is a warning sign
+	resDialogIcon = R.drawable.ic_menu_info, //optional. default is a warning sign
 	resDialogTitle = R.string.crash_dialog_title, // optional. default is your application name
 	resDialogCommentPrompt = R.string.crash_dialog_comment_prompt, // optional. when defined, adds a user text field input with this text resource as a label
 	resDialogOkToast = R.string.crash_dialog_ok_toast // optional. displays a Toast message when the user accepts to send a report.
@@ -98,16 +93,13 @@ public class BookCatalogueApp extends Application {
 
 	/** Flag indicating the collation we use in the current database is case-sensitive */
 	private static Boolean mCollationCaseSensitive = null;
-	
-	/** Used to sent notifications regarding tasks */
-	private static NotificationManager mNotifier;
 
-	private static BcQueueManager mQueueManager = null;
+    private static BcQueueManager mQueueManager = null;
 
 	/** The locale used at startup; so that we can revert to system locale if we want to */
 	private static final Locale mInitialLocale = Locale.getDefault();
 	@SuppressLint("ConstantLocale")
-	/** User-specified default locale */
+	// User-specified default locale
 	private static Locale mPreferredLocale = null;
 
 	/**
@@ -166,9 +158,6 @@ public class BookCatalogueApp extends Application {
 
         // Save the app signer
         ErrorReporter.getInstance().putCustomData("Signed-By", Utils.signedBy(this));
-
-        // Create the notifier
-    	mNotifier = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 
 		// Start the queue manager
 		if (mQueueManager == null)
@@ -284,34 +273,7 @@ public class BookCatalogueApp extends Application {
 		return mCollationCaseSensitive;
 	}
 
-//	/**
-//	 * Currently the QueueManager is implemented as a service. This is not clearly necessary
-//	 * but has the huge advantage of making a 'context' object available in the Service
-//	 * implementation.
-//	 * 
-//	 * By binding it here, the service will not die when the last Activity is closed. We
-//	 * could call StartService to keep it awake indefinitely also, but we do want the binding
-//	 * object...so we bind it.
-//	 */
-//	private void startQueueManager() {
-//		doBindService();		
-//	}
-//
-//	/**
-//	 * Points to the bound service, once it is started.
-//	 */
-//	private static BcQueueManager mBoundService = null;
-//
-//	/**
-//	 * Utility routine to get the current QueueManager.
-//	 * 
-//	 * @return	QueueManager object
-//	 */
-//	public static BcQueueManager getQueueManager() {
-//		return mBoundService;
-//	}
-
-	/**
+    /**
 	 * Utility routine to get the current QueueManager.
 	 * 
 	 * @return	QueueManager object
@@ -373,52 +335,6 @@ public class BookCatalogueApp extends Application {
 		a.startActivity(i);
 	}
 
-	private static final String NOTIFICATION_CHANNEL_NAME = "Basic Notifications";
-	private static NotificationChannel mNoticiationChannel = null;
-
-	/**
-     * Show a notification while this app is running.
-	 * <p>
-	 * TODO: NOTE THAT THIS APP NO LONGER USES NOTIFICATIONS SINCE GOODREADS/LT are GONE. IF WE DO, THEN WE NEED TO REQUEST PERMS.
-	 *  ALSO NOTE: BG tasks should be done with WorkManager in future, and it will handle notifications.
-	 * <p>
-	 * @param id		ID of the notification
-	 * @param title		Title of message
-	 * @param message	Message
-	 */
-    public static void showNotification(int id, String title, String message, Intent i) {
-        // In this sample, we'll use the same text for the ticker and the expanded notification
-
-		Builder nb = new Builder(context)
-				.setSmallIcon(R.drawable.ic_stat_logo)
-				//.setSubText(Utils.toDurationDHMS(mLastRecordMillis))
-				.setContentText(message)
-				.setContentTitle(title)
-				//.setContentTitle(getString(R.string.tracking_active))
-				;
-		if (VERSION.SDK_INT >= 26) {
-			if (mNoticiationChannel == null) {
-				mNoticiationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_NAME, "Basic", NotificationManager.IMPORTANCE_LOW);
-			}
-			nb.setChannelId(NOTIFICATION_CHANNEL_NAME);
-		}
-
-		// Set the icon, scrolling text and timestamp
-        Notification notification = nb.build(); //new Notification(R.drawable.ic_stat_logo, text, System.currentTimeMillis());
-        // Auto-cancel the notification
-        notification.flags |= Notification.FLAG_AUTO_CANCEL;
-
-        // The PendingIntent to launch our activity if the user selects this notification
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, i, PendingIntent.FLAG_IMMUTABLE);
-
-		//// Set the info for the views that show in the notification panel.
-		//notification.setLatestEventInfo(context, title, //getText(R.string.local_service_label),
-		//			   text, contentIntent);
-
-        // Send the notification.
-        mNotifier.notify(id, notification);
-    }
-
 	@Override
 	protected void attachBaseContext(Context base) {
 		// We need a context in order to get prefs
@@ -443,24 +359,10 @@ public class BookCatalogueApp extends Application {
 	// * @param res   Resources to use
 	// * @return  true if it was actually changed
 	// */
-	//public static boolean applyPreferredLocaleIfNecessary(Resources res) {
-	//	if (mPreferredLocale == null)
-	//		return false;
-	//
-	//	if (res.getConfiguration().locale.equals(mPreferredLocale))
-	//		return false;
-	//	Locale.setDefault(mPreferredLocale);
-	//	Configuration config = new Configuration();
-	//	config.locale = mPreferredLocale;
-	//	res.updateConfiguration(config, res.getDisplayMetrics());
-	//
-	//	return true;
-	//}
-
-	public static Context setLocale(Context context) {
+    public static Context setLocale(Context context) {
 		String prefLocaleName = getAppPreferences().getString(BookCataloguePreferences.PREF_APP_LOCALE, null);
 		// If we have a preference, set it
-		if (prefLocaleName != null && !prefLocaleName.equals("")) {
+		if (prefLocaleName != null && !prefLocaleName.isEmpty()) {
 			mPreferredLocale = localeFromName(prefLocaleName);
 		} else {
 			mPreferredLocale = getSystemLocale();

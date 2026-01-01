@@ -339,7 +339,6 @@ public class GoodreadsManager {
         // Get the URL
         try {
             authUrl = m_provider.retrieveRequestToken(m_consumer, "com.eleybourn.bookcatalogue://goodreadsauth");
-            //authUrl = m_provider.retrieveRequestToken(m_consumer,  "intent:#Intent;action=android.intent.action.VIEW;category=android.intent.category.DEFAULT;component=com.eleybourn.bookcatalogue/.goodreads.GoodReadsAuthorizationActivity;end");
         } catch (OAuthCommunicationException e) {
             throw new NetworkException(e);
         } catch (Exception e) {

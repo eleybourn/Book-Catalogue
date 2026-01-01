@@ -99,7 +99,7 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
                 // Clear and add item dynamically as per original logic
                 menu.clear();
                 MenuItem populate = menu.add(0, POPULATE_ID, 0, R.string.populate_anthology_titles);
-                populate.setIcon(android.R.drawable.ic_menu_add);
+                populate.setIcon(R.drawable.ic_menu_add);
                 populate.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
 
@@ -315,7 +315,7 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(anthology_title.toString());
         builder.setTitle(R.string.anthology_confirm);
-        builder.setIcon(android.R.drawable.ic_menu_info_details);
+        builder.setIcon(R.drawable.ic_menu_info);
 
         // Modernization: Use explicit positive/negative buttons instead of setButton
         builder.setPositiveButton(R.string.button_ok, (dialog, which) -> {

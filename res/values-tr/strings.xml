@@ -2,7 +2,6 @@
 <resources>
 
     <string name="app_name">Kitap Kataloğu</string>
-    <string name="system_app_name">Book Catalogue</string>
     <string name="label_insert">Kitap ekle</string>
     <string name="menu_delete">Kitap sil</string>
     <string name="label_author">Yazar</string>
@@ -18,7 +17,6 @@
     <string name="confirm_update">Güncelle</string>
     <string name="para_no_books">Bu kitaplıkta hiç kitap yok. Lütfen ekranın alt kısmındaki bölümü kullanarak kitap ekleyin.</string>
     <string name="menu_sort_by_author_expanded">Hepsini göster</string>
-    <string name="menu_sort_by">Sırala</string>
     <string name="menu_sort_by_author_collapsed">Hepsini gizle</string>
     <string name="label_search">Ara</string>
     <string name="button_cancel">Vazgeç</string>
@@ -30,7 +28,6 @@
     <string name="confirm_save_bs">Kitaplığı kaydet</string>
     <string name="menu_delete_bs">Kitaplığı sil</string>
     <string name="delete_1st_bs">Birinci kitaplık silinemiyor</string>
-    <string name="bookshelf_label">Kitaplık: </string>
     <string name="all_books">Tüm kitaplar</string>
     <string name="title_isbn_search">Kitap kataloğu: ISBN arama</string>
     <string name="title_edit_bs">Kitap kataloğu: Kitaplığı düzenle</string>
@@ -41,8 +38,6 @@
     <string name="import_data">Kitapları içe aktar</string>
     <string name="import_alert">Uyarı: Bilgileri içe aktarırken eğer içe aktardığınız dosyaların ID numarası var olan bir kitabın ID\'si ile aynı ise, varolan kitap verilerinin üstüne yazılmasına neden olabilir. Eğer dışa aktarılmış bir dosyada bir giriyi değiştirdiyseniz bu sorun değildir; ancak yeni bir kitap girişi oluşturuyorsanız ID bölümünün boş olduğundan emin olun.</string>
     <string name="import_failed_is_location_correct">Hata: SD karttan içe aktarma başarısız oldu. Dosyalar yerli yerinde mi acaba?</string>
-    <string name="search_title">Kitap kataloğu: Arama sonuçları</string>
-    <string name="results_found">Sonuç bulundu</string>
     <string name="administration_label">Yönetim işlevleri</string>
     <string name="menu_administration">Ayarlar</string>
     <string name="install_scan_title">Barkod Tarayıcıyı yükleyin</string>
@@ -68,12 +63,6 @@
     <string name="contact2">philip.warner@rhyme.com.au</string>
     <string name="label_donate">Bağış yap</string>
     <string name="label_about">Uygulama hakkında</string>
-    <string name="sortby_author">Yazara göre sırala</string>
-    <string name="sortby_title">Ada göre sırala</string>
-    <string name="sortby_series">Diziye göre sırala</string>
-    <string name="sortby_loan">Ödünç verilene göre sırala</string>
-    <string name="sortby_unread">Okunmamışlara göre sırala</string>
-    <string name="sortby_genre">Türe göre sırala</string>
     <string name="label_list_price">Fiyatı</string>
     <string name="label_update_fields">Alanları kendiliğinden doldur</string>
     <string name="select_fields_to_update">Güncellenecek alanları seçin</string>		
@@ -203,18 +192,6 @@
     <string name="usage_overwrite">Bulunan verinin üstüne yazar</string>
     <string name="cancelling">İptal ediliyor&#8230;</string>
     <string name="starting_search">Arama başlatılıyor&#8230;</string>
-    <string name="lt_info">>Bu uygulama kitap serileri hakkında bilgi almak ve ek kapakları indirmek üzere LibraryThing\'den yararlanır. Bu özellikleri kullanmak için LibraryThing\'e kayıt olmanız (ücretsiz) ve LibraryThing geliştirici anahtarı almanız gerekmektedir (yine ücretsiz).</string>
-    <string name="lt_register_text">LibraryThing\'e kayıt ol</string>
-    <string name="lt_devkey_text">LibraryThing geliştirici anahtarı iste</string>
-    <string name="lt_gotkey">Geliştirici anahtarını aldığınızda (veya sizde halihazırda varsa) yalnızca aşağıdaki alana girin, sonrasında bu anahtar ek verileri almak için kullanılacaktır.</string>
-    <string name="developer_key">Geliştirici anahtarı</string>
-    <string name="require_library_thing_info">Bu özellik bir LibraryThing geliştirici anahtarı gerektirmektedir. LibraryThing hakkında daha fazla bilgi almak ister misiniz?</string>
-    <string name="uses_library_thing_info">Bu özellik bir LibraryThing geliştirici anahtarından yararlanır. LibraryThing hakkında daha fazla bilgi almak mı ister, yoksa bu iletiyi devre dışı bırakmak mı istersiniz?\n\nLibraryThing üzerine bilgi Yönetim bölümünün LibraryThing sekmesinde bulunabilir.</string>
-    <string name="reg_library_thing_title">LibraryThing Kayıt</string>
-    <string name="more_info">Ek bilgi</string>
-    <string name="disable_dialogue">İletiyi kapat</string>
-    <string name="lt_reset_messages_info">Bazen bu uygulama LibraryThing\'den isteğe bağlı iletiler gösterebilir. Devre dışı kalmış olabilecek bu iletileri sıfırlamak için aşağıdaki düğmeye dokunun.</string>
-    <string name="reset">Sıfırla</string>
     <string name="para_send_info">Son zamanda oluşan çökmelerle ilgili bilgi toplamak ve bunu geliştiricilerimizden birine göndermek için aşağıdaki butonu dokunun. Bu veritabanınızın ve oluşturulan günlük dosyalarının bir yedeğini oluşturacaktır. Eğer bu dosyaları bize göndermek istemezseniz göndermeden önce lütfen e-posta eklerinden kaldırın.</string>
     <string name="button_send_info">Bilgi gönder</string>
     <string name="para_cleanup_files">Temizlenebilir dosyalar şu anda SD kartta %s kullanmaktadır. Her güncellemenizde, her veritabanı yedeklemenizde veya her uygulamanın çökmesinde günlük dosyaları ve diğer veriler SD kartta saklanır. Bu bilgileri temizlemek için aşağıdaki düğmeye dokunun. Eğer çökmeler veya başka sorunlar yaşıyorsanız öncelikle \'Bilgi gönder\' düğmesini kullanmayı deneyin.</string>
@@ -223,16 +200,11 @@
     <string name="kilobytes">%.2f kilobit</string>
     <string name="bytes">%.0f bit</string>
     <string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
-    <string name="sortby_author_given">Yazara göre sırala (Ad)</string>
     <string name="debug_subject">Hata ayıklama bilgisi alındı</string>
     <string name="debug_body">Lütfen yaşamakta olduğunuz sorunu kısaca anlatınız.</string>
     <string name="menu_duplicate">Kitabı kopyala</string>
     <string name="cannot_edit_system">Sistem değerlerini düzenleyemezsiniz</string>
-    <string name="incorrect_key">Ya LibraryThing geliştirici anahtarınız yanlış ya da biz doğrulama için ağa bağlanamadık.</string>
-    <string name="correct_key">LibraryThing geliştirici anahtarınız geçerli.</string>
-    <string name="sortby_author_one">Yazara göre sırala (Yalnızca ilk yazar)</string>
     <string name="no_connection">Ağ bağlantısı yok.</string>
-    <string name="sortby_published">Yayım tarihine göre sırala</string>
     <string name="menu_share_this">Paylaş</string>
     <string name="email_export">Dışarı aktarılan veriyi e-posta ile göndermemizi ister misiniz?</string>
     <string name="menu_crop_thumb">Küçük resmi kırp</string>
@@ -252,28 +224,12 @@
 
     <string name="label_library">Kitaplarım</string>
     <string name="label_settings">Yönetim ve Seçenekler</string>
-    <string name="edit_book_send_to_gr">Goodreads\'e gönder</string>
-    <string name="goodreads">goodreads</string>
-    <string name="goodreads_auth_blurb_part1">Goodreads, ağ sayfasında belirtildiği üzere ereği \"kişilerin sevdiği kitapları bulmasına ve paylaşmasına yardımcı olmak\" olan bir servistir.
- 										Çok geniş bir kitap ve yorum veritabanına iye olan Goodreads\'te kayıtlı bir  											    		    
- 										kullanıcı iseniz BookCatalogue Goodreads\'ten kitaplarınızı, raflarınızı ve yorumlarınızı
- 										alabilir veya Goodreads\'e gönderebilir. BookCatalogue kendi başına bir uygulama olup
- 										Goodreads\'i gerektirmemektedir, ancak ilgilendiyseniz buradan kayıt olabilirsiniz:</string>
-    <string name="goodreads_auth_blurb_part2">Kayıt olduktan sonra veya kayıtlı bir kullanıcı iseniz Goodreads verilerinize ulaşmak için aşağıdaki düğmeye basın. 
-										Sizi Goodreads\'e giriş yapabileceğiniz bir ağ sayfasına yönlendirecektir. Açarsözünüzü (şifrenizi) biz 										    kesinlikle görmeyeceğiz ve dilediğiniz zaman erişimi Goodreads ağ sayfasından iptal edebilirsiniz. 
-										Bazen boş bir bete düşerseniz geri düğmesine basıp buraya dönebilirsiniz!</string>
-    <string name="goodreads_auth_blurb_part3">Ancak unutmayın&#8230; bunu yapmanız zorunlu değil, BookCatalogue tek başına da gayet de çalışır!</string>
-    <string name="goodreads_url">http://www.goodreads.com</string>
-    <string name="authorize_access">Erişime izin ver</string>
-    <string name="authorize_access_already_auth">Bu uygulamayı zaten önceden yetkilendirmişsiniz. Tüm Goodreads işlevleri halihazırda kullanılabilir olmalı</string>
-    <string name="goodreads_access_error">Goodreads\'e erişmeye çalışırken bir ağ sorunu oluştu. Lütfen Goodreads ağ sayfasının çalışıyor olduğundan emin olun, sorun sürerse lütfen destek bölümü ile iletişime geçin.</string>
     <string name="label_other_preferences">Diğer seçenekler</string>
     <string name="user_interface">Kullanıcı arayüzü</string>
     <string name="start_in_my_books">\'Kitaplarım\' içinde aç</string>
     <string name="background_tasks">Ardalan görevleri</string>
     <string name="cleanup_old_tasks">Eski görevleri temizle</string>
     <string name="cleanup_old_events">Eski olayları temizle</string>
-    <string name="text_and_or_isbn">Metin ve/veya ISBN</string>
     <string name="search_criteria">Arama kriteri</string>
     <string name="add_manually">El ile ekle</string>
     <string name="search_internet">Genelağ\'da ara</string>
@@ -295,9 +251,6 @@
     <string name="not_authorized">Yetkilendirilmemiş</string>
     <string name="goodreads_auth_error">Goodreads yetkilendirmesi bir hataya neden oldu</string>
     <string name="if_the_problem_persists">Eğer sorun sürerse lütfen ana seçkedeki Yardım bölümünden destek ile iletişime geçin.</string>
-    <string name="book_no_longer_exists">Belirtilen kitap artık yok</string>
-    <string name="please_enter_search_criteria">Lütfen arama kriteri girin</string>
-    <string name="error_while_searching">Arama sırasında hata</string>
     <string name="send_all_to_goodreads_result">%1$s kitap işlendi: %2$s tanesi başarıyla gönderildi, %3$s tanesinin ISBN\'si yok ve %4$s tanesinin ISBN\'si Goodreads\'te bulunamadı</string>
     <string name="x_of_y">%1$d (Toplam %2$d)</string>
     <string name="send_book_to_goodreads">Bu kitabı Goodreads\'e gönder: %1$s</string>
@@ -435,25 +388,11 @@
     <string name="builtin">Yerleşik</string>
     <string name="sort_unread">Okunmayan (Yazar/Seri)</string>
     <string name="import_all_from_goodreads">Tümünü Goodreads\'den içe aktar</string>
-    <string name="requested_task_is_already_queued">İstenen görev kuyrukta bekliyor</string>
-    <string name="export_task_is_already_queued">Bir dışa aktarma görevi kuyrukta bekliyor ve bu görev başlayabilmesi için önce bitirilmesi gerek</string>
-    <string name="import_task_is_already_queued">Bir içe aktarma görevi kuyrukta bekliyor ve bu görev başlayabilmesi için önce bitirilmesi gerek</string>
-    <string name="goodreads_action_cannot_blah_blah">Bu uygulama Goodreads ağ sayfasında yetkilendirilmeden verilen bu görev tamamlanamaz. Uygulamayı yetkilendirdikten sonra yeniden deneyiniz. \n\nŞimdi yetkilendirmek istiyor musunuz?</string>
-    <string name="tell_me_more">Bilgi ver</string>
     <string name="retry_x_of_y_next_at_z">Yeniden dene: %1$s (Toplam %2$s), sonraki: %3$s</string>
     <string name="completed">Tamamlandı</string>
     <string name="failed">Başarısız</string>
     <string name="queued">Kuyrukta</string>
     <string name="unknown">Bilinmeyen</string>
-    <string name="send_books_to_goodreads_blurb">Bu işlem kitaplığınızı Goodreads\'e gönderecektir.
-    										\n\nİster tüm kitaplarınızı gönderebilir veya son göndermenizden bu yana güncellenen, alınan 
-    										veya gönderilen kitapları seçebilir (henüz gönderilmeyen 
-    										kitaplar da dahil olmak üzere) veya güncellemeyi iptal edebilirsiniz.
-    										\n\nEğer daha önce hiç kitap göndermediyseniz ilk iki seçenek
-    										arasında hiçbir ayrım bulunmamaktadır.</string>
-    <string name="send_all">Tümünü gönder</string>
-    <string name="send_updated">Güncellenenleri gönder</string>
-    <string name="sync_with_goodreads">Goodreads ile eşitle</string>
     <string name="cover_options_cc_ellipsis">Kapak seçenekleri&#8230;</string>
     <string name="show_events_ellipsis">Olayları göster&#8230;</string>
     <string name="hint_authors_book_may_appear_more_than_once">Eğer her yazar için gösteriliyorsa, tek bir kitap bir dizelgede birden fazla görünebilir. Böyle bir durumda bu kitaplardan birini silmek dizelgeden tüm girileri silecektir.</string>
@@ -463,7 +402,6 @@
     <string name="hint_background_task_events">Buradan bir ardalan görevi ile ilişkili tüm olayları görebilirsiniz. 
     								Bir olaya tıklamak o olayla ilintili yapılabilecek eylemleri görüntülemenizi sağlar.</string>
     <string name="hints_have_been_reset">İpuçları sıfırlandı</string>
-    <string name="task_has_been_queued_in_background">Görev ardalanda kuyruğa yerleştirildi</string>
     <string name="hint_startup_screen">Bu ölçünlü BookCatalogue başlangıç ekranıdır. Eğer isterseniz doğrudan \'Kitaplarım\'; ekranından başlayabilirsiniz. Başlangıç ekranı yeğlenenlerden değiştirilebilir.</string>
     <string name="upgrading_ellipsis">Yükseltiliyor&#8230;</string>
     <string name="explain_goodreads_no_isbn">Seçili kitabın bir ISBN numarası yok, dolayısıyla Goodreads ile özdevinimli olarak eşitlenmesi olanaklı değil. 
@@ -529,7 +467,6 @@
     <string name="label_year">Yıl</string>
     <string name="label_month">Ay</string>
     <string name="day">Gün</string>
-    <string name="getting_books_ellipsis">Kitaplar alınıyor&#8230;</string>
     <string name="last_error_e">Son hata: %1$s</string>
     <string name="invalid_isbn_x_specified_in_search">Aramara belirtilen ISBN \'%1$s\' geçersiz</string>
     <string name="if_day_is_specified_month_and_year_must_be">Eğer gün belirtmiş iseniz hem ay hem yıl bölümlerini de doldurmalısınız.</string>
@@ -540,7 +477,6 @@
     <string name="default_crop_frame_is_whole_image">Öntanımlı kırpma alanı bütün görseldir</string>
     <string name="cancelled">İptal edildi</string>
     <string name="import_complete">İçe aktarma başarılı</string>
-    <string name="library_thing">LibraryThing</string>
     <string name="searching_elipsis">Aranıyor&#8230;</string>
     <string name="adding_book_elipsis">Kitap ekle&#8230;</string>
     <string name="prefs_global_opening_book_mode">Kitabı salt okunur aç</string>
@@ -643,16 +579,10 @@
     <!-- Hint displayed when an export or database backup is done -->
 
     <!-- Button text on the goodreads activity; only displayed after user has registered -->
-    <string name="forget_credentials">Forget Credentials</string>
 
     <!-- Extra text displayed on the goodreads activity when a user HAS registered -->
-    <string name="goodreads_auth_blurb_part4">It looks like you have already authorized this app. If you would like to
-    delete the credentials from this phone, then you can do so by pressing the button below. But it is also
-    important to de-authorize the application at the goodreads website as well.
-    \n\nForgetting the credentials here will remove the goodreads option from the main application menu.</string>
 
     <!-- Progress dialog message displayed when doing a long network operation to a web site -->
-    <string name="connecting_to_web_site">Ağ sayfasına bağlanılıyor&#8230;</string>
 
     <!-- Admin option to import -->
     <string name="label_backup_to_archive">Arşive yedekle</string>

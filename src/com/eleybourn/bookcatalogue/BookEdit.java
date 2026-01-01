@@ -482,7 +482,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
             delete.setIcon(R.drawable.ic_menu_edit);
 
             MenuItem duplicate = menu.add(0, R.id.MENU_DUPLICATE_BOOK, 0, R.string.menu_duplicate);
-            duplicate.setIcon(android.R.drawable.ic_menu_add);
+            duplicate.setIcon(R.drawable.ic_menu_add);
         }
 
         // TODO: Consider allowing Tweets (or other sharing methods) to work on un-added books.
@@ -500,17 +500,17 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
         boolean hasAuthor = !this.getBookData().getAuthorList().isEmpty();
         if (mRowId != 0) {
             MenuItem item = menu.add(0, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR, 0, R.string.amazon_books_by_author);
-            item.setIcon(R.drawable.ic_www_search_2_holo_dark);
+            item.setIcon(R.drawable.ic_menu_search_globe);
         }
 
         if (!this.getBookData().getSeriesList().isEmpty()) {
             if (hasAuthor) {
                 MenuItem item = menu.add(0, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR_IN_SERIES, 0, R.string.amazon_books_by_author_in_series);
-                item.setIcon(R.drawable.ic_www_search_2_holo_dark);
+                item.setIcon(R.drawable.ic_menu_search_globe);
             }
             {
                 MenuItem item = menu.add(0, R.id.MENU_AMAZON_BOOKS_IN_SERIES, 0, R.string.amazon_books_in_series);
-                item.setIcon(R.drawable.ic_www_search_2_holo_dark);
+                item.setIcon(R.drawable.ic_menu_search_globe);
             }
         }
 
@@ -718,7 +718,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
                     SaveAlert alert = new SaveAlert();
                     alert.setMessage(getResources().getString(R.string.duplicate_book_message));
                     alert.setTitle(R.string.duplicate_book_title);
-                    alert.setIcon(android.R.drawable.ic_menu_info_details);
+                    alert.setIcon(R.drawable.ic_menu_info);
 
                     // Modern replacement for setButton2 (Negative)
                     alert.setButton(android.content.DialogInterface.BUTTON_NEGATIVE,

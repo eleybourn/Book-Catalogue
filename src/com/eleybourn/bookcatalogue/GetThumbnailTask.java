@@ -212,7 +212,7 @@ public class GetThumbnailTask implements SimpleTask {
 				mBitmap = null;
 			}
 		} else {
-			v.setImageResource(android.R.drawable.ic_dialog_alert);
+			v.setImageResource(R.drawable.ic_alert_warning);
 		}
 
 		mView.clear();

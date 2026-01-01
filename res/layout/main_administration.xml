@@ -26,7 +26,8 @@
             <TextView
                 android:id="@+id/bookshelfLabel"
                 style="@style/layout_menu_list"
-                app:drawableLeftCompat="@drawable/ic_menu_shelves"
+                app:drawableLeftCompat="@drawable/ic_menu_bookshelves"
+                android:drawablePadding="@dimen/p_lg"
                 android:text="@string/label_bookshelf" />
 
             <!-- FIELDS -->
@@ -35,6 +36,7 @@
                 android:id="@+id/fieldsLabel"
                 style="@style/layout_menu_list"
                 app:drawableLeftCompat="@drawable/ic_menu_fields"
+                android:drawablePadding="@dimen/p_lg"
                 android:text="@string/label_manage_fields" />
 
             <!-- BOOK LIST PREFS -->
@@ -42,7 +44,8 @@
             <TextView
                 android:id="@+id/booklistPreferencesLabel"
                 style="@style/layout_menu_list"
-                app:drawableLeftCompat="@drawable/ic_menu_manage"
+                app:drawableLeftCompat="@drawable/ic_menu_preferences"
+                android:drawablePadding="@dimen/p_lg"
                 android:text="@string/label_booklist_preferences" />
 
             <!-- Edit Styles -->
@@ -50,7 +53,8 @@
             <TextView
                 android:id="@+id/editStylesLabel"
                 style="@style/layout_menu_list"
-                app:drawableLeftCompat="@drawable/ic_menu_manage"
+                app:drawableLeftCompat="@drawable/ic_menu_styles"
+                android:drawablePadding="@dimen/p_lg"
                 android:text="@string/label_edit_book_list_styles" />
 
             <!-- OTHER PREFS -->
@@ -58,7 +62,8 @@
             <TextView
                 android:id="@+id/otherPrefsLabel"
                 style="@style/layout_menu_list"
-                app:drawableLeftCompat="@drawable/ic_menu_manage"
+                app:drawableLeftCompat="@drawable/ic_menu_settings"
+                android:drawablePadding="@dimen/p_lg"
                 android:text="@string/label_other_preferences" />
 
             <!-- DATA IMPORT/EXPORT -->
@@ -71,24 +76,28 @@
                 android:id="@+id/backupCatalogueLabel"
                 style="@style/layout_menu_list"
                 android:text="@string/label_backup_to_archive"
-                app:drawableLeftCompat="@drawable/ic_menu_save" />
+                app:drawableLeftCompat="@drawable/ic_menu_save"
+                android:drawablePadding="@dimen/p_lg" />
 
             <TextView
                 android:id="@+id/restoreCatalogueLabel"
                 style="@style/layout_menu_list"
                 app:drawableLeftCompat="@drawable/ic_menu_upload"
+                android:drawablePadding="@dimen/p_lg"
                 android:text="@string/label_import_from_archive" />
 
             <TextView
                 android:id="@+id/exportLabel"
                 style="@style/layout_menu_list"
                 app:drawableLeftCompat="@drawable/ic_menu_save"
+                android:drawablePadding="@dimen/p_lg"
                 android:text="@string/label_export_to_csv" />
 
             <TextView
                 android:id="@+id/importLabel"
                 style="@style/layout_menu_list"
                 app:drawableLeftCompat="@drawable/ic_menu_upload"
+                android:drawablePadding="@dimen/p_lg"
                 android:text="@string/label_import_from_csv" />
 
             <!-- UPDATE FIELDS -->
@@ -96,6 +105,7 @@
                 android:id="@+id/thumbLabel"
                 style="@style/layout_menu_list"
                 app:drawableLeftCompat="@drawable/ic_menu_gallery"
+                android:drawablePadding="@dimen/p_lg"
                 android:text="@string/label_update_fields" />
 
             <!-- ADVANCED OPTIONS Header -->
@@ -108,32 +118,37 @@
                 android:id="@+id/resetHintsLabel"
                 style="@style/layout_menu_list"
                 app:drawableLeftCompat="@drawable/ic_menu_fields"
+                android:drawablePadding="@dimen/p_lg"
                 android:text="@string/label_reset_hints" />
 
             <!-- ERASE COVER CACHE -->
             <TextView
                 android:id="@+id/eraseCoverCacheLabel"
                 style="@style/layout_menu_list"
-                app:drawableLeftCompat="@drawable/ic_menu_close_clear_cancel"
+                app:drawableLeftCompat="@drawable/ic_button_cancel"
+                android:drawablePadding="@dimen/p_lg"
                 android:text="@string/label_erase_cover_cache" />
 
             <!-- BACKUP DATABASE (DEBUG ONLY!) -->
             <TextView
                 android:id="@+id/backupLabel"
                 style="@style/layout_menu_list"
-                app:drawableLeftCompat="@drawable/ic_menu_archive"
+                app:drawableLeftCompat="@drawable/ic_menu_copy"
+                android:drawablePadding="@dimen/p_lg"
                 android:text="@string/label_copy_database" />
 
             <TextView
                 android:id="@+id/importOldFilesLabel"
                 style="@style/layout_menu_list"
                 app:drawableLeftCompat="@drawable/ic_menu_upload"
+                android:drawablePadding="@dimen/p_lg"
                 android:text="@string/label_import_old_files" />
 
             <TextView
                 android:id="@+id/backgroundEventsLabel"
                 style="@style/layout_menu_list"
                 app:drawableLeftCompat="@drawable/ic_menu_settings"
+                android:drawablePadding="@dimen/p_lg"
                 android:text="@string/label_background_events"
                 android:visibility="gone" />
 
@@ -141,6 +156,7 @@
                 android:id="@+id/backgroundTasksLabel"
                 style="@style/layout_menu_list"
                 app:drawableLeftCompat="@drawable/ic_menu_settings"
+                android:drawablePadding="@dimen/p_lg"
                 android:text="@string/label_background_tasks"
                 android:visibility="gone" />
         </LinearLayout>

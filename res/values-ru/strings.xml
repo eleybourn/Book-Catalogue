@@ -2,7 +2,6 @@
 <resources>
 
     <string name="app_name">BookCatalogue</string>
-    <string name="system_app_name">Book Catalogue</string>
     <string name="label_insert">Добавить книгу</string>
     <string name="menu_delete">Удалить книгу</string>
     <string name="label_author">Автор</string>
@@ -18,7 +17,6 @@
     <string name="confirm_update">Обновить</string>
     <string name="para_no_books">На этой полке нет книг. Пожалуйста, добавьте книги, используя меню в нижней части этого экрана.</string>
     <string name="menu_sort_by_author_expanded">Развернуть всё</string>
-    <string name="menu_sort_by">Отсортировать по</string>
     <string name="menu_sort_by_author_collapsed">Свернуть всё</string>
     <string name="label_search">Поиск</string>
     <string name="button_cancel">Отмена</string>
@@ -30,9 +28,7 @@
     <string name="confirm_save_bs">Сохранить полку</string>
     <string name="menu_delete_bs">Удалить полку</string>
     <string name="delete_1st_bs">Невозможно удалить единственную книжную полку</string>
-    <string name="bookshelf_label">Полка: </string>
     <string name="all_books">Все книги</string>
-    <string name="isbn_found">ISBN отсканирован. Поиск в Интернете.</string>
     <string name="title_isbn_search">Книжный каталог: поиск по ISBN</string>
     <string name="title_edit_bs">Книжный каталог: редактирование книжной полки</string>
     <string name="search_label">Поиск книг</string>
@@ -41,8 +37,6 @@
     <string name="label_series_num">№</string>
     <string name="import_data">Импортировать книги</string>
     <string name="import_alert">Предупреждение. Импорт данных может заменить существующие записи книг обновлённой информацией, в случае, если номер в файле совпадает с существующим номером. Обычно это то, что требуется, если вы обновляете поле в файле экспорта. Если вы добавляете запись новой книге, убедитесь, что поле id не заполнено.</string>
-    <string name="search_title">Книжный каталог: результаты поиска</string>
-    <string name="results_found">Найденные результаты</string>
     <string name="administration_label">Функции администрирования</string>
     <string name="menu_administration">Настройки</string>
     <string name="install_scan_title">Установить сканер штрих-кодов</string>
@@ -68,12 +62,6 @@
     <string name="contact2">philip.warner@rhyme.com.au</string>
     <string name="label_donate">Пожертвовать</string>
     <string name="label_about">О приложении…</string>
-    <string name="sortby_author">Отсортировать по автору</string>
-    <string name="sortby_title">Отсортировать по названию</string>
-    <string name="sortby_series">Отсортировать по серии</string>
-    <string name="sortby_loan">Отсортировать по одолженным</string>
-    <string name="sortby_unread">Отсортировать по непрочитанным</string>
-    <string name="sortby_genre">Отсортировать по жанру</string>
     <string name="label_list_price">Список цен</string>
     <string name="label_update_fields">Автоматическое обновление полей</string>
     <string name="select_fields_to_update">Выберите поля для обновления</string>
@@ -202,18 +190,6 @@
     <string name="usage_overwrite">Перезаписывает существующие данные</string>
     <string name="cancelling">Отменяется</string>
     <string name="starting_search">Поиск начинается</string>
-    <string name="lt_info">Это приложение может использовать LibraryThing (бесплатно) в качестве источника информации как для серий так и об альтернативных обложках. Чтобы использовать эту возможность, Вам нужно зарегистрироваться на LibraryThing и запросить ключ разработчика. Всё бесплатно.</string>
-    <string name="lt_register_text">Зарегистрироваться в LibraryThing</string>
-    <string name="lt_devkey_text">Запросить ключ разработчика LibraryThing</string>
-    <string name="lt_gotkey">Как только вы получите ключ разработчика (или если он у Вас уже есть), просто введите его в поле ниже. Он будет использован для получения дополнительной информации о книге.</string>
-    <string name="developer_key">Ключ разработчика</string>
-    <string name="require_library_thing_info">Для этой возможности необходим ключ разработчика LibraryThing. Вы хотите узнать больше о LibraryThing?</string>
-    <string name="uses_library_thing_info">Эта функция работает лучше при наличии ключа разработчика LibraryThing. Вы хотите узнать больше о LibraryThing, или не показывать это сообщение?\n\nИнформация о LibraryThing есть на закладке LibraryThing страницы Администрирования.</string>
-    <string name="reg_library_thing_title">Регистрация в LibraryThing</string>
-    <string name="more_info">Дополнительная информация</string>
-    <string name="disable_dialogue">Отключить сообщение</string>
-    <string name="lt_reset_messages_info">Время от времени приложение может показывать опциональные сообщения о LibraryThing. Нажмите кнопку внизу, чтобы сбросить все отключенные сообщения.</string>
-    <string name="reset">Сброс</string>
     <string name="para_send_info">Нажмите кнопку внизу экрана для сбора информации о недавних аварийных выключения программы или об иных ошибках и отправьте эту информацию нашим разработчикам. Создастся копия вашей базы и лог файлов. Если вы не хотите отправлять какой-либо из этих файлов, удалите его из приложений письма до отправки.</string>
     <string name="button_send_info">Отправить информацию</string>
     <string name="para_cleanup_files">Файлы, подлежащие очистке сейчас занимают %s на SD-карте. Лог-файлы и другие данные сохраняются на SD-карте при каждом обновлении, когда происходит резервное копирование базы, или в случае аварийного завершения программы. Нажмите кнопку внизу экрана, чтобы очистить эти файлы с SD-карты. Если у вас аварийно завершается программа или происходят иные ошибки, пожалуйста, сначала воспользуйтесь кнопкой \'Отправить информацию\'.</string>
@@ -222,16 +198,11 @@
     <string name="kilobytes">%.2fкб</string>
     <string name="bytes">%.0f байт</string>
     <string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
-    <string name="sortby_author_given">Отсортировать по автору (имени)</string>
     <string name="debug_subject">Собрана отладочная информация</string>
     <string name="debug_body">Пожалуйста, кратко опишите обнаруженную ошибку.</string>
     <string name="menu_duplicate">Дублирующаяся книга</string>
     <string name="cannot_edit_system">Вы не можете редактировать системные параметры.</string>
-    <string name="incorrect_key">Ваш ключ разработчика LibraryThing не действителен или не возможно установить соединение, чтобы его проверить.</string>
-    <string name="correct_key">Ваш ключ разработика LibraryThing действителен.</string>
-    <string name="sortby_author_one">Сортировать по автору (Только первый автор)</string>
     <string name="no_connection">Интернет соединение отсутствует.</string>
-    <string name="sortby_published">Сортировать по дате публикации</string>
     <string name="menu_share_this">Поделиться</string>
     <string name="email_export">Желаете ли Вы отправить этот экспорт по почте?</string>
     <string name="menu_crop_thumb">Обрезать эскиз</string>
@@ -242,29 +213,12 @@
     <string name="delete_task">Удалить задачу</string>
     <string name="label_library">Мои книги</string>
     <string name="label_settings">Администрирование и Настройки</string>
-    <string name="edit_book_send_to_gr">Послать на goodreads</string>
-    <string name="goodreads">goodreads</string>
-    <string name="goodreads_auth_blurb_part1">Goodreads это сайт, чья основная миссия это "помогать людям находить и делиться книгами, которые они любят".
-        									У них есть обширная база данных с книгами и отзывами на них. И если Вы зарегистрированный пользователь goodreads,
-        									наше приложение может экспортировать и импортировать ваши книги, полки и обзоры. Наше приложение полностью 
-        									автономно и не требует Goodreads, но если Вам интересно, вы можете зарегистрироваться здесь:</string>
-    <string name="goodreads_auth_blurb_part2">        									Как только Вы зарегистрируетесь или если уже зарегистрировались на Goodreads, Вы сможете авторизоваться через наше 
-        									приложение для доступа к вашим данным на Goodreads. Для этого нажмите на кнопку Авторизация ниже. Вы перейдете на страницу,
-        									где сможете авторизоваться. Наше приложение не знает и не хранит Ваши пароли. Также Вы можете заблокировать доступ
-        									через сайт Goodreads. Из-за капризов интернет соединения Вы можете увидеть пустую страницу. В этом случае просто нажмите
-        									кнопку Назад, чтобы вернуться сюда!</string>
-    <string name="goodreads_auth_blurb_part3">Но помните&#8230;всё это делать не обязательно: наше приложение замечательно работает и без этого!</string>
-    <string name="goodreads_url">http://www.goodreads.com</string>
-    <string name="authorize_access">Авторизация</string>
-    <string name="authorize_access_already_auth">Кажется, вы уже авторизованы. Все функции Goodreads уже должны быть доступны</string>
-    <string name="goodreads_access_error">Возникли проблемы с соединением во время доступа к Goodreads. Пожалуйста, проверьте работает ли сайт Goodreads и если проблема останется сообщите в поддержку</string>
     <string name="label_other_preferences">Другие настройки</string>
     <string name="user_interface">Пользовательский интерфейс</string>
     <string name="start_in_my_books">Начинать с \'Мои книги\'</string>
     <string name="background_tasks">Фоновые задачи</string>
     <string name="cleanup_old_tasks">Очистить старые задачи</string>
     <string name="cleanup_old_events">Очистить старые события</string>
-    <string name="text_and_or_isbn">Текст и/или ISBN</string>
     <string name="search_criteria">Параметры поиска</string>
     <string name="add_manually">Добавить вручную</string>
     <string name="search_internet">Поиск в Интернете</string>
@@ -286,9 +240,6 @@
     <string name="not_authorized">Не авторизовано</string>
     <string name="goodreads_auth_error">Авторизация Goodreads завершилась с ошибкой.</string>
     <string name="if_the_problem_persists">Если проблема осталась, свяжитесь с поддержкой через меню Помощь главного меню.</string>
-    <string name="book_no_longer_exists">Указанная книга больше не существует</string>
-    <string name="please_enter_search_criteria">Пожалуйста, введите параметры поиска</string>
-    <string name="error_while_searching">Ошибка во время поиска</string>
     <string name="send_all_to_goodreads_result">%1$s книг обработано: %2$s отправлено успешно, %3$s без ISBN и %4$s с ISBN но не найдено в Goodreads</string>
     <string name="x_of_y">%1$d из %2$d</string>
     <string name="send_book_to_goodreads">Отправить книгу %1$s на Goodreads</string>
@@ -419,25 +370,11 @@
     <string name="builtin">Встроенный</string>
     <string name="sort_unread">Непрочтенные (Автор/Серии)</string>
     <string name="import_all_from_goodreads">Импортировать все из Goodreads</string>
-    <string name="requested_task_is_already_queued">Запрошенная задача уже в очереди</string>
-    <string name="export_task_is_already_queued">Задача экспортирования уже в очереди и должна завершиться до того, как может начаться эта задача</string>
-    <string name="import_task_is_already_queued">Задача импортирования уже в очереди и должна завершиться до того, как может начаться эта задача</string>
-    <string name="goodreads_action_cannot_blah_blah">        Данное действие не может быть завершено пока приложение не будет авторизовано через сайт Goodreads. 
-        Пожалуйста, попробуйте ещё раз, после авторизации приложения.\n\n
-        Хотите ли Вы авторизоваться сейчас?</string>
-    <string name="tell_me_more">Расскажите мне ещё</string>
     <string name="retry_x_of_y_next_at_z">Повторить %1$s из %2$s следующий к %3$s</string>
     <string name="completed">Завершено</string>
     <string name="failed">Неудача</string>
     <string name="queued">В очереди</string>
     <string name="unknown">Неизвестно</string>
-    <string name="send_books_to_goodreads_blurb">        Это отправит Вашу библиотеку на Goodreads. 
-        \n\nВы можете выбрать так, чтобы отослать все ваши книги или только те, которые были обновлены с тех пор как были копированы с или на Goodreads
-        (включая все книги, которые ещё не были отправлены). Также Вы можете отменить обновление.
-        \n\nЕсли никогда не отправляли книги, тогда нет никакой разницы между первыми двумя вариантами.</string>
-    <string name="send_all">Отправить все</string>
-    <string name="send_updated">Отправить обновленные</string>
-    <string name="sync_with_goodreads">Синхронизировать с Goodreads</string>
     <string name="cover_options_cc_ellipsis">Настройки обложек&#8230;</string>
     <string name="show_events_ellipsis">Показать события&#8230;</string>
     <string name="hint_authors_book_may_appear_more_than_once">        Если показывается по авторам, то одна и та же книга может появиться в списке многократно. 
@@ -449,8 +386,7 @@
     <string name="hint_background_task_events">        Здесь Вы сможете увидеть события связанные с фоновыми задачами. 
         Клик по событию позволит осуществить множество действий, связанных с этим событием.</string>
     <string name="hints_have_been_reset">Подсказки сброшены</string>
-    <string name="task_has_been_queued_in_background">Задача поставлена в очередь в фоне</string>
-    <string name="hint_startup_screen">        Это стандартное стартовое окно BookCatalogue. 
+    <string name="hint_startup_screen">        Это стандартное стартовое окно BookCatalogue.
         Если хотите, Вы можете начинать прямо с \'Мои книги\'; начальное окно может быть изменено в настройках.</string>
     <string name="upgrading_ellipsis">Обновление&#8230;</string>
     <string name="explain_goodreads_no_isbn">        Выбранная книга не имеет ISBN; невозможно автоматически синхронизировать с Goodreads.
@@ -517,7 +453,6 @@
     <string name="label_year">Год</string>
     <string name="label_month">Месяц</string>
     <string name="day">День</string>
-    <string name="getting_books_ellipsis">Получение книг&#8230;</string>
     <string name="last_error_e">Последняя ошибка: %1$s</string>
     <string name="invalid_isbn_x_specified_in_search">В поиске указан неверный ISBN \'%1$s\'</string>
     <string name="if_day_is_specified_month_and_year_must_be">Если указан день, также необходимо указать месяц и год.</string>
@@ -528,7 +463,6 @@
     <string name="default_crop_frame_is_whole_image">Рамка по умолчанию: всё изображение</string>
     <string name="cancelled">Отменено</string>
     <string name="import_complete">Импорт завершен</string>
-    <string name="library_thing">LibraryThing</string>
     <string name="searching_elipsis">Поиск&#8230;</string>
     <string name="adding_book_elipsis">Добавление книги&#8230;</string>
     <string name="prefs_global_opening_book_mode">Просмотр книги в режиме чтения</string>
@@ -625,11 +559,6 @@
 	</string>
 	<string name="label_details">Детали</string>
 	<string name="label_loan">Долг</string>
-    <string name="forget_credentials">Убрать credentials</string>
-    <string name="goodreads_auth_blurb_part4">Похоже, что Вы уже авторизовали приложение. Если Вы хотите удалить
-    credentials с этого телефона, то воспользуйтесь кнопкой ниже. В этом случае не забудьте деавторизировать приложение на сайте Goodreads.
-    \n\nПосле сброса credentials пункт меню Goodreads пропадет из главного меню.</string>
-    <string name="connecting_to_web_site">Соединение с сайтом&#8230;</string>
     <string name="label_backup_to_archive">Бэкап в архив</string>
     <string name="label_import_from_archive">Импорт из архива</string>
     <string name="a_and_b">%1$s и %2$s</string>

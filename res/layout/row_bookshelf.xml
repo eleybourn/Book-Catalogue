@@ -11,7 +11,9 @@
     <TextView
         android:id="@+id/row_bookshelf"
         style="@style/layout_menu_list"
-        app:drawableLeftCompat="@drawable/ic_menu_archive"
+        android:drawablePadding="@dimen/p_md"
+        android:paddingVertical="@dimen/p_md"
+        app:drawableLeftCompat="@drawable/ic_menu_bookshelves"
         app:drawableTint="?attr/colorPrimary"
         android:text="@string/not_set" />
 

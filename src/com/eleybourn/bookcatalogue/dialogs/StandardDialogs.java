@@ -85,7 +85,7 @@ public class StandardDialogs {
         new AlertDialog.Builder(context)
             .setMessage(message)
             .setTitle(R.string.delete_series)
-            .setIcon(android.R.drawable.ic_menu_info_details)
+            .setIcon(R.drawable.ic_menu_info)
             .setPositiveButton(R.string.button_ok, (dialog, which) -> {
                 dbHelper.deleteSeries(series);
                 onDeleted.run();
@@ -130,7 +130,7 @@ public class StandardDialogs {
         new AlertDialog.Builder(context)
                 .setMessage(message)
                 .setTitle(R.string.menu_delete)
-                .setIcon(android.R.drawable.ic_menu_info_details)
+                .setIcon(R.drawable.ic_menu_info)
                 .setPositiveButton(R.string.button_ok, (dialog, which) -> {
                     dbHelper.deleteBook(id);
                     onDeleted.run();

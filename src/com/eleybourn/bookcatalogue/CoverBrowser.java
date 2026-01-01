@@ -400,7 +400,7 @@ public class CoverBrowser {
 		        i.setScaleType(ImageView.ScaleType.FIT_CENTER);
 		        i.setLayoutParams(new ImageSwitcher.LayoutParams(ImageSwitcher.LayoutParams.WRAP_CONTENT,
 		        		ImageSwitcher.LayoutParams.WRAP_CONTENT));
-			    i.setImageResource(android.R.drawable.ic_menu_help);
+			    i.setImageResource(R.drawable.ic_menu_help);
 		        return i;
 			}});
 
@@ -608,7 +608,7 @@ public class CoverBrowser {
 				// Not present; request it and use a placeholder.
 				GetThumbnailTask task = new GetThumbnailTask(position, i);
 				mImageFetcher.enqueue(task);
-				i.setImageResource(android.R.drawable.ic_menu_help);
+				i.setImageResource(R.drawable.ic_menu_help);
 			} else {
 				if (f.exists()) {
 					// Present, so use it.

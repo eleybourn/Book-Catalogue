@@ -822,11 +822,6 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
 
         ImageView bookshelfDown = findViewById(R.id.button_bookshelf);
         bookshelfDown.setOnClickListener(v -> mBookshelfSpinner.performClick());
-
-        TextView bookshelfNum = findViewById(R.id.bookshelf_num);
-        if (bookshelfNum != null) {
-            bookshelfNum.setOnClickListener(v -> mBookshelfSpinner.performClick());
-        }
     }
 
     /**
@@ -838,7 +833,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
         mMenuHandler = new MenuHandler();
         mMenuHandler.init(menu);
         mMenuHandler.addCreateBookItems(menu);
-        i = mMenuHandler.addItem(menu, MNU_SORT, R.string.sort_and_style_ellipsis, android.R.drawable.ic_menu_sort_alphabetically);
+        i = mMenuHandler.addItem(menu, MNU_SORT, R.string.sort_and_style_ellipsis, R.drawable.ic_menu_sort);
         i.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         mMenuHandler.addItem(menu, MNU_EXPAND, R.string.menu_sort_by_author_expanded, R.drawable.ic_menu_expand);
         mMenuHandler.addItem(menu, MNU_COLLAPSE, R.string.menu_sort_by_author_collapsed, R.drawable.ic_menu_collapse);

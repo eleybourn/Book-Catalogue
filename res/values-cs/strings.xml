@@ -1,8 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
 <string name="app_name">Book Catalogue</string>
-<string name="system_app_name">Book Catalogue</string>
-<string name="label_insert">Přidat knihu</string>
+    <string name="label_insert">Přidat knihu</string>
 <string name="menu_delete">Smazat knihu</string>
 <string name="label_author">Autor</string>
 <string name="label_title">Titul</string>
@@ -17,8 +16,7 @@
 <string name="confirm_update">Upravit</string>
 <string name="para_no_books">V této knihovně nemáte v současnosti žádnou knihu. Pro přidání knihy použijte menu ve spodní části obrazovky.</string>
 <string name="menu_sort_by_author_expanded">Rozbalit vše</string>
-<string name="menu_sort_by">Seřadit podle</string>
-<string name="menu_sort_by_author_collapsed">Sbalit vše</string>
+    <string name="menu_sort_by_author_collapsed">Sbalit vše</string>
     <string name="label_search">Hledat</string>
 <string name="button_cancel">Zrušit</string>
 <string name="button_confirm_save">Uložit knihu</string>
@@ -29,10 +27,8 @@
 <string name="confirm_save_bs">Uložit knihovnu</string>
 <string name="menu_delete_bs">Smazat knihovnu</string>
 <string name="delete_1st_bs">Nelze smazat defaultní knihovnu.</string>
-<string name="bookshelf_label">Knihovna: </string>
-<string name="all_books">Všechny knihy</string>
-<string name="isbn_found">Zjištěn ISBN kód. Prohledávám Internet.</string>
-<string name="title_isbn_search">Book Catalogue: Hledat ISBN</string>
+    <string name="all_books">Všechny knihy</string>
+    <string name="title_isbn_search">Book Catalogue: Hledat ISBN</string>
     <string name="title_edit_bs">Book Catalogue: Upravit knihovnu</string>
     <string name="search_label">Hledat knihy</string>
 <string name="search_hint">Hledat autora nebo titul</string>
@@ -41,9 +37,7 @@
     <string name="import_data">Importovat knihy</string>
 <string name="import_alert">Pozor: Importovaná data mohou upravit existující záznamy knih - k takové situaci dojde v případě, že není vyplněno uuid, a id v importovaném souboru je totožné s již existujícím id. Doporučujeme proto zkontrolovat - a případně upravit - toto pole v exportovaném souboru. Pokud byl vytvořen nový záznam, nebo jsou importovány další knihy, tak se ujistěte, že je vyplněno uuid, nebo že pole id je prázdné.</string>
     <string name="import_failed_is_location_correct">ERROR: Import dat (z SD karty) selhal. Je soubor na správném místě?</string>
-<string name="search_title">Book Catalogue: Výsledky vyhledávání</string>
-<string name="results_found">Nalezené výsledky</string>
-<string name="administration_label">Administrační funkce</string>
+    <string name="administration_label">Administrační funkce</string>
     <string name="menu_administration">Admin</string>
     <string name="install_scan_title">Instalovat čtečku čárových kódů</string>
 <string name="label_version_number">Číslo verze:</string>
@@ -68,13 +62,7 @@
 <string name="contact2">philip.warner@rhyme.com.au</string>
 <string name="label_donate">Podpořit</string>
 <string name="label_about">O této aplikaci</string>
-    <string name="sortby_author">Řadit podle autora</string>
-<string name="sortby_title">Řadit podle titulu</string>
-<string name="sortby_series">Řadit podle série</string>
-<string name="sortby_loan">Řadit podle zapůjčení</string>
-<string name="sortby_unread">Řadit podle přečtení</string>
-<string name="sortby_genre">Řadit podle žánru</string>
-<string name="label_list_price">Seznam cen</string>
+    <string name="label_list_price">Seznam cen</string>
     <string name="label_update_fields">Automaticky aktualizovat pole</string>
 <string name="select_fields_to_update">Zvolit pole k aktualizaci</string>
 <string name="select_fields_to_update_help">Vybraná pole budou aktualizována automaticky z internetu. Nevybraná pole zůstanou beze změny.</string>
@@ -198,19 +186,7 @@
 <string name="usage_overwrite">Přepsat existující data</string>
 <string name="cancelling">Rušení</string>
 <string name="starting_search">Začínám vyhledávat</string>
-<string name="lt_info">Tato aplikace může využít LibraryThing jako další zdroj informací o knihách. K využití této funkce je nutná Vaše registrace na LibraryThing (zdarma) a rovněž získání vývojářského klíče od LibraryThing (také zdarma).</string>
-<string name="lt_register_text">Registrovat na LibraryThing</string>
-<string name="lt_devkey_text">Získat vývojářský klíč LibraryThing</string>
-<string name="lt_gotkey">Až získáte svůj vývojářský klíč (nebo pokud jej již máte), jednoduše jej vložte níže, aby mohl být použit pro získání extra informací.</string>
-<string name="developer_key">Vývojářský klíč</string>
-<string name="require_library_thing_info">Tato funkce vyžaduje vývojářský klíč LibraryThing. Chtece se dozvědět více informací o LibraryThing?</string>
-<string name="uses_library_thing_info">Tato funkce využívá vývojářský klíč LibraryThing. Chtece se dozvědět více informací o LibraryThing, nebo zakázat tuto zprávu?\n\nInformace o LibraryThing můžete nalézt v záložce LibraryThing na administrační obrazovce.</string>
-<string name="reg_library_thing_title">LibraryThing registrace</string>
-<string name="more_info">Více informací.</string>
-<string name="disable_dialogue">Zakázat zprávu</string>
-<string name="lt_reset_messages_info">Čas od času zobrazí aplikace zprávu týkající se LibraryThing. Stiskněte tlačítko níže pro resetování všech těchto zpráv, které byly v minulosti zakázány.</string>
-<string name="reset">Reset</string>
-<string name="para_send_info">Stiskněte tlačítko níže pro získání informací o nedávných chybách nebo problémech s aplikací a jejich následné zaslání jednomu z našich vývojářů. Bude vytvořena záložní kopie Vaší databáze a všech logovacích souborů. Pokud si nepřejete poslat některý z těchto souborů, odstraňte jej z přílohy mailu ještě před jeho odesláním.</string>
+    <string name="para_send_info">Stiskněte tlačítko níže pro získání informací o nedávných chybách nebo problémech s aplikací a jejich následné zaslání jednomu z našich vývojářů. Bude vytvořena záložní kopie Vaší databáze a všech logovacích souborů. Pokud si nepřejete poslat některý z těchto souborů, odstraňte jej z přílohy mailu ještě před jeho odesláním.</string>
 <string name="button_send_info">Poslat informace</string>
 <string name="para_cleanup_files">Dočasné soubory momentálně zabírají %s na SD kartě. Logovací soubory a další data jsou ukládána na SD kartu při každé aktualizaci, při zálohování databáze, nebo při pádu aplikace. Stiskněte tlačítko níže pro odstranění těchto dat. Pokud jste se však v minulosti setkal s pádem aplikace, nebo dalšími problémy při jejím používání, uvažujte prosím nejprve o zaslání těchto informací prostřednictvím tlačítka \'Poslat informace\'.</string>
 <string name="button_cleanup_files">Odstranit soubory</string>
@@ -218,17 +194,12 @@
 <string name="kilobytes">%.2fkB</string>
 <string name="bytes">%.0f bytů</string>
 <string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
-<string name="sortby_author_given">Řadit podle autora (křestní jméno)</string>
-<string name="debug_subject">Shromáždit informace o debugování</string>
+    <string name="debug_subject">Shromáždit informace o debugování</string>
 <string name="debug_body">Věnujte prosím čas přesnému popisu problému, se kterým máte zkušenost.</string>
 <string name="menu_duplicate">Duplicitní kniha</string>
 <string name="cannot_edit_system">Nemůžete upravovat systémové hodnoty</string>
-<string name="incorrect_key">Váš vývojářský klíč LibraryThing je neplatný, nebo není k dispozici připojení k internetu nutné k jeho ověření.</string>
-<string name="correct_key">Váš vývojářský klíč LibraryThing je platný.</string>
-<string name="sortby_author_one">Řadit podle autora (pouze dle prvního autora)</string>
-<string name="no_connection">Připojení k internetu není k dispozici.</string>
-<string name="sortby_published">Řadit podle data vydání</string>
-<string name="menu_share_this">Sdílet</string>
+    <string name="no_connection">Připojení k internetu není k dispozici.</string>
+    <string name="menu_share_this">Sdílet</string>
 <string name="email_export">Přejete si odeslat tento export prostřednictvím mailu?</string>
 <string name="menu_crop_thumb">Oříznout náhled</string>
     <string name="task_errors">Chyby</string>
@@ -236,31 +207,13 @@
     <string name="retry_task">Opakovat</string>
     <string name="label_library">Moje knihy</string>
     <string name="label_settings">Administrace a možnosti</string>
-<string name="edit_book_send_to_gr">Poslat do Goodreads</string>
-<string name="goodreads">Goodreads</string>
-    <string name="goodreads_auth_blurb_part1">Goodreads je internetová síť, jejímž hlavním cílem je "pomoci lidem najít a sdílet knihy, které milují".
-    										Mají velmi rozsáhlou databázi knih a recenzí, a pokud jste jejich registovaný uživatel, může 
-    										BookCatalogue exportovat Vaše knihy, knihovny a recenze do Goodreads a naopak importovat Vaše knihy, knihovny 
-    										a recenze z Goodreads. BookCatalogue je samostatná aplikace a ke své činnosti  
-    										Goodreads nepotřebuje, ale přesto, pokud máte zájem, můžete se registrovat na:</string>
-<string name="goodreads_auth_blurb_part2">Pokud jste se na Goodreads registroval, nebo pokud již jste registrovaným uživatelem, můžete autorizovat BookCatalogue 
-    										k přístupu k Vašim datům na Goodreads prostřednictvím tlačítka níže. Následně budete přesunut na webovou stránku, 
-    										na které se přihlásíte do Goodreads a autorizujete tuto aplikaci. Tato aplikace nikdy nebude znát Vaše heslo 
-    										a udělenou autorizaci můžete kdykoli zrušit přes webové stránky Goodreads. Při problémech s připojením 
-    										k internetu můžete skončit na prázdné stránce - v tom případě prostě použijte tlačítko zpět pro návrat na tuto obrazovku!</string>
-<string name="goodreads_auth_blurb_part3">Pamatujte&#8230;žádná z těchto možností není povinná: BookCatalogue je samostatná aplikace a pracuje zcela správně i bez nich!</string>
-<string name="goodreads_url">http://www.goodreads.com</string>
-<string name="authorize_access">Autorizovat přístup</string>
-<string name="authorize_access_already_auth">Vypadá to, že aplikace již byla autorizována. Všechny funkce z Goodreads by již měly být dostupné</string>
-<string name="goodreads_access_error">Během autorizace aplikace došlo k problému s internetovým připojením. Zkontrolujte prosím přístup ke stránkám Goodreads a pokud problémy přetrvají, kontaktujte správce.</string>
-<string name="label_other_preferences">Další možnosti</string>
+    <string name="label_other_preferences">Další možnosti</string>
 <string name="user_interface">Uživatelské rozhraní</string>
 <string name="start_in_my_books">Začínat v \'Moje knihy\'</string>
     <string name="background_tasks">Úlohy na pozadí</string>
 <string name="cleanup_old_tasks">Smazat staré úlohy</string>
 <string name="cleanup_old_events">Smazat staré události</string>
-    <string name="text_and_or_isbn">Vložit a/nebo ISBN</string>
-<string name="search_criteria">Kritéria pro vyhledávání</string>
+    <string name="search_criteria">Kritéria pro vyhledávání</string>
 <string name="add_manually">Přidat ručně</string>
     <string name="search_internet">Prohledat internet</string>
 <string name="show_results">Zobrazit výsledky</string>
@@ -281,10 +234,7 @@
 <string name="not_authorized">Neautorizováno</string>
 <string name="goodreads_auth_error">Goodreads autorizace skončila chybou.</string>
 <string name="if_the_problem_persists">Pokud problémy přetrvají, kontaktujte správce.</string>
-<string name="book_no_longer_exists">Zadaná kniha již neexistuje</string>
-<string name="please_enter_search_criteria">Prosím vložte kritéria pro vyhledávání</string>
-<string name="error_while_searching">Během vyhledávání došlo k chybě.</string>
-<string name="send_all_to_goodreads_result">%1$s knih zpracováno: %2$s úspěšně odesláno, %3$s bez ISBN a %4$s s ISBN, které nebyly v Goodreads nalezeny.</string>
+    <string name="send_all_to_goodreads_result">%1$s knih zpracováno: %2$s úspěšně odesláno, %3$s bez ISBN a %4$s s ISBN, které nebyly v Goodreads nalezeny.</string>
 <string name="x_of_y">%1$d z %2$d</string>
 <string name="send_book_to_goodreads">Poslat knihu %1$s do Goodreads</string>
 <string name="label_erase_cover_cache">Vymazat vyrovnávací paměť pro obálky</string>
@@ -402,25 +352,12 @@
 <string name="builtin">Vestavěný</string>
 <string name="sort_unread">Nepřečtené (Autor/Série)</string>
 <string name="import_all_from_goodreads">Importovat vše z Goodreads</string>
-<string name="requested_task_is_already_queued">Požadovaná úloha je již ve frontě</string>
-<string name="export_task_is_already_queued">Úloha "export" je již v současné době ve frontě a musí být dokončena dříve, než může být tato úloha spuštěna</string>
-<string name="import_task_is_already_queued">Úloha "import" je již v současné době ve frontě a musí být dokončena dříve, než může být tato úloha spuštěna</string>
-<string name="goodreads_action_cannot_blah_blah">Tato akce nemůže být dokončena, dokud nebude aplikace autorizována na webových stránkách Goodreads. Pokud jste již aplikaci autorizoval, opakujte prosím akci znovu. \n\nPřejete si autorizovat aplikaci nyní?</string>
-<string name="tell_me_more">Dozvědět se více</string>
-<string name="retry_x_of_y_next_at_z">Opakovat %1$s z %2$s dále na %3$s</string>
+    <string name="retry_x_of_y_next_at_z">Opakovat %1$s z %2$s dále na %3$s</string>
 <string name="completed">Kompletní</string>
 <string name="failed">Neúspěšný</string>
 <string name="queued">Fronta</string>
 <string name="unknown">Neznámý</string>
-<string name="send_books_to_goodreads_blurb">Zde můžete odeslat Vaši knihovnu na Goodreads.
-    										\n\nMůžete odeslat buď všechny knihy, nebo pouze ty knihy, které byly aktualizovány
-    										od chvíle, kdy jste naposledy kopíroval z nebo do Goodreads (spolu se všemi knihami,
-    										které doposud nebyly odeslány) nebo můžete aktualizaci zrušit.
-    										\n\nPokud jste doposud žádnou knihu neodeslal, pak mezi první a druhou volbou není žádký rozdíl.</string>
-<string name="send_all">Odeslat vše</string>
-<string name="send_updated">Odeslat aktualizované</string>
-<string name="sync_with_goodreads">Synchronizovat s Goodreads</string>
-<string name="cover_options_cc_ellipsis">Možnosti obálky&#8230;</string>
+    <string name="cover_options_cc_ellipsis">Možnosti obálky&#8230;</string>
 <string name="show_events_ellipsis">Zobrazit události&#8230;</string>
 <string name="hint_authors_book_may_appear_more_than_once">Při zobrazení pod každým autorem se může stát, že jedna kniha se objeví v seznamu vícekrát - pokud však v takovém případě odstraníte kterýkoli z těchto záznamů, budou odstraněny všechny.</string>
 <string name="hint_series_book_may_appear_more_than_once">Při zobrazení pod každou sérií se může stát, že jedna kniha se objeví v seznamu vícekrát - pokud však v takovém případě odstraníte kterýkoli z těchto záznamů, budou odstraněny všechny.</string>
@@ -429,8 +366,7 @@
 <string name="hint_background_task_events">Odtud můžete sledovat události spojené s úlohami na pozadí. 
     								Kliknutí na událost Vám umožní provést celou řadu akcí spojených s danou událostí.</string>
 <string name="hints_have_been_reset">Rady byly obnoveny</string>
-<string name="task_has_been_queued_in_background">Úloha byla zařazena do fronty na pozadí</string>
-<string name="hint_startup_screen">Toto je standardní výchozí obrazovka aplikace BookCatalogue. Pokud si však přejete, může aplikace ihned po spuštění zobrazit sekci \'Moje knihy\'; případnou změnu spouštění aplikace můžete provést v sekci Nastavení.</string>
+    <string name="hint_startup_screen">Toto je standardní výchozí obrazovka aplikace BookCatalogue. Pokud si však přejete, může aplikace ihned po spuštění zobrazit sekci \'Moje knihy\'; případnou změnu spouštění aplikace můžete provést v sekci Nastavení.</string>
 <string name="upgrading_ellipsis">Aktualizování&#8230;</string>
 <string name="explain_goodreads_no_isbn">Zvolená kniha nemá zadaný ISBN kód; není proto možné ji automaticky synchronizovat s Goodreads. 
     									Tuto situaci můžete jednoduše vyřešit následujícím způsobem:

@@ -350,7 +350,7 @@ public class StartupActivity
 			AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(R.string.backup_request).create();
 			alertDialog.setCanceledOnTouchOutside(false);
 			alertDialog.setTitle(R.string.backup_title);
-			alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
+			alertDialog.setIcon(R.drawable.ic_menu_info);
 			alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.button_cancel),
 								  (dialog, which) -> dialog.dismiss());
 			alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.button_ok),
@@ -400,7 +400,7 @@ public class StartupActivity
 		AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(Html.fromHtml(message, Html.FROM_HTML_MODE_LEGACY)).create();
 		alertDialog.setCanceledOnTouchOutside(false);
 		alertDialog.setTitle(R.string.upgrade_title);
-		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
+		alertDialog.setIcon(R.drawable.ic_menu_info);
 		alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.button_ok), (dialog, which) -> alertDialog.dismiss());
 		alertDialog.setOnCancelListener(dialog -> alertDialog.dismiss());
 		alertDialog.setOnDismissListener(dialog -> {

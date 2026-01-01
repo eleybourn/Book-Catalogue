@@ -341,7 +341,7 @@ public class BookISBNSearch extends ActivityWithTasks {
         AlertDialog.Builder builder = new AlertDialog.Builder(BookISBNSearch.this);
         builder.setMessage(R.string.bad_scanner);
         builder.setTitle(R.string.install_scan_title);
-        builder.setIcon(android.R.drawable.ic_menu_info_details);
+        builder.setIcon(R.drawable.ic_menu_info);
 
         // setButton2 -> setNegativeButton
         builder.setNegativeButton("ZXing", (dialog, which) -> {
@@ -435,7 +435,7 @@ public class BookISBNSearch extends ActivityWithTasks {
                         AlertDialog.Builder builder = new AlertDialog.Builder(this);
                         builder.setMessage(R.string.duplicate_book_message);
                         builder.setTitle(R.string.duplicate_book_title);
-                        builder.setIcon(android.R.drawable.ic_menu_info_details);
+                        builder.setIcon(R.drawable.ic_menu_info);
 
                         // setButton2 -> setNegativeButton (Add)
                         builder.setNegativeButton(this.getResources().getString(R.string.label_add), (dialog, which) -> doSearchBook());

@@ -2,8 +2,7 @@
 <resources>
 
 	<string name="app_name">Book Catalogue</string>
-    	<string name="system_app_name">Book Catalogue</string>
-	<string name="label_insert">Añadir libro</string>
+    <string name="label_insert">Añadir libro</string>
 	<string name="menu_delete">Eliminar libro</string>
 	<string name="label_author">Autor</string>
 	<string name="label_title">Título</string>
@@ -18,8 +17,7 @@
 	<string name="confirm_update">Actualizar</string>
 	<string name="para_no_books">No hay libros en esta biblioteca. Añada alguno utilizando el menú al pie de esta pantalla.</string>
 	<string name="menu_sort_by_author_expanded">Expandir todo</string>
-	<string name="menu_sort_by">Ordenar por</string>
-	<string name="menu_sort_by_author_collapsed">Comprimir todo</string>
+    <string name="menu_sort_by_author_collapsed">Comprimir todo</string>
     <string name="label_search">Buscar</string>
 	<string name="button_cancel">Cancelar</string>
 	<string name="button_confirm_save">Guardar libro</string>
@@ -30,10 +28,8 @@
 	<string name="confirm_save_bs">Guardar biblioteca</string>
 	<string name="menu_delete_bs">Eliminar biblioteca</string>
 	<string name="delete_1st_bs">La biblioteca predefinida no se puede eliminar</string>
-	<string name="bookshelf_label">Biblioteca: </string>
-	<string name="all_books">Todos los libros</string>
-	<string name="isbn_found">ISBN escaneado. Buscando en Internet.</string>
-	<string name="title_isbn_search">Book Catalogue: Buscar ISBN</string>
+    <string name="all_books">Todos los libros</string>
+    <string name="title_isbn_search">Book Catalogue: Buscar ISBN</string>
     <string name="title_edit_bs">Book Catalogue: Editar bibliotecas</string>
     <string name="search_label">Buscar libro</string>
 	<string name="search_hint">Buscar autor o título</string>
@@ -42,9 +38,7 @@
     <string name="import_data">Importar libros</string>
 	<string name="import_alert">¡Atención! La importación de datos puede actualizar los datos de libros existentes con nueva información si el ID del fichero de importación existe ya en la base de datos. Esto puede ser aceptable si se modifica un campo de un fichero exportado. Si crea un registro para un nuevo libro, compruebe que el campo ID está en blanco.</string>
     <string name="import_failed_is_location_correct">ERROR: La importación (desde la tarjeta SD) ha fallado. ¿Está el fichero en el lugar correcto?</string>
-	<string name="search_title">Book Catalogue: Buscar resultados</string>
-	<string name="results_found">Resultados encontrados</string>
-	<string name="administration_label">Administración</string>
+    <string name="administration_label">Administración</string>
     <string name="menu_administration">Admin</string>
     <string name="install_scan_title">Instalar Escáner de código de barras</string>
 	<string name="label_version_number">Versión</string>
@@ -69,13 +63,7 @@
 	<string name="contact2">philip.warner@rhyme.com.au</string>
 	<string name="label_donate">Contribuir</string>
 	<string name="label_about">Acerca de esta App</string>
-    <string name="sortby_author">Ordenar por autor</string>
-	<string name="sortby_title">Ordenar por título</string>
-	<string name="sortby_series">Ordenar por serie</string>
-	<string name="sortby_loan">Ordenar por prestado</string>
-	<string name="sortby_unread">Ordenar por no leidos</string>
-	<string name="sortby_genre">Ordenar por género</string>
-	<string name="label_list_price">Precio</string>
+    <string name="label_list_price">Precio</string>
     <string name="label_update_fields">Actualización automática de campos</string>
 	<string name="select_fields_to_update">Seleccione campos para actualizar</string>
 	<string name="select_fields_to_update_help">Los campos seleccionados se actualizarán con datos de internet. Los campos no marcados no se modificarán.</string>
@@ -201,19 +189,7 @@
 	<string name="usage_overwrite">Sobreescribir los datos existentes</string>
 	<string name="cancelling">Cancelando</string>
 	<string name="starting_search">Iniciando búsqueda</string>
-	<string name="lt_info">Está aplicación utiliza LibraryThing como fuente de información sobre series de libros, así como para portadas alternativas. Para poder utilizar estas opciones necesita estar registrado en LibraryThing (gratis) y solicitar una clave de desarrollador de LibraryThing (también gratuita).</string>
-	<string name="lt_register_text">Registro en LibraryThing</string>
-	<string name="lt_devkey_text">Solicitar clave de desarrollador de LibraryThing</string>
-	<string name="lt_gotkey">Una vez obtenga la clave de desarrollador (o si ya tiene una), introdúzcala a continuación. Se utilizará para obtener datos adicionales.</string>
-	<string name="developer_key">Clave de desarrollador (Developer Key)</string>
-	<string name="require_library_thing_info">Esta opción requiere clave de desarrollador de LibraryThing. ¿Desea ver más información relacionada con LibraryThing?</string>
-	<string name="uses_library_thing_info">Esta opción utiliza una clave de desarrollador de LibraryThing. ¿Desea ver más información relacionada con LibraryThing, o deshabilitar este mensaje?\n\nLa información relativa a LibraryThing puede consultarse en la pestaña LibraryThing que se encuentra en él menú de Administración.</string>
-	<string name="reg_library_thing_title">Registro en LibraryThing</string>
-	<string name="more_info">Más información.</string>
-	<string name="disable_dialogue">Deshabilitar mensaje</string>
-	<string name="lt_reset_messages_info">Esta aplicación puede mostrar, de vez en cuando, mensajes relacionados con LibraryThing. Pulse el botón siguiente para resetear cualquiera de los mensajes que hayan sido deshabilitados.</string>
-	<string name="reset">Reiniciar</string>
-	<string name="para_send_info">Pulse el botón siguiente para recopilar información sobre cualquier fallo reciente y enviarlo al equipo de desarrollo. Se creará una copia de seguridad de su base de datos y de los archivos de registro. Si no desea enviar alguno de estos ficheros, elimine los correspondientes adjuntos antes de enviar el correo que se generará.</string>
+    <string name="para_send_info">Pulse el botón siguiente para recopilar información sobre cualquier fallo reciente y enviarlo al equipo de desarrollo. Se creará una copia de seguridad de su base de datos y de los archivos de registro. Si no desea enviar alguno de estos ficheros, elimine los correspondientes adjuntos antes de enviar el correo que se generará.</string>
 	<string name="button_send_info">Enviar información</string>
 	<string name="para_cleanup_files">Los ficheros que se pueden eliminar ocupan %s en la tarjeta SD. Cada vez que se actualiza la versión de BookCatalogue, al hacer una copia de seguridad o cuando falla la aplicación se crean ficheros de registro en la tarjeta SD. Pulse el botón siguiente para eliminarlos. Si ha detectado algún error, le agradeceremos que utilice primero la opción de \'Enviar información\'.</string>
 	<string name="button_cleanup_files">Borrar ficheros</string>
@@ -221,16 +197,11 @@
 	<string name="kilobytes">%.2fkB</string>
 	<string name="bytes">%.0f bytes</string>
 	<string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
-	<string name="sortby_author_given">Ordenar por autor (Nombre)</string>
-	<string name="debug_subject">Recopilando información sobre fallos</string>
+    <string name="debug_subject">Recopilando información sobre fallos</string>
 	<string name="debug_body">Por favor, explique brevemente el problema experimentado.</string>
 	<string name="menu_duplicate">Duplicar libro</string>
     <string name="cannot_edit_system">No se pueden modificar los valores del sistema</string>
-    <string name="incorrect_key">Su clave de desarrollador de LibraryThing es incorrecta, o no se  ha podido contactar para verificarla.</string>
-    <string name="correct_key">Su clave de desarrollador de LibraryThing es válida.</string>
-    <string name="sortby_author_one">Ordenar por Autor (sólo el primer autor)</string>
     <string name="no_connection">No hay conexión a internet.</string>
-    <string name="sortby_published">Ordenar por fecha de publicación</string>
     <string name="menu_share_this">Compartir</string>
     <string name="email_export">¿Desea enviar por correo electrónico el fichero exportado?</string>
     <string name="menu_crop_thumb">Recortar miniatura</string>
@@ -242,30 +213,12 @@
 
     <string name="label_library">Mis Libros</string>
     <string name="label_settings">Administración y Preferencias</string>
-    <string name="edit_book_send_to_gr">Enviar a goodreads</string>
-    <string name="goodreads">goodreads</string>
-    <string name="goodreads_auth_blurb_part1">goodreads es un sitio web cuya misión es "ayudar a la gente a encontrar y compartir los libros que les gustan".
-    										Disponen de una amplia base de datos de libros y comentarios, y si eres un usuario registrado de goodreads, 
-    										BookCatalogue puede exportar sus libros, bibliotecas y comentarios a goodreads e importar sus libros, 
-    										bibliotecas y comentarios de goodreads. BookCatalogue es una aplicación independiente, y no
-    										necesita goodreads, pero si esta usted interesado se puede registrar en:</string>
-    <string name="goodreads_auth_blurb_part2">Una vez se haya registrado, o si ya es usuario de goodreads, puede autorizar el acceso de BookCatalogue 
-    										a sus datos de goodreads pulsando sobre el botón siguiente. Le llevará a una página web
-    										en la que tendrá que acceder a goodreads para autorizar esta aplicación. Nosotros nunca veremos
-    										su contraseña, y podrá desactivar el acceso desde el sitio web de goodreads. Debido a la imprevisibilidad
-    										de la web, puede terminar en una página en blanco. En ese caso, pulse el botón Atrás de su navegador para volver aquí.</string>
-    <string name="goodreads_auth_blurb_part3">Pero recuerde&#8230;que no es necesario hacer nada de esto: BookCatalogue funciona perfectamente sin ello.</string>
-    <string name="goodreads_url">http://www.goodreads.com</string>
-    <string name="authorize_access">Autorizar acceso</string>
-    <string name="authorize_access_already_auth">Parece que usted ya había autorizado esta aplicación. Todas las funciones de goodreads deberían estar ya disponibles</string>
-    <string name="goodreads_access_error">Se ha producido un problema de red al acceder a goodreads. Compruebe si el sitio web de goodreads está operativo, y si el problema persiste póngase en contacto con su servicio de soporte</string>
     <string name="label_other_preferences">Otras preferencias</string>
     <string name="user_interface">Interfaz de usuario</string>
     <string name="start_in_my_books">Empezar en \'Mis libros\'</string>
     <string name="background_tasks">Tareas en segundo plano</string>
     <string name="cleanup_old_tasks">Eliminar tareas antiguas</string>
     <string name="cleanup_old_events">Eliminar eventos antiguos</string>
-    <string name="text_and_or_isbn">Texto y/o ISBN</string>
     <string name="search_criteria">Criterio de búsqueda</string>
     <string name="add_manually">Añadir manualmente</string>
     <string name="search_internet">Buscar en internet</string>
@@ -287,9 +240,6 @@
     <string name="not_authorized">No Autorizado</string>
     <string name="goodreads_auth_error">Error de autorización en Goodreads.</string>
     <string name="if_the_problem_persists">Si el problema persiste, contacte con soporte utilizando la opción de Ayuda del menú principal.</string>
-    <string name="book_no_longer_exists">El libro especificado no existe</string>
-    <string name="please_enter_search_criteria">Por favor, introduzca un criterio de búsqueda</string>
-    <string name="error_while_searching">Error buscando.</string>
     <string name="send_all_to_goodreads_result">%1$s libros procesados: %2$s enviados correctamente, %3$s sin ISBN y %4$s con ISBN pero no encontrados en goodreads</string>
     <string name="x_of_y">%1$d de %2$d</string>
     <string name="send_book_to_goodreads">Enviar libro %1$s a goodreads</string>
@@ -413,25 +363,11 @@
     <string name="builtin">Predefinido</string>
     <string name="sort_unread">No leídos (Autor/Serie)</string>
     <string name="import_all_from_goodreads">Importar todo de goodreads</string>
-    <string name="requested_task_is_already_queued">La tarea solicitada ya está en la cola</string>
-    <string name="export_task_is_already_queued">Ya hay una tarea de exportación pendiente, y debe completarse antes de que se pueda lanzar de nuevo</string>
-    <string name="import_task_is_already_queued">Ya hay una tarea de importación pendiente, y debe completarse antes de que se pueda lanzar de nuevo</string>
-    <string name="goodreads_action_cannot_blah_blah">Esta acción no se puede completar mientras la aplicación no sea autorizada en el sitio web goodreads web site. Inténtelo una vez haya autorizado esta aplicación. \n\nQuiere autorizarla ahora?</string>
-    <string name="tell_me_more">Cuéntenos más</string>
     <string name="retry_x_of_y_next_at_z">Reintento %1$s de %2$s, el próximo a las %3$s</string>
     <string name="completed">Completado</string>
     <string name="failed">Fallido</string>
     <string name="queued">En cola</string>
     <string name="unknown">Desconocido</string>
-    <string name="send_books_to_goodreads_blurb">Esta opción enviará su biblioteca a goodreads.
-    										\n\nPuede elegir enviar todos sus libros o sólo los que haya actualizado desde 
-    										la última vez que fueron copiados a o desde goodreads (incluyendo todos los libros 
-    										que todavía no han sido enviados), o cancelar la actualización.
-    										\n\nSi no ha enviado nunca ningún libro, entonces no hay ninguna diferencia 
-    										entre las dos opciones.</string>
-    <string name="send_all">Enviar todo</string>
-    <string name="send_updated">Sólo actualizados</string>
-    <string name="sync_with_goodreads">Sincronizar con goodreads</string>
     <string name="cover_options_cc_ellipsis">Opciones de Portadas&#8230;</string>
     <string name="show_events_ellipsis">Mostrar eventos&#8230;</string>
     <string name="hint_authors_book_may_appear_more_than_once">Si se muestra para cada autor, un mismo libro puede aparecer más de una vez en un listado. En ese caso, si se elimina uno de esos libros se eliminará de todas las posiciones del listado.</string>
@@ -441,7 +377,6 @@
     <string name="hint_background_task_events">Aquí puede ver los eventos asociados con una tarea en segundo plano. 
     								Haciendo clic sobre un evento podrá realizar distintas acciones según el tipo de evento.</string>
     <string name="hints_have_been_reset">Sugerencias reseteadas</string>
-    <string name="task_has_been_queued_in_background">Tarea añadida a la cola de tareas en segundo plano</string>
     <string name="hint_startup_screen">Esta es la pantalla estándar de inicio de BookCatalogue. Si lo prefiere, puede iniciar la aplicación directamente en \'Mis Libros\'; la pantalla de inicio preferida puede cambiarse en preferencias.</string>
     <string name="upgrading_ellipsis">Actualizando&#8230;</string>
     <string name="explain_goodreads_no_isbn">El libro seleccionado no tiene ISBN; no se puede sincronizar de forma automática con goodreads. 
@@ -507,7 +442,6 @@
     <string name="label_year">Año</string>
     <string name="label_month">Mes</string>
     <string name="day">Día</string>
-    <string name="getting_books_ellipsis">Obteniendo libros&#8230;</string>
     <string name="last_error_e">Último error: %1$s</string>
     <string name="invalid_isbn_x_specified_in_search">ISBN no válido \'%1$s\' en la búsqueda</string>
     <string name="if_day_is_specified_month_and_year_must_be">Si se especifica un día, deben especificarse también el mes y el año.</string>
@@ -518,7 +452,6 @@
     <string name="default_crop_frame_is_whole_image">Por defecto, la imagen se guarda completa</string>
     <string name="cancelled">Cancelado</string>
     <string name="import_complete">Importación finalizada</string>
-    <string name="library_thing">LibraryThing</string>
     <string name="searching_elipsis">Buscando&#8230;</string>
     <string name="adding_book_elipsis">Añadiendo libro&#8230;</string>
     <string name="prefs_global_opening_book_mode">Abrir libro en modo sólo lectura</string>
@@ -622,16 +555,10 @@ y puede editar el libro utilizando el menú de opciones.
     <!-- Hint displayed when an export or database backup is done -->
 
     <!-- Button text on the goodreads activity; only displayed after user has registered -->
-    <string name="forget_credentials">Olvidar credenciales</string>
 
     <!-- Extra text displayed on the goodreads activity when a user HAS registered -->
-    <string name="goodreads_auth_blurb_part4">Parece que ya ha autorizado esta aplicación. Si quiere
-    eliminar los datos de acceso (credenciales) de este dispositivo, puede hacerlo pulsando el botón siguiente. También es
-    importante que elimine la autorización para esta aplicación en el sitio web de goodreads.
-    \n\nAl eliminar las credenciales se eliminará la opción goodreads del menú principal de la aplicación.</string>
 
     <!-- Progress dialog message displayed when doing a long network operation to a web site -->
-    <string name="connecting_to_web_site">Conectando con el sitio web&#8230;</string>
 
     <!-- Admin option to import -->
     <string name="label_backup_to_archive">Backup a fichero</string>

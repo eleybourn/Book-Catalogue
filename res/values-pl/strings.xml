@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <string name="app_name">Katalog książek</string>
-<string name="system_app_name">Book Catalogue</string>
-<string name="label_insert">Dodaj książkę</string>
+    <string name="label_insert">Dodaj książkę</string>
 <string name="menu_delete">Usuń książkę</string>
 <string name="label_author">Autor</string>
 <string name="label_title">Tytuł</string>
@@ -17,8 +16,7 @@
 <string name="confirm_update">Aktualizuj</string>
 <string name="para_no_books">Na tej półce nie ma książek. Dodaj jakąś przy pomocy menu na dole ekranu.</string>
 <string name="menu_sort_by_author_expanded">Rozwiń wszystko</string>
-<string name="menu_sort_by">Sortuj wg</string>
-<string name="menu_sort_by_author_collapsed">Zwiń wszystko</string>
+    <string name="menu_sort_by_author_collapsed">Zwiń wszystko</string>
     <string name="label_search">Szukaj</string>
 <string name="button_cancel">Anuluj</string>
 <string name="button_confirm_save">Zapisz książkę</string>
@@ -29,10 +27,8 @@
 <string name="confirm_save_bs">Zapisz półkę</string>
 <string name="menu_delete_bs">Usuń półkę</string>
 <string name="delete_1st_bs">Nie można usunąć pierwszej półki</string>
-<string name="bookshelf_label">Półka: </string>
-<string name="all_books">Wszystkie książki</string>
-<string name="isbn_found">ISBN odczytany. Wyszukiwanie w Internecie.</string>
-<string name="title_isbn_search">Katalog książek: Szukj wg ISBN</string>
+    <string name="all_books">Wszystkie książki</string>
+    <string name="title_isbn_search">Katalog książek: Szukj wg ISBN</string>
     <string name="title_edit_bs">Katalog książek: Edycja półek</string>
     <string name="search_label">Szukaj książek</string>
 <string name="search_hint">Szukaj autora lub tytułu</string>
@@ -42,9 +38,7 @@
     <string name="import_data">Importuj książki</string>
 <string name="import_alert">Uwaga! Zaimportowane dane mogą nadpisać istniejące, jeśli pokryje się identyfikator (pole _id). Jest to zwykle oczekiwane zachowanie, gdy edytowałeś wyeksportowany wcześniej plik. Jeśli dodajesz nową książkę, pozostaw pole _id puste.</string>
     <string name="import_failed_is_location_correct">Błąd!: Import z karty SD nie powiódł się. Upewnij się, czy plik export.csv jest w prawidłowym miejscu.</string>
-<string name="search_title">Katalog książek: Wynik wyszukiwania</string>
-<string name="results_found">Znaleziono</string>
-<string name="administration_label">Funkcje administracyjne</string>
+    <string name="administration_label">Funkcje administracyjne</string>
     <string name="menu_administration">Administracja</string>
     <string name="install_scan_title">Zainstaluj Barcode Scanner</string>
 <string name="label_version_number">Wersja programu:</string>
@@ -69,13 +63,7 @@
 <string name="contact2">philip.warner@rhyme.com.au</string>
 <string name="label_donate">Wesprzyj</string>
 <string name="label_about">O programie</string>
-    <string name="sortby_author">Sortuj wg autora</string>
-<string name="sortby_title">Sortuj wg tytułu</string>
-<string name="sortby_series">Sortuj wg serii</string>
-<string name="sortby_loan">Sortuj wg wypożyczenia</string>
-<string name="sortby_unread">Sortuj wg "(nie)przeczytania"</string>
-<string name="sortby_genre">Sortuj wg gatunku</string>
-<string name="label_list_price">Cena</string>
+    <string name="label_list_price">Cena</string>
     <string name="label_update_fields">Automatycznie aktualizuj pola wg danych z sieci</string>
 <string name="select_fields_to_update">Wybierz pola do aktualizacji</string>
 <string name="select_fields_to_update_help">Wybrane pola będą zaktualizowane wg danych z sieci. Pozostałe nie zostaną zmienione.</string>
@@ -199,19 +187,7 @@
 <string name="usage_overwrite">Nadpisz istniejące dane</string>
 <string name="cancelling">Przerywam..</string>
 <string name="starting_search">Rozpoczynam szukanie</string>
-<string name="lt_info">Ten program wykorzystuje serwis LibraryThing jako żródło informacji o książkach, ich seriach, okładkach. W tym celu powinienieś zarejestrować się (darmowo) w LibraryThing i uzyskać klucz deweloperski LibraryThing (również darmowo).</string>
-<string name="lt_register_text">Zarejestruj się w LibraryThing</string>
-<string name="lt_devkey_text">Pobierz klucz deweloperski LibraryThing</string>
-<string name="lt_gotkey">Jeśli już masz klucz deweloperski, wprowadź go poniżej, co pozwoli na pobieranie danych uzupełniających.</string>
-<string name="developer_key">Klucz deweloperski</string>
-<string name="require_library_thing_info">Ta fukncja wymaga klucza deweloperskiego LibraryThing. Czy chesz dowiedzieć się więcej o LibraryThing?</string>
-<string name="uses_library_thing_info">Ta fukncja korzysta z klucza deweloperskiego. Czy chesz dowiedzieć się więcej o LibraryThing, czy wyłączyć ten komunikat?\n\nInformacje o LibraryThing znajdziesz na stronie administracyjnej.</string>
-<string name="reg_library_thing_title">Rejestracja w LibraryThing</string>
-<string name="more_info">Więcej informacji.</string>
-<string name="disable_dialogue">Wyłącz komunikat.</string>
-<string name="lt_reset_messages_info">Od czasu do czasu program może wyświetlać komunikaty z LibraryThing. Naciśnij przycisk poniżej, by przywrócić komunikaty, które były wyłączone.</string>
-<string name="reset">Reset</string>
-<string name="para_send_info">Naciśnij przycisk poniżej, by zebrać informacje o problemach i błędach i wysłać je do programistów. Zostanie wykonana kopia danych i logów. Jeśli nie chesz, by te dane były wysyłane, usuń je z przygotowanej wiadomości przed jej wysłaniem.</string>
+    <string name="para_send_info">Naciśnij przycisk poniżej, by zebrać informacje o problemach i błędach i wysłać je do programistów. Zostanie wykonana kopia danych i logów. Jeśli nie chesz, by te dane były wysyłane, usuń je z przygotowanej wiadomości przed jej wysłaniem.</string>
 <string name="button_send_info">Wyślij</string>
 <string name="para_cleanup_files">Pliki pomocnicze możliwe do usunięcia zajmują %s na karcie SD. Logi i inne dane są zapisywane przy każdej aktualizacji, kopii danych i gdy program odmówi posłuszeństwa. Kliknij w przycisk poniżej by usunąć te pliki z karty SD. Jeśli pojawiają się problemy i program działa nieprawidłowo, rozważ wysłanie informacji do programistów - kliknij \'Wyślij \' najpierw.</string>
 <string name="button_cleanup_files">Usuwanie plików</string>
@@ -219,14 +195,10 @@
 <string name="kilobytes">%.2fkB</string>
 <string name="bytes">%.0f bytes</string>
 <string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
-<string name="sortby_author_given">Sortuj wg imienia autora</string>
-<string name="debug_subject">Zbieranie informacji o problemach technicznych</string>
+    <string name="debug_subject">Zbieranie informacji o problemach technicznych</string>
 <string name="debug_body">Poświęć chwilę na krótki opis problemu, z którym się zetknąłeś.</string>
 <string name="menu_duplicate">Duplikuj książkę</string>
 <string name="cannot_edit_system">Nie możesz edytować danych systemowych</string>
-<string name="incorrect_key">Weryfikacja klucza deweloperskiego LibraryThing się nie powiodła - jest niepoprawny lub nie masz połączenia z siecią</string>
-<string name="correct_key">Twój klucz deweloperski LibraryThing jest poprawny.</string>
-<string name="sortby_author_one">Sortuj wg autora (pierwszego)</string>
 
-<string name="searching_book_catalogue">Przeszukiwanie book-catalogue.com</string>
+    <string name="searching_book_catalogue">Przeszukiwanie book-catalogue.com</string>
 </resources>

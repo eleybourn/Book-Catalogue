@@ -254,29 +254,29 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
         // Creating submenu item for rotate
         android.view.SubMenu replaceSubmenu = menu.addSubMenu(0, CONTEXT_SUBMENU_REPLACE_THUMB, 2,
                 R.string.menu_replace_thumb);
-        replaceSubmenu.setIcon(android.R.drawable.ic_menu_gallery);
+        replaceSubmenu.setIcon(R.drawable.ic_menu_gallery);
 
         MenuItem add_photo = replaceSubmenu.add(0, CODE_ADD_PHOTO, 1, R.string.menu_add_thumb_photo);
         add_photo.setIcon(R.drawable.ic_menu_camera);
         MenuItem add_gallery = replaceSubmenu.add(0, CODE_ADD_GALLERY, 2, R.string.menu_add_thumb_gallery);
-        add_gallery.setIcon(android.R.drawable.ic_menu_gallery);
+        add_gallery.setIcon(R.drawable.ic_menu_gallery);
         // TODO EDITIONS
         //MenuItem alt_covers = replaceSubmenu.add(0, CONTEXT_ID_SHOW_ALT_COVERS, 3, R.string.menu_thumb_alt_editions);
-        //alt_covers.setIcon(android.R.drawable.ic_menu_zoom);
+        //alt_covers.setIcon(R.drawable.ic_menu_zoom);
 
         // Implementing submenu for rotate
         android.view.SubMenu submenu = menu.addSubMenu(0, CONTEXT_ID_SUBMENU_ROTATE_THUMB, 3, R.string.menu_rotate_thumb);
         add_gallery.setIcon(android.R.drawable.ic_menu_rotate);
 
         MenuItem rotate_photo_cw = submenu.add(0, CONTEXT_ID_ROTATE_THUMB_CW, 1, R.string.menu_rotate_thumb_cw);
-        rotate_photo_cw.setIcon(android.R.drawable.ic_menu_rotate);
+        rotate_photo_cw.setIcon(R.drawable.ic_menu_rotate_cw);
         MenuItem rotate_photo_ccw = submenu.add(0, CONTEXT_ID_ROTATE_THUMB_CCW, 2, R.string.menu_rotate_thumb_ccw);
-        rotate_photo_ccw.setIcon(android.R.drawable.ic_menu_rotate);
+        rotate_photo_ccw.setIcon(R.drawable.ic_menu_rotate_ccw);
         MenuItem rotate_photo_180 = submenu.add(0, CONTEXT_ID_ROTATE_THUMB_180, 3, R.string.menu_rotate_thumb_180);
-        rotate_photo_180.setIcon(android.R.drawable.ic_menu_rotate);
+        rotate_photo_180.setIcon(R.drawable.ic_menu_rotate);
 
         MenuItem crop_thumb = menu.add(0, CONTEXT_ID_CROP_THUMB, 4, R.string.menu_crop_thumb);
-        crop_thumb.setIcon(android.R.drawable.ic_menu_crop);
+        crop_thumb.setIcon(R.drawable.ic_button_crop);
     };
 
     /**

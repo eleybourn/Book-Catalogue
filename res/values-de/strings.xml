@@ -1,8 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
 <string name="app_name">Book Catalogue</string>
-<string name="system_app_name">Book Catalogue</string>
-<string name="label_insert">Buch hinzufügen</string>
+    <string name="label_insert">Buch hinzufügen</string>
 <string name="menu_delete">Buch löschen</string>
 <string name="label_author">Autor</string>
 <string name="label_title">Titel</string>
@@ -17,8 +16,7 @@
 <string name="confirm_update">Aktualisieren</string>
 <string name="para_no_books">Es befinden sich keine Bücher im Bücherregal. Bitte fügen Sie Bücher über das Menü am unteren Bildschirmrand hinzu.</string>
 <string name="menu_sort_by_author_expanded">Alles ausklappen</string>
-<string name="menu_sort_by">Sortieren nach</string>
-<string name="menu_sort_by_author_collapsed">Alles einklappen</string>
+    <string name="menu_sort_by_author_collapsed">Alles einklappen</string>
     <string name="label_search">Suche</string>
 <string name="button_cancel">Abbrechen</string>
 <string name="button_confirm_save">Buch speichern</string>
@@ -29,10 +27,8 @@
 <string name="confirm_save_bs">Bücherregal speichern</string>
 <string name="menu_delete_bs">Bücherregal löschen</string>
 <string name="delete_1st_bs">Das erste Bücherregal kann nicht gelöscht werden</string>
-<string name="bookshelf_label">Bücherregal: </string>
-<string name="all_books">Alle Bücher</string>
-<string name="isbn_found">ISBN gescannt. Suche im Internet.</string>
-<string name="title_isbn_search">Book Catalogue: ISBN-Suche</string>
+    <string name="all_books">Alle Bücher</string>
+    <string name="title_isbn_search">Book Catalogue: ISBN-Suche</string>
     <string name="title_edit_bs">Book Catalogue: Bücherregal bearbeiten</string>
     <string name="search_label">Suche nach Büchern</string>
 <string name="search_hint">Suche nach Autor oder Titel</string>
@@ -43,9 +39,7 @@
 <string name="import_alert">Warnung. Der Import von Daten kann Informationen von bestehenden Büchern überschreiben, wenn die ID der Importdatei mit der bestehenden ID übereinstimmt. Normalerweise ist es kein Problem wenn ein Feld in der exportierten Datei geändert wurde. Bitte stellen Sie bei einem neuen Buch sicher, dass das ID-Feld leer ist.</string>
 <!--<string name="export_failed">FEHLER: Der Export auf die SD-Karte ist fehlgeschlagen.</string>-->
 <!--<string name="import_failed_is_location_correct">FEHLER: Der Import von Daten von der SD-Karte ist fehlgeschlagen. Ist die Datei bereits vorhanden?</string>-->
-<string name="search_title">Book Catalogue: Suchergebnisse</string>
-<string name="results_found">Bücher gefunden</string>
-<string name="administration_label">Verwaltungsfunktionen</string>
+    <string name="administration_label">Verwaltungsfunktionen</string>
     <string name="menu_administration">Verwaltung</string>
 <string name="install_scan_title">Installiere Barcode Scanner</string>
 <string name="label_version_number">Versionsnummer:</string>
@@ -70,13 +64,7 @@
 <string name="contact2">philip.warner@rhyme.com.au</string>
 <string name="label_donate">Spenden</string>
 <string name="label_about">Über diese App</string>
-    <string name="sortby_author">Sortieren nach Autor</string>
-<string name="sortby_title">Sortieren nach Titel</string>
-<string name="sortby_series">Sortieren nach Serie</string>
-<string name="sortby_loan">Sortieren nach Verliehen</string>
-<string name="sortby_unread">Sortieren nach Ungelesen</string>
-<string name="sortby_genre">Sortieren nach Genre</string>
-<string name="label_list_price">Preis</string>
+    <string name="label_list_price">Preis</string>
     <string name="label_update_fields">Automatische Aktualisierung der Felder</string>
 <string name="select_fields_to_update">Felder für Aktualisierung auswählen</string>
 <string name="select_fields_to_update_help">Die ausgewählten Felder werden aus dem Internet aktualisiert. Nicht ausgewählte Felder werden nicht geändert.</string>
@@ -200,19 +188,7 @@
 <string name="usage_overwrite">überschreibt zusätzliche Daten</string>
 <string name="cancelling">Abbruch</string>
 <string name="starting_search">Beginn der Suche</string>
-<string name="lt_info">Diese App nutzt LibraryThing als Quelle für Buchinformationen und alternative Cover. Um diese Funktionalitäten nutzen zu können, müssen Sie sich bei LibraryThing registrieren (kostenlos) und einen Entwicklerschlüssel anfordern (ebenfalls kostenlos).</string>
-<string name="lt_register_text">Registrieren Sie sich bei LibraryThing</string>
-<string name="lt_devkey_text">LibraryThing-Entwicklerschlüssel anfordern</string>
-<string name="lt_gotkey">Nachdem Sie einen Entwicklerschlüssel erhalten haben (oder bereits einen besitzen), geben Sie diesen unten ein.</string>
-<string name="developer_key">Entwicklerschlüssel</string>
-<string name="require_library_thing_info">Diese Funktionalität setzt einen LibraryThing Entwicklerschlüssel voraus. Möchten Sie mehr Informationen über LibraryThing erhalten?</string>
-<string name="uses_library_thing_info">Diese Funktionalität profitiert von einem LibraryThing Entwicklerschlüssel. Wollen Sie mehr Informationen über LibraryThing erhalten oder diese Meldung deaktivieren?\n\nInformationen zu LibraryThing erhalten Sie im Tab LibraryThing in Hilfe &amp; Verwaltung.</string>
-<string name="reg_library_thing_title">LibraryThing-Registrierung</string>
-<string name="more_info">Weitere Informationen.</string>
-<string name="disable_dialogue">Meldung deaktivieren</string>
-<string name="lt_reset_messages_info">Diese App zeigt fallweise optionale Meldungen zu LibraryThing an. Wenn diese Meldungen deaktiviert wurden können, Sie die Deaktivierung über den Knopf unten zurücksetzen.</string>
-<string name="reset">Zurücksetzen</string>
-<string name="para_send_info">Klicken Sie auf den Button unten, um Informationen über die letzten Abstürze der App zu sammeln und an einen der Entwickler zu schicken. Dieser Vorgang erstellt eine Sicherheitskopie Ihrer gesamten Datenbank und der Log-Dateien. Wenn Sie eine dieser Dateien nicht verschicken wollen, löschen Sie diese vor dem Senden aus dem Anhang.</string>
+    <string name="para_send_info">Klicken Sie auf den Button unten, um Informationen über die letzten Abstürze der App zu sammeln und an einen der Entwickler zu schicken. Dieser Vorgang erstellt eine Sicherheitskopie Ihrer gesamten Datenbank und der Log-Dateien. Wenn Sie eine dieser Dateien nicht verschicken wollen, löschen Sie diese vor dem Senden aus dem Anhang.</string>
 <string name="button_send_info">Sende Informationen</string>
 <!--<string name="cleanup_files_text">Die Dateien belegen %s Speicherplatz auf der SD-Karte. Log-Dateien und andere Daten werden bei jeder App-Aktualisierung, Sicherungskopie oder wenn die App abstürzt auf der SD-Karte gespeichert. Klicken Sie den Knopf unten, um diese Dateien von der SD-Karte zu entfernen. Wenn Sie Abstürze oder andere Fehler erhalten, ziehen Sie bitte in Betracht, den \'Sende Informationen\' Knopf zuerst zu benutzen.</string>-->
 <string name="button_cleanup_files">Dateien bereinigen</string>
@@ -220,17 +196,12 @@
 <string name="kilobytes">%.2f kB</string>
 <string name="bytes">%.0f Bytes</string>
 <string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
-<string name="sortby_author_given">Sortieren nach Autor (Vorname)</string>
-<string name="debug_subject">Gesammelte Debug-Informationen</string>
+    <string name="debug_subject">Gesammelte Debug-Informationen</string>
 <string name="debug_body">Bitte nehmen Sie sich Zeit, das aufgetretene Problem zu beschreiben.</string>
 <string name="menu_duplicate">Dublette</string>
 <string name="cannot_edit_system">Die Systemwerte können nicht geändert werden</string>
-<string name="incorrect_key">Der eingegebene LibraryThing-Entwicklerschlüssel war falsch, oder es konnte keine Netzwerkverbindung zur Verifizierung hergestellt werden.</string>
-<string name="correct_key">Ihr LibraryThing-Entwicklerschlüssel ist gültig.</string>
-<string name="sortby_author_one">Sortieren nach Autor (nur erster Autor)</string>
-<string name="no_connection">Internet Verbindung nicht verfügbar.</string>
-<string name="sortby_published">Sortieren nach Veröffentlichungsdatum</string>
-<string name="menu_share_this">Teilen</string>
+    <string name="no_connection">Internet Verbindung nicht verfügbar.</string>
+    <string name="menu_share_this">Teilen</string>
 <string name="email_export">Möchten Sie diesen Export als E-Mail versenden?</string>
 <string name="menu_crop_thumb">Cover-Bild zuschneiden</string>
     <string name="task_errors">Aufgabenfehler</string>
@@ -241,32 +212,13 @@
 
 <string name="label_library">Meine Bücher</string>
     <string name="label_settings">Verwaltung und Einstellungen</string>
-<string name="edit_book_send_to_gr">Zu Goodreads senden</string>
-<string name="goodreads">Goodreads</string>
-    <string name="goodreads_auth_blurb_part1">Goodreads ist eine Website, deren ausgewiesener Zweck es ist, "Menschen zu helfen, um Bücher zu suchen und zu teilen, die sie gern haben".
-Sie führt eine umfassende Datenbank von Büchern und Buchbesprechungen, und wenn Sie ein
-registrierter Benutzer von Goodreads sind, kann BookCatalogue Ihre Bücher, Bücherregale
-und Buchbesprechnungen exportieren und importieren.
-BookCatalogue ist eine eigenständige App und erfordert keine Verbindung zu Goodreads,
-aber wenn Sie möchten, können Sie sich hier registrieren:</string>
-<string name="goodreads_auth_blurb_part2">Als registrierter Nutzer können Sie den Zugriff von BookCatalogue auf Ihre Daten bei Goodreads autorisieren.
-Drücken Sie dazu den Button unten. Sie werden auf eine Website weitergeleitet, auf der Sie sich bei Goodreads
-anmelden und den Zugriff autorisieren können. Wir werden Ihr Kennwort nie sehen, und Sie können den Zugriff
-auf der Website von Goodreads jederzeit beenden. Wegen der Unwägbarkeiten des Webs kann es sein, dass Sie
-anschließend auf eine leeren Seite landen. Klicken Sie einfach auf den "Zurück"-Button, um hierher zurückzukehren!</string>
-<string name="goodreads_auth_blurb_part3">Aber denken Sie daran… Sie müssen nichts davon tun: BookCatalogue funktioniert ganz wunderbar ohne Goodreads!</string>
-<string name="goodreads_url">http://www.goodreads.com</string>
-<string name="authorize_access">Zugriff autorisieren</string>
-<string name="authorize_access_already_auth">Scheinbar haben Sie diese App bereits autorisiert. Alle Funktionen von Goodreads sollten bereits verwendbar sein.</string>
-<string name="goodreads_access_error">Beim Zugriff auf Goodreads ist ein Netzwerkproblem aufgetreten. Bitte überprüfen Sie, ob die Website von Goodreads erreichbar ist. Falls das Problem nicht gelöst werden kann, kontaktieren Sie den Support.</string>
-<string name="label_other_preferences">Weitere Einstellungen</string>
+    <string name="label_other_preferences">Weitere Einstellungen</string>
 <string name="user_interface">Benutzeroberfläche</string>
 <string name="start_in_my_books">Start in \'Meine Bücher\'</string>
     <string name="background_tasks">Aufgaben im Hintergrund</string>
 <string name="cleanup_old_tasks">Alte Aufgaben bereinigen</string>
 <string name="cleanup_old_events">Alte Ereignisse bereinigen</string>
-    <string name="text_and_or_isbn">Text und/oder ISBN</string>
-<string name="search_criteria">Suchkriterien</string>
+    <string name="search_criteria">Suchkriterien</string>
 <string name="add_manually">Manuell hinzufügen</string>
     <string name="search_internet">Internet durchsuchen</string>
 <string name="show_results">Ergebnisse anzeigen</string>
@@ -287,10 +239,7 @@ anschließend auf eine leeren Seite landen. Klicken Sie einfach auf den "Zurück
 <string name="not_authorized">Nicht autorisiert</string>
 <string name="goodreads_auth_error">Die Autorisierung bei Goodreads endete fehlerhaft</string>
 <string name="if_the_problem_persists">Wenn das Problem weiterhin besteht, kontaktieren Sie den Support über das Menü "Hilfe"</string>
-<string name="book_no_longer_exists">Das gewünschte Buch existiert nicht mehr</string>
-<string name="please_enter_search_criteria">Bitte geben Sie die Suchkriterien ein</string>
-<string name="error_while_searching">Fehler während der Suche.</string>
-<string name="send_all_to_goodreads_result">%1$s Bücher verarbeitet: %2$s erfolgreich übertragen, %3$s ohne ISBN und %4$s mit einer in Goodreads nicht auffindbaren ISBN</string>
+    <string name="send_all_to_goodreads_result">%1$s Bücher verarbeitet: %2$s erfolgreich übertragen, %3$s ohne ISBN und %4$s mit einer in Goodreads nicht auffindbaren ISBN</string>
 <string name="x_of_y">%1$d von %2$d</string>
 <string name="send_book_to_goodreads">Buch %1$s an Goodreads senden</string>
 
@@ -406,24 +355,12 @@ anschließend auf eine leeren Seite landen. Klicken Sie einfach auf den "Zurück
 <string name="builtin">Eingebaut</string>
 <string name="sort_unread">Ungelesen (Autor/Serie)</string>
 <string name="import_all_from_goodreads">Alles von Goodreads importieren</string>
-<string name="requested_task_is_already_queued">Angeforderte Aufgabe ist bereits eingereiht</string>
-<string name="export_task_is_already_queued">Eine Exportaufgabe ist bereits eingereiht und muss vor der Ausführung dieser Aufgabe abgeschlossen werden</string>
-<string name="import_task_is_already_queued">Eine Importaufgabe ist bereits eingereiht und muss vor der Ausführung dieser Aufgabe abgeschlossen werden</string>
-<string name="goodreads_action_cannot_blah_blah">Diese Aktion kann nicht beendet werden bis Sie diese App auf der Website von Goodreads autorisiert haben. Wiederholen Sie diese Aktion, sobald Sie die App autorisiert haben.\n\nWollen Sie die App jetzt autorisieren?</string>
-<string name="tell_me_more">Erzählen Sie mehr davon</string>
-<string name="retry_x_of_y_next_at_z">Wiederholung %1$s von %2$s nächste um %3$s</string>
+    <string name="retry_x_of_y_next_at_z">Wiederholung %1$s von %2$s nächste um %3$s</string>
 <string name="completed">Abgeschlossen</string>
 <string name="failed">Fehlerhaft</string>
 <string name="queued">Eingereiht</string>
 <string name="unknown">Unbekannt</string>
-<string name="send_books_to_goodreads_blurb">Damit wird Ihre Bibliothek an Goodreads gesendet.
-        \n\nSie können auswählen, ob Sie alle Bücher oder nur die seit der letzten Übertragung geänderten (inklusive aller bisher nicht gesendeten Bücher) senden möchten, oder das Update abbrechen.
-        \n\nWenn Sie noch nie Bücher gesendet haben, ist kein Unterschied zwischen den ersten beiden Optionen.
-        </string>
-<string name="send_all">Alles senden</string>
-<string name="send_updated">Geänderte senden</string>
-<string name="sync_with_goodreads">Mit Goodreads synchronisieren</string>
-<string name="cover_options_cc_ellipsis">Umschlag-Einstellungen…</string>
+    <string name="cover_options_cc_ellipsis">Umschlag-Einstellungen…</string>
 <string name="show_events_ellipsis">Ereignisse anzeigen…</string>
 <string name="hint_authors_book_may_appear_more_than_once">Ein Buch kann mehrfach in einer Liste erscheinen, wenn es bei jedem Autor angezeigt wird. In diesem Fall führt das Löschen eines Buchs zum Löschen aller Vorkommen von der Liste.</string>
 <string name="hint_series_book_may_appear_more_than_once">Ein Buch kann mehrfach in einer Liste erscheinen, wenn es bei jeder Serie angezeigt wird. In diesem Fall führt das Löschen eines Buchs zum Löschen aller Vorkommen von der Liste.</string>
@@ -432,8 +369,7 @@ Nach dem Klick auf eine Aufgabe können Sie die mit dieser Aufgabe verbundenen E
 <string name="hint_background_task_events">Sie können hier die mit einer Hintergrundaufgabe verbundenen Ereignisse sehen.
 Nach dem Klick auf ein Ereignis können Sie eine Vielzahl von Aktionen durchführen, die für dieses Ereignis passen.</string>
 <string name="hints_have_been_reset">Hinweise wurden zurückgesetzt</string>
-<string name="task_has_been_queued_in_background">Aufgabe wurde im Hintergrund eingereiht</string>
-<string name="hint_startup_screen">Das ist der Standard-Startbildschirm von BookCatalogue. Sie könne auch direkt in \'Meinen Bücher\' starten; der bevorzugte Startbildschirm kann in den Einstellungen geändert werden.</string>
+    <string name="hint_startup_screen">Das ist der Standard-Startbildschirm von BookCatalogue. Sie könne auch direkt in \'Meinen Bücher\' starten; der bevorzugte Startbildschirm kann in den Einstellungen geändert werden.</string>
 <string name="upgrading_ellipsis">Upgrade läuft…</string>
 <string name="explain_goodreads_no_isbn">Das gewählte Buch hat keine ISBN; eine automatische Synchronisation mit Goodreads ist nicht möglich.
 Die einfachste Lösung ist:
@@ -499,7 +435,6 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
 <string name="label_year">Jahr</string>
 <string name="label_month">Monat</string>
 <string name="day">Tag</string>
-    <string name="getting_books_ellipsis">Hole Bücher&#8230;</string>
     <string name="last_error_e">Letzter Fehler: %1$s</string>
 <string name="invalid_isbn_x_specified_in_search">Ungültige ISBN \'%1$s\' gesucht</string>
 <string name="if_day_is_specified_month_and_year_must_be">Wenn der Tag angegeben wird, muss auch Monat und Jahr angegeben werden.</string>
@@ -510,8 +445,7 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
 <string name="default_crop_frame_is_whole_image">Standardbeschnitt besteht aus dem gesamten Bild</string>
 <string name="cancelled">Abgebrochen</string>
 <string name="import_complete">Import vollständig</string>
-    <string name="library_thing">LibraryThing</string>
-<string name="searching_elipsis">Suche&#8230;</string>
+    <string name="searching_elipsis">Suche&#8230;</string>
 
 <string name="adding_book_elipsis">Buch hinzufügen&#8230;</string>
 
@@ -600,14 +534,7 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
 
 <!--  Hint displayed when an export or database backup is done -->
 
-    <string name="forget_credentials">Zugangsdaten löschen</string>
-<string name="goodreads_auth_blurb_part4">Sie haben diese App anscheinend bereits autorisiert.
-    Wenn Sie die Zugangsdaten von diesem Gerät löschen möchten, klicken Sie bitte den untenstehenden Knopf. Vergessen Sie nicht, diese App auch auf der Goodreads-Website zu de-autorisieren.
-    \n\nDas Löschen der Zugangsdaten entfernt die Goodreads-Option aus dem  Hauptmenü.</string>
-
-<string name="connecting_to_web_site">Verbinde mit der Website&#8230;</string>
-
-<string name="label_backup_to_archive">Sichern ins Archiv</string>
+    <string name="label_backup_to_archive">Sichern ins Archiv</string>
 <string name="label_import_from_archive">Import vom Archiv</string>
 <!--  Hint displayed when aCatalogue Backup is done -->
     <string name="a_and_b">%1$s und %2$s</string>

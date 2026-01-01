@@ -118,7 +118,7 @@ public class ExportAdvancedDialogFragment extends BookCatalogueDialogFragment {
 
         View v = getActivity().getLayoutInflater().inflate(R.layout.export_advanced_options, null);
 		AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setView(v).setTitle(R.string.label_advanced_options).create();
-		alertDialog.setIcon(R.drawable.ic_menu_help_old);
+		alertDialog.setIcon(R.drawable.ic_menu_help);
 		alertDialog.setCanceledOnTouchOutside(false);
 
 		v.findViewById(R.id.button_cancel).setOnClickListener(new OnClickListener() {

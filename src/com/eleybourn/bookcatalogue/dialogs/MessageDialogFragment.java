@@ -10,6 +10,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
+import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueDialogFragment;
 import com.eleybourn.bookcatalogue.utils.Logger;
 
@@ -90,7 +91,7 @@ public class MessageDialogFragment extends BookCatalogueDialogFragment {
         
 		AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setMessage(msg).create();
 		alertDialog.setTitle(title);
-		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
+		alertDialog.setIcon(R.drawable.ic_menu_info);
 		alertDialog.setCanceledOnTouchOutside(false);
 
 		alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(btnPos), new DialogInterface.OnClickListener() {

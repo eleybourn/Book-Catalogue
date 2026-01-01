@@ -177,7 +177,7 @@ public class MainAdministration extends ActivityWithTasks
                     // Verify - this can be a dangerous operation
                     AlertDialog alertDialog = new AlertDialog.Builder(MainAdministration.this).setMessage(R.string.import_alert).create();
                     alertDialog.setTitle(R.string.import_data);
-                    alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
+                    alertDialog.setIcon(R.drawable.ic_menu_info);
                     alertDialog.setButton(
                             AlertDialog.BUTTON_POSITIVE,
                             MainAdministration.this.getResources().getString(R.string.button_ok),
@@ -360,7 +360,7 @@ public class MainAdministration extends ActivityWithTasks
         }
         AlertDialog alertDialog = new AlertDialog.Builder(MainAdministration.this).create();
         alertDialog.setTitle(R.string.email_export);
-        alertDialog.setIcon(android.R.drawable.ic_menu_send);
+        alertDialog.setIcon(R.drawable.ic_menu_send);
         alertDialog.setButton(
                 DialogInterface.BUTTON_NEGATIVE,
                 getResources().getString(R.string.button_ok),

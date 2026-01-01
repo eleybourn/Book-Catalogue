@@ -30,8 +30,8 @@
     <string name="all_books">Alle Bücher</string>
     <string name="title_isbn_search">Book Catalogue: ISBN-Suche</string>
     <string name="title_edit_bs">Book Catalogue: Bücherregal bearbeiten</string>
-    <string name="search_label">Suche nach Büchern</string>
-<string name="search_hint">Suche nach Autor oder Titel</string>
+    <string name="label_search_for_books">Suche nach Büchern</string>
+<string name="hint_search">Suche nach Autor oder Titel</string>
 <string name="book_not_found">Das gescannte Buch wurde nicht gefunden. Manchmal befindet sich der korrekte Barcode auf der Rückseite des Covers. Geben Sie ansonsten die Daten manuell ein.</string>
 <string name="label_series_num">#</string>
     <!--<string name="export_complete">Der Export auf die SD-Karte ist abgeschlossen.</string>-->
@@ -40,7 +40,7 @@
 <!--<string name="export_failed">FEHLER: Der Export auf die SD-Karte ist fehlgeschlagen.</string>-->
 <!--<string name="import_failed_is_location_correct">FEHLER: Der Import von Daten von der SD-Karte ist fehlgeschlagen. Ist die Datei bereits vorhanden?</string>-->
     <string name="administration_label">Verwaltungsfunktionen</string>
-    <string name="menu_administration">Verwaltung</string>
+    <string name="label_administration">Verwaltung</string>
 <string name="install_scan_title">Installiere Barcode Scanner</string>
 <string name="label_version_number">Versionsnummer:</string>
 <string name="para_donate">Wenn Sie die Entwicklung dieser App unterstützen möchten, können Sie über meine Amazon-Wunschliste oder den PayPal-Knopf spenden. Weil ich in Australien bin, kann ich keine "Kaufversion" der App anbieten. :-) </string>

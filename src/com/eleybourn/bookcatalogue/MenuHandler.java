@@ -38,17 +38,17 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * @author Philip Warner
  */
 public class MenuHandler {
-	private static final int MNU_ADD_BOOK = Menu.FIRST+1;
-	private static final int MNU_ITM_ADD_BOOK_MANUAL = Menu.FIRST+2;
-	private static final int MNU_ITM_ADD_BOOK_BARCODE = Menu.FIRST+3;
-	private static final int MNU_ITM_ADD_BOOK_ISBN = Menu.FIRST+4;
-	private static final int MNU_ITM_ADD_BOOK_NAMES = Menu.FIRST+5;
-	private static final int MNU_ITM_HELP = Menu.FIRST+7;
-	private static final int MNU_ITM_ADMIN = Menu.FIRST+8;
-	private static final int MNU_ITM_SEARCH = Menu.FIRST+9;
-	private static final int MNU_ITM_ABOUT = Menu.FIRST+10;
-	private static final int MNU_ITM_DONATE = Menu.FIRST+11;
-	private static final int MNU_ITM_BOOKSHELVES = Menu.FIRST+12;
+	private static final int MENU_ADD_BOOK = Menu.FIRST+1;
+	private static final int MENU_ITEM_ADD_BOOK_MANUAL = Menu.FIRST+2;
+	private static final int MENU_ITEM_ADD_BOOK_BARCODE = Menu.FIRST+3;
+	private static final int MENU_ITEM_ADD_BOOK_ISBN = Menu.FIRST+4;
+	private static final int MENU_ITEM_ADD_BOOK_NAMES = Menu.FIRST+5;
+	private static final int MENU_ITEM_HELP = Menu.FIRST+7;
+	private static final int MENU_ITEM_ADMIN = Menu.FIRST+8;
+	private static final int MENU_ITEM_SEARCH = Menu.FIRST+9;
+	private static final int MENU_ITEM_ABOUT = Menu.FIRST+10;
+	private static final int MENU_ITEM_DONATE = Menu.FIRST+11;
+	private static final int MENU_ITEM_BOOKSHELVES = Menu.FIRST+12;
 	
 	public static final int FIRST = Menu.FIRST+13;
 
@@ -65,22 +65,22 @@ public class MenuHandler {
 	 * @param menu	Root menu
 	 */
 	public void addCreateBookItems(Menu menu) {
-		SubMenu addMenu = menu.addSubMenu(0, MNU_ADD_BOOK, mSort++, BookCatalogueApp.getResourceString(R.string.label_insert) + "...");
+		SubMenu addMenu = menu.addSubMenu(0, MENU_ADD_BOOK, mSort++, BookCatalogueApp.getResourceString(R.string.label_insert) + "...");
 		addMenu.setIcon(R.drawable.ic_menu_new);
         addMenu.getItem().setIconTintList(ColorStateList.valueOf(ContextCompat.getColor(BookCatalogueApp.context, R.color.theme_onPrimary)));
 		addMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 		{
 			if (Utils.USE_BARCODE) {
-				MenuItem insertBC = addMenu.add(0, MNU_ITM_ADD_BOOK_BARCODE, mSort++, R.string.scan_barcode_isbn);
+				MenuItem insertBC = addMenu.add(0, MENU_ITEM_ADD_BOOK_BARCODE, mSort++, R.string.scan_barcode_isbn);
 				insertBC.setIcon(R.drawable.ic_menu_scan);
 			}
-			MenuItem insertISBN = addMenu.add(0, MNU_ITM_ADD_BOOK_ISBN, mSort++, R.string.enter_isbn);
+			MenuItem insertISBN = addMenu.add(0, MENU_ITEM_ADD_BOOK_ISBN, mSort++, R.string.enter_isbn);
 			insertISBN.setIcon(R.drawable.ic_menu_field_numbers);
 			
-			MenuItem insertName = addMenu.add(0, MNU_ITM_ADD_BOOK_NAMES, mSort++, R.string.search_internet);
+			MenuItem insertName = addMenu.add(0, MENU_ITEM_ADD_BOOK_NAMES, mSort++, R.string.search_internet);
 			insertName.setIcon(R.drawable.ic_menu_search_globe);
 
-			MenuItem insertBook = addMenu.add(0, MNU_ITM_ADD_BOOK_MANUAL, mSort++, R.string.add_manually);
+			MenuItem insertBook = addMenu.add(0, MENU_ITEM_ADD_BOOK_MANUAL, mSort++, R.string.add_manually);
 			insertBook.setIcon(R.drawable.ic_menu_field_text);
 		}
 	}
@@ -110,28 +110,28 @@ public class MenuHandler {
 	public void addCreateHelpAndAdminItems(Menu menu) {
 		{
 			String title = BookCatalogueApp.getResourceString(R.string.label_bookshelf);
-			MenuItem item = menu.add(0, MNU_ITM_BOOKSHELVES, mSort++, title);
+			MenuItem item = menu.add(0, MENU_ITEM_BOOKSHELVES, mSort++, title);
 			item.setIcon(R.drawable.ic_menu_bookshelves);
 		}
 		{
 			String helpTitle = BookCatalogueApp.getResourceString(R.string.label_help);
-			MenuItem help = menu.add(0, MNU_ITM_HELP, mSort++, helpTitle);
+			MenuItem help = menu.add(0, MENU_ITEM_HELP, mSort++, helpTitle);
 			help.setIcon(R.drawable.ic_menu_help);
 		}
 		{
-			String adminTitle = BookCatalogueApp.getResourceString(R.string.menu_administration);
-			MenuItem admin = menu.add(0, MNU_ITM_ADMIN, mSort++, adminTitle);
+			String adminTitle = BookCatalogueApp.getResourceString(R.string.label_settings);
+			MenuItem admin = menu.add(0, MENU_ITEM_ADMIN, mSort++, adminTitle);
 			admin.setIcon(R.drawable.ic_menu_settings);
 		}
 		{
 			String aboutTitle = BookCatalogueApp.getResourceString(R.string.label_about);
-			MenuItem admin = menu.add(0, MNU_ITM_ABOUT, mSort++, aboutTitle);
+			MenuItem admin = menu.add(0, MENU_ITEM_ABOUT, mSort++, aboutTitle);
 			admin.setIcon(R.drawable.ic_menu_info);
 		}
 		if (BuildConfig.IS_DONATE_ALLOWED)
 		{
 			String title = BookCatalogueApp.getResourceString(R.string.label_donate);
-			MenuItem donate = menu.add(0, MNU_ITM_DONATE, mSort++, title);
+			MenuItem donate = menu.add(0, MENU_ITEM_DONATE, mSort++, title);
 			donate.setIcon(R.drawable.ic_menu_donate);
 		}
 	}
@@ -142,9 +142,10 @@ public class MenuHandler {
 	 * @param menu	root menu
 	 */
 	public MenuItem addSearchItem(Menu menu) {
-		MenuItem search = menu.add(0, MNU_ITM_SEARCH, mSort++, R.string.menu_search);
+		MenuItem search = menu.add(0, MENU_ITEM_SEARCH, mSort++, R.string.menu_search);
 		search.setIcon(R.drawable.ic_menu_search);
-		return search;
+        search.setIconTintList(ColorStateList.valueOf(ContextCompat.getColor(BookCatalogueApp.context, R.color.theme_onPrimary)));
+        return search;
 	}
 
 	/**
@@ -157,34 +158,34 @@ public class MenuHandler {
 	 */
 	public boolean onMenuItemSelected(Activity a, MenuItem item) {
 		switch(item.getItemId()) {
-		case MNU_ITM_ADD_BOOK_MANUAL:
+		case MENU_ITEM_ADD_BOOK_MANUAL:
 			createBook(a);
 			return true;
-		case MNU_ITM_ADD_BOOK_ISBN:
+		case MENU_ITEM_ADD_BOOK_ISBN:
 			createBookISBN(a, "isbn");
 			return true;
-		case MNU_ITM_ADD_BOOK_BARCODE:
+		case MENU_ITEM_ADD_BOOK_BARCODE:
 			createBookScan(a);
 			return true;
-		case MNU_ITM_ADD_BOOK_NAMES:
+		case MENU_ITEM_ADD_BOOK_NAMES:
 			createBookISBN(a,"name");
 			return true;
-		case MNU_ITM_HELP:
+		case MENU_ITEM_HELP:
 			helpPage(a);
 			return true;
-		case MNU_ITM_ADMIN:
+		case MENU_ITEM_ADMIN:
 			adminPage(a);
 			return true;
-		case MNU_ITM_DONATE:
+		case MENU_ITEM_DONATE:
 			donatePage(a);
 			return true;
-		case MNU_ITM_ABOUT:
+		case MENU_ITEM_ABOUT:
 			aboutPage(a);
 			return true;
-		case MNU_ITM_BOOKSHELVES:
+		case MENU_ITEM_BOOKSHELVES:
 			bookshelvesPage(a);
 			return true;
-		case MNU_ITM_SEARCH:
+		case MENU_ITEM_SEARCH:
 			a.onSearchRequested();
 			return true;
 		}

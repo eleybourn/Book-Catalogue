@@ -23,14 +23,14 @@ public class SearchSuggestionProvider extends SearchRecentSuggestionsProvider {
 	
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-		if (selectionArgs[0].equals("")) {
+        assert selectionArgs != null;
+        if (selectionArgs[0].isEmpty()) {
 			return null;
 		}
 		if (mDbHelper == null) {
 			mDbHelper = new CatalogueDBAdapter(getContext());
 			mDbHelper.open();
 		}
-		Cursor mCursor = mDbHelper.fetchSearchSuggestions(selectionArgs[0]);
-		return mCursor;
+        return mDbHelper.fetchSearchSuggestions(selectionArgs[0]);
 	}
 }

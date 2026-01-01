@@ -34,14 +34,14 @@
     <string name="all_books">All Books</string>
     <string name="title_isbn_search">ISBN Search</string>
     <string name="title_edit_bs">Edit Bookshelf</string>
-    <string name="search_label">Search for Books</string>
-    <string name="search_hint">Search Author or Title</string>
+    <string name="label_search_for_books">Search for Books</string>
+    <string name="hint_search">Search Author or Title</string>
     <string name="book_not_found">The scanned book was not found. You can sometimes find the correct barcode on the inside front cover. Otherwise please enter the details manually.</string>
     <string name="label_series_num">#</string>
     <string name="import_data">Import Books</string>
     <string name="import_alert">Warning. Importing data may update existing book records with new information if the uuid column is not present and the id in the import file is the same as an existing id. This is usually fine if you changed a field in an exported file. If you created a new book record, or are importing someone elses books, ensure the uuid field is present or the id field is blank.</string>
     <string name="administration_label">Administration Functions</string>
-    <string name="menu_administration">Admin</string>
+    <string name="label_administration">Admin</string>
     <string name="install_scan_title">Install Barcode Scanner</string>
     <string name="label_version_number">Version Number:</string>
     <string name="para_donate">If you would like to support the development of this application, please donate using a my Amazon Wishlist or the paypal button below. Being in Australia means I cannot publish a paid version. :-) </string>

@@ -105,10 +105,10 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
      * Preference name
      */
     private final static String PREF_LIST_STYLE = TAG + ".LIST_STYLE";
-    private static final int MNU_SORT = MenuHandler.FIRST + 1;
-    private static final int MNU_EXPAND = MenuHandler.FIRST + 2;
-    private static final int MNU_COLLAPSE = MenuHandler.FIRST + 3;
-    private static final int MNU_EDIT_STYLE = MenuHandler.FIRST + 4;
+    private static final int MENU_SORT = MenuHandler.FIRST + 1;
+    private static final int MENU_EXPAND = MenuHandler.FIRST + 2;
+    private static final int MENU_COLLAPSE = MenuHandler.FIRST + 3;
+    private static final int MENU_EDIT_STYLE = MenuHandler.FIRST + 4;
     /**
      * Counter for debug purposes
      */
@@ -833,10 +833,10 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
         mMenuHandler = new MenuHandler();
         mMenuHandler.init(menu);
         mMenuHandler.addCreateBookItems(menu);
-        i = mMenuHandler.addItem(menu, MNU_SORT, R.string.sort_and_style_ellipsis, R.drawable.ic_menu_sort);
+        i = mMenuHandler.addItem(menu, MENU_SORT, R.string.sort_and_style_ellipsis, R.drawable.ic_menu_sort);
         i.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        mMenuHandler.addItem(menu, MNU_EXPAND, R.string.menu_sort_by_author_expanded, R.drawable.ic_menu_expand);
-        mMenuHandler.addItem(menu, MNU_COLLAPSE, R.string.menu_sort_by_author_collapsed, R.drawable.ic_menu_collapse);
+        mMenuHandler.addItem(menu, MENU_EXPAND, R.string.menu_sort_by_author_expanded, R.drawable.ic_menu_expand);
+        mMenuHandler.addItem(menu, MENU_COLLAPSE, R.string.menu_sort_by_author_collapsed, R.drawable.ic_menu_collapse);
         mMenuHandler.addSearchItem(menu)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         mMenuHandler.addCreateHelpAndAdminItems(menu);
@@ -853,15 +853,15 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
         if (mMenuHandler != null && !mMenuHandler.onMenuItemSelected(this, item)) {
             switch (item.getItemId()) {
 
-                case MNU_SORT:
+                case MENU_SORT:
                     HintManager.displayHint(this, R.string.hint_booklist_style_menu, null, () -> doSortMenu(false));
                     return true;
 
-                case MNU_EDIT_STYLE:
+                case MENU_EDIT_STYLE:
                     doEditStyle();
                     return true;
 
-                case MNU_EXPAND: {
+                case MENU_EXPAND: {
                     // It is possible that the list will be empty, if so, ignore
                     if (getListView().getChildCount() != 0) {
                         int oldAbsPos = mListHandler.getAbsolutePosition(getListView().getChildAt(0));
@@ -873,7 +873,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
                     }
                     break;
                 }
-                case MNU_COLLAPSE: {
+                case MENU_COLLAPSE: {
                     // It is possible that the list will be empty, if so, ignore
                     if (getListView().getChildCount() != 0) {
                         int oldAbsPos = mListHandler.getAbsolutePosition(getListView().getChildAt(0));

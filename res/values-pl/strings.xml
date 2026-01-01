@@ -30,8 +30,8 @@
     <string name="all_books">Wszystkie książki</string>
     <string name="title_isbn_search">Katalog książek: Szukj wg ISBN</string>
     <string name="title_edit_bs">Katalog książek: Edycja półek</string>
-    <string name="search_label">Szukaj książek</string>
-<string name="search_hint">Szukaj autora lub tytułu</string>
+    <string name="label_search_for_books">Szukaj książek</string>
+<string name="hint_search">Szukaj autora lub tytułu</string>
 <string name="book_not_found">Zeskanowana książka nie została odnaleziona. Spóbuj ponownie z kodem, który może znajdować się w środku okładki lub wprowadź dane ręcznie.</string>
 <string name="label_series_num">tom#</string>
     <string name="a_and_b">%1$s i %2$s</string>
@@ -39,7 +39,7 @@
 <string name="import_alert">Uwaga! Zaimportowane dane mogą nadpisać istniejące, jeśli pokryje się identyfikator (pole _id). Jest to zwykle oczekiwane zachowanie, gdy edytowałeś wyeksportowany wcześniej plik. Jeśli dodajesz nową książkę, pozostaw pole _id puste.</string>
     <string name="import_failed_is_location_correct">Błąd!: Import z karty SD nie powiódł się. Upewnij się, czy plik export.csv jest w prawidłowym miejscu.</string>
     <string name="administration_label">Funkcje administracyjne</string>
-    <string name="menu_administration">Administracja</string>
+    <string name="label_administration">Administracja</string>
     <string name="install_scan_title">Zainstaluj Barcode Scanner</string>
 <string name="label_version_number">Wersja programu:</string>
 <string name="para_donate">Jeśli chciałbyś wesprzeć rozwój programu, zrób to poprzez mój Amazon Wishlist lub PayPal. Będąc obywatelem Australii nie mam póki co możliwości opublikowania &quot;płatnej&quot; wersji. :-) </string>

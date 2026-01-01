@@ -31,14 +31,14 @@
     <string name="all_books">Все книги</string>
     <string name="title_isbn_search">Книжный каталог: поиск по ISBN</string>
     <string name="title_edit_bs">Книжный каталог: редактирование книжной полки</string>
-    <string name="search_label">Поиск книг</string>
-    <string name="search_hint">Поиск автора или названия</string>
+    <string name="label_search_for_books">Поиск книг</string>
+    <string name="hint_search">Поиск автора или названия</string>
     <string name="book_not_found">Не найдена книга, соответствующая отсканированному штрих-коду. Возможно правильный штрих-код находится внутри книги. Иначе, пожалуйста, введите детализированную информацию о книге вручную.</string>
     <string name="label_series_num">№</string>
     <string name="import_data">Импортировать книги</string>
     <string name="import_alert">Предупреждение. Импорт данных может заменить существующие записи книг обновлённой информацией, в случае, если номер в файле совпадает с существующим номером. Обычно это то, что требуется, если вы обновляете поле в файле экспорта. Если вы добавляете запись новой книге, убедитесь, что поле id не заполнено.</string>
     <string name="administration_label">Функции администрирования</string>
-    <string name="menu_administration">Настройки</string>
+    <string name="label_administration">Настройки</string>
     <string name="install_scan_title">Установить сканер штрих-кодов</string>
     <string name="label_version_number">Номер версии:</string>
     <string name="para_donate">Если Вы хотите поддержать разработку этого приложения, пожалуйста сделайте пожертвование или через Amazon Wishlist или через PayPal кнопкой внизу. Я не могу опубликовать &quot;платную&quot; версию приложения в Австралии. :-) </string>

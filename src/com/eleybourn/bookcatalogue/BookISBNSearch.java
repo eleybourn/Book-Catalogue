@@ -264,7 +264,7 @@ public class BookISBNSearch extends ActivityWithTasks {
             } else if (by.equals("name")) {
                 // System.out.println(mId + " OnCreate BY NAME");
                 setContentView(R.layout.search_name);
-                this.setTitle(R.string.search_hint);
+                this.setTitle(R.string.hint_search);
 
                 this.initAuthorList();
 

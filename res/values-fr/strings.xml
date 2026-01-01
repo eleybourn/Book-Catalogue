@@ -324,15 +324,8 @@
     <string name="no_matching_book_found">Aucun livre correspondant n\'a été trouvé</string>
     <string name="no_isbn_stored_for_book">Aucun ISBN enregistré pour ce livre</string>
     <string name="select_an_action">Choisissez une action</string>
-    <string name="goodreads_auth_check">Autorisation Goodreads en cours</string>
-    <string name="goodreads_auth_failed">Échec de l\'autorisation Goodreads</string>
-    <string name="goodreads_auth_successful">Autorisation Goodreads accordée</string>
-    <string name="authorized">Autorisé</string>
-    <string name="not_authorized">Non autorisé</string>
-    <string name="goodreads_auth_error">Autorisation Goodreads en erreur.</string>
     <string name="if_the_problem_persists">Si le problème persiste, contactez le support via l\'aide du menu principal.</string>
     <string name="x_of_y">%1$d de %2$d</string>
-    <string name="send_all_to_goodreads_result">%1$s livres traités : %2$s envoyés avec succès, %3$s sans ISBN et %4$s avec ISBN mais non trouvés sur Goodreads</string>
     <string name="send_book_to_goodreads">Envoyer le livre %1$s à Goodreads</string>
     <string name="label_erase_cover_cache">Effacer le cache des couvertures</string>
     <string name="crash_toast_text">Book Catalogue a planté. Merci de nous aider en reportant ce crash.</string>

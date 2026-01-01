@@ -233,14 +233,7 @@
     <string name="no_matching_book_found">No se ha encontrado ningún libro</string>
     <string name="no_isbn_stored_for_book">No se ha guardado ISBN para el libro</string>
     <string name="select_an_action">Seleccione una opción</string>
-    <string name="goodreads_auth_check">Comprobación de autorización en Goodreads</string>
-    <string name="goodreads_auth_failed">Fallo de autorización en Goodreads</string>
-    <string name="goodreads_auth_successful">Autorización satisfactoria en Goodreads</string>
-    <string name="authorized">Autorizado</string>
-    <string name="not_authorized">No Autorizado</string>
-    <string name="goodreads_auth_error">Error de autorización en Goodreads.</string>
     <string name="if_the_problem_persists">Si el problema persiste, contacte con soporte utilizando la opción de Ayuda del menú principal.</string>
-    <string name="send_all_to_goodreads_result">%1$s libros procesados: %2$s enviados correctamente, %3$s sin ISBN y %4$s con ISBN pero no encontrados en goodreads</string>
     <string name="x_of_y">%1$d de %2$d</string>
     <string name="send_book_to_goodreads">Enviar libro %1$s a goodreads</string>
 

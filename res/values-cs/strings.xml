@@ -227,15 +227,8 @@
 <string name="no_matching_book_found">Nebyla nalezena odpovídající kniha</string>
 <string name="no_isbn_stored_for_book">Kniha nemá uložen ISBN</string>
 <string name="select_an_action">Zvolte akci</string>
-    <string name="goodreads_auth_check">Kontrola Goodreads autorizace</string>
-<string name="goodreads_auth_failed">Goodreads autorizace selhala</string>
-<string name="goodreads_auth_successful">Goodreads autorizace v pořádku</string>
-<string name="authorized">Autorizováno</string>
-<string name="not_authorized">Neautorizováno</string>
-<string name="goodreads_auth_error">Goodreads autorizace skončila chybou.</string>
-<string name="if_the_problem_persists">Pokud problémy přetrvají, kontaktujte správce.</string>
-    <string name="send_all_to_goodreads_result">%1$s knih zpracováno: %2$s úspěšně odesláno, %3$s bez ISBN a %4$s s ISBN, které nebyly v Goodreads nalezeny.</string>
-<string name="x_of_y">%1$d z %2$d</string>
+    <string name="if_the_problem_persists">Pokud problémy přetrvají, kontaktujte správce.</string>
+    <string name="x_of_y">%1$d z %2$d</string>
 <string name="send_book_to_goodreads">Poslat knihu %1$s do Goodreads</string>
 <string name="label_erase_cover_cache">Vymazat vyrovnávací paměť pro obálky</string>
 <string name="crash_toast_text">Došlo k neočekávanému pádu aplikace BookCatalogue. Prosím pomozte nám zlepšit aplikaci a informujte nás o tomto problému.</string>

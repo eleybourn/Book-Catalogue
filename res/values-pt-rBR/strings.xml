@@ -234,14 +234,7 @@
     <string name="no_matching_book_found">No matching book found</string>
     <string name="no_isbn_stored_for_book">No ISBN stored for book</string>
     <string name="select_an_action">Select an action</string>
-    <string name="goodreads_auth_check">Goodreads authorization check</string>
-    <string name="goodreads_auth_failed">Goodreads authorization failed</string>
-    <string name="goodreads_auth_successful">Goodreads authorization successful</string>
-    <string name="authorized">Authorized</string>
-    <string name="not_authorized">Not Authorized</string>
-    <string name="goodreads_auth_error">Goodreads authorization resulted in an error.</string>
     <string name="if_the_problem_persists">If the problem persists, contact support via Help on the main menu.</string>
-    <string name="send_all_to_goodreads_result">%1$s books processed: %2$s sent successfully, %3$s with no ISBN and %4$s with ISBN but not found in goodreads</string>
     <string name="x_of_y">%1$d of %2$d</string>
     <string name="send_book_to_goodreads">Send book %1$s to goodreads</string>
 

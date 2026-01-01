@@ -232,15 +232,8 @@
 <string name="no_matching_book_found">Kein passendes Buch gefunden</string>
 <string name="no_isbn_stored_for_book">Zu diesem Buch ist keine ISBN gespeichert</string>
 <string name="select_an_action">Eine Aktion wählen</string>
-    <string name="goodreads_auth_check">Autorisierungsprüfung für Goodreads</string>
-<string name="goodreads_auth_failed">Autorisierung bei Goodreads fehlgeschlagen</string>
-<string name="goodreads_auth_successful">Autorisierung bei Goodreads erfolgreich</string>
-<string name="authorized">Autorisiert</string>
-<string name="not_authorized">Nicht autorisiert</string>
-<string name="goodreads_auth_error">Die Autorisierung bei Goodreads endete fehlerhaft</string>
-<string name="if_the_problem_persists">Wenn das Problem weiterhin besteht, kontaktieren Sie den Support über das Menü "Hilfe"</string>
-    <string name="send_all_to_goodreads_result">%1$s Bücher verarbeitet: %2$s erfolgreich übertragen, %3$s ohne ISBN und %4$s mit einer in Goodreads nicht auffindbaren ISBN</string>
-<string name="x_of_y">%1$d von %2$d</string>
+    <string name="if_the_problem_persists">Wenn das Problem weiterhin besteht, kontaktieren Sie den Support über das Menü "Hilfe"</string>
+    <string name="x_of_y">%1$d von %2$d</string>
 <string name="send_book_to_goodreads">Buch %1$s an Goodreads senden</string>
 
 <string name="label_erase_cover_cache">Zwischenspeicher für Cover-Bilder löschen</string>

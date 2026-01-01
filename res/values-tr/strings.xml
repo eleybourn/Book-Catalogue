@@ -244,14 +244,7 @@
     <string name="no_matching_book_found">Eşleşen kitap bulunamadı</string>
     <string name="no_isbn_stored_for_book">Bu kitap için bir ISBN depolanmamış</string>
     <string name="select_an_action">Bir eylem seçin</string>
-    <string name="goodreads_auth_check">Goodreads yetkilendirme denetimi</string>
-    <string name="goodreads_auth_failed">Goodreads yetkilendirmesi başarısız</string>
-    <string name="goodreads_auth_successful">Goodreads yetkilendirmesi başarılı</string>
-    <string name="authorized">Yetkilendirilmiş</string>
-    <string name="not_authorized">Yetkilendirilmemiş</string>
-    <string name="goodreads_auth_error">Goodreads yetkilendirmesi bir hataya neden oldu</string>
     <string name="if_the_problem_persists">Eğer sorun sürerse lütfen ana seçkedeki Yardım bölümünden destek ile iletişime geçin.</string>
-    <string name="send_all_to_goodreads_result">%1$s kitap işlendi: %2$s tanesi başarıyla gönderildi, %3$s tanesinin ISBN\'si yok ve %4$s tanesinin ISBN\'si Goodreads\'te bulunamadı</string>
     <string name="x_of_y">%1$d (Toplam %2$d)</string>
     <string name="send_book_to_goodreads">Bu kitabı Goodreads\'e gönder: %1$s</string>
 

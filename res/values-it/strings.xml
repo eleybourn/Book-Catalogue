@@ -239,14 +239,7 @@
     <string name="no_matching_book_found">Nessuna corrispondenza trovata</string>
     <string name="no_isbn_stored_for_book">Codice ISBN non memorizzato</string>
     <string name="select_an_action">Seleziona un\'azione</string>
-    <string name="goodreads_auth_check">Verifica autorizzazione Goodreads</string>
-    <string name="goodreads_auth_failed">Autorizzazione Goodreads fallita</string>
-    <string name="goodreads_auth_successful">Autorizzazione Goodreads concessa</string>
-    <string name="authorized">Autorizzato</string>
-    <string name="not_authorized">Non autorizzato</string>
-    <string name="goodreads_auth_error">Errore durante l\'autorizzazione di Goodreads.</string>
     <string name="if_the_problem_persists">Se il problema persiste, contatta il supporto dalla voce Aiuto del menu principale.</string>
-    <string name="send_all_to_goodreads_result">%1$s libri esaminati: %2$s inviati correttamente, %3$s sprovvisti di ISBN e %4$s con ISBN ma non trovato in Goodreads</string>
     <string name="x_of_y">%1$d di %2$d</string>
     <string name="send_book_to_goodreads">Invia il libro %1$s a Goodreads</string>
 

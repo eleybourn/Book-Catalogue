@@ -235,14 +235,7 @@
     <string name="no_matching_book_found">Geen overeenkomstig boek gevonden</string>
     <string name="no_isbn_stored_for_book">Geen ISBN opgeslagen voor boek</string>
     <string name="select_an_action">Selecteer een actie</string>
-    <string name="goodreads_auth_check">Goodreads autorisatie controle</string>
-    <string name="goodreads_auth_failed">Goodreads autorisatie mislukt</string>
-    <string name="goodreads_auth_successful">Goodreads autorisatie gelukt</string>
-    <string name="authorized">Geautoriseerd</string>
-    <string name="not_authorized">Niet geautoriseerd</string>
-    <string name="goodreads_auth_error">Goodreads autorisatie leidde tot een fout.</string>
     <string name="if_the_problem_persists">Als het probleem aanhoud, maak dan contact met ondersteuning via Help in het hoofdmenu.</string>
-    <string name="send_all_to_goodreads_result">%1$s boeken verwerkt: %2$s met succes verzonden, %3$s zonder ISBN en %4$s met ISBN maar niet gevonden in goodreads</string>
     <string name="x_of_y">%1$d van %2$d</string>
     <string name="send_book_to_goodreads">Zend boek %1$s naar goodreads</string>
     <string name="label_erase_cover_cache">Wis boekomslag cache</string>

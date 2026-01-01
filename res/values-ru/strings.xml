@@ -233,14 +233,7 @@
     <string name="no_matching_book_found">Нет совпавших книг</string>
     <string name="no_isbn_stored_for_book">Нет ISBN хранящегося для книги</string>
     <string name="select_an_action">Выберете дествие</string>
-    <string name="goodreads_auth_check">Проверка авторизации Goodreads</string>
-    <string name="goodreads_auth_failed">Ошибка авторизации Goodreads</string>
-    <string name="goodreads_auth_successful">Авторизация Goodreads прошла успешно</string>
-    <string name="authorized">Авторизовано</string>
-    <string name="not_authorized">Не авторизовано</string>
-    <string name="goodreads_auth_error">Авторизация Goodreads завершилась с ошибкой.</string>
     <string name="if_the_problem_persists">Если проблема осталась, свяжитесь с поддержкой через меню Помощь главного меню.</string>
-    <string name="send_all_to_goodreads_result">%1$s книг обработано: %2$s отправлено успешно, %3$s без ISBN и %4$s с ISBN но не найдено в Goodreads</string>
     <string name="x_of_y">%1$d из %2$d</string>
     <string name="send_book_to_goodreads">Отправить книгу %1$s на Goodreads</string>
 

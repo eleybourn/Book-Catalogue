@@ -108,7 +108,7 @@
             android:label="@string/title_isbn_search"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".booklist.BooklistPreferencesActivity"
+            android:name=".booklist.AdminLibraryPreferences"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".booklist.BooklistStyleGroupsActivity"
@@ -121,16 +121,16 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".AdminBookshelf"
-            android:label="@string/label_bookshelf"
+            android:label="@string/title_manage_bookshelves"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".AdminBookshelfEdit"
-            android:label="@string/title_edit_bs"
+            android:label="@string/title_edit_bookshelf"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".Library"
             android:exported="false"
-            android:label="@string/label_library"
+            android:label="@string/title_library"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -161,11 +161,11 @@
             android:name=".MainHelp"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".FieldVisibility"
-            android:label="@string/label_manage_fields"
+            android:name=".AdminFieldVisibility"
+            android:label="@string/title_manage_fields"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".OtherPreferences"
+            android:name=".AdminOtherPreferences"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".BookEditAuthorList"

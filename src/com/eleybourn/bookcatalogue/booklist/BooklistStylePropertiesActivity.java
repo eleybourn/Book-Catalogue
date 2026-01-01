@@ -61,7 +61,7 @@ public class BooklistStylePropertiesActivity extends BookCatalogueActivity {
     /** Flag indicating style should be saved to the database on exit */
     private boolean mSaveToDb = true;
     /** Style we are editing */
-    private BooklistStyle mStyle;
+    private LibraryStyle mStyle;
     /** Properties object constructed from current style */
     private Properties mProperties;
 
@@ -85,9 +85,9 @@ public class BooklistStylePropertiesActivity extends BookCatalogueActivity {
                     // Logic moved from onActivityResult
                     Intent intent = result.getData();
                     if (intent != null && intent.hasExtra(BooklistStyleGroupsActivity.KEY_STYLE)) {
-                        BooklistStyle editedStyle = null;
+                        LibraryStyle editedStyle = null;
                         try {
-                            editedStyle = (BooklistStyle) intent.getSerializableExtra(BooklistStyleGroupsActivity.KEY_STYLE);
+                            editedStyle = (LibraryStyle) intent.getSerializableExtra(BooklistStyleGroupsActivity.KEY_STYLE);
                         } catch (Exception e) {
                             Logger.logError(e);
                         }
@@ -103,7 +103,7 @@ public class BooklistStylePropertiesActivity extends BookCatalogueActivity {
         this.setContentView(R.layout.admin_style_edit);
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
         setSupportActionBar(topAppBar);
-        topAppBar.setTitle(R.string.label_bookshelf);
+        topAppBar.setTitle(R.string.title_edit_library_styles);
         topAppBar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         Button save = findViewById(R.id.button_confirm);
@@ -113,7 +113,7 @@ public class BooklistStylePropertiesActivity extends BookCatalogueActivity {
 
         // Get the intent and get the style and other details
         Intent i = this.getIntent();
-        mStyle = (BooklistStyle) i.getSerializableExtra(KEY_STYLE);
+        mStyle = (LibraryStyle) i.getSerializableExtra(KEY_STYLE);
 
         if (i.hasExtra(KEY_SAVE_TO_DATABASE))
             mSaveToDb = i.getBooleanExtra(KEY_SAVE_TO_DATABASE, true);
@@ -126,15 +126,15 @@ public class BooklistStylePropertiesActivity extends BookCatalogueActivity {
         if (mStyle.getDisplayName().isEmpty())
             title = getString(R.string.new_style);
         else if (mStyle.getRowId() == 0)
-            title = getString(R.string.clone_style_colon_name, mStyle.getDisplayName());
+            title = getString(R.string.title_clone_style_colon_name, mStyle.getDisplayName());
         else
-            title = getString(R.string.edit_style_colon_name, mStyle.getDisplayName());
+            title = getString(R.string.title_edit_style_colon_name, mStyle.getDisplayName());
 
         this.setTitle(title);
 
         // Display hint if required
         if (savedInstanceState == null)
-            HintManager.displayHint(this, R.string.hint_booklist_style_properties, null, null);
+            HintManager.displayHint(this, R.string.hint_library_style_properties, null, null);
     }
 
     /**

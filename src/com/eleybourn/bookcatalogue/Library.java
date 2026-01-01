@@ -55,10 +55,10 @@ import android.widget.Toast;
 import com.eleybourn.bookcatalogue.LibraryMultitypeHandler.BooklistChangeListener;
 import com.eleybourn.bookcatalogue.booklist.LibraryBuilder;
 import com.eleybourn.bookcatalogue.booklist.LibraryBuilder.BookRowInfo;
-import com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds;
-import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
+import com.eleybourn.bookcatalogue.booklist.LibraryGroup.RowKinds;
+import com.eleybourn.bookcatalogue.booklist.AdminLibraryPreferences;
 import com.eleybourn.bookcatalogue.booklist.BooklistPseudoCursor;
-import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
+import com.eleybourn.bookcatalogue.booklist.LibraryStyle;
 import com.eleybourn.bookcatalogue.booklist.BooklistStylePropertiesActivity;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyles;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
@@ -121,7 +121,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
     /**
      * Currently selected list style
      */
-    BooklistStyle mCurrentStyle = null;
+    LibraryStyle mCurrentStyle = null;
     /**
      * Currently selected bookshelf
      */
@@ -202,7 +202,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
                         if (result.getResultCode() == RESULT_OK) {
                             Intent intent = result.getData();
                             if (intent != null && intent.hasExtra(BooklistStylePropertiesActivity.KEY_STYLE)) {
-                                BooklistStyle style = (BooklistStyle) intent.getSerializableExtra(BooklistStylePropertiesActivity.KEY_STYLE);
+                                LibraryStyle style = (LibraryStyle) intent.getSerializableExtra(BooklistStylePropertiesActivity.KEY_STYLE);
                                 if (style != null)
                                     mCurrentStyle = style;
                             }
@@ -238,16 +238,16 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
             setContentView(R.layout.library);
             MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
             setSupportActionBar(topAppBar);
-            topAppBar.setTitle(R.string.label_library);
+            topAppBar.setTitle(R.string.title_library);
             topAppBar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
             mProgressBar = findViewById(R.id.loading_progress);
 
             if (savedInstanceState == null)
                 // Get preferred booklist state to use from preferences; default to always expanded (MUCH faster than 'preserve' with lots of books)
-                mRebuildState = BooklistPreferencesActivity.getRebuildState();
+                mRebuildState = AdminLibraryPreferences.getRebuildState();
             else
                 // Always preserve state when rebuilding/recreating etc
-                mRebuildState = BooklistPreferencesActivity.BOOKLISTS_STATE_PRESERVED;
+                mRebuildState = AdminLibraryPreferences.LIBRARY_STATE_PRESERVED;
 
             mDb = new CatalogueDBAdapter(this);
             mDb.open();
@@ -328,10 +328,10 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
 
             if (savedInstanceState == null) {
                 HintManager.displayHint(this, R.string.hint_view_only_book_details, null, null);
-                HintManager.displayHint(this, R.string.hint_book_list, null, null);
+                HintManager.displayHint(this, R.string.hint_library, null, null);
                 // This hint is only displayed for users with missing covers who might have upgraded from an earlier version and missed the update message
                 // that explains how to update covers...
-                HintManager.displayHint(this, R.string.hint_missing_covers, null, null, getString(R.string.label_settings), getString(R.string.label_import_old_files));
+                HintManager.displayHint(this, R.string.hint_missing_covers, null, null, getString(R.string.title_settings), getString(R.string.label_import_old_files));
             }
 
             if (intent.getBooleanExtra("com.eleybourn.bookcatalogue.START_SEARCH", false)) {
@@ -396,7 +396,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
     private void handleSelectedStyle(String name) {
         // Find the style, if no match warn user and exit
         BooklistStyles styles = BooklistStyles.getAllStyles(mDb);
-        BooklistStyle style = styles.findCanonical(name);
+        LibraryStyle style = styles.findCanonical(name);
         if (style == null) {
             Toast.makeText(this, "Could not find appropriate list", Toast.LENGTH_LONG).show();
             return;
@@ -415,7 +415,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
         }
 
         // New style, so use user-pref for rebuild
-        mRebuildState = BooklistPreferencesActivity.getRebuildState();
+        mRebuildState = AdminLibraryPreferences.getRebuildState();
         // Do a rebuild
         mCurrentStyle = style;
         setupList();
@@ -459,10 +459,10 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
             throw new RuntimeException("Unexpected empty list");
         }
 
-        final int showHeaderFlags = (mCurrentStyle == null ? BooklistStyle.SUMMARY_SHOW_ALL : mCurrentStyle.getShowHeaderInfo());
+        final int showHeaderFlags = (mCurrentStyle == null ? LibraryStyle.SUMMARY_SHOW_ALL : mCurrentStyle.getShowHeaderInfo());
 
         TextView bookCounts = findViewById(R.id.label_bookshelf_count);
-        if ((showHeaderFlags & BooklistStyle.SUMMARY_SHOW_COUNT) != 0) {
+        if ((showHeaderFlags & LibraryStyle.SUMMARY_SHOW_COUNT) != 0) {
             if (mUniqueBooks != mTotalBooks)
                 bookCounts.setText(this.getString(R.string.displaying_n_books_in_m_entries, String.valueOf(mUniqueBooks), String.valueOf(mTotalBooks)));
             else
@@ -561,20 +561,20 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
         final boolean hasLevel1 = (mList.numLevels() > 1);
         final boolean hasLevel2 = (mList.numLevels() > 2);
 
-        if (hasLevel2 && (showHeaderFlags & BooklistStyle.SUMMARY_SHOW_LEVEL_2) != 0) {
+        if (hasLevel2 && (showHeaderFlags & LibraryStyle.SUMMARY_SHOW_LEVEL_2) != 0) {
             lvHolder.level2Text.setVisibility(View.VISIBLE);
             lvHolder.level2Text.setText("");
         } else {
             lvHolder.level2Text.setVisibility(View.GONE);
         }
-        if (hasLevel1 && (showHeaderFlags & BooklistStyle.SUMMARY_SHOW_LEVEL_1) != 0) {
+        if (hasLevel1 && (showHeaderFlags & LibraryStyle.SUMMARY_SHOW_LEVEL_1) != 0) {
             lvHolder.level1Text.setVisibility(View.VISIBLE);
             lvHolder.level1Text.setText("");
         } else
             lvHolder.level1Text.setVisibility(View.GONE);
 
         // Update the header details
-        if (count > 0 && (showHeaderFlags & (BooklistStyle.SUMMARY_SHOW_LEVEL_1 ^ BooklistStyle.SUMMARY_SHOW_LEVEL_2)) != 0)
+        if (count > 0 && (showHeaderFlags & (LibraryStyle.SUMMARY_SHOW_LEVEL_1 ^ LibraryStyle.SUMMARY_SHOW_LEVEL_2)) != 0)
             updateListHeader(lvHolder, mTopRow, hasLevel1, hasLevel2, showHeaderFlags);
 
         // Define a scroller to update header detail when top row changes
@@ -624,11 +624,11 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
             topItem = 0;
 
         mLastTop = topItem;
-        if (hasLevel1 && (flags & BooklistStyle.SUMMARY_SHOW_LEVEL_1) != 0) {
+        if (hasLevel1 && (flags & LibraryStyle.SUMMARY_SHOW_LEVEL_1) != 0) {
             if (mList.moveToPosition(topItem)) {
                 holder.level1Text.setText(mList.getRowView().getLevel1Data());
                 String s;
-                if (hasLevel2 && (flags & BooklistStyle.SUMMARY_SHOW_LEVEL_2) != 0) {
+                if (hasLevel2 && (flags & LibraryStyle.SUMMARY_SHOW_LEVEL_2) != 0) {
                     s = mList.getRowView().getLevel2Data();
                     holder.level2Text.setText(s);
                 }
@@ -671,7 +671,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
             builder.build(mRebuildState, mMarkBookId, mCurrentBookshelf, "", "", "", "", mSearchText);
 
             // After first build, always preserve this object state
-            mRebuildState = BooklistPreferencesActivity.BOOKLISTS_STATE_PRESERVED;
+            mRebuildState = AdminLibraryPreferences.LIBRARY_STATE_PRESERVED;
 
             return builder;
         }
@@ -774,7 +774,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
         // Add the default All Books bookshelf
         int pos = 0;
         int bookshelf_pos = pos;
-        mBookshelfAdapter.add(getString(R.string.all_books));
+        mBookshelfAdapter.add(getString(R.string.option_all_books));
         pos++;
 
         Cursor bookshelves = mDb.fetchAllBookshelves();
@@ -858,7 +858,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
             switch (item.getItemId()) {
 
                 case MENU_SORT:
-                    HintManager.displayHint(this, R.string.hint_booklist_style_menu, null, () -> doSortMenu(false));
+                    HintManager.displayHint(this, R.string.hint_library_style_menu, null, () -> doSortMenu(false));
                     return true;
 
                 case MENU_EDIT_STYLE:
@@ -966,7 +966,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
             styleName = mCurrentStyle.getCanonicalName();
         }
 
-        BooklistStyle style = styles.findCanonical(styleName);
+        LibraryStyle style = styles.findCanonical(styleName);
         if (style != null)
             mCurrentStyle = style;
         if (mCurrentStyle == null)
@@ -987,14 +987,14 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
         sortDialog.setTitle(R.string.select_style);
         sortDialog.show();
 
-        Iterator<BooklistStyle> i;
+        Iterator<LibraryStyle> i;
         if (!showAll)
             i = BooklistStyles.getPreferredStyles(mDb).iterator();
         else
             i = BooklistStyles.getAllStyles(mDb).iterator();
 
         while (i.hasNext()) {
-            BooklistStyle style = i.next();
+            LibraryStyle style = i.next();
             makeRadio(sortDialog, inf, group, style);
         }
         int moreLess;
@@ -1018,7 +1018,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
     /**
      * Add a radio box to the sort options dialogue.
      */
-    private void makeRadio(final AlertDialog sortDialog, final LayoutInflater inf, RadioGroup group, final BooklistStyle style) {
+    private void makeRadio(final AlertDialog sortDialog, final LayoutInflater inf, RadioGroup group, final LibraryStyle style) {
         View v = inf.inflate(R.layout.menu_style_radio, group, false);
         RadioButton btn = (RadioButton) v;
         btn.setText(style.getDisplayName());

@@ -110,7 +110,7 @@ public class UpdateFromInternet extends ActivityWithTasks {
 	private void addIfVisible(String field, String visField, int stringId, Usages usage, boolean canAppend) {
 		if (visField == null || visField.trim().length() == 0)
 			visField = field;
-		if (mPrefs.getBoolean(FieldVisibility.prefix + visField, true))
+		if (mPrefs.getBoolean(AdminFieldVisibility.prefix + visField, true))
 			mFieldUsages.put(new FieldUsage(field, stringId, usage, canAppend));		
 	}
 	/**

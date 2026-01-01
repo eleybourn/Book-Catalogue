@@ -108,7 +108,7 @@ public class MainAdministration extends ActivityWithTasks
             mDbHelper.open();
             setContentView(R.layout.main_administration);
             MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
-            topAppBar.setTitle(R.string.administration_label);
+            topAppBar.setTitle(R.string.title_settings);
             topAppBar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
             Bundle extras = getIntent().getExtras();
@@ -149,6 +149,12 @@ public class MainAdministration extends ActivityWithTasks
         // Make line flash when clicked.
         fields.setBackgroundResource(android.R.drawable.list_selector_background);
         fields.setOnClickListener(v -> manageFields());
+
+        /* Book List Preferences Link */
+        View blPrefs = findViewById(R.id.booklistPreferencesLabel);
+        // Make line flash when clicked.
+        blPrefs.setBackgroundResource(android.R.drawable.list_selector_background);
+        blPrefs.setOnClickListener(v -> BookCatalogueApp.startPreferencesActivity(MainAdministration.this));
 
         /* Export Link */
         View export = findViewById(R.id.exportLabel);
@@ -196,15 +202,9 @@ public class MainAdministration extends ActivityWithTasks
         // Make line flash when clicked.
         otherPrefs.setBackgroundResource(android.R.drawable.list_selector_background);
         otherPrefs.setOnClickListener(v -> {
-            Intent i = new Intent(MainAdministration.this, OtherPreferences.class);
+            Intent i = new Intent(MainAdministration.this, AdminOtherPreferences.class);
             startActivity(i);
         });
-
-        /* Book List Preferences Link */
-        View blPrefs = findViewById(R.id.booklistPreferencesLabel);
-        // Make line flash when clicked.
-        blPrefs.setBackgroundResource(android.R.drawable.list_selector_background);
-        blPrefs.setOnClickListener(v -> BookCatalogueApp.startPreferencesActivity(MainAdministration.this));
 
         // Edit Book list styles
         {
@@ -300,7 +300,7 @@ public class MainAdministration extends ActivityWithTasks
      * Load the Manage Field Visibility Activity
      */
     private void manageFields() {
-        Intent i = new Intent(this, FieldVisibility.class);
+        Intent i = new Intent(this, AdminFieldVisibility.class);
         startActivity(i);
     }
 

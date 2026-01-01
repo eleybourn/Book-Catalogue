@@ -13,7 +13,7 @@
         <TextView
             android:id="@+id/field_anthology_title"
             style="@style/layout_heading"
-            android:text="@string/label_anthology" />
+            android:text="@string/label_anthology_titles" />
 
         <CheckBox
             android:id="@+id/field_same_author"

@@ -22,6 +22,7 @@ package com.eleybourn.bookcatalogue.utils;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Objects;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -53,10 +54,10 @@ public class HintManager {
 
 	/** All hints managed by this class */
 	private static final Hints mHints = new Hints()
-		.add("BOOKLIST_STYLES_EDITOR", R.string.hint_booklist_styles_editor)
-		.add("BOOKLIST_STYLE_GROUPS", R.string.hint_booklist_style_groups)
-		.add("BOOKLIST_STYLE_PROPERTIES", R.string.hint_booklist_style_properties)
-		.add("BOOKLIST_GLOBAL_PROPERTIES", R.string.hint_booklist_global_properties)
+		.add("BOOKLIST_STYLES_EDITOR", R.string.hint_library_styles_editor)
+		.add("BOOKLIST_STYLE_GROUPS", R.string.hint_library_style_groups)
+		.add("BOOKLIST_STYLE_PROPERTIES", R.string.hint_library_style_properties)
+		.add("BOOKLIST_GLOBAL_PROPERTIES", R.string.hint_library_global_properties)
 		.add("BOOKLIST_MULTI_AUTHORS", R.string.hint_authors_book_may_appear_more_than_once)
 		.add("BOOKLIST_MULTI_SERIES", R.string.hint_series_book_may_appear_more_than_once)
 		.add("BACKGROUND_TASKS", R.string.hint_background_tasks)
@@ -64,12 +65,12 @@ public class HintManager {
 		.add("STARTUP_SCREEN", R.string.hint_startup_screen)
 		.add("explain_goodreads_no_isbn", R.string.explain_goodreads_no_isbn)
 		.add("explain_goodreads_no_match", R.string.explain_goodreads_no_match)
-		.add("hint_booklist_style_menu", R.string.hint_booklist_style_menu)
+		.add("hint_booklist_style_menu", R.string.hint_library_style_menu)
 		.add("hint_autorotate_camera_images", R.string.hint_autorotate_camera_images)
 		.add("hint_view_only_book_details", R.string.hint_view_only_book_details)
 		.add("hint_view_only_help", R.string.hint_view_only_help)
 		.add("hint_tempus_locum", R.string.hint_tempus_locum)
-		.add("hint_book_list", R.string.hint_book_list)
+		.add("hint_book_list", R.string.hint_library)
 		.add("hint_missing_covers", R.string.hint_missing_covers, false)
 		//.add("hint_amazon_links_blurb", R.string.hint_amazon_links_blurb)
 		;
@@ -119,10 +120,9 @@ public class HintManager {
 		final Button ok = dialog.findViewById(R.id.button_confirm);
 
 		// Setup the views
-        if (headingId != null) {
-            String headingText = BookCatalogueApp.context.getResources().getString(headingId, args);
-            header.setText(headingText);
-        }
+        String headingText;
+        headingText = BookCatalogueApp.context.getResources().getString(Objects.requireNonNullElse(headingId, R.string.title_hint), args);
+        header.setText(headingText);
 		String hintText = BookCatalogueApp.context.getResources().getString(stringId, args);
 		msg.setText(Utils.linkifyHtml(hintText, Linkify.WEB_URLS));
 		// Automatically start a browser (or whatever)
@@ -157,7 +157,8 @@ public class HintManager {
 		/** USed to lookup hint based on string ID */
 		private final Hashtable<Integer, Hint> mHintsById = new Hashtable<>();
 		/** Used to prevent two hints having the same preference name */
-		private final Hashtable<String, Hint> mHintsByKey = new Hashtable<>();
+		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+        private final Hashtable<String, Hint> mHintsByKey = new Hashtable<>();
 
 		/**
 		 * Add a hint to the collection

@@ -256,7 +256,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
         setContentView(R.layout.book_edit_base);
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
         setSupportActionBar(topAppBar);
-        topAppBar.setTitle(R.string.label_bookshelf);
+        topAppBar.setTitle(R.string.title_manage_bookshelves);
         topAppBar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
         TabLayout tabLayout = findViewById(R.id.tab_layout);
         ViewPager2 mViewPager = findViewById(R.id.view_pager);
@@ -281,7 +281,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
                             tab.setText(R.string.label_loan);
                             break;
                         case 3:
-                            tab.setText(R.string.label_anthology);
+                            tab.setText(R.string.label_anthology_titles);
                             break;
                     }
                 }
@@ -520,7 +520,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
             }
         }
 
-        boolean thumbVisible = BookCatalogueApp.getAppPreferences().getBoolean(FieldVisibility.prefix + "thumbnail", true);
+        boolean thumbVisible = BookCatalogueApp.getAppPreferences().getBoolean(AdminFieldVisibility.prefix + "thumbnail", true);
         if (thumbVisible) {
             MenuItem thumbOptions = menu.add(0, R.id.MENU_THUMBNAIL_OPTIONS, 0, R.string.cover_options_cc_ellipsis);
             thumbOptions.setIcon(R.drawable.ic_menu_camera);
@@ -812,7 +812,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
             bar.setTitle(mBookData.getString(CatalogueDBAdapter.KEY_TITLE));
             bar.setSubtitle(mBookData.getAuthorTextShort());
         } else {
-            bar.setTitle(this.getResources().getString(R.string.label_insert));
+            bar.setTitle(this.getResources().getString(R.string.title_add_book));
             bar.setSubtitle(null);
         }
     }

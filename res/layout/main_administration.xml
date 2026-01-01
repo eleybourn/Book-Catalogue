@@ -28,7 +28,7 @@
                 style="@style/layout_menu_list"
                 app:drawableLeftCompat="@drawable/ic_menu_bookshelves"
                 android:drawablePadding="@dimen/p_lg"
-                android:text="@string/label_bookshelf" />
+                android:text="@string/title_manage_bookshelves" />
 
             <!-- FIELDS -->
 
@@ -37,7 +37,7 @@
                 style="@style/layout_menu_list"
                 app:drawableLeftCompat="@drawable/ic_menu_fields"
                 android:drawablePadding="@dimen/p_lg"
-                android:text="@string/label_manage_fields" />
+                android:text="@string/title_manage_fields" />
 
             <!-- BOOK LIST PREFS -->
 
@@ -46,7 +46,7 @@
                 style="@style/layout_menu_list"
                 app:drawableLeftCompat="@drawable/ic_menu_preferences"
                 android:drawablePadding="@dimen/p_lg"
-                android:text="@string/label_booklist_preferences" />
+                android:text="@string/title_library_preferences" />
 
             <!-- Edit Styles -->
 
@@ -55,7 +55,7 @@
                 style="@style/layout_menu_list"
                 app:drawableLeftCompat="@drawable/ic_menu_styles"
                 android:drawablePadding="@dimen/p_lg"
-                android:text="@string/label_edit_book_list_styles" />
+                android:text="@string/title_edit_library_styles" />
 
             <!-- OTHER PREFS -->
 
@@ -64,7 +64,7 @@
                 style="@style/layout_menu_list"
                 app:drawableLeftCompat="@drawable/ic_menu_settings"
                 android:drawablePadding="@dimen/p_lg"
-                android:text="@string/label_other_preferences" />
+                android:text="@string/title_other_preferences" />
 
             <!-- DATA IMPORT/EXPORT -->
 

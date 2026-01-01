@@ -61,7 +61,7 @@ public class AdminBookshelf extends AppCompatActivity {
         setContentView(R.layout.admin_bookshelves);
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
         setSupportActionBar(topAppBar);
-        topAppBar.setTitle(R.string.label_bookshelf);
+        topAppBar.setTitle(R.string.title_manage_bookshelves);
         topAppBar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         // Initialize Launchers

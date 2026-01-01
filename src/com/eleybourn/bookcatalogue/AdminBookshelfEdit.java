@@ -56,7 +56,7 @@ public class AdminBookshelfEdit extends BookCatalogueActivity {
             setContentView(R.layout.admin_bookshelf_edit);
             MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
             setSupportActionBar(topAppBar);
-            topAppBar.setTitle(R.string.title_edit_bs);
+            topAppBar.setTitle(R.string.title_edit_bookshelf);
             topAppBar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
 			mBookshelfText = findViewById(R.id.field_bookshelf);

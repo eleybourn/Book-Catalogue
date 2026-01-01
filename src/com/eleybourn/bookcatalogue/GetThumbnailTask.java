@@ -26,7 +26,7 @@ import java.lang.ref.WeakReference;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
 
-import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
+import com.eleybourn.bookcatalogue.booklist.AdminLibraryPreferences;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTask;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTaskContext;
@@ -197,7 +197,7 @@ public class GetThumbnailTask implements SimpleTask {
 			ViewTagger.setTag(v, R.id.TAG_GET_THUMBNAIL_TASK, null);
 
 		if (mBitmap != null) {
-			if (!mWasInCache && BooklistPreferencesActivity.isThumbnailCacheEnabled())  {
+			if (!mWasInCache && AdminLibraryPreferences.isThumbnailCacheEnabled())  {
 				// Queue the image to be written to the cache. Do it in a separate queue to avoid delays in displaying image
 				// and to avoid contention -- the cache queue only has one thread. Tell the cache write it can be recycled
 				// if we don't have a valid view.

@@ -30,7 +30,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
 
-import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
+import com.eleybourn.bookcatalogue.booklist.AdminLibraryPreferences;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueDialogFragment;
 import com.eleybourn.bookcatalogue.dialogs.ExportTypeSelectionDialogFragment.ExportSettings;
@@ -453,7 +453,7 @@ public class StartupActivity
 			updateProgress(getString(R.string.optimizing_databases));
 			// Analyze DB
 			db.analyzeDb();
-			if (BooklistPreferencesActivity.isThumbnailCacheEnabled()) {
+			if (AdminLibraryPreferences.isThumbnailCacheEnabled()) {
 				// Analyze the covers DB
 				Utils utils = taskContext.getUtils();
 				utils.analyzeCovers();

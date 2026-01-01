@@ -32,7 +32,7 @@ import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build.VERSION;
 
-import com.eleybourn.bookcatalogue.booklist.BooklistPreferencesActivity;
+import com.eleybourn.bookcatalogue.booklist.AdminLibraryPreferences;
 import com.eleybourn.bookcatalogue.utils.Terminator;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
@@ -331,7 +331,7 @@ public class BookCatalogueApp extends Application {
 	}
 
 	public static void startPreferencesActivity(Activity a) {
-		Intent i = new Intent(a, BooklistPreferencesActivity.class);
+		Intent i = new Intent(a, AdminLibraryPreferences.class);
 		a.startActivity(i);
 	}
 

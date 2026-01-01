@@ -44,7 +44,7 @@ import android.util.TypedValue;
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds;
+import com.eleybourn.bookcatalogue.booklist.LibraryGroup.RowKinds;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
@@ -127,7 +127,7 @@ public class LibraryRowView {
 	private int computeThumbnailSize(int extras) {
 		int maxSize;
 
-		if ( (extras & BooklistStyle.EXTRAS_THUMBNAIL_LARGE) != 0) {
+		if ( (extras & LibraryStyle.EXTRAS_THUMBNAIL_LARGE) != 0) {
 			maxSize = 90;
 		} else {
 			maxSize = 60;
@@ -148,7 +148,7 @@ public class LibraryRowView {
 	/**
 	 * Accessor
 	 */
-	public BooklistStyle getStyle() {
+	public LibraryStyle getStyle() {
 		return mBuilder.getStyle();
 	}
 

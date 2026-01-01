@@ -897,7 +897,7 @@ public class Fields extends ArrayList<Fields.Field> {
 				} else {
 					throw new IllegalArgumentException();
 				}
-				visible = fields.getPreferences().getBoolean(FieldVisibility.prefix + group, true);
+				visible = fields.getPreferences().getBoolean(AdminFieldVisibility.prefix + group, true);
 				if (!visible) {
 					view.setVisibility(View.GONE);
 				}
@@ -929,7 +929,7 @@ public class Fields extends ArrayList<Fields.Field> {
 			// Lookup the view
 			final View view = c.findViewById(id);
 			if (view != null) {
-				visible = BookCatalogueApp.getAppPreferences().getBoolean(FieldVisibility.prefix + group, true);
+				visible = BookCatalogueApp.getAppPreferences().getBoolean(AdminFieldVisibility.prefix + group, true);
 				if (visible) {
 					view.setVisibility(View.VISIBLE);					
 				} else {

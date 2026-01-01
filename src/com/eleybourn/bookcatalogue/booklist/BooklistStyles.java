@@ -20,7 +20,7 @@
 
 package com.eleybourn.bookcatalogue.booklist;
 
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.*;
+import static com.eleybourn.bookcatalogue.booklist.LibraryGroup.RowKinds.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -38,7 +38,7 @@ import com.eleybourn.bookcatalogue.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.UniqueId;
-import com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds;
+import com.eleybourn.bookcatalogue.booklist.LibraryGroup.RowKinds;
 import com.eleybourn.bookcatalogue.database.SerializationUtils;
 import com.eleybourn.bookcatalogue.database.SerializationUtils.DeserializationException;
 import com.eleybourn.bookcatalogue.utils.Utils;
@@ -48,9 +48,9 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * 
  * @author Philip Warner
  */
-public class BooklistStyles implements Iterable<BooklistStyle> {
+public class BooklistStyles implements Iterable<LibraryStyle> {
 	/** Internal storage for defined styles represented by this object */
-	private final ArrayList<BooklistStyle> mList = new ArrayList<>();
+	private final ArrayList<LibraryStyle> mList = new ArrayList<>();
 	private final HashSet<String> mPreferredStyleNames;
 
     public static final String TAG = "BooklistStyles";
@@ -95,16 +95,16 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 	//public static final int BUILTIN_AUTHOR_SERIES = 1;
 	private static void getBuiltinStyles(BooklistStyles styles) {
 		// First build the stock ones
-		BooklistStyle style;
+		LibraryStyle style;
 
 		// Author/Series
-		style = new BooklistStyle(R.string.sort_author_series);
+		style = new LibraryStyle(R.string.sort_author_series);
 		styles.add(style);
 		style.addGroup(ROW_KIND_AUTHOR);
 		style.addGroup(ROW_KIND_SERIES);
 
 		//// Author(first)/Series
-		//style = new BooklistStyle(R.string.sort_first_author_series);
+		//style = new LibraryStyle(R.string.sort_first_author_series);
 		//styles.add(style);
 		//a = new BooklistAuthorGroup();
 		//a.setAllAuthors(false);
@@ -112,52 +112,52 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 		//style.addGroup(ROW_KIND_SERIES);
 
 		// Unread
-		style = new BooklistStyle(R.string.sort_unread);
+		style = new LibraryStyle(R.string.sort_unread);
 		styles.add(style);
 		style.addGroup(ROW_KIND_AUTHOR);
 		style.addGroup(ROW_KIND_SERIES);
-		style.setReadUnreadAll(BooklistStyle.FILTER_UNREAD);
+		style.setReadUnreadAll(LibraryStyle.FILTER_UNREAD);
 
 		// Compact
-		style = new BooklistStyle(R.string.compact);
+		style = new LibraryStyle(R.string.compact);
 		styles.add(style);
 		style.addGroup(ROW_KIND_AUTHOR);
 		style.setCondensed(true);
 		style.setShowThumbnails(false);
 
 		// Title
-		style = new BooklistStyle(R.string.sort_title_first_letter);
+		style = new LibraryStyle(R.string.label_sort_title_first_letter);
 		styles.add(style);
 		style.addGroup(RowKinds.ROW_KIND_TITLE_LETTER);
 
 		// Series
-		style = new BooklistStyle(R.string.sort_series);
+		style = new LibraryStyle(R.string.sort_series);
 		styles.add(style);
 		style.addGroup(RowKinds.ROW_KIND_SERIES);
 
 		// Genre
-		style = new BooklistStyle(R.string.sort_genre);
+		style = new LibraryStyle(R.string.sort_genre);
 		styles.add(style);
 		style.addGroup(ROW_KIND_GENRE);
 		style.addGroup(ROW_KIND_AUTHOR);
 		style.addGroup(ROW_KIND_SERIES);
 
 		// Loaned
-		style = new BooklistStyle(R.string.sort_loaned);
+		style = new LibraryStyle(R.string.sort_loaned);
 		styles.add(style);
 		style.addGroup(ROW_KIND_LOANED);
 		style.addGroup(ROW_KIND_AUTHOR);
 		style.addGroup(ROW_KIND_SERIES);
 
 		// Read & Unread
-		style = new BooklistStyle(R.string.sort_read_and_unread);
+		style = new LibraryStyle(R.string.sort_read_and_unread);
 		styles.add(style);
 		style.addGroup(ROW_KIND_READ_AND_UNREAD);
 		style.addGroup(ROW_KIND_AUTHOR);
 		style.addGroup(ROW_KIND_SERIES);
 
 		// Publication date
-		style = new BooklistStyle(R.string.sort_publication_date);
+		style = new LibraryStyle(R.string.sort_publication_date);
 		styles.add(style);
 		style.addGroup(ROW_KIND_YEAR_PUBLISHED);
 		style.addGroup(ROW_KIND_MONTH_PUBLISHED);
@@ -165,7 +165,7 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 		style.addGroup(ROW_KIND_SERIES);
 
 		// Added date
-		style = new BooklistStyle(R.string.sort_added_date);
+		style = new LibraryStyle(R.string.sort_added_date);
 		styles.add(style);
 		style.addGroup(ROW_KIND_YEAR_ADDED);
 		style.addGroup(ROW_KIND_MONTH_ADDED);
@@ -173,54 +173,54 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 		style.addGroup(ROW_KIND_AUTHOR);
 
 		// Author/Publication date
-		style = new BooklistStyle(R.string.sort_author_year);
+		style = new LibraryStyle(R.string.sort_author_year);
 		styles.add(style);
 		style.addGroup(ROW_KIND_AUTHOR);
 		style.addGroup(ROW_KIND_YEAR_PUBLISHED);
 		style.addGroup(ROW_KIND_SERIES);
 
 		// Format
-		style = new BooklistStyle(R.string.label_format);
+		style = new LibraryStyle(R.string.label_format);
 		styles.add(style);
 		style.addGroup(ROW_KIND_FORMAT);
 
 		// Read date
-		style = new BooklistStyle(R.string.sort_read_date);
+		style = new LibraryStyle(R.string.sort_read_date);
 		styles.add(style);
 		style.addGroup(ROW_KIND_YEAR_READ);
 		style.addGroup(ROW_KIND_MONTH_READ);
 		style.addGroup(ROW_KIND_AUTHOR);
 
 		// Location
-		style = new BooklistStyle(R.string.location);
+		style = new LibraryStyle(R.string.label_location);
 		styles.add(style);
 		style.addGroup(ROW_KIND_LOCATION);
 		style.addGroup(ROW_KIND_AUTHOR);
 		style.addGroup(ROW_KIND_SERIES);
 
 		// Location
-		style = new BooklistStyle(R.string.label_language);
+		style = new LibraryStyle(R.string.label_language);
 		styles.add(style);
 		style.addGroup(ROW_KIND_LANGUAGE);
 		style.addGroup(ROW_KIND_AUTHOR);
 		style.addGroup(ROW_KIND_SERIES);
 
 		// Rating
-		style = new BooklistStyle(R.string.label_rating);
+		style = new LibraryStyle(R.string.label_rating);
 		styles.add(style);
 		style.addGroup(ROW_KIND_RATING);
 		style.addGroup(ROW_KIND_AUTHOR);
 		style.addGroup(ROW_KIND_SERIES);
 
 		// Bookshelf
-		style = new BooklistStyle(R.string.bookshelf);
+		style = new LibraryStyle(R.string.label_bookshelf);
 		styles.add(style);
 		style.addGroup(ROW_KIND_BOOKSHELF);
 		style.addGroup(ROW_KIND_AUTHOR);
 		style.addGroup(ROW_KIND_SERIES);
 
 		// Update date
-		style = new BooklistStyle(R.string.update_date);
+		style = new LibraryStyle(R.string.update_date);
 		styles.add(style);
 		style.addGroup(ROW_KIND_UPDATE_YEAR);
 		style.addGroup(ROW_KIND_UPDATE_MONTH);
@@ -235,7 +235,7 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 	 *
      */
 	private static void getUserStyles(CatalogueDBAdapter db, BooklistStyles styles) {
-		BooklistStyle style;
+		LibraryStyle style;
         try (Cursor c = db.getBooklistStyles()) {
             // Get the columns we want
             int idCol = c.getColumnIndex(DatabaseDefinitions.DOM_ID.name);
@@ -273,7 +273,7 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 			ArrayList<String> list = Utils.decodeList(itemStr, '|');
             for (String n : list) {
                 // Add any exiting style that is preferred
-                BooklistStyle s = allStyles.findCanonical(n);
+                LibraryStyle s = allStyles.findCanonical(n);
                 if (s != null)
                     styles.add(s);
             }
@@ -315,7 +315,7 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 
 		// Add missing styles to the end of the list
 		if (styles != allStyles) {
-			for(BooklistStyle s: allStyles)
+			for(LibraryStyle s: allStyles)
 				if (!styles.contains(s))
 					styles.add(s);
 		}
@@ -333,14 +333,14 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 	/**
 	 * Utility to check if this collection contains a specific style INSTANCE.
 	 */
-	private boolean contains(BooklistStyle style) {
+	private boolean contains(LibraryStyle style) {
 		return mList.contains(style);
 	}
 
 	/**
 	 * Add a style to this list
 	 */
-	public void add(BooklistStyle style) {
+	public void add(LibraryStyle style) {
 		style.setPreferred(mPreferredStyleNames.contains(style.getCanonicalName()));
 		mList.add(style);
 	}
@@ -350,8 +350,8 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 	 * 
 	 * @return		Named style, or null
 	 */
-	public BooklistStyle findCanonical(String name) {
-		for(BooklistStyle style: mList) {
+	public LibraryStyle findCanonical(String name) {
+		for(LibraryStyle style: mList) {
 			if (style.getCanonicalName().equalsIgnoreCase(name))
 				return style;
 		}
@@ -361,7 +361,7 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 	/**
 	 * Return the nth style in the list
 	 */
-	public BooklistStyle get(int i) {
+	public LibraryStyle get(int i) {
 		return mList.get(i);
 	}
 
@@ -369,17 +369,17 @@ public class BooklistStyles implements Iterable<BooklistStyle> {
 	 * Return an iterator for the list of styles.
 	 */
 	@NonNull
-    public Iterator<BooklistStyle> iterator() {
+    public Iterator<LibraryStyle> iterator() {
 		return mList.iterator();
 	}
 
 	/**
      * Save the preferred style menu list.
      */
-	public static void SaveMenuOrder(ArrayList<BooklistStyle> list) {
+	public static void SaveMenuOrder(ArrayList<LibraryStyle> list) {
 		StringBuilder items = new StringBuilder();
 		for(int i = 0; i < list.size(); i++) {
-			BooklistStyle s = list.get(i);
+			LibraryStyle s = list.get(i);
 			if (s.isPreferred()) {
 				if (items.length() > 0)
 					items.append("|");

@@ -79,7 +79,7 @@ import android.graphics.Bitmap;
 import android.provider.BaseColumns;
 import android.widget.ImageView;
 
-import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
+import com.eleybourn.bookcatalogue.booklist.LibraryStyle;
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedDb;
 import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedStatement;
@@ -5549,7 +5549,7 @@ public class CatalogueDBAdapter {
 	 * @return
 	 */
 	private SynchronizedStatement mInsertBooklistStyleStmt = null;
-	public long insertBooklistStyle(BooklistStyle s) {
+	public long insertBooklistStyle(LibraryStyle s) {
 		if (mInsertBooklistStyleStmt == null) {
 			final String sql = TBL_BOOK_LIST_STYLES.getInsert(DOM_STYLE) 
 						+ " Values (?)";
@@ -5566,7 +5566,7 @@ public class CatalogueDBAdapter {
 	 * @return
 	 */
 	private SynchronizedStatement mUpdateBooklistStyleStmt = null;
-	public void updateBooklistStyle(BooklistStyle s) {
+	public void updateBooklistStyle(LibraryStyle s) {
 		if (mUpdateBooklistStyleStmt == null) {
 			final String sql = TBL_BOOK_LIST_STYLES.getInsertOrReplaceValues(DOM_ID, DOM_STYLE);
 			mUpdateBooklistStyleStmt = mStatements.add("mUpdateBooklistStyleStmt", sql);

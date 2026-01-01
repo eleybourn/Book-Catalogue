@@ -264,13 +264,13 @@ public class StandardDialogs {
 			TextView name = v.findViewById(R.id.field_name);
 			name.setText(mFile.getName());
 			// Set the path
-			TextView location = v.findViewById(R.id.path);
+			TextView location = v.findViewById(R.id.field_path);
 			location.setText(mFile.getParent());
 			// Set the size
-			TextView size = v.findViewById(R.id.size);
+			TextView size = v.findViewById(R.id.field_size);
 			size.setText(Utils.formatFileSize(mFile.length()));
 			// Set the last modified date
-			TextView update = v.findViewById(R.id.updated);
+			TextView update = v.findViewById(R.id.field_updated);
 			update.setText(Utils.toPrettyDateTime(new Date(mFile.lastModified())));
 			// Return it
 			return v;

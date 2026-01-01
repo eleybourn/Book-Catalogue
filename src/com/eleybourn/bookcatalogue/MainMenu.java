@@ -107,11 +107,11 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
         @Override
         public void onClick(View v) {
             ArrayList<AlertDialogItem> items = new ArrayList<>();
-            items.add(new AlertDialogItem(getString(R.string.scan_barcode_isbn), mCreateBookScan));
-            items.add(new AlertDialogItem(getString(R.string.enter_isbn), mCreateBookIsbn));
-            items.add(new AlertDialogItem(getString(R.string.search_internet), mCreateBookName));
-            items.add(new AlertDialogItem(getString(R.string.add_manually), mCreateBookManually));
-            AlertDialogUtils.showContextDialogue(MainMenu.this, getString(R.string.label_insert), items);
+            items.add(new AlertDialogItem(getString(R.string.label_scan_barcode_isbn), mCreateBookScan));
+            items.add(new AlertDialogItem(getString(R.string.label_enter_isbn), mCreateBookIsbn));
+            items.add(new AlertDialogItem(getString(R.string.label_search_internet), mCreateBookName));
+            items.add(new AlertDialogItem(getString(R.string.label_add_manually), mCreateBookManually));
+            AlertDialogUtils.showContextDialogue(MainMenu.this, getString(R.string.title_add_book), items);
         }
     };
 

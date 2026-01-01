@@ -25,15 +25,14 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.properties.Properties;
 import com.eleybourn.bookcatalogue.utils.Logger;
+import com.google.android.material.appbar.MaterialToolbar;
 
 /**
- * Base class to display simple preference-based optins to the user.
+ * Base class to display simple preference-based options to the user.
  * 
  * @author Philip Warner
  */
@@ -41,6 +40,7 @@ public abstract class PreferencesBase extends BookCatalogueActivity {
 
 	/** Get the layout of the subclass */
 	public abstract int getLayout();
+    public abstract int getPageTitle();
 	/** Setup the views in the layout */
 	public abstract void setupViews(BookCataloguePreferences prefs, Properties globalProps);
 	
@@ -50,6 +50,11 @@ public abstract class PreferencesBase extends BookCatalogueActivity {
 			super.onCreate(savedInstanceState);
 			System.out.println("In onCreate in PreferencesBase");
 			setContentView(this.getLayout());
+            MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
+            setSupportActionBar(topAppBar);
+            topAppBar.setTitle(this.getPageTitle());
+            topAppBar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+
 			final BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
 
 			// Get a properties collection.
@@ -66,7 +71,7 @@ public abstract class PreferencesBase extends BookCatalogueActivity {
 	}
 
 	/**
-	 * Utility routine to setup a checkobox based on a preference.
+	 * Utility routine to setup a checkbox based on a preference.
 	 * 
 	 * @param prefs		Preferences to use
 	 * @param cbId		CheckBox ID from XML file
@@ -78,28 +83,22 @@ public abstract class PreferencesBase extends BookCatalogueActivity {
 		{
 			CheckBox v = this.findViewById(cbId);
 			v.setChecked(prefs.getBoolean(key, defaultValue));
-			v.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-				@Override
-				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-					prefs.setBoolean(key, isChecked);
-				}});
+			v.setOnCheckedChangeListener((buttonView, isChecked) -> prefs.setBoolean(key, isChecked));
 		}
 		// Allow clicking of entire row.
 		{
 			View v = this.findViewById(viewId);
 			// Make line flash when clicked.
 			v.setBackgroundResource(android.R.drawable.list_selector_background);
-			v.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					CheckBox cb = v.findViewById(cbId);
-					cb.setChecked(!prefs.getBoolean(key, defaultValue));
-				}});
+			v.setOnClickListener(v1 -> {
+                CheckBox cb = v1.findViewById(cbId);
+                cb.setChecked(!prefs.getBoolean(key, defaultValue));
+            });
 		}
 	}
 
 	// Add an item that has a creator-define click event
-	public void addClickablePref(final BookCataloguePreferences prefs, final int viewId, final OnClickListener listener) {
+	public void addClickablePref(final int viewId, final OnClickListener listener) {
 		/* Erase covers cache Link */
 		View v = findViewById(viewId);
 		// Make line flash when clicked.

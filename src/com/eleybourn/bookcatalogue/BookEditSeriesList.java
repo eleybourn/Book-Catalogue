@@ -190,7 +190,7 @@ public class BookEditSeriesList extends BookEditObjectList<Series> {
 
 		// When we get here, we know the names are genuinely different and the old series is used in more than one place.
 		String format = getResources().getString(R.string.changed_series_how_apply);
-		String allBooks = getResources().getString(R.string.all_books);
+		String allBooks = getResources().getString(R.string.option_all_books);
 		String thisBook = getResources().getString(R.string.this_book);
 		String message = String.format(format, oldSeries.name, newSeries.name);
 

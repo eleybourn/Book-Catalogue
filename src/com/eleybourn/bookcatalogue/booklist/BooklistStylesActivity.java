@@ -47,7 +47,7 @@ import com.eleybourn.bookcatalogue.utils.ViewTagger;
  *
  * @author Philip Warner
  */
-public class BooklistStylesActivity extends BookEditObjectList<BooklistStyle> {
+public class BooklistStylesActivity extends BookEditObjectList<LibraryStyle> {
     /** Database connection */
     private CatalogueDBAdapter mDb ;
     /** The row being edited. Set when an individual style is edited */
@@ -94,7 +94,7 @@ public class BooklistStylesActivity extends BookEditObjectList<BooklistStyle> {
             this.setTitle(R.string.preferred_styles);
 
             if (savedInstanceState == null)
-                HintManager.displayHint(this, R.string.hint_booklist_styles_editor, null, null);
+                HintManager.displayHint(this, R.string.hint_library_styles_editor, null, null);
 
 
         } catch (Exception e) {
@@ -114,10 +114,10 @@ public class BooklistStylesActivity extends BookEditObjectList<BooklistStyle> {
      * Required by parent class since we do not pass a key for the intent to get the list.
      */
     @Override
-    protected ArrayList<BooklistStyle> getList() {
-        ArrayList<BooklistStyle> styles = new ArrayList<>();
+    protected ArrayList<LibraryStyle> getList() {
+        ArrayList<LibraryStyle> styles = new ArrayList<>();
         // get the preferred styles first
-        for(BooklistStyle s: BooklistStyles.getAllStyles(mDb)) {
+        for(LibraryStyle s: BooklistStyles.getAllStyles(mDb)) {
             styles.add(s);
         }
         return styles;
@@ -136,7 +136,7 @@ public class BooklistStylesActivity extends BookEditObjectList<BooklistStyle> {
      * @author Philip Warner
      */
     private static class Holder {
-        BooklistStyle style;
+        LibraryStyle style;
         TextView name;
         TextView groups;
         TextView kind;
@@ -144,7 +144,7 @@ public class BooklistStylesActivity extends BookEditObjectList<BooklistStyle> {
     }
 
     @Override
-    protected void onSetupView(View target, BooklistStyle style) {
+    protected void onSetupView(View target, LibraryStyle style) {
         Holder h;
         h = ViewTagger.getTag(target, R.id.TAG_HOLDER);
         if (h == null) {
@@ -247,7 +247,7 @@ public class BooklistStylesActivity extends BookEditObjectList<BooklistStyle> {
      * Use the RowClick ti present a pseudo context menu.
      */
     @Override
-    protected void onRowClick(View target, final int position, final BooklistStyle style) {
+    protected void onRowClick(View target, final int position, final LibraryStyle style) {
         // Build the array of menu items based on the style we are editing
         final ArrayList<ContextItem> items = new ArrayList<>();
         if (style.isUserDefined()) {
@@ -290,7 +290,7 @@ public class BooklistStylesActivity extends BookEditObjectList<BooklistStyle> {
      * @param style			Actual style
      * @param alwaysClone	Force a clone, even if its already user-defined
      */
-    private void editStyle(int position, BooklistStyle style, boolean alwaysClone) {
+    private void editStyle(int position, LibraryStyle style, boolean alwaysClone) {
         Intent i = new Intent(this, BooklistStylePropertiesActivity.class);
         // Save the current row
         mEditedRow = position;
@@ -328,7 +328,7 @@ public class BooklistStylesActivity extends BookEditObjectList<BooklistStyle> {
             return;
 
         try {
-            BooklistStyle result = (BooklistStyle) data.getSerializableExtra(BooklistStylePropertiesActivity.KEY_STYLE);
+            LibraryStyle result = (LibraryStyle) data.getSerializableExtra(BooklistStylePropertiesActivity.KEY_STYLE);
             if (result == null) {
                 // Style was deleted. Refresh.
                 setList(getList());
@@ -338,7 +338,7 @@ public class BooklistStylesActivity extends BookEditObjectList<BooklistStyle> {
                 mList.add(0, result);
                 BooklistStyles.SaveMenuOrder(mList);
             } else {
-                BooklistStyle origStyle = mList.get(mEditedRow);
+                LibraryStyle origStyle = mList.get(mEditedRow);
                 if (origStyle.getRowId() != result.getRowId()) {
                     if (!origStyle.isUserDefined()) {
                         // Working on a clone of a builtin style

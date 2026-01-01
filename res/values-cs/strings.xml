@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
 <string name="app_name">Book Catalogue</string>
-    <string name="label_insert">Přidat knihu</string>
+    <string name="title_add_book">Přidat knihu</string>
 <string name="menu_delete_book">Smazat knihu</string>
 <string name="label_author">Autor</string>
 <string name="label_title">Titul</string>
 <string name="label_publisher">Vydavatel</string>
 <string name="label_date_published">Datum vydání</string>
 <string name="label_rating">Hodnocení</string>
-<string name="bookshelf">Knihovna</string>
+<string name="label_bookshelf">Knihovna</string>
 <string name="label_read">Máte tuto knihu přečtenou?</string>
 <string name="label_series">Série</string>
 <string name="label_pages">Počet stran</string>
@@ -23,21 +23,21 @@
 <string name="info_no_bookshelves">Zatím nemáte vytvořenou žádnou knihovnu. Pro její vytvoření použijte menu ve spodní části obrazovky.</string>
 <string name="menu_insert_bs">Vytvořit knihovnu</string>
 <string name="confirm_add_bs">Přidat knihovnu</string>
-<string name="label_bookshelf">Spravovat knihovny</string>
+<string name="title_manage_bookshelves">Spravovat knihovny</string>
 <string name="confirm_save_bs">Uložit knihovnu</string>
 <string name="menu_delete_bs">Smazat knihovnu</string>
 <string name="delete_1st_bs">Nelze smazat defaultní knihovnu.</string>
-    <string name="all_books">Všechny knihy</string>
+    <string name="option_all_books">Všechny knihy</string>
     <string name="title_isbn_search">Book Catalogue: Hledat ISBN</string>
-    <string name="title_edit_bs">Book Catalogue: Upravit knihovnu</string>
+    <string name="title_edit_bookshelf">Book Catalogue: Upravit knihovnu</string>
     <string name="label_search_for_books">Hledat knihy</string>
-<string name="hint_search">Hledat autora nebo titul</string>
+<string name="label_search_by">Hledat autora nebo titul</string>
 <string name="book_not_found">Nepodařilo se nalézt hledanou knihu. Zkuste prosím zadat potřebné údaje manuálně.</string>
 <string name="label_series_num">#</string>
     <string name="import_data">Importovat knihy</string>
 <string name="import_alert">Pozor: Importovaná data mohou upravit existující záznamy knih - k takové situaci dojde v případě, že není vyplněno uuid, a id v importovaném souboru je totožné s již existujícím id. Doporučujeme proto zkontrolovat - a případně upravit - toto pole v exportovaném souboru. Pokud byl vytvořen nový záznam, nebo jsou importovány další knihy, tak se ujistěte, že je vyplněno uuid, nebo že pole id je prázdné.</string>
     <string name="import_failed_is_location_correct">ERROR: Import dat (z SD karty) selhal. Je soubor na správném místě?</string>
-    <string name="administration_label">Administrační funkce</string>
+    <string name="deleteme_administration_label">Administrační funkce</string>
     <string name="label_administration">Admin</string>
     <string name="install_scan_title">Instalovat čtečku čárových kódů</string>
 <string name="label_version_number">Číslo verze:</string>
@@ -74,16 +74,16 @@
 <string name="search_exception">Hledání selhalo %1$s: %2$s</string>
     <string name="menu_delete_thumb">Smazat náhled</string>
 <string name="label_help">Nápověda</string>
-    <string name="label_manage_fields">Spravovat viditelnost jednotlivých polí</string>
-<string name="manage_fields_help">Vybraná pole jsou viditelná na obrazovce pro přidání/úpravu knihy. Nevybraná pole jsou skryta.</string>
-<string name="label_anthology">Antologické tituly</string>
+    <string name="title_manage_fields">Spravovat viditelnost jednotlivých polí</string>
+<string name="para_manage_fields_help">Vybraná pole jsou viditelná na obrazovce pro přidání/úpravu knihy. Nevybraná pole jsou skryta.</string>
+<string name="label_anthology_titles">Antologické tituly</string>
 <string name="label_amazon_wishlist">Amazon Wishlist</string>
 <string name="label_same_author">Všechny příběhy v této antologii jsou napsány stejným autorem</string>
 <string name="menu_delete_anthology">Odstranit tento titul z antologií</string>
 <string name="label_is_anthology">Je tato kniha antologií?</string>
 <string name="populate_anthology_titles">Automaticky naplnit tituly (EXPERIMENTÁLNÍ FUNKCE)</string>
 <string name="automatic_population_failed">Automatické naplnění titulů selhalo</string>
-<string name="anthology">Antologie</string>
+<string name="label_anthology">Antologie</string>
 <string name="anthology_confirm">Prosím zkontrolujte, zda jsou tyto antologie v pořádku</string>
 <string name="anthology_save">Uložit</string>
 <string name="button_anthology_add">Přidat</string>
@@ -96,7 +96,7 @@
     <string name="label_signed">Byla tato kniha podepsána</string>
 <string name="label_read_start">Datum začátku čtení</string>
 <string name="label_read_end">Datum ukončení čtení</string>
-<string name="location">Umístění knihy</string>
+<string name="label_location">Umístění knihy</string>
     <string name="duplicate_book_title">Duplicitní kniha</string>
 <string name="duplicate_book_message">Kniha, kterou se pokoušíte přidat, se již v databázi nachází - určitě si přejete přidat její další kopii?</string>
 <string name="menu_add_thumb_gallery">Z galerie&#8230;</string>
@@ -205,17 +205,17 @@
     <string name="task_errors">Chyby</string>
 <string name="retry">Opakovat</string>
     <string name="retry_task">Opakovat</string>
-    <string name="label_library">Moje knihy</string>
-    <string name="label_settings">Administrace a možnosti</string>
-    <string name="label_other_preferences">Další možnosti</string>
+    <string name="title_library">Moje knihy</string>
+    <string name="title_settings">Administrace a možnosti</string>
+    <string name="title_other_preferences">Další možnosti</string>
 <string name="user_interface">Uživatelské rozhraní</string>
 <string name="start_in_my_books">Začínat v \'Moje knihy\'</string>
     <string name="background_tasks">Úlohy na pozadí</string>
 <string name="cleanup_old_tasks">Smazat staré úlohy</string>
 <string name="cleanup_old_events">Smazat staré události</string>
     <string name="search_criteria">Kritéria pro vyhledávání</string>
-<string name="add_manually">Přidat ručně</string>
-    <string name="search_internet">Prohledat internet</string>
+<string name="label_add_manually">Přidat ručně</string>
+    <string name="label_search_internet">Prohledat internet</string>
 <string name="show_results">Zobrazit výsledky</string>
 <string name="rebuild_fts">Obnovit FTS (neotestovaná funkce!)</string>
     <string name="send_books_to_goodreads">Poslat knihu do Goodreads</string>
@@ -240,18 +240,18 @@
 <string name="crash_dialog_comment_prompt">Váš komentář (nepovinné):</string>
 <string name="crash_dialog_ok_toast">Děkujeme!</string>
     <string name="no_series">(žádná série)</string>
-<string name="booklist_read">Přečteno</string>
-<string name="booklist_unread">Nepřečteno</string>
+<string name="option_library_read">Přečteno</string>
+<string name="option_library_unread">Nepřečteno</string>
 <string name="no_genre">(žádný žánr)</string>
 <string name="no_title">(žádný titul)</string>
 <string name="no_publisher">(žádný vydavatel)</string>
 <string name="no_author">(žádný autor)</string>
 <string name="no_date">(žádné datum)</string>
-    <string name="show_thumbnails">Zobrazit náhledy</string>
-<string name="prefer_large_thumbnails">Preferovat velké náhledy</string>
+    <string name="preference_show_thumbnails">Zobrazit náhledy</string>
+<string name="preference_prefer_large_thumbnails">Preferovat velké náhledy</string>
     <string name="sort_author_series">Autor, následně série</string>
     <string name="sort_series">Série</string>
-<string name="sort_title_first_letter">První písmeno z titulu</string>
+<string name="label_sort_title_first_letter">První písmeno z titulu</string>
 <string name="sort_genre">Název žánru</string>
 <string name="sort_loaned">Půjčeno</string>
 <string name="sort_read_and_unread">Přečteno/Nepřečteno</string>
@@ -260,7 +260,7 @@
 <string name="sort_author_year">Autor a rok</string>
 <string name="empty_with_brackets">(prázdné)</string>
 
-    <string name="label_booklist_preferences">Možnosti seznamu knih</string>
+    <string name="title_library_preferences">Možnosti seznamu knih</string>
 <string name="extra_book_details">Podrobnosti o knize</string>
 <string name="general">Obecné</string>
 <string name="shelves">Police</string>
@@ -270,66 +270,66 @@
 <string name="optimizing_databases">Optimalizování databáze&#8230;</string>
 <string name="starting_up">Spouštění&#8230;</string>
 <string name="book_catalogue_startup">BookCatalogue spuštěn</string>
-<string name="book_list_state">Stav seznamu knih</string>
-<string name="always_start_booklists_expanded">Vždy otevřít seznam knih rozbalený</string>
-<string name="always_start_booklists_collapsed">Vždy otevřít seznam knih sbalený</string>
-<string name="remember_booklists_state">Zachovat stav seznamu knih</string>
+<string name="preference_library_state">Stav seznamu knih</string>
+<string name="option_always_start_library_expanded">Vždy otevřít seznam knih rozbalený</string>
+<string name="option_always_start_library_collapsed">Vždy otevřít seznam knih sbalený</string>
+<string name="option_remember_library_state">Zachovat stav seznamu knih</string>
 <string name="searching_goodreads">Vyhledávám na Goodreads</string>
-<string name="label_edit_book_list_styles">Spravovat styly pro seznam knih</string>
+<string name="title_edit_library_styles">Spravovat styly pro seznam knih</string>
 <string name="show_more_ellipsis">Zobrazit vše&#8230;</string>
 <string name="show_fewer_ellipsis">Zobrazit méně&#8230;</string>
 <string name="customize_ellipsis">Přizpůsobit&#8230;</string>
     <string name="label_reset_hints">Obnovit rady</string>
 <string name="do_not_show_again">Příště již nezobrazovat</string>
-    <string name="hint_booklist_styles_editor">Na této obrazovce máte možnost upravit seznam stylů, které budou zobrazeny ve Vašem defaultním menu stylů.
+    <string name="hint_library_styles_editor">Na této obrazovce máte možnost upravit seznam stylů, které budou zobrazeny ve Vašem defaultním menu stylů.
     										\n\nZelená fajfka označuje ty styly, které budou v seznamu zobrazeny, červený křížek potom označuje ty, které budou skryty.
     										Kliknutím na danou položku můžete přepínat mezi fajfkou a křížkem.
     										\n\nPokud zde není zaškrtnut žádný styl, pak budou v seznamu zobrazeny všechny dostupné styly.
     										\n\nJednotlivé styly je rovněž možné přeuspořádat a to přetažením ikony v pravé části řádku.
     										\n\nKliknutí kamkoli jinam na řádek Vám umožní upravit detaily daného stylu (případně jeho naklonování).
     										</string>
-<string name="hint_booklist_style_groups">Na této obrazovce můžete upravit hierarchii položek v daném stylu pro seznam knih.
+<string name="hint_library_style_groups">Na této obrazovce můžete upravit hierarchii položek v daném stylu pro seznam knih.
     										\n\nZelená fajfka označuje ty položky, které budou v seznamu zobrazeny, červený křížek potom označuje ty, které budou skryty.
     										Kliknutím na danou položku můžete přepínat mezi fajfkou a křížkem.
     										\n\nHierarchii jednotlivých položek je možné upravit přetažením ikony v pravé části řádku.
     										</string>
-<string name="hint_booklist_style_properties">Na této obrazovce můžete upravit charakteristiky daného stylu pro seznam knih.
+<string name="hint_library_style_properties">Na této obrazovce můžete upravit charakteristiky daného stylu pro seznam knih.
     										\n\nK dispozici máte několik nástrojů, které Vám umožní přizpůsobit styl seznamu 
     										Vašim představám - můžete například měnit jména, nebo upravovat seskupení a měnit tak hierarchii.
     										\n\nMůžete rovněž použít \'filtry knih\' a určit tak, které knihy mají být v seznamu zobrazeny - 
     										například pouze vrácené knihy, které nemáte dosud přečtené.
     										</string>
-<string name="hint_booklist_global_properties">Na této obrazovce máte možnost nastavit defaultní charakteristiky pro všechny styly seznamu knih.
+<string name="hint_library_global_properties">Na této obrazovce máte možnost nastavit defaultní charakteristiky pro všechny styly seznamu knih.
     										\n\nVětšina charakteristik může být předefinována přímo u jednotlivých stylů, ale defalutní hodnoty můžete nastavit zde.
     										\n\nMůžete nastavit pozadí, měnit způsob jak bude seznam zobrazen při spuštění a rovněž využít celou řadu dalších 
     										nastavení, která budou aplikována na všechny Vaše styly.
     										\n\nMůžete zde rovněž upravit podobu menu stylů.
     										</string>
 <string name="preferred_styles">Preferované styly</string>
-<string name="edit_style_colon_name">Upravit styl: %1$s</string>
-<string name="add_style">Přidat styl</string>
-<string name="clone_style_colon_name">Klonovat styl: %1$s</string>
-    <string name="select_read_only">Vybrat pouze přečtené knihy</string>
-<string name="select_unread_only">Vybrat pouze nepřečtené knihy</string>
+<string name="title_edit_style_colon_name">Upravit styl: %1$s</string>
+<string name="title_add_style">Přidat styl</string>
+<string name="title_clone_style_colon_name">Klonovat styl: %1$s</string>
+    <string name="option_select_read_only">Vybrat pouze přečtené knihy</string>
+<string name="option_select_unread_only">Vybrat pouze nepřečtené knihy</string>
 <string name="extra_filters">Filtry knih</string>
 <string name="new_style">Nový styl</string>
 <string name="select_based_on_read_status">Výběr založený na statusu \'Přečtení\'</string>
 <string name="books_with_multiple_authors">Knihy s více autory</string>
 <string name="books_in_multiple_series">Knihy ve více sériích</string>
-<string name="use_default_setting">Použít defaultní nastavení</string>
+<string name="option_use_default_setting">Použít defaultní nastavení</string>
 <string name="show_book_under_each_thing">Pod každým %1$s</string>
 <string name="show_book_under_primary_thing">Pouze pod primárním %1$s</string>
 <string name="format_of_author_names">Formát zobrazení jména autora</string>
 <string name="given_name_first_eg">Zobrazovat nejprve křestní jméno, tj. \'Bill Smith\'</string>
 <string name="family_name_first_eg">Zobrazovat nejprve příjmení, tj. \'Smith, Bill\'</string>
 <string name="thumbnails">Náhledy</string>
-<string name="size_of_booklist_items">Velikost položek na seznamu knih</string>
-<string name="normal">Normální</string>
-<string name="smaller">Menší</string>
+<string name="preference_size_of_library_items">Velikost položek na seznamu knih</string>
+<string name="option_normal">Normální</string>
+<string name="option_smaller">Menší</string>
 <string name="select_style">Zvolit styl</string>
-<string name="booklist_background_style">Styl pozadí seznamu knih</string>
-<string name="textured_backgroud">Obrázek na pozadí</string>
-<string name="plain_background_b_reduces_flicker_b">Jednobarevné pozadí (redukuje blikání)</string>
+<string name="preference_library_background_style">Styl pozadí seznamu knih</string>
+<string name="option_textured_background">Obrázek na pozadí</string>
+<string name="option_plain_background_b_reduces_flicker_b">Jednobarevné pozadí (redukuje blikání)</string>
 <string name="thing_must_not_be_blank">%1$s nemůže být prázdné</string>
 <string name="label_edit">Upravit</string>
 <string name="groupings">Seskupení</string>
@@ -372,19 +372,19 @@
     									\n\nPokud změníte data v aplikaci BookCatalogue, můžete použít tlačítko \'Opakovat\' a zkontrolovat, zda operace proběhla úspěšně. 
     									\n\nPokud jsou data v pořádku a kniha stále nebyla nalezena, musí být kniha s tímto ISBN kódem do Goodreads přidána ručně
 										přes webové rozhraní - poté můžete knihu zkusit znovu odeslat.</string>    									    
-<string name="read_amp_unread">Přečteno &amp; Nepřečteno</string>
-<string name="loaned">Půjčeno</string>
-<string name="publication_year">Rok vydání</string>
-<string name="publication_month">Měsíc vydání</string>
-    <string name="added_year">Rok přidání</string>
-<string name="added_month">Měsíc přidání</string>
-<string name="added_day">Den přidání</string>
+<string name="label_read_amp_unread">Přečteno &amp; Nepřečteno</string>
+<string name="label_loaned">Půjčeno</string>
+<string name="label_publication_year">Rok vydání</string>
+<string name="label_publication_month">Měsíc vydání</string>
+    <string name="label_added_year">Rok přidání</string>
+<string name="label_added_month">Měsíc přidání</string>
+<string name="label_added_day">Den přidání</string>
 <string name="book">Kniha</string>
-<string name="in">V</string>
-<string name="size">Velikost</string>
-<string name="updated">Aktualizování</string>
+<string name="label_in">V</string>
+<string name="label_size">Velikost</string>
+<string name="label_updated">Aktualizování</string>
     <string name="problem_starting_import_arg">Vyskytl se problém při zahájení importu: %1$s</string>
-<string name="hint_booklist_style_menu">Toto menu umožňuje zvolit si styl seznamu. 
+<string name="hint_library_style_menu">Toto menu umožňuje zvolit si styl seznamu.
     								\n\nProstřednictvím tlačítka \'Přizpůsobit\' (na konci seznamu) máte možnost si toto menu přizpůsobit, nebo si vytvořit vlastní styl.</string>
 <string name="menu_edit_format">Upravit formát&#8230;</string>
 <string name="label_edit_format_name">Upravit jméno formátu</string>

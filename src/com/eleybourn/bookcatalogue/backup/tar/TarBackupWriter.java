@@ -24,7 +24,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -39,7 +38,7 @@ import com.eleybourn.bookcatalogue.backup.BackupContainer;
 import com.eleybourn.bookcatalogue.backup.BackupInfo;
 import com.eleybourn.bookcatalogue.backup.BackupUtils;
 import com.eleybourn.bookcatalogue.backup.BackupWriterAbstract;
-import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
+import com.eleybourn.bookcatalogue.booklist.LibraryStyle;
 import com.eleybourn.bookcatalogue.database.SerializationUtils;
 
 /**
@@ -116,7 +115,7 @@ public class TarBackupWriter extends BackupWriterAbstract {
 	 * Save a Booklist style. We save them with increasing suffix counters to ensure uniqueness
 	 */
 	@Override
-	public void putBooklistStyle(BooklistStyle style) throws IOException {
+	public void putBooklistStyle(LibraryStyle style) throws IOException {
 		// Turn the object into a byte array
 		byte[] blob = SerializationUtils.serializeObject(style);
 		mStyleCounter++;

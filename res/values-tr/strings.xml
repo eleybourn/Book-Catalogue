@@ -2,14 +2,14 @@
 <resources>
 
     <string name="app_name">Kitap Kataloğu</string>
-    <string name="label_insert">Kitap ekle</string>
+    <string name="title_add_book">Kitap ekle</string>
     <string name="menu_delete_book">Kitap sil</string>
     <string name="label_author">Yazar</string>
     <string name="label_title">Kitap adı</string>
     <string name="label_publisher">Yayınevi</string>
     <string name="label_date_published">Yayımlandığı Tarih</string>
     <string name="label_rating">Değerlendirme</string>
-    <string name="bookshelf">Kitaplık</string>
+    <string name="label_bookshelf">Kitaplık</string>
     <string name="label_read">Bu kitabı okudunuz mu?</string>
     <string name="label_series">Dizi</string>
     <string name="label_pages">Sayfa</string>
@@ -24,21 +24,21 @@
     <string name="info_no_bookshelves">Henüz hiçbir kitaplık oluşturmadınız. Ekranın alt kısmındaki bölümü kullanarak yeni kitaplık oluşturun.</string>
     <string name="menu_insert_bs">Kitaplık oluştur</string>
     <string name="confirm_add_bs">Kitaplık ekle</string>
-    <string name="label_bookshelf">Kitaplıkları yönet</string>
+    <string name="title_manage_bookshelves">Kitaplıkları yönet</string>
     <string name="confirm_save_bs">Kitaplığı kaydet</string>
     <string name="menu_delete_bs">Kitaplığı sil</string>
     <string name="delete_1st_bs">Birinci kitaplık silinemiyor</string>
-    <string name="all_books">Tüm kitaplar</string>
+    <string name="option_all_books">Tüm kitaplar</string>
     <string name="title_isbn_search">Kitap kataloğu: ISBN arama</string>
-    <string name="title_edit_bs">Kitap kataloğu: Kitaplığı düzenle</string>
+    <string name="title_edit_bookshelf">Kitap kataloğu: Kitaplığı düzenle</string>
     <string name="label_search_for_books">Kitap ara</string>
-    <string name="hint_search">Yazar veya kitap adı ara</string>
+    <string name="label_search_by">Yazar veya kitap adı ara</string>
     <string name="book_not_found">Aranan kitap bulunamadı. Bazen doğru barkodu kitap kapağının içinde bulabilirsiniz. Bulamazsanız, bilgileri elle giriniz.</string>
     <string name="label_series_num">#</string>
     <string name="import_data">Kitapları içe aktar</string>
     <string name="import_alert">Uyarı: Bilgileri içe aktarırken eğer içe aktardığınız dosyaların ID numarası var olan bir kitabın ID\'si ile aynı ise, varolan kitap verilerinin üstüne yazılmasına neden olabilir. Eğer dışa aktarılmış bir dosyada bir giriyi değiştirdiyseniz bu sorun değildir; ancak yeni bir kitap girişi oluşturuyorsanız ID bölümünün boş olduğundan emin olun.</string>
     <string name="import_failed_is_location_correct">Hata: SD karttan içe aktarma başarısız oldu. Dosyalar yerli yerinde mi acaba?</string>
-    <string name="administration_label">Yönetim işlevleri</string>
+    <string name="deleteme_administration_label">Yönetim işlevleri</string>
     <string name="label_administration">Ayarlar</string>
     <string name="install_scan_title">Barkod Tarayıcıyı yükleyin</string>
     <string name="label_version_number">Sürüm numarası</string>
@@ -75,16 +75,16 @@
     <string name="search_exception">%1$s sırasında arama başarısız oldu: %2$s</string>
     <string name="menu_delete_thumb">Küçük resmi sil</string>
     <string name="label_help">Yardım</string>
-    <string name="label_manage_fields">Alan görünürlüğünü yönet</string>
-    <string name="manage_fields_help">Seçili alanlar kitap ekle/düzenle ekranlarında görünecektir. Seçilmeyen alanlar gizli kalacaktır.</string>
-    <string name="label_anthology">Seçmeler</string>
+    <string name="title_manage_fields">Alan görünürlüğünü yönet</string>
+    <string name="para_manage_fields_help">Seçili alanlar kitap ekle/düzenle ekranlarında görünecektir. Seçilmeyen alanlar gizli kalacaktır.</string>
+    <string name="label_anthology_titles">Seçmeler</string>
     <string name="label_amazon_wishlist">Amazon Wishlist</string>
     <string name="label_same_author">Bu seçkideki tüm anlatılar aynı yazar tarafından yazılmıştır</string>
     <string name="menu_delete_anthology">Seçkiden eser sil</string>
     <string name="label_is_anthology">Bu kitap bir seçkide var mı?</string>
     <string name="populate_anthology_titles">Kitap adlarını kendiliğinden doldur (DENEYSEL ÖZELLİK)</string>
     <string name="automatic_population_failed">Kitap adlarının kendiliğinden doldurulması başarısız oldu</string>
-    <string name="anthology">Seçmeler</string>
+    <string name="label_anthology">Seçmeler</string>
     <string name="anthology_confirm">Lütfen bu seçki adlarının doğru olduğunu onaylayın</string>
     <string name="anthology_save">Kaydet</string>
     <string name="button_anthology_add">Ekle</string>
@@ -222,17 +222,17 @@
     <item name="TAG_PROPERTY" type="id"></item>
     <item name="TAG_DIALOG_ITEM" type="id"></item>
 
-    <string name="label_library">Kitaplarım</string>
-    <string name="label_settings">Yönetim ve Seçenekler</string>
-    <string name="label_other_preferences">Diğer seçenekler</string>
+    <string name="title_library">Kitaplarım</string>
+    <string name="title_settings">Yönetim ve Seçenekler</string>
+    <string name="title_other_preferences">Diğer seçenekler</string>
     <string name="user_interface">Kullanıcı arayüzü</string>
     <string name="start_in_my_books">\'Kitaplarım\' içinde aç</string>
     <string name="background_tasks">Ardalan görevleri</string>
     <string name="cleanup_old_tasks">Eski görevleri temizle</string>
     <string name="cleanup_old_events">Eski olayları temizle</string>
     <string name="search_criteria">Arama kriteri</string>
-    <string name="add_manually">El ile ekle</string>
-    <string name="search_internet">Genelağ\'da ara</string>
+    <string name="label_add_manually">El ile ekle</string>
+    <string name="label_search_internet">Genelağ\'da ara</string>
     <string name="show_results">Sonuçları göster</string>
     <string name="rebuild_fts">FTS\'yi yeniden yapıla (aşırı deneysel)</string>
     <string name="send_books_to_goodreads">Kitapları GoodReads\'e gönder</string>
@@ -262,18 +262,18 @@
     <string name="crash_dialog_comment_prompt">Yorumlarınız (isteğe bağlı):</string>
     <string name="crash_dialog_ok_toast">Sağ olun!</string>
     <string name="no_series">(seri yok)</string>
-    <string name="booklist_read">Okunmuş</string>
-    <string name="booklist_unread">Okunmamış</string>
+    <string name="option_library_read">Okunmuş</string>
+    <string name="option_library_unread">Okunmamış</string>
     <string name="no_genre">(tür yok)</string>
     <string name="no_title">(ad yok)</string>
     <string name="no_publisher">(yayımcı yok)</string>
     <string name="no_author">(yazar yok)</string>
     <string name="no_date">(günay yok)</string>
-    <string name="show_thumbnails">Ufak resimleri göster</string>
-    <string name="prefer_large_thumbnails">Büyük resimleri yeğle</string>
+    <string name="preference_show_thumbnails">Ufak resimleri göster</string>
+    <string name="preference_prefer_large_thumbnails">Büyük resimleri yeğle</string>
     <string name="sort_author_series">Önce yazar sonra seri</string>
     <string name="sort_series">Seriler</string>
-    <string name="sort_title_first_letter">İlk harf başlık</string>
+    <string name="label_sort_title_first_letter">İlk harf başlık</string>
     <string name="sort_genre">Tür adı</string>
     <string name="sort_loaned">Ödünç verilmiş</string>
     <string name="sort_read_and_unread">Okunmuş ve okunmamış</string>
@@ -295,46 +295,46 @@
     <item name="MENU_EDIT_STYLE" type="id"/>
     <item name="MENU_CLONE_STYLE" type="id"/>
 
-    <string name="label_booklist_preferences">Kitap dizelgesi yeğlenenleri</string>
+    <string name="title_library_preferences">Kitap dizelgesi yeğlenenleri</string>
     <string name="extra_book_details">Ek kitap ayarları</string>
     <string name="general">Genel</string>
     <string name="label_bookshelves">Kitap rafları</string>
     <string name="shelves">Raflar</string>
-    <string name="location">Konum</string>
+    <string name="label_location">Konum</string>
     <string name="label_data_import_export">Veri içe/dışa aktarma</string>
     <string name="unrecognized_task">Tanımlanamayan görev</string>
     <string name="rebuilding_search_index">Arama dizini yeniden oluşturuluyor&#8230;</string>
     <string name="optimizing_databases">Veritabanları eniyileniyor&#8230;</string>
     <string name="starting_up">Başlatılıyor&#8230;</string>
     <string name="book_catalogue_startup">BookCatalogue başlangıç</string>
-    <string name="book_list_state">Kitap dizelgesi durumu</string>
-    <string name="always_start_booklists_expanded">Kitap dizelgelerini genişletilmiş olarak başlat</string>
-    <string name="always_start_booklists_collapsed">Kitap dizelgelerini içe kapalı olarak başlat</string>
-    <string name="remember_booklists_state">Kitap dizelgesi durumunu koru</string>
+    <string name="preference_library_state">Kitap dizelgesi durumu</string>
+    <string name="option_always_start_library_expanded">Kitap dizelgelerini genişletilmiş olarak başlat</string>
+    <string name="option_always_start_library_collapsed">Kitap dizelgelerini içe kapalı olarak başlat</string>
+    <string name="option_remember_library_state">Kitap dizelgesi durumunu koru</string>
     <string name="searching_goodreads">Goodreads\'te aranıyor</string>
-    <string name="label_edit_book_list_styles">Kitap dizelgesi biçemlerini düzenle</string>
+    <string name="title_edit_library_styles">Kitap dizelgesi biçemlerini düzenle</string>
     <string name="show_more_ellipsis">Daha fazla göster&#8230;</string>
     <string name="show_fewer_ellipsis">Daha az göster&#8230;</string>
     <string name="customize_ellipsis">Kişiselleştir&#8230;</string>
     <string name="label_reset_hints">İpuçlarını sıfırla</string>
     <string name="do_not_show_again">Bir daha gösterme</string>
-    <string name="hint_booklist_styles_editor">Bu ekranı öntanımlı biçemler seçkesinde görüntülenecek biçemler dizelgesini düzenlemek için kullanabilirsiniz.
+    <string name="hint_library_styles_editor">Bu ekranı öntanımlı biçemler seçkesinde görüntülenecek biçemler dizelgesini düzenlemek için kullanabilirsiniz.
     										\n\nYeşil onay simgesi biçemin listede görüntüleneceğini, kırmızı artı ise görüntülenmeyeceğini belirtir.
     										Yeşil onay simgesine dokunmak onu kırmızı artıya dönüştürür, tersi de onay simgesi için geçerlidir.
     										\n\nEğer onay simgeli bir biçem yoksa tüm biçemler gösterilir.
     										\n\nIt is also possible to re-order the items by dragging the icon at the extreme right of each row.
     										\n\nBir satırda herhangi bir yere dokunmak o biçemin ayrıntılarını düzenleme olanağı tanır (veya çoğaltır, eğer yerleşik bir biçemse).
 </string>
-    <string name="hint_booklist_style_groups">Bu ekranı özel bir kitap dizelgesi biçemi hiyerarşisini düzenlemek için kullanabilirsiniz.
+    <string name="hint_library_style_groups">Bu ekranı özel bir kitap dizelgesi biçemi hiyerarşisini düzenlemek için kullanabilirsiniz.
     										\n\nYeşil onay simgesi başlığın listede görüntüleneceğini, kırmızı artı ise görüntülenmeyeceğini belirtir.
     										Yeşil onay simgesine dokunmak onu kırmızı artıya dönüştürür, tersi de onay simgesi için geçerlidir.
     										\n\nHiyerarşiyi sağ uçtaki simgeyi yukarı-aşağı taşıyarak değiştirebilirsiniz.
 </string>
-    <string name="hint_booklist_style_properties">Bu ekranı seçilen kitap dizgesi biçeminin özelliklerini değiştirmek üzere kullanabilirsiniz.
+    <string name="hint_library_style_properties">Bu ekranı seçilen kitap dizgesi biçeminin özelliklerini değiştirmek üzere kullanabilirsiniz.
     										\n\nBuradan adını değiştirelibilr, hiyerarşiyi değiştirmek için öbeklendirmeyi düzenleyebilir ve										    kullanışlı bir biçem yaratmak için diğer ayarları yapabilirsiniz.
     										\n\n\'Kitap süzgeçleri\' ayarlarını kullanarak kitap dizgelerinde görüntülenecek seçimleri          										    ayarlayabilirsiniz, örneğin yalnızca okumadığınız kitapları vb. seçebilirsiniz.
 </string>
-    <string name="hint_booklist_global_properties">Bu ekranı tüm kitap dizgesi biçeminin özelliklerini değiştirmek üzere kullanabilirsiniz.
+    <string name="hint_library_global_properties">Bu ekranı tüm kitap dizgesi biçeminin özelliklerini değiştirmek üzere kullanabilirsiniz.
     										\n\nÇoğu özellikler kişisel biçemlerle değiştirilebilir, ancak öntanımlı değerler burada
     										tanımlanmışlardır.
     										\n\nArdalanı değiştirebilir, dizelgelerin başlangıçta nasıl görüntüleneceğini seçebilir
@@ -342,30 +342,30 @@
     										\n\nAynı zamanda biçemler seçkesini ve biçemlerin kendisini dedüzenleyebilirsiniz.
 </string>
     <string name="preferred_styles">Yeğlenen biçemler</string>
-    <string name="edit_style_colon_name">Biçemi düzenle: %1$s</string>
-    <string name="add_style">Biçem ekle</string>
-    <string name="clone_style_colon_name">Biçemi çoğalt: %1$s</string>
-    <string name="select_read_only">Yalnızca okunan kitapları seç</string>
-    <string name="select_unread_only">Yalnızca okunmayan kitapları seç</string>
+    <string name="title_edit_style_colon_name">Biçemi düzenle: %1$s</string>
+    <string name="title_add_style">Biçem ekle</string>
+    <string name="title_clone_style_colon_name">Biçemi çoğalt: %1$s</string>
+    <string name="option_select_read_only">Yalnızca okunan kitapları seç</string>
+    <string name="option_select_unread_only">Yalnızca okunmayan kitapları seç</string>
     <string name="extra_filters">Kitap süzgeçleri</string>
     <string name="new_style">Yeni biçem</string>
     <string name="select_based_on_read_status">\'Okunma\' durumuna göre seç</string>
     <string name="books_with_multiple_authors">Birden fazla yazarlı kitaplar</string>
     <string name="books_in_multiple_series">Birden fazla seride bulunan kitaplar</string>
-    <string name="use_default_setting">Öntanımlı ayarları kullan</string>
+    <string name="option_use_default_setting">Öntanımlı ayarları kullan</string>
     <string name="show_book_under_each_thing">Her %1$s altında</string>
     <string name="show_book_under_primary_thing">Yalnızca birincil %1$s altında</string>
     <string name="format_of_author_names">Yazar adları biçimi</string>
     <string name="given_name_first_eg">Ad başta, örneğin \'Özgür Çapulcu\'</string>
     <string name="family_name_first_eg">Soyad başta, örneğin \'Çapulcu, Özgür\'</string>
     <string name="thumbnails">Ufak resimler</string>
-    <string name="size_of_booklist_items">Kitap dizelgesi öğeleri boyutu</string>
-    <string name="normal">Olağan</string>
-    <string name="smaller">Daha ufak</string>
+    <string name="preference_size_of_library_items">Kitap dizelgesi öğeleri boyutu</string>
+    <string name="option_normal">Olağan</string>
+    <string name="option_smaller">Daha ufak</string>
     <string name="select_style">Biçem seç</string>
-    <string name="booklist_background_style">Kitap dizelgesi ardalan biçemi</string>
-    <string name="textured_backgroud">Dokulu ardalan resmi</string>
-    <string name="plain_background_b_reduces_flicker_b">Düz ardalan (titremeyi azaltır)</string>
+    <string name="preference_library_background_style">Kitap dizelgesi ardalan biçemi</string>
+    <string name="option_textured_background">Dokulu ardalan resmi</string>
+    <string name="option_plain_background_b_reduces_flicker_b">Düz ardalan (titremeyi azaltır)</string>
     <string name="thing_must_not_be_blank">%1$s boş olamaz</string>
     <string name="label_edit">Düzenle</string>
     <string name="groupings">Öbeklemeler</string>
@@ -409,48 +409,48 @@
     									ve oluşan ardalan görevinin başarıyla tamamlanıp tamamlanmadığına bakın. 
     									\n\nEğer veri doğru olup, ancak kitap hala bulunamıyorsa bu kitabın ISBN\'si ile birlikte Goodreads\'e el ile
 									ağ sayfasından eklenmesi gerekmektedir. Bu yapıldıktan sonra kitabı yeniden göndermeyi deneyebilirsiniz.</string>
-    <string name="read_amp_unread">Okunan &amp; Okunmayan</string>
-    <string name="loaned">Ödünç verilen</string>
-    <string name="publication_year">Yayım yılı</string>
-    <string name="publication_month">Yayım ayı</string>
-    <string name="added_year">Eklenen yıl</string>
-    <string name="added_month">Eklenen ay</string>
-    <string name="added_day">Eklenen gün</string>
+    <string name="label_read_amp_unread">Okunan &amp; Okunmayan</string>
+    <string name="label_loaned">Ödünç verilen</string>
+    <string name="label_publication_year">Yayım yılı</string>
+    <string name="label_publication_month">Yayım ayı</string>
+    <string name="label_added_year">Eklenen yıl</string>
+    <string name="label_added_month">Eklenen ay</string>
+    <string name="label_added_day">Eklenen gün</string>
     <string name="book">Kitap</string>
-    <string name="in">İçinde</string>
-    <string name="size">Boyut</string>
-    <string name="updated">Güncellenmiş</string>
+    <string name="label_in">İçinde</string>
+    <string name="label_size">Boyut</string>
+    <string name="label_updated">Güncellenmiş</string>
     <string name="problem_starting_import_arg">İçe aktarmaya başlarken bir hata oluştu: %1$s</string>
-    <string name="hint_booklist_style_menu">Bu seçke size dizelge biçemini seçmenize olanak tanır. 
+    <string name="hint_library_style_menu">Bu seçke size dizelge biçemini seçmenize olanak tanır.
     								\n\nEk olarak dizelgenin sonundaki \'Kişiselleştir\' düğmesini kullanarak bu seçkeyi kişiselleştirebilir ve hatta kendi dizelge biçemlerinizi oluşturabilirsiniz.</string>
     <string name="menu_edit_format">Biçimi düzenle&#8230;</string>
     <string name="label_edit_format_name">Biçim adını düzenle</string>
     <string name="name_can_not_be_blank">Ad kısmı boş olamaz</string>
     <string name="export_starting_ellipsis">Dışa aktarma başlıyor&#8230;</string>
-    <string name="resizing_cover_thumbnails">Kapak ufak resimleri yeniden boyutlandırılıyor</string>
-    <string name="resize_each_time">Gerekli olduğunda her seferinde yeniden boyutlandır (daha az yer kaplar, kaydırma daha yavaş olacaktır)</string>
-    <string name="cache_resized_thumbnails_for_later_use">Yeniden boyutlandırılmış ufak resimleri bellekte tut (daha fazla yer kaplar, dizelgeler daha hızlı kayar)</string>
-    <string name="generating_cover_thumbnails">Kapak ufak resimleri oluşturuluyor</string>
-    <string name="use_background_thread">Ardalanda iş oluştur (dizelgeler daha hızlı kayar, resimlerin görüntülenmesi gecikebilir)</string>
-    <string name="generate_immediately">Anında oluştur (dizelgeler daha yavaş kayar, resimler anında görüntülenir)</string>
+    <string name="preference_resizing_cover_thumbnails">Kapak ufak resimleri yeniden boyutlandırılıyor</string>
+    <string name="option_resize_each_time">Gerekli olduğunda her seferinde yeniden boyutlandır (daha az yer kaplar, kaydırma daha yavaş olacaktır)</string>
+    <string name="option_cache_resized_thumbnails_for_later_use">Yeniden boyutlandırılmış ufak resimleri bellekte tut (daha fazla yer kaplar, dizelgeler daha hızlı kayar)</string>
+    <string name="preference_generating_cover_thumbnails">Kapak ufak resimleri oluşturuluyor</string>
+    <string name="option_use_background_thread">Ardalanda iş oluştur (dizelgeler daha hızlı kayar, resimlerin görüntülenmesi gecikebilir)</string>
+    <string name="option_generate_immediately">Anında oluştur (dizelgeler daha yavaş kayar, resimler anında görüntülenir)</string>
     <string name="sort_and_style_ellipsis">Sıralama &amp; biçemi&#8230;</string>
     <string name="displaying_n_books_in_m_entries">%2$s giride %1$s kitap görüntüleniyor</string>
     <string name="displaying_n_books">%1$s kitap görüntüleniyor</string>
     <string name="available">Uygun</string>
-    <string name="summary_details_in_header">Başlık özet ayrıntıları</string>
-    <string name="hide_summary_details">Özet ayrıntılarını gizle</string>
+    <string name="preference_summary_details_in_header">Başlık özet ayrıntıları</string>
+    <string name="option_hide_summary_details">Özet ayrıntılarını gizle</string>
     <string name="x_is_not_a_valid_isbn">%1$s geçerli birISBN değil</string>
     <string name="beep_if_scanned_isbn_invalid">Taranan ISBN geçerli değil ise biple</string>
     <string name="no_image_found">Resim bulunamadı</string>
     <string name="could_not_copy_image">Resim eşlemlenemedi</string>
     <string name="this_option_is_not_available_until_the_book_is_saved">Bu özellik kitap saklanana kadar kullanılamaz</string>
-    <string name="scan_barcode_isbn">Barkod/ISBN tara</string>
-    <string name="enter_isbn">ISBN gir</string>
+    <string name="label_scan_barcode_isbn">Barkod/ISBN tara</string>
+    <string name="label_enter_isbn">ISBN gir</string>
     <string name="label_allow_asin">ASIN\'e izin ver</string>
     <string name="x_is_not_a_valid_isbn_or_asin">%1$s geçerli bir ISBN veya ASIN değil</string>
-    <string name="read_year">Okuma yılı</string>
-    <string name="read_month">Okuma ayı</string>
-    <string name="read_day">Okuma günü</string>
+    <string name="label_read_year">Okuma yılı</string>
+    <string name="label_read_month">Okuma ayı</string>
+    <string name="label_read_day">Okuma günü</string>
     <string name="sort_read_date">Okunan günay</string>
     <string name="details_have_changed">Ayrıntılar değiştirildi</string>
     <string name="you_have_unsaved_changes">Saklanmamış değişiklikler var, şimdi çıkarsanız hepsi silinecektir.</string>
@@ -470,8 +470,8 @@
     <string name="default_crop_frame_is_whole_image">Öntanımlı kırpma alanı bütün görseldir</string>
     <string name="cancelled">İptal edildi</string>
     <string name="import_complete">İçe aktarma başarılı</string>
-    <string name="searching_elipsis">Aranıyor&#8230;</string>
-    <string name="adding_book_elipsis">Kitap ekle&#8230;</string>
+    <string name="searching_ellipsis">Aranıyor&#8230;</string>
+    <string name="status_adding_book_ellipsis">Kitap ekle&#8230;</string>
     <string name="prefs_global_opening_book_mode">Kitabı salt okunur aç</string>
     <string name="label_publishing">Yayımlanıyor</string>
     <string name="book_details_readonly_by">ile</string>
@@ -633,9 +633,9 @@
     <string name="label_copy_database">Veritabanını eşlemle (teknik destek için)</string>
 
     <!-- Items in list of options for the 'Summary Details' preference. Detrmines what is show in book list header -->
-    <string name="show_book_count">Kitap sayısını göster</string>
-    <string name="show_first_level_and_book_count">Birinci başlığı ve kitap sayısını göster</string>
-    <string name="show_all_summary_details">Tüm özet ayrıntılarını göster</string>
+    <string name="option_show_book_count">Kitap sayısını göster</string>
+    <string name="option_show_first_level_and_book_count">Birinci başlığı ve kitap sayısını göster</string>
+    <string name="option_show_all_summary_details">Tüm özet ayrıntılarını göster</string>
 
     <!-- Displayed when an archive operation fails -->
     <string name="import_failed">İçe aktarma başarısız.</string>
@@ -738,7 +738,7 @@
     <!-- Part of the progress message displayed when exporting books -->
 
     <!-- Displayed in progress dialog when exporting covers in incremental mode -->
-    <string name="covers_progress_incr">%1$s kapak işlendi (%2$s bulunamadı, %3$s atlandı)</string>
+    <string name="covers_progress_increment">%1$s kapak işlendi (%2$s bulunamadı, %3$s atlandı)</string>
     <!-- Explanatory note for 'export all' option -->
     <string name="export_all_blurb">Tüm kitaplar, kapaklar, ayarlar ve kişiselleştirilmiş biçemler arşive aktarılacaktır.</string>
     <!-- Explanatory note for 'advanced export' option -->
@@ -796,7 +796,7 @@
    <!-- Menu item -->
    <string name="menu_amazon_books_by_author_in_series">Yazara/diziye göre kitaplar</string>
    <!-- Hint text displayed when user enters the book listw -->
-   <string name="hint_book_list">Bir kitabın üzerine dokunmak kitap ayrıntılarını gösterir, uzun basılı tutmak daha fazla seçeneğin olduğu bir dizelge verir.</string>
+   <string name="hint_library">Bir kitabın üzerine dokunmak kitap ayrıntılarını gösterir, uzun basılı tutmak daha fazla seçeneğin olduğu bir dizelge verir.</string>
    <!-- TRANLATORS NOTE: I HAVE UPDATED THE new_in_510, above! Sorry. -->
 
    <!-- Preference VALUE, displayed in a preference activity -->
@@ -814,11 +814,11 @@
    <!-- Name of the new style grouping (needs to be short). -->
    <string name="update_date">Gün ve ayı güncelle</string>
    <!-- Name of the new style grouping (needs to be short). -->
-   <string name="update_year">Yılı güncelle</string>
+   <string name="label_update_year">Yılı güncelle</string>
    <!-- Name of the new style grouping (needs to be short). -->
-   <string name="update_month">Ayı güncelle</string>
+   <string name="label_update_month">Ayı güncelle</string>
    <!-- Name of the new style grouping (needs to be short). -->
-   <string name="update_day">Günü güncelle</string>
+   <string name="label_update_day">Günü güncelle</string>
    <!-- Short text for 'n stars' -->
    <plurals name="n_stars">
 	   <item quantity="zero">%1$s yıldız</item>

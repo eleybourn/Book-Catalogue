@@ -302,7 +302,7 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
 					R.string.old_files_message,
 					getString(R.string.button_ok),
 					getString(R.string.button_cancel),
-					getString(R.string.label_settings),
+					getString(R.string.title_settings),
 					getString(R.string.label_import_old_files));
 			MessageDialogFragment frag = MessageDialogFragment.newInstance(
 					ACTIVITY_IMPORT_OLD_FILES,

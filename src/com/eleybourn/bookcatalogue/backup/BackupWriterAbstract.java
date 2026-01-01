@@ -31,7 +31,7 @@ import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
+import com.eleybourn.bookcatalogue.booklist.LibraryStyle;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyles;
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 import com.eleybourn.bookcatalogue.utils.Logger;
@@ -277,7 +277,7 @@ public abstract class BackupWriterAbstract implements BackupWriter {
 		int missing = 0;
 		int skipped = 0;
 		String fmt_noskip = BookCatalogueApp.getResourceString(R.string.covers_progress);
-		String fmt_skip = BookCatalogueApp.getResourceString(R.string.covers_progress_incr);
+		String fmt_skip = BookCatalogueApp.getResourceString(R.string.covers_progress_increment);
 
 		Cursor c = mDbHelper.getUuidList();
 		try {
@@ -339,7 +339,7 @@ public abstract class BackupWriterAbstract implements BackupWriter {
 	 */
 	private void writeStyles(final BackupWriterListener listener) throws IOException {
 		BooklistStyles styles = BooklistStyles.getAllStyles(mDbHelper);
-		for(BooklistStyle style: styles) {
+		for(LibraryStyle style: styles) {
 			if (style.isUserDefined()) {
 				putBooklistStyle(style);				
 			}

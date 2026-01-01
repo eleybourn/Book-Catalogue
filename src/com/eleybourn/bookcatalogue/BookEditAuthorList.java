@@ -181,7 +181,7 @@ public class BookEditAuthorList extends BookEditObjectList<Author> {
 
 		// When we get here, we know the names are genuinely different and the old author is used in more than one place.
 		String format = getResources().getString(R.string.changed_author_how_apply);
-		String allBooks = getResources().getString(R.string.all_books);
+		String allBooks = getResources().getString(R.string.option_all_books);
 		String thisBook = getResources().getString(R.string.this_book);
 		String message = String.format(format, oldAuthor.getSortName(), newAuthor.getSortName(), allBooks);
 		final AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(message).create();

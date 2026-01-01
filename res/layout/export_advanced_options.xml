@@ -149,7 +149,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="@string/all_books" />
+                android:text="@string/option_all_books" />
 
             <RadioButton
                 android:id="@+id/radioSinceLast"

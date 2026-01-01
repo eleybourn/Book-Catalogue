@@ -23,30 +23,30 @@ import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.EMPTY_STRING_ARRAY;
 import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_DATE_PUBLISHED;
 import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.KEY_LOANED_TO;
 import static com.eleybourn.bookcatalogue.CatalogueDBAdapter.encodeString;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_AUTHOR;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_BOOK;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_BOOKSHELF;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_DAY_ADDED;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_DAY_READ;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_FORMAT;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_GENRE;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_LANGUAGE;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_LOANED;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_LOCATION;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_MONTH_ADDED;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_MONTH_PUBLISHED;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_MONTH_READ;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_PUBLISHER;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_RATING;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_READ_AND_UNREAD;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_SERIES;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_TITLE_LETTER;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_UPDATE_DAY;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_UPDATE_MONTH;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_UPDATE_YEAR;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_YEAR_ADDED;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_YEAR_PUBLISHED;
-import static com.eleybourn.bookcatalogue.booklist.BooklistGroup.RowKinds.ROW_KIND_YEAR_READ;
+import static com.eleybourn.bookcatalogue.booklist.LibraryGroup.RowKinds.ROW_KIND_AUTHOR;
+import static com.eleybourn.bookcatalogue.booklist.LibraryGroup.RowKinds.ROW_KIND_BOOK;
+import static com.eleybourn.bookcatalogue.booklist.LibraryGroup.RowKinds.ROW_KIND_BOOKSHELF;
+import static com.eleybourn.bookcatalogue.booklist.LibraryGroup.RowKinds.ROW_KIND_DAY_ADDED;
+import static com.eleybourn.bookcatalogue.booklist.LibraryGroup.RowKinds.ROW_KIND_DAY_READ;
+import static com.eleybourn.bookcatalogue.booklist.LibraryGroup.RowKinds.ROW_KIND_FORMAT;
+import static com.eleybourn.bookcatalogue.booklist.LibraryGroup.RowKinds.ROW_KIND_GENRE;
+import static com.eleybourn.bookcatalogue.booklist.LibraryGroup.RowKinds.ROW_KIND_LANGUAGE;
+import static com.eleybourn.bookcatalogue.booklist.LibraryGroup.RowKinds.ROW_KIND_LOANED;
+import static com.eleybourn.bookcatalogue.booklist.LibraryGroup.RowKinds.ROW_KIND_LOCATION;
+import static com.eleybourn.bookcatalogue.booklist.LibraryGroup.RowKinds.ROW_KIND_MONTH_ADDED;
+import static com.eleybourn.bookcatalogue.booklist.LibraryGroup.RowKinds.ROW_KIND_MONTH_PUBLISHED;
+import static com.eleybourn.bookcatalogue.booklist.LibraryGroup.RowKinds.ROW_KIND_MONTH_READ;
+import static com.eleybourn.bookcatalogue.booklist.LibraryGroup.RowKinds.ROW_KIND_PUBLISHER;
+import static com.eleybourn.bookcatalogue.booklist.LibraryGroup.RowKinds.ROW_KIND_RATING;
+import static com.eleybourn.bookcatalogue.booklist.LibraryGroup.RowKinds.ROW_KIND_READ_AND_UNREAD;
+import static com.eleybourn.bookcatalogue.booklist.LibraryGroup.RowKinds.ROW_KIND_SERIES;
+import static com.eleybourn.bookcatalogue.booklist.LibraryGroup.RowKinds.ROW_KIND_TITLE_LETTER;
+import static com.eleybourn.bookcatalogue.booklist.LibraryGroup.RowKinds.ROW_KIND_UPDATE_DAY;
+import static com.eleybourn.bookcatalogue.booklist.LibraryGroup.RowKinds.ROW_KIND_UPDATE_MONTH;
+import static com.eleybourn.bookcatalogue.booklist.LibraryGroup.RowKinds.ROW_KIND_UPDATE_YEAR;
+import static com.eleybourn.bookcatalogue.booklist.LibraryGroup.RowKinds.ROW_KIND_YEAR_ADDED;
+import static com.eleybourn.bookcatalogue.booklist.LibraryGroup.RowKinds.ROW_KIND_YEAR_PUBLISHED;
+import static com.eleybourn.bookcatalogue.booklist.LibraryGroup.RowKinds.ROW_KIND_YEAR_READ;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ABSOLUTE_POSITION;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ADDED_DATE;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ADDED_DAY;
@@ -122,9 +122,9 @@ import androidx.annotation.NonNull;
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.booklist.BooklistGroup.BooklistAuthorGroup;
-import com.eleybourn.bookcatalogue.booklist.BooklistGroup.BooklistSeriesGroup;
-import com.eleybourn.bookcatalogue.booklist.BooklistStyle.CompoundKey;
+import com.eleybourn.bookcatalogue.booklist.LibraryGroup.BooklistAuthorGroup;
+import com.eleybourn.bookcatalogue.booklist.LibraryGroup.BooklistSeriesGroup;
+import com.eleybourn.bookcatalogue.booklist.LibraryStyle.CompoundKey;
 import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedDb;
 import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedStatement;
 import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer.SyncLock;
@@ -202,7 +202,7 @@ public class LibraryBuilder {
     /**
      * Style to use in building the list
      */
-    private final BooklistStyle mStyle;
+    private final LibraryStyle mStyle;
     /**
      * Instance-based cursor factory so that the builder can be associated with the cursor and the rowView. We could
      * probably send less context, but in the first instance this guarantees we get all the info we need downstream.
@@ -248,7 +248,7 @@ public class LibraryBuilder {
      * @param adapter Database Adapter to use
      * @param style   Book list style to use
      */
-    public LibraryBuilder(CatalogueDBAdapter adapter, BooklistStyle style) {
+    public LibraryBuilder(CatalogueDBAdapter adapter, LibraryStyle style) {
         synchronized (sInstanceLock) {
             mInstanceCount++;
             System.out.println("Builder instances: " + mInstanceCount);
@@ -558,22 +558,22 @@ public class LibraryBuilder {
             //// Based on the users choice, decide how the list will be generated.
             //switch(listMode) {
             //
-            //	case OtherPreferences.BOOKLIST_GENERATE_OLD_STYLE:
+            //	case AdminOtherPreferences.BOOKLIST_GENERATE_OLD_STYLE:
             //		useTriggers = false;
             //		break;
-            //	case OtherPreferences.BOOKLIST_GENERATE_AUTOMATIC:
+            //	case AdminOtherPreferences.BOOKLIST_GENERATE_AUTOMATIC:
             //		if (Build.VERSION.SDK_INT < 8) {
             //			useTriggers = false;
             //		} else {
             //			useTriggers = true;
             //		}
             //		break;
-            //	case OtherPreferences.BOOKLIST_GENERATE_FLAT_TRIGGER:
+            //	case AdminOtherPreferences.BOOKLIST_GENERATE_FLAT_TRIGGER:
             //		useTriggers = true;
             //		flatTriggers = true;
             //		break;
             //
-            //	case OtherPreferences.BOOKLIST_GENERATE_NESTED_TRIGGER:
+            //	case AdminOtherPreferences.BOOKLIST_GENERATE_NESTED_TRIGGER:
             //		useTriggers = true;
             //		flatTriggers = false;
             //		break;
@@ -589,7 +589,7 @@ public class LibraryBuilder {
             long t0a = System.currentTimeMillis();
 
             // Process each group in the style
-            for (BooklistGroup g : mStyle) {
+            for (LibraryGroup g : mStyle) {
                 //
                 //	Build each row-kind group.
                 //
@@ -686,8 +686,8 @@ public class LibraryBuilder {
                     case ROW_KIND_READ_AND_UNREAD:
                         g.displayDomain = DOM_READ_STATUS;
                         String unreadExpr = "Case When " + TBL_BOOKS.dot(DOM_READ) + " = 1\n" +
-                                "	Then '" + BookCatalogueApp.getResourceString(R.string.booklist_read) + "'\n" +
-                                " Else '" + BookCatalogueApp.getResourceString(R.string.booklist_unread) + "' end";
+                                "	Then '" + BookCatalogueApp.getResourceString(R.string.option_library_read) + "'\n" +
+                                " Else '" + BookCatalogueApp.getResourceString(R.string.option_library_unread) + "' end";
                         summary.addDomain(DOM_READ_STATUS, unreadExpr, SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED);
                         // We want the READ flag at the lowest level only. Some bad data means that it may be 0 or 'f', so we don't group by it.
                         summary.addDomain(DOM_READ, TBL_BOOKS.dot(DOM_READ), SummaryBuilder.FLAG_NONE);
@@ -959,10 +959,10 @@ public class LibraryBuilder {
             {
                 String extra = null;
                 switch (mStyle.getReadFilter()) {
-                    case BooklistStyle.FILTER_READ:
+                    case LibraryStyle.FILTER_READ:
                         extra = TBL_BOOKS.dot(DOM_READ) + " = 1\n";
                         break;
-                    case BooklistStyle.FILTER_UNREAD:
+                    case LibraryStyle.FILTER_UNREAD:
                         extra = TBL_BOOKS.dot(DOM_READ) + " = 0\n";
                         break;
                     default:
@@ -1052,14 +1052,14 @@ public class LibraryBuilder {
                 mLevelBuildStmt.add(navStmt);
 
                 // On first-time builds, get the pref-based list
-                if (preferredState == BooklistPreferencesActivity.BOOKLISTS_ALWAYS_COLLAPSED) {
+                if (preferredState == AdminLibraryPreferences.LIBRARY_ALWAYS_COLLAPSED) {
                     String sql = mNavTable.getInsert(DOM_REAL_ROW_ID, DOM_LEVEL, DOM_ROOT_KEY, DOM_VISIBLE, DOM_EXPANDED) +
                             " Select " + mListTable.dot(DOM_ID) + "," + mListTable.dot(DOM_LEVEL) + "," + mListTable.dot(DOM_ROOT_KEY) +
                             " ,\n	Case When " + DOM_LEVEL + " = 1 Then 1 Else 0 End, 0\n" +
                             " From " + mListTable.ref() +
                             "\n	Order by " + sortExpression;
                     mDb.execSQL(sql);
-                } else if (preferredState == BooklistPreferencesActivity.BOOKLISTS_ALWAYS_EXPANDED) {
+                } else if (preferredState == AdminLibraryPreferences.LIBRARY_ALWAYS_EXPANDED) {
                     String sql = mNavTable.getInsert(DOM_REAL_ROW_ID, DOM_LEVEL, DOM_ROOT_KEY, DOM_VISIBLE, DOM_EXPANDED) +
                             " Select " + mListTable.dot(DOM_ID) + "," + mListTable.dot(DOM_LEVEL) + "," + mListTable.dot(DOM_ROOT_KEY) +
                             " , 1, 1 \n" +
@@ -1254,7 +1254,7 @@ public class LibraryBuilder {
         // For each grouping, starting with the lowest, build a trigger to update the next level up as necessary
         for (int i = 0; i < mStyle.size(); i++) {
             // Get the group
-            final BooklistGroup l = mStyle.getGroupAt(i);
+            final LibraryGroup l = mStyle.getGroupAt(i);
             // Get the level number for this group
             final int levelId = i + 1;
             // Create an INSERT statement for the next level up
@@ -1336,7 +1336,7 @@ public class LibraryBuilder {
         // For each grouping, starting with the lowest, build a trigger to update the next level up as necessary
         for (int i = mStyle.size() - 1; i >= 0; i--) {
             // Get the group
-            final BooklistGroup l = mStyle.getGroupAt(i);
+            final LibraryGroup l = mStyle.getGroupAt(i);
             // Get the level number for this group
             final int levelId = i + 1;
             // Create an INSERT statement for the next level up
@@ -1756,7 +1756,7 @@ public class LibraryBuilder {
     /**
      * Get the style used by this builder.
      */
-    public BooklistStyle getStyle() {
+    public LibraryStyle getStyle() {
         return mStyle;
     }
 
@@ -1969,7 +1969,7 @@ public class LibraryBuilder {
         }
 
         /**
-         * Return a clone of the CURRENT groups. Since BooklistGroup objects are processed in order, this
+         * Return a clone of the CURRENT groups. Since LibraryGroup objects are processed in order, this
          * allows us to get the GROUP-BY fields applicable to the currently processed group, including all
          * outer groups. Hence why it is cloned -- subsequent domains will modify this collection.
          */

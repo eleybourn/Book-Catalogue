@@ -264,7 +264,7 @@ public class BookISBNSearch extends ActivityWithTasks {
             } else if (by.equals("name")) {
                 // System.out.println(mId + " OnCreate BY NAME");
                 setContentView(R.layout.search_name);
-                this.setTitle(R.string.hint_search);
+                this.setTitle(R.string.label_search_by);
 
                 this.initAuthorList();
 
@@ -330,7 +330,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 
             MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
             setSupportActionBar(topAppBar);
-            topAppBar.setTitle(R.string.label_insert);
+            topAppBar.setTitle(R.string.title_add_book);
             topAppBar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
         } finally {
             Tracker.exitOnCreate(this);
@@ -490,7 +490,7 @@ public class BookISBNSearch extends ActivityWithTasks {
                 mSearchManagerId = sm.getSenderId();
                 Tracker.handleEvent(this, "Searching" + mSearchManagerId, Tracker.States.Running);
 
-                this.getTaskManager().doProgress(getString(R.string.searching_elipsis));
+                this.getTaskManager().doProgress(getString(R.string.searching_ellipsis));
                 sm.search(mAuthor, mTitle, mIsbn, true, SearchManager.SEARCH_ALL);
                 // reset the details so we don't restart the search unnecessarily
                 mAuthor = "";
@@ -518,7 +518,7 @@ public class BookISBNSearch extends ActivityWithTasks {
                 if (mMode == MODE_SCAN)
                     startScannerActivity();
             } else {
-                getTaskManager().doProgress(getString(R.string.adding_book_elipsis));
+                getTaskManager().doProgress(getString(R.string.status_adding_book_ellipsis));
                 createBook(bookData);
                 // Clear the data entry fields ready for the next one
                 clearFields();

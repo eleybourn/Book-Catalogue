@@ -263,7 +263,7 @@ public class BookDetails extends BookAbstract {
     private void showReadStatus(BookData book) {
         assert getView() != null;
         ImageView image = getView().findViewById(R.id.field_read);
-        if (FieldVisibility.isVisible(CatalogueDBAdapter.KEY_READ)) {
+        if (AdminFieldVisibility.isVisible(CatalogueDBAdapter.KEY_READ)) {
             if (book.isRead()) {
                 image.setVisibility(View.VISIBLE);
                 image.setImageResource(R.drawable.ic_menu_checkmark_checked);

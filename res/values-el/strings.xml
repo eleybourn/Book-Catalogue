@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Book Catalogue</string>
-    <string name="label_insert">Προσθήκη Βιβλίου</string>
+    <string name="title_add_book">Προσθήκη Βιβλίου</string>
     <string name="menu_delete_book">Διαγραφή Βιβλίου</string>
     <string name="label_author">Συγγραφέας</string>
     <string name="label_title">Τίτλος</string>
@@ -10,7 +10,7 @@
     <string name="label_publisher">Εκδότης</string>
     <string name="label_date_published">Ημερομηνία έκδοσης</string>
     <string name="label_rating">Βαθμολογία</string>
-    <string name="bookshelf">Ράφι</string>
+    <string name="label_bookshelf">Ράφι</string>
     <string name="label_read">Έχετε διαβάσει αυτό το βιβλίο;</string>
     <string name="label_series">Σειρές</string>
     <string name="label_pages">Σελίδες</string>
@@ -25,21 +25,21 @@
     <string name="info_no_bookshelves">Δεν έχετε δημιουργήσει ακόμα ράφια. Παρακαλούμε προσθέστε μερικά με το μενού στο κάτω μέρος της οθόνης.</string>
     <string name="menu_insert_bs">Δημιουργία Ραφιού</string>
     <string name="confirm_add_bs">Προσθήκη Ραφιού</string>
-    <string name="label_bookshelf">Διαχείρηση Ραφιών</string>
+    <string name="title_manage_bookshelves">Διαχείρηση Ραφιών</string>
     <string name="confirm_save_bs">Αποθήκευση Ραφιού</string>
     <string name="menu_delete_bs">Διαγραφή Ραφιού</string>
     <string name="delete_1st_bs">Δεν μπορεί να διαγραφεί το 1ο ράφι.</string>
-    <string name="all_books">Όλα τα βιβλία.</string>
+    <string name="option_all_books">Όλα τα βιβλία.</string>
     <string name="title_isbn_search">Book Catalogue: ISBN Αναζήτηση</string>
-    <string name="title_edit_bs">Book Catalogue: Επεξεργασία ραφιού</string>
+    <string name="title_edit_bookshelf">Book Catalogue: Επεξεργασία ραφιού</string>
     <string name="label_search_for_books">Αναζήτηση για βιβλία</string>
-    <string name="hint_search">Αναζήτηση συγγραφέα ή τίτλου</string>
+    <string name="label_search_by">Αναζήτηση συγγραφέα ή τίτλου</string>
     <string name="book_not_found">Το βιβλίο που σαρώθηκε δεν βρέθηκε. Κάποιες φορές το σωστό barcode βρίσκεται στο εσωτερικό του εξωφύλλου. Αλλιώς εισάγετε τις λεπτομέρειες χειροκίνητα.</string>
     <string name="label_series_num">#</string>
     <string name="import_data">Εισαγωγή Βιβλιων</string>
     <string name="import_alert">Προσοχή. Η εισαγωγή δεδομένων μπορεί να ενημερώσει υπάρχοντα βιβλία με νέες πληροφορίες εαν η στήλη uuid δεν είναι παρούσα και το id στο αρχείο εισαγωγής είναι το ίδιο με κάποιο υπάρχον id. Αυτό είναι εντάξει εαν έχει αλλαχτεί κάποιο πεδίο σε ένα εξαγμένο αρχείο. Εαν δημιουργήσατε μια νεα βιβλιογραφική εγγραφή ή εαν εισάγετε τα βιβλία κάποιου άλλου, σιγουρευτείτε ότι το πεδίο uuid είναι παρόν ή το πεδίο id είναι κενό.</string>
     <string name="import_failed_is_location_correct">ΣΦΑΛΜΑ: Εισαγωγή δεδομένων (από SDCard) απέτυχε. Βρίσκεται το αρχείο στη σωστή τοποθεσία;</string>
-    <string name="administration_label">Λειτουργίες διαχείρισης</string>
+    <string name="deleteme_administration_label">Λειτουργίες διαχείρισης</string>
     <string name="label_administration">Διαχειριστής</string>
     <string name="install_scan_title">Εγκατάσταση σαρωτή barcode</string>
     <string name="label_version_number">Αριθμός έκδοσης:</string>
@@ -76,16 +76,16 @@
     <string name="search_exception">Αναζήτηση απέτυχε όταν %1$s: %2$s</string>
     <string name="menu_delete_thumb">Διαγραφή μικρογραφίας</string>
     <string name="label_help">Βοήθεια</string>
-    <string name="label_manage_fields">Διαχείρηση ορατότητας πεδίου</string>
-    <string name="manage_fields_help">Τα επιλεγμένα πεδία είναι ορατά στις οθόνες προσθήκης/επεξεργασίας βιβλίου. Τα μη επιλεγμένα πεδία είναι κρυφά.</string>
-    <string name="label_anthology">Τίτλοι Ανθολογιών</string>
+    <string name="title_manage_fields">Διαχείρηση ορατότητας πεδίου</string>
+    <string name="para_manage_fields_help">Τα επιλεγμένα πεδία είναι ορατά στις οθόνες προσθήκης/επεξεργασίας βιβλίου. Τα μη επιλεγμένα πεδία είναι κρυφά.</string>
+    <string name="label_anthology_titles">Τίτλοι Ανθολογιών</string>
     <string name="label_amazon_wishlist">Amazon Wishlist</string>
     <string name="label_same_author">Όλες οι ιστορίες σε αυτήν την ανθολογία είναι γραμμένες από τον ίδιο συγγραφέα.</string>
     <string name="menu_delete_anthology">Διαγραφή τίτλου από Ανθολογία</string>
     <string name="label_is_anthology">Είναι αυτό το βιβλίο ανθολογία;</string>
     <string name="populate_anthology_titles">Αυτόματη συμπλήρωση τίτλων (ΠΕΙΡΑΜΑΤΙΚΟ)</string>
     <string name="automatic_population_failed">Η αυτόματη συμπλήρωση τίτλων απέτυχε</string>
-    <string name="anthology">Ανθολογία</string>
+    <string name="label_anthology">Ανθολογία</string>
     <string name="anthology_confirm">Παρακαλούμε επιβεβαιώστε ότι αυτοί οι τίτλοι ανθολογίας είναι (κυρίως) σωστοί</string>
     <string name="anthology_save">Αποθήκευση</string>
     <string name="button_anthology_add">Προσθήκη</string>
@@ -211,17 +211,17 @@
     <string name="delete_event">Διαγραφή Event</string>
     <string name="delete_task">Διαγραφή Εργασίας</string>
 
-    <string name="label_library">Τα βιβλία μου</string>
-    <string name="label_settings">Διαχείριση και προτιμήσεις</string>
-    <string name="label_other_preferences">Άλλες Προτιμήσεις</string>
+    <string name="title_library">Τα βιβλία μου</string>
+    <string name="title_settings">Διαχείριση και προτιμήσεις</string>
+    <string name="title_other_preferences">Άλλες Προτιμήσεις</string>
     <string name="user_interface">Περιβάλλον Χρήστη</string>
     <string name="start_in_my_books">Εκκίνηση σε \'Τα βιβλία μου\'</string>
     <string name="background_tasks">Εργασίες Παρασκηνίου</string>
     <string name="cleanup_old_tasks">Εκκαθάριση παλιών εργασιών</string>
     <string name="cleanup_old_events">Εκκαθάριση παλιών events</string>
     <string name="search_criteria">Κριτήρια αναζήτησης</string>
-    <string name="add_manually">Χειροκίνητη Προσθήκη</string>
-    <string name="search_internet">Αναζήτηση στο Internet</string>
+    <string name="label_add_manually">Χειροκίνητη Προσθήκη</string>
+    <string name="label_search_internet">Αναζήτηση στο Internet</string>
     <string name="show_results">Εμφάνιση αποτελεσμάτων</string>
     <string name="rebuild_fts">Ανακατασκευή FTS (alpha μονο!)</string>
     <string name="send_books_to_goodreads">Αποστολή βιβλίων στο goodreads</string>
@@ -247,18 +247,18 @@
     <string name="crash_dialog_comment_prompt">Τα σχόλιά σας (ή αφήστε το κενό):</string>
     <string name="crash_dialog_ok_toast">Ευχαριστούμε!</string>
     <string name="no_series">(χωρίς σειρά)</string>
-    <string name="booklist_read">Αναγνωσμένα</string>
-    <string name="booklist_unread">Μη αναγνωσμένα</string>
+    <string name="option_library_read">Αναγνωσμένα</string>
+    <string name="option_library_unread">Μη αναγνωσμένα</string>
     <string name="no_genre">(χωρίς είδος)</string>
     <string name="no_title">(χωρίς τίτλο)</string>
     <string name="no_publisher">(χωρίς εκδότη)</string>
     <string name="no_author">(χωρίς συγγραφέα)</string>
     <string name="no_date">(χωρίς ημερομηνία)</string>
-    <string name="show_thumbnails">Εμφάνιση μικρογραφιών</string>
-    <string name="prefer_large_thumbnails">Προτίμησε μεγάλες μικρογραφίες</string>
+    <string name="preference_show_thumbnails">Εμφάνιση μικρογραφιών</string>
+    <string name="preference_prefer_large_thumbnails">Προτίμησε μεγάλες μικρογραφίες</string>
     <string name="sort_author_series">Συγγραφέας μετά σειρά</string>
     <string name="sort_series">Σειρά</string>
-    <string name="sort_title_first_letter">Πρώτο γράμμα τίτλου</string>
+    <string name="label_sort_title_first_letter">Πρώτο γράμμα τίτλου</string>
     <string name="sort_genre">Όνομα Κατηγορίας</string>
     <string name="sort_loaned">Δανεισμένα</string>
     <string name="sort_read_and_unread">Αναγνωσμένα και μη αναγνωσμένα</string>
@@ -267,30 +267,30 @@
     <string name="sort_author_year">Συγγραφέας και χρονιά</string>
     <string name="empty_with_brackets">(άδειο)</string>
 
-    <string name="label_booklist_preferences">Προτιμήσεις λίστας βιβλίων</string>
+    <string name="title_library_preferences">Προτιμήσεις λίστας βιβλίων</string>
     <string name="extra_book_details">Επιπλέον λεπτομέρειες βιβλίου</string>
     <string name="general">Γενικά</string>
     <string name="label_bookshelves">Ράφια Βιβλιοθήκης</string>
     <string name="shelves">Ράφια</string>
-    <string name="location">Τοποθεσία</string>
+    <string name="label_location">Τοποθεσία</string>
     <string name="label_data_import_export">Εισαγωγή/Εξαγωγή Δεδομένων</string>
     <string name="unrecognized_task">Μη αναγνωρίσιμη Εργασία</string>
     <string name="rebuilding_search_index">Ανακατασκευή Ευρετηρίου Αναζήτησης&#8230;</string>
     <string name="optimizing_databases">Βελτιστοποίηση βάσεων δεδομένων&#8230;</string>
     <string name="starting_up">Εκκίνηση&#8230;</string>
     <string name="book_catalogue_startup">Εκκίνηση BookCatalogue</string>
-    <string name="book_list_state">Κατάσταση λίστας βιβλίων</string>
-    <string name="always_start_booklists_expanded">Εκκίνηση πάντα με ανοιχτές λίστες βιβλίων</string>
-    <string name="always_start_booklists_collapsed">Εκκίνηση πάντα με κλειστές λίστες βιβλίων</string>
-    <string name="remember_booklists_state">Διατήρηση κατάστασης λίστας βιβλίων</string>
+    <string name="preference_library_state">Κατάσταση λίστας βιβλίων</string>
+    <string name="option_always_start_library_expanded">Εκκίνηση πάντα με ανοιχτές λίστες βιβλίων</string>
+    <string name="option_always_start_library_collapsed">Εκκίνηση πάντα με κλειστές λίστες βιβλίων</string>
+    <string name="option_remember_library_state">Διατήρηση κατάστασης λίστας βιβλίων</string>
     <string name="searching_goodreads">Αναζήτηση στο goodreads</string>
-    <string name="label_edit_book_list_styles">Επεξεργασία στυλ λίστας βιβλίων</string>
+    <string name="title_edit_library_styles">Επεξεργασία στυλ λίστας βιβλίων</string>
     <string name="show_more_ellipsis">Εμφάνιση περισσότερων&#8230;</string>
     <string name="show_fewer_ellipsis">Εμφάνιση λιγότερων&#8230;</string>
     <string name="customize_ellipsis">Προσαρμογή&#8230;</string>
     <string name="label_reset_hints">Επαναφορά συμβουλών</string>
     <string name="do_not_show_again">Μην εμφανιστείς ξανά</string>
-    <string name="hint_booklist_styles_editor">Σε αυτή την οθόνη μπορείτε να προσαρμόσετε τη λίστα των στυλ που θα εμφανίζεται στο μενού με τα προεπιλεγμένα στυλ σας.
+    <string name="hint_library_styles_editor">Σε αυτή την οθόνη μπορείτε να προσαρμόσετε τη λίστα των στυλ που θα εμφανίζεται στο μενού με τα προεπιλεγμένα στυλ σας.
     										\n\nΤο πράσινο V δείχνει ότι το στυλ θα εμφανίζεται στη λίστα, ενώ το κόκκινο Χ δείχνει πως δεν θα εμφανίζεται.
     										Πατώντας στο πράσινο V θα γίνει X και το αντίστροφο.
     										\n\nΕαν κανένα στυλ δεν έχει τσεκαριστέι, τότε θα εμφανίζονται όλα.
@@ -298,18 +298,18 @@
     										\n\nΠατώντας οπουδήποτε αλλού στη σειρά θα μπορείτε να επεξεργαστείτε τις λεπτομέρειες του συγκεκριμένου στυλ (ή να το αντιγράψετε, εαν
     										είναι ενσωματωμένο στύλ).
 </string>
-    <string name="hint_booklist_style_groups">Σε αυτή την οθόνη μπορείτε να τροποποιήσετε την ιεραρχία των κεφαλίδων για ένα συγκεκριμένο στυλ λίστας βιβλίων.
+    <string name="hint_library_style_groups">Σε αυτή την οθόνη μπορείτε να τροποποιήσετε την ιεραρχία των κεφαλίδων για ένα συγκεκριμένο στυλ λίστας βιβλίων.
     										\n\nΤο πράσινο V δείχνει ότι η κεφαλίδα θα εμφανίζεται στη λίστα, ενώ το κόκκινο Χ δείχνει πως δεν θα εμφανίζεται.
     										Πατώντας στο πράσινο V θα γίνει X και το αντίστροφο.
     										\n\nΜπορείτε να αναδιατάξετε την ιεραρχία μεταφέροντας το εικονίδιο στο δεξί άκρο κάθε σειράς.
 </string>
-    <string name="hint_booklist_style_properties">Σε αυτή την οθόνη μπορείτε να ορίσετε τα χαρακτηριστικά ενός συγκεκριμένου στυλ λίστας βιβλίων.
+    <string name="hint_library_style_properties">Σε αυτή την οθόνη μπορείτε να ορίσετε τα χαρακτηριστικά ενός συγκεκριμένου στυλ λίστας βιβλίων.
     										\n\nΜπορείτε να αλλάξετε όνομα, να επεξεργαστείτε ομαδοποιήσεις, να αλλάξετε την ιεραρχία και να ρυθμίσετε μια ποικιλία άλλων
     										επιλογών ώστε να φτιάξετε ένα στυλ που θεωρείτε χρήσιμο.
     										\n\nΑκόμα μπορείτε να χρησιμοποιήσετε \'Φίλτρα Βιβλίων\' για να τροποποιήσετε την επιλογή των βιβλίων που θα εμφανίζονται
     										στην λίστα. πχ να εμφανίζονται μόνο μη αναγνωσμένα βιβλία.
 </string>
-    <string name="hint_booklist_global_properties">Σε αυτή την οθόνη μπορείτε να ορίσετε τα προεπιλεγμένα χαρακτηριστικά όλων των στυλ λίστας βιβλίων.
+    <string name="hint_library_global_properties">Σε αυτή την οθόνη μπορείτε να ορίσετε τα προεπιλεγμένα χαρακτηριστικά όλων των στυλ λίστας βιβλίων.
     										\n\nΟι περισσότερες ιδιότητες μπορούν να παρακαμφθούν στα ξεχωριστά στυλ, αλλά οι προεπιλεγμένες επιλογές
     										ορίζονται εδώ.
     										\n\nΜπορείτε να αλλάξετε φόντο, να αλλάξετε το πως οι λίστες εμφανίζονται στην εκκίνηση και να ρυθμίσετε μια ποικιλία άλλων
@@ -317,30 +317,30 @@
     										\n\nΕπίσης μπορείτε να επεξεργαστείτε το μενου στυλ και τα διάφορα στυλ από εδώ.
 </string>
     <string name="preferred_styles">Προτιμώμενα στυλ</string>
-    <string name="edit_style_colon_name">Επεξεργασία στυλ: %1$s</string>
-    <string name="add_style">Προσθήκη στυλ</string>
-    <string name="clone_style_colon_name">Αντιγραφή στυλ: %1$s</string>
-    <string name="select_read_only">Επιλογή μόνο αναγνωσμένων βιβλίων</string>
-    <string name="select_unread_only">Επιλογή μόνο μη αναγνωσμένων βιβλίων</string>
+    <string name="title_edit_style_colon_name">Επεξεργασία στυλ: %1$s</string>
+    <string name="title_add_style">Προσθήκη στυλ</string>
+    <string name="title_clone_style_colon_name">Αντιγραφή στυλ: %1$s</string>
+    <string name="option_select_read_only">Επιλογή μόνο αναγνωσμένων βιβλίων</string>
+    <string name="option_select_unread_only">Επιλογή μόνο μη αναγνωσμένων βιβλίων</string>
     <string name="extra_filters">Φίλτρα Βιβλίων</string>
     <string name="new_style">Νέο στυλ</string>
     <string name="select_based_on_read_status">Επιλογή με βάση την κατάσταση του πεδίου \'Αναγνωσμένο\'</string>
     <string name="books_with_multiple_authors">Βιβλία με πολλούς συγγραφείς</string>
     <string name="books_in_multiple_series">Βιβλία σε πολλές σειρές</string>
-    <string name="use_default_setting">Χρήση προεπιλεγμένης ρύθμισης</string>
+    <string name="option_use_default_setting">Χρήση προεπιλεγμένης ρύθμισης</string>
     <string name="show_book_under_each_thing">Κάτω από κάθε %1$s</string>
     <string name="show_book_under_primary_thing">Κάτω από κύρια %1$s μόνο</string>
     <string name="format_of_author_names">Μορφή του ονόματος συγγραφέα</string>
     <string name="given_name_first_eg">Μικρό όνομα πρώτα πχ \'Bill Smith\'</string>
     <string name="family_name_first_eg">Επώνυμο πρώτα πχ \'Smith, Bill\'</string>
     <string name="thumbnails">Μικρογραφίες</string>
-    <string name="size_of_booklist_items">Μέγεθος αντικειμένων λίστας βιβλίων</string>
-    <string name="normal">Κανονικό</string>
-    <string name="smaller">Μικρότερο</string>
+    <string name="preference_size_of_library_items">Μέγεθος αντικειμένων λίστας βιβλίων</string>
+    <string name="option_normal">Κανονικό</string>
+    <string name="option_smaller">Μικρότερο</string>
     <string name="select_style">Επιλογή Στυλ</string>
-    <string name="booklist_background_style">Στυλ φόντου λίστας βιβλίων</string>
-    <string name="textured_backgroud">Εικόνα φόντου</string>
-    <string name="plain_background_b_reduces_flicker_b">Απλό φόντο (μείωση τρεμοπαίγματος)</string>
+    <string name="preference_library_background_style">Στυλ φόντου λίστας βιβλίων</string>
+    <string name="option_textured_background">Εικόνα φόντου</string>
+    <string name="option_plain_background_b_reduces_flicker_b">Απλό φόντο (μείωση τρεμοπαίγματος)</string>
     <string name="thing_must_not_be_blank">%1$s δεν πρέπει να είναι κενό</string>
     <string name="label_edit">Επεξεργασία</string>
     <string name="groupings">Ομαδοποιήσεις</string>
@@ -384,49 +384,49 @@
     									η εργασία παρασκηνίου που προκύπτει είναι επιτυχής.
     									\n\nΑν τα δεδομένα είναι σωστά και το βιβλίο ακόμα δεν εμφανίζεται, πρέπει να προστεθεί ένα βιβλίο με αυτό το ISBN στο goodreads χειροκίνητα
 										μέσω της ιστοσελίδας του. Μόλις γίνει αυτό, μπορείτε να δοκιμάσετε να ξαναστείλετε το βιβλίο.</string>
-    <string name="read_amp_unread">Αναγνωσμένο &amp; Μη Αναγνωσμένο</string>
-    <string name="loaned">Δανεισμένο</string>
-    <string name="publication_year">Έτος Εκδοσης</string>
-    <string name="publication_month">Μήνας Έκδοσης</string>
-    <string name="added_year">Έτος Πρόσθεσης</string>
-    <string name="added_month">Μήνας Πρόσθεσης</string>
-    <string name="added_day">Ημέρα Πρόσθεσης</string>
+    <string name="label_read_amp_unread">Αναγνωσμένο &amp; Μη Αναγνωσμένο</string>
+    <string name="label_loaned">Δανεισμένο</string>
+    <string name="label_publication_year">Έτος Εκδοσης</string>
+    <string name="label_publication_month">Μήνας Έκδοσης</string>
+    <string name="label_added_year">Έτος Πρόσθεσης</string>
+    <string name="label_added_month">Μήνας Πρόσθεσης</string>
+    <string name="label_added_day">Ημέρα Πρόσθεσης</string>
     <string name="book">Βιβλίο</string>
-    <string name="in">Μέσα</string>
-    <string name="size">Μέγεθος</string>
-    <string name="updated">Ενημερωμένο</string>
+    <string name="label_in">Μέσα</string>
+    <string name="label_size">Μέγεθος</string>
+    <string name="label_updated">Ενημερωμένο</string>
     <string name="problem_starting_import_arg">Υπήρξε ένα πρόβλημα στην έναρξη της εισαγωγής: %1$s</string>
-    <string name="hint_booklist_style_menu">Σε αυτό το μενού μπορείτε να επιλέξετε το στυλ της λίστας.
+    <string name="hint_library_style_menu">Σε αυτό το μενού μπορείτε να επιλέξετε το στυλ της λίστας.
     								\n\nΜπορείτε επίσης να προσαρμόσετε και αυτό το μενού, καθώς και να δημιουργήσετε το δικό σας στυλ για λίστες, πατώντας \'Προσαρμογή\' στο τέλος της λίστας.</string>
     <string name="menu_edit_format">Επεξεργασία Μορφής&#8230;</string>
     <string name="label_edit_format_name">Επεξεργασία Ονόματος Μορφής</string>
     <string name="name_can_not_be_blank">Το όνομα δε μπορεί να είναι κενό</string>
     <string name="export_starting_ellipsis">Εκκίνηση εξαγωγής&#8230;</string>
-    <string name="resizing_cover_thumbnails">Αλλαγή μεγέθους μικρογραφιών εξωφύλλου</string>
-    <string name="resize_each_time">Αλλαγή μεγέθους όποτε χρειάζεται (χρήση λιγότερου αποθηκευτικού χώρου, πιο αργό scrolling)</string>
-    <string name="cache_resized_thumbnails_for_later_use">Αποθήκευση μικρογραφιών αλλαγμένου μεγέθους στην προσωρινή μνήμη (χρήση περισσότερου αποθηλευτικού χώρου, πιο γρήγορο scrolling στις λίστες)</string>
-    <string name="generating_cover_thumbnails">παραγωγή μικρογραφιών εξωφύλλου</string>
-    <string name="use_background_thread">Χρήση νήματος παρασκηνίου (πιο γρήγορο scrolling στις λίστες, οι εικόνες ίσως καθυστερρούν να εμφανιστούν)</string>
-    <string name="generate_immediately">Άμεση παραγωγή (πιο αργό scrolling στις λίστες, οι εικόνες εμφανίζονται αμέσως)</string>
+    <string name="preference_resizing_cover_thumbnails">Αλλαγή μεγέθους μικρογραφιών εξωφύλλου</string>
+    <string name="option_resize_each_time">Αλλαγή μεγέθους όποτε χρειάζεται (χρήση λιγότερου αποθηκευτικού χώρου, πιο αργό scrolling)</string>
+    <string name="option_cache_resized_thumbnails_for_later_use">Αποθήκευση μικρογραφιών αλλαγμένου μεγέθους στην προσωρινή μνήμη (χρήση περισσότερου αποθηλευτικού χώρου, πιο γρήγορο scrolling στις λίστες)</string>
+    <string name="preference_generating_cover_thumbnails">παραγωγή μικρογραφιών εξωφύλλου</string>
+    <string name="option_use_background_thread">Χρήση νήματος παρασκηνίου (πιο γρήγορο scrolling στις λίστες, οι εικόνες ίσως καθυστερρούν να εμφανιστούν)</string>
+    <string name="option_generate_immediately">Άμεση παραγωγή (πιο αργό scrolling στις λίστες, οι εικόνες εμφανίζονται αμέσως)</string>
     <string name="sort_and_style_ellipsis">Ταξινόμηση &amp; Στυλ&#8230;</string>
     <string name="displaying_n_books_in_m_entries">εμφανίζονται %1$s βιβλία, σε %2$s καταχωρήσεις</string>
     <string name="displaying_n_books">εμφανίζονται %1$s βιβλία</string>
     <string name="available">Διαθέσιμο</string>
     <string name="loaned_to_2">\u2192</string>
-    <string name="summary_details_in_header">Λεπτομέρειες περίληψης στην επικεφαλίδα</string>
-    <string name="hide_summary_details">Απόκρυψη λεπτομερειών περίληψης</string>
+    <string name="preference_summary_details_in_header">Λεπτομέρειες περίληψης στην επικεφαλίδα</string>
+    <string name="option_hide_summary_details">Απόκρυψη λεπτομερειών περίληψης</string>
     <string name="x_is_not_a_valid_isbn">%1$s δεν είναι έγκυρος κωδικός ISBN</string>
     <string name="beep_if_scanned_isbn_invalid">Ειδοποίηση αν ο σκαναρισμένος κωδικός ISBN δεν είναι έγκυρος</string>
     <string name="no_image_found">Δε βρέθηκε εικόνα</string>
     <string name="could_not_copy_image">Δεν ήταν δυνατή η αντιγραφή εικόνας</string>
     <string name="this_option_is_not_available_until_the_book_is_saved">Αυτή επιλογή δεν είναι διαθέσιμη μέχρι να αποθηκευτεί το βιβλίο</string>
-    <string name="scan_barcode_isbn">Σκανάρισμα Barcode/ISBN</string>
-    <string name="enter_isbn">Εισαγωγή κωδικού ISBN</string>
+    <string name="label_scan_barcode_isbn">Σκανάρισμα Barcode/ISBN</string>
+    <string name="label_enter_isbn">Εισαγωγή κωδικού ISBN</string>
     <string name="label_allow_asin">Να επιτρέπεται κωδικός ASIN</string>
     <string name="x_is_not_a_valid_isbn_or_asin">%1$s δεν είναι έγκυρος κωδικός ISBN ή ASIN</string>
-    <string name="read_year">Έτος Ανάγνωσης</string>
-    <string name="read_month">Μήνας Ανάγνωσης</string>
-    <string name="read_day">Ημέρα Ανάγνωσης</string>
+    <string name="label_read_year">Έτος Ανάγνωσης</string>
+    <string name="label_read_month">Μήνας Ανάγνωσης</string>
+    <string name="label_read_day">Ημέρα Ανάγνωσης</string>
     <string name="sort_read_date">Ημερομηνία Ανάγνωσης</string>
     <string name="details_have_changed">Κάποιες λεπτομέρειες έχουν αλλάξει</string>
     <string name="you_have_unsaved_changes">Υπάρχουν αλλαγές που δεν έχουν αποθηκευτεί, αν γίνει έξοδος τώρα θα χαθούν.</string>
@@ -446,8 +446,8 @@
     <string name="default_crop_frame_is_whole_image">Η προεπιλεγμένη περικοπή πλαισίου είναι ολόκληρη η εικόνα</string>
     <string name="cancelled">Ακυρώθηκε</string>
     <string name="import_complete">Εισαγωγή Ολοκληρώθηκε</string>
-    <string name="searching_elipsis">Γίνεται αναζήτηση&#8230;</string>
-    <string name="adding_book_elipsis">Γίνεται πρόσθεση βιβλίου&#8230;</string>
+    <string name="searching_ellipsis">Γίνεται αναζήτηση&#8230;</string>
+    <string name="status_adding_book_ellipsis">Γίνεται πρόσθεση βιβλίου&#8230;</string>
     <string name="prefs_global_opening_book_mode">Άνοιγμα βιβλίου μόνο για ανάγνωση</string>
     <string name="label_publishing">Εκδόσεις</string>
     <string name="book_details_readonly_by">από</string>
@@ -611,9 +611,9 @@
     <string name="label_copy_database">Αντιγραφή Βάσης Δεδομένων (για τεχνική υποστήριξη)</string>
 
     <!-- Items in list of options for the 'Summary Details' preference. Detrmines what is show in book list header -->
-    <string name="show_book_count">Εμφάνιση αριθμού βιβλίων</string>
-    <string name="show_first_level_and_book_count">Εμφάνιση επικεφαλίδας πρώτου επιπέδου και αριθμού βιβλίων</string>
-    <string name="show_all_summary_details">Εμφάνιση όλων των λεπτομερειών περίληψης</string>
+    <string name="option_show_book_count">Εμφάνιση αριθμού βιβλίων</string>
+    <string name="option_show_first_level_and_book_count">Εμφάνιση επικεφαλίδας πρώτου επιπέδου και αριθμού βιβλίων</string>
+    <string name="option_show_all_summary_details">Εμφάνιση όλων των λεπτομερειών περίληψης</string>
 
     <!-- Displayed when an archive operation fails -->
     <string name="import_failed">Αποτυχία Εισαγωγής.</string>
@@ -729,7 +729,7 @@
     <!-- Part of the progress message displayed when exporting books -->
 
     <!-- Displayed in progress dialog when exporting covers in incremental mode -->
-    <string name="covers_progress_incr">%1$s εξώφυλλα επεξεργάστηκαν (%2$s λείπουν, %3$s παρελείφθησαν)</string>
+    <string name="covers_progress_increment">%1$s εξώφυλλα επεξεργάστηκαν (%2$s λείπουν, %3$s παρελείφθησαν)</string>
 
     <!-- Explanatory note for 'export all' option -->
     <string name="export_all_blurb">Όλα τα βιβλία, εξώφυλλα, ρυθμίσεις και προσαρμοσμένα στυλ θα εξαχθούν στο Αρχείο.</string>
@@ -798,7 +798,7 @@
     <string name="menu_amazon_books_by_author_in_series">Βιβλία από συγγραφέα/σειρά</string>
 
     <!-- Hint text displayed when user enters the book listw -->
-    <string name="hint_book_list">Πατώντας στιγμιαία σε ένα βιβλίο θα εμφανίσει λεπτομέρειες, πατώντας παρατεταμένα θα εμφανίσει και άλλες επιλογές.</string>
+    <string name="hint_library">Πατώντας στιγμιαία σε ένα βιβλίο θα εμφανίσει λεπτομέρειες, πατώντας παρατεταμένα θα εμφανίσει και άλλες επιλογές.</string>
 
     <!-- TRANLATORS NOTE: I HAVE UPDATED THE new_in_510, above! Sorry. -->
 
@@ -822,11 +822,11 @@
     <!-- Name of the new style grouping (needs to be short). -->
     <string name="update_date">Ημερομηνία ενημέρωσης</string>
     <!-- Name of the new style grouping (needs to be short). -->
-    <string name="update_year">Έτος ενημέρωσης</string>
+    <string name="label_update_year">Έτος ενημέρωσης</string>
     <!-- Name of the new style grouping (needs to be short). -->
-    <string name="update_month">Μήνας ενημέρωσης</string>
+    <string name="label_update_month">Μήνας ενημέρωσης</string>
     <!-- Name of the new style grouping (needs to be short). -->
-    <string name="update_day">Ημέρα ενημέρωσης</string>
+    <string name="label_update_day">Ημέρα ενημέρωσης</string>
 
     <!-- Short text for 'n stars' -->
     <plurals

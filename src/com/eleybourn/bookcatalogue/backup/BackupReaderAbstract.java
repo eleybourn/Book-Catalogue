@@ -29,7 +29,7 @@ import android.content.SharedPreferences;
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
-import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
+import com.eleybourn.bookcatalogue.booklist.LibraryStyle;
 import com.eleybourn.bookcatalogue.database.SerializationUtils.DeserializationException;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.StorageUtils;
@@ -185,9 +185,9 @@ public abstract class BackupReaderAbstract implements BackupReader {
 	 */
 	private void restoreStyle(BackupReaderListener listener, ReaderEntity entity) throws IOException {
 		listener.step("Booklist Styles...", 1);
-		BooklistStyle s = null;
+		LibraryStyle s = null;
 		try {
-			s = (BooklistStyle) entity.getSerializable();
+			s = (LibraryStyle) entity.getSerializable();
 		} catch (DeserializationException e) {
 			Logger.logError(e, "Unable to restore style");
 		}

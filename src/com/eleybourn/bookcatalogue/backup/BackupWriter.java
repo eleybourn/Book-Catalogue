@@ -25,7 +25,7 @@ import java.util.Date;
 
 import android.content.SharedPreferences;
 
-import com.eleybourn.bookcatalogue.booklist.BooklistStyle;
+import com.eleybourn.bookcatalogue.booklist.LibraryStyle;
 
 /**
  * Public interface for any backup archive reader.
@@ -72,7 +72,7 @@ public interface BackupWriter {
 	/** Store a cover file */
     void putCoverFile(File source) throws IOException;
 	/** Store a Booklist Style */
-    void putBooklistStyle(BooklistStyle style) throws IOException;
+    void putBooklistStyle(LibraryStyle style) throws IOException;
 	/** Store a SharedPreferences */
     void putPreferences(SharedPreferences prefs) throws IOException;
 	/** Close the writer */

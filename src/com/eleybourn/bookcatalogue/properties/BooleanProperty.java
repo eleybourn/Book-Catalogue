@@ -149,7 +149,7 @@ public class BooleanProperty extends ValuePropertyWithGlobalDefault<Boolean> imp
 				resolved = false;
 			h.cb.setChecked(resolved);
 			h.name.setText(this.getName());
-			h.value.setText(R.string.use_default_setting);
+			h.value.setText(R.string.option_use_default_setting);
 			h.cb.setPressed(false);
 		}			
 	}

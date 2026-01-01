@@ -29,11 +29,11 @@
                     <com.google.android.material.imageview.ShapeableImageView
                         style="@style/layout_card_icon"
                         android:src="@drawable/ic_menu_scan"
-                        android:contentDescription="@string/label_insert" />
+                        android:contentDescription="@string/title_add_book" />
                     <LinearLayout style="@style/layout_card_content">
                         <TextView
                             style="@style/layout_card_title"
-                            android:text="@string/label_insert" />
+                            android:text="@string/title_add_book" />
                         <TextView
                             style="@style/layout_card_subtitle"
                             android:text="@string/label_insert_description" />
@@ -53,12 +53,12 @@
                     <com.google.android.material.imageview.ShapeableImageView
                         style="@style/layout_card_icon"
                         android:src="@drawable/ic_menu_library"
-                        android:contentDescription="@string/label_library"
+                        android:contentDescription="@string/title_library"
                         app:contentPadding="5dp" />
                     <LinearLayout style="@style/layout_card_content">
                         <TextView
                             style="@style/layout_card_title"
-                            android:text="@string/label_library" />
+                            android:text="@string/title_library" />
                         <TextView
                             style="@style/layout_card_subtitle"
                             android:text="@string/label_library_description" />
@@ -107,7 +107,7 @@
                     <TextView
                         style="@style/layout_card_title"
                         android:layout_gravity="center_horizontal"
-                        android:text="@string/label_settings"
+                        android:text="@string/title_settings"
                         app:drawableTopCompat="@drawable/ic_menu_settings" />
                 </com.google.android.material.card.MaterialCardView>
 

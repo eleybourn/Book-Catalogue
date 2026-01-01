@@ -65,22 +65,22 @@ public class MenuHandler {
 	 * @param menu	Root menu
 	 */
 	public void addCreateBookItems(Menu menu) {
-		SubMenu addMenu = menu.addSubMenu(0, MENU_ADD_BOOK, mSort++, BookCatalogueApp.getResourceString(R.string.label_insert) + "...");
+		SubMenu addMenu = menu.addSubMenu(0, MENU_ADD_BOOK, mSort++, BookCatalogueApp.getResourceString(R.string.title_add_book) + "...");
 		addMenu.setIcon(R.drawable.ic_menu_new);
         addMenu.getItem().setIconTintList(ColorStateList.valueOf(ContextCompat.getColor(BookCatalogueApp.context, R.color.theme_onPrimary)));
 		addMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 		{
 			if (Utils.USE_BARCODE) {
-				MenuItem insertBC = addMenu.add(0, MENU_ITEM_ADD_BOOK_BARCODE, mSort++, R.string.scan_barcode_isbn);
+				MenuItem insertBC = addMenu.add(0, MENU_ITEM_ADD_BOOK_BARCODE, mSort++, R.string.label_scan_barcode_isbn);
 				insertBC.setIcon(R.drawable.ic_menu_scan);
 			}
-			MenuItem insertISBN = addMenu.add(0, MENU_ITEM_ADD_BOOK_ISBN, mSort++, R.string.enter_isbn);
+			MenuItem insertISBN = addMenu.add(0, MENU_ITEM_ADD_BOOK_ISBN, mSort++, R.string.label_enter_isbn);
 			insertISBN.setIcon(R.drawable.ic_menu_field_numbers);
 			
-			MenuItem insertName = addMenu.add(0, MENU_ITEM_ADD_BOOK_NAMES, mSort++, R.string.search_internet);
+			MenuItem insertName = addMenu.add(0, MENU_ITEM_ADD_BOOK_NAMES, mSort++, R.string.label_search_internet);
 			insertName.setIcon(R.drawable.ic_menu_search_globe);
 
-			MenuItem insertBook = addMenu.add(0, MENU_ITEM_ADD_BOOK_MANUAL, mSort++, R.string.add_manually);
+			MenuItem insertBook = addMenu.add(0, MENU_ITEM_ADD_BOOK_MANUAL, mSort++, R.string.label_add_manually);
 			insertBook.setIcon(R.drawable.ic_menu_field_text);
 		}
 	}
@@ -109,7 +109,7 @@ public class MenuHandler {
 	 */
 	public void addCreateHelpAndAdminItems(Menu menu) {
 		{
-			String title = BookCatalogueApp.getResourceString(R.string.label_bookshelf);
+			String title = BookCatalogueApp.getResourceString(R.string.title_manage_bookshelves);
 			MenuItem item = menu.add(0, MENU_ITEM_BOOKSHELVES, mSort++, title);
 			item.setIcon(R.drawable.ic_menu_bookshelves);
 		}
@@ -119,7 +119,7 @@ public class MenuHandler {
 			help.setIcon(R.drawable.ic_menu_help);
 		}
 		{
-			String adminTitle = BookCatalogueApp.getResourceString(R.string.label_settings);
+			String adminTitle = BookCatalogueApp.getResourceString(R.string.title_settings);
 			MenuItem admin = menu.add(0, MENU_ITEM_ADMIN, mSort++, adminTitle);
 			admin.setIcon(R.drawable.ic_menu_settings);
 		}

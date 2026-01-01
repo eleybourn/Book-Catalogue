@@ -50,7 +50,7 @@ public class BooklistStyleGroupsActivity extends BookEditObjectList<GroupWrapper
 	private static final String KEY_GROUPS = "StyleEditor.Groups";
 
     /** Copy of the style we are editing */
-	private BooklistStyle mStyle;
+	private LibraryStyle mStyle;
 	/** Copy of flag passed by calling activity to indicate changes made here should be saved on exit */
 	private boolean mSaveToDb = true;
 
@@ -73,11 +73,11 @@ public class BooklistStyleGroupsActivity extends BookEditObjectList<GroupWrapper
 	public static class GroupWrapper implements Serializable {
 		private static final long serialVersionUID = 3108094089675884238L;
 		/** The actual group */
-		BooklistGroup group;
+		LibraryGroup group;
 		/** Whether this groups is present in the style */
 		boolean present;
 		/** Constructor */
-		public GroupWrapper(BooklistGroup group, boolean present) {
+		public GroupWrapper(LibraryGroup group, boolean present) {
 			this.group = group;
 			this.present = present;
 		}
@@ -93,7 +93,7 @@ public class BooklistStyleGroupsActivity extends BookEditObjectList<GroupWrapper
 		try {
 			// Get the intent and get the style and other settings
 			Intent i = this.getIntent();
-			mStyle = (BooklistStyle) i.getSerializableExtra(KEY_STYLE);
+			mStyle = (LibraryStyle) i.getSerializableExtra(KEY_STYLE);
 
 			if (i.hasExtra(KEY_SAVE_TO_DATABASE))
 				mSaveToDb = i.getBooleanExtra(KEY_SAVE_TO_DATABASE, true);
@@ -101,17 +101,17 @@ public class BooklistStyleGroupsActivity extends BookEditObjectList<GroupWrapper
             // Indicated this activity was called without an existing style
             boolean mIsNew = (mStyle == null);
 			if (mIsNew)
-				mStyle = new BooklistStyle("");
+				mStyle = new LibraryStyle("");
 
 			// Build an array list with the groups from the style, and record that they are present in mGroups.
 			ArrayList<GroupWrapper> groups = new ArrayList<>();
-			for(BooklistGroup g: mStyle) {
+			for(LibraryGroup g: mStyle) {
 				groups.add(new GroupWrapper(g, true));
 			}
 
 			// Get all other groups and add any missing ones to the list
-			ArrayList<BooklistGroup> allGroups = BooklistGroup.getAllGroups();
-			for(BooklistGroup g: allGroups) {
+			ArrayList<LibraryGroup> allGroups = LibraryGroup.getAllGroups();
+			for(LibraryGroup g: allGroups) {
 				if (!mStyle.hasKind(g.kind))
 					groups.add(new GroupWrapper(g, false));
 			}
@@ -123,14 +123,14 @@ public class BooklistStyleGroupsActivity extends BookEditObjectList<GroupWrapper
 			super.onCreate(savedInstanceState);
 
 			if (mIsNew)
-				this.setTitle(getString(R.string.add_style));
+				this.setTitle(getString(R.string.title_add_style));
 			else if (mStyle.getRowId() == 0)
-				this.setTitle(getString(R.string.clone_style_colon_name, mStyle.getDisplayName()));
+				this.setTitle(getString(R.string.title_clone_style_colon_name, mStyle.getDisplayName()));
 			else
-				this.setTitle(getString(R.string.edit_style_colon_name, mStyle.getDisplayName()));
+				this.setTitle(getString(R.string.title_edit_style_colon_name, mStyle.getDisplayName()));
 
 			if (savedInstanceState == null)
-				HintManager.displayHint(this, R.string.hint_booklist_style_groups, null, null);
+				HintManager.displayHint(this, R.string.hint_library_style_groups, null, null);
 
 		} catch (Exception e) {
 			Logger.logError(e);

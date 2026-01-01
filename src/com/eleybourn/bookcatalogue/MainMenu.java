@@ -119,8 +119,8 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
      * Search Menu Handler
      */
     private final OnClickListener mSearchHandler = v -> {
-        Intent i = new Intent(MainMenu.this, SearchCatalogue.class);
-        //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Intent i = new Intent(MainMenu.this, Library.class);
+        i.putExtra("com.eleybourn.bookcatalogue.START_SEARCH", true);
         startActivity(i);
     };
 

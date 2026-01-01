@@ -333,6 +333,10 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
                 // that explains how to update covers...
                 HintManager.displayHint(this, R.string.hint_missing_covers, null, null, getString(R.string.label_settings), getString(R.string.label_import_old_files));
             }
+
+            if (intent.getBooleanExtra("com.eleybourn.bookcatalogue.START_SEARCH", false)) {
+                this.onSearchRequested();
+            }
         } finally {
             Tracker.exitOnCreate(this);
         }

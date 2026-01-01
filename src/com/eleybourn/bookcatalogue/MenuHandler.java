@@ -156,7 +156,8 @@ public class MenuHandler {
 	 * 
 	 * @return		True, if handled
 	 */
-	public boolean onMenuItemSelected(Activity a, MenuItem item) {
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public boolean onMenuItemSelected(Activity a, MenuItem item) {
 		switch(item.getItemId()) {
 		case MENU_ITEM_ADD_BOOK_MANUAL:
 			createBook(a);

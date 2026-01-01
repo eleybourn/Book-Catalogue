@@ -154,8 +154,6 @@
         <activity
             android:name=".AdminBackgroundEvents"
             android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".SearchCatalogue"
-            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".AdminBackgroundTasks"
             android:windowSoftInputMode="adjustResize" />

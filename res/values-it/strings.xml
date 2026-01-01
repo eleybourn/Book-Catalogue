@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Book Catalogue</string>
     <string name="label_insert">Aggiungi libro</string>
-    <string name="menu_delete">Cancella libro</string>
+    <string name="menu_delete_book">Cancella libro</string>
     <string name="label_author">Autore</string>
     <string name="label_title">Titolo</string>
     <string name="label_publisher">Editore</string>
@@ -43,7 +43,7 @@
     <string name="label_version_number">Numero versione:</string>
     <string name="para_donate">Se vuoi supportare lo sviluppatore di questa applicazione, effettua una donazione utilizzando My Amazon Wishlist o il pulsante di Paypal qui sotto. Essendo in Australia non posso pubblicare una versione a &quot;pagamento&quot;. :-)</string>
     <string name="upgrade_title">Dal tuo ultimo aggiornamento</string>
-    <string name="edit_book">Modifica libri</string>
+    <string name="menu_edit_book">Modifica libri</string>
     <string name="label_comments">I miei commenti</string>
     <string name="button_loan_book">Presta libro</string>
     <string name="label_notes">Note</string>
@@ -429,7 +429,7 @@
     <string name="hint_booklist_style_menu">Questo menu permette di scegliere lo stile dell\'elenco. 
     								\n\nÈ anche possibile personalizzare questo menu, così come creare i propri stili di elenco, facendo click su \'Personalizza\' in fondo dell\'elenco.</string>
     <string name="menu_edit_format">Modifica Formato&#8230;</string>
-    <string name="edit_format_name">Modifica Nome Formato</string>
+    <string name="label_edit_format_name">Modifica Nome Formato</string>
     <string name="name_can_not_be_blank">Il nome non può essere vuoto</string>
     <string name="export_starting_ellipsis">Inizio esportazione&#8230;</string>
     <string name="resizing_cover_thumbnails">Ridimensionamento miniature copertine</string>

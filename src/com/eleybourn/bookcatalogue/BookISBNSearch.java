@@ -441,7 +441,7 @@ public class BookISBNSearch extends ActivityWithTasks {
                         builder.setNegativeButton(this.getResources().getString(R.string.label_add), (dialog, which) -> doSearchBook());
 
                         // setButton3 -> setNeutralButton (Edit)
-                        builder.setNeutralButton(this.getResources().getString(R.string.edit_book), (dialog, which) -> BookEdit.editBook(BookISBNSearch.this, existingId, BookEdit.TAB_EDIT));
+                        builder.setNeutralButton(this.getResources().getString(R.string.menu_edit_book), (dialog, which) -> BookEdit.editBook(BookISBNSearch.this, existingId, BookEdit.TAB_EDIT));
 
                         // setButton -> setPositiveButton (Cancel)
                         builder.setPositiveButton(this.getResources().getString(R.string.button_cancel), (dialog, which) -> {

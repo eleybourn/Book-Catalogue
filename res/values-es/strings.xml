@@ -3,7 +3,7 @@
 
 	<string name="app_name">Book Catalogue</string>
     <string name="label_insert">Añadir libro</string>
-	<string name="menu_delete">Eliminar libro</string>
+	<string name="menu_delete_book">Eliminar libro</string>
 	<string name="label_author">Autor</string>
 	<string name="label_title">Título</string>
 	<string name="label_publisher">Editorial</string>
@@ -44,7 +44,7 @@
 	<string name="label_version_number">Versión</string>
 	<string name="para_donate">Si desea contribuir al desarrollo de esta aplicación puede realizar su aportación económica utilizando Amazon Wishlist o el botón de Paypal que figura más abajo. En Australia no se puede publicar una versión &quot;de pago&quot;. :-)</string>
     <string name="upgrade_title">Desde la última actualización</string>
-	<string name="edit_book">Editar libro</string>
+	<string name="menu_edit_book">Editar libro</string>
 	<string name="label_comments">Sus comentarios</string>
 	<string name="button_loan_book">Prestar libro</string>
     <string name="label_notes">Notas</string>
@@ -406,7 +406,7 @@
     <string name="hint_booklist_style_menu">Esta opción le permite seleccionar el estilo de los listados. 
     								\n\nTambién puede modificar este menú, así como crear sus propios estilos de listado, seleccionando \'Configurar\' al final de la lista.</string>
     <string name="menu_edit_format">Editar Formato&#8230;</string>
-    <string name="edit_format_name">Editar Nombre del Formato</string>
+    <string name="label_edit_format_name">Editar Nombre del Formato</string>
     <string name="name_can_not_be_blank">El nombre no puede ser blanco</string>
     <string name="export_starting_ellipsis">Empezando exportación&#8230;</string>
     <string name="resizing_cover_thumbnails">Redimensionado de miniaturas</string>
@@ -797,11 +797,11 @@ y puede editar el libro utilizando el menú de opciones.
     </string>
     
     <!-- Menu item -->
-    <string name="amazon_books_in_series">Libros de la misma serie</string>
+    <string name="menu_amazon_books_in_series">Libros de la misma serie</string>
     <!-- Menu item -->
-    <string name="amazon_books_by_author">Libros del mismo autor</string>
+    <string name="menu_amazon_books_by_author">Libros del mismo autor</string>
     <!-- Menu item -->
-    <string name="amazon_books_by_author_in_series">Libros del autor/serie</string>
+    <string name="menu_amazon_books_by_author_in_series">Libros del autor/serie</string>
     
     <!-- Hint text displayed when user enters the book listw -->
     <string name="hint_book_list">Si pulsa sobre un libro se muestran sus detalles. Si mantiene pulsado, se muestran más opciones.</string>

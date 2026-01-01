@@ -2,7 +2,7 @@
 <resources>
 <string name="app_name">Katalog książek</string>
     <string name="label_insert">Dodaj książkę</string>
-<string name="menu_delete">Usuń książkę</string>
+<string name="menu_delete_book">Usuń książkę</string>
 <string name="label_author">Autor</string>
 <string name="label_title">Tytuł</string>
 <string name="label_publisher">Wydawca</string>
@@ -44,7 +44,7 @@
 <string name="label_version_number">Wersja programu:</string>
 <string name="para_donate">Jeśli chciałbyś wesprzeć rozwój programu, zrób to poprzez mój Amazon Wishlist lub PayPal. Będąc obywatelem Australii nie mam póki co możliwości opublikowania &quot;płatnej&quot; wersji. :-) </string>
     <string name="upgrade_title">Od ostatniej aktualizacji</string>
-<string name="edit_book">Edytuj książkę</string>
+<string name="menu_edit_book">Edytuj książkę</string>
 <string name="label_comments">Twoje komentarze</string>
 <string name="button_loan_book">Wypożycz książkę</string>
     <string name="label_notes">Notatki</string>

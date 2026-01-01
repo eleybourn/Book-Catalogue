@@ -210,7 +210,7 @@ public class BookEvents {
 		public void addContextMenuItems(final Context ctx, AdapterView<?> parent, final View v, final int position, final long id, ArrayList<ContextDialogItem> items, final Object appInfo) {
 
 			// EDIT BOOK
-			items.add(new ContextDialogItem(ctx.getString(R.string.edit_book), new Runnable() {
+			items.add(new ContextDialogItem(ctx.getString(R.string.menu_edit_book), new Runnable() {
 				@Override
 				public void run() {
 					try {

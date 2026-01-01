@@ -4,7 +4,7 @@
 <!--    <string name="app_name">Catálogo de livros</string>-->
     <string name="app_name">Catálogo de livros</string>
     <string name="label_insert">Adicionar livro</string>
-    <string name="menu_delete">Excluir livro</string>
+    <string name="menu_delete_book">Excluir livro</string>
     <string name="label_author">Autor</string>
     <string name="label_title">Título</string>
     <string name="label_isbn">ISBN</string>
@@ -46,7 +46,7 @@
     <string name="label_version_number">Número da versão:</string>
     <string name="para_donate">Se você gostaria de contribuir para o desenvolvimento deste aplicativo, por favor faça uma doação através da minha Lista de Desejos da Amazon ou através do botão Paypal, abaixo. Não posso publicar aplicativos &quot;pagos&quot;, estando na Austrália. :-) </string>
     <string name="upgrade_title">Desde a sua última atualização</string>
-    <string name="edit_book">Editar livro</string>
+    <string name="menu_edit_book">Editar livro</string>
     <string name="label_comments">Meus comentários</string>
     <string name="button_loan_book">Emprestar livro</string>
     <string name="label_notes">Notas</string>
@@ -407,7 +407,7 @@
     <string name="hint_booklist_style_menu">This menu allows you to select the style of the list. 
     								\n\nYou can also customize this menu, as well as create your own list styles, by clicking \'Customize\' at the end of the list.</string>
     <string name="menu_edit_format">Edit Format&#8230;</string>
-    <string name="edit_format_name">Edit Format Name</string>
+    <string name="label_edit_format_name">Edit Format Name</string>
     <string name="name_can_not_be_blank">Name can not be blank</string>
     <string name="export_starting_ellipsis">Export starting&#8230;</string>
     <string name="resizing_cover_thumbnails">Resizing cover thumbnails</string>
@@ -799,11 +799,11 @@ and you can edit the book via the options menu using the menu button or overflow
     </string>
     
     <!-- Menu item -->
-    <string name="amazon_books_in_series">Books in this series</string>
+    <string name="menu_amazon_books_in_series">Books in this series</string>
     <!-- Menu item -->
-    <string name="amazon_books_by_author">Books by this author</string>
+    <string name="menu_amazon_books_by_author">Books by this author</string>
     <!-- Menu item -->
-    <string name="amazon_books_by_author_in_series">Books by author/series</string>
+    <string name="menu_amazon_books_by_author_in_series">Books by author/series</string>
     
     <!-- Hint text displayed when user enters the book listw -->
     <string name="hint_book_list">Tapping on a book will show you book details, a long-press on an item in the list give you further options.</string>

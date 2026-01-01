@@ -35,7 +35,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
-import com.eleybourn.bookcatalogue.EditObjectList;
+import com.eleybourn.bookcatalogue.BookEditObjectList;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.utils.HintManager;
 import com.eleybourn.bookcatalogue.utils.Logger;
@@ -47,7 +47,7 @@ import com.eleybourn.bookcatalogue.utils.ViewTagger;
  *
  * @author Philip Warner
  */
-public class BooklistStylesActivity extends EditObjectList<BooklistStyle> {
+public class BooklistStylesActivity extends BookEditObjectList<BooklistStyle> {
     /** Database connection */
     private CatalogueDBAdapter mDb ;
     /** The row being edited. Set when an individual style is edited */

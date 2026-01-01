@@ -2,7 +2,7 @@
 <resources>
 <string name="app_name">Book Catalogue</string>
     <string name="label_insert">Buch hinzufügen</string>
-<string name="menu_delete">Buch löschen</string>
+<string name="menu_delete_book">Buch löschen</string>
 <string name="label_author">Autor</string>
 <string name="label_title">Titel</string>
 <string name="label_publisher">Verlag</string>
@@ -45,7 +45,7 @@
 <string name="label_version_number">Versionsnummer:</string>
 <string name="para_donate">Wenn Sie die Entwicklung dieser App unterstützen möchten, können Sie über meine Amazon-Wunschliste oder den PayPal-Knopf spenden. Weil ich in Australien bin, kann ich keine "Kaufversion" der App anbieten. :-) </string>
     <string name="upgrade_title">Seit der letzten Aktualisierung</string>
-<string name="edit_book">Buch bearbeiten</string>
+<string name="menu_edit_book">Buch bearbeiten</string>
 <string name="label_comments">Kommentar</string>
 <string name="button_loan_book">Buch verleihen</string>
     <string name="label_notes">Notizen</string>
@@ -399,7 +399,7 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
         \n\nSie können auch dieses Menü anpassen und Ihre eigenen Stile erzeugen. Klicken Sie dafür auf \'Anpassen\' am Ende der Liste.
         </string>
 <string name="menu_edit_format">Format bearbeiten…</string>
-<string name="edit_format_name">Formatname bearbeiten</string>
+<string name="label_edit_format_name">Formatname bearbeiten</string>
 <string name="name_can_not_be_blank">Name darf nicht leer sein</string>
 <string name="export_starting_ellipsis">Export startet…</string>
 <string name="resizing_cover_thumbnails">Größe der Cover-Bilder ändern</string>
@@ -758,11 +758,11 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
         </string>
 
         <!-- Menu item -->
-        <string name="amazon_books_in_series">Bücher in dieser Serie</string>
+        <string name="menu_amazon_books_in_series">Bücher in dieser Serie</string>
         <!-- Menu item -->
-        <string name="amazon_books_by_author">Bücher von diesem Autor</string>
+        <string name="menu_amazon_books_by_author">Bücher von diesem Autor</string>
         <!-- Menu item -->
-        <string name="amazon_books_by_author_in_series">Bücher nach Autor/Serie</string>
+        <string name="menu_amazon_books_by_author_in_series">Bücher nach Autor/Serie</string>
 
         <!-- Hint text displayed when user enters the book listw -->
         <string name="hint_book_list">Tippen Sie auf ein Buch, um dessen Details zu sehen. Ein langer Druck auf einen Listeneintrag zeigt weitere Optionen.</string>

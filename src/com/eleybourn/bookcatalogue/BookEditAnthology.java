@@ -19,6 +19,7 @@ package com.eleybourn.bookcatalogue;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -42,6 +43,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuProvider;
 import androidx.lifecycle.Lifecycle;
 
@@ -99,7 +101,8 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
                 // Clear and add item dynamically as per original logic
                 menu.clear();
                 MenuItem populate = menu.add(0, POPULATE_ID, 0, R.string.populate_anthology_titles);
-                populate.setIcon(R.drawable.ic_menu_add);
+                populate.setIcon(R.drawable.ic_menu_search_globe);
+                populate.setIconTintList(ColorStateList.valueOf(ContextCompat.getColor(BookCatalogueApp.context, R.color.theme_onPrimary)));
                 populate.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
 

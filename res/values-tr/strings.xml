@@ -3,7 +3,7 @@
 
     <string name="app_name">Kitap Kataloğu</string>
     <string name="label_insert">Kitap ekle</string>
-    <string name="menu_delete">Kitap sil</string>
+    <string name="menu_delete_book">Kitap sil</string>
     <string name="label_author">Yazar</string>
     <string name="label_title">Kitap adı</string>
     <string name="label_publisher">Yayınevi</string>
@@ -44,7 +44,7 @@
     <string name="label_version_number">Sürüm numarası</string>
     <string name="para_donate">Eğer uygulamanın geliştirilmesini desteklemek isterseniz aşağıdaki Amazon Wishlist veya Paypal düğmelerini kullanarak bağışta bulunabilirsiniz. Kişi Avustralya\'da olunca &quot;ücretli&quot; bir sürüm yayınlayamıyor haliyle. :-) </string>
     <string name="upgrade_title">Son güncellemenizden beri</string>
-    <string name="edit_book">Kitap düzenle</string>
+    <string name="menu_edit_book">Kitap düzenle</string>
     <string name="label_comments">Yorumlarınız</string>
     <string name="button_loan_book">Kitabı ödünç ver</string>
     <string name="label_notes">Notlar</string>
@@ -431,7 +431,7 @@
     <string name="hint_booklist_style_menu">Bu seçke size dizelge biçemini seçmenize olanak tanır. 
     								\n\nEk olarak dizelgenin sonundaki \'Kişiselleştir\' düğmesini kullanarak bu seçkeyi kişiselleştirebilir ve hatta kendi dizelge biçemlerinizi oluşturabilirsiniz.</string>
     <string name="menu_edit_format">Biçimi düzenle&#8230;</string>
-    <string name="edit_format_name">Biçim adını düzenle</string>
+    <string name="label_edit_format_name">Biçim adını düzenle</string>
     <string name="name_can_not_be_blank">Ad kısmı boş olamaz</string>
     <string name="export_starting_ellipsis">Dışa aktarma başlıyor&#8230;</string>
     <string name="resizing_cover_thumbnails">Kapak ufak resimleri yeniden boyutlandırılıyor</string>
@@ -797,11 +797,11 @@
    ]]>
    </string>
    <!-- Menu item -->
-   <string name="amazon_books_in_series">Bu dizideki kitaplar</string>
+   <string name="menu_amazon_books_in_series">Bu dizideki kitaplar</string>
    <!-- Menu item -->
-   <string name="amazon_books_by_author">Bu yazarın kitapları</string>
+   <string name="menu_amazon_books_by_author">Bu yazarın kitapları</string>
    <!-- Menu item -->
-   <string name="amazon_books_by_author_in_series">Yazara/diziye göre kitaplar</string>
+   <string name="menu_amazon_books_by_author_in_series">Yazara/diziye göre kitaplar</string>
    <!-- Hint text displayed when user enters the book listw -->
    <string name="hint_book_list">Bir kitabın üzerine dokunmak kitap ayrıntılarını gösterir, uzun basılı tutmak daha fazla seçeneğin olduğu bir dizelge verir.</string>
    <!-- TRANLATORS NOTE: I HAVE UPDATED THE new_in_510, above! Sorry. -->

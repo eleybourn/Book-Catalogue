@@ -2,7 +2,7 @@
 <resources>
 <string name="app_name">Book Catalogue</string>
     <string name="label_insert">Přidat knihu</string>
-<string name="menu_delete">Smazat knihu</string>
+<string name="menu_delete_book">Smazat knihu</string>
 <string name="label_author">Autor</string>
 <string name="label_title">Titul</string>
 <string name="label_publisher">Vydavatel</string>
@@ -43,7 +43,7 @@
 <string name="label_version_number">Číslo verze:</string>
 <string name="para_donate">Pokud chcete podpořit vývoj této aplikace, učiňte tak prosím prostřednictvím mého Amazon Wishlistu nebo přes paypal tlačítko níže. Vzhledem k tomu, že jsem z Austrálie, tak nemohu nabízet &quot;placenou&quot; verzi. :-) </string>
     <string name="upgrade_title">Od Vaší poslední aktualizace</string>
-<string name="edit_book">Upravit knihu</string>
+<string name="menu_edit_book">Upravit knihu</string>
 <string name="label_comments">Váš komentář</string>
 <string name="button_loan_book">Půjčit knihu</string>
     <string name="label_notes">Poznámky</string>
@@ -394,7 +394,7 @@
 <string name="hint_booklist_style_menu">Toto menu umožňuje zvolit si styl seznamu. 
     								\n\nProstřednictvím tlačítka \'Přizpůsobit\' (na konci seznamu) máte možnost si toto menu přizpůsobit, nebo si vytvořit vlastní styl.</string>
 <string name="menu_edit_format">Upravit formát&#8230;</string>
-<string name="edit_format_name">Upravit jméno formátu</string>
+<string name="label_edit_format_name">Upravit jméno formátu</string>
 <string name="name_can_not_be_blank">Jméno nesmí být prázdné</string>
 
 <string name="searching_book_catalogue">Vyhledávám na book-catalogue.com</string>

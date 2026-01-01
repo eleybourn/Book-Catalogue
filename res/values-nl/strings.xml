@@ -3,7 +3,7 @@
 
     <string name="app_name">Book Catalogue</string>
     <string name="label_insert">Boek Toevoegen</string>
-    <string name="menu_delete">Boek verwijderen</string>
+    <string name="menu_delete_book">Boek verwijderen</string>
     <string name="label_author">Auteur</string>
     <string name="label_title">Titel</string>
     <string name="label_isbn">ISBN</string>
@@ -45,7 +45,7 @@
     <string name="label_version_number">Versienummer:</string>
     <string name="para_donate">Als u de ontwikkeling van deze applicatie wilt ondersteunen, kunt u een bijdrage doen via mijn Amazon Wishlist of de Paypal knop hieronder. Omdat ik in Australië ben kan ik geen betaalde &quot;betaalde&quot; versie publiceren. :-) </string>
     <string name="upgrade_title">Sinds uw laatste upgrade</string>
-    <string name="edit_book">Boek bewerken</string>
+    <string name="menu_edit_book">Boek bewerken</string>
     <string name="label_comments">Mijn Commentaar</string>
     <string name="button_loan_book">Boek uitlenen</string>
     <string name="label_notes">Notities</string>
@@ -403,7 +403,7 @@
     <string name="hint_booklist_style_menu">Dit menu laat u de lijststijl selecteren. 
     								\n\nU kunt het menu ook aanpassen of u eigen lijststijl maken door te tikken op \'Aanpassen\' onderaan de lijst.</string>
     <string name="menu_edit_format">Formaat bewerken&#8230;</string>
-    <string name="edit_format_name">Formaat naam bewerken</string>
+    <string name="label_edit_format_name">Formaat naam bewerken</string>
     <string name="name_can_not_be_blank">Naamveld mag niet leeg zijn</string>
     <string name="export_starting_ellipsis">Starten van Export&#8230;</string>
     <string name="resizing_cover_thumbnails">Herschalen boekomslag miniaturen</string>
@@ -794,11 +794,11 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     </string>
     
     <!-- Menu item -->
-    <string name="amazon_books_in_series">Boeken in deze serie</string>
+    <string name="menu_amazon_books_in_series">Boeken in deze serie</string>
     <!-- Menu item -->
-    <string name="amazon_books_by_author">Boeken van deze auteur</string>
+    <string name="menu_amazon_books_by_author">Boeken van deze auteur</string>
     <!-- Menu item -->
-    <string name="amazon_books_by_author_in_series">Boeken per auteur/serie</string>
+    <string name="menu_amazon_books_by_author_in_series">Boeken per auteur/serie</string>
     
     <!-- Hint text displayed when user enters the book listw -->
     <string name="hint_book_list">Tikken op een boek zal de details van het boek tonen, lang drukken op een titel in de lijst geeft verdere opties.</string>

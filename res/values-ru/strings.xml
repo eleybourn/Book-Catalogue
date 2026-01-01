@@ -3,7 +3,7 @@
 
     <string name="app_name">BookCatalogue</string>
     <string name="label_insert">Добавить книгу</string>
-    <string name="menu_delete">Удалить книгу</string>
+    <string name="menu_delete_book">Удалить книгу</string>
     <string name="label_author">Автор</string>
     <string name="label_title">Название</string>
     <string name="label_publisher">Издатель</string>
@@ -43,7 +43,7 @@
     <string name="label_version_number">Номер версии:</string>
     <string name="para_donate">Если Вы хотите поддержать разработку этого приложения, пожалуйста сделайте пожертвование или через Amazon Wishlist или через PayPal кнопкой внизу. Я не могу опубликовать &quot;платную&quot; версию приложения в Австралии. :-) </string>
     <string name="upgrade_title">После Вашего последнего обновления</string>
-    <string name="edit_book">Редактировать книгу</string>
+    <string name="menu_edit_book">Редактировать книгу</string>
     <string name="label_comments">Комментарии</string>
     <string name="button_loan_book">Одолжить книгу</string>
     <string name="label_notes">Заметки</string>
@@ -415,7 +415,7 @@
     <string name="hint_booklist_style_menu">        Это меню позволяет Вам выбрать стиль списка. 
     	\n\nВы можете также настроить это меню и создать свои стили списков нажатием на \'Настроить\' в конце списка.</string>
     <string name="menu_edit_format">Редактировать формат&#8230;</string>
-    <string name="edit_format_name">Редактировать имя формата</string>
+    <string name="label_edit_format_name">Редактировать имя формата</string>
     <string name="name_can_not_be_blank">Имя не может быть пустым</string>
 
 
@@ -691,9 +691,9 @@
 		]]>
     </string>
     
-    <string name="amazon_books_in_series">Книги в этой серии</string>
-    <string name="amazon_books_by_author">Книги этого автора</string>
-    <string name="amazon_books_by_author_in_series">Книги по автору/серии</string>
+    <string name="menu_amazon_books_in_series">Книги в этой серии</string>
+    <string name="menu_amazon_books_by_author">Книги этого автора</string>
+    <string name="menu_amazon_books_by_author_in_series">Книги по автору/серии</string>
     
     <string name="hint_book_list">Клик по книге покажет детальную информацию, долгое нажатие на элемент списка покажет остальные действия.</string>
 

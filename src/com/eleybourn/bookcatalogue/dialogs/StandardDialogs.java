@@ -129,7 +129,7 @@ public class StandardDialogs {
         // Modern Builder approach
         new AlertDialog.Builder(context)
                 .setMessage(message)
-                .setTitle(R.string.menu_delete)
+                .setTitle(R.string.menu_delete_book)
                 .setIcon(R.drawable.ic_menu_info)
                 .setPositiveButton(R.string.button_ok, (dialog, which) -> {
                     dbHelper.deleteBook(id);

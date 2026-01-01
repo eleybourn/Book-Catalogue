@@ -3,7 +3,7 @@
 
     <string name="app_name">Book Catalogue</string>
     <string name="label_insert">Προσθήκη Βιβλίου</string>
-    <string name="menu_delete">Διαγραφή Βιβλίου</string>
+    <string name="menu_delete_book">Διαγραφή Βιβλίου</string>
     <string name="label_author">Συγγραφέας</string>
     <string name="label_title">Τίτλος</string>
     <string name="label_isbn">ISBN</string>
@@ -45,7 +45,7 @@
     <string name="label_version_number">Αριθμός έκδοσης:</string>
     <string name="para_donate">Εαν θέλετε να στηρίξετε την αναπτυξη της εφαρμογής, παρακαλούμε δωρήστε μέ το my Amazon Wishlist ή το paypal κουμπί παρακάτω. Το να βρίσκεσαι στην Αυστραλία σημαίνει ότι δεν μπορεί να εκδοθεί &quot;πληρωμένη&quot; έκδοση. :-) </string>
     <string name="upgrade_title">Από την τελευταία σας αναβάθμιση.</string>
-    <string name="edit_book">Επεξεργασία βιβλίου</string>
+    <string name="menu_edit_book">Επεξεργασία βιβλίου</string>
     <string name="label_comments">Τα σχόλια μου</string>
     <string name="button_loan_book">Δανεισμός βιβλίου</string>
     <string name="label_notes">Σημειώσεις</string>
@@ -406,7 +406,7 @@
     <string name="hint_booklist_style_menu">Σε αυτό το μενού μπορείτε να επιλέξετε το στυλ της λίστας.
     								\n\nΜπορείτε επίσης να προσαρμόσετε και αυτό το μενού, καθώς και να δημιουργήσετε το δικό σας στυλ για λίστες, πατώντας \'Προσαρμογή\' στο τέλος της λίστας.</string>
     <string name="menu_edit_format">Επεξεργασία Μορφής&#8230;</string>
-    <string name="edit_format_name">Επεξεργασία Ονόματος Μορφής</string>
+    <string name="label_edit_format_name">Επεξεργασία Ονόματος Μορφής</string>
     <string name="name_can_not_be_blank">Το όνομα δε μπορεί να είναι κενό</string>
     <string name="export_starting_ellipsis">Εκκίνηση εξαγωγής&#8230;</string>
     <string name="resizing_cover_thumbnails">Αλλαγή μεγέθους μικρογραφιών εξωφύλλου</string>
@@ -798,11 +798,11 @@
     </string>
 
     <!-- Menu item -->
-    <string name="amazon_books_in_series">Βιβλία σε αυτή τη σειρά</string>
+    <string name="menu_amazon_books_in_series">Βιβλία σε αυτή τη σειρά</string>
     <!-- Menu item -->
-    <string name="amazon_books_by_author">Βιβλία από αυτόν το συγγραφέα</string>
+    <string name="menu_amazon_books_by_author">Βιβλία από αυτόν το συγγραφέα</string>
     <!-- Menu item -->
-    <string name="amazon_books_by_author_in_series">Βιβλία από συγγραφέα/σειρά</string>
+    <string name="menu_amazon_books_by_author_in_series">Βιβλία από συγγραφέα/σειρά</string>
 
     <!-- Hint text displayed when user enters the book listw -->
     <string name="hint_book_list">Πατώντας στιγμιαία σε ένα βιβλίο θα εμφανίσει λεπτομέρειες, πατώντας παρατεταμένα θα εμφανίσει και άλλες επιλογές.</string>

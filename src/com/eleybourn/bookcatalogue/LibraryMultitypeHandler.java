@@ -66,17 +66,12 @@ import com.eleybourn.bookcatalogue.database.DbUtils.DomainDefinition;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogItem;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs.SimpleDialogMenuItem;
-import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
-import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;
-import com.eleybourn.bookcatalogue.goodreads.SendOneBookTask;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTask;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTaskContext;
 import com.eleybourn.bookcatalogue.utils.Utils;
 import com.eleybourn.bookcatalogue.utils.ViewTagger;
-
-import net.philipwarner.taskqueue.QueueManager;
 
 import java.util.ArrayList;
 
@@ -272,26 +267,24 @@ public class LibraryMultitypeHandler implements MultitypeListHandler {
 
             switch (rowView.getKind()) {
                 case RowKinds.ROW_KIND_BOOK: {
-                    addMenuItem(menu, R.id.MENU_DELETE_BOOK, R.string.menu_delete, R.drawable.ic_menu_delete);
-                    addMenuItem(menu, R.id.MENU_EDIT_BOOK, R.string.edit_book, R.drawable.ic_menu_edit);
+                    addMenuItem(menu, R.id.MENU_DELETE_BOOK, R.string.menu_delete_book, R.drawable.ic_menu_delete);
+                    addMenuItem(menu, R.id.MENU_EDIT_BOOK, R.string.menu_edit_book, R.drawable.ic_menu_edit);
                     addMenuItem(menu, R.id.MENU_EDIT_BOOK_NOTES, R.string.label_comments, R.drawable.ic_menu_notes);
                     //Shows different menu item depending on loan status of book but both situations still go to the same view.
                     if (!onLoan) {
                         addMenuItem(menu, R.id.MENU_EDIT_BOOK_FRIENDS, R.string.button_loan_book, R.drawable.ic_menu_loan);
                     } else {
-                        addMenuItem(menu, R.id.MENU_EDIT_BOOK_FRIENDS, R.string.edit_book_friends_return, R.drawable.ic_menu_loan);
+                        addMenuItem(menu, R.id.MENU_EDIT_BOOK_FRIENDS, R.string.button_return_book, R.drawable.ic_menu_loan);
                     }
                     if (!isRead) {
                         addMenuItem(menu, R.id.MENU_MARK_AS_READ, R.string.menu_mark_as_read, R.drawable.ic_menu_checkmark_unchecked);
                     } else {
                         addMenuItem(menu, R.id.MENU_MARK_AS_UNREAD, R.string.menu_mark_as_unread, R.drawable.ic_menu_checkmark_checked);
                     }
-                    //addMenuItem(menu, R.id.MENU_SEND_BOOK_TO_GR, R.string.edit_book_send_to_gr, R.drawable.ic_menu_goodreads_holo_dark);
                     break;
                 }
                 case RowKinds.ROW_KIND_AUTHOR: {
                     addMenuItem(menu, R.id.MENU_EDIT_AUTHOR, R.string.menu_edit_author, R.drawable.ic_menu_edit);
-                    addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR, R.string.amazon_books_by_author, R.drawable.ic_menu_author);
                     break;
                 }
                 case RowKinds.ROW_KIND_SERIES: {
@@ -311,11 +304,11 @@ public class LibraryMultitypeHandler implements MultitypeListHandler {
                 }
             }
             if (hasAuthor)
-                addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR, R.string.amazon_books_by_author, R.drawable.ic_menu_search_globe);
+                addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR, R.string.menu_amazon_books_by_author, R.drawable.ic_menu_author);
             if (hasSeries) {
                 if (hasAuthor)
-                    addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR_IN_SERIES, R.string.amazon_books_by_author_in_series, R.drawable.ic_menu_search_globe);
-                addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_IN_SERIES, R.string.amazon_books_in_series, R.drawable.ic_menu_search_globe);
+                    addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR_IN_SERIES, R.string.menu_amazon_books_by_author_in_series, R.drawable.ic_menu_author);
+                addMenuItem(menu, R.id.MENU_AMAZON_BOOKS_IN_SERIES, R.string.menu_amazon_books_in_series, R.drawable.ic_menu_author);
             }
         } catch (Exception e) {
             Logger.logError(e);
@@ -398,29 +391,24 @@ public class LibraryMultitypeHandler implements MultitypeListHandler {
             String series = getSeriesFromRow(db, rowView);
             Utils.openAmazonSearchPage(context, author, series);
             return true;
-        } else if (itemId == R.id.MENU_SEND_BOOK_TO_GR) {
-            // Get a GoodreadsManager and make sure we are authorized.
-            // TODO: This does network traffic on main thread and will ALWAYS die in Android 4.2+.
-            GoodreadsManager grMgr = new GoodreadsManager();
-            if (!grMgr.hasValidCredentials()) {
-                try {
-                    grMgr.requestAuthorization(context);
-                } catch (NetworkException e) {
-                    Toast.makeText(context, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+        } else if (itemId == R.id.MENU_EDIT_AUTHOR) {
+            long id = rowView.getAuthorId();
+            LibraryEditAuthorDialog d = new LibraryEditAuthorDialog(context, dba, () -> {
+                dba.purgeAuthors();
+                // Let the Activity know
+                if (context instanceof BooklistChangeListener) {
+                    final BooklistChangeListener l = (BooklistChangeListener) context;
+                    l.onBooklistChange(BooklistChangeListener.FLAG_AUTHOR);
                 }
-            }
-            // get a QueueManager and queue the task.
-            QueueManager qm = BookCatalogueApp.getQueueManager();
-            SendOneBookTask task = new SendOneBookTask(rowView.getBookId());
-            qm.enqueueTask(task, BcQueueManager.QUEUE_MAIN, 0);
-            return true;
+            });
+            d.editAuthor(dba.getAuthorById(id));
         } else if (itemId == R.id.MENU_EDIT_SERIES) {
             long id = rowView.getSeriesId();
             if (id == -1) {
                 Toast.makeText(context, R.string.cannot_edit_system, Toast.LENGTH_LONG).show();
             } else {
                 Series s = dba.getSeriesById(id);
-                EditSeriesDialog d = new EditSeriesDialog(context, dba, () -> {
+                LibraryEditSeriesDialog d = new LibraryEditSeriesDialog(context, dba, () -> {
                     dba.purgeSeries();
                     // Let the Activity know
                     if (context instanceof BooklistChangeListener) {
@@ -439,20 +427,9 @@ public class LibraryMultitypeHandler implements MultitypeListHandler {
                     l.onBooklistChange(BooklistChangeListener.FLAG_SERIES);
                 }
             });
-        } else if (itemId == R.id.MENU_EDIT_AUTHOR) {
-            long id = rowView.getAuthorId();
-            EditAuthorDialog d = new EditAuthorDialog(context, dba, () -> {
-                dba.purgeAuthors();
-                // Let the Activity know
-                if (context instanceof BooklistChangeListener) {
-                    final BooklistChangeListener l = (BooklistChangeListener) context;
-                    l.onBooklistChange(BooklistChangeListener.FLAG_AUTHOR);
-                }
-            });
-            d.editAuthor(dba.getAuthorById(id));
         } else if (itemId == R.id.MENU_EDIT_FORMAT) {
             String format = rowView.getFormat();
-            EditFormatDialog d = new EditFormatDialog(context, dba, () -> {
+            LibraryEditFormatDialog d = new LibraryEditFormatDialog(context, dba, () -> {
                 // Let the Activity know
                 if (context instanceof BooklistChangeListener) {
                     final BooklistChangeListener l = (BooklistChangeListener) context;

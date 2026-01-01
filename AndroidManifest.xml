@@ -170,10 +170,10 @@
             android:name=".OtherPreferences"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".EditAuthorList"
+            android:name=".BookEditAuthorList"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".EditSeriesList"
+            android:name=".BookEditSeriesList"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".UpdateFromInternet"

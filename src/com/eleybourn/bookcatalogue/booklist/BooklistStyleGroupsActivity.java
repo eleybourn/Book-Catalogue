@@ -30,7 +30,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
-import com.eleybourn.bookcatalogue.EditObjectList;
+import com.eleybourn.bookcatalogue.BookEditObjectList;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyleGroupsActivity.GroupWrapper;
 import com.eleybourn.bookcatalogue.properties.Properties;
@@ -43,7 +43,7 @@ import com.eleybourn.bookcatalogue.utils.ViewTagger;
  * 
  * @author Philip Warner
  */
-public class BooklistStyleGroupsActivity extends EditObjectList<GroupWrapper> {
+public class BooklistStyleGroupsActivity extends BookEditObjectList<GroupWrapper> {
 	// Preferences setup
 	public static final String KEY_STYLE = "StyleEditor.Style";
 	public static final String KEY_SAVE_TO_DATABASE = "StyleEditor.SaveToDb";

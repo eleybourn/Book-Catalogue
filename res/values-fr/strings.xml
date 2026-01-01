@@ -101,7 +101,7 @@
     <string name="show_book_under_primary_thing">Sous %1$s principal(e) seulement</string>
     <string name="retry_x_of_y_next_at_z">Essai %1$s de %2$s, suivant à %3$s</string>
     <string name="label_insert">Ajouter un livre</string>
-    <string name="menu_delete">Supprimer un livre</string>
+    <string name="menu_delete_book">Supprimer un livre</string>
     <string name="label_author">Auteur</string>
     <string name="label_title">Titre</string>
     <string name="label_publisher">Éditeur</string>
@@ -141,7 +141,7 @@
     <string name="label_version_number">Numéro de version :</string>
     <string name="para_donate">Si vous souhaitez supporter le développement de cette application, les donations sont possibles par Amazon Wishlist ou par le bouton Paypal ci-dessous. Je suis en Australie, ce qui rend impossible la publication d\'une version payante. :-)</string>
     <string name="upgrade_title">Depuis votre dernière mise à jour</string>
-    <string name="edit_book">Modifier le livre</string>
+    <string name="menu_edit_book">Modifier le livre</string>
     <string name="label_comments">Votre commentaire</string>
     <string name="button_loan_book">Prêter le livre</string>
     <string name="label_notes">Notes</string>
@@ -490,7 +490,7 @@
     <string name="hint_booklist_style_menu">Ce menu vous permet de sélectionner le style de la liste.
 	 	\n\nVous pouvez également personnaliser ce menu, ainsi que créer vos propres styles de liste, en cliquant sur « personnaliser » à la fin de la liste.</string>
     <string name="menu_edit_format">Modifier le format&#8230;</string>
-    <string name="edit_format_name">Renommer le format</string>
+    <string name="label_edit_format_name">Renommer le format</string>
     <string name="name_can_not_be_blank">Le nom ne peut pas être vide</string>
     <string name="export_starting_ellipsis">Démarrage de l\'export&#8230;</string>
     <string name="resizing_cover_thumbnails">Redimensionner les miniatures des couvertures</string>
@@ -781,11 +781,11 @@
     </string>
 
     <!-- Menu item -->
-    <string name="amazon_books_in_series">Livres dans cette série</string>
+    <string name="menu_amazon_books_in_series">Livres dans cette série</string>
     <!-- Menu item -->
-    <string name="amazon_books_by_author">Livres de cet auteur</string>
+    <string name="menu_amazon_books_by_author">Livres de cet auteur</string>
     <!-- Menu item -->
-    <string name="amazon_books_by_author_in_series">Livres par auteur par série</string>
+    <string name="menu_amazon_books_by_author_in_series">Livres par auteur par série</string>
 
     <!-- Hint text displayed when user enters the book listw -->
     <string name="hint_book_list">Cliquez sur un livre vous montrera les détails du livre, un appui long sur un livre dans la liste vous donnera d\'autres options.</string>

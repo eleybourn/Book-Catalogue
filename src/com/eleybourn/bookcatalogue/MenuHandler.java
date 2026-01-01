@@ -22,9 +22,12 @@ package com.eleybourn.bookcatalogue;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
+
+import androidx.core.content.ContextCompat;
 
 import com.eleybourn.bookcatalogue.utils.Utils;
 
@@ -63,22 +66,22 @@ public class MenuHandler {
 	 */
 	public void addCreateBookItems(Menu menu) {
 		SubMenu addMenu = menu.addSubMenu(0, MNU_ADD_BOOK, mSort++, BookCatalogueApp.getResourceString(R.string.label_insert) + "...");
-		//addMenu.setIcon(R.drawable.ic_menu_add);
-		addMenu.setIcon(R.drawable.ic_menu_add);
+		addMenu.setIcon(R.drawable.ic_menu_new);
+        addMenu.getItem().setIconTintList(ColorStateList.valueOf(ContextCompat.getColor(BookCatalogueApp.context, R.color.theme_onPrimary)));
 		addMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 		{
 			if (Utils.USE_BARCODE) {
 				MenuItem insertBC = addMenu.add(0, MNU_ITM_ADD_BOOK_BARCODE, mSort++, R.string.scan_barcode_isbn);
-				insertBC.setIcon(R.drawable.ic_menu_add);
+				insertBC.setIcon(R.drawable.ic_menu_scan);
 			}
 			MenuItem insertISBN = addMenu.add(0, MNU_ITM_ADD_BOOK_ISBN, mSort++, R.string.enter_isbn);
-			insertISBN.setIcon(R.drawable.ic_menu_zoom);
+			insertISBN.setIcon(R.drawable.ic_menu_field_numbers);
 			
 			MenuItem insertName = addMenu.add(0, MNU_ITM_ADD_BOOK_NAMES, mSort++, R.string.search_internet);
-			insertName.setIcon(R.drawable.ic_menu_zoom);
+			insertName.setIcon(R.drawable.ic_menu_search_globe);
 
 			MenuItem insertBook = addMenu.add(0, MNU_ITM_ADD_BOOK_MANUAL, mSort++, R.string.add_manually);
-			insertBook.setIcon(R.drawable.ic_menu_add);
+			insertBook.setIcon(R.drawable.ic_menu_field_text);
 		}
 	}
 
@@ -94,7 +97,8 @@ public class MenuHandler {
 	 */
 	public MenuItem addItem( Menu menu, int id, int stringId, int icon ) {
 		MenuItem item = menu.add(0, id, mSort++, stringId);
-		item.setIcon(icon);		
+        item.setIcon(icon);
+        item.setIconTintList(ColorStateList.valueOf(ContextCompat.getColor(BookCatalogueApp.context, R.color.theme_onPrimary)));
 		return item;
 	}
 

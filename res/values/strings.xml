@@ -4,7 +4,7 @@
     <string name="app_name">Book Catalogue</string>
     <string name="label_insert">Add Book</string>
     <string name="label_insert_description">Add manually or by barcode</string>
-    <string name="menu_delete">Delete Book</string>
+    <string name="menu_delete_book">Delete Book</string>
     <string name="label_author">Author</string>
     <string name="label_title">Title</string>
     <string name="label_isbn">ISBN</string>
@@ -46,10 +46,10 @@
     <string name="label_version_number">Version Number:</string>
     <string name="para_donate">If you would like to support the development of this application, please donate using a my Amazon Wishlist or the paypal button below. Being in Australia means I cannot publish a paid version. :-) </string>
     <string name="upgrade_title">Since your last upgrade</string>
-    <string name="edit_book">Edit Book</string>
+    <string name="menu_edit_book">Edit Book</string>
     <string name="label_comments">My Comments</string>
     <string name="button_loan_book">Loan Book</string>
-    <string name="edit_book_friends_return">Return Book</string>
+    <string name="button_return_book">Return Book</string>
     <string name="label_notes">Notes</string>
     <string name="label_loaned_to">This book has been loaned to:</string>
     <string name="option_nobody">Nobody</string>
@@ -408,7 +408,7 @@
     <string name="hint_booklist_style_menu">This menu allows you to select the style of the list. 
     								\n\nYou can also customize this menu, as well as create your own list styles, by clicking \'Customize\' at the end of the list.</string>
     <string name="menu_edit_format">Edit Format&#8230;</string>
-    <string name="edit_format_name">Edit Format Name</string>
+    <string name="label_edit_format_name">Edit Format Name</string>
     <string name="name_can_not_be_blank">Name can not be blank</string>
     <string name="export_starting_ellipsis">Export starting&#8230;</string>
     <string name="resizing_cover_thumbnails">Resizing cover thumbnails</string>
@@ -787,11 +787,11 @@ and you can edit the book via the options menu using the menu button or overflow
     </string>
 
     <!-- Menu item -->
-    <string name="amazon_books_in_series">Books in this series</string>
+    <string name="menu_amazon_books_in_series">Books in this series</string>
     <!-- Menu item -->
-    <string name="amazon_books_by_author">Books by this author</string>
+    <string name="menu_amazon_books_by_author">Books by this author</string>
     <!-- Menu item -->
-    <string name="amazon_books_by_author_in_series">Books by author/series</string>
+    <string name="menu_amazon_books_by_author_in_series">Books by author/series</string>
 
     <!-- Hint text displayed when user enters the book listw -->
     <string name="hint_book_list">Tapping on a book will show you book details, a long-press on an item in the list give you further options.</string>

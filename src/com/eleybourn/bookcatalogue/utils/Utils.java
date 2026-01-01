@@ -147,8 +147,7 @@ public class Utils {
 		mParseDateFormats.add(mDateSqlSdf);
 	}
 
-	public static final String APP_NAME = "Book Catalogue";
-	public static final boolean USE_LT = true;
+    public static final boolean USE_LT = true;
 	public static final boolean USE_BARCODE = true;
 
 	/**

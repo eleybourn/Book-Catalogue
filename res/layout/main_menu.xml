@@ -28,7 +28,7 @@
                     android:orientation="horizontal">
                     <com.google.android.material.imageview.ShapeableImageView
                         style="@style/layout_card_icon"
-                        android:src="@drawable/ic_menu_add"
+                        android:src="@drawable/ic_menu_scan"
                         android:contentDescription="@string/label_insert" />
                     <LinearLayout style="@style/layout_card_content">
                         <TextView

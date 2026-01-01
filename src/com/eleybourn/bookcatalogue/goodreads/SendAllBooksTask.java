@@ -212,12 +212,6 @@ public class SendAllBooksTask extends GenericTask {
 			{}
 		}
 
-		// Notify the user: '15 books processed: 3 sent successfully, 5 with no ISBN and 7 with ISBN but not found in goodreads'
-		String s = context.getString(R.string.send_all_to_goodreads_result, mCount, mSent, mNoIsbn, mNotFound);
-		BookCatalogueApp.showNotification(R.id.NOTIFICATION, 
-							context.getString(R.string.send_books_to_goodreads), s, 
-							BookCatalogueApp.getAppToForegroundIntent(context));
-
 		return true;
 	}
 

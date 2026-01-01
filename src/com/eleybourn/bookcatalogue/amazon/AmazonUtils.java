@@ -1,24 +1,20 @@
 package com.eleybourn.bookcatalogue.amazon;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.webkit.WebView;
 
 import com.amazon.device.associates.AssociatesAPI;
 import com.amazon.device.associates.LinkService;
-import com.amazon.device.associates.NotInitializedException;
 import com.amazon.device.associates.OpenSearchPageRequest;
 import com.eleybourn.bookcatalogue.utils.Logger;
 
 /**
  * Wrappers for Amazon API
- * 
  * NOTE: The project must include a class, AmazonAppKey in this folder, which contains a
  * single static String, KEY, containing the app key granted by Amazon. For testing purposes
  * this KEY can be junk.
@@ -29,9 +25,9 @@ import com.eleybourn.bookcatalogue.utils.Logger;
 public class AmazonUtils {
 
 	public static final String AMAZON_LINK_EXTRAS = "&tag=bookcatalogue-20&linkCode=da5";
-	public static final String AMAZON_BOOKS_BASE = "https://www.amazon.com/gp/search?index=books";
+	public static final String AMAZON_BOOKS_BASE = "https://www.amazon.com/s?i=stripbooks&k=";
 
-	public static void openLink(Activity context, String author, String series) throws Exception {
+	public static void openLink(Activity context, String author, String series) {
 		// Build the URL and args
 		String url = AMAZON_BOOKS_BASE;
 		
@@ -40,7 +36,7 @@ public class AmazonUtils {
 
 		String extra = AmazonUtils.buildSearchArgs(author, series);
 
-		if (extra != null && !extra.trim().equals("")) {
+		if (extra != null && !extra.trim().isEmpty()) {
 			url += extra;
 		}
 
@@ -71,23 +67,19 @@ public class AmazonUtils {
 		//String baseUrl = "http://www.amazon.com/gp/search?index=books&tag=philipwarneri-20&tracking_id=philipwarner-20";
 		String extra = "";
 		// http://www.amazon.com/gp/search?index=books&field-author=steven+a.+mckay&field-keywords=the+forest+lord
-		if (author != null && !author.trim().equals("")) {
-			author.replaceAll("\\.,+"," ");
-			author.replaceAll(" *","+");
-            extra += "&field-author=" + URLEncoder.encode(author, StandardCharsets.UTF_8);
+		if (author != null && !author.trim().isEmpty()) {
+            author = author.replaceAll("\\.,+"," ");
+            author = author.replaceAll(" *","+");
+            extra += URLEncoder.encode(author, StandardCharsets.UTF_8);
         }
-		if (series != null && !series.trim().equals("")) {
-			series.replaceAll("\\.,+"," ");
-			series.replaceAll(" *","+");
-            extra += "&field-keywords=" + URLEncoder.encode(series, StandardCharsets.UTF_8);
+		if (series != null && !series.trim().isEmpty()) {
+            series = series.replaceAll("\\.,+"," ");
+            series = series.replaceAll(" *","+");
+            extra += " " + URLEncoder.encode(series, StandardCharsets.UTF_8);
         }
 		return extra;
-		//if (extra != null && !extra.trim().equals("")) {
-		//	Intent loadWeb = new Intent(Intent.ACTION_VIEW, Uri.parse(baseUrl + extra));
-		//	context.startActivity(loadWeb); 			
-		//}			
-		
-	}
+
+    }
 	
 	private static String cleanupSearchString(String search) {
 		if (search == null)

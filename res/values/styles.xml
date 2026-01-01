@@ -233,6 +233,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:paddingHorizontal">@dimen/p_xl</item>
+        <item name="android:paddingVertical">@dimen/p_md</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
     </style>
 

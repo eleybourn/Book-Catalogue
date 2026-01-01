@@ -23,6 +23,7 @@ package com.eleybourn.bookcatalogue;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.GestureDetector;
@@ -35,6 +36,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -284,6 +286,9 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
                     }
                 }
         ).attach(); // Crucial: call attach() to establish the link
+        if (extras != null && extras.containsKey(TAB)) {
+            mViewPager.setCurrentItem(extras.getInt(TAB));
+        }
 
         // Class needed for the first tab: BookEditFields except when book is
         // exist and read-only mode enabled
@@ -478,11 +483,11 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
         mMenuHandler.init(menu);
 
         if (mRowId != 0) {
-            MenuItem delete = menu.add(0, R.id.MENU_DELETE_BOOK, 0, R.string.menu_delete);
+            MenuItem delete = menu.add(0, R.id.MENU_DELETE_BOOK, 0, R.string.menu_delete_book);
             delete.setIcon(R.drawable.ic_menu_edit);
 
             MenuItem duplicate = menu.add(0, R.id.MENU_DUPLICATE_BOOK, 0, R.string.menu_duplicate);
-            duplicate.setIcon(R.drawable.ic_menu_add);
+            duplicate.setIcon(R.drawable.ic_menu_new);
         }
 
         // TODO: Consider allowing Tweets (or other sharing methods) to work on un-added books.
@@ -492,24 +497,25 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
         //tweet.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
         if (mIsReadOnly) {
-            menu.add(0, R.id.MENU_EDIT_BOOK, 0, R.string.edit_book)
-                    .setIcon(R.drawable.ic_menu_edit)
-                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            MenuItem edit = menu.add(0, R.id.MENU_EDIT_BOOK, 0, R.string.menu_edit_book)
+                    .setIcon(R.drawable.ic_menu_edit);
+            edit.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            edit.setIconTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.theme_onPrimary)));
         }
 
         boolean hasAuthor = !this.getBookData().getAuthorList().isEmpty();
         if (mRowId != 0) {
-            MenuItem item = menu.add(0, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR, 0, R.string.amazon_books_by_author);
+            MenuItem item = menu.add(0, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR, 0, R.string.menu_amazon_books_by_author);
             item.setIcon(R.drawable.ic_menu_search_globe);
         }
 
         if (!this.getBookData().getSeriesList().isEmpty()) {
             if (hasAuthor) {
-                MenuItem item = menu.add(0, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR_IN_SERIES, 0, R.string.amazon_books_by_author_in_series);
+                MenuItem item = menu.add(0, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR_IN_SERIES, 0, R.string.menu_amazon_books_by_author_in_series);
                 item.setIcon(R.drawable.ic_menu_search_globe);
             }
             {
-                MenuItem item = menu.add(0, R.id.MENU_AMAZON_BOOKS_IN_SERIES, 0, R.string.amazon_books_in_series);
+                MenuItem item = menu.add(0, R.id.MENU_AMAZON_BOOKS_IN_SERIES, 0, R.string.menu_amazon_books_in_series);
                 item.setIcon(R.drawable.ic_menu_search_globe);
             }
         }
@@ -519,6 +525,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
             MenuItem thumbOptions = menu.add(0, R.id.MENU_THUMBNAIL_OPTIONS, 0, R.string.cover_options_cc_ellipsis);
             thumbOptions.setIcon(R.drawable.ic_menu_camera);
             thumbOptions.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            thumbOptions.setIconTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.theme_onPrimary)));
         }
 
         return super.onPrepareOptionsMenu(menu);

@@ -138,7 +138,7 @@ public class BooleanProperty extends ValuePropertyWithGlobalDefault<Boolean> imp
 			h.cb.setChecked(b);
 			h.name.setText(this.getNameResourceId());
 			if (b)
-				h.value.setText(R.string.yes);
+				h.value.setText(R.string.option_yes);
 			else
 				h.value.setText(R.string.option_no);
 			h.cb.setPressed(false);

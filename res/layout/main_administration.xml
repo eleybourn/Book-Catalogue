@@ -89,7 +89,7 @@
             <TextView
                 android:id="@+id/exportLabel"
                 style="@style/layout_menu_list"
-                app:drawableLeftCompat="@drawable/ic_menu_save"
+                app:drawableLeftCompat="@drawable/ic_menu_spreadsheet"
                 android:drawablePadding="@dimen/p_lg"
                 android:text="@string/label_export_to_csv" />
 

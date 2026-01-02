@@ -42,7 +42,6 @@ public class PropertyGroup {
 	private static final int GRP_USER_INTERFACE_ID = ++GRP_COUNT;
 	private static final int GRP_THUMBNAILS_ID = ++GRP_COUNT;
 	private static final int GRP_SCANNER_ID = ++GRP_COUNT;
-	private static final int GRP_ADVANCED_OPTIONS_ID = ++GRP_COUNT;
 
 	// Collection of all groups.
 	private static final PropertyGroups mGroups = new PropertyGroups();
@@ -50,7 +49,7 @@ public class PropertyGroup {
 	/** Global PropertyGroup definition */
 	public static final PropertyGroup GRP_GENERAL = mGroups.addGroup(GRP_GENERAL_ID, R.string.general, 0);
 	/** Global PropertyGroup definition */
-	public static final PropertyGroup GRP_EXTRA_BOOK_DETAILS = mGroups.addGroup(GRP_EXTRA_BOOK_DETAILS_ID, R.string.extra_book_details, 100);
+	public static final PropertyGroup GRP_EXTRA_BOOK_DETAILS = mGroups.addGroup(GRP_EXTRA_BOOK_DETAILS_ID, R.string.preference_extra_book_details, 100);
 	/** Global PropertyGroup definition */
 	public static final PropertyGroup GRP_AUTHOR = mGroups.addGroup(GRP_AUTHOR_ID, R.string.label_author, 50);
 	/** Global PropertyGroup definition */
@@ -63,10 +62,8 @@ public class PropertyGroup {
 	public static final PropertyGroup GRP_USER_INTERFACE = mGroups.addGroup(GRP_USER_INTERFACE_ID, R.string.user_interface, 35);
 	/** Global PropertyGroup definition */
 	public static final PropertyGroup GRP_SCANNER = mGroups.addGroup(GRP_SCANNER_ID, R.string.scanning, 70);
-	/** Global PropertyGroup definition */
-	public static final PropertyGroup GRP_ADVANCED_OPTIONS = mGroups.addGroup(GRP_ADVANCED_OPTIONS_ID, R.string.label_advanced_options, 80);
 
-	/**
+    /**
 	 * Collection class for all PropertyGroups
 	 * 
 	 * @author Philip Warner
@@ -74,27 +71,15 @@ public class PropertyGroup {
 	public static class PropertyGroups extends Hashtable<Integer,PropertyGroup> {
 		private static final long serialVersionUID = 1L;
 
-		/**
-		 * Add the passed group
-		 *
-		 * @param g
-		 * @return
-		 */
-		public PropertyGroup addGroup(PropertyGroup g) {
+		// Add the passed group
+		public void addGroup(PropertyGroup g) {
 			if (this.containsKey(g.id) && (this.get(g.id) != g))
 				throw new RuntimeException("Duplicate PropertyGroup ID " + g.id);
 
 			this.put(g.id , g);
-			return g;
-		}
+        }
 		/**
-		 * Construct and add a group based on parameters 
-		 * 
-		 * @param id
-		 * @param nameId
-		 * @param weight
-		 * 
-		 * @return
+		 * Construct and add a group based on parameters
 		 */
 		public PropertyGroup addGroup(int id, int nameId, int weight) {
 			PropertyGroup g = new PropertyGroup(id, nameId, weight);
@@ -127,11 +112,7 @@ public class PropertyGroup {
 	}
 
 	/**
-	 * Compare two groups for sorting purposes 
-	 *
-	 * @param lhs
-	 * @param rhs
-	 * @return
+	 * Compare two groups for sorting purposes
 	 */
 	public static int compare(PropertyGroup lhs, PropertyGroup rhs) {
 		// Compare weights

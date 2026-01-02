@@ -4,7 +4,6 @@
 
     <string name="a_and_b">%1$s and %2$s</string>
 
-    <string name="option_all_books">All Books</string>
     <!-- Explanatory note for export date (not yet implemented) -->
     <string name="all_books_added_or_updated_since">All books added or updated since:</string>
     <!-- Explanatory note for export data since last backup -->
@@ -12,28 +11,21 @@
     <!-- Description of the 'import all books' option -->
     <string name="all_books_blurb">All books in the archive will be imported, updating existing books and adding new ones.</string>
 
-    <string name="option_always_start_library_collapsed">Always start library collapsed</string>
-    <string name="option_always_start_library_expanded">Always start library expanded</string>
-
     <string name="and_others">et. al.</string>
 
-    <string name="label_anthology">Anthology</string>
     <string name="anthology_confirm">Please confirm that these anthology titles are (mostly) correct</string>
     <string name="anthology_save">Save</string>
 
     <string name="app_name">Book Catalogue</string>
 
-    <!-- The following is an updated string - the word 'selected' has replaced the first parameter. -->
     <!-- Hint displayed when aCatalogue Backup is done -->
-    <string name="archive_complete_details">A %3$s file called %2$s was created in the selected directory.
+    <string name="para_archive_complete_details">A %3$s file called %2$s was created in the selected directory.
         \n\nYou should manually copy it elsewhere to protect the data in case your device is damaged, lost,
         or stolen.</string>
 
     <string name="author_already_in_list">Author is already in the list</string>
     <string name="author_is_blank">Author field is blank</string>
     <string name="author_required">At least one author must be specified</string>
-
-    <string name="auto_rotate_camera_images">Automatically rotate images captured by camera</string>
 
     <string name="automatic_population_failed">Automatic Population of Titles Failed</string>
 
@@ -51,10 +43,6 @@
 
     <string name="bad_scanner">It looks like your existing barcode scanner app is not compatible with Book Catalogue. We recommend installing the Zxing barcode scanner application, and if it is already installed, we recommend uninstalling it and reinstalling it.</string>
 
-    <string name="beep_if_scanned_isbn_invalid">Beep if scanned ISBN is invalid</string>
-    <!-- Preference name, displayed in a preference activity -->
-    <string name="beep_if_scanned_isbn_valid">Beep if scanned ISBN is valid</string>
-
     <string name="book">Book</string>
     <string name="book_catalogue_startup">BookCatalogue Startup</string>
     <!-- Introduction for 'advanced export' option -->
@@ -65,20 +53,11 @@
     <string name="book_details_readonly_by">by</string>
     <string name="book_details_readonly_loaned_to">On Loan to %1$s</string>
     <string name="book_details_readonly_pages">%1$s pages</string>
-    <string name="preference_library_state">Library state</string>
     <string name="book_not_found">The scanned book was not found. You can sometimes find the correct barcode on the inside front cover. Otherwise please enter the details manually.</string>
-
-    <string name="preference_library_background_style">Library background style</string>
-    <string name="option_library_read">Read</string>
-    <string name="option_library_unread">Unread</string>
-
-    <string name="books_in_multiple_series">Books in multiple series</string>
-    <string name="books_with_multiple_authors">Books with multiple authors</string>
 
     <string name="brackets">(%1$s)</string>
 
     <string name="builtin">Builtin</string>
-    <string name="builtin_scanner">Builtin Scanner</string>
 
     <string name="button_anthology_add">Add</string>
     <string name="button_cancel">Cancel</string>
@@ -97,8 +76,6 @@
     <string name="by">by %1$s</string>
 
     <string name="bytes">%.0f bytes</string>
-
-    <string name="option_cache_resized_thumbnails_for_later_use">Cache resized thumbnails (uses more storage, lists will scroll faster)</string>
 
     <string name="cancelled">Cancelled</string>
     <string name="cancelled_info">Cancelled - %s</string>
@@ -172,15 +149,11 @@
     <string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
     <string name="debug_subject">Gathered debugging information</string>
 
-    <string name="default_crop_frame_is_whole_image">Default crop frame is whole image</string>
-
     <string name="delete_1st_bs">Cannot Delete the 1st Bookshelf</string>
     <string name="delete_event">Delete Event</string>
     <string name="delete_series">Delete Series</string>
     <string name="delete_style">Delete style</string>
     <string name="delete_task">Delete Task</string>
-
-    <string name="deleteme_administration_label">Administration Functions</string>
 
     <string name="details_have_changed">Details Have Changed</string>
 
@@ -227,31 +200,18 @@
     <string name="export_failed_sdcard">Export failed - could not write to the shared storage</string>
     <string name="export_starting_ellipsis">Export starting…</string>
 
-    <string name="extra_book_details">Extra Book Details</string>
     <string name="extra_filters">Book filters</string>
 
     <string name="failed">Failed</string>
-
-    <string name="family_name_first_eg">Family name first eg. \'Smith, Bill\'</string>
 
     <string name="file_must_contain_any_column">File must contain a column with one of the following names: %s</string>
     <string name="file_must_contain_column">File must contain column named %s</string>
 
     <string name="finding_editions">Finding Editions…</string>
 
-    <string name="format_of_author_names">Format of author names</string>
-
     <string name="general">General</string>
 
-    <string name="option_generate_immediately">Generate immediately (lists scroll slower, images will be displayed immediately)</string>
-
-    <string name="preference_generating_cover_thumbnails">Generating cover thumbnails</string>
-
-    <string name="given_name_first_eg">Given name first eg. \'Bill Smith\'</string>
-
     <string name="groupings">Groupings</string>
-
-    <string name="option_hide_summary_details">Hide summary details</string>
 
     <string name="hint_authors_book_may_appear_more_than_once">If shown for every author, a single book may appear more than once in a list. In such a case deleting one of those books will delete all instances from the list.</string>
     <string name="hint_autorotate_camera_images">If you find yourself always rotating camera images in the same direction, try changing the application settings to specify a rotation to apply automatically.</string>
@@ -290,7 +250,6 @@
     <string name="hint_missing_covers"><![CDATA[
         <p><b>PLEASE READ THIS MESSAGE CAREFULLY</b></p><p>Based on a random sampling we have detected that you may be missing some covers after a recent upgrade.</p><p>This probably happened as a result of an upgrade message not being displayed, or being ignored.</p><p>You can import old missing covers via:</p><p>\'%1$s\'\u2192\'%2$s\'.</p>
         			]]></string>
-    <string name="label_search_by">Search Author or Title</string>
     <string name="hint_series_book_may_appear_more_than_once">If shown in every series, a single book may appear more than once in a list. In such a case deleting one of those books will delete all instances from the list.</string>
     <string name="hint_startup_screen">This is the standard BookCatalogue startup screen. If you prefer, you can startup directly in \'My Books\'; the preferred startup screen can be changed in Settings.</string>
     <string name="hint_startup_screen_heading">Thank You For Installing BookCatalogue.</string>
@@ -310,7 +269,6 @@
                 </string>
 
     <string name="hints_have_been_reset">Hints have been reset</string>
-    <string name="title_hint">Tip</string>
 
     <string name="if_day_is_specified_month_and_year_must_be">If day is specified, then both month and year must also be specified.</string>
     <string name="if_month_is_specified_year_must_be">If month is specified, then year must also be specified.</string>
@@ -333,8 +291,6 @@
     <!-- Showed in progress dialog when an import starts -->
     <string name="importing_ellipsis">Importing…</string>
 
-    <string name="label_in">In</string>
-
     <string name="info_no_bookshelves">You have not created any bookshelves yet. Please add some using the add icon at the top of this screen.</string>
 
     <string name="install_scan_title">Install Barcode Scanner</string>
@@ -350,11 +306,11 @@
     <string name="label_added_day">Added Day</string>
     <string name="label_added_month">Added Month</string>
     <string name="label_added_year">Added Year</string>
-    <string name="label_administration">Admin</string>
     <!-- Heading in Admin activity and in 'Export' dialogue -->
     <string name="label_advanced_options">Advanced Options</string>
     <string name="label_allow_asin">Allow ASIN</string>
     <string name="label_amazon_wishlist">Amazon Wishlist</string>
+    <string name="label_anthology">Anthology</string>
     <string name="label_anthology_titles">Anthology Titles</string>
     <string name="label_author">Author</string>
     <string name="label_background_events">Show Background Events</string>
@@ -364,7 +320,6 @@
     <!-- Progress dialog message displayed when doing a long network operation to a web site -->
     <!-- Admin option to import -->
     <string name="label_backup_to_archive">Backup to Archive</string>
-    <string name="title_library_preferences">Library Preferences</string>
     <string name="label_bookshelf">Bookshelf</string>
     <string name="label_bookshelves">Bookshelves</string>
     <string name="label_comments">My Comments</string>
@@ -381,7 +336,6 @@
     <string name="label_details">Details</string>
     <string name="label_donate">Support Us</string>
     <string name="label_edit">Edit</string>
-    <string name="title_edit_library_styles">Edit Library Styles</string>
     <string name="label_edit_format_name">Edit Format Name</string>
     <string name="label_enter_isbn">Enter ISBN</string>
     <string name="label_erase_cover_cache">Erase cover cache</string>
@@ -404,7 +358,7 @@
     <!-- Seems no longer used. Ignore. -->
     <!-- Hint displayed when an export or database backup is done -->
     <string name="label_import_old_files">Import old files</string>
-    <string name="title_add_book">Add Book</string>
+    <string name="label_in">In</string>
     <string name="label_insert_description">Add manually or by barcode</string>
     <string name="label_is_anthology">Is this book an Anthology?</string>
     <string name="label_isbn">ISBN</string>
@@ -412,7 +366,6 @@
     <!-- Begin: Added/Updated in 5.0.4 -->
     <!-- Short Heading for 'Language' field in book details -->
     <string name="label_language">Language</string>
-    <string name="title_library">My Library</string>
     <string name="label_library_description">View and manage your collection</string>
     <string name="label_list_price">List Price</string>
     <!-- This is the heading of the 'Loan' tab when editing a book. It needs to be short. "Loan Book" is too long. -->
@@ -422,10 +375,8 @@
     <string name="label_loaned_to">This book has been loaned to:</string>
     <string name="label_location">Location</string>
     <string name="label_location_of_book">Location of the book</string>
-    <string name="title_manage_fields">Manage Field Visibility</string>
     <string name="label_month">Month</string>
     <string name="label_notes">Notes</string>
-    <string name="title_other_preferences">Other Preferences</string>
     <string name="label_pages">Pages</string>
     <string name="label_paypal_donation">PayPal Donation</string>
     <string name="label_preferences">Preferences</string>
@@ -445,6 +396,7 @@
     <string name="label_same_author">All stories in this anthology are written by the same author</string>
     <string name="label_scan_barcode_isbn">Scan Barcode/ISBN</string>
     <string name="label_search">Search</string>
+    <string name="label_search_by">Search Author or Title</string>
     <string name="label_search_description">Find a book in your catalogue</string>
     <string name="label_search_for_books">Search for Books</string>
     <string name="label_search_internet">Search Internet</string>
@@ -454,6 +406,7 @@
     <string name="label_series_number">Series Number</string>
     <string name="label_set_authors">Set Authors…</string>
     <string name="label_signed">Has this book been signed</string>
+    <string name="label_size">Size</string>
     <string name="label_sort_title_first_letter">Title first letter</string>
     <string name="label_sourcecode">Source Code:</string>
     <!-- Heading in 'about' dialog -->
@@ -467,6 +420,7 @@
     <string name="label_update_month">Update Month</string>
     <!-- Name of the new style grouping (needs to be short). -->
     <string name="label_update_year">Update Year</string>
+    <string name="label_updated">Updated</string>
     <string name="label_version_number">Version Number:</string>
     <string name="label_webpage">Webpage:</string>
     <string name="label_year">Year</string>
@@ -748,8 +702,6 @@
     <string name="no_series">(no series)</string>
     <string name="no_title">(no title)</string>
 
-    <string name="option_normal">Normal</string>
-
     <string name="not_set">Not Set</string>
 
     <string name="num_books_searched">%s Books Searched</string>
@@ -778,14 +730,49 @@
 
     <string name="optimizing_databases">Optimizing databases…</string>
 
+    <string name="option_all_books">All Books</string>
+    <string name="option_always_start_library_collapsed">Always start library collapsed</string>
+    <string name="option_always_start_library_expanded">Always start library expanded</string>
+    <string name="option_builtin_scanner">Builtin Scanner</string>
+    <string name="option_cache_resized_thumbnails_for_later_use">Cache resized thumbnails (uses more storage, lists will scroll faster)</string>
+    <string name="option_family_name_first_eg">Family name first eg. \'Smith, Bill\'</string>
     <string name="option_format1">Paperback</string>
     <string name="option_format2">Hard Cover</string>
     <string name="option_format3">eBook</string>
     <string name="option_format4">Audiobook</string>
     <string name="option_format5">Guide / Companion</string>
+    <string name="option_generate_immediately">Generate immediately (lists scroll slower, images will be displayed immediately)</string>
+    <string name="option_given_name_first_eg">Given name first eg. \'Bill Smith\'</string>
+    <string name="option_hide_summary_details">Hide summary details</string>
+    <string name="option_library_read">Read</string>
+    <string name="option_library_unread">Unread</string>
     <string name="option_name">Name</string>
     <string name="option_no">No</string>
     <string name="option_nobody">Nobody</string>
+    <string name="option_normal">Normal</string>
+    <!-- Preference VALUE, displayed in a preference activity -->
+    <string name="option_pic2shop_scanner">Pic2Shop Scanner</string>
+    <!-- Preference value for a specific language. First arg is name in it's own language, second arg is name in current locale -->
+    <string name="option_preferred_language_x">%1$s (%2$s)</string>
+    <string name="option_remember_library_state">Preserve library state</string>
+    <string name="option_resize_each_time">Resize each time they are needed (uses less storage, scrolling will be slower)</string>
+    <string name="option_select_read_only">Select read books only</string>
+    <string name="option_select_unread_only">Select unread books only</string>
+    <string name="option_show_all_summary_details">Show all summary details</string>
+    <!-- Items in list of options for the 'Summary Details' preference. Determines what is show in library header -->
+    <string name="option_show_book_count">Show number of books</string>
+    <string name="option_show_book_under_each_thing">Under each %1$s</string>
+    <string name="option_show_book_under_primary_thing">Under primary %1$s only</string>
+    <string name="option_show_first_level_and_book_count">Show first level heading and number of books</string>
+    <string name="option_smaller">Smaller</string>
+    <string name="option_use_background_thread">Use background thread (lists scroll faster, images may be delayed)</string>
+    <string name="option_use_default_setting">Use default setting</string>
+    <string name="option_yes">Yes</string>
+    <!-- Preference VALUE, displayed in a preference activity -->
+    <string name="option_zxing_compatible_scanner">Zxing Compatible Scanner</string>
+    <!-- TRANSLATORS NOTE: I HAVE UPDATED THE new_in_510, above! Sorry. -->
+    <!-- Preference VALUE, displayed in a preference activity -->
+    <string name="option_zxing_scanner">Zxing Scanner</string>
 
     <string name="overwrite_thumbnail">This will update the selected fields as shown, but Thumbnails can optionally be downloaded for ALL books.\n\nDo you want to overwrite all existing thumbnails? Warning, this may take a long time. </string>
 
@@ -823,11 +810,6 @@
                                 to restore backups and exports, to create cover thumbnails
                                 and to save information for debugging and recovery.</string>
 
-    <!-- Preference VALUE, displayed in a preference activity -->
-    <string name="pic2shop_scanner">Pic2Shop Scanner</string>
-
-    <string name="option_plain_background_b_reduces_flicker_b">Plain background (reduces flicker)</string>
-
     <!-- Displayed when any write operation to the sd card fails -->
     <string name="please_check_sd_readable">Please check that the storage is accessible.</string>
     <!-- SEVERAL UPDATED MESSAGES: changed 'sd card' tp storage. -->
@@ -836,11 +818,19 @@
 
     <string name="populate_anthology_titles">Automatically Populate Titles (EXPERIMENTAL)</string>
 
+    <string name="preference_auto_rotate_camera_images">Automatically rotate images captured by camera</string>
+    <string name="preference_beep_if_scanned_isbn_invalid">Beep if scanned ISBN is invalid</string>
+    <!-- Preference name, displayed in a preference activity -->
+    <string name="preference_beep_if_scanned_isbn_valid">Beep if scanned ISBN is valid</string>
+    <string name="preference_books_in_multiple_series">Books in multiple series</string>
+    <string name="preference_books_with_multiple_authors">Books with multiple authors</string>
+    <string name="preference_default_crop_frame_is_whole_image">Default crop frame is whole image</string>
+    <string name="preference_extra_book_details">Extra Book Details</string>
+    <string name="preference_format_of_author_names">Format of author names</string>
+    <string name="preference_generating_cover_thumbnails">Generating cover thumbnails</string>
+    <string name="preference_global_opening_book_mode">Open book in read-only mode</string>
+    <string name="preference_library_state">Library state</string>
     <string name="preference_prefer_large_thumbnails">Prefer large thumbnails</string>
-
-    <!-- Brief description -->
-    <string name="preferences_blurb">Preferences and user-defined list styles</string>
-
     <!-- End: Added/Updated in 5.1.1 -->
     <!-- Begin: Added/Updated in 5.1.2 -->
     <!-- A heading in the 'about' dialog -->
@@ -852,14 +842,20 @@
     <!-- End: Added/Updated in 5.1.2 -->
     <!-- Begin: Added/Updated in 5.2.0 -->
     <!-- Preference name (fairly short) for preferred language -->
-    <string name="preferred_interface_language">Preferred Interface Language</string>
-    <!-- Preference value for a specific language. First arg is name in it's own language, second arg is name in current locale -->
-    <string name="preferred_language_x">%1$s (%2$s)</string>
+    <string name="preference_preferred_interface_language">Preferred Interface Language</string>
     <!-- Preference name, displayed in a preference activity -->
-    <string name="preferred_scanner">Preferred Scanner</string>
-    <string name="preferred_styles">Preferred styles</string>
+    <string name="preference_preferred_scanner">Preferred Scanner</string>
+    <string name="preference_resizing_cover_thumbnails">Resizing cover thumbnails</string>
+    <string name="preference_show_thumbnails">Show Thumbnails</string>
+    <string name="preference_size_of_library_items">Size of library items</string>
+    <string name="preference_start_in_my_books">Start in \'My Books\'</string>
+    <string name="preference_summary_details_in_header">Summary details in header</string>
+    <string name="preference_use_external_image_cropper">Use external image cropper (experimental)</string>
 
-    <string name="prefs_global_opening_book_mode">Open book in read-only mode</string>
+    <!-- Brief description -->
+    <string name="preferences_blurb">Preferences and user-defined list styles</string>
+
+    <string name="preferred_styles">Preferred styles</string>
 
     <string name="problem_starting_import_arg">There was a problem starting the import: %1$s</string>
 
@@ -868,15 +864,7 @@
     <string name="really_delete_book">This will completely delete the book entitled \'%1$s\' by %2$s. Are you sure you wish to proceed?</string>
     <string name="really_delete_series">Really delete series \'%s\'?\n\nThe books themselves will not be deleted.\n\nConsider editing the series and changing the series name to that of another series to preserve this data</string>
 
-    <string name="rebuild_fts">Rebuild FTS (alpha only!)</string>
-
     <string name="rebuilding_search_index">Rebuilding Search Index…</string>
-
-    <string name="option_remember_library_state">Preserve library state</string>
-
-    <string name="option_resize_each_time">Resize each time they are needed (uses less storage, scrolling will be slower)</string>
-
-    <string name="preference_resizing_cover_thumbnails">Resizing cover thumbnails</string>
 
     <string name="retry">Retry</string>
     <string name="retry_task">Retry</string>
@@ -887,7 +875,6 @@
 
     <string name="scope_of_change">Scope of Change</string>
 
-    <string name="search_criteria">Search Criteria</string>
     <string name="search_exception">Search failed while %1$s: %2$s</string>
     <string name="search_fail">Searching for the book failed. Please check your network settings.</string>
 
@@ -904,9 +891,7 @@
     <string name="select_fields_to_update">Select Fields to Update</string>
     <string name="select_fields_to_update_help">Selected fields will be updated from the internet. Unselected fields will remain unchanged.</string>
     <string name="select_min_1_field">Select at least one field to update</string>
-    <string name="option_select_read_only">Select read books only</string>
     <string name="select_style">Select Style</string>
-    <string name="option_select_unread_only">Select unread books only</string>
 
     <string name="selected_archive_contains">It contains %1$s.</string>
     <string name="selected_archive_info">The selected archive is %1$s in size and was created on %2$s.</string>
@@ -925,24 +910,11 @@
 
     <string name="shelves">Shelves</string>
 
-    <string name="option_show_all_summary_details">Show all summary details</string>
-    <!-- Items in list of options for the 'Summary Details' preference. Determines what is show in library header -->
-    <string name="option_show_book_count">Show number of books</string>
-    <string name="show_book_under_each_thing">Under each %1$s</string>
-    <string name="show_book_under_primary_thing">Under primary %1$s only</string>
     <string name="show_events_ellipsis">Show events…</string>
     <string name="show_fewer_ellipsis">Show fewer…</string>
-    <string name="option_show_first_level_and_book_count">Show first level heading and number of books</string>
     <string name="show_more_ellipsis">Show more…</string>
-    <string name="show_results">Show Results</string>
-    <string name="preference_show_thumbnails">Show Thumbnails</string>
-
-    <string name="label_size">Size</string>
-    <string name="preference_size_of_library_items">Size of library items</string>
 
     <string name="skip_title">Skip - %s</string>
-
-    <string name="option_smaller">Smaller</string>
 
     <string name="sort_added_date">Added date</string>
     <string name="sort_and_style_ellipsis">Sort &amp; Style…</string>
@@ -956,21 +928,15 @@
     <string name="sort_series">Series</string>
     <string name="sort_unread">Unread (Author/Series)</string>
 
-    <string name="start_in_my_books">Start in \'My Books\'</string>
-
     <string name="starting_search">Starting Search</string>
     <string name="starting_up">Starting up…</string>
 
     <string name="status_adding_book_ellipsis">Adding book…</string>
 
-    <string name="preference_summary_details_in_header">Summary details in header</string>
-
     <!-- This is an UPDATED string copied from earlier in the file; "Google Googles" (sic) was removed from the list of scanners -->
     <string name="system_locale">System Locale</string>
 
     <string name="task_errors">Task Errors</string>
-
-    <string name="option_textured_background">Textured background image</string>
 
     <string name="the_title_already_exists">The title already exists</string>
 
@@ -983,12 +949,19 @@
     <string name="thumbnails">Thumbnails</string>
 
     <string name="title_activity_scanner">ScannerActivity</string>
+    <string name="title_add_book">Add Book</string>
     <string name="title_add_style">Add style</string>
     <string name="title_clone_style_colon_name">Clone style: %1$s</string>
     <string name="title_edit_bookshelf">Edit Bookshelf</string>
+    <string name="title_edit_library_styles">Edit Library Styles</string>
     <string name="title_edit_style_colon_name">Edit style: %1$s</string>
+    <string name="title_hint">Tip</string>
     <string name="title_isbn_search">ISBN Search</string>
+    <string name="title_library">My Library</string>
+    <string name="title_library_preferences">Library Preferences</string>
     <string name="title_manage_bookshelves">Manage Bookshelves</string>
+    <string name="title_manage_fields">Manage Field Visibility</string>
+    <string name="title_other_preferences">Other Preferences</string>
     <string name="title_required">A non-blank title must be specified</string>
     <string name="title_settings">Settings</string>
 
@@ -1012,8 +985,6 @@
     <!-- Name of the new style grouping (needs to be short). -->
     <string name="update_date">Update date</string>
 
-    <string name="label_updated">Updated</string>
-
     <string name="upgrade_title">Since your last upgrade</string>
 
     <string name="upgrading_ellipsis">Upgrading…</string>
@@ -1025,10 +996,6 @@
     <string name="usage_add_extra">Appends extra data</string>
     <string name="usage_copy_if_blank">Copy if blank</string>
     <string name="usage_overwrite">Overwrites existing data</string>
-
-    <string name="option_use_background_thread">Use background thread (lists scroll faster, images may be delayed)</string>
-    <string name="option_use_default_setting">Use default setting</string>
-    <string name="use_external_image_cropper">Use external image cropper (experimental)</string>
 
     <string name="user_defined">User-defined</string>
     <string name="user_interface">User Interface</string>
@@ -1047,13 +1014,5 @@
     <string name="x_is_not_a_valid_isbn_or_asin">%1$s is not a valid ISBN or ASIN</string>
     <string name="x_of_y">%1$d of %2$d</string>
 
-    <string name="yes">Yes</string>
-
     <string name="you_have_unsaved_changes">You have unsaved changes, if you exit now they will be lost.</string>
-
-    <!-- Preference VALUE, displayed in a preference activity -->
-    <string name="zxing_compatible_scanner">Zxing Compatible Scanner</string>
-    <!-- TRANSLATORS NOTE: I HAVE UPDATED THE new_in_510, above! Sorry. -->
-    <!-- Preference VALUE, displayed in a preference activity -->
-    <string name="zxing_scanner">Zxing Scanner</string>
 </resources>

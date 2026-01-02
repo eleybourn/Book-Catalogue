@@ -38,8 +38,6 @@
     <string name="import_data">Kitapları içe aktar</string>
     <string name="import_alert">Uyarı: Bilgileri içe aktarırken eğer içe aktardığınız dosyaların ID numarası var olan bir kitabın ID\'si ile aynı ise, varolan kitap verilerinin üstüne yazılmasına neden olabilir. Eğer dışa aktarılmış bir dosyada bir giriyi değiştirdiyseniz bu sorun değildir; ancak yeni bir kitap girişi oluşturuyorsanız ID bölümünün boş olduğundan emin olun.</string>
     <string name="import_failed_is_location_correct">Hata: SD karttan içe aktarma başarısız oldu. Dosyalar yerli yerinde mi acaba?</string>
-    <string name="deleteme_administration_label">Yönetim işlevleri</string>
-    <string name="label_administration">Ayarlar</string>
     <string name="install_scan_title">Barkod Tarayıcıyı yükleyin</string>
     <string name="label_version_number">Sürüm numarası</string>
     <string name="para_donate">Eğer uygulamanın geliştirilmesini desteklemek isterseniz aşağıdaki Amazon Wishlist veya Paypal düğmelerini kullanarak bağışta bulunabilirsiniz. Kişi Avustralya\'da olunca &quot;ücretli&quot; bir sürüm yayınlayamıyor haliyle. :-) </string>
@@ -68,7 +66,7 @@
     <string name="select_fields_to_update">Güncellenecek alanları seçin</string>		
     <string name="select_fields_to_update_help">Seçilen alanlar İnternet\'ten güncellenecektir. Seçilmeyen alanlar değiştirilmeden kalacaktır.</string>
     <string name="overwrite_thumbnail">Bu işlem seçili alanları gösterildiği biçimde güncelleyecektir, ancak küçük resimler seçime bağlı olarak tüm kitaplar için de indirilebilir.\n\nVar olan tüm küçük resimlerin üzerine yazmak istiyor musunuz? Bu işlem uzun sürebilir. </string>
-    <string name="yes">Evet</string>
+    <string name="option_yes">Evet</string>
     <string name="option_no">Hayır</string>
     <string name="button_ok">Tamam</string>
     <string name="search_fail">Kitap araması başarısız oldu. Ağ ayarlarınızı denetleyiniz.</string>
@@ -226,15 +224,12 @@
     <string name="title_settings">Yönetim ve Seçenekler</string>
     <string name="title_other_preferences">Diğer seçenekler</string>
     <string name="user_interface">Kullanıcı arayüzü</string>
-    <string name="start_in_my_books">\'Kitaplarım\' içinde aç</string>
+    <string name="preference_start_in_my_books">\'Kitaplarım\' içinde aç</string>
     <string name="background_tasks">Ardalan görevleri</string>
     <string name="cleanup_old_tasks">Eski görevleri temizle</string>
     <string name="cleanup_old_events">Eski olayları temizle</string>
-    <string name="search_criteria">Arama kriteri</string>
     <string name="label_add_manually">El ile ekle</string>
     <string name="label_search_internet">Genelağ\'da ara</string>
-    <string name="show_results">Sonuçları göster</string>
-    <string name="rebuild_fts">FTS\'yi yeniden yapıla (aşırı deneysel)</string>
     <string name="send_books_to_goodreads">Kitapları GoodReads\'e gönder</string>
     <string name="legacy_task">Eski görev</string>
     <string name="occurred_at">%1$s içinde oluştu</string>
@@ -296,7 +291,7 @@
     <item name="MENU_CLONE_STYLE" type="id"/>
 
     <string name="title_library_preferences">Kitap dizelgesi yeğlenenleri</string>
-    <string name="extra_book_details">Ek kitap ayarları</string>
+    <string name="preference_extra_book_details">Ek kitap ayarları</string>
     <string name="general">Genel</string>
     <string name="label_bookshelves">Kitap rafları</string>
     <string name="shelves">Raflar</string>
@@ -350,22 +345,19 @@
     <string name="extra_filters">Kitap süzgeçleri</string>
     <string name="new_style">Yeni biçem</string>
     <string name="select_based_on_read_status">\'Okunma\' durumuna göre seç</string>
-    <string name="books_with_multiple_authors">Birden fazla yazarlı kitaplar</string>
-    <string name="books_in_multiple_series">Birden fazla seride bulunan kitaplar</string>
+    <string name="preference_books_with_multiple_authors">Birden fazla yazarlı kitaplar</string>
+    <string name="preference_books_in_multiple_series">Birden fazla seride bulunan kitaplar</string>
     <string name="option_use_default_setting">Öntanımlı ayarları kullan</string>
-    <string name="show_book_under_each_thing">Her %1$s altında</string>
-    <string name="show_book_under_primary_thing">Yalnızca birincil %1$s altında</string>
-    <string name="format_of_author_names">Yazar adları biçimi</string>
-    <string name="given_name_first_eg">Ad başta, örneğin \'Özgür Çapulcu\'</string>
-    <string name="family_name_first_eg">Soyad başta, örneğin \'Çapulcu, Özgür\'</string>
+    <string name="option_show_book_under_each_thing">Her %1$s altında</string>
+    <string name="option_show_book_under_primary_thing">Yalnızca birincil %1$s altında</string>
+    <string name="preference_format_of_author_names">Yazar adları biçimi</string>
+    <string name="option_given_name_first_eg">Ad başta, örneğin \'Özgür Çapulcu\'</string>
+    <string name="option_family_name_first_eg">Soyad başta, örneğin \'Çapulcu, Özgür\'</string>
     <string name="thumbnails">Ufak resimler</string>
     <string name="preference_size_of_library_items">Kitap dizelgesi öğeleri boyutu</string>
     <string name="option_normal">Olağan</string>
     <string name="option_smaller">Daha ufak</string>
     <string name="select_style">Biçem seç</string>
-    <string name="preference_library_background_style">Kitap dizelgesi ardalan biçemi</string>
-    <string name="option_textured_background">Dokulu ardalan resmi</string>
-    <string name="option_plain_background_b_reduces_flicker_b">Düz ardalan (titremeyi azaltır)</string>
     <string name="thing_must_not_be_blank">%1$s boş olamaz</string>
     <string name="label_edit">Düzenle</string>
     <string name="groupings">Öbeklemeler</string>
@@ -440,7 +432,7 @@
     <string name="preference_summary_details_in_header">Başlık özet ayrıntıları</string>
     <string name="option_hide_summary_details">Özet ayrıntılarını gizle</string>
     <string name="x_is_not_a_valid_isbn">%1$s geçerli birISBN değil</string>
-    <string name="beep_if_scanned_isbn_invalid">Taranan ISBN geçerli değil ise biple</string>
+    <string name="preference_beep_if_scanned_isbn_invalid">Taranan ISBN geçerli değil ise biple</string>
     <string name="no_image_found">Resim bulunamadı</string>
     <string name="could_not_copy_image">Resim eşlemlenemedi</string>
     <string name="this_option_is_not_available_until_the_book_is_saved">Bu özellik kitap saklanana kadar kullanılamaz</string>
@@ -464,15 +456,15 @@
     <string name="invalid_isbn_x_specified_in_search">Aramara belirtilen ISBN \'%1$s\' geçersiz</string>
     <string name="if_day_is_specified_month_and_year_must_be">Eğer gün belirtmiş iseniz hem ay hem yıl bölümlerini de doldurmalısınız.</string>
     <string name="if_month_is_specified_year_must_be">Eğer bir ay belirtmiş iseniz yıl da belirtmelisiniz.</string>
-    <string name="use_external_image_cropper">Başka resim kırpıcı kullan (deneysel özellik)</string>
-    <string name="auto_rotate_camera_images">Kamera resimlerini özdevinimli olarak döndür</string>
+    <string name="preference_use_external_image_cropper">Başka resim kırpıcı kullan (deneysel özellik)</string>
+    <string name="preference_auto_rotate_camera_images">Kamera resimlerini özdevinimli olarak döndür</string>
     <string name="hint_autorotate_camera_images">Eğer kendinizi sürekli kamera resimlerini aynı doğrultuda döndürüyor buluyorsanız uygulama ayarlarını sürekli bir yöne görselleri kendiliğinden döndürecek biçimde ayarlayabilirsiniz.</string>
-    <string name="default_crop_frame_is_whole_image">Öntanımlı kırpma alanı bütün görseldir</string>
+    <string name="preference_default_crop_frame_is_whole_image">Öntanımlı kırpma alanı bütün görseldir</string>
     <string name="cancelled">İptal edildi</string>
     <string name="import_complete">İçe aktarma başarılı</string>
     <string name="searching_ellipsis">Aranıyor&#8230;</string>
     <string name="status_adding_book_ellipsis">Kitap ekle&#8230;</string>
-    <string name="prefs_global_opening_book_mode">Kitabı salt okunur aç</string>
+    <string name="preference_global_opening_book_mode">Kitabı salt okunur aç</string>
     <string name="label_publishing">Yayımlanıyor</string>
     <string name="book_details_readonly_by">ile</string>
     <string name="book_details_readonly_loaned_to">%1$s kişisine ödünç verilmiş</string>
@@ -535,13 +527,13 @@
     <!-- Heading for scanner-related preferences -->
     <string name="scanning">Tarama</string>
     <!-- Preference name, displayed in a preference activity -->
-    <string name="preferred_scanner">Yeğlenen Tarayıcı</string>
+    <string name="preference_preferred_scanner">Yeğlenen Tarayıcı</string>
     <!-- Preference VALUE, displayed in a preference activity -->
-    <string name="zxing_compatible_scanner">Zxing Uyumlu Tarayıcı</string>
+    <string name="option_zxing_compatible_scanner">Zxing Uyumlu Tarayıcı</string>
     <!-- Preference VALUE, displayed in a preference activity -->
-    <string name="pic2shop_scanner">Pic2Shop Tarayıcı</string>
+    <string name="option_pic2shop_scanner">Pic2Shop Tarayıcı</string>
     <!-- Preference name, displayed in a preference activity -->
-    <string name="beep_if_scanned_isbn_valid">Taranan ISBN geçerli ise biple</string>
+    <string name="preference_beep_if_scanned_isbn_valid">Taranan ISBN geçerli ise biple</string>
     <string name="new_in_424">
 <![CDATA[
 	<p><b>New in 4.2.4</b>\n\n
@@ -584,7 +576,7 @@
 
     <!-- Hint displayed when aCatalogue Backup is done -->
     <string name="a_and_b">%1$s ve %2$s</string>
-    <string name="archive_complete_details">%2$s adında bir %3$s dosyası SD kartınızın \"%1$s\" dizininde oluşturuldu.\n\nBu dosyayı el ile başka bir yere yedeklemeniz aygıtınızın hasar görmesi, kaybolması veya çalınması durumunda verilerinizin korunması için tavsiye edilir.</string>
+    <string name="para_archive_complete_details">%2$s adında bir %3$s dosyası SD kartınızın \"%1$s\" dizininde oluşturuldu.\n\nBu dosyayı el ile başka bir yere yedeklemeniz aygıtınızın hasar görmesi, kaybolması veya çalınması durumunda verilerinizin korunması için tavsiye edilir.</string>
 
     <!-- Displayed in progress dialog when exporting covers -->
     <string name="covers_progress">%1$s kapak işlendi (%2$s bulunamadı)</string>
@@ -800,7 +792,7 @@
    <!-- TRANLATORS NOTE: I HAVE UPDATED THE new_in_510, above! Sorry. -->
 
    <!-- Preference VALUE, displayed in a preference activity -->
-   <string name="zxing_scanner">Zxing Tarayıcı</string>
+   <string name="option_zxing_scanner">Zxing Tarayıcı</string>
    <!-- Heading in 'about' dialog -->
    <string name="label_special_thanks">Teşekkürlerimizle</string>
    <!-- Credits in the 'about' dialog -->

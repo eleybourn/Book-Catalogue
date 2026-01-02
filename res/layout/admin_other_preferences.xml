@@ -1,16 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/root"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/deleteme_bc_background_gradient_dim" >
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/layout_body">
+    <!-- Root -->
 
-    <LinearLayout
-        android:id="@+id/dynamic_properties"
+    <include layout="@layout/layout_header" />
+
+    <include layout="@layout/layout_background" />
+
+    <ScrollView
+        style="@style/layout_scroll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingLeft="@dimen/p_md" >
-    </LinearLayout>
+        android:layout_height="wrap_content">
 
-</ScrollView>
+        <LinearLayout
+            android:id="@+id/dynamic_properties"
+            style="@style/layout_main"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -39,9 +39,7 @@
 <string name="import_alert">Warnung. Der Import von Daten kann Informationen von bestehenden Büchern überschreiben, wenn die ID der Importdatei mit der bestehenden ID übereinstimmt. Normalerweise ist es kein Problem wenn ein Feld in der exportierten Datei geändert wurde. Bitte stellen Sie bei einem neuen Buch sicher, dass das ID-Feld leer ist.</string>
 <!--<string name="export_failed">FEHLER: Der Export auf die SD-Karte ist fehlgeschlagen.</string>-->
 <!--<string name="import_failed_is_location_correct">FEHLER: Der Import von Daten von der SD-Karte ist fehlgeschlagen. Ist die Datei bereits vorhanden?</string>-->
-    <string name="deleteme_administration_label">Verwaltungsfunktionen</string>
-    <string name="label_administration">Verwaltung</string>
-<string name="install_scan_title">Installiere Barcode Scanner</string>
+    <string name="install_scan_title">Installiere Barcode Scanner</string>
 <string name="label_version_number">Versionsnummer:</string>
 <string name="para_donate">Wenn Sie die Entwicklung dieser App unterstützen möchten, können Sie über meine Amazon-Wunschliste oder den PayPal-Knopf spenden. Weil ich in Australien bin, kann ich keine "Kaufversion" der App anbieten. :-) </string>
     <string name="upgrade_title">Seit der letzten Aktualisierung</string>
@@ -69,7 +67,7 @@
 <string name="select_fields_to_update">Felder für Aktualisierung auswählen</string>
 <string name="select_fields_to_update_help">Die ausgewählten Felder werden aus dem Internet aktualisiert. Nicht ausgewählte Felder werden nicht geändert.</string>
 <string name="overwrite_thumbnail">Die ausgewählten Felder werden wie gezeigt aktualisiert. Die Cover-Bilder können optional für ALLE Bücher heruntergeladen werden.\n\nSollen alle bestehenden Cover-Bilder überschrieben werden? Warnung, die Aktualisierung kann lange dauern. </string>
-<string name="yes">Ja</string>
+<string name="option_yes">Ja</string>
 <string name="option_no">Nein</string>
 <string name="button_ok">OK</string>
     <string name="search_fail">Die Suche nach dem Buch ist fehlgeschlagen. Bitte überprüfen Sie die Netzwerkeinstellungen.</string>
@@ -214,15 +212,12 @@
     <string name="title_settings">Verwaltung und Einstellungen</string>
     <string name="title_other_preferences">Weitere Einstellungen</string>
 <string name="user_interface">Benutzeroberfläche</string>
-<string name="start_in_my_books">Start in \'Meine Bücher\'</string>
+<string name="preference_start_in_my_books">Start in \'Meine Bücher\'</string>
     <string name="background_tasks">Aufgaben im Hintergrund</string>
 <string name="cleanup_old_tasks">Alte Aufgaben bereinigen</string>
 <string name="cleanup_old_events">Alte Ereignisse bereinigen</string>
-    <string name="search_criteria">Suchkriterien</string>
-<string name="label_add_manually">Manuell hinzufügen</string>
+    <string name="label_add_manually">Manuell hinzufügen</string>
     <string name="label_search_internet">Internet durchsuchen</string>
-<string name="show_results">Ergebnisse anzeigen</string>
-<string name="rebuild_fts">FTS neu aufbauen(nur alpha!)</string>
     <string name="send_books_to_goodreads">Bücher zu Goodreads senden</string>
 <string name="legacy_task">Legacy Task</string>
 <string name="occurred_at">ist bei %1$s aufgetreten</string>
@@ -266,7 +261,7 @@
 <string name="sort_author_year">Autor und Jahr</string>
 <string name="empty_with_brackets">(leer)</string>
     <string name="title_library_preferences">Einstellungen der Bücherliste</string>
-<string name="extra_book_details">Zusätzliche Buchdetails</string>
+<string name="preference_extra_book_details">Zusätzliche Buchdetails</string>
 <string name="general">Allgemein</string>
 <string name="label_bookshelves">Bücherregale</string>
 <string name="shelves">Regale</string>
@@ -317,23 +312,20 @@
 <string name="extra_filters">Buchfilter</string>
 <string name="new_style">Neuer Stil</string>
 <string name="select_based_on_read_status">Auswahl auf Basis des Status \'Gelesen\'</string>
-<string name="books_with_multiple_authors">Bücher mit mehreren Autoren</string>
-<string name="books_in_multiple_series">Bücher in mehreren Serien</string>
+<string name="preference_books_with_multiple_authors">Bücher mit mehreren Autoren</string>
+<string name="preference_books_in_multiple_series">Bücher in mehreren Serien</string>
 <string name="option_use_default_setting">Standardeinstellung verwenden</string>
-<string name="show_book_under_each_thing">Unter jedem %1$s</string>
-<string name="show_book_under_primary_thing">Nur unter primärem %1$s</string>
-<string name="format_of_author_names">Format des Autorennamens</string>
-<string name="given_name_first_eg">Vorname zuerst (z.B. \'Max Meier\')</string>
-<string name="family_name_first_eg">Familienname zuerst (z.B. \'Meier, Max\')</string>
+<string name="option_show_book_under_each_thing">Unter jedem %1$s</string>
+<string name="option_show_book_under_primary_thing">Nur unter primärem %1$s</string>
+<string name="preference_format_of_author_names">Format des Autorennamens</string>
+<string name="option_given_name_first_eg">Vorname zuerst (z.B. \'Max Meier\')</string>
+<string name="option_family_name_first_eg">Familienname zuerst (z.B. \'Meier, Max\')</string>
 <string name="thumbnails">Cover-Bilder</string>
 <string name="preference_size_of_library_items">Größe der Einträge in der Bücherliste</string>
 <string name="option_normal">Normal</string>
 <string name="option_smaller">Kleiner</string>
 <string name="select_style">Stil wählen</string>
-<string name="preference_library_background_style">Hintergrundstil der Bücherliste</string>
-<string name="option_textured_background">Gemustertes Hintergrundbild</string>
-<string name="option_plain_background_b_reduces_flicker_b">Einfacher Hintergrund (vermindert Flackern)</string>
-<string name="thing_must_not_be_blank">%1$s darf nicht leer sein</string>
+    <string name="thing_must_not_be_blank">%1$s darf nicht leer sein</string>
 <string name="label_edit">Bearbeiten</string>
 <string name="groupings">Gruppierung</string>
     <string name="label_preferences">Einstellungen</string>
@@ -408,7 +400,7 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
 <string name="preference_summary_details_in_header">Zusammenfassung in der Kopfzeile</string>
 <string name="option_hide_summary_details">Zusammenfassung verbergen</string>
     <string name="x_is_not_a_valid_isbn">%1$s ist keine gültige ISBN</string>
-<string name="beep_if_scanned_isbn_invalid">Tonsignal, falls die gescannte ISBN ungültig ist</string>
+<string name="preference_beep_if_scanned_isbn_invalid">Tonsignal, falls die gescannte ISBN ungültig ist</string>
 <string name="no_image_found">Kein Bild gefunden</string>
 <string name="could_not_copy_image">Konnte Bild nicht kopieren</string>
 <string name="this_option_is_not_available_until_the_book_is_saved">Diese Option ist erst verfügbar, wenn das Buch gespeichert wurde.</string>
@@ -432,10 +424,10 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
 <string name="invalid_isbn_x_specified_in_search">Ungültige ISBN \'%1$s\' gesucht</string>
 <string name="if_day_is_specified_month_and_year_must_be">Wenn der Tag angegeben wird, muss auch Monat und Jahr angegeben werden.</string>
 <string name="if_month_is_specified_year_must_be">Wenn das Monat angegeben wird, muss auch das Jahr angegeben werden.</string>
-    <string name="use_external_image_cropper">Externe Bildbearbeitung verwenden (experimentell)</string>
-<string name="auto_rotate_camera_images">Bilder von der Kamera automatisch rotieren</string>
+    <string name="preference_use_external_image_cropper">Externe Bildbearbeitung verwenden (experimentell)</string>
+<string name="preference_auto_rotate_camera_images">Bilder von der Kamera automatisch rotieren</string>
 <string name="hint_autorotate_camera_images">Wenn Sie Bilder von der Kamera immer in die selbe Richtung drehen müssen, versuchen Sie, die automatische Drehrichtung in den Einstellungen festzulegen.</string>
-<string name="default_crop_frame_is_whole_image">Standardbeschnitt besteht aus dem gesamten Bild</string>
+<string name="preference_default_crop_frame_is_whole_image">Standardbeschnitt besteht aus dem gesamten Bild</string>
 <string name="cancelled">Abgebrochen</string>
 <string name="import_complete">Import vollständig</string>
     <string name="searching_ellipsis">Suche&#8230;</string>
@@ -494,10 +486,10 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
     ]]></string>
 
 <string name="scanning">Scanne</string>
-<string name="preferred_scanner">Bevorzugter Scanner</string>
-<string name="zxing_compatible_scanner">Zxing-kompatibler Scanner</string>
-<string name="pic2shop_scanner">pic2shop-Scanner</string>
-<string name="beep_if_scanned_isbn_valid">Tonsignal bei gültig gescannter ISBN</string>
+<string name="preference_preferred_scanner">Bevorzugter Scanner</string>
+<string name="option_zxing_compatible_scanner">Zxing-kompatibler Scanner</string>
+<string name="option_pic2shop_scanner">pic2shop-Scanner</string>
+<string name="preference_beep_if_scanned_isbn_valid">Tonsignal bei gültig gescannter ISBN</string>
 
 <string name="new_in_424"><![CDATA[
 <p><b>Neu in 4.2.4</b>\n\n
@@ -531,7 +523,7 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
 <string name="label_import_from_archive">Import vom Archiv</string>
 <!--  Hint displayed when aCatalogue Backup is done -->
     <string name="a_and_b">%1$s und %2$s</string>
-    <string name="archive_complete_details">Eine %3$s-Datei namens %2$s wurde im Verzeichnis \"%1$s\" auf Ihrer SD-Karte erzeugt.
+    <string name="para_archive_complete_details">Eine %3$s-Datei namens %2$s wurde im Verzeichnis \"%1$s\" auf Ihrer SD-Karte erzeugt.
     \n\nSie sollten diese Datei händisch an einen sicheren Ort kopieren, um Ihre Daten vor Beschädigung, Verlust oder Diebstahl zu schützen.</string>
 
 <string name="covers_progress">%1$s Cover bearbeitet (%2$s offen)</string>
@@ -763,7 +755,7 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
         <!-- TRANLATORS NOTE: I HAVE UPDATED THE new_in_510, above! Sorry. -->
 
         <!-- Preference VALUE, displayed in a preference activity -->
-        <string name="zxing_scanner">Zxing Scanner</string>
+        <string name="option_zxing_scanner">Zxing Scanner</string>
 
         <!-- Heading in 'about' dialog -->
         <string name="label_special_thanks">Danksagung</string>
@@ -825,9 +817,9 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
     <!-- Begin: Added/Updated in 5.2.0 -->
 
     <!-- Preference name (fairly short) for preferred language -->
-    <string name="preferred_interface_language">Bevorzugte Bediensprache</string>
+    <string name="preference_preferred_interface_language">Bevorzugte Bediensprache</string>
     <!-- Preference value for a specific language. First arg is name in it's own language, second arg is name in current locale -->
-    <string name="preferred_language_x">%1$s (%2$s)</string>
+    <string name="option_preferred_language_x">%1$s (%2$s)</string>
 
     <!-- This is an UPDATED string copied from earlier in the file; "Google Googles" (sic) was removed from the list of scanners -->
 

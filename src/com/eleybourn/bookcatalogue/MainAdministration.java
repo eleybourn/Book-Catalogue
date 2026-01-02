@@ -156,6 +156,30 @@ public class MainAdministration extends ActivityWithTasks
         blPrefs.setBackgroundResource(android.R.drawable.list_selector_background);
         blPrefs.setOnClickListener(v -> BookCatalogueApp.startPreferencesActivity(MainAdministration.this));
 
+        // Edit Book list styles
+        {
+            View lbl = findViewById(R.id.editStylesLabel);
+            // Make line flash when clicked.
+            lbl.setBackgroundResource(android.R.drawable.list_selector_background);
+            lbl.setOnClickListener(v -> BooklistStyles.startEditActivity(MainAdministration.this));
+        }
+
+        /* Other Prefs Link */
+        View otherPrefs = findViewById(R.id.otherPrefsLabel);
+        // Make line flash when clicked.
+        otherPrefs.setBackgroundResource(android.R.drawable.list_selector_background);
+        otherPrefs.setOnClickListener(v -> {
+            Intent i = new Intent(MainAdministration.this, AdminOtherPreferences.class);
+            startActivity(i);
+        });
+        {
+            /* Backup Catalogue Link */
+            View backup = findViewById(R.id.backupCatalogueLabel);
+            // Make line flash when clicked.
+            backup.setBackgroundResource(android.R.drawable.list_selector_background);
+            backup.setOnClickListener(v -> launchBackupExport());
+        }
+
         /* Export Link */
         View export = findViewById(R.id.exportLabel);
         // Make line flash when clicked.
@@ -196,23 +220,6 @@ public class MainAdministration extends ActivityWithTasks
                             });
                     alertDialog.show();
                 });
-
-        /* Other Prefs Link */
-        View otherPrefs = findViewById(R.id.otherPrefsLabel);
-        // Make line flash when clicked.
-        otherPrefs.setBackgroundResource(android.R.drawable.list_selector_background);
-        otherPrefs.setOnClickListener(v -> {
-            Intent i = new Intent(MainAdministration.this, AdminOtherPreferences.class);
-            startActivity(i);
-        });
-
-        // Edit Book list styles
-        {
-            View lbl = findViewById(R.id.editStylesLabel);
-            // Make line flash when clicked.
-            lbl.setBackgroundResource(android.R.drawable.list_selector_background);
-            lbl.setOnClickListener(v -> BooklistStyles.startEditActivity(MainAdministration.this));
-        }
 
         {
             /* Update Fields Link */
@@ -270,13 +277,6 @@ public class MainAdministration extends ActivityWithTasks
                     utils.close();
                 }
             });
-        }
-        {
-            /* Backup Catalogue Link */
-            View backup = findViewById(R.id.backupCatalogueLabel);
-            // Make line flash when clicked.
-            backup.setBackgroundResource(android.R.drawable.list_selector_background);
-            backup.setOnClickListener(v -> launchBackupExport());
         }
         {
             /* Restore Catalogue Link */

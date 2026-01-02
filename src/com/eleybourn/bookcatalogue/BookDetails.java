@@ -283,7 +283,7 @@ public class BookDetails extends BookAbstract {
     private void showSignedStatus(BookData book) {
         if (book.isSigned()) {
             assert getView() != null;
-            ((TextView) getView().findViewById(R.id.field_signed)).setText(getResources().getString(R.string.yes));
+            ((TextView) getView().findViewById(R.id.field_signed)).setText(getResources().getString(R.string.option_yes));
         }
     }
 
@@ -332,7 +332,7 @@ public class BookDetails extends BookAbstract {
         public String format(Field f, String source) {
             try {
                 boolean val = Utils.stringToBoolean(source, false);
-                return BookCatalogueApp.getResourceString(val ? R.string.yes : R.string.option_no);
+                return BookCatalogueApp.getResourceString(val ? R.string.option_yes : R.string.option_no);
             } catch (Exception e) {
                 return source;
             }

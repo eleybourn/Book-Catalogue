@@ -37,8 +37,6 @@
     <string name="import_data">Importa libri</string>
     <string name="import_alert">Attenzione. L\'importazione dei dati potrebbe aggiornare i record esistenti con nuove informazioni se manca la colonna uuid e l\'id nel file di importazione è identico a un id esistente. Ciò è corretto se hai modificato un campo nel file di esportazione. Se hai registrato un nuovo libro, o stai importando libri di qualcun altro, assicurati che vi sia il campo uuid o il campo id sia vuoto.</string>
     <string name="import_failed_is_location_correct">ERRORE: Importazione dei dati dalla SDCard non riuscita. Il file è nel posto corretto?</string>
-    <string name="deleteme_administration_label">Funzioni amministratore</string>
-    <string name="label_administration">Amministratore</string>
     <string name="install_scan_title">Installa app per la scansione</string>
     <string name="label_version_number">Numero versione:</string>
     <string name="para_donate">Se vuoi supportare lo sviluppatore di questa applicazione, effettua una donazione utilizzando My Amazon Wishlist o il pulsante di Paypal qui sotto. Essendo in Australia non posso pubblicare una versione a &quot;pagamento&quot;. :-)</string>
@@ -67,7 +65,7 @@
     <string name="select_fields_to_update">Seleziona i campi da aggiornare</string>
     <string name="select_fields_to_update_help">I campi selezionati verranno aggiornato da Internet. Gli altri rimarranno invariati.</string>
     <string name="overwrite_thumbnail">Verranno aggiornati i campi selezionati come indicato, ma opzionalmente è possibile aggiornare anche le miniature di TUTTI i libri.\n\nVuoi sovrascrivere tutte le miniature esistenti? Attenzione, potrebbero occorrere diversi minuti. </string>
-    <string name="yes">Sì</string>
+    <string name="option_yes">Sì</string>
     <string name="option_no">No</string>
     <string name="button_ok">OK</string>
     <string name="search_fail">Ricerca del libro fallita. Controlla le impostazioni di rete.</string>
@@ -221,15 +219,12 @@
     <string name="title_settings">Amministrazione e Preferenze</string>
     <string name="title_other_preferences">Altre Preferenze</string>
     <string name="user_interface">Interfaccia Utente</string>
-    <string name="start_in_my_books">Inizia in \'I miei libri\'</string>
+    <string name="preference_start_in_my_books">Inizia in \'I miei libri\'</string>
     <string name="background_tasks">Operazioni in background</string>
     <string name="cleanup_old_tasks">Cancella operazioni precedenti</string>
     <string name="cleanup_old_events">Cancella eventi trascorsi</string>
-    <string name="search_criteria">Criteri di ricerca</string>
     <string name="label_add_manually">Aggiungi Manualmente</string>
     <string name="label_search_internet">Cerca in Internet</string>
-    <string name="show_results">Mostra risultati</string>
-    <string name="rebuild_fts">Ricrea FTS (sperimentale!)</string>
     <string name="send_books_to_goodreads">Invia libri a GoodReads</string>
     <string name="legacy_task">Operazione obsoleta</string>
     <string name="occurred_at">si è verificata a %1$s</string>
@@ -291,7 +286,7 @@
     <item name="MENU_CLONE_STYLE" type="id"/>
 
     <string name="title_library_preferences">Preferenze Elenchi Libri</string>
-    <string name="extra_book_details">Dettagli libro aggiuntivi</string>
+    <string name="preference_extra_book_details">Dettagli libro aggiuntivi</string>
     <string name="general">Generale</string>
     <string name="label_bookshelves">Librerie</string>
     <string name="shelves">Scaffali</string>
@@ -348,22 +343,19 @@
     <string name="extra_filters">Filtra libri</string>
     <string name="new_style">Nuovo stile</string>
     <string name="select_based_on_read_status">Seleziona in base allo stato \'Letto\'</string>
-    <string name="books_with_multiple_authors">Libri con autori multipli</string>
-    <string name="books_in_multiple_series">Libri in serie multiple</string>
+    <string name="preference_books_with_multiple_authors">Libri con autori multipli</string>
+    <string name="preference_books_in_multiple_series">Libri in serie multiple</string>
     <string name="option_use_default_setting">Usa i parametri predefiniti</string>
-    <string name="show_book_under_each_thing">Sotto ciascuno %1$s</string>
-    <string name="show_book_under_primary_thing">Solo sotto %1$s primario</string>
-    <string name="format_of_author_names">Formato dei nome degli autori</string>
-    <string name="given_name_first_eg">Prima il nome, ad es. \'Mario Rossi\'</string>
-    <string name="family_name_first_eg">Prima il cognome, ad es. \'Rossi, Mario\'</string>
+    <string name="option_show_book_under_each_thing">Sotto ciascuno %1$s</string>
+    <string name="option_show_book_under_primary_thing">Solo sotto %1$s primario</string>
+    <string name="preference_format_of_author_names">Formato dei nome degli autori</string>
+    <string name="option_given_name_first_eg">Prima il nome, ad es. \'Mario Rossi\'</string>
+    <string name="option_family_name_first_eg">Prima il cognome, ad es. \'Rossi, Mario\'</string>
     <string name="thumbnails">Miniature</string>
     <string name="preference_size_of_library_items">Dimensione degli elementi dell\'elenco libri</string>
     <string name="option_normal">Normale</string>
     <string name="option_smaller">Più piccolo</string>
     <string name="select_style">Seleziona Stile</string>
-    <string name="preference_library_background_style">Stile dello sfondo dell\'elenco libri</string>
-    <string name="option_textured_background">Immagine di sfondo</string>
-    <string name="option_plain_background_b_reduces_flicker_b">Sfondo semplice (riduce lo sfarfallio)</string>
     <string name="thing_must_not_be_blank">%1$s deve contenere un valore</string>
     <string name="label_edit">Modifica</string>
     <string name="groupings">Raggruppamenti</string>
@@ -438,7 +430,7 @@
     <string name="preference_summary_details_in_header">Riassunto dettagli nel titolo</string>
     <string name="option_hide_summary_details">Nascondi riassunto dettagli</string>
     <string name="x_is_not_a_valid_isbn">%1$s non è un codice ISBN valido</string>
-    <string name="beep_if_scanned_isbn_invalid">Suona se il codice ISBN acquisito non è valido</string>
+    <string name="preference_beep_if_scanned_isbn_invalid">Suona se il codice ISBN acquisito non è valido</string>
     <string name="no_image_found">Nessuna immagine trovata</string>
     <string name="could_not_copy_image">Impossibile copiare l\'immagine</string>
     <string name="this_option_is_not_available_until_the_book_is_saved">Opzione disponibile dopo aver salvato il libro</string>
@@ -462,15 +454,15 @@
     <string name="invalid_isbn_x_specified_in_search">Codice ISBN non valido \'%1$s\' specificato nella ricerca</string>
     <string name="if_day_is_specified_month_and_year_must_be">Se si indica il giorno, occorre indicare anche mese ed anno.</string>
     <string name="if_month_is_specified_year_must_be">Se si indica il mese, occorre indicare anche l\'anno.</string>
-    <string name="use_external_image_cropper">Usa un programma esterno per il ritaglio delle immagini (sperimentale)</string>
-    <string name="auto_rotate_camera_images">Ruota automaticamente le immagini acquisite dalla fotocamera</string>
+    <string name="preference_use_external_image_cropper">Usa un programma esterno per il ritaglio delle immagini (sperimentale)</string>
+    <string name="preference_auto_rotate_camera_images">Ruota automaticamente le immagini acquisite dalla fotocamera</string>
     <string name="hint_autorotate_camera_images">Se ti trovi a ruotare le immagini acquisite sempre nella stessa direzione, puoi provare a modificare le impostazioni dell\'applicazione specificando una rotazione di default da applicare automaticamente.</string>
-    <string name="default_crop_frame_is_whole_image">Area di ritaglio predefinita uguale all\'intera immagine</string>
+    <string name="preference_default_crop_frame_is_whole_image">Area di ritaglio predefinita uguale all\'intera immagine</string>
     <string name="cancelled">Cancellato</string>
     <string name="import_complete">Importazione Completata</string>
     <string name="searching_ellipsis">Ricerca&#8230;</string>
     <string name="status_adding_book_ellipsis">Aggiunta libro&#8230;</string>
-    <string name="prefs_global_opening_book_mode">Apri il libro in sola lettura</string>
+    <string name="preference_global_opening_book_mode">Apri il libro in sola lettura</string>
     <string name="label_publishing">Pubblicazione</string>
     <string name="book_details_readonly_by">di</string>
     <string name="book_details_readonly_loaned_to">Prestato a %1$s</string>
@@ -533,13 +525,13 @@
     <!-- Heading for scanner-related preferences -->
     <string name="scanning">Acquisizione</string>
     <!-- Preference name, displayed in a preference activity -->
-    <string name="preferred_scanner">Programma Preferito</string>
+    <string name="preference_preferred_scanner">Programma Preferito</string>
     <!-- Preference VALUE, displayed in a preference activity -->
-    <string name="zxing_compatible_scanner">Programma Compatibile Zxing</string>
+    <string name="option_zxing_compatible_scanner">Programma Compatibile Zxing</string>
     <!-- Preference VALUE, displayed in a preference activity -->
-    <string name="pic2shop_scanner">Programma Pic2Shop</string>
+    <string name="option_pic2shop_scanner">Programma Pic2Shop</string>
     <!-- Preference name, displayed in a preference activity -->
-    <string name="beep_if_scanned_isbn_valid">Suona se il codice ISBN acquisito è valido</string>
+    <string name="preference_beep_if_scanned_isbn_valid">Suona se il codice ISBN acquisito è valido</string>
     <string name="new_in_424">
 <![CDATA[
 	<p><b>Novità nella versione 4.2.4</b>\n\n
@@ -583,7 +575,7 @@
 
     <!-- Hint displayed when aCatalogue Backup is done -->
     <string name="a_and_b">%1$s e %2$s</string>
-    <string name="archive_complete_details">Un %3$s file chiamato %2$s è stato creato nella cartella \"%1$s\" della tua
+    <string name="para_archive_complete_details">Un %3$s file chiamato %2$s è stato creato nella cartella \"%1$s\" della tua
     SD card.\n\nTi raccomandiamo di tenerne copia da qualche altra parte a protezione dei dati in caso il tuo apparecchio venga danneggiato, perso o rubato.</string>
 
     <!-- Displayed in progress dialog when exporting covers -->
@@ -863,7 +855,7 @@
     <!-- Begin: Added/Updated in 5.2.0 -->
     
     <!-- Preference name (fairly short) for preferred language -->
-    <string name="preferred_interface_language">Lingua preferita</string>
+    <string name="preference_preferred_interface_language">Lingua preferita</string>
     <!-- Preference value for a specific language. First arg is name in it's own language, second arg is name in current locale -->
 
     <!-- This is an UPDATED string copied from earlier in the file; "Google Googles" (sic) was removed from the list of scanners -->

@@ -39,8 +39,6 @@
     <string name="import_data">Boeken Importeren</string>
     <string name="import_alert">Waarschuwing. Het importeren van gegevens kan bestaande boekgegevens onbedoeld bijwerken met nieuwe informatie als de UUID-kolom niet aanwezig is en de id in het import-bestand dezelfde is als het bestaande id. Dit is meestal geen bezwaar als u een veld in een exportbestand heeft veranderd. Als u een nieuwe boek item heeft gemaakt, of iemand anders zijn boeken importeert, zorg dan dat het UUID veld aanwezig is of dat het id veld leeg is.</string>
     <string name="import_failed_is_location_correct">FOUT: Import van gegevens (van SD kaart) mislukt. Staat het bestand op de juiste plaats?</string>
-    <string name="deleteme_administration_label">Administratieve Functies</string>
-    <string name="label_administration">Beheer</string>
     <string name="install_scan_title">Streepjescode Scanner Installeren</string>
     <string name="label_version_number">Versienummer:</string>
     <string name="para_donate">Als u de ontwikkeling van deze applicatie wilt ondersteunen, kunt u een bijdrage doen via mijn Amazon Wishlist of de Paypal knop hieronder. Omdat ik in Australië ben kan ik geen betaalde &quot;betaalde&quot; versie publiceren. :-) </string>
@@ -69,7 +67,7 @@
     <string name="select_fields_to_update">Selecteer bij te werken velden</string>
     <string name="select_fields_to_update_help">De geselecteerde velden zullen worden bijgewerkt vanaf het internet. Niet geselecteerde velden blijven onveranderd.</string>
     <string name="overwrite_thumbnail">Dit zal de geselecteerde velden zoals getoond bijwerken, maar miniaturen kunnen desgewenst voor Alle boeken worden gedownload.\n\nWilt u alle miniaturen overschrijven? Waarschuwing: dit kan een lange tijd in beslag nemen. </string>
-    <string name="yes">Ja</string>
+    <string name="option_yes">Ja</string>
     <string name="option_no">Nee</string>
     <string name="button_ok">OK</string>
     <string name="search_fail">Het zoeken naar het boek is mislukt. Controleer uw netwerk instellingen.</string>
@@ -217,15 +215,12 @@
     <string name="title_settings">Administratie en voorkeuren</string>
     <string name="title_other_preferences">Meer voorkeuren</string>
     <string name="user_interface">Gebruikersinterface</string>
-    <string name="start_in_my_books">Opstarten in \'Mijn Boeken\'</string>
+    <string name="preference_start_in_my_books">Opstarten in \'Mijn Boeken\'</string>
     <string name="background_tasks">Achtergrondtaken</string>
     <string name="cleanup_old_tasks">Opschonen oude taken</string>
     <string name="cleanup_old_events">Opschonen oude gebeurtenissen</string>
-    <string name="search_criteria">Zoekcriteria</string>
     <string name="label_add_manually">Handmatig toevoegen</string>
     <string name="label_search_internet">Internet doorzoeken</string>
-    <string name="show_results">Toon resultaten</string>
-    <string name="rebuild_fts">FTS opnieuw opbouwen (alleen alpha!)</string>
     <string name="send_books_to_goodreads">Zend boeken naar goodreads</string>
     <string name="legacy_task">Verlopen taken</string>
     <string name="occurred_at">opgetreden op %1$s</string>
@@ -268,7 +263,7 @@
     <string name="sort_author_year">Auteur en jaar</string>
     <string name="empty_with_brackets">(leeg)</string>
     <string name="title_library_preferences">Boekenlijst Voorkeuren</string>
-    <string name="extra_book_details">Extra boekdetails</string>
+    <string name="preference_extra_book_details">Extra boekdetails</string>
     <string name="general">Algemeen</string>
     <string name="label_bookshelves">Boekenplanken</string>
     <string name="shelves">Planken</string>
@@ -324,22 +319,19 @@
     <string name="extra_filters">Boekfilters</string>
     <string name="new_style">Nieuwe stijl</string>
     <string name="select_based_on_read_status">Selecteer op \'Gelezen\' status</string>
-    <string name="books_with_multiple_authors">Boeken met meerdere auteurs</string>
-    <string name="books_in_multiple_series">Boeken in meerdere series</string>
+    <string name="preference_books_with_multiple_authors">Boeken met meerdere auteurs</string>
+    <string name="preference_books_in_multiple_series">Boeken in meerdere series</string>
     <string name="option_use_default_setting">Gebruik de standaard waarden</string>
-    <string name="show_book_under_each_thing">Onder elke %1$s</string>
-    <string name="show_book_under_primary_thing">Alleen onder primaire %1$s</string>
-    <string name="format_of_author_names">Formaat van auteursnamen</string>
-    <string name="given_name_first_eg">Voornaam eerst bijv. \'Gerard Reve\'</string>
-    <string name="family_name_first_eg">Achternaam eerst bijv. \'Reve, Gerard\'</string>
+    <string name="option_show_book_under_each_thing">Onder elke %1$s</string>
+    <string name="option_show_book_under_primary_thing">Alleen onder primaire %1$s</string>
+    <string name="preference_format_of_author_names">Formaat van auteursnamen</string>
+    <string name="option_given_name_first_eg">Voornaam eerst bijv. \'Gerard Reve\'</string>
+    <string name="option_family_name_first_eg">Achternaam eerst bijv. \'Reve, Gerard\'</string>
     <string name="thumbnails">Miniaturen</string>
     <string name="preference_size_of_library_items">Grootte van boekenlijstitems</string>
     <string name="option_normal">Normaal</string>
     <string name="option_smaller">Kleiner</string>
     <string name="select_style">Selecteer stijl</string>
-    <string name="preference_library_background_style">Boekenlijst achtergrondstijl</string>
-    <string name="option_textured_background">Achtergrondafbeelding met textuur</string>
-    <string name="option_plain_background_b_reduces_flicker_b">Effen achtergrond (minder flikkering)</string>
     <string name="thing_must_not_be_blank">%1$s mag niet leeg zijn</string>
     <string name="label_edit">Bewerken</string>
     <string name="groupings">Groeperingen</string>
@@ -413,7 +405,7 @@
     <string name="preference_summary_details_in_header">Samenvattingsdetails in koptekst</string>
     <string name="option_hide_summary_details">Verberg samenvattingsdetails</string>
     <string name="x_is_not_a_valid_isbn">%1$s is geen geldige ISBN</string>
-    <string name="beep_if_scanned_isbn_invalid">Beep als het gescande ISBN ongeldig is</string>
+    <string name="preference_beep_if_scanned_isbn_invalid">Beep als het gescande ISBN ongeldig is</string>
     <string name="no_image_found">Geen afbeelding gevonden</string>
     <string name="could_not_copy_image">Kon afbeelding niet kopiëren</string>
     <string name="this_option_is_not_available_until_the_book_is_saved">Deze optie is niet aanwezig voordat het boek is opgeslagen</string>
@@ -437,15 +429,15 @@
     <string name="invalid_isbn_x_specified_in_search">Ongeldig ISBN \'%1$s\' gespecificeerd in zoekveld</string>
     <string name="if_day_is_specified_month_and_year_must_be">Als de dag is gespecificeerd dan moet ook de maand en het jaar ingevuld worden.</string>
     <string name="if_month_is_specified_year_must_be">Als de maand is gespecificeerd moet ook het jaar worden ingevuld.</string>
-    <string name="use_external_image_cropper">Gebruik een externe app voor bijsnijden afbeelding (experimenteel)</string>
-    <string name="auto_rotate_camera_images">met camera-opnames automatisch draaien</string>
+    <string name="preference_use_external_image_cropper">Gebruik een externe app voor bijsnijden afbeelding (experimenteel)</string>
+    <string name="preference_auto_rotate_camera_images">met camera-opnames automatisch draaien</string>
     <string name="hint_autorotate_camera_images">Als u altijd uw camera-opnames dezelfde kant opdraait kunt u proberen de applicatie-instellingen te veranderen zodat dit automatisch gebeurt.</string>
-    <string name="default_crop_frame_is_whole_image">Standaard kader voor bijsnijden is hele afbeelding</string>
+    <string name="preference_default_crop_frame_is_whole_image">Standaard kader voor bijsnijden is hele afbeelding</string>
     <string name="cancelled">Geannuleerd</string>
     <string name="import_complete">Import Compleet</string>
     <string name="searching_ellipsis">Aan \'t zoeken&#8230;</string>
     <string name="status_adding_book_ellipsis">Boeken aan \'t toevoegen&#8230;</string>
-    <string name="prefs_global_opening_book_mode">Open boek in alleen-lezen modus</string>
+    <string name="preference_global_opening_book_mode">Open boek in alleen-lezen modus</string>
     <string name="label_publishing">Publiceren</string>
     <string name="book_details_readonly_by">door</string>
     <string name="book_details_readonly_loaned_to">Uitgeleend aan %1$s</string>
@@ -508,13 +500,13 @@
     <!-- Heading for scanner-related preferences -->
     <string name="scanning">Scannen</string>
     <!-- Preference name, displayed in a preference activity -->
-    <string name="preferred_scanner">Voorkeur Scanner</string>
+    <string name="preference_preferred_scanner">Voorkeur Scanner</string>
     <!-- Preference VALUE, displayed in a preference activity -->
-    <string name="zxing_compatible_scanner">Zxing Compatibele Scanner</string>
+    <string name="option_zxing_compatible_scanner">Zxing Compatibele Scanner</string>
     <!-- Preference VALUE, displayed in a preference activity -->
-    <string name="pic2shop_scanner">Pic2Shop Scanner</string>
+    <string name="option_pic2shop_scanner">Pic2Shop Scanner</string>
     <!-- Preference name, displayed in a preference activity -->
-    <string name="beep_if_scanned_isbn_valid">Beep als gescande ISBN geldig is</string>
+    <string name="preference_beep_if_scanned_isbn_valid">Beep als gescande ISBN geldig is</string>
     <string name="new_in_424">
 <![CDATA[
 	<p><b>New in 4.2.4</b>\n\n
@@ -557,7 +549,7 @@ Zie "Meer voorkeuren" voor de relevante instelling.
 
     <!-- Hint displayed when aCatalogue Backup is done -->
     <string name="a_and_b">%1$s and %2$s</string>
-    <string name="archive_complete_details">Een %3$s bestand met de naam %2$s is aangemaakt in de \"%1$s\" map op uw
+    <string name="para_archive_complete_details">Een %3$s bestand met de naam %2$s is aangemaakt in de \"%1$s\" map op uw
         SD kaart.  U wordt aangeraden dit bestand naar een ander plek te kopiëren om de gegevens veilig te stellen in geval uw apparaat wordt gestolen, beschadigd of kwijt raakt.</string>
 
     <!-- Displayed in progress dialog when exporting covers -->
@@ -798,7 +790,7 @@ Zie "Meer voorkeuren" voor de relevante instelling.
 
     <!-- TRANLATORS NOTE: I HAVE UPDATED THE new_in_510, above! Sorry. -->
     
-    <string name="zxing_scanner">Zxing Scanner</string>
+    <string name="option_zxing_scanner">Zxing Scanner</string>
     
     <!-- Heading in 'about' dialog -->
     <string name="label_special_thanks">Speciale dankbetuiging</string>
@@ -859,9 +851,9 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     <!-- Begin: Added/Updated in 5.2.0 -->
     
     <!-- Preference name (fairly short) for preferred language -->
-    <string name="preferred_interface_language">Voorkeurstaal voor Interface</string>
+    <string name="preference_preferred_interface_language">Voorkeurstaal voor Interface</string>
     <!-- Preference value for a specific language. First arg is name in it's own language, second arg is name in current locale -->
-    <string name="preferred_language_x">%1$s (%2$s)</string>
+    <string name="option_preferred_language_x">%1$s (%2$s)</string>
 
     <string name="system_locale">Systeem taal</string>
 

@@ -228,7 +228,7 @@ public class BookEditSeriesList extends BookEditObjectList<Series> {
 			
 			alertDialog.setTitle(res.getText(R.string.unsaved_edits_title));
 			alertDialog.setIcon(R.drawable.ic_menu_info);
-			alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, res.getText(R.string.yes), (dialog, which) -> {
+			alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, res.getText(R.string.option_yes), (dialog, which) -> {
                 t.setText("");
                 findViewById(R.id.button_confirm).performClick();
             });

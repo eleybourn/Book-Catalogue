@@ -20,6 +20,8 @@
 
 package com.eleybourn.bookcatalogue.booklist;
 
+import androidx.annotation.NonNull;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -46,12 +48,9 @@ import com.eleybourn.bookcatalogue.properties.StringProperty;
 /**
  * Represents a specific style of book list (eg. authors/series). Individual LibraryGroup objects
  * are added to a style in order to describe the resulting list style.
- * 
  * ENHANCE: Allow for style-based overrides of things currently stored in preferences
  * 			This should include thumbnail presence/size, book-in-each-series etc. as well as font sizes.
- * 
  * How to add a new Group:
- * 
  * - add it to RowKinds. Update ROW_KIND_MAX.
  * - add new domain to DatabaseDefinitions (if necessary)
  * - modify LibraryBuilder.build() to add the necessary grouped/sorted domains
@@ -76,10 +75,8 @@ public class LibraryStyle implements Iterable<LibraryGroup>, Serializable {
 	public static final int EXTRAS_THUMBNAIL = 16;
 	/** Extra book data to show at lowest level */
 	public static final int EXTRAS_THUMBNAIL_LARGE = 32;
-	/** Extra book data to show at lowest level */
-	public static final int EXTRAS_ALL = EXTRAS_BOOKSHELVES|EXTRAS_LOCATION|EXTRAS_PUBLISHER|EXTRAS_AUTHOR|EXTRAS_THUMBNAIL|EXTRAS_THUMBNAIL_LARGE;
 
-	public static final String SFX_SHOW_BOOKSHELVES = "ShowBookshelves";
+    public static final String SFX_SHOW_BOOKSHELVES = "ShowBookshelves";
 	public static final String SFX_SHOW_LOCATION = "ShowLocation";
 	public static final String SFX_SHOW_PUBLISHER = "ShowPublisher";
 	public static final String SFX_SHOW_AUTHOR = "ShowAuthor";
@@ -115,32 +112,31 @@ public class LibraryStyle implements Iterable<LibraryGroup>, Serializable {
 	private int mNameStringId;
 
 	/** User-defined name of this style. Used for user-defined styles */
-	private String mName; // TODO: Legacy field designed for backward serialization compatibility
+	@SuppressWarnings("unused")
+    private String mName; // TODO: Legacy field designed for backward serialization compatibility
 	private transient StringProperty mNameProperty;
 
-	/** Extra fields to show at the book level */
-	//private int mExtras = 0;
-	/** List of groups */
+	// List of groups
 	private final ArrayList<LibraryGroup> mGroups;
-	/** Row id of database row from which this object comes */
+	// Row id of database row from which this object comes
 	private long mRowId = 0;
-	/** Extra details to show on book rows */
-	private transient BooleanProperty mXtraShowThumbnails;
-	/** Extra details to show on book rows */
-	private transient BooleanProperty mXtraLargeThumbnails;
-	/** Extra details to show on book rows */
-	private transient BooleanProperty mXtraShowBookshelves;
-	/** Extra details to show on book rows */
-	private transient BooleanProperty mXtraShowLocation;
-	/** Extra details to show on book rows */
-	private transient BooleanProperty mXtraShowPublisher;
-	/** Extra details to show on book rows */
-	private transient BooleanProperty mXtraShowAuthor;
-	/** Extra details to show on book rows */
-	private transient IntegerListProperty mXtraReadUnreadAll; 
-	/** Show list using smaller text */
+	// Extra details to show on book rows
+	private transient BooleanProperty mExtraShowThumbnails;
+	// Extra details to show on book rows
+	private transient BooleanProperty mExtraLargeThumbnails;
+	// Extra details to show on book rows
+	private transient BooleanProperty mExtraShowBookshelves;
+	// Extra details to show on book rows
+	private transient BooleanProperty mExtraShowLocation;
+	// Extra details to show on book rows
+	private transient BooleanProperty mExtraShowPublisher;
+	// Extra details to show on book rows
+	private transient BooleanProperty mExtraShowAuthor;
+	// Extra details to show on book rows
+	private transient IntegerListProperty mExtraReadUnreadAll;
+	// Show list using smaller text
 	private transient BooleanListProperty mCondensed; 
-	/** Show list header info */
+	// Show list header info
 	private transient IntegerListProperty mShowHeaderInfo; 
 			
 	/**
@@ -173,7 +169,7 @@ public class LibraryStyle implements Iterable<LibraryGroup>, Serializable {
 	// ENHANCE: Add filters based on 'loaned', 'anthology' and (maybe) duplicate books
 	
 	/** Support for 'READ' filter */
-	private static final ItemEntries<Integer> mReadFilterListItems = new ItemEntries<Integer>();
+	private static final ItemEntries<Integer> mReadFilterListItems = new ItemEntries<>();
 	static {
 		mReadFilterListItems.add(FILTER_UNREAD, R.string.option_select_unread_only);
 		mReadFilterListItems.add(FILTER_READ, R.string.option_select_read_only);
@@ -181,7 +177,7 @@ public class LibraryStyle implements Iterable<LibraryGroup>, Serializable {
 	}
 
 	/** Support for 'Condensed' property */
-	private static final ItemEntries<Boolean> mCondensedListItems = new ItemEntries<Boolean>();
+	private static final ItemEntries<Boolean> mCondensedListItems = new ItemEntries<>();
 	static {
 		mCondensedListItems.add(null, R.string.option_use_default_setting);
 		mCondensedListItems.add(false, R.string.option_normal);
@@ -196,7 +192,7 @@ public class LibraryStyle implements Iterable<LibraryGroup>, Serializable {
 	public static final Integer SUMMARY_SHOW_ALL = 0xff;
 	
 	/** Support for 'Show List Header Info' property */
-	private static final ItemEntries<Integer> mShowHeaderInfoListItems = new ItemEntries<Integer>();
+	private static final ItemEntries<Integer> mShowHeaderInfoListItems = new ItemEntries<>();
 	static {
 		mShowHeaderInfoListItems.add(null, R.string.option_use_default_setting);
 		mShowHeaderInfoListItems.add(SUMMARY_HIDE, R.string.option_hide_summary_details);
@@ -207,44 +203,36 @@ public class LibraryStyle implements Iterable<LibraryGroup>, Serializable {
 
 	/**
 	 * Constructor for system-defined styles.
-	 * 
-	 * @param stringId
 	 */
 	LibraryStyle(int stringId) {
 		mNameStringId = stringId;
-		mGroups = new ArrayList<LibraryGroup>();
+		mGroups = new ArrayList<>();
 		initProperties();
 		mNameProperty.set((String)null);
 	}
 
 	/**
 	 * Constructor for user-defined styles.
-	 * 
-	 * @param name
 	 */
 	LibraryStyle(String name) {
 		initProperties();
 		mNameStringId = 0;
-		mGroups = new ArrayList<LibraryGroup>();
+		mGroups = new ArrayList<>();
 		mNameProperty.set(name);
 	}
 
 	public int getReadFilter() {
-		return mXtraReadUnreadAll.getResolvedValue();
+		return mExtraReadUnreadAll.getResolvedValue();
 	}
 
 	/**
 	 * Accessor for flag indicating style is among preferred styles.
-	 * 
-	 * @return
 	 */
 	public boolean isPreferred() {
 		return mIsPreferred;
 	}
 	/**
 	 * Accessor for flag indicating style is among preferred styles.
-	 * 
-	 * @return
 	 */
 	public void setPreferred(boolean isPreferred) {
 		mIsPreferred = isPreferred;
@@ -252,20 +240,16 @@ public class LibraryStyle implements Iterable<LibraryGroup>, Serializable {
 	
 	/**
 	 * Accessor. Returns system name or user-defined name based on kind of style this object defines.
-	 *
-	 * @return
 	 */
 	public String getDisplayName() {
 		String s = mNameProperty.getResolvedValue();
-		if (!s.equals(""))
+		if (!s.isEmpty())
 			return s;
 		else
 			return BookCatalogueApp.getResourceString(mNameStringId);
 	}
 	/**
 	 * Accessor. Sets user-defined name.
-	 *
-	 * @return
 	 */
 	public void setName(String name) {
 		mNameProperty.set(name);
@@ -273,9 +257,7 @@ public class LibraryStyle implements Iterable<LibraryGroup>, Serializable {
 	}
 
 	/**
-	 * Accessor. Returns a standarised form of the style name. This name is unique.
-	 *
-	 * @return
+	 * Accessor. Returns a standardised form of the style name. This name is unique.
 	 */
 	public String getCanonicalName() {
 		if (isUserDefined())
@@ -291,26 +273,21 @@ public class LibraryStyle implements Iterable<LibraryGroup>, Serializable {
 	}
 
 	/**
-	 * Add a group to this style below any already added groups.
-	 * 
-	 * @param kind		Kind of group to add.
-	 * 
-	 * @return 	Newly created group.
-	 */
-	public LibraryGroup addGroup(int kind) {
+     * Add a group to this style below any already added groups.
+     *
+     * @param kind Kind of group to add.
+     */
+	public void addGroup(int kind) {
 		LibraryGroup g = LibraryGroup.newGroup(kind);
 		addGroup(g);
-		return g;
-	}
+    }
 
 	/**
-	 * Remove a group from this style.
-	 * 
-	 * @param kind		Kind of group to add.
-	 * 
-	 * @return 	Newly created group.
-	 */
-	public LibraryGroup removeGroup(int kind) {
+     * Remove a group from this style.
+     *
+     * @param kind Kind of group to add.
+     */
+	public void removeGroup(int kind) {
 		LibraryGroup toRemove = null;
 		for(LibraryGroup g: mGroups) {
 			if (g.kind == kind) {
@@ -321,36 +298,33 @@ public class LibraryStyle implements Iterable<LibraryGroup>, Serializable {
 		if (toRemove != null)
 			mGroups.remove(toRemove);
 
-		return toRemove;
-	}
+    }
 
 
 	/**
 	 * Returns true if this style is user-defined.
-	 *
-	 * @return
 	 */
 	public boolean isUserDefined() {
 		return (mNameStringId == 0 || mRowId != 0);
 	}
 
 	private void initProperties() {
-		mXtraShowThumbnails = new BooleanProperty("XThumbnails", PropertyGroup.GRP_THUMBNAILS, R.string.preference_show_thumbnails,
+		mExtraShowThumbnails = new BooleanProperty("XThumbnails", PropertyGroup.GRP_THUMBNAILS, R.string.preference_show_thumbnails,
 										PREF_SHOW_THUMBNAILS, true);
-		mXtraShowThumbnails.setWeight(-100);		
-		mXtraLargeThumbnails = new BooleanProperty("XLargeThumbnails", PropertyGroup.GRP_THUMBNAILS, R.string.preference_prefer_large_thumbnails,
+		mExtraShowThumbnails.setWeight(-100);
+		mExtraLargeThumbnails = new BooleanProperty("XLargeThumbnails", PropertyGroup.GRP_THUMBNAILS, R.string.preference_prefer_large_thumbnails,
 										PREF_LARGE_THUMBNAILS, false);
-		mXtraLargeThumbnails.setWeight(-99);		
+		mExtraLargeThumbnails.setWeight(-99);
 
-		mXtraShowBookshelves = new BooleanProperty("XBookshelves", PropertyGroup.GRP_EXTRA_BOOK_DETAILS, R.string.label_bookshelves,
+		mExtraShowBookshelves = new BooleanProperty("XBookshelves", PropertyGroup.GRP_EXTRA_BOOK_DETAILS, R.string.label_bookshelves,
 										PREF_SHOW_BOOKSHELVES, false);
-		mXtraShowLocation = new BooleanProperty("XLocation", PropertyGroup.GRP_EXTRA_BOOK_DETAILS, R.string.label_location,
+		mExtraShowLocation = new BooleanProperty("XLocation", PropertyGroup.GRP_EXTRA_BOOK_DETAILS, R.string.label_location,
 										PREF_SHOW_LOCATION, false);
-		mXtraShowPublisher = new BooleanProperty("XPublisher", PropertyGroup.GRP_EXTRA_BOOK_DETAILS, R.string.label_publisher,
+		mExtraShowPublisher = new BooleanProperty("XPublisher", PropertyGroup.GRP_EXTRA_BOOK_DETAILS, R.string.label_publisher,
 										PREF_SHOW_PUBLISHER, false);
-		mXtraShowAuthor = new BooleanProperty("XAuthor", PropertyGroup.GRP_EXTRA_BOOK_DETAILS, R.string.label_author,
+		mExtraShowAuthor = new BooleanProperty("XAuthor", PropertyGroup.GRP_EXTRA_BOOK_DETAILS, R.string.label_author,
 										PREF_SHOW_AUTHOR, false);
-		mXtraReadUnreadAll = new IntegerListProperty(mReadFilterListItems, "XReadUnreadAll", PropertyGroup.GRP_EXTRA_FILTERS, R.string.select_based_on_read_status, FILTER_READ_AND_UNREAD);
+		mExtraReadUnreadAll = new IntegerListProperty(mReadFilterListItems, "XReadUnreadAll", PropertyGroup.GRP_EXTRA_FILTERS, R.string.select_based_on_read_status, FILTER_READ_AND_UNREAD);
 
 		mNameProperty = new StringProperty("StyleName", PropertyGroup.GRP_GENERAL, R.string.option_name);
 		mNameProperty.setRequireNonBlank(true);
@@ -369,13 +343,13 @@ public class LibraryStyle implements Iterable<LibraryGroup>, Serializable {
 	public Properties getProperties() {
 		Properties props = new Properties();
 
-		props.add(mXtraShowThumbnails);
-		props.add(mXtraLargeThumbnails);
-		props.add(mXtraShowBookshelves);
-		props.add(mXtraShowLocation);
-		props.add(mXtraShowPublisher);
-		props.add(mXtraShowAuthor);
-		props.add(mXtraReadUnreadAll);
+		props.add(mExtraShowThumbnails);
+		props.add(mExtraLargeThumbnails);
+		props.add(mExtraShowBookshelves);
+		props.add(mExtraShowLocation);
+		props.add(mExtraShowPublisher);
+		props.add(mExtraShowAuthor);
+		props.add(mExtraReadUnreadAll);
 		props.add(mCondensed);
 		props.add(mNameProperty);
 		props.add(mShowHeaderInfo);
@@ -408,7 +382,7 @@ public class LibraryStyle implements Iterable<LibraryGroup>, Serializable {
 		Properties newProps = new Properties();
 
 		// Save the current groups
-		Hashtable<Integer, LibraryGroup> oldGroups = new Hashtable<Integer, LibraryGroup>();
+		Hashtable<Integer, LibraryGroup> oldGroups = new Hashtable<>();
 		for(LibraryGroup g: this) {
 			oldGroups.put(g.kind, g);
 		}
@@ -433,22 +407,22 @@ public class LibraryStyle implements Iterable<LibraryGroup>, Serializable {
 	public int getExtras() {
 		int extras = 0;
 
-		if ( mXtraShowThumbnails.getResolvedValue() )
+		if ( mExtraShowThumbnails.getResolvedValue() )
 			extras |= EXTRAS_THUMBNAIL;
 
-		if ( mXtraLargeThumbnails.getResolvedValue() )
+		if ( mExtraLargeThumbnails.getResolvedValue() )
 			extras |= EXTRAS_THUMBNAIL_LARGE;
 			
-		if ( mXtraShowBookshelves.getResolvedValue() )
+		if ( mExtraShowBookshelves.getResolvedValue() )
 			extras |= EXTRAS_BOOKSHELVES;
 
-		if ( mXtraShowLocation.getResolvedValue() )
+		if ( mExtraShowLocation.getResolvedValue() )
 			extras |= EXTRAS_LOCATION;
 			
-		if ( mXtraShowPublisher.getResolvedValue() )
+		if ( mExtraShowPublisher.getResolvedValue() )
 			extras |= EXTRAS_PUBLISHER;
 			
-		if ( mXtraShowAuthor.getResolvedValue() )
+		if ( mExtraShowAuthor.getResolvedValue() )
 			extras |= EXTRAS_AUTHOR;
 
 		return extras;
@@ -481,8 +455,6 @@ public class LibraryStyle implements Iterable<LibraryGroup>, Serializable {
 	
 	/**
 	 * Accessor for underlying database row id, if this object is from a database. 0 if not from database.
-	 * 
-	 * @return
 	 */
 	public long getRowId() {
 		return mRowId;
@@ -490,8 +462,6 @@ public class LibraryStyle implements Iterable<LibraryGroup>, Serializable {
 	
 	/**
 	 * Accessor for underlying database row id, set by query that retrieves the object.
-	 * 
-	 * @return
 	 */
 	public void setRowId(long rowId) {
 		mRowId = rowId;
@@ -500,7 +470,8 @@ public class LibraryStyle implements Iterable<LibraryGroup>, Serializable {
 	/**
      * Iterable support
      */
-	@Override
+	@NonNull
+    @Override
 	public Iterator<LibraryGroup> iterator() {
 		return mGroups.iterator();
 	}
@@ -511,13 +482,13 @@ public class LibraryStyle implements Iterable<LibraryGroup>, Serializable {
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.defaultWriteObject();
 		out.writeObject((Long)realSerialVersion);
-		out.writeObject(mXtraShowThumbnails.get());			
-		out.writeObject(mXtraLargeThumbnails.get());
-		out.writeObject(mXtraShowBookshelves.get());
-		out.writeObject(mXtraShowLocation.get());
-		out.writeObject(mXtraShowPublisher.get());
-		out.writeObject(mXtraShowAuthor.get());
-		out.writeObject(mXtraReadUnreadAll.get());
+		out.writeObject(mExtraShowThumbnails.get());
+		out.writeObject(mExtraLargeThumbnails.get());
+		out.writeObject(mExtraShowBookshelves.get());
+		out.writeObject(mExtraShowLocation.get());
+		out.writeObject(mExtraShowPublisher.get());
+		out.writeObject(mExtraShowAuthor.get());
+		out.writeObject(mExtraReadUnreadAll.get());
 		out.writeObject(mCondensed.get());
 		out.writeObject(mNameProperty.get());
 		out.writeObject(mShowHeaderInfo.get());
@@ -536,16 +507,14 @@ public class LibraryStyle implements Iterable<LibraryGroup>, Serializable {
 			version = ((Long)o);
 			// Get the next object
 			o = in.readObject();
-		} else {
-			// Its a pre-version object...just use it
 		}
-		mXtraShowThumbnails.set((Boolean)o);
-		mXtraLargeThumbnails.set((Boolean)in.readObject());
-		mXtraShowBookshelves.set((Boolean)in.readObject());
-		mXtraShowLocation.set((Boolean)in.readObject());
-		mXtraShowPublisher.set((Boolean)in.readObject());
-		mXtraShowAuthor.set((Boolean)in.readObject());
-		mXtraReadUnreadAll.set((Integer)in.readObject());
+		mExtraShowThumbnails.set((Boolean)o);
+		mExtraLargeThumbnails.set((Boolean)in.readObject());
+		mExtraShowBookshelves.set((Boolean)in.readObject());
+		mExtraShowLocation.set((Boolean)in.readObject());
+		mExtraShowPublisher.set((Boolean)in.readObject());
+		mExtraShowAuthor.set((Boolean)in.readObject());
+		mExtraReadUnreadAll.set((Integer)in.readObject());
 		if (version > 0)
 			mCondensed.set((Boolean)in.readObject());
 		if (version > 1)
@@ -577,29 +546,17 @@ public class LibraryStyle implements Iterable<LibraryGroup>, Serializable {
 	public void setCondensed(boolean condensed) {
 		mCondensed.set(condensed);
 	}
-	/**
-	 * Accessor
-	 */
-	public boolean showThumbnails() {
-		return mXtraShowThumbnails.getResolvedValue();
+
+    public void setShowThumbnails(boolean show) {
+		mExtraShowThumbnails.set(show);
 	}
-	public void setShowThumbnails(boolean show) {
-		mXtraShowThumbnails.set(show);
-	}
-	/**
-	 * Accessor
-	 */
-	public Integer getReadUnreadAll() {
-		return mXtraReadUnreadAll.getResolvedValue();
-	}
-	public void setReadUnreadAll(Integer readUnreadAll) {
-		mXtraReadUnreadAll.set(readUnreadAll);
+
+    public void setReadUnreadAll(Integer readUnreadAll) {
+		mExtraReadUnreadAll.set(readUnreadAll);
 	}
 	
 	/**
 	 * Accessor
-	 * 
-	 * @return
 	 */
 	public int getShowHeaderInfo() {
 		return mShowHeaderInfo.getResolvedValue();
@@ -645,16 +602,14 @@ public class LibraryStyle implements Iterable<LibraryGroup>, Serializable {
 	 * Construct a deep clone of this object.
 	 */
 	public LibraryStyle getClone() throws DeserializationException {
-		LibraryStyle newStyle = SerializationUtils.cloneObject(this);
-		return newStyle;
+        return SerializationUtils.cloneObject(this);
 	}
 
 	/**
 	 * Accessor to allow setting of Extras value directly.
-	 * @param show
 	 */
 	public void setShowAuthor(boolean show) {
-		mXtraShowAuthor.set(show);
+		mExtraShowAuthor.set(show);
 	}
 }
 

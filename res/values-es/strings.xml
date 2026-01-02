@@ -38,8 +38,6 @@
     <string name="import_data">Importar libros</string>
 	<string name="import_alert">¡Atención! La importación de datos puede actualizar los datos de libros existentes con nueva información si el ID del fichero de importación existe ya en la base de datos. Esto puede ser aceptable si se modifica un campo de un fichero exportado. Si crea un registro para un nuevo libro, compruebe que el campo ID está en blanco.</string>
     <string name="import_failed_is_location_correct">ERROR: La importación (desde la tarjeta SD) ha fallado. ¿Está el fichero en el lugar correcto?</string>
-    <string name="deleteme_administration_label">Administración</string>
-    <string name="label_administration">Admin</string>
     <string name="install_scan_title">Instalar Escáner de código de barras</string>
 	<string name="label_version_number">Versión</string>
 	<string name="para_donate">Si desea contribuir al desarrollo de esta aplicación puede realizar su aportación económica utilizando Amazon Wishlist o el botón de Paypal que figura más abajo. En Australia no se puede publicar una versión &quot;de pago&quot;. :-)</string>
@@ -68,7 +66,7 @@
 	<string name="select_fields_to_update">Seleccione campos para actualizar</string>
 	<string name="select_fields_to_update_help">Los campos seleccionados se actualizarán con datos de internet. Los campos no marcados no se modificarán.</string>
 	<string name="overwrite_thumbnail">Los campos seleccionados se actualizarán tal y como se muestra, pero las imágenes de portadas se pueden descargar, si lo desea, para TODOS los libros.\n\n¿Desea sobreescribir todas las portadas existentes? ¡Atención!, esto puede requerir un tiempo considerable.</string>
-	<string name="yes">Sí</string>
+	<string name="option_yes">Sí</string>
 	<string name="option_no">No</string>
 	<string name="button_ok">Aceptar</string>
     <string name="search_fail">La búsqueda del libro ha fallado. Por favor, verifique la configuración de su conexión a internet.</string>
@@ -215,15 +213,12 @@
     <string name="title_settings">Administración y Preferencias</string>
     <string name="title_other_preferences">Otras preferencias</string>
     <string name="user_interface">Interfaz de usuario</string>
-    <string name="start_in_my_books">Empezar en \'Mis libros\'</string>
+    <string name="preference_start_in_my_books">Empezar en \'Mis libros\'</string>
     <string name="background_tasks">Tareas en segundo plano</string>
     <string name="cleanup_old_tasks">Eliminar tareas antiguas</string>
     <string name="cleanup_old_events">Eliminar eventos antiguos</string>
-    <string name="search_criteria">Criterio de búsqueda</string>
     <string name="label_add_manually">Añadir manualmente</string>
     <string name="label_search_internet">Buscar en internet</string>
-    <string name="show_results">Mostrar resultados</string>
-    <string name="rebuild_fts">Reconstruir FTS (alpha only!)</string>
     <string name="send_books_to_goodreads">Enviar libros a goodreads</string>
     <string name="legacy_task">Legacy Task</string>
     <string name="occurred_at">ocurrido en %1$s</string>
@@ -268,7 +263,7 @@
     <string name="empty_with_brackets">(vacío)</string>
 
     <string name="title_library_preferences">Preferencias para listas de libros</string>
-    <string name="extra_book_details">Detalles adicionales</string>
+    <string name="preference_extra_book_details">Detalles adicionales</string>
     <string name="general">General</string>
     <string name="label_bookshelves">Biblioteca</string>
     <string name="shelves">Biblioteca</string>
@@ -325,22 +320,19 @@
     <string name="extra_filters">Filtros adicionales</string>
     <string name="new_style">Nuevo estilo</string>
     <string name="select_based_on_read_status">Seleccionar en función del estado \'Leído\'</string>
-    <string name="books_with_multiple_authors">Libros con varios autores</string>
-    <string name="books_in_multiple_series">Libros en varias series</string>
+    <string name="preference_books_with_multiple_authors">Libros con varios autores</string>
+    <string name="preference_books_in_multiple_series">Libros en varias series</string>
     <string name="option_use_default_setting">Utilizar configuración por defecto</string>
-    <string name="show_book_under_each_thing">Bajo cada %1$s</string>
-    <string name="show_book_under_primary_thing">Sólo bajo primer %1$s</string>
-    <string name="format_of_author_names">Formato para nombres de autor</string>
-    <string name="given_name_first_eg">Nombre primero, por ejemplo \'Antonio García\'</string>
-    <string name="family_name_first_eg">Apellido primero, por ejemplo \'García, Antonio\'</string>
+    <string name="option_show_book_under_each_thing">Bajo cada %1$s</string>
+    <string name="option_show_book_under_primary_thing">Sólo bajo primer %1$s</string>
+    <string name="preference_format_of_author_names">Formato para nombres de autor</string>
+    <string name="option_given_name_first_eg">Nombre primero, por ejemplo \'Antonio García\'</string>
+    <string name="option_family_name_first_eg">Apellido primero, por ejemplo \'García, Antonio\'</string>
     <string name="thumbnails">Miniaturas</string>
     <string name="preference_size_of_library_items">Tamaño de los elementos en el listado</string>
     <string name="option_normal">Normal</string>
     <string name="option_smaller">Pequeño</string>
     <string name="select_style">Seleccionar Estilo</string>
-    <string name="preference_library_background_style">Fondo para el listado</string>
-    <string name="option_textured_background">Imagen de fondo texturizada</string>
-    <string name="option_plain_background_b_reduces_flicker_b">Fondo liso (reduce el parpadeo)</string>
     <string name="thing_must_not_be_blank">%1$s no puede ser blanco</string>
     <string name="label_edit">Editar</string>
     <string name="groupings">Grupos</string>
@@ -415,7 +407,7 @@
     <string name="preference_summary_details_in_header">Resumen en la cabecera</string>
     <string name="option_hide_summary_details">Ocultar resumen</string>
     <string name="x_is_not_a_valid_isbn">%1$s no es un ISBN válido</string>
-    <string name="beep_if_scanned_isbn_invalid">Pitido si el ISBN escaneado no es válido</string>
+    <string name="preference_beep_if_scanned_isbn_invalid">Pitido si el ISBN escaneado no es válido</string>
     <string name="no_image_found">No se ha encontrado imagen</string>
     <string name="could_not_copy_image">No se pudo copiar la imagen</string>
     <string name="this_option_is_not_available_until_the_book_is_saved">Esta opción no está disponible mientras no se guarde el libro</string>
@@ -439,15 +431,15 @@
     <string name="invalid_isbn_x_specified_in_search">ISBN no válido \'%1$s\' en la búsqueda</string>
     <string name="if_day_is_specified_month_and_year_must_be">Si se especifica un día, deben especificarse también el mes y el año.</string>
     <string name="if_month_is_specified_year_must_be">Si se especifica el mes, debe especificarse también el año.</string>
-    <string name="use_external_image_cropper">Utilizar recortador de imágenes externo (experimental)</string>
-    <string name="auto_rotate_camera_images">Girar automáticamente las imágenes de la cámara</string>
+    <string name="preference_use_external_image_cropper">Utilizar recortador de imágenes externo (experimental)</string>
+    <string name="preference_auto_rotate_camera_images">Girar automáticamente las imágenes de la cámara</string>
     <string name="hint_autorotate_camera_images">Si siempre tiene que girar las imágenes de la cámara en el mismo sentido, intente cambiar la configuración para aplicar la rotación automática.</string>
-    <string name="default_crop_frame_is_whole_image">Por defecto, la imagen se guarda completa</string>
+    <string name="preference_default_crop_frame_is_whole_image">Por defecto, la imagen se guarda completa</string>
     <string name="cancelled">Cancelado</string>
     <string name="import_complete">Importación finalizada</string>
     <string name="searching_ellipsis">Buscando&#8230;</string>
     <string name="status_adding_book_ellipsis">Añadiendo libro&#8230;</string>
-    <string name="prefs_global_opening_book_mode">Abrir libro en modo sólo lectura</string>
+    <string name="preference_global_opening_book_mode">Abrir libro en modo sólo lectura</string>
     <string name="label_publishing">Editor</string>
     <string name="book_details_readonly_by">por</string>
     <string name="book_details_readonly_loaned_to">Prestado a %1$s</string>
@@ -510,13 +502,13 @@
     <!-- Heading for scanner-related preferences -->
     <string name="scanning">Escaneado</string>
     <!-- Preference name, displayed in a preference activity -->
-    <string name="preferred_scanner">Escaner preferido</string>
+    <string name="preference_preferred_scanner">Escaner preferido</string>
     <!-- Preference VALUE, displayed in a preference activity -->
-    <string name="zxing_compatible_scanner">Zxing Compatible Scanner</string>
+    <string name="option_zxing_compatible_scanner">Zxing Compatible Scanner</string>
     <!-- Preference VALUE, displayed in a preference activity -->
-    <string name="pic2shop_scanner">Pic2Shop Scanner</string>
+    <string name="option_pic2shop_scanner">Pic2Shop Scanner</string>
     <!-- Preference name, displayed in a preference activity -->
-    <string name="beep_if_scanned_isbn_valid">Pitido si el ISBN escaneado es válido</string>
+    <string name="preference_beep_if_scanned_isbn_valid">Pitido si el ISBN escaneado es válido</string>
     <string name="new_in_424">
 <![CDATA[
 	<p><b>Novedades en la versión 4.2.4</b>\n\n
@@ -560,7 +552,7 @@ y puede editar el libro utilizando el menú de opciones.
 
     <!-- Hint displayed when aCatalogue Backup is done -->
     <string name="a_and_b">%1$s y %2$s</string>
-    <string name="archive_complete_details">Se ha creado un fichero de %3$s llamado %2$s en el directorio \"%1$s\" de su tarjeta SD.
+    <string name="para_archive_complete_details">Se ha creado un fichero de %3$s llamado %2$s en el directorio \"%1$s\" de su tarjeta SD.
     \n\nDebe copiarlo a otro lugar para proteger los datos en caso de que su dispositivo resulte dañado, se pierda o sea robado.</string>
 
     <!-- Displayed in progress dialog when exporting covers -->
@@ -802,7 +794,7 @@ y puede editar el libro utilizando el menú de opciones.
     <!-- TRANLATORS NOTE: I HAVE UPDATED THE new_in_510, above! Sorry. -->
 
     <!-- Preference VALUE, displayed in a preference activity -->
-    <string name="zxing_scanner">Zxing Scanner</string>
+    <string name="option_zxing_scanner">Zxing Scanner</string>
 
     <!-- Heading in 'about' dialog -->
     <string name="label_special_thanks">Agradecimientos</string>

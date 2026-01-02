@@ -218,12 +218,12 @@ public class LibraryGroup implements Serializable {
 		static {
 			String kind = BookCatalogueApp.getResourceString(R.string.label_series);
 			mAllSeriesItems.add(null, R.string.option_use_default_setting);
-			mAllSeriesItems.add(false, R.string.show_book_under_primary_thing, kind);
-			mAllSeriesItems.add(true, R.string.show_book_under_each_thing, kind);
+			mAllSeriesItems.add(false, R.string.option_show_book_under_primary_thing, kind);
+			mAllSeriesItems.add(true, R.string.option_show_book_under_each_thing, kind);
 		}
 
 		private void initProperties() {
-			mAllSeries = new BooleanListProperty(mAllSeriesItems, "AllSeries", PropertyGroup.GRP_SERIES, R.string.books_in_multiple_series, null, BookCataloguePreferences.PREF_SHOW_ALL_SERIES, false);
+			mAllSeries = new BooleanListProperty(mAllSeriesItems, "AllSeries", PropertyGroup.GRP_SERIES, R.string.preference_books_in_multiple_series, null, BookCataloguePreferences.PREF_SHOW_ALL_SERIES, false);
 			mAllSeries.setHint(R.string.hint_series_book_may_appear_more_than_once);
 		}
 
@@ -278,8 +278,8 @@ public class LibraryGroup implements Serializable {
 		private static final ItemEntries<Boolean> mGivenNameFirstItems = new ItemEntries<>();
 		static {
 			mGivenNameFirstItems.add(null, R.string.option_use_default_setting);
-			mGivenNameFirstItems.add(false, R.string.family_name_first_eg);
-			mGivenNameFirstItems.add(true, R.string.given_name_first_eg);
+			mGivenNameFirstItems.add(false, R.string.option_family_name_first_eg);
+			mGivenNameFirstItems.add(true, R.string.option_given_name_first_eg);
 		}
 
 		/** Support for 'Show All Authors of Book' property */
@@ -288,8 +288,8 @@ public class LibraryGroup implements Serializable {
 		static {
 			String kind = BookCatalogueApp.getResourceString(R.string.label_author);
 			mAllAuthorsItems.add(null, R.string.option_use_default_setting);
-			mAllAuthorsItems.add(false, R.string.show_book_under_primary_thing, kind);
-			mAllAuthorsItems.add(true, R.string.show_book_under_each_thing, kind);
+			mAllAuthorsItems.add(false, R.string.option_show_book_under_primary_thing, kind);
+			mAllAuthorsItems.add(true, R.string.option_show_book_under_each_thing, kind);
 		}
 
 		/**
@@ -297,9 +297,9 @@ public class LibraryGroup implements Serializable {
 		 * be created in constructors as well.
 		 */
 		private void initProperties() {
-			mAllAuthors = new BooleanListProperty(mAllAuthorsItems, "AllAuthors", PropertyGroup.GRP_AUTHOR, R.string.books_with_multiple_authors, BookCataloguePreferences.PREF_SHOW_ALL_AUTHORS);
+			mAllAuthors = new BooleanListProperty(mAllAuthorsItems, "AllAuthors", PropertyGroup.GRP_AUTHOR, R.string.preference_books_with_multiple_authors, BookCataloguePreferences.PREF_SHOW_ALL_AUTHORS);
 			mAllAuthors.setHint(R.string.hint_authors_book_may_appear_more_than_once);
-			mGivenName = new BooleanListProperty(mGivenNameFirstItems, "GivenName", PropertyGroup.GRP_AUTHOR, R.string.format_of_author_names, BookCataloguePreferences.PREF_DISPLAY_FIRST_THEN_LAST_NAMES);
+			mGivenName = new BooleanListProperty(mGivenNameFirstItems, "GivenName", PropertyGroup.GRP_AUTHOR, R.string.preference_format_of_author_names, BookCataloguePreferences.PREF_DISPLAY_FIRST_THEN_LAST_NAMES);
 		}
 
 		/**

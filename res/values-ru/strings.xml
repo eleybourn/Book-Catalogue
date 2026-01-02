@@ -37,8 +37,6 @@
     <string name="label_series_num">№</string>
     <string name="import_data">Импортировать книги</string>
     <string name="import_alert">Предупреждение. Импорт данных может заменить существующие записи книг обновлённой информацией, в случае, если номер в файле совпадает с существующим номером. Обычно это то, что требуется, если вы обновляете поле в файле экспорта. Если вы добавляете запись новой книге, убедитесь, что поле id не заполнено.</string>
-    <string name="deleteme_administration_label">Функции администрирования</string>
-    <string name="label_administration">Настройки</string>
     <string name="install_scan_title">Установить сканер штрих-кодов</string>
     <string name="label_version_number">Номер версии:</string>
     <string name="para_donate">Если Вы хотите поддержать разработку этого приложения, пожалуйста сделайте пожертвование или через Amazon Wishlist или через PayPal кнопкой внизу. Я не могу опубликовать &quot;платную&quot; версию приложения в Австралии. :-) </string>
@@ -67,7 +65,7 @@
     <string name="select_fields_to_update">Выберите поля для обновления</string>
     <string name="select_fields_to_update_help">Выбранные поля будут обновлены через интернет. Остальные останутся неизменными.</string>
     <string name="overwrite_thumbnail">Выбранные поля будут обновлены как показано, но миниатюры при желании можно загрузить для ВСЕХ книг.\n\nВы хотите перезаписать все миниатюры? Предупреждение: это может занять много времени. </string>
-    <string name="yes">Да</string>
+    <string name="option_yes">Да</string>
     <string name="option_no">Нет</string>
     <string name="button_ok">OK</string>
     <string name="search_fail">Поиск книги не удался. Пожалуйста, проверьте настройки интернет-соединения.</string>
@@ -215,15 +213,12 @@
     <string name="title_settings">Администрирование и Настройки</string>
     <string name="title_other_preferences">Другие настройки</string>
     <string name="user_interface">Пользовательский интерфейс</string>
-    <string name="start_in_my_books">Начинать с \'Мои книги\'</string>
+    <string name="preference_start_in_my_books">Начинать с \'Мои книги\'</string>
     <string name="background_tasks">Фоновые задачи</string>
     <string name="cleanup_old_tasks">Очистить старые задачи</string>
     <string name="cleanup_old_events">Очистить старые события</string>
-    <string name="search_criteria">Параметры поиска</string>
     <string name="label_add_manually">Добавить вручную</string>
     <string name="label_search_internet">Поиск в Интернете</string>
-    <string name="show_results">Показать результаты</string>
-    <string name="rebuild_fts">Переобрать FTS (только альфа-версия!)</string>
     <string name="send_books_to_goodreads">Отправить книги на Goodreads</string>
     <string name="legacy_task">Действующая задача</string>
     <string name="occurred_at">случилось в %1$s</string>
@@ -286,7 +281,7 @@
     <item name="MENU_CLONE_STYLE" type="id"/>
 
     <string name="title_library_preferences">Список книг</string>
-    <string name="extra_book_details">Дополнительная информация</string>
+    <string name="preference_extra_book_details">Дополнительная информация</string>
     <string name="general">Основные</string>
     <string name="label_bookshelves">Книжные полки</string>
     <string name="shelves">Полки</string>
@@ -332,22 +327,19 @@
     <string name="extra_filters">Фильтры книг</string>
     <string name="new_style">Новый стиль</string>
     <string name="select_based_on_read_status">Выбор основан на статусе \'Прочитана\'</string>
-    <string name="books_with_multiple_authors">Книги с множеством авторов</string>
-    <string name="books_in_multiple_series">Книги в множестве серий</string>
+    <string name="preference_books_with_multiple_authors">Книги с множеством авторов</string>
+    <string name="preference_books_in_multiple_series">Книги в множестве серий</string>
     <string name="option_use_default_setting">Использовать настройки по умолчанию</string>
-    <string name="show_book_under_each_thing">Под каждым %1$s</string>
-    <string name="show_book_under_primary_thing">Только под первым %1$s</string>
-    <string name="format_of_author_names">Форматирование по авторским именам</string>
-    <string name="given_name_first_eg">Первое имя, например \'Иван, Иванов\'</string>
-    <string name="family_name_first_eg">Первая фамилия, например \'Иванов, Иван\'</string>
+    <string name="option_show_book_under_each_thing">Под каждым %1$s</string>
+    <string name="option_show_book_under_primary_thing">Только под первым %1$s</string>
+    <string name="preference_format_of_author_names">Форматирование по авторским именам</string>
+    <string name="option_given_name_first_eg">Первое имя, например \'Иван, Иванов\'</string>
+    <string name="option_family_name_first_eg">Первая фамилия, например \'Иванов, Иван\'</string>
     <string name="thumbnails">Миниатюры</string>
     <string name="preference_size_of_library_items">Размер элемента списка книг</string>
     <string name="option_normal">Нормальный</string>
     <string name="option_smaller">Меньший</string>
     <string name="select_style">Выбрать стиль</string>
-    <string name="preference_library_background_style">Стиль фона списка книг</string>
-    <string name="option_textured_background">Картинка фона</string>
-    <string name="option_plain_background_b_reduces_flicker_b">Ровный фон (уменьшает мерцание)</string>
     <string name="thing_must_not_be_blank">%1$s должен быть не пустым</string>
     <string name="label_edit">Редактировать</string>
     <string name="groupings">Группирование</string>
@@ -426,7 +418,7 @@
     <string name="preference_summary_details_in_header">Суммарная информация в заголовке</string>
     <string name="option_hide_summary_details">Спрятать суммарную информацию</string>
     <string name="x_is_not_a_valid_isbn">%1$s не правльный ISBN</string>
-    <string name="beep_if_scanned_isbn_invalid">Подать звуковой сигнал, если сканируемый ISBN не правильный</string>
+    <string name="preference_beep_if_scanned_isbn_invalid">Подать звуковой сигнал, если сканируемый ISBN не правильный</string>
     <string name="no_image_found">Рисунок не найден</string>
     <string name="could_not_copy_image">Не возможно скопировать изображение</string>
     <string name="this_option_is_not_available_until_the_book_is_saved">Эта опция не доступна, пока книга не будет сохранена</string>
@@ -450,15 +442,15 @@
     <string name="invalid_isbn_x_specified_in_search">В поиске указан неверный ISBN \'%1$s\'</string>
     <string name="if_day_is_specified_month_and_year_must_be">Если указан день, также необходимо указать месяц и год.</string>
     <string name="if_month_is_specified_year_must_be">Если указан месяц, также необходимо указать год.</string>
-    <string name="use_external_image_cropper">Использовать внешний редактор рисунков (экспериментально)</string>
-    <string name="auto_rotate_camera_images">Автоматически поворачивать фото, полученное камерой</string>
+    <string name="preference_use_external_image_cropper">Использовать внешний редактор рисунков (экспериментально)</string>
+    <string name="preference_auto_rotate_camera_images">Автоматически поворачивать фото, полученное камерой</string>
     <string name="hint_autorotate_camera_images">Если вы заметили, что всегда поворачиваете камеру в одном направлении, попробуйте установить в настройках опцию автоматического поворота.</string>
-    <string name="default_crop_frame_is_whole_image">Рамка по умолчанию: всё изображение</string>
+    <string name="preference_default_crop_frame_is_whole_image">Рамка по умолчанию: всё изображение</string>
     <string name="cancelled">Отменено</string>
     <string name="import_complete">Импорт завершен</string>
     <string name="searching_ellipsis">Поиск&#8230;</string>
     <string name="status_adding_book_ellipsis">Добавление книги&#8230;</string>
-    <string name="prefs_global_opening_book_mode">Просмотр книги в режиме чтения</string>
+    <string name="preference_global_opening_book_mode">Просмотр книги в режиме чтения</string>
     <string name="label_publishing">Публикация</string>
     <string name="book_details_readonly_by">от</string>
     <string name="book_details_readonly_loaned_to">Дана вдолг: %1$s</string>
@@ -555,7 +547,7 @@
     <string name="label_backup_to_archive">Бэкап в архив</string>
     <string name="label_import_from_archive">Импорт из архива</string>
     <string name="a_and_b">%1$s и %2$s</string>
-    <string name="archive_complete_details">Файл %3$s с именем %2$s был создан в папке \"%1$s\" на вашей SD карте.
+    <string name="para_archive_complete_details">Файл %3$s с именем %2$s был создан в папке \"%1$s\" на вашей SD карте.
     \n\nВам следует вручную скопировать его, чтобы защитить данные в случае утери или повреждения телефона.</string>
     <string name="covers_progress">%1$s обложек обработано (%2$s пропущено)</string>
     <string name="label_advanced_options">Тонкие настройки</string>
@@ -721,14 +713,14 @@
 			</p>
 		]]>
     </string>
-    <string name="beep_if_scanned_isbn_valid">Подать звуковой сигнал, если сканируемый ISBN правильный</string>
-    <string name="pic2shop_scanner">Pic2Shop сканер</string>
-    <string name="preferred_interface_language">Предпочтительный язык</string>
-    <string name="preferred_scanner">Предпочтительный сканер</string>
+    <string name="preference_beep_if_scanned_isbn_valid">Подать звуковой сигнал, если сканируемый ISBN правильный</string>
+    <string name="option_pic2shop_scanner">Pic2Shop сканер</string>
+    <string name="preference_preferred_interface_language">Предпочтительный язык</string>
+    <string name="preference_preferred_scanner">Предпочтительный сканер</string>
     <string name="scanning">Сканирование</string>
     <string name="system_locale">Локаль системы</string>
-    <string name="zxing_compatible_scanner">Zxing совместимый сканер</string>
-    <string name="zxing_scanner">Zxing сканер</string>
+    <string name="option_zxing_compatible_scanner">Zxing совместимый сканер</string>
+    <string name="option_zxing_scanner">Zxing сканер</string>
     <string name="new_in_520"><![CDATA[
 			<p><b>Новое в 5.2.0</b>\n\n
 			    * Настраиваемый  в настройках язык приложения\n\n

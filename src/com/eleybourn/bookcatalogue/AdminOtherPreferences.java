@@ -53,27 +53,13 @@ public class AdminOtherPreferences extends PreferencesBase {
 	/** List of supported locales */
 	private static final ItemEntries<String> mInterfaceLanguageListItems = getLanguageListItems();
 
-	///** Booklist Compatibility mode property values */
-	//public static final int BOOKLIST_GENERATE_OLD_STYLE = 1;
-	//public static final int BOOKLIST_GENERATE_FLAT_TRIGGER = 2;
-	//public static final int BOOKLIST_GENERATE_NESTED_TRIGGER = 3;
-	//public static final int BOOKLIST_GENERATE_AUTOMATIC = 4;
-	///** Booklist Compatibility mode property values */
-	//private static final ItemEntries<Integer> mListGenerationOptionsListItems = new ItemEntries<Integer>()
-	//		.add(null, R.string.use_default_setting)
-	//		.add(BOOKLIST_GENERATE_OLD_STYLE, R.string.force_compatibility_mode)
-	//		.add(BOOKLIST_GENERATE_FLAT_TRIGGER, R.string.force_enhanced_compatibility_mode)
-	//		.add(BOOKLIST_GENERATE_NESTED_TRIGGER, R.string.force_fully_featured)
-	//		.add(BOOKLIST_GENERATE_AUTOMATIC, R.string.automatically_use_recommended_option)
-	//		;
-
 	/** Preferred Scanner property values */
 	private static final ItemEntries<Integer> mScannerListItems = new ItemEntries<Integer>()
 			.add(null, R.string.option_use_default_setting)
-			.add(ScannerManager.SCANNER_BUILTIN, R.string.builtin_scanner)
-			.add(ScannerManager.SCANNER_ZXING_COMPATIBLE, R.string.zxing_compatible_scanner)
-			.add(ScannerManager.SCANNER_ZXING, R.string.zxing_scanner)
-			.add(ScannerManager.SCANNER_PIC2SHOP, R.string.pic2shop_scanner);
+			.add(ScannerManager.SCANNER_BUILTIN, R.string.option_builtin_scanner)
+			.add(ScannerManager.SCANNER_ZXING_COMPATIBLE, R.string.option_zxing_compatible_scanner)
+			.add(ScannerManager.SCANNER_ZXING, R.string.option_zxing_scanner)
+			.add(ScannerManager.SCANNER_PIC2SHOP, R.string.option_pic2shop_scanner);
 	
 	private static final Properties mProperties = new Properties()
 
@@ -82,7 +68,7 @@ public class AdminOtherPreferences extends PreferencesBase {
 		.setPreferenceKey(BookCataloguePreferences.PREF_START_IN_MY_BOOKS)
 		.setGlobal(true)
 		.setWeight(0)
-		.setNameResourceId(R.string.start_in_my_books)
+		.setNameResourceId(R.string.preference_start_in_my_books)
 		.setGroup(PropertyGroup.GRP_USER_INTERFACE))	
 	
 		/*
@@ -93,30 +79,29 @@ public class AdminOtherPreferences extends PreferencesBase {
             .setDefaultValue(true)
             .setPreferenceKey(BookCataloguePreferences.PREF_OPEN_BOOK_READ_ONLY)
             .setGlobal(true)
-            .setNameResourceId(R.string.prefs_global_opening_book_mode)
+            .setNameResourceId(R.string.preference_global_opening_book_mode)
             .setGroup(PropertyGroup.GRP_USER_INTERFACE))
 		
 	.add(new BooleanProperty(BookCataloguePreferences.PREF_CROP_FRAME_WHOLE_IMAGE)
             .setDefaultValue(false)
             .setPreferenceKey(BookCataloguePreferences.PREF_CROP_FRAME_WHOLE_IMAGE)
             .setGlobal(true)
-            .setNameResourceId(R.string.default_crop_frame_is_whole_image)
+            .setNameResourceId(R.string.preference_default_crop_frame_is_whole_image)
             .setGroup(PropertyGroup.GRP_THUMBNAILS))
 
-    .add(new StringListProperty(mInterfaceLanguageListItems, BookCataloguePreferences.PREF_APP_LOCALE, PropertyGroup.GRP_USER_INTERFACE, R.string.preferred_interface_language)
+    .add(new StringListProperty(mInterfaceLanguageListItems, BookCataloguePreferences.PREF_APP_LOCALE, PropertyGroup.GRP_USER_INTERFACE, R.string.preference_preferred_interface_language)
             .setDefaultValue(null)
             .setPreferenceKey(BookCataloguePreferences.PREF_APP_LOCALE)
             .setGlobal(true)
             .setWeight(200)
             .setGroup(PropertyGroup.GRP_USER_INTERFACE))
 
-
     .add(new BooleanProperty(SoundManager.PREF_BEEP_IF_SCANNED_ISBN_INVALID)
             .setDefaultValue(true)
             .setPreferenceKey(SoundManager.PREF_BEEP_IF_SCANNED_ISBN_INVALID)
             .setGlobal(true)
             .setWeight(300)
-            .setNameResourceId(R.string.beep_if_scanned_isbn_invalid)
+            .setNameResourceId(R.string.preference_beep_if_scanned_isbn_invalid)
             .setGroup(PropertyGroup.GRP_SCANNER))
 
 	.add(new BooleanProperty(SoundManager.PREF_BEEP_IF_SCANNED_ISBN_VALID)
@@ -124,50 +109,30 @@ public class AdminOtherPreferences extends PreferencesBase {
 		.setPreferenceKey(SoundManager.PREF_BEEP_IF_SCANNED_ISBN_VALID)
 		.setGlobal(true)
 		.setWeight(300)
-		.setNameResourceId(R.string.beep_if_scanned_isbn_valid)
+		.setNameResourceId(R.string.preference_beep_if_scanned_isbn_valid)
 		.setGroup(PropertyGroup.GRP_SCANNER) )
 
 	.add(new IntegerListProperty( mScannerListItems, ScannerManager.PREF_PREFERRED_SCANNER)
 		.setDefaultValue(ScannerManager.SCANNER_BUILTIN)
 		.setPreferenceKey(ScannerManager.PREF_PREFERRED_SCANNER)
 		.setGlobal(true)
-		.setNameResourceId(R.string.preferred_scanner)
+		.setNameResourceId(R.string.preference_preferred_scanner)
 		.setGroup(PropertyGroup.GRP_SCANNER) )
-
-
 		
 	.add(new IntegerListProperty( mRotationListItems, BookCataloguePreferences.PREF_AUTOROTATE_CAMERA_IMAGES)
 		.setDefaultValue(90)
 		.setPreferenceKey(BookCataloguePreferences.PREF_AUTOROTATE_CAMERA_IMAGES)
 		.setGlobal(true)
-		.setNameResourceId(R.string.auto_rotate_camera_images)
+		.setNameResourceId(R.string.preference_auto_rotate_camera_images)
 		.setGroup(PropertyGroup.GRP_THUMBNAILS) )
 
 	.add (new BooleanProperty(BookCataloguePreferences.PREF_USE_EXTERNAL_IMAGE_CROPPER)
 		.setDefaultValue(false)
 		.setPreferenceKey(BookCataloguePreferences.PREF_USE_EXTERNAL_IMAGE_CROPPER)
 		.setGlobal(true)
-		.setNameResourceId(R.string.use_external_image_cropper)
+		.setNameResourceId(R.string.preference_use_external_image_cropper)
 		.setGroup(PropertyGroup.GRP_THUMBNAILS))		
-
-		//// Book list compatibility mode setting
-		//.add (new IntegerListProperty(mListGenerationOptionsListItems, BookCataloguePreferences.PREF_BOOKLIST_GENERATION_MODE)
-		//	.setDefaultValue(BOOKLIST_GENERATE_AUTOMATIC)
-		//	.setPreferenceKey(BookCataloguePreferences.PREF_BOOKLIST_GENERATION_MODE)
-		//	.setGlobal(true)
-		//	.setNameResourceId(R.string.booklist_generation)
-		//	.setGroup(PropertyGroup.GRP_ADVANCED_OPTIONS))
-		//
 	;
-	///**
-	// * Get the value of Book list compatibility mode setting
-	// *
-	// * @return
-	// */
-	//public static int getBooklistCompatibleMode() {
-	//	IntegerListProperty prop = (IntegerListProperty) mProperties.get(BookCataloguePreferences.PREF_BOOKLIST_GENERATION_MODE);
-	//	return prop.getResolvedValue();
-	//}
 
 	@Override
 	protected RequiredPermission[] getRequiredPermissions() {
@@ -226,11 +191,11 @@ public class AdminOtherPreferences extends PreferencesBase {
 		ItemEntries<String> items = new ItemEntries<>();
 
 		Locale l = BookCatalogueApp.getSystemLocale();
-		items.add("", R.string.preferred_language_x, BookCatalogueApp.getResourceString(R.string.system_locale), l.getDisplayLanguage());
+		items.add("", R.string.option_preferred_language_x, BookCatalogueApp.getResourceString(R.string.system_locale), l.getDisplayLanguage());
 
 		for(String loc: BookCatalogueApp.getSupportedLocales()) {
 			l = BookCatalogueApp.localeFromName(loc);
-			items.add(loc, R.string.preferred_language_x, l.getDisplayLanguage(l), l.getDisplayLanguage());
+			items.add(loc, R.string.option_preferred_language_x, l.getDisplayLanguage(l), l.getDisplayLanguage());
 		}
 		return items;
 	}
@@ -259,7 +224,7 @@ public class AdminOtherPreferences extends PreferencesBase {
 				name = l.getDisplayLanguage(l);
 				lang = l.getDisplayLanguage();
 			}
-			item.setString(R.string.preferred_language_x, name, lang);
+			item.setString(R.string.option_preferred_language_x, name, lang);
 		}
 	}
 }

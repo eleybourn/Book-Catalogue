@@ -38,8 +38,6 @@
     <string name="import_data">Importuj książki</string>
 <string name="import_alert">Uwaga! Zaimportowane dane mogą nadpisać istniejące, jeśli pokryje się identyfikator (pole _id). Jest to zwykle oczekiwane zachowanie, gdy edytowałeś wyeksportowany wcześniej plik. Jeśli dodajesz nową książkę, pozostaw pole _id puste.</string>
     <string name="import_failed_is_location_correct">Błąd!: Import z karty SD nie powiódł się. Upewnij się, czy plik export.csv jest w prawidłowym miejscu.</string>
-    <string name="deleteme_administration_label">Funkcje administracyjne</string>
-    <string name="label_administration">Administracja</string>
     <string name="install_scan_title">Zainstaluj Barcode Scanner</string>
 <string name="label_version_number">Wersja programu:</string>
 <string name="para_donate">Jeśli chciałbyś wesprzeć rozwój programu, zrób to poprzez mój Amazon Wishlist lub PayPal. Będąc obywatelem Australii nie mam póki co możliwości opublikowania &quot;płatnej&quot; wersji. :-) </string>
@@ -68,7 +66,7 @@
 <string name="select_fields_to_update">Wybierz pola do aktualizacji</string>
 <string name="select_fields_to_update_help">Wybrane pola będą zaktualizowane wg danych z sieci. Pozostałe nie zostaną zmienione.</string>
 <string name="overwrite_thumbnail">Wybrane pola zostaną zaktualizowane, natomiast okładki mogą by opcjonalnie pobrane dla wszystkich książek.\n\nCzy chcesz zastąpić wszystkie istniejące okładki? Uwaga - może to zająć sporo czasu&#8230;</string>
-<string name="yes">Tak</string>
+<string name="option_yes">Tak</string>
 <string name="option_no">Nie</string>
 <string name="button_ok">OK</string>
     <string name="search_fail">Wyszukiwanie książki nie powiodło się. Sprawdź połączenie z siecią.</string>

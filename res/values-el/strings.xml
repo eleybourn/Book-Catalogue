@@ -15,7 +15,7 @@
     <string name="label_series">Σειρές</string>
     <string name="label_pages">Σελίδες</string>
     <string name="button_confirm_add">Προσθήκη Βιβλίου</string>
-    <string name="confirm_update">Ενημέρωση</string>
+    <string name="button_update">Ενημέρωση</string>
     <string name="para_no_books">Δεν υπάρχουν βιβλία σε αυτό το ράφι. Παρακαλούμε προσθέστε μερικά με το μενού στο κάτω μέρος της οθόνης.</string>
     <string name="menu_sort_by_author_expanded">Επέκταση Όλων</string>
     <string name="menu_sort_by_author_collapsed">Απόκρυψη Όλων</string>
@@ -64,9 +64,9 @@
     <string name="label_about">Σχετικά με την εφαρμογή</string>
     <string name="label_list_price">List Price</string>
     <string name="label_update_fields">Αυτόματη ενημέρωση πεδίων</string>
-    <string name="select_fields_to_update">Επιλεγξτε πεδία για ενημέρωση</string>
-    <string name="select_fields_to_update_help">Τα επιλεγμένα πεδία θα ενημερωθούν από το διαδίκτυο. Τα μη επιλεγμένα θα μείνουν ως έχει.</string>
-    <string name="overwrite_thumbnail">Τα επιλεγμένα πεδία θα ενημερωθούν όπως φαίνεται, αλλά οι Μικρογραφίες μπορούν να κατέβουν προαιρετικά για ΌΛΑ τα βιβλία.\n\nΘέλετε να αντικαταστήσετε όλες τις υπάρχουσες μικρογραφίες; Προσοχή, θα χρειαστεί πολύς χρόνος. </string>
+    <string name="title_select_fields_to_update">Επιλεγξτε πεδία για ενημέρωση</string>
+    <string name="description_select_fields_to_update_help">Τα επιλεγμένα πεδία θα ενημερωθούν από το διαδίκτυο. Τα μη επιλεγμένα θα μείνουν ως έχει.</string>
+    <string name="description_overwrite_thumbnail">Τα επιλεγμένα πεδία θα ενημερωθούν όπως φαίνεται, αλλά οι Μικρογραφίες μπορούν να κατέβουν προαιρετικά για ΌΛΑ τα βιβλία.\n\nΘέλετε να αντικαταστήσετε όλες τις υπάρχουσες μικρογραφίες; Προσοχή, θα χρειαστεί πολύς χρόνος. </string>
     <string name="option_yes">Ναι</string>
     <string name="option_no">Όχι</string>
     <string name="button_ok">OK</string>
@@ -181,10 +181,10 @@
     <string name="loading">Φορτώνει&#8230;</string>
     <string name="image_not_found">Εικόνα δεν βρέθηκε</string>
 
-    <string name="select_min_1_field">Επιλέξτε τουυλάχιστον ένα πεδία για ενημέρωση</string>
-    <string name="usage_copy_if_blank">Αντιγραφή εαν ειναι κενό</string>
-    <string name="usage_add_extra">Προσθέτει επιπλέον δεδομένα</string>
-    <string name="usage_overwrite">Αντικαθιστά υπάρχοντα δεδομένα</string>
+    <string name="alert_select_min_1_field">Επιλέξτε τουυλάχιστον ένα πεδία για ενημέρωση</string>
+    <string name="option_usage_copy_if_blank">Αντιγραφή εαν ειναι κενό</string>
+    <string name="option_usage_add_extra">Προσθέτει επιπλέον δεδομένα</string>
+    <string name="option_usage_overwrite">Αντικαθιστά υπάρχοντα δεδομένα</string>
     <string name="cancelling">Ακυρώνεται</string>
     <string name="starting_search">Έναρξη Αναζήτησης</string>
     <string name="para_send_info">Πατήστε στο παρακάτω κουμπί για να αποστείλετε αναφορά σφαλμάτων και προβλημάτων σε κάποιον προγραμματιστή μας. Θα δημιουργηθεί αντίγραφο ολόκληρης της βάσης δεδομένων σας καθώς και των αρχείων log. Εαν δεν θέλετε να στείλετε αυτά τα αρχεία διαγράψτε τα επισυναπτόμενα αρχεία του email πριν την αποστολή.</string>
@@ -401,8 +401,8 @@
     <string name="option_use_background_thread">Χρήση νήματος παρασκηνίου (πιο γρήγορο scrolling στις λίστες, οι εικόνες ίσως καθυστερρούν να εμφανιστούν)</string>
     <string name="option_generate_immediately">Άμεση παραγωγή (πιο αργό scrolling στις λίστες, οι εικόνες εμφανίζονται αμέσως)</string>
     <string name="sort_and_style_ellipsis">Ταξινόμηση &amp; Στυλ&#8230;</string>
-    <string name="displaying_n_books_in_m_entries">εμφανίζονται %1$s βιβλία, σε %2$s καταχωρήσεις</string>
-    <string name="displaying_n_books">εμφανίζονται %1$s βιβλία</string>
+    <string name="description_displaying_n_books_in_m_entries">εμφανίζονται %1$s βιβλία, σε %2$s καταχωρήσεις</string>
+    <string name="description_displaying_n_books">εμφανίζονται %1$s βιβλία</string>
     <string name="available">Διαθέσιμο</string>
     <string name="loaned_to_2">\u2192</string>
     <string name="preference_summary_details_in_header">Λεπτομέρειες περίληψης στην επικεφαλίδα</string>

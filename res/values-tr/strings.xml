@@ -14,7 +14,7 @@
     <string name="label_series">Dizi</string>
     <string name="label_pages">Sayfa</string>
     <string name="button_confirm_add">Kitap ekle</string>
-    <string name="confirm_update">Güncelle</string>
+    <string name="button_update">Güncelle</string>
     <string name="para_no_books">Bu kitaplıkta hiç kitap yok. Lütfen ekranın alt kısmındaki bölümü kullanarak kitap ekleyin.</string>
     <string name="menu_sort_by_author_expanded">Hepsini göster</string>
     <string name="menu_sort_by_author_collapsed">Hepsini gizle</string>
@@ -63,9 +63,9 @@
     <string name="label_about">Uygulama hakkında</string>
     <string name="label_list_price">Fiyatı</string>
     <string name="label_update_fields">Alanları kendiliğinden doldur</string>
-    <string name="select_fields_to_update">Güncellenecek alanları seçin</string>		
-    <string name="select_fields_to_update_help">Seçilen alanlar İnternet\'ten güncellenecektir. Seçilmeyen alanlar değiştirilmeden kalacaktır.</string>
-    <string name="overwrite_thumbnail">Bu işlem seçili alanları gösterildiği biçimde güncelleyecektir, ancak küçük resimler seçime bağlı olarak tüm kitaplar için de indirilebilir.\n\nVar olan tüm küçük resimlerin üzerine yazmak istiyor musunuz? Bu işlem uzun sürebilir. </string>
+    <string name="title_select_fields_to_update">Güncellenecek alanları seçin</string>
+    <string name="description_select_fields_to_update_help">Seçilen alanlar İnternet\'ten güncellenecektir. Seçilmeyen alanlar değiştirilmeden kalacaktır.</string>
+    <string name="description_overwrite_thumbnail">Bu işlem seçili alanları gösterildiği biçimde güncelleyecektir, ancak küçük resimler seçime bağlı olarak tüm kitaplar için de indirilebilir.\n\nVar olan tüm küçük resimlerin üzerine yazmak istiyor musunuz? Bu işlem uzun sürebilir. </string>
     <string name="option_yes">Evet</string>
     <string name="option_no">Hayır</string>
     <string name="button_ok">Tamam</string>
@@ -184,10 +184,10 @@
 
     <item name="fieldCheckbox" type="id"></item>
 
-    <string name="select_min_1_field">Güncellemek için en azından bir alan seçin</string>
-    <string name="usage_copy_if_blank">Boş ise eşlemle</string>
-    <string name="usage_add_extra">Ek veriyi iliştirir</string>
-    <string name="usage_overwrite">Bulunan verinin üstüne yazar</string>
+    <string name="alert_select_min_1_field">Güncellemek için en azından bir alan seçin</string>
+    <string name="option_usage_copy_if_blank">Boş ise eşlemle</string>
+    <string name="option_usage_add_extra">Ek veriyi iliştirir</string>
+    <string name="option_usage_overwrite">Bulunan verinin üstüne yazar</string>
     <string name="cancelling">İptal ediliyor&#8230;</string>
     <string name="starting_search">Arama başlatılıyor&#8230;</string>
     <string name="para_send_info">Son zamanda oluşan çökmelerle ilgili bilgi toplamak ve bunu geliştiricilerimizden birine göndermek için aşağıdaki butonu dokunun. Bu veritabanınızın ve oluşturulan günlük dosyalarının bir yedeğini oluşturacaktır. Eğer bu dosyaları bize göndermek istemezseniz göndermeden önce lütfen e-posta eklerinden kaldırın.</string>
@@ -426,8 +426,8 @@
     <string name="option_use_background_thread">Ardalanda iş oluştur (dizelgeler daha hızlı kayar, resimlerin görüntülenmesi gecikebilir)</string>
     <string name="option_generate_immediately">Anında oluştur (dizelgeler daha yavaş kayar, resimler anında görüntülenir)</string>
     <string name="sort_and_style_ellipsis">Sıralama &amp; biçemi&#8230;</string>
-    <string name="displaying_n_books_in_m_entries">%2$s giride %1$s kitap görüntüleniyor</string>
-    <string name="displaying_n_books">%1$s kitap görüntüleniyor</string>
+    <string name="description_displaying_n_books_in_m_entries">%2$s giride %1$s kitap görüntüleniyor</string>
+    <string name="description_displaying_n_books">%1$s kitap görüntüleniyor</string>
     <string name="available">Uygun</string>
     <string name="preference_summary_details_in_header">Başlık özet ayrıntıları</string>
     <string name="option_hide_summary_details">Özet ayrıntılarını gizle</string>

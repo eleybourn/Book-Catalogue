@@ -14,7 +14,7 @@
 	<string name="label_series">Serie</string>
 	<string name="label_pages">Páginas</string>
 	<string name="button_confirm_add">Añadir libro</string>
-	<string name="confirm_update">Actualizar</string>
+	<string name="button_update">Actualizar</string>
 	<string name="para_no_books">No hay libros en esta biblioteca. Añada alguno utilizando el menú al pie de esta pantalla.</string>
 	<string name="menu_sort_by_author_expanded">Expandir todo</string>
     <string name="menu_sort_by_author_collapsed">Comprimir todo</string>
@@ -63,9 +63,9 @@
 	<string name="label_about">Acerca de esta App</string>
     <string name="label_list_price">Precio</string>
     <string name="label_update_fields">Actualización automática de campos</string>
-	<string name="select_fields_to_update">Seleccione campos para actualizar</string>
-	<string name="select_fields_to_update_help">Los campos seleccionados se actualizarán con datos de internet. Los campos no marcados no se modificarán.</string>
-	<string name="overwrite_thumbnail">Los campos seleccionados se actualizarán tal y como se muestra, pero las imágenes de portadas se pueden descargar, si lo desea, para TODOS los libros.\n\n¿Desea sobreescribir todas las portadas existentes? ¡Atención!, esto puede requerir un tiempo considerable.</string>
+	<string name="title_select_fields_to_update">Seleccione campos para actualizar</string>
+	<string name="description_select_fields_to_update_help">Los campos seleccionados se actualizarán con datos de internet. Los campos no marcados no se modificarán.</string>
+	<string name="description_overwrite_thumbnail">Los campos seleccionados se actualizarán tal y como se muestra, pero las imágenes de portadas se pueden descargar, si lo desea, para TODOS los libros.\n\n¿Desea sobreescribir todas las portadas existentes? ¡Atención!, esto puede requerir un tiempo considerable.</string>
 	<string name="option_yes">Sí</string>
 	<string name="option_no">No</string>
 	<string name="button_ok">Aceptar</string>
@@ -181,10 +181,10 @@
 	<string name="loading">Cargando&#8230;</string>
 	<string name="image_not_found">Imagen no encontrada</string>
 
-	<string name="select_min_1_field">Seleccione al menos un campo para actualizar</string>
-	<string name="usage_copy_if_blank">Copiar si está en blanco</string>
-	<string name="usage_add_extra">Añadir datos adicionales</string>
-	<string name="usage_overwrite">Sobreescribir los datos existentes</string>
+	<string name="alert_select_min_1_field">Seleccione al menos un campo para actualizar</string>
+	<string name="option_usage_copy_if_blank">Copiar si está en blanco</string>
+	<string name="option_usage_add_extra">Añadir datos adicionales</string>
+	<string name="option_usage_overwrite">Sobreescribir los datos existentes</string>
 	<string name="cancelling">Cancelando</string>
 	<string name="starting_search">Iniciando búsqueda</string>
     <string name="para_send_info">Pulse el botón siguiente para recopilar información sobre cualquier fallo reciente y enviarlo al equipo de desarrollo. Se creará una copia de seguridad de su base de datos y de los archivos de registro. Si no desea enviar alguno de estos ficheros, elimine los correspondientes adjuntos antes de enviar el correo que se generará.</string>
@@ -401,8 +401,8 @@
     <string name="option_use_background_thread">Usar hilo de fondo (desplazamiento más rápido, las imágenes pueden retrasarse)</string>
     <string name="option_generate_immediately">Generar inmediatamente (desplazamiento más lento, las imágenes se muestran inmediatamente)</string>
     <string name="sort_and_style_ellipsis">Estilo de &amp; ordenación&#8230;</string>
-    <string name="displaying_n_books_in_m_entries">Se muestran %1$s libros, en %2$s entradas</string>
-    <string name="displaying_n_books">Se muestran %1$s libros</string>
+    <string name="description_displaying_n_books_in_m_entries">Se muestran %1$s libros, en %2$s entradas</string>
+    <string name="description_displaying_n_books">Se muestran %1$s libros</string>
     <string name="available">Disponible</string>
     <string name="preference_summary_details_in_header">Resumen en la cabecera</string>
     <string name="option_hide_summary_details">Ocultar resumen</string>

@@ -13,7 +13,7 @@
 <string name="label_series">Série</string>
 <string name="label_pages">Počet stran</string>
 <string name="button_confirm_add">Přidat knihu</string>
-<string name="confirm_update">Upravit</string>
+<string name="button_update">Upravit</string>
 <string name="para_no_books">V této knihovně nemáte v současnosti žádnou knihu. Pro přidání knihy použijte menu ve spodní části obrazovky.</string>
 <string name="menu_sort_by_author_expanded">Rozbalit vše</string>
     <string name="menu_sort_by_author_collapsed">Sbalit vše</string>
@@ -62,9 +62,9 @@
 <string name="label_about">O této aplikaci</string>
     <string name="label_list_price">Seznam cen</string>
     <string name="label_update_fields">Automaticky aktualizovat pole</string>
-<string name="select_fields_to_update">Zvolit pole k aktualizaci</string>
-<string name="select_fields_to_update_help">Vybraná pole budou aktualizována automaticky z internetu. Nevybraná pole zůstanou beze změny.</string>
-<string name="overwrite_thumbnail">Toto aktualizuje pouze vybraná pole, ale náhledy budou staženy pro VŠECHNY knihy.\n\nChcete přepsat všechny existující náhledy? Pozor, může to chvíli trvat&#8230;</string>
+<string name="title_select_fields_to_update">Zvolit pole k aktualizaci</string>
+<string name="description_select_fields_to_update_help">Vybraná pole budou aktualizována automaticky z internetu. Nevybraná pole zůstanou beze změny.</string>
+<string name="description_overwrite_thumbnail">Toto aktualizuje pouze vybraná pole, ale náhledy budou staženy pro VŠECHNY knihy.\n\nChcete přepsat všechny existující náhledy? Pozor, může to chvíli trvat&#8230;</string>
 <string name="option_yes">Ano</string>
 <string name="option_no">Ne</string>
 <string name="button_ok">OK</string>
@@ -178,10 +178,10 @@
 <string name="loading">Načítání&#8230;</string>
 <string name="image_not_found">Obrázek nebyl nalezen</string>
 <item name="fieldCheckbox" type="id"></item>
-<string name="select_min_1_field">Zvolte alespoň jedno pole k aktualizaci</string>
-<string name="usage_copy_if_blank">Kopírovat pokud je prázdné</string>
-<string name="usage_add_extra">Přidat extra data</string>
-<string name="usage_overwrite">Přepsat existující data</string>
+<string name="alert_select_min_1_field">Zvolte alespoň jedno pole k aktualizaci</string>
+<string name="option_usage_copy_if_blank">Kopírovat pokud je prázdné</string>
+<string name="option_usage_add_extra">Přidat extra data</string>
+<string name="option_usage_overwrite">Přepsat existující data</string>
 <string name="cancelling">Rušení</string>
 <string name="starting_search">Začínám vyhledávat</string>
     <string name="para_send_info">Stiskněte tlačítko níže pro získání informací o nedávných chybách nebo problémech s aplikací a jejich následné zaslání jednomu z našich vývojářů. Bude vytvořena záložní kopie Vaší databáze a všech logovacích souborů. Pokud si nepřejete poslat některý z těchto souborů, odstraňte jej z přílohy mailu ještě před jeho odesláním.</string>

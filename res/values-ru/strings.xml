@@ -14,7 +14,7 @@
     <string name="label_series">Серия</string>
     <string name="label_pages">Страницы</string>
     <string name="button_confirm_add">Добавить книгу</string>
-    <string name="confirm_update">Обновить</string>
+    <string name="button_update">Обновить</string>
     <string name="para_no_books">На этой полке нет книг. Пожалуйста, добавьте книги, используя меню в нижней части этого экрана.</string>
     <string name="menu_sort_by_author_expanded">Развернуть всё</string>
     <string name="menu_sort_by_author_collapsed">Свернуть всё</string>
@@ -62,9 +62,9 @@
     <string name="label_about">О приложении…</string>
     <string name="label_list_price">Список цен</string>
     <string name="label_update_fields">Автоматическое обновление полей</string>
-    <string name="select_fields_to_update">Выберите поля для обновления</string>
-    <string name="select_fields_to_update_help">Выбранные поля будут обновлены через интернет. Остальные останутся неизменными.</string>
-    <string name="overwrite_thumbnail">Выбранные поля будут обновлены как показано, но миниатюры при желании можно загрузить для ВСЕХ книг.\n\nВы хотите перезаписать все миниатюры? Предупреждение: это может занять много времени. </string>
+    <string name="title_select_fields_to_update">Выберите поля для обновления</string>
+    <string name="description_select_fields_to_update_help">Выбранные поля будут обновлены через интернет. Остальные останутся неизменными.</string>
+    <string name="description_overwrite_thumbnail">Выбранные поля будут обновлены как показано, но миниатюры при желании можно загрузить для ВСЕХ книг.\n\nВы хотите перезаписать все миниатюры? Предупреждение: это может занять много времени. </string>
     <string name="option_yes">Да</string>
     <string name="option_no">Нет</string>
     <string name="button_ok">OK</string>
@@ -182,10 +182,10 @@
 
     <item name="fieldCheckbox" type="id"></item>
 
-    <string name="select_min_1_field">Выберите хотя бы одно поле для обновления</string>
-    <string name="usage_copy_if_blank">Копирует, если пусто</string>
-    <string name="usage_add_extra">Добавляет дополнительные данные</string>
-    <string name="usage_overwrite">Перезаписывает существующие данные</string>
+    <string name="alert_select_min_1_field">Выберите хотя бы одно поле для обновления</string>
+    <string name="option_usage_copy_if_blank">Копирует, если пусто</string>
+    <string name="option_usage_add_extra">Добавляет дополнительные данные</string>
+    <string name="option_usage_overwrite">Перезаписывает существующие данные</string>
     <string name="cancelling">Отменяется</string>
     <string name="starting_search">Поиск начинается</string>
     <string name="para_send_info">Нажмите кнопку внизу экрана для сбора информации о недавних аварийных выключения программы или об иных ошибках и отправьте эту информацию нашим разработчикам. Создастся копия вашей базы и лог файлов. Если вы не хотите отправлять какой-либо из этих файлов, удалите его из приложений письма до отправки.</string>
@@ -412,8 +412,8 @@
     <string name="option_use_background_thread">Использовать фоновый поток (списки пролистываются быстрее, картинки показываются по мере их загрузки)</string>
     <string name="option_generate_immediately">Создавать немедленно (списки пролистываются медленнее, зато картинки показываются сразу)</string>
     <string name="sort_and_style_ellipsis">Сортировать &amp; Стиль&#8230;</string>
-    <string name="displaying_n_books_in_m_entries">отображается %1$s книг, в %2$s элементах</string>
-    <string name="displaying_n_books">Книг на полке: %1$s</string>
+    <string name="description_displaying_n_books_in_m_entries">отображается %1$s книг, в %2$s элементах</string>
+    <string name="description_displaying_n_books">Книг на полке: %1$s</string>
     <string name="available">Доступно</string>
     <string name="preference_summary_details_in_header">Суммарная информация в заголовке</string>
     <string name="option_hide_summary_details">Спрятать суммарную информацию</string>

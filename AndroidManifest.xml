@@ -174,7 +174,7 @@
             android:name=".BookEditSeriesList"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".UpdateFromInternet"
+            android:name=".AdminUpdateFromInternet"
             android:label="@string/label_update_fields"
             android:windowSoftInputMode="adjustResize" />
         <activity

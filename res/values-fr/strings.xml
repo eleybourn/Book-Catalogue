@@ -112,7 +112,7 @@
     <string name="label_series">Série</string>
     <string name="label_pages">Pages</string>
     <string name="button_confirm_add">Ajouter le livre ?</string>
-    <string name="confirm_update">Mettre à jour</string>
+    <string name="button_update">Mettre à jour</string>
     <string name="para_no_books">Il n\'y a pas de livre dans cette biblothèque. Veuillez en ajouter par le menu en bas de cet écran.</string>
     <string name="menu_sort_by_author_expanded">Tout étendre</string>
     <string name="menu_sort_by_author_collapsed">Tout réduire</string>
@@ -154,9 +154,9 @@
     <string name="label_about">À propos de cette application</string>
     <string name="label_list_price">Liste de prix</string>
     <string name="label_update_fields">Mise à jour automatique des champs</string>
-    <string name="select_fields_to_update">Sélection des champs à mettre à jour</string>
-    <string name="select_fields_to_update_help">Les champs sélectionnés vont être mis à jour à partir d\'Internet. Les champs non sélectionnés ne seront pas modifiés.</string>
-    <string name="overwrite_thumbnail">Les champs sélectionnés vont être mis à jour tels que montré ; en option, les vignettes peuvent être téléchargées pour tous les livres.\n\nVoulez-vous remplacer toutes les vignettes existantes ? Attention, cela peut prendre du temps.</string>
+    <string name="title_select_fields_to_update">Sélection des champs à mettre à jour</string>
+    <string name="description_select_fields_to_update_help">Les champs sélectionnés vont être mis à jour à partir d\'Internet. Les champs non sélectionnés ne seront pas modifiés.</string>
+    <string name="description_overwrite_thumbnail">Les champs sélectionnés vont être mis à jour tels que montré ; en option, les vignettes peuvent être téléchargées pour tous les livres.\n\nVoulez-vous remplacer toutes les vignettes existantes ? Attention, cela peut prendre du temps.</string>
     <string name="option_yes">Oui</string>
     <string name="option_no">Non</string>
     <string name="button_ok">OK</string>
@@ -272,10 +272,10 @@
 
     <item name="fieldCheckbox" type="id"></item>
 
-    <string name="select_min_1_field">Choisissez au moins un champ à mettre à jour</string>
-    <string name="usage_copy_if_blank">Copier si vide</string>
-    <string name="usage_add_extra">Ajouter des données supplémentaires</string>
-    <string name="usage_overwrite">Remplacer les données existantes</string>
+    <string name="alert_select_min_1_field">Choisissez au moins un champ à mettre à jour</string>
+    <string name="option_usage_copy_if_blank">Copier si vide</string>
+    <string name="option_usage_add_extra">Ajouter des données supplémentaires</string>
+    <string name="option_usage_overwrite">Remplacer les données existantes</string>
     <string name="cancelling">Annulation en cours</string>
     <string name="starting_search">Démarrage en cours</string>
     <string name="para_send_info">Cliquez sur le bouton ci-dessous pour obtenir des informations à propos des plantages récents ou d\'autres erreurs, et pour les envoyer à l\'un des développeurs. Cela créera une copie complète de votre base de données ainsi que des fichiers journaux. Si vous ne souhaitez pas envoyer certains de ces fichiers, supprimez les des pièces jointes du courriel avant l\'envoi.</string>
@@ -485,8 +485,8 @@
     <string name="option_use_background_thread">Utiliser un thread (défilement des listes plus rapide, affichage décalé des images)</string>
     <string name="option_generate_immediately">Générer immédiatement (défilement des listes plus lent, affichage immédiat des images)</string>
     <string name="sort_and_style_ellipsis">Tri &amp; style&#8230;</string>
-    <string name="displaying_n_books_in_m_entries">Affichage de %1$s livres, parmi %2$s entrées</string>
-    <string name="displaying_n_books">Affichage de %1$s livres</string>
+    <string name="description_displaying_n_books_in_m_entries">Affichage de %1$s livres, parmi %2$s entrées</string>
+    <string name="description_displaying_n_books">Affichage de %1$s livres</string>
     <string name="available">Disponible</string>
     <string name="preference_summary_details_in_header">Détails du résumé dans l\'en-tête</string>
     <string name="option_hide_summary_details">Cacher les détails du résumé</string>

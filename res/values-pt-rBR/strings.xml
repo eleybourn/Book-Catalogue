@@ -16,7 +16,7 @@
     <string name="label_series">Srie</string>
     <string name="label_pages">Página</string>
     <string name="button_confirm_add">Adicionar livro</string>
-    <string name="confirm_update">Atualizar</string>
+    <string name="button_update">Atualizar</string>
     <string name="para_no_books">Não existem livros nesta estante. Use o botão na parte inferior da tela para adicionar livros.</string>
     <string name="menu_sort_by_author_expanded">Expandir todos</string>
     <string name="menu_sort_by_author_collapsed">Recolher todos</string>
@@ -65,9 +65,9 @@
     <string name="label_about">Sobre este aplicativo</string>
     <string name="label_list_price">Listar preço</string>
     <string name="label_update_fields">Atualizar campos automaticamente</string>
-    <string name="select_fields_to_update">Selecionar campos para atualizar</string>
-    <string name="select_fields_to_update_help">Campos marcados serão atualizados com dados da Internet. Campos não marcados permanecerão intactos.</string>
-    <string name="overwrite_thumbnail">Isto vai atualizar os campos como mostrados, mas miniaturas podem ser baixadas para todos os livros, opcionalmente.\n\nVocê quer atualizar todas as miniaturas? Cuidado, isso pode levar um bom tempo. </string>
+    <string name="title_select_fields_to_update">Selecionar campos para atualizar</string>
+    <string name="description_select_fields_to_update_help">Campos marcados serão atualizados com dados da Internet. Campos não marcados permanecerão intactos.</string>
+    <string name="description_overwrite_thumbnail">Isto vai atualizar os campos como mostrados, mas miniaturas podem ser baixadas para todos os livros, opcionalmente.\n\nVocê quer atualizar todas as miniaturas? Cuidado, isso pode levar um bom tempo. </string>
     <string name="option_yes">Sim</string>
     <string name="option_no">Não</string>
     <string name="button_ok">OK</string>
@@ -182,10 +182,10 @@
     <string name="loading">Loading&#8230;</string>
     <string name="image_not_found">Image Not Found</string>
 
-    <string name="select_min_1_field">Select at least one field to update</string>
-    <string name="usage_copy_if_blank">Copy if blank</string>
-    <string name="usage_add_extra">Appends extra data</string>
-    <string name="usage_overwrite">Overwrites existing data</string>
+    <string name="alert_select_min_1_field">Select at least one field to update</string>
+    <string name="option_usage_copy_if_blank">Copy if blank</string>
+    <string name="option_usage_add_extra">Appends extra data</string>
+    <string name="option_usage_overwrite">Overwrites existing data</string>
     <string name="cancelling">Cancelling</string>
     <string name="starting_search">Starting Search</string>
     <string name="para_send_info">Click on the button below to gather information about any recent crashes or other errors and send it to one of our developers. This will create a backup copy of your entire database as well as any log files. If you do not wish to send any of these files, delete it from the mail attachments before sending.</string>
@@ -402,8 +402,8 @@
     <string name="option_use_background_thread">Use background thread (lists scroll faster, images may be delayed)</string>
     <string name="option_generate_immediately">Generate immediately (lists scroll slower, images will be displayed immediately)</string>
     <string name="sort_and_style_ellipsis">Sort &amp; Style&#8230;</string>
-    <string name="displaying_n_books_in_m_entries">displaying %1$s books, in %2$s entries</string>
-    <string name="displaying_n_books">displaying %1$s books</string>
+    <string name="description_displaying_n_books_in_m_entries">displaying %1$s books, in %2$s entries</string>
+    <string name="description_displaying_n_books">displaying %1$s books</string>
     <string name="available">Available</string>
     <string name="loaned_to_2">\u2192</string>
     <string name="preference_summary_details_in_header">Summary details in header</string>

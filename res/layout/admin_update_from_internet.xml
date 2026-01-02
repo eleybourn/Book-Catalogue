@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/layout_body">
+    <!-- Root -->
+
+    <include layout="@layout/layout_header" />
+
+    <include layout="@layout/layout_background" />
+
+    <ScrollView
+        style="@style/layout_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/manage_fields_scrollview"
+            style="@style/layout_main">
+
+            <TextView
+                style="@style/layout_title"
+                android:text="@string/title_select_fields_to_update" />
+
+            <TextView
+                style="@style/layout_paragraph"
+                android:text="@string/description_select_fields_to_update_help" />
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/bottom_buttons"
+        style="@style/layout_action_row"
+        android:layout_below="@+id/top_buttons"
+        android:layout_alignParentBottom="false">
+
+        <Button
+            android:id="@+id/button_cancel"
+            style="@style/layout_button_action"
+            android:text="@string/button_cancel" />
+
+        <Button
+            android:id="@+id/button_confirm"
+            style="@style/layout_button_action"
+            android:text="@string/button_update" />
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

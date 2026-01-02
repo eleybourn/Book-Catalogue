@@ -29,9 +29,9 @@ import java.util.concurrent.locks.ReentrantLock;
 import android.database.Cursor;
 import android.os.Bundle;
 
-import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsage;
-import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsages;
-import com.eleybourn.bookcatalogue.UpdateFromInternet.FieldUsages.Usages;
+import com.eleybourn.bookcatalogue.AdminUpdateFromInternet.FieldUsage;
+import com.eleybourn.bookcatalogue.AdminUpdateFromInternet.FieldUsages;
+import com.eleybourn.bookcatalogue.AdminUpdateFromInternet.FieldUsages.Usages;
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 import com.eleybourn.bookcatalogue.utils.Utils;
 

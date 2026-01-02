@@ -15,7 +15,7 @@
     <string name="label_series">Serie</string>
     <string name="label_pages">Pagina\'s</string>
     <string name="button_confirm_add">Boek toevoegen</string>
-    <string name="confirm_update">Bijwerken</string>
+    <string name="button_update">Bijwerken</string>
     <string name="para_no_books">Er staan geen boeken op deze boekenplank. Voeg er een paar toe via het menu onderaan dit scherm.</string>
     <string name="menu_sort_by_author_expanded">Alles uitklappen</string>
     <string name="menu_sort_by_author_collapsed">Alles inklappen</string>
@@ -64,9 +64,9 @@
     <string name="label_about">Over deze App</string>
     <string name="label_list_price">Prijs</string>
     <string name="label_update_fields">Automatisch Velden bijwerken</string>
-    <string name="select_fields_to_update">Selecteer bij te werken velden</string>
-    <string name="select_fields_to_update_help">De geselecteerde velden zullen worden bijgewerkt vanaf het internet. Niet geselecteerde velden blijven onveranderd.</string>
-    <string name="overwrite_thumbnail">Dit zal de geselecteerde velden zoals getoond bijwerken, maar miniaturen kunnen desgewenst voor Alle boeken worden gedownload.\n\nWilt u alle miniaturen overschrijven? Waarschuwing: dit kan een lange tijd in beslag nemen. </string>
+    <string name="title_select_fields_to_update">Selecteer bij te werken velden</string>
+    <string name="description_select_fields_to_update_help">De geselecteerde velden zullen worden bijgewerkt vanaf het internet. Niet geselecteerde velden blijven onveranderd.</string>
+    <string name="description_overwrite_thumbnail">Dit zal de geselecteerde velden zoals getoond bijwerken, maar miniaturen kunnen desgewenst voor Alle boeken worden gedownload.\n\nWilt u alle miniaturen overschrijven? Waarschuwing: dit kan een lange tijd in beslag nemen. </string>
     <string name="option_yes">Ja</string>
     <string name="option_no">Nee</string>
     <string name="button_ok">OK</string>
@@ -183,10 +183,10 @@
 
     <item name="fieldCheckbox" type="id"></item>
 
-    <string name="select_min_1_field">Selecteer tenminste één veld om te updaten</string>
-    <string name="usage_copy_if_blank">kopieer indien leeg</string>
-    <string name="usage_add_extra">Voegt extra gegevens toe</string>
-    <string name="usage_overwrite">Overschrijft bestaande gegevens</string>
+    <string name="alert_select_min_1_field">Selecteer tenminste één veld om te updaten</string>
+    <string name="option_usage_copy_if_blank">kopieer indien leeg</string>
+    <string name="option_usage_add_extra">Voegt extra gegevens toe</string>
+    <string name="option_usage_overwrite">Overschrijft bestaande gegevens</string>
     <string name="cancelling">Aan \'t Annuleren</string>
     <string name="starting_search">Opstarten zoeken</string>
     <string name="para_send_info">Tik op de knop hieronder om informatie te verzamelen over recente crashes of andere fouten en zend deze naar een van onze ontwikkelaars. Dit maakt een back-up van uw hele database en van alle log-bestanden. Als u deze bestanden niet wilt opsturen, kunt u ze van de bijlagen lijst in het e-mailbericht verwijderen voordat u dit verstuurt.</string>
@@ -398,8 +398,8 @@
     <string name="option_use_background_thread">Gebruik achtergrond deelproces (lijsten scrollen sneller, tonen afbeeldingen misschien vertraagd)</string>
     <string name="option_generate_immediately">Genereer onmiddelijk (lijsten scrollen langzamer, afbeeldingen worden onmiddelijk getoond)</string>
     <string name="sort_and_style_ellipsis">Sorteren &amp; Stijlen&#8230;</string>
-    <string name="displaying_n_books_in_m_entries">tonen van %1$s boeken, in %2$s invoeren</string>
-    <string name="displaying_n_books">tonen van %1$s boeken</string>
+    <string name="description_displaying_n_books_in_m_entries">tonen van %1$s boeken, in %2$s invoeren</string>
+    <string name="description_displaying_n_books">tonen van %1$s boeken</string>
     <string name="available">Beschikbaar</string>
     <string name="loaned_to_2">\u2192</string>
     <string name="preference_summary_details_in_header">Samenvattingsdetails in koptekst</string>

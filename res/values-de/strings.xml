@@ -13,7 +13,7 @@
 <string name="label_series">Serie</string>
 <string name="label_pages">Seiten</string>
 <string name="button_confirm_add">Buch hinzufügen</string>
-<string name="confirm_update">Aktualisieren</string>
+<string name="button_update">Aktualisieren</string>
 <string name="para_no_books">Es befinden sich keine Bücher im Bücherregal. Bitte fügen Sie Bücher über das Menü am unteren Bildschirmrand hinzu.</string>
 <string name="menu_sort_by_author_expanded">Alles ausklappen</string>
     <string name="menu_sort_by_author_collapsed">Alles einklappen</string>
@@ -64,9 +64,9 @@
 <string name="label_about">Über diese App</string>
     <string name="label_list_price">Preis</string>
     <string name="label_update_fields">Automatische Aktualisierung der Felder</string>
-<string name="select_fields_to_update">Felder für Aktualisierung auswählen</string>
-<string name="select_fields_to_update_help">Die ausgewählten Felder werden aus dem Internet aktualisiert. Nicht ausgewählte Felder werden nicht geändert.</string>
-<string name="overwrite_thumbnail">Die ausgewählten Felder werden wie gezeigt aktualisiert. Die Cover-Bilder können optional für ALLE Bücher heruntergeladen werden.\n\nSollen alle bestehenden Cover-Bilder überschrieben werden? Warnung, die Aktualisierung kann lange dauern. </string>
+<string name="title_select_fields_to_update">Felder für Aktualisierung auswählen</string>
+<string name="description_select_fields_to_update_help">Die ausgewählten Felder werden aus dem Internet aktualisiert. Nicht ausgewählte Felder werden nicht geändert.</string>
+<string name="description_overwrite_thumbnail">Die ausgewählten Felder werden wie gezeigt aktualisiert. Die Cover-Bilder können optional für ALLE Bücher heruntergeladen werden.\n\nSollen alle bestehenden Cover-Bilder überschrieben werden? Warnung, die Aktualisierung kann lange dauern. </string>
 <string name="option_yes">Ja</string>
 <string name="option_no">Nein</string>
 <string name="button_ok">OK</string>
@@ -180,10 +180,10 @@
 <string name="loading">Lade…</string>
 <string name="image_not_found">Bild nicht gefunden</string>
 <item name="fieldCheckbox" type="id"/>
-<string name="select_min_1_field">Es muss mindestens ein Feld für die Aktualisierung ausgewählt werden</string>
-<string name="usage_copy_if_blank">Kopieren wenn leer</string>
-<string name="usage_add_extra">hängt zusätzliche Daten an</string>
-<string name="usage_overwrite">überschreibt zusätzliche Daten</string>
+<string name="alert_select_min_1_field">Es muss mindestens ein Feld für die Aktualisierung ausgewählt werden</string>
+<string name="option_usage_copy_if_blank">Kopieren wenn leer</string>
+<string name="option_usage_add_extra">hängt zusätzliche Daten an</string>
+<string name="option_usage_overwrite">überschreibt zusätzliche Daten</string>
 <string name="cancelling">Abbruch</string>
 <string name="starting_search">Beginn der Suche</string>
     <string name="para_send_info">Klicken Sie auf den Button unten, um Informationen über die letzten Abstürze der App zu sammeln und an einen der Entwickler zu schicken. Dieser Vorgang erstellt eine Sicherheitskopie Ihrer gesamten Datenbank und der Log-Dateien. Wenn Sie eine dieser Dateien nicht verschicken wollen, löschen Sie diese vor dem Senden aus dem Anhang.</string>
@@ -394,8 +394,8 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
 <string name="option_use_background_thread">Im Hintergrund laden (schnellerer Bildlauf, Bilder können verzögert sein)</string>
 <string name="option_generate_immediately">Sofort erzeugen (langsamerer Bildlauf, Bilder sofort angezeigt)</string>
 <string name="sort_and_style_ellipsis">Sortierung und Stil…</string>
-    <string name="displaying_n_books_in_m_entries">%1$s Bücher in %2$s Einträgen werden angezeigt</string>
-<string name="displaying_n_books">%1$s Bücher werden angezeigt</string>
+    <string name="description_displaying_n_books_in_m_entries">%1$s Bücher in %2$s Einträgen werden angezeigt</string>
+<string name="description_displaying_n_books">%1$s Bücher werden angezeigt</string>
 <string name="available">Verfügbar</string>
 <string name="preference_summary_details_in_header">Zusammenfassung in der Kopfzeile</string>
 <string name="option_hide_summary_details">Zusammenfassung verbergen</string>

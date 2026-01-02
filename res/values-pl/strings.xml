@@ -13,7 +13,7 @@
 <string name="label_series">Seria</string>
 <string name="label_pages">Stron</string>
 <string name="button_confirm_add">Dodaj!</string>
-<string name="confirm_update">Aktualizuj</string>
+<string name="button_update">Aktualizuj</string>
 <string name="para_no_books">Na tej półce nie ma książek. Dodaj jakąś przy pomocy menu na dole ekranu.</string>
 <string name="menu_sort_by_author_expanded">Rozwiń wszystko</string>
     <string name="menu_sort_by_author_collapsed">Zwiń wszystko</string>
@@ -63,9 +63,9 @@
 <string name="label_about">O programie</string>
     <string name="label_list_price">Cena</string>
     <string name="label_update_fields">Automatycznie aktualizuj pola wg danych z sieci</string>
-<string name="select_fields_to_update">Wybierz pola do aktualizacji</string>
-<string name="select_fields_to_update_help">Wybrane pola będą zaktualizowane wg danych z sieci. Pozostałe nie zostaną zmienione.</string>
-<string name="overwrite_thumbnail">Wybrane pola zostaną zaktualizowane, natomiast okładki mogą by opcjonalnie pobrane dla wszystkich książek.\n\nCzy chcesz zastąpić wszystkie istniejące okładki? Uwaga - może to zająć sporo czasu&#8230;</string>
+<string name="title_select_fields_to_update">Wybierz pola do aktualizacji</string>
+<string name="description_select_fields_to_update_help">Wybrane pola będą zaktualizowane wg danych z sieci. Pozostałe nie zostaną zmienione.</string>
+<string name="description_overwrite_thumbnail">Wybrane pola zostaną zaktualizowane, natomiast okładki mogą by opcjonalnie pobrane dla wszystkich książek.\n\nCzy chcesz zastąpić wszystkie istniejące okładki? Uwaga - może to zająć sporo czasu&#8230;</string>
 <string name="option_yes">Tak</string>
 <string name="option_no">Nie</string>
 <string name="button_ok">OK</string>
@@ -179,10 +179,10 @@
 <string name="loading">Pobieram...</string>
 <string name="image_not_found">Zdjęcie nie znalezione</string>
 <item name="fieldCheckbox" type="id"></item>
-<string name="select_min_1_field">Wybierz przynajmniej jedno pole do zaktualizowania</string>
-<string name="usage_copy_if_blank">Kopiuj, gdy puste</string>
-<string name="usage_add_extra">Dopisz do istniejącego</string>
-<string name="usage_overwrite">Nadpisz istniejące dane</string>
+<string name="alert_select_min_1_field">Wybierz przynajmniej jedno pole do zaktualizowania</string>
+<string name="option_usage_copy_if_blank">Kopiuj, gdy puste</string>
+<string name="option_usage_add_extra">Dopisz do istniejącego</string>
+<string name="option_usage_overwrite">Nadpisz istniejące dane</string>
 <string name="cancelling">Przerywam..</string>
 <string name="starting_search">Rozpoczynam szukanie</string>
     <string name="para_send_info">Naciśnij przycisk poniżej, by zebrać informacje o problemach i błędach i wysłać je do programistów. Zostanie wykonana kopia danych i logów. Jeśli nie chesz, by te dane były wysyłane, usuń je z przygotowanej wiadomości przed jej wysłaniem.</string>

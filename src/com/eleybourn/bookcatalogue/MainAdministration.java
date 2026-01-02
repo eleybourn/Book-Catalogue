@@ -217,49 +217,12 @@ public class MainAdministration extends ActivityWithTasks
                     alertDialog.show();
                 });
 
-
-
-        /* TaskList Link */
-        View backgroundEvents = findViewById(R.id.backgroundEventsLabel);
-        // Make line flash when clicked.
-        backgroundEvents.setBackgroundResource(android.R.drawable.list_selector_background);
-        backgroundEvents.setOnClickListener(v -> showEvents());
-
-        /* TaskList Link */
-        View backgroundTasks = findViewById(R.id.backgroundTasksLabel);
-        // Make line flash when clicked.
-        backgroundTasks.setBackgroundResource(android.R.drawable.list_selector_background);
-        backgroundTasks.setOnClickListener(v -> showBackgroundTasks());
-
         {
             /* Update Fields Link */
             View thumb = findViewById(R.id.thumbLabel);
             // Make line flash when clicked.
             thumb.setBackgroundResource(android.R.drawable.list_selector_background);
             thumb.setOnClickListener(v -> updateThumbnails());
-        }
-
-        {
-            // Debug ONLY!
-            /* Backup Link */
-            View backup = findViewById(R.id.backupLabel);
-            // Make line flash when clicked.
-            backup.setBackgroundResource(android.R.drawable.list_selector_background);
-            backup.setOnClickListener(v -> {
-                if (mDbHelper.backupDbFile() != null) {
-                    Toast.makeText(MainAdministration.this, R.string.alert_backup_success, Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(MainAdministration.this, R.string.alert_unexpected_error, Toast.LENGTH_LONG).show();
-                }
-            });
-        }
-
-        {
-            /* Import old files */
-            View imp = findViewById(R.id.importOldFilesLabel);
-            // Make line flash when clicked.
-            imp.setBackgroundResource(android.R.drawable.list_selector_background);
-            imp.setOnClickListener(v -> startImportOldFiles());
         }
 
         {
@@ -286,6 +249,42 @@ public class MainAdministration extends ActivityWithTasks
                     utils.close();
                 }
             });
+        }
+
+
+        /* TaskList Link */
+        View backgroundEvents = findViewById(R.id.backgroundEventsLabel);
+        // Make line flash when clicked.
+        backgroundEvents.setBackgroundResource(android.R.drawable.list_selector_background);
+        backgroundEvents.setOnClickListener(v -> showEvents());
+
+        /* TaskList Link */
+        View backgroundTasks = findViewById(R.id.backgroundTasksLabel);
+        // Make line flash when clicked.
+        backgroundTasks.setBackgroundResource(android.R.drawable.list_selector_background);
+        backgroundTasks.setOnClickListener(v -> showBackgroundTasks());
+
+        {
+            // Debug ONLY!
+            /* Backup Link */
+            View backup = findViewById(R.id.backupLabel);
+            // Make line flash when clicked.
+            backup.setBackgroundResource(android.R.drawable.list_selector_background);
+            backup.setOnClickListener(v -> {
+                if (mDbHelper.backupDbFile() != null) {
+                    Toast.makeText(MainAdministration.this, R.string.alert_backup_success, Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(MainAdministration.this, R.string.alert_unexpected_error, Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+
+        {
+            /* Import old files */
+            View imp = findViewById(R.id.importOldFilesLabel);
+            // Make line flash when clicked.
+            imp.setBackgroundResource(android.R.drawable.list_selector_background);
+            imp.setOnClickListener(v -> startImportOldFiles());
         }
 
     }
@@ -422,7 +421,7 @@ public class MainAdministration extends ActivityWithTasks
      * with an ISBN
      */
     private void updateThumbnails() {
-        Intent i = new Intent(this, UpdateFromInternet.class);
+        Intent i = new Intent(this, AdminUpdateFromInternet.class);
         startActivity(i);
     }
 

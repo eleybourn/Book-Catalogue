@@ -13,7 +13,7 @@
     <string name="label_series">Serie</string>
     <string name="label_pages">Pagine</string>
     <string name="button_confirm_add">Aggiungi libro</string>
-    <string name="confirm_update">Aggiorna</string>
+    <string name="button_update">Aggiorna</string>
     <string name="para_no_books">Non ci sono libri in questa libreria. Per aggiungerne utilizza il menù nella parte inferiore dello schermo.</string>
     <string name="menu_sort_by_author_expanded">Espandi tutto</string>
     <string name="menu_sort_by_author_collapsed">Comprimi tutto</string>
@@ -62,9 +62,9 @@
     <string name="label_about">Riguardo questa app</string>
     <string name="label_list_price">Prezzo di listino</string>
     <string name="label_update_fields">Aggiorna i campi automaticamente</string>
-    <string name="select_fields_to_update">Seleziona i campi da aggiornare</string>
-    <string name="select_fields_to_update_help">I campi selezionati verranno aggiornato da Internet. Gli altri rimarranno invariati.</string>
-    <string name="overwrite_thumbnail">Verranno aggiornati i campi selezionati come indicato, ma opzionalmente è possibile aggiornare anche le miniature di TUTTI i libri.\n\nVuoi sovrascrivere tutte le miniature esistenti? Attenzione, potrebbero occorrere diversi minuti. </string>
+    <string name="title_select_fields_to_update">Seleziona i campi da aggiornare</string>
+    <string name="description_select_fields_to_update_help">I campi selezionati verranno aggiornato da Internet. Gli altri rimarranno invariati.</string>
+    <string name="description_overwrite_thumbnail">Verranno aggiornati i campi selezionati come indicato, ma opzionalmente è possibile aggiornare anche le miniature di TUTTI i libri.\n\nVuoi sovrascrivere tutte le miniature esistenti? Attenzione, potrebbero occorrere diversi minuti. </string>
     <string name="option_yes">Sì</string>
     <string name="option_no">No</string>
     <string name="button_ok">OK</string>
@@ -180,10 +180,10 @@
     <string name="loading">Caricamento&#8230;</string>
     <string name="image_not_found">Immagine non trovata</string>
     <item name="fieldCheckbox" type="id"></item>
-    <string name="select_min_1_field">Seleziona almeno un campo da aggiornare</string>
-    <string name="usage_copy_if_blank">Copia se vuoto</string>
-    <string name="usage_add_extra">Aggiungi altri dati</string>
-    <string name="usage_overwrite">Sovrascrivi dati esistenti</string>
+    <string name="alert_select_min_1_field">Seleziona almeno un campo da aggiornare</string>
+    <string name="option_usage_copy_if_blank">Copia se vuoto</string>
+    <string name="option_usage_add_extra">Aggiungi altri dati</string>
+    <string name="option_usage_overwrite">Sovrascrivi dati esistenti</string>
     <string name="cancelling">Annullamento</string>
     <string name="starting_search">Inizio ricerca</string>
     <string name="para_send_info">Clicca sul pulsante qui sotto per raccogliere informazioni sui crash recenti o altri errori e inviarli allo sviluppatore. Verrà creata una copia di backup dell\'intero database e di tutti i file di log. Cancella i file che non vuoi allegare alla email prima di inviarla.</string>
@@ -424,8 +424,8 @@
     <string name="option_use_background_thread">In sottofondo (scorrimento elenchi più veloce, immagini mostrate con ritardo)</string>
     <string name="option_generate_immediately">Immediata (scorrimento elenchi più lento, immagini mostrate immediatamente)</string>
     <string name="sort_and_style_ellipsis">Ordina &amp; Stile&#8230;</string>
-    <string name="displaying_n_books_in_m_entries">visualizzati %1$s libri, in %2$s voci</string>
-    <string name="displaying_n_books">visualizzati %1$s libri</string>
+    <string name="description_displaying_n_books_in_m_entries">visualizzati %1$s libri, in %2$s voci</string>
+    <string name="description_displaying_n_books">visualizzati %1$s libri</string>
     <string name="available">Disponibile</string>
     <string name="preference_summary_details_in_header">Riassunto dettagli nel titolo</string>
     <string name="option_hide_summary_details">Nascondi riassunto dettagli</string>

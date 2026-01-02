@@ -326,6 +326,11 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
             initBookshelfSpinner();
             setupList();
 
+            TextView empty = findViewById(R.id.empty);
+            if (mUniqueBooks == 0) {
+                empty.setVisibility(View.GONE);
+            }
+
             if (savedInstanceState == null) {
                 HintManager.displayHint(this, R.string.hint_view_only_book_details, null, null);
                 HintManager.displayHint(this, R.string.hint_library, null, null);
@@ -464,9 +469,9 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
         TextView bookCounts = findViewById(R.id.label_bookshelf_count);
         if ((showHeaderFlags & LibraryStyle.SUMMARY_SHOW_COUNT) != 0) {
             if (mUniqueBooks != mTotalBooks)
-                bookCounts.setText(this.getString(R.string.displaying_n_books_in_m_entries, String.valueOf(mUniqueBooks), String.valueOf(mTotalBooks)));
+                bookCounts.setText(this.getString(R.string.description_displaying_n_books_in_m_entries, String.valueOf(mUniqueBooks), String.valueOf(mTotalBooks)));
             else
-                bookCounts.setText(this.getString(R.string.displaying_n_books, String.valueOf(mUniqueBooks)));
+                bookCounts.setText(this.getString(R.string.description_displaying_n_books, String.valueOf(mUniqueBooks)));
             bookCounts.setVisibility(View.VISIBLE);
         } else {
             bookCounts.setVisibility(View.GONE);
